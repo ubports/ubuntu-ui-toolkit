@@ -31,7 +31,10 @@ MainView {
         id: stock
         iconName: "starred"
         text: "Staaaar"
-        onTriggered: print(iconName, "triggered", value)
+        onTriggered: {
+            print(iconName, "triggered", value)
+            view.ViewItems.selectedIndices = [0, 2, 9];
+        }
     }
 
     ListItemActions {
@@ -66,6 +69,7 @@ MainView {
         ]
     }
 
+    property bool selectable: false
     property list<Action> leadingArray: [
         Action {
             iconName: "delete"
@@ -91,6 +95,11 @@ MainView {
         anchors {
             left: parent.left
             right: parent.right
+        }
+
+        Button {
+            text: "Selectable " + (selectable ? "OFF" : "ON")
+            onClicked: selectable = !selectable
         }
 
         ListItem {
@@ -161,6 +170,9 @@ MainView {
             height: units.gu(28)
             model: 25
             pressDelay: 0
+            ViewItems.selectMode: main.selectable
+            ViewItems.selectedIndices: [9,3,4,1]
+            ViewItems.onSelectedIndicesChanged: print("LISTVIEW INDEXES=", ViewItems.selectedIndices)
             delegate: ListItem {
                 objectName: "ListItem" + index
                 id: listItem
@@ -178,6 +190,10 @@ MainView {
                     verticalAlignment: Text.AlignVCenter
                     text: "This is one Label split in two lines.\n" +
                           "The second line - item #" + modelData
+                }
+                Button {
+                    text: "Pressme..."
+                    anchors.centerIn: parent
                 }
 
                 states: State {
@@ -203,11 +219,11 @@ MainView {
                 id: trailing
                 actions: leading.actions
             }
-
             Column {
                 id: column
                 width: flicker.width
                 property alias count: repeater.count
+                ViewItems.selectMode: main.selectable
                 Repeater {
                     id: repeater
                     model: 10

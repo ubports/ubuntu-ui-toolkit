@@ -67,6 +67,7 @@ Item {
     }
 
     Column {
+        id: testColumn
         width: parent.width
         ListItem {
             id: defaults
@@ -107,6 +108,7 @@ Item {
             height: units.gu(28)
             clip: true
             model: 10
+            ViewItems.selectMode: false
             delegate: ListItem {
                 objectName: "listItem" + index
                 color: "lightgray"
@@ -131,6 +133,24 @@ Item {
                 delegate: ListItem {
                     objectName: "listItem" + index
                     leadingActions: leading
+                }
+            }
+        }
+        Flickable {
+            id: flickable
+            width: parent.width
+            height: units.gu(14)
+            clip: true
+            contentHeight: column.height
+            Column {
+                id: column
+                width: parent.width
+                Repeater {
+                    model: 10
+                    ListItem {
+                        objectName: "listItem" + index
+                        color: "lightgreen"
+                    }
                 }
             }
         }
@@ -183,6 +203,12 @@ Item {
             }
         }
 
+        // delayed swipe, gives few millisecond timeout between each move
+        // so Repeater has time to create the panel actions in style
+        function swipe(item, x, y, dx, dy) {
+            flick(item, x, y, dx, dy, 0, 0, undefined, undefined, 100);
+        }
+
         function initTestCase() {
             TestExtras.registerTouchDevice();
             waitForRendering(main);
@@ -191,6 +217,11 @@ Item {
         function cleanup() {
             testItem.action = null;
             testItem.contentItem.anchors.margins = 0;
+            testItem.selected = false;
+            testColumn.ViewItems.selectMode = false;
+            waitForRendering(testItem.contentItem, 200);
+            controlItem.selected = false;
+            waitForRendering(controlItem.contentItem, 200);
             movingSpy.clear();
             highlightedSpy.clear();
             clickSpy.clear();
@@ -199,6 +230,7 @@ Item {
             buttonSpy.clear();
             interactiveSpy.clear();
             listView.interactive = true;
+            listView.ViewItems.selectMode = false;
             // make sure we collapse
             mouseClick(defaults, 0, 0)
             movingSpy.target = null;
@@ -229,6 +261,10 @@ Item {
             compare(defaults.action, null, "No action by default.");
             compare(defaults.style, null, "Style is loaded upon first use.");
             compare(defaults.__styleInstance, null, "__styleInstance must be null.");
+            compare(defaults.selected, false, "Not selected by default");
+            compare(defaults.selectMode, false, "Not selectable by default");
+            compare(testColumn.ViewItems.selectMode, false, "The parent attached property is not selectable by default");
+            compare(testColumn.ViewItems.selectedIndices.length, 0, "No item is selected by default");
 
             compare(actionsDefault.delegate, null, "ListItemActions has no delegate set by default.");
             compare(actionsDefault.actions.length, 0, "ListItemActions has no actions set.");
@@ -277,7 +313,7 @@ Item {
             clickSpy.target = item;
             clickSpy.clear();
             movingSpy.target = item;
-            flick(item, centerOf(item).x, centerOf(item).y, units.gu(20), 0);
+            swipe(item, centerOf(item).x, centerOf(item).y, units.gu(20), 0);
             movingSpy.wait();
 
             // click over the contentItem
@@ -292,7 +328,7 @@ Item {
             pressAndHoldSpy.target = item;
             pressAndHoldSpy.clear();
             movingSpy.target = item;
-            flick(item, centerOf(item).x, centerOf(item).y, units.gu(20), 0);
+            swipe(item, centerOf(item).x, centerOf(item).y, units.gu(20), 0);
             movingSpy.wait();
 
             // press and hold
@@ -363,7 +399,7 @@ Item {
             listView.positionViewAtBeginning();
             movingSpy.target = data.item;
             if (data.mouse) {
-                flick(data.item, data.pos.x, data.pos.y, data.dx, 0);
+                swipe(data.item, data.pos.x, data.pos.y, data.dx, 0);
             } else {
                 TestExtras.touchDrag(0, data.item, data.pos, Qt.point(data.dx, 0));
             }
@@ -392,7 +428,7 @@ Item {
             listView.positionViewAtBeginning();
             movingSpy.target = data.item;
             if (data.mouse) {
-                flick(data.item, data.pos.x, data.pos.y, data.dx, 0);
+                swipe(data.item, data.pos.x, data.pos.y, data.dx, 0);
             } else {
                 TestExtras.touchDrag(0, data.item, data.pos, Qt.point(data.dx, 0));
             }
@@ -419,7 +455,7 @@ Item {
             movingSpy.target = data.item;
             interactiveSpy.target = listView;
             if (data.mouse) {
-                flick(data.item, data.pos.x, data.pos.y, data.dx, data.dy);
+                swipe(data.item, data.pos.x, data.pos.y, data.dx, data.dy);
             } else {
                 TestExtras.touchDrag(0, data.item, data.pos, Qt.point(data.dx, data.dy));
             }
@@ -444,7 +480,7 @@ Item {
         }
         function test_visualized_actions(data) {
             movingSpy.target = data.item;
-            flick(data.item, centerOf(data.item).x, centerOf(data.item).y, data.leading ? units.gu(20) : -units.gu(20), 0);
+            swipe(data.item, centerOf(data.item).x, centerOf(data.item).y, data.leading ? units.gu(20) : -units.gu(20), 0);
             movingSpy.wait();
 
             // check if the action is visible
@@ -468,7 +504,7 @@ Item {
         function test_listitem_margins(data) {
             data.item.contentItem.anchors.margins = units.gu(1);
             movingSpy.target = data.item;
-            flick(data.item, centerOf(data.item).x, centerOf(data.item).y, data.dx, 0);
+            swipe(data.item, centerOf(data.item).x, centerOf(data.item).y, data.dx, 0);
             movingSpy.wait();
             var panel = panelItem(data.item, data.leading);
             verify(panel && panel.visible, "Panel not visible.");
@@ -489,7 +525,7 @@ Item {
             listView.positionViewAtBeginning();
             movingSpy.target = data.item;
             if (data.mouse) {
-                flick(data.item, data.pos.x, data.pos.y, data.dx, 0);
+                swipe(data.item, data.pos.x, data.pos.y, data.dx, 0);
             } else {
                 TestExtras.touchDrag(0, data.item, data.pos, Qt.point(data.dx, 0));
             }
@@ -516,7 +552,7 @@ Item {
             listView.positionViewAtBeginning();
             var item = findChild(listView, "listItem0");
             movingSpy.target = item;
-            flick(item, centerOf(item).x, centerOf(item).y, -units.gu(20), 0);
+            swipe(item, centerOf(item).x, centerOf(item).y, -units.gu(20), 0);
             var panel = panelItem(item, false);
             verify(panel, "Panel is not visible");
             var custom = findChild(panel, "custom_delegate");
@@ -534,16 +570,16 @@ Item {
             return [
                 // the list snaps out if the panel is dragged in > overshoot GU (hardcoded for now)
                 {tag: "Snap out leading", item: listItem, dx: units.gu(2), snapIn: false},
-                {tag: "Snap in leading", item: listItem, dx: units.gu(4), snapIn: true},
+                {tag: "Snap in leading", item: listItem, dx: units.gu(6), snapIn: true},
                 {tag: "Snap out trailing", item: listItem, dx: -units.gu(2), snapIn: false},
-                {tag: "Snap in trailing", item: listItem, dx: -units.gu(4), snapIn: true},
+                {tag: "Snap in trailing", item: listItem, dx: -units.gu(6), snapIn: true},
             ];
         }
         function test_snap(data) {
             movingSpy.target = data.item;
-            flick(data.item, centerOf(data.item).x, centerOf(data.item).y, data.dx, 0);
+            swipe(data.item, centerOf(data.item).x, centerOf(data.item).y, data.dx, 0);
             movingSpy.wait();
-            waitForRendering(data.item, 400);
+            waitForRendering(data.item.contentItem, 400);
             movingSpy.clear();
             if (data.snapIn) {
                 verify(data.item.contentItem.x != 0.0, "Not snapped to be visible");
@@ -595,8 +631,6 @@ Item {
             listView.positionViewAtBeginning();
             var item0 = findChild(listView, "listItem0");
             var item1 = findChild(listView, "listItem1");
-            var item2 = findChild(listView, "listItem2");
-            var item3 = findChild(listView, "listItem3");
             return [
                 // testItem is the child item @index 3 in the topmost Column.
                 {tag: "Standalone item, child index 3", item: testItem, result: 3},
@@ -607,8 +641,9 @@ Item {
         function test_verify_action_value(data) {
             // tug actions in
             movingSpy.target = data.item;
-            flick(data.item, centerOf(data.item).x, centerOf(data.item).y, units.gu(20), 0);
+            swipe(data.item, 1, centerOf(data.item).y, units.gu(40), 0);
             movingSpy.wait();
+            wait(2000);
             verify(data.item.contentItem.x != data.item.contentItem.anchors.leftMargin, "Not snapped in");
 
             var panel = panelItem(data.item, "Leading");
@@ -709,7 +744,7 @@ Item {
             interactiveSpy.target = testFlickable;
             movingSpy.target = listItem;
             // tug leading
-            flick(listItem, centerOf(listItem).x, centerOf(listItem).y, listItem.width / 2, 0);
+            swipe(listItem, centerOf(listItem).x, centerOf(listItem).y, listItem.width / 2, 0);
             movingSpy.wait();
             // check if interactive got changed
             interactiveSpy.wait();
@@ -742,6 +777,142 @@ Item {
             pressAndHoldSpy.wait();
             compare(clickSpy.count, 0, "Click must be suppressed.");
             compare(actionSpy.count, 0, "Action triggered must be suppressed");
+        }
+
+        function test_select_indices_updates_selected_items() {
+            listView.ViewItems.selectedIndices = [0,1,2];
+            listView.ViewItems.selectMode = true;
+            waitForRendering(listView, 500);
+            for (var i in listView.ViewItems.selectedIndices) {
+                var index = listView.ViewItems.selectedIndices[i];
+                var listItem = findChild(listView, "listItem" + index);
+                compare(listItem.selected, true, "ListItem at index " + index + " is not selected!");
+            }
+            listView.ViewItems.selectMode = false;
+            listView.ViewItems.selectedIndices = [];
+            waitForRendering(listView, 500);
+        }
+
+        function test_toggle_selectMode_data() {
+            return [
+                {tag: "When not selected", index: 0, selected: false},
+                {tag: "When selected", index: 0, selected: true},
+            ]
+        }
+        function test_toggle_selectMode(data) {
+            var listItem = findChild(listView, "listItem" + data.index)
+            verify(listItem, "Cannot get test item");
+            listItem.selected = data.selected;
+            listView.ViewItems.selectMode = true;
+            // wait few milliseconds
+            wait(400);
+            // testItem is the 4th child, so index is 3
+            verify(findChild(listItem, "selection_panel" + data.index), "Cannot find selection panel");
+            compare(listItem.contentItem.enabled, true, "contentItem is not disabled.");
+        }
+
+        SignalSpy {
+            id: selectedSpy
+            signalName: "selectedChanged"
+        }
+
+        function test_toggle_selected_data() {
+            return [
+                // item = <test-item>, clickOk: <item-to-click-on>, offsetX|Y: <clickOn offset clicked>
+                {tag: "Click over selection", selectableHolder: testColumn, item: controlItem, clickOn: "listitem_select", offsetX: units.gu(0.5), offsetY: units.gu(0.5), xfail: false},
+                {tag: "Click over contentItem", selectableHolder: testColumn, item: controlItem, clickOn: "ListItemHolder", offsetX: units.gu(0.5), offsetY: units.gu(0.5), xfail: true},
+                {tag: "Click over control", selectableHolder: testColumn, item: controlItem, clickOn: "button_in_list", offsetX: units.gu(0.5), offsetY: units.gu(0.5), xfail: true},
+            ];
+         }
+        function test_toggle_selected(data) {
+            // make test item selectable first, so the panel is created
+            data.selectableHolder.ViewItems.selectMode = true;
+            wait(400);
+            // get the control to click on
+            var clickOn = findChild(data.item, data.clickOn);
+            verify(clickOn, "control to be clicked on not found");
+            // click on the selection and check selected changed
+            selectedSpy.target = data.item;
+            selectedSpy.clear();
+            mouseClick(clickOn, data.offsetX, data.offsetY);
+            if (data.xfail) {
+                expectFail(data.tag, "Clicking anywhere else but selection panel should not toggle selection state!");
+            }
+            selectedSpy.wait();
+        }
+
+        SignalSpy {
+            id: selectedIndicesSpy
+            signalName: "selectedIndicesChanged"
+            target: listView.ViewItems
+        }
+
+        function test_selectedIndices_change() {
+            // move to the end of the view
+            listView.positionViewAtEnd();
+            var listItem = findChild(listView, "listItem" + (listView.count - 1));
+            verify(listItem, "Cannot get tested list item");
+            listView.ViewItems.selectMode = true;
+            waitForRendering(listItem);
+            selectedSpy.target = listItem;
+            selectedSpy.clear();
+
+            listItem.selected = true;
+            selectedSpy.wait();
+            selectedIndicesSpy.wait();
+        }
+
+        function test_no_tug_when_selectable() {
+            movingSpy.target = testItem;
+            testColumn.ViewItems.selectMode = true;
+            // wait till animation to selection mode ends
+            waitForRendering(testItem.contentItem);
+
+            // try to tug leading
+            movingSpy.clear();
+            swipe(testItem, centerOf(testItem).x, centerOf(testItem).y, units.gu(10), 0);
+            compare(movingSpy.count, 0, "No tug allowed when in selection mode");
+        }
+
+        function test_selectable_and_click() {
+            testColumn.ViewItems.selectMode = true;
+            // wait till animation to selection mode ends
+            waitForRendering(testItem.contentItem);
+
+            clickSpy.target = testItem;
+            mouseClick(testItem, centerOf(testItem).x, centerOf(testItem).y);
+            clickSpy.wait();
+        }
+
+        function test_selectable_and_pressandhold() {
+            testColumn.ViewItems.selectMode = true;
+            // wait till animation to selection mode ends
+            waitForRendering(testItem.contentItem);
+
+            pressAndHoldSpy.target = testItem;
+            mouseLongPress(testItem, centerOf(testItem).x, centerOf(testItem).y);
+            mouseRelease(testItem, centerOf(testItem).x, centerOf(testItem).y);
+            pressAndHoldSpy.wait();
+        }
+
+        function test_proper_attached_properties_data() {
+            return [
+                {tag: "Attached to ListView", item: listView},
+                {tag: "Attached to Column in Flickable", item: column},
+            ];
+        }
+        function test_proper_attached_properties(data) {
+            var listItem = findChild(data.item, "listItem0");
+            verify(listItem, "ListItem not found!");
+            data.item.ViewItems.selectMode = true;
+            // wait few milliseconds to get the selection panel opened
+            wait(400);
+            // check if the selection mode was activated by looking after the first selection panel
+            var panel = findChild(listItem, "selection_panel0");
+            // turn off selection mode so we have a proper cleanup
+            data.item.ViewItems.selectMode = false;
+            wait(400);
+            verify(panel, "Selection panel not found, wrong attached property target?");
         }
     }
 }

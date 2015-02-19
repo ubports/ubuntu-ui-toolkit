@@ -44,13 +44,12 @@ Styles.ListItemStyle {
         Rectangle {
             id: panel
             objectName: "ListItemPanel" + (leading ? "Leading" : "Trailing")
-            property bool leading: false
             readonly property real panelWidth: actionsRow.width
 
             // FIXME use theme palette colors once stabilized
             color: leading ? UbuntuColors.red : "white"
             anchors.fill: parent
-            width: parent.width
+            width: parent ? parent.width : 0
 
             readonly property ListItemActions itemActions: leading ? styledItem.leadingActions : styledItem.trailingActions
 
@@ -64,7 +63,7 @@ Styles.ListItemStyle {
                     leftMargin: spacing
                 }
 
-                property real maxItemWidth: parent.width / itemActions.actions.length
+                readonly property real maxItemWidth: parent.width / itemActions.actions.length
 
                 Repeater {
                     model: itemActions.actions
@@ -124,6 +123,46 @@ Styles.ListItemStyle {
             }
         }
     }
+    // the selection/multiselection panel
+    Component {
+        id: selectionDelegate
+        Item {
+            id: selectPanel
+            objectName: "selection_panel" + listItemIndex
+            anchors.fill: parent ? parent : undefined
+
+            CheckBox {
+                id: checkbox
+                opacity: 0
+                // for unit and autopilot tests
+                objectName: "listitem_select"
+                anchors.centerIn: parent
+                // for the initial value
+                checked: styledItem.selected
+                onCheckedChanged: styledItem.selected = checked;
+            }
+
+            states: State {
+                name: "enabled"
+                when: loaded && styledItem.selectMode
+                PropertyChanges {
+                    target: checkbox
+                    opacity: 1.0
+                }
+            }
+            transitions: Transition {
+                from: ""
+                to: "*"
+                reversible: true
+                enabled: listItemStyle.animatePanels
+                OpacityAnimator {
+                    easing: UbuntuAnimation.StandardEasing
+                    duration: UbuntuAnimation.FastDuration
+                }
+            }
+        }
+    }
+
 
     // leading panel loader
     Loader {
@@ -135,13 +174,46 @@ Styles.ListItemStyle {
             right: parent.left
         }
         width: parent.width
-        sourceComponent: styledItem.leadingActions && styledItem.leadingActions.actions.length > 0 ?
+        sourceComponent: internals.swiped && styledItem.leadingActions && styledItem.leadingActions.actions.length > 0 ?
                              panelComponent : null
-        onItemChanged: {
-            if (item) {
-                item.leading = true;
+        // context properties used in delegates
+        readonly property bool leading: true
+        readonly property bool loaded: status == Loader.Ready
+
+        // panel states
+        states: [
+            State {
+                name: "selectable"
+                when: styledItem.selectMode
+                PropertyChanges {
+                    target: leadingLoader
+                    sourceComponent: selectionDelegate
+                    width: units.gu(5)
+                }
+                PropertyChanges {
+                    target: listItemStyle
+                    anchors.leftMargin: 0
+                }
+                PropertyChanges {
+                    target: styledItem.contentItem
+                    anchors.leftMargin: units.gu(5)
+                }
             }
-        }
+        ]
+        transitions: [
+            Transition {
+                from: ""
+                to: "selectable"
+                reversible: true
+                enabled: listItemStyle.animatePanels
+                PropertyAnimation {
+                    target: styledItem.contentItem
+                    properties: "anchors.leftMargin"
+                    easing: UbuntuAnimation.StandardEasing
+                    duration: UbuntuAnimation.FastDuration
+                }
+            }
+        ]
     }
     // trailing panel loader
     Loader {
@@ -153,13 +225,10 @@ Styles.ListItemStyle {
             left: parent.right
         }
         width: parent.width
-        sourceComponent: styledItem.trailingActions && styledItem.trailingActions.actions.length > 0 ?
+        sourceComponent: internals.swiped && styledItem.trailingActions && styledItem.trailingActions.actions.length > 0 ?
                              panelComponent : null
-        onItemChanged: {
-            if (item) {
-                item.leading = false;
-            }
-        }
+        // context properties used in delegates
+        readonly property bool leading: false
     }
 
     // internals
@@ -168,10 +237,11 @@ Styles.ListItemStyle {
         // action triggered
         property Action selectedAction
         // swipe handling
+        readonly property bool swiped: listItemStyle.x != styledItem.x && !styledItem.selectMode
         readonly property Item swipedPanel: listItemStyle.x > 0 ? leadingLoader.item : trailingLoader.item
         readonly property bool leadingPanel: listItemStyle.x > 0
         readonly property real swipedOffset: leadingPanel ? listItemStyle.x : -listItemStyle.x
-        readonly property real panelWidth: swipedPanel ? swipedPanel.panelWidth : 0
+        readonly property real panelWidth: swipedPanel && swipedPanel.hasOwnProperty("panelWidth") ? swipedPanel.panelWidth : 0
         property real prevX: 0.0
         property real snapChangerLimit: 0.0
         readonly property real threshold: units.gu(1.5)

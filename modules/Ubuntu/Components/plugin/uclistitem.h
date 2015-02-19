@@ -36,6 +36,8 @@ class UCListItem : public UCStyledItemBase
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), bool contentMoving READ contentMoving NOTIFY contentMovingChanged)
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
     Q_PROPERTY(QColor highlightColor READ highlightColor WRITE setHighlightColor RESET resetHighlightColor NOTIFY highlightColorChanged)
+    Q_PRIVATE_PROPERTY(UCListItem::d_func(), bool selected READ isSelected WRITE setSelected NOTIFY selectedChanged)
+    Q_PRIVATE_PROPERTY(UCListItem::d_func(), bool selectMode READ selectMode WRITE setSelectMode NOTIFY selectModeChanged)
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), UCAction *action READ action WRITE setAction NOTIFY actionChanged DESIGNABLE false)
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), QQmlListProperty<QObject> listItemData READ data DESIGNABLE false)
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), QQmlListProperty<QQuickItem> listItemChildren READ children NOTIFY listItemChildrenChanged DESIGNABLE false)
@@ -78,6 +80,8 @@ Q_SIGNALS:
     void contentMovingChanged();
     void colorChanged();
     void highlightColorChanged();
+    void selectedChanged();
+    void selectModeChanged();
     void actionChanged();
     void listItemChildrenChanged();
 
@@ -100,6 +104,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_updateSize())
     Q_PRIVATE_SLOT(d_func(), void _q_updateIndex())
     Q_PRIVATE_SLOT(d_func(), void _q_contentMoving())
+    Q_PRIVATE_SLOT(d_func(), void _q_syncSelectMode())
 };
 
 class UCListItemDividerPrivate;
@@ -134,6 +139,8 @@ class UCViewItemsAttachedPrivate;
 class UCViewItemsAttached : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(bool selectMode READ selectMode WRITE setSelectMode NOTIFY selectModeChanged)
+    Q_PROPERTY(QList<int> selectedIndices READ selectedIndices WRITE setSelectedIndices NOTIFY selectedIndicesChanged)
 public:
     explicit UCViewItemsAttached(QObject *owner);
     ~UCViewItemsAttached();
@@ -145,8 +152,18 @@ public:
     bool isMoving();
     bool isBoundTo(UCListItem *item);
 
+    // getter/setter
+    bool selectMode() const;
+    void setSelectMode(bool value);
+    QList<int> selectedIndices() const;
+    void setSelectedIndices(const QList<int> &list);
 private Q_SLOTS:
     void unbindItem();
+
+Q_SIGNALS:
+    void selectModeChanged();
+    void selectedIndicesChanged();
+
 private:
     Q_DECLARE_PRIVATE(UCViewItemsAttached)
     QScopedPointer<UCViewItemsAttachedPrivate> d_ptr;

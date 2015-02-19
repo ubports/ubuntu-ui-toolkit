@@ -305,6 +305,15 @@ void UCListItemPrivate::_q_contentMoving()
     setContentMoving(styleItem->m_snapAnimation->isRunning());
 }
 
+// synchronizes selection mode, initializes the style if has not been done yet,
+// which in turn reveals the selection panels
+void UCListItemPrivate::_q_syncSelectMode()
+{
+    initStyleItem();
+    Q_Q(UCListItem);
+    Q_EMIT q->selectModeChanged();
+}
+
 /*!
  * \qmlproperty Component ListItem::style
  * Holds the style of the component defining the components visualizing the leading/
@@ -375,8 +384,9 @@ void UCListItemPrivate::resetStyle()
     }
 }
 
-// creates the style item
-void UCListItemPrivate::initStyleItem()
+// creates the style item, with altered default value of the animatePanels style property
+// the property is turned on after the panel initialization.
+void UCListItemPrivate::initStyleItem(bool withAnimatedPanels)
 {
     if (!ready || styleItem) {
         return;
@@ -411,8 +421,11 @@ void UCListItemPrivate::initStyleItem()
         return;
     }
     QQml_setParent_noEvent(styleItem, q);
+    styleItem->setAnimatePanels(withAnimatedPanels);
     styleItem->setParentItem(q);
     delegate->completeCreate();
+    // turn animations on
+    styleItem->setAnimatePanels(true);
     Q_EMIT q->__styleInstanceChanged();
 }
 
@@ -459,7 +472,8 @@ bool UCListItemPrivate::canHighlight(QMouseEvent *event)
    Q_Q(UCListItem);
    QPointF myPos = q->mapToItem(contentItem, event->localPos());
    QQuickItem *child = contentItem->childAt(myPos.x(), myPos.y());
-   bool activeComponent = child && (child->acceptedMouseButtons() & event->button()) && !qobject_cast<QQuickText*>(child);
+   bool activeComponent = child && (child->acceptedMouseButtons() & event->button()) &&
+           child->isEnabled() && !qobject_cast<QQuickText*>(child);
    // do highlight if not pressed above the active component, and the component has either
    // action, leading or trailing actions list or at least an active child component declared
    QQuickMouseArea *ma = q->findChild<QQuickMouseArea*>();
@@ -672,7 +686,8 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  * Being an Item, all properties can be accessed or altered. However, make sure you
  * never change \c x, \c y, \c width, \c height or \c anchors properties as those are
  * controlled by the ListItem itself when leading or trailing actions are revealed
- * and thus might cause the component to misbehave. Anchors margins are free to alter.
+ * or when selectable and draggable mode is turned on, and thus might cause the
+ * component to misbehave. Anchors margins are free to alter.
  *
  * Each ListItem has a thin divider shown on the bottom of the component. This
  * divider can be configured through the \c divider grouped property, which can
@@ -680,7 +695,7 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  * When used in \c ListView or \l UbuntuListView, the last list item will not
  * show the divider no matter of the visible property value set.
  *
- * ListItem can handle actions that can get swiped from front to back of the item.
+ * ListItem can handle actions that can get swiped from front or back of the item.
  * These actions are Action elements visualized in panels attached to the front
  * or to the back of the item, and are revealed by swiping the item horizontally.
  * The swipe is started only after the mouse/touch move had passed a given threshold.
@@ -738,6 +753,48 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  * of the ListItem. However not all properties are valid in all the circumstances.
  *
  * The component is styled using the \l ListItemStyle style interface.
+ *
+ * \section3 Selection mode
+ * The selection mode of a ListItem is controlled by the \l ViewItems::selectMode
+ * attached property. This property is attached to each parent item of the ListItem
+ * exception being when used as delegate in ListView, where the property is attached
+ * to the view itself.
+ * \qml
+ * import QtQuick 2.3
+ * import Ubuntu.Components 1.2
+ *
+ * Flickable {
+ *    width: units.gu(40)
+ *    height: units.gu(50)
+ *
+ *    // this will not have any effect
+ *    ViewItems.selectMode: true
+ *    Column {
+ *        // this will work
+ *        ViewItems.selectMode: false
+ *        width: parent.width
+ *        Repeater {
+ *            model: 25
+ *            ListItem {
+ *                Label {
+ *                    text: "ListItem in Flickable #" + index
+ *                }
+ *            }
+ *        }
+ *    }
+ * }
+ * \endqml
+ * The indices selected are stored in \l ViewItems::selectedIndices attached property,
+ * attached the same way as the \l ViewItems::selectMode property is. This is a
+ * read/write property, meaning that initial selected item indices can be set up.
+ * The list contains the indices added in the order of selection, not sorted in
+ * any form.
+ *
+ * \note When in selectable mode, the ListItem content is not disabled and \l clicked
+ * and \l pressAndHold signals are also emitted. The only restriction the component
+ * implies is that leading and trailing actions cannot be swiped in. \ selectable
+ * property can be used to implement different behavior when \l clicked or \l
+ * pressAndHold.
  */
 
 /*!
@@ -746,16 +803,16 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  * is set. The signal is not emitted if the ListItem content is swiped or when used in
  * Flickable (or ListView, GridView) and the Flickable gets moved.
  *
- * If the ListItem contains a component which contains a MouseArea, the clicked
- * signal will be supressed.
+ * If the ListItem contains a component which contains an active MouseArea, the clicked
+ * signal will be supressed when clicked over this area.
  */
 
 /*!
  * \qmlsignal ListItem::pressAndHold()
  * The signal is emitted when the list item is long pressed.
  *
- * If the ListItem contains a component which contains a MouseArea, the pressAndHold
- * signal will be supressed.
+ * If the ListItem contains a component which contains an active MouseArea, the pressAndHold
+ * signal will be supressed when pressed over this area.
  */
 
 UCListItem::UCListItem(QQuickItem *parent)
@@ -795,6 +852,20 @@ void UCListItem::componentComplete()
                          this, SLOT(_q_updateIndex()), Qt::DirectConnection);
         update();
     }
+
+    if (d->parentAttached) {
+        // connect selectedIndicesChanged
+        connect(d->parentAttached, &UCViewItemsAttached::selectedIndicesChanged,
+                this, &UCListItem::selectedChanged);
+        // sync selectModeChanged()
+        connect(d->parentAttached, SIGNAL(selectModeChanged()),
+                this, SLOT(_q_syncSelectMode()));
+
+        // if selection mode is on, initialize style
+        if (d->parentAttached->selectMode()) {
+            d->initStyleItem(false);
+        }
+    }
 }
 
 void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
@@ -830,10 +901,9 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
 
         if (parentAttachee) {
             QObject::connect(parentAttachee, SIGNAL(widthChanged()), this, SLOT(_q_updateSize()), Qt::DirectConnection);
+            // update size
+            d->_q_updateSize();
         }
-
-        // update size
-        d->_q_updateSize();
     }
 }
 
@@ -936,7 +1006,10 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
     Q_D(UCListItem);
     UCStyledItemBase::mouseMoveEvent(event);
 
-//    qDebug() << "MOVE" << event->localPos();
+    if (d->selectMode()) {
+        // no move is allowed while selectable mode is on
+        return;
+    }
 
     // accept the tugging only if the move is within the threshold
     if (d->highlighted && !d->swiped && (d->leadingActions || d->trailingActions)) {
@@ -1258,6 +1331,48 @@ void UCListItem::resetHighlightColor()
     d->highlightColor = getPaletteColor("selected", "background");
     update();
     Q_EMIT highlightColorChanged();
+}
+
+/*!
+ * 
+ * \qmlproperty bool ListItem::selected
+ * The property drives whether a list item is selected or not. Defaults to false.
+ *
+ * \sa ListItem::selectMode, ViewItems::selectMode
+ */
+bool UCListItemPrivate::isSelected()
+{
+    Q_Q(UCListItem);
+    return UCViewItemsAttachedPrivate::get(parentAttached)->isItemSelected(q);
+}
+void UCListItemPrivate::setSelected(bool value)
+{
+    Q_Q(UCListItem);
+    if (value) {
+        UCViewItemsAttachedPrivate::get(parentAttached)->addSelectedItem(q);
+    } else {
+        UCViewItemsAttachedPrivate::get(parentAttached)->removeSelectedItem(q);
+    }
+}
+
+/*!
+ * \qmlproperty bool ListItem::selectMode
+ * The property reports whether the component and the view using the component
+ * is in selectable state. While selectable, the ListItem's leading- and trailing
+ * panels cannot be swiped in. \l clicked and \l pressAndHold signals are also
+ * triggered. Selectable mode can be set either through this property or through
+ * the parent attached \l ViewItems::selectMode property.
+ */
+bool UCListItemPrivate::selectMode()
+{
+    UCViewItemsAttachedPrivate *attached = UCViewItemsAttachedPrivate::get(parentAttached);
+    return attached ? attached->selectable : false;
+}
+void UCListItemPrivate::setSelectMode(bool selectable)
+{
+    if (parentAttached) {
+        parentAttached->setSelectMode(selectable);
+    }
 }
 
 /*!

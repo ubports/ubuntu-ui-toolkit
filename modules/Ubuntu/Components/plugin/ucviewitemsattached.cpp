@@ -32,6 +32,7 @@
 UCViewItemsAttachedPrivate::UCViewItemsAttachedPrivate(UCViewItemsAttached *qq)
     : q_ptr(qq)
     , globalDisabled(false)
+    , selectable(false)
 {
 }
 
@@ -76,11 +77,7 @@ void UCViewItemsAttachedPrivate::buildFlickablesList()
 void UCViewItemsAttachedPrivate::clearChangesList()
 {
     // clear property change objects
-    Q_FOREACH(PropertyChange *change, changes) {
-        // deleting PropertyChange will restore the saved property
-        // to its original binding/value
-        delete change;
-    }
+    qDeleteAll(changes);
     changes.clear();
 }
 
@@ -104,6 +101,17 @@ void UCViewItemsAttachedPrivate::buildChangesList(const QVariant &newValue)
     }
 }
 
+/*!
+ * \qmltype ViewItems
+ * \instantiates UCViewItemsAttached
+ * \inqmlmodule Ubuntu.Components 1.2
+ * \ingroup unstable-ubuntu-listitems
+ * \since Ubuntu.Components 1.2
+ * \brief A set of properties attached to the ListItem's parent item or ListView.
+ *
+ * These properties are attached to the parent item of the ListItem, or to
+ * ListView, when the component is used as delegate.
+ */
 UCViewItemsAttached::UCViewItemsAttached(QObject *owner)
     : QObject(owner)
     , d_ptr(new UCViewItemsAttachedPrivate(this))
@@ -204,4 +212,74 @@ void UCViewItemsAttached::unbindItem()
     }
     // clear binding list
     d->clearFlickablesList();
+}
+
+/*!
+ * \qmlattachedproperty bool ViewItems::selectMode
+ * The property drives whether list items are selectable or not.
+ *
+ * When set, the ListItems of the Item the property is attached to will enter into
+ * selection state. ListItems provide a visual clue which can be used to toggle
+ * the selection state of each, which in order will be reflected in the
+ * \l {ViewItems::selectedIndices}{ViewItems.selectedIndices} list.
+ */
+bool UCViewItemsAttached::selectMode() const
+{
+    Q_D(const UCViewItemsAttached);
+    return d->selectable;
+}
+void UCViewItemsAttached::setSelectMode(bool value)
+{
+    Q_D(UCViewItemsAttached);
+    if (d->selectable == value) {
+        return;
+    }
+    d->selectable = value;
+    Q_EMIT selectModeChanged();
+}
+
+/*!
+ * \qmlattachedproperty list<int> ViewItems::selectedIndices
+ * The property contains the indexes of the ListItems marked as selected. The
+ * indexes are model indexes when used in ListView, and child indexes in other
+ * components. The property being writable, initial selection configuration
+ * can be provided for a view, and provides ability to save the selection state.
+ */
+QList<int> UCViewItemsAttached::selectedIndices() const
+{
+    Q_D(const UCViewItemsAttached);
+    return d->selectedList.toList();
+}
+void UCViewItemsAttached::setSelectedIndices(const QList<int> &list)
+{
+    Q_D(UCViewItemsAttached);
+    if (d->selectedList.toList() == list) {
+        return;
+    }
+    d->selectedList = QSet<int>::fromList(list);
+    Q_EMIT selectedIndicesChanged();
+}
+
+bool UCViewItemsAttachedPrivate::addSelectedItem(UCListItem *item)
+{
+    int index = UCListItemPrivate::get(item)->index();
+    if (!selectedList.contains(index)) {
+        selectedList.insert(index);
+        Q_EMIT q_ptr->selectedIndicesChanged();
+        return true;
+    }
+    return false;
+}
+bool UCViewItemsAttachedPrivate::removeSelectedItem(UCListItem *item)
+{
+    if (selectedList.remove(UCListItemPrivate::get(item)->index()) > 0) {
+        Q_EMIT q_ptr->selectedIndicesChanged();
+        return true;
+    }
+    return false;
+}
+
+bool UCViewItemsAttachedPrivate::isItemSelected(UCListItem *item)
+{
+    return selectedList.contains(UCListItemPrivate::get(item)->index());
 }

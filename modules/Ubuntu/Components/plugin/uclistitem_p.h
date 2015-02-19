@@ -57,6 +57,7 @@ public:
     void _q_updateSize();
     void _q_updateIndex();
     void _q_contentMoving();
+    void _q_syncSelectMode();
     int index();
     bool canHighlight(QMouseEvent *event);
     void setHighlighted(bool pressed);
@@ -101,8 +102,12 @@ public:
     QQmlComponent *style() const;
     void setStyle(QQmlComponent *delegate);
     void resetStyle();
-    void initStyleItem();
+    void initStyleItem(bool withAnimatedPanels = true);
     QQuickItem *styleInstance() const;
+    bool isSelected();
+    void setSelected(bool value);
+    bool selectMode();
+    void setSelectMode(bool selectable);
     UCAction *action() const;
     void setAction(UCAction *action);
 };
@@ -115,13 +120,23 @@ public:
     UCViewItemsAttachedPrivate(UCViewItemsAttached *qq);
     ~UCViewItemsAttachedPrivate();
 
+    static UCViewItemsAttachedPrivate *get(UCViewItemsAttached *item)
+    {
+        return item ? item->d_func() : 0;
+    }
+
     void clearFlickablesList();
     void buildFlickablesList();
     void clearChangesList();
     void buildChangesList(const QVariant &newValue);
+    bool addSelectedItem(UCListItem *item);
+    bool removeSelectedItem(UCListItem *item);
+    bool isItemSelected(UCListItem *item);
 
     UCViewItemsAttached *q_ptr;
-    bool globalDisabled;
+    bool globalDisabled:1;
+    bool selectable:1;
+    QSet<int> selectedList;
     QList< QPointer<QQuickFlickable> > flickables;
     QList< PropertyChange* > changes;
     QPointer<UCListItem> boundItem;
