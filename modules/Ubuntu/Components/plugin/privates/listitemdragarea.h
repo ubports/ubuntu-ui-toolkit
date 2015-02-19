@@ -36,7 +36,6 @@ protected:
     void timerEvent(QTimerEvent *event);
 
 private Q_SLOTS:
-    void updateWidth();
     void startDragging(QQuickMouseEvent *event);
     void stopDragging(QQuickMouseEvent *event);
     void updateDragging(QQuickMouseEvent *event);

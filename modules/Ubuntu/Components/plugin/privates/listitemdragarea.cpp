@@ -54,12 +54,9 @@ void ListItemDragArea::init(const QRectF &area)
 {
     setParentItem(static_cast<QQuickItem*>(parent()));
     updateArea(area);
-
-    // handle default width
-    connect(&UCUnits::instance(), &UCUnits::gridUnitChanged, this, &ListItemDragArea::updateWidth);
-    updateWidth();
     reset();
 
+    // warn if no draggingUpdated() signal handler is implemented
     viewAttached = static_cast<UCViewItemsAttached*>(
                 qmlAttachedPropertiesObject<UCViewItemsAttached>(listView));
     if (viewAttached && !UCViewItemsAttachedPrivate::get(viewAttached)->isDraggingUpdatedConnected()) {
@@ -105,11 +102,6 @@ void ListItemDragArea::timerEvent(QTimerEvent *event)
             updateDragging(0);
         }
     }
-}
-
-void ListItemDragArea::updateWidth()
-{
-    setImplicitWidth(UCUnits::instance().gu(IMPLICIT_DRAG_WIDTH_GU));
 }
 
 // starts dragging operation; emits draggingStarted() and if the signal handler is implemented,
