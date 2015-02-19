@@ -16,14 +16,30 @@
 
 import QtQuick 2.3
 import Ubuntu.Components 1.2
+import Ubuntu.Components.ListItems 1.0
 
 MainView {
     id: main
     width: units.gu(40)
-    height: units.gu(60)
+    height: units.gu(71)
 
     property bool restrictDragging: true
 
+    Action {
+        id: deleteAction
+        iconName: "delete"
+    }
+    property list<Action> contextualActions: [
+        Action {
+            iconName: "edit"
+        },
+        Action {
+            iconName: "share"
+        },
+        Action {
+            iconName: "stock_website"
+        }
+    ]
     Page {
         title: "Dragging test"
         ListView {
@@ -82,9 +98,10 @@ MainView {
                 id: item
                 objectName: "ListItem-" + index
                 leadingActions: ListItemActions {
-                    actions: Action {
-                        iconName: "delete"
-                    }
+                    actions: deleteAction
+                }
+                trailingActions: ListItemActions {
+                    actions: contextualActions
                 }
 
                 Rectangle {
