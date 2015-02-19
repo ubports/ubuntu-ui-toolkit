@@ -82,9 +82,23 @@ MainView {
 
             model: ListModel {
                 Component.onCompleted: {
-                    for (var i = 0; i < 25; i++) {
-                        append({label: "List item #"+i})
+                    for (var i = 0; i < 3; i++) {
+                        append({label: "List item #"+i, sectionData: "Locked"});
                     }
+                    for (i = 3; i < 11; i++) {
+                        append({label: "List item #"+i, sectionData: "Limited, live move"});
+                    }
+                    for (i = 11; i < 25; i++) {
+                        append({label: "List item #"+i, sectionData: "Unlimited, drag'n'drop"});
+                    }
+                }
+            }
+
+            section {
+                property: "sectionData"
+                criteria: ViewSection.FullString
+                delegate: Header {
+                    text: section
                 }
             }
 
