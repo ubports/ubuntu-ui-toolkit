@@ -21,7 +21,6 @@ MainView {
     id: main
     width: units.gu(40)
     height: units.gu(60)
-    useDeprecatedToolbar: false
 
     property bool restrictDragging: true
 

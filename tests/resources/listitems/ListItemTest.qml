@@ -22,7 +22,6 @@ MainView {
     id: main
     width: units.gu(50)
     height: units.gu(105)
-    useDeprecatedToolbar: false
 
     property bool override: false
 
