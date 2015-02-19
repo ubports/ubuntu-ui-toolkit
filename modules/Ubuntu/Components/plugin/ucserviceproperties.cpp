@@ -47,7 +47,8 @@ void UCServicePropertiesPrivate::warning(const QString &message)
     } else {
         setError(QString("%1\n%2").arg(error).arg(message));
     }
-    if (qEnvironmentVariableIsSet("SHOW_SERVICEPROPERTIES_WARNINGS")) {
+    QString env = qgetenv("SHOW_SERVICEPROPERTIES_WARNINGS");
+    if (!env.isEmpty() && (env == "1" || env.toLower() == "true")) {
         qmlInfo(q_ptr) << message;
     }
 }
