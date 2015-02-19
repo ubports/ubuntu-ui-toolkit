@@ -303,40 +303,38 @@ Item {
             movingSpy.wait();
         }
 
-        function test_mouse_click_on_listitem() {
+        function test_vertical_listview_move_cancels_highlight_mouse() {
             var listItem = findChild(listView, "listItem0");
             verify(listItem, "Cannot find listItem0");
 
-            mousePress(listItem, listItem.width / 2, 0);
-            compare(listItem.highlighted, true, "Item is not highlighted?");
-            // do 5 moves to be able to sense it
-            var dy = 0;
-            for (var i = 1; i <= 5; i++) {
-                dy += i * 10;
-                mouseMove(listItem, listItem.width / 2, dy);
-            }
-            compare(listItem.highlighted, false, "Item is highlighted still!");
-            // cleanup, simulate drop event
-            mouseRelease(listItem, listItem.width / 2, dy);
-            mouseRelease(listItem, listItem.width / 2, dy);
+            // convert positions and use the listView to move
+            var pos = listView.mapFromItem(listItem, listItem.width / 2, 0);
+            highlightedSpy.target = listItem;
+            flick(listView, pos.x, pos.y, 0, units.gu(10), -1, undefined, undefined, undefined, 100);
+            highlightedSpy.wait();
+            // the highglighted should have been changed twice
+            compare(highlightedSpy.count, 2, "highlighted did not change twice");
+            compare(listItem.highlighted, false, "Itemshoudl not be highlighted");
         }
-        function test_touch_click_on_listitem() {
+        function test_vertical_listview_move_cancels_highlight_touch() {
             var listItem = findChild(listView, "listItem0");
             verify(listItem, "Cannot find listItem0");
 
-            TestExtras.touchPress(0, listItem, Qt.point(listItem.width / 2, 5));
-            compare(listItem.highlighted, true, "Item is not highlighted?");
-            // do 5 moves to be able to sense it
-            var dy = 0;
+            // convert positions and use the listView to move
+            var pos = listView.mapFromItem(listItem, listItem.width / 2, 0);
+            highlightedSpy.target = listItem;
+            TestExtras.touchPress(0, listView, pos);
             for (var i = 1; i <= 5; i++) {
-                dy += i * 10;
-                TestExtras.touchMove(0, listItem, Qt.point(listItem.width / 2, dy));
+                pos.y += i * units.gu(2);
+                TestExtras.touchMove(0, listView, pos);
+                // wait few milliseconds between moves
+                wait(100);
             }
-            compare(listItem.highlighted, false, "Item is highlighted still!");
-            // cleanup, wait few milliseconds to avoid dbl-click collision
-            TestExtras.touchRelease(0, listItem, Qt.point(listItem.width / 2, dy));
-            TestExtras.touchRelease(0, listItem, Qt.point(listItem.width / 2, dy));
-            wait(400);
+            TestExtras.touchRelease(0, listView, pos);
+            highlightedSpy.wait();
+            // the highglighted should have been changed twice
+            compare(highlightedSpy.count, 2, "highlighted did not change twice");
+            compare(listItem.highlighted, false, "Itemshoudl not be highlighted");
         }
 
         function test_background_height_change_on_divider_visible() {
@@ -591,10 +589,11 @@ Item {
             }
         }
 
-        function test_overshoot_from_style() {
+        // execute thes overshoot tests early enough to make sure that style is not loaded yet
+        function test_1_overshoot_from_style() {
             // scroll to the last ListView element and test on that, to make sure we don't have the style loaded for that component
             listView.positionViewAtEnd();
-            var listItem = findChild(listView, "listItem" + (listView.count - 1));
+            var listItem = findChild(listView, "listItem" + (listView.count - 4));
             verify(listItem, "Cannot get list item for testing");
 
             compare(listItem.swipeOvershoot, 0.0, "No overshoot should be set yet!");
@@ -608,7 +607,7 @@ Item {
             rebound(listItem);
         }
 
-        function test_custom_overshoot_data() {
+        function test_2_custom_overshoot_data() {
             // use different items to make sure the style doesn't update the overshoot values during the test
             return [
                 {tag: "Positive value", index: listView.count - 1, value: units.gu(10), expected: units.gu(10)},
@@ -617,7 +616,7 @@ Item {
                 {tag: "Negative value", index: listView.count - 3, value: -1, expected: units.gu(2)},
             ];
         }
-        function test_custom_overshoot(data) {
+        function test_2_custom_overshoot(data) {
             // scroll to the last ListView element and test on that, to make sure we don't have the style loaded for that component
             listView.positionViewAtEnd();
             var listItem = findChild(listView, "listItem" + data.index);
