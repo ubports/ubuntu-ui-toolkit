@@ -47,7 +47,7 @@ void UCServicePropertiesPrivate::warning(const QString &message)
     } else {
         setError(QString("%1\n%2").arg(error).arg(message));
     }
-    if (qEnvironmentVariableIsSet("DISPLAY_SERVICE_WARNINGS")) {
+    if (qEnvironmentVariableIsSet("SHOW_SERVICEPROPERTIES_WARNINGS")) {
         qmlInfo(q_ptr) << message;
     }
 }
