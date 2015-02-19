@@ -45,6 +45,7 @@ MainView {
         ListView {
             anchors.fill: parent
             ViewItems.selectMode: ViewItems.dragMode
+            ViewItems.onSelectedIndicesChanged: print(ViewItems.selectedIndices)
             ViewItems.onDraggingStarted: {
                 if (!restrictDragging) {
                     return;

@@ -45,6 +45,9 @@ ListItemDragArea::ListItemDragArea(QQuickItem *parent)
     connect(this, SIGNAL(pressed(QQuickMouseEvent*)), this, SLOT(startDragging(QQuickMouseEvent*)), Qt::DirectConnection);
     connect(this, SIGNAL(released(QQuickMouseEvent*)), this, SLOT(stopDragging(QQuickMouseEvent*)), Qt::DirectConnection);
     connect(this, SIGNAL(positionChanged(QQuickMouseEvent*)), this, SLOT(updateDragging(QQuickMouseEvent*)), Qt::DirectConnection);
+
+    // for testing purposes
+    setObjectName("drag_area");
 }
 
 void ListItemDragArea::init(const QRectF &area)

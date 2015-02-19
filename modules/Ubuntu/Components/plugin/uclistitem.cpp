@@ -932,6 +932,10 @@ void UCListItem::componentComplete()
         if (d->parentAttached->selectMode() || d->parentAttached->dragMode()) {
             d->initStyleItem(false);
         }
+        // set the object name for testing purposes
+        if (d->dragging()) {
+            setObjectName("DraggedListItem");
+        }
     }
 }
 

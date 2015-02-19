@@ -167,7 +167,7 @@ Styles.ListItemStyle {
         id: dragDelegate
         Item {
             id: dragPanel
-            objectName: "draghandler_panel" + index
+            objectName: "drag_panel" + index
             anchors.fill: parent ? parent : undefined
             Icon {
                 objectName: "icon"

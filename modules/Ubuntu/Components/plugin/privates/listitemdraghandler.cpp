@@ -26,8 +26,6 @@ ListItemDragHandler::ListItemDragHandler(UCListItem *baseItem, UCListItem *listI
     , baseItem(baseItem)
     , baseVisible(0)
 {
-    // set the object name for testing purposes
-    listItem->setObjectName("DraggedListItem");
     targetPos = baseItem->position();
     baseVisible = new PropertyChange(baseItem, "visible");
 }
