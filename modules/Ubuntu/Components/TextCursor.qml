@@ -93,7 +93,7 @@ Ubuntu.StyledItem {
 
         // if the cursor is out of the visible viewport, anchor the
         // contextual menu to the input field
-        var anchor = fakeCursor.visible ? cursorItem : handler.main
+        var anchor = fakeCursor.visible ? draggedItem : handler.main
         var popup = PopupUtils.open(component, anchor, {
             "target": handler.main,
         });

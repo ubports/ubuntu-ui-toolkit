@@ -36,6 +36,8 @@ class CaretTextInputTestCase(tests.QMLFileAppTestCase):
         dir_path, 'test_textinput.textarea.qml')
     customfield_qml_file_path = os.path.join(
         dir_path, 'test_textinput.textfield_custom.qml')
+    header_qml_file_path = os.path.join(
+        dir_path, 'test_textinput.header.qml')
 
     scenarios = [
         ('textfield',
@@ -46,6 +48,9 @@ class CaretTextInputTestCase(tests.QMLFileAppTestCase):
                  objectName='textarea')),
         ('customfield',
             dict(test_qml_file_path=customfield_qml_file_path,
+                 objectName='textfield')),
+        ('header',
+            dict(test_qml_file_path=header_qml_file_path,
                  objectName='textfield')),
     ]
 
