@@ -125,16 +125,19 @@ private:
     {
         QPixmap pixmap;
 
+        const bool anyZero = size.width() <= 0 || size.height() <= 0;
+        const Qt::AspectRatioMode scaleMode = anyZero ? Qt::KeepAspectRatioByExpanding : Qt::KeepAspectRatio;
+
         if (filename.endsWith(".png")) {
             pixmap = QPixmap(filename);
             if (!pixmap.isNull() && !size.isNull() && (pixmap.width() != size.width() || pixmap.height() != size.height())) {
-                const QSize newSize = pixmap.size().scaled(size.width(), size.height(), Qt::KeepAspectRatioByExpanding);
+                const QSize newSize = pixmap.size().scaled(size.width(), size.height(), scaleMode);
                 pixmap = pixmap.scaled(newSize);
             }
         }
         else if (filename.endsWith(".svg")) {
             QSvgRenderer renderer(filename);
-            pixmap = QPixmap(renderer.defaultSize().scaled(size.width(), size.height(), Qt::KeepAspectRatioByExpanding));
+            pixmap = QPixmap(renderer.defaultSize().scaled(size.width(), size.height(), scaleMode));
             pixmap.fill(Qt::transparent);
             QPainter painter(&pixmap);
             renderer.render(&painter);
