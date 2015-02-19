@@ -132,6 +132,7 @@ public:
     }
 
     void watchDragAreaPosition(UCListItemStyle *styleItem);
+    void _q_dragPanelUpdated(UCListItemStyle *style = 0);
     void _q_setDragAreaPosition(QQuickItem *panel = 0);
 
     void clearFlickablesList();

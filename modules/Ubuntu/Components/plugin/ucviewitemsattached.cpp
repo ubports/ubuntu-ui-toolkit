@@ -312,11 +312,30 @@ void UCViewItemsAttached::completed()
 void UCViewItemsAttachedPrivate::watchDragAreaPosition(UCListItemStyle *styleItem)
 {
     Q_Q(UCViewItemsAttached);
-    QObject::connect(styleItem, SIGNAL(dragPanelChanged()),
-            q, SLOT(_q_setDragAreaPosition()), Qt::DirectConnection);
-    _q_setDragAreaPosition(styleItem->m_dragPanel);
+    if (!styleItem->m_dragPanel) {
+        // connect dragPanelChanged() to be able to watch its size changes.
+        QObject::connect(styleItem, SIGNAL(dragPanelChanged()),
+                q, SLOT(_q_dragPanelUpdated()), Qt::DirectConnection);
+    } else {
+        _q_dragPanelUpdated(styleItem);
+    }
 }
 
+// dragPanel updated, watch its x coordinate changes
+void UCViewItemsAttachedPrivate::_q_dragPanelUpdated(UCListItemStyle *style)
+{
+    Q_Q(UCViewItemsAttached);
+    if (!style) {
+        style = qobject_cast<UCListItemStyle*>(q->sender());
+    }
+    if (style) {
+        QObject::connect(style->m_dragPanel, SIGNAL(xChanged()),
+                q, SLOT(_q_setDragAreaPosition()), Qt::DirectConnection);
+        _q_setDragAreaPosition(style->m_dragPanel);
+    }
+}
+
+// dragPanel's coordinates changed, update drag area
 void UCViewItemsAttachedPrivate::_q_setDragAreaPosition(QQuickItem *panel)
 {
     Q_Q(UCViewItemsAttached);

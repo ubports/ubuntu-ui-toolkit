@@ -181,6 +181,7 @@ Q_SIGNALS:
 
 private:
     Q_DECLARE_PRIVATE(UCViewItemsAttached)
+    Q_PRIVATE_SLOT(d_func(), void _q_dragPanelUpdated(UCListItemStyle *style = 0))
     Q_PRIVATE_SLOT(d_func(), void _q_setDragAreaPosition(QQuickItem *panel = 0))
     QScopedPointer<UCViewItemsAttachedPrivate> d_ptr;
 };

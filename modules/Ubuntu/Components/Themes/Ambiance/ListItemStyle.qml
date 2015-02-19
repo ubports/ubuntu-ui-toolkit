@@ -179,6 +179,12 @@ Styles.ListItemStyle {
                 opacity: 0.0
                 scale: 0.5
             }
+            Binding {
+                target: listItemStyle
+                property: "dragPanel"
+                value: dragPanel
+            }
+
             states: State {
                 name: "enabled"
                 when: loaded && styledItem.dragMode
@@ -303,7 +309,6 @@ Styles.ListItemStyle {
             }
         }
     }
-    dragPanel: trailingLoader.item
 
     // internals
     QtObject {
