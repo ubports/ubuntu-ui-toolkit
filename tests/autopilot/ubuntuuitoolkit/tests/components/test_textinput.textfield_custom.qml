@@ -25,33 +25,43 @@ MainView {
     Page {
         title: "Textfield"
 
-        Column {
-            Label {
-                text: "Below is a customized text field with clipping"
-            }
+        Flickable {
+            anchors.fill: parent
+            contentHeight: childrenRect.height
 
-            Item {
-                clip: true // Mustn't affect handler visibility
-                width: childrenRect.width
-                height: childrenRect.height
+            Column {
+                anchors.fill: parent
 
-                TextField {
-                    objectName: "textfield"
-                    placeholderText: "Type here"
-                    width: units.gu(15)
-                    height: units.gu(2)
+                Label {
+                    text: "Below is a customized text field with clipping"
+                }
 
-                    style: TextFieldStyle {
-                        overlaySpacing: 0
-                        frameSpacing: 0
-                        background: Item {}
-                        color: UbuntuColors.lightAubergine
+                Item {
+                    clip: true // Mustn't affect handler visibility
+                    width: childrenRect.width
+                    height: childrenRect.height
+
+                    TextField {
+                        objectName: "textfield"
+                        placeholderText: "Type here"
+                        width: units.gu(15)
+                        height: units.gu(2)
+
+                        style: TextFieldStyle {
+                            overlaySpacing: 0
+                            frameSpacing: 0
+                            background: Item {}
+                            color: UbuntuColors.lightAubergine
+                        }
                     }
                 }
-            }
 
-            Label {
-                text: "Below is a customized text field with clipping"
+                Repeater {
+                    model: 30
+                    Label {
+                        text: "These labels are here to necessitate scrolling"
+                    }
+                }
             }
         }
     }

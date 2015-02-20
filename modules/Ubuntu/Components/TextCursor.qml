@@ -49,6 +49,13 @@ Ubuntu.StyledItem {
 
     // Returns "x" or "y" relative to the item handlers are a child of
     function mappedCursorPosition(coordinate) {
+        // FIXME: Hack to catch scrolling
+        var flickable = handler.main;
+        do {
+            flickable = flickable.parent;
+        } while (!flickable.contentY && flickable != fakeCursor.parent);
+        flickable.contentY;
+
         var cpos = fakeCursor.parent.mapFromItem(handler.main, cursorItem.x, cursorItem.y)[coordinate];
         cpos += handler.frameDistance[coordinate];
         cpos += handler.input[coordinate];
