@@ -46,17 +46,21 @@ Ubuntu.StyledItem {
     objectName: "textCursor"
     //Caret instance from the style.
     property Item caret: __styleInstance.caret
-
-    // Returns "x" or "y" relative to the item handlers are a child of
-    function mappedCursorPosition(coordinate) {
-        // FIXME: Hack to catch scrolling
+    property int absX: {
+        return fakeCursor.parent.mapFromItem(handler.main, cursorItem.x, cursorItem.y).x
+    }
+    property int absY: {
+        // Take parent flickable movement into account
         var flickable = handler.main;
         do {
             flickable = flickable.parent;
         } while (!flickable.contentY && flickable != fakeCursor.parent);
-        flickable.contentY;
+        return fakeCursor.parent.mapFromItem(handler.main, cursorItem.x, cursorItem.y).y
+    }
 
-        var cpos = fakeCursor.parent.mapFromItem(handler.main, cursorItem.x, cursorItem.y)[coordinate];
+    // Returns "x" or "y" relative to the item handlers are a child of
+    function mappedCursorPosition(coordinate) {
+        var cpos = cursorItem["abs" + coordinate.toUpperCase()];
         cpos += handler.frameDistance[coordinate];
         cpos += handler.input[coordinate];
         cpos -= handler.flickable["content" + coordinate.toUpperCase()];
