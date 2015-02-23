@@ -144,7 +144,6 @@ public:
     bool isItemSelected(UCListItem *item);
     void enterDragMode();
     void leaveDragMode();
-    bool isDraggingStartedConnected();
     bool isDraggingUpdatedConnected();
     void updateSelectedIndices(int fromIndex, int toIndex);
 

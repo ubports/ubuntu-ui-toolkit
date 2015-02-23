@@ -34,12 +34,11 @@
  * \since Ubuntu.Components 1.2
  * \brief Provides information about a ListItem drag event.
  *
- * The object cannot be instantiated and it is passed as parameter to \l ViewItems::draggingStarted
- * and \l ViewItems::draggingUpdated attached signals. Developer can decide whether
- * to accept or restrict the dragging event based on the input provided by this
- * event.
+ * The object cannot be instantiated and it is passed as parameter to \l ViewItems::draggingUpdated
+ * attached signal. Developer can decide whether to accept or restrict the dragging
+ * event based on the input provided by this event.
  *
- * The direction of the drag can be found via the \l direction property and the
+ * The direction of the drag can be found via the \l status property and the
  * source and destination the drag can be applied via \l from and \l to properties.
  * The allowed directions can be configured through \l minimumIndex and \l maximumIndex
  * properties, and the event acceptance through \l accept property. If the event is not
@@ -47,29 +46,31 @@
  */
 
 /*!
- * \qmlproperty enum ListItemDrag::direction
+ * \qmlproperty enum ListItemDrag::status
  * \readonly
- * The property specifies the direction of the drag. Its value depends on the
- * signal triggered and can be one of the following:
+ * The property provides information about the status of the drag. Its value can
+ * be one of the following:
  * \list
- *  \li \c ListItemDrag.Steady - no drag, value set when \l ViewItems::draggingStarted
- *         signal is emitted or when the \l ViewItems::draggingUpdated signal
- *         identifies a drop gesture.
- *  \li \c ListItemDrag.Upwards - the drag is proceeded upwards in the ListView
- *  \li \c ListItemDrag.Downwards - the drag proceeds downwards in the ListView
+ *  \li \b ListItemDrag.Started - indicates that the dragging is about to start,
+ *              giving opportunities to define restrictions on the dragging indexes,
+ *              like \l minimumIndex, \l maximumIndex
+ *  \li \b ListItemDrag.Moving - the dragged item is moved upwards or downwards
+ *              in the ListItem
+ *  \li \b ListItemDrag.Dropped - indicates that the drag event is finished, and
+ *              the dragged item is about to be dropped to the given position.
  * \endlist
  */
 
 /*!
  * \qmlproperty int ListItemDrag::from
  * \readonly
+ * Specifies the source index the ListItem is dragged from.
  */
 /*!
  * \qmlproperty int ListItemDrag::to
  * \readonly
  *
- * Specifies the source index the ListItem is dragged from and the destination
- * index it can be dropped.
+ * Specifies the index the ListItem is dragged to or dropped.
  */
 
 /*!
@@ -78,15 +79,15 @@
 /*!
  * \qmlproperty int ListItemDrag::maximumIndex
  * These properties configure the minimum and maximum indexes the item can be
- * dragged. The properties can be set in \l ViewItems::draggingStarted signal,
- * changing them in \l ViewItems::draggingUpdated will have no effect. A value
- * of -1 means no restriction defined on the dragging interval side.
+ * dragged. The properties can be set in \l ViewItems::draggingUpdated signal.
+ * A negative value means no restriction defined on the dragging interval side.
  */
 
 /*!
  * \qmlproperty bool ListItemDrag::accept
  * The property can be used to dismiss the event. By default its value is true,
- * meaning the drag event is accepted.
+ * meaning the drag event is accepted. The value of false blocks the drag event
+ * to be handled by the ListItem's dragging mechanism.
  */
 
 /*
@@ -441,102 +442,46 @@ bool UCViewItemsAttachedPrivate::isItemSelected(UCListItem *item)
  *
  * The panel is configured by the style.
  *
- * \sa ListItemStyle, draggingStarted
- */
-
-/*!
- * \qmlattachedsignal ViewItems::draggingStarted(ListItemDrag event)
- * The signal is emitted when a ListItem dragging is started. \c event.from
- * specifies the index of the ListItem being dragged. \c event.minimumIndex and
- * \c event.maximumIndex configures the index interval the dragging of the item
- * is allowed. If set (meaning their value differs from -1), items cannot be
- * dragged outside of this region. The \c event.accept property, if set to false,
- * will cancel dragging operation. The other fields of the event (i.e. \c event.to
- * and \c event.direction) contain invalid data.
- * \qml
- * import QtQuick 2.3
- * import Ubuntu.Components 1.2
- *
- * ListView {
- *     width: units.gu(40)
- *     height: units.gu(40)
- *     model: ListModel {
- *         // initiate with random data
- *     }
- *     delegate: ListItem {
- *         // content
- *     }
- *
- *     ViewItems.dragMode: true
- *     ViewItems.onDraggingStarted: {
- *         if (event.from < 5) {
- *             // deny dragging on the first 5 element
- *             event.accept = false;
- *         } else if (event.from >= 5 && event.from <= 10) {
- *             // specify the interval
- *             event.minimumIndex = 5;
- *             event.maximumIndex = 10;
- *         }
- *     }
- * }
- * \endqml
- *
- * In the example above the first 5 items are not draggable, though drag handler
- * will still be shown for them. If the drag starts on item index 5, it will only
- * accept drag gesture downwards, respectively starting a drag on item index 10
- * will only allow dragging that element upwards. Every item dragged between
- * indexes 5 and 10 will be draggable both directions, however only till 5th or
- * 10th index. On the other hand, items dragged from index > 10 will be draggable
- * to any index, including the first 11 items. In order to avoid dragging those
- * items in between the first 11 items, the following change must be made:
- * \qml
- * import QtQuick 2.3
- * import Ubuntu.Components 1.2
- *
- * ListView {
- *     width: units.gu(40)
- *     height: units.gu(40)
- *     model: ListModel {
- *         // initiate with random data
- *     }
- *     delegate: ListItem {
- *         // content
- *     }
- *
- *     ViewItems.dragMode: true
- *     ViewItems.onDraggingStarted: {
- *         if (event.from < 5) {
- *             // deny dragging on the first 5 element
- *             event.accept = false;
- *         } else if (event.from >= 5 && event.from <= 10) {
- *             // specify the interval
- *             event.minimumIndex = 5;
- *             event.maximumIndex = 10;
- *         } else {
- *             // prevent dragging to the first 11 items area
- *             event.minimumIndex = 11;
- *         }
- *     }
- * }
- * \endqml
- *
- * \note None of the above examples will move the dragged item. In order that to
- * happen, you must implement \l draggingUpdated signal and move the model data.
- * \note Implementing the signal handler is not mandatory and should only happen
- * if restrictions on the drag must be applied.
+ * \sa ListItemStyle, draggingUpdated
  */
 
 /*!
  * \qmlattachedsignal ViewItems::draggingUpdated(ListItemDrag event)
- * The signal is emitted when the list item from \c event.from index has been
- * dragged over to \c event.to, and a move operation is possible. Implementations
- * \b {must move the model data} between these indexes. If the move is not acceptable,
- * it can be cancelled by setting \c event.accept to \c false, in which case the
- * dragged item will stay on its last moved position or will snap back to its
- * previous or original place, depending whether the drag was sent during the
- * drag or as a result of a drop gesture. The direction of the drag is given in the
- * \c event.direction property. Extending the example from \l draggingStarted, an
- * implementation of a live dragging would look as follows
+ * The signal is emitted whenever a dragging related event occurrs. The \b event.status
+ * specifies the dragging event type. Depending on the type, the ListItemDrag event
+ * properties will have the following meaning:
+ * \table
+ * \header
+ *  \li status
+ *  \li from
+ *  \li to
+ *  \li minimumIndex
+ *  \li maximumIndex
+ * \row
+ *  \li Started
+ *  \li the index of the item to be dragged
+ *  \li -1
+ *  \li default (-1), can be changed to restrict moves
+ *  \li default (-1), can be changed to restrict moves
+ * \row
+ *  \li Moving
+ *  \li source index from where the item dragged from
+ *  \li destination index where the item can be dragged to
+ *  \li the same value set at \e Started, can be changed
+ *  \li the same value set at \e Started, can be changed
+ * \row
+ *  \li Dropped
+ *  \li source index from where the item dragged from
+ *  \li destination index where the item can be dragged to
+ *  \li the value set at \e Started/Moving, changes are omitted
+ *  \li the value set at \e Started/Moving, changes are omitted
+ * \endtable
+ * Implementations \b {must move the model data} in order to re-order the ListView
+ * content. If the move is not acceptable, it must be cancelled by setting
+ * \b event.accept to \e false, in which case the dragged index (\b from) will
+ * not be updated and next time the signal is emitted will be the same.
+ *
+ * An example implementation of a live dragging with restrictions:
  * \qml
  * import QtQuick 2.3
  * import Ubuntu.Components 1.2
@@ -552,29 +497,30 @@ bool UCViewItemsAttachedPrivate::isItemSelected(UCListItem *item)
  *     }
  *
  *     ViewItems.dragMode: true
- *     ViewItems.onDraggingStarted: {
- *         if (event.from < 5) {
- *             // deny dragging on the first 5 element
- *             event.accept = false;
- *         } else if (event.from >= 5 && event.from <= 10) {
- *             // specify the interval
- *             event.minimumIndex = 5;
- *             event.maximumIndex = 10;
- *         } else if (event.from > 10) {
- *             // prevent dragging to the first 11 items area
- *             event.minimumIndex = 11;
- *         }
- *     }
  *     ViewItems.onDraggingUpdated: {
- *         model.move(event.from, event.to, 1);
+ *         if (event.status == ListViewDrag.Started) {
+ *             if (event.from < 5) {
+ *                 // deny dragging on the first 5 element
+ *                 event.accept = false;
+ *             } else if (event.from >= 5 && event.from <= 10 &&
+ *                        event.to >= 5 && event.to <= 10) {
+ *                 // specify the interval
+ *                 event.minimumIndex = 5;
+ *                 event.maximumIndex = 10;
+ *             } else if (event.from > 10) {
+ *                 // prevent dragging to the first 11 items area
+ *                 event.minimumIndex = 11;
+ *             }
+ *         } else {
+ *             model.move(event.from, event.to, 1);
+ *         }
  *     }
  * }
  * \endqml
  *
- * \c event.direction set to \e ListItemDrag.Steady means the signal is sent as a
- * result of a drop operation, and this was the last update signal emitted. The
- * following sample shows how to implement list reordering when dropping the item
- * (non-live update).
+ * A drag'n'drop implementation might be required when model changes are too
+ * expensive, and continuously updating while dragging would cause lot of traffic.
+ * The following example illustrates how to implement such a scenario:
  * \qml
  * import QtQuick 2.3
  * import Ubuntu.Components 1.2
@@ -591,11 +537,11 @@ bool UCViewItemsAttachedPrivate::isItemSelected(UCListItem *item)
  *
  *    ViewItems.dragMode: true
  *    ViewItems.onDraggingUpdated: {
- *        if (event.direction == ListItemDrag.Steady) {
+ *        if (event.direction == ListItemDrag.Dropped) {
  *            // this is the last event, so drop the item
  *            model.move(event.from, event.to, 1);
- *        } else {
- *            // do not accept the other events so drag.from will
+ *        } else if (event.direction != ListItemDrag.Started) {
+ *            // do not accept the moving events, so drag.from will
  *            // always contain the original drag index
  *            event.accept = false;
  *        }
@@ -603,9 +549,10 @@ bool UCViewItemsAttachedPrivate::isItemSelected(UCListItem *item)
  * }
  * \endqml
  *
- * \note Do not forget to set \b{event.attached} to false in \c draggingUpdated,
- * otherwise the system will not know whether the move has been performed or not,
- * and selected indexes will not be synchronized properly.
+ * \note Do not forget to set \b{event.accept} to false in \b draggingUpdated in
+ * case the drag event handling is not accepted, otherwise the system will not
+ * know whether the move has been performed or not, and selected indexes will
+ * not be synchronized properly.
  */
 bool UCViewItemsAttached::dragMode() const
 {
@@ -657,15 +604,6 @@ void UCViewItemsAttachedPrivate::leaveDragMode()
     if (dragArea) {
         dragArea->setEnabled(false);
     }
-}
-
-// returns true when the draggingStarted signal handler is implemented or a function is connected to it
-bool UCViewItemsAttachedPrivate::isDraggingStartedConnected()
-{
-    Q_Q(UCViewItemsAttached);
-    static QMetaMethod method = QMetaMethod::fromSignal(&UCViewItemsAttached::draggingStarted);
-    static int signalIdx = QMetaObjectPrivate::signalIndex(method);
-    return QObjectPrivate::get(q)->isSignalConnected(signalIdx);
 }
 
 // returns true when the draggingUpdated signal handler is implemented or a function is connected to it

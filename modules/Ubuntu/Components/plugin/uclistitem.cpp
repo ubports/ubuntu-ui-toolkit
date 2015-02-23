@@ -818,10 +818,15 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  * panel. Pressing or clicking anywhere else on the ListItem will invoke the item's
  * action assigned to the touched area.
  *
- * The most important thing to remember when implementing dragging on a ListItem is to
- * implement the \l ViewItems::draggingUpdated signal, and to move the model data whenever
- * desired. \l ViewItems::draggingStarted signal implementation is only required if there
- * are preconditions to be applied prior to initiate the dragging.
+ * The dragging is realized through the \l ViewItems::draggingUpdated signal, and
+ * a signal handler must be implemented in order to have the draging working.
+ * Implementations can drive the drag to be live (each time the dragged item is
+ * dragged over an other item will change the order of the items) or drag'n'drop
+ * way (the dragged item will be moved only when the user releases the item by
+ * dropping it to the desired position). The signal has a \l ListItemDrag \e event
+ * parameter, which gives detailed information about the drag event, like started,
+ * dragged up or downwards or dropped, allowing in this way various restrictions
+ * on the dragging.
  *
  * ListItem does not provide animations when the ListView's model is updated. In order
  * to have animation, use UbuntuListView or provide a transition animation to the
@@ -847,7 +852,10 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  *         onPressAndHold: ListView.view.ViewItems.dragMode =
  *             !ListView.view.ViewItems.dragMode
  *     }
- *     ViewItems.draggingUpdated: {
+ *     ViewItems.onDraggingUpdated: {
+ *         if (event.status == ListItemDrag.Started) {
+ *             return;
+ *         }
  *         model.move(event.from, event.to, 1);
  *     }
  *     moveDisplaced: Transition {
@@ -858,7 +866,7 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  * }
  * \endqml
  *
- * \sa ViewItems::dragMode, ViewItems::draggingStarted, ViewItems::draggingUpdated
+ * \sa ViewItems::dragMode, ViewItems::draggingUpdated
  */
 
 /*!

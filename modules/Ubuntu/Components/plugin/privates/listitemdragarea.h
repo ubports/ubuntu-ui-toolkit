@@ -46,8 +46,7 @@ private:
     QQuickFlickable *listView;
     UCViewItemsAttached *viewAttached;
     QPointF lastPos;
-    UCDragEvent::Status direction;
-    UCDragEvent::Status scrollDirection;
+    int scrollDirection;
     int fromIndex, toIndex, min, max;
 
     QPointF mapDragAreaPos();

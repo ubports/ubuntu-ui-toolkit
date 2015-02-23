@@ -46,7 +46,8 @@ MainView {
             anchors.fill: parent
             ViewItems.selectMode: ViewItems.dragMode
             ViewItems.onSelectedIndicesChanged: print(ViewItems.selectedIndices)
-            ViewItems.onDraggingStarted: {
+
+            function handleDragStarted(event) {
                 if (!restrictDragging) {
                     return;
                 }
@@ -63,8 +64,7 @@ MainView {
                     event.minimumIndex = 11;
                 }
             }
-
-            ViewItems.onDraggingUpdated: {
+            function handleDragUpdates(event) {
                 if (restrictDragging) {
                     // deal only with indexes >= 3
                     if (event.to >= 3 && event.to <= 10 && event.from >= 3 && event.from <= 10) {
@@ -78,6 +78,14 @@ MainView {
                 } else {
                     // no restrictions, perform live update
                     model.move(event.from, event.to, 1);
+                }
+            }
+
+            ViewItems.onDraggingUpdated: {
+                if (event.status == ListItemDrag.Started) {
+                    handleDragStarted(event);
+                } else {
+                    handleDragUpdates(event);
                 }
             }
 

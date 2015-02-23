@@ -176,7 +176,6 @@ Q_SIGNALS:
     void selectedIndicesChanged();
     void dragModeChanged();
 
-    void draggingStarted(UCDragEvent *event);
     void draggingUpdated(UCDragEvent *event);
 
 private:
@@ -199,10 +198,8 @@ class UCDragEvent : public QObject
     Q_ENUMS(Status)
 public:
     enum Status {
-        Invalid,    // used for initialization purposes only, if it is set other times, that means error
         Started,
-        DragUp,
-        DragDown,
+        Moving,
         Dropped
     };
 

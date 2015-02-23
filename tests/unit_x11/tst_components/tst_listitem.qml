@@ -1021,6 +1021,9 @@ Item {
         function test_drag(data) {
             var moveCount = 0;
             function liveUpdate(event) {
+                if (event.status == ListItemDrag.Started) {
+                    return;
+                }
                 if (data.accept) {
                     moveCount++;
                     listView.model.move(event.from, event.to, 1);
@@ -1034,7 +1037,7 @@ Item {
                         listView.model.move(event.from, event.to, 1);
                     }
                     event.accept = data.accept;
-                } else {
+                } else if (event.status == ListItemDrag.Moving) {
                     event.accept = false;
                 }
             }
@@ -1074,22 +1077,22 @@ Item {
         }
         function test_drag_restricted(data) {
             var moveCount = 0;
-            function startHandler(event) {
-                if (event.from < 2) {
-                    event.accept = false;
-                } else {
-                    event.minimumIndex = 2;
-                }
-            }
             function updateHandler(event) {
-                listView.model.move(event.from, event.to, 1);
-                moveCount++;
+                if (event.status == ListItemDrag.Started) {
+                    if (event.from < 2) {
+                        event.accept = false;
+                    } else {
+                        event.minimumIndex = 2;
+                    }
+                } else if (event.status == ListItemDrag.Moving) {
+                    listView.model.move(event.from, event.to, 1);
+                    moveCount++;
+                }
             }
 
             objectModel.reset();
             waitForRendering(listView);
             listView.positionViewAtBeginning();
-            listView.ViewItems.draggingStarted.connect(startHandler);
             listView.ViewItems.draggingUpdated.connect(updateHandler);
 
             // enter drag mode
@@ -1102,7 +1105,6 @@ Item {
             }
 
             // cleanup
-            listView.ViewItems.draggingStarted.disconnect(startHandler);
             listView.ViewItems.draggingUpdated.disconnect(updateHandler);
             toggleDragMode(listView, false);
         }
@@ -1122,7 +1124,11 @@ Item {
         }
         function test_drag_keeps_selected_indexes(data) {
             function updateHandler(event) {
+                if (event.status == ListItemDrag.Started) {
+                    return;
+                }
                 if (data.live || event.status == ListItemDrag.Dropped) {
+                    print(event.from, event.to)
                     listView.model.move(event.from, event.to, 1);
                 } else {
                     event.accept = false;
