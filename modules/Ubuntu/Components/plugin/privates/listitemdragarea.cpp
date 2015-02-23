@@ -35,8 +35,8 @@ ListItemDragArea::ListItemDragArea(QQuickItem *parent)
     : QQuickMouseArea(parent)
     , listView(static_cast<QQuickFlickable*>(parent))
     , viewAttached(0)
-    , direction(UCDragEvent::Steady)
-    , scrollDirection(UCDragEvent::Steady)
+    , direction(UCDragEvent::Invalid)
+    , scrollDirection(UCDragEvent::Invalid)
     , fromIndex(-1)
     , toIndex(-1)
     , min(-1)
@@ -89,7 +89,7 @@ void ListItemDragArea::timerEvent(QTimerEvent *event)
 {
     QQuickMouseArea::timerEvent(event);
     if (event->timerId() == scrollTimer.timerId()) {
-        qreal scrollAmount = UCUnits::instance().gu(0.5) * (scrollDirection == UCDragEvent::Upwards ? -1 : 1);
+        qreal scrollAmount = UCUnits::instance().gu(0.5) * (scrollDirection == UCDragEvent::DragUp ? -1 : 1);
         qreal contentHeight = listView->contentHeight();
         qreal height = listView->height();
         if ((contentHeight - height) > 0) {
@@ -121,7 +121,7 @@ void ListItemDragArea::startDragging(QQuickMouseEvent *event)
     // call start handler if implemented
     UCViewItemsAttachedPrivate *pViewAttached = UCViewItemsAttachedPrivate::get(viewAttached);
     if (pViewAttached->isDraggingStartedConnected()) {
-        UCDragEvent drag(UCDragEvent::Steady, index, -1, -1, -1);
+        UCDragEvent drag(UCDragEvent::Started, index, -1, -1, -1);
         Q_EMIT viewAttached->draggingStarted(&drag);
         start = drag.m_accept;
         min = drag.m_minimum;
@@ -148,7 +148,7 @@ void ListItemDragArea::stopDragging(QQuickMouseEvent *event)
     scrollTimer.stop();
     UCViewItemsAttachedPrivate *pViewAttached = UCViewItemsAttachedPrivate::get(viewAttached);
     if (pViewAttached->isDraggingUpdatedConnected() && (fromIndex != toIndex)) {
-        UCDragEvent drag(UCDragEvent::Steady, fromIndex, toIndex, min, max);
+        UCDragEvent drag(UCDragEvent::Dropped, fromIndex, toIndex, min, max);
         Q_EMIT viewAttached->draggingUpdated(&drag);
         updateDraggedItem();
         if (drag.m_accept) {
@@ -197,15 +197,15 @@ void ListItemDragArea::updateDragging(QQuickMouseEvent *event)
     // use MouseArea's top/bottom as limits
     qreal topViewMargin = y() + listView->topMargin();
     qreal bottomViewMargin = y() + height() - listView->bottomMargin();
-    scrollDirection = UCDragEvent::Steady;
+    scrollDirection = UCDragEvent::Invalid;
     if (topHotspot < topViewMargin) {
         // scroll upwards
-        scrollDirection = UCDragEvent::Upwards;
+        scrollDirection = UCDragEvent::DragUp;
     } else if (bottomHotspot > bottomViewMargin) {
         // scroll downwards
-        scrollDirection = UCDragEvent::Downwards;
+        scrollDirection = UCDragEvent::DragDown;
     }
-    if (scrollDirection == UCDragEvent::Steady) {
+    if (scrollDirection == UCDragEvent::Invalid) {
         scrollTimer.stop();
     } else if (!scrollTimer.isActive()){
         scrollTimer.start(DRAG_SCROLL_TIMEOUT, this);
@@ -217,7 +217,7 @@ void ListItemDragArea::updateDragging(QQuickMouseEvent *event)
         return;
     }
     // update drag direction to make sure we're reflecting the proper one
-    direction = (toIndex > index) ? UCDragEvent::Upwards : UCDragEvent::Downwards;
+    direction = (toIndex > index) ? UCDragEvent::DragUp : UCDragEvent::DragDown;
 
     toIndex = index;
     if (fromIndex != toIndex) {

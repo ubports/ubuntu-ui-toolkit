@@ -190,23 +190,24 @@ QML_DECLARE_TYPEINFO(UCViewItemsAttached, QML_HAS_ATTACHED_PROPERTIES)
 class UCDragEvent : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(Direction direction READ direction)
+    Q_PROPERTY(Status status READ status)
     Q_PROPERTY(int from READ from)
     Q_PROPERTY(int to READ to)
     Q_PROPERTY(int minimumIndex MEMBER m_minimum)
     Q_PROPERTY(int maximumIndex MEMBER m_maximum)
     Q_PROPERTY(bool accept MEMBER m_accept)
-    Q_ENUMS(Direction)
+    Q_ENUMS(Status)
 public:
-    enum Direction {
-        Steady      = 0x00,
-        Upwards     = 0x01,
-        Downwards   = 0x02
+    enum Status {
+        Invalid,    // used for initialization purposes only, if it is set other times, that means error
+        Started,
+        DragUp,
+        DragDown,
+        Dropped
     };
-    Q_DECLARE_FLAGS(Directions, Direction)
 
-    explicit UCDragEvent(Direction direction, int from, int to, int min, int max)
-        : QObject(0), m_direction(direction), m_from(from), m_to(to), m_minimum(min), m_maximum(max), m_accept(true)
+    explicit UCDragEvent(Status status, int from, int to, int min, int max)
+        : QObject(0), m_status(status), m_from(from), m_to(to), m_minimum(min), m_maximum(max), m_accept(true)
     {}
     int from() const
     {
@@ -216,13 +217,13 @@ public:
     {
         return m_to;
     }
-    Direction direction() const
+    Status status() const
     {
-        return m_direction;
+        return m_status;
     }
 
 private:
-    Direction m_direction;
+    Status m_status;
     int m_from;
     int m_to;
     int m_minimum;
@@ -231,6 +232,5 @@ private:
 
     friend class ListItemDragArea;
 };
-Q_DECLARE_OPERATORS_FOR_FLAGS(UCDragEvent::Directions)
 
 #endif // UCLISTITEM_H

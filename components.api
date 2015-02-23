@@ -925,8 +925,8 @@ plugins.qmltypes
     name: "UCDragEvent"
     prototype: "QObject"
     exports: ["ListItemDrag 1.2"]
-    name: "Direction"
-    Property { name: "direction"; type: "Direction"; isReadonly: true }
+    name: "Status"
+    Property { name: "status"; type: "Status"; isReadonly: true }
     Property { name: "from"; type: "int"; isReadonly: true }
     Property { name: "to"; type: "int"; isReadonly: true }
     Property { name: "minimumIndex"; type: "int" }

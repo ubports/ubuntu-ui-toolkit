@@ -1028,7 +1028,7 @@ Item {
                 event.accept = data.accept;
             }
             function singleDrop(event) {
-                if (event.direction == ListItemDrag.Steady) {
+                if (event.status == ListItemDrag.Dropped) {
                     if (data.accept) {
                         moveCount++;
                         listView.model.move(event.from, event.to, 1);
@@ -1122,7 +1122,7 @@ Item {
         }
         function test_drag_keeps_selected_indexes(data) {
             function updateHandler(event) {
-                if (data.live || event.direction == ListItemDrag.Steady) {
+                if (data.live || event.status == ListItemDrag.Dropped) {
                     listView.model.move(event.from, event.to, 1);
                 } else {
                     event.accept = false;

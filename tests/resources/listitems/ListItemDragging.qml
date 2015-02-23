@@ -70,7 +70,7 @@ MainView {
                     if (event.to >= 3 && event.to <= 10 && event.from >= 3 && event.from <= 10) {
                         // live update
                         model.move(event.from, event.to, 1);
-                    } else if (event.direction == ListItemDrag.Steady) {
+                    } else if (event.status == ListItemDrag.Dropped) {
                         model.move(event.from, event.to, 1);
                     } else {
                         event.accept = false;
