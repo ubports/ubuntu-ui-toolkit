@@ -25,7 +25,7 @@ PageTreeNode {
     id: page
     anchors {
         left: parent ? parent.left : undefined
-        bottom: parent.bottom ? parent.bottom : undefined
+        bottom: parent ? parent.bottom : undefined
     }
     // Set width and height so that a parent Loader can be automatically resized
     // to the size of the loaded Page.
