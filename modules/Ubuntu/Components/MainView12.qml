@@ -149,5 +149,17 @@ MainViewBase {
           and to which a local context can be added for each Page that has actions.actions.
          */
         property var actionManager: mainView.actionManager
+
+        /*!
+          \internal
+          Track the major version of the UITK import for MainView.
+         */
+        property int majorVersion: 1
+
+        /*!
+          \internal
+          Track the minor version of the UITK import for MainView.
+         */
+        property int minorVersion: 2
     }
 }

@@ -111,6 +111,26 @@ StyledItem {
         when: node.active
     }
 
+    /*!
+      \internal
+      Check the value of __propagated.majorVersion.
+     */
+    function __majorVersionEquals(version) {
+        return node.__propagated &&
+                node.__propagated.hasOwnProperty("majorVersion") &&
+                node.__propagated.majorVersion == version;
+    }
+
+    /*!
+      \internal
+      Check the value of __propagated.minorVersion.
+     */
+    function __minorVersionAtLeast(version) {
+        return node.__propagated &&
+                node.__propagated.hasOwnProperty("minorVersion") &&
+                node.__propagated.minorVersion >= version;
+    }
+
     Item {
         id: internal
 
