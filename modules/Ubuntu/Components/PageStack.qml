@@ -214,17 +214,8 @@ PageTreeNode {
                                     ? pageStack.__propagated.header.__styleInstance
                                     : null
 
-        function headerCanAnimate() {
-            if (!headStyle) return false;
-            if (!headStyle.hasOwnProperty("animateIn")) return false;
-            if (!headStyle.hasOwnProperty("animateOut")) return false;
-            if (!headStyle.hasOwnProperty("animateInFinished")) return false;
-            if (!headStyle.hasOwnProperty("animateOutFinished")) return false;
-            return true;
-        }
-        property bool animateHeader: internal.headerCanAnimate() &&
-                                     pageStack.__majorVersionEquals(1) &&
-                                     pageStack.__minorVersionAtLeast(2)
+        property bool animateHeader: pageStack.__propagated.hasOwnProperty("animateHeader") &&
+                                     pageStack.__propagated.animateHeader
 
         // Call this function before pushing or popping to ensure correct order
         // of pushes/pops on the stack. This terminates any currently running

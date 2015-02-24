@@ -108,6 +108,13 @@ MainViewBase {
 
             // Use of the deprecated toolbar is no longer supported in MainView 1.2.
             useDeprecatedToolbar: false
+
+            // Exposed via __propagated.animateHeader
+            property bool canAnimate: __styleInstance &&
+                                      __styleInstance.hasOwnProperty("animateIn") &&
+                                      __styleInstance.hasOwnProperty("animateOut") &&
+                                      __styleInstance.hasOwnProperty("animateInFinished") &&
+                                      __styleInstance.hasOwnProperty("animateOutFinished")
         }
 
         Connections {
@@ -152,14 +159,8 @@ MainViewBase {
 
         /*!
           \internal
-          Track the major version of the UITK import for MainView.
+          Used by PageStack. This property only exists in MainView 1.2 and later.
          */
-        property int majorVersion: 1
-
-        /*!
-          \internal
-          Track the minor version of the UITK import for MainView.
-         */
-        property int minorVersion: 2
+        readonly property bool animateHeader: headerItem.canAnimate
     }
 }
