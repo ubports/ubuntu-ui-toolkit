@@ -222,7 +222,9 @@ PageTreeNode {
             if (!headStyle.hasOwnProperty("animateOutFinished")) return false;
             return true;
         }
-        property bool animateHeader: internal.headerCanAnimate()
+        property bool animateHeader: internal.headerCanAnimate() &&
+                                     pageStack.__majorVersionEquals(1) &&
+                                     pageStack.__minorVersionAtLeast(2)
 
         // Call this function before pushing or popping to ensure correct order
         // of pushes/pops on the stack. This terminates any currently running
