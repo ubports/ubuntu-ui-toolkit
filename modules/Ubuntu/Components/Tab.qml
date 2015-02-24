@@ -87,7 +87,6 @@ PageTreeNode {
                 }
             }
         }
-        }
       \endqml
      */
     property Item page: null
