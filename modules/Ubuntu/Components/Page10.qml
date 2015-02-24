@@ -25,33 +25,13 @@ PageTreeNode {
     id: page
     anchors {
         left: parent ? parent.left : undefined
-//        right: parent ? parent.right : undefined
-//        bottom: parent.bottom ? parent.bottom : undefined
+        bottom: parent.bottom ? parent.bottom : undefined
     }
-    // set width and height instead of right and top anchors to make the page work better
-    // inside a Loader that does not have width and height set.
+    // Set width and height so that a parent Loader can be automatically resized
+    // to the size of the loaded Page.
     width: parentNode ? parentNode.width : undefined
     height: parentNode ? page.flickable ? parentNode.height : parentNode.height - internal.headerHeight : undefined
 
-    function getHeight() {
-        if (parentNode) {
-            if (page.flickable) {
-                print("yes flickable")
-                return parentNode.height - 200
-            } else {
-                print("no flickable")
-                return parentNode.height - internal.headerHeight;
-            }
-        } else {
-            print("UNDEFINED");
-            return undefined;
-        }
-    }
-
-//    onHeightChanged: {
-//        print("parentNode "+parentNode+" height = "+parentNode.height)
-//        print("height of "+page+" changed to "+parentNode.height+" - "+internal.headerHeight+" = "+height)
-//    }
     isLeaf: true
 
     property string title: parentNode && parentNode.hasOwnProperty("title") ? parentNode.title : ""
@@ -74,7 +54,7 @@ PageTreeNode {
     property Item __customHeaderContents: null
 
     property Flickable flickable: internal.getFlickableChild(page)
-onFlickableChanged: print(" "+page+".flickable = "+flickable)
+
     /*! \internal */
     onActiveChanged: {
         internal.updateActions();
@@ -101,7 +81,6 @@ onFlickableChanged: print(" "+page+".flickable = "+flickable)
         // Used to position the Page when there is no flickable.
         // When there is a flickable, the header will automatically position it.
         property real headerHeight: internal.header && internal.header.visible ? internal.header.height : 0
-onHeaderHeightChanged: print(" "+page+".headerHeight = "+headerHeight)
 
         Binding {
             target: tools
