@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2014-2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -96,6 +96,21 @@ Object {
      */
     property Item contents: null
 
+    QtObject {
+        id: internal
+        property Item oldContents: null
+    }
+
+    onContentsChanged: {
+        if (internal.oldContents) {
+            // FIX: bug #1341814 and #1400297
+            // We have to force the removal of the previous head.contents
+            // in order to show the new contents
+            internal.oldContents.parent = null;
+        }
+        internal.oldContents = contents;
+    }
+
     // FIXME: The example below can be much simplified using PageHeadState
     //  when bug #1345775 has been fixed.
     /*!
@@ -106,14 +121,13 @@ Object {
 
       Example:
       \qml
-        import QtQuick 2.2
-        import Ubuntu.Components 1.1
+        import QtQuick 2.3
+        import Ubuntu.Components 1.2
 
         MainView {
             id: mainView
             width: units.gu(40)
             height: units.gu(50)
-            useDeprecatedToolbar: false
 
             Page {
                 id: page

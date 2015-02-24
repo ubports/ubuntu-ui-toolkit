@@ -47,7 +47,7 @@ private Q_SLOTS:
 
     void initTestCase()
     {
-        QString modules("../../../modules");
+        QString modules(UBUNTU_QML_IMPORT_PATH);
         QVERIFY(QDir(modules).exists());
 
         quickView = new QQuickView(0);
@@ -83,6 +83,7 @@ private Q_SLOTS:
         QTest::newRow("list with ListItems.Empty (equivalent to the new ListItem") << "ListItemsEmptyList.qml" << QUrl();
         // disable this test as it takes >20 seconds. Kept still for measurements to be done during development
 //        QTest::newRow("list with ListItems.Base (one icon, one label and one chevron)") << "ListItemsBaseList.qml" << QUrl();
+        QTest::newRow("single MainView") << "MainView.qml" << QUrl();
     }
 
     void benchmark_GridOfComponents()

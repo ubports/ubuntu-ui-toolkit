@@ -29,7 +29,7 @@ HTML.footer = \
     "			<ul>\n" \
     "				<li><a href=\"/community\">Community</a></li>\n" \
     "				<li class=\"page_item page-item-28\"><a href=\"http://developer.ubuntu.com/community/app-developer-blog/\">App Developer Blog</a></li>\n" \
-    "<li class=\"page_item page-item-30\"><a href=\"http://developer.ubuntu.com/community/submit-a-tutorial/\">Submit a tutorial</a></li>\n" \
+    "<li class=\"page_item page-item-30\"><a href=\"http://developer.ubuntu.com/community/\">Submit a tutorial</a></li>\n" \
     "<li class=\"page_item page-item-32\"><a href=\"http://developer.ubuntu.com/community/app-review-board-charter/\">App Review Board charter</a></li>\n" \
     "<li class=\"page_item page-item-2987\"><a href=\"http://developer.ubuntu.com/community/on-air/\">On air</a>\n" \
     "<ul class='children'>\n" \

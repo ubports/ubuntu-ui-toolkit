@@ -15,7 +15,9 @@ excludedirs = ../modules/Ubuntu/Components/Themes
 imagedirs = images
 sources.fileextensions = "*.qml *.qdoc *.cpp"
 headers.fileextensions = "*.h"
-outputdir = html
+# exclude qml files that have the component documented in a separate qdoc file
+excludefiles = $BLD/../modules/Ubuntu/Components/MainView.qml
+outputdir = $BLD/html
 outputformats = HTML
 version = 1.1
 syntaxhighlighting = true

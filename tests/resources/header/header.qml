@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2014 Canonical Ltd.
+ * Copyright (C) 2013-2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,14 +14,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 1.1
+import QtQuick 2.3
+import Ubuntu.Components 1.2
 
 MainView {
     id: mainView
     width: units.gu(50)
     height: units.gu(70)
-    useDeprecatedToolbar: false
 
     PageStack {
         id: stack
@@ -115,7 +114,8 @@ MainView {
                 page: Page {
                     Label {
                         anchors.centerIn: parent
-                        text: "Second tab"
+                        text: "Tools no longer supported in\nUbuntu.Components 1.2." +
+                              "\nUse Page.head.actions instead."
                     }
 
                     tools: ToolbarItems {

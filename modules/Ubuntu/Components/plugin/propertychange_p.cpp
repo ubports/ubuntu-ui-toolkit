@@ -25,14 +25,25 @@
  * The class is used to save properties and their bindings while the property is
  * altered temporarily.
  */
-PropertyChange::PropertyChange(QObject *item, const char *property)
-    : m_backedUp(false)
+PropertyChange::PropertyChange(QObject *item, const char *property, bool autoBackup)
+    : backedUp(false)
     , qmlProperty(item, property, qmlContext(item))
 {
+    if (autoBackup) {
+        backup();
+    }
 }
 PropertyChange::~PropertyChange()
 {
     restore(this);
+}
+
+void PropertyChange::backup()
+{
+    if (!backedUp) {
+        backupValue = qmlProperty.read();
+        backedUp = true;
+    }
 }
 
 /*
@@ -44,12 +55,11 @@ void PropertyChange::setValue(PropertyChange *change, const QVariant &value)
     if (!change) {
         return;
     }
-    if (!change->m_backedUp) {
-        change->backup.first = QQmlPropertyPrivate::setBinding(change->qmlProperty, 0);
-        change->backup.second = change->qmlProperty.read();
-        change->m_backedUp = true;
-    }
-    change->qmlProperty.write(value);
+    change->backup();
+    // write using QQmlPropertyPrivate so we can keep the bindings
+    QQmlPropertyPrivate::write(change->qmlProperty,
+                               value,
+                               QQmlPropertyPrivate::BypassInterceptor | QQmlPropertyPrivate::DontRemoveBinding);
 }
 
 /*
@@ -60,17 +70,11 @@ void PropertyChange::restore(PropertyChange *change)
     if (!change) {
         return;
     }
-    if (change->m_backedUp) {
-        // if there was a binding, restore it
-        if (change->backup.first) {
-            QQmlAbstractBinding *prevBinding = QQmlPropertyPrivate::setBinding(change->qmlProperty, change->backup.first);
-            if (prevBinding && prevBinding != change->backup.first) {
-                prevBinding->destroy();
-            }
-        } else {
-            // there was no binding, restore previous value
-            change->qmlProperty.write(change->backup.second);
-        }
-        change->m_backedUp = false;
+    if (change->backedUp) {
+        // write using QQmlPropertyPrivate to keep the bindings
+        QQmlPropertyPrivate::write(change->qmlProperty,
+                                   change->backupValue,
+                                   QQmlPropertyPrivate::BypassInterceptor | QQmlPropertyPrivate::DontRemoveBinding);
+        change->backedUp = false;
     }
 }

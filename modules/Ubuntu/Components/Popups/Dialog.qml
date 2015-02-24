@@ -179,7 +179,7 @@ PopupBase {
             Column {
                 id: contentsColumn
                 spacing: foreground.itemSpacing
-                width: foreground.width - foreground.margins * 2 - foreground.itemSpacing
+                width: foreground.width - foreground.margins * 2
                 height: childrenRect.height + foreground.margins
                 onWidthChanged: updateChildrenWidths();
 

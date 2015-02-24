@@ -56,6 +56,7 @@
 #include "uclistitem_p.h"
 #include "uclistitemactions.h"
 #include "uclistitemstyle.h"
+#include "ucserviceproperties.h"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -166,11 +167,14 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<QSortFilterProxyModelQML>(uri, 1, 1, "SortFilterModel");
     qmlRegisterUncreatableType<FilterBehavior>(uri, 1, 1, "FilterBehavior", "Not instantiable");
     qmlRegisterUncreatableType<SortBehavior>(uri, 1, 1, "SortBehavior", "Not instantiable");
+    qmlRegisterType<UCServiceProperties, 1>(uri, 1, 1, "ServiceProperties");
 
     // ListItem and related types, released to 1.2
-    qmlRegisterType<UCListItem, 2>(uri, 1, 2, "ListItem");
+    qmlRegisterType<UCListItem>(uri, 1, 2, "ListItem");
     qmlRegisterType<UCListItemDivider>();
-    qmlRegisterType<UCListItemActions, 2>(uri, 1, 2, "ListItemActions");
+    qmlRegisterUncreatableType<UCSwipeEvent>(uri, 1, 2, "SwipeEvent", "This is an event object.");
+    qmlRegisterType<UCListItemActions>(uri, 1, 2, "ListItemActions");
+    qmlRegisterUncreatableType<UCViewItemsAttached>(uri, 1, 2, "ViewItems", "Not instantiable");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)

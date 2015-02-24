@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2014-2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -20,6 +20,7 @@ import Ubuntu.Components 1.2
 MainView {
     width: units.gu(48)
     height: units.gu(60)
+    objectName: "mainView"
 
     // make sure we're not messed up by the deprecated toolbar
     useDeprecatedToolbar: false
@@ -27,13 +28,15 @@ MainView {
     Page {
         id: testPage
         objectName: "test_page"
-        title: "No action triggered"
+        title: listView.ViewItems.selectMode ? "In selection mode" : "No action triggered"
         ListView {
             id: listView
+            objectName: "test_view"
             anchors.fill: parent
             model: 25
             delegate: ListItem {
                 objectName: "listitem" + index
+                onPressAndHold: listView.ViewItems.selectMode = true
                 leadingActions: ListItemActions {
                     actions: [
                         Action {

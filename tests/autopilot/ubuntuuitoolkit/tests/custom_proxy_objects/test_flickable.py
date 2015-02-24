@@ -1,6 +1,6 @@
 # -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
 #
-# Copyright (C) 2014 Canonical Ltd.
+# Copyright (C) 2014-2015 Canonical Ltd.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -58,8 +58,8 @@ class IsFlickableTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 0.1
-import Ubuntu.Components.ListItems 0.1 as ListItem
+import Ubuntu.Components 1.0
+import Ubuntu.Components.ListItems 1.0 as ListItem
 
 MainView {
     objectName: 'mainView'
@@ -95,11 +95,12 @@ class SwipeFlickableTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.0
 
 MainView {
     width: units.gu(48)
     height: units.gu(60)
+    objectName: "mainView"
 
     Label {
         id: clickedLabel
@@ -234,11 +235,12 @@ class UnityFlickableTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.0
 
 MainView {
     width: units.gu(48)
     height: units.gu(60)
+    objectName: 'mainView'
 
     Flickable {
         objectName: 'testFlickable'

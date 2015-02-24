@@ -1,0 +1,17 @@
+[Icon Theme]
+Name=MockTheme
+
+Directories=actions/scalable,apps/512
+
+[actions/scalable]
+MinSize=9
+Size=90
+MaxSize=256
+Context=Actions
+Type=Scalable
+
+[apps/512]
+Size=512
+Context=Applications
+Type=Fixed
+
