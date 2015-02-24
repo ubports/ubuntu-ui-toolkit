@@ -144,7 +144,7 @@ public:
     bool isItemSelected(UCListItem *item);
     void enterDragMode();
     void leaveDragMode();
-    bool isDraggingUpdatedConnected();
+    bool isDragUpdatedConnected();
     void updateSelectedIndices(int fromIndex, int toIndex);
 
     QQuickFlickable *listView;

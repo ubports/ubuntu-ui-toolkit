@@ -1046,7 +1046,7 @@ Item {
             waitForRendering(listView);
             listView.positionViewAtBeginning();
             var func = data.live ? liveUpdate : singleDrop;
-            listView.ViewItems.draggingUpdated.connect(func);
+            listView.ViewItems.dragUpdated.connect(func);
 
             // enter drag mode
             toggleDragMode(listView, true);
@@ -1058,7 +1058,7 @@ Item {
             }
 
             // cleanup
-            listView.ViewItems.draggingUpdated.disconnect(func);
+            listView.ViewItems.dragUpdated.disconnect(func);
             toggleDragMode(listView, false);
         }
 
@@ -1093,7 +1093,7 @@ Item {
             objectModel.reset();
             waitForRendering(listView);
             listView.positionViewAtBeginning();
-            listView.ViewItems.draggingUpdated.connect(updateHandler);
+            listView.ViewItems.dragUpdated.connect(updateHandler);
 
             // enter drag mode
             toggleDragMode(listView, true);
@@ -1105,7 +1105,7 @@ Item {
             }
 
             // cleanup
-            listView.ViewItems.draggingUpdated.disconnect(updateHandler);
+            listView.ViewItems.dragUpdated.disconnect(updateHandler);
             toggleDragMode(listView, false);
         }
 
@@ -1128,7 +1128,6 @@ Item {
                     return;
                 }
                 if (data.live || event.status == ListItemDrag.Dropped) {
-                    print(event.from, event.to)
                     listView.model.move(event.from, event.to, 1);
                 } else {
                     event.accept = false;
@@ -1137,10 +1136,10 @@ Item {
             objectModel.reset();
             waitForRendering(listView);
             listView.ViewItems.selectedIndices = data.selected;
-            listView.ViewItems.draggingUpdated.connect(updateHandler);
+            listView.ViewItems.dragUpdated.connect(updateHandler);
             toggleDragMode(listView, true);
             drag(listView, data.from, data.to);
-            listView.ViewItems.draggingUpdated.disconnect(updateHandler);
+            listView.ViewItems.dragUpdated.disconnect(updateHandler);
             toggleDragMode(listView, false);
 
             // NOTE: the selected indexes order is arbitrar and cannot be predicted by the test

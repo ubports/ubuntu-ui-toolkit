@@ -81,7 +81,7 @@ MainView {
                 }
             }
 
-            ViewItems.onDraggingUpdated: {
+            ViewItems.onDragUpdated: {
                 if (event.status == ListItemDrag.Started) {
                     handleDragStarted(event);
                 } else {

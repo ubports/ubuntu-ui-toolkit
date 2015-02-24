@@ -602,10 +602,10 @@ void UCViewItemsAttachedPrivate::leaveDragMode()
 }
 
 // returns true when the draggingUpdated signal handler is implemented or a function is connected to it
-bool UCViewItemsAttachedPrivate::isDraggingUpdatedConnected()
+bool UCViewItemsAttachedPrivate::isDragUpdatedConnected()
 {
     Q_Q(UCViewItemsAttached);
-    static QMetaMethod method = QMetaMethod::fromSignal(&UCViewItemsAttached::draggingUpdated);
+    static QMetaMethod method = QMetaMethod::fromSignal(&UCViewItemsAttached::dragUpdated);
     static int signalIdx = QMetaObjectPrivate::signalIndex(method);
     return QObjectPrivate::get(q)->isSignalConnected(signalIdx);
 }

@@ -176,7 +176,7 @@ Q_SIGNALS:
     void selectedIndicesChanged();
     void dragModeChanged();
 
-    void draggingUpdated(UCDragEvent *event);
+    void dragUpdated(UCDragEvent *event);
 
 private:
     Q_DECLARE_PRIVATE(UCViewItemsAttached)

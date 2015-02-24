@@ -114,9 +114,9 @@ void ListItemDragArea::startDragging(QQuickMouseEvent *event)
     max = min = -1;
     // call start handler if implemented
     UCViewItemsAttachedPrivate *pViewAttached = UCViewItemsAttachedPrivate::get(viewAttached);
-    if (pViewAttached->isDraggingUpdatedConnected()) {
+    if (pViewAttached->isDragUpdatedConnected()) {
         UCDragEvent drag(UCDragEvent::Started, index, -1, -1, -1);
-        Q_EMIT viewAttached->draggingUpdated(&drag);
+        Q_EMIT viewAttached->dragUpdated(&drag);
         start = drag.m_accept;
         min = drag.m_minimum;
         max = drag.m_maximum;
@@ -145,9 +145,9 @@ void ListItemDragArea::stopDragging(QQuickMouseEvent *event)
     // stop scroll timer
     scrollTimer.stop();
     UCViewItemsAttachedPrivate *pViewAttached = UCViewItemsAttachedPrivate::get(viewAttached);
-    if (pViewAttached->isDraggingUpdatedConnected() && (fromIndex != toIndex)) {
+    if (pViewAttached->isDragUpdatedConnected() && (fromIndex != toIndex)) {
         UCDragEvent drag(UCDragEvent::Dropped, fromIndex, toIndex, min, max);
-        Q_EMIT viewAttached->draggingUpdated(&drag);
+        Q_EMIT viewAttached->dragUpdated(&drag);
         updateDraggedItem();
         if (drag.m_accept) {
             pViewAttached->updateSelectedIndices(fromIndex, toIndex);
@@ -219,9 +219,9 @@ void ListItemDragArea::updateDragging(QQuickMouseEvent *event)
     if (fromIndex != toIndex) {
         bool update = true;
         UCViewItemsAttachedPrivate *pViewAttached = UCViewItemsAttachedPrivate::get(viewAttached);
-        if (pViewAttached->isDraggingUpdatedConnected()) {
+        if (pViewAttached->isDragUpdatedConnected()) {
             UCDragEvent drag(UCDragEvent::Moving, fromIndex, toIndex, min, max);
-            Q_EMIT viewAttached->draggingUpdated(&drag);
+            Q_EMIT viewAttached->dragUpdated(&drag);
             update = drag.m_accept;
             if (update) {
                 pViewAttached->updateSelectedIndices(fromIndex, toIndex);

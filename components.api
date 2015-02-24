@@ -1096,7 +1096,7 @@ plugins.qmltypes
     Property { name: "selectedIndices"; type: "QList<int>" }
     Property { name: "dragMode"; type: "bool" }
     Signal {
-    name: "draggingUpdated"
+    name: "dragUpdated"
     Parameter { name: "event"; type: "UCDragEvent"; isPointer: true }
     name: "UbuntuI18n"
     prototype: "QObject"
