@@ -156,7 +156,6 @@ MainViewBase {
          */
         readonly property bool animateHeader: headerItem.__styleInstance &&
                                               headerItem.__styleInstance.hasOwnProperty("animateIn") &&
-                                              headerItem.__styleInstance.hasOwnProperty("animateIn") &&
                                               headerItem.__styleInstance.hasOwnProperty("animateOut") &&
                                               headerItem.__styleInstance.hasOwnProperty("animateInFinished") &&
                                               headerItem.__styleInstance.hasOwnProperty("animateOutFinished")
