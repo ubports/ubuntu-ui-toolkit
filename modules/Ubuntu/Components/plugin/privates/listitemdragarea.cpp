@@ -58,11 +58,6 @@ void ListItemDragArea::init(const QRectF &area)
     // warn if no draggingUpdated() signal handler is implemented
     viewAttached = static_cast<UCViewItemsAttached*>(
                 qmlAttachedPropertiesObject<UCViewItemsAttached>(listView));
-    if (viewAttached && !UCViewItemsAttachedPrivate::get(viewAttached)->isDraggingUpdatedConnected()) {
-        qmlInfo(parentItem()) << UbuntuI18n::instance().tr(
-                                     "ListView has no ViewItems.draggingUpdated() signal handler implemented. "\
-                                     "No dragging will be possible");
-    }
 }
 
 void ListItemDragArea::updateArea(const QRectF &area)
@@ -125,6 +120,10 @@ void ListItemDragArea::startDragging(QQuickMouseEvent *event)
         start = drag.m_accept;
         min = drag.m_minimum;
         max = drag.m_maximum;
+    } else {
+        qmlInfo(parentItem()) << UbuntuI18n::instance().tr(
+                                     "ListView has no ViewItems.draggingUpdated() signal handler implemented. "\
+                                     "No dragging will be possible");
     }
     if (start) {
         pViewAttached->buildChangesList(false);

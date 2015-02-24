@@ -97,8 +97,8 @@
  * in this way the controlling of the interactive flag of the Flickable and all
  * its ascendant Flickables.
  */
-UCViewItemsAttachedPrivate::UCViewItemsAttachedPrivate(UCViewItemsAttached *qq)
-    : q_ptr(qq)
+UCViewItemsAttachedPrivate::UCViewItemsAttachedPrivate()
+    : QObjectPrivate()
     , listView(0)
     , dragArea(0)
     , globalDisabled(false)
@@ -190,11 +190,10 @@ void UCViewItemsAttachedPrivate::buildChangesList(const QVariant &newValue)
  * ListView, when the component is used as delegate.
  */
 UCViewItemsAttached::UCViewItemsAttached(QObject *owner)
-    : QObject(owner)
-    , d_ptr(new UCViewItemsAttachedPrivate(this))
+    : QObject(*(new UCViewItemsAttachedPrivate()), owner)
 {
     if (owner->inherits("QQuickListView")) {
-        d_ptr->listView = static_cast<QQuickFlickable*>(owner);
+        d_func()->listView = static_cast<QQuickFlickable*>(owner);
     }
     // listen readyness
     QQmlComponentAttached *attached = QQmlComponent::qmlAttachedProperties(owner);
@@ -412,7 +411,7 @@ bool UCViewItemsAttachedPrivate::addSelectedItem(UCListItem *item)
     int index = UCListItemPrivate::get(item)->index();
     if (!selectedList.contains(index)) {
         selectedList.insert(index);
-        Q_EMIT q_ptr->selectedIndicesChanged();
+        Q_EMIT q_func()->selectedIndicesChanged();
         return true;
     }
     return false;
@@ -420,7 +419,7 @@ bool UCViewItemsAttachedPrivate::addSelectedItem(UCListItem *item)
 bool UCViewItemsAttachedPrivate::removeSelectedItem(UCListItem *item)
 {
     if (selectedList.remove(UCListItemPrivate::get(item)->index()) > 0) {
-        Q_EMIT q_ptr->selectedIndicesChanged();
+        Q_EMIT q_func()->selectedIndicesChanged();
         return true;
     }
     return false;
@@ -573,10 +572,6 @@ void UCViewItemsAttached::setDragMode(bool value)
          */
         if (!d->listView) {
             qmlInfo(parent()) << UbuntuI18n::instance().tr("dragging mode requires ListView");
-            return;
-        }
-        QVariant modelValue = d->listView->property("model");
-        if (!modelValue.isValid()) {
             return;
         }
     }

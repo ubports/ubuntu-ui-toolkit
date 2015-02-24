@@ -848,7 +848,7 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  *         Label {
  *             text: modelData
  *         }
- *         color: draggable ? "lightblue" : "lightgray"
+ *         color: dragMode ? "lightblue" : "lightgray"
  *         onPressAndHold: ListView.view.ViewItems.dragMode =
  *             !ListView.view.ViewItems.dragMode
  *     }

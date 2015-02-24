@@ -119,11 +119,11 @@ public:
 
 class PropertyChange;
 class ListItemDragArea;
-class UCViewItemsAttachedPrivate
+class UCViewItemsAttachedPrivate : public QObjectPrivate
 {
     Q_DECLARE_PUBLIC(UCViewItemsAttached)
 public:
-    UCViewItemsAttachedPrivate(UCViewItemsAttached *qq);
+    UCViewItemsAttachedPrivate();
     ~UCViewItemsAttachedPrivate();
 
     static UCViewItemsAttachedPrivate *get(UCViewItemsAttached *item)
@@ -147,7 +147,6 @@ public:
     bool isDraggingUpdatedConnected();
     void updateSelectedIndices(int fromIndex, int toIndex);
 
-    UCViewItemsAttached *q_ptr;
     QQuickFlickable *listView;
     ListItemDragArea *dragArea;
     QRectF dragAreaRect;
