@@ -43,9 +43,19 @@ PageTreeNode {
     property url iconSource
 
     /*!
-      The contents of the page. Use a \l Page or a Loader that loads an external \l Page.
+      The contents of the page. Use a \l Page or a Loader that instantiates a Component or
+      loads an external \l Page.
+      When using a Loader
+      When using a Loader
      */
     property Item page: null
+
+    Binding {
+        target: page
+        property: anchors.bottom
+        value: tab.bottom
+        when: page
+    }
 
     /*!
       \qmlproperty int index
