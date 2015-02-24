@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2014 Canonical Ltd.
+ * Copyright 2012-2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -24,19 +24,15 @@ import Ubuntu.Components 1.1 as Toolkit
 PageTreeNode {
     id: page
     anchors {
-//        left: parent ? parent.left : undefined
-        right: parent ? parent.right : undefined
-        bottom: parent.bottom ? parent.bottom : undefined
+        left: parent ? parent.left : undefined
+//        right: parent ? parent.right : undefined
+//        bottom: parent.bottom ? parent.bottom : undefined
     }
+    // set width and height instead of right and top anchors to make the page work better
+    // inside a Loader that does not have width and height set.
     width: parentNode ? parentNode.width : undefined
-    // avoid using parent.height because parent may be a Loader which does not have its height set.
     height: parentNode ? page.flickable ? parentNode.height : parentNode.height - internal.headerHeight : undefined
-//width: 100
-//height: 300
 
-    //    height: parentNode.height - internal.headerHeight
-//    height: 150 //getHeight()
-//    width: 200
     function getHeight() {
         if (parentNode) {
             if (page.flickable) {
