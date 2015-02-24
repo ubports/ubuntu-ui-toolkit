@@ -241,23 +241,22 @@ Item {
             view.positionViewAtBeginning(from,ListView.Beginning);
             var panel = findChild(view, "drag_panel" + from);
             verify(panel, "Cannot locate source panel");
-            var x = centerOf(panel).x;
-            var y = dragArea.mapFromItem(panel, panel.x, panel.y).y;
+            var dragPos = dragArea.mapFromItem(panel, centerOf(panel).x, centerOf(panel).y);
             // move the mouse
             var dy = Math.abs(to - from) * panel.height + units.gu(1);
             dy *= (to > from) ? 1 : -1;
-            mousePress(dragArea, x, y);
+            mousePress(dragArea, dragPos.x, dragPos.y);
             wait(100);
             var draggedItem = findChild(view.contentItem, "DraggedListItem");
             if (draggedItem) {
                 dropSpy.target = draggedItem.__styleInstance.dropAnimation;
             }
             // use 10 steps to be sure the move is properly detected by the drag area
-            mouseMoveSlowly(dragArea, x, y, 0, dy, 10, 100);
+            mouseMoveSlowly(dragArea, dragPos.x, dragPos.y, 0, dy, 10, 100);
             // drop it, needs two mouse releases, this generates the Drop event also
-            mouseRelease(dragArea, x, y + dy);
+            mouseRelease(dragArea, dragPos.x, dragPos.y + dy);
             // needs one more mouse release
-            mouseRelease(dragArea, x, y + dy);
+            mouseRelease(dragArea, dragPos.x, dragPos.y + dy);
             if (dropSpy.target) {
                 dropSpy.wait();
             } else {
@@ -1149,6 +1148,14 @@ Item {
                 var index = data.expected.indexOf(listView.ViewItems.selectedIndices[i]);
                 verify(index >= 0, "Index " + listView.ViewItems.selectedIndices[i] + " is not expected to be selected!");
             }
+        }
+
+        // must run this immediately after the defaults are checked otherwise drag handler connected check will fail
+        function test_1_warn_missing_dragUpdated_signal_handler() {
+            ignoreWarning(warningFormat(115, 9, "QML ListView: ListView has no ViewItems.draggingUpdated() signal handler implemented. No dragging will be possible."));
+            toggleDragMode(listView, true);
+            drag(listView, 0, 1);
+            toggleDragMode(listView, true);
         }
     }
 }

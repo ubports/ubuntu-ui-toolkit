@@ -32,7 +32,7 @@
 #define CLAMP(v, min, max)  ((min) <= (max) ? MAX(min, MIN(v, max)) : MAX(max, MIN(v, min)))
 
 ListItemDragArea::ListItemDragArea(QQuickItem *parent)
-    : QQuickMouseArea(parent)
+    : QQuickItem(parent)
     , listView(static_cast<QQuickFlickable*>(parent))
     , viewAttached(0)
     , scrollDirection(0)
@@ -41,34 +41,22 @@ ListItemDragArea::ListItemDragArea(QQuickItem *parent)
     , min(-1)
     , max(-1)
 {
-    connect(this, SIGNAL(pressed(QQuickMouseEvent*)), this, SLOT(startDragging(QQuickMouseEvent*)), Qt::DirectConnection);
-    connect(this, SIGNAL(released(QQuickMouseEvent*)), this, SLOT(stopDragging(QQuickMouseEvent*)), Qt::DirectConnection);
-    connect(this, SIGNAL(positionChanged(QQuickMouseEvent*)), this, SLOT(updateDragging(QQuickMouseEvent*)), Qt::DirectConnection);
+    setAcceptedMouseButtons(Qt::LeftButton);
 
     // for testing purposes
     setObjectName("drag_area");
 }
 
-void ListItemDragArea::init(const QRectF &area)
+void ListItemDragArea::init()
 {
     setParentItem(static_cast<QQuickItem*>(parent()));
-    updateArea(area);
-    reset();
+    QQuickAnchors *anchors = QQuickItemPrivate::get(this)->anchors();
+    anchors->setFill(parentItem());
 
     // warn if no draggingUpdated() signal handler is implemented
     viewAttached = static_cast<UCViewItemsAttached*>(
                 qmlAttachedPropertiesObject<UCViewItemsAttached>(listView));
-}
-
-void ListItemDragArea::updateArea(const QRectF &area)
-{
-    QQuickAnchors *anchors = QQuickItemPrivate::get(this)->anchors();
-    anchors->setFill(listView);
-    // set the margins based on the area
-    anchors->setLeftMargin(area.left());
-    if (area.right() != 0.0) {
-        anchors->setRightMargin(listView->width() - area.right());
-    }
+    reset();
 }
 
 void ListItemDragArea::reset()
@@ -81,7 +69,7 @@ void ListItemDragArea::reset()
 
 void ListItemDragArea::timerEvent(QTimerEvent *event)
 {
-    QQuickMouseArea::timerEvent(event);
+    QQuickItem::timerEvent(event);
     if (event->timerId() == scrollTimer.timerId()) {
         qreal scrollAmount = UCUnits::instance().gu(0.5) * scrollDirection;
         qreal contentHeight = listView->contentHeight();
@@ -93,7 +81,7 @@ void ListItemDragArea::timerEvent(QTimerEvent *event)
                                    contentHeight - height + listView->originY());
             listView->setContentY(contentY);
             // update
-            updateDragging(0);
+            mouseMoveEvent(0);
         }
     }
 }
@@ -101,16 +89,28 @@ void ListItemDragArea::timerEvent(QTimerEvent *event)
 // starts dragging operation; emits draggingStarted() and if the signal handler is implemented,
 // depending on the acceptance, will create a fake item and will start dragging. If the start is
 // cancelled, no dragging will happen
-void ListItemDragArea::startDragging(QQuickMouseEvent *event)
+void ListItemDragArea::mousePressEvent(QMouseEvent *event)
 {
-    Q_UNUSED(event);
+    mousePos = event->localPos();
     QPointF pos = mapDragAreaPos();
     UCListItem *listItem = itemAt(pos.x(), pos.y());
     if (!listItem) {
+        event->setAccepted(false);
         return;
     }
+    // check if we tapped over the drag panel
+    UCListItemPrivate *pListItem = UCListItemPrivate::get(listItem);
+    if (pListItem->styleItem && pListItem->styleItem->m_dragPanel) {
+        // convert mouse into local panel coordinates
+        QPointF panelPos = pListItem->styleItem->m_dragPanel->mapFromItem(this, mousePos);
+        if (!pListItem->styleItem->m_dragPanel->contains(panelPos)) {
+            // not tapped over the drag panel, leave
+            event->setAccepted(false);
+            return;
+        }
+    }
     int index = indexAt(pos.x(), pos.y());
-    bool start = true;
+    bool start = false;
     max = min = -1;
     // call start handler if implemented
     UCViewItemsAttachedPrivate *pViewAttached = UCViewItemsAttachedPrivate::get(viewAttached);
@@ -123,7 +123,7 @@ void ListItemDragArea::startDragging(QQuickMouseEvent *event)
     } else {
         qmlInfo(parentItem()) << UbuntuI18n::instance().tr(
                                      "ListView has no ViewItems.draggingUpdated() signal handler implemented. "\
-                                     "No dragging will be possible");
+                                     "No dragging will be possible.");
     }
     if (start) {
         pViewAttached->buildChangesList(false);
@@ -132,13 +132,14 @@ void ListItemDragArea::startDragging(QQuickMouseEvent *event)
         // create temp drag item
         createDraggedItem(listItem);
     }
+    event->setAccepted(start);
 }
 
 // stops dragging, performs drop event (event.direction = ListItemDrag.Steady)
 // and clears temporary item
-void ListItemDragArea::stopDragging(QQuickMouseEvent *event)
+void ListItemDragArea::mouseReleaseEvent(QMouseEvent *event)
 {
-    Q_UNUSED(event);
+    mousePos = event->localPos();
     if (item.isNull()) {
         return;
     }
@@ -161,9 +162,11 @@ void ListItemDragArea::stopDragging(QQuickMouseEvent *event)
     fromIndex = toIndex = -1;
 }
 
-void ListItemDragArea::updateDragging(QQuickMouseEvent *event)
+void ListItemDragArea::mouseMoveEvent(QMouseEvent *event)
 {
-    Q_UNUSED(event);
+    if (event) {
+        mousePos = event->localPos();
+    }
     if (!item) {
         return;
     }
@@ -238,7 +241,7 @@ void ListItemDragArea::updateDragging(QQuickMouseEvent *event)
 // returns the mapped mouse position of the dragged item's dragHandler to the ListView
 QPointF ListItemDragArea::mapDragAreaPos()
 {
-    QPointF pos(mouseX(), mouseY() + listView->contentY());
+    QPointF pos(mousePos.x(), mousePos.y() + listView->contentY());
     pos = listView->mapFromItem(this, pos);
     return pos;
 }

@@ -308,58 +308,6 @@ void UCViewItemsAttached::completed()
     }
 }
 
-// set the drag area so we can position the handler accordingly
-void UCViewItemsAttachedPrivate::watchDragAreaPosition(UCListItemStyle *styleItem)
-{
-    Q_Q(UCViewItemsAttached);
-    if (!styleItem->m_dragPanel) {
-        // connect dragPanelChanged() to be able to watch its size changes.
-        QObject::connect(styleItem, SIGNAL(dragPanelChanged()),
-                q, SLOT(_q_dragPanelUpdated()), Qt::DirectConnection);
-    } else {
-        _q_dragPanelUpdated(styleItem);
-    }
-}
-
-// dragPanel updated, watch its x coordinate changes
-void UCViewItemsAttachedPrivate::_q_dragPanelUpdated(UCListItemStyle *style)
-{
-    Q_Q(UCViewItemsAttached);
-    if (!style) {
-        style = qobject_cast<UCListItemStyle*>(q->sender());
-    }
-    if (style) {
-        QObject::connect(style->m_dragPanel, SIGNAL(xChanged()),
-                q, SLOT(_q_setDragAreaPosition()), Qt::DirectConnection);
-        _q_setDragAreaPosition(style->m_dragPanel);
-    }
-}
-
-// dragPanel's coordinates changed, update drag area
-void UCViewItemsAttachedPrivate::_q_setDragAreaPosition(QQuickItem *panel)
-{
-    Q_Q(UCViewItemsAttached);
-    if (!panel) {
-        panel = qobject_cast<QQuickItem*>(q->sender());
-    }
-    if (listView && panel) {
-        QPointF mappedPos = listView->mapFromItem(panel, panel->position());
-        bool updated = false;
-        if (mappedPos.x() != dragAreaRect.x()) {
-            dragAreaRect.setX(mappedPos.x());
-            updated = true;
-        }
-        if (panel->width() != dragAreaRect.width()) {
-            dragAreaRect.setWidth(panel->width());
-            updated = true;
-        }
-        if (dragArea && updated) {
-            // update anchors
-            dragArea->updateArea(dragAreaRect);
-        }
-    }
-}
-
 /*!
  * \qmlattachedproperty bool ViewItems::selectMode
  * The property drives whether list items are selectable or not.
@@ -591,7 +539,7 @@ void UCViewItemsAttachedPrivate::enterDragMode()
         return;
     }
     dragArea = new ListItemDragArea(listView);
-    dragArea->init(dragAreaRect);
+    dragArea->init();
 }
 
 void UCViewItemsAttachedPrivate::leaveDragMode()

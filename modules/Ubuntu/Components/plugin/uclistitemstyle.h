@@ -99,7 +99,7 @@ private:
     bool m_animatePanels:1;
 
     friend class UCListItemPrivate;
-    friend class UCActionPanel;
+    friend class ListItemDragArea;
     friend class ListItemDragHandler;
     friend class UCViewItemsAttachedPrivate;
 };

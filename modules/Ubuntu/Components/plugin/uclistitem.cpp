@@ -435,10 +435,6 @@ void UCListItemPrivate::initStyleItem(bool withAnimatedPanels)
     // turn animations on
     styleItem->setAnimatePanels(true);
     Q_EMIT q->__styleInstanceChanged();
-    // connect to the ViewItems
-    if (parentAttached) {
-        UCViewItemsAttachedPrivate::get(parentAttached)->watchDragAreaPosition(styleItem);
-    }
 }
 
 /*!

@@ -18,34 +18,30 @@
 #define LISTITEMDRAGAREA_H
 
 #include "uclistitem.h"
-#include <QtQuick/private/qquickmousearea_p.h>
 #include <QtCore/QBasicTimer>
 #include <QtCore/QPointer>
 
 class QQuickFlickable;
-class ListItemDragArea : public QQuickMouseArea
+class ListItemDragArea : public QQuickItem
 {
     Q_OBJECT
 public:
     explicit ListItemDragArea(QQuickItem *parent = 0);
-    void init(const QRectF &area);
-    void updateArea(const QRectF &area);
+    void init();
     void reset();
 
 protected:
     void timerEvent(QTimerEvent *event);
-
-private Q_SLOTS:
-    void startDragging(QQuickMouseEvent *event);
-    void stopDragging(QQuickMouseEvent *event);
-    void updateDragging(QQuickMouseEvent *event);
+    void mousePressEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
 
 private:
     QBasicTimer scrollTimer;
     QPointer<UCListItem> item;
     QQuickFlickable *listView;
     UCViewItemsAttached *viewAttached;
-    QPointF lastPos;
+    QPointF lastPos, mousePos;
     int scrollDirection;
     int fromIndex, toIndex, min, max;
 
