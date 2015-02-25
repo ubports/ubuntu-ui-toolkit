@@ -824,10 +824,15 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  * dragged up or downwards or dropped, allowing in this way various restrictions
  * on the dragging.
  *
- * ListItem does not provide animations when the ListView's model is updated. In order
- * to have animation, use UbuntuListView or provide a transition animation to the
- * moveDisplaced property of the ListView.
+ * The dragging event provides three states reported in \l ListItemDrag::status
+ * field, \e Started, \e Moving and \e Dropped. The other event field values depend
+ * on the status, therefore the status must be taken into account when implementing
+ * the signal handler. In case live dragging is needed, \e Moving state must be
+ * checked, and for non-live drag (drag'n'drop) the \e Moving state must be blocked
+ * by setting \e {event.accept = false}, otherwise the dragging will not know
+ * whether the model has been updated or not.
  *
+ * Example of live drag implementation:
  * \qml
  * import QtQuick 2.4
  * import Ubuntu.Components 1.2
@@ -849,10 +854,9 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  *             !ListView.view.ViewItems.dragMode
  *     }
  *     ViewItems.onDragUpdated: {
- *         if (event.status == ListItemDrag.Started) {
- *             return;
+ *         if (event.status == ListItemDrag.Moving) {
+ *             model.move(event.from, event.to, 1);
  *         }
- *         model.move(event.from, event.to, 1);
  *     }
  *     moveDisplaced: Transition {
  *         UbuntuNumberAnimation {
@@ -861,6 +865,47 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  *     }
  * }
  * \endqml
+ *
+ * Example of drag'n'drop implementation:
+ * \qml
+ * import QtQuick 2.4
+ * import Ubuntu.Components 1.2
+ *
+ * ListView {
+ *     model: ListModel {
+ *         Component.onCompleted: {
+ *             for (var i = 0; i < 100; i++) {
+ *                 append({tag: "List item #"+i});
+ *             }
+ *         }
+ *     }
+ *     delegate: ListItem {
+ *         Label {
+ *             text: modelData
+ *         }
+ *         color: dragMode ? "lightblue" : "lightgray"
+ *         onPressAndHold: ListView.view.ViewItems.dragMode =
+ *             !ListView.view.ViewItems.dragMode
+ *     }
+ *     ViewItems.onDragUpdated: {
+ *         if (event.status == ListItemDrag.Moving) {
+ *             // inform dragging that move is not performed
+ *             event.accept = false;
+ *         } else if (event.status == ListItemDrag.Dropped) {
+ *             model.move(event.from, event.to, 1);
+ *         }
+ *     }
+ *     moveDisplaced: Transition {
+ *         UbuntuNumberAnimation {
+ *             property: "y"
+ *         }
+ *     }
+ * }
+ * \endqml
+ *
+ * ListItem does not provide animations when the ListView's model is updated. In order
+ * to have animation, use UbuntuListView or provide a transition animation to the
+ * moveDisplaced or displaced property of the ListView.
  *
  * \section3 Using non-QAbstractItemModel models
  * Live dragging (moving content on the move) is only possible when the model is
