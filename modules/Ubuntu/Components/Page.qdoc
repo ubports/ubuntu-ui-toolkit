@@ -63,7 +63,7 @@
     will be the full width of its parent \l MainView or \l PageStack or \l Tab,
     and the height will adapt to leave space for the header when needed. It is possible to
     use a Page inside a Loader, but in that case do not set the anchors or size of the Loader
-    because that would override the Page width and height which breaks the header behavior.
+    so that the Page can control its width and height.
 */
 
 /*!
