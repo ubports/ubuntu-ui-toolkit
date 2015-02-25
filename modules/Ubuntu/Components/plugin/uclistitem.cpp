@@ -1018,7 +1018,6 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
         Q_D(UCListItem);
         // make sure we are not connected to any previous Flickable
         d->listenToRebind(false);
-
         // check if we are in a positioner, and if that positioner is in a Flickable
         QQuickBasePositioner *positioner = qobject_cast<QQuickBasePositioner*>(data.item);
         if (positioner && positioner->parentItem()) {
@@ -1031,7 +1030,7 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
         // attach ViewItems to parent item or to ListView
         QQuickItem *parentAttachee = data.item;
         if (d->flickable && d->flickable->inherits("QQuickListView")) {
-            // the ListItem is a delegate of the ListView, so we attache the porperty to that
+            // attach to ListView
             d->parentAttached = static_cast<UCViewItemsAttached*>(qmlAttachedPropertiesObject<UCViewItemsAttached>(d->flickable));
             parentAttachee = d->flickable;
         } else if (data.item) {

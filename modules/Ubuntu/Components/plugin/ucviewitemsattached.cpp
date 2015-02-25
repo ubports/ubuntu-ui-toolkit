@@ -189,8 +189,8 @@ void UCViewItemsAttachedPrivate::buildChangesList(const QVariant &newValue)
  * \since Ubuntu.Components 1.2
  * \brief A set of properties attached to the ListItem's parent item or ListView.
  *
- * These properties are attached to the parent item of the ListItem, or to
- * ListView, when the component is used as delegate.
+ * These properties are automatically attached to the parent item of the ListItem,
+ * or to ListView, when the component is used as delegate.
  */
 UCViewItemsAttached::UCViewItemsAttached(QObject *owner)
     : QObject(*(new UCViewItemsAttachedPrivate()), owner)
@@ -433,7 +433,7 @@ bool UCViewItemsAttachedPrivate::isItemSelected(UCListItem *item)
  *
  * An example implementation of a live dragging with restrictions:
  * \qml
- * import QtQuick 2.3
+ * import QtQuick 2.4
  * import Ubuntu.Components 1.2
  *
  * ListView {
@@ -472,7 +472,7 @@ bool UCViewItemsAttachedPrivate::isItemSelected(UCListItem *item)
  * expensive, and continuously updating while dragging would cause lot of traffic.
  * The following example illustrates how to implement such a scenario:
  * \qml
- * import QtQuick 2.3
+ * import QtQuick 2.4
  * import Ubuntu.Components 1.2
  *
  * ListView {

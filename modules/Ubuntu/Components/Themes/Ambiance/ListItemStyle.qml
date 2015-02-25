@@ -383,7 +383,10 @@ Styles.ListItemStyle {
     }
 
     // simple drop animation
-    dropAnimation: UbuntuNumberAnimation { properties: "y" }
+    dropAnimation: SmoothedAnimation {
+        properties: "y"
+        velocity: units.gu(60)
+    }
 
     onXChanged: internals.updateSnapDirection()
     // overriding default functions
