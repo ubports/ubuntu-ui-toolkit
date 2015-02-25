@@ -1149,7 +1149,7 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
     Q_D(UCListItem);
     UCStyledItemBase::mouseMoveEvent(event);
 
-    if (d->selectMode()) {
+    if (d->selectMode() || d->dragMode()) {
         // no move is allowed while selectable mode is on
         return;
     }
