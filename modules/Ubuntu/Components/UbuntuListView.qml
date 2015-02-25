@@ -133,4 +133,12 @@ ListView {
         enabled: root.expandedIndex != -1
         onClicked: root.expandedIndex = -1;
     }
+
+    // animate move displaced if UbuntuListView is in drag mode
+    moveDisplaced: Transition {
+        enabled: root.ViewItems.dragMode
+        UbuntuNumberAnimation {
+            properties: "x,y"
+        }
+    }
 }
