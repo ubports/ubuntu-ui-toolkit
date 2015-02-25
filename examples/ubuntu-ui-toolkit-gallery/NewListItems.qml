@@ -135,20 +135,32 @@ Template {
             width: parent.width
             clip: true
 
-            model: [ i18n.tr("Basic"), i18n.tr("Colored divider"), i18n.tr("No divider") ]
             ViewItems.dragMode: ViewItems.selectMode
             ViewItems.onDragUpdated: {
+                if (event.status == ListItemDrag.Started) {
+                    if (model[event.from] == "Immutable")
+                        event.accept = false;
+                    return;
+                }
+                if (model[event.to] == "Immutable") {
+                    event.accept = false;
+                    return;
+                }
+                // No instantaneous updates
                 if (event.status == ListItemDrag.Moving) {
                     event.accept = false;
-                } else if (event.status == ListItemDrag.Dropped) {
-                    var fromData = model[event.from]
+                    return;
+                }
+                if (event.status == ListItemDrag.Dropped) {
+                    var fromItem = model[event.from];
                     var list = model;
                     list.splice(event.from, 1);
-                    list.splice(event.to, 0, fromData);
+                    list.splice(event.to, 0, fromItem);
                     model = list;
                 }
             }
 
+            model: [ i18n.tr("Basic"), i18n.tr("Colored divider"), i18n.tr("Immutable"), i18n.tr("No divider") ]
             delegate: ListItemWithLabel {
                 text: modelData
                 color: dragging ? "lightblue" : "transparent"
@@ -171,14 +183,26 @@ Template {
             clip: true
             ViewItems.dragMode: true
             ViewItems.onDragUpdated: {
+                if (event.status == ListItemDrag.Started) {
+                    if (model.get(event.from).label == "Immutable")
+                        event.accept = false;
+                    return;
+                }
+                if (model.get(event.to).label == "Immutable") {
+                    event.accept = false;
+                    return;
+                }
+                // Live update as you drag
                 if (event.status == ListItemDrag.Moving) {
-                    model.move(event.from, event.to, 1)
+                    model.move(event.from, event.to, 1);
                 }
             }
+
 
             model: ListModel {
                 ListElement { label: "Basic" }
                 ListElement { label: "Colored divider" }
+                ListElement { label: "Immutable" }
                 ListElement { label: "No divider" }
             }
 
