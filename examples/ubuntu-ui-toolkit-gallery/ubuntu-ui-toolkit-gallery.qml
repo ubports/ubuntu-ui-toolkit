@@ -137,6 +137,7 @@ MainView {
         id: contentPage
         active: selectedWidget != null
         title: selectedWidget ? selectedWidget.label : ""
+        width: gallery.width - mainPage.width
         /* Page internally sets the topMargin of its flickable to account for
            the height of the header. Undo it when unsetting the flickable.
         */
