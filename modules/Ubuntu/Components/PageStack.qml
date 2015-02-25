@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2015 Canonical Ltd.
+ * Copyright 2012 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -214,8 +214,18 @@ PageTreeNode {
                                     ? pageStack.__propagated.header.__styleInstance
                                     : null
 
-        property bool animateHeader: pageStack.__propagated.hasOwnProperty("animateHeader") &&
-                                     pageStack.__propagated.animateHeader
+        function headerCanAnimate() {
+            if (!headStyle) return false;
+            if (!headStyle.hasOwnProperty("animateIn")) return false;
+            if (!headStyle.hasOwnProperty("animateOut")) return false;
+            if (!headStyle.hasOwnProperty("animateInFinished")) return false;
+            if (!headStyle.hasOwnProperty("animateOutFinished")) return false;
+            return true;
+        }
+
+        // FIXME: Replace false by headerCanAnimate() below to enable
+        //  header animations.
+        property bool animateHeader: false
 
         // Call this function before pushing or popping to ensure correct order
         // of pushes/pops on the stack. This terminates any currently running
