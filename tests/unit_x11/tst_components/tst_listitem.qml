@@ -120,6 +120,7 @@ Item {
             clip: true
             model: objectModel
             ViewItems.selectMode: false
+            LayoutMirroring.childrenInherit: true
             delegate: ListItem {
                 objectName: "listItem" + index
                 color: "lightgray"
@@ -224,6 +225,18 @@ Item {
             signalName: "stopped"
         }
 
+        function toggleSelectMode(view, enabled, scrollToTop) {
+            if (view.hasOwnProperty("positionViewAtBeginning") && scrollToTop) {
+                // use the topmost listItem to wait for rendering completion
+                view.positionViewAtBeginning();
+            }
+            var listItem = findChild(view, "listItem0");
+            verify(listItem);
+            view.ViewItems.selectMode = enabled;
+            // waitForRendering aint seems to be reliable here, so we wait ~400 msecs
+            wait(400);
+        }
+
         function toggleDragMode(view, enabled) {
             // use the topmost listItem to wait for rendering completion
             view.positionViewAtBeginning();
@@ -310,8 +323,9 @@ Item {
             compare(defaults.divider.visible, true, "divider is visible by default");
             compare(defaults.divider.anchors.leftMargin, 0, "divider's left margin is 0");
             compare(defaults.divider.anchors.rightMargin, 0, "divider's right margin is 0");
-            compare(defaults.divider.anchors.left, defaults.left, "divider's left anchor is wrong");
-            compare(defaults.divider.anchors.right, defaults.right, "divider's right anchor is wrong");
+            var mappedDividerPos = defaults.mapFromItem(defaults.divider, defaults.divider.x, defaults.divider.y);
+            compare(mappedDividerPos.x, 0, "divider's left anchor is wrong");
+            compare(mappedDividerPos.x + defaults.divider.width, defaults.width, "divider's right anchor is wrong");
             compare(defaults.divider.height, units.dp(2), "divider's thickness is wrong");
             compare(defaults.divider.colorFrom, "#000000", "colorFrom differs.");
             fuzzyCompare(defaults.divider.colorFrom.a, 0.14, 0.01, "colorFrom alpha differs");
@@ -841,16 +855,14 @@ Item {
 
         function test_select_indices_updates_selected_items() {
             listView.ViewItems.selectedIndices = [0,1,2];
-            listView.ViewItems.selectMode = true;
-            waitForRendering(listView, 500);
+            toggleSelectMode(listView, true);
             for (var i in listView.ViewItems.selectedIndices) {
                 var index = listView.ViewItems.selectedIndices[i];
                 var listItem = findChild(listView, "listItem" + index);
                 compare(listItem.selected, true, "ListItem at index " + index + " is not selected!");
             }
-            listView.ViewItems.selectMode = false;
+            toggleSelectMode(listView, false);
             listView.ViewItems.selectedIndices = [];
-            waitForRendering(listView, 500);
         }
 
         function test_toggle_selectMode_data() {
@@ -863,9 +875,7 @@ Item {
             var listItem = findChild(listView, "listItem" + data.index)
             verify(listItem, "Cannot get test item");
             listItem.selected = data.selected;
-            listView.ViewItems.selectMode = true;
-            // wait few milliseconds
-            wait(400);
+            toggleSelectMode(listView, true);
             // testItem is the 4th child, so index is 3
             verify(findChild(listItem, "selection_panel" + data.index), "Cannot find selection panel");
             compare(listItem.contentItem.enabled, true, "contentItem is not disabled.");
@@ -886,8 +896,7 @@ Item {
          }
         function test_toggle_selected(data) {
             // make test item selectable first, so the panel is created
-            data.selectableHolder.ViewItems.selectMode = true;
-            wait(400);
+            toggleSelectMode(data.selectableHolder, true);
             // get the control to click on
             var clickOn = findChild(data.item, data.clickOn);
             verify(clickOn, "control to be clicked on not found");
@@ -912,8 +921,7 @@ Item {
             listView.positionViewAtEnd();
             var listItem = findChild(listView, "listItem" + (listView.count - 1));
             verify(listItem, "Cannot get tested list item");
-            listView.ViewItems.selectMode = true;
-            waitForRendering(listItem);
+            toggleSelectMode(listView, true, false);
             selectedSpy.target = listItem;
             selectedSpy.clear();
 
@@ -924,9 +932,7 @@ Item {
 
         function test_no_tug_when_selectable() {
             movingSpy.target = testItem;
-            testColumn.ViewItems.selectMode = true;
-            // wait till animation to selection mode ends
-            waitForRendering(testItem.contentItem);
+            toggleSelectMode(testColumn, true);
 
             // try to tug leading
             movingSpy.clear();
@@ -935,9 +941,7 @@ Item {
         }
 
         function test_selectable_and_click() {
-            testColumn.ViewItems.selectMode = true;
-            // wait till animation to selection mode ends
-            waitForRendering(testItem.contentItem);
+            toggleSelectMode(testColumn, true);
 
             clickSpy.target = testItem;
             mouseClick(testItem, centerOf(testItem).x, centerOf(testItem).y);
@@ -945,9 +949,7 @@ Item {
         }
 
         function test_selectable_and_pressandhold() {
-            testColumn.ViewItems.selectMode = true;
-            // wait till animation to selection mode ends
-            waitForRendering(testItem.contentItem);
+            toggleSelectMode(testColumn, true);
 
             pressAndHoldSpy.target = testItem;
             mouseLongPress(testItem, centerOf(testItem).x, centerOf(testItem).y);
@@ -964,14 +966,11 @@ Item {
         function test_proper_attached_properties(data) {
             var listItem = findChild(data.item, "listItem0");
             verify(listItem, "ListItem not found!");
-            data.item.ViewItems.selectMode = true;
-            // wait few milliseconds to get the selection panel opened
-            wait(400);
+            toggleSelectMode(data.item, true);
             // check if the selection mode was activated by looking after the first selection panel
             var panel = findChild(listItem, "selection_panel0");
             // turn off selection mode so we have a proper cleanup
-            data.item.ViewItems.selectMode = false;
-            wait(400);
+            toggleSelectMode(data.item, true);
             verify(panel, "Selection panel not found, wrong attached property target?");
         }
 
@@ -1203,6 +1202,63 @@ Item {
             toggleDragMode(listView, true);
             toggleDragMode(listView, false);
             listView.ViewItems.dragUpdated.disconnect(dummyFunc);
+        }
+
+        function test_rtl_actions_data() {
+            return [
+                {tag: "Leading actions", item: "listItem0", leading: true, expected: ["leading_1", "leading_2", "leading_3"]},
+                {tag: "Trailing actions", item: "listItem0", leading: false, expected: ["stockAction"]},
+            ];
+        }
+        function test_rtl_actions(data) {
+            listView.LayoutMirroring.enabled = true;
+            waitForRendering(listView, 500);
+            var listItem = findChild(listView, data.item);
+            movingSpy.target = listItem;
+            swipe(listItem, centerOf(listItem).x, centerOf(listItem).y, data.leading ? -units.gu(20) : units.gu(20), 0);
+            movingSpy.wait();
+
+            // check if the action is visible
+            var panel = panelItem(listItem, data.leading);
+            verify(panel, "Panel not visible");
+            for (var i in data.expected) {
+                var actionItem = findChild(panel, data.expected[i]);
+                verify(actionItem, data.expected[i] + " action not found");
+            }
+            // dismiss
+            rebound(listItem);
+            listView.LayoutMirroring.enabled = false;
+            waitForRendering(listView, 500);
+        }
+
+        function test_rtl_selection_panel_position() {
+            listView.LayoutMirroring.enabled = true;
+            waitForRendering(listView, 500);
+            toggleSelectMode(listView, true);
+            // get the panel
+            var listItem = findChild(listView, "listItem0");
+            verify(listItem, "ListItem cannot be found");
+            var panel = findChild(listView, "selection_panel0");
+            verify(panel, "Selection panel not found.");
+            verify(listItem.mapFromItem(panel, panel.x, panel.y).x > centerOf(listItem).x, "Panel is not in its proper place!");
+            toggleSelectMode(listView, false);
+            listView.LayoutMirroring.enabled = false;
+            waitForRendering(listView, 500);
+        }
+
+        function test_rtl_drag_panel_position() {
+            listView.LayoutMirroring.enabled = true;
+            waitForRendering(listView, 500);
+            toggleDragMode(listView, true);
+            // get the panel
+            var listItem = findChild(listView, "listItem0");
+            verify(listItem, "ListItem cannot be found");
+            var panel = findChild(listView, "drag_panel0");
+            verify(panel, "Drag panel not found.");
+            verify(listItem.mapFromItem(panel, panel.x, panel.y).x < centerOf(listItem).x, "Panel is not in its proper place!");
+            toggleDragMode(listView, false);
+            listView.LayoutMirroring.enabled = false;
+            waitForRendering(listView, 500);
         }
     }
 }
