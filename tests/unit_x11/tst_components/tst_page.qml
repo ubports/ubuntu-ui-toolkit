@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2012 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,9 +14,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.3
+import QtQuick 2.0
 import QtTest 1.0
-import Ubuntu.Components 1.2
+import Ubuntu.Components 1.1
 
 Item {
     width: 200
@@ -54,7 +54,7 @@ Item {
     }
 
     TestCase {
-        name: "Page12API"
+        name: "PageAPI"
         when: windowShown
 
         function initTestCase() {
@@ -91,6 +91,10 @@ Item {
             compare(mainView.__propagated.header.visible, false, "header is hidden when title is unset")
         }
 
+        function test_tools() {
+            compare(mainView.__propagated.toolbar.tools, page.tools, "Page updates toolbar tools");
+        }
+
         function test_active() {
             compare(page.active, true, "Page is active by default");
         }
@@ -108,7 +112,6 @@ Item {
             page.actions = [];
             compare(page.actions.length, 0, "Page action list can be cleared");
         }
-
         function test_flickable_bug1200642_bug1192591() {
             compare(page.flickable, pageFlickable, "page flickable is correctly detected");
             compare(page.__propagated.header.flickable, pageFlickable, "header flickable is correctly detected"); // bug 1200642 FAIL
