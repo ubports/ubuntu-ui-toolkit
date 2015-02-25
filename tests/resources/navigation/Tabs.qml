@@ -32,7 +32,7 @@ MainView {
 
         Tab {
             id: simpleTab
-            title: i18n.tr("Simple page #" + index)
+            title: i18n.tr("Simple page #" + index + " to demonstrate tabs")
             page: Page {
                 Label {
                     anchors.centerIn: parent
