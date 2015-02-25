@@ -14,8 +14,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.2
+import QtQuick 2.4
 import Ubuntu.Components 1.2
+import QtQml.Models 2.1
 
 Template {
     objectName: "listItemsTemplate"
@@ -130,23 +131,9 @@ Template {
         className: "ListItem"
         title: "Select mode"
 
-        ListView {
-            height: units.gu(20)
-            width: parent.width
-            clip: true
-
+        DelegateModel {
+            id: delegateModel
             model: [ i18n.tr("Basic"), i18n.tr("Colored divider"), i18n.tr("No divider") ]
-            ViewItems.dragMode: ViewItems.selectMode
-            ViewItems.onDragUpdated: {
-                if (event.status == ListItemDrag.Moving) {
-                    var list = model;
-                    var fromItem = list[event.from];
-                    list.splice(event.from, 1);
-                    list.splice(event.to, 0, fromItem);
-                    model = list;
-                }
-            }
-
             delegate: ListItemWithLabel {
                 text: modelData
                 divider {
@@ -155,6 +142,37 @@ Template {
                     visible: modelData != i18n.tr("No divider")
                 }
             }
+        }
+
+        ListView {
+            height: units.gu(20)
+            width: parent.width
+            clip: true
+            model: delegateModel
+
+//            model: [ i18n.tr("Basic"), i18n.tr("Colored divider"), i18n.tr("No divider") ]
+            ViewItems.dragMode: ViewItems.selectMode
+            ViewItems.onDragUpdated: {
+                if (event.status == ListItemDrag.Dropped) {
+                    var list = model.model;
+                    var fromItem = list[event.from];
+                    list.splice(event.from, 1);
+                    list.splice(event.to, 0, fromItem);
+                    model.model = list;
+                    print(model)
+                } else if (event.status != ListItemDrag.Started) {
+                    event.accept = false;
+                }
+            }
+
+//            delegate: ListItemWithLabel {
+//                text: modelData
+//                divider {
+//                    colorFrom: modelData == i18n.tr("Colored divider") ? UbuntuColors.red : Qt.rgba(0.0, 0.0, 0.0, 0.0)
+//                    colorTo: modelData == i18n.tr("Colored divider") ? UbuntuColors.green : Qt.rgba(0.0, 0.0, 0.0, 0.0)
+//                    visible: modelData != i18n.tr("No divider")
+//                }
+//            }
         }
     }
 

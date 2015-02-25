@@ -200,14 +200,14 @@ Styles.ListItemStyle {
                 reversible: true
                 enabled: listItemStyle.animatePanels
                 ParallelAnimation {
-                OpacityAnimator {
-                    easing: UbuntuAnimation.StandardEasing
-                    duration: UbuntuAnimation.FastDuration
-                }
-                ScaleAnimator {
-                    easing: UbuntuAnimation.StandardEasing
-                    duration: UbuntuAnimation.FastDuration
-                }
+                    OpacityAnimator {
+                        easing: UbuntuAnimation.StandardEasing
+                        duration: UbuntuAnimation.FastDuration
+                    }
+                    ScaleAnimator {
+                        easing: UbuntuAnimation.StandardEasing
+                        duration: UbuntuAnimation.FastDuration
+                    }
                 }
             }
         }

@@ -26,6 +26,9 @@
 #include <QtQuick/private/qquickflickable_p.h>
 #include <QtQml/private/qqmlcomponentattached_p.h>
 #include <QtQml/QQmlInfo>
+#include <QtCore/QAbstractItemModel>
+#include <QtQml/private/qqmlobjectmodel_p.h>
+#include <QtQml/private/qqmldelegatemodel_p.h>
 
 /*!
  * \qmltype ListItemDrag
@@ -34,7 +37,7 @@
  * \since Ubuntu.Components 1.2
  * \brief Provides information about a ListItem drag event.
  *
- * The object cannot be instantiated and it is passed as parameter to \l ViewItems::draggingUpdated
+ * The object cannot be instantiated and it is passed as parameter to \l ViewItems::dragUpdated
  * attached signal. Developer can decide whether to accept or restrict the dragging
  * event based on the input provided by this event.
  *
@@ -74,12 +77,12 @@
  */
 
 /*!
- * \qmlproperty int ListItemDrag::minimumIndex
+ * \qmlproperty int ListItemDrag::maximumIndex
  */
 /*!
- * \qmlproperty int ListItemDrag::maximumIndex
+ * \qmlproperty int ListItemDrag::minimumIndex
  * These properties configure the minimum and maximum indexes the item can be
- * dragged. The properties can be set in \l ViewItems::draggingUpdated signal.
+ * dragged. The properties can be set in \l ViewItems::dragUpdated signal.
  * A negative value means no restriction defined on the dragging interval side.
  */
 
@@ -389,11 +392,11 @@ bool UCViewItemsAttachedPrivate::isItemSelected(UCListItem *item)
  *
  * The panel is configured by the style.
  *
- * \sa ListItemStyle, draggingUpdated
+ * \sa ListItemStyle, dragUpdated
  */
 
 /*!
- * \qmlattachedsignal ViewItems::draggingUpdated(ListItemDrag event)
+ * \qmlattachedsignal ViewItems::dragUpdated(ListItemDrag event)
  * The signal is emitted whenever a dragging related event occurrs. The \b event.status
  * specifies the dragging event type. Depending on the type, the ListItemDrag event
  * properties will have the following meaning:
@@ -444,7 +447,7 @@ bool UCViewItemsAttachedPrivate::isItemSelected(UCListItem *item)
  *     }
  *
  *     ViewItems.dragMode: true
- *     ViewItems.onDraggingUpdated: {
+ *     ViewItems.onDragUpdated: {
  *         if (event.status == ListViewDrag.Started) {
  *             if (event.from < 5) {
  *                 // deny dragging on the first 5 element
@@ -483,7 +486,7 @@ bool UCViewItemsAttachedPrivate::isItemSelected(UCListItem *item)
  *    }
  *
  *    ViewItems.dragMode: true
- *    ViewItems.onDraggingUpdated: {
+ *    ViewItems.onDragUpdated: {
  *        if (event.direction == ListItemDrag.Dropped) {
  *            // this is the last event, so drop the item
  *            model.move(event.from, event.to, 1);
@@ -496,7 +499,7 @@ bool UCViewItemsAttachedPrivate::isItemSelected(UCListItem *item)
  * }
  * \endqml
  *
- * \note Do not forget to set \b{event.accept} to false in \b draggingUpdated in
+ * \note Do not forget to set \b{event.accept} to false in \b dragUpdated in
  * case the drag event handling is not accepted, otherwise the system will not
  * know whether the move has been performed or not, and selected indexes will
  * not be synchronized properly.
@@ -521,6 +524,18 @@ void UCViewItemsAttached::setDragMode(bool value)
         if (!d->listView) {
             qmlInfo(parent()) << UbuntuI18n::instance().tr("dragging mode requires ListView");
             return;
+        }
+        QVariant model = d->listView->property("model");
+        // warn if the model is anything else but Instance model (ObjectModel or DelegateModel)
+        // or a derivate of QAbstractItemModel
+        if (model.isValid() && !model.value<QQmlInstanceModel*>() && !model.value<QAbstractItemModel*>()) {
+            qmlInfo(parent()) << UbuntuI18n::instance().tr("not all features of dragging will be possible on this model.");
+        }
+        // if we have a QQmlDelegateModel we must also check the model property of it
+        QQmlDelegateModel *delegateModel = model.value<QQmlDelegateModel*>();
+        if (delegateModel && delegateModel->model().isValid() &&
+                             !delegateModel->model().value<QAbstractItemModel*>()) {
+            qmlInfo(parent()) << UbuntuI18n::instance().tr("not all features of dragging will be possible on this DelegateModel.model.");
         }
     }
     d->draggable = value;
@@ -549,7 +564,7 @@ void UCViewItemsAttachedPrivate::leaveDragMode()
     }
 }
 
-// returns true when the draggingUpdated signal handler is implemented or a function is connected to it
+// returns true when the dragUpdated signal handler is implemented or a function is connected to it
 bool UCViewItemsAttachedPrivate::isDragUpdatedConnected()
 {
     Q_Q(UCViewItemsAttached);

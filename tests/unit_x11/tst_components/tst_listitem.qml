@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2014-2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,11 +14,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
+import QtQuick 2.4
 import QtTest 1.0
 import Ubuntu.Test 1.0
 import Ubuntu.Components 1.2
 import Ubuntu.Components.Styles 1.2
+import QtQml.Models 2.1
 
 Item {
     id: main
@@ -271,6 +272,7 @@ Item {
         }
 
         function cleanup() {
+            listView.model = objectModel;
             testItem.action = null;
             testItem.contentItem.anchors.margins = 0;
             testItem.selected = false;
@@ -981,7 +983,7 @@ Item {
         }
         function test_dragmode_availability(data) {
             if (data.xfail) {
-                ignoreWarning(warningFormat(79, 5, "QML Column: dragging mode requires ListView"));
+                ignoreWarning(warningFormat(80, 5, "QML Column: dragging mode requires ListView"));
             }
             data.item.ViewItems.dragMode = true;
             wait(400);
@@ -1152,10 +1154,55 @@ Item {
 
         // must run this immediately after the defaults are checked otherwise drag handler connected check will fail
         function test_1_warn_missing_dragUpdated_signal_handler() {
-            ignoreWarning(warningFormat(115, 9, "QML ListView: ListView has no ViewItems.draggingUpdated() signal handler implemented. No dragging will be possible."));
+            ignoreWarning(warningFormat(116, 9, "QML ListView: ListView has no ViewItems.dragUpdated() signal handler implemented. No dragging will be possible."));
             toggleDragMode(listView, true);
             drag(listView, 0, 1);
             toggleDragMode(listView, true);
+        }
+
+        DelegateModel {
+            id: delegateModel
+            delegate: ListItem {
+                objectName: "listItem" + index
+                Label { text: modelData }
+            }
+        }
+        ObjectModel {
+            id: objectModel2
+            Repeater {
+                model: 3
+                ListItem {
+                    objectName: "listItem" + index
+                    Label { text: modelData }
+                }
+            }
+        }
+        function test_warn_model_data() {
+            var list = [1,2,3,4,5,6,7,8,9,10];
+            return [
+                {tag: "number", model: 20, warning: "not all features of dragging will be possible on this model."},
+                {tag: "list", model: list, warning: "not all features of dragging will be possible on this model."},
+                {tag: "objectModel", model: objectModel, warning: ""},
+                {tag: "DelegateModel with number", model: delegateModel, modelModel: 20, warning: "not all features of dragging will be possible on this DelegateModel.model."},
+                {tag: "DelegateModel with list", model: delegateModel, modelModel: [1,2,3,4,5,6,7,8,9,10], warning: "not all features of dragging will be possible on this DelegateModel.model."},
+                {tag: "DelegateModel with objectModel", model: delegateModel, modelModel: objectModel, warning: ""},
+                {tag: "ObjectModel", model: objectModel2, warning: ""},
+            ];
+        }
+        function test_warn_model(data) {
+            function dummyFunc() {}
+            if (data.warning !== "") {
+                ignoreWarning(warningFormat(116, 9, "QML ListView: " + data.warning));
+            }
+            listView.model = data.model;
+            if (typeof data.modelModel !== "undefined") {
+                listView.model.model = data.modelModel;
+            }
+            waitForRendering(listView, 500);
+            listView.ViewItems.dragUpdated.connect(dummyFunc);
+            toggleDragMode(listView, true);
+            toggleDragMode(listView, false);
+            listView.ViewItems.dragUpdated.disconnect(dummyFunc);
         }
     }
 }

@@ -52,8 +52,6 @@ void ListItemDragArea::init()
     setParentItem(static_cast<QQuickItem*>(parent()));
     QQuickAnchors *anchors = QQuickItemPrivate::get(this)->anchors();
     anchors->setFill(parentItem());
-
-    // warn if no draggingUpdated() signal handler is implemented
     viewAttached = static_cast<UCViewItemsAttached*>(
                 qmlAttachedPropertiesObject<UCViewItemsAttached>(listView));
     reset();
@@ -122,7 +120,7 @@ void ListItemDragArea::mousePressEvent(QMouseEvent *event)
         max = drag.m_maximum;
     } else {
         qmlInfo(parentItem()) << UbuntuI18n::instance().tr(
-                                     "ListView has no ViewItems.draggingUpdated() signal handler implemented. "\
+                                     "ListView has no ViewItems.dragUpdated() signal handler implemented. "\
                                      "No dragging will be possible.");
     }
     if (start) {
