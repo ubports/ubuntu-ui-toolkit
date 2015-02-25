@@ -149,15 +149,5 @@ MainViewBase {
           and to which a local context can be added for each Page that has actions.actions.
          */
         property var actionManager: mainView.actionManager
-
-        /*!
-          \internal
-          Used by PageStack. This property only exists in MainView 1.2 and later.
-         */
-        readonly property bool animateHeader: headerItem.__styleInstance &&
-                                              headerItem.__styleInstance.hasOwnProperty("animateIn") &&
-                                              headerItem.__styleInstance.hasOwnProperty("animateOut") &&
-                                              headerItem.__styleInstance.hasOwnProperty("animateInFinished") &&
-                                              headerItem.__styleInstance.hasOwnProperty("animateOutFinished")
     }
 }

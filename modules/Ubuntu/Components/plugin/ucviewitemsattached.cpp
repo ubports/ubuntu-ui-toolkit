@@ -19,8 +19,79 @@
 #include "uclistitem.h"
 #include "uclistitem_p.h"
 #include "propertychange_p.h"
+#include "quickutils.h"
+#include "i18n.h"
 #include "uclistitemstyle.h"
+#include "privates/listitemdragarea.h"
 #include <QtQuick/private/qquickflickable_p.h>
+#include <QtQml/private/qqmlcomponentattached_p.h>
+#include <QtQml/QQmlInfo>
+#include <QtCore/QAbstractItemModel>
+#include <QtQml/private/qqmlobjectmodel_p.h>
+#include <QtQml/private/qqmldelegatemodel_p.h>
+
+/*!
+ * \qmltype ListItemDrag
+ * \inqmlmodule Ubuntu.Components 1.2
+ * \ingroup unstable-ubuntu-listitems
+ * \since Ubuntu.Components 1.2
+ * \brief Provides information about a ListItem drag event.
+ *
+ * The object cannot be instantiated and it is passed as parameter to \l ViewItems::dragUpdated
+ * attached signal. Developer can decide whether to accept or restrict the dragging
+ * event based on the input provided by this event.
+ *
+ * The direction of the drag can be found via the \l status property and the
+ * source and destination the drag can be applied via \l from and \l to properties.
+ * The allowed directions can be configured through \l minimumIndex and \l maximumIndex
+ * properties, and the event acceptance through \l accept property. If the event is not
+ * accepted, the drag action will be considered as cancelled.
+ */
+
+/*!
+ * \qmlproperty enum ListItemDrag::status
+ * \readonly
+ * The property provides information about the status of the drag. Its value can
+ * be one of the following:
+ * \list
+ *  \li \b ListItemDrag.Started - indicates that the dragging is about to start,
+ *              giving opportunities to define restrictions on the dragging indexes,
+ *              like \l minimumIndex, \l maximumIndex
+ *  \li \b ListItemDrag.Moving - the dragged item is moved upwards or downwards
+ *              in the ListItem
+ *  \li \b ListItemDrag.Dropped - indicates that the drag event is finished, and
+ *              the dragged item is about to be dropped to the given position.
+ * \endlist
+ */
+
+/*!
+ * \qmlproperty int ListItemDrag::from
+ * \readonly
+ * Specifies the source index the ListItem is dragged from.
+ */
+/*!
+ * \qmlproperty int ListItemDrag::to
+ * \readonly
+ *
+ * Specifies the index the ListItem is dragged to or dropped.
+ */
+
+/*!
+ * \qmlproperty int ListItemDrag::maximumIndex
+ */
+/*!
+ * \qmlproperty int ListItemDrag::minimumIndex
+ * These properties configure the minimum and maximum indexes the item can be
+ * dragged. The properties can be set in \l ViewItems::dragUpdated signal.
+ * A negative value means no restriction defined on the dragging interval side.
+ */
+
+/*!
+ * \qmlproperty bool ListItemDrag::accept
+ * The property can be used to dismiss the event. By default its value is true,
+ * meaning the drag event is accepted. The value of false blocks the drag event
+ * to be handled by the ListItem's dragging mechanism.
+ */
 
 /*
  * The properties are attached to the ListItem's parent item or to its closest
@@ -29,10 +100,14 @@
  * in this way the controlling of the interactive flag of the Flickable and all
  * its ascendant Flickables.
  */
-UCViewItemsAttachedPrivate::UCViewItemsAttachedPrivate(UCViewItemsAttached *qq)
-    : q_ptr(qq)
+UCViewItemsAttachedPrivate::UCViewItemsAttachedPrivate()
+    : QObjectPrivate()
+    , listView(0)
+    , dragArea(0)
     , globalDisabled(false)
     , selectable(false)
+    , draggable(false)
+    , ready(false)
 {
 }
 
@@ -47,9 +122,12 @@ void UCViewItemsAttachedPrivate::clearFlickablesList()
 {
     Q_Q(UCViewItemsAttached);
     Q_FOREACH(const QPointer<QQuickFlickable> &flickable, flickables) {
-        if (flickable.data())
-        QObject::disconnect(flickable.data(), &QQuickFlickable::movementStarted,
-                            q, &UCViewItemsAttached::unbindItem);
+        if (flickable.data()) {
+            QObject::disconnect(flickable.data(), &QQuickFlickable::movementStarted,
+                                q, &UCViewItemsAttached::unbindItem);
+            QObject::disconnect(flickable.data(), &QQuickFlickable::flickStarted,
+                                q, &UCViewItemsAttached::unbindItem);
+        }
     }
     flickables.clear();
 }
@@ -67,6 +145,8 @@ void UCViewItemsAttachedPrivate::buildFlickablesList()
         QQuickFlickable *flickable = qobject_cast<QQuickFlickable*>(item);
         if (flickable) {
             QObject::connect(flickable, &QQuickFlickable::movementStarted,
+                             q, &UCViewItemsAttached::unbindItem);
+            QObject::connect(flickable, &QQuickFlickable::flickStarted,
                              q, &UCViewItemsAttached::unbindItem);
             flickables << flickable;
         }
@@ -109,13 +189,18 @@ void UCViewItemsAttachedPrivate::buildChangesList(const QVariant &newValue)
  * \since Ubuntu.Components 1.2
  * \brief A set of properties attached to the ListItem's parent item or ListView.
  *
- * These properties are attached to the parent item of the ListItem, or to
- * ListView, when the component is used as delegate.
+ * These properties are automatically attached to the parent item of the ListItem,
+ * or to ListView, when the component is used as delegate.
  */
 UCViewItemsAttached::UCViewItemsAttached(QObject *owner)
-    : QObject(owner)
-    , d_ptr(new UCViewItemsAttachedPrivate(this))
+    : QObject(*(new UCViewItemsAttachedPrivate()), owner)
 {
+    if (owner->inherits("QQuickListView")) {
+        d_func()->listView = static_cast<QQuickFlickable*>(owner);
+    }
+    // listen readyness
+    QQmlComponentAttached *attached = QQmlComponent::qmlAttachedProperties(owner);
+    connect(attached, &QQmlComponentAttached::completed, this, &UCViewItemsAttached::completed);
 }
 
 UCViewItemsAttached::~UCViewItemsAttached()
@@ -214,6 +299,18 @@ void UCViewItemsAttached::unbindItem()
     d->clearFlickablesList();
 }
 
+// reports completion, and in case the dragMode is turned on, enters drag mode
+void UCViewItemsAttached::completed()
+{
+    Q_D(UCViewItemsAttached);
+    d->ready = true;
+    if (d->draggable) {
+        d->enterDragMode();
+    } else {
+        d->leaveDragMode();
+    }
+}
+
 /*!
  * \qmlattachedproperty bool ViewItems::selectMode
  * The property drives whether list items are selectable or not.
@@ -265,7 +362,7 @@ bool UCViewItemsAttachedPrivate::addSelectedItem(UCListItem *item)
     int index = UCListItemPrivate::get(item)->index();
     if (!selectedList.contains(index)) {
         selectedList.insert(index);
-        Q_EMIT q_ptr->selectedIndicesChanged();
+        Q_EMIT q_func()->selectedIndicesChanged();
         return true;
     }
     return false;
@@ -273,7 +370,7 @@ bool UCViewItemsAttachedPrivate::addSelectedItem(UCListItem *item)
 bool UCViewItemsAttachedPrivate::removeSelectedItem(UCListItem *item)
 {
     if (selectedList.remove(UCListItemPrivate::get(item)->index()) > 0) {
-        Q_EMIT q_ptr->selectedIndicesChanged();
+        Q_EMIT q_func()->selectedIndicesChanged();
         return true;
     }
     return false;
@@ -282,4 +379,233 @@ bool UCViewItemsAttachedPrivate::removeSelectedItem(UCListItem *item)
 bool UCViewItemsAttachedPrivate::isItemSelected(UCListItem *item)
 {
     return selectedList.contains(UCListItemPrivate::get(item)->index());
+}
+
+/*!
+ * \qmlattachedproperty bool ViewItems::dragMode
+ * The property drives the dragging mode of the ListItems within a ListView. It
+ * has no effect on any other parent of the ListItem.
+ *
+ * When set, ListItem content will be disabled and a panel will be shown enabling
+ * the dragging mode. The items can be dragged by dragging this handler only.
+ * The feature can be activated same time with \l ListItem::selectMode.
+ *
+ * The panel is configured by the style.
+ *
+ * \sa ListItemStyle, dragUpdated
+ */
+
+/*!
+ * \qmlattachedsignal ViewItems::dragUpdated(ListItemDrag event)
+ * The signal is emitted whenever a dragging related event occurrs. The \b event.status
+ * specifies the dragging event type. Depending on the type, the ListItemDrag event
+ * properties will have the following meaning:
+ * \table
+ * \header
+ *  \li status
+ *  \li from
+ *  \li to
+ *  \li minimumIndex
+ *  \li maximumIndex
+ * \row
+ *  \li Started
+ *  \li the index of the item to be dragged
+ *  \li -1
+ *  \li default (-1), can be changed to restrict moves
+ *  \li default (-1), can be changed to restrict moves
+ * \row
+ *  \li Moving
+ *  \li source index from where the item dragged from
+ *  \li destination index where the item can be dragged to
+ *  \li the same value set at \e Started, can be changed
+ *  \li the same value set at \e Started, can be changed
+ * \row
+ *  \li Dropped
+ *  \li source index from where the item dragged from
+ *  \li destination index where the item can be dragged to
+ *  \li the value set at \e Started/Moving, changes are omitted
+ *  \li the value set at \e Started/Moving, changes are omitted
+ * \endtable
+ * Implementations \b {must move the model data} in order to re-order the ListView
+ * content. If the move is not acceptable, it must be cancelled by setting
+ * \b event.accept to \e false, in which case the dragged index (\b from) will
+ * not be updated and next time the signal is emitted will be the same.
+ *
+ * An example implementation of a live dragging with restrictions:
+ * \qml
+ * import QtQuick 2.4
+ * import Ubuntu.Components 1.2
+ *
+ * ListView {
+ *     width: units.gu(40)
+ *     height: units.gu(40)
+ *     model: ListModel {
+ *         // initiate with random data
+ *     }
+ *     delegate: ListItem {
+ *         // content
+ *     }
+ *
+ *     ViewItems.dragMode: true
+ *     ViewItems.onDragUpdated: {
+ *         if (event.status == ListViewDrag.Started) {
+ *             if (event.from < 5) {
+ *                 // deny dragging on the first 5 element
+ *                 event.accept = false;
+ *             } else if (event.from >= 5 && event.from <= 10 &&
+ *                        event.to >= 5 && event.to <= 10) {
+ *                 // specify the interval
+ *                 event.minimumIndex = 5;
+ *                 event.maximumIndex = 10;
+ *             } else if (event.from > 10) {
+ *                 // prevent dragging to the first 11 items area
+ *                 event.minimumIndex = 11;
+ *             }
+ *         } else {
+ *             model.move(event.from, event.to, 1);
+ *         }
+ *     }
+ * }
+ * \endqml
+ *
+ * A drag'n'drop implementation might be required when model changes are too
+ * expensive, and continuously updating while dragging would cause lot of traffic.
+ * The following example illustrates how to implement such a scenario:
+ * \qml
+ * import QtQuick 2.4
+ * import Ubuntu.Components 1.2
+ *
+ * ListView {
+ *    width: units.gu(40)
+ *    height: units.gu(40)
+ *    model: ListModel {
+ *        // initiate with random data
+ *    }
+ *    delegate: ListItem {
+ *        // content
+ *    }
+ *
+ *    ViewItems.dragMode: true
+ *    ViewItems.onDragUpdated: {
+ *        if (event.direction == ListItemDrag.Dropped) {
+ *            // this is the last event, so drop the item
+ *            model.move(event.from, event.to, 1);
+ *        } else if (event.direction != ListItemDrag.Started) {
+ *            // do not accept the moving events, so drag.from will
+ *            // always contain the original drag index
+ *            event.accept = false;
+ *        }
+ *    }
+ * }
+ * \endqml
+ *
+ * \note Do not forget to set \b{event.accept} to false in \b dragUpdated in
+ * case the drag event handling is not accepted, otherwise the system will not
+ * know whether the move has been performed or not, and selected indexes will
+ * not be synchronized properly.
+ */
+bool UCViewItemsAttached::dragMode() const
+{
+    Q_D(const UCViewItemsAttached);
+    return d->draggable;
+}
+void UCViewItemsAttached::setDragMode(bool value)
+{
+    Q_D(UCViewItemsAttached);
+    if (d->draggable == value) {
+        return;
+    }
+    if (value) {
+        /*
+         * The dragging works only if the ListItem is used inside a ListView, and the
+         * model used is a list, a ListModel or a derivate of QAbstractItemModel. Do
+         * not enable dragging if these conditions are not fulfilled.
+         */
+        if (!d->listView) {
+            qmlInfo(parent()) << UbuntuI18n::instance().tr("dragging mode requires ListView");
+            return;
+        }
+        QVariant model = d->listView->property("model");
+        // warn if the model is anything else but Instance model (ObjectModel or DelegateModel)
+        // or a derivate of QAbstractItemModel
+        if (model.isValid() && !model.value<QQmlInstanceModel*>() && !model.value<QAbstractItemModel*>()) {
+            qmlInfo(parent()) << UbuntuI18n::instance().tr("not all features of dragging will be possible on this model.");
+        }
+        // if we have a QQmlDelegateModel we must also check the model property of it
+        QQmlDelegateModel *delegateModel = model.value<QQmlDelegateModel*>();
+        if (delegateModel && delegateModel->model().isValid() &&
+                             !delegateModel->model().value<QAbstractItemModel*>()) {
+            qmlInfo(parent()) << UbuntuI18n::instance().tr("not all features of dragging will be possible on this DelegateModel.model.");
+        }
+    }
+    d->draggable = value;
+    if (d->draggable) {
+        d->enterDragMode();
+    } else {
+        d->leaveDragMode();
+    }
+    Q_EMIT dragModeChanged();
+}
+
+void UCViewItemsAttachedPrivate::enterDragMode()
+{
+    if (dragArea) {
+        dragArea->reset();
+        return;
+    }
+    dragArea = new ListItemDragArea(listView);
+    dragArea->init();
+}
+
+void UCViewItemsAttachedPrivate::leaveDragMode()
+{
+    if (dragArea) {
+        dragArea->setEnabled(false);
+    }
+}
+
+// returns true when the dragUpdated signal handler is implemented or a function is connected to it
+bool UCViewItemsAttachedPrivate::isDragUpdatedConnected()
+{
+    Q_Q(UCViewItemsAttached);
+    static QMetaMethod method = QMetaMethod::fromSignal(&UCViewItemsAttached::dragUpdated);
+    static int signalIdx = QMetaObjectPrivate::signalIndex(method);
+    return QObjectPrivate::get(q)->isSignalConnected(signalIdx);
+}
+
+// updates the selected indices list in ViewAttached which is changed due to dragging
+void UCViewItemsAttachedPrivate::updateSelectedIndices(int fromIndex, int toIndex)
+{
+    if (selectedList.count() == listView->property("count").toInt()) {
+        // all indices selected, no need to reorder
+        return;
+    }
+
+    Q_Q(UCViewItemsAttached);
+    bool isFromSelected = selectedList.contains(fromIndex);
+    if (isFromSelected) {
+        selectedList.remove(fromIndex);
+        Q_EMIT q->selectedIndicesChanged();
+    }
+    // direction is -1 (forwards) or 1 (backwards)
+    int direction = (fromIndex < toIndex) ? -1 : 1;
+    int i = (direction < 0) ? fromIndex + 1 : fromIndex - 1;
+    // loop thru the selectedIndices and fix all indices
+    while (1) {
+        if (((direction < 0) && (i > toIndex)) ||
+            ((direction > 0) && (i < toIndex))) {
+            break;
+        }
+
+        if (selectedList.contains(i)) {
+            selectedList.remove(i);
+            selectedList.insert(i + direction);
+            Q_EMIT q->selectedIndicesChanged();
+        }
+        i -= direction;
+    }
+    if (isFromSelected) {
+        selectedList.insert(toIndex);
+        Q_EMIT q->selectedIndicesChanged();
+    }
 }

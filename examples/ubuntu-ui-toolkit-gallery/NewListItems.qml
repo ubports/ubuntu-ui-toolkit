@@ -34,36 +34,6 @@ Template {
         // clip the action delegates while swiping left/right
         clip: true
 
-        ListView {
-            height: units.gu(20)
-            width: parent.width
-
-            model: [ i18n.tr("Basic"), i18n.tr("Colored divider"), i18n.tr("No divider") ]
-            delegate: ListItemWithLabel {
-                text: modelData
-                divider {
-                    colorFrom: modelData == i18n.tr("Colored divider") ? UbuntuColors.red : Qt.rgba(0.0, 0.0, 0.0, 0.0)
-                    colorTo: modelData == i18n.tr("Colored divider") ? UbuntuColors.green : Qt.rgba(0.0, 0.0, 0.0, 0.0)
-                    visible: modelData != i18n.tr("No divider")
-                }
-            }
-        }
-     }
-
-    TemplateSection {
-        className: "ListItem"
-        // no spacing between the list items in the Column
-        spacing: 0
-        Item {
-            // compensate for the spacing of 0 by adding this
-            // Item inbetween the title and the list items.
-            height: units.gu(3)
-            width: parent.width
-        }
-
-        // clip the action delegates while swiping left/right
-        clip: true
-
        ListItemWithLabel {
             color: UbuntuColors.blue
             text: i18n.tr("Colored")
@@ -151,6 +121,60 @@ Template {
                         text: action.text
                         anchors.centerIn: parent
                     }
+                }
+            }
+        }
+    }
+
+    TemplateSection {
+        className: "ListItem"
+        title: "Select mode"
+
+        ListView {
+            height: units.gu(20)
+            width: parent.width
+            clip: true
+
+            model: [ i18n.tr("Basic"), i18n.tr("Colored divider"), i18n.tr("No divider") ]
+            delegate: ListItemWithLabel {
+                text: modelData
+                divider {
+                    colorFrom: modelData == i18n.tr("Colored divider") ? UbuntuColors.red : Qt.rgba(0.0, 0.0, 0.0, 0.0)
+                    colorTo: modelData == i18n.tr("Colored divider") ? UbuntuColors.green : Qt.rgba(0.0, 0.0, 0.0, 0.0)
+                    visible: modelData != i18n.tr("No divider")
+                }
+            }
+        }
+    }
+
+    TemplateSection {
+        className: "ListItem"
+        title: "Drag mode"
+
+        ListView {
+            height: units.gu(20)
+            width: parent.width
+            clip: true
+            ViewItems.dragMode: true
+            ViewItems.onDragUpdated: {
+                if (event.status == ListItemDrag.Moving) {
+                    model.move(event.from, event.to, 1)
+                }
+            }
+
+            model: ListModel {
+                ListElement { label: "Basic" }
+                ListElement { label: "Colored divider" }
+                ListElement { label: "No divider" }
+            }
+
+            delegate: ListItemWithLabel {
+                text: modelData
+                color: dragMode ? "lightblue" : "lightgray"
+                divider {
+                    colorFrom: modelData == i18n.tr("Colored divider") ? UbuntuColors.red : Qt.rgba(0.0, 0.0, 0.0, 0.0)
+                    colorTo: modelData == i18n.tr("Colored divider") ? UbuntuColors.green : Qt.rgba(0.0, 0.0, 0.0, 0.0)
+                    visible: modelData != i18n.tr("No divider")
                 }
             }
         }
