@@ -87,6 +87,12 @@ Ubuntu.StyledItem {
         }
     }
 
+    Binding {
+        target: handler
+        property: "cursorPositionCursor"
+        value: cursorItem
+    }
+
     function openPopover() {
         if (!visible
          || opacity === 0.0
@@ -148,8 +154,7 @@ Ubuntu.StyledItem {
     }
 
     //dragged item
-    Item {
-        id: draggedItem
+    property Item draggedItem: Item {
         objectName: cursorItem.positionProperty + "_draggeditem"
         width: caret.width + units.gu(4)
         height: caret.height + units.gu(4)

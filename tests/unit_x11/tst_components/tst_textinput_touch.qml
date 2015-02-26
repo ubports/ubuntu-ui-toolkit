@@ -258,7 +258,9 @@ Item {
         }
         function test_drag_cursor_handler(data) {
             data.input.focus = true;
-            var caret = findChild(data.input, "cursorPosition_draggeditem");
+            data.input.cursorPosition = 0;
+            var caret = findChild(data.input, "input_handler").cursorPositionCursor;
+            verify(caret, "Caret \"" + data.cursorName + "\" cannot be found!");
             var cursorPosition = data.input.cursorPosition;
 
             TestExtras.touchDrag(0, caret, centerOf(caret), data.delta);
@@ -280,7 +282,7 @@ Item {
             data.input.selectWord();
             var selectedText = data.input.selectedText;
 
-            var caret = findChild(data.input, data.cursorName + "_draggeditem");
+            var caret = findChild(data.input, "input_handler")[data.cursorName + "Cursor"];
             verify(caret, "Caret \"" + data.cursorName + "\" cannot be found!");
 
             // The caret may not receive events right away

@@ -461,10 +461,12 @@ MultiPointTouchArea {
     onPressed: handlePressed(touchPoints[0], true)
     onReleased: handleReleased(touchPoints[0], true)
 
+    property Item cursorPositionCursor: null
+    property Item selectionStartCursor: null
+    property Item selectionEndCursor: null
+
     // cursors to use when text is selected
     Connections {
-        property Item selectionStartCursor: null
-        property Item selectionEndCursor: null
         target: input
         onSelectedTextChanged: {
             if (selectedText !== "") {
