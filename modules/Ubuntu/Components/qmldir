@@ -98,7 +98,7 @@ PullToRefresh 1.1 PullToRefresh.qml
 UbuntuListView 1.1 UbuntuListView11.qml
 internal PageBase Page10.qml
 Page 1.1 Page11.qml
-PageHeadConfiguration 1.1 PageHeadConfiguration.qml
+PageHeadConfiguration 1.1 PageHeadConfiguration11.qml
 PageHeadSections 1.1 PageHeadSections.qml
 PageHeadState 1.1 PageHeadState.qml
 Icon 1.1 Icon11.qml
@@ -110,3 +110,4 @@ singleton Haptics 1.0 11/Haptics.qml
 
 #version 1.2
 MainView 1.2 MainView12.qml
+PageHeadConfiguration 1.2 PageHeadConfiguration12.qml
