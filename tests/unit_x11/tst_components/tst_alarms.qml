@@ -21,8 +21,8 @@ import Ubuntu.Components 1.1
 
 Item {
     id: root
-    width: 100
-    height: 100
+    width: units.gu(40)
+    height: units.gu(71)
 
     Alarm {
         id: testAlarm
@@ -36,6 +36,7 @@ Item {
         id: roleTest
         model: testModel
         delegate: Item {
+            height: units.gu(7)
             objectName: "roleItem"
             property var roleModel: model
             property bool roleEnabled: model.enabled
@@ -44,8 +45,14 @@ Item {
             property int roleType: type
             property int roleDaysOfWeek: daysOfWeek
             property url roleSound: sound
+
+            Label {
+                text: model.date + model.message + model.sound + model.type + model.daysOfWeek + model.enabled
+            }
         }
     }
+
+    property Alarm workAlarm: testAlarm
 
     UbuntuTestCase {
         id: testCase
@@ -63,7 +70,8 @@ Item {
             modelSpy.signalName = "rowsRemoved";
             while (i < testModel.count) {
                 var alarm = testModel.get(i);
-                if (alarm.message === "test") {
+                // tests start with "test" string
+                if (alarm.message.search("test") == 0) {
                     alarm.cancel();
                     modelSpy.wait();
                     modelSpy.clear();
@@ -72,6 +80,10 @@ Item {
                     i++;
                 }
             }
+        }
+
+        function normalizeDate(date) {
+            return new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds(), 0);
         }
 
         function initTestCase() {
@@ -274,6 +286,51 @@ Item {
             verify(item.roleType !== undefined, "type is defined");
             verify(item.roleDaysOfWeek !== undefined, "daysOfWeek is defined");
             verify(item.roleSound !== undefined, "sound is defined");
+        }
+
+        // guarding bug #1401883
+        // changed alarm data retrieved from model, when used in bindings, resets the
+        // model data
+        function test_model_role_binding_bug1401883_data() {
+            var dt1 = new Date();
+            dt1.setMinutes(dt1.getMinutes() + 2);
+            var dt2 = new Date(dt1);
+            dt2.setMinutes(dt2.getMinutes() + 2);
+            return [
+                        {tag: "Message", role: "message", firstValue: "test", updatedValue: "test_other"},
+                        {tag: "Enabled", role: "enabled", firstValue: true, updatedValue: false},
+                        {tag: "Date", role: "date", firstValue: dt1, updatedValue: dt2},
+                    ];
+        }
+        function test_model_role_binding_bug1401883(data) {
+            // create a new test alarm and make sure we set the mandatory fields
+            testAlarm.reset();
+            var dt = new Date();
+            dt.setMinutes(dt.getMinutes() + 1);
+            testAlarm.date = dt;
+            testAlarm.message = "test";
+
+            testAlarm[data.role] = data.firstValue;
+            modelSpy.signalName = "rowsInserted";
+            modelSpy.clear();
+            testAlarm.save();
+            modelSpy.wait();
+            waitForRendering(roleTest);
+
+            print(data.firstValue, "->", data.updatedValue);
+            // change the date
+            var alarmData = testModel.get(0);
+            modelSpy.signalName = "dataChanged";
+            modelSpy.clear();
+            alarmData[data.role] = data.updatedValue;
+            alarmData.save();
+            modelSpy.wait(200);
+
+            if (data.role === "date") {
+                compare(normalizeDate(testModel.get(0).date), normalizeDate(data.updatedValue), "Date differs");
+            } else {
+                compare(testModel.get(0)[data.role], data.updatedValue, data.tag + " differs");
+            }
         }
     }
 }

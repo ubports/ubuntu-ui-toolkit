@@ -65,10 +65,11 @@ int AlarmManager::alarmCount()
     return d_ptr->alarmCount();
 }
 
-UCAlarm *AlarmManager::alarmAt(int index) const
+UCAlarm *AlarmManager::alarmAt(int index)
 {
-    d_ptr->getAlarmAt(*d_ptr->alarmHolder, index);
-    return d_ptr->alarmHolder;
+    UCAlarm *holder = new UCAlarm(this);
+    d_ptr->getAlarmAt(*holder, index);
+    return holder;
 }
 
 UCAlarm *AlarmManager::findAlarm(const QVariant &cookie) const

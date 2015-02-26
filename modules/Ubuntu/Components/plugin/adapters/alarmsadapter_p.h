@@ -160,6 +160,7 @@ public:
     int alarmCount();
     void getAlarmAt(const UCAlarm &alarm, int index) const;
     bool findAlarm(const UCAlarm &alarm, const QVariant &cookie) const;
+    bool updateAlarmData(const UCAlarm &alarm);
     void adjustAlarmOccurrence(AlarmDataAdapter &alarm);
 
     void loadAlarms();

@@ -79,6 +79,8 @@ bool AlarmDataAdapter::setEnabled(bool enabled)
         // tag the alarm as disabled, using x-canonical-disabled as agreed in bug #1361702
         event.addTag(tagDisabledAlarm);
     }
+    // update cache
+    AlarmManagerPrivate::get()->updateAlarmData(*q_ptr);
     return true;
 }
 
@@ -97,6 +99,8 @@ bool AlarmDataAdapter::setDate(const QDateTime &date)
         dt = QDateTime(dt.date(), dt.time(), QTimeZone());
     }
     event.setStartDateTime(dt);
+    // update cache
+    AlarmManagerPrivate::get()->updateAlarmData(*q_ptr);
     return true;
 }
 
@@ -119,6 +123,8 @@ bool AlarmDataAdapter::setMessage(const QString &message)
     visual.setSecondsBeforeStart(0);
     visual.setMessage(message);
     event.saveDetail(&visual);
+    // update cache
+    AlarmManagerPrivate::get()->updateAlarmData(*q_ptr);
     return true;
 }
 
@@ -132,6 +138,8 @@ bool AlarmDataAdapter::setType(UCAlarm::AlarmType type)
         return false;
     }
     alarmType = type;
+    // update cache
+    AlarmManagerPrivate::get()->updateAlarmData(*q_ptr);
     return true;
 }
 
@@ -145,6 +153,8 @@ bool AlarmDataAdapter::setDaysOfWeek(UCAlarm::DaysOfWeek days)
         return false;
     }
     dow = days;
+    // update cache
+    AlarmManagerPrivate::get()->updateAlarmData(*q_ptr);
     return true;
 }
 
@@ -168,6 +178,8 @@ bool AlarmDataAdapter::setSound(const QUrl &sound)
     audible.setSecondsBeforeStart(0);
     audible.setDataUrl(sound);
     event.saveDetail(&audible);
+    // update cache
+    AlarmManagerPrivate::get()->updateAlarmData(*q_ptr);
     return true;
 }
 
@@ -655,6 +667,18 @@ bool AlarmsAdapter::findAlarm(const UCAlarm &alarm, const QVariant &cookie) cons
         AlarmDataAdapter *pAlarm = static_cast<AlarmDataAdapter*>(UCAlarmPrivate::get(&alarm));
         pAlarm->setData(static_cast<QOrganizerTodo>(item));
         return true;
+    }
+    return false;
+}
+
+bool AlarmsAdapter::updateAlarmData(const UCAlarm &alarm)
+{
+    AlarmDataAdapter *pAlarm = static_cast<AlarmDataAdapter*>(UCAlarmPrivate::get(&alarm));
+    QOrganizerItemId id = pAlarm->cookie().value<QOrganizerItemId>();
+    int index = alarmList.indexOf(id);
+    if (index >= 0) {
+        // update alarm data in cache
+//        return alarmList.update(index, pAlarm->data()) >= 0;
     }
     return false;
 }

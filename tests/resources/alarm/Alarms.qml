@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 1.1
+import Ubuntu.Components 1.2
 import Ubuntu.Components.ListItems 1.0
 import Ubuntu.Components.Popups 1.0
 import Ubuntu.Components.Pickers 1.0
@@ -25,23 +25,25 @@ MainView {
     width: units.gu(40)
     height: units.gu(71)
     objectName: "mainView"
-    useDeprecatedToolbar: false
 
     AlarmModel{
         id: alarmModel
     }
 
     Alarm {
-        id: alarm
+        id: stockAlarm
         onStatusChanged: {
             print("operation " + operation + ", status= " + status + ", error=" + error);
             if (status !== Alarm.Ready)
                 return;
             if ((operation > Alarm.NoOperation) && (operation < Alarm.Reseting)) {
                 reset();
+                alarm = stockAlarm;
             }
         }
     }
+
+    property Alarm alarm: stockAlarm
 
     Page {
         title: "Alarm test"
@@ -83,7 +85,7 @@ MainView {
             Standard {
                 text: "Enabled"
                 control: Switch {
-                    id: enabled
+                    id: enabledSwitch
                     objectName: "alarm_enabled"
                     checked: alarm.enabled
                     onCheckedChanged: {
@@ -177,14 +179,31 @@ MainView {
                 height: units.gu(20)
                 clip: true
                 model: alarmModel
-                delegate: Standard {
-                    text: message + recurring(model) + "\n" + model.date
+                ListItemActions {
+                    id: leading
+                    actions: Action {
+                        iconName: "delete"
+                        onTriggered: {
+                            var data = alarmModel.get(value);
+                            data.cancel();
+                        }
+                    }
+                }
+                delegate: ListItem {
+                    Label {
+                        text: message + recurring(model) + "\n" + model.date
+                    }
                     function recurring(alarmData) {
                         return (alarmData.type === Alarm.Repeating) ? "[Repeating]" : "[Onetime]";
                     }
 
-                    removable: true
-                    control: Switch {
+                    leadingActions: leading
+
+                    Switch {
+                        anchors {
+                            verticalCenter: parent.verticalCenter
+                            right: parent.right
+                        }
                         checked: model.enabled
                         onCheckedChanged: {
                             if (checked != model.enabled) {
@@ -196,17 +215,12 @@ MainView {
                             }
                         }
                     }
-                    onItemRemoved: {
-                        var data = alarmModel.get(index);
-                        data.cancel();
-                    }
                     onClicked: {
-                        var data = alarmModel.get(index);
-                        alarm.message = data.message;
-                        alarm.date = data.date;
-                        alarm.type = data.type;
-                        alarm.daysOfWeek = data.daysOfWeek;
-                        alarm.enabled = data.enabled;
+                        alarm = alarmModel.get(index);
+                        dateChooser.date = alarm.date;
+                        timeChooser.time = alarm.date;
+                        message.text = alarm.message;
+                        enabledSwitch.checked = alarm.enabled;
                     }
 
                     Connections {
