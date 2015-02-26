@@ -29,7 +29,7 @@ PageTreeNode {
     }
     // Set width and height so that a parent Loader can be automatically resized
     // to the size of the loaded Page.
-    width: parentNode ? parentNode.width : undefined
+    width: parentNode ? parentNode.width - page.x : undefined
     height: parentNode ? page.flickable ? parentNode.height : parentNode.height - internal.headerHeight : undefined
 
     isLeaf: true
