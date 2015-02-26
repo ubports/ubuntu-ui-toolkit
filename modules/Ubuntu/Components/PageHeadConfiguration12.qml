@@ -23,8 +23,6 @@ Toolkit11.PageHeadConfiguration {
     property bool locked: false
 
     // auto-updated
-    property bool visible: false
-    Component.onCompleted: {
-        print("PageHeadConfiguration 1.2 completed");
-    }
+    property bool visible
+    onVisibleChanged: print("visible = "+visible)
 }

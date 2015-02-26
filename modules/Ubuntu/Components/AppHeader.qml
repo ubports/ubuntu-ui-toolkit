@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 Canonical Ltd.
+ * Copyright 2013-2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -165,9 +165,36 @@ StyledItem {
       Configuration of the header.
      */
     property PageHeadConfiguration config: null
+    onConfigChanged: {
+        internal.updatePageHeadVisible();
+    }
 
     QtObject {
         id: internal
+
+        property bool fullyOpened: header.y === 0
+        property bool fullyClosed: header.y === -header.height
+
+        onFullyOpenedChanged: updatePageHeadVisible()
+        onFullyClosedChanged: updatePageHeadVisible()
+
+        function updatePageHeadVisible() {
+            if (!(fullyOpened || fullyClosed)) {
+                // still animating or flicking
+                return;
+            }
+            if (!header.config) return;
+            if (!header.config.hasOwnProperty("visible")) return;
+            if (fullyOpened) {
+                // FIXME: When we remove deprecated functionality where the header
+                // visibility is controlled by its contents/title, we can simply set
+                // header.config.visible to true here.
+                header.config.visible = header.visible;
+            } else {
+                // fullyClosed
+                header.config.visible = false;
+            }
+        }
 
         /*!
           Track the y-position inside the flickable.
