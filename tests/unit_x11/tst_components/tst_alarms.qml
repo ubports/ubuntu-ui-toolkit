@@ -297,10 +297,11 @@ Item {
             var dt2 = new Date(dt1);
             dt2.setMinutes(dt2.getMinutes() + 2);
             return [
-                        {tag: "Message", role: "message", firstValue: "test", updatedValue: "test_other"},
-                        {tag: "Enabled", role: "enabled", firstValue: true, updatedValue: false},
-                        {tag: "Date", role: "date", firstValue: dt1, updatedValue: dt2},
-                    ];
+                {tag: "Message", role: "message", firstValue: "test", updatedValue: "test_other"},
+                {tag: "Enabled", role: "enabled", firstValue: true, updatedValue: false},
+                {tag: "Date", role: "date", firstValue: dt1, updatedValue: dt2},
+                {tag: "Type", role: "type", firstValue: Alarm.Daily, updatedValue: Alarm.OneTime},
+            ];
         }
         function test_model_role_binding_bug1401883(data) {
             // create a new test alarm and make sure we set the mandatory fields
@@ -317,14 +318,13 @@ Item {
             modelSpy.wait();
             waitForRendering(roleTest);
 
-            print(data.firstValue, "->", data.updatedValue);
             // change the date
             var alarmData = testModel.get(0);
             modelSpy.signalName = "dataChanged";
             modelSpy.clear();
             alarmData[data.role] = data.updatedValue;
             alarmData.save();
-            modelSpy.wait(200);
+            modelSpy.wait(500);
 
             if (data.role === "date") {
                 compare(normalizeDate(testModel.get(0).date), normalizeDate(data.updatedValue), "Date differs");
