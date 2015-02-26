@@ -168,6 +168,18 @@ StyledItem {
     onConfigChanged: {
         internal.updatePageHeadVisible();
     }
+    Connections {
+        target: header.config
+        // PageHeadConfiguration <1.2 has no visible property.
+        ignoreUnknownSignals: true
+        onVisibleChanged: {
+            if (header.config.visible) {
+                header.show();
+            } else {
+                header.hide();
+            }
+        }
+    }
 
     QtObject {
         id: internal

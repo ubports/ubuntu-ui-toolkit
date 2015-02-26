@@ -77,7 +77,8 @@ MainViewBase {
             panelColor: Qt.lighter(mainView.headerColor, 1.1)
 
             title: internal.activePage ? internal.activePage.title : ""
-            flickable: internal.activePage ? internal.activePage.flickable : null
+//            flickable: internal.activePage ? internal.activePage.flickable : null
+            flickable: internal.activePage && !config.locked ? internal.activePage.flickable : null
             pageStack: internal.activePage ? internal.activePage.pageStack : null
 
             contents: internal.activePage ?

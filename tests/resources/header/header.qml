@@ -259,6 +259,55 @@ MainView {
                     }
                 }
             }
+            Tab {
+                title: "Auto-hide"
+                page: Page {
+                    id: flickingPage
+                    head {
+                        locked: lockedSwitch.checked
+                        onVisibleChanged: {
+                            visibleSwitch.checked = flickingPage.head.visible
+                        }
+                    }
+                    Flickable {
+                        anchors.fill: parent
+                        contentHeight: height * 2
+                        Grid {
+                            id: switchGrid
+                            columns: 2
+                            spacing: units.gu(1)
+                            anchors {
+                                top: parent.top
+                                left: parent.left
+                                margins: units.gu(6)
+                            }
+                            Switch {
+                                id: lockedSwitch
+                                checked: false
+                            }
+                            Label {
+                                text: "header locked"
+                            }
+                            Switch {
+                                id: visibleSwitch
+                                checked: flickingPage.head.visible
+                                onClicked: flickingPage.head.visible = checked
+                            }
+                            Label {
+                                text: "header visible"
+                            }
+                        }
+                        Label {
+                            anchors {
+                                horizontalCenter: parent.horizontalCenter
+                                top: switchGrid.bottom
+                                topMargin: units.gu(15)
+                            }
+                            text: "Please flick me"
+                        }
+                    }
+                }
+            }
         }
     }
 
