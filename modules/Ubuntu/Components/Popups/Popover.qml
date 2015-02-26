@@ -294,5 +294,7 @@ PopupBase {
         target: pointerTarget
         onXChanged: internal.updatePosition()
         onYChanged: internal.updatePosition()
+        onWidthChanged: internal.updatePosition()
+        onHeightChanged: internal.updatePosition()
     }
 }

@@ -16,24 +16,26 @@
 import QtQuick 2.0
 import QtTest 1.0
 import Ubuntu.Test 0.1
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.2
 import Ubuntu.Components.Popups 0.1
 
 MainView {
     id: main
-    width: units.gu(40)
+    width: units.gu(50)
     height: units.gu(71)
-    useDeprecatedToolbar: false
 
     Button {
         id: caller
         anchors.top: other.bottom
         text: "Press me"
+        height: units.gu(10)
+        width: height
         onClicked: {
             var popover = PopupUtils.open(popoverComponent, caller);
             popoverSpy.target = testCase.findChild(popover, "popover_foreground");
             popoverSpy.clear();
             anchors.top = parent.top
+            caller.height = units.gu(15)
         }
     }
     Label {
@@ -66,11 +68,8 @@ MainView {
         when: windowShown
 
         function cleanup() {
-            // dismiss
-            mouseClick(main, 10, 10, data.button);
-            popoverSpy.wait();
-
             caller.anchors.top = other.bottom
+            caller.height = units.gu(10)
             popoverSpy.target = null;
             popoverSpy.clear();
             waitForRendering(main, 500);
@@ -88,8 +87,21 @@ MainView {
             mouseClick(caller, caller.width / 2, caller.height / 2);
             waitForRendering(caller);
             verify(popoverSpy.target !== null, "The popover did not open");
-            // ensure popover is next to caller
-            verify(popoverSpy.target.y < caller.height * 2, "Popover isn't pointing at the caller")
+
+            // dismiss
+            mouseClick(main, 10, 10, data.button);
+            popoverSpy.wait();
+        }
+
+        function test_popover_follows_pointerTarget_bug1199502() {
+            mouseClick(caller, caller.width / 2, caller.height / 2);
+            waitForRendering(caller);
+            var popoverY = popoverSpy.target.y
+            // dismiss
+            mouseClick(main, 10, 10, Qt.LeftButton);
+            popoverSpy.wait();
+            // ensure popover was next to caller
+            verify(popoverY > caller.height, "Popover isn't pointing at the caller")
         }
     }
 }
