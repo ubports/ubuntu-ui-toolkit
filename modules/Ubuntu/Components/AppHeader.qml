@@ -166,7 +166,7 @@ StyledItem {
      */
     property PageHeadConfiguration config: null
     onConfigChanged: {
-        internal.updatePageHeadVisible();
+        internal.updateConfigVisible()
     }
     Connections {
         target: header.config
@@ -187,10 +187,10 @@ StyledItem {
         property bool fullyOpened: header.y === 0
         property bool fullyClosed: header.y === -header.height
 
-        onFullyOpenedChanged: updatePageHeadVisible()
-        onFullyClosedChanged: updatePageHeadVisible()
+        onFullyOpenedChanged: updateConfigVisible()
+        onFullyClosedChanged: updateConfigVisible()
 
-        function updatePageHeadVisible() {
+        function updateConfigVisible() {
             if (!(fullyOpened || fullyClosed)) {
                 // still animating or flicking
                 return;
