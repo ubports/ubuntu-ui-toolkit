@@ -23,16 +23,23 @@ MainView {
     id: main
     width: units.gu(40)
     height: units.gu(71)
+    useDeprecatedToolbar: false
 
     Button {
         id: caller
-        anchors.centerIn: parent
+        anchors.top: other.bottom
         text: "Press me"
         onClicked: {
             var popover = PopupUtils.open(popoverComponent, caller);
             popoverSpy.target = testCase.findChild(popover, "popover_foreground");
             popoverSpy.clear();
+            anchors.top = parent.top
         }
+    }
+    Label {
+        id: other
+        text: "Ignore me"
+        anchors.centerIn: parent
     }
 
     // spy to listen on the popover foreground's hideCompleted() signal
@@ -59,6 +66,11 @@ MainView {
         when: windowShown
 
         function cleanup() {
+            // dismiss
+            mouseClick(main, 10, 10, data.button);
+            popoverSpy.wait();
+
+            caller.anchors.top = other.bottom
             popoverSpy.target = null;
             popoverSpy.clear();
             waitForRendering(main, 500);
@@ -76,9 +88,8 @@ MainView {
             mouseClick(caller, caller.width / 2, caller.height / 2);
             waitForRendering(caller);
             verify(popoverSpy.target !== null, "The popover did not open");
-            // dismiss
-            mouseClick(main, 10, 10, data.button);
-            popoverSpy.wait();
+            // ensure popover is next to caller
+            verify(popoverSpy.target.y < caller.height * 2, "Popover isn't pointing at the caller")
         }
     }
 }
