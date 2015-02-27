@@ -60,7 +60,9 @@ StyledItem {
         internal.movementEnded();
     }
 
-    visible: title || contents || tabsModel
+    visible: title || contents || tabsModel ||
+             // with PageHeadConfiguration 1.2, always be visible.
+             (header.config && header.config.hasOwnProperty("visible"))
     onVisibleChanged: {
         internal.checkFlickableMargins();
     }
