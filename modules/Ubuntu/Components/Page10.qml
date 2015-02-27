@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2014 Canonical Ltd.
+ * Copyright 2012-2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -25,7 +25,6 @@ PageTreeNode {
     id: page
     anchors {
         left: parent ? parent.left : undefined
-        right: parent ? parent.right : undefined
         bottom: parent ? parent.bottom : undefined
     }
     // Set width and height so that a parent Loader can be automatically resized
