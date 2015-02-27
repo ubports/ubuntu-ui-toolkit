@@ -22,9 +22,6 @@ MainView {
     height: units.gu(60)
     objectName: "mainView"
 
-    // make sure we're not messed up by the deprecated toolbar
-    useDeprecatedToolbar: false
-
     Page {
         id: testPage
         objectName: "test_page"

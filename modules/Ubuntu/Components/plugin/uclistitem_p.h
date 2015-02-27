@@ -33,7 +33,7 @@ class QQuickFlickable;
 class UCListItemDivider;
 class UCListItemActions;
 class UCListItemStyle;
-class UCActionPanel;
+class ListItemDragHandler;
 class UCListItemPrivate : public UCStyledItemBasePrivate
 {
     Q_DECLARE_PUBLIC(UCListItem)
@@ -58,6 +58,7 @@ public:
     void _q_updateIndex();
     void _q_contentMoving();
     void _q_syncSelectMode();
+    void _q_syncDragMode();
     int index();
     bool canHighlight(QMouseEvent *event);
     void setHighlighted(bool pressed);
@@ -83,6 +84,7 @@ public:
     QPointer<QQuickItem> countOwner;
     QPointer<QQuickFlickable> flickable;
     QPointer<UCViewItemsAttached> parentAttached;
+    QPointer<ListItemDragHandler> dragHandler;
     QQuickItem *contentItem;
     UCListItemDivider *divider;
     UCListItemActions *leadingActions;
@@ -104,6 +106,9 @@ public:
     void resetStyle();
     void initStyleItem(bool withAnimatedPanels = true);
     QQuickItem *styleInstance() const;
+    bool dragging();
+    bool dragMode();
+    void setDragMode(bool draggable);
     bool isSelected();
     void setSelected(bool value);
     bool selectMode();
@@ -113,11 +118,12 @@ public:
 };
 
 class PropertyChange;
-class UCViewItemsAttachedPrivate
+class ListItemDragArea;
+class UCViewItemsAttachedPrivate : public QObjectPrivate
 {
     Q_DECLARE_PUBLIC(UCViewItemsAttached)
 public:
-    UCViewItemsAttachedPrivate(UCViewItemsAttached *qq);
+    UCViewItemsAttachedPrivate();
     ~UCViewItemsAttachedPrivate();
 
     static UCViewItemsAttachedPrivate *get(UCViewItemsAttached *item)
@@ -132,10 +138,17 @@ public:
     bool addSelectedItem(UCListItem *item);
     bool removeSelectedItem(UCListItem *item);
     bool isItemSelected(UCListItem *item);
+    void enterDragMode();
+    void leaveDragMode();
+    bool isDragUpdatedConnected();
+    void updateSelectedIndices(int fromIndex, int toIndex);
 
-    UCViewItemsAttached *q_ptr;
+    QQuickFlickable *listView;
+    ListItemDragArea *dragArea;
     bool globalDisabled:1;
     bool selectable:1;
+    bool draggable:1;
+    bool ready:1;
     QSet<int> selectedList;
     QList< QPointer<QQuickFlickable> > flickables;
     QList< PropertyChange* > changes;
