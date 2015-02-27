@@ -16,7 +16,39 @@
 #
 # Author: Christian Dywan <christian.dywan@canonical.com>
 
-ARCH=arm-linux-gnueabihf
+# Ensure adb is running to prevent errors in output
+adb start-server
+
+devicename(){
+    NAME=$(adb -s $1 shell 'grep device: /etc/system-image/channel.ini' 2>/dev/null) &&
+        echo ${NAME:8} || echo "(Developer mode not enabled or screen locked)"
+}
+
+# Support for multiple devices connected at once
+SERIAL=$1
+if [ -z "$SERIAL" ]; then
+    COUNT=0
+    for DEVICE in $(adb devices | grep -v attached); do
+        test $DEVICE != 'device' && SERIAL=$DEVICE && COUNT=$((COUNT+1)) && echo $DEVICE: $(devicename $DEVICE)
+    done
+    if [ $COUNT -gt 1 ]; then
+        echo $COUNT devices plugged in - unplug one or pass the serial number to the script
+        exit 1
+    fi
+fi
+
+adb(){
+    command adb -s $SERIAL $*
+}
+
+# Determine device architecture
+ARCH=$(adb shell "dpkg-architecture -qDEB_HOST_MULTIARCH 2>/dev/null || echo arm-linux-gnueabihf" | tr -d \\r)
+if [ -z "$ARCH" ]; then
+    echo Developer mode enabled? Screen unlocked?
+    exit 1
+fi
+echo Ready to push Ubuntu.Components for $ARCH to device
+
 DEST=/usr/lib/$ARCH/qt5/qml/Ubuntu/Components
 RUN=$XDG_RUNTIME_DIR/$(basename $0)
 STONE=/tmp/$(basename $0)
@@ -26,7 +58,7 @@ echo Type your phone\'s PIN or password to continue:
 read -s PW
 
 # Make the image writable
-phablet-config writable-image || exit 1
+phablet-config -s $SERIAL writable-image || exit 1
 
 # Prepare copy script to be run on the device
 rm -Rf $RUN
@@ -43,7 +75,7 @@ for i in $(ls Ubuntu/Components/*.qml Ubuntu/Components/*.js Ubuntu/Components/q
     adb push $i $STONE/c/$i || exit 1
 done
 cd ..
-echo cp -R c/Ubuntu/Components/* "\$DEST" >> $RUN/copy.sh
+echo cp -R c/Ubuntu/Components/* "\$DEST || exit 1" >> $RUN/copy.sh
 
 for i in 10 11 ListItems Pickers Popups Styles Themes artwork; do
     adb push modules/Ubuntu/Components/$i/ $STONE/$i || exit 1

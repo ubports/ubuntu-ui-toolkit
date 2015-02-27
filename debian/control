@@ -24,6 +24,7 @@ Build-Depends: debhelper (>= 9.0.0),
                qtdeclarative5-unity-action-plugin (>= 1.1.0),
                qml-module-qtquick-localstorage | qtdeclarative5-localstorage-plugin,
                qml-module-qt-labs-settings | qtdeclarative5-settings-plugin,
+               qml-module-qtqml-models2,
                qtdeclarative5-doc-html,
                qtwebkit5-doc-html,
                qtsvg5-doc-html,
@@ -45,6 +46,7 @@ Build-Depends: debhelper (>= 9.0.0),
                locales,
                suru-icon-theme,
                uuid-runtime,
+               python3-sphinx,
 Standards-Version: 3.9.4
 Homepage: https://launchpad.net/ubuntu-ui-toolkit
 # If you aren't a member of ~ubuntu-sdk-team but need to upload packaging
