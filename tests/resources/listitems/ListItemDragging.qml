@@ -133,19 +133,18 @@ MainView {
                             actions: contextualActions
                         }
 
-                        Rectangle {
-                            anchors.fill: parent
-                            color: item.dragging ? UbuntuColors.blue : "#69aa69"
-                        }
-                        Column {
-                            anchors.fill: parent
-                            Label {
-                                text: label + " from index #" + index
-                                anchors.left: parent.left
+                        ListItemLayout {
+                            Rectangle {
+                                anchors.fill: parent
+                                color: item.dragging ? UbuntuColors.blue : "#69aa69"
                             }
-                            Label {
-                                text: "Click to turn LTR<->RTL"
-                                anchors.right: parent.right
+                            Captions {
+                                title.text: label
+                                subtitle.text: "from index #" + index
+                            }
+                            Captions {
+                                preset: "summary"
+                                title.text: "LTR<->RTL"
                             }
                         }
 
