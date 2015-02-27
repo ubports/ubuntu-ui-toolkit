@@ -134,17 +134,16 @@ MainView {
                         }
 
                         ListItemLayout {
-                            Rectangle {
-                                anchors.fill: parent
-                                color: item.dragging ? UbuntuColors.blue : "#69aa69"
-                            }
                             Captions {
-                                title.text: label
-                                subtitle.text: "from index #" + index
+                                id: captions
+//                                title.text: label
+//                                subtitle.text: "from index #" + index
                             }
+                            Button {}
                             Captions {
                                 preset: "summary"
-                                title.text: "LTR<->RTL"
+                                title.text: "LTR"
+                                subtitle.text: "RTL"
                             }
                         }
 

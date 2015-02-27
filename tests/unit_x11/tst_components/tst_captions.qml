@@ -50,8 +50,9 @@ Item {
             compare(defaults.preset, "caption", "Default preset is 'titles'");
             compare(defaults.height, 0, "default height is 0");
             compare(defaults.width, 0, "default width is 0")
+            compare(defaults.spacing, units.gu(0.5), "default spacing failure");
+            compare(defaults.visible, false, "default should be invisible")
             compare(defaults.Layout.alignment, Qt.AlignVCenter | Qt.AlignLeft, "center vertically and left horizontally by default");
-            compare(defaults.layout.spacing, units.gu(0.5), "default spacing failure");
         }
 
         function test_captions_data() {
@@ -59,7 +60,7 @@ Item {
                 {tag: "caption, title.fontSize", preset: "caption", label: "title", property: "fontSize", value: "medium"},
                 {tag: "caption, title.horizontalAlignment", preset: "caption", label: "title", property: "horizontalAlignment", value: Text.AlignLeft},
                 {tag: "caption, title.elide", preset: "caption", label: "title", property: "elide", value: Text.ElideRight},
-                {tag: "caption, subtitle.fontSize", preset: "caption", label: "subtitle", property: "fontSize", value: "x-small"},
+                {tag: "caption, subtitle.fontSize", preset: "caption", label: "subtitle", property: "fontSize", value: "small"},
                 {tag: "caption, subtitle.horizontalAlignment", preset: "caption", label: "subtitle", property: "horizontalAlignment", value: Text.AlignLeft},
                 {tag: "caption, subtitle.maximumLineCount", preset: "caption", label: "subtitle", property: "maximumLineCount", value: 2},
                 {tag: "caption, subtitle.wrapMode", preset: "caption", label: "subtitle", property: "wrapMode", value: Text.Wrap},
@@ -68,7 +69,7 @@ Item {
                 {tag: "summary, title.fontSize", preset: "summary", label: "title", property: "fontSize", value: "small"},
                 {tag: "summary, title.horizontalAlignment", preset: "summary", label: "title", property: "horizontalAlignment", value: Text.AlignRight},
                 {tag: "summary, title.elide", preset: "summary", label: "title", property: "elide", value: Text.ElideNone},
-                {tag: "summary, subtitle.fontSize", preset: "summary", label: "subtitle", property: "fontSize", value: "x-small"},
+                {tag: "summary, subtitle.fontSize", preset: "summary", label: "subtitle", property: "fontSize", value: "small"},
                 {tag: "summary, subtitle.horizontalAlignment", preset: "summary", label: "subtitle", property: "horizontalAlignment", value: Text.AlignRight},
                 {tag: "summary, subtitle.maximumLineCount", preset: "summary", label: "subtitle", property: "maximumLineCount", value: 1},
                 {tag: "summary, subtitle.wrapMode", preset: "summary", label: "subtitle", property: "wrapMode", value: Text.NoWrap},
