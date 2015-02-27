@@ -58,6 +58,12 @@
     \endqml
     See \l MainView for more examples on how to use the header.
     Advanced navigation structures can be created by adding Pages to a \l PageStack or \l Tabs.
+
+    The Page automatically anchors to the left and bottom of its parent. The width of the Page
+    will be the full width of its parent \l MainView or \l PageStack or \l Tab,
+    and the height will adapt to leave space for the header when needed. It is possible to
+    use a Page inside a Loader, but in that case do not set the anchors or size of the Loader
+    so that the Page can control its width and height.
 */
 
 /*!
