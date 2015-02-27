@@ -141,7 +141,7 @@ class InsertModeTextInputTestCase(tests.QMLFileAppTestCase):
         # Discard popover by tap
         self.pointing_device.move(
             self.textfield.globalRect.x + self.textfield.width * 0.7,
-            self.textfield.globalRect.y + self.textfield.height / 10)
+            self.textfield.globalRect.y + self.textfield.height * 0.9)
         self.pointing_device.click()
 
         self._assert_not_visible(objectName='text_input_contextmenu')

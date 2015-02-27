@@ -28,7 +28,7 @@ MainView {
             TextField {
                 objectName: "textfield"
                 placeholderText: "Type here"
-                width: units.gu(15)
+                width: units.gu(35)
             }
         }
     }
