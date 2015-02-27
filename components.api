@@ -35,11 +35,10 @@ AbstractButton
     property font font
     property string iconPosition
 Captions 1.2
-Item
+ColumnLayout
     property string preset
     property Label title
     property Label subtitle
-    property Column layout
 CheckBox 0.1 1.0
 AbstractButton
     property bool checked
