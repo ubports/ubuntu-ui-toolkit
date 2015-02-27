@@ -331,10 +331,10 @@ Styles.ListItemStyle {
         // update snap direction
         function updateSnapDirection() {
             if (prevX < listItemStyle.x && (snapChangerLimit <= listItemStyle.x)) {
-                snapIn = listItemStyle.LayoutMirroring.enabled ? !leadingPanel : leadingPanel;
+                snapIn = (listItemStyle.LayoutMirroring.enabled !== leadingPanel);
                 snapChangerLimit = listItemStyle.x - threshold;
             } else if (prevX > listItemStyle.x && (listItemStyle.x < snapChangerLimit)) {
-                snapIn = listItemStyle.LayoutMirroring.enabled ? leadingPanel : !leadingPanel;
+                snapIn = (listItemStyle.LayoutMirroring.enabled === leadingPanel);
                 snapChangerLimit = listItemStyle.x + threshold;
             }
             prevX = listItemStyle.x;
