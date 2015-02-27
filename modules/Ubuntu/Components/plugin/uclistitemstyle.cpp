@@ -38,6 +38,8 @@
 UCListItemStyle::UCListItemStyle(QQuickItem *parent)
     : QQuickItem(parent)
     , m_snapAnimation(0)
+    , m_dropAnimation(0)
+    , m_dragPanel(0)
     , m_animatePanels(true)
 {
 }
@@ -140,3 +142,16 @@ void UCListItemStyle::setAnimatePanels(bool animate)
     m_animatePanels = animate;
     Q_EMIT animatePanelsChanged();
 }
+
+/*!
+ * \qmlproperty PropertyAnimation ListItemStyle::dropAnimation
+ * The property holds the animation executed on ListItem dropping.
+ */
+
+/*!
+ * \qmlproperty Item ListItemStyle::dragPanel
+ * The property holds the item visualizing the drag handler. ListItem's dragging
+ * mechanism uses this property to detect the area the dragging can be initiated
+ * from. If not set, the ListItem will assume the dragging can be initiated from
+ * the entire area of the ListItem.
+ */

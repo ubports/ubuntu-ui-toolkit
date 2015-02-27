@@ -59,12 +59,15 @@ public:
 
 class QQmlComponent;
 class QQuickAbstractAnimation;
+class QQuickPropertyAnimation;
 class QQuickBehavior;
 class UCListItemStyle : public QQuickItem
 {
     Q_OBJECT
     Q_PROPERTY(QQuickAbstractAnimation *snapAnimation MEMBER m_snapAnimation NOTIFY snapAnimationChanged)
+    Q_PROPERTY(QQuickPropertyAnimation *dropAnimation MEMBER m_dropAnimation NOTIFY dropAnimationChanged)
     Q_PROPERTY(bool animatePanels READ animatePanels NOTIFY animatePanelsChanged)
+    Q_PROPERTY(QQuickItem *dragPanel MEMBER m_dragPanel NOTIFY dragPanelChanged)
 public:
     explicit UCListItemStyle(QQuickItem *parent = 0);
 
@@ -75,7 +78,9 @@ public:
 
 Q_SIGNALS:
     void snapAnimationChanged();
+    void dropAnimationChanged();
     void animatePanelsChanged();
+    void dragPanelChanged();
 
 public Q_SLOTS:
     void swipeEvent(UCSwipeEvent *event);
@@ -89,11 +94,14 @@ private:
     QMetaMethod m_swipeEvent;
     QMetaMethod m_rebound;
     QQuickAbstractAnimation *m_snapAnimation;
+    QQuickPropertyAnimation *m_dropAnimation;
+    QQuickItem *m_dragPanel;
     bool m_animatePanels:1;
 
     friend class UCListItemPrivate;
-    friend class UCActionPanel;
-    friend class ListItemAnimator;
+    friend class ListItemDragArea;
+    friend class ListItemDragHandler;
+    friend class UCViewItemsAttachedPrivate;
 };
 
 #endif // UCLISTITEMSTYLE_H

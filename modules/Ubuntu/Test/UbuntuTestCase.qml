@@ -230,4 +230,11 @@ TestCase {
             keyClick(string[i]);
         }
     }
+
+    /*!
+      Warning message formatter, uses file name, line and column numbers to build up the message.
+      */
+    function warningFormat(line, column, message) {
+        return util.callerFile() + ":" + line + ":" + column + ": " + message;
+    }
 }

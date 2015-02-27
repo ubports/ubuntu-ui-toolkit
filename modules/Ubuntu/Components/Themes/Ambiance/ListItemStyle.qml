@@ -37,6 +37,7 @@ Styles.ListItemStyle {
         right: styledItem.contentItem.right
         rightMargin: -styledItem.contentItem.anchors.rightMargin
     }
+    LayoutMirroring.childrenInherit: true
 
     // leading/trailing panels
     Component {
@@ -162,7 +163,56 @@ Styles.ListItemStyle {
             }
         }
     }
+    // drag panel
+    Component {
+        id: dragDelegate
+        Item {
+            id: dragPanel
+            objectName: "drag_panel" + index
+            anchors.fill: parent ? parent : undefined
+            Icon {
+                objectName: "icon"
+                id: dragIcon
+                anchors.centerIn: parent
+                width: units.gu(3)
+                height: width
+                name: "view-grid-symbolic"
+                opacity: 0.0
+                scale: 0.5
+            }
+            Binding {
+                target: listItemStyle
+                property: "dragPanel"
+                value: dragPanel
+            }
 
+            states: State {
+                name: "enabled"
+                when: loaded && styledItem.dragMode
+                PropertyChanges {
+                    target: dragIcon
+                    opacity: 1.0
+                    scale: 1.0
+                }
+            }
+            transitions: Transition {
+                from: ""
+                to: "*"
+                reversible: true
+                enabled: listItemStyle.animatePanels
+                ParallelAnimation {
+                    OpacityAnimator {
+                        easing: UbuntuAnimation.StandardEasing
+                        duration: UbuntuAnimation.FastDuration
+                    }
+                    ScaleAnimator {
+                        easing: UbuntuAnimation.StandardEasing
+                        duration: UbuntuAnimation.FastDuration
+                    }
+                }
+            }
+        }
+    }
 
     // leading panel loader
     Loader {
@@ -200,20 +250,18 @@ Styles.ListItemStyle {
                 }
             }
         ]
-        transitions: [
-            Transition {
-                from: ""
-                to: "selectable"
-                reversible: true
-                enabled: listItemStyle.animatePanels
-                PropertyAnimation {
-                    target: styledItem.contentItem
-                    properties: "anchors.leftMargin"
-                    easing: UbuntuAnimation.StandardEasing
-                    duration: UbuntuAnimation.FastDuration
-                }
+        transitions: Transition {
+            from: ""
+            to: "selectable"
+            reversible: true
+            enabled: listItemStyle.animatePanels
+            PropertyAnimation {
+                target: styledItem.contentItem
+                properties: "anchors.leftMargin"
+                easing: UbuntuAnimation.StandardEasing
+                duration: UbuntuAnimation.FastDuration
             }
-        ]
+        }
     }
     // trailing panel loader
     Loader {
@@ -229,6 +277,38 @@ Styles.ListItemStyle {
                              panelComponent : null
         // context properties used in delegates
         readonly property bool leading: false
+        readonly property bool loaded: status == Loader.Ready
+
+        // panel states
+        states: State {
+            name: "draggable"
+            when: styledItem.dragMode
+            PropertyChanges {
+                target: trailingLoader
+                sourceComponent: dragDelegate
+                width: units.gu(5)
+            }
+            PropertyChanges {
+                target: listItemStyle
+                anchors.rightMargin: 0
+            }
+            PropertyChanges {
+                target: styledItem.contentItem
+                anchors.rightMargin: units.gu(5)
+            }
+        }
+        transitions: Transition {
+            from: ""
+            to: "*"
+            reversible: true
+            enabled: listItemStyle.animatePanels
+            PropertyAnimation {
+                target: styledItem.contentItem
+                properties: "anchors.rightMargin"
+                easing: UbuntuAnimation.StandardEasing
+                duration: UbuntuAnimation.FastDuration
+            }
+        }
     }
 
     // internals
@@ -237,10 +317,11 @@ Styles.ListItemStyle {
         // action triggered
         property Action selectedAction
         // swipe handling
-        readonly property bool swiped: listItemStyle.x != styledItem.x && !styledItem.selectMode
-        readonly property Item swipedPanel: listItemStyle.x > 0 ? leadingLoader.item : trailingLoader.item
-        readonly property bool leadingPanel: listItemStyle.x > 0
-        readonly property real swipedOffset: leadingPanel ? listItemStyle.x : -listItemStyle.x
+        readonly property bool swiped: listItemStyle.x != styledItem.x && !styledItem.selectMode && !styledItem.dragMode
+        readonly property Item swipedPanel: leadingPanel ? leadingLoader.item : trailingLoader.item
+        readonly property bool leadingPanel: listItemStyle.LayoutMirroring.enabled ? (listItemStyle.x < 0) : (listItemStyle.x > 0)
+        readonly property real swipedOffset: (leadingPanel ? listItemStyle.x : -listItemStyle.x) *
+                                             (listItemStyle.LayoutMirroring.enabled ? -1 : 1)
         readonly property real panelWidth: swipedPanel && swipedPanel.hasOwnProperty("panelWidth") ? swipedPanel.panelWidth : 0
         property real prevX: 0.0
         property real snapChangerLimit: 0.0
@@ -250,10 +331,10 @@ Styles.ListItemStyle {
         // update snap direction
         function updateSnapDirection() {
             if (prevX < listItemStyle.x && (snapChangerLimit <= listItemStyle.x)) {
-                snapIn = leadingPanel;
+                snapIn = listItemStyle.LayoutMirroring.enabled ? !leadingPanel : leadingPanel;
                 snapChangerLimit = listItemStyle.x - threshold;
             } else if (prevX > listItemStyle.x && (listItemStyle.x < snapChangerLimit)) {
-                snapIn = !leadingPanel;
+                snapIn = listItemStyle.LayoutMirroring.enabled ? leadingPanel : !leadingPanel;
                 snapChangerLimit = listItemStyle.x + threshold;
             }
             prevX = listItemStyle.x;
@@ -262,12 +343,16 @@ Styles.ListItemStyle {
         function snap() {
             var snapPos = (swipedOffset > units.gu(2) && snapIn) ? panelWidth : 0.0;
             snapPos *= leadingPanel ? 1 : -1;
+            // invert snapPos on RTL
+            snapPos *= listItemStyle.LayoutMirroring.enabled ? -1 : 1;
             snapAnimation.snapTo(snapPos);
         }
         // handle elasticity on overshoot
         function overshoot(event) {
             var offset = event.content.x - styledItem.contentItem.anchors.leftMargin;
             offset *= leadingPanel ? 1 : -1;
+            // invert offset on RTL
+            offset *= listItemStyle.LayoutMirroring.enabled ? -1 : 1;
             if (offset > panelWidth) {
                 // do elastic move
                 event.content.x = styledItem.contentItem.x + (event.to.x - event.from.x) / 2;
@@ -301,6 +386,12 @@ Styles.ListItemStyle {
             to = pos;
             start();
         }
+    }
+
+    // simple drop animation
+    dropAnimation: SmoothedAnimation {
+        properties: "y"
+        velocity: units.gu(60)
     }
 
     onXChanged: internals.updateSnapDirection()

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2014-2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,11 +14,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
+import QtQuick 2.4
 import QtTest 1.0
 import Ubuntu.Test 1.0
 import Ubuntu.Components 1.2
 import Ubuntu.Components.Styles 1.2
+import QtQml.Models 2.1
 
 Item {
     id: main
@@ -55,6 +56,16 @@ Item {
     }
     ListItemActions {
         id: actionsDefault
+    }
+    ListModel {
+        id: objectModel
+        function reset() {
+            clear();
+            for (var i = 0; i < 25; i++) {
+                append({data: i});
+            }
+        }
+        Component.onCompleted: reset()
     }
 
     Component {
@@ -107,23 +118,23 @@ Item {
             width: parent.width
             height: units.gu(28)
             clip: true
-            model: 10
+            model: objectModel
             ViewItems.selectMode: false
+            LayoutMirroring.childrenInherit: true
             delegate: ListItem {
                 objectName: "listItem" + index
                 color: "lightgray"
-                width: parent.width
                 leadingActions: leading
                 trailingActions: trailing
                 Label {
-                    text: "Data " + index
+                    text: "Data: " + modelData + " @" + index
                 }
             }
         }
         Flickable {
             id: testFlickable
             width: parent.width
-            height: units.gu(28)
+            height: units.gu(21)
             ListView {
                 id: nestedListView
                 width: parent.width
@@ -209,12 +220,72 @@ Item {
             flick(item, x, y, dx, dy, 0, 0, undefined, undefined, 100);
         }
 
+        SignalSpy {
+            id: dropSpy
+            signalName: "stopped"
+        }
+
+        function toggleSelectMode(view, enabled, scrollToTop) {
+            if (view.hasOwnProperty("positionViewAtBeginning") && scrollToTop) {
+                // use the topmost listItem to wait for rendering completion
+                view.positionViewAtBeginning();
+            }
+            var listItem = findChild(view, "listItem0");
+            verify(listItem);
+            view.ViewItems.selectMode = enabled;
+            // waitForRendering aint seems to be reliable here, so we wait ~400 msecs
+            wait(400);
+        }
+
+        function toggleDragMode(view, enabled) {
+            // use the topmost listItem to wait for rendering completion
+            view.positionViewAtBeginning();
+            var listItem = findChild(view, "listItem0");
+            verify(listItem);
+            view.ViewItems.dragMode = enabled;
+            // waitForRendering aint seems to be reliable here, so we wait ~400 msecs
+            wait(400);
+        }
+
+        function drag(view, from, to) {
+            var dragArea = findChild(view, "drag_area");
+            verify(dragArea, "Cannot locate drag area");
+
+            // grab the source item
+            view.positionViewAtBeginning(from,ListView.Beginning);
+            var panel = findChild(view, "drag_panel" + from);
+            verify(panel, "Cannot locate source panel");
+            var dragPos = dragArea.mapFromItem(panel, centerOf(panel).x, centerOf(panel).y);
+            // move the mouse
+            var dy = Math.abs(to - from) * panel.height + units.gu(1);
+            dy *= (to > from) ? 1 : -1;
+            mousePress(dragArea, dragPos.x, dragPos.y);
+            wait(100);
+            var draggedItem = findChild(view.contentItem, "DraggedListItem");
+            if (draggedItem) {
+                dropSpy.target = draggedItem.__styleInstance.dropAnimation;
+            }
+            // use 10 steps to be sure the move is properly detected by the drag area
+            mouseMoveSlowly(dragArea, dragPos.x, dragPos.y, 0, dy, 10, 100);
+            // drop it, needs two mouse releases, this generates the Drop event also
+            mouseRelease(dragArea, dragPos.x, dragPos.y + dy);
+            // needs one more mouse release
+            mouseRelease(dragArea, dragPos.x, dragPos.y + dy);
+            if (dropSpy.target) {
+                dropSpy.wait();
+            } else {
+                // draggedItem cannot be found, we might be trying to drag a restricted item
+                wait(200);
+            }
+        }
+
         function initTestCase() {
             TestExtras.registerTouchDevice();
             waitForRendering(main);
         }
 
         function cleanup() {
+            listView.model = objectModel;
             testItem.action = null;
             testItem.contentItem.anchors.margins = 0;
             testItem.selected = false;
@@ -231,6 +302,7 @@ Item {
             interactiveSpy.clear();
             listView.interactive = true;
             listView.ViewItems.selectMode = false;
+            listView.ViewItems.dragMode = false;
             // make sure we collapse
             mouseClick(defaults, 0, 0)
             movingSpy.target = null;
@@ -251,8 +323,9 @@ Item {
             compare(defaults.divider.visible, true, "divider is visible by default");
             compare(defaults.divider.anchors.leftMargin, 0, "divider's left margin is 0");
             compare(defaults.divider.anchors.rightMargin, 0, "divider's right margin is 0");
-            compare(defaults.divider.anchors.left, defaults.left, "divider's left anchor is wrong");
-            compare(defaults.divider.anchors.right, defaults.right, "divider's right anchor is wrong");
+            var mappedDividerPos = defaults.mapFromItem(defaults.divider, defaults.divider.x, defaults.divider.y);
+            compare(mappedDividerPos.x, 0, "divider's left anchor is wrong");
+            compare(mappedDividerPos.x + defaults.divider.width, defaults.width, "divider's right anchor is wrong");
             compare(defaults.divider.height, units.dp(2), "divider's thickness is wrong");
             compare(defaults.divider.colorFrom, "#000000", "colorFrom differs.");
             fuzzyCompare(defaults.divider.colorFrom.a, 0.14, 0.01, "colorFrom alpha differs");
@@ -265,6 +338,7 @@ Item {
             compare(defaults.selectMode, false, "Not selectable by default");
             compare(testColumn.ViewItems.selectMode, false, "The parent attached property is not selectable by default");
             compare(testColumn.ViewItems.selectedIndices.length, 0, "No item is selected by default");
+            compare(listView.ViewItems.dragMode, false, "Drag mode is off on ListView");
 
             compare(actionsDefault.delegate, null, "ListItemActions has no delegate set by default.");
             compare(actionsDefault.actions.length, 0, "ListItemActions has no actions set.");
@@ -781,16 +855,14 @@ Item {
 
         function test_select_indices_updates_selected_items() {
             listView.ViewItems.selectedIndices = [0,1,2];
-            listView.ViewItems.selectMode = true;
-            waitForRendering(listView, 500);
+            toggleSelectMode(listView, true);
             for (var i in listView.ViewItems.selectedIndices) {
                 var index = listView.ViewItems.selectedIndices[i];
                 var listItem = findChild(listView, "listItem" + index);
                 compare(listItem.selected, true, "ListItem at index " + index + " is not selected!");
             }
-            listView.ViewItems.selectMode = false;
+            toggleSelectMode(listView, false);
             listView.ViewItems.selectedIndices = [];
-            waitForRendering(listView, 500);
         }
 
         function test_toggle_selectMode_data() {
@@ -803,9 +875,7 @@ Item {
             var listItem = findChild(listView, "listItem" + data.index)
             verify(listItem, "Cannot get test item");
             listItem.selected = data.selected;
-            listView.ViewItems.selectMode = true;
-            // wait few milliseconds
-            wait(400);
+            toggleSelectMode(listView, true);
             // testItem is the 4th child, so index is 3
             verify(findChild(listItem, "selection_panel" + data.index), "Cannot find selection panel");
             compare(listItem.contentItem.enabled, true, "contentItem is not disabled.");
@@ -826,8 +896,7 @@ Item {
          }
         function test_toggle_selected(data) {
             // make test item selectable first, so the panel is created
-            data.selectableHolder.ViewItems.selectMode = true;
-            wait(400);
+            toggleSelectMode(data.selectableHolder, true);
             // get the control to click on
             var clickOn = findChild(data.item, data.clickOn);
             verify(clickOn, "control to be clicked on not found");
@@ -852,8 +921,7 @@ Item {
             listView.positionViewAtEnd();
             var listItem = findChild(listView, "listItem" + (listView.count - 1));
             verify(listItem, "Cannot get tested list item");
-            listView.ViewItems.selectMode = true;
-            waitForRendering(listItem);
+            toggleSelectMode(listView, true, false);
             selectedSpy.target = listItem;
             selectedSpy.clear();
 
@@ -864,9 +932,7 @@ Item {
 
         function test_no_tug_when_selectable() {
             movingSpy.target = testItem;
-            testColumn.ViewItems.selectMode = true;
-            // wait till animation to selection mode ends
-            waitForRendering(testItem.contentItem);
+            toggleSelectMode(testColumn, true);
 
             // try to tug leading
             movingSpy.clear();
@@ -875,9 +941,7 @@ Item {
         }
 
         function test_selectable_and_click() {
-            testColumn.ViewItems.selectMode = true;
-            // wait till animation to selection mode ends
-            waitForRendering(testItem.contentItem);
+            toggleSelectMode(testColumn, true);
 
             clickSpy.target = testItem;
             mouseClick(testItem, centerOf(testItem).x, centerOf(testItem).y);
@@ -885,9 +949,7 @@ Item {
         }
 
         function test_selectable_and_pressandhold() {
-            testColumn.ViewItems.selectMode = true;
-            // wait till animation to selection mode ends
-            waitForRendering(testItem.contentItem);
+            toggleSelectMode(testColumn, true);
 
             pressAndHoldSpy.target = testItem;
             mouseLongPress(testItem, centerOf(testItem).x, centerOf(testItem).y);
@@ -904,15 +966,299 @@ Item {
         function test_proper_attached_properties(data) {
             var listItem = findChild(data.item, "listItem0");
             verify(listItem, "ListItem not found!");
-            data.item.ViewItems.selectMode = true;
-            // wait few milliseconds to get the selection panel opened
-            wait(400);
+            toggleSelectMode(data.item, true);
             // check if the selection mode was activated by looking after the first selection panel
             var panel = findChild(listItem, "selection_panel0");
             // turn off selection mode so we have a proper cleanup
-            data.item.ViewItems.selectMode = false;
-            wait(400);
+            toggleSelectMode(data.item, true);
             verify(panel, "Selection panel not found, wrong attached property target?");
+        }
+
+        function test_dragmode_availability_data() {
+            return [
+                {tag: "Attached to Column", item: testColumn, lookupOn: testItem, xfail: true},
+                {tag: "Attached to ListView", item: listView, lookupOn: findChild(listView, "listItem0"), xfail: false},
+            ];
+        }
+        function test_dragmode_availability(data) {
+            if (data.xfail) {
+                ignoreWarning(warningFormat(80, 5, "QML Column: Dragging mode requires ListView"));
+            }
+            data.item.ViewItems.dragMode = true;
+            wait(400);
+            var panel = findChild(data.lookupOn, "drag_panel0");
+            if (data.xfail) {
+                expectFailContinue(data.tag, "There should be no drag handler shown!")
+            }
+            verify(panel, "No drag handler found!");
+        }
+
+        function test_drag_data() {
+            return [
+                {tag: "Live 0->1 OK", live: true, from: 0, to: 1, count: 1, accept: true, indices:[1,0,2,3,4]},
+                {tag: "Live 0->2 OK", live: true, from: 0, to: 2, count: 2, accept: true, indices:[1,2,0,3,4]},
+                {tag: "Live 0->3 OK", live: true, from: 0, to: 3, count: 3, accept: true, indices:[1,2,3,0,4]},
+                {tag: "Live 3->0 OK", live: true, from: 3, to: 0, count: 3, accept: true, indices:[3,0,1,2,4]},
+                        // do not accept moves
+                {tag: "Live 0->1 NOK", live: true, from: 0, to: 1, count: 0, accept: false, indices:[0,1,2,3,4]},
+                {tag: "Live 0->2 NOK", live: true, from: 0, to: 2, count: 0, accept: false, indices:[0,1,2,3,4]},
+                {tag: "Live 0->3 NOK", live: true, from: 0, to: 3, count: 0, accept: false, indices:[0,1,2,3,4]},
+                {tag: "Live 3->0 NOK", live: true, from: 3, to: 0, count: 0, accept: false, indices:[0,1,2,3,4]},
+
+                        // non-live updates
+                {tag: "Drop 0->1 OK", live: false, from: 0, to: 1, count: 1, accept: true, indices:[1,0,2,3,4]},
+                {tag: "Drop 0->2 OK", live: false, from: 0, to: 2, count: 1, accept: true, indices:[1,2,0,3,4]},
+                {tag: "Drop 0->3 OK", live: false, from: 0, to: 3, count: 1, accept: true, indices:[1,2,3,0,4]},
+                {tag: "Drop 3->0 OK", live: false, from: 3, to: 0, count: 1, accept: true, indices:[3,0,1,2,4]},
+                        // do not accept moves
+                {tag: "Drop 0->1 NOK", live: false, from: 0, to: 1, count: 0, accept: false, indices:[0,1,2,3,4]},
+                {tag: "Drop 0->2 NOK", live: false, from: 0, to: 2, count: 0, accept: false, indices:[0,1,2,3,4]},
+                {tag: "Drop 0->3 NOK", live: false, from: 0, to: 3, count: 0, accept: false, indices:[0,1,2,3,4]},
+                {tag: "Drop 3->0 NOK", live: false, from: 3, to: 0, count: 0, accept: false, indices:[0,1,2,3,4]},
+            ];
+        }
+
+        function test_drag(data) {
+            var moveCount = 0;
+            function liveUpdate(event) {
+                if (event.status == ListItemDrag.Started) {
+                    return;
+                }
+                if (data.accept) {
+                    moveCount++;
+                    listView.model.move(event.from, event.to, 1);
+                }
+                event.accept = data.accept;
+            }
+            function singleDrop(event) {
+                if (event.status == ListItemDrag.Dropped) {
+                    if (data.accept) {
+                        moveCount++;
+                        listView.model.move(event.from, event.to, 1);
+                    }
+                    event.accept = data.accept;
+                } else if (event.status == ListItemDrag.Moving) {
+                    event.accept = false;
+                }
+            }
+
+            objectModel.reset();
+            waitForRendering(listView);
+            listView.positionViewAtBeginning();
+            var func = data.live ? liveUpdate : singleDrop;
+            listView.ViewItems.dragUpdated.connect(func);
+
+            // enter drag mode
+            toggleDragMode(listView, true);
+            drag(listView, data.from, data.to);
+            compare(moveCount, data.count, "Move did not happen or more than one item was moved");
+            // compare array indices
+            for (var i in data.indices) {
+                compare(listView.model.get(i).data, data.indices[i], "data at index " + i + " is not the expected one");
+            }
+
+            // cleanup
+            listView.ViewItems.dragUpdated.disconnect(func);
+            toggleDragMode(listView, false);
+        }
+
+        // preconditions:
+        // the first 2 items cannot be dragged anywhere, nothing can be dropped in this area
+        // the 3-> items can be interchanged in between, cannot be dragged outside
+        function test_drag_restricted_data() {
+            return [
+                {tag: "[0,1] locked, drag 0->1 NOK", from: 0, to: 1, count: 0, indices: [0,1,2,3,4]},
+                {tag: "[0,1] locked, drag 1->2 NOK", from: 1, to: 2, count: 0, indices: [0,1,2,3,4]},
+                {tag: "[0,1] locked, drag 2->1 NOK", from: 2, to: 1, count: 0, indices: [0,1,2,3,4]},
+                {tag: "[0,1] locked, drag 2->0 NOK", from: 2, to: 0, count: 0, indices: [0,1,2,3,4]},
+                        // drag
+                {tag: "[0,1] locked, drag 2->3 OK", from: 2, to: 3, count: 1, indices: [0,1,3,2,4]},
+            ];
+        }
+        function test_drag_restricted(data) {
+            var moveCount = 0;
+            function updateHandler(event) {
+                if (event.status == ListItemDrag.Started) {
+                    if (event.from < 2) {
+                        event.accept = false;
+                    } else {
+                        event.minimumIndex = 2;
+                    }
+                } else if (event.status == ListItemDrag.Moving) {
+                    listView.model.move(event.from, event.to, 1);
+                    moveCount++;
+                }
+            }
+
+            objectModel.reset();
+            waitForRendering(listView);
+            listView.positionViewAtBeginning();
+            listView.ViewItems.dragUpdated.connect(updateHandler);
+
+            // enter drag mode
+            toggleDragMode(listView, true);
+            drag(listView, data.from, data.to);
+            compare(moveCount, data.count, "Move did not happen or more than one item was moved");
+            // compare array indices
+            for (var i in data.indices) {
+                compare(listView.model.get(i).data, data.indices[i], "data at index " + i + " is not the expected one");
+            }
+
+            // cleanup
+            listView.ViewItems.dragUpdated.disconnect(updateHandler);
+            toggleDragMode(listView, false);
+        }
+
+        function test_drag_keeps_selected_indexes_data() {
+            return [
+                {tag: "[0,1,2] selected, move 0->3, live", selected: [0,1,2], from: 0, to: 3, expected: [0,1,3], live: true},
+                {tag: "[1,2] selected, move 3->2, live", selected: [1,2], from: 3, to: 2, expected: [1,3], live: true},
+                {tag: "[1,2] selected, move 0->3, live", selected: [1,2], from: 0, to: 3, expected: [0,1], live: true},
+                {tag: "[1,2] selected, move 3->0, live", selected: [1,2], from: 3, to: 0, expected: [2,3], live: true},
+                // non-live updates
+                {tag: "[0,1,2] selected, move 0->3, non-live", selected: [0,1,2], from: 0, to: 3, expected: [0,1,3], live: false},
+                {tag: "[1,2] selected, move 3->2, non-live", selected: [1,2], from: 3, to: 2, expected: [1,3], live: false},
+                {tag: "[1,2] selected, move 0->3, non-live", selected: [1,2], from: 0, to: 3, expected: [0,1], live: false},
+                {tag: "[1,2] selected, move 3->0, non-live", selected: [1,2], from: 3, to: 0, expected: [2,3], live: false},
+            ];
+        }
+        function test_drag_keeps_selected_indexes(data) {
+            function updateHandler(event) {
+                if (event.status == ListItemDrag.Started) {
+                    return;
+                }
+                if (data.live || event.status == ListItemDrag.Dropped) {
+                    listView.model.move(event.from, event.to, 1);
+                } else {
+                    event.accept = false;
+                }
+            }
+            objectModel.reset();
+            waitForRendering(listView);
+            listView.ViewItems.selectedIndices = data.selected;
+            listView.ViewItems.dragUpdated.connect(updateHandler);
+            toggleDragMode(listView, true);
+            drag(listView, data.from, data.to);
+            listView.ViewItems.dragUpdated.disconnect(updateHandler);
+            toggleDragMode(listView, false);
+
+            // NOTE: the selected indexes order is arbitrar and cannot be predicted by the test
+            // therefore we check the selected indexes presence in the expected list.
+            compare(listView.ViewItems.selectedIndices.length, data.expected.length, "The selected indexes and expected list size differs");
+            for (var i = 0; i < listView.ViewItems.selectedIndices.length; i++) {
+                var index = data.expected.indexOf(listView.ViewItems.selectedIndices[i]);
+                verify(index >= 0, "Index " + listView.ViewItems.selectedIndices[i] + " is not expected to be selected!");
+            }
+        }
+
+        // must run this immediately after the defaults are checked otherwise drag handler connected check will fail
+        function test_1_warn_missing_dragUpdated_signal_handler() {
+            ignoreWarning(warningFormat(116, 9, "QML ListView: ListView has no ViewItems.dragUpdated() signal handler implemented. No dragging will be possible."));
+            toggleDragMode(listView, true);
+            drag(listView, 0, 1);
+            toggleDragMode(listView, true);
+        }
+
+        DelegateModel {
+            id: delegateModel
+            delegate: ListItem {
+                objectName: "listItem" + index
+                Label { text: modelData }
+            }
+        }
+        ObjectModel {
+            id: objectModel2
+            Repeater {
+                model: 3
+                ListItem {
+                    objectName: "listItem" + index
+                    Label { text: modelData }
+                }
+            }
+        }
+        function test_warn_model_data() {
+            var list = [1,2,3,4,5,6,7,8,9,10];
+            return [
+                {tag: "number", model: 20, warning: "Dragging is only supported when using a QAbstractItemModel, ListModel or list."},
+                {tag: "list", model: list, warning: ""},
+                {tag: "ListModel", model: objectModel, warning: ""},
+                {tag: "DelegateModel with number", model: delegateModel, modelModel: 20, warning: "Dragging is only supported when using a QAbstractItemModel, ListModel or list."},
+                {tag: "DelegateModel with list", model: delegateModel, modelModel: list, warning: ""},
+                {tag: "DelegateModel with ListModel", model: delegateModel, modelModel: objectModel, warning: ""},
+                {tag: "ObjectModel", model: objectModel2, warning: ""},
+            ];
+        }
+        function test_warn_model(data) {
+            function dummyFunc() {}
+            if (data.warning !== "") {
+                ignoreWarning(warningFormat(116, 9, "QML ListView: " + data.warning));
+            }
+            listView.model = data.model;
+            if (typeof data.modelModel !== "undefined") {
+                listView.model.model = data.modelModel;
+            }
+            waitForRendering(listView, 500);
+            listView.ViewItems.dragUpdated.connect(dummyFunc);
+            toggleDragMode(listView, true);
+            toggleDragMode(listView, false);
+            listView.ViewItems.dragUpdated.disconnect(dummyFunc);
+        }
+
+        function test_rtl_actions_data() {
+            return [
+                {tag: "Leading actions", item: "listItem0", leading: true, expected: ["leading_1", "leading_2", "leading_3"]},
+                {tag: "Trailing actions", item: "listItem0", leading: false, expected: ["stockAction"]},
+            ];
+        }
+        function test_rtl_actions(data) {
+            listView.LayoutMirroring.enabled = true;
+            waitForRendering(listView, 500);
+            var listItem = findChild(listView, data.item);
+            movingSpy.target = listItem;
+            swipe(listItem, centerOf(listItem).x, centerOf(listItem).y, data.leading ? -units.gu(20) : units.gu(20), 0);
+            movingSpy.wait();
+
+            // check if the action is visible
+            var panel = panelItem(listItem, data.leading);
+            verify(panel, "Panel not visible");
+            for (var i in data.expected) {
+                var actionItem = findChild(panel, data.expected[i]);
+                verify(actionItem, data.expected[i] + " action not found");
+            }
+            // dismiss
+            rebound(listItem);
+            listView.LayoutMirroring.enabled = false;
+            waitForRendering(listView, 500);
+        }
+
+        function test_rtl_selection_panel_position() {
+            listView.LayoutMirroring.enabled = true;
+            waitForRendering(listView, 500);
+            toggleSelectMode(listView, true);
+            // get the panel
+            var listItem = findChild(listView, "listItem0");
+            verify(listItem, "ListItem cannot be found");
+            var panel = findChild(listView, "selection_panel0");
+            verify(panel, "Selection panel not found.");
+            verify(listItem.mapFromItem(panel, panel.x, panel.y).x > centerOf(listItem).x, "Panel is not in its proper place!");
+            toggleSelectMode(listView, false);
+            listView.LayoutMirroring.enabled = false;
+            waitForRendering(listView, 500);
+        }
+
+        function test_rtl_drag_panel_position() {
+            listView.LayoutMirroring.enabled = true;
+            waitForRendering(listView, 500);
+            toggleDragMode(listView, true);
+            // get the panel
+            var listItem = findChild(listView, "listItem0");
+            verify(listItem, "ListItem cannot be found");
+            var panel = findChild(listView, "drag_panel0");
+            verify(panel, "Drag panel not found.");
+            verify(listItem.mapFromItem(panel, panel.x, panel.y).x < centerOf(listItem).x, "Panel is not in its proper place!");
+            toggleDragMode(listView, false);
+            listView.LayoutMirroring.enabled = false;
+            waitForRendering(listView, 500);
         }
     }
 }

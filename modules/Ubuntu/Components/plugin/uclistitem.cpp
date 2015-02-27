@@ -240,7 +240,7 @@ void UCListItemPrivate::init()
     QObject::connect(&UCTheme::instance(), SIGNAL(nameChanged()), q, SLOT(_q_updateThemedData()));
     _q_updateThemedData();
 
-    // watch size change and set implicit size;
+    // watch grid unit size change and set implicit size
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_updateSize()));
     _q_updateSize();
 }
@@ -312,6 +312,14 @@ void UCListItemPrivate::_q_syncSelectMode()
     initStyleItem();
     Q_Q(UCListItem);
     Q_EMIT q->selectModeChanged();
+}
+
+// same for the dragMode
+void UCListItemPrivate::_q_syncDragMode()
+{
+    initStyleItem();
+    Q_Q(UCListItem);
+    Q_EMIT q->dragModeChanged();
 }
 
 /*!
@@ -442,10 +450,12 @@ QQuickItem *UCListItemPrivate::styleInstance() const
 void UCListItemPrivate::_q_updateSize()
 {
     Q_Q(UCListItem);
-
     // update divider thickness
     divider->setImplicitHeight(UCUnits::instance().dp(DIVIDER_THICKNESS_DP));
-    QQuickItem *owner = flickable ? flickable : parentItem;
+    QQuickItem *owner = qobject_cast<QQuickItem*>(q->sender());
+    if (!owner && parentAttached) {
+        owner = static_cast<QQuickItem*>(parentAttached->parent());
+    }
     q->setImplicitWidth(owner ? owner->width() : UCUnits::instance().gu(IMPLICIT_LISTITEM_WIDTH_GU));
     q->setImplicitHeight(UCUnits::instance().gu(IMPLICIT_LISTITEM_HEIGHT_GU));
 }
@@ -626,7 +636,7 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  * be highlighted, and \l highlighted property will not be toggled either. Also,
  * there will be no highlight happening if the click happens on the active component.
  * \qml
- * import QtQuick 2.3
+ * import QtQuick 2.4
  * import Ubuntu.Components 1.2
  *
  * MainView {
@@ -682,17 +692,17 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  * }
  * \endqml
  *
- * \c contentItem holds all components and resources declared as child to ListItem.
+ * \l contentItem holds all components and resources declared as child to ListItem.
  * Being an Item, all properties can be accessed or altered. However, make sure you
- * never change \c x, \c y, \c width, \c height or \c anchors properties as those are
+ * never change \b x, \b y, \b width, \b height or \b anchors properties as those are
  * controlled by the ListItem itself when leading or trailing actions are revealed
  * or when selectable and draggable mode is turned on, and thus might cause the
  * component to misbehave. Anchors margins are free to alter.
  *
  * Each ListItem has a thin divider shown on the bottom of the component. This
- * divider can be configured through the \c divider grouped property, which can
+ * divider can be configured through the \l divider grouped property, which can
  * configure its margins from the edges of the ListItem as well as its visibility.
- * When used in \c ListView or \l UbuntuListView, the last list item will not
+ * When used in ListView or \l UbuntuListView, the last list item will not
  * show the divider no matter of the visible property value set.
  *
  * ListItem can handle actions that can get swiped from front or back of the item.
@@ -754,13 +764,13 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  *
  * The component is styled using the \l ListItemStyle style interface.
  *
- * \section3 Selection mode
+ * \section2 Selection mode
  * The selection mode of a ListItem is controlled by the \l ViewItems::selectMode
  * attached property. This property is attached to each parent item of the ListItem
  * exception being when used as delegate in ListView, where the property is attached
  * to the view itself.
  * \qml
- * import QtQuick 2.3
+ * import QtQuick 2.4
  * import Ubuntu.Components 1.2
  *
  * Flickable {
@@ -795,6 +805,177 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  * implies is that leading and trailing actions cannot be swiped in. \ selectable
  * property can be used to implement different behavior when \l clicked or \l
  * pressAndHold.
+ *
+ * \section2 Dragging mode
+ * The dragging mode is only supported on ListView, as it requires a model supported
+ * view to be used. The drag mode can be activated through the \l ViewItems::dragMode
+ * attached property, when attached to the ListView. The items will show a panel
+ * as defined in the style, and dragging will be possible when initiated over this
+ * panel. Pressing or clicking anywhere else on the ListItem will invoke the item's
+ * action assigned to the touched area.
+ *
+ * The dragging is realized through the \l ViewItems::dragUpdated signal, and
+ * a signal handler must be implemented in order to have the draging working.
+ * Implementations can drive the drag to be live (each time the dragged item is
+ * dragged over an other item will change the order of the items) or drag'n'drop
+ * way (the dragged item will be moved only when the user releases the item by
+ * dropping it to the desired position). The signal has a \l ListItemDrag \e event
+ * parameter, which gives detailed information about the drag event, like started,
+ * dragged up or downwards or dropped, allowing in this way various restrictions
+ * on the dragging.
+ *
+ * The dragging event provides three states reported in \l ListItemDrag::status
+ * field, \e Started, \e Moving and \e Dropped. The other event field values depend
+ * on the status, therefore the status must be taken into account when implementing
+ * the signal handler. In case live dragging is needed, \e Moving state must be
+ * checked, and for non-live drag (drag'n'drop) the \e Moving state must be blocked
+ * by setting \e {event.accept = false}, otherwise the dragging will not know
+ * whether the model has been updated or not.
+ *
+ * Example of live drag implementation:
+ * \qml
+ * import QtQuick 2.4
+ * import Ubuntu.Components 1.2
+ *
+ * ListView {
+ *     model: ListModel {
+ *         Component.onCompleted: {
+ *             for (var i = 0; i < 100; i++) {
+ *                 append({tag: "List item #"+i});
+ *             }
+ *         }
+ *     }
+ *     delegate: ListItem {
+ *         Label {
+ *             text: modelData
+ *         }
+ *         color: dragMode ? "lightblue" : "lightgray"
+ *         onPressAndHold: ListView.view.ViewItems.dragMode =
+ *             !ListView.view.ViewItems.dragMode
+ *     }
+ *     ViewItems.onDragUpdated: {
+ *         if (event.status == ListItemDrag.Moving) {
+ *             model.move(event.from, event.to, 1);
+ *         }
+ *     }
+ *     moveDisplaced: Transition {
+ *         UbuntuNumberAnimation {
+ *             property: "y"
+ *         }
+ *     }
+ * }
+ * \endqml
+ *
+ * Example of drag'n'drop implementation:
+ * \qml
+ * import QtQuick 2.4
+ * import Ubuntu.Components 1.2
+ *
+ * ListView {
+ *     model: ListModel {
+ *         Component.onCompleted: {
+ *             for (var i = 0; i < 100; i++) {
+ *                 append({tag: "List item #"+i});
+ *             }
+ *         }
+ *     }
+ *     delegate: ListItem {
+ *         Label {
+ *             text: modelData
+ *         }
+ *         color: dragMode ? "lightblue" : "lightgray"
+ *         onPressAndHold: ListView.view.ViewItems.dragMode =
+ *             !ListView.view.ViewItems.dragMode
+ *     }
+ *     ViewItems.onDragUpdated: {
+ *         if (event.status == ListItemDrag.Moving) {
+ *             // inform dragging that move is not performed
+ *             event.accept = false;
+ *         } else if (event.status == ListItemDrag.Dropped) {
+ *             model.move(event.from, event.to, 1);
+ *         }
+ *     }
+ *     moveDisplaced: Transition {
+ *         UbuntuNumberAnimation {
+ *             property: "y"
+ *         }
+ *     }
+ * }
+ * \endqml
+ *
+ * ListItem does not provide animations when the ListView's model is updated. In order
+ * to have animation, use UbuntuListView or provide a transition animation to the
+ * moveDisplaced or displaced property of the ListView.
+ *
+ * \section3 Using non-QAbstractItemModel models
+ * Live dragging (moving content on the move) is only possible when the model is
+ * a derivate of the QAbstractItemModel. When a list model is used, the ListView
+ * will re-create all the items in the view, meaning that the dragged item will
+ * no longer be controlled by the dragging. However, non-live drag'n'drop operations
+ * can still be implemented with these kind of lists as well.
+ * \qml
+ * import QtQuick 2.4
+ * import Ubuntu.Components 1.2
+ *
+ * ListView {
+ *     model: ["plum", "peach", "pomegrenade", "pear", "banana"]
+ *     delegate: ListItem {
+ *         Label {
+ *             text: modelData
+ *         }
+ *         color: dragMode ? "lightblue" : "lightgray"
+ *         onPressAndHold: ListView.view.ViewItems.dragMode =
+ *             !ListView.view.ViewItems.dragMode
+ *     }
+ *     ViewItems.onDragUpdated: {
+ *         if (event.status == ListItemDrag.Started) {
+ *             return;
+ *         } else if (event.status == ListItemDrag.Dropped) {
+ *             var fromData = model[event.from];
+ *             // must use a temporary variable as list manipulation
+ *             // is not working directly on model
+ *             var list = model;
+ *             list.splice(event.from, 1);
+ *             list.splice(event.to, 0, fromData);
+ *             model = list;
+ *         } else {
+ *             event.accept = false;
+ *         }
+ *     }
+ * }
+ * \endqml
+ *
+ * When using DelegateModel, it must be taken into account when implementing the
+ * \l ViewItems::dragUpdated signal handler.
+ * \qml
+ * import QtQuick 2.4
+ * import Ubuntu.Components 1.2
+ *
+ * ListView {
+ *     model: DelegateModel {
+ *         model: ["apple", "pear", "plum", "peach", "nuts", "dates"]
+ *         delegate: ListItem {
+ *             Label {
+ *                 text: modelData
+ *             }
+ *             onPressAndHold: dragMode = !dragMode;
+ *         }
+ *     }
+ *     ViewItems.onDragUpdated: {
+ *         if (event.status == ListItemDrag.Moving) {
+ *             event.accept = false
+ *         } else if (event.status == ListItemDrag.Dropped) {
+ *             var fromData = model.model[event.from];
+ *             var list = model.model;
+ *             list.splice(event.from, 1);
+ *             list.splice(event.to, 0, fromData);
+ *             model.model = list;
+ *         }
+ *     }
+ * }
+ * \endqml
+ *
+ * \sa ViewItems::dragMode, ViewItems::dragUpdated
  */
 
 /*!
@@ -860,10 +1041,17 @@ void UCListItem::componentComplete()
         // sync selectModeChanged()
         connect(d->parentAttached, SIGNAL(selectModeChanged()),
                 this, SLOT(_q_syncSelectMode()));
+        // also draggable
+        connect(d->parentAttached, SIGNAL(dragModeChanged()),
+                this, SLOT(_q_syncDragMode()));
 
-        // if selection mode is on, initialize style
-        if (d->parentAttached->selectMode()) {
+        // if selection or drag mode is on, initialize style, with animations turned off
+        if (d->parentAttached->selectMode() || d->parentAttached->dragMode()) {
             d->initStyleItem(false);
+        }
+        // set the object name for testing purposes
+        if (d->dragging()) {
+            setObjectName("DraggedListItem");
         }
     }
 }
@@ -1006,7 +1194,7 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
     Q_D(UCListItem);
     UCStyledItemBase::mouseMoveEvent(event);
 
-    if (d->selectMode()) {
+    if (d->selectMode() || d->dragMode()) {
         // no move is allowed while selectable mode is on
         return;
     }
@@ -1183,12 +1371,12 @@ QQuickItem* UCListItem::contentItem() const
  *
  * This grouped property configures the thin divider shown in the bottom of the
  * component. The divider is not moved together with the content when swiped left
- * or right to reveal the actions. \c colorFrom and \c colorTo configure
+ * or right to reveal the actions. \b colorFrom and \b colorTo configure
  * the starting and ending colors of the divider. Beside these properties all Item
  * specific properties can be accessed.
  *
- * When \c visible is true, the ListItem's content size gets thinner with the
- * divider's \c thickness. By default the divider is anchored to the bottom, left
+ * When \b visible is true, the ListItem's content size gets thinner with the
+ * divider's \b thickness. By default the divider is anchored to the bottom, left
  * right of the ListItem, and has a 2dp height.
  */
 UCListItemDivider* UCListItem::divider() const
@@ -1214,7 +1402,7 @@ UCListItemDivider* UCListItem::divider() const
  *  \li * it has an \l action attached
  *  \li * if the ListItem has an active child component, such as a \l Button, a
  *      \l Switch, etc.
- *  \li * in general, if an active (enabled and visible) \c MouseArea is added
+ *  \li * in general, if an active (enabled and visible) \b MouseArea is added
  *      as a child component
  *  \li * \l clicked signal handler is implemented or there is a slot or function
  *      connected to it
@@ -1334,6 +1522,32 @@ void UCListItem::resetHighlightColor()
 }
 
 /*!
+ * \qmlproperty bool ListItem::dragging
+ * The property informs about an ongoing dragging on a ListItem.
+ */
+bool UCListItemPrivate::dragging()
+{
+    return !dragHandler.isNull();
+}
+
+/*!
+ * \qmlproperty bool ListItem::dragMode
+ * The property reports whether a ListItem is draggable or not. While in drag mode,
+ * the list item content cannot be swiped. The default value is false.
+ */
+bool UCListItemPrivate::dragMode()
+{
+    UCViewItemsAttachedPrivate *attached = UCViewItemsAttachedPrivate::get(parentAttached);
+    return attached ? attached->draggable : false;
+}
+void UCListItemPrivate::setDragMode(bool draggable)
+{
+    if (parentAttached) {
+        parentAttached->setDragMode(draggable);
+    }
+}
+
+/*!
  * 
  * \qmlproperty bool ListItem::selected
  * The property drives whether a list item is selected or not. Defaults to false.
@@ -1382,7 +1596,7 @@ void UCListItemPrivate::setSelectMode(bool selectable)
  * of the components placed inside the list item. However, when set, the ListItem
  * will be highlighted on press.
  *
- * If the action set has no value type set, ListItem will set its type to \c
+ * If the action set has no value type set, ListItem will set its type to \b
  * Action.Integer and the \l {Action::triggered}{triggered} signal will be getting
  * the ListItem index as \e value parameter.
  *
