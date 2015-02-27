@@ -98,7 +98,7 @@ public:
 
     bool fetchAlarms();
     int alarmCount();
-    UCAlarm *alarmAt(int index) const;
+    UCAlarm *alarmAt(int index);
     UCAlarm *findAlarm(const QVariant &cookie) const;
 
     bool verifyChange(UCAlarm *alarm, Change change, const QVariant &newData);

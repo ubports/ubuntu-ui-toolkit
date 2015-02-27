@@ -170,10 +170,12 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCServiceProperties, 1>(uri, 1, 1, "ServiceProperties");
 
     // register 1.2 only API
-    qmlRegisterType<UCListItem, 2>(uri, 1, 2, "ListItem");
+    qmlRegisterType<UCListItem>(uri, 1, 2, "ListItem");
     qmlRegisterType<UCListItemDivider>();
-    qmlRegisterType<UCListItemActions, 2>(uri, 1, 2, "ListItemActions");
-    qmlRegisterUncreatableType<UCViewItemsAttached, 2>(uri, 1, 2, "ViewItems", "Not instantiable");
+    qmlRegisterUncreatableType<UCSwipeEvent>(uri, 1, 2, "SwipeEvent", "This is an event object.");
+    qmlRegisterUncreatableType<UCDragEvent>(uri, 1, 2, "ListItemDrag", "This is an event object");
+    qmlRegisterType<UCListItemActions>(uri, 1, 2, "ListItemActions");
+    qmlRegisterUncreatableType<UCViewItemsAttached>(uri, 1, 2, "ViewItems", "Not instantiable");
     qmlRegisterType<UCUbuntuShape, 1>(uri, 1, 2, "UbuntuShape");
 }
 

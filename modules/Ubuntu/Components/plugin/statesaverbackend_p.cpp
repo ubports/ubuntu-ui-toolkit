@@ -186,6 +186,8 @@ int StateSaverBackend::load(const QString &id, QObject *item, const QStringList 
                              .arg(propertyName).arg(qmlContext(item)->nameForObject(item));
         }
     }
+    // drop cache once properties are successfully restored
+    m_archive.data()->remove("");
     m_archive.data()->endGroup();
     // restore leaved group if needed
     if (restorePreviousGroup) {

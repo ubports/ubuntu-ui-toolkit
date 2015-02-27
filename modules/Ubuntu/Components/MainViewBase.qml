@@ -59,7 +59,6 @@ PageTreeNode {
     }
 
     active: true
-    property bool useDeprecatedToolbar
     property alias actions: unityActionManager.actions
     property alias actionManager: unityActionManager
     Toolkit.ActionManager {

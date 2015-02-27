@@ -33,6 +33,7 @@ CHANNEL="ubuntu-touch/${DISTRO}/${SERIES}-proposed"
 PASSWORD="0000"
 BOOTTIME=500
 ONLYCOMPARE=false
+DISTUPGRADE=false
 
 declare -a TEST_SUITE=(
     " -p ubuntu-ui-toolkit-autopilot ubuntuuitoolkit"
@@ -194,8 +195,14 @@ function device_comission {
     echo -e "Original UITK version:\t\e[31m${UITK_VERSION}\e[0m"
     echo "Updating APT";
     adb -s ${SERIALNUMBER} shell "echo ${PASSWORD} |sudo -S apt-get update  2>&1|grep -v password > /dev/null"
-    echo "Install the UITK packages"
-    adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S apt-get install --yes --force-yes ${UITK_PACKAGES} 2>&1 |grep -v password > /dev/null"
+    if [ ${DISTUPGRADE} == true ]; then
+        echo "Install all the upgraded packages with dist-upgrade"
+        adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S apt-get dist-upgrade --yes --force-yes 2>&1 |grep -v password > /dev/null"
+        adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S dpkg --configure -a 2>&1 |grep -v password > /dev/null"
+    else
+        echo "Install the UITK packages"
+        adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S apt-get install --yes --force-yes ${UITK_PACKAGES} 2>&1 |grep -v password > /dev/null"
+    fi
     UITK_VERSION=`adb -s ${SERIALNUMBER} shell "stty cols 250; dpkg -l"|grep qtdeclarative5-ubuntu-ui-toolkit-plugin|awk '{print $3}'`
     echo -e "New UITK version:\t\e[31m${UITK_VERSION}\e[0m"
     # Update APT
@@ -227,7 +234,7 @@ function compare_results {
     done
 }
 
-while getopts ":hrcintdusv:o:p:f:" opt; do
+while getopts ":hrcintduswv:o:p:f:" opt; do
     case $opt in
         r)
             RESET=true
@@ -267,6 +274,9 @@ while getopts ":hrcintdusv:o:p:f:" opt; do
             DISTRO="ubuntu"
             SERIES="vivid"
             ;;
+        w)
+            DISTUPGRADE=true
+            ;;
         h)
             echo "Usage: uitk_test_plan.sh -s [serial number] -m -c"
             echo -e "\t-r : Reset after each tests. Default: ${RESET}"
@@ -278,6 +288,7 @@ while getopts ":hrcintdusv:o:p:f:" opt; do
             echo -e "\t-p : Source PPA for the UITK. Default $PPA. Use -p archive to test stock image or -p [0-9]* to set a silo."
             echo -e "\t-f : Filter for the test suite. Default $FILTER"
             echo -e "\t-u : Provision the Development release of Ubuntu. Default is RTM."
+            echo -e "\t-w : dist-upgrade to the whole PPA instead of just Ubuntu UI Toolkit. Default is only UITK."
             echo ""
             echo "By default tihe uitk_test_plan.sh flashes the latest RTM image on the device, installs the click application"
             echo "tests, configures the ppa:ubuntu-sdk-team/staging PPA, installs the UITK from the PPA and executes the test plan."
@@ -322,6 +333,22 @@ if [ ${ONLYCOMPARE} == true ]; then
    exit
 fi
 
+echo "*** Settings ***"
+echo ""
+echo "Serial number: ${SERIALNUMBER}"
+echo "Output directory: ${OUTPUTDIR}"
+echo "PPA: $PPA"
+echo "Filter: ${FILTER}"
+echo ""
+echo "Reset: ${RESET}"
+echo "Commission: ${COMISSION}"
+echo "Only compare: ${ONLYCOMPARE}"
+echo "Do not run tests: ${DONOTRUNTESTS}"
+echo "RTM: ${RTM}"
+echo "Dist-upgrade: ${DISTUPGRADE}"
+echo ""
+echo "*** Starting ***"
+echo ""
 
 # Use the first available device for testing
 if [ ${LAZY} == true ]; then

@@ -278,6 +278,8 @@ UCAlarm::Error UCAlarmPrivate::checkRepeatingWeekly()
  * The \l reset function clears the properties of the alarm bringing them to the
  * default values. In this way the same alarm component can be used to save several
  * alarms at the same time.
+ * \note Do not call reset function on an alarm event object when that was returned
+ * by the \l AlarmModel::get function, as that will reset the alarm cache data!
  */
 
 UCAlarm::UCAlarm(QObject *parent)

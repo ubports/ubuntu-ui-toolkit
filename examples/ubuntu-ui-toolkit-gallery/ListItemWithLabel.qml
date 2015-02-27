@@ -27,4 +27,5 @@ ListItem {
             verticalCenter: parent.verticalCenter
         }
     }
+    onPressAndHold: selectMode = !selectMode
 }
