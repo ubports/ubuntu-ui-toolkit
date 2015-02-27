@@ -983,7 +983,7 @@ Item {
         }
         function test_dragmode_availability(data) {
             if (data.xfail) {
-                ignoreWarning(warningFormat(80, 5, "QML Column: dragging mode requires ListView"));
+                ignoreWarning(warningFormat(80, 5, "QML Column: Dragging mode requires ListView"));
             }
             data.item.ViewItems.dragMode = true;
             wait(400);
@@ -1180,12 +1180,12 @@ Item {
         function test_warn_model_data() {
             var list = [1,2,3,4,5,6,7,8,9,10];
             return [
-                {tag: "number", model: 20, warning: "not all features of dragging will be possible on this model."},
-                {tag: "list", model: list, warning: "not all features of dragging will be possible on this model."},
-                {tag: "objectModel", model: objectModel, warning: ""},
-                {tag: "DelegateModel with number", model: delegateModel, modelModel: 20, warning: "not all features of dragging will be possible on this DelegateModel.model."},
-                {tag: "DelegateModel with list", model: delegateModel, modelModel: [1,2,3,4,5,6,7,8,9,10], warning: "not all features of dragging will be possible on this DelegateModel.model."},
-                {tag: "DelegateModel with objectModel", model: delegateModel, modelModel: objectModel, warning: ""},
+                {tag: "number", model: 20, warning: "Dragging is only supported when using a QAbstractItemModel, ListModel or list."},
+                {tag: "list", model: list, warning: ""},
+                {tag: "ListModel", model: objectModel, warning: ""},
+                {tag: "DelegateModel with number", model: delegateModel, modelModel: 20, warning: "Dragging is only supported when using a QAbstractItemModel, ListModel or list."},
+                {tag: "DelegateModel with list", model: delegateModel, modelModel: list, warning: ""},
+                {tag: "DelegateModel with ListModel", model: delegateModel, modelModel: objectModel, warning: ""},
                 {tag: "ObjectModel", model: objectModel2, warning: ""},
             ];
         }
