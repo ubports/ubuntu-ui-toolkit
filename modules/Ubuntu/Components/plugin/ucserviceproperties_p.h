@@ -27,6 +27,7 @@ public:
     virtual ~UCServicePropertiesPrivate();
 
     static UCServicePropertiesPrivate *get(UCServiceProperties *service);
+    void warning(const QString &message);
     void setError(const QString &msg);
     void setStatus(UCServiceProperties::Status status);
 

@@ -205,8 +205,9 @@ QHash<int, QByteArray> UCAlarmModel::roleNames() const
  * }
  * \endcode
  *
- * \b Warning: The returned object is not guarantied to remain valid, it should
- * not be used in property bindings.
+ * \note The returned object is not guarantied to remain valid, it should not be
+ * used in property bindings. Also, \l {Alarm::reset}{reset()} should not be called
+ * either as the call will clear the alarm data from the cache.
  *
  * \sa Alarm
  */

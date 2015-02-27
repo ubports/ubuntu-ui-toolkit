@@ -39,6 +39,20 @@ UCServicePropertiesPrivate *UCServicePropertiesPrivate::get(UCServiceProperties 
     return service->d_func();
 }
 
+void UCServicePropertiesPrivate::warning(const QString &message)
+{
+    // append warning messages to the error string
+    if (error.isEmpty()) {
+        setError(message);
+    } else {
+        setError(QString("%1\n%2").arg(error).arg(message));
+    }
+    QString env = qgetenv("SHOW_SERVICEPROPERTIES_WARNINGS");
+    if (!env.isEmpty() && (env == "1" || env.toLower() == "true")) {
+        qmlInfo(q_ptr) << message;
+    }
+}
+
 void UCServicePropertiesPrivate::setError(const QString &msg)
 {
     if (error == msg) {
@@ -59,7 +73,8 @@ void UCServicePropertiesPrivate::setStatus(UCServiceProperties::Status status)
 
 void printLocked(UCServiceProperties *owner)
 {
-    qmlInfo(owner) << UbuntuI18n::instance().tr("Changing connection parameters forbidden.");
+    UCServicePropertiesPrivate::get(owner)->
+            warning(UbuntuI18n::instance().tr("Changing connection parameters forbidden."));
 }
 
 /*!
@@ -141,9 +156,9 @@ void UCServiceProperties::componentComplete()
         // check the binding on the property and warn if there is one.
         QQmlProperty qmlProperty(this, property);
         if (QQmlPropertyPrivate::binding(qmlProperty)) {
-            qmlInfo(this) << UbuntuI18n::instance().
-                             tr("Binding detected on property '%1' will be removed by the service updates.").
-                             arg(property);
+            d->warning(UbuntuI18n::instance().
+                       tr("Binding detected on property '%1' will be removed by the service updates.").
+                       arg(property));
         }
         // insert both the declared and capitalized first character properties
         d->properties << property;

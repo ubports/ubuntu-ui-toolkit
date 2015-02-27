@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2014-2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -158,7 +158,7 @@ UCListItemActions::~UCListItemActions()
  * \qmlproperty Component ListItemActions::delegate
  * The property holds the custom delegate to visualize the actions listed in the
  * ListItemActions. When set to null, the default delegate specified by the \l
- * {ListItemStyle::actionsDelegate}{actionsDelegate} will be used.
+ * ListItemStyle will be used.
  *
  * ListItemActions provides the \c action context property which contains the
  * Action instance currently visualized. Using this property delegates can access

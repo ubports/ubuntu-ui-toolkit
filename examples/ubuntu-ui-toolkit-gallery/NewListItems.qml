@@ -34,21 +34,7 @@ Template {
         // clip the action delegates while swiping left/right
         clip: true
 
-        ListItemWithLabel {
-            text: i18n.tr("Basic")
-        }
-        ListItemWithLabel {
-            text: i18n.tr("Colored divider")
-            divider {
-                colorFrom: UbuntuColors.red
-                colorTo: UbuntuColors.green
-            }
-        }
-        ListItemWithLabel {
-            text: i18n.tr("No divider")
-            divider.visible: false
-        }
-        ListItemWithLabel {
+       ListItemWithLabel {
             color: UbuntuColors.blue
             text: i18n.tr("Colored")
         }
@@ -56,7 +42,6 @@ Template {
             text: i18n.tr("Highlight color")
             highlightColor: UbuntuColors.orange
             // no highlight without clicked() or leading/trailing actions
-            onClicked: print(i18n.tr("Highlighting list item"))
         }
 
         ListItemActions {
@@ -97,7 +82,6 @@ Template {
         }
         ListItemWithLabel {
             text: i18n.tr("Custom action delegates")
-            swipeOvershoot: 0
             leadingActions: ListItemActions {
                 actions: [
                     Action {
@@ -137,6 +121,98 @@ Template {
                         text: action.text
                         anchors.centerIn: parent
                     }
+                }
+            }
+        }
+    }
+
+    TemplateSection {
+        className: "ListItem"
+        title: "Select mode"
+
+        ListView {
+            height: units.gu(20)
+            width: parent.width
+            clip: true
+
+            ViewItems.dragMode: ViewItems.selectMode
+            ViewItems.onDragUpdated: {
+                if (event.status == ListItemDrag.Started) {
+                    if (model[event.from] == "Immutable")
+                        event.accept = false;
+                    return;
+                }
+                if (model[event.to] == "Immutable") {
+                    event.accept = false;
+                    return;
+                }
+                // No instantaneous updates
+                if (event.status == ListItemDrag.Moving) {
+                    event.accept = false;
+                    return;
+                }
+                if (event.status == ListItemDrag.Dropped) {
+                    var fromItem = model[event.from];
+                    var list = model;
+                    list.splice(event.from, 1);
+                    list.splice(event.to, 0, fromItem);
+                    model = list;
+                }
+            }
+
+            model: [ i18n.tr("Basic"), i18n.tr("Colored divider"), i18n.tr("Immutable"), i18n.tr("No divider") ]
+            delegate: ListItemWithLabel {
+                text: modelData
+                color: dragging ? "lightblue" : "transparent"
+                divider {
+                    colorFrom: modelData == i18n.tr("Colored divider") ? UbuntuColors.red : Qt.rgba(0.0, 0.0, 0.0, 0.0)
+                    colorTo: modelData == i18n.tr("Colored divider") ? UbuntuColors.green : Qt.rgba(0.0, 0.0, 0.0, 0.0)
+                    visible: modelData != i18n.tr("No divider")
+                }
+            }
+        }
+    }
+
+    TemplateSection {
+        className: "ListItem"
+        title: "Drag mode"
+
+        UbuntuListView {
+            height: units.gu(20)
+            width: parent.width
+            clip: true
+            ViewItems.dragMode: true
+            ViewItems.onDragUpdated: {
+                if (event.status == ListItemDrag.Started) {
+                    if (model.get(event.from).label == "Immutable")
+                        event.accept = false;
+                    return;
+                }
+                if (model.get(event.to).label == "Immutable") {
+                    event.accept = false;
+                    return;
+                }
+                // Live update as you drag
+                if (event.status == ListItemDrag.Moving) {
+                    model.move(event.from, event.to, 1);
+                }
+            }
+
+
+            model: ListModel {
+                ListElement { label: "Basic" }
+                ListElement { label: "Colored divider" }
+                ListElement { label: "Immutable" }
+                ListElement { label: "No divider" }
+            }
+
+            delegate: ListItemWithLabel {
+                text: modelData
+                color: dragMode ? "lightblue" : "lightgray"
+                divider {
+                    colorFrom: modelData == i18n.tr("Colored divider") ? UbuntuColors.red : Qt.rgba(0.0, 0.0, 0.0, 0.0)
+                    colorTo: modelData == i18n.tr("Colored divider") ? UbuntuColors.green : Qt.rgba(0.0, 0.0, 0.0, 0.0)
+                    visible: modelData != i18n.tr("No divider")
                 }
             }
         }

@@ -103,17 +103,27 @@ class InsertModeTextInputTestCase(tests.QMLFileAppTestCase):
         dir_path, 'test_textinput.textarea.qml')
     customfield_qml_file_path = os.path.join(
         dir_path, 'test_textinput.textfield_custom.qml')
+    header_qml_file_path = os.path.join(
+        dir_path, 'test_textinput.header.qml')
 
     scenarios = [
         ('textfield',
-            dict(test_qml_file_path=textfield_qml_file_path,
-                 objectName='textfield')),
+         dict(test_qml_file_path=textfield_qml_file_path,
+              objectName='textfield')),
         ('textarea',
-            dict(test_qml_file_path=textarea_qml_file_path,
-                 objectName='textarea')),
+         dict(test_qml_file_path=textarea_qml_file_path,
+              objectName='textarea')),
         ('customfield',
-            dict(test_qml_file_path=customfield_qml_file_path,
-                 objectName='textfield')),
+         dict(test_qml_file_path=customfield_qml_file_path,
+              objectName='textfield')),
+        ('header',
+         dict(test_qml_file_path=header_qml_file_path,
+              objectName='textfield')),
+    ]
+    scenarios = [
+        ('header',
+         dict(test_qml_file_path=header_qml_file_path,
+              objectName='textfield')),
     ]
 
     def get_command_line(self, command_line):
@@ -142,11 +152,26 @@ class InsertModeTextInputTestCase(tests.QMLFileAppTestCase):
 
         self._assert_not_visible(objectName='text_input_contextmenu')
 
-    def test_popover_visible_after_tapping_caret(self):
-        # Insert Mode
+    def test_popover_not_obscured(self):
         self.pointing_device.click_object(self.textfield)
         cursor = self.main_view.select_single(
             objectName='text_cursor_style_cursorPosition')
+        sleep(1)
+        self.pointing_device.click_object(cursor)
+        popover = self.main_view.get_text_input_context_menu(
+            'text_input_contextmenu')
+        self.assertTrue(popover.globalRect.y > 0,
+                        '%s <= 0' % popover.globalRect.y)
+
+    def test_popover_visible_after_tapping_caret(self):
+        # Insert Mode
+        self.pointing_device.click_object(self.textfield)
+        sleep(1)
+        cursor = self.main_view.select_single(
+            objectName='text_cursor_style_cursorPosition')
+        if (self.textfield.text):
+            # Let the cursor stabilize
+            sleep(1)
         self.pointing_device.click_object(cursor)
         self.assert_buttons(['Select All', 'Paste'])
         self.assert_discard_popover()
@@ -155,6 +180,7 @@ class InsertModeTextInputTestCase(tests.QMLFileAppTestCase):
         # Insert Mode
         self.pointing_device.click_object(self.textfield)
         self.textfield.keyboard.type('Lorem ipsum')
+        sleep(1)
         cursor = self.main_view.select_single(
             objectName='text_cursor_style_cursorPosition')
         x, y = get_center_point(cursor)

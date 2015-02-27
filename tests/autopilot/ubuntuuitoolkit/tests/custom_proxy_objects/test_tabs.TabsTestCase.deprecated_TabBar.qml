@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2014-2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -21,6 +21,7 @@ MainView {
     width: units.gu(70)
     height: units.gu(60)
     useDeprecatedToolbar: true
+    objectName: "mainView"
 
     Tabs {
         id: tabs
