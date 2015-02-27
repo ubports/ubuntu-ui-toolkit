@@ -90,6 +90,6 @@ GridLayout {
     }
 
     // layout mirroring configuration
-    LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
+    LayoutMirroring.enabled: parent ? parent.LayoutMirroring.enabled : (Qt.application.layoutDirrection == Qt.RightToLeft)
     LayoutMirroring.childrenInherit: true
 }
