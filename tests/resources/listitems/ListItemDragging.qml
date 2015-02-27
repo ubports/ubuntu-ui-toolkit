@@ -136,10 +136,9 @@ MainView {
                         ListItemLayout {
                             Captions {
                                 id: captions
-//                                title.text: label
-//                                subtitle.text: "from index #" + index
+                                title.text: label
+                                subtitle.text: "from index #" + index
                             }
-                            Button {}
                             Captions {
                                 preset: "summary"
                                 title.text: "LTR"
