@@ -162,7 +162,56 @@ Styles.ListItemStyle {
             }
         }
     }
+    // drag panel
+    Component {
+        id: dragDelegate
+        Item {
+            id: dragPanel
+            objectName: "drag_panel" + index
+            anchors.fill: parent ? parent : undefined
+            Icon {
+                objectName: "icon"
+                id: dragIcon
+                anchors.centerIn: parent
+                width: units.gu(3)
+                height: width
+                name: "view-grid-symbolic"
+                opacity: 0.0
+                scale: 0.5
+            }
+            Binding {
+                target: listItemStyle
+                property: "dragPanel"
+                value: dragPanel
+            }
 
+            states: State {
+                name: "enabled"
+                when: loaded && styledItem.dragMode
+                PropertyChanges {
+                    target: dragIcon
+                    opacity: 1.0
+                    scale: 1.0
+                }
+            }
+            transitions: Transition {
+                from: ""
+                to: "*"
+                reversible: true
+                enabled: listItemStyle.animatePanels
+                ParallelAnimation {
+                    OpacityAnimator {
+                        easing: UbuntuAnimation.StandardEasing
+                        duration: UbuntuAnimation.FastDuration
+                    }
+                    ScaleAnimator {
+                        easing: UbuntuAnimation.StandardEasing
+                        duration: UbuntuAnimation.FastDuration
+                    }
+                }
+            }
+        }
+    }
 
     // leading panel loader
     Loader {
@@ -200,20 +249,18 @@ Styles.ListItemStyle {
                 }
             }
         ]
-        transitions: [
-            Transition {
-                from: ""
-                to: "selectable"
-                reversible: true
-                enabled: listItemStyle.animatePanels
-                PropertyAnimation {
-                    target: styledItem.contentItem
-                    properties: "anchors.leftMargin"
-                    easing: UbuntuAnimation.StandardEasing
-                    duration: UbuntuAnimation.FastDuration
-                }
+        transitions: Transition {
+            from: ""
+            to: "selectable"
+            reversible: true
+            enabled: listItemStyle.animatePanels
+            PropertyAnimation {
+                target: styledItem.contentItem
+                properties: "anchors.leftMargin"
+                easing: UbuntuAnimation.StandardEasing
+                duration: UbuntuAnimation.FastDuration
             }
-        ]
+        }
     }
     // trailing panel loader
     Loader {
@@ -229,6 +276,38 @@ Styles.ListItemStyle {
                              panelComponent : null
         // context properties used in delegates
         readonly property bool leading: false
+        readonly property bool loaded: status == Loader.Ready
+
+        // panel states
+        states: State {
+            name: "draggable"
+            when: styledItem.dragMode
+            PropertyChanges {
+                target: trailingLoader
+                sourceComponent: dragDelegate
+                width: units.gu(5)
+            }
+            PropertyChanges {
+                target: listItemStyle
+                anchors.rightMargin: 0
+            }
+            PropertyChanges {
+                target: styledItem.contentItem
+                anchors.rightMargin: units.gu(5)
+            }
+        }
+        transitions: Transition {
+            from: ""
+            to: "*"
+            reversible: true
+            enabled: listItemStyle.animatePanels
+            PropertyAnimation {
+                target: styledItem.contentItem
+                properties: "anchors.rightMargin"
+                easing: UbuntuAnimation.StandardEasing
+                duration: UbuntuAnimation.FastDuration
+            }
+        }
     }
 
     // internals
@@ -301,6 +380,12 @@ Styles.ListItemStyle {
             to = pos;
             start();
         }
+    }
+
+    // simple drop animation
+    dropAnimation: SmoothedAnimation {
+        properties: "y"
+        velocity: units.gu(60)
     }
 
     onXChanged: internals.updateSnapDirection()

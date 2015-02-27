@@ -133,4 +133,11 @@ ListView {
         enabled: root.expandedIndex != -1
         onClicked: root.expandedIndex = -1;
     }
+
+    // animate move displaced
+    moveDisplaced: Transition {
+        UbuntuNumberAnimation {
+            properties: "x,y"
+        }
+    }
 }
