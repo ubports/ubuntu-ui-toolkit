@@ -17,6 +17,10 @@
 import QtQuick 2.2
 import Ubuntu.Components 1.1 as Toolkit11
 
+/*!
+  \internal
+  documented in PageHeadConfiguration.qdoc
+ */
 Toolkit11.PageHeadConfiguration {
     id: headerConfig
 
