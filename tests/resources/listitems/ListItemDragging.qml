@@ -26,6 +26,8 @@ MainView {
 
     property bool restrictDragging: true
 
+    LayoutMirroring.childrenInherit: true
+
     Action {
         id: deleteAction
         iconName: "delete"
@@ -135,14 +137,23 @@ MainView {
                             anchors.fill: parent
                             color: item.dragging ? UbuntuColors.blue : "#69aa69"
                         }
-                        Label {
-                            text: label + " from index #" + index
+                        Column {
+                            anchors.fill: parent
+                            Label {
+                                text: label + " from index #" + index
+                                anchors.left: parent.left
+                            }
+                            Label {
+                                text: "Click to turn LTR<->RTL"
+                                anchors.right: parent.right
+                            }
                         }
 
                         onPressAndHold: {
                             print("entering/leaving draggable mode")
                             ListView.view.ViewItems.dragMode = !ListView.view.ViewItems.dragMode;
                         }
+                        onClicked: main.LayoutMirroring.enabled = !main.LayoutMirroring.enabled
                     }
                 }
             }
