@@ -20,9 +20,19 @@ import Ubuntu.Components 1.1
 MainView {
     width: units.gu(48)
     height: units.gu(60)
+    useDeprecatedToolbar: false
 
     Page {
         title: "Textfield"
+        tools: ToolbarItems {
+            back: ToolbarButton {
+                action: Action {
+                    iconName: "back"
+                    text: i18n.tr("Back")
+                    onTriggered: visible = false
+                }
+            }
+        }
 
         Column {
             TextField {

@@ -157,6 +157,7 @@ Ubuntu.StyledItem {
     property Item draggedItem: Item {
         objectName: cursorItem.positionProperty + "_draggeditem"
         width: caret.width + units.gu(4)
+        onWidthChanged: draggedItem.moveToCaret()
         height: caret.height + units.gu(4)
         parent: fakeCursor.parent
         visible: caret.visible
@@ -193,7 +194,7 @@ Ubuntu.StyledItem {
                 anchors.fill: parent
                 color: 'red'
                 opacity: 0.1
-                visible: false // draggedItem.visible && draggedItemMouseArea.enabled
+                visible: false // draggedItemMouseArea.enabled
             }
         }
 
@@ -223,7 +224,7 @@ Ubuntu.StyledItem {
         // fill the entire component area
         parent: handler.main
         anchors.fill: parent
-        enabled: draggedItemMouseArea.enabled && draggedItemMouseArea.pressed && QuickUtils.touchScreenAvailable
+        enabled: draggedItemMouseArea.enabled && draggedItemMouseArea.pressed && caret.visible
         onEnabledChanged: {
             if (enabled) {
                 dragAmountX = 0;

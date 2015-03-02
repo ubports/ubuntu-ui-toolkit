@@ -152,6 +152,14 @@ class InsertModeTextInputTestCase(tests.QMLFileAppTestCase):
         return self.main_view.select_single(
             objectName=positionProperty + '_draggeditem')
 
+    def test_header_undisturbed_by_text_handlers(self):
+        # Verify that handlers aren't accidentally placed at absolute 0/0
+        self.pointing_device.click_object(self.textfield)
+        # Back will hide when pressed
+        back = self.main_view.select_single(objectName='customBackButton')
+        self.main_view.get_header().click_custom_back_button()
+        self.assertFalse(back.visible)
+
     def test_popover_visible_after_tapping_caret(self):
         # Insert Mode
         self.pointing_device.click_object(self.textfield)
