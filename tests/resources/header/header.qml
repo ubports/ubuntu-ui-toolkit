@@ -29,72 +29,7 @@ MainView {
         Tabs {
             id: tabs
 
-            Tab {
-                title: "Tools"
-                page: Page {
-                    Label {
-                        anchors.centerIn: parent
-                        text: "Tools no longer supported in\nUbuntu.Components 1.2." +
-                              "\nUse Page.head.actions instead."
-                    }
-
-                    tools: ToolbarItems {
-                        ToolbarButton {
-                            action: Action {
-                                iconName: "settings"
-                                text: "Settings"
-                            }
-                        }
-                        ToolbarButton {
-                            action: Action {
-                                iconName: "contact"
-                                text: "Contacts"
-                            }
-                        }
-                        ToolbarButton {
-                            action: Action {
-                                iconName: "share"
-                                text: "Share"
-                            }
-                        }
-                        ToolbarButton {
-                            action: Action {
-                                iconName: "select"
-                                text: "Select"
-                            }
-                        }
-                    }
-                }
-            }
-            Tab {
-                title: "Switch"
-                page: Page {
-                    Switch {
-                        id: newHeaderSwitch
-                        anchors.centerIn: parent
-                        checked: !mainView.useDeprecatedToolbar
-                        onTriggered: {
-                            mainView.useDeprecatedToolbar = !checked;
-                        }
-                    }
-                    Label {
-                        anchors {
-                            horizontalCenter: parent.horizontalCenter
-                            bottom: newHeaderSwitch.top
-                            bottomMargin: units.gu(1)
-                        }
-                        text: "Use new header"
-                    }
-                    tools: ToolbarItems {
-                        ToolbarButton {
-                            action: Action {
-                                iconName: "camera-flip"
-                                text: "hello"
-                            }
-                        }
-                    }
-                }
-            }
+            selectedTabIndex: 1
             Tab {
                 title: "Actions"
                 page: Page {
