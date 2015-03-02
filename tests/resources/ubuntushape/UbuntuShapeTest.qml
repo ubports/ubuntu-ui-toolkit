@@ -58,6 +58,7 @@ Item {
         "Zoom            (scroll):   x " + root.scaleFactor.toFixed(1) + "\n\n" +
         "Background colors  (a/z):   " + shape.backgroundColor + ", " + shape.secondaryBackgroundColor + "\n" +
         "Background mode      (e):   " + root.backgroundModeTable[shape.backgroundMode] + "\n\n" +
+        "Corner radius        (r):   " + shape.cornerRadius + "\n\n" +
         "Source               (o):   " + shape.source + "\n" +
         "Source opacity       (p):   " + shape.sourceOpacity.toFixed(2) + "\n" +
         "Source fill          (q):   " + root.sourceFillModeTable[shape.sourceFillMode] + "\n" +
@@ -211,6 +212,10 @@ Item {
                 Math.random(), Math.random(), Math.random(), Math.random());
         } else if (event.key == Qt.Key_E) {
             shape.backgroundMode = (shape.backgroundMode + 1) % 3;
+
+        // Styling.
+        } else if (event.key == Qt.Key_R) {
+            shape.cornerRadius += ((event.modifiers & shift) ? 1 : -1);
 
         // Source.
         } else if (event.key == Qt.Key_O) {
