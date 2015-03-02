@@ -24,18 +24,37 @@ MainView {
     width: units.gu(50)
     height: units.gu(71)
 
-    Button {
-        id: caller
-        anchors.top: other.bottom
-        text: "Press me"
+    Rectangle {
+        id: rect
+        y: main.height / 2
         height: units.gu(10)
         width: height
-        onClicked: {
-            var popover = PopupUtils.open(popoverComponent, caller);
-            popoverSpy.target = testCase.findChild(popover, "popover_foreground");
-            popoverSpy.clear();
-            anchors.top = parent.top
-            caller.height = units.gu(15)
+
+        Button {
+            id: pressMe
+            anchors.top: parent.top
+            text: "Press me"
+            onClicked: {
+                testCase.resetPositions();
+                var popover = PopupUtils.open(popoverComponent, pressMe);
+                popoverSpy.target = testCase.findChild(popover, "popover_foreground");
+                popoverSpy.clear();
+                pressMe.parent.height = units.gu(25)
+                pressMe.anchors.top = parent.bottom
+            }
+        }
+
+        Button {
+            id: pushMe
+            anchors.bottom: parent.bottom
+            text: "Push me"
+            onClicked: {
+                //testCase.resetPositions();
+                var popover = PopupUtils.open(popoverComponent, pushMe);
+                popoverSpy.target = testCase.findChild(popover, "popover_foreground");
+                popoverSpy.clear();
+                rect.y = main.height / 10
+            }
         }
     }
     Label {
@@ -67,9 +86,13 @@ MainView {
         name: "PopoverTests"
         when: windowShown
 
+        function resetPositions() {
+            pressMe.parent.height = units.gu(10)
+            rect.y = main.height / 2
+        }
+
         function cleanup() {
-            caller.anchors.top = other.bottom
-            caller.height = units.gu(10)
+            resetPositions()
             popoverSpy.target = null;
             popoverSpy.clear();
             waitForRendering(main, 500);
@@ -84,8 +107,8 @@ MainView {
         }
 
         function test_dismiss_on_click(data) {
-            mouseClick(caller, caller.width / 2, caller.height / 2);
-            waitForRendering(caller);
+            mouseClick(pressMe, pressMe.width / 2, pressMe.height / 2);
+            waitForRendering(pressMe);
             verify(popoverSpy.target !== null, "The popover did not open");
 
             // dismiss
@@ -93,15 +116,25 @@ MainView {
             popoverSpy.wait();
         }
 
-        function test_popover_follows_pointerTarget_bug1199502() {
-            mouseClick(caller, caller.width / 2, caller.height / 2);
-            waitForRendering(caller);
+        function test_popover_follows_pointerTarget_bug1199502_data() {
+            return [
+                { tag: "Moving pointerTarget", button: pressMe, dir: "down", y: 318 },
+                { tag: "Moving parent", button: pushMe, dir: "up", y: 142.8 },
+            ]
+        }
+        function test_popover_follows_pointerTarget_bug1199502(data) {
+            mouseClick(data.button, data.button.width / 2, data.button.height / 2);
+            waitForRendering(data.button);
+            var dir = popoverSpy.target.direction
             var popoverY = popoverSpy.target.y
+
             // dismiss
             mouseClick(main, 10, 10, Qt.LeftButton);
             popoverSpy.wait();
+
             // ensure popover was next to caller
-            verify(popoverY > caller.height, "Popover isn't pointing at the caller")
+            compare(dir, data.dir, "Popover arrow is wrong")
+            compare(popoverY, data.y, "Popover isn't pointing at the caller")
         }
     }
 }
