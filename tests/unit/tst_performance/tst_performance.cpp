@@ -78,7 +78,6 @@ private Q_SLOTS:
         QTest::newRow("grid with Slider") << "SliderGrid.qml" << QUrl();
         QTest::newRow("list with QtQuick Item") << "ItemList.qml" << QUrl();
         QTest::newRow("list with new ListItem") << "ListItemList.qml" << QUrl();
-        QTest::newRow("list with ListItemLayout") << "ListItemLayoutList.qml" << QUrl();
         QTest::newRow("list with new ListItem with actions") << "ListItemWithActionsList.qml" << QUrl();
         QTest::newRow("list with new ListItem with inline actions") << "ListItemWithInlineActionsList.qml" << QUrl();
         QTest::newRow("list with Captions, preset: caption") << "ListOfCaptions.qml" << QUrl();

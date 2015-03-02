@@ -111,7 +111,13 @@ MainView {
                 units.gridUnit += 2;
             }
             onPressAndHold: print("pressAndHold", objectName)
-            ListItemLayout {
+            RowLayout {
+                anchors {
+                    fill: parent
+                    margins: units.gu(0.5)
+                    leftMargin: anchors.rightMargin
+                    rightMargin: units.gu(2)
+                }
                 Label {
                     anchors.fill: parent
                     text: units.gridUnit + "PX/unit"
@@ -189,13 +195,16 @@ MainView {
                 trailingActions: trailing
                 contentItem.anchors.margins: units.gu(1)
 
-                ListItemLayout {
-                    Label {
-                        anchors.fill: parent
-                        verticalAlignment: Text.AlignVCenter
-                        text: "This is one Label split in two lines.\n" +
+                RowLayout {
+                    anchors {
+                        fill: parent
+                        margins: units.gu(0.5)
+                        leftMargin: anchors.rightMargin
+                        rightMargin: units.gu(2)
+                    }
+                    Captions {
+                        title.text: "This is one Label split in two lines.\n" +
                               "The second line - item #" + modelData
-                        Layout.preferredWidth: paintedWidth
                     }
                     Button {
                         text: "Pressme..."

@@ -138,7 +138,7 @@ MainView {
                             anchors {
                                 fill: parent
                                 margins: units.gu(0.5)
-                                leftMargin: rightMargin
+                                leftMargin: anchors.rightMargin
                                 rightMargin: units.gu(2)
                             }
                             Captions {
