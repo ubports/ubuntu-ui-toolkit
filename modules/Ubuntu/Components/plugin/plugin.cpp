@@ -57,6 +57,7 @@
 #include "uclistitemactions.h"
 #include "uclistitemstyle.h"
 #include "ucserviceproperties.h"
+#include "ucnamespace.h"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -93,6 +94,14 @@ static QObject *registerUriHandler(QQmlEngine *engine, QJSEngine *scriptEngine)
 
     UCUriHandler *uriHandler = new UCUriHandler();
     return uriHandler;
+}
+
+static QObject *registerUbuntuNamespace(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+    Q_UNUSED(engine)
+    Q_UNUSED(scriptEngine)
+
+    return new UCNamespace();
 }
 
 void UbuntuComponentsPlugin::registerWindowContextProperty()
@@ -176,6 +185,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterUncreatableType<UCDragEvent>(uri, 1, 2, "ListItemDrag", "This is an event object");
     qmlRegisterType<UCListItemActions>(uri, 1, 2, "ListItemActions");
     qmlRegisterUncreatableType<UCViewItemsAttached>(uri, 1, 2, "ViewItems", "Not instantiable");
+    qmlRegisterSingletonType<UCNamespace>(uri, 1, 2, "Ubuntu", registerUbuntuNamespace);
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
