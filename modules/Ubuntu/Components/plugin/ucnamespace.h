@@ -26,8 +26,8 @@ class UCNamespace : public QObject
     Q_ENUMS(CaptionsStyle)
 public:
     enum CaptionsStyle {
-        Captions = 5000,
-        Summary
+        TitleCaptionStyle = 5000,
+        SummaryCaptionStyle
     };
     explicit UCNamespace(QObject *parent = 0);
 

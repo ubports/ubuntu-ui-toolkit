@@ -34,10 +34,10 @@
  *      \li Enum
  *      \li Description
  *  \row
- *      \li Caption
- *      \li The Captions labels are configured to represent caption behavior
+ *      \li TitleCaptionStyle
+ *      \li The Captions labels are configured to represent caption behavior.
  *  \row
- *      \li Summary
+ *      \li SummaryCaptionStyle
  *      \li The Captions labels are configured to represent a summary-like description.
  * \endtable
  */
