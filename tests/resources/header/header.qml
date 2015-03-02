@@ -29,24 +29,6 @@ MainView {
         Tabs {
             id: tabs
 
-
-            Tab {
-                title: "Stack"
-                page: Page {
-                    Button {
-                        anchors.centerIn: parent
-                        text: "Click me"
-                        onTriggered: stack.push(pageOnStack)
-                    }
-                    head {
-                        actions: Action {
-                            iconName: "settings"
-                            text: "Settings"
-                        }
-                        foregroundColor: UbuntuColors.purple
-                    }
-                }
-            }
             Tab {
                 title: "Tools"
                 page: Page {
@@ -197,20 +179,6 @@ MainView {
                     }
                 }
             }
-        }
-    }
-
-    Page {
-        id: pageOnStack
-        visible: false
-        title: "Stacked page"
-        Label {
-            anchors.centerIn: parent
-            text: "Use back button to return"
-        }
-        head.actions: Action {
-            iconName: "settings"
-            text: "settings"
         }
     }
 }
