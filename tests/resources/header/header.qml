@@ -72,24 +72,6 @@ MainView {
                     ]
                 }
             }
-            Tab {
-                title: "Sections"
-                page: Page {
-                    id: sectionsPage
-                    head {
-                        sections {
-                            model: ["navy", "lightblue", "brown"]
-                        }
-                    }
-                    Rectangle {
-                        anchors {
-                            fill: parent
-                            margins: units.gu(2)
-                        }
-                        color: sectionsPage.head.sections.model[sectionsPage.head.sections.selectedIndex]
-                    }
-                }
-            }
         }
     }
 }
