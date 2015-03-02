@@ -29,30 +29,6 @@ MainView {
         Tabs {
             id: tabs
 
-            selectedTabIndex: 1
-            Tab {
-                title: "Actions"
-                page: Page {
-                    Label {
-                        anchors.centerIn: parent
-                        text: "New API"
-                    }
-                    head {
-                        actions: [
-                            Action {
-                                iconName: "settings"
-                            },
-                            Action {
-                                iconName: "camera-flip"
-                            }
-                        ]
-                        backAction: Action {
-                            iconName: "close"
-                            onTriggered: tabs.selectedTabIndex = 0
-                        }
-                    }
-                }
-            }
             Tab {
                 title: "Search"
                 page: Page {
