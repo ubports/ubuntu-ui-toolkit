@@ -705,12 +705,12 @@ void UCUbuntuShape::setColor(const QColor& color)
     }
 }
 
-/*! \deprecated
-    \qmlproperty color UbuntuShape::gradientColor
+/*! \qmlproperty color UbuntuShape::gradientColor
+    \deprecated
 
     This property defines the bottom color used for the vertical gradient filling the UbuntuShape
-    when there is no \image set. As long as this property is not set, a single color (defined by \l
-    color) is used to fill the UbuntuShape.
+    when there is no \l image set. As long as this property is not set, a single color (defined
+    by \l color) is used to fill the UbuntuShape.
 
     \note Use \l backgroundColor, \l secondaryBackgroundColor and \l backgroundMode instead.
 */
@@ -729,8 +729,8 @@ void UCUbuntuShape::setGradientColor(const QColor& gradientColor)
     }
 }
 
-/*! \deprecated
-    \qmlproperty Image UbuntuShape::image
+/*! \qmlproperty Image UbuntuShape::image
+    \deprecated
 
     This property holds the \c Image or \c ShaderEffectSource rendered in the UbuntuShape. In case
     of an \c Image, it watches for fillMode (\c Image.Stretch and\c Image.PreserveAspectCrop), \c
