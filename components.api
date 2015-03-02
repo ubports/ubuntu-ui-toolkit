@@ -86,9 +86,6 @@ Icon10
 Label 0.1 1.0
 Text
     property string fontSize
-ListItemLayout 1.2
-GridLayout
-    property int direction
 Base 0.1 1.0
 Empty
     property variant icon

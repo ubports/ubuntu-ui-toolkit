@@ -16,6 +16,7 @@
 
 import QtQuick 2.3
 import Ubuntu.Components 1.2
+import QtQuick.Layouts 1.1
 
 Column {
     width: 800
@@ -24,7 +25,7 @@ Column {
         id: repeater
         model: 5000
         ListItem {
-            ListItemLayout {
+            RowLayout {
                 Captions {
                 }
             }

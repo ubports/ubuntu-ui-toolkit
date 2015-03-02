@@ -16,6 +16,7 @@
 
 import QtQuick 2.4
 import Ubuntu.Components 1.2
+import QtQuick.Layouts 1.1
 import Ubuntu.Components.ListItems 1.0
 import QtQml.Models 2.1
 
@@ -133,7 +134,13 @@ MainView {
                             actions: contextualActions
                         }
 
-                        ListItemLayout {
+                        RowLayout {
+                            anchors {
+                                fill: parent
+                                margins: units.gu(0.5)
+                                leftMargin: rightMargin
+                                rightMargin: units.gu(2)
+                            }
                             Captions {
                                 id: captions
                                 title.text: label
