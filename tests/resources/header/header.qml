@@ -271,7 +271,7 @@ MainView {
                     }
                     Flickable {
                         anchors.fill: parent
-                        contentHeight: height * 2
+                        contentHeight: units.guu(200)
                         Grid {
                             id: switchGrid
                             columns: 2
