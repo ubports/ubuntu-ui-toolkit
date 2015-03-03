@@ -33,7 +33,7 @@
   Popup.qml
   \qml
   import QtQuick 2.4
-  import Ubuntu.Components 1.1
+  import Ubuntu.Components 1.2
 
   Rectangle {
       anchors.centerIn: parent
@@ -53,7 +53,7 @@
 
   \qml
   import QtQuick 2.4
-  import Ubuntu.Components 1.1
+  import Ubuntu.Components 1.2
 
   Item {
       width: 640
@@ -77,7 +77,7 @@
   a component which is either a parent of the mouse area or a sibling of it.
   \qml
   import QtQuick 2.4
-  import Ubuntu.Components 1.1
+  import Ubuntu.Components 1.2
 
   Item {
       width: units.gu(40)

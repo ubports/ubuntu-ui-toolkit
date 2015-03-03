@@ -51,7 +51,7 @@
 
     \qml
     import QtQuick 2.4
-    import Ubuntu.Components 1.1
+    import Ubuntu.Components 1.2
 
     Item {
         Button {
@@ -64,7 +64,7 @@
 
     \qml
     import QtQuick 2.4
-    import Ubuntu.Components 1.1
+    import Ubuntu.Components 1.2
 
     StyledItem {
         id: myItem

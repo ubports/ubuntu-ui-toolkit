@@ -28,7 +28,7 @@ import QtQuick 2.4
         Example of different ways to define the toolbar button:
         \qml
         import QtQuick 2.4
-        import Ubuntu.Components 1.1
+        import Ubuntu.Components 1.2
 
         MainView {
             width: units.gu(50)

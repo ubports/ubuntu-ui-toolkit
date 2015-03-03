@@ -97,7 +97,7 @@ T *createAttachedFilter(QObject *owner, const QString &qmlName)
    released mouse buttons would look as follows:
    \qml
    import QtQuick 2.4
-   import Ubuntu.Components 1.1
+   import Ubuntu.Components 1.2
 
    TextInput {
        width: 100
@@ -119,7 +119,7 @@ T *createAttachedFilter(QObject *owner, const QString &qmlName)
    Example of handling right button clicks over a TextInput:
    \qml
    import QtQuick 2.4
-   import Ubuntu.Components 1.1
+   import Ubuntu.Components 1.2
 
    TextInput {
        width: 100
@@ -141,7 +141,7 @@ T *createAttachedFilter(QObject *owner, const QString &qmlName)
 
    \qml
    import QtQuick 2.4
-   import Ubuntu.Components 1.1
+   import Ubuntu.Components 1.2
 
    TextInput {
        width: 100
@@ -201,7 +201,7 @@ T *createAttachedFilter(QObject *owner, const QString &qmlName)
    will be printed as well as the proxied mouse press from the main item.
    \qml
    import QtQuick 2.4
-   import Ubuntu.Components 1.1
+   import Ubuntu.Components 1.2
 
    Item {
        id: main
@@ -254,7 +254,7 @@ T *createAttachedFilter(QObject *owner, const QString &qmlName)
    will be blocked by the MouseArea still.
    \qml
    import QtQuick 2.4
-   import Ubuntu.Components 1.1
+   import Ubuntu.Components 1.2
 
    MouseArea {
        id: topArea
@@ -289,7 +289,7 @@ T *createAttachedFilter(QObject *owner, const QString &qmlName)
    we make sure the TextInput always receives the events before the filter:
    \qml
    import QtQuick 2.4
-   import Ubuntu.Components 1.1
+   import Ubuntu.Components 1.2
 
    TextInput {
        id: input
@@ -316,7 +316,7 @@ T *createAttachedFilter(QObject *owner, const QString &qmlName)
 
    \qml
    import QtQuick 2.4
-   import Ubuntu.Components 1.1
+   import Ubuntu.Components 1.2
 
    TextInput {
        width: units.gu(40)

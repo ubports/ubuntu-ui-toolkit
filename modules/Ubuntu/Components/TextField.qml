@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.1 as Ubuntu
+import Ubuntu.Components 1.2 as Ubuntu
 import Ubuntu.Components.Popups 1.0
 
 /*!
@@ -527,7 +527,7 @@ ActionItem {
 
       \qml
       import QtQuick 2.4
-      import Ubuntu.Components 1.1
+      import Ubuntu.Components 1.2
       TextField{
           validator: IntValidator{bottom: 11; top: 31;}
           focus: true

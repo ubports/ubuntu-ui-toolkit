@@ -33,7 +33,7 @@ import QtQuick 2.4
     Example:
     \qml
         import QtQuick 2.4
-        import Ubuntu.Components 1.1
+        import Ubuntu.Components 1.2
         import Ubuntu.Components.ListItems 1.0 as ListItem
 
         MainView {
@@ -104,7 +104,7 @@ import QtQuick 2.4
 
     \qml
         import QtQuick 2.4
-        import Ubuntu.Components 1.1
+        import Ubuntu.Components 1.2
 
         MainView {
             id: mainView

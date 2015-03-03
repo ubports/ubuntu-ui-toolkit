@@ -43,7 +43,7 @@
 
     Examples:
     \qml
-        import Ubuntu.Components 1.1
+        import Ubuntu.Components 1.2
 
         UbuntuShape {
             color: "lightblue"
@@ -52,7 +52,7 @@
     \endqml
 
     \qml
-        import Ubuntu.Components 1.1
+        import Ubuntu.Components 1.2
 
         UbuntuShape {
             image: Image {

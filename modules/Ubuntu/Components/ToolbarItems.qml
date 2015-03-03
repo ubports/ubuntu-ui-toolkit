@@ -41,7 +41,7 @@ import QtQuick 2.4
     be visible to the user:
     \qml
         import QtQuick 2.4
-        import Ubuntu.Components 1.1
+        import Ubuntu.Components 1.2
 
         MainView {
             width: units.gu(50)
@@ -73,7 +73,7 @@ import QtQuick 2.4
     the full height of the toolbar, and other Items you will probably want to center vertically:
     \qml
         import QtQuick 2.4
-        import Ubuntu.Components 1.1
+        import Ubuntu.Components 1.2
 
         MainView {
             width: units.gu(50)
@@ -122,7 +122,7 @@ Item {
       visible in the toolbar, instead of the default toolbar-styled back button:
         \qml
             import QtQuick 2.4
-            import Ubuntu.Components 1.1
+            import Ubuntu.Components 1.2
 
             MainView {
                 width: units.gu(50)

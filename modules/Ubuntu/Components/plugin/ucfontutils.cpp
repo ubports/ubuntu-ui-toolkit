@@ -34,7 +34,7 @@
  * size:
  * \qml
  * import QtQuick 2.4
- * import Ubuntu.Components 1.1
+ * import Ubuntu.Components 1.2
  *
  * Text {
  *     property string fontSize: "medium"
@@ -46,7 +46,7 @@
  * font unit size to scale its font:
  * \qml
  * import QtQuick 2.4
- * import Ubuntu.Components 1.1
+ * import Ubuntu.Components 1.2
  *
  * TextInput {
  *     property string fontSize: "small"

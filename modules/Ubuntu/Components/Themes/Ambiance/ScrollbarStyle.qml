@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.1
+import Ubuntu.Components 1.2
 
 /*
   The visuals handle both active and passive modes. This behavior is driven yet by

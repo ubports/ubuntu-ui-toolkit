@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.1
+import Ubuntu.Components 1.2
 
 /*!
     \qmltype DefaultSheet
@@ -33,7 +33,7 @@ import Ubuntu.Components 1.1
 
     Example:
     \qml
-        import Ubuntu.Components 1.1
+        import Ubuntu.Components 1.2
         import Ubuntu.Components.Popups 1.0
 
         Item {

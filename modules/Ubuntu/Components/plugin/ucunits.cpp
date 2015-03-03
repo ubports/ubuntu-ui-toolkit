@@ -52,7 +52,7 @@ static float getenvFloat(const char* name, float defaultValue)
 
     \qml
     import QtQuick 2.4
-    import Ubuntu.Components 1.1
+    import Ubuntu.Components 1.2
 
     Item {
         width: units.gu(2)

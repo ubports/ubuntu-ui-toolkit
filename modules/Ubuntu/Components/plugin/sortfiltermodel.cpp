@@ -36,7 +36,7 @@
  * Example usage:
  * \qml
  * import QtQuick 2.4
- * import Ubuntu.Components 1.1
+ * import Ubuntu.Components 1.2
  * import Ubuntu.Components.ListItems 1.1
  *
  * MainView {
