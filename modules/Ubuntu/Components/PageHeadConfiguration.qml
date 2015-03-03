@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.2
+import QtQuick 2.4
 import Ubuntu.Components 1.1
 
 /*!
@@ -121,7 +121,7 @@ Object {
 
       Example:
       \qml
-        import QtQuick 2.3
+        import QtQuick 2.4
         import Ubuntu.Components 1.2
 
         MainView {

@@ -15,7 +15,7 @@
  */
 
 pragma Singleton
-import QtQuick 2.0
+import QtQuick 2.4
 import QtFeedback 5.0
 import Ubuntu.Components 1.1
 
@@ -32,7 +32,7 @@ import Ubuntu.Components 1.1
 
   Example of using Haptics:
   \qml
-  import QtQuick 2.3
+  import QtQuick 2.4
   import Ubuntu.Components 1.1
 
   Item {
@@ -54,7 +54,7 @@ import Ubuntu.Components 1.1
 
   Custom effects can be played as follows:
   \qml
-  import QtQuick 2.3
+  import QtQuick 2.4
   import Ubuntu.Components 1.1
 
   Item {

@@ -28,7 +28,7 @@
     and \l head properties of the page:
 
     \qml
-        import QtQuick 2.0
+        import QtQuick 2.4
         import Ubuntu.Components 1.1
 
         MainView {
@@ -92,7 +92,7 @@
     is automatically set to the first child of the page that is Flickable
     and anchors to the top of the page or fills the page. For example:
     \qml
-        import QtQuick 2.0
+        import QtQuick 2.4
         import Ubuntu.Components 1.1
 
         MainView {

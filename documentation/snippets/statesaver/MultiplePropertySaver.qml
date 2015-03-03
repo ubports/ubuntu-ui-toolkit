@@ -16,7 +16,7 @@
 
 //![group-saver]
 import QtQuick 2.0
-import Ubuntu.Components 1.1
+import Ubuntu.Components 1.2
 
 Rectangle {
     id: root

@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
+import QtQuick 2.4
 
 /*!
     \qmltype ToolbarItems
@@ -40,7 +40,7 @@ import QtQuick 2.0
     It is recommended to use \l ToolbarButton inside the ToolbarItems to define the buttons that will
     be visible to the user:
     \qml
-        import QtQuick 2.0
+        import QtQuick 2.4
         import Ubuntu.Components 1.1
 
         MainView {
@@ -72,7 +72,7 @@ import QtQuick 2.0
     ToolbarButtons and other Items (for example standard Buttons). ToolbarButtons automatically span
     the full height of the toolbar, and other Items you will probably want to center vertically:
     \qml
-        import QtQuick 2.0
+        import QtQuick 2.4
         import Ubuntu.Components 1.1
 
         MainView {
@@ -121,7 +121,7 @@ Item {
       The following example shows how to have a classic cancel button that is always
       visible in the toolbar, instead of the default toolbar-styled back button:
         \qml
-            import QtQuick 2.0
+            import QtQuick 2.4
             import Ubuntu.Components 1.1
 
             MainView {

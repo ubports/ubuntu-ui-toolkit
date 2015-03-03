@@ -97,7 +97,7 @@ void printLocked(UCServiceProperties *owner)
  * those. When enumerating properties, each property will be checked twice, with
  * the case specified as well as with the first letter capitalized.
  * \qml
- * import QtQuick 2.3
+ * import QtQuick 2.4
  * import Ubuntu.Components 1.1
  *
  * ServiceProperties {

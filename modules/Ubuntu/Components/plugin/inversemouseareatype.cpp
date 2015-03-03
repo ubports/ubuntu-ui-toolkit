@@ -32,7 +32,7 @@
 
   Popup.qml
   \qml
-  import QtQuick 2.0
+  import QtQuick 2.4
   import Ubuntu.Components 1.1
 
   Rectangle {
@@ -52,7 +52,7 @@
   closing and destroying the popup.
 
   \qml
-  import QtQuick 2.0
+  import QtQuick 2.4
   import Ubuntu.Components 1.1
 
   Item {
@@ -76,7 +76,7 @@
   however altered to a different area by setting the \l sensingArea property to
   a component which is either a parent of the mouse area or a sibling of it.
   \qml
-  import QtQuick 2.0
+  import QtQuick 2.4
   import Ubuntu.Components 1.1
 
   Item {

@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
+import QtQuick 2.4
 // FIXME: When a module contains QML, C++ and JavaScript elements exported,
 // we need to use named imports otherwise namespace collision is reported
 // by the QML engine. As workaround, we use Ubuntu named import.

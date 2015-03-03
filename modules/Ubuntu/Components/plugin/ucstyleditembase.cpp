@@ -115,7 +115,7 @@ bool UCStyledItemBase::requestFocus(Qt::FocusReason reason)
  * In the following example the TextField will stay focused when clicked on the
  * red rectangle.
  * \qml
- * import QtQuick 2.2
+ * import QtQuick 2.4
  * import Ubuntu.Components 1.1
  *
  * Column {

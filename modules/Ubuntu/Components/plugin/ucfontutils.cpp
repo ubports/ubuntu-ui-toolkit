@@ -33,7 +33,7 @@
  * Example of a Label implementation which uses the default base scale for the font
  * size:
  * \qml
- * import QtQuick 2.0
+ * import QtQuick 2.4
  * import Ubuntu.Components 1.1
  *
  * Text {
@@ -45,7 +45,7 @@
  * Another example of a custom text input component exposing a fontSize property and a base
  * font unit size to scale its font:
  * \qml
- * import QtQuick 2.0
+ * import QtQuick 2.4
  * import Ubuntu.Components 1.1
  *
  * TextInput {
