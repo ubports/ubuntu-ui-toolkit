@@ -14,9 +14,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
+import QtQuick 2.4
 import QtTest 1.0
-import Ubuntu.Components 1.1
+import Ubuntu.Components 1.2
 
 // pagestack tests for the new header are in
 // unit_x11/tst_components/tst_pagestack_new_header.qml

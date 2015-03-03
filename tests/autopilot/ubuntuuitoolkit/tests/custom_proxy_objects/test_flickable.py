@@ -57,7 +57,7 @@ class IsFlickableTestCase(tests.QMLStringAppTestCase):
     """
 
     test_qml = ("""
-import QtQuick 2.0
+import QtQuick 2.4
 import Ubuntu.Components 1.0
 import Ubuntu.Components.ListItems 1.0 as ListItem
 
@@ -94,7 +94,7 @@ MainView {
 class SwipeFlickableTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
-import QtQuick 2.0
+import QtQuick 2.4
 import Ubuntu.Components 1.0
 
 MainView {
@@ -234,7 +234,7 @@ MainView {
 class UnityFlickableTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
-import QtQuick 2.0
+import QtQuick 2.4
 import Ubuntu.Components 1.0
 
 MainView {
