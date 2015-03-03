@@ -48,8 +48,7 @@
      \annotatedlist ubuntu-listitem
 
      \part List Items module - deprecated
-     This module contains the old set of list items. These components are mostly
-     deprecated. The new ListItem component should be used instead.
+     This module contains the old set of list items.
 
      Available through:
      \code

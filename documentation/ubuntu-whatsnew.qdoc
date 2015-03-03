@@ -22,8 +22,9 @@
  * as follows:
  *
  * \section3 MainView.useDeprecatedToolbar
- * MainView.useDeprecatedToolbar property \b {got removed}. If you need to use the feature
- * you can still do that by importing \b Ubuntu.Components 1.1.
+ * MainView.useDeprecatedToolbar property \b {got removed} and the new header is always
+ * enabled. If you need to use the old toolbar you can still do that by importing \b
+ * Ubuntu.Components 1.1.
  *
  * \section3 A new performant ListItem component
  * As of 1.2, a new ListItem component and its attached components were added to the toolkit,
