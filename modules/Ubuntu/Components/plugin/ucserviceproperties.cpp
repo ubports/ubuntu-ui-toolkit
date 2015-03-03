@@ -98,7 +98,7 @@ void printLocked(UCServiceProperties *owner)
  * the case specified as well as with the first letter capitalized.
  * \qml
  * import QtQuick 2.3
- * import Ubuntu.Components 1.1
+ * import Ubuntu.Components 1.2
  *
  * ServiceProperties {
  *     service: "org.freenode.AccountsService"

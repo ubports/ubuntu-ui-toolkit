@@ -26,7 +26,7 @@ from ubuntuuitoolkit import tests
 class MainView10TestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
-import QtQuick 2.0
+import QtQuick 2.4
 import Ubuntu.Components 1.0
 
 MainView {
@@ -132,7 +132,7 @@ MainView {
 
 
 TEST_GO_BACK_QML_FORMAT = ("""
-import QtQuick 2.0
+import QtQuick 2.4
 import Ubuntu.Components 1.0
 
 MainView {{
