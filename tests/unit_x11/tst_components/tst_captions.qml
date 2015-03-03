@@ -49,7 +49,7 @@ Item {
         when: windowShown
 
         function test_0_defaults() {
-            compare(defaults.captionStyle, Ubuntu.Captions, "Default preset is 'titles'");
+            compare(defaults.captionStyle, Ubuntu.TitleCaptionStyle, "Default preset is 'titles'");
             compare(defaults.height, 0, "default height is 0");
             compare(defaults.width, 0, "default width is 0")
             compare(defaults.spacing, units.gu(0.5), "default spacing failure");
@@ -59,23 +59,23 @@ Item {
 
         function test_captions_data() {
             return [
-                {tag: "caption, title.fontSize", captionStyle: Ubuntu.Captions, label: "title", property: "fontSize", value: "medium"},
-                {tag: "caption, title.horizontalAlignment", captionStyle: Ubuntu.Captions, label: "title", property: "horizontalAlignment", value: Text.AlignLeft},
-                {tag: "caption, title.elide", captionStyle: Ubuntu.Captions, label: "title", property: "elide", value: Text.ElideRight},
-                {tag: "caption, subtitle.fontSize", captionStyle: Ubuntu.Captions, label: "subtitle", property: "fontSize", value: "small"},
-                {tag: "caption, subtitle.horizontalAlignment", captionStyle: Ubuntu.Captions, label: "subtitle", property: "horizontalAlignment", value: Text.AlignLeft},
-                {tag: "caption, subtitle.maximumLineCount", captionStyle: Ubuntu.Captions, label: "subtitle", property: "maximumLineCount", value: 2},
-                {tag: "caption, subtitle.wrapMode", captionStyle: Ubuntu.Captions, label: "subtitle", property: "wrapMode", value: Text.Wrap},
-                {tag: "caption, subtitle.elide", captionStyle: Ubuntu.Captions, label: "subtitle", property: "elide", value: Text.ElideRight},
+                {tag: "caption, title.fontSize", captionStyle: Ubuntu.TitleCaptionStyle, label: "title", property: "fontSize", value: "medium"},
+                {tag: "caption, title.horizontalAlignment", captionStyle: Ubuntu.TitleCaptionStyle, label: "title", property: "horizontalAlignment", value: Text.AlignLeft},
+                {tag: "caption, title.elide", captionStyle: Ubuntu.TitleCaptionStyle, label: "title", property: "elide", value: Text.ElideRight},
+                {tag: "caption, subtitle.fontSize", captionStyle: Ubuntu.TitleCaptionStyle, label: "subtitle", property: "fontSize", value: "small"},
+                {tag: "caption, subtitle.horizontalAlignment", captionStyle: Ubuntu.TitleCaptionStyle, label: "subtitle", property: "horizontalAlignment", value: Text.AlignLeft},
+                {tag: "caption, subtitle.maximumLineCount", captionStyle: Ubuntu.TitleCaptionStyle, label: "subtitle", property: "maximumLineCount", value: 2},
+                {tag: "caption, subtitle.wrapMode", captionStyle: Ubuntu.TitleCaptionStyle, label: "subtitle", property: "wrapMode", value: Text.Wrap},
+                {tag: "caption, subtitle.elide", captionStyle: Ubuntu.TitleCaptionStyle, label: "subtitle", property: "elide", value: Text.ElideRight},
 
-                {tag: "summary, title.fontSize", captionStyle: Ubuntu.Summary, label: "title", property: "fontSize", value: "small"},
-                {tag: "summary, title.horizontalAlignment", captionStyle: Ubuntu.Summary, label: "title", property: "horizontalAlignment", value: Text.AlignRight},
-                {tag: "summary, title.elide", captionStyle: Ubuntu.Summary, label: "title", property: "elide", value: Text.ElideNone},
-                {tag: "summary, subtitle.fontSize", captionStyle: Ubuntu.Summary, label: "subtitle", property: "fontSize", value: "small"},
-                {tag: "summary, subtitle.horizontalAlignment", captionStyle: Ubuntu.Summary, label: "subtitle", property: "horizontalAlignment", value: Text.AlignRight},
-                {tag: "summary, subtitle.maximumLineCount", captionStyle: Ubuntu.Summary, label: "subtitle", property: "maximumLineCount", value: 1},
-                {tag: "summary, subtitle.wrapMode", captionStyle: Ubuntu.Summary, label: "subtitle", property: "wrapMode", value: Text.NoWrap},
-                {tag: "summary, subtitle.elide", captionStyle: Ubuntu.Summary, label: "subtitle", property: "elide", value: Text.ElideNone},
+                {tag: "summary, title.fontSize", captionStyle: Ubuntu.SummaryCaptionStyle, label: "title", property: "fontSize", value: "small"},
+                {tag: "summary, title.horizontalAlignment", captionStyle: Ubuntu.SummaryCaptionStyle, label: "title", property: "horizontalAlignment", value: Text.AlignRight},
+                {tag: "summary, title.elide", captionStyle: Ubuntu.SummaryCaptionStyle, label: "title", property: "elide", value: Text.ElideNone},
+                {tag: "summary, subtitle.fontSize", captionStyle: Ubuntu.SummaryCaptionStyle, label: "subtitle", property: "fontSize", value: "small"},
+                {tag: "summary, subtitle.horizontalAlignment", captionStyle: Ubuntu.SummaryCaptionStyle, label: "subtitle", property: "horizontalAlignment", value: Text.AlignRight},
+                {tag: "summary, subtitle.maximumLineCount", captionStyle: Ubuntu.SummaryCaptionStyle, label: "subtitle", property: "maximumLineCount", value: 1},
+                {tag: "summary, subtitle.wrapMode", captionStyle: Ubuntu.SummaryCaptionStyle, label: "subtitle", property: "wrapMode", value: Text.NoWrap},
+                {tag: "summary, subtitle.elide", captionStyle: Ubuntu.SummaryCaptionStyle, label: "subtitle", property: "elide", value: Text.ElideNone},
             ];
         }
         function test_captions(data) {
