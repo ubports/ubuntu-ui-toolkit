@@ -49,7 +49,7 @@ MainView {
             anchors.bottom: parent.bottom
             text: "Push me"
             onClicked: {
-                //testCase.resetPositions();
+                testCase.resetPositions();
                 var popover = PopupUtils.open(popoverComponent, pushMe);
                 popoverSpy.target = testCase.findChild(popover, "popover_foreground");
                 popoverSpy.clear();
