@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2014-2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,9 +14,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.2
+import QtQuick 2.4
 import Ubuntu.Components 1.2
 import Ubuntu.Components.Styles 1.2
+import QtQuick.Layouts 1.1
 
 MainView {
     id: main
@@ -110,13 +111,23 @@ MainView {
                 units.gridUnit += 2;
             }
             onPressAndHold: print("pressAndHold", objectName)
-            Label {
-                anchors.fill: parent
-                text: units.gridUnit + "PX/unit"
-            }
-            Button {
-                text: "Press me"
-                anchors.centerIn: parent
+            RowLayout {
+                anchors {
+                    fill: parent
+                    margins: units.gu(0.5)
+                    leftMargin: anchors.rightMargin
+                    rightMargin: units.gu(2)
+                }
+                Label {
+                    anchors.fill: parent
+                    text: units.gridUnit + "PX/unit"
+                    Layout.preferredWidth: paintedWidth
+                }
+                Button {
+                    text: "Press me"
+                    anchors.centerIn: parent
+                    onClicked: units.gridUnit -= 2
+                }
             }
 
             leadingActions: ListItemActions {
@@ -184,15 +195,20 @@ MainView {
                 trailingActions: trailing
                 contentItem.anchors.margins: units.gu(1)
 
-                Label {
-                    anchors.fill: parent
-                    verticalAlignment: Text.AlignVCenter
-                    text: "This is one Label split in two lines.\n" +
-                          "The second line - item #" + modelData
-                }
-                Button {
-                    text: "Pressme..."
-                    anchors.centerIn: parent
+                RowLayout {
+                    anchors {
+                        fill: parent
+                        margins: units.gu(0.5)
+                        leftMargin: anchors.rightMargin
+                        rightMargin: units.gu(2)
+                    }
+                    Captions {
+                        title.text: "This is one Label split in two lines.\n" +
+                              "The second line - item #" + modelData
+                    }
+                    Button {
+                        text: "Pressme..."
+                    }
                 }
 
                 states: State {
@@ -237,6 +253,10 @@ MainView {
                         }
                         trailingActions: ListItemActions {
                             actions: trailingArray
+                        }
+                        contentItem.anchors {
+                            leftMargin: units.gu(2)
+                            rightMargin: units.gu(2)
                         }
 
                         Label {

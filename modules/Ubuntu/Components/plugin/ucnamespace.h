@@ -12,19 +12,25 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
  */
 
-import QtQuick 2.3
-import Ubuntu.Components 1.2
+#ifndef UCNAMESPACE_H
+#define UCNAMESPACE_H
 
-Column {
-    width: 800
-    height: 600
-    property alias count: repeater.count
-    Repeater {
-        id: repeater
-        model: 5000
-        ListItem {
-        }
-    }
-}
+#include <QObject>
+
+class UCNamespace : public QObject
+{
+    Q_OBJECT
+    Q_ENUMS(CaptionsStyle)
+public:
+    enum CaptionsStyle {
+        TitleCaptionStyle = 5000,
+        SummaryCaptionStyle
+    };
+    explicit UCNamespace(QObject *parent = 0);
+
+};
+
+#endif // UCNAMESPACE_H

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013-2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -18,7 +18,7 @@
 
 class QSGTexture;
 
-struct TextureData {
+struct ShapeTextureData {
     const unsigned char* const data;
     int width;
     int height;
@@ -5158,7 +5158,7 @@ static const unsigned char shapeTextureHighData[256 * 128 * 4 + 1] =
 const float hh = 1.0f / 512.0f;
 
 // High resolution shape texture.
-TextureData shapeTextureHigh __attribute__((aligned(16))) = {
+ShapeTextureData shapeTextureHigh __attribute__((aligned(16))) = {
     shapeTextureHighData, 256, 128, 4, 32.0f, 64.0f, 18.0f,
     {
         {  // Medium raw coords.
@@ -6482,7 +6482,7 @@ static const unsigned char shapeTextureLowData[128 * 64 * 4 + 1] =
 const float hl = 1.0f / 256.0f;
 
 // Low resolution shape texture.
-TextureData shapeTextureLow __attribute__((aligned(16))) = {
+ShapeTextureData shapeTextureLow __attribute__((aligned(16))) = {
     shapeTextureLowData, 128, 64, 4, 16.0f, 32.0f, 9.0f,
     {
         {  // Medium raw coords.
