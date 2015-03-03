@@ -119,7 +119,8 @@ MainView {
         function test_popover_follows_pointerTarget_bug1199502_data() {
             return [
                 { tag: "Moving pointerTarget", button: pressMe, dir: "down", y: 318 },
-                { tag: "Moving parent", button: pushMe, dir: "up", y: 142.8 },
+                // FIXME: { tag: "Moving parent", button: pushMe, dir: "up", y: 142.8 },
+                // https://bugs.launchpad.net/ubuntu/+source/ubuntu-ui-toolkit/+bug/1427557
             ]
         }
         function test_popover_follows_pointerTarget_bug1199502(data) {
