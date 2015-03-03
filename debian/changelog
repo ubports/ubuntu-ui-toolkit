@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (1.2.1403+15.04.20150206-0ubuntu3) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.2.1428+15.04.20150206-0ubuntu3) UNRELEASED; urgency=medium
 
   [ Albert Astals Cid ]
   * Fix infinite icon size grow when asked for a non square icon
@@ -53,6 +53,16 @@ ubuntu-ui-toolkit (1.2.1403+15.04.20150206-0ubuntu3) UNRELEASED; urgency=medium
     SHOW_SERVICEPROPERTIES_WARNINGS environment variable set will
     display them in the console. Fixes: LP: #1423203.
   * Updating documentation and imports for 1.2 & Vivid (Qt 5.4). 
+  * Captions component dedicated to ListItem layouts, a ColumnLayout
+    holding two Layouts pre-configurable for fixed or rest of content 
+    filling behavior.
+  [ Loïc Molinari ]
+  * Refactored UbuntuShape base component.
+    The UbuntuShape needed a rework in order to propose more features 
+    while keeping efficiency high and maintenance easy. 
+    Fixes LP: #1396098, LP: #1396101, LP: #1396104, LP: #1396113, 
+    LP: #1396114, LP: #1396119, LP: #1396124, LP: #1396162, 
+    LP: #1396165, LP: #1396168, LP: #1396178
 
  -- Zoltán Balogh <zoltan@bakter.hu>  Tue, 03 Mar 2015 15:20:12 +0200
 
