@@ -36,7 +36,7 @@ Item {
         /* The color must be white for PartialColorizeUbuntuShape to accurately
            replace the white with leftColor and rightColor
         */
-        color: progressBar.indeterminate ? backgroundColor : "#FFFFFF"
+        color: progressBar.indeterminate ? progressBarStyle.backgroundColor : "#FFFFFF"
     }
 
     property real progress: progressBar.indeterminate ? 0.0
