@@ -386,6 +386,7 @@ Style.PageHeadStyle {
                                             verticalCenterOffset: units.dp(-1)
                                             left: parent.left
                                             leftMargin: units.gu(2)
+                                            right: parent.right
                                         }
                                         fontSize: "medium"
                                         elide: Text.ElideRight
