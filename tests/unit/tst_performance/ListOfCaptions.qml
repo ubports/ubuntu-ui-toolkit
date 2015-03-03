@@ -16,15 +16,20 @@
 
 import QtQuick 2.3
 import Ubuntu.Components 1.2
+import QtQuick.Layouts 1.1
 
 Column {
     width: 800
     height: 600
-    property alias count: repeater.count
     Repeater {
         id: repeater
         model: 5000
         ListItem {
+            RowLayout {
+                anchors.fill: parent
+                Captions {
+                }
+            }
         }
     }
 }
