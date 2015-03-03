@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 1.1
+import QtQuick 2.4
+import Ubuntu.Components 1.2
 
 /*!
     \qmltype DatePicker
@@ -35,8 +35,8 @@ import Ubuntu.Components 1.1
     only through the \l date property.
 
     \qml
-    import QtQuick 2.0
-    import Ubuntu.Components 1.1
+    import QtQuick 2.4
+    import Ubuntu.Components 1.2
     import Ubuntu.Components.Pickers 1.0
 
     Column {
@@ -55,8 +55,8 @@ import Ubuntu.Components 1.1
     \b Minutes and \b Seconds strings sepatared with '|' character. A DatePicker
     which shows only year and month date units would look as follows:
     \qml
-    import QtQuick 2.0
-    import Ubuntu.Components 1.1
+    import QtQuick 2.4
+    import Ubuntu.Components 1.2
     import Ubuntu.Components.Pickers 1.0
 
     Column {
@@ -74,8 +74,8 @@ import Ubuntu.Components 1.1
     is needed, the model should be set to contain the time specific mode flags.
     The following example demonstrates how to use DatePicker for time picking.
     \qml
-    import QtQuick 2.0
-    import Ubuntu.Components 1.1
+    import QtQuick 2.4
+    import Ubuntu.Components 1.2
     import Ubuntu.Components.Pickers 1.0
 
     Column {
@@ -111,8 +111,8 @@ import Ubuntu.Components 1.1
                 hours picker presenting 24 hours.
     \endlist
     \qml
-    import QtQuick 2.0
-    import Ubuntu.Components 1.1
+    import QtQuick 2.4
+    import Ubuntu.Components 1.2
     import Ubuntu.Components.Pickers 1.0
 
     Column {
