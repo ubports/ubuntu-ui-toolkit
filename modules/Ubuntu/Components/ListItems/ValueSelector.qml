@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.4
-import Ubuntu.Components 1.2
+import QtQuick 2.0
+import Ubuntu.Components 1.1
 
 /*!
     ****DEPRECATED! PLEASE USE ITEM SELECTOR OR FOR THE UBUNTU SHAPE VERSION THE OPTION SELECTOR.****
@@ -25,7 +25,6 @@ import Ubuntu.Components 1.2
     \ingroup ubuntu-listitems
     \brief List item displaying single selected value when not expanded,
     where expanding it opens a listing of all the possible values for selection.
-    \note This component is deprecated. Use ListItem instead.
 
     Examples:
     \qml

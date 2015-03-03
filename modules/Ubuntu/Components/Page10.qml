@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.2
-import Ubuntu.Components 1.2 as Toolkit
+import Ubuntu.Components 1.1 as Toolkit
 
 /*!
   \internal

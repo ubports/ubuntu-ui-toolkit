@@ -28,7 +28,7 @@ from ubuntuuitoolkit import tests
 class TextFieldTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
-import QtQuick 2.4
+import QtQuick 2.0
 import Ubuntu.Components 1.0
 
 MainView {

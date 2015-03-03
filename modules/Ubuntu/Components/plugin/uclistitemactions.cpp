@@ -40,7 +40,7 @@ UCListItemActionsPrivate::~UCListItemActionsPrivate()
  * \inherits QtQObject
  * \inqmlmodule Ubuntu.Components 1.2
  * \since Ubuntu.Components 1.2
- * \ingroup ubuntu-listitem
+ * \ingroup unstable-ubuntu-listitems
  * \brief Provides configuration for actions to be added to a ListItem.
  *
  * ListItem accepts actions that can be configured to appear when swiped to left

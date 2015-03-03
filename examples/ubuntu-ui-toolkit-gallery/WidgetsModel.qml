@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.4
+import QtQuick 2.0
 
 ListModel {
     // Already in design guidelines
@@ -99,8 +99,13 @@ ListModel {
 
     // Already in design guidelines but should be reordered
     ListElement {
-        objectName: "newListItemsElement"
+        objectName: "listItemsElement"
         label: "List Items"
+        source: "ListItems.qml"
+    }
+    ListElement {
+        objectName: "newListItemsElement"
+        label: "New list items (preview)"
         source: "NewListItems.qml"
     }
     ListElement {
@@ -130,12 +135,5 @@ ListModel {
         objectName: "animationsElement"
         label: "Animations"
         source: "Animations.qml"
-    }
-
-    // Deprecated components gallery
-    ListElement {
-        objectName: "listItemsElement"
-        label: "Deprecated List Items"
-        source: "ListItems.qml"
     }
 }

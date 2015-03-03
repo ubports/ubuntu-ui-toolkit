@@ -116,7 +116,7 @@ bool UCStyledItemBase::requestFocus(Qt::FocusReason reason)
  * red rectangle.
  * \qml
  * import QtQuick 2.2
- * import Ubuntu.Components 1.2
+ * import Ubuntu.Components 1.1
  *
  * Column {
  *     width: units.gu(50)

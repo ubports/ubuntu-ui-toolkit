@@ -14,16 +14,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.4
-import Ubuntu.Components 1.2
+import QtQuick 2.0
+import Ubuntu.Components 1.1
 
 /*!
     \qmltype Empty
     \inqmlmodule Ubuntu.Components.ListItems 1.0
     \ingroup ubuntu-listitems
     \brief A list item with no contents.
-    \note This component is deprecated. Use ListItem instead.
-
     The Empty class can be used for generic list items containing other
     components such as buttons. It is selectable and can take mouse clicks.
     It will attempt to detect if a thin dividing line at the bottom of the
@@ -36,7 +34,7 @@ import Ubuntu.Components 1.2
 
     Examples:
     \qml
-        import Ubuntu.Components 1.2
+        import Ubuntu.Components 1.1
         import Ubuntu.Components.ListItems 1.0 as ListItem
 
         Item {

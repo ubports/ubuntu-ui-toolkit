@@ -14,15 +14,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.4
+import QtQuick 2.0
 
 /*!
     \qmltype MultiValue
     \inqmlmodule Ubuntu.Components.ListItems 1.0
     \ingroup ubuntu-listitems
     \brief List item displaying multiple values.
-
-    \note This component is deprecated. Use ListItem instead.
 
     Examples:
     \qml

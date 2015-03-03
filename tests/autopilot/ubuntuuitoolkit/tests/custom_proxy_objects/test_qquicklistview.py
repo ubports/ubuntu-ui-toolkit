@@ -28,7 +28,7 @@ from ubuntuuitoolkit import tests
 class QQuickListViewTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
-import QtQuick 2.4
+import QtQuick 2.0
 import Ubuntu.Components 1.0
 import Ubuntu.Components.ListItems 1.0 as ListItem
 
@@ -153,7 +153,7 @@ class QQuickListViewOutOfViewTestCase(tests.QMLStringAppTestCase):
     """Test that we can make elements visible when the list is out of view."""
 
     test_qml = ("""
-import QtQuick 2.4
+import QtQuick 2.0
 import Ubuntu.Components 1.0
 import Ubuntu.Components.ListItems 1.0 as ListItem
 
