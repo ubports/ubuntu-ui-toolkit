@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 0.1
+import QtQuick 2.2
+import Ubuntu.Components 1.2
 
 Template {
     objectName: "ubuntuShapesTemplate"
@@ -30,18 +30,17 @@ Template {
             height: units.gu(8)
 
             UbuntuShape {
-                objectName: "ubuntushape_color_hex"
-                color: UbuntuColors.orange
+                objectName: "ubuntushape_backgroundcolor_orange"
+                backgroundColor: UbuntuColors.orange
             }
 
             UbuntuShape {
-                objectName: "ubuntushape_color_lightaubergine"
-                color: UbuntuColors.lightAubergine
-            }
-
-            UbuntuShape {
-                objectName: "ubuntushape_color_darkgray"
-                color: UbuntuColors.warmGrey
+                objectName: "ubuntushape_verticalgradient"
+                backgroundColor: UbuntuColors.lightAubergine
+                secondaryBackgroundColor: Qt.rgba(
+                    UbuntuColors.lightAubergine.r, UbuntuColors.lightAubergine.g,
+                    UbuntuColors.lightAubergine.b, 0.25)
+                backgroundMode: UbuntuShape.VerticalGradient
             }
         }
 
@@ -51,12 +50,16 @@ Template {
             height: units.gu(8)
 
             UbuntuShape {
-                objectName: "ubuntushape_image"
+                objectName: "ubuntushape_preserveaspectcrop"
+                source: Image { source: "map_icon.png" }
+                sourceFillMode: UbuntuShape.PreserveAspectCrop
+            }
 
-                image: Image {
-                    source: "map_icon.png"
-                    fillMode: Image.PreserveAspectCrop
-                }
+            UbuntuShape {
+                objectName: "ubuntushape_pad"
+                backgroundColor: UbuntuColors.warmGrey
+                source: Image { source: "images.png" }
+                sourceFillMode: UbuntuShape.Pad
             }
         }
 
@@ -68,7 +71,7 @@ Template {
             UbuntuShape {
                 objectName: "ubuntushape_radius_small"
 
-                color: Theme.palette.normal.foreground
+                backgroundColor: Theme.palette.normal.foreground
                 radius: "small"
 
                 Label {
@@ -81,7 +84,7 @@ Template {
 
             UbuntuShape {
                 objectName: "ubuntushape_radius_medium"
-                color: Theme.palette.normal.foreground
+                backgroundColor: Theme.palette.normal.foreground
                 radius: "medium"
 
                 Label {
@@ -100,7 +103,7 @@ Template {
 
             UbuntuShape {
                 objectName: "ubuntushape_sizes_15_6"
-                color: Theme.palette.normal.foreground
+                backgroundColor: Theme.palette.normal.foreground
                 width: units.gu(15)
                 height: units.gu(6)
                 anchors.verticalCenter: parent.verticalCenter
@@ -108,7 +111,7 @@ Template {
 
             UbuntuShape {
                 objectName: "ubuntushape_sizes_10_14"
-                color: Theme.palette.normal.foreground
+                backgroundColor: Theme.palette.normal.foreground
                 width: units.gu(10)
                 height: units.gu(14)
             }

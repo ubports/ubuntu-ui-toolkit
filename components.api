@@ -799,21 +799,6 @@ plugins.qmltypes
     name: "get"
     Parameter { name: "row"; type: "int" }
     Method { name: "count"; type: "int" }
-    name: "ShapeItem"
-    prototype: "QQuickItem"
-    exports: [
-    name: "HAlignment"
-    name: "VAlignment"
-    Property { name: "color"; type: "QColor" }
-    Property { name: "gradientColor"; type: "QColor" }
-    Property { name: "radius"; type: "string" }
-    Property { name: "image"; type: "QVariant" }
-    Property { name: "stretched"; type: "bool" }
-    Property { name: "horizontalAlignment"; type: "HAlignment" }
-    Property { name: "verticalAlignment"; type: "VAlignment" }
-    Property { name: "borderSource"; type: "string" }
-    Signal { name: "borderChanged" }
-    Method { name: "gridUnitChanged" }
     name: "SortBehavior"
     prototype: "QObject"
     exports: ["SortBehavior 1.1"]
@@ -1082,6 +1067,46 @@ plugins.qmltypes
     Property { name: "SleepyDuration"; type: "int"; isReadonly: true }
     Property { name: "StandardEasing"; type: "QEasingCurve"; isReadonly: true }
     Property { name: "StandardEasingReverse"; type: "QEasingCurve"; isReadonly: true }
+    name: "UCUbuntuShape"
+    prototype: "QQuickItem"
+    exports: [
+    name: "BackgroundMode"
+    name: "HAlignment"
+    name: "VAlignment"
+    name: "FillMode"
+    name: "WrapMode"
+    Property { name: "radius"; type: "string" }
+    Property { name: "borderSource"; type: "string" }
+    Property { name: "source"; revision: 1; type: "QVariant" }
+    Property { name: "sourceOpacity"; revision: 1; type: "float" }
+    Property { name: "sourceFillMode"; revision: 1; type: "FillMode" }
+    Property { name: "sourceHorizontalWrapMode"; revision: 1; type: "WrapMode" }
+    Property { name: "sourceVerticalWrapMode"; revision: 1; type: "WrapMode" }
+    Property { name: "sourceHorizontalAlignment"; revision: 1; type: "HAlignment" }
+    Property { name: "sourceVerticalAlignment"; revision: 1; type: "VAlignment" }
+    Property { name: "sourceTranslation"; revision: 1; type: "QVector2D" }
+    Property { name: "sourceScale"; revision: 1; type: "QVector2D" }
+    Property { name: "backgroundColor"; revision: 1; type: "QColor" }
+    Property { name: "secondaryBackgroundColor"; revision: 1; type: "QColor" }
+    Property { name: "backgroundMode"; revision: 1; type: "BackgroundMode" }
+    Property { name: "color"; type: "QColor" }
+    Property { name: "gradientColor"; type: "QColor" }
+    Property { name: "image"; type: "QVariant" }
+    Property { name: "stretched"; type: "bool" }
+    Property { name: "horizontalAlignment"; type: "HAlignment" }
+    Property { name: "verticalAlignment"; type: "VAlignment" }
+    Signal { name: "sourceChanged"; revision: 1 }
+    Signal { name: "sourceOpacityChanged"; revision: 1 }
+    Signal { name: "sourceFillModeChanged"; revision: 1 }
+    Signal { name: "sourceHorizontalWrapModeChanged"; revision: 1 }
+    Signal { name: "sourceVerticalWrapModeChanged"; revision: 1 }
+    Signal { name: "sourceHorizontalAlignmentChanged"; revision: 1 }
+    Signal { name: "sourceVerticalAlignmentChanged"; revision: 1 }
+    Signal { name: "sourceTranslationChanged"; revision: 1 }
+    Signal { name: "sourceScaleChanged"; revision: 1 }
+    Signal { name: "backgroundColorChanged"; revision: 1 }
+    Signal { name: "secondaryBackgroundColorChanged"; revision: 1 }
+    Signal { name: "backgroundModeChanged"; revision: 1 }
     name: "UCUnits"
     prototype: "QObject"
     exports: ["UCUnits 0.1", "UCUnits 1.0"]
