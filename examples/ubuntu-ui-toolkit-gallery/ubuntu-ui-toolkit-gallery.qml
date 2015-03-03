@@ -26,8 +26,6 @@ MainView {
     // Note! applicationName needs to match the .desktop filename
     applicationName: "ubuntu-ui-toolkit-gallery"
 
-    useDeprecatedToolbar: false
-
     width: units.gu(120)
     height: units.gu(75)
 

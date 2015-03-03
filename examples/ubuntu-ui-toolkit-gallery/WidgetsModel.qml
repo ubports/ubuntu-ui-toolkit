@@ -99,13 +99,8 @@ ListModel {
 
     // Already in design guidelines but should be reordered
     ListElement {
-        objectName: "listItemsElement"
-        label: "List Items"
-        source: "ListItems.qml"
-    }
-    ListElement {
         objectName: "newListItemsElement"
-        label: "New list items (preview)"
+        label: "List Items"
         source: "NewListItems.qml"
     }
     ListElement {
@@ -135,5 +130,12 @@ ListModel {
         objectName: "animationsElement"
         label: "Animations"
         source: "Animations.qml"
+    }
+
+    // Deprecated components gallery
+    ListElement {
+        objectName: "listItemsElement"
+        label: "Deprecated List Items"
+        source: "ListItems.qml"
     }
 }

@@ -24,6 +24,8 @@ import Ubuntu.Components.ListItems 1.0
     \ingroup ubuntu-listitems
     \brief A list item containing a single control
 
+    \note This component is deprecated. Use ListItem instead.
+
     Examples:
     \qml
         import Ubuntu.Components 1.2
