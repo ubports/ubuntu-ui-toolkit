@@ -289,4 +289,12 @@ PopupBase {
     onHeightChanged: internal.updatePosition()
     /*! \internal */
     onRotatingChanged: hide()
+
+    Connections {
+        target: pointerTarget
+        onXChanged: internal.updatePosition()
+        onYChanged: internal.updatePosition()
+        onWidthChanged: internal.updatePosition()
+        onHeightChanged: internal.updatePosition()
+    }
 }
