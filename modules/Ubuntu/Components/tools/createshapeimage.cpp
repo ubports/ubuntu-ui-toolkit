@@ -21,6 +21,11 @@
 // contours. The EDTAA3 algorithm and implementation comes from Stefan Gustavson, for more
 // information see http://webstaff.itn.liu.se/~stegu/aadist/readme.pdf.
 
+// In order to generate a new file, the following commands must be used:
+// $ cd tools
+// $ qmake && make
+// $ ./createshapeimage shape.svg ../plugin/ucubuntushapetexture.cpp
+
 #include <QtCore/QFile>
 #include <QtCore/QTextStream>
 #include <QtGui/QImage>
@@ -76,7 +81,7 @@ int main(int argc, char* argv[])
     // Open files.
     QSvgRenderer svg;
     if (!svg.load(QString(svgFilename))) {
-        qWarning("Can't open input SVG file \'%s\'", cppFilename);
+        qWarning("Can't open input SVG file \'%s\'", svgFilename);
         return 1;
     }
     QFile cppFile(cppFilename);

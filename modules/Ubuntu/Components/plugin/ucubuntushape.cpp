@@ -18,7 +18,7 @@
 
 // The UbuntuShape uses this simple and efficient method described by Chris Green in this paper from
 // 2007 (http://www.valvesoftware.com/publications/2007/SIGGRAPH2007_AlphaTestedMagnification.pdf)
-// to create its anti-aliased and resolution indpendant contour.
+// to create its anti-aliased and resolution independent contour.
 
 // FIXME(loicm) Storing lower precision data types in the vertex buffer could be more efficent. Note
 //     that on PowerVR GPUs (and certainly others), it requires a conversion in the USSE pipeline so
