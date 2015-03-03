@@ -23,6 +23,7 @@ import Ubuntu.Components 1.2
     \ingroup ubuntu-listitems
     \brief Parent class of various list item classes that can have
         an icon and a progression symbol.
+    \note \b{The component is deprecated. Use ListItem component instead.}
 
     Examples: See subclasses
 */

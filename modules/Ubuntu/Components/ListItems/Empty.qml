@@ -22,6 +22,7 @@ import Ubuntu.Components 1.2
     \inqmlmodule Ubuntu.Components.ListItems 1.0
     \ingroup ubuntu-listitems
     \brief A list item with no contents.
+    \note \b{The component is deprecated. Use ListItem component instead.}
     The Empty class can be used for generic list items containing other
     components such as buttons. It is selectable and can take mouse clicks.
     It will attempt to detect if a thin dividing line at the bottom of the

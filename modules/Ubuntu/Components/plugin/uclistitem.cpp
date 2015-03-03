@@ -618,7 +618,7 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  * \qmltype ListItem
  * \instantiates UCListItem
  * \inqmlmodule Ubuntu.Components 1.2
- * \ingroup unstable-ubuntu-listitems
+ * \ingroup ubuntu-listitem
  * \since Ubuntu.Components 1.2
  * \brief The ListItem element provides Ubuntu design standards for list or grid
  * views.

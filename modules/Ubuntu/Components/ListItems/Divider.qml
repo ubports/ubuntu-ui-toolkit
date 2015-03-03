@@ -22,6 +22,7 @@ import Ubuntu.Components 1.2
     \inqmlmodule Ubuntu.Components.ListItems 1.0
     \ingroup ubuntu-listitems
     \brief Divider to break up list items into groups.
+    \note \b{The component is deprecated.}
 
     Examples: see \l Header
 */

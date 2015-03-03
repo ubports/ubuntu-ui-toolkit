@@ -22,6 +22,7 @@ import Ubuntu.Components 1.2
     \inqmlmodule Ubuntu.Components.ListItems 1.0
     \ingroup ubuntu-listitems
     \brief List item that shows a piece of text.
+    \note \b{The component is deprecated. Use ListItem and Captiopns components instead.}
 
     Examples:
     \qml

@@ -44,9 +44,12 @@
      \code
          import Ubuntu.Components 1.2
      \endcode
-     \annotatedlist unstable-ubuntu-listitems
+     \annotatedlist ubuntu-listitem
 
-     \part List Items
+     \part List Items module - deprecated
+     This module contains the old set of list items. These components are mostly
+     deprecated. The new ListItem component should be used instead.
+
      Available through:
      \code
          import Ubuntu.Components.ListItems 1.0

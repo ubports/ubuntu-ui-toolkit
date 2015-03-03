@@ -23,6 +23,7 @@ import Ubuntu.Components.ListItems 1.0
     \inqmlmodule Ubuntu.Components.ListItems 1.0
     \ingroup ubuntu-listitems
     \brief A list item containing a single control
+    \note \b{The component is deprecated. Use ListItem component instead.}
 
     Examples:
     \qml

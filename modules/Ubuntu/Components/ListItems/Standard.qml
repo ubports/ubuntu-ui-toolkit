@@ -25,6 +25,7 @@ import Ubuntu.Components 1.2
         with a label (text), and optionally an icon, a progression arrow,
         and it can have an embedded Item (\l control) that can be used
         for including Buttons, Switches etc. inside the list item.
+    \note \b{The component is deprecated. Use ListItem component instead.}
 
     \l {http://design.ubuntu.com/apps/building-blocks/list-items}{See also the Design Guidelines on List Items}.
 

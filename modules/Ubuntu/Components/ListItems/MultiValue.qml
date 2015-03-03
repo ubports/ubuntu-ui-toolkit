@@ -21,6 +21,7 @@ import QtQuick 2.4
     \inqmlmodule Ubuntu.Components.ListItems 1.0
     \ingroup ubuntu-listitems
     \brief List item displaying multiple values.
+    \note \b{The component is deprecated. Use ListItem component instead.}
 
     Examples:
     \qml

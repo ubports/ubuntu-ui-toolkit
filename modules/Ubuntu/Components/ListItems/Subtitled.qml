@@ -22,6 +22,7 @@ import Ubuntu.Components 1.2
     \inqmlmodule Ubuntu.Components.ListItems 1.0
     \ingroup ubuntu-listitems
     \brief List item displaying a second string under the main label.
+    \note \b{The component is deprecated. Use ListItem component instead.}
 
     Examples:
     \qml
