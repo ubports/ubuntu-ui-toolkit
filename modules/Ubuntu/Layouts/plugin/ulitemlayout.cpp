@@ -34,7 +34,7 @@
  *
  * Example:
  * \qml
- * import QtQuick 2.0
+ * import QtQuick 2.4
  * import Ubuntu.Layouts 0.1
  *
  * Layouts {

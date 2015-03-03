@@ -39,7 +39,7 @@ namespace C {
  * It is based on \l {https://www.gnu.org/software/gettext/} {gettext}, and thus the standard gettext tools can be used for translating
  * a project. Example:
  * \qml
- * import QtQuick 2.0
+ * import QtQuick 2.4
  * import Ubunut.Components 0.1
  *
  * Item {
@@ -220,7 +220,7 @@ QString UbuntuI18n::dctr(const QString& domain, const QString& context, const QS
  * to take the original string and pass it to dtr (or dgettext).
  *
  * \qml
- * import QtQuick 2.0
+ * import QtQuick 2.4
  * import UserMetrics 0.1
  *
  * Metric {

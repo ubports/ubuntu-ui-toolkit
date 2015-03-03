@@ -22,7 +22,7 @@
 
     Examples:
     \qml
-        import Ubuntu.Components 1.1
+        import Ubuntu.Components 1.2
         Column {
             width: 250
             OptionSelector {
@@ -41,9 +41,9 @@
     \endqml
 */
 
-import QtQuick 2.0
+import QtQuick 2.4
 import "ListItems" as ListItem
-import Ubuntu.Components 1.1 as Toolkit
+import Ubuntu.Components 1.2 as Toolkit
 
 ListItem.Empty {
     id: option
