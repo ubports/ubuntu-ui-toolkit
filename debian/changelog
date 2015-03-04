@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (1.2.1428+15.04.20150206-0ubuntu3) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.2.1431+15.04.20150206-0ubuntu3) UNRELEASED; urgency=medium
 
   [ Albert Astals Cid ]
   * Fix infinite icon size grow when asked for a non square icon
@@ -12,6 +12,8 @@ ubuntu-ui-toolkit (1.2.1428+15.04.20150206-0ubuntu3) UNRELEASED; urgency=medium
     Fixes: LP: #1413194
   * Update popover position upon pointer movement.
     Fixes: LP: #1199502, LP: #1415532
+  * Change <code> to be inline-block. Fixes LP: #1427534
+  * Set right anchor on tab overflow buttons. Fixes LP: #1425433
   [ Sebastien Bacher ]
   * document that MainView's applicationName is used to set the gettext
     domain. Fixes: LP: #1421661.
