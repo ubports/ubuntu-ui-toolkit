@@ -35,8 +35,6 @@ import QtQuick 2.4
     is updated by changing the selected \l Tab or by pushing/popping a \l Page on the \l PageStack,
     the toolbar will automatically hide, except if the new active \l Page has the \l locked property set.
 
-    \l {http://design.ubuntu.com/apps/building-blocks/toolbar}{See also the Design Guidelines on Toolbars}.
-
     It is recommended to use \l ToolbarButton inside the ToolbarItems to define the buttons that will
     be visible to the user:
     \qml
