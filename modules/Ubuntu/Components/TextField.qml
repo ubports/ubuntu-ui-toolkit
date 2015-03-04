@@ -26,7 +26,7 @@ import Ubuntu.Components.Popups 1.0
     Input constraints can be set through validator or inputMask. Setting echoMode
     to an appropriate value enables TextField to be used as password input field.
 
-    \l {http://design.ubuntu.com/apps/building-blocks/text-field}{See also the Design Guidelines on the Text Field}.
+    \l {https://design.ubuntu.com/apps/building-blocks/text-input#text-field}{See also the Design Guidelines on the Text Field}.
 
     Example:
     \qml
