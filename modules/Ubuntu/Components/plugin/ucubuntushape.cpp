@@ -37,6 +37,13 @@
 // Anti-aliasing distance of the contour in pixels.
 const float distanceAApx = 1.75f;
 
+// For cosmetic reasons, we add an offset to the exposed cornerRadius to avoid having values less
+// than 2 to look as if it has no rounded corners.
+const float cornerRadiusOffset = 2.0f;
+
+// Factor by which the final fragment RGB color must be multiplied for the pressed style.
+const float pressedFactor = 0.85f;
+
 // --- Scene graph shader ---
 
 ShapeShader::ShapeShader()
@@ -63,12 +70,12 @@ void ShapeShader::initialize()
 
     m_functions = QOpenGLContext::currentContext()->functions();
     m_matrixId = program()->uniformLocation("matrix");
-    m_opacityId = program()->uniformLocation("opacity");
+    m_factorsId = program()->uniformLocation("factors");
     m_sourceOpacityId = program()->uniformLocation("sourceOpacity");
     m_distanceAAId = program()->uniformLocation("distanceAA");
     m_dfdtFlipId = program()->uniformLocation("dfdtFlip");
     m_texturedId = program()->uniformLocation("textured");
-    m_styledId = program()->uniformLocation("styled");
+    m_styleId = program()->uniformLocation("style");
 }
 
 void ShapeShader::updateState(
@@ -108,7 +115,18 @@ void ShapeShader::updateState(
         }
     }
     program()->setUniformValue(m_texturedId, textured);
-    program()->setUniformValue(m_styledId, !!(data->flags & ShapeMaterial::Data::Styled));
+    program()->setUniformValue(
+        m_styleId, data->flags & (ShapeMaterial::Data::Plain | ShapeMaterial::Data::Sunken));
+
+    // The pressed style is implemented by scaling the final RGB fragment color. It's not a real
+    // blending as it was done before deprecation, so for instance transparent colors remain the
+    // same, but we consider it would be too costly to maintain for a deprecated feature that was
+    // actually only use in the toolkit and never documented. The factor is multiplied with the Qt
+    // opacity to avoid useless operations in the shader.
+    const float opacity = state.opacity();
+    const QVector2D factors(
+        data->flags & ShapeMaterial::Data::Pressed ? pressedFactor * opacity : opacity, opacity);
+    program()->setUniformValue(m_factorsId, factors);
 
     // Send anti-aliasing distance in distance field space, needs to be divided by 2 for the shader
     // and by 255 for distanceAAFactor dequantization. The factor is 1 most of the time apart when
@@ -126,9 +144,6 @@ void ShapeShader::updateState(
     // Update QtQuick engine uniforms.
     if (state.isMatrixDirty()) {
         program()->setUniformValue(m_matrixId, state.combinedMatrix());
-    }
-    if (state.isOpacityDirty()) {
-        program()->setUniformValue(m_opacityId, state.opacity());
     }
 }
 
@@ -259,7 +274,7 @@ UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
     , m_sourceScale(1.0f, 1.0f)
     , m_sourceTranslation(0.0f, 0.0f)
     , m_sourceTransform(1.0f, 1.0f, 0.0f, 0.0f)
-    , m_border(IdleBorder)
+    , m_style(Sunken)
     , m_imageHorizontalAlignment(AlignHCenter)
     , m_imageVerticalAlignment(AlignVCenter)
     , m_backgroundMode(SolidColor)
@@ -281,26 +296,31 @@ UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
     update();
 }
 
-/*! \qmlproperty int UbuntuShape::cornerRadius
+/*! \qmlproperty real UbuntuShape::cornerRadius
 
     This property defines the radius of the corner in pixels. Radius values exceeding the range
-    between 0 and 128 are clamped. The default value is 24.
+    between 0.0 and 127.5 are clamped. The default value is 24.0.
 
     \note Setting this disables support for the deprecated \l radius property.
 */
 // FIXME(loicm) Should we add constants for the fixed sizes previously exposed by the deprecated
 //     radius property? I'd say yes, but then should we expose these directly in the UbuntuShape or
 //     in a QML file defining constants for the toolkit (as it is done for the color palette)?
-void UCUbuntuShape::setCornerRadius(int cornerRadius)
+void UCUbuntuShape::setCornerRadius(qreal cornerRadius)
 {
+    // The cornerRadius floating-point value is packed in a byte, the maximal value being 127.5 we
+    // multiply by 2 when packing and divide by 2 when unpacking. Because of that we effectively
+    // handle steps of 0.5 in the supported range, lower steps don't provide visual benefits anyway.
+    // That said, if we need to increase the supported range, we might have to avoid the packing.
+
     if (!(m_flags & CornerRadiusSet)) {
         m_flags |= CornerRadiusSet;
-        m_cornerRadius = 24;
+        m_cornerRadius = 24 * 2;
         update();
         Q_EMIT radiusChanged();
     }
 
-    const quint8 newCornerRadius = qMax(0, qMin(128, cornerRadius));
+    const quint8 newCornerRadius = static_cast<quint8>(qBound(0.0, cornerRadius, 127.5) * 2.0);
     if (m_cornerRadius != newCornerRadius) {
         m_cornerRadius = newCornerRadius;
         update();
@@ -308,27 +328,32 @@ void UCUbuntuShape::setCornerRadius(int cornerRadius)
     }
 }
 
-/*! \qmlproperty string UbuntuShape::borderSource
+/*! \qmlproperty enumeration UbuntuShape::style
 
-    This property defines the look of the shape borders. The supported strings are \c
-    "radius_idle.sci" providing an idle button style and \c "radius_pressed.sci" providing a pressed
-    button style. Any other strings (like the empty one \c "") disables styling. The default value
-    is \c "radius_idle.sci".
+    This property defines the graphical style of the UbuntuShape. The default value is \c
+    UbuntuShape.Plain.
+
+    \note Setting this disables support for the deprecated \l borderSource property.
+
+    \list
+    \li \b UbuntuShape.Plain - no effects applied
+    \li \b UbuntuShape.Sunken - inner shadow slightly moved downwards and bevelled bottom
+    \endlist
 */
-void UCUbuntuShape::setBorderSource(const QString& borderSource)
+void UCUbuntuShape::setStyle(Style style)
 {
-    Border border;
-    if (borderSource.endsWith(QString("radius_idle.sci"))) {
-        border = IdleBorder;
-    } else if (borderSource.endsWith(QString("radius_pressed.sci"))) {
-        border = PressedBorder;
-    } else {
-        border = RawBorder;
-    }
-    if (m_border != border) {
-        m_border = border;
+    if (!(m_flags & StyleSet)) {
+        m_flags |= StyleSet;
+        m_style = Plain;
         update();
         Q_EMIT borderSourceChanged();
+    }
+
+    const quint8 newStyle = style;
+    if (m_style != newStyle) {
+        m_style = newStyle;
+        update();
+        Q_EMIT styleChanged();
     }
 }
 
@@ -711,11 +736,40 @@ void UCUbuntuShape::setBackgroundMode(BackgroundMode backgroundMode)
 void UCUbuntuShape::setRadius(const QString& radius)
 {
     if (!(m_flags & CornerRadiusSet)) {
-        const Radius newRadius = (radius == "medium") ? MediumRadius : SmallRadius;
+        const quint8 newRadius = (radius == "medium") ? MediumRadius : SmallRadius;
         if (m_cornerRadius != newRadius) {
             m_cornerRadius = newRadius;
             update();
             Q_EMIT radiusChanged();
+        }
+    }
+}
+
+/*! \qmlproperty string UbuntuShape::borderSource
+    \deprecated
+
+    This property defines the look of the shape borders. The supported strings are \c
+    "radius_idle.sci" providing an idle button style and \c "radius_pressed.sci" providing a pressed
+    button style. Any other strings (like the empty one \c "") provides a plain shape with no
+    borders. The default value is \c "radius_idle.sci".
+
+    \note Use \l style instead.
+*/
+void UCUbuntuShape::setBorderSource(const QString& borderSource)
+{
+    if (!(m_flags & StyleSet)) {
+        quint8 style;
+        if (borderSource.endsWith(QString("radius_idle.sci"))) {
+            style = Sunken;
+        } else if (borderSource.endsWith(QString("radius_pressed.sci"))) {
+            style = Pressed;
+        } else {
+            style = Plain;
+        }
+        if (m_style != style) {
+            m_style = style;
+            update();
+            Q_EMIT borderSourceChanged();
         }
     }
 }
@@ -1083,9 +1137,8 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
     }
 
     // Get the corner radius size. When the item width and/or height is less than 2 * radius, the
-    // radius size is scaled down accordingly. We add 2 to the exposed radius otherwise sizes of 1
-    // and 2 look like 0.
-    float radius = (m_flags & CornerRadiusSet) ? m_cornerRadius + 2 :
+    // radius size is scaled down accordingly.
+    float radius = (m_flags & CornerRadiusSet) ? (m_cornerRadius * 0.5f + cornerRadiusOffset) :
         (m_cornerRadius == SmallRadius ? smallRadiusGU : mediumRadiusGU)
             * UCUnits::instance().gridUnit();
     const float scaledDownRadius = qMin(itemSize.width(), itemSize.height()) * 0.5f;
@@ -1172,8 +1225,18 @@ void UCUbuntuShape::updateMaterial(QSGNode* node, float radius, quint32 shapeTex
     // Mapping of radius range from [0, 10] to [0, 1] with clamping, plus quantization.
     materialData->distanceAAFactor = qMin(radius / 10.0f, 1.0f) * 255.0f;
 
-    if (m_border != UCUbuntuShape::RawBorder) {
-        flags |= ShapeMaterial::Data::Styled;
+    // When the radius is equal to cornerRadiusOffset (which means cornerRadius is 0), no style is
+    // flagged so that a dedicated (statically flow controlled) shaved off shader can be used for
+    // optimal performance.
+    if (radius > cornerRadiusOffset) {
+        const quint8 styleFlags[] = {
+            ShapeMaterial::Data::Plain, ShapeMaterial::Data::Sunken,
+            ShapeMaterial::Data::Sunken | ShapeMaterial::Data::Pressed
+        };
+        flags |= styleFlags[m_style];
+    } else {
+        const quint8 styleFlags[] = { 0, 0, ShapeMaterial::Data::Pressed };
+        flags |= styleFlags[m_style];
     }
 
     materialData->flags = flags;

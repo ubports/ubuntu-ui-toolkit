@@ -41,12 +41,12 @@ public:
 private:
     QOpenGLFunctions* m_functions;
     int m_matrixId;
-    int m_opacityId;
+    int m_factorsId;
     int m_sourceOpacityId;
     int m_distanceAAId;
     int m_dfdtFlipId;
     int m_texturedId;
-    int m_styledId;
+    int m_styleId;
 };
 
 // --- Scene graph material ---
@@ -60,7 +60,9 @@ public:
             HorizontallyRepeated = (1 << 1),
             VerticallyRepeated   = (1 << 2),
             Repeated             = (HorizontallyRepeated | VerticallyRepeated),
-            Styled               = (1 << 3)
+            Plain                = (1 << 3),
+            Sunken               = (1 << 4),
+            Pressed              = (1 << 5),
         };
         QSGTextureProvider* sourceTextureProvider;
         quint32 shapeTexture;
@@ -118,10 +120,10 @@ class UCUbuntuShape : public QQuickItem
     Q_OBJECT
 
     // Shape properties.
-    Q_PROPERTY(int cornerRadius READ cornerRadius WRITE setCornerRadius NOTIFY cornerRadiusChanged
+    Q_ENUMS(Style)
+    Q_PROPERTY(qreal cornerRadius READ cornerRadius WRITE setCornerRadius NOTIFY cornerRadiusChanged
                REVISION 1)
-    Q_PROPERTY(QString borderSource READ borderSource WRITE setBorderSource
-               NOTIFY borderSourceChanged)
+    Q_PROPERTY(Style style READ style WRITE setStyle NOTIFY styleChanged REVISION 1)
 
     // Source properties.
     Q_ENUMS(FillMode)
@@ -158,6 +160,8 @@ class UCUbuntuShape : public QQuickItem
 
     // Deprecated properties.
     Q_PROPERTY(QString radius READ radius WRITE setRadius NOTIFY radiusChanged)
+    Q_PROPERTY(QString borderSource READ borderSource WRITE setBorderSource
+               NOTIFY borderSourceChanged)
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
     Q_PROPERTY(QColor gradientColor READ gradientColor WRITE setGradientColor
                NOTIFY gradientColorChanged)
@@ -171,18 +175,17 @@ class UCUbuntuShape : public QQuickItem
 public:
     UCUbuntuShape(QQuickItem* parent=0);
 
+    enum Style { Plain = 0, Sunken = 1 };  // Don't forget to update private enum if extended.
     enum BackgroundMode { SolidColor = 0, VerticalGradient = 1 };
     enum HAlignment { AlignLeft = 0, AlignHCenter = 1, AlignRight = 2 };
     enum VAlignment { AlignTop = 0, AlignVCenter = 1, AlignBottom = 2 };
     enum FillMode { Stretch = 0, PreserveAspectFit = 1, PreserveAspectCrop = 2, Pad = 3 };
     enum WrapMode { Transparent = 0, Repeat = 1 };
 
-    int cornerRadius() const { return (m_flags & CornerRadiusSet) ? m_cornerRadius : 16; }
-    void setCornerRadius(int cornerRadius);
-    QString borderSource() const {
-        return (m_border == IdleBorder) ? "radius_idle.sci" :
-                ((m_border == PressedBorder) ? "radius_pressed.sci" : ""); }
-    void setBorderSource(const QString& borderSource);
+    qreal cornerRadius() const { return (m_flags & CornerRadiusSet) ? m_cornerRadius * 0.5 : 24.0; }
+    void setCornerRadius(qreal cornerRadius);
+    Style style() const { return (m_flags & StyleSet) ? static_cast<Style>(m_style) : Plain; }
+    void setStyle(Style style);
 
     QVariant source() const {
         return QVariant::fromValue((m_flags & SourceApiSet) ? m_source : NULL); }
@@ -222,6 +225,11 @@ public:
         return (m_flags & CornerRadiusSet) ? "" :
             ((m_cornerRadius == SmallRadius) ? "small" : "medium"); }
     void setRadius(const QString& radius);
+    QString borderSource() const {
+        return (m_flags & StyleSet) ? "" :
+            ((m_style == Plain) ? "" :
+             ((m_style == Sunken) ? "radius_idle.sci" : "radius_pressed.sci")); }
+    void setBorderSource(const QString& borderSource);
     QColor color() const {
         return (m_flags & BackgroundApiSet) ?
             QColor(0, 0, 0, 0) :
@@ -246,7 +254,7 @@ public:
 
 Q_SIGNALS:
     Q_REVISION(1) void cornerRadiusChanged();
-    void borderSourceChanged();
+    Q_REVISION(1) void styleChanged();
 
     Q_REVISION(1) void sourceChanged();
     Q_REVISION(1) void sourceOpacityChanged();
@@ -263,6 +271,7 @@ Q_SIGNALS:
     Q_REVISION(1) void backgroundModeChanged();
 
     void radiusChanged();
+    void borderSourceChanged();
     void colorChanged();
     void gradientColorChanged();
     void imageChanged();
@@ -300,15 +309,16 @@ private:
         float itemWidth, float itemHeight, FillMode fillMode, HAlignment horizontalAlignment,
         VAlignment verticalAlignment, const QSize& textureSize);
 
-    enum Radius { SmallRadius, MediumRadius };
-    enum Border { RawBorder, IdleBorder, PressedBorder };
+    enum { Pressed = 2 };  // Style extension (to keep support for deprecated styles).
+    enum { SmallRadius = 0, MediumRadius = 1 };
     enum {
         CornerRadiusSet      = (1 << 0),
-        GradientColorSet     = (1 << 1),
-        BackgroundApiSet     = (1 << 2),
-        SourceApiSet         = (1 << 3),
-        Stretched            = (1 << 4),
-        DirtySourceTransform = (1 << 5)
+        StyleSet             = (1 << 1),
+        GradientColorSet     = (1 << 2),
+        BackgroundApiSet     = (1 << 3),
+        SourceApiSet         = (1 << 4),
+        Stretched            = (1 << 5),
+        DirtySourceTransform = (1 << 6)
     };
 
     QQuickItem* m_source;
@@ -318,7 +328,7 @@ private:
     QVector2D m_sourceScale;
     QVector2D m_sourceTranslation;
     QVector4D m_sourceTransform;
-    Border m_border : 2;
+    quint8 m_style : 2;
     HAlignment m_imageHorizontalAlignment : 2;
     VAlignment m_imageVerticalAlignment : 2;
     BackgroundMode m_backgroundMode : 1;
@@ -327,6 +337,7 @@ private:
     FillMode m_sourceFillMode : 2;
     WrapMode m_sourceHorizontalWrapMode : 1;
     WrapMode m_sourceVerticalWrapMode : 1;
+    quint8 m_padding : 1;  // Unused, explicit bitfield padding (16 bits).
     quint8 m_sourceOpacity;
     quint8 m_cornerRadius;
     quint8 m_flags;
