@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.3
+import QtQuick 2.4
 import Ubuntu.Components.Styles 1.2 as Styles
 import Ubuntu.Components 1.2
 
@@ -37,6 +37,7 @@ Styles.ListItemStyle {
         right: styledItem.contentItem.right
         rightMargin: -styledItem.contentItem.anchors.rightMargin
     }
+    LayoutMirroring.childrenInherit: true
 
     // leading/trailing panels
     Component {
@@ -316,10 +317,11 @@ Styles.ListItemStyle {
         // action triggered
         property Action selectedAction
         // swipe handling
-        readonly property bool swiped: listItemStyle.x != styledItem.x && !styledItem.selectMode
-        readonly property Item swipedPanel: listItemStyle.x > 0 ? leadingLoader.item : trailingLoader.item
-        readonly property bool leadingPanel: listItemStyle.x > 0
-        readonly property real swipedOffset: leadingPanel ? listItemStyle.x : -listItemStyle.x
+        readonly property bool swiped: listItemStyle.x != styledItem.x && !styledItem.selectMode && !styledItem.dragMode
+        readonly property Item swipedPanel: leadingPanel ? leadingLoader.item : trailingLoader.item
+        readonly property bool leadingPanel: listItemStyle.LayoutMirroring.enabled ? (listItemStyle.x < 0) : (listItemStyle.x > 0)
+        readonly property real swipedOffset: (leadingPanel ? listItemStyle.x : -listItemStyle.x) *
+                                             (listItemStyle.LayoutMirroring.enabled ? -1 : 1)
         readonly property real panelWidth: swipedPanel && swipedPanel.hasOwnProperty("panelWidth") ? swipedPanel.panelWidth : 0
         property real prevX: 0.0
         property real snapChangerLimit: 0.0
@@ -329,10 +331,10 @@ Styles.ListItemStyle {
         // update snap direction
         function updateSnapDirection() {
             if (prevX < listItemStyle.x && (snapChangerLimit <= listItemStyle.x)) {
-                snapIn = leadingPanel;
+                snapIn = (listItemStyle.LayoutMirroring.enabled !== leadingPanel);
                 snapChangerLimit = listItemStyle.x - threshold;
             } else if (prevX > listItemStyle.x && (listItemStyle.x < snapChangerLimit)) {
-                snapIn = !leadingPanel;
+                snapIn = (listItemStyle.LayoutMirroring.enabled === leadingPanel);
                 snapChangerLimit = listItemStyle.x + threshold;
             }
             prevX = listItemStyle.x;
@@ -341,12 +343,16 @@ Styles.ListItemStyle {
         function snap() {
             var snapPos = (swipedOffset > units.gu(2) && snapIn) ? panelWidth : 0.0;
             snapPos *= leadingPanel ? 1 : -1;
+            // invert snapPos on RTL
+            snapPos *= listItemStyle.LayoutMirroring.enabled ? -1 : 1;
             snapAnimation.snapTo(snapPos);
         }
         // handle elasticity on overshoot
         function overshoot(event) {
             var offset = event.content.x - styledItem.contentItem.anchors.leftMargin;
             offset *= leadingPanel ? 1 : -1;
+            // invert offset on RTL
+            offset *= listItemStyle.LayoutMirroring.enabled ? -1 : 1;
             if (offset > panelWidth) {
                 // do elastic move
                 event.content.x = styledItem.contentItem.x + (event.to.x - event.from.x) / 2;

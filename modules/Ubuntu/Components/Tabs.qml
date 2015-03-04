@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
+import QtQuick 2.4
 
 /*!
     \qmltype Tabs
@@ -32,8 +32,8 @@ import QtQuick 2.0
 
     Example:
     \qml
-        import QtQuick 2.0
-        import Ubuntu.Components 1.1
+        import QtQuick 2.4
+        import Ubuntu.Components 1.2
         import Ubuntu.Components.ListItems 1.0 as ListItem
 
         MainView {
@@ -103,8 +103,8 @@ import QtQuick 2.0
     \l PageStack, and pushing other pages on top of that, as is shown in the following example:
 
     \qml
-        import QtQuick 2.0
-        import Ubuntu.Components 1.1
+        import QtQuick 2.4
+        import Ubuntu.Components 1.2
 
         MainView {
             id: mainView

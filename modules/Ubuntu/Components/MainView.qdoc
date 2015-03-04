@@ -25,7 +25,7 @@
     The simplest way to use a MainView is to include a single \l Page object
     inside the MainView:
     \qml
-        import QtQuick 2.3
+        import QtQuick 2.4
         import Ubuntu.Components 1.2
 
         MainView {
@@ -55,7 +55,7 @@
     If the \l Page inside the MainView includes a Flickable with enough contents for scrolling,
     the header will automatically hide and show when the user scrolls up or down:
     \qml
-        import QtQuick 2.3
+        import QtQuick 2.4
         import Ubuntu.Components 1.2
 
         MainView {
@@ -126,7 +126,7 @@
   For example, in order for the MainView to draw a color gradient beneath
   the content:
   \qml
-      import QtQuick 2.3
+      import QtQuick 2.4
       import Ubuntu.Components 1.2
 
       MainView {
