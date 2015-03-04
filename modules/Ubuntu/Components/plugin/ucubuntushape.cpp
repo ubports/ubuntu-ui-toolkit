@@ -445,12 +445,12 @@ void UCUbuntuShape::setSource(const QVariant& source)
 
     \note Setting this disables support for the deprecated \l image property.
 */
-void UCUbuntuShape::setSourceOpacity(qreal sourceOpacity)
+void UCUbuntuShape::setSourceOpacity(float sourceOpacity)
 {
     dropImageSupport();
 
     const quint8 sourceOpacityPacked =
-        qMax(0.0f, qMin(1.0f, static_cast<float>(sourceOpacity))) * static_cast<float>(0xff);
+        qMax(0.0f, qMin(1.0f, sourceOpacity)) * static_cast<float>(0xff);
     if (m_sourceOpacity != sourceOpacityPacked) {
         m_sourceOpacity = sourceOpacityPacked;
         update();
