@@ -20,6 +20,7 @@
 
      \part General Topics
      \list
+     \li \l{ubuntu-whatsnew.html}{What's new in version 1.2?}
      \li \l{ubuntu-layouts.html}{Layouts} describes a flexible layouting engine
      to ease the development of responsive user interfaces.
      \li \l {Resolution Independence} describes the facilities that should be
@@ -31,11 +32,24 @@
      \part Basic QML Types
      Available through:
      \code
-         import Ubuntu.Components 1.1
+         import Ubuntu.Components 1.2
      \endcode
      \annotatedlist ubuntu
 
-     \part List Items
+     \part List views, list items
+     Components with standardized view items, with conditional actions, multiselect
+     and reordering support on scrollable views. Replaces the Ubuntu.Components.ListItems
+     module components.
+
+     Available through:
+     \code
+         import Ubuntu.Components 1.2
+     \endcode
+     \annotatedlist ubuntu-listitem
+
+     \part List Items module - deprecated
+     This module contains the old set of list items.
+
      Available through:
      \code
          import Ubuntu.Components.ListItems 1.0
@@ -66,7 +80,7 @@
      \part Theming Elements
      Available through:
      \code
-         import Ubuntu.Components 1.1
+         import Ubuntu.Components 1.2
      \endcode
      \annotatedlist theming
 
@@ -75,28 +89,28 @@
      Themes must make sure that these interfaces are all implemented.
      Available through:
      \code
-         import Ubuntu.Components.Styles 1.1
+         import Ubuntu.Components.Styles 1.2
      \endcode
      \annotatedlist style-api
 
      \part Resolution Independence Items
      Available through:
      \code
-         import Ubuntu.Components 1.1
+         import Ubuntu.Components 1.2
      \endcode
      \annotatedlist resolution-independence
 
      \part Parsing Command-Line Arguments
      Available through:
      \code
-         import Ubuntu.Components 1.1
+         import Ubuntu.Components 1.2
      \endcode
      \annotatedlist ubuntu-commandline
 
      \part Services
      Available through:
      \code
-         import Ubuntu.Components 1.1
+         import Ubuntu.Components 1.2
      \endcode
      \annotatedlist ubuntu-services
 
@@ -113,9 +127,4 @@
          import Ubuntu Test 1.0
      \endcode
      \annotatedlist ubuntu-test
-
-     \part Unstable QML Types
-     The following section lists components which will be part of future releases.
-     Their interface is unstable and thus should not be used in production applications.
-     \annotatedlist unstable-ubuntu-listitems
  */

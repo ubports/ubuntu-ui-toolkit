@@ -15,24 +15,52 @@
  */
 import QtQuick 2.0
 import QtTest 1.0
-import Ubuntu.Test 0.1
-import Ubuntu.Components 0.1
-import Ubuntu.Components.Popups 0.1
+import Ubuntu.Test 1.0
+import Ubuntu.Components 1.2
+import Ubuntu.Components.Popups 1.0
 
 MainView {
     id: main
-    width: units.gu(40)
+    width: units.gu(50)
     height: units.gu(71)
 
-    Button {
-        id: caller
-        anchors.centerIn: parent
-        text: "Press me"
-        onClicked: {
-            var popover = PopupUtils.open(popoverComponent, caller);
-            popoverSpy.target = testCase.findChild(popover, "popover_foreground");
-            popoverSpy.clear();
+    Rectangle {
+        id: rect
+        y: main.height / 2
+        height: units.gu(10)
+        width: height
+
+        Button {
+            id: pressMe
+            anchors.top: parent.top
+            text: "Press me"
+            onClicked: {
+                testCase.resetPositions();
+                var popover = PopupUtils.open(popoverComponent, pressMe);
+                popoverSpy.target = testCase.findChild(popover, "popover_foreground");
+                popoverSpy.clear();
+                pressMe.parent.height = units.gu(25)
+                pressMe.anchors.top = parent.bottom
+            }
         }
+
+        Button {
+            id: pushMe
+            anchors.bottom: parent.bottom
+            text: "Push me"
+            onClicked: {
+                testCase.resetPositions();
+                var popover = PopupUtils.open(popoverComponent, pushMe);
+                popoverSpy.target = testCase.findChild(popover, "popover_foreground");
+                popoverSpy.clear();
+                rect.y = main.height / 10
+            }
+        }
+    }
+    Label {
+        id: other
+        text: "Ignore me"
+        anchors.centerIn: parent
     }
 
     // spy to listen on the popover foreground's hideCompleted() signal
@@ -58,7 +86,13 @@ MainView {
         name: "PopoverTests"
         when: windowShown
 
+        function resetPositions() {
+            pressMe.parent.height = units.gu(10)
+            rect.y = main.height / 2
+        }
+
         function cleanup() {
+            resetPositions()
             popoverSpy.target = null;
             popoverSpy.clear();
             waitForRendering(main, 500);
@@ -73,12 +107,35 @@ MainView {
         }
 
         function test_dismiss_on_click(data) {
-            mouseClick(caller, caller.width / 2, caller.height / 2);
-            waitForRendering(caller);
+            mouseClick(pressMe, pressMe.width / 2, pressMe.height / 2);
+            waitForRendering(pressMe);
             verify(popoverSpy.target !== null, "The popover did not open");
+
             // dismiss
             mouseClick(main, 10, 10, data.button);
             popoverSpy.wait();
+        }
+
+        function test_popover_follows_pointerTarget_bug1199502_data() {
+            return [
+                { tag: "Moving pointerTarget", button: pressMe, dir: "down", y: 318 },
+                // FIXME: { tag: "Moving parent", button: pushMe, dir: "up", y: 142.8 },
+                // https://bugs.launchpad.net/ubuntu/+source/ubuntu-ui-toolkit/+bug/1427557
+            ]
+        }
+        function test_popover_follows_pointerTarget_bug1199502(data) {
+            mouseClick(data.button, data.button.width / 2, data.button.height / 2);
+            waitForRendering(data.button);
+            var dir = popoverSpy.target.direction
+            var popoverY = popoverSpy.target.y
+
+            // dismiss
+            mouseClick(main, 10, 10, Qt.LeftButton);
+            popoverSpy.wait();
+
+            // ensure popover was next to caller
+            compare(dir, data.dir, "Popover arrow is wrong")
+            compare(popoverY, data.y, "Popover isn't pointing at the caller")
         }
     }
 }

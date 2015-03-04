@@ -34,6 +34,11 @@ AbstractButton
     property Gradient gradient
     property font font
     property string iconPosition
+Captions 1.2
+ColumnLayout
+    property int captionStyle
+    property Label title
+    property Label subtitle
 CheckBox 0.1 1.0
 AbstractButton
     property bool checked
@@ -1007,6 +1012,10 @@ plugins.qmltypes
     name: "exited"
     Parameter { name: "event"; type: "QQuickMouseEvent"; isPointer: true }
     Parameter { name: "host"; type: "QQuickItem"; isPointer: true }
+    name: "UCNamespace"
+    prototype: "QObject"
+    exports: ["Ubuntu 1.2"]
+    name: "CaptionsStyle"
     name: "UCQQuickImageExtension"
     prototype: "QQuickImageBase"
     exports: ["QQuickImageBase 0.1", "QQuickImageBase 1.0"]
@@ -1098,6 +1107,11 @@ plugins.qmltypes
     Signal { name: "backgroundColorChanged"; revision: 1 }
     Signal { name: "secondaryBackgroundColorChanged"; revision: 1 }
     Signal { name: "backgroundModeChanged"; revision: 1 }
+    name: "UCUbuntuShapeOverlay"
+    prototype: "UCUbuntuShape"
+    exports: ["UbuntuShapeOverlay 1.2"]
+    Property { name: "overlayGeometry"; type: "QRectF" }
+    Property { name: "overlayColor"; type: "QColor" }
     name: "UCUnits"
     prototype: "QObject"
     exports: ["UCUnits 0.1", "UCUnits 1.0"]

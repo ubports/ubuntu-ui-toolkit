@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.2
-import Ubuntu.Components 1.1
+import QtQuick 2.4
+import Ubuntu.Components 1.2
 
 /*!
     \qmltype PullToRefresh
@@ -32,9 +32,9 @@ import Ubuntu.Components 1.1
     component by defining the completion clause to the \l refreshing property.
 
     \qml
-    import QtQuick 2.2
+    import QtQuick 2.4
     import QtQuick.XmlListModel 2.0
-    import Ubuntu.Components 1.1
+    import Ubuntu.Components 1.2
     import Ubuntu.Components.ListItems 1.0
 
     MainView {
@@ -82,9 +82,9 @@ import Ubuntu.Components 1.1
     to be shown by the component. Custom implementations can hold any component,
     which will be anchor filled to the component itself.
     \qml
-    import QtQuick 2.2
+    import QtQuick 2.4
     import QtQuick.XmlListModel 2.0
-    import Ubuntu.Components 1.1
+    import Ubuntu.Components 1.2
     import Ubuntu.Components.ListItems 1.0
 
     MainView {
@@ -130,9 +130,9 @@ import Ubuntu.Components 1.1
     \note When declared as child of Flickable, set parent to the flickable explicitly
     so the component does not land in the \c content of Flickable.
     \qml
-    import QtQuick 2.2
+    import QtQuick 2.4
     import QtQuick.XmlListModel 2.0
-    import Ubuntu.Components 1.1
+    import Ubuntu.Components 1.2
     import Ubuntu.Components.ListItems 1.0
 
     MainView {

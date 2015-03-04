@@ -224,8 +224,8 @@ UCAlarm::Error UCAlarmPrivate::checkRepeatingWeekly()
  *
  * Example usage:
  * \qml
- * import QtQuick 2.0
- * import Ubuntu.Components 1.1
+ * import QtQuick 2.4
+ * import Ubuntu.Components 1.2
  *
  * Rectangle {
  *     width: units.gu(40)
