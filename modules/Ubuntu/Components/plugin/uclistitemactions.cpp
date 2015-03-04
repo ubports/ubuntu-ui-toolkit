@@ -40,7 +40,7 @@ UCListItemActionsPrivate::~UCListItemActionsPrivate()
  * \inherits QtQObject
  * \inqmlmodule Ubuntu.Components 1.2
  * \since Ubuntu.Components 1.2
- * \ingroup unstable-ubuntu-listitems
+ * \ingroup ubuntu-listitem
  * \brief Provides configuration for actions to be added to a ListItem.
  *
  * ListItem accepts actions that can be configured to appear when swiped to left
@@ -62,7 +62,7 @@ UCListItemActionsPrivate::~UCListItemActionsPrivate()
  * The examples below illustrate the worst and best practice when used in a ListView.
  * The worst case:
  * \qml
- * import QtQuick 2.2
+ * import QtQuick 2.4
  * import Ubuntu.Components 1.2
  * MainView {
  *     width: units.gu(40)
@@ -99,7 +99,7 @@ UCListItemActionsPrivate::~UCListItemActionsPrivate()
  *
  * This example can be optimized by sharing the action arrays between the items:
  * \qml
- * import QtQuick 2.2
+ * import QtQuick 2.4
  * import Ubuntu.Components 1.2
  * MainView {
  *     width: units.gu(40)
@@ -177,7 +177,7 @@ UCListItemActions::~UCListItemActions()
  * be specified which will be clamped between height and the maximum width of the
  * list item divided by the number of actions in the list.
  * \qml
- * import QtQuick 2.2
+ * import QtQuick 2.4
  * import Ubuntu.Components 1.2
  *
  * MainView {

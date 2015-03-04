@@ -71,7 +71,7 @@ T *createAttachedFilter(QObject *owner, const QString &qmlName)
    MouseArea will no longer receive other mouse events.
 
    \qml
-   import QtQuick 2.0
+   import QtQuick 2.4
 
    TextInput {
        width: 100
@@ -96,8 +96,8 @@ T *createAttachedFilter(QObject *owner, const QString &qmlName)
    The previous code sample using Mouse filter, which will print the pressed and
    released mouse buttons would look as follows:
    \qml
-   import QtQuick 2.0
-   import Ubuntu.Components 1.1
+   import QtQuick 2.4
+   import Ubuntu.Components 1.2
 
    TextInput {
        width: 100
@@ -118,8 +118,8 @@ T *createAttachedFilter(QObject *owner, const QString &qmlName)
 
    Example of handling right button clicks over a TextInput:
    \qml
-   import QtQuick 2.0
-   import Ubuntu.Components 1.1
+   import QtQuick 2.4
+   import Ubuntu.Components 1.2
 
    TextInput {
        width: 100
@@ -140,8 +140,8 @@ T *createAttachedFilter(QObject *owner, const QString &qmlName)
    add new functionality to the primitive.
 
    \qml
-   import QtQuick 2.0
-   import Ubuntu.Components 1.1
+   import QtQuick 2.4
+   import Ubuntu.Components 1.2
 
    TextInput {
        width: 100
@@ -200,8 +200,8 @@ T *createAttachedFilter(QObject *owner, const QString &qmlName)
    to the items in the list. In the following example the mouse press in red rectangle
    will be printed as well as the proxied mouse press from the main item.
    \qml
-   import QtQuick 2.0
-   import Ubuntu.Components 1.1
+   import QtQuick 2.4
+   import Ubuntu.Components 1.2
 
    Item {
        id: main
@@ -253,8 +253,8 @@ T *createAttachedFilter(QObject *owner, const QString &qmlName)
    is only valid to press and release events, double-click or mouse position change
    will be blocked by the MouseArea still.
    \qml
-   import QtQuick 2.0
-   import Ubuntu.Components 1.1
+   import QtQuick 2.4
+   import Ubuntu.Components 1.2
 
    MouseArea {
        id: topArea
@@ -288,8 +288,8 @@ T *createAttachedFilter(QObject *owner, const QString &qmlName)
    can be controlled through the \l priority property. In the following example
    we make sure the TextInput always receives the events before the filter:
    \qml
-   import QtQuick 2.0
-   import Ubuntu.Components 1.1
+   import QtQuick 2.4
+   import Ubuntu.Components 1.2
 
    TextInput {
        id: input
@@ -315,8 +315,8 @@ T *createAttachedFilter(QObject *owner, const QString &qmlName)
    are emitted during a mouse move.
 
    \qml
-   import QtQuick 2.0
-   import Ubuntu.Components 1.1
+   import QtQuick 2.4
+   import Ubuntu.Components 1.2
 
    TextInput {
        width: units.gu(40)

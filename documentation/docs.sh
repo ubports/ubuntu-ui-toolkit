@@ -45,8 +45,6 @@ echo docs: Online done.
 qdoc $SRC/ubuntu-ui-toolkit-online-indexes.qdocconf 2> /dev/null
 echo docs: Cross-referenced done.
 
-sed -r -i 's@("main-content">)@\1<ul class="breadcrumb">@g' $1/html/*.html
-sed -r -i 's@(<div class="toc">|<h1 class="title">)@</ul>\1@g' $1/html/*.html
 sed -r -i 's@(</p>)<p/>@\1@g' $1/html/*.html
 sed -r -i 's@(<a class="(next|prev)Page" href=".+">)(.+)(</a>)@<li>\1\3\4</li>@g' $1/html/*.html
 sed -r -i 's@(href="qmlmodule-ubuntu-components0-ubuntu-components-0-1.html">Basic QML Types)@href="overview-ubuntu-sdk.html">Ubuntu User Interface Toolkit@g' $1/html/*.html

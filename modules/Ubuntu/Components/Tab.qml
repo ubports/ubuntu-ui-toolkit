@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
+import QtQuick 2.4
 
 /*!
     \qmltype Tab
@@ -49,7 +49,7 @@ PageTreeNode {
       \l Page can control the height and prevent overlapping the header.
       Example:
       \qml
-        import QtQuick 2.3
+        import QtQuick 2.4
         import Ubuntu.Components 1.2
         MainView {
             width: units.gu(40)

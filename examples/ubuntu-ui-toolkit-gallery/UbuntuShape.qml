@@ -26,7 +26,7 @@ Template {
 
         TemplateRow {
             title: i18n.tr("Color")
-            titleWidth: units.gu(7)
+            titleWidth: units.gu(6)
             height: units.gu(8)
 
             UbuntuShape {
@@ -46,7 +46,7 @@ Template {
 
         TemplateRow {
             title: i18n.tr("Image")
-            titleWidth: units.gu(7)
+            titleWidth: units.gu(6)
             height: units.gu(8)
 
             UbuntuShape {
@@ -65,7 +65,7 @@ Template {
 
         TemplateRow {
             title: i18n.tr("Radius")
-            titleWidth: units.gu(7)
+            titleWidth: units.gu(6)
             height: units.gu(8)
 
             UbuntuShape {
@@ -98,7 +98,7 @@ Template {
 
         TemplateRow {
             title: i18n.tr("Sizes")
-            titleWidth: units.gu(7)
+            titleWidth: units.gu(6)
             height: units.gu(20)
 
             UbuntuShape {
