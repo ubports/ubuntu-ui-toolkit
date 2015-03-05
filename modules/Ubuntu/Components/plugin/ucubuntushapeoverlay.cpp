@@ -154,12 +154,12 @@ UCUbuntuShapeOverlay::UCUbuntuShapeOverlay(QQuickItem* parent)
 void UCUbuntuShapeOverlay::setOverlayGeometry(const QRectF& overlayGeometry)
 {
     // Crop rectangle and pack to 16-bit unsigned integers.
-    const float x = qMax(0.0f, qMin(1.0f, static_cast<float>(overlayGeometry.x())));
+    const float x = qBound(0.0f, static_cast<float>(overlayGeometry.x()), 1.0f);
     float width = qMax(0.0f, static_cast<float>(overlayGeometry.width()));
     if ((x + width) > 1.0f) {
         width += 1.0f - (x + width);
     }
-    const float y = qMax(0.0f, qMin(1.0f, static_cast<float>(overlayGeometry.y())));
+    const float y = qBound(0.0f, static_cast<float>(overlayGeometry.y()), 1.0f);
     float height = qMax(0.0f, static_cast<float>(overlayGeometry.height()));
     if ((y + height) > 1.0f) {
         height += 1.0f - (y + height);
