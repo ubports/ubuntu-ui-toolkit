@@ -23,6 +23,7 @@
 
 #include "plugin.h"
 #include "uctheme.h"
+#include "ucdeprecatedtheme.h"
 
 #include <QtQml/QQmlContext>
 #include "i18n.h"
@@ -205,7 +206,7 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     // that can be accessed from any object
     context->setContextProperty("QuickUtils", &QuickUtils::instance());
 
-    UCTheme::instance().registerToContext(context);
+    UCDeprecatedTheme::instance().registerToContext(context);
 
     context->setContextProperty("i18n", &UbuntuI18n::instance());
     ContextPropertyChangeListener *i18nChangeListener =

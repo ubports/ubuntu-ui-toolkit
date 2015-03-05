@@ -78,7 +78,8 @@ HEADERS += plugin.h \
     ucserviceproperties_p.h \
     privates/listitemdragarea.h \
     privates/listitemdraghandler.h \
-    ucnamespace.h
+    ucnamespace.h \
+    ucdeprecatedtheme.h
 
 SOURCES += plugin.cpp \
     uctheme.cpp \
@@ -124,7 +125,8 @@ SOURCES += plugin.cpp \
     ucserviceproperties.cpp \
     privates/listitemdragarea.cpp \
     privates/listitemdraghandler.cpp \
-    ucnamespace.cpp
+    ucnamespace.cpp \
+    ucdeprecatedtheme.cpp
 
 # adapters
 SOURCES += adapters/alarmsadapter_organizer.cpp
