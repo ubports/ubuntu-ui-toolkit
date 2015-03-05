@@ -23,7 +23,7 @@
 
 class QQmlComponent;
 class QQmlContext;
-class UCTheme;
+class UCStyleSet;
 class UCDeprecatedTheme : public QObject
 {
     Q_OBJECT
@@ -49,7 +49,7 @@ Q_SIGNALS:
     void paletteChanged();
 
 private:
-    UCTheme *m_theme;
+    UCStyleSet *m_theme;
 };
 
 #endif // UCDEPRECATEDTHEME_H

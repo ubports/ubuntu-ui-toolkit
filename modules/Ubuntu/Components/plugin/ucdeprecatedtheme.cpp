@@ -17,7 +17,7 @@
  */
 
 #include "ucdeprecatedtheme.h"
-#include "uctheme.h"
+#include "ucstyleset.h"
 #include "listener.h"
 #include <QtQml/QQmlComponent>
 #include <QtQml/QQmlContext>
@@ -25,7 +25,7 @@
 
 /*!
     \qmltype Theme
-    \instantiates UCTheme
+    \instantiates UCStyleSet
     \inqmlmodule Ubuntu.Components 1.1
     \ingroup theming
     \brief The Theme class provides facilities to interact with the current theme.
@@ -65,10 +65,10 @@
 */
 UCDeprecatedTheme::UCDeprecatedTheme(QObject *parent)
     : QObject(parent)
-    , m_theme(new UCTheme(this))
+    , m_theme(new UCStyleSet(this))
 {
-    connect(m_theme, &UCTheme::nameChanged, this, &UCDeprecatedTheme::nameChanged);
-    connect(m_theme, &UCTheme::paletteChanged, this, &UCDeprecatedTheme::paletteChanged);
+    connect(m_theme, &UCStyleSet::nameChanged, this, &UCDeprecatedTheme::nameChanged);
+    connect(m_theme, &UCStyleSet::paletteChanged, this, &UCDeprecatedTheme::paletteChanged);
 }
 
 /*!

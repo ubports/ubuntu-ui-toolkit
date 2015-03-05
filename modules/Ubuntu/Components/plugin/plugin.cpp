@@ -22,7 +22,7 @@
 #include <QtGui/QScreen>
 
 #include "plugin.h"
-#include "uctheme.h"
+#include "ucstyleset.h"
 #include "ucdeprecatedtheme.h"
 
 #include <QtQml/QQmlContext>
@@ -188,6 +188,9 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterUncreatableType<UCViewItemsAttached>(uri, 1, 2, "ViewItems", "Not instantiable");
     qmlRegisterSingletonType<UCNamespace>(uri, 1, 2, "Ubuntu", registerUbuntuNamespace);
     qmlRegisterType<UCUbuntuShape, 1>(uri, 1, 2, "UbuntuShape");
+
+    // register 1.3 API
+    qmlRegisterType<UCStyleSet>(uri, 1, 3, "StyleSet");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)

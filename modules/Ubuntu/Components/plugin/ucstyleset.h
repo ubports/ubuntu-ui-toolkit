@@ -17,8 +17,8 @@
  *          Florian Boucault <florian.boucault@canonical.com>
  */
 
-#ifndef UCTHEME_H
-#define UCTHEME_H
+#ifndef UCSTYLESET_H
+#define UCSTYLESET_H
 
 #include <QtCore/QObject>
 #include <QtCore/QUrl>
@@ -27,14 +27,14 @@
 
 #include "ucthemesettings.h"
 
-class UCTheme : public QObject
+class UCStyleSet : public QObject
 {
     Q_OBJECT
 
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QObject* palette READ palette NOTIFY paletteChanged)
 public:
-    explicit UCTheme(QObject *parent = 0);
+    explicit UCStyleSet(QObject *parent = 0);
 
     // getter/setters
     QString name() const;
@@ -43,7 +43,6 @@ public:
 
     Q_INVOKABLE QQmlComponent* createStyleComponent(const QString& styleName, QObject* parent);
     void registerToContext(QQmlContext* context);
-    static QUrl pathFromThemeName(QString themeName);
 
 Q_SIGNALS:
     void nameChanged();
@@ -67,4 +66,6 @@ private:
     friend class UCDeprecatedTheme;
 };
 
-#endif // UCTHEME_H
+QUrl pathFromThemeName(QString themeName);
+
+#endif // UCSTYLESET_H
