@@ -65,7 +65,7 @@
 */
 UCDeprecatedTheme::UCDeprecatedTheme(QObject *parent)
     : QObject(parent)
-    , m_theme(new UCTheme(this))
+    , m_theme(new UCTheme(true, this))
 {
     connect(m_theme, &UCTheme::nameChanged, this, &UCDeprecatedTheme::nameChanged);
     connect(m_theme, &UCTheme::paletteChanged, this, &UCDeprecatedTheme::paletteChanged);

@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.3
+import Ubuntu.Components 1.2
 
 StyledItem {
     id: component1
@@ -28,109 +28,18 @@ StyledItem {
         anchors.fill: parent
         TextField {
             objectName: "OuterText"
-            property string styleName: theme.name
+            property string styleName: Theme.name
             onStyleNameChanged: print(objectName, styleName)
         }
         StyledItem {
             objectName: "SuruDarkStyled"
             width: parent.width
             height: units.gu(10)
-            property StyleSet theme: StyleSet {
-                name: "Ubuntu.Components.Themes.SuruDark"
-            }
             TextField {
                 objectName: "InnerText"
-                property string styleName: theme.name
+                property string styleName: Theme.name
                 onStyleNameChanged: print(objectName, styleName)
             }
         }
     }
-
-
-//    StyleSet {
-//        id: customSet
-//        name: "Ubuntu.Components.Themes.Ambiance"
-//    }
-
-//    Column {
-//        anchors.fill: parent
-//        TextField { text: "Press me" }
-//        StyledItem {
-//            id: component2
-//            width: units.gu(40)
-//            height: units.gu(80)
-
-//            StyledItem {
-//                id: component3
-//                width: units.gu(40)
-//                height: units.gu(80)
-
-//                styleSet: StyleSet {
-//                    name: "Ubuntu.Components.Themes.SuruDark"
-//                }
-//                Column {
-//                    TextField { text: "Press me" }
-//                    StyledItem {
-//                        id: component4
-//                        width: units.gu(40)
-//                        height: units.gu(80)
-//                    }
-//                    Loader {
-//                        id: loader1
-//                        width: units.gu(30)
-//                        height: units.gu(30)
-//                    }
-//                }
-//            }
-//        }
-//        Component {
-//            id: dynamicItem
-//            Item {
-//                property alias styleSet: component5.styleSet
-//                StyledItem {
-//                    id: component5
-//                    anchors.fill: parent
-//                }
-//            }
-//        }
-
-//        Loader {
-//            id: loader2
-//            width: units.gu(30)
-//            height: units.gu(30)
-//        }
-//    }
-
-//    function printComponents(message) {
-//        print("----Component styleSets:", message)
-//        print("component1", component1.styleSet.name);
-//        print("component2", component2.styleSet.name);
-//        print("component3", component3.styleSet.name);
-//        print("component4", component4.styleSet.name);
-//        if (loader1.item) {
-//            print("loader1.item", loader1.item.styleSet.name);
-//        }
-//        if (loader2.item) {
-//            print("loader2.item", loader2.item.styleSet.name);
-//        }
-//        print("------------------------")
-//    }
-
-//    Component.onCompleted: {
-//        printComponents("default");
-////        // reparent component4
-////        component4.parent = component2;
-////        printComponents("component4 reparented to component2");
-////        // load a dynamic and nested StyledItem
-////        loader1.sourceComponent = dynamicItem;
-////        printComponents("loader1 set");
-////        loader2.sourceComponent = dynamicItem;
-////        printComponents("loader2 set");
-
-////        component2.styleSet = customSet;
-////        printComponents("component2 customSet");
-////        Theme.name = "Ubuntu.Components.Themes.SuruGradient";
-////        component1.styleSet = customSet;
-////        printComponents("system theme changed");
-//    }
 }

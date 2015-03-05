@@ -115,21 +115,32 @@ UCTheme::UCTheme(QObject *parent)
     : QObject(parent)
     , m_palette(NULL)
     , m_engine(NULL)
+    , m_defaultStyle(false)
 {
-    m_name = m_themeSettings.themeName();
-    QObject::connect(&m_themeSettings, &UCThemeSettings::themeNameChanged,
-                     this, &UCTheme::onThemeNameChanged);
-    updateThemePaths();
+    init();
+}
 
-    QObject::connect(this, SIGNAL(nameChanged()),
-                     this, SLOT(loadPalette()), Qt::UniqueConnection);
-
+UCTheme::UCTheme(bool defaultStyle, QObject *parent)
+    : QObject(parent)
+    , m_palette(NULL)
+    , m_engine(NULL)
+    , m_defaultStyle(defaultStyle)
+{
+    init();
     // set the default font
     QFont defaultFont;
     defaultFont.setFamily("Ubuntu");
     defaultFont.setPixelSize(UCFontUtils::instance().sizeToPixels("medium"));
     defaultFont.setWeight(QFont::Light);
     QGuiApplication::setFont(defaultFont);
+}
+
+void UCTheme::init()
+{
+    m_name = m_themeSettings.themeName();
+    QObject::connect(&m_themeSettings, &UCThemeSettings::themeNameChanged,
+                     this, &UCTheme::onThemeNameChanged);
+    updateThemePaths();
 }
 
 void UCTheme::updateEnginePaths()
@@ -203,6 +214,7 @@ void UCTheme::setName(const QString& name)
         updateThemePaths();
         updateEnginePaths();
         Q_EMIT nameChanged();
+        loadPalette();
     }
 }
 
