@@ -23,6 +23,8 @@ StyledItem {
     width: units.gu(50)
     height: units.gu(100)
 
+    StyleSet { id: set }
+
     Column {
         objectName: "Column"
         anchors.fill: parent

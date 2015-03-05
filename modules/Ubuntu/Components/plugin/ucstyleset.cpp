@@ -167,8 +167,6 @@ void UCStyleSet::init()
         connect(&m_themeSettings, &UCThemeSettings::themeNameChanged,
                 this, &UCStyleSet::onThemeNameChanged);
     }
-    connect(this, SIGNAL(nameChanged()),
-            this, SLOT(loadPalette()), Qt::UniqueConnection);
 }
 
 void UCStyleSet::classBegin()
@@ -241,14 +239,20 @@ QString UCStyleSet::name() const
 
 void UCStyleSet::setName(const QString& name)
 {
-    if (name != m_name && m_defaultSet) {
-        QObject::disconnect(&m_themeSettings, &UCThemeSettings::themeNameChanged,
-                            this, &UCStyleSet::onThemeNameChanged);
-        m_name = name;
-        updateThemePaths();
-        updateEnginePaths();
-        Q_EMIT nameChanged();
+    if (name == m_name) {
+        return;
     }
+    if (m_completed && !m_defaultSet) {
+        qmlInfo(this) << UbuntuI18n::instance().tr("Cannot change styleset name on runtime.");
+        return;
+    }
+    QObject::disconnect(&m_themeSettings, &UCThemeSettings::themeNameChanged,
+                        this, &UCStyleSet::onThemeNameChanged);
+    m_name = name;
+    updateThemePaths();
+    updateEnginePaths();
+    loadPalette();
+    Q_EMIT nameChanged();
 }
 
 /*!
