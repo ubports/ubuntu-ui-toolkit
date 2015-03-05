@@ -65,10 +65,11 @@
 */
 UCDeprecatedTheme::UCDeprecatedTheme(QObject *parent)
     : QObject(parent)
+    , m_theme(new UCStyleSet(true, this))
 {
-    connect(&UCStyleSet::instance(), &UCStyleSet::nameChanged,
+    connect(m_theme, &UCStyleSet::nameChanged,
             this, &UCDeprecatedTheme::nameChanged);
-    connect(&UCStyleSet::instance(), &UCStyleSet::paletteChanged,
+    connect(m_theme, &UCStyleSet::paletteChanged,
             this, &UCDeprecatedTheme::paletteChanged);
 }
 
@@ -80,12 +81,12 @@ UCDeprecatedTheme::UCDeprecatedTheme(QObject *parent)
 QString UCDeprecatedTheme::name() const
 {
 //    qmlInfo(this) << "Theme.name is deprecated. Use StyleSet instead.";
-    return UCStyleSet::instance().name();
+    return m_theme->name();
 }
 void UCDeprecatedTheme::setName(const QString& name)
 {
 //    qmlInfo(this) << "Theme.name is deprecated. Use StyleSet instead.";
-    UCStyleSet::instance().setName(name);
+    m_theme->setName(name);
 }
 
 /*!
@@ -96,7 +97,7 @@ void UCDeprecatedTheme::setName(const QString& name)
 QObject* UCDeprecatedTheme::palette()
 {
 //    qmlInfo(this) << "Theme.palette is deprecated. Use StyleSet instead.";
-    return UCStyleSet::instance().palette();
+    return m_theme->palette();
 }
 
 /*!
@@ -107,14 +108,14 @@ QObject* UCDeprecatedTheme::palette()
 QQmlComponent* UCDeprecatedTheme::createStyleComponent(const QString& styleName, QObject* parent)
 {
 //    qmlInfo(this) << "Theme.createStyleComponent is deprecated. Use StyleSet instead.";
-    return UCStyleSet::instance().createStyleComponent(styleName, parent);
+    return m_theme->createStyleComponent(styleName, parent);
 }
 
 void UCDeprecatedTheme::registerToContext(QQmlContext* context)
 {
     // add paths to engine search folder
-    UCStyleSet::instance().m_engine = context->engine();
-    UCStyleSet::instance().updateEnginePaths();
+    m_theme->m_engine = context->engine();
+    m_theme->updateEnginePaths();
 
     // register deprecated Theme property
     context->setContextProperty("Theme", this);

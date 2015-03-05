@@ -79,7 +79,7 @@ private:
     QQmlEngine *m_engine;
     QList<QUrl> m_themePaths;
     UCThemeSettings m_themeSettings;
-    bool m_defaultSet:1;
+    bool m_defaultStyle:1;
     bool m_completed:1;
 
     friend class UCDeprecatedTheme;

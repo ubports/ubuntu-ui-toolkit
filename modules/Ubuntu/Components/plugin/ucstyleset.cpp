@@ -135,7 +135,7 @@ UCStyleSet::UCStyleSet(QObject *parent)
     , m_palette(UCStyleSet::instance().m_palette)
     , m_engine(NULL)
     , m_themePaths(UCStyleSet::instance().m_themePaths)
-    , m_defaultSet(false)
+    , m_defaultStyle(false)
     , m_completed(false)
 {
     init();
@@ -145,14 +145,10 @@ UCStyleSet::UCStyleSet(bool defaultStyle, QObject *parent)
     : QObject(parent)
     , m_palette(NULL)
     , m_engine(NULL)
-    , m_defaultSet(defaultStyle)
+    , m_defaultStyle(defaultStyle)
     , m_completed(false)
 {
-    m_name = m_themeSettings.themeName();
     init();
-
-    updateThemePaths();
-
     // set the default font
     QFont defaultFont;
     defaultFont.setFamily("Ubuntu");
@@ -163,10 +159,10 @@ UCStyleSet::UCStyleSet(bool defaultStyle, QObject *parent)
 
 void UCStyleSet::init()
 {
-    if (m_defaultSet) {
-        connect(&m_themeSettings, &UCThemeSettings::themeNameChanged,
-                this, &UCStyleSet::onThemeNameChanged);
-    }
+    m_name = m_themeSettings.themeName();
+    QObject::connect(&m_themeSettings, &UCThemeSettings::themeNameChanged,
+                     this, &UCStyleSet::onThemeNameChanged);
+    updateThemePaths();
 }
 
 void UCStyleSet::classBegin()
@@ -242,7 +238,7 @@ void UCStyleSet::setName(const QString& name)
     if (name == m_name) {
         return;
     }
-    if (m_completed && !m_defaultSet) {
+    if (m_completed && !m_defaultStyle) {
         qmlInfo(this) << UbuntuI18n::instance().tr("Cannot change styleset name on runtime.");
         return;
     }
@@ -251,8 +247,8 @@ void UCStyleSet::setName(const QString& name)
     m_name = name;
     updateThemePaths();
     updateEnginePaths();
-    loadPalette();
     Q_EMIT nameChanged();
+    loadPalette();
 }
 
 /*!
