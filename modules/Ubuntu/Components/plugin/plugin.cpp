@@ -191,6 +191,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
 
     // register 1.3 API
     qmlRegisterType<UCStyleSet>(uri, 1, 3, "StyleSet");
+    qmlRegisterType<UCStyledItemBase, 2>(uri, 1, 3, "StyledItemBase");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)

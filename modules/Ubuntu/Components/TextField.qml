@@ -1023,5 +1023,5 @@ ActionItem {
         cursorPosition = 0;
     }
 
-    style: Theme.createStyleComponent("TextFieldStyle.qml", control)
+    style: styleSet.createStyleComponent("TextFieldStyle.qml", control)
 }

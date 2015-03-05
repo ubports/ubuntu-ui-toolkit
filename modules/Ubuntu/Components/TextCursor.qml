@@ -42,7 +42,7 @@ Ubuntu.StyledItem {
                                            __styleInstance.cursorDelegate
 
     // depending on the positionProperty, we chose different styles
-    style: Theme.createStyleComponent(handler.textCursorStyle(positionProperty), cursorItem);
+    style: styleSet.createStyleComponent(handler.textCursorStyle(positionProperty), cursorItem);
 
     objectName: "textCursor"
     //Caret instance from the style.
