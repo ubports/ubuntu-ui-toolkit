@@ -22,8 +22,6 @@
 #include <QtQuick/QQuickView>
 #include <QtQuick/QQuickItem>
 
-#include "uctheme.h"
-
 class tst_Performance : public QObject
 {
     Q_OBJECT
@@ -69,6 +67,7 @@ private Q_SLOTS:
         QTest::addColumn<QString>("document");
         QTest::addColumn<QUrl>("theme");
 
+        QTest::newRow("old theming") << "StyledItemOldTheming.qml" << QUrl("Ubuntu.Components.Themes.SuruDark");
         QTest::newRow("grid with Rectangle") << "RectangleGrid.qml" << QUrl();
         QTest::newRow("grid with Text") << "TextGrid.qml" << QUrl();
         QTest::newRow("grid with Label") << "LabelGrid.qml" << QUrl();
@@ -95,6 +94,9 @@ private Q_SLOTS:
         QQuickItem *root = 0;
         QBENCHMARK {
             root = loadDocument(document);
+            if (root && theme.isValid()) {
+                root->setProperty("newTheme", theme.toString());
+            }
         }
         if (root)
             delete root;

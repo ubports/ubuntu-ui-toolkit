@@ -19,13 +19,13 @@
 #include <QtTest/QtTest>
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlComponent>
-#include "uctheme.h"
+#include "ucdeprecatedtheme.h"
 #include "uctestcase.h"
 #include <private/qquicktext_p.h>
 
 Q_DECLARE_METATYPE(QList<QQmlError>)
 
-class tst_UCTheme : public QObject
+class tst_UCDeprecatedTheme : public QObject
 {
     Q_OBJECT
 private:
@@ -50,37 +50,37 @@ private Q_SLOTS:
     void testMultipleImportPathsSet();
 };
 
-void tst_UCTheme::initTestCase()
+void tst_UCDeprecatedTheme::initTestCase()
 {
     m_xdgDataPath = QLatin1String(getenv("XDG_DATA_DIRS"));
 }
 
-void tst_UCTheme::cleanupTestCase()
+void tst_UCDeprecatedTheme::cleanupTestCase()
 {
     qputenv("XDG_DATA_DIRS", m_xdgDataPath.toLocal8Bit());
 }
 
-void tst_UCTheme::testInstance()
+void tst_UCDeprecatedTheme::testInstance()
 {
-    UCTheme::instance();
+    UCDeprecatedTheme::instance();
 }
 
-void tst_UCTheme::testNameDefault()
+void tst_UCDeprecatedTheme::testNameDefault()
 {
-    UCTheme theme;
+    UCDeprecatedTheme theme;
     QCOMPARE(theme.name(), QString("Ubuntu.Components.Themes.Ambiance"));
 }
 
-void tst_UCTheme::testNameSet()
+void tst_UCDeprecatedTheme::testNameSet()
 {
     QTest::ignoreMessage(QtWarningMsg, "Theme not found: \"MyBeautifulTheme\"");
 
-    UCTheme theme;
+    UCDeprecatedTheme theme;
     theme.setName("MyBeautifulTheme");
     QCOMPARE(theme.name(), QString("MyBeautifulTheme"));
 }
 
-void tst_UCTheme::testCreateStyleComponent()
+void tst_UCDeprecatedTheme::testCreateStyleComponent()
 {
     QFETCH(QString, styleName);
     QFETCH(QString, parentName);
@@ -93,7 +93,7 @@ void tst_UCTheme::testCreateStyleComponent()
 
     qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", ".");
 
-    UCTheme theme;
+    UCDeprecatedTheme theme;
     theme.setName("TestModule.TestTheme");
     QQmlEngine engine;
     QQmlComponent parentComponent(&engine, parentName);
@@ -103,7 +103,7 @@ void tst_UCTheme::testCreateStyleComponent()
     QCOMPARE(component != NULL, success);
 }
 
-void tst_UCTheme::testCreateStyleComponent_data() {
+void tst_UCDeprecatedTheme::testCreateStyleComponent_data() {
     QTest::addColumn<QString>("styleName");
     QTest::addColumn<QString>("parentName");
     QTest::addColumn<bool>("success");
@@ -112,11 +112,11 @@ void tst_UCTheme::testCreateStyleComponent_data() {
     QTest::newRow("No parent") << "TestStyle.qml" << "" << false;
 }
 
-void tst_UCTheme::testThemesRelativePath()
+void tst_UCDeprecatedTheme::testThemesRelativePath()
 {
     qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "../tst_theme_engine");
 
-    UCTheme theme;
+    UCDeprecatedTheme theme;
     theme.setName("TestModule.TestTheme");
     QQmlEngine engine;
     QQmlComponent parentComponent(&engine, "Parent.qml");
@@ -127,12 +127,12 @@ void tst_UCTheme::testThemesRelativePath()
     QCOMPARE(component->status(), QQmlComponent::Ready);
 }
 
-void tst_UCTheme::testThemesRelativePathWithParent()
+void tst_UCDeprecatedTheme::testThemesRelativePathWithParent()
 {
     QSKIP("https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1248982");
     qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "../../resources/themes:../../resources/themes/TestModule");
 
-    UCTheme theme;
+    UCDeprecatedTheme theme;
     theme.setName("CustomTheme");
     QQmlEngine engine;
     theme.registerToContext(engine.rootContext());
@@ -144,13 +144,13 @@ void tst_UCTheme::testThemesRelativePathWithParent()
     QCOMPARE(component->status(), QQmlComponent::Ready);
 }
 
-void tst_UCTheme::testThemesRelativePathWithParentXDGDATA()
+void tst_UCDeprecatedTheme::testThemesRelativePathWithParentXDGDATA()
 {
     QSKIP("https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1248982");
     qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "");
     qputenv("XDG_DATA_DIRS", "../../resources/themes:../../resources/themes/TestModule");
 
-    UCTheme theme;
+    UCDeprecatedTheme theme;
     theme.setName("CustomTheme");
     QQmlEngine engine;
     theme.registerToContext(engine.rootContext());
@@ -162,14 +162,14 @@ void tst_UCTheme::testThemesRelativePathWithParentXDGDATA()
     QCOMPARE(component->status(), QQmlComponent::Ready);
 }
 
-void tst_UCTheme::testThemesRelativePathWithParentNoVariablesSet()
+void tst_UCDeprecatedTheme::testThemesRelativePathWithParentNoVariablesSet()
 {
     UbuntuTestCase::ignoreWarning("Parent.qml", 19, 1, "QML Item: Warning: Style TestStyle.qml not found in theme Ubuntu.Components.Themes.Ambiance");
 
     qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "");
     qputenv("XDG_DATA_DIRS", "");
 
-    UCTheme theme;
+    UCDeprecatedTheme theme;
     QQmlEngine engine;
     qRegisterMetaType<QList <QQmlError> >();
     QSignalSpy spy(&engine, SIGNAL(warnings(QList<QQmlError>)));
@@ -182,12 +182,12 @@ void tst_UCTheme::testThemesRelativePathWithParentNoVariablesSet()
     QCOMPARE(component == NULL, true);
 }
 
-void tst_UCTheme::testThemesRelativePathWithParentOneXDGPathSet()
+void tst_UCDeprecatedTheme::testThemesRelativePathWithParentOneXDGPathSet()
 {
     qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "");
     qputenv("XDG_DATA_DIRS", "../tst_theme_engine");
 
-    UCTheme theme;
+    UCDeprecatedTheme theme;
     theme.setName("TestModule.TestTheme");
     QQmlEngine engine;
     QQmlComponent parentComponent(&engine, "Parent.qml");
@@ -198,7 +198,7 @@ void tst_UCTheme::testThemesRelativePathWithParentOneXDGPathSet()
     QCOMPARE(component->status(), QQmlComponent::Ready);
 }
 
-void tst_UCTheme::testAppTheme()
+void tst_UCDeprecatedTheme::testAppTheme()
 {
     QScopedPointer<UbuntuTestCase> test(new UbuntuTestCase("TestApp.qml"));
     QColor backgroundColor = test->rootObject()->property("backgroundColor").value<QColor>();
@@ -208,7 +208,7 @@ void tst_UCTheme::testAppTheme()
     QCOMPARE(label->color(), QColor("lightblue"));
 }
 
-void tst_UCTheme::testNoImportPathSet()
+void tst_UCDeprecatedTheme::testNoImportPathSet()
 {
     if (!QFile(QLibraryInfo::location(QLibraryInfo::Qml2ImportsPath) + "/Ubuntu/Components").exists())
         QSKIP("This can only be tested if the UITK is installed");
@@ -217,11 +217,11 @@ void tst_UCTheme::testNoImportPathSet()
     qputenv("XDG_DATA_DIRS", "");
     qputenv("QML2_IMPORT_PATH", "");
 
-    UCTheme theme;
+    UCDeprecatedTheme theme;
     QCOMPARE(theme.name(), QString("Ubuntu.Components.Themes.Ambiance"));
 }
 
-void tst_UCTheme::testBogusImportPathSet()
+void tst_UCDeprecatedTheme::testBogusImportPathSet()
 {
     if (!QFile(QLibraryInfo::location(QLibraryInfo::Qml2ImportsPath) + "/Ubuntu/Components").exists())
         QSKIP("This can only be tested if the UITK is installed");
@@ -230,11 +230,11 @@ void tst_UCTheme::testBogusImportPathSet()
     qputenv("XDG_DATA_DIRS", "");
     qputenv("QML2_IMPORT_PATH", "/no/plugins/here");
 
-    UCTheme theme;
+    UCDeprecatedTheme theme;
     QCOMPARE(theme.name(), QString("Ubuntu.Components.Themes.Ambiance"));
 }
 
-void tst_UCTheme::testMultipleImportPathsSet()
+void tst_UCDeprecatedTheme::testMultipleImportPathsSet()
 {
     if (!QFile(QLibraryInfo::location(QLibraryInfo::Qml2ImportsPath) + "/Ubuntu/Components").exists())
         QSKIP("This can only be tested if the UITK is installed");
@@ -243,10 +243,10 @@ void tst_UCTheme::testMultipleImportPathsSet()
     qputenv("XDG_DATA_DIRS", "");
     qputenv("QML2_IMPORT_PATH", "/no/plugins/here:.");
 
-    UCTheme theme;
+    UCDeprecatedTheme theme;
     theme.setName("TestModule.TestTheme");
 }
 
-QTEST_MAIN(tst_UCTheme)
+QTEST_MAIN(tst_UCDeprecatedTheme)
 
 #include "tst_theme_enginetest.moc"

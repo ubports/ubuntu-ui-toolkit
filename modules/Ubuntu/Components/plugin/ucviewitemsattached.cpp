@@ -15,7 +15,7 @@
  */
 
 #include "ucunits.h"
-#include "uctheme.h"
+#include "ucstyleset.h"
 #include "uclistitem.h"
 #include "uclistitem_p.h"
 #include "propertychange_p.h"
