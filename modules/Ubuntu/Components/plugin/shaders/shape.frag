@@ -33,8 +33,8 @@ varying mediump vec2 shapeCoord;
 varying mediump vec4 sourceCoord;
 varying lowp vec4 backgroundColor;
 
-const mediump int PLAIN   = 0x08;  // 1 << 3
-const mediump int SUNKEN  = 0x10;  // 1 << 4
+const mediump int PLAIN  = 0x08;  // 1 << 3
+const mediump int SUNKEN = 0x10;  // 1 << 4
 
 void main(void)
 {
