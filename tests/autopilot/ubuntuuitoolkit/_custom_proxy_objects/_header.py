@@ -60,8 +60,9 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
             style = self.select_single(objectName='PageHeadStyle')
             style.animating.wait_for(False)
         except dbus.StateNotFoundError:
-            raise _common.ToolkitException(
-                'AppHeader is not using the new PageHeadStyle')
+            # AppHeader is not using the new PageHeadStyle,
+            # so no need to wait.
+            return
 
     @autopilot_logging.log_action(logger.info)
     def switch_to_section_by_index(self, index):

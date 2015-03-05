@@ -29,6 +29,8 @@ ubuntu-ui-toolkit (1.2.1431+15.04.20150206-0ubuntu3) UNRELEASED; urgency=medium
     This is useful when a Page is Loaded by a Tab. Fixes: LP: #1424635
   * Fix UITK gallery content page width.
     Fixes: LP: #1424635, LP: #1425470
+  * Set objectName for MainView int est_textinput.header.qml and fix 
+    scenarios in test_textinput.py
   [ Zsombor Egri ]
   * Alarm services regression fix. Fixes: LP: #1401883
   * Implement ListItem dragging support in ListView.
