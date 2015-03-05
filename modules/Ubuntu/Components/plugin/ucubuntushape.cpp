@@ -403,8 +403,7 @@ void UCUbuntuShape::setSourceOpacity(qreal sourceOpacity)
 {
     dropImageSupport();
 
-    const quint8 sourceOpacityPacked =
-        qMax(0.0, qMin(1.0, sourceOpacity)) * static_cast<qreal>(0xff);
+    const quint8 sourceOpacityPacked = qBound(0.0, sourceOpacity, 1.0) * static_cast<qreal>(0xff);
     if (m_sourceOpacity != sourceOpacityPacked) {
         m_sourceOpacity = sourceOpacityPacked;
         update();
