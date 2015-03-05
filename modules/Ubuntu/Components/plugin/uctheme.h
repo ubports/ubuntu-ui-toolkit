@@ -35,7 +35,6 @@ class UCTheme : public QObject
     Q_PROPERTY(QObject* palette READ palette NOTIFY paletteChanged)
 public:
     explicit UCTheme(QObject *parent = 0);
-    UCTheme(bool defaultStyle, QObject *parent = 0);
 
     // getter/setters
     QString name() const;
@@ -59,6 +58,7 @@ private Q_SLOTS:
     void loadPalette(bool notify = true);
 
 private:
+    UCTheme(bool defaultStyle, QObject *parent = 0);
     void init();
 
     QString m_name;
