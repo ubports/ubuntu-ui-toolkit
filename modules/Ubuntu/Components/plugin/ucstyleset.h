@@ -24,22 +24,29 @@
 #include <QtCore/QUrl>
 #include <QtCore/QString>
 #include <QtQml/QQmlComponent>
+#include <QtQml/QQmlParserStatus>
 
 #include "ucthemesettings.h"
 
-class UCStyleSet : public QObject
+class UCStyleSet : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
-
+    Q_INTERFACES(QQmlParserStatus)
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
-    Q_PROPERTY(QObject* palette READ palette NOTIFY paletteChanged)
+    Q_PROPERTY(QObject* palette READ palette WRITE setPalette NOTIFY paletteChanged)
 public:
     explicit UCStyleSet(QObject *parent = 0);
+    static UCStyleSet &instance()
+    {
+        static UCStyleSet instance(true);
+        return instance;
+    }
 
     // getter/setters
     QString name() const;
     void setName(const QString& name);
     QObject* palette();
+    void setPalette(QObject *palette);
 
     Q_INVOKABLE QQmlComponent* createStyleComponent(const QString& styleName, QObject* parent);
     void registerToContext(QQmlContext* context);
@@ -47,6 +54,13 @@ public:
 Q_SIGNALS:
     void nameChanged();
     void paletteChanged();
+
+protected:
+    void classBegin();
+    void componentComplete()
+    {
+        m_completed = true;
+    }
 
 private Q_SLOTS:
     void updateEnginePaths();
@@ -57,11 +71,16 @@ private Q_SLOTS:
     void loadPalette(bool notify = true);
 
 private:
+    UCStyleSet(bool defaultStyle, QObject *parent = 0);
+    void init();
+
     QString m_name;
     QObject* m_palette;
     QQmlEngine *m_engine;
     QList<QUrl> m_themePaths;
     UCThemeSettings m_themeSettings;
+    bool m_defaultSet:1;
+    bool m_completed:1;
 
     friend class UCDeprecatedTheme;
 };

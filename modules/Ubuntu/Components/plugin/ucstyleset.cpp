@@ -131,16 +131,27 @@ QUrl pathFromThemeName(QString themeName)
 
 UCStyleSet::UCStyleSet(QObject *parent)
     : QObject(parent)
+    , m_name(UCStyleSet::instance().m_name)
+    , m_palette(UCStyleSet::instance().m_palette)
+    , m_engine(NULL)
+    , m_themePaths(UCStyleSet::instance().m_themePaths)
+    , m_defaultSet(false)
+    , m_completed(false)
+{
+    init();
+}
+
+UCStyleSet::UCStyleSet(bool defaultStyle, QObject *parent)
+    : QObject(parent)
     , m_palette(NULL)
     , m_engine(NULL)
+    , m_defaultSet(defaultStyle)
+    , m_completed(false)
 {
     m_name = m_themeSettings.themeName();
-    QObject::connect(&m_themeSettings, &UCThemeSettings::themeNameChanged,
-                     this, &UCStyleSet::onThemeNameChanged);
-    updateThemePaths();
+    init();
 
-    QObject::connect(this, SIGNAL(nameChanged()),
-                     this, SLOT(loadPalette()), Qt::UniqueConnection);
+    updateThemePaths();
 
     // set the default font
     QFont defaultFont;
@@ -148,6 +159,22 @@ UCStyleSet::UCStyleSet(QObject *parent)
     defaultFont.setPixelSize(UCFontUtils::instance().sizeToPixels("medium"));
     defaultFont.setWeight(QFont::Light);
     QGuiApplication::setFont(defaultFont);
+}
+
+void UCStyleSet::init()
+{
+    if (m_defaultSet) {
+        connect(&m_themeSettings, &UCThemeSettings::themeNameChanged,
+                this, &UCStyleSet::onThemeNameChanged);
+    }
+    connect(this, SIGNAL(nameChanged()),
+            this, SLOT(loadPalette()), Qt::UniqueConnection);
+}
+
+void UCStyleSet::classBegin()
+{
+    m_engine = qmlEngine(this);
+    updateEnginePaths();
 }
 
 void UCStyleSet::updateEnginePaths()
@@ -187,10 +214,25 @@ void UCStyleSet::updateThemePaths()
     }
 }
 
-/*
-    \qmlproperty string Theme::name
+/*!
+    \qmlproperty string StyleSet::name
 
-    The name of the current theme.
+    The name of the current theme. The name can be set only at creation time, runtime
+    changes will be omitted.
+
+    \qml
+    import QtQuick 2.4
+    import Ubuntu.Componenst 1.3
+
+    StyledItem {
+        style: StyleSet {
+            // this is right
+            name: "Ubuntu.Components.Themes.Ambiance"
+        }
+        // this is not allowed, and will be omitted
+        Components.onCompleted: styleSet.name = "Ubuntu.Components.Themes.SuruDark"
+    }
+    \endqml
 */
 QString UCStyleSet::name() const
 {
@@ -199,7 +241,7 @@ QString UCStyleSet::name() const
 
 void UCStyleSet::setName(const QString& name)
 {
-    if (name != m_name) {
+    if (name != m_name && m_defaultSet) {
         QObject::disconnect(&m_themeSettings, &UCThemeSettings::themeNameChanged,
                             this, &UCStyleSet::onThemeNameChanged);
         m_name = name;
@@ -209,8 +251,8 @@ void UCStyleSet::setName(const QString& name)
     }
 }
 
-/*
-    \qmlproperty Palette Theme::palette
+/*!
+    \qmlproperty Palette StyleSet::palette
 
     The palette of the current theme.
 */
@@ -220,6 +262,14 @@ QObject* UCStyleSet::palette()
         loadPalette(false);
     }
     return m_palette;
+}
+void UCStyleSet::setPalette(QObject *palette)
+{
+    if (m_palette == palette) {
+        return;
+    }
+    m_palette = palette;
+    Q_EMIT paletteChanged();
 }
 
 QUrl UCStyleSet::styleUrl(const QString& styleName)
@@ -250,8 +300,8 @@ QString UCStyleSet::parentThemeName(const QString& themeName)
     return parentTheme;
 }
 
-/*
-    \qmlmethod Component Theme::createStyleComponent(string styleName, object parent)
+/*!
+    \qmlmethod Component StyleSet::createStyleComponent(string styleName, object parent)
 
     Returns an instance of the style component named \a styleName.
 */

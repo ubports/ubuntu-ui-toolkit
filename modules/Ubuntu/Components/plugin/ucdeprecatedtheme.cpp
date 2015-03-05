@@ -65,10 +65,11 @@
 */
 UCDeprecatedTheme::UCDeprecatedTheme(QObject *parent)
     : QObject(parent)
-    , m_theme(new UCStyleSet(this))
 {
-    connect(m_theme, &UCStyleSet::nameChanged, this, &UCDeprecatedTheme::nameChanged);
-    connect(m_theme, &UCStyleSet::paletteChanged, this, &UCDeprecatedTheme::paletteChanged);
+    connect(&UCStyleSet::instance(), &UCStyleSet::nameChanged,
+            this, &UCDeprecatedTheme::nameChanged);
+    connect(&UCStyleSet::instance(), &UCStyleSet::paletteChanged,
+            this, &UCDeprecatedTheme::paletteChanged);
 }
 
 /*!
@@ -79,12 +80,12 @@ UCDeprecatedTheme::UCDeprecatedTheme(QObject *parent)
 QString UCDeprecatedTheme::name() const
 {
 //    qmlInfo(this) << "Theme.name is deprecated. Use StyleSet instead.";
-    return m_theme->name();
+    return UCStyleSet::instance().name();
 }
 void UCDeprecatedTheme::setName(const QString& name)
 {
 //    qmlInfo(this) << "Theme.name is deprecated. Use StyleSet instead.";
-    m_theme->setName(name);
+    UCStyleSet::instance().setName(name);
 }
 
 /*!
@@ -95,7 +96,7 @@ void UCDeprecatedTheme::setName(const QString& name)
 QObject* UCDeprecatedTheme::palette()
 {
 //    qmlInfo(this) << "Theme.palette is deprecated. Use StyleSet instead.";
-    return m_theme->palette();
+    return UCStyleSet::instance().palette();
 }
 
 /*!
@@ -106,14 +107,14 @@ QObject* UCDeprecatedTheme::palette()
 QQmlComponent* UCDeprecatedTheme::createStyleComponent(const QString& styleName, QObject* parent)
 {
 //    qmlInfo(this) << "Theme.createStyleComponent is deprecated. Use StyleSet instead.";
-    return m_theme->createStyleComponent(styleName, parent);
+    return UCStyleSet::instance().createStyleComponent(styleName, parent);
 }
 
 void UCDeprecatedTheme::registerToContext(QQmlContext* context)
 {
     // add paths to engine search folder
-    m_theme->m_engine = context->engine();
-    m_theme->updateEnginePaths();
+    UCStyleSet::instance().m_engine = context->engine();
+    UCStyleSet::instance().updateEnginePaths();
 
     // register deprecated Theme property
     context->setContextProperty("Theme", this);

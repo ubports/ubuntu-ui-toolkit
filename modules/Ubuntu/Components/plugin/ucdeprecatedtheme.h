@@ -47,9 +47,6 @@ public:
 Q_SIGNALS:
     void nameChanged();
     void paletteChanged();
-
-private:
-    UCStyleSet *m_theme;
 };
 
 #endif // UCDEPRECATEDTHEME_H
