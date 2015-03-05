@@ -1223,7 +1223,10 @@ void UCUbuntuShape::updateMaterial(QSGNode* node, float radius, quint32 shapeTex
     }
 
     // Mapping of cornerRadius range from [0, 4] to [0, 1] with clamping, plus quantization.
-    materialData->distanceAAFactor = qMin((radius - cornerRadiusOffset) / 4.0f, 1.0f) * 255.0f;
+    const float start = 0.0f + cornerRadiusOffset;
+    const float end = 4.0f + cornerRadiusOffset;
+    materialData->distanceAAFactor = qMin(
+        (radius / (end - start)) - (start / (end - start)), 1.0f) * 255.0f;
 
     // When the radius is equal to cornerRadiusOffset (which means cornerRadius is 0), no style is
     // flagged so that a dedicated (statically flow controlled) shaved off shader can be used for
