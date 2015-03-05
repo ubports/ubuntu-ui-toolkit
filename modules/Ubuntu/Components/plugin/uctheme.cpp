@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013-2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -36,7 +36,7 @@
 #include <QtGui/QGuiApplication>
 #include <QtGui/QFont>
 
-/*!
+/*
     \qmltype Theme
     \instantiates UCTheme
     \inqmlmodule Ubuntu.Components 1.1
@@ -111,11 +111,10 @@ QStringList themeSearchPath() {
     return result;
 }
 
-UCTheme::UCTheme(QObject *parent) :
-    QObject(parent),
-    m_palette(NULL),
-    m_engine(NULL),
-    m_engineUpdated(false)
+UCTheme::UCTheme(QObject *parent)
+    : QObject(parent)
+    , m_palette(NULL)
+    , m_engine(NULL)
 {
     m_name = m_themeSettings.themeName();
     QObject::connect(&m_themeSettings, &UCThemeSettings::themeNameChanged,
@@ -135,7 +134,7 @@ UCTheme::UCTheme(QObject *parent) :
 
 void UCTheme::updateEnginePaths()
 {
-    if (!m_engine || m_engineUpdated) {
+    if (!m_engine) {
         return;
     }
 
@@ -145,7 +144,6 @@ void UCTheme::updateEnginePaths()
             m_engine->addImportPath(path);
         }
     }
-    m_engineUpdated = true;
 }
 
 void UCTheme::onThemeNameChanged()
@@ -186,7 +184,7 @@ void UCTheme::updateThemePaths()
     }
 }
 
-/*!
+/*
     \qmlproperty string Theme::name
 
     The name of the current theme.
@@ -203,11 +201,12 @@ void UCTheme::setName(const QString& name)
                             this, &UCTheme::onThemeNameChanged);
         m_name = name;
         updateThemePaths();
+        updateEnginePaths();
         Q_EMIT nameChanged();
     }
 }
 
-/*!
+/*
     \qmlproperty Palette Theme::palette
 
     The palette of the current theme.
@@ -248,7 +247,7 @@ QString UCTheme::parentThemeName(const QString& themeName)
     return parentTheme;
 }
 
-/*!
+/*
     \qmlmethod Component Theme::createStyleComponent(string styleName, object parent)
 
     Returns an instance of the style component named \a styleName.
@@ -281,22 +280,6 @@ QQmlComponent* UCTheme::createStyleComponent(const QString& styleName, QObject* 
     }
 
     return component;
-}
-
-void UCTheme::registerToContext(QQmlContext* context)
-{
-    // add paths to engine search folder
-    m_engine = context->engine();
-    updateEnginePaths();
-
-    // register Theme
-    context->setContextProperty("Theme", this);
-
-    ContextPropertyChangeListener *themeChangeListener =
-        new ContextPropertyChangeListener(context, "Theme");
-    QObject::connect(this, SIGNAL(nameChanged()),
-                     themeChangeListener, SLOT(updateContextProperty()));
-
 }
 
 void UCTheme::loadPalette(bool notify)
