@@ -962,8 +962,7 @@ void UCUbuntuShape::connectToImageProperties(QQuickItem* image)
 // Deprecation layer.
 void UCUbuntuShape::_q_imagePropertiesChanged()
 {
-    QQuickItem* image = qobject_cast<QQuickItem*>(sender());
-    updateFromImageProperties(image);
+    updateFromImageProperties(qobject_cast<QQuickItem*>(sender()));
 }
 
 void UCUbuntuShape::_q_openglContextDestroyed()
