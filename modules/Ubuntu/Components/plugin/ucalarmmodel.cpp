@@ -39,8 +39,8 @@
  *
  * Example usage:
  * \qml
- * import QtQuick 2.0
- * import Ubuntu.Components 1.1
+ * import QtQuick 2.4
+ * import Ubuntu.Components 1.2
  * import Ubuntu.Components.ListItems 1.0
  * ListView {
  *     model: AlarmModel {}
@@ -205,8 +205,9 @@ QHash<int, QByteArray> UCAlarmModel::roleNames() const
  * }
  * \endcode
  *
- * \b Warning: The returned object is not guarantied to remain valid, it should
- * not be used in property bindings.
+ * \note The returned object is not guarantied to remain valid, it should not be
+ * used in property bindings. Also, \l {Alarm::reset}{reset()} should not be called
+ * either as the call will clear the alarm data from the cache.
  *
  * \sa Alarm
  */

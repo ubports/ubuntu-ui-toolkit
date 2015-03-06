@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.2
-import Ubuntu.Components 1.1 as Toolkit
+import QtQuick 2.4
+import Ubuntu.Components 1.2 as Toolkit
 import Ubuntu.PerformanceMetrics 1.0
 import QtQuick.Window 2.0
 
@@ -24,13 +24,11 @@ import QtQuick.Window 2.0
 MainViewBase {
     id: mainView
 
-    active: true
-
     /*!
       \qmlproperty bool automaticOrientation
      */
     property alias automaticOrientation: canvas.automaticOrientation
-    useDeprecatedToolbar: true
+    property bool useDeprecatedToolbar: true
 
     /*!
       \internal
@@ -125,9 +123,8 @@ MainViewBase {
           in \l Page to determine the area for the \l Page to fill.
          */
         AppHeader {
-            // FIXME We need to set an object name to this header in order to differentiate it from the ListItem.Header on Autopilot tests.
-            // This is a temporary workaround while we find a better solution for https://bugs.launchpad.net/autopilot/+bug/1210265
-            // --elopio - 2013-08-08
+            // This objectName is used in the MainView autopilot custom proxy object
+            // in order to select the application header.
             objectName: "MainView_Header"
             id: headerItem
             property real bottomY: headerItem.y + headerItem.height

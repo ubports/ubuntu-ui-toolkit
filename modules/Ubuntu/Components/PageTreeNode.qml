@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
+import QtQuick 2.4
 
 /*!
     \internal
@@ -52,7 +52,8 @@ StyledItem {
       The toolbar of the node. Propagates down from the root node.
       This property is DEPRECATED.
      */
-    property Toolbar toolbar: node.__propagated ? node.__propagated.toolbar : null
+    property Toolbar toolbar: node.__propagated && node.__propagated.hasOwnProperty("toolbar")
+                              ? node.__propagated.toolbar : null
 
     /*!
       \internal

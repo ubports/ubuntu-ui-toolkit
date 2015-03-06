@@ -56,10 +56,13 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
         self.y.wait_for(0)
 
     def wait_for_animation(self):
-        # FIXME: Dummy function so that we can already call it in the apps
-        # The real implementation will be done when header animations
-        # are added in PageHeadStyle.qml
-        return
+        try:
+            style = self.select_single(objectName='PageHeadStyle')
+            style.animating.wait_for(False)
+        except dbus.StateNotFoundError:
+            # AppHeader is not using the new PageHeadStyle,
+            # so no need to wait.
+            return
 
     @autopilot_logging.log_action(logger.info)
     def switch_to_section_by_index(self, index):
@@ -161,6 +164,8 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
         self.wait_for_animation()
         tabs_model_properties = self.select_single(
             'QQuickItem', objectName='tabsModelProperties')
+        if tabs_model_properties.count == 0:
+            raise _common.ToolkitException(_NO_TABS_ERROR)
         next_tab_index = (tabs_model_properties.selectedIndex
                           + 1) % tabs_model_properties.count
         self._switch_to_tab_in_drawer_by_index(next_tab_index)

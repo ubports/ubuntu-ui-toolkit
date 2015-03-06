@@ -22,7 +22,7 @@ import Ubuntu.Components.ListItems 1.0
 Dialog {
     id:root
 
-    property var alarm
+    property string property
 
     title: "Choose days"
 
@@ -63,12 +63,12 @@ Dialog {
         Standard {
             text: day
             control: CheckBox {
-                checked: (alarm.daysOfWeek & flag) == flag
+                checked: caller && ((caller[property] & flag) == flag)
                 onCheckedChanged: {
                     if (checked) {
-                        alarm.daysOfWeek |= flag;
+                        caller[property] |= flag;
                     } else {
-                        alarm.daysOfWeek &= ~flag;
+                        caller[property] &= ~flag;
                     }
                 }
             }

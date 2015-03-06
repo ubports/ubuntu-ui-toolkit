@@ -28,6 +28,8 @@ class ListItemTestCase(tests.QMLFileAppTestCase):
 
     def setUp(self):
         super(ListItemTestCase, self).setUp()
+        self.list_view = self.main_view.select_single(
+            ubuntuuitoolkit.QQuickListView, objectName='test_view')
         self.test_listitem = self.main_view.select_single(
             'UCListItem', objectName='listitem0')
         self.test_page = self.main_view.select_single(
@@ -84,3 +86,13 @@ class ListItemTestCase(tests.QMLFileAppTestCase):
                                   'this_action_does_not_exist')
         self.assertEqual(str(error),
                          'The requested action not found on trailing side')
+
+    def test_select_items(self):
+        self.list_view.enable_select_mode()
+        self.test_listitem.toggle_selected()
+        self.assertTrue(self.test_listitem.selected)
+        # select an other one
+        listItem3 = self.main_view.select_single(
+            'UCListItem', objectName='listitem3')
+        listItem3.toggle_selected()
+        self.assertTrue(listItem3.selected)
