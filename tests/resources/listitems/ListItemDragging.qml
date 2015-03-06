@@ -16,6 +16,7 @@
 
 import QtQuick 2.4
 import Ubuntu.Components 1.2
+import QtQuick.Layouts 1.1
 import Ubuntu.Components.ListItems 1.0
 import QtQml.Models 2.1
 
@@ -133,19 +134,22 @@ MainView {
                             actions: contextualActions
                         }
 
-                        Rectangle {
-                            anchors.fill: parent
-                            color: item.dragging ? UbuntuColors.blue : "#69aa69"
-                        }
-                        Column {
-                            anchors.fill: parent
-                            Label {
-                                text: label + " from index #" + index
-                                anchors.left: parent.left
+                        RowLayout {
+                            anchors {
+                                fill: parent
+                                margins: units.gu(0.5)
+                                leftMargin: anchors.rightMargin
+                                rightMargin: units.gu(2)
                             }
-                            Label {
-                                text: "Click to turn LTR<->RTL"
-                                anchors.right: parent.right
+                            Captions {
+                                id: captions
+                                title.text: label
+                                subtitle.text: "from index #" + index
+                            }
+                            Captions {
+                                captionStyle: Ubuntu.Summary
+                                title.text: "LTR"
+                                subtitle.text: "RTL"
                             }
                         }
 

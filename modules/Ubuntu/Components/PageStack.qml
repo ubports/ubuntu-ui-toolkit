@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.2
+import QtQuick 2.4
 import "stack.js" as Stack
 
 /*!
@@ -36,8 +36,8 @@ import "stack.js" as Stack
     left/right/top/bottom anchors, explicitly set anchors.fill of the PageStack to
     undefined:
     \qml
-        import QtQuick 2.2
-        import Ubuntu.Components 1.1
+        import QtQuick 2.4
+        import Ubuntu.Components 1.2
 
         MainView {
             width: units.gu(40)
@@ -75,8 +75,8 @@ import "stack.js" as Stack
 
     Example:
     \qml
-        import QtQuick 2.0
-        import Ubuntu.Components 1.1
+        import QtQuick 2.4
+        import Ubuntu.Components 1.2
         import Ubuntu.Components.ListItems 1.0 as ListItem
 
         MainView {

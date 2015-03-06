@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.3
+import QtQuick 2.4
 import Ubuntu.Components.Styles 1.2 as Styles
 import Ubuntu.Components 1.2
 

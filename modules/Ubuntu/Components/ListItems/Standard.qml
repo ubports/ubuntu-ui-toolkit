@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 1.1
+import QtQuick 2.4
+import Ubuntu.Components 1.2
 
 /*!
     \qmltype Standard
@@ -25,12 +25,13 @@ import Ubuntu.Components 1.1
         with a label (text), and optionally an icon, a progression arrow,
         and it can have an embedded Item (\l control) that can be used
         for including Buttons, Switches etc. inside the list item.
+    \note \b{The component is deprecated. Use ListItem component instead.}
 
     \l {http://design.ubuntu.com/apps/building-blocks/list-items}{See also the Design Guidelines on List Items}.
 
     Examples:
     \qml
-        import Ubuntu.Components 1.1
+        import Ubuntu.Components 1.2
         import Ubuntu.Components.ListItems 1.0 as ListItem
         Column {
             ListItem.Standard {
