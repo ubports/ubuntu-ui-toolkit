@@ -35,10 +35,10 @@ class UCStyleSet : public QObject, public QQmlParserStatus
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QObject* palette READ palette WRITE setPalette NOTIFY paletteChanged)
 public:
-    explicit UCStyleSet(QObject *parent = 0);
-    static UCStyleSet &instance()
+    explicit UCStyleSet(QObject *parent);
+    static UCStyleSet &defaultSet()
     {
-        static UCStyleSet instance(true);
+        static UCStyleSet instance;
         return instance;
     }
 
@@ -49,7 +49,7 @@ public:
     void setPalette(QObject *palette);
 
     Q_INVOKABLE QQmlComponent* createStyleComponent(const QString& styleName, QObject* parent);
-    void registerToContext(QQmlContext* context);
+    static void registerToContext(QQmlContext* context);
 
 Q_SIGNALS:
     void nameChanged();
@@ -71,7 +71,7 @@ private Q_SLOTS:
     void loadPalette(bool notify = true);
 
 private:
-    UCStyleSet(bool defaultStyle, QObject *parent = 0);
+    UCStyleSet();
     void init();
 
     QString m_name;

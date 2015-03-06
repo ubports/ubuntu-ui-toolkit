@@ -131,23 +131,22 @@ QUrl pathFromThemeName(QString themeName)
 
 UCStyleSet::UCStyleSet(QObject *parent)
     : QObject(parent)
-    , m_name(UCStyleSet::instance().m_name)
-    , m_palette(UCStyleSet::instance().m_palette)
+    , m_name(UCStyleSet::defaultSet().m_name)
+    , m_palette(UCStyleSet::defaultSet().m_palette)
     , m_engine(NULL)
-    , m_themePaths(UCStyleSet::instance().m_themePaths)
+    , m_themePaths(UCStyleSet::defaultSet().m_themePaths)
     , m_defaultStyle(false)
-    , m_completed(false)
 {
     init();
 }
 
-UCStyleSet::UCStyleSet(bool defaultStyle, QObject *parent)
-    : QObject(parent)
+UCStyleSet::UCStyleSet()
+    : QObject(0)
     , m_palette(NULL)
     , m_engine(NULL)
-    , m_defaultStyle(defaultStyle)
-    , m_completed(false)
+    , m_defaultStyle(true)
 {
+    qDebug() << "DEFAULT";
     init();
     // set the default font
     QFont defaultFont;
@@ -159,6 +158,7 @@ UCStyleSet::UCStyleSet(bool defaultStyle, QObject *parent)
 
 void UCStyleSet::init()
 {
+    m_completed = false;
     m_name = m_themeSettings.themeName();
     QObject::connect(&m_themeSettings, &UCThemeSettings::themeNameChanged,
                      this, &UCStyleSet::onThemeNameChanged);
@@ -298,6 +298,20 @@ QString UCStyleSet::parentThemeName(const QString& themeName)
         }
     }
     return parentTheme;
+}
+
+// registers the default styleSet property to the root context
+void UCStyleSet::registerToContext(QQmlContext* context)
+{
+    UCStyleSet *defaultSet = &UCStyleSet::defaultSet();
+    defaultSet->m_engine = context->engine();
+    defaultSet->updateEnginePaths();
+
+    context->setContextProperty("styleSet", defaultSet);
+    ContextPropertyChangeListener *listener =
+        new ContextPropertyChangeListener(context, "styleSet");
+    QObject::connect(defaultSet, &UCStyleSet::nameChanged,
+                     listener, &ContextPropertyChangeListener::updateContextProperty);
 }
 
 /*!

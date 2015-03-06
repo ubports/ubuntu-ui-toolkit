@@ -15,9 +15,9 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.2
+import Ubuntu.Components 1.3
 
-StyledItem {
+Item {
     id: component1
     objectName: "TopItem"
     width: units.gu(50)
@@ -26,6 +26,10 @@ StyledItem {
     Column {
         objectName: "Column"
         anchors.fill: parent
+        Label {
+            text: "Hallo"
+        }
+
         TextField {
             objectName: "OuterText"
             property string styleName: Theme.name

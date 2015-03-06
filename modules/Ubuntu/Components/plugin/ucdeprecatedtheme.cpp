@@ -65,8 +65,9 @@
 */
 UCDeprecatedTheme::UCDeprecatedTheme(QObject *parent)
     : QObject(parent)
-    , m_theme(new UCStyleSet(true, this))
+    , m_theme(&UCStyleSet::defaultSet())
 {
+    m_theme->m_defaultStyle = true;
     connect(m_theme, &UCStyleSet::nameChanged,
             this, &UCDeprecatedTheme::nameChanged);
     connect(m_theme, &UCStyleSet::paletteChanged,

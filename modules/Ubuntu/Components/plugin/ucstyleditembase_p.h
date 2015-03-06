@@ -45,6 +45,7 @@ public:
 
 public:
     bool activeFocusOnPress:1;
+    bool subthemingEnabled:1;
     UCStyleSet *styleSet;
     QPointer<UCStyledItemBase> parentStyledItem;
 

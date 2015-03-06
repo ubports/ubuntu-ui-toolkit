@@ -22,6 +22,7 @@
 
 UCStyledItemBasePrivate::UCStyledItemBasePrivate()
     : activeFocusOnPress(false)
+    , subthemingEnabled(true)
     , styleSet(0)
     , parentStyledItem(0)
 {
@@ -35,6 +36,7 @@ void UCStyledItemBasePrivate::init()
 {
     Q_Q(UCStyledItemBase);
     q->setFlag(QQuickItem::ItemIsFocusScope);
+    subthemingEnabled = qgetenv("UITK_SUBTHEMING").toInt() == 1;
 }
 
 
@@ -181,18 +183,25 @@ void UCStyledItemBase::setActiveFocusOnPress(bool value)
 UCStyleSet * UCStyledItemBase::styleSet() const
 {
     Q_D(const UCStyledItemBase);
-    if (d->styleSet) {
-        return d->styleSet;
-    } else if (!d->parentStyledItem.isNull()) {
-        return d->parentStyledItem->styleSet();
+    if (d->subthemingEnabled) {
+        if (d->styleSet) {
+            return d->styleSet;
+        } else if (!d->parentStyledItem.isNull()) {
+            return d->parentStyledItem->styleSet();
+        }
     }
-    return &UCStyleSet::instance();
+    return &UCStyleSet::defaultSet();
 }
 
 void UCStyledItemBase::setStyleSet(UCStyleSet *styleSet)
 {
     Q_D(UCStyledItemBase);
     if (d->styleSet == styleSet) {
+        return;
+    }
+    if (!d->subthemingEnabled && styleSet) {
+        d->styleSet = styleSet;
+        UCStyleSet::defaultSet().setName(styleSet->name());
         return;
     }
     if (d->styleSet && styleSet) {
@@ -225,6 +234,9 @@ void UCStyledItemBase::resetStyleSet()
 // styleSet change signal emission is justified
 bool UCStyledItemBasePrivate::connectParents(QQuickItem *fromItem)
 {
+    if (!subthemingEnabled) {
+        return false;
+    }
     Q_Q(UCStyledItemBase);
     QQuickItem *item = fromItem ? fromItem : parentItem;
     while (item) {
@@ -260,6 +272,9 @@ bool UCStyledItemBasePrivate::setParentStyled(UCStyledItemBase *styledItem)
 // disconnect parent stack till item is reached; all the stack if item == 0
 void UCStyledItemBasePrivate::disconnectTillItem(QQuickItem *item)
 {
+    if (!subthemingEnabled) {
+        return;
+    }
     Q_Q(UCStyledItemBase);
     while (!parentStack.isEmpty() && item != parentStack.top()) {
         QPointer<QQuickItem> stackItem = parentStack.pop();
@@ -337,7 +352,7 @@ void UCStyledItemBase::itemChange(ItemChange change, const ItemChangeData &data)
 {
     QQuickItem::itemChange(change, data);
     Q_D(UCStyledItemBase);
-    if (change == ItemParentHasChanged) {
+    if (change == ItemParentHasChanged && d->subthemingEnabled) {
         if (!data.item) {
             d->disconnectTillItem(0);
         } else if (!d->styleSet && d->connectParents(0)) {
