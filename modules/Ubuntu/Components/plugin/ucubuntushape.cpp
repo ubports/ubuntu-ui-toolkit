@@ -461,7 +461,7 @@ void UCUbuntuShape::setSourceFillMode(UCUbuntuShape::FillMode sourceFillMode)
 
     \list
     \li \b UbuntuShape.Transparent - the source is clamped to transparent
-    \li \b UbuntuShape.Repeat - the source is repeated indefinitely (not supported yet)
+    \li \b UbuntuShape.Repeat - the source is repeated indefinitely
     \endlist
 */
 void UCUbuntuShape::setSourceHorizontalWrapMode(UCUbuntuShape::WrapMode sourceHorizontalWrapMode)
