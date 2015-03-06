@@ -26,6 +26,11 @@ StyledItem {
     Column {
         objectName: "Column"
         anchors.fill: parent
+        Button {
+            text: "Theme change"
+            onClicked: Theme.name = "Ubuntu.Components.Themes.SuruDark"
+        }
+
         TextField {
             objectName: "OuterText"
             property string styleName: Theme.name

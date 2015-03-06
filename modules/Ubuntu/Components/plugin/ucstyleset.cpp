@@ -47,20 +47,23 @@
 
     A global instance is exposed as the \b styleSet context property.
 
-    The styleset or theme defines the visual aspect of the Ubuntu components.
+    The styleset or theme defines the visual aspect of the Ubuntu components. An
+    application can use one or more styleset the same time. The StyleSet component
+    provides abilities to change thye styleset used by the component and all its
+    child components.
 
-    Example changing the current styleset:
+    Changing the styleset of the entire application can be achieved by changing
+    the name of the root StyledItem's, i.e. MainView's current styleset.
 
     \qml
     import QtQuick 2.4
     import Ubuntu.Components 1.3
 
-    Item {
-        Button {
-            styleSet: StyleSet {
-                name: "Ubuntu.Components.Themes.Ambiance"
-            }
-        }
+    MainWindow {
+        width: units.gu(40)
+        height: units.gu(71)
+
+        styleSet.name: "Ubuntu.Components.Themes.Ambiance"
     }
     \endqml
 
@@ -131,18 +134,17 @@ QUrl pathFromThemeName(QString themeName)
 
 UCStyleSet::UCStyleSet(QObject *parent)
     : QObject(parent)
-    , m_name(UCStyleSet::instance().m_name)
-    , m_palette(UCStyleSet::instance().m_palette)
+    , m_name(UCStyleSet::defaultSet().m_name)
+    , m_palette(UCStyleSet::defaultSet().m_palette)
     , m_engine(NULL)
-    , m_themePaths(UCStyleSet::instance().m_themePaths)
     , m_defaultStyle(false)
     , m_completed(false)
 {
     init();
 }
 
-UCStyleSet::UCStyleSet(bool defaultStyle, QObject *parent)
-    : QObject(parent)
+UCStyleSet::UCStyleSet(bool defaultStyle)
+    : QObject(0)
     , m_palette(NULL)
     , m_engine(NULL)
     , m_defaultStyle(defaultStyle)
@@ -232,24 +234,38 @@ QString UCStyleSet::name() const
 {
     return m_name;
 }
-
 void UCStyleSet::setName(const QString& name)
 {
     if (name == m_name) {
         return;
     }
-    if (m_completed && !m_defaultStyle) {
-        qmlInfo(this) << UbuntuI18n::instance().tr("Cannot change styleset name on runtime.");
-        return;
+    if (name.isEmpty()) {
+        resetName();
+    } else {
+//        if (m_completed && !m_defaultStyle) {
+//            qmlInfo(this) << UbuntuI18n::instance().tr("Cannot change styleset name on runtime.");
+//            return;
+//        }
+        QObject::disconnect(&m_themeSettings, &UCThemeSettings::themeNameChanged,
+                            this, &UCStyleSet::onThemeNameChanged);
+        m_name = name;
+        updateThemePaths();
+        updateEnginePaths();
+        Q_EMIT nameChanged();
+        loadPalette();
     }
-    QObject::disconnect(&m_themeSettings, &UCThemeSettings::themeNameChanged,
-                        this, &UCStyleSet::onThemeNameChanged);
-    m_name = name;
+}
+void UCStyleSet::resetName()
+{
+    m_name = m_themeSettings.themeName();
+    connect(&m_themeSettings, &UCThemeSettings::themeNameChanged,
+            this, &UCStyleSet::onThemeNameChanged);
     updateThemePaths();
     updateEnginePaths();
     Q_EMIT nameChanged();
     loadPalette();
 }
+
 
 /*!
     \qmlproperty Palette StyleSet::palette
@@ -300,6 +316,20 @@ QString UCStyleSet::parentThemeName(const QString& themeName)
     return parentTheme;
 }
 
+// registers the default styleSet property to the root context
+void UCStyleSet::registerToContext(QQmlContext* context)
+{
+    UCStyleSet *defaultSet = &UCStyleSet::defaultSet();
+    defaultSet->m_engine = context->engine();
+    defaultSet->updateEnginePaths();
+
+    context->setContextProperty("styleSet", defaultSet);
+    ContextPropertyChangeListener *listener =
+        new ContextPropertyChangeListener(context, "styleSet");
+    QObject::connect(defaultSet, &UCStyleSet::nameChanged,
+                     listener, &ContextPropertyChangeListener::updateContextProperty);
+}
+
 /*!
     \qmlmethod Component StyleSet::createStyleComponent(string styleName, object parent)
 
@@ -340,11 +370,18 @@ void UCStyleSet::loadPalette(bool notify)
     if (!m_engine) {
         return;
     }
-    if (m_palette != NULL) {
+    if (!m_palette.isNull()) {
         delete m_palette;
     }
-    m_palette = QuickUtils::instance().createQmlObject(styleUrl("Palette.qml"), m_engine);
-    if (notify) {
-        Q_EMIT paletteChanged();
+    // theme may not have palette defined
+    QUrl paletteUrl = styleUrl("Palette.qml");
+    if (paletteUrl.isValid()) {
+        m_palette = QuickUtils::instance().createQmlObject(paletteUrl, m_engine);
+        if (notify) {
+            Q_EMIT paletteChanged();
+        }
+    } else {
+        // use the default palette if none defined
+        m_palette = defaultSet().m_palette;
     }
 }
