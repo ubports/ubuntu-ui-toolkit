@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (1.2.1433+15.04.20150206-0ubuntu3) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.2.1433+15.04.20150306-0ubuntu1) vivid; urgency=medium
 
   [ Albert Astals Cid ]
   * Fix infinite icon size grow when asked for a non square icon
@@ -70,7 +70,7 @@ ubuntu-ui-toolkit (1.2.1433+15.04.20150206-0ubuntu3) UNRELEASED; urgency=medium
     LP: #1396114, LP: #1396119, LP: #1396124, LP: #1396162, 
     LP: #1396165, LP: #1396168, LP: #1396178
 
- -- Zoltán Balogh <zoltan@bakter.hu>  Tue, 03 Mar 2015 15:20:12 +0200
+ -- CI Train Bot <ci-train-bot@canonical.com>  Fri, 06 Mar 2015 08:23:35 +0000
 
 ubuntu-ui-toolkit (1.1.1403+15.04.20150206-0ubuntu2) vivid; urgency=medium
 
