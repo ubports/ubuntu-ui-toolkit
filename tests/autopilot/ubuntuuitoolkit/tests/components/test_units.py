@@ -71,7 +71,7 @@ class UnitsTestCase(tests.QMLFileAppTestCase):
 
         from autopilot.matchers import Eventually
         from testtools.matchers import Equals
-        self.assertThat(self.label.text, Eventually(Equals('Clicked')))
+        self.assertThat(self.label.text, Eventually(Equals('Clicked.')))
 
     def test_click_outside_button_using_grid_units(self):
         x, y, _, height = self.button.globalRect
