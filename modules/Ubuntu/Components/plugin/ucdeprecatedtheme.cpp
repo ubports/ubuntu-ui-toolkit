@@ -65,12 +65,10 @@
 */
 UCDeprecatedTheme::UCDeprecatedTheme(QObject *parent)
     : QObject(parent)
-    , m_theme(&UCStyleSet::defaultSet())
 {
-    m_theme->m_defaultStyle = true;
-    connect(m_theme, &UCStyleSet::nameChanged,
+    connect(&UCStyleSet::defaultSet(), &UCStyleSet::nameChanged,
             this, &UCDeprecatedTheme::nameChanged);
-    connect(m_theme, &UCStyleSet::paletteChanged,
+    connect(&UCStyleSet::defaultSet(), &UCStyleSet::paletteChanged,
             this, &UCDeprecatedTheme::paletteChanged);
 }
 
@@ -82,12 +80,17 @@ UCDeprecatedTheme::UCDeprecatedTheme(QObject *parent)
 QString UCDeprecatedTheme::name() const
 {
 //    qmlInfo(this) << "Theme.name is deprecated. Use StyleSet instead.";
-    return m_theme->name();
+    return UCStyleSet::defaultSet().name();
 }
 void UCDeprecatedTheme::setName(const QString& name)
 {
 //    qmlInfo(this) << "Theme.name is deprecated. Use StyleSet instead.";
-    m_theme->setName(name);
+    UCStyleSet::defaultSet().setName(name);
+}
+void UCDeprecatedTheme::resetName()
+{
+//    qmlInfo(this) << "Theme.name is deprecated. Use StyleSet instead.";
+    UCStyleSet::defaultSet().resetName();
 }
 
 /*!
@@ -98,7 +101,7 @@ void UCDeprecatedTheme::setName(const QString& name)
 QObject* UCDeprecatedTheme::palette()
 {
 //    qmlInfo(this) << "Theme.palette is deprecated. Use StyleSet instead.";
-    return m_theme->palette();
+    return UCStyleSet::defaultSet().palette();
 }
 
 /*!
@@ -109,15 +112,13 @@ QObject* UCDeprecatedTheme::palette()
 QQmlComponent* UCDeprecatedTheme::createStyleComponent(const QString& styleName, QObject* parent)
 {
 //    qmlInfo(this) << "Theme.createStyleComponent is deprecated. Use StyleSet instead.";
-    return m_theme->createStyleComponent(styleName, parent);
+    return UCStyleSet::defaultSet().createStyleComponent(styleName, parent);
 }
 
 void UCDeprecatedTheme::registerToContext(QQmlContext* context)
 {
-    // add paths to engine search folder
-    m_theme->m_engine = context->engine();
-    m_theme->updateEnginePaths();
-
+    UCStyleSet::defaultSet().m_engine = context->engine();
+    UCStyleSet::defaultSet().updateEnginePaths();
     // register deprecated Theme property
     context->setContextProperty("Theme", this);
 

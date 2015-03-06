@@ -28,6 +28,9 @@ Item {
         anchors.fill: parent
         Label {
             text: "Hallo"
+        Button {
+            text: "Theme change"
+            onClicked: Theme.name = "Ubuntu.Components.Themes.SuruDark"
         }
 
         TextField {

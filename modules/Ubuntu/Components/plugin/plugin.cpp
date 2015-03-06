@@ -210,7 +210,7 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     // that can be accessed from any object
     context->setContextProperty("QuickUtils", &QuickUtils::instance());
 
-    // register default styleSet
+    // register styleSet context property
     UCStyleSet::registerToContext(context);
 
     UCDeprecatedTheme::instance().registerToContext(context);

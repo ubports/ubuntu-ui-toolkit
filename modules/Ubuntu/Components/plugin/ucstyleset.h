@@ -21,6 +21,7 @@
 #define UCSTYLESET_H
 
 #include <QtCore/QObject>
+#include <QtCore/QPointer>
 #include <QtCore/QUrl>
 #include <QtCore/QString>
 #include <QtQml/QQmlComponent>
@@ -32,10 +33,10 @@ class UCStyleSet : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
     Q_INTERFACES(QQmlParserStatus)
-    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
+    Q_PROPERTY(QString name READ name WRITE setName RESET resetName NOTIFY nameChanged)
     Q_PROPERTY(QObject* palette READ palette WRITE setPalette NOTIFY paletteChanged)
 public:
-    explicit UCStyleSet(QObject *parent);
+    explicit UCStyleSet(QObject *parent = 0);
     static UCStyleSet &defaultSet()
     {
         static UCStyleSet instance;
@@ -45,6 +46,7 @@ public:
     // getter/setters
     QString name() const;
     void setName(const QString& name);
+    void resetName();
     QObject* palette();
     void setPalette(QObject *palette);
 
@@ -71,11 +73,11 @@ private Q_SLOTS:
     void loadPalette(bool notify = true);
 
 private:
-    UCStyleSet();
+    UCStyleSet(bool defaultStyle);
     void init();
 
     QString m_name;
-    QObject* m_palette;
+    QPointer<QObject> m_palette;
     QQmlEngine *m_engine;
     QList<QUrl> m_themePaths;
     UCThemeSettings m_themeSettings;
