@@ -33,24 +33,32 @@ public:
     ThemeTestCase(const QString& file, QWindow* parent = 0)
         : UbuntuTestCase(file, parent)
     {
-//        connect(rootObject(), SIGNAL(destroyed()),
-//                this, SLOT(resetTheme()), Qt::DirectConnection);
-    }
-    ~ThemeTestCase()
-    {
-        resetTheme();
     }
 
-private Q_SLOTS:
-    void resetTheme()
+    ~ThemeTestCase()
     {
         // restore theme before quitting
+        if (!rootContext()) {
+            return;
+        }
         UCDeprecatedTheme *theme = rootContext()->contextProperty("Theme").value<UCDeprecatedTheme*>();
         if (theme) {
             theme->resetName();
         } else {
-            qDebug() << "NO THEME ENGINE!";
+            qWarning() << "No theme instance found!";
         }
+    }
+
+    void setTheme(const QString &theme)
+    {
+        rootObject()->setProperty("themeName", theme);
+        QTest::waitForEvents();
+    }
+
+    void setStyle(const QString &style)
+    {
+        rootObject()->setProperty("styleDocument", style);
+        QTest::waitForEvents();
     }
 };
 
@@ -59,16 +67,6 @@ class tst_UCDeprecatedTheme : public QObject
     Q_OBJECT
 private:
     QString m_xdgDataPath;
-    void setTheme(QObject *object, const QString &theme)
-    {
-        object->setProperty("themeName", theme);
-        QTest::waitForEvents();
-    }
-    void setStyle(QObject *object, const QString &style)
-    {
-        object->setProperty("styleDocument", style);
-        QTest::waitForEvents();
-    }
 
 private Q_SLOTS:
     void initTestCase();
@@ -134,8 +132,8 @@ void tst_UCDeprecatedTheme::testCreateStyleComponent()
 
     QScopedPointer<ThemeTestCase> view(new ThemeTestCase(parentName));
     QVERIFY(view);
-    setTheme(view->rootObject(), "TestModule.TestTheme");
-    setStyle(view->rootObject(), styleName);
+    view->setTheme("TestModule.TestTheme");
+    view->setStyle(styleName);
     QQmlComponent *style = view->rootObject()->property("style").value<QQmlComponent*>();
     QCOMPARE(style != NULL, success);
 }
@@ -154,35 +152,33 @@ void tst_UCDeprecatedTheme::testThemesRelativePath()
 
     QScopedPointer<ThemeTestCase> view(new ThemeTestCase("Parent.qml"));
     QVERIFY(view);
-    setTheme(view->rootObject(), "TestModule.TestTheme");
-    setStyle(view->rootObject(), "TestStyle.qml");
+    view->setTheme("TestModule.TestTheme");
+    view->setStyle("TestStyle.qml");
     QQmlComponent *style = view->rootObject()->property("style").value<QQmlComponent*>();
     QCOMPARE(style != NULL, true);
 }
 
 void tst_UCDeprecatedTheme::testThemesRelativePathWithParent()
 {
-//    QSKIP("https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1248982");
     qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "./themes:./themes/TestModule");
 
     QScopedPointer<ThemeTestCase> view(new ThemeTestCase("Parent.qml"));
     QVERIFY(view);
-    setTheme(view->rootObject(), "CustomTheme");
-    setStyle(view->rootObject(), "TestStyle.qml");
+    view->setTheme("CustomTheme");
+    view->setStyle("TestStyle.qml");
     QQmlComponent *style = view->rootObject()->property("style").value<QQmlComponent*>();
     QCOMPARE(style != NULL, true);
 }
 
 void tst_UCDeprecatedTheme::testThemesRelativePathWithParentXDGDATA()
 {
-//    QSKIP("https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1248982");
     qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "");
     qputenv("XDG_DATA_DIRS", "./themes:./themes/TestModule");
 
     QScopedPointer<ThemeTestCase> view(new ThemeTestCase("Parent.qml"));
     QVERIFY(view);
-    setTheme(view->rootObject(), "CustomTheme");
-    setStyle(view->rootObject(), "TestStyle.qml");
+    view->setTheme("CustomTheme");
+    view->setStyle("TestStyle.qml");
     QQmlComponent *style = view->rootObject()->property("style").value<QQmlComponent*>();
     QCOMPARE(style != NULL, true);
 }
@@ -196,7 +192,7 @@ void tst_UCDeprecatedTheme::testThemesRelativePathWithParentNoVariablesSet()
 
     QScopedPointer<ThemeTestCase> view(new ThemeTestCase("Parent.qml"));
     QVERIFY(view);
-    setStyle(view->rootObject(), "TestStyle.qml");
+    view->setStyle("TestStyle.qml");
 }
 
 void tst_UCDeprecatedTheme::testThemesRelativePathWithParentOneXDGPathSet()
@@ -206,8 +202,8 @@ void tst_UCDeprecatedTheme::testThemesRelativePathWithParentOneXDGPathSet()
 
     QScopedPointer<ThemeTestCase> view(new ThemeTestCase("Parent.qml"));
     QVERIFY(view);
-    setTheme(view->rootObject(), "TestModule.TestTheme");
-    setStyle(view->rootObject(), "TestStyle.qml");
+    view->setTheme("TestModule.TestTheme");
+    view->setStyle("TestStyle.qml");
     QQmlComponent *style = view->rootObject()->property("style").value<QQmlComponent*>();
     QCOMPARE(style != NULL, true);
 }
@@ -260,7 +256,7 @@ void tst_UCDeprecatedTheme::testMultipleImportPathsSet()
 
     QScopedPointer<ThemeTestCase> view(new ThemeTestCase("Parent.qml"));
     QVERIFY(view);
-    setTheme(view->rootObject(), "TestModule.TestTheme");
+    view->setTheme("TestModule.TestTheme");
 }
 
 QTEST_MAIN(tst_UCDeprecatedTheme)
