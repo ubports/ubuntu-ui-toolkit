@@ -15,7 +15,6 @@
  */
 
 import QtQuick 2.0
-import TestTheme 1.0 as Parent
 
-Parent.TestStyle {
+Item {
 }

@@ -138,7 +138,6 @@ UCStyleSet::UCStyleSet(QObject *parent)
     , m_palette(UCStyleSet::defaultSet().m_palette)
     , m_engine(NULL)
     , m_defaultStyle(false)
-    , m_completed(false)
 {
     init();
 }
@@ -148,7 +147,6 @@ UCStyleSet::UCStyleSet(bool defaultStyle)
     , m_palette(NULL)
     , m_engine(NULL)
     , m_defaultStyle(defaultStyle)
-    , m_completed(false)
 {
     init();
     // set the default font
@@ -161,6 +159,7 @@ UCStyleSet::UCStyleSet(bool defaultStyle)
 
 void UCStyleSet::init()
 {
+    m_completed = false;
     m_name = m_themeSettings.themeName();
     QObject::connect(&m_themeSettings, &UCThemeSettings::themeNameChanged,
                      this, &UCStyleSet::onThemeNameChanged);
@@ -242,10 +241,6 @@ void UCStyleSet::setName(const QString& name)
     if (name.isEmpty()) {
         resetName();
     } else {
-//        if (m_completed && !m_defaultStyle) {
-//            qmlInfo(this) << UbuntuI18n::instance().tr("Cannot change styleset name on runtime.");
-//            return;
-//        }
         QObject::disconnect(&m_themeSettings, &UCThemeSettings::themeNameChanged,
                             this, &UCStyleSet::onThemeNameChanged);
         m_name = name;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,7 +15,10 @@
  */
 
 import QtQuick 2.0
-import TestTheme 1.0 as Parent
+import Ubuntu.Components 1.1
+import Ubuntu.Components.Themes.SuruDark 1.1 as Suru
 
-Parent.TestStyle {
+Suru.Palette {
+    normal.background: "#A21E1C"
+    selected.backgroundText: "lightblue"
 }
