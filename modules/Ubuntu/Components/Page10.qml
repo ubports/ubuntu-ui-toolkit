@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.2
-import Ubuntu.Components 1.1 as Toolkit
+import QtQuick 2.4
+import Ubuntu.Components 1.2 as Toolkit
 
 /*!
   \internal
@@ -29,7 +29,7 @@ PageTreeNode {
     }
     // Set width and height so that a parent Loader can be automatically resized
     // to the size of the loaded Page.
-    width: parentNode ? parentNode.width : undefined
+    width: parentNode ? parentNode.width - page.x : undefined
     height: parentNode ? page.flickable ? parentNode.height : parentNode.height - internal.headerHeight : undefined
 
     isLeaf: true

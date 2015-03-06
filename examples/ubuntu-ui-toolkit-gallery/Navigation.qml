@@ -35,7 +35,7 @@ Template {
         title: "Tabs (flat)"
         className: "Tabs"
         description: "Use them to switch between views of equal importance."
-        designUrl: "http://design.ubuntu.com/apps/building-blocks/tabs"
+        designUrl: "https://design.ubuntu.com/apps/patterns/navigation"
         screenshot: "nav_tabs.png"
     }
 
@@ -43,7 +43,7 @@ Template {
         title: "Expansion (contextual)"
         documentation: ""
         description: "Use this to show more content"
-        designUrl: "http://design.ubuntu.com/apps/building-blocks/expansion"
+        designUrl: "https://design.ubuntu.com/apps/patterns/navigation"
         screenshot: "nav_expansion.png"
     }
 
@@ -51,7 +51,7 @@ Template {
         title: "Page stack (deep)"
         className: "PageStack"
         description: "Use this to move from a main page to a secondary page."
-        designUrl: "http://design.ubuntu.com/apps/building-blocks/page-stack"
+        designUrl: "https://design.ubuntu.com/apps/patterns/navigation"
         screenshot: "nav_pagestack.png"
     }
 }

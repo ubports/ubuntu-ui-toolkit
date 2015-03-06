@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 1.1
+import QtQuick 2.4
+import Ubuntu.Components 1.2
 
 Item {
     id: progressBarStyle
@@ -36,7 +36,7 @@ Item {
         /* The color must be white for PartialColorizeUbuntuShape to accurately
            replace the white with leftColor and rightColor
         */
-        color: progressBar.indeterminate ? backgroundColor : "#FFFFFF"
+        color: progressBar.indeterminate ? progressBarStyle.backgroundColor : "#FFFFFF"
     }
 
     property real progress: progressBar.indeterminate ? 0.0

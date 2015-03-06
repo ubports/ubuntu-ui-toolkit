@@ -36,6 +36,8 @@ class UCListItem : public UCStyledItemBase
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), bool contentMoving READ contentMoving NOTIFY contentMovingChanged)
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
     Q_PROPERTY(QColor highlightColor READ highlightColor WRITE setHighlightColor RESET resetHighlightColor NOTIFY highlightColorChanged)
+    Q_PRIVATE_PROPERTY(UCListItem::d_func(), bool dragging READ dragging NOTIFY draggingChanged)
+    Q_PRIVATE_PROPERTY(UCListItem::d_func(), bool dragMode READ dragMode WRITE setDragMode NOTIFY dragModeChanged)
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), bool selected READ isSelected WRITE setSelected NOTIFY selectedChanged)
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), bool selectMode READ selectMode WRITE setSelectMode NOTIFY selectModeChanged)
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), UCAction *action READ action WRITE setAction NOTIFY actionChanged DESIGNABLE false)
@@ -80,6 +82,8 @@ Q_SIGNALS:
     void contentMovingChanged();
     void colorChanged();
     void highlightColorChanged();
+    void draggingChanged();
+    void dragModeChanged();
     void selectedChanged();
     void selectModeChanged();
     void actionChanged();
@@ -105,6 +109,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_updateIndex())
     Q_PRIVATE_SLOT(d_func(), void _q_contentMoving())
     Q_PRIVATE_SLOT(d_func(), void _q_syncSelectMode())
+    Q_PRIVATE_SLOT(d_func(), void _q_syncDragMode())
 };
 
 class UCListItemDividerPrivate;
@@ -135,12 +140,14 @@ private:
     Q_DECLARE_PRIVATE(UCListItemDivider)
 };
 
+class UCDragEvent;
 class UCViewItemsAttachedPrivate;
 class UCViewItemsAttached : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(bool selectMode READ selectMode WRITE setSelectMode NOTIFY selectModeChanged)
     Q_PROPERTY(QList<int> selectedIndices READ selectedIndices WRITE setSelectedIndices NOTIFY selectedIndicesChanged)
+    Q_PROPERTY(bool dragMode READ dragMode WRITE setDragMode NOTIFY dragModeChanged)
 public:
     explicit UCViewItemsAttached(QObject *owner);
     ~UCViewItemsAttached();
@@ -157,17 +164,67 @@ public:
     void setSelectMode(bool value);
     QList<int> selectedIndices() const;
     void setSelectedIndices(const QList<int> &list);
+    bool dragMode() const;
+    void setDragMode(bool value);
+
 private Q_SLOTS:
     void unbindItem();
+    void completed();
 
 Q_SIGNALS:
     void selectModeChanged();
     void selectedIndicesChanged();
+    void dragModeChanged();
+
+    void dragUpdated(UCDragEvent *event);
 
 private:
     Q_DECLARE_PRIVATE(UCViewItemsAttached)
-    QScopedPointer<UCViewItemsAttachedPrivate> d_ptr;
 };
 QML_DECLARE_TYPEINFO(UCViewItemsAttached, QML_HAS_ATTACHED_PROPERTIES)
+
+class UCDragEvent : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(Status status READ status)
+    Q_PROPERTY(int from READ from)
+    Q_PROPERTY(int to READ to)
+    Q_PROPERTY(int minimumIndex MEMBER m_minimum)
+    Q_PROPERTY(int maximumIndex MEMBER m_maximum)
+    Q_PROPERTY(bool accept MEMBER m_accept)
+    Q_ENUMS(Status)
+public:
+    enum Status {
+        Started,
+        Moving,
+        Dropped
+    };
+
+    explicit UCDragEvent(Status status, int from, int to, int min, int max)
+        : QObject(0), m_status(status), m_from(from), m_to(to), m_minimum(min), m_maximum(max), m_accept(true)
+    {}
+    int from() const
+    {
+        return m_from;
+    }
+    int to() const
+    {
+        return m_to;
+    }
+    Status status() const
+    {
+        return m_status;
+    }
+
+private:
+    Status m_status;
+    int m_from;
+    int m_to;
+    int m_minimum;
+    int m_maximum;
+    bool m_accept;
+
+    friend class ListItemDragArea;
+};
 
 #endif // UCLISTITEM_H

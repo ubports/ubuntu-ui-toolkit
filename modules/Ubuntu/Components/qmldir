@@ -110,3 +110,4 @@ singleton Haptics 1.0 11/Haptics.qml
 
 #version 1.2
 MainView 1.2 MainView12.qml
+Captions 1.2 Captions.qml

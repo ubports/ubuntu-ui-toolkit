@@ -77,6 +77,7 @@ function execute_test_cmd {
                 tst_focus.qml \
                 tst_pickerpanel.qml \
                 tst_picker.qml \
+                tst_listitems_itemselector.qml \
                 '
     if [ $WARNINGS -ne 0 ]; then
       if [[ $EXCEPTIONS == *$_TARGET_$_TESTFILE* ]]; then
