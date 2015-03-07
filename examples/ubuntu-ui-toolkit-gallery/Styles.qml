@@ -43,6 +43,7 @@ Template {
     OptionSelector {
         model: [ 'Ambiance', 'SuruDark' ]
         expanded: true
+        selectedIndex: (Theme.name == 'Ubuntu.Components.Themes.SuruDark')
         onSelectedIndexChanged: Theme.name = 'Ubuntu.Components.Themes.%1'.arg(model[selectedIndex])
     }
 }
