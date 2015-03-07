@@ -1041,10 +1041,21 @@ plugins.qmltypes
     prototype: "QObject"
     Property { name: "enabled"; type: "bool" }
     Property { name: "properties"; type: "string" }
+    name: "UCStyleSet"
+    prototype: "QObject"
+    exports: ["StyleSet 1.3"]
+    Property { name: "name"; type: "string" }
+    Property { name: "palette"; type: "QObject"; isPointer: true }
+    Method {
+    name: "createStyleComponent"
+    Parameter { name: "styleName"; type: "string" }
+    Parameter { name: "parent"; type: "QObject"; isPointer: true }
     name: "UCStyledItemBase"
     prototype: "QQuickItem"
     exports: [
     Property { name: "activeFocusOnPress"; revision: 1; type: "bool" }
+    Property { name: "styleSet"; revision: 2; type: "UCStyleSet"; isPointer: true }
+    Signal { name: "styleSetChanged"; revision: 2 }
     Method {
     name: "requestFocus"
     Parameter { name: "reason"; type: "Qt::FocusReason" }

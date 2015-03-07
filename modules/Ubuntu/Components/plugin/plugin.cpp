@@ -22,7 +22,8 @@
 #include <QtGui/QScreen>
 
 #include "plugin.h"
-#include "uctheme.h"
+#include "ucstyleset.h"
+#include "ucdeprecatedtheme.h"
 
 #include <QtQml/QQmlContext>
 #include "i18n.h"
@@ -187,6 +188,10 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterUncreatableType<UCViewItemsAttached>(uri, 1, 2, "ViewItems", "Not instantiable");
     qmlRegisterSingletonType<UCNamespace>(uri, 1, 2, "Ubuntu", registerUbuntuNamespace);
     qmlRegisterType<UCUbuntuShape, 1>(uri, 1, 2, "UbuntuShape");
+
+    // register 1.3 API
+    qmlRegisterType<UCStyleSet>(uri, 1, 3, "StyleSet");
+    qmlRegisterType<UCStyledItemBase, 2>(uri, 1, 3, "StyledItemBase");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
@@ -205,7 +210,10 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     // that can be accessed from any object
     context->setContextProperty("QuickUtils", &QuickUtils::instance());
 
-    UCTheme::instance().registerToContext(context);
+    // register styleSet context property
+    UCStyleSet::registerToContext(context);
+
+    UCDeprecatedTheme::instance().registerToContext(context);
 
     context->setContextProperty("i18n", &UbuntuI18n::instance());
     ContextPropertyChangeListener *i18nChangeListener =

@@ -20,6 +20,7 @@
 #define UCSTYLEDITEMBASE_P_H
 
 #include <QtQuick/private/qquickitem_p.h>
+#include "ucstyleditembase.h"
 
 class QQuickMouseArea;
 class UCStyledItemBase;
@@ -32,6 +33,9 @@ public:
         return item->d_func();
     }
 
+    void _q_ascendantChanged(QQuickItem *ascendant);
+    void _q_parentStyleChanged();
+
     UCStyledItemBasePrivate();
     virtual ~UCStyledItemBasePrivate();
     void init();
@@ -41,6 +45,16 @@ public:
 
 public:
     bool activeFocusOnPress:1;
+    bool subthemingEnabled:1;
+    UCStyleSet *styleSet;
+    QPointer<UCStyledItemBase> parentStyledItem;
+
+private:
+    QStack< QPointer<QQuickItem> > parentStack;
+
+    bool connectParents(QQuickItem *fromItem);
+    bool setParentStyled(UCStyledItemBase *styledItem);
+    void disconnectTillItem(QQuickItem *item);
 };
 
 #endif // UCSTYLEDITEMBASE_P_H

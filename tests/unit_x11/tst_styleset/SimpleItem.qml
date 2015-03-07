@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,15 +15,16 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.2
+import Ubuntu.Components 1.3
 
-MainView {
-    width: units.gu(40)
-    height: units.gu(71)
+Item {
+    id: item
+    property StyleSet styleSet: StyleSet {}
+    property Component style
 
-    Component.onCompleted: Theme.name = "AppTheme"
+    property string styleDocument
+    onStyleDocumentChanged: style = styleSet.createStyleComponent(styleDocument, item)
 
-    Label {
-        objectName: "test_label"
-    }
+    property string themeName
+    onThemeNameChanged: styleSet.name = themeName;
 }

@@ -14,16 +14,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.4
-import Ubuntu.Components 1.2
+import QtQuick 2.0
+import Ubuntu.Components 1.1
+import Ubuntu.Components.Themes.SuruDark 1.1 as Suru
 
-MainView {
-    width: units.gu(40)
-    height: units.gu(71)
-
-    Component.onCompleted: Theme.name = "AppTheme"
-
-    Label {
-        objectName: "test_label"
-    }
+Suru.Palette {
+    normal.background: "#A21E1C"
+    selected.backgroundText: "lightblue"
 }

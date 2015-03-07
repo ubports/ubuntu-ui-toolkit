@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013-2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -18,14 +18,51 @@
 #include <QtCore/QString>
 #include <QtTest/QtTest>
 #include <QtQml/QQmlEngine>
+#include <QtQml/QQmlContext>
 #include <QtQml/QQmlComponent>
-#include "uctheme.h"
+#include "ucdeprecatedtheme.h"
 #include "uctestcase.h"
 #include <private/qquicktext_p.h>
 
 Q_DECLARE_METATYPE(QList<QQmlError>)
 
-class tst_UCTheme : public QObject
+class ThemeTestCase : public UbuntuTestCase
+{
+    Q_OBJECT
+public:
+    ThemeTestCase(const QString& file, QWindow* parent = 0)
+        : UbuntuTestCase(file, parent)
+    {
+    }
+
+    ~ThemeTestCase()
+    {
+        // restore theme before quitting
+        if (!rootContext()) {
+            return;
+        }
+        UCDeprecatedTheme *theme = rootContext()->contextProperty("Theme").value<UCDeprecatedTheme*>();
+        if (theme) {
+            theme->resetName();
+        } else {
+            qWarning() << "No theme instance found!";
+        }
+    }
+
+    void setTheme(const QString &theme)
+    {
+        rootObject()->setProperty("themeName", theme);
+        QTest::waitForEvents();
+    }
+
+    void setStyle(const QString &style)
+    {
+        rootObject()->setProperty("styleDocument", style);
+        QTest::waitForEvents();
+    }
+};
+
+class tst_UCDeprecatedTheme : public QObject
 {
     Q_OBJECT
 private:
@@ -50,157 +87,131 @@ private Q_SLOTS:
     void testMultipleImportPathsSet();
 };
 
-void tst_UCTheme::initTestCase()
+void tst_UCDeprecatedTheme::initTestCase()
 {
     m_xdgDataPath = QLatin1String(getenv("XDG_DATA_DIRS"));
 }
 
-void tst_UCTheme::cleanupTestCase()
+void tst_UCDeprecatedTheme::cleanupTestCase()
 {
     qputenv("XDG_DATA_DIRS", m_xdgDataPath.toLocal8Bit());
 }
 
-void tst_UCTheme::testInstance()
+void tst_UCDeprecatedTheme::testInstance()
 {
-    UCTheme::instance();
+    UCDeprecatedTheme::instance();
 }
 
-void tst_UCTheme::testNameDefault()
+void tst_UCDeprecatedTheme::testNameDefault()
 {
-    UCTheme theme;
+    UCDeprecatedTheme theme;
     QCOMPARE(theme.name(), QString("Ubuntu.Components.Themes.Ambiance"));
 }
 
-void tst_UCTheme::testNameSet()
+void tst_UCDeprecatedTheme::testNameSet()
 {
     QTest::ignoreMessage(QtWarningMsg, "Theme not found: \"MyBeautifulTheme\"");
 
-    UCTheme theme;
+    UCDeprecatedTheme theme;
     theme.setName("MyBeautifulTheme");
     QCOMPARE(theme.name(), QString("MyBeautifulTheme"));
 }
 
-void tst_UCTheme::testCreateStyleComponent()
+void tst_UCDeprecatedTheme::testCreateStyleComponent()
 {
     QFETCH(QString, styleName);
     QFETCH(QString, parentName);
     QFETCH(bool, success);
 
-    if (parentName.isEmpty())
+    if (parentName == "SimpleItem.qml")
         QTest::ignoreMessage(QtWarningMsg, "QQmlComponent: Component is not ready");
     else if (styleName == "NotExistingTestStyle.qml")
-        UbuntuTestCase::ignoreWarning(parentName, 19, 1, "QML Item: Warning: Style NotExistingTestStyle.qml not found in theme TestModule.TestTheme");
+        ThemeTestCase::ignoreWarning(parentName, 20, 1, "QML Parent: Warning: Style NotExistingTestStyle.qml not found in theme TestModule.TestTheme");
 
     qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", ".");
 
-    UCTheme theme;
-    theme.setName("TestModule.TestTheme");
-    QQmlEngine engine;
-    QQmlComponent parentComponent(&engine, parentName);
-    QObject* parent = parentComponent.create();
-    QQmlComponent* component = theme.createStyleComponent(styleName, parent);
-
-    QCOMPARE(component != NULL, success);
+    QScopedPointer<ThemeTestCase> view(new ThemeTestCase(parentName));
+    QVERIFY(view);
+    view->setTheme("TestModule.TestTheme");
+    view->setStyle(styleName);
+    QQmlComponent *style = view->rootObject()->property("style").value<QQmlComponent*>();
+    QCOMPARE(style != NULL, success);
 }
 
-void tst_UCTheme::testCreateStyleComponent_data() {
+void tst_UCDeprecatedTheme::testCreateStyleComponent_data() {
     QTest::addColumn<QString>("styleName");
     QTest::addColumn<QString>("parentName");
     QTest::addColumn<bool>("success");
     QTest::newRow("Existing style") << "TestStyle.qml" << "Parent.qml" << true;
     QTest::newRow("Non existing style") << "NotExistingTestStyle.qml" << "Parent.qml" << false;
-    QTest::newRow("No parent") << "TestStyle.qml" << "" << false;
 }
 
-void tst_UCTheme::testThemesRelativePath()
+void tst_UCDeprecatedTheme::testThemesRelativePath()
 {
     qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "../tst_theme_engine");
 
-    UCTheme theme;
-    theme.setName("TestModule.TestTheme");
-    QQmlEngine engine;
-    QQmlComponent parentComponent(&engine, "Parent.qml");
-    QObject* parent = parentComponent.create();
-    QQmlComponent* component = theme.createStyleComponent("TestStyle.qml", parent);
-
-    QCOMPARE(component != NULL, true);
-    QCOMPARE(component->status(), QQmlComponent::Ready);
+    QScopedPointer<ThemeTestCase> view(new ThemeTestCase("Parent.qml"));
+    QVERIFY(view);
+    view->setTheme("TestModule.TestTheme");
+    view->setStyle("TestStyle.qml");
+    QQmlComponent *style = view->rootObject()->property("style").value<QQmlComponent*>();
+    QCOMPARE(style != NULL, true);
 }
 
-void tst_UCTheme::testThemesRelativePathWithParent()
+void tst_UCDeprecatedTheme::testThemesRelativePathWithParent()
 {
-    QSKIP("https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1248982");
-    qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "../../resources/themes:../../resources/themes/TestModule");
+    qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "./themes:./themes/TestModule");
 
-    UCTheme theme;
-    theme.setName("CustomTheme");
-    QQmlEngine engine;
-    theme.registerToContext(engine.rootContext());
-    QQmlComponent parentComponent(&engine, "Parent.qml");
-    QObject* parent = parentComponent.create();
-    QQmlComponent* component = theme.createStyleComponent("TestStyle.qml", parent);
-
-    QCOMPARE(component != NULL, true);
-    QCOMPARE(component->status(), QQmlComponent::Ready);
+    QScopedPointer<ThemeTestCase> view(new ThemeTestCase("Parent.qml"));
+    QVERIFY(view);
+    view->setTheme("CustomTheme");
+    view->setStyle("TestStyle.qml");
+    QQmlComponent *style = view->rootObject()->property("style").value<QQmlComponent*>();
+    QCOMPARE(style != NULL, true);
 }
 
-void tst_UCTheme::testThemesRelativePathWithParentXDGDATA()
+void tst_UCDeprecatedTheme::testThemesRelativePathWithParentXDGDATA()
 {
-    QSKIP("https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1248982");
     qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "");
-    qputenv("XDG_DATA_DIRS", "../../resources/themes:../../resources/themes/TestModule");
+    qputenv("XDG_DATA_DIRS", "./themes:./themes/TestModule");
 
-    UCTheme theme;
-    theme.setName("CustomTheme");
-    QQmlEngine engine;
-    theme.registerToContext(engine.rootContext());
-    QQmlComponent parentComponent(&engine, "Parent.qml");
-    QObject* parent = parentComponent.create();
-    QQmlComponent* component = theme.createStyleComponent("TestStyle.qml", parent);
-
-    QCOMPARE(component != NULL, true);
-    QCOMPARE(component->status(), QQmlComponent::Ready);
+    QScopedPointer<ThemeTestCase> view(new ThemeTestCase("Parent.qml"));
+    QVERIFY(view);
+    view->setTheme("CustomTheme");
+    view->setStyle("TestStyle.qml");
+    QQmlComponent *style = view->rootObject()->property("style").value<QQmlComponent*>();
+    QCOMPARE(style != NULL, true);
 }
 
-void tst_UCTheme::testThemesRelativePathWithParentNoVariablesSet()
+void tst_UCDeprecatedTheme::testThemesRelativePathWithParentNoVariablesSet()
 {
-    UbuntuTestCase::ignoreWarning("Parent.qml", 19, 1, "QML Item: Warning: Style TestStyle.qml not found in theme Ubuntu.Components.Themes.Ambiance");
+    ThemeTestCase::ignoreWarning("Parent.qml", 20, 1, "QML Parent: Warning: Style TestStyle.qml not found in theme Ubuntu.Components.Themes.Ambiance");
 
     qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "");
     qputenv("XDG_DATA_DIRS", "");
 
-    UCTheme theme;
-    QQmlEngine engine;
-    qRegisterMetaType<QList <QQmlError> >();
-    QSignalSpy spy(&engine, SIGNAL(warnings(QList<QQmlError>)));
-    theme.registerToContext(engine.rootContext());
-    QQmlComponent parentComponent(&engine, "Parent.qml");
-    QObject* parent = parentComponent.create();
-    QQmlComponent* component = theme.createStyleComponent("TestStyle.qml", parent);
-    // warning about TestStyle not defined in Ubuntu.Components.Themes.Ambiance should be shown
-    QCOMPARE(spy.count(), 1);
-    QCOMPARE(component == NULL, true);
+    QScopedPointer<ThemeTestCase> view(new ThemeTestCase("Parent.qml"));
+    QVERIFY(view);
+    view->setStyle("TestStyle.qml");
 }
 
-void tst_UCTheme::testThemesRelativePathWithParentOneXDGPathSet()
+void tst_UCDeprecatedTheme::testThemesRelativePathWithParentOneXDGPathSet()
 {
     qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "");
     qputenv("XDG_DATA_DIRS", "../tst_theme_engine");
 
-    UCTheme theme;
-    theme.setName("TestModule.TestTheme");
-    QQmlEngine engine;
-    QQmlComponent parentComponent(&engine, "Parent.qml");
-    QObject* parent = parentComponent.create();
-    QQmlComponent* component = theme.createStyleComponent("TestStyle.qml", parent);
-
-    QCOMPARE(component != NULL, true);
-    QCOMPARE(component->status(), QQmlComponent::Ready);
+    QScopedPointer<ThemeTestCase> view(new ThemeTestCase("Parent.qml"));
+    QVERIFY(view);
+    view->setTheme("TestModule.TestTheme");
+    view->setStyle("TestStyle.qml");
+    QQmlComponent *style = view->rootObject()->property("style").value<QQmlComponent*>();
+    QCOMPARE(style != NULL, true);
 }
 
-void tst_UCTheme::testAppTheme()
+void tst_UCDeprecatedTheme::testAppTheme()
 {
-    QScopedPointer<UbuntuTestCase> test(new UbuntuTestCase("TestApp.qml"));
+    QScopedPointer<ThemeTestCase> test(new ThemeTestCase("TestApp.qml"));
+    // as default theme is a static object, the theme might be someting
     QColor backgroundColor = test->rootObject()->property("backgroundColor").value<QColor>();
     QCOMPARE(backgroundColor, QColor("#A21E1C"));
     QQuickText *label = test->findItem<QQuickText*>("test_label");
@@ -208,7 +219,7 @@ void tst_UCTheme::testAppTheme()
     QCOMPARE(label->color(), QColor("lightblue"));
 }
 
-void tst_UCTheme::testNoImportPathSet()
+void tst_UCDeprecatedTheme::testNoImportPathSet()
 {
     if (!QFile(QLibraryInfo::location(QLibraryInfo::Qml2ImportsPath) + "/Ubuntu/Components").exists())
         QSKIP("This can only be tested if the UITK is installed");
@@ -217,11 +228,11 @@ void tst_UCTheme::testNoImportPathSet()
     qputenv("XDG_DATA_DIRS", "");
     qputenv("QML2_IMPORT_PATH", "");
 
-    UCTheme theme;
+    UCDeprecatedTheme theme;
     QCOMPARE(theme.name(), QString("Ubuntu.Components.Themes.Ambiance"));
 }
 
-void tst_UCTheme::testBogusImportPathSet()
+void tst_UCDeprecatedTheme::testBogusImportPathSet()
 {
     if (!QFile(QLibraryInfo::location(QLibraryInfo::Qml2ImportsPath) + "/Ubuntu/Components").exists())
         QSKIP("This can only be tested if the UITK is installed");
@@ -230,11 +241,11 @@ void tst_UCTheme::testBogusImportPathSet()
     qputenv("XDG_DATA_DIRS", "");
     qputenv("QML2_IMPORT_PATH", "/no/plugins/here");
 
-    UCTheme theme;
+    UCDeprecatedTheme theme;
     QCOMPARE(theme.name(), QString("Ubuntu.Components.Themes.Ambiance"));
 }
 
-void tst_UCTheme::testMultipleImportPathsSet()
+void tst_UCDeprecatedTheme::testMultipleImportPathsSet()
 {
     if (!QFile(QLibraryInfo::location(QLibraryInfo::Qml2ImportsPath) + "/Ubuntu/Components").exists())
         QSKIP("This can only be tested if the UITK is installed");
@@ -243,10 +254,11 @@ void tst_UCTheme::testMultipleImportPathsSet()
     qputenv("XDG_DATA_DIRS", "");
     qputenv("QML2_IMPORT_PATH", "/no/plugins/here:.");
 
-    UCTheme theme;
-    theme.setName("TestModule.TestTheme");
+    QScopedPointer<ThemeTestCase> view(new ThemeTestCase("Parent.qml"));
+    QVERIFY(view);
+    view->setTheme("TestModule.TestTheme");
 }
 
-QTEST_MAIN(tst_UCTheme)
+QTEST_MAIN(tst_UCDeprecatedTheme)
 
 #include "tst_theme_enginetest.moc"

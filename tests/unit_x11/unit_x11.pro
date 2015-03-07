@@ -13,4 +13,6 @@ SUBDIRS += tst_components \
     tst_layouts \
     tst_mousefilters \
     tst_animator \
-    tst_serviceproperties
+    tst_serviceproperties \
+    tst_styleset \
+    tst_multi_theming

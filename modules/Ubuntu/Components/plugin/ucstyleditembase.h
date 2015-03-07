@@ -22,32 +22,42 @@
 #include <QtQuick/QQuickItem>
 
 class UCStyledItemBasePrivate;
+class UCStyleSet;
 class UCStyledItemBase : public QQuickItem
 {
     Q_OBJECT
     Q_PROPERTY(bool activeFocusOnPress
                READ activefocusOnPress WRITE setActiveFocusOnPress
                NOTIFY activeFocusOnPressChanged REVISION 1)
+    Q_PROPERTY(UCStyleSet *styleSet READ styleSet WRITE setStyleSet RESET resetStyleSet NOTIFY styleSetChanged REVISION 2)
 public:
     explicit UCStyledItemBase(QQuickItem *parent = 0);
 
     bool activefocusOnPress() const;
     void setActiveFocusOnPress(bool value);
 
+    UCStyleSet *styleSet() const;
+    void setStyleSet(UCStyleSet *styleSet);
+    void resetStyleSet();
+
 public Q_SLOTS:
     Q_REVISION(1) bool requestFocus(Qt::FocusReason reason = Qt::OtherFocusReason);
 
 Q_SIGNALS:
     void activeFocusOnPressChanged();
+    Q_REVISION(2) void styleSetChanged();
 
 protected:
     UCStyledItemBase(UCStyledItemBasePrivate &, QQuickItem *parent);
 
     void mousePressEvent(QMouseEvent *event);
     bool childMouseEventFilter(QQuickItem *child, QEvent *event);
+    void itemChange(ItemChange, const ItemChangeData &);
 
 private:
     Q_DECLARE_PRIVATE(UCStyledItemBase)
+    Q_PRIVATE_SLOT(d_func(), void _q_ascendantChanged(QQuickItem*))
+    Q_PRIVATE_SLOT(d_func(), void _q_parentStyleChanged())
 };
 
 #endif // UCSTYLEDITEMBASE_H

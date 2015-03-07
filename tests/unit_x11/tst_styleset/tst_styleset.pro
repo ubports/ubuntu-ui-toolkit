@@ -1,11 +1,9 @@
 include(../test-include.pri)
 QT += quick-private gui-private
-SOURCES += tst_theme_enginetest.cpp
+SOURCES += tst_styleset.cpp
 
 OTHER_FILES += \
     TestStyle.qml \
-    TestApp.qml \
-    Parent.qml \
     SimpleItem.qml \
     themes/CustomTheme/TestStyle.qml \
     themes/CustomTheme/parent_theme \

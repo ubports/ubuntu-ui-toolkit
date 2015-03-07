@@ -18,9 +18,13 @@
 
 #include "ucstyleditembase.h"
 #include "ucstyleditembase_p.h"
+#include "ucstyleset.h"
 
 UCStyledItemBasePrivate::UCStyledItemBasePrivate()
     : activeFocusOnPress(false)
+    , subthemingEnabled(true)
+    , styleSet(0)
+    , parentStyledItem(0)
 {
 }
 
@@ -32,6 +36,7 @@ void UCStyledItemBasePrivate::init()
 {
     Q_Q(UCStyledItemBase);
     q->setFlag(QQuickItem::ItemIsFocusScope);
+    subthemingEnabled = qgetenv("UITK_SUBTHEMING").toInt() == 1;
 }
 
 
@@ -168,6 +173,154 @@ void UCStyledItemBase::setActiveFocusOnPress(bool value)
     Q_EMIT activeFocusOnPressChanged();
 }
 
+/*!
+ * \qmlproperty StyleSet StyledItemBase::styleSet
+ * \since Ubuntu.Components 1.3
+ * The property configures the styleset the component and all its sub-components
+ * should use. By default it is set to the closest StyledItem's styleset if any,
+ * or to the system default styleset.
+ */
+UCStyleSet * UCStyledItemBase::styleSet() const
+{
+    Q_D(const UCStyledItemBase);
+    if (d->subthemingEnabled) {
+        if (d->styleSet) {
+            return d->styleSet;
+        } else if (!d->parentStyledItem.isNull()) {
+            return d->parentStyledItem->styleSet();
+        }
+    }
+    return &UCStyleSet::defaultSet();
+}
+
+void UCStyledItemBase::setStyleSet(UCStyleSet *styleSet)
+{
+    Q_D(UCStyledItemBase);
+    if (d->styleSet == styleSet) {
+        return;
+    }
+    if (!d->subthemingEnabled && styleSet) {
+        d->styleSet = styleSet;
+        UCStyleSet::defaultSet().setName(styleSet->name());
+        return;
+    }
+    if (d->styleSet && styleSet) {
+        // no need to redo the parentStack, simply set the styleSet and leave
+        d->styleSet = styleSet;
+        Q_EMIT styleSetChanged();
+    } else {
+        d->styleSet = styleSet;
+        if (!styleSet) {
+            resetStyleSet();
+        } else {
+            d->disconnectTillItem(0);
+            Q_EMIT styleSetChanged();
+        }
+    }
+}
+void UCStyledItemBase::resetStyleSet()
+{
+    // reset styleset back to use its parent
+    Q_D(UCStyledItemBase);
+    if (!d->styleSet) {
+        return;
+    }
+    d->styleSet = NULL;
+    d->connectParents(0);
+    Q_EMIT styleSetChanged();
+}
+
+// link/unlink all ascendant items until we reach a StyledItem, returns true if the
+// styleSet change signal emission is justified
+bool UCStyledItemBasePrivate::connectParents(QQuickItem *fromItem)
+{
+    if (!subthemingEnabled) {
+        return false;
+    }
+    Q_Q(UCStyledItemBase);
+    QQuickItem *item = fromItem ? fromItem : parentItem;
+    while (item) {
+        // push the item onto the stack
+        parentStack.push(QPointer<QQuickItem>(item));
+        UCStyledItemBase *styledItem = qobject_cast<UCStyledItemBase*>(item);
+        if (styledItem) {
+            // this is the closest StyledItem, connect its styleSetChanged() signal
+            QObject::connect(styledItem, SIGNAL(styleSetChanged()),
+                             q, SLOT(_q_parentStyleChanged()), Qt::DirectConnection);
+            // set the current style set to the one in the parent's one if differs
+            return setParentStyled(styledItem);
+        } else {
+            // connect to the item's parentChanged() signal so we can detect when the parent changes
+            QObject::connect(item, SIGNAL(parentChanged(QQuickItem*)),
+                             q, SLOT(_q_ascendantChanged(QQuickItem*)), Qt::DirectConnection);
+        }
+        item = item->parentItem();
+    }
+    return false;
+}
+
+// set the used parent styled item's style
+bool UCStyledItemBasePrivate::setParentStyled(UCStyledItemBase *styledItem)
+{
+    if (parentStyledItem == styledItem) {
+        return false;
+    }
+    parentStyledItem = styledItem;
+    return true;
+}
+
+// disconnect parent stack till item is reached; all the stack if item == 0
+void UCStyledItemBasePrivate::disconnectTillItem(QQuickItem *item)
+{
+    if (!subthemingEnabled) {
+        return;
+    }
+    Q_Q(UCStyledItemBase);
+    while (!parentStack.isEmpty() && item != parentStack.top()) {
+        QPointer<QQuickItem> stackItem = parentStack.pop();
+        // the topmost item can be the only one which is a StyledItem
+        UCStyledItemBase *styledItem = qobject_cast<UCStyledItemBase*>(stackItem.data());
+        if (styledItem) {
+            QObject::disconnect(styledItem, SIGNAL(styleSetChanged()),
+                                q, SLOT(_q_parentStyleChanged()));
+        } else if (!stackItem.isNull()) {
+            QObject::disconnect(stackItem.data(), SIGNAL(parentChanged(QQuickItem*)),
+                                q, SLOT(_q_ascendantChanged(QQuickItem*)));
+        }
+    }
+}
+
+// captures ascendant change signal, the sender is the one which counts!
+void UCStyledItemBasePrivate::_q_ascendantChanged(QQuickItem *ascendant)
+{
+    Q_Q(UCStyledItemBase);
+    QQuickItem *sender = static_cast<QQuickItem*>(q->sender());
+    if (!sender) {
+        // cannot detect the sender, leave!
+        return;
+    }
+    if (ascendant) {
+        // disconnect from the previous ones
+        disconnectTillItem(sender);
+        // traverse ascendants till we reach a StyledItem or root and push them into the stack
+        if (connectParents(ascendant)) {
+            Q_EMIT q->styleSetChanged();
+        }
+    }
+}
+
+// syncs the ascendant StyledItem's style
+void UCStyledItemBasePrivate::_q_parentStyleChanged()
+{
+    Q_Q(UCStyledItemBase);
+    UCStyledItemBase *styledItem = static_cast<UCStyledItemBase*>(q->sender());
+    if (!styledItem) {
+        return;
+    }
+    setParentStyled(styledItem);
+    Q_EMIT q->styleSetChanged();
+}
+
 // grab pressed state and focus if it can be
 void UCStyledItemBase::mousePressEvent(QMouseEvent *event)
 {
@@ -192,6 +345,20 @@ bool UCStyledItemBase::childMouseEventFilter(QQuickItem *child, QEvent *event)
     }
     // let the event be passed to children
     return QQuickItem::childMouseEventFilter(child, event);
+}
+
+// catch parent change event so we can lookup for the parent chain theme
+void UCStyledItemBase::itemChange(ItemChange change, const ItemChangeData &data)
+{
+    QQuickItem::itemChange(change, data);
+    Q_D(UCStyledItemBase);
+    if (change == ItemParentHasChanged && d->subthemingEnabled) {
+        if (!data.item) {
+            d->disconnectTillItem(0);
+        } else if (!d->styleSet && d->connectParents(0)) {
+            Q_EMIT styleSetChanged();
+        }
+    }
 }
 
 #include "moc_ucstyleditembase.cpp"
