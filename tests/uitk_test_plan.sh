@@ -354,9 +354,11 @@ while getopts ":hrcintduslwbv:o:p:f:a:" opt; do
 done
 
 MAINFILE=MAIN-ap-${DATESTAMP}-${SERIES}-SILO${PPA}
+MAINFILE=${MAINFILE/\//_}
 
 if [ ${ONLYCOMPARE} == true ]; then
    echo "Comparing results with the archive tests"
+   PPA=${PPA/\//_}
    compare_results
    egrep "regression" -B1 ${MAINFILE} |grep Failed|sort|uniq -c|grep " 2"
    exit
@@ -398,13 +400,6 @@ echo "*** Starting ***"
 echo ""
 
 
-if [ ${ONLYCOMPARE} == true ]; then
-   echo "Comparing results with the archive tests"
-   compare_results
-   exit
-fi
-
-
 if [ ${UNLOCK_ONLY} == true ]; then
    reset -f
    exit
@@ -439,7 +434,7 @@ if [ ${DONOTRUNTESTS} != true ]; then
             echo "<<<=== ${APPNAME} 1 ===>>>" >> ${LOGFILE}
             reset
             eval ${COMMAND}
-            egrep "<<<===|Ran|OK|FAILED" ${LOGFILE}
+             egrep "<<<===|Ran|OK|FAILED" ${LOGFILE}
             # check if the tests were successful and re-run after a reset
             if (tail -1 ${LOGFILE}|grep -q OK) ;then 
 		echo -e "OK - ${LOGFILE}";

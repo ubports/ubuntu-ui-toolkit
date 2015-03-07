@@ -68,6 +68,11 @@ Popover {
         popover.visible = false;
     }
 
+    /*
+      Force positioning so that the popover is positioned in the screen while
+      the input is on the top of the screen
+    */
+    y: parent ? (parent.height - height) / 2 : 0
     autoClose: false
     contentHeight: row.childrenRect.height
     contentWidth: row.childrenRect.width
