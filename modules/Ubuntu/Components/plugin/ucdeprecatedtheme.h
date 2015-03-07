@@ -27,7 +27,7 @@ class UCTheme;
 class UCDeprecatedTheme : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
+    Q_PROPERTY(QString name READ name WRITE setName RESET resetName NOTIFY nameChanged)
     Q_PROPERTY(QObject* palette READ palette NOTIFY paletteChanged)
 public:
     static UCDeprecatedTheme& instance() {
@@ -39,6 +39,7 @@ public:
     // getter/setters
     QString name() const;
     void setName(const QString& name);
+    void resetName();
     QObject* palette();
 
     Q_INVOKABLE QQmlComponent* createStyleComponent(const QString& styleName, QObject* parent);
@@ -47,9 +48,6 @@ public:
 Q_SIGNALS:
     void nameChanged();
     void paletteChanged();
-
-private:
-    UCTheme *m_theme;
 };
 
 #endif // UCDEPRECATEDTHEME_H

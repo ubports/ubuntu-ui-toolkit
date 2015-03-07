@@ -21,6 +21,7 @@
 #define UCTHEME_H
 
 #include <QtCore/QObject>
+#include <QtCore/QPointer>
 #include <QtCore/QUrl>
 #include <QtCore/QString>
 #include <QtQml/QQmlComponent>
@@ -31,14 +32,20 @@ class UCTheme : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
+    Q_PROPERTY(QString name READ name WRITE setName RESET resetName NOTIFY nameChanged)
     Q_PROPERTY(QObject* palette READ palette NOTIFY paletteChanged)
 public:
     explicit UCTheme(QObject *parent = 0);
+    static UCTheme &defaultSet()
+    {
+        static UCTheme instance(true);
+        return instance;
+    }
 
     // getter/setters
     QString name() const;
     void setName(const QString& name);
+    void resetName();
     QObject* palette();
 
     Q_INVOKABLE QQmlComponent* createStyleComponent(const QString& styleName, QObject* parent);
@@ -62,7 +69,7 @@ private:
     void init();
 
     QString m_name;
-    QObject* m_palette;
+    QPointer<QObject> m_palette; // the palette might be from the default style if the theme doesn't define palette
     QQmlEngine *m_engine;
     QList<QUrl> m_themePaths;
     UCThemeSettings m_themeSettings;

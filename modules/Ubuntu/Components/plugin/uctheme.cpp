@@ -113,8 +113,9 @@ QStringList themeSearchPath() {
 
 UCTheme::UCTheme(QObject *parent)
     : QObject(parent)
-    , m_palette(NULL)
-    , m_engine(NULL)
+    , m_name(UCTheme::defaultSet().m_name)
+    , m_palette(UCTheme::defaultSet().m_palette)
+    , m_engine(UCTheme::defaultSet().m_engine)
     , m_defaultStyle(false)
 {
     init();
@@ -204,18 +205,26 @@ QString UCTheme::name() const
 {
     return m_name;
 }
-
 void UCTheme::setName(const QString& name)
 {
-    if (name != m_name) {
+    if (name == m_name) {
+        return;
+    }
+    if (name.isEmpty()) {
+        init();
+    } else {
         QObject::disconnect(&m_themeSettings, &UCThemeSettings::themeNameChanged,
                             this, &UCTheme::onThemeNameChanged);
         m_name = name;
         updateThemePaths();
-        updateEnginePaths();
-        Q_EMIT nameChanged();
-        loadPalette();
     }
+    updateEnginePaths();
+    Q_EMIT nameChanged();
+    loadPalette();
+}
+void UCTheme::resetName()
+{
+    setName(QString());
 }
 
 /*
@@ -302,8 +311,15 @@ void UCTheme::loadPalette(bool notify)
     if (m_palette != NULL) {
         delete m_palette;
     }
-    m_palette = QuickUtils::instance().createQmlObject(styleUrl("Palette.qml"), m_engine);
-    if (notify) {
-        Q_EMIT paletteChanged();
+    // theme may not have palette defined
+    QUrl paletteUrl = styleUrl("Palette.qml");
+    if (paletteUrl.isValid()) {
+        m_palette = QuickUtils::instance().createQmlObject(paletteUrl, m_engine);
+        if (notify) {
+            Q_EMIT paletteChanged();
+        }
+    } else {
+        // use the default palette if none defined
+        m_palette = defaultSet().m_palette;
     }
 }
