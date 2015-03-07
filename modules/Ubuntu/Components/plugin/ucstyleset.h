@@ -77,7 +77,7 @@ private:
     void init();
 
     QString m_name;
-    QPointer<QObject> m_palette;
+    QPointer<QObject> m_palette; // the palette might be from the default style if the theme doesn't define palette
     QQmlEngine *m_engine;
     QList<QUrl> m_themePaths;
     UCThemeSettings m_themeSettings;

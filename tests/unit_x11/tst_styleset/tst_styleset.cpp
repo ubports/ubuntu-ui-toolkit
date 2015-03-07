@@ -57,6 +57,16 @@ public:
         rootObject()->setProperty("styleDocument", style);
         QTest::waitForEvents();
     }
+
+    UCStyleSet *styleSet()
+    {
+        return rootObject()->property("styleSet").value<UCStyleSet*>();
+    }
+
+    UCStyleSet *rootStyleSet()
+    {
+        return rootContext()->contextProperty("styleSet").value<UCStyleSet*>();
+    }
 };
 
 class tst_UCStyleSet : public QObject
@@ -217,6 +227,34 @@ private Q_SLOTS:
         QScopedPointer<ThemeTestCase> view(new ThemeTestCase("SimpleItem.qml"));
         QVERIFY(view);
         view->setTheme("TestModule.TestTheme");
+    }
+
+    void test_styleset_not_root_stylset()
+    {
+        qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", ".");
+
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase("SimpleItem.qml"));
+        QVERIFY(view);
+        view->setTheme("TestModule.TestTheme");
+        UCStyleSet *styleSet = view->styleSet();
+        UCStyleSet *rootStyleSet = view->rootStyleSet();
+        QVERIFY(styleSet);
+        QVERIFY(rootStyleSet);
+        QVERIFY(styleSet != rootStyleSet);
+    }
+
+    void test_styleset_reset_name()
+    {
+        qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", ".");
+
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase("SimpleItem.qml"));
+        QVERIFY(view);
+        view->setTheme("TestModule.TestTheme");
+        UCStyleSet *styleSet = view->styleSet();
+        QCOMPARE(styleSet->name(), QString("TestModule.TestTheme"));
+        // reset
+        styleSet->resetName();
+        QCOMPARE(styleSet->name(), QString("Ubuntu.Components.Themes.Ambiance"));
     }
 };
 

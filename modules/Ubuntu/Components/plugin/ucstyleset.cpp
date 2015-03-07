@@ -136,7 +136,7 @@ UCStyleSet::UCStyleSet(QObject *parent)
     : QObject(parent)
     , m_name(UCStyleSet::defaultSet().m_name)
     , m_palette(UCStyleSet::defaultSet().m_palette)
-    , m_engine(NULL)
+    , m_engine(UCStyleSet::defaultSet().m_engine)
     , m_defaultStyle(false)
 {
     init();
@@ -239,28 +239,21 @@ void UCStyleSet::setName(const QString& name)
         return;
     }
     if (name.isEmpty()) {
-        resetName();
+        init();
     } else {
         QObject::disconnect(&m_themeSettings, &UCThemeSettings::themeNameChanged,
                             this, &UCStyleSet::onThemeNameChanged);
         m_name = name;
         updateThemePaths();
-        updateEnginePaths();
-        Q_EMIT nameChanged();
-        loadPalette();
     }
-}
-void UCStyleSet::resetName()
-{
-    m_name = m_themeSettings.themeName();
-    connect(&m_themeSettings, &UCThemeSettings::themeNameChanged,
-            this, &UCStyleSet::onThemeNameChanged);
-    updateThemePaths();
     updateEnginePaths();
     Q_EMIT nameChanged();
     loadPalette();
 }
-
+void UCStyleSet::resetName()
+{
+    setName(QString());
+}
 
 /*!
     \qmlproperty Palette StyleSet::palette
