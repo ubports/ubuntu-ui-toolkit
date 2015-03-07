@@ -39,7 +39,7 @@ public:
     explicit UCStyleSet(QObject *parent = 0);
     static UCStyleSet &defaultSet()
     {
-        static UCStyleSet instance;
+        static UCStyleSet instance(true);
         return instance;
     }
 
