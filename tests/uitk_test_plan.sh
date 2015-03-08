@@ -353,14 +353,14 @@ while getopts ":hrcintduslwbv:o:p:f:a:" opt; do
     esac
 done
 
-MAINFILE=MAIN-ap-${DATESTAMP}-${SERIES}-SILO${PPA}
+MAINFILE=MAIN-ap-${DATESTAMP}-${SERIES}-${PPA}
 MAINFILE=${MAINFILE/\//_}
 
 if [ ${ONLYCOMPARE} == true ]; then
-   echo "Comparing results with the archive tests"
+   echo "Comparing results with the archive tests" > $MAINFILE
    PPA=${PPA/\//_}
    compare_results
-   egrep "regression" -B1 ${MAINFILE} |grep Failed|sort|uniq -c|grep " 2"
+   egrep "regression" -B1 ${MAINFILE} |grep Failed|sort|uniq -c|grep " 2"|sed 's/2//g'
    exit
 fi
 
@@ -375,9 +375,6 @@ if [ ${BOOTSTRAP} == false ]; then
         adb -s ${SERIALNUMBER} wait-for-device
     fi
 fi
-
-
-
 
 echo "*** Settings ***"
 echo ""
@@ -407,6 +404,7 @@ fi
 # Check if the device need to be flashed and set up for testing
 if [ ${COMISSION} == true ]; then
     device_comission
+    egrep "regression" -B1 ${MAINFILE} |grep Failed|sort|uniq -c|grep " 2"
 fi
 
 # Fix the PPA string as it is used in log file names
@@ -457,6 +455,6 @@ if [ ${DONOTRUNTESTS} != true ]; then
 fi
 
 if [ ${PPA} != "archive"  ]; then 
-   echo "Comparing results with the archive tests"
+   echo "Comparing results with the archive tests"  > $MAINFILE
    compare_results
 fi
