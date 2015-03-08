@@ -200,7 +200,7 @@ Object {
 
             id: panel
             // no additional styling is needed
-            color: Theme.palette.normal.overlay
+            color: styleSet.palette.normal.overlay
             width: parent.width
             height: Qt.inputMethod.keyboardRectangle.height > 0 ? Qt.inputMethod.keyboardRectangle.height : units.gu(26)
             y: parent.height

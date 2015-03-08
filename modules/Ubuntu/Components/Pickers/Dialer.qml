@@ -144,7 +144,7 @@ StyledItem {
     implicitHeight: size
     activeFocusOnPress: true
 
-    style: Theme.createStyleComponent("DialerStyle.qml", dialer)
+    style: styleSet.createStyleComponent("DialerStyle.qml", dialer)
 
     Item {
         id: internal

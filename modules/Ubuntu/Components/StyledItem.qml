@@ -27,13 +27,13 @@ import Ubuntu.Components 1.3
 
     In order to make an Item stylable by the theme, it is enough to make the Item
     inherit from StyledItem and set its \l style property to be the result of the
-    appropriate call to Theme.createStyleComponent().
+    appropriate call to styleSet.createStyleComponent().
 
     Example definition of a custom Item MyItem.qml:
     \qml
         StyledItem {
             id: myItem
-            style: Theme.createStyleComponent("MyItemStyle.qml", myItem)
+            style: styleSet.createStyleComponent("MyItemStyle.qml", myItem)
         }
     \endqml
 

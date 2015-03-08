@@ -38,7 +38,7 @@ Item {
 
     property int fontWeight: Font.Light
     property string fontSize: "x-large"
-    property color textColor: Theme.palette.selected.backgroundText
+    property color textColor: styleSet.palette.selected.backgroundText
     property real textLeftMargin: units.gu(2)
 
     implicitHeight: headerStyle.contentHeight + separator.height + separatorBottom.height

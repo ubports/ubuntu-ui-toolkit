@@ -213,6 +213,6 @@ PopupBase {
             }
         }
 
-        style: Theme.createStyleComponent("DialogForegroundStyle.qml", foreground)
+        style: styleSet.createStyleComponent("DialogForegroundStyle.qml", foreground)
     }
 }

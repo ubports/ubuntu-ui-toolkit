@@ -32,5 +32,5 @@ AbstractButton {
 
     property string iconPosition: "left"
 
-    style: Theme.createStyleComponent("ButtonStyle.qml", button)
+    style: styleSet.createStyleComponent("ButtonStyle.qml", button)
 }

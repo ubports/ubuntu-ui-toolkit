@@ -46,17 +46,17 @@ Style.PageHeadStyle {
     /*!
       The background color of the tapped item in the panel.
      */
-    property color panelHighlightColor: Theme.palette.selected.background
+    property color panelHighlightColor: styleSet.palette.selected.background
 
     /*!
       The foreground color (icon and text) of actions in the panel.
      */
-    property color panelForegroundColor: Theme.palette.selected.backgroundText
+    property color panelForegroundColor: styleSet.palette.selected.backgroundText
 
     /*!
       The text color of unselected sections and the section divider.
      */
-    property color sectionColor: Theme.palette.selected.backgroundText
+    property color sectionColor: styleSet.palette.selected.backgroundText
 
     /*!
       The text color of the selected section.
@@ -66,7 +66,7 @@ Style.PageHeadStyle {
     /*!
       The background color of the pressed section.
      */
-    property color sectionHighlightColor: Theme.palette.selected.background
+    property color sectionHighlightColor: styleSet.palette.selected.background
 
     implicitHeight: headerStyle.contentHeight + divider.height
 
@@ -101,7 +101,7 @@ Style.PageHeadStyle {
         // backgroundColor is used in the new HeadDividerStyle
         property color backgroundColor: styledItem.dividerColor
 
-        style: Theme.createStyleComponent("HeadDividerStyle.qml", divider)
+        style: styleSet.createStyleComponent("HeadDividerStyle.qml", divider)
 
         property PageHeadSections sections: styledItem.config.sections
 

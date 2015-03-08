@@ -203,5 +203,5 @@ Object {
     /*!
       The color of the text and icons.
      */
-    property color foregroundColor: Theme.palette.selected.backgroundText
+    property color foregroundColor: styleSet.palette.selected.backgroundText
 }

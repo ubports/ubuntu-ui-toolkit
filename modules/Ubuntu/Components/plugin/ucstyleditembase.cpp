@@ -36,7 +36,13 @@ void UCStyledItemBasePrivate::init()
 {
     Q_Q(UCStyledItemBase);
     q->setFlag(QQuickItem::ItemIsFocusScope);
-    subthemingEnabled = qgetenv("UITK_SUBTHEMING").toInt() == 1;
+    QByteArray env = qgetenv("UITK_SUBTHEMING");
+    subthemingEnabled = (env.isEmpty() || env == QByteArrayLiteral("yes"));
+    if (!subthemingEnabled) {
+        // every styleSet will be using the default styleSet
+        styleSet = &UCStyleSet::defaultSet();
+        QObject::connect(styleSet, &UCStyleSet::nameChanged, q, &UCStyledItemBase::styleSetChanged);
+    }
 }
 
 
@@ -199,44 +205,60 @@ void UCStyledItemBase::setStyleSet(UCStyleSet *styleSet)
     if (d->styleSet == styleSet) {
         return;
     }
-    if (!d->subthemingEnabled && styleSet) {
-        d->styleSet = styleSet;
-        UCStyleSet::defaultSet().setName(styleSet->name());
+
+    if (!d->subthemingEnabled) {
+        // no subtheming
+        if (styleSet) {
+            d->styleSet = styleSet;
+            UCStyleSet::defaultSet().setName(styleSet->name());
+        } else {
+            UCStyleSet::defaultSet().resetName();
+        }
         return;
     }
+
+    // disconnect from the previous set
+    UCStyleSet *connectedSet = d->styleSet ?
+                                d->styleSet :
+                                (!d->parentStyledItem ? &UCStyleSet::defaultSet() : NULL);
+    if (connectedSet) {
+        disconnect(connectedSet, &UCStyleSet::nameChanged,
+                   this, &UCStyledItemBase::styleSetChanged);
+    }
+
+    // resolve new styleSet
     if (d->styleSet && styleSet) {
         // no need to redo the parentStack, simply set the styleSet and leave
         d->styleSet = styleSet;
-        Q_EMIT styleSetChanged();
     } else {
         d->styleSet = styleSet;
         if (!styleSet) {
-            resetStyleSet();
+            d->connectParents(0);
         } else {
             d->disconnectTillItem(0);
-            Q_EMIT styleSetChanged();
         }
+
     }
+
+    // connect to the new set
+    connectedSet = d->styleSet ?
+                    d->styleSet :
+                    (!d->parentStyledItem ? &UCStyleSet::defaultSet() : NULL);
+    if (connectedSet) {
+        connect(connectedSet, &UCStyleSet::nameChanged,
+                this, &UCStyledItemBase::styleSetChanged);
+    }
+    Q_EMIT styleSetChanged();
 }
 void UCStyledItemBase::resetStyleSet()
 {
-    // reset styleset back to use its parent
-    Q_D(UCStyledItemBase);
-    if (!d->styleSet) {
-        return;
-    }
-    d->styleSet = NULL;
-    d->connectParents(0);
-    Q_EMIT styleSetChanged();
+    setStyleSet(NULL);
 }
 
 // link/unlink all ascendant items until we reach a StyledItem, returns true if the
 // styleSet change signal emission is justified
 bool UCStyledItemBasePrivate::connectParents(QQuickItem *fromItem)
 {
-    if (!subthemingEnabled) {
-        return false;
-    }
     Q_Q(UCStyledItemBase);
     QQuickItem *item = fromItem ? fromItem : parentItem;
     while (item) {
@@ -319,6 +341,18 @@ void UCStyledItemBasePrivate::_q_parentStyleChanged()
     }
     setParentStyled(styledItem);
     Q_EMIT q->styleSetChanged();
+}
+
+// connect to the default styleSet, as at this phase the properties are not yet evaluated
+// so an eventual custom styleset is not yet evaluated
+void UCStyledItemBase::classBegin()
+{
+    QQuickItem::classBegin();
+    Q_D(UCStyledItemBase);
+    if (d->subthemingEnabled) {
+        connect(&UCStyleSet::defaultSet(), &UCStyleSet::nameChanged,
+                this, &UCStyledItemBase::styleSetChanged);
+    }
 }
 
 // grab pressed state and focus if it can be

@@ -947,7 +947,7 @@ ActionItem {
         }
         // hint is shown till user types something in the field
         visible: (editor.text == "") && !editor.inputMethodComposing
-        color: Theme.palette.normal.backgroundText
+        color: styleSet.palette.normal.backgroundText
         font: editor.font
         elide: Text.ElideRight
     }
@@ -1023,5 +1023,5 @@ ActionItem {
         cursorPosition = 0;
     }
 
-    style: Theme.createStyleComponent("TextFieldStyle.qml", control)
+    style: styleSet.createStyleComponent("TextFieldStyle.qml", control)
 }

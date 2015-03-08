@@ -50,6 +50,7 @@ Q_SIGNALS:
 protected:
     UCStyledItemBase(UCStyledItemBasePrivate &, QQuickItem *parent);
 
+    void classBegin();
     void mousePressEvent(QMouseEvent *event);
     bool childMouseEventFilter(QQuickItem *child, QEvent *event);
     void itemChange(ItemChange, const ItemChangeData &);

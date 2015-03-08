@@ -83,5 +83,5 @@ ActionItem {
     height: parent ? parent.height : undefined
     width: units.gu(5)
 
-    style: Theme.createStyleComponent("ToolbarButtonStyle.qml", toolbarButton)
+    style: styleSet.createStyleComponent("ToolbarButtonStyle.qml", toolbarButton)
 }

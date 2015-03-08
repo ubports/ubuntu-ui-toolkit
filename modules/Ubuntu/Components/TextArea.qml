@@ -804,7 +804,7 @@ StyledItem {
         }
         // hint is shown till user types something in the field
         visible: (editor.getText(0, editor.length) == "") && !editor.inputMethodComposing
-        color: Theme.palette.normal.backgroundText
+        color: styleSet.palette.normal.backgroundText
         fontSize: "medium"
         elide: Text.ElideRight
         wrapMode: Text.WordWrap
@@ -875,5 +875,5 @@ StyledItem {
         }
     }
 
-    style: Theme.createStyleComponent("TextAreaStyle.qml", control)
+    style: styleSet.createStyleComponent("TextAreaStyle.qml", control)
 }

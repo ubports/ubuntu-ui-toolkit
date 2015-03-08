@@ -49,5 +49,5 @@ AbstractButton {
      */
     onTriggered: checked = !checked
 
-    style: Theme.createStyleComponent("CheckBoxStyle.qml", checkBox)
+    style: styleSet.createStyleComponent("CheckBoxStyle.qml", checkBox)
 }

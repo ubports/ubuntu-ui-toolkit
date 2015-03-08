@@ -55,5 +55,5 @@ Text {
     property string fontSize: "medium"
 
     font.pixelSize: FontUtils.sizeToPixels(fontSize)
-    color: Theme.palette.selected.backgroundText
+    color: styleSet.palette.selected.backgroundText
 }

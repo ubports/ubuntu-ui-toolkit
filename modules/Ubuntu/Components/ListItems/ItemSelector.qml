@@ -207,7 +207,7 @@ ListItem.Empty {
 
             readonly property url chevron: __styleInstance.chevron
             readonly property url tick: __styleInstance.tick
-            readonly property color themeColour: Theme.palette.selected.fieldText
+            readonly property color themeColour: styleSet.palette.selected.fieldText
             readonly property alias colourImage: itemSelector.colourImage
             property bool currentlyExpanded: expanded || multiSelection
 
@@ -216,7 +216,7 @@ ListItem.Empty {
                 right: parent.right
             }
             state: itemSelector.expanded ? "expanded" : "collapsed"
-            style: Theme.createStyleComponent("ListItemOptionSelectorStyle.qml", listContainer)
+            style: styleSet.createStyleComponent("ListItemOptionSelectorStyle.qml", listContainer)
 
             states: [ State {
                     name: "expanded"

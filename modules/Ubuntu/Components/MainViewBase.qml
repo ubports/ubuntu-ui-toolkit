@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.2 as Toolkit
+import Ubuntu.Components 1.3 as Toolkit
 import Ubuntu.PerformanceMetrics 1.0
 import QtQuick.Window 2.0
 
@@ -35,10 +35,10 @@ PageTreeNode {
     StyledItem {
         id: background
         anchors.fill: parent
-        style: Theme.createStyleComponent("MainViewStyle.qml", background)
+        style: styleSet.createStyleComponent("MainViewStyle.qml", background)
 
         property color headerColor: backgroundColor
-        property color backgroundColor: Theme.palette.normal.background
+        property color backgroundColor: styleSet.palette.normal.background
         property color footerColor: backgroundColor
 
         /*
@@ -52,8 +52,8 @@ PageTreeNode {
                                    "Ambiance" : "SuruDark"
         onThemeChanged: {
             // only change the theme if the current one is a system one.
-            if (theme !== "" && (Theme.name.search("Ubuntu.Components.Themes") >= 0)) {
-                Theme.name = "Ubuntu.Components.Themes.%1".arg(theme);
+            if (theme !== "" && (styleSet.name.search("Ubuntu.Components.Themes") >= 0)) {
+                styleSet.name = "Ubuntu.Components.Themes.%1".arg(theme);
             }
         }
     }

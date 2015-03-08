@@ -253,6 +253,6 @@ StyledItem {
         }
     }
 
-    style: header.useDeprecatedToolbar ? Theme.createStyleComponent("HeaderStyle.qml", header) :
-                                         Theme.createStyleComponent("PageHeadStyle.qml", header)
+    style: header.useDeprecatedToolbar ? styleSet.createStyleComponent("HeaderStyle.qml", header) :
+                                         styleSet.createStyleComponent("PageHeadStyle.qml", header)
 }

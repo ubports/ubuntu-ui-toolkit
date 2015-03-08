@@ -19,7 +19,7 @@ import Ubuntu.Components 1.2
 Item {
     id: visuals
     // styling properties
-    property color color: Theme.palette.normal.overlay
+    property color color: styleSet.palette.normal.overlay
 
     anchors.fill: parent
 

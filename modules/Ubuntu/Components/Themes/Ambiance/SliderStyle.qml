@@ -27,7 +27,7 @@ Item {
     id: sliderStyle
 
     property color foregroundColor: UbuntuColors.orange
-    property color backgroundColor: Theme.palette.normal.base
+    property color backgroundColor: styleSet.palette.normal.base
 
     property real thumbSpacing: units.gu(0)
     property Item bar: background
@@ -87,7 +87,7 @@ Item {
         width: units.gu(2)
         height: units.gu(2)
         opacity: 0.97
-        color: Theme.palette.normal.overlay
+        color: styleSet.palette.normal.overlay
     }
 
     BubbleShape {
@@ -120,7 +120,7 @@ Item {
             anchors.centerIn: parent
             text: styledItem.formatValue(SliderUtils.liveValue(styledItem))
             fontSize: "large"
-            color: Theme.palette.normal.overlayText
+            color: styleSet.palette.normal.overlayText
         }
     }
 }

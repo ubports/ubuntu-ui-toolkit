@@ -53,7 +53,7 @@ Rectangle {
     // a private property to catch theme background color change
     // use private property instead of embedding it into a QtObject to avoid further
     // performance decrease
-    property bool __lightBackground: ColorUtils.luminance(Theme.palette.normal.background) > 0.85
+    property bool __lightBackground: ColorUtils.luminance(styleSet.palette.normal.background) > 0.85
     // use a gradient of 4 steps instead of instantiating two Rectangles for performance reasons
     gradient: Gradient {
         GradientStop { position: 0.0; color: __lightBackground ? Qt.rgba(0, 0, 0, 0.1) : Qt.rgba(0, 0, 0, 0.4) }

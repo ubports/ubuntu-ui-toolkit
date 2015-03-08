@@ -39,7 +39,7 @@ Item {
     /*!
       The background color of the switch.
      */
-    property color backgroundColor: Theme.palette.normal.base
+    property color backgroundColor: styleSet.palette.normal.base
 
     /*!
       The background color of the thumb when the switch is checked.
@@ -54,12 +54,12 @@ Item {
     /*!
       The foreground color of the icon that is currently selected.
      */
-    property color selectedIconColor: Theme.palette.normal.foregroundText
+    property color selectedIconColor: styleSet.palette.normal.foregroundText
 
    /*!
      The color of the icon that is not currently selected.
     */
-    property color unselectedIconColor: Theme.palette.normal.backgroundText
+    property color unselectedIconColor: styleSet.palette.normal.backgroundText
 
     /*!
       The source of the selected icon when the switch is checked.

@@ -116,7 +116,7 @@ Popover {
                 horizontalCenter: parent.horizontalCenter
             }
             wrapMode: Text.Wrap
-            color: Theme.palette.normal.overlayText
+            color: styleSet.palette.normal.overlayText
         }
         /*! \internal */
         onTriggered: popover.hide()

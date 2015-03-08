@@ -37,7 +37,7 @@ import Ubuntu.Components 1.2
         import Ubuntu.Components.Popups 1.0
 
         Rectangle {
-            color: Theme.palette.normal.background
+            color: styleSet.palette.normal.background
             width: units.gu(80)
             height: units.gu(80)
             Component {
@@ -237,7 +237,7 @@ PopupBase {
         signal showCompleted()
         signal hideCompleted()
 
-        style: Theme.createStyleComponent("PopoverForegroundStyle.qml", foreground)
+        style: styleSet.createStyleComponent("PopoverForegroundStyle.qml", foreground)
     }
 
     QtObject {

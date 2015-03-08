@@ -93,7 +93,7 @@ Popover {
                 width: Math.max(units.gu(4), implicitWidth) + units.gu(2)
                 height: units.gu(6)
                 action: actions[modelData]
-                style: Theme.createStyleComponent("ToolbarButtonStyle.qml", button)
+                style: styleSet.createStyleComponent("ToolbarButtonStyle.qml", button)
             }
         }
     }
