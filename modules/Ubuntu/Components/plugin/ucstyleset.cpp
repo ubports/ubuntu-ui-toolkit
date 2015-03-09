@@ -135,7 +135,7 @@ QUrl pathFromThemeName(QString themeName)
 
 UCStyleSet::UCStyleSet(QObject *parent)
     : QObject(parent)
-    , m_name(UCStyleSet::defaultSet().m_name)
+    , m_implicitName(UCStyleSet::defaultSet().m_implicitName)
     , m_palette(UCStyleSet::defaultSet().m_palette)
     , m_engine(UCStyleSet::defaultSet().m_engine)
     , m_defaultStyle(false)
@@ -161,7 +161,7 @@ UCStyleSet::UCStyleSet(bool defaultStyle)
 void UCStyleSet::init()
 {
     m_completed = false;
-    m_name = m_themeSettings.themeName();
+    m_implicitName = m_themeSettings.themeName();
     QObject::connect(&m_themeSettings, &UCThemeSettings::themeNameChanged,
                      this, &UCStyleSet::onThemeNameChanged);
     updateThemePaths();
@@ -189,8 +189,8 @@ void UCStyleSet::updateEnginePaths()
 
 void UCStyleSet::onThemeNameChanged()
 {
-    if (m_themeSettings.themeName() != m_name) {
-        m_name = m_themeSettings.themeName();
+    if (m_themeSettings.themeName() != m_implicitName) {
+        m_implicitName = m_themeSettings.themeName();
         updateThemePaths();
         Q_EMIT nameChanged();
     }
@@ -200,7 +200,7 @@ void UCStyleSet::updateThemePaths()
 {
     m_themePaths.clear();
 
-    QString themeName = m_name;
+    QString themeName = name();
     while (!themeName.isEmpty()) {
         QUrl themePath = pathFromThemeName(themeName);
         if (themePath.isValid()) {
@@ -232,19 +232,19 @@ void UCStyleSet::updateThemePaths()
 */
 QString UCStyleSet::name() const
 {
-    return m_name;
+    return m_name.isEmpty() ? m_implicitName : m_name;
 }
 void UCStyleSet::setName(const QString& name)
 {
     if (name == m_name) {
         return;
     }
+    m_name = name;
     if (name.isEmpty()) {
         init();
     } else {
         QObject::disconnect(&m_themeSettings, &UCThemeSettings::themeNameChanged,
                             this, &UCStyleSet::onThemeNameChanged);
-        m_name = name;
         updateThemePaths();
     }
     updateEnginePaths();
@@ -346,7 +346,7 @@ QQmlComponent* UCStyleSet::createStyleComponent(const QString& styleName, QObjec
                 }
             } else {
                 qmlInfo(parent) <<
-                   UbuntuI18n::instance().tr(QString("Warning: Style %1 not found in theme %2").arg(styleName).arg(m_name));
+                   UbuntuI18n::instance().tr(QString("Warning: Style %1 not found in theme %2").arg(styleName).arg(name()));
             }
         }
     }
