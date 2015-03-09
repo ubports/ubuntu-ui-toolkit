@@ -1055,7 +1055,10 @@ plugins.qmltypes
     exports: [
     Property { name: "activeFocusOnPress"; revision: 1; type: "bool" }
     Property { name: "styleSet"; revision: 2; type: "UCStyleSet"; isPointer: true }
+    Property {
+    name: "parentStyled"
     Signal { name: "styleSetChanged"; revision: 2 }
+    Signal { name: "parentStyledChanged"; revision: 2 }
     Method {
     name: "requestFocus"
     Parameter { name: "reason"; type: "Qt::FocusReason" }

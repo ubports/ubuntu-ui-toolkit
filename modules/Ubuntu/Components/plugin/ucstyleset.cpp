@@ -22,12 +22,12 @@
 #include "quickutils.h"
 #include "i18n.h"
 #include "ucfontutils.h"
+#include "ucstyleditembase.h"
 
 #include <QtQml/qqml.h>
 #include <QtQml/qqmlinfo.h>
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlContext>
-#include <QtCore/QDebug>
 #include <QtCore/QDir>
 #include <QtCore/QFile>
 #include <QtCore/QTextStream>
@@ -45,7 +45,8 @@
     \brief The StyleSet class provides facilities to define the styleset of a
     StyledItem.
 
-    A global instance is exposed as the \b styleSet context property.
+    A global instance, which is the default styleset, is exposed as the \b styleSet
+    context property.
 
     The styleset or theme defines the visual aspect of the Ubuntu components. An
     application can use one or more styleset the same time. The StyleSet component
