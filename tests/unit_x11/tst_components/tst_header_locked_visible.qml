@@ -85,9 +85,16 @@ Item {
         property var header
         function initTestCase() {
             testCase.header = findChild(mainView, "MainView_Header");
-            print("header = "+testCase.header);
+        }
+
+        function init() {
             testCase.check_header_visibility(true, "Header is not visible initially.");
             compare(page.head.locked, false, "Header is not locked initially.");
+        }
+        function cleanup() {
+            page.head.visible = true;
+            page.head.locked = false;
+            testCase.wait_for_animation();
         }
 
         function scroll_down() {
