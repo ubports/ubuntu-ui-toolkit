@@ -22,6 +22,7 @@ COMISSION=false
 DONOTRUNTESTS=false
 PPA="ubuntu-sdk-team/staging"
 TIMESTAMP=`date +"%Y_%m_%d-%H_%M_%S"`
+DATESTAMP=`date +"%Y_%m_%d"`
 LOGFILENAME="ap-${TIMESTAMP}"
 OUTPUTDIR=$HOME
 FILTER=.*
@@ -35,6 +36,7 @@ BOOTTIME=500
 ONLYCOMPARE=false
 DISTUPGRADE=false
 BOOTSTRAP=false
+UNLOCK_ONLY=false
 
 declare -a TEST_SUITE=(
     " -p ubuntu-ui-toolkit-autopilot ubuntuuitoolkit"
@@ -54,9 +56,9 @@ declare -a TEST_SUITE=(
     " ubuntu_terminal_app"
     " -n unity8"
     " ubuntu_clock_app"
-    " -p dialer-app-autopilot dialer_app"
-    " -p reminders-app-autopilot reminders"
-    " -p messaging-app-autopilot messaging_app"
+#    " -p dialer-app-autopilot dialer_app"
+#    " -p reminders-app-autopilot reminders"
+#    " -p messaging-app-autopilot messaging_app"
 )
 
 
@@ -131,11 +133,13 @@ function network {
 
 function reset {
      if [ ${RESET} == true  -o  x"$1" == x-f ]; then
-        adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S reboot 2>&1|grep -v password"
-        sleep_indicator 120
-        /usr/share/qtcreator/ubuntu/scripts/device_wait_for_shell ${SERIALNUMBER} > /dev/null
-        sleep_indicator 10
-        network
+	if [ ${UNLOCK_ONLY} == false ]; then
+            adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S reboot 2>&1|grep -v password"
+             sleep_indicator 120
+             /usr/share/qtcreator/ubuntu/scripts/device_wait_for_shell ${SERIALNUMBER} > /dev/null
+             sleep_indicator 10
+             network
+        fi
         phablet-config -s ${SERIALNUMBER} autopilot --dbus-probe enable 2>&1 > /dev/null
         adb -s ${SERIALNUMBER} shell powerd-cli display on |egrep -v "Display State requested, cookie is|Press ctrl-c to exit|not fully supported." &
         adb -s ${SERIALNUMBER} shell powerd-cli active |egrep -v "requested, cookie is|Press ctrl-c to exit|not fully supported." &
@@ -154,14 +158,14 @@ function reset {
 function device_comission {
     if [ ${BOOTSTRAP} == true ]; then
         # bootstrap the device with the latest image
-	ubuntu-device-flash touch --channel=${CHANNEL} --wipe --bootstrap --developer-mode --password=0000 || fatal_failure "bootstraping with ubuntu-device-flash has failed"
+	ubuntu-device-flash touch --channel=${CHANNEL} --wipe --bootstrap --developer-mode --password=0000
     else
         adb -s ${SERIALNUMBER} wait-for-device
         # Avoid https://bugs.launchpad.net/gallery-app/+bug/1363190
         adb -s ${SERIALNUMBER} shell "echo ${PASSWORD} |sudo -S rm -rf /userdata/user-data/phablet/.cache/com.ubuntu.gallery 2>&1|grep -v password"
         # flash the latest image
         echo -e "Flashing \e[31m${CHANNEL}\e[0m"
-        ubuntu-device-flash touch --serial=${SERIALNUMBER} --channel=${CHANNEL} --wipe --developer-mode --password=${PASSWORD} || fatal_failure "ubuntu-device-flash failed"
+        ubuntu-device-flash touch --serial=${SERIALNUMBER} --channel=${CHANNEL} --wipe --developer-mode --password=${PASSWORD}
     fi
     sleep_indicator ${BOOTTIME}
     echo -e "Disable the intro wizard"
@@ -226,26 +230,26 @@ function compare_results {
     sed -i 's/\r//g' *tests
     for RESULT_FILE in *${PPA}.tests;
     do
-        echo "$RESULT_FILE";
+        echo "$RESULT_FILE" >> ${MAINFILE};
         LAST_LINE=`tail -1 $RESULT_FILE`
         if [[ "$LAST_LINE" =~ OK || "$LAST_LINE" =~ FAILED ]]; then
-	    echo -e  "\t"`tail -2 $RESULT_FILE`
+	    echo -e  "\t"`tail -2 $RESULT_FILE` >> ${MAINFILE}
 	else
-	    echo -e "\t\e[31mBroken tests\e[0m"
+	    echo -e "\tBroken tests"  >> ${MAINFILE}
         fi
         egrep -v "NO TAGS DATABASE" $RESULT_FILE |egrep "^ERROR:|^FAIL:" | while read -r FAILED ; 
         do
-            echo -e "\tFailed with ${PPA} - $FAILED"
+            echo -e "\tFailed with ${PPA} - $FAILED"  >> ${MAINFILE}
             if grep --quiet "$FAILED" *archive.tests; then
-                echo -e "\tSame on archive"
+                echo -e "\tSame on archive"  >> ${MAINFILE}
             else
-                echo -e "\t\e[31mPossible regression\e[0m"
+                echo -e "\tPossible regression"  >> ${MAINFILE}
             fi
         done
     done
 }
 
-while getopts ":hrcintduswbv:o:p:f:a:" opt; do
+while getopts ":hrcintduslwbv:o:p:f:a:" opt; do
     case $opt in
         r)
             RESET=true
@@ -294,6 +298,9 @@ while getopts ":hrcintduswbv:o:p:f:a:" opt; do
         b)
 	   BOOTSTRAP=true
 	   ;;
+        l)
+           UNLOCK_ONLY=true
+           ;;
         h)
             echo "Usage: uitk_test_plan.sh -s [serial number] -m -c"
             echo -e "\t-r : Reset after each tests. Default: ${RESET}"
@@ -346,10 +353,27 @@ while getopts ":hrcintduswbv:o:p:f:a:" opt; do
     esac
 done
 
+MAINFILE=MAIN-ap-${DATESTAMP}-${SERIES}-${PPA}
+MAINFILE=${MAINFILE/\//_}
+
 if [ ${ONLYCOMPARE} == true ]; then
-   echo "Comparing results with the archive tests"
+   echo "Comparing results with the archive tests" > $MAINFILE
+   PPA=${PPA/\//_}
    compare_results
+   egrep "regression" -B1 ${MAINFILE} |grep Failed|sort|uniq -c|grep " 2"|sed 's/2//g'
    exit
+fi
+
+if [ ${BOOTSTRAP} == false ]; then
+    # Use the first available device for testing
+    if [ ${LAZY} == true ]; then
+        echo "Waiting for a device"
+        adb wait-for-device
+        SERIALNUMBER=`adb devices -l | grep -Ev "List of devices attached" | grep -Ev "emulator-" | sed "/^$/d"|sed "s/ .*//g"`
+    else
+        echo "Waiting for the device with ${SERIALNUMBER} serial number."
+        adb -s ${SERIALNUMBER} wait-for-device
+    fi
 fi
 
 echo "*** Settings ***"
@@ -358,7 +382,9 @@ echo "Serial number: ${SERIALNUMBER}"
 echo "Output directory: ${OUTPUTDIR}"
 echo "PPA: $PPA"
 echo "Filter: ${FILTER}"
+echo "Start with: ${START_FROM}"
 echo ""
+echo "Unlock only: ${UNLOCK_ONLY}"
 echo "Reset: ${RESET}"
 echo "Commission: ${COMISSION}"
 echo "Bootstrap: ${BOOTSTRAP}"
@@ -366,27 +392,19 @@ echo "Only compare: ${ONLYCOMPARE}"
 echo "Do not run tests: ${DONOTRUNTESTS}"
 echo "RTM: ${RTM}"
 echo "Dist-upgrade: ${DISTUPGRADE}"
-echo ""
+echo "Main logs: ${MAINFILE}"
 echo "*** Starting ***"
 echo ""
 
 
-if [ ${BOOTSTRAP} == false ]; then
-    # Use the first available device for testing
-    if [ ${LAZY} == true ]; then
-        echo "Waiting for a device"
-        adb wait-for-device
-        SERIALNUMBER=`adb devices -l | grep -Ev "List of devices attached" | grep -Ev "emulator-" | sed "/^$/d"|sed "s/ .*//g"`
-        echo "Tests will be run on the device with ${SERIALNUMBER} serial number."
-    else
-        echo "Waiting for the device with ${SERIALNUMBER} serial number."
-        adb -s ${SERIALNUMBER} wait-for-device
-    fi
+if [ ${UNLOCK_ONLY} == true ]; then
+   reset -f
+   exit
 fi
-
 # Check if the device need to be flashed and set up for testing
 if [ ${COMISSION} == true ]; then
     device_comission
+    egrep "regression" -B1 ${MAINFILE} |grep Failed|sort|uniq -c|grep " 2"
 fi
 
 # Fix the PPA string as it is used in log file names
@@ -414,12 +432,12 @@ if [ ${DONOTRUNTESTS} != true ]; then
             echo "<<<=== ${APPNAME} 1 ===>>>" >> ${LOGFILE}
             reset
             eval ${COMMAND}
-            egrep "<<<===|Ran|OK|FAILED" ${LOGFILE}
+             egrep "<<<===|Ran|OK|FAILED" ${LOGFILE}
             # check if the tests were successful and re-run after a reset
             if (tail -1 ${LOGFILE}|grep -q OK) ;then 
-		echo ${LOGFILE} - OK;
-            else 
-                echo ${LOGFILE} - Failed
+		echo -e "OK - ${LOGFILE}";
+          else 
+                echo -e "\e[31mFailed\e[0m - ${LOGFILE}";
                 reset -f
                 LOGFILE="$OUTPUTDIR/${LOGFILENAME}-${APPNAME}-2-${PPA}.tests"
                 COMMAND="phablet-test-run -r ${PASSWORD} -s ${SERIALNUMBER} $TEST_SET >> ${LOGFILE}"
@@ -427,9 +445,9 @@ if [ ${DONOTRUNTESTS} != true ]; then
                 eval ${COMMAND}
                 egrep "<<<===|Ran|OK|FAILED" ${LOGFILE}
                 if (tail -1 ${LOGFILE}|grep -q OK) ;then
-                    echo ${LOGFILE} - OK;
+                    echo -e "OK - ${LOGFILE}";
                 else 
-                    echo ${LOGFILE} - Failed
+                    echo -e "\e[31mFailed\e[0m - ${LOGFILE}";
                 fi
             fi
         fi
@@ -437,6 +455,6 @@ if [ ${DONOTRUNTESTS} != true ]; then
 fi
 
 if [ ${PPA} != "archive"  ]; then 
-   echo "Comparing results with the archive tests"
+   echo "Comparing results with the archive tests"  > $MAINFILE
    compare_results
 fi
