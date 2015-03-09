@@ -16,7 +16,7 @@
 
 // FIXME(loicm) Add support for keyboard shortcuts (basically left/right).
 
-import QtQuick 2.0
+import QtQuick 2.4
 import "mathUtils.js" as MathUtils
 
 /*!
@@ -30,7 +30,7 @@ import "mathUtils.js" as MathUtils
     styles should take this into account when defining the visuals, and
     alter these values to align the graphics' sizes.
 
-    \l {http://design.ubuntu.com/apps/building-blocks/slider}{See also the Design Guidelines on Sliders}.
+    \l {https://design.ubuntu.com/apps/building-blocks/selection#slider}{See also the Design Guidelines on Sliders}.
 
     Example:
     \qml

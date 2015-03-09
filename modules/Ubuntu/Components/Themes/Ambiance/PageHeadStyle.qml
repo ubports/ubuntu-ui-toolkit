@@ -13,11 +13,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import QtQuick 2.2
-import Ubuntu.Components 1.1
+import QtQuick 2.4
+import Ubuntu.Components 1.2
 import Ubuntu.Components.Popups 1.0
 import Ubuntu.Components.ListItems 1.0 as ListItem
-import Ubuntu.Components.Styles 1.1 as Style
+import Ubuntu.Components.Styles 1.2 as Style
 
 Style.PageHeadStyle {
     id: headerStyle
@@ -386,6 +386,7 @@ Style.PageHeadStyle {
                                             verticalCenterOffset: units.dp(-1)
                                             left: parent.left
                                             leftMargin: units.gu(2)
+                                            right: parent.right
                                         }
                                         fontSize: "medium"
                                         elide: Text.ElideRight

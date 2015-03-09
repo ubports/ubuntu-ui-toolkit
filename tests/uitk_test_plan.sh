@@ -34,6 +34,7 @@ PASSWORD="0000"
 BOOTTIME=500
 ONLYCOMPARE=false
 DISTUPGRADE=false
+BOOTSTRAP=false
 
 declare -a TEST_SUITE=(
     " -p ubuntu-ui-toolkit-autopilot ubuntuuitoolkit"
@@ -42,11 +43,8 @@ declare -a TEST_SUITE=(
     " sudoku_app"
     " online_accounts_ui"
     " ubuntu_calculator_app"
-#    " -p messaging-app-autopilot messaging_app"
     " -p mediaplayer-app-autopilot mediaplayer_app"
     " dropping_letters_app"
-    " -p dialer-app-autopilot dialer_app"
-    " -p reminders-app-autopilot reminders"
     " shorts_app"
     " ubuntu_weather_app"
     " -p ubuntu-system-settings-autopilot ubuntu_system_settings"
@@ -56,6 +54,9 @@ declare -a TEST_SUITE=(
     " ubuntu_terminal_app"
     " -n unity8"
     " ubuntu_clock_app"
+    " -p dialer-app-autopilot dialer_app"
+    " -p reminders-app-autopilot reminders"
+    " -p messaging-app-autopilot messaging_app"
 )
 
 
@@ -83,6 +84,13 @@ AP_PACKAGES="address-book-service-dummy \
              ubuntu-html5-ui-toolkit-autopilot \
              ubuntu-system-settings-online-accounts-autopilot"
 #             messaging-app-autopilot \
+
+fatal_failure () {
+    echo -e "\e[31mFailed operation:\e[0m $1"
+    exit
+}
+
+
 
 sleep_indicator () {
     if [ -z "$1" ]; then
@@ -144,15 +152,17 @@ function reset {
 }
 
 function device_comission {
-    adb -s ${SERIALNUMBER} wait-for-device
-    # Avoid https://bugs.launchpad.net/gallery-app/+bug/1363190
-    adb -s ${SERIALNUMBER} shell "echo ${PASSWORD} |sudo -S rm -rf /userdata/user-data/phablet/.cache/com.ubuntu.gallery 2>&1|grep -v password"
-    # flash the latest image
-    echo -e "Flashing \e[31m${CHANNEL}\e[0m"
-
-#    ubuntu-device-flash --serial=${SERIALNUMBER} --channel=${CHANNEL} --revision=${REVISION} --wipe --bootstrap --developer-mode --password=${PASSWORD} 
-    ubuntu-device-flash touch --serial=${SERIALNUMBER} --channel=${CHANNEL} --wipe --developer-mode --password=${PASSWORD} 
-
+    if [ ${BOOTSTRAP} == true ]; then
+        # bootstrap the device with the latest image
+	ubuntu-device-flash touch --channel=${CHANNEL} --wipe --bootstrap --developer-mode --password=0000 || fatal_failure "bootstraping with ubuntu-device-flash has failed"
+    else
+        adb -s ${SERIALNUMBER} wait-for-device
+        # Avoid https://bugs.launchpad.net/gallery-app/+bug/1363190
+        adb -s ${SERIALNUMBER} shell "echo ${PASSWORD} |sudo -S rm -rf /userdata/user-data/phablet/.cache/com.ubuntu.gallery 2>&1|grep -v password"
+        # flash the latest image
+        echo -e "Flashing \e[31m${CHANNEL}\e[0m"
+        ubuntu-device-flash touch --serial=${SERIALNUMBER} --channel=${CHANNEL} --wipe --developer-mode --password=${PASSWORD} || fatal_failure "ubuntu-device-flash failed"
+    fi
     sleep_indicator ${BOOTTIME}
     echo -e "Disable the intro wizard"
     phablet-config -s ${SERIALNUMBER}  welcome-wizard --disable
@@ -163,7 +173,7 @@ function device_comission {
     adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S reboot 2>&1|grep -v password"
     sleep_indicator 120
     echo -e "phablet-click-test-setup  \e[31m${DISTRO} ${SERIES}\e[0m"
-    phablet-click-test-setup -s ${SERIALNUMBER} --distribution=${DISTRO} --series=${SERIES} 2>&1 
+    phablet-click-test-setup -s ${SERIALNUMBER} --distribution=${DISTRO} --series=${SERIES} 2>&1 || fatal_failure "phablet-click-test-setup has failed" 
     echo "Sleep after phablet-click-test-setup";
     sleep_indicator 120
     if [ ${PPA} == "archive"  ]; then
@@ -178,14 +188,15 @@ function device_comission {
             phablet-config -s ${SERIALNUMBER} writable-image -r ${PASSWORD} 2>&1 > /dev/null
 	    sleep_indicator 120
             network
-            adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S  bash -c 'echo \"deb http://ppa.launchpad.net/ci-train-ppa-service/landing-${PPA}/${DISTRO} ${SERIES} main\" > /etc/apt/sources.list.d/silo-${PPA}.list'"
+            # TODO: hide the sudo output
+            adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S  bash -c 'echo \"deb http://ppa.launchpad.net/ci-train-ppa-service/landing-${PPA}/${DISTRO} ${SERIES} main\" > /etc/apt/sources.list.d/silo-${PPA}.list'  2>&1|grep -v password > /dev/null "
             adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S apt-get update 2>&1|grep -v password > /dev/null"
         else
             echo  -e "Set up with the PPA \e[31m${PPA}\e[0m"
             phablet-config -s ${SERIALNUMBER} writable-image -r ${PASSWORD}  2>&1 > /dev/null
 	    sleep_indicator 120
             network
-            adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S  bash -c 'echo \"deb http://ppa.launchpad.net/${PPA}/${DISTRO} ${SERIES} main\" > /etc/apt/sources.list.d/testing-ppa.list'"
+            adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S  bash -c 'echo \"deb http://ppa.launchpad.net/${PPA}/${DISTRO} ${SERIES} main\" > /etc/apt/sources.list.d/testing-ppa.list' 2>&1|grep -v password > /dev/null"
             adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S apt-get update 2>&1|grep -v password > /dev/null"
 
         fi
@@ -234,7 +245,7 @@ function compare_results {
     done
 }
 
-while getopts ":hrcintduswv:o:p:f:" opt; do
+while getopts ":hrcintduswbv:o:p:f:a:" opt; do
     case $opt in
         r)
             RESET=true
@@ -252,6 +263,9 @@ while getopts ":hrcintduswv:o:p:f:" opt; do
             ;;
         p)
             PPA=$OPTARG
+            ;;
+	a)
+	    START_FROM=$OPTARG
             ;;
         f)
             FILTER=$OPTARG
@@ -277,6 +291,9 @@ while getopts ":hrcintduswv:o:p:f:" opt; do
         w)
             DISTUPGRADE=true
             ;;
+        b)
+	   BOOTSTRAP=true
+	   ;;
         h)
             echo "Usage: uitk_test_plan.sh -s [serial number] -m -c"
             echo -e "\t-r : Reset after each tests. Default: ${RESET}"
@@ -287,8 +304,10 @@ while getopts ":hrcintduswv:o:p:f:" opt; do
             echo -e "\t-o : Output directory. Default $OUTPUTDIR"
             echo -e "\t-p : Source PPA for the UITK. Default $PPA. Use -p archive to test stock image or -p [0-9]* to set a silo."
             echo -e "\t-f : Filter for the test suite. Default $FILTER"
+            echo -e "\t-a : Start the test suite from the given test."
             echo -e "\t-u : Provision the Development release of Ubuntu. Default is RTM."
             echo -e "\t-w : dist-upgrade to the whole PPA instead of just Ubuntu UI Toolkit. Default is only UITK."
+            echo -e "\t-b : Bootstrap the device with the ${PPA} enabled."
             echo ""
             echo "By default tihe uitk_test_plan.sh flashes the latest RTM image on the device, installs the click application"
             echo "tests, configures the ppa:ubuntu-sdk-team/staging PPA, installs the UITK from the PPA and executes the test plan."
@@ -342,6 +361,7 @@ echo "Filter: ${FILTER}"
 echo ""
 echo "Reset: ${RESET}"
 echo "Commission: ${COMISSION}"
+echo "Bootstrap: ${BOOTSTRAP}"
 echo "Only compare: ${ONLYCOMPARE}"
 echo "Do not run tests: ${DONOTRUNTESTS}"
 echo "RTM: ${RTM}"
@@ -350,15 +370,18 @@ echo ""
 echo "*** Starting ***"
 echo ""
 
-# Use the first available device for testing
-if [ ${LAZY} == true ]; then
-    echo "Waiting for a device"
-    adb wait-for-device
-    SERIALNUMBER=`adb devices -l | grep -Ev "List of devices attached" | grep -Ev "emulator-" | sed "/^$/d"|sed "s/ .*//g"`
-    echo "Tests will be run on the device with ${SERIALNUMBER} serial number."
-else
-    echo "Waiting for the device with ${SERIALNUMBER} serial number."
-    adb -s ${SERIALNUMBER} wait-for-device
+
+if [ ${BOOTSTRAP} == false ]; then
+    # Use the first available device for testing
+    if [ ${LAZY} == true ]; then
+        echo "Waiting for a device"
+        adb wait-for-device
+        SERIALNUMBER=`adb devices -l | grep -Ev "List of devices attached" | grep -Ev "emulator-" | sed "/^$/d"|sed "s/ .*//g"`
+        echo "Tests will be run on the device with ${SERIALNUMBER} serial number."
+    else
+        echo "Waiting for the device with ${SERIALNUMBER} serial number."
+        adb -s ${SERIALNUMBER} wait-for-device
+    fi
 fi
 
 # Check if the device need to be flashed and set up for testing
@@ -373,28 +396,43 @@ PPA=${PPA/\//_}
 if [ ${DONOTRUNTESTS} != true ]; then
     # Reset the device for testing
     reset -f
-
+	
     # Run the test suite
     for TEST_SET in "${TEST_SUITE[@]}"
     do
-       if [[ ${TEST_SET} =~ ${FILTER} ]]; then
-           APPNAME=${TEST_SET##* }
-           LOGFILE="$OUTPUTDIR/${LOGFILENAME}-${APPNAME}-1-${PPA}.tests"
-           COMMAND="phablet-test-run -r ${PASSWORD} -s ${SERIALNUMBER} $TEST_SET >> ${LOGFILE}"
-           echo "<<<=== ${APPNAME} 1 ===>>>" >> ${LOGFILE}
-           reset
-           eval ${COMMAND}
-           egrep "<<<===|Ran|OK|FAILED" ${LOGFILE}
-           # check if the tests were successful and re-run after a reset
-           if grep -q "FAILED" ${LOGFILE}; then 
-               reset -f
-               LOGFILE="$OUTPUTDIR/${LOGFILENAME}-${APPNAME}-2-${PPA}.tests"
-               COMMAND="phablet-test-run -r ${PASSWORD} -s ${SERIALNUMBER} $TEST_SET >> ${LOGFILE}"
-               echo "<<<=== ${APPNAME} 2 ===>>>" >> ${LOGFILE}
-               eval ${COMMAND}
-               egrep "<<<===|Ran|OK|FAILED" ${LOGFILE}
-           fi
-       fi
+	if [[ ! -z $START_FROM ]]; then
+            if [[ ! ${TEST_SET} =~ ${START_FROM} ]]; then
+        	continue
+	     else
+		unset START_FROM
+	     fi
+	fi
+        if [[ ${TEST_SET} =~ ${FILTER} ]]; then
+            APPNAME=${TEST_SET##* }
+            LOGFILE="$OUTPUTDIR/${LOGFILENAME}-${APPNAME}-1-${PPA}.tests"
+            COMMAND="phablet-test-run -r ${PASSWORD} -s ${SERIALNUMBER} $TEST_SET >> ${LOGFILE}"
+            echo "<<<=== ${APPNAME} 1 ===>>>" >> ${LOGFILE}
+            reset
+            eval ${COMMAND}
+            egrep "<<<===|Ran|OK|FAILED" ${LOGFILE}
+            # check if the tests were successful and re-run after a reset
+            if (tail -1 ${LOGFILE}|grep -q OK) ;then 
+		echo ${LOGFILE} - OK;
+            else 
+                echo ${LOGFILE} - Failed
+                reset -f
+                LOGFILE="$OUTPUTDIR/${LOGFILENAME}-${APPNAME}-2-${PPA}.tests"
+                COMMAND="phablet-test-run -r ${PASSWORD} -s ${SERIALNUMBER} $TEST_SET >> ${LOGFILE}"
+                echo "<<<=== ${APPNAME} 2 ===>>>" >> ${LOGFILE}
+                eval ${COMMAND}
+                egrep "<<<===|Ran|OK|FAILED" ${LOGFILE}
+                if (tail -1 ${LOGFILE}|grep -q OK) ;then
+                    echo ${LOGFILE} - OK;
+                else 
+                    echo ${LOGFILE} - Failed
+                fi
+            fi
+        fi
     done
 fi
 

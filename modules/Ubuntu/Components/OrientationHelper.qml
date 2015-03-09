@@ -14,9 +14,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.2
+import QtQuick 2.4
 import QtQuick.Window 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.2
 
 /*!
     \qmltype OrientationHelper
@@ -98,7 +98,7 @@ Item {
     property bool anchorToKeyboard: false
 
     x: parent ? (parent.width - width) / 2 : 0
-    y: parent ? (parent.height - height) / 2 : 0
+    y: parent ? (d.availableParentHeight - height) / 2 : 0
     width: parent ? (d.flipDimensions ? d.availableParentHeight : parent.width) : 0
     height: parent ? (d.flipDimensions ? parent.width : d.availableParentHeight) : 0
 

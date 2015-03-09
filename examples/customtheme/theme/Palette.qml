@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 1.1
+import Ubuntu.Components 1.2
 import Ubuntu.Components.Themes.SuruDark 1.1 as Suru
 
 Suru.Palette {

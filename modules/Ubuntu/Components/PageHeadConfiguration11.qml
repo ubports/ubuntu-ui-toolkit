@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.2
-import Ubuntu.Components 1.1
+import QtQuick 2.4
+import Ubuntu.Components 1.2
 
 /*!
   \internal
@@ -28,6 +28,21 @@ Object {
     property list<Action> actions
     property Action backAction: null
     property Item contents: null
+
+    QtObject {
+        id: internal
+        property Item oldContents: null
+    }
+    onContentsChanged: {
+        if (internal.oldContents) {
+            // FIX: bug #1341814 and #1400297
+            // We have to force the removal of the previous head.contents
+            // in order to show the new contents
+            internal.oldContents.parent = null;
+        }
+        internal.oldContents = contents;
+    }
+
     property string preset: ""
     readonly property alias sections: headSections
     PageHeadSections {

@@ -33,7 +33,7 @@
 /*!
  * \qmltype ListItemDrag
  * \inqmlmodule Ubuntu.Components 1.2
- * \ingroup unstable-ubuntu-listitems
+ * \ingroup ubuntu-listitem
  * \since Ubuntu.Components 1.2
  * \brief Provides information about a ListItem drag event.
  *
@@ -185,7 +185,7 @@ void UCViewItemsAttachedPrivate::buildChangesList(const QVariant &newValue)
  * \qmltype ViewItems
  * \instantiates UCViewItemsAttached
  * \inqmlmodule Ubuntu.Components 1.2
- * \ingroup unstable-ubuntu-listitems
+ * \ingroup ubuntu-listitem
  * \since Ubuntu.Components 1.2
  * \brief A set of properties attached to the ListItem's parent item or ListView.
  *

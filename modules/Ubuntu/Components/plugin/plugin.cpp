@@ -31,7 +31,8 @@
 #include "ucscalingimageprovider.h"
 #include "ucqquickimageextension.h"
 #include "quickutils.h"
-#include "shapeitem.h"
+#include "ucubuntushape.h"
+#include "ucubuntushapeoverlay.h"
 #include "inversemouseareatype.h"
 #include "qquickclipboard.h"
 #include "qquickmimedata.h"
@@ -57,6 +58,7 @@
 #include "uclistitemactions.h"
 #include "uclistitemstyle.h"
 #include "ucserviceproperties.h"
+#include "ucnamespace.h"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -95,6 +97,14 @@ static QObject *registerUriHandler(QQmlEngine *engine, QJSEngine *scriptEngine)
     return uriHandler;
 }
 
+static QObject *registerUbuntuNamespace(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+    Q_UNUSED(engine)
+    Q_UNUSED(scriptEngine)
+
+    return new UCNamespace();
+}
+
 void UbuntuComponentsPlugin::registerWindowContextProperty()
 {
     setWindowContextProperty(QGuiApplication::focusWindow());
@@ -129,9 +139,9 @@ void UbuntuComponentsPlugin::registerTypesToVersion(const char *uri, int major, 
     qmlRegisterUncreatableType<UbuntuI18n>(uri, major, minor, "i18n", "Singleton object");
     qmlRegisterExtendedType<QQuickImageBase, UCQQuickImageExtension>(uri, major, minor, "QQuickImageBase");
     qmlRegisterUncreatableType<UCUnits>(uri, major, minor, "UCUnits", "Not instantiable");
-    qmlRegisterType<ShapeItem>(uri, major, minor, "UbuntuShape");
-    // FIXME/DEPRECATED: Shape is exported for backwards compatibity only
-    qmlRegisterType<ShapeItem>(uri, major, minor, "Shape");
+    qmlRegisterType<UCUbuntuShape>(uri, major, minor, "UbuntuShape");
+    // FIXME/DEPRECATED: Shape is exported for backwards compatibility only
+    qmlRegisterType<UCUbuntuShape>(uri, major, minor, "Shape");
     qmlRegisterType<InverseMouseAreaType>(uri, major, minor, "InverseMouseArea");
     qmlRegisterType<QQuickMimeData>(uri, major, minor, "MimeData");
     qmlRegisterSingletonType<QQuickClipboard>(uri, major, minor, "Clipboard", registerClipboard);
@@ -169,13 +179,16 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterUncreatableType<SortBehavior>(uri, 1, 1, "SortBehavior", "Not instantiable");
     qmlRegisterType<UCServiceProperties, 1>(uri, 1, 1, "ServiceProperties");
 
-    // ListItem and related types, released to 1.2
+    // register 1.2 only API
     qmlRegisterType<UCListItem>(uri, 1, 2, "ListItem");
     qmlRegisterType<UCListItemDivider>();
     qmlRegisterUncreatableType<UCSwipeEvent>(uri, 1, 2, "SwipeEvent", "This is an event object.");
     qmlRegisterUncreatableType<UCDragEvent>(uri, 1, 2, "ListItemDrag", "This is an event object");
     qmlRegisterType<UCListItemActions>(uri, 1, 2, "ListItemActions");
     qmlRegisterUncreatableType<UCViewItemsAttached>(uri, 1, 2, "ViewItems", "Not instantiable");
+    qmlRegisterSingletonType<UCNamespace>(uri, 1, 2, "Ubuntu", registerUbuntuNamespace);
+    qmlRegisterType<UCUbuntuShape, 1>(uri, 1, 2, "UbuntuShape");
+    qmlRegisterType<UCUbuntuShapeOverlay>(uri, 1, 2, "UbuntuShapeOverlay");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
