@@ -1,4 +1,62 @@
 {
+    "AbstractButton": {
+        "action": {
+            "isPointer": true,
+            "type": "Action"
+        },
+        "activeFocusOnPress": {
+            "revision": 1,
+            "type": "bool"
+        },
+        "defaultProperty": "data",
+        "exportMetaObjectRevisions": [
+            "-1"
+        ],
+        "exports": [
+            "AbstractButton -1.-1"
+        ],
+        "hovered": {
+            "type": "bool"
+        },
+        "iconName": {
+            "type": "string"
+        },
+        "iconSource": {
+            "type": "QUrl"
+        },
+        "isComposite": true,
+        "methods": [
+            {
+                "name": "requestFocus",
+                "parameters": [
+                    {
+                        "name": "reason",
+                        "type": "Qt::FocusReason"
+                    }
+                ],
+                "returns": "bool",
+                "revision": "1",
+                "type": "function"
+            },
+            {
+                "name": "requestFocus",
+                "returns": "bool",
+                "revision": "1",
+                "type": "function"
+            }
+        ],
+        "pressed": {
+            "type": "bool"
+        },
+        "prototype": "Item",
+        "style": {
+            "isPointer": true,
+            "type": "Component"
+        },
+        "text": {
+            "type": "string"
+        }
+    },
     "Action": {
         "description": {
             "type": "string"
@@ -112,6 +170,58 @@
             }
         ],
         "prototype": "QtObject"
+    },
+    "ActionItem": {
+        "action": {
+            "isPointer": true,
+            "type": "Action"
+        },
+        "activeFocusOnPress": {
+            "revision": 1,
+            "type": "bool"
+        },
+        "defaultProperty": "data",
+        "exportMetaObjectRevisions": [
+            "-1"
+        ],
+        "exports": [
+            "ActionItem -1.-1"
+        ],
+        "iconName": {
+            "type": "string"
+        },
+        "iconSource": {
+            "type": "QUrl"
+        },
+        "isComposite": true,
+        "methods": [
+            {
+                "name": "requestFocus",
+                "parameters": [
+                    {
+                        "name": "reason",
+                        "type": "Qt::FocusReason"
+                    }
+                ],
+                "returns": "bool",
+                "revision": "1",
+                "type": "function"
+            },
+            {
+                "name": "requestFocus",
+                "returns": "bool",
+                "revision": "1",
+                "type": "function"
+            }
+        ],
+        "prototype": "Item",
+        "style": {
+            "isPointer": true,
+            "type": "Component"
+        },
+        "text": {
+            "type": "string"
+        }
     },
     "ActionManager": {
         "actions": {
@@ -272,6 +382,117 @@
         "Repeating": "1",
         "prototype": "Enum"
     },
+    "AnimatedItem": {
+        "activeFocusOnPress": {
+            "revision": 1,
+            "type": "bool"
+        },
+        "defaultProperty": "data",
+        "exportMetaObjectRevisions": [
+            "-1"
+        ],
+        "exports": [
+            "AnimatedItem -1.-1"
+        ],
+        "isComposite": true,
+        "methods": [
+            {
+                "name": "requestFocus",
+                "parameters": [
+                    {
+                        "name": "reason",
+                        "type": "Qt::FocusReason"
+                    }
+                ],
+                "returns": "bool",
+                "revision": "1",
+                "type": "function"
+            },
+            {
+                "name": "requestFocus",
+                "returns": "bool",
+                "revision": "1",
+                "type": "function"
+            }
+        ],
+        "onScreen": {
+            "type": "bool"
+        },
+        "prototype": "Item",
+        "style": {
+            "isPointer": true,
+            "type": "Component"
+        }
+    },
+    "AppHeader": {
+        "actions": {
+            "type": "QVariant"
+        },
+        "activeFocusOnPress": {
+            "revision": 1,
+            "type": "bool"
+        },
+        "animate": {
+            "type": "bool"
+        },
+        "config": {
+            "isPointer": true,
+            "type": "PageHeadConfiguration"
+        },
+        "contents": {
+            "isPointer": true,
+            "type": "Item"
+        },
+        "defaultProperty": "data",
+        "exportMetaObjectRevisions": [
+            "-1"
+        ],
+        "exports": [
+            "AppHeader -1.-1"
+        ],
+        "flickable": {
+            "isPointer": true,
+            "type": "Flickable"
+        },
+        "isComposite": true,
+        "methods": [
+            {
+                "name": "requestFocus",
+                "parameters": [
+                    {
+                        "name": "reason",
+                        "type": "Qt::FocusReason"
+                    }
+                ],
+                "returns": "bool",
+                "revision": "1",
+                "type": "function"
+            },
+            {
+                "name": "requestFocus",
+                "returns": "bool",
+                "revision": "1",
+                "type": "function"
+            }
+        ],
+        "pageStack": {
+            "type": "QVariant"
+        },
+        "prototype": "Item",
+        "style": {
+            "isPointer": true,
+            "type": "Component"
+        },
+        "tabsModel": {
+            "type": "QVariant"
+        },
+        "title": {
+            "type": "string"
+        },
+        "useDeprecatedToolbar": {
+            "type": "bool"
+        }
+    },
     "Argument": {
         "exports": [
             "Argument 0.1",
@@ -354,6 +575,80 @@
             "type": "QQmlPropertyMap"
         }
     },
+    "Button": {
+        "action": {
+            "isPointer": true,
+            "type": "Action"
+        },
+        "activeFocusOnPress": {
+            "revision": 1,
+            "type": "bool"
+        },
+        "color": {
+            "type": "QColor"
+        },
+        "defaultProperty": "data",
+        "exportMetaObjectRevisions": [
+            "-1"
+        ],
+        "exports": [
+            "Button -1.-1"
+        ],
+        "font": {
+            "type": "QFont"
+        },
+        "gradient": {
+            "isPointer": true,
+            "type": "Gradient"
+        },
+        "hovered": {
+            "type": "bool"
+        },
+        "iconName": {
+            "type": "string"
+        },
+        "iconPosition": {
+            "type": "string"
+        },
+        "iconSource": {
+            "type": "QUrl"
+        },
+        "isComposite": true,
+        "methods": [
+            {
+                "name": "requestFocus",
+                "parameters": [
+                    {
+                        "name": "reason",
+                        "type": "Qt::FocusReason"
+                    }
+                ],
+                "returns": "bool",
+                "revision": "1",
+                "type": "function"
+            },
+            {
+                "name": "requestFocus",
+                "returns": "bool",
+                "revision": "1",
+                "type": "function"
+            }
+        ],
+        "pressed": {
+            "type": "bool"
+        },
+        "prototype": "Item",
+        "strokeColor": {
+            "type": "QColor"
+        },
+        "style": {
+            "isPointer": true,
+            "type": "Component"
+        },
+        "text": {
+            "type": "string"
+        }
+    },
     "Clipboard": {
         "data": {
             "isPointer": true,
@@ -396,6 +691,135 @@
         ],
         "type": "script"
     },
+    "ComboButton": {
+        "action": {
+            "isPointer": true,
+            "type": "Action"
+        },
+        "activeFocusOnPress": {
+            "revision": 1,
+            "type": "bool"
+        },
+        "collapsedHeight": {
+            "type": "double"
+        },
+        "color": {
+            "type": "QColor"
+        },
+        "comboList": {
+            "isList": true,
+            "isReadonly": true,
+            "type": "QtObject"
+        },
+        "comboListHeight": {
+            "isReadonly": true,
+            "type": "double"
+        },
+        "defaultProperty": "comboList",
+        "dropdownColor": {
+            "type": "QColor"
+        },
+        "expanded": {
+            "type": "bool"
+        },
+        "expandedHeight": {
+            "type": "double"
+        },
+        "exportMetaObjectRevisions": [
+            "-1"
+        ],
+        "exports": [
+            "ComboButton -1.-1"
+        ],
+        "font": {
+            "type": "QFont"
+        },
+        "gradient": {
+            "isPointer": true,
+            "type": "Gradient"
+        },
+        "hovered": {
+            "type": "bool"
+        },
+        "iconName": {
+            "type": "string"
+        },
+        "iconPosition": {
+            "type": "string"
+        },
+        "iconSource": {
+            "type": "QUrl"
+        },
+        "isComposite": true,
+        "methods": [
+            {
+                "name": "requestFocus",
+                "parameters": [
+                    {
+                        "name": "reason",
+                        "type": "Qt::FocusReason"
+                    }
+                ],
+                "returns": "bool",
+                "revision": "1",
+                "type": "function"
+            },
+            {
+                "name": "requestFocus",
+                "returns": "bool",
+                "revision": "1",
+                "type": "function"
+            }
+        ],
+        "pressed": {
+            "type": "bool"
+        },
+        "prototype": "Item",
+        "strokeColor": {
+            "type": "QColor"
+        },
+        "style": {
+            "isPointer": true,
+            "type": "Component"
+        },
+        "text": {
+            "type": "string"
+        }
+    },
+    "CrossFadeImage": {
+        "defaultProperty": "data",
+        "exportMetaObjectRevisions": [
+            "-1"
+        ],
+        "exports": [
+            "CrossFadeImage -1.-1"
+        ],
+        "fadeDuration": {
+            "type": "int"
+        },
+        "fadeStyle": {
+            "type": "string"
+        },
+        "fillMode": {
+            "type": "int"
+        },
+        "isComposite": true,
+        "prototype": "Item",
+        "running": {
+            "isReadonly": true,
+            "type": "bool"
+        },
+        "source": {
+            "type": "QUrl"
+        },
+        "sourceSize": {
+            "type": "QSizeF"
+        },
+        "status": {
+            "isReadonly": true,
+            "type": "int"
+        }
+    },
     "DateUtils": {
         "exports": [
             "DateUtils 1.0",
@@ -427,6 +851,90 @@
         "Wednesday": "4",
         "prototype": "Enum"
     },
+    "DraggingArea": {
+        "clickValidated": {
+            "type": "bool"
+        },
+        "defaultProperty": "data",
+        "dragValue": {
+            "type": "double"
+        },
+        "dragVelocity": {
+            "type": "double"
+        },
+        "dragging": {
+            "type": "bool"
+        },
+        "exportMetaObjectRevisions": [
+            "-1"
+        ],
+        "exports": [
+            "DraggingArea -1.-1"
+        ],
+        "isComposite": true,
+        "lateralPosition": {
+            "type": "double"
+        },
+        "methods": [
+            {
+                "name": "dragStart",
+                "type": "signal"
+            },
+            {
+                "name": "dragEnd",
+                "type": "signal"
+            },
+            {
+                "name": "updateSpeed",
+                "returns": "QVariant",
+                "type": "function"
+            },
+            {
+                "name": "cullOldDragEvents",
+                "parameters": [
+                    {
+                        "name": "currentTime",
+                        "type": "QVariant"
+                    }
+                ],
+                "returns": "QVariant",
+                "type": "function"
+            },
+            {
+                "name": "getEventSpeed",
+                "parameters": [
+                    {
+                        "name": "currentTime",
+                        "type": "QVariant"
+                    },
+                    {
+                        "name": "event",
+                        "type": "QVariant"
+                    }
+                ],
+                "returns": "QVariant",
+                "type": "function"
+            },
+            {
+                "name": "pushDragEvent",
+                "parameters": [
+                    {
+                        "name": "event",
+                        "type": "QVariant"
+                    }
+                ],
+                "returns": "QVariant",
+                "type": "function"
+            }
+        ],
+        "orientation": {
+            "type": "int"
+        },
+        "prototype": "MouseArea",
+        "zeroVelocityCounts": {
+            "type": "bool"
+        }
+    },
     "Error": {
         "AdaptationError": "100",
         "EarlyDate": "2",
@@ -456,6 +964,49 @@
         "AlignLeft": "0",
         "AlignRight": "2",
         "prototype": "Enum"
+    },
+    "Icon": {
+        "color": {
+            "type": "QColor"
+        },
+        "defaultProperty": "data",
+        "exportMetaObjectRevisions": [
+            "-1"
+        ],
+        "exports": [
+            "Icon -1.-1"
+        ],
+        "isComposite": true,
+        "keyColor": {
+            "type": "QColor"
+        },
+        "name": {
+            "type": "string"
+        },
+        "prototype": "Item",
+        "source": {
+            "type": "QUrl"
+        }
+    },
+    "Icon10": {
+        "color": {
+            "type": "QColor"
+        },
+        "defaultProperty": "data",
+        "exportMetaObjectRevisions": [
+            "-1"
+        ],
+        "exports": [
+            "Icon10 -1.-1"
+        ],
+        "isComposite": true,
+        "keyColor": {
+            "type": "QColor"
+        },
+        "name": {
+            "type": "string"
+        },
+        "prototype": "Item"
     },
     "InverseMouse": {
         "exports": [
@@ -690,6 +1241,22 @@
         },
         "prototype": "QtObject"
     },
+    "Object": {
+        "children": {
+            "isList": true,
+            "isReadonly": true,
+            "type": "QtObject"
+        },
+        "defaultProperty": "children",
+        "exportMetaObjectRevisions": [
+            "-1"
+        ],
+        "exports": [
+            "Object -1.-1"
+        ],
+        "isComposite": true,
+        "prototype": "QtObject"
+    },
     "Operation": {
         "Canceling": "2",
         "NoOperation": "0",
@@ -697,10 +1264,499 @@
         "Saving": "1",
         "prototype": "Enum"
     },
+    "Page": {
+        "actions": {
+            "isList": true,
+            "isReadonly": true,
+            "type": "QtObject"
+        },
+        "active": {
+            "type": "bool"
+        },
+        "activeFocusOnPress": {
+            "revision": 1,
+            "type": "bool"
+        },
+        "activeLeafNode": {
+            "isPointer": true,
+            "type": "Item"
+        },
+        "defaultProperty": "data",
+        "exportMetaObjectRevisions": [
+            "-1"
+        ],
+        "exports": [
+            "Page -1.-1"
+        ],
+        "flickable": {
+            "isPointer": true,
+            "type": "Flickable"
+        },
+        "head": {
+            "isPointer": true,
+            "isReadonly": true,
+            "type": "PageHeadConfiguration"
+        },
+        "header": {
+            "isPointer": true,
+            "type": "AppHeader"
+        },
+        "isComposite": true,
+        "isLeaf": {
+            "type": "bool"
+        },
+        "methods": [
+            {
+                "name": "requestFocus",
+                "parameters": [
+                    {
+                        "name": "reason",
+                        "type": "Qt::FocusReason"
+                    }
+                ],
+                "returns": "bool",
+                "revision": "1",
+                "type": "function"
+            },
+            {
+                "name": "requestFocus",
+                "returns": "bool",
+                "revision": "1",
+                "type": "function"
+            }
+        ],
+        "pageStack": {
+            "isPointer": true,
+            "type": "Item"
+        },
+        "parentNode": {
+            "isPointer": true,
+            "type": "Item"
+        },
+        "prototype": "Item",
+        "style": {
+            "isPointer": true,
+            "type": "Component"
+        },
+        "title": {
+            "type": "string"
+        },
+        "toolbar": {
+            "isPointer": true,
+            "type": "Toolbar"
+        },
+        "tools": {
+            "isPointer": true,
+            "type": "Item"
+        }
+    },
+    "Page10": {
+        "actions": {
+            "isList": true,
+            "isReadonly": true,
+            "type": "QtObject"
+        },
+        "active": {
+            "type": "bool"
+        },
+        "activeFocusOnPress": {
+            "revision": 1,
+            "type": "bool"
+        },
+        "activeLeafNode": {
+            "isPointer": true,
+            "type": "Item"
+        },
+        "defaultProperty": "data",
+        "exportMetaObjectRevisions": [
+            "-1"
+        ],
+        "exports": [
+            "Page10 -1.-1"
+        ],
+        "flickable": {
+            "isPointer": true,
+            "type": "Flickable"
+        },
+        "header": {
+            "isPointer": true,
+            "type": "AppHeader"
+        },
+        "isComposite": true,
+        "isLeaf": {
+            "type": "bool"
+        },
+        "methods": [
+            {
+                "name": "requestFocus",
+                "parameters": [
+                    {
+                        "name": "reason",
+                        "type": "Qt::FocusReason"
+                    }
+                ],
+                "returns": "bool",
+                "revision": "1",
+                "type": "function"
+            },
+            {
+                "name": "requestFocus",
+                "returns": "bool",
+                "revision": "1",
+                "type": "function"
+            }
+        ],
+        "pageStack": {
+            "isPointer": true,
+            "type": "Item"
+        },
+        "parentNode": {
+            "isPointer": true,
+            "type": "Item"
+        },
+        "prototype": "Item",
+        "style": {
+            "isPointer": true,
+            "type": "Component"
+        },
+        "title": {
+            "type": "string"
+        },
+        "toolbar": {
+            "isPointer": true,
+            "type": "Toolbar"
+        },
+        "tools": {
+            "isPointer": true,
+            "type": "Item"
+        }
+    },
+    "PageHeadConfiguration": {
+        "actions": {
+            "isList": true,
+            "isReadonly": true,
+            "type": "Action"
+        },
+        "backAction": {
+            "isPointer": true,
+            "type": "Action"
+        },
+        "children": {
+            "isList": true,
+            "isReadonly": true,
+            "type": "QtObject"
+        },
+        "contents": {
+            "isPointer": true,
+            "type": "Item"
+        },
+        "defaultProperty": "children",
+        "exportMetaObjectRevisions": [
+            "-1"
+        ],
+        "exports": [
+            "PageHeadConfiguration -1.-1"
+        ],
+        "foregroundColor": {
+            "type": "QColor"
+        },
+        "isComposite": true,
+        "prototype": "QtObject",
+        "sections": {
+            "isPointer": true,
+            "isReadonly": true,
+            "type": "PageHeadSections"
+        }
+    },
+    "PageHeadSections": {
+        "enabled": {
+            "type": "bool"
+        },
+        "exportMetaObjectRevisions": [
+            "-1"
+        ],
+        "exports": [
+            "PageHeadSections -1.-1"
+        ],
+        "isComposite": true,
+        "model": {
+            "type": "QVariant"
+        },
+        "prototype": "QtObject",
+        "selectedIndex": {
+            "type": "int"
+        }
+    },
+    "PageHeadState": {
+        "actions": {
+            "isList": true,
+            "isReadonly": true,
+            "type": "Action"
+        },
+        "backAction": {
+            "isPointer": true,
+            "type": "Action"
+        },
+        "contents": {
+            "isPointer": true,
+            "type": "Item"
+        },
+        "defaultProperty": "changes",
+        "exportMetaObjectRevisions": [
+            "-1"
+        ],
+        "exports": [
+            "PageHeadState -1.-1"
+        ],
+        "head": {
+            "isPointer": true,
+            "type": "PageHeadConfiguration"
+        },
+        "isComposite": true,
+        "prototype": "State"
+    },
+    "PageTreeNode": {
+        "active": {
+            "type": "bool"
+        },
+        "activeFocusOnPress": {
+            "revision": 1,
+            "type": "bool"
+        },
+        "activeLeafNode": {
+            "isPointer": true,
+            "type": "Item"
+        },
+        "defaultProperty": "data",
+        "exportMetaObjectRevisions": [
+            "-1"
+        ],
+        "exports": [
+            "PageTreeNode -1.-1"
+        ],
+        "header": {
+            "isPointer": true,
+            "type": "AppHeader"
+        },
+        "isComposite": true,
+        "isLeaf": {
+            "type": "bool"
+        },
+        "methods": [
+            {
+                "name": "requestFocus",
+                "parameters": [
+                    {
+                        "name": "reason",
+                        "type": "Qt::FocusReason"
+                    }
+                ],
+                "returns": "bool",
+                "revision": "1",
+                "type": "function"
+            },
+            {
+                "name": "requestFocus",
+                "returns": "bool",
+                "revision": "1",
+                "type": "function"
+            }
+        ],
+        "pageStack": {
+            "isPointer": true,
+            "type": "Item"
+        },
+        "parentNode": {
+            "isPointer": true,
+            "type": "Item"
+        },
+        "prototype": "Item",
+        "style": {
+            "isPointer": true,
+            "type": "Component"
+        },
+        "toolbar": {
+            "isPointer": true,
+            "type": "Toolbar"
+        }
+    },
+    "Panel": {
+        "align": {
+            "type": "int"
+        },
+        "animate": {
+            "type": "bool"
+        },
+        "animating": {
+            "isReadonly": true,
+            "type": "bool"
+        },
+        "contents": {
+            "isList": true,
+            "isReadonly": true,
+            "type": "QtObject"
+        },
+        "defaultProperty": "contents",
+        "exportMetaObjectRevisions": [
+            "-1"
+        ],
+        "exports": [
+            "Panel -1.-1"
+        ],
+        "hideTimeout": {
+            "type": "int"
+        },
+        "hintSize": {
+            "type": "double"
+        },
+        "isComposite": true,
+        "locked": {
+            "type": "bool"
+        },
+        "methods": [
+            {
+                "name": "open",
+                "returns": "QVariant",
+                "type": "function"
+            },
+            {
+                "name": "close",
+                "returns": "QVariant",
+                "type": "function"
+            }
+        ],
+        "opened": {
+            "type": "bool"
+        },
+        "position": {
+            "isReadonly": true,
+            "type": "double"
+        },
+        "pressed": {
+            "isReadonly": true,
+            "type": "bool"
+        },
+        "prototype": "Item",
+        "triggerSize": {
+            "type": "double"
+        }
+    },
     "Priority": {
         "AfterItem": "1",
         "BeforeItem": "0",
         "prototype": "Enum"
+    },
+    "ProgressBar": {
+        "activeFocusOnPress": {
+            "revision": 1,
+            "type": "bool"
+        },
+        "defaultProperty": "data",
+        "exportMetaObjectRevisions": [
+            "-1"
+        ],
+        "exports": [
+            "ProgressBar -1.-1"
+        ],
+        "indeterminate": {
+            "type": "bool"
+        },
+        "isComposite": true,
+        "maximumValue": {
+            "type": "double"
+        },
+        "methods": [
+            {
+                "name": "requestFocus",
+                "parameters": [
+                    {
+                        "name": "reason",
+                        "type": "Qt::FocusReason"
+                    }
+                ],
+                "returns": "bool",
+                "revision": "1",
+                "type": "function"
+            },
+            {
+                "name": "requestFocus",
+                "returns": "bool",
+                "revision": "1",
+                "type": "function"
+            }
+        ],
+        "minimumValue": {
+            "type": "double"
+        },
+        "onScreen": {
+            "type": "bool"
+        },
+        "prototype": "Item",
+        "style": {
+            "isPointer": true,
+            "type": "Component"
+        },
+        "value": {
+            "type": "double"
+        }
+    },
+    "PullToRefresh": {
+        "activeFocusOnPress": {
+            "revision": 1,
+            "type": "bool"
+        },
+        "content": {
+            "isPointer": true,
+            "type": "Component"
+        },
+        "defaultProperty": "data",
+        "exportMetaObjectRevisions": [
+            "-1"
+        ],
+        "exports": [
+            "PullToRefresh -1.-1"
+        ],
+        "isComposite": true,
+        "methods": [
+            {
+                "name": "requestFocus",
+                "parameters": [
+                    {
+                        "name": "reason",
+                        "type": "Qt::FocusReason"
+                    }
+                ],
+                "returns": "bool",
+                "revision": "1",
+                "type": "function"
+            },
+            {
+                "name": "requestFocus",
+                "returns": "bool",
+                "revision": "1",
+                "type": "function"
+            }
+        ],
+        "offset": {
+            "isReadonly": true,
+            "type": "double"
+        },
+        "prototype": "Item",
+        "refreshing": {
+            "type": "bool"
+        },
+        "releaseToRefresh": {
+            "isReadonly": true,
+            "type": "bool"
+        },
+        "style": {
+            "isPointer": true,
+            "type": "Component"
+        },
+        "target": {
+            "isPointer": true,
+            "type": "Flickable"
+        }
     },
     "QAbstractProxyModel": {
         "prototype": "QAbstractItemModel",
@@ -833,6 +1889,52 @@
             "type": "int"
         }
     },
+    "Scrollbar": {
+        "activeFocusOnPress": {
+            "revision": 1,
+            "type": "bool"
+        },
+        "align": {
+            "type": "int"
+        },
+        "defaultProperty": "data",
+        "exportMetaObjectRevisions": [
+            "-1"
+        ],
+        "exports": [
+            "Scrollbar -1.-1"
+        ],
+        "flickableItem": {
+            "isPointer": true,
+            "type": "Flickable"
+        },
+        "isComposite": true,
+        "methods": [
+            {
+                "name": "requestFocus",
+                "parameters": [
+                    {
+                        "name": "reason",
+                        "type": "Qt::FocusReason"
+                    }
+                ],
+                "returns": "bool",
+                "revision": "1",
+                "type": "function"
+            },
+            {
+                "name": "requestFocus",
+                "returns": "bool",
+                "revision": "1",
+                "type": "function"
+            }
+        ],
+        "prototype": "Item",
+        "style": {
+            "isPointer": true,
+            "type": "Component"
+        }
+    },
     "ScrollbarUtils": {
         "exports": [
             "ScrollbarUtils 1.0",
@@ -916,6 +2018,45 @@
         "Ready": "1",
         "prototype": "Enum"
     },
+    "StyledItem": {
+        "activeFocusOnPress": {
+            "revision": 1,
+            "type": "bool"
+        },
+        "defaultProperty": "data",
+        "exportMetaObjectRevisions": [
+            "-1"
+        ],
+        "exports": [
+            "StyledItem -1.-1"
+        ],
+        "isComposite": true,
+        "methods": [
+            {
+                "name": "requestFocus",
+                "parameters": [
+                    {
+                        "name": "reason",
+                        "type": "Qt::FocusReason"
+                    }
+                ],
+                "returns": "bool",
+                "revision": "1",
+                "type": "function"
+            },
+            {
+                "name": "requestFocus",
+                "returns": "bool",
+                "revision": "1",
+                "type": "function"
+            }
+        ],
+        "prototype": "Item",
+        "style": {
+            "isPointer": true,
+            "type": "Component"
+        }
+    },
     "StyledItemBase": {
         "activeFocusOnPress": {
             "revision": 1,
@@ -948,6 +2089,71 @@
             }
         ],
         "prototype": "Item"
+    },
+    "Toolbar": {
+        "align": {
+            "type": "int"
+        },
+        "animate": {
+            "type": "bool"
+        },
+        "animating": {
+            "isReadonly": true,
+            "type": "bool"
+        },
+        "contents": {
+            "isList": true,
+            "isReadonly": true,
+            "type": "QtObject"
+        },
+        "defaultProperty": "contents",
+        "exportMetaObjectRevisions": [
+            "-1"
+        ],
+        "exports": [
+            "Toolbar -1.-1"
+        ],
+        "hideTimeout": {
+            "type": "int"
+        },
+        "hintSize": {
+            "type": "double"
+        },
+        "isComposite": true,
+        "locked": {
+            "type": "bool"
+        },
+        "methods": [
+            {
+                "name": "open",
+                "returns": "QVariant",
+                "type": "function"
+            },
+            {
+                "name": "close",
+                "returns": "QVariant",
+                "type": "function"
+            }
+        ],
+        "opened": {
+            "type": "bool"
+        },
+        "position": {
+            "isReadonly": true,
+            "type": "double"
+        },
+        "pressed": {
+            "isReadonly": true,
+            "type": "bool"
+        },
+        "prototype": "Item",
+        "tools": {
+            "isPointer": true,
+            "type": "Item"
+        },
+        "triggerSize": {
+            "type": "double"
+        }
     },
     "Type": {
         "Bool": "3",
@@ -1040,19 +2246,11 @@
         "prototype": "QtObject"
     },
     "UbuntuColors": {
-        "blue": {
-            "isReadonly": true,
-            "type": "QColor"
-        },
         "coolGrey": {
             "isReadonly": true,
             "type": "QColor"
         },
         "darkAubergine": {
-            "isReadonly": true,
-            "type": "QColor"
-        },
-        "darkGrey": {
             "isReadonly": true,
             "type": "QColor"
         },
@@ -1062,10 +2260,6 @@
         "exports": [
             "UbuntuColors -1.-1"
         ],
-        "green": {
-            "isReadonly": true,
-            "type": "QColor"
-        },
         "greyGradient": {
             "isPointer": true,
             "type": "Gradient"
@@ -1074,10 +2268,6 @@
         "isCreatable": false,
         "isSingleton": true,
         "lightAubergine": {
-            "isReadonly": true,
-            "type": "QColor"
-        },
-        "lightGrey": {
             "isReadonly": true,
             "type": "QColor"
         },
@@ -1094,18 +2284,34 @@
             "type": "Gradient"
         },
         "prototype": "QtObject",
-        "purple": {
-            "isReadonly": true,
-            "type": "QColor"
-        },
-        "red": {
-            "isReadonly": true,
-            "type": "QColor"
-        },
         "warmGrey": {
             "isReadonly": true,
             "type": "QColor"
         }
+    },
+    "UbuntuListView": {
+        "defaultProperty": "data",
+        "expandedIndex": {
+            "type": "int"
+        },
+        "exportMetaObjectRevisions": [
+            "-1"
+        ],
+        "exports": [
+            "UbuntuListView -1.-1"
+        ],
+        "isComposite": true,
+        "prototype": "ListView"
+    },
+    "UbuntuNumberAnimation": {
+        "exportMetaObjectRevisions": [
+            "-1"
+        ],
+        "exports": [
+            "UbuntuNumberAnimation -1.-1"
+        ],
+        "isComposite": true,
+        "prototype": "NumberAnimation"
     },
     "UbuntuShape": {
         "borderSource": {

@@ -1,4 +1,39 @@
 {
+    "BarGraph": {
+        "aboveThresholdColor": {
+            "type": "QColor"
+        },
+        "backgroundColor": {
+            "type": "QColor"
+        },
+        "color": {
+            "type": "QColor"
+        },
+        "defaultProperty": "data",
+        "exportMetaObjectRevisions": [
+            "-1"
+        ],
+        "exports": [
+            "BarGraph -1.-1"
+        ],
+        "isComposite": true,
+        "labelFormat": {
+            "type": "string"
+        },
+        "labels": {
+            "type": "QVariant"
+        },
+        "maximumValue": {
+            "type": "double"
+        },
+        "model": {
+            "type": "QVariant"
+        },
+        "prototype": "Item",
+        "threshold": {
+            "type": "double"
+        }
+    },
     "CpuUsage": {
         "defaultProperty": "data",
         "exports": [
@@ -15,6 +50,132 @@
         },
         "prototype": "Item",
         "samplingInterval": {
+            "type": "int"
+        }
+    },
+    "Label": {
+        "defaultProperty": "data",
+        "exportMetaObjectRevisions": [
+            "-1"
+        ],
+        "exports": [
+            "Label -1.-1"
+        ],
+        "fontSize": {
+            "type": "string"
+        },
+        "isComposite": true,
+        "prototype": "Text"
+    },
+    "PerformanceOverlay": {
+        "active": {
+            "type": "bool"
+        },
+        "defaultProperty": "data",
+        "exportMetaObjectRevisions": [
+            "-1"
+        ],
+        "exports": [
+            "PerformanceOverlay -1.-1"
+        ],
+        "isComposite": true,
+        "prototype": "Item"
+    },
+    "QAbstractProxyModel": {
+        "prototype": "QAbstractItemModel",
+        "sourceModel": {
+            "isPointer": true,
+            "type": "QAbstractItemModel"
+        }
+    },
+    "QQmlPropertyMap": {
+        "methods": [
+            {
+                "name": "valueChanged",
+                "parameters": [
+                    {
+                        "name": "key",
+                        "type": "string"
+                    },
+                    {
+                        "name": "value",
+                        "type": "QVariant"
+                    }
+                ],
+                "type": "signal"
+            },
+            {
+                "name": "keys",
+                "returns": "QStringList",
+                "type": "function"
+            }
+        ],
+        "prototype": "QtObject"
+    },
+    "QSortFilterProxyModel": {
+        "dynamicSortFilter": {
+            "type": "bool"
+        },
+        "filterCaseSensitivity": {
+            "type": "Qt::CaseSensitivity"
+        },
+        "filterKeyColumn": {
+            "type": "int"
+        },
+        "filterRegExp": {
+            "type": "QRegExp"
+        },
+        "filterRole": {
+            "type": "int"
+        },
+        "isSortLocaleAware": {
+            "type": "bool"
+        },
+        "methods": [
+            {
+                "name": "setFilterRegExp",
+                "parameters": [
+                    {
+                        "name": "pattern",
+                        "type": "string"
+                    }
+                ],
+                "type": "function"
+            },
+            {
+                "name": "setFilterWildcard",
+                "parameters": [
+                    {
+                        "name": "pattern",
+                        "type": "string"
+                    }
+                ],
+                "type": "function"
+            },
+            {
+                "name": "setFilterFixedString",
+                "parameters": [
+                    {
+                        "name": "pattern",
+                        "type": "string"
+                    }
+                ],
+                "type": "function"
+            },
+            {
+                "name": "clear",
+                "type": "function"
+            },
+            {
+                "name": "invalidate",
+                "type": "function"
+            }
+        ],
+        "prototype": "QAbstractProxyModel",
+        "sortCaseSensitivity": {
+            "type": "Qt::CaseSensitivity"
+        },
+        "sortRole": {
             "type": "int"
         }
     },
@@ -63,6 +224,15 @@
         },
         "prototype": "Item"
     },
+    "UCStateSaverAttached": {
+        "enabled": {
+            "type": "bool"
+        },
+        "properties": {
+            "type": "string"
+        },
+        "prototype": "QtObject"
+    },
     "UPMGraphModel": {
         "currentValue": {
             "isReadonly": true,
@@ -79,6 +249,74 @@
         "shift": {
             "isReadonly": true,
             "type": "int"
+        }
+    },
+    "UbuntuColors": {
+        "blue": {
+            "isReadonly": true,
+            "type": "QColor"
+        },
+        "coolGrey": {
+            "isReadonly": true,
+            "type": "QColor"
+        },
+        "darkAubergine": {
+            "isReadonly": true,
+            "type": "QColor"
+        },
+        "darkGrey": {
+            "isReadonly": true,
+            "type": "QColor"
+        },
+        "exportMetaObjectRevisions": [
+            "-1"
+        ],
+        "exports": [
+            "UbuntuColors -1.-1"
+        ],
+        "green": {
+            "isReadonly": true,
+            "type": "QColor"
+        },
+        "greyGradient": {
+            "isPointer": true,
+            "type": "Gradient"
+        },
+        "isComposite": true,
+        "isCreatable": false,
+        "isSingleton": true,
+        "lightAubergine": {
+            "isReadonly": true,
+            "type": "QColor"
+        },
+        "lightGrey": {
+            "isReadonly": true,
+            "type": "QColor"
+        },
+        "midAubergine": {
+            "isReadonly": true,
+            "type": "QColor"
+        },
+        "orange": {
+            "isReadonly": true,
+            "type": "QColor"
+        },
+        "orangeGradient": {
+            "isPointer": true,
+            "type": "Gradient"
+        },
+        "prototype": "QtObject",
+        "purple": {
+            "isReadonly": true,
+            "type": "QColor"
+        },
+        "red": {
+            "isReadonly": true,
+            "type": "QColor"
+        },
+        "warmGrey": {
+            "isReadonly": true,
+            "type": "QColor"
         }
     },
     "namespace": "Ubuntu.PerformanceMetrics"

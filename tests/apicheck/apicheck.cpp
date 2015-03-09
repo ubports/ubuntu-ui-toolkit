@@ -887,23 +887,24 @@ int main(int argc, char *argv[])
         pluginImportUri = p.typeNamespace();
 
     // find all QMetaObjects reachable when the specified module is imported
+    QString pluginAlias(QString("%1").arg(pluginImportUri).replace(".", ""));
     if (action != Path) {
-        importCode += QString("import %0 %1 as A\n").arg(pluginImportUri, pluginImportVersion).toLatin1();
+        importCode += QString("import %1 %2 as %3\n").arg(pluginImportUri).arg(pluginImportVersion).arg(pluginAlias);
     } else {
         // pluginImportVersion can be empty
-        importCode += QString("import %1 %2 as A\n").arg(pluginImportUri).arg(pluginImportVersion).toLatin1();
+        importCode += QString("import %1 %2 as %3\n").arg(pluginImportUri).arg(pluginImportVersion).arg(pluginAlias);
     }
 
     // Create a component with all QML types to add them to the type system
     QByteArray code = importCode;
-    code += "Column {\n";
+    code += "Item {\n";
 
     Q_FOREACH(QQmlDirParser::Component c, p.components()) {
         if (c.internal)
             continue;
-        if (c.majorVersion + "." + c.minorVersion != pluginImportVersion)
+        if (QString("%1.%2").arg(c.majorVersion).arg(c.minorVersion) != QString(pluginImportVersion))
             continue;
-        code += QString("A.%1 {}\n").arg(c.typeName);
+        code += QString("%1.%2 {}\n").arg(pluginAlias).arg(c.typeName);
     }
 
     code += "}";
@@ -911,7 +912,7 @@ int main(int argc, char *argv[])
         std::cerr << "Importing QML components:" << std::endl << qPrintable(code) << std::endl;
 
     QQmlComponent c(&engine);
-    c.setData(code, QUrl::fromLocalFile(pluginImportPath + "/typelist.qml"));
+    c.setData(code, QUrl::fromLocalFile(pluginModulePath + "/qmldir"));
     std::cerr << "Creating QML component for " << qPrintable(pluginImportUri) << std::endl;
     c.create();
     if (!c.errors().isEmpty()) {
