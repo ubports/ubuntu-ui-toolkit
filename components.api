@@ -1107,6 +1107,11 @@ plugins.qmltypes
     Signal { name: "backgroundColorChanged"; revision: 1 }
     Signal { name: "secondaryBackgroundColorChanged"; revision: 1 }
     Signal { name: "backgroundModeChanged"; revision: 1 }
+    name: "UCUbuntuShapeOverlay"
+    prototype: "UCUbuntuShape"
+    exports: ["UbuntuShapeOverlay 1.2"]
+    Property { name: "overlayGeometry"; type: "QRectF" }
+    Property { name: "overlayColor"; type: "QColor" }
     name: "UCUnits"
     prototype: "QObject"
     exports: ["UCUnits 0.1", "UCUnits 1.0"]
