@@ -183,6 +183,15 @@ StyledItem {
         }
     }
 
+    /*!
+      The header is not fully opened or fully closed.
+      This property is true if the header is animating towards a fully
+      opened or fully closed state, or if the header is moving inbetween
+      fully opened and fully closed due to user interaction with the
+      flickable.
+    */
+    readonly property bool moving: !(internal.fullyOpened || internal.fullyClosed)
+
     QtObject {
         id: internal
 

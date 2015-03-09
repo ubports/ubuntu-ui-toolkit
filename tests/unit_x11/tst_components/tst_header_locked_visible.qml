@@ -28,12 +28,12 @@ Item {
         height: units.gu(70)
 
         Page {
-            id: flickingPage
+            id: page
             title: "Auto-hide"
             head {
                 locked: lockedSwitch.checked
                 onVisibleChanged: {
-                    visibleSwitch.checked = flickingPage.head.visible
+                    visibleSwitch.checked = page.head.visible
                 }
             }
             Flickable {
@@ -46,7 +46,8 @@ Item {
                     anchors {
                         top: parent.top
                         left: parent.left
-                        margins: units.gu(6)
+                        leftMargin: units.gu(5)
+                        topMargin: units.gu(15)
                     }
                     Switch {
                         id: lockedSwitch
@@ -57,8 +58,8 @@ Item {
                     }
                     Switch {
                         id: visibleSwitch
-                        checked: flickingPage.head.visible
-                        onClicked: flickingPage.head.visible = checked
+                        checked: page.head.visible
+                        onClicked: page.head.visible = checked
                     }
                     Label {
                         text: "header visible"
@@ -82,35 +83,80 @@ Item {
         id: testCase
 
         function initTestCase() {
-            // do something
+            testCase.check_header_visibility(true);
         }
 
         function scroll_down() {
-
+            // TODO
         }
 
         function scroll_up() {
-
+            // TODO
         }
 
         function check_header_visibility(visible) {
-
+            // TODO
+            // wait for animation
+            // check value of Page.head.visible
+            // check actual visibility
         }
 
         function test_visible_to_hide_and_show() {
+            page.head.visible = false;
+            testCase.check_header_visibility(false);
+            page.head.visible = true;
+            testCase.check_header_visibility(true);
 
+            // ensure that setting visible also works
+            // when the header is locked:
+            page.head.locked = true;
+            page.head.visible = false;
+            testCase.check_header_visibility(false);
+            page.head.visible = true;
+            testCase.check_header_visibility(true);
         }
 
         function test_scroll_to_hide_and_show() {
-
+            testCase.scroll_down();
+            testCase.check_header_visibility(false);
+            testCase.scroll_up();
+            testCase.check_header_visibility(true);
         }
 
         function test_dont_hide_when_locked() {
-
+            page.head.locked = true;
+            testCase.scroll_down();
+            // header did not auto-hide when locked:
+            testCase.check_header_visibility(true);
         }
 
         function test_dont_show_when_locked() {
+            testCase.scroll_down();
+            testCase.check_header_visibility(false);
+            page.head.locked = true;
+            testCase.scroll_up();
+            // header did not auto-show when locked:
+            testCase.check_header_visibility(false);
+        }
 
+        function test_set_locked_and_visible_independently() {
+            // visible is true, locked is false
+
+            // locking does not update visible:
+            page.head.locked = true;
+            testCase.check_header_visibility(true);
+
+            // hiding does not update locked:
+            page.head.visible = false;
+            // TODO: check that locked is true
+
+            // unlocking does not update visible:
+            page.head.locked = false;
+            testCase.check_header_visibility(false);
+
+            // showing does not update locked:
+            page.head.visible = true;
+            // TODO: check that locked is false
         }
     }
 }
