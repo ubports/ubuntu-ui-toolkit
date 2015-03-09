@@ -37,6 +37,7 @@ Item {
                 }
             }
             Flickable {
+                id: flickable
                 anchors.fill: parent
                 contentHeight: units.gu(200)
                 Grid {
@@ -85,6 +86,7 @@ Item {
         property var header
         function initTestCase() {
             testCase.header = findChild(mainView, "MainView_Header");
+            testCase.wait_for_animation();
         }
 
         function init() {
@@ -97,12 +99,18 @@ Item {
             testCase.wait_for_animation();
         }
 
+        function scroll(dy) {
+            var x = flickable.width / 2;
+            var y = flickable.height / 2;
+            mouseDrag(flickable, x, y, 0, dy);
+        }
+
         function scroll_down() {
-            // TODO
+            testCase.scroll(-header.height);
         }
 
         function scroll_up() {
-            // TODO
+            testCase.scroll(header.height);
         }
 
         function wait_for_animation() {
@@ -149,6 +157,7 @@ Item {
 
         function test_dont_hide_when_locked() {
             page.head.locked = true;
+            testCase.check_header_visibility(true, "Locking hides the header.");
             testCase.scroll_down();
             // header did not auto-hide when locked:
             testCase.check_header_visibility(true, "Scrolling down hides locked header.");
@@ -158,6 +167,7 @@ Item {
             testCase.scroll_down();
             testCase.check_header_visibility(false, "Scrolling down does not hide header.");
             page.head.locked = true;
+            testCase.check_header_visibility(false, "Locking shows the header.")
             testCase.scroll_up();
             // header did not auto-show when locked:
             testCase.check_header_visibility(false, "Scrolling up shows locked header.");
@@ -168,7 +178,7 @@ Item {
 
             // locking does not update visible:
             page.head.locked = true;
-            testCase.check_header_visibility(true, "Setting page.head.locked hides header.");
+            testCase.check_header_visibility(true, "Locking hides header.");
 
             // hiding does not update locked:
             page.head.visible = false;
