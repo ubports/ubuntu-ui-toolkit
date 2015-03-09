@@ -25,7 +25,6 @@ import Ubuntu.Components 1.2 as Components
 */
 StyledItem {
     id: header
-
     anchors {
         left: parent.left
         right: parent.right
@@ -185,10 +184,13 @@ StyledItem {
 
     /*!
       The header is not fully opened or fully closed.
+
       This property is true if the header is animating towards a fully
       opened or fully closed state, or if the header is moving inbetween
       fully opened and fully closed due to user interaction with the
       flickable.
+
+      Used in tst_header_locked_visible.qml.
     */
     readonly property bool moving: !(internal.fullyOpened || internal.fullyClosed)
 

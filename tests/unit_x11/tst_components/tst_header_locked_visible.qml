@@ -82,8 +82,12 @@ Item {
         when: windowShown
         id: testCase
 
+        property var header
         function initTestCase() {
-            testCase.check_header_visibility(true);
+            testCase.header = findChild(mainView, "MainView_Header");
+            print("header = "+testCase.header);
+            testCase.check_header_visibility(true, "Header is not visible initially.");
+            compare(page.head.locked, false, "Header is not locked initially.");
         }
 
         function scroll_down() {
@@ -94,49 +98,62 @@ Item {
             // TODO
         }
 
-        function check_header_visibility(visible) {
-            // TODO
-            // wait for animation
-            // check value of Page.head.visible
-            // check actual visibility
+        function wait_for_animation() {
+            tryCompareFunction(function(){return testCase.header.moving}, false);
+        }
+
+        function check_header_visibility(visible, errorMessage) {
+            testCase.wait_for_animation();
+            compare(page.head.visible, visible, errorMessage);
+            if (visible) {
+                compare(header.y, 0, errorMessage +
+                        " Page.head.visible does not match header visibility.");
+            } else {
+                compare(header.y, -header.height, errorMessage +
+                        " Page.head.visible does not match header visibility.");
+            }
         }
 
         function test_visible_to_hide_and_show() {
             page.head.visible = false;
-            testCase.check_header_visibility(false);
+            testCase.check_header_visibility(false, "Setting Page.head.visible to "+
+                                             "false does not hide the header.");
             page.head.visible = true;
-            testCase.check_header_visibility(true);
+            testCase.check_header_visibility(true, "Setting Page.head.visible to "+
+                                             "true does not show the header.");
 
             // ensure that setting visible also works
             // when the header is locked:
             page.head.locked = true;
             page.head.visible = false;
-            testCase.check_header_visibility(false);
+            testCase.check_header_visibility(false, "Setting Page.head.visible to false "+
+                                             "does not hide locked header.");
             page.head.visible = true;
-            testCase.check_header_visibility(true);
+            testCase.check_header_visibility(true, "Setting Page.head.visible to true "+
+                                             "does not show locked header");
         }
 
         function test_scroll_to_hide_and_show() {
             testCase.scroll_down();
-            testCase.check_header_visibility(false);
+            testCase.check_header_visibility(false, "Scrolling down does not hide header.");
             testCase.scroll_up();
-            testCase.check_header_visibility(true);
+            testCase.check_header_visibility(true, "Scrolling up does not show header.");
         }
 
         function test_dont_hide_when_locked() {
             page.head.locked = true;
             testCase.scroll_down();
             // header did not auto-hide when locked:
-            testCase.check_header_visibility(true);
+            testCase.check_header_visibility(true, "Scrolling down hides locked header.");
         }
 
         function test_dont_show_when_locked() {
             testCase.scroll_down();
-            testCase.check_header_visibility(false);
+            testCase.check_header_visibility(false, "Scrolling down does not hide header.");
             page.head.locked = true;
             testCase.scroll_up();
             // header did not auto-show when locked:
-            testCase.check_header_visibility(false);
+            testCase.check_header_visibility(false, "Scrolling up shows locked header.");
         }
 
         function test_set_locked_and_visible_independently() {
@@ -144,19 +161,19 @@ Item {
 
             // locking does not update visible:
             page.head.locked = true;
-            testCase.check_header_visibility(true);
+            testCase.check_header_visibility(true, "Setting page.head.locked hides header.");
 
             // hiding does not update locked:
             page.head.visible = false;
-            // TODO: check that locked is true
+            compare(page.head.locked, true, "Setting page.head.visible locks header.");
 
             // unlocking does not update visible:
             page.head.locked = false;
-            testCase.check_header_visibility(false);
+            testCase.check_header_visibility(false, "Unlocking header hides it.");
 
             // showing does not update locked:
             page.head.visible = true;
-            // TODO: check that locked is false
+            compare(page.head.locked, false, "Showing header unlocks it.");
         }
     }
 }

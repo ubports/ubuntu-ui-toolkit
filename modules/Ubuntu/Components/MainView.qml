@@ -125,6 +125,7 @@ MainViewBase {
         AppHeader {
             // This objectName is used in the MainView autopilot custom proxy object
             // in order to select the application header.
+            // Also used in tst_header_locked_visible.qml.
             objectName: "MainView_Header"
             id: headerItem
             property real bottomY: headerItem.y + headerItem.height

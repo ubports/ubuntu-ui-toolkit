@@ -69,6 +69,7 @@ MainViewBase {
         AppHeader {
             // This objectName is used in the MainView autopilot custom proxy object
             // in order to select the application header.
+            // Also used in tst_header_locked_visible.qml.
             objectName: "MainView_Header"
             id: headerItem
             property real bottomY: headerItem.y + headerItem.height
@@ -77,6 +78,7 @@ MainViewBase {
             panelColor: Qt.lighter(mainView.headerColor, 1.1)
 
             title: internal.activePage ? internal.activePage.title : ""
+            // FIXME TIM: check this
 //            flickable: internal.activePage ? internal.activePage.flickable : null
             flickable: internal.activePage && !config.locked ? internal.activePage.flickable : null
             pageStack: internal.activePage ? internal.activePage.pageStack : null
