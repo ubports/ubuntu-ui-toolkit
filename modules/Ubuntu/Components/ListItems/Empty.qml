@@ -14,14 +14,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 1.1
+import QtQuick 2.4
+import Ubuntu.Components 1.2
 
 /*!
     \qmltype Empty
     \inqmlmodule Ubuntu.Components.ListItems 1.0
     \ingroup ubuntu-listitems
     \brief A list item with no contents.
+    \note \b{The component is deprecated. Use ListItem component instead.}
     The Empty class can be used for generic list items containing other
     components such as buttons. It is selectable and can take mouse clicks.
     It will attempt to detect if a thin dividing line at the bottom of the
@@ -34,7 +35,7 @@ import Ubuntu.Components 1.1
 
     Examples:
     \qml
-        import Ubuntu.Components 1.1
+        import Ubuntu.Components 1.2
         import Ubuntu.Components.ListItems 1.0 as ListItem
 
         Item {
@@ -69,19 +70,16 @@ import Ubuntu.Components 1.1
     \endqml
 
     See the documentation of the derived classes of Empty for more examples.
-    \b{This component is under heavy development.}
 */
 AbstractButton {
     id: emptyListItem
 
     /*!
-      \preliminary
       Specifies whether the list item is selected.
      */
     property bool selected: false
 
     /*!
-      \preliminary
       Highlight the list item when it is pressed.
       This is used to disable the highlighting of the full list item
       when custom highlighting needs to be implemented (for example in
@@ -90,34 +88,29 @@ AbstractButton {
     property bool highlightWhenPressed: true
 
     /*!
-      \preliminary
       Defines if this item can be removed or not.
      */
     property bool removable: false
 
     /*!
-      \preliminary
       Defines if the item needs confirmation before removing by swiping.
       \qmlproperty bool confirmRemoval
      */
     property alias confirmRemoval: confirmRemovalDialog.visible
 
     /*!
-      \preliminary
       \qmlproperty string swipingState
       The current swiping state ("SwipingRight" or "")
      */
     readonly property alias swipingState: backgroundIndicator.state
 
     /*!
-      \preliminary
       \qmlproperty bool waitingConfirmationForRemoval
       Defines if the item is waiting for the user interaction during the swipe to delete
      */
     readonly property alias waitingConfirmationForRemoval: confirmRemovalDialog.waitingForConfirmation
 
     /*!
-      \preliminary
       This handler is called when the item is removed from the list
      */
     signal itemRemoved
@@ -130,7 +123,6 @@ AbstractButton {
     property int __height: units.gu(6)
 
     /*!
-      \preliminary
       Set to show or hide the thin bottom divider line (drawn by the \l ThinDivider component).
       This line is shown by default except in cases where this item is the delegate of a ListView.
      */
@@ -150,14 +142,12 @@ AbstractButton {
     property alias __contents: body
 
     /*!
-      \preliminary
       \qmlproperty list<Item> backgroundIndicator
       Defines the item background item to be showed during the item swiping
      */
     property alias backgroundIndicator: backgroundIndicator.children
 
     /*!
-      \preliminary
       \qmlproperty ThinDivider divider
       Exposes our the bottom line divider.
      */
@@ -169,7 +159,6 @@ AbstractButton {
     property real __contentsMargins: units.gu(2)
 
     /*!
-      \preliminary
       Cancel item romoval
      */
     function cancelItemRemoval()

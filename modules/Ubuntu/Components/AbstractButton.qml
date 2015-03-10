@@ -14,17 +14,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import QtFeedback 5.0
-import Ubuntu.Components 1.1
+import QtQuick 2.4
+import Ubuntu.Components 1.2
 
 /*!
     \qmlabstract AbstractButton
     \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
     \brief The AbstractButton class defines the behavior of the button.
-
-    \b{This component is under heavy development.}
 
     This class defines the behavior of the button: it defines the MouseArea
     and the states.
@@ -42,7 +39,7 @@ ActionItem {
 
     /*!
        This handler is called when there is a mouse click on the button
-       and the button is not disabled. If \l action is defined,
+       and the button is not disabled. If \b action is defined,
        the action will be triggered.
     */
     signal clicked()
@@ -85,16 +82,6 @@ ActionItem {
 
     activeFocusOnPress: true
 
-    HapticsEffect {
-        id: pressEffect
-        attackIntensity: 0.0
-        attackTime: 50
-        intensity: 1.0
-        duration: 10
-        fadeTime: 50
-        fadeIntensity: 0.0
-    }
-
     MouseArea {
         id: mouseArea
         anchors.fill: parent
@@ -102,9 +89,14 @@ ActionItem {
         // as it might occlude the newly assigned mouse area.
         hoverEnabled: true
 
+        // invoke Haptics singleton earlier than we press the button,
+        // so we give some time for the singleton to sync settings with the service
+        property bool hapticsEnabled: Haptics.enabled
+
         onClicked: {
             if (button.__acceptEvents) {
-                pressEffect.start()
+                // FIXME (Vivid) call this in the style rather than from AbstractButton
+                Haptics.play();
                 button.clicked()
             }
         }

@@ -2,6 +2,7 @@ Makefile
 modules/Makefile.ubuntu-ui-toolkit
 modules/Ubuntu/Components/Makefile.ubuntu-ui-toolkit
 modules/Ubuntu/Components/plugin/Makefile.ubuntu-ui-toolkit
+modules/Ubuntu/Components/plugin/qrc_plugin.cpp
 documentation/html/*
 *.moc
 moc_*.cpp
@@ -14,3 +15,6 @@ plugins.qmltypes
 po/*.mo
 examples/ubuntu-ui-toolkit-gallery/po/*.mo
 tests/unit/tst_i18n/locale/en/LC_MESSAGES/*.mo
+tests/launcher/launcher
+build_paths.inc
+tests/unit/tst_i18n/localizedApp/share/locale/en/LC_MESSAGES/localizedApp.mo

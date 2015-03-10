@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 1.1 as Ubuntu
+import QtQuick 2.4
+import Ubuntu.Components 1.2 as Ubuntu
 import Ubuntu.Components.Popups 1.0
 import "mathUtils.js" as MathUtils
 
@@ -612,7 +612,6 @@ StyledItem {
     }
 
     /*!
-      \preliminary
       Places the clipboard or the data given as parameter into the text input.
       The selected text will be replaces with the data.
     */
@@ -852,8 +851,8 @@ StyledItem {
                 handler: inputHandler
             }
             color: control.__styleInstance.color
-            selectedTextColor: Theme.palette.selected.foregroundText
-            selectionColor: Theme.palette.selected.selection
+            selectedTextColor: control.__styleInstance.selectedTextColor
+            selectionColor: control.__styleInstance.selectionColor
             font.pixelSize: FontUtils.sizeToPixels("medium")
             // forward keys to the root element so it can be captured outside of it
             // as well as to InputHandler to handle PageUp/PageDown keys

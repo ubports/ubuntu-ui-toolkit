@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 1.1
+import QtQuick 2.4
+import Ubuntu.Components 1.2
 import Ubuntu.Components.Popups 1.0
 
 Popover {
@@ -68,6 +68,11 @@ Popover {
         popover.visible = false;
     }
 
+    /*
+      Force positioning so that the popover is positioned in the screen while
+      the input is on the top of the screen
+    */
+    y: parent ? (parent.height - height) / 2 : 0
     autoClose: false
     contentHeight: row.childrenRect.height + padding * 2
     contentWidth: row.childrenRect.width + padding * 2

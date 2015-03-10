@@ -22,14 +22,9 @@ import Ubuntu.Components.ListItems 1.0
 Dialog {
     id:root
 
-    property var alarm
+    property string property
 
     title: "Choose days"
-
-    Button {
-        text: "Done"
-        onClicked: PopupUtils.close(root);
-    }
 
     ListModel {
         id: daysModel
@@ -63,28 +58,24 @@ Dialog {
         }
     }
 
-    Column {
-        anchors {
-            left: contents.left
-            top: contents.top
-            right: contents.right
-        }
-        height: childrenRect.height
-        Repeater {
-            model: daysModel
-            Standard {
-                text: day
-                control: CheckBox {
-                    checked: (alarm.daysOfWeek & flag) == flag
-                    onCheckedChanged: {
-                        if (checked) {
-                            alarm.daysOfWeek |= flag;
-                        } else {
-                            alarm.daysOfWeek &= ~flag;
-                        }
+    Repeater {
+        model: daysModel
+        Standard {
+            text: day
+            control: CheckBox {
+                checked: caller && ((caller[property] & flag) == flag)
+                onCheckedChanged: {
+                    if (checked) {
+                        caller[property] |= flag;
+                    } else {
+                        caller[property] &= ~flag;
                     }
                 }
             }
         }
+    }
+    Button {
+        text: "Done"
+        onClicked: PopupUtils.close(root);
     }
 }

@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 1.1 as Ubuntu
+import QtQuick 2.4
+import Ubuntu.Components 1.2 as Ubuntu
 import Ubuntu.Components.Popups 1.0
 
 Ubuntu.StyledItem {
@@ -75,7 +75,7 @@ Ubuntu.StyledItem {
             // open context menu only for cursorPosition or selectionStart as to
             // ensure that only one popover gets opened
             if (positionProperty !== "selectionEnd") {
-                openPopover();
+                openPopover(fromTouch);
             }
         }
         onTextModified: typing = true
@@ -184,7 +184,7 @@ Ubuntu.StyledItem {
             Ubuntu.Mouse.onClicked: openPopover()
             Ubuntu.Mouse.onPressAndHold: {
                 handler.main.selectWord();
-                handler.pressAndHold(-1);
+                handler.pressAndHold(-1, false);
             }
             Ubuntu.Mouse.onDoubleClicked: handler.main.selectWord()
             Ubuntu.Mouse.enabled: enabled
@@ -284,7 +284,7 @@ Ubuntu.StyledItem {
                     PopupUtils.close(handler.popover);
                 }
             } else {
-                handler.pressAndHold(-1);
+                handler.pressAndHold(-1, false);
             }
         }
     }

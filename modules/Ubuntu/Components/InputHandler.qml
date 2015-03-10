@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.1
-import Ubuntu.Components 1.1
+import QtQuick 2.4
+import Ubuntu.Components 1.2
 
 /*
   This component is a unified text selection and scrolling handler for both
@@ -46,7 +46,7 @@ MultiPointTouchArea {
     property point frameDistance: Qt.point(flickable.x, flickable.y)
 
     // signal triggered when popup should be opened
-    signal pressAndHold(int pos)
+    signal pressAndHold(int pos, bool fromTouch)
     signal tap(int pos)
     property string oldText: ""
     signal textModified()
@@ -154,7 +154,7 @@ MultiPointTouchArea {
         return p;
     }
     // focuses the input if not yet focused, and shows the context menu
-    function openContextMenu(mouse, noAutoselect) {
+    function openContextMenu(mouse, noAutoselect, fromTouch) {
         var pos = mousePosition(mouse);
         if (!main.focus || !mouseInSelection(mouse)) {
             activateInput();
@@ -164,7 +164,7 @@ MultiPointTouchArea {
             }
         }
         // open context menu at the cursor position
-        inputHandler.pressAndHold(input.cursorPosition);
+        inputHandler.pressAndHold(input.cursorPosition, fromTouch);
         // if opened with left press (touch falls into this criteria as well), we need to set state to inactive
         // so the mouse moves won't result in selected text loss/change
         if (mouse.button === Qt.LeftButton) {
@@ -373,7 +373,7 @@ MultiPointTouchArea {
         // check if we get right-click from the frame or the area that has no text
         if (event.button === Qt.RightButton) {
             // open the popover
-            inputHandler.pressAndHold(input.cursorPosition);
+            inputHandler.pressAndHold(input.cursorPosition, touch);
         } else {
             inputHandler.tap(input.cursorPosition);
         }
@@ -406,9 +406,9 @@ MultiPointTouchArea {
         anchors.fill: parent
         acceptedButtons: Qt.RightButton
         // trigger pressAndHold
-        onReleased: openContextMenu(mouse, true)
+        onReleased: openContextMenu(mouse, true, false)
     }
-    Keys.onMenuPressed: inputHandler.pressAndHold(input.cursorPosition);
+    Keys.onMenuPressed: inputHandler.pressAndHold(input.cursorPosition, false);
 
     // touch handling
     touchPoints: TouchPoint {
@@ -444,7 +444,7 @@ MultiPointTouchArea {
             if (touchPoint.startY - touchPoint.y < -units.gu(2))
                 return;
 
-            openContextMenu(touchPoint, false);
+            openContextMenu(touchPoint, false, true);
             suppressReleaseEvent = true;
         }
     }

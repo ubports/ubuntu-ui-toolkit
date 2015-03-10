@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
+import QtQuick 2.4
 import Ubuntu.Components.Popups 1.0
 import "mathUtils.js" as MathUtils
 
@@ -41,8 +41,8 @@ import "mathUtils.js" as MathUtils
     \li If the content height is smaller than the value of \l expandedHeight, the combo
         list will be expanded only to the height of the content.
         \qml
-        import QtQuick 2.0
-        import Ubuntu.Components 1.1
+        import QtQuick 2.4
+        import Ubuntu.Components 1.2
         ComboButton {
             text: "smaller content"
             Rectangle {
@@ -57,8 +57,8 @@ import "mathUtils.js" as MathUtils
         GridView or PathView, the content scrolling will be provided by the content
         itself.
         \qml
-        import QtQuick 2.0
-        import Ubuntu.Components 1.1
+        import QtQuick 2.4
+        import Ubuntu.Components 1.2
         ComboButton {
             text: "long scrolled content"
             Column {
@@ -76,8 +76,8 @@ import "mathUtils.js" as MathUtils
     \li In case the content is a single Flickable, ListView, GridView or PathView,
         the content will be filling the entire combo list area defined.
         \qml
-        import QtQuick 2.0
-        import Ubuntu.Components 1.1
+        import QtQuick 2.4
+        import Ubuntu.Components 1.2
         import Ubuntu.Components.ListItems 1.0
         ComboButton {
             text: "listview"
@@ -94,8 +94,8 @@ import "mathUtils.js" as MathUtils
         If the content wants to take the size of the entire combo list, it should
         bind its height to the \l comboListHeight property.
         \qml
-        import QtQuick 2.0
-        import Ubuntu.Components 1.1
+        import QtQuick 2.4
+        import Ubuntu.Components 1.2
         ComboButton {
             id: combo
             text: "smaller content"
@@ -108,8 +108,8 @@ import "mathUtils.js" as MathUtils
     \li In case the expansion needs to be the size of the combo list content, the \l
         expandedHeight should be set to -1.
         \qml
-        import QtQuick 2.0
-        import Ubuntu.Components 1.1
+        import QtQuick 2.4
+        import Ubuntu.Components 1.2
         ComboButton {
             text: "auto-sized content"
             expandedHeight: -1
@@ -134,8 +134,8 @@ import "mathUtils.js" as MathUtils
     example illustrates a possible implementation.
 
     \qml
-    import QtQuick 2.0
-    import Ubuntu.Components 1.1
+    import QtQuick 2.4
+    import Ubuntu.Components 1.2
 
     ComboButton {
         id: combo
@@ -201,8 +201,8 @@ Button {
       \l expandedHeight and \l collapsedHeight values. It is a convenience property
       that can be used to size the combo list content.
       \qml
-      import QtQuick 2.0
-      import Ubuntu.Components 1.1
+      import QtQuick 2.4
+      import Ubuntu.Components 1.2
       import Ubuntu.Components.ListItems 0.1
       ComboButton {
           id: combo

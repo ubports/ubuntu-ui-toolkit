@@ -104,6 +104,11 @@ ListModel {
         source: "ListItems.qml"
     }
     ListElement {
+        objectName: "newListItemsElement"
+        label: "New list items (preview)"
+        source: "NewListItems.qml"
+    }
+    ListElement {
         objectName: "ubuntuListViewElement"
         label: "Ubuntu ListView"
         source: "UbuntuListViews.qml"

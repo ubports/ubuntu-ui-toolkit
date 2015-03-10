@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 1.1
+import QtQuick 2.4
+import Ubuntu.Components 1.2
 
 /*!
     \qmltype PopupBase
@@ -61,22 +61,31 @@ OrientationHelper {
     LayoutMirroring.childrenInherit: true
 
     /*!
-      \preliminary
       Make the popup visible. Reparent to the background area object first if needed.
       Only use this function if you handle memory management. Otherwise use
       PopupUtils.open() to do it automatically.
     */
     function show() {
-        if (!dismissArea)
-            dismissArea = stateWrapper.rootItem
+
+        if ((typeof popupBase["reparentToRootItem"]) === "boolean") {
+            // So the property exists. Let's use it then.
+            if (reparentToRootItem) {
+                parent = stateWrapper.rootItem;
+            }
+        } else {
+            // The property does not exist. Default is to reparent
+            parent = stateWrapper.rootItem;
+        }
+
+        if (!dismissArea) {
+            dismissArea = parent
+        }
 
         // Without setting the parent, mapFromItem() breaks in internalPopupUtils.
-        parent = stateWrapper.rootItem;
         stateWrapper.state = 'opened';
     }
 
     /*!
-      \preliminary
       Hide the popup.
       Only use this function if you handle memory management. Otherwise use
       PopupUtils.close() to do it automatically.
@@ -191,9 +200,9 @@ OrientationHelper {
         function restoreActiveFocus() {
             if (prevFocus) {
                 if (prevFocus.hasOwnProperty("requestFocus")) {
-                    prevFocus.requestFocus(Qt.PopupFocusReason);
+                    prevFocus.requestFocus(Qt.OtherFocusReason);
                 } else {
-                    prevFocus.forceActiveFocus(Qt.PopupFocusReason);
+                    prevFocus.forceActiveFocus(Qt.OtherFocusReason);
                 }
             }
         }

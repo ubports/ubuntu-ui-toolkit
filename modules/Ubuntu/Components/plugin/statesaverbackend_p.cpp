@@ -46,7 +46,7 @@ StateSaverBackend::StateSaverBackend(QObject *parent)
     // catch eventual app name changes so we can have different path for the states if needed
     QObject::connect(&UCApplication::instance(), &UCApplication::applicationNameChanged,
                      this, &StateSaverBackend::initialize);
-    if (!qgetenv("APP_ID").isEmpty() || !UCApplication::instance().applicationName().isEmpty()) {
+    if (!UCApplication::instance().applicationName().isEmpty()) {
         initialize();
     }
 
@@ -186,6 +186,8 @@ int StateSaverBackend::load(const QString &id, QObject *item, const QStringList 
                              .arg(propertyName).arg(qmlContext(item)->nameForObject(item));
         }
     }
+    // drop cache once properties are successfully restored
+    m_archive.data()->remove("");
     m_archive.data()->endGroup();
     // restore leaved group if needed
     if (restorePreviousGroup) {
@@ -206,6 +208,9 @@ int StateSaverBackend::save(const QString &id, QObject *item, const QStringList 
         if (qmlProperty.isValid()) {
             QVariant value = qmlProperty.read();
             if (static_cast<QMetaType::Type>(value.type()) != QMetaType::QObjectStar) {
+                if (value.userType() == qMetaTypeId<QJSValue>()) {
+                    value = value.value<QJSValue>().toVariant();
+                }
                 m_archive.data()->setValue(propertyName, value);
                 /* Save the type of the property along with its value.
                  * This is important because QSettings deserializes values as QString.

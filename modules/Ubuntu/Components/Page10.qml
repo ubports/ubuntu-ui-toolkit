@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2014 Canonical Ltd.
+ * Copyright 2012-2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.2
-import Ubuntu.Components 1.1 as Toolkit
+import QtQuick 2.4
+import Ubuntu.Components 1.2 as Toolkit
 
 /*!
   \internal
@@ -25,10 +25,11 @@ PageTreeNode {
     id: page
     anchors {
         left: parent ? parent.left : undefined
-        right: parent ? parent.right : undefined
         bottom: parent ? parent.bottom : undefined
     }
-    // avoid using parent.height because parent may be a Loader which does not have its height set.
+    // Set width and height so that a parent Loader can be automatically resized
+    // to the size of the loaded Page.
+    width: parentNode ? parentNode.width - page.x : undefined
     height: parentNode ? page.flickable ? parentNode.height : parentNode.height - internal.headerHeight : undefined
 
     isLeaf: true

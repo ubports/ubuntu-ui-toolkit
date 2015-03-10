@@ -26,10 +26,39 @@ MainView {
         objectName: 'page'
         title: i18n.dtr('localizedApp', "Welcome")
         Button {
+            id: button
             objectName: 'button'
             anchors.centerIn: parent
             text: i18n.tr('Count the kilometres')
             width: units.gu(15)
+        }
+        Button {
+            id: button2
+            objectName: 'button2'
+            anchors.top: button.bottom
+            text: i18n.tag('Count the kittens')
+            width: units.gu(15)
+        }
+        Label {
+            id: all1
+            objectName: 'all1'
+            anchors.top: button2.bottom
+            anchors.horizontalCenter: button.horizontalCenter
+            text: i18n.ctr('All Contacts', 'All')
+        }
+        Label {
+            id: all2
+            objectName: 'all2'
+            anchors.top: all1.bottom
+            anchors.horizontalCenter: all1.horizontalCenter
+            text: i18n.ctr('All Calls', 'All')
+        }
+        Label {
+            id: all3
+            objectName: 'all3'
+            anchors.top: all2.bottom
+            anchors.horizontalCenter: all2.horizontalCenter
+            text: i18n.tag('All Cats', 'All')
         }
     }
 }

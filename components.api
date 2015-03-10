@@ -34,6 +34,11 @@ AbstractButton
     property Gradient gradient
     property font font
     property string iconPosition
+Captions 1.2
+ColumnLayout
+    property int captionStyle
+    property Label title
+    property Label subtitle
 CheckBox 0.1 1.0
 AbstractButton
     property bool checked
@@ -62,6 +67,11 @@ Item
     property string fadeStyle
     readonly property bool running
     readonly property int status
+Haptics 0.1 1.0
+Object
+    readonly property bool enabled
+    property HapticsEffect effect
+    function play(customEffect)
 Header 0.1 1.0
 AppHeader
     property string _for_autopilot
@@ -186,17 +196,14 @@ Empty
     property int selectedIndex
     property bool expanded
 MainView 0.1 1.0
-PageTreeNode
-    property string applicationName
-    property bool anchorToKeyboard
-    property color headerColor
-    property color backgroundColor
-    property color footerColor
+MainViewBase
     property bool automaticOrientation
     property bool useDeprecatedToolbar
     default property internal contentsItem
-    property list<Action> actions
-    property ActionManager actionManager
+MainView 1.2
+MainViewBase
+    property internal automaticOrientation
+    default property internal contentsItem
 Object 0.1 1.0
 QtObject
     default property internal children
@@ -227,7 +234,7 @@ OrientationHelper 0.1 1.0
 Item
     property bool automaticOrientation
     property bool transitionEnabled
-    property alias rotating
+    readonly property bool rotating
     property int __orientationAngle
     property int orientationAngle
     property bool anchorToKeyboard
@@ -684,6 +691,7 @@ TestCase
     function mouseLongPress(item, x, y, button, modifiers, delay)
     function tryCompareFunction(func, expectedResult, timeout)
     function typeString(string)
+    function warningFormat(line, column, message)
 plugins.qmltypes
     name: "FilterBehavior"
     prototype: "QObject"
@@ -701,6 +709,64 @@ plugins.qmltypes
     name: "QAbstractProxyModel"
     prototype: "QAbstractItemModel"
     Property { name: "sourceModel"; type: "QAbstractItemModel"; isPointer: true }
+    name: "QDeclarativeFeedbackActuator"
+    prototype: "QObject"
+    exports: ["QtFeedback/Actuator 5.0"]
+    name: "Capability"
+    name: "State"
+    Property { name: "actuatorId"; type: "int"; isReadonly: true }
+    Property { name: "name"; type: "string"; isReadonly: true }
+    Property { name: "state"; type: "State"; isReadonly: true }
+    Property { name: "valid"; type: "bool"; isReadonly: true }
+    Property { name: "enabled"; type: "bool" }
+    Method {
+    name: "isCapabilitySupported"
+    Parameter { name: "capability"; type: "Capability" }
+    name: "QDeclarativeFeedbackEffect"
+    prototype: "QObject"
+    exports: ["QtFeedback/Feedback 5.0", "QtFeedback/FeedbackEffect 5.0"]
+    name: "Duration"
+    name: "State"
+    name: "ErrorType"
+    Property { name: "running"; type: "bool" }
+    Property { name: "paused"; type: "bool" }
+    Property { name: "duration"; type: "int" }
+    Property { name: "state"; type: "State" }
+    Property { name: "error"; type: "ErrorType"; isReadonly: true }
+    Method { name: "updateState" }
+    Method { name: "start" }
+    Method { name: "stop" }
+    Method { name: "pause" }
+    name: "QDeclarativeFileEffect"
+    prototype: "QDeclarativeFeedbackEffect"
+    exports: ["QtFeedback/FileEffect 5.0"]
+    Property { name: "loaded"; type: "bool" }
+    Property { name: "source"; type: "QUrl" }
+    Property { name: "supportedMimeTypes"; type: "QStringList"; isReadonly: true }
+    Method { name: "load" }
+    Method { name: "unload" }
+    name: "QDeclarativeHapticsEffect"
+    prototype: "QDeclarativeFeedbackEffect"
+    exports: ["QtFeedback/HapticsEffect 5.0"]
+    Property {
+    name: "availableActuators"
+    Property { name: "intensity"; type: "double" }
+    Property { name: "attackTime"; type: "int" }
+    Property { name: "attackIntensity"; type: "double" }
+    Property { name: "fadeTime"; type: "int" }
+    Property { name: "fadeIntensity"; type: "double" }
+    Property { name: "period"; type: "int" }
+    Property { name: "actuator"; type: "QDeclarativeFeedbackActuator"; isPointer: true }
+    name: "QDeclarativeThemeEffect"
+    prototype: "QObject"
+    exports: ["QtFeedback/EffectPlayer 5.0", "QtFeedback/ThemeEffect 5.0"]
+    name: "Effect"
+    Property { name: "supported"; type: "bool"; isReadonly: true }
+    Property { name: "effect"; type: "Effect" }
+    Method { name: "play" }
+    Method {
+    name: "play"
+    Parameter { name: "effect"; type: "Effect" }
     name: "QSortFilterProxyModel"
     prototype: "QAbstractProxyModel"
     Property { name: "filterRegExp"; type: "QRegExp" }
@@ -733,21 +799,6 @@ plugins.qmltypes
     name: "get"
     Parameter { name: "row"; type: "int" }
     Method { name: "count"; type: "int" }
-    name: "ShapeItem"
-    prototype: "QQuickItem"
-    exports: [
-    name: "HAlignment"
-    name: "VAlignment"
-    Property { name: "color"; type: "QColor" }
-    Property { name: "gradientColor"; type: "QColor" }
-    Property { name: "radius"; type: "string" }
-    Property { name: "image"; type: "QVariant" }
-    Property { name: "stretched"; type: "bool" }
-    Property { name: "horizontalAlignment"; type: "HAlignment" }
-    Property { name: "verticalAlignment"; type: "VAlignment" }
-    Property { name: "borderSource"; type: "string" }
-    Signal { name: "borderChanged" }
-    Method { name: "gridUnitChanged" }
     name: "SortBehavior"
     prototype: "QObject"
     exports: ["SortBehavior 1.1"]
@@ -834,6 +885,7 @@ plugins.qmltypes
     prototype: "QAbstractListModel"
     exports: ["AlarmModel 0.1", "AlarmModel 1.0"]
     Property { name: "count"; type: "int"; isReadonly: true }
+    Method { name: "refresh"; revision: 1 }
     Method {
     name: "get"
     Parameter { name: "index"; type: "int" }
@@ -860,9 +912,64 @@ plugins.qmltypes
     name: "quitWithError"
     Parameter { name: "errorMessage"; type: "string" }
     Method { name: "quitWithError" }
+    name: "UCDragEvent"
+    prototype: "QObject"
+    exports: ["ListItemDrag 1.2"]
+    name: "Status"
+    Property { name: "status"; type: "Status"; isReadonly: true }
+    Property { name: "from"; type: "int"; isReadonly: true }
+    Property { name: "to"; type: "int"; isReadonly: true }
+    Property { name: "minimumIndex"; type: "int" }
+    Property { name: "maximumIndex"; type: "int" }
+    Property { name: "accept"; type: "bool" }
     name: "UCInverseMouse"
     prototype: "UCMouse"
     exports: ["InverseMouse 0.1", "InverseMouse 1.0"]
+    name: "UCListItem"
+    prototype: "UCStyledItemBase"
+    exports: ["ListItem 1.2"]
+    Property { name: "contentItem"; type: "QQuickItem"; isReadonly: true; isPointer: true }
+    Property { name: "divider"; type: "UCListItemDivider"; isReadonly: true; isPointer: true }
+    Property { name: "leadingActions"; type: "UCListItemActions"; isPointer: true }
+    Property { name: "trailingActions"; type: "UCListItemActions"; isPointer: true }
+    Property { name: "highlighted"; type: "bool"; isReadonly: true }
+    Property { name: "contentMoving"; type: "bool"; isReadonly: true }
+    Property { name: "color"; type: "QColor" }
+    Property { name: "highlightColor"; type: "QColor" }
+    Property { name: "dragging"; type: "bool"; isReadonly: true }
+    Property { name: "dragMode"; type: "bool" }
+    Property { name: "selected"; type: "bool" }
+    Property { name: "selectMode"; type: "bool" }
+    Property { name: "action"; type: "UCAction"; isPointer: true }
+    Property { name: "listItemData"; type: "QObject"; isList: true; isReadonly: true }
+    Property { name: "listItemChildren"; type: "QQuickItem"; isList: true; isReadonly: true }
+    Property { name: "style"; type: "QQmlComponent"; isPointer: true }
+    Property { name: "__styleInstance"; type: "QQuickItem"; isReadonly: true; isPointer: true }
+    Signal { name: "clicked" }
+    Signal { name: "pressAndHold" }
+    Signal { name: "contentMovementStarted" }
+    Signal { name: "contentMovementEnded" }
+    name: "UCListItemActions"
+    prototype: "QObject"
+    exports: ["ListItemActions 1.2"]
+    Property { name: "delegate"; type: "QQmlComponent"; isPointer: true }
+    Property { name: "actions"; type: "UCAction"; isList: true; isReadonly: true }
+    Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
+    name: "UCListItemDivider"
+    prototype: "QQuickItem"
+    Property { name: "colorFrom"; type: "QColor" }
+    Property { name: "colorTo"; type: "QColor" }
+    name: "UCListItemStyle"
+    prototype: "QQuickItem"
+    exports: ["Ubuntu.Components.Styles/ListItemStyle 1.2"]
+    Property { name: "snapAnimation"; type: "QQuickAbstractAnimation"; isPointer: true }
+    Property { name: "dropAnimation"; type: "QQuickPropertyAnimation"; isPointer: true }
+    Property { name: "animatePanels"; type: "bool"; isReadonly: true }
+    Property { name: "dragPanel"; type: "QQuickItem"; isPointer: true }
+    Method {
+    name: "swipeEvent"
+    Parameter { name: "event"; type: "UCSwipeEvent"; isPointer: true }
+    Method { name: "rebound" }
     name: "UCMouse"
     prototype: "QObject"
     exports: ["Mouse 0.1", "Mouse 1.0"]
@@ -905,16 +1012,28 @@ plugins.qmltypes
     name: "exited"
     Parameter { name: "event"; type: "QQuickMouseEvent"; isPointer: true }
     Parameter { name: "host"; type: "QQuickItem"; isPointer: true }
+    name: "UCNamespace"
+    prototype: "QObject"
+    exports: ["Ubuntu 1.2"]
+    name: "CaptionsStyle"
     name: "UCQQuickImageExtension"
     prototype: "QQuickImageBase"
     exports: ["QQuickImageBase 0.1", "QQuickImageBase 1.0"]
     Property { name: "source"; type: "QUrl" }
-    Signal {
-    name: "sourceChanged"
-    Parameter { type: "QUrl" }
-    Signal {
-    name: "sourceChanged"
-    Parameter { type: "QUrl" }
+    Signal { name: "extendedSourceChanged" }
+    Signal { name: "extendedSourceChanged" }
+    name: "UCServiceProperties"
+    prototype: "QObject"
+    exports: ["ServiceProperties 1.1"]
+    name: "ServiceType"
+    name: "Status"
+    Property { name: "type"; revision: 1; type: "ServiceType" }
+    Property { name: "service"; revision: 1; type: "string" }
+    Property { name: "path"; revision: 1; type: "string" }
+    Property { name: "serviceInterface"; revision: 1; type: "string" }
+    Property { name: "adaptorInterface"; revision: 1; type: "string" }
+    Property { name: "error"; revision: 1; type: "string"; isReadonly: true }
+    Property { name: "status"; revision: 1; type: "Status"; isReadonly: true }
     name: "UCStateSaver"
     prototype: "QObject"
     exports: ["StateSaver 0.1", "StateSaver 1.0"]
@@ -930,6 +1049,14 @@ plugins.qmltypes
     name: "requestFocus"
     Parameter { name: "reason"; type: "Qt::FocusReason" }
     Method { name: "requestFocus"; revision: 1; type: "bool" }
+    name: "UCSwipeEvent"
+    prototype: "QObject"
+    exports: ["SwipeEvent 1.2"]
+    name: "Status"
+    Property { name: "to"; type: "QPointF"; isReadonly: true }
+    Property { name: "from"; type: "QPointF"; isReadonly: true }
+    Property { name: "content"; type: "QPointF" }
+    Property { name: "status"; type: "Status"; isReadonly: true }
     name: "UCUbuntuAnimation"
     prototype: "QObject"
     exports: ["UbuntuAnimation 0.1", "UbuntuAnimation 1.0"]
@@ -940,6 +1067,51 @@ plugins.qmltypes
     Property { name: "SleepyDuration"; type: "int"; isReadonly: true }
     Property { name: "StandardEasing"; type: "QEasingCurve"; isReadonly: true }
     Property { name: "StandardEasingReverse"; type: "QEasingCurve"; isReadonly: true }
+    name: "UCUbuntuShape"
+    prototype: "QQuickItem"
+    exports: [
+    name: "BackgroundMode"
+    name: "HAlignment"
+    name: "VAlignment"
+    name: "FillMode"
+    name: "WrapMode"
+    Property { name: "radius"; type: "string" }
+    Property { name: "borderSource"; type: "string" }
+    Property { name: "source"; revision: 1; type: "QVariant" }
+    Property { name: "sourceOpacity"; revision: 1; type: "float" }
+    Property { name: "sourceFillMode"; revision: 1; type: "FillMode" }
+    Property { name: "sourceHorizontalWrapMode"; revision: 1; type: "WrapMode" }
+    Property { name: "sourceVerticalWrapMode"; revision: 1; type: "WrapMode" }
+    Property { name: "sourceHorizontalAlignment"; revision: 1; type: "HAlignment" }
+    Property { name: "sourceVerticalAlignment"; revision: 1; type: "VAlignment" }
+    Property { name: "sourceTranslation"; revision: 1; type: "QVector2D" }
+    Property { name: "sourceScale"; revision: 1; type: "QVector2D" }
+    Property { name: "backgroundColor"; revision: 1; type: "QColor" }
+    Property { name: "secondaryBackgroundColor"; revision: 1; type: "QColor" }
+    Property { name: "backgroundMode"; revision: 1; type: "BackgroundMode" }
+    Property { name: "color"; type: "QColor" }
+    Property { name: "gradientColor"; type: "QColor" }
+    Property { name: "image"; type: "QVariant" }
+    Property { name: "stretched"; type: "bool" }
+    Property { name: "horizontalAlignment"; type: "HAlignment" }
+    Property { name: "verticalAlignment"; type: "VAlignment" }
+    Signal { name: "sourceChanged"; revision: 1 }
+    Signal { name: "sourceOpacityChanged"; revision: 1 }
+    Signal { name: "sourceFillModeChanged"; revision: 1 }
+    Signal { name: "sourceHorizontalWrapModeChanged"; revision: 1 }
+    Signal { name: "sourceVerticalWrapModeChanged"; revision: 1 }
+    Signal { name: "sourceHorizontalAlignmentChanged"; revision: 1 }
+    Signal { name: "sourceVerticalAlignmentChanged"; revision: 1 }
+    Signal { name: "sourceTranslationChanged"; revision: 1 }
+    Signal { name: "sourceScaleChanged"; revision: 1 }
+    Signal { name: "backgroundColorChanged"; revision: 1 }
+    Signal { name: "secondaryBackgroundColorChanged"; revision: 1 }
+    Signal { name: "backgroundModeChanged"; revision: 1 }
+    name: "UCUbuntuShapeOverlay"
+    prototype: "UCUbuntuShape"
+    exports: ["UbuntuShapeOverlay 1.2"]
+    Property { name: "overlayGeometry"; type: "QRectF" }
+    Property { name: "overlayColor"; type: "QColor" }
     name: "UCUnits"
     prototype: "QObject"
     exports: ["UCUnits 0.1", "UCUnits 1.0"]
@@ -956,6 +1128,15 @@ plugins.qmltypes
     Signal {
     name: "opened"
     Parameter { name: "uris"; type: "QStringList" }
+    name: "UCViewItemsAttached"
+    prototype: "QObject"
+    exports: ["ViewItems 1.2"]
+    Property { name: "selectMode"; type: "bool" }
+    Property { name: "selectedIndices"; type: "QList<int>" }
+    Property { name: "dragMode"; type: "bool" }
+    Signal {
+    name: "dragUpdated"
+    Parameter { name: "event"; type: "UCDragEvent"; isPointer: true }
     name: "UbuntuI18n"
     prototype: "QObject"
     exports: ["i18n 0.1", "i18n 1.0"]
@@ -983,6 +1164,37 @@ plugins.qmltypes
     Parameter { name: "singular"; type: "string" }
     Parameter { name: "plural"; type: "string" }
     Parameter { name: "n"; type: "int" }
+    Method {
+    name: "ctr"
+    Parameter { name: "context"; type: "string" }
+    Parameter { name: "text"; type: "string" }
+    Method {
+    name: "dctr"
+    Parameter { name: "domain"; type: "string" }
+    Parameter { name: "context"; type: "string" }
+    Parameter { name: "text"; type: "string" }
+    Method {
+    name: "tag"
+    Parameter { name: "text"; type: "string" }
+    Method {
+    name: "tag"
+    Parameter { name: "context"; type: "string" }
+    Parameter { name: "text"; type: "string" }
+    prototype: "QObject"
+    name: "Haptics"
+    exports: ["Haptics -1.-1"]
+    Property { name: "enabled"; type: "bool"; isReadonly: true }
+    Property { name: "effect"; type: "QDeclarativeHapticsEffect"; isReadonly: true; isPointer: true }
+    Method {
+    name: "play"
+    Parameter { name: "customEffect"; type: "QVariant" }
+    Property { name: "__defaultPropertyFix"; type: "QObject"; isList: true; isReadonly: true }
+    Property { name: "children"; type: "QObject"; isList: true; isReadonly: true }
+    prototype: "QObject"
+    name: "Object"
+    exports: ["Object -1.-1"]
+    Property { name: "__defaultPropertyFix"; type: "QObject"; isList: true; isReadonly: true }
+    Property { name: "children"; type: "QObject"; isList: true; isReadonly: true }
     name: "ULConditionalLayout"
     prototype: "QObject"
     exports: ["ConditionalLayout 0.1", "ConditionalLayout 1.0"]
@@ -1033,6 +1245,8 @@ plugins.qmltypes
     prototype: "QObject"
     exports: ["TestExtras 1.0"]
     Property { name: "touchPresent"; type: "bool"; isReadonly: true }
+    Method { name: "openGLflavor"; type: "string" }
+    Method { name: "cpuArchitecture"; type: "string" }
     Method { name: "touchDevicePresent"; type: "bool" }
     Method { name: "registerTouchDevice" }
     Method {

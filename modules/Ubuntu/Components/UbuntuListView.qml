@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 1.1 as Toolkit
+import QtQuick 2.4
+import Ubuntu.Components 1.2 as Toolkit
 
 /*!
     \qmltype UbuntuListView
@@ -30,7 +30,7 @@ import Ubuntu.Components 1.1 as Toolkit
 
     Examples:
     \qml
-        import Ubuntu.Components 1.1
+        import Ubuntu.Components 1.2
         import Ubuntu.Components.ListItems 1.0 as ListItem
 
         Item {
@@ -56,8 +56,6 @@ import Ubuntu.Components 1.1 as Toolkit
             }
         }
     \endqml
-
-    \b{This component is under heavy development.}
 */
 
 ListView {
@@ -113,7 +111,6 @@ ListView {
     Toolkit.Mouse.onClicked: priv.requestFocus(Qt.MouseFocusReason)
 
     /*!
-      \preliminary
       Expand the item at the given index.
      */
     onExpandedIndexChanged: {
@@ -135,5 +132,12 @@ ListView {
         z: 2
         enabled: root.expandedIndex != -1
         onClicked: root.expandedIndex = -1;
+    }
+
+    // animate move displaced
+    moveDisplaced: Transition {
+        UbuntuNumberAnimation {
+            properties: "x,y"
+        }
     }
 }

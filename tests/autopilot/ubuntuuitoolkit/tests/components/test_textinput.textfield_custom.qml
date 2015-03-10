@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2014-2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,12 +16,13 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 1.1
-import Ubuntu.Components.Themes.Ambiance 0.1
+import Ubuntu.Components.Themes.Ambiance 1.1
 
 MainView {
     width: units.gu(48)
     height: units.gu(60)
     useDeprecatedToolbar: false
+    objectName: "mainView"
 
     Page {
         title: "Textfield"

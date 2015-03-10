@@ -107,17 +107,22 @@ class InsertModeTextInputTestCase(tests.QMLFileAppTestCase):
         dir_path, 'test_textinput.textarea.qml')
     customfield_qml_file_path = os.path.join(
         dir_path, 'test_textinput.textfield_custom.qml')
+    header_qml_file_path = os.path.join(
+        dir_path, 'test_textinput.header.qml')
 
     scenarios = [
         ('textfield',
-            dict(test_qml_file_path=textfield_qml_file_path,
-                 objectName='textfield')),
+         dict(test_qml_file_path=textfield_qml_file_path,
+              objectName='textfield')),
         ('textarea',
-            dict(test_qml_file_path=textarea_qml_file_path,
-                 objectName='textarea')),
+         dict(test_qml_file_path=textarea_qml_file_path,
+              objectName='textarea')),
         ('customfield',
-            dict(test_qml_file_path=customfield_qml_file_path,
-                 objectName='textfield')),
+         dict(test_qml_file_path=customfield_qml_file_path,
+              objectName='textfield')),
+        ('header',
+         dict(test_qml_file_path=header_qml_file_path,
+              objectName='textfield')),
     ]
 
     def get_command_line(self, command_line):
@@ -152,6 +157,15 @@ class InsertModeTextInputTestCase(tests.QMLFileAppTestCase):
         return self.main_view.select_single(
             objectName=positionProperty + '_draggeditem')
 
+    def test_popover_not_obscured(self):
+        self.pointing_device.click_object(self.textfield)
+        cursor = self.select_cursor('cursorPosition')
+        self.pointing_device.click_object(cursor)
+        popover = self.main_view.get_text_input_context_menu(
+            'text_input_contextmenu')
+        self.assertTrue(popover.globalRect.y > 0,
+                        '%s <= 0' % popover.globalRect.y)
+
     def test_header_undisturbed_by_text_handlers(self):
         # Verify that handlers aren't accidentally placed at absolute 0/0
         self.pointing_device.click_object(self.textfield)
@@ -175,7 +189,7 @@ class InsertModeTextInputTestCase(tests.QMLFileAppTestCase):
         self.pointing_device.click_object(self.textfield)
         cursor = self.select_cursor('cursorPosition')
         x, y = get_center_point(cursor)
-        self.pointing_device.drag(x, y, 0, y)
+        self.pointing_device.drag(x, y, x + self.textfield.width // 2, y)
         self.assert_buttons(['Select All', 'Paste'])
         self.assert_discard_popover()
 

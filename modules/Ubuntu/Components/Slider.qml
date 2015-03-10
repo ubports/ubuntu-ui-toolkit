@@ -16,7 +16,7 @@
 
 // FIXME(loicm) Add support for keyboard shortcuts (basically left/right).
 
-import QtQuick 2.0
+import QtQuick 2.4
 import "mathUtils.js" as MathUtils
 
 /*!
@@ -30,7 +30,7 @@ import "mathUtils.js" as MathUtils
     styles should take this into account when defining the visuals, and
     alter these values to align the graphics' sizes.
 
-    \l {http://design.ubuntu.com/apps/building-blocks/slider}{See also the Design Guidelines on Sliders}.
+    \l {https://design.ubuntu.com/apps/building-blocks/selection#slider}{See also the Design Guidelines on Sliders}.
 
     Example:
     \qml
@@ -49,7 +49,6 @@ StyledItem {
     id: slider
 
     /*!
-       \preliminary
        The minimum value from the continuous range of values. If this value is
        greater than maximumValue, the component will be in an inconsistent
        state.
@@ -57,7 +56,6 @@ StyledItem {
     property real minimumValue: 0.0
 
     /*!
-       \preliminary
        The maximum value from the continuous range of values. If this value is
        lesser than minimumValue, the component will be in an inconsistent state.
     */
@@ -66,21 +64,18 @@ StyledItem {
     // FIXME(loicm) Add Support for the stepSize property.
 
     // /*!
-    //    \preliminary
     //    The distance between two selectable values in the range defined by
     //    [minimumValue, maximumValue].
     // */
     // property real stepSize: 1.0
 
     /*!
-       \preliminary
        The current value of the slider. This property is not changed while the
        thumb is dragged unless the live property is set to true.
     */
     property real value: 0.0
 
     /*!
-       \preliminary
        Defines whether the value is updated while the thumb is dragged or just
        when the thumb is released.
     */
@@ -89,20 +84,17 @@ StyledItem {
     /*!
        \qmlproperty bool pressed
 
-       \preliminary
        Whether the Slider is currently being pressed.
     */
     property alias pressed: mouseArea.pressed
 
     /*!
-       \preliminary
        The signal is emitted when there is a click on the slider. The onThumb parameter provides information if the click, was inside of the thumb element.
     */
     signal touched(bool onThumb)
 
 
     /*!
-      \preliminary
       This function is used by the value indicator to show the current value.
       Reimplement this function if you want to show different information. By
       default, the value v is rounded to the nearest interger value.

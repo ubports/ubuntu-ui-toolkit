@@ -34,7 +34,7 @@ logger = logging.getLogger(__name__)
 class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
     """AppHeader Autopilot custom proxy object."""
 
-    def _show_if_not_visible(self):
+    def ensure_visible(self):
         if not self._is_visible():
             self._show()
 
@@ -46,17 +46,23 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
         # fills the main view. The header has a flickable property but it
         # can't be read by autopilot. See bug http://pad.lv/1318829
         top_container = self._get_top_container()
-        start_x = stop_x = (self.globalRect.x + self.globalRect.width) // 2
+        # Make the drag range be a multiple of the drag "rate" value.
+        # Workarounds https://bugs.launchpad.net/mir/+bug/1399690
+        rate = 10
+        start_x = stop_x = self.globalRect.x + self.globalRect.width // 2
         start_y = top_container.globalRect.y + 5
-        stop_y = start_y + self.globalRect.height
-        self.pointing_device.drag(start_x, start_y, stop_x, stop_y)
+        stop_y = start_y + self.globalRect.height // rate * rate
+        self.pointing_device.drag(start_x, start_y, stop_x, stop_y, rate)
         self.y.wait_for(0)
 
     def wait_for_animation(self):
-        # FIXME: Dummy function so that we can already call it in the apps
-        # The real implementation will be done when header animations
-        # are added in PageHeadStyle.qml
-        return
+        try:
+            style = self.select_single(objectName='PageHeadStyle')
+            style.animating.wait_for(False)
+        except dbus.StateNotFoundError:
+            # AppHeader is not using the new PageHeadStyle,
+            # so no need to wait.
+            return
 
     @autopilot_logging.log_action(logger.info)
     def switch_to_section_by_index(self, index):
@@ -67,7 +73,7 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
                 range or useDeprecatedToolbar is set.
 
         """
-        self._show_if_not_visible()
+        self.ensure_visible()
 
         if self.useDeprecatedToolbar:
             raise _common.ToolkitException('Old header has no sections')
@@ -92,7 +98,7 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
         return sectionsProperties.selectedIndex
 
     def click_back_button(self):
-        self._show_if_not_visible()
+        self.ensure_visible()
 
         if self.useDeprecatedToolbar:
             raise _common.ToolkitException('Old header has no back button')
@@ -107,7 +113,7 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
         self.wait_for_animation()
 
     def click_custom_back_button(self):
-        self._show_if_not_visible()
+        self.ensure_visible()
 
         if self.useDeprecatedToolbar:
             raise _common.ToolkitException(
@@ -139,7 +145,7 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
         :raise ToolkitException: If the main view has no tabs.
 
         """
-        self._show_if_not_visible()
+        self.ensure_visible()
 
         if self.useDeprecatedToolbar:
             self._switch_to_next_tab_in_deprecated_tabbar()
@@ -158,6 +164,8 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
         self.wait_for_animation()
         tabs_model_properties = self.select_single(
             'QQuickItem', objectName='tabsModelProperties')
+        if tabs_model_properties.count == 0:
+            raise _common.ToolkitException(_NO_TABS_ERROR)
         next_tab_index = (tabs_model_properties.selectedIndex
                           + 1) % tabs_model_properties.count
         self._switch_to_tab_in_drawer_by_index(next_tab_index)
@@ -171,7 +179,7 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
                 of range or useDeprecatedToolbar is set.
 
         """
-        self._show_if_not_visible()
+        self.ensure_visible()
 
         if self.useDeprecatedToolbar:
             raise _common.ToolkitException(
@@ -211,7 +219,7 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
             name.
 
         """
-        self._show_if_not_visible()
+        self.ensure_visible()
 
         button = self._get_action_button(action_object_name)
         self.pointing_device.click_object(button)

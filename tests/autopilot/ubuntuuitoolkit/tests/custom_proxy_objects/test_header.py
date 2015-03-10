@@ -1,6 +1,6 @@
 # -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
 #
-# Copyright (C) 2013, 2014 Canonical Ltd.
+# Copyright (C) 2013-2015 Canonical Ltd.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -19,9 +19,38 @@ import os
 
 import fixtures
 from testtools.matchers import Contains
+from autopilot import introspection
 
 import ubuntuuitoolkit
 from ubuntuuitoolkit import tests
+
+
+class HideShowTestCase(tests.QMLFileAppTestCase):
+
+    path = os.path.abspath(__file__)
+    dir_path = os.path.dirname(path)
+    test_qml_file_path = os.path.join(
+        dir_path,
+        'test_header.HideShowTestCase.qml')
+
+    def setUp(self):
+        super(HideShowTestCase, self).setUp()
+        self.header = self.main_view.get_header()
+
+    def test_ensure_header_visible_must_show_it_when_not_visible(self):
+        """Test that header.ensure_visible() shows the header."""
+
+        # NOTE: Using the internal _is_visible() function here.
+        # It is not made public because besides testing the
+        # ensure_visible() function, there is no use for it.
+        self.assertEquals(self.header._is_visible(), True)
+        # Scroll down to hide the header
+        self.list_view = self.main_view.select_single(
+            ubuntuuitoolkit.QQuickListView, objectName='testListView')
+        self.list_view.click_element('testListElement19')
+        self.assertEquals(self.header._is_visible(), False)
+        self.header.ensure_visible()
+        self.assertEquals(self.header._is_visible(), True)
 
 
 class ActionsTestCase(tests.QMLFileAppTestCase):
@@ -167,6 +196,12 @@ class DeprecatedHeaderSectionsTestCase(tests.QMLFileAppTestCase):
 class CustomMainView(ubuntuuitoolkit.MainView):
     """Autopilot helper for a custom main view."""
 
+    @classmethod
+    def validate_dbus_object(cls, path, state):
+        state_name = introspection.get_classname_from_path(path)
+        class_name = cls.__name__.encode('utf-8')
+        return state_name == class_name
+
 
 class HeaderInCustomMainViewTestCase(tests.QMLFileAppTestCase):
 
@@ -177,7 +212,7 @@ class HeaderInCustomMainViewTestCase(tests.QMLFileAppTestCase):
 
     @property
     def main_view(self):
-        return self.app.select_single(CustomMainView)
+        return self.app.select_single(objectName='customMainView')
 
     def test_get_header_from_custom_main_view(self):
         """Test that we can get the header from a custom main view.

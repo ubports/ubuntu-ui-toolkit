@@ -23,7 +23,7 @@ Item {
     id: textItem
     width: units.gu(50); height: units.gu(70)
 
-    property bool hasOSK: QuickUtils.inputMethodProvider !== ""
+    property bool hasOSK: false
 
     function reset() {
         colorTest.focus = false;
@@ -89,6 +89,7 @@ Item {
 
         // initialize test objects
         function init() {
+            textItem.hasOSK = QuickUtils.inputMethodProvider !== ""
             longText.cursorPosition = 0;
         }
 

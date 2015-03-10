@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 1.1 as Ubuntu
+import QtQuick 2.4
+import Ubuntu.Components 1.2 as Ubuntu
 import Ubuntu.Components.Popups 1.0
 
 /*!
@@ -26,9 +26,7 @@ import Ubuntu.Components.Popups 1.0
     Input constraints can be set through validator or inputMask. Setting echoMode
     to an appropriate value enables TextField to be used as password input field.
 
-    \b{This component is under heavy development.}
-
-    \l {http://design.ubuntu.com/apps/building-blocks/text-field}{See also the Design Guidelines on the Text Field}.
+    \l {https://design.ubuntu.com/apps/building-blocks/text-input#text-field}{See also the Design Guidelines on the Text Field}.
 
     Example:
     \qml
@@ -528,8 +526,8 @@ ActionItem {
       between 11 and 31 into the text input:
 
       \qml
-      import QtQuick 2.0
-      import Ubuntu.Components 1.1
+      import QtQuick 2.4
+      import Ubuntu.Components 1.2
       TextField{
           validator: IntValidator{bottom: 11; top: 31;}
           focus: true
@@ -991,8 +989,8 @@ ActionItem {
                 handler: inputHandler
             }
             color: control.__styleInstance.color
-            selectedTextColor: Theme.palette.selected.foregroundText
-            selectionColor: Theme.palette.selected.selection
+            selectedTextColor: control.__styleInstance.selectedTextColor
+            selectionColor: control.__styleInstance.selectionColor
             font.pixelSize: FontUtils.sizeToPixels("medium")
             passwordCharacter: "\u2022"
             // forward keys to the root element so it can be captured outside of it

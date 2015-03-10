@@ -32,5 +32,8 @@ Item {
         running: false
         onTriggered: Qt.quit();
     }
-    Component.onCompleted: closeTimer.running = true
+    Component.onCompleted: {
+        UbuntuApplication.applicationName = "SimpleApp";
+        closeTimer.running = true;
+    }
 }

@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 1.1
+import QtQuick 2.4
+import Ubuntu.Components 1.2
 
 /*!
     \qmltype ExpandablesColumn
@@ -29,7 +29,7 @@ import Ubuntu.Components 1.1
 
     Examples:
     \qml
-        import Ubuntu.Components 1.1
+        import Ubuntu.Components 1.2
         import Ubuntu.Components.ListItems 1.0 as ListItem
 
         ListItem.ExpandablesColumn {
@@ -48,8 +48,6 @@ import Ubuntu.Components 1.1
             }
         }
     \endqml
-
-    \b{This component is under heavy development.}
 */
 
 Flickable {
@@ -57,14 +55,12 @@ Flickable {
     contentHeight: column.height
 
     /*!
-      \preliminary
       Points to the currently expanded item. Null if no item is expanded.
       \qmlproperty Item expandedItem
      */
     readonly property alias expandedItem: priv.expandedItem
 
     /*!
-      \preliminary
       Expand the given item. The item must be a child of this ListView.
      */
     function expandItem(item) {
@@ -86,7 +82,6 @@ Flickable {
     }
 
     /*!
-      \preliminary
       Collapse the currently expanded item. If there isn't any item expanded, this function does nothing.
      */
     function collapse() {

@@ -14,15 +14,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 1.1
+import QtQuick 2.4
+import Ubuntu.Components 1.2
 
 /*!
     \qmltype MultiValue
     \inqmlmodule Ubuntu.Components.ListItems 1.0
     \ingroup ubuntu-listitems
     \brief List item displaying a second string under the main label.
-    \b{This component is under heavy development.}
+    \note \b{The component is deprecated. Use ListItem component instead.}
 
     Examples:
     \qml
@@ -70,7 +70,6 @@ Base {
     __height: Math.max(middleVisuals.height, units.gu(6))
 
     /*!
-      \preliminary
       The list of strings that will be shown under the label text
       \qmlproperty string subText
      */

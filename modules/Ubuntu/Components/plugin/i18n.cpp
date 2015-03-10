@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2012-2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -21,6 +21,8 @@
 
 namespace C {
 #include <libintl.h>
+#include <glib.h>
+#include <glib/gi18n.h>
 }
 
 #include <stdlib.h>
@@ -37,7 +39,7 @@ namespace C {
  * It is based on \l {https://www.gnu.org/software/gettext/} {gettext}, and thus the standard gettext tools can be used for translating
  * a project. Example:
  * \qml
- * import QtQuick 2.0
+ * import QtQuick 2.4
  * import Ubunut.Components 0.1
  *
  * Item {
@@ -186,4 +188,67 @@ QString UbuntuI18n::dtr(const QString& domain, const QString& singular, const QS
     } else {
         return QString::fromUtf8(C::dngettext(domain.toUtf8(), singular.toUtf8(), plural.toUtf8(), n));
     }
+}
+
+/*!
+ * \qmlmethod string i18n::ctr(string context, string text)
+ * Translate \a text using gettext and return the translation.
+ * \a context is only visible to the translator and helps disambiguating for very short texts
+ */
+QString UbuntuI18n::ctr(const QString& context, const QString& text)
+{
+    return dctr(QString(), context, text);
+}
+
+/*!
+ * \qmlmethod string i18n::dctr(string domain, string context, string text)
+ * Translate \a text using gettext. Uses the specified domain \a domain instead of i18n.domain.
+ * \a context is only visible to the translator and helps disambiguating for very short texts
+ */
+QString UbuntuI18n::dctr(const QString& domain, const QString& context, const QString& text)
+{
+    if (domain.isNull()) {
+        return QString::fromUtf8(C::g_dpgettext2(NULL, context.toUtf8(), text.toUtf8()));
+    } else {
+        return QString::fromUtf8(C::g_dpgettext2(domain.toUtf8(), context.toUtf8(), text.toUtf8()));
+    }
+}
+
+/*!
+ * \qmlmethod string i18n::tag(string text)
+ * Mark \a text for translation at a later point. Typically this allows an API
+ * to take the original string and pass it to dtr (or dgettext).
+ *
+ * \qml
+ * import QtQuick 2.4
+ * import UserMetrics 0.1
+ *
+ * Metric {
+ *     name: "distance"
+ *     format: i18n.tag("Distance covered today: %1 km")
+ *     emptyFormat: i18n.tag("No running today")
+ *     domain: "runner.forest"
+ * }
+ * \endqml
+ *
+ * The strings tagged for localzation above are passed to the implementation
+ * of UserMetrics verbatim, as well as the domain of the app. Display and
+ * translation of the strings will happen in the lockscreen, where the same
+ * strings will be passed to i18n.tr.
+ */
+QString UbuntuI18n::tag(const QString& text)
+{
+    return text;
+}
+
+/*!
+ * \qmlmethod string i18n::tag(string context, string text)
+ * Mark \a text for translation at a later point. Typically this allows an API
+ * to take the original string and pass it to dctr (or g_dpgettext2).
+ * \a context is only visible to the translator and helps disambiguating for very short texts
+ */
+QString UbuntuI18n::tag(const QString& context, const QString& text)
+{
+    Q_UNUSED(context);
+    return text;
 }

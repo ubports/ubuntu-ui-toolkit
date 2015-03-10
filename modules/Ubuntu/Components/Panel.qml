@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 1.1 as Toolkit
+import QtQuick 2.4
+import Ubuntu.Components 1.2 as Toolkit
 
 /*!
     \qmltype Panel
@@ -37,8 +37,8 @@ import Ubuntu.Components 1.1 as Toolkit
 
     A black panel that can be swiped in from the lower-right of the window can be created like this:
     \qml
-        import QtQuick 2.0
-        import Ubuntu.Components 1.1
+        import QtQuick 2.4
+        import Ubuntu.Components 1.2
 
         Item {
             width: units.gu(80)
@@ -68,8 +68,8 @@ import Ubuntu.Components 1.1 as Toolkit
 
     A panel that looks like the standard (bottom-aligned) toolbar, but with custom contents, can be created like this:
     \qml
-        import QtQuick 2.0
-        import Ubuntu.Components 1.1
+        import QtQuick 2.4
+        import Ubuntu.Components 1.2
 
         Item {
             width: units.gu(80)
@@ -105,8 +105,8 @@ import Ubuntu.Components 1.1 as Toolkit
     start swiping on the buttons in the examples above in order to hide the panel. To remedy this, clicked()
     signals are forwarded from the panel by calling the child's trigger() function. Example:
     \qml
-        import QtQuick 2.0
-        import Ubuntu.Components 1.1
+        import QtQuick 2.4
+        import Ubuntu.Components 1.2
 
         Rectangle {
             color: Theme.palette.normal.background

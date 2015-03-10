@@ -21,8 +21,8 @@ import Ubuntu.Components 1.1
 
 Item {
     id: root
-    width: 100
-    height: 100
+    width: units.gu(40)
+    height: units.gu(71)
 
     Alarm {
         id: testAlarm
@@ -36,6 +36,7 @@ Item {
         id: roleTest
         model: testModel
         delegate: Item {
+            height: units.gu(7)
             objectName: "roleItem"
             property var roleModel: model
             property bool roleEnabled: model.enabled
@@ -44,8 +45,14 @@ Item {
             property int roleType: type
             property int roleDaysOfWeek: daysOfWeek
             property url roleSound: sound
+
+            Label {
+                text: model.date + model.message + model.sound + model.type + model.daysOfWeek + model.enabled
+            }
         }
     }
+
+    property Alarm workAlarm: testAlarm
 
     UbuntuTestCase {
         id: testCase
@@ -53,23 +60,21 @@ Item {
         when: windowShown
 
         SignalSpy {
-            id: dataChangedSpy
-            signalName: "onDataChanged"
-            target: testModel
-        }
-        SignalSpy {
-            id: beginResetModelSpy
-            signalName: "onBeginResetModel"
+            id: modelSpy
+            signalName: "modelReset"
             target: testModel
         }
 
         function clean() {
             var i = 0;
+            modelSpy.signalName = "rowsRemoved";
             while (i < testModel.count) {
                 var alarm = testModel.get(i);
-                if (alarm.message === "test") {
+                // tests start with "test" string
+                if (alarm.message.search("test") == 0) {
                     alarm.cancel();
-                    wait(100);
+                    modelSpy.wait();
+                    modelSpy.clear();
                     i = 0;
                 } else {
                     i++;
@@ -77,7 +82,13 @@ Item {
             }
         }
 
+        function normalizeDate(date) {
+            return new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds(), 0);
+        }
+
         function initTestCase() {
+            // AlarmModel initiates a fetch, wait till that one completes
+            modelSpy.wait();
             clean();
         }
 
@@ -86,8 +97,12 @@ Item {
         }
 
         function init() {
-            dataChangedSpy.clear();
-            beginResetModelSpy.clear();
+            modelSpy.clear();
+        }
+
+        function cleanup() {
+            // clear the added test alarm
+            clean();
         }
 
         function test_createOneTimeFail() {
@@ -105,7 +120,9 @@ Item {
             dt.setMinutes(dt.getMinutes() + 10);
             testAlarm.date = dt;
 
+            modelSpy.signalName = "rowsInserted";
             testAlarm.save();
+            modelSpy.wait();
             compare(testAlarm.error, Alarm.NoError, 'alarm date must be greater than the current time');
         }
 
@@ -115,7 +132,9 @@ Item {
             testAlarm.date = new Date();
             testAlarm.type = Alarm.AutoDetect;
 
+            modelSpy.signalName = "rowsInserted";
             testAlarm.save();
+            modelSpy.wait();
             compare(testAlarm.error, Alarm.NoError, 'repating AutoDetect alarm');
         }
 
@@ -125,7 +144,9 @@ Item {
             testAlarm.date = new Date();
             testAlarm.type = Alarm.Daily;
 
+            modelSpy.signalName = "rowsInserted";
             testAlarm.save();
+            modelSpy.wait();
             compare(testAlarm.error, Alarm.NoError, 'repating Daily alarm');
         }
 
@@ -136,7 +157,9 @@ Item {
             testAlarm.type = Alarm.Repeating;
             testAlarm.daysOfWeek = Alarm.Monday;
 
+            modelSpy.signalName = "rowsInserted";
             testAlarm.save();
+            modelSpy.wait();
             compare(testAlarm.error, Alarm.NoError, 'repating on a given day alarm');
         }
 
@@ -146,7 +169,9 @@ Item {
             testAlarm.date = new Date();
             testAlarm.type = Alarm.Monday | Alarm.Friday;
 
+            modelSpy.signalName = "rowsInserted";
             testAlarm.save();
+            modelSpy.wait();
             compare(testAlarm.error, Alarm.NoError, 'repating on multiple days alarm');
         }
 
@@ -178,10 +203,13 @@ Item {
             dt.setMinutes(dt.getMinutes() + 10);
             testAlarm.date = dt;
 
+            modelSpy.signalName = "rowsInserted";
             testAlarm.save();
-            wait(100);
+            modelSpy.wait();
+            modelSpy.clear();
+            modelSpy.signalName = "rowsRemoved"
             testAlarm.cancel();
-            wait(100);
+            modelSpy.wait();
             compare(testAlarm.error, Alarm.NoError, "alarm canceled");
         }
 
@@ -200,17 +228,18 @@ Item {
             testAlarm.type = Alarm.OneTime;
             testAlarm.date = date;
 
+            modelSpy.signalName = "rowsInserted";
             testAlarm.save();
+            modelSpy.wait();
             compare(testAlarm.error, Alarm.NoError, "fist alarm added");
-            compare(dataChangedSpy.count, 0, "No dataChanged() should be emitted");
-            compare(beginResetModelSpy.count, 0, "No beginResetModel() should be emitted");
 
             date.setMinutes(date.getMinutes() + data.addMinutes);
             testAlarm.date = date;
+            modelSpy.clear();
+            // watch dataChanged, as there should be no event around it
+            modelSpy.signalName = "dataChanged";
             testAlarm.save();
-            compare(testAlarm.error, Alarm.NoError, "updated alarm");
-            compare(beginResetModelSpy.count, 0, "No beginResetModel() should be emitted");
-            dataChangedSpy.wait();
+            modelSpy.wait();
         }
 
         function test_updateAlarm_differentType() {
@@ -221,20 +250,19 @@ Item {
             dt.setMinutes(dt.getMinutes() + 10);
             testAlarm.date = dt;
 
+            modelSpy.signalName = "rowsInserted";
             testAlarm.save();
+            modelSpy.wait();
             compare(testAlarm.error, Alarm.NoError, "fist alarm added");
-            compare(dataChangedSpy.count, 0, "No dataChanged() should be emitted");
-            compare(beginResetModelSpy.count, 0, "No beginResetModel() should be emitted");
 
             testAlarm.type = Alarm.Repeating;
+            modelSpy.clear();
+            modelSpy.signalName = "dataChanged";
             testAlarm.save();
-            compare(testAlarm.error, Alarm.NoError, "updated alarm");
-            compare(beginResetModelSpy.count, 0, "No beginResetModel() should be emitted");
-            dataChangedSpy.wait();
+            modelSpy.wait();
         }
 
-        function test_modelRoles() {
-            clean();
+        function test_0_modelRoles() {
             testAlarm.reset();
             testAlarm.message = "test";
             var dt = new Date();
@@ -243,8 +271,11 @@ Item {
             testAlarm.type = Alarm.Repeating;
             testAlarm.daysOfWeek = Alarm.Monday;
 
+            modelSpy.signalName = "rowsInserted";
             testAlarm.save();
-            wait(100);
+            modelSpy.wait();
+            waitForRendering(roleTest);
+
             verify(testModel.count > 0, "alarm added");
             var item = findChild(roleTest, "roleItem");
             verify(item, "has children");
@@ -255,6 +286,51 @@ Item {
             verify(item.roleType !== undefined, "type is defined");
             verify(item.roleDaysOfWeek !== undefined, "daysOfWeek is defined");
             verify(item.roleSound !== undefined, "sound is defined");
+        }
+
+        // guarding bug #1401883
+        // changed alarm data retrieved from model, when used in bindings, resets the
+        // model data
+        function test_model_role_binding_bug1401883_data() {
+            var dt1 = new Date();
+            dt1.setMinutes(dt1.getMinutes() + 2);
+            var dt2 = new Date(dt1);
+            dt2.setMinutes(dt2.getMinutes() + 2);
+            return [
+                {tag: "Message", role: "message", firstValue: "test", updatedValue: "test_other"},
+                {tag: "Enabled", role: "enabled", firstValue: true, updatedValue: false},
+                {tag: "Date", role: "date", firstValue: dt1, updatedValue: dt2},
+                {tag: "Type", role: "type", firstValue: Alarm.Daily, updatedValue: Alarm.OneTime},
+            ];
+        }
+        function test_model_role_binding_bug1401883(data) {
+            // create a new test alarm and make sure we set the mandatory fields
+            testAlarm.reset();
+            var dt = new Date();
+            dt.setMinutes(dt.getMinutes() + 1);
+            testAlarm.date = dt;
+            testAlarm.message = "test";
+
+            testAlarm[data.role] = data.firstValue;
+            modelSpy.signalName = "rowsInserted";
+            modelSpy.clear();
+            testAlarm.save();
+            modelSpy.wait();
+            waitForRendering(roleTest);
+
+            // change the date
+            var alarmData = testModel.get(0);
+            modelSpy.signalName = "dataChanged";
+            modelSpy.clear();
+            alarmData[data.role] = data.updatedValue;
+            alarmData.save();
+            modelSpy.wait(500);
+
+            if (data.role === "date") {
+                compare(normalizeDate(testModel.get(0).date), normalizeDate(data.updatedValue), "Date differs");
+            } else {
+                compare(testModel.get(0)[data.role], data.updatedValue, data.tag + " differs");
+            }
         }
     }
 }

@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
+import QtQuick 2.4
 
 /*!
     \qmltype ProgressBar
@@ -22,8 +22,6 @@ import QtQuick 2.0
     \ingroup ubuntu
     \brief The ProgressBar component visually indicates the progress of a process of
     determinate or indeterminate duration.
-
-    \b{This component is under heavy development.}
 
     Example:
     \qml
@@ -45,7 +43,6 @@ AnimatedItem {
     id: progressBar
 
     /*!
-      \preliminary
       Specifies whether the progress interval is unknown. When set, altering
       other properties do not have any effect on the component's behavior.
       By default the property is set to false.
@@ -53,19 +50,16 @@ AnimatedItem {
     property bool indeterminate: false
 
     /*!
-      \preliminary
       Specifies the minimum value of the progress.
     */
     property real minimumValue: 0.0
 
     /*!
-      \preliminary
       Specifies the maximum value of the progress.
     */
     property real maximumValue: 1.0
 
     /*!
-      \preliminary
       Specifies the current value of the progress
     */
     property real value: 0.5

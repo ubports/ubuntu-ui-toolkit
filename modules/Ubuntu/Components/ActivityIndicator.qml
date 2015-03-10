@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
+import QtQuick 2.4
 
 /*!
     \qmltype ActivityIndicator
@@ -26,8 +26,6 @@ import QtQuick 2.0
 
     Note: for time consuming JavaScript operations use WorkerScript, otherwise no
     UI interaction will be possible and the ActicityIndicator animation will freeze.
-
-    \b{This component is under heavy development.}
 
     Example:
     \qml
@@ -48,7 +46,6 @@ AnimatedItem {
     id: indicator
 
     /*!
-       \preliminary
        Presents whether there is activity to be visualized or not. The default value is false.
        When activated (set to true), an animation is shown indicating an ongoing activity, which
        continues until deactivated (set to false).

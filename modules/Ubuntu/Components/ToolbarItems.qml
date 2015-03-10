@@ -14,13 +14,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
+import QtQuick 2.4
 
 /*!
     \qmltype ToolbarItems
     \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
+    \deprecated
     \brief Row of Items to be placed in a toolbar.
+
+    \b DEPRECATED: DO NOT USE THIS. USE \b head.actions IN \l Page INSTEAD.
 
     Each \l Page has a tools property that can be set to change the tools of toolbar supplied
     by \l MainView when the \l Page is active. Each ToolbarItems consists of a set of
@@ -32,13 +35,11 @@ import QtQuick 2.0
     is updated by changing the selected \l Tab or by pushing/popping a \l Page on the \l PageStack,
     the toolbar will automatically hide, except if the new active \l Page has the \l locked property set.
 
-    \l {http://design.ubuntu.com/apps/building-blocks/toolbar}{See also the Design Guidelines on Toolbars}.
-
     It is recommended to use \l ToolbarButton inside the ToolbarItems to define the buttons that will
     be visible to the user:
     \qml
-        import QtQuick 2.0
-        import Ubuntu.Components 1.1
+        import QtQuick 2.4
+        import Ubuntu.Components 1.2
 
         MainView {
             width: units.gu(50)
@@ -69,8 +70,8 @@ import QtQuick 2.0
     ToolbarButtons and other Items (for example standard Buttons). ToolbarButtons automatically span
     the full height of the toolbar, and other Items you will probably want to center vertically:
     \qml
-        import QtQuick 2.0
-        import Ubuntu.Components 1.1
+        import QtQuick 2.4
+        import Ubuntu.Components 1.2
 
         MainView {
             width: units.gu(50)
@@ -118,8 +119,8 @@ Item {
       The following example shows how to have a classic cancel button that is always
       visible in the toolbar, instead of the default toolbar-styled back button:
         \qml
-            import QtQuick 2.0
-            import Ubuntu.Components 1.1
+            import QtQuick 2.4
+            import Ubuntu.Components 1.2
 
             MainView {
                 width: units.gu(50)

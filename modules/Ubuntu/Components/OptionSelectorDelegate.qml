@@ -20,11 +20,9 @@
     \ingroup ubuntu-components
     \brief OptionSelector delegate which can display text, subtext and an image from a custom model.
 
-    \b{This component is under heavy development.}
-
     Examples:
     \qml
-        import Ubuntu.Components 1.1
+        import Ubuntu.Components 1.2
         Column {
             width: 250
             OptionSelector {
@@ -43,9 +41,9 @@
     \endqml
 */
 
-import QtQuick 2.0
+import QtQuick 2.4
 import "ListItems" as ListItem
-import Ubuntu.Components 1.1 as Toolkit
+import Ubuntu.Components 1.2 as Toolkit
 
 ListItem.Empty {
     id: option
@@ -53,7 +51,6 @@ ListItem.Empty {
     __height: units.gu(5)
 
     /*!
-      \preliminary
       Subtext which appears below the main text.
      */
     property string subText
@@ -72,31 +69,26 @@ ListItem.Empty {
                    }
 
     /*!
-      \preliminary
       Constrains the size of the image to nothing greater than that of the delegate. Changes fillMode to Image.PreserveAspectFit.
      */
     property bool constrainImage: false
 
     /*!
-      \preliminary
       Whether or not left image is coloured by our theme.
      */
     property bool colourImage: listView.container.colourImage
 
     /*!
-      \preliminary
       Colour of left image.
      */
     property color assetColour: listView.container.themeColour
 
     /*!
-      \preliminary
       OptionSelector's ListView.
      */
     readonly property ListView listView: ListView.view
 
     /*!
-      \preliminary
       Colourising fragment shader.
      */
     readonly property string fragColourShader:

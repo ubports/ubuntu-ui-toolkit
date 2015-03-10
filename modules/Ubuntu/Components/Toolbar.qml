@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
+import QtQuick 2.4
 
 /*!
     \internal
@@ -43,7 +43,6 @@ Panel {
     __openOnHover: true
 
     /*!
-      \preliminary
       The list of \l Actions to be shown on the toolbar
      */
     property Item tools: null

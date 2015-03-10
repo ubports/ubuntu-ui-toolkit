@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 1.1
+import QtQuick 2.4
+import Ubuntu.Components 1.2
 
 /*!
     \qmltype SheetBase
@@ -36,7 +36,6 @@ PopupBase {
     }
 
     /*!
-      \preliminary
       \qmlproperty list<Object> container
       Content will be put inside the foreround of the sheet.
     */
@@ -50,7 +49,6 @@ PopupBase {
     property alias contentsWidth: foreground.contentsWidth
 
     /*!
-      \preliminary
       Override the default height of the contents of the sheet.
       Total sheet height will be clamped between 40 grid units and the screen height.
       \qmlproperty real contentsHeight
@@ -58,7 +56,6 @@ PopupBase {
     property alias contentsHeight: foreground.contentsHeight
 
     /*!
-      \preliminary
       The text shown in the header of the sheet.
       \qmlproperty string title
      */
