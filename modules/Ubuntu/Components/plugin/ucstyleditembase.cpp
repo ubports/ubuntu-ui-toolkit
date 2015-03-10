@@ -353,8 +353,9 @@ void UCStyledItemBasePrivate::_q_ascendantChanged(QQuickItem *ascendant)
 void UCStyledItemBasePrivate::_q_parentStyleChanged()
 {
     // do not trigger styleSetChanged() on this item if we have a
-    // custom one
+    // custom one, but resolve its eventual parent change!
     if (styleSet) {
+        Q_EMIT styleSet->parentChanged();
         return;
     }
     Q_Q(UCStyledItemBase);

@@ -27,7 +27,6 @@ StyledItem {
     StyleSet {
         objectName: "testSet"
         name: "Ubuntu.Components.Themes.SuruDark"
-        onParentChanged: print(parent)
     }
 
     Item {
