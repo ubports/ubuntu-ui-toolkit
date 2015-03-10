@@ -229,6 +229,8 @@ void UCStyledItemBase::setStyleSet(UCStyleSet *styleSet)
                    this, &UCStyledItemBase::styleSetChanged);
     }
 
+    UCStyleSet *prevSet = d->styleSet;
+
     // resolve new styleSet
     if (d->styleSet && styleSet) {
         // no need to redo the parentStack, simply set the styleSet and leave
@@ -250,6 +252,17 @@ void UCStyledItemBase::setStyleSet(UCStyleSet *styleSet)
         connect(connectedSet, &UCStyleSet::nameChanged,
                 this, &UCStyledItemBase::styleSetChanged);
     }
+    // detach previous set and attach the new one
+    if (prevSet) {
+        Q_EMIT prevSet->parentChanged();
+    }
+    if (d->styleSet) {
+        // re-parent styleSet to make sure we have it
+        // for the entire lifetime of the styled item
+        d->styleSet->setParent(this);
+        Q_EMIT d->styleSet->parentChanged();
+    }
+
     Q_EMIT styleSetChanged();
 }
 void UCStyledItemBase::resetStyleSet()

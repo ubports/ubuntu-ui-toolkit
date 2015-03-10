@@ -22,6 +22,7 @@
 #include <QtQml/QQmlComponent>
 #include "ucstyleset.h"
 #include "uctestcase.h"
+#include "ucstyleditembase.h"
 
 class ThemeTestCase : public UbuntuTestCase
 {
@@ -135,7 +136,6 @@ private Q_SLOTS:
         qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", ".");
 
         QScopedPointer<ThemeTestCase> view(new ThemeTestCase(parentName));
-        QVERIFY(view);
         view->setTheme("TestModule.TestTheme");
         view->setStyle(styleName);
         QQmlComponent *style = view->rootObject()->property("style").value<QQmlComponent*>();
@@ -190,7 +190,6 @@ private Q_SLOTS:
         qputenv("XDG_DATA_DIRS", xdgPath.toLocal8Bit());
 
         QScopedPointer<ThemeTestCase> view(new ThemeTestCase("SimpleItem.qml"));
-        QVERIFY(view);
         if (!theme.isEmpty()) {
             view->setTheme(theme);
         }
@@ -235,7 +234,6 @@ private Q_SLOTS:
         qputenv("QML2_IMPORT_PATH", "/no/plugins/here:.");
 
         QScopedPointer<ThemeTestCase> view(new ThemeTestCase("SimpleItem.qml"));
-        QVERIFY(view);
         view->setTheme("TestModule.TestTheme");
     }
 
@@ -244,7 +242,6 @@ private Q_SLOTS:
         qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", ".");
 
         QScopedPointer<ThemeTestCase> view(new ThemeTestCase("SimpleItem.qml"));
-        QVERIFY(view);
         view->setTheme("TestModule.TestTheme");
         UCStyleSet *styleSet = view->styleSet();
         UCStyleSet *rootStyleSet = view->rootStyleSet();
@@ -258,13 +255,45 @@ private Q_SLOTS:
         qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", ".");
 
         QScopedPointer<ThemeTestCase> view(new ThemeTestCase("SimpleItem.qml"));
-        QVERIFY(view);
         view->setTheme("TestModule.TestTheme");
         UCStyleSet *styleSet = view->styleSet();
         QCOMPARE(styleSet->name(), QString("TestModule.TestTheme"));
         // reset
         styleSet->resetName();
         QCOMPARE(styleSet->name(), QString("Ubuntu.Components.Themes.Ambiance"));
+    }
+
+    void test_parent_change_when_assinged()
+    {
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase("DynamicAssignment.qml"));
+        UCStyleSet *testSet = view->findItem<UCStyleSet*>("testSet");
+        UCStyledItemBase *testItem = view->findItem<UCStyledItemBase*>("testItem");
+        UCStyledItemBase *mainItem = qobject_cast<UCStyledItemBase*>(view->rootObject());
+
+        QSignalSpy parentChangeSpy(testSet, SIGNAL(parentChanged()));
+        testItem->setStyleSet(testSet);
+        parentChangeSpy.wait(200);
+        QCOMPARE(parentChangeSpy.count(), 1);
+        // test if the parent is correct
+        QCOMPARE(testSet->parentSet(), mainItem->styleSet());
+    }
+
+    void test_parent_set_deleted_triggers_parent_change()
+    {
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase("DynamicAssignment.qml"));
+        UCStyleSet *testSet = view->findItem<UCStyleSet*>("testSet");
+        UCStyledItemBase *testItem = view->findItem<UCStyledItemBase*>("testItem");
+        UCStyledItemBase *mainItem = qobject_cast<UCStyledItemBase*>(view->rootObject());
+        // set the theme first
+        testItem->setStyleSet(testSet);
+
+        // reset mainItem's styleSet should trigger parentChanged on testSet
+        QSignalSpy parentChangeSpy(testSet, SIGNAL(parentChanged()));
+        mainItem->resetStyleSet();
+        parentChangeSpy.wait(200);
+        QCOMPARE(mainItem->styleSet(), &UCStyleSet::defaultSet());
+        QCOMPARE(testSet->parentSet(), mainItem->styleSet());
+        QCOMPARE(parentChangeSpy.count(), 1);
     }
 };
 

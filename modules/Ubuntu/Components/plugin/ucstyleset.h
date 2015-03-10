@@ -34,7 +34,7 @@ class UCStyleSet : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
     Q_INTERFACES(QQmlParserStatus)
-    Q_PROPERTY(UCStyleSet *parent READ getParent NOTIFY parentChanged)
+    Q_PROPERTY(UCStyleSet *parent READ parentSet NOTIFY parentChanged)
     Q_PROPERTY(QString name READ name WRITE setName RESET resetName NOTIFY nameChanged)
     Q_PROPERTY(QObject* palette READ palette NOTIFY paletteChanged)
 public:
@@ -46,7 +46,7 @@ public:
     }
 
     // getter/setters
-    UCStyleSet *getParent();
+    UCStyleSet *parentSet();
     QString name() const;
     void setName(const QString& name);
     void resetName();

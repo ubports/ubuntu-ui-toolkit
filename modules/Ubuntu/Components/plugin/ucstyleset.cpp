@@ -234,7 +234,7 @@ void UCStyleSet::updateThemePaths()
  * The property specifies the parent StyleSet. The property only has a valid value
  * when assigned to \l StyledItem::styleSet property.
  */
-UCStyleSet *UCStyleSet::getParent()
+UCStyleSet *UCStyleSet::parentSet()
 {
     UCStyledItemBase *owner = qobject_cast<UCStyledItemBase*>(parent());
     UCStyledItemBasePrivate *pOwner = owner ? UCStyledItemBasePrivate::get(owner) : NULL;
