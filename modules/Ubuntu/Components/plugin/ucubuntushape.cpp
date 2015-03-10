@@ -333,7 +333,9 @@ void UCUbuntuShape::setCornerRadius(qreal cornerRadius)
     This property defines the graphical style of the UbuntuShape. The default value is \c
     UbuntuShape.Plain.
 
-    \note Setting this disables support for the deprecated \l borderSource property.
+    \note Setting this disables support for the deprecated \l borderSource property. Use the
+    UbuntuShapeOverlay item in order to provide the sunken "pressed" style previously supported by
+    that property.
 
     \list
     \li \b UbuntuShape.Plain - no effects applied
