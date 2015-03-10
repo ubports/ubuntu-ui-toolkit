@@ -66,9 +66,13 @@
         styleSet.name: "Ubuntu.Components.Themes.Ambiance"
     }
     \endqml
+    \note Changing the style set name in this way will result in a change of the
+    inherited style set. In case a different style set is desired, a new instance
+    of the StyleSet must be created.
 
-    Example creating a style component:
-
+    The \l createCtyleComponent function can be used to create the style for a
+    component. The following example will create the style with the inherited
+    style set.
     \qml
     import QtQuick 2.4
     import Ubuntu.Components 1.3
@@ -134,7 +138,6 @@ QUrl pathFromThemeName(QString themeName)
 
 UCStyleSet::UCStyleSet(QObject *parent)
     : QObject(parent)
-    , m_name(UCStyleSet::defaultSet().m_name)
     , m_palette(UCStyleSet::defaultSet().m_palette)
     , m_engine(UCStyleSet::defaultSet().m_engine)
     , m_defaultStyle(false)
@@ -160,7 +163,6 @@ UCStyleSet::UCStyleSet(bool defaultStyle)
 void UCStyleSet::init()
 {
     m_completed = false;
-    m_name = m_themeSettings.themeName();
     QObject::connect(&m_themeSettings, &UCThemeSettings::themeNameChanged,
                      this, &UCStyleSet::onThemeNameChanged);
     updateThemePaths();
@@ -188,18 +190,15 @@ void UCStyleSet::updateEnginePaths()
 
 void UCStyleSet::onThemeNameChanged()
 {
-    if (m_themeSettings.themeName() != m_name) {
-        m_name = m_themeSettings.themeName();
-        updateThemePaths();
-        Q_EMIT nameChanged();
-    }
+    updateThemePaths();
+    Q_EMIT nameChanged();
 }
 
 void UCStyleSet::updateThemePaths()
 {
     m_themePaths.clear();
 
-    QString themeName = m_name;
+    QString themeName = name();
     while (!themeName.isEmpty()) {
         QUrl themePath = pathFromThemeName(themeName);
         if (themePath.isValid()) {
@@ -231,24 +230,24 @@ void UCStyleSet::updateThemePaths()
 */
 QString UCStyleSet::name() const
 {
-    return m_name;
+    return !m_name.isEmpty() ? m_name : m_themeSettings.themeName();
 }
 void UCStyleSet::setName(const QString& name)
 {
     if (name == m_name) {
         return;
     }
+    m_name = name;
     if (name.isEmpty()) {
         init();
     } else {
         QObject::disconnect(&m_themeSettings, &UCThemeSettings::themeNameChanged,
                             this, &UCStyleSet::onThemeNameChanged);
-        m_name = name;
         updateThemePaths();
     }
     updateEnginePaths();
-    Q_EMIT nameChanged();
     loadPalette();
+    Q_EMIT nameChanged();
 }
 void UCStyleSet::resetName()
 {
@@ -266,14 +265,6 @@ QObject* UCStyleSet::palette()
         loadPalette(false);
     }
     return m_palette;
-}
-void UCStyleSet::setPalette(QObject *palette)
-{
-    if (m_palette == palette) {
-        return;
-    }
-    m_palette = palette;
-    Q_EMIT paletteChanged();
 }
 
 QUrl UCStyleSet::styleUrl(const QString& styleName)
@@ -321,7 +312,8 @@ void UCStyleSet::registerToContext(QQmlContext* context)
 /*!
     \qmlmethod Component StyleSet::createStyleComponent(string styleName, object parent)
 
-    Returns an instance of the style component named \a styleName.
+    Returns an instance of the style component named \a styleName and parented
+    to \a parent.
 */
 QQmlComponent* UCStyleSet::createStyleComponent(const QString& styleName, QObject* parent)
 {
@@ -345,7 +337,7 @@ QQmlComponent* UCStyleSet::createStyleComponent(const QString& styleName, QObjec
                 }
             } else {
                 qmlInfo(parent) <<
-                   UbuntuI18n::instance().tr(QString("Warning: Style %1 not found in theme %2").arg(styleName).arg(m_name));
+                   UbuntuI18n::instance().tr(QString("Warning: Style %1 not found in theme %2").arg(styleName).arg(name()));
             }
         }
     }

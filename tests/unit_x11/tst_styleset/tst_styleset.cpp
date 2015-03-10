@@ -86,15 +86,15 @@ private Q_SLOTS:
         qputenv("XDG_DATA_DIRS", m_xdgDataPath.toLocal8Bit());
     }
 
-    void test_default_setyleset()
+    void test_default_styleset()
     {
         UCStyleSet::defaultSet();
     }
 
     void test_default_name()
     {
-        UCStyleSet setyleSet;
-        QCOMPARE(setyleSet.name(), QString("Ubuntu.Components.Themes.Ambiance"));
+        UCStyleSet styleSet;
+        QCOMPARE(styleSet.name(), QString("Ubuntu.Components.Themes.Ambiance"));
     }
 
     void test_name_set()
@@ -104,6 +104,16 @@ private Q_SLOTS:
         UCStyleSet styleSet;
         styleSet.setName("MyBeautifulTheme");
         QCOMPARE(styleSet.name(), QString("MyBeautifulTheme"));
+    }
+
+    void test_name_reset()
+    {
+        UCStyleSet styleSet;
+        styleSet.setName("Ubuntu.Components.Themes.SuruDark");
+        QCOMPARE(styleSet.name(), QString("Ubuntu.Components.Themes.SuruDark"));
+        // reset
+        styleSet.resetName();
+        QCOMPARE(styleSet.name(), QString("Ubuntu.Components.Themes.Ambiance"));
     }
 
     void test_create_style_component_data() {
