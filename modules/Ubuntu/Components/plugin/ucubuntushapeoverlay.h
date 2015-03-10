@@ -70,24 +70,23 @@ class UCUbuntuShapeOverlay : public UCUbuntuShape
     Q_OBJECT
 
     // Overlay properties.
-    Q_PROPERTY(QRectF overlayGeometry READ overlayGeometry WRITE setOverlayGeometry
-               NOTIFY overlayGeometryChanged)
+    Q_PROPERTY(QRectF overlayRect READ overlayRect WRITE setOverlayRect NOTIFY overlayRectChanged)
     Q_PROPERTY(QColor overlayColor READ overlayColor WRITE setOverlayColor
                NOTIFY overlayColorChanged)
 
 public:
     UCUbuntuShapeOverlay(QQuickItem* parent=0);
 
-    QRectF overlayGeometry() const {
+    QRectF overlayRect() const {
         const float u16ToF32 = 1.0f / static_cast<float>(0xffff);
         return QRectF(m_overlayX * u16ToF32, m_overlayY * u16ToF32, m_overlayWidth * u16ToF32,
                       m_overlayHeight * u16ToF32); }
-    void setOverlayGeometry(const QRectF& overlayGeometry);
+    void setOverlayRect(const QRectF& overlayRect);
     QColor overlayColor() const { return m_overlayColor; }
     void setOverlayColor(const QColor& overlayColor);
 
 Q_SIGNALS:
-    void overlayGeometryChanged();
+    void overlayRectChanged();
     void overlayColorChanged();
 
 protected:
