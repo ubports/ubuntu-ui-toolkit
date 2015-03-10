@@ -102,13 +102,13 @@ const QSGGeometry::AttributeSet& ShapeOverlayNode::attributeSet()
     Example:
 
     \qml
-        import Ubuntu.Components 1.2
+    import Ubuntu.Components 1.2
 
-        UbuntuShapeOverlay {
-            backgroundColor: "white"
-            overlayColor: "black"
-            overlayGeometry: Qt.rect(0.25, 0.25, 0.5, 0.5)
-        }
+    UbuntuShapeOverlay {
+        backgroundColor: "white"
+        overlayColor: "black"
+        overlayGeometry: Qt.rect(0.25, 0.25, 0.5, 0.5)
+    }
     \endqml
 */
 UCUbuntuShapeOverlay::UCUbuntuShapeOverlay(QQuickItem* parent)
@@ -131,22 +131,22 @@ UCUbuntuShapeOverlay::UCUbuntuShapeOverlay(QQuickItem* parent)
     at the vertical center can be done like that:
 
     \qml
-        UbuntuShapeOverlay {
-            width: 200; height: 200
-            overlayColor: Qt.rgba(0.0, 0.0, 0.5, 0.5)
-            overlayGeometry: Qt.rect(0.0, 0.5, 1.0, 0.5)
-        }
+    UbuntuShapeOverlay {
+        width: 200; height: 200
+        overlayColor: Qt.rgba(0.0, 0.0, 0.5, 0.5)
+        overlayGeometry: Qt.rect(0.0, 0.5, 1.0, 0.5)
+    }
     \endqml
 
     Converting a position and a size in pixels to normalized item coordinates can be done with a
     division by the size. Here is an equivalent of the previous code sample:
 
     \qml
-        UbuntuShapeOverlay {
-            width: 200; height: 200
-            overlayColor: Qt.rgba(0.0, 0.0, 0.5, 0.5)
-            overlayGeometry: Qt.rect(100.0/width, 100.0/height, 200.0/width, 100.0/height)
-        }
+    UbuntuShapeOverlay {
+        width: 200; height: 200
+        overlayColor: Qt.rgba(0.0, 0.0, 0.5, 0.5)
+        overlayGeometry: Qt.rect(100.0/width, 100.0/height, 200.0/width, 100.0/height)
+    }
     \endqml
 
     A geometry exceeding the item area is cropped.

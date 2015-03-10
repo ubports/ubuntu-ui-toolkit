@@ -224,21 +224,21 @@ const float lowHighTextureThreshold = 11.0f;
     Examples:
 
     \qml
-        import Ubuntu.Components 1.2
+    import Ubuntu.Components 1.2
 
-        UbuntuShape {
-            backgroundColor: "green"
-        }
+    UbuntuShape {
+        backgroundColor: "green"
+    }
     \endqml
 
     \qml
-        import Ubuntu.Components 1.2
+    import Ubuntu.Components 1.2
 
-        UbuntuShape {
-            source: Image {
-               source: "ubuntu.png"
-           }
-       }
+    UbuntuShape {
+        source: Image {
+            source: "ubuntu.png"
+        }
+    }
     \endqml
 */
 UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
@@ -336,26 +336,26 @@ void UCUbuntuShape::dropImageSupport()
     It can be set either with an inlined \c Image:
 
     \qml
-        Item {
-            UbuntuShape {
-                source: Image { source: "ubuntu.png" }
-            }
+    Item {
+        UbuntuShape {
+            source: Image { source: "ubuntu.png" }
         }
+    }
     \endqml
 
     or with an \c Image \c id:
 
     \qml
-        Item {
-            Image {
-                id: img
-                visible: false
-                source: "ubuntu.png"
-            }
-            UbuntuShape {
-                source: img
-            }
+    Item {
+        Image {
+            id: img
+            visible: false
+            source: "ubuntu.png"
         }
+        UbuntuShape {
+            source: img
+        }
+    }
     \endqml
 
     Note that in this case, the \c Image is stored in the scene tree as any other items. So setting
@@ -575,10 +575,10 @@ void UCUbuntuShape::setSourceTranslation(const QVector2D& sourceTranslation)
     Here is a code sample showing how to apply an horizontal flip:
 
     \qml
-        UbuntuShape {
-            source: Image { source: "ubuntu.png" }
-            sourceScale: Qt.vector2d(-1.0, 1.0)
-        }
+    UbuntuShape {
+        source: Image { source: "ubuntu.png" }
+        sourceScale: Qt.vector2d(-1.0, 1.0)
+    }
     \endqml
 
     \note Setting this disables support for the deprecated \l image property.
