@@ -211,7 +211,6 @@ void tst_UCDeprecatedTheme::testThemesRelativePathWithParentOneXDGPathSet()
 void tst_UCDeprecatedTheme::testAppTheme()
 {
     QScopedPointer<ThemeTestCase> test(new ThemeTestCase("TestApp.qml"));
-    // as default theme is a static object, the theme might be someting
     QColor backgroundColor = test->rootObject()->property("backgroundColor").value<QColor>();
     QCOMPARE(backgroundColor, QColor("#A21E1C"));
     QQuickText *label = test->findItem<QQuickText*>("test_label");
