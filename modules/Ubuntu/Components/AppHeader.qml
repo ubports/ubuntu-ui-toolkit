@@ -50,6 +50,7 @@ StyledItem {
         enabled: animate && !(header.flickable && header.flickable.moving)
         SmoothedAnimation {
             duration: Components.UbuntuAnimation.BriskDuration
+            onRunningChanged: if (!running) internal.moving = false
         }
     }
 
@@ -70,14 +71,20 @@ StyledItem {
       Show the header
      */
     function show() {
-        header.y = 0;
+        if (header.y !== 0) {
+            internal.moving = true;
+            header.y = 0;
+        }
     }
 
     /*!
       Hide the header
      */
     function hide() {
-        header.y = - header.height;
+        if (header.y !== -header.height) {
+            internal.moving = true;
+            header.y = - header.height;
+        }
     }
 
     /*!
@@ -192,16 +199,24 @@ StyledItem {
 
       Used in tst_header_locked_visible.qml.
     */
-    readonly property bool moving: !(internal.fullyOpened || internal.fullyClosed)
+//    readonly property bool moving: !(internal.fullyOpened || internal.fullyClosed)
+     readonly property alias moving: internal.moving
+
+    // TODO TIM: support old version without the config.visible property?
+//    onMovingChanged: print("header moving = "+moving)
 
     QtObject {
         id: internal
 
+        property bool moving: false
         property bool fullyOpened: header.y === 0
         property bool fullyClosed: header.y === -header.height
+        property bool locked: header.config && header.config.hasOwnProperty("locked") &&
+                              header.config.locked
 
         onFullyOpenedChanged: updateConfigVisible()
         onFullyClosedChanged: updateConfigVisible()
+        onLockedChanged: connectFlickable()
 
         function updateConfigVisible() {
             if (!(fullyOpened || fullyClosed)) {
@@ -211,10 +226,11 @@ StyledItem {
             if (!header.config) return;
             if (!header.config.hasOwnProperty("visible")) return;
             if (fullyOpened) {
-                // FIXME: When we remove deprecated functionality where the header
+                // FIXME TIM: When we remove deprecated functionality where the header
                 // visibility is controlled by its contents/title, we can simply set
                 // header.config.visible to true here.
-                header.config.visible = header.visible;
+                // FIXME: header.config.visible = fullyOpened
+                header.config.visible = true; //header.visible;
             } else {
                 // fullyClosed
                 header.config.visible = false;
@@ -239,16 +255,18 @@ StyledItem {
                 previousFlickable.contentYChanged.disconnect(internal.scrollContents);
                 previousFlickable.movementEnded.disconnect(internal.movementEnded);
                 previousFlickable.interactiveChanged.disconnect(internal.interactiveChanged);
+                previousFlickable = null;
             }
-            if (flickable) {
+            if (flickable && !internal.locked) {
                 // Connect flicking to movements of the header
                 previousContentY = flickable.contentY;
                 flickable.contentYChanged.connect(internal.scrollContents);
                 flickable.movementEnded.connect(internal.movementEnded);
                 flickable.interactiveChanged.connect(internal.interactiveChanged);
                 flickable.contentHeightChanged.connect(internal.contentHeightChanged);
+                previousFlickable = flickable;
             }
-            previousFlickable = flickable;
+//            previousFlickable = flickable;
         }
 
         /*!
@@ -257,6 +275,7 @@ StyledItem {
         function scrollContents() {
             // Avoid updating header.y when rebounding or being dragged over the bounds.
             if (!flickable.atYBeginning && !flickable.atYEnd) {
+                internal.moving = true;
                 var deltaContentY = flickable.contentY - previousContentY;
                 // FIXME: MathUtils.clamp  is expensive. Fix clamp, or replace it here.
                 header.y = MathUtils.clamp(header.y - deltaContentY, -header.height, 0);
@@ -268,6 +287,9 @@ StyledItem {
           Fully show or hide the header, depending on its current y.
          */
         function movementEnded() {
+            if (internal.fullyClosed || internal.fullyOpened) {
+                internal.moving = false;
+            }
             if (flickable && flickable.contentY < 0) header.show();
             else if (header.y < -header.height/2) header.hide();
             else header.show();

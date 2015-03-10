@@ -115,10 +115,10 @@ TestCase {
         var iy = 0;
 
         for (var step=0; step < steps; step++) {
-            if (ix < abs_dx) {
+            if (Math.abs(ix) < abs_dx) {
                 ix += step_dx;
             }
-            if (iy < abs_dy) {
+            if (Math.abs(iy) < abs_dy) {
                 iy += step_dy;
             }
             mouseMove(item, x + ix, y + iy, stepdelay);
