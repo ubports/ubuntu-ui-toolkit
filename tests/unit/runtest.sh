@@ -78,6 +78,7 @@ function execute_test_cmd {
                 tst_pickerpanel.qml \
                 tst_picker.qml \
                 tst_listitems_itemselector.qml \
+                tst_tabs_with_repeater.deprecated_toolbar.qml \
                 '
     if [ $WARNINGS -ne 0 ]; then
       if [[ $EXCEPTIONS == *$_TARGET_$_TESTFILE* ]]; then

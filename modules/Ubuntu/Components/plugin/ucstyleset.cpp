@@ -67,9 +67,13 @@
         styleSet.name: "Ubuntu.Components.Themes.Ambiance"
     }
     \endqml
+    \note Changing the style set name in this way will result in a change of the
+    inherited style set. In case a different style set is desired, a new instance
+    of the StyleSet must be created.
 
-    Example creating a style component:
-
+    The \l createCtyleComponent function can be used to create the style for a
+    component. The following example will create the style with the inherited
+    style set.
     \qml
     import QtQuick 2.4
     import Ubuntu.Components 1.3
@@ -243,7 +247,7 @@ UCStyleSet *UCStyleSet::getParent()
 */
 QString UCStyleSet::name() const
 {
-    return m_name.isEmpty() ? m_themeSettings.themeName() : m_name;
+    return !m_name.isEmpty() ? m_name : m_themeSettings.themeName();
 }
 void UCStyleSet::setName(const QString& name)
 {
@@ -278,14 +282,6 @@ QObject* UCStyleSet::palette()
         loadPalette(false);
     }
     return m_palette;
-}
-void UCStyleSet::setPalette(QObject *palette)
-{
-    if (m_palette == palette) {
-        return;
-    }
-    m_palette = palette;
-    Q_EMIT paletteChanged();
 }
 
 QUrl UCStyleSet::styleUrl(const QString& styleName)
@@ -333,7 +329,8 @@ void UCStyleSet::registerToContext(QQmlContext* context)
 /*!
     \qmlmethod Component StyleSet::createStyleComponent(string styleName, object parent)
 
-    Returns an instance of the style component named \a styleName.
+    Returns an instance of the style component named \a styleName and parented
+    to \a parent.
 */
 QQmlComponent* UCStyleSet::createStyleComponent(const QString& styleName, QObject* parent)
 {
