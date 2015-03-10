@@ -229,11 +229,6 @@ void UCStyledItemBase::setStyleSet(UCStyleSet *styleSet)
                    this, &UCStyledItemBase::styleSetChanged);
     }
 
-    // detach current styleset
-    if (d->styleSet) {
-        d->styleSet->attach(this, false);
-    }
-
     // resolve new styleSet
     if (d->styleSet && styleSet) {
         // no need to redo the parentStack, simply set the styleSet and leave
@@ -247,10 +242,6 @@ void UCStyledItemBase::setStyleSet(UCStyleSet *styleSet)
         }
     }
 
-    // attach current styleset
-    if (d->styleSet) {
-        d->styleSet->attach(this, true);
-    }
     // connect to the new set
     connectedSet = d->styleSet ?
                     d->styleSet :
@@ -264,12 +255,6 @@ void UCStyledItemBase::setStyleSet(UCStyleSet *styleSet)
 void UCStyledItemBase::resetStyleSet()
 {
     setStyleSet(NULL);
-}
-
-UCStyledItemBase *UCStyledItemBase::parentStyled() const
-{
-    Q_D(const UCStyledItemBase);
-    return d->parentStyledItem;
 }
 
 // link/unlink all ascendant items until we reach a StyledItem, returns true if the
@@ -305,7 +290,9 @@ bool UCStyledItemBasePrivate::setParentStyled(UCStyledItemBase *styledItem)
         return false;
     }
     parentStyledItem = styledItem;
-    Q_EMIT q_func()->parentStyledChanged();
+    if (styleSet) {
+        Q_EMIT styleSet->parentChanged();
+    }
     return (styleSet == NULL);
 }
 
@@ -364,14 +351,6 @@ void UCStyledItemBasePrivate::_q_parentStyleChanged()
     }
     setParentStyled(styledItem);
     Q_EMIT q->styleSetChanged();
-}
-
-// connect to the default styleSet, as at this phase the properties are not yet evaluated
-// so an eventual custom styleset is not yet evaluated
-void UCStyledItemBase::classBegin()
-{
-    QQuickItem::classBegin();
-    Q_D(UCStyledItemBase);
 }
 
 // grab pressed state and focus if it can be

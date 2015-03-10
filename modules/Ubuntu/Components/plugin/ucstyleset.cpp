@@ -135,7 +135,6 @@ QUrl pathFromThemeName(QString themeName)
 
 UCStyleSet::UCStyleSet(QObject *parent)
     : QObject(parent)
-    , m_implicitName(UCStyleSet::defaultSet().m_implicitName)
     , m_palette(UCStyleSet::defaultSet().m_palette)
     , m_engine(UCStyleSet::defaultSet().m_engine)
     , m_defaultStyle(false)
@@ -161,7 +160,6 @@ UCStyleSet::UCStyleSet(bool defaultStyle)
 void UCStyleSet::init()
 {
     m_completed = false;
-    m_implicitName = m_themeSettings.themeName();
     QObject::connect(&m_themeSettings, &UCThemeSettings::themeNameChanged,
                      this, &UCStyleSet::onThemeNameChanged);
     updateThemePaths();
@@ -187,13 +185,11 @@ void UCStyleSet::updateEnginePaths()
     }
 }
 
+// slot called when the styleset uses the system theme
 void UCStyleSet::onThemeNameChanged()
 {
-    if (m_themeSettings.themeName() != m_implicitName) {
-        m_implicitName = m_themeSettings.themeName();
-        updateThemePaths();
-        Q_EMIT nameChanged();
-    }
+    updateThemePaths();
+    Q_EMIT nameChanged();
 }
 
 void UCStyleSet::updateThemePaths()
@@ -224,19 +220,6 @@ UCStyleSet *UCStyleSet::getParent()
     }
     return NULL;
 }
-// related functions, attaches/detaches a StyledItem to the StyleSet
-// called when styleSet property is altered
-void UCStyleSet::attach(UCStyledItemBase *item, bool attach)
-{
-    // connect parentStyledChanged so we can update parent property
-    if (attach) {
-        connect(item, &UCStyledItemBase::parentStyledChanged,
-                this, &UCStyleSet::parentChanged);
-    } else {
-        disconnect(item, &UCStyledItemBase::parentStyledChanged,
-                   this, &UCStyleSet::parentChanged);
-    }
-}
 
 /*!
     \qmlproperty string StyleSet::name
@@ -260,7 +243,7 @@ void UCStyleSet::attach(UCStyledItemBase *item, bool attach)
 */
 QString UCStyleSet::name() const
 {
-    return m_name.isEmpty() ? m_implicitName : m_name;
+    return m_name.isEmpty() ? m_themeSettings.themeName() : m_name;
 }
 void UCStyleSet::setName(const QString& name)
 {

@@ -55,7 +55,6 @@ public:
 
     Q_INVOKABLE QQmlComponent* createStyleComponent(const QString& styleName, QObject* parent);
     static void registerToContext(QQmlContext* context);
-    void attach(UCStyledItemBase *item, bool attach);
 
 Q_SIGNALS:
     void parentChanged();
@@ -82,7 +81,6 @@ private:
     void init();
 
     QString m_name;
-    QString m_implicitName;
     QPointer<QObject> m_palette; // the palette might be from the default style if the theme doesn't define palette
     QQmlEngine *m_engine;
     QList<QUrl> m_themePaths;
