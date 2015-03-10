@@ -70,7 +70,7 @@
     inherited style set. In case a different style set is desired, a new instance
     of the StyleSet must be created.
 
-    The \l createCtyleComponent function can be used to create the style for a
+    The \l createStyleComponent function can be used to create the style for a
     component. The following example will create the style with the inherited
     style set.
     \qml
