@@ -30,7 +30,6 @@ TestCase {
 
      function test_api() {
          verify(scope.styleSet, "Null default styleSet");
-         verify(!scope.parentStyled, "parentStyled not null!");
-         verify(inner.parentStyled, "Null parentStyled");
+         compare(inner.styleSet, scope.styleSet, "default stylesets should be inherited!");
      }
 }
