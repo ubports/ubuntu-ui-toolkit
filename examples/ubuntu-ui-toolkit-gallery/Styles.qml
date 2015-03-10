@@ -18,6 +18,7 @@ import QtQuick 2.4
 import Ubuntu.Components 1.1
 
 Template {
+    id: page
     objectName: "stylesTemplate"
 
     Label {
@@ -45,5 +46,22 @@ Template {
         expanded: true
         selectedIndex: (styleSet.name == 'Ubuntu.Components.Themes.SuruDark')
         onSelectedIndexChanged: styleSet.name = 'Ubuntu.Components.Themes.%1'.arg(model[selectedIndex])
+    }
+
+    OptionSelector {
+        model: [ 'DarkGray', 'LightGray' ]
+        expanded: true
+        onSelectedIndexChanged: {
+            if (selectedIndex) {
+                QuickUtils.rootItem(page).backgroundColor = "#F4F4F4"
+            } else {
+                QuickUtils.rootItem(page).backgroundColor = "darkgray";
+            }
+        }
+    }
+    Component.onCompleted: {
+        styleSet.nameChanged.connect(function() {
+            print(styleSet.name)
+        })
     }
 }

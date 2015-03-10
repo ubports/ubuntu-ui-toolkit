@@ -9,4 +9,7 @@ OTHER_FILES += \
     themes/CustomTheme/parent_theme \
     themes/TestModule/TestTheme/TestStyle.qml \
     themes/TestModule/TestTheme/qmldir \
-    themes/TestModule/TestTheme/parent_theme
+    themes/TestModule/TestTheme/parent_theme \
+    TestMain.qml \
+    TestStyleChange.qml \
+    DifferentStylesets.qml

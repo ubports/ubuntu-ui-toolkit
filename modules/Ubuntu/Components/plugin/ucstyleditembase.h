@@ -30,6 +30,7 @@ class UCStyledItemBase : public QQuickItem
                READ activefocusOnPress WRITE setActiveFocusOnPress
                NOTIFY activeFocusOnPressChanged REVISION 1)
     Q_PROPERTY(UCStyleSet *styleSet READ styleSet WRITE setStyleSet RESET resetStyleSet NOTIFY styleSetChanged REVISION 2)
+    Q_PROPERTY(UCStyledItemBase *parentStyled READ parentStyled NOTIFY parentStyledChanged REVISION 2)
 public:
     explicit UCStyledItemBase(QQuickItem *parent = 0);
 
@@ -39,6 +40,7 @@ public:
     UCStyleSet *styleSet() const;
     void setStyleSet(UCStyleSet *styleSet);
     void resetStyleSet();
+    UCStyledItemBase *parentStyled() const;
 
 public Q_SLOTS:
     Q_REVISION(1) bool requestFocus(Qt::FocusReason reason = Qt::OtherFocusReason);
@@ -46,6 +48,7 @@ public Q_SLOTS:
 Q_SIGNALS:
     void activeFocusOnPressChanged();
     Q_REVISION(2) void styleSetChanged();
+    Q_REVISION(2) void parentStyledChanged();
 
 protected:
     UCStyledItemBase(UCStyledItemBasePrivate &, QQuickItem *parent);
