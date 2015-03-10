@@ -102,13 +102,13 @@ const QSGGeometry::AttributeSet& ShapeOverlayNode::attributeSet()
     Example:
 
     \qml
-        import Ubuntu.Components 1.2
+    import Ubuntu.Components 1.2
 
-        UbuntuShapeOverlay {
-            backgroundColor: "white"
-            overlayColor: "black"
-            overlayGeometry: Qt.rect(0.25, 0.25, 0.5, 0.5)
-        }
+    UbuntuShapeOverlay {
+        backgroundColor: "white"
+        overlayColor: "black"
+        overlayRect: Qt.rect(0.25, 0.25, 0.5, 0.5)
+    }
     \endqml
 */
 UCUbuntuShapeOverlay::UCUbuntuShapeOverlay(QQuickItem* parent)
@@ -121,7 +121,7 @@ UCUbuntuShapeOverlay::UCUbuntuShapeOverlay(QQuickItem* parent)
 {
 }
 
-/*! \qmlproperty rect UbuntuShapeOverlay::overlayGeometry
+/*! \qmlproperty rect UbuntuShapeOverlay::overlayRect
     \since Ubuntu.Components 1.2
 
     This property sets the overlay rectangle. The default value is the empty rectangle.
@@ -131,36 +131,36 @@ UCUbuntuShapeOverlay::UCUbuntuShapeOverlay(QQuickItem* parent)
     at the vertical center can be done like that:
 
     \qml
-        UbuntuShapeOverlay {
-            width: 200; height: 200
-            overlayColor: Qt.rgba(0.0, 0.0, 0.5, 0.5)
-            overlayGeometry: Qt.rect(0.0, 0.5, 1.0, 0.5)
-        }
+    UbuntuShapeOverlay {
+        width: 200; height: 200
+        overlayColor: Qt.rgba(0.0, 0.0, 0.5, 0.5)
+        overlayRect: Qt.rect(0.0, 0.5, 1.0, 0.5)
+    }
     \endqml
 
     Converting a position and a size in pixels to normalized item coordinates can be done with a
     division by the size. Here is an equivalent of the previous code sample:
 
     \qml
-        UbuntuShapeOverlay {
-            width: 200; height: 200
-            overlayColor: Qt.rgba(0.0, 0.0, 0.5, 0.5)
-            overlayGeometry: Qt.rect(100.0/width, 100.0/height, 200.0/width, 100.0/height)
-        }
+    UbuntuShapeOverlay {
+        width: 200; height: 200
+        overlayColor: Qt.rgba(0.0, 0.0, 0.5, 0.5)
+        overlayRect: Qt.rect(100.0/width, 100.0/height, 200.0/width, 100.0/height)
+    }
     \endqml
 
     A geometry exceeding the item area is cropped.
 */
-void UCUbuntuShapeOverlay::setOverlayGeometry(const QRectF& overlayGeometry)
+void UCUbuntuShapeOverlay::setOverlayRect(const QRectF& overlayRect)
 {
     // Crop rectangle and pack to 16-bit unsigned integers.
-    const float x = qBound(0.0f, static_cast<float>(overlayGeometry.x()), 1.0f);
-    float width = qMax(0.0f, static_cast<float>(overlayGeometry.width()));
+    const float x = qBound(0.0f, static_cast<float>(overlayRect.x()), 1.0f);
+    float width = qMax(0.0f, static_cast<float>(overlayRect.width()));
     if ((x + width) > 1.0f) {
         width += 1.0f - (x + width);
     }
-    const float y = qBound(0.0f, static_cast<float>(overlayGeometry.y()), 1.0f);
-    float height = qMax(0.0f, static_cast<float>(overlayGeometry.height()));
+    const float y = qBound(0.0f, static_cast<float>(overlayRect.y()), 1.0f);
+    float height = qMax(0.0f, static_cast<float>(overlayRect.height()));
     if ((y + height) > 1.0f) {
         height += 1.0f - (y + height);
     }
@@ -177,14 +177,14 @@ void UCUbuntuShapeOverlay::setOverlayGeometry(const QRectF& overlayGeometry)
         m_overlayWidth = overlayWidth;
         m_overlayHeight = overlayHeight;
         update();
-        Q_EMIT overlayGeometryChanged();
+        Q_EMIT overlayRectChanged();
     }
 }
 
 /*! \qmlproperty color UbuntuShapeOverlay::overlayColor
     \since Ubuntu.Components 1.2
 
-    This property sets the color of the overlay rectangle defined by \l overlayGeometry. The default
+    This property sets the color of the overlay rectangle defined by \l overlayRect. The default
     value is transparent black.
 */
 void UCUbuntuShapeOverlay::setOverlayColor(const QColor& overlayColor)

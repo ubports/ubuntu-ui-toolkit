@@ -120,11 +120,6 @@ class InsertModeTextInputTestCase(tests.QMLFileAppTestCase):
          dict(test_qml_file_path=header_qml_file_path,
               objectName='textfield')),
     ]
-    scenarios = [
-        ('header',
-         dict(test_qml_file_path=header_qml_file_path,
-              objectName='textfield')),
-    ]
 
     def get_command_line(self, command_line):
         command_line.append('-touch')

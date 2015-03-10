@@ -80,7 +80,7 @@ Item {
         "Border (deprecated)  (b):   " + "\"" + shape.borderSource + "\"\n\n" +
         "Colors (deprecated) (n/,):  " + shape.color + ", " + shape.gradientColor +  "\n\n" +
         "Overlay color       (F1):   " + shape.overlayColor + "\n" +
-        "Overlay geom (F2/F3/F4/F5): " + shape.overlayGeometry.x.toFixed(2) + ", " + shape.overlayGeometry.y.toFixed(2) + ", " + shape.overlayGeometry.width.toFixed(2) + ", " + shape.overlayGeometry.height.toFixed(2)
+        "Overlay rect (F2/F3/F4/F5): " + shape.overlayRect.x.toFixed(2) + ", " + shape.overlayRect.y.toFixed(2) + ", " + shape.overlayRect.width.toFixed(2) + ", " + shape.overlayRect.height.toFixed(2)
 
     // Main scene.
     Item {
@@ -313,27 +313,27 @@ Item {
                 Math.random(), Math.random(), Math.random(), Math.random());
         } else if (event.key == Qt.Key_F2) {
             var x = Math.max(0.0, Math.min(1.0,
-            shape.overlayGeometry.x + ((event.modifiers & shift) ? 0.005 : -0.005)));
-            shape.overlayGeometry = Qt.rect(
-                x, shape.overlayGeometry.y, shape.overlayGeometry.width,
-                shape.overlayGeometry.height);
+            shape.overlayRect.x + ((event.modifiers & shift) ? 0.005 : -0.005)));
+            shape.overlayRect = Qt.rect(
+                x, shape.overlayRect.y, shape.overlayRect.width,
+                shape.overlayRect.height);
         } else if (event.key == Qt.Key_F3) {
             var y = Math.max(0.0, Math.min(1.0,
-            shape.overlayGeometry.y + ((event.modifiers & shift) ? 0.005 : -0.005)));
-            shape.overlayGeometry = Qt.rect(
-                shape.overlayGeometry.x, y, shape.overlayGeometry.width,
-                shape.overlayGeometry.height);
+            shape.overlayRect.y + ((event.modifiers & shift) ? 0.005 : -0.005)));
+            shape.overlayRect = Qt.rect(
+                shape.overlayRect.x, y, shape.overlayRect.width,
+                shape.overlayRect.height);
         } else if (event.key == Qt.Key_F4) {
             var width = Math.max(0.0, Math.min(1.0,
-            shape.overlayGeometry.width + ((event.modifiers & shift) ? 0.005 : -0.005)));
-            shape.overlayGeometry = Qt.rect(
-                shape.overlayGeometry.x, shape.overlayGeometry.y, width,
-                shape.overlayGeometry.height);
+            shape.overlayRect.width + ((event.modifiers & shift) ? 0.005 : -0.005)));
+            shape.overlayRect = Qt.rect(
+                shape.overlayRect.x, shape.overlayRect.y, width,
+                shape.overlayRect.height);
         } else if (event.key == Qt.Key_F5) {
             var height = Math.max(0.0, Math.min(1.0,
-            shape.overlayGeometry.height + ((event.modifiers & shift) ? 0.005 : -0.005)));
-            shape.overlayGeometry = Qt.rect(
-                shape.overlayGeometry.x, shape.overlayGeometry.y, shape.overlayGeometry.width,
+            shape.overlayRect.height + ((event.modifiers & shift) ? 0.005 : -0.005)));
+            shape.overlayRect = Qt.rect(
+                shape.overlayRect.x, shape.overlayRect.y, shape.overlayRect.width,
                 height);
         }
     }
