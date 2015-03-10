@@ -183,7 +183,7 @@ void UCStyledItemBase::setActiveFocusOnPress(bool value)
 }
 
 /*!
- * \qmlproperty StyleSet StyledItemBase::styleSet
+ * \qmlproperty StyleSet StyledItem::styleSet
  * \since Ubuntu.Components 1.3
  * The property configures the styleset the component and all its sub-components
  * should use. By default it is set to the closest StyledItem's styleset if any,
