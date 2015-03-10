@@ -34,6 +34,7 @@ HEADERS += plugin.h \
     quickutils.h \
     ucubuntushapetexture.h \
     ucubuntushape.h \
+    ucubuntushapeoverlay.h \
     inversemouseareatype.h \
     qquickclipboard.h \
     qquickmimedata.h \
@@ -90,6 +91,7 @@ SOURCES += plugin.cpp \
     ucqquickimageextension.cpp \
     quickutils.cpp \
     ucubuntushape.cpp \
+    ucubuntushapeoverlay.cpp \
     inversemouseareatype.cpp \
     qquickclipboard.cpp \
     qquickmimedata.cpp \
@@ -136,7 +138,9 @@ RESOURCES += \
 
 OTHER_FILES += \
     shaders/shape.vert \
-    shaders/shape.frag
+    shaders/shape.frag \
+    shaders/shapeoverlay.vert \
+    shaders/shapeoverlay.frag
 
 # deployment rules for the plugin
 installPath = $$[QT_INSTALL_QML]/$$replace(uri, \\., /)

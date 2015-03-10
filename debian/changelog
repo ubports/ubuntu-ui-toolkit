@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (1.2.1431+15.04.20150206-0ubuntu3) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.2.1433+15.04.20150306-0ubuntu1) vivid; urgency=medium
 
   [ Albert Astals Cid ]
   * Fix infinite icon size grow when asked for a non square icon
@@ -14,6 +14,8 @@ ubuntu-ui-toolkit (1.2.1431+15.04.20150206-0ubuntu3) UNRELEASED; urgency=medium
     Fixes: LP: #1199502, LP: #1415532
   * Change <code> to be inline-block. Fixes LP: #1427534
   * Set right anchor on tab overflow buttons. Fixes LP: #1425433
+  * Add tst_listitems_itemselector.qml to EXCEPTIONS. So warnings are 
+    no longer fatal for unit test.
   [ Sebastien Bacher ]
   * document that MainView's applicationName is used to set the gettext
     domain. Fixes: LP: #1421661.
@@ -29,6 +31,8 @@ ubuntu-ui-toolkit (1.2.1431+15.04.20150206-0ubuntu3) UNRELEASED; urgency=medium
     This is useful when a Page is Loaded by a Tab. Fixes: LP: #1424635
   * Fix UITK gallery content page width.
     Fixes: LP: #1424635, LP: #1425470
+  * Set objectName for MainView int est_textinput.header.qml and fix 
+    scenarios in test_textinput.py
   [ Zsombor Egri ]
   * Alarm services regression fix. Fixes: LP: #1401883
   * Implement ListItem dragging support in ListView.
@@ -66,7 +70,7 @@ ubuntu-ui-toolkit (1.2.1431+15.04.20150206-0ubuntu3) UNRELEASED; urgency=medium
     LP: #1396114, LP: #1396119, LP: #1396124, LP: #1396162, 
     LP: #1396165, LP: #1396168, LP: #1396178
 
- -- Zoltán Balogh <zoltan@bakter.hu>  Tue, 03 Mar 2015 15:20:12 +0200
+ -- CI Train Bot <ci-train-bot@canonical.com>  Fri, 06 Mar 2015 08:23:35 +0000
 
 ubuntu-ui-toolkit (1.1.1403+15.04.20150206-0ubuntu2) vivid; urgency=medium
 
