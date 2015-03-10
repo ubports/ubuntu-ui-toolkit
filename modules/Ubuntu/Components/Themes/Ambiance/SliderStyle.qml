@@ -46,7 +46,7 @@ Item {
         height: units.dp(4)
         backgroundColor: sliderStyle.backgroundColor
         overlayColor: sliderStyle.foregroundColor
-        overlayGeometry: Qt.application.layoutDirection == Qt.LeftToRight ?
+        overlayRect: Qt.application.layoutDirection == Qt.LeftToRight ?
             Qt.rect(0.0, 0.0, thumb.x / thumb.barMinusThumbWidth, 1.0) :
             Qt.rect(1.0 - (thumb.x / thumb.barMinusThumbWidth), 0.0, 1.0, 1.0)
     }
