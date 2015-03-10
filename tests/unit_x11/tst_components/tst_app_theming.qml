@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,14 +16,37 @@
 
 import QtQuick 2.4
 import Ubuntu.Components 1.2
+import QtTest 1.0
+import Ubuntu.Test 1.0
 
 MainView {
+    id: main
     width: units.gu(40)
     height: units.gu(71)
 
     Component.onCompleted: Theme.name = "AppTheme"
 
     Label {
-        objectName: "test_label"
+        id: testLabel
+    }
+
+    UbuntuTestCase {
+        name: "AppTheming"
+        when: windowShown
+
+        function test_0() {
+            compare(main.backgroundColor, "#a21e1c", "Theme not loaded?");
+            compare(testLabel.color, "#add8e6", "Label color not from application theme.");
+        }
+
+        function test_ambiance()
+        {
+            Theme.name = "Ubuntu.Components.Themes.Ambiance";
+        }
+
+        function test_reset()
+        {
+            Theme.name = undefined;
+        }
     }
 }
