@@ -22,7 +22,7 @@
 #include "quickutils.h"
 #include "i18n.h"
 #include "ucfontutils.h"
-#include "ucstyleditembase.h"
+#include "ucstyleditembase_p.h"
 
 #include <QtQml/qqml.h>
 #include <QtQml/qqmlinfo.h>
@@ -211,6 +211,34 @@ void UCStyleSet::updateThemePaths()
 }
 
 /*!
+ * \qmlproperty StyleSet StyleSet::parent
+ * The property specifies the parent StyleSet. The property only has a valid value
+ * when assigned to \l StyledItem::styleSet property.
+ */
+UCStyleSet *UCStyleSet::getParent()
+{
+    UCStyledItemBase *owner = qobject_cast<UCStyledItemBase*>(parent());
+    UCStyledItemBasePrivate *pOwner = owner ? UCStyledItemBasePrivate::get(owner) : NULL;
+    if (pOwner && pOwner->styleSet == this && pOwner->parentStyledItem) {
+        return pOwner->parentStyledItem->styleSet();
+    }
+    return NULL;
+}
+// related functions, attaches/detaches a StyledItem to the StyleSet
+// called when styleSet property is altered
+void UCStyleSet::attach(UCStyledItemBase *item, bool attach)
+{
+    // connect parentStyledChanged so we can update parent property
+    if (attach) {
+        connect(item, &UCStyledItemBase::parentStyledChanged,
+                this, &UCStyleSet::parentChanged);
+    } else {
+        disconnect(item, &UCStyledItemBase::parentStyledChanged,
+                   this, &UCStyleSet::parentChanged);
+    }
+}
+
+/*!
     \qmlproperty string StyleSet::name
 
     The name of the current theme. The name can be set only at creation time, runtime
@@ -248,8 +276,8 @@ void UCStyleSet::setName(const QString& name)
         updateThemePaths();
     }
     updateEnginePaths();
-    Q_EMIT nameChanged();
     loadPalette();
+    Q_EMIT nameChanged();
 }
 void UCStyleSet::resetName()
 {

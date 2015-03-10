@@ -17,6 +17,7 @@ import QtQuick 2.4
 import Ubuntu.Components 1.3
 
 StyledItem {
+    id: main
     width: units.gu(40)
     height: units.gu(71)
     objectName: "mainStyled"
@@ -30,6 +31,7 @@ StyledItem {
             width: parent.width
             height: units.gu(20)
             styleSet: StyleSet {
+                name: parent ? parent.name : undefined
             }
 
             Item {
