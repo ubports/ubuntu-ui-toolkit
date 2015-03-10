@@ -15,25 +15,20 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 1.1
+import Ubuntu.Components 1.2
 import Ubuntu.Components.Themes.Ambiance 1.1
 
 MainView {
     width: units.gu(48)
     height: units.gu(60)
-    useDeprecatedToolbar: false
     objectName: "mainView"
 
     Page {
         title: "Textfield"
-        tools: ToolbarItems {
-            back: ToolbarButton {
-                action: Action {
-                    iconName: "back"
-                    text: i18n.tr("Back")
-                    onTriggered: visible = false
-                }
-            }
+        head.backAction: Action {
+            iconName: "back"
+            text: i18n.tr("Back")
+            onTriggered: visible = false
         }
 
         Flickable {
@@ -42,6 +37,7 @@ MainView {
 
             Column {
                 anchors.fill: parent
+                anchors.leftMargin: units.gu(2)
 
                 Label {
                     text: "Below is a customized text field with clipping"

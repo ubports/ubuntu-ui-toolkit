@@ -15,24 +15,19 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 1.1
+import Ubuntu.Components 1.2
 
 MainView {
     width: units.gu(48)
     height: units.gu(60)
-    useDeprecatedToolbar: false
     objectName: "mainView"
 
     Page {
         title: "Textarea"
-        tools: ToolbarItems {
-            back: ToolbarButton {
-                action: Action {
-                    iconName: "back"
-                    text: i18n.tr("Back")
-                    onTriggered: visible = false
-                }
-            }
+        head.backAction: Action {
+            iconName: "back"
+            text: i18n.tr("Back")
+            onTriggered: visible = false
         }
 
         Column {
