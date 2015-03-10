@@ -63,11 +63,39 @@ private Q_SLOTS:
         delete quickView;
     }
 
+    void benchmark_theming_data()
+    {
+        QTest::addColumn<QString>("document");
+        QTest::addColumn<QUrl>("theme");
+        QTest::addColumn<QByteArray>("enableSubtheming");
+
+        QTest::newRow("old theming, subtheming disabled") << "StyledItemOldTheming.qml" << QUrl("Ubuntu.Components.Themes.SuruDark") << QByteArray("no");
+        QTest::newRow("old theming, subtheming enabled") << "StyledItemOldTheming.qml" << QUrl("Ubuntu.Components.Themes.SuruDark") << QByteArray("yes");
+        QTest::newRow("subtheming, no changes on themes") << "Styling.qml" << QUrl() << QByteArray("yes");
+        QTest::newRow("subtheming, change mid item") << "Styling.qml" << QUrl("Ubuntu.Components.Themes.SuruDark") << QByteArray("yes");
+    }
+    void benchmark_theming()
+    {
+        QFETCH(QString, document);
+        QFETCH(QUrl, theme);
+        QFETCH(QByteArray, enableSubtheming);
+
+        qputenv("UITK_SUBTHEMING", enableSubtheming);
+        QQuickItem *root = 0;
+        QBENCHMARK {
+            root = loadDocument(document);
+            if (root && theme.isValid()) {
+                root->setProperty("newTheme", theme.toString());
+            }
+        }
+        if (root)
+            delete root;
+    }
+
     void benchmark_GridOfComponents_data() {
         QTest::addColumn<QString>("document");
         QTest::addColumn<QUrl>("theme");
 
-        QTest::newRow("old theming") << "StyledItemOldTheming.qml" << QUrl("Ubuntu.Components.Themes.SuruDark");
         QTest::newRow("grid with Rectangle") << "RectangleGrid.qml" << QUrl();
         QTest::newRow("grid with Text") << "TextGrid.qml" << QUrl();
         QTest::newRow("grid with Label") << "LabelGrid.qml" << QUrl();
@@ -117,7 +145,6 @@ private Q_SLOTS:
             loadDocument(document);
         }
     }
-
 };
 
 QTEST_MAIN(tst_Performance)
