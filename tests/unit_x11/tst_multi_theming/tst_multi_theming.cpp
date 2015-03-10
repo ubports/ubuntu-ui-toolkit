@@ -268,22 +268,6 @@ private Q_SLOTS:
         QCOMPARE(styleSetSpy.count(), 1);
     }
 
-    void test_parent_styled_changes()
-    {
-        QScopedPointer<ThemeTestCase> view(new ThemeTestCase("TestStyleChange.qml"));
-        QVERIFY(view);
-        UCStyledItemBase *testItem = view->findItem<UCStyledItemBase*>("thirdLevelLoaderStyled");
-        QVERIFY(testItem);
-        UCStyledItemBase *parentStyled = testItem->parentStyled();
-        QVERIFY(parentStyled);
-        // reparent item
-        QQuickItem *targetItem = view->findItem<QQuickItem*>("firstLevelStyled");
-        QSignalSpy spy(testItem, SIGNAL(parentStyledChanged()));
-        testItem->setParentItem(targetItem);
-        spy.wait(200);
-        QCOMPARE(spy.count(), 1);
-    }
-
     void test_styleset_name()
     {
         QScopedPointer<ThemeTestCase> view(new ThemeTestCase("DifferentStylesets.qml"));

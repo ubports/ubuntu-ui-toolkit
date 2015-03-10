@@ -55,7 +55,6 @@ public:
 
     Q_INVOKABLE QQmlComponent* createStyleComponent(const QString& styleName, QObject* parent);
     static void registerToContext(QQmlContext* context);
-    void attach(UCStyledItemBase *item, bool attach);
 
 Q_SIGNALS:
     void parentChanged();

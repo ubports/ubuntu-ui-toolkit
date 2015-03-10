@@ -220,19 +220,6 @@ UCStyleSet *UCStyleSet::getParent()
     }
     return NULL;
 }
-// related functions, attaches/detaches a StyledItem to the StyleSet
-// called when styleSet property is altered
-void UCStyleSet::attach(UCStyledItemBase *item, bool attach)
-{
-    // connect parentStyledChanged so we can update parent property
-    if (attach) {
-        connect(item, &UCStyledItemBase::parentStyledChanged,
-                this, &UCStyleSet::parentChanged);
-    } else {
-        disconnect(item, &UCStyledItemBase::parentStyledChanged,
-                   this, &UCStyleSet::parentChanged);
-    }
-}
 
 /*!
     \qmlproperty string StyleSet::name
