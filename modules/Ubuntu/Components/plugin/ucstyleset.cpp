@@ -239,7 +239,7 @@ UCStyleSet *UCStyleSet::parentSet()
     UCStyledItemBase *owner = qobject_cast<UCStyledItemBase*>(parent());
     UCStyledItemBasePrivate *pOwner = owner ? UCStyledItemBasePrivate::get(owner) : NULL;
     if (pOwner && pOwner->styleSet == this && pOwner->parentStyledItem) {
-        return pOwner->parentStyledItem->styleSet();
+        return UCStyledItemBasePrivate::get(pOwner->parentStyledItem)->getStyleSet();
     }
     return NULL;
 }

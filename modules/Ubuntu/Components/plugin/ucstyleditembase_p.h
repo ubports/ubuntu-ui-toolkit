@@ -43,6 +43,10 @@ public:
     virtual void setFocusable(bool focus);
     bool isParentFocusable();
 
+    UCStyleSet *getStyleSet() const;
+    void setStyleSet(UCStyleSet *styleSet);
+    void resetStyleSet();
+
 public:
     bool activeFocusOnPress:1;
     bool subthemingEnabled:1;
