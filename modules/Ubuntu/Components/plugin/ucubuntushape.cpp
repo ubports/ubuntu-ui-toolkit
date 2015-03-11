@@ -121,7 +121,7 @@ void ShapeShader::updateState(
     // The pressed style is implemented by scaling the final RGB fragment color. It's not a real
     // blending as it was done before deprecation, so for instance transparent colors remain the
     // same, but we consider it would be too costly to maintain for a deprecated feature that was
-    // actually only use in the toolkit and never documented. The factor is multiplied with the Qt
+    // actually only used in the toolkit and never documented. The factor is multiplied with the Qt
     // opacity to avoid useless operations in the shader.
     const float opacity = state.opacity();
     const QVector2D factors(
