@@ -1,5 +1,5 @@
 include(../test-include.pri)
-QT += quick-private gui-private
+QT += core-private qml-private quick-private gui-private
 SOURCES += tst_styleset.cpp
 
 OTHER_FILES += \

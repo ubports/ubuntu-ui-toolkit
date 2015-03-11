@@ -22,7 +22,7 @@
 #include <QtQml/QQmlComponent>
 #include "ucstyleset.h"
 #include "uctestcase.h"
-#include "ucstyleditembase.h"
+#include "ucstyleditembase_p.h"
 
 class ThemeTestCase : public UbuntuTestCase
 {
@@ -288,11 +288,11 @@ private Q_SLOTS:
         UCStyledItemBase *mainItem = qobject_cast<UCStyledItemBase*>(view->rootObject());
 
         QSignalSpy parentChangeSpy(testSet, SIGNAL(parentChanged()));
-        testItem->setStyleSet(testSet);
+        UCStyledItemBasePrivate::get(testItem)->setStyleSet(testSet);
         parentChangeSpy.wait(200);
         QCOMPARE(parentChangeSpy.count(), 1);
         // test if the parent is correct
-        QCOMPARE(testSet->parentSet(), mainItem->styleSet());
+        QCOMPARE(testSet->parentSet(), UCStyledItemBasePrivate::get(mainItem)->getStyleSet());
     }
 
     void test_parent_set_reset_triggers_parent_change()
@@ -303,11 +303,11 @@ private Q_SLOTS:
 
         // reset mainItem's styleSet should trigger parentChanged on testSet
         QSignalSpy parentChangeSpy(testSet, SIGNAL(parentChanged()));
-        mainItem->resetStyleSet();
+        UCStyledItemBasePrivate::get(mainItem)->resetStyleSet();
         parentChangeSpy.wait(200);
         QCOMPARE(parentChangeSpy.count(), 1);
-        QCOMPARE(mainItem->styleSet(), &UCStyleSet::defaultSet());
-        QCOMPARE(testSet->parentSet(), mainItem->styleSet());
+        QCOMPARE(UCStyledItemBasePrivate::get(mainItem)->getStyleSet(), &UCStyleSet::defaultSet());
+        QCOMPARE(testSet->parentSet(), UCStyledItemBasePrivate::get(mainItem)->getStyleSet());
     }
 
     void test_parent_set_namechange_triggers_parent_change()
@@ -318,10 +318,10 @@ private Q_SLOTS:
 
         // change mainItem.styleSet.name should trigger parentChanged on testSet
         QSignalSpy parentChangeSpy(testSet, SIGNAL(parentChanged()));
-        mainItem->styleSet()->setName("Ubuntu.Components.Themes.SuruDark");
+        UCStyledItemBasePrivate::get(mainItem)->getStyleSet()->setName("Ubuntu.Components.Themes.SuruDark");
         parentChangeSpy.wait(200);
         QCOMPARE(parentChangeSpy.count(), 1);
-        QCOMPARE(testSet->parentSet(), mainItem->styleSet());
+        QCOMPARE(testSet->parentSet(), UCStyledItemBasePrivate::get(mainItem)->getStyleSet());
     }
 
 
@@ -338,16 +338,14 @@ private Q_SLOTS:
         QFETCH(QByteArray, subtheming);
         qputenv("UITK_SUBTHEMING", subtheming);
         QScopedPointer<ThemeTestCase> view(new ThemeTestCase("TestMain.qml"));
-        QVERIFY(view);
         view->setGlobalTheme("Ubuntu.Components.Themes.SuruDark");
         // verify theme changes
         UCStyledItemBase *styled = qobject_cast<UCStyledItemBase*>(view->rootObject());
         QVERIFY(styled);
-        QCOMPARE(styled->styleSet()->name(), QString("Ubuntu.Components.Themes.SuruDark"));
+        QCOMPARE(UCStyledItemBasePrivate::get(styled)->getStyleSet()->name(), QString("Ubuntu.Components.Themes.SuruDark"));
         // a deeper item's style name
         styled = view->findItem<UCStyledItemBase*>("secondLevelStyled");
-        QVERIFY(styled);
-        QCOMPARE(styled->styleSet()->name(), QString("Ubuntu.Components.Themes.SuruDark"));
+        QCOMPARE(UCStyledItemBasePrivate::get(styled)->getStyleSet()->name(), QString("Ubuntu.Components.Themes.SuruDark"));
     }
 
     // changing StyledItem.styleSet.name for different items within a tree where
@@ -368,11 +366,9 @@ private Q_SLOTS:
         QFETCH(QString, itemName);
         qputenv("UITK_SUBTHEMING", subtheming);
         QScopedPointer<ThemeTestCase> view(new ThemeTestCase("TestMain.qml"));
-        QVERIFY(view);
         // change styleset name (theme)
         UCStyledItemBase *styled = view->findItem<UCStyledItemBase*>(itemName);
-        QVERIFY(styled);
-        styled->styleSet()->setName("Ubuntu.Components.Themes.SuruDark");
+        UCStyledItemBasePrivate::get(styled)->getStyleSet()->setName("Ubuntu.Components.Themes.SuruDark");
         QTest::waitForEvents();
         UCStyleSet *style = view->globalStyleSet();
         QCOMPARE(style->name(), QString("Ubuntu.Components.Themes.SuruDark"));
@@ -412,18 +408,16 @@ private Q_SLOTS:
         QVERIFY2(validTest, "testItems, expectedStyleNames, and sameStyleSet must have same amount of values");
 
         QScopedPointer<ThemeTestCase> view(new ThemeTestCase("TestStyleChange.qml"));
-        QVERIFY(view);
         UCStyleSet *styleSet = view->findItem<UCStyleSet*>("StyleSet");
-        QVERIFY(styleSet);
         UCStyledItemBase *styledItem = applyOnItem.isEmpty() ?
                     qobject_cast<UCStyledItemBase*>(view->rootObject()) :
                     view->findItem<UCStyledItemBase*>(applyOnItem);
         QVERIFY(styledItem);
         // the styleset is declared, but should not be set yet!!!
-        QVERIFY2(styledItem->styleSet() != styleSet, "StyleSet should not be set yet!");
+        QVERIFY2(UCStyledItemBasePrivate::get(styledItem)->getStyleSet() != styleSet, "StyleSet should not be set yet!");
         styleSet->setName(styleSetName);
         // set the style on the item
-        styledItem->setStyleSet(styleSet);
+        UCStyledItemBasePrivate::get(styledItem)->setStyleSet(styleSet);
         QTest::waitForEvents();
         // test on the items
         for (int i = 0; i < testItems.count(); i++) {
@@ -431,9 +425,8 @@ private Q_SLOTS:
             QString themeName = expectedStyleNames[i];
             bool success = sameStyleSet[i];
             styledItem = view->findItem<UCStyledItemBase*>(itemName);
-            QVERIFY(styledItem);
-            QCOMPARE(styledItem->styleSet() == styleSet, success);
-            QCOMPARE(styledItem->styleSet()->name(), themeName);
+            QCOMPARE(UCStyledItemBasePrivate::get(styledItem)->getStyleSet() == styleSet, success);
+            QCOMPARE(UCStyledItemBasePrivate::get(styledItem)->getStyleSet()->name(), themeName);
         }
     }
 
@@ -469,43 +462,37 @@ private Q_SLOTS:
         QFETCH(QString, newParentItemName);
 
         QScopedPointer<ThemeTestCase> view(new ThemeTestCase("TestStyleChange.qml"));
-        QVERIFY(view);
         UCStyledItemBase *testItem = view->findItem<UCStyledItemBase*>(testStyledItem);
-        QVERIFY(testItem);
-        QCOMPARE(testItem->styleSet()->name(), testStyledItemStyleSets[0]);
+        QCOMPARE(UCStyledItemBasePrivate::get(testItem)->getStyleSet()->name(), testStyledItemStyleSets[0]);
 
         UCStyleSet *styleSet = view->findItem<UCStyleSet*>("StyleSet");
-        QVERIFY(styleSet);
         styleSet->setName("Ubuntu.Components.Themes.SuruDark");
         UCStyledItemBase *suruItem = view->findItem<UCStyledItemBase*>(suruStyledItem);
-        QVERIFY(suruItem);
-        suruItem->setStyleSet(styleSet);
+        UCStyledItemBasePrivate::get(suruItem)->setStyleSet(styleSet);
         QTest::waitForEvents();
-        QCOMPARE(testItem->styleSet()->name(), testStyledItemStyleSets[1]);
+        QCOMPARE(UCStyledItemBasePrivate::get(testItem)->getStyleSet()->name(), testStyledItemStyleSets[1]);
 
         // get items and reparent
         QQuickItem *sourceItem = view->findItem<QQuickItem*>(sourceItemName);
         QQuickItem *newParentItem = view->findItem<QQuickItem*>(newParentItemName);
-        QVERIFY(sourceItem);
-        QVERIFY(newParentItem);
         QVERIFY(sourceItem != newParentItem);
         QVERIFY(sourceItem->parentItem() != newParentItem);
 
         QSignalSpy styleSetSpy(testItem, SIGNAL(styleSetChanged()));
         sourceItem->setParentItem(newParentItem);
         styleSetSpy.wait(200);
-        QCOMPARE(testItem->styleSet()->name(), testStyledItemStyleSets[2]);
+        QCOMPARE(UCStyledItemBasePrivate::get(testItem)->getStyleSet()->name(), testStyledItemStyleSets[2]);
         QCOMPARE(styleSetSpy.count(), 1);
     }
 
     void test_styleset_name()
     {
         QScopedPointer<ThemeTestCase> view(new ThemeTestCase("DifferentStylesets.qml"));
-        QVERIFY(view);
         UCStyledItemBase *main = qobject_cast<UCStyledItemBase*>(view->rootObject());
         QVERIFY(main);
         UCStyledItemBase *test = view->findItem<UCStyledItemBase*>("firstLevelStyled");
-        QCOMPARE(main->styleSet()->name(), test->styleSet()->name());
+        QCOMPARE(UCStyledItemBasePrivate::get(main)->getStyleSet()->name(),
+                 UCStyledItemBasePrivate::get(test)->getStyleSet()->name());
     }
 };
 

@@ -189,30 +189,28 @@ void UCStyledItemBase::setActiveFocusOnPress(bool value)
  * should use. By default it is set to the closest StyledItem's styleset if any,
  * or to the system default styleset.
  */
-UCStyleSet *UCStyledItemBase::styleSet() const
+UCStyleSet *UCStyledItemBasePrivate::getStyleSet() const
 {
-    Q_D(const UCStyledItemBase);
-    if (d->subthemingEnabled) {
-        if (d->styleSet) {
-            return d->styleSet;
-        } else if (!d->parentStyledItem.isNull()) {
-            return d->parentStyledItem->styleSet();
+    if (subthemingEnabled) {
+        if (styleSet) {
+            return styleSet;
+        } else if (!parentStyledItem.isNull()) {
+            return UCStyledItemBasePrivate::get(parentStyledItem)->getStyleSet();
         }
     }
     return &UCStyleSet::defaultSet();
 }
-
-void UCStyledItemBase::setStyleSet(UCStyleSet *styleSet)
+void UCStyledItemBasePrivate::setStyleSet(UCStyleSet *newSet)
 {
-    Q_D(UCStyledItemBase);
-    if (d->styleSet == styleSet) {
+    Q_Q(UCStyledItemBase);
+    if (styleSet == newSet) {
         return;
     }
 
-    if (!d->subthemingEnabled) {
+    if (!subthemingEnabled) {
         // no subtheming
-        if (styleSet) {
-            d->styleSet = styleSet;
+        if (newSet) {
+            styleSet = newSet;
             UCStyleSet::defaultSet().setName(styleSet->name());
         } else {
             UCStyleSet::defaultSet().resetName();
@@ -221,51 +219,51 @@ void UCStyledItemBase::setStyleSet(UCStyleSet *styleSet)
     }
 
     // disconnect from the previous set
-    UCStyleSet *connectedSet = d->styleSet ?
-                                d->styleSet :
-                                (!d->parentStyledItem ? &UCStyleSet::defaultSet() : NULL);
+    UCStyleSet *connectedSet = styleSet ?
+                                styleSet :
+                                (!parentStyledItem ? &UCStyleSet::defaultSet() : NULL);
     if (connectedSet) {
-        disconnect(connectedSet, &UCStyleSet::nameChanged,
-                   this, &UCStyledItemBase::styleSetChanged);
+        QObject::disconnect(connectedSet, &UCStyleSet::nameChanged,
+                            q, &UCStyledItemBase::styleSetChanged);
     }
 
-    UCStyleSet *prevSet = d->styleSet;
+    UCStyleSet *prevSet = styleSet;
 
     // resolve new styleSet
-    if (d->styleSet && styleSet) {
+    if (styleSet && newSet) {
         // no need to redo the parentStack, simply set the styleSet and leave
-        d->styleSet = styleSet;
+        styleSet = newSet;
     } else {
-        d->styleSet = styleSet;
-        if (!styleSet) {
+        styleSet = newSet;
+        if (!newSet) {
             // redo the parent chanin
-            d->disconnectTillItem(0);
-            d->connectParents(0);
+            disconnectTillItem(0);
+            connectParents(0);
         }
     }
 
     // connect to the new set
-    connectedSet = d->styleSet ?
-                    d->styleSet :
-                    (!d->parentStyledItem ? &UCStyleSet::defaultSet() : NULL);
+    connectedSet = styleSet ?
+                    styleSet :
+                    (!parentStyledItem ? &UCStyleSet::defaultSet() : NULL);
     if (connectedSet) {
-        connect(connectedSet, &UCStyleSet::nameChanged,
-                this, &UCStyledItemBase::styleSetChanged);
+        QObject::connect(connectedSet, &UCStyleSet::nameChanged,
+                         q, &UCStyledItemBase::styleSetChanged);
     }
     // detach previous set and attach the new one
     if (prevSet) {
         Q_EMIT prevSet->parentChanged();
     }
-    if (d->styleSet) {
+    if (styleSet) {
         // re-parent styleSet to make sure we have it
         // for the entire lifetime of the styled item
-        d->styleSet->setParent(this);
-        Q_EMIT d->styleSet->parentChanged();
+        styleSet->setParent(q);
+        Q_EMIT styleSet->parentChanged();
     }
 
-    Q_EMIT styleSetChanged();
+    Q_EMIT q->styleSetChanged();
 }
-void UCStyledItemBase::resetStyleSet()
+void UCStyledItemBasePrivate::resetStyleSet()
 {
     setStyleSet(NULL);
 }
