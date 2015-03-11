@@ -23,7 +23,8 @@ Template {
     TemplateSection {
         title: i18n.tr("Progress Bar")
         className: "ProgressBar"
-
+        documentation: "qml-ubuntu-components-progressbar10.html"
+        
         TemplateRow {
             title: i18n.tr("Standard")
 
