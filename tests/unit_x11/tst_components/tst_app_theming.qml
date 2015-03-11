@@ -24,7 +24,7 @@ MainView {
     width: units.gu(40)
     height: units.gu(71)
 
-    Component.onCompleted: Theme.name = "AppTheme"
+    Component.onCompleted: styleSet.name = "AppTheme"
 
     Label {
         id: testLabel
@@ -41,12 +41,12 @@ MainView {
 
         function test_ambiance()
         {
-            Theme.name = "Ubuntu.Components.Themes.Ambiance";
+            main.styleSet.name = "Ubuntu.Components.Themes.Ambiance";
         }
 
         function test_reset()
         {
-            Theme.name = undefined;
+            main.styleSet.name = undefined;
         }
     }
 }
