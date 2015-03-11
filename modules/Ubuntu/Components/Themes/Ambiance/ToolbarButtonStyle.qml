@@ -37,9 +37,10 @@ Item {
                 top: parent.top
                 horizontalCenter: parent.horizontalCenter
             }
-            width: iconWidth
-            height: iconWidth
+            sourceSize.width: iconWidth
+            sourceSize.height: iconWidth
             source: styledItem.iconSource
+            smooth: true
         }
 
         Label {
@@ -52,7 +53,6 @@ Item {
             width: paintedWidth
             text: styledItem.text
             fontSize: "x-small"
-            color: styleSet.palette.normal.overlayText
         }
     }
 

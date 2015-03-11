@@ -758,8 +758,7 @@ StyledItem {
 
         function linesHeight(lines)
         {
-            var lineHeight = editor.font.pixelSize * lines + inputHandler.lineSpacing * lines
-            return lineHeight + 2 * frameSpacing;
+            return inputHandler.lineSize * lines + 2 * frameSpacing;
         }
 
         function frameSize()
@@ -803,9 +802,9 @@ StyledItem {
             margins: internal.frameSpacing
         }
         // hint is shown till user types something in the field
-        visible: (editor.getText(0, editor.length) == "") && !editor.inputMethodComposing
+        visible: (editor.text == "") && !editor.inputMethodComposing
         color: styleSet.palette.normal.backgroundText
-        fontSize: "medium"
+        font: editor.font
         elide: Text.ElideRight
         wrapMode: Text.WordWrap
     }
@@ -870,7 +869,6 @@ StyledItem {
                 main: control
                 input: editor
                 flickable: flicker
-                frameDistance: Qt.point(flicker.x, flicker.y)
             }
         }
     }

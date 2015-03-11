@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 1.1
+import Ubuntu.Components 1.2
 import Ubuntu.Components.Themes.Ambiance 1.1
 
 MainView {
@@ -25,18 +25,49 @@ MainView {
 
     Page {
         title: "Textfield"
+        head.backAction: Action {
+            iconName: "back"
+            text: i18n.tr("Back")
+            onTriggered: visible = false
+        }
 
-        Column {
-            TextField {
-                objectName: "textfield"
-                placeholderText: "Type here"
-                width: units.gu(15)
+        Flickable {
+            anchors.fill: parent
+            contentHeight: childrenRect.height
 
-                style: TextFieldStyle {
-                    overlaySpacing: 0
-                    frameSpacing: 0
-                    background: Item {}
-                    color: UbuntuColors.lightAubergine
+            Column {
+                anchors.fill: parent
+                anchors.leftMargin: units.gu(2)
+
+                Label {
+                    text: "Below is a customized text field with clipping"
+                }
+
+                Item {
+                    clip: true // Mustn't affect handler visibility
+                    width: childrenRect.width
+                    height: childrenRect.height
+
+                    TextField {
+                        objectName: "textfield"
+                        placeholderText: "Type here"
+                        width: units.gu(35)
+                        height: units.gu(2)
+
+                        style: TextFieldStyle {
+                            overlaySpacing: 0
+                            frameSpacing: 0
+                            background: Item {}
+                            color: UbuntuColors.lightAubergine
+                        }
+                    }
+                }
+
+                Repeater {
+                    model: 30
+                    Label {
+                        text: "These labels are here to necessitate scrolling"
+                    }
                 }
             }
         }

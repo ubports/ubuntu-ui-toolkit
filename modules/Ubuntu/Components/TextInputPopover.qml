@@ -74,11 +74,14 @@ Popover {
     */
     y: parent ? (parent.height - height) / 2 : 0
     autoClose: false
-    contentHeight: row.childrenRect.height
-    contentWidth: row.childrenRect.width
+    contentHeight: row.childrenRect.height + padding * 2
+    contentWidth: row.childrenRect.width + padding * 2
+    property int padding: units.gu(1)
     Row {
         id: row
         height: units.gu(6)
+        x: popover.padding
+        y: popover.padding
 
         Repeater {
             model: actions.length
@@ -90,7 +93,7 @@ Popover {
                   accessible. https://bugs.launchpad.net/autopilot/+bug/1334599
                   */
                 property string text: action.text
-                width: Math.max(units.gu(4), implicitWidth) + units.gu(2)
+                width: Math.max(units.gu(5), implicitWidth) + units.gu(2)
                 height: units.gu(6)
                 action: actions[modelData]
                 style: styleSet.createStyleComponent("ToolbarButtonStyle.qml", button)
