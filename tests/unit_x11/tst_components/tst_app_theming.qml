@@ -38,6 +38,7 @@ MainView {
             compare(main.backgroundColor, "#a21e1c", "Theme not loaded?");
             compare(testLabel.color, "#add8e6", "Label color not from application theme.");
         }
+
         function test_ambiance()
         {
             Theme.name = "Ubuntu.Components.Themes.Ambiance";

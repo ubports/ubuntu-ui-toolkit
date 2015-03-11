@@ -1046,7 +1046,7 @@ plugins.qmltypes
     exports: ["StyleSet 1.3"]
     Property { name: "parent"; type: "UCStyleSet"; isReadonly: true; isPointer: true }
     Property { name: "name"; type: "string" }
-    Property { name: "palette"; type: "QObject"; isPointer: true }
+    Property { name: "palette"; type: "QObject"; isReadonly: true; isPointer: true }
     Method {
     name: "createStyleComponent"
     Parameter { name: "styleName"; type: "string" }
@@ -1090,7 +1090,7 @@ plugins.qmltypes
     Property { name: "radius"; type: "string" }
     Property { name: "borderSource"; type: "string" }
     Property { name: "source"; revision: 1; type: "QVariant" }
-    Property { name: "sourceOpacity"; revision: 1; type: "float" }
+    Property { name: "sourceOpacity"; revision: 1; type: "double" }
     Property { name: "sourceFillMode"; revision: 1; type: "FillMode" }
     Property { name: "sourceHorizontalWrapMode"; revision: 1; type: "WrapMode" }
     Property { name: "sourceVerticalWrapMode"; revision: 1; type: "WrapMode" }
@@ -1119,6 +1119,11 @@ plugins.qmltypes
     Signal { name: "backgroundColorChanged"; revision: 1 }
     Signal { name: "secondaryBackgroundColorChanged"; revision: 1 }
     Signal { name: "backgroundModeChanged"; revision: 1 }
+    name: "UCUbuntuShapeOverlay"
+    prototype: "UCUbuntuShape"
+    exports: ["UbuntuShapeOverlay 1.2"]
+    Property { name: "overlayRect"; type: "QRectF" }
+    Property { name: "overlayColor"; type: "QColor" }
     name: "UCUnits"
     prototype: "QObject"
     exports: ["UCUnits 0.1", "UCUnits 1.0"]

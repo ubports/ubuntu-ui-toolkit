@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,9 +14,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Components.Themes.Ambiance 0.1
+import QtQuick 2.4
+import Ubuntu.Components 1.3
 
-Item {
-    Component.onCompleted: console.log("PARENT")
+StyledItem {
+    objectName: "main"
+    width: units.gu(40)
+    height: units.gu(71)
+
+    styleSet: StyleSet{ objectName: "top" }
+
+    Item {
+        anchors.fill: parent
+        StyledItem {
+            objectName: "testItem"
+            styleSet: StyleSet {
+                objectName: "testSet"
+                name: "Ubuntu.Components.Themes.SuruDark"
+            }
+        }
+    }
 }

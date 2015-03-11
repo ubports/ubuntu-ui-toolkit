@@ -65,8 +65,8 @@ function execute_test_cmd {
     ALARM_BACKEND=memory \
     $_CMD $_ARGS 2>&1 | grep -v 'QFontDatabase: Cannot find font directory'
     # Note: Get first command before the pipe, $? would be ambiguous
-#    RESULT=${PIPESTATUS[0]}
-#    WARNINGS=$(grep -c qwarn $_XML)
+    RESULT=${PIPESTATUS[0]}
+    WARNINGS=$(grep -c qwarn $_XML)
     EXCEPTIONS='tst_components_benchmark \
                 tst_tabbar.qml \
                 tst_datepicker.qml \

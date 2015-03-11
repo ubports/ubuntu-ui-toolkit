@@ -183,7 +183,7 @@ void UCStyledItemBase::setActiveFocusOnPress(bool value)
 }
 
 /*!
- * \qmlproperty StyleSet StyledItemBase::styleSet
+ * \qmlproperty StyleSet StyledItem::styleSet
  * \since Ubuntu.Components 1.3
  * The property configures the styleset the component and all its sub-components
  * should use. By default it is set to the closest StyledItem's styleset if any,
@@ -229,6 +229,8 @@ void UCStyledItemBase::setStyleSet(UCStyleSet *styleSet)
                    this, &UCStyledItemBase::styleSetChanged);
     }
 
+    UCStyleSet *prevSet = d->styleSet;
+
     // resolve new styleSet
     if (d->styleSet && styleSet) {
         // no need to redo the parentStack, simply set the styleSet and leave
@@ -250,6 +252,17 @@ void UCStyledItemBase::setStyleSet(UCStyleSet *styleSet)
         connect(connectedSet, &UCStyleSet::nameChanged,
                 this, &UCStyledItemBase::styleSetChanged);
     }
+    // detach previous set and attach the new one
+    if (prevSet) {
+        Q_EMIT prevSet->parentChanged();
+    }
+    if (d->styleSet) {
+        // re-parent styleSet to make sure we have it
+        // for the entire lifetime of the styled item
+        d->styleSet->setParent(this);
+        Q_EMIT d->styleSet->parentChanged();
+    }
+
     Q_EMIT styleSetChanged();
 }
 void UCStyledItemBase::resetStyleSet()
@@ -340,8 +353,9 @@ void UCStyledItemBasePrivate::_q_ascendantChanged(QQuickItem *ascendant)
 void UCStyledItemBasePrivate::_q_parentStyleChanged()
 {
     // do not trigger styleSetChanged() on this item if we have a
-    // custom one
+    // custom one, but resolve its eventual parent change!
     if (styleSet) {
+        Q_EMIT styleSet->parentChanged();
         return;
     }
     Q_Q(UCStyledItemBase);

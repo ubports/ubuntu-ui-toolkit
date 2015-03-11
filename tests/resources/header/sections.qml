@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright (C) 2013-2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -18,12 +18,24 @@ import QtQuick 2.4
 import Ubuntu.Components 1.2
 
 MainView {
-    width: units.gu(40)
-    height: units.gu(71)
+    id: mainView
+    width: units.gu(50)
+    height: units.gu(70)
 
-    Component.onCompleted: Theme.name = "AppTheme"
-
-    Label {
-        objectName: "test_label"
+    Page {
+        title: "Sections"
+        id: sectionsPage
+        head {
+            sections {
+                model: ["navy", "lightblue", "brown"]
+            }
+        }
+        Rectangle {
+            anchors {
+                fill: parent
+                margins: units.gu(2)
+            }
+            color: sectionsPage.head.sections.model[sectionsPage.head.sections.selectedIndex]
+        }
     }
 }

@@ -156,6 +156,7 @@ public:
     QPointer<UCListItem> disablerItem;
 };
 
-QColor getPaletteColor(const char *profile, const char *color);
+class UCStyleSet;
+QColor getPaletteColor(UCStyleSet *styleSet, const char *profile, const char *color);
 
 #endif // UCVIEWITEM_P_H

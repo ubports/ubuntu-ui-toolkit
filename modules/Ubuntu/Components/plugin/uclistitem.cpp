@@ -15,7 +15,7 @@
  */
 
 #include "ucunits.h"
-#include "ucdeprecatedtheme.h"
+#include "ucstyleset.h"
 #include "uclistitem.h"
 #include "uclistitem_p.h"
 #include "uclistitemactions.h"
@@ -37,11 +37,10 @@
 #include <QtQuick/private/qquickbehavior_p.h>
 #include <QtQml/QQmlEngine>
 
-QColor getPaletteColor(const char *profile, const char *color)
+QColor getPaletteColor(UCStyleSet *styleSet, const char *profile, const char *color)
 {
     QColor result;
-    // FIXME: use styleSet when available
-    QObject *palette = UCDeprecatedTheme::instance().palette();
+    QObject *palette = styleSet->palette();
     if (palette) {
         QObject *paletteProfile = palette->property(profile).value<QObject*>();
         if (paletteProfile) {
@@ -99,13 +98,13 @@ void UCListItemDivider::init(UCListItem *listItem)
 
 void UCListItemDivider::paletteChanged()
 {
-    QColor background = getPaletteColor("normal", "background");
+    Q_D(UCListItemDivider);
+    QColor background = getPaletteColor(d->listItem->styleSet, "normal", "background");
     if (!background.isValid()) {
         return;
     }
     // FIXME: we need a palette value for divider colors, till then base on the background
     // luminance
-    Q_D(UCListItemDivider);
     if (!d->colorFromChanged || !d->colorToChanged) {
         qreal luminance = (background.red()*212 + background.green()*715 + background.blue()*73)/1000.0/255.0;
         bool lightBackground = (luminance > 0.85);
@@ -238,8 +237,7 @@ void UCListItemPrivate::init()
                      q, SLOT(_q_updateSwiping()), Qt::DirectConnection);
 
     // catch theme changes
-    // FIXME: use styleSet when available
-    QObject::connect(&UCDeprecatedTheme::instance(), SIGNAL(nameChanged()), q, SLOT(_q_updateThemedData()));
+    QObject::connect(q, SIGNAL(styleSetChanged()), q, SLOT(_q_updateThemedData()));
     _q_updateThemedData();
 
     // watch grid unit size change and set implicit size
@@ -381,8 +379,7 @@ void UCListItemPrivate::resetStyle()
         }
         delete implicitStyleComponent;
         Q_Q(UCListItem);
-        // FIXME: use styleSet when available
-        implicitStyleComponent = UCDeprecatedTheme::instance().createStyleComponent("ListItemStyle.qml", q);
+        implicitStyleComponent = q->styleSet()->createStyleComponent("ListItemStyle.qml", q);
         if (implicitStyleComponent) {
             // set the objectnane for testing in tst_listitems.qml
             implicitStyleComponent->setObjectName("ListItemThemeStyle");
@@ -1519,7 +1516,7 @@ void UCListItem::resetHighlightColor()
 {
     Q_D(UCListItem);
     d->customColor = false;
-    d->highlightColor = getPaletteColor("selected", "background");
+    d->highlightColor = getPaletteColor(d->styleSet, "selected", "background");
     update();
     Q_EMIT highlightColorChanged();
 }

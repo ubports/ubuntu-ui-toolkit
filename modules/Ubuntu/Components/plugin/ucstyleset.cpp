@@ -67,9 +67,13 @@
         styleSet.name: "Ubuntu.Components.Themes.Ambiance"
     }
     \endqml
+    \note Changing the style set name in this way will result in a change of the
+    inherited style set. In case a different style set is desired, a new instance
+    of the StyleSet must be created.
 
-    Example creating a style component:
-
+    The \l createStyleComponent function can be used to create the style for a
+    component. The following example will create the style with the inherited
+    style set.
     \qml
     import QtQuick 2.4
     import Ubuntu.Components 1.3
@@ -78,6 +82,25 @@
         style: styleSet.createStyleComponent("MyItemStyle.qml", myItem)
     }
     \endqml
+
+    When declared, the StyleSet's name points to the system defined theme. There
+    can be cases when the parent defined style set is needed but with small modifications.
+    In these situations the \l parent property can be used to get the parent
+    style set, and so the name can be bound to the parent's name.
+    \qml
+    import QtQuick 2.4
+    import Ubuntu.Components 1.3
+    StyledItem {
+        id: myItem
+        styleSet: StyleSet {
+            name: parent ? parent.name : undefined
+        }
+        style: styleSet.createStyleComponent("MyItemStyle.qml", myItem)
+    }
+    \endqml
+    \note Observe the way the name is set to \c undefined when the parent is not
+    defined. Setting \c undefined to name will reset the property to the system
+    theme defined one.
 
     \sa {StyledItem}
 */
@@ -211,7 +234,7 @@ void UCStyleSet::updateThemePaths()
  * The property specifies the parent StyleSet. The property only has a valid value
  * when assigned to \l StyledItem::styleSet property.
  */
-UCStyleSet *UCStyleSet::getParent()
+UCStyleSet *UCStyleSet::parentSet()
 {
     UCStyledItemBase *owner = qobject_cast<UCStyledItemBase*>(parent());
     UCStyledItemBasePrivate *pOwner = owner ? UCStyledItemBasePrivate::get(owner) : NULL;
@@ -243,7 +266,7 @@ UCStyleSet *UCStyleSet::getParent()
 */
 QString UCStyleSet::name() const
 {
-    return m_name.isEmpty() ? m_themeSettings.themeName() : m_name;
+    return !m_name.isEmpty() ? m_name : m_themeSettings.themeName();
 }
 void UCStyleSet::setName(const QString& name)
 {
@@ -278,14 +301,6 @@ QObject* UCStyleSet::palette()
         loadPalette(false);
     }
     return m_palette;
-}
-void UCStyleSet::setPalette(QObject *palette)
-{
-    if (m_palette == palette) {
-        return;
-    }
-    m_palette = palette;
-    Q_EMIT paletteChanged();
 }
 
 QUrl UCStyleSet::styleUrl(const QString& styleName)
@@ -333,7 +348,8 @@ void UCStyleSet::registerToContext(QQmlContext* context)
 /*!
     \qmlmethod Component StyleSet::createStyleComponent(string styleName, object parent)
 
-    Returns an instance of the style component named \a styleName.
+    Returns an instance of the style component named \a styleName and parented
+    to \a parent.
 */
 QQmlComponent* UCStyleSet::createStyleComponent(const QString& styleName, QObject* parent)
 {
