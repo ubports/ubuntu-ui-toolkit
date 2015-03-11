@@ -41,7 +41,7 @@ const float distanceAApx = 1.75f;
 // than 2 to look as if it has no rounded corners.
 const float cornerRadiusOffset = 2.0f;
 
-// Factor by which the final fragment RGB color must be multiplied for the pressed style.
+// Factor by which the final fragment RGB color must be multiplied for the pressed aspect.
 const float pressedFactor = 0.85f;
 
 // --- Scene graph shader ---
@@ -75,7 +75,7 @@ void ShapeShader::initialize()
     m_distanceAAId = program()->uniformLocation("distanceAA");
     m_dfdtFlipId = program()->uniformLocation("dfdtFlip");
     m_texturedId = program()->uniformLocation("textured");
-    m_styleId = program()->uniformLocation("style");
+    m_aspectId = program()->uniformLocation("aspect");
 }
 
 void ShapeShader::updateState(
@@ -116,9 +116,9 @@ void ShapeShader::updateState(
     }
     program()->setUniformValue(m_texturedId, textured);
     program()->setUniformValue(
-        m_styleId, data->flags & (ShapeMaterial::Data::Plain | ShapeMaterial::Data::Sunken));
+        m_aspectId, data->flags & (ShapeMaterial::Data::Plain | ShapeMaterial::Data::Sunken));
 
-    // The pressed style is implemented by scaling the final RGB fragment color. It's not a real
+    // The pressed aspect is implemented by scaling the final RGB fragment color. It's not a real
     // blending as it was done before deprecation, so for instance transparent colors remain the
     // same, but we consider it would be too costly to maintain for a deprecated feature that was
     // actually only used in the toolkit and never documented. The factor is multiplied with the Qt
@@ -274,7 +274,7 @@ UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
     , m_sourceScale(1.0f, 1.0f)
     , m_sourceTranslation(0.0f, 0.0f)
     , m_sourceTransform(1.0f, 1.0f, 0.0f, 0.0f)
-    , m_style(Sunken)
+    , m_aspect(Sunken)
     , m_imageHorizontalAlignment(AlignHCenter)
     , m_imageVerticalAlignment(AlignVCenter)
     , m_backgroundMode(SolidColor)
@@ -328,13 +328,13 @@ void UCUbuntuShape::setCornerRadius(qreal cornerRadius)
     }
 }
 
-/*! \qmlproperty enumeration UbuntuShape::style
+/*! \qmlproperty enumeration UbuntuShape::aspect
 
     This property defines the graphical style of the UbuntuShape. The default value is \c
     UbuntuShape.Plain.
 
     \note Setting this disables support for the deprecated \l borderSource property. Use the
-    UbuntuShapeOverlay item in order to provide the sunken "pressed" style previously supported by
+    UbuntuShapeOverlay item in order to provide the sunken "pressed" aspect previously supported by
     that property.
 
     \list
@@ -342,20 +342,20 @@ void UCUbuntuShape::setCornerRadius(qreal cornerRadius)
     \li \b UbuntuShape.Sunken - inner shadow slightly moved downwards and bevelled bottom
     \endlist
 */
-void UCUbuntuShape::setStyle(Style style)
+void UCUbuntuShape::setAspect(Aspect aspect)
 {
-    if (!(m_flags & StyleSet)) {
-        m_flags |= StyleSet;
-        m_style = Plain;
+    if (!(m_flags & AspectSet)) {
+        m_flags |= AspectSet;
+        m_aspect = Plain;
         update();
         Q_EMIT borderSourceChanged();
     }
 
-    const quint8 newStyle = style;
-    if (m_style != newStyle) {
-        m_style = newStyle;
+    const quint8 newAspect = aspect;
+    if (m_aspect != newAspect) {
+        m_aspect = newAspect;
         update();
-        Q_EMIT styleChanged();
+        Q_EMIT aspectChanged();
     }
 }
 
@@ -750,25 +750,25 @@ void UCUbuntuShape::setRadius(const QString& radius)
     \deprecated
 
     This property defines the look of the shape borders. The supported strings are \c
-    "radius_idle.sci" providing an idle button style and \c "radius_pressed.sci" providing a pressed
-    button style. Any other strings (like the empty one \c "") provides a plain shape with no
-    borders. The default value is \c "radius_idle.sci".
+    "radius_idle.sci" providing an idle button aspect and \c "radius_pressed.sci" providing a
+    pressed button aspect. Any other strings (like the empty one \c "") provides a plain shape with
+    no borders. The default value is \c "radius_idle.sci".
 
-    \note Use \l style instead.
+    \note Use \l aspect instead.
 */
 void UCUbuntuShape::setBorderSource(const QString& borderSource)
 {
-    if (!(m_flags & StyleSet)) {
-        quint8 style;
+    if (!(m_flags & AspectSet)) {
+        quint8 aspect;
         if (borderSource.endsWith(QString("radius_idle.sci"))) {
-            style = Sunken;
+            aspect = Sunken;
         } else if (borderSource.endsWith(QString("radius_pressed.sci"))) {
-            style = Pressed;
+            aspect = Pressed;
         } else {
-            style = Plain;
+            aspect = Plain;
         }
-        if (m_style != style) {
-            m_style = style;
+        if (m_aspect != aspect) {
+            m_aspect = aspect;
             update();
             Q_EMIT borderSourceChanged();
         }
@@ -1228,18 +1228,18 @@ void UCUbuntuShape::updateMaterial(QSGNode* node, float radius, quint32 shapeTex
     materialData->distanceAAFactor = qMin(
         (radius / (end - start)) - (start / (end - start)), 1.0f) * 255.0f;
 
-    // When the radius is equal to cornerRadiusOffset (which means cornerRadius is 0), no style is
+    // When the radius is equal to cornerRadiusOffset (which means cornerRadius is 0), no aspect is
     // flagged so that a dedicated (statically flow controlled) shaved off shader can be used for
     // optimal performance.
     if (radius > cornerRadiusOffset) {
-        const quint8 styleFlags[] = {
+        const quint8 aspectFlags[] = {
             ShapeMaterial::Data::Plain, ShapeMaterial::Data::Sunken,
             ShapeMaterial::Data::Sunken | ShapeMaterial::Data::Pressed
         };
-        flags |= styleFlags[m_style];
+        flags |= aspectFlags[m_aspect];
     } else {
-        const quint8 styleFlags[] = { 0, 0, ShapeMaterial::Data::Pressed };
-        flags |= styleFlags[m_style];
+        const quint8 aspectFlags[] = { 0, 0, ShapeMaterial::Data::Pressed };
+        flags |= aspectFlags[m_aspect];
     }
 
     materialData->flags = flags;

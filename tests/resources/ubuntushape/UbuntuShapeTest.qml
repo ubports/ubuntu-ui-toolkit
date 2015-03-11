@@ -24,7 +24,7 @@ Item {
     focus: true
 
     // Enum to string tables.
-    property variant styleTable: [
+    property variant aspectTable: [
         "Plain", "Sunken"
     ]
     property variant backgroundModeTable: [
@@ -62,7 +62,7 @@ Item {
         "Background colors  (a/z):   " + shape.backgroundColor + ", " + shape.secondaryBackgroundColor + "\n" +
         "Background mode      (e):   " + root.backgroundModeTable[shape.backgroundMode] + "\n\n" +
         "Corner radius        (r):   " + shape.cornerRadius.toFixed(1.0) + "\n" +
-        "Style                (t):   " + root.styleTable[shape.style] + "\n\n" +
+        "Aspect               (t):   " + root.aspectTable[shape.aspect] + "\n\n" +
         "Source               (o):   " + shape.source + "\n" +
         "Source opacity       (p):   " + shape.sourceOpacity.toFixed(2) + "\n" +
         "Source fill          (q):   " + root.sourceFillModeTable[shape.sourceFillMode] + "\n" +
@@ -221,7 +221,7 @@ Item {
         } else if (event.key == Qt.Key_R) {
             shape.cornerRadius += ((event.modifiers & shift) ? 1.0 : -1.0);
         } else if (event.key == Qt.Key_T) {
-            shape.style = (shape.style + 1) % 2;
+            shape.aspect = (shape.aspect + 1) % 2;
 
         // Source.
         } else if (event.key == Qt.Key_O) {

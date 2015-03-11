@@ -1077,7 +1077,7 @@ plugins.qmltypes
     name: "FillMode"
     name: "WrapMode"
     Property { name: "cornerRadius"; revision: 1; type: "double" }
-    Property { name: "style"; revision: 1; type: "Style" }
+    Property { name: "aspect"; revision: 1; type: "Aspect" }
     Property { name: "source"; revision: 1; type: "QVariant" }
     Property { name: "sourceOpacity"; revision: 1; type: "double" }
     Property { name: "sourceFillMode"; revision: 1; type: "FillMode" }
