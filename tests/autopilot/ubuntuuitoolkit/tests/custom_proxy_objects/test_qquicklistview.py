@@ -19,6 +19,9 @@ try:
 except ImportError:
     import mock
 
+import copy
+import os
+
 from autopilot.introspection import dbus
 
 import ubuntuuitoolkit
@@ -224,3 +227,56 @@ MainView {
 
         self.list_view.click_element('testListElement9')
         self.assertEqual(self.label.text, 'testListElement9')
+
+
+class QQuickListViewDraggingBaseTestCase(tests.QMLFileAppTestCase):
+
+    path = os.path.abspath(__file__)
+    dir_path = os.path.dirname(path)
+    test_qml_file_path = os.path.join(
+        dir_path, 'test_listitem.ListViewDraggingTestCase.qml')
+
+    def setUp(self):
+        super(QQuickListViewDraggingBaseTestCase, self).setUp()
+        self.list_view = self.main_view.select_single(
+            ubuntuuitoolkit.QQuickListView, objectName='test_view')
+
+
+class QQuickListViewDraggingTestCase(QQuickListViewDraggingBaseTestCase):
+
+    def test_long_press_must_enable_drag_mode(self):
+        self.list_view._enable_drag_mode()
+        # The item will not exist if the list is not in drag mode.
+        self.list_view.select_single(
+            'QQuickItem', objectName='draghandler_panel0')
+
+
+class QQuickListViewReorderingTestCase(QQuickListViewDraggingBaseTestCase):
+
+    scenarios = [
+        ('both items visible, to bottom', {'from_index': 0, 'to_index': 1}),
+        ('both items visible, to top', {'from_index': 1, 'to_index': 0}),
+        ('both items visible, to bottom, first non visible', {
+            'from_index': 0, 'to_index': 7}),
+        ('to item not visible, to middle', {'from_index': 0, 'to_index': 15}),
+        ('to item not visible, to bottom', {'from_index': 0, 'to_index': 24}),
+
+        # from bottom to top
+#        ('both items not visible, to top', {'from_index': 7, 'to_index': 6}),
+#        ('both items not visible, to top', {'from_index': 10, 'to_index': 8}),
+    ]
+
+    def _find_item(self, index):
+        return self.list_view._find_element('listitem{}'.format(index))
+
+    def _get_item_text(self, index):
+        item = self._find_item(index)
+        return item.select_single('Label').text
+
+    def test_drag_item_must_reorder_list(self):
+        original_from_text = self._get_item_text(self.from_index)
+
+        self.list_view.drag_item(self.from_index, self.to_index)
+
+        self.assertEqual(
+            original_from_text, self._get_item_text(self.to_index))
