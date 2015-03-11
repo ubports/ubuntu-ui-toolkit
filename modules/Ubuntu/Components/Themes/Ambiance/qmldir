@@ -9,7 +9,6 @@ ListItemOptionSelector 0.1 ListItemOptionSelector.qml
 OptionSelectorStyle 0.1 OptionSelectorStyle.qml
 PopoverForegroundStyle 0.1 PopoverForegroundStyle.qml
 internal ScrollbarStyle ScrollbarStyle.qml
-internal SelectionCursorStyle SelectionCursorStyle.qml
 internal SheetForegroundStyle SheetForegroundStyle.qml
 internal SliderStyle SliderStyle.qml
 TabBarStyle 0.1 TabBarStyle.qml
@@ -50,8 +49,6 @@ SliderStyle 1.1 SliderStyle.qml
 SwitchStyle 1.1 SwitchStyle.qml
 CheckBoxStyle 1.1 CheckBoxStyle.qml
 
-internal TextSelectionStartCursorStyle TextSelectionStartCursorStyle.qml
-internal TextSelectionEndCursorStyle TextSelectionEndCursorStyle.qml
 internal OverflowPanel OverflowPanel.qml
 internal HeadDividerStyle HeadDividerStyle.qml
 
