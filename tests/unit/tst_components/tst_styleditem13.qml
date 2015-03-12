@@ -29,7 +29,7 @@ TestCase {
      }
 
      function test_api() {
-         verify(scope.styleSet, "Null default styleSet");
-         compare(inner.styleSet, scope.styleSet, "default stylesets should be inherited!");
+         verify(scope.theme, "Null default theme");
+         compare(inner.theme, scope.theme, "default themes should be inherited!");
      }
 }

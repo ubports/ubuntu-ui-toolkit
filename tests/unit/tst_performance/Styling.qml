@@ -23,7 +23,7 @@ StyledItem {
     height: units.gu(100)
 
     property string newTheme
-    onNewThemeChanged: component3.styleSet.name = newTheme
+    onNewThemeChanged: component3.theme.name = newTheme
 
     Column {
         anchors.fill: parent
@@ -40,7 +40,7 @@ StyledItem {
                     anchors.fill: parent
                     StyledItem {
                         id: component4
-                        styleSet: StyleSet {
+                        theme: ThemeSettings {
                             name: "Ubuntu.Components.Themes.Ambiance"
                         }
 

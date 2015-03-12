@@ -82,7 +82,7 @@
     }
     \endqml
 
-    When declared, the StyleSet's name points to the system defined theme. There
+    When declared, the ThemeSettings's name points to the system defined theme. There
     can be cases when the parent defined style set is needed but with small modifications.
     In these situations the \l parent property can be used to get the parent
     style set, and so the name can be bound to the parent's name.
@@ -91,10 +91,10 @@
     import Ubuntu.Components 1.3
     StyledItem {
         id: myItem
-        styleSet: StyleSet {
+        theme: ThemeSettings {
             name: parent ? parent.name : undefined
         }
-        style: styleSet.createStyleComponent("MyItemStyle.qml", myItem)
+        style: theme.createStyleComponent("MyItemStyle.qml", myItem)
     }
     \endqml
     \note Observe the way the name is set to \c undefined when the parent is not
@@ -207,7 +207,7 @@ void UCTheme::updateEnginePaths()
     }
 }
 
-// slot called when the styleset uses the system theme
+// slot called when the ThemeSettings uses the system theme
 void UCTheme::onThemeNameChanged()
 {
     updateThemePaths();
