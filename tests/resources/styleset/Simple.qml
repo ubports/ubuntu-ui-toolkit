@@ -28,12 +28,12 @@ StyledItem {
         anchors.fill: parent
         Button {
             text: "Theme change"
-            onClicked: Theme.name = "Ubuntu.Components.Themes.SuruDark"
+            onClicked: theme.name = "Ubuntu.Components.Themes.SuruDark"
         }
 
         TextField {
             objectName: "OuterText"
-            property string styleName: Theme.name
+            property string styleName: theme.name
             onStyleNameChanged: print(objectName, styleName)
         }
         StyledItem {
@@ -42,7 +42,7 @@ StyledItem {
             height: units.gu(10)
             TextField {
                 objectName: "InnerText"
-                property string styleName: Theme.name
+                property string styleName: theme.name
                 onStyleNameChanged: print(objectName, styleName)
             }
         }

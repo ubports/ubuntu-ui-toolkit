@@ -88,7 +88,7 @@ private Q_SLOTS:
 
     void test_default_theme()
     {
-        UCTheme::defaultSet();
+        UCTheme::defaultTheme();
     }
 
     void test_default_name()

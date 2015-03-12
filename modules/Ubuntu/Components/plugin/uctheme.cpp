@@ -138,15 +138,15 @@ QUrl pathFromThemeName(QString themeName)
 
 UCTheme::UCTheme(QObject *parent)
     : QObject(parent)
-    , m_palette(UCTheme::defaultSet().m_palette)
-    , m_engine(UCTheme::defaultSet().m_engine)
+    , m_palette(UCTheme::defaultTheme().m_palette)
+    , m_engine(UCTheme::defaultTheme().m_engine)
     , m_defaultStyle(false)
 {
     init();
 }
 
-UCTheme::UCTheme(bool defaultStyle)
-    : QObject(0)
+UCTheme::UCTheme(bool defaultStyle, QObject *parent)
+    : QObject(parent)
     , m_palette(NULL)
     , m_engine(NULL)
     , m_defaultStyle(defaultStyle)
@@ -298,14 +298,14 @@ QString UCTheme::parentThemeName(const QString& themeName)
 // registers the default theme property to the root context
 void UCTheme::registerToContext(QQmlContext* context)
 {
-    UCTheme *defaultSet = &UCTheme::defaultSet();
-    defaultSet->m_engine = context->engine();
-    defaultSet->updateEnginePaths();
+    UCTheme *defaultTheme = &UCTheme::defaultTheme();
+    defaultTheme->m_engine = context->engine();
+    defaultTheme->updateEnginePaths();
 
-    context->setContextProperty("theme", defaultSet);
+    context->setContextProperty("theme", defaultTheme);
     ContextPropertyChangeListener *listener =
         new ContextPropertyChangeListener(context, "theme");
-    QObject::connect(defaultSet, &UCTheme::nameChanged,
+    QObject::connect(defaultTheme, &UCTheme::nameChanged,
                      listener, &ContextPropertyChangeListener::updateContextProperty);
 }
 
@@ -362,6 +362,6 @@ void UCTheme::loadPalette(bool notify)
         }
     } else {
         // use the default palette if none defined
-        m_palette = defaultSet().m_palette;
+        m_palette = defaultTheme().m_palette;
     }
 }

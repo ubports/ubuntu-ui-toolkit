@@ -37,7 +37,7 @@ class UCTheme : public QObject, public QQmlParserStatus
     Q_PROPERTY(QObject* palette READ palette NOTIFY paletteChanged)
 public:
     explicit UCTheme(QObject *parent = 0);
-    static UCTheme &defaultSet()
+    static UCTheme &defaultTheme()
     {
         static UCTheme instance(true);
         return instance;
@@ -72,7 +72,7 @@ private Q_SLOTS:
     void loadPalette(bool notify = true);
 
 private:
-    UCTheme(bool defaultStyle);
+    UCTheme(bool defaultStyle, QObject *parent = 0);
     void init();
 
     QString m_name;
