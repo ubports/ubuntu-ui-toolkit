@@ -31,7 +31,7 @@ StyledItem {
             width: parent.width
             height: units.gu(20)
             styleSet: StyleSet {
-                name: parent ? parent.name : undefined
+                name: parentStyleSet ? parentStyleSet.name : undefined
             }
 
             Item {

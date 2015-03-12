@@ -287,7 +287,7 @@ private Q_SLOTS:
         UCStyledItemBase *testItem = view->findItem<UCStyledItemBase*>("testItem");
         UCStyledItemBase *mainItem = qobject_cast<UCStyledItemBase*>(view->rootObject());
 
-        QSignalSpy parentChangeSpy(testSet, SIGNAL(parentChanged()));
+        QSignalSpy parentChangeSpy(testSet, SIGNAL(parentStyleSetChanged()));
         UCStyledItemBasePrivate::get(testItem)->setStyleSet(testSet);
         parentChangeSpy.wait(200);
         QCOMPARE(parentChangeSpy.count(), 1);
@@ -302,7 +302,7 @@ private Q_SLOTS:
         UCStyledItemBase *mainItem = qobject_cast<UCStyledItemBase*>(view->rootObject());
 
         // reset mainItem's styleSet should trigger parentChanged on testSet
-        QSignalSpy parentChangeSpy(testSet, SIGNAL(parentChanged()));
+        QSignalSpy parentChangeSpy(testSet, SIGNAL(parentStyleSetChanged()));
         UCStyledItemBasePrivate::get(mainItem)->resetStyleSet();
         parentChangeSpy.wait(200);
         QCOMPARE(parentChangeSpy.count(), 1);
@@ -317,7 +317,7 @@ private Q_SLOTS:
         UCStyledItemBase *mainItem = qobject_cast<UCStyledItemBase*>(view->rootObject());
 
         // change mainItem.styleSet.name should trigger parentChanged on testSet
-        QSignalSpy parentChangeSpy(testSet, SIGNAL(parentChanged()));
+        QSignalSpy parentChangeSpy(testSet, SIGNAL(parentStyleSetChanged()));
         UCStyledItemBasePrivate::get(mainItem)->getStyleSet()->setName("Ubuntu.Components.Themes.SuruDark");
         parentChangeSpy.wait(200);
         QCOMPARE(parentChangeSpy.count(), 1);
