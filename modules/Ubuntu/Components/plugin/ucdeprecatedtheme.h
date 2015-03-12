@@ -23,7 +23,7 @@
 
 class QQmlComponent;
 class QQmlContext;
-class UCStyleSet;
+class UCTheme;
 class UCDeprecatedTheme : public QObject
 {
     Q_OBJECT

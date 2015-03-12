@@ -22,7 +22,7 @@ StyledItem {
     height: units.gu(71)
     objectName: "mainStyled"
 
-    styleSet.name: "Ubuntu.Components.Themes.SuruGradient"
+    theme.name: "Ubuntu.Components.Themes.SuruGradient"
 
     Column {
         anchors.fill: parent
@@ -30,8 +30,8 @@ StyledItem {
             objectName: "firstLevelStyled"
             width: parent.width
             height: units.gu(20)
-            styleSet: StyleSet {
-                name: parentStyleSet ? parentStyleSet.name : undefined
+            theme: ThemeSettings {
+                name: parentTheme.name
             }
 
             Item {

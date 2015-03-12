@@ -19,12 +19,12 @@ import Ubuntu.Components 1.3
 
 Item {
     id: item
-    property StyleSet styleSet: StyleSet {}
+    property ThemeSettings theme: ThemeSettings {}
     property Component style
 
     property string styleDocument
-    onStyleDocumentChanged: style = styleSet.createStyleComponent(styleDocument, item)
+    onStyleDocumentChanged: style = theme.createStyleComponent(styleDocument, item)
 
     property string themeName
-    onThemeNameChanged: styleSet.name = themeName;
+    onThemeNameChanged: theme.name = themeName;
 }

@@ -22,14 +22,14 @@
 #include <QtQuick/QQuickItem>
 
 class UCStyledItemBasePrivate;
-class UCStyleSet;
+class UCTheme;
 class UCStyledItemBase : public QQuickItem
 {
     Q_OBJECT
     Q_PROPERTY(bool activeFocusOnPress
                READ activefocusOnPress WRITE setActiveFocusOnPress
                NOTIFY activeFocusOnPressChanged REVISION 1)
-    Q_PRIVATE_PROPERTY(d_func(), UCStyleSet *styleSet READ getStyleSet WRITE setStyleSet RESET resetStyleSet NOTIFY styleSetChanged REVISION 2)
+    Q_PRIVATE_PROPERTY(d_func(), UCTheme *theme READ getTheme WRITE setTheme RESET resetTheme NOTIFY themeChanged REVISION 2)
 public:
     explicit UCStyledItemBase(QQuickItem *parent = 0);
 
@@ -41,7 +41,7 @@ public Q_SLOTS:
 
 Q_SIGNALS:
     void activeFocusOnPressChanged();
-    Q_REVISION(2) void styleSetChanged();
+    Q_REVISION(2) void themeChanged();
 
 protected:
     UCStyledItemBase(UCStyledItemBasePrivate &, QQuickItem *parent);

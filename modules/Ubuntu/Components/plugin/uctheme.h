@@ -17,8 +17,8 @@
  *          Florian Boucault <florian.boucault@canonical.com>
  */
 
-#ifndef UCSTYLESET_H
-#define UCSTYLESET_H
+#ifndef UCTHEME_H
+#define UCTHEME_H
 
 #include <QtCore/QObject>
 #include <QtCore/QPointer>
@@ -30,23 +30,23 @@
 #include "ucthemesettings.h"
 
 class UCStyledItemBase;
-class UCStyleSet : public QObject, public QQmlParserStatus
+class UCTheme : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
     Q_INTERFACES(QQmlParserStatus)
-    Q_PROPERTY(UCStyleSet *parentStyleSet READ parentSet NOTIFY parentStyleSetChanged)
+    Q_PROPERTY(UCTheme *parentTheme READ parentTheme NOTIFY parentThemeChanged)
     Q_PROPERTY(QString name READ name WRITE setName RESET resetName NOTIFY nameChanged)
     Q_PROPERTY(QObject* palette READ palette NOTIFY paletteChanged)
 public:
-    explicit UCStyleSet(QObject *parent = 0);
-    static UCStyleSet &defaultSet()
+    explicit UCTheme(QObject *parent = 0);
+    static UCTheme &defaultTheme()
     {
-        static UCStyleSet instance(true);
+        static UCTheme instance(true);
         return instance;
     }
 
     // getter/setters
-    UCStyleSet *parentSet();
+    UCTheme *parentTheme();
     QString name() const;
     void setName(const QString& name);
     void resetName();
@@ -56,7 +56,7 @@ public:
     static void registerToContext(QQmlContext* context);
 
 Q_SIGNALS:
-    void parentStyleSetChanged();
+    void parentThemeChanged();
     void nameChanged();
     void paletteChanged();
 
@@ -76,7 +76,7 @@ private Q_SLOTS:
     void loadPalette(bool notify = true);
 
 private:
-    UCStyleSet(bool defaultStyle);
+    UCTheme(bool defaultStyle, QObject *parent = 0);
     void init();
 
     QString m_name;
@@ -92,4 +92,4 @@ private:
 
 QUrl pathFromThemeName(QString themeName);
 
-#endif // UCSTYLESET_H
+#endif // UCTHEME_H
