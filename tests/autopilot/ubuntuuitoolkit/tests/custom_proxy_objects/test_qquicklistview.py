@@ -19,7 +19,6 @@ try:
 except ImportError:
     import mock
 
-import copy
 import os
 
 from autopilot.introspection import dbus
@@ -245,10 +244,11 @@ class QQuickListViewDraggingBaseTestCase(tests.QMLFileAppTestCase):
 class QQuickListViewDraggingTestCase(QQuickListViewDraggingBaseTestCase):
 
     def test_long_press_must_enable_drag_mode(self):
+        list_item = self.list_view.select_single(
+            'UCListItem', objectName='listitem0')
+        self.assertFalse(list_item.dragMode)
         self.list_view._enable_drag_mode()
-        # The item will not exist if the list is not in drag mode.
-        self.list_view.select_single(
-            'QQuickItem', objectName='draghandler_panel0')
+        self.assertTrue(list_item.dragMode)
 
 
 class QQuickListViewReorderingTestCase(QQuickListViewDraggingBaseTestCase):

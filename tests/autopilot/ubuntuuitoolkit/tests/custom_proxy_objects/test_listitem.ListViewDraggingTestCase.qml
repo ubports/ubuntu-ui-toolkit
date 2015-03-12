@@ -20,9 +20,7 @@ import Ubuntu.Components 1.2
 MainView {
     width: units.gu(48)
     height: units.gu(60)
-
-    // make sure we're not messed up by the deprecated toolbar
-    useDeprecatedToolbar: false
+    objectName: "mainView"
 
     Page {
         id: testPage
@@ -32,7 +30,7 @@ MainView {
             id: listView
             objectName: "test_view"
             ViewItems.objectName: "test_attached"
-            ViewItems.onDraggingUpdated: {
+            ViewItems.onDragUpdated: {
                 model.move(event.from, event.to, 1)
             }
 

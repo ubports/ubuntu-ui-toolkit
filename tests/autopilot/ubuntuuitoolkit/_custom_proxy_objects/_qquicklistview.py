@@ -202,7 +202,7 @@ class QQuickListView(_flickable.QQuickFlickable):
         self.swipe_to_top()
         first_item = self._get_first_item()
         self.pointing_device.click_object(first_item, press_duration=2)
-        self.wait_select_single('QQuickItem', objectName='draghandler_panel0')
+        self.wait_select_single('QQuickItem', objectName='drag_panel0')
 
     def _is_drag_handler_visible(self, index):
         try:
