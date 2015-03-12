@@ -17,8 +17,8 @@
  *          Florian Boucault <florian.boucault@canonical.com>
  */
 
-#ifndef UCSTYLESET_H
-#define UCSTYLESET_H
+#ifndef UCTHEME_H
+#define UCTHEME_H
 
 #include <QtCore/QObject>
 #include <QtCore/QPointer>
@@ -29,17 +29,17 @@
 
 #include "ucthemesettings.h"
 
-class UCStyleSet : public QObject, public QQmlParserStatus
+class UCTheme : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
     Q_INTERFACES(QQmlParserStatus)
     Q_PROPERTY(QString name READ name WRITE setName RESET resetName NOTIFY nameChanged)
     Q_PROPERTY(QObject* palette READ palette NOTIFY paletteChanged)
 public:
-    explicit UCStyleSet(QObject *parent = 0);
-    static UCStyleSet &defaultSet()
+    explicit UCTheme(QObject *parent = 0);
+    static UCTheme &defaultSet()
     {
-        static UCStyleSet instance(true);
+        static UCTheme instance(true);
         return instance;
     }
 
@@ -72,7 +72,7 @@ private Q_SLOTS:
     void loadPalette(bool notify = true);
 
 private:
-    UCStyleSet(bool defaultStyle);
+    UCTheme(bool defaultStyle);
     void init();
 
     QString m_name;
@@ -88,4 +88,4 @@ private:
 
 QUrl pathFromThemeName(QString themeName);
 
-#endif // UCSTYLESET_H
+#endif // UCTHEME_H

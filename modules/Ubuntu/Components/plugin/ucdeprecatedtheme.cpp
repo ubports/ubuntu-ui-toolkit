@@ -17,7 +17,7 @@
  */
 
 #include "ucdeprecatedtheme.h"
-#include "ucstyleset.h"
+#include "uctheme.h"
 #include "listener.h"
 #include <QtQml/QQmlComponent>
 #include <QtQml/QQmlContext>
@@ -25,7 +25,7 @@
 
 /*!
     \qmltype Theme
-    \instantiates UCStyleSet
+    \instantiates UCTheme
     \inqmlmodule Ubuntu.Components 1.1
     \ingroup theming
     \brief The Theme class provides facilities to interact with the current theme.
@@ -64,9 +64,9 @@
 UCDeprecatedTheme::UCDeprecatedTheme(QObject *parent)
     : QObject(parent)
 {
-    connect(&UCStyleSet::defaultSet(), &UCStyleSet::nameChanged,
+    connect(&UCTheme::defaultSet(), &UCTheme::nameChanged,
             this, &UCDeprecatedTheme::nameChanged);
-    connect(&UCStyleSet::defaultSet(), &UCStyleSet::paletteChanged,
+    connect(&UCTheme::defaultSet(), &UCTheme::paletteChanged,
             this, &UCDeprecatedTheme::paletteChanged);
 }
 
@@ -77,15 +77,15 @@ UCDeprecatedTheme::UCDeprecatedTheme(QObject *parent)
 */
 QString UCDeprecatedTheme::name() const
 {
-    return UCStyleSet::defaultSet().name();
+    return UCTheme::defaultSet().name();
 }
 void UCDeprecatedTheme::setName(const QString& name)
 {
-    UCStyleSet::defaultSet().setName(name);
+    UCTheme::defaultSet().setName(name);
 }
 void UCDeprecatedTheme::resetName()
 {
-    UCStyleSet::defaultSet().resetName();
+    UCTheme::defaultSet().resetName();
 }
 
 /*!
@@ -95,7 +95,7 @@ void UCDeprecatedTheme::resetName()
 */
 QObject* UCDeprecatedTheme::palette()
 {
-    return UCStyleSet::defaultSet().palette();
+    return UCTheme::defaultSet().palette();
 }
 
 /*!
@@ -105,13 +105,13 @@ QObject* UCDeprecatedTheme::palette()
 */
 QQmlComponent* UCDeprecatedTheme::createStyleComponent(const QString& styleName, QObject* parent)
 {
-    return UCStyleSet::defaultSet().createStyleComponent(styleName, parent);
+    return UCTheme::defaultSet().createStyleComponent(styleName, parent);
 }
 
 void UCDeprecatedTheme::registerToContext(QQmlContext* context)
 {
-    UCStyleSet::defaultSet().m_engine = context->engine();
-    UCStyleSet::defaultSet().updateEnginePaths();
+    UCTheme::defaultSet().m_engine = context->engine();
+    UCTheme::defaultSet().updateEnginePaths();
     // register deprecated Theme property
     context->setContextProperty("Theme", this);
 

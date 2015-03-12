@@ -20,7 +20,7 @@
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlComponent>
-#include "ucstyleset.h"
+#include "uctheme.h"
 #include "uctestcase.h"
 
 class ThemeTestCase : public UbuntuTestCase
@@ -38,9 +38,9 @@ public:
         if (!rootContext()) {
             return;
         }
-        UCStyleSet *styleSet = rootContext()->contextProperty("styleSet").value<UCStyleSet*>();
-        if (styleSet) {
-            styleSet->resetName();
+        UCTheme *theme = globalTheme();
+        if (theme) {
+            theme->resetName();
         } else {
             qWarning() << "No theme instance found!";
         }
@@ -58,18 +58,18 @@ public:
         QTest::waitForEvents();
     }
 
-    UCStyleSet *styleSet()
+    UCTheme *theme()
     {
-        return rootObject()->property("styleSet").value<UCStyleSet*>();
+        return rootObject()->property("theme").value<UCTheme*>();
     }
 
-    UCStyleSet *rootStyleSet()
+    UCTheme *globalTheme()
     {
-        return rootContext()->contextProperty("styleSet").value<UCStyleSet*>();
+        return rootContext()->contextProperty("theme").value<UCTheme*>();
     }
 };
 
-class tst_UCStyleSet : public QObject
+class tst_Subtheming : public QObject
 {
     Q_OBJECT
 private:
@@ -86,14 +86,14 @@ private Q_SLOTS:
         qputenv("XDG_DATA_DIRS", m_xdgDataPath.toLocal8Bit());
     }
 
-    void test_default_styleset()
+    void test_default_theme()
     {
-        UCStyleSet::defaultSet();
+        UCTheme::defaultSet();
     }
 
     void test_default_name()
     {
-        UCStyleSet styleSet;
+        UCTheme styleSet;
         QCOMPARE(styleSet.name(), QString("Ubuntu.Components.Themes.Ambiance"));
     }
 
@@ -101,14 +101,14 @@ private Q_SLOTS:
     {
         QTest::ignoreMessage(QtWarningMsg, "Theme not found: \"MyBeautifulTheme\"");
 
-        UCStyleSet styleSet;
+        UCTheme styleSet;
         styleSet.setName("MyBeautifulTheme");
         QCOMPARE(styleSet.name(), QString("MyBeautifulTheme"));
     }
 
     void test_name_reset()
     {
-        UCStyleSet styleSet;
+        UCTheme styleSet;
         styleSet.setName("Ubuntu.Components.Themes.SuruDark");
         QCOMPARE(styleSet.name(), QString("Ubuntu.Components.Themes.SuruDark"));
         // reset
@@ -208,7 +208,7 @@ private Q_SLOTS:
         qputenv("XDG_DATA_DIRS", "");
         qputenv("QML2_IMPORT_PATH", "");
 
-        UCStyleSet styleSet;
+        UCTheme styleSet;
         QCOMPARE(styleSet.name(), QString("Ubuntu.Components.Themes.Ambiance"));
     }
 
@@ -221,7 +221,7 @@ private Q_SLOTS:
         qputenv("XDG_DATA_DIRS", "");
         qputenv("QML2_IMPORT_PATH", "/no/plugins/here");
 
-        UCStyleSet styleSet;
+        UCTheme styleSet;
         QCOMPARE(styleSet.name(), QString("Ubuntu.Components.Themes.Ambiance"));
     }
 
@@ -246,11 +246,11 @@ private Q_SLOTS:
         QScopedPointer<ThemeTestCase> view(new ThemeTestCase("SimpleItem.qml"));
         QVERIFY(view);
         view->setTheme("TestModule.TestTheme");
-        UCStyleSet *styleSet = view->styleSet();
-        UCStyleSet *rootStyleSet = view->rootStyleSet();
-        QVERIFY(styleSet);
-        QVERIFY(rootStyleSet);
-        QVERIFY(styleSet != rootStyleSet);
+        UCTheme *theme = view->theme();
+        UCTheme *globalTheme = view->globalTheme();
+        QVERIFY(theme);
+        QVERIFY(globalTheme);
+        QVERIFY(theme != globalTheme);
     }
 
     void test_styleset_reset_name()
@@ -260,14 +260,14 @@ private Q_SLOTS:
         QScopedPointer<ThemeTestCase> view(new ThemeTestCase("SimpleItem.qml"));
         QVERIFY(view);
         view->setTheme("TestModule.TestTheme");
-        UCStyleSet *styleSet = view->styleSet();
-        QCOMPARE(styleSet->name(), QString("TestModule.TestTheme"));
+        UCTheme *theme = view->theme();
+        QCOMPARE(theme->name(), QString("TestModule.TestTheme"));
         // reset
-        styleSet->resetName();
-        QCOMPARE(styleSet->name(), QString("Ubuntu.Components.Themes.Ambiance"));
+        theme->resetName();
+        QCOMPARE(theme->name(), QString("Ubuntu.Components.Themes.Ambiance"));
     }
 };
 
-QTEST_MAIN(tst_UCStyleSet)
+QTEST_MAIN(tst_Subtheming)
 
-#include "tst_styleset.moc"
+#include "tst_subtheming.moc"

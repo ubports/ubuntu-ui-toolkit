@@ -1,6 +1,6 @@
 include(../test-include.pri)
 QT += quick-private gui-private
-SOURCES += tst_styleset.cpp
+SOURCES += tst_subtheming.cpp
 
 OTHER_FILES += \
     TestStyle.qml \

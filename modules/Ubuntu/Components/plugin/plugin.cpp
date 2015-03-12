@@ -22,7 +22,7 @@
 #include <QtGui/QScreen>
 
 #include "plugin.h"
-#include "ucstyleset.h"
+#include "uctheme.h"
 #include "ucdeprecatedtheme.h"
 
 #include <QtQml/QQmlContext>
@@ -192,7 +192,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCUbuntuShapeOverlay>(uri, 1, 2, "UbuntuShapeOverlay");
 
     // register 1.3 API
-    qmlRegisterType<UCStyleSet>(uri, 1, 3, "StyleSet");
+    qmlRegisterType<UCTheme>(uri, 1, 3, "ThemeSettings");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
@@ -212,7 +212,7 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     context->setContextProperty("QuickUtils", &QuickUtils::instance());
 
     // register styleSet context property
-    UCStyleSet::registerToContext(context);
+    UCTheme::registerToContext(context);
 
     UCDeprecatedTheme::instance().registerToContext(context);
 
