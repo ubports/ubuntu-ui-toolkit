@@ -594,6 +594,7 @@ ActionItem
     property int selectionEnd
     property string text
     property Validator validator
+    readonly property var textDocument
     property enumeration horizontalAlignment
     property enumeration effectiveHorizontalAlignment
     property enumeration verticalAlignment

@@ -541,6 +541,12 @@ ActionItem {
     property alias validator: editor.validator
 
     /*!
+      Exposes the QQuickTextDocument which can be used to implement advanced
+      formatting and syntax highlighting (QSyntaxHighlighter) with C++.
+    */
+    readonly property var textDocument: editor.textDocument
+
+    /*!
       Sets the horizontal alignment of the text within the item's width and height.
       By default, the text alignment follows the natural alignment of the text, for
       example text that is read from left to right will be aligned to the left.
