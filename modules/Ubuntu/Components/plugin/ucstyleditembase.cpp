@@ -252,13 +252,13 @@ void UCStyledItemBasePrivate::setStyleSet(UCStyleSet *newSet)
     }
     // detach previous set and attach the new one
     if (prevSet) {
-        Q_EMIT prevSet->parentChanged();
+        Q_EMIT prevSet->parentStyleSetChanged();
     }
     if (styleSet) {
         // re-parent styleSet to make sure we have it
         // for the entire lifetime of the styled item
         styleSet->setParent(q);
-        Q_EMIT styleSet->parentChanged();
+        Q_EMIT styleSet->parentStyleSetChanged();
     }
 
     Q_EMIT q->styleSetChanged();
@@ -302,7 +302,7 @@ bool UCStyledItemBasePrivate::setParentStyled(UCStyledItemBase *styledItem)
     }
     parentStyledItem = styledItem;
     if (styleSet) {
-        Q_EMIT styleSet->parentChanged();
+        Q_EMIT styleSet->parentStyleSetChanged();
     }
     return (styleSet == NULL);
 }
@@ -353,7 +353,7 @@ void UCStyledItemBasePrivate::_q_parentStyleChanged()
     // do not trigger styleSetChanged() on this item if we have a
     // custom one, but resolve its eventual parent change!
     if (styleSet) {
-        Q_EMIT styleSet->parentChanged();
+        Q_EMIT styleSet->parentStyleSetChanged();
         return;
     }
     Q_Q(UCStyledItemBase);

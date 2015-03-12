@@ -1044,7 +1044,7 @@ plugins.qmltypes
     name: "UCStyleSet"
     prototype: "QObject"
     exports: ["StyleSet 1.3"]
-    Property { name: "parent"; type: "UCStyleSet"; isReadonly: true; isPointer: true }
+    Property { name: "parentStyleSet"; type: "UCStyleSet"; isReadonly: true; isPointer: true }
     Property { name: "name"; type: "string" }
     Property { name: "palette"; type: "QObject"; isReadonly: true; isPointer: true }
     Method {
