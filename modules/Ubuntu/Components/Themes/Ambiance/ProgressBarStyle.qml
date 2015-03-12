@@ -35,7 +35,7 @@ Item {
         anchors.fill: parent
         backgroundColor: progressBarStyle.backgroundColor
         overlayColor: foregroundColor
-        overlayGeometry: Qt.application.layoutDirection == Qt.LeftToRight ?
+        overlayRect: Qt.application.layoutDirection == Qt.LeftToRight ?
             Qt.rect(0.0, 0.0, progressBarStyle.progress, 1.0) :
             Qt.rect(1.0 - progressBarStyle.progress, 0.0, 1.0, 1.0)
     }

@@ -1,7 +1,14 @@
-ubuntu-ui-toolkit (1.2.1442+15.04.20150306-0ubuntu2) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.2.1447+15.04.20150306-0ubuntu2) UNRELEASED; urgency=medium
+
+  [ Timo Jyrinki ]
+  * Clean QML cache after updating package, before reboot. LP: #1431228
 
   [ Zoltán Balogh ]
   * Improved test plan script. Fixes LP: #1430201
+
+  [ Christian Dywan ]
+  * New text handler visuals and improved behavior. 
+    Fixes LP: #1391335, LP: #1407723, LP: #1415548
 
   [ Tim Peeters ] 
   * Make the filenames for header and navigation tests consistent and 
@@ -20,6 +27,15 @@ ubuntu-ui-toolkit (1.2.1442+15.04.20150306-0ubuntu2) UNRELEASED; urgency=medium
     rendering. Fixes LP: #1396170
   * Removed misleading statement from UbuntuShape documentation.
     Fixes LP: #1430198
+  * Renamed the overlayGeometry property to overlayRect. The 
+    overlayGeometry being of type QRect, using overlayRect instead 
+    makes it more precise, less generic. Fixes LP: #1430278
+  * Converted sourceOpacity from float to qreal. Respect the same
+    guideline QtQuick items use to expose floating-point properties.
+    That doesn't break the QML API since there's no precision loss 
+    from single to double precision, the cast is implicit. 
+    Fixes LP: #1430267
+  * Fixed embedded QML code snippets indentation. Fixes LP: #1430274
 
   [ Florian Boucault ]
   * CheckBox: apply clipping to the Ubuntu shape and not to the CheckBox 

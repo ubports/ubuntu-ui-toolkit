@@ -60,6 +60,7 @@ class TextInputPopover(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
     def _get_button(self, text):
         buttons = self.select_many('AbstractButton')
+        texts = []
         for button in buttons:
             # workaround used in the text input's context menu to access
             # action.text so we can get the proper button by text, action
@@ -67,6 +68,10 @@ class TextInputPopover(_common.UbuntuUIToolkitCustomProxyObjectBase):
             # https://bugs.launchpad.net/autopilot/+bug/1334599
             if button.text == text:
                 return button
+            texts.append(button.text)
+        raise _common.ToolkitException(
+            'Could not find a button with text %s (Available buttons are %s)'
+            % (text, ','.join(texts)))
 
 
 class ActionSelectionPopover(_common.UbuntuUIToolkitCustomProxyObjectBase):
