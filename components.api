@@ -1045,6 +1045,8 @@ plugins.qmltypes
     prototype: "QQuickItem"
     exports: [
     Property { name: "activeFocusOnPress"; revision: 1; type: "bool" }
+    Property { name: "theme"; revision: 2; type: "UCTheme"; isPointer: true }
+    Signal { name: "themeChanged"; revision: 2 }
     Method {
     name: "requestFocus"
     Parameter { name: "reason"; type: "Qt::FocusReason" }
@@ -1060,6 +1062,7 @@ plugins.qmltypes
     name: "UCTheme"
     prototype: "QObject"
     exports: ["ThemeSettings 1.3"]
+    Property { name: "parentTheme"; type: "UCTheme"; isReadonly: true; isPointer: true }
     Property { name: "name"; type: "string" }
     Property { name: "palette"; type: "QObject"; isReadonly: true; isPointer: true }
     Method {
