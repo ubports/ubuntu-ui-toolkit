@@ -278,6 +278,7 @@ StyledItem {
           Fully show or hide the header, depending on its current y.
          */
         function movementEnded() {
+            // FIXME TIM: This is not right for old config.
             if (flickable && !locked) {
                 if (internal.newConfig) {
                     if (flickable.contentY < 0 || header.y > -header.height/2) {
