@@ -117,18 +117,18 @@ Item {
         }
 
         function init() {
+            page.head.visible = true;
+            page.head.locked = false;
+            otherPage.head.visible = true;
+            otherPage.head.locked = false;
             testCase.wait_for_visible(true, "Header is not visible initially.");
             compare(stack.currentPage, page, "Wrong Page on PageStack initially.");
             compare(page.head.locked, false, "Header is not locked initially.");
         }
 
-        function cleanup() {
-            page.head.visible = true;
-            page.head.locked = false;
-            otherPage.head.visible = true;
-            otherPage.head.visible = false;
-            testCase.wait_for_visible(true, "Header visibility could not be reset.");
-        }
+//        function cleanup() {
+//            testCase.wait_for_visible(true, "Header visibility could not be reset.");
+//        }
 
         function scroll(dy) {
             var p = centerOf(mainView);
@@ -244,27 +244,19 @@ Item {
             wait_for_visible(true, "Activating unlocked Page does not make header visible.");
         }
 
-//        function test_activate_hides_locked_hidden_header() {
-//            otherPage.head.locked = true;
-//            otherPage.head.visible = false;
+        function test_activate_hides_locked_hidden_header() {
+            otherPage.head.locked = true;
+            otherPage.head.visible = false;
 
-//            stack.push(otherPage);
-//            wait_for_visible(false, "Pushing Page whith locked hidden header shows header.");
+            stack.push(otherPage);
+            wait_for_visible(false, "Pushing Page whith locked hidden header shows header.");
+            compare(otherPage.head.locked, true, "Pushing Page unlocks header.");
+            compare(page.head.locked, false, "Pushing Page locks previous header.");
 
-//            stack.pop();
-//            wait_for_visible(true, "Popping Page with locked hidden header does not show header.");
-//        }
-
-        //        function test_push_and_pop_dont_hide_unlocked_header() {
-
-//        }
-
-//        function test_push_and_pop_dont_lock_header() {
-
-//        }
-
-//        function test_push_and_pop_dont_unlock_header() {
-
-//        }
+            stack.pop();
+            wait_for_visible(true, "Popping Page with locked hidden header does not show header.");
+            compare(otherPage.head.locked, true, "Popping Page unlocks previous header.");
+            compare(page.head.locked, false, "Popping Page locks header.");
+        }
     }
 }
