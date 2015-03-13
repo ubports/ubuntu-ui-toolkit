@@ -180,7 +180,16 @@ StyledItem {
      */
     property PageHeadConfiguration config: null
     onConfigChanged: {
-        if (!internal.locked) {
+        internal.newConfig = config && config.hasOwnProperty("visible") &&
+                config.hasOwnProperty("locked");
+
+        if (internal.newConfig && header.config.locked) {
+            if (header.config.visible) {
+                header.show();
+            } else {
+                header.hide();
+            }
+        } else {
             header.show();
         }
     }
@@ -194,6 +203,9 @@ StyledItem {
             } else {
                 header.hide();
             }
+        }
+        onLockedChanged: {
+            internal.connectFlickable();
         }
     }
 
@@ -216,11 +228,8 @@ StyledItem {
     QtObject {
         id: internal
 
-        property bool locked: newConfig && header.config.locked
-        onLockedChanged: {
-            connectFlickable();
-        }
-
+        // This property will be updated in header.onConfigChanged to ensure it
+        //  is updated before other functions are called in onConfigChanged.
         property bool newConfig: header.config &&
                                  header.config.hasOwnProperty("locked") &&
                                  header.config.hasOwnProperty("visible")
@@ -249,7 +258,7 @@ StyledItem {
                 previousFlickable.interactiveChanged.disconnect(internal.interactiveChanged);
                 previousFlickable = null;
             }
-            if (flickable && !internal.locked) {
+            if (flickable && !(internal.newConfig && header.config.locked)) {
                 // Connect flicking to movements of the header
                 previousContentY = flickable.contentY;
                 flickable.contentYChanged.connect(internal.scrollContents);
@@ -279,7 +288,7 @@ StyledItem {
          */
         function movementEnded() {
             // FIXME TIM: This is not right for old config.
-            if (flickable && !locked) {
+            if (flickable && !(internal.newConfig && header.config.locked)) {
                 if (internal.newConfig) {
                     if (flickable.contentY < 0 || header.y > -header.height/2) {
                         header.show();

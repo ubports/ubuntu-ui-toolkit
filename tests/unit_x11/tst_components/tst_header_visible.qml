@@ -71,6 +71,7 @@ Item {
                         }
                     }
                     Label {
+                        id: label
                         anchors {
                             horizontalCenter: parent.horizontalCenter
                             top: switchGrid.bottom
@@ -78,6 +79,25 @@ Item {
                         }
                         text: "Flick me"
                     }
+                    Button {
+                        anchors {
+                            horizontalCenter: parent.horizontalCenter
+                            top: label.bottom
+                            topMargin: units.gu(5)
+                        }
+                        text: "Click me"
+                        onTriggered: stack.push(otherPage)
+                    }
+                }
+            }
+            Page {
+                id: otherPage
+                title: "On stack"
+                visible: false
+
+                Label {
+                    anchors.centerIn: parent
+                    text: "Stacked"
                 }
             }
         }
@@ -89,18 +109,24 @@ Item {
         id: testCase
 
         property var header
+        property var headerStyle
+
         function initTestCase() {
             testCase.header = findChild(mainView, "MainView_Header");
+            testCase.headerStyle = findChild(mainView, "PageHeadStyle");
         }
 
         function init() {
             testCase.wait_for_visible(true, "Header is not visible initially.");
+            compare(stack.currentPage, page, "Wrong Page on PageStack initially.");
             compare(page.head.locked, false, "Header is not locked initially.");
         }
 
         function cleanup() {
             page.head.visible = true;
             page.head.locked = false;
+            otherPage.head.visible = true;
+            otherPage.head.visible = false;
             testCase.wait_for_visible(true, "Header visibility could not be reset.");
         }
 
@@ -120,13 +146,17 @@ Item {
         }
 
         function wait_for_animation() {
-            wait(50); // Wait for the header to start to move
+            // Wait for the header to start to move:
+            wait(50);
+            // Wait for animation of the style inside the header (when pushing/popping):
+            tryCompareFunction(function(){ return testCase.headerStyle.animating }, false);
+            // Wait for the header to finish showing/hiding
             tryCompareFunction(function(){ return testCase.header.moving }, false);
         }
 
         function wait_for_visible(visible, errorMessage) {
             wait_for_animation();
-            compare(page.head.visible, visible, errorMessage);
+            compare(stack.currentPage.head.visible, visible, errorMessage);
             var mismatchMessage = " Page.head.visible does not match header visibility.";
             if (visible) {
                 compare(header.y, 0, errorMessage + mismatchMessage);
@@ -148,14 +178,14 @@ Item {
             wait_for_visible(true, "Cannot show locked header by setting visible to true.");
         }
 
-        function test_scroll_when_unlocked() {
+        function test_scroll_when_unlocked_updates_visible() {
             testCase.scroll_down();
             testCase.wait_for_visible(false, "Scrolling down does not hide header.");
             testCase.scroll_up();
             testCase.wait_for_visible(true, "Scrolling up does not show header.");
         }
 
-        function test_scroll_when_locked() {
+        function test_scroll_when_locked_does_not_update_visible() {
             // Note that with a locked header, scrolling up and down does not
             //  cause the header to move, so the wait_for_visible() calls below
             //  will return almost instantly.
@@ -200,7 +230,41 @@ Item {
                              "Y beginning.");
         }
 
-        // TODO TIM: add tests that header does not hide/show when changing contents
-        //  or title when the header is locked.
+        function test_activate_page_shows_header() {
+            page.head.visible = false;
+            wait_for_animation();
+
+            // Header becomes visible when new Page becomes active:
+            stack.push(otherPage);
+            wait_for_visible(true, "Pushing page on stack does not show header.");
+
+            // Header becomes visible when Page with previously hidden header
+            // becomes active:
+            stack.pop();
+            wait_for_visible(true, "Activating unlocked Page does not make header visible.");
+        }
+
+//        function test_activate_hides_locked_hidden_header() {
+//            otherPage.head.locked = true;
+//            otherPage.head.visible = false;
+
+//            stack.push(otherPage);
+//            wait_for_visible(false, "Pushing Page whith locked hidden header shows header.");
+
+//            stack.pop();
+//            wait_for_visible(true, "Popping Page with locked hidden header does not show header.");
+//        }
+
+        //        function test_push_and_pop_dont_hide_unlocked_header() {
+
+//        }
+
+//        function test_push_and_pop_dont_lock_header() {
+
+//        }
+
+//        function test_push_and_pop_dont_unlock_header() {
+
+//        }
     }
 }
