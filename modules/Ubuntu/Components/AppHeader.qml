@@ -265,7 +265,6 @@ StyledItem {
           Update the position of the header to scroll with the flickable.
          */
         function scrollContents() {
-//            print("Scrolling contents")
             // Avoid updating header.y when rebounding or being dragged over the bounds.
             if (!flickable.atYBeginning && !flickable.atYEnd) {
                 var deltaContentY = flickable.contentY - previousContentY;
@@ -281,18 +280,11 @@ StyledItem {
         function movementEnded() {
             if (flickable && !locked) {
                 if (internal.newConfig) {
-                    header.config.visible = (flickable.contentY < 0) ||
-                                        (header.y > -header.height/2);
-                    if (header.config.visible) {
+                    if (flickable.contentY < 0 || header.y > -header.height/2) {
                         header.show();
                     } else {
                         header.hide();
                     }
-                } else {
-                    //                print("contentY = "+flickable.contentY)
-                    if (flickable.contentY < 0) header.show();
-                    else if (header.y < -header.height/2) header.hide();
-                    else header.show();
                 }
             }
         }
