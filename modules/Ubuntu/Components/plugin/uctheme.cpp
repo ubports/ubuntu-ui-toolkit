@@ -136,6 +136,22 @@ QUrl pathFromThemeName(QString themeName)
     return QUrl();
 }
 
+QString parentThemeName(const QString& themeName)
+{
+    QString parentTheme;
+    QUrl themePath = pathFromThemeName(themeName);
+    if (!themePath.isValid()) {
+        qWarning() << qPrintable(UbuntuI18n::instance().tr("Theme not found: \"%1\"").arg(themeName));
+    } else {
+        QFile file(themePath.resolved(PARENT_THEME_FILE).toLocalFile());
+        if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            QTextStream in(&file);
+            parentTheme = in.readLine();
+        }
+    }
+    return parentTheme;
+}
+
 UCTheme::UCTheme(QObject *parent)
     : QObject(parent)
     , m_palette(UCTheme::defaultTheme().m_palette)
@@ -163,7 +179,7 @@ UCTheme::UCTheme(bool defaultStyle, QObject *parent)
 void UCTheme::init()
 {
     m_completed = false;
-    QObject::connect(&m_themeSettings, &UCThemeSettings::themeNameChanged,
+    QObject::connect(&m_defaultTheme, &UCDefaultTheme::themeNameChanged,
                      this, &UCTheme::onThemeNameChanged);
     updateThemePaths();
 }
@@ -230,7 +246,7 @@ void UCTheme::updateThemePaths()
 */
 QString UCTheme::name() const
 {
-    return !m_name.isEmpty() ? m_name : m_themeSettings.themeName();
+    return !m_name.isEmpty() ? m_name : m_defaultTheme.themeName();
 }
 void UCTheme::setName(const QString& name)
 {
@@ -241,7 +257,7 @@ void UCTheme::setName(const QString& name)
     if (name.isEmpty()) {
         init();
     } else {
-        QObject::disconnect(&m_themeSettings, &UCThemeSettings::themeNameChanged,
+        QObject::disconnect(&m_defaultTheme, &UCDefaultTheme::themeNameChanged,
                             this, &UCTheme::onThemeNameChanged);
         updateThemePaths();
     }
@@ -277,22 +293,6 @@ QUrl UCTheme::styleUrl(const QString& styleName)
     }
 
     return QUrl();
-}
-
-QString UCTheme::parentThemeName(const QString& themeName)
-{
-    QString parentTheme;
-    QUrl themePath = pathFromThemeName(themeName);
-    if (!themePath.isValid()) {
-        qWarning() << qPrintable(UbuntuI18n::instance().tr("Theme not found: \"%1\"").arg(themeName));
-    } else {
-        QFile file(themePath.resolved(PARENT_THEME_FILE).toLocalFile());
-        if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            QTextStream in(&file);
-            parentTheme = in.readLine();
-        }
-    }
-    return parentTheme;
 }
 
 // registers the default theme property to the root context

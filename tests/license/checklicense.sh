@@ -20,14 +20,18 @@ SKIP='(Canonical|GENERATED FILE|Yahoo! Inc. All rights reserved)'
 COMMAND="licensecheck --noconf -r * --copyright -c $PATTERN"
 echo Executing $COMMAND
 RESULTS=$($COMMAND)
-test $? = 0 || exit 1
+RESULT=$?
 ERRORS=$(echo "$RESULTS" | egrep -v "$SKIP" | grep '*No copyright*')
 COUNT=$(echo "$ERRORS" | sed 's/^ *//g' | wc -l)
-if [ "$ERRORS" = "" ]; then
-    echo No license problems found.
-    exit 0
-else
+if [ "$ERRORS" != "" ]; then
     echo Found $COUNT license problems:
     echo "$ERRORS"
-    exit 1
+    return $RESULT
+elif [ "$RESULT" != 0 ]; then
+    echo License check with unknown cause:
+    echo "RESULTS"
+    return $RESULT
+elif [ "$ERRORS" = "" ]; then
+    echo No license problems found.
+    exit 0
 fi

@@ -27,7 +27,7 @@
 #include <QtQml/QQmlComponent>
 #include <QtQml/QQmlParserStatus>
 
-#include "ucthemesettings.h"
+#include "ucdefaulttheme.h"
 
 class UCTheme : public QObject, public QQmlParserStatus
 {
@@ -68,7 +68,6 @@ private Q_SLOTS:
     void onThemeNameChanged();
     void updateThemePaths();
     QUrl styleUrl(const QString& styleName);
-    QString parentThemeName(const QString& themeName);
     void loadPalette(bool notify = true);
 
 private:
@@ -79,7 +78,7 @@ private:
     QPointer<QObject> m_palette; // the palette might be from the default style if the theme doesn't define palette
     QQmlEngine *m_engine;
     QList<QUrl> m_themePaths;
-    UCThemeSettings m_themeSettings;
+    UCDefaultTheme m_defaultTheme;
     bool m_defaultStyle:1;
     bool m_completed:1;
 
