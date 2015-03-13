@@ -22,17 +22,16 @@ StyledItem {
     width: units.gu(40)
     height: units.gu(71)
 
-    styleSet: StyleSet{ objectName: "top" }
-
-    StyleSet {
-        objectName: "testSet"
-        name: "Ubuntu.Components.Themes.SuruDark"
-    }
+    theme: ThemeSettings{ objectName: "top" }
 
     Item {
         anchors.fill: parent
         StyledItem {
             objectName: "testItem"
+            theme: ThemeSettings {
+                objectName: "testSet"
+                name: "Ubuntu.Components.Themes.SuruDark"
+            }
         }
     }
 }

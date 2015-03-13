@@ -25,7 +25,7 @@ TARGET = $$qtLibraryTarget($$TARGET)
 uri = Ubuntu.Components
 
 HEADERS += plugin.h \
-    ucthemesettings.h \
+    uctheme.h \
     i18n.h \
     listener.h \
     ucscalingimageprovider.h \
@@ -80,10 +80,10 @@ HEADERS += plugin.h \
     privates/listitemdraghandler.h \
     ucnamespace.h \
     ucdeprecatedtheme.h \
-    ucstyleset.h
+    ucdefaulttheme.h
 
 SOURCES += plugin.cpp \
-    ucthemesettings.cpp \
+    uctheme.cpp \
     i18n.cpp \
     listener.cpp \
     ucscalingimageprovider.cpp \
@@ -128,7 +128,7 @@ SOURCES += plugin.cpp \
     privates/listitemdraghandler.cpp \
     ucnamespace.cpp \
     ucdeprecatedtheme.cpp \
-    ucstyleset.cpp
+    ucdefaulttheme.cpp
 
 # adapters
 SOURCES += adapters/alarmsadapter_organizer.cpp

@@ -64,32 +64,10 @@ function execute_test_cmd {
     QML2_IMPORT_PATH=${_IMPORT_PATH} UBUNTU_UI_TOOLKIT_THEMES_PATH=${_THEMES_PATH} \
     ALARM_BACKEND=memory \
     $_CMD $_ARGS 2>&1 | grep -v 'QFontDatabase: Cannot find font directory'
-    # Note: Get first command before the pipe, $? would be ambiguous
-    RESULT=${PIPESTATUS[0]}
-    WARNINGS=$(grep -c qwarn $_XML)
-    EXCEPTIONS='tst_components_benchmark \
-                tst_tabbar.qml \
-                tst_datepicker.qml \
-                tst_qquick_image_extension \
-                tst_page.qml \
-                tst_toolbar.qml \
-                tst_tabs.qml \
-                tst_focus.qml \
-                tst_pickerpanel.qml \
-                tst_picker.qml \
-                tst_listitems_itemselector.qml \
-                tst_tabs_with_repeater.deprecated_toolbar.qml \
-                '
-    if [ $WARNINGS -ne 0 ]; then
-      if [[ $EXCEPTIONS == *$_TARGET_$_TESTFILE* ]]; then
-        echo "FIXME: $WARNINGS warnings - Known problematic test"
-      else
-        echo "Error: $WARNINGS warnings in $_TARGET_$_TESTFILE"
-        RESULT=666
-      fi
-    elif [[ $EXCEPTIONS == *$_TARGET_$_TESTFILE* ]]; then
-      echo Woot! Known problematic test did pass afterall!
-      echo Consider removing $_TARGET_$_TESTFILE from EXCEPTIONS in $0
+    RESULT=0
+    if [ "x$UITK_TEST_KEEP_RUNNING" != "x1" ]; then
+        ${BUILD_DIR}/tests/checkresults.sh $_XML
+        RESULT=$*
     fi
   else
     echo "Skipped because no DISPLAY available"

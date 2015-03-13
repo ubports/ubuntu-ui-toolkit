@@ -224,6 +224,8 @@ function device_comission {
     adb -s ${SERIALNUMBER} shell "echo ${PASSWORD} |sudo -S apt-get update 2>&1|grep -v password > /dev/null"
     # Install the autopilot tests for the apps
     adb -s ${SERIALNUMBER} shell "echo ${PASSWORD} |sudo -S apt-get install --yes --force-yes ${AP_PACKAGES} 2>&1 | grep -v password > /dev/null"
+    echo "Cleaning QML cache for the next boot"
+    adb -s ${SERIALNUMBER} shell "rm -rf ~/.cache/QML/Apps/"
 }
 
 function compare_results {

@@ -23,7 +23,7 @@ Template {
     id: root
     TemplateSection {
         className: "Picker"
-        documentation: "qml-ubuntu-components-pickers0-picker.html"
+        documentation: "qml-ubuntu-components-pickers-picker.html"
 
         TemplateRow {
             title: i18n.tr("Linear")
@@ -104,7 +104,7 @@ Template {
 
     TemplateSection {
         className: "Dialer"
-        documentation: "qml-ubuntu-components-pickers0-dialer.html"
+        documentation: "qml-ubuntu-components-pickers-dialer.html"
 
         TemplateRow {
             title: i18n.tr("Clock")
@@ -180,7 +180,7 @@ Template {
     }
     TemplateSection {
         className: "DatePicker"
-        documentation: "qml-ubuntu-components-pickers0-datepicker.html"
+        documentation: "qml-ubuntu-components-pickers-datepicker.html"
         TemplateRow {
             title: "Date"
             DatePicker {

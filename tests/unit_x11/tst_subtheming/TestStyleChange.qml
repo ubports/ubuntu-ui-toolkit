@@ -21,8 +21,8 @@ StyledItem {
     height: units.gu(71)
     objectName: "mainStyled"
 
-    StyleSet {
-        objectName: "StyleSet"
+    ThemeSettings {
+        objectName: "Theme"
     }
 
     Component {

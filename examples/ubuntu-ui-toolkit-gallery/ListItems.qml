@@ -317,7 +317,7 @@ Template {
         }
     }
 
-    TemplateSection {
+    ListItemsSection {
         title: i18n.tr("ExpandablesColumn")
         className: "ExpandablesColumn"
 
@@ -360,7 +360,7 @@ Template {
         }
     }
 
-    TemplateSection {
+    ListItemsSection {
         title: i18n.tr("Expandable")
         className: "Expandable"
 
