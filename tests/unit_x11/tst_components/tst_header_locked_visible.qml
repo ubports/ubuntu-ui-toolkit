@@ -86,32 +86,23 @@ Item {
         property var header
         function initTestCase() {
             testCase.header = findChild(mainView, "MainView_Header");
-            testCase.wait_for_animation();
         }
 
         function init() {
-            testCase.check_header_visibility(true, "Header is not visible initially.");
+            testCase.wait_for_visible(true, "Header is not visible initially.");
             compare(page.head.locked, false, "Header is not locked initially.");
         }
+
         function cleanup() {
             page.head.visible = true;
             page.head.locked = false;
-            testCase.wait_for_animation();
+            testCase.wait_for_visible(true, "Header visibility could not be reset.");
         }
 
         function scroll(dy) {
-//            var p = flickable.contentItem.mapFromItem(mainView, mainView.width/2, mainView.height/2);
             var p = centerOf(mainView);
-//            var x = p.x;
-//            var y = p.y;//mainView.height / 2;
-//            mouseDrag(mainView, x, y, 0, -50);
-//            mouseRelease(mainView, x, y-50);
-//            mousePress(mainView, x, y, Qt.LeftButton);
-//            mouseMove(mainView, x, y-20, Qt.LeftButton);
-//            mouseRelease(mainView, x, y-20, Qt.LeftButton);
-//            flick(mainView, x, y, 0, dy);
-//            flickable.contentY -= dy;
-//            flickable.movementEnded();
+            // Use mouseWheel to scroll because mouseDrag seems very unreliable
+            // and does not properly handle negative values for dy.
             mouseWheel(mainView, p.x, p.y, 0, 2*dy);
         }
 
@@ -124,86 +115,87 @@ Item {
         }
 
         function wait_for_animation() {
-            tryCompareFunction(function(){return testCase.header.moving}, false);
-            wait(200);
+            wait(50); // Wait for the header to start to move
+            tryCompareFunction(function(){ return testCase.header.moving }, false);
         }
 
-        function check_header_visibility(visible, errorMessage) {
-            testCase.wait_for_animation();
+        function wait_for_visible(visible, errorMessage) {
+            wait_for_animation();
             compare(page.head.visible, visible, errorMessage);
+            var mismatchMessage = " Page.head.visible does not match header visibility.";
             if (visible) {
-                compare(header.y, 0, errorMessage +
-                        " Page.head.visible does not match header visibility.");
+                compare(header.y, 0, errorMessage + mismatchMessage);
             } else {
-                compare(header.y, -header.height, errorMessage +
-                        " Page.head.visible does not match header visibility.");
+                compare(header.y, -header.height, errorMessage + mismatchMessage);
             }
         }
 
-//        function test_visible_to_hide_and_show() {
-//            page.head.visible = false;
-//            testCase.check_header_visibility(false, "Setting Page.head.visible to "+
-//                                             "false does not hide the header.");
-//            page.head.visible = true;
-//            testCase.check_header_visibility(true, "Setting Page.head.visible to "+
-//                                             "true does not show the header.");
+        function test_set_visible_to_hide_and_show() {
+            page.head.visible = false;
+            wait_for_visible(false, "Cannot hide unlocked header by setting visible to false.");
+            page.head.visible = true;
+            wait_for_visible(true, "Cannot show unlocked header by setting visible to true.");
 
-//            // ensure that setting visible also works
-//            // when the header is locked:
-//            page.head.locked = true;
-//            page.head.visible = false;
-//            testCase.check_header_visibility(false, "Setting Page.head.visible to false "+
-//                                             "does not hide locked header.");
-//            page.head.visible = true;
-//            testCase.check_header_visibility(true, "Setting Page.head.visible to true "+
-//                                             "does not show locked header");
-//        }
-
-        function test_scroll_to_hide_and_show() {
-            testCase.scroll_down();
-            testCase.check_header_visibility(false, "Scrolling down does not hide header.");
-            testCase.scroll_up();
-            testCase.check_header_visibility(true, "Scrolling up does not show header.");
-        }
-
-        function test_dont_hide_when_locked() {
             page.head.locked = true;
-            testCase.check_header_visibility(true, "Locking hides the header.");
-            testCase.scroll_down();
-            // header did not auto-hide when locked:
-            testCase.check_header_visibility(true, "Scrolling down hides locked header.");
-            // go back to initial position:
-            testCase.scroll_up();
+            page.head.visible = false;
+            wait_for_visible(false, "Cannot hide locked header by setting visible to false.");
+            page.head.visible = true;
+            wait_for_visible(true, "Cannot show locked header by setting visible to true.");
         }
 
-        function test_dont_show_when_locked() {
+        function test_scroll_when_unlocked() {
             testCase.scroll_down();
-            testCase.check_header_visibility(false, "Scrolling down does not hide header.");
+            testCase.wait_for_visible(false, "Scrolling down does not hide header.");
+            testCase.scroll_up();
+            testCase.wait_for_visible(true, "Scrolling up does not show header.");
+        }
+
+        function test_scroll_when_locked() {
+            // Note that with a locked header, scrolling up and down does not
+            //  cause the header to move, so the wait_for_visible() calls below
+            //  will return almost instantly.
             page.head.locked = true;
-            testCase.check_header_visibility(false, "Locking shows the header.")
-            testCase.scroll_up();
-            // header did not auto-show when locked:
-            testCase.check_header_visibility(false, "Scrolling up shows locked header.");
+            scroll_down();
+            wait_for_visible(true, "Scrolling down hides locked header.");
+            scroll_up();
+            wait_for_visible(true, "Scrolling up hides locked header.");
+
+            page.head.visible = false;
+            wait_for_animation();
+            scroll_down();
+            wait_for_visible(false, "Scrolling down shows locked header.");
+            scroll_up();
+            wait_for_visible(false, "Scrolling up shows locked header.");
         }
 
-//        function test_set_locked_and_visible_independently() {
-//            // visible is true, locked is false
+        function test_locking_updates_visible() {
+            // locked = false, visible = true.
+            page.head.locked = true;
+            wait_for_visible(true, "Locking hides header.");
+            page.head.locked = false;
+            wait_for_visible(true, "Unlocking hides header.");
 
-//            // locking does not update visible:
-//            page.head.locked = true;
-//            testCase.check_header_visibility(true, "Locking hides header.");
+            page.head.locked = true;
+            page.head.visible = false;
+            wait_for_animation();
+            // When the flickable is scrolled to the top, unlocking the header must show
+            //  the header because you cannot scroll more up to reveal it:
+            page.head.locked = false;
+            wait_for_visible(true, "Unlocking header when flickable is at Y beginning "+
+                             "does not show header.");
 
-//            // hiding does not update locked:
-//            page.head.visible = false;
-//            compare(page.head.locked, true, "Setting page.head.visible locks header.");
+            scroll_down();
+            wait_for_visible(false, "Scrolling down does not hide header.");
+            page.head.locked = true;
+            wait_for_visible(false, "Locking shows header.");
+            // When flickable is scrolled down, unlocking header does not show header
+            //  because the user can scroll up to reveal it:
+            page.head.locked = false;
+            wait_for_visible(false, "Unlocking shows header when flickable is not at " +
+                             "Y beginning.");
+        }
 
-//            // unlocking does not update visible:
-//            page.head.locked = false;
-//            testCase.check_header_visibility(false, "Unlocking header hides it.");
-
-//            // showing does not update locked:
-//            page.head.visible = true;
-//            compare(page.head.locked, false, "Showing header unlocks it.");
-//        }
+        // TODO TIM: add tests that header does not hide/show when changing contents
+        //  or title when the header is locked.
     }
 }

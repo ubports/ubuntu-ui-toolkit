@@ -50,7 +50,6 @@ StyledItem {
         enabled: animate && !(header.flickable && header.flickable.moving)
         SmoothedAnimation {
             duration: Components.UbuntuAnimation.BriskDuration
-            onRunningChanged: if (!running) internal.moving = false
         }
     }
 
@@ -60,9 +59,8 @@ StyledItem {
         internal.movementEnded();
     }
 
-    visible: title || contents || tabsModel ||
-             // with PageHeadConfiguration 1.2, always be visible.
-             (header.config && header.config.hasOwnProperty("visible"))
+    // with PageHeadConfiguration 1.2, always be visible.
+    visible: title || contents || tabsModel || internal.newConfig
     onVisibleChanged: {
         internal.checkFlickableMargins();
     }
@@ -71,8 +69,10 @@ StyledItem {
       Show the header
      */
     function show() {
+        if (internal.newConfig) {
+            header.config.visible = true;
+        }
         if (header.y !== 0) {
-            internal.moving = true;
             header.y = 0;
         }
     }
@@ -81,8 +81,10 @@ StyledItem {
       Hide the header
      */
     function hide() {
+        if (internal.newConfig) {
+            header.config.visible = false;
+        }
         if (header.y !== -header.height) {
-            internal.moving = true;
             header.y = - header.height;
         }
     }
@@ -92,7 +94,9 @@ StyledItem {
      */
     property string title: ""
     onTitleChanged: {
-        header.show();
+        if (!internal.newConfig) {
+            header.show();
+        }
     }
 
     /*!
@@ -100,7 +104,9 @@ StyledItem {
      */
     property Item contents: null
     onContentsChanged: {
-        header.show();
+        if (!internal.newConfig) {
+            header.show();
+        }
     }
 
     /*!
@@ -174,7 +180,9 @@ StyledItem {
      */
     property PageHeadConfiguration config: null
     onConfigChanged: {
-        internal.updateConfigVisible()
+        if (!internal.locked) {
+            header.show();
+        }
     }
     Connections {
         target: header.config
@@ -199,43 +207,23 @@ StyledItem {
 
       Used in tst_header_locked_visible.qml.
     */
-//    readonly property bool moving: !(internal.fullyOpened || internal.fullyClosed)
-     readonly property alias moving: internal.moving
-
-    // TODO TIM: support old version without the config.visible property?
-//    onMovingChanged: print("header moving = "+moving)
+    //    readonly property bool moving: !(internal.fullyOpened || internal.fullyClosed)
+    //     readonly property alias moving: internal.moving
+    readonly property bool moving: internal.newConfig &&
+                                   ((config.visible && header.y !== 0) ||
+                                    (!config.visible && header.y !== -header.height))
 
     QtObject {
         id: internal
 
-        property bool moving: false
-        property bool fullyOpened: header.y === 0
-        property bool fullyClosed: header.y === -header.height
-        property bool locked: header.config && header.config.hasOwnProperty("locked") &&
-                              header.config.locked
-
-        onFullyOpenedChanged: updateConfigVisible()
-        onFullyClosedChanged: updateConfigVisible()
-        onLockedChanged: connectFlickable()
-
-        function updateConfigVisible() {
-            if (!(fullyOpened || fullyClosed)) {
-                // still animating or flicking
-                return;
-            }
-            if (!header.config) return;
-            if (!header.config.hasOwnProperty("visible")) return;
-            if (fullyOpened) {
-                // FIXME TIM: When we remove deprecated functionality where the header
-                // visibility is controlled by its contents/title, we can simply set
-                // header.config.visible to true here.
-                // FIXME: header.config.visible = fullyOpened
-                header.config.visible = true; //header.visible;
-            } else {
-                // fullyClosed
-                header.config.visible = false;
-            }
+        property bool locked: newConfig && header.config.locked
+        onLockedChanged: {
+            connectFlickable();
         }
+
+        property bool newConfig: header.config &&
+                                 header.config.hasOwnProperty("locked") &&
+                                 header.config.hasOwnProperty("visible")
 
         /*!
           Track the y-position inside the flickable.
@@ -251,6 +239,10 @@ StyledItem {
           Disconnect previous flickable, and connect the new one.
          */
         function connectFlickable() {
+            // Finish the current header movement in case the current
+            // flickable is disconnected while scrolling:
+            internal.movementEnded();
+
             if (previousFlickable) {
                 previousFlickable.contentYChanged.disconnect(internal.scrollContents);
                 previousFlickable.movementEnded.disconnect(internal.movementEnded);
@@ -266,16 +258,16 @@ StyledItem {
                 flickable.contentHeightChanged.connect(internal.contentHeightChanged);
                 previousFlickable = flickable;
             }
-//            previousFlickable = flickable;
+            //            previousFlickable = flickable;
         }
 
         /*!
           Update the position of the header to scroll with the flickable.
          */
         function scrollContents() {
+//            print("Scrolling contents")
             // Avoid updating header.y when rebounding or being dragged over the bounds.
             if (!flickable.atYBeginning && !flickable.atYEnd) {
-                internal.moving = true;
                 var deltaContentY = flickable.contentY - previousContentY;
                 // FIXME: MathUtils.clamp  is expensive. Fix clamp, or replace it here.
                 header.y = MathUtils.clamp(header.y - deltaContentY, -header.height, 0);
@@ -287,12 +279,22 @@ StyledItem {
           Fully show or hide the header, depending on its current y.
          */
         function movementEnded() {
-            if (internal.fullyClosed || internal.fullyOpened) {
-                internal.moving = false;
+            if (flickable && !locked) {
+                if (internal.newConfig) {
+                    header.config.visible = (flickable.contentY < 0) ||
+                                        (header.y > -header.height/2);
+                    if (header.config.visible) {
+                        header.show();
+                    } else {
+                        header.hide();
+                    }
+                } else {
+                    //                print("contentY = "+flickable.contentY)
+                    if (flickable.contentY < 0) header.show();
+                    else if (header.y < -header.height/2) header.hide();
+                    else header.show();
+                }
             }
-            if (flickable && flickable.contentY < 0) header.show();
-            else if (header.y < -header.height/2) header.hide();
-            else header.show();
         }
 
         /*

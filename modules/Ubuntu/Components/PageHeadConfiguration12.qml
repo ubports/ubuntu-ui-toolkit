@@ -27,5 +27,4 @@ Toolkit11.PageHeadConfiguration {
 
     // auto-updated
     property bool visible
-    onVisibleChanged: print("PageHeadConfiguration.visible = "+visible)
 }
