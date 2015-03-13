@@ -138,8 +138,8 @@ UCTheme::UCTheme(bool defaultStyle, QObject *parent)
 
 void UCTheme::init()
 {
-    m_name = m_themeSettings.themeName();
-    QObject::connect(&m_themeSettings, &UCThemeSettings::themeNameChanged,
+    m_name = m_defaultTheme.themeName();
+    QObject::connect(&m_defaultTheme, &UCDefaultTheme::themeNameChanged,
                      this, &UCTheme::onThemeNameChanged);
     updateThemePaths();
 }
@@ -160,8 +160,8 @@ void UCTheme::updateEnginePaths()
 
 void UCTheme::onThemeNameChanged()
 {
-    if (m_themeSettings.themeName() != m_name) {
-        m_name = m_themeSettings.themeName();
+    if (m_defaultTheme.themeName() != m_name) {
+        m_name = m_defaultTheme.themeName();
         updateThemePaths();
         Q_EMIT nameChanged();
     }
@@ -213,7 +213,7 @@ void UCTheme::setName(const QString& name)
     if (name.isEmpty()) {
         init();
     } else {
-        QObject::disconnect(&m_themeSettings, &UCThemeSettings::themeNameChanged,
+        QObject::disconnect(&m_defaultTheme, &UCDefaultTheme::themeNameChanged,
                             this, &UCTheme::onThemeNameChanged);
         m_name = name;
         updateThemePaths();

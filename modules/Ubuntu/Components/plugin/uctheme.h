@@ -26,7 +26,7 @@
 #include <QtCore/QString>
 #include <QtQml/QQmlComponent>
 
-#include "ucthemesettings.h"
+#include "ucdefaulttheme.h"
 
 class UCTheme : public QObject
 {
@@ -72,7 +72,7 @@ private:
     QPointer<QObject> m_palette; // the palette might be from the default style if the theme doesn't define palette
     QQmlEngine *m_engine;
     QList<QUrl> m_themePaths;
-    UCThemeSettings m_themeSettings;
+    UCDefaultTheme m_defaultTheme;
     bool m_defaultStyle:1;
 
     friend class UCDeprecatedTheme;

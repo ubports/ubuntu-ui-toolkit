@@ -26,7 +26,6 @@ uri = Ubuntu.Components
 
 HEADERS += plugin.h \
     uctheme.h \
-    ucthemesettings.h \
     i18n.h \
     listener.h \
     ucscalingimageprovider.h \
@@ -80,11 +79,11 @@ HEADERS += plugin.h \
     privates/listitemdragarea.h \
     privates/listitemdraghandler.h \
     ucnamespace.h \
-    ucdeprecatedtheme.h
+    ucdeprecatedtheme.h \
+    ucdefaulttheme.h
 
 SOURCES += plugin.cpp \
     uctheme.cpp \
-    ucthemesettings.cpp \
     i18n.cpp \
     listener.cpp \
     ucscalingimageprovider.cpp \
@@ -128,7 +127,8 @@ SOURCES += plugin.cpp \
     privates/listitemdragarea.cpp \
     privates/listitemdraghandler.cpp \
     ucnamespace.cpp \
-    ucdeprecatedtheme.cpp
+    ucdeprecatedtheme.cpp \
+    ucdefaulttheme.cpp
 
 # adapters
 SOURCES += adapters/alarmsadapter_organizer.cpp
