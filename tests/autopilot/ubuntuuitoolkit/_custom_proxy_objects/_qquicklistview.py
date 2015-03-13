@@ -162,7 +162,6 @@ class QQuickListView(_flickable.QQuickFlickable):
     def _drag_item_with_pagination(self, from_index, to_index):
         # the from_index might be invisible
         from_item = self._find_element('listitem{}'.format(from_index))
-        import pdb; pdb.set_trace()
         from_item.swipe_into_view()
         from_drag_panel = self._get_drag_panel(from_index)
         containers = self._get_containers()
@@ -198,6 +197,7 @@ class QQuickListView(_flickable.QQuickFlickable):
         visible_top = _flickable._get_visible_container_top(
             containers)
         start_x, start_y = input.get_center_point(handler)
+
         self.pointing_device.move(start_x, start_y)
         self.pointing_device.press()
         stop_x = start_x
@@ -206,15 +206,13 @@ class QQuickListView(_flickable.QQuickFlickable):
         to_drag_panel = self._get_drag_panel(to_index, wait=True)
         while not self.is_child_visible(to_drag_panel):
             pass
-        # NOTE the Header may overlap the to_index while swiped in
         # stop moving
-        self.pointing_device.move(
-            stop_x,
-            self.pointing_device.y + to_drag_panel.height / 2)
+        h = to_drag_panel.height / 2
+        self.pointing_device.move(stop_x, self.pointing_device.y + h)
         # move after the item with the to_index
-        to_drag_panel = self._get_drag_handler(to_index + 1)
+        to_drag_panel = self._get_drag_panel(to_index)
         stop_y = (
-            to_drag_panel.globalRect.y -
+            to_drag_panel.globalRect.y +
             to_drag_panel.globalRect.height)
         self.pointing_device.move(stop_x, stop_y)
         self.pointing_device.release()

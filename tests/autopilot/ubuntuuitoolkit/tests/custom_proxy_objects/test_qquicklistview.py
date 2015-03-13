@@ -258,16 +258,14 @@ class QQuickListViewReorderingTestCase(QQuickListViewDraggingBaseTestCase):
         ('both items visible, to top', {'from_index': 1, 'to_index': 0}),
         ('both items visible, to bottom, first non visible', {
             'from_index': 0, 'to_index': 7}),
-        # paginate to bottom.
-        ('to item not visible, to middle', {'from_index': 0, 'to_index': 15}),
-        ('to item not visible, to bottom', {'from_index': 0, 'to_index': 24}),
-        # paginate to top.
-#        ('both items not visible, to top', {'from_index': 7, 'to_index': 6}),
-#        ('both items not visible, to top', {'from_index': 10, 'to_index': 8}),
+        ('to item not visible, to top', {'from_index': 15, 'to_index': 0}),
+        ('to item not visible, to middle down', {
+            'from_index': 0, 'to_index': 15}),
+        ('to item not visible, to bottom', {'from_index': 0, 'to_index': 24})
     ]
 
     def _find_item(self, index):
-        object_name='listitem{}'.format(index)
+        object_name = 'listitem{}'.format(index)
         try:
             return self.list_view.select_single(objectName=object_name)
         except dbus.StateNotFoundError:
