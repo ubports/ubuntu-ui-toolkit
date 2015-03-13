@@ -31,7 +31,7 @@ AbstractButton {
     Rectangle {
         visible: button.pressed
         anchors.fill: parent
-        color: styleSet.palette.selected.background
+        color: theme.palette.selected.background
     }
 
     Icon {

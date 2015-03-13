@@ -28,9 +28,9 @@ Item {
     /*!
       The background color when the checkbox is not checked.
      */
-    property color uncheckedBackgroundColor: Qt.rgba(styleSet.palette.normal.foreground.r,
-                                                     styleSet.palette.normal.foreground.g,
-                                                     styleSet.palette.normal.foreground.b, 0.2)
+    property color uncheckedBackgroundColor: Qt.rgba(theme.palette.normal.foreground.r,
+                                                     theme.palette.normal.foreground.g,
+                                                     theme.palette.normal.foreground.b, 0.2)
 
     /*!
       The background color when the checkbox is checked.
@@ -45,7 +45,7 @@ Item {
     /*!
       The color of the icon.
      */
-    property color iconColor: styleSet.palette.normal.foregroundText
+    property color iconColor: theme.palette.normal.foregroundText
 
     /*!
       The padding between the icon and the border of the thumb.

@@ -35,10 +35,10 @@ PageTreeNode {
     StyledItem {
         id: background
         anchors.fill: parent
-        style: styleSet.createStyleComponent("MainViewStyle.qml", background)
+        style: theme.createStyleComponent("MainViewStyle.qml", background)
 
         property color headerColor: backgroundColor
-        property color backgroundColor: styleSet.palette.normal.background
+        property color backgroundColor: theme.palette.normal.background
         property color footerColor: backgroundColor
 
         /*
@@ -48,12 +48,12 @@ PageTreeNode {
 
           Qt bug: https://bugreports.qt-project.org/browse/QTBUG-11712
          */
-        property string theme: (ColorUtils.luminance(backgroundColor) >= 0.85) ?
+        property string autoThemeName: (ColorUtils.luminance(backgroundColor) >= 0.85) ?
                                    "Ambiance" : "SuruDark"
-        onThemeChanged: {
+        onAutoThemeNameChanged: {
             // only change the theme if the current one is a system one.
-            if (theme !== "" && (styleSet.name.search("Ubuntu.Components.Themes") >= 0)) {
-                styleSet.name = "Ubuntu.Components.Themes.%1".arg(theme);
+            if (autoThemeName !== "" && (theme.name.search("Ubuntu.Components.Themes") >= 0)) {
+                mainView.theme.name = "Ubuntu.Components.Themes.%1".arg(autoThemeName);
             }
         }
     }

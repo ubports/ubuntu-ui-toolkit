@@ -44,7 +44,7 @@ public:
     bool isParentFocusable();
 
     UCTheme *getTheme() const;
-    void setTheme(UCTheme *styleSet);
+    void setTheme(UCTheme *theme);
     void resetTheme();
 
 public:

@@ -28,7 +28,7 @@ Item {
     /*!
       The background color of the bubble.
      */
-    property color color: square ? styleSet.palette.normal.background : styleSet.palette.normal.overlay
+    property color color: square ? theme.palette.normal.background : theme.palette.normal.overlay
 
     property point target
     property string direction: "down"
@@ -111,7 +111,7 @@ Item {
     UbuntuShape {
         anchors.fill: parent
         borderSource: "none"
-        color: styleSet.palette.normal.overlay
+        color: theme.palette.normal.overlay
         image: bubbleShape.clipContent ? shapeSource : null
         visible: !square
     }

@@ -97,7 +97,7 @@ StyledItem {
     implicitHeight: units.gu(7.5)
     activeFocusOnPress: true
 
-    style: styleSet.createStyleComponent("TabBarStyle.qml", tabBar)
+    style: theme.createStyleComponent("TabBarStyle.qml", tabBar)
 
     QtObject {
         id: internal

@@ -65,7 +65,7 @@ import Ubuntu.Components 1.2
                 width: height
                 height: units.gu(3)
                 radius: width / 2
-                color: styleSet.palette.normal.background
+                color: theme.palette.normal.background
                 antialiasing: true
                 Label {
                     text: Math.round(selector.value)
@@ -142,7 +142,7 @@ StyledItem {
     width: parent.width
     height: parent.height
     activeFocusOnPress: true
-    style: styleSet.createStyleComponent("DialerHandStyle.qml", dialerHand)
+    style: theme.createStyleComponent("DialerHandStyle.qml", dialerHand)
 
     /*! \internal */
     onParentChanged: {

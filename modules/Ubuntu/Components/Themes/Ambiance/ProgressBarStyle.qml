@@ -22,8 +22,8 @@ Item {
 
     property color foregroundColor: UbuntuColors.orange
     property color foregroundTextColor: '#FFFFFF'
-    property color backgroundColor: styleSet.palette.normal.base
-    property color backgroundTextColor: styleSet.palette.normal.baseText
+    property color backgroundColor: theme.palette.normal.base
+    property color backgroundTextColor: theme.palette.normal.baseText
 
     property var progressBar: styledItem
 

@@ -206,5 +206,5 @@ StyledItem {
         onLiveValueChanged: if (isPressed) slider.requestFocus(Qt.MouseFocusReason)
     }
 
-    style: styleSet.createStyleComponent("SliderStyle.qml", slider)
+    style: theme.createStyleComponent("SliderStyle.qml", slider)
 }

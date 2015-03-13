@@ -64,5 +64,5 @@ AnimatedItem {
     */
     property real value: 0.5
 
-    style: styleSet.createStyleComponent("ProgressBarStyle.qml", progressBar)
+    style: theme.createStyleComponent("ProgressBarStyle.qml", progressBar)
 }

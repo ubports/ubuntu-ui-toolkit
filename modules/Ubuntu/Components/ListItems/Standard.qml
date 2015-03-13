@@ -172,7 +172,7 @@ Empty {
             bottom: parent.bottom
             left: parent.left
         }
-        color: styleSet.palette.selected.background
+        color: theme.palette.selected.background
     }
 
     Rectangle {
@@ -185,7 +185,7 @@ Empty {
             bottom: parent.bottom
             right: parent.right
         }
-        color: styleSet.palette.selected.background
+        color: theme.palette.selected.background
     }
 
     IconVisual {

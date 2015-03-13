@@ -158,7 +158,7 @@ Template {
                         width: height
                         height: units.gu(3)
                         radius: width / 2
-                        color: styleSet.palette.normal.background
+                        color: theme.palette.normal.background
                         antialiasing: true
                         Label {
                             text: Math.round(selector.value)

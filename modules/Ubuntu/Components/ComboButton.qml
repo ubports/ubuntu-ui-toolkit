@@ -248,7 +248,7 @@ Button {
     property color dropdownColor: __styleInstance ? __styleInstance.defaultDropdownColor : color
 
 
-    style: styleSet.createStyleComponent("ComboButtonStyle.qml", combo)
+    style: theme.createStyleComponent("ComboButtonStyle.qml", combo)
 
     Component.onCompleted: {
         // update mouse area to report clicks only on the main button area

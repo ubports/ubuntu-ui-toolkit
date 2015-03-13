@@ -52,7 +52,7 @@ Item {
         anchors.centerIn: parent
         width: parent.width - units.gu(1)
         wrapMode: Text.Wrap
-        color: styleSet.palette.normal.backgroundText
+        color: theme.palette.normal.backgroundText
         horizontalAlignment: Text.AlignLeft
         fontSize: "small"
     }

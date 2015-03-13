@@ -41,7 +41,7 @@ Ubuntu.StyledItem {
                                            handler.main.cursorDelegate :
                                            __styleInstance.cursorDelegate
 
-    style: styleSet.createStyleComponent("TextCursorStyle.qml", cursorItem);
+    style: theme.createStyleComponent("TextCursorStyle.qml", cursorItem);
 
     objectName: "textCursor"
     //Caret instance from the style.

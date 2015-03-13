@@ -52,7 +52,7 @@ Item {
         width: styledItem.hand.width
         height: styledItem.hand.height
         radius: units.gu(1)
-        color: styledItem.hand.visible ? styleSet.palette.normal.baseText : "#00000000"
+        color: styledItem.hand.visible ? theme.palette.normal.baseText : "#00000000"
         antialiasing: true
     }
 

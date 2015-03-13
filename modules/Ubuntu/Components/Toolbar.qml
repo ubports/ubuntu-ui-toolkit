@@ -134,7 +134,7 @@ Panel {
         property bool opened: toolbar.opened
         property bool animating: toolbar.animating
 
-        style: styleSet.createStyleComponent("ToolbarStyle.qml", background)
+        style: theme.createStyleComponent("ToolbarStyle.qml", background)
     }
 
     Item {

@@ -32,7 +32,7 @@ Label {
 
     fontSize: "medium"
     elide: Text.ElideRight
-    color: selected ? UbuntuColors.orange : secondary ? overlay ? styleSet.palette.normal.overlayText : styleSet.palette.normal.backgroundText
-                                                      : overlay ? styleSet.palette.selected.overlayText : styleSet.palette.selected.backgroundText
+    color: selected ? UbuntuColors.orange : secondary ? overlay ? theme.palette.normal.overlayText : theme.palette.normal.backgroundText
+                                                      : overlay ? theme.palette.selected.overlayText : theme.palette.selected.backgroundText
     opacity: label.enabled ? 1.0 : 0.5
 }

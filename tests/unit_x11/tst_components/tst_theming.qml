@@ -46,15 +46,15 @@ MainView {
             ];
         }
         function test_backgroundcolor_change(data) {
-            if (data.oldTheme !== mainView.styleSet.name) {
-                mainView.styleSet.name = data.oldTheme;
+            if (data.oldTheme !== mainView.theme.name) {
+                mainView.theme.name = data.oldTheme;
                 themeSpy.wait();
             }
             // change color;
             themeSpy.clear();
             mainView.backgroundColor = data.color;
             themeSpy.wait();
-            compare(mainView.styleSet.name, data.newTheme, "Theme not chnaged");
+            compare(mainView.theme.name, data.newTheme, "Theme not chnaged");
         }
     }
 }

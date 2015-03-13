@@ -85,7 +85,7 @@ Styles.ListItemStyle {
 
                         Rectangle {
                             anchors.fill: parent
-                            color: styleSet.palette.selected.background
+                            color: theme.palette.selected.background
                             visible: pressed
                         }
 
