@@ -117,6 +117,10 @@ MainViewBase {
         Connections {
             target: Qt.application
             onActiveChanged: {
+                if (headerItem.config && headerItem.config.hasOwnProperty("locked") &&
+                        headerItem.config.locked) {
+                    return;
+                }
                 if (Qt.application.active) {
                     headerItem.animate = false;
                     headerItem.show();

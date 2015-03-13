@@ -180,8 +180,10 @@ StyledItem {
      */
     property PageHeadConfiguration config: null
     onConfigChanged: {
+        print("config changed.")
         internal.newConfig = config && config.hasOwnProperty("visible") &&
                 config.hasOwnProperty("locked");
+        print("newConfig = "+internal.newConfig+", locked = "+header.config.locked + ", visible = "+header.config.visible)
 
         if (internal.newConfig && header.config.locked) {
             if (header.config.visible) {
