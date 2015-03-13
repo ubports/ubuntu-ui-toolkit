@@ -35,7 +35,7 @@ Template {
 
     TemplateSection {
         className: "Popover"
-        documentation: "qml-ubuntu-components-popups0-%1.html".arg(className.toLowerCase())
+        documentation: "qml-ubuntu-components-popups-%1.html".arg(className.toLowerCase())
 
         TemplateRow {
             title: i18n.tr("Flickable")
