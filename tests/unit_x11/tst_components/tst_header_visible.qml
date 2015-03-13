@@ -27,52 +27,57 @@ Item {
         width: units.gu(50)
         height: units.gu(70)
 
-        Page {
-            id: page
-            title: "Auto-hide"
-            head {
-                locked: lockedSwitch.checked
-                onVisibleChanged: {
-                    visibleSwitch.checked = page.head.visible
-                }
-            }
-            Flickable {
-                id: flickable
-                anchors.fill: parent
-                contentHeight: units.gu(200)
-                Grid {
-                    id: switchGrid
-                    columns: 2
-                    spacing: units.gu(1)
-                    anchors {
-                        top: parent.top
-                        left: parent.left
-                        leftMargin: units.gu(5)
-                        topMargin: units.gu(15)
-                    }
-                    Switch {
-                        id: lockedSwitch
-                        checked: false
-                    }
-                    Label {
-                        text: "header locked"
-                    }
-                    Switch {
-                        id: visibleSwitch
-                        checked: page.head.visible
-                        onClicked: page.head.visible = checked
-                    }
-                    Label {
-                        text: "header visible"
+        PageStack {
+            id: stack
+            Component.onCompleted: stack.push(page)
+
+            Page {
+                id: page
+                title: "Auto-hide"
+                head {
+                    locked: lockedSwitch.checked
+                    onVisibleChanged: {
+                        visibleSwitch.checked = page.head.visible
                     }
                 }
-                Label {
-                    anchors {
-                        horizontalCenter: parent.horizontalCenter
-                        top: switchGrid.bottom
-                        topMargin: units.gu(15)
+                Flickable {
+                    id: flickable
+                    anchors.fill: parent
+                    contentHeight: units.gu(200)
+                    Grid {
+                        id: switchGrid
+                        columns: 2
+                        spacing: units.gu(1)
+                        anchors {
+                            top: parent.top
+                            left: parent.left
+                            leftMargin: units.gu(5)
+                            topMargin: units.gu(15)
+                        }
+                        Switch {
+                            id: lockedSwitch
+                            checked: false
+                        }
+                        Label {
+                            text: "header locked"
+                        }
+                        Switch {
+                            id: visibleSwitch
+                            checked: page.head.visible
+                            onClicked: page.head.visible = checked
+                        }
+                        Label {
+                            text: "header visible"
+                        }
                     }
-                    text: "Flick me"
+                    Label {
+                        anchors {
+                            horizontalCenter: parent.horizontalCenter
+                            top: switchGrid.bottom
+                            topMargin: units.gu(15)
+                        }
+                        text: "Flick me"
+                    }
                 }
             }
         }
