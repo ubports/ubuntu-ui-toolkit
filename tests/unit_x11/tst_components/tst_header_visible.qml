@@ -266,10 +266,8 @@ Item {
             page.head.locked = true;
             page.head.visible = false;
             wait_for_animation();
-            print("PUSHING")
             stack.push(otherPage);
             wait_for_animation();
-            print("POPPING")
             stack.pop();
             wait_for_visible(false, "Popping to a Page with locked hidden header shows header.");
         }

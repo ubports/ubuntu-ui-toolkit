@@ -226,8 +226,7 @@ MainViewBase {
             onActiveChanged: {
                 if (Qt.application.active) {
                     canvas.animate = false;
-                    // FIXME TIM: don't show locked header
-//                    headerItem.show();
+                    headerItem.show();
                     if (headerItem.tabBar) {
                         headerItem.tabBar.selectionMode = true;
                     }

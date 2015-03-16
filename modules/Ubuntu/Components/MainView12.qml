@@ -81,7 +81,7 @@ MainViewBase {
             // FIXME TIM: This doesn't work by checking !config.locked because
             //  changing the flickable will show the header (even if it is locked)
             flickable: internal.activePage ? internal.activePage.flickable : null
-//            flickable: internal.activePage && !config.locked ? internal.activePage.flickable : null
+            //            flickable: internal.activePage && !config.locked ? internal.activePage.flickable : null
             pageStack: internal.activePage ? internal.activePage.pageStack : null
 
             contents: internal.activePage ?
@@ -122,10 +122,13 @@ MainViewBase {
                     return;
                 }
                 if (Qt.application.active) {
-                    headerItem.animate = false;
-                    // FIXME TIM: Don't show locked header.
-//                    headerItem.show();
-                    headerItem.animate = true;
+                    if (!(headerItem.config &&
+                          headerItem.config.hasOwnProperty("locked") &&
+                          headerItem.locked)) {
+                        headerItem.animate = false;
+                        headerItem.show();
+                        headerItem.animate = true;
+                    }
                 }
             }
         }
