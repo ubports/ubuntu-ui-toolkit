@@ -183,10 +183,8 @@ StyledItem {
      */
     property PageHeadConfiguration config: null
     onConfigChanged: {
-        print("config changed.")
         internal.newConfig = config && config.hasOwnProperty("visible") &&
                 config.hasOwnProperty("locked");
-        print("newConfig = "+internal.newConfig+", locked = "+header.config.locked + ", visible = "+header.config.visible)
 
         if (internal.newConfig && header.config.locked &&!header.config.visible) {
             header.hide();
@@ -199,7 +197,6 @@ StyledItem {
         // PageHeadConfiguration <1.2 has no visible property.
         ignoreUnknownSignals: true
         onVisibleChanged: {
-            print("visible for "+header.config+ " changed to "+header.config.visible)
             if (header.config.visible) {
                 header.show();
             } else {
