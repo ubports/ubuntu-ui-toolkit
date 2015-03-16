@@ -123,7 +123,8 @@ MainViewBase {
                 }
                 if (Qt.application.active) {
                     headerItem.animate = false;
-                    headerItem.show();
+                    // FIXME TIM: Don't show locked header.
+//                    headerItem.show();
                     headerItem.animate = true;
                 }
             }

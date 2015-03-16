@@ -168,7 +168,9 @@ StyledItem {
     onFlickableChanged: {
         internal.checkFlickableMargins();
         internal.connectFlickable();
-        header.show();
+        if (!internal.newConfig && header.locked) {
+            header.show();
+        }
     }
 
     /*!

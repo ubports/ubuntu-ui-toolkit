@@ -310,8 +310,9 @@ PageTreeNode {
             if (tabBar && tabBar.__styleInstance && tabBar.__styleInstance.hasOwnProperty("sync")) {
                 tabBar.__styleInstance.sync();
             }
+            // FIXME TIM: check this for new PHC
             if (tabs.active && internal.header) {
-                internal.header.show();
+//                internal.header.show();
             }
             // deprecated, however use it till we remove it completely
             tabs.modelChanged();
