@@ -124,7 +124,7 @@ class UCUbuntuShape : public QQuickItem
     Q_ENUMS(HAlignment)
     Q_ENUMS(VAlignment)
     Q_PROPERTY(QVariant source READ source WRITE setSource NOTIFY sourceChanged REVISION 1)
-    Q_PROPERTY(float sourceOpacity READ sourceOpacity WRITE setSourceOpacity
+    Q_PROPERTY(qreal sourceOpacity READ sourceOpacity WRITE setSourceOpacity
                NOTIFY sourceOpacityChanged REVISION 1)
     Q_PROPERTY(FillMode sourceFillMode READ sourceFillMode WRITE setSourceFillMode
                NOTIFY sourceFillModeChanged REVISION 1)
@@ -181,8 +181,8 @@ public:
     QVariant source() const {
         return QVariant::fromValue((m_flags & SourceApiSet) ? m_source : NULL); }
     void setSource(const QVariant& source);
-    float sourceOpacity() const { return m_sourceOpacity / static_cast<float>(0xff); }
-    void setSourceOpacity(float sourceOpacity);
+    qreal sourceOpacity() const { return m_sourceOpacity / static_cast<qreal>(0xff); }
+    void setSourceOpacity(qreal sourceOpacity);
     FillMode sourceFillMode() const { return m_sourceFillMode; }
     void setSourceFillMode(FillMode sourceFillMode);
     WrapMode sourceHorizontalWrapMode() const { return m_sourceHorizontalWrapMode; }

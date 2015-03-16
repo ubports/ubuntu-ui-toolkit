@@ -15,20 +15,60 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 1.1
+import Ubuntu.Components 1.2
 
 MainView {
+    id: root
     width: units.gu(48)
     height: units.gu(60)
-    useDeprecatedToolbar: false
     objectName: "mainView"
 
     Page {
         title: "Header"
+        head.backAction: Action {
+            iconName: "back"
+            text: i18n.tr("Back")
+            onTriggered: visible = false
+        }
         head.contents: TextField {
+            id: searchTextField
             objectName: "textfield"
             placeholderText: "Header"
-            width: parent ? parent.width : 0
+            inputMethodHints: Qt.ImhNoPredictiveText
+            hasClearButton: false
+
+            text: "Then two bears came out of the woods and mauled forty-two of the youths."
+
+            anchors {
+                fill: parent
+                leftMargin: units.gu(1)
+                topMargin: units.gu(0.5)
+                bottomMargin: units.gu(0.5)
+                rightMargin: units.gu(1)
+            }
+
+            secondaryItem: AbstractButton {
+                height: searchTextField.height
+                width: height
+                enabled: searchTextField.text.length > 0
+                Image {
+                    objectName: "clearIcon"
+                    anchors.fill: parent
+                    anchors.margins: units.gu(.75)
+                    source: "image://theme/clear"
+                    opacity: searchTextField.text.length > 0
+                    visible: opacity > 0
+                    Behavior on opacity {
+                        UbuntuNumberAnimation { duration: UbuntuAnimation.FastDuration }
+                    }
+                }
+            }
+        }
+
+        Column {
+            Label {
+                text: "Above is a text field in the header"
+            }
         }
     }
 }

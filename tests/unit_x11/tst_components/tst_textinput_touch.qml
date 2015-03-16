@@ -26,9 +26,21 @@ Item {
 
     Column {
         spacing: units.gu(1)
+        Label {
+            text: "Text fields are awesome"
+            width: parent.width
+            height: units.gu(10)
+            verticalAlignment: Text.AlignVCenter
+        }
         TextField {
             id: textField
             text: "This is a single line text input called TextField."
+        }
+        Label {
+            text: "Text areas are even more amazing"
+            width: parent.width
+            height: units.gu(5)
+            verticalAlignment: Text.AlignVCenter
         }
         TextArea {
             id: textArea
@@ -249,7 +261,9 @@ Item {
         }
         function test_drag_cursor_handler(data) {
             data.input.focus = true;
-            var caret = findChild(data.input, "cursorPosition_draggeditem");
+            data.input.cursorPosition = 0;
+            var caret = findChild(data.input, "input_handler").cursorPositionCursor;
+            verify(caret, "Caret \"" + data.cursorName + "\" cannot be found!");
             var cursorPosition = data.input.cursorPosition;
 
             TestExtras.touchDrag(0, caret, centerOf(caret), data.delta);
@@ -261,8 +275,8 @@ Item {
             return [
                 {tag: "TextField", input: textField, initialCursorPosition: 0, cursorName: "selectionEnd", delta: guPoint(10, 0)},
                 {tag: "TextArea", input: textArea, initialCursorPosition: 0, cursorName: "selectionEnd", delta: guPoint(10, 5)},
-                {tag: "TextField", input: textField, initialCursorPosition: 48, cursorName: "selectionStart", delta: guPoint(-10, 0)},
-                {tag: "TextArea", input: textArea, initialCursorPosition: 50, cursorName: "selectionStart", delta: guPoint(-20, -5)},
+                {tag: "TextField(end)", input: textField, initialCursorPosition: 48, cursorName: "selectionStart", delta: guPoint(-10, 0)},
+                {tag: "TextArea(end)", input: textArea, initialCursorPosition: 50, cursorName: "selectionStart", delta: guPoint(-20, -5)},
             ];
         }
         function test_select_text_by_dragging_cursor_handler(data) {
@@ -271,9 +285,11 @@ Item {
             data.input.selectWord();
             var selectedText = data.input.selectedText;
 
-            var caret = findChild(data.input, data.cursorName + "_draggeditem");
+            var caret = findChild(data.input, "input_handler")[data.cursorName + "Cursor"];
             verify(caret, "Caret \"" + data.cursorName + "\" cannot be found!");
 
+            // The caret may not receive events right away
+            sleep(500)
             TestExtras.touchDrag(0, caret, centerOf(caret), data.delta);
             verify(data.input.selectedText !== "", "Selection cleared!");
             verify(data.input.selectedText != selectedText, "Selection did not change");
@@ -283,8 +299,8 @@ Item {
             return [
                 {tag: "TextField", input: textField, withSelectedText: false, from: guPoint(2, 2), delta: guPoint(10, 0)},
                 {tag: "TextArea", input: textArea, withSelectedText: false, from: guPoint(2, 2), delta: guPoint(10, 4)},
-                {tag: "TextField", input: textField, withSelectedText: true, from: guPoint(2, 2), delta: guPoint(10, 0)},
-                {tag: "TextArea", input: textArea, withSelectedText: true, from: guPoint(2, 2), delta: guPoint(10, 4)},
+                {tag: "TextField(selected)", input: textField, withSelectedText: true, from: guPoint(2, 2), delta: guPoint(10, 0)},
+                {tag: "TextArea(selected)", input: textArea, withSelectedText: true, from: guPoint(2, 2), delta: guPoint(10, 4)},
             ];
         }
         function test_z_scroll_when_tap_dragged(data) {

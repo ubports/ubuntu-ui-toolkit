@@ -36,7 +36,7 @@ Item {
     implicitWidth: units.gu(38)
     implicitHeight: units.gu(5)
 
-    UbuntuShape {
+    UbuntuShapeOverlay {
         id: background
         anchors {
             verticalCenter: parent.verticalCenter
@@ -44,17 +44,11 @@ Item {
             left: parent.left
         }
         height: units.dp(4)
-
-        color: "white"
-    }
-
-    PartialColorizeUbuntuShape {
-        anchors.fill: background
-        sourceItem: background
-        progress: thumb.x / thumb.barMinusThumbWidth
-        leftColor: foregroundColor
-        rightColor: backgroundColor
-        mirror: Qt.application.layoutDirection == Qt.RightToLeft
+        backgroundColor: sliderStyle.backgroundColor
+        overlayColor: sliderStyle.foregroundColor
+        overlayRect: Qt.application.layoutDirection == Qt.LeftToRight ?
+            Qt.rect(0.0, 0.0, thumb.x / thumb.barMinusThumbWidth, 1.0) :
+            Qt.rect(1.0 - (thumb.x / thumb.barMinusThumbWidth), 0.0, 1.0, 1.0)
     }
 
     UbuntuShape {
