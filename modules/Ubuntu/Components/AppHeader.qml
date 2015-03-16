@@ -24,8 +24,8 @@ import Ubuntu.Components 1.2 as Components
     \ingroup ubuntu
 */
 StyledItem {
-
     id: header
+
     anchors {
         left: parent.left
         right: parent.right
@@ -73,9 +73,7 @@ StyledItem {
         if (internal.newConfig) {
             header.config.visible = true;
         }
-        if (header.y !== 0) {
-            header.y = 0;
-        }
+        header.y = 0;
     }
 
     /*!
@@ -85,9 +83,7 @@ StyledItem {
         if (internal.newConfig) {
             header.config.visible = false;
         }
-        if (header.y !== -header.height) {
-            header.y = - header.height;
-        }
+        header.y = -header.height;
     }
 
     /*!
@@ -95,6 +91,7 @@ StyledItem {
      */
     property string title: ""
     onTitleChanged: {
+        // deprecated for new versions of PageHeadConfiguration
         if (!internal.newConfig) {
             header.show();
         }
@@ -105,6 +102,7 @@ StyledItem {
      */
     property Item contents: null
     onContentsChanged: {
+        // deprecated for new versions of PageHeadConfiguration
         if (!internal.newConfig) {
             header.show();
         }
@@ -168,7 +166,7 @@ StyledItem {
     onFlickableChanged: {
         internal.checkFlickableMargins();
         internal.connectFlickable();
-        if (!internal.newConfig && header.locked) {
+        if (!internal.newConfig || !header.config.locked) {
             header.show();
         }
     }
@@ -183,6 +181,8 @@ StyledItem {
      */
     property PageHeadConfiguration config: null
     onConfigChanged: {
+        // set internal.newConfig because when we rely on the binding,
+        //  the value of newConfig may be updated after executing the code below.
         internal.newConfig = config && config.hasOwnProperty("visible") &&
                 config.hasOwnProperty("locked");
 
@@ -194,8 +194,7 @@ StyledItem {
     }
     Connections {
         target: header.config
-        // PageHeadConfiguration <1.2 has no visible property.
-        ignoreUnknownSignals: true
+        ignoreUnknownSignals: true // PageHeadConfiguration <1.2 lacks the signals below
         onVisibleChanged: {
             if (header.config.visible) {
                 header.show();
@@ -214,6 +213,9 @@ StyledItem {
       This property is true if the header is animating towards a fully
       opened or fully closed state, or if the header is moving due to user
       interaction with the flickable.
+
+      The value of moving is always false when using an old version of
+      PageHeadConfiguration (which does not have the visible property).
 
       Used in tst_header_locked_visible.qml.
     */
@@ -282,14 +284,12 @@ StyledItem {
           Fully show or hide the header, depending on its current y.
          */
         function movementEnded() {
-            // FIXME TIM: This is not right for old config.
-            if (flickable && !(internal.newConfig && header.config.locked)) {
-                if (internal.newConfig) {
-                    if (flickable.contentY < 0 || header.y > -header.height/2) {
-                        header.show();
-                    } else {
-                        header.hide();
-                    }
+            if (!(internal.newConfig && header.config.locked)) {
+                if ( (flickable && flickable.contentY < 0) ||
+                        (header.y > -header.height/2)) {
+                    header.show();
+                } else {
+                    header.hide();
                 }
             }
         }
