@@ -126,13 +126,9 @@ Item {
             compare(page.head.locked, false, "Header is not locked initially.");
         }
 
-//        function cleanup() {
-//            testCase.wait_for_visible(true, "Header visibility could not be reset.");
-//        }
-
         function scroll(dy) {
             var p = centerOf(mainView);
-            // Use mouseWheel to scroll because mouseDrag seems very unreliable
+            // Use mouseWheel to scroll because mouseDrag is very unreliable
             // and does not properly handle negative values for dy.
             mouseWheel(mainView, p.x, p.y, 0, 2*dy);
         }
