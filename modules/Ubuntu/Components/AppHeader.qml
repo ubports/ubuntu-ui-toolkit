@@ -24,6 +24,7 @@ import Ubuntu.Components 1.2 as Components
     \ingroup ubuntu
 */
 StyledItem {
+
     id: header
     anchors {
         left: parent.left
@@ -185,12 +186,8 @@ StyledItem {
                 config.hasOwnProperty("locked");
         print("newConfig = "+internal.newConfig+", locked = "+header.config.locked + ", visible = "+header.config.visible)
 
-        if (internal.newConfig && header.config.locked) {
-            if (header.config.visible) {
-                header.show();
-            } else {
-                header.hide();
-            }
+        if (internal.newConfig && header.config.locked &&!header.config.visible) {
+            header.hide();
         } else {
             header.show();
         }
@@ -200,6 +197,7 @@ StyledItem {
         // PageHeadConfiguration <1.2 has no visible property.
         ignoreUnknownSignals: true
         onVisibleChanged: {
+            print("visible for "+header.config+ " changed to "+header.config.visible)
             if (header.config.visible) {
                 header.show();
             } else {
@@ -215,14 +213,11 @@ StyledItem {
       The header is not fully opened or fully closed.
 
       This property is true if the header is animating towards a fully
-      opened or fully closed state, or if the header is moving inbetween
-      fully opened and fully closed due to user interaction with the
-      flickable.
+      opened or fully closed state, or if the header is moving due to user
+      interaction with the flickable.
 
       Used in tst_header_locked_visible.qml.
     */
-    //    readonly property bool moving: !(internal.fullyOpened || internal.fullyClosed)
-    //     readonly property alias moving: internal.moving
     readonly property bool moving: internal.newConfig &&
                                    ((config.visible && header.y !== 0) ||
                                     (!config.visible && header.y !== -header.height))
@@ -230,7 +225,7 @@ StyledItem {
     QtObject {
         id: internal
 
-        // This property will be updated in header.onConfigChanged to ensure it
+        // This property is updated in header.onConfigChanged to ensure it
         //  is updated before other functions are called in onConfigChanged.
         property bool newConfig: header.config &&
                                  header.config.hasOwnProperty("locked") &&
@@ -269,7 +264,6 @@ StyledItem {
                 flickable.contentHeightChanged.connect(internal.contentHeightChanged);
                 previousFlickable = flickable;
             }
-            //            previousFlickable = flickable;
         }
 
         /*!

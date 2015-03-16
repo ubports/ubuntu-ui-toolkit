@@ -37,7 +37,7 @@ Item {
                 head {
                     locked: lockedSwitch.checked
                     onVisibleChanged: {
-                        print("VISIBLE = "+page.head.visible)
+                        print(page.head + ".VISIBLE = "+page.head.visible)
                         visibleSwitch.checked = page.head.visible
                     }
                 }
@@ -245,26 +245,29 @@ Item {
 //            wait_for_visible(true, "Activating unlocked Page does not make header visible.");
 //        }
 
-        function test_activate_hides_locked_hidden_header() {
-            otherPage.head.locked = true;
-            otherPage.head.visible = false;
+//        function test_activate_hides_locked_hidden_header() {
+//            otherPage.head.locked = true;
+//            otherPage.head.visible = false;
 
-            stack.push(otherPage);
-            wait_for_visible(false, "Pushing Page with locked hidden header shows header.");
-            compare(otherPage.head.locked, true, "Pushing Page unlocks header.");
-            compare(page.head.locked, false, "Pushing Page locks previous header.");
+//            stack.push(otherPage);
+//            wait_for_visible(false, "Pushing Page with locked hidden header shows header.");
+//            compare(otherPage.head.locked, true, "Pushing Page unlocks header.");
+//            compare(page.head.locked, false, "Pushing Page locks previous header.");
 
-            stack.pop();
-            wait_for_visible(true, "Popping to a Page with unlocked header does not show header.");
-            compare(otherPage.head.locked, true, "Popping Page unlocks previous header.");
-            compare(page.head.locked, false, "Popping Page locks header.");
+//            stack.pop();
+//            wait_for_visible(true, "Popping to a Page with unlocked header does not show header.");
+//            compare(otherPage.head.locked, true, "Popping Page unlocks previous header.");
+//            compare(page.head.locked, false, "Popping Page locks header.");
+//        }
 
-            otherPage.head.locked = false;
-            otherPage.head.visible = true;
+        function test_hidden_locked_header_stays_hidden() {
+//            otherPage.head.locked = false;
+//            otherPage.head.visible = true;
             page.head.locked = true;
             page.head.visible = false;
             wait_for_animation();
             stack.push(otherPage);
+            wait_for_animation();
             stack.pop();
             wait_for_visible(false, "Popping to a Page with locked hidden header shows header.");
         }
