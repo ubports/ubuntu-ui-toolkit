@@ -100,6 +100,10 @@ Item {
                     text: "Stacked"
                 }
             }
+            Page {
+                id: titleLessPage
+                visible: false
+            }
         }
     }
 
@@ -263,6 +267,23 @@ Item {
             wait_for_animation();
             stack.pop();
             wait_for_visible(false, "Popping to a Page with locked hidden header shows header.");
+        }
+
+        function test_page_with_no_title_on_pagestack_has_back_button_bug1402054() {
+            page.head.visible = false;
+            wait_for_animation();
+            stack.push(titleLessPage);
+            wait_for_visible(true, "Page with no title hides the header.");
+
+            var backButton = findChild(testCase.header, "backButton");
+            verify(null !== backButton, "Header has no back button.");
+            compare(backButton.visible, true, "Page with no title hides the back button.");
+
+            var center = centerOf(backButton);
+            mouseClick(backButton, center.x, center.y);
+            wait_for_animation();
+            compare(stack.depth, 1, "Clicking back button of page with no title does not "+
+                    "pop the page from the PageStack.");
         }
     }
 }
