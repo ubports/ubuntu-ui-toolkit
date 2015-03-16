@@ -125,7 +125,7 @@ Item {
             page.head.locked = false;
             otherPage.head.visible = true;
             otherPage.head.locked = false;
-            testCase.wait_for_visible(true, "Header is not visible initially.");
+            wait_for_visible(true, "Header is not visible initially.");
             compare(stack.currentPage, page, "Wrong Page on PageStack initially.");
             compare(page.head.locked, false, "Header is not locked initially.");
         }
@@ -138,11 +138,11 @@ Item {
         }
 
         function scroll_down() {
-            testCase.scroll(-header.height);
+            scroll(-header.height);
         }
 
         function scroll_up() {
-            testCase.scroll(header.height);
+            scroll(header.height);
         }
 
         function wait_for_animation() {
@@ -150,7 +150,7 @@ Item {
             wait(50);
             // Wait for animation of the style inside the header (when pushing/popping):
             tryCompareFunction(function(){ return testCase.headerStyle.animating }, false);
-            // Wait for the header to finish showing/hiding
+            // Wait for the header to finish showing/hiding:
             tryCompareFunction(function(){ return testCase.header.moving }, false);
         }
 
@@ -179,10 +179,10 @@ Item {
         }
 
         function test_scroll_when_unlocked_updates_visible() {
-            testCase.scroll_down();
-            testCase.wait_for_visible(false, "Scrolling down does not hide header.");
-            testCase.scroll_up();
-            testCase.wait_for_visible(true, "Scrolling up does not show header.");
+            scroll_down();
+            wait_for_visible(false, "Scrolling down does not hide header.");
+            scroll_up();
+            wait_for_visible(true, "Scrolling up does not show header.");
         }
 
         function test_scroll_when_locked_does_not_update_visible() {
