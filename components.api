@@ -256,6 +256,10 @@ Object
     property string preset
     readonly property PageHeadSections sections
     property color foregroundColor
+PageHeadConfiguration 1.2
+Toolkit11.PageHeadConfiguration
+    property bool locked
+    property bool visible
 PageHeadSections 1.1
 QtObject
     property bool enabled

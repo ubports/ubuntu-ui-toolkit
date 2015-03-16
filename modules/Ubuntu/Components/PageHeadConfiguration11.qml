@@ -44,6 +44,9 @@ Object {
     }
 
     property string preset: ""
+    /*!
+      \qmlproperty PageHeadSections sections
+     */
     readonly property alias sections: headSections
     PageHeadSections {
         id: headSections
