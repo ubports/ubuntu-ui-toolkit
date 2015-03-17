@@ -22,10 +22,6 @@ Item {
     width: 400
     height: 600
 
-    Action {
-        id: action0
-    }
-
     Flickable {
         id: testFlickable
     }
@@ -78,7 +74,6 @@ Item {
             compare(header.title, newTitle, "Header title does not match active page title.");
             page.title = "";
         }
-
 
         function test_flickable_bug1200642_bug1192591() {
             var header = page.__propagated.header;

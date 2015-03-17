@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.4
-//import Ubuntu.Components 1.2 as Toolkit
+//import Ubuntu.Components 1.3 as Toolkit
 
 /*!
   \internal
@@ -33,9 +33,7 @@ PageTreeNode {
     height: parentNode ? page.flickable ? parentNode.height : parentNode.height - internal.headerHeight : undefined
 
     isLeaf: true
-
     property string title: parentNode && parentNode.hasOwnProperty("title") ? parentNode.title : ""
-
     property Flickable flickable: internal.getFlickableChild(page)
 
     Object {
@@ -46,6 +44,7 @@ PageTreeNode {
         // When there is a flickable, the header will automatically position it.
         property real headerHeight: internal.header && internal.header.visible ? internal.header.height : 0
 
+        // FIXME TIM: Move these two functions into a flickables.js
         function isVerticalFlickable(object) {
             if (object && object.hasOwnProperty("flickableDirection") && object.hasOwnProperty("contentHeight")) {
                 var direction = object.flickableDirection;
