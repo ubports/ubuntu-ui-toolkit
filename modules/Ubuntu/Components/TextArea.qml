@@ -316,6 +316,12 @@ StyledItem {
     property alias inputMethodComposing: editor.inputMethodComposing
 
     /*!
+      Exposes the QQuickTextDocument which can be used to implement advanced
+      formatting and syntax highlighting (QSyntaxHighlighter) with C++.
+    */
+    property alias textDocument: editor.textDocument
+
+    /*!
     Provides hints to the input method about the expected content of the text
     edit and how it should operate.
 

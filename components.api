@@ -519,6 +519,7 @@ StyledItem
     property font font
     property enumeration horizontalAlignment
     property bool inputMethodComposing
+    property alias textDocument
     property enumeration inputMethodHints
     property int length
     property int lineCount
@@ -594,7 +595,6 @@ ActionItem
     property int selectionEnd
     property string text
     property Validator validator
-    readonly property var textDocument
     property enumeration horizontalAlignment
     property enumeration effectiveHorizontalAlignment
     property enumeration verticalAlignment
