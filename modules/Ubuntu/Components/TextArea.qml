@@ -322,6 +322,18 @@ StyledItem {
     property alias textDocument: editor.textDocument
 
     /*!
+      Exposes the paintedWidth of the underlying text component. It's required
+      if the application uses its own Flickable for scrolling.
+    */
+    property alias paintedWidth: editor.paintedWidth
+
+    /*!
+      Exposes the paintedHeight of the underlying text component. It's required
+      if the application uses its own Flickable for scrolling.
+    */
+    property alias paintedHeight: editor.paintedHeight
+
+    /*!
     Provides hints to the input method about the expected content of the text
     edit and how it should operate.
 
