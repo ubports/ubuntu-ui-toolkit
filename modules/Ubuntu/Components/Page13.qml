@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.4
-//import Ubuntu.Components 1.3 as Toolkit
+import Ubuntu.Components 1.3 as Toolkit13
 import "pageUtils.js" as Utils
 
 /*!
@@ -37,6 +37,14 @@ PageTreeNode {
     property string title: parentNode && parentNode.hasOwnProperty("title") ? parentNode.title : ""
     property Flickable flickable: Utils.getFlickableChild(page)
 
+    /*!
+      \qmlproperty PageHeadConfiguration head
+     */
+    readonly property alias head: headerConfig
+    Toolkit13.PageHeadConfiguration {
+        id: headerConfig
+    }
+
     Object {
         id: internal
 
@@ -44,5 +52,33 @@ PageTreeNode {
         // Used to position the Page when there is no flickable.
         // When there is a flickable, the header will automatically position it.
         property real headerHeight: internal.header && internal.header.visible ? internal.header.height : 0
+
+        // Note: The bindings below need to check whether headerConfig.contents
+        // is valid in the "value", even when that is required in the Binding's "when"
+        // property, to avoid TypeErrors while/after a page becomes (in)active.
+        //
+        // Note 2: contents.parent binding is made by PageHeadStyle.
+        property bool hasParent: headerConfig.contents &&
+                                 headerConfig.contents.parent
+
+        Binding {
+            target: headerConfig.contents
+            property: "visible"
+            value: page.active
+            when: headerConfig.contents
+        }
+        Binding {
+            target: headerConfig.contents
+            property: "anchors.verticalCenter"
+            value: internal.hasParent ? headerConfig.contents.parent.verticalCenter :
+                                        undefined
+            when: headerConfig.contents
+        }
+        Binding {
+            target: headerConfig.contents
+            property: "anchors.left"
+            value: internal.hasParent ? headerConfig.contents.parent.left : undefined
+            when: headerConfig.contents
+        }
     }
 }
