@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.2 as Toolkit
+//import Ubuntu.Components 1.2 as Toolkit
 
 /*!
   \internal
@@ -36,65 +36,15 @@ PageTreeNode {
 
     property string title: parentNode && parentNode.hasOwnProperty("title") ? parentNode.title : ""
 
-    // deprecated
-    property Item tools: toolsLoader.item
-
-    Loader {
-        id: toolsLoader
-        source: internal.header && internal.header.useDeprecatedToolbar ? "ToolbarItems.qml" : ""
-        asynchronous: true
-    }
-
-    /*!
-      \internal
-      \deprecated
-      Set this property to replace the title label in the header by any Item.
-      It will be automatically anchored to fill the title space in the header.
-     */
-    property Item __customHeaderContents: null
-
     property Flickable flickable: internal.getFlickableChild(page)
-
-    /*! \internal */
-    onActiveChanged: {
-        internal.updateActions();
-    }
-
-    /*!
-      \qmlproperty list<Action> actions
-     */
-    property alias actions: actionContext.actions
 
     Object {
         id: internal
-
-        // Toolkit ActionContext registers automatically to ActionManager
-        Toolkit.ActionContext {
-            id: actionContext
-        }
-
-        function updateActions() {
-            actionContext.active = page.active;
-        }
 
         property AppHeader header: page.__propagated && page.__propagated.header ? page.__propagated.header : null
         // Used to position the Page when there is no flickable.
         // When there is a flickable, the header will automatically position it.
         property real headerHeight: internal.header && internal.header.visible ? internal.header.height : 0
-
-        Binding {
-            target: tools
-            property: "pageStack"
-            value: page.pageStack
-            when: tools && tools.hasOwnProperty("pageStack")
-        }
-        Binding {
-            target: tools
-            property: "visible"
-            value: false
-            when: internal.header && !internal.header.useDeprecatedToolbar &&
-                  page.tools !== null
-        }
 
         function isVerticalFlickable(object) {
             if (object && object.hasOwnProperty("flickableDirection") && object.hasOwnProperty("contentHeight")) {
