@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2012-2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,13 +14,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
+import QtQuick 2.4
 import QtTest 1.0
-import Ubuntu.Components 1.1
+import Ubuntu.Components 1.2
 
 Item {
-    width: 200
-    height: 200
+    width: 400
+    height: 600
 
     Action {
         id: action0
@@ -58,89 +58,72 @@ Item {
         when: windowShown
 
         function initTestCase() {
-            compare(page.title, "", "is not set by default")
-            compare(page.__propagated, mainView.__propagated, "page propagated equals mainView propagated")
-            compare(page.__propagated.header, mainView.__propagated.header, "page header equals mainView header")
-            compare(page.__propagated.header.title, page.title, "header title is same as page title")
-            compare(page.__propagated.header.visible, false, "header is not visible initially because there is no title")
-            compare(page.actions.length, 0, "page actions list empty by default")
-        }
-
-        function test_0_noHeader_bug1162028_bug1161910() {
-            compare(mainView.__propagated.header.title, "", "no header title by default")
-            compare(mainView.__propagated.header.visible, false, "header is hidden when title is not set")
-            compare(page.height, mainView.height, "page uses full height when there is no header")
+            compare(page.title, "", "Page title is set by default.");
+            compare(page.active, true, "Page is inactive by default.");
+            compare(page.pageStack, null, "Page has a PageStack by default.");
         }
 
         function test_title() {
-            var newTitle = "Hello World!"
-            page.title = newTitle
-            compare(page.title, newTitle, "can set/get")
-            page.title = ""
-            compare(page.title, "", "can unset")
+            var newTitle = "Hello World!";
+            page.title = newTitle;
+            compare(page.title, newTitle, "Could not set page title.");
+            page.title = "";
+            compare(page.title, "", "Could not unset page title.");
         }
 
-        function test_header() {
-            var newTitle = "Hello header!"
-            page.title = newTitle
-            compare(mainView.__propagated.header.title, newTitle, "header title updated by changing page title")
-            compare(mainView.__propagated.header.visible, true, "header is visible when title is set")
-            compare(mainView.__propagated.header.height > 0, true, "header has a height when title is set")
-            page.title = ""
-            compare(mainView.__propagated.header.title, "", "header title unset by unsetting page title")
-            compare(mainView.__propagated.header.visible, false, "header is hidden when title is unset")
+        function test_header_title() {
+            var newTitle = "Hello header!";
+            page.title = newTitle;
+            var header = mainView.__propagated.header;
+            compare(header.title, newTitle, "Header title does not match active page title.");
+            page.title = "";
         }
 
-        function test_tools() {
-            compare(mainView.__propagated.toolbar.tools, page.tools, "Page updates toolbar tools");
-        }
 
-        function test_active() {
-            compare(page.active, true, "Page is active by default");
-        }
-
-        function test_pageStack() {
-            compare(page.pageStack, null, "is not set by default")
-        }
-
-        function test_actions() {
-            // FIXME: Check the contents of page.actions. This is currently not
-            //  possible because ActionContext.actions does not support it,
-            //  so changes to ActionContext are needed.
-            page.actions = [action0];
-            compare(page.actions.length, 1, "Actions can be added to page actions");
-            page.actions = [];
-            compare(page.actions.length, 0, "Page action list can be cleared");
-        }
         function test_flickable_bug1200642_bug1192591() {
-            compare(page.flickable, pageFlickable, "page flickable is correctly detected");
-            compare(page.__propagated.header.flickable, pageFlickable, "header flickable is correctly detected"); // bug 1200642 FAIL
+            var header = page.__propagated.header;
+            compare(page.flickable, pageFlickable,
+                    "Flickable is not correctly detected.");
+            compare(header.flickable, pageFlickable,
+                    "Header flickable is not correctly set.");
+
             page.flickable = testFlickable;
-            compare(page.flickable, testFlickable, "flickable can be set");
-            compare(page.__propagated.header.flickable, testFlickable, "updating page flickable updates header flickable");
+            compare(page.flickable, testFlickable, "Flickable could not be set.");
+            compare(header.flickable, testFlickable,
+                    "Header flickable was not update correctly.");
+
             page.flickable = null;
-            compare(page.flickable, null, "flickable can be unset");
-            compare(page.__propagated.header.flickable, null, "unsetting page flickable unsets header flickable");
+            compare(page.flickable, null, "Flickable cannot be unset.");
+            compare(header.flickable, null,
+                    "Header flickable was not correctly unset.");
         }
 
         function test_flickableY_bug1201452() {
             var pageTitle = "Hello bug!";
             page.title = pageTitle;
             var header = page.__propagated.header;
-            compare(header.visible, true, "header is visible when title is set")
-            compare(header.height > 0, true, "header has a height when title is set")
+
             var headerHeight = header.height
             var flickableY = 150;
             page.flickable.contentY = flickableY;
-            compare(page.flickable.contentY, flickableY, "flickable.contentY can be set");
-            compare(page.flickable.topMargin, headerHeight, "topMargin of the flickable equals header height");
+            compare(page.flickable.contentY, flickableY,
+                    "Flickable.contentY could not be set.");
+            compare(page.flickable.topMargin, headerHeight,
+                    "topMargin of the flickable does not equal header height.");
             page.title = "";
-            compare(header.visible, false, "header is hidden when title is unset")
-            compare(page.flickable.topMargin, 0, "topMargin becomes 0 because header is hidden"); // used to be headerHeight
-            compare(page.flickable.contentY, flickableY + headerHeight, "contentY is updated when header is made invisible to compensate for the change in topMargin");
+
+            // FIXME: Update the checks below when new API is added
+            //  for showing and hiding the header.
+            compare(header.visible, false, "Header is not hidden when title is unset.");
+            compare(page.flickable.topMargin, 0,
+                    "topMargin is not 0 when header is hidden.");
+            compare(page.flickable.contentY, flickableY + headerHeight,
+                    "contentY was not updated properly when header was hidden.");
             page.title = pageTitle;
-            compare(page.flickable.contentY, flickableY, "Making header visible again does not reset flickable.contentY");
-            compare(page.flickable.topMargin, headerHeight, "topMargin is updated when header becomes visible.")
+            compare(page.flickable.contentY, flickableY,
+                    "Making header visible changes flickable.contentY");
+            compare(page.flickable.topMargin, headerHeight,
+                    "topMargin was not updated when header became visible.");
         }
     }
 }
