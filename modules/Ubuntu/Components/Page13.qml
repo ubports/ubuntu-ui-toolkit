@@ -16,6 +16,7 @@
 
 import QtQuick 2.4
 //import Ubuntu.Components 1.3 as Toolkit
+import "pageUtils.js" as Utils
 
 /*!
   \internal
@@ -34,7 +35,7 @@ PageTreeNode {
 
     isLeaf: true
     property string title: parentNode && parentNode.hasOwnProperty("title") ? parentNode.title : ""
-    property Flickable flickable: internal.getFlickableChild(page)
+    property Flickable flickable: Utils.getFlickableChild(page)
 
     Object {
         id: internal
@@ -43,35 +44,5 @@ PageTreeNode {
         // Used to position the Page when there is no flickable.
         // When there is a flickable, the header will automatically position it.
         property real headerHeight: internal.header && internal.header.visible ? internal.header.height : 0
-
-        // FIXME TIM: Move these two functions into a flickables.js
-        function isVerticalFlickable(object) {
-            if (object && object.hasOwnProperty("flickableDirection") && object.hasOwnProperty("contentHeight")) {
-                var direction = object.flickableDirection;
-                if ( ((direction === Flickable.AutoFlickDirection) && (object.contentHeight !== object.height) )
-                        || direction === Flickable.VerticalFlick
-                        || direction === Flickable.HorizontalAndVerticalFlick) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        /*!
-          Return the first flickable child of this page.
-         */
-        function getFlickableChild(item) {
-            if (item && item.hasOwnProperty("children")) {
-                for (var i=0; i < item.children.length; i++) {
-                    var child = item.children[i];
-                    if (internal.isVerticalFlickable(child)) {
-                        if (child.anchors.top === page.top || child.anchors.fill === page) {
-                            return item.children[i];
-                        }
-                    }
-                }
-            }
-            return null;
-        }
     }
 }

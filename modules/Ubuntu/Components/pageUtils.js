@@ -30,7 +30,7 @@ function isVerticalFlickable(object) {
 }
 
 /*!
-  Return the first flickable child of this page.
+  Return the first child of the item that is flickable in the vertical direction.
  */
 function getFlickableChild(item) {
     if (item && item.hasOwnProperty("children")) {
