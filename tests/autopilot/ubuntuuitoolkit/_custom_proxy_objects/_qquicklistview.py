@@ -19,7 +19,8 @@ import time
 
 from autopilot import (
     input,
-    logging as autopilot_logging
+    logging as autopilot_logging,
+    platform
 )
 from autopilot.introspection import dbus
 
@@ -114,6 +115,10 @@ class QQuickListView(_flickable.QQuickFlickable):
 
     @autopilot_logging.log_action(logger.info)
     def drag_item(self, from_index, to_index):
+        if platform.model() != 'Desktop':
+            raise NotImplementedError(
+                'Drag does not work on the phone because of bug #1266601')
+
         self._enable_drag_mode()
 
         both_items_visible = (

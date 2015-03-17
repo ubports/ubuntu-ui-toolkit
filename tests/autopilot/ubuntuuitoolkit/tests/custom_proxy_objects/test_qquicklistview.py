@@ -21,6 +21,7 @@ except ImportError:
 
 import os
 
+from autopilot import platform
 from autopilot.introspection import dbus
 
 import ubuntuuitoolkit
@@ -276,6 +277,10 @@ class QQuickListViewReorderingTestCase(QQuickListViewDraggingBaseTestCase):
         return item.select_single('Label').text
 
     def test_drag_item_must_reorder_list(self):
+        if platform.model() != 'Desktop':
+            self.skipTest(
+                'Drag does not work on the phone because of bug #1266601')
+
         original_from_text = self._get_item_text(self.from_index)
 
         self.list_view.drag_item(self.from_index, self.to_index)
