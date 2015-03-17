@@ -89,7 +89,7 @@ StyledItem {
 
     /*!
       The contents of the header. If this is set, \l title will be ignored.
-      DEPRECATED for Page.head.contents.
+      DEPRECATED and replaced by Page.head.contents.
      */
     property Item contents: null
     onContentsChanged: {
