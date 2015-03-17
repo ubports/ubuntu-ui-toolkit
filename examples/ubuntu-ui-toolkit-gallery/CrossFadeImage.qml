@@ -23,6 +23,7 @@ Template {
     TemplateSection {
         id: crossFadeImageTemplateSection
         className: "CrossFadeImage"
+        documentation: "qml-crossfadeimage.html"
 
         function next() {
             if (internal.index < internal.paths.length - 1)

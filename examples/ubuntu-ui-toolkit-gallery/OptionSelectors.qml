@@ -22,7 +22,7 @@ Template {
 
     TemplateSection {
         title: i18n.tr("Option Selector")
-        className: "Option Selector"
+        className: "OptionSelector"
 
         Column {
             anchors.left: parent.left
