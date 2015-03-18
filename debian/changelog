@@ -1,3 +1,56 @@
+ubuntu-ui-toolkit (1.2.1450+15.04.20150306-0ubuntu2) UNRELEASED; urgency=medium
+
+  [ Timo Jyrinki ]
+  * Clean QML cache after updating package, before reboot. LP: #1431228
+
+  [ Zoltán Balogh ]
+  * Improved test plan script. Fixes LP: #1430201
+
+  [ Christian Dywan ]
+  * New text handler visuals and improved behavior. 
+    Fixes LP: #1391335, LP: #1407723, LP: #1415548
+  * Split off test verification and run it once only for 'make check'.
+    Fixes LP: #1431698
+  * Tweak assert_discard_popover to work better with textfield in header. 
+    Fixes LP: #1432611
+
+  [ Tim Peeters ] 
+  * Make the filenames for header and navigation tests consistent and 
+    split up the big tabbed header.qml into multiple smaller test files.
+    Fixes LP: #1429838
+
+  [ Loïc Molinari ]
+  * Optimized Slider and ProgressBar components. Switched to the native 
+    UbuntuShapeOverlay instead of PartialColorizeUbuntuShape to render 
+    the progression in the Slider and ProgressBar components. The 
+    rendering is now faster since it removes an FBO indirection and 
+    enables batching by the QtQtuick renderer. 
+    Fixes LP: #1398370, LP: #1427169
+  * Added a dedicated overlay shape. Made use of the new UbuntuShape 
+    architecture to create an extended shape with efficient overlay 
+    rendering. Fixes LP: #1396170
+  * Removed misleading statement from UbuntuShape documentation.
+    Fixes LP: #1430198
+  * Renamed the overlayGeometry property to overlayRect. The 
+    overlayGeometry being of type QRect, using overlayRect instead 
+    makes it more precise, less generic. Fixes LP: #1430278
+  * Converted sourceOpacity from float to qreal. Respect the same
+    guideline QtQuick items use to expose floating-point properties.
+    That doesn't break the QML API since there's no precision loss 
+    from single to double precision, the cast is implicit. 
+    Fixes LP: #1430267
+  * Fixed embedded QML code snippets indentation. Fixes LP: #1430274
+
+  [ Florian Boucault ]
+  * CheckBox: apply clipping to the Ubuntu shape and not to the CheckBox 
+    itself so that the tick never overflows. Fixes LP: #1430191
+
+  [ Daniel Holbach ]
+  * A number of links changed on design.ubuntu.com - let's make sure 
+    they're fixed in our docs. Fixes LP: #1428051
+
+ -- Zoltán Balogh <zoltan@bakter.hu>  Tue, 10 Mar 2015 09:33:09 +0200
+
 ubuntu-ui-toolkit (1.2.1433+15.04.20150306-0ubuntu2) vivid; urgency=medium
 
   * No-change rebuild against Qt 5.4.1.

@@ -27,7 +27,7 @@ import Ubuntu.Components 1.2
         A popover has a fixed width and automatic height, depending on is contents.
         It can be closed by clicking anywhere outside of the popover area.
 
-    \l {http://design.ubuntu.com/apps/building-blocks/popover}{See also the Design Guidelines on Popovers}.
+    \l {https://design.ubuntu.com/apps/building-blocks/dialog#popover}{See also the Design Guidelines on Popovers}.
 
     Example:
     \qml

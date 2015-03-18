@@ -40,7 +40,7 @@ Template {
 
     TemplateSection {
         className: "Toolbar"
-        documentation: "qml-ubuntu-components-toolbar0-%1.html".arg(className.toLowerCase())
+        documentation: "qml-ubuntu-components-toolbaritems.html".arg(className.toLowerCase())
 
         TemplateRow {
             title: i18n.tr("See below")

@@ -34,7 +34,7 @@ Template {
     TemplateSection {
         title: "Default sheet"
         className: "DefaultSheet"
-        documentation: "qml-ubuntu-components-popups0-%1.html".arg(className.toLowerCase())
+        documentation: "qml-ubuntu-components-popups-%1.html".arg(className.toLowerCase())
 
         TemplateRow {
             title: i18n.tr("Standard")
@@ -67,7 +67,7 @@ Template {
     TemplateSection {
         title: "Composer sheet"
         className: "ComposerSheet"
-        documentation: "qml-ubuntu-components-popups0-%1.html".arg(className.toLowerCase())
+        documentation: "qml-ubuntu-components-popups-%1.html".arg(className.toLowerCase())
 
         TemplateRow {
             title: i18n.tr("Standard")
