@@ -31,7 +31,9 @@ MainView {
             objectName: "test_view"
             ViewItems.objectName: "test_attached"
             ViewItems.onDragUpdated: {
-                model.move(event.from, event.to, 1)
+                if (event.status == ListItemDrag.Moving) {
+                    model.move(event.from, event.to, 1)
+                }
             }
 
             anchors.fill: parent
