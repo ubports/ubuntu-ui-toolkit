@@ -152,7 +152,8 @@ class QQuickListView(_flickable.QQuickFlickable):
             return select_method(
                 'QQuickItem', objectName='drag_panel{}'.format(index))
         except ValueError:
-            # While we are dragging, each panel item is duplicated. We can take
+            # While we are dragging, each panel item is duplicated.
+            # A ValueError will be raised in this scenario. We can take
             # any of the returned elements, as they have the same position.
             return self.select_many(
                 'QQuickItem', objectName='drag_panel{}'.format(index))[0]
