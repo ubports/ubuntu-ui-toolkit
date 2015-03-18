@@ -80,6 +80,10 @@ MainViewBase {
             flickable: internal.activePage ? internal.activePage.flickable : null
             pageStack: internal.activePage ? internal.activePage.pageStack : null
 
+            contents: internal.activePage &&
+                      internal.activePage.hasOwnProperty("__customHeaderContents") ?
+                          internal.activePage.__customHeaderContents : nulli
+
             PageHeadConfiguration {
                 id: defaultConfig
                 // Used when there is no active Page, or a Page 1.0 is used which
