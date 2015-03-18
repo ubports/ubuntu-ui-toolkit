@@ -25,5 +25,5 @@ StyledItem {
     property bool showSplit: false
     property real splitMargin
 
-    style: Theme.createStyleComponent("ProgressionVisualStyle.qml", progressionVisual)
+    style: theme.createStyleComponent("ProgressionVisualStyle.qml", progressionVisual)
 }

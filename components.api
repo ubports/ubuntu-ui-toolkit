@@ -1045,6 +1045,8 @@ plugins.qmltypes
     prototype: "QQuickItem"
     exports: [
     Property { name: "activeFocusOnPress"; revision: 1; type: "bool" }
+    Property { name: "theme"; revision: 2; type: "UCTheme"; isPointer: true }
+    Signal { name: "themeChanged"; revision: 2 }
     Method {
     name: "requestFocus"
     Parameter { name: "reason"; type: "Qt::FocusReason" }
@@ -1057,6 +1059,16 @@ plugins.qmltypes
     Property { name: "from"; type: "QPointF"; isReadonly: true }
     Property { name: "content"; type: "QPointF" }
     Property { name: "status"; type: "Status"; isReadonly: true }
+    name: "UCTheme"
+    prototype: "QObject"
+    exports: ["ThemeSettings 1.3"]
+    Property { name: "parentTheme"; type: "UCTheme"; isReadonly: true; isPointer: true }
+    Property { name: "name"; type: "string" }
+    Property { name: "palette"; type: "QObject"; isReadonly: true; isPointer: true }
+    Method {
+    name: "createStyleComponent"
+    Parameter { name: "styleName"; type: "string" }
+    Parameter { name: "parent"; type: "QObject"; isPointer: true }
     name: "UCUbuntuAnimation"
     prototype: "QObject"
     exports: ["UbuntuAnimation 0.1", "UbuntuAnimation 1.0"]

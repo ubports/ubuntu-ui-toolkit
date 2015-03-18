@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,16 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 1.1
+import QtQuick 2.4
 
-MainView {
-    width: units.gu(40)
-    height: units.gu(71)
-
-    Component.onCompleted: Theme.name = "AppTheme"
-
-    Label {
-        objectName: "test_label"
-    }
+Item {
 }

@@ -37,11 +37,11 @@ import QtQuick 2.4
     \qml
     Item {
         Rectangle {
-            color: Theme.palette.normal.base
+            color: theme.palette.normal.base
         }
 
         Text {
-            color: Theme.palette.normal.baseText
+            color: theme.palette.normal.baseText
         }
     }
     \endqml

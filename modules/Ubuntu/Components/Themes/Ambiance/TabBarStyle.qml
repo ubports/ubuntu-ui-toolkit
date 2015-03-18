@@ -25,8 +25,8 @@ Item {
     readonly property bool pressed: mouseArea.interacting
 
     // styling properties, public API
-    property color headerTextColor: Theme.palette.normal.backgroundText
-    property color headerTextSelectedColor: Theme.palette.selected.backgroundText
+    property color headerTextColor: theme.palette.normal.backgroundText
+    property color headerTextSelectedColor: theme.palette.selected.backgroundText
 
     // Don't start transitions because of updates to selectionMode before styledItem is completed.
     //  This fixes bug #1246792: "Disable tabs scrolling animations at startup"
@@ -42,7 +42,7 @@ Item {
 
     property string headerFontSize: "x-large"
     property int headerTextStyle: Text.Normal
-    property color headerTextStyleColor: Theme.palette.normal.backgroundText
+    property color headerTextStyleColor: theme.palette.normal.backgroundText
     property int headerFontWeight: Font.Light
     property real headerTextLeftMargin: units.gu(2)
     property real headerTextRightMargin: units.gu(2)

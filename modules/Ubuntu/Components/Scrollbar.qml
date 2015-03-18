@@ -145,5 +145,5 @@ StyledItem {
         }
     }
 
-    style: Theme.createStyleComponent("ScrollbarStyle.qml", scrollbar)
+    style: theme.createStyleComponent("ScrollbarStyle.qml", scrollbar)
 }

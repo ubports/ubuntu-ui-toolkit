@@ -4,4 +4,11 @@ SOURCES += tst_theme_enginetest.cpp
 
 OTHER_FILES += \
     TestStyle.qml \
-    TestApp.qml
+    TestApp.qml \
+    Parent.qml \
+    SimpleItem.qml \
+    themes/CustomTheme/TestStyle.qml \
+    themes/CustomTheme/parent_theme \
+    themes/TestModule/TestTheme/TestStyle.qml \
+    themes/TestModule/TestTheme/qmldir \
+    themes/TestModule/TestTheme/parent_theme

@@ -420,7 +420,7 @@ StyledItem {
         }
     }
 
-    style: Theme.createStyleComponent("DatePickerStyle.qml", datePicker)
+    style: theme.createStyleComponent("DatePickerStyle.qml", datePicker)
     Binding {
         target: __styleInstance
         property: "view"

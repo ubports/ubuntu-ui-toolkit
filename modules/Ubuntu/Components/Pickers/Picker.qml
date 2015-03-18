@@ -159,7 +159,7 @@ StyledItem {
     implicitHeight: units.gu(20)
     activeFocusOnPress: true
 
-    style: Theme.createStyleComponent("PickerStyle.qml", picker)
+    style: theme.createStyleComponent("PickerStyle.qml", picker)
 
     /*! \internal */
     property int __clickedIndex: -1
