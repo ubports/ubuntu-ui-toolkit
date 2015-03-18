@@ -82,7 +82,7 @@ MainViewBase {
 
             contents: internal.activePage &&
                       internal.activePage.hasOwnProperty("__customHeaderContents") ?
-                          internal.activePage.__customHeaderContents : nulli
+                          internal.activePage.__customHeaderContents : null
 
             PageHeadConfiguration {
                 id: defaultConfig
