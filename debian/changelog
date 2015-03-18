@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (1.2.1450+15.04.20150306-0ubuntu2) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.2.1450+15.04.20150318-0ubuntu1) vivid; urgency=medium
 
   [ Timo Jyrinki ]
   * Clean QML cache after updating package, before reboot. LP: #1431228
@@ -49,7 +49,10 @@ ubuntu-ui-toolkit (1.2.1450+15.04.20150306-0ubuntu2) UNRELEASED; urgency=medium
   * A number of links changed on design.ubuntu.com - let's make sure 
     they're fixed in our docs. Fixes LP: #1428051
 
- -- Zoltán Balogh <zoltan@bakter.hu>  Tue, 10 Mar 2015 09:33:09 +0200
+  [ CI Train Bot ]
+  * New rebuild forced.
+
+ -- CI Train Bot <ci-train-bot@canonical.com>  Wed, 18 Mar 2015 12:23:35 +0000
 
 ubuntu-ui-toolkit (1.2.1433+15.04.20150306-0ubuntu2) vivid; urgency=medium
 
