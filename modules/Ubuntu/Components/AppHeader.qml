@@ -165,7 +165,6 @@ StyledItem {
      */
     property Flickable flickable: null
     onFlickableChanged: {
-        internal.checkFlickableMargins();
         internal.connectFlickable();
         if (!internal.newConfig || !header.config.locked) {
             header.show();
@@ -186,6 +185,7 @@ StyledItem {
         //  the value of newConfig may be updated after executing the code below.
         internal.newConfig = config && config.hasOwnProperty("visible") &&
                 config.hasOwnProperty("locked");
+        internal.connectFlickable();
 
         if (internal.newConfig && header.config.locked &&!header.config.visible) {
             header.hide();
@@ -202,9 +202,13 @@ StyledItem {
             } else {
                 header.hide();
             }
+            internal.checkFlickableMargins();
         }
         onLockedChanged: {
             internal.connectFlickable();
+            if (!header.config.locked) {
+                internal.movementEnded();
+            }
         }
     }
 
@@ -266,6 +270,7 @@ StyledItem {
                 flickable.contentHeightChanged.connect(internal.contentHeightChanged);
                 previousFlickable = flickable;
             }
+            internal.checkFlickableMargins();
         }
 
         /*!
@@ -315,13 +320,20 @@ StyledItem {
          */
         function checkFlickableMargins() {
             if (header.flickable) {
-                var headerHeight = header.visible ? header.height : 0
+                var headerHeight = 0;
+                if (header.visible && !(internal.newConfig &&
+                                        header.config.locked &&
+                                        !header.config.visible)) {
+                    headerHeight = header.height;
+                }
+
                 if (flickable.topMargin !== headerHeight) {
+                    var oldContentY = flickable.contentY;
                     var previousHeaderHeight = flickable.topMargin;
                     flickable.topMargin = headerHeight;
                     // push down contents when header grows,
                     // pull up contents when header shrinks.
-                    flickable.contentY -= headerHeight - previousHeaderHeight;
+                    flickable.contentY = oldContentY - headerHeight + previousHeaderHeight;
                 }
             }
         }

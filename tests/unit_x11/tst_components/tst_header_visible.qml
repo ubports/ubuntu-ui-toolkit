@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.4
+import QtQuick 2.0
 import Ubuntu.Components 1.2
 import Ubuntu.Test 1.0
 
@@ -44,6 +44,17 @@ Item {
                     id: flickable
                     anchors.fill: parent
                     contentHeight: units.gu(200)
+                    Rectangle {
+                        color: "green"
+                        opacity: 0.3
+                        anchors {
+                            left: parent.left
+                            right: parent.right
+                            top: parent.top
+                        }
+                        height: 1
+                    }
+
                     Grid {
                         id: switchGrid
                         columns: 2
@@ -52,7 +63,7 @@ Item {
                             top: parent.top
                             left: parent.left
                             leftMargin: units.gu(5)
-                            topMargin: units.gu(15)
+                            topMargin: 0//units.gu(15)
                         }
                         Switch {
                             id: lockedSwitch
