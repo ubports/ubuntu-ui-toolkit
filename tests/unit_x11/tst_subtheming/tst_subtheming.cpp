@@ -489,6 +489,14 @@ private Q_SLOTS:
         QCOMPARE(UCStyledItemBasePrivate::get(main)->getTheme()->name(),
                  UCStyledItemBasePrivate::get(test)->getTheme()->name());
     }
+
+    void test_no_change_in_other_suru_dark()
+    {
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase("SameNamedPaletteSettings.qml"));
+        UCTheme *firstTheme = view->findItem<UCTheme*>("firstTheme");
+        UCTheme *secondTheme = view->findItem<UCTheme*>("secondTheme");
+        QVERIFY(firstTheme->getPaletteColor("normal", "background") != secondTheme->getPaletteColor("normal", "background"));
+    }
 };
 
 QTEST_MAIN(tst_Subtheming)

@@ -525,7 +525,12 @@ void UCTheme::loadPalette(bool notify)
 
 void UCTheme::_q_configurePalette(bool notify)
 {
-    if (!m_paletteConfiguration || !m_paletteConfiguration->property("__ready").toBool()) {
+    if (!m_paletteConfiguration) {
+        return;
+    }
+    if (!m_paletteConfiguration->property("__ready").toBool()) {
+        // connect to __completed() signal of Palette to receive completion
+        connect(m_paletteConfiguration, SIGNAL(__completed()), this, SLOT(_q_configurePalette()));
         return;
     }
     applyPaletteConfiguration("normal");
