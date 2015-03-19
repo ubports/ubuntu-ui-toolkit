@@ -80,12 +80,13 @@ private Q_SLOTS:
     QUrl styleUrl(const QString& styleName);
     void loadPalette(bool notify = true);
     void _q_configurePalette(bool notify = true);
+    void _q_restorePalette();
 
 private:
     UCTheme(bool defaultStyle, QObject *parent = 0);
     void init();
+    void backupPaletteValue(const QString &name, const QQmlProperty &property);
     void applyPaletteConfiguration(const QString &valueSet);
-    void restorePalette();
 
     class PaletteBinding
     {
@@ -104,6 +105,7 @@ private:
     };
 
     QString m_name;
+    QQmlComponent *m_paletteComponent;
     QPointer<QObject> m_palette; // the palette might be from the default style if the theme doesn't define palette
     QQmlEngine *m_engine;
     QObject *m_paletteConfiguration;
@@ -112,6 +114,7 @@ private:
     UCDefaultTheme m_defaultTheme;
     bool m_defaultStyle:1;
     bool m_completed:1;
+    bool m_paletteConfigured:1;
 
     friend class UCDeprecatedTheme;
 };

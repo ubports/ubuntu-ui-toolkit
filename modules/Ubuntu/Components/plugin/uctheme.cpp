@@ -179,10 +179,12 @@ QString parentThemeName(const QString& themeName)
 
 UCTheme::UCTheme(QObject *parent)
     : QObject(parent)
+    , m_paletteComponent(0)
     , m_palette(UCTheme::defaultTheme().m_palette)
     , m_engine(UCTheme::defaultTheme().m_engine)
     , m_paletteConfiguration(0)
     , m_defaultStyle(false)
+    , m_paletteConfigured(false)
 {
     init();
 }
@@ -304,6 +306,10 @@ void UCTheme::setName(const QString& name)
         updateThemePaths();
     }
     updateEnginePaths();
+    if (m_paletteComponent) {
+        delete m_paletteComponent;
+        m_paletteComponent = 0;
+    }
     loadPalette();
     Q_EMIT nameChanged();
 }
@@ -334,7 +340,7 @@ void UCTheme::setPalette(QObject *config)
         return;
     }
     // must restore the palette before we change the config
-    restorePalette();
+    _q_restorePalette();
     m_paletteConfiguration = config;
     if (m_paletteConfiguration) {
         // make sure the Palette is parented to Theme
@@ -349,6 +355,17 @@ void UCTheme::setPalette(QObject *config)
 void UCTheme::resetPalette()
 {
     setPalette(NULL);
+}
+
+// backup original palette value
+void UCTheme::backupPaletteValue(const QString &name, const QQmlProperty &property)
+{
+    QQmlAbstractBinding *binding = QQmlPropertyPrivate::binding(property);
+    if (binding) {
+        m_bindingList << PaletteBinding(name, binding);
+    } else {
+        m_bindingList << PaletteBinding(name, property.read());
+    }
 }
 
 // applies a palette configuration
@@ -370,23 +387,17 @@ void UCTheme::applyPaletteConfiguration(const QString &valueSet)
         QQmlProperty configProperty(m_paletteConfiguration, propertyName, configContext);
         QQmlProperty paletteProperty(m_palette, propertyName, paletteContext);
 
-        // backup
-        QQmlAbstractBinding *paletteBinding = QQmlPropertyPrivate::binding(paletteProperty);
-        if (paletteBinding) {
-            m_bindingList << PaletteBinding(propertyName, paletteBinding);
-        } else {
-            m_bindingList << PaletteBinding(propertyName, paletteProperty.read());
-        }
-
         QVariant value = configProperty.read();
         QColor color = value.value<QColor>();
         if (color.isValid()) {
+            backupPaletteValue(propertyName, paletteProperty);
             // do not use QQmlProperty for this, setting the property in this way seems to be faster
             paletteProperty.write(value);
         } else {
             // is it a binding?
             QQmlAbstractBinding *binding = QQmlPropertyPrivate::binding(configProperty);
             if (binding) {
+                backupPaletteValue(propertyName, paletteProperty);
                 // store so we can restore it
                 if (binding->bindingType() == QQmlAbstractBinding::Binding) {
                     QQmlBinding *qmlBinding = static_cast<QQmlBinding*>(binding);
@@ -399,9 +410,9 @@ void UCTheme::applyPaletteConfiguration(const QString &valueSet)
 }
 
 // restores changed palette values
-void UCTheme::restorePalette()
+void UCTheme::_q_restorePalette()
 {
-    if (!m_palette || !m_paletteConfiguration || m_bindingList.isEmpty()) {
+    if (!m_palette || !m_paletteConfiguration || m_bindingList.isEmpty() || !m_paletteConfigured) {
         return;
     }
 
@@ -435,6 +446,7 @@ void UCTheme::restorePalette()
         }
     }
     m_bindingList.clear();
+    m_paletteConfigured = false;
 }
 
 QUrl UCTheme::styleUrl(const QString& styleName)
@@ -504,15 +516,24 @@ void UCTheme::loadPalette(bool notify)
     if (!m_engine) {
         return;
     }
-    if (!m_palette.isNull()) {
+    if (!m_paletteComponent) {
+        QUrl paletteUrl = styleUrl("Palette.qml");
+        if (paletteUrl.isValid()) {
+            m_paletteComponent = new QQmlComponent(m_engine, paletteUrl, QQmlComponent::PreferSynchronous, this);
+        }
+    }
+    if (m_palette) {
         // restore bindings to the config palette before we delete
-        restorePalette();
         delete m_palette;
+        m_palette = 0;
     }
     // theme may not have palette defined
-    QUrl paletteUrl = styleUrl("Palette.qml");
-    if (paletteUrl.isValid()) {
-        m_palette = QuickUtils::instance().createQmlObject(paletteUrl, m_engine);
+    if (m_paletteComponent && !m_paletteComponent->isError()) {
+        m_palette = m_paletteComponent->create();
+        if (m_palette) {
+            m_palette->setParent(this);
+            connect(m_palette.data(), &QObject::destroyed, this, &UCTheme::_q_restorePalette, Qt::DirectConnection);
+        }
         _q_configurePalette(false);
         if (notify) {
             Q_EMIT paletteChanged();
@@ -525,7 +546,7 @@ void UCTheme::loadPalette(bool notify)
 
 void UCTheme::_q_configurePalette(bool notify)
 {
-    if (!m_paletteConfiguration) {
+    if (!m_paletteConfiguration || m_paletteConfigured) {
         return;
     }
     if (!m_paletteConfiguration->property("__ready").toBool()) {
@@ -535,6 +556,7 @@ void UCTheme::_q_configurePalette(bool notify)
     }
     applyPaletteConfiguration("normal");
     applyPaletteConfiguration("selected");
+    m_paletteConfigured = true;
     if (notify) {
         Q_EMIT paletteChanged();
     }

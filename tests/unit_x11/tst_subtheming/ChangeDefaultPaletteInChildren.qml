@@ -19,6 +19,7 @@ import Ubuntu.Components 1.3
 import Ubuntu.Components.Themes 1.0
 
 StyledItem {
+    theme.objectName: "MasterTheme"
     Loader {
         objectName: "loader"
         anchors.fill: parent

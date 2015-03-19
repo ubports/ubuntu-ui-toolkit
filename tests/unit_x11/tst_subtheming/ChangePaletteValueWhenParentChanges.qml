@@ -20,6 +20,7 @@ import Ubuntu.Components.Themes 1.0
 
 // the style of the root object will be changed
 StyledItem {
+    theme.objectName: "MasterTheme"
     StyledItem {
         theme: ThemeSettings {
             objectName: "firstTheme"
