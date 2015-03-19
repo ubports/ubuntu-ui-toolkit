@@ -47,7 +47,7 @@ Item {
             theme: ThemeSettings {
                 id: thisTheme
                 name: "Ubuntu.Components.Themes.SuruDark"
-                Palette {
+                palette: Palette {
                     id: config
                     normal {
                         foregroundText: UbuntuColors.blue
