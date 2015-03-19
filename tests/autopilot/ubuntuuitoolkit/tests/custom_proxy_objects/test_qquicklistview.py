@@ -21,6 +21,7 @@ except ImportError:
 
 import os
 
+import testscenarios
 from autopilot import platform
 from autopilot.introspection import dbus
 
@@ -231,18 +232,20 @@ MainView {
 
 class QQuickListViewDraggingBaseTestCase(tests.QMLFileAppTestCase):
 
-    path = os.path.abspath(__file__)
-    dir_path = os.path.dirname(path)
-    test_qml_file_path = os.path.join(
-        dir_path, 'test_listitem.ListViewDraggingTestCase.qml')
-
     def setUp(self):
+        path = os.path.abspath(__file__)
+        dir_path = os.path.dirname(path)
+        self.test_qml_file_path = os.path.join(
+            dir_path, self.qml_file_name)
+
         super(QQuickListViewDraggingBaseTestCase, self).setUp()
         self.list_view = self.main_view.select_single(
             ubuntuuitoolkit.QQuickListView, objectName='test_view')
 
 
 class QQuickListViewDraggingTestCase(QQuickListViewDraggingBaseTestCase):
+
+    qml_file_name = 'test_listitem.ListViewWithLiveDraggingTestCase.qml'
 
     def test_long_press_must_enable_drag_mode(self):
         list_item = self.list_view.select_single(
@@ -254,7 +257,15 @@ class QQuickListViewDraggingTestCase(QQuickListViewDraggingBaseTestCase):
 
 class QQuickListViewReorderingTestCase(QQuickListViewDraggingBaseTestCase):
 
-    scenarios = [
+    dragging_scenarios = [
+        ('with live dragging', {
+            'qml_file_name': (
+                'test_listitem.ListViewWithLiveDraggingTestCase.qml')}),
+        ('without live dragging', {
+            'qml_file_name': (
+                'test_listitem.ListViewWithoutLiveDraggingTestCase.qml')}),
+    ]
+    reorder_scenarios = [
         ('both items visible, to bottom', {'from_index': 0, 'to_index': 1}),
         ('both items visible, to top', {'from_index': 1, 'to_index': 0}),
         ('both items visible, to bottom, first non visible', {
@@ -264,6 +275,8 @@ class QQuickListViewReorderingTestCase(QQuickListViewDraggingBaseTestCase):
             'from_index': 0, 'to_index': 15}),
         ('to item not visible, to bottom', {'from_index': 0, 'to_index': 24})
     ]
+    scenarios = testscenarios.multiply_scenarios(
+        dragging_scenarios, reorder_scenarios)
 
     def _find_item(self, index):
         object_name = 'listitem{}'.format(index)
