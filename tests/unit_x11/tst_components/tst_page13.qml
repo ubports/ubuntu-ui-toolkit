@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.4
-import QtTest 1.0
+import Ubuntu.Test 1.0
 import Ubuntu.Components 1.3
 
 Item {
@@ -49,11 +49,19 @@ Item {
         }
     }
 
-    TestCase {
+    UbuntuTestCase {
+        id: testCase
         name: "Page13API"
         when: windowShown
 
+        property var header
+        property var headerStyle
         function initTestCase() {
+            testCase.header = findChild(mainView, "MainView_Header");
+            testCase.headerStyle = findChild(mainView, "PageHeadStyle");
+        }
+
+        function init() {
             compare(page.title, "", "Page title is set by default.");
             compare(page.active, true, "Page is inactive by default.");
             compare(page.pageStack, null, "Page has a PageStack by default.");
@@ -93,30 +101,39 @@ Item {
                     "Header flickable was not correctly unset.");
         }
 
-        function test_flickableY_bug1201452() {
-            var pageTitle = "Hello bug!";
-            page.title = pageTitle;
-            var header = page.__propagated.header;
+        function wait_for_header_animation() {
+            // Wait for the header to start to move:
+            wait(50);
+            // Wait for animation of the style inside the header (when pushing/popping):
+            tryCompareFunction(function(){ return testCase.headerStyle.animating }, false);
+            // Wait for the header to finish showing/hiding:
+            tryCompareFunction(function(){ return testCase.header.moving }, false);
+        }
 
-            var headerHeight = header.height
+        function test_flickableY_bug1201452() {
+            var headerHeight = testCase.header.height
             var flickableY = 150;
             page.flickable.contentY = flickableY;
             compare(page.flickable.contentY, flickableY,
                     "Flickable.contentY could not be set.");
             compare(page.flickable.topMargin, headerHeight,
                     "topMargin of the flickable does not equal header height.");
-            page.title = "";
 
-            // FIXME: Update the checks below when new API is added
-            //  for showing and hiding the header.
-//            compare(header.visible, false, "Header is not hidden when title is unset.");
+            page.head.locked = true;
+            page.head.visible = false;
+            wait_for_header_animation();
+
             compare(page.flickable.topMargin, 0,
-                    "topMargin is not 0 when header is hidden.");
+                    "topMargin is not 0 when header is locked hidden.");
             compare(page.flickable.contentY, flickableY + headerHeight,
                     "contentY was not updated properly when header was hidden.");
-            page.title = pageTitle;
+
+            page.head.locked.locked = false;
+            page.head.visible = true;
+            wait_for_header_animation();
+
             compare(page.flickable.contentY, flickableY,
-                    "Making header visible changes flickable.contentY");
+                    "Hiding and showing header changes flickable.contentY.");
             compare(page.flickable.topMargin, headerHeight,
                     "topMargin was not updated when header became visible.");
         }
