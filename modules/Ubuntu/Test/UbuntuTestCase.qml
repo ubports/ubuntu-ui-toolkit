@@ -253,6 +253,7 @@ TestCase {
         // Wait for animation of the style inside the header (when pushing/popping):
         tryCompareFunction(function(){ return headerStyle.animating }, false);
         // Wait for the header to finish showing/hiding:
-        tryCompareFunction(function(){ return header.moving }, false);
+        // FIXME: Uncomment this in the following MR that adds the header.moving property.
+        //tryCompareFunction(function(){ return header.moving }, false);
     }
 }
