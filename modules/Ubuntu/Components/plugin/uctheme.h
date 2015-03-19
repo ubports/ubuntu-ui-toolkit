@@ -34,9 +34,11 @@ class UCTheme : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
     Q_INTERFACES(QQmlParserStatus)
-    Q_PROPERTY(UCTheme *parentTheme READ parentTheme NOTIFY parentThemeChanged)
-    Q_PROPERTY(QString name READ name WRITE setName RESET resetName NOTIFY nameChanged)
-    Q_PROPERTY(QObject* palette READ palette NOTIFY paletteChanged)
+    Q_PROPERTY(UCTheme *parentTheme READ parentTheme NOTIFY parentThemeChanged FINAL)
+    Q_PROPERTY(QString name READ name WRITE setName RESET resetName NOTIFY nameChanged FINAL)
+    Q_PROPERTY(QObject* palette READ palette NOTIFY paletteChanged FINAL)
+    Q_PROPERTY(QObject* paletteConfiguration READ paletteConfiguration WRITE setPaletteConfiguration NOTIFY paletteConfigurationChanged FINAL)
+    Q_CLASSINFO("DefaultProperty", "paletteConfiguration")
 public:
     explicit UCTheme(QObject *parent = 0);
     static UCTheme &defaultTheme()
@@ -51,6 +53,8 @@ public:
     void setName(const QString& name);
     void resetName();
     QObject* palette();
+    QObject *paletteConfiguration() const;
+    void setPaletteConfiguration(QObject *config);
 
     Q_INVOKABLE QQmlComponent* createStyleComponent(const QString& styleName, QObject* parent);
     static void registerToContext(QQmlContext* context);
@@ -62,6 +66,7 @@ Q_SIGNALS:
     void parentThemeChanged();
     void nameChanged();
     void paletteChanged();
+    void paletteConfigurationChanged();
 
 protected:
     void classBegin();
@@ -76,14 +81,17 @@ private Q_SLOTS:
     void updateThemePaths();
     QUrl styleUrl(const QString& styleName);
     void loadPalette(bool notify = true);
+    void _q_configurePalette(bool notify = true);
 
 private:
     UCTheme(bool defaultStyle, QObject *parent = 0);
     void init();
+    void applyPaletteConfiguration(const QString &valueSet);
 
     QString m_name;
     QPointer<QObject> m_palette; // the palette might be from the default style if the theme doesn't define palette
     QQmlEngine *m_engine;
+    QObject *m_paletteConfiguration;
     QList<QUrl> m_themePaths;
     UCDefaultTheme m_defaultTheme;
     bool m_defaultStyle:1;

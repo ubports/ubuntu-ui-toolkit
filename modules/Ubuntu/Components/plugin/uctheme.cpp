@@ -36,6 +36,12 @@
 #include <QtGui/QGuiApplication>
 #include <QtGui/QFont>
 
+#include <QtQml/private/qqmlproperty_p.h>
+#include <QtQml/private/qqmlabstractbinding_p.h>
+#define foreach Q_FOREACH
+#include <QtQml/private/qqmlbinding_p.h>
+#undef foreach
+
 /*!
     \qmltype ThemeSettings
     \instantiates UCTheme
@@ -318,6 +324,80 @@ QObject* UCTheme::palette()
     return m_palette;
 }
 
+/*!
+ * \qmlproperty Palette ThemeSettings::paletteConfiguration
+ * \default
+ */
+QObject *UCTheme::paletteConfiguration() const
+{
+    return m_paletteConfiguration;
+}
+void UCTheme::setPaletteConfiguration(QObject *config)
+{
+    if (m_paletteConfiguration == config) {
+        return;
+    }
+    if (m_paletteConfiguration && config) {
+        qmlInfo(config) << UbuntuI18n::instance().tr("ThemeSettings can have only one Palette instance to configure the palette.");
+        return;
+    }
+    if (config && !QuickUtils::inherits(config, "Palette")) {
+        qmlInfo(config) << UbuntuI18n::instance().tr("Not a Palette component.");
+        return;
+    }
+    m_paletteConfiguration = config;
+    if (!m_paletteConfiguration) {
+        loadPalette();
+    } else {
+        // take ownership over the Palette set
+        m_paletteConfiguration->setParent(this);
+        // if not complete yet, we must wait till it gets completed
+        // apply palette changes on the theme palette
+        connect(m_paletteConfiguration, SIGNAL(__completed()), this, SLOT(_q_configurePalette()), Qt::DirectConnection);
+        _q_configurePalette();
+    }
+    Q_EMIT paletteConfigurationChanged();
+}
+
+// applies a palette configuration
+void UCTheme::applyPaletteConfiguration(const QString &valueSet)
+{
+    if (!m_palette || !m_paletteConfiguration) {
+        return;
+    }
+
+    QObject *configObject = m_paletteConfiguration->property(valueSet.toUtf8()).value<QObject*>();
+    const QMetaObject *mo = configObject->metaObject();
+    QQmlContext *configContext = qmlContext(m_paletteConfiguration);
+
+    // we must detect the validity of the palette properties one by one
+    for (int i = mo->propertyOffset(); i < mo->propertyCount(); i++) {
+        const QMetaProperty prop = mo->property(i);
+        QString propertyName = QString("%1.%2").arg(valueSet).arg(prop.name());
+        QQmlProperty configProperty(m_paletteConfiguration, propertyName, configContext);
+        QQmlProperty paletteProperty(m_palette, propertyName, qmlContext(m_palette));
+
+        // is it a binding?
+        QQmlAbstractBinding *binding = QQmlPropertyPrivate::binding(configProperty);
+        if (binding) {
+            if (binding->bindingType() == QQmlAbstractBinding::Binding) {
+                QQmlBinding *qmlBinding = static_cast<QQmlBinding*>(binding);
+                qmlBinding->setTarget(paletteProperty);
+            }
+            QQmlAbstractBinding *prev = QQmlPropertyPrivate::setBinding(paletteProperty, binding);
+            if (prev && prev != binding) {
+                prev->destroy();
+            }
+        } else {
+            QColor color = configProperty.read().value<QColor>();
+            if (color.isValid()) {
+                // do not use QQmlProperty for this, setting the property in this way seems to be faster
+                paletteProperty.write(configProperty.read());
+            }
+        }
+    }
+}
+
 QUrl UCTheme::styleUrl(const QString& styleName)
 {
     Q_FOREACH (const QUrl& themePath, m_themePaths) {
@@ -392,12 +472,25 @@ void UCTheme::loadPalette(bool notify)
     QUrl paletteUrl = styleUrl("Palette.qml");
     if (paletteUrl.isValid()) {
         m_palette = QuickUtils::instance().createQmlObject(paletteUrl, m_engine);
+        _q_configurePalette(false);
         if (notify) {
             Q_EMIT paletteChanged();
         }
     } else {
         // use the default palette if none defined
         m_palette = defaultTheme().m_palette;
+    }
+}
+
+void UCTheme::_q_configurePalette(bool notify)
+{
+    if (!m_paletteConfiguration || (sender() && !m_paletteConfiguration->property("__ready").toBool())) {
+        return;
+    }
+    applyPaletteConfiguration("normal");
+    applyPaletteConfiguration("selected");
+    if (notify) {
+        Q_EMIT paletteChanged();
     }
 }
 

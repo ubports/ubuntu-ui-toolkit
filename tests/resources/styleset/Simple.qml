@@ -16,6 +16,7 @@
 
 import QtQuick 2.4
 import Ubuntu.Components 1.3
+import Ubuntu.Components.Themes 1.0
 
 Item {
     id: component1
@@ -43,6 +44,25 @@ Item {
             objectName: "SuruDarkStyled"
             width: parent.width
             height: units.gu(10)
+            theme: ThemeSettings {
+                id: thisTheme
+                name: "Ubuntu.Components.Themes.SuruDark"
+                Palette {
+                    id: config
+                    normal {
+                        foregroundText: UbuntuColors.blue
+                        overlayText: "#ABCDEF"
+                    }
+                    selected {
+                        foregroundText: Qt.rgba(0, 0, 1, 1)
+                        overlayText: config.normal.overlayText
+                        foreground: Qt.rgba(UbuntuColors.blue.r, UbuntuColors.blue.g, UbuntuColors.blue.b, 0.2)
+                    }
+                }
+            }
+            property color myColor: theme.palette.selected.overlayText
+            onMyColorChanged: print(myColor)
+
             TextField {
                 objectName: "InnerText"
                 property string styleName: theme.name
