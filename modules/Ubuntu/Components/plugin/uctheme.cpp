@@ -336,13 +336,13 @@ void UCTheme::setPalette(QObject *config)
     // must restore the palette before we change the config
     restorePalette();
     m_paletteConfiguration = config;
-    // make sure the Palette is parented to Theme
     if (m_paletteConfiguration) {
+        // make sure the Palette is parented to Theme
         m_paletteConfiguration->setParent(this);
-        // reload palette as any change we do must be applied on a theme palette
+        // apply configuration on palette
         _q_configurePalette(true);
     } else {
-        // emit palette changes
+        // emit palette changes as there's nothing to configure
         Q_EMIT paletteChanged();
     }
 }

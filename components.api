@@ -622,7 +622,6 @@ QtObject
     property PaletteValues normal
     property PaletteValues selected
     property bool __ready
-    signal __completed()
 PaletteValues 0.1 1.0
 QtObject
     property color background

@@ -101,43 +101,43 @@ private Q_SLOTS:
             delete root;
     }
 
-//    void benchmark_GridOfComponents_data() {
-//        QTest::addColumn<QString>("document");
-//        QTest::addColumn<QUrl>("theme");
+    void benchmark_GridOfComponents_data() {
+        QTest::addColumn<QString>("document");
+        QTest::addColumn<QUrl>("theme");
 
-//        QTest::newRow("grid with Rectangle") << "RectangleGrid.qml" << QUrl();
-//        QTest::newRow("grid with Text") << "TextGrid.qml" << QUrl();
-//        QTest::newRow("grid with Label") << "LabelGrid.qml" << QUrl();
-//        QTest::newRow("grid with UbuntuShape") << "UbuntuShapeGrid.qml" << QUrl();
-//        QTest::newRow("grid with UbuntuShapePair") << "PairOfUbuntuShapeGrid.qml" << QUrl();
-//        QTest::newRow("grid with Button") << "ButtonGrid.qml" << QUrl();
-//        QTest::newRow("grid with Slider") << "SliderGrid.qml" << QUrl();
-//        QTest::newRow("list with QtQuick Item") << "ItemList.qml" << QUrl();
-//        QTest::newRow("list with new ListItem") << "ListItemList.qml" << QUrl();
-//        QTest::newRow("list with new ListItem with actions") << "ListItemWithActionsList.qml" << QUrl();
-//        QTest::newRow("list with new ListItem with inline actions") << "ListItemWithInlineActionsList.qml" << QUrl();
-//        QTest::newRow("list with Captions, preset: caption") << "ListOfCaptions.qml" << QUrl();
-//        QTest::newRow("list with ListItems.Empty (equivalent to the new ListItem") << "ListItemsEmptyList.qml" << QUrl();
-//        // disable this test as it takes >20 seconds. Kept still for measurements to be done during development
-////        QTest::newRow("list with ListItems.Base (one icon, one label and one chevron)") << "ListItemsBaseList.qml" << QUrl();
-//        QTest::newRow("single MainView") << "MainView.qml" << QUrl();
-//    }
+        QTest::newRow("grid with Rectangle") << "RectangleGrid.qml" << QUrl();
+        QTest::newRow("grid with Text") << "TextGrid.qml" << QUrl();
+        QTest::newRow("grid with Label") << "LabelGrid.qml" << QUrl();
+        QTest::newRow("grid with UbuntuShape") << "UbuntuShapeGrid.qml" << QUrl();
+        QTest::newRow("grid with UbuntuShapePair") << "PairOfUbuntuShapeGrid.qml" << QUrl();
+        QTest::newRow("grid with Button") << "ButtonGrid.qml" << QUrl();
+        QTest::newRow("grid with Slider") << "SliderGrid.qml" << QUrl();
+        QTest::newRow("list with QtQuick Item") << "ItemList.qml" << QUrl();
+        QTest::newRow("list with new ListItem") << "ListItemList.qml" << QUrl();
+        QTest::newRow("list with new ListItem with actions") << "ListItemWithActionsList.qml" << QUrl();
+        QTest::newRow("list with new ListItem with inline actions") << "ListItemWithInlineActionsList.qml" << QUrl();
+        QTest::newRow("list with Captions, preset: caption") << "ListOfCaptions.qml" << QUrl();
+        QTest::newRow("list with ListItems.Empty (equivalent to the new ListItem") << "ListItemsEmptyList.qml" << QUrl();
+        // disable this test as it takes >20 seconds. Kept still for measurements to be done during development
+//        QTest::newRow("list with ListItems.Base (one icon, one label and one chevron)") << "ListItemsBaseList.qml" << QUrl();
+        QTest::newRow("single MainView") << "MainView.qml" << QUrl();
+    }
 
-//    void benchmark_GridOfComponents()
-//    {
-//        QFETCH(QString, document);
-//        QFETCH(QUrl, theme);
+    void benchmark_GridOfComponents()
+    {
+        QFETCH(QString, document);
+        QFETCH(QUrl, theme);
 
-//        QQuickItem *root = 0;
-//        QBENCHMARK {
-//            root = loadDocument(document);
-//            if (root && theme.isValid()) {
-//                root->setProperty("newTheme", theme.toString());
-//            }
-//        }
-//        if (root)
-//            delete root;
-//    }
+        QQuickItem *root = 0;
+        QBENCHMARK {
+            root = loadDocument(document);
+            if (root && theme.isValid()) {
+                root->setProperty("newTheme", theme.toString());
+            }
+        }
+        if (root)
+            delete root;
+    }
 
     void benchmark_import_data()
     {

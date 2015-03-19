@@ -91,14 +91,14 @@ private:
     {
     public:
         PaletteBinding(const QString &property, const QVariant &value)
-            : property(property), isValue(true), value(value), binding(0)
+            : isValue(true), property(property), value(value), binding(0)
         {}
         PaletteBinding(const QString &property, QQmlAbstractBinding *binding)
-            : property(property), isValue(false), binding(binding)
+            : isValue(false), property(property), binding(binding)
         {}
 
-        QString property;
         bool isValue;
+        QString property;
         QVariant value;
         QQmlAbstractBinding *binding;
     };

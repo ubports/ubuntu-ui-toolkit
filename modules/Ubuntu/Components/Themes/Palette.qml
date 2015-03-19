@@ -59,6 +59,5 @@ QtObject {
 
     /*! /internal */
     property bool __ready: false
-    signal __completed()
-    Component.onCompleted: { __ready = true; __completed(); }
+    Component.onCompleted: { __ready = true }
 }
