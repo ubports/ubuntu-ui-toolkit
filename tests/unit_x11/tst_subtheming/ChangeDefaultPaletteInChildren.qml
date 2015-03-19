@@ -16,6 +16,7 @@
 
 import QtQuick 2.4
 import Ubuntu.Components 1.3
+import Ubuntu.Components.Themes 1.0
 
 StyledItem {
     Loader {
@@ -27,7 +28,7 @@ StyledItem {
     Component {
         id: dynamicItem
         StyledItem {
-            theme.paletteSettings: PaletteSettings {
+            theme.palette: Palette {
                 normal.background: "blue"
             }
         }

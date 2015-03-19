@@ -16,6 +16,7 @@
 
 import QtQuick 2.4
 import Ubuntu.Components 1.3
+import Ubuntu.Components.Themes 1.0
 
 // the style of the root object will be changed
 StyledItem {
@@ -23,7 +24,7 @@ StyledItem {
         theme: ThemeSettings {
             objectName: "firstTheme"
             name: parentTheme.name
-            PaletteSettings{
+            palette: Palette {
                 normal.background: "blue"
             }
         }
