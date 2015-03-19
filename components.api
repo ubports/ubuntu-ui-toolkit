@@ -692,6 +692,7 @@ TestCase
     function tryCompareFunction(func, expectedResult, timeout)
     function typeString(string)
     function warningFormat(line, column, message)
+    function waitForHeaderAnimation(mainView)
 plugins.qmltypes
     name: "FilterBehavior"
     prototype: "QObject"
