@@ -124,11 +124,8 @@ Item {
         id: testCase
 
         property var header
-        property var headerStyle
-
         function initTestCase() {
             testCase.header = findChild(mainView, "MainView_Header");
-            testCase.headerStyle = findChild(mainView, "PageHeadStyle");
         }
 
         function init() {
@@ -156,17 +153,8 @@ Item {
             scroll(header.height);
         }
 
-        function wait_for_animation() {
-            // Wait for the header to start to move:
-            wait(50);
-            // Wait for animation of the style inside the header (when pushing/popping):
-            tryCompareFunction(function(){ return testCase.headerStyle.animating }, false);
-            // Wait for the header to finish showing/hiding:
-            tryCompareFunction(function(){ return testCase.header.moving }, false);
-        }
-
         function wait_for_visible(visible, errorMessage) {
-            wait_for_animation();
+            waitForHeaderAnimation(mainView);
             compare(stack.currentPage.head.visible, visible, errorMessage);
             var mismatchMessage = " Page.head.visible does not match header visibility.";
             if (visible) {
@@ -207,7 +195,7 @@ Item {
             wait_for_visible(true, "Scrolling up hides locked header.");
 
             page.head.visible = false;
-            wait_for_animation();
+            waitForHeaderAnimation(mainView);
             scroll_down();
             wait_for_visible(false, "Scrolling down shows locked header.");
             scroll_up();
@@ -223,7 +211,7 @@ Item {
 
             page.head.locked = true;
             page.head.visible = false;
-            wait_for_animation();
+            waitForHeaderAnimation(mainView);
             // When the flickable is scrolled to the top, unlocking the header must show
             //  the header because you cannot scroll more up to reveal it:
             page.head.locked = false;
@@ -243,7 +231,7 @@ Item {
 
         function test_activate_page_shows_header() {
             page.head.visible = false;
-            wait_for_animation();
+            waitForHeaderAnimation(mainView);
 
             // Header becomes visible when new Page becomes active:
             stack.push(otherPage);
@@ -273,16 +261,16 @@ Item {
         function test_hidden_locked_header_stays_hidden() {
             page.head.locked = true;
             page.head.visible = false;
-            wait_for_animation();
+            waitForHeaderAnimation(mainView);
             stack.push(otherPage);
-            wait_for_animation();
+            waitForHeaderAnimation(mainView);
             stack.pop();
             wait_for_visible(false, "Popping to a Page with locked hidden header shows header.");
         }
 
         function test_page_with_no_title_on_pagestack_has_back_button_bug1402054() {
             page.head.visible = false;
-            wait_for_animation();
+            waitForHeaderAnimation(mainView);
             stack.push(titleLessPage);
             wait_for_visible(true, "Page with no title hides the header.");
 
@@ -292,7 +280,7 @@ Item {
 
             var center = centerOf(backButton);
             mouseClick(backButton, center.x, center.y);
-            wait_for_animation();
+            waitForHeaderAnimation(mainView);
             compare(stack.depth, 1, "Clicking back button of page with no title does not "+
                     "pop the page from the PageStack.");
         }
