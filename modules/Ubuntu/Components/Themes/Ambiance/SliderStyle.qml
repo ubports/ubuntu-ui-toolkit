@@ -87,7 +87,10 @@ Item {
     BubbleShape {
         id: bubbleShape
 
-        width: Math.max(units.gu(8), label.implicitWidth + units.gu(2))
+        property real minimumWidth: units.gu(8)
+        property real horizontalPadding: units.gu(1)
+
+        width: Math.max(minimumWidth, label.implicitWidth + 2*horizontalPadding)
         height: units.gu(6)
 
         // FIXME: very temporary implementation
