@@ -84,23 +84,29 @@ private Q_SLOTS:
 private:
     UCTheme(bool defaultStyle, QObject *parent = 0);
     void init();
-    void configurePalette();
-    void restorePalette();
 
     class PaletteConfig
     {
     public:
         PaletteConfig()
-            : palette(0)
+            : palette(0), configured(false)
         {}
         ~PaletteConfig()
         {
-            restore();
+            restorePalette();
         }
 
+        void configurePalette(QObject *themePalette);
+        void restorePalette();
+        void reset()
+        {
+            configList.clear();
+        }
+
+        QObject *palette;
+    private:
         void buildConfig();
         void apply(QObject *palette);
-        void restore();
 
         struct Data {
             Data(const QString &name, const QQmlProperty &prop)
@@ -119,7 +125,7 @@ private:
         };
 
         // configuration palette, not the original theme one
-        QObject *palette;
+        bool configured:1;
         QList<Data> configList;
     };
 
@@ -132,7 +138,6 @@ private:
     UCDefaultTheme m_defaultTheme;
     bool m_defaultStyle:1;
     bool m_completed:1;
-    bool m_paletteConfigured:1;
 
     friend class UCDeprecatedTheme;
 };
