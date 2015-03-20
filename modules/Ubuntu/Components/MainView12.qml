@@ -85,7 +85,7 @@ MainViewBase {
                       internal.activePage.hasOwnProperty("__customHeaderContents") ?
                           internal.activePage.__customHeaderContents : null
 
-            PageHeadConfiguration {
+            Toolkit.PageHeadConfiguration {
                 id: defaultConfig
                 // Used when there is no active Page, or a Page 1.0 is used which
                 // does not have a PageHeadConfiguration.
