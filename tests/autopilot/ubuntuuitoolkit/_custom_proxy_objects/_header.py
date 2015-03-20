@@ -64,7 +64,8 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
             # so no need to wait.
             return
 
-        # FIXME TIM: Wait showing/hiding animation of the header.
+        # Wait showing/hiding animation of the header.
+        self.moving.wait_for(False)
 
 
     @autopilot_logging.log_action(logger.info)
