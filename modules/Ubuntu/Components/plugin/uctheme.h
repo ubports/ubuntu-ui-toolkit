@@ -80,12 +80,12 @@ private Q_SLOTS:
     void updateThemePaths();
     QUrl styleUrl(const QString& styleName);
     void loadPalette(bool notify = true);
-    void _q_configurePalette(bool notify = true);
-    void _q_restorePalette(bool omitValues = true);
 
 private:
     UCTheme(bool defaultStyle, QObject *parent = 0);
     void init();
+    void configurePalette();
+    void restorePalette();
 
     class PaletteConfig
     {
@@ -98,7 +98,6 @@ private:
             restore();
         }
 
-        bool ready();
         void buildConfig();
         void apply(QObject *palette);
         void restore();

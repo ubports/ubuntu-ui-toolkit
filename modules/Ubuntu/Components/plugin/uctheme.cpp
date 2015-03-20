@@ -340,30 +340,20 @@ void UCTheme::setPalette(QObject *config)
     }
 
     // 1. restore original palette values
-    _q_restorePalette(false);
-    // 2. disconnect from the previous palette completion
-    if (m_config.palette) {
-//        disconnect(m_config.palette, SIGNAL(__completed()), 0, 0);
-    }
+    restorePalette();
+    // 2. clear config list
     m_config.configList.clear();
     // 3. own configuration palette object and apply palette configuration
     m_config.palette = config;
     if (m_config.palette) {
         m_config.palette->setParent(this);
-//        connect(m_config.palette, SIGNAL(__completed()), this, SLOT(_q_configurePalette()), Qt::DirectConnection);
-        _q_configurePalette(false);
+        configurePalette();
     }
     Q_EMIT paletteChanged();
 }
 void UCTheme::resetPalette()
 {
     setPalette(NULL);
-}
-
-// reports whether the configuration palette is ready
-bool UCTheme::PaletteConfig::ready()
-{
-    return palette && palette->property("__ready").toBool();
 }
 
 // build palette configuration list
@@ -469,9 +459,9 @@ void UCTheme::PaletteConfig::restore()
     }
 }
 
-void UCTheme::_q_configurePalette(bool notify)
+void UCTheme::configurePalette()
 {
-    if (!m_palette || !m_config.palette || m_paletteConfigured /*|| !m_config.ready()*/) {
+    if (!m_palette || !m_config.palette || m_paletteConfigured) {
         return;
     }
     if (m_config.configList.isEmpty()) {
@@ -480,15 +470,11 @@ void UCTheme::_q_configurePalette(bool notify)
     }
     m_config.apply(m_palette);
     m_paletteConfigured = true;
-    if (notify) {
-        Q_EMIT paletteChanged();
-    }
 }
 
 // restores changed palette values
-void UCTheme::_q_restorePalette(bool omitValues)
+void UCTheme::restorePalette()
 {
-    Q_UNUSED(omitValues)
     if (!m_palette || !m_config.palette || m_config.configList.isEmpty() || !m_paletteConfigured) {
         return;
     }
@@ -571,7 +557,7 @@ void UCTheme::loadPalette(bool notify)
     }
     if (m_palette) {
         // restore bindings to the config palette before we delete
-        _q_restorePalette();
+        restorePalette();
         delete m_palette;
         m_palette = 0;
     }
@@ -581,7 +567,7 @@ void UCTheme::loadPalette(bool notify)
         if (m_palette) {
             m_palette->setParent(this);
         }
-        _q_configurePalette(false);
+        configurePalette();
         if (notify) {
             Q_EMIT paletteChanged();
         }

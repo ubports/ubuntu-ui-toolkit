@@ -56,9 +56,4 @@ QtObject {
        a tab is the current one.
     */
     property PaletteValues selected: PaletteValues{}
-
-    /*! /internal */
-//    property bool __ready: false
-//    signal __completed()
-//    Component.onCompleted: { __ready = true; __completed(); }
 }
