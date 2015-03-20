@@ -1,3 +1,5 @@
+#extension GL_OES_standard_derivatives : enable  // Enable dFdy() on OpenGL ES 2.
+
 // Copyright © 2015 Canonical Ltd.
 //
 // This program is free software; you can redistribute it and/or modify
