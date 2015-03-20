@@ -1070,7 +1070,7 @@ plugins.qmltypes
     name: "UCUbuntuShape"
     prototype: "QQuickItem"
     exports: [
-    name: "Style"
+    name: "Aspect"
     name: "BackgroundMode"
     name: "HAlignment"
     name: "VAlignment"
@@ -1099,7 +1099,7 @@ plugins.qmltypes
     Property { name: "horizontalAlignment"; type: "HAlignment" }
     Property { name: "verticalAlignment"; type: "VAlignment" }
     Signal { name: "cornerRadiusChanged"; revision: 1 }
-    Signal { name: "styleChanged"; revision: 1 }
+    Signal { name: "aspectChanged"; revision: 1 }
     Signal { name: "sourceChanged"; revision: 1 }
     Signal { name: "sourceOpacityChanged"; revision: 1 }
     Signal { name: "sourceFillModeChanged"; revision: 1 }
