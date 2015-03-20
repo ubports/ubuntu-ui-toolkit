@@ -53,7 +53,7 @@ declare -a TEST_SUITE=(
     " music_app"
     " gallery_app"
     " filemanager"
-    " ubuntu_terminal_app"
+#    " ubuntu_terminal_app"
     " -n unity8"
     " ubuntu_clock_app"
 #    " -p dialer-app-autopilot dialer_app"
@@ -176,6 +176,8 @@ function device_comission {
     network
     adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S reboot 2>&1|grep -v password"
     sleep_indicator 120
+    # Required for at least rtm-14.09/mako, phablet-click-test-setup fails otherwise and we don't need terminal
+    adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S click unregister com.ubuntu.terminal 2>&1|grep -v password"
     echo -e "phablet-click-test-setup  \e[31m${DISTRO} ${SERIES}\e[0m"
     phablet-click-test-setup -s ${SERIALNUMBER} --distribution=${DISTRO} --series=${SERIES} 2>&1 || fatal_failure "phablet-click-test-setup has failed" 
     echo "Sleep after phablet-click-test-setup";
