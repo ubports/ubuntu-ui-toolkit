@@ -35,6 +35,10 @@ StyledItem {
             text: "Theme change"
             onClicked: theme.name = "Ubuntu.Components.Themes.SuruDark"
         }
+        Button {
+            text: "Reset palette"
+            onClicked: customTheme.theme.palette = undefined
+        }
 
         TextField {
             objectName: "OuterText"
@@ -42,6 +46,7 @@ StyledItem {
             onStyleNameChanged: print(objectName, styleName)
         }
         StyledItem {
+            id: customTheme
             objectName: "SuruDarkStyled"
             width: parent.width
             height: units.gu(10)
@@ -49,6 +54,7 @@ StyledItem {
                 objectName: "InnerTheme"
                 id: thisTheme
                 name: parentTheme.name
+//                name: "Ubuntu.Components.Themes.SuruDark"
                 palette: Palette {
                     id: config
                     normal {
@@ -58,8 +64,8 @@ StyledItem {
                     selected {
                         fieldText: "brown"
                         foregroundText: Qt.rgba(0, 0, 1, 1)
-//                        overlayText: config.normal.overlayText
-                        foreground: Qt.rgba(UbuntuColors.blue.r, UbuntuColors.blue.g, UbuntuColors.blue.b, 0.2)
+                        overlayText: config.normal.overlayText
+                        foreground: UbuntuColors.green
                     }
                 }
             }

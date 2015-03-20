@@ -343,14 +343,14 @@ void UCTheme::setPalette(QObject *config)
     _q_restorePalette(false);
     // 2. disconnect from the previous palette completion
     if (m_config.palette) {
-        disconnect(m_config.palette, SIGNAL(__completed()), 0, 0);
+//        disconnect(m_config.palette, SIGNAL(__completed()), 0, 0);
     }
     m_config.configList.clear();
     // 3. own configuration palette object and apply palette configuration
     m_config.palette = config;
     if (m_config.palette) {
         m_config.palette->setParent(this);
-        connect(m_config.palette, SIGNAL(__completed()), this, SLOT(_q_configurePalette()), Qt::DirectConnection);
+//        connect(m_config.palette, SIGNAL(__completed()), this, SLOT(_q_configurePalette()), Qt::DirectConnection);
         _q_configurePalette(false);
     }
     Q_EMIT paletteChanged();
@@ -429,7 +429,6 @@ void UCTheme::PaletteConfig::apply(QObject *themePalette)
             }
             config.paletteProperty.write(config.configProperty.read());
         }
-        qDebug() << configList[i].paletteProperty.name();
     }
 }
 
@@ -443,15 +442,13 @@ void UCTheme::PaletteConfig::restore()
     for (int i = 0; i < configList.count(); i++) {
         Data &config = configList[i];
         if (!config.paletteProperty.isValid()) {
-            qDebug() << "NOTHING CONFIGURED FOR" << config.propertyName;
             continue;
         }
-
-        qDebug() << "RESTORING" << config.propertyName << config.paletteBinding << config.paletteValue;
 
         // restore the config binding to the config target
         if (config.configBinding && config.configBinding->bindingType() == QQmlAbstractBinding::Binding) {
             QQmlBinding *qmlBinding = static_cast<QQmlBinding*>(config.configBinding);
+            qmlBinding->removeFromObject();
             qmlBinding->setTarget(config.configProperty);
         }
 
@@ -461,6 +458,7 @@ void UCTheme::PaletteConfig::restore()
             if (prev && prev != config.paletteBinding && prev != config.configBinding) {
                 prev->destroy();
             }
+            config.paletteBinding->update();
         } else {
             config.paletteProperty.write(config.paletteValue);
         }
@@ -473,7 +471,7 @@ void UCTheme::PaletteConfig::restore()
 
 void UCTheme::_q_configurePalette(bool notify)
 {
-    if (!m_palette || !m_config.palette || m_paletteConfigured || !m_config.ready()) {
+    if (!m_palette || !m_config.palette || m_paletteConfigured /*|| !m_config.ready()*/) {
         return;
     }
     if (m_config.configList.isEmpty()) {
@@ -481,7 +479,6 @@ void UCTheme::_q_configurePalette(bool notify)
         m_config.buildConfig();
     }
     m_config.apply(m_palette);
-    qDebug() << "APPLIED on" << objectName() << m_config.configList.count();
     m_paletteConfigured = true;
     if (notify) {
         Q_EMIT paletteChanged();
@@ -492,13 +489,11 @@ void UCTheme::_q_configurePalette(bool notify)
 void UCTheme::_q_restorePalette(bool omitValues)
 {
     Q_UNUSED(omitValues)
-    qDebug() << objectName() << !m_palette << !m_config.palette << m_config.configList.isEmpty() << !m_paletteConfigured;
     if (!m_palette || !m_config.palette || m_config.configList.isEmpty() || !m_paletteConfigured) {
         return;
     }
     m_config.restore();
     m_paletteConfigured = false;
-    qDebug() << "RESTORED" << objectName();
 }
 
 QUrl UCTheme::styleUrl(const QString& styleName)
@@ -585,7 +580,6 @@ void UCTheme::loadPalette(bool notify)
         m_palette = m_paletteComponent->create();
         if (m_palette) {
             m_palette->setParent(this);
-//            connect(m_palette.data(), &QObject::destroyed, this, &UCTheme::_q_restorePalette, Qt::DirectConnection);
         }
         _q_configurePalette(false);
         if (notify) {

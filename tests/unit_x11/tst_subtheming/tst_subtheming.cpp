@@ -527,6 +527,20 @@ private Q_SLOTS:
         // palette stays!
         QCOMPARE(mainSet->getPaletteColor("normal", "background"), QColor("blue"));
     }
+
+    void test_reset_palette_to_theme_default()
+    {
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase("ChangePaletteValueWhenParentChanges.qml"));
+        UCTheme *firstTheme = view->findItem<UCTheme*>("firstTheme");
+        QColor prevColor = firstTheme->getPaletteColor("normal", "background");
+
+        QVERIFY(prevColor.isValid());
+        // reset palette
+        QSignalSpy spy(firstTheme, SIGNAL(paletteChanged()));
+        firstTheme->resetPalette();
+        spy.wait(200);
+        QVERIFY(firstTheme->getPaletteColor("normal", "background") != prevColor);
+    }
 };
 
 QTEST_MAIN(tst_Subtheming)
