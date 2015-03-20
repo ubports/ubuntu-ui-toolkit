@@ -63,6 +63,7 @@ StyledItem {
     // with PageHeadConfiguration 1.2, always be visible.
     visible: title || contents || tabsModel || internal.newConfig
     onVisibleChanged: {
+        print("visible = "+visible)
         internal.checkFlickableMargins();
     }
 
@@ -236,6 +237,7 @@ StyledItem {
         property bool newConfig: header.config &&
                                  header.config.hasOwnProperty("locked") &&
                                  header.config.hasOwnProperty("visible")
+        onNewConfigChanged: print("new config = "+newConfig)
 
         /*!
           Track the y-position inside the flickable.
