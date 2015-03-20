@@ -64,6 +64,9 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
             # so no need to wait.
             return
 
+        # FIXME TIM: Wait showing/hiding animation of the header.
+
+
     @autopilot_logging.log_action(logger.info)
     def switch_to_section_by_index(self, index):
         """Select a section in the header divider
