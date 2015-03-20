@@ -178,8 +178,11 @@ StyledItem {
 
     /*!
       Configuration of the header.
+      FIXME: Must be of type PageHeadConfiguration. Setting that as the property type
+      however will use the latest version (1.3) and a Page that uses an older
+      version (1.1) will no longer work.
      */
-    property PageHeadConfiguration config: null
+    property Object config: null
     onConfigChanged: {
         // set internal.newConfig because when we rely on the binding,
         //  the value of newConfig may be updated after executing the code below.
