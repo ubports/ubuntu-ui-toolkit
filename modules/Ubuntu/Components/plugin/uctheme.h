@@ -26,6 +26,7 @@
 #include <QtCore/QString>
 #include <QtQml/QQmlComponent>
 #include <QtQml/QQmlParserStatus>
+#include <QtQml/QQmlProperty>
 
 #include "ucdefaulttheme.h"
 
@@ -80,37 +81,55 @@ private Q_SLOTS:
     QUrl styleUrl(const QString& styleName);
     void loadPalette(bool notify = true);
     void _q_configurePalette(bool notify = true);
-    void _q_restorePalette();
+    void _q_restorePalette(bool omitValues = true);
 
 private:
     UCTheme(bool defaultStyle, QObject *parent = 0);
     void init();
-    void backupPaletteValue(const QString &name, const QQmlProperty &property);
-    void applyPaletteConfiguration(const QString &valueSet);
 
-    class PaletteBinding
+    class PaletteConfig
     {
     public:
-        PaletteBinding(const QString &property, const QVariant &value)
-            : isValue(true), property(property), value(value), binding(0)
+        PaletteConfig()
+            : palette(0)
         {}
-        PaletteBinding(const QString &property, QQmlAbstractBinding *binding)
-            : isValue(false), property(property), binding(binding)
-        {}
+        ~PaletteConfig()
+        {
+            restore();
+        }
 
-        bool isValue;
-        QString property;
-        QVariant value;
-        QQmlAbstractBinding *binding;
+        bool ready();
+        void buildConfig();
+        void apply(QObject *palette);
+        void restore();
+
+        struct Data {
+            Data(const QString &name, const QQmlProperty &prop)
+                : propertyName(name), configProperty(prop), configBinding(0), paletteBinding(0)
+            {}
+            Data(const QString &name, const QQmlProperty &prop, QQmlAbstractBinding *binding)
+                : propertyName(name), configProperty(prop), configBinding(binding), paletteBinding(0)
+            {}
+
+            QString propertyName;
+            QQmlProperty configProperty;
+            QQmlProperty paletteProperty;
+            QVariant paletteValue;
+            QQmlAbstractBinding *configBinding;
+            QQmlAbstractBinding *paletteBinding;
+        };
+
+        // configuration palette, not the original theme one
+        QObject *palette;
+        QList<Data> configList;
     };
 
     QString m_name;
     QQmlComponent *m_paletteComponent;
     QPointer<QObject> m_palette; // the palette might be from the default style if the theme doesn't define palette
     QQmlEngine *m_engine;
-    QObject *m_paletteConfiguration;
+    PaletteConfig m_config;
     QList<QUrl> m_themePaths;
-    QList<PaletteBinding> m_bindingList;
     UCDefaultTheme m_defaultTheme;
     bool m_defaultStyle:1;
     bool m_completed:1;

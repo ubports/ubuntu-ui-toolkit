@@ -18,12 +18,13 @@ import QtQuick 2.4
 import Ubuntu.Components 1.3
 import Ubuntu.Components.Themes 1.0
 
-Item {
+StyledItem {
     id: component1
     objectName: "TopItem"
     width: units.gu(50)
     height: units.gu(100)
 
+    theme.objectName: "MasterTheme"
     Column {
         objectName: "Column"
         anchors.fill: parent
@@ -45,17 +46,19 @@ Item {
             width: parent.width
             height: units.gu(10)
             theme: ThemeSettings {
+                objectName: "InnerTheme"
                 id: thisTheme
-                name: "Ubuntu.Components.Themes.SuruDark"
+                name: parentTheme.name
                 palette: Palette {
                     id: config
                     normal {
                         foregroundText: UbuntuColors.blue
-                        overlayText: "#ABCDEF"
+                        overlayText: "#BAFEDC"
                     }
                     selected {
+                        fieldText: "brown"
                         foregroundText: Qt.rgba(0, 0, 1, 1)
-                        overlayText: config.normal.overlayText
+//                        overlayText: config.normal.overlayText
                         foreground: Qt.rgba(UbuntuColors.blue.r, UbuntuColors.blue.g, UbuntuColors.blue.b, 0.2)
                     }
                 }

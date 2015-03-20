@@ -182,7 +182,6 @@ UCTheme::UCTheme(QObject *parent)
     , m_paletteComponent(0)
     , m_palette(UCTheme::defaultTheme().m_palette)
     , m_engine(UCTheme::defaultTheme().m_engine)
-    , m_paletteConfiguration(0)
     , m_defaultStyle(false)
     , m_paletteConfigured(false)
 {
@@ -332,121 +331,174 @@ QObject* UCTheme::palette()
 }
 void UCTheme::setPalette(QObject *config)
 {
-    if (config == m_palette || config == m_paletteConfiguration) {
+    if (config == m_palette || config == m_config.palette) {
         return;
     }
     if (config && !QuickUtils::inherits(config, "Palette")) {
         qmlInfo(config) << UbuntuI18n::instance().tr("Not a Palette component.");
         return;
     }
-    // must restore the palette before we change the config
-    _q_restorePalette();
-    m_paletteConfiguration = config;
-    if (m_paletteConfiguration) {
-        // make sure the Palette is parented to Theme
-        m_paletteConfiguration->setParent(this);
-        // apply configuration on palette
-        _q_configurePalette(true);
-    } else {
-        // emit palette changes as there's nothing to configure
-        Q_EMIT paletteChanged();
+
+    // 1. restore original palette values
+    _q_restorePalette(false);
+    // 2. disconnect from the previous palette completion
+    if (m_config.palette) {
+        disconnect(m_config.palette, SIGNAL(__completed()), 0, 0);
     }
+    m_config.configList.clear();
+    // 3. own configuration palette object and apply palette configuration
+    m_config.palette = config;
+    if (m_config.palette) {
+        m_config.palette->setParent(this);
+        connect(m_config.palette, SIGNAL(__completed()), this, SLOT(_q_configurePalette()), Qt::DirectConnection);
+        _q_configurePalette(false);
+    }
+    Q_EMIT paletteChanged();
 }
 void UCTheme::resetPalette()
 {
     setPalette(NULL);
 }
 
-// backup original palette value
-void UCTheme::backupPaletteValue(const QString &name, const QQmlProperty &property)
+// reports whether the configuration palette is ready
+bool UCTheme::PaletteConfig::ready()
 {
-    QQmlAbstractBinding *binding = QQmlPropertyPrivate::binding(property);
-    if (binding) {
-        m_bindingList << PaletteBinding(name, binding);
-    } else {
-        m_bindingList << PaletteBinding(name, property.read());
+    return palette && palette->property("__ready").toBool();
+}
+
+// build palette configuration list
+void UCTheme::PaletteConfig::buildConfig()
+{
+    if (!palette) {
+        return;
+    }
+    const char *valueSetList[10] = {"normal", "selected"};
+    QQmlContext *configContext = qmlContext(palette);
+
+    for (int i = 0; i < 2; i++) {
+        const char *valueSet = valueSetList[i];
+        QObject *configObject = palette->property(valueSet).value<QObject*>();
+        const QMetaObject *mo = configObject->metaObject();
+
+        for (int ii = mo->propertyOffset(); ii < mo->propertyCount(); ii++) {
+            const QMetaProperty prop = mo->property(ii);
+            QString propertyName = QString("%1.%2").arg(valueSet).arg(prop.name());
+            QQmlProperty configProperty(palette, propertyName, configContext);
+
+            // first we need to check whether the property has a binding or not
+            QQmlAbstractBinding *binding = QQmlPropertyPrivate::binding(configProperty);
+            if (binding) {
+                configList << Data(propertyName, configProperty, binding);
+            } else {
+                QVariant value = configProperty.read();
+                QColor color = value.value<QColor>();
+                if (color.isValid()) {
+                    configList << Data(propertyName, configProperty);
+                }
+            }
+        }
     }
 }
 
-// applies a palette configuration
-void UCTheme::applyPaletteConfiguration(const QString &valueSet)
+// apply configuration on the palette
+void UCTheme::PaletteConfig::apply(QObject *themePalette)
 {
-    if (!m_palette || !m_paletteConfiguration) {
+    QQmlContext *context = qmlContext(themePalette);
+    for (int i = 0; i < configList.count(); i++) {
+        Data &config = configList[i];
+        config.paletteProperty = QQmlProperty(themePalette, config.propertyName, context);
+
+        // backup
+        config.paletteBinding = QQmlPropertyPrivate::binding(config.paletteProperty);
+        if (!config.paletteBinding) {
+            config.paletteValue = config.paletteProperty.read();
+        }
+
+        // apply configuration
+        if (config.configBinding) {
+            // transfer binding's target
+            if (config.configBinding->bindingType() == QQmlAbstractBinding::Binding) {
+                QQmlBinding *qmlBinding = static_cast<QQmlBinding*>(config.configBinding);
+                qmlBinding->setTarget(config.paletteProperty);
+            }
+            QQmlPropertyPrivate::setBinding(config.paletteProperty, config.configBinding);
+        } else {
+            if (config.paletteBinding) {
+                // remove binding so the property doesn't clear it
+                QQmlPropertyPrivate::setBinding(config.paletteProperty, 0);
+            }
+            config.paletteProperty.write(config.configProperty.read());
+        }
+        qDebug() << configList[i].paletteProperty.name();
+    }
+}
+
+// restores the palette to the pre-configuration state
+void UCTheme::PaletteConfig::restore()
+{
+    if (configList.isEmpty()) {
         return;
     }
 
-    QObject *configObject = m_paletteConfiguration->property(valueSet.toUtf8()).value<QObject*>();
-    const QMetaObject *mo = configObject->metaObject();
-    QQmlContext *paletteContext = qmlContext(m_palette);
-    QQmlContext *configContext = qmlContext(m_paletteConfiguration);
-
-    // we must detect the validity of the palette properties one by one
-    for (int i = mo->propertyOffset(); i < mo->propertyCount(); i++) {
-        const QMetaProperty prop = mo->property(i);
-        QString propertyName = QString("%1.%2").arg(valueSet).arg(prop.name());
-        QQmlProperty configProperty(m_paletteConfiguration, propertyName, configContext);
-        QQmlProperty paletteProperty(m_palette, propertyName, paletteContext);
-
-        QVariant value = configProperty.read();
-        QColor color = value.value<QColor>();
-        if (color.isValid()) {
-            backupPaletteValue(propertyName, paletteProperty);
-            // do not use QQmlProperty for this, setting the property in this way seems to be faster
-            paletteProperty.write(value);
-        } else {
-            // is it a binding?
-            QQmlAbstractBinding *binding = QQmlPropertyPrivate::binding(configProperty);
-            if (binding) {
-                backupPaletteValue(propertyName, paletteProperty);
-                // store so we can restore it
-                if (binding->bindingType() == QQmlAbstractBinding::Binding) {
-                    QQmlBinding *qmlBinding = static_cast<QQmlBinding*>(binding);
-                    qmlBinding->setTarget(paletteProperty);
-                }
-                QQmlPropertyPrivate::setBinding(paletteProperty, binding);
-            }
+    for (int i = 0; i < configList.count(); i++) {
+        Data &config = configList[i];
+        if (!config.paletteProperty.isValid()) {
+            qDebug() << "NOTHING CONFIGURED FOR" << config.propertyName;
+            continue;
         }
+
+        qDebug() << "RESTORING" << config.propertyName << config.paletteBinding << config.paletteValue;
+
+        // restore the config binding to the config target
+        if (config.configBinding && config.configBinding->bindingType() == QQmlAbstractBinding::Binding) {
+            QQmlBinding *qmlBinding = static_cast<QQmlBinding*>(config.configBinding);
+            qmlBinding->setTarget(config.configProperty);
+        }
+
+        if (config.paletteBinding) {
+            // restore the binding to the palette
+            QQmlAbstractBinding *prev = QQmlPropertyPrivate::setBinding(config.paletteProperty, config.paletteBinding);
+            if (prev && prev != config.paletteBinding && prev != config.configBinding) {
+                prev->destroy();
+            }
+        } else {
+            config.paletteProperty.write(config.paletteValue);
+        }
+
+        config.paletteProperty = QQmlProperty();
+        config.paletteBinding = NULL;
+        config.paletteValue.clear();
+    }
+}
+
+void UCTheme::_q_configurePalette(bool notify)
+{
+    if (!m_palette || !m_config.palette || m_paletteConfigured || !m_config.ready()) {
+        return;
+    }
+    if (m_config.configList.isEmpty()) {
+        // need to build config list first
+        m_config.buildConfig();
+    }
+    m_config.apply(m_palette);
+    qDebug() << "APPLIED on" << objectName() << m_config.configList.count();
+    m_paletteConfigured = true;
+    if (notify) {
+        Q_EMIT paletteChanged();
     }
 }
 
 // restores changed palette values
-void UCTheme::_q_restorePalette()
+void UCTheme::_q_restorePalette(bool omitValues)
 {
-    if (!m_palette || !m_paletteConfiguration || m_bindingList.isEmpty() || !m_paletteConfigured) {
+    Q_UNUSED(omitValues)
+    qDebug() << objectName() << !m_palette << !m_config.palette << m_config.configList.isEmpty() << !m_paletteConfigured;
+    if (!m_palette || !m_config.palette || m_config.configList.isEmpty() || !m_paletteConfigured) {
         return;
     }
-
-    QQmlContext *paletteContext = qmlContext(m_palette);
-    QQmlContext *configContext = qmlContext(m_paletteConfiguration);
-
-    for (int i = 0; i < m_bindingList.count(); i++) {
-        const PaletteBinding binding = m_bindingList[i];
-        QQmlProperty configProperty(m_paletteConfiguration, binding.property, configContext);
-        QQmlProperty paletteProperty(m_palette, binding.property, paletteContext);
-
-        if (binding.isValue) {
-            // restore the value
-            paletteProperty.write(binding.value);
-        } else {
-            // get the binding from the palette and transfer it to config palette
-            QQmlAbstractBinding *paletteBinding = QQmlPropertyPrivate::binding(paletteProperty);
-            if (paletteBinding) {
-                if (paletteBinding->bindingType() == QQmlAbstractBinding::Binding) {
-                    QQmlBinding *qmlBinding = static_cast<QQmlBinding*>(paletteBinding);
-                    qmlBinding->setTarget(configProperty);
-                }
-                QQmlPropertyPrivate::setBinding(configProperty, paletteBinding);
-            }
-
-            // finally restore the original binding if any to the palette to make sure it won't wipe the config one
-            QQmlAbstractBinding *prev = QQmlPropertyPrivate::setBinding(paletteProperty, binding.binding);
-            if (prev && prev != binding.binding && prev != paletteBinding) {
-                prev->destroy();
-            }
-        }
-    }
-    m_bindingList.clear();
+    m_config.restore();
     m_paletteConfigured = false;
+    qDebug() << "RESTORED" << objectName();
 }
 
 QUrl UCTheme::styleUrl(const QString& styleName)
@@ -524,6 +576,7 @@ void UCTheme::loadPalette(bool notify)
     }
     if (m_palette) {
         // restore bindings to the config palette before we delete
+        _q_restorePalette();
         delete m_palette;
         m_palette = 0;
     }
@@ -532,7 +585,7 @@ void UCTheme::loadPalette(bool notify)
         m_palette = m_paletteComponent->create();
         if (m_palette) {
             m_palette->setParent(this);
-            connect(m_palette.data(), &QObject::destroyed, this, &UCTheme::_q_restorePalette, Qt::DirectConnection);
+//            connect(m_palette.data(), &QObject::destroyed, this, &UCTheme::_q_restorePalette, Qt::DirectConnection);
         }
         _q_configurePalette(false);
         if (notify) {
@@ -541,24 +594,6 @@ void UCTheme::loadPalette(bool notify)
     } else {
         // use the default palette if none defined
         m_palette = defaultTheme().m_palette;
-    }
-}
-
-void UCTheme::_q_configurePalette(bool notify)
-{
-    if (!m_paletteConfiguration || m_paletteConfigured) {
-        return;
-    }
-    if (!m_paletteConfiguration->property("__ready").toBool()) {
-        // connect to __completed() signal of Palette to receive completion
-        connect(m_paletteConfiguration, SIGNAL(__completed()), this, SLOT(_q_configurePalette()));
-        return;
-    }
-    applyPaletteConfiguration("normal");
-    applyPaletteConfiguration("selected");
-    m_paletteConfigured = true;
-    if (notify) {
-        Q_EMIT paletteChanged();
     }
 }
 
