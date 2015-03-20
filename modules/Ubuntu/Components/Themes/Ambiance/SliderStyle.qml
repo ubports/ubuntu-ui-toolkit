@@ -87,7 +87,7 @@ Item {
     BubbleShape {
         id: bubbleShape
 
-        width: units.gu(8)
+        width: Math.max(units.gu(8), label.implicitWidth + units.gu(2))
         height: units.gu(6)
 
         // FIXME: very temporary implementation
