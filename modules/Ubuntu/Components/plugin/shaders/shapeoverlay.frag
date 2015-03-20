@@ -37,8 +37,8 @@ varying lowp vec4 backgroundColor;
 varying mediump vec2 overlayCoord;
 varying lowp vec4 overlayColor;
 
-const mediump int PLAIN  = 0x08;  // 1 << 3
-const mediump int SUNKEN = 0x10;  // 1 << 4
+const mediump int FLAT  = 0x08;  // 1 << 3
+const mediump int INSET = 0x10;  // 1 << 4
 
 void main(void)
 {
@@ -63,7 +63,7 @@ void main(void)
     lowp vec4 overlay = overlayColor * vec4(overlayMask);
     color = vec4(1.0 - overlay.a) * color + overlay;
 
-    if (aspect == PLAIN) {
+    if (aspect == FLAT) {
         // Get screen-space derivative of texture coordinate t representing the normalized distance
         // between 2 pixels then mask the current color with an anti-aliased and resolution
         // independent shape mask built from distance fields.
@@ -72,7 +72,7 @@ void main(void)
         lowp float distanceMax = abs(dfdt) * distanceAA + 0.5;
         color *= smoothstep(distanceMin, distanceMax, shapeData.b);
 
-    } else if (aspect == SUNKEN) {
+    } else if (aspect == INSET) {
         // Get screen-space derivative of texture coordinate t representing the normalized distance
         // between 2 pixels. The vertex layout of the shape is made so that the derivative is
         // negative from top to middle and positive from middle to bottom.

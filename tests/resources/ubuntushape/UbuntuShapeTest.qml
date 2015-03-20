@@ -25,7 +25,7 @@ Item {
 
     // Enum to string tables.
     property variant aspectTable: [
-        "Plain", "Sunken"
+        "Flat", "Inset"
     ]
     property variant backgroundModeTable: [
         "SolidColor", "VerticalGradient"

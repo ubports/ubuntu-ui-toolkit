@@ -116,7 +116,7 @@ void ShapeShader::updateState(
     }
     program()->setUniformValue(m_texturedId, textured);
     program()->setUniformValue(
-        m_aspectId, data->flags & (ShapeMaterial::Data::Plain | ShapeMaterial::Data::Sunken));
+        m_aspectId, data->flags & (ShapeMaterial::Data::Flat | ShapeMaterial::Data::Inset));
 
     // The pressed aspect is implemented by scaling the final RGB fragment color. It's not a real
     // blending as it was done before deprecation, so for instance transparent colors remain the
@@ -274,7 +274,7 @@ UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
     , m_sourceScale(1.0f, 1.0f)
     , m_sourceTranslation(0.0f, 0.0f)
     , m_sourceTransform(1.0f, 1.0f, 0.0f, 0.0f)
-    , m_aspect(Sunken)
+    , m_aspect(Inset)
     , m_imageHorizontalAlignment(AlignHCenter)
     , m_imageVerticalAlignment(AlignVCenter)
     , m_backgroundMode(SolidColor)
@@ -331,22 +331,22 @@ void UCUbuntuShape::setCornerRadius(qreal cornerRadius)
 /*! \qmlproperty enumeration UbuntuShape::aspect
 
     This property defines the graphical style of the UbuntuShape. The default value is \c
-    UbuntuShape.Plain.
+    UbuntuShape.Flat.
 
     \note Setting this disables support for the deprecated \l borderSource property. Use the
-    UbuntuShapeOverlay item in order to provide the sunken "pressed" aspect previously supported by
+    UbuntuShapeOverlay item in order to provide the inset "pressed" aspect previously supported by
     that property.
 
     \list
-    \li \b UbuntuShape.Plain - no effects applied
-    \li \b UbuntuShape.Sunken - inner shadow slightly moved downwards and bevelled bottom
+    \li \b UbuntuShape.Flat - no effects applied
+    \li \b UbuntuShape.Inset - inner shadow slightly moved downwards and bevelled bottom
     \endlist
 */
 void UCUbuntuShape::setAspect(Aspect aspect)
 {
     if (!(m_flags & AspectSet)) {
         m_flags |= AspectSet;
-        m_aspect = Plain;
+        m_aspect = Flat;
         update();
         Q_EMIT borderSourceChanged();
     }
@@ -751,8 +751,8 @@ void UCUbuntuShape::setRadius(const QString& radius)
 
     This property defines the look of the shape borders. The supported strings are \c
     "radius_idle.sci" providing an idle button aspect and \c "radius_pressed.sci" providing a
-    pressed button aspect. Any other strings (like the empty one \c "") provides a plain shape with
-    no borders. The default value is \c "radius_idle.sci".
+    pressed button aspect. Any other strings (like the empty one \c "") provides a shape with no
+    borders. The default value is \c "radius_idle.sci".
 
     \note Use \l aspect instead.
 */
@@ -761,11 +761,11 @@ void UCUbuntuShape::setBorderSource(const QString& borderSource)
     if (!(m_flags & AspectSet)) {
         quint8 aspect;
         if (borderSource.endsWith(QString("radius_idle.sci"))) {
-            aspect = Sunken;
+            aspect = Inset;
         } else if (borderSource.endsWith(QString("radius_pressed.sci"))) {
             aspect = Pressed;
         } else {
-            aspect = Plain;
+            aspect = Flat;
         }
         if (m_aspect != aspect) {
             m_aspect = aspect;
@@ -1233,8 +1233,8 @@ void UCUbuntuShape::updateMaterial(QSGNode* node, float radius, quint32 shapeTex
     // optimal performance.
     if (radius > cornerRadiusOffset) {
         const quint8 aspectFlags[] = {
-            ShapeMaterial::Data::Plain, ShapeMaterial::Data::Sunken,
-            ShapeMaterial::Data::Sunken | ShapeMaterial::Data::Pressed
+            ShapeMaterial::Data::Flat, ShapeMaterial::Data::Inset,
+            ShapeMaterial::Data::Inset | ShapeMaterial::Data::Pressed
         };
         flags |= aspectFlags[m_aspect];
     } else {

@@ -60,9 +60,9 @@ public:
             HorizontallyRepeated = (1 << 1),
             VerticallyRepeated   = (1 << 2),
             Repeated             = (HorizontallyRepeated | VerticallyRepeated),
-            Plain                = (1 << 3),
-            Sunken               = (1 << 4),
-            Pressed              = (1 << 5),
+            Flat                 = (1 << 3),
+            Inset                = (1 << 4),
+            Pressed              = (1 << 5)
         };
         QSGTextureProvider* sourceTextureProvider;
         quint32 shapeTexture;
@@ -175,7 +175,7 @@ class UCUbuntuShape : public QQuickItem
 public:
     UCUbuntuShape(QQuickItem* parent=0);
 
-    enum Aspect { Plain = 0, Sunken = 1 };  // Don't forget to update private enum if extended.
+    enum Aspect { Flat = 0, Inset = 1 };  // Don't forget to update private enum if extended.
     enum BackgroundMode { SolidColor = 0, VerticalGradient = 1 };
     enum HAlignment { AlignLeft = 0, AlignHCenter = 1, AlignRight = 2 };
     enum VAlignment { AlignTop = 0, AlignVCenter = 1, AlignBottom = 2 };
@@ -184,7 +184,7 @@ public:
 
     qreal cornerRadius() const { return (m_flags & CornerRadiusSet) ? m_cornerRadius * 0.5 : 24.0; }
     void setCornerRadius(qreal cornerRadius);
-    Aspect aspect() const { return (m_flags & AspectSet) ? static_cast<Aspect>(m_aspect) : Plain; }
+    Aspect aspect() const { return (m_flags & AspectSet) ? static_cast<Aspect>(m_aspect) : Flat; }
     void setAspect(Aspect aspect);
 
     QVariant source() const {
@@ -227,8 +227,8 @@ public:
     void setRadius(const QString& radius);
     QString borderSource() const {
         return (m_flags & AspectSet) ? "" :
-            ((m_aspect == Plain) ? "" :
-             ((m_aspect == Sunken) ? "radius_idle.sci" : "radius_pressed.sci")); }
+            ((m_aspect == Flat) ? "" :
+             ((m_aspect == Inset) ? "radius_idle.sci" : "radius_pressed.sci")); }
     void setBorderSource(const QString& borderSource);
     QColor color() const {
         return (m_flags & BackgroundApiSet) ?
