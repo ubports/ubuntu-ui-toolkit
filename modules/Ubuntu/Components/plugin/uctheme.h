@@ -80,6 +80,7 @@ private Q_SLOTS:
     void updateThemePaths();
     QUrl styleUrl(const QString& styleName);
     void loadPalette(bool notify = true);
+    void _q_configPaletteDestroyed();
 
 private:
     UCTheme(bool defaultStyle, QObject *parent = 0);

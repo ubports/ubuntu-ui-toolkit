@@ -19,6 +19,7 @@ OTHER_FILES += \
     SameNamedPaletteSettings.qml \
     ChangePaletteValueWhenParentChanges.qml \
     ChangeDefaultPaletteInChildren.qml \
-    MultiplePaletteInstances.qml
+    MultiplePaletteInstances.qml \
+    DynamicPalette.qml
 
 

@@ -188,7 +188,7 @@ UCTheme::UCTheme(QObject *parent)
 }
 
 /******************************************************************************
- * Theme::PaletteChanges
+ * Theme::PaletteConfig
  */
 
 // builds configuration list and applies the configuration on the palette
@@ -341,6 +341,7 @@ void UCTheme::classBegin()
 {
     m_engine = qmlEngine(this);
     updateEnginePaths();
+    loadPalette();
 }
 
 void UCTheme::updateEnginePaths()
@@ -469,10 +470,10 @@ void UCTheme::setPalette(QObject *config)
     m_config.restorePalette();
     // 2. clear config list
     m_config.reset();
-    // 3. own configuration palette object and apply palette configuration
+    // 3. apply palette configuration
     m_config.palette = config;
     if (m_config.palette) {
-        m_config.palette->setParent(this);
+        connect(m_config.palette, SIGNAL(destroyed()), this, SLOT(_q_configPaletteDestroyed()));
         m_config.configurePalette(m_palette);
     }
     Q_EMIT paletteChanged();
@@ -575,6 +576,13 @@ void UCTheme::loadPalette(bool notify)
         // use the default palette if none defined
         m_palette = defaultTheme().m_palette;
     }
+}
+
+// restores palette values when palette configuration is deleted
+void UCTheme::_q_configPaletteDestroyed()
+{
+    m_config.restorePalette();
+    m_config.palette = NULL;
 }
 
 // returns the palette color value of a color profile

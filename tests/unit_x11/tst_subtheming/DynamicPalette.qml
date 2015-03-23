@@ -21,18 +21,27 @@ import Ubuntu.Components.Themes 1.0
 StyledItem {
     theme.objectName: "MasterTheme"
     StyledItem {
+        id: styled
         theme: ThemeSettings {
             objectName: "theme"
         }
+        Loader {
+            objectName: "paletteLoader"
+            sourceComponent: paletteComponent
+            onItemChanged: {
+                if (item) {
+                    styled.theme.palette = item;
+                }
+            }
+        }
     }
 
-    Palette {
-        objectName: "palette1"
-        normal.background: "blue"
-    }
-    Palette {
-        objectName: "palette2"
-        normal.background: "pink"
+    Component {
+        id: paletteComponent
+        Palette {
+            objectName: "palette"
+            normal.background: "blue"
+        }
     }
 }
 
