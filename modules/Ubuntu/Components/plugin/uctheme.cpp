@@ -72,13 +72,13 @@
         theme.name: "Ubuntu.Components.Themes.Ambiance"
     }
     \endqml
-    \note Changing the style set name in this way will result in a change of the
-    inherited style set. In case a different style set is desired, a new instance
-    of the ThemeSettings must be created.
+    \note Changing the theme name in this way will result in a change of the
+    inherited theme. In case a different theme is desired, a new ThemeSettings
+    instance must be created.
 
     The \l createStyleComponent function can be used to create the style for a
     component. The following example will create the style with the inherited
-    style set.
+    theme.
     \qml
     import QtQuick 2.4
     import Ubuntu.Components 1.3
@@ -88,17 +88,17 @@
     }
     \endqml
 
-    When declared, the ThemeSettings's name points to the system defined theme. There
-    can be cases when the parent defined style set is needed but with small modifications.
-    In these situations the \l parent property can be used to get the parent
-    style set, and so the name can be bound to the parent's name.
+    A ThemeSettings declared without any name specified will create a system default
+    one. There can be cases when the parent defined theme is needed but with small
+    modifications. In these situations the \l parentTheme property can be used to get
+    the parent theme, and so the name can be bound to the parent's name.
     \qml
     import QtQuick 2.4
     import Ubuntu.Components 1.3
     StyledItem {
         id: myItem
         theme: ThemeSettings {
-            name: parent ? parent.name : undefined
+            name: parentTheme ? parentTheme.name : undefined
         }
         style: theme.createStyleComponent("MyItemStyle.qml", myItem)
     }
@@ -381,8 +381,8 @@ void UCTheme::updateThemePaths()
 
 /*!
  * \qmlproperty ThemeSettings ThemeSettings::parentTheme
- * The property specifies the parent ThemeSettings instance. The property only
- * has a valid value when assigned to \l StyledItem::theme property.
+ * \readonly
+ * The property specifies the parent ThemeSettings instance.
  */
 UCTheme *UCTheme::parentTheme()
 {
@@ -395,25 +395,9 @@ UCTheme *UCTheme::parentTheme()
 }
 
 /*!
-    \qmlproperty string ThemeSettings::name
-
-    The name of the current theme. The name can be set only at creation time, runtime
-    changes will be omitted.
-
-    \qml
-    import QtQuick 2.4
-    import Ubuntu.Componenst 1.3
-
-    StyledItem {
-        style: ThemeSettings {
-            // this is right
-            name: "Ubuntu.Components.Themes.Ambiance"
-        }
-        // this is not allowed, and will be omitted
-        Components.onCompleted: theme.name = "Ubuntu.Components.Themes.SuruDark"
-    }
-    \endqml
-*/
+ * \qmlproperty string ThemeSettings::name
+ * The name of the current theme in dotted format i.e. "Ubuntu.Components.Themes.Ambiance".
+ */
 QString UCTheme::name() const
 {
     return !m_name.isEmpty() ? m_name : m_defaultTheme.themeName();
@@ -431,7 +415,6 @@ void UCTheme::setName(const QString& name)
                             this, &UCTheme::onThemeNameChanged);
         updateThemePaths();
     }
-    updateEnginePaths();
     if (m_paletteComponent) {
         delete m_paletteComponent;
         m_paletteComponent = 0;
@@ -510,11 +493,10 @@ void UCTheme::registerToContext(QQmlContext* context)
 }
 
 /*!
-    \qmlmethod Component ThemeSettings::createStyleComponent(string styleName, object parent)
-
-    Returns an instance of the style component named \a styleName and parented
-    to \a parent.
-*/
+ * \qmlmethod Component ThemeSettings::createStyleComponent(string styleName, object parent)
+ * Returns an instance of the style component named \a styleName and parented
+ * to \a parent.
+ */
 QQmlComponent* UCTheme::createStyleComponent(const QString& styleName, QObject* parent)
 {
     QQmlComponent *component = NULL;
