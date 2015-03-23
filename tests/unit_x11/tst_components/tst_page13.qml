@@ -54,13 +54,6 @@ Item {
         name: "Page13API"
         when: windowShown
 
-        property var header
-        property var headerStyle
-        function initTestCase() {
-            testCase.header = findChild(mainView, "MainView_Header");
-            testCase.headerStyle = findChild(mainView, "PageHeadStyle");
-        }
-
         function init() {
             compare(page.title, "", "Page title is set by default.");
             compare(page.active, true, "Page is inactive by default.");
@@ -101,17 +94,9 @@ Item {
                     "Header flickable was not correctly unset.");
         }
 
-        function wait_for_header_animation() {
-            // Wait for the header to start to move:
-            wait(50);
-            // Wait for animation of the style inside the header (when pushing/popping):
-            tryCompareFunction(function(){ return testCase.headerStyle.animating }, false);
-            // Wait for the header to finish showing/hiding:
-            tryCompareFunction(function(){ return testCase.header.moving }, false);
-        }
-
         function test_flickableY_bug1201452() {
-            var headerHeight = testCase.header.height
+            var header = findChild(mainView, "MainView_Header");
+            var headerHeight = header.height;
             var flickableY = 150;
             page.flickable.contentY = flickableY;
             compare(page.flickable.contentY, flickableY,
@@ -121,7 +106,7 @@ Item {
 
             page.head.locked = true;
             page.head.visible = false;
-            wait_for_header_animation();
+            waitForHeaderAnimation(mainView);
 
             compare(page.flickable.topMargin, 0,
                     "topMargin is not 0 when header is locked hidden.");
@@ -130,7 +115,7 @@ Item {
 
             page.head.locked.locked = false;
             page.head.visible = true;
-            wait_for_header_animation();
+            waitForHeaderAnimation(mainView);
 
             compare(page.flickable.contentY, flickableY,
                     "Hiding and showing header changes flickable.contentY.");
