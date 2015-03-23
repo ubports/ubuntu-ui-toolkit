@@ -28,7 +28,6 @@ Toolkit10.Page {
     readonly property alias head: headerConfig
     Toolkit11.PageHeadConfiguration {
         id: headerConfig
-//        visible: false
     }
 
     onToolsChanged: {
