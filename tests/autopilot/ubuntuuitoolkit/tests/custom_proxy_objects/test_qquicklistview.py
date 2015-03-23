@@ -19,6 +19,10 @@ try:
 except ImportError:
     import mock
 
+import os
+
+import testscenarios
+from autopilot import platform
 from autopilot.introspection import dbus
 
 import ubuntuuitoolkit
@@ -224,3 +228,75 @@ MainView {
 
         self.list_view.click_element('testListElement9')
         self.assertEqual(self.label.text, 'testListElement9')
+
+
+class QQuickListViewDraggingBaseTestCase(tests.QMLFileAppTestCase):
+
+    def setUp(self):
+        path = os.path.abspath(__file__)
+        dir_path = os.path.dirname(path)
+        self.test_qml_file_path = os.path.join(
+            dir_path, self.qml_file_name)
+
+        super(QQuickListViewDraggingBaseTestCase, self).setUp()
+        self.list_view = self.main_view.select_single(
+            ubuntuuitoolkit.QQuickListView, objectName='test_view')
+
+
+class QQuickListViewDraggingTestCase(QQuickListViewDraggingBaseTestCase):
+
+    qml_file_name = 'test_listitem.ListViewWithLiveDraggingTestCase.qml'
+
+    def test_long_press_must_enable_drag_mode(self):
+        list_item = self.list_view.select_single(
+            'UCListItem', objectName='listitem0')
+        self.assertFalse(list_item.dragMode)
+        self.list_view._enable_drag_mode()
+        self.assertTrue(list_item.dragMode)
+
+
+class QQuickListViewReorderingTestCase(QQuickListViewDraggingBaseTestCase):
+
+    dragging_scenarios = [
+        ('with live dragging', {
+            'qml_file_name': (
+                'test_listitem.ListViewWithLiveDraggingTestCase.qml')}),
+        ('without live dragging', {
+            'qml_file_name': (
+                'test_listitem.ListViewWithoutLiveDraggingTestCase.qml')}),
+    ]
+    reorder_scenarios = [
+        ('both items visible, to bottom', {'from_index': 0, 'to_index': 1}),
+        ('both items visible, to top', {'from_index': 1, 'to_index': 0}),
+        ('both items visible, to bottom, first non visible', {
+            'from_index': 0, 'to_index': 7}),
+        ('to item not visible, to top', {'from_index': 15, 'to_index': 0}),
+        ('to item not visible, to middle down', {
+            'from_index': 0, 'to_index': 15}),
+        ('to item not visible, to bottom', {'from_index': 0, 'to_index': 24})
+    ]
+    scenarios = testscenarios.multiply_scenarios(
+        dragging_scenarios, reorder_scenarios)
+
+    def _find_item(self, index):
+        object_name = 'listitem{}'.format(index)
+        try:
+            return self.list_view.select_single(objectName=object_name)
+        except dbus.StateNotFoundError:
+            return self.list_view._find_element(object_name)
+
+    def _get_item_text(self, index):
+        item = self._find_item(index)
+        return item.select_single('Label').text
+
+    def test_drag_item_must_reorder_list(self):
+        if platform.model() != 'Desktop':
+            self.skipTest(
+                'Drag does not work on the phone because of bug #1266601')
+
+        original_from_text = self._get_item_text(self.from_index)
+
+        self.list_view.drag_item(self.from_index, self.to_index)
+
+        self.assertEqual(
+            original_from_text, self._get_item_text(self.to_index))
