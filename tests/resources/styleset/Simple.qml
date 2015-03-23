@@ -18,13 +18,13 @@ import QtQuick 2.4
 import Ubuntu.Components 1.3
 import Ubuntu.Components.Themes 1.0
 
-StyledItem {
-    id: component1
+MainView {
     objectName: "TopItem"
     width: units.gu(50)
     height: units.gu(100)
 
     theme.objectName: "MasterTheme"
+
     Column {
         objectName: "Column"
         anchors.fill: parent
@@ -38,6 +38,9 @@ StyledItem {
         Button {
             text: "Reset palette"
             onClicked: customTheme.theme.palette = undefined
+        }
+        Button {
+            text: "Lo"
         }
 
         TextField {

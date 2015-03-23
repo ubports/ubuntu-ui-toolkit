@@ -54,7 +54,6 @@ public:
     void resetName();
     QObject* palette();
     void setPalette(QObject *config);
-    void resetPalette();
 
     Q_INVOKABLE QQmlComponent* createStyleComponent(const QString& styleName, QObject* parent);
     static void registerToContext(QQmlContext* context);
@@ -75,12 +74,12 @@ protected:
     }
 
 private Q_SLOTS:
+    void resetPalette();
     void updateEnginePaths();
     void onThemeNameChanged();
     void updateThemePaths();
     QUrl styleUrl(const QString& styleName);
     void loadPalette(bool notify = true);
-    void _q_configPaletteDestroyed();
 
 private:
     UCTheme(bool defaultStyle, QObject *parent = 0);

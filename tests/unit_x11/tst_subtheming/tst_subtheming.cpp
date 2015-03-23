@@ -537,7 +537,7 @@ private Q_SLOTS:
         QVERIFY(prevColor.isValid());
         // reset palette
         QSignalSpy spy(firstTheme, SIGNAL(paletteChanged()));
-        firstTheme->resetPalette();
+        firstTheme->setPalette(NULL);
         spy.wait(200);
         QVERIFY(firstTheme->getPaletteColor("normal", "background") != prevColor);
     }
@@ -576,8 +576,7 @@ private Q_SLOTS:
         loader->setProperty("sourceComponent", QVariant());
         spy.wait(200);
         // unloaded palette by Loader should remove palette configuration
-        QEXPECT_FAIL(0, "Loader unloads palette configuration", Continue);
-        QVERIFY(theme->getPaletteColor("normal", "background") == QColor("blue"));
+        QVERIFY(theme->getPaletteColor("normal", "background") != QColor("blue"));
     }
 };
 

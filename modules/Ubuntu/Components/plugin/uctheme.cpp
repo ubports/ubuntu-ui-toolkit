@@ -428,10 +428,61 @@ void UCTheme::resetName()
 }
 
 /*!
-    \qmlproperty Palette ThemeSettings::palette
-
-    The palette of the current theme.
-*/
+ * \qmlproperty Palette ThemeSettings::palette
+ * The palette of the current theme. When set, only the valid palette values will
+ * be taken into account, which will override the theme defined palette values.
+ * The following example will set the system's default theme palette normal background
+ * color to Ubuntu blue. All other palette values will be untouched.
+ * \qml
+ * import QtQuick 2.4
+ * import Ubuntu.Components 1.3
+ * import Ubuntu.Components.Themes 1.0
+ *
+ * MainView {
+ *     // your code
+ *     theme.palette: Palette {
+ *         normal.background: UbuntuColors.blue
+ *     }
+ * }
+ * \endqml
+ * \note Palette values applied on inherited themes will be rolled back once the
+ * component declaring the palette is unloaded. This can be demonstracted using
+ * a Loader element:
+ * \qml
+ * import QtQuick 2.4
+ * import Ubuntu.Components 1.3
+ * import Ubuntu.Components.Themes 1.0
+ *
+ * MainView {
+ *     width: units.gu(40)
+ *     height: units.gu(71)
+ *
+ *     Loader {
+ *         id: loader
+ *         onItemChanged: if (item) button.theme.palette = item
+ *     }
+ *     Component {
+ *         id: dynamicPalette
+ *         Palette {
+ *             normal.background: UbuntuColors.blue
+ *         }
+ *     }
+ *     Button {
+ *         id: button
+ *         text: "Toggle palette"
+ *         onClicked: {
+ *             if (loader.item) {
+ *                 loader.sourceComponent = undefined;
+ *             } else {
+ *                 loader.sourceComponent = dynamicPalette;
+ *             }
+ *         }
+ *     }
+ * }
+ * \endqml
+ * The palette doesn't need to be reset as it automatically resets when the
+ * palette used for configuration is destroyed.
+ */
 QObject* UCTheme::palette()
 {
     if (!m_palette) {
@@ -453,10 +504,17 @@ void UCTheme::setPalette(QObject *config)
     m_config.restorePalette();
     // 2. clear config list
     m_config.reset();
+    // disconnect the reset from the previous palette
+    if (m_config.palette) {
+        disconnect(m_config.palette, &QObject::destroyed,
+                   this, 0);
+    }
     // 3. apply palette configuration
     m_config.palette = config;
     if (m_config.palette) {
-        connect(m_config.palette, SIGNAL(destroyed()), this, SLOT(_q_configPaletteDestroyed()));
+        connect(m_config.palette, &QObject::destroyed,
+                this, &UCTheme::resetPalette,
+                Qt::DirectConnection);
         m_config.configurePalette(m_palette);
     }
     Q_EMIT paletteChanged();
@@ -558,13 +616,6 @@ void UCTheme::loadPalette(bool notify)
         // use the default palette if none defined
         m_palette = defaultTheme().m_palette;
     }
-}
-
-// restores palette values when palette configuration is deleted
-void UCTheme::_q_configPaletteDestroyed()
-{
-    m_config.restorePalette();
-    m_config.palette = NULL;
 }
 
 // returns the palette color value of a color profile
