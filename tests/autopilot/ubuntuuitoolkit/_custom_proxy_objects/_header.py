@@ -1,6 +1,6 @@
 # -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
 #
-# Copyright (C) 2012, 2013, 2014 Canonical Ltd.
+# Copyright (C) 2012-2015 Canonical Ltd.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -66,7 +66,6 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
         # Wait showing/hiding animation of the header.
         self.moving.wait_for(False)
-
 
     @autopilot_logging.log_action(logger.info)
     def switch_to_section_by_index(self, index):
