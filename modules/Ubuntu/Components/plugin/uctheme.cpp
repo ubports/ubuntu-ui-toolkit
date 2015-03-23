@@ -37,53 +37,53 @@
 #include <QtGui/QFont>
 
 /*!
-    \qmltype ThemeSettings
-    \instantiates UCTheme
-    \inqmlmodule Ubuntu.Components 1.3
-    \since Ubuntu.Components 1.3
-    \ingroup theming
-    \brief The ThemeSettings class provides facilities to define the theme of a
-    StyledItem.
-
-    A global instance is exposed as the \b theme context property.
-
-    The theme or theme defines the visual aspect of the Ubuntu components. An
-    application can use one or more theme the same time. The ThemeSettings component
-    provides abilities to change thye theme used by the component and all its
-    child components.
-
-    Changing the theme of the entire application can be achieved by changing
-    the name of the root StyledItem's, i.e. MainView's current theme.
-
-    \qml
-    import QtQuick 2.4
-    import Ubuntu.Components 1.3
-
-    MainWindow {
-        width: units.gu(40)
-        height: units.gu(71)
-
-        theme.name: "Ubuntu.Components.Themes.Ambiance"
-    }
-    \endqml
-    \note Changing the style set name in this way will result in a change of the
-    inherited style set. In case a different style set is desired, a new instance
-    of the ThemeSettings must be created.
-
-    The \l createStyleComponent function can be used to create the style for a
-    component. The following example will create the style with the inherited
-    style set.
-    \qml
-    import QtQuick 2.4
-    import Ubuntu.Components 1.3
-    StyledItem {
-        id: myItem
-        style: theme.createStyleComponent("MyItemStyle.qml", myItem)
-    }
-    \endqml
-
-    \sa {StyledItem}
-*/
+ * \qmltype ThemeSettings
+ * \instantiates UCTheme
+ * \inqmlmodule Ubuntu.Components 1.3
+ * \since Ubuntu.Components 1.3
+ * \ingroup theming
+ * \brief The ThemeSettings class provides facilities to define the theme of a
+ * StyledItem.
+ *
+ * A global instance is exposed as the \b theme context property.
+ *
+ * The theme or theme defines the visual aspect of the Ubuntu components. An
+ * application can use one or more theme the same time. The ThemeSettings component
+ * provides abilities to change thye theme used by the component and all its
+ * child components.
+ *
+ * Changing the theme of the entire application can be achieved by changing
+ * the name of the root StyledItem's, i.e. MainView's current theme.
+ *
+ * \qml
+ * import QtQuick 2.4
+ * import Ubuntu.Components 1.3
+ *
+ * MainWindow {
+ *     width: units.gu(40)
+ *     height: units.gu(71)
+ *
+ *     theme.name: "Ubuntu.Components.Themes.Ambiance"
+ * }
+ * \endqml
+ * \note Changing the theme name in this way will result in a change of the
+ * inherited theme. In case a different theme is desired, a new instance of the
+ * ThemeSettings must be created.
+ *
+ * The \l createStyleComponent function can be used to create the style for a
+ * component. The following example will create the style with the inherited
+ * theme.
+ * \qml
+ * import QtQuick 2.4
+ * import Ubuntu.Components 1.3
+ * StyledItem {
+ *     id: myItem
+ *     style: theme.createStyleComponent("MyItemStyle.qml", myItem)
+ * }
+ * \endqml
+ *
+ * \sa {StyledItem}
+ */
 
 const QString THEME_FOLDER_FORMAT("%1/%2/");
 const QString PARENT_THEME_FILE("parent_theme");
@@ -225,25 +225,9 @@ void UCTheme::updateThemePaths()
 }
 
 /*!
-    \qmlproperty string ThemeSettings::name
-
-    The name of the current theme. The name can be set only at creation time, runtime
-    changes will be omitted.
-
-    \qml
-    import QtQuick 2.4
-    import Ubuntu.Componenst 1.3
-
-    StyledItem {
-        style: ThemeSettings {
-            // this is right
-            name: "Ubuntu.Components.Themes.Ambiance"
-        }
-        // this is not allowed, and will be omitted
-        Components.onCompleted: theme.name = "Ubuntu.Components.Themes.SuruDark"
-    }
-    \endqml
-*/
+ * \qmlproperty string ThemeSettings::name
+ * The name of the current theme.
+ */
 QString UCTheme::name() const
 {
     return !m_name.isEmpty() ? m_name : m_defaultTheme.themeName();
@@ -261,7 +245,6 @@ void UCTheme::setName(const QString& name)
                             this, &UCTheme::onThemeNameChanged);
         updateThemePaths();
     }
-    updateEnginePaths();
     loadPalette();
     Q_EMIT nameChanged();
 }
@@ -271,10 +254,9 @@ void UCTheme::resetName()
 }
 
 /*!
-    \qmlproperty Palette ThemeSettings::palette
-
-    The palette of the current theme.
-*/
+ * \qmlproperty Palette ThemeSettings::palette
+ * The palette of the current theme.
+ */
 QObject* UCTheme::palette()
 {
     if (!m_palette) {
@@ -310,10 +292,9 @@ void UCTheme::registerToContext(QQmlContext* context)
 }
 
 /*!
-    \qmlmethod Component ThemeSettings::createStyleComponent(string styleName, object parent)
-
-    Returns an instance of the style component named \a styleName and parented
-    to \a parent.
+ * \qmlmethod Component ThemeSettings::createStyleComponent(string styleName, object parent)
+ * Returns an instance of the style component named \a styleName and parented
+ * to \a parent.
 */
 QQmlComponent* UCTheme::createStyleComponent(const QString& styleName, QObject* parent)
 {
