@@ -223,9 +223,8 @@ void UCListItemPrivate::init()
     QObject::connect(contentItem, SIGNAL(xChanged()),
                      q, SLOT(_q_updateSwiping()), Qt::DirectConnection);
 
-    // catch theme changes
-    QObject::connect(q, SIGNAL(styleSetChanged()), q, SLOT(_q_updateThemedData()));
-    _q_updateThemedData();
+    // update theme changes
+    updateStyling();
 
     // watch grid unit size change and set implicit size
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_updateSize()));
@@ -250,8 +249,9 @@ bool UCListItemPrivate::isPressAndHoldConnected()
     return QObjectPrivate::get(q)->isSignalConnected(signalIdx);
 }
 
-void UCListItemPrivate::_q_updateThemedData()
+void UCListItemPrivate::updateStyling()
 {
+    UCStyledItemBasePrivate::updateStyling();
     Q_Q(UCListItem);
     // update the divider colors
     divider->paletteChanged();
@@ -391,7 +391,7 @@ void UCListItemPrivate::initStyleItem(bool withAnimatedPanels)
     QQmlComponent *delegate = style();
     if (!delegate) {
         // the style is not loaded from the theme yet
-        _q_updateThemedData();
+        updateStyling();
         delegate = style();
     }
     if (!delegate) {
