@@ -47,6 +47,9 @@ public:
     void setTheme(UCTheme *theme);
     void resetTheme();
 
+protected:
+    virtual void updateStyling() {}
+
 public:
     bool activeFocusOnPress:1;
     bool subthemingEnabled:1;

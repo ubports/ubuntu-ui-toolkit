@@ -261,6 +261,9 @@ void UCStyledItemBasePrivate::setTheme(UCTheme *newTheme)
         Q_EMIT theme->parentThemeChanged();
     }
 
+    // update internal styling
+    updateStyling();
+
     Q_EMIT q->themeChanged();
 }
 void UCStyledItemBasePrivate::resetTheme()

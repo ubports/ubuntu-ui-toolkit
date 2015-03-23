@@ -50,7 +50,6 @@ public:
 
     bool isClickedConnected();
     bool isPressAndHoldConnected();
-    void _q_updateThemedData();
     void _q_relayout();
     void _q_updateSwiping();
     void setSwiped(bool swiped);
@@ -115,6 +114,9 @@ public:
     void setSelectMode(bool selectable);
     UCAction *action() const;
     void setAction(UCAction *action);
+
+protected:
+    void updateStyling();
 };
 
 class PropertyChange;
