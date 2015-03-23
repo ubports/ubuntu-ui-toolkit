@@ -40,7 +40,7 @@
 QColor getPaletteColor(const char *profile, const char *color)
 {
     QColor result;
-    // FIXME: use styleSet when available
+    // FIXME: use theme when available
     QObject *palette = UCDeprecatedTheme::instance().palette();
     if (palette) {
         QObject *paletteProfile = palette->property(profile).value<QObject*>();
@@ -238,7 +238,7 @@ void UCListItemPrivate::init()
                      q, SLOT(_q_updateSwiping()), Qt::DirectConnection);
 
     // catch theme changes
-    // FIXME: use styleSet when available
+    // FIXME: use theme when available
     QObject::connect(&UCDeprecatedTheme::instance(), SIGNAL(nameChanged()), q, SLOT(_q_updateThemedData()));
     _q_updateThemedData();
 
@@ -381,7 +381,7 @@ void UCListItemPrivate::resetStyle()
         }
         delete implicitStyleComponent;
         Q_Q(UCListItem);
-        // FIXME: use styleSet when available
+        // FIXME: use theme when available
         implicitStyleComponent = UCDeprecatedTheme::instance().createStyleComponent("ListItemStyle.qml", q);
         if (implicitStyleComponent) {
             // set the objectnane for testing in tst_listitems.qml

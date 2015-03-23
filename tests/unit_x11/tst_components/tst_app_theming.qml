@@ -34,17 +34,19 @@ MainView {
         name: "AppTheming"
         when: windowShown
 
-        function test_0() {
+        function test_app_theme_defaults() {
             compare(main.backgroundColor, "#a21e1c", "Theme not loaded?");
             compare(testLabel.color, "#add8e6", "Label color not from application theme.");
         }
 
-        function test_ambiance()
+        // the following tests should give binding loops which are captured by the runtest.sh
+        // and will report failure if received
+        function test_no_binding_loop_when_set_to_ambiance()
         {
             Theme.name = "Ubuntu.Components.Themes.Ambiance";
         }
 
-        function test_reset()
+        function test_reset_theme_should_not_give_binding_loops()
         {
             Theme.name = undefined;
         }

@@ -1,6 +1,6 @@
 include(../test-include.pri)
 QT += quick-private gui-private
-SOURCES += tst_theme_enginetest.cpp
+SOURCES += tst_deprecated_theme_engine.cpp
 
 OTHER_FILES += \
     TestStyle.qml \
