@@ -18,6 +18,7 @@ OTHER_FILES += \
     DifferentThemes.qml \
     SameNamedPaletteSettings.qml \
     ChangePaletteValueWhenParentChanges.qml \
-    ChangeDefaultPaletteInChildren.qml
+    ChangeDefaultPaletteInChildren.qml \
+    MultiplePaletteInstances.qml
 
 

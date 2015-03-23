@@ -541,6 +541,28 @@ private Q_SLOTS:
         spy.wait(200);
         QVERIFY(firstTheme->getPaletteColor("normal", "background") != prevColor);
     }
+
+    void test_multiple_palette_instances()
+    {
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase("MultiplePaletteInstances.qml"));
+        UCTheme *firstTheme = view->findItem<UCTheme*>("firstTheme");
+        QObject *palette1 = view->findItem<QObject*>("palette1");
+        QObject *palette2 = view->findItem<QObject*>("palette2");
+        QColor prevColor = firstTheme->getPaletteColor("normal", "background");
+
+        // set the first palette
+        QSignalSpy spy(firstTheme, SIGNAL(paletteChanged()));
+        firstTheme->setPalette(palette1);
+        spy.wait();
+        QVERIFY(prevColor != firstTheme->getPaletteColor("normal", "background"));
+        QCOMPARE(firstTheme->getPaletteColor("normal", "background"), QColor("blue"));
+
+        spy.clear();
+        firstTheme->setPalette(palette2);
+        spy.wait();
+        QVERIFY(prevColor != firstTheme->getPaletteColor("normal", "background"));
+        QCOMPARE(firstTheme->getPaletteColor("normal", "background"), QColor("pink"));
+    }
 };
 
 QTEST_MAIN(tst_Subtheming)
