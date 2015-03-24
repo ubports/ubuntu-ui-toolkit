@@ -519,9 +519,9 @@ StyledItem
     property font font
     property enumeration horizontalAlignment
     property bool inputMethodComposing
-    property alias textDocument
-    property alias paintedWidth
-    property alias paintedHeight
+    property var textDocument
+    readonly property real paintedWidth
+    readonly property real paintedHeight
     property enumeration inputMethodHints
     property int length
     property int lineCount

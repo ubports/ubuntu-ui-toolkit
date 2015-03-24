@@ -318,6 +318,7 @@ StyledItem {
     /*!
       Exposes the QQuickTextDocument which can be used to implement advanced
       formatting and syntax highlighting (QSyntaxHighlighter) with C++.
+      \qmlproperty var textDocument
     */
     property alias textDocument: editor.textDocument
 
@@ -325,13 +326,13 @@ StyledItem {
       Exposes the paintedWidth of the underlying text component. It's required
       if the application uses its own Flickable for scrolling.
     */
-    property alias paintedWidth: editor.paintedWidth
+    readonly property real paintedWidth: editor.paintedWidth + internal.frameSpacing
 
     /*!
       Exposes the paintedHeight of the underlying text component. It's required
       if the application uses its own Flickable for scrolling.
     */
-    property alias paintedHeight: editor.paintedHeight
+    readonly property real paintedHeight: editor.paintedHeight + internal.frameSpacing
 
     /*!
     Provides hints to the input method about the expected content of the text
