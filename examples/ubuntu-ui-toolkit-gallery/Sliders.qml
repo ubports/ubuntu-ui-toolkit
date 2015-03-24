@@ -69,5 +69,30 @@ Template {
                 font.weight: Font.Light
             }
         }
+
+        TemplateFlow {
+            title: i18n.tr("Labels")
+
+            Slider {
+                id: longBubbleSlider
+                objectName: "slider_long_bubble"
+                width: parent.width
+                value: 50
+                minimumValue: 0
+                maximumValue: 100
+                function formatValue(v) {
+                    if (v < maximumValue/4)
+                        return i18n.tr("Small")
+                    else if (v < maximumValue/1.5)
+                        return i18n.tr("Medium")
+                    else
+                        return i18n.tr("Large")
+                }
+            }
+            Label {
+                text: i18n.tr("Actual value: %1").arg(longBubbleSlider.value)
+                font.weight: Font.Light
+            }
+        }
     }
 }

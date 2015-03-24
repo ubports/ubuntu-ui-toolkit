@@ -250,4 +250,4 @@ void tst_UCDeprecatedTheme::testMultipleImportPathsSet()
 
 QTEST_MAIN(tst_UCDeprecatedTheme)
 
-#include "tst_theme_enginetest.moc"
+#include "tst_deprecated_theme_engine.moc"

@@ -43,72 +43,53 @@
 #undef foreach
 
 /*!
-    \qmltype ThemeSettings
-    \instantiates UCTheme
-    \inqmlmodule Ubuntu.Components 1.3
-    \since Ubuntu.Components 1.3
-    \ingroup theming
-    \brief The ThemeSettings class provides facilities to define the theme of a
-    StyledItem.
-
-    A global instance is exposed as the \b theme context property.
-
-    The theme or theme defines the visual aspect of the Ubuntu components. An
-    application can use one or more theme the same time. The ThemeSettings component
-    provides abilities to change thye theme used by the component and all its
-    child components.
-
-    Changing the theme of the entire application can be achieved by changing
-    the name of the root StyledItem's, i.e. MainView's current theme.
-
-    \qml
-    import QtQuick 2.4
-    import Ubuntu.Components 1.3
-
-    MainWindow {
-        width: units.gu(40)
-        height: units.gu(71)
-
-        theme.name: "Ubuntu.Components.Themes.Ambiance"
-    }
-    \endqml
-    \note Changing the theme name in this way will result in a change of the
-    inherited theme. In case a different theme is desired, a new ThemeSettings
-    instance must be created.
-
-    The \l createStyleComponent function can be used to create the style for a
-    component. The following example will create the style with the inherited
-    theme.
-    \qml
-    import QtQuick 2.4
-    import Ubuntu.Components 1.3
-    StyledItem {
-        id: myItem
-        style: theme.createStyleComponent("MyItemStyle.qml", myItem)
-    }
-    \endqml
-
-    A ThemeSettings declared without any name specified will create a system default
-    one. There can be cases when the parent defined theme is needed but with small
-    modifications. In these situations the \l parentTheme property can be used to get
-    the parent theme, and so the name can be bound to the parent's name.
-    \qml
-    import QtQuick 2.4
-    import Ubuntu.Components 1.3
-    StyledItem {
-        id: myItem
-        theme: ThemeSettings {
-            name: parentTheme ? parentTheme.name : undefined
-        }
-        style: theme.createStyleComponent("MyItemStyle.qml", myItem)
-    }
-    \endqml
-    \note Observe the way the name is set to \c undefined when the parent is not
-    defined. Setting \c undefined to name will reset the property to the system
-    theme defined one.
-
-    \sa {StyledItem}
-*/
+ * \qmltype ThemeSettings
+ * \instantiates UCTheme
+ * \inqmlmodule Ubuntu.Components 1.3
+ * \since Ubuntu.Components 1.3
+ * \ingroup theming
+ * \brief The ThemeSettings class provides facilities to define the theme of a
+ * StyledItem.
+ *
+ * A global instance is exposed as the \b theme context property.
+ *
+ * The theme or theme defines the visual aspect of the Ubuntu components. An
+ * application can use one or more theme the same time. The ThemeSettings component
+ * provides abilities to change thye theme used by the component and all its
+ * child components.
+ *
+ * Changing the theme of the entire application can be achieved by changing
+ * the name of the root StyledItem's, i.e. MainView's current theme.
+ *
+ * \qml
+ * import QtQuick 2.4
+ * import Ubuntu.Components 1.3
+ *
+ * MainWindow {
+ *     width: units.gu(40)
+ *     height: units.gu(71)
+ *
+ *     theme.name: "Ubuntu.Components.Themes.Ambiance"
+ * }
+ * \endqml
+ * \note Changing the theme name in this way will result in a change of the
+ * inherited theme. In case a different theme is desired, a new instance of the
+ * ThemeSettings must be created.
+ *
+ * The \l createStyleComponent function can be used to create the style for a
+ * component. The following example will create the style with the inherited
+ * theme.
+ * \qml
+ * import QtQuick 2.4
+ * import Ubuntu.Components 1.3
+ * StyledItem {
+ *     id: myItem
+ *     style: theme.createStyleComponent("MyItemStyle.qml", myItem)
+ * }
+ * \endqml
+ *
+ * \sa {StyledItem}
+ */
 
 const QString THEME_FOLDER_FORMAT("%1/%2/");
 const QString PARENT_THEME_FILE("parent_theme");

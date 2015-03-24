@@ -54,7 +54,7 @@ Ubuntu.StyledItem {
         var flickable = handler.main;
         do {
             flickable = flickable.parent;
-        } while (!flickable.contentY && flickable != fakeCursor.parent);
+        } while (flickable && !flickable.contentY && flickable != fakeCursor.parent);
         return fakeCursor.parent.mapFromItem(handler.main, cursorItem.x, cursorItem.y).y
     }
 
