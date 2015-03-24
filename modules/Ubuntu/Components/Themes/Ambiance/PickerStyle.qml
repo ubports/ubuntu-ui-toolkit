@@ -59,7 +59,7 @@ Item {
     UbuntuShape {
         anchors.fill: parent
         radius: "medium"
-        color: Theme.palette.normal.overlay
+        color: theme.palette.normal.overlay
         image: shapeSource
     }
 

@@ -70,7 +70,7 @@ Item {
     property PropertyAnimation thumbConnectorFading: UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration }
     property PropertyAnimation thumbFading: UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration }
 
-    property color sliderColor: Theme.palette.normal.base
+    property color sliderColor: theme.palette.normal.base
     property real sliderRadius: units.gu(0.5)
     property color thumbConnectorColor: "white"
     property url forwardThumbReleased: (styledItem.align === Qt.AlignLeading || styledItem.align === Qt.AlignTrailing) ? "artwork/ScrollbarBottomIdle.png" : "artwork/ScrollbarRightIdle.png"

@@ -102,7 +102,6 @@ public Q_SLOTS:
 
 private:
     Q_DECLARE_PRIVATE(UCListItem)
-    Q_PRIVATE_SLOT(d_func(), void _q_updateThemedData())
     Q_PRIVATE_SLOT(d_func(), void _q_relayout())
     Q_PRIVATE_SLOT(d_func(), void _q_updateSwiping())
     Q_PRIVATE_SLOT(d_func(), void _q_updateSize())
