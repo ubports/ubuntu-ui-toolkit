@@ -30,15 +30,16 @@ ERRORS=0
 echo Dumping QML API as QML
 for i in $CPP; do
     j=1.0
-    test "$i" = "Ubuntu.Components" && j=1.1
+    test "$i" = "Ubuntu.Components" && j=1.2
     echo "Processing $i $j"
     # Silence spam on stderr due to fonts
     # https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1256999
     # https://bugreports.qt-project.org/browse/QTBUG-36243
-    env ALARM_BACKEND=memory $BUILD_DIR/tests/apicheck/apicheck --qml $i $j $BUILD_DIR/modules 1> $BUILD_DIR/$i.api.new
+    env ALARM_BACKEND=memory $BUILD_DIR/tests/apicheck/apicheck \
+        --qml $i $j $BUILD_DIR/modules 1> $BUILD_DIR/$i.api.new
     test $? != 0 && echo Error: apicheck failed && ERRORS=1
     echo Verifying the diff between existing and generated API
-    test -s $BUILD_DIR/$i.api.new && diff -Fqml -u $i.api $BUILD_DIR/$i.api.new
+    test -s $BUILD_DIR/$i.api.new && diff -Fqml -u $SRC_DIR/$i.api $BUILD_DIR/$i.api.new
     test $? != 0 && echo Error: Differences in API. Did you forget to update $i.api? && ERRORS=1
 done
 

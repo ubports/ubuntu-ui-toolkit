@@ -339,6 +339,7 @@ class Dumper
 {
     QJsonObject* json;
     QString relocatableModuleUri;
+    QString importVersion;
 
 public:
     Dumper(QJsonObject* json): json(json) {}
@@ -348,6 +349,10 @@ public:
         relocatableModuleUri = uri;
     }
 
+    void setImportVersion(const QString &version)
+    {
+        importVersion = version;
+    }
     const QString getExportString(QString qmlTyName, int majorVersion, int minorVersion)
     {
         if (qmlTyName.startsWith(relocatableModuleUri + QLatin1Char('/'))) {
@@ -359,9 +364,10 @@ public:
         if (qmlTyName.startsWith("/")) {
             qmlTyName.remove(0, 1);
         }
-        const QString exportString = QString("%1 %2.%3").arg(
-            qmlTyName).arg(majorVersion).arg( minorVersion);
-        return exportString;
+        // Work-around for version -1, -1
+        if (majorVersion == -1)
+            return QString("%1 %2").arg(qmlTyName).arg(importVersion);
+        return QString("%1 %2.%3").arg(qmlTyName).arg(majorVersion).arg(minorVersion);
     }
 
     void writeMetaContent(QJsonObject* object, const QMetaObject *meta, KnownAttributes *knownAttributes = 0)
@@ -973,6 +979,7 @@ int main(int argc, char *argv[])
     Dumper dumper(&json);
     if (relocatable)
         dumper.setRelocatableModuleUri(pluginImportUri);
+    dumper.setImportVersion(pluginImportVersion);
     Q_FOREACH (const QMetaObject *meta, nameToMeta) {
         dumper.dump(meta, uncreatableMetas.contains(meta), singletonMetas.contains(meta));
     }

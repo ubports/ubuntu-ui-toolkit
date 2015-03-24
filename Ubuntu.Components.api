@@ -1,98 +1,4 @@
-// UbuntuComponents.Toolbar -1.-1
-// UbuntuComponents.ToolbarItems 1.0
-// UbuntuComponents.ToolbarItems 0.1
-// UbuntuComponents.OrientationHelper 1.0
-// UbuntuComponents.OrientationHelper 0.1
-// UbuntuComponents.ActivityIndicator 1.0
-// UbuntuComponents.ActivityIndicator 0.1
-// UbuntuComponents.PullToRefresh 1.1
-// UbuntuComponents.Haptics 1.0
-// UbuntuComponents.Haptics 0.1
-// UbuntuComponents.StyledItem 1.1
-// UbuntuComponents.StyledItem 1.0
-// UbuntuComponents.StyledItem 0.1
-// UbuntuComponents.PageHeadSections 1.1
-// UbuntuComponents.AbstractButton 1.0
-// UbuntuComponents.AbstractButton 0.1
-// UbuntuComponents.InputHandler -1.-1
-// UbuntuComponents.AnimatedItem -1.-1
-// UbuntuComponents.TextCursor -1.-1
-// UbuntuComponents.MainView 1.2
-// UbuntuComponents.MainView 1.0
-// UbuntuComponents.MainView 0.1
-// UbuntuComponents.PageTreeNode -1.-1
-// UbuntuComponents.ComboButton 1.1
-// UbuntuComponents.TextInputPopover -1.-1
-// UbuntuComponents.ProgressBar 1.1
-// UbuntuComponents.ProgressBar 1.0
-// UbuntuComponents.ProgressBar 0.1
-// UbuntuComponents.CheckBox 1.0
-// UbuntuComponents.CheckBox 0.1
-// UbuntuComponents.CrossFadeImage 1.1
-// UbuntuComponents.CrossFadeImage 1.0
-// UbuntuComponents.CrossFadeImage 0.1
-// UbuntuComponents.PageBase -1.-1
-// UbuntuComponents.MainViewBase -1.-1
-// UbuntuComponents.PageWrapper -1.-1
-// UbuntuComponents.UbuntuNumberAnimation 1.0
-// UbuntuComponents.UbuntuNumberAnimation 0.1
-// UbuntuComponents.TextField 1.0
-// UbuntuComponents.TextField 0.1
-// UbuntuComponents.OptionSelector 1.0
-// UbuntuComponents.OptionSelector 0.1
-// UbuntuComponents.Tabs 1.0
-// UbuntuComponents.Tabs 0.1
-// UbuntuComponents.Panel 1.0
-// UbuntuComponents.Panel 0.1
-// UbuntuComponents.OptionSelectorDelegate 1.0
-// UbuntuComponents.OptionSelectorDelegate 0.1
-// UbuntuComponents.Captions 1.2
-// UbuntuComponents.Label 1.0
-// UbuntuComponents.Label 0.1
-// UbuntuComponents.ActionList 1.0
-// UbuntuComponents.ActionList 0.1
-// UbuntuComponents.Slider 1.0
-// UbuntuComponents.Slider 0.1
-// UbuntuComponents.Scrollbar 1.0
-// UbuntuComponents.Scrollbar 0.1
-// UbuntuComponents.TextArea 1.0
-// UbuntuComponents.TextArea 0.1
-// UbuntuComponents.PageHeadState 1.1
-// UbuntuComponents.Button 1.1
-// UbuntuComponents.Button 1.0
-// UbuntuComponents.Button 0.1
-// UbuntuComponents.UbuntuListView 1.1
-// UbuntuComponents.UbuntuListView 1.0
-// UbuntuComponents.UbuntuListView 0.1
-// UbuntuComponents.Object 1.0
-// UbuntuComponents.Object 0.1
-// UbuntuComponents.ActionItem 1.0
-// UbuntuComponents.ActionItem 0.1
-// UbuntuComponents.Switch 1.0
-// UbuntuComponents.Switch 0.1
-// UbuntuComponents.Page 1.1
-// UbuntuComponents.Page 1.0
-// UbuntuComponents.Page 0.1
-// UbuntuComponents.UbuntuColors 1.1
-// UbuntuComponents.UbuntuColors 1.0
-// UbuntuComponents.UbuntuColors 0.1
-// UbuntuComponents.Tab 1.0
-// UbuntuComponents.Tab 0.1
-// UbuntuComponents.DraggingArea -1.-1
-// UbuntuComponents.Icon 1.1
-// UbuntuComponents.Icon 1.0
-// UbuntuComponents.Icon 0.1
-// UbuntuComponents.ToolbarButton 1.0
-// UbuntuComponents.ToolbarButton 0.1
-// UbuntuComponents.PageStack 1.0
-// UbuntuComponents.PageStack 0.1
-// UbuntuComponents.AppHeader -1.-1
-// UbuntuComponents.Header 1.0
-// UbuntuComponents.Header 0.1
-// UbuntuComponents.TabBar 1.0
-// UbuntuComponents.TabBar 0.1
-// UbuntuComponents.PageHeadConfiguration 1.1
-AbstractButton -1.-1 Item
+AbstractButton 1.2 Item
     property Action action
     property bool activeFocusOnPress
     property bool hovered
@@ -123,7 +29,7 @@ ActionContext 0.1 ActionContext 1.0 QtObject
     signal activeChanged(bool )
     function addAction(QtObject action)
     function removeAction(QtObject action)
-ActionItem -1.-1 Item
+ActionItem 1.2 Item
     property Action action
     property bool activeFocusOnPress
     property string iconName
@@ -160,13 +66,7 @@ AlarmModel 0.1 AlarmModel 1.0 QAbstractListModel
 AlarmType Enum
     OneTime
     Repeating
-AnimatedItem -1.-1 Item
-    property bool activeFocusOnPress
-    function bool requestFocus(Qt::FocusReason reason)
-    function bool requestFocus
-    property bool onScreen
-    property Component style
-AppHeader -1.-1 Item
+AppHeader 1.2 Item
     property QVariant actions
     property bool activeFocusOnPress
     property bool animate
@@ -200,22 +100,21 @@ Arguments 0.1 Arguments 1.0 QtObject
 BackgroundMode Enum
     SolidColor
     VerticalGradient
-Button -1.-1 Item
-    property Action action
-    property bool activeFocusOnPress
+BarGraph 1.2 Item
+    property QColor aboveThresholdColor
+    property QColor backgroundColor
     property QColor color
-    property QFont font
-    property Gradient gradient
-    property bool hovered
-    property string iconName
-    property string iconPosition
-    property QUrl iconSource
-    function bool requestFocus(Qt::FocusReason reason)
-    function bool requestFocus
-    property bool pressed
-    property QColor strokeColor
-    property Component style
-    property string text
+    property string labelFormat
+    property QVariant labels
+    property double maximumValue
+    property QVariant model
+    property double threshold
+Captions 1.2 Item
+    property int captionStyle
+    property Qt::LayoutDirection layoutDirection
+    property double spacing
+    readonly property Label subtitle
+    readonly property Label title
 CaptionsStyle Enum
     SummaryCaptionStyle
     TitleCaptionStyle
@@ -225,36 +124,6 @@ Clipboard 0.1 Clipboard 1.0 QtObject singleton
     function clear
     function QQuickMimeData* newData
 ColorUtils 1.0 ColorUtils 0.1 
-ComboButton -1.-1 Item
-    property Action action
-    property bool activeFocusOnPress
-    property double collapsedHeight
-    property QColor color
-    default readonly property QtObject comboList
-    readonly property double comboListHeight
-    property QColor dropdownColor
-    property bool expanded
-    property double expandedHeight
-    property QFont font
-    property Gradient gradient
-    property bool hovered
-    property string iconName
-    property string iconPosition
-    property QUrl iconSource
-    function bool requestFocus(Qt::FocusReason reason)
-    function bool requestFocus
-    property bool pressed
-    property QColor strokeColor
-    property Component style
-    property string text
-CrossFadeImage -1.-1 Item
-    property int fadeDuration
-    property string fadeStyle
-    property int fillMode
-    readonly property bool running
-    property QUrl source
-    property QSizeF sourceSize
-    readonly property int status
 DateUtils 1.0 DateUtils 0.1 
 DayOfWeek Enum
     AutoDetect
@@ -276,7 +145,7 @@ DaysOfWeek Enum
     Thursday
     Tuesday
     Wednesday
-DraggingArea -1.-1 MouseArea
+DraggingArea 1.2 MouseArea
     property bool clickValidated
     property double dragValue
     property double dragVelocity
@@ -311,17 +180,17 @@ HAlignment Enum
     AlignHCenter
     AlignLeft
     AlignRight
-Haptics -1.-1 QtObject singleton
+Haptics 1.2 QtObject singleton
     default readonly property QtObject children
     readonly property HapticsEffect effect
     readonly property bool enabled
     function QVariant play(QVariant customEffect)
-Icon -1.-1 Item
+Icon 1.2 Item
     property QColor color
     property QColor keyColor
     property string name
     property QUrl source
-Icon10 -1.-1 Item
+Icon10 1.2 Item
     property QColor color
     property QColor keyColor
     property string name
@@ -330,6 +199,8 @@ InverseMouseArea 0.1 InverseMouseArea 1.0 MouseArea
     function bool contains(QPointF point)
     property Item sensingArea
     property bool topmostItem
+Label 1.2 Text
+    property string fontSize
 ListItem 1.2 StyledItemBase
     property Action action
     property QColor color
@@ -362,6 +233,46 @@ ListItemDrag 1.2 QtObject
     property int minimumIndex
     readonly property Status status
     readonly property int to
+MainView 1.2 Item
+    readonly property ActionManager actionManager
+    readonly property QtObject actions
+    property bool active
+    property bool activeFocusOnPress
+    property Item activeLeafNode
+    property bool anchorToKeyboard
+    property string applicationName
+    property bool automaticOrientation
+    property QColor backgroundColor
+    default readonly property QtObject contentsItem
+    property QColor footerColor
+    property AppHeader header
+    property QColor headerColor
+    property bool isLeaf
+    function bool requestFocus(Qt::FocusReason reason)
+    function bool requestFocus
+    property Item pageStack
+    property Item parentNode
+    property Component style
+    property Toolbar toolbar
+MainViewBase 1.2 Item
+    readonly property ActionManager actionManager
+    readonly property QtObject actions
+    property bool active
+    property bool activeFocusOnPress
+    property Item activeLeafNode
+    property bool anchorToKeyboard
+    property string applicationName
+    property QColor backgroundColor
+    property QColor footerColor
+    property AppHeader header
+    property QColor headerColor
+    property bool isLeaf
+    function bool requestFocus(Qt::FocusReason reason)
+    function bool requestFocus
+    property Item pageStack
+    property Item parentNode
+    property Component style
+    property Toolbar toolbar
 MathUtils 1.0 MathUtils 0.1 
 MimeData 0.1 MimeData 1.0 QtObject
     property QColor color
@@ -386,20 +297,46 @@ Mouse 0.1 Mouse 1.0 QtObject
     signal entered(QQuickMouseEvent event, Item host)
     signal exited(QQuickMouseEvent event, Item host)
     property Priority priority
-Object -1.-1 QtObject
+Object 1.2 QtObject
     default readonly property QtObject children
 Operation Enum
     Canceling
     NoOperation
     Reseting
     Saving
-Page -1.-1 Item
+OrientationHelper 1.2 Item
+    property bool anchorToKeyboard
+    property bool automaticOrientation
+    property int orientationAngle
+    readonly property bool rotating
+    property bool transitionEnabled
+OverflowPanel 1.2 Item
+    property bool anchorToKeyboard
+    property bool autoClose
+    property bool automaticOrientation
+    property Item caller
+    property double callerMargin
+    default readonly property QtObject container
+    property double contentHeight
+    property double contentWidth
+    property Item dismissArea
+    property double edgeMargins
+    property PropertyAnimation fadingAnimation
+    property Component foregroundStyle
+    property bool grabDismissAreaEvents
+    function QVariant __closeIfHidden
+    function QVariant __closePopup
+    property int orientationAngle
+    property Item pointerTarget
+    readonly property bool rotating
+    property bool square
+    property bool transitionEnabled
+PageBase 1.2 Item
     readonly property QtObject actions
     property bool active
     property bool activeFocusOnPress
     property Item activeLeafNode
     property Flickable flickable
-    readonly property PageHeadConfiguration head
     property AppHeader header
     property bool isLeaf
     function bool requestFocus(Qt::FocusReason reason)
@@ -410,23 +347,21 @@ Page -1.-1 Item
     property string title
     property Toolbar toolbar
     property Item tools
-Page10 -1.-1 Item
-    readonly property QtObject actions
-    property bool active
+PageHeadButton 1.2 Item
+    property Action action
     property bool activeFocusOnPress
-    property Item activeLeafNode
-    property Flickable flickable
-    property AppHeader header
-    property bool isLeaf
+    property QColor color
+    property bool hovered
+    property double iconHeight
+    property string iconName
+    property QUrl iconSource
+    property double iconWidth
     function bool requestFocus(Qt::FocusReason reason)
     function bool requestFocus
-    property Item pageStack
-    property Item parentNode
+    property bool pressed
     property Component style
-    property string title
-    property Toolbar toolbar
-    property Item tools
-PageHeadConfiguration -1.-1 QtObject
+    property string text
+PageHeadConfiguration 1.2 QtObject
     readonly property Action actions
     property Action backAction
     default readonly property QtObject children
@@ -434,16 +369,20 @@ PageHeadConfiguration -1.-1 QtObject
     property QColor foregroundColor
     property string preset
     readonly property PageHeadSections sections
-PageHeadSections -1.-1 QtObject
+PageHeadSections 1.2 QtObject
     property bool enabled
     property QVariant model
     property int selectedIndex
-PageHeadState -1.-1 State
-    readonly property Action actions
-    property Action backAction
-    property Item contents
-    property PageHeadConfiguration head
-PageTreeNode -1.-1 Item
+PageHeadStyle 1.2 Item
+    property double contentHeight
+    property string fontSize
+    property int fontWeight
+    property int maximumNumberOfActions
+    property QUrl separatorBottomSource
+    property QUrl separatorSource
+    property QColor textColor
+    property double textLeftMargin
+PageTreeNode 1.2 Item
     property bool active
     property bool activeFocusOnPress
     property Item activeLeafNode
@@ -455,10 +394,10 @@ PageTreeNode -1.-1 Item
     property Item parentNode
     property Component style
     property Toolbar toolbar
-Palette -1.-1 QtObject
+Palette 1.2 QtObject
     property PaletteValues normal
     property PaletteValues selected
-PaletteValues -1.-1 QtObject
+PaletteValues 1.2 QtObject
     property QColor background
     property QColor backgroundText
     property QColor base
@@ -470,7 +409,7 @@ PaletteValues -1.-1 QtObject
     property QColor overlay
     property QColor overlayText
     property QColor selection
-Panel -1.-1 Item
+Panel 1.2 Item
     property int align
     property bool animate
     readonly property bool animating
@@ -484,38 +423,94 @@ Panel -1.-1 Item
     readonly property double position
     readonly property bool pressed
     property double triggerSize
+PerformanceOverlay 1.2 Item
+    property bool active
+Popover 1.2 Item
+    property bool anchorToKeyboard
+    property bool autoClose
+    property bool automaticOrientation
+    property Item caller
+    property double callerMargin
+    default readonly property QtObject container
+    property double contentHeight
+    property double contentWidth
+    property Item dismissArea
+    property double edgeMargins
+    property PropertyAnimation fadingAnimation
+    property Component foregroundStyle
+    property bool grabDismissAreaEvents
+    function QVariant __closeIfHidden
+    function QVariant __closePopup
+    property int orientationAngle
+    property Item pointerTarget
+    readonly property bool rotating
+    property bool transitionEnabled
+PopupBase 1.2 Item
+    property bool anchorToKeyboard
+    property bool automaticOrientation
+    property Item dismissArea
+    property PropertyAnimation fadingAnimation
+    property bool grabDismissAreaEvents
+    function QVariant show
+    function QVariant hide
+    function QVariant __closeIfHidden
+    function QVariant __closePopup
+    property int orientationAngle
+    readonly property bool rotating
+    property bool transitionEnabled
 Priority Enum
     AfterItem
     BeforeItem
-ProgressBar -1.-1 Item
-    property bool activeFocusOnPress
-    property bool indeterminate
-    property double maximumValue
-    function bool requestFocus(Qt::FocusReason reason)
-    function bool requestFocus
-    property double minimumValue
-    property bool onScreen
-    property Component style
-    property double value
-PullToRefresh -1.-1 Item
-    property bool activeFocusOnPress
-    property Component content
-    function bool requestFocus(Qt::FocusReason reason)
-    function bool requestFocus
-    readonly property double offset
-    property bool refreshing
-    readonly property bool releaseToRefresh
-    property Component style
-    property Flickable target
 QAbstractProxyModel QAbstractItemModel
     property QAbstractItemModel sourceModel
 QQmlPropertyMap QtObject
     signal valueChanged(string key, QVariant value)
     function QStringList keys
+QQuickGridLayoutBase Layout
+    property Qt::LayoutDirection layoutDirection
+    signal layoutDirectionChanged
 QQuickImageBase 0.1 QQuickImageBase 1.0 QQuickImageBase
     signal extendedSourceChanged
     signal extendedSourceChanged
     property QUrl source
+QQuickLayoutAttached QtObject
+    property Qt::Alignment alignment
+    property int column
+    property int columnSpan
+    property bool fillHeight
+    property bool fillWidth
+    property double maximumHeight
+    property double maximumWidth
+    property double minimumHeight
+    property double minimumWidth
+    property double preferredHeight
+    property double preferredWidth
+    property int row
+    property int rowSpan
+QQuickLinearLayout QQuickGridLayoutBase
+    property double spacing
+QQuickRootItem Item
+    function setWidth(int w)
+    function setHeight(int h)
+QQuickScreenAttached QtObject
+    readonly property int desktopAvailableHeight
+    readonly property int desktopAvailableWidth
+    readonly property double devicePixelRatio
+    readonly property int height
+    readonly property double logicalPixelDensity
+    signal desktopGeometryChanged
+    function int angleBetween(int a, int b)
+    readonly property string name
+    readonly property Qt::ScreenOrientation orientation
+    property Qt::ScreenOrientations orientationUpdateMask
+    readonly property double pixelDensity
+    readonly property Qt::ScreenOrientation primaryOrientation
+    readonly property int width
+QQuickWindowAttached QtObject
+    readonly property bool active
+    readonly property Item activeFocusItem
+    readonly property Item contentItem
+    readonly property QWindow::Visibility visibility
 QSortFilterProxyModel QAbstractProxyModel
     property bool dynamicSortFilter
     property Qt::CaseSensitivity filterCaseSensitivity
@@ -530,13 +525,62 @@ QSortFilterProxyModel QAbstractProxyModel
     function invalidate
     property Qt::CaseSensitivity sortCaseSensitivity
     property int sortRole
-Scrollbar -1.-1 Item
-    property bool activeFocusOnPress
-    property int align
-    property Flickable flickableItem
-    function bool requestFocus(Qt::FocusReason reason)
-    function bool requestFocus
-    property Component style
+QWindow QtObject
+    readonly property bool active
+    property Qt::ScreenOrientation contentOrientation
+    property Qt::WindowFlags flags
+    property int height
+    property int maximumHeight
+    property int maximumWidth
+    signal screenChanged(QScreen screen)
+    signal modalityChanged(Qt::WindowModality modality)
+    signal windowStateChanged(Qt::WindowState windowState)
+    signal windowTitleChanged(string title)
+    signal xChanged(int arg)
+    signal yChanged(int arg)
+    signal widthChanged(int arg)
+    signal heightChanged(int arg)
+    signal minimumWidthChanged(int arg)
+    signal minimumHeightChanged(int arg)
+    signal maximumWidthChanged(int arg)
+    signal maximumHeightChanged(int arg)
+    signal visibleChanged(bool arg)
+    signal visibilityChanged(QWindow::Visibility visibility)
+    signal activeChanged
+    signal contentOrientationChanged(Qt::ScreenOrientation orientation)
+    signal focusObjectChanged(QtObject object)
+    signal opacityChanged(double opacity)
+    function requestActivate
+    function setVisible(bool visible)
+    function show
+    function hide
+    function showMinimized
+    function showMaximized
+    function showFullScreen
+    function showNormal
+    function bool close
+    function raise
+    function lower
+    function setTitle(string )
+    function setX(int arg)
+    function setY(int arg)
+    function setWidth(int arg)
+    function setHeight(int arg)
+    function setMinimumWidth(int w)
+    function setMinimumHeight(int h)
+    function setMaximumWidth(int w)
+    function setMaximumHeight(int h)
+    function alert(int msec)
+    property int minimumHeight
+    property int minimumWidth
+    property Qt::WindowModality modality
+    property double opacity
+    property string title
+    property Visibility visibility
+    property bool visible
+    property int width
+    property int x
+    property int y
 ScrollbarUtils 1.0 ScrollbarUtils 0.1 
 ServiceProperties 1.1 QtObject
     property string adaptorInterface
@@ -598,7 +642,7 @@ Status Enum
     Finished
     Started
     Updated
-StyledItem -1.-1 Item
+StyledItem 1.2 Item
     property bool activeFocusOnPress
     function bool requestFocus(Qt::FocusReason reason)
     function bool requestFocus
@@ -612,7 +656,8 @@ SwipeEvent 1.2 QtObject
     readonly property QPointF from
     readonly property Status status
     readonly property QPointF to
-Toolbar -1.-1 Item
+ThinDivider 1.2 Rectangle
+Toolbar 1.2 Item
     property int align
     property bool animate
     readonly property bool animating
@@ -644,6 +689,11 @@ UCUnits 0.1 UCUnits 1.0 QtObject
     property float gridUnit
     function float dp(float value)
     function float gu(float value)
+UPMGraphModel QtObject
+    readonly property int currentValue
+    readonly property QImage image
+    property int samples
+    readonly property int shift
 Ubuntu 1.2 QtObject singleton
 UbuntuAnimation 0.1 UbuntuAnimation 1.0 QtObject singleton
     readonly property int BriskDuration
@@ -653,7 +703,7 @@ UbuntuAnimation 0.1 UbuntuAnimation 1.0 QtObject singleton
     readonly property int SnapDuration
     readonly property QEasingCurve StandardEasing
     readonly property QEasingCurve StandardEasingReverse
-UbuntuColors -1.-1 QtObject singleton
+UbuntuColors 1.2 QtObject singleton
     readonly property QColor blue
     readonly property QColor coolGrey
     readonly property QColor darkAubergine
@@ -668,9 +718,7 @@ UbuntuColors -1.-1 QtObject singleton
     readonly property QColor purple
     readonly property QColor red
     readonly property QColor warmGrey
-UbuntuListView -1.-1 ListView
-    property int expandedIndex
-UbuntuNumberAnimation -1.-1 NumberAnimation
+UbuntuNumberAnimation 1.2 NumberAnimation
 UbuntuShapeOverlay 1.2 Shape
     property QColor overlayColor
     property QRectF overlayRect
@@ -685,6 +733,13 @@ ViewItems 1.2 QtObject
     signal dragUpdated(ListItemDrag event)
     property bool selectMode
     property QList<int> selectedIndices
+Visibility Enum
+    AutomaticVisibility
+    FullScreen
+    Hidden
+    Maximized
+    Minimized
+    Windowed
 WrapMode Enum
     Repeat
     Transparent

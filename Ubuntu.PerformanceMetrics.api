@@ -1,4 +1,4 @@
-BarGraph -1.-1 Item
+BarGraph 1.0 Item
     property QColor aboveThresholdColor
     property QColor backgroundColor
     property QColor color
@@ -11,19 +11,19 @@ CpuUsage 0.1 CpuUsage 1.0 Item
     readonly property UPMGraphModel graphModel
     property int period
     property int samplingInterval
-Haptics -1.-1 QtObject singleton
+Haptics 1.0 QtObject singleton
     default readonly property QtObject children
     readonly property HapticsEffect effect
     readonly property bool enabled
     function QVariant play(QVariant customEffect)
-Label -1.-1 Text
+Label 1.0 Text
     property string fontSize
-Object -1.-1 QtObject
+Object 1.0 QtObject
     default readonly property QtObject children
-Palette -1.-1 QtObject
+Palette 1.0 QtObject
     property PaletteValues normal
     property PaletteValues selected
-PaletteValues -1.-1 QtObject
+PaletteValues 1.0 QtObject
     property QColor background
     property QColor backgroundText
     property QColor base
@@ -35,7 +35,7 @@ PaletteValues -1.-1 QtObject
     property QColor overlay
     property QColor overlayText
     property QColor selection
-PerformanceOverlay -1.-1 Item
+PerformanceOverlay 1.0 Item
     property bool active
 QAbstractProxyModel QAbstractItemModel
     property QAbstractItemModel sourceModel
@@ -75,7 +75,7 @@ UPMGraphModel QtObject
     readonly property QImage image
     property int samples
     readonly property int shift
-UbuntuColors -1.-1 QtObject singleton
+UbuntuColors 1.0 QtObject singleton
     readonly property QColor blue
     readonly property QColor coolGrey
     readonly property QColor darkAubergine

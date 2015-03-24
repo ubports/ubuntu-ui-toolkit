@@ -1,4 +1,4 @@
-AbstractButton -1.-1 Item
+AbstractButton 1.0 Item
     property Action action
     property bool activeFocusOnPress
     property bool hovered
@@ -9,7 +9,7 @@ AbstractButton -1.-1 Item
     property bool pressed
     property Component style
     property string text
-ActionItem -1.-1 Item
+ActionItem 1.0 Item
     property Action action
     property bool activeFocusOnPress
     property string iconName
@@ -18,7 +18,7 @@ ActionItem -1.-1 Item
     function bool requestFocus
     property Component style
     property string text
-Base -1.-1 Item
+Base 1.0 Item
     property Action action
     property bool activeFocusOnPress
     readonly property Item backgroundIndicator
@@ -44,10 +44,10 @@ Base -1.-1 Item
     readonly property string swipingState
     property string text
     readonly property bool waitingConfirmationForRemoval
-Caption -1.-1 Item
+Caption 1.0 Item
     property string text
-Divider -1.-1 Image
-Empty -1.-1 Item
+Divider 1.0 Image
+Empty 1.0 Item
     property Action action
     property bool activeFocusOnPress
     readonly property Item backgroundIndicator
@@ -68,7 +68,7 @@ Empty -1.-1 Item
     readonly property string swipingState
     property string text
     readonly property bool waitingConfirmationForRemoval
-Expandable -1.-1 Item
+Expandable 1.0 Item
     property Action action
     property bool activeFocusOnPress
     readonly property Item backgroundIndicator
@@ -93,30 +93,30 @@ Expandable -1.-1 Item
     readonly property string swipingState
     property string text
     readonly property bool waitingConfirmationForRemoval
-ExpandablesColumn -1.-1 Flickable
+ExpandablesColumn 1.0 Flickable
     default readonly property QtObject children
     readonly property QVariant expandedItem
     function QVariant expandItem(QVariant item)
     function QVariant collapse
-Haptics -1.-1 QtObject singleton
+Haptics 1.0 QtObject singleton
     default readonly property QtObject children
     readonly property HapticsEffect effect
     readonly property bool enabled
     function QVariant play(QVariant customEffect)
-Header -1.-1 Item
+Header 1.0 Item
     property string text
-IconVisual -1.-1 Item
+IconVisual 1.0 Item
     property string fallbackIconName
     property QUrl fallbackSource
     property bool hasFrame
     property QUrl source
-ImageWithFallback -1.-1 Image
+ImageWithFallback 1.0 Image
     property bool fallbackRequired
     property QUrl fallbackSource
     function QVariant isSourceDefined(QVariant sourceUrl)
     function QVariant tryLoadingFallbackSource
     function QVariant checkStatus
-ItemSelector -1.-1 Item
+ItemSelector 1.0 Item
     property Action action
     property bool activeFocusOnPress
     readonly property Item backgroundIndicator
@@ -146,15 +146,15 @@ ItemSelector -1.-1 Item
     readonly property string swipingState
     property string text
     readonly property bool waitingConfirmationForRemoval
-Label -1.-1 Text
+Label 1.0 Text
     property string fontSize
-LabelVisual -1.-1 Text
+LabelVisual 1.0 Text
     property string fontSize
     function QVariant isInsideOverlay(QVariant item)
     property bool overlay
     property bool secondary
     property bool selected
-MultiValue -1.-1 Item
+MultiValue 1.0 Item
     property Action action
     property bool activeFocusOnPress
     readonly property Item backgroundIndicator
@@ -181,9 +181,9 @@ MultiValue -1.-1 Item
     property string text
     property QVariant values
     readonly property bool waitingConfirmationForRemoval
-Object -1.-1 QtObject
+Object 1.0 QtObject
     default readonly property QtObject children
-OptionSelectorDelegate -1.-1 Item
+OptionSelectorDelegate 1.0 Item
     property Action action
     property bool activeFocusOnPress
     property QColor assetColour
@@ -211,10 +211,10 @@ OptionSelectorDelegate -1.-1 Item
     readonly property string swipingState
     property string text
     readonly property bool waitingConfirmationForRemoval
-Palette -1.-1 QtObject
+Palette 1.0 QtObject
     property PaletteValues normal
     property PaletteValues selected
-PaletteValues -1.-1 QtObject
+PaletteValues 1.0 QtObject
     property QColor background
     property QColor backgroundText
     property QColor base
@@ -226,7 +226,7 @@ PaletteValues -1.-1 QtObject
     property QColor overlay
     property QColor overlayText
     property QColor selection
-ProgressionVisual -1.-1 Item
+ProgressionVisual 1.0 Item
     property bool activeFocusOnPress
     function bool requestFocus(Qt::FocusReason reason)
     function bool requestFocus
@@ -252,7 +252,7 @@ QSortFilterProxyModel QAbstractProxyModel
     function invalidate
     property Qt::CaseSensitivity sortCaseSensitivity
     property int sortRole
-SingleControl -1.-1 Item
+SingleControl 1.0 Item
     property Action action
     property bool activeFocusOnPress
     readonly property Item backgroundIndicator
@@ -274,7 +274,7 @@ SingleControl -1.-1 Item
     readonly property string swipingState
     property string text
     readonly property bool waitingConfirmationForRemoval
-SingleValue -1.-1 Item
+SingleValue 1.0 Item
     property Action action
     property bool activeFocusOnPress
     readonly property Item backgroundIndicator
@@ -301,7 +301,7 @@ SingleValue -1.-1 Item
     property string text
     property string value
     readonly property bool waitingConfirmationForRemoval
-Standard -1.-1 Item
+Standard 1.0 Item
     property Action action
     property bool activeFocusOnPress
     readonly property Item backgroundIndicator
@@ -328,12 +328,12 @@ Standard -1.-1 Item
     readonly property string swipingState
     property string text
     readonly property bool waitingConfirmationForRemoval
-StyledItem -1.-1 Item
+StyledItem 1.0 Item
     property bool activeFocusOnPress
     function bool requestFocus(Qt::FocusReason reason)
     function bool requestFocus
     property Component style
-Subtitled -1.-1 Item
+Subtitled 1.0 Item
     property Action action
     property bool activeFocusOnPress
     readonly property Item backgroundIndicator
@@ -360,14 +360,14 @@ Subtitled -1.-1 Item
     readonly property string swipingState
     property string text
     readonly property bool waitingConfirmationForRemoval
-ThinDivider -1.-1 Rectangle
+ThinDivider 1.0 Rectangle
 UCListItemDivider Item
     property QColor colorFrom
     property QColor colorTo
 UCStateSaverAttached QtObject
     property bool enabled
     property string properties
-UbuntuColors -1.-1 QtObject singleton
+UbuntuColors 1.0 QtObject singleton
     readonly property QColor blue
     readonly property QColor coolGrey
     readonly property QColor darkAubergine
@@ -382,8 +382,8 @@ UbuntuColors -1.-1 QtObject singleton
     readonly property QColor purple
     readonly property QColor red
     readonly property QColor warmGrey
-UbuntuNumberAnimation -1.-1 NumberAnimation
-ValueSelector -1.-1 Item
+UbuntuNumberAnimation 1.0 NumberAnimation
+ValueSelector 1.0 Item
     property Action action
     property bool activeFocusOnPress
     readonly property Item backgroundIndicator
