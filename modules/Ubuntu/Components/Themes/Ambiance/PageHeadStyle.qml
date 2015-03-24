@@ -22,9 +22,9 @@ import Ubuntu.Components.Styles 1.2 as Style
 Style.PageHeadStyle {
     id: headerStyle
     objectName: "PageHeadStyle" // used in unit tests
-    contentHeight: units.gu(7)
-    fontWeight: Font.Light
-    fontSize: "x-large"
+    contentHeight: units.gu(6)
+//    fontWeight: Font.Light
+    fontSize: "large"
     textLeftMargin: units.gu(2)
     maximumNumberOfActions: 3
 
@@ -91,7 +91,7 @@ Style.PageHeadStyle {
             right: parent.right
         }
 
-        height: sectionsRow.visible ? units.gu(3) : units.gu(2)
+        height: sectionsRow.visible ? units.gu(3) : units.dp(1) //gu(2)
 
         // separatorSource and separatorBottomSource are needed for the deprecated
         // HeadSeparatorImageStyle.
