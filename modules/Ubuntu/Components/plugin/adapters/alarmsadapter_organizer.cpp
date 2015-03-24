@@ -292,6 +292,12 @@ void AlarmDataAdapter::completeCancel()
     }
 }
 
+void AlarmDataAdapter::copyAlarmData(const UCAlarm &other)
+{
+    AlarmDataAdapter *pOther = static_cast<AlarmDataAdapter*>(AlarmDataAdapter::get(&other));
+    setData(pOther->data());
+}
+
 void AlarmDataAdapter::adjustDowSettings(UCAlarm::AlarmType type, UCAlarm::DaysOfWeek days)
 {
     QOrganizerItemRecurrence old = event.detail(QOrganizerItemDetail::TypeRecurrence);
@@ -368,13 +374,6 @@ void AlarmDataAdapter::setData(const QOrganizerTodo &data)
         break;
     }
 }
-
-void AlarmDataAdapter::copyData(const UCAlarm &other)
-{
-    AlarmDataAdapter *pOther = static_cast<AlarmDataAdapter*>(AlarmDataAdapter::get(&other));
-    setData(pOther->data());
-}
-
 
 /*-----------------------------------------------------------------------------
  * Adaptation layer for Alarms.
