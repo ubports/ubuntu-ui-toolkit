@@ -188,6 +188,7 @@ void UCTheme::classBegin()
 {
     m_engine = qmlEngine(this);
     updateEnginePaths();
+    loadPalette();
 }
 
 void UCTheme::updateEnginePaths()
