@@ -64,15 +64,15 @@ protected:
     }
 
 private Q_SLOTS:
-    void updateEnginePaths();
-    void onThemeNameChanged();
-    void updateThemePaths();
-    QUrl styleUrl(const QString& styleName);
-    void loadPalette(bool notify = true);
+    void _q_defaultThemeChanged();
 
 private:
     UCTheme(bool defaultStyle, QObject *parent = 0);
     void init();
+    void updateEnginePaths();
+    void updateThemePaths();
+    QUrl styleUrl(const QString& styleName);
+    void loadPalette(bool notify = true);
 
     QString m_name;
     QPointer<QObject> m_palette; // the palette might be from the default style if the theme doesn't define palette

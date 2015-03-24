@@ -180,7 +180,7 @@ void UCTheme::init()
 {
     m_completed = false;
     QObject::connect(&m_defaultTheme, &UCDefaultTheme::themeNameChanged,
-                     this, &UCTheme::onThemeNameChanged);
+                     this, &UCTheme::_q_defaultThemeChanged);
     updateThemePaths();
 }
 
@@ -204,7 +204,7 @@ void UCTheme::updateEnginePaths()
     }
 }
 
-void UCTheme::onThemeNameChanged()
+void UCTheme::_q_defaultThemeChanged()
 {
     updateThemePaths();
     Q_EMIT nameChanged();
@@ -242,7 +242,7 @@ void UCTheme::setName(const QString& name)
         init();
     } else {
         QObject::disconnect(&m_defaultTheme, &UCDefaultTheme::themeNameChanged,
-                            this, &UCTheme::onThemeNameChanged);
+                            this, &UCTheme::_q_defaultThemeChanged);
         updateThemePaths();
     }
     loadPalette();
