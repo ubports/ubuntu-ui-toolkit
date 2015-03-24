@@ -130,7 +130,6 @@ private:
     };
 
     QString m_name;
-    QQmlComponent *m_paletteComponent;
     QPointer<QObject> m_palette; // the palette might be from the default style if the theme doesn't define palette
     QQmlEngine *m_engine;
     PaletteConfig m_config;

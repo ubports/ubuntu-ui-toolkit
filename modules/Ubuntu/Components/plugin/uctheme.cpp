@@ -158,16 +158,6 @@ QString parentThemeName(const QString& themeName)
     return parentTheme;
 }
 
-UCTheme::UCTheme(QObject *parent)
-    : QObject(parent)
-    , m_paletteComponent(0)
-    , m_palette(UCTheme::defaultTheme().m_palette)
-    , m_engine(UCTheme::defaultTheme().m_engine)
-    , m_defaultStyle(false)
-{
-    init();
-}
-
 /******************************************************************************
  * Theme::PaletteConfig
  */
@@ -295,6 +285,15 @@ void UCTheme::PaletteConfig::apply(QObject *themePalette)
 /******************************************************************************
  * Theme
  */
+UCTheme::UCTheme(QObject *parent)
+    : QObject(parent)
+    , m_palette(UCTheme::defaultTheme().m_palette)
+    , m_engine(UCTheme::defaultTheme().m_engine)
+    , m_defaultStyle(false)
+{
+    init();
+}
+
 UCTheme::UCTheme(bool defaultStyle, QObject *parent)
     : QObject(parent)
     , m_palette(NULL)
@@ -395,10 +394,6 @@ void UCTheme::setName(const QString& name)
         QObject::disconnect(&m_defaultTheme, &UCDefaultTheme::themeNameChanged,
                             this, &UCTheme::onThemeNameChanged);
         updateThemePaths();
-    }
-    if (m_paletteComponent) {
-        delete m_paletteComponent;
-        m_paletteComponent = 0;
     }
     loadPalette();
     Q_EMIT nameChanged();
@@ -571,12 +566,6 @@ void UCTheme::loadPalette(bool notify)
     if (!m_engine) {
         return;
     }
-    if (!m_paletteComponent) {
-        QUrl paletteUrl = styleUrl("Palette.qml");
-        if (paletteUrl.isValid()) {
-            m_paletteComponent = new QQmlComponent(m_engine, paletteUrl, QQmlComponent::PreferSynchronous, this);
-        }
-    }
     if (m_palette) {
         // restore bindings to the config palette before we delete
         m_config.restorePalette();
@@ -584,8 +573,9 @@ void UCTheme::loadPalette(bool notify)
         m_palette = 0;
     }
     // theme may not have palette defined
-    if (m_paletteComponent && !m_paletteComponent->isError()) {
-        m_palette = m_paletteComponent->create();
+    QUrl paletteUrl = styleUrl("Palette.qml");
+    if (paletteUrl.isValid()) {
+        m_palette = QuickUtils::instance().createQmlObject(paletteUrl, m_engine);
         if (m_palette) {
             m_palette->setParent(this);
         }
