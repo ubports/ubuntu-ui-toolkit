@@ -16,7 +16,7 @@
 
 import QtQuick 2.4
 import Ubuntu.Test 1.0
-import Ubuntu.Components 1.2
+import Ubuntu.Components 1.3
 
 // NOTE: Other parts of the page head API are tested with autopilot in
 // ubuntuuitoolkit.tests.components.test_header
@@ -34,19 +34,58 @@ Item {
             Page {
                 id: page1
                 title: "First page"
+
+                Button {
+                    anchors.centerIn: parent
+                    onClicked: pageStack.push(page2)
+                    text: "Push page 2"
+                }
+
+                head {
+                    actions: [
+                        Action {
+                            iconName: "settings"
+                            onTriggered: print("Trigger first action")
+                        },
+                        Action {
+                            iconName: "info"
+                            onTriggered: print("Trigger second action")
+                        }
+                    ]
+                }
             }
             Page {
                 id: page2
+                visible: false
                 title: "Second page"
 
                 Action {
                     id: customBackAction
-                    iconName: "search"
-                    text: "Search"
+                    iconName: "close"
+                    text: "Close"
+                    onTriggered: print("Triggered custom back action.")
                 }
                 Action {
                     id: invisibleAction
                     visible: false
+                }
+                head {
+                    backAction: customBackActionSwitch.checked ?
+                                    customBackAction : null
+                }
+
+                Row {
+                    anchors.centerIn: parent
+                    spacing: units.gu(1)
+                    Label {
+                        text: "standard"
+                    }
+                    Switch {
+                        id: customBackActionSwitch
+                    }
+                    Label {
+                        text: "custom back action"
+                    }
                 }
             }
         }
