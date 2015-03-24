@@ -1,3 +1,21 @@
+ubuntu-ui-toolkit (1.2.1456+15.04.20150318-0ubuntu2) UNRELEASED; urgency=medium
+
+  [ By Tim Peeters ]
+  * Remove the deprecated toolbar example from the gallery. 
+    Fixes LP: #1430904
+
+  [ Nekhelesh Ramananthan ]
+  * Fixes the slider bubble width to be dynamic and dependent 
+    on the label width. Fixes LP: #1228575
+
+  [ Leo Arias ]
+  * Added a scenario for autopilot tests without live dragging.
+    Fixes LP: #1435698
+  * Added a helper to reorder items in a list view.
+    Fixes LP: #1435700
+
+ -- Zoltán Balogh <zoltan@bakter.hu>  Tue, 24 Mar 2015 09:43:50 +0200
+
 ubuntu-ui-toolkit (1.2.1450+15.04.20150318-0ubuntu1) vivid; urgency=medium
 
   [ Timo Jyrinki ]
