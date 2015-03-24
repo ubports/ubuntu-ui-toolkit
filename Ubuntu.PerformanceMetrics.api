@@ -1,323 +1,92 @@
-{
-    "BarGraph": {
-        "aboveThresholdColor": {
-            "type": "QColor"
-        },
-        "backgroundColor": {
-            "type": "QColor"
-        },
-        "color": {
-            "type": "QColor"
-        },
-        "defaultProperty": "data",
-        "exportMetaObjectRevisions": [
-            "-1"
-        ],
-        "exports": [
-            "BarGraph -1.-1"
-        ],
-        "isComposite": true,
-        "labelFormat": {
-            "type": "string"
-        },
-        "labels": {
-            "type": "QVariant"
-        },
-        "maximumValue": {
-            "type": "double"
-        },
-        "model": {
-            "type": "QVariant"
-        },
-        "prototype": "Item",
-        "threshold": {
-            "type": "double"
-        }
-    },
-    "CpuUsage": {
-        "defaultProperty": "data",
-        "exports": [
-            "CpuUsage 0.1",
-            "CpuUsage 1.0"
-        ],
-        "graphModel": {
-            "isPointer": true,
-            "isReadonly": true,
-            "type": "UPMGraphModel"
-        },
-        "period": {
-            "type": "int"
-        },
-        "prototype": "Item",
-        "samplingInterval": {
-            "type": "int"
-        }
-    },
-    "Label": {
-        "defaultProperty": "data",
-        "exportMetaObjectRevisions": [
-            "-1"
-        ],
-        "exports": [
-            "Label -1.-1"
-        ],
-        "fontSize": {
-            "type": "string"
-        },
-        "isComposite": true,
-        "prototype": "Text"
-    },
-    "PerformanceOverlay": {
-        "active": {
-            "type": "bool"
-        },
-        "defaultProperty": "data",
-        "exportMetaObjectRevisions": [
-            "-1"
-        ],
-        "exports": [
-            "PerformanceOverlay -1.-1"
-        ],
-        "isComposite": true,
-        "prototype": "Item"
-    },
-    "QAbstractProxyModel": {
-        "prototype": "QAbstractItemModel",
-        "sourceModel": {
-            "isPointer": true,
-            "type": "QAbstractItemModel"
-        }
-    },
-    "QQmlPropertyMap": {
-        "methods": [
-            {
-                "name": "valueChanged",
-                "parameters": [
-                    {
-                        "name": "key",
-                        "type": "string"
-                    },
-                    {
-                        "name": "value",
-                        "type": "QVariant"
-                    }
-                ],
-                "type": "signal"
-            },
-            {
-                "name": "keys",
-                "returns": "QStringList",
-                "type": "function"
-            }
-        ],
-        "prototype": "QtObject"
-    },
-    "QSortFilterProxyModel": {
-        "dynamicSortFilter": {
-            "type": "bool"
-        },
-        "filterCaseSensitivity": {
-            "type": "Qt::CaseSensitivity"
-        },
-        "filterKeyColumn": {
-            "type": "int"
-        },
-        "filterRegExp": {
-            "type": "QRegExp"
-        },
-        "filterRole": {
-            "type": "int"
-        },
-        "isSortLocaleAware": {
-            "type": "bool"
-        },
-        "methods": [
-            {
-                "name": "setFilterRegExp",
-                "parameters": [
-                    {
-                        "name": "pattern",
-                        "type": "string"
-                    }
-                ],
-                "type": "function"
-            },
-            {
-                "name": "setFilterWildcard",
-                "parameters": [
-                    {
-                        "name": "pattern",
-                        "type": "string"
-                    }
-                ],
-                "type": "function"
-            },
-            {
-                "name": "setFilterFixedString",
-                "parameters": [
-                    {
-                        "name": "pattern",
-                        "type": "string"
-                    }
-                ],
-                "type": "function"
-            },
-            {
-                "name": "clear",
-                "type": "function"
-            },
-            {
-                "name": "invalidate",
-                "type": "function"
-            }
-        ],
-        "prototype": "QAbstractProxyModel",
-        "sortCaseSensitivity": {
-            "type": "Qt::CaseSensitivity"
-        },
-        "sortRole": {
-            "type": "int"
-        }
-    },
-    "RenderingTimes": {
-        "defaultProperty": "data",
-        "exports": [
-            "RenderingTimes 0.1",
-            "RenderingTimes 1.0"
-        ],
-        "graphModel": {
-            "isPointer": true,
-            "isReadonly": true,
-            "type": "UPMGraphModel"
-        },
-        "methods": [
-            {
-                "name": "frameRendered",
-                "parameters": [
-                    {
-                        "name": "renderTime",
-                        "type": "qlonglong"
-                    }
-                ],
-                "type": "signal"
-            }
-        ],
-        "period": {
-            "type": "int"
-        },
-        "prototype": "Item",
-        "samples": {
-            "type": "int"
-        },
-        "timerType": {
-            "type": "RenderTimer::TimerType"
-        }
-    },
-    "TextureFromImage": {
-        "defaultProperty": "data",
-        "exports": [
-            "TextureFromImage 0.1",
-            "TextureFromImage 1.0"
-        ],
-        "image": {
-            "type": "QImage"
-        },
-        "prototype": "Item"
-    },
-    "UCStateSaverAttached": {
-        "enabled": {
-            "type": "bool"
-        },
-        "properties": {
-            "type": "string"
-        },
-        "prototype": "QtObject"
-    },
-    "UPMGraphModel": {
-        "currentValue": {
-            "isReadonly": true,
-            "type": "int"
-        },
-        "image": {
-            "isReadonly": true,
-            "type": "QImage"
-        },
-        "prototype": "QtObject",
-        "samples": {
-            "type": "int"
-        },
-        "shift": {
-            "isReadonly": true,
-            "type": "int"
-        }
-    },
-    "UbuntuColors": {
-        "blue": {
-            "isReadonly": true,
-            "type": "QColor"
-        },
-        "coolGrey": {
-            "isReadonly": true,
-            "type": "QColor"
-        },
-        "darkAubergine": {
-            "isReadonly": true,
-            "type": "QColor"
-        },
-        "darkGrey": {
-            "isReadonly": true,
-            "type": "QColor"
-        },
-        "exportMetaObjectRevisions": [
-            "-1"
-        ],
-        "exports": [
-            "UbuntuColors -1.-1"
-        ],
-        "green": {
-            "isReadonly": true,
-            "type": "QColor"
-        },
-        "greyGradient": {
-            "isPointer": true,
-            "type": "Gradient"
-        },
-        "isComposite": true,
-        "isCreatable": false,
-        "isSingleton": true,
-        "lightAubergine": {
-            "isReadonly": true,
-            "type": "QColor"
-        },
-        "lightGrey": {
-            "isReadonly": true,
-            "type": "QColor"
-        },
-        "midAubergine": {
-            "isReadonly": true,
-            "type": "QColor"
-        },
-        "orange": {
-            "isReadonly": true,
-            "type": "QColor"
-        },
-        "orangeGradient": {
-            "isPointer": true,
-            "type": "Gradient"
-        },
-        "prototype": "QtObject",
-        "purple": {
-            "isReadonly": true,
-            "type": "QColor"
-        },
-        "red": {
-            "isReadonly": true,
-            "type": "QColor"
-        },
-        "warmGrey": {
-            "isReadonly": true,
-            "type": "QColor"
-        }
-    },
-    "namespace": "Ubuntu.PerformanceMetrics"
-}
+BarGraph -1.-1 Item
+    property QColor aboveThresholdColor
+    property QColor backgroundColor
+    property QColor color
+    property string labelFormat
+    property QVariant labels
+    property double maximumValue
+    property QVariant model
+    property double threshold
+CpuUsage 0.1 CpuUsage 1.0 Item
+    readonly property UPMGraphModel graphModel
+    property int period
+    property int samplingInterval
+Haptics -1.-1 QtObject singleton
+    default readonly property QtObject children
+    readonly property HapticsEffect effect
+    readonly property bool enabled
+    function QVariant play(QVariant customEffect)
+Label -1.-1 Text
+    property string fontSize
+Object -1.-1 QtObject
+    default readonly property QtObject children
+Palette -1.-1 QtObject
+    property PaletteValues normal
+    property PaletteValues selected
+PaletteValues -1.-1 QtObject
+    property QColor background
+    property QColor backgroundText
+    property QColor base
+    property QColor baseText
+    property QColor field
+    property QColor fieldText
+    property QColor foreground
+    property QColor foregroundText
+    property QColor overlay
+    property QColor overlayText
+    property QColor selection
+PerformanceOverlay -1.-1 Item
+    property bool active
+QAbstractProxyModel QAbstractItemModel
+    property QAbstractItemModel sourceModel
+QQmlPropertyMap QtObject
+    signal valueChanged(string key, QVariant value)
+    function QStringList keys
+QSortFilterProxyModel QAbstractProxyModel
+    property bool dynamicSortFilter
+    property Qt::CaseSensitivity filterCaseSensitivity
+    property int filterKeyColumn
+    property QRegExp filterRegExp
+    property int filterRole
+    property bool isSortLocaleAware
+    function setFilterRegExp(string pattern)
+    function setFilterWildcard(string pattern)
+    function setFilterFixedString(string pattern)
+    function clear
+    function invalidate
+    property Qt::CaseSensitivity sortCaseSensitivity
+    property int sortRole
+RenderingTimes 0.1 RenderingTimes 1.0 Item
+    readonly property UPMGraphModel graphModel
+    signal frameRendered(qlonglong renderTime)
+    property int period
+    property int samples
+    property RenderTimer::TimerType timerType
+TextureFromImage 0.1 TextureFromImage 1.0 Item
+    property QImage image
+UCListItemDivider Item
+    property QColor colorFrom
+    property QColor colorTo
+UCStateSaverAttached QtObject
+    property bool enabled
+    property string properties
+UPMGraphModel QtObject
+    readonly property int currentValue
+    readonly property QImage image
+    property int samples
+    readonly property int shift
+UbuntuColors -1.-1 QtObject singleton
+    readonly property QColor blue
+    readonly property QColor coolGrey
+    readonly property QColor darkAubergine
+    readonly property QColor darkGrey
+    readonly property QColor green
+    property Gradient greyGradient
+    readonly property QColor lightAubergine
+    readonly property QColor lightGrey
+    readonly property QColor midAubergine
+    readonly property QColor orange
+    property Gradient orangeGradient
+    readonly property QColor purple
+    readonly property QColor red
+    readonly property QColor warmGrey

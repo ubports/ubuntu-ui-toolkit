@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2014-2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.2
-import Ubuntu.Components 1.1
+import QtQuick 2.4
+import Ubuntu.Components 1.2
 
 /*!
     \qmltype PageHeadConfiguration
@@ -95,6 +95,101 @@ Object {
       be implemented.
      */
     property Item contents: null
+
+    QtObject {
+        id: internal
+        property Item oldContents: null
+    }
+
+    onContentsChanged: {
+        if (internal.oldContents) {
+            // FIX: bug #1341814 and #1400297
+            // We have to force the removal of the previous head.contents
+            // in order to show the new contents
+            internal.oldContents.parent = null;
+        }
+        internal.oldContents = contents;
+    }
+
+    // FIXME: The example below can be much simplified using PageHeadState
+    //  when bug #1345775 has been fixed.
+    /*!
+      Choose a preset for the header visuals and behavior.
+      The default is an empty string "".
+      By setting this to "select", title will be hidden and
+      actions will be represented by icons with a label.
+
+      Example:
+      \qml
+        import QtQuick 2.4
+        import Ubuntu.Components 1.2
+
+        MainView {
+            id: mainView
+            width: units.gu(40)
+            height: units.gu(50)
+
+            Page {
+                id: page
+                title: "Demo"
+
+                state: "default"
+                states: [
+                    PageHeadState {
+                        name: "default"
+                        head: page.head
+                        actions: [
+                            Action {
+                                iconName: "contact"
+                                text: "Contact"
+                            }
+                        ]
+                    },
+                    State {
+                        id: selectState
+                        name: "select"
+
+                        property Action leaveSelect: Action {
+                            iconName: "back"
+                            text: "Back"
+                            onTriggered: page.state = "default"
+                        }
+                        property list<Action> actions: [
+                            Action {
+                                iconName: "select"
+                                text: "Select All"
+                            },
+                            Action {
+                                iconName: "delete"
+                                text: "Delete"
+                            }
+                        ]
+                        PropertyChanges {
+                            target: page.head
+                            backAction: selectState.leaveSelect
+                            actions: selectState.actions
+                            preset: "select"
+                        }
+                    }
+                ]
+
+                Label {
+                    anchors.centerIn: parent
+                    text: "Use back button to leave selection mode."
+                    visible: page.state == "select"
+                }
+
+                Button {
+                    anchors.centerIn: parent
+                    onClicked: page.state = "select"
+                    visible: page.state != "select"
+                    text: "selection mode"
+                }
+            }
+        }
+      \endqml
+     */
+    property string preset: ""
 
     /*!
       \qmlproperty PageHeadSections sections

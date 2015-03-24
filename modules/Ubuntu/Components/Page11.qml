@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.2
+import QtQuick 2.4
 
 /*! \internal */
 // Documentation in Page.qdoc
@@ -26,6 +26,10 @@ Page10 {
     readonly property alias head: headerConfig
     PageHeadConfiguration {
         id: headerConfig
+    }
+
+    onToolsChanged: {
+        print("Page.tools is a deprecated property. Please use Page.head instead.");
     }
 
     Object {

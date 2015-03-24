@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 1.1
+import QtQuick 2.4
+import Ubuntu.Components 1.2
 import "internalPopupUtils.js" as InternalPopupUtils
 
 /*!
@@ -32,8 +32,8 @@ import "internalPopupUtils.js" as InternalPopupUtils
 
     Example:
     \qml
-        import QtQuick 2.0
-        import Ubuntu.Components 1.1
+        import QtQuick 2.4
+        import Ubuntu.Components 1.2
         import Ubuntu.Components.Popups 1.0
 
         Item {
@@ -75,28 +75,24 @@ PopupBase {
     id: dialog
 
     /*!
-      \preliminary
       \qmlproperty list<Object> contents
       Content will be put inside a column in the foreround of the Dialog.
     */
     default property alias contents: contentsColumn.data
 
     /*!
-      \preliminary
       The title of the question to ask the user.
       \qmlproperty string title
      */
     property alias title: foreground.title
 
     /*!
-      \preliminary
       The question to the user.
       \qmlproperty string text
      */
     property alias text: foreground.text
 
     /*!
-      \preliminary
       The Item such as a \l Button that the user interacted with to open the Dialog.
       This property will be used for the automatic positioning of the Dialog next to
       the caller, if possible.
@@ -171,43 +167,48 @@ PopupBase {
         property real itemSpacing: units.gu(2)
         property Item dismissArea: dialog.dismissArea
 
-        height: Math.min(childrenRect.height, dialog.height)
+        height: Math.min(contentsColumn.height + foreground.margins, dialog.height)
 
-        Column {
-            id: contentsColumn
-            anchors {
-                top: parent.top
-                left: parent.left
-                right: parent.right
-                margins: foreground.margins
-            }
-            spacing: foreground.itemSpacing
-            height: childrenRect.height + foreground.margins
-            onWidthChanged: updateChildrenWidths();
+        Flickable {
+            anchors.fill: parent
+            anchors.margins: foreground.margins
+            contentWidth: contentsColumn.width
+            contentHeight: contentsColumn.height - foreground.margins
+            boundsBehavior: Flickable.StopAtBounds
 
-            Label {
-                horizontalAlignment: Text.AlignHCenter
-                text: dialog.title
-                wrapMode: Text.Wrap
-                maximumLineCount: 2
-                elide: Text.ElideRight
-                fontSize: "large"
-                color: UbuntuColors.darkGrey
-            }
+            Column {
+                id: contentsColumn
+                spacing: foreground.itemSpacing
+                width: foreground.width - foreground.margins * 2
+                height: childrenRect.height + foreground.margins
+                onWidthChanged: updateChildrenWidths();
 
-            Label {
-                horizontalAlignment: Text.AlignHCenter
-                text: dialog.text
-                fontSize: "medium"
-                color: UbuntuColors.darkGrey
-                wrapMode: Text.Wrap
-            }
+                Label {
+                    horizontalAlignment: Text.AlignHCenter
+                    text: dialog.title
+                    wrapMode: Text.Wrap
+                    maximumLineCount: 2
+                    elide: Text.ElideRight
+                    fontSize: "large"
+                    color: UbuntuColors.darkGrey
+                    visible: (text !== "")
+                }
 
-            onChildrenChanged: updateChildrenWidths()
+                Label {
+                    horizontalAlignment: Text.AlignHCenter
+                    text: dialog.text
+                    fontSize: "medium"
+                    color: UbuntuColors.darkGrey
+                    wrapMode: Text.Wrap
+                    visible: (text !== "")
+                }
 
-            function updateChildrenWidths() {
-                for (var i = 0; i < children.length; i++) {
-                    children[i].width = contentsColumn.width;
+                onChildrenChanged: updateChildrenWidths()
+
+                function updateChildrenWidths() {
+                    for (var i = 0; i < children.length; i++) {
+                        children[i].width = contentsColumn.width;
+                    }
                 }
             }
         }

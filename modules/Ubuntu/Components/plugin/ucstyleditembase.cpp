@@ -115,8 +115,8 @@ bool UCStyledItemBase::requestFocus(Qt::FocusReason reason)
  * In the following example the TextField will stay focused when clicked on the
  * red rectangle.
  * \qml
- * import QtQuick 2.2
- * import Ubuntu.Components 1.1
+ * import QtQuick 2.4
+ * import Ubuntu.Components 1.2
  *
  * Column {
  *     width: units.gu(50)
@@ -181,18 +181,17 @@ bool UCStyledItemBase::childMouseEventFilter(QQuickItem *child, QEvent *event)
 {
     // only filter pressed events
     if (event->type() == QEvent::MouseButtonPress) {
+        // send mouse event
         QMouseEvent *mouse = static_cast<QMouseEvent*>(event);
         // the event may occur outside of the parent's boundaries if not clipped
         // therefore must check containment
         QPointF point = mapFromItem(child, mouse->localPos());
         if (contains(point)) {
-            QMouseEvent press(event->type(), point, mouse->windowPos(), mouse->screenPos(),
-                              mouse->button(), mouse->buttons(), mouse->modifiers());
-            mousePressEvent(&press);
+            requestFocus(Qt::MouseFocusReason);
         }
     }
     // let the event be passed to children
-    return false;
+    return QQuickItem::childMouseEventFilter(child, event);
 }
 
 #include "moc_ucstyleditembase.cpp"

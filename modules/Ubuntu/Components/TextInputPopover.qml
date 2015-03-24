@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 1.1
+import QtQuick 2.4
+import Ubuntu.Components 1.2
 import Ubuntu.Components.Popups 1.0
 
 Popover {
@@ -26,6 +26,7 @@ Popover {
         Action {
             text: i18n.dtr('ubuntu-ui-toolkit', "Select All")
             iconName: "edit-select-all"
+            enabled: target.text !== ""
             visible: target && target.selectedText === ""
             onTriggered: target.selectAll()
         },
@@ -34,30 +35,53 @@ Popover {
             iconName: "edit-cut"
             // If paste/editing is not possible, then disable also "Cut" operation
             // It is applicable for ReadOnly's TextFields and TextAreas
-            enabled: target && target.selectedText !== "" && target.canPaste
+            enabled: target && target.selectedText !== "" && !target.readOnly
             visible: target.selectedText !== ""
-            onTriggered: target.cut()
+            onTriggered: {
+                PopupUtils.close(popover);
+                target.cut();
+            }
         },
         Action {
             text: i18n.dtr('ubuntu-ui-toolkit', "Copy")
             iconName: "edit-copy"
             enabled: target && target.selectedText !== ""
             visible: target.selectedText !== ""
-            onTriggered: target.copy()
+            onTriggered: {
+                PopupUtils.close(popover);
+                target.copy();
+            }
         },
         Action {
             text: i18n.dtr('ubuntu-ui-toolkit', "Paste")
             iconName: "edit-paste"
             enabled: target && target.canPaste
-            onTriggered: target.paste()
+            onTriggered: {
+                PopupUtils.close(popover);
+                target.paste();
+            }
         }
     ]
 
-    contentHeight: row.childrenRect.height
-    contentWidth: row.childrenRect.width
+    // removes hide animation
+    function hide() {
+        popover.visible = false;
+    }
+
+    /*
+      Force positioning so that the popover is positioned in the screen while
+      the input is on the top of the screen
+    */
+    y: parent ? (parent.height - height) / 2 : 0
+    autoClose: false
+    contentHeight: row.childrenRect.height + padding * 2
+    contentWidth: row.childrenRect.width + padding * 2
+    property int padding: units.gu(1)
     Row {
         id: row
         height: units.gu(6)
+        x: popover.padding
+        y: popover.padding
 
         Repeater {
             model: actions.length
@@ -69,11 +93,10 @@ Popover {
                   accessible. https://bugs.launchpad.net/autopilot/+bug/1334599
                   */
                 property string text: action.text
-                width: Math.max(units.gu(4), implicitWidth) + units.gu(2)
+                width: Math.max(units.gu(5), implicitWidth) + units.gu(2)
                 height: units.gu(6)
                 action: actions[modelData]
                 style: Theme.createStyleComponent("ToolbarButtonStyle.qml", button)
-                onClicked: popover.hide()
             }
         }
     }

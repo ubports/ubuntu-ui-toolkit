@@ -1,0 +1,15 @@
+{
+    "architecture": "all",
+    "description": "description of customtheme",
+    "framework": "ubuntu-sdk-14.10-dev2",
+    "hooks": {
+        "customtheme": {
+            "apparmor": "customtheme.apparmor",
+            "desktop": "customtheme.desktop"
+        }
+    },
+    "maintainer": "Zsombor Egri <zsombor.egri@canonical.com>",
+    "name": "customtheme",
+    "title": "customtheme",
+    "version": "0.1"
+}

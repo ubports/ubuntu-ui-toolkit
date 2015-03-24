@@ -14,14 +14,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 1.1
+import QtQuick 2.4
+import Ubuntu.Components 1.2
 
 /*!
     \qmltype Caption
     \inqmlmodule Ubuntu.Components.ListItems 1.0
     \ingroup ubuntu-listitems
     \brief List item that shows a piece of text.
+    \note \b{The component is deprecated. Use ListItem and Captiopns components instead.}
 
     Examples:
     \qml
@@ -35,14 +36,12 @@ import Ubuntu.Components 1.1
             }
         }
     \endqml
-    \b{This component is under heavy development.}
 */
 Item {
     height: captionText.height + units.gu(1)
     width: parent ? parent.width : units.gu(31)
 
     /*!
-      \preliminary
       The text that is shown in the list item as a label.
       \qmlproperty string text
      */

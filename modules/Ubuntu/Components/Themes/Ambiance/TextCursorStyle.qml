@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 1.1
+import QtQuick 2.4
+import Ubuntu.Components 1.2
 
 // FIXME : move the API into Ubuntu.Components.Style
 Item {
@@ -53,17 +53,20 @@ Item {
     Component {
         id: delegate
         Rectangle {
+            objectName: "text_cursor_style_" + styledItem.positionProperty
             width: cursorWidth
             // FIXME: Extend the palette and use palette values here
             color: UbuntuColors.blue
-            visible: blinkTimer.timerShowCursor
+            visible: styledItem.positionProperty === "cursorPosition" && (blinkTimer.timerShowCursor || !blinkTimer.running)
             Timer {
                 id: blinkTimer
                 interval: cursorStyle.cursorVisibleTimeout
                 running: (cursorStyle.cursorVisibleTimeout > 0) &&
                          (cursorStyle.cursorHiddenTimeout > 0) &&
-                         styledItem.visible
+                         styledItem.visible &&
+                         shouldBlink
                 repeat: true
+                property bool shouldBlink: !styledItem.readOnly && !styledItem.contextMenuVisible
                 property bool timerShowCursor: true
                 onTriggered: {
                     interval = (interval == cursorStyle.cursorVisibleTimeout) ?
@@ -78,11 +81,11 @@ Item {
     Image {
         id: caretItem
         source: "artwork/caret_noshadow.png"
-        objectName: "text_cursor_style_caret"
+        objectName: "text_cursor_style_caret_" + styledItem.positionProperty
         anchors {
             top: parent.bottom
             horizontalCenter: parent.horizontalCenter
-            horizontalCenterOffset: (LayoutMirroring.enabled ? -1 : 1) * (implicitWidth / 2 - cursorWidth)
+            horizontalCenterOffset: cursorWidth / 2
         }
     }
 }

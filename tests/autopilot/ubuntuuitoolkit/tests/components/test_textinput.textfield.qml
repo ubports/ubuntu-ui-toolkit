@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2014-2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,20 +15,26 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 1.1
+import Ubuntu.Components 1.2
 
 MainView {
     width: units.gu(48)
     height: units.gu(60)
+    objectName: "mainView"
 
     Page {
         title: "Textfield"
+        head.backAction: Action {
+            iconName: "back"
+            text: i18n.tr("Back")
+            onTriggered: visible = false
+        }
 
         Column {
             TextField {
                 objectName: "textfield"
                 placeholderText: "Type here"
-                width: units.gu(15)
+                width: units.gu(35)
             }
         }
     }

@@ -33,8 +33,9 @@ Template {
                               "ligula tortor, luctus id elementum vel, varius vel augue. "+
                               "Nunc porta mattis bibendum. Nam vitae sapien ipsum, non viverra neque."
 
-    property string richText: "<i>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</i> "+
-                              "<b>Nunc pretium iaculis risus, sed vehicula odio varius ac.</b> "+
+    // http://qt-project.org/doc/qt-5/richtext-html-subset.html
+    property string richText: "<big>Lorem ipsum dolor sit amet</big>, <i>consectetur adipiscing elit.</i>" +
+                              "<b>Nunc pretium iaculis risus</b>, <small>sed vehicula odio varius ac.</small>" +
                               "<u>Etiam orci lectus, bibendum in vulputate ac, tristique quis dui.</u>"
 
     TemplateSection {
@@ -74,12 +75,26 @@ Template {
         }
 
         TemplateRow {
+            title: i18n.tr("Read-only")
+
+            TextField {
+                objectName: "textfield_read_only"
+                text: i18n.tr("Nobody type here")
+                readOnly: true
+                width: parent.width
+                horizontalAlignment: TextInput.AlignHCenter
+            }
+        }
+
+        TemplateRow {
             title: i18n.tr("Disabled")
 
             TextField {
                 objectName: "textfield_disabled"
+                text: i18n.tr("No interaction allowed")
                 enabled: false
                 width: parent.width
+                horizontalAlignment: TextInput.AlignRight
             }
         }
     }

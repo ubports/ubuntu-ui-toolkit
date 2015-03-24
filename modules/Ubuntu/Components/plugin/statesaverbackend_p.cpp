@@ -46,7 +46,7 @@ StateSaverBackend::StateSaverBackend(QObject *parent)
     // catch eventual app name changes so we can have different path for the states if needed
     QObject::connect(&UCApplication::instance(), &UCApplication::applicationNameChanged,
                      this, &StateSaverBackend::initialize);
-    if (!qgetenv("APP_ID").isEmpty() || !UCApplication::instance().applicationName().isEmpty()) {
+    if (!UCApplication::instance().applicationName().isEmpty()) {
         initialize();
     }
 
@@ -72,15 +72,28 @@ void StateSaverBackend::initialize()
         delete m_archive.data();
         m_archive.clear();
     }
-    QString applicationName(qgetenv("APP_ID"));
+    QString applicationName(UCApplication::instance().applicationName());
     if (applicationName.isEmpty()) {
-        applicationName = UCApplication::instance().applicationName();
+        qCritical() << "[StateSaver] Cannot create appstate file, application name not defined.";
+        return;
     }
     // make sure the path is in sync with https://wiki.ubuntu.com/SecurityTeam/Specifications/ApplicationConfinement
     // the file must be saved under XDG_RUNTIME_DIR/<APP_PKGNAME> path.
-    m_archive = new QSettings(QString("%1/%2/statesaver.appstate")
-                              .arg(QStandardPaths::writableLocation(QStandardPaths::RuntimeLocation))
-                              .arg(applicationName), QSettings::NativeFormat);
+    // NOTE!!: we cannot use QStandardPaths::writableLocation(QStandardPaths::RuntimeLocation)
+    // as that is going to perform a chmod +w on the path, see bug #1359831. Therefore we must
+    // fetch the XDG_RUNTIME_DIR either from QStandardPaths::standardLocations() or from env var
+    // see bug https://bugreports.qt-project.org/browse/QTBUG-41735
+    QString runtimeDir = QStandardPaths::writableLocation(QStandardPaths::RuntimeLocation);
+    if (runtimeDir.isEmpty()) {
+        runtimeDir = qgetenv("XDG_RUNTIME_DIR");
+    }
+    if (runtimeDir.isEmpty()) {
+        qCritical() << "[StateSaver] No XDG_RUNTIME_DIR path set, cannot create appstate file.";
+        return;
+    }
+    m_archive = new QSettings(QString("%1/%2/statesaver.appstate").
+                              arg(runtimeDir).
+                              arg(applicationName), QSettings::NativeFormat);
     m_archive->setFallbacksEnabled(false);
 }
 
@@ -173,6 +186,8 @@ int StateSaverBackend::load(const QString &id, QObject *item, const QStringList 
                              .arg(propertyName).arg(qmlContext(item)->nameForObject(item));
         }
     }
+    // drop cache once properties are successfully restored
+    m_archive.data()->remove("");
     m_archive.data()->endGroup();
     // restore leaved group if needed
     if (restorePreviousGroup) {
@@ -193,6 +208,9 @@ int StateSaverBackend::save(const QString &id, QObject *item, const QStringList 
         if (qmlProperty.isValid()) {
             QVariant value = qmlProperty.read();
             if (static_cast<QMetaType::Type>(value.type()) != QMetaType::QObjectStar) {
+                if (value.userType() == qMetaTypeId<QJSValue>()) {
+                    value = value.value<QJSValue>().toVariant();
+                }
                 m_archive.data()->setValue(propertyName, value);
                 /* Save the type of the property along with its value.
                  * This is important because QSettings deserializes values as QString.

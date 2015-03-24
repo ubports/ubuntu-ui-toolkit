@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 1.1 as Components
+import QtQuick 2.4
+import Ubuntu.Components 1.2 as Components
 
 /*!
     \internal
@@ -36,6 +36,16 @@ StyledItem {
       Animate showing and hiding of the header.
      */
     property bool animate: true
+
+    /*!
+      The background color of the divider. Value set by MainView.
+     */
+    property color dividerColor
+
+    /*!
+      The background color of the panel. Value set by MainView.
+     */
+    property color panelColor
 
     Behavior on y {
         enabled: animate && !(header.flickable && header.flickable.moving)
@@ -86,14 +96,12 @@ StyledItem {
     }
 
     /*!
-      \preliminary
       A model of tabs to represent in the header.
       This is automatically set by \l Tabs.
      */
     property var tabsModel: null
 
     /*!
-      \preliminary
       If it is possible to pop this PageStack, a back button will be
       shown in the header.
      */

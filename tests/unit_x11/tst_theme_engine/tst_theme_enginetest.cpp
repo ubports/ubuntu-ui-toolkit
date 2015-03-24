@@ -20,6 +20,8 @@
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlComponent>
 #include "uctheme.h"
+#include "uctestcase.h"
+#include <private/qquicktext_p.h>
 
 Q_DECLARE_METATYPE(QList<QQmlError>)
 
@@ -42,6 +44,10 @@ private Q_SLOTS:
     void testThemesRelativePathWithParentXDGDATA();
     void testThemesRelativePathWithParentNoVariablesSet();
     void testThemesRelativePathWithParentOneXDGPathSet();
+    void testAppTheme();
+    void testNoImportPathSet();
+    void testBogusImportPathSet();
+    void testMultipleImportPathsSet();
 };
 
 void tst_UCTheme::initTestCase()
@@ -67,6 +73,8 @@ void tst_UCTheme::testNameDefault()
 
 void tst_UCTheme::testNameSet()
 {
+    QTest::ignoreMessage(QtWarningMsg, "Theme not found: \"MyBeautifulTheme\"");
+
     UCTheme theme;
     theme.setName("MyBeautifulTheme");
     QCOMPARE(theme.name(), QString("MyBeautifulTheme"));
@@ -77,6 +85,11 @@ void tst_UCTheme::testCreateStyleComponent()
     QFETCH(QString, styleName);
     QFETCH(QString, parentName);
     QFETCH(bool, success);
+
+    if (parentName.isEmpty())
+        QTest::ignoreMessage(QtWarningMsg, "QQmlComponent: Component is not ready");
+    else if (styleName == "NotExistingTestStyle.qml")
+        UbuntuTestCase::ignoreWarning(parentName, 19, 1, "QML Item: Warning: Style NotExistingTestStyle.qml not found in theme TestModule.TestTheme");
 
     qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", ".");
 
@@ -151,6 +164,8 @@ void tst_UCTheme::testThemesRelativePathWithParentXDGDATA()
 
 void tst_UCTheme::testThemesRelativePathWithParentNoVariablesSet()
 {
+    UbuntuTestCase::ignoreWarning("Parent.qml", 19, 1, "QML Item: Warning: Style TestStyle.qml not found in theme Ubuntu.Components.Themes.Ambiance");
+
     qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "");
     qputenv("XDG_DATA_DIRS", "");
 
@@ -180,7 +195,57 @@ void tst_UCTheme::testThemesRelativePathWithParentOneXDGPathSet()
     QQmlComponent* component = theme.createStyleComponent("TestStyle.qml", parent);
 
     QCOMPARE(component != NULL, true);
-    QCOMPARE(component->status(), QQmlComponent::Ready);}
+    QCOMPARE(component->status(), QQmlComponent::Ready);
+}
+
+void tst_UCTheme::testAppTheme()
+{
+    QScopedPointer<UbuntuTestCase> test(new UbuntuTestCase("TestApp.qml"));
+    QColor backgroundColor = test->rootObject()->property("backgroundColor").value<QColor>();
+    QCOMPARE(backgroundColor, QColor("#A21E1C"));
+    QQuickText *label = test->findItem<QQuickText*>("test_label");
+    QVERIFY(label);
+    QCOMPARE(label->color(), QColor("lightblue"));
+}
+
+void tst_UCTheme::testNoImportPathSet()
+{
+    if (!QFile(QLibraryInfo::location(QLibraryInfo::Qml2ImportsPath) + "/Ubuntu/Components").exists())
+        QSKIP("This can only be tested if the UITK is installed");
+
+    qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "");
+    qputenv("XDG_DATA_DIRS", "");
+    qputenv("QML2_IMPORT_PATH", "");
+
+    UCTheme theme;
+    QCOMPARE(theme.name(), QString("Ubuntu.Components.Themes.Ambiance"));
+}
+
+void tst_UCTheme::testBogusImportPathSet()
+{
+    if (!QFile(QLibraryInfo::location(QLibraryInfo::Qml2ImportsPath) + "/Ubuntu/Components").exists())
+        QSKIP("This can only be tested if the UITK is installed");
+
+    qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "");
+    qputenv("XDG_DATA_DIRS", "");
+    qputenv("QML2_IMPORT_PATH", "/no/plugins/here");
+
+    UCTheme theme;
+    QCOMPARE(theme.name(), QString("Ubuntu.Components.Themes.Ambiance"));
+}
+
+void tst_UCTheme::testMultipleImportPathsSet()
+{
+    if (!QFile(QLibraryInfo::location(QLibraryInfo::Qml2ImportsPath) + "/Ubuntu/Components").exists())
+        QSKIP("This can only be tested if the UITK is installed");
+
+    qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "");
+    qputenv("XDG_DATA_DIRS", "");
+    qputenv("QML2_IMPORT_PATH", "/no/plugins/here:.");
+
+    UCTheme theme;
+    theme.setName("TestModule.TestTheme");
+}
 
 QTEST_MAIN(tst_UCTheme)
 

@@ -15,3 +15,18 @@ msgstr "Greets"
 
 msgid "Count the kilometres"
 msgstr "Count the clicks"
+
+msgid "Count the kittens"
+msgstr "Contar los gatitos"
+
+msgctxt "All Contacts"
+msgid "All"
+msgstr "Todos"
+
+msgctxt "All Calls"
+msgid "All"
+msgstr "Todas"
+
+msgctxt "All Cats"
+msgid "All"
+msgstr "Cada"

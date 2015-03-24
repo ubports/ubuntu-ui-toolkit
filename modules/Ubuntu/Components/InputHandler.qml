@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.1
-import Ubuntu.Components 1.1
+import QtQuick 2.4
+import Ubuntu.Components 1.2
 
 /*
   This component is a unified text selection and scrolling handler for both
@@ -32,11 +32,8 @@ MultiPointTouchArea {
     property Item input
     // the Flickable holding the input instance
     property Flickable flickable
-    // selection cursor mode
-    property bool selectionCursor: input && input.selectedText !== ""
 
-    // item filling the text input visible area, used to check teh caret handler
-    // visibility
+    // item filling the visible text input area used to check handler visibility
     property Item visibleArea: Item {
         parent: flickable
         anchors.fill: parent
@@ -46,10 +43,10 @@ MultiPointTouchArea {
     property real lineSpacing: units.dp(3)
     property real lineSize: input.font.pixelSize + lineSpacing
     // input x/y distance from the frame
-    property point frameDistance: Qt.point(0,0)
+    property point frameDistance: Qt.point(flickable.x, flickable.y)
 
     // signal triggered when popup should be opened
-    signal pressAndHold(int pos)
+    signal pressAndHold(int pos, bool fromTouch)
     signal tap(int pos)
     property string oldText: ""
     signal textModified()
@@ -76,7 +73,7 @@ MultiPointTouchArea {
     }
 
     // internal properties/functions
-    readonly property bool singleLine: input && input.hasOwnProperty("validator")
+    readonly property bool singleLine: input.hasOwnProperty("validator")
     property var flickableList: new Array()
     property bool textChanged: false
     property var popover
@@ -94,12 +91,9 @@ MultiPointTouchArea {
     readonly property Flickable grandScroller: firstFlickableParent(main)
     readonly property Flickable scroller: (scrollingDisabled && grandScroller) ? grandScroller : flickable
 
-    // ensures the text cusrorRectangle is always in the internal Flickable's visible area
+    // ensures the text cursorRectangle is always in the internal Flickable's visible area
     function ensureVisible(rect)
     {
-        if (rect === undefined) {
-            rect = input.cursorRectangle;
-        }
         if (flickable.moving || flickable.flicking)
             return;
         if (flickable.contentX >= rect.x)
@@ -112,8 +106,18 @@ MultiPointTouchArea {
             flickable.contentY = rect.y + rect.height - flickable.height;
     }
     // returns the cursor position from x,y pair
-    function cursorPosition(x, y) {
+    function unadulteratedCursorPosition(x, y) {
         return singleLine ? input.positionAt(x, TextInput.CursorOnCharacter) : input.positionAt(x, y, TextInput.CursorOnCharacter);
+    }
+    // returns the cursor position taking frame into account
+    function cursorPosition(x, y) {
+        var frameSpacing = main.__styleInstance.frameSpacing;
+        var cursorPosition = unadulteratedCursorPosition(x, y);
+        if (cursorPosition == 0)
+            cursorPosition = unadulteratedCursorPosition(x + frameSpacing, y + frameSpacing);
+        if (cursorPosition == text.length)
+            cursorPosition = unadulteratedCursorPosition(x - frameSpacing, y - frameSpacing);
+        return cursorPosition
     }
 
     // returns the mouse position
@@ -150,17 +154,17 @@ MultiPointTouchArea {
         return p;
     }
     // focuses the input if not yet focused, and shows the context menu
-    function openContextMenu(mouse, noAutoselect) {
+    function openContextMenu(mouse, noAutoselect, fromTouch) {
         var pos = mousePosition(mouse);
         if (!main.focus || !mouseInSelection(mouse)) {
             activateInput();
             input.cursorPosition = pressedPosition = mousePosition(mouse);
-            if (noAutoselect === undefined || !noAutoselect) {
+            if (!noAutoselect) {
                 input.selectWord();
             }
         }
         // open context menu at the cursor position
-        inputHandler.pressAndHold(input.cursorPosition);
+        inputHandler.pressAndHold(input.cursorPosition, fromTouch);
         // if opened with left press (touch falls into this criteria as well), we need to set state to inactive
         // so the mouse moves won't result in selected text loss/change
         if (mouse.button === Qt.LeftButton) {
@@ -203,15 +207,6 @@ MultiPointTouchArea {
             } else if (positioner === "selectionEnd" && (pos > input.selectionStart)) {
                 input.select(input.selectionStart, pos);
             }
-        }
-    }
-
-    // returns the styles for the cursors depending on the position property given
-    function textCursorStyle(positionProperty) {
-        switch (positionProperty) {
-        case "cursorPosition": return main.__styleInstance.mainCursorStyle;
-        case "selectionStart": return main.__styleInstance.selectionStartCursorStyle;
-        case "selectionEnd": return main.__styleInstance.selectionEndCursorStyle;
         }
     }
 
@@ -310,7 +305,7 @@ MultiPointTouchArea {
     // input specific signals
     Connections {
         target: input
-        onCursorRectangleChanged: ensureVisible()
+        onCursorRectangleChanged: ensureVisible(input.cursorRectangle)
         onTextChanged: {
             textChanged = true;
             if (oldText != input.text) {
@@ -378,7 +373,7 @@ MultiPointTouchArea {
         // check if we get right-click from the frame or the area that has no text
         if (event.button === Qt.RightButton) {
             // open the popover
-            inputHandler.pressAndHold(input.cursorPosition);
+            inputHandler.pressAndHold(input.cursorPosition, touch);
         } else {
             inputHandler.tap(input.cursorPosition);
         }
@@ -392,12 +387,10 @@ MultiPointTouchArea {
     }
     function handleDblClick(event, touch) {
         if (main.selectByMouse) {
-            input.selectWord();
+            openContextMenu(event, false, touch);
             // turn selection state temporarily so the selection is not cleared on release
             state = "selection";
-            if (touch) {
-                suppressReleaseEvent = true;
-            }
+            suppressReleaseEvent = true;
         }
     }
 
@@ -406,16 +399,16 @@ MultiPointTouchArea {
     Mouse.onPressed: handlePressed(mouse, false)
     Mouse.onReleased: handleReleased(mouse, false)
     Mouse.onPositionChanged: handleMove(mouse, false)
-    Mouse.onDoubleClicked: handleDblClick(mouse)
+    Mouse.onDoubleClicked: handleDblClick(mouse, false)
 
     // right button handling
     MouseArea {
         anchors.fill: parent
         acceptedButtons: Qt.RightButton
         // trigger pressAndHold
-        onReleased: openContextMenu(mouse, true)
+        onReleased: openContextMenu(mouse, true, false)
     }
-    Keys.onMenuPressed: inputHandler.pressAndHold(input.cursorPosition);
+    Keys.onMenuPressed: inputHandler.pressAndHold(input.cursorPosition, false);
 
     // touch handling
     touchPoints: TouchPoint {
@@ -448,13 +441,15 @@ MultiPointTouchArea {
             }
 
             // do not open context menu if this is scrolling
-            if (touchPoint.startY - touchPoint.y < -units.dp(2))
+            if (touchPoint.startY - touchPoint.y < -units.gu(2))
                 return;
 
-            openContextMenu(touchPoint, false);
+            openContextMenu(touchPoint, false, true);
             suppressReleaseEvent = true;
         }
     }
+
+    property bool doubleTapInProgress: doubleTap.running
     Timer {
         id: doubleTap
         property int tapCount: 0
@@ -466,31 +461,27 @@ MultiPointTouchArea {
     onPressed: handlePressed(touchPoints[0], true)
     onReleased: handleReleased(touchPoints[0], true)
 
+    property Item cursorPositionCursor: null
+    property Item selectionStartCursor: null
+    property Item selectionEndCursor: null
+
     // cursors to use when text is selected
     Connections {
-        property Item selectionStartCursor: null
-        property Item selectionEndCursor: null
         target: input
         onSelectedTextChanged: {
-            if (selectedText !== "" && input.cursorDelegate) {
+            if (selectedText !== "") {
                 if (!selectionStartCursor) {
                     selectionStartCursor = input.cursorDelegate.createObject(
                                 input, {
                                     "positionProperty": "selectionStart",
-                                    "height": lineSize,
                                     "handler": inputHandler,
-                                    "objectName": "selectionStartCursor"
                                     }
                                 );
                     moveSelectionCursor(selectionStartCursor);
-                }
-                if (!selectionEndCursor) {
                     selectionEndCursor = input.cursorDelegate.createObject(
                                 input, {
                                     "positionProperty": "selectionEnd",
-                                    "height": lineSize,
                                     "handler": inputHandler,
-                                    "objectName": "selectionEndCursor"
                                     }
                                 );
                     moveSelectionCursor(selectionEndCursor);
@@ -499,8 +490,6 @@ MultiPointTouchArea {
                 if (selectionStartCursor) {
                     selectionStartCursor.destroy();
                     selectionStartCursor = null;
-                }
-                if (selectionEndCursor) {
                     selectionEndCursor.destroy();
                     selectionEndCursor = null;
                 }
@@ -522,6 +511,7 @@ MultiPointTouchArea {
             var pos = input.positionToRectangle(input[cursor.positionProperty]);
             cursor.x = pos.x;
             cursor.y = pos.y;
+            cursor.height = pos.height;
             ensureVisible(pos);
         }
     }

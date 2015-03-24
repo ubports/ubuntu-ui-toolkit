@@ -14,17 +14,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 1.1 as Ubuntu
+import QtQuick 2.4
+import Ubuntu.Components 1.2 as Ubuntu
 import Ubuntu.Components.Popups 1.0
 
 Ubuntu.StyledItem {
     id: cursorItem
 
-    width: units.dp(1)
+    height: cursorRectangle.height
 
     /*
-      Property holding the text input's custor position property. Can be one of
+      Property holding the text input's cursor position property. Can be one of
       the following ones: cursorPosition, selectionStart and selectionEnd.
       */
     property string positionProperty: "cursorPosition"
@@ -41,78 +41,97 @@ Ubuntu.StyledItem {
                                            handler.main.cursorDelegate :
                                            __styleInstance.cursorDelegate
 
-    // depending on the positionProperty, we chose different styles
-    style: Theme.createStyleComponent(handler.textCursorStyle(positionProperty), cursorItem);
+    style: Theme.createStyleComponent("TextCursorStyle.qml", cursorItem);
 
     objectName: "textCursor"
     //Caret instance from the style.
     property Item caret: __styleInstance.caret
-    property real caretX: caret ? caret.x : 0
-    property real caretY: caret ? caret.y : 0
+    property int absX: {
+        return fakeCursor.parent.mapFromItem(handler.main, cursorItem.x, cursorItem.y).x
+    }
+    property int absY: {
+        // Take parent flickable movement into account
+        var flickable = handler.main;
+        do {
+            flickable = flickable.parent;
+        } while (flickable && !flickable.contentY && flickable != fakeCursor.parent);
+        return fakeCursor.parent.mapFromItem(handler.main, cursorItem.x, cursorItem.y).y
+    }
 
-    // returns the mapped cursor position to a position relative to the main component
-    function mappedCursorPosition(pos) {
-        var cpos = cursorItem[pos];
-        if (handler) {
-            cpos += handler.frameDistance[pos] - handler.flickable["content"+pos.toUpperCase()];
-        }
+    // Returns "x" or "y" relative to the item handlers are a child of
+    function mappedCursorPosition(coordinate) {
+        var cpos = cursorItem["abs" + coordinate.toUpperCase()];
+        cpos += handler.frameDistance[coordinate];
+        cpos += handler.input[coordinate];
+        cpos -= handler.flickable["content" + coordinate.toUpperCase()];
         return cpos;
     }
     /*
         The function opens the text input popover setting the text cursor as caller.
       */
     Connections {
-        target: inputHandler
-        onPressAndHold: openPopover()
+        target: handler
+        onPressAndHold: {
+            // open context menu only for cursorPosition or selectionStart as to
+            // ensure that only one popover gets opened
+            if (positionProperty !== "selectionEnd") {
+                openPopover(fromTouch);
+            }
+        }
         onTextModified: typing = true
-        onTap: typing = false
+        onTap: {
+            typing = false
+            if (handler.popover != null) {
+                PopupUtils.close(handler.popover);
+            }
+        }
+    }
+
+    Binding {
+        target: handler
+        property: "cursorPositionCursor"
+        value: cursorItem
     }
 
     function openPopover() {
-        if (!visible || opacity === 0.0 || dragger.drag.active) {
+        if (!visible
+         || opacity === 0.0
+         || dragger.dragActive) {
             return;
         }
-        // open context menu only for cursorPosition or selectionEnd
-        if (positionProperty !== "selectionStart") {
-            if (inputHandler.popover != null)
-                inputHandler.popover.hide();
 
-            var component = handler.main.popover;
-            if (component === undefined)
-                component = Qt.resolvedUrl("TextInputPopover.qml");
-            var popup = PopupUtils.open(component, cursorItem, {
-                "target": handler.main
-            });
-            contextMenuVisible = true;
-            popup.onVisibleChanged.connect(contextMenuHidden.bind(undefined, popup));
-            // do not grab focus!
-            popup.__foreground.activeFocusOnPress = false;
-            inputHandler.popover = popup;
+        if (handler.popover != null) {
+            PopupUtils.close(handler.popover);
         }
+
+        var component = handler.main.popover;
+        if (component === undefined)
+            component = Qt.resolvedUrl("TextInputPopover.qml");
+
+        // if the cursor is out of the visible viewport, anchor the
+        // contextual menu to the input field
+        var anchor = fakeCursor.visible ? draggedItem : handler.main
+        var popup = PopupUtils.open(component, anchor, {
+            "target": handler.main,
+        });
+        // hide the arrow
+        popup.__foreground.direction = "none";
+        cursorItem.Component.onDestruction.connect(popup.__closePopup);
+        contextMenuVisible = true;
+        popup.onVisibleChanged.connect(contextMenuHidden.bind(undefined, popup));
+        // do not grab focus!
+        popup.__foreground.activeFocusOnPress = false;
+        handler.popover = popup;
     }
 
-    visible: handler.main.cursorVisible
-    // change opacity to 0 if text is selected and the positionProperty is cursorPosition
-    // note: we should not touch visibility as cursorVisible alters that!
-    opacity: (positionProperty === "cursorPosition") && (handler.main.selectedText !== "") ? 0.0 : 1.0
+    visible: handler.main.cursorVisible &&
+     !(positionProperty === "cursorPosition" && handler.main.selectedText !== "")
 
     // cursor visual loader
     Loader {
         id: cursorLoader
         sourceComponent: cursorDelegate
         height: parent.height
-        onItemChanged: {
-            if (item) {
-                cursorItem.width = item.width;
-            }
-        }
-        // bind the cursor height as it may change depending on the text size
-        Binding {
-            target: cursorLoader.item
-            property: "height"
-            value: cursorLoader.height
-            when: cursorLoader.item
-        }
     }
 
     /*
@@ -129,28 +148,19 @@ Ubuntu.StyledItem {
     }
     property bool typing: false
     property bool contextMenuVisible: false
+    property bool readOnly: handler.main.readOnly
     function contextMenuHidden(p) {
         contextMenuVisible = false
     }
-    onXChanged: if (draggedItem.state === "") draggedItem.moveToCaret()
-    onYChanged: if (draggedItem.state === "") draggedItem.moveToCaret()
-    Component.onCompleted: draggedItem.moveToCaret()
 
     //dragged item
-    Item {
-        id: draggedItem
+    property Item draggedItem: Item {
         objectName: cursorItem.positionProperty + "_draggeditem"
-        width: caret ? Math.max(caret.width, units.gu(2)) : 0
-        height: caret ? Math.max(caret.height, units.gu(2)) : 0
-        parent: handler.main
-        visible: cursorItem.visible && (cursorItem.opacity > 0.0) && QuickUtils.touchScreenAvailable
-
-        // when the dragging ends, reposition the dragger back to caret
-        onStateChanged: {
-            if (state === "") {
-                draggedItem.moveToCaret();
-            }
-        }
+        width: caret.width + units.gu(4)
+        onWidthChanged: draggedItem.moveToCaret()
+        height: caret.height + units.gu(4)
+        parent: fakeCursor.parent
+        visible: caret.visible
 
         /*
           Mouse area to turn on dragging or selection mode when pressed
@@ -158,56 +168,52 @@ Ubuntu.StyledItem {
           gets inactive or when the LeftButton is released.
           */
         MouseArea {
+            id: draggedItemMouseArea
             objectName: cursorItem.positionProperty + "_activator"
             anchors.fill: parent
             acceptedButtons: Qt.LeftButton
             preventStealing: true
-            enabled: parent.width && parent.height && parent.visible
-
-            onPressed: {
-                draggedItem.moveToCaret(mouse.x, mouse.y);
-                draggedItem.state = "dragging";
+            enabled: parent.width && parent.height && parent.visible && !handler.doubleTapInProgress
+            onPressedChanged: {
+                if (!pressed) {
+                    // when the dragging ends, reposition the dragger back to caret
+                    draggedItem.moveToCaret();
+                }
             }
             Ubuntu.Mouse.forwardTo: [dragger]
-            /*
-              As we are forwarding the events to the upper mouse area, the release
-              will not get into the normal MosueArea onRelease signal as the preventStealing
-              will not have any effect on the handling. However due to the mouse
-              filter's nature, we will still be able to grab mouse events and we
-              can stop dragging. We only handle the release in case the drag hasn't
-              been active at all, otherwise the drag will not be deactivated and we
-              will end up in a binding loop on the moveToCaret() next time the caret
-              handler is grabbed.
-              */
-            Ubuntu.Mouse.onReleased: {
-                if (!dragger.drag.active) {
-                    draggedItem.state = "";
-                }
+            Ubuntu.Mouse.onClicked: openPopover()
+            Ubuntu.Mouse.onPressAndHold: {
+                handler.main.selectWord();
+                handler.pressAndHold(-1, false);
+            }
+            Ubuntu.Mouse.onDoubleClicked: handler.main.selectWord()
+            Ubuntu.Mouse.enabled: enabled
+
+            // Visible touch target area for debugging purposes
+            Rectangle {
+                anchors.fill: parent
+                color: 'red'
+                opacity: 0.1
+                visible: false // draggedItemMouseArea.enabled
             }
         }
 
         // aligns the draggedItem to the caret and resets the dragger
-        function moveToCaret(cx, cy) {
-            if (cx === undefined && cy === undefined) {
-                cx = mappedCursorPosition("x") + caretX;
-                cy = mappedCursorPosition("y") + caretY;
-            } else {
-                // move mouse position to caret
-                cx += draggedItem.x;
-                cy += draggedItem.y;
+        function moveToCaret() {
+            if (!caret) {
+                return;
             }
-
-            draggedItem.x = cx;
-            draggedItem.y = cy;
-            dragger.resetDrag();
+            draggedItem.x = fakeCursor.x - draggedItem.width / 2;
+            draggedItem.y = fakeCursor.y + caret.y - caret.height / 2;
         }
         // positions caret to the dragged position
         function positionCaret() {
-            if (dragger.drag.active) {
-                var dx = dragger.thumbStartX + dragger.dragAmountX + handler.flickable.contentX;
-                var dy = dragger.thumbStartY + dragger.dragAmountY + handler.flickable.contentY;
-                // consider only the x-distance because of the overlays
+            if (dragger.dragActive) {
+                var dx = dragger.dragStartX + dragger.dragAmountX + handler.flickable.contentX;
+                var dy = dragger.dragStartY + dragger.dragAmountY + handler.flickable.contentY;
                 dx -= handler.frameDistance.x;
+                dy -= handler.frameDistance.y;
+                dy -= draggedItem.height / 2;
                 handler.positionCaret(positionProperty, dx, dy);
             }
         }
@@ -218,51 +224,84 @@ Ubuntu.StyledItem {
         // fill the entire component area
         parent: handler.main
         anchors.fill: parent
-        hoverEnabled: true
-        preventStealing: drag.active
-        enabled: draggedItem.enabled && draggedItem.state === "dragging" && QuickUtils.touchScreenAvailable
-
-        property int thumbStartX
-        property int dragStartX
-        property int dragAmountX: dragger.drag.target.x - dragStartX
-        property int thumbStartY
-        property int dragStartY
-        property int dragAmountY: dragger.drag.target.y - dragStartY
-
-        function resetDrag() {
-            thumbStartX = mappedCursorPosition("x");
-            thumbStartY = mappedCursorPosition("y");
-            dragStartX = drag.target ? drag.target.x : 0;
-            dragStartY = drag.target ? drag.target.y : 0;
+        enabled: draggedItemMouseArea.enabled && draggedItemMouseArea.pressed && caret.visible
+        onEnabledChanged: {
+            if (enabled) {
+                dragAmountX = 0;
+                dragAmountY = 0;
+                firstMouseXChange = true;
+                firstMouseYChange = true;
+            } else {
+                dragActive = false;
+            }
         }
 
-        // do not set minimum/maximum so we can drag outside of the Flickable area
-        drag {
-            target: draggedItem
-            axis: handler.singleLine ? Drag.XAxis : Drag.XAndYAxis
-            // deactivate dragging
-            onActiveChanged: {
-                if (!drag.active) {
-                    draggedItem.state = "";
+        property int dragStartX
+        property int dragAmountX
+        property int dragStartY
+        property int dragAmountY
+        property bool dragActive: false
+        property int dragThreshold: units.gu(2)
+        property bool firstMouseXChange: true
+        property bool firstMouseYChange: true
+
+        onMouseXChanged: {
+            if (firstMouseXChange) {
+                dragStartX = mouseX;
+                firstMouseXChange = false;
+            } else {
+                var amount = mouseX - dragStartX;
+                if (Math.abs(amount) >= dragThreshold) {
+                    dragActive = true;
+                }
+                if (dragActive) {
+                    dragAmountX = amount;
+                    draggedItem.positionCaret();
                 }
             }
         }
 
-        onDragAmountXChanged: draggedItem.positionCaret()
-        onDragAmountYChanged: draggedItem.positionCaret()
+        onMouseYChanged: {
+            if (firstMouseYChange) {
+                dragStartY = mouseY;
+                firstMouseYChange = false;
+            } else {
+                var amount = mouseY - dragStartY;
+                if (Math.abs(amount) >= dragThreshold) {
+                    dragActive = true;
+                }
+                if (dragActive) {
+                    dragAmountY = amount;
+                    draggedItem.positionCaret()
+                }
+            }
+        }
+
+        onDragActiveChanged: {
+            // close contextual menu when dragging and reopen it at the end of the drag
+            if (dragActive) {
+                if (handler.popover != null) {
+                    PopupUtils.close(handler.popover);
+                }
+            } else {
+                handler.pressAndHold(-1, false);
+            }
+        }
     }
 
     // fake cursor, caret is reparented to it to avoid caret clipping
     Item {
         id: fakeCursor
-        parent: handler.main
+        objectName: positionProperty + "FakeCursor"
+        parent: QuickUtils.rootItem(handler.main)
         width: cursorItem.width
         height: cursorItem.height
-        //reparent caret to it
-        Component.onCompleted: if (caret) caret.parent = fakeCursor
+        Component.onCompleted: caret.parent = fakeCursor
 
         x: mappedCursorPosition("x")
         y: mappedCursorPosition("y")
+        onXChanged: draggedItem.moveToCaret()
+        onYChanged: draggedItem.moveToCaret()
 
         // manual clipping: the caret should be visible only while the cursor's
         // top/bottom falls into the text area
@@ -270,8 +309,9 @@ Ubuntu.StyledItem {
             if (!caret || !cursorItem.visible || cursorItem.opacity < 1.0)
                 return false;
 
-            var leftTop = Qt.point(x - handler.frameDistance.x, y + handler.frameDistance.y + handler.lineSpacing);
-            var rightBottom = Qt.point(x - handler.frameDistance.x, y + height - handler.frameDistance.y - handler.lineSpacing);
+            var pos = handler.main.mapFromItem(fakeCursor.parent, fakeCursor.x, fakeCursor.y);
+            var leftTop = Qt.point(pos.x - handler.frameDistance.x, pos.y + handler.frameDistance.y + handler.lineSpacing);
+            var rightBottom = Qt.point(pos.x - handler.frameDistance.x, pos.y + height - handler.frameDistance.y - handler.lineSpacing);
             return (handler.visibleArea.contains(leftTop) || handler.visibleArea.contains(rightBottom));
         }
     }

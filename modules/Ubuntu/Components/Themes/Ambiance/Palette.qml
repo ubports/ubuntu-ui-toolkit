@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 1.1
+import QtQuick 2.4
+import Ubuntu.Components 1.2
 import Ubuntu.Components.Themes 0.1
 
 Palette {
@@ -28,14 +28,14 @@ Palette {
         foregroundText: "#FFFFFF"
         overlay: "#FDFDFD"
         overlayText: UbuntuColors.lightGrey
-        field: "#1A000000"
+        field: "#FAFAFA"
         fieldText: UbuntuColors.darkGrey
     }
     selected: PaletteValues {
         background: Qt.rgba(0, 0, 0, 0.05)
         backgroundText: UbuntuColors.darkGrey
-        selection: Qt.rgba(UbuntuColors.blue.r, UbuntuColors.blue.g, UbuntuColors.blue.b, 0.2)
-        foreground: UbuntuColors.orange
+        selection: foreground // unused
+        foreground: Qt.rgba(UbuntuColors.blue.r, UbuntuColors.blue.g, UbuntuColors.blue.b, 0.2)
         foregroundText: UbuntuColors.darkGrey
         field: "#FFFFFF"
         fieldText: UbuntuColors.darkGrey

@@ -14,9 +14,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 1.1 as Toolkit
-import Ubuntu.Components.ListItems 0.1 as ListItem
+import QtQuick 2.4
+import Ubuntu.Components 1.2 as Toolkit
+import Ubuntu.Components.ListItems 1.0 as ListItem
 
 Template {
     objectName: "listItemsTemplate"
@@ -317,7 +317,7 @@ Template {
         }
     }
 
-    TemplateSection {
+    ListItemsSection {
         title: i18n.tr("ExpandablesColumn")
         className: "ExpandablesColumn"
 
@@ -360,7 +360,7 @@ Template {
         }
     }
 
-    TemplateSection {
+    ListItemsSection {
         title: i18n.tr("Expandable")
         className: "Expandable"
 

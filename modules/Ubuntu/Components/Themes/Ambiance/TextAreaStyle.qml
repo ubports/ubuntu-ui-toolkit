@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 1.1
+import QtQuick 2.4
+import Ubuntu.Components 1.2
 
 // frame
 // FIXME: stabilize API
@@ -26,6 +26,8 @@ Item {
     // if color type is used, alpha value gets lost
 
     property color color: (styledItem.focus || styledItem.highlighted) ? Theme.palette.selected.fieldText : Theme.palette.normal.fieldText
+    property color selectedTextColor: Theme.palette.selected.foregroundText
+    property color selectionColor: Theme.palette.selected.foreground
     /*!
       Background fill color
       */
@@ -36,16 +38,8 @@ Item {
       Spacing between the frame and the text editor area
       */
     property real frameSpacing: units.gu(1)
-    property real overlaySpacing: frameSpacing / 2
-
-    /*!
-      The following properties define the name of the style components declaring
-      the styles for the main and the selection cursors. All cursors must defive
-      from TextCursorStyle.
-      */
-    property string mainCursorStyle: "TextCursorStyle.qml"
-    property string selectionStartCursorStyle: "TextSelectionStartCursorStyle.qml"
-    property string selectionEndCursorStyle: "TextSelectionEndCursorStyle.qml"
+    // Obsolete
+    property alias overlaySpacing: visuals.frameSpacing
 
     // style body
     anchors.fill: parent
@@ -61,6 +55,7 @@ Item {
         onErrorChanged: (error) ? visuals.errorColor : visuals.backgroundColor;
         color: visuals.backgroundColor;
         anchors.fill: parent
+        visible: !styledItem.readOnly
     }
 
     Loader {

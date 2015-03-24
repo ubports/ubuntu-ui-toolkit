@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013-2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -37,11 +37,6 @@ ListModel {
         objectName: "togglesElement"
         label: "Toggles"
         source: "Toggles.qml"
-    }
-    ListElement {
-        objectName: "toolbarElement"
-        label: "Toolbar"
-        source: "Toolbar.qml"
     }
     ListElement {
         objectName: "buttonsElement"
@@ -102,6 +97,11 @@ ListModel {
         objectName: "listItemsElement"
         label: "List Items"
         source: "ListItems.qml"
+    }
+    ListElement {
+        objectName: "newListItemsElement"
+        label: "New list items (preview)"
+        source: "NewListItems.qml"
     }
     ListElement {
         objectName: "ubuntuListViewElement"

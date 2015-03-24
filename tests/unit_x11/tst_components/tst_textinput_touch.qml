@@ -26,9 +26,21 @@ Item {
 
     Column {
         spacing: units.gu(1)
+        Label {
+            text: "Text fields are awesome"
+            width: parent.width
+            height: units.gu(10)
+            verticalAlignment: Text.AlignVCenter
+        }
         TextField {
             id: textField
             text: "This is a single line text input called TextField."
+        }
+        Label {
+            text: "Text areas are even more amazing"
+            width: parent.width
+            height: units.gu(5)
+            verticalAlignment: Text.AlignVCenter
         }
         TextArea {
             id: textArea
@@ -37,7 +49,7 @@ Item {
         Flickable {
             id: outerFlicker
             width: parent.width
-            height: units.gu(40)
+            height: units.gu(20)
             clip: true
             contentWidth: autoSizeTextArea.width
             contentHeight: autoSizeTextArea.height
@@ -47,6 +59,14 @@ Item {
                 maximumLineCount: 0
                 text: "1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1"
             }
+        }
+        TextField {
+            id: emptyTextField
+            text: ""
+        }
+        TextArea {
+            id: emptyTextArea
+            text: ""
         }
     }
 
@@ -74,12 +94,16 @@ Item {
         function init() {
             textField.cursorPosition = 0;
             textArea.cursorPosition = 0;
+            emptyTextField.cursorPosition = 0;
+            emptyTextArea.cursorPosition = 0;
         }
         function cleanup() {
             textField.cursorPosition = 1;
             textArea.cursorPosition = 1;
             textField.focus = false;
             textArea.focus = false;
+            emptyTextField.focus = false;
+            emptyTextArea.focus = false;
             autoSizeTextArea.focus = false;
             popupSpy.target = null;
             popupSpy.clear();
@@ -165,6 +189,9 @@ Item {
             ];
         }
         function test_select_text_longtap_when_active(data) {
+            if(TestExtras.openGLflavor() == "opengles2" &&
+               TestExtras.cpuArchitecture() != "arm")
+                skip("This test doesn't pass with OpenGLES other than arm");
             data.input.focus = true;
             popupSpy.target = findChild(data.input, "input_handler");
 
@@ -177,6 +204,29 @@ Item {
             TestExtras.touchRelease(0, data.input, guPoint(1, 1));
             // dismiss popover
             TestExtras.touchClick(0, testMain, 0, 0);
+        }
+
+        function test_longtap_when_empty_data() {
+            return [
+                {tag: "TextField", input: emptyTextField},
+            ];
+        }
+        function test_longtap_when_empty(data) {
+            TestExtras.touchClick(0, data.input, centerOf(data.input));
+            wait(500);
+
+            popupSpy.target = findChild(data.input, "input_handler");
+
+            TestExtras.touchLongPress(0, data.input, guPoint(1, 1));
+            waitForRendering(data.input, 500);
+            popupSpy.wait();
+            compare(popupSpy.count, 1, "Copy/paste popup should be displayed.");
+
+            // cleanup
+            TestExtras.touchRelease(0, data.input, guPoint(1, 1));
+            // dismiss popover
+            TestExtras.touchClick(0, testMain, 0, 0);
+            waitForRendering(data.input, 500);
         }
 
         function test_long_tap_on_selected_text_data() {
@@ -211,7 +261,9 @@ Item {
         }
         function test_drag_cursor_handler(data) {
             data.input.focus = true;
-            var caret = findChild(data.input, "cursorPosition_draggeditem");
+            data.input.cursorPosition = 0;
+            var caret = findChild(data.input, "input_handler").cursorPositionCursor;
+            verify(caret, "Caret \"" + data.cursorName + "\" cannot be found!");
             var cursorPosition = data.input.cursorPosition;
 
             TestExtras.touchDrag(0, caret, centerOf(caret), data.delta);
@@ -223,8 +275,8 @@ Item {
             return [
                 {tag: "TextField", input: textField, initialCursorPosition: 0, cursorName: "selectionEnd", delta: guPoint(10, 0)},
                 {tag: "TextArea", input: textArea, initialCursorPosition: 0, cursorName: "selectionEnd", delta: guPoint(10, 5)},
-                {tag: "TextField", input: textField, initialCursorPosition: 50, cursorName: "selectionStart", delta: guPoint(-10, 0)},
-                {tag: "TextArea", input: textArea, initialCursorPosition: 50, cursorName: "selectionStart", delta: guPoint(-20, -5)},
+                {tag: "TextField(end)", input: textField, initialCursorPosition: 48, cursorName: "selectionStart", delta: guPoint(-10, 0)},
+                {tag: "TextArea(end)", input: textArea, initialCursorPosition: 50, cursorName: "selectionStart", delta: guPoint(-20, -5)},
             ];
         }
         function test_select_text_by_dragging_cursor_handler(data) {
@@ -233,9 +285,11 @@ Item {
             data.input.selectWord();
             var selectedText = data.input.selectedText;
 
-            var caret = findChild(data.input, data.cursorName + "_draggeditem");
+            var caret = findChild(data.input, "input_handler")[data.cursorName + "Cursor"];
             verify(caret, "Caret \"" + data.cursorName + "\" cannot be found!");
 
+            // The caret may not receive events right away
+            sleep(500)
             TestExtras.touchDrag(0, caret, centerOf(caret), data.delta);
             verify(data.input.selectedText !== "", "Selection cleared!");
             verify(data.input.selectedText != selectedText, "Selection did not change");
@@ -245,8 +299,8 @@ Item {
             return [
                 {tag: "TextField", input: textField, withSelectedText: false, from: guPoint(2, 2), delta: guPoint(10, 0)},
                 {tag: "TextArea", input: textArea, withSelectedText: false, from: guPoint(2, 2), delta: guPoint(10, 4)},
-                {tag: "TextField", input: textField, withSelectedText: true, from: guPoint(2, 2), delta: guPoint(10, 0)},
-                {tag: "TextArea", input: textArea, withSelectedText: true, from: guPoint(2, 2), delta: guPoint(10, 4)},
+                {tag: "TextField(selected)", input: textField, withSelectedText: true, from: guPoint(2, 2), delta: guPoint(10, 0)},
+                {tag: "TextArea(selected)", input: textArea, withSelectedText: true, from: guPoint(2, 2), delta: guPoint(10, 4)},
             ];
         }
         function test_z_scroll_when_tap_dragged(data) {
@@ -268,7 +322,6 @@ Item {
         function test_0_drag_autosizing_textarea_drags_parent_flickable_data() {
             return [
                 {tag: "when inactive", focused: false },
-                {tag: "when active", focused: true },
             ];
         }
         function test_0_drag_autosizing_textarea_drags_parent_flickable(data) {

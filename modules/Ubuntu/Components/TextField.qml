@@ -14,8 +14,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 1.1 as Ubuntu
+import QtQuick 2.4
+import Ubuntu.Components 1.2 as Ubuntu
+import Ubuntu.Components.Popups 1.0
 
 /*!
     \qmltype TextField
@@ -25,9 +26,7 @@ import Ubuntu.Components 1.1 as Ubuntu
     Input constraints can be set through validator or inputMask. Setting echoMode
     to an appropriate value enables TextField to be used as password input field.
 
-    \b{This component is under heavy development.}
-
-    \l {http://design.ubuntu.com/apps/building-blocks/text-field}{See also the Design Guidelines on the Text Field}.
+    \l {https://design.ubuntu.com/apps/building-blocks/text-input#text-field}{See also the Design Guidelines on the Text Field}.
 
     Example:
     \qml
@@ -527,8 +526,8 @@ ActionItem {
       between 11 and 31 into the text input:
 
       \qml
-      import QtQuick 2.0
-      import Ubuntu.Components 1.1
+      import QtQuick 2.4
+      import Ubuntu.Components 1.2
       TextField{
           validator: IntValidator{bottom: 11; top: 31;}
           focus: true
@@ -845,9 +844,7 @@ ActionItem {
     QtObject {
         id: internal
         // array of borders in left, top, right, bottom order
-        property real spacing: control.__styleInstance.overlaySpacing
-        property real lineSpacing: units.dp(3)
-        property real lineSize: editor.font.pixelSize + lineSpacing
+        property real spacing: control.__styleInstance.frameSpacing
 
         property int type: action ? action.parameterType : Ubuntu.Action.None
         onTypeChanged: {
@@ -872,6 +869,8 @@ ActionItem {
         // the left pane width depends on its children width
         height: parent.height
         width: childrenRect.width
+        // Overlay needs to have priority
+        z: 1
         onChildrenChanged: {
             // reparenting
             for (var i = 0; i < children.length; i++) {
@@ -892,6 +891,8 @@ ActionItem {
         // the right pane width depends on its children width
         height: parent.height
         width: childrenRect.width
+        // Overlay needs to have priority
+        z: 1
         onChildrenChanged: {
             // reparenting
             for (var i = 0; i < children.length; i++) {
@@ -912,8 +913,14 @@ ActionItem {
             bottom: parent.bottom
             margins: internal.spacing
         }
+        /* draggedItemMouseArea and dragger in TextCursor are reparented to the
+           TextField and end up being on top of the clear button.
+           Ensure that the clear button receives touch/mouse events first.
+        */
+        z: 100
         width: visible ? icon.width : 0
         visible: control.hasClearButton &&
+                 !control.readOnly &&
                     (control.activeFocus && ((editor.text != "") || editor.inputMethodComposing))
 
         Icon {
@@ -922,7 +929,7 @@ ActionItem {
             width: units.gu(2.5)
             height: width
             // use icon from icon-theme
-            name: control.hasClearButton ? "clear-search" : ""
+            name: control.hasClearButton && !control.readOnly ? "clear-search" : ""
         }
 
         onClicked: editor.text = ""
@@ -943,7 +950,7 @@ ActionItem {
         // hint is shown till user types something in the field
         visible: (editor.text == "") && !editor.inputMethodComposing
         color: Theme.palette.normal.backgroundText
-        fontSize: "medium"
+        font: editor.font
         elide: Text.ElideRight
     }
 
@@ -975,12 +982,15 @@ ActionItem {
             // FocusScope will forward focus to this component
             focus: true
             anchors.verticalCenter: parent.verticalCenter
+            verticalAlignment: TextInput.AlignVCenter
+            width: flicker.width
+            height: flicker.height
             cursorDelegate: TextCursor {
                 handler: inputHandler
             }
             color: control.__styleInstance.color
-            selectedTextColor: Theme.palette.selected.foregroundText
-            selectionColor: Theme.palette.selected.selection
+            selectedTextColor: control.__styleInstance.selectedTextColor
+            selectionColor: control.__styleInstance.selectionColor
             font.pixelSize: FontUtils.sizeToPixels("medium")
             passwordCharacter: "\u2022"
             // forward keys to the root element so it can be captured outside of it
@@ -990,6 +1000,7 @@ ActionItem {
             // overrides
             selectByMouse: true
             activeFocusOnPress: true
+            onActiveFocusChanged: if (!activeFocus && inputHandler.popover) PopupUtils.close(inputHandler.popover)
 
             // input selection and navigation handling
             Ubuntu.Mouse.forwardTo: [inputHandler]
@@ -999,12 +1010,6 @@ ActionItem {
                 main: control
                 input: editor
                 flickable: flicker
-                /*
-                  In x direction we use the Flickable x position as we can have overlays
-                  which can shift the cursor caret. On y direction we only use the topMargin
-                  spacing.
-                  */
-                frameDistance: Qt.point(flicker.x, flicker.topMargin)
             }
         }
     }

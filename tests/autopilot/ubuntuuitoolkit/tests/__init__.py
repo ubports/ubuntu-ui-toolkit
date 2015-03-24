@@ -1,6 +1,6 @@
 # -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
 #
-# Copyright (C) 2012, 2013, 2014 Canonical Ltd.
+# Copyright (C) 2012-2015 Canonical Ltd.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -29,7 +29,7 @@ from ubuntuuitoolkit import base, fixture_setup
 
 _DESKTOP_FILE_CONTENTS = ("""[Desktop Entry]
 Type=Application
-Exec=Not important
+Exec=/usr/bin/whoami
 Path=Not important
 Name=Test app
 Icon=Not important
@@ -56,10 +56,22 @@ def get_local_desktop_file_directory():
 
 
 def _get_module_include_path():
-    return os.path.join(get_path_to_source_root(), 'modules')
+    return os.path.join(get_path_to_build_root(), 'modules')
+
+
+def get_path_to_build_root():
+    if "UITK_BUILD_ROOT" in os.environ:
+        return os.environ["UITK_BUILD_ROOT"]
+    return _guess_root_path()
 
 
 def get_path_to_source_root():
+    if "UITK_SOURCE_ROOT" in os.environ:
+        return os.environ["UITK_SOURCE_ROOT"]
+    return _guess_root_path()
+
+
+def _guess_root_path():
     return os.path.abspath(
         os.path.join(
             os.path.dirname(__file__), '..', '..', '..', '..'))
@@ -75,6 +87,7 @@ import Ubuntu.Components 1.1
 MainView {
     width: units.gu(48)
     height: units.gu(80)
+    objectName: "mainView"
 }
 """)
 
@@ -121,7 +134,13 @@ class QMLStringAppTestCase(UbuntuUIToolkitWithFakeAppRunningTestCase):
 
     @property
     def main_view(self):
-        return self.app.select_single(ubuntuuitoolkit.MainView)
+        """
+        Return the MainView of the app, selected by objectName.
+
+        QML code used for testing must define the objectName
+        of the MainView to be 'mainView'.
+        """
+        return self.app.select_single(objectName='mainView')
 
 
 class FlickDirection:
@@ -170,7 +189,13 @@ class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
 
     @property
     def main_view(self):
-        return self.app.select_single(ubuntuuitoolkit.MainView)
+        """
+        Return the MainView of the app, selected by objectName.
+
+        QML code used for testing must define the objectName
+        of the MainView to be 'mainView'.
+        """
+        return self.app.select_single(objectName='mainView')
 
     def getOrientationHelper(self):
         orientationHelper = self.main_view.select_many(

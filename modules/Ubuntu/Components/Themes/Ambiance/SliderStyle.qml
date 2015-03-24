@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 1.1
+import QtQuick 2.4
+import Ubuntu.Components 1.2
 
 /*
   The default slider style consists of a bar and a thumb shape.
@@ -26,6 +26,9 @@ import Ubuntu.Components 1.1
 Item {
     id: sliderStyle
 
+    property color foregroundColor: UbuntuColors.orange
+    property color backgroundColor: Theme.palette.normal.base
+
     property real thumbSpacing: units.gu(0)
     property Item bar: background
     property Item thumb: thumb
@@ -33,7 +36,7 @@ Item {
     implicitWidth: units.gu(38)
     implicitHeight: units.gu(5)
 
-    UbuntuShape {
+    UbuntuShapeOverlay {
         id: background
         anchors {
             verticalCenter: parent.verticalCenter
@@ -41,17 +44,11 @@ Item {
             left: parent.left
         }
         height: units.dp(4)
-
-        color: "white"
-    }
-
-    PartialColorizeUbuntuShape {
-        anchors.fill: background
-        sourceItem: background
-        progress: thumb.x / thumb.barMinusThumbWidth
-        leftColor: Theme.palette.selected.foreground
-        rightColor: Theme.palette.normal.base
-        mirror: Qt.application.layoutDirection == Qt.RightToLeft
+        backgroundColor: sliderStyle.backgroundColor
+        overlayColor: sliderStyle.foregroundColor
+        overlayRect: Qt.application.layoutDirection == Qt.LeftToRight ?
+            Qt.rect(0.0, 0.0, thumb.x / thumb.barMinusThumbWidth, 1.0) :
+            Qt.rect(1.0 - (thumb.x / thumb.barMinusThumbWidth), 0.0, 1.0, 1.0)
     }
 
     UbuntuShape {
@@ -90,7 +87,10 @@ Item {
     BubbleShape {
         id: bubbleShape
 
-        width: units.gu(8)
+        property real minimumWidth: units.gu(8)
+        property real horizontalPadding: units.gu(1)
+
+        width: Math.max(minimumWidth, label.implicitWidth + 2*horizontalPadding)
         height: units.gu(6)
 
         // FIXME: very temporary implementation

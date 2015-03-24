@@ -74,17 +74,26 @@ class Scrollable(_common.UbuntuUIToolkitCustomProxyObjectBase):
         return (object_center >= visible_top and
                 object_center <= visible_bottom)
 
-    def _slow_drag(self, start_x, stop_x, start_y, stop_y):
-        # If we drag too fast, we end up scrolling more than what we
-        # should, sometimes missing the  element we are looking for.
+    def _slow_drag_rate(self):
         # I found that when the flickDeceleration is 1500, the rate should be
         # 5 and that when it's 100, the rate should be 1. With those two points
-        # we can get that the following equation.
+        # we can get the following equation.
         # XXX The deceleration might not be linear with respect to the rate,
         # but this works for the two types of scrollables we have for now.
         # --elopio - 2014-05-08
-        rate = (self.flickDeceleration + 250) / 350
+        return (self.flickDeceleration + 250) / 350
+
+    def _slow_drag(self, start_x, stop_x, start_y, stop_y, rate=None):
+        # If we drag too fast, we end up scrolling more than what we
+        # should, sometimes missing the  element we are looking for.
+        original_content_y = self.contentY
+
+        if rate is None:
+            rate = self._slow_drag_rate()
         self.pointing_device.drag(start_x, start_y, stop_x, stop_y, rate=rate)
+
+        if self.contentY == original_content_y:
+            raise _common.ToolkitException('Could not swipe in the flickable.')
 
 
 class QQuickFlickable(Scrollable):
@@ -105,7 +114,6 @@ class QQuickFlickable(Scrollable):
 
     @autopilot_logging.log_action(logger.info)
     def _swipe_non_visible_child_into_view(self, child, containers):
-        original_content_y = self.contentY
         while not self._is_child_visible(child, containers):
             # Check the direction of the swipe based on the position of the
             # child relative to the immediate flickable container.
@@ -114,12 +122,8 @@ class QQuickFlickable(Scrollable):
             else:
                 self.swipe_to_show_more_below(containers)
 
-            if self.contentY == original_content_y:
-                raise _common.ToolkitException(
-                    "Couldn't swipe in the flickable.")
-
     @autopilot_logging.log_action(logger.info)
-    def swipe_to_show_more_above(self, containers):
+    def swipe_to_show_more_above(self, containers=None):
         if self.atYBeginning:
             raise _common.ToolkitException(
                 "Can't swipe more, we are already at the top of the "
@@ -128,7 +132,7 @@ class QQuickFlickable(Scrollable):
             self._swipe_to_show_more('above', containers)
 
     @autopilot_logging.log_action(logger.info)
-    def swipe_to_show_more_below(self, containers):
+    def swipe_to_show_more_below(self, containers=None):
         if self.atYEnd:
             raise _common.ToolkitException(
                 "Can't swipe more, we are already at the bottom of the "
@@ -136,26 +140,33 @@ class QQuickFlickable(Scrollable):
         else:
             self._swipe_to_show_more('below', containers)
 
-    def _swipe_to_show_more(self, direction, containers):
+    def _swipe_to_show_more(self, direction, containers=None):
+        if containers is None:
+            containers = self._get_containers()
         start_x = stop_x = self.globalRect.x + (self.globalRect.width // 2)
+
+        # Make the drag range be a multiple of the drag "rate" value.
+        # Workarounds https://bugs.launchpad.net/mir/+bug/1399690
+        rate = self._slow_drag_rate()
+
         # Start and stop just a little under the top and a little over the
         # bottom.
-        top = _get_visible_container_top(containers) + 5
-        bottom = _get_visible_container_bottom(containers) - 5
+        top = _get_visible_container_top(containers) + rate
+        bottom = _get_visible_container_bottom(containers) - rate
 
         if direction == 'below':
             # Take into account that swiping from below can open the toolbar or
             # trigger the bottom edge gesture.
             # XXX Do this only if we are close to the bottom edge.
             start_y = bottom - 20
-            stop_y = top
+            stop_y = start_y + (top - start_y) // rate * rate
         elif direction == 'above':
             start_y = top
-            stop_y = bottom
+            stop_y = start_y + (bottom - start_y) // rate * rate
         else:
             raise _common.ToolkitException(
                 'Invalid direction {}.'.format(direction))
-        self._slow_drag(start_x, stop_x, start_y, stop_y)
+        self._slow_drag(start_x, stop_x, start_y, stop_y, rate)
         self.dragging.wait_for(False)
         self.moving.wait_for(False)
 

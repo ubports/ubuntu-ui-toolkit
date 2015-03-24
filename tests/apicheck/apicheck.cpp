@@ -1040,7 +1040,8 @@ int main(int argc, char *argv[])
                             signature += "readonly ";
                         signature += "property ";
                     }
-                    signature += QString(convertToId(field["type"].toString().toUtf8())) + " ";
+                    if (field.contains("type"))
+                        signature += QString(convertToId(field["type"].toString().toUtf8())) + " ";
                     signature += fieldName;
                     signature += "\n";
                 }

@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 1.1
+import QtQuick 2.4
+import Ubuntu.Components 1.2
 
 /*!
     \qmltype Standard
@@ -25,12 +25,13 @@ import Ubuntu.Components 1.1
         with a label (text), and optionally an icon, a progression arrow,
         and it can have an embedded Item (\l control) that can be used
         for including Buttons, Switches etc. inside the list item.
+    \note \b{The component is deprecated. Use ListItem component instead.}
 
     \l {http://design.ubuntu.com/apps/building-blocks/list-items}{See also the Design Guidelines on List Items}.
 
     Examples:
     \qml
-        import Ubuntu.Components 1.1
+        import Ubuntu.Components 1.2
         import Ubuntu.Components.ListItems 1.0 as ListItem
         Column {
             ListItem.Standard {
@@ -57,7 +58,6 @@ import Ubuntu.Components 1.1
             }
         }
     \endqml
-    \b{This component is under heavy development.}
 */
 Empty {
     id: listItem
@@ -76,7 +76,6 @@ Empty {
     property variant icon: iconSource != "" ? iconSource : undefined
 
     /*!
-      \preliminary
       The location of the icon to show in the list item if iconSource failed to load (optional).
       \qmlproperty url fallbackIconSource
      */
@@ -100,13 +99,11 @@ Empty {
     property alias fallbackIconName: iconHelper.fallbackIconName
 
     /*!
-      \preliminary
       The text that is shown in the list item as a label.
       \qmlproperty string text
      */
 
     /*!
-      \preliminary
       Show or hide the progression symbol.
      */
     property bool progression: false
@@ -140,7 +137,6 @@ Empty {
     property real __rightIconMargin
 
     /*!
-      \preliminary
       An optional control that is displayed inside the list item.
       The width of the control must be specified in order to determine
       the layout of the list item.
@@ -150,7 +146,6 @@ Empty {
     property alias control: controlContainer.control
 
     /*!
-      \preliminary
       Show or hide the frame around the icon
       \qmlproperty bool iconFrame
      */
@@ -278,22 +273,8 @@ Empty {
 
         Connections {
             target: listItem.__mouseArea
-
-            onClicked: {
-                if (control && __mouseArea.mouseX < progressionHelper.x) {
-                    if (control.enabled && control.hasOwnProperty("clicked")) control.clicked();
-                } else {
-                    listItem.clicked();
-                }
-            }
-
-            onPressAndHold: {
-                if (control && control.enabled && __mouseArea.mouseX < progressionHelper.x && control.hasOwnProperty("pressAndHold")) {
-                    control.pressAndHold();
-                } else {
-                    listItem.pressAndHold();
-                }
-            }
+            onClicked: listItem.clicked()
+            onPressAndHold: listItem.pressAndHold()
         }
     }
 

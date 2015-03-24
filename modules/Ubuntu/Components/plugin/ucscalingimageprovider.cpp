@@ -65,7 +65,7 @@ QImage UCScalingImageProvider::requestImage(const QString &id, QSize *size, cons
             }
         }
 
-        if (constrainedSize.isValid()) {
+        if (!constrainedSize.isEmpty()) {
             imageReader.setScaledSize(constrainedSize);
         } else if (scaledSize != realSize) {
             imageReader.setScaledSize(scaledSize);

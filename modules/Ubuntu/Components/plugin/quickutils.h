@@ -44,6 +44,7 @@ public:
     bool touchScreenAvailable() const;
 
     Q_INVOKABLE static QString className(QObject *item);
+    Q_REVISION(1) Q_INVOKABLE static bool inherits(QObject *object, const QString &fromClass);
     QObject* createQmlObject(const QUrl &url, QQmlEngine *engine);
 
 Q_SIGNALS:
@@ -58,6 +59,7 @@ protected:
 private:
     explicit QuickUtils(QObject *parent = 0);
     QPointer<QQuickView> m_rootView;
+    QStringList m_omitIM;
 
     void lookupQuickView();
 };

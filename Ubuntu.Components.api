@@ -1,2486 +1,702 @@
-{
-    "AbstractButton": {
-        "action": {
-            "isPointer": true,
-            "type": "Action"
-        },
-        "activeFocusOnPress": {
-            "revision": 1,
-            "type": "bool"
-        },
-        "defaultProperty": "data",
-        "exportMetaObjectRevisions": [
-            "-1"
-        ],
-        "exports": [
-            "AbstractButton -1.-1"
-        ],
-        "hovered": {
-            "type": "bool"
-        },
-        "iconName": {
-            "type": "string"
-        },
-        "iconSource": {
-            "type": "QUrl"
-        },
-        "isComposite": true,
-        "methods": [
-            {
-                "name": "requestFocus",
-                "parameters": [
-                    {
-                        "name": "reason",
-                        "type": "Qt::FocusReason"
-                    }
-                ],
-                "returns": "bool",
-                "revision": "1",
-                "type": "function"
-            },
-            {
-                "name": "requestFocus",
-                "returns": "bool",
-                "revision": "1",
-                "type": "function"
-            }
-        ],
-        "pressed": {
-            "type": "bool"
-        },
-        "prototype": "Item",
-        "style": {
-            "isPointer": true,
-            "type": "Component"
-        },
-        "text": {
-            "type": "string"
-        }
-    },
-    "Action": {
-        "description": {
-            "type": "string"
-        },
-        "enabled": {
-            "type": "bool"
-        },
-        "exports": [
-            "Action 0.1",
-            "Action 1.0"
-        ],
-        "iconName": {
-            "type": "string"
-        },
-        "iconSource": {
-            "type": "QUrl"
-        },
-        "itemHint": {
-            "isPointer": true,
-            "type": "Component"
-        },
-        "keywords": {
-            "type": "string"
-        },
-        "methods": [
-            {
-                "name": "triggered",
-                "parameters": [
-                    {
-                        "name": "value",
-                        "type": "QVariant"
-                    }
-                ],
-                "type": "signal"
-            },
-            {
-                "name": "trigger",
-                "parameters": [
-                    {
-                        "name": "value",
-                        "type": "QVariant"
-                    }
-                ],
-                "type": "function"
-            },
-            {
-                "name": "trigger",
-                "type": "function"
-            }
-        ],
-        "name": {
-            "type": "string"
-        },
-        "parameterType": {
-            "type": "Type"
-        },
-        "prototype": "QtObject",
-        "text": {
-            "type": "string"
-        },
-        "visible": {
-            "type": "bool"
-        }
-    },
-    "ActionContext": {
-        "actions": {
-            "isList": true,
-            "isReadonly": true,
-            "type": "QtObject"
-        },
-        "active": {
-            "type": "bool"
-        },
-        "defaultProperty": "actions",
-        "exports": [
-            "ActionContext 0.1",
-            "ActionContext 1.0"
-        ],
-        "methods": [
-            {
-                "name": "activeChanged",
-                "parameters": [
-                    {
-                        "name": "",
-                        "type": "bool"
-                    }
-                ],
-                "type": "signal"
-            },
-            {
-                "name": "addAction",
-                "parameters": [
-                    {
-                        "isPointer": true,
-                        "name": "action",
-                        "type": "QtObject"
-                    }
-                ],
-                "type": "function"
-            },
-            {
-                "name": "removeAction",
-                "parameters": [
-                    {
-                        "isPointer": true,
-                        "name": "action",
-                        "type": "QtObject"
-                    }
-                ],
-                "type": "function"
-            }
-        ],
-        "prototype": "QtObject"
-    },
-    "ActionItem": {
-        "action": {
-            "isPointer": true,
-            "type": "Action"
-        },
-        "activeFocusOnPress": {
-            "revision": 1,
-            "type": "bool"
-        },
-        "defaultProperty": "data",
-        "exportMetaObjectRevisions": [
-            "-1"
-        ],
-        "exports": [
-            "ActionItem -1.-1"
-        ],
-        "iconName": {
-            "type": "string"
-        },
-        "iconSource": {
-            "type": "QUrl"
-        },
-        "isComposite": true,
-        "methods": [
-            {
-                "name": "requestFocus",
-                "parameters": [
-                    {
-                        "name": "reason",
-                        "type": "Qt::FocusReason"
-                    }
-                ],
-                "returns": "bool",
-                "revision": "1",
-                "type": "function"
-            },
-            {
-                "name": "requestFocus",
-                "returns": "bool",
-                "revision": "1",
-                "type": "function"
-            }
-        ],
-        "prototype": "Item",
-        "style": {
-            "isPointer": true,
-            "type": "Component"
-        },
-        "text": {
-            "type": "string"
-        }
-    },
-    "ActionManager": {
-        "actions": {
-            "isList": true,
-            "isReadonly": true,
-            "type": "QtObject"
-        },
-        "defaultProperty": "actions",
-        "exports": [
-            "ActionManager 0.1",
-            "ActionManager 1.0"
-        ],
-        "globalContext": {
-            "isPointer": true,
-            "isReadonly": true,
-            "type": "ActionContext"
-        },
-        "localContexts": {
-            "isList": true,
-            "isReadonly": true,
-            "type": "QtObject"
-        },
-        "methods": [
-            {
-                "name": "quit",
-                "type": "signal"
-            },
-            {
-                "name": "addAction",
-                "parameters": [
-                    {
-                        "isPointer": true,
-                        "name": "action",
-                        "type": "QtObject"
-                    }
-                ],
-                "type": "function"
-            },
-            {
-                "name": "removeAction",
-                "parameters": [
-                    {
-                        "isPointer": true,
-                        "name": "action",
-                        "type": "QtObject"
-                    }
-                ],
-                "type": "function"
-            },
-            {
-                "name": "addLocalContext",
-                "parameters": [
-                    {
-                        "isPointer": true,
-                        "name": "context",
-                        "type": "QtObject"
-                    }
-                ],
-                "type": "function"
-            },
-            {
-                "name": "removeLocalContext",
-                "parameters": [
-                    {
-                        "isPointer": true,
-                        "name": "context",
-                        "type": "QtObject"
-                    }
-                ],
-                "type": "function"
-            }
-        ],
-        "prototype": "QtObject"
-    },
-    "Alarm": {
-        "date": {
-            "type": "QDateTime"
-        },
-        "daysOfWeek": {
-            "type": "DaysOfWeek"
-        },
-        "enabled": {
-            "type": "bool"
-        },
-        "error": {
-            "isReadonly": true,
-            "type": "int"
-        },
-        "exports": [
-            "Alarm 0.1",
-            "Alarm 1.0"
-        ],
-        "message": {
-            "type": "string"
-        },
-        "methods": [
-            {
-                "name": "statusChanged",
-                "parameters": [
-                    {
-                        "name": "operation",
-                        "type": "Operation"
-                    }
-                ],
-                "type": "signal"
-            },
-            {
-                "name": "save",
-                "type": "function"
-            },
-            {
-                "name": "cancel",
-                "type": "function"
-            },
-            {
-                "name": "reset",
-                "type": "function"
-            }
-        ],
-        "prototype": "QtObject",
-        "sound": {
-            "type": "QUrl"
-        },
-        "status": {
-            "isReadonly": true,
-            "type": "Status"
-        },
-        "type": {
-            "type": "AlarmType"
-        }
-    },
-    "AlarmModel": {
-        "count": {
-            "isReadonly": true,
-            "type": "int"
-        },
-        "exports": [
-            "AlarmModel 0.1",
-            "AlarmModel 1.0"
-        ],
-        "methods": [
-            {
-                "name": "get",
-                "parameters": [
-                    {
-                        "name": "index",
-                        "type": "int"
-                    }
-                ],
-                "returns": "UCAlarm*",
-                "type": "function"
-            }
-        ],
-        "prototype": "QAbstractListModel"
-    },
-    "AlarmType": {
-        "OneTime": "0",
-        "Repeating": "1",
-        "prototype": "Enum"
-    },
-    "AnimatedItem": {
-        "activeFocusOnPress": {
-            "revision": 1,
-            "type": "bool"
-        },
-        "defaultProperty": "data",
-        "exportMetaObjectRevisions": [
-            "-1"
-        ],
-        "exports": [
-            "AnimatedItem -1.-1"
-        ],
-        "isComposite": true,
-        "methods": [
-            {
-                "name": "requestFocus",
-                "parameters": [
-                    {
-                        "name": "reason",
-                        "type": "Qt::FocusReason"
-                    }
-                ],
-                "returns": "bool",
-                "revision": "1",
-                "type": "function"
-            },
-            {
-                "name": "requestFocus",
-                "returns": "bool",
-                "revision": "1",
-                "type": "function"
-            }
-        ],
-        "onScreen": {
-            "type": "bool"
-        },
-        "prototype": "Item",
-        "style": {
-            "isPointer": true,
-            "type": "Component"
-        }
-    },
-    "AppHeader": {
-        "actions": {
-            "type": "QVariant"
-        },
-        "activeFocusOnPress": {
-            "revision": 1,
-            "type": "bool"
-        },
-        "animate": {
-            "type": "bool"
-        },
-        "config": {
-            "isPointer": true,
-            "type": "PageHeadConfiguration"
-        },
-        "contents": {
-            "isPointer": true,
-            "type": "Item"
-        },
-        "defaultProperty": "data",
-        "exportMetaObjectRevisions": [
-            "-1"
-        ],
-        "exports": [
-            "AppHeader -1.-1"
-        ],
-        "flickable": {
-            "isPointer": true,
-            "type": "Flickable"
-        },
-        "isComposite": true,
-        "methods": [
-            {
-                "name": "requestFocus",
-                "parameters": [
-                    {
-                        "name": "reason",
-                        "type": "Qt::FocusReason"
-                    }
-                ],
-                "returns": "bool",
-                "revision": "1",
-                "type": "function"
-            },
-            {
-                "name": "requestFocus",
-                "returns": "bool",
-                "revision": "1",
-                "type": "function"
-            }
-        ],
-        "pageStack": {
-            "type": "QVariant"
-        },
-        "prototype": "Item",
-        "style": {
-            "isPointer": true,
-            "type": "Component"
-        },
-        "tabsModel": {
-            "type": "QVariant"
-        },
-        "title": {
-            "type": "string"
-        },
-        "useDeprecatedToolbar": {
-            "type": "bool"
-        }
-    },
-    "Argument": {
-        "exports": [
-            "Argument 0.1",
-            "Argument 1.0"
-        ],
-        "help": {
-            "type": "string"
-        },
-        "methods": [
-            {
-                "name": "at",
-                "parameters": [
-                    {
-                        "name": "i",
-                        "type": "int"
-                    }
-                ],
-                "returns": "QVariant",
-                "type": "function"
-            }
-        ],
-        "name": {
-            "type": "string"
-        },
-        "prototype": "QtObject",
-        "required": {
-            "type": "bool"
-        },
-        "valueNames": {
-            "type": "QStringList"
-        }
-    },
-    "Arguments": {
-        "arguments": {
-            "isList": true,
-            "isReadonly": true,
-            "type": "Argument"
-        },
-        "defaultArgument": {
-            "isPointer": true,
-            "type": "Argument"
-        },
-        "defaultProperty": "arguments",
-        "error": {
-            "isReadonly": true,
-            "type": "bool"
-        },
-        "errorMessage": {
-            "isReadonly": true,
-            "type": "string"
-        },
-        "exports": [
-            "Arguments 0.1",
-            "Arguments 1.0"
-        ],
-        "methods": [
-            {
-                "name": "printUsage",
-                "type": "function"
-            },
-            {
-                "name": "quitWithError",
-                "parameters": [
-                    {
-                        "name": "errorMessage",
-                        "type": "string"
-                    }
-                ],
-                "type": "function"
-            },
-            {
-                "name": "quitWithError",
-                "type": "function"
-            }
-        ],
-        "prototype": "QtObject",
-        "values": {
-            "isPointer": true,
-            "isReadonly": true,
-            "type": "QQmlPropertyMap"
-        }
-    },
-    "Button": {
-        "action": {
-            "isPointer": true,
-            "type": "Action"
-        },
-        "activeFocusOnPress": {
-            "revision": 1,
-            "type": "bool"
-        },
-        "color": {
-            "type": "QColor"
-        },
-        "defaultProperty": "data",
-        "exportMetaObjectRevisions": [
-            "-1"
-        ],
-        "exports": [
-            "Button -1.-1"
-        ],
-        "font": {
-            "type": "QFont"
-        },
-        "gradient": {
-            "isPointer": true,
-            "type": "Gradient"
-        },
-        "hovered": {
-            "type": "bool"
-        },
-        "iconName": {
-            "type": "string"
-        },
-        "iconPosition": {
-            "type": "string"
-        },
-        "iconSource": {
-            "type": "QUrl"
-        },
-        "isComposite": true,
-        "methods": [
-            {
-                "name": "requestFocus",
-                "parameters": [
-                    {
-                        "name": "reason",
-                        "type": "Qt::FocusReason"
-                    }
-                ],
-                "returns": "bool",
-                "revision": "1",
-                "type": "function"
-            },
-            {
-                "name": "requestFocus",
-                "returns": "bool",
-                "revision": "1",
-                "type": "function"
-            }
-        ],
-        "pressed": {
-            "type": "bool"
-        },
-        "prototype": "Item",
-        "strokeColor": {
-            "type": "QColor"
-        },
-        "style": {
-            "isPointer": true,
-            "type": "Component"
-        },
-        "text": {
-            "type": "string"
-        }
-    },
-    "Clipboard": {
-        "data": {
-            "isPointer": true,
-            "isReadonly": true,
-            "type": "MimeData"
-        },
-        "exports": [
-            "Clipboard 0.1",
-            "Clipboard 1.0"
-        ],
-        "isCreatable": false,
-        "isSingleton": true,
-        "methods": [
-            {
-                "name": "push",
-                "parameters": [
-                    {
-                        "name": "data",
-                        "type": "QVariant"
-                    }
-                ],
-                "type": "function"
-            },
-            {
-                "name": "clear",
-                "type": "function"
-            },
-            {
-                "name": "newData",
-                "returns": "QQuickMimeData*",
-                "type": "function"
-            }
-        ],
-        "prototype": "QtObject"
-    },
-    "ColorUtils": {
-        "exports": [
-            "ColorUtils 1.0",
-            "ColorUtils 0.1"
-        ],
-        "type": "script"
-    },
-    "ComboButton": {
-        "action": {
-            "isPointer": true,
-            "type": "Action"
-        },
-        "activeFocusOnPress": {
-            "revision": 1,
-            "type": "bool"
-        },
-        "collapsedHeight": {
-            "type": "double"
-        },
-        "color": {
-            "type": "QColor"
-        },
-        "comboList": {
-            "isList": true,
-            "isReadonly": true,
-            "type": "QtObject"
-        },
-        "comboListHeight": {
-            "isReadonly": true,
-            "type": "double"
-        },
-        "defaultProperty": "comboList",
-        "dropdownColor": {
-            "type": "QColor"
-        },
-        "expanded": {
-            "type": "bool"
-        },
-        "expandedHeight": {
-            "type": "double"
-        },
-        "exportMetaObjectRevisions": [
-            "-1"
-        ],
-        "exports": [
-            "ComboButton -1.-1"
-        ],
-        "font": {
-            "type": "QFont"
-        },
-        "gradient": {
-            "isPointer": true,
-            "type": "Gradient"
-        },
-        "hovered": {
-            "type": "bool"
-        },
-        "iconName": {
-            "type": "string"
-        },
-        "iconPosition": {
-            "type": "string"
-        },
-        "iconSource": {
-            "type": "QUrl"
-        },
-        "isComposite": true,
-        "methods": [
-            {
-                "name": "requestFocus",
-                "parameters": [
-                    {
-                        "name": "reason",
-                        "type": "Qt::FocusReason"
-                    }
-                ],
-                "returns": "bool",
-                "revision": "1",
-                "type": "function"
-            },
-            {
-                "name": "requestFocus",
-                "returns": "bool",
-                "revision": "1",
-                "type": "function"
-            }
-        ],
-        "pressed": {
-            "type": "bool"
-        },
-        "prototype": "Item",
-        "strokeColor": {
-            "type": "QColor"
-        },
-        "style": {
-            "isPointer": true,
-            "type": "Component"
-        },
-        "text": {
-            "type": "string"
-        }
-    },
-    "CrossFadeImage": {
-        "defaultProperty": "data",
-        "exportMetaObjectRevisions": [
-            "-1"
-        ],
-        "exports": [
-            "CrossFadeImage -1.-1"
-        ],
-        "fadeDuration": {
-            "type": "int"
-        },
-        "fadeStyle": {
-            "type": "string"
-        },
-        "fillMode": {
-            "type": "int"
-        },
-        "isComposite": true,
-        "prototype": "Item",
-        "running": {
-            "isReadonly": true,
-            "type": "bool"
-        },
-        "source": {
-            "type": "QUrl"
-        },
-        "sourceSize": {
-            "type": "QSizeF"
-        },
-        "status": {
-            "isReadonly": true,
-            "type": "int"
-        }
-    },
-    "DateUtils": {
-        "exports": [
-            "DateUtils 1.0",
-            "DateUtils 0.1"
-        ],
-        "type": "script"
-    },
-    "DayOfWeek": {
-        "AutoDetect": "128",
-        "Daily": "127",
-        "Friday": "16",
-        "Monday": "1",
-        "Saturday": "32",
-        "Sunday": "64",
-        "Thursday": "8",
-        "Tuesday": "2",
-        "Wednesday": "4",
-        "prototype": "Enum"
-    },
-    "DaysOfWeek": {
-        "AutoDetect": "128",
-        "Daily": "127",
-        "Friday": "16",
-        "Monday": "1",
-        "Saturday": "32",
-        "Sunday": "64",
-        "Thursday": "8",
-        "Tuesday": "2",
-        "Wednesday": "4",
-        "prototype": "Enum"
-    },
-    "DraggingArea": {
-        "clickValidated": {
-            "type": "bool"
-        },
-        "defaultProperty": "data",
-        "dragValue": {
-            "type": "double"
-        },
-        "dragVelocity": {
-            "type": "double"
-        },
-        "dragging": {
-            "type": "bool"
-        },
-        "exportMetaObjectRevisions": [
-            "-1"
-        ],
-        "exports": [
-            "DraggingArea -1.-1"
-        ],
-        "isComposite": true,
-        "lateralPosition": {
-            "type": "double"
-        },
-        "methods": [
-            {
-                "name": "dragStart",
-                "type": "signal"
-            },
-            {
-                "name": "dragEnd",
-                "type": "signal"
-            },
-            {
-                "name": "updateSpeed",
-                "returns": "QVariant",
-                "type": "function"
-            },
-            {
-                "name": "cullOldDragEvents",
-                "parameters": [
-                    {
-                        "name": "currentTime",
-                        "type": "QVariant"
-                    }
-                ],
-                "returns": "QVariant",
-                "type": "function"
-            },
-            {
-                "name": "getEventSpeed",
-                "parameters": [
-                    {
-                        "name": "currentTime",
-                        "type": "QVariant"
-                    },
-                    {
-                        "name": "event",
-                        "type": "QVariant"
-                    }
-                ],
-                "returns": "QVariant",
-                "type": "function"
-            },
-            {
-                "name": "pushDragEvent",
-                "parameters": [
-                    {
-                        "name": "event",
-                        "type": "QVariant"
-                    }
-                ],
-                "returns": "QVariant",
-                "type": "function"
-            }
-        ],
-        "orientation": {
-            "type": "int"
-        },
-        "prototype": "MouseArea",
-        "zeroVelocityCounts": {
-            "type": "bool"
-        }
-    },
-    "Error": {
-        "AdaptationError": "100",
-        "EarlyDate": "2",
-        "InvalidDate": "1",
-        "InvalidEvent": "5",
-        "NoDaysOfWeek": "3",
-        "NoError": "0",
-        "OneTimeOnMoreDays": "4",
-        "OperationPending": "6",
-        "prototype": "Enum"
-    },
-    "FilterBehavior": {
-        "exports": [
-            "FilterBehavior 1.1"
-        ],
-        "isCreatable": false,
-        "pattern": {
-            "type": "QRegExp"
-        },
-        "property": {
-            "type": "string"
-        },
-        "prototype": "QtObject"
-    },
-    "HAlignment": {
-        "AlignHCenter": "1",
-        "AlignLeft": "0",
-        "AlignRight": "2",
-        "prototype": "Enum"
-    },
-    "Icon": {
-        "color": {
-            "type": "QColor"
-        },
-        "defaultProperty": "data",
-        "exportMetaObjectRevisions": [
-            "-1"
-        ],
-        "exports": [
-            "Icon -1.-1"
-        ],
-        "isComposite": true,
-        "keyColor": {
-            "type": "QColor"
-        },
-        "name": {
-            "type": "string"
-        },
-        "prototype": "Item",
-        "source": {
-            "type": "QUrl"
-        }
-    },
-    "Icon10": {
-        "color": {
-            "type": "QColor"
-        },
-        "defaultProperty": "data",
-        "exportMetaObjectRevisions": [
-            "-1"
-        ],
-        "exports": [
-            "Icon10 -1.-1"
-        ],
-        "isComposite": true,
-        "keyColor": {
-            "type": "QColor"
-        },
-        "name": {
-            "type": "string"
-        },
-        "prototype": "Item"
-    },
-    "InverseMouse": {
-        "exports": [
-            "InverseMouse 0.1",
-            "InverseMouse 1.0"
-        ],
-        "prototype": "Mouse"
-    },
-    "InverseMouseArea": {
-        "defaultProperty": "data",
-        "exports": [
-            "InverseMouseArea 0.1",
-            "InverseMouseArea 1.0"
-        ],
-        "methods": [
-            {
-                "name": "contains",
-                "parameters": [
-                    {
-                        "name": "point",
-                        "type": "QPointF"
-                    }
-                ],
-                "returns": "bool",
-                "type": "function"
-            }
-        ],
-        "prototype": "MouseArea",
-        "sensingArea": {
-            "isPointer": true,
-            "type": "Item"
-        },
-        "topmostItem": {
-            "type": "bool"
-        }
-    },
-    "MathUtils": {
-        "exports": [
-            "MathUtils 1.0",
-            "MathUtils 0.1"
-        ],
-        "type": "script"
-    },
-    "MimeData": {
-        "color": {
-            "type": "QColor"
-        },
-        "data": {
-            "type": "QVariant"
-        },
-        "exports": [
-            "MimeData 0.1",
-            "MimeData 1.0"
-        ],
-        "formats": {
-            "isReadonly": true,
-            "type": "QStringList"
-        },
-        "html": {
-            "type": "string"
-        },
-        "methods": [
-            {
-                "name": "typeChanged",
-                "type": "signal"
-            }
-        ],
-        "prototype": "QtObject",
-        "text": {
-            "type": "string"
-        },
-        "urls": {
-            "type": "QList<QUrl>"
-        }
-    },
-    "Mouse": {
-        "acceptedButtons": {
-            "isReadonly": true,
-            "type": "Qt::MouseButtons"
-        },
-        "clickAndHoldThreshold": {
-            "type": "int"
-        },
-        "enabled": {
-            "type": "bool"
-        },
-        "exports": [
-            "Mouse 0.1",
-            "Mouse 1.0"
-        ],
-        "forwardTo": {
-            "isList": true,
-            "isReadonly": true,
-            "type": "Item"
-        },
-        "hoverEnabled": {
-            "isReadonly": true,
-            "type": "bool"
-        },
-        "methods": [
-            {
-                "name": "pressed",
-                "parameters": [
-                    {
-                        "isPointer": true,
-                        "name": "mouse",
-                        "type": "QQuickMouseEvent"
-                    },
-                    {
-                        "isPointer": true,
-                        "name": "host",
-                        "type": "Item"
-                    }
-                ],
-                "type": "signal"
-            },
-            {
-                "name": "released",
-                "parameters": [
-                    {
-                        "isPointer": true,
-                        "name": "mouse",
-                        "type": "QQuickMouseEvent"
-                    },
-                    {
-                        "isPointer": true,
-                        "name": "host",
-                        "type": "Item"
-                    }
-                ],
-                "type": "signal"
-            },
-            {
-                "name": "clicked",
-                "parameters": [
-                    {
-                        "isPointer": true,
-                        "name": "mouse",
-                        "type": "QQuickMouseEvent"
-                    },
-                    {
-                        "isPointer": true,
-                        "name": "host",
-                        "type": "Item"
-                    }
-                ],
-                "type": "signal"
-            },
-            {
-                "name": "pressAndHold",
-                "parameters": [
-                    {
-                        "isPointer": true,
-                        "name": "mouse",
-                        "type": "QQuickMouseEvent"
-                    },
-                    {
-                        "isPointer": true,
-                        "name": "host",
-                        "type": "Item"
-                    }
-                ],
-                "type": "signal"
-            },
-            {
-                "name": "doubleClicked",
-                "parameters": [
-                    {
-                        "isPointer": true,
-                        "name": "mouse",
-                        "type": "QQuickMouseEvent"
-                    },
-                    {
-                        "isPointer": true,
-                        "name": "host",
-                        "type": "Item"
-                    }
-                ],
-                "type": "signal"
-            },
-            {
-                "name": "positionChanged",
-                "parameters": [
-                    {
-                        "isPointer": true,
-                        "name": "mouse",
-                        "type": "QQuickMouseEvent"
-                    },
-                    {
-                        "isPointer": true,
-                        "name": "host",
-                        "type": "Item"
-                    }
-                ],
-                "type": "signal"
-            },
-            {
-                "name": "entered",
-                "parameters": [
-                    {
-                        "isPointer": true,
-                        "name": "event",
-                        "type": "QQuickMouseEvent"
-                    },
-                    {
-                        "isPointer": true,
-                        "name": "host",
-                        "type": "Item"
-                    }
-                ],
-                "type": "signal"
-            },
-            {
-                "name": "exited",
-                "parameters": [
-                    {
-                        "isPointer": true,
-                        "name": "event",
-                        "type": "QQuickMouseEvent"
-                    },
-                    {
-                        "isPointer": true,
-                        "name": "host",
-                        "type": "Item"
-                    }
-                ],
-                "type": "signal"
-            }
-        ],
-        "priority": {
-            "type": "Priority"
-        },
-        "prototype": "QtObject"
-    },
-    "Object": {
-        "children": {
-            "isList": true,
-            "isReadonly": true,
-            "type": "QtObject"
-        },
-        "defaultProperty": "children",
-        "exportMetaObjectRevisions": [
-            "-1"
-        ],
-        "exports": [
-            "Object -1.-1"
-        ],
-        "isComposite": true,
-        "prototype": "QtObject"
-    },
-    "Operation": {
-        "Canceling": "2",
-        "NoOperation": "0",
-        "Reseting": "3",
-        "Saving": "1",
-        "prototype": "Enum"
-    },
-    "Page": {
-        "actions": {
-            "isList": true,
-            "isReadonly": true,
-            "type": "QtObject"
-        },
-        "active": {
-            "type": "bool"
-        },
-        "activeFocusOnPress": {
-            "revision": 1,
-            "type": "bool"
-        },
-        "activeLeafNode": {
-            "isPointer": true,
-            "type": "Item"
-        },
-        "defaultProperty": "data",
-        "exportMetaObjectRevisions": [
-            "-1"
-        ],
-        "exports": [
-            "Page -1.-1"
-        ],
-        "flickable": {
-            "isPointer": true,
-            "type": "Flickable"
-        },
-        "head": {
-            "isPointer": true,
-            "isReadonly": true,
-            "type": "PageHeadConfiguration"
-        },
-        "header": {
-            "isPointer": true,
-            "type": "AppHeader"
-        },
-        "isComposite": true,
-        "isLeaf": {
-            "type": "bool"
-        },
-        "methods": [
-            {
-                "name": "requestFocus",
-                "parameters": [
-                    {
-                        "name": "reason",
-                        "type": "Qt::FocusReason"
-                    }
-                ],
-                "returns": "bool",
-                "revision": "1",
-                "type": "function"
-            },
-            {
-                "name": "requestFocus",
-                "returns": "bool",
-                "revision": "1",
-                "type": "function"
-            }
-        ],
-        "pageStack": {
-            "isPointer": true,
-            "type": "Item"
-        },
-        "parentNode": {
-            "isPointer": true,
-            "type": "Item"
-        },
-        "prototype": "Item",
-        "style": {
-            "isPointer": true,
-            "type": "Component"
-        },
-        "title": {
-            "type": "string"
-        },
-        "toolbar": {
-            "isPointer": true,
-            "type": "Toolbar"
-        },
-        "tools": {
-            "isPointer": true,
-            "type": "Item"
-        }
-    },
-    "Page10": {
-        "actions": {
-            "isList": true,
-            "isReadonly": true,
-            "type": "QtObject"
-        },
-        "active": {
-            "type": "bool"
-        },
-        "activeFocusOnPress": {
-            "revision": 1,
-            "type": "bool"
-        },
-        "activeLeafNode": {
-            "isPointer": true,
-            "type": "Item"
-        },
-        "defaultProperty": "data",
-        "exportMetaObjectRevisions": [
-            "-1"
-        ],
-        "exports": [
-            "Page10 -1.-1"
-        ],
-        "flickable": {
-            "isPointer": true,
-            "type": "Flickable"
-        },
-        "header": {
-            "isPointer": true,
-            "type": "AppHeader"
-        },
-        "isComposite": true,
-        "isLeaf": {
-            "type": "bool"
-        },
-        "methods": [
-            {
-                "name": "requestFocus",
-                "parameters": [
-                    {
-                        "name": "reason",
-                        "type": "Qt::FocusReason"
-                    }
-                ],
-                "returns": "bool",
-                "revision": "1",
-                "type": "function"
-            },
-            {
-                "name": "requestFocus",
-                "returns": "bool",
-                "revision": "1",
-                "type": "function"
-            }
-        ],
-        "pageStack": {
-            "isPointer": true,
-            "type": "Item"
-        },
-        "parentNode": {
-            "isPointer": true,
-            "type": "Item"
-        },
-        "prototype": "Item",
-        "style": {
-            "isPointer": true,
-            "type": "Component"
-        },
-        "title": {
-            "type": "string"
-        },
-        "toolbar": {
-            "isPointer": true,
-            "type": "Toolbar"
-        },
-        "tools": {
-            "isPointer": true,
-            "type": "Item"
-        }
-    },
-    "PageHeadConfiguration": {
-        "actions": {
-            "isList": true,
-            "isReadonly": true,
-            "type": "Action"
-        },
-        "backAction": {
-            "isPointer": true,
-            "type": "Action"
-        },
-        "children": {
-            "isList": true,
-            "isReadonly": true,
-            "type": "QtObject"
-        },
-        "contents": {
-            "isPointer": true,
-            "type": "Item"
-        },
-        "defaultProperty": "children",
-        "exportMetaObjectRevisions": [
-            "-1"
-        ],
-        "exports": [
-            "PageHeadConfiguration -1.-1"
-        ],
-        "foregroundColor": {
-            "type": "QColor"
-        },
-        "isComposite": true,
-        "prototype": "QtObject",
-        "sections": {
-            "isPointer": true,
-            "isReadonly": true,
-            "type": "PageHeadSections"
-        }
-    },
-    "PageHeadSections": {
-        "enabled": {
-            "type": "bool"
-        },
-        "exportMetaObjectRevisions": [
-            "-1"
-        ],
-        "exports": [
-            "PageHeadSections -1.-1"
-        ],
-        "isComposite": true,
-        "model": {
-            "type": "QVariant"
-        },
-        "prototype": "QtObject",
-        "selectedIndex": {
-            "type": "int"
-        }
-    },
-    "PageHeadState": {
-        "actions": {
-            "isList": true,
-            "isReadonly": true,
-            "type": "Action"
-        },
-        "backAction": {
-            "isPointer": true,
-            "type": "Action"
-        },
-        "contents": {
-            "isPointer": true,
-            "type": "Item"
-        },
-        "defaultProperty": "changes",
-        "exportMetaObjectRevisions": [
-            "-1"
-        ],
-        "exports": [
-            "PageHeadState -1.-1"
-        ],
-        "head": {
-            "isPointer": true,
-            "type": "PageHeadConfiguration"
-        },
-        "isComposite": true,
-        "prototype": "State"
-    },
-    "PageTreeNode": {
-        "active": {
-            "type": "bool"
-        },
-        "activeFocusOnPress": {
-            "revision": 1,
-            "type": "bool"
-        },
-        "activeLeafNode": {
-            "isPointer": true,
-            "type": "Item"
-        },
-        "defaultProperty": "data",
-        "exportMetaObjectRevisions": [
-            "-1"
-        ],
-        "exports": [
-            "PageTreeNode -1.-1"
-        ],
-        "header": {
-            "isPointer": true,
-            "type": "AppHeader"
-        },
-        "isComposite": true,
-        "isLeaf": {
-            "type": "bool"
-        },
-        "methods": [
-            {
-                "name": "requestFocus",
-                "parameters": [
-                    {
-                        "name": "reason",
-                        "type": "Qt::FocusReason"
-                    }
-                ],
-                "returns": "bool",
-                "revision": "1",
-                "type": "function"
-            },
-            {
-                "name": "requestFocus",
-                "returns": "bool",
-                "revision": "1",
-                "type": "function"
-            }
-        ],
-        "pageStack": {
-            "isPointer": true,
-            "type": "Item"
-        },
-        "parentNode": {
-            "isPointer": true,
-            "type": "Item"
-        },
-        "prototype": "Item",
-        "style": {
-            "isPointer": true,
-            "type": "Component"
-        },
-        "toolbar": {
-            "isPointer": true,
-            "type": "Toolbar"
-        }
-    },
-    "Panel": {
-        "align": {
-            "type": "int"
-        },
-        "animate": {
-            "type": "bool"
-        },
-        "animating": {
-            "isReadonly": true,
-            "type": "bool"
-        },
-        "contents": {
-            "isList": true,
-            "isReadonly": true,
-            "type": "QtObject"
-        },
-        "defaultProperty": "contents",
-        "exportMetaObjectRevisions": [
-            "-1"
-        ],
-        "exports": [
-            "Panel -1.-1"
-        ],
-        "hideTimeout": {
-            "type": "int"
-        },
-        "hintSize": {
-            "type": "double"
-        },
-        "isComposite": true,
-        "locked": {
-            "type": "bool"
-        },
-        "methods": [
-            {
-                "name": "open",
-                "returns": "QVariant",
-                "type": "function"
-            },
-            {
-                "name": "close",
-                "returns": "QVariant",
-                "type": "function"
-            }
-        ],
-        "opened": {
-            "type": "bool"
-        },
-        "position": {
-            "isReadonly": true,
-            "type": "double"
-        },
-        "pressed": {
-            "isReadonly": true,
-            "type": "bool"
-        },
-        "prototype": "Item",
-        "triggerSize": {
-            "type": "double"
-        }
-    },
-    "Priority": {
-        "AfterItem": "1",
-        "BeforeItem": "0",
-        "prototype": "Enum"
-    },
-    "ProgressBar": {
-        "activeFocusOnPress": {
-            "revision": 1,
-            "type": "bool"
-        },
-        "defaultProperty": "data",
-        "exportMetaObjectRevisions": [
-            "-1"
-        ],
-        "exports": [
-            "ProgressBar -1.-1"
-        ],
-        "indeterminate": {
-            "type": "bool"
-        },
-        "isComposite": true,
-        "maximumValue": {
-            "type": "double"
-        },
-        "methods": [
-            {
-                "name": "requestFocus",
-                "parameters": [
-                    {
-                        "name": "reason",
-                        "type": "Qt::FocusReason"
-                    }
-                ],
-                "returns": "bool",
-                "revision": "1",
-                "type": "function"
-            },
-            {
-                "name": "requestFocus",
-                "returns": "bool",
-                "revision": "1",
-                "type": "function"
-            }
-        ],
-        "minimumValue": {
-            "type": "double"
-        },
-        "onScreen": {
-            "type": "bool"
-        },
-        "prototype": "Item",
-        "style": {
-            "isPointer": true,
-            "type": "Component"
-        },
-        "value": {
-            "type": "double"
-        }
-    },
-    "PullToRefresh": {
-        "activeFocusOnPress": {
-            "revision": 1,
-            "type": "bool"
-        },
-        "content": {
-            "isPointer": true,
-            "type": "Component"
-        },
-        "defaultProperty": "data",
-        "exportMetaObjectRevisions": [
-            "-1"
-        ],
-        "exports": [
-            "PullToRefresh -1.-1"
-        ],
-        "isComposite": true,
-        "methods": [
-            {
-                "name": "requestFocus",
-                "parameters": [
-                    {
-                        "name": "reason",
-                        "type": "Qt::FocusReason"
-                    }
-                ],
-                "returns": "bool",
-                "revision": "1",
-                "type": "function"
-            },
-            {
-                "name": "requestFocus",
-                "returns": "bool",
-                "revision": "1",
-                "type": "function"
-            }
-        ],
-        "offset": {
-            "isReadonly": true,
-            "type": "double"
-        },
-        "prototype": "Item",
-        "refreshing": {
-            "type": "bool"
-        },
-        "releaseToRefresh": {
-            "isReadonly": true,
-            "type": "bool"
-        },
-        "style": {
-            "isPointer": true,
-            "type": "Component"
-        },
-        "target": {
-            "isPointer": true,
-            "type": "Flickable"
-        }
-    },
-    "QAbstractProxyModel": {
-        "prototype": "QAbstractItemModel",
-        "sourceModel": {
-            "isPointer": true,
-            "type": "QAbstractItemModel"
-        }
-    },
-    "QQmlPropertyMap": {
-        "methods": [
-            {
-                "name": "valueChanged",
-                "parameters": [
-                    {
-                        "name": "key",
-                        "type": "string"
-                    },
-                    {
-                        "name": "value",
-                        "type": "QVariant"
-                    }
-                ],
-                "type": "signal"
-            },
-            {
-                "name": "keys",
-                "returns": "QStringList",
-                "type": "function"
-            }
-        ],
-        "prototype": "QtObject"
-    },
-    "QQuickImageBase": {
-        "defaultProperty": "data",
-        "exports": [
-            "QQuickImageBase 0.1",
-            "QQuickImageBase 1.0"
-        ],
-        "methods": [
-            {
-                "name": "sourceChanged",
-                "parameters": [
-                    {
-                        "name": "",
-                        "type": "QUrl"
-                    }
-                ],
-                "type": "signal"
-            },
-            {
-                "name": "sourceChanged",
-                "parameters": [
-                    {
-                        "name": "",
-                        "type": "QUrl"
-                    }
-                ],
-                "type": "signal"
-            }
-        ],
-        "prototype": "QQuickImageBase",
-        "source": {
-            "type": "QUrl"
-        }
-    },
-    "QSortFilterProxyModel": {
-        "dynamicSortFilter": {
-            "type": "bool"
-        },
-        "filterCaseSensitivity": {
-            "type": "Qt::CaseSensitivity"
-        },
-        "filterKeyColumn": {
-            "type": "int"
-        },
-        "filterRegExp": {
-            "type": "QRegExp"
-        },
-        "filterRole": {
-            "type": "int"
-        },
-        "isSortLocaleAware": {
-            "type": "bool"
-        },
-        "methods": [
-            {
-                "name": "setFilterRegExp",
-                "parameters": [
-                    {
-                        "name": "pattern",
-                        "type": "string"
-                    }
-                ],
-                "type": "function"
-            },
-            {
-                "name": "setFilterWildcard",
-                "parameters": [
-                    {
-                        "name": "pattern",
-                        "type": "string"
-                    }
-                ],
-                "type": "function"
-            },
-            {
-                "name": "setFilterFixedString",
-                "parameters": [
-                    {
-                        "name": "pattern",
-                        "type": "string"
-                    }
-                ],
-                "type": "function"
-            },
-            {
-                "name": "clear",
-                "type": "function"
-            },
-            {
-                "name": "invalidate",
-                "type": "function"
-            }
-        ],
-        "prototype": "QAbstractProxyModel",
-        "sortCaseSensitivity": {
-            "type": "Qt::CaseSensitivity"
-        },
-        "sortRole": {
-            "type": "int"
-        }
-    },
-    "Scrollbar": {
-        "activeFocusOnPress": {
-            "revision": 1,
-            "type": "bool"
-        },
-        "align": {
-            "type": "int"
-        },
-        "defaultProperty": "data",
-        "exportMetaObjectRevisions": [
-            "-1"
-        ],
-        "exports": [
-            "Scrollbar -1.-1"
-        ],
-        "flickableItem": {
-            "isPointer": true,
-            "type": "Flickable"
-        },
-        "isComposite": true,
-        "methods": [
-            {
-                "name": "requestFocus",
-                "parameters": [
-                    {
-                        "name": "reason",
-                        "type": "Qt::FocusReason"
-                    }
-                ],
-                "returns": "bool",
-                "revision": "1",
-                "type": "function"
-            },
-            {
-                "name": "requestFocus",
-                "returns": "bool",
-                "revision": "1",
-                "type": "function"
-            }
-        ],
-        "prototype": "Item",
-        "style": {
-            "isPointer": true,
-            "type": "Component"
-        }
-    },
-    "ScrollbarUtils": {
-        "exports": [
-            "ScrollbarUtils 1.0",
-            "ScrollbarUtils 0.1"
-        ],
-        "type": "script"
-    },
-    "SliderUtils": {
-        "exports": [
-            "SliderUtils 1.0",
-            "SliderUtils 0.1"
-        ],
-        "type": "script"
-    },
-    "SortBehavior": {
-        "exports": [
-            "SortBehavior 1.1"
-        ],
-        "isCreatable": false,
-        "order": {
-            "type": "Qt::SortOrder"
-        },
-        "property": {
-            "type": "string"
-        },
-        "prototype": "QtObject"
-    },
-    "SortFilterModel": {
-        "count": {
-            "isReadonly": true,
-            "type": "int"
-        },
-        "exports": [
-            "SortFilterModel 1.1"
-        ],
-        "filter": {
-            "isPointer": true,
-            "isReadonly": true,
-            "type": "FilterBehavior"
-        },
-        "methods": [
-            {
-                "name": "get",
-                "parameters": [
-                    {
-                        "name": "row",
-                        "type": "int"
-                    }
-                ],
-                "returns": "QVariantMap",
-                "type": "function"
-            },
-            {
-                "name": "count",
-                "returns": "int",
-                "type": "function"
-            }
-        ],
-        "model": {
-            "isPointer": true,
-            "type": "QAbstractItemModel"
-        },
-        "prototype": "QSortFilterProxyModel",
-        "sort": {
-            "isPointer": true,
-            "isReadonly": true,
-            "type": "SortBehavior"
-        }
-    },
-    "StateSaver": {
-        "attachedType": "UCStateSaverAttached",
-        "exports": [
-            "StateSaver 0.1",
-            "StateSaver 1.0"
-        ],
-        "prototype": "QtObject"
-    },
-    "Status": {
-        "Fail": "3",
-        "InProgress": "2",
-        "Ready": "1",
-        "prototype": "Enum"
-    },
-    "StyledItem": {
-        "activeFocusOnPress": {
-            "revision": 1,
-            "type": "bool"
-        },
-        "defaultProperty": "data",
-        "exportMetaObjectRevisions": [
-            "-1"
-        ],
-        "exports": [
-            "StyledItem -1.-1"
-        ],
-        "isComposite": true,
-        "methods": [
-            {
-                "name": "requestFocus",
-                "parameters": [
-                    {
-                        "name": "reason",
-                        "type": "Qt::FocusReason"
-                    }
-                ],
-                "returns": "bool",
-                "revision": "1",
-                "type": "function"
-            },
-            {
-                "name": "requestFocus",
-                "returns": "bool",
-                "revision": "1",
-                "type": "function"
-            }
-        ],
-        "prototype": "Item",
-        "style": {
-            "isPointer": true,
-            "type": "Component"
-        }
-    },
-    "StyledItemBase": {
-        "activeFocusOnPress": {
-            "revision": 1,
-            "type": "bool"
-        },
-        "defaultProperty": "data",
-        "exports": [
-            "StyledItemBase 0.1",
-            "StyledItemBase 1.0",
-            "StyledItemBase 1.1"
-        ],
-        "methods": [
-            {
-                "name": "requestFocus",
-                "parameters": [
-                    {
-                        "name": "reason",
-                        "type": "Qt::FocusReason"
-                    }
-                ],
-                "returns": "bool",
-                "revision": "1",
-                "type": "function"
-            },
-            {
-                "name": "requestFocus",
-                "returns": "bool",
-                "revision": "1",
-                "type": "function"
-            }
-        ],
-        "prototype": "Item"
-    },
-    "Toolbar": {
-        "align": {
-            "type": "int"
-        },
-        "animate": {
-            "type": "bool"
-        },
-        "animating": {
-            "isReadonly": true,
-            "type": "bool"
-        },
-        "contents": {
-            "isList": true,
-            "isReadonly": true,
-            "type": "QtObject"
-        },
-        "defaultProperty": "contents",
-        "exportMetaObjectRevisions": [
-            "-1"
-        ],
-        "exports": [
-            "Toolbar -1.-1"
-        ],
-        "hideTimeout": {
-            "type": "int"
-        },
-        "hintSize": {
-            "type": "double"
-        },
-        "isComposite": true,
-        "locked": {
-            "type": "bool"
-        },
-        "methods": [
-            {
-                "name": "open",
-                "returns": "QVariant",
-                "type": "function"
-            },
-            {
-                "name": "close",
-                "returns": "QVariant",
-                "type": "function"
-            }
-        ],
-        "opened": {
-            "type": "bool"
-        },
-        "position": {
-            "isReadonly": true,
-            "type": "double"
-        },
-        "pressed": {
-            "isReadonly": true,
-            "type": "bool"
-        },
-        "prototype": "Item",
-        "tools": {
-            "isPointer": true,
-            "type": "Item"
-        },
-        "triggerSize": {
-            "type": "double"
-        }
-    },
-    "Type": {
-        "Bool": "3",
-        "Integer": "2",
-        "None": "0",
-        "Object": "255",
-        "Real": "4",
-        "String": "1",
-        "prototype": "Enum"
-    },
-    "UCStateSaverAttached": {
-        "enabled": {
-            "type": "bool"
-        },
-        "properties": {
-            "type": "string"
-        },
-        "prototype": "QtObject"
-    },
-    "UCUnits": {
-        "exports": [
-            "UCUnits 0.1",
-            "UCUnits 1.0"
-        ],
-        "gridUnit": {
-            "type": "float"
-        },
-        "isCreatable": false,
-        "methods": [
-            {
-                "name": "dp",
-                "parameters": [
-                    {
-                        "name": "value",
-                        "type": "float"
-                    }
-                ],
-                "returns": "float",
-                "type": "function"
-            },
-            {
-                "name": "gu",
-                "parameters": [
-                    {
-                        "name": "value",
-                        "type": "float"
-                    }
-                ],
-                "returns": "float",
-                "type": "function"
-            }
-        ],
-        "prototype": "QtObject"
-    },
-    "UbuntuAnimation": {
-        "BriskDuration": {
-            "isReadonly": true,
-            "type": "int"
-        },
-        "FastDuration": {
-            "isReadonly": true,
-            "type": "int"
-        },
-        "SleepyDuration": {
-            "isReadonly": true,
-            "type": "int"
-        },
-        "SlowDuration": {
-            "isReadonly": true,
-            "type": "int"
-        },
-        "SnapDuration": {
-            "isReadonly": true,
-            "type": "int"
-        },
-        "StandardEasing": {
-            "isReadonly": true,
-            "type": "QEasingCurve"
-        },
-        "StandardEasingReverse": {
-            "isReadonly": true,
-            "type": "QEasingCurve"
-        },
-        "exports": [
-            "UbuntuAnimation 0.1",
-            "UbuntuAnimation 1.0"
-        ],
-        "isCreatable": false,
-        "isSingleton": true,
-        "prototype": "QtObject"
-    },
-    "UbuntuColors": {
-        "coolGrey": {
-            "isReadonly": true,
-            "type": "QColor"
-        },
-        "darkAubergine": {
-            "isReadonly": true,
-            "type": "QColor"
-        },
-        "exportMetaObjectRevisions": [
-            "-1"
-        ],
-        "exports": [
-            "UbuntuColors -1.-1"
-        ],
-        "greyGradient": {
-            "isPointer": true,
-            "type": "Gradient"
-        },
-        "isComposite": true,
-        "isCreatable": false,
-        "isSingleton": true,
-        "lightAubergine": {
-            "isReadonly": true,
-            "type": "QColor"
-        },
-        "midAubergine": {
-            "isReadonly": true,
-            "type": "QColor"
-        },
-        "orange": {
-            "isReadonly": true,
-            "type": "QColor"
-        },
-        "orangeGradient": {
-            "isPointer": true,
-            "type": "Gradient"
-        },
-        "prototype": "QtObject",
-        "warmGrey": {
-            "isReadonly": true,
-            "type": "QColor"
-        }
-    },
-    "UbuntuListView": {
-        "defaultProperty": "data",
-        "expandedIndex": {
-            "type": "int"
-        },
-        "exportMetaObjectRevisions": [
-            "-1"
-        ],
-        "exports": [
-            "UbuntuListView -1.-1"
-        ],
-        "isComposite": true,
-        "prototype": "ListView"
-    },
-    "UbuntuNumberAnimation": {
-        "exportMetaObjectRevisions": [
-            "-1"
-        ],
-        "exports": [
-            "UbuntuNumberAnimation -1.-1"
-        ],
-        "isComposite": true,
-        "prototype": "NumberAnimation"
-    },
-    "UbuntuShape": {
-        "borderSource": {
-            "type": "string"
-        },
-        "color": {
-            "type": "QColor"
-        },
-        "defaultProperty": "data",
-        "exports": [
-            "Shape 0.1",
-            "Shape 1.0",
-            "UbuntuShape 0.1",
-            "UbuntuShape 1.0"
-        ],
-        "gradientColor": {
-            "type": "QColor"
-        },
-        "horizontalAlignment": {
-            "type": "HAlignment"
-        },
-        "image": {
-            "type": "QVariant"
-        },
-        "methods": [
-            {
-                "name": "borderChanged",
-                "type": "signal"
-            },
-            {
-                "name": "gridUnitChanged",
-                "type": "function"
-            }
-        ],
-        "prototype": "Item",
-        "radius": {
-            "type": "string"
-        },
-        "stretched": {
-            "type": "bool"
-        },
-        "verticalAlignment": {
-            "type": "VAlignment"
-        }
-    },
-    "UriHandler": {
-        "exports": [
-            "UriHandler 0.1",
-            "UriHandler 1.0"
-        ],
-        "isCreatable": false,
-        "isSingleton": true,
-        "methods": [
-            {
-                "name": "opened",
-                "parameters": [
-                    {
-                        "name": "uris",
-                        "type": "QStringList"
-                    }
-                ],
-                "type": "signal"
-            }
-        ],
-        "prototype": "QtObject"
-    },
-    "VAlignment": {
-        "AlignBottom": "2",
-        "AlignTop": "0",
-        "AlignVCenter": "1",
-        "prototype": "Enum"
-    },
-    "i18n": {
-        "domain": {
-            "type": "string"
-        },
-        "exports": [
-            "i18n 0.1",
-            "i18n 1.0"
-        ],
-        "isCreatable": false,
-        "language": {
-            "type": "string"
-        },
-        "methods": [
-            {
-                "name": "bindtextdomain",
-                "parameters": [
-                    {
-                        "name": "domain_name",
-                        "type": "string"
-                    },
-                    {
-                        "name": "dir_name",
-                        "type": "string"
-                    }
-                ],
-                "type": "function"
-            },
-            {
-                "name": "tr",
-                "parameters": [
-                    {
-                        "name": "text",
-                        "type": "string"
-                    }
-                ],
-                "returns": "string",
-                "type": "function"
-            },
-            {
-                "name": "tr",
-                "parameters": [
-                    {
-                        "name": "singular",
-                        "type": "string"
-                    },
-                    {
-                        "name": "plural",
-                        "type": "string"
-                    },
-                    {
-                        "name": "n",
-                        "type": "int"
-                    }
-                ],
-                "returns": "string",
-                "type": "function"
-            },
-            {
-                "name": "dtr",
-                "parameters": [
-                    {
-                        "name": "domain",
-                        "type": "string"
-                    },
-                    {
-                        "name": "text",
-                        "type": "string"
-                    }
-                ],
-                "returns": "string",
-                "type": "function"
-            },
-            {
-                "name": "dtr",
-                "parameters": [
-                    {
-                        "name": "domain",
-                        "type": "string"
-                    },
-                    {
-                        "name": "singular",
-                        "type": "string"
-                    },
-                    {
-                        "name": "plural",
-                        "type": "string"
-                    },
-                    {
-                        "name": "n",
-                        "type": "int"
-                    }
-                ],
-                "returns": "string",
-                "type": "function"
-            }
-        ],
-        "prototype": "QtObject"
-    },
-    "namespace": "Ubuntu.Components"
-}
+// UbuntuComponents.Toolbar -1.-1
+// UbuntuComponents.ToolbarItems 1.0
+// UbuntuComponents.ToolbarItems 0.1
+// UbuntuComponents.OrientationHelper 1.0
+// UbuntuComponents.OrientationHelper 0.1
+// UbuntuComponents.ActivityIndicator 1.0
+// UbuntuComponents.ActivityIndicator 0.1
+// UbuntuComponents.PullToRefresh 1.1
+// UbuntuComponents.Haptics 1.0
+// UbuntuComponents.Haptics 0.1
+// UbuntuComponents.StyledItem 1.1
+// UbuntuComponents.StyledItem 1.0
+// UbuntuComponents.StyledItem 0.1
+// UbuntuComponents.PageHeadSections 1.1
+// UbuntuComponents.AbstractButton 1.0
+// UbuntuComponents.AbstractButton 0.1
+// UbuntuComponents.InputHandler -1.-1
+// UbuntuComponents.AnimatedItem -1.-1
+// UbuntuComponents.TextCursor -1.-1
+// UbuntuComponents.MainView 1.2
+// UbuntuComponents.MainView 1.0
+// UbuntuComponents.MainView 0.1
+// UbuntuComponents.PageTreeNode -1.-1
+// UbuntuComponents.ComboButton 1.1
+// UbuntuComponents.TextInputPopover -1.-1
+// UbuntuComponents.ProgressBar 1.1
+// UbuntuComponents.ProgressBar 1.0
+// UbuntuComponents.ProgressBar 0.1
+// UbuntuComponents.CheckBox 1.0
+// UbuntuComponents.CheckBox 0.1
+// UbuntuComponents.CrossFadeImage 1.1
+// UbuntuComponents.CrossFadeImage 1.0
+// UbuntuComponents.CrossFadeImage 0.1
+// UbuntuComponents.PageBase -1.-1
+// UbuntuComponents.MainViewBase -1.-1
+// UbuntuComponents.PageWrapper -1.-1
+// UbuntuComponents.UbuntuNumberAnimation 1.0
+// UbuntuComponents.UbuntuNumberAnimation 0.1
+// UbuntuComponents.TextField 1.0
+// UbuntuComponents.TextField 0.1
+// UbuntuComponents.OptionSelector 1.0
+// UbuntuComponents.OptionSelector 0.1
+// UbuntuComponents.Tabs 1.0
+// UbuntuComponents.Tabs 0.1
+// UbuntuComponents.Panel 1.0
+// UbuntuComponents.Panel 0.1
+// UbuntuComponents.OptionSelectorDelegate 1.0
+// UbuntuComponents.OptionSelectorDelegate 0.1
+// UbuntuComponents.Captions 1.2
+// UbuntuComponents.Label 1.0
+// UbuntuComponents.Label 0.1
+// UbuntuComponents.ActionList 1.0
+// UbuntuComponents.ActionList 0.1
+// UbuntuComponents.Slider 1.0
+// UbuntuComponents.Slider 0.1
+// UbuntuComponents.Scrollbar 1.0
+// UbuntuComponents.Scrollbar 0.1
+// UbuntuComponents.TextArea 1.0
+// UbuntuComponents.TextArea 0.1
+// UbuntuComponents.PageHeadState 1.1
+// UbuntuComponents.Button 1.1
+// UbuntuComponents.Button 1.0
+// UbuntuComponents.Button 0.1
+// UbuntuComponents.UbuntuListView 1.1
+// UbuntuComponents.UbuntuListView 1.0
+// UbuntuComponents.UbuntuListView 0.1
+// UbuntuComponents.Object 1.0
+// UbuntuComponents.Object 0.1
+// UbuntuComponents.ActionItem 1.0
+// UbuntuComponents.ActionItem 0.1
+// UbuntuComponents.Switch 1.0
+// UbuntuComponents.Switch 0.1
+// UbuntuComponents.Page 1.1
+// UbuntuComponents.Page 1.0
+// UbuntuComponents.Page 0.1
+// UbuntuComponents.UbuntuColors 1.1
+// UbuntuComponents.UbuntuColors 1.0
+// UbuntuComponents.UbuntuColors 0.1
+// UbuntuComponents.Tab 1.0
+// UbuntuComponents.Tab 0.1
+// UbuntuComponents.DraggingArea -1.-1
+// UbuntuComponents.Icon 1.1
+// UbuntuComponents.Icon 1.0
+// UbuntuComponents.Icon 0.1
+// UbuntuComponents.ToolbarButton 1.0
+// UbuntuComponents.ToolbarButton 0.1
+// UbuntuComponents.PageStack 1.0
+// UbuntuComponents.PageStack 0.1
+// UbuntuComponents.AppHeader -1.-1
+// UbuntuComponents.Header 1.0
+// UbuntuComponents.Header 0.1
+// UbuntuComponents.TabBar 1.0
+// UbuntuComponents.TabBar 0.1
+// UbuntuComponents.PageHeadConfiguration 1.1
+AbstractButton -1.-1 Item
+    property Action action
+    property bool activeFocusOnPress
+    property bool hovered
+    property string iconName
+    property QUrl iconSource
+    function bool requestFocus(Qt::FocusReason reason)
+    function bool requestFocus
+    property bool pressed
+    property Component style
+    property string text
+Action 0.1 Action 1.0 QtObject
+    property string description
+    property bool enabled
+    property string iconName
+    property QUrl iconSource
+    property Component itemHint
+    property string keywords
+    signal triggered(QVariant value)
+    function trigger(QVariant value)
+    function trigger
+    property string name
+    property Type parameterType
+    property string text
+    property bool visible
+ActionContext 0.1 ActionContext 1.0 QtObject
+    default readonly property QtObject actions
+    property bool active
+    signal activeChanged(bool )
+    function addAction(QtObject action)
+    function removeAction(QtObject action)
+ActionItem -1.-1 Item
+    property Action action
+    property bool activeFocusOnPress
+    property string iconName
+    property QUrl iconSource
+    function bool requestFocus(Qt::FocusReason reason)
+    function bool requestFocus
+    property Component style
+    property string text
+ActionManager 0.1 ActionManager 1.0 QtObject
+    default readonly property QtObject actions
+    readonly property ActionContext globalContext
+    readonly property QtObject localContexts
+    signal quit
+    function addAction(QtObject action)
+    function removeAction(QtObject action)
+    function addLocalContext(QtObject context)
+    function removeLocalContext(QtObject context)
+Alarm 0.1 Alarm 1.0 QtObject
+    property QDateTime date
+    property DaysOfWeek daysOfWeek
+    property bool enabled
+    readonly property int error
+    property string message
+    signal statusChanged(Operation operation)
+    function save
+    function cancel
+    function reset
+    property QUrl sound
+    readonly property Status status
+AlarmModel 0.1 AlarmModel 1.0 QAbstractListModel
+    readonly property int count
+    function refresh
+    function UCAlarm* get(int index)
+AlarmType Enum
+    OneTime
+    Repeating
+AnimatedItem -1.-1 Item
+    property bool activeFocusOnPress
+    function bool requestFocus(Qt::FocusReason reason)
+    function bool requestFocus
+    property bool onScreen
+    property Component style
+AppHeader -1.-1 Item
+    property QVariant actions
+    property bool activeFocusOnPress
+    property bool animate
+    property PageHeadConfiguration config
+    property Item contents
+    property QColor dividerColor
+    property Flickable flickable
+    function bool requestFocus(Qt::FocusReason reason)
+    function bool requestFocus
+    property QVariant pageStack
+    property QColor panelColor
+    property Component style
+    property QVariant tabsModel
+    property string title
+    property bool useDeprecatedToolbar
+Argument 0.1 Argument 1.0 QtObject
+    property string help
+    function QVariant at(int i)
+    property string name
+    property bool required
+    property QStringList valueNames
+Arguments 0.1 Arguments 1.0 QtObject
+    default readonly property Argument arguments
+    property Argument defaultArgument
+    readonly property bool error
+    readonly property string errorMessage
+    function printUsage
+    function quitWithError(string errorMessage)
+    function quitWithError
+    readonly property QQmlPropertyMap values
+BackgroundMode Enum
+    SolidColor
+    VerticalGradient
+Button -1.-1 Item
+    property Action action
+    property bool activeFocusOnPress
+    property QColor color
+    property QFont font
+    property Gradient gradient
+    property bool hovered
+    property string iconName
+    property string iconPosition
+    property QUrl iconSource
+    function bool requestFocus(Qt::FocusReason reason)
+    function bool requestFocus
+    property bool pressed
+    property QColor strokeColor
+    property Component style
+    property string text
+CaptionsStyle Enum
+    SummaryCaptionStyle
+    TitleCaptionStyle
+Clipboard 0.1 Clipboard 1.0 QtObject singleton
+    readonly property MimeData data
+    function push(QVariant data)
+    function clear
+    function QQuickMimeData* newData
+ColorUtils 1.0 ColorUtils 0.1 
+ComboButton -1.-1 Item
+    property Action action
+    property bool activeFocusOnPress
+    property double collapsedHeight
+    property QColor color
+    default readonly property QtObject comboList
+    readonly property double comboListHeight
+    property QColor dropdownColor
+    property bool expanded
+    property double expandedHeight
+    property QFont font
+    property Gradient gradient
+    property bool hovered
+    property string iconName
+    property string iconPosition
+    property QUrl iconSource
+    function bool requestFocus(Qt::FocusReason reason)
+    function bool requestFocus
+    property bool pressed
+    property QColor strokeColor
+    property Component style
+    property string text
+CrossFadeImage -1.-1 Item
+    property int fadeDuration
+    property string fadeStyle
+    property int fillMode
+    readonly property bool running
+    property QUrl source
+    property QSizeF sourceSize
+    readonly property int status
+DateUtils 1.0 DateUtils 0.1 
+DayOfWeek Enum
+    AutoDetect
+    Daily
+    Friday
+    Monday
+    Saturday
+    Sunday
+    Thursday
+    Tuesday
+    Wednesday
+DaysOfWeek Enum
+    AutoDetect
+    Daily
+    Friday
+    Monday
+    Saturday
+    Sunday
+    Thursday
+    Tuesday
+    Wednesday
+DraggingArea -1.-1 MouseArea
+    property bool clickValidated
+    property double dragValue
+    property double dragVelocity
+    property bool dragging
+    property double lateralPosition
+    signal dragStart
+    signal dragEnd
+    function QVariant updateSpeed
+    function QVariant cullOldDragEvents(QVariant currentTime)
+    function QVariant getEventSpeed(QVariant currentTime, QVariant event)
+    function QVariant pushDragEvent(QVariant event)
+    property int orientation
+    property bool zeroVelocityCounts
+Error Enum
+    AdaptationError
+    EarlyDate
+    InvalidDate
+    InvalidEvent
+    NoDaysOfWeek
+    NoError
+    OneTimeOnMoreDays
+    OperationPending
+FillMode Enum
+    Pad
+    PreserveAspectCrop
+    PreserveAspectFit
+    Stretch
+FilterBehavior 1.1 QtObject
+    property QRegExp pattern
+    property string property
+HAlignment Enum
+    AlignHCenter
+    AlignLeft
+    AlignRight
+Haptics -1.-1 QtObject singleton
+    default readonly property QtObject children
+    readonly property HapticsEffect effect
+    readonly property bool enabled
+    function QVariant play(QVariant customEffect)
+Icon -1.-1 Item
+    property QColor color
+    property QColor keyColor
+    property string name
+    property QUrl source
+Icon10 -1.-1 Item
+    property QColor color
+    property QColor keyColor
+    property string name
+InverseMouse 0.1 InverseMouse 1.0 Mouse
+InverseMouseArea 0.1 InverseMouseArea 1.0 MouseArea
+    function bool contains(QPointF point)
+    property Item sensingArea
+    property bool topmostItem
+ListItem 1.2 StyledItemBase
+    property Action action
+    property QColor color
+    readonly property Item contentItem
+    readonly property bool contentMoving
+    readonly property UCListItemDivider divider
+    property bool dragMode
+    readonly property bool dragging
+    property QColor highlightColor
+    readonly property bool highlighted
+    property ListItemActions leadingActions
+    readonly property Item listItemChildren
+    default readonly property QtObject listItemData
+    signal clicked
+    signal pressAndHold
+    signal contentMovementStarted
+    signal contentMovementEnded
+    property bool selectMode
+    property bool selected
+    property Component style
+    property ListItemActions trailingActions
+ListItemActions 1.2 QtObject
+    readonly property Action actions
+    default readonly property QtObject data
+    property Component delegate
+ListItemDrag 1.2 QtObject
+    property bool accept
+    readonly property int from
+    property int maximumIndex
+    property int minimumIndex
+    readonly property Status status
+    readonly property int to
+MathUtils 1.0 MathUtils 0.1 
+MimeData 0.1 MimeData 1.0 QtObject
+    property QColor color
+    property QVariant data
+    readonly property QStringList formats
+    property string html
+    signal typeChanged
+    property string text
+    property QList<QUrl> urls
+Mouse 0.1 Mouse 1.0 QtObject
+    readonly property Qt::MouseButtons acceptedButtons
+    property int clickAndHoldThreshold
+    property bool enabled
+    readonly property Item forwardTo
+    readonly property bool hoverEnabled
+    signal pressed(QQuickMouseEvent mouse, Item host)
+    signal released(QQuickMouseEvent mouse, Item host)
+    signal clicked(QQuickMouseEvent mouse, Item host)
+    signal pressAndHold(QQuickMouseEvent mouse, Item host)
+    signal doubleClicked(QQuickMouseEvent mouse, Item host)
+    signal positionChanged(QQuickMouseEvent mouse, Item host)
+    signal entered(QQuickMouseEvent event, Item host)
+    signal exited(QQuickMouseEvent event, Item host)
+    property Priority priority
+Object -1.-1 QtObject
+    default readonly property QtObject children
+Operation Enum
+    Canceling
+    NoOperation
+    Reseting
+    Saving
+Page -1.-1 Item
+    readonly property QtObject actions
+    property bool active
+    property bool activeFocusOnPress
+    property Item activeLeafNode
+    property Flickable flickable
+    readonly property PageHeadConfiguration head
+    property AppHeader header
+    property bool isLeaf
+    function bool requestFocus(Qt::FocusReason reason)
+    function bool requestFocus
+    property Item pageStack
+    property Item parentNode
+    property Component style
+    property string title
+    property Toolbar toolbar
+    property Item tools
+Page10 -1.-1 Item
+    readonly property QtObject actions
+    property bool active
+    property bool activeFocusOnPress
+    property Item activeLeafNode
+    property Flickable flickable
+    property AppHeader header
+    property bool isLeaf
+    function bool requestFocus(Qt::FocusReason reason)
+    function bool requestFocus
+    property Item pageStack
+    property Item parentNode
+    property Component style
+    property string title
+    property Toolbar toolbar
+    property Item tools
+PageHeadConfiguration -1.-1 QtObject
+    readonly property Action actions
+    property Action backAction
+    default readonly property QtObject children
+    property Item contents
+    property QColor foregroundColor
+    property string preset
+    readonly property PageHeadSections sections
+PageHeadSections -1.-1 QtObject
+    property bool enabled
+    property QVariant model
+    property int selectedIndex
+PageHeadState -1.-1 State
+    readonly property Action actions
+    property Action backAction
+    property Item contents
+    property PageHeadConfiguration head
+PageTreeNode -1.-1 Item
+    property bool active
+    property bool activeFocusOnPress
+    property Item activeLeafNode
+    property AppHeader header
+    property bool isLeaf
+    function bool requestFocus(Qt::FocusReason reason)
+    function bool requestFocus
+    property Item pageStack
+    property Item parentNode
+    property Component style
+    property Toolbar toolbar
+Palette -1.-1 QtObject
+    property PaletteValues normal
+    property PaletteValues selected
+PaletteValues -1.-1 QtObject
+    property QColor background
+    property QColor backgroundText
+    property QColor base
+    property QColor baseText
+    property QColor field
+    property QColor fieldText
+    property QColor foreground
+    property QColor foregroundText
+    property QColor overlay
+    property QColor overlayText
+    property QColor selection
+Panel -1.-1 Item
+    property int align
+    property bool animate
+    readonly property bool animating
+    default readonly property QtObject contents
+    property int hideTimeout
+    property double hintSize
+    property bool locked
+    function QVariant open
+    function QVariant close
+    property bool opened
+    readonly property double position
+    readonly property bool pressed
+    property double triggerSize
+Priority Enum
+    AfterItem
+    BeforeItem
+ProgressBar -1.-1 Item
+    property bool activeFocusOnPress
+    property bool indeterminate
+    property double maximumValue
+    function bool requestFocus(Qt::FocusReason reason)
+    function bool requestFocus
+    property double minimumValue
+    property bool onScreen
+    property Component style
+    property double value
+PullToRefresh -1.-1 Item
+    property bool activeFocusOnPress
+    property Component content
+    function bool requestFocus(Qt::FocusReason reason)
+    function bool requestFocus
+    readonly property double offset
+    property bool refreshing
+    readonly property bool releaseToRefresh
+    property Component style
+    property Flickable target
+QAbstractProxyModel QAbstractItemModel
+    property QAbstractItemModel sourceModel
+QQmlPropertyMap QtObject
+    signal valueChanged(string key, QVariant value)
+    function QStringList keys
+QQuickImageBase 0.1 QQuickImageBase 1.0 QQuickImageBase
+    signal extendedSourceChanged
+    signal extendedSourceChanged
+    property QUrl source
+QSortFilterProxyModel QAbstractProxyModel
+    property bool dynamicSortFilter
+    property Qt::CaseSensitivity filterCaseSensitivity
+    property int filterKeyColumn
+    property QRegExp filterRegExp
+    property int filterRole
+    property bool isSortLocaleAware
+    function setFilterRegExp(string pattern)
+    function setFilterWildcard(string pattern)
+    function setFilterFixedString(string pattern)
+    function clear
+    function invalidate
+    property Qt::CaseSensitivity sortCaseSensitivity
+    property int sortRole
+Scrollbar -1.-1 Item
+    property bool activeFocusOnPress
+    property int align
+    property Flickable flickableItem
+    function bool requestFocus(Qt::FocusReason reason)
+    function bool requestFocus
+    property Component style
+ScrollbarUtils 1.0 ScrollbarUtils 0.1 
+ServiceProperties 1.1 QtObject
+    property string adaptorInterface
+    readonly property string error
+    property string path
+    property string service
+    property string serviceInterface
+    readonly property Status status
+ServiceType Enum
+    Session
+    System
+    Undefined
+Shape 0.1 Shape 1.0 UbuntuShape 0.1 UbuntuShape 1.0 UbuntuShape 1.2 Item
+    property QColor backgroundColor
+    property BackgroundMode backgroundMode
+    property string borderSource
+    property QColor color
+    property QColor gradientColor
+    property HAlignment horizontalAlignment
+    property QVariant image
+    signal sourceChanged
+    signal sourceOpacityChanged
+    signal sourceFillModeChanged
+    signal sourceHorizontalWrapModeChanged
+    signal sourceVerticalWrapModeChanged
+    signal sourceHorizontalAlignmentChanged
+    signal sourceVerticalAlignmentChanged
+    signal sourceTranslationChanged
+    signal sourceScaleChanged
+    signal backgroundColorChanged
+    signal secondaryBackgroundColorChanged
+    signal backgroundModeChanged
+    property string radius
+    property QColor secondaryBackgroundColor
+    property QVariant source
+    property FillMode sourceFillMode
+    property HAlignment sourceHorizontalAlignment
+    property WrapMode sourceHorizontalWrapMode
+    property double sourceOpacity
+    property QVector2D sourceScale
+    property QVector2D sourceTranslation
+    property VAlignment sourceVerticalAlignment
+    property WrapMode sourceVerticalWrapMode
+    property bool stretched
+    property VAlignment verticalAlignment
+SliderUtils 1.0 SliderUtils 0.1 
+SortBehavior 1.1 QtObject
+    property Qt::SortOrder order
+    property string property
+SortFilterModel 1.1 QSortFilterProxyModel
+    readonly property int count
+    readonly property FilterBehavior filter
+    function QVariantMap get(int row)
+    function int count
+    property QAbstractItemModel model
+    readonly property SortBehavior sort
+StateSaver 0.1 StateSaver 1.0 QtObject
+Status Enum
+    Finished
+    Started
+    Updated
+StyledItem -1.-1 Item
+    property bool activeFocusOnPress
+    function bool requestFocus(Qt::FocusReason reason)
+    function bool requestFocus
+    property Component style
+StyledItemBase 0.1 StyledItemBase 1.0 StyledItemBase 1.1 Item
+    property bool activeFocusOnPress
+    function bool requestFocus(Qt::FocusReason reason)
+    function bool requestFocus
+SwipeEvent 1.2 QtObject
+    property QPointF content
+    readonly property QPointF from
+    readonly property Status status
+    readonly property QPointF to
+Toolbar -1.-1 Item
+    property int align
+    property bool animate
+    readonly property bool animating
+    default readonly property QtObject contents
+    property int hideTimeout
+    property double hintSize
+    property bool locked
+    function QVariant open
+    function QVariant close
+    property bool opened
+    readonly property double position
+    readonly property bool pressed
+    property Item tools
+    property double triggerSize
+Type Enum
+    Bool
+    Integer
+    None
+    Object
+    Real
+    String
+UCListItemDivider Item
+    property QColor colorFrom
+    property QColor colorTo
+UCStateSaverAttached QtObject
+    property bool enabled
+    property string properties
+UCUnits 0.1 UCUnits 1.0 QtObject
+    property float gridUnit
+    function float dp(float value)
+    function float gu(float value)
+Ubuntu 1.2 QtObject singleton
+UbuntuAnimation 0.1 UbuntuAnimation 1.0 QtObject singleton
+    readonly property int BriskDuration
+    readonly property int FastDuration
+    readonly property int SleepyDuration
+    readonly property int SlowDuration
+    readonly property int SnapDuration
+    readonly property QEasingCurve StandardEasing
+    readonly property QEasingCurve StandardEasingReverse
+UbuntuColors -1.-1 QtObject singleton
+    readonly property QColor blue
+    readonly property QColor coolGrey
+    readonly property QColor darkAubergine
+    readonly property QColor darkGrey
+    readonly property QColor green
+    property Gradient greyGradient
+    readonly property QColor lightAubergine
+    readonly property QColor lightGrey
+    readonly property QColor midAubergine
+    readonly property QColor orange
+    property Gradient orangeGradient
+    readonly property QColor purple
+    readonly property QColor red
+    readonly property QColor warmGrey
+UbuntuListView -1.-1 ListView
+    property int expandedIndex
+UbuntuNumberAnimation -1.-1 NumberAnimation
+UbuntuShapeOverlay 1.2 Shape
+    property QColor overlayColor
+    property QRectF overlayRect
+UriHandler 0.1 UriHandler 1.0 QtObject singleton
+    signal opened(QStringList uris)
+VAlignment Enum
+    AlignBottom
+    AlignTop
+    AlignVCenter
+ViewItems 1.2 QtObject
+    property bool dragMode
+    signal dragUpdated(ListItemDrag event)
+    property bool selectMode
+    property QList<int> selectedIndices
+WrapMode Enum
+    Repeat
+    Transparent
+i18n 0.1 i18n 1.0 QtObject
+    property string domain
+    property string language
+    function bindtextdomain(string domain_name, string dir_name)
+    function string tr(string text)
+    function string tr(string singular, string plural, int n)
+    function string dtr(string domain, string text)
+    function string dtr(string domain, string singular, string plural, int n)
+    function string ctr(string context, string text)
+    function string dctr(string domain, string context, string text)
+    function string tag(string text)
+    function string tag(string context, string text)
