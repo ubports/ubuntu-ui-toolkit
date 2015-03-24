@@ -1,0 +1,179 @@
+Haptics 1.0 QTestRootObject singleton
+    default readonly property QTestRootObject children
+    readonly property HapticsEffect effect
+    readonly property bool enabled
+    function var play(var customEffect)
+Object 1.0 QTestRootObject
+    default readonly property QTestRootObject children
+Palette 1.0 QTestRootObject
+    property PaletteValues normal
+    property PaletteValues selected
+PaletteValues 1.0 QTestRootObject
+    property QColor background
+    property QColor backgroundText
+    property QColor base
+    property QColor baseText
+    property QColor field
+    property QColor fieldText
+    property QColor foreground
+    property QColor foregroundText
+    property QColor overlay
+    property QColor overlayText
+    property QColor selection
+QAbstractProxyModel QAbstractItemModel
+    property QAbstractItemModel sourceModel
+QQmlPropertyMap QTestRootObject
+    signal valueChanged(string key, var value)
+    function QStringList keys
+QSortFilterProxyModel QAbstractProxyModel
+    property bool dynamicSortFilter
+    property Qt::CaseSensitivity filterCaseSensitivity
+    property int filterKeyColumn
+    property QRegExp filterRegExp
+    property int filterRole
+    property bool isSortLocaleAware
+    function setFilterRegExp(string pattern)
+    function setFilterWildcard(string pattern)
+    function setFilterFixedString(string pattern)
+    function clear
+    function invalidate
+    property Qt::CaseSensitivity sortCaseSensitivity
+    property int sortRole
+TestCase 1.0 Item
+    property bool completed
+    function var fail(var msg)
+    function var qtest_fail(var msg, var frame)
+    function var verify(var cond, var msg)
+    function var qtest_typeof(var o)
+    function var qtest_compareInternal(var act, var exp)
+    function var qtest_compareInternalObjects(var act, var exp)
+    function var qtest_compareInternalArrays(var actual, var expected)
+    function var compare(var actual, var expected, var msg)
+    function var fuzzyCompare(var actual, var expected, var delta, var msg)
+    function var grabImage(var item)
+    function var findChild(var parent, var objectName)
+    function var qtest_findVisualChild(var parent, var objectName)
+    function var tryCompare(var obj, var prop, var value, var timeout, var msg)
+    function var skip(var msg)
+    function var expectFail(var tag, var msg)
+    function var expectFailContinue(var tag, var msg)
+    function var warn(var msg)
+    function var ignoreWarning(var msg)
+    function var wait(var ms)
+    function var waitForRendering(var item, var timeout)
+    function var sleep(var ms)
+    function var keyPress(var key, var modifiers, var delay)
+    function var keyRelease(var key, var modifiers, var delay)
+    function var keyClick(var key, var modifiers, var delay)
+    function var mousePress(var item, var x, var y, var button, var modifiers, var delay)
+    function var mouseRelease(var item, var x, var y, var button, var modifiers, var delay)
+    function var mouseDrag(var item, var x, var y, var dx, var dy, var button, var modifiers, var delay)
+    function var mouseClick(var item, var x, var y, var button, var modifiers, var delay)
+    function var mouseDoubleClick(var item, var x, var y, var button, var modifiers, var delay)
+    function var mouseMove(var item, var x, var y, var delay, var buttons)
+    function var mouseWheel(var item, var x, var y, var xDelta, var yDelta, var buttons, var modifiers, var delay)
+    function var initTestCase
+    function var cleanupTestCase
+    function var init
+    function var cleanup
+    function var qtest_runInternal(var prop, var arg)
+    function var qtest_runFunction(var prop, var arg)
+    function var qtest_runBenchmarkFunction(var prop, var arg)
+    function var qtest_run
+    property string name
+    property bool optional
+    property bool qtest_componentCompleted
+    property var qtest_events
+    property bool qtest_prevWhen
+    property var qtest_results
+    property var qtest_testCaseResult
+    property int qtest_testId
+    property bool running
+    property bool when
+    property bool windowShown
+TestExtras 1.0 QTestRootObject singleton
+    function string openGLflavor
+    function string cpuArchitecture
+    function bool touchDevicePresent
+    function registerTouchDevice
+    function touchPress(int touchId, Item item, QPoint point)
+    function touchRelease(int touchId, Item item, QPoint point)
+    function touchClick(int touchId, Item item, QPoint point)
+    function touchLongPress(int touchId, Item item, QPoint point)
+    function touchDoubleClick(int touchId, Item item, QPoint point)
+    function touchMove(int touchId, Item item, QPoint point)
+    function touchDrag(int touchId, Item item, QPoint from, QPoint delta, int steps)
+    function touchDrag(int touchId, Item item, QPoint from, QPoint delta)
+    readonly property bool touchPresent
+UCListItemDivider Item
+    property QColor colorFrom
+    property QColor colorTo
+UCStateSaverAttached QTestRootObject
+    property bool enabled
+    property string properties
+UbuntuColors 1.0 QTestRootObject singleton
+    readonly property QColor blue
+    readonly property QColor coolGrey
+    readonly property QColor darkAubergine
+    readonly property QColor darkGrey
+    readonly property QColor green
+    property Gradient greyGradient
+    readonly property QColor lightAubergine
+    readonly property QColor lightGrey
+    readonly property QColor midAubergine
+    readonly property QColor orange
+    property Gradient orangeGradient
+    readonly property QColor purple
+    readonly property QColor red
+    readonly property QColor warmGrey
+UbuntuTestCase 1.0 Item
+    property bool completed
+    function var fail(var msg)
+    function var qtest_fail(var msg, var frame)
+    function var verify(var cond, var msg)
+    function var qtest_typeof(var o)
+    function var qtest_compareInternal(var act, var exp)
+    function var qtest_compareInternalObjects(var act, var exp)
+    function var qtest_compareInternalArrays(var actual, var expected)
+    function var compare(var actual, var expected, var msg)
+    function var fuzzyCompare(var actual, var expected, var delta, var msg)
+    function var grabImage(var item)
+    function var qtest_findVisualChild(var parent, var objectName)
+    function var tryCompare(var obj, var prop, var value, var timeout, var msg)
+    function var skip(var msg)
+    function var expectFail(var tag, var msg)
+    function var expectFailContinue(var tag, var msg)
+    function var warn(var msg)
+    function var ignoreWarning(var msg)
+    function var wait(var ms)
+    function var waitForRendering(var item, var timeout)
+    function var sleep(var ms)
+    function var keyPress(var key, var modifiers, var delay)
+    function var keyRelease(var key, var modifiers, var delay)
+    function var keyClick(var key, var modifiers, var delay)
+    function var mousePress(var item, var x, var y, var button, var modifiers, var delay)
+    function var mouseRelease(var item, var x, var y, var button, var modifiers, var delay)
+    function var mouseDrag(var item, var x, var y, var dx, var dy, var button, var modifiers, var delay)
+    function var mouseClick(var item, var x, var y, var button, var modifiers, var delay)
+    function var mouseDoubleClick(var item, var x, var y, var button, var modifiers, var delay)
+    function var mouseMove(var item, var x, var y, var delay, var buttons)
+    function var mouseWheel(var item, var x, var y, var xDelta, var yDelta, var buttons, var modifiers, var delay)
+    function var initTestCase
+    function var cleanupTestCase
+    function var init
+    function var cleanup
+    function var qtest_runInternal(var prop, var arg)
+    function var qtest_runFunction(var prop, var arg)
+    function var qtest_runBenchmarkFunction(var prop, var arg)
+    function var qtest_run
+    property string name
+    property bool optional
+    property bool qtest_componentCompleted
+    property var qtest_events
+    property bool qtest_prevWhen
+    property var qtest_results
+    property var qtest_testCaseResult
+    property int qtest_testId
+    property bool running
+    property bool when
+    property bool windowShown

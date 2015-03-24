@@ -3,9 +3,9 @@ BarGraph 1.0 Item
     property QColor backgroundColor
     property QColor color
     property string labelFormat
-    property QVariant labels
+    property var labels
     property double maximumValue
-    property QVariant model
+    property var model
     property double threshold
 CpuUsage 0.1 CpuUsage 1.0 Item
     readonly property UPMGraphModel graphModel
@@ -15,7 +15,7 @@ Haptics 1.0 QtObject singleton
     default readonly property QtObject children
     readonly property HapticsEffect effect
     readonly property bool enabled
-    function QVariant play(QVariant customEffect)
+    function var play(var customEffect)
 Label 1.0 Text
     property string fontSize
 Object 1.0 QtObject
@@ -40,7 +40,7 @@ PerformanceOverlay 1.0 Item
 QAbstractProxyModel QAbstractItemModel
     property QAbstractItemModel sourceModel
 QQmlPropertyMap QtObject
-    signal valueChanged(string key, QVariant value)
+    signal valueChanged(string key, var value)
     function QStringList keys
 QSortFilterProxyModel QAbstractProxyModel
     property bool dynamicSortFilter

@@ -715,6 +715,16 @@ void printDebugMessage(QtMsgType, const QMessageLogContext &, const QString &msg
     // In case of QtFatalMsg the calling code will abort() when appropriate.
 }
 
+static QObject *s_testRootObject = 0;
+static QObject *testRootObject(QQmlEngine *engine, QJSEngine *jsEngine)
+{
+    Q_UNUSED(jsEngine);
+    if (!s_testRootObject) {
+        s_testRootObject = new QObject(engine);
+    }
+    return s_testRootObject;
+}
+
 int main(int argc, char *argv[])
 {
     // The default message handler might not print to console on some systems. Enforce this.
@@ -823,6 +833,9 @@ int main(int argc, char *argv[])
     // By default output JSON
     if (!output_json and !output_qml)
         output_json = true;
+
+    // Allow import of Qt.Test
+    qmlRegisterSingletonType<QObject>("Qt.test.qtestroot", 1, 0, "QTestRootObject", testRootObject);
 
     QQmlEngine engine;
     if (!pluginImportPath.isEmpty()) {
@@ -947,6 +960,7 @@ int main(int argc, char *argv[])
 
     // setup static rewrites of type names
     cppToId.insert("QString", "string");
+    cppToId.insert("QVariant", "var");
     cppToId.insert("QQmlEasingValueType::Type", "Type");
 
     // create an object that will be the API description

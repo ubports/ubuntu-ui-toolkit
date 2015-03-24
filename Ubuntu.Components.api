@@ -16,8 +16,8 @@ Action 0.1 Action 1.0 QtObject
     property QUrl iconSource
     property Component itemHint
     property string keywords
-    signal triggered(QVariant value)
-    function trigger(QVariant value)
+    signal triggered(var value)
+    function trigger(var value)
     function trigger
     property string name
     property Type parameterType
@@ -67,7 +67,7 @@ AlarmType Enum
     OneTime
     Repeating
 AppHeader 1.2 Item
-    property QVariant actions
+    property var actions
     property bool activeFocusOnPress
     property bool animate
     property PageHeadConfiguration config
@@ -76,15 +76,15 @@ AppHeader 1.2 Item
     property Flickable flickable
     function bool requestFocus(Qt::FocusReason reason)
     function bool requestFocus
-    property QVariant pageStack
+    property var pageStack
     property QColor panelColor
     property Component style
-    property QVariant tabsModel
+    property var tabsModel
     property string title
     property bool useDeprecatedToolbar
 Argument 0.1 Argument 1.0 QtObject
     property string help
-    function QVariant at(int i)
+    function var at(int i)
     property string name
     property bool required
     property QStringList valueNames
@@ -105,9 +105,9 @@ BarGraph 1.2 Item
     property QColor backgroundColor
     property QColor color
     property string labelFormat
-    property QVariant labels
+    property var labels
     property double maximumValue
-    property QVariant model
+    property var model
     property double threshold
 Captions 1.2 Item
     property int captionStyle
@@ -120,7 +120,7 @@ CaptionsStyle Enum
     TitleCaptionStyle
 Clipboard 0.1 Clipboard 1.0 QtObject singleton
     readonly property MimeData data
-    function push(QVariant data)
+    function push(var data)
     function clear
     function QQuickMimeData* newData
 ColorUtils 1.0 ColorUtils 0.1 
@@ -153,10 +153,10 @@ DraggingArea 1.2 MouseArea
     property double lateralPosition
     signal dragStart
     signal dragEnd
-    function QVariant updateSpeed
-    function QVariant cullOldDragEvents(QVariant currentTime)
-    function QVariant getEventSpeed(QVariant currentTime, QVariant event)
-    function QVariant pushDragEvent(QVariant event)
+    function var updateSpeed
+    function var cullOldDragEvents(var currentTime)
+    function var getEventSpeed(var currentTime, var event)
+    function var pushDragEvent(var event)
     property int orientation
     property bool zeroVelocityCounts
 Error Enum
@@ -184,7 +184,7 @@ Haptics 1.2 QtObject singleton
     default readonly property QtObject children
     readonly property HapticsEffect effect
     readonly property bool enabled
-    function QVariant play(QVariant customEffect)
+    function var play(var customEffect)
 Icon 1.2 Item
     property QColor color
     property QColor keyColor
@@ -276,7 +276,7 @@ MainViewBase 1.2 Item
 MathUtils 1.0 MathUtils 0.1 
 MimeData 0.1 MimeData 1.0 QtObject
     property QColor color
-    property QVariant data
+    property var data
     readonly property QStringList formats
     property string html
     signal typeChanged
@@ -324,8 +324,8 @@ OverflowPanel 1.2 Item
     property PropertyAnimation fadingAnimation
     property Component foregroundStyle
     property bool grabDismissAreaEvents
-    function QVariant __closeIfHidden
-    function QVariant __closePopup
+    function var __closeIfHidden
+    function var __closePopup
     property int orientationAngle
     property Item pointerTarget
     readonly property bool rotating
@@ -371,7 +371,7 @@ PageHeadConfiguration 1.2 QtObject
     readonly property PageHeadSections sections
 PageHeadSections 1.2 QtObject
     property bool enabled
-    property QVariant model
+    property var model
     property int selectedIndex
 PageHeadStyle 1.2 Item
     property double contentHeight
@@ -417,8 +417,8 @@ Panel 1.2 Item
     property int hideTimeout
     property double hintSize
     property bool locked
-    function QVariant open
-    function QVariant close
+    function var open
+    function var close
     property bool opened
     readonly property double position
     readonly property bool pressed
@@ -439,8 +439,8 @@ Popover 1.2 Item
     property PropertyAnimation fadingAnimation
     property Component foregroundStyle
     property bool grabDismissAreaEvents
-    function QVariant __closeIfHidden
-    function QVariant __closePopup
+    function var __closeIfHidden
+    function var __closePopup
     property int orientationAngle
     property Item pointerTarget
     readonly property bool rotating
@@ -451,10 +451,10 @@ PopupBase 1.2 Item
     property Item dismissArea
     property PropertyAnimation fadingAnimation
     property bool grabDismissAreaEvents
-    function QVariant show
-    function QVariant hide
-    function QVariant __closeIfHidden
-    function QVariant __closePopup
+    function var show
+    function var hide
+    function var __closeIfHidden
+    function var __closePopup
     property int orientationAngle
     readonly property bool rotating
     property bool transitionEnabled
@@ -464,7 +464,7 @@ Priority Enum
 QAbstractProxyModel QAbstractItemModel
     property QAbstractItemModel sourceModel
 QQmlPropertyMap QtObject
-    signal valueChanged(string key, QVariant value)
+    signal valueChanged(string key, var value)
     function QStringList keys
 QQuickGridLayoutBase Layout
     property Qt::LayoutDirection layoutDirection
@@ -600,7 +600,7 @@ Shape 0.1 Shape 1.0 UbuntuShape 0.1 UbuntuShape 1.0 UbuntuShape 1.2 Item
     property QColor color
     property QColor gradientColor
     property HAlignment horizontalAlignment
-    property QVariant image
+    property var image
     signal sourceChanged
     signal sourceOpacityChanged
     signal sourceFillModeChanged
@@ -615,7 +615,7 @@ Shape 0.1 Shape 1.0 UbuntuShape 0.1 UbuntuShape 1.0 UbuntuShape 1.2 Item
     signal backgroundModeChanged
     property string radius
     property QColor secondaryBackgroundColor
-    property QVariant source
+    property var source
     property FillMode sourceFillMode
     property HAlignment sourceHorizontalAlignment
     property WrapMode sourceHorizontalWrapMode
@@ -665,8 +665,8 @@ Toolbar 1.2 Item
     property int hideTimeout
     property double hintSize
     property bool locked
-    function QVariant open
-    function QVariant close
+    function var open
+    function var close
     property bool opened
     readonly property double position
     readonly property bool pressed

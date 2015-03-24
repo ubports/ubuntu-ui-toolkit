@@ -22,14 +22,14 @@ Base 1.0 Item
     property Action action
     property bool activeFocusOnPress
     readonly property Item backgroundIndicator
-    default readonly property QtObject children
+    default readonly property QTestRootObject children
     property bool confirmRemoval
     readonly property ThinDivider divider
     property string fallbackIconName
     property QUrl fallbackIconSource
     property bool highlightWhenPressed
     property bool hovered
-    property QVariant icon
+    property var icon
     property bool iconFrame
     property string iconName
     property QUrl iconSource
@@ -51,7 +51,7 @@ Empty 1.0 Item
     property Action action
     property bool activeFocusOnPress
     readonly property Item backgroundIndicator
-    default readonly property QtObject children
+    default readonly property QTestRootObject children
     property bool confirmRemoval
     readonly property ThinDivider divider
     property bool highlightWhenPressed
@@ -72,7 +72,7 @@ Expandable 1.0 Item
     property Action action
     property bool activeFocusOnPress
     readonly property Item backgroundIndicator
-    default readonly property QtObject children
+    default readonly property QTestRootObject children
     property bool collapseOnClick
     property double collapsedHeight
     property bool confirmRemoval
@@ -94,15 +94,15 @@ Expandable 1.0 Item
     property string text
     readonly property bool waitingConfirmationForRemoval
 ExpandablesColumn 1.0 Flickable
-    default readonly property QtObject children
-    readonly property QVariant expandedItem
-    function QVariant expandItem(QVariant item)
-    function QVariant collapse
-Haptics 1.0 QtObject singleton
-    default readonly property QtObject children
+    default readonly property QTestRootObject children
+    readonly property var expandedItem
+    function var expandItem(var item)
+    function var collapse
+Haptics 1.0 QTestRootObject singleton
+    default readonly property QTestRootObject children
     readonly property HapticsEffect effect
     readonly property bool enabled
-    function QVariant play(QVariant customEffect)
+    function var play(var customEffect)
 Header 1.0 Item
     property string text
 IconVisual 1.0 Item
@@ -113,14 +113,14 @@ IconVisual 1.0 Item
 ImageWithFallback 1.0 Image
     property bool fallbackRequired
     property QUrl fallbackSource
-    function QVariant isSourceDefined(QVariant sourceUrl)
-    function QVariant tryLoadingFallbackSource
-    function QVariant checkStatus
+    function var isSourceDefined(var sourceUrl)
+    function var tryLoadingFallbackSource
+    function var checkStatus
 ItemSelector 1.0 Item
     property Action action
     property bool activeFocusOnPress
     readonly property Item backgroundIndicator
-    default readonly property QtObject children
+    default readonly property QTestRootObject children
     property bool colourImage
     property bool confirmRemoval
     property double containerHeight
@@ -135,7 +135,7 @@ ItemSelector 1.0 Item
     readonly property double itemHeight
     function bool requestFocus(Qt::FocusReason reason)
     function bool requestFocus
-    property QVariant model
+    property var model
     property bool multiSelection
     property bool pressed
     property bool removable
@@ -150,7 +150,7 @@ Label 1.0 Text
     property string fontSize
 LabelVisual 1.0 Text
     property string fontSize
-    function QVariant isInsideOverlay(QVariant item)
+    function var isInsideOverlay(var item)
     property bool overlay
     property bool secondary
     property bool selected
@@ -158,14 +158,14 @@ MultiValue 1.0 Item
     property Action action
     property bool activeFocusOnPress
     readonly property Item backgroundIndicator
-    default readonly property QtObject children
+    default readonly property QTestRootObject children
     property bool confirmRemoval
     readonly property ThinDivider divider
     property string fallbackIconName
     property QUrl fallbackIconSource
     property bool highlightWhenPressed
     property bool hovered
-    property QVariant icon
+    property var icon
     property bool iconFrame
     property string iconName
     property QUrl iconSource
@@ -179,16 +179,16 @@ MultiValue 1.0 Item
     property Component style
     readonly property string swipingState
     property string text
-    property QVariant values
+    property var values
     readonly property bool waitingConfirmationForRemoval
-Object 1.0 QtObject
-    default readonly property QtObject children
+Object 1.0 QTestRootObject
+    default readonly property QTestRootObject children
 OptionSelectorDelegate 1.0 Item
     property Action action
     property bool activeFocusOnPress
     property QColor assetColour
     readonly property Item backgroundIndicator
-    default readonly property QtObject children
+    default readonly property QTestRootObject children
     property bool colourImage
     property bool confirmRemoval
     property bool constrainImage
@@ -211,10 +211,10 @@ OptionSelectorDelegate 1.0 Item
     readonly property string swipingState
     property string text
     readonly property bool waitingConfirmationForRemoval
-Palette 1.0 QtObject
+Palette 1.0 QTestRootObject
     property PaletteValues normal
     property PaletteValues selected
-PaletteValues 1.0 QtObject
+PaletteValues 1.0 QTestRootObject
     property QColor background
     property QColor backgroundText
     property QColor base
@@ -235,8 +235,8 @@ ProgressionVisual 1.0 Item
     property Component style
 QAbstractProxyModel QAbstractItemModel
     property QAbstractItemModel sourceModel
-QQmlPropertyMap QtObject
-    signal valueChanged(string key, QVariant value)
+QQmlPropertyMap QTestRootObject
+    signal valueChanged(string key, var value)
     function QStringList keys
 QSortFilterProxyModel QAbstractProxyModel
     property bool dynamicSortFilter
@@ -256,7 +256,7 @@ SingleControl 1.0 Item
     property Action action
     property bool activeFocusOnPress
     readonly property Item backgroundIndicator
-    default readonly property QtObject children
+    default readonly property QTestRootObject children
     property bool confirmRemoval
     property Item control
     readonly property ThinDivider divider
@@ -278,14 +278,14 @@ SingleValue 1.0 Item
     property Action action
     property bool activeFocusOnPress
     readonly property Item backgroundIndicator
-    default readonly property QtObject children
+    default readonly property QTestRootObject children
     property bool confirmRemoval
     readonly property ThinDivider divider
     property string fallbackIconName
     property QUrl fallbackIconSource
     property bool highlightWhenPressed
     property bool hovered
-    property QVariant icon
+    property var icon
     property bool iconFrame
     property string iconName
     property QUrl iconSource
@@ -305,7 +305,7 @@ Standard 1.0 Item
     property Action action
     property bool activeFocusOnPress
     readonly property Item backgroundIndicator
-    default readonly property QtObject children
+    default readonly property QTestRootObject children
     property bool confirmRemoval
     property Item control
     readonly property ThinDivider divider
@@ -313,7 +313,7 @@ Standard 1.0 Item
     property QUrl fallbackIconSource
     property bool highlightWhenPressed
     property bool hovered
-    property QVariant icon
+    property var icon
     property bool iconFrame
     property string iconName
     property QUrl iconSource
@@ -337,14 +337,14 @@ Subtitled 1.0 Item
     property Action action
     property bool activeFocusOnPress
     readonly property Item backgroundIndicator
-    default readonly property QtObject children
+    default readonly property QTestRootObject children
     property bool confirmRemoval
     readonly property ThinDivider divider
     property string fallbackIconName
     property QUrl fallbackIconSource
     property bool highlightWhenPressed
     property bool hovered
-    property QVariant icon
+    property var icon
     property bool iconFrame
     property string iconName
     property QUrl iconSource
@@ -364,10 +364,10 @@ ThinDivider 1.0 Rectangle
 UCListItemDivider Item
     property QColor colorFrom
     property QColor colorTo
-UCStateSaverAttached QtObject
+UCStateSaverAttached QTestRootObject
     property bool enabled
     property string properties
-UbuntuColors 1.0 QtObject singleton
+UbuntuColors 1.0 QTestRootObject singleton
     readonly property QColor blue
     readonly property QColor coolGrey
     readonly property QColor darkAubergine
@@ -387,7 +387,7 @@ ValueSelector 1.0 Item
     property Action action
     property bool activeFocusOnPress
     readonly property Item backgroundIndicator
-    default readonly property QtObject children
+    default readonly property QTestRootObject children
     property bool confirmRemoval
     readonly property ThinDivider divider
     property bool expanded
@@ -395,7 +395,7 @@ ValueSelector 1.0 Item
     property QUrl fallbackIconSource
     property bool highlightWhenPressed
     property bool hovered
-    property QVariant icon
+    property var icon
     property bool iconFrame
     property string iconName
     property QUrl iconSource
@@ -409,5 +409,5 @@ ValueSelector 1.0 Item
     property Component style
     readonly property string swipingState
     property string text
-    property QVariant values
+    property var values
     readonly property bool waitingConfirmationForRemoval
