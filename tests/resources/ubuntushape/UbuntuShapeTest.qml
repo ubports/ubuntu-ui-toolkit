@@ -61,7 +61,7 @@ Item {
         "Zoom            (scroll):   x " + root.scaleFactor.toFixed(1) + "\n\n" +
         "Background colors  (a/z):   " + shape.backgroundColor + ", " + shape.secondaryBackgroundColor + "\n" +
         "Background mode      (e):   " + root.backgroundModeTable[shape.backgroundMode] + "\n\n" +
-        "Corner radius        (r):   " + shape.cornerRadius.toFixed(1.0) + "\n" +
+        "Radius               (r):   " + "\"" + shape.radius + "\"\n" +
         "Aspect               (t):   " + root.aspectTable[shape.aspect] + "\n\n" +
         "Source               (o):   " + shape.source + "\n" +
         "Source opacity       (p):   " + shape.sourceOpacity.toFixed(2) + "\n" +
@@ -76,7 +76,6 @@ Item {
         "Image fill           (w):   " + root.imageFillModeTable[img1.fillMode] + "\n" +
         "Image halign         (x):   " + img1.horizontalAlignment + "\n" +
         "Image valign         (c):   " + img1.verticalAlignment + "\n\n" +
-        "Radius (deprecated)  (v):   " + "\"" + shape.radius + "\"\n" +
         "Border (deprecated)  (b):   " + "\"" + shape.borderSource + "\"\n\n" +
         "Colors (deprecated) (n/,):  " + shape.color + ", " + shape.gradientColor
 
@@ -219,7 +218,7 @@ Item {
 
         // Styling.
         } else if (event.key == Qt.Key_R) {
-            shape.cornerRadius += ((event.modifiers & shift) ? 1.0 : -1.0);
+            shape.radius = (shape.radius == "medium") ? "small" : "medium";
         } else if (event.key == Qt.Key_T) {
             shape.aspect = (shape.aspect + 1) % 2;
 
@@ -287,8 +286,6 @@ Item {
             }
 
         // Deprecated styling.
-        } else if (event.key == Qt.Key_V) {
-            shape.radius = (shape.radius == "medium") ? "small" : "medium";
         } else if (event.key == Qt.Key_B) {
             if (shape.borderSource == "radius_idle.sci") {
                 shape.borderSource = "radius_pressed.sci";

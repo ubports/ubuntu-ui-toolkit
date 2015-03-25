@@ -121,8 +121,7 @@ class UCUbuntuShape : public QQuickItem
 
     // Shape properties.
     Q_ENUMS(Aspect)
-    Q_PROPERTY(qreal cornerRadius READ cornerRadius WRITE setCornerRadius NOTIFY cornerRadiusChanged
-               REVISION 1)
+    Q_PROPERTY(QString radius READ radius WRITE setRadius NOTIFY radiusChanged)
     Q_PROPERTY(Aspect aspect READ aspect WRITE setAspect NOTIFY aspectChanged REVISION 1)
 
     // Source properties.
@@ -159,7 +158,6 @@ class UCUbuntuShape : public QQuickItem
                NOTIFY backgroundModeChanged REVISION 1)
 
     // Deprecated properties.
-    Q_PROPERTY(QString radius READ radius WRITE setRadius NOTIFY radiusChanged)
     Q_PROPERTY(QString borderSource READ borderSource WRITE setBorderSource
                NOTIFY borderSourceChanged)
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
@@ -182,8 +180,8 @@ public:
     enum FillMode { Stretch = 0, PreserveAspectFit = 1, PreserveAspectCrop = 2, Pad = 3 };
     enum WrapMode { Transparent = 0, Repeat = 1 };
 
-    qreal cornerRadius() const { return (m_flags & CornerRadiusSet) ? m_cornerRadius * 0.5 : 24.0; }
-    void setCornerRadius(qreal cornerRadius);
+    QString radius() const { return (m_radius == Small) ? "small" : "medium"; }
+    void setRadius(const QString& radius);
     Aspect aspect() const { return (m_flags & AspectSet) ? static_cast<Aspect>(m_aspect) : Flat; }
     void setAspect(Aspect aspect);
 
@@ -221,10 +219,6 @@ public:
     BackgroundMode backgroundMode() const { return m_backgroundMode; }
     void setBackgroundMode(BackgroundMode backgroundMode);
 
-    QString radius() const {
-        return (m_flags & CornerRadiusSet) ? "" :
-            ((m_cornerRadius == SmallRadius) ? "small" : "medium"); }
-    void setRadius(const QString& radius);
     QString borderSource() const {
         return (m_flags & AspectSet) ? "" :
             ((m_aspect == Flat) ? "" :
@@ -253,7 +247,7 @@ public:
     void setVerticalAlignment(VAlignment verticalAlignment);
 
 Q_SIGNALS:
-    Q_REVISION(1) void cornerRadiusChanged();
+    void radiusChanged();
     Q_REVISION(1) void aspectChanged();
 
     Q_REVISION(1) void sourceChanged();
@@ -270,7 +264,6 @@ Q_SIGNALS:
     Q_REVISION(1) void secondaryBackgroundColorChanged();
     Q_REVISION(1) void backgroundModeChanged();
 
-    void radiusChanged();
     void borderSourceChanged();
     void colorChanged();
     void gradientColorChanged();
@@ -309,16 +302,15 @@ private:
         float itemWidth, float itemHeight, FillMode fillMode, HAlignment horizontalAlignment,
         VAlignment verticalAlignment, const QSize& textureSize);
 
+    enum Radius { Small = 0, Medium = 1 };
     enum { Pressed = 2 };  // Aspect extension (to keep support for deprecated aspects).
-    enum { SmallRadius = 0, MediumRadius = 1 };
     enum {
-        CornerRadiusSet      = (1 << 0),
-        AspectSet            = (1 << 1),
-        GradientColorSet     = (1 << 2),
-        BackgroundApiSet     = (1 << 3),
-        SourceApiSet         = (1 << 4),
-        Stretched            = (1 << 5),
-        DirtySourceTransform = (1 << 6)
+        AspectSet            = (1 << 0),
+        GradientColorSet     = (1 << 1),
+        BackgroundApiSet     = (1 << 2),
+        SourceApiSet         = (1 << 3),
+        Stretched            = (1 << 4),
+        DirtySourceTransform = (1 << 5)
     };
 
     QQuickItem* m_source;
@@ -328,6 +320,7 @@ private:
     QVector2D m_sourceScale;
     QVector2D m_sourceTranslation;
     QVector4D m_sourceTransform;
+    Radius m_radius : 1;
     quint8 m_aspect : 2;
     HAlignment m_imageHorizontalAlignment : 2;
     VAlignment m_imageVerticalAlignment : 2;
@@ -337,9 +330,7 @@ private:
     FillMode m_sourceFillMode : 2;
     WrapMode m_sourceHorizontalWrapMode : 1;
     WrapMode m_sourceVerticalWrapMode : 1;
-    quint8 m_padding : 1;  // Unused, explicit bitfield padding (16 bits).
     quint8 m_sourceOpacity;
-    quint8 m_cornerRadius;
     quint8 m_flags;
 
     Q_DISABLE_COPY(UCUbuntuShape)

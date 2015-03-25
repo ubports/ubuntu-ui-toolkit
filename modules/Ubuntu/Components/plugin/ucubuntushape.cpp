@@ -37,9 +37,9 @@
 // Anti-aliasing distance of the contour in pixels.
 const float distanceAApx = 1.75f;
 
-// For cosmetic reasons, we add an offset to the exposed cornerRadius to avoid having values less
-// than 2 to look as if it has no rounded corners.
-const float cornerRadiusOffset = 2.0f;
+// For cosmetic reasons, we add an offset to the radius size to avoid having values less than 2 to
+// look as if it has no rounded corners.
+const float radiusSizeOffset = 2.0f;
 
 // Factor by which the final fragment RGB color must be multiplied for the pressed aspect.
 const float pressedFactor = 0.85f;
@@ -130,7 +130,7 @@ void ShapeShader::updateState(
 
     // Send anti-aliasing distance in distance field space, needs to be divided by 2 for the shader
     // and by 255 for distanceAAFactor dequantization. The factor is 1 most of the time apart when
-    // the corner radius is low, it linearly goes from 1 to 0 to make the corners prettier and to
+    // the radius size is low, it linearly goes from 1 to 0 to make the corners prettier and to
     // prevent the opacity of the whole shape to slightly lower.
     const float distanceAA = (shapeTextureInfo.distanceAA * distanceAApx) / (2.0 * 255.0f);
     program()->setUniformValue(m_distanceAAId, data->distanceAAFactor * distanceAA);
@@ -274,6 +274,7 @@ UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
     , m_sourceScale(1.0f, 1.0f)
     , m_sourceTranslation(0.0f, 0.0f)
     , m_sourceTransform(1.0f, 1.0f, 0.0f, 0.0f)
+    , m_radius(Small)
     , m_aspect(Inset)
     , m_imageHorizontalAlignment(AlignHCenter)
     , m_imageVerticalAlignment(AlignVCenter)
@@ -284,7 +285,6 @@ UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
     , m_sourceHorizontalWrapMode(Transparent)
     , m_sourceVerticalWrapMode(Transparent)
     , m_sourceOpacity(255)
-    , m_cornerRadius(SmallRadius)
     , m_flags(Stretched)
 {
     setFlag(ItemHasContents);
@@ -296,35 +296,18 @@ UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
     update();
 }
 
-/*! \qmlproperty real UbuntuShape::cornerRadius
+/*! \qmlproperty string UbuntuShape::radius
 
-    This property defines the radius of the corner in pixels. Radius values exceeding the range
-    between 0.0 and 127.5 are clamped. The default value is 24.0.
-
-    \note Setting this disables support for the deprecated \l radius property.
+    This property defines the corner radius. Two fixed values are supported: \c "small" and \c
+    "medium". The default value is \c "small".
 */
-// FIXME(loicm) Should we add constants for the fixed sizes previously exposed by the deprecated
-//     radius property? I'd say yes, but then should we expose these directly in the UbuntuShape or
-//     in a QML file defining constants for the toolkit (as it is done for the color palette)?
-void UCUbuntuShape::setCornerRadius(qreal cornerRadius)
+void UCUbuntuShape::setRadius(const QString& radius)
 {
-    // The cornerRadius floating-point value is packed in a byte, the maximal value being 127.5 we
-    // multiply by 2 when packing and divide by 2 when unpacking. Because of that we effectively
-    // handle steps of 0.5 in the supported range, lower steps don't provide visual benefits anyway.
-    // That said, if we need to increase the supported range, we might have to avoid the packing.
-
-    if (!(m_flags & CornerRadiusSet)) {
-        m_flags |= CornerRadiusSet;
-        m_cornerRadius = 24 * 2;
+    const Radius newRadius = (radius == "medium") ? Medium : Small;
+    if (m_radius != newRadius) {
+        m_radius = newRadius;
         update();
         Q_EMIT radiusChanged();
-    }
-
-    const quint8 newCornerRadius = static_cast<quint8>(qBound(0.0, cornerRadius, 127.5) * 2.0);
-    if (m_cornerRadius != newCornerRadius) {
-        m_cornerRadius = newCornerRadius;
-        update();
-        Q_EMIT cornerRadiusChanged();
     }
 }
 
@@ -726,26 +709,6 @@ void UCUbuntuShape::setBackgroundMode(BackgroundMode backgroundMode)
     }
 }
 
-/*! \qmlproperty string UbuntuShape::radius
-    \deprecated
-
-    This property defines the corner radius. Two fixed values are supported: \c "small" and \c
-    "medium". The default value is \c "small".
-
-    \note Use \l cornerRadius instead.
-*/
-void UCUbuntuShape::setRadius(const QString& radius)
-{
-    if (!(m_flags & CornerRadiusSet)) {
-        const quint8 newRadius = (radius == "medium") ? MediumRadius : SmallRadius;
-        if (m_cornerRadius != newRadius) {
-            m_cornerRadius = newRadius;
-            update();
-            Q_EMIT radiusChanged();
-        }
-    }
-}
-
 /*! \qmlproperty string UbuntuShape::borderSource
     \deprecated
 
@@ -1136,11 +1099,10 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
         m_sourceTextureProvider = provider;
     }
 
-    // Get the corner radius size. When the item width and/or height is less than 2 * radius, the
-    // radius size is scaled down accordingly.
-    float radius = (m_flags & CornerRadiusSet) ? (m_cornerRadius * 0.5f + cornerRadiusOffset) :
-        (m_cornerRadius == SmallRadius ? smallRadiusGU : mediumRadiusGU)
-            * UCUnits::instance().gridUnit();
+    // Get the radius size. When the item width and/or height is less than 2 * radius, the size is
+    // scaled down accordingly.
+    float radius = UCUnits::instance().gridUnit()
+        * (m_radius == Small ? smallRadiusGU : mediumRadiusGU);
     const float scaledDownRadius = qMin(itemSize.width(), itemSize.height()) * 0.5f;
     if (radius > scaledDownRadius) {
         radius = scaledDownRadius;
@@ -1222,16 +1184,16 @@ void UCUbuntuShape::updateMaterial(QSGNode* node, float radius, quint32 shapeTex
         materialData->sourceOpacity = 0;
     }
 
-    // Mapping of cornerRadius range from [0, 4] to [0, 1] with clamping, plus quantization.
-    const float start = 0.0f + cornerRadiusOffset;
-    const float end = 4.0f + cornerRadiusOffset;
+    // Mapping of radius size range from [0, 4] to [0, 1] with clamping, plus quantization.
+    const float start = 0.0f + radiusSizeOffset;
+    const float end = 4.0f + radiusSizeOffset;
     materialData->distanceAAFactor = qMin(
         (radius / (end - start)) - (start / (end - start)), 1.0f) * 255.0f;
 
-    // When the radius is equal to cornerRadiusOffset (which means cornerRadius is 0), no aspect is
+    // When the radius is equal to radiusSizeOffset (which means radius size is 0), no aspect is
     // flagged so that a dedicated (statically flow controlled) shaved off shader can be used for
     // optimal performance.
-    if (radius > cornerRadiusOffset) {
+    if (radius > radiusSizeOffset) {
         const quint8 aspectFlags[] = {
             ShapeMaterial::Data::Flat, ShapeMaterial::Data::Inset,
             ShapeMaterial::Data::Inset | ShapeMaterial::Data::Pressed
