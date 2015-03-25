@@ -1076,7 +1076,7 @@ plugins.qmltypes
     name: "VAlignment"
     name: "FillMode"
     name: "WrapMode"
-    Property { name: "cornerRadius"; revision: 1; type: "double" }
+    Property { name: "radius"; type: "string" }
     Property { name: "aspect"; revision: 1; type: "Aspect" }
     Property { name: "source"; revision: 1; type: "QVariant" }
     Property { name: "sourceOpacity"; revision: 1; type: "double" }
@@ -1090,7 +1090,6 @@ plugins.qmltypes
     Property { name: "backgroundColor"; revision: 1; type: "QColor" }
     Property { name: "secondaryBackgroundColor"; revision: 1; type: "QColor" }
     Property { name: "backgroundMode"; revision: 1; type: "BackgroundMode" }
-    Property { name: "radius"; type: "string" }
     Property { name: "borderSource"; type: "string" }
     Property { name: "color"; type: "QColor" }
     Property { name: "gradientColor"; type: "QColor" }
@@ -1098,7 +1097,6 @@ plugins.qmltypes
     Property { name: "stretched"; type: "bool" }
     Property { name: "horizontalAlignment"; type: "HAlignment" }
     Property { name: "verticalAlignment"; type: "VAlignment" }
-    Signal { name: "cornerRadiusChanged"; revision: 1 }
     Signal { name: "aspectChanged"; revision: 1 }
     Signal { name: "sourceChanged"; revision: 1 }
     Signal { name: "sourceOpacityChanged"; revision: 1 }
