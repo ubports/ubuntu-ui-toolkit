@@ -27,8 +27,8 @@ Item {
         anchors.fill: parent
 
         Page {
-            title: "Sections"
             id: page
+            title: "Sections"
             head {
                 sections {
                     model: ["navy", "lightblue", "brown"]
