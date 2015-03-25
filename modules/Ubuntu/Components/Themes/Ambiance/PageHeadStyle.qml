@@ -23,7 +23,7 @@ Style.PageHeadStyle {
     id: headerStyle
     objectName: "PageHeadStyle" // used in unit tests
     contentHeight: units.gu(6)
-//    fontWeight: Font.Light
+    fontWeight: Font.Normal
     fontSize: "large"
     textLeftMargin: units.gu(2)
     maximumNumberOfActions: 3
@@ -68,7 +68,10 @@ Style.PageHeadStyle {
      */
     property color sectionHighlightColor: Theme.palette.selected.background
 
-    implicitHeight: headerStyle.contentHeight + divider.height
+    implicitHeight: headerStyle.contentHeight + divider.height + sectionsItem.height
+    // FIXME TIM: Document
+    property real sectionsHeight: units.gu(4)
+
 
     // FIXME: Workaround to get sectionsRepeater.count in autopilot tests,
     //  see also FIXME in AppHeader where this property is used.
@@ -83,50 +86,57 @@ Style.PageHeadStyle {
     //  have a separator.
     property alias __separator_visible: divider.visible
 
-    StyledItem {
+    Rectangle {
         id: divider
         anchors {
+            left: parent.left
+            right: parent.right
             bottom: parent.bottom
+        }
+        height: units.dp(1)
+        color: styledItem.dividerColor
+    }
+
+    Item {
+        id: sectionsItem
+        anchors {
+            bottom: divider.top
             left: parent.left
             right: parent.right
         }
 
-        height: sectionsRow.visible ? units.gu(3) : units.dp(1) //gu(2)
-
-        // separatorSource and separatorBottomSource are needed for the deprecated
-        // HeadSeparatorImageStyle.
-        property url separatorSource: headerStyle.separatorSource
-        property url separatorBottomSource: headerStyle.separatorBottomSource
-
-        // backgroundColor is used in the new HeadDividerStyle
-        property color backgroundColor: styledItem.dividerColor
-
-        style: Theme.createStyleComponent("HeadDividerStyle.qml", divider)
+        visible: sectionsItem.sections.model !== undefined
+        height: visible ? headerStyle.sectionsHeight : 0
 
         property PageHeadSections sections: styledItem.config.sections
 
         Row {
             id: sectionsRow
-            anchors.centerIn: parent
+            anchors {
+                top: parent.top
+                bottom: parent.bottom
+                horizontalCenter: parent.horizontalCenter
+            }
             width: childrenRect.width
-            height: parent.height
-            enabled: divider.sections.enabled
-            visible: divider.sections.model !== undefined
+            enabled: sectionsItem.sections.enabled
+            visible: sectionsItem.sections.model !== undefined
             opacity: enabled ? 1.0 : 0.5
 
             Repeater {
                 id: sectionsRepeater
-                model: divider.sections.model
+                model: sectionsItem.sections.model
                 objectName: "page_head_sections_repeater"
                 AbstractButton {
                     id: sectionButton
-                    anchors.verticalCenter: parent ? parent.verticalCenter : undefined
+                    anchors {
+                        top: parent.top
+                        bottom: parent.bottom
+                    }
                     objectName: "section_button_" + index
                     enabled: sectionsRow.enabled
-                    width: label.width + units.gu(4)
-                    height: sectionsRow.height + units.gu(2)
-                    property bool selected: index === divider.sections.selectedIndex
-                    onClicked: divider.sections.selectedIndex = index;
+                    width: label.width + units.gu(4) // FIXME TIM: spacing configurable?
+                    property bool selected: index === sectionsItem.sections.selectedIndex
+                    onClicked: sectionsItem.sections.selectedIndex = index;
 
                     Rectangle {
                         visible: parent.pressed
@@ -134,7 +144,6 @@ Style.PageHeadStyle {
                             verticalCenter: parent.verticalCenter
                             left: parent.left
                             right: parent.right
-                            rightMargin: verticalDividerLine.width
                         }
                         height: sectionsRow.height
                         color: headerStyle.sectionHighlightColor
@@ -144,25 +153,27 @@ Style.PageHeadStyle {
                         id: label
                         text: modelData
                         fontSize: "small"
-                        anchors.centerIn: sectionButton
+                        anchors {
+                            horizontalCenter: parent.horizontalCenter
+                            top: parent.top
+                        }
                         horizontalAlignment: Text.AlignHCenter
                         color: sectionButton.selected ?
                                    headerStyle.selectedSectionColor :
                                    headerStyle.sectionColor
                     }
 
-                    // vertical divider line
                     Rectangle {
-                        id: verticalDividerLine
+                        id: sectionLine
                         anchors {
-                            verticalCenter: parent.verticalCenter
+                            bottom: parent.bottom
+                            left: parent.left
                             right: parent.right
                         }
-                        height: units.dp(10)
-                        width: units.dp(1)
-                        visible: index < sectionsRepeater.model.length - 1
-                        color: headerStyle.sectionColor
-                        opacity: 0.2
+                        height: units.dp(4) // FIXME TIM: make configurable?
+                        color: sectionButton.selected ?
+                                   headerStyle.selectedSectionColor :
+                                   styledItem.dividerColor // FIXME TIM: why is this styledItem?
                     }
                 }
             }

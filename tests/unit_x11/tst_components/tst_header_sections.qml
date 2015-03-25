@@ -20,7 +20,7 @@ import Ubuntu.Test 1.0
 
 Item {
     width: units.gu(50)
-    height: units.gu(80)
+    height: units.gu(70)
 
     MainView {
         id: mainView
