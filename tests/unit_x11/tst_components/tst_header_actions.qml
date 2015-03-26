@@ -55,7 +55,6 @@ Item {
                             iconName: "search"
                             onTriggered: print("Trigger third action")
                         }
-
                     ]
                 }
             }
