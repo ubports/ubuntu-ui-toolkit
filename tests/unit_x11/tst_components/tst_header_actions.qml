@@ -50,6 +50,10 @@ Item {
                         Action {
                             iconName: "info"
                             onTriggered: print("Trigger second action")
+                        },
+                        Action {
+                            iconName: "search"
+                            onTriggered: print("Trigger third action")
                         }
                     ]
                 }
