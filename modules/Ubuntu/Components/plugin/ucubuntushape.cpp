@@ -16,7 +16,7 @@
  * Author: Loïc Molinari <loic.molinari@canonical.com>
  */
 
-// The UbuntuShape uses this simple and efficient method described by Chris Green in this paper from
+// The UbuntuShape uses a simple and efficient method described by Chris Green in this paper from
 // 2007 (http://www.valvesoftware.com/publications/2007/SIGGRAPH2007_AlphaTestedMagnification.pdf)
 // to create its anti-aliased and resolution independent contour.
 
