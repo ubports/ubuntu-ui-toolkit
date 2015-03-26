@@ -69,7 +69,10 @@ Style.PageHeadStyle {
     property color sectionHighlightColor: Theme.palette.selected.background
 
     implicitHeight: headerStyle.contentHeight + divider.height + sectionsItem.height
-    // FIXME TIM: Document
+
+    /*!
+      The height of the row displaying the sections, if sections are specified.
+     */
     property real sectionsHeight: units.gu(4)
 
 
@@ -134,7 +137,7 @@ Style.PageHeadStyle {
                     }
                     objectName: "section_button_" + index
                     enabled: sectionsRow.enabled
-                    width: label.width + units.gu(4) // FIXME TIM: spacing configurable?
+                    width: label.width + units.gu(4) // FIXME: expose spacing as style property
                     property bool selected: index === sectionsItem.sections.selectedIndex
                     onClicked: sectionsItem.sections.selectedIndex = index;
 
@@ -170,10 +173,10 @@ Style.PageHeadStyle {
                             left: parent.left
                             right: parent.right
                         }
-                        height: units.dp(4) // FIXME TIM: make configurable?
+                        height: units.dp(4) // FIXME: Expose as style property
                         color: sectionButton.selected ?
                                    headerStyle.selectedSectionColor :
-                                   styledItem.dividerColor // FIXME TIM: why is this styledItem?
+                                   styledItem.dividerColor
                     }
                 }
             }
