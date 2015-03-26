@@ -1,4 +1,4 @@
-ConditionalLayout 0.1 ConditionalLayout 1.0 QtObject
+ConditionalLayout 0.1 ConditionalLayout 1.0 QTestRootObject
     default property Component layout
     property string name
     property QQmlBinding when
@@ -7,7 +7,7 @@ ItemLayout 0.1 ItemLayout 1.0 Item
 Layouts 0.1 Layouts 1.0 Item
     readonly property Item children
     readonly property string currentLayout
-    default readonly property QtObject data
+    default readonly property QTestRootObject data
     readonly property ConditionalLayout layouts
-ULLayoutsAttached QtObject
+ULLayoutsAttached QTestRootObject
     property string item

@@ -24,7 +24,7 @@ if [ ! -e $BUILD_DIR/modules/Ubuntu/Layouts/libUbuntuLayouts.so ]; then
 fi
 
 QML="modules/Ubuntu/*/qmldir modules/Ubuntu/Components/*/qmldir"
-CPP="Ubuntu.Components Ubuntu.Components.ListItems Ubuntu.Layouts Ubuntu.PerformanceMetrics Ubuntu.Test"
+CPP="Ubuntu.Components Ubuntu.Components.ListItems Ubuntu.Components.Styles Ubuntu.Components.Themes Ubuntu.Layouts Ubuntu.PerformanceMetrics Ubuntu.Test"
 
 ERRORS=0
 echo Dumping QML API as QML

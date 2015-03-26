@@ -11,19 +11,18 @@ CpuUsage 0.1 CpuUsage 1.0 Item
     readonly property UPMGraphModel graphModel
     property int period
     property int samplingInterval
-Haptics 1.0 QtObject singleton
-    default readonly property QtObject children
+Haptics 1.0 QTestRootObject singleton
     readonly property HapticsEffect effect
     readonly property bool enabled
     function var play(var customEffect)
 Label 1.0 Text
     property string fontSize
-Object 1.0 QtObject
-    default readonly property QtObject children
-Palette 1.0 QtObject
+Object 1.0 QTestRootObject
+    default readonly property QTestRootObject children
+Palette 1.0 QTestRootObject
     property PaletteValues normal
     property PaletteValues selected
-PaletteValues 1.0 QtObject
+PaletteValues 1.0 QTestRootObject
     property QColor background
     property QColor backgroundText
     property QColor base
@@ -39,7 +38,7 @@ PerformanceOverlay 1.0 Item
     property bool active
 QAbstractProxyModel QAbstractItemModel
     property QAbstractItemModel sourceModel
-QQmlPropertyMap QtObject
+QQmlPropertyMap QTestRootObject
     signal valueChanged(string key, var value)
     function QStringList keys
 QSortFilterProxyModel QAbstractProxyModel
@@ -67,15 +66,15 @@ TextureFromImage 0.1 TextureFromImage 1.0 Item
 UCListItemDivider Item
     property QColor colorFrom
     property QColor colorTo
-UCStateSaverAttached QtObject
+UCStateSaverAttached QTestRootObject
     property bool enabled
     property string properties
-UPMGraphModel QtObject
+UPMGraphModel QTestRootObject
     readonly property int currentValue
     readonly property QImage image
     property int samples
     readonly property int shift
-UbuntuColors 1.0 QtObject singleton
+UbuntuColors 1.0 QTestRootObject singleton
     readonly property QColor blue
     readonly property QColor coolGrey
     readonly property QColor darkAubergine

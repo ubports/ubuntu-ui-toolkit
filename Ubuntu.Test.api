@@ -1,14 +1,13 @@
-Haptics 1.0 QTestRootObject singleton
-    default readonly property QTestRootObject children
+Haptics 1.0 QtObject singleton
     readonly property HapticsEffect effect
     readonly property bool enabled
     function var play(var customEffect)
-Object 1.0 QTestRootObject
-    default readonly property QTestRootObject children
-Palette 1.0 QTestRootObject
+Object 1.0 QtObject
+    default readonly property QtObject children
+Palette 1.0 QtObject
     property PaletteValues normal
     property PaletteValues selected
-PaletteValues 1.0 QTestRootObject
+PaletteValues 1.0 QtObject
     property QColor background
     property QColor backgroundText
     property QColor base
@@ -22,7 +21,7 @@ PaletteValues 1.0 QTestRootObject
     property QColor selection
 QAbstractProxyModel QAbstractItemModel
     property QAbstractItemModel sourceModel
-QQmlPropertyMap QTestRootObject
+QQmlPropertyMap QtObject
     signal valueChanged(string key, var value)
     function QStringList keys
 QSortFilterProxyModel QAbstractProxyModel
@@ -91,7 +90,7 @@ TestCase 1.0 Item
     property bool running
     property bool when
     property bool windowShown
-TestExtras 1.0 QTestRootObject singleton
+TestExtras 1.0 QtObject singleton
     function string openGLflavor
     function string cpuArchitecture
     function bool touchDevicePresent
@@ -108,10 +107,10 @@ TestExtras 1.0 QTestRootObject singleton
 UCListItemDivider Item
     property QColor colorFrom
     property QColor colorTo
-UCStateSaverAttached QTestRootObject
+UCStateSaverAttached QtObject
     property bool enabled
     property string properties
-UbuntuColors 1.0 QTestRootObject singleton
+UbuntuColors 1.0 QtObject singleton
     readonly property QColor blue
     readonly property QColor coolGrey
     readonly property QColor darkAubergine
@@ -127,53 +126,13 @@ UbuntuColors 1.0 QTestRootObject singleton
     readonly property QColor red
     readonly property QColor warmGrey
 UbuntuTestCase 1.0 Item
-    property bool completed
-    function var fail(var msg)
-    function var qtest_fail(var msg, var frame)
-    function var verify(var cond, var msg)
-    function var qtest_typeof(var o)
-    function var qtest_compareInternal(var act, var exp)
-    function var qtest_compareInternalObjects(var act, var exp)
-    function var qtest_compareInternalArrays(var actual, var expected)
-    function var compare(var actual, var expected, var msg)
-    function var fuzzyCompare(var actual, var expected, var delta, var msg)
-    function var grabImage(var item)
-    function var qtest_findVisualChild(var parent, var objectName)
-    function var tryCompare(var obj, var prop, var value, var timeout, var msg)
-    function var skip(var msg)
-    function var expectFail(var tag, var msg)
-    function var expectFailContinue(var tag, var msg)
-    function var warn(var msg)
-    function var ignoreWarning(var msg)
-    function var wait(var ms)
-    function var waitForRendering(var item, var timeout)
-    function var sleep(var ms)
-    function var keyPress(var key, var modifiers, var delay)
-    function var keyRelease(var key, var modifiers, var delay)
-    function var keyClick(var key, var modifiers, var delay)
-    function var mousePress(var item, var x, var y, var button, var modifiers, var delay)
-    function var mouseRelease(var item, var x, var y, var button, var modifiers, var delay)
-    function var mouseDrag(var item, var x, var y, var dx, var dy, var button, var modifiers, var delay)
-    function var mouseClick(var item, var x, var y, var button, var modifiers, var delay)
-    function var mouseDoubleClick(var item, var x, var y, var button, var modifiers, var delay)
-    function var mouseMove(var item, var x, var y, var delay, var buttons)
-    function var mouseWheel(var item, var x, var y, var xDelta, var yDelta, var buttons, var modifiers, var delay)
-    function var initTestCase
-    function var cleanupTestCase
-    function var init
-    function var cleanup
-    function var qtest_runInternal(var prop, var arg)
-    function var qtest_runFunction(var prop, var arg)
-    function var qtest_runBenchmarkFunction(var prop, var arg)
-    function var qtest_run
-    property string name
-    property bool optional
-    property bool qtest_componentCompleted
-    property var qtest_events
-    property bool qtest_prevWhen
-    property var qtest_results
-    property var qtest_testCaseResult
-    property int qtest_testId
-    property bool running
-    property bool when
-    property bool windowShown
+    function var findChild(var obj, var objectName)
+    function var findInvisibleChild(var obj, var objectName)
+    function var findChildWithProperty(var item, var property, var value)
+    function var centerOf(var item)
+    function var mouseMoveSlowly(var item, var x, var y, var dx, var dy, var steps, var stepdelay)
+    function var flick(var item, var x, var y, var dx, var dy, var pressTimeout, var steps, var button, var modifiers, var delay)
+    function var mouseLongPress(var item, var x, var y, var button, var modifiers, var delay)
+    function var tryCompareFunction(var func, var expectedResult, var timeout)
+    function var typeString(var string)
+    function var warningFormat(var line, var column, var message)

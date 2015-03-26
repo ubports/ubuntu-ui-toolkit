@@ -489,6 +489,9 @@ public:
             }
         }
 
+        // FIXME: Merge only members of internal objects.
+        objectsToMerge.clear();
+        objectsToMerge.append(mainMeta);
         Q_FOREACH (const QMetaObject *meta, objectsToMerge)
             writeMetaContent(&object, meta, &knownAttributes);
         json->insert(qmlTyName, object);
@@ -667,7 +670,7 @@ private:
     void dump(const QMetaEnum &e)
     {
         QJsonObject object;
-        object["prototype"] = "Enum";
+        object["prototype"] = e.isFlag() ? "Flag" : "Enum";
 
         QList<QPair<QString, QString> > namesValues;
         for (int index = 0; index < e.keyCount(); ++index) {
