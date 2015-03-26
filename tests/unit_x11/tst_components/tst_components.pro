@@ -7,4 +7,5 @@ TARGET = tst_components
 SOURCES += tst_components.cpp tabsmodel.cpp
 HEADERS += tabsmodel.h
 
-OTHER_FILES += $$system(ls *.qml)
+OTHER_FILES += $$system(ls *.qml) \
+    tst_stress_alarmmodel.qml
