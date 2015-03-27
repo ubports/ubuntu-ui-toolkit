@@ -45,16 +45,25 @@ Item {
                     actions: [
                         Action {
                             iconName: "settings"
+                            text: "first"
                             onTriggered: print("Trigger first action")
                         },
                         Action {
                             iconName: "info"
+                            text: "second"
                             onTriggered: print("Trigger second action")
                         },
                         Action {
                             iconName: "search"
+                            text: "third"
                             onTriggered: print("Trigger third action")
+                        },
+                        Action {
+                            iconName: "appointment"
+                            text: "fourth"
+                            onTriggered: print("Trigger fourth action")
                         }
+
                     ]
                 }
             }

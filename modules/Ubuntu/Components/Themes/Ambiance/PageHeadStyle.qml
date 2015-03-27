@@ -373,11 +373,17 @@ Style.PageHeadStyle {
                                 right: parent.right
                             }
                             Repeater {
+                                id: repeater
                                 model: styledItem.tabsModel
                                 AbstractButton {
+                                    action: Action {
+                                        text: tab.title // FIXME: only "title" doesn't work with i18n.tr(). Why not?
+                                        onTriggered: {
+                                            repeater.model.selectedIndex = index;
+                                        }
+                                    }
                                     objectName: "tabButton" + index
                                     onClicked: {
-                                        styledItem.tabsModel.selectedIndex = index;
                                         tabsPopover.hide();
                                     }
                                     implicitHeight: units.gu(6) + bottomDividerLine.height
@@ -404,7 +410,7 @@ Style.PageHeadStyle {
                                         }
                                         fontSize: "medium"
                                         elide: Text.ElideRight
-                                        text: tab.title // FIXME: only "title" doesn't work with i18n.tr(). Why not?
+                                        text: action.text
                                         color: headerStyle.panelForegroundColor
                                     }
 
@@ -577,9 +583,10 @@ Style.PageHeadStyle {
                             }
                             Repeater {
                                 id: overflowRepeater
-                                model: numberOfSlots.requested - numberOfSlots.used
+                                model: actionsContainer.visibleActions.slice(numberOfSlots.used,
+                                                                             numberOfSlots.requested)
                                 AbstractButton {
-                                    action: actionsContainer.visibleActions[numberOfSlots.used + index]
+                                    action: modelData
                                     objectName: action.objectName + "_header_overflow_button"
                                     onClicked: actionsOverflowPopover.hide()
                                     implicitHeight: units.gu(6) + bottomDividerLine.height
