@@ -16,6 +16,7 @@ ubuntu-ui-toolkit (1.2.1458+15.04.20150318-0ubuntu3) UNRELEASED; urgency=medium
 
   [ Christian Dywan ]
   * Add tests/autopilot to sys.path of sphinx config. 
+  * Build-depend on python-autopilot used by sphinx-build
     Fixes LP: #1431749
 
   [ Zsombor Egri ]
