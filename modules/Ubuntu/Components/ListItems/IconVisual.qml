@@ -53,6 +53,6 @@ Item {
         id: shape
         visible: iconVisual.hasFrame
         anchors.fill: parent
-        image: icon
+        source: icon
     }
 }

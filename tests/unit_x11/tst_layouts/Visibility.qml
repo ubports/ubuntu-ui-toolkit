@@ -61,7 +61,7 @@ MainView {
                         UbuntuShape {
                             width: units.gu(20)
                             height: units.gu(20)
-                            color: "red"
+                            backgroundColor: "red"
                             Label { text: "wide" }
                         }
                     }
@@ -74,7 +74,7 @@ MainView {
                     objectName: "DefaultLayout"
                     width: units.gu(20)
                     height: units.gu(20)
-                    color: "green"
+                    backgroundColor: "green"
                     visible: main.boundValue
                     Label { text: "default" }
                 }

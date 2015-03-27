@@ -61,7 +61,7 @@ Item {
     UbuntuShape {
         anchors.fill: parent
         radius: "medium"
-        image: shapeSource
+        source: shapeSource
     }
 
     ShaderEffectSource {

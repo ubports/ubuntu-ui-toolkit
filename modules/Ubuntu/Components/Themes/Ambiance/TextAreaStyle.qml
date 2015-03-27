@@ -61,7 +61,7 @@ Item {
     property Component background: UbuntuShape {
         property bool error: (styledItem.hasOwnProperty("errorHighlight") && styledItem.errorHighlight && !styledItem.acceptableInput)
         onErrorChanged: (error) ? visuals.errorColor : visuals.backgroundColor;
-        color: visuals.backgroundColor;
+        backgroundColor: visuals.backgroundColor
         anchors.fill: parent
         visible: !styledItem.readOnly
     }

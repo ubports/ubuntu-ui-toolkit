@@ -110,9 +110,9 @@ Item {
 
     UbuntuShape {
         anchors.fill: parent
-        borderSource: "none"
-        color: Theme.palette.normal.overlay
-        image: bubbleShape.clipContent ? shapeSource : null
+        aspect: UbuntuShape.Flat
+        backgroundColor: Theme.palette.normal.overlay
+        source: bubbleShape.clipContent ? shapeSource : null
         visible: !square
     }
 
