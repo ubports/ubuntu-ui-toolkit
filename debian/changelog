@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (1.2.1458+15.04.20150318-0ubuntu3) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.2.1458+15.04.20150327-0ubuntu1) vivid; urgency=medium
 
   [ By Tim Peeters ]
   * Remove the deprecated toolbar example from the gallery. 
@@ -23,7 +23,10 @@ ubuntu-ui-toolkit (1.2.1458+15.04.20150318-0ubuntu3) UNRELEASED; urgency=medium
   * Fixing crashes when AlarmModel::get() returned valid stock alarm
     ends up to be NULL in QML. Fixes LP: #1429273
 
- -- Zoltán Balogh <zoltan@bakter.hu>  Wed, 25 Mar 2015 13:53:17 +0200
+  [ CI Train Bot ]
+  * New rebuild forced.
+
+ -- CI Train Bot <ci-train-bot@canonical.com>  Fri, 27 Mar 2015 12:35:55 +0000
 
 ubuntu-ui-toolkit (1.2.1450+15.04.20150318-0ubuntu1) vivid; urgency=medium
 
