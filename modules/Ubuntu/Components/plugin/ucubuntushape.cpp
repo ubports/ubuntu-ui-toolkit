@@ -314,7 +314,7 @@ void UCUbuntuShape::setRadius(const QString& radius)
 /*! \qmlproperty enumeration UbuntuShape::aspect
 
     This property defines the graphical style of the UbuntuShape. The default value is \c
-    UbuntuShape.Flat.
+    UbuntuShape.Inset.
 
     \note Setting this disables support for the deprecated \l borderSource property. Use the
     UbuntuShapeOverlay item in order to provide the inset "pressed" aspect previously supported by
