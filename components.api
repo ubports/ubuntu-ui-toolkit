@@ -253,11 +253,6 @@ PageTreeNode
     property string title
     property Flickable flickable
     readonly property PageHeadConfiguration head
-Page 1.3
-PageTreeNode
-    property string title
-    property Flickable flickable
-    readonly property PageHeadConfiguration head
 PageHeadConfiguration 1.1
 Object
     property list<Action> actions
