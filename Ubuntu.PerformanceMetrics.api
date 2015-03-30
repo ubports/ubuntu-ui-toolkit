@@ -1,7 +1,7 @@
 BarGraph 1.0 Item
-    property QColor aboveThresholdColor
-    property QColor backgroundColor
-    property QColor color
+    property color aboveThresholdColor
+    property color backgroundColor
+    property color color
     property string labelFormat
     property var labels
     property double maximumValue
@@ -11,39 +11,39 @@ CpuUsage 0.1 CpuUsage 1.0 Item
     readonly property UPMGraphModel graphModel
     property int period
     property int samplingInterval
-Haptics 1.0 QTestRootObject singleton
+Haptics 1.0 QtObject singleton
     readonly property HapticsEffect effect
     readonly property bool enabled
     function var play(var customEffect)
 Label 1.0 Text
     property string fontSize
-Object 1.0 QTestRootObject
-    default readonly property QTestRootObject children
-Palette 1.0 QTestRootObject
+Object 1.0 QtObject
+    default readonly property QtObject children
+Palette 1.0 QtObject
     property PaletteValues normal
     property PaletteValues selected
-PaletteValues 1.0 QTestRootObject
-    property QColor background
-    property QColor backgroundText
-    property QColor base
-    property QColor baseText
-    property QColor field
-    property QColor fieldText
-    property QColor foreground
-    property QColor foregroundText
-    property QColor overlay
-    property QColor overlayText
-    property QColor selection
+PaletteValues 1.0 QtObject
+    property color background
+    property color backgroundText
+    property color base
+    property color baseText
+    property color field
+    property color fieldText
+    property color foreground
+    property color foregroundText
+    property color overlay
+    property color overlayText
+    property color selection
 PerformanceOverlay 1.0 Item
     property bool active
 QAbstractProxyModel QAbstractItemModel
     property QAbstractItemModel sourceModel
-QQmlPropertyMap QTestRootObject
+QQmlPropertyMap QtObject
     signal valueChanged(string key, var value)
     function QStringList keys
 QSortFilterProxyModel QAbstractProxyModel
     property bool dynamicSortFilter
-    property Qt::CaseSensitivity filterCaseSensitivity
+    property Qt.CaseSensitivity filterCaseSensitivity
     property int filterKeyColumn
     property QRegExp filterRegExp
     property int filterRole
@@ -53,39 +53,39 @@ QSortFilterProxyModel QAbstractProxyModel
     function setFilterFixedString(string pattern)
     function clear
     function invalidate
-    property Qt::CaseSensitivity sortCaseSensitivity
+    property Qt.CaseSensitivity sortCaseSensitivity
     property int sortRole
 RenderingTimes 0.1 RenderingTimes 1.0 Item
     readonly property UPMGraphModel graphModel
     signal frameRendered(qlonglong renderTime)
     property int period
     property int samples
-    property RenderTimer::TimerType timerType
+    property RenderTimer.TimerType timerType
 TextureFromImage 0.1 TextureFromImage 1.0 Item
     property QImage image
 UCListItemDivider Item
-    property QColor colorFrom
-    property QColor colorTo
-UCStateSaverAttached QTestRootObject
+    property color colorFrom
+    property color colorTo
+UCStateSaverAttached QtObject
     property bool enabled
     property string properties
-UPMGraphModel QTestRootObject
+UPMGraphModel QtObject
     readonly property int currentValue
     readonly property QImage image
     property int samples
     readonly property int shift
-UbuntuColors 1.0 QTestRootObject singleton
-    readonly property QColor blue
-    readonly property QColor coolGrey
-    readonly property QColor darkAubergine
-    readonly property QColor darkGrey
-    readonly property QColor green
+UbuntuColors 1.0 QtObject singleton
+    readonly property color blue
+    readonly property color coolGrey
+    readonly property color darkAubergine
+    readonly property color darkGrey
+    readonly property color green
     property Gradient greyGradient
-    readonly property QColor lightAubergine
-    readonly property QColor lightGrey
-    readonly property QColor midAubergine
-    readonly property QColor orange
+    readonly property color lightAubergine
+    readonly property color lightGrey
+    readonly property color midAubergine
+    readonly property color orange
     property Gradient orangeGradient
-    readonly property QColor purple
-    readonly property QColor red
-    readonly property QColor warmGrey
+    readonly property color purple
+    readonly property color red
+    readonly property color warmGrey

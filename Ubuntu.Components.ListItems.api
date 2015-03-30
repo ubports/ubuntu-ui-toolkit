@@ -95,7 +95,7 @@ MultiValue 1.0 Item
 Object 1.0 QtObject
     default readonly property QtObject children
 OptionSelectorDelegate 1.0 Item
-    property QColor assetColour
+    property color assetColour
     property bool colourImage
     property bool constrainImage
     readonly property string fragColourShader
@@ -106,17 +106,17 @@ Palette 1.0 QtObject
     property PaletteValues normal
     property PaletteValues selected
 PaletteValues 1.0 QtObject
-    property QColor background
-    property QColor backgroundText
-    property QColor base
-    property QColor baseText
-    property QColor field
-    property QColor fieldText
-    property QColor foreground
-    property QColor foregroundText
-    property QColor overlay
-    property QColor overlayText
-    property QColor selection
+    property color background
+    property color backgroundText
+    property color base
+    property color baseText
+    property color field
+    property color fieldText
+    property color foreground
+    property color foregroundText
+    property color overlay
+    property color overlayText
+    property color selection
 ProgressionVisual 1.0 Item
     property bool showSplit
     property double splitMargin
@@ -127,7 +127,7 @@ QQmlPropertyMap QtObject
     function QStringList keys
 QSortFilterProxyModel QAbstractProxyModel
     property bool dynamicSortFilter
-    property Qt::CaseSensitivity filterCaseSensitivity
+    property Qt.CaseSensitivity filterCaseSensitivity
     property int filterKeyColumn
     property QRegExp filterRegExp
     property int filterRole
@@ -137,7 +137,7 @@ QSortFilterProxyModel QAbstractProxyModel
     function setFilterFixedString(string pattern)
     function clear
     function invalidate
-    property Qt::CaseSensitivity sortCaseSensitivity
+    property Qt.CaseSensitivity sortCaseSensitivity
     property int sortRole
 SingleControl 1.0 Item
     property Item control
@@ -157,26 +157,26 @@ Subtitled 1.0 Item
     property string subText
 ThinDivider 1.0 Rectangle
 UCListItemDivider Item
-    property QColor colorFrom
-    property QColor colorTo
+    property color colorFrom
+    property color colorTo
 UCStateSaverAttached QtObject
     property bool enabled
     property string properties
 UbuntuColors 1.0 QtObject singleton
-    readonly property QColor blue
-    readonly property QColor coolGrey
-    readonly property QColor darkAubergine
-    readonly property QColor darkGrey
-    readonly property QColor green
+    readonly property color blue
+    readonly property color coolGrey
+    readonly property color darkAubergine
+    readonly property color darkGrey
+    readonly property color green
     property Gradient greyGradient
-    readonly property QColor lightAubergine
-    readonly property QColor lightGrey
-    readonly property QColor midAubergine
-    readonly property QColor orange
+    readonly property color lightAubergine
+    readonly property color lightGrey
+    readonly property color midAubergine
+    readonly property color orange
     property Gradient orangeGradient
-    readonly property QColor purple
-    readonly property QColor red
-    readonly property QColor warmGrey
+    readonly property color purple
+    readonly property color red
+    readonly property color warmGrey
 UbuntuNumberAnimation 1.0 NumberAnimation
     property double from
     property double to

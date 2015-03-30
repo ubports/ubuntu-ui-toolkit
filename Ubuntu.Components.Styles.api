@@ -1,0 +1,23 @@
+ComboButtonStyle 1.1 Item
+    property Item comboListHolder
+    property double comboListMargin
+    property Item comboListPanel
+    property color defaultColor
+    property color defaultDropdownColor
+    property QFont defaultFont
+    property Gradient defaultGradient
+    property double dropDownSeparatorWidth
+    property double dropDownWidth
+PageHeadStyle 1.1 Item
+    property double contentHeight
+    property string fontSize
+    property int fontWeight
+    property int maximumNumberOfActions
+    property QUrl separatorBottomSource
+    property QUrl separatorSource
+    property color textColor
+    property double textLeftMargin
+PullToRefreshStyle 1.1 Item
+    property double activationThreshold
+    property Component defaultContent
+    property bool releaseToRefresh

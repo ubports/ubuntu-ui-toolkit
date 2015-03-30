@@ -53,6 +53,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QLoggingCategory>
 
 #include <iostream>
 #include <algorithm>
@@ -143,12 +144,16 @@ static QHash<QByteArray, QByteArray> cppToId;
    name much. It is mostly used to for explicit translations such as
    QString->string and translations for extended QML objects.
 */
-QByteArray convertToId(const QByteArray &cppName)
+QByteArray convertToId(const QString &cppName)
 {
-    QList<const QQmlType*>types(qmlTypesByCppName[cppName].toList());
+    QString qmlType(cppName);
+    QList<const QQmlType*>types(qmlTypesByCppName[qPrintable(cppName)].toList());
     if (!types.isEmpty())
-        return QString(types[0]->qmlTypeName()).split("/")[1].toUtf8();
-    return cppToId.value(cppName, cppName);
+        qmlType = QString(types[0]->qmlTypeName()).split("/")[1].toUtf8();
+    else
+        qmlType = cppToId.value(qPrintable(cppName), qPrintable(cppName));
+    // QML . for namespace rather than C++ ::
+    return qPrintable(qmlType.replace("::", "."));
 }
 
 QByteArray convertToId(const QMetaObject *mo)
@@ -353,6 +358,7 @@ public:
     {
         importVersion = version;
     }
+
     const QString getExportString(QString qmlTyName, int majorVersion, int minorVersion)
     {
         if (qmlTyName.startsWith(relocatableModuleUri + QLatin1Char('/'))) {
@@ -532,7 +538,7 @@ public:
         }
 
         if (meta->superClass())
-            object.insert("prototype", QString(convertToId(meta->superClass())));
+            object.insert("prototype", meta->superClass()->className());
 
         if (!qmlTypes.isEmpty()) {
             object.insert("exports", QJsonArray::fromStringList(exportStrings));
@@ -546,7 +552,7 @@ public:
                 // Can happen when a type is registered that returns itself as attachedPropertiesType()
                 // because there is no creatable type to attach to.
                 if (attachedType != meta) {
-                    object.insert("attachedType", QString(convertToId(attachedType)));
+                    object.insert("attachedType", attachedType->className());
                 }
             }
         }
@@ -578,8 +584,6 @@ private:
             *typeName = typeName->mid(declListPrefix.size());
             removePointerAndList(typeName, isList, isPointer);
         }
-
-        *typeName = convertToId(*typeName);
     }
 
     void writeTypeProperties(QJsonObject* object, QByteArray typeName, bool isWritable)
@@ -626,7 +630,7 @@ private:
         }
 
         QByteArray name = meth.name();
-        const QString typeName = convertToId(meth.typeName());
+        const QString typeName = meth.typeName();
 
         if (implicitSignals.contains(name)
                 && !meth.revision()
@@ -676,7 +680,7 @@ private:
         for (int index = 0; index < e.keyCount(); ++index) {
             object[e.key(index)] = QString::number(e.value(index));
         }
-        json->insert(e.name(), object);
+        json->insert(QString("%1.%2").arg(e.scope()).arg(e.name()), object);
     }
 };
 
@@ -837,6 +841,9 @@ int main(int argc, char *argv[])
     if (!output_json and !output_qml)
         output_json = true;
 
+    if (!verbose)
+        QLoggingCategory::setFilterRules(QStringLiteral("*=false"));
+
     // Allow import of Qt.Test
     qmlRegisterSingletonType<QObject>("Qt.test.qtestroot", 1, 0, "QTestRootObject", testRootObject);
 
@@ -964,6 +971,7 @@ int main(int argc, char *argv[])
     // setup static rewrites of type names
     cppToId.insert("QString", "string");
     cppToId.insert("QVariant", "var");
+    cppToId.insert("QColor", "color");
     cppToId.insert("QQmlEasingValueType::Type", "Type");
 
     // create an object that will be the API description
@@ -1019,13 +1027,13 @@ int main(int argc, char *argv[])
                 QJsonArray exports(object["exports"].toArray());
                 QStringList exportsSl;
                 Q_FOREACH(QJsonValue expor, exports) {
-                    exportsSl.append(expor.toString());
+                    exportsSl.append(convertToId(expor.toString()));
                 }
                 if (!exportsSl.isEmpty())
                     signature += exportsSl.join(" ");
                 else
-                    signature += key;
-                signature += " " + object["prototype"].toString();
+                    signature +=  key;
+                signature += " " + convertToId(object["prototype"].toString());
                 if (object.contains("isSingleton"))
                     signature += " singleton";
                 signature += "\n";
@@ -1039,13 +1047,13 @@ int main(int argc, char *argv[])
                             signature += "    ";
                             signature += valu["type"].toString() + " ";
                             if (valu.contains("returns"))
-                                signature += valu["returns"].toString() + " ";
+                                signature += convertToId(valu["returns"].toString()) + " ";
                             signature += valu["name"].toString();
                             if (valu.contains("parameters")) {
                                 QStringList args;
                                 Q_FOREACH(const QJsonValue& parameterValue, valu["parameters"].toArray()) {
                                     QJsonObject parameter(parameterValue.toObject());
-                                    args.append(parameter["type"].toString() + " " + parameter["name"].toString());
+                                    args.append(convertToId(parameter["type"].toString()) + " " + parameter["name"].toString());
                                 }
                                 signature += "(" + args.join(", ") + ")";
                                 }
@@ -1065,7 +1073,7 @@ int main(int argc, char *argv[])
                         signature += "property ";
                     }
                     if (field.contains("type"))
-                        signature += QString(convertToId(field["type"].toString().toUtf8())) + " ";
+                        signature += QString(convertToId(field["type"].toString())) + " ";
                     signature += fieldName;
                     signature += "\n";
                 }

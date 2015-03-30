@@ -55,20 +55,17 @@ AlarmModel 0.1 AlarmModel 1.0 QAbstractListModel
     readonly property int count
     function refresh
     function UCAlarm* get(int index)
-AlarmType Enum
-    OneTime
-    Repeating
 AppHeader 1.2 Item
     property var actions
     property bool animate
     property PageHeadConfiguration config
     property Item contents
-    property QColor dividerColor
+    property color dividerColor
     property Flickable flickable
     function var show
     function var hide
     property var pageStack
-    property QColor panelColor
+    property color panelColor
     property var tabsModel
     property string title
     property bool useDeprecatedToolbar
@@ -87,13 +84,10 @@ Arguments 0.1 Arguments 1.0 QtObject
     function quitWithError(string errorMessage)
     function quitWithError
     readonly property QQmlPropertyMap values
-BackgroundMode Enum
-    SolidColor
-    VerticalGradient
 BarGraph 1.2 Item
-    property QColor aboveThresholdColor
-    property QColor backgroundColor
-    property QColor color
+    property color aboveThresholdColor
+    property color backgroundColor
+    property color color
     property string labelFormat
     property var labels
     property double maximumValue
@@ -103,9 +97,6 @@ Captions 1.2 Item
     property int captionStyle
     readonly property Label subtitle
     readonly property Label title
-CaptionsStyle Enum
-    SummaryCaptionStyle
-    TitleCaptionStyle
 Clipboard 0.1 Clipboard 1.0 QtObject singleton
     readonly property MimeData data
     function push(var data)
@@ -113,17 +104,6 @@ Clipboard 0.1 Clipboard 1.0 QtObject singleton
     function QQuickMimeData* newData
 ColorUtils 1.0 ColorUtils 0.1 
 DateUtils 1.0 DateUtils 0.1 
-DayOfWeek Enum
-    AutoDetect
-    Daily
-    Friday
-    Monday
-    Saturday
-    Sunday
-    Thursday
-    Tuesday
-    Wednesday
-DaysOfWeek Flag
 DraggingArea 1.2 MouseArea
     property bool clickValidated
     property double dragValue
@@ -138,27 +118,9 @@ DraggingArea 1.2 MouseArea
     function var pushDragEvent(var event)
     property int orientation
     property bool zeroVelocityCounts
-Error Enum
-    AdaptationError
-    EarlyDate
-    InvalidDate
-    InvalidEvent
-    NoDaysOfWeek
-    NoError
-    OneTimeOnMoreDays
-    OperationPending
-FillMode Enum
-    Pad
-    PreserveAspectCrop
-    PreserveAspectFit
-    Stretch
 FilterBehavior 1.1 QtObject
     property QRegExp pattern
     property string property
-HAlignment Enum
-    AlignHCenter
-    AlignLeft
-    AlignRight
 Haptics 1.2 QtObject singleton
     readonly property HapticsEffect effect
     readonly property bool enabled
@@ -166,8 +128,8 @@ Haptics 1.2 QtObject singleton
 Icon 1.2 Item
     property QUrl source
 Icon10 1.2 Item
-    property QColor color
-    property QColor keyColor
+    property color color
+    property color keyColor
     property string name
 InverseMouse 0.1 InverseMouse 1.0 Mouse
 InverseMouseArea 0.1 InverseMouseArea 1.0 MouseArea
@@ -178,13 +140,13 @@ Label 1.2 Text
     property string fontSize
 ListItem 1.2 StyledItemBase
     property Action action
-    property QColor color
+    property color color
     readonly property Item contentItem
     readonly property bool contentMoving
     readonly property UCListItemDivider divider
     property bool dragMode
     readonly property bool dragging
-    property QColor highlightColor
+    property color highlightColor
     readonly property bool highlighted
     property ListItemActions leadingActions
     readonly property Item listItemChildren
@@ -216,12 +178,12 @@ MainViewBase 1.2 Item
     readonly property QtObject actions
     property bool anchorToKeyboard
     property string applicationName
-    property QColor backgroundColor
-    property QColor footerColor
-    property QColor headerColor
+    property color backgroundColor
+    property color footerColor
+    property color headerColor
 MathUtils 1.0 MathUtils 0.1 
 MimeData 0.1 MimeData 1.0 QtObject
-    property QColor color
+    property color color
     property var data
     readonly property QStringList formats
     property string html
@@ -229,7 +191,7 @@ MimeData 0.1 MimeData 1.0 QtObject
     property string text
     property QList<QUrl> urls
 Mouse 0.1 Mouse 1.0 QtObject
-    readonly property Qt::MouseButtons acceptedButtons
+    readonly property Qt.MouseButtons acceptedButtons
     property int clickAndHoldThreshold
     property bool enabled
     readonly property Item forwardTo
@@ -245,11 +207,6 @@ Mouse 0.1 Mouse 1.0 QtObject
     property Priority priority
 Object 1.2 QtObject
     default readonly property QtObject children
-Operation Enum
-    Canceling
-    NoOperation
-    Reseting
-    Saving
 OrientationHelper 1.2 Item
     property bool anchorToKeyboard
     property bool automaticOrientation
@@ -264,14 +221,14 @@ PageBase 1.2 Item
     property string title
     property Item tools
 PageHeadButton 1.2 Item
-    property QColor color
+    property color color
     property double iconHeight
     property double iconWidth
 PageHeadConfiguration 1.2 QtObject
     readonly property Action actions
     property Action backAction
     property Item contents
-    property QColor foregroundColor
+    property color foregroundColor
     property string preset
     readonly property PageHeadSections sections
 PageHeadSections 1.2 QtObject
@@ -285,7 +242,7 @@ PageHeadStyle 1.2 Item
     property int maximumNumberOfActions
     property QUrl separatorBottomSource
     property QUrl separatorSource
-    property QColor textColor
+    property color textColor
     property double textLeftMargin
 PageTreeNode 1.2 Item
     property bool active
@@ -299,17 +256,17 @@ Palette 1.2 QtObject
     property PaletteValues normal
     property PaletteValues selected
 PaletteValues 1.2 QtObject
-    property QColor background
-    property QColor backgroundText
-    property QColor base
-    property QColor baseText
-    property QColor field
-    property QColor fieldText
-    property QColor foreground
-    property QColor foregroundText
-    property QColor overlay
-    property QColor overlayText
-    property QColor selection
+    property color background
+    property color backgroundText
+    property color base
+    property color baseText
+    property color field
+    property color fieldText
+    property color foreground
+    property color foregroundText
+    property color overlay
+    property color overlayText
+    property color selection
 Panel 1.2 Item
     property int align
     property bool animate
@@ -347,23 +304,20 @@ PopupBase 1.2 Item
     function var hide
     function var __closeIfHidden
     function var __closePopup
-Priority Enum
-    AfterItem
-    BeforeItem
 QAbstractProxyModel QAbstractItemModel
     property QAbstractItemModel sourceModel
 QQmlPropertyMap QtObject
     signal valueChanged(string key, var value)
     function QStringList keys
 QQuickGridLayoutBase Layout
-    property Qt::LayoutDirection layoutDirection
+    property Qt.LayoutDirection layoutDirection
     signal layoutDirectionChanged
 QQuickImageBase 0.1 QQuickImageBase 1.0 QQuickImageBase
     signal extendedSourceChanged
     signal extendedSourceChanged
     property QUrl source
 QQuickLayoutAttached QtObject
-    property Qt::Alignment alignment
+    property Qt.Alignment alignment
     property int column
     property int columnSpan
     property bool fillHeight
@@ -390,19 +344,19 @@ QQuickScreenAttached QtObject
     signal desktopGeometryChanged
     function int angleBetween(int a, int b)
     readonly property string name
-    readonly property Qt::ScreenOrientation orientation
-    property Qt::ScreenOrientations orientationUpdateMask
+    readonly property Qt.ScreenOrientation orientation
+    property Qt.ScreenOrientations orientationUpdateMask
     readonly property double pixelDensity
-    readonly property Qt::ScreenOrientation primaryOrientation
+    readonly property Qt.ScreenOrientation primaryOrientation
     readonly property int width
 QQuickWindowAttached QtObject
     readonly property bool active
     readonly property Item activeFocusItem
     readonly property Item contentItem
-    readonly property QWindow::Visibility visibility
+    readonly property QWindow.Visibility visibility
 QSortFilterProxyModel QAbstractProxyModel
     property bool dynamicSortFilter
-    property Qt::CaseSensitivity filterCaseSensitivity
+    property Qt.CaseSensitivity filterCaseSensitivity
     property int filterKeyColumn
     property QRegExp filterRegExp
     property int filterRole
@@ -412,18 +366,18 @@ QSortFilterProxyModel QAbstractProxyModel
     function setFilterFixedString(string pattern)
     function clear
     function invalidate
-    property Qt::CaseSensitivity sortCaseSensitivity
+    property Qt.CaseSensitivity sortCaseSensitivity
     property int sortRole
 QWindow QtObject
     readonly property bool active
-    property Qt::ScreenOrientation contentOrientation
-    property Qt::WindowFlags flags
+    property Qt.ScreenOrientation contentOrientation
+    property Qt.WindowFlags flags
     property int height
     property int maximumHeight
     property int maximumWidth
     signal screenChanged(QScreen screen)
-    signal modalityChanged(Qt::WindowModality modality)
-    signal windowStateChanged(Qt::WindowState windowState)
+    signal modalityChanged(Qt.WindowModality modality)
+    signal windowStateChanged(Qt.WindowState windowState)
     signal windowTitleChanged(string title)
     signal xChanged(int arg)
     signal yChanged(int arg)
@@ -434,9 +388,9 @@ QWindow QtObject
     signal maximumWidthChanged(int arg)
     signal maximumHeightChanged(int arg)
     signal visibleChanged(bool arg)
-    signal visibilityChanged(QWindow::Visibility visibility)
+    signal visibilityChanged(QWindow.Visibility visibility)
     signal activeChanged
-    signal contentOrientationChanged(Qt::ScreenOrientation orientation)
+    signal contentOrientationChanged(Qt.ScreenOrientation orientation)
     signal focusObjectChanged(QtObject object)
     signal opacityChanged(double opacity)
     function requestActivate
@@ -462,7 +416,7 @@ QWindow QtObject
     function alert(int msec)
     property int minimumHeight
     property int minimumWidth
-    property Qt::WindowModality modality
+    property Qt.WindowModality modality
     property double opacity
     property string title
     property Visibility visibility
@@ -470,6 +424,13 @@ QWindow QtObject
     property int width
     property int x
     property int y
+QWindow.Visibility Enum
+    AutomaticVisibility
+    FullScreen
+    Hidden
+    Maximized
+    Minimized
+    Windowed
 ScrollbarUtils 1.0 ScrollbarUtils 0.1 
 ServiceProperties 1.1 QtObject
     property string adaptorInterface
@@ -478,13 +439,9 @@ ServiceProperties 1.1 QtObject
     property string service
     property string serviceInterface
     readonly property Status status
-ServiceType Enum
-    Session
-    System
-    Undefined
 SliderUtils 1.0 SliderUtils 0.1 
 SortBehavior 1.1 QtObject
-    property Qt::SortOrder order
+    property Qt.SortOrder order
     property string property
 SortFilterModel 1.1 QSortFilterProxyModel
     readonly property int count
@@ -494,15 +451,11 @@ SortFilterModel 1.1 QSortFilterProxyModel
     property QAbstractItemModel model
     readonly property SortBehavior sort
 StateSaver 0.1 StateSaver 1.0 QtObject
-Status Enum
-    Finished
-    Started
-    Updated
 StyledItem 1.2 Item
     property Component style
 StyledItemBase 0.1 StyledItemBase 1.0 StyledItemBase 1.1 Item
     property bool activeFocusOnPress
-    function bool requestFocus(Qt::FocusReason reason)
+    function bool requestFocus(Qt.FocusReason reason)
     function bool requestFocus
 SwipeEvent 1.2 QtObject
     property QPointF content
@@ -512,19 +465,93 @@ SwipeEvent 1.2 QtObject
 ThinDivider 1.2 Rectangle
 Toolbar 1.2 Item
     property Item tools
-Type Enum
+UCAction.Type Enum
     Bool
     Integer
     None
     Object
     Real
     String
+UCAlarm.AlarmType Enum
+    OneTime
+    Repeating
+UCAlarm.DayOfWeek Enum
+    AutoDetect
+    Daily
+    Friday
+    Monday
+    Saturday
+    Sunday
+    Thursday
+    Tuesday
+    Wednesday
+UCAlarm.DaysOfWeek Flag
+UCAlarm.Error Enum
+    AdaptationError
+    EarlyDate
+    InvalidDate
+    InvalidEvent
+    NoDaysOfWeek
+    NoError
+    OneTimeOnMoreDays
+    OperationPending
+UCAlarm.Operation Enum
+    Canceling
+    NoOperation
+    Reseting
+    Saving
+UCAlarm.Status Enum
+    Fail
+    InProgress
+    Ready
+UCDragEvent.Status Enum
+    Dropped
+    Moving
+    Started
 UCListItemDivider Item
-    property QColor colorFrom
-    property QColor colorTo
+    property color colorFrom
+    property color colorTo
+UCMouse.Priority Enum
+    AfterItem
+    BeforeItem
+UCNamespace.CaptionsStyle Enum
+    SummaryCaptionStyle
+    TitleCaptionStyle
+UCServiceProperties.ServiceType Enum
+    Session
+    System
+    Undefined
+UCServiceProperties.Status Enum
+    Active
+    ConnectionError
+    Inactive
+    Synchronizing
 UCStateSaverAttached QtObject
     property bool enabled
     property string properties
+UCSwipeEvent.Status Enum
+    Finished
+    Started
+    Updated
+UCUbuntuShape.BackgroundMode Enum
+    SolidColor
+    VerticalGradient
+UCUbuntuShape.FillMode Enum
+    Pad
+    PreserveAspectCrop
+    PreserveAspectFit
+    Stretch
+UCUbuntuShape.HAlignment Enum
+    AlignHCenter
+    AlignLeft
+    AlignRight
+UCUbuntuShape.VAlignment Enum
+    AlignBottom
+    AlignTop
+    AlignVCenter
+UCUbuntuShape.WrapMode Enum
+    Repeat
+    Transparent
 UCUnits 0.1 UCUnits 1.0 QtObject
     property float gridUnit
     function float dp(float value)
@@ -544,29 +571,29 @@ UbuntuAnimation 0.1 UbuntuAnimation 1.0 QtObject singleton
     readonly property QEasingCurve StandardEasing
     readonly property QEasingCurve StandardEasingReverse
 UbuntuColors 1.2 QtObject singleton
-    readonly property QColor blue
-    readonly property QColor coolGrey
-    readonly property QColor darkAubergine
-    readonly property QColor darkGrey
-    readonly property QColor green
+    readonly property color blue
+    readonly property color coolGrey
+    readonly property color darkAubergine
+    readonly property color darkGrey
+    readonly property color green
     property Gradient greyGradient
-    readonly property QColor lightAubergine
-    readonly property QColor lightGrey
-    readonly property QColor midAubergine
-    readonly property QColor orange
+    readonly property color lightAubergine
+    readonly property color lightGrey
+    readonly property color midAubergine
+    readonly property color orange
     property Gradient orangeGradient
-    readonly property QColor purple
-    readonly property QColor red
-    readonly property QColor warmGrey
+    readonly property color purple
+    readonly property color red
+    readonly property color warmGrey
 UbuntuNumberAnimation 1.2 NumberAnimation
     property double from
     property double to
 Shape 0.1 Shape 1.0 UbuntuShape 0.1 UbuntuShape 1.0 UbuntuShape 1.2 Item
-    property QColor backgroundColor
+    property color backgroundColor
     property BackgroundMode backgroundMode
     property string borderSource
-    property QColor color
-    property QColor gradientColor
+    property color color
+    property color gradientColor
     property HAlignment horizontalAlignment
     property var image
     signal sourceChanged
@@ -582,7 +609,7 @@ Shape 0.1 Shape 1.0 UbuntuShape 0.1 UbuntuShape 1.0 UbuntuShape 1.2 Item
     signal secondaryBackgroundColorChanged
     signal backgroundModeChanged
     property string radius
-    property QColor secondaryBackgroundColor
+    property color secondaryBackgroundColor
     property var source
     property FillMode sourceFillMode
     property HAlignment sourceHorizontalAlignment
@@ -595,29 +622,15 @@ Shape 0.1 Shape 1.0 UbuntuShape 0.1 UbuntuShape 1.0 UbuntuShape 1.2 Item
     property bool stretched
     property VAlignment verticalAlignment
 UbuntuShapeOverlay 1.2 UbuntuShape
-    property QColor overlayColor
+    property color overlayColor
     property QRectF overlayRect
 UriHandler 0.1 UriHandler 1.0 QtObject singleton
     signal opened(QStringList uris)
-VAlignment Enum
-    AlignBottom
-    AlignTop
-    AlignVCenter
 ViewItems 1.2 QtObject
     property bool dragMode
     signal dragUpdated(ListItemDrag event)
     property bool selectMode
     property QList<int> selectedIndices
-Visibility Enum
-    AutomaticVisibility
-    FullScreen
-    Hidden
-    Maximized
-    Minimized
-    Windowed
-WrapMode Enum
-    Repeat
-    Transparent
 i18n 0.1 i18n 1.0 QtObject
     property string domain
     property string language
