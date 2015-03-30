@@ -1102,7 +1102,7 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
     // Get the radius size. When the item width and/or height is less than 2 * radius, the size is
     // scaled down accordingly. The shape was using a fixed image for the corner before switching to
     // a distance field, since the corner wasn't taking the whole image (ending at ~87.5%) we need
-    // to take that into account when the the size is scaled down.
+    // to take that into account when the size is scaled down.
     float radius = UCUnits::instance().gridUnit()
         * (m_radius == Small ? smallRadiusGU : mediumRadiusGU);
     const float scaledDownRadius = qMin(itemSize.width(), itemSize.height()) * 0.5f * 0.875f;
