@@ -173,6 +173,7 @@ PageTreeNode {
         Toolkit.Action {
             id: selectTabAction
             text: "BLA"+tab.title
+            objectName: "select_tab_"+index
             iconSource: tab.iconSource
             onTriggered: {
                 if (internal.index < 0) return;

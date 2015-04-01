@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2014-2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -360,58 +360,8 @@ Style.PageHeadStyle {
                             when: tabsPopover.__foreground &&
                                   tabsPopover.__foreground.__styleInstance
                         }
-
-                        Column {
-                            anchors {
-                                left: parent.left
-                                top: parent.top
-                                right: parent.right
-                            }
-                            Repeater {
-                                id: repeater
-                                model: styledItem.tabsModel
-                                AbstractButton {
-                                    action: tab.__protected.action
-                                    objectName: "tabButton" + index
-                                    onClicked: {
-                                        tabsPopover.hide();
-                                    }
-                                    implicitHeight: units.gu(6) + bottomDividerLine.height
-                                    width: parent ? parent.width : units.gu(31)
-
-                                    Rectangle {
-                                        visible: parent.pressed
-                                        anchors {
-                                            left: parent.left
-                                            right: parent.right
-                                            top: parent.top
-                                        }
-                                        height: parent.height - bottomDividerLine.height
-                                        color: headerStyle.panelHighlightColor
-                                    }
-
-                                    Label {
-                                        anchors {
-                                            verticalCenter: parent.verticalCenter
-                                            verticalCenterOffset: units.dp(-1)
-                                            left: parent.left
-                                            leftMargin: units.gu(2)
-                                            right: parent.right
-                                        }
-                                        fontSize: "medium"
-                                        elide: Text.ElideRight
-                                        text: action.text
-                                        color: headerStyle.panelForegroundColor
-                                    }
-
-                                    ListItem.ThinDivider {
-                                        id: bottomDividerLine
-                                        anchors.bottom: parent.bottom
-                                        visible: index < styledItem.tabsModel.count - 1
-                                    }
-                                }
-                            }
-                        }
+                        tabsOverflow: true
+                        model: styledItem.tabsModel
                     }
                 }
             }
@@ -563,72 +513,9 @@ Style.PageHeadStyle {
                             }
                         }
 
-                        Column {
-                            anchors {
-                                left: parent.left
-                                top: parent.top
-                                right: parent.right
-                            }
-                            Repeater {
-                                id: overflowRepeater
-                                model: actionsContainer.visibleActions.slice(numberOfSlots.used,
-                                                                             numberOfSlots.requested)
-                                AbstractButton {
-                                    action: modelData
-                                    objectName: action.objectName + "_header_overflow_button"
-                                    onClicked: actionsOverflowPopover.hide()
-                                    implicitHeight: units.gu(6) + bottomDividerLine.height
-                                    width: parent ? parent.width : units.gu(31)
-
-                                    Rectangle {
-                                        visible: parent.pressed
-                                        anchors {
-                                            left: parent.left
-                                            right: parent.right
-                                            top: parent.top
-                                        }
-                                        height: parent.height - bottomDividerLine.height
-                                        color: headerStyle.panelHighlightColor
-                                    }
-
-                                    Icon {
-                                        id: actionIcon
-                                        source: action.iconSource
-                                        color: headerStyle.panelForegroundColor
-                                        anchors {
-                                            verticalCenter: parent.verticalCenter
-                                            verticalCenterOffset: units.dp(-1)
-                                            left: parent.left
-                                            leftMargin: units.gu(2)
-                                        }
-                                        width: units.gu(2)
-                                        height: units.gu(2)
-                                        opacity: action.enabled ? 1.0 : 0.5
-                                    }
-
-                                    Label {
-                                        anchors {
-                                            verticalCenter: parent.verticalCenter
-                                            verticalCenterOffset: units.dp(-1)
-                                            left: actionIcon.right
-                                            leftMargin: units.gu(2)
-                                            right: parent.right
-                                        }
-                                        fontSize: "small"
-                                        elide: Text.ElideRight
-                                        text: action.text
-                                        color: headerStyle.panelForegroundColor
-                                        opacity: action.enabled ? 1.0 : 0.5
-                                    }
-
-                                    ListItem.ThinDivider {
-                                        id: bottomDividerLine
-                                        anchors.bottom: parent.bottom
-                                        visible: index !== overflowRepeater.count - 1
-                                    }
-                                }
-                            }
-                        }
+                        tabsOverflow: false
+                        model: actionsContainer.visibleActions.slice(numberOfSlots.used,
+                                                                     numberOfSlots.requested)
                     }
                 }
             }
