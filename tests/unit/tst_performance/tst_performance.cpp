@@ -77,6 +77,8 @@ private Q_SLOTS:
 
         QTest::newRow("old theming, subtheming disabled") << "StyledItemOldTheming.qml" << QUrl("Ubuntu.Components.Themes.SuruDark") << QByteArray("no");
         QTest::newRow("old theming, subtheming enabled") << "StyledItemOldTheming.qml" << QUrl("Ubuntu.Components.Themes.SuruDark") << QByteArray("yes");
+        QTest::newRow("new theming, subtheming enabled, no theme change") << "StyledItemNewTheming.qml" << QUrl() << QByteArray("yes");
+        QTest::newRow("new theming, subtheming enabled, with theme change") << "StyledItemNewTheming.qml" << QUrl("Ubuntu.Components.Themes.SuruDark") << QByteArray("yes");
         QTest::newRow("subtheming, no changes on themes") << "Styling.qml" << QUrl() << QByteArray("yes");
         QTest::newRow("subtheming, change mid item") << "Styling.qml" << QUrl("Ubuntu.Components.Themes.SuruDark") << QByteArray("yes");
         QTest::newRow("Palette configuration of one color") << "PaletteConfigurationOneColor.qml" << QUrl("Ubuntu.Components.Themes.SuruDark") << QByteArray("yes");

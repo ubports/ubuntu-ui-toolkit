@@ -29,4 +29,5 @@ OTHER_FILES += \
     StyledItemOldTheming.qml \
     Styling.qml \
     PaletteConfigurationOneColor.qml \
-    PaletteConfigurationAllColors.qml
+    PaletteConfigurationAllColors.qml \
+    StyledItemNewTheming.qml
