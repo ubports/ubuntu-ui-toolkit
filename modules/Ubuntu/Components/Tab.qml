@@ -167,12 +167,12 @@ PageTreeNode {
         property bool removedFromTabs: false
 
         /*!
-          This action can be used for (for example) a button to select the tab.
+          Triggering this action will select the tab. Used by the tabs OverflowPanel.
          */
         property alias action: selectTabAction
         Toolkit.Action {
             id: selectTabAction
-            text: "BLA"+tab.title
+            text: tab.title
             objectName: "select_tab_"+index
             iconSource: tab.iconSource
             onTriggered: {

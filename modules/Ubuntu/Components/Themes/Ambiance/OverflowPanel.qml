@@ -124,7 +124,7 @@ Popover {
                     }
                     fontSize: overflow.tabsOverflow ? "medium" : "small"
                     elide: Text.ElideRight
-                    text: "LALA"+action.text
+                    text: action.text
                     color: overflow.foregroundColor
                     opacity: action.enabled ? 1.0 : 0.5
                 }
