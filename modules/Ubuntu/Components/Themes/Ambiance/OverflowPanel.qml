@@ -40,10 +40,7 @@ Popover {
      */
     property color foregroundColor: Theme.palette.selected.backgroundText
 
-
-
     property bool square: true
-
     callerMargin: -units.gu(1) + units.dp(4)
     contentWidth: units.gu(20)
 
@@ -102,7 +99,6 @@ Popover {
                     id: actionIcon
                     visible: !overflow.tabsOverflow
                     source: action.iconSource
-                    // FIXME TIM: headerStyle
                     color: overflow.foregroundColor
                     anchors {
                         verticalCenter: parent.verticalCenter
@@ -126,7 +122,6 @@ Popover {
                     fontSize: overflow.tabsOverflow ? "medium" : "small"
                     elide: Text.ElideRight
                     text: "LALA"+action.text
-                    // FIXME TIM: headerStyle
                     color: overflow.foregroundColor
                     opacity: action.enabled ? 1.0 : 0.5
                 }
