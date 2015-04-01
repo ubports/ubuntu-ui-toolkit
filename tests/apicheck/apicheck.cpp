@@ -915,8 +915,6 @@ int main(int argc, char *argv[])
     Q_FOREACH(QQmlDirParser::Component c, p.components()) {
         if (c.internal)
             continue;
-        if (QString("%1.%2").arg(c.majorVersion).arg(c.minorVersion) != QString(pluginImportVersion))
-            continue;
         code += QString("%1.%2 {}\n").arg(pluginAlias).arg(c.typeName);
     }
 
