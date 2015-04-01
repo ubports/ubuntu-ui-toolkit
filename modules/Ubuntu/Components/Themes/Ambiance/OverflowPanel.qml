@@ -50,6 +50,9 @@ Popover {
       and false implies that the model is a list of actions.
     */
     property bool tabsOverflow: false
+    // FIXME: In the input, generate a list of actions from the Tabs
+    //  so that we no longer need to make a distinction between the tabs ListModel
+    //  and a list of Actions.
     property var model: null
 
 
