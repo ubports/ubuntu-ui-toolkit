@@ -355,8 +355,6 @@ Style.PageHeadStyle {
                     OverflowPanel {
                         id: tabsPopover
                         objectName: "tabsPopover"
-                        callerMargin: -units.gu(1) + units.dp(4)
-                        contentWidth: units.gu(20)
 
                         Binding {
                             target: tabsPopover.__foreground.__styleInstance
@@ -376,12 +374,7 @@ Style.PageHeadStyle {
                                 id: repeater
                                 model: styledItem.tabsModel
                                 AbstractButton {
-                                    action: Action {
-                                        text: tab.title // FIXME: only "title" doesn't work with i18n.tr(). Why not?
-                                        onTriggered: {
-                                            repeater.model.selectedIndex = index;
-                                        }
-                                    }
+                                    action: tab.__protected.action
                                     objectName: "tabButton" + index
                                     onClicked: {
                                         tabsPopover.hide();
@@ -547,8 +540,6 @@ Style.PageHeadStyle {
                     OverflowPanel {
                         id: actionsOverflowPopover
                         objectName: "actions_overflow_popover"
-                        callerMargin: -units.gu(1) + units.dp(4)
-                        contentWidth: units.gu(20)
 
                         Binding {
                             target: actionsOverflowPopover.__foreground.__styleInstance

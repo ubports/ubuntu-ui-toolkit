@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.4
+import Ubuntu.Components 1.3 as Toolkit
 
 /*!
     \qmltype Tab
@@ -137,7 +138,7 @@ PageTreeNode {
       \internal
       */
     property alias __protected: internal
-    QtObject {
+    Object {
         id: internal
         /*
           Specifies the index of the Tab in Tabs.
@@ -164,5 +165,21 @@ PageTreeNode {
           component stack  (children) change.
           */
         property bool removedFromTabs: false
+
+        /*!
+          This action can be used for (for example) a button to select the tab.
+         */
+        property alias action: selectTabAction
+        Toolkit.Action {
+            id: selectTabAction
+            text: "BLA"+tab.title
+            iconSource: tab.iconSource
+            onTriggered: {
+                if (internal.index < 0) return;
+                if (tab.parentNode && tab.parentNode.hasOwnProperty("selectedTabIndex")) {
+                    tab.parentNode.selectedTabIndex = internal.index;
+                }
+            }
+        }
     }
 }
