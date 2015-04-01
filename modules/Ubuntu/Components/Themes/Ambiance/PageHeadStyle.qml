@@ -60,7 +60,6 @@ Style.PageHeadStyle {
      */
     property real sectionsHeight: units.gu(4)
 
-
     // FIXME: Workaround to get sectionsRepeater.count in autopilot tests,
     //  see also FIXME in AppHeader where this property is used.
     property alias __sections_repeater_for_autopilot: sectionsRepeater
@@ -337,14 +336,6 @@ Style.PageHeadStyle {
                     OverflowPanel {
                         id: tabsPopover
                         objectName: "tabsPopover"
-
-                        Binding {
-                            target: tabsPopover.__foreground.__styleInstance
-                            property: "color"
-                            value: headerStyle.panelBackgroundColor
-                            when: tabsPopover.__foreground &&
-                                  tabsPopover.__foreground.__styleInstance
-                        }
                         tabsOverflow: true
                         model: styledItem.tabsModel
                     }
@@ -472,14 +463,6 @@ Style.PageHeadStyle {
                     OverflowPanel {
                         id: actionsOverflowPopover
                         objectName: "actions_overflow_popover"
-
-                        Binding {
-                            target: actionsOverflowPopover.__foreground.__styleInstance
-                            property: "color"
-                            value: headerStyle.panelBackgroundColor
-                            when: actionsOverflowPopover.__foreground &&
-                                  actionsOverflowPopover.__foreground.__styleInstance
-                        }
 
                         // Ensure the popover closes when actions change and
                         // the list item below may be destroyed before its

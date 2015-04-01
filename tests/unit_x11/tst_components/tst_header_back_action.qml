@@ -63,7 +63,6 @@ Item {
                             text: "fourth"
                             onTriggered: print("Trigger fourth action")
                         }
-
                     ]
                 }
             }
