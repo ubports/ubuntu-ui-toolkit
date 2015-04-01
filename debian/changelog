@@ -1,3 +1,33 @@
+ubuntu-ui-toolkit (1.2.1458+15.04.20150327-0ubuntu1) vivid; urgency=medium
+
+  [ By Tim Peeters ]
+  * Remove the deprecated toolbar example from the gallery. 
+    Fixes LP: #1430904
+
+  [ Nekhelesh Ramananthan ]
+  * Fixes the slider bubble width to be dynamic and dependent 
+    on the label width. Fixes LP: #1228575
+
+  [ Leo Arias ]
+  * Added a scenario for autopilot tests without live dragging.
+    Fixes LP: #1435698
+  * Added a helper to reorder items in a list view.
+    Fixes LP: #1435700
+
+  [ Christian Dywan ]
+  * Add tests/autopilot to sys.path of sphinx config. 
+  * Build-depend on python-autopilot used by sphinx-build
+    Fixes LP: #1431749
+
+  [ Zsombor Egri ]
+  * Fixing crashes when AlarmModel::get() returned valid stock alarm
+    ends up to be NULL in QML. Fixes LP: #1429273
+
+  [ CI Train Bot ]
+  * New rebuild forced.
+
+ -- CI Train Bot <ci-train-bot@canonical.com>  Fri, 27 Mar 2015 12:35:55 +0000
+
 ubuntu-ui-toolkit (1.2.1450+15.04.20150318-0ubuntu1) vivid; urgency=medium
 
   [ Timo Jyrinki ]
