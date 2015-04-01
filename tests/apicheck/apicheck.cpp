@@ -970,7 +970,12 @@ int main(int argc, char *argv[])
 
     // setup static rewrites of type names
     cppToId.insert("QString", "string");
+    cppToId.insert("QUrl", "url");
     cppToId.insert("QVariant", "var");
+    cppToId.insert("QVector2D", "vector2d");
+    cppToId.insert("QVector3D", "vector3d");
+    cppToId.insert("QVector4D", "vector4d");
+    cppToId.insert("QPoint", "Qt.point");
     cppToId.insert("QColor", "color");
     cppToId.insert("QQmlEasingValueType::Type", "Type");
 

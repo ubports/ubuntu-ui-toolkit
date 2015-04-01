@@ -27,7 +27,8 @@ QML="modules/Ubuntu/*/qmldir modules/Ubuntu/Components/*/qmldir"
 CPP="Ubuntu.Components Ubuntu.Components.ListItems Ubuntu.Components.Styles Ubuntu.Components.Themes Ubuntu.Layouts Ubuntu.PerformanceMetrics Ubuntu.Test"
 
 ERRORS=0
-echo Dumping QML API as QML
+echo Dumping QML API of C++ components
+rm $BUILD_DIR/components.api.new
 for i in $CPP; do
     j=1.0
     # FIXME: Versioning is inconsistent here
@@ -39,13 +40,13 @@ for i in $CPP; do
     # https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1256999
     # https://bugreports.qt-project.org/browse/QTBUG-36243
     env ALARM_BACKEND=memory $BUILD_DIR/tests/apicheck/apicheck \
-        --qml $i $j $BUILD_DIR/modules 1> $BUILD_DIR/$i.api.new
+        --qml $i $j $BUILD_DIR/modules 1>> $BUILD_DIR/components.api.new
     test $? != 0 && echo Error: apicheck failed && ERRORS=1
     echo Verifying the diff between existing and generated API
-    # FIXME: Not clear why QTestRootObject shows up as a parent class
-    test -s $BUILD_DIR/$i.api.new && sed -r -i 's@QTestRootObject@QtObject@g' $BUILD_DIR/$i.api.new && diff -Fqml -u $SRC_DIR/$i.api $BUILD_DIR/$i.api.new
-    test $? != 0 && echo Error: Differences in API. Did you forget to update $i.api? && ERRORS=1
 done
+# FIXME: Not clear why QTestRootObject shows up as a parent class
+test -s $BUILD_DIR/components.api.new && sed -r -i 's@QTestRootObject@QtObject@g' $BUILD_DIR/components.api.new && diff -Fqml -u $SRC_DIR/components.api $BUILD_DIR/components.api.new
+test $? != 0 && echo Error: Differences in API. Did you forget to update components.api? && ERRORS=1
 
 if [ "x$ERRORS" != "x1" ]; then
     echo API is all fine.
