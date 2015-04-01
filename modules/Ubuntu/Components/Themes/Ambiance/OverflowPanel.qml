@@ -25,6 +25,23 @@ import Ubuntu.Components.ListItems 1.0 as ListItem
 Popover {
     id: overflow
 
+    /*!
+      The background color of the tabs panel and the actions overflow panel.
+     */
+    property color backgroundColor: styledItem.panelColor
+
+    /*!
+      The background color of the tapped item in the panel.
+     */
+    property color highlightColor: Theme.palette.selected.background
+
+    /*!
+      The foreground color (icon and text) of actions in the panel.
+     */
+    property color foregroundColor: Theme.palette.selected.backgroundText
+
+
+
     property bool square: true
 
     callerMargin: -units.gu(1) + units.dp(4)
@@ -37,6 +54,15 @@ Popover {
     */
     property bool tabsOverflow: false
     property var model: null
+
+
+    Binding {
+        target: overflow.__foreground.__styleInstance
+        property: "color"
+        value: overflow.backgroundColor
+        when: overflow.__foreground &&
+              overflow.__foreground.__styleInstance
+    }
 
     Column {
         anchors {
@@ -69,8 +95,7 @@ Popover {
                         top: parent.top
                     }
                     height: parent.height - bottomDividerLine.height
-                    // FIXME TIM: headerStyle
-                    color: headerStyle.panelHighlightColor
+                    color: overflow.highlightColor
                 }
 
                 Icon {
@@ -78,7 +103,7 @@ Popover {
                     visible: !overflow.tabsOverflow
                     source: action.iconSource
                     // FIXME TIM: headerStyle
-                    color: headerStyle.panelForegroundColor
+                    color: overflow.foregroundColor
                     anchors {
                         verticalCenter: parent.verticalCenter
                         verticalCenterOffset: units.dp(-1)
@@ -102,7 +127,7 @@ Popover {
                     elide: Text.ElideRight
                     text: "LALA"+action.text
                     // FIXME TIM: headerStyle
-                    color: headerStyle.panelForegroundColor
+                    color: overflow.foregroundColor
                     opacity: action.enabled ? 1.0 : 0.5
                 }
 

@@ -39,21 +39,6 @@ Style.PageHeadStyle {
     property color titleColor: styledItem.config.foregroundColor
 
     /*!
-      The background color of the tabs panel and the actions overflow panel.
-     */
-    property color panelBackgroundColor: styledItem.panelColor
-
-    /*!
-      The background color of the tapped item in the panel.
-     */
-    property color panelHighlightColor: Theme.palette.selected.background
-
-    /*!
-      The foreground color (icon and text) of actions in the panel.
-     */
-    property color panelForegroundColor: Theme.palette.selected.backgroundText
-
-    /*!
       The text color of unselected sections and the section divider.
      */
     property color sectionColor: Theme.palette.selected.backgroundText
