@@ -23,7 +23,7 @@ Style.PageHeadStyle {
     id: headerStyle
     objectName: "PageHeadStyle" // used in unit tests
     contentHeight: units.gu(6)
-    fontWeight: Font.Normal
+    fontWeight: Font.Light
     fontSize: "large"
     textLeftMargin: units.gu(2)
     maximumNumberOfActions: 3
@@ -156,10 +156,7 @@ Style.PageHeadStyle {
                         id: label
                         text: modelData
                         fontSize: "small"
-                        anchors {
-                            horizontalCenter: parent.horizontalCenter
-                            top: parent.top
-                        }
+                        anchors.centerIn: parent
                         horizontalAlignment: Text.AlignHCenter
                         color: sectionButton.selected ?
                                    headerStyle.selectedSectionColor :
@@ -173,7 +170,7 @@ Style.PageHeadStyle {
                             left: parent.left
                             right: parent.right
                         }
-                        height: units.dp(4) // FIXME: Expose as style property
+                        height: units.dp(2) // FIXME: Expose as style property
                         color: sectionButton.selected ?
                                    headerStyle.selectedSectionColor :
                                    styledItem.dividerColor
