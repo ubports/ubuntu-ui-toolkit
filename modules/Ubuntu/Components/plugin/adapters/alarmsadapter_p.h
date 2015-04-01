@@ -58,6 +58,7 @@ public:
     bool wait(int msec);
     void completeSave();
     void completeCancel();
+    void copyAlarmData(const UCAlarm &other);
 
 // adaptation specific data
     void adjustDowSettings(UCAlarm::AlarmType type, UCAlarm::DaysOfWeek days);
@@ -69,7 +70,6 @@ public:
         return event;
     }
     void setData(const QOrganizerTodo &data);
-    void copyData(const UCAlarm &other);
 
 protected:
     QOrganizerTodo event;
@@ -108,7 +108,7 @@ public:
         UCAlarm *oldAlarm = takeAt(index);
         // copy the other alarm data
         AlarmDataAdapter *pAlarm = static_cast<AlarmDataAdapter*>(AlarmDataAdapter::get(oldAlarm));
-        pAlarm->copyData(alarm);
+        pAlarm->copyAlarmData(alarm);
         // and insert it back
         QDateTime dt = oldAlarm->date();
         QOrganizerItemId id = oldAlarm->cookie().value<QOrganizerItemId>();
@@ -123,7 +123,7 @@ public:
         QOrganizerItemId id = alarm.cookie().value<QOrganizerItemId>();
         idHash.insert(id, dt);
         UCAlarm *newAlarm = new UCAlarm;
-        static_cast<AlarmDataAdapter*>(AlarmDataAdapter::get(newAlarm))->copyData(alarm);
+        UCAlarmPrivate::get(newAlarm)->copyAlarmData(alarm);
         data.insert(QPair<QDateTime, QOrganizerItemId>(dt, id), newAlarm);
         return indexOf(id);
     }
@@ -140,6 +140,8 @@ public:
         UCAlarm *alarm = takeAt(index);
         delete alarm;
     }
+
+protected:
     // removes alarm data at index and returns the alarm pointer
     UCAlarm *takeAt(int index)
     {
