@@ -19,4 +19,7 @@ import Ubuntu.Components.Popups 1.0
 
 Popover {
     property bool square: true
+
+    callerMargin: -units.gu(1) + units.dp(4)
+    contentWidth: units.gu(20)
 }
