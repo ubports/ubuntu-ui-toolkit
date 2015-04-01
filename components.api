@@ -326,7 +326,7 @@ OrientationHelper 1.2 Item
     property bool transitionEnabled
 Page 1.2 Item
     readonly property PageHeadConfiguration head
-Page10 1.2 Item
+PageBase 1.2 Item
     readonly property QtObject actions
     property Flickable flickable
     property string title

@@ -901,12 +901,22 @@ int main(int argc, char *argv[])
 
     // find all QMetaObjects reachable when the specified module is imported
     QString pluginAlias(QString("%1").arg(pluginImportUri).replace(".", ""));
-    if (action != Path) {
-        importCode += QString("import %1 %2 as %3\n").arg(pluginImportUri).arg(pluginImportVersion).arg(pluginAlias);
-    } else {
-        // pluginImportVersion can be empty
-        importCode += QString("import %1 %2 as %3\n").arg(pluginImportUri).arg(pluginImportVersion).arg(pluginAlias);
+    if (pluginImportVersion.isEmpty()) {
+        // pluginImportVersion can be empty, pick latest
+        int highestMajor = 0, highestMinor = 1;
+        Q_FOREACH(QQmlDirParser::Component c, p.components()) {
+            qDebug() << c.typeName << c.majorVersion << c.minorVersion;
+            if (c.majorVersion > highestMajor) {
+                highestMajor = c.majorVersion;
+                highestMinor = c.minorVersion;
+            } else if (c.majorVersion == highestMajor && c.minorVersion > highestMinor) {
+                highestMinor = c.minorVersion;
+            }
+        }
+        pluginImportVersion = QString("%1.%2").arg(highestMajor).arg(highestMinor);
+        qDebug() << "Automatically picked version" << pluginImportVersion;
     }
+    importCode += QString("import %1 %2 as %3\n").arg(pluginImportUri).arg(pluginImportVersion).arg(pluginAlias);
 
     // Create a component with all QML types to add them to the type system
     QByteArray code = importCode;

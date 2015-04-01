@@ -30,17 +30,12 @@ ERRORS=0
 echo Dumping QML API of C++ components
 rm $BUILD_DIR/components.api.new
 for i in $CPP; do
-    j=1.0
-    # FIXME: Versioning is inconsistent here
-    test "$i" = "Ubuntu.Components" && j=1.2
-    test "$i" = "Ubuntu.Components.Styles" && j=1.1
-    test "$i" = "Ubuntu.Components.Themes" && j=0.1
-    echo "Processing $i $j"
+    echo "Processing $i"
     # Silence spam on stderr due to fonts
     # https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1256999
     # https://bugreports.qt-project.org/browse/QTBUG-36243
     env ALARM_BACKEND=memory $BUILD_DIR/tests/apicheck/apicheck \
-        --qml $i $j $BUILD_DIR/modules 1>> $BUILD_DIR/components.api.new
+        --qml $i $BUILD_DIR/modules 1>> $BUILD_DIR/components.api.new
     test $? != 0 && echo Error: apicheck failed && ERRORS=1
     echo Verifying the diff between existing and generated API
 done
