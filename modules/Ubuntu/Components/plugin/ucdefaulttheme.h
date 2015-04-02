@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013-2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -17,20 +17,20 @@
  *          Florian Boucault <florian.boucault@canonical.com>
  */
 
-#ifndef UCTHEMESETTINGS_H
-#define UCTHEMESETTINGS_H
+#ifndef UCDEFAULTTHEME_H
+#define UCDEFAULTTHEME_H
 
 #include <QtCore/QFileSystemWatcher>
 #include <QtCore/QSettings>
 #include <QtCore/QObject>
 
-class UCThemeSettings : public QObject
+class UCDefaultTheme : public QObject
 {
     Q_OBJECT
 
     Q_PROPERTY(QString themeName READ themeName WRITE setThemeName NOTIFY themeNameChanged)
 public:
-    explicit UCThemeSettings(QObject *parent = 0);
+    explicit UCDefaultTheme(QObject *parent = 0);
 
     // getter/setters
     QString themeName() const;
@@ -47,4 +47,4 @@ private:
     QString m_themeName;
 };
 
-#endif // UCTHEMESETTINGS_H
+#endif // UCDEFAULTTHEME_H
