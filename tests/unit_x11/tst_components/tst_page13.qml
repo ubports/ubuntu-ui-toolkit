@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2015 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.4
-import QtTest 1.0
+import Ubuntu.Test 1.0
 import Ubuntu.Components 1.3
 
 Item {
@@ -49,11 +49,12 @@ Item {
         }
     }
 
-    TestCase {
+    UbuntuTestCase {
+        id: testCase
         name: "Page13API"
         when: windowShown
 
-        function initTestCase() {
+        function init() {
             compare(page.title, "", "Page title is set by default.");
             compare(page.active, true, "Page is inactive by default.");
             compare(page.pageStack, null, "Page has a PageStack by default.");
@@ -94,29 +95,30 @@ Item {
         }
 
         function test_flickableY_bug1201452() {
-            var pageTitle = "Hello bug!";
-            page.title = pageTitle;
-            var header = page.__propagated.header;
-
-            var headerHeight = header.height
+            var header = findChild(mainView, "MainView_Header");
+            var headerHeight = header.height;
             var flickableY = 150;
             page.flickable.contentY = flickableY;
             compare(page.flickable.contentY, flickableY,
                     "Flickable.contentY could not be set.");
             compare(page.flickable.topMargin, headerHeight,
                     "topMargin of the flickable does not equal header height.");
-            page.title = "";
 
-            // FIXME: Update the checks below when new API is added
-            //  for showing and hiding the header.
-            compare(header.visible, false, "Header is not hidden when title is unset.");
+            page.head.locked = true;
+            page.head.visible = false;
+            waitForHeaderAnimation(mainView);
+
             compare(page.flickable.topMargin, 0,
-                    "topMargin is not 0 when header is hidden.");
+                    "topMargin is not 0 when header is locked hidden.");
             compare(page.flickable.contentY, flickableY + headerHeight,
                     "contentY was not updated properly when header was hidden.");
-            page.title = pageTitle;
+
+            page.head.locked.locked = false;
+            page.head.visible = true;
+            waitForHeaderAnimation(mainView);
+
             compare(page.flickable.contentY, flickableY,
-                    "Making header visible changes flickable.contentY");
+                    "Hiding and showing header changes flickable.contentY.");
             compare(page.flickable.topMargin, headerHeight,
                     "topMargin was not updated when header became visible.");
         }

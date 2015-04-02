@@ -115,10 +115,10 @@ TestCase {
         var iy = 0;
 
         for (var step=0; step < steps; step++) {
-            if (ix < abs_dx) {
+            if (Math.abs(ix) < abs_dx) {
                 ix += step_dx;
             }
-            if (iy < abs_dy) {
+            if (Math.abs(iy) < abs_dy) {
                 iy += step_dy;
             }
             mouseMove(item, x + ix, y + iy, stepdelay);
@@ -253,7 +253,6 @@ TestCase {
         // Wait for animation of the style inside the header (when pushing/popping):
         tryCompareFunction(function(){ return headerStyle.animating }, false);
         // Wait for the header to finish showing/hiding:
-        // FIXME: Uncomment this in the following MR that adds the header.moving property.
-        //tryCompareFunction(function(){ return header.moving }, false);
+        tryCompareFunction(function(){ return header.moving }, false);
     }
 }
