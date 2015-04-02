@@ -54,7 +54,7 @@ Item {
     }
 
     TestCase {
-        name: "PageAPI"
+        name: "Page11API"
         when: windowShown
 
         function initTestCase() {
