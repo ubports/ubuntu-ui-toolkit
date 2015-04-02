@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013-2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -36,7 +36,7 @@
 #include <QtGui/QGuiApplication>
 #include <QtGui/QFont>
 
-/*!
+/*
     \qmltype Theme
     \instantiates UCTheme
     \inqmlmodule Ubuntu.Components 1.1
@@ -111,20 +111,23 @@ QStringList themeSearchPath() {
     return result;
 }
 
-UCTheme::UCTheme(QObject *parent) :
-    QObject(parent),
-    m_palette(NULL),
-    m_engine(NULL),
-    m_engineUpdated(false)
+UCTheme::UCTheme(QObject *parent)
+    : QObject(parent)
+    , m_name(UCTheme::defaultSet().m_name)
+    , m_palette(UCTheme::defaultSet().m_palette)
+    , m_engine(UCTheme::defaultSet().m_engine)
+    , m_defaultStyle(false)
 {
-    m_name = m_themeSettings.themeName();
-    QObject::connect(&m_themeSettings, &UCThemeSettings::themeNameChanged,
-                     this, &UCTheme::onThemeNameChanged);
-    updateThemePaths();
+    init();
+}
 
-    QObject::connect(this, SIGNAL(nameChanged()),
-                     this, SLOT(loadPalette()), Qt::UniqueConnection);
-
+UCTheme::UCTheme(bool defaultStyle, QObject *parent)
+    : QObject(parent)
+    , m_palette(NULL)
+    , m_engine(NULL)
+    , m_defaultStyle(defaultStyle)
+{
+    init();
     // set the default font
     QFont defaultFont;
     defaultFont.setFamily("Ubuntu");
@@ -133,9 +136,17 @@ UCTheme::UCTheme(QObject *parent) :
     QGuiApplication::setFont(defaultFont);
 }
 
+void UCTheme::init()
+{
+    m_name = m_defaultTheme.themeName();
+    QObject::connect(&m_defaultTheme, &UCDefaultTheme::themeNameChanged,
+                     this, &UCTheme::onThemeNameChanged);
+    updateThemePaths();
+}
+
 void UCTheme::updateEnginePaths()
 {
-    if (!m_engine || m_engineUpdated) {
+    if (!m_engine) {
         return;
     }
 
@@ -145,13 +156,12 @@ void UCTheme::updateEnginePaths()
             m_engine->addImportPath(path);
         }
     }
-    m_engineUpdated = true;
 }
 
 void UCTheme::onThemeNameChanged()
 {
-    if (m_themeSettings.themeName() != m_name) {
-        m_name = m_themeSettings.themeName();
+    if (m_defaultTheme.themeName() != m_name) {
+        m_name = m_defaultTheme.themeName();
         updateThemePaths();
         Q_EMIT nameChanged();
     }
@@ -186,7 +196,7 @@ void UCTheme::updateThemePaths()
     }
 }
 
-/*!
+/*
     \qmlproperty string Theme::name
 
     The name of the current theme.
@@ -195,19 +205,29 @@ QString UCTheme::name() const
 {
     return m_name;
 }
-
 void UCTheme::setName(const QString& name)
 {
-    if (name != m_name) {
-        QObject::disconnect(&m_themeSettings, &UCThemeSettings::themeNameChanged,
+    if (name == m_name) {
+        return;
+    }
+    if (name.isEmpty()) {
+        init();
+    } else {
+        QObject::disconnect(&m_defaultTheme, &UCDefaultTheme::themeNameChanged,
                             this, &UCTheme::onThemeNameChanged);
         m_name = name;
         updateThemePaths();
-        Q_EMIT nameChanged();
     }
+    updateEnginePaths();
+    Q_EMIT nameChanged();
+    loadPalette();
+}
+void UCTheme::resetName()
+{
+    setName(QString());
 }
 
-/*!
+/*
     \qmlproperty Palette Theme::palette
 
     The palette of the current theme.
@@ -248,7 +268,7 @@ QString UCTheme::parentThemeName(const QString& themeName)
     return parentTheme;
 }
 
-/*!
+/*
     \qmlmethod Component Theme::createStyleComponent(string styleName, object parent)
 
     Returns an instance of the style component named \a styleName.
@@ -283,22 +303,6 @@ QQmlComponent* UCTheme::createStyleComponent(const QString& styleName, QObject* 
     return component;
 }
 
-void UCTheme::registerToContext(QQmlContext* context)
-{
-    // add paths to engine search folder
-    m_engine = context->engine();
-    updateEnginePaths();
-
-    // register Theme
-    context->setContextProperty("Theme", this);
-
-    ContextPropertyChangeListener *themeChangeListener =
-        new ContextPropertyChangeListener(context, "Theme");
-    QObject::connect(this, SIGNAL(nameChanged()),
-                     themeChangeListener, SLOT(updateContextProperty()));
-
-}
-
 void UCTheme::loadPalette(bool notify)
 {
     if (!m_engine) {
@@ -307,8 +311,15 @@ void UCTheme::loadPalette(bool notify)
     if (m_palette != NULL) {
         delete m_palette;
     }
-    m_palette = QuickUtils::instance().createQmlObject(styleUrl("Palette.qml"), m_engine);
-    if (notify) {
-        Q_EMIT paletteChanged();
+    // theme may not have palette defined
+    QUrl paletteUrl = styleUrl("Palette.qml");
+    if (paletteUrl.isValid()) {
+        m_palette = QuickUtils::instance().createQmlObject(paletteUrl, m_engine);
+        if (notify) {
+            Q_EMIT paletteChanged();
+        }
+    } else {
+        // use the default palette if none defined
+        m_palette = defaultSet().m_palette;
     }
 }
