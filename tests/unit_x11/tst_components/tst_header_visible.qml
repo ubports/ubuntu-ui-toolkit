@@ -52,7 +52,7 @@ Item {
                             right: parent.right
                             top: parent.top
                         }
-                        height: 1
+                        height: units.gu(2)
                     }
 
                     Grid {
