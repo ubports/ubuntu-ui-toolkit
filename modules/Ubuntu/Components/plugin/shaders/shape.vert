@@ -14,10 +14,10 @@
 //
 // Author: Loïc Molinari <loic.molinari@canonical.com>
 
-uniform mediump mat4 matrix;
+uniform highp mat4 matrix;  // mediump was interpreted as lowp on PowerVR Rogue G6200 (arale).
 uniform bool textured;
 
-attribute mediump vec4 positionAttrib;
+attribute highp vec4 positionAttrib;  // highp because of matrix precision qualifier.
 attribute mediump vec2 shapeCoordAttrib;
 attribute mediump vec4 sourceCoordAttrib;
 attribute lowp vec4 backgroundColorAttrib;
