@@ -63,21 +63,22 @@ void main(void)
     lowp vec4 overlay = overlayColor * vec4(overlayMask);
     color = vec4(1.0 - overlay.a) * color + overlay;
 
+    // Get screen-space derivative of texture coordinate t representing the normalized distance
+    // between 2 pixels. dFd*() unfortunately have to be called outside of the following branches
+    // (evaluated using a uniform variable) in order to work correctly with Mesa.
+    lowp float dfdt = dFdy(shapeCoord.t);
+
     if (aspect == FLAT) {
-        // Get screen-space derivative of texture coordinate t representing the normalized distance
-        // between 2 pixels then mask the current color with an anti-aliased and resolution
-        // independent shape mask built from distance fields.
-        lowp float dfdt = dFdy(shapeCoord.t);
+        // Mask the current color with an anti-aliased and resolution independent shape mask built
+        // from distance fields.
         lowp float distanceMin = abs(dfdt) * -distanceAA + 0.5;
         lowp float distanceMax = abs(dfdt) * distanceAA + 0.5;
         color *= smoothstep(distanceMin, distanceMax, shapeData.b);
 
     } else if (aspect == INSET) {
-        // Get screen-space derivative of texture coordinate t representing the normalized distance
-        // between 2 pixels. The vertex layout of the shape is made so that the derivative is
-        // negative from top to middle and positive from middle to bottom.
-        lowp float dfdt = dFdy(shapeCoord.t) * dfdtFlip;
-        lowp float shapeSide = dfdt <= 0.0 ? 0.0 : 1.0;
+        // The vertex layout of the shape is made so that the derivative is negative from top to
+        // middle and positive from middle to bottom.
+        lowp float shapeSide = dfdt * dfdtFlip <= 0.0 ? 0.0 : 1.0;
         // Blend the shape inner shadow over the current color. The shadow color is black, its
         // translucency is stored in the texture.
         lowp float shadow = shapeData[int(shapeSide)];
