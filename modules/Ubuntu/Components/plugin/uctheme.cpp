@@ -49,7 +49,7 @@
  *
  * The theme defines the visual aspect of the Ubuntu components. An application
  * can use one or more theme the same time. The ThemeSettings component provides
- * abilities to change thye theme used by the component and all its child components.
+ * abilities to change the theme used by the component and all its child components.
  *
  * Changing the theme of the entire application can be achieved by changing
  * the name of the root StyledItem's, i.e. MainView's current theme.
