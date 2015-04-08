@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2014-2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -25,8 +25,8 @@ import QtQuick 2.4
   */
 Item {
     /*!
-      The height of the headercontents, which is the full height of
-      the header minus the separators shown at the bottom of it.
+      The height of the header excluding the height of the bottom divider and
+      the (optional) row that displays the sections.
      */
     property real contentHeight
 
