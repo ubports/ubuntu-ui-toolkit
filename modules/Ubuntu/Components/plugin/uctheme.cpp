@@ -80,6 +80,9 @@
  *     style: theme.createStyleComponent("MyItemStyle.qml", myItem)
  * }
  * \endqml
+ * All styled toolkit components such as \l Button, \l CheckBox, \l Switch, etc.
+ * create their style in this way. Note that the style component must be part
+ * of the theme, otherwise the style creation will fail.
  *
  * \sa {StyledItem}
  */
