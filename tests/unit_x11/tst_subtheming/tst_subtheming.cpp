@@ -93,27 +93,27 @@ private Q_SLOTS:
 
     void test_default_name()
     {
-        UCTheme styleSet;
-        QCOMPARE(styleSet.name(), QString("Ubuntu.Components.Themes.Ambiance"));
+        UCTheme theme;
+        QCOMPARE(theme.name(), QString("Ubuntu.Components.Themes.Ambiance"));
     }
 
     void test_name_set()
     {
         QTest::ignoreMessage(QtWarningMsg, "Theme not found: \"MyBeautifulTheme\"");
 
-        UCTheme styleSet;
-        styleSet.setName("MyBeautifulTheme");
-        QCOMPARE(styleSet.name(), QString("MyBeautifulTheme"));
+        UCTheme theme;
+        theme.setName("MyBeautifulTheme");
+        QCOMPARE(theme.name(), QString("MyBeautifulTheme"));
     }
 
     void test_name_reset()
     {
-        UCTheme styleSet;
-        styleSet.setName("Ubuntu.Components.Themes.SuruDark");
-        QCOMPARE(styleSet.name(), QString("Ubuntu.Components.Themes.SuruDark"));
+        UCTheme theme;
+        theme.setName("Ubuntu.Components.Themes.SuruDark");
+        QCOMPARE(theme.name(), QString("Ubuntu.Components.Themes.SuruDark"));
         // reset
-        styleSet.resetName();
-        QCOMPARE(styleSet.name(), QString("Ubuntu.Components.Themes.Ambiance"));
+        theme.resetName();
+        QCOMPARE(theme.name(), QString("Ubuntu.Components.Themes.Ambiance"));
     }
 
     void test_create_style_component_data() {
@@ -208,8 +208,8 @@ private Q_SLOTS:
         qputenv("XDG_DATA_DIRS", "");
         qputenv("QML2_IMPORT_PATH", "");
 
-        UCTheme styleSet;
-        QCOMPARE(styleSet.name(), QString("Ubuntu.Components.Themes.Ambiance"));
+        UCTheme theme;
+        QCOMPARE(theme.name(), QString("Ubuntu.Components.Themes.Ambiance"));
     }
 
     void test_bogus_import_path_set()
@@ -221,8 +221,8 @@ private Q_SLOTS:
         qputenv("XDG_DATA_DIRS", "");
         qputenv("QML2_IMPORT_PATH", "/no/plugins/here");
 
-        UCTheme styleSet;
-        QCOMPARE(styleSet.name(), QString("Ubuntu.Components.Themes.Ambiance"));
+        UCTheme theme;
+        QCOMPARE(theme.name(), QString("Ubuntu.Components.Themes.Ambiance"));
     }
 
     void test_multiple_import_paths_set()
@@ -239,7 +239,7 @@ private Q_SLOTS:
         view->setTheme("TestModule.TestTheme");
     }
 
-    void test_styleset_not_root_stylset()
+    void test_theme_not_root_stylset()
     {
         qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", ".");
 
@@ -253,7 +253,7 @@ private Q_SLOTS:
         QVERIFY(theme != globalTheme);
     }
 
-    void test_styleset_reset_name()
+    void test_theme_reset_name()
     {
         qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", ".");
 
