@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.4
+import Ubuntu.Components 1.3 as Toolkit
 
 /*!
     \qmltype Tab
@@ -137,7 +138,7 @@ PageTreeNode {
       \internal
       */
     property alias __protected: internal
-    QtObject {
+    Object {
         id: internal
         /*
           Specifies the index of the Tab in Tabs.
@@ -164,5 +165,22 @@ PageTreeNode {
           component stack  (children) change.
           */
         property bool removedFromTabs: false
+
+        /*!
+          Triggering this action will select the tab. Used by the tabs OverflowPanel.
+         */
+        property alias action: selectTabAction
+        Toolkit.Action {
+            id: selectTabAction
+            text: tab.title
+            objectName: "select_tab_"+index
+            iconSource: tab.iconSource
+            onTriggered: {
+                if (internal.index < 0) return;
+                if (tab.parentNode && tab.parentNode.hasOwnProperty("selectedTabIndex")) {
+                    tab.parentNode.selectedTabIndex = internal.index;
+                }
+            }
+        }
     }
 }

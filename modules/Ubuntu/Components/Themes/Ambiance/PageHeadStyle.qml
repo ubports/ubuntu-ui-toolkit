@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -39,21 +39,6 @@ Style.PageHeadStyle {
     property color titleColor: styledItem.config.foregroundColor
 
     /*!
-      The background color of the tabs panel and the actions overflow panel.
-     */
-    property color panelBackgroundColor: styledItem.panelColor
-
-    /*!
-      The background color of the tapped item in the panel.
-     */
-    property color panelHighlightColor: Theme.palette.selected.background
-
-    /*!
-      The foreground color (icon and text) of actions in the panel.
-     */
-    property color panelForegroundColor: Theme.palette.selected.backgroundText
-
-    /*!
       The text color of unselected sections and the section divider.
      */
     property color sectionColor: Theme.palette.selected.backgroundText
@@ -74,7 +59,6 @@ Style.PageHeadStyle {
       The height of the row displaying the sections, if sections are specified.
      */
     property real sectionsHeight: units.gu(4)
-
 
     // FIXME: Workaround to get sectionsRepeater.count in autopilot tests,
     //  see also FIXME in AppHeader where this property is used.
@@ -352,67 +336,8 @@ Style.PageHeadStyle {
                     OverflowPanel {
                         id: tabsPopover
                         objectName: "tabsPopover"
-                        callerMargin: -units.gu(1) + units.dp(4)
-                        contentWidth: units.gu(20)
-
-                        Binding {
-                            target: tabsPopover.__foreground.__styleInstance
-                            property: "color"
-                            value: headerStyle.panelBackgroundColor
-                            when: tabsPopover.__foreground &&
-                                  tabsPopover.__foreground.__styleInstance
-                        }
-
-                        Column {
-                            anchors {
-                                left: parent.left
-                                top: parent.top
-                                right: parent.right
-                            }
-                            Repeater {
-                                model: styledItem.tabsModel
-                                AbstractButton {
-                                    objectName: "tabButton" + index
-                                    onClicked: {
-                                        styledItem.tabsModel.selectedIndex = index;
-                                        tabsPopover.hide();
-                                    }
-                                    implicitHeight: units.gu(6) + bottomDividerLine.height
-                                    width: parent ? parent.width : units.gu(31)
-
-                                    Rectangle {
-                                        visible: parent.pressed
-                                        anchors {
-                                            left: parent.left
-                                            right: parent.right
-                                            top: parent.top
-                                        }
-                                        height: parent.height - bottomDividerLine.height
-                                        color: headerStyle.panelHighlightColor
-                                    }
-
-                                    Label {
-                                        anchors {
-                                            verticalCenter: parent.verticalCenter
-                                            verticalCenterOffset: units.dp(-1)
-                                            left: parent.left
-                                            leftMargin: units.gu(2)
-                                            right: parent.right
-                                        }
-                                        fontSize: "medium"
-                                        elide: Text.ElideRight
-                                        text: tab.title // FIXME: only "title" doesn't work with i18n.tr(). Why not?
-                                        color: headerStyle.panelForegroundColor
-                                    }
-
-                                    ListItem.ThinDivider {
-                                        id: bottomDividerLine
-                                        anchors.bottom: parent.bottom
-                                        visible: index < styledItem.tabsModel.count - 1
-                                    }
-                                }
-                            }
-                        }
+                        tabsOverflow: true
+                        model: styledItem.tabsModel
                     }
                 }
             }
@@ -538,16 +463,6 @@ Style.PageHeadStyle {
                     OverflowPanel {
                         id: actionsOverflowPopover
                         objectName: "actions_overflow_popover"
-                        callerMargin: -units.gu(1) + units.dp(4)
-                        contentWidth: units.gu(20)
-
-                        Binding {
-                            target: actionsOverflowPopover.__foreground.__styleInstance
-                            property: "color"
-                            value: headerStyle.panelBackgroundColor
-                            when: actionsOverflowPopover.__foreground &&
-                                  actionsOverflowPopover.__foreground.__styleInstance
-                        }
 
                         // Ensure the popover closes when actions change and
                         // the list item below may be destroyed before its
@@ -566,71 +481,9 @@ Style.PageHeadStyle {
                             }
                         }
 
-                        Column {
-                            anchors {
-                                left: parent.left
-                                top: parent.top
-                                right: parent.right
-                            }
-                            Repeater {
-                                id: overflowRepeater
-                                model: numberOfSlots.requested - numberOfSlots.used
-                                AbstractButton {
-                                    action: actionsContainer.visibleActions[numberOfSlots.used + index]
-                                    objectName: action.objectName + "_header_overflow_button"
-                                    onClicked: actionsOverflowPopover.hide()
-                                    implicitHeight: units.gu(6) + bottomDividerLine.height
-                                    width: parent ? parent.width : units.gu(31)
-
-                                    Rectangle {
-                                        visible: parent.pressed
-                                        anchors {
-                                            left: parent.left
-                                            right: parent.right
-                                            top: parent.top
-                                        }
-                                        height: parent.height - bottomDividerLine.height
-                                        color: headerStyle.panelHighlightColor
-                                    }
-
-                                    Icon {
-                                        id: actionIcon
-                                        source: action.iconSource
-                                        color: headerStyle.panelForegroundColor
-                                        anchors {
-                                            verticalCenter: parent.verticalCenter
-                                            verticalCenterOffset: units.dp(-1)
-                                            left: parent.left
-                                            leftMargin: units.gu(2)
-                                        }
-                                        width: units.gu(2)
-                                        height: units.gu(2)
-                                        opacity: action.enabled ? 1.0 : 0.5
-                                    }
-
-                                    Label {
-                                        anchors {
-                                            verticalCenter: parent.verticalCenter
-                                            verticalCenterOffset: units.dp(-1)
-                                            left: actionIcon.right
-                                            leftMargin: units.gu(2)
-                                            right: parent.right
-                                        }
-                                        fontSize: "small"
-                                        elide: Text.ElideRight
-                                        text: action.text
-                                        color: headerStyle.panelForegroundColor
-                                        opacity: action.enabled ? 1.0 : 0.5
-                                    }
-
-                                    ListItem.ThinDivider {
-                                        id: bottomDividerLine
-                                        anchors.bottom: parent.bottom
-                                        visible: index !== overflowRepeater.count - 1
-                                    }
-                                }
-                            }
-                        }
+                        tabsOverflow: false
+                        model: actionsContainer.visibleActions.slice(numberOfSlots.used,
+                                                                     numberOfSlots.requested)
                     }
                 }
             }

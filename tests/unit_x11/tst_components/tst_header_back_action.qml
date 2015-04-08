@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -45,15 +45,23 @@ Item {
                     actions: [
                         Action {
                             iconName: "settings"
+                            text: "first"
                             onTriggered: print("Trigger first action")
                         },
                         Action {
                             iconName: "info"
+                            text: "second"
                             onTriggered: print("Trigger second action")
                         },
                         Action {
                             iconName: "search"
+                            text: "third"
                             onTriggered: print("Trigger third action")
+                        },
+                        Action {
+                            iconName: "appointment"
+                            text: "fourth"
+                            onTriggered: print("Trigger fourth action")
                         }
                     ]
                 }
