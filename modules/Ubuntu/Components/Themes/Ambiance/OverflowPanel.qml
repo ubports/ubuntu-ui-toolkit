@@ -77,9 +77,10 @@ Popover {
                 action: overflow.tabsOverflow ? tab.__protected.action
                                               : modelData
 
-                // FIXME TIM: set the objectname, update the CPOs
-//                objectName: action.objectName + "_header_overflow_button"
-//                objectName: "tabButton" + index
+                // These objectNames are used in the CPOs for header and tabs.
+                objectName: overflow.tabsOverflow ?
+                                "tabButton" + index :
+                                action.objectName + "_header_overflow_button"
 
                 // close after triggering the action.
                 onClicked: overflow.hide()
