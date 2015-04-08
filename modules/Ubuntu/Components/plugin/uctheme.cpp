@@ -58,16 +58,61 @@
  * import QtQuick 2.4
  * import Ubuntu.Components 1.3
  *
- * MainWindow {
+ * MainView {
  *     width: units.gu(40)
  *     height: units.gu(71)
  *
  *     theme.name: "Ubuntu.Components.Themes.Ambiance"
  * }
  * \endqml
- * \note Changing the theme name in this way will result in a change of the
- * inherited theme. In case a different theme is desired, a new instance of the
- * ThemeSettings must be created.
+ * By default, styled items inherit the theme they use from their closest styled
+ * item ancestor. In case the application uses MainView, all components will inherit
+ * the theme from the MainView.
+ * \qml
+ * import QtQuick 2.4
+ * import Ubuntu.Components 1.3
+ *
+ * MainView {
+ *     width: units.gu(40)
+ *     height: units.gu(71)
+ *
+ *     Page {
+ *         title: "Style test"
+ *         Button {
+ *             text: theme.name == "Ubuntu.Components.Themes.Ambiance" ?
+ *                      "SuruDark" : "Ambiance"
+ *             onClicked: theme.name = (text == "Ambiance" ?
+ *                      "Ubuntu.Components.Themes.SuruDark" :
+ *                      "Ubuntu.Components.Themes.Ambiance")
+ *         }
+ *     }
+ * }
+ * \endqml
+ * \note In the example above the Button inherits the theme from Page, which
+ * inherits it from MainView. Therefore changing the theme name in this way will
+ * result in a change of the inherited theme. In case a different theme is desired,
+ * a new instance of the ThemeSettings must be created on the styled item desired.
+ * \qml
+ * import QtQuick 2.4
+ * import Ubuntu.Components 1.3
+ *
+ * MainView {
+ *     width: units.gu(40)
+ *     height: units.gu(71)
+ *
+ *     Page {
+ *         title: "Style test"
+ *         theme: ThemeSettings{}
+ *         Button {
+ *             text: theme.name == "Ubuntu.Components.Themes.Ambiance" ?
+ *                      "SuruDark" : "Ambiance"
+ *             onClicked: theme.name = (text == "Ambiance" ?
+ *                      "Ubuntu.Components.Themes.SuruDark" :
+ *                      "Ubuntu.Components.Themes.Ambiance")
+ *         }
+ *     }
+ * }
+ * \endqml
  *
  * The \l createStyleComponent function can be used to create the style for a
  * component. The following example will create the style with the inherited
