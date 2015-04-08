@@ -45,7 +45,7 @@ Popover {
     contentWidth: units.gu(20)
 
     /*!
-      False implies the model is a list of Actions
+      False implies the model is a list of Actions.
       True implies the model is a ListModel with a 'tab' role,
       and false implies that the model is a list of actions.
     */
@@ -54,7 +54,6 @@ Popover {
     //  so that we no longer need to make a distinction between the tabs ListModel
     //  and a list of Actions.
     property var model: null
-
 
     Binding {
         target: overflow.__foreground.__styleInstance
