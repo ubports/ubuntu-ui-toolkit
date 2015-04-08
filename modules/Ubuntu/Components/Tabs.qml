@@ -310,7 +310,10 @@ PageTreeNode {
             if (tabBar && tabBar.__styleInstance && tabBar.__styleInstance.hasOwnProperty("sync")) {
                 tabBar.__styleInstance.sync();
             }
-            if (tabs.active && internal.header) {
+            if ((tabs.active && internal.header) &&
+                    !(internal.header.config &&
+                      internal.header.config.hasOwnProperty("locked") &&
+                      internal.header.config.locked)) {
                 internal.header.show();
             }
             // deprecated, however use it till we remove it completely

@@ -15,6 +15,9 @@
  */
 import QtQuick 2.4
 
+/*!
+  This component is DEPRECATED and no longer used. The divider is now a simple line.
+ */
 Item {
     id: dividerStyle
 
