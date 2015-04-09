@@ -115,10 +115,10 @@ TestCase {
         var iy = 0;
 
         for (var step=0; step < steps; step++) {
-            if (ix < abs_dx) {
+            if (Math.abs(ix) < abs_dx) {
                 ix += step_dx;
             }
-            if (iy < abs_dy) {
+            if (Math.abs(iy) < abs_dy) {
                 iy += step_dy;
             }
             mouseMove(item, x + ix, y + iy, stepdelay);
@@ -236,5 +236,23 @@ TestCase {
       */
     function warningFormat(line, column, message) {
         return util.callerFile() + ":" + line + ":" + column + ": " + message;
+    }
+
+    /*!
+        Wait for animations of the header and the style inside the header to finish.
+        The MainView that has the header that may animate must be passed as an argument.
+     */
+    function waitForHeaderAnimation(mainView) {
+        var header = findChild(mainView, "MainView_Header");
+        verify(header !== null, "Could not find header.");
+        var headerStyle = findChild(header, "PageHeadStyle");
+        verify(headerStyle !== null, "Could not find header style.");
+
+        // Wait for the header to start to move:
+        wait(50);
+        // Wait for animation of the style inside the header (when pushing/popping):
+        tryCompareFunction(function(){ return headerStyle.animating }, false);
+        // Wait for the header to finish showing/hiding:
+        tryCompareFunction(function(){ return header.moving }, false);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2015 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -53,10 +53,9 @@
  *
  * A global instance is exposed as the \b theme context property.
  *
- * The theme or theme defines the visual aspect of the Ubuntu components. An
- * application can use one or more theme the same time. The ThemeSettings component
- * provides abilities to change thye theme used by the component and all its
- * child components.
+ * The theme defines the visual aspect of the Ubuntu components. An application
+ * can use one or more theme the same time. The ThemeSettings component provides
+ * abilities to change the theme used by the component and all its child components.
  *
  * Changing the theme of the entire application can be achieved by changing
  * the name of the root StyledItem's, i.e. MainView's current theme.
@@ -65,16 +64,61 @@
  * import QtQuick 2.4
  * import Ubuntu.Components 1.3
  *
- * MainWindow {
+ * MainView {
  *     width: units.gu(40)
  *     height: units.gu(71)
  *
  *     theme.name: "Ubuntu.Components.Themes.Ambiance"
  * }
  * \endqml
- * \note Changing the theme name in this way will result in a change of the
- * inherited theme. In case a different theme is desired, a new instance of the
- * ThemeSettings must be created.
+ * By default, styled items inherit the theme they use from their closest styled
+ * item ancestor. In case the application uses MainView, all components will inherit
+ * the theme from the MainView.
+ * \qml
+ * import QtQuick 2.4
+ * import Ubuntu.Components 1.3
+ *
+ * MainView {
+ *     width: units.gu(40)
+ *     height: units.gu(71)
+ *
+ *     Page {
+ *         title: "Style test"
+ *         Button {
+ *             text: theme.name == "Ubuntu.Components.Themes.Ambiance" ?
+ *                      "SuruDark" : "Ambiance"
+ *             onClicked: theme.name = (text == "Ambiance" ?
+ *                      "Ubuntu.Components.Themes.SuruDark" :
+ *                      "Ubuntu.Components.Themes.Ambiance")
+ *         }
+ *     }
+ * }
+ * \endqml
+ * \note In the example above the Button inherits the theme from Page, which
+ * inherits it from MainView. Therefore changing the theme name in this way will
+ * result in a change of the inherited theme. In case a different theme is desired,
+ * a new instance of the ThemeSettings must be created on the styled item desired.
+ * \qml
+ * import QtQuick 2.4
+ * import Ubuntu.Components 1.3
+ *
+ * MainView {
+ *     width: units.gu(40)
+ *     height: units.gu(71)
+ *
+ *     Page {
+ *         title: "Style test"
+ *         theme: ThemeSettings{}
+ *         Button {
+ *             text: theme.name == "Ubuntu.Components.Themes.Ambiance" ?
+ *                      "SuruDark" : "Ambiance"
+ *             onClicked: theme.name = (text == "Ambiance" ?
+ *                      "Ubuntu.Components.Themes.SuruDark" :
+ *                      "Ubuntu.Components.Themes.Ambiance")
+ *         }
+ *     }
+ * }
+ * \endqml
  *
  * The \l createStyleComponent function can be used to create the style for a
  * component. The following example will create the style with the inherited
@@ -87,6 +131,9 @@
  *     style: theme.createStyleComponent("MyItemStyle.qml", myItem)
  * }
  * \endqml
+ * All styled toolkit components such as \l Button, \l CheckBox, \l Switch, etc.
+ * create their style in this way. Note that the style component must be part
+ * of the theme, otherwise the style creation will fail.
  *
  * \sa {StyledItem}
  */

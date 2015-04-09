@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2015 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.0 as Toolkit
+import Ubuntu.Components 1.3 as Toolkit13
 import "pageUtils.js" as Utils
 
 /*!
@@ -34,67 +34,51 @@ PageTreeNode {
     height: parentNode ? page.flickable ? parentNode.height : parentNode.height - internal.headerHeight : undefined
 
     isLeaf: true
-
     property string title: parentNode && parentNode.hasOwnProperty("title") ? parentNode.title : ""
-
-    // deprecated
-    property Item tools: toolsLoader.item
-
-    Loader {
-        id: toolsLoader
-        source: internal.header && internal.header.useDeprecatedToolbar ? "ToolbarItems.qml" : ""
-        asynchronous: true
-    }
-
-    /*!
-      \internal
-      \deprecated
-      Set this property to replace the title label in the header by any Item.
-      It will be automatically anchored to fill the title space in the header.
-     */
-    property Item __customHeaderContents: null
-
     property Flickable flickable: Utils.getFlickableChild(page)
 
-    /*! \internal */
-    onActiveChanged: {
-        internal.updateActions();
-    }
-
     /*!
-      \qmlproperty list<Action> actions
+      \qmlproperty PageHeadConfiguration head
      */
-    property alias actions: actionContext.actions
+    readonly property alias head: headerConfig
+    Toolkit13.PageHeadConfiguration {
+        id: headerConfig
+    }
 
     Object {
         id: internal
-
-        // Toolkit ActionContext registers automatically to ActionManager
-        Toolkit.ActionContext {
-            id: actionContext
-        }
-
-        function updateActions() {
-            actionContext.active = page.active;
-        }
 
         property AppHeader header: page.__propagated && page.__propagated.header ? page.__propagated.header : null
         // Used to position the Page when there is no flickable.
         // When there is a flickable, the header will automatically position it.
         property real headerHeight: internal.header && internal.header.visible ? internal.header.height : 0
 
+        // Note: The bindings below need to check whether headerConfig.contents
+        // is valid in the "value", even when that is required in the Binding's "when"
+        // property, to avoid TypeErrors while/after a page becomes (in)active.
+        //
+        // Note 2: contents.parent binding is made by PageHeadStyle.
+        property bool hasParent: headerConfig.contents &&
+                                 headerConfig.contents.parent
+
         Binding {
-            target: tools
-            property: "pageStack"
-            value: page.pageStack
-            when: tools && tools.hasOwnProperty("pageStack")
+            target: headerConfig.contents
+            property: "visible"
+            value: page.active
+            when: headerConfig.contents
         }
         Binding {
-            target: tools
-            property: "visible"
-            value: false
-            when: internal.header && !internal.header.useDeprecatedToolbar &&
-                  page.tools !== null
+            target: headerConfig.contents
+            property: "anchors.verticalCenter"
+            value: internal.hasParent ? headerConfig.contents.parent.verticalCenter :
+                                        undefined
+            when: headerConfig.contents
+        }
+        Binding {
+            target: headerConfig.contents
+            property: "anchors.left"
+            value: internal.hasParent ? headerConfig.contents.parent.left : undefined
+            when: headerConfig.contents
         }
     }
 }

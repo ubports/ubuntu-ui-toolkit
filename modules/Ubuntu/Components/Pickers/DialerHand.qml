@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,13 +15,14 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.2
+import Ubuntu.Components 1.3
 
 /*!
     \qmltype DialerHand
     \inqmlmodule Ubuntu.Components.Pickers 1.0
     \ingroup ubuntu-pickers
     \brief DialerHand represents a value selector on a Dialer.
+    \deprecated
 
     DialerHand components have meaning only if those are placed inside Dialer
     components. The dialer hand presents a value selection from the given dialer's
