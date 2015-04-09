@@ -246,7 +246,12 @@ PageTreeNode
     property Flickable flickable
     property list<Action> actions
 Page 1.1
-Page10
+Toolkit10.Page
+    readonly property PageHeadConfiguration head
+Page 1.3
+PageTreeNode
+    property string title
+    property Flickable flickable
     readonly property PageHeadConfiguration head
 PageHeadConfiguration 1.1
 Object
@@ -256,6 +261,10 @@ Object
     property string preset
     readonly property PageHeadSections sections
     property color foregroundColor
+PageHeadConfiguration 1.3
+Toolkit12.PageHeadConfiguration
+    property bool locked
+    property bool visible
 PageHeadSections 1.1
 QtObject
     property bool enabled
@@ -692,6 +701,7 @@ TestCase
     function tryCompareFunction(func, expectedResult, timeout)
     function typeString(string)
     function warningFormat(line, column, message)
+    function waitForHeaderAnimation(mainView)
 plugins.qmltypes
     name: "FilterBehavior"
     prototype: "QObject"

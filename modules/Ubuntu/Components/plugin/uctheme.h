@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2015 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -75,15 +75,15 @@ protected:
 
 private Q_SLOTS:
     void resetPalette();
-    void updateEnginePaths();
-    void onThemeNameChanged();
-    void updateThemePaths();
-    QUrl styleUrl(const QString& styleName);
-    void loadPalette(bool notify = true);
+    void _q_defaultThemeChanged();
 
 private:
     UCTheme(bool defaultStyle, QObject *parent = 0);
     void init();
+    void updateEnginePaths();
+    void updateThemePaths();
+    QUrl styleUrl(const QString& styleName);
+    void loadPalette(bool notify = true);
 
     class PaletteConfig
     {
