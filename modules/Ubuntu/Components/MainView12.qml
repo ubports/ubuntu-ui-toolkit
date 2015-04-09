@@ -69,6 +69,7 @@ MainViewBase {
         AppHeader {
             // This objectName is used in the MainView autopilot custom proxy object
             // in order to select the application header.
+            // Also used in tst_header_locked_visible.qml.
             objectName: "MainView_Header"
             id: headerItem
             property real bottomY: headerItem.y + headerItem.height
@@ -80,10 +81,11 @@ MainViewBase {
             flickable: internal.activePage ? internal.activePage.flickable : null
             pageStack: internal.activePage ? internal.activePage.pageStack : null
 
-            contents: internal.activePage ?
+            contents: internal.activePage &&
+                      internal.activePage.hasOwnProperty("__customHeaderContents") ?
                           internal.activePage.__customHeaderContents : null
 
-            PageHeadConfiguration {
+            Toolkit.PageHeadConfiguration {
                 id: defaultConfig
                 // Used when there is no active Page, or a Page 1.0 is used which
                 // does not have a PageHeadConfiguration.
@@ -114,9 +116,13 @@ MainViewBase {
             target: Qt.application
             onActiveChanged: {
                 if (Qt.application.active) {
-                    headerItem.animate = false;
-                    headerItem.show();
-                    headerItem.animate = true;
+                    if (!(headerItem.config &&
+                          headerItem.config.hasOwnProperty("locked") &&
+                          headerItem.locked)) {
+                        headerItem.animate = false;
+                        headerItem.show();
+                        headerItem.animate = true;
+                    }
                 }
             }
         }
@@ -127,11 +133,15 @@ MainViewBase {
 
         // Even when using MainView 1.1, we still support Page 1.0.
         // PageBase (=Page 1.0) is the superclass of Page 1.1.
-        property PageBase activePage: isPage(mainView.activeLeafNode) ? mainView.activeLeafNode : null
+        property Item activePage: isPage(mainView.activeLeafNode) ? mainView.activeLeafNode : null
 
         function isPage(item) {
-            return item && item.hasOwnProperty("__isPageTreeNode") && item.__isPageTreeNode &&
-                    item.hasOwnProperty("title") && item.hasOwnProperty("tools");
+            return item && item.hasOwnProperty("__isPageTreeNode") &&
+                    item.__isPageTreeNode &&
+                    item.hasOwnProperty("title") &&
+                    item.hasOwnProperty("flickable") &&
+                    item.hasOwnProperty("active") &&
+                    item.hasOwnProperty("pageStack")
         }
     }
 

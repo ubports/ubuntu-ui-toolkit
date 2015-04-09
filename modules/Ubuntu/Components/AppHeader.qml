@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 Canonical Ltd.
+ * Copyright 2013-2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -60,7 +60,8 @@ StyledItem {
         internal.movementEnded();
     }
 
-    visible: title || contents || tabsModel
+    // with PageHeadConfiguration 1.2, always be visible.
+    visible: title || contents || tabsModel || internal.newConfig
     onVisibleChanged: {
         internal.checkFlickableMargins();
     }
@@ -69,6 +70,9 @@ StyledItem {
       Show the header
      */
     function show() {
+        if (internal.newConfig) {
+            header.config.visible = true;
+        }
         header.y = 0;
     }
 
@@ -76,7 +80,10 @@ StyledItem {
       Hide the header
      */
     function hide() {
-        header.y = - header.height;
+        if (internal.newConfig) {
+            header.config.visible = false;
+        }
+        header.y = -header.height;
     }
 
     /*!
@@ -84,15 +91,22 @@ StyledItem {
      */
     property string title: ""
     onTitleChanged: {
-        header.show();
+        // deprecated for new versions of PageHeadConfiguration
+        if (!internal.newConfig) {
+            header.show();
+        }
     }
 
     /*!
       The contents of the header. If this is set, \l title will be ignored.
+      DEPRECATED and replaced by Page.head.contents.
      */
     property Item contents: null
     onContentsChanged: {
-        header.show();
+        // deprecated for new versions of PageHeadConfiguration
+        if (!internal.newConfig) {
+            header.show();
+        }
     }
 
     /*!
@@ -151,9 +165,10 @@ StyledItem {
      */
     property Flickable flickable: null
     onFlickableChanged: {
-        internal.checkFlickableMargins();
         internal.connectFlickable();
-        header.show();
+        if (!internal.newConfig || !header.config.locked) {
+            header.show();
+        }
     }
 
     /*!
@@ -163,11 +178,67 @@ StyledItem {
 
     /*!
       Configuration of the header.
+      FIXME: Must be of type PageHeadConfiguration. Setting that as the property type
+      however will use the latest version (1.3) and a Page that uses an older
+      version (1.1) will no longer work.
      */
-    property PageHeadConfiguration config: null
+    property Object config: null
+    onConfigChanged: {
+        // set internal.newConfig because when we rely on the binding,
+        //  the value of newConfig may be updated after executing the code below.
+        internal.newConfig = config && config.hasOwnProperty("visible") &&
+                config.hasOwnProperty("locked");
+        internal.connectFlickable();
+
+        if (internal.newConfig && header.config.locked &&!header.config.visible) {
+            header.hide();
+        } else {
+            header.show();
+        }
+    }
+    Connections {
+        target: header.config
+        ignoreUnknownSignals: true // PageHeadConfiguration <1.2 lacks the signals below
+        onVisibleChanged: {
+            if (header.config.visible) {
+                header.show();
+            } else {
+                header.hide();
+            }
+            internal.checkFlickableMargins();
+        }
+        onLockedChanged: {
+            internal.connectFlickable();
+            if (!header.config.locked) {
+                internal.movementEnded();
+            }
+        }
+    }
+
+    /*!
+      The header is not fully opened or fully closed.
+
+      This property is true if the header is animating towards a fully
+      opened or fully closed state, or if the header is moving due to user
+      interaction with the flickable.
+
+      The value of moving is always false when using an old version of
+      PageHeadConfiguration (which does not have the visible property).
+
+      Used in tst_header_locked_visible.qml.
+    */
+    readonly property bool moving: internal.newConfig &&
+                                   ((config.visible && header.y !== 0) ||
+                                    (!config.visible && header.y !== -header.height))
 
     QtObject {
         id: internal
+
+        // This property is updated in header.onConfigChanged to ensure it
+        //  is updated before other functions are called in onConfigChanged.
+        property bool newConfig: header.config &&
+                                 header.config.hasOwnProperty("locked") &&
+                                 header.config.hasOwnProperty("visible")
 
         /*!
           Track the y-position inside the flickable.
@@ -183,20 +254,26 @@ StyledItem {
           Disconnect previous flickable, and connect the new one.
          */
         function connectFlickable() {
+            // Finish the current header movement in case the current
+            // flickable is disconnected while scrolling:
+            internal.movementEnded();
+
             if (previousFlickable) {
                 previousFlickable.contentYChanged.disconnect(internal.scrollContents);
                 previousFlickable.movementEnded.disconnect(internal.movementEnded);
                 previousFlickable.interactiveChanged.disconnect(internal.interactiveChanged);
+                previousFlickable = null;
             }
-            if (flickable) {
+            if (flickable && !(internal.newConfig && header.config.locked)) {
                 // Connect flicking to movements of the header
                 previousContentY = flickable.contentY;
                 flickable.contentYChanged.connect(internal.scrollContents);
                 flickable.movementEnded.connect(internal.movementEnded);
                 flickable.interactiveChanged.connect(internal.interactiveChanged);
                 flickable.contentHeightChanged.connect(internal.contentHeightChanged);
+                previousFlickable = flickable;
             }
-            previousFlickable = flickable;
+            internal.checkFlickableMargins();
         }
 
         /*!
@@ -216,9 +293,14 @@ StyledItem {
           Fully show or hide the header, depending on its current y.
          */
         function movementEnded() {
-            if (flickable && flickable.contentY < 0) header.show();
-            else if (header.y < -header.height/2) header.hide();
-            else header.show();
+            if (!(internal.newConfig && header.config.locked)) {
+                if ( (flickable && flickable.contentY < 0) ||
+                        (header.y > -header.height/2)) {
+                    header.show();
+                } else {
+                    header.hide();
+                }
+            }
         }
 
         /*
@@ -241,13 +323,20 @@ StyledItem {
          */
         function checkFlickableMargins() {
             if (header.flickable) {
-                var headerHeight = header.visible ? header.height : 0
+                var headerHeight = 0;
+                if (header.visible && !(internal.newConfig &&
+                                        header.config.locked &&
+                                        !header.config.visible)) {
+                    headerHeight = header.height;
+                }
+
                 if (flickable.topMargin !== headerHeight) {
+                    var oldContentY = flickable.contentY;
                     var previousHeaderHeight = flickable.topMargin;
                     flickable.topMargin = headerHeight;
                     // push down contents when header grows,
                     // pull up contents when header shrinks.
-                    flickable.contentY -= headerHeight - previousHeaderHeight;
+                    flickable.contentY = oldContentY - headerHeight + previousHeaderHeight;
                 }
             }
         }
