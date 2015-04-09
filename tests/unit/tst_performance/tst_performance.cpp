@@ -22,8 +22,6 @@
 #include <QtQuick/QQuickView>
 #include <QtQuick/QQuickItem>
 
-#include "uctheme.h"
-
 class tst_Performance : public QObject
 {
     Q_OBJECT

@@ -39,7 +39,7 @@ UCDefaultTheme::UCDefaultTheme(QObject *parent) :
     m_settings(SETTINGS_FILE_FORMAT.arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation)), QSettings::IniFormat)
 {
     // fundamental features rely on the default theme, so bail out if it's absent
-    if (UCTheme::pathFromThemeName(DEFAULT_THEME).isEmpty()) {
+    if (pathFromThemeName(DEFAULT_THEME).isEmpty()) {
         qWarning() << "Mandatory default theme" << DEFAULT_THEME << "missing!";
     }
 

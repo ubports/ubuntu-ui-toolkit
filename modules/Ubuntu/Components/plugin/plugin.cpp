@@ -189,6 +189,9 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterSingletonType<UCNamespace>(uri, 1, 2, "Ubuntu", registerUbuntuNamespace);
     qmlRegisterType<UCUbuntuShape, 1>(uri, 1, 2, "UbuntuShape");
     qmlRegisterType<UCUbuntuShapeOverlay>(uri, 1, 2, "UbuntuShapeOverlay");
+
+    // register 1.3 API
+    qmlRegisterType<UCTheme>(uri, 1, 3, "ThemeSettings");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
@@ -206,6 +209,9 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     // register root object watcher that sets a global property with the root object
     // that can be accessed from any object
     context->setContextProperty("QuickUtils", &QuickUtils::instance());
+
+    // register theme context property
+    UCTheme::registerToContext(context);
 
     UCDeprecatedTheme::instance().registerToContext(context);
 

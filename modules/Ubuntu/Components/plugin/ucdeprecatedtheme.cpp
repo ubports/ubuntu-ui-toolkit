@@ -64,9 +64,9 @@
 UCDeprecatedTheme::UCDeprecatedTheme(QObject *parent)
     : QObject(parent)
 {
-    connect(&UCTheme::defaultSet(), &UCTheme::nameChanged,
+    connect(&UCTheme::defaultTheme(), &UCTheme::nameChanged,
             this, &UCDeprecatedTheme::nameChanged);
-    connect(&UCTheme::defaultSet(), &UCTheme::paletteChanged,
+    connect(&UCTheme::defaultTheme(), &UCTheme::paletteChanged,
             this, &UCDeprecatedTheme::paletteChanged);
 }
 
@@ -77,15 +77,15 @@ UCDeprecatedTheme::UCDeprecatedTheme(QObject *parent)
 */
 QString UCDeprecatedTheme::name() const
 {
-    return UCTheme::defaultSet().name();
+    return UCTheme::defaultTheme().name();
 }
 void UCDeprecatedTheme::setName(const QString& name)
 {
-    UCTheme::defaultSet().setName(name);
+    UCTheme::defaultTheme().setName(name);
 }
 void UCDeprecatedTheme::resetName()
 {
-    UCTheme::defaultSet().resetName();
+    UCTheme::defaultTheme().resetName();
 }
 
 /*!
@@ -95,7 +95,7 @@ void UCDeprecatedTheme::resetName()
 */
 QObject* UCDeprecatedTheme::palette()
 {
-    return UCTheme::defaultSet().palette();
+    return UCTheme::defaultTheme().palette();
 }
 
 /*!
@@ -105,15 +105,13 @@ QObject* UCDeprecatedTheme::palette()
 */
 QQmlComponent* UCDeprecatedTheme::createStyleComponent(const QString& styleName, QObject* parent)
 {
-    return UCTheme::defaultSet().createStyleComponent(styleName, parent);
+    return UCTheme::defaultTheme().createStyleComponent(styleName, parent);
 }
 
 void UCDeprecatedTheme::registerToContext(QQmlContext* context)
 {
-    // add paths to engine search folder
-    UCTheme::defaultSet().m_engine = context->engine();
-    UCTheme::defaultSet().updateEnginePaths();
-
+    UCTheme::defaultTheme().m_engine = context->engine();
+    UCTheme::defaultTheme().updateEnginePaths();
     // register deprecated Theme property
     context->setContextProperty("Theme", this);
 
