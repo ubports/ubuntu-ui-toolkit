@@ -239,7 +239,7 @@ private Q_SLOTS:
         view->setTheme("TestModule.TestTheme");
     }
 
-    void test_theme_not_root_stylset()
+    void test_theme_not_root_theme()
     {
         qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", ".");
 
