@@ -19,6 +19,7 @@
 #include "ucstyleditembase.h"
 #include "ucstyleditembase_p.h"
 #include "uctheme.h"
+#include <QtQml/QQmlEngine>
 #include <QtQuick/private/qquickanchors_p.h>
 
 UCStyleLoader::UCStyleLoader(QQuickItem *parent)
@@ -40,7 +41,13 @@ QQuickItem *UCStyleLoader::loadStyle(QQmlComponent *style)
     if (!style) {
         return 0;
     }
-    QObject *object = style->create(qmlContext(styledItem));
+    QQmlContext *creationContext = style->creationContext();
+    if (!creationContext) {
+        creationContext = qmlContext(styledItem);
+    }
+    QQmlContext *itemContext = new QQmlContext(creationContext, creationContext);
+    itemContext->setContextObject(this);
+    QObject *object = style->create(itemContext);
     if (!object) {
         return 0;
     }
