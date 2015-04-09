@@ -202,6 +202,7 @@ void UCStyledItemBasePrivate::setStyle(QQmlComponent *style)
     styleComponent = style;
     Q_EMIT q_func()->styleChanged();
     if (styleItem) {
+        attachStyleSizeChanges(false);
         styleItem->setParentItem(NULL);
         styleItem->deleteLater();
         styleItem = 0;
@@ -240,9 +241,64 @@ void UCStyledItemBasePrivate::loadStyle()
     if (styleItem) {
         QQml_setParent_noEvent(styleItem, q);
         styleItem->setParentItem(q);
+        QQuickAnchors *styleAnchors = QQuickItemPrivate::get(styleItem)->anchors();
+        styleAnchors->setFill(q);
     } else {
         delete object;
     }
+
+    // set implicit size
+    _q_styleResized();
+    attachStyleSizeChanges(true);
+}
+
+void UCStyledItemBasePrivate::attachStyleSizeChanges(bool attach)
+{
+    if (!styleItem) {
+        return;
+    }
+    Q_Q(UCStyledItemBase);
+    if (attach) {
+        QQuickImplicitSizeItem *sitem = qobject_cast<QQuickImplicitSizeItem*>(styleItem);
+        if (sitem) {
+            QObject::connect(styleItem, SIGNAL(implicitWidthChanged2()),
+                             q, SLOT(_q_styleResized()));
+            QObject::connect(styleItem, SIGNAL(implicitHeightChanged2()),
+                             q, SLOT(_q_styleResized()));
+        } else {
+            QObject::connect(styleItem, SIGNAL(implicitWidthChanged()),
+                             q, SLOT(_q_styleResized()));
+            QObject::connect(styleItem, SIGNAL(implicitHeightChanged()),
+                             q, SLOT(_q_styleResized()));
+        }
+    } else {
+        QQuickImplicitSizeItem *sitem = qobject_cast<QQuickImplicitSizeItem*>(styleItem);
+        if (sitem) {
+            QObject::disconnect(styleItem, SIGNAL(implicitWidthChanged2()),
+                             q, SLOT(_q_styleResized()));
+            QObject::disconnect(styleItem, SIGNAL(implicitHeightChanged2()),
+                             q, SLOT(_q_styleResized()));
+        } else {
+            QObject::disconnect(styleItem, SIGNAL(implicitWidthChanged()),
+                             q, SLOT(_q_styleResized()));
+            QObject::disconnect(styleItem, SIGNAL(implicitHeightChanged()),
+                             q, SLOT(_q_styleResized()));
+        }
+    }
+}
+
+void UCStyledItemBasePrivate::_q_styleResized()
+{
+    Q_Q(UCStyledItemBase);
+    qreal w = styleItem ? styleItem->implicitWidth() : 0;
+    qreal h = styleItem ? styleItem->implicitHeight() : 0;
+    if (w != implicitWidth) {
+        q->setImplicitWidth(w);
+    }
+    if (h != implicitHeight) {
+        q->setImplicitHeight(h);
+    }
+    qDebug() << "W" << q->implicitWidth() << ":H" << q->implicitHeight();
 }
 
 /*!

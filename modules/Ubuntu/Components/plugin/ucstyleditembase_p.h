@@ -34,6 +34,7 @@ public:
         return item->d_func();
     }
 
+    void _q_styleResized();
     void _q_ascendantChanged(QQuickItem *ascendant);
     void _q_parentStyleChanged();
 
@@ -63,10 +64,11 @@ public:
     UCTheme *theme;
     QPointer<UCStyledItemBase> parentStyledItem;
 
-private:
+protected:
     QStack< QPointer<QQuickItem> > parentStack;
 
     void loadStyle();
+    void attachStyleSizeChanges(bool attach);
     bool connectParents(QQuickItem *fromItem);
     bool setParentStyled(UCStyledItemBase *styledItem);
     void disconnectTillItem(QQuickItem *item);
