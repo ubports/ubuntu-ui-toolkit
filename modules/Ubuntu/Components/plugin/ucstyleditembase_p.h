@@ -22,6 +22,22 @@
 #include <QtQuick/private/qquickitem_p.h>
 #include "ucstyleditembase.h"
 
+class UCStyleLoader : public QQuickItem
+{
+    Q_OBJECT
+    Q_PROPERTY(UCStyledItemBase *styledItem MEMBER styledItem NOTIFY styledItemChanged)
+public:
+    explicit UCStyleLoader(QQuickItem *parent = 0);
+    void init(UCStyledItemBase *styled);
+    QQuickItem *loadStyle(QQmlComponent *style);
+
+Q_SIGNALS:
+    void styledItemChanged();
+
+private:
+    UCStyledItemBase *styledItem;
+};
+
 class QQuickMouseArea;
 class UCStyledItemBase;
 class UCStyledItemBasePrivate : public QQuickItemPrivate
@@ -45,6 +61,7 @@ public:
 
     QQmlComponent *style() const;
     void setStyle(QQmlComponent *style);
+    QQuickItem *styleInstance();
 
     UCTheme *getTheme() const;
     void setTheme(UCTheme *theme);
@@ -57,6 +74,8 @@ public:
     bool activeFocusOnPress:1;
     bool subthemingEnabled:1;
     QQmlComponent *styleComponent;
+    QQuickItem *styleItem;
+    UCStyleLoader *loader;
     UCTheme *theme;
     QPointer<UCStyledItemBase> parentStyledItem;
 

@@ -57,15 +57,15 @@ StyledItemBase {
        \internal
        Instance of the \l style.
     */
-    readonly property Item __styleInstance: styleLoader.status == Loader.Ready ? styleLoader.item : null
+//    readonly property Item __styleInstance: styleLoader.status == Loader.Ready ? styleLoader.item : null
 
     implicitWidth: __styleInstance ? __styleInstance.implicitWidth : 0
     implicitHeight: __styleInstance ? __styleInstance.implicitHeight : 0
 
-    Loader {
-        id: styleLoader
-        anchors.fill: parent
-        sourceComponent: style
-        property Item styledItem: styledItem
-    }
+//    Loader {
+//        id: styleLoader
+//        anchors.fill: parent
+//        sourceComponent: style
+//        property Item styledItem: styledItem
+//    }
 }

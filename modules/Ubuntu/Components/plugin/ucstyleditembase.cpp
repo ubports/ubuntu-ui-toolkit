@@ -19,11 +19,47 @@
 #include "ucstyleditembase.h"
 #include "ucstyleditembase_p.h"
 #include "uctheme.h"
+#include <QtQuick/private/qquickanchors_p.h>
+
+UCStyleLoader::UCStyleLoader(QQuickItem *parent)
+    : QQuickItem(parent)
+{
+    setFlag(ItemIsFocusScope);
+}
+
+void UCStyleLoader::init(UCStyledItemBase *styled)
+{
+    styledItem = styled;
+    setParentItem(styledItem);
+    QQuickAnchors *anchors = QQuickItemPrivate::get(this)->anchors();
+    anchors->setFill(styledItem);
+}
+
+QQuickItem *UCStyleLoader::loadStyle(QQmlComponent *style)
+{
+    if (!style) {
+        return 0;
+    }
+    QObject *object = style->create(qmlContext(styledItem));
+    if (!object) {
+        return 0;
+    }
+    QQuickItem *result = qobject_cast<QQuickItem*>(object);
+    if (result) {
+        QQml_setParent_noEvent(result, this);
+        result->setParentItem(this);
+    } else {
+        delete object;
+    }
+    return result;
+}
 
 UCStyledItemBasePrivate::UCStyledItemBasePrivate()
     : activeFocusOnPress(false)
     , subthemingEnabled(true)
     , styleComponent(0)
+    , styleItem(0)
+    , loader(new UCStyleLoader)
     , theme(0)
     , parentStyledItem(0)
 {
@@ -37,6 +73,7 @@ void UCStyledItemBasePrivate::init()
 {
     Q_Q(UCStyledItemBase);
     q->setFlag(QQuickItem::ItemIsFocusScope);
+    loader->init(q);
     QByteArray env = qgetenv("UITK_SUBTHEMING");
     subthemingEnabled = (env.isEmpty() || env == QByteArrayLiteral("yes"));
     if (!subthemingEnabled) {
@@ -194,6 +231,18 @@ void UCStyledItemBasePrivate::setStyle(QQmlComponent *style)
     }
     styleComponent = style;
     Q_EMIT q_func()->styleChanged();
+    if (styleItem) {
+        styleItem->setParentItem(NULL);
+        styleItem->deleteLater();
+        styleItem = 0;
+    }
+    styleItem = loader->loadStyle(styleComponent);
+    Q_EMIT q_func()->styleInstanceChanged();
+}
+
+QQuickItem *UCStyledItemBasePrivate::styleInstance()
+{
+    return styleItem;
 }
 
 /*!
