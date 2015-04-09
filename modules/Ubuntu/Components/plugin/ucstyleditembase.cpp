@@ -23,6 +23,7 @@
 UCStyledItemBasePrivate::UCStyledItemBasePrivate()
     : activeFocusOnPress(false)
     , subthemingEnabled(true)
+    , styleComponent(0)
     , theme(0)
     , parentStyledItem(0)
 {
@@ -180,6 +181,19 @@ void UCStyledItemBase::setActiveFocusOnPress(bool value)
     d->activeFocusOnPress = value;
     d->setFocusable(d->activeFocusOnPress);
     Q_EMIT activeFocusOnPressChanged();
+}
+
+QQmlComponent *UCStyledItemBasePrivate::style() const
+{
+    return styleComponent;
+}
+void UCStyledItemBasePrivate::setStyle(QQmlComponent *style)
+{
+    if (styleComponent == style) {
+        return;
+    }
+    styleComponent = style;
+    Q_EMIT q_func()->styleChanged();
 }
 
 /*!

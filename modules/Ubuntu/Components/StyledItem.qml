@@ -48,10 +48,10 @@ import Ubuntu.Components 1.3
 StyledItemBase {
     id: styledItem
 
-    /*!
-       Component instantiated immediately and placed below everything else.
-    */
-    property Component style
+//    /*!
+//       Component instantiated immediately and placed below everything else.
+//    */
+//    property Component style
 
     /*!
        \internal
