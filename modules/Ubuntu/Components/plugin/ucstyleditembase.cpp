@@ -22,51 +22,11 @@
 #include <QtQml/QQmlEngine>
 #include <QtQuick/private/qquickanchors_p.h>
 
-UCStyleLoader::UCStyleLoader(QQuickItem *parent)
-    : QQuickItem(parent)
-{
-    setFlag(ItemIsFocusScope);
-}
-
-void UCStyleLoader::init(UCStyledItemBase *styled)
-{
-    styledItem = styled;
-    setParentItem(styledItem);
-    QQuickAnchors *anchors = QQuickItemPrivate::get(this)->anchors();
-    anchors->setFill(styledItem);
-}
-
-QQuickItem *UCStyleLoader::loadStyle(QQmlComponent *style)
-{
-    if (!style) {
-        return 0;
-    }
-    QQmlContext *creationContext = style->creationContext();
-    if (!creationContext) {
-        creationContext = qmlContext(styledItem);
-    }
-    QQmlContext *itemContext = new QQmlContext(creationContext, creationContext);
-    itemContext->setContextObject(this);
-    QObject *object = style->create(itemContext);
-    if (!object) {
-        return 0;
-    }
-    QQuickItem *result = qobject_cast<QQuickItem*>(object);
-    if (result) {
-        QQml_setParent_noEvent(result, this);
-        result->setParentItem(this);
-    } else {
-        delete object;
-    }
-    return result;
-}
-
 UCStyledItemBasePrivate::UCStyledItemBasePrivate()
     : activeFocusOnPress(false)
     , subthemingEnabled(true)
     , styleComponent(0)
     , styleItem(0)
-    , loader(new UCStyleLoader)
     , theme(0)
     , parentStyledItem(0)
 {
@@ -80,7 +40,6 @@ void UCStyledItemBasePrivate::init()
 {
     Q_Q(UCStyledItemBase);
     q->setFlag(QQuickItem::ItemIsFocusScope);
-    loader->init(q);
     QByteArray env = qgetenv("UITK_SUBTHEMING");
     subthemingEnabled = (env.isEmpty() || env == QByteArrayLiteral("yes"));
     if (!subthemingEnabled) {
@@ -227,6 +186,10 @@ void UCStyledItemBase::setActiveFocusOnPress(bool value)
     Q_EMIT activeFocusOnPressChanged();
 }
 
+/*!
+ * \qmlproperty Component StyledItem::style
+ * Component instantiated immediately and placed below everything else.
+ */
 QQmlComponent *UCStyledItemBasePrivate::style() const
 {
     return styleComponent;
@@ -243,13 +206,43 @@ void UCStyledItemBasePrivate::setStyle(QQmlComponent *style)
         styleItem->deleteLater();
         styleItem = 0;
     }
-    styleItem = loader->loadStyle(styleComponent);
+    loadStyle();
     Q_EMIT q_func()->styleInstanceChanged();
 }
 
+/*!
+ * \internal
+ * Instance of the \l style.
+ */
 QQuickItem *UCStyledItemBasePrivate::styleInstance()
 {
     return styleItem;
+}
+void UCStyledItemBasePrivate::loadStyle()
+{
+    if (!styleComponent) {
+        return;
+    }
+    Q_Q(UCStyledItemBase);
+    QQmlContext *creationContext = styleComponent->creationContext();
+    if (!creationContext) {
+        creationContext = qmlContext(q);
+    }
+    QQmlContext *itemContext = new QQmlContext(creationContext);
+    itemContext->setContextObject(q);
+    itemContext->setContextProperty("styledItem", q);
+    QObject *object = styleComponent->create(itemContext);
+    if (!object) {
+        return;
+    }
+    QQml_setParent_noEvent(itemContext, object);
+    styleItem = qobject_cast<QQuickItem*>(object);
+    if (styleItem) {
+        QQml_setParent_noEvent(styleItem, q);
+        styleItem->setParentItem(q);
+    } else {
+        delete object;
+    }
 }
 
 /*!

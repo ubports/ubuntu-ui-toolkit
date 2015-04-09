@@ -60,22 +60,4 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_parentStyleChanged())
 };
 
-class UCStyleLoader : public QQuickItem
-{
-    Q_OBJECT
-    Q_PROPERTY(UCStyledItemBase *styledItem MEMBER styledItem NOTIFY styledItemChanged)
-public:
-    explicit UCStyleLoader(QQuickItem *parent = 0);
-    void init(UCStyledItemBase *styled);
-    QQuickItem *loadStyle(QQmlComponent *style);
-
-Q_SIGNALS:
-    void styledItemChanged();
-
-private:
-    UCStyledItemBase *styledItem;
-};
-
-
-
 #endif // UCSTYLEDITEMBASE_H

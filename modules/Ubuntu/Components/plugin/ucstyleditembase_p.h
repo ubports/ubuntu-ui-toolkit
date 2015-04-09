@@ -60,13 +60,13 @@ public:
     bool subthemingEnabled:1;
     QQmlComponent *styleComponent;
     QQuickItem *styleItem;
-    UCStyleLoader *loader;
     UCTheme *theme;
     QPointer<UCStyledItemBase> parentStyledItem;
 
 private:
     QStack< QPointer<QQuickItem> > parentStack;
 
+    void loadStyle();
     bool connectParents(QQuickItem *fromItem);
     bool setParentStyled(UCStyledItemBase *styledItem);
     void disconnectTillItem(QQuickItem *item);
