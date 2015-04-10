@@ -33,8 +33,9 @@ HEADERS += plugin.h \
     ucunits.h \
     ucqquickimageextension.h \
     quickutils.h \
-    shapeitemtexture.h \
-    shapeitem.h \
+    ucubuntushapetexture.h \
+    ucubuntushape.h \
+    ucubuntushapeoverlay.h \
     inversemouseareatype.h \
     qquickclipboard.h \
     qquickmimedata.h \
@@ -67,15 +68,18 @@ HEADERS += plugin.h \
     ucactioncontext.h \
     ucactionmanager.h \
     adapters/actionsproxy_p.h \
+    adapters/dbuspropertywatcher_p.h \
     uclistitem.h \
     uclistitem_p.h \
     uclistitemactions.h \
     uclistitemactions_p.h \
     propertychange_p.h \
     uclistitemstyle.h \
-    adapters\dbuspropertywatcher_p.h \
     ucserviceproperties.h \
-    ucserviceproperties_p.h
+    ucserviceproperties_p.h \
+    privates/listitemdragarea.h \
+    privates/listitemdraghandler.h \
+    ucnamespace.h
 
 SOURCES += plugin.cpp \
     uctheme.cpp \
@@ -86,7 +90,8 @@ SOURCES += plugin.cpp \
     ucunits.cpp \
     ucqquickimageextension.cpp \
     quickutils.cpp \
-    shapeitem.cpp \
+    ucubuntushape.cpp \
+    ucubuntushapeoverlay.cpp \
     inversemouseareatype.cpp \
     qquickclipboard.cpp \
     qquickmimedata.cpp \
@@ -112,18 +117,28 @@ SOURCES += plugin.cpp \
     ucactioncontext.cpp \
     ucactionmanager.cpp \
     adapters/actionsproxy_p.cpp \
+    adapters/dbuspropertywatcher_p.cpp \
     uclistitem.cpp \
     uclistitemactions.cpp \
     propertychange_p.cpp \
     uclistitemstyle.cpp \
     ucviewitemsattached.cpp \
-    uclistitemattached.cpp \
-    ucactionpanel_p.cpp \
-    adapters\dbuspropertywatcher_p.cpp \
-    ucserviceproperties.cpp
+    ucserviceproperties.cpp \
+    privates/listitemdragarea.cpp \
+    privates/listitemdraghandler.cpp \
+    ucnamespace.cpp
 
 # adapters
 SOURCES += adapters/alarmsadapter_organizer.cpp
+
+RESOURCES += \
+    plugin.qrc
+
+OTHER_FILES += \
+    shaders/shape.vert \
+    shaders/shape.frag \
+    shaders/shapeoverlay.vert \
+    shaders/shapeoverlay.frag
 
 # deployment rules for the plugin
 installPath = $$[QT_INSTALL_QML]/$$replace(uri, \\., /)

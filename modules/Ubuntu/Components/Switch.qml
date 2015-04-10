@@ -17,7 +17,7 @@
 // FIXME(loicm) It would be nice to have a draggable thumb to toggle the switch,
 //     that needs to be validated with designers though.
 
-import QtQuick 2.0
+import QtQuick 2.4
 
 /*!
     \qmltype Switch
@@ -27,7 +27,7 @@ import QtQuick 2.0
     be used to set boolean options. The behavior is the same as \l CheckBox, the
     only difference is the graphical style.
 
-    \l {http://design.ubuntu.com/apps/building-blocks/toggles}{See also the Design Guidelines on Toggles}.
+    \l {https://design.ubuntu.com/apps/building-blocks/selection}{See also the Design Guidelines on selection}.
 
     Example:
     \qml

@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 1.1
+import QtQuick 2.4
+import Ubuntu.Components 1.2
 
 Item {
     id: progressBarStyle
@@ -30,29 +30,18 @@ Item {
     implicitWidth: units.gu(38)
     implicitHeight: units.gu(4)
 
-    UbuntuShape {
+    UbuntuShapeOverlay {
         id: background
         anchors.fill: parent
-        /* The color must be white for PartialColorizeUbuntuShape to accurately
-           replace the white with leftColor and rightColor
-        */
-        color: progressBar.indeterminate ? backgroundColor : "#FFFFFF"
+        backgroundColor: progressBarStyle.backgroundColor
+        overlayColor: foregroundColor
+        overlayRect: Qt.application.layoutDirection == Qt.LeftToRight ?
+            Qt.rect(0.0, 0.0, progressBarStyle.progress, 1.0) :
+            Qt.rect(1.0 - progressBarStyle.progress, 0.0, 1.0, 1.0)
     }
 
     property real progress: progressBar.indeterminate ? 0.0
                             : progressBar.value / (progressBar.maximumValue - progressBar.minimumValue)
-
-    /* Colorize the background with rightColor and progressively fill it
-       with leftColor proportionally to progress
-    */
-    PartialColorizeUbuntuShape {
-        anchors.fill: background
-        sourceItem: progressBar.indeterminate ? null : background
-        progress: progressBarStyle.progress
-        leftColor: foregroundColor
-        rightColor: backgroundColor
-        mirror: Qt.application.layoutDirection == Qt.RightToLeft
-    }
 
     Label {
         id: valueLabel

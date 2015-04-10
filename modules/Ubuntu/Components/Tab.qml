@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
+import QtQuick 2.4
 
 /*!
     \qmltype Tab
@@ -43,9 +43,62 @@ PageTreeNode {
     property url iconSource
 
     /*!
-      The contents of the page. Use a \l Page or a Loader that loads an external \l Page.
+      The contents of the Tab. Use a \l Page or a Loader that instantiates a Component or
+      loads an external \l Page.
+      When using a Loader, do not set the anchors or dimensions of the Loader so that the
+      \l Page can control the height and prevent overlapping the header.
+      Example:
+      \qml
+        import QtQuick 2.4
+        import Ubuntu.Components 1.2
+        MainView {
+            width: units.gu(40)
+            height: units.gu(50)
+
+            Component {
+                id: pageComponent
+                Page {
+                    Label {
+                        anchors.centerIn: parent
+                        text: "Loaded when tab is selected."
+                    }
+                }
+            }
+            Tabs {
+                id: tabs
+                Tab {
+                    title: i18n.tr("Simple page")
+                    page: Page {
+                        Label {
+                            anchors.centerIn: parent
+                            text: i18n.tr("Always loaded")
+                        }
+                    }
+                }
+                Tab {
+                    id: loaderTab
+                    title: i18n.tr("Page loader")
+                    page: Loader {
+                        // no anchors
+                        id: loader
+                        sourceComponent: tabs.selectedTab == loaderTab ? pageComponent : null
+                        onStatusChanged: if (loader.status == Loader.Ready) console.log('Loaded')
+                    }
+                }
+            }
+        }
+      \endqml
      */
     property Item page: null
+
+    // In case the page is a Loader with a Page inside, the Loader needs to be
+    // anchored to the bottom of the Tab. Width and height are set by the Page.
+    Binding {
+        target: page
+        property: "anchors.bottom"
+        value: tab.bottom
+        when: page
+    }
 
     /*!
       \qmlproperty int index

@@ -58,6 +58,7 @@ public:
     bool wait(int msec);
     void completeSave();
     void completeCancel();
+    void copyAlarmData(const UCAlarm &other);
 
 // adaptation specific data
     void adjustDowSettings(UCAlarm::AlarmType type, UCAlarm::DaysOfWeek days);
@@ -87,6 +88,7 @@ public:
 
     void clear()
     {
+        qDeleteAll(data);
         data.clear();
         idHash.clear();
     }
@@ -94,24 +96,36 @@ public:
     {
         return data.count();
     }
-    const QOrganizerTodo operator[](int index) const
+    const UCAlarm *operator[](int index) const
     {
         QPair<QDateTime, QOrganizerItemId> key = data.keys()[index];
         return data.value(key);
     }
     // update event at index, returns the new event index
-    int update(int index, const QOrganizerTodo &alarm)
+    int update(int index, const UCAlarm &alarm)
     {
-        removeAt(index);
-        return insert(alarm);
+        // take alarm from previous index, update its data and insert it again
+        UCAlarm *oldAlarm = takeAt(index);
+        // copy the other alarm data
+        AlarmDataAdapter *pAlarm = static_cast<AlarmDataAdapter*>(AlarmDataAdapter::get(oldAlarm));
+        pAlarm->copyAlarmData(alarm);
+        // and insert it back
+        QDateTime dt = oldAlarm->date();
+        QOrganizerItemId id = oldAlarm->cookie().value<QOrganizerItemId>();
+        idHash.insert(id, dt);
+        data.insert(QPair<QDateTime, QOrganizerItemId>(dt, id), oldAlarm);
+        return indexOf(id);
     }
     // insert an alarm event into the list
-    int insert(const QOrganizerTodo &alarm)
+    int insert(const UCAlarm &alarm)
     {
-        QDateTime dt = AlarmUtils::normalizeDate(alarm.startDateTime());
-        idHash.insert(alarm.id(), dt);
-        data.insert(QPair<QDateTime, QOrganizerItemId>(dt, alarm.id()), alarm);
-        return indexOf(alarm.id());
+        QDateTime dt = alarm.date();
+        QOrganizerItemId id = alarm.cookie().value<QOrganizerItemId>();
+        idHash.insert(id, dt);
+        UCAlarm *newAlarm = new UCAlarm;
+        UCAlarmPrivate::get(newAlarm)->copyAlarmData(alarm);
+        data.insert(QPair<QDateTime, QOrganizerItemId>(dt, id), newAlarm);
+        return indexOf(id);
     }
     // returns the index of the alarm matching the id, -1 on error
     int indexOf(const QOrganizerItemId &id)
@@ -123,14 +137,23 @@ public:
     // remove alarm at index
     void removeAt(int index)
     {
+        UCAlarm *alarm = takeAt(index);
+        delete alarm;
+    }
+
+protected:
+    // removes alarm data at index and returns the alarm pointer
+    UCAlarm *takeAt(int index)
+    {
         QPair<QDateTime, QOrganizerItemId> key = data.keys()[index];
-        data.remove(key);
+        UCAlarm *alarm = data.take(key);
         idHash.remove(key.second);
+        return alarm;
     }
 
 private:
     // ordered map by occurrence date + event id, ascending
-    QMap< QPair<QDateTime, QOrganizerItemId>, QOrganizerTodo> data;
+    QMap< QPair<QDateTime, QOrganizerItemId>, UCAlarm*> data;
     // alarms ordered based on even id
     QHash<QOrganizerItemId, QDateTime> idHash;
 };
@@ -158,7 +181,7 @@ public:
 
     void init();
     int alarmCount();
-    void getAlarmAt(const UCAlarm &alarm, int index) const;
+    UCAlarm *getAlarmAt(int index) const;
     bool findAlarm(const UCAlarm &alarm, const QVariant &cookie) const;
     void adjustAlarmOccurrence(AlarmDataAdapter &alarm);
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2014 Canonical Ltd.
+ * Copyright 2012-2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,14 +15,13 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 1.1
+import Ubuntu.Components 1.2
 import Ubuntu.Components.ListItems 1.0 as ListItem
 
 MainView {
     width: 800
     height: 600
     id: mainView
-    useDeprecatedToolbar: false
 
     Tabs {
         id: tabs
@@ -33,32 +32,16 @@ MainView {
 
         Tab {
             id: simpleTab
-            title: i18n.tr("Simple page #" + index)
+            title: i18n.tr("Simple page #" + index + " to demonstrate tabs")
             page: Page {
-                Row {
+                Label {
                     anchors.centerIn: parent
-                    spacing: units.gu(1)
-                    width: childrenRect.width
-                    height: childrenRect.height
-                    Button {
-                        text: "tab bar on"
-                        enabled: mainView.useDeprecatedToolbar && !tabs.tabBar.selectionMode
-                        onClicked: tabs.tabBar.selectionMode = true;
-                    }
-                    Button {
-                        text: "tab bar off"
-                        enabled: mainView.useDeprecatedToolbar && tabs.tabBar.selectionMode
-                        onClicked: tabs.tabBar.selectionMode = false;
-                    }
+                    text: "Use tabs drawer to navigate"
                 }
-                tools: ToolbarItems {
-                    ToolbarButton {
-                        action: Action {
-                            text: "action"
-                            iconSource: "call_icon.png"
-                            onTriggered: print("action triggered")
-                        }
-                    }
+                head.actions: Action {
+                    text: "action"
+                    iconSource: "call_icon.png"
+                    onTriggered: print("action triggered")
                 }
             }
         }
@@ -66,7 +49,7 @@ MainView {
             model: 3
             Tab {
                 id: tab
-                title: "Extra #" + tab.index
+                title: "Repeater #" + tab.index
                 page: Page {
                     Column {
                         anchors.centerIn: parent
@@ -76,7 +59,7 @@ MainView {
                                 left: parent.left
                                 right: parent.right
                             }
-                            text: "Extra tab number "+index
+                            text: "Repeater tab number "+index
                         }
                         Button {
                             anchors {

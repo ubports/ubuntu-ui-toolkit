@@ -86,3 +86,9 @@ class UCListItem(_common.UbuntuUIToolkitCustomProxyObjectBase):
         """
         self._click_on_panel_action('trailing', action_objectName,
                                     wait_function)
+
+    @autopilot_logging.log_action(logger.info)
+    def toggle_selected(self):
+        """Toggles selected state of the ListItem. """
+        toggle = self.select_single(objectName='listitem_select')
+        self.pointing_device.click_object(toggle)
