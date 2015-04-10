@@ -241,6 +241,7 @@ void UCStyledItemBasePrivate::loadStyle()
     if (styleItem) {
         QQml_setParent_noEvent(styleItem, q);
         styleItem->setParentItem(q);
+        styleItem->setZ(-1);
         QQuickAnchors *styleAnchors = QQuickItemPrivate::get(styleItem)->anchors();
         styleAnchors->setFill(q);
     } else {
