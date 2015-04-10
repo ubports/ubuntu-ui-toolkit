@@ -68,7 +68,7 @@ protected:
     QStack< QPointer<QQuickItem> > parentStack;
 
     void loadStyle();
-    void attachStyleSizeChanges(bool attach);
+    void connectStyleSizeChanges(bool attach);
     bool connectParents(QQuickItem *fromItem);
     bool setParentStyled(UCStyledItemBase *styledItem);
     void disconnectTillItem(QQuickItem *item);

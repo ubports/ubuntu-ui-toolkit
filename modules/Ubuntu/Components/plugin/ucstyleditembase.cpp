@@ -202,8 +202,11 @@ void UCStyledItemBasePrivate::setStyle(QQmlComponent *style)
     styleComponent = style;
     Q_EMIT q_func()->styleChanged();
     if (styleItem) {
-        attachStyleSizeChanges(false);
+        // disconnect the size changes if they were still connected
+        connectStyleSizeChanges(false);
+        // remove parentalship to avoid eventual binding loops
         styleItem->setParentItem(NULL);
+        // delay deletion to avoid property cache messing
         styleItem->deleteLater();
         styleItem = 0;
     }
@@ -225,6 +228,7 @@ void UCStyledItemBasePrivate::loadStyle()
         return;
     }
     Q_Q(UCStyledItemBase);
+    // use creation context as parent to create the context we load the style item with
     QQmlContext *creationContext = styleComponent->creationContext();
     if (!creationContext) {
         creationContext = qmlContext(q);
@@ -236,12 +240,15 @@ void UCStyledItemBasePrivate::loadStyle()
     if (!object) {
         return;
     }
+    // link context to the style item to delete them together
     QQml_setParent_noEvent(itemContext, object);
     styleItem = qobject_cast<QQuickItem*>(object);
     if (styleItem) {
         QQml_setParent_noEvent(styleItem, q);
         styleItem->setParentItem(q);
+        // put the style behind evenrything
         styleItem->setZ(-1);
+        // anchor fill to the styled component
         QQuickAnchors *styleAnchors = QQuickItemPrivate::get(styleItem)->anchors();
         styleAnchors->setFill(q);
     } else {
@@ -250,10 +257,11 @@ void UCStyledItemBasePrivate::loadStyle()
 
     // set implicit size
     _q_styleResized();
-    attachStyleSizeChanges(true);
+    connectStyleSizeChanges(true);
 }
 
-void UCStyledItemBasePrivate::attachStyleSizeChanges(bool attach)
+// connect style item implicit size changes
+void UCStyledItemBasePrivate::connectStyleSizeChanges(bool attach)
 {
     if (!styleItem) {
         return;
@@ -288,13 +296,14 @@ void UCStyledItemBasePrivate::attachStyleSizeChanges(bool attach)
     }
 }
 
+// handle implicit size changes implied by the style components
 void UCStyledItemBasePrivate::_q_styleResized()
 {
     Q_Q(UCStyledItemBase);
     QObject *sender = q->sender();
     if (sender && sender != styleItem && styleItem) {
         // the implicitSize has been changed by other than the styleItem, detach
-        attachStyleSizeChanges(false);
+        connectStyleSizeChanges(false);
         return;
     }
     qreal w = styleItem ? styleItem->implicitWidth() : 0;
