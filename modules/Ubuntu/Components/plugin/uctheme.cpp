@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013-2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -37,43 +37,100 @@
 #include <QtGui/QFont>
 
 /*!
-    \qmltype Theme
-    \instantiates UCTheme
-    \inqmlmodule Ubuntu.Components 1.1
-    \ingroup theming
-    \brief The Theme class provides facilities to interact with the current theme.
-
-    A global instance is exposed as the \b Theme context property.
-
-    The theme defines the visual aspect of the Ubuntu components.
-
-    Example changing the current theme:
-
-    \qml
-    import QtQuick 2.4
-    import Ubuntu.Components 1.2
-
-    Item {
-        Button {
-            onClicked: Theme.name = "Ubuntu.Components.Themes.Ambiance"
-        }
-    }
-    \endqml
-
-    Example creating a style component:
-
-    \qml
-    import QtQuick 2.4
-    import Ubuntu.Components 1.2
-
-    StyledItem {
-        id: myItem
-        style: Theme.createStyleComponent("MyItemStyle.qml", myItem)
-    }
-    \endqml
-
-    \sa {StyledItem}
-*/
+ * \qmltype ThemeSettings
+ * \instantiates UCTheme
+ * \inqmlmodule Ubuntu.Components 1.3
+ * \since Ubuntu.Components 1.3
+ * \ingroup theming
+ * \brief The ThemeSettings class provides facilities to define the theme of a
+ * StyledItem.
+ *
+ * A global instance is exposed as the \b theme context property.
+ *
+ * The theme defines the visual aspect of the Ubuntu components. An application
+ * can use one or more theme the same time. The ThemeSettings component provides
+ * abilities to change the theme used by the component and all its child components.
+ *
+ * Changing the theme of the entire application can be achieved by changing
+ * the name of the root StyledItem's, i.e. MainView's current theme.
+ *
+ * \qml
+ * import QtQuick 2.4
+ * import Ubuntu.Components 1.3
+ *
+ * MainView {
+ *     width: units.gu(40)
+ *     height: units.gu(71)
+ *
+ *     theme.name: "Ubuntu.Components.Themes.Ambiance"
+ * }
+ * \endqml
+ * By default, styled items inherit the theme they use from their closest styled
+ * item ancestor. In case the application uses MainView, all components will inherit
+ * the theme from the MainView.
+ * \qml
+ * import QtQuick 2.4
+ * import Ubuntu.Components 1.3
+ *
+ * MainView {
+ *     width: units.gu(40)
+ *     height: units.gu(71)
+ *
+ *     Page {
+ *         title: "Style test"
+ *         Button {
+ *             text: theme.name == "Ubuntu.Components.Themes.Ambiance" ?
+ *                      "SuruDark" : "Ambiance"
+ *             onClicked: theme.name = (text == "Ambiance" ?
+ *                      "Ubuntu.Components.Themes.SuruDark" :
+ *                      "Ubuntu.Components.Themes.Ambiance")
+ *         }
+ *     }
+ * }
+ * \endqml
+ * \note In the example above the Button inherits the theme from Page, which
+ * inherits it from MainView. Therefore changing the theme name in this way will
+ * result in a change of the inherited theme. In case a different theme is desired,
+ * a new instance of the ThemeSettings must be created on the styled item desired.
+ * \qml
+ * import QtQuick 2.4
+ * import Ubuntu.Components 1.3
+ *
+ * MainView {
+ *     width: units.gu(40)
+ *     height: units.gu(71)
+ *
+ *     Page {
+ *         title: "Style test"
+ *         theme: ThemeSettings{}
+ *         Button {
+ *             text: theme.name == "Ubuntu.Components.Themes.Ambiance" ?
+ *                      "SuruDark" : "Ambiance"
+ *             onClicked: theme.name = (text == "Ambiance" ?
+ *                      "Ubuntu.Components.Themes.SuruDark" :
+ *                      "Ubuntu.Components.Themes.Ambiance")
+ *         }
+ *     }
+ * }
+ * \endqml
+ *
+ * The \l createStyleComponent function can be used to create the style for a
+ * component. The following example will create the style with the inherited
+ * theme.
+ * \qml
+ * import QtQuick 2.4
+ * import Ubuntu.Components 1.3
+ * StyledItem {
+ *     id: myItem
+ *     style: theme.createStyleComponent("MyItemStyle.qml", myItem)
+ * }
+ * \endqml
+ * All styled toolkit components such as \l Button, \l CheckBox, \l Switch, etc.
+ * create their style in this way. Note that the style component must be part
+ * of the theme, otherwise the style creation will fail.
+ *
+ * \sa {StyledItem}
+ */
 
 const QString THEME_FOLDER_FORMAT("%1/%2/");
 const QString PARENT_THEME_FILE("parent_theme");
@@ -111,53 +168,7 @@ QStringList themeSearchPath() {
     return result;
 }
 
-UCTheme::UCTheme(QObject *parent) :
-    QObject(parent),
-    m_palette(NULL),
-    m_engine(NULL),
-    m_engineUpdated(false)
-{
-    m_name = m_themeSettings.themeName();
-    QObject::connect(&m_themeSettings, &UCThemeSettings::themeNameChanged,
-                     this, &UCTheme::onThemeNameChanged);
-    updateThemePaths();
-
-    QObject::connect(this, SIGNAL(nameChanged()),
-                     this, SLOT(loadPalette()), Qt::UniqueConnection);
-
-    // set the default font
-    QFont defaultFont;
-    defaultFont.setFamily("Ubuntu");
-    defaultFont.setPixelSize(UCFontUtils::instance().sizeToPixels("medium"));
-    defaultFont.setWeight(QFont::Light);
-    QGuiApplication::setFont(defaultFont);
-}
-
-void UCTheme::updateEnginePaths()
-{
-    if (!m_engine || m_engineUpdated) {
-        return;
-    }
-
-    QStringList paths = themeSearchPath();
-    Q_FOREACH(const QString &path, paths) {
-        if (QDir(path).exists() && !m_engine->importPathList().contains(path)) {
-            m_engine->addImportPath(path);
-        }
-    }
-    m_engineUpdated = true;
-}
-
-void UCTheme::onThemeNameChanged()
-{
-    if (m_themeSettings.themeName() != m_name) {
-        m_name = m_themeSettings.themeName();
-        updateThemePaths();
-        Q_EMIT nameChanged();
-    }
-}
-
-QUrl UCTheme::pathFromThemeName(QString themeName)
+QUrl pathFromThemeName(QString themeName)
 {
     themeName.replace('.', '/');
     QStringList pathList = themeSearchPath();
@@ -172,11 +183,86 @@ QUrl UCTheme::pathFromThemeName(QString themeName)
     return QUrl();
 }
 
+QString parentThemeName(const QString& themeName)
+{
+    QString parentTheme;
+    QUrl themePath = pathFromThemeName(themeName);
+    if (!themePath.isValid()) {
+        qWarning() << qPrintable(UbuntuI18n::instance().tr("Theme not found: \"%1\"").arg(themeName));
+    } else {
+        QFile file(themePath.resolved(PARENT_THEME_FILE).toLocalFile());
+        if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            QTextStream in(&file);
+            parentTheme = in.readLine();
+        }
+    }
+    return parentTheme;
+}
+
+UCTheme::UCTheme(QObject *parent)
+    : QObject(parent)
+    , m_palette(UCTheme::defaultTheme().m_palette)
+    , m_engine(UCTheme::defaultTheme().m_engine)
+    , m_defaultStyle(false)
+{
+    init();
+}
+
+UCTheme::UCTheme(bool defaultStyle, QObject *parent)
+    : QObject(parent)
+    , m_palette(NULL)
+    , m_engine(NULL)
+    , m_defaultStyle(defaultStyle)
+{
+    init();
+    // set the default font
+    QFont defaultFont;
+    defaultFont.setFamily("Ubuntu");
+    defaultFont.setPixelSize(UCFontUtils::instance().sizeToPixels("medium"));
+    defaultFont.setWeight(QFont::Light);
+    QGuiApplication::setFont(defaultFont);
+}
+
+void UCTheme::init()
+{
+    m_completed = false;
+    QObject::connect(&m_defaultTheme, &UCDefaultTheme::themeNameChanged,
+                     this, &UCTheme::_q_defaultThemeChanged);
+    updateThemePaths();
+}
+
+void UCTheme::classBegin()
+{
+    m_engine = qmlEngine(this);
+    updateEnginePaths();
+    loadPalette();
+}
+
+void UCTheme::updateEnginePaths()
+{
+    if (!m_engine) {
+        return;
+    }
+
+    QStringList paths = themeSearchPath();
+    Q_FOREACH(const QString &path, paths) {
+        if (QDir(path).exists() && !m_engine->importPathList().contains(path)) {
+            m_engine->addImportPath(path);
+        }
+    }
+}
+
+void UCTheme::_q_defaultThemeChanged()
+{
+    updateThemePaths();
+    Q_EMIT nameChanged();
+}
+
 void UCTheme::updateThemePaths()
 {
     m_themePaths.clear();
 
-    QString themeName = m_name;
+    QString themeName = name();
     while (!themeName.isEmpty()) {
         QUrl themePath = pathFromThemeName(themeName);
         if (themePath.isValid()) {
@@ -187,31 +273,38 @@ void UCTheme::updateThemePaths()
 }
 
 /*!
-    \qmlproperty string Theme::name
-
-    The name of the current theme.
-*/
+ * \qmlproperty string ThemeSettings::name
+ * The name of the current theme.
+ */
 QString UCTheme::name() const
 {
-    return m_name;
+    return !m_name.isEmpty() ? m_name : m_defaultTheme.themeName();
 }
-
 void UCTheme::setName(const QString& name)
 {
-    if (name != m_name) {
-        QObject::disconnect(&m_themeSettings, &UCThemeSettings::themeNameChanged,
-                            this, &UCTheme::onThemeNameChanged);
-        m_name = name;
-        updateThemePaths();
-        Q_EMIT nameChanged();
+    if (name == m_name) {
+        return;
     }
+    m_name = name;
+    if (name.isEmpty()) {
+        init();
+    } else {
+        QObject::disconnect(&m_defaultTheme, &UCDefaultTheme::themeNameChanged,
+                            this, &UCTheme::_q_defaultThemeChanged);
+        updateThemePaths();
+    }
+    loadPalette();
+    Q_EMIT nameChanged();
+}
+void UCTheme::resetName()
+{
+    setName(QString());
 }
 
 /*!
-    \qmlproperty Palette Theme::palette
-
-    The palette of the current theme.
-*/
+ * \qmlproperty Palette ThemeSettings::palette
+ * The palette of the current theme.
+ */
 QObject* UCTheme::palette()
 {
     if (!m_palette) {
@@ -232,26 +325,24 @@ QUrl UCTheme::styleUrl(const QString& styleName)
     return QUrl();
 }
 
-QString UCTheme::parentThemeName(const QString& themeName)
+// registers the default theme property to the root context
+void UCTheme::registerToContext(QQmlContext* context)
 {
-    QString parentTheme;
-    QUrl themePath = pathFromThemeName(themeName);
-    if (!themePath.isValid()) {
-        qWarning() << qPrintable(UbuntuI18n::instance().tr("Theme not found: \"%1\"").arg(themeName));
-    } else {
-        QFile file(themePath.resolved(PARENT_THEME_FILE).toLocalFile());
-        if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            QTextStream in(&file);
-            parentTheme = in.readLine();
-        }
-    }
-    return parentTheme;
+    UCTheme *defaultTheme = &UCTheme::defaultTheme();
+    defaultTheme->m_engine = context->engine();
+    defaultTheme->updateEnginePaths();
+
+    context->setContextProperty("theme", defaultTheme);
+    ContextPropertyChangeListener *listener =
+        new ContextPropertyChangeListener(context, "theme");
+    QObject::connect(defaultTheme, &UCTheme::nameChanged,
+                     listener, &ContextPropertyChangeListener::updateContextProperty);
 }
 
 /*!
-    \qmlmethod Component Theme::createStyleComponent(string styleName, object parent)
-
-    Returns an instance of the style component named \a styleName.
+ * \qmlmethod Component ThemeSettings::createStyleComponent(string styleName, object parent)
+ * Returns an instance of the style component named \a styleName and parented
+ * to \a parent.
 */
 QQmlComponent* UCTheme::createStyleComponent(const QString& styleName, QObject* parent)
 {
@@ -275,7 +366,7 @@ QQmlComponent* UCTheme::createStyleComponent(const QString& styleName, QObject* 
                 }
             } else {
                 qmlInfo(parent) <<
-                   UbuntuI18n::instance().tr(QString("Warning: Style %1 not found in theme %2").arg(styleName).arg(m_name));
+                   UbuntuI18n::instance().tr(QString("Warning: Style %1 not found in theme %2").arg(styleName).arg(name()));
             }
         }
     }
@@ -283,32 +374,23 @@ QQmlComponent* UCTheme::createStyleComponent(const QString& styleName, QObject* 
     return component;
 }
 
-void UCTheme::registerToContext(QQmlContext* context)
-{
-    // add paths to engine search folder
-    m_engine = context->engine();
-    updateEnginePaths();
-
-    // register Theme
-    context->setContextProperty("Theme", this);
-
-    ContextPropertyChangeListener *themeChangeListener =
-        new ContextPropertyChangeListener(context, "Theme");
-    QObject::connect(this, SIGNAL(nameChanged()),
-                     themeChangeListener, SLOT(updateContextProperty()));
-
-}
-
 void UCTheme::loadPalette(bool notify)
 {
     if (!m_engine) {
         return;
     }
-    if (m_palette != NULL) {
+    if (!m_palette.isNull()) {
         delete m_palette;
     }
-    m_palette = QuickUtils::instance().createQmlObject(styleUrl("Palette.qml"), m_engine);
-    if (notify) {
-        Q_EMIT paletteChanged();
+    // theme may not have palette defined
+    QUrl paletteUrl = styleUrl("Palette.qml");
+    if (paletteUrl.isValid()) {
+        m_palette = QuickUtils::instance().createQmlObject(paletteUrl, m_engine);
+        if (notify) {
+            Q_EMIT paletteChanged();
+        }
+    } else {
+        // use the default palette if none defined
+        m_palette = defaultTheme().m_palette;
     }
 }

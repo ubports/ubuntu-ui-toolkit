@@ -125,6 +125,7 @@ MainViewBase {
         AppHeader {
             // This objectName is used in the MainView autopilot custom proxy object
             // in order to select the application header.
+            // Also used in tst_header_locked_visible.qml.
             objectName: "MainView_Header"
             id: headerItem
             property real bottomY: headerItem.y + headerItem.height
@@ -136,7 +137,7 @@ MainViewBase {
             flickable: internal.activePage ? internal.activePage.flickable : null
             pageStack: internal.activePage ? internal.activePage.pageStack : null
 
-            PageHeadConfiguration {
+            Toolkit.PageHeadConfiguration {
                 id: headerConfig
                 // for backwards compatibility with deprecated tools property
                 actions: internal.activePage ?
