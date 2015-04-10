@@ -35,15 +35,16 @@ public:
     }
 
     explicit UCUnits(QObject *parent = 0);
-    Q_INVOKABLE float dp(float value);
-    Q_INVOKABLE float gu(float value);
+    Q_INVOKABLE float dp(const float value);
+    Q_INVOKABLE float gu(const float value);
     QString resolveResource(const QUrl& url);
 
     // getters
     float gridUnit();
+    float devicePixelRatio() const;
 
     // setters
-    void setGridUnit(float gridUnit);
+    void setGridUnit(const float gridUnit);
 
 Q_SIGNALS:
     void gridUnitChanged();

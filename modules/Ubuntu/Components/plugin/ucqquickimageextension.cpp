@@ -76,15 +76,22 @@ void UCQQuickImageExtension::reloadSource()
     int separatorPosition = resolved.indexOf("/");
     QString scaleFactor = resolved.left(separatorPosition);
     QString selectedFilePath = resolved.mid(separatorPosition+1);
+qDebug() << "reloadSource" << selectedFilePath << scaleFactor << "AAA" << UCUnits::instance().devicePixelRatio();
 
     if (scaleFactor == "1") {
-        // No scaling. Just pass the file as is.
-        m_image->setSource(QUrl::fromLocalFile(selectedFilePath));
+        if (qFuzzyCompare(UCUnits::instance().devicePixelRatio(), 1.0f)) {
+            // No scaling. Just pass the file as is.
+            m_image->setSource(QUrl::fromLocalFile(selectedFilePath));
+        } else {
+            m_image->setSource(QUrl("image://scaling/1/" + selectedFilePath));
+            m_image->setSourceSize(m_image->sourceSize()); // explicitly set the source size as we know it
+        }
     } else {
         // Prepend "image://scaling" for the image to be loaded by UCScalingImageProvider.
-        if (!m_source.path().endsWith(".sci")) {
+        if (!m_source.path().endsWith(".sci")) { qDebug() << "scaled";
             // Regular image file
             m_image->setSource(QUrl("image://scaling/" + resolved));
+            m_image->setSourceSize(m_image->sourceSize()); // explicitly set the source size as we know it
         } else {
             // .sci image file. Rewrite the .sci file into a temporary file.
             bool rewritten = true;
@@ -111,6 +118,7 @@ void UCQQuickImageExtension::reloadSource()
             } else {
                 m_image->setSource(m_source);
             }
+            m_image->setSourceSize(m_image->sourceSize()); // explicitly set the source size as we know it
         }
     }
 }

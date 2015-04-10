@@ -74,8 +74,14 @@ UCUnits::UCUnits(QObject *parent) :
     } else {
         m_devicePixelRatio = 1.0;
     }
-    m_gridUnit = getenvFloat(ENV_GRID_UNIT_PX, DEFAULT_GRID_UNIT_PX);
-    qDebug() << "!123 loading devpixratio:" << m_devicePixelRatio << m_gridUnit;
+
+    // If GRID_UNIT_PX set, always use it. If not, 1GU := DEFAULT_GRID_UNIT_PX * m_devicePixelRatio
+    if (qEnvironmentVariableIsSet(ENV_GRID_UNIT_PX)) {
+        m_gridUnit = getenvFloat(ENV_GRID_UNIT_PX, DEFAULT_GRID_UNIT_PX);
+    } else {
+        m_gridUnit = DEFAULT_GRID_UNIT_PX * m_devicePixelRatio;
+    }
+    qDebug() << "Initial GU" << m_gridUnit;
 }
 
 /*!
@@ -85,23 +91,22 @@ UCUnits::UCUnits(QObject *parent) :
 */
 float UCUnits::gridUnit()
 {
-    qDebug() << "!123 asked for grid unit" << m_gridUnit / m_devicePixelRatio;
-    return m_gridUnit / m_devicePixelRatio;
+    return m_gridUnit;
 }
 
-void UCUnits::setGridUnit(float gridUnit)
-{
-    qDebug() << "!123 setting grid unit" << gridUnit;
-    m_gridUnit = gridUnit * m_devicePixelRatio;
+void UCUnits::setGridUnit(const float gridUnit)
+{    qDebug() << "Override GU" << gridUnit;
+    m_gridUnit = gridUnit;
     Q_EMIT gridUnitChanged();
 }
 
 /*!
     \qmlmethod real Units::dp(real value)
 
-    Returns the number of pixels \a value density independent pixels correspond to.
+    Returns the number of device pixels \a value density independent pixels correspond to.
 */
-float UCUnits::dp(float value)
+// Device pixels (and not actual pixels) because QML sizes in terms of device pixels.
+float UCUnits::dp(const float value)
 {
     const float ratio = m_gridUnit / DEFAULT_GRID_UNIT_PX / m_devicePixelRatio;
     if (value <= 2.0) {
@@ -115,11 +120,18 @@ float UCUnits::dp(float value)
 /*!
     \qmlmethod real Units::gu(real value)
 
-    Returns the number of pixels \a value grid units correspond to.
+    Returns the number of device pixels \a value grid units correspond to.
 */
-float UCUnits::gu(float value)
+// Device pixels (and not actual pixels) because QML sizes in terms of device pixels.
+
+float UCUnits::gu(const float value)
 {
     return qRound(value * m_gridUnit / m_devicePixelRatio);
+}
+
+float UCUnits::devicePixelRatio() const
+{
+    return m_devicePixelRatio;
 }
 
 QString UCUnits::resolveResource(const QUrl& url)
@@ -184,11 +196,12 @@ QString UCUnits::resolveResource(const QUrl& url)
 
         path = prefix + suffixForGridUnit(selectedGridUnitSuffix) + suffix;
         float scaleFactor = m_gridUnit / selectedGridUnitSuffix;
+        qDebug() << "P" << path << scaleFactor;
         return QString::number(scaleFactor) + "/" + path;
     }
 
     path = prefix + suffix;
-    if (QFile::exists(path)) {
+    if (QFile::exists(path)) { qDebug() << "P" << path;
         return QString("1") + "/" + path;
     }
 
