@@ -262,14 +262,14 @@ void UCStyledItemBasePrivate::attachStyleSizeChanges(bool attach)
         QQuickImplicitSizeItem *sitem = qobject_cast<QQuickImplicitSizeItem*>(styleItem);
         if (sitem) {
             QObject::connect(styleItem, SIGNAL(implicitWidthChanged2()),
-                             q, SLOT(_q_styleResized()));
+                             q, SLOT(_q_styleResized()), Qt::DirectConnection);
             QObject::connect(styleItem, SIGNAL(implicitHeightChanged2()),
-                             q, SLOT(_q_styleResized()));
+                             q, SLOT(_q_styleResized()), Qt::DirectConnection);
         } else {
             QObject::connect(styleItem, SIGNAL(implicitWidthChanged()),
-                             q, SLOT(_q_styleResized()));
+                             q, SLOT(_q_styleResized()), Qt::DirectConnection);
             QObject::connect(styleItem, SIGNAL(implicitHeightChanged()),
-                             q, SLOT(_q_styleResized()));
+                             q, SLOT(_q_styleResized()), Qt::DirectConnection);
         }
     } else {
         QQuickImplicitSizeItem *sitem = qobject_cast<QQuickImplicitSizeItem*>(styleItem);
@@ -290,15 +290,23 @@ void UCStyledItemBasePrivate::attachStyleSizeChanges(bool attach)
 void UCStyledItemBasePrivate::_q_styleResized()
 {
     Q_Q(UCStyledItemBase);
+    QObject *sender = q->sender();
+    if (sender && sender != styleItem && styleItem) {
+        // the implicitSize has been changed by other than the styleItem, detach
+        attachStyleSizeChanges(false);
+        return;
+    }
     qreal w = styleItem ? styleItem->implicitWidth() : 0;
     qreal h = styleItem ? styleItem->implicitHeight() : 0;
+    if (!w || !h) {
+        return;
+    }
     if (w != implicitWidth) {
         q->setImplicitWidth(w);
     }
     if (h != implicitHeight) {
         q->setImplicitHeight(h);
     }
-    qDebug() << "W" << q->implicitWidth() << ":H" << q->implicitHeight();
 }
 
 /*!

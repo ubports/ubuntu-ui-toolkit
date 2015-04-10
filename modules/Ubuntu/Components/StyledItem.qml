@@ -47,7 +47,4 @@ import Ubuntu.Components 1.3
 */
 StyledItemBase {
     id: styledItem
-
-//    implicitWidth: __styleInstance ? __styleInstance.implicitWidth : 0
-//    implicitHeight: __styleInstance ? __styleInstance.implicitHeight : 0
 }
