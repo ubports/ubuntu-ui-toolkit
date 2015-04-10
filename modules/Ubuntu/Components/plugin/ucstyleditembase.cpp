@@ -299,7 +299,9 @@ void UCStyledItemBasePrivate::_q_styleResized()
     }
     qreal w = styleItem ? styleItem->implicitWidth() : 0;
     qreal h = styleItem ? styleItem->implicitHeight() : 0;
-    if (!w || !h) {
+    // leave if the new width/height is 0 and the current width/height is not 0
+    // and the call was an initial call (sender is not a valid object)
+    if ((!w || !h) && !sender && (q->implicitWidth() || q->implicitHeight())) {
         return;
     }
     if (w != implicitWidth) {

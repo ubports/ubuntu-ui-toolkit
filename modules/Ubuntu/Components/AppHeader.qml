@@ -26,10 +26,6 @@ import Ubuntu.Components 1.3 as Components
 StyledItem {
     id: header
 
-    // FIXME: force implicitHeight binding to overrule the way styled item is getting it
-    // as workaround for the binding being broken in case of style change
-    implicitHeight: __styleInstance ? __styleInstance.implicitHeight : 0
-
     anchors {
         left: parent.left
         right: parent.right

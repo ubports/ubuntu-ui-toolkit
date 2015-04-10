@@ -28,11 +28,6 @@ MainView {
         anchors.fill: parent
         spacing: units.gu(2)
 
-        Button {
-            text: "ahoj"
-        }
-
-        /*
         ComboButton {
             id: combo1
             text: "collapsedHeight differs"
@@ -144,6 +139,5 @@ MainView {
                 }
             }
         }
-        */
     }
 }
