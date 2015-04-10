@@ -21,7 +21,6 @@
 
 #include <QtQuick/private/qquickitem_p.h>
 #include "ucstyleditembase.h"
-#include <QtQml/QQmlIncubator>
 
 class QQuickMouseArea;
 class UCStyledItemBase;

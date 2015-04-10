@@ -81,13 +81,34 @@ bool UCStyledItemBasePrivate::isParentFocusable()
 
 
 /*!
- * \qmltype StyledItemBase
+ * \qmltype StyledItem
  * \instantiates UCStyledItemBase
  * \inqmlmodule Ubuntu.Components 1.1
  * \ingroup ubuntu
  * \since Ubuntu.Components 1.1
- * \internal
- * \qmlabstract
+ * \brief The StyledItem class allows items to be styled by the theme.
+ *
+ * StyledItem provides facilities for making an Item stylable by the theme.
+ *
+ * In order to make an Item stylable by the theme, it is enough to make the Item
+ * inherit from StyledItem and set its \l style property to be the result of the
+ * appropriate call to theme.createStyleComponent().
+ *
+ * Example definition of a custom Item MyItem.qml:
+ * \qml
+ * StyledItem {
+ *     id: myItem
+ *     style: theme.createStyleComponent("MyItemStyle.qml", myItem)
+ * }
+ * \endqml
+ *
+ * The Component set on \l style is instantiated and placed below everything else
+ * that the Item contains.
+ *
+ * A reference to the Item being styled is accessible from the style and named
+ * 'styledItem'.
+ *
+ * \sa {Theme}
  */
 UCStyledItemBase::UCStyledItemBase(QQuickItem *parent)
     : QQuickItem(*(new UCStyledItemBasePrivate), parent)

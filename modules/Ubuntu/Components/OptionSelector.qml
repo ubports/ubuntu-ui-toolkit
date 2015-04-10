@@ -209,7 +209,7 @@ ListItem.Empty {
             visible: optionSelector.text !== "" ? true : false
         }
 
-        StyledItem {
+        Toolkit.StyledItem {
             id: listContainer
             objectName: "listContainer"
             activeFocusOnPress: true

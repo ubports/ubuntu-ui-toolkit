@@ -18,6 +18,7 @@
 
 import QtQuick 2.4
 import "mathUtils.js" as MathUtils
+import Ubuntu.Components 1.3 as Toolkit
 
 /*!
     \qmltype Slider
@@ -45,7 +46,7 @@ import "mathUtils.js" as MathUtils
     }
     \endqml
 */
-StyledItem {
+Toolkit.StyledItem {
     id: slider
 
     /*!
