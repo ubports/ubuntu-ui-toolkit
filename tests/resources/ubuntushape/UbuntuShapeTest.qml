@@ -24,6 +24,9 @@ Item {
     focus: true
 
     // Enum to string tables.
+    property variant aspectTable: [
+        "Flat", "Inset"
+    ]
     property variant backgroundModeTable: [
         "SolidColor", "VerticalGradient"
     ]
@@ -58,6 +61,8 @@ Item {
         "Zoom            (scroll):   x " + root.scaleFactor.toFixed(1) + "\n\n" +
         "Background colors  (a/z):   " + shape.backgroundColor + ", " + shape.secondaryBackgroundColor + "\n" +
         "Background mode      (e):   " + root.backgroundModeTable[shape.backgroundMode] + "\n\n" +
+        "Radius               (r):   " + "\"" + shape.radius + "\"\n" +
+        "Aspect               (t):   " + root.aspectTable[shape.aspect] + "\n\n" +
         "Source               (o):   " + shape.source + "\n" +
         "Source opacity       (p):   " + shape.sourceOpacity.toFixed(2) + "\n" +
         "Source fill          (q):   " + root.sourceFillModeTable[shape.sourceFillMode] + "\n" +
@@ -71,8 +76,7 @@ Item {
         "Image fill           (w):   " + root.imageFillModeTable[img1.fillMode] + "\n" +
         "Image halign         (x):   " + img1.horizontalAlignment + "\n" +
         "Image valign         (c):   " + img1.verticalAlignment + "\n\n" +
-        "Radius               (v):   " + "\"" + shape.radius + "\"\n" +
-        "Border               (b):   " + "\"" + shape.borderSource + "\"\n\n" +
+        "Border (deprecated)  (b):   " + "\"" + shape.borderSource + "\"\n\n" +
         "Colors (deprecated) (n/,):  " + shape.color + ", " + shape.gradientColor
 
     // Main scene.
@@ -212,6 +216,12 @@ Item {
         } else if (event.key == Qt.Key_E) {
             shape.backgroundMode = (shape.backgroundMode + 1) % 3;
 
+        // Styling.
+        } else if (event.key == Qt.Key_R) {
+            shape.radius = (shape.radius == "medium") ? "small" : "medium";
+        } else if (event.key == Qt.Key_T) {
+            shape.aspect = (shape.aspect + 1) % 2;
+
         // Source.
         } else if (event.key == Qt.Key_O) {
             if (shape.source == null) {
@@ -249,7 +259,7 @@ Item {
                 shape.sourceScale.x,
                 shape.sourceScale.y + ((event.modifiers & shift) ? 0.02 : -0.02));
 
-        // Image.
+        // Deprecated image.
         } else if (event.key == Qt.Key_M) {
             if (shape.image == null) {
                 shape.image = img1;
@@ -275,9 +285,7 @@ Item {
                 img1.verticalAlignment = Image.AlignTop;
             }
 
-        // Styling.
-        } else if (event.key == Qt.Key_V) {
-            shape.radius = (shape.radius == "medium") ? "small" : "medium";
+        // Deprecated styling.
         } else if (event.key == Qt.Key_B) {
             if (shape.borderSource == "radius_idle.sci") {
                 shape.borderSource = "radius_pressed.sci";
@@ -286,8 +294,6 @@ Item {
             } else {
                 shape.borderSource = "radius_idle.sci";
             }
-
-        // Colors.
         } else if (event.key == Qt.Key_N) {
             shape.color = Qt.rgba(
                 Math.random(), Math.random(), Math.random(), Math.random());
