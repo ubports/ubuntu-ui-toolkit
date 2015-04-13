@@ -949,8 +949,6 @@ plugins.qmltypes
     Property { name: "action"; type: "UCAction"; isPointer: true }
     Property { name: "listItemData"; type: "QObject"; isList: true; isReadonly: true }
     Property { name: "listItemChildren"; type: "QQuickItem"; isList: true; isReadonly: true }
-    Property { name: "style"; type: "QQmlComponent"; isPointer: true }
-    Property { name: "__styleInstance"; type: "QQuickItem"; isReadonly: true; isPointer: true }
     Signal { name: "clicked" }
     Signal { name: "pressAndHold" }
     Signal { name: "contentMovementStarted" }
@@ -967,11 +965,13 @@ plugins.qmltypes
     Property { name: "colorTo"; type: "QColor" }
     name: "UCListItemStyle"
     prototype: "QQuickItem"
-    exports: ["Ubuntu.Components.Styles/ListItemStyle 1.2"]
+    exports: [
     Property { name: "snapAnimation"; type: "QQuickAbstractAnimation"; isPointer: true }
     Property { name: "dropAnimation"; type: "QQuickPropertyAnimation"; isPointer: true }
     Property { name: "animatePanels"; type: "bool"; isReadonly: true }
     Property { name: "dragPanel"; type: "QQuickItem"; isPointer: true }
+    Property { name: "listItemIndex"; revision: 1; type: "int"; isReadonly: true }
+    Signal { name: "listItemIndexChanged"; revision: 1 }
     Method {
     name: "swipeEvent"
     Parameter { name: "event"; type: "UCSwipeEvent"; isPointer: true }

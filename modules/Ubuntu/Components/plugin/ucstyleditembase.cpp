@@ -301,7 +301,7 @@ void UCStyledItemBasePrivate::loadStyleItem(bool animated)
     // set implicit size
     _q_styleResized();
     connectStyleSizeChanges(true);
-    Q_EMIT q->__styleInstanceChanged();
+    Q_EMIT q->styleInstanceChanged();
 }
 
 /*!

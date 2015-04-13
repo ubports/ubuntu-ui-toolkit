@@ -15,17 +15,12 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components.Styles 1.2 as Styles
+import Ubuntu.Components.Styles 1.3 as Styles
 import Ubuntu.Components 1.3
 
 Styles.ListItemStyle {
 
     id: listItemStyle
-    /*
-     * Take over the ListItem's index context property as repeater used in panel
-     * overrides the property.
-     */
-    readonly property int listItemIndex: index
 
     // anchoring
     anchors {
@@ -96,7 +91,7 @@ Styles.ListItemStyle {
                             height: parent.height
                             sourceComponent: itemActions.delegate ? itemActions.delegate : defaultDelegate
                             property Action action: modelData
-                            property int index: index
+                            property int index: listItemIndex
                             property bool pressed: actionButton.pressed
                             onItemChanged: {
                                 // use action's objectName to identify the visualized action
@@ -170,7 +165,7 @@ Styles.ListItemStyle {
         id: dragDelegate
         Item {
             id: dragPanel
-            objectName: "drag_panel" + index
+            objectName: "drag_panel" + listItemIndex
             anchors.fill: parent ? parent : undefined
             Icon {
                 objectName: "icon"

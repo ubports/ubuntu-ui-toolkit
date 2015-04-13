@@ -202,7 +202,8 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
 
     // register internal styles
     const char *styleUri = "Ubuntu.Components.Styles";
-    qmlRegisterType<UCListItemStyle, 2>(styleUri, 1, 2, "ListItemStyle");
+    qmlRegisterType<UCListItemStyle>(styleUri, 1, 2, "ListItemStyle");
+    qmlRegisterType<UCListItemStyle, 1>(styleUri, 1, 3, "ListItemStyle");
 
     QQmlExtensionPlugin::initializeEngine(engine, uri);
     QQmlContext* context = engine->rootContext();

@@ -69,7 +69,7 @@ class UCListItemStyle : public QQuickItem
     Q_PROPERTY(QQuickPropertyAnimation *dropAnimation MEMBER m_dropAnimation NOTIFY dropAnimationChanged)
     Q_PROPERTY(bool animatePanels READ animatePanels NOTIFY animatePanelsChanged)
     Q_PROPERTY(QQuickItem *dragPanel MEMBER m_dragPanel NOTIFY dragPanelChanged)
-    Q_PROPERTY(int index READ index NOTIFY indexChanged FINAL)
+    Q_PROPERTY(int listItemIndex READ index NOTIFY listItemIndexChanged FINAL REVISION 1)
 public:
     explicit UCListItemStyle(QQuickItem *parent = 0);
 
@@ -84,7 +84,7 @@ Q_SIGNALS:
     void dropAnimationChanged();
     void animatePanelsChanged();
     void dragPanelChanged();
-    void indexChanged();
+    Q_REVISION(1) void listItemIndexChanged();
 
 public Q_SLOTS:
     void swipeEvent(UCSwipeEvent *event);

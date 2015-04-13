@@ -77,7 +77,15 @@ void UCListItemStyle::componentComplete()
     }
 }
 
-// returns teh styledItem's index
+/*!
+ * \qmlproperty in ListItemStyle::listItemIndex
+ * \readonly
+ * \since Ubuntu.Components.Styles 1.3
+ * The property proxies the ListItem's index context property to the style, which
+ * is either the index of the list item in a ListView or the child index. Use this
+ * property rather than the \c index context property as that may not be defined
+ * in situations where the ListItem is not a delegate of a ListView or Repeater.
+ */
 int UCListItemStyle::index()
 {
     return UCListItemPrivate::get(m_listItem)->index();
