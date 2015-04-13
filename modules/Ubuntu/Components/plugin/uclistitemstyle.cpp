@@ -16,7 +16,7 @@
 
 #include "uclistitemstyle.h"
 #include "i18n.h"
-#include "uclistitem.h"
+#include "uclistitem_p.h"
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlInfo>
@@ -37,6 +37,7 @@
  */
 UCListItemStyle::UCListItemStyle(QQuickItem *parent)
     : QQuickItem(parent)
+    , m_listItem(0)
     , m_snapAnimation(0)
     , m_dropAnimation(0)
     , m_dragPanel(0)
@@ -52,6 +53,7 @@ void UCListItemStyle::classBegin()
     if (context && context->contextProperty("animated").isValid()) {
         setAnimatePanels(context->contextProperty("animated").toBool());
     }
+    m_listItem = qmlContext(this)->contextProperty("styledItem").value<UCListItem*>();
 }
 
 void UCListItemStyle::componentComplete()
@@ -69,11 +71,16 @@ void UCListItemStyle::componentComplete()
     }
 
     // connect snapAnimation's stopped() and the owning ListItem's contentMovementeEnded() signals
-    UCListItem *listItem = qmlContext(this)->contextProperty("styledItem").value<UCListItem*>();
-    if (listItem && m_snapAnimation) {
+    if (m_listItem && m_snapAnimation) {
         connect(m_snapAnimation, SIGNAL(runningChanged(bool)),
-                listItem, SLOT(_q_contentMoving()));
+                m_listItem, SLOT(_q_contentMoving()));
     }
+}
+
+// returns teh styledItem's index
+int UCListItemStyle::index()
+{
+    return UCListItemPrivate::get(m_listItem)->index();
 }
 
 /*!

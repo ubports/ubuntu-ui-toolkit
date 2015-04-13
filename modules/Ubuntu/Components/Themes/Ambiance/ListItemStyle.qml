@@ -29,6 +29,7 @@ Styles.ListItemStyle {
 
     // anchoring
     anchors {
+        // do not anchor fill
         fill: undefined
         top: parent ? parent.top : undefined
         bottom: parent ? parent.bottom : undefined

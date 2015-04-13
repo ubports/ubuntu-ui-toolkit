@@ -88,6 +88,10 @@ void UCListItemDivider::init(UCListItem *listItem)
 void UCListItemDivider::paletteChanged()
 {
     Q_D(UCListItemDivider);
+    // update hinglight color as well
+    if (!d->listItem->customColor) {
+        static_cast<UCListItem*>(d->listItem->q_ptr)->resetHighlightColor();
+    }
     QColor background = d->listItem->getTheme()->getPaletteColor("normal", "background");
     if (!background.isValid()) {
         return;
@@ -227,8 +231,6 @@ void UCListItemPrivate::init()
     // connect theme changes
     QObject::connect(q, SIGNAL(themeChanged()),
                      q, SLOT(_q_themeChanged()), Qt::DirectConnection);
-    // update theme changes
-    _q_themeChanged();
 
     // watch grid unit size change and set implicit size
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_updateSize()));
@@ -262,19 +264,11 @@ bool UCListItemPrivate::isPressAndHoldConnected()
 void UCListItemPrivate::postThemeChanged()
 {
     Q_Q(UCListItem);
-    // update the divider colors
-//    divider->paletteChanged();
-
     // if not using custom style, reload style component from theme
-    if (!customStyle) {
+    if (!customStyle && componentComplete) {
         // use style setter but reset custom style flag
         setStyle(getTheme()->createStyleComponent("ListItemStyle.qml", q));
         customStyle = false;
-    }
-
-    // update colors, panels
-    if (!customColor) {
-        q->resetHighlightColor();
     }
 }
 
@@ -330,24 +324,24 @@ void UCListItemPrivate::_q_syncDragMode()
  */
 void UCListItemPrivate::preStyleChanged()
 {
-    customStyle = true;
     snapOut();
     UCStyledItemBasePrivate::preStyleChanged();
-}
-
-void UCListItemPrivate::postStyleChanged()
-{
-    UCStyledItemBasePrivate::postStyleChanged();
-    // extra context properties
-    if (!styleItemContext->contextProperty("index").isValid()) {
-        styleItemContext->setContextProperty("index", index());
+    // delete style if it was non-custom style
+    if (!customStyle && styleComponent) {
+        styleComponent->deleteLater();
+        styleComponent = 0;
     }
+    customStyle = true;
 }
 
 // creates the style item, with altered default value of the animatePanels style property
 // the property is turned on after the panel initialization.
 void UCListItemPrivate::loadStyleItem(bool animated)
 {
+    if (!styleComponent) {
+        // try to create the style if possible
+        postThemeChanged();
+    }
     UCStyledItemBasePrivate::loadStyleItem(animated);
     UCListItemStyle *myStyle = qobject_cast<UCListItemStyle*>(styleItem);
     if (!myStyle) {
@@ -919,6 +913,15 @@ UCListItem::UCListItem(QQuickItem *parent)
 
 UCListItem::~UCListItem()
 {
+}
+
+void UCListItem::classBegin()
+{
+    UCStyledItemBase::classBegin();
+    Q_D(UCListItem);
+    // initialize theme
+    d->_q_themeChanged();
+    d->divider->paletteChanged();
 }
 
 void UCListItem::componentComplete()

@@ -98,7 +98,6 @@ public:
     bool contentMoving() const;
     void setContentMoving(bool moved);
     virtual void preStyleChanged();
-    virtual void postStyleChanged();
     virtual void loadStyleItem(bool animated = true);
     bool dragging();
     bool dragMode();

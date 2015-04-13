@@ -62,6 +62,7 @@ public:
     void resetHighlightColor();
 
 protected:
+    void classBegin();
     void componentComplete();
     QSGNode *updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data);
     void itemChange(ItemChange change, const ItemChangeData &data);
@@ -134,6 +135,7 @@ private:
     QColor colorTo() const;
     void setColorTo(const QColor &color);
     Q_DECLARE_PRIVATE(UCListItemDivider)
+    friend class UCListItem;
 };
 
 class UCDragEvent;
