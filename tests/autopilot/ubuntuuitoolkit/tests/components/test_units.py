@@ -18,6 +18,8 @@
 
 import logging
 import os
+import testscenarios
+import testtools
 
 import fixtures
 
@@ -31,9 +33,10 @@ from ubuntuuitoolkit import (
 logger = logging.getLogger(__name__)
 
 
-class UnitsTestCase(tests.QMLFileAppTestCase):
+class UnitsTestCase(testscenarios.TestWithScenarios,
+                    testtools.TestCase):
 
-    BUTTON_WIDTH_IN_GU = 20
+    WIDTH_IN_GU = 20
 
     path = os.path.abspath(__file__)
     dir_path = os.path.dirname(path)
@@ -41,8 +44,9 @@ class UnitsTestCase(tests.QMLFileAppTestCase):
         dir_path, 'test_units.UnitsTestCase.qml')
 
     scenarios = [
-        ('with default GRID_UNIT_PX', {'grid_unit_px': ''}),
-        ('with GRID_UNIT_PX environment variable set', {'grid_unit_px': '10'})
+        ('with default GRID_UNIT_PX', {'grid_unit_px': '', 'expected_pixels': 160}),
+        ('with GRID_UNIT_PX environment variable set', {'grid_unit_px': '10',
+         'expected_pixels': 200})
     ]
 
     def setUp(self):
@@ -51,32 +55,7 @@ class UnitsTestCase(tests.QMLFileAppTestCase):
         self.useFixture(fixture_setup.InitctlEnvironmentVariable(
             global_=True, GRID_UNIT_PX=self.grid_unit_px))
         super(UnitsTestCase, self).setUp()
-        self.button = self.main_view.select_single(objectName='button')
-        self.label = self.main_view.select_single(objectName='clicked_label')
 
-    def test_click_inside_button_using_grid_units(self):
-        x, y, width, height = self.button.globalRect
-        logger.info(
-            'globalRect: {}, {}, {}, {}'.format(*self.button.globalRect))
-        from autopilot import input
-        logger.info('button center: {}, {}'.format(
-            *input.get_center_point(self.button)))
-        logger.info('button right border: ' + str(x + width))
-        logger.info('move: {}, {}'.format(
-            x + units.gu(self.BUTTON_WIDTH_IN_GU - 1), y + height // 2))
-
-        self.pointing_device.move(
-            x + units.gu(self.BUTTON_WIDTH_IN_GU - 1), y + height // 2)
-        self.pointing_device.click()
-
-        from autopilot.matchers import Eventually
-        from testtools.matchers import Equals
-        self.assertThat(self.label.text, Eventually(Equals('Clicked.')))
-
-    def test_click_outside_button_using_grid_units(self):
-        x, y, _, height = self.button.globalRect
-        self.pointing_device.move(
-            x + units.gu(self.BUTTON_WIDTH_IN_GU + 1), y + height // 2)
-        self.pointing_device.click()
-
-        self.assertEqual('Not clicked.', self.label.text)
+    def test_gu(self):
+        pixels = units.gu(self.WIDTH_IN_GU)
+        self.assertEquals(pixels, self.expected_pixels)
