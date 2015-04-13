@@ -292,6 +292,12 @@ void AlarmDataAdapter::completeCancel()
     }
 }
 
+void AlarmDataAdapter::copyAlarmData(const UCAlarm &other)
+{
+    AlarmDataAdapter *pOther = static_cast<AlarmDataAdapter*>(AlarmDataAdapter::get(&other));
+    setData(pOther->data());
+}
+
 void AlarmDataAdapter::adjustDowSettings(UCAlarm::AlarmType type, UCAlarm::DaysOfWeek days)
 {
     QOrganizerItemRecurrence old = event.detail(QOrganizerItemDetail::TypeRecurrence);
@@ -508,18 +514,16 @@ void AlarmsAdapter::saveAlarms()
         return;
     }
     QJsonArray data;
-    UCAlarm alarm;
-    AlarmDataAdapter *pAlarm = static_cast<AlarmDataAdapter*>(UCAlarmPrivate::get(&alarm));
     for(int i = 0; i < alarmList.count(); i++) {
         // create an UCAlarm and set its event to ease conversions
-        pAlarm->setData(alarmList[i]);
+        const UCAlarm *alarm = alarmList[i];
         QJsonObject object;
-        object["message"] = alarm.message();
-        object["date"] = alarm.date().toString();
-        object["sound"] = alarm.sound().toString();
-        object["type"] = QJsonValue(alarm.type());
-        object["days"] = QJsonValue(alarm.daysOfWeek());
-        object["enabled"] = QJsonValue(alarm.enabled());
+        object["message"] = alarm->message();
+        object["date"] = alarm->date().toString();
+        object["sound"] = alarm->sound().toString();
+        object["type"] = QJsonValue(alarm->type());
+        object["days"] = QJsonValue(alarm->daysOfWeek());
+        object["enabled"] = QJsonValue(alarm->enabled());
         data.append(object);
 
     }
@@ -640,11 +644,10 @@ int AlarmsAdapter::alarmCount()
     return alarmList.count();
 }
 
-void AlarmsAdapter::getAlarmAt(const UCAlarm &alarm, int index) const
+UCAlarm *AlarmsAdapter::getAlarmAt(int index) const
 {
     Q_ASSERT(index >= 0 && index < alarmList.count());
-    AlarmDataAdapter *pAlarm = static_cast<AlarmDataAdapter*>(UCAlarmPrivate::get(&alarm));
-    pAlarm->setData(alarmList[index]);
+    return const_cast<UCAlarm*>(alarmList[index]);
 }
 
 bool AlarmsAdapter::findAlarm(const UCAlarm &alarm, const QVariant &cookie) const
@@ -693,7 +696,7 @@ void AlarmsAdapter::insertAlarm(const QOrganizerItemId &id)
     adjustAlarmOccurrence(*pAlarm);
 
     // insert and get the index
-    int index = alarmList.insert(pAlarm->data());
+    int index = alarmList.insert(alarm);
     Q_EMIT q_ptr->alarmInsertStarted(index);
     Q_EMIT q_ptr->alarmInsertFinished();
 }
@@ -717,7 +720,7 @@ void AlarmsAdapter::updateAlarm(const QOrganizerItemId &id)
     AlarmDataAdapter *pAlarm = static_cast<AlarmDataAdapter*>(UCAlarmPrivate::get(&alarm));
     pAlarm->setData(event);
     adjustAlarmOccurrence(*pAlarm);
-    int newIndex = alarmList.update(index, pAlarm->data());
+    int newIndex = alarmList.update(index, alarm);
     if (newIndex == index) {
         Q_EMIT q_ptr->alarmUpdated(index);
     } else {
@@ -774,7 +777,7 @@ void AlarmsAdapter::completeFetchAlarms()
         AlarmDataAdapter *pAlarm = static_cast<AlarmDataAdapter*>(UCAlarmPrivate::get(&alarm));
         pAlarm->setData(event);
         adjustAlarmOccurrence(*pAlarm);
-        alarmList.insert(pAlarm->data());
+        alarmList.insert(alarm);
     }
 
     completed = true;

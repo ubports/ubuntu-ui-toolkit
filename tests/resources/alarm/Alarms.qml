@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 1.1
+import Ubuntu.Components 1.2 // due to ListItem
 import Ubuntu.Components.ListItems 1.0
 import Ubuntu.Components.Popups 1.0
 import Ubuntu.Components.Pickers 1.0
@@ -25,23 +25,25 @@ MainView {
     width: units.gu(40)
     height: units.gu(71)
     objectName: "mainView"
-    useDeprecatedToolbar: false
 
     AlarmModel{
         id: alarmModel
     }
 
     Alarm {
-        id: alarm
+        id: stockAlarm
         onStatusChanged: {
             print("operation " + operation + ", status= " + status + ", error=" + error);
             if (status !== Alarm.Ready)
                 return;
             if ((operation > Alarm.NoOperation) && (operation < Alarm.Reseting)) {
                 reset();
+                alarm = stockAlarm;
             }
         }
     }
+
+    property Alarm alarm: stockAlarm
 
     Page {
         title: "Alarm test"
@@ -83,21 +85,17 @@ MainView {
             Standard {
                 text: "Enabled"
                 control: Switch {
-                    id: enabled
+                    id: enabledSwitch
                     objectName: "alarm_enabled"
                     checked: alarm.enabled
-                    onCheckedChanged: {
-                        if (checked != alarm.enabled) {
-                            alarm.enabled = checked;
-                        }
-                    }
                 }
             }
             ItemSelector {
                 id: recurence
                 text: "Recurence"
                 model: ["OneTime", "Daily", "Weekly"]
-                selectedIndex: {
+                selectedIndex: setRecurence(alarm)
+                function setRecurence(alarm) {
                     if (alarm.type == Alarm.OneTime)
                         return 0;
                     else if (alarm.type == Alarm.Repeating) {
@@ -107,32 +105,18 @@ MainView {
                             return 2;
                     }
                 }
-                onSelectedIndexChanged: {
-                    switch (selectedIndex) {
-                    case 0:
-                        alarm.type = Alarm.OneTime;
-                        break;
-                    case 1:
-                        alarm.type = Alarm.Repeating;
-                        alarm.daysOfWeek = Alarm.Daily;
-                        break;
-                    case 2:
-                        alarm.type = Alarm.Repeating;
-                        alarm.daysOfWeek = Alarm.AutoDetect;
-                        break;
-                    }
-                }
             }
 
             MultiValue {
                 id: days
                 text: "Occurrence"
-                values: getValues()
+                values: getValues(alarm)
                 visible: recurence.selectedIndex === 2
+                property int daysOfWeek: alarm.daysOfWeek
                 onClicked: {
-                    PopupUtils.open(Qt.resolvedUrl("AlarmDays.qml"), days, {"alarm": alarm});
+                    PopupUtils.open(Qt.resolvedUrl("AlarmDays.qml"), days, {property: "daysOfWeek"});
                 }
-                function getValues() {
+                function getValues(alarm) {
                     var v = [];
                     if (alarm.daysOfWeek & Alarm.Monday) v.push("Monday");
                     if (alarm.daysOfWeek & Alarm.Tuesday) v.push("Tuesday");
@@ -154,8 +138,22 @@ MainView {
                         var date = new Date();
                         date.setTime(timeChooser.time.getTime());
                         date.setDate(dateChooser.date.getDate());
-                        print("DATE", date, dateChooser.date.toDateString())
                         alarm.date = date;
+                        alarm.enabled = enabledSwitch.checked;
+                        switch (recurence.selectedIndex) {
+                        case 0:
+                            alarm.type = Alarm.OneTime;
+                            alarm.daysOfWeek = Alarm.AutoDetect;
+                            break;
+                        case 1:
+                            alarm.type = Alarm.Repeating;
+                            alarm.daysOfWeek = Alarm.Daily;
+                            break;
+                        case 2:
+                            alarm.type = Alarm.Repeating;
+                            alarm.daysOfWeek = days.daysOfWeek;
+                            break;
+                        }
                         alarm.save();
                     }
                 }
@@ -165,6 +163,7 @@ MainView {
                 control: Button {
                     text: "Reset"
                     onClicked: {
+                        alarm = stockAlarm;
                         alarm.reset();
                     }
                 }
@@ -177,14 +176,31 @@ MainView {
                 height: units.gu(20)
                 clip: true
                 model: alarmModel
-                delegate: Standard {
-                    text: message + recurring(model) + "\n" + model.date
+                ListItemActions {
+                    id: leading
+                    actions: Action {
+                        iconName: "delete"
+                        onTriggered: {
+                            var data = alarmModel.get(value);
+                            data.cancel();
+                        }
+                    }
+                }
+                delegate: ListItem {
+                    Label {
+                        text: message + recurring(model) + "\n" + model.date
+                    }
                     function recurring(alarmData) {
                         return (alarmData.type === Alarm.Repeating) ? "[Repeating]" : "[Onetime]";
                     }
 
-                    removable: true
-                    control: Switch {
+                    leadingActions: leading
+
+                    Switch {
+                        anchors {
+                            verticalCenter: parent.verticalCenter
+                            right: parent.right
+                        }
                         checked: model.enabled
                         onCheckedChanged: {
                             if (checked != model.enabled) {
@@ -196,17 +212,13 @@ MainView {
                             }
                         }
                     }
-                    onItemRemoved: {
-                        var data = alarmModel.get(index);
-                        data.cancel();
-                    }
                     onClicked: {
-                        var data = alarmModel.get(index);
-                        alarm.message = data.message;
-                        alarm.date = data.date;
-                        alarm.type = data.type;
-                        alarm.daysOfWeek = data.daysOfWeek;
-                        alarm.enabled = data.enabled;
+                        alarm = alarmModel.get(index);
+                        dateChooser.date = alarm.date;
+                        timeChooser.time = alarm.date;
+                        message.text = alarm.message;
+                        enabledSwitch.checked = alarm.enabled;
+                        recurence.selectedIndex = recurence.setRecurence(alarm);
                     }
 
                     Connections {

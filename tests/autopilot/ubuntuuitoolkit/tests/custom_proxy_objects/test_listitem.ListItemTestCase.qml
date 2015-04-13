@@ -22,19 +22,18 @@ MainView {
     height: units.gu(60)
     objectName: "mainView"
 
-    // make sure we're not messed up by the deprecated toolbar
-    useDeprecatedToolbar: false
-
     Page {
         id: testPage
         objectName: "test_page"
-        title: "No action triggered"
+        title: listView.ViewItems.selectMode ? "In selection mode" : "No action triggered"
         ListView {
             id: listView
+            objectName: "test_view"
             anchors.fill: parent
             model: 25
             delegate: ListItem {
                 objectName: "listitem" + index
+                onPressAndHold: listView.ViewItems.selectMode = true
                 leadingActions: ListItemActions {
                     actions: [
                         Action {

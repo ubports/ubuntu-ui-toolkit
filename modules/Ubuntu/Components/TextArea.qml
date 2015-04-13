@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 1.1 as Ubuntu
+import QtQuick 2.4
+import Ubuntu.Components 1.2 as Ubuntu
 import Ubuntu.Components.Popups 1.0
 import "mathUtils.js" as MathUtils
 
@@ -758,8 +758,7 @@ StyledItem {
 
         function linesHeight(lines)
         {
-            var lineHeight = editor.font.pixelSize * lines + inputHandler.lineSpacing * lines
-            return lineHeight + 2 * frameSpacing;
+            return inputHandler.lineSize * lines + 2 * frameSpacing;
         }
 
         function frameSize()
@@ -803,9 +802,9 @@ StyledItem {
             margins: internal.frameSpacing
         }
         // hint is shown till user types something in the field
-        visible: (editor.getText(0, editor.length) == "") && !editor.inputMethodComposing
+        visible: (editor.text == "") && !editor.inputMethodComposing
         color: Theme.palette.normal.backgroundText
-        fontSize: "medium"
+        font: editor.font
         elide: Text.ElideRight
         wrapMode: Text.WordWrap
     }
@@ -870,7 +869,6 @@ StyledItem {
                 main: control
                 input: editor
                 flickable: flicker
-                frameDistance: Qt.point(flicker.x, flicker.y)
             }
         }
     }

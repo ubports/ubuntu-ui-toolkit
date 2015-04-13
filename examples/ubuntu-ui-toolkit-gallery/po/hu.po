@@ -1,287 +1,412 @@
+# Hungarian translation for ubuntu-ui-toolkit
+# Copyright (c) 2015 Rosetta Contributors and Canonical Ltd 2015
+# This file is distributed under the same license as the ubuntu-ui-toolkit package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2015.
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: Tim Peeters <tim.peeters@canonical.com>\n"
-"Language-Team: \n"
-"Language: \n"
+"Project-Id-Version: ubuntu-ui-toolkit\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2014-11-11 11:21+0100\n"
+"PO-Revision-Date: 2015-02-09 08:21+0000\n"
+"Last-Translator: Richard Somlói <ricsipontaz@gmail.com>\n"
+"Language-Team: Hungarian <hu@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2015-03-14 05:29+0000\n"
+"X-Generator: Launchpad (build 17389)\n"
 
-msgid "Activity Indicator"
-msgstr "Akitvitás Jelző"
+#: Animations.qml:24
+msgid "NumberAnimation"
+msgstr ""
 
-msgid "Basic"
-msgstr "Alapvető"
+#: Animations.qml:28 Buttons.qml:28 Dialog.qml:29 ListItems.qml:25
+#: ProgressBars.qml:28 ProgressBars.qml:84 Sheet.qml:40 Sheet.qml:73
+#: Sliders.qml:28 TextInputs.qml:45
+msgid "Standard"
+msgstr "Normál"
 
-msgid "Button"
-msgstr "Gomb"
+#: Animations.qml:58
+msgid "Standard Durations"
+msgstr "Normál időtartam"
 
-msgid "Buttons"
-msgstr "Gombok"
+#: Animations.qml:62
+msgid "Snap"
+msgstr ""
 
+#: Animations.qml:98
+msgid "Fast"
+msgstr "Gyors"
+
+#: Animations.qml:134
+msgid "Slow"
+msgstr "Lassú"
+
+#: Animations.qml:159
+msgid "Sleepy"
+msgstr ""
+
+#: Buttons.qml:32 Buttons.qml:41 Buttons.qml:51 Buttons.qml:71 Buttons.qml:79
+#: Buttons.qml:89
 msgid "Call"
 msgstr "Hívás"
 
-msgid "Captions and Dividers"
-msgstr "Feliratok és Választóvonalak"
+#: Buttons.qml:37
+msgid "Stroke"
+msgstr ""
 
-msgid "Check Box"
-msgstr "Jelölő négyzet"
+#: Buttons.qml:47 UbuntuShape.qml:28
+msgid "Color"
+msgstr "Színes"
 
-msgid "Checked"
-msgstr "Kipipálva"
-
-msgid "Colors"
-msgstr "Színek"
-
-msgid "Content"
-msgstr "Tartalom"
-
-msgid "Controls"
-msgstr "Vezérlő"
-
-msgid "Custom icon"
-msgstr "Egyedi ikon"
-
-msgid "Date Picker"
-msgstr "Dátum Választó"
-
-msgid "Default"
-msgstr "Alapértelmezett"
-
-msgid "Disabled"
-msgstr "Letiltva"
-
-msgid "Expanded"
-msgstr "Kiterjesztett"
-
-msgid "External page"
-msgstr "Külső oldal"
-
-msgid "First page"
-msgstr "Első oldal"
-
-msgid "Grid View"
-msgstr "Rács Nézet"
-
-msgid "Grouped List"
-msgstr "Csoportosított Lista"
-
+#: Buttons.qml:57 Buttons.qml:114 ListItems.qml:43
 msgid "Icon"
 msgstr "Ikon"
 
-msgid "Idle"
-msgstr "Üresjárat"
+#: Buttons.qml:66 Buttons.qml:128
+msgid "Icon+Text"
+msgstr "Ikon + szöveg"
 
-msgid "It also works well with icons and progression."
-msgstr "Jól működik Ikonokkal és Progresszióval"
+#: Buttons.qml:85 TextInputs.qml:88 Toggles.qml:45 Toggles.qml:83
+msgid "Disabled"
+msgstr "Letiltott"
 
-msgid "Item"
-msgstr "Elem"
+#: Buttons.qml:99 OptionSelectors.qml:34
+msgid "Collapsed"
+msgstr "Összecsukott"
 
-msgid "Known"
-msgstr "Ismert"
+#: Buttons.qml:142 ListItems.qml:120 OptionSelectors.qml:43
+msgid "Expanded"
+msgstr "Lenyitott"
 
+#: Colors.qml:30
+msgid "Orange"
+msgstr "Narancssárga"
+
+#: Colors.qml:36
+msgid "Light grey"
+msgstr "Világos szürke"
+
+#: Colors.qml:42
+msgid "Dark grey"
+msgstr "Sötét szürke"
+
+#: Colors.qml:48
+msgid "Red"
+msgstr "Piros"
+
+#: Colors.qml:54
+msgid "Green"
+msgstr "Zöld"
+
+#: Colors.qml:60
+msgid "Blue"
+msgstr "Kék"
+
+#: Colors.qml:66
+msgid "Purple"
+msgstr "Lila"
+
+#: Dialog.qml:32 Popover.qml:45 Sheet.qml:43 Sheet.qml:76
+msgid "Open"
+msgstr "Megnyitás"
+
+#: Icons.qml:30
+msgid "Scaling"
+msgstr "Átméretezés"
+
+#: Icons.qml:55
+msgid "Colorization"
+msgstr "Színezés"
+
+#: Icons.qml:80
+msgid "Theme"
+msgstr "Téma"
+
+#: ListItems.qml:28 ListItems.qml:36 ListItems.qml:46 ListItems.qml:60
+#: ListItems.qml:66 ListItems.qml:76 ListItems.qml:85 ListItems.qml:94
+#: ListItems.qml:160 ListItems.qml:173 ListItems.qml:193
 msgid "Label"
-msgstr "Cimke"
+msgstr "Címke"
 
-msgid "Large button clicked"
-msgstr "Nagy gombra klikkelve"
-
-msgid "List Items"
-msgstr "Lista Elem"
-
-msgid "Live"
-msgstr "Élő"
-
-msgid "Mixed"
-msgstr "Vegyes"
-
-msgid "Multiple lines"
-msgstr "Több sor"
-
-msgid "Multiple values"
-msgstr "Több érték"
-
-msgid "My custom page"
-msgstr "Egyéni oldalam"
-
-msgid "On Screen Keyboard"
-msgstr "Billentyűzet"
-
-msgid "Overlaid"
-msgstr "Lefedett"
-
-msgid "Page one"
-msgstr "Első oldal"
-
-msgid "Page Stack"
-msgstr "Oldal Halom"
-
-msgid "Page two (external)"
-msgstr "Második oldal (külső)"
-
-msgid "Password"
-msgstr "Jelszó"
-
-msgid "password echo on editing"
-msgstr "Jelszó kiírása szerkesztéskor"
-
-msgid "password with echo"
-msgstr "Jelszó kiírása"
-
-msgid "Popovers"
-msgstr "Előugrók"
-
-msgid "Progress Bar"
-msgstr "Folyamat jelző"
-
-msgid "Progression"
-msgstr "Előrehaladás"
-
-msgid "Red rectangle"
-msgstr "Piros téglalap"
-
-msgid "Root page"
-msgstr "Kezdő oldal"
-
-msgid "Root page (again)"
-msgstr "Kezdő oldal (ismét)"
-
-msgid "sample text"
-msgstr "minta szöveg"
-
-msgid "Scalability"
-msgstr "Skálázhatóság"
-
-msgid "Scrollbar"
-msgstr "Gördülő sáv"
-
-msgid "Secondary label"
-msgstr "Másodlagos címke"
-
-msgid "Selected"
-msgstr "Kiválasztott"
-
-msgid "Sheets & Dialogues"
-msgstr "Táblázatok és Dialógusok"
-
-msgid "Show"
-msgstr "Megmutat"
-
-msgid "simple text field"
-msgstr "egyszerű szöveges mező"
-
-msgid "Single control"
-msgstr "Egyedüli vezérlő"
-
-msgid "Single value"
-msgstr "Egyedüli érték"
-
-msgid "Slider"
-msgstr "Csúszó"
-
-msgid "Split"
-msgstr "Választó"
-
-msgid "Standard"
-msgstr "Szabványos"
-
+#: ListItems.qml:33
 msgid "Subtitled"
 msgstr "Feliratozott"
 
-msgid "Switch"
-msgstr "Kapcsoló"
+#: ListItems.qml:37
+msgid "Secondary label"
+msgstr "Másodlagos címke"
 
-msgid "Tab"
-msgstr "Fül"
-
-msgid "Tabs"
-msgstr "Fülek"
-
-msgid "Tabs (Non Segmented)"
-msgstr "Fülek (Nem osztott)"
-
-msgid "Tabs (Segmented)"
-msgstr "Fülek (Osztott)"
-
-msgid "Text Input"
-msgstr "Szöveg Bevitel"
-
-msgid ""
-"This is a multi-line subText.\n"
-"Up to 5 lines are supported."
+#: ListItems.qml:52
+msgid "ThinDivider"
 msgstr ""
-"Ez egy több-soros subText.\n"
-"Legfeljebb 5 sor engedélyezett."
 
-msgid "This is an external page."
-msgstr "Ez egy külső oldal."
+#: ListItems.qml:73
+msgid "Progression"
+msgstr "Haladás"
 
-msgid "This is the first tab."
-msgstr "Ez az első fül"
+#: ListItems.qml:82
+msgid "Single value"
+msgstr "Egyértékű"
 
-msgid "This is the second tab."
-msgstr "Ez a második fül"
-
-msgid "Time Picker"
-msgstr "Időpont kiválasztó"
-
-msgid "Toolbars"
-msgstr "Eszközök"
-
-msgid "Types of list items"
-msgstr "Lista elemek típusai"
-
-msgid "type to show clear button"
-msgstr "gépeljen a törlő gomb megjelenítéséhez"
-
-msgid "Unchecked"
-msgstr "Bejelöletlen"
-
-msgid "Unknown"
-msgstr "Ismeretlen"
-
+#: ListItems.qml:86
 msgid "Value"
 msgstr "Érték"
 
-msgid "Value selector"
-msgstr "Értékválasztó"
+#: ListItems.qml:91
+msgid "Multi value"
+msgstr "Többértékű"
 
-msgid "Value selectors"
-msgstr "Értékválasztók"
+#: ListItems.qml:95 ListItems.qml:113 ListItems.qml:122 ListItems.qml:132
+#: ListItems.qml:161 ListItems.qml:176 OptionSelectors.qml:35
+#: OptionSelectors.qml:45 OptionSelectors.qml:56 OptionSelectors.qml:86
+#: OptionSelectors.qml:101
+msgid "Value 1"
+msgstr "1. érték"
 
-msgid "Parsley"
-msgstr "Petrezselyem"
+#: ListItems.qml:96 ListItems.qml:114 ListItems.qml:123 ListItems.qml:133
+#: ListItems.qml:162 ListItems.qml:177 OptionSelectors.qml:36
+#: OptionSelectors.qml:46 OptionSelectors.qml:57 OptionSelectors.qml:87
+#: OptionSelectors.qml:102
+msgid "Value 2"
+msgstr "2. érték"
 
-msgid "fruit"
-msgstr "gyümölcs"
+#: ListItems.qml:97 ListItems.qml:115 ListItems.qml:124 ListItems.qml:134
+#: ListItems.qml:163 ListItems.qml:178 OptionSelectors.qml:37
+#: OptionSelectors.qml:47 OptionSelectors.qml:58 OptionSelectors.qml:88
+#: OptionSelectors.qml:103
+msgid "Value 3"
+msgstr "3. érték"
 
-msgid "Orange"
-msgstr "Narancs"
+#: ListItems.qml:98 ListItems.qml:116 ListItems.qml:125 ListItems.qml:135
+#: ListItems.qml:164 ListItems.qml:179 OptionSelectors.qml:38
+#: OptionSelectors.qml:48 OptionSelectors.qml:59 OptionSelectors.qml:89
+#: OptionSelectors.qml:104
+msgid "Value 4"
+msgstr "4. érték"
 
-msgid "Apple"
-msgstr "Alma"
+#: ListItems.qml:103
+msgid "Item selector"
+msgstr "Elemválasztó"
 
-msgid "Tomato"
-msgstr "Paradicsom"
+#: ListItems.qml:112 TextInputs.qml:114
+msgid "Expanding"
+msgstr "Növekvő"
 
-msgid "veg"
-msgstr "zöldség"
+#: ListItems.qml:129 OptionSelectors.qml:53
+msgid "Multiple Selection"
+msgstr "Többesválasztó"
 
-msgid "Carrot"
-msgstr "Répa"
+#: ListItems.qml:139 OptionSelectors.qml:64
+msgid "Custom Model"
+msgstr "Egyéni modell"
 
-msgid "Potato"
-msgstr "Pityóka"
+#: ListItems.qml:165 ListItems.qml:180 OptionSelectors.qml:90
+#: OptionSelectors.qml:105
+msgid "Value 5"
+msgstr "5. érték"
 
-msgid "Hide"
-msgstr "Elrejt"
+#: ListItems.qml:166 ListItems.qml:181 OptionSelectors.qml:91
+#: OptionSelectors.qml:106
+msgid "Value 6"
+msgstr "6. érték"
 
-#, fuzzy
-msgid "'value' is %1"
-msgstr "az érték %1"
+#: ListItems.qml:167 ListItems.qml:182 OptionSelectors.qml:92
+#: OptionSelectors.qml:107
+msgid "Value 7"
+msgstr "7. érték"
 
+#: ListItems.qml:168 ListItems.qml:183 OptionSelectors.qml:93
+#: OptionSelectors.qml:108
+msgid "Value 8"
+msgstr "8. érték"
+
+#: ListItems.qml:190
+msgid "Control"
+msgstr "Vezérlő"
+
+#: ListItems.qml:202
+msgid "Removable"
+msgstr "Eltávolítható"
+
+#: ListItems.qml:205
+msgid "Slide to remove"
+msgstr "Húzza az eltávolításhoz"
+
+#: ListItems.qml:215
+msgid "Reset"
+msgstr "Visszaállítás"
+
+#: ListItems.qml:226
+msgid "Grouped list"
+msgstr "Csoportos lista"
+
+#: ListItems.qml:261
+msgid "UbuntuListView"
+msgstr ""
+
+#: ListItems.qml:321
+msgid "ExpandablesColumn"
+msgstr ""
+
+#: ListItems.qml:364
+msgid "Expandable"
+msgstr ""
+
+#: OptionSelectors.qml:24
+msgid "Option Selector"
+msgstr "Opcióválasztó"
+
+#: OptionSelectors.qml:85
+msgid "Custom container height"
+msgstr "Egyedi konténer magassága"
+
+#: OptionSelectors.qml:98
+msgid "No initial selection, scrollable."
+msgstr "Nincs kezdeti kijelölés, görgethető."
+
+#: Pickers.qml:29
+msgid "Linear"
+msgstr "Lineáris"
+
+#: Pickers.qml:48
+msgid "Circular"
+msgstr "Körkörös"
+
+#: Pickers.qml:73 ProgressBars.qml:48
+msgid "Infinite"
+msgstr "Végtelen"
+
+#: Pickers.qml:110
+msgid "Clock"
+msgstr "Óra"
+
+#: Pickers.qml:147
+msgid "Overlay"
+msgstr ""
+
+#: Popover.qml:41
+msgid "Flickable"
+msgstr ""
+
+#: Popover.qml:77
+msgid "Action #1"
+msgstr "1. művelet"
+
+#: Popover.qml:81
+msgid "Action #2"
+msgstr "2. művelet"
+
+#: Popover.qml:85
+msgid "Action #3"
+msgstr "3. művelet"
+
+#: Popover.qml:89
+msgid "Action #4"
+msgstr "4. művelet"
+
+#: Popover.qml:93
+msgid "Action #5"
+msgstr "5. művelet"
+
+#: ProgressBars.qml:24
+msgid "Progress Bar"
+msgstr "Folyamatjelző"
+
+#: ProgressBars.qml:58
+msgid "No label"
+msgstr "Nincs címke"
+
+#: ProgressBars.qml:80
+msgid "Activity Indicator"
+msgstr "Tevékenységmutató"
+
+#: Sheet.qml:28
+msgid "The visual style of the Sheet is early work and thus clunky looking."
+msgstr ""
+
+#: Sheet.qml:53 Sheet.qml:86
+msgid "Title"
+msgstr "Cím"
+
+#: Sliders.qml:36 Sliders.qml:51 Sliders.qml:68
+#, qt-format
+msgid "Actual value: %1"
+msgstr "Aktuális érték: %1"
+
+#: Sliders.qml:42
+msgid "Live Update"
+msgstr "Élő frissítés"
+
+#: Sliders.qml:57
+msgid "Range"
+msgstr "Tartomány"
+
+#: Styles.qml:27
+msgid "Switch between old and new style header"
+msgstr "Váltás a régi és az új fejléc stílusa között"
+
+#: Styles.qml:40
+msgid "Switch between themes"
+msgstr "Témák közötti váltás"
+
+#: TextInputs.qml:49
+msgid "Type me in..."
+msgstr "Ide írhat…"
+
+#: TextInputs.qml:55
+msgid "Password"
+msgstr "Jelszó"
+
+#: TextInputs.qml:66
+msgid "Numbers"
+msgstr "Számok"
+
+#: TextInputs.qml:77
+msgid "Read-only"
+msgstr "Csak olvasható"
+
+#: TextInputs.qml:81
+msgid "Nobody type here"
+msgstr "Senki nem írhat ide"
+
+#: TextInputs.qml:92
+msgid "No interaction allowed"
+msgstr "Az interakció nem engedélyezett"
+
+#: TextInputs.qml:104
+msgid "Default"
+msgstr "Alapértelmezett"
+
+#: TextInputs.qml:126
+msgid "Rich Text"
+msgstr ""
+
+#: Toggles.qml:28 Toggles.qml:66
+msgid "Unchecked"
+msgstr "Kijelöletlen"
+
+#: Toggles.qml:36 Toggles.qml:74
+msgid "Checked"
+msgstr "Kijelölt"
+
+#: Toolbar.qml:30
+msgid "Share"
+msgstr "Megosztás"
+
+#: Toolbar.qml:46
+msgid "See below"
+msgstr "Megtekintés alább"
+
+#: UbuntuShape.qml:49
+msgid "Image"
+msgstr "Kép"
+
+#: UbuntuShape.qml:64
+msgid "Radius"
+msgstr "Sugár"
+
+#: UbuntuShape.qml:97
+msgid "Sizes"
+msgstr "Méretek"

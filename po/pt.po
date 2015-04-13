@@ -14,12 +14,12 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-11-29 06:46+0000\n"
-"X-Generator: Launchpad (build 17267)\n"
+"X-Launchpad-Export-Date: 2015-03-14 05:29+0000\n"
+"X-Generator: Launchpad (build 17389)\n"
 
 #: Ubuntu/Components/ListItems/Empty.qml:413
 msgid "Delete"
-msgstr ""
+msgstr "Eliminar"
 
 #: Ubuntu/Components/plugin/statesaverbackend_p.cpp:176
 #, qt-format
@@ -43,7 +43,7 @@ msgstr "Alarme"
 #: Ubuntu/Components/plugin/ucalarm.cpp:684
 #: Ubuntu/Components/plugin/ucalarm.cpp:716
 msgid "Alarm has a pending operation."
-msgstr "O allarme tem uma operação pendente."
+msgstr "O alarme tem uma operação pendente."
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:188
 msgid "Usage: "
@@ -89,7 +89,7 @@ msgid ""
 "State saving disabled for %1, class %2"
 msgstr ""
 "Todas as origens devem ter uma id.\n"
-"Estado de guardar desactivado para %1, classe %2"
+"Estado de guardar desativado para %1, classe %2"
 
 #: Ubuntu/Components/plugin/uctheme.cpp:233
 msgid "Theme not found: "
@@ -113,7 +113,7 @@ msgstr "Concluído"
 
 #: Ubuntu/Components/TextInputPopover.qml:27
 msgid "Select All"
-msgstr "Seleccionar Tudo"
+msgstr "Selecionar tudo"
 
 #: Ubuntu/Components/TextInputPopover.qml:33
 msgid "Cut"
@@ -129,16 +129,16 @@ msgstr "Colar"
 
 #: Ubuntu/Components/Themes/Ambiance/ProgressBarStyle.qml:57
 msgid "In Progress"
-msgstr "Em Progresso"
+msgstr "Em progresso"
 
 #: Ubuntu/Components/Themes/Ambiance/PullToRefreshStyle.qml:28
 msgid "Release to refresh..."
-msgstr "Largar para actualizar..."
+msgstr "Largar para atualizar..."
 
 #: Ubuntu/Components/Themes/Ambiance/PullToRefreshStyle.qml:28
 msgid "Pull to refresh..."
-msgstr "Puxar para actualizar"
+msgstr "Puxar para atualizar..."
 
 #: Ubuntu/Components/ToolbarItems.qml:142
 msgid "Back"
-msgstr ""
+msgstr "Anterior"

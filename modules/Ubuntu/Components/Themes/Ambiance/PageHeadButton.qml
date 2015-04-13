@@ -14,13 +14,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.2
-import Ubuntu.Components 1.1
+import QtQuick 2.4
+import Ubuntu.Components 1.2
 
 AbstractButton {
     id: button
 
-    property real iconWidth: units.gu(2.5)
+    property real iconWidth: units.gu(2)
     property real iconHeight: iconWidth
 
     width: visible ? units.gu(5) : 0

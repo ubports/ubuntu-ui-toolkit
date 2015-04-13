@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 1.1
+import QtQuick 2.4
+import Ubuntu.Components 1.2
 import Ubuntu.Components.Popups 1.0
 
 Popover {
@@ -68,12 +68,20 @@ Popover {
         popover.visible = false;
     }
 
+    /*
+      Force positioning so that the popover is positioned in the screen while
+      the input is on the top of the screen
+    */
+    y: parent ? (parent.height - height) / 2 : 0
     autoClose: false
-    contentHeight: row.childrenRect.height
-    contentWidth: row.childrenRect.width
+    contentHeight: row.childrenRect.height + padding * 2
+    contentWidth: row.childrenRect.width + padding * 2
+    property int padding: units.gu(1)
     Row {
         id: row
         height: units.gu(6)
+        x: popover.padding
+        y: popover.padding
 
         Repeater {
             model: actions.length
@@ -85,7 +93,7 @@ Popover {
                   accessible. https://bugs.launchpad.net/autopilot/+bug/1334599
                   */
                 property string text: action.text
-                width: Math.max(units.gu(4), implicitWidth) + units.gu(2)
+                width: Math.max(units.gu(5), implicitWidth) + units.gu(2)
                 height: units.gu(6)
                 action: actions[modelData]
                 style: Theme.createStyleComponent("ToolbarButtonStyle.qml", button)

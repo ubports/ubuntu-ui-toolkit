@@ -19,6 +19,7 @@ import os
 
 import fixtures
 from testtools.matchers import Contains
+from autopilot import introspection
 
 import ubuntuuitoolkit
 from ubuntuuitoolkit import tests
@@ -195,6 +196,12 @@ class DeprecatedHeaderSectionsTestCase(tests.QMLFileAppTestCase):
 class CustomMainView(ubuntuuitoolkit.MainView):
     """Autopilot helper for a custom main view."""
 
+    @classmethod
+    def validate_dbus_object(cls, path, state):
+        state_name = introspection.get_classname_from_path(path)
+        class_name = cls.__name__.encode('utf-8')
+        return state_name == class_name
+
 
 class HeaderInCustomMainViewTestCase(tests.QMLFileAppTestCase):
 
@@ -205,7 +212,7 @@ class HeaderInCustomMainViewTestCase(tests.QMLFileAppTestCase):
 
     @property
     def main_view(self):
-        return self.app.select_single(CustomMainView)
+        return self.app.select_single(objectName='customMainView')
 
     def test_get_header_from_custom_main_view(self):
         """Test that we can get the header from a custom main view.

@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.1
-import Ubuntu.Components 1.1
+import QtQuick 2.4
+import Ubuntu.Components 1.2
 
 /*
   This component is a unified text selection and scrolling handler for both
@@ -32,11 +32,8 @@ MultiPointTouchArea {
     property Item input
     // the Flickable holding the input instance
     property Flickable flickable
-    // selection cursor mode
-    property bool selectionCursor: input && input.selectedText !== ""
 
-    // item filling the text input visible area, used to check teh caret handler
-    // visibility
+    // item filling the visible text input area used to check handler visibility
     property Item visibleArea: Item {
         parent: flickable
         anchors.fill: parent
@@ -46,7 +43,7 @@ MultiPointTouchArea {
     property real lineSpacing: units.dp(3)
     property real lineSize: input.font.pixelSize + lineSpacing
     // input x/y distance from the frame
-    property point frameDistance: Qt.point(0,0)
+    property point frameDistance: Qt.point(flickable.x, flickable.y)
 
     // signal triggered when popup should be opened
     signal pressAndHold(int pos, bool fromTouch)
@@ -76,7 +73,7 @@ MultiPointTouchArea {
     }
 
     // internal properties/functions
-    readonly property bool singleLine: input && input.hasOwnProperty("validator")
+    readonly property bool singleLine: input.hasOwnProperty("validator")
     property var flickableList: new Array()
     property bool textChanged: false
     property var popover
@@ -94,12 +91,9 @@ MultiPointTouchArea {
     readonly property Flickable grandScroller: firstFlickableParent(main)
     readonly property Flickable scroller: (scrollingDisabled && grandScroller) ? grandScroller : flickable
 
-    // ensures the text cusrorRectangle is always in the internal Flickable's visible area
+    // ensures the text cursorRectangle is always in the internal Flickable's visible area
     function ensureVisible(rect)
     {
-        if (rect === undefined) {
-            rect = input.cursorRectangle;
-        }
         if (flickable.moving || flickable.flicking)
             return;
         if (flickable.contentX >= rect.x)
@@ -165,7 +159,7 @@ MultiPointTouchArea {
         if (!main.focus || !mouseInSelection(mouse)) {
             activateInput();
             input.cursorPosition = pressedPosition = mousePosition(mouse);
-            if (noAutoselect === undefined || !noAutoselect) {
+            if (!noAutoselect) {
                 input.selectWord();
             }
         }
@@ -213,15 +207,6 @@ MultiPointTouchArea {
             } else if (positioner === "selectionEnd" && (pos > input.selectionStart)) {
                 input.select(input.selectionStart, pos);
             }
-        }
-    }
-
-    // returns the styles for the cursors depending on the position property given
-    function textCursorStyle(positionProperty) {
-        switch (positionProperty) {
-        case "cursorPosition": return main.__styleInstance.mainCursorStyle;
-        case "selectionStart": return main.__styleInstance.selectionStartCursorStyle;
-        case "selectionEnd": return main.__styleInstance.selectionEndCursorStyle;
         }
     }
 
@@ -320,7 +305,7 @@ MultiPointTouchArea {
     // input specific signals
     Connections {
         target: input
-        onCursorRectangleChanged: ensureVisible()
+        onCursorRectangleChanged: ensureVisible(input.cursorRectangle)
         onTextChanged: {
             textChanged = true;
             if (oldText != input.text) {
@@ -402,12 +387,10 @@ MultiPointTouchArea {
     }
     function handleDblClick(event, touch) {
         if (main.selectByMouse) {
-            openContextMenu(event, false);
+            openContextMenu(event, false, touch);
             // turn selection state temporarily so the selection is not cleared on release
             state = "selection";
-            if (touch) {
-                suppressReleaseEvent = true;
-            }
+            suppressReleaseEvent = true;
         }
     }
 
@@ -416,7 +399,7 @@ MultiPointTouchArea {
     Mouse.onPressed: handlePressed(mouse, false)
     Mouse.onReleased: handleReleased(mouse, false)
     Mouse.onPositionChanged: handleMove(mouse, false)
-    Mouse.onDoubleClicked: handleDblClick(mouse)
+    Mouse.onDoubleClicked: handleDblClick(mouse, false)
 
     // right button handling
     MouseArea {
@@ -478,31 +461,27 @@ MultiPointTouchArea {
     onPressed: handlePressed(touchPoints[0], true)
     onReleased: handleReleased(touchPoints[0], true)
 
+    property Item cursorPositionCursor: null
+    property Item selectionStartCursor: null
+    property Item selectionEndCursor: null
+
     // cursors to use when text is selected
     Connections {
-        property Item selectionStartCursor: null
-        property Item selectionEndCursor: null
         target: input
         onSelectedTextChanged: {
-            if (selectedText !== "" && input.cursorDelegate) {
+            if (selectedText !== "") {
                 if (!selectionStartCursor) {
                     selectionStartCursor = input.cursorDelegate.createObject(
                                 input, {
                                     "positionProperty": "selectionStart",
-                                    "height": lineSize,
                                     "handler": inputHandler,
-                                    "objectName": "selectionStartCursor"
                                     }
                                 );
                     moveSelectionCursor(selectionStartCursor);
-                }
-                if (!selectionEndCursor) {
                     selectionEndCursor = input.cursorDelegate.createObject(
                                 input, {
                                     "positionProperty": "selectionEnd",
-                                    "height": lineSize,
                                     "handler": inputHandler,
-                                    "objectName": "selectionEndCursor"
                                     }
                                 );
                     moveSelectionCursor(selectionEndCursor);
@@ -511,8 +490,6 @@ MultiPointTouchArea {
                 if (selectionStartCursor) {
                     selectionStartCursor.destroy();
                     selectionStartCursor = null;
-                }
-                if (selectionEndCursor) {
                     selectionEndCursor.destroy();
                     selectionEndCursor = null;
                 }
@@ -534,6 +511,7 @@ MultiPointTouchArea {
             var pos = input.positionToRectangle(input[cursor.positionProperty]);
             cursor.x = pos.x;
             cursor.y = pos.y;
+            cursor.height = pos.height;
             ensureVisible(pos);
         }
     }

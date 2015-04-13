@@ -1,3 +1,298 @@
+ubuntu-ui-toolkit (1.2.1458+15.04.20150327-0ubuntu1) vivid; urgency=medium
+
+  [ By Tim Peeters ]
+  * Remove the deprecated toolbar example from the gallery. 
+    Fixes LP: #1430904
+
+  [ Nekhelesh Ramananthan ]
+  * Fixes the slider bubble width to be dynamic and dependent 
+    on the label width. Fixes LP: #1228575
+
+  [ Leo Arias ]
+  * Added a scenario for autopilot tests without live dragging.
+    Fixes LP: #1435698
+  * Added a helper to reorder items in a list view.
+    Fixes LP: #1435700
+
+  [ Christian Dywan ]
+  * Add tests/autopilot to sys.path of sphinx config. 
+  * Build-depend on python-autopilot used by sphinx-build
+    Fixes LP: #1431749
+
+  [ Zsombor Egri ]
+  * Fixing crashes when AlarmModel::get() returned valid stock alarm
+    ends up to be NULL in QML. Fixes LP: #1429273
+
+  [ CI Train Bot ]
+  * New rebuild forced.
+
+ -- CI Train Bot <ci-train-bot@canonical.com>  Fri, 27 Mar 2015 12:35:55 +0000
+
+ubuntu-ui-toolkit (1.2.1450+15.04.20150318-0ubuntu1) vivid; urgency=medium
+
+  [ Timo Jyrinki ]
+  * Clean QML cache after updating package, before reboot. LP: #1431228
+
+  [ Zoltán Balogh ]
+  * Improved test plan script. Fixes LP: #1430201
+
+  [ Christian Dywan ]
+  * New text handler visuals and improved behavior. 
+    Fixes LP: #1391335, LP: #1407723, LP: #1415548
+  * Split off test verification and run it once only for 'make check'.
+    Fixes LP: #1431698
+  * Tweak assert_discard_popover to work better with textfield in header. 
+    Fixes LP: #1432611
+
+  [ Tim Peeters ] 
+  * Make the filenames for header and navigation tests consistent and 
+    split up the big tabbed header.qml into multiple smaller test files.
+    Fixes LP: #1429838
+
+  [ Loïc Molinari ]
+  * Optimized Slider and ProgressBar components. Switched to the native 
+    UbuntuShapeOverlay instead of PartialColorizeUbuntuShape to render 
+    the progression in the Slider and ProgressBar components. The 
+    rendering is now faster since it removes an FBO indirection and 
+    enables batching by the QtQtuick renderer. 
+    Fixes LP: #1398370, LP: #1427169
+  * Added a dedicated overlay shape. Made use of the new UbuntuShape 
+    architecture to create an extended shape with efficient overlay 
+    rendering. Fixes LP: #1396170
+  * Removed misleading statement from UbuntuShape documentation.
+    Fixes LP: #1430198
+  * Renamed the overlayGeometry property to overlayRect. The 
+    overlayGeometry being of type QRect, using overlayRect instead 
+    makes it more precise, less generic. Fixes LP: #1430278
+  * Converted sourceOpacity from float to qreal. Respect the same
+    guideline QtQuick items use to expose floating-point properties.
+    That doesn't break the QML API since there's no precision loss 
+    from single to double precision, the cast is implicit. 
+    Fixes LP: #1430267
+  * Fixed embedded QML code snippets indentation. Fixes LP: #1430274
+
+  [ Florian Boucault ]
+  * CheckBox: apply clipping to the Ubuntu shape and not to the CheckBox 
+    itself so that the tick never overflows. Fixes LP: #1430191
+
+  [ Daniel Holbach ]
+  * A number of links changed on design.ubuntu.com - let's make sure 
+    they're fixed in our docs. Fixes LP: #1428051
+
+  [ CI Train Bot ]
+  * New rebuild forced.
+
+ -- CI Train Bot <ci-train-bot@canonical.com>  Wed, 18 Mar 2015 12:23:35 +0000
+
+ubuntu-ui-toolkit (1.2.1433+15.04.20150306-0ubuntu2) vivid; urgency=medium
+
+  * No-change rebuild against Qt 5.4.1.
+
+ -- Timo Jyrinki <timo-jyrinki@ubuntu.com>  Wed, 11 Mar 2015 09:01:34 +0200
+
+ubuntu-ui-toolkit (1.2.1433+15.04.20150306-0ubuntu1) vivid; urgency=medium
+
+  [ Albert Astals Cid ]
+  * Fix infinite icon size grow when asked for a non square icon
+    Fixes: LP: #1422835
+  * IconProvider: Make sure icons fit in the given size
+  [ Christian Dywan ]
+  * Skip select_text_longtap_when_active under opengles2.
+    Fixes: LP: #1401140
+  * Support for multiple devices with push_to_phone.sh.
+  * Take OrientationHelper y coordinate from real parent height.
+    Fixes: LP: #1413194
+  * Update popover position upon pointer movement.
+    Fixes: LP: #1199502, LP: #1415532
+  * Change <code> to be inline-block. Fixes LP: #1427534
+  * Set right anchor on tab overflow buttons. Fixes LP: #1425433
+  * Add tst_listitems_itemselector.qml to EXCEPTIONS. So warnings are 
+    no longer fatal for unit test.
+  [ Sebastien Bacher ]
+  * document that MainView's applicationName is used to set the gettext
+    domain. Fixes: LP: #1421661.
+  [ Tiago Salem Herrmann ]
+  * Drop cache once properties are successfully restored.
+  [ Timo Jyrinki ]
+  * Add dist-upgrade option to the UITK Test Plan script. Output the
+    selected parameters in the beginning.
+  [ Tim Peeters ]
+  * Add MainView 1.2 which removes the deprecated toolbar support.
+  * Enable PageStack header animations for MainView 1.2.
+  * Fix the size and anchors of a Page that is loaded inside a Loader.
+    This is useful when a Page is Loaded by a Tab. Fixes: LP: #1424635
+  * Fix UITK gallery content page width.
+    Fixes: LP: #1424635, LP: #1425470
+  * Set objectName for MainView int est_textinput.header.qml and fix 
+    scenarios in test_textinput.py
+  [ Zsombor Egri ]
+  * Alarm services regression fix. Fixes: LP: #1401883
+  * Implement ListItem dragging support in ListView.
+    Fixes: LP: #119535
+  * Introducing select/multiselect mode in ListItem.
+  * Moving the tst_focus.qml under exceptions till we fix DatePicker
+    binding loops.
+  * RTL (Right To Left) support in ListItem.
+  * RTM branch diff merge. Fixes: LP: #1358610.
+  * Second stage of simplification - divider group property is an item,
+    simplifying the anchoring of the contentItem. PropertyChange does
+    not backup the property binding, uses QQmlPropertyPrivate::write()
+    with parameter to keep bindings. ListItemAnimator uses behavior to
+    animate snapping. Styling got "styledItem" context property to obey
+    general styling rules. clicked() and pressAndHold() emission fix
+    when content is swiped.
+  * Transferring the ListItem attached properties to ListItemStyle API.
+    Most of the style API became redundant, and removed. Few API from
+    ListItem were also removed as not needed. ListItemAnimator,
+    UCListItemAttached and UCActionPanel classes removed.
+    Panel swiping overshoot made elastic. Snapping animation transformed
+    into SmoothedAnimation, uses velocity of 60GU/second. Turning
+    warnings to be reported in the error property.
+    SHOW_SERVICEPROPERTIES_WARNINGS environment variable set will
+    display them in the console. Fixes: LP: #1423203.
+  * Updating documentation and imports for 1.2 & Vivid (Qt 5.4). 
+  * Captions component dedicated to ListItem layouts, a ColumnLayout
+    holding two Layouts pre-configurable for fixed or rest of content 
+    filling behavior.
+  [ Loïc Molinari ]
+  * Refactored UbuntuShape base component.
+    The UbuntuShape needed a rework in order to propose more features 
+    while keeping efficiency high and maintenance easy. 
+    Fixes LP: #1396098, LP: #1396101, LP: #1396104, LP: #1396113, 
+    LP: #1396114, LP: #1396119, LP: #1396124, LP: #1396162, 
+    LP: #1396165, LP: #1396168, LP: #1396178
+
+ -- CI Train Bot <ci-train-bot@canonical.com>  Fri, 06 Mar 2015 08:23:35 +0000
+
+ubuntu-ui-toolkit (1.1.1403+15.04.20150206-0ubuntu2) vivid; urgency=medium
+
+  * No-change rebuild against Qt 5.4.0.
+
+ -- Timo Jyrinki <timo-jyrinki@ubuntu.com>  Mon, 09 Feb 2015 10:47:17 +0200
+
+ubuntu-ui-toolkit (1.1.1403+15.04.20150206-0ubuntu1) vivid; urgency=medium
+
+  [ Albert Astals Cid ]  
+  * Adapt to behaviour change in handling of QVariants from QML to 
+    C++ in Qt 5.4    
+  * Don't use Qt::PopupFocusReason to change the focus Even if it
+    is the correct reason QtQuick is since 5.4 ignoring  focus changes
+    due to PopupFocusReason. Fixes LP: #1395014.    
+  * Fix test failure with Qt 5.4 ExpandablesColumn::test_expandedItem()
+    In Qt 5.4 an alias to a null variable is correctly null instead of 
+    undefined like it was in 5.3, since we still want 5.3 support i'm 
+    conveting it to a verify with ==  that uses JS loose comparison to
+    accept both null and undefined. Fixes LP: #1395012.    
+
+  [ Alexandre Abreu ]  
+  * Remove the unecessary DBUS bindingi to global address 
+    org.freedesktop.Application by the UriHAndler. It actually fails 
+    for confined apps and the uri-dispatcher anyway does not work by 
+    directly calling into the exposed "well known names" exposed on 
+    the bus as TEd explains here LP: #1342129  but by directly calling
+     into the process dbus connection. Fixes LP: #1378823.    
+
+  [ Benjamin Zeller ]  
+  * Fix scripts to work in shadowbuild mode.    
+  * Shadowbuild support for ubuntu-ui-toolkit.    
+
+  [ Christian Dywan ]  
+  * Abort export_modules_dir.sh and ergo run_tests.sh if binaries are
+    absent. Fixes LP: #1415973.    
+  * Asterisk are needed for cp -R.    
+  * Ensure adb is running (and fallback arch if dpkg-dev is missing). 
+    Fixes LP: #1417997.    
+  * Get arch for push_to_phone.sh from device and handle adb refusal.    
+  * Implement and unit-test i18n.(c)tag. Fixes LP: #1417031.    
+  * Print component creation errors in popupUtils.open. 
+    Fixes LP: #1418507.    
+  * Use correct unfocussed text field color. Fixes LP: #1396062.    
+
+  [ Daniel d'Andrada ]
+  * Refactor OrientationHelper Simplify animation code and make it 
+    more robust. It now survives changes in Screen.primaryOrientation
+    and Screen.orientation happening one right after the other.  
+
+  [ Daniel Holbach ]
+  * Fix broken link to developer site.    
+
+  [ Giulio Collura ]
+  * This is a bugfix for bug LP: #1341814 and bug LP: #1400297. 
+    Essentially we have to force the removal of the previous 
+    'contents' item by removing its parent. This way we ensure that 
+    the contents are correctly hidden, focused and removed, without 
+    destroying them.    
+
+  [ Loïc Molinari ]  
+  * Removed unused variables breaking debug builds.    
+
+  [ Michael Sheldon ]
+  * Only use stableOrientationAngleTimer in the OrientationHelper when
+    the orientationAngle has been set automatically. 
+    Fixes LP: #1409027. 
+
+  [ Niklas Wenzel ]
+  *  Fixes LP: #1395118 
+
+  [ nskaggs ]
+  * Re-add autopilot helper documentation and update. Fixes 
+    LP: #1409778, LP: #1410477.    
+
+  [ Tim Peeters ] 
+  * Add a preview of the new list items to the UITK component gallery.  
+  * Add performance test for MainView.    
+  * Clean python code to follow pep257 standards.    
+  * Fix incorrect header contents width when navigating back from a 
+    page with a lot of actions. Fixes LP: #1408481.    
+  * Split up MainView in MainView and MainViewBase. Move docs to 
+    MainView.qdoc.    
+  * Use objectName for the MainViews in our autopilot tests.    
+
+  [ Zoltán Balogh ] 
+  * Added Dialog CPO to test if OSK pushes up the the dialog.    
+  * Update the test plan and fix the PPA string in case it contains
+    backslash.    
+
+  [ Zsombor Egri ]  
+  * CPOs
+  * Include ServiceProperties component into the module and the 
+    missing test case - inclusion messed up due to broken mainline in 
+    the previous branch. Fixes LP: #1391877.    
+  * Introducing action property in ListItem. 
+    Fixes LP: #1362305, LP: #1369935.    
+  * Introducing pressAndHold signal into ListItem.    
+  * ListItem highlight is driven also by the connection of a slot to 
+    the clicked() signal. This will also be applied when pressAndHold
+    signal will be introduced. Fixes LP: #1399025.    
+  * Small refactoring to follow upstream concept on naming attached 
+    properties. Panels visualising ListItemActions are owned by 
+    ListItem and not being shared by the ListItemActiomns. In this way
+    the same ListItemActions instance can be used on both leading and 
+    trailing side. Fixes LP: #1403005.    
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 06 Feb 2015 11:33:33 +0000
+
+ubuntu-ui-toolkit (1.1.1376+15.04.20150111-0ubuntu1) vivid; urgency=medium
+
+  [ Tim Peeters ]
+  * Add a preview of the new list items to the UITK component gallery.
+
+  [ Zoltan Balogh ]
+  * Update the test plan and fix the PPA string in case it contains backslash.
+  * Added Dialog CPO to test if OSK pushes up the the dialog.
+
+  [ Zsombor Egri ]
+  * ListItem highlight is driven also by the connection of a slot to 
+    the clicked() signal. This will also be applied when pressAndHold 
+    signal will be introduced. Fixes LP: #1399025
+
+  [ Giulio Collura ]
+  * Force the removal of the previous 'contents' item by removing its parent. 
+    This way we ensure that the contents are correctly hidden, focused and 
+    removed, without destroying them. Fixes LP: #1341814 LP: #1400297
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Sun, 11 Jan 2015 18:57:02 +0000
+
 ubuntu-ui-toolkit (1.1.1370+15.04.20141217-0ubuntu1) vivid; urgency=medium
 
   [ Zoltán Balogh ]
@@ -226,6 +521,34 @@ ubuntu-ui-toolkit (1.1.1311+15.04.20141102-0ubuntu1) vivid; urgency=medium
  
 
  -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Sun, 02 Nov 2014 13:01:56 +0000
+
+ubuntu-ui-toolkit (1.1.1298+15.04.20150209~rtm-0ubuntu1) 14.09; urgency=medium
+
+  [ Zsombor Egri ]
+  * isHapticsFeedbackEnabled context property exposed to drive
+    HapticsFeedback in AbstractButton. (LP: #1391877)
+  * Haptics singleton component to provide toolkit wide default and
+    custom feedback functionaity controlled by system settings. (LP:
+    #1391877)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 09 Feb 2015 13:10:45 +0000
+
+ubuntu-ui-toolkit (1.1.1298+15.04.20150202~rtm-0ubuntu1) 14.09; urgency=medium
+
+  [ Tim Peeters ]
+  * Port "In Progress" translation fix from staging to rtm. (LP:
+    #1391617, #1081607)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 02 Feb 2015 09:11:21 +0000
+
+ubuntu-ui-toolkit (1.1.1298+15.04.20150116~rtm-0ubuntu1) 14.09; urgency=low
+
+  [ Florian Boucault ]
+  * ActivityIndicator: make its animation rely solely on the rendering
+    thread so that it does not stop spinning if the main thread is
+    blocked. (LP: #1411376)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 16 Jan 2015 10:17:50 +0000
 
 ubuntu-ui-toolkit (1.1.1298+15.04.20141111.2~rtm-0ubuntu1) 14.09; urgency=low
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2012-2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.2
+import QtQuick 2.4
 import "stack.js" as Stack
 
 /*!
@@ -36,8 +36,8 @@ import "stack.js" as Stack
     left/right/top/bottom anchors, explicitly set anchors.fill of the PageStack to
     undefined:
     \qml
-        import QtQuick 2.2
-        import Ubuntu.Components 1.1
+        import QtQuick 2.4
+        import Ubuntu.Components 1.2
 
         MainView {
             width: units.gu(40)
@@ -75,8 +75,8 @@ import "stack.js" as Stack
 
     Example:
     \qml
-        import QtQuick 2.0
-        import Ubuntu.Components 1.1
+        import QtQuick 2.4
+        import Ubuntu.Components 1.2
         import Ubuntu.Components.ListItems 1.0 as ListItem
 
         MainView {
@@ -214,18 +214,8 @@ PageTreeNode {
                                     ? pageStack.__propagated.header.__styleInstance
                                     : null
 
-        function headerCanAnimate() {
-            if (!headStyle) return false;
-            if (!headStyle.hasOwnProperty("animateIn")) return false;
-            if (!headStyle.hasOwnProperty("animateOut")) return false;
-            if (!headStyle.hasOwnProperty("animateInFinished")) return false;
-            if (!headStyle.hasOwnProperty("animateOutFinished")) return false;
-            return true;
-        }
-
-        // FIXME: Replace false by headerCanAnimate() below to enable
-        //  header animations.
-        property bool animateHeader: false
+        property bool animateHeader: pageStack.__propagated.hasOwnProperty("animateHeader") &&
+                                     pageStack.__propagated.animateHeader
 
         // Call this function before pushing or popping to ensure correct order
         // of pushes/pops on the stack. This terminates any currently running

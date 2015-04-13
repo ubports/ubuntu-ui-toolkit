@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 1.1
+import QtQuick 2.4
+import Ubuntu.Components 1.2
 
 // FIXME : move the API into Ubuntu.Components.Style
 Item {
@@ -57,17 +57,16 @@ Item {
             width: cursorWidth
             // FIXME: Extend the palette and use palette values here
             color: UbuntuColors.blue
-            visible: blinkTimer.timerShowCursor || !blinkTimer.running
+            visible: styledItem.positionProperty === "cursorPosition" && (blinkTimer.timerShowCursor || !blinkTimer.running)
             Timer {
                 id: blinkTimer
                 interval: cursorStyle.cursorVisibleTimeout
                 running: (cursorStyle.cursorVisibleTimeout > 0) &&
                          (cursorStyle.cursorHiddenTimeout > 0) &&
                          styledItem.visible &&
-                         !styledItem.readOnly &&
-                         !styledItem.contextMenuVisible &&
-                         styledItem.positionProperty === "cursorPosition"
+                         shouldBlink
                 repeat: true
+                property bool shouldBlink: !styledItem.readOnly && !styledItem.contextMenuVisible
                 property bool timerShowCursor: true
                 onTriggered: {
                     interval = (interval == cursorStyle.cursorVisibleTimeout) ?
@@ -84,13 +83,9 @@ Item {
         source: "artwork/caret_noshadow.png"
         objectName: "text_cursor_style_caret_" + styledItem.positionProperty
         anchors {
-            top: styledItem.positionProperty === "selectionStart" ? undefined : parent.bottom
-            bottom: styledItem.positionProperty === "selectionStart" ? parent.top : undefined
+            top: parent.bottom
             horizontalCenter: parent.horizontalCenter
-            horizontalCenterOffset: styledItem.positionProperty === "cursorPosition"
-            ? 0
-            : (LayoutMirroring.enabled ? -1 : 1) * (implicitWidth / 2 - cursorWidth)
+            horizontalCenterOffset: cursorWidth / 2
         }
-        rotation: styledItem.positionProperty === "selectionStart" ? 180 : 0
     }
 }

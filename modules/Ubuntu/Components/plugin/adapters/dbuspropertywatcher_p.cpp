@@ -133,13 +133,13 @@ bool DBusServiceProperties::readProperty(const QString &property)
     if (!readIFace.isValid()) {
         // report invalid interface only if the property's first letter was with capital one!
         if (property[0].isUpper()) {
-            qmlInfo(q) << readIFace.lastError().message();
+            warning(readIFace.lastError().message());
         }
         return false;
     }
     QDBusPendingCall pending = readIFace.asyncCall("Get", adaptor, property);
     if (pending.isError()) {
-        qmlInfo(q) << pending.error().message();
+        warning(pending.error().message());
         return false;
     }
     QDBusPendingCallWatcher *callWatcher = new QDBusPendingCallWatcher(pending, q);
@@ -182,7 +182,7 @@ void DBusServiceProperties::readFinished(QDBusPendingCallWatcher *call)
         properties.removeAll(property);
         if (property[0].isUpper()) {
             // report error!
-            qmlInfo(q) << reply.error().message();
+            warning(reply.error().message());
         }
     } else {
         // update watched property value

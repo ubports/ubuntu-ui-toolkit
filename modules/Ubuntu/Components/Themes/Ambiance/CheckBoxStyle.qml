@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 1.1
+import QtQuick 2.4
+import Ubuntu.Components 1.2
 
 Item {
     id: checkBoxStyle
@@ -113,7 +113,7 @@ Item {
                 }
                 SequentialAnimation {
                     PropertyAction {
-                        target: checkBoxStyle
+                        target: background
                         property: "clip"
                         value: true
                     }
@@ -124,7 +124,7 @@ Item {
                         easing: UbuntuAnimation.StandardEasingReverse
                     }
                     PropertyAction {
-                        target: checkBoxStyle
+                        target: background
                         property: "clip"
                         value: false
                     }
@@ -140,7 +140,7 @@ Item {
                 }
                 SequentialAnimation {
                     PropertyAction {
-                        target: checkBoxStyle
+                        target: background
                         property: "clip"
                         value: true
                     }
@@ -151,7 +151,7 @@ Item {
                         easing: UbuntuAnimation.StandardEasing
                     }
                     PropertyAction {
-                        target: checkBoxStyle
+                        target: background
                         property: "clip"
                         value: false
                     }

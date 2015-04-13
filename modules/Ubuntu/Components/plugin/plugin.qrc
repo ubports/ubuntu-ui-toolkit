@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/uc">
+        <file>shaders/shape.frag</file>
+        <file>shaders/shape.vert</file>
+        <file>shaders/shapeoverlay.frag</file>
+        <file>shaders/shapeoverlay.vert</file>
+    </qresource>
+</RCC>

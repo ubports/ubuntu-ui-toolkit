@@ -8,18 +8,18 @@ msgstr ""
 "Project-Id-Version: ubuntu-ui-toolkit\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2014-11-05 14:29+0100\n"
-"PO-Revision-Date: 2014-01-07 18:39+0000\n"
-"Last-Translator: Gabor Kelemen <kelemeng@openscope.org>\n"
+"PO-Revision-Date: 2015-02-05 07:14+0000\n"
+"Last-Translator: Richard Somlói <ricsipontaz@gmail.com>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-11-29 06:46+0000\n"
-"X-Generator: Launchpad (build 17267)\n"
+"X-Launchpad-Export-Date: 2015-03-14 05:28+0000\n"
+"X-Generator: Launchpad (build 17389)\n"
 
 #: Ubuntu/Components/ListItems/Empty.qml:413
 msgid "Delete"
-msgstr ""
+msgstr "Törlés"
 
 #: Ubuntu/Components/plugin/statesaverbackend_p.cpp:176
 #, qt-format
@@ -27,6 +27,8 @@ msgid ""
 "property \"%1\" of object %2 has type %3 and cannot be set to value \"%4\" "
 "of type %5"
 msgstr ""
+"a(z) %2 objektum „%1” tulajdonságának %3 típusa van, és nem lehet a(z) %5 "
+"típus „%4” értékére beállítani"
 
 #: Ubuntu/Components/plugin/statesaverbackend_p.cpp:185
 #, qt-format
@@ -43,7 +45,7 @@ msgstr "Riasztás"
 #: Ubuntu/Components/plugin/ucalarm.cpp:684
 #: Ubuntu/Components/plugin/ucalarm.cpp:716
 msgid "Alarm has a pending operation."
-msgstr ""
+msgstr "A riasztáshoz függőben lévő művelet tartozik"
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:188
 msgid "Usage: "
@@ -56,17 +58,17 @@ msgstr "Beállítások:"
 #: Ubuntu/Components/plugin/ucarguments.cpp:498
 #, qt-format
 msgid "%1 is expecting an additional argument: %2"
-msgstr "A %1 egy további paramétert vár: %2"
+msgstr "A(z) %1 egy további paramétert vár: %2"
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:503
 #, qt-format
 msgid "%1 is expecting a value for argument: %2"
-msgstr "A %1 egy értéket vár a következő paraméterhez: %2"
+msgstr "A(z) %1 egy értéket vár a következő paraméterhez: %2"
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:520
 #, qt-format
 msgid "%1 is expecting additional arguments: %2"
-msgstr "A %1 további paramétereket vár: %2"
+msgstr "A(z) %1 további paramétereket vár: %2"
 
 #: Ubuntu/Components/plugin/ucmousefilters.cpp:1064
 msgid "Ignoring AfterItem priority for InverseMouse filters."
@@ -88,6 +90,8 @@ msgid ""
 "All the parents must have an id.\n"
 "State saving disabled for %1, class %2"
 msgstr ""
+"Minden szülőnek rendelkeznie kell azonosítóval.\n"
+"Az állapotmentés le van tiltva %1, %2 osztály esetén"
 
 #: Ubuntu/Components/plugin/uctheme.cpp:233
 msgid "Theme not found: "
@@ -139,4 +143,4 @@ msgstr "Húzza a frissítéshez…"
 
 #: Ubuntu/Components/ToolbarItems.qml:142
 msgid "Back"
-msgstr ""
+msgstr "Vissza"

@@ -14,12 +14,12 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-11-29 06:46+0000\n"
-"X-Generator: Launchpad (build 17267)\n"
+"X-Launchpad-Export-Date: 2015-03-14 05:28+0000\n"
+"X-Generator: Launchpad (build 17389)\n"
 
 #: Ubuntu/Components/ListItems/Empty.qml:413
 msgid "Delete"
-msgstr ""
+msgstr "ማጥፊያ"
 
 #: Ubuntu/Components/plugin/statesaverbackend_p.cpp:176
 #, qt-format
@@ -36,12 +36,12 @@ msgstr ""
 #: Ubuntu/Components/plugin/ucalarm.cpp:42
 #: Ubuntu/Components/plugin/ucalarm.cpp:136
 msgid "Alarm"
-msgstr ""
+msgstr "መቀስቀሻ"
 
 #: Ubuntu/Components/plugin/ucalarm.cpp:684
 #: Ubuntu/Components/plugin/ucalarm.cpp:716
 msgid "Alarm has a pending operation."
-msgstr ""
+msgstr "መቀስቀሻ በቀጠሮ ላይ ያለ ተግባር አለው"
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:188
 msgid "Usage: "
@@ -89,23 +89,23 @@ msgstr ""
 
 #: Ubuntu/Components/plugin/uctheme.cpp:233
 msgid "Theme not found: "
-msgstr ""
+msgstr "ገጽታው አልተገኘም: "
 
 #: Ubuntu/Components/Popups/ComposerSheet.qml:80
 msgid "Cancel"
-msgstr ""
+msgstr "መሰረዣ"
 
 #: Ubuntu/Components/Popups/ComposerSheet.qml:90
 msgid "Confirm"
-msgstr ""
+msgstr "ማረጋገጫ"
 
 #: Ubuntu/Components/Popups/DefaultSheet.qml:89
 msgid "Close"
-msgstr ""
+msgstr "መዝጊያ"
 
 #: Ubuntu/Components/Popups/DefaultSheet.qml:99
 msgid "Done"
-msgstr ""
+msgstr "ጨርሷል"
 
 #: Ubuntu/Components/TextInputPopover.qml:27
 msgid "Select All"
@@ -125,16 +125,16 @@ msgstr "መለጠፊያ"
 
 #: Ubuntu/Components/Themes/Ambiance/ProgressBarStyle.qml:57
 msgid "In Progress"
-msgstr ""
+msgstr "በሂደት ላይ"
 
 #: Ubuntu/Components/Themes/Ambiance/PullToRefreshStyle.qml:28
 msgid "Release to refresh..."
-msgstr ""
+msgstr "ለማነቃቃት ይልቀቁ..."
 
 #: Ubuntu/Components/Themes/Ambiance/PullToRefreshStyle.qml:28
 msgid "Pull to refresh..."
-msgstr ""
+msgstr "ለማነቃቃት ይሳቡ..."
 
 #: Ubuntu/Components/ToolbarItems.qml:142
 msgid "Back"
-msgstr ""
+msgstr "ወደ ኋላ"

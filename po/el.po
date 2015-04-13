@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: ubuntu-ui-toolkit\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2014-11-05 14:29+0100\n"
-"PO-Revision-Date: 2014-11-18 23:21+0000\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2015-02-28 10:26+0000\n"
+"Last-Translator: Aggelos Arnaoutis <angelosarn@hotmail.com>\n"
 "Language-Team: Greek <el@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-11-29 06:46+0000\n"
-"X-Generator: Launchpad (build 17267)\n"
+"X-Launchpad-Export-Date: 2015-03-14 05:28+0000\n"
+"X-Generator: Launchpad (build 17389)\n"
 
 #: Ubuntu/Components/ListItems/Empty.qml:413
 msgid "Delete"
@@ -89,10 +89,12 @@ msgid ""
 "All the parents must have an id.\n"
 "State saving disabled for %1, class %2"
 msgstr ""
+"Όλα τα γονικά στοιχεία πρέπει να έχουν ταυτότητα (ID).\n"
+"Η αποθήκευση κατάστασης είναι απενεργοποιημένη για %1, κλάση %2"
 
 #: Ubuntu/Components/plugin/uctheme.cpp:233
 msgid "Theme not found: "
-msgstr ""
+msgstr "Δεν βρέθηκε θέμα: "
 
 #: Ubuntu/Components/Popups/ComposerSheet.qml:80
 msgid "Cancel"
@@ -100,11 +102,11 @@ msgstr ""
 
 #: Ubuntu/Components/Popups/ComposerSheet.qml:90
 msgid "Confirm"
-msgstr ""
+msgstr "Επιβεβαίωση"
 
 #: Ubuntu/Components/Popups/DefaultSheet.qml:89
 msgid "Close"
-msgstr ""
+msgstr "Κλείσιμο"
 
 #: Ubuntu/Components/Popups/DefaultSheet.qml:99
 msgid "Done"
@@ -112,23 +114,23 @@ msgstr ""
 
 #: Ubuntu/Components/TextInputPopover.qml:27
 msgid "Select All"
-msgstr ""
+msgstr "Επιλογή όλων"
 
 #: Ubuntu/Components/TextInputPopover.qml:33
 msgid "Cut"
-msgstr ""
+msgstr "Αποκοπή"
 
 #: Ubuntu/Components/TextInputPopover.qml:42
 msgid "Copy"
-msgstr ""
+msgstr "Αντιγραφή"
 
 #: Ubuntu/Components/TextInputPopover.qml:49
 msgid "Paste"
-msgstr ""
+msgstr "Επικόλληση"
 
 #: Ubuntu/Components/Themes/Ambiance/ProgressBarStyle.qml:57
 msgid "In Progress"
-msgstr ""
+msgstr "Σε εξέλιξη"
 
 #: Ubuntu/Components/Themes/Ambiance/PullToRefreshStyle.qml:28
 msgid "Release to refresh..."

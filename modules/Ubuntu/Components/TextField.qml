@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 1.1 as Ubuntu
+import QtQuick 2.4
+import Ubuntu.Components 1.2 as Ubuntu
 import Ubuntu.Components.Popups 1.0
 
 /*!
@@ -26,7 +26,7 @@ import Ubuntu.Components.Popups 1.0
     Input constraints can be set through validator or inputMask. Setting echoMode
     to an appropriate value enables TextField to be used as password input field.
 
-    \l {http://design.ubuntu.com/apps/building-blocks/text-field}{See also the Design Guidelines on the Text Field}.
+    \l {https://design.ubuntu.com/apps/building-blocks/text-input#text-field}{See also the Design Guidelines on the Text Field}.
 
     Example:
     \qml
@@ -526,8 +526,8 @@ ActionItem {
       between 11 and 31 into the text input:
 
       \qml
-      import QtQuick 2.0
-      import Ubuntu.Components 1.1
+      import QtQuick 2.4
+      import Ubuntu.Components 1.2
       TextField{
           validator: IntValidator{bottom: 11; top: 31;}
           focus: true
@@ -844,9 +844,7 @@ ActionItem {
     QtObject {
         id: internal
         // array of borders in left, top, right, bottom order
-        property real spacing: control.__styleInstance.overlaySpacing
-        property real lineSpacing: units.dp(3)
-        property real lineSize: editor.font.pixelSize + lineSpacing
+        property real spacing: control.__styleInstance.frameSpacing
 
         property int type: action ? action.parameterType : Ubuntu.Action.None
         onTypeChanged: {
@@ -871,6 +869,8 @@ ActionItem {
         // the left pane width depends on its children width
         height: parent.height
         width: childrenRect.width
+        // Overlay needs to have priority
+        z: 1
         onChildrenChanged: {
             // reparenting
             for (var i = 0; i < children.length; i++) {
@@ -891,6 +891,8 @@ ActionItem {
         // the right pane width depends on its children width
         height: parent.height
         width: childrenRect.width
+        // Overlay needs to have priority
+        z: 1
         onChildrenChanged: {
             // reparenting
             for (var i = 0; i < children.length; i++) {
@@ -1008,12 +1010,6 @@ ActionItem {
                 main: control
                 input: editor
                 flickable: flicker
-                /*
-                  In x direction we use the Flickable x position as we can have overlays
-                  which can shift the cursor caret. On y direction we only use the topMargin
-                  spacing.
-                  */
-                frameDistance: Qt.point(flicker.x, flicker.topMargin)
             }
         }
     }

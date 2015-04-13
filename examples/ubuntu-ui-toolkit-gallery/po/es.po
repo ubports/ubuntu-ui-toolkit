@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: ubuntu-ui-toolkit\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2014-11-11 11:21+0100\n"
-"PO-Revision-Date: 2014-12-09 08:16+0000\n"
+"PO-Revision-Date: 2015-01-16 03:32+0000\n"
 "Last-Translator: Adolfo Jayme <fitoschido@gmail.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-12-12 06:33+0000\n"
-"X-Generator: Launchpad (build 17286)\n"
+"X-Launchpad-Export-Date: 2015-03-14 05:29+0000\n"
+"X-Generator: Launchpad (build 17389)\n"
 
 #: Animations.qml:24
 msgid "NumberAnimation"
@@ -50,7 +50,7 @@ msgstr ""
 #: Buttons.qml:32 Buttons.qml:41 Buttons.qml:51 Buttons.qml:71 Buttons.qml:79
 #: Buttons.qml:89
 msgid "Call"
-msgstr ""
+msgstr "Llamar"
 
 #: Buttons.qml:37
 msgid "Stroke"
@@ -284,7 +284,7 @@ msgstr "Reloj"
 
 #: Pickers.qml:147
 msgid "Overlay"
-msgstr ""
+msgstr "Superposición"
 
 #: Popover.qml:41
 msgid "Flickable"
@@ -333,7 +333,7 @@ msgstr "Título"
 #: Sliders.qml:36 Sliders.qml:51 Sliders.qml:68
 #, qt-format
 msgid "Actual value: %1"
-msgstr ""
+msgstr "Valor real: %1"
 
 #: Sliders.qml:42
 msgid "Live Update"
@@ -385,11 +385,11 @@ msgstr "Texto enriquecido"
 
 #: Toggles.qml:28 Toggles.qml:66
 msgid "Unchecked"
-msgstr ""
+msgstr "No activada"
 
 #: Toggles.qml:36 Toggles.qml:74
 msgid "Checked"
-msgstr ""
+msgstr "Activada"
 
 #: Toolbar.qml:30
 msgid "Share"

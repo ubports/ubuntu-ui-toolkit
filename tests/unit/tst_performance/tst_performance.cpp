@@ -22,8 +22,6 @@
 #include <QtQuick/QQuickView>
 #include <QtQuick/QQuickItem>
 
-#include "uctheme.h"
-
 class tst_Performance : public QObject
 {
     Q_OBJECT
@@ -69,6 +67,7 @@ private Q_SLOTS:
         QTest::addColumn<QString>("document");
         QTest::addColumn<QUrl>("theme");
 
+        QTest::newRow("old theming") << "StyledItemOldTheming.qml" << QUrl("Ubuntu.Components.Themes.SuruDark");
         QTest::newRow("grid with Rectangle") << "RectangleGrid.qml" << QUrl();
         QTest::newRow("grid with Text") << "TextGrid.qml" << QUrl();
         QTest::newRow("grid with Label") << "LabelGrid.qml" << QUrl();
@@ -80,6 +79,7 @@ private Q_SLOTS:
         QTest::newRow("list with new ListItem") << "ListItemList.qml" << QUrl();
         QTest::newRow("list with new ListItem with actions") << "ListItemWithActionsList.qml" << QUrl();
         QTest::newRow("list with new ListItem with inline actions") << "ListItemWithInlineActionsList.qml" << QUrl();
+        QTest::newRow("list with Captions, preset: caption") << "ListOfCaptions.qml" << QUrl();
         QTest::newRow("list with ListItems.Empty (equivalent to the new ListItem") << "ListItemsEmptyList.qml" << QUrl();
         // disable this test as it takes >20 seconds. Kept still for measurements to be done during development
 //        QTest::newRow("list with ListItems.Base (one icon, one label and one chevron)") << "ListItemsBaseList.qml" << QUrl();
@@ -94,6 +94,9 @@ private Q_SLOTS:
         QQuickItem *root = 0;
         QBENCHMARK {
             root = loadDocument(document);
+            if (root && theme.isValid()) {
+                root->setProperty("newTheme", theme.toString());
+            }
         }
         if (root)
             delete root;
