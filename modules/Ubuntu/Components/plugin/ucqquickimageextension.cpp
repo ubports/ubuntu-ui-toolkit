@@ -76,7 +76,6 @@ void UCQQuickImageExtension::reloadSource()
     int separatorPosition = resolved.indexOf("/");
     QString scaleFactor = resolved.left(separatorPosition);
     QString selectedFilePath = resolved.mid(separatorPosition+1);
-qDebug() << "reloadSource" << selectedFilePath << scaleFactor << "AAA" << UCUnits::instance().devicePixelRatio();
 
     if (scaleFactor == "1") {
         if (qFuzzyCompare(UCUnits::instance().devicePixelRatio(), 1.0f)) {
