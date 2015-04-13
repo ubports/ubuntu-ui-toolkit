@@ -25,7 +25,9 @@
 UCStyledItemBasePrivate::UCStyledItemBasePrivate()
     : activeFocusOnPress(false)
     , subthemingEnabled(true)
+    , styleLoadingMethod(Immediate)
     , styleComponent(0)
+    , styleItemContext(0)
     , styleItem(0)
     , theme(0)
     , parentStyledItem(0)
@@ -220,9 +222,20 @@ void UCStyledItemBasePrivate::setStyle(QQmlComponent *style)
     if (styleComponent == style) {
         return;
     }
+    preStyleChanged();
     styleComponent = style;
     Q_EMIT q_func()->styleChanged();
+    postStyleChanged();
+    loadStyleItem();
+}
+
+// performs pre-style change actions, removes style item size change
+// connections and destroys the style component
+void UCStyledItemBasePrivate::preStyleChanged()
+{
     if (styleItem) {
+        // make sure the context holder is reset too
+        styleItemContext.clear();
         // disconnect the size changes if they were still connected
         connectStyleSizeChanges(false);
         // remove parentalship to avoid eventual binding loops
@@ -231,21 +244,13 @@ void UCStyledItemBasePrivate::setStyle(QQmlComponent *style)
         styleItem->deleteLater();
         styleItem = 0;
     }
-    loadStyle();
-    Q_EMIT q_func()->styleInstanceChanged();
 }
 
-/*!
- * \internal
- * Instance of the \l style.
- */
-QQuickItem *UCStyledItemBasePrivate::styleInstance()
+// performs post-style change actions, creates the context object the
+// style item will be created in
+void UCStyledItemBasePrivate::postStyleChanged()
 {
-    return styleItem;
-}
-void UCStyledItemBasePrivate::loadStyle()
-{
-    if (!styleComponent) {
+    if (!styleComponent || styleItemContext) {
         return;
     }
     Q_Q(UCStyledItemBase);
@@ -254,15 +259,26 @@ void UCStyledItemBasePrivate::loadStyle()
     if (!creationContext) {
         creationContext = qmlContext(q);
     }
-    QQmlContext *itemContext = new QQmlContext(creationContext);
-    itemContext->setContextObject(q);
-    itemContext->setContextProperty("styledItem", q);
-    QObject *object = styleComponent->create(itemContext);
+    styleItemContext = new QQmlContext(creationContext);
+    styleItemContext->setContextObject(q);
+    styleItemContext->setContextProperty("styledItem", q);
+}
+
+// loads the style animated or not, depending on the loading time
+void UCStyledItemBasePrivate::loadStyleItem(bool animated)
+{
+    if (styleItem || !styleComponent || !styleItemContext || (styleLoadingMethod != Immediate && !componentComplete)) {
+        // the style loading is delayed
+        return;
+    }
+    Q_Q(UCStyledItemBase);
+    styleItemContext->setContextProperty("animated", animated);
+    QObject *object = styleComponent->beginCreate(styleItemContext);
     if (!object) {
         return;
     }
     // link context to the style item to delete them together
-    QQml_setParent_noEvent(itemContext, object);
+    QQml_setParent_noEvent(styleItemContext, object);
     styleItem = qobject_cast<QQuickItem*>(object);
     if (styleItem) {
         QQml_setParent_noEvent(styleItem, q);
@@ -275,10 +291,26 @@ void UCStyledItemBasePrivate::loadStyle()
     } else {
         delete object;
     }
+    styleComponent->completeCreate();
+
+    // make sure we reset the animated property to true
+    if (!animated) {
+        styleItemContext->setContextProperty("animated", true);
+    }
 
     // set implicit size
     _q_styleResized();
     connectStyleSizeChanges(true);
+    Q_EMIT q->__styleInstanceChanged();
+}
+
+/*!
+ * \internal
+ * Instance of the \l style.
+ */
+QQuickItem *UCStyledItemBasePrivate::styleInstance()
+{
+    return styleItem;
 }
 
 // connect style item implicit size changes
@@ -367,6 +399,9 @@ void UCStyledItemBasePrivate::setTheme(UCTheme *newTheme)
         return;
     }
 
+    // preform pre-theme change tasks
+    preThemeChanged();
+
     if (!subthemingEnabled) {
         // no subtheming
         if (newTheme) {
@@ -421,8 +456,8 @@ void UCStyledItemBasePrivate::setTheme(UCTheme *newTheme)
         Q_EMIT theme->parentThemeChanged();
     }
 
-    // update internal styling
-    updateStyling();
+    // perform post-theme changes, update internal styling
+    postThemeChanged();
 
     Q_EMIT q->themeChanged();
 }
@@ -526,6 +561,16 @@ void UCStyledItemBasePrivate::_q_parentStyleChanged()
     }
     setParentStyled(styledItem);
     Q_EMIT q->themeChanged();
+}
+
+void UCStyledItemBase::componentComplete()
+{
+    QQuickItem::componentComplete();
+    Q_D(UCStyledItemBase);
+    if (d->styleLoadingMethod == UCStyledItemBasePrivate::DelayTillCompleted) {
+        // the delayed completion disables animations
+        d->loadStyleItem(false);
+    }
 }
 
 // grab pressed state and focus if it can be

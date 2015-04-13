@@ -29,6 +29,7 @@ Styles.ListItemStyle {
 
     // anchoring
     anchors {
+        fill: undefined
         top: parent ? parent.top : undefined
         bottom: parent ? parent.bottom : undefined
         bottomMargin: styledItem.divider.visible ? styledItem.divider.height : 0

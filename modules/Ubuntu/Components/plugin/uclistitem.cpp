@@ -81,6 +81,8 @@ void UCListItemDivider::init(UCListItem *listItem)
     anchors->setBottom(d->listItem->bottom());
     // connect visible change so we relayout contentItem
     connect(this, SIGNAL(visibleChanged()), listItem, SLOT(_q_relayout()));
+    // theme palette changes
+    connect(listItem, SIGNAL(themeChanged()), this, SLOT(paletteChanged()));
 }
 
 void UCListItemDivider::paletteChanged()
@@ -185,6 +187,7 @@ UCListItemPrivate::UCListItemPrivate()
     , suppressClick(false)
     , ready(false)
     , customColor(false)
+    , customStyle(false)
     , xAxisMoveThresholdGU(DEFAULT_SWIPE_THRESHOLD_GU)
     , color(Qt::transparent)
     , highlightColor(Qt::transparent)
@@ -194,10 +197,8 @@ UCListItemPrivate::UCListItemPrivate()
     , leadingActions(0)
     , trailingActions(0)
     , mainAction(0)
-    , styleComponent(0)
-    , implicitStyleComponent(0)
-    , styleItem(0)
 {
+    styleLoadingMethod = DelayTillExplicitRequested;
 }
 UCListItemPrivate::~UCListItemPrivate()
 {
@@ -223,12 +224,21 @@ void UCListItemPrivate::init()
     QObject::connect(contentItem, SIGNAL(xChanged()),
                      q, SLOT(_q_updateSwiping()), Qt::DirectConnection);
 
+    // connect theme changes
+    QObject::connect(q, SIGNAL(themeChanged()),
+                     q, SLOT(_q_themeChanged()), Qt::DirectConnection);
     // update theme changes
-    updateStyling();
+    _q_themeChanged();
 
     // watch grid unit size change and set implicit size
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_updateSize()));
     _q_updateSize();
+}
+
+void UCListItemPrivate::_q_themeChanged()
+{
+    // call the post theme changes
+    postThemeChanged();
 }
 
 // inspired from IS_SIGNAL_CONNECTED(q, UCListItem, pressAndHold, ())
@@ -249,16 +259,17 @@ bool UCListItemPrivate::isPressAndHoldConnected()
     return QObjectPrivate::get(q)->isSignalConnected(signalIdx);
 }
 
-void UCListItemPrivate::updateStyling()
+void UCListItemPrivate::postThemeChanged()
 {
-    UCStyledItemBasePrivate::updateStyling();
     Q_Q(UCListItem);
     // update the divider colors
-    divider->paletteChanged();
-    // we reload the implicit style only if the custom style is not set, and
-    // the component is ready
-    if (!styleComponent && ready) {
-        resetStyle();
+//    divider->paletteChanged();
+
+    // if not using custom style, reload style component from theme
+    if (!customStyle) {
+        // use style setter but reset custom style flag
+        setStyle(getTheme()->createStyleComponent("ListItemStyle.qml", q));
+        customStyle = false;
     }
 
     // update colors, panels
@@ -289,14 +300,14 @@ void UCListItemPrivate::_q_updateIndex()
 // update contentMoving property when ListItemStyle.snapAnimation stopped() signal is emitted
 void UCListItemPrivate::_q_contentMoving()
 {
-    setContentMoving(styleItem->m_snapAnimation->isRunning());
+    setContentMoving(listItemStyle()->m_snapAnimation->isRunning());
 }
 
 // synchronizes selection mode, initializes the style if has not been done yet,
 // which in turn reveals the selection panels
 void UCListItemPrivate::_q_syncSelectMode()
 {
-    initStyleItem();
+    loadStyleItem();
     Q_Q(UCListItem);
     Q_EMIT q->selectModeChanged();
 }
@@ -304,7 +315,7 @@ void UCListItemPrivate::_q_syncSelectMode()
 // same for the dragMode
 void UCListItemPrivate::_q_syncDragMode()
 {
-    initStyleItem();
+    loadStyleItem();
     Q_Q(UCListItem);
     Q_EMIT q->dragModeChanged();
 }
@@ -317,120 +328,36 @@ void UCListItemPrivate::_q_syncDragMode()
  * and will load its content only when requested.
  * \sa ListItemStyle
  */
-QQmlComponent *UCListItemPrivate::style() const
+void UCListItemPrivate::preStyleChanged()
 {
-    return styleComponent ? styleComponent : implicitStyleComponent;
-}
-void UCListItemPrivate::setStyle(QQmlComponent *delegate)
-{
-    if (styleComponent == delegate) {
-        return;
-    }
-    Q_Q(UCListItem);
-    if (!delegate) {
-        // undefined or null delegate resets the style to theme
-        resetStyle();
-        return;
-    }
-    // make sure we're rebound before we change the panel component
+    customStyle = true;
     snapOut();
-    bool reloadStyle = styleItem != 0;
-    if (styleItem) {
-        styleItem->deleteLater();
-        styleItem = 0;
-        Q_EMIT q->__styleInstanceChanged();
-    }
-    styleComponent = delegate;
-    // delete theme style for now
-    if (implicitStyleComponent) {
-        implicitStyleComponent->deleteLater();
-        implicitStyleComponent = 0;
-    }
-    if (reloadStyle) {
-        initStyleItem();
-    }
-    Q_EMIT q->styleChanged();
+    UCStyledItemBasePrivate::preStyleChanged();
 }
-void UCListItemPrivate::resetStyle()
+
+void UCListItemPrivate::postStyleChanged()
 {
-    if (styleComponent || !implicitStyleComponent) {
-        styleComponent = 0;
-        // rebound as the current panels are not gonna be valid anymore
-        if (swiped) {
-            snapOut();
-        }
-        bool reloadStyle = styleItem != 0;
-        if (styleItem) {
-            styleItem->deleteLater();
-            styleItem = 0;
-        }
-        delete implicitStyleComponent;
-        Q_Q(UCListItem);
-        implicitStyleComponent = getTheme()->createStyleComponent("ListItemStyle.qml", q);
-        if (implicitStyleComponent) {
-            // set the objectnane for testing in tst_listitems.qml
-            implicitStyleComponent->setObjectName("ListItemThemeStyle");
-        }
-        // re-create style instance if it was created using the implicit style
-        if (reloadStyle) {
-            initStyleItem();
-        }
-        Q_EMIT q->styleChanged();
+    UCStyledItemBasePrivate::postStyleChanged();
+    // extra context properties
+    if (!styleItemContext->contextProperty("index").isValid()) {
+        styleItemContext->setContextProperty("index", index());
     }
 }
 
 // creates the style item, with altered default value of the animatePanels style property
 // the property is turned on after the panel initialization.
-void UCListItemPrivate::initStyleItem(bool withAnimatedPanels)
+void UCListItemPrivate::loadStyleItem(bool animated)
 {
-    if (!ready || styleItem) {
+    UCStyledItemBasePrivate::loadStyleItem(animated);
+    UCListItemStyle *myStyle = qobject_cast<UCListItemStyle*>(styleItem);
+    if (!myStyle) {
+        // the style is not derived from ListItemStyle, clean
+        preStyleChanged();
         return;
     }
-    // get the component the style instance is created from
-    Q_Q(UCListItem);
-    QQmlComponent *delegate = style();
-    if (!delegate) {
-        // the style is not loaded from the theme yet
-        updateStyling();
-        delegate = style();
-    }
-    if (!delegate) {
-        return;
-    }
-    if (delegate->isError()) {
-        qmlInfo(q) << delegate->errorString();
-        return;
-    }
-    QQmlContext *context = new QQmlContext(qmlContext(q), qmlContext(q));
-    context->setContextProperty("styledItem", q);
-    // also declare index property in case not defined
-    if (!context->contextProperty("index").isValid()) {
-        context->setContextProperty("index", index());
-    }
-    QObject *object = delegate->beginCreate(context);
-    styleItem = qobject_cast<UCListItemStyle*>(object);
-    if (!styleItem) {
-        delete object;
-        delegate->completeCreate();
-        delete context;
-        return;
-    }
-    QQml_setParent_noEvent(styleItem, q);
-    styleItem->setAnimatePanels(withAnimatedPanels);
-    styleItem->setParentItem(q);
-    delegate->completeCreate();
-    // turn animations on
-    styleItem->setAnimatePanels(true);
-    Q_EMIT q->__styleInstanceChanged();
-}
-
-/*!
- * \qmlproperty Item ListItem::__styleInstance
- * \internal
- */
-QQuickItem *UCListItemPrivate::styleInstance() const
-{
-    return styleItem;
+    // bring the panels foreground
+    styleItem->setZ(0);
+    listItemStyle()->setAnimatePanels(true);
 }
 
 // called when units size changes
@@ -575,7 +502,7 @@ void UCListItemPrivate::snapOut()
         listenToRebind(false);
     }
     if (styleItem) {
-        styleItem->invokeRebound();
+        listItemStyle()->invokeRebound();
     }
 }
 
@@ -589,7 +516,7 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
         event.m_contentPos = zeroPos;
     }
     if (styleItem) {
-        styleItem->invokeSwipeEvent(&event);
+        listItemStyle()->invokeSwipeEvent(&event);
     }
     if (event.m_contentPos != contentItem->position()) {
         contentItem->setPosition(event.m_contentPos);
@@ -1034,7 +961,7 @@ void UCListItem::componentComplete()
 
         // if selection or drag mode is on, initialize style, with animations turned off
         if (d->parentAttached->selectMode() || d->parentAttached->dragMode()) {
-            d->initStyleItem(false);
+            d->loadStyleItem(false);
         }
         // set the object name for testing purposes
         if (d->dragging()) {
@@ -1131,7 +1058,7 @@ void UCListItem::mousePressEvent(QMouseEvent *event)
     if (d->canHighlight(event)
             && !d->highlighted && event->button() == Qt::LeftButton) {
         // create style instance
-        d->initStyleItem();
+        d->loadStyleItem();
         d->setHighlighted(true);
         d->lastPos = d->pressedPos = event->localPos();
         // connect the Flickable to know when to rebound

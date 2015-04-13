@@ -44,6 +44,16 @@ UCListItemStyle::UCListItemStyle(QQuickItem *parent)
 {
 }
 
+void UCListItemStyle::classBegin()
+{
+    // grab the animated context property and transfer it to the property
+    QQuickItem::classBegin();
+    QQmlContext *context = qmlContext(this);
+    if (context && context->contextProperty("animated").isValid()) {
+        setAnimatePanels(context->contextProperty("animated").toBool());
+    }
+}
+
 void UCListItemStyle::componentComplete()
 {
     QQuickItem::componentComplete();
@@ -58,7 +68,7 @@ void UCListItemStyle::componentComplete()
         }
     }
 
-    // connect snapAnimation's stopped() and the owning ListItem's sontentMovementeEnded() signals
+    // connect snapAnimation's stopped() and the owning ListItem's contentMovementeEnded() signals
     UCListItem *listItem = qmlContext(this)->contextProperty("styledItem").value<UCListItem*>();
     if (listItem && m_snapAnimation) {
         connect(m_snapAnimation, SIGNAL(runningChanged(bool)),
