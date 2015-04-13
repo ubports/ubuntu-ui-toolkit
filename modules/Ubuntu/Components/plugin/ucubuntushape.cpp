@@ -290,10 +290,7 @@ UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
     setFlag(ItemHasContents);
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this,
                      SLOT(_q_gridUnitChanged()));
-    const float gridUnit = UCUnits::instance().gridUnit();
-    setImplicitWidth(implicitWidthGU * gridUnit);
-    setImplicitHeight(implicitHeightGU * gridUnit);
-    update();
+    _q_gridUnitChanged();
 }
 
 /*! \qmlproperty string UbuntuShape::radius
@@ -938,9 +935,9 @@ void UCUbuntuShape::_q_openglContextDestroyed()
 
 void UCUbuntuShape::_q_gridUnitChanged()
 {
-    const float gridUnit = UCUnits::instance().gridUnit();
-    setImplicitWidth(implicitWidthGU * gridUnit);
-    setImplicitHeight(implicitHeightGU * gridUnit);
+    const float gridUnitInDevicePixels = UCUnits::instance().gridUnit() / UCUnits::instance().devicePixelRatio();
+    setImplicitWidth(implicitWidthGU * gridUnitInDevicePixels);
+    setImplicitHeight(implicitHeightGU * gridUnitInDevicePixels);
     update();
 }
 
@@ -1033,6 +1030,7 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
 {
     Q_UNUSED(data);
 
+    const float dpr = UCUnits::instance().devicePixelRatio();
     const QSizeF itemSize(width(), height());
     if (itemSize.isEmpty()) {
         delete oldNode;
@@ -1071,12 +1069,12 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
         }
         if (m_flags & DirtySourceTransform) {
             if (m_flags & SourceApiSet) {
-                updateSourceTransform(itemSize.width(), itemSize.height(), m_sourceFillMode,
+                updateSourceTransform(itemSize.width() * dpr, itemSize.height() * dpr, m_sourceFillMode,
                                       m_sourceHorizontalAlignment, m_sourceVerticalAlignment,
                                       sourceTexture->textureSize());
             } else {
                 FillMode imageFillMode = (m_flags & Stretched) ? Stretch : PreserveAspectCrop;
-                updateSourceTransform(itemSize.width(), itemSize.height(), imageFillMode,
+                updateSourceTransform(itemSize.width() * dpr, itemSize.height() * dpr, imageFillMode,
                                       m_imageHorizontalAlignment, m_imageVerticalAlignment,
                                       sourceTexture->textureSize());
             }
@@ -1103,7 +1101,7 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
     // scaled down accordingly. The shape was using a fixed image for the corner before switching to
     // a distance field, since the corner wasn't taking the whole image (ending at ~80%) we need
     // to take that into account when the size is scaled down.
-    float radius = UCUnits::instance().gridUnit()
+    float radius = UCUnits::instance().gridUnit() / UCUnits::instance().devicePixelRatio()
         * (m_radius == Small ? smallRadiusGU : mediumRadiusGU);
     const float scaledDownRadius = qMin(itemSize.width(), itemSize.height()) * 0.5f * 0.8f;
     if (radius > scaledDownRadius) {
