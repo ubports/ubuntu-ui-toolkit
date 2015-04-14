@@ -1,0 +1,56 @@
+/*
+ * Copyright 2015 Canonical Ltd.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/*!
+ * \page ubuntu-theming.html
+ * \title Styling - Introduction
+ * \nextpage Styling - Themes
+ *
+ * Components in Ubuntu UI toolkit are split in two parts. One part of the component
+ * defines the generic logic of the component, and all the visuals and visual specific
+ * logic is concentrated inside a visuals component called style.
+ *
+ *
+ */
+
+/*!
+ * \page ubuntu-theming1.html
+ * \title Styling - Themes
+ * \nextpage Styling - Application themes
+ */
+
+/*!
+ * \page ubuntu-theming2.html
+ * \title Styling - Application themes
+ * \nextpage Styling - Using multiple themes in an application
+ */
+
+/*!
+ * \page ubuntu-theming3.html
+ * \title Styling - Using multiple themes in an application
+ * \nextpage Styling - Using custom palette in a component sub-tree
+ */
+
+/*!
+ * \page ubuntu-theming4.html
+ * \title Styling - Using custom palette in a component sub-tree
+ * \nextpage Styling - Using custom styles
+ */
+
+/*!
+ * \page ubuntu-theming5.html
+ * \title Styling - Using custom styles
+ */
