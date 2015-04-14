@@ -223,12 +223,19 @@ void UCListItemPrivate::init()
     QObject::connect(contentItem, SIGNAL(xChanged()),
                      q, SLOT(_q_updateSwiping()), Qt::DirectConnection);
 
-    // update theme changes
-    updateStyling();
+    // connect theme changes
+    QObject::connect(q, SIGNAL(themeChanged()),
+                     q, SLOT(_q_themeChanged()), Qt::DirectConnection);
 
     // watch grid unit size change and set implicit size
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_updateSize()));
     _q_updateSize();
+}
+
+void UCListItemPrivate::_q_themeChanged()
+{
+    // call the post theme changes
+    updateStyling();
 }
 
 // inspired from IS_SIGNAL_CONNECTED(q, UCListItem, pressAndHold, ())
@@ -992,6 +999,13 @@ UCListItem::UCListItem(QQuickItem *parent)
 
 UCListItem::~UCListItem()
 {
+}
+
+void UCListItem::classBegin()
+{
+    UCStyledItemBase::classBegin();
+    Q_D(UCListItem);
+    d->_q_themeChanged();
 }
 
 void UCListItem::componentComplete()

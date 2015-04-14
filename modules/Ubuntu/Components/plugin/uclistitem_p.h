@@ -48,6 +48,7 @@ public:
         return that->d_func();
     }
 
+    void _q_themeChanged();
     bool isClickedConnected();
     bool isPressAndHoldConnected();
     void _q_relayout();
