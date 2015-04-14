@@ -94,7 +94,6 @@ private Q_SLOTS:
 
     void cleanup()
     {
-        qputenv("UITK_SUBTHEMING", "yes");
         qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", m_themesPath.toLatin1());
         qputenv("XDG_DATA_DIRS", m_xdgDataPath.toLocal8Bit());
     }
@@ -321,17 +320,8 @@ private Q_SLOTS:
 
 
     // testing global context property 'theme' name changes
-    void test_set_global_theme_name_data()
-    {
-        QTest::addColumn<QByteArray>("subtheming");
-
-        QTest::newRow("Subtheming disabled") << QByteArray("no");
-        QTest::newRow("Subtheming enabled") << QByteArray("yes");
-    }
     void test_set_global_theme_name()
     {
-        QFETCH(QByteArray, subtheming);
-        qputenv("UITK_SUBTHEMING", subtheming);
         QScopedPointer<ThemeTestCase> view(new ThemeTestCase("TestMain.qml"));
         view->setGlobalTheme("Ubuntu.Components.Themes.SuruDark");
         // verify theme changes
@@ -347,19 +337,14 @@ private Q_SLOTS:
     // no sub-theming si applied
     void test_set_styleditem_theme_name_data()
     {
-        QTest::addColumn<QByteArray>("subtheming");
         QTest::addColumn<QString>("itemName");
 
-        QTest::newRow("Subtheming disabled, set firstLevelStyled") << QByteArray("no") << "firstLevelStyled";
-        QTest::newRow("Subtheming disabled, set secondLevelStyled") << QByteArray("no") << "secondLevelStyled";
-        QTest::newRow("Subtheming enabled, set firstLevelStyled") << QByteArray("yes") << "firstLevelStyled";
-        QTest::newRow("Subtheming enabled, set secondLevelStyled") << QByteArray("yes") << "secondLevelStyled";
+        QTest::newRow("Subtheming enabled, set firstLevelStyled") << "firstLevelStyled";
+        QTest::newRow("Subtheming enabled, set secondLevelStyled") << "secondLevelStyled";
     }
     void test_set_styleditem_theme_name()
     {
-        QFETCH(QByteArray, subtheming);
         QFETCH(QString, itemName);
-        qputenv("UITK_SUBTHEMING", subtheming);
         QScopedPointer<ThemeTestCase> view(new ThemeTestCase("TestMain.qml"));
         // change theme name (theme)
         UCStyledItemBase *styled = view->findItem<UCStyledItemBase*>(itemName);

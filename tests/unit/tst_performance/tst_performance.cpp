@@ -72,26 +72,20 @@ private Q_SLOTS:
     {
         QTest::addColumn<QString>("document");
         QTest::addColumn<QUrl>("theme");
-        QTest::addColumn<QByteArray>("enableSubtheming");
-        QTest::addColumn<QString>("warning");
 
-        QTest::newRow("old theming, subtheming disabled, no theme change") << "StyledItemOldTheming.qml" << QUrl() << QByteArray("no");
-        QTest::newRow("old theming, subtheming disabled, with theme change") << "StyledItemOldTheming.qml" << QUrl("Ubuntu.Components.Themes.SuruDark") << QByteArray("no");
-        QTest::newRow("new theming, subtheming enabled, no theme change") << "StyledItemNewTheming.qml" << QUrl() << QByteArray("yes");
-        QTest::newRow("new theming, subtheming enabled, with theme change") << "StyledItemNewTheming.qml" << QUrl("Ubuntu.Components.Themes.SuruDark") << QByteArray("yes");
-        QTest::newRow("old theming, subtheming enabled") << "StyledItemOldTheming.qml" << QUrl("Ubuntu.Components.Themes.SuruDark") << QByteArray("yes");
-        QTest::newRow("subtheming, no changes on themes") << "Styling.qml" << QUrl() << QByteArray("yes");
-        QTest::newRow("subtheming, change mid item") << "Styling.qml" << QUrl("Ubuntu.Components.Themes.SuruDark") << QByteArray("yes");
-        QTest::newRow("Palette configuration of one color") << "PaletteConfigurationOneColor.qml" << QUrl("Ubuntu.Components.Themes.SuruDark") << QByteArray("yes");
-        QTest::newRow("Palette configuration of all colors") << "PaletteConfigurationAllColors.qml" << QUrl("Ubuntu.Components.Themes.SuruDark") << QByteArray("yes");
+        QTest::newRow("new theming, subtheming enabled, no theme change") << "StyledItemNewTheming.qml" << QUrl();
+        QTest::newRow("new theming, subtheming enabled, with theme change") << "StyledItemNewTheming.qml" << QUrl("Ubuntu.Components.Themes.SuruDark");
+        QTest::newRow("old theming, subtheming enabled") << "StyledItemOldTheming.qml" << QUrl("Ubuntu.Components.Themes.SuruDark");
+        QTest::newRow("subtheming, no changes on themes") << "Styling.qml" << QUrl();
+        QTest::newRow("subtheming, change mid item") << "Styling.qml" << QUrl("Ubuntu.Components.Themes.SuruDark");
+        QTest::newRow("Palette configuration of one color") << "PaletteConfigurationOneColor.qml" << QUrl("Ubuntu.Components.Themes.SuruDark");
+        QTest::newRow("Palette configuration of all colors") << "PaletteConfigurationAllColors.qml" << QUrl("Ubuntu.Components.Themes.SuruDark");
     }
     void benchmark_theming()
     {
         QFETCH(QString, document);
         QFETCH(QUrl, theme);
-        QFETCH(QByteArray, enableSubtheming);
 
-        qputenv("UITK_SUBTHEMING", enableSubtheming);
         qputenv("SUPPRESS_DEPRECATED_NOTE", "yes");
         QQuickItem *root = 0;
         QBENCHMARK {
