@@ -67,7 +67,6 @@ public:
 
 public:
     bool activeFocusOnPress:1;
-    bool subthemingEnabled:1;
     StyleLoadingMethod styleLoadingMethod;
     QQmlComponent *styleComponent;
     QPointer<QQmlContext> styleItemContext;

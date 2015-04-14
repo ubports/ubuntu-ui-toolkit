@@ -24,7 +24,6 @@
 
 UCStyledItemBasePrivate::UCStyledItemBasePrivate()
     : activeFocusOnPress(false)
-    , subthemingEnabled(true)
     , styleLoadingMethod(Immediate)
     , styleComponent(0)
     , styleItemContext(0)
@@ -42,16 +41,8 @@ void UCStyledItemBasePrivate::init()
 {
     Q_Q(UCStyledItemBase);
     q->setFlag(QQuickItem::ItemIsFocusScope);
-    QByteArray env = qgetenv("UITK_SUBTHEMING");
-    subthemingEnabled = (env.isEmpty() || env == QByteArrayLiteral("yes"));
-    if (!subthemingEnabled) {
-        // every theme will be using the default theme
-        theme = &UCTheme::defaultTheme();
-        QObject::connect(theme, &UCTheme::nameChanged, q, &UCStyledItemBase::themeChanged);
-    } else {
-        QObject::connect(&UCTheme::defaultTheme(), &UCTheme::nameChanged,
-                         q, &UCStyledItemBase::themeChanged);
-    }
+    QObject::connect(&UCTheme::defaultTheme(), &UCTheme::nameChanged,
+                     q, &UCStyledItemBase::themeChanged);
 }
 
 
@@ -378,17 +369,15 @@ void UCStyledItemBasePrivate::_q_styleResized()
  * \qmlproperty ThemeSettings StyledItem::theme
  * \since Ubuntu.Components 1.3
  * The property configures the theme the component and all its sub-components
- * will use. By default it is set to the closest StyledItem's theme if any,
- * or to the system default theme.
+ * will use. By default it is set to the closest ancestor StyledItem's theme
+ * if any, or to the system default theme.
  */
 UCTheme *UCStyledItemBasePrivate::getTheme() const
 {
-    if (subthemingEnabled) {
-        if (theme) {
-            return theme;
-        } else if (!parentStyledItem.isNull()) {
-            return UCStyledItemBasePrivate::get(parentStyledItem)->getTheme();
-        }
+    if (theme) {
+        return theme;
+    } else if (!parentStyledItem.isNull()) {
+        return UCStyledItemBasePrivate::get(parentStyledItem)->getTheme();
     }
     return &UCTheme::defaultTheme();
 }
@@ -401,17 +390,6 @@ void UCStyledItemBasePrivate::setTheme(UCTheme *newTheme)
 
     // preform pre-theme change tasks
     preThemeChanged();
-
-    if (!subthemingEnabled) {
-        // no subtheming
-        if (newTheme) {
-            theme = newTheme;
-            UCTheme::defaultTheme().setName(theme->name());
-        } else {
-            UCTheme::defaultTheme().resetName();
-        }
-        return;
-    }
 
     // disconnect from the previous set
     UCTheme *connectedSet = theme ?
@@ -492,7 +470,7 @@ bool UCStyledItemBasePrivate::connectParents(QQuickItem *fromItem)
     return false;
 }
 
-// set the used parent styled item's style
+// set the used parent styled item's style; returns true if the parent styled got changed
 bool UCStyledItemBasePrivate::setParentStyled(UCStyledItemBase *styledItem)
 {
     if (parentStyledItem == styledItem) {
@@ -508,9 +486,6 @@ bool UCStyledItemBasePrivate::setParentStyled(UCStyledItemBase *styledItem)
 // disconnect parent stack till item is reached; all the stack if item == 0
 void UCStyledItemBasePrivate::disconnectTillItem(QQuickItem *item)
 {
-    if (!subthemingEnabled) {
-        return;
-    }
     Q_Q(UCStyledItemBase);
     while (!parentStack.isEmpty() && item != parentStack.top()) {
         QPointer<QQuickItem> stackItem = parentStack.pop();
@@ -604,7 +579,7 @@ void UCStyledItemBase::itemChange(ItemChange change, const ItemChangeData &data)
 {
     QQuickItem::itemChange(change, data);
     Q_D(UCStyledItemBase);
-    if (change == ItemParentHasChanged && d->subthemingEnabled) {
+    if (change == ItemParentHasChanged) {
         if (!data.item) {
             d->disconnectTillItem(0);
         } else if (d->connectParents(0)) {
