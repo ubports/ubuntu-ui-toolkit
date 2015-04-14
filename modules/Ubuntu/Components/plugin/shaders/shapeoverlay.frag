@@ -24,10 +24,10 @@
 
 uniform sampler2D shapeTexture;
 uniform sampler2D sourceTexture;
-uniform lowp vec2 factors;
+uniform lowp vec2 dfdtFactors;
+uniform lowp vec2 opacityFactors;
 uniform lowp float sourceOpacity;
 uniform lowp float distanceAA;
-uniform lowp float dfdtFlip;
 uniform bool textured;
 uniform mediump int aspect;
 
@@ -66,7 +66,7 @@ void main(void)
     // Get screen-space derivative of texture coordinate t representing the normalized distance
     // between 2 pixels. dFd*() unfortunately have to be called outside of the following branches
     // (evaluated using a uniform variable) in order to work correctly with Mesa.
-    lowp float dfdt = dFdy(shapeCoord.t);
+    lowp float dfdt = dfdtFactors.x != 0.0 ? dFdy(shapeCoord.t) : dFdx(shapeCoord.t);
 
     if (aspect == FLAT) {
         // Mask the current color with an anti-aliased and resolution independent shape mask built
@@ -78,7 +78,7 @@ void main(void)
     } else if (aspect == INSET) {
         // The vertex layout of the shape is made so that the derivative is negative from top to
         // middle and positive from middle to bottom.
-        lowp float shapeSide = dfdt * dfdtFlip <= 0.0 ? 0.0 : 1.0;
+        lowp float shapeSide = dfdt * dfdtFactors.y <= 0.0 ? 0.0 : 1.0;
         // Blend the shape inner shadow over the current color. The shadow color is black, its
         // translucency is stored in the texture.
         lowp float shadow = shapeData[int(shapeSide)];
@@ -98,5 +98,5 @@ void main(void)
         color = (color * vec4(mask[int(shapeSide)])) + vec4(bevel);
     }
 
-    gl_FragColor = color * vec4(factors.x, factors.x, factors.x, factors.y);
+    gl_FragColor = color * opacityFactors.xxxy;
 }

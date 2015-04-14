@@ -41,10 +41,10 @@ public:
 private:
     QOpenGLFunctions* m_functions;
     int m_matrixId;
-    int m_factorsId;
+    int m_dfdtFactorsId;
+    int m_opacityFactorsId;
     int m_sourceOpacityId;
     int m_distanceAAId;
-    int m_dfdtFlipId;
     int m_texturedId;
     int m_aspectId;
 };
