@@ -13,40 +13,26 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 import QtQuick 2.4
 import Ubuntu.Components 1.3
 
-Item {
-    id: component1
-    objectName: "TopItem"
-    width: units.gu(50)
-    height: units.gu(100)
+StyledItem {
+    width: units.gu(40)
+    height: units.gu(71)
+    objectName: "mainStyled"
 
     Column {
-        objectName: "Column"
         anchors.fill: parent
-        Label {
-            text: "Hallo"
-        }
-        Button {
-            text: "Theme change"
-            onClicked: theme.name = "Ubuntu.Components.Themes.SuruDark"
-        }
-
-        TextField {
-            objectName: "OuterText"
-            property string styleName: theme.name
-            onStyleNameChanged: print(objectName, styleName)
-        }
         StyledItem {
-            objectName: "SuruDarkStyled"
+            objectName: "firstLevelStyled"
             width: parent.width
-            height: units.gu(10)
-            TextField {
-                objectName: "InnerText"
-                property string styleName: theme.name
-                onStyleNameChanged: print(objectName, styleName)
+            height: units.gu(20)
+            Item {
+                anchors.fill: parent
+                StyledItem {
+                    objectName: "secondLevelStyled"
+                    anchors.fill: parent
+                }
             }
         }
     }

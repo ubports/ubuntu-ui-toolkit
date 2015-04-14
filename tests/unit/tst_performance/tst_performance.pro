@@ -26,4 +26,5 @@ OTHER_FILES += \
     ListItemsBaseList.qml \
     ListItemWithInlineActionsList.qml \
     ListItemWithActionsList.qml \
-    StyledItemOldTheming.qml
+    StyledItemOldTheming.qml \
+    Styling.qml

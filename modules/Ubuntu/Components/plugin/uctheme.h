@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2015 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -29,10 +29,12 @@
 
 #include "ucdefaulttheme.h"
 
+class UCStyledItemBase;
 class UCTheme : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
     Q_INTERFACES(QQmlParserStatus)
+    Q_PROPERTY(UCTheme *parentTheme READ parentTheme NOTIFY parentThemeChanged)
     Q_PROPERTY(QString name READ name WRITE setName RESET resetName NOTIFY nameChanged)
     Q_PROPERTY(QObject* palette READ palette NOTIFY paletteChanged)
 public:
@@ -44,6 +46,7 @@ public:
     }
 
     // getter/setters
+    UCTheme *parentTheme();
     QString name() const;
     void setName(const QString& name);
     void resetName();
@@ -53,6 +56,7 @@ public:
     static void registerToContext(QQmlContext* context);
 
 Q_SIGNALS:
+    void parentThemeChanged();
     void nameChanged();
     void paletteChanged();
 
