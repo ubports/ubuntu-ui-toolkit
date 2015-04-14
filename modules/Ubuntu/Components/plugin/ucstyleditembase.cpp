@@ -186,8 +186,8 @@ void UCStyledItemBase::setActiveFocusOnPress(bool value)
  * \qmlproperty ThemeSettings StyledItem::theme
  * \since Ubuntu.Components 1.3
  * The property configures the theme the component and all its sub-components
- * will use. By default it is set to the closest StyledItem's theme if any,
- * or to the system default theme.
+ * will use. By default it is set to the closest ancestor StyledItem's theme
+ * if any, or to the system default theme.
  */
 UCTheme *UCStyledItemBasePrivate::getTheme() const
 {
@@ -294,7 +294,7 @@ bool UCStyledItemBasePrivate::connectParents(QQuickItem *fromItem)
     return false;
 }
 
-// set the used parent styled item's style
+// set the used parent styled item's style; returns true if the parent styled got changed
 bool UCStyledItemBasePrivate::setParentStyled(UCStyledItemBase *styledItem)
 {
     if (parentStyledItem == styledItem) {
