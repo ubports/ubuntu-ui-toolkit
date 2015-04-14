@@ -24,8 +24,6 @@ MainView {
     width: units.gu(50)
     height: units.gu(10)
 
-    useDeprecatedToolbar: false
-
     UbuntuTestCase {
         when: windowShown
 

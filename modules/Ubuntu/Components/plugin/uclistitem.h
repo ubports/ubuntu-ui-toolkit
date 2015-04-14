@@ -117,8 +117,6 @@ public:
     explicit UCListItemDivider(UCListItem *parent = 0);
     ~UCListItemDivider();
     void init(UCListItem *listItem);
-
-private Q_SLOTS:
     void paletteChanged();
 
 Q_SIGNALS:
@@ -135,7 +133,6 @@ private:
     QColor colorTo() const;
     void setColorTo(const QColor &color);
     Q_DECLARE_PRIVATE(UCListItemDivider)
-    friend class UCListItem;
 };
 
 class UCDragEvent;

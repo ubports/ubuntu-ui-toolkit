@@ -81,17 +81,11 @@ void UCListItemDivider::init(UCListItem *listItem)
     anchors->setBottom(d->listItem->bottom());
     // connect visible change so we relayout contentItem
     connect(this, SIGNAL(visibleChanged()), listItem, SLOT(_q_relayout()));
-    // theme palette changes
-    connect(listItem, SIGNAL(themeChanged()), this, SLOT(paletteChanged()));
 }
 
 void UCListItemDivider::paletteChanged()
 {
     Q_D(UCListItemDivider);
-    // update hinglight color as well
-    if (!d->listItem->customColor) {
-        static_cast<UCListItem*>(d->listItem->q_ptr)->resetHighlightColor();
-    }
     QColor background = d->listItem->getTheme()->getPaletteColor("normal", "background");
     if (!background.isValid()) {
         return;
@@ -264,11 +258,18 @@ bool UCListItemPrivate::isPressAndHoldConnected()
 void UCListItemPrivate::postThemeChanged()
 {
     Q_Q(UCListItem);
+    // update divider colors
+    divider->paletteChanged();
     // if not using custom style, reload style component from theme
     if (!customStyle && componentComplete) {
         // use style setter but reset custom style flag
         setStyle(getTheme()->createStyleComponent("ListItemStyle.qml", q));
         customStyle = false;
+    }
+
+    // update colors, panels
+    if (!customColor) {
+        q->resetHighlightColor();
     }
 }
 
