@@ -25,7 +25,6 @@ import fixtures
 
 from ubuntuuitoolkit import (
     fixture_setup,
-    tests,
     units
 )
 
@@ -44,7 +43,8 @@ class UnitsTestCase(testscenarios.TestWithScenarios,
         dir_path, 'test_units.UnitsTestCase.qml')
 
     scenarios = [
-        ('with default GRID_UNIT_PX', {'grid_unit_px': '', 'expected_pixels': 160}),
+        ('with default GRID_UNIT_PX', {'grid_unit_px': '',
+         'expected_pixels': 160}),
         ('with GRID_UNIT_PX environment variable set', {'grid_unit_px': '10',
          'expected_pixels': 200})
     ]
