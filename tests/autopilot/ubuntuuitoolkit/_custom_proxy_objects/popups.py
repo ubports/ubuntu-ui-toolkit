@@ -113,9 +113,6 @@ class ActionSelectionPopover(_common.UbuntuUIToolkitCustomProxyObjectBase):
 class ComposerSheet(_common.UbuntuUIToolkitCustomProxyObjectBase):
     """ComposerSheet Autopilot custom proxy object."""
 
-    def __init__(self, *args):
-        super(ComposerSheet, self).__init__(*args)
-
     @autopilot_logging.log_action(logger.info)
     def confirm(self):
         """Confirm the composer sheet."""

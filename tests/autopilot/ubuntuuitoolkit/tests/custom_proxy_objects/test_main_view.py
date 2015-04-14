@@ -14,10 +14,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-try:
-    from unittest import mock
-except ImportError:
-    import mock
+from unittest import mock
 
 import ubuntuuitoolkit
 from ubuntuuitoolkit import tests
@@ -179,7 +176,7 @@ class GoBackTestCase(tests.QMLStringAppTestCase):
     ]
 
     def setUp(self):
-        super(GoBackTestCase, self).setUp()
+        super().setUp()
         self.header = self.main_view.get_header()
         self.assertEqual(self.header.title, 'Page 0')
 

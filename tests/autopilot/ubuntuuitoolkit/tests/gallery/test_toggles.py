@@ -1,6 +1,6 @@
 # -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
 #
-# Copyright (C) 2012, 2013, 2014 Canonical Ltd.
+# Copyright (C) 2012, 2013, 2014, 2015 Canonical Ltd.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -40,7 +40,7 @@ class EnabledTogglesTestCase(gallery.GalleryTestCase):
         toggles_scenarios)
 
     def setUp(self):
-        super(EnabledTogglesTestCase, self).setUp()
+        super().setUp()
         self.open_page('togglesElement')
 
     def test_change_toggles_state(self):
@@ -71,7 +71,7 @@ class DisabledTogglesTestCase(gallery.GalleryTestCase):
         toggles_scenarios)
 
     def setUp(self):
-        super(DisabledTogglesTestCase, self).setUp()
+        super().setUp()
         self.open_page('togglesElement')
 
     def test_change_toggles_state(self):

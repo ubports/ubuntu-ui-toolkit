@@ -92,7 +92,7 @@ MainView {
 """)
 
     def setUp(self):
-        super(UbuntuUIToolkitWithFakeAppRunningTestCase, self).setUp()
+        super().setUp()
         self.launch_application()
 
     def launch_application(self):
@@ -126,7 +126,7 @@ class QMLStringAppTestCase(UbuntuUIToolkitWithFakeAppRunningTestCase):
     """Base test case for self tests that define the QML on an string."""
 
     def setUp(self):
-        super(QMLStringAppTestCase, self).setUp()
+        super().setUp()
         self.assertThat(
             self.main_view.visible, Eventually(Equals(True)))
 
@@ -156,7 +156,7 @@ class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
     desktop_file_path = None
 
     def setUp(self):
-        super(QMLFileAppTestCase, self).setUp()
+        super().setUp()
         self.pointing_device = Pointer(self.input_device_class.create())
         self.launch_application()
 
