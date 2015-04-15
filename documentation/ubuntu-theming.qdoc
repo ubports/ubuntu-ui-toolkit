@@ -87,12 +87,64 @@
  * But let's see first how the styles are implemented.
  *
  * \section2 Style implementation
- * Some components' internal functionality can be configured throug the styles. Those
- * components expect some API to be present in the style. These APIs are listed in
- * Ubuntu.Components.Styles module, and styles should use these components as base
- * for the style implementation.
+ * Style components are meant to provide visual representation of a specific component or
+ * even a set of components. However some components allow styles to drive their functionality,
+ * and these components typically expect styles to have a well defined API implemented.
+ * These APIs are listed in Ubuntu.Components.Styles module, and styles should use these
+ * components as base for the style implementation.
  *
- * A good example of such a style is the ListItemStyle.
+ * A good example of such a style is the ListItemStyle. The ListItem drives the style
+ * animation through the \l ListItemStyle::animatePanels property, value being false when
+ * selection and/or drag panels should be visible when the component loads the style.
+ * Also, ListItem informs the style when to execute rebound and whether to overrule
+ * swipe coordinates calculated by the ListItem itself or leave it default. On the other
+ * hand, the style must inform the component about the position of the drag panel so
+ * dragging (reordering of list items in a ListView) hot spot can be detected. A custom
+ * style implementation must use the API provided by ListItemStyle, otherwise ListItem
+ * will fail to function properly.
+ *
+ * Beside these, component styles may provide default values for colors, fonts, widths,
+ * margins, thicknesses, and most importantly for implicit sizes. All style components are
+ * anchor filled into their parent StyledItem, and they are placed behind any content of
+ * the styled item (z: -1). Each style component has a \c styledItem context property defined
+ * which points to the StyledItem instance instantiating the style.
+ *
+ * \section2 Overriding the default component style
+ * \section3 Override with a different style from the theme
+ * Returning back to the ways to override a component's style, overriding by using a different
+ * style from the theme can simply be done by calling the theme's \l{Theme::createStyleComponent}
+ * {createStyleComponent()} function with the alternative style document name as follows:
+ * \qml
+ * Button {
+ *     id: button
+ *     style: theme.createStyleComponent("SquaryButton.qml", button)
+ * }
+ * \endqml
+ * \note This assumes that the \c SquaryButton.qml document is present in the theme.
+ * This kind of styling will make sure the style will always be theme specific, however
+ * also requires the SquaryButton.qml to be present in all the themes used by the application.
+ * \section3 Override with a custom component
+ * The other way is to override the style with a local component not present in any theme.
+ * This kind of override makes sure the component will use the custom style no matter of the
+ * theme used.
+ * \qml
+ * Button {
+ *     id: button
+ *     style: Rectangle {
+ *         implicitWidth: units.gu(12)
+ *         implicitHeight: units.gu(5)
+ *         color: styledItem.color
+ *         border {
+ *             width: units.dp(1)
+ *             color: styledItem.strokeColor
+ *         }
+ *         Label {
+ *             text: styledItem.text
+ *             font: styledItem.font
+ *         }
+ *     }
+ * }
+ * \endqml
  */
 
 /*!
