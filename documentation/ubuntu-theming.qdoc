@@ -223,17 +223,66 @@
  * }
  * \endqml
  *
- * The theme imports the Ambiance theme module, and extends the MainViewStyle
+ * The style imports the Ambiance theme module, and extends the Ambiance MainViewStyle
+ * component. The same is done in the other style components. However, Palette defines
+ * own values, and does not resuse Ambiance palette values.
  *
- * For instance style documents
- * and palette definition document is mandatory only if the theme is a standalone theme
- * (i.e. it is not derived from any shared theme). The presence of \c qmldir file is mandated
- * only if the theme is a shared theme.
+ * \qml
+ * import QtQuick 2.4
+ * import Ubuntu.Components 1.2
+ * import Ubuntu.Components.Themes 0.1
  *
+ * Palette {
+ *     normal: PaletteValues {
+ *         background: "#221E1C"
+ *         backgroundText: "#33F3F3E7"
+ *         base: "#19000000"
+ *         baseText: "#FFFFFF"
+ *         foreground: "#888888"
+ *         foregroundText: "#FFFFFF"
+ *         overlay: "#F2F2F2"
+ *         overlayText: "#888888"
+ *         field: "#19000000"
+ *         fieldText: "#7F7F7F7F"
+ *     }
+ *     selected: PaletteValues {
+ *         background: "#88D6D6D6"
+ *         backgroundText: "#FFFFFF"
+ *         selection: Qt.rgba(UbuntuColors.blue.r, UbuntuColors.blue.g, UbuntuColors.blue.b, 0.2)
+ *         foreground: UbuntuColors.orange
+ *         foregroundText: UbuntuColors.darkGrey
+ *         field: "#FFFFFF"
+ *         fieldText: "#888888"
+ *     }
+ * }
+ * \endqml
  *
- * - how to create own theme
- * - how to create a theme based on another theme
+ * \section2 Application themes
+ * Application themes can also be standalone or derived themes. Usually applications
+ * need slight differences on certain component styles, colors. These can be configured
+ * in multiple ways, depending on the needs of the application. Applications can decide
+ * to have their own theme, and override the palette value in the theme, or to use the
+ * system themes and override few color values from the theme palette.
  *
+ * Let's take an example of an application which changes some palette values of SuruDark
+ * theme.
+ *
+ * First, the application has to define the theme, preferably in a separate folder (e.g.
+ * theme). The folder should contain a \c parent_theme file with the content
+ * \code
+ * Ubuntu.Components.Themes.SuruDark
+ * \endcode
+ * This will make sure theme engine will look after the style components that are not
+ * defined by the application theme inside the parent theme. Remember, parent theme can
+ * also have parent theme (in SuruDark case it is) in which case the style components
+ * will be looked at in all these themes.
+ *
+ * As next, the application can define the palette.
+ * \snippet customtheme/theme/Palette.qml 0
+ * Note that the palette uses the SuruDark palette as base, and changes few colors from it.
+ *
+ * The application can use its own theme in teh following way:
+ * \snippet customtheme/main.qml 0
  */
 
 /*!
