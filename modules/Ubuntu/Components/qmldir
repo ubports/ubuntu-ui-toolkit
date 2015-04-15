@@ -39,7 +39,6 @@ MathUtils 0.1 mathUtils.js
 SliderUtils 0.1 sliderUtils.js
 ScrollbarUtils 0.1 scrollbarUtils.js
 UbuntuNumberAnimation 0.1 UbuntuNumberAnimation.qml
-StyledItem 0.1 StyledItem.qml
 ColorUtils 0.1 colorUtils.js
 DateUtils 0.1 dateUtils.js
 UbuntuListView 0.1 UbuntuListView.qml
@@ -83,7 +82,6 @@ MathUtils 1.0 mathUtils.js
 SliderUtils 1.0 sliderUtils.js
 ScrollbarUtils 1.0 scrollbarUtils.js
 UbuntuNumberAnimation 1.0 UbuntuNumberAnimation.qml
-StyledItem 1.0 StyledItem.qml
 ColorUtils 1.0 colorUtils.js
 DateUtils 1.0 dateUtils.js
 UbuntuListView 1.0 UbuntuListView.qml
@@ -102,7 +100,6 @@ PageHeadConfiguration 1.1 PageHeadConfiguration11.qml
 PageHeadSections 1.1 PageHeadSections.qml
 PageHeadState 1.1 PageHeadState.qml
 Icon 1.1 Icon11.qml
-StyledItem 1.1 StyledItem.qml
 singleton UbuntuColors 1.1 11/UbuntuColors.qml
 internal MainViewBase MainViewBase.qml
 singleton Haptics 0.1 11/Haptics.qml

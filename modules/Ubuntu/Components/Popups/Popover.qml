@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,7 +16,7 @@
 
 import QtQuick 2.4
 import "internalPopupUtils.js" as InternalPopupUtils
-import Ubuntu.Components 1.2
+import Ubuntu.Components 1.3
 
 /*!
     \qmltype Popover
@@ -37,7 +37,7 @@ import Ubuntu.Components 1.2
         import Ubuntu.Components.Popups 1.0
 
         Rectangle {
-            color: Theme.palette.normal.background
+            color: theme.palette.normal.background
             width: units.gu(80)
             height: units.gu(80)
             Component {
@@ -237,7 +237,7 @@ PopupBase {
         signal showCompleted()
         signal hideCompleted()
 
-        style: Theme.createStyleComponent("PopoverForegroundStyle.qml", foreground)
+        style: theme.createStyleComponent("PopoverForegroundStyle.qml", foreground)
     }
 
     QtObject {

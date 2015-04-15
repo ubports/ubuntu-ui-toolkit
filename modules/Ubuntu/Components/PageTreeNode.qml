@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.4
+import Ubuntu.Components 1.3 as Toolkit
 
 /*!
     \internal
@@ -26,7 +27,7 @@ import QtQuick 2.4
     It is used to propagate properties such as \l header and \l toolbar from a
     \l MainView (the root node) to each \l Page (leaf node) in the tree.
 */
-StyledItem {
+Toolkit.StyledItem {
     id: node
 
     /*!

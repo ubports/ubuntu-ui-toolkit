@@ -89,6 +89,7 @@ private Q_SLOTS:
 void tst_UCDeprecatedTheme::initTestCase()
 {
     m_xdgDataPath = QLatin1String(getenv("XDG_DATA_DIRS"));
+    qputenv("SUPPRESS_DEPRECATED_NOTE", "yes");
 }
 
 void tst_UCDeprecatedTheme::cleanupTestCase()

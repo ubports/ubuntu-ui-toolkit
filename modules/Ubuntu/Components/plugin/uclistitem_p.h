@@ -48,9 +48,9 @@ public:
         return that->d_func();
     }
 
+    void _q_themeChanged();
     bool isClickedConnected();
     bool isPressAndHoldConnected();
-    void _q_updateThemedData();
     void _q_relayout();
     void _q_updateSwiping();
     void setSwiped(bool swiped);
@@ -74,6 +74,7 @@ public:
     bool suppressClick:1;
     bool ready:1;
     bool customColor:1;
+    bool customStyle:1;
     qreal xAxisMoveThresholdGU;
     QBasicTimer pressAndHoldTimer;
     QPointF lastPos;
@@ -91,21 +92,13 @@ public:
     UCListItemActions *trailingActions;
     UCAction *mainAction;
 
-    // FIXME move these to StyledItemBase togehther with subtheming.
-    QQmlComponent *styleComponent;
-    QQmlComponent *implicitStyleComponent;
-    UCListItemStyle *styleItem;
-
     // getters/setters
     QQmlListProperty<QObject> data();
     QQmlListProperty<QQuickItem> children();
     bool contentMoving() const;
     void setContentMoving(bool moved);
-    QQmlComponent *style() const;
-    void setStyle(QQmlComponent *delegate);
-    void resetStyle();
-    void initStyleItem(bool withAnimatedPanels = true);
-    QQuickItem *styleInstance() const;
+    virtual void preStyleChanged();
+    virtual void loadStyleItem(bool animated = true);
     bool dragging();
     bool dragMode();
     void setDragMode(bool draggable);
@@ -115,7 +108,14 @@ public:
     void setSelectMode(bool selectable);
     UCAction *action() const;
     void setAction(UCAction *action);
+
+    virtual void postThemeChanged();
+    inline UCListItemStyle *listItemStyle() const;
 };
+UCListItemStyle *UCListItemPrivate::listItemStyle() const
+{
+    return static_cast<UCListItemStyle*>(styleItem);
+}
 
 class PropertyChange;
 class ListItemDragArea;
@@ -155,7 +155,5 @@ public:
     QPointer<UCListItem> boundItem;
     QPointer<UCListItem> disablerItem;
 };
-
-QColor getPaletteColor(const char *profile, const char *color);
 
 #endif // UCVIEWITEM_P_H

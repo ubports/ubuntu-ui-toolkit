@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -50,10 +50,10 @@ QtObject {
     /*!
        Color palette to use when the widget is not in any particular state.
     */
-    property PaletteValues normal
+    property PaletteValues normal: PaletteValues{}
     /*!
        Color palette to use when the widget is selected, for example when
        a tab is the current one.
     */
-    property PaletteValues selected
+    property PaletteValues selected: PaletteValues{}
 }

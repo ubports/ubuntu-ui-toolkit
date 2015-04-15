@@ -13,33 +13,17 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 import QtQuick 2.4
 import Ubuntu.Components 1.3
+import Ubuntu.Components.Themes.Ambiance 1.1 as Suru
 
-Item {
-    id: visuals
-    // styling properties
-    property color color: theme.palette.normal.overlay
-
-    anchors.fill: parent
-
-    Rectangle {
-        id: background
-        anchors.fill: parent
-        color: visuals.color
-    }
-
-    Image {
-        id: dropshadow
-        anchors {
-            left: parent.left
-            right: parent.right
-            bottom: background.top
-        }
-        source: Qt.resolvedUrl("artwork/toolbar_dropshadow.png")
-        opacity: styledItem.opened || styledItem.animating ? 0.5 : 0.0
-        Behavior on opacity {
-            UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration }
-        }
-    }
+Suru.Palette {
+    normal.selection: "#A21E1C"
+    selected.selection: "#1C1EA2"
+    selected.base: "lightblue"
+    selected.baseText: "pink"
+    selected.overlay: "#ABCDEF"
+    selected.overlayText: "#FEDCBA"
+    selected.fieldText: UbuntuColors.red
 }
