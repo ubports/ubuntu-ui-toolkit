@@ -14,6 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+//![0]
 import QtQuick 2.4
 import Ubuntu.Components 1.3
 import Ubuntu.Components.Themes 1.0
@@ -32,7 +33,7 @@ Palette {
         fieldText: "#7F7F7F7F"
     }
     selected: PaletteValues {
-        background: "#88D6D6D6" // FIXME: not from design
+        background: "#88D6D6D6"
         backgroundText: "#FFFFFF"
         selection: Qt.rgba(UbuntuColors.blue.r, UbuntuColors.blue.g, UbuntuColors.blue.b, 0.2)
         foreground: UbuntuColors.orange
@@ -41,3 +42,4 @@ Palette {
         fieldText: "#888888"
     }
 }
+//![0]
