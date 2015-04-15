@@ -85,6 +85,13 @@
      \endcode
      \annotatedlist theming
 
+     \part Theme module
+     Available through:
+     \code
+         import Ubuntu.Components.Themes 1.0
+     \endcode
+     \annotatedlist theme-module
+
      \part Style API
      The Style API defines the interface components use to style the visuals.
      Themes must make sure that these interfaces are all implemented.

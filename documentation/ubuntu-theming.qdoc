@@ -17,40 +17,163 @@
 /*!
  * \page ubuntu-theming.html
  * \title Styling - Introduction
- * \nextpage Styling - Themes
+ * \nextpage Component styles, Style API
  *
- * Components in Ubuntu UI toolkit are split in two parts. One part of the component
- * defines the generic logic of the component, and all the visuals and visual specific
- * logic is concentrated inside a visuals component called style.
+ * A style defines the visuals of a component. With some exceptions all UI Toolkit
+ * components have styles declared. Some styles provide additional logic to the
+ * component. These components rely on a well defined API, which must be implemented
+ * by the styles. These APIs are provided by the Ubuntu.Components.Styles module.
+ * One additional functionality of the style is to provide the implicit size of the
+ * component. The theming engine applies the implicit size provided by the style
+ * on the component, which can be overruled by the component.
  *
+ * With some exceptions, each component's style document name is compound of the
+ * component name plus the Style word. In this way the Button component's style is
+ * ButtonStyle. These styles are grouped in themes. In addition to styles, themes
+ * can also provide custom palette values. There are two themes in Ubuntu, Ambiance
+ * and SuruDark themes, Ambiance being the default theme. Both themes are declared
+ * in separate modules, in \c Ubuntu.Components.Themes.Ambiance ans well as
+ * \c Ubuntu.Components.Themes.SuruDark. Application should define the theme name
+ * using this dotted name format.
  *
+ * Applications can decide which theme they want to use or they can provide their
+ * own themes. Also, applications can use multiple themes or set custom palette values.
+ *
+ * \qml
+ * import QtQuick 2.4
+ * import Ubuntu.Components 1.3
+ *
+ * MainView {
+ *     width: units,gu(40)
+ *     height: units.gu(71)
+ *
+ *     theme.name: "Ubuntu.Components.Themes.SuruDark"
+ * }
+ * \endqml
  */
 
 /*!
- * \page ubuntu-theming1.html
- * \title Styling - Themes
- * \nextpage Styling - Application themes
+ * \page ubuntu-theming-styles.html
+ * \title Component styles, Style API
+ * \nextpage Themes, theme types, theme structure
+ *
+ * \section2 Naming conventions
+ * With few exception, each toolkit component is having StyledItem as its base
+ * component. The component is aimed to be the base component for all styled
+ * elements in the toolkit. Modules providing additional custom components to
+ * UI Toolkit components can also use this component as base, especially if
+ * they want to provide styling capabilities.
+ *
+ * As mentioned, each component is having a style pair in a theme which is implemented
+ * in a document named using the component name adding the \e Style word. In this way
+ * Button's style is implemented by ButtonStyle.qml document in the theme, and
+ * \l Button is loading this style from the theme:
+ * \qml
+ * import QtQuick 2.4
+ * import Ubuntu.Components 1.3
+ *
+ * AbstractButton {
+ *     id: button
+ *     // [...]
+ *     style: theme.createStyleComponent("ButtonStyle.qml", button)
+ * }
+ * \endqml
+ * Developers can override the style in two ways, depending on how they want to style
+ * the component:
+ * \list
+ *  \li 1. by overriding the style using an other style component from the theme, or
+ *  \li 2. by overriding the style with a custom style component.
+ * \endlist
+ * But let's see first how the styles are implemented.
+ *
+ * \section2 Style implementation
+ * Some components' internal functionality can be configured throug the styles. Those
+ * components expect some API to be present in the style. These APIs are listed in
+ * Ubuntu.Components.Styles module, and styles should use these components as base
+ * for the style implementation.
+ *
+ * A good example of such a style is the ListItemStyle.
  */
 
 /*!
- * \page ubuntu-theming2.html
- * \title Styling - Application themes
- * \nextpage Styling - Using multiple themes in an application
+ * \page ubuntu-theming-themes.html
+ * \title Themes, theme types, theme structure
+ * \nextpage Using multiple themes in an application
+ *
+ * A theme is a collection of style implementations. The style component names are
+ * typically built using the component name and the Style word, exceptions being
+ * documented per component.
+ *
+ * In addition to the styles the theme can provide palette values used by the style
+ * and components. The palette values are defined in \c Palette.qml file, which must
+ * either be derived from \l Palette component or from a parent theme's Palette.
+ *
+ * There are two types of themes, shared themes and application themes. These themes
+ * do not differ in structure but in the way they are exposed. Shared themes are
+ * located either under \b QML2_IMPORT_PATH or \b XDG_DATA_DIR. Application themes
+ * are located under the application's private folder, therefore they are typically
+ * serving the application styling needs, and cannot be shared. Shared themes are also
+ * presented as QML extension modules, giving the possibility for application themes
+ * to extend them.
+ *
+ * \note Yet there is no possibility to install shared themes into the system thru
+ * app store, only by providing them as part of the system image.
+ *
+ * The system provides two shared themes, \b Ambiance and \b SuruDark, the latest derived
+ * from Ambiance theme. Both themes can be used as base theme in application themes,
+ * by importing the modules defining them. If you decide to create a shared theme
+ * that can be used also as base for custom or application themes, it is recommended
+ * to do the same approach as the system themes do.
+ *
+ * \section2 Theme structure
+ * \image surudark-theme.png
+ * The theme structure is similar to a QML extension module structure, and this applies
+ * to both shared and application themes. Contains component style documents, palette
+ * description document, \c qmldir file and a special file called \c parent_theme. All
+ * these files are optional in a theme depending on context.
+ *
+ * \c parent_theme is a special file which defines the theme the current one is derifed from.
+ * The derived theme must be a shared theme and its name must be specified in dotted format.
+ * For example SuruDark theme is located under \c{$QML2_IMPORT_PATH/Ubuntu/Components/Themes/SuruDark}
+ * folder. This means that the theme name is identified by the \b Ubuntu.Components.Themes.SuruDark
+ * dotted format.
+ *
+ * \section3 Standalone theme
+ * A standalone theme is a theme which defines all style documents and theme palette,
+ * and it is not derived from any theme. The only standalone theme UI Toolkit provides is
+ * the Ambiance theme. Both shared and application themes can be standalone themes, however
+ * Applications should make sure they implement all the styles used by the toolkit components
+ * used in the application. \c qmldir file presence is mandatory only if the theme is
+ * shared.
+ *
+ *
+ * For instance style documents
+ * and palette definition document is mandatory only if the theme is a standalone theme
+ * (i.e. it is not derived from any shared theme). The presence of \c qmldir file is mandated
+ * only if the theme is a shared theme.
+ *
+ *
+ * - how to create own theme
+ * - how to create a theme based on another theme
+ *
  */
 
 /*!
  * \page ubuntu-theming3.html
- * \title Styling - Using multiple themes in an application
- * \nextpage Styling - Using custom palette in a component sub-tree
+ * \title Using multiple themes in an application
+ * \nextpage Using custom palette in a component sub-tree
+ *
+ * -use sub-theming
+ * - extend parent theme and override stuff
  */
 
 /*!
  * \page ubuntu-theming4.html
- * \title Styling - Using custom palette in a component sub-tree
- * \nextpage Styling - Using custom styles
+ * \title Using custom palette in a component sub-tree
+ * \nextpage Using custom styles
  */
 
 /*!
  * \page ubuntu-theming5.html
- * \title Styling - Using custom styles
+ * \title Using custom styles
  */

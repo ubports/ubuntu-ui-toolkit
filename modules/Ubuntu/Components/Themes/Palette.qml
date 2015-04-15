@@ -18,9 +18,9 @@ import QtQuick 2.4
 
 /*!
     \qmltype Palette
-    \inqmlmodule Ubuntu.Components.Themes 0.1
-    \ingroup theming
-    \brief Palette of colors from the theme that widgets use to draw themselves.
+    \inqmlmodule Ubuntu.Components.Themes 1.0
+    \ingroup theme-module
+    \brief Provides the palette of colors from the theme that widgets use to draw themselves.
 
     Palette provides access to colors defined by the current theme. The actual
     color palette to use depends on the state of the widget being drawn.
@@ -37,11 +37,11 @@ import QtQuick 2.4
     \qml
     Item {
         Rectangle {
-            color: Theme.palette.normal.base
+            color: theme.palette.normal.base
         }
 
         Text {
-            color: Theme.palette.normal.baseText
+            color: theme.palette.normal.baseText
         }
     }
     \endqml
