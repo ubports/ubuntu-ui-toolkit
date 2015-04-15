@@ -45,15 +45,9 @@ Popover {
     contentWidth: units.gu(20)
 
     /*!
-      False implies the model is a list of Actions.
-      True implies the model is a ListModel with a 'tab' role,
-      and false implies that the model is a list of actions.
-    */
-    property bool tabsOverflow: false
-    // FIXME: In the input, generate a list of actions from the Tabs
-    //  so that we no longer need to make a distinction between the tabs ListModel
-    //  and a list of Actions.
-    property var model: null
+      The actions to list in the popover.
+     */
+    property list<Action> model
 
     Binding {
         target: overflow.__foreground.__styleInstance
@@ -73,13 +67,14 @@ Popover {
             id: overflowRepeater
             model: overflow.model
             AbstractButton {
-                action: overflow.tabsOverflow ? tab.__protected.action
-                                              : modelData
+                action: modelData
 
-                // These objectNames are used in the CPOs for header and tabs.
-                objectName: overflow.tabsOverflow ?
-                                "tabButton" + index :
-                                action.objectName + "_header_overflow_button"
+                // FIXME TIM
+//                 These objectNames are used in the CPOs for header and tabs.
+//                objectName: overflow.tabsOverflow ?
+//                                "tabButton" + index :
+//                                action.objectName + "_header_overflow_button"
+                objectName: action.objectName + "_header_overflow_button"
 
                 // close after triggering the action.
                 onClicked: overflow.hide()
@@ -100,7 +95,8 @@ Popover {
 
                 Icon {
                     id: actionIcon
-                    visible: !overflow.tabsOverflow
+                    // FIXME TIM: test this.
+                    visible: "" != action.iconSource //!overflow.tabsOverflow
                     source: action.iconSource
                     color: overflow.foregroundColor
                     anchors {
@@ -122,7 +118,11 @@ Popover {
                         leftMargin: units.gu(2)
                         right: parent.right
                     }
-                    fontSize: overflow.tabsOverflow ? "medium" : "small"
+                    // FIXME TIM: Check with design what the font size should be. Why is it
+                    //  smaller for actions?
+                    //  Should we support icons for the tabs as well?
+//                    fontSize: overflow.tabsOverflow ? "medium" : "small"
+                    fontSize: "small"
                     elide: Text.ElideRight
                     text: action.text
                     color: overflow.foregroundColor
