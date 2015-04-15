@@ -190,6 +190,12 @@
  * folder. This means that the theme name is identified by the \b Ubuntu.Components.Themes.SuruDark
  * dotted format.
  *
+ * In addition to the files mentioned, themes can provide components supporting the styling
+ * (i.e. components providing common visuals in the style implementations). Style implementations
+ * can also provide additional APIs alongside the standard style API. These additional APIs are
+ * typically there to configure the style itself, or to turn on/off features provided by styles
+ * in derived themes.
+ *
  * \section3 Standalone theme
  * A standalone theme is a theme which defines all style documents and theme palette,
  * and it is not derived from any theme. The only standalone theme UI Toolkit provides is
@@ -198,6 +204,26 @@
  * used in the application. \c qmldir file presence is mandatory only if the theme is
  * shared.
  *
+ * \section3 Derived themes
+ * As the name suggests derived themes are themes which use other themes (standalone or derived ones)
+ * as base theme. These themes must have the \c parent_theme file to be present and to contain the
+ * name of the theme they are derived from. These themes do not have to provide palette configuration
+ * as long as they use the derived theme's palette values.
+ *
+ * Derived themes should only list those style components which overrule the derived style or
+ * extend the derived style. The only requirement is to use the same document name as the paren theme
+ * is having. For example the SuruDark theme extends the MainViewStyle and therefore declares the
+ * MainViewStyle.qml document, with the following content:
+ * \qml
+ * import QtQuick 2.4
+ * import Ubuntu.Components.Themes.Ambiance 0.1
+ *
+ * MainViewStyle {
+ *     backgroundSource: ""
+ * }
+ * \endqml
+ *
+ * The theme imports the Ambiance theme module, and extends the MainViewStyle
  *
  * For instance style documents
  * and palette definition document is mandatory only if the theme is a standalone theme
