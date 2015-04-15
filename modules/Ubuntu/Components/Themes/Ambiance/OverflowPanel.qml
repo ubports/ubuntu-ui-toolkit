@@ -122,7 +122,7 @@ Popover {
                     //  smaller for actions?
                     //  Should we support icons for the tabs as well?
 //                    fontSize: overflow.tabsOverflow ? "medium" : "small"
-                    fontSize: "small"
+                    fontSize: actionIcon.visible ? "small" : "medium"
                     elide: Text.ElideRight
                     text: action.text
                     color: overflow.foregroundColor
