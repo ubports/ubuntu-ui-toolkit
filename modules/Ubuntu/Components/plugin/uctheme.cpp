@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2015 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -22,12 +22,12 @@
 #include "quickutils.h"
 #include "i18n.h"
 #include "ucfontutils.h"
+#include "ucstyleditembase_p.h"
 
 #include <QtQml/qqml.h>
 #include <QtQml/qqmlinfo.h>
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlContext>
-#include <QtCore/QDebug>
 #include <QtCore/QDir>
 #include <QtCore/QFile>
 #include <QtCore/QTextStream>
@@ -273,8 +273,23 @@ void UCTheme::updateThemePaths()
 }
 
 /*!
+ * \qmlproperty ThemeSettings ThemeSettings::parentTheme
+ * \readonly
+ * The property specifies the parent ThemeSettings instance.
+ */
+UCTheme *UCTheme::parentTheme()
+{
+    UCStyledItemBase *owner = qobject_cast<UCStyledItemBase*>(parent());
+    UCStyledItemBasePrivate *pOwner = owner ? UCStyledItemBasePrivate::get(owner) : NULL;
+    if (pOwner && pOwner->theme == this && pOwner->parentStyledItem) {
+        return UCStyledItemBasePrivate::get(pOwner->parentStyledItem)->getTheme();
+    }
+    return NULL;
+}
+
+/*!
  * \qmlproperty string ThemeSettings::name
- * The name of the current theme.
+ * The name of the current theme in dotted format i.e. "Ubuntu.Components.Themes.Ambiance".
  */
 QString UCTheme::name() const
 {
@@ -343,7 +358,7 @@ void UCTheme::registerToContext(QQmlContext* context)
  * \qmlmethod Component ThemeSettings::createStyleComponent(string styleName, object parent)
  * Returns an instance of the style component named \a styleName and parented
  * to \a parent.
-*/
+ */
 QQmlComponent* UCTheme::createStyleComponent(const QString& styleName, QObject* parent)
 {
     QQmlComponent *component = NULL;

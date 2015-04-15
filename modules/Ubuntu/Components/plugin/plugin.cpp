@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2015 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -192,6 +192,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
 
     // register 1.3 API
     qmlRegisterType<UCTheme>(uri, 1, 3, "ThemeSettings");
+    qmlRegisterType<UCStyledItemBase, 2>(uri, 1, 3, "StyledItemBase");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
