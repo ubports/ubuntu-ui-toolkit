@@ -3,4 +3,5 @@ Palette 0.1 Palette.qml
 PaletteValues 0.1 PaletteValues.qml
 
 #version 1.0
+Palette 1.0 Palette.qml
 PaletteValues 1.0 PaletteValues.qml
