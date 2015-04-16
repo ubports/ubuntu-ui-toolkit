@@ -563,6 +563,12 @@ private Q_SLOTS:
         // unloaded palette by Loader should remove palette configuration
         QVERIFY(theme->getPaletteColor("normal", "background") != QColor("blue"));
     }
+
+    void test_invalid_palette_object()
+    {
+        ThemeTestCase::ignoreWarning("InvalidPalette.qml", 22, 20, "QML QtObject: Not a Palette component.");
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase("InvalidPalette.qml"));
+    }
 };
 
 QTEST_MAIN(tst_Subtheming)
