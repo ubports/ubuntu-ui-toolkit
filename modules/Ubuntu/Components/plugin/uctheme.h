@@ -55,6 +55,9 @@ public:
     Q_INVOKABLE QQmlComponent* createStyleComponent(const QString& styleName, QObject* parent);
     static void registerToContext(QQmlContext* context);
 
+    // helper functions
+    QColor getPaletteColor(const char *profile, const char *color);
+
 Q_SIGNALS:
     void parentThemeChanged();
     void nameChanged();

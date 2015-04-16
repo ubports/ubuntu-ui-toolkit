@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -17,7 +17,7 @@
 import QtQuick 2.4
 import QtTest 1.0
 import Ubuntu.Test 1.0
-import Ubuntu.Components 1.2
+import Ubuntu.Components 1.3
 import Ubuntu.Components.Styles 1.2
 import QtQml.Models 2.1
 
@@ -318,7 +318,7 @@ Item {
         function test_0_defaults() {
             verify(defaults.contentItem !== null, "Defaults is null");
             compare(defaults.color, "#000000", "Transparent by default");
-            compare(defaults.highlightColor, Theme.palette.selected.background, "Theme.palette.selected.background color by default")
+            compare(defaults.highlightColor, theme.palette.selected.background, "theme.palette.selected.background color by default")
             compare(defaults.highlighted, false, "Not highlighted by default");
             compare(defaults.divider.visible, true, "divider is visible by default");
             compare(defaults.divider.anchors.leftMargin, 0, "divider's left margin is 0");

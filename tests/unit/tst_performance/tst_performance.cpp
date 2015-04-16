@@ -63,24 +63,27 @@ private Q_SLOTS:
         delete quickView;
     }
 
+    void clean()
+    {
+        qputenv("SUPPRESS_DEPRECATED_NOTE", "no");
+    }
+
     void benchmark_theming_data()
     {
         QTest::addColumn<QString>("document");
         QTest::addColumn<QUrl>("theme");
-        QTest::addColumn<QByteArray>("enableSubtheming");
+        QTest::addColumn<QString>("warning");
 
-        QTest::newRow("old theming, subtheming disabled") << "StyledItemOldTheming.qml" << QUrl("Ubuntu.Components.Themes.SuruDark") << QByteArray("no");
-        QTest::newRow("old theming, subtheming enabled") << "StyledItemOldTheming.qml" << QUrl("Ubuntu.Components.Themes.SuruDark") << QByteArray("yes");
-        QTest::newRow("subtheming, no changes on themes") << "Styling.qml" << QUrl() << QByteArray("yes");
-        QTest::newRow("subtheming, change mid item") << "Styling.qml" << QUrl("Ubuntu.Components.Themes.SuruDark") << QByteArray("yes");
+        QTest::newRow("old theming, subtheming enabled") << "StyledItemOldTheming.qml" << QUrl("Ubuntu.Components.Themes.SuruDark");
+        QTest::newRow("subtheming, no changes on themes") << "Styling.qml" << QUrl();
+        QTest::newRow("subtheming, change mid item") << "Styling.qml" << QUrl("Ubuntu.Components.Themes.SuruDark");
     }
     void benchmark_theming()
     {
         QFETCH(QString, document);
         QFETCH(QUrl, theme);
-        QFETCH(QByteArray, enableSubtheming);
 
-        qputenv("UITK_SUBTHEMING", enableSubtheming);
+        qputenv("SUPPRESS_DEPRECATED_NOTE", "yes");
         QQuickItem *root = 0;
         QBENCHMARK {
             root = loadDocument(document);

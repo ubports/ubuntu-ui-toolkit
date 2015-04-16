@@ -70,21 +70,32 @@ UCDeprecatedTheme::UCDeprecatedTheme(QObject *parent)
             this, &UCDeprecatedTheme::paletteChanged);
 }
 
+void UCDeprecatedTheme::showDeprecatedNote(const char *note)
+{
+    QByteArray suppressNote = qgetenv("SUPPRESS_DEPRECATED_NOTE");
+    if (suppressNote.isEmpty() || suppressNote != "yes") {
+        qmlInfo(this) << note;
+    }
+}
+
 /*!
     \qmlproperty string Theme::name
 
     The name of the current theme.
 */
-QString UCDeprecatedTheme::name() const
+QString UCDeprecatedTheme::name()
 {
+    showDeprecatedNote("Theme.name is deprecated. Use ThemeSettings instead.");
     return UCTheme::defaultTheme().name();
 }
 void UCDeprecatedTheme::setName(const QString& name)
 {
+    showDeprecatedNote("Theme.name is deprecated. Use ThemeSettings instead.");
     UCTheme::defaultTheme().setName(name);
 }
 void UCDeprecatedTheme::resetName()
 {
+    showDeprecatedNote("Theme.name is deprecated. Use ThemeSettings instead.");
     UCTheme::defaultTheme().resetName();
 }
 
@@ -95,6 +106,7 @@ void UCDeprecatedTheme::resetName()
 */
 QObject* UCDeprecatedTheme::palette()
 {
+    showDeprecatedNote("Theme.palette is deprecated. Use ThemeSettings instead.");
     return UCTheme::defaultTheme().palette();
 }
 
@@ -105,6 +117,7 @@ QObject* UCDeprecatedTheme::palette()
 */
 QQmlComponent* UCDeprecatedTheme::createStyleComponent(const QString& styleName, QObject* parent)
 {
+    showDeprecatedNote("Theme.createStyleComponent() is deprecated. Use ThemeSettings instead.");
     return UCTheme::defaultTheme().createStyleComponent(styleName, parent);
 }
 

@@ -409,3 +409,17 @@ void UCTheme::loadPalette(bool notify)
         m_palette = defaultTheme().m_palette;
     }
 }
+
+// returns the palette color value of a color profile
+QColor UCTheme::getPaletteColor(const char *profile, const char *color)
+{
+    QColor result;
+    if (palette()) {
+        QObject *paletteProfile = m_palette->property(profile).value<QObject*>();
+        if (paletteProfile) {
+            result = paletteProfile->property(color).value<QColor>();
+        }
+    }
+    return result;
+}
+

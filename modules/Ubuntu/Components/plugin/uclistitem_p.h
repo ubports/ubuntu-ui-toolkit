@@ -48,9 +48,9 @@ public:
         return that->d_func();
     }
 
+    void _q_themeChanged();
     bool isClickedConnected();
     bool isPressAndHoldConnected();
-    void _q_updateThemedData();
     void _q_relayout();
     void _q_updateSwiping();
     void setSwiped(bool swiped);
@@ -115,6 +115,9 @@ public:
     void setSelectMode(bool selectable);
     UCAction *action() const;
     void setAction(UCAction *action);
+
+protected:
+    void updateStyling();
 };
 
 class PropertyChange;
@@ -155,7 +158,5 @@ public:
     QPointer<UCListItem> boundItem;
     QPointer<UCListItem> disablerItem;
 };
-
-QColor getPaletteColor(const char *profile, const char *color);
 
 #endif // UCVIEWITEM_P_H

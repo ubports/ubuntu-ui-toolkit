@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.2
+import Ubuntu.Components 1.3
 
 AbstractButton {
     id: button
@@ -31,7 +31,7 @@ AbstractButton {
     Rectangle {
         visible: button.pressed
         anchors.fill: parent
-        color: Theme.palette.selected.background
+        color: theme.palette.selected.background
     }
 
     Icon {
