@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -97,7 +97,7 @@ StyledItem {
     implicitHeight: units.gu(7.5)
     activeFocusOnPress: true
 
-    style: Theme.createStyleComponent("TabBarStyle.qml", tabBar)
+    style: theme.createStyleComponent("TabBarStyle.qml", tabBar)
 
     QtObject {
         id: internal

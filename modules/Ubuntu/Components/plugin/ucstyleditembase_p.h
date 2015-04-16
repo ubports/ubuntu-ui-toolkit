@@ -44,12 +44,14 @@ public:
     bool isParentFocusable();
 
     UCTheme *getTheme() const;
-    void setTheme(UCTheme *styleSet);
+    void setTheme(UCTheme *theme);
     void resetTheme();
+
+protected:
+    virtual void updateStyling() {}
 
 public:
     bool activeFocusOnPress:1;
-    bool subthemingEnabled:1;
     UCTheme *theme;
     QPointer<UCStyledItemBase> parentStyledItem;
 

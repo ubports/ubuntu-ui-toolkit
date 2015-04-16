@@ -65,6 +65,7 @@ public:
     void resetHighlightColor();
 
 protected:
+    void classBegin();
     void componentComplete();
     QSGNode *updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data);
     void itemChange(ItemChange change, const ItemChangeData &data);
@@ -102,7 +103,7 @@ public Q_SLOTS:
 
 private:
     Q_DECLARE_PRIVATE(UCListItem)
-    Q_PRIVATE_SLOT(d_func(), void _q_updateThemedData())
+    Q_PRIVATE_SLOT(d_func(), void _q_themeChanged())
     Q_PRIVATE_SLOT(d_func(), void _q_relayout())
     Q_PRIVATE_SLOT(d_func(), void _q_updateSwiping())
     Q_PRIVATE_SLOT(d_func(), void _q_updateSize())

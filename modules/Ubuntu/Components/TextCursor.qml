@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.2 as Ubuntu
+import Ubuntu.Components 1.3 as Ubuntu
 import Ubuntu.Components.Popups 1.0
 
 Ubuntu.StyledItem {
@@ -41,7 +41,7 @@ Ubuntu.StyledItem {
                                            handler.main.cursorDelegate :
                                            __styleInstance.cursorDelegate
 
-    style: Theme.createStyleComponent("TextCursorStyle.qml", cursorItem);
+    style: theme.createStyleComponent("TextCursorStyle.qml", cursorItem);
 
     objectName: "textCursor"
     //Caret instance from the style.

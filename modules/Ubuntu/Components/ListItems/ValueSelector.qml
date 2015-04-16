@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.2
+import Ubuntu.Components 1.3
 
 /*!
     ****DEPRECATED! PLEASE USE ITEM SELECTOR OR FOR THE UBUNTU SHAPE VERSION THE OPTION SELECTOR.****
@@ -262,7 +262,7 @@ Empty {
 
             model: selector.values
             Rectangle {
-                color: Qt.lighter(Theme.palette.normal.base)
+                color: Qt.lighter(theme.palette.normal.base)
                 height: valueRepeater.valueHeight
                 width: parent.width
 
