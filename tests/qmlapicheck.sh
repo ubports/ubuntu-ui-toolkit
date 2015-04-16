@@ -29,16 +29,14 @@ CPP="Ubuntu.Components Ubuntu.Components.ListItems Ubuntu.Components.Styles Ubun
 ERRORS=0
 echo Dumping QML API of C++ components
 rm $BUILD_DIR/components.api.new
-for i in $CPP; do
     echo "Processing $i"
     # Silence spam on stderr due to fonts
     # https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1256999
     # https://bugreports.qt-project.org/browse/QTBUG-36243
     env ALARM_BACKEND=memory $BUILD_DIR/tests/apicheck/apicheck \
-        --qml $i $BUILD_DIR/modules 1>> $BUILD_DIR/components.api.new
+        --qml "$CPP" $BUILD_DIR/modules 1>> $BUILD_DIR/components.api.new
     test $? != 0 && echo Error: apicheck failed && ERRORS=1
     echo Verifying the diff between existing and generated API
-done
 # FIXME: Not clear why QTestRootObject shows up as a parent class
 test -s $BUILD_DIR/components.api.new && sed -r -i 's@QTestRootObject@QtObject@g' $BUILD_DIR/components.api.new && diff -Fqml -u $SRC_DIR/components.api $BUILD_DIR/components.api.new
 test $? != 0 && echo Error: Differences in API. Did you forget to update components.api? && ERRORS=1

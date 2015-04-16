@@ -451,6 +451,9 @@ public:
 
         QJsonObject object;
         QString qmlTyName = compositeType->qmlTypeName();
+        // FIXME: Work-around to omit Qt types unintentionally included
+        if (qmlTyName.startsWith("Q") || qmlTyName == "TestCase")
+            return;
 
         const QMetaObject *mainMeta = qtobject->metaObject();
 
@@ -461,8 +464,19 @@ public:
                                                                  &objectsToMerge);
         object.insert("prototype", prototypeName);
 
-        const QString exportString = getExportString(qmlTyName, compositeType->majorVersion(), compositeType->minorVersion());
-        object.insert("exports", QJsonArray::fromStringList(QStringList() << exportString));
+        QStringList exportStrings(QStringList() << getExportString(qmlTyName, compositeType->majorVersion(), compositeType->minorVersion()));
+        // Merge objects to get all exported versions of the same type
+        if (json->contains(qmlTyName)) {
+            object = json->value(qmlTyName).toObject();
+            QJsonArray exports(object["exports"].toArray());
+            Q_FOREACH(QJsonValue expor, exports) {
+                exportStrings.append(QString("%1").arg(expor.toString()));
+            }
+        }
+        exportStrings.removeDuplicates();
+        exportStrings.sort();
+
+        object.insert("exports", QJsonArray::fromStringList(exportStrings));
         object.insert("exportMetaObjectRevisions", QJsonArray::fromStringList((QStringList() << QString::number(compositeType->minorVersion()))));
         object.insert("isComposite", true);
 
@@ -546,7 +560,11 @@ public:
 
         writeMetaContent(&object, meta);
 
+        // FIXME: Work-around to omit Qt types unintentionally included
         QByteArray id = convertToId(meta);
+        if (QString(id).startsWith("Q"))
+            return;
+
         json->insert(id, object);
     }
 
@@ -882,6 +900,15 @@ int main(int argc, char *argv[])
                                                       QString::number(qtObjectType->minorVersion())).toUtf8();
     }
 
+    QStringList internalTypes;
+    // create an object that will be the API description
+    QJsonObject json;
+
+    QStringList modules(pluginImportUri.split(" "));
+    Q_FOREACH (const QString& plugin, modules) {
+        pluginImportUri = plugin;
+        pluginImportVersion = "";
+
     QString pluginModulePath(pluginImportPath + "/" + QString(pluginImportUri).replace(".", "/"));
     QFile f(pluginModulePath + "/qmldir");
     if (!f.open(QIODevice::ReadOnly)) {
@@ -923,8 +950,10 @@ int main(int argc, char *argv[])
     code += "Item {\n";
 
     Q_FOREACH(QQmlDirParser::Component c, p.components()) {
-        if (c.internal)
+        if (c.internal) {
+            internalTypes.append(c.typeName);
             continue;
+        }
         code += QString("%1.%2 {}\n").arg(pluginAlias).arg(c.typeName);
     }
 
@@ -971,8 +1000,6 @@ int main(int argc, char *argv[])
     cppToId.insert("QColor", "color");
     cppToId.insert("QQmlEasingValueType::Type", "Type");
 
-    // create an object that will be the API description
-    QJsonObject json;
     QMap<QString, QString> scripts;
     Q_FOREACH(QQmlDirParser::Script s, p.scripts()) {
         QFile sf(pluginModulePath + "/" + s.fileName);
@@ -1006,6 +1033,8 @@ int main(int argc, char *argv[])
     Q_FOREACH (const QQmlType *compositeType, qmlTypesByCompositeName)
         dumper.dumpComposite(&engine, compositeType, defaultReachableNames);
 
+    }
+
     if (output_json) {
         // write JSON representation of the API
         QJsonDocument jsonDoc(json);
@@ -1017,6 +1046,9 @@ int main(int argc, char *argv[])
         Q_FOREACH(const QString& key, json.keys()) {
             QJsonValue value(json[key]);
             if (value.isObject()) {
+                if (internalTypes.contains(key))
+                    continue;
+
                 QJsonObject object(value.toObject());
                 QString signature;
                 QJsonArray exports(object["exports"].toArray());
