@@ -63,8 +63,10 @@ MainView {
                     normal {
                         foregroundText: UbuntuColors.blue
                         overlayText: "#BAFEDC"
+                        field: "lime"
                     }
                     selected {
+                        field: "teal"
                         fieldText: "brown"
                         foregroundText: Qt.rgba(0, 0, 1, 1)
                         overlayText: config.normal.overlayText

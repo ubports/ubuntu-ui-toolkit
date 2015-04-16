@@ -19,7 +19,7 @@ import Ubuntu.Components 1.2
 import Ubuntu.Components.Themes 0.1
 
 Palette {
-    normal: PaletteValues {
+    normal {
         background: "#221E1C"
         backgroundText: "#33F3F3E7"
         base: "#19000000"
@@ -31,7 +31,7 @@ Palette {
         field: "#19000000"
         fieldText: "#7F7F7F7F"
     }
-    selected: PaletteValues {
+    selected {
         background: "#88D6D6D6" // FIXME: not from design
         backgroundText: "#FFFFFF"
         selection: Qt.rgba(UbuntuColors.blue.r, UbuntuColors.blue.g, UbuntuColors.blue.b, 0.2)
