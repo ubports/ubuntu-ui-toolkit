@@ -39,8 +39,8 @@ Style.PageHeadStyle {
     property color titleColor: styledItem.config.foregroundColor
 
     // FIXME: When the three panel color properties below are removed,
-    //  update unity8 to use the new theming (currently in progress)
-    //  to set these colors.
+    //  update unity8/Dash/PageHeader to use the new theming (currently
+    //  in progress) to set these colors.
     /*!
       \deprecated
       The background color of the tabs panel and the actions overflow panel.
