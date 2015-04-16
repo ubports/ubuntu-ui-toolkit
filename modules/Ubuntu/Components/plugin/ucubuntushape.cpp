@@ -59,11 +59,11 @@ static void orientationChanged(Qt::ScreenOrientation orientation)
     if (QGuiApplication::primaryScreen()->primaryOrientation() & landscapeMask) {
         const quint8 flippedMask =
             Qt::InvertedLandscapeOrientation | Qt::InvertedPortraitOrientation;
-        dfdtFactors[0] = orientation & landscapeMask ? 1.0f : 0.0f;
+        dfdtFactors[0] = orientation & landscapeMask ? 0.0f : 1.0f;
         dfdtFactors[1] = orientation & flippedMask ? -1.0f : 1.0f;
     } else {
         const quint8 flippedMask = Qt::InvertedPortraitOrientation | Qt::LandscapeOrientation;
-        dfdtFactors[0] = orientation & portraitMask ? 1.0f : 0.0f;
+        dfdtFactors[0] = orientation & portraitMask ? 0.0f : 1.0f;
         dfdtFactors[1] = orientation & flippedMask ? -1.0f : 1.0f;
     }
 }
