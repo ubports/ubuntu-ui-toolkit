@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -22,12 +22,14 @@
 #include <QtQuick/QQuickItem>
 
 class UCStyledItemBasePrivate;
+class UCTheme;
 class UCStyledItemBase : public QQuickItem
 {
     Q_OBJECT
     Q_PROPERTY(bool activeFocusOnPress
                READ activefocusOnPress WRITE setActiveFocusOnPress
                NOTIFY activeFocusOnPressChanged REVISION 1)
+    Q_PRIVATE_PROPERTY(d_func(), UCTheme *theme READ getTheme WRITE setTheme RESET resetTheme NOTIFY themeChanged REVISION 2)
 public:
     explicit UCStyledItemBase(QQuickItem *parent = 0);
 
@@ -39,15 +41,19 @@ public Q_SLOTS:
 
 Q_SIGNALS:
     void activeFocusOnPressChanged();
+    Q_REVISION(2) void themeChanged();
 
 protected:
     UCStyledItemBase(UCStyledItemBasePrivate &, QQuickItem *parent);
 
     void mousePressEvent(QMouseEvent *event);
     bool childMouseEventFilter(QQuickItem *child, QEvent *event);
+    void itemChange(ItemChange, const ItemChangeData &);
 
 private:
     Q_DECLARE_PRIVATE(UCStyledItemBase)
+    Q_PRIVATE_SLOT(d_func(), void _q_ascendantChanged(QQuickItem*))
+    Q_PRIVATE_SLOT(d_func(), void _q_parentStyleChanged())
 };
 
 #endif // UCSTYLEDITEMBASE_H

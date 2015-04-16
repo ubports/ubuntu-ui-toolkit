@@ -92,9 +92,9 @@ Q_SIGNALS:
 protected:
     virtual QSGNode* createSceneGraphNode() const;
     virtual void updateGeometry(
-        QSGNode* node, float width, float height, float radius, const float shapeCoordinate[][2],
+        QSGNode* node, const QSizeF& itemSize, float radius, float shapeOffset,
         const QVector4D& sourceCoordTransform, const QVector4D& sourceMaskTransform,
-        const quint32 backgroundColor[4]);
+        const quint32 backgroundColor[3]);
 
 private:
     quint16 m_overlayX;

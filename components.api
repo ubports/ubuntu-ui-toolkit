@@ -1,4 +1,4 @@
-AbstractButton 0.1 AbstractButton 1.0 AbstractButton 1.1 AbstractButton 1.2 Item
+AbstractButton 0.1 AbstractButton 1.0 AbstractButton 1.1 AbstractButton 1.3 Item
     property bool hovered
     signal clicked
     signal pressAndHold
@@ -23,14 +23,14 @@ ActionContext 0.1 ActionContext 1.0 QtObject
     signal activeChanged(bool )
     function addAction(QtObject action)
     function removeAction(QtObject action)
-ActionItem 0.1 ActionItem 1.0 ActionItem 1.1 ActionItem 1.2 Item
+ActionItem 0.1 ActionItem 1.0 ActionItem 1.1 ActionItem 1.3 Item
     property Action action
     property string iconName
     property url iconSource
     signal triggered(var value)
     function var trigger(var value)
     property string text
-ActionList 0.1 ActionList 1.0 ActionList 1.1 ActionList 1.2 QtObject
+ActionList 0.1 ActionList 1.0 ActionList 1.1 ActionList 1.3 QtObject
     readonly property Action actions
     default readonly property Action children
 ActionManager 0.1 ActionManager 1.0 QtObject
@@ -42,7 +42,7 @@ ActionManager 0.1 ActionManager 1.0 QtObject
     function removeAction(QtObject action)
     function addLocalContext(QtObject context)
     function removeLocalContext(QtObject context)
-ActivityIndicator 0.1 ActivityIndicator 1.0 ActivityIndicator 1.1 ActivityIndicator 1.2 Item
+ActivityIndicator 0.1 ActivityIndicator 1.0 ActivityIndicator 1.1 ActivityIndicator 1.3 Item
     property bool running
 Alarm 0.1 Alarm 1.0 QtObject
     property QDateTime date
@@ -94,7 +94,7 @@ BubbleShape 0.1 BubbleShape 1.0 BubbleShape 1.1 Item
     function var hide
     property bool square
     property QPointF target
-Button 0.1 Button 1.0 Button 1.1 Button 1.2 Item
+Button 0.1 Button 1.0 Button 1.1 Button 1.3 Item
     property color color
     property QFont font
     property Gradient gradient
@@ -125,11 +125,11 @@ ButtonStyle 0.1 ButtonStyle 1.0 ButtonStyle 1.1 Item
     property bool stroke
 Caption 0.1 Caption 1.0 Caption 1.1 Item
     property string text
-Captions 0.1 Captions 1.0 Captions 1.1 Captions 1.2 Item
+Captions 0.1 Captions 1.0 Captions 1.1 Captions 1.3 Item
     property int captionStyle
     readonly property Label subtitle
     readonly property Label title
-CheckBox 0.1 CheckBox 1.0 CheckBox 1.1 CheckBox 1.2 Item
+CheckBox 0.1 CheckBox 1.0 CheckBox 1.1 CheckBox 1.3 Item
     property bool checked
 Clipboard 0.1 Clipboard 1.0 QtObject singleton
     readonly property MimeData data
@@ -137,7 +137,7 @@ Clipboard 0.1 Clipboard 1.0 QtObject singleton
     function clear
     function QQuickMimeData* newData
 ColorUtils 1.0 ColorUtils 0.1 
-ComboButton 0.1 ComboButton 1.0 ComboButton 1.1 ComboButton 1.2 Item
+ComboButton 0.1 ComboButton 1.0 ComboButton 1.1 ComboButton 1.3 Item
     property double collapsedHeight
     default readonly property QtObject comboList
     readonly property double comboListHeight
@@ -162,7 +162,7 @@ CpuUsage 0.1 CpuUsage 1.0 Item
     readonly property UPMGraphModel graphModel
     property int period
     property int samplingInterval
-CrossFadeImage 0.1 CrossFadeImage 1.0 CrossFadeImage 1.1 CrossFadeImage 1.2 Item
+CrossFadeImage 0.1 CrossFadeImage 1.0 CrossFadeImage 1.1 CrossFadeImage 1.3 Item
     property int fadeDuration
     property string fadeStyle
     property int fillMode
@@ -182,7 +182,7 @@ Divider 0.1 Divider 1.0 Divider 1.1 Image
     readonly property double paintedHeight
     readonly property double paintedWidth
     property VAlignment verticalAlignment
-Empty 0.1 Empty 1.0 Empty 1.1 Empty 1.2 Item
+Empty 0.1 Empty 1.0 Empty 1.1 Empty 1.3 Item
     readonly property Item backgroundIndicator
     default readonly property QtObject children
     property bool confirmRemoval
@@ -209,16 +209,16 @@ ExpandablesColumn 0.1 ExpandablesColumn 1.0 ExpandablesColumn 1.1 Flickable
 FilterBehavior 1.1 QtObject
     property QRegExp pattern
     property string property
-Haptics 0.1 Haptics 1.0 Haptics 1.1 Haptics 1.2 QtObject singleton
+Haptics 0.1 Haptics 1.0 Haptics 1.1 Haptics 1.3 QtObject singleton
     readonly property HapticsEffect effect
     readonly property bool enabled
     function var play(var customEffect)
-Header 0.1 Header 1.0 Header 1.1 Header 1.2 Item
+Header 0.1 Header 1.0 Header 1.1 Header 1.3 Item
     property string _for_autopilot
     property string text
-Icon 0.1 Icon 1.0 Icon 1.1 Icon 1.2 Item
+Icon 0.1 Icon 1.0 Icon 1.1 Icon 1.3 Item
     property url source
-Icon10 0.1 Icon10 1.0 Icon10 1.1 Icon10 1.2 Item
+Icon10 0.1 Icon10 1.0 Icon10 1.1 Icon10 1.3 Item
     property color color
     property color keyColor
     property string name
@@ -247,7 +247,7 @@ ItemSelector 0.1 ItemSelector 1.0 ItemSelector 1.1 Item
     property var model
     property bool multiSelection
     property int selectedIndex
-Label 0.1 Label 1.0 Label 1.1 Label 1.2 Text
+Label 0.1 Label 1.0 Label 1.1 Label 1.3 Text
     property string fontSize
 Layouts 0.1 Layouts 1.0 Item
     readonly property Item children
@@ -293,7 +293,7 @@ ListItemStyle 1.2 Item
     function swipeEvent(SwipeEvent event)
     function rebound
     property Animation snapAnimation
-MainView 0.1 MainView 1.0 MainView 1.1 MainView 1.2 Item
+MainView 0.1 MainView 1.0 MainView 1.1 MainView 1.3 Item
     property bool automaticOrientation
     default readonly property QtObject contentsItem
 MathUtils 1.0 MathUtils 0.1 
@@ -322,9 +322,9 @@ Mouse 0.1 Mouse 1.0 QtObject
     property Priority priority
 MultiValue 0.1 MultiValue 1.0 MultiValue 1.1 Item
     property var values
-Object 0.1 Object 1.0 Object 1.1 Object 1.2 QtObject
+Object 0.1 Object 1.0 Object 1.1 Object 1.3 QtObject
     default readonly property QtObject children
-OptionSelector 0.1 OptionSelector 1.0 OptionSelector 1.1 OptionSelector 1.2 Item
+OptionSelector 0.1 OptionSelector 1.0 OptionSelector 1.1 OptionSelector 1.3 Item
     property bool colourImage
     property double containerHeight
     property bool currentlyExpanded
@@ -336,7 +336,7 @@ OptionSelector 0.1 OptionSelector 1.0 OptionSelector 1.1 OptionSelector 1.2 Item
     property var model
     property bool multiSelection
     property int selectedIndex
-OptionSelectorDelegate 0.1 OptionSelectorDelegate 1.0 OptionSelectorDelegate 1.1 OptionSelectorDelegate 1.2 Item
+OptionSelectorDelegate 0.1 OptionSelectorDelegate 1.0 OptionSelectorDelegate 1.1 OptionSelectorDelegate 1.3 Item
     property color assetColour
     property bool colourImage
     property bool constrainImage
@@ -344,36 +344,39 @@ OptionSelectorDelegate 0.1 OptionSelectorDelegate 1.0 OptionSelectorDelegate 1.1
     property url icon
     readonly property ListView listView
     property string subText
-OrientationHelper 0.1 OrientationHelper 1.0 OrientationHelper 1.1 OrientationHelper 1.2 Item
+OrientationHelper 0.1 OrientationHelper 1.0 OrientationHelper 1.1 OrientationHelper 1.3 Item
     property bool anchorToKeyboard
     property bool automaticOrientation
     property int orientationAngle
     readonly property bool rotating
     property bool transitionEnabled
 OverflowPanel 0.1 OverflowPanel 1.0 OverflowPanel 1.1 Item
+    property color backgroundColor
+    property color foregroundColor
+    property color highlightColor
+    property var model
     property bool square
-Page 0.1 Page 1.0 Page 1.1 Page 1.2 Item
-    readonly property PageHeadConfiguration head
+    property bool tabsOverflow
+Page 0.1 Page 1.0 Page 1.1 Page 1.3 Item
+    property Flickable flickable
+    readonly property PageHeadConfiguration13 head
+    property string title
 PageHeadButton 0.1 PageHeadButton 1.0 PageHeadButton 1.1 Item
     property color color
     property double iconHeight
     property double iconWidth
-PageHeadConfiguration 0.1 PageHeadConfiguration 1.0 PageHeadConfiguration 1.1 PageHeadConfiguration 1.2 QtObject
-    readonly property Action actions
-    property Action backAction
-    property Item contents
-    property color foregroundColor
-    property string preset
-    readonly property PageHeadSections sections
-PageHeadSections 0.1 PageHeadSections 1.0 PageHeadSections 1.1 PageHeadSections 1.2 QtObject
+PageHeadConfiguration 0.1 PageHeadConfiguration 1.0 PageHeadConfiguration 1.1 PageHeadConfiguration 1.3 QtObject
+    property bool locked
+    property bool visible
+PageHeadSections 0.1 PageHeadSections 1.0 PageHeadSections 1.1 PageHeadSections 1.3 QtObject
     property bool enabled
     property var model
     property int selectedIndex
-PageHeadState 0.1 PageHeadState 1.0 PageHeadState 1.1 PageHeadState 1.2 State
+PageHeadState 0.1 PageHeadState 1.0 PageHeadState 1.1 PageHeadState 1.3 State
     readonly property Action actions
     property Action backAction
     property Item contents
-    property PageHeadConfiguration head
+    property PageHeadConfiguration11 head
 PageHeadStyle 0.1 PageHeadStyle 1.0 PageHeadStyle 1.1 Item
     property double contentHeight
     property string fontSize
@@ -383,17 +386,17 @@ PageHeadStyle 0.1 PageHeadStyle 1.0 PageHeadStyle 1.1 Item
     property url separatorSource
     property color textColor
     property double textLeftMargin
-PageStack 0.1 PageStack 1.0 PageStack 1.1 PageStack 1.2 Item
+PageStack 0.1 PageStack 1.0 PageStack 1.1 PageStack 1.3 Item
     property Item currentPage
     default readonly property QtObject data
     property int depth
     function var push(var page, var properties)
     function var pop
     function var clear
-Palette 0.1 Palette 1.0 Palette 1.1 Palette 1.2 QtObject
+Palette 0.1 Palette 1.0 Palette 1.1 Palette 1.3 QtObject
     property PaletteValues normal
     property PaletteValues selected
-PaletteValues 0.1 PaletteValues 1.0 PaletteValues 1.1 PaletteValues 1.2 QtObject
+PaletteValues 0.1 PaletteValues 1.0 PaletteValues 1.1 PaletteValues 1.3 QtObject
     property color background
     property color backgroundText
     property color base
@@ -405,7 +408,7 @@ PaletteValues 0.1 PaletteValues 1.0 PaletteValues 1.1 PaletteValues 1.2 QtObject
     property color overlay
     property color overlayText
     property color selection
-Panel 0.1 Panel 1.0 Panel 1.1 Panel 1.2 Item
+Panel 0.1 Panel 1.0 Panel 1.1 Panel 1.3 Item
     property int align
     property bool animate
     readonly property bool animating
@@ -427,7 +430,7 @@ PartialColorize 0.1 PartialColorize 1.0 PartialColorize 1.1 ShaderEffect
     property var source
     property Item sourceItem
     property string texCoord
-PerformanceOverlay 0.1 PerformanceOverlay 1.0 PerformanceOverlay 1.1 PerformanceOverlay 1.2 Item
+PerformanceOverlay 0.1 PerformanceOverlay 1.0 PerformanceOverlay 1.1 PerformanceOverlay 1.3 Item
     property bool active
 Popover 0.1 Popover 1.0 Popover 1.1 Item
     property bool autoClose
@@ -450,12 +453,12 @@ PopupBase 0.1 PopupBase 1.0 PopupBase 1.1 Item
     function var hide
     function var __closeIfHidden
     function var __closePopup
-ProgressBar 0.1 ProgressBar 1.0 ProgressBar 1.1 ProgressBar 1.2 Item
+ProgressBar 0.1 ProgressBar 1.0 ProgressBar 1.1 ProgressBar 1.3 Item
     property bool indeterminate
     property double maximumValue
     property double minimumValue
     property double value
-PullToRefresh 0.1 PullToRefresh 1.0 PullToRefresh 1.1 PullToRefresh 1.2 Item
+PullToRefresh 0.1 PullToRefresh 1.0 PullToRefresh 1.1 PullToRefresh 1.3 Item
     property Component content
     signal refresh
     readonly property double offset
@@ -479,7 +482,7 @@ RenderingTimes 0.1 RenderingTimes 1.0 Item
     property int period
     property int samples
     property RenderTimer.TimerType timerType
-Scrollbar 0.1 Scrollbar 1.0 Scrollbar 1.1 Scrollbar 1.2 Item
+Scrollbar 0.1 Scrollbar 1.0 Scrollbar 1.1 Scrollbar 1.3 Item
     property int align
     property Flickable flickableItem
 ScrollbarUtils 1.0 ScrollbarUtils 0.1 
@@ -528,7 +531,7 @@ SingleControl 0.1 SingleControl 1.0 SingleControl 1.1 Item
     function var __updateControl
 SingleValue 0.1 SingleValue 1.0 SingleValue 1.1 Item
     property string value
-Slider 0.1 Slider 1.0 Slider 1.1 Slider 1.2 Item
+Slider 0.1 Slider 1.0 Slider 1.1 Slider 1.3 Item
     property bool live
     property double maximumValue
     signal touched(bool onThumb)
@@ -555,7 +558,7 @@ Standard 0.1 Standard 1.0 Standard 1.1 Item
     property bool iconFrame
     property bool progression
 StateSaver 0.1 StateSaver 1.0 QtObject
-StyledItem 0.1 StyledItem 1.0 StyledItem 1.1 StyledItem 1.2 Item
+StyledItem 0.1 StyledItem 1.0 StyledItem 1.1 StyledItem 1.3 Item
     property Component style
 StyledItemBase 0.1 StyledItemBase 1.0 StyledItemBase 1.1 Item
     property bool activeFocusOnPress
@@ -568,14 +571,14 @@ SwipeEvent 1.2 QtObject
     readonly property QPointF from
     readonly property Status status
     readonly property QPointF to
-Switch 0.1 Switch 1.0 Switch 1.1 Switch 1.2 Item
+Switch 0.1 Switch 1.0 Switch 1.1 Switch 1.3 Item
     property bool checked
-Tab 0.1 Tab 1.0 Tab 1.1 Tab 1.2 Item
+Tab 0.1 Tab 1.0 Tab 1.1 Tab 1.3 Item
     property url iconSource
     readonly property int index
     property Item page
     property string title
-TabBar 0.1 TabBar 1.0 TabBar 1.1 TabBar 1.2 Item
+TabBar 0.1 TabBar 1.0 TabBar 1.1 TabBar 1.3 Item
     property bool alwaysSelectionMode
     property bool animate
     property var model
@@ -583,7 +586,7 @@ TabBar 0.1 TabBar 1.0 TabBar 1.1 TabBar 1.2 Item
     property int selectedIndex
     property bool selectionMode
     property Item tabsItem
-Tabs 0.1 Tabs 1.0 Tabs 1.1 Tabs 1.2 Item
+Tabs 0.1 Tabs 1.0 Tabs 1.1 Tabs 1.3 Item
     readonly property int count
     readonly property Item currentPage
     signal modelChanged
@@ -605,7 +608,7 @@ TestExtras 1.0 QtObject singleton
     function touchDrag(int touchId, Item item, Qt.point from, Qt.point delta, int steps)
     function touchDrag(int touchId, Item item, Qt.point from, Qt.point delta)
     readonly property bool touchPresent
-TextArea 0.1 TextArea 1.0 TextArea 1.1 TextArea 1.2 Item
+TextArea 0.1 TextArea 1.0 TextArea 1.1 TextArea 1.3 Item
     property bool activeFocusOnPress
     property bool autoExpand
     property bool autoSize
@@ -673,7 +676,7 @@ TextAreaStyle 0.1 TextAreaStyle 1.0 TextAreaStyle 1.1 Item
     property double overlaySpacing
     property color selectedTextColor
     property color selectionColor
-TextField 0.1 TextField 1.0 TextField 1.1 TextField 1.2 Item
+TextField 0.1 TextField 1.0 TextField 1.1 TextField 1.3 Item
     readonly property bool acceptableInput
     property bool activeFocusOnPress
     property bool autoScroll
@@ -738,15 +741,15 @@ TextField 0.1 TextField 1.0 TextField 1.1 TextField 1.2 Item
     property int verticalAlignment
 TextureFromImage 0.1 TextureFromImage 1.0 Item
     property QImage image
-ThinDivider 0.1 ThinDivider 1.0 ThinDivider 1.1 ThinDivider 1.2 Rectangle
-ToolbarButton 0.1 ToolbarButton 1.0 ToolbarButton 1.1 ToolbarButton 1.2 Item
+ThinDivider 0.1 ThinDivider 1.0 ThinDivider 1.1 ThinDivider 1.3 Rectangle
+ToolbarButton 0.1 ToolbarButton 1.0 ToolbarButton 1.1 ToolbarButton 1.3 Item
     property Action action
     property string iconName
     property url iconSource
     signal triggered(var value)
     function var trigger(var value)
     property string text
-ToolbarItems 0.1 ToolbarItems 1.0 ToolbarItems 1.1 ToolbarItems 1.2 Item
+ToolbarItems 0.1 ToolbarItems 1.0 ToolbarItems 1.1 ToolbarItems 1.3 Item
     property Item back
     default readonly property QtObject contents
     property bool locked
@@ -859,7 +862,7 @@ UbuntuAnimation 0.1 UbuntuAnimation 1.0 QtObject singleton
     readonly property int SnapDuration
     readonly property QEasingCurve StandardEasing
     readonly property QEasingCurve StandardEasingReverse
-UbuntuColors 0.1 UbuntuColors 1.0 UbuntuColors 1.1 UbuntuColors 1.2 QtObject singleton
+UbuntuColors 0.1 UbuntuColors 1.0 UbuntuColors 1.1 UbuntuColors 1.3 QtObject singleton
     readonly property color blue
     readonly property color coolGrey
     readonly property color darkAubergine
@@ -874,9 +877,9 @@ UbuntuColors 0.1 UbuntuColors 1.0 UbuntuColors 1.1 UbuntuColors 1.2 QtObject sin
     readonly property color purple
     readonly property color red
     readonly property color warmGrey
-UbuntuListView 0.1 UbuntuListView 1.0 UbuntuListView 1.1 UbuntuListView 1.2 ListView
+UbuntuListView 0.1 UbuntuListView 1.0 UbuntuListView 1.1 UbuntuListView 1.3 ListView
     property int expandedIndex
-UbuntuNumberAnimation 0.1 UbuntuNumberAnimation 1.0 UbuntuNumberAnimation 1.1 UbuntuNumberAnimation 1.2 NumberAnimation
+UbuntuNumberAnimation 0.1 UbuntuNumberAnimation 1.0 UbuntuNumberAnimation 1.1 UbuntuNumberAnimation 1.3 NumberAnimation
     property double from
     property double to
 UbuntuShapeOverlay 1.2 Shape
@@ -893,6 +896,7 @@ UbuntuTestCase 1.0 Item
     function var tryCompareFunction(var func, var expectedResult, var timeout)
     function var typeString(var string)
     function var warningFormat(var line, var column, var message)
+    function var waitForHeaderAnimation(var mainView)
 UriHandler 0.1 UriHandler 1.0 QtObject singleton
     signal opened(QStringList uris)
 ValueSelector 0.1 ValueSelector 1.0 ValueSelector 1.1 Item

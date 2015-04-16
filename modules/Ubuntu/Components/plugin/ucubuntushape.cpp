@@ -16,23 +16,68 @@
  * Author: Loïc Molinari <loic.molinari@canonical.com>
  */
 
-// FIXME(loicm) Storing lower precision data types in the vertex buffer could be more efficent. On
-//     PowerVR, for instance, that requires a conversion so the trade-off between shader cycles and
-//     bandwidth requirements must be benchmarked.
+// The UbuntuShape uses a simple and efficient method described by Chris Green in this paper from
+// 2007 (http://www.valvesoftware.com/publications/2007/SIGGRAPH2007_AlphaTestedMagnification.pdf)
+// to create its anti-aliased and resolution independent contour.
+
+// FIXME(loicm) Storing lower precision data types in the vertex buffer could be more efficent. Note
+//     that on PowerVR GPUs (and certainly others), it requires a conversion in the USSE pipeline so
+//     the trade-off between shader cycles and bandwidth requirements needs to be precisely
+//     evaluated.
 
 #include "ucubuntushape.h"
 #include "ucubuntushapetexture.h"
 #include "ucunits.h"
 #include <QtCore/QPointer>
+#include <QtGui/QGuiApplication>
+#include <QtGui/QScreen>
 #include <QtQuick/QQuickWindow>
 #include <QtQuick/QSGTextureProvider>
 #include <QtQuick/private/qquickimage_p.h>
 #include <math.h>
 
+// Anti-aliasing distance of the contour in pixels.
+const float distanceAApx = 1.75f;
+
+// For cosmetic reasons, we add an offset to the radius size to avoid having values less than 2 to
+// look as if it has no rounded corners.
+const float radiusSizeOffset = 2.0f;
+
+// Factor by which the final fragment RGB color must be multiplied for the pressed aspect.
+const float pressedFactor = 0.85f;
+
 // --- Scene graph shader ---
+
+// Factors used to know which screen-space derivatives must be used in the fragment shaders based on
+// the primary orientation and current orientation.
+static float dfdtFactors[2];
+
+static void orientationChanged(Qt::ScreenOrientation orientation)
+{
+    const quint8 landscapeMask = Qt::LandscapeOrientation | Qt::InvertedLandscapeOrientation;
+    const quint8 portraitMask = Qt::PortraitOrientation | Qt::InvertedPortraitOrientation;
+    if (QGuiApplication::primaryScreen()->primaryOrientation() & landscapeMask) {
+        const quint8 flippedMask =
+            Qt::InvertedLandscapeOrientation | Qt::InvertedPortraitOrientation;
+        dfdtFactors[0] = orientation & landscapeMask ? 1.0f : 0.0f;
+        dfdtFactors[1] = orientation & flippedMask ? -1.0f : 1.0f;
+    } else {
+        const quint8 flippedMask = Qt::InvertedPortraitOrientation | Qt::LandscapeOrientation;
+        dfdtFactors[0] = orientation & portraitMask ? 1.0f : 0.0f;
+        dfdtFactors[1] = orientation & flippedMask ? -1.0f : 1.0f;
+    }
+}
 
 ShapeShader::ShapeShader()
 {
+    static bool once = true;
+    if (once) {
+        const QScreen* primaryScreen = QGuiApplication::primaryScreen();
+        orientationChanged(primaryScreen->orientation());
+        QObject::connect(primaryScreen, &QScreen::orientationChanged, orientationChanged);
+        once = false;
+    }
+
     setShaderSourceFile(QOpenGLShader::Vertex, QStringLiteral(":/uc/shaders/shape.vert"));
     setShaderSourceFile(QOpenGLShader::Fragment, QStringLiteral(":/uc/shaders/shape.frag"));
 }
@@ -55,9 +100,12 @@ void ShapeShader::initialize()
 
     m_functions = QOpenGLContext::currentContext()->functions();
     m_matrixId = program()->uniformLocation("matrix");
-    m_opacityId = program()->uniformLocation("opacity");
+    m_dfdtFactorsId = program()->uniformLocation("dfdtFactors");
+    m_opacityFactorsId = program()->uniformLocation("opacityFactors");
     m_sourceOpacityId = program()->uniformLocation("sourceOpacity");
+    m_distanceAAId = program()->uniformLocation("distanceAA");
     m_texturedId = program()->uniformLocation("textured");
+    m_aspectId = program()->uniformLocation("aspect");
 }
 
 void ShapeShader::updateState(
@@ -68,53 +116,64 @@ void ShapeShader::updateState(
     const ShapeMaterial::Data* data = static_cast<ShapeMaterial*>(newEffect)->constData();
 
     // Bind shape texture.
-    QSGTexture* shapeTexture = data->shapeTexture;
-    if (shapeTexture) {
-        shapeTexture->setFiltering(static_cast<QSGTexture::Filtering>(data->shapeTextureFiltering));
-        shapeTexture->setHorizontalWrapMode(QSGTexture::ClampToEdge);
-        shapeTexture->setVerticalWrapMode(QSGTexture::ClampToEdge);
-        shapeTexture->bind();
-    } else {
-        glBindTexture(GL_TEXTURE_2D, 0);
-    }
+    glBindTexture(GL_TEXTURE_2D, data->shapeTexture);
 
+    // Bind source texture on the 2nd texture unit and update uniforms.
+    bool textured = false;
     if (data->flags & ShapeMaterial::Data::Textured) {
-        // Bind image texture.
-        m_functions->glActiveTexture(GL_TEXTURE1);
         QSGTextureProvider* provider = data->sourceTextureProvider;
-        QSGTexture* texture = provider ? provider->texture() : NULL;
-        if (texture) {
+        QSGTexture* sourceTexture = provider ? provider->texture() : NULL;
+        if (sourceTexture) {
             if (data->flags & ShapeMaterial::Data::Repeated) {
-                if (texture->isAtlasTexture()) {
+                if (sourceTexture->isAtlasTexture()) {
                     // A texture in an atlas can't be repeated with builtin GPU facility (exposed by
                     // GL_REPEAT with OpenGL), so we extract it and create a new dedicated one.
-                    texture = texture->removedFromAtlas();
+                    sourceTexture = sourceTexture->removedFromAtlas();
                 }
-                texture->setHorizontalWrapMode(
+                sourceTexture->setHorizontalWrapMode(
                     data->flags & ShapeMaterial::Data::HorizontallyRepeated ?
                     QSGTexture::Repeat : QSGTexture::ClampToEdge);
-                texture->setVerticalWrapMode(
+                sourceTexture->setVerticalWrapMode(
                     data->flags & ShapeMaterial::Data::VerticallyRepeated ?
                     QSGTexture::Repeat : QSGTexture::ClampToEdge);
             }
-            texture->bind();
-        } else {
-            glBindTexture(GL_TEXTURE_2D, 0);
+            m_functions->glActiveTexture(GL_TEXTURE1);
+            sourceTexture->bind();
+            m_functions->glActiveTexture(GL_TEXTURE0);
+            program()->setUniformValue(m_sourceOpacityId, data->sourceOpacity / 255.0f);
+            textured = true;
         }
-        m_functions->glActiveTexture(GL_TEXTURE0);
-        // Update image uniform.
-        const float u8toF32 = 1.0f / 255.0f;
-        program()->setUniformValue(m_sourceOpacityId, data->sourceOpacity * u8toF32);
     }
+    program()->setUniformValue(m_texturedId, textured);
+    program()->setUniformValue(
+        m_aspectId, data->flags & (ShapeMaterial::Data::Flat | ShapeMaterial::Data::Inset));
 
-    program()->setUniformValue(m_texturedId, !!(data->flags & ShapeMaterial::Data::Textured));
+    // The pressed aspect is implemented by scaling the final RGB fragment color. It's not a real
+    // blending as it was done before deprecation, so for instance transparent colors remain the
+    // same, but we consider it would be too costly to maintain for a deprecated feature that was
+    // actually only used in the toolkit and never documented. The factor is multiplied with the Qt
+    // opacity to avoid useless operations in the shader.
+    const float opacity = state.opacity();
+    const QVector2D opacityFactorsVector(
+        data->flags & ShapeMaterial::Data::Pressed ? pressedFactor * opacity : opacity, opacity);
+    program()->setUniformValue(m_opacityFactorsId, opacityFactorsVector);
+
+    // Send anti-aliasing distance in distance field space, needs to be divided by 2 for the shader
+    // and by 255 for distanceAAFactor dequantization. The factor is 1 most of the time apart when
+    // the radius size is low, it linearly goes from 1 to 0 to make the corners prettier and to
+    // prevent the opacity of the whole shape to slightly lower.
+    const float distanceAA = (shapeTextureInfo.distanceAA * distanceAApx) / (2.0 * 255.0f);
+    program()->setUniformValue(m_distanceAAId, data->distanceAAFactor * distanceAA);
+
+    // Send screen-space derivative factors. Note that when rendering is redirected to a
+    // ShaderEffectSource (FBO), dFdy() sign is flipped.
+    const bool flipped = dfdtFactors[0] != 0.0f && state.projectionMatrix()(1, 3) < 0.0f;
+    const QVector2D dfdtFactorsVector(dfdtFactors[0], flipped ? -dfdtFactors[1] : dfdtFactors[1]);
+    program()->setUniformValue(m_dfdtFactorsId, dfdtFactorsVector);
 
     // Update QtQuick engine uniforms.
     if (state.isMatrixDirty()) {
         program()->setUniformValue(m_matrixId, state.combinedMatrix());
-    }
-    if (state.isOpacityDirty()) {
-        program()->setUniformValue(m_opacityId, state.opacity());
     }
 }
 
@@ -167,13 +226,16 @@ ShapeNode::ShapeNode()
 // static
 const unsigned short* ShapeNode::indices()
 {
-    // Don't forget to update indexCount if changed.
+    // The geometry is made of 9 vertices indexed with a triangle strip mode.
+    // 0 - 1 - 2
+    // | / | / |
+    // 3 - 4 - 5
+    // | / | / |
+    // 6 - 7 - 8
     static const unsigned short indices[] = {
-        0, 4, 1, 5, 2, 6, 3, 7,       // Triangles 1 to 6.
-        7, 4,                         // Degenerate triangles.
-        4, 8, 5, 9, 6, 10, 7, 11,     // Triangles 7 to 12.
-        11, 8,                        // Degenerate triangles.
-        8, 12, 9, 13, 10, 14, 11, 15  // Triangles 13 to 18.
+        0, 3, 1, 4, 2, 5,
+        5, 3,  // Degenerate triangles.
+        3, 6, 4, 7, 5, 8
     };
     return indices;
 }
@@ -195,20 +257,12 @@ const QSGGeometry::AttributeSet& ShapeNode::attributeSet()
 
 // --- QtQuick item ---
 
-struct ShapeTextures
-{
-    ShapeTextures() : high(0), low(0) {}
-    QSGTexture* high;
-    QSGTexture* low;
-};
+static QHash<QOpenGLContext*, quint32> shapeTextureHash;
 
-static QHash<QOpenGLContext*, ShapeTextures> shapeTexturesHash;
-
-const float implicitGridUnitWidth = 8.0f;
-const float implicitGridUnitHeight = 8.0f;
-
-// Threshold in grid unit defining the texture quality to be used.
-const float lowHighTextureThreshold = 11.0f;
+const float implicitWidthGU = 8.0f;
+const float implicitHeightGU = 8.0f;
+const float smallRadiusGU = 1.45f;
+const float mediumRadiusGU = 2.55f;
 
 /*! \qmltype UbuntuShape
     \instantiates UCUbuntuShape
@@ -250,8 +304,8 @@ UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
     , m_sourceScale(1.0f, 1.0f)
     , m_sourceTranslation(0.0f, 0.0f)
     , m_sourceTransform(1.0f, 1.0f, 0.0f, 0.0f)
-    , m_radius(SmallRadius)
-    , m_border(IdleBorder)
+    , m_radius(Small)
+    , m_aspect(Inset)
     , m_imageHorizontalAlignment(AlignHCenter)
     , m_imageVerticalAlignment(AlignVCenter)
     , m_backgroundMode(SolidColor)
@@ -267,8 +321,8 @@ UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this,
                      SLOT(_q_gridUnitChanged()));
     const float gridUnit = UCUnits::instance().gridUnit();
-    setImplicitWidth(implicitGridUnitWidth * gridUnit);
-    setImplicitHeight(implicitGridUnitHeight * gridUnit);
+    setImplicitWidth(implicitWidthGU * gridUnit);
+    setImplicitHeight(implicitHeightGU * gridUnit);
     update();
 }
 
@@ -279,7 +333,7 @@ UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
 */
 void UCUbuntuShape::setRadius(const QString& radius)
 {
-    const Radius newRadius = (radius == "medium") ? MediumRadius : SmallRadius;
+    const Radius newRadius = (radius == "medium") ? Medium : Small;
     if (m_radius != newRadius) {
         m_radius = newRadius;
         update();
@@ -287,27 +341,34 @@ void UCUbuntuShape::setRadius(const QString& radius)
     }
 }
 
-/*! \qmlproperty string UbuntuShape::borderSource
+/*! \qmlproperty enumeration UbuntuShape::aspect
 
-    This property defines the look of the shape borders. The supported strings are \c
-    "radius_idle.sci" providing an idle button style and \c "radius_pressed.sci" providing a pressed
-    button style. Any other strings (like the empty one \c "") disables styling. The default value
-    is \c "radius_idle.sci".
+    This property defines the graphical style of the UbuntuShape. The default value is \c
+    UbuntuShape.Inset.
+
+    \note Setting this disables support for the deprecated \l borderSource property. Use the
+    UbuntuShapeOverlay item in order to provide the inset "pressed" aspect previously supported by
+    that property.
+
+    \list
+    \li \b UbuntuShape.Flat - no effects applied
+    \li \b UbuntuShape.Inset - inner shadow slightly moved downwards and bevelled bottom
+    \endlist
 */
-void UCUbuntuShape::setBorderSource(const QString& borderSource)
+void UCUbuntuShape::setAspect(Aspect aspect)
 {
-    Border border;
-    if (borderSource.endsWith(QString("radius_idle.sci"))) {
-        border = IdleBorder;
-    } else if (borderSource.endsWith(QString("radius_pressed.sci"))) {
-        border = PressedBorder;
-    } else {
-        border = RawBorder;
-    }
-    if (m_border != border) {
-        m_border = border;
+    if (!(m_flags & AspectSet)) {
+        m_flags |= AspectSet;
+        m_aspect = Flat;
         update();
         Q_EMIT borderSourceChanged();
+    }
+
+    const quint8 newAspect = aspect;
+    if (m_aspect != newAspect) {
+        m_aspect = newAspect;
+        update();
+        Q_EMIT aspectChanged();
     }
 }
 
@@ -678,6 +739,35 @@ void UCUbuntuShape::setBackgroundMode(BackgroundMode backgroundMode)
     }
 }
 
+/*! \qmlproperty string UbuntuShape::borderSource
+    \deprecated
+
+    This property defines the look of the shape borders. The supported strings are \c
+    "radius_idle.sci" providing an idle button aspect and \c "radius_pressed.sci" providing a
+    pressed button aspect. Any other strings (like the empty one \c "") provides a shape with no
+    borders. The default value is \c "radius_idle.sci".
+
+    \note Use \l aspect instead.
+*/
+void UCUbuntuShape::setBorderSource(const QString& borderSource)
+{
+    if (!(m_flags & AspectSet)) {
+        quint8 aspect;
+        if (borderSource.endsWith(QString("radius_idle.sci"))) {
+            aspect = Inset;
+        } else if (borderSource.endsWith(QString("radius_pressed.sci"))) {
+            aspect = Pressed;
+        } else {
+            aspect = Flat;
+        }
+        if (m_aspect != aspect) {
+            m_aspect = aspect;
+            update();
+            Q_EMIT borderSourceChanged();
+        }
+    }
+}
+
 /*! \qmlproperty color UbuntuShape::color
     \deprecated
 
@@ -866,29 +956,21 @@ void UCUbuntuShape::connectToImageProperties(QQuickItem* image)
 // Deprecation layer.
 void UCUbuntuShape::_q_imagePropertiesChanged()
 {
-    QQuickItem* image = qobject_cast<QQuickItem*>(sender());
-    updateFromImageProperties(image);
+    updateFromImageProperties(qobject_cast<QQuickItem*>(sender()));
 }
 
 void UCUbuntuShape::_q_openglContextDestroyed()
 {
-    QOpenGLContext* context = qobject_cast<QOpenGLContext*>(sender());
-    if (context) {
-        QHash<QOpenGLContext*, ShapeTextures>::iterator it = shapeTexturesHash.find(context);
-        if (it != shapeTexturesHash.end()) {
-            ShapeTextures &shapeTextures = it.value();
-            delete shapeTextures.high;
-            delete shapeTextures.low;
-            shapeTexturesHash.erase(it);
-        }
-    }
+    // Delete the shape texture that's stored per context and shared by all the shape items.
+    quint32 shapeTexture = shapeTextureHash.take(qobject_cast<QOpenGLContext*>(sender()));
+    glDeleteTextures(1, &shapeTexture);
 }
 
 void UCUbuntuShape::_q_gridUnitChanged()
 {
     const float gridUnit = UCUnits::instance().gridUnit();
-    setImplicitWidth(implicitGridUnitWidth * gridUnit);
-    setImplicitHeight(implicitGridUnitHeight * gridUnit);
+    setImplicitWidth(implicitWidthGU * gridUnit);
+    setImplicitHeight(implicitHeightGU * gridUnit);
     update();
 }
 
@@ -969,14 +1051,12 @@ static quint32 packColor(quint32 a, quint32 b, quint32 g, quint32 r)
     return (a << 24) | ((pb & 0xff) << 16) | ((pg & 0xff) << 8) | (pr & 0xff);
 }
 
-// Lerp c1 and c2 with t in the range [0, 255]. Return value is a premultiplied 32-bit ABGR integer.
-static quint32 lerpColor(quint32 t, QRgb c1, QRgb c2)
+// Average c1 and c2. Return value is a premultiplied 32-bit ABGR integer.
+static quint32 averageColor(QRgb c1, QRgb c2)
 {
-    const quint32 a = qAlpha(c1) + ((t * (qAlpha(c2) - qAlpha(c1)) + 0xff) >> 8);
-    const quint32 b = qBlue(c1) + ((t * (qBlue(c2) - qBlue(c1)) + 0xff) >> 8);
-    const quint32 g = qGreen(c1) + ((t * (qGreen(c2) - qGreen(c1)) + 0xff) >> 8);
-    const quint32 r = qRed(c1) + ((t * (qRed(c2) - qRed(c1)) + 0xff) >> 8);
-    return packColor(a, b, g, r);
+    return packColor(
+        (qAlpha(c1) + qAlpha(c2)) >> 1, (qBlue(c1) + qBlue(c2)) >> 1,
+        (qGreen(c1) + qGreen(c2)) >> 1, (qRed(c1) + qRed(c2)) >> 1);
 }
 
 QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* data)
@@ -992,23 +1072,26 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
     QSGNode* node = oldNode ? oldNode : createSceneGraphNode();
     Q_ASSERT(node);
 
-    // OpenGL allocates textures per context, so we store textures reused by all shape instances
-    // per context as well.
-    QOpenGLContext* openglContext = window() ? window()->openglContext() : NULL;
+    // Get or create the shape texture that's stored per context and shared by all the shape items.
+    Q_ASSERT(window());
+    QOpenGLContext* openglContext = window()->openglContext();
     Q_ASSERT(openglContext);
-    ShapeTextures &shapeTextures = shapeTexturesHash[openglContext];
-    if (!shapeTextures.high) {
-        shapeTextures.high = window()->createTextureFromImage(
-            QImage(shapeTextureHigh.data, shapeTextureHigh.width, shapeTextureHigh.height,
-                   QImage::Format_ARGB32_Premultiplied));
-        shapeTextures.low = window()->createTextureFromImage(
-            QImage(shapeTextureLow.data, shapeTextureLow.width, shapeTextureLow.height,
-                   QImage::Format_ARGB32_Premultiplied));
-        QObject::connect(openglContext, SIGNAL(aboutToBeDestroyed()),
-                         this, SLOT(_q_openglContextDestroyed()), Qt::DirectConnection);
+    quint32 shapeTexture = shapeTextureHash[openglContext];
+    if (!shapeTexture) {
+        glGenTextures(1, &shapeTexture);
+        glBindTexture(GL_TEXTURE_2D, shapeTexture);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, shapeTextureInfo.size, shapeTextureInfo.size, 0,
+                     GL_RGBA, GL_UNSIGNED_BYTE, shapeTextureInfo.data);
+        shapeTextureHash[openglContext] = shapeTexture;
+        QObject::connect(openglContext, SIGNAL(aboutToBeDestroyed()), this,
+                         SLOT(_q_openglContextDestroyed()), Qt::DirectConnection);
     }
 
-    // Get the texture info and update the source transform if needed.
+    // Get the source texture info and update the source transform if needed.
     QSGTextureProvider* provider = m_source ? m_source->textureProvider() : NULL;
     QSGTexture* sourceTexture = provider ? provider->texture() : NULL;
     QRectF sourceTextureRect(0.0f, 0.0f, 1.0f, 1.0f);
@@ -1031,7 +1114,7 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
         }
     }
 
-    // Update the shape item whenever the source item's texture changes.
+    // Ensure the shape item is updated whenever the source item's texture changes.
     if (provider != m_sourceTextureProvider) {
         if (m_sourceTextureProvider) {
             QObject::disconnect(m_sourceTextureProvider, SIGNAL(textureChanged()),
@@ -1046,42 +1129,18 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
         m_sourceTextureProvider = provider;
     }
 
-    const float gridUnit = UCUnits::instance().gridUnit();
-    ShapeTextureData* shapeTextureData;
-    QSGTexture* shapeTexture;
-    if (gridUnit > lowHighTextureThreshold) {
-        shapeTextureData = &shapeTextureHigh;
-        shapeTexture = shapeTextures.high;
-    } else {
-        shapeTextureData = &shapeTextureLow;
-        shapeTexture = shapeTextures.low;
+    // Get the radius size. When the item width and/or height is less than 2 * radius, the size is
+    // scaled down accordingly. The shape was using a fixed image for the corner before switching to
+    // a distance field, since the corner wasn't taking the whole image (ending at ~80%) we need
+    // to take that into account when the size is scaled down.
+    float radius = UCUnits::instance().gridUnit()
+        * (m_radius == Small ? smallRadiusGU : mediumRadiusGU);
+    const float scaledDownRadius = qMin(itemSize.width(), itemSize.height()) * 0.5f * 0.8f;
+    if (radius > scaledDownRadius) {
+        radius = scaledDownRadius;
     }
 
-    // Set the shape texture to be used by the materials depending on current grid unit. The radius
-    // is set considering the current grid unit and the texture raster grid unit. When the item size
-    // is less than 2 radii, the radius is scaled down.
-    QSGTexture::Filtering shapeTextureFiltering;
-    float radius = (m_radius == SmallRadius) ?
-        shapeTextureData->smallRadius : shapeTextureData->mediumRadius;
-    const float scaleFactor = gridUnit / shapeTextureData->gridUnit;
-    shapeTextureFiltering = QSGTexture::Nearest;
-    if (scaleFactor != 1.0f) {
-        radius *= scaleFactor;
-        shapeTextureFiltering = QSGTexture::Linear;
-    }
-    const float halfMinWidthHeight = qMin(itemSize.width(), itemSize.height()) * 0.5f;
-    if (radius > halfMinWidthHeight) {
-        radius = halfMinWidthHeight;
-        shapeTextureFiltering = QSGTexture::Linear;
-    }
-
-    updateMaterial(node, shapeTexture, shapeTextureFiltering, sourceTexture);
-
-    // Select the right shape texture coordinates.
-    int index = (m_border == RawBorder) ? 0 : (m_border == IdleBorder) ? 1 : 2;
-    if (m_radius == SmallRadius) {
-        index += 3;
-    }
+    updateMaterial(node, radius, shapeTexture, sourceTexture && m_sourceOpacity);
 
     // Get the affine transformation for the source texture coordinates.
     const QVector4D sourceCoordTransform(
@@ -1099,7 +1158,7 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
         m_sourceHorizontalWrapMode == Transparent ? m_sourceTransform.z() * 2.0f - 1.0f : -1.0f,
         m_sourceVerticalWrapMode == Transparent ? m_sourceTransform.w() * 2.0f - 1.0f : -1.0f);
 
-    // Select and pack the lerp'd and premultiplied background colors.
+    // Select and pack the lerped and premultiplied background colors.
     QRgb color[2];
     if (m_flags & BackgroundApiSet) {
         color[0] = m_backgroundColor;
@@ -1118,17 +1177,15 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
             color[1] = qRgba(0, 0, 0, 0);
         }
     }
-    const quint32 radiusHeight = static_cast<quint32>((radius / itemSize.height()) * 255.0f);
-    const quint32 backgroundColor[4] = {
+    const quint32 backgroundColor[3] = {
         packColor(qAlpha(color[0]), qBlue(color[0]), qGreen(color[0]), qRed(color[0])),
-        lerpColor(radiusHeight, color[0], color[1]),
-        lerpColor(255 - radiusHeight, color[0], color[1]),
+        averageColor(color[0], color[1]),
         packColor(qAlpha(color[1]), qBlue(color[1]), qGreen(color[1]), qRed(color[1]))
     };
 
     updateGeometry(
-        node, itemSize.width(), itemSize.height(), radius, shapeTextureData->coordinate[index],
-        sourceCoordTransform, sourceMaskTransform, backgroundColor);
+        node, itemSize, radius, shapeTextureInfo.offset, sourceCoordTransform, sourceMaskTransform,
+        backgroundColor);
 
     return node;
 }
@@ -1138,16 +1195,13 @@ QSGNode* UCUbuntuShape::createSceneGraphNode() const
     return new ShapeNode;
 }
 
-void UCUbuntuShape::updateMaterial(
-    QSGNode* node, QSGTexture* shapeTexture, QSGTexture::Filtering shapeTextureFiltering,
-    QSGTexture* sourceTexture)
+void UCUbuntuShape::updateMaterial(QSGNode* node, float radius, quint32 shapeTexture, bool textured)
 {
-    ShapeNode* shapeNode = static_cast<ShapeNode*>(node);
-    ShapeMaterial::Data* materialData = shapeNode->material()->data();
+    ShapeMaterial::Data* materialData = static_cast<ShapeNode*>(node)->material()->data();
     quint8 flags = 0;
 
     materialData->shapeTexture = shapeTexture;
-    if (sourceTexture && m_sourceOpacity) {
+    if (textured) {
         materialData->sourceTextureProvider = m_sourceTextureProvider;
         materialData->sourceOpacity = m_sourceOpacity;
         if (m_sourceHorizontalWrapMode == Repeat) {
@@ -1161,174 +1215,128 @@ void UCUbuntuShape::updateMaterial(
         materialData->sourceTextureProvider = NULL;
         materialData->sourceOpacity = 0;
     }
-    materialData->shapeTextureFiltering = shapeTextureFiltering;
+
+    // Mapping of radius size range from [0, 4] to [0, 1] with clamping, plus quantization.
+    const float start = 0.0f + radiusSizeOffset;
+    const float end = 4.0f + radiusSizeOffset;
+    materialData->distanceAAFactor = qMin(
+        (radius / (end - start)) - (start / (end - start)), 1.0f) * 255.0f;
+
+    // When the radius is equal to radiusSizeOffset (which means radius size is 0), no aspect is
+    // flagged so that a dedicated (statically flow controlled) shaved off shader can be used for
+    // optimal performance.
+    if (radius > radiusSizeOffset) {
+        const quint8 aspectFlags[] = {
+            ShapeMaterial::Data::Flat, ShapeMaterial::Data::Inset,
+            ShapeMaterial::Data::Inset | ShapeMaterial::Data::Pressed
+        };
+        flags |= aspectFlags[m_aspect];
+    } else {
+        const quint8 aspectFlags[] = { 0, 0, ShapeMaterial::Data::Pressed };
+        flags |= aspectFlags[m_aspect];
+    }
+
     materialData->flags = flags;
 }
 
 void UCUbuntuShape::updateGeometry(
-    QSGNode* node, float width, float height, float radius, const float shapeCoordinate[][2],
+    QSGNode* node, const QSizeF& itemSize, float radius, float shapeOffset,
     const QVector4D& sourceCoordTransform, const QVector4D& sourceMaskTransform,
-    const quint32 backgroundColor[4])
+    const quint32 backgroundColor[3])
 {
-    ShapeNode* shapeNode = static_cast<ShapeNode*>(node);
+    // Used by subclasses, using the shapeTextureInfo.offset constant directly allows slightly
+    // better optimization here.
+    Q_UNUSED(shapeOffset);
+
     ShapeNode::Vertex* v = reinterpret_cast<ShapeNode::Vertex*>(
-        shapeNode->geometry()->vertexData());
+        static_cast<ShapeNode*>(node)->geometry()->vertexData());
 
-    // Convert radius to normalized coordinates.
-    const float rw = radius / width;
-    const float rh = radius / height;
-
-    // Set top row of 4 vertices.
+    // Set top row of 3 vertices.
     v[0].position[0] = 0.0f;
     v[0].position[1] = 0.0f;
-    v[0].shapeCoordinate[0] = shapeCoordinate[0][0];
-    v[0].shapeCoordinate[1] = shapeCoordinate[0][1];
+    v[0].shapeCoordinate[0] = shapeTextureInfo.offset;
+    v[0].shapeCoordinate[1] = shapeTextureInfo.offset;
     v[0].sourceCoordinate[0] = sourceCoordTransform.z();
     v[0].sourceCoordinate[1] = sourceCoordTransform.w();
     v[0].sourceCoordinate[2] = sourceMaskTransform.z();
     v[0].sourceCoordinate[3] = sourceMaskTransform.w();
     v[0].backgroundColor = backgroundColor[0];
-    v[1].position[0] = radius;
+    v[1].position[0] = 0.5f * itemSize.width();
     v[1].position[1] = 0.0f;
-    v[1].shapeCoordinate[0] = shapeCoordinate[1][0];
-    v[1].shapeCoordinate[1] = shapeCoordinate[1][1];
-    v[1].sourceCoordinate[0] = rw * sourceCoordTransform.x() + sourceCoordTransform.z();
+    v[1].shapeCoordinate[0] = (0.5f * itemSize.width()) / radius - shapeTextureInfo.offset;
+    v[1].shapeCoordinate[1] = shapeTextureInfo.offset;
+    v[1].sourceCoordinate[0] = 0.5f * sourceCoordTransform.x() + sourceCoordTransform.z();
     v[1].sourceCoordinate[1] = sourceCoordTransform.w();
-    v[1].sourceCoordinate[2] = rw * sourceMaskTransform.x() + sourceMaskTransform.z();
+    v[1].sourceCoordinate[2] = 0.5f * sourceMaskTransform.x() + sourceMaskTransform.z();
     v[1].sourceCoordinate[3] = sourceMaskTransform.w();
     v[1].backgroundColor = backgroundColor[0];
-    v[2].position[0] = width - radius;
+    v[2].position[0] = itemSize.width();
     v[2].position[1] = 0.0f;
-    v[2].shapeCoordinate[0] = shapeCoordinate[2][0];
-    v[2].shapeCoordinate[1] = shapeCoordinate[2][1];
-    v[2].sourceCoordinate[0] = (1.0f - rw) * sourceCoordTransform.x() + sourceCoordTransform.z();
+    v[2].shapeCoordinate[0] = shapeTextureInfo.offset;
+    v[2].shapeCoordinate[1] = shapeTextureInfo.offset;
+    v[2].sourceCoordinate[0] = sourceCoordTransform.x() + sourceCoordTransform.z();
     v[2].sourceCoordinate[1] = sourceCoordTransform.w();
-    v[2].sourceCoordinate[2] = (1.0f - rw) * sourceMaskTransform.x() + sourceMaskTransform.z();
+    v[2].sourceCoordinate[2] = sourceMaskTransform.x() + sourceMaskTransform.z();
     v[2].sourceCoordinate[3] = sourceMaskTransform.w();
     v[2].backgroundColor = backgroundColor[0];
-    v[3].position[0] = width;
-    v[3].position[1] = 0.0f;
-    v[3].shapeCoordinate[0] = shapeCoordinate[3][0];
-    v[3].shapeCoordinate[1] = shapeCoordinate[3][1];
-    v[3].sourceCoordinate[0] = sourceCoordTransform.x() + sourceCoordTransform.z();
-    v[3].sourceCoordinate[1] = sourceCoordTransform.w();
-    v[3].sourceCoordinate[2] = sourceMaskTransform.x() + sourceMaskTransform.z();
-    v[3].sourceCoordinate[3] = sourceMaskTransform.w();
-    v[3].backgroundColor = backgroundColor[0];
 
-    // Set middle-top row of 4 vertices.
-    v[4].position[0] = 0.0f;
-    v[4].position[1] = radius;
-    v[4].shapeCoordinate[0] = shapeCoordinate[4][0];
-    v[4].shapeCoordinate[1] = shapeCoordinate[4][1];
-    v[4].sourceCoordinate[0] = sourceCoordTransform.z();
-    v[4].sourceCoordinate[1] = rh * sourceCoordTransform.y() + sourceCoordTransform.w();
-    v[4].sourceCoordinate[2] = sourceMaskTransform.z();
-    v[4].sourceCoordinate[3] = rh * sourceMaskTransform.y() + sourceMaskTransform.w();
+    // Set middle row of 3 vertices.
+    v[3].position[0] = 0.0f;
+    v[3].position[1] = 0.5f * itemSize.height();
+    v[3].shapeCoordinate[0] = shapeTextureInfo.offset;
+    v[3].shapeCoordinate[1] = (0.5f * itemSize.height()) / radius - shapeTextureInfo.offset;
+    v[3].sourceCoordinate[0] = sourceCoordTransform.z();
+    v[3].sourceCoordinate[1] = 0.5f * sourceCoordTransform.y() + sourceCoordTransform.w();
+    v[3].sourceCoordinate[2] = sourceMaskTransform.z();
+    v[3].sourceCoordinate[3] = 0.5f * sourceMaskTransform.y() + sourceMaskTransform.w();
+    v[3].backgroundColor = backgroundColor[1];
+    v[4].position[0] = 0.5f * itemSize.width();
+    v[4].position[1] = 0.5f * itemSize.height();
+    v[4].shapeCoordinate[0] = (0.5f * itemSize.width()) / radius - shapeTextureInfo.offset;
+    v[4].shapeCoordinate[1] = (0.5f * itemSize.height()) / radius - shapeTextureInfo.offset;
+    v[4].sourceCoordinate[0] = 0.5f * sourceCoordTransform.x() + sourceCoordTransform.z();
+    v[4].sourceCoordinate[1] = 0.5f * sourceCoordTransform.y() + sourceCoordTransform.w();
+    v[4].sourceCoordinate[2] = 0.5f * sourceMaskTransform.x() + sourceMaskTransform.z();
+    v[4].sourceCoordinate[3] = 0.5f * sourceMaskTransform.y() + sourceMaskTransform.w();
     v[4].backgroundColor = backgroundColor[1];
-    v[5].position[0] = radius;
-    v[5].position[1] = radius;
-    v[5].shapeCoordinate[0] = shapeCoordinate[5][0];
-    v[5].shapeCoordinate[1] = shapeCoordinate[5][1];
-    v[5].sourceCoordinate[0] = rw * sourceCoordTransform.x() + sourceCoordTransform.z();
-    v[5].sourceCoordinate[1] = rh * sourceCoordTransform.y() + sourceCoordTransform.w();
-    v[5].sourceCoordinate[2] = rw * sourceMaskTransform.x() + sourceMaskTransform.z();
-    v[5].sourceCoordinate[3] = rh * sourceMaskTransform.y() + sourceMaskTransform.w();
+    v[5].position[0] = itemSize.width();
+    v[5].position[1] = 0.5f * itemSize.height();
+    v[5].shapeCoordinate[0] = shapeTextureInfo.offset;
+    v[5].shapeCoordinate[1] = (0.5f * itemSize.height()) / radius - shapeTextureInfo.offset;
+    v[5].sourceCoordinate[0] = sourceCoordTransform.x() + sourceCoordTransform.z();
+    v[5].sourceCoordinate[1] = 0.5f * sourceCoordTransform.y() + sourceCoordTransform.w();
+    v[5].sourceCoordinate[2] = sourceMaskTransform.x() + sourceMaskTransform.z();
+    v[5].sourceCoordinate[3] = 0.5f * sourceMaskTransform.y() + sourceMaskTransform.w();
     v[5].backgroundColor = backgroundColor[1];
-    v[6].position[0] = width - radius;
-    v[6].position[1] = radius;
-    v[6].shapeCoordinate[0] = shapeCoordinate[6][0];
-    v[6].shapeCoordinate[1] = shapeCoordinate[6][1];
-    v[6].sourceCoordinate[0] = (1.0f - rw) * sourceCoordTransform.x() + sourceCoordTransform.z();
-    v[6].sourceCoordinate[1] = rh * sourceCoordTransform.y() + sourceCoordTransform.w();
-    v[6].sourceCoordinate[2] = (1.0f - rw) * sourceMaskTransform.x() + sourceMaskTransform.z();
-    v[6].sourceCoordinate[3] = rh * sourceMaskTransform.y() + sourceMaskTransform.w();
-    v[6].backgroundColor = backgroundColor[1];
-    v[7].position[0] = width;
-    v[7].position[1] = radius;
-    v[7].shapeCoordinate[0] = shapeCoordinate[7][0];
-    v[7].shapeCoordinate[1] = shapeCoordinate[7][1];
-    v[7].sourceCoordinate[0] = sourceCoordTransform.x() + sourceCoordTransform.z();
-    v[7].sourceCoordinate[1] = rh * sourceCoordTransform.y() + sourceCoordTransform.w();
-    v[7].sourceCoordinate[2] = sourceMaskTransform.x() + sourceMaskTransform.z();
-    v[7].sourceCoordinate[3] = rh * sourceMaskTransform.y() + sourceMaskTransform.w();
-    v[7].backgroundColor = backgroundColor[1];
 
-    // Set middle-bottom row of 4 vertices.
-    v[8].position[0] = 0.0f;
-    v[8].position[1] = height - radius;
-    v[8].shapeCoordinate[0] = shapeCoordinate[8][0];
-    v[8].shapeCoordinate[1] = shapeCoordinate[8][1];
-    v[8].sourceCoordinate[0] = sourceCoordTransform.z();
-    v[8].sourceCoordinate[1] = (1.0f - rh) * sourceCoordTransform.y() + sourceCoordTransform.w();
-    v[8].sourceCoordinate[2] = sourceMaskTransform.z();
-    v[8].sourceCoordinate[3] = (1.0f - rh) * sourceMaskTransform.y() + sourceMaskTransform.w();
+    // Set bottom row of 3 vertices.
+    v[6].position[0] = 0.0f;
+    v[6].position[1] = itemSize.height();
+    v[6].shapeCoordinate[0] = shapeTextureInfo.offset;
+    v[6].shapeCoordinate[1] = shapeTextureInfo.offset;
+    v[6].sourceCoordinate[0] = sourceCoordTransform.z();
+    v[6].sourceCoordinate[1] = sourceCoordTransform.y() + sourceCoordTransform.w();
+    v[6].sourceCoordinate[2] = sourceMaskTransform.z();
+    v[6].sourceCoordinate[3] = sourceMaskTransform.y() + sourceMaskTransform.w();
+    v[6].backgroundColor = backgroundColor[2];
+    v[7].position[0] = 0.5f * itemSize.width();
+    v[7].position[1] = itemSize.height();
+    v[7].shapeCoordinate[0] = (0.5f * itemSize.width()) / radius - shapeTextureInfo.offset;
+    v[7].shapeCoordinate[1] = shapeTextureInfo.offset;
+    v[7].sourceCoordinate[0] = 0.5f * sourceCoordTransform.x() + sourceCoordTransform.z();
+    v[7].sourceCoordinate[1] = sourceCoordTransform.y() + sourceCoordTransform.w();
+    v[7].sourceCoordinate[2] = 0.5f * sourceMaskTransform.x() + sourceMaskTransform.z();
+    v[7].sourceCoordinate[3] = sourceMaskTransform.y() + sourceMaskTransform.w();
+    v[7].backgroundColor = backgroundColor[2];
+    v[8].position[0] = itemSize.width();
+    v[8].position[1] = itemSize.height();
+    v[8].shapeCoordinate[0] = shapeTextureInfo.offset;
+    v[8].shapeCoordinate[1] = shapeTextureInfo.offset;
+    v[8].sourceCoordinate[0] = sourceCoordTransform.x() + sourceCoordTransform.z();
+    v[8].sourceCoordinate[1] = sourceCoordTransform.y() + sourceCoordTransform.w();
+    v[8].sourceCoordinate[2] = sourceMaskTransform.x() + sourceMaskTransform.z();
+    v[8].sourceCoordinate[3] = sourceMaskTransform.y() + sourceMaskTransform.w();
     v[8].backgroundColor = backgroundColor[2];
-    v[9].position[0] = radius;
-    v[9].position[1] = height - radius;
-    v[9].shapeCoordinate[0] = shapeCoordinate[9][0];
-    v[9].shapeCoordinate[1] = shapeCoordinate[9][1];
-    v[9].sourceCoordinate[0] = rw * sourceCoordTransform.x() + sourceCoordTransform.z();
-    v[9].sourceCoordinate[1] = (1.0f - rh) * sourceCoordTransform.y() + sourceCoordTransform.w();
-    v[9].sourceCoordinate[2] = rw * sourceMaskTransform.x() + sourceMaskTransform.z();
-    v[9].sourceCoordinate[3] = (1.0f - rh) * sourceMaskTransform.y() + sourceMaskTransform.w();
-    v[9].backgroundColor = backgroundColor[2];
-    v[10].position[0] = width - radius;
-    v[10].position[1] = height - radius;
-    v[10].shapeCoordinate[0] = shapeCoordinate[10][0];
-    v[10].shapeCoordinate[1] = shapeCoordinate[10][1];
-    v[10].sourceCoordinate[0] = (1.0f - rw) * sourceCoordTransform.x() + sourceCoordTransform.z();
-    v[10].sourceCoordinate[1] = (1.0f - rh) * sourceCoordTransform.y() + sourceCoordTransform.w();
-    v[10].sourceCoordinate[2] = (1.0f - rw) * sourceMaskTransform.x() + sourceMaskTransform.z();
-    v[10].sourceCoordinate[3] = (1.0f - rh) * sourceMaskTransform.y() + sourceMaskTransform.w();
-    v[10].backgroundColor = backgroundColor[2];
-    v[11].position[0] = width;
-    v[11].position[1] = height - radius;
-    v[11].shapeCoordinate[0] = shapeCoordinate[11][0];
-    v[11].shapeCoordinate[1] = shapeCoordinate[11][1];
-    v[11].sourceCoordinate[0] = sourceCoordTransform.x() + sourceCoordTransform.z();
-    v[11].sourceCoordinate[1] = (1.0f - rh) * sourceCoordTransform.y() + sourceCoordTransform.w();
-    v[11].sourceCoordinate[2] = sourceMaskTransform.x() + sourceMaskTransform.z();
-    v[11].sourceCoordinate[3] = (1.0f - rh) * sourceMaskTransform.y() + sourceMaskTransform.w();
-    v[11].backgroundColor = backgroundColor[2];
-
-    // Set bottom row of 4 vertices.
-    v[12].position[0] = 0.0f;
-    v[12].position[1] = height;
-    v[12].shapeCoordinate[0] = shapeCoordinate[12][0];
-    v[12].shapeCoordinate[1] = shapeCoordinate[12][1];
-    v[12].sourceCoordinate[0] = sourceCoordTransform.z();
-    v[12].sourceCoordinate[1] = sourceCoordTransform.y() + sourceCoordTransform.w();
-    v[12].sourceCoordinate[2] = sourceMaskTransform.z();
-    v[12].sourceCoordinate[3] = sourceMaskTransform.y() + sourceMaskTransform.w();
-    v[12].backgroundColor = backgroundColor[3];
-    v[13].position[0] = radius;
-    v[13].position[1] = height;
-    v[13].shapeCoordinate[0] = shapeCoordinate[13][0];
-    v[13].shapeCoordinate[1] = shapeCoordinate[13][1];
-    v[13].sourceCoordinate[0] = rw * sourceCoordTransform.x() + sourceCoordTransform.z();
-    v[13].sourceCoordinate[1] = sourceCoordTransform.y() + sourceCoordTransform.w();
-    v[13].sourceCoordinate[2] = rw * sourceMaskTransform.x() + sourceMaskTransform.z();
-    v[13].sourceCoordinate[3] = sourceMaskTransform.y() + sourceMaskTransform.w();
-    v[13].backgroundColor = backgroundColor[3];
-    v[14].position[0] = width - radius;
-    v[14].position[1] = height;
-    v[14].shapeCoordinate[0] = shapeCoordinate[14][0];
-    v[14].shapeCoordinate[1] = shapeCoordinate[14][1];
-    v[14].sourceCoordinate[0] = (1.0f - rw) * sourceCoordTransform.x() + sourceCoordTransform.z();
-    v[14].sourceCoordinate[1] = sourceCoordTransform.y() + sourceCoordTransform.w();
-    v[14].sourceCoordinate[2] = (1.0f - rw) * sourceMaskTransform.x() + sourceMaskTransform.z();
-    v[14].sourceCoordinate[3] = sourceMaskTransform.y() + sourceMaskTransform.w();
-    v[14].backgroundColor = backgroundColor[3];
-    v[15].position[0] = width;
-    v[15].position[1] = height;
-    v[15].shapeCoordinate[0] = shapeCoordinate[15][0];
-    v[15].shapeCoordinate[1] = shapeCoordinate[15][1];
-    v[15].sourceCoordinate[0] = sourceCoordTransform.x() + sourceCoordTransform.z();
-    v[15].sourceCoordinate[1] = sourceCoordTransform.y() + sourceCoordTransform.w();
-    v[15].sourceCoordinate[2] = sourceMaskTransform.x() + sourceMaskTransform.z();
-    v[15].sourceCoordinate[3] = sourceMaskTransform.y() + sourceMaskTransform.w();
-    v[15].backgroundColor = backgroundColor[3];
 
     node->markDirty(QSGNode::DirtyGeometry);
 }

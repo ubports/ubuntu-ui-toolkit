@@ -22,6 +22,7 @@
 #include "alarmmanager_p.h"
 #include <QtQml/QQmlPropertyMap>
 #include <QtQml/QQmlInfo>
+#include <QtQml/QQmlEngine>
 
 /*!
  * \qmltype AlarmModel
@@ -213,7 +214,14 @@ QHash<int, QByteArray> UCAlarmModel::roleNames() const
  */
 UCAlarm* UCAlarmModel::get(int index)
 {
-    return AlarmManager::instance().alarmAt(index);
+    UCAlarm *alarm = AlarmManager::instance().alarmAt(index);
+    if (alarm) {
+        UCAlarm *tempAlarm = new UCAlarm(this);
+        UCAlarmPrivate::get(tempAlarm)->copyAlarmData(*alarm);
+        alarm = tempAlarm;
+        QQmlEngine::setObjectOwnership(tempAlarm, QQmlEngine::JavaScriptOwnership);
+    }
+    return alarm;
 }
 
 /*!
