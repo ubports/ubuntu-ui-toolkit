@@ -24,7 +24,6 @@
 #include <QtCore/QDir>
 #include <QtCore/QRegularExpression>
 #include <QtCore/qmath.h>
-#include <QtCore/QDebug>
 #include <QtGui/QGuiApplication>
 #include <QtGui/QScreen>
 
@@ -65,14 +64,15 @@ static float getenvFloat(const char* name, float defaultValue)
 
     \sa {Resolution Independence}
 */
+
 UCUnits::UCUnits(QObject *parent) :
-    QObject(parent)
+    QObject(parent),
+    m_devicePixelRatio(1.0)
 {
-    QScreen *screen = QGuiApplication::primaryScreen();
-    if (screen) {
-        m_devicePixelRatio = screen->devicePixelRatio();
-    } else {
-        m_devicePixelRatio = 1.0;
+    // While QScreen::devicePixelRatio is a qreal, Qt will have rendering issues unless it is an integer value
+    int dpr = qgetenv("QT_DEVICE_PIXEL_RATIO").toInt();
+    if (dpr > 1) {
+        m_devicePixelRatio = dpr;
     }
 
     // If GRID_UNIT_PX set, always use it. If not, 1GU := DEFAULT_GRID_UNIT_PX * m_devicePixelRatio
@@ -81,7 +81,6 @@ UCUnits::UCUnits(QObject *parent) :
     } else {
         m_gridUnit = DEFAULT_GRID_UNIT_PX * m_devicePixelRatio;
     }
-    qDebug() << "Initial GU" << m_gridUnit;
 }
 
 /*!
@@ -95,7 +94,7 @@ float UCUnits::gridUnit()
 }
 
 void UCUnits::setGridUnit(const float gridUnit)
-{    qDebug() << "Override GU" << gridUnit;
+{
     m_gridUnit = gridUnit;
     Q_EMIT gridUnitChanged();
 }
@@ -196,12 +195,11 @@ QString UCUnits::resolveResource(const QUrl& url)
 
         path = prefix + suffixForGridUnit(selectedGridUnitSuffix) + suffix;
         float scaleFactor = m_gridUnit / selectedGridUnitSuffix;
-        qDebug() << "P" << path << scaleFactor;
         return QString::number(scaleFactor) + "/" + path;
     }
 
     path = prefix + suffix;
-    if (QFile::exists(path)) { qDebug() << "P" << path;
+    if (QFile::exists(path)) {
         return QString("1") + "/" + path;
     }
 

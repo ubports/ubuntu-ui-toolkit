@@ -87,7 +87,7 @@ void UCQQuickImageExtension::reloadSource()
         }
     } else {
         // Prepend "image://scaling" for the image to be loaded by UCScalingImageProvider.
-        if (!m_source.path().endsWith(".sci")) { qDebug() << "scaled";
+        if (!m_source.path().endsWith(".sci")) {
             // Regular image file
             m_image->setSource(QUrl("image://scaling/" + resolved));
             m_image->setSourceSize(m_image->sourceSize()); // explicitly set the source size as we know it

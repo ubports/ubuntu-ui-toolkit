@@ -1,7 +1,7 @@
 include( documentation/documentation.pri )
 
 TEMPLATE = subdirs
-SUBDIRS += modules/ubuntu-ui-toolkit.pro #tests examples po
+SUBDIRS += modules/ubuntu-ui-toolkit.pro tests examples po
 
 BUILD_PATH_CONTENTS="SRC_DIR=\"$$PWD\"" \
                     "BUILD_DIR=\"$$OUT_PWD\""
