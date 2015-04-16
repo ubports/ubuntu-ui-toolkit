@@ -95,8 +95,7 @@ Popover {
 
                 Icon {
                     id: actionIcon
-                    // FIXME TIM: test this.
-                    visible: "" != action.iconSource //!overflow.tabsOverflow
+                    visible: "" != action.iconSource
                     source: action.iconSource
                     color: overflow.foregroundColor
                     anchors {
@@ -118,10 +117,8 @@ Popover {
                         leftMargin: units.gu(2)
                         right: parent.right
                     }
-                    // FIXME TIM: Check with design what the font size should be. Why is it
-                    //  smaller for actions?
-                    //  Should we support icons for the tabs as well?
-//                    fontSize: overflow.tabsOverflow ? "medium" : "small"
+                    // In the tabs overflow panel there are no icons, and the font-size
+                    //  is medium as opposed to the small font-size in the actions overflow panel.
                     fontSize: actionIcon.visible ? "small" : "medium"
                     elide: Text.ElideRight
                     text: action.text
