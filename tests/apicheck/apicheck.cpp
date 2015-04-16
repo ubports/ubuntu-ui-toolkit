@@ -493,11 +493,11 @@ public:
             }
         }
 
-        // FIXME: Merge only members of internal objects.
-        objectsToMerge.clear();
-        objectsToMerge.append(mainMeta);
-        Q_FOREACH (const QMetaObject *meta, objectsToMerge)
+        Q_FOREACH (const QMetaObject *meta, objectsToMerge) {
+            if (!QString(meta->className()).contains(qmlTyName))
+                continue;
             writeMetaContent(&object, meta, &knownAttributes);
+        }
         json->insert(qmlTyName, object);
     }
 

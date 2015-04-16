@@ -76,17 +76,24 @@ Arguments 1.0 Arguments 0.1 QtObject
     function quitWithError
     readonly property QQmlPropertyMap values
 Base 1.1 Base 1.0 Base 0.1 Item
+    property bool activeFocusOnPress
     default readonly property QtObject children
     property string fallbackIconName
     property url fallbackIconSource
     property var icon
     property bool iconFrame
+    function bool requestFocus(Qt.FocusReason reason)
+    function bool requestFocus
     property bool progression
 Button 1.3 Button 1.1 Button 1.0 Button 0.1 Item
     property color color
     property QFont font
     property Gradient gradient
+    property bool hovered
     property string iconPosition
+    signal clicked
+    signal pressAndHold
+    property bool pressed
     property color strokeColor
 Caption 1.1 Caption 1.0 Caption 0.1 Item
     property string text
@@ -137,16 +144,6 @@ CrossFadeImage 1.3 CrossFadeImage 1.1 CrossFadeImage 1.0 CrossFadeImage 0.1 Item
     readonly property int status
 DateUtils 0.1 DateUtils 1.0 
 Divider 1.1 Divider 1.0 Divider 0.1 Image
-    property FillMode fillMode
-    property HAlignment horizontalAlignment
-    signal paintedGeometryChanged
-    signal horizontalAlignmentChanged(HAlignment alignment)
-    signal verticalAlignmentChanged(VAlignment alignment)
-    signal mipmapChanged(bool )
-    property bool mipmap
-    readonly property double paintedHeight
-    readonly property double paintedWidth
-    property VAlignment verticalAlignment
 Empty 1.3 Empty 1.1 Empty 1.0 Empty 0.1 Item
     readonly property Item backgroundIndicator
     default readonly property QtObject children
@@ -180,8 +177,25 @@ Haptics 1.3 Haptics 1.1 Haptics 1.0 Haptics 0.1 QtObject singleton
     function var play(var customEffect)
 Header 1.3 Header 1.1 Header 1.0 Header 0.1 Item
     property string _for_autopilot
+    property var actions
+    property bool animate
+    property Object config
+    property Item contents
+    property color dividerColor
+    property Flickable flickable
+    function var show
+    function var hide
+    readonly property bool moving
+    property var pageStack
+    property color panelColor
+    property var tabsModel
     property string text
+    property string title
+    property bool useDeprecatedToolbar
 Icon 1.3 Icon 1.1 Icon 1.0 Icon 0.1 Item
+    property color color
+    property color keyColor
+    property string name
     property url source
 Icon10 1.3 Icon10 1.1 Icon10 1.0 Icon10 0.1 Item
     property color color
@@ -259,8 +273,15 @@ ListItemStyle 1.2 Item
     function rebound
     property Animation snapAnimation
 MainView 1.3 MainView 1.1 MainView 1.0 MainView 0.1 Item
+    readonly property ActionManager actionManager
+    readonly property QtObject actions
+    property bool anchorToKeyboard
+    property string applicationName
     property bool automaticOrientation
+    property color backgroundColor
     default readonly property QtObject contentsItem
+    property color footerColor
+    property color headerColor
 MathUtils 0.1 MathUtils 1.0 
 MimeData 1.0 MimeData 0.1 QtObject
     property color color
@@ -316,11 +337,24 @@ OrientationHelper 1.3 OrientationHelper 1.1 OrientationHelper 1.0 OrientationHel
     readonly property bool rotating
     property bool transitionEnabled
 Page 1.3 Page 1.1 Page 1.0 Page 0.1 Item
+    property bool active
+    property Item activeLeafNode
     property Flickable flickable
     readonly property PageHeadConfiguration13 head
+    property AppHeader header
+    property bool isLeaf
+    property Item pageStack
+    property Item parentNode
     property string title
+    property Toolbar toolbar
 PageHeadConfiguration 1.3 PageHeadConfiguration 1.1 PageHeadConfiguration 1.0 PageHeadConfiguration 0.1 QtObject
+    readonly property Action actions
+    property Action backAction
+    property Item contents
+    property color foregroundColor
     property bool locked
+    property string preset
+    readonly property PageHeadSections sections
     property bool visible
 PageHeadSections 1.3 PageHeadSections 1.1 PageHeadSections 1.0 PageHeadSections 0.1 QtObject
     property bool enabled
@@ -451,6 +485,9 @@ Standard 1.1 Standard 1.0 Standard 0.1 Item
     property bool progression
 StateSaver 1.0 StateSaver 0.1 QtObject
 StyledItem 1.3 StyledItem 1.1 StyledItem 1.0 StyledItem 0.1 Item
+    property bool activeFocusOnPress
+    function bool requestFocus(Qt.FocusReason reason)
+    function bool requestFocus
     property Component style
 StyledItemBase 1.1 StyledItemBase 1.0 StyledItemBase 0.1 Item
     property bool activeFocusOnPress
@@ -464,7 +501,6 @@ SwipeEvent 1.2 QtObject
     readonly property Status status
     readonly property QPointF to
 Switch 1.3 Switch 1.1 Switch 1.0 Switch 0.1 Item
-    property bool checked
 Tab 1.3 Tab 1.1 Tab 1.0 Tab 0.1 Item
     property url iconSource
     readonly property int index
@@ -626,12 +662,6 @@ TextureFromImage 1.0 TextureFromImage 0.1 Item
     property QImage image
 ThinDivider 1.3 ThinDivider 1.1 ThinDivider 1.0 ThinDivider 0.1 Rectangle
 ToolbarButton 1.3 ToolbarButton 1.1 ToolbarButton 1.0 ToolbarButton 0.1 Item
-    property Action action
-    property string iconName
-    property url iconSource
-    signal triggered(var value)
-    function var trigger(var value)
-    property string text
 ToolbarItems 1.3 ToolbarItems 1.1 ToolbarItems 1.0 ToolbarItems 0.1 Item
     property Item back
     default readonly property QtObject contents
@@ -763,8 +793,6 @@ UbuntuColors 1.3 UbuntuColors 1.1 UbuntuColors 1.0 UbuntuColors 0.1 QtObject sin
 UbuntuListView 1.3 UbuntuListView 1.1 UbuntuListView 1.0 UbuntuListView 0.1 ListView
     property int expandedIndex
 UbuntuNumberAnimation 1.3 UbuntuNumberAnimation 1.1 UbuntuNumberAnimation 1.0 UbuntuNumberAnimation 0.1 NumberAnimation
-    property double from
-    property double to
 UbuntuShape 1.2 UbuntuShape 1.0 UbuntuShape 0.1 Shape 1.0 Shape 0.1 Item
     property color backgroundColor
     property BackgroundMode backgroundMode
@@ -798,7 +826,7 @@ UbuntuShape 1.2 UbuntuShape 1.0 UbuntuShape 0.1 Shape 1.0 Shape 0.1 Item
     property WrapMode sourceVerticalWrapMode
     property bool stretched
     property VAlignment verticalAlignment
-UbuntuShapeOverlay 1.2 Shape
+UbuntuShapeOverlay 1.2 UbuntuShape
     property color overlayColor
     property QRectF overlayRect
 UbuntuTestCase 1.0 Item
