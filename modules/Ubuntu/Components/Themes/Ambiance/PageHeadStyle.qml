@@ -39,6 +39,24 @@ Style.PageHeadStyle {
     property color titleColor: styledItem.config.foregroundColor
 
     /*!
+      \deprecated
+      The background color of the tabs panel and the actions overflow panel.
+     */
+    property color panelBackgroundColor: styledItem.panelColor
+
+     /*!
+       \deprecated
+       The background color of the tapped item in the panel.
+      */
+     property color panelHighlightColor: Theme.palette.selected.background
+
+     /*!
+       \deprecated
+       The foreground color (icon and text) of actions in the panel.
+      */
+     property color panelForegroundColor: Theme.palette.selected.backgroundText
+
+    /*!
       The text color of unselected sections and the section divider.
      */
     property color sectionColor: theme.palette.selected.backgroundText
@@ -338,6 +356,9 @@ Style.PageHeadStyle {
                         objectName: "tabsPopover"
                         tabsOverflow: true
                         model: styledItem.tabsModel
+                        backgroundColor: headerStyle.panelBackgroundColor
+                        foregroundColor: headerStyle.panelForegroundColor
+                        highlightColor: headerStyle.panelHighlightColor
                     }
                 }
             }
@@ -463,6 +484,10 @@ Style.PageHeadStyle {
                     OverflowPanel {
                         id: actionsOverflowPopover
                         objectName: "actions_overflow_popover"
+
+                        backgroundColor: headerStyle.panelBackgroundColor
+                        foregroundColor: headerStyle.panelForegroundColor
+                        highlightColor: headerStyle.panelHighlightColor
 
                         // Ensure the popover closes when actions change and
                         // the list item below may be destroyed before its
