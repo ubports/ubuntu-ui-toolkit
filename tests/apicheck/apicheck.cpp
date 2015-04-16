@@ -1043,23 +1043,45 @@ int main(int argc, char *argv[])
 
     if (output_qml) {
         // write QML representation of the API
-        Q_FOREACH(const QString& key, json.keys()) {
+        QStringList keys(json.keys());
+
+        // Sort by exports
+        QMap<QString, QString>byExports;
+        Q_FOREACH(const QString& key, keys) {
             QJsonValue value(json[key]);
             if (value.isObject()) {
                 if (internalTypes.contains(key))
                     continue;
 
                 QJsonObject object(value.toObject());
-                QString signature;
                 QJsonArray exports(object["exports"].toArray());
                 QStringList exportsSl;
                 Q_FOREACH(QJsonValue expor, exports) {
                     exportsSl.append(convertToId(expor.toString()));
                 }
+                // Reverse exports: latest to oldest
+                for(int k = 0; k < (exportsSl.size() / 2); k++)
+                    exportsSl.swap(k, exportsSl.size() - (1 + k));
+                QString sortedExports;
                 if (!exportsSl.isEmpty())
-                    signature += exportsSl.join(" ");
+                    sortedExports = exportsSl.join(" ");
                 else
-                    signature +=  key;
+                    sortedExports = key;
+                byExports.insert(sortedExports, key);
+            }
+        }
+
+        QMap<QString, QString>::const_iterator i = byExports.constBegin();
+        while (i != byExports.constEnd()) {
+            QString exports(i.key());
+            QString key(i.value());
+            QJsonValue value(json[key]);
+            if (value.isObject()) {
+                if (internalTypes.contains(key))
+                    continue;
+
+                QJsonObject object(value.toObject());
+                QString signature(exports);
                 signature += " " + convertToId(object["prototype"].toString());
                 if (object.contains("isSingleton"))
                     signature += " singleton";
@@ -1106,6 +1128,7 @@ int main(int argc, char *argv[])
                 }
                 std::cout << qPrintable(signature);
             }
+            i++;
         }
     }
 
