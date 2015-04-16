@@ -37,7 +37,7 @@ public:
     explicit UCDeprecatedTheme(QObject *parent = 0);
 
     // getter/setters
-    QString name() const;
+    QString name();
     void setName(const QString& name);
     void resetName();
     QObject* palette();
@@ -48,6 +48,9 @@ public:
 Q_SIGNALS:
     void nameChanged();
     void paletteChanged();
+
+private:
+    void showDeprecatedNote(const char *note);
 };
 
 #endif // UCDEPRECATEDTHEME_H

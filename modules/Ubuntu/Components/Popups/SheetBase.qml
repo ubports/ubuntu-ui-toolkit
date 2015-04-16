@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.2
+import Ubuntu.Components 1.3
 
 /*!
     \qmltype SheetBase
@@ -23,6 +23,7 @@ import Ubuntu.Components 1.2
     \inqmlmodule Ubuntu.Components.Popups 1.0
     \ingroup ubuntu-popups
     \brief Parent class of different types of sheets. Not to be used directly.
+    \deprecated
 
     Examples: See subclasses.
     \b{Sheets are deprecated. Consider using \l Dialog, \l Popover or \l PageStack instead.}
@@ -108,6 +109,6 @@ PopupBase {
             }
         }
 
-        style: Theme.createStyleComponent("SheetForegroundStyle.qml", sheet)
+        style: theme.createStyleComponent("SheetForegroundStyle.qml", sheet)
     }
 }

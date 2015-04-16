@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -206,5 +206,5 @@ StyledItem {
         onLiveValueChanged: if (isPressed) slider.requestFocus(Qt.MouseFocusReason)
     }
 
-    style: Theme.createStyleComponent("SliderStyle.qml", slider)
+    style: theme.createStyleComponent("SliderStyle.qml", slider)
 }

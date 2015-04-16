@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -37,11 +37,11 @@ import QtQuick 2.4
     \qml
     Item {
         Rectangle {
-            color: Theme.palette.normal.base
+            color: theme.palette.normal.base
         }
 
         Text {
-            color: Theme.palette.normal.baseText
+            color: theme.palette.normal.baseText
         }
     }
     \endqml

@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import QtQuick 2.4
-import Ubuntu.Components 1.2
+import Ubuntu.Components 1.3
 import Ubuntu.Components.Popups 1.0
 import Ubuntu.Components.ListItems 1.0 as ListItem
 import Ubuntu.Components.Styles 1.2 as Style
@@ -41,7 +41,7 @@ Style.PageHeadStyle {
     /*!
       The text color of unselected sections and the section divider.
      */
-    property color sectionColor: Theme.palette.selected.backgroundText
+    property color sectionColor: theme.palette.selected.backgroundText
 
     /*!
       The text color of the selected section.
@@ -51,7 +51,7 @@ Style.PageHeadStyle {
     /*!
       The background color of the pressed section.
      */
-    property color sectionHighlightColor: Theme.palette.selected.background
+    property color sectionHighlightColor: theme.palette.selected.background
 
     implicitHeight: headerStyle.contentHeight + divider.height + sectionsItem.height
 
