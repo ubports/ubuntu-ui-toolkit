@@ -626,11 +626,11 @@ ActionItem
     function undo()
     function remove(start, end)
     function getText(start, end)
-Palette 0.1
+Palette 0.1 1.0
 QtObject
     property PaletteValues normal
     property PaletteValues selected
-PaletteValues 0.1
+PaletteValues 0.1 1.0
 QtObject
     property color background
     property color backgroundText
@@ -1074,7 +1074,7 @@ plugins.qmltypes
     exports: ["ThemeSettings 1.3"]
     Property { name: "parentTheme"; type: "UCTheme"; isReadonly: true; isPointer: true }
     Property { name: "name"; type: "string" }
-    Property { name: "palette"; type: "QObject"; isReadonly: true; isPointer: true }
+    Property { name: "palette"; type: "QObject"; isPointer: true }
     Method {
     name: "createStyleComponent"
     Parameter { name: "styleName"; type: "string" }

@@ -19,7 +19,7 @@ import Ubuntu.Components 1.2
 import Ubuntu.Components.Themes 0.1
 
 Palette {
-    normal: PaletteValues {
+    normal {
         background: "#EDEDED"
         backgroundText: "#81888888"
         base: Qt.rgba(0, 0, 0, 0.1)
@@ -28,13 +28,13 @@ Palette {
         foregroundText: "#FFFFFF"
         overlay: "#FDFDFD"
         overlayText: UbuntuColors.lightGrey
-        field: "#FAFAFA"
+        field: "lightgray"
         fieldText: UbuntuColors.darkGrey
     }
-    selected: PaletteValues {
+    selected {
         background: Qt.rgba(0, 0, 0, 0.05)
         backgroundText: UbuntuColors.darkGrey
-        selection: foreground // unused
+        selection: selected.foreground // unused
         foreground: Qt.rgba(UbuntuColors.blue.r, UbuntuColors.blue.g, UbuntuColors.blue.b, 0.2)
         foregroundText: UbuntuColors.darkGrey
         field: "#FFFFFF"

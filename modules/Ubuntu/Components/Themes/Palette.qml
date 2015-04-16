@@ -18,7 +18,7 @@ import QtQuick 2.4
 
 /*!
     \qmltype Palette
-    \inqmlmodule Ubuntu.Components.Themes 0.1
+    \inqmlmodule Ubuntu.Components.Themes 1.0
     \ingroup theming
     \brief Palette of colors from the theme that widgets use to draw themselves.
 
@@ -50,10 +50,10 @@ QtObject {
     /*!
        Color palette to use when the widget is not in any particular state.
     */
-    property PaletteValues normal
+    property PaletteValues normal: PaletteValues{}
     /*!
        Color palette to use when the widget is selected, for example when
        a tab is the current one.
     */
-    property PaletteValues selected
+    property PaletteValues selected: PaletteValues{}
 }

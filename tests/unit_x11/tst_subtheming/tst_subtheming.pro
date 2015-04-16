@@ -5,9 +5,8 @@ SOURCES += tst_subtheming.cpp
 OTHER_FILES += \
     TestStyle.qml \
     SimpleItem.qml \
-    themes/AppTheme/Palette.qml \
-    themes/AppTheme/parent_theme \
     themes/CustomTheme/TestStyle.qml \
+    themes/CustomTheme/Palette.qml \
     themes/CustomTheme/parent_theme \
     themes/TestModule/TestTheme/TestStyle.qml \
     themes/TestModule/TestTheme/qmldir \
@@ -16,5 +15,12 @@ OTHER_FILES += \
     ParentChanges.qml \
     TestMain.qml \
     TestStyleChange.qml \
-    DifferentThemes.qml
+    DifferentThemes.qml \
+    SameNamedPaletteSettings.qml \
+    ChangePaletteValueWhenParentChanges.qml \
+    ChangeDefaultPaletteInChildren.qml \
+    MultiplePaletteInstances.qml \
+    DynamicPalette.qml \
+    InvalidPalette.qml
+
 

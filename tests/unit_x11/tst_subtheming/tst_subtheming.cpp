@@ -474,6 +474,101 @@ private Q_SLOTS:
         QCOMPARE(UCStyledItemBasePrivate::get(main)->getTheme()->name(),
                  UCStyledItemBasePrivate::get(test)->getTheme()->name());
     }
+
+    void test_no_change_in_other_suru_dark()
+    {
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase("SameNamedPaletteSettings.qml"));
+        UCTheme *firstTheme = view->findItem<UCTheme*>("firstTheme");
+        UCTheme *secondTheme = view->findItem<UCTheme*>("secondTheme");
+        QVERIFY(firstTheme->getPaletteColor("normal", "background") != secondTheme->getPaletteColor("normal", "background"));
+    }
+
+    void test_keep_palette_value_when_theme_changes()
+    {
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase("ChangePaletteValueWhenParentChanges.qml"));
+        UCTheme *firstTheme = view->findItem<UCTheme*>("firstTheme");
+
+        QCOMPARE(firstTheme->getPaletteColor("normal", "background"), QColor("blue"));
+        // change the theme
+        view->setGlobalTheme("Ubuntu.Components.Themes.SuruDark");
+        QTest::waitForEvents();
+        QCOMPARE(firstTheme->getPaletteColor("normal", "background"), QColor("blue"));
+    }
+
+    void test_change_default_palette_in_children_kept_after_child_deletion()
+    {
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase("ChangeDefaultPaletteInChildren.qml"));
+        QQuickItem *loader = view->findItem<QQuickItem*>("loader");
+        UCStyledItemBase *main = qobject_cast<UCStyledItemBase*>(view->rootObject());
+        UCTheme *mainSet = UCStyledItemBasePrivate::get(main)->getTheme();
+        QQuickItem *item = loader->property("item").value<QQuickItem*>();
+        QVERIFY(item);
+
+        QCOMPARE(mainSet->getPaletteColor("normal", "background"), QColor("blue"));
+        // unload component
+        QSignalSpy itemSpy(item, SIGNAL(destroyed()));
+        loader->setProperty("sourceComponent", QVariant());
+        itemSpy.wait();
+        // palette stays!
+        QCOMPARE(mainSet->getPaletteColor("normal", "background"), QColor("blue"));
+    }
+
+    void test_reset_palette_to_theme_default()
+    {
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase("ChangePaletteValueWhenParentChanges.qml"));
+        UCTheme *firstTheme = view->findItem<UCTheme*>("firstTheme");
+        QColor prevColor = firstTheme->getPaletteColor("normal", "background");
+
+        QVERIFY(prevColor.isValid());
+        // reset palette
+        QSignalSpy spy(firstTheme, SIGNAL(paletteChanged()));
+        firstTheme->setPalette(NULL);
+        spy.wait(200);
+        QVERIFY(firstTheme->getPaletteColor("normal", "background") != prevColor);
+    }
+
+    void test_multiple_palette_instances()
+    {
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase("MultiplePaletteInstances.qml"));
+        UCTheme *theme = view->findItem<UCTheme*>("theme");
+        QObject *palette1 = view->findItem<QObject*>("palette1");
+        QObject *palette2 = view->findItem<QObject*>("palette2");
+        QColor prevColor = theme->getPaletteColor("normal", "background");
+
+        // set the first palette
+        QSignalSpy spy(theme, SIGNAL(paletteChanged()));
+        theme->setPalette(palette1);
+        spy.wait(200);
+        QVERIFY(prevColor != theme->getPaletteColor("normal", "background"));
+        QCOMPARE(theme->getPaletteColor("normal", "background"), QColor("blue"));
+
+        spy.clear();
+        theme->setPalette(palette2);
+        spy.wait(200);
+        QVERIFY(prevColor != theme->getPaletteColor("normal", "background"));
+        QCOMPARE(theme->getPaletteColor("normal", "background"), QColor("pink"));
+    }
+
+    void test_dynamic_palette()
+    {
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase("DynamicPalette.qml"));
+        UCTheme *theme = view->findItem<UCTheme*>("theme");
+        QQuickItem *loader = view->findItem<QQuickItem*>("paletteLoader");
+
+        QVERIFY(theme->getPaletteColor("normal", "background") == QColor("blue"));
+
+        QSignalSpy spy(loader, SIGNAL(itemChanged()));
+        loader->setProperty("sourceComponent", QVariant());
+        spy.wait(200);
+        // unloaded palette by Loader should remove palette configuration
+        QVERIFY(theme->getPaletteColor("normal", "background") != QColor("blue"));
+    }
+
+    void test_invalid_palette_object()
+    {
+        ThemeTestCase::ignoreWarning("InvalidPalette.qml", 22, 20, "QML QtObject: Not a Palette component.");
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase("InvalidPalette.qml"));
+    }
 };
 
 QTEST_MAIN(tst_Subtheming)
