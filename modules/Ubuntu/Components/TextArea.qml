@@ -104,7 +104,7 @@ StyledItem {
       text input. This property allows to control the highlight separately from
       the focused behavior.
       */
-    property bool highlighted: focus
+    property bool highlighted: activeFocus
     /*!
       Text that appears when there is no focus and no content in the component
       (hint text).
