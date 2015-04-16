@@ -24,7 +24,7 @@
 // In order to generate a new file, the following commands must be used:
 // $ cd tools
 // $ qmake && make
-// $ ./createshapeimage shape.svg ../plugin/ucubuntushapetexture.cpp
+// $ ./createshapeimage shape.svg ../plugin/ucubuntushapetexture.h
 
 #include <QtCore/QFile>
 #include <QtCore/QTextStream>

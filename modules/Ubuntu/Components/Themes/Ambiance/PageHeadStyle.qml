@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -22,9 +22,9 @@ import Ubuntu.Components.Styles 1.2 as Style
 Style.PageHeadStyle {
     id: headerStyle
     objectName: "PageHeadStyle" // used in unit tests
-    contentHeight: units.gu(7)
+    contentHeight: units.gu(6)
     fontWeight: Font.Light
-    fontSize: "x-large"
+    fontSize: "large"
     textLeftMargin: units.gu(2)
     maximumNumberOfActions: 3
 
@@ -37,21 +37,6 @@ Style.PageHeadStyle {
       The color of the title text.
      */
     property color titleColor: styledItem.config.foregroundColor
-
-    /*!
-      The background color of the tabs panel and the actions overflow panel.
-     */
-    property color panelBackgroundColor: styledItem.panelColor
-
-    /*!
-      The background color of the tapped item in the panel.
-     */
-    property color panelHighlightColor: Theme.palette.selected.background
-
-    /*!
-      The foreground color (icon and text) of actions in the panel.
-     */
-    property color panelForegroundColor: Theme.palette.selected.backgroundText
 
     /*!
       The text color of unselected sections and the section divider.
@@ -68,7 +53,12 @@ Style.PageHeadStyle {
      */
     property color sectionHighlightColor: Theme.palette.selected.background
 
-    implicitHeight: headerStyle.contentHeight + divider.height
+    implicitHeight: headerStyle.contentHeight + divider.height + sectionsItem.height
+
+    /*!
+      The height of the row displaying the sections, if sections are specified.
+     */
+    property real sectionsHeight: units.gu(4)
 
     // FIXME: Workaround to get sectionsRepeater.count in autopilot tests,
     //  see also FIXME in AppHeader where this property is used.
@@ -83,50 +73,57 @@ Style.PageHeadStyle {
     //  have a separator.
     property alias __separator_visible: divider.visible
 
-    StyledItem {
+    Rectangle {
         id: divider
         anchors {
+            left: parent.left
+            right: parent.right
             bottom: parent.bottom
+        }
+        height: units.dp(1)
+        color: styledItem.dividerColor
+    }
+
+    Item {
+        id: sectionsItem
+        anchors {
+            bottom: divider.top
             left: parent.left
             right: parent.right
         }
 
-        height: sectionsRow.visible ? units.gu(3) : units.gu(2)
-
-        // separatorSource and separatorBottomSource are needed for the deprecated
-        // HeadSeparatorImageStyle.
-        property url separatorSource: headerStyle.separatorSource
-        property url separatorBottomSource: headerStyle.separatorBottomSource
-
-        // backgroundColor is used in the new HeadDividerStyle
-        property color backgroundColor: styledItem.dividerColor
-
-        style: Theme.createStyleComponent("HeadDividerStyle.qml", divider)
+        visible: sectionsItem.sections.model !== undefined
+        height: visible ? headerStyle.sectionsHeight : 0
 
         property PageHeadSections sections: styledItem.config.sections
 
         Row {
             id: sectionsRow
-            anchors.centerIn: parent
+            anchors {
+                top: parent.top
+                bottom: parent.bottom
+                horizontalCenter: parent.horizontalCenter
+            }
             width: childrenRect.width
-            height: parent.height
-            enabled: divider.sections.enabled
-            visible: divider.sections.model !== undefined
+            enabled: sectionsItem.sections.enabled
+            visible: sectionsItem.sections.model !== undefined
             opacity: enabled ? 1.0 : 0.5
 
             Repeater {
                 id: sectionsRepeater
-                model: divider.sections.model
+                model: sectionsItem.sections.model
                 objectName: "page_head_sections_repeater"
                 AbstractButton {
                     id: sectionButton
-                    anchors.verticalCenter: parent ? parent.verticalCenter : undefined
+                    anchors {
+                        top: parent.top
+                        bottom: parent.bottom
+                    }
                     objectName: "section_button_" + index
                     enabled: sectionsRow.enabled
-                    width: label.width + units.gu(4)
-                    height: sectionsRow.height + units.gu(2)
-                    property bool selected: index === divider.sections.selectedIndex
-                    onClicked: divider.sections.selectedIndex = index;
+                    width: label.width + units.gu(4) // FIXME: expose spacing as style property
+                    property bool selected: index === sectionsItem.sections.selectedIndex
+                    onClicked: sectionsItem.sections.selectedIndex = index;
 
                     Rectangle {
                         visible: parent.pressed
@@ -134,7 +131,6 @@ Style.PageHeadStyle {
                             verticalCenter: parent.verticalCenter
                             left: parent.left
                             right: parent.right
-                            rightMargin: verticalDividerLine.width
                         }
                         height: sectionsRow.height
                         color: headerStyle.sectionHighlightColor
@@ -144,25 +140,24 @@ Style.PageHeadStyle {
                         id: label
                         text: modelData
                         fontSize: "small"
-                        anchors.centerIn: sectionButton
+                        anchors.centerIn: parent
                         horizontalAlignment: Text.AlignHCenter
                         color: sectionButton.selected ?
                                    headerStyle.selectedSectionColor :
                                    headerStyle.sectionColor
                     }
 
-                    // vertical divider line
                     Rectangle {
-                        id: verticalDividerLine
+                        id: sectionLine
                         anchors {
-                            verticalCenter: parent.verticalCenter
+                            bottom: parent.bottom
+                            left: parent.left
                             right: parent.right
                         }
-                        height: units.dp(10)
-                        width: units.dp(1)
-                        visible: index < sectionsRepeater.model.length - 1
-                        color: headerStyle.sectionColor
-                        opacity: 0.2
+                        height: units.dp(2) // FIXME: Expose as style property
+                        color: sectionButton.selected ?
+                                   headerStyle.selectedSectionColor :
+                                   styledItem.dividerColor
                     }
                 }
             }
@@ -341,67 +336,8 @@ Style.PageHeadStyle {
                     OverflowPanel {
                         id: tabsPopover
                         objectName: "tabsPopover"
-                        callerMargin: -units.gu(1) + units.dp(4)
-                        contentWidth: units.gu(20)
-
-                        Binding {
-                            target: tabsPopover.__foreground.__styleInstance
-                            property: "color"
-                            value: headerStyle.panelBackgroundColor
-                            when: tabsPopover.__foreground &&
-                                  tabsPopover.__foreground.__styleInstance
-                        }
-
-                        Column {
-                            anchors {
-                                left: parent.left
-                                top: parent.top
-                                right: parent.right
-                            }
-                            Repeater {
-                                model: styledItem.tabsModel
-                                AbstractButton {
-                                    objectName: "tabButton" + index
-                                    onClicked: {
-                                        styledItem.tabsModel.selectedIndex = index;
-                                        tabsPopover.hide();
-                                    }
-                                    implicitHeight: units.gu(6) + bottomDividerLine.height
-                                    width: parent ? parent.width : units.gu(31)
-
-                                    Rectangle {
-                                        visible: parent.pressed
-                                        anchors {
-                                            left: parent.left
-                                            right: parent.right
-                                            top: parent.top
-                                        }
-                                        height: parent.height - bottomDividerLine.height
-                                        color: headerStyle.panelHighlightColor
-                                    }
-
-                                    Label {
-                                        anchors {
-                                            verticalCenter: parent.verticalCenter
-                                            verticalCenterOffset: units.dp(-1)
-                                            left: parent.left
-                                            leftMargin: units.gu(2)
-                                            right: parent.right
-                                        }
-                                        fontSize: "medium"
-                                        elide: Text.ElideRight
-                                        text: tab.title // FIXME: only "title" doesn't work with i18n.tr(). Why not?
-                                        color: headerStyle.panelForegroundColor
-                                    }
-
-                                    ListItem.ThinDivider {
-                                        id: bottomDividerLine
-                                        anchors.bottom: parent.bottom
-                                        visible: index < styledItem.tabsModel.count - 1
-                                    }
-                                }
-                            }
-                        }
+                        tabsOverflow: true
+                        model: styledItem.tabsModel
                     }
                 }
             }
@@ -527,16 +463,6 @@ Style.PageHeadStyle {
                     OverflowPanel {
                         id: actionsOverflowPopover
                         objectName: "actions_overflow_popover"
-                        callerMargin: -units.gu(1) + units.dp(4)
-                        contentWidth: units.gu(20)
-
-                        Binding {
-                            target: actionsOverflowPopover.__foreground.__styleInstance
-                            property: "color"
-                            value: headerStyle.panelBackgroundColor
-                            when: actionsOverflowPopover.__foreground &&
-                                  actionsOverflowPopover.__foreground.__styleInstance
-                        }
 
                         // Ensure the popover closes when actions change and
                         // the list item below may be destroyed before its
@@ -555,71 +481,9 @@ Style.PageHeadStyle {
                             }
                         }
 
-                        Column {
-                            anchors {
-                                left: parent.left
-                                top: parent.top
-                                right: parent.right
-                            }
-                            Repeater {
-                                id: overflowRepeater
-                                model: numberOfSlots.requested - numberOfSlots.used
-                                AbstractButton {
-                                    action: actionsContainer.visibleActions[numberOfSlots.used + index]
-                                    objectName: action.objectName + "_header_overflow_button"
-                                    onClicked: actionsOverflowPopover.hide()
-                                    implicitHeight: units.gu(6) + bottomDividerLine.height
-                                    width: parent ? parent.width : units.gu(31)
-
-                                    Rectangle {
-                                        visible: parent.pressed
-                                        anchors {
-                                            left: parent.left
-                                            right: parent.right
-                                            top: parent.top
-                                        }
-                                        height: parent.height - bottomDividerLine.height
-                                        color: headerStyle.panelHighlightColor
-                                    }
-
-                                    Icon {
-                                        id: actionIcon
-                                        source: action.iconSource
-                                        color: headerStyle.panelForegroundColor
-                                        anchors {
-                                            verticalCenter: parent.verticalCenter
-                                            verticalCenterOffset: units.dp(-1)
-                                            left: parent.left
-                                            leftMargin: units.gu(2)
-                                        }
-                                        width: units.gu(2)
-                                        height: units.gu(2)
-                                        opacity: action.enabled ? 1.0 : 0.5
-                                    }
-
-                                    Label {
-                                        anchors {
-                                            verticalCenter: parent.verticalCenter
-                                            verticalCenterOffset: units.dp(-1)
-                                            left: actionIcon.right
-                                            leftMargin: units.gu(2)
-                                            right: parent.right
-                                        }
-                                        fontSize: "small"
-                                        elide: Text.ElideRight
-                                        text: action.text
-                                        color: headerStyle.panelForegroundColor
-                                        opacity: action.enabled ? 1.0 : 0.5
-                                    }
-
-                                    ListItem.ThinDivider {
-                                        id: bottomDividerLine
-                                        anchors.bottom: parent.bottom
-                                        visible: index !== overflowRepeater.count - 1
-                                    }
-                                }
-                            }
-                        }
+                        tabsOverflow: false
+                        model: actionsContainer.visibleActions.slice(numberOfSlots.used,
+                                                                     numberOfSlots.requested)
                     }
                 }
             }

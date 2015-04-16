@@ -15,16 +15,18 @@
  */
 
 import QtQuick 2.4
+import Ubuntu.Components 1.0 as Toolkit10
+import Ubuntu.Components 1.1 as Toolkit11
 
 /*! \internal */
 // Documentation in Page.qdoc
-Page10 {
+Toolkit10.Page {
     id: page
     /*!
       \qmlproperty PageHeadConfiguration head
      */
     readonly property alias head: headerConfig
-    PageHeadConfiguration {
+    Toolkit11.PageHeadConfiguration {
         id: headerConfig
     }
 
@@ -32,7 +34,7 @@ Page10 {
         print("Page.tools is a deprecated property. Please use Page.head instead.");
     }
 
-    Object {
+    Toolkit11.Object {
         id: internal
 
         // Note: The bindings below need to check whether headerConfig.contents
