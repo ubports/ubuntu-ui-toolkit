@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,7 +16,7 @@
 
 import QtQuick 2.4
 import "." as ListItem
-import Ubuntu.Components 1.2
+import Ubuntu.Components 1.3
 
 /*!
     \qmltype ItemSelector
@@ -207,7 +207,7 @@ ListItem.Empty {
 
             readonly property url chevron: __styleInstance.chevron
             readonly property url tick: __styleInstance.tick
-            readonly property color themeColour: Theme.palette.selected.fieldText
+            readonly property color themeColour: theme.palette.selected.fieldText
             readonly property alias colourImage: itemSelector.colourImage
             property bool currentlyExpanded: expanded || multiSelection
 
@@ -216,7 +216,7 @@ ListItem.Empty {
                 right: parent.right
             }
             state: itemSelector.expanded ? "expanded" : "collapsed"
-            style: Theme.createStyleComponent("ListItemOptionSelectorStyle.qml", listContainer)
+            style: theme.createStyleComponent("ListItemOptionSelectorStyle.qml", listContainer)
 
             states: [ State {
                     name: "expanded"

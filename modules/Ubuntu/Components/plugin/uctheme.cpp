@@ -36,6 +36,12 @@
 #include <QtGui/QGuiApplication>
 #include <QtGui/QFont>
 
+#include <QtQml/private/qqmlproperty_p.h>
+#include <QtQml/private/qqmlabstractbinding_p.h>
+#define foreach Q_FOREACH
+#include <QtQml/private/qqmlbinding_p.h>
+#undef foreach
+
 /*!
  * \qmltype ThemeSettings
  * \instantiates UCTheme
@@ -199,6 +205,133 @@ QString parentThemeName(const QString& themeName)
     return parentTheme;
 }
 
+/******************************************************************************
+ * Theme::PaletteConfig
+ */
+
+// builds configuration list and applies the configuration on the palette
+void UCTheme::PaletteConfig::configurePalette(QObject *themePalette)
+{
+    if (!palette || !themePalette || configured) {
+        return;
+    }
+    if (configList.isEmpty()) {
+        // need to build config list first
+        buildConfig();
+    }
+    if (!configList.isEmpty()) {
+        apply(themePalette);
+    }
+}
+
+void UCTheme::PaletteConfig::restorePalette()
+{
+    if (!palette || configList.isEmpty() || !configured) {
+        return;
+    }
+
+    for (int i = 0; i < configList.count(); i++) {
+        Data &config = configList[i];
+        if (!config.paletteProperty.isValid()) {
+            continue;
+        }
+
+        // restore the config binding to the config target
+        if (config.configBinding && config.configBinding->bindingType() == QQmlAbstractBinding::Binding) {
+            QQmlBinding *qmlBinding = static_cast<QQmlBinding*>(config.configBinding);
+            qmlBinding->removeFromObject();
+            qmlBinding->setTarget(config.configProperty);
+        }
+
+        if (config.paletteBinding) {
+            // restore the binding to the palette
+            QQmlAbstractBinding *prev = QQmlPropertyPrivate::setBinding(config.paletteProperty, config.paletteBinding);
+            if (prev && prev != config.paletteBinding && prev != config.configBinding) {
+                prev->destroy();
+            }
+            config.paletteBinding->update();
+        } else {
+            config.paletteProperty.write(config.paletteValue);
+        }
+
+        config.paletteProperty = QQmlProperty();
+        config.paletteBinding = NULL;
+        config.paletteValue.clear();
+    }
+
+    configured = false;
+}
+
+// build palette configuration list
+void UCTheme::PaletteConfig::buildConfig()
+{
+    if (!palette) {
+        return;
+    }
+    const char *valueSetList[10] = {"normal", "selected"};
+    QQmlContext *configContext = qmlContext(palette);
+
+    for (int i = 0; i < 2; i++) {
+        const char *valueSet = valueSetList[i];
+        QObject *configObject = palette->property(valueSet).value<QObject*>();
+        const QMetaObject *mo = configObject->metaObject();
+
+        for (int ii = mo->propertyOffset(); ii < mo->propertyCount(); ii++) {
+            const QMetaProperty prop = mo->property(ii);
+            QString propertyName = QString("%1.%2").arg(valueSet).arg(prop.name());
+            QQmlProperty configProperty(palette, propertyName, configContext);
+
+            // first we need to check whether the property has a binding or not
+            QQmlAbstractBinding *binding = QQmlPropertyPrivate::binding(configProperty);
+            if (binding) {
+                configList << Data(propertyName, configProperty, binding);
+            } else {
+                QVariant value = configProperty.read();
+                QColor color = value.value<QColor>();
+                if (color.isValid()) {
+                    configList << Data(propertyName, configProperty);
+                }
+            }
+        }
+    }
+}
+
+// apply configuration on the palette
+void UCTheme::PaletteConfig::apply(QObject *themePalette)
+{
+    QQmlContext *context = qmlContext(themePalette);
+    for (int i = 0; i < configList.count(); i++) {
+        Data &config = configList[i];
+        config.paletteProperty = QQmlProperty(themePalette, config.propertyName, context);
+
+        // backup
+        config.paletteBinding = QQmlPropertyPrivate::binding(config.paletteProperty);
+        if (!config.paletteBinding) {
+            config.paletteValue = config.paletteProperty.read();
+        }
+
+        // apply configuration
+        if (config.configBinding) {
+            // transfer binding's target
+            if (config.configBinding->bindingType() == QQmlAbstractBinding::Binding) {
+                QQmlBinding *qmlBinding = static_cast<QQmlBinding*>(config.configBinding);
+                qmlBinding->setTarget(config.paletteProperty);
+            }
+            QQmlPropertyPrivate::setBinding(config.paletteProperty, config.configBinding);
+        } else {
+            if (config.paletteBinding) {
+                // remove binding so the property doesn't clear it
+                QQmlPropertyPrivate::setBinding(config.paletteProperty, 0);
+            }
+            config.paletteProperty.write(config.configProperty.read());
+        }
+    }
+    configured = true;
+}
+
+/******************************************************************************
+ * Theme
+ */
 UCTheme::UCTheme(QObject *parent)
     : QObject(parent)
     , m_palette(UCTheme::defaultTheme().m_palette)
@@ -318,7 +451,59 @@ void UCTheme::resetName()
 
 /*!
  * \qmlproperty Palette ThemeSettings::palette
- * The palette of the current theme.
+ * The palette of the current theme. When set, only the valid palette values will
+ * be taken into account, which will override the theme defined palette values.
+ * The following example will set the system's default theme palette normal background
+ * color to Ubuntu blue. All other palette values will be untouched.
+ * \qml
+ * import QtQuick 2.4
+ * import Ubuntu.Components 1.3
+ * import Ubuntu.Components.Themes 1.0
+ *
+ * MainView {
+ *     // your code
+ *     theme.palette: Palette {
+ *         normal.background: UbuntuColors.blue
+ *     }
+ * }
+ * \endqml
+ * \note Palette values applied on inherited themes will be rolled back once the
+ * component declaring the palette is unloaded. This can be demonstracted using
+ * a Loader element:
+ * \qml
+ * import QtQuick 2.4
+ * import Ubuntu.Components 1.3
+ * import Ubuntu.Components.Themes 1.0
+ *
+ * MainView {
+ *     width: units.gu(40)
+ *     height: units.gu(71)
+ *
+ *     Loader {
+ *         id: loader
+ *         onItemChanged: if (item) button.theme.palette = item
+ *     }
+ *     Component {
+ *         id: dynamicPalette
+ *         Palette {
+ *             normal.background: UbuntuColors.blue
+ *         }
+ *     }
+ *     Button {
+ *         id: button
+ *         text: "Toggle palette"
+ *         onClicked: {
+ *             if (loader.item) {
+ *                 loader.sourceComponent = undefined;
+ *             } else {
+ *                 loader.sourceComponent = dynamicPalette;
+ *             }
+ *         }
+ *     }
+ * }
+ * \endqml
+ * The palette doesn't need to be reset as it automatically resets when the
+ * palette used for configuration is destroyed.
  */
 QObject* UCTheme::palette()
 {
@@ -326,6 +511,39 @@ QObject* UCTheme::palette()
         loadPalette(false);
     }
     return m_palette;
+}
+void UCTheme::setPalette(QObject *config)
+{
+    if (config == m_palette || config == m_config.palette) {
+        return;
+    }
+    if (config && !QuickUtils::inherits(config, "Palette")) {
+        qmlInfo(config) << UbuntuI18n::instance().tr("Not a Palette component.");
+        return;
+    }
+
+    // 1. restore original palette values
+    m_config.restorePalette();
+    // 2. clear config list
+    m_config.reset();
+    // disconnect the reset from the previous palette
+    if (m_config.palette) {
+        disconnect(m_config.palette, &QObject::destroyed,
+                   this, 0);
+    }
+    // 3. apply palette configuration
+    m_config.palette = config;
+    if (m_config.palette) {
+        connect(m_config.palette, &QObject::destroyed,
+                this, &UCTheme::resetPalette,
+                Qt::DirectConnection);
+        m_config.configurePalette(m_palette);
+    }
+    Q_EMIT paletteChanged();
+}
+void UCTheme::resetPalette()
+{
+    setPalette(NULL);
 }
 
 QUrl UCTheme::styleUrl(const QString& styleName)
@@ -394,13 +612,20 @@ void UCTheme::loadPalette(bool notify)
     if (!m_engine) {
         return;
     }
-    if (!m_palette.isNull()) {
+    if (m_palette) {
+        // restore bindings to the config palette before we delete
+        m_config.restorePalette();
         delete m_palette;
+        m_palette = 0;
     }
     // theme may not have palette defined
     QUrl paletteUrl = styleUrl("Palette.qml");
     if (paletteUrl.isValid()) {
         m_palette = QuickUtils::instance().createQmlObject(paletteUrl, m_engine);
+        if (m_palette) {
+            m_palette->setParent(this);
+        }
+        m_config.configurePalette(m_palette);
         if (notify) {
             Q_EMIT paletteChanged();
         }
@@ -409,3 +634,17 @@ void UCTheme::loadPalette(bool notify)
         m_palette = defaultTheme().m_palette;
     }
 }
+
+// returns the palette color value of a color profile
+QColor UCTheme::getPaletteColor(const char *profile, const char *color)
+{
+    QColor result;
+    if (palette()) {
+        QObject *paletteProfile = m_palette->property(profile).value<QObject*>();
+        if (paletteProfile) {
+            result = paletteProfile->property(color).value<QColor>();
+        }
+    }
+    return result;
+}
+

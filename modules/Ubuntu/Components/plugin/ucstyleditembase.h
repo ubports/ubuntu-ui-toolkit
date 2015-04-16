@@ -29,7 +29,7 @@ class UCStyledItemBase : public QQuickItem
     Q_PROPERTY(bool activeFocusOnPress
                READ activefocusOnPress WRITE setActiveFocusOnPress
                NOTIFY activeFocusOnPressChanged REVISION 1)
-    Q_PRIVATE_PROPERTY(d_func(), UCTheme *theme READ getTheme WRITE setTheme RESET resetTheme NOTIFY themeChanged REVISION 2)
+    Q_PRIVATE_PROPERTY(d_func(), UCTheme *theme READ getTheme WRITE setTheme RESET resetTheme NOTIFY themeChanged FINAL REVISION 2)
 public:
     explicit UCStyledItemBase(QQuickItem *parent = 0);
 

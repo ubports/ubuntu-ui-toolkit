@@ -22,7 +22,6 @@
 
 UCStyledItemBasePrivate::UCStyledItemBasePrivate()
     : activeFocusOnPress(false)
-    , subthemingEnabled(true)
     , theme(0)
     , parentStyledItem(0)
 {
@@ -36,16 +35,8 @@ void UCStyledItemBasePrivate::init()
 {
     Q_Q(UCStyledItemBase);
     q->setFlag(QQuickItem::ItemIsFocusScope);
-    QByteArray env = qgetenv("UITK_SUBTHEMING");
-    subthemingEnabled = (env.isEmpty() || env == QByteArrayLiteral("yes"));
-    if (!subthemingEnabled) {
-        // every theme will be using the default theme
-        theme = &UCTheme::defaultTheme();
-        QObject::connect(theme, &UCTheme::nameChanged, q, &UCStyledItemBase::themeChanged);
-    } else {
-        QObject::connect(&UCTheme::defaultTheme(), &UCTheme::nameChanged,
-                         q, &UCStyledItemBase::themeChanged);
-    }
+    QObject::connect(&UCTheme::defaultTheme(), &UCTheme::nameChanged,
+                     q, &UCStyledItemBase::themeChanged);
 }
 
 
@@ -190,12 +181,10 @@ void UCStyledItemBase::setActiveFocusOnPress(bool value)
  */
 UCTheme *UCStyledItemBasePrivate::getTheme() const
 {
-    if (subthemingEnabled) {
-        if (theme) {
-            return theme;
-        } else if (!parentStyledItem.isNull()) {
-            return UCStyledItemBasePrivate::get(parentStyledItem)->getTheme();
-        }
+    if (theme) {
+        return theme;
+    } else if (!parentStyledItem.isNull()) {
+        return UCStyledItemBasePrivate::get(parentStyledItem)->getTheme();
     }
     return &UCTheme::defaultTheme();
 }
@@ -203,17 +192,6 @@ void UCStyledItemBasePrivate::setTheme(UCTheme *newTheme)
 {
     Q_Q(UCStyledItemBase);
     if (theme == newTheme) {
-        return;
-    }
-
-    if (!subthemingEnabled) {
-        // no subtheming
-        if (newTheme) {
-            theme = newTheme;
-            UCTheme::defaultTheme().setName(theme->name());
-        } else {
-            UCTheme::defaultTheme().resetName();
-        }
         return;
     }
 
@@ -259,6 +237,9 @@ void UCStyledItemBasePrivate::setTheme(UCTheme *newTheme)
         theme->setParent(q);
         Q_EMIT theme->parentThemeChanged();
     }
+
+    // update internal styling
+    updateStyling();
 
     Q_EMIT q->themeChanged();
 }
@@ -309,9 +290,6 @@ bool UCStyledItemBasePrivate::setParentStyled(UCStyledItemBase *styledItem)
 // disconnect parent stack till item is reached; all the stack if item == 0
 void UCStyledItemBasePrivate::disconnectTillItem(QQuickItem *item)
 {
-    if (!subthemingEnabled) {
-        return;
-    }
     Q_Q(UCStyledItemBase);
     while (!parentStack.isEmpty() && item != parentStack.top()) {
         QPointer<QQuickItem> stackItem = parentStack.pop();
@@ -395,7 +373,7 @@ void UCStyledItemBase::itemChange(ItemChange change, const ItemChangeData &data)
 {
     QQuickItem::itemChange(change, data);
     Q_D(UCStyledItemBase);
-    if (change == ItemParentHasChanged && d->subthemingEnabled) {
+    if (change == ItemParentHasChanged) {
         if (!data.item) {
             d->disconnectTillItem(0);
         } else if (d->connectParents(0)) {

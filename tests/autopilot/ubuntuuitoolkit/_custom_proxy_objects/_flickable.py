@@ -19,6 +19,7 @@ import logging
 import autopilot.exceptions
 from autopilot import logging as autopilot_logging
 
+from ubuntuuitoolkit import units
 from ubuntuuitoolkit._custom_proxy_objects import _common
 
 
@@ -98,6 +99,14 @@ class Scrollable(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
 class QQuickFlickable(Scrollable):
 
+    # Swiping from below can open the toolbar or trigger the bottom edge
+    # gesture. Use this margin to start a swipe that will not be that close to
+    # the bottom edge.
+    margin_to_swipe_from_bottom = units.gu(2)
+    # Swiping from above can open the indicators or resize the window. Use this
+    # margin to start a swipe that will not be that close to the top edge.
+    margin_to_swipe_from_top = units.gu(1)
+
     @autopilot_logging.log_action(logger.info)
     def swipe_child_into_view(self, child):
         """Make the child visible.
@@ -145,24 +154,23 @@ class QQuickFlickable(Scrollable):
             containers = self._get_containers()
         start_x = stop_x = self.globalRect.x + (self.globalRect.width // 2)
 
+        top = _get_visible_container_top(containers)
+        bottom = _get_visible_container_bottom(containers)
+
         # Make the drag range be a multiple of the drag "rate" value.
         # Workarounds https://bugs.launchpad.net/mir/+bug/1399690
         rate = self._slow_drag_rate()
 
-        # Start and stop just a little under the top and a little over the
-        # bottom.
-        top = _get_visible_container_top(containers) + rate
-        bottom = _get_visible_container_bottom(containers) - rate
-
+        # The swipes are not done from right at the top and bottom because
+        # they could trigger edge gestures or resize windows.
         if direction == 'below':
-            # Take into account that swiping from below can open the toolbar or
-            # trigger the bottom edge gesture.
-            # XXX Do this only if we are close to the bottom edge.
-            start_y = bottom - 20
+            start_y = bottom - self.margin_to_swipe_from_bottom
             stop_y = start_y + (top - start_y) // rate * rate
+
         elif direction == 'above':
-            start_y = top
+            start_y = top + self.margin_to_swipe_from_top
             stop_y = start_y + (bottom - start_y) // rate * rate
+
         else:
             raise _common.ToolkitException(
                 'Invalid direction {}.'.format(direction))

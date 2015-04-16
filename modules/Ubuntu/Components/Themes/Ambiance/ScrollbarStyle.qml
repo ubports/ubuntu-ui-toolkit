@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.2
+import Ubuntu.Components 1.3
 
 /*
   The visuals handle both active and passive modes. This behavior is driven yet by
@@ -70,7 +70,7 @@ Item {
     property PropertyAnimation thumbConnectorFading: UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration }
     property PropertyAnimation thumbFading: UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration }
 
-    property color sliderColor: Theme.palette.normal.base
+    property color sliderColor: theme.palette.normal.base
     property real sliderRadius: units.gu(0.5)
     property color thumbConnectorColor: "white"
     property url forwardThumbReleased: (styledItem.align === Qt.AlignLeading || styledItem.align === Qt.AlignTrailing) ? "artwork/ScrollbarBottomIdle.png" : "artwork/ScrollbarRightIdle.png"

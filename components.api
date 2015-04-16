@@ -82,47 +82,12 @@ Base 1.1 Base 1.0 Base 0.1 Item
     property var icon
     property bool iconFrame
     property bool progression
-BubbleShape 1.1 BubbleShape 1.0 BubbleShape 0.1 Item
-    property url arrowSource
-    default readonly property Item children
-    property bool clipContent
-    property color color
-    property string direction
-    signal showCompleted
-    signal hideCompleted
-    function var show
-    function var hide
-    property bool square
-    property QPointF target
 Button 1.3 Button 1.1 Button 1.0 Button 0.1 Item
     property color color
     property QFont font
     property Gradient gradient
     property string iconPosition
     property color strokeColor
-ButtonForeground 1.1 ButtonForeground 1.0 ButtonForeground 0.1 Item
-    property QFont font
-    property bool hasIcon
-    property bool hasText
-    property string iconPosition
-    property double iconSize
-    property url iconSource
-    property double spacing
-    property string text
-    property color textColor
-ButtonStyle 1.1 ButtonStyle 1.0 ButtonStyle 0.1 Item
-    property Item backgroundSource
-    property var button
-    property double buttonFaceOffset
-    property color defaultColor
-    property QFont defaultFont
-    property Gradient defaultGradient
-    property QtObject gradientProxy
-    property double horizontalPadding
-    property bool isGradient
-    function var __colorHack(var color)
-    property double minimumWidth
-    property bool stroke
 Caption 1.1 Caption 1.0 Caption 0.1 Item
     property string text
 Captions 1.3 Captions 1.1 Captions 1.0 Captions 0.1 Item
@@ -350,28 +315,13 @@ OrientationHelper 1.3 OrientationHelper 1.1 OrientationHelper 1.0 OrientationHel
     property int orientationAngle
     readonly property bool rotating
     property bool transitionEnabled
-OverflowPanel 1.1 OverflowPanel 1.0 OverflowPanel 0.1 Item
-    property color backgroundColor
-    property color foregroundColor
-    property color highlightColor
-    property var model
-    property bool square
-    property bool tabsOverflow
 Page 1.3 Page 1.1 Page 1.0 Page 0.1 Item
     property Flickable flickable
     readonly property PageHeadConfiguration13 head
     property string title
-PageHeadButton 1.1 PageHeadButton 1.0 PageHeadButton 0.1 Item
-    property color color
-    property double iconHeight
-    property double iconWidth
 PageHeadConfiguration 1.3 PageHeadConfiguration 1.1 PageHeadConfiguration 1.0 PageHeadConfiguration 0.1 QtObject
-    readonly property Action actions
-    property Action backAction
-    property Item contents
-    property color foregroundColor
-    property string preset
-    readonly property PageHeadSections sections
+    property bool locked
+    property bool visible
 PageHeadSections 1.3 PageHeadSections 1.1 PageHeadSections 1.0 PageHeadSections 0.1 QtObject
     property bool enabled
     property var model
@@ -426,37 +376,8 @@ Panel 1.3 Panel 1.1 Panel 1.0 Panel 0.1 Item
     readonly property double position
     readonly property bool pressed
     property double triggerSize
-PartialColorize 1.1 PartialColorize 1.0 PartialColorize 0.1 ShaderEffect
-    property color leftColor
-    property bool mirror
-    property double progress
-    property color rightColor
-    property var source
-    property Item sourceItem
-    property string texCoord
 PerformanceOverlay 1.3 PerformanceOverlay 1.1 PerformanceOverlay 1.0 PerformanceOverlay 0.1 Item
     property bool active
-Popover 1.1 Popover 1.0 Popover 0.1 Item
-    property bool autoClose
-    property Item caller
-    property double callerMargin
-    default readonly property QtObject container
-    property double contentHeight
-    property double contentWidth
-    property double edgeMargins
-    property Component foregroundStyle
-    function var show
-    function var hide
-    function var __makeInvisible
-    property Item pointerTarget
-PopupBase 1.1 PopupBase 1.0 PopupBase 0.1 Item
-    property Item dismissArea
-    property PropertyAnimation fadingAnimation
-    property bool grabDismissAreaEvents
-    function var show
-    function var hide
-    function var __closeIfHidden
-    function var __closePopup
 ProgressBar 1.3 ProgressBar 1.1 ProgressBar 1.0 ProgressBar 0.1 Item
     property bool indeterminate
     property double maximumValue
@@ -638,15 +559,6 @@ TextArea 1.3 TextArea 1.1 TextArea 1.0 TextArea 0.1 Item
     property int textFormat
     property int verticalAlignment
     property int wrapMode
-TextAreaStyle 1.1 TextAreaStyle 1.0 TextAreaStyle 0.1 Item
-    property Component background
-    property color backgroundColor
-    property color color
-    property color errorColor
-    property double frameSpacing
-    property double overlaySpacing
-    property color selectedTextColor
-    property color selectionColor
 TextField 1.3 TextField 1.1 TextField 1.0 TextField 0.1 Item
     readonly property bool acceptableInput
     property bool activeFocusOnPress
@@ -886,7 +798,7 @@ UbuntuShape 1.2 UbuntuShape 1.0 UbuntuShape 0.1 Shape 1.0 Shape 0.1 Item
     property WrapMode sourceVerticalWrapMode
     property bool stretched
     property VAlignment verticalAlignment
-UbuntuShapeOverlay 1.2 UbuntuShape
+UbuntuShapeOverlay 1.2 Shape
     property color overlayColor
     property QRectF overlayRect
 UbuntuTestCase 1.0 Item

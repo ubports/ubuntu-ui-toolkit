@@ -13,33 +13,35 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 import QtQuick 2.4
 import Ubuntu.Components 1.3
+import Ubuntu.Components.Themes 1.0
 
-Item {
-    id: visuals
-    // styling properties
-    property color color: theme.palette.normal.overlay
-
-    anchors.fill: parent
-
-    Rectangle {
-        id: background
-        anchors.fill: parent
-        color: visuals.color
+StyledItem {
+    theme.objectName: "MasterTheme"
+    StyledItem {
+        id: styled
+        theme: ThemeSettings {
+            objectName: "theme"
+        }
+        Loader {
+            objectName: "paletteLoader"
+            sourceComponent: paletteComponent
+            onItemChanged: {
+                if (item) {
+                    styled.theme.palette = item;
+                }
+            }
+        }
     }
 
-    Image {
-        id: dropshadow
-        anchors {
-            left: parent.left
-            right: parent.right
-            bottom: background.top
-        }
-        source: Qt.resolvedUrl("artwork/toolbar_dropshadow.png")
-        opacity: styledItem.opened || styledItem.animating ? 0.5 : 0.0
-        Behavior on opacity {
-            UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration }
+    Component {
+        id: paletteComponent
+        Palette {
+            objectName: "palette"
+            normal.background: "blue"
         }
     }
 }
+

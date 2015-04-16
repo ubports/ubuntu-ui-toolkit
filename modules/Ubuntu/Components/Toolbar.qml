@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Canonical Ltd.
+ * Copyright (C) 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -134,7 +134,7 @@ Panel {
         property bool opened: toolbar.opened
         property bool animating: toolbar.animating
 
-        style: Theme.createStyleComponent("ToolbarStyle.qml", background)
+        style: theme.createStyleComponent("ToolbarStyle.qml", background)
     }
 
     Item {

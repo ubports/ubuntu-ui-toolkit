@@ -16,12 +16,14 @@
 
 import QtQuick 2.4
 import Ubuntu.Components 1.3
+import Ubuntu.Components.Themes 1.0
 
-Item {
-    id: component1
+MainView {
     objectName: "TopItem"
     width: units.gu(50)
     height: units.gu(100)
+
+    theme.objectName: "MasterTheme"
 
     Column {
         objectName: "Column"
@@ -33,6 +35,13 @@ Item {
             text: "Theme change"
             onClicked: theme.name = "Ubuntu.Components.Themes.SuruDark"
         }
+        Button {
+            text: "Reset palette"
+            onClicked: customTheme.theme.palette = undefined
+        }
+        Button {
+            text: "Lo"
+        }
 
         TextField {
             objectName: "OuterText"
@@ -40,9 +49,34 @@ Item {
             onStyleNameChanged: print(objectName, styleName)
         }
         StyledItem {
+            id: customTheme
             objectName: "SuruDarkStyled"
             width: parent.width
             height: units.gu(10)
+            theme: ThemeSettings {
+                objectName: "InnerTheme"
+                id: thisTheme
+                name: parentTheme.name
+//                name: "Ubuntu.Components.Themes.SuruDark"
+                palette: Palette {
+                    id: config
+                    normal {
+                        foregroundText: UbuntuColors.blue
+                        overlayText: "#BAFEDC"
+                        field: "lime"
+                    }
+                    selected {
+                        field: "teal"
+                        fieldText: "brown"
+                        foregroundText: Qt.rgba(0, 0, 1, 1)
+                        overlayText: config.normal.overlayText
+                        foreground: UbuntuColors.green
+                    }
+                }
+            }
+            property color myColor: theme.palette.selected.overlayText
+            onMyColorChanged: print(myColor)
+
             TextField {
                 objectName: "InnerText"
                 property string styleName: theme.name

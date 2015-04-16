@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2015 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.2 as Toolkit
+import Ubuntu.Components 1.3 as Toolkit
 import Ubuntu.PerformanceMetrics 1.0
 import QtQuick.Window 2.0
 
@@ -35,10 +35,10 @@ PageTreeNode {
     StyledItem {
         id: background
         anchors.fill: parent
-        style: Theme.createStyleComponent("MainViewStyle.qml", background)
+        style: theme.createStyleComponent("MainViewStyle.qml", background)
 
         property color headerColor: backgroundColor
-        property color backgroundColor: Theme.palette.normal.background
+        property color backgroundColor: theme.palette.normal.background
         property color footerColor: backgroundColor
 
         /*
@@ -48,12 +48,19 @@ PageTreeNode {
 
           Qt bug: https://bugreports.qt-project.org/browse/QTBUG-11712
          */
-        property string theme: (ColorUtils.luminance(backgroundColor) >= 0.85) ?
-                                   "Ambiance" : "SuruDark"
-        onThemeChanged: {
+
+        onBackgroundColorChanged: {
+            if (backgroundColor != theme.palette.normal.background) {
+                // custom color, proceed with auto-theming
+                autoThemeName = (ColorUtils.luminance(backgroundColor) >= 0.85) ?
+                                                   "Ambiance" : "SuruDark";
+            }
+        }
+        property string autoThemeName
+        onAutoThemeNameChanged: {
             // only change the theme if the current one is a system one.
-            if (theme !== "" && (Theme.name.search("Ubuntu.Components.Themes") >= 0)) {
-                Theme.name = "Ubuntu.Components.Themes.%1".arg(theme);
+            if (autoThemeName !== "" && (theme.name.search("Ubuntu.Components.Themes") == 0)) {
+                mainView.theme.name = "Ubuntu.Components.Themes.%1".arg(autoThemeName);
             }
         }
     }

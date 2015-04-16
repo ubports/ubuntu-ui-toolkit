@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -64,5 +64,5 @@ AnimatedItem {
     */
     property real value: 0.5
 
-    style: Theme.createStyleComponent("ProgressBarStyle.qml", progressBar)
+    style: theme.createStyleComponent("ProgressBarStyle.qml", progressBar)
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.2
+import Ubuntu.Components 1.3
 import "internalPopupUtils.js" as InternalPopupUtils
 
 /*!
@@ -213,6 +213,6 @@ PopupBase {
             }
         }
 
-        style: Theme.createStyleComponent("DialogForegroundStyle.qml", foreground)
+        style: theme.createStyleComponent("DialogForegroundStyle.qml", foreground)
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.2
+import Ubuntu.Components 1.3
 
 // internal helper class for text inside the list items.
 Label {
@@ -32,7 +32,7 @@ Label {
 
     fontSize: "medium"
     elide: Text.ElideRight
-    color: selected ? UbuntuColors.orange : secondary ? overlay ? Theme.palette.normal.overlayText : Theme.palette.normal.backgroundText
-                                                      : overlay ? Theme.palette.selected.overlayText : Theme.palette.selected.backgroundText
+    color: selected ? UbuntuColors.orange : secondary ? overlay ? theme.palette.normal.overlayText : theme.palette.normal.backgroundText
+                                                      : overlay ? theme.palette.selected.overlayText : theme.palette.selected.backgroundText
     opacity: label.enabled ? 1.0 : 0.5
 }

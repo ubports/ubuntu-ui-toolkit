@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.2
-import Ubuntu.Components 1.2
+import QtQuick 2.4
+import Ubuntu.Components 1.3
 
 Template {
     objectName: "ubuntuShapesTemplate"
@@ -71,27 +71,27 @@ Template {
             UbuntuShape {
                 objectName: "ubuntushape_radius_small"
 
-                backgroundColor: Theme.palette.normal.foreground
+                backgroundColor: theme.palette.normal.foreground
                 radius: "small"
 
                 Label {
                     anchors.centerIn: parent
                     text: "small"
                     fontSize: "x-small"
-                    color: Theme.palette.normal.foregroundText
+                    color: theme.palette.normal.foregroundText
                 }
             }
 
             UbuntuShape {
                 objectName: "ubuntushape_radius_medium"
-                backgroundColor: Theme.palette.normal.foreground
+                backgroundColor: theme.palette.normal.foreground
                 radius: "medium"
 
                 Label {
                     anchors.centerIn: parent
                     text: "medium"
                     fontSize: "x-small"
-                    color: Theme.palette.normal.foregroundText
+                    color: theme.palette.normal.foregroundText
                 }
             }
         }
@@ -103,7 +103,7 @@ Template {
 
             UbuntuShape {
                 objectName: "ubuntushape_sizes_15_6"
-                backgroundColor: Theme.palette.normal.foreground
+                backgroundColor: theme.palette.normal.foreground
                 width: units.gu(15)
                 height: units.gu(6)
                 anchors.verticalCenter: parent.verticalCenter
@@ -111,7 +111,7 @@ Template {
 
             UbuntuShape {
                 objectName: "ubuntushape_sizes_10_14"
-                backgroundColor: Theme.palette.normal.foreground
+                backgroundColor: theme.palette.normal.foreground
                 width: units.gu(10)
                 height: units.gu(14)
             }
