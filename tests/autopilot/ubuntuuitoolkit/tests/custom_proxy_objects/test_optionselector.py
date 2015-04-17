@@ -1,6 +1,6 @@
 # -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
 #
-# Copyright (C) 2013, 2014 Canonical Ltd.
+# Copyright (C) 2013, 2014, 2015 Canonical Ltd.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -68,7 +68,7 @@ MainView {
 """)
 
     def setUp(self):
-        super(OptionSelectorCustomDelegateTestCase, self).setUp()
+        super().setUp()
         self.option_selector = self.main_view.select_single(
             ubuntuuitoolkit.OptionSelector,
             objectName="test_option_selector_collapsed")
@@ -151,7 +151,7 @@ MainView {
 """)
 
     def setUp(self):
-        super(OptionSelectorTestCase, self).setUp()
+        super().setUp()
         self.option_selector = self.main_view.select_single(
             ubuntuuitoolkit.OptionSelector,
             objectName="option_selector")

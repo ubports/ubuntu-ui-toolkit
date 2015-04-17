@@ -14,10 +14,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-try:
-    from unittest import mock
-except ImportError:
-    import mock
+from unittest import mock
 
 from autopilot import platform
 from testtools.matchers import GreaterThan
@@ -46,7 +43,7 @@ MainView {
 """)
 
     def setUp(self):
-        super(TextAreaTestCase, self).setUp()
+        super().setUp()
         self.simple_text_area = self.main_view.select_single(
             ubuntuuitoolkit.TextArea, objectName='simple_text_area')
 

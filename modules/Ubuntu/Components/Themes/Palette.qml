@@ -19,8 +19,8 @@ import QtQuick 2.4
 /*!
     \qmltype Palette
     \inqmlmodule Ubuntu.Components.Themes 1.0
-    \ingroup theming
-    \brief Palette of colors from the theme that widgets use to draw themselves.
+    \ingroup theme-module
+    \brief Provides the palette of colors from the theme that widgets use to draw themselves.
 
     Palette provides access to colors defined by the current theme. The actual
     color palette to use depends on the state of the widget being drawn.

@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (1.2.1481+15.04.20150327-0ubuntu1) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.2.1485+15.04.20150327-0ubuntu1) UNRELEASED; urgency=medium
 
   [ Christian Dywan]   
   * Use activeFocus rather than focus to determine that Text* has focus. 
@@ -8,7 +8,8 @@ ubuntu-ui-toolkit (1.2.1481+15.04.20150327-0ubuntu1) UNRELEASED; urgency=medium
   * Added a grids unit helper for autopilot tests.
   * Make it possible to overwrite the bottom margin for the flickable autopilot
     helper. Fixes  LP: #1401517.
-  
+  * Removed python2 support from autopilot tests and helpers. Fixes LP: #1429163 
+ 
   [ Loïc Molinari ]   
   * Bumped matrix precision in vertex shaders. mediump, which should actually be
     enough, was interpreted as lowp on arale (PowerVR Rogue G6200).
@@ -36,7 +37,8 @@ ubuntu-ui-toolkit (1.2.1481+15.04.20150327-0ubuntu1) UNRELEASED; urgency=medium
   * Move duplicate code for the overflows that was in PageHeadStyle twice
     (for Tabs and Actions overflows) into OverflowPanel.
   * New header visuals.
-  
+  * Re-introduce the panel color properties to Ambience PageHeadStyle.
+
   [ Zsombor Egri ]
   * Applying sub-theming on toolkit.
   * Introducing StyledItem.theme and ThemeSettings.parentTheme properties
@@ -47,6 +49,8 @@ ubuntu-ui-toolkit (1.2.1481+15.04.20150327-0ubuntu1) UNRELEASED; urgency=medium
   * Separating Theme context property from theme engine, giving the possibility 
     to use the theming engine by multiple instances. Preparations for deprecation. 
     Theming unit tests fixed. Fixes  LP: #1248982.
+  * Theming tutorial
+  * Remove extra StyledItem.qml layer for styled items, keep only UCStyledItemBase.
 
  -- Zoltán Balogh <zoltan@bakter.hu>  Fri, 17 Apr 2015 14:06:27 +0300
 

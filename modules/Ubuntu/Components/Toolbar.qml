@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.4
+import Ubuntu.Components 1.3 as Toolkit
 
 /*!
     \internal
@@ -117,7 +118,7 @@ Panel {
         }
     }
 
-    StyledItem {
+    Toolkit.StyledItem {
         // FIXME:
         // All theming items go into the background because only the children
         //  of the Panel are being shown/hidden while the toolbar

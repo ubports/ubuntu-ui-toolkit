@@ -14,10 +14,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-try:
-    from unittest import mock
-except ImportError:
-    import mock
+from unittest import mock
 
 import ubuntuuitoolkit
 from ubuntuuitoolkit import tests
@@ -62,7 +59,7 @@ MainView {
 """)
 
     def setUp(self):
-        super(ToolbarTestCase, self).setUp()
+        super().setUp()
         self.toolbar = self.main_view.get_toolbar()
         # toolbar may be opened or closed now, depending on whether
         # the application has been deactivated and resumed already
