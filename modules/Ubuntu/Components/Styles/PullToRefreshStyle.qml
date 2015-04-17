@@ -24,7 +24,7 @@ import QtQuick 2.4
 
     The component defines the style API for the PullToRefresh component.
   */
-
+//![0]
 Item {
     /*!
       The property holds the style provided default content component. The value
@@ -46,3 +46,4 @@ Item {
       */
     property bool releaseToRefresh: false
 }
+//![0]

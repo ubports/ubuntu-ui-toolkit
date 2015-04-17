@@ -18,8 +18,8 @@ import QtQuick 2.4
 
 /*!
     \qmltype PaletteValues
-    \inqmlmodule Ubuntu.Components.Themes 0.1
-    \ingroup theming
+    \inqmlmodule Ubuntu.Components.Themes 1.0
+    \ingroup theme-module
     \brief Color values used for a given widget state.
 */
 QtObject {
