@@ -51,13 +51,13 @@ Style.PageHeadStyle {
        \deprecated
        The background color of the tapped item in the panel.
       */
-    property color panelHighlightColor: Theme.palette.selected.background
+    property color panelHighlightColor: theme.palette.selected.background
 
     /*!
        \deprecated
        The foreground color (icon and text) of actions in the panel.
       */
-    property color panelForegroundColor: Theme.palette.selected.backgroundText
+    property color panelForegroundColor: theme.palette.selected.backgroundText
 
     /*!
       The text color of unselected sections and the section divider.
