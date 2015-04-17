@@ -23,7 +23,7 @@
  * additional logic for a given component. Some components have fixed style API the
  * component relies on, and yet some others do not have any restriction on hwat the
  * style contains or does. Components relying on a well defined API provide these
- * interfaces throug Ubuntu.Components.Styles module, and styles must implement these
+ * interfaces through Ubuntu.Components.Styles module, and styles must implement these
  * interfaces.
  *
  * The implicit size of a component is driven by the style as well, but it is not
@@ -190,7 +190,7 @@
  * presented as QML extension modules, giving the possibility for application themes
  * to extend them.
  *
- * \note Yet there is no possibility to install shared themes into the system thru
+ * \note Yet there is no possibility to install shared themes into the system through
  * app store, only by providing them as part of the system image.
  *
  * The system provides two shared themes, \b Ambiance and \b SuruDark, the latest derived
@@ -239,7 +239,7 @@
  * Let's take SuruDark theme as en example. The theme is derived from Ambiance theme, and only
  * extends few style components. When theming engine loads the style components, it looks
  * after the styles starting from the current theme. If the style is not found there, it
- * tryes to look after the style in the parent themes until it finds one.
+ * tries to look after the style in the parent themes until it finds one.
  *
  * The extended (or even overridden) style component documents must follow the naming
  * convention, and must have the names implied by the components styled.
