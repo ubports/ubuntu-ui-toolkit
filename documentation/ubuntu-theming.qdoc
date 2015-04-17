@@ -19,9 +19,18 @@
  * \title Styling - Introduction
  * \nextpage Component styles, Style API
  *
+ * Table of contents:
+ * \list
+ * \li \l {Styling - Introduction}
+ * \li \l {Component styles, Style API}
+ * \li \l {Themes, theme types, theme structure}
+ * \li \l {Sub-theming}
+ * \endlist
+ *
+ * \section2 Introduction
  * The style defines the visuals, the implicit size of the component and may provide
  * additional logic for a given component. Some components have fixed style API the
- * component relies on, and yet some others do not have any restriction on hwat the
+ * component relies on, and yet some others do not have any restriction on what the
  * style contains or does. Components relying on a well defined API provide these
  * interfaces through Ubuntu.Components.Styles module, and styles must implement these
  * interfaces.
@@ -40,7 +49,7 @@
  * style is ButtonStyle. In addition to styles, themes can also provide custom palette
  * values. There are two themes in Ubuntu, Ambiance and SuruDark themes, Ambiance
  * being the default theme. Both themes are declared in separate modules, in \c
- * Ubuntu.Components.Themes.Ambiance ans well as \c Ubuntu.Components.Themes.SuruDark.
+ * Ubuntu.Components.Themes.Ambiance as well as \c Ubuntu.Components.Themes.SuruDark.
  * Application should define the theme name using this dotted name format.
  *
  * Applications can decide which theme they want to use or they can provide their
@@ -62,7 +71,9 @@
 /*!
  * \page ubuntu-theming-styles.html
  * \title Component styles, Style API
+ * \previouspage Styling - Introduction
  * \nextpage Themes, theme types, theme structure
+ * \contentspage {Styling - Introduction} {Contents}
  *
  * \section2 Naming conventions
  * With few exception, each toolkit component is having StyledItem as its base
@@ -106,7 +117,7 @@
  * execute leading or trailing panel \l {ListItemStyle::rebound}{rebound}s and provides
  * the style the ability to overrule the \l {ListItemStyle::swipeEvent}{swipe} coordinates
  * calculated by the ListItem. On the other hand, the style must inform the component
- * about the position of the \l {ListItemStyle::dragPanel}{drag panel} so dragging
+ * about the position of the \l {ListItemStyle::dragPanel}{drag panel} so a dragging
  * (reordering of list items in a ListView) hot spot can be detected. A style implementation
  * must use the API provided by ListItemStyle, otherwise ListItem will fail to function
  * properly.
@@ -172,7 +183,9 @@
 /*!
  * \page ubuntu-theming-themes.html
  * \title Themes, theme types, theme structure
+ * \previouspage Themes, theme types, theme structure
  * \nextpage Sub-theming
+ * \contentspage {Styling - Introduction} {Contents}
  *
  * A theme is a collection of style implementations. The style component names are
  * typically built using the component name and the Style word, exceptions being
@@ -300,6 +313,8 @@
 /*!
  * \page ubuntu-theming-subtheming.html
  * \title Sub-theming
+ * \previouspage Sub-theming
+ * \contentspage {Styling - Introduction} {Contents}
  *
  * There can be situations when an application has a design which combines styles from different
  * themes, which would not be possible or would be hard to be combined in a theme. In these
