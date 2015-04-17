@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (1.2.1485+15.04.20150327-0ubuntu1) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.2.1485+15.04.20150417.1-0ubuntu1) vivid; urgency=medium
 
   [ Christian Dywan]   
   * Use activeFocus rather than focus to determine that Text* has focus. 
@@ -52,7 +52,7 @@ ubuntu-ui-toolkit (1.2.1485+15.04.20150327-0ubuntu1) UNRELEASED; urgency=medium
   * Theming tutorial
   * Remove extra StyledItem.qml layer for styled items, keep only UCStyledItemBase.
 
- -- Zoltán Balogh <zoltan@bakter.hu>  Fri, 17 Apr 2015 14:06:27 +0300
+ -- CI Train Bot <ci-train-bot@canonical.com>  Fri, 17 Apr 2015 16:22:53 +0000
 
 ubuntu-ui-toolkit (1.2.1458+15.04.20150327-0ubuntu1) vivid; urgency=medium
 
