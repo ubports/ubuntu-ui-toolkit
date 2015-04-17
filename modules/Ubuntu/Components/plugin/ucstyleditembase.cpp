@@ -55,7 +55,6 @@ void UCStyledItemBasePrivate::setFocusable(bool focus)
 
 bool UCStyledItemBasePrivate::isParentFocusable()
 {
-    Q_Q(UCStyledItemBase);
     if (!activeFocusOnPress) {
         return false;
     }
