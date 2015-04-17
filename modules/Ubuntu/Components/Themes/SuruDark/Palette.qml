@@ -32,7 +32,7 @@ Palette {
         field: "#19000000"
         fieldText: "#7F7F7F7F"
     }
-    selected: PaletteValues {
+    selected {
         background: "#88D6D6D6"
         backgroundText: "#FFFFFF"
         selection: Qt.rgba(UbuntuColors.blue.r, UbuntuColors.blue.g, UbuntuColors.blue.b, 0.2)
