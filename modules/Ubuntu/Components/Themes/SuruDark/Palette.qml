@@ -20,7 +20,7 @@ import Ubuntu.Components 1.3
 import Ubuntu.Components.Themes 1.0
 
 Palette {
-    normal: PaletteValues {
+    normal {
         background: "#221E1C"
         backgroundText: "#33F3F3E7"
         base: "#19000000"

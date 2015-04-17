@@ -20,6 +20,7 @@ OTHER_FILES += \
     ChangePaletteValueWhenParentChanges.qml \
     ChangeDefaultPaletteInChildren.qml \
     MultiplePaletteInstances.qml \
-    DynamicPalette.qml
+    DynamicPalette.qml \
+    InvalidPalette.qml
 
 
