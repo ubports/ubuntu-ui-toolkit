@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.4
+import Ubuntu.Components 1.3 as Toolkit
 
 /*!
     \qmltype TabBar
@@ -24,7 +25,7 @@ import QtQuick 2.4
         This component does not need to be instantiated by the developer, it is
         automatically created by the \l Tabs.
 */
-StyledItem {
+Toolkit.StyledItem {
     id: tabBar
 
     /*!

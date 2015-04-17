@@ -346,12 +346,6 @@ Item {
 
         Component { id: customStyle; ListItemStyle {} }
 
-        function test_style_reset() {
-            testItem.style = customStyle;
-            testItem.style = undefined;
-            verify(testItem.style != 0 && testItem.style.objectName == "ListItemThemeStyle", "Style set back to theme");
-        }
-
         function test_children_in_content_item() {
             compare(bodyItem.parent, testItem.contentItem, "Content is not in the right holder!");
         }

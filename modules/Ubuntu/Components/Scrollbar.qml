@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.4
+import Ubuntu.Components 1.3 as Toolkit
 
 /*!
     \qmltype ScrollBar
@@ -58,7 +59,7 @@ import QtQuick 2.4
     \endqml
   */
 
-StyledItem {
+Toolkit.StyledItem {
     id: scrollbar
 
     /*!

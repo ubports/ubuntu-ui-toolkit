@@ -23,7 +23,7 @@ import Ubuntu.Components 1.3 as Components
     \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
 */
-StyledItem {
+Components.StyledItem {
     id: header
 
     anchors {
