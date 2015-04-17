@@ -34,7 +34,7 @@ class TextField(_common.UbuntuUIToolkitCustomProxyObjectBase):
     """TextField Autopilot custom proxy object."""
 
     def __init__(self, *args):
-        super(TextField, self).__init__(*args)
+        super().__init__(*args)
         self.keyboard = _common.get_keyboard()
 
     @autopilot_logging.log_action(logger.info)

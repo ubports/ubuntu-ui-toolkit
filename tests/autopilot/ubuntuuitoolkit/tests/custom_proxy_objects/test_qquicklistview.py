@@ -14,10 +14,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-try:
-    from unittest import mock
-except ImportError:
-    import mock
+from unittest import mock
 
 import os
 
@@ -76,7 +73,7 @@ MainView {
 """)
 
     def setUp(self):
-        super(QQuickListViewTestCase, self).setUp()
+        super().setUp()
         self.list_view = self.main_view.select_single(
             ubuntuuitoolkit.QQuickListView, objectName='testListView')
         self.label = self.main_view.select_single(
@@ -206,7 +203,7 @@ MainView {
 """)
 
     def setUp(self):
-        super(QQuickListViewOutOfViewTestCase, self).setUp()
+        super().setUp()
         self.list_view = self.main_view.select_single(
             ubuntuuitoolkit.QQuickListView, objectName='testListView')
         self.label = self.main_view.select_single(
@@ -238,7 +235,7 @@ class QQuickListViewDraggingBaseTestCase(tests.QMLFileAppTestCase):
         self.test_qml_file_path = os.path.join(
             dir_path, self.qml_file_name)
 
-        super(QQuickListViewDraggingBaseTestCase, self).setUp()
+        super().setUp()
         self.list_view = self.main_view.select_single(
             ubuntuuitoolkit.QQuickListView, objectName='test_view')
 

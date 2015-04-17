@@ -14,10 +14,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-try:
-    from unittest import mock
-except ImportError:
-    import mock
+from unittest import mock
 
 import logging
 import os
@@ -121,7 +118,7 @@ MainView {
 """)
 
     def setUp(self):
-        super(SwipeToDeleteTestCase, self).setUp()
+        super().setUp()
         self._item = self.main_view.select_single(
             listitems.Standard, objectName='listitem_standard')
         self.assertTrue(self._item.exists())
@@ -208,7 +205,7 @@ class ExpandableTestCase(tests.QMLFileAppTestCase):
         dir_path, 'test_listitems.ExpandableTestCase.qml')
 
     def setUp(self):
-        super(ExpandableTestCase, self).setUp()
+        super().setUp()
         self.test_expandable = self.main_view.select_single(
             listitems.Expandable, objectName='expandable0')
 

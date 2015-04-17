@@ -40,7 +40,7 @@ class HeaderActionsOverflowTestCase(tests.QMLFileAppTestCase):
     ]
 
     def setUp(self):
-        super(HeaderActionsOverflowTestCase, self).setUp()
+        super().setUp()
         self.header = self.main_view.get_header()
 
     def test_click_header_overflow_action_must_close_popover(self):
@@ -71,7 +71,7 @@ class HeaderContentsTestCase(tests.QMLFileAppTestCase):
         dir_path, 'test_header.HeaderContentsTestCase.qml')
 
     def setUp(self):
-        super(HeaderContentsTestCase, self).setUp()
+        super().setUp()
         self.header = self.main_view.get_header()
 
     def test_open_page_with_head_contents_must_change_header(self):
