@@ -16,7 +16,7 @@
 
 #include "uclistitemstyle.h"
 #include "i18n.h"
-#include "uclistitem.h"
+#include "uclistitem_p.h"
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlInfo>
@@ -37,11 +37,23 @@
  */
 UCListItemStyle::UCListItemStyle(QQuickItem *parent)
     : QQuickItem(parent)
+    , m_listItem(0)
     , m_snapAnimation(0)
     , m_dropAnimation(0)
     , m_dragPanel(0)
     , m_animatePanels(true)
 {
+}
+
+void UCListItemStyle::classBegin()
+{
+    // grab the animated context property and transfer it to the property
+    QQuickItem::classBegin();
+    QQmlContext *context = qmlContext(this);
+    if (context && context->contextProperty("animated").isValid()) {
+        setAnimatePanels(context->contextProperty("animated").toBool());
+    }
+    m_listItem = qmlContext(this)->contextProperty("styledItem").value<UCListItem*>();
 }
 
 void UCListItemStyle::componentComplete()
@@ -58,12 +70,25 @@ void UCListItemStyle::componentComplete()
         }
     }
 
-    // connect snapAnimation's stopped() and the owning ListItem's sontentMovementeEnded() signals
-    UCListItem *listItem = qmlContext(this)->contextProperty("styledItem").value<UCListItem*>();
-    if (listItem && m_snapAnimation) {
+    // connect snapAnimation's stopped() and the owning ListItem's contentMovementeEnded() signals
+    if (m_listItem && m_snapAnimation) {
         connect(m_snapAnimation, SIGNAL(runningChanged(bool)),
-                listItem, SLOT(_q_contentMoving()));
+                m_listItem, SLOT(_q_contentMoving()));
     }
+}
+
+/*!
+ * \qmlproperty in ListItemStyle::listItemIndex
+ * \readonly
+ * \since Ubuntu.Components.Styles 1.3
+ * The property proxies the ListItem's index context property to the style, which
+ * is either the index of the list item in a ListView or the child index. Use this
+ * property rather than the \c index context property as that may not be defined
+ * in situations where the ListItem is not a delegate of a ListView or Repeater.
+ */
+int UCListItemStyle::index()
+{
+    return UCListItemPrivate::get(m_listItem)->index();
 }
 
 /*!

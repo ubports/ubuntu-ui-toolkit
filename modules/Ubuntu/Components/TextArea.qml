@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.2 as Ubuntu
+import Ubuntu.Components 1.3 as Ubuntu
 import Ubuntu.Components.Popups 1.0
 import "mathUtils.js" as MathUtils
 
@@ -92,7 +92,7 @@ import "mathUtils.js" as MathUtils
     \note During text selection all interactive parent Flickables are turned off.
   */
 
-StyledItem {
+Ubuntu.StyledItem {
     id: control
     implicitWidth: units.gu(30)
     implicitHeight: (autoSize) ? internal.minimumSize : internal.linesHeight(4)
@@ -104,7 +104,7 @@ StyledItem {
       text input. This property allows to control the highlight separately from
       the focused behavior.
       */
-    property bool highlighted: focus
+    property bool highlighted: activeFocus
     /*!
       Text that appears when there is no focus and no content in the component
       (hint text).
@@ -803,7 +803,7 @@ StyledItem {
         }
         // hint is shown till user types something in the field
         visible: (editor.text == "") && !editor.inputMethodComposing
-        color: Theme.palette.normal.backgroundText
+        color: theme.palette.normal.backgroundText
         font: editor.font
         elide: Text.ElideRight
         wrapMode: Text.WordWrap
@@ -873,5 +873,5 @@ StyledItem {
         }
     }
 
-    style: Theme.createStyleComponent("TextAreaStyle.qml", control)
+    style: theme.createStyleComponent("TextAreaStyle.qml", control)
 }

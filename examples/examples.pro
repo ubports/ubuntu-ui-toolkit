@@ -4,7 +4,8 @@ SUBDIRS += \
     ubuntu-ui-toolkit-gallery\
     locale \
     unit-converter \
-    calculator
+    calculator \
+    customtheme
 
 
 #examples = jokes unit-converter

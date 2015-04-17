@@ -1,6 +1,6 @@
 # -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
 #
-# Copyright (C) 2012, 2013, 2014 Canonical Ltd.
+# Copyright (C) 2012, 2013, 2014, 2015 Canonical Ltd.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -73,7 +73,7 @@ class UbuntuUIToolkitCustomProxyObjectBase(dbus.CustomEmulatorBase):
 
     def __init__(self, *args):
         check_autopilot_version()
-        super(UbuntuUIToolkitCustomProxyObjectBase, self).__init__(*args)
+        super().__init__(*args)
         self.pointing_device = get_pointing_device()
 
     def is_flickable(self):

@@ -41,9 +41,12 @@ public:
 private:
     QOpenGLFunctions* m_functions;
     int m_matrixId;
-    int m_opacityId;
+    int m_dfdtFactorsId;
+    int m_opacityFactorsId;
     int m_sourceOpacityId;
+    int m_distanceAAId;
     int m_texturedId;
+    int m_aspectId;
 };
 
 // --- Scene graph material ---
@@ -56,12 +59,15 @@ public:
             Textured             = (1 << 0),
             HorizontallyRepeated = (1 << 1),
             VerticallyRepeated   = (1 << 2),
-            Repeated             = (HorizontallyRepeated | VerticallyRepeated)
+            Repeated             = (HorizontallyRepeated | VerticallyRepeated),
+            Flat                 = (1 << 3),
+            Inset                = (1 << 4),
+            Pressed              = (1 << 5)
         };
-        QSGTexture* shapeTexture;
         QSGTextureProvider* sourceTextureProvider;
+        quint32 shapeTexture;
+        quint8 distanceAAFactor;
         quint8 sourceOpacity;
-        quint8 shapeTextureFiltering;
         quint8 flags;
     };
 
@@ -88,10 +94,10 @@ public:
         quint32 backgroundColor;
     };
 
-    static const int indexCount = 28;
+    static const int indexCount = 14;
     static const int indexType = GL_UNSIGNED_SHORT;
     static const int indexTypeSize = sizeof(unsigned short);
-    static const int vertexCount = 16;
+    static const int vertexCount = 9;
     static const QSGGeometry::DataPattern indexDataPattern = QSGGeometry::StaticPattern;
     static const QSGGeometry::DataPattern vertexDataPattern = QSGGeometry::AlwaysUploadPattern;
     static const GLenum drawingMode = GL_TRIANGLE_STRIP;
@@ -114,9 +120,9 @@ class UCUbuntuShape : public QQuickItem
     Q_OBJECT
 
     // Shape properties.
+    Q_ENUMS(Aspect)
     Q_PROPERTY(QString radius READ radius WRITE setRadius NOTIFY radiusChanged)
-    Q_PROPERTY(QString borderSource READ borderSource WRITE setBorderSource
-               NOTIFY borderSourceChanged)
+    Q_PROPERTY(Aspect aspect READ aspect WRITE setAspect NOTIFY aspectChanged REVISION 1)
 
     // Source properties.
     Q_ENUMS(FillMode)
@@ -152,6 +158,8 @@ class UCUbuntuShape : public QQuickItem
                NOTIFY backgroundModeChanged REVISION 1)
 
     // Deprecated properties.
+    Q_PROPERTY(QString borderSource READ borderSource WRITE setBorderSource
+               NOTIFY borderSourceChanged)
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
     Q_PROPERTY(QColor gradientColor READ gradientColor WRITE setGradientColor
                NOTIFY gradientColorChanged)
@@ -165,18 +173,17 @@ class UCUbuntuShape : public QQuickItem
 public:
     UCUbuntuShape(QQuickItem* parent=0);
 
+    enum Aspect { Flat = 0, Inset = 1 };  // Don't forget to update private enum if extended.
     enum BackgroundMode { SolidColor = 0, VerticalGradient = 1 };
     enum HAlignment { AlignLeft = 0, AlignHCenter = 1, AlignRight = 2 };
     enum VAlignment { AlignTop = 0, AlignVCenter = 1, AlignBottom = 2 };
     enum FillMode { Stretch = 0, PreserveAspectFit = 1, PreserveAspectCrop = 2, Pad = 3 };
     enum WrapMode { Transparent = 0, Repeat = 1 };
 
-    QString radius() const { return (m_radius == SmallRadius) ? "small" : "medium"; }
+    QString radius() const { return (m_radius == Small) ? "small" : "medium"; }
     void setRadius(const QString& radius);
-    QString borderSource() const {
-        return (m_border == IdleBorder) ? "radius_idle.sci" :
-                ((m_border == PressedBorder) ? "radius_pressed.sci" : ""); }
-    void setBorderSource(const QString& borderSource);
+    Aspect aspect() const { return (m_flags & AspectSet) ? static_cast<Aspect>(m_aspect) : Flat; }
+    void setAspect(Aspect aspect);
 
     QVariant source() const {
         return QVariant::fromValue((m_flags & SourceApiSet) ? m_source : NULL); }
@@ -212,6 +219,11 @@ public:
     BackgroundMode backgroundMode() const { return m_backgroundMode; }
     void setBackgroundMode(BackgroundMode backgroundMode);
 
+    QString borderSource() const {
+        return (m_flags & AspectSet) ? "" :
+            ((m_aspect == Flat) ? "" :
+             ((m_aspect == Inset) ? "radius_idle.sci" : "radius_pressed.sci")); }
+    void setBorderSource(const QString& borderSource);
     QColor color() const {
         return (m_flags & BackgroundApiSet) ?
             QColor(0, 0, 0, 0) :
@@ -236,7 +248,7 @@ public:
 
 Q_SIGNALS:
     void radiusChanged();
-    void borderSourceChanged();
+    Q_REVISION(1) void aspectChanged();
 
     Q_REVISION(1) void sourceChanged();
     Q_REVISION(1) void sourceOpacityChanged();
@@ -252,6 +264,7 @@ Q_SIGNALS:
     Q_REVISION(1) void secondaryBackgroundColorChanged();
     Q_REVISION(1) void backgroundModeChanged();
 
+    void borderSourceChanged();
     void colorChanged();
     void gradientColorChanged();
     void imageChanged();
@@ -265,13 +278,11 @@ protected:
 
     // Virtual functions for extended shapes.
     virtual QSGNode* createSceneGraphNode() const;
-    virtual void updateMaterial(
-        QSGNode* node, QSGTexture* shapeTexture, QSGTexture::Filtering shapeTextureFiltering,
-        QSGTexture* sourceTexture);
+    virtual void updateMaterial(QSGNode* node, float radius, quint32 shapeTexture, bool textured);
     virtual void updateGeometry(
-        QSGNode* node, float width, float height, float radius, const float shapeCoordinate[][2],
+        QSGNode* node, const QSizeF& itemSize, float radius, float shapeOffset,
         const QVector4D& sourceCoordTransform, const QVector4D& sourceMaskTransform,
-        const quint32 backgroundColor[4]);
+        const quint32 backgroundColor[3]);
 
 private Q_SLOTS:
     void _q_imagePropertiesChanged();
@@ -291,14 +302,15 @@ private:
         float itemWidth, float itemHeight, FillMode fillMode, HAlignment horizontalAlignment,
         VAlignment verticalAlignment, const QSize& textureSize);
 
-    enum Radius { SmallRadius, MediumRadius };
-    enum Border { RawBorder, IdleBorder, PressedBorder };
+    enum Radius { Small = 0, Medium = 1 };
+    enum { Pressed = 2 };  // Aspect extension (to keep support for deprecated aspects).
     enum {
-        GradientColorSet     = (1 << 0),
-        Stretched            = (1 << 1),
+        AspectSet            = (1 << 0),
+        GradientColorSet     = (1 << 1),
         BackgroundApiSet     = (1 << 2),
         SourceApiSet         = (1 << 3),
-        DirtySourceTransform = (1 << 4)
+        Stretched            = (1 << 4),
+        DirtySourceTransform = (1 << 5)
     };
 
     QQuickItem* m_source;
@@ -309,7 +321,7 @@ private:
     QVector2D m_sourceTranslation;
     QVector4D m_sourceTransform;
     Radius m_radius : 1;
-    Border m_border : 2;
+    quint8 m_aspect : 2;
     HAlignment m_imageHorizontalAlignment : 2;
     VAlignment m_imageVerticalAlignment : 2;
     BackgroundMode m_backgroundMode : 1;

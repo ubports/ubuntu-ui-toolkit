@@ -214,17 +214,12 @@ static quint32 packColor(QRgb color)
 }
 
 void UCUbuntuShapeOverlay::updateGeometry(
-    QSGNode* node, float width, float height, float radius, const float shapeCoordinate[][2],
+    QSGNode* node, const QSizeF& itemSize, float radius, float shapeOffset,
     const QVector4D& sourceCoordTransform, const QVector4D& sourceMaskTransform,
-    const quint32 backgroundColor[4])
+    const quint32 backgroundColor[3])
 {
-    ShapeOverlayNode* shapeOverlayNode = static_cast<ShapeOverlayNode*>(node);
     ShapeOverlayNode::Vertex* v = reinterpret_cast<ShapeOverlayNode::Vertex*>(
-        shapeOverlayNode->geometry()->vertexData());
-
-    // Convert radius to normalized coordinates.
-    const float rw = radius / width;
-    const float rh = radius / height;
+        static_cast<ShapeOverlayNode*>(node)->geometry()->vertexData());
 
     // Get the affine transformation for the overlay coordinates, pixels lying inside the mask
     // (values in the range [-1, 1]) will be considered overlaid in the fragment shader.
@@ -241,11 +236,11 @@ void UCUbuntuShapeOverlay::updateGeometry(
     const quint32 overlayColor = qIsFinite(invOverlayHeight + invOverlayWidth) ?
         packColor(m_overlayColor) : 0x00000000;
 
-    // Set top row of 4 vertices.
+    // Set top row of 3 vertices.
     v[0].position[0] = 0.0f;
     v[0].position[1] = 0.0f;
-    v[0].shapeCoordinate[0] = shapeCoordinate[0][0];
-    v[0].shapeCoordinate[1] = shapeCoordinate[0][1];
+    v[0].shapeCoordinate[0] = shapeOffset;
+    v[0].shapeCoordinate[1] = shapeOffset;
     v[0].sourceCoordinate[0] = sourceCoordTransform.z();
     v[0].sourceCoordinate[1] = sourceCoordTransform.w();
     v[0].sourceCoordinate[2] = sourceMaskTransform.z();
@@ -254,192 +249,106 @@ void UCUbuntuShapeOverlay::updateGeometry(
     v[0].overlayCoordinate[0] = overlayTx;
     v[0].overlayCoordinate[1] = overlayTy;
     v[0].overlayColor = overlayColor;
-    v[1].position[0] = radius;
+    v[1].position[0] = 0.5f * itemSize.width();
     v[1].position[1] = 0.0f;
-    v[1].shapeCoordinate[0] = shapeCoordinate[1][0];
-    v[1].shapeCoordinate[1] = shapeCoordinate[1][1];
-    v[1].sourceCoordinate[0] = rw * sourceCoordTransform.x() + sourceCoordTransform.z();
+    v[1].shapeCoordinate[0] = (0.5f * itemSize.width()) / radius - shapeOffset;
+    v[1].shapeCoordinate[1] = shapeOffset;
+    v[1].sourceCoordinate[0] = 0.5f * sourceCoordTransform.x() + sourceCoordTransform.z();
     v[1].sourceCoordinate[1] = sourceCoordTransform.w();
-    v[1].sourceCoordinate[2] = rw * sourceMaskTransform.x() + sourceMaskTransform.z();
+    v[1].sourceCoordinate[2] = 0.5f * sourceMaskTransform.x() + sourceMaskTransform.z();
     v[1].sourceCoordinate[3] = sourceMaskTransform.w();
     v[1].backgroundColor = backgroundColor[0];
-    v[1].overlayCoordinate[0] = rw * overlaySx + overlayTx;
+    v[1].overlayCoordinate[0] = 0.5f * overlaySx + overlayTx;
     v[1].overlayCoordinate[1] = overlayTy;
     v[1].overlayColor = overlayColor;
-    v[2].position[0] = width - radius;
+    v[2].position[0] = itemSize.width();
     v[2].position[1] = 0.0f;
-    v[2].shapeCoordinate[0] = shapeCoordinate[2][0];
-    v[2].shapeCoordinate[1] = shapeCoordinate[2][1];
-    v[2].sourceCoordinate[0] = (1.0f - rw) * sourceCoordTransform.x() + sourceCoordTransform.z();
+    v[2].shapeCoordinate[0] = shapeOffset;
+    v[2].shapeCoordinate[1] = shapeOffset;
+    v[2].sourceCoordinate[0] = sourceCoordTransform.x() + sourceCoordTransform.z();
     v[2].sourceCoordinate[1] = sourceCoordTransform.w();
-    v[2].sourceCoordinate[2] = (1.0f - rw) * sourceMaskTransform.x() + sourceMaskTransform.z();
+    v[2].sourceCoordinate[2] = sourceMaskTransform.x() + sourceMaskTransform.z();
     v[2].sourceCoordinate[3] = sourceMaskTransform.w();
     v[2].backgroundColor = backgroundColor[0];
-    v[2].overlayCoordinate[0] = (1.0f - rw) * overlaySx + overlayTx;
+    v[2].overlayCoordinate[0] = overlaySx + overlayTx;
     v[2].overlayCoordinate[1] = overlayTy;
     v[2].overlayColor = overlayColor;
-    v[3].position[0] = width;
-    v[3].position[1] = 0.0f;
-    v[3].shapeCoordinate[0] = shapeCoordinate[3][0];
-    v[3].shapeCoordinate[1] = shapeCoordinate[3][1];
-    v[3].sourceCoordinate[0] = sourceCoordTransform.x() + sourceCoordTransform.z();
-    v[3].sourceCoordinate[1] = sourceCoordTransform.w();
-    v[3].sourceCoordinate[2] = sourceMaskTransform.x() + sourceMaskTransform.z();
-    v[3].sourceCoordinate[3] = sourceMaskTransform.w();
-    v[3].backgroundColor = backgroundColor[0];
-    v[3].overlayCoordinate[0] = overlaySx + overlayTx;
-    v[3].overlayCoordinate[1] = overlayTy;
+
+    // Set middle row of 3 vertices.
+    v[3].position[0] = 0.0f;
+    v[3].position[1] = 0.5f * itemSize.height();
+    v[3].shapeCoordinate[0] = shapeOffset;
+    v[3].shapeCoordinate[1] = (0.5f * itemSize.height()) / radius - shapeOffset;
+    v[3].sourceCoordinate[0] = sourceCoordTransform.z();
+    v[3].sourceCoordinate[1] = 0.5f * sourceCoordTransform.y() + sourceCoordTransform.w();
+    v[3].sourceCoordinate[2] = sourceMaskTransform.z();
+    v[3].sourceCoordinate[3] = 0.5f * sourceMaskTransform.y() + sourceMaskTransform.w();
+    v[3].backgroundColor = backgroundColor[1];
+    v[3].overlayCoordinate[0] = overlayTx;
+    v[3].overlayCoordinate[1] = 0.5f * overlaySy + overlayTy;
     v[3].overlayColor = overlayColor;
-
-    // Set middle-top row of 4 vertices.
-    v[4].position[0] = 0.0f;
-    v[4].position[1] = radius;
-    v[4].shapeCoordinate[0] = shapeCoordinate[4][0];
-    v[4].shapeCoordinate[1] = shapeCoordinate[4][1];
-    v[4].sourceCoordinate[0] = sourceCoordTransform.z();
-    v[4].sourceCoordinate[1] = rh * sourceCoordTransform.y() + sourceCoordTransform.w();
-    v[4].sourceCoordinate[2] = sourceMaskTransform.z();
-    v[4].sourceCoordinate[3] = rh * sourceMaskTransform.y() + sourceMaskTransform.w();
+    v[4].position[0] = 0.5f * itemSize.width();
+    v[4].position[1] = 0.5f * itemSize.height();
+    v[4].shapeCoordinate[0] = (0.5f * itemSize.width()) / radius - shapeOffset;
+    v[4].shapeCoordinate[1] = (0.5f * itemSize.height()) / radius - shapeOffset;
+    v[4].sourceCoordinate[0] = 0.5f * sourceCoordTransform.x() + sourceCoordTransform.z();
+    v[4].sourceCoordinate[1] = 0.5f * sourceCoordTransform.y() + sourceCoordTransform.w();
+    v[4].sourceCoordinate[2] = 0.5f * sourceMaskTransform.x() + sourceMaskTransform.z();
+    v[4].sourceCoordinate[3] = 0.5f * sourceMaskTransform.y() + sourceMaskTransform.w();
     v[4].backgroundColor = backgroundColor[1];
-    v[4].overlayCoordinate[0] = overlayTx;
-    v[4].overlayCoordinate[1] = rh * overlaySy + overlayTy;
+    v[4].overlayCoordinate[0] = 0.5f * overlaySx + overlayTx;
+    v[4].overlayCoordinate[1] = 0.5f * overlaySy + overlayTy;
     v[4].overlayColor = overlayColor;
-    v[5].position[0] = radius;
-    v[5].position[1] = radius;
-    v[5].shapeCoordinate[0] = shapeCoordinate[5][0];
-    v[5].shapeCoordinate[1] = shapeCoordinate[5][1];
-    v[5].sourceCoordinate[0] = rw * sourceCoordTransform.x() + sourceCoordTransform.z();
-    v[5].sourceCoordinate[1] = rh * sourceCoordTransform.y() + sourceCoordTransform.w();
-    v[5].sourceCoordinate[2] = rw * sourceMaskTransform.x() + sourceMaskTransform.z();
-    v[5].sourceCoordinate[3] = rh * sourceMaskTransform.y() + sourceMaskTransform.w();
+    v[5].position[0] = itemSize.width();
+    v[5].position[1] = 0.5f * itemSize.height();
+    v[5].shapeCoordinate[0] = shapeOffset;
+    v[5].shapeCoordinate[1] = (0.5f * itemSize.height()) / radius - shapeOffset;
+    v[5].sourceCoordinate[0] = sourceCoordTransform.x() + sourceCoordTransform.z();
+    v[5].sourceCoordinate[1] = 0.5f * sourceCoordTransform.y() + sourceCoordTransform.w();
+    v[5].sourceCoordinate[2] = sourceMaskTransform.x() + sourceMaskTransform.z();
+    v[5].sourceCoordinate[3] = 0.5f * sourceMaskTransform.y() + sourceMaskTransform.w();
     v[5].backgroundColor = backgroundColor[1];
-    v[5].overlayCoordinate[0] = rw * overlaySx + overlayTx;
-    v[5].overlayCoordinate[1] = rh * overlaySy + overlayTy;
+    v[5].overlayCoordinate[0] = overlaySx + overlayTx;
+    v[5].overlayCoordinate[1] = 0.5f * overlaySy + overlayTy;
     v[5].overlayColor = overlayColor;
-    v[6].position[0] = width - radius;
-    v[6].position[1] = radius;
-    v[6].shapeCoordinate[0] = shapeCoordinate[6][0];
-    v[6].shapeCoordinate[1] = shapeCoordinate[6][1];
-    v[6].sourceCoordinate[0] = (1.0f - rw) * sourceCoordTransform.x() + sourceCoordTransform.z();
-    v[6].sourceCoordinate[1] = rh * sourceCoordTransform.y() + sourceCoordTransform.w();
-    v[6].sourceCoordinate[2] = (1.0f - rw) * sourceMaskTransform.x() + sourceMaskTransform.z();
-    v[6].sourceCoordinate[3] = rh * sourceMaskTransform.y() + sourceMaskTransform.w();
-    v[6].backgroundColor = backgroundColor[1];
-    v[6].overlayCoordinate[0] = (1.0f - rw) * overlaySx + overlayTx;
-    v[6].overlayCoordinate[1] = rh * overlaySy + overlayTy;
+
+    // Set bottom row of 3 vertices.
+    v[6].position[0] = 0.0f;
+    v[6].position[1] = itemSize.height();
+    v[6].shapeCoordinate[0] = shapeOffset;
+    v[6].shapeCoordinate[1] = shapeOffset;
+    v[6].sourceCoordinate[0] = sourceCoordTransform.z();
+    v[6].sourceCoordinate[1] = sourceCoordTransform.y() + sourceCoordTransform.w();
+    v[6].sourceCoordinate[2] = sourceMaskTransform.z();
+    v[6].sourceCoordinate[3] = sourceMaskTransform.y() + sourceMaskTransform.w();
+    v[6].backgroundColor = backgroundColor[2];
+    v[6].overlayCoordinate[0] = overlayTx;
+    v[6].overlayCoordinate[1] = overlaySy + overlayTy;
     v[6].overlayColor = overlayColor;
-    v[7].position[0] = width;
-    v[7].position[1] = radius;
-    v[7].shapeCoordinate[0] = shapeCoordinate[7][0];
-    v[7].shapeCoordinate[1] = shapeCoordinate[7][1];
-    v[7].sourceCoordinate[0] = sourceCoordTransform.x() + sourceCoordTransform.z();
-    v[7].sourceCoordinate[1] = rh * sourceCoordTransform.y() + sourceCoordTransform.w();
-    v[7].sourceCoordinate[2] = sourceMaskTransform.x() + sourceMaskTransform.z();
-    v[7].sourceCoordinate[3] = rh * sourceMaskTransform.y() + sourceMaskTransform.w();
-    v[7].backgroundColor = backgroundColor[1];
-    v[7].overlayCoordinate[0] = overlaySx + overlayTx;
-    v[7].overlayCoordinate[1] = rh * overlaySy + overlayTy;
+    v[7].position[0] = 0.5f * itemSize.width();
+    v[7].position[1] = itemSize.height();
+    v[7].shapeCoordinate[0] = (0.5f * itemSize.width()) / radius - shapeOffset;
+    v[7].shapeCoordinate[1] = shapeOffset;
+    v[7].sourceCoordinate[0] = 0.5f * sourceCoordTransform.x() + sourceCoordTransform.z();
+    v[7].sourceCoordinate[1] = sourceCoordTransform.y() + sourceCoordTransform.w();
+    v[7].sourceCoordinate[2] = 0.5f * sourceMaskTransform.x() + sourceMaskTransform.z();
+    v[7].sourceCoordinate[3] = sourceMaskTransform.y() + sourceMaskTransform.w();
+    v[7].backgroundColor = backgroundColor[2];
+    v[7].overlayCoordinate[0] = 0.5f * overlaySx + overlayTx;
+    v[7].overlayCoordinate[1] = overlaySy + overlayTy;
     v[7].overlayColor = overlayColor;
-
-    // Set middle-bottom row of 4 vertices.
-    v[8].position[0] = 0.0f;
-    v[8].position[1] = height - radius;
-    v[8].shapeCoordinate[0] = shapeCoordinate[8][0];
-    v[8].shapeCoordinate[1] = shapeCoordinate[8][1];
-    v[8].sourceCoordinate[0] = sourceCoordTransform.z();
-    v[8].sourceCoordinate[1] = (1.0f - rh) * sourceCoordTransform.y() + sourceCoordTransform.w();
-    v[8].sourceCoordinate[2] = sourceMaskTransform.z();
-    v[8].sourceCoordinate[3] = (1.0f - rh) * sourceMaskTransform.y() + sourceMaskTransform.w();
+    v[8].position[0] = itemSize.width();
+    v[8].position[1] = itemSize.height();
+    v[8].shapeCoordinate[0] = shapeOffset;
+    v[8].shapeCoordinate[1] = shapeOffset;
+    v[8].sourceCoordinate[0] = sourceCoordTransform.x() + sourceCoordTransform.z();
+    v[8].sourceCoordinate[1] = sourceCoordTransform.y() + sourceCoordTransform.w();
+    v[8].sourceCoordinate[2] = sourceMaskTransform.x() + sourceMaskTransform.z();
+    v[8].sourceCoordinate[3] = sourceMaskTransform.y() + sourceMaskTransform.w();
     v[8].backgroundColor = backgroundColor[2];
-    v[8].overlayCoordinate[0] = overlayTx;
-    v[8].overlayCoordinate[1] = (1.0f - rh) * overlaySy + overlayTy;
+    v[8].overlayCoordinate[0] = overlaySx + overlayTx;
+    v[8].overlayCoordinate[1] = overlaySy + overlayTy;
     v[8].overlayColor = overlayColor;
-    v[9].position[0] = radius;
-    v[9].position[1] = height - radius;
-    v[9].shapeCoordinate[0] = shapeCoordinate[9][0];
-    v[9].shapeCoordinate[1] = shapeCoordinate[9][1];
-    v[9].sourceCoordinate[0] = rw * sourceCoordTransform.x() + sourceCoordTransform.z();
-    v[9].sourceCoordinate[1] = (1.0f - rh) * sourceCoordTransform.y() + sourceCoordTransform.w();
-    v[9].sourceCoordinate[2] = rw * sourceMaskTransform.x() + sourceMaskTransform.z();
-    v[9].sourceCoordinate[3] = (1.0f - rh) * sourceMaskTransform.y() + sourceMaskTransform.w();
-    v[9].backgroundColor = backgroundColor[2];
-    v[9].overlayCoordinate[0] = rw * overlaySx + overlayTx;
-    v[9].overlayCoordinate[1] = (1.0f - rh) * overlaySy + overlayTy;
-    v[9].overlayColor = overlayColor;
-    v[10].position[0] = width - radius;
-    v[10].position[1] = height - radius;
-    v[10].shapeCoordinate[0] = shapeCoordinate[10][0];
-    v[10].shapeCoordinate[1] = shapeCoordinate[10][1];
-    v[10].sourceCoordinate[0] = (1.0f - rw) * sourceCoordTransform.x() + sourceCoordTransform.z();
-    v[10].sourceCoordinate[1] = (1.0f - rh) * sourceCoordTransform.y() + sourceCoordTransform.w();
-    v[10].sourceCoordinate[2] = (1.0f - rw) * sourceMaskTransform.x() + sourceMaskTransform.z();
-    v[10].sourceCoordinate[3] = (1.0f - rh) * sourceMaskTransform.y() + sourceMaskTransform.w();
-    v[10].backgroundColor = backgroundColor[2];
-    v[10].overlayCoordinate[0] = (1.0f - rw) * overlaySx + overlayTx;
-    v[10].overlayCoordinate[1] = (1.0f - rh) * overlaySy + overlayTy;
-    v[10].overlayColor = overlayColor;
-    v[11].position[0] = width;
-    v[11].position[1] = height - radius;
-    v[11].shapeCoordinate[0] = shapeCoordinate[11][0];
-    v[11].shapeCoordinate[1] = shapeCoordinate[11][1];
-    v[11].sourceCoordinate[0] = sourceCoordTransform.x() + sourceCoordTransform.z();
-    v[11].sourceCoordinate[1] = (1.0f - rh) * sourceCoordTransform.y() + sourceCoordTransform.w();
-    v[11].sourceCoordinate[2] = sourceMaskTransform.x() + sourceMaskTransform.z();
-    v[11].sourceCoordinate[3] = (1.0f - rh) * sourceMaskTransform.y() + sourceMaskTransform.w();
-    v[11].backgroundColor = backgroundColor[2];
-    v[11].overlayCoordinate[0] = overlaySx + overlayTx;
-    v[11].overlayCoordinate[1] = (1.0f - rh) * overlaySy + overlayTy;
-    v[11].overlayColor = overlayColor;
-
-    // Set bottom row of 4 vertices.
-    v[12].position[0] = 0.0f;
-    v[12].position[1] = height;
-    v[12].shapeCoordinate[0] = shapeCoordinate[12][0];
-    v[12].shapeCoordinate[1] = shapeCoordinate[12][1];
-    v[12].sourceCoordinate[0] = sourceCoordTransform.z();
-    v[12].sourceCoordinate[1] = sourceCoordTransform.y() + sourceCoordTransform.w();
-    v[12].sourceCoordinate[2] = sourceMaskTransform.z();
-    v[12].sourceCoordinate[3] = sourceMaskTransform.y() + sourceMaskTransform.w();
-    v[12].backgroundColor = backgroundColor[3];
-    v[12].overlayCoordinate[0] = overlayTx;
-    v[12].overlayCoordinate[1] = overlaySy + overlayTy;
-    v[12].overlayColor = overlayColor;
-    v[13].position[0] = radius;
-    v[13].position[1] = height;
-    v[13].shapeCoordinate[0] = shapeCoordinate[13][0];
-    v[13].shapeCoordinate[1] = shapeCoordinate[13][1];
-    v[13].sourceCoordinate[0] = rw * sourceCoordTransform.x() + sourceCoordTransform.z();
-    v[13].sourceCoordinate[1] = sourceCoordTransform.y() + sourceCoordTransform.w();
-    v[13].sourceCoordinate[2] = rw * sourceMaskTransform.x() + sourceMaskTransform.z();
-    v[13].sourceCoordinate[3] = sourceMaskTransform.y() + sourceMaskTransform.w();
-    v[13].backgroundColor = backgroundColor[3];
-    v[13].overlayCoordinate[0] = rw * overlaySx + overlayTx;
-    v[13].overlayCoordinate[1] = overlaySy + overlayTy;
-    v[13].overlayColor = overlayColor;
-    v[14].position[0] = width - radius;
-    v[14].position[1] = height;
-    v[14].shapeCoordinate[0] = shapeCoordinate[14][0];
-    v[14].shapeCoordinate[1] = shapeCoordinate[14][1];
-    v[14].sourceCoordinate[0] = (1.0f - rw) * sourceCoordTransform.x() + sourceCoordTransform.z();
-    v[14].sourceCoordinate[1] = sourceCoordTransform.y() + sourceCoordTransform.w();
-    v[14].sourceCoordinate[2] = (1.0f - rw) * sourceMaskTransform.x() + sourceMaskTransform.z();
-    v[14].sourceCoordinate[3] = sourceMaskTransform.y() + sourceMaskTransform.w();
-    v[14].backgroundColor = backgroundColor[3];
-    v[14].overlayCoordinate[0] = (1.0f - rw) * overlaySx + overlayTx;
-    v[14].overlayCoordinate[1] = overlaySy + overlayTy;
-    v[14].overlayColor = overlayColor;
-    v[15].position[0] = width;
-    v[15].position[1] = height;
-    v[15].shapeCoordinate[0] = shapeCoordinate[15][0];
-    v[15].shapeCoordinate[1] = shapeCoordinate[15][1];
-    v[15].sourceCoordinate[0] = sourceCoordTransform.x() + sourceCoordTransform.z();
-    v[15].sourceCoordinate[1] = sourceCoordTransform.y() + sourceCoordTransform.w();
-    v[15].sourceCoordinate[2] = sourceMaskTransform.x() + sourceMaskTransform.z();
-    v[15].sourceCoordinate[3] = sourceMaskTransform.y() + sourceMaskTransform.w();
-    v[15].backgroundColor = backgroundColor[3];
-    v[15].overlayCoordinate[0] = overlaySx + overlayTx;
-    v[15].overlayCoordinate[1] = overlaySy + overlayTy;
-    v[15].overlayColor = overlayColor;
 
     node->markDirty(QSGNode::DirtyGeometry);
 }

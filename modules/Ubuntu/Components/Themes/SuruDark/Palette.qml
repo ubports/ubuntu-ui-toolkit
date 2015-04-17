@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,12 +14,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+//![0]
 import QtQuick 2.4
-import Ubuntu.Components 1.2
-import Ubuntu.Components.Themes 0.1
+import Ubuntu.Components 1.3
+import Ubuntu.Components.Themes 1.0
 
 Palette {
-    normal: PaletteValues {
+    normal {
         background: "#221E1C"
         backgroundText: "#33F3F3E7"
         base: "#19000000"
@@ -31,8 +32,8 @@ Palette {
         field: "#19000000"
         fieldText: "#7F7F7F7F"
     }
-    selected: PaletteValues {
-        background: "#88D6D6D6" // FIXME: not from design
+    selected {
+        background: "#88D6D6D6"
         backgroundText: "#FFFFFF"
         selection: Qt.rgba(UbuntuColors.blue.r, UbuntuColors.blue.g, UbuntuColors.blue.b, 0.2)
         foreground: UbuntuColors.orange
@@ -41,3 +42,4 @@ Palette {
         fieldText: "#888888"
     }
 }
+//![0]

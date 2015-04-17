@@ -56,7 +56,7 @@ class ButtonsTestCase(gallery.GalleryTestCase):
     def setUp(self):
         # Reset the locale to English
         os.environ['LANGUAGE'] = 'en'
-        super(ButtonsTestCase, self).setUp()
+        super().setUp()
 
     def test_buttons(self):
         self.open_page('buttonsElement')

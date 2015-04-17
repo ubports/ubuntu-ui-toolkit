@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.2
+import Ubuntu.Components 1.3
 
 Item {
     id: bubbleShape
@@ -28,7 +28,7 @@ Item {
     /*!
       The background color of the bubble.
      */
-    property color color: square ? Theme.palette.normal.background : Theme.palette.normal.overlay
+    property color color: square ? theme.palette.normal.background : theme.palette.normal.overlay
 
     property point target
     property string direction: "down"
@@ -111,7 +111,7 @@ Item {
     UbuntuShape {
         anchors.fill: parent
         borderSource: "none"
-        color: Theme.palette.normal.overlay
+        color: theme.palette.normal.overlay
         image: bubbleShape.clipContent ? shapeSource : null
         visible: !square
     }

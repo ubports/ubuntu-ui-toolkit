@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -21,8 +21,6 @@
 #include <QtQml/QQmlEngine>
 #include <QtQuick/QQuickView>
 #include <QtQuick/QQuickItem>
-
-#include "uctheme.h"
 
 class tst_Performance : public QObject
 {
@@ -65,6 +63,41 @@ private Q_SLOTS:
         delete quickView;
     }
 
+    void clean()
+    {
+        qputenv("SUPPRESS_DEPRECATED_NOTE", "no");
+    }
+
+    void benchmark_theming_data()
+    {
+        QTest::addColumn<QString>("document");
+        QTest::addColumn<QUrl>("theme");
+
+        QTest::newRow("new theming, subtheming enabled, no theme change") << "StyledItemNewTheming.qml" << QUrl();
+        QTest::newRow("new theming, subtheming enabled, with theme change") << "StyledItemNewTheming.qml" << QUrl("Ubuntu.Components.Themes.SuruDark");
+        QTest::newRow("old theming, subtheming enabled") << "StyledItemOldTheming.qml" << QUrl("Ubuntu.Components.Themes.SuruDark");
+        QTest::newRow("subtheming, no changes on themes") << "Styling.qml" << QUrl();
+        QTest::newRow("subtheming, change mid item") << "Styling.qml" << QUrl("Ubuntu.Components.Themes.SuruDark");
+        QTest::newRow("Palette configuration of one color") << "PaletteConfigurationOneColor.qml" << QUrl("Ubuntu.Components.Themes.SuruDark");
+        QTest::newRow("Palette configuration of all colors") << "PaletteConfigurationAllColors.qml" << QUrl("Ubuntu.Components.Themes.SuruDark");
+    }
+    void benchmark_theming()
+    {
+        QFETCH(QString, document);
+        QFETCH(QUrl, theme);
+
+        qputenv("SUPPRESS_DEPRECATED_NOTE", "yes");
+        QQuickItem *root = 0;
+        QBENCHMARK {
+            root = loadDocument(document);
+            if (root && theme.isValid()) {
+                root->setProperty("newTheme", theme.toString());
+            }
+        }
+        if (root)
+            delete root;
+    }
+
     void benchmark_GridOfComponents_data() {
         QTest::addColumn<QString>("document");
         QTest::addColumn<QUrl>("theme");
@@ -95,6 +128,9 @@ private Q_SLOTS:
         QQuickItem *root = 0;
         QBENCHMARK {
             root = loadDocument(document);
+            if (root && theme.isValid()) {
+                root->setProperty("newTheme", theme.toString());
+            }
         }
         if (root)
             delete root;
@@ -115,7 +151,6 @@ private Q_SLOTS:
             loadDocument(document);
         }
     }
-
 };
 
 QTEST_MAIN(tst_Performance)

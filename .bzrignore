@@ -1,8 +1,12 @@
-Makefile
-modules/Makefile.ubuntu-ui-toolkit
-modules/Ubuntu/Components/Makefile.ubuntu-ui-toolkit
-modules/Ubuntu/Components/plugin/Makefile.ubuntu-ui-toolkit
+Makefile*
+modules/Makefile*
+modules/Ubuntu/Components/Makefile*
+modules/Ubuntu/Components/plugin/Makefile*
 modules/Ubuntu/Components/plugin/qrc_plugin.cpp
+modules/Ubuntu/Components/Themes/Makefile*
+modules/Ubuntu/Components/Layouts/Makefile*
+modules/Ubuntu/Components/PerformanceMetrics/Makefile*
+modules/Ubuntu/Test/Makefile*
 documentation/html/*
 *.moc
 moc_*.cpp

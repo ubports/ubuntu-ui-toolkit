@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -248,7 +248,7 @@ Button {
     property color dropdownColor: __styleInstance ? __styleInstance.defaultDropdownColor : color
 
 
-    style: Theme.createStyleComponent("ComboButtonStyle.qml", combo)
+    style: theme.createStyleComponent("ComboButtonStyle.qml", combo)
 
     Component.onCompleted: {
         // update mouse area to report clicks only on the main button area

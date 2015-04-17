@@ -103,7 +103,7 @@ Item {
         visible: stroke && strokeBorder.status == Image.Ready
 
         property Item source: visible ? strokeBorder : null
-        property color keyColorOut: stroke ? strokeColor : Qt.rgba(0.0, 0.0, 0.0, 0.0)
+        property color keyColorOut: stroke ? button.strokeColor : Qt.rgba(0.0, 0.0, 0.0, 0.0)
         property color keyColorIn: Qt.rgba(1.0, 1.0, 1.0, 1.0)
         property real threshold: 1.0
 
@@ -135,8 +135,8 @@ Item {
     UbuntuShape {
         id: backgroundPressed
         anchors.fill: parent
-        color: stroke ? strokeColor : background.color
-        gradientColor: stroke ? strokeColor : background.gradientColor
+        color: stroke ? button.strokeColor : background.color
+        gradientColor: stroke ? button.strokeColor : background.gradientColor
         borderSource: "radius_pressed.sci"
         opacity: button.pressed ? 1.0 : 0.0
         Behavior on opacity {
@@ -159,7 +159,7 @@ Item {
         /* Pick either a clear or dark text color depending on the luminance of the
            background color to maintain good contrast (works in most cases)
         */
-        textColor: ColorUtils.luminance(button.color) <= 0.85 && !(stroke && !pressed) ? "#FFFFFF" : "#888888"
+        textColor: ColorUtils.luminance(button.color) <= 0.85 && !(stroke && !button.pressed) ? "#FFFFFF" : "#888888"
         iconSource: button.iconSource
         iconPosition: button.iconPosition
         iconSize: units.gu(3)

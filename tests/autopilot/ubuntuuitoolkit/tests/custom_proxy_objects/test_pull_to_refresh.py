@@ -1,6 +1,6 @@
 # -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
 #
-# Copyright (C) 2014 Canonical Ltd.
+# Copyright (C) 2014, 2015 Canonical Ltd.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -30,7 +30,7 @@ class PullToRefreshTestCase(tests.QMLFileAppTestCase):
     test_qml_file_path = os.path.join(dir_path, 'test_pull_to_refresh.qml')
 
     def setUp(self):
-        super(PullToRefreshTestCase, self).setUp()
+        super().setUp()
         self.label = self.main_view.select_single(
             'Label', objectName='refreshedLabel')
         self.assertEqual(self.label.text, 'Not refreshed.')

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2014 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -13,7 +13,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Author: Juhapekka Piiroinen <juhapekka.piiroinen@canonical.com>
  */
 
 #include <QtQuick/private/qquickimagebase_p.h>
@@ -23,6 +22,7 @@
 
 #include "plugin.h"
 #include "uctheme.h"
+#include "ucdeprecatedtheme.h"
 
 #include <QtQml/QQmlContext>
 #include "i18n.h"
@@ -135,7 +135,7 @@ void UbuntuComponentsPlugin::registerTypesToVersion(const char *uri, int major, 
     qmlRegisterType<UCAction>(uri, major, minor, "Action");
     qmlRegisterType<UCActionContext>(uri, major, minor, "ActionContext");
     qmlRegisterType<UCActionManager>(uri, major, minor, "ActionManager");
-    qmlRegisterType<UCStyledItemBase>(uri, major, minor, "StyledItemBase");
+    qmlRegisterType<UCStyledItemBase>(uri, major, minor, "StyledItem");
     qmlRegisterUncreatableType<UbuntuI18n>(uri, major, minor, "i18n", "Singleton object");
     qmlRegisterExtendedType<QQuickImageBase, UCQQuickImageExtension>(uri, major, minor, "QQuickImageBase");
     qmlRegisterUncreatableType<UCUnits>(uri, major, minor, "UCUnits", "Not instantiable");
@@ -173,7 +173,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterUncreatableType<QAbstractItemModel>(uri, 1, 1, "QAbstractItemModel", "Not instantiable");
 
     // register 1.1 only API
-    qmlRegisterType<UCStyledItemBase, 1>(uri, 1, 1, "StyledItemBase");
+    qmlRegisterType<UCStyledItemBase, 1>(uri, 1, 1, "StyledItem");
     qmlRegisterType<QSortFilterProxyModelQML>(uri, 1, 1, "SortFilterModel");
     qmlRegisterUncreatableType<FilterBehavior>(uri, 1, 1, "FilterBehavior", "Not instantiable");
     qmlRegisterUncreatableType<SortBehavior>(uri, 1, 1, "SortBehavior", "Not instantiable");
@@ -189,6 +189,10 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterSingletonType<UCNamespace>(uri, 1, 2, "Ubuntu", registerUbuntuNamespace);
     qmlRegisterType<UCUbuntuShape, 1>(uri, 1, 2, "UbuntuShape");
     qmlRegisterType<UCUbuntuShapeOverlay>(uri, 1, 2, "UbuntuShapeOverlay");
+
+    // register 1.3 API
+    qmlRegisterType<UCTheme>(uri, 1, 3, "ThemeSettings");
+    qmlRegisterType<UCStyledItemBase, 2>(uri, 1, 3, "StyledItem");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
@@ -198,7 +202,8 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
 
     // register internal styles
     const char *styleUri = "Ubuntu.Components.Styles";
-    qmlRegisterType<UCListItemStyle, 2>(styleUri, 1, 2, "ListItemStyle");
+    qmlRegisterType<UCListItemStyle>(styleUri, 1, 2, "ListItemStyle");
+    qmlRegisterType<UCListItemStyle, 1>(styleUri, 1, 3, "ListItemStyle");
 
     QQmlExtensionPlugin::initializeEngine(engine, uri);
     QQmlContext* context = engine->rootContext();
@@ -207,7 +212,10 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     // that can be accessed from any object
     context->setContextProperty("QuickUtils", &QuickUtils::instance());
 
-    UCTheme::instance().registerToContext(context);
+    // register theme context property
+    UCTheme::registerToContext(context);
+
+    UCDeprecatedTheme::instance().registerToContext(context);
 
     context->setContextProperty("i18n", &UbuntuI18n::instance());
     ContextPropertyChangeListener *i18nChangeListener =
