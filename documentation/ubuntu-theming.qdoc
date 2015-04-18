@@ -16,19 +16,19 @@
 
 /*!
  * \page ubuntu-theming.html
- * \title Styling - Introduction
- * \nextpage Component styles, Style API
+ * \title Introduction
+ * \nextpage Styles
  *
  * Table of contents:
  * \list
- * \li \l {Styling - Introduction}
- * \li \l {Component styles, Style API}
- * \li \l {Themes, theme types, theme structure}
- * \li \l {Sub-theming}
+ * \li \l Introduction
+ * \li \l Styles
+ * \li \l Themes
+ * \li \l Sub-theming
  * \endlist
  *
  * \section2 Introduction
- * The style defines the visuals, the implicit size of the component and may provide
+ * The \l{Styles}{style} defines the visuals, the implicit size of the component and may provide
  * additional logic for a given component. Some components have fixed style API the
  * component relies on, and yet some others do not have any restriction on what the
  * style contains or does. Components relying on a well defined API provide these
@@ -43,7 +43,7 @@
  *
  * Styles can be declared as Components (like delegates), in a separate document
  * loaded dynamically using a Loader or Qt.createComponent(), or can be grouped
- * in themes. When declared in themes, with some exceptions, each component's style
+ * in \l{Themes}{themes}. When declared in themes, with some exceptions, each component's style
  * document name is compound of the component name having the \e Style word as postfix,
  * followed by the typical QML file name extension. In this way the Button component's
  * style is ButtonStyle. In addition to styles, themes can also provide custom palette
@@ -70,10 +70,10 @@
 
 /*!
  * \page ubuntu-theming-styles.html
- * \title Component styles, Style API
- * \previouspage Styling - Introduction
- * \nextpage Themes, theme types, theme structure
- * \contentspage {Styling - Introduction} {Contents}
+ * \title Styles
+ * \previouspage Introduction
+ * \nextpage Themes
+ * \contentspage {Introduction} {Contents}
  *
  * \section2 Naming conventions
  * With few exception, each toolkit component is having StyledItem as its base
@@ -146,10 +146,10 @@
  * \qml
  * Button {
  *     id: button
- *     style: theme.createStyleComponent("SquaryButton.qml", button)
+ *     style: theme.createStyleComponent("SquaryButtonStyle.qml", button)
  * }
  * \endqml
- * \note This assumes that the \c SquaryButton.qml document is present in the theme.
+ * \note This assumes that the \c SquaryButtonStyle.qml document is present in the theme.
  * This type of component styling makes sure the style will always have theme specific implementation
  * or coloring, however it also requires the style document to be present in all the themes
  * used by the application.
@@ -182,10 +182,10 @@
 
 /*!
  * \page ubuntu-theming-themes.html
- * \title Themes, theme types, theme structure
- * \previouspage Themes, theme types, theme structure
+ * \title Themes
+ * \previouspage Styles
  * \nextpage Sub-theming
- * \contentspage {Styling - Introduction} {Contents}
+ * \contentspage {Introduction} {Contents}
  *
  * A theme is a collection of style implementations. The style component names are
  * typically built using the component name and the Style word, exceptions being
@@ -241,12 +241,12 @@
  *
  * \section3 Derived themes
  * As the name suggests derived themes are themes which use other themes (standalone or derived ones)
- * as base theme. These themes must have the \c parent_theme file to be present and to contain the
+ * as base theme. These themes must have the \c parent_theme file which contains the
  * name of the theme they are derived from. These themes do not have to provide palette configuration
  * as long as they use the derived theme's palette values.
  *
  * Derived themes should only list those style components which overrule the derived style or
- * extend the derived style. The only requirement is to use the same document name as the paren theme
+ * extend the derived style. The only requirement is to use the same document name as the parent theme
  * is having.
  *
  * Let's take SuruDark theme as en example. The theme is derived from Ambiance theme, and only
@@ -313,8 +313,8 @@
 /*!
  * \page ubuntu-theming-subtheming.html
  * \title Sub-theming
- * \previouspage Sub-theming
- * \contentspage {Styling - Introduction} {Contents}
+ * \previouspage Themes
+ * \contentspage {Introduction} {Contents}
  *
  * There can be situations when an application has a design which combines styles from different
  * themes, which would not be possible or would be hard to be combined in a theme. In these
