@@ -263,7 +263,7 @@
  *
  * The style imports the Ambiance theme module, and extends the Ambiance MainViewStyle
  * component. The same is done in the other style components. However, Palette defines
- * own values, and does not resuse Ambiance palette values.
+ * own values, and does not re-use Ambiance palette values.
  * \snippet Themes/SuruDark/Palette.qml 0
  *
  * The same is done with TabBarStyle and OptionSelectorStyle components.
@@ -299,10 +299,10 @@
  * \endcode
  * This will make sure theme engine will look after the style components that are not
  * defined by the application theme inside the parent theme. Remember, the parent themes
- * can have parent themes (in SuruDark case it is) in which case the style components
+ * can have parent themes (SuruDark is derived from Ambience) in which case the style components
  * will be looked up in all these themes.
  *
- * As next, the application can define the palette.
+ * As shown next, the application can define the palette.
  * \snippet customtheme/theme/Palette.qml 0
  * Note that the palette uses the SuruDark palette as base, and changes few colors from it.
  *
