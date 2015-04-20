@@ -1,6 +1,6 @@
 # -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
 #
-# Copyright (C) 2014 Canonical Ltd.
+# Copyright (C) 2014, 2015 Canonical Ltd.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -59,7 +59,7 @@ class CaretTextInputTestCase(tests.QMLFileAppTestCase):
         return command_line
 
     def setUp(self):
-        super(CaretTextInputTestCase, self).setUp()
+        super().setUp()
         self.textfield = self.main_view.select_single(
             objectName=self.objectName)
         self.assertFalse(self.textfield.focus)
@@ -130,7 +130,7 @@ class InsertModeTextInputTestCase(tests.QMLFileAppTestCase):
         return command_line
 
     def setUp(self):
-        super(InsertModeTextInputTestCase, self).setUp()
+        super().setUp()
         self.textfield = self.main_view.select_single(
             objectName=self.objectName)
         self.assertFalse(self.textfield.focus)

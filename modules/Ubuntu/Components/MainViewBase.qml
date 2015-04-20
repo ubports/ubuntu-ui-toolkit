@@ -32,7 +32,7 @@ PageTreeNode {
     // FIXME: Make sure that the theming is only in the background, and the style
     //  should not occlude contents of the MainView. When making changes here, make
     //  sure that bug https://bugs.launchpad.net/manhattan/+bug/1124076 does not come back.
-    StyledItem {
+    Toolkit.StyledItem {
         id: background
         anchors.fill: parent
         style: theme.createStyleComponent("MainViewStyle.qml", background)
@@ -48,11 +48,18 @@ PageTreeNode {
 
           Qt bug: https://bugreports.qt-project.org/browse/QTBUG-11712
          */
-        property string autoThemeName: (ColorUtils.luminance(backgroundColor) >= 0.85) ?
-                                   "Ambiance" : "SuruDark"
+
+        onBackgroundColorChanged: {
+            if (backgroundColor != theme.palette.normal.background) {
+                // custom color, proceed with auto-theming
+                autoThemeName = (ColorUtils.luminance(backgroundColor) >= 0.85) ?
+                                                   "Ambiance" : "SuruDark";
+            }
+        }
+        property string autoThemeName
         onAutoThemeNameChanged: {
             // only change the theme if the current one is a system one.
-            if (autoThemeName !== "" && (theme.name.search("Ubuntu.Components.Themes") >= 0)) {
+            if (autoThemeName !== "" && (theme.name.search("Ubuntu.Components.Themes") == 0)) {
                 mainView.theme.name = "Ubuntu.Components.Themes.%1".arg(autoThemeName);
             }
         }

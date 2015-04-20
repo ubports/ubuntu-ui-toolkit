@@ -54,7 +54,7 @@ class UnitsTestCase(testscenarios.TestWithScenarios,
             'GRID_UNIT_PX', self.grid_unit_px))
         self.useFixture(fixture_setup.InitctlEnvironmentVariable(
             global_=True, GRID_UNIT_PX=self.grid_unit_px))
-        super(UnitsTestCase, self).setUp()
+        super().setUp()
 
     def test_gu(self):
         pixels = units.gu(self.WIDTH_IN_GU)

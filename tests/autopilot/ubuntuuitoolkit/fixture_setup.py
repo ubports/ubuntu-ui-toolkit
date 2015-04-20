@@ -1,6 +1,6 @@
 # -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
 #
-# Copyright (C) 2014 Canonical Ltd.
+# Copyright (C) 2014, 2015 Canonical Ltd.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -57,7 +57,7 @@ class FakeApplication(fixtures.Fixture):
     def __init__(
             self, qml_file_contents=DEFAULT_QML_FILE_CONTENTS,
             desktop_file_dict=None):
-        super(FakeApplication, self).__init__()
+        super().__init__()
         self._qml_file_contents = qml_file_contents
         if desktop_file_dict is None:
             self._desktop_file_dict = copy.deepcopy(DEFAULT_DESKTOP_FILE_DICT)
@@ -65,7 +65,7 @@ class FakeApplication(fixtures.Fixture):
             self._desktop_file_dict = copy.deepcopy(desktop_file_dict)
 
     def setUp(self):
-        super(FakeApplication, self).setUp()
+        super().setUp()
         self.qml_file_path, self.desktop_file_path = (
             self._create_test_application())
 
@@ -116,7 +116,7 @@ class InitctlEnvironmentVariable(fixtures.Fixture):
     """Set the value of initctl environment variables."""
 
     def __init__(self, global_=False, **kwargs):
-        super(InitctlEnvironmentVariable, self).__init__()
+        super().__init__()
         # Added one level of indirection to be able to spy the calls to
         # environment during tests.
         self.environment = environment
@@ -124,7 +124,7 @@ class InitctlEnvironmentVariable(fixtures.Fixture):
         self.global_ = global_
 
     def setUp(self):
-        super(InitctlEnvironmentVariable, self).setUp()
+        super().setUp()
         for variable, value in self.variables.items():
             self._add_variable_cleanup(variable)
             self.environment.set_initctl_env_var(
@@ -154,11 +154,11 @@ class FakeHome(fixtures.Fixture):
     should_copy_xauthority_file = True
 
     def __init__(self, directory=None):
-        super(FakeHome, self).__init__()
+        super().__init__()
         self.directory = directory
 
     def setUp(self):
-        super(FakeHome, self).setUp()
+        super().setUp()
         self.directory = self._make_directory_if_not_specified()
         if self.should_copy_xauthority_file:
             self._copy_xauthority_file(self.directory)
@@ -202,7 +202,7 @@ class HideUnity7Launcher(fixtures.Fixture):
     _UNITYSHELL_LAUNCHER_HIDDEN_MODE = 1  # launcher hidden
 
     def setUp(self):
-        super(HideUnity7Launcher, self).setUp()
+        super().setUp()
         self._hide_launcher()
 
     def _hide_launcher(self):
@@ -232,14 +232,14 @@ class HideUnity7Launcher(fixtures.Fixture):
 class SimulateDevice(fixtures.Fixture):
 
     def __init__(self, app_width, app_height, grid_unit_px):
-        super(SimulateDevice, self).__init__()
+        super().__init__()
         self.app_width = app_width
         self.app_height = app_height
         self.grid_unit_px = grid_unit_px
         self._screen = None
 
     def setUp(self):
-        super(SimulateDevice, self).setUp()
+        super().setUp()
         if self._is_geometry_larger_than_display(
                 self.app_width, self.app_height):
             scale_divisor = self._get_scale_divisor()

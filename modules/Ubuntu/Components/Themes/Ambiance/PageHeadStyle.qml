@@ -38,6 +38,27 @@ Style.PageHeadStyle {
      */
     property color titleColor: styledItem.config.foregroundColor
 
+    // FIXME: When the three panel color properties below are removed,
+    //  update unity8/Dash/PageHeader to use the new theming (currently
+    //  in progress) to set these colors.
+    /*!
+      \deprecated
+      The background color of the tabs panel and the actions overflow panel.
+     */
+    property color panelBackgroundColor: styledItem.panelColor
+
+    /*!
+       \deprecated
+       The background color of the tapped item in the panel.
+      */
+    property color panelHighlightColor: theme.palette.selected.background
+
+    /*!
+       \deprecated
+       The foreground color (icon and text) of actions in the panel.
+      */
+    property color panelForegroundColor: theme.palette.selected.backgroundText
+
     /*!
       The text color of unselected sections and the section divider.
      */
@@ -351,6 +372,9 @@ Style.PageHeadStyle {
                             }
                             return result;
                         }
+                        backgroundColor: headerStyle.panelBackgroundColor
+                        foregroundColor: headerStyle.panelForegroundColor
+                        highlightColor: headerStyle.panelHighlightColor
                     }
                 }
             }
@@ -476,6 +500,10 @@ Style.PageHeadStyle {
                     OverflowPanel {
                         id: actionsOverflowPopover
                         objectName: "actions_overflow_popover"
+
+                        backgroundColor: headerStyle.panelBackgroundColor
+                        foregroundColor: headerStyle.panelForegroundColor
+                        highlightColor: headerStyle.panelHighlightColor
 
                         // Ensure the popover closes when actions change and
                         // the list item below may be destroyed before its

@@ -110,7 +110,7 @@ ActionItem {
       text input. This property allows to control the highlight separately from
       the focused behavior.
       */
-    property bool highlighted: focus
+    property bool highlighted: activeFocus
 
     /*!
       Text that appears when there is no content in the component.

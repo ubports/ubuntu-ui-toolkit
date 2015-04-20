@@ -1,6 +1,6 @@
 # -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
 #
-# Copyright (C) 2014 Canonical Ltd.
+# Copyright (C) 2014, 2015 Canonical Ltd.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -82,7 +82,7 @@ MainView {
 """)
 
     def setUp(self):
-        super(DatePickerBaseTestCase, self).setUp()
+        super().setUp()
         self.date_picker = self.main_view.select_single(
             pickers.DatePicker, objectName='datePicker')
         self.time_picker = self.main_view.select_single(

@@ -147,7 +147,7 @@ MainView {
                                 subtitle.text: "from index #" + index
                             }
                             Captions {
-                                captionStyle: Ubuntu.Summary
+                                captionStyle: Ubuntu.SummaryCaptionStyle
                                 title.text: "LTR"
                                 subtitle.text: "RTL"
                             }

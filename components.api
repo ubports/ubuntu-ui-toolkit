@@ -429,13 +429,13 @@ StyledItem
     property bool refreshing
     signal refresh()
 Scrollbar 0.1 1.0
-StyledItem
+Toolkit.StyledItem
     property Flickable flickableItem
     property int align
     property bool __interactive
     property internal __private
 Slider 0.1 1.0
-StyledItem
+Toolkit.StyledItem
     property real minimumValue
     property real maximumValue
     property real value
@@ -444,10 +444,6 @@ StyledItem
     signal touched(bool onThumb)
     function formatValue(v)
     property internal __internals
-StyledItem 0.1 1.0 1.1
-StyledItemBase
-    property Component style
-    readonly property Item __styleInstance
 ComboButtonStyle 1.1
 Item
     property real dropDownWidth
@@ -484,7 +480,7 @@ PageTreeNode
     readonly property int index
     property internal __protected
 TabBar 0.1 1.0
-StyledItem
+Toolkit.StyledItem
     property Item tabsItem
     property var model
     readonly property bool pressed
@@ -503,7 +499,7 @@ PageTreeNode
     signal modelChanged()
     property var __model
 TextArea 0.1 1.0
-StyledItem
+Ubuntu.StyledItem
     property bool highlighted
     property string placeholderText
     readonly property string displayText
@@ -626,11 +622,11 @@ ActionItem
     function undo()
     function remove(start, end)
     function getText(start, end)
-Palette 0.1
+Palette 0.1 1.0
 QtObject
     property PaletteValues normal
     property PaletteValues selected
-PaletteValues 0.1
+PaletteValues 0.1 1.0
 QtObject
     property color background
     property color backgroundText
@@ -953,8 +949,6 @@ plugins.qmltypes
     Property { name: "action"; type: "UCAction"; isPointer: true }
     Property { name: "listItemData"; type: "QObject"; isList: true; isReadonly: true }
     Property { name: "listItemChildren"; type: "QQuickItem"; isList: true; isReadonly: true }
-    Property { name: "style"; type: "QQmlComponent"; isPointer: true }
-    Property { name: "__styleInstance"; type: "QQuickItem"; isReadonly: true; isPointer: true }
     Signal { name: "clicked" }
     Signal { name: "pressAndHold" }
     Signal { name: "contentMovementStarted" }
@@ -971,11 +965,13 @@ plugins.qmltypes
     Property { name: "colorTo"; type: "QColor" }
     name: "UCListItemStyle"
     prototype: "QQuickItem"
-    exports: ["Ubuntu.Components.Styles/ListItemStyle 1.2"]
+    exports: [
     Property { name: "snapAnimation"; type: "QQuickAbstractAnimation"; isPointer: true }
     Property { name: "dropAnimation"; type: "QQuickPropertyAnimation"; isPointer: true }
     Property { name: "animatePanels"; type: "bool"; isReadonly: true }
     Property { name: "dragPanel"; type: "QQuickItem"; isPointer: true }
+    Property { name: "listItemIndex"; revision: 1; type: "int"; isReadonly: true }
+    Signal { name: "listItemIndexChanged"; revision: 1 }
     Method {
     name: "swipeEvent"
     Parameter { name: "event"; type: "UCSwipeEvent"; isPointer: true }
@@ -1055,7 +1051,11 @@ plugins.qmltypes
     prototype: "QQuickItem"
     exports: [
     Property { name: "activeFocusOnPress"; revision: 1; type: "bool" }
+    Property { name: "style"; type: "QQmlComponent"; isPointer: true }
+    Property { name: "__styleInstance"; type: "QQuickItem"; isReadonly: true; isPointer: true }
     Property { name: "theme"; revision: 2; type: "UCTheme"; isPointer: true }
+    Signal { name: "styleInstanceChanged" }
+    Signal { name: "activeFocusOnPressChanged"; revision: 1 }
     Signal { name: "themeChanged"; revision: 2 }
     Method {
     name: "requestFocus"
@@ -1074,7 +1074,7 @@ plugins.qmltypes
     exports: ["ThemeSettings 1.3"]
     Property { name: "parentTheme"; type: "UCTheme"; isReadonly: true; isPointer: true }
     Property { name: "name"; type: "string" }
-    Property { name: "palette"; type: "QObject"; isReadonly: true; isPointer: true }
+    Property { name: "palette"; type: "QObject"; isPointer: true }
     Method {
     name: "createStyleComponent"
     Parameter { name: "styleName"; type: "string" }

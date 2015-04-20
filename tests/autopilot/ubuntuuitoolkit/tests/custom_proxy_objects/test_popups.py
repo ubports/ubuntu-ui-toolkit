@@ -139,7 +139,7 @@ MainView {
 """)
 
     def setUp(self):
-        super(ComposerSheetTestCase, self).setUp()
+        super().setUp()
         self.label = self.main_view.select_single(
             'Label', objectName='actionLabel')
         self.assertEqual(self.label.text, 'No action taken.')
