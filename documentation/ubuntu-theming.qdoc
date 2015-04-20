@@ -16,12 +16,21 @@
 
 /*!
  * \page ubuntu-theming.html
- * \title Styling - Introduction
- * \nextpage Component styles, Style API
+ * \title Introduction
+ * \nextpage Styles
  *
- * The style defines the visuals, the implicit size of the component and may provide
+ * Table of contents:
+ * \list
+ * \li \l Introduction
+ * \li \l Styles
+ * \li \l Themes
+ * \li \l Sub-theming
+ * \endlist
+ *
+ * \section2 Introduction
+ * The \l{Styles}{style} defines the visuals, the implicit size of the component and may provide
  * additional logic for a given component. Some components have fixed style API the
- * component relies on, and yet some others do not have any restriction on hwat the
+ * component relies on, and yet some others do not have any restriction on what the
  * style contains or does. Components relying on a well defined API provide these
  * interfaces through Ubuntu.Components.Styles module, and styles must implement these
  * interfaces.
@@ -34,13 +43,13 @@
  *
  * Styles can be declared as Components (like delegates), in a separate document
  * loaded dynamically using a Loader or Qt.createComponent(), or can be grouped
- * in themes. When declared in themes, with some exceptions, each component's style
+ * in \l{Themes}{themes}. When declared in themes, with some exceptions, each component's style
  * document name is compound of the component name having the \e Style word as postfix,
  * followed by the typical QML file name extension. In this way the Button component's
  * style is ButtonStyle. In addition to styles, themes can also provide custom palette
  * values. There are two themes in Ubuntu, Ambiance and SuruDark themes, Ambiance
  * being the default theme. Both themes are declared in separate modules, in \c
- * Ubuntu.Components.Themes.Ambiance ans well as \c Ubuntu.Components.Themes.SuruDark.
+ * Ubuntu.Components.Themes.Ambiance as well as \c Ubuntu.Components.Themes.SuruDark.
  * Application should define the theme name using this dotted name format.
  *
  * Applications can decide which theme they want to use or they can provide their
@@ -61,8 +70,10 @@
 
 /*!
  * \page ubuntu-theming-styles.html
- * \title Component styles, Style API
- * \nextpage Themes, theme types, theme structure
+ * \title Styles
+ * \previouspage Introduction
+ * \nextpage Themes
+ * \contentspage {Introduction} {Contents}
  *
  * \section2 Naming conventions
  * With few exception, each toolkit component is having StyledItem as its base
@@ -106,7 +117,7 @@
  * execute leading or trailing panel \l {ListItemStyle::rebound}{rebound}s and provides
  * the style the ability to overrule the \l {ListItemStyle::swipeEvent}{swipe} coordinates
  * calculated by the ListItem. On the other hand, the style must inform the component
- * about the position of the \l {ListItemStyle::dragPanel}{drag panel} so dragging
+ * about the position of the \l {ListItemStyle::dragPanel}{drag panel} so the dragging
  * (reordering of list items in a ListView) hot spot can be detected. A style implementation
  * must use the API provided by ListItemStyle, otherwise ListItem will fail to function
  * properly.
@@ -135,10 +146,10 @@
  * \qml
  * Button {
  *     id: button
- *     style: theme.createStyleComponent("SquaryButton.qml", button)
+ *     style: theme.createStyleComponent("SquaryButtonStyle.qml", button)
  * }
  * \endqml
- * \note This assumes that the \c SquaryButton.qml document is present in the theme.
+ * \note This assumes that the \c SquaryButtonStyle.qml document is present in the theme.
  * This type of component styling makes sure the style will always have theme specific implementation
  * or coloring, however it also requires the style document to be present in all the themes
  * used by the application.
@@ -171,8 +182,10 @@
 
 /*!
  * \page ubuntu-theming-themes.html
- * \title Themes, theme types, theme structure
+ * \title Themes
+ * \previouspage Styles
  * \nextpage Sub-theming
+ * \contentspage {Introduction} {Contents}
  *
  * A theme is a collection of style implementations. The style component names are
  * typically built using the component name and the Style word, exceptions being
@@ -228,12 +241,12 @@
  *
  * \section3 Derived themes
  * As the name suggests derived themes are themes which use other themes (standalone or derived ones)
- * as base theme. These themes must have the \c parent_theme file to be present and to contain the
+ * as base theme. These themes must have the \c parent_theme file which contains the
  * name of the theme they are derived from. These themes do not have to provide palette configuration
  * as long as they use the derived theme's palette values.
  *
  * Derived themes should only list those style components which overrule the derived style or
- * extend the derived style. The only requirement is to use the same document name as the paren theme
+ * extend the derived style. The only requirement is to use the same document name as the parent theme
  * is having.
  *
  * Let's take SuruDark theme as en example. The theme is derived from Ambiance theme, and only
@@ -250,7 +263,7 @@
  *
  * The style imports the Ambiance theme module, and extends the Ambiance MainViewStyle
  * component. The same is done in the other style components. However, Palette defines
- * own values, and does not resuse Ambiance palette values.
+ * own values, and does not re-use Ambiance palette values.
  * \snippet Themes/SuruDark/Palette.qml 0
  *
  * The same is done with TabBarStyle and OptionSelectorStyle components.
@@ -286,10 +299,10 @@
  * \endcode
  * This will make sure theme engine will look after the style components that are not
  * defined by the application theme inside the parent theme. Remember, the parent themes
- * can have parent themes (in SuruDark case it is) in which case the style components
+ * can have parent themes (SuruDark is derived from Ambiance) in which case the style components
  * will be looked up in all these themes.
  *
- * As next, the application can define the palette.
+ * As shown next, the application can define the palette.
  * \snippet customtheme/theme/Palette.qml 0
  * Note that the palette uses the SuruDark palette as base, and changes few colors from it.
  *
@@ -300,16 +313,18 @@
 /*!
  * \page ubuntu-theming-subtheming.html
  * \title Sub-theming
+ * \previouspage Themes
+ * \contentspage {Introduction} {Contents}
  *
  * There can be situations when an application has a design which combines styles from different
- * themes, which would not be possible or would be hard to be combined in a theme. In these
+ * themes, which would not be possible or would be hard to be combined in a single theme. In these
  * situations developers can use different themes in the components and its child components.
- * This is called sub-theming, which was introduced in Ubuntu.Components v1.3.
+ * This is called sub-theming, which was introduced in Ubuntu.Components 1.3.
  * The only thing the application has to do is to define a ThemeSettings instance for the
  * component which is desired to use a different theme.
  * \qml
  * import QtQuick 2.4
- * import Ubuntu.Componenst 1.3
+ * import Ubuntu.Components 1.3
  * MainView {
  *     width: units.gu(40)
  *     height: units.gu(71)
@@ -348,13 +363,13 @@
  * Another use-case is when a different palette set is needed in the application.
  * One way to achieve that is to define a custom theme for the application, however
  * that theme must be derived from one particular theme, so the application will be
- * nailed to one given theme. If we want to have the same palette values to be used
- * no matter of the component shape, we can override the palette values we want to
+ * restricted to one given theme. If we want to have the same palette values to be used
+ * no matter where the component is used, we can override the palette values we want to
  * change, by setting the theme palette to a \l Palette instance where only the desired
  * palette values are changed. This can be combined with sub-theming, which will make
  * sure that the palette values are applied only on a certain component sub-tree.
  *
- * The following example makes sure the Dialog and is child components will use a given
+ * The following example makes sure the Dialog and its child components will use a given
  * palette value:
  * \qml
  * import QtQuick 2.4
@@ -431,7 +446,7 @@
  *
  * \section1 That's it
  * By now you should have learned what the styling means, what are the themes, what
- * kind of themes toolkit has, how can you create shared or application themes, where should
+ * kind of themes the toolkit has, how can you create shared or application themes, where should
  * you store them, how to extend styles, how to use multiple themes in an application
  * and how to set custom palette values runtime. If you have questions or need guidance,
  * you can contact us on \b{#ubuntu-app-devel} IRC channel on freenode.
