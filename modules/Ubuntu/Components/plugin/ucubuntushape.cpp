@@ -167,7 +167,7 @@ void ShapeShader::updateState(
 
     // Send screen-space derivative factors. Note that when rendering is redirected to a
     // ShaderEffectSource (FBO), dFdy() sign is flipped.
-    const bool flipped = dfdtFactors[0] != 0.0f && state.projectionMatrix()(1, 3) < 0.0f;
+    const bool flipped = dfdtFactors[0] != 1.0f && state.projectionMatrix()(1, 3) < 0.0f;
     const QVector2D dfdtFactorsVector(dfdtFactors[0], flipped ? -dfdtFactors[1] : dfdtFactors[1]);
     program()->setUniformValue(m_dfdtFactorsId, dfdtFactorsVector);
 
