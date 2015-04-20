@@ -162,7 +162,7 @@ void ShapeShader::updateState(
     // and by 255 for distanceAAFactor dequantization. The factor is 1 most of the time apart when
     // the radius size is low, it linearly goes from 1 to 0 to make the corners prettier and to
     // prevent the opacity of the whole shape to slightly lower.
-    const float distanceAA = (shapeTextureInfo.distanceAA * distanceAApx) / (2.0 * 255.0f);
+    const float distanceAA = (shapeTextureInfo.distanceAA * distanceAApx * UCUnits::instance().devicePixelRatio()) / (2.0 * 255.0f);
     program()->setUniformValue(m_distanceAAId, data->distanceAAFactor * distanceAA);
 
     // Send screen-space derivative factors. Note that when rendering is redirected to a
@@ -1130,13 +1130,14 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
     // Get the radius size. When the item width and/or height is less than 2 * radius, the size is
     // scaled down accordingly. The shape was using a fixed image for the corner before switching to
     // a distance field, since the corner wasn't taking the whole image (ending at ~80%) we need
-    // to take that into account when the size is scaled down.
-    float radius = UCUnits::instance().gridUnit() / UCUnits::instance().devicePixelRatio()
+    // to take that into account when the size is scaled down. (calculation in physical pixels)
+    float radius = UCUnits::instance().gridUnit()
         * (m_radius == Small ? smallRadiusGU : mediumRadiusGU);
-    const float scaledDownRadius = qMin(itemSize.width(), itemSize.height()) * 0.5f * 0.8f;
+    const float scaledDownRadius = qMin(itemSize.width(), itemSize.height()) * dpr * 0.5f * 0.8f;
     if (radius > scaledDownRadius) {
         radius = scaledDownRadius;
     }
+    radius = radius / dpr; // convert to device pixels
 
     updateMaterial(node, radius, shapeTexture, sourceTexture && m_sourceOpacity);
 
