@@ -69,11 +69,7 @@ Popover {
             AbstractButton {
                 action: modelData
 
-                // FIXME TIM
-//                 These objectNames are used in the CPOs for header and tabs.
-//                objectName: overflow.tabsOverflow ?
-//                                "tabButton" + index :
-//                                action.objectName + "_header_overflow_button"
+                // These objectNames are used in the CPOs for header and tabs.
                 objectName: action.objectName + "_header_overflow_button"
 
                 // close after triggering the action.
