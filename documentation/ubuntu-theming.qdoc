@@ -117,7 +117,7 @@
  * execute leading or trailing panel \l {ListItemStyle::rebound}{rebound}s and provides
  * the style the ability to overrule the \l {ListItemStyle::swipeEvent}{swipe} coordinates
  * calculated by the ListItem. On the other hand, the style must inform the component
- * about the position of the \l {ListItemStyle::dragPanel}{drag panel} so a dragging
+ * about the position of the \l {ListItemStyle::dragPanel}{drag panel} so the dragging
  * (reordering of list items in a ListView) hot spot can be detected. A style implementation
  * must use the API provided by ListItemStyle, otherwise ListItem will fail to function
  * properly.
@@ -299,7 +299,7 @@
  * \endcode
  * This will make sure theme engine will look after the style components that are not
  * defined by the application theme inside the parent theme. Remember, the parent themes
- * can have parent themes (SuruDark is derived from Ambience) in which case the style components
+ * can have parent themes (SuruDark is derived from Ambiance) in which case the style components
  * will be looked up in all these themes.
  *
  * As shown next, the application can define the palette.
