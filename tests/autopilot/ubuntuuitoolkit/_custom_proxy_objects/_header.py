@@ -206,7 +206,8 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
         try:
             tab_button = self.get_root_instance().select_single(
-                objectName='tabButton' + str(index))
+                objectName='select_tab_' + str(index)
+                + '_header_overflow_button')
         except dbus.StateNotFoundError:
             raise _common.ToolkitException(
                 "Tab button {0} not found.".format(index))
@@ -268,4 +269,4 @@ class Header(AppHeader):
             'Header is an internal QML component of Ubuntu.Components and '
             'its API may change or be removed at any moment. Please use '
             'MainView and Page instead.')
-        super(Header, self).__init__(*args)
+        super().__init__(*args)

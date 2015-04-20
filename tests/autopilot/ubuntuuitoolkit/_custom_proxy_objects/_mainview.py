@@ -1,6 +1,6 @@
 # -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
 #
-# Copyright (C) 2012, 2013, 2014 Canonical Ltd.
+# Copyright (C) 2012, 2013, 2014, 2015 Canonical Ltd.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -42,7 +42,7 @@ class MainView(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
     @classmethod
     def validate_dbus_object(cls, path, state):
-        if super(MainView, cls).validate_dbus_object(path, state):
+        if super().validate_dbus_object(path, state):
             # This covers MainView 0.1/1.0/1.1 and possible components
             # derived from MainView (e.g. "CustomMainView") that have
             # their own CPO.

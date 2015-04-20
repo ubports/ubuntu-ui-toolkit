@@ -1,6 +1,6 @@
 # -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
 #
-# Copyright (C) 2014 Canonical Ltd.
+# Copyright (C) 2014, 2015 Canonical Ltd.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -17,12 +17,7 @@
 import os
 import tempfile
 
-try:
-    # Python 3.
-    from unittest import mock
-except ImportError:
-    # Python 2 add-on: python-mock.
-    import mock
+from unittest import mock
 import testscenarios
 import testtools
 from autopilot import (
@@ -408,7 +403,7 @@ class HideUnity7LauncherTestCase(
         if platform.model() != 'Desktop':
             self.skipTest('Unity 7 runs only on desktop.')
         self.useFixture(fixture_setup.HideUnity7Launcher())
-        super(HideUnity7LauncherTestCase, self).setUp()
+        super().setUp()
 
     def test_maximized_application_must_use_all_screen_width(self):
         application = self.process_manager.get_running_applications()[0]
@@ -434,7 +429,7 @@ class FakeDisplay(object):
     """Fake display with fixed widht and height for use in tests."""
 
     def __init__(self, width, height):
-        super(FakeDisplay, self).__init__()
+        super().__init__()
         self.width = width
         self.height = height
 

@@ -21,6 +21,7 @@
      \part General Topics
      \list
      \li \l{ubuntu-whatsnew.html}{What's new in version 1.2?}
+     \li \l{ubuntu-theming.html}{Styling} components
      \li \l{ubuntu-layouts.html}{Layouts} describes a flexible layouting engine
      to ease the development of responsive user interfaces.
      \li \l {Resolution Independence} describes the facilities that should be
@@ -83,6 +84,13 @@
          import Ubuntu.Components 1.2
      \endcode
      \annotatedlist theming
+
+     \part Theme module
+     Available through:
+     \code
+         import Ubuntu.Components.Themes 1.0
+     \endcode
+     \annotatedlist theme-module
 
      \part Style API
      The Style API defines the interface components use to style the visuals.

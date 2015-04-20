@@ -14,10 +14,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-try:
-    from unittest import mock
-except ImportError:
-    import mock
+from unittest import mock
 
 import testtools
 import ubuntuuitoolkit
@@ -147,7 +144,7 @@ MainView {
 """)
 
     def setUp(self):
-        super(SwipeFlickableTestCase, self).setUp()
+        super().setUp()
         self.flickable = self.main_view.select_single(
             ubuntuuitoolkit.QQuickFlickable, objectName='flickable')
         self.label = self.main_view.select_single(
