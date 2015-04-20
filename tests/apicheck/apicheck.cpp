@@ -29,7 +29,6 @@
 #include <QtCore/QTimer>
 #include <QtCore/QMetaObject>
 #include <QtCore/QMetaProperty>
-#include <QtCore/QDebug>
 #include <QtCore/private/qobject_p.h>
 #include <QtCore/private/qmetaobject_p.h>
 #include <QtQml/private/qqmldirparser_p.h>
@@ -132,12 +131,15 @@ QByteArray convertToId(const QString &cppName)
 {
     QString qmlType(cppName);
     QList<const QQmlType*>types(qmlTypesByCppName[qPrintable(cppName)].toList());
+    std::sort(types.begin(), types.end());
     if (!types.isEmpty())
         qmlType = QString(types[0]->qmlTypeName()).split("/")[1].toUtf8();
     else
         qmlType = cppToId.value(qPrintable(cppName), qPrintable(cppName));
+    // Strip internal _QMLTYPE_xy suffix
+    qmlType = qmlType.split("_")[0];
     // QML . for namespace rather than C++ ::
-    return qPrintable(qmlType.replace("::", "."));
+    return qPrintable(qmlType.replace("::", ".").replace("QTestRootObject", "QtObject"));
 }
 
 QByteArray convertToId(const QMetaObject *mo)
@@ -411,6 +413,10 @@ public:
             }
         } else {
             for (int index = meta->methodOffset(); index < meta->methodCount(); ++index) {
+                // Omit "Changed" methods of properties
+                QByteArray methName(meta->method(index).name());
+                if (!methName.isEmpty() && methName.endsWith("Changed"))
+                    continue;
                 dump(&methods, meta->method(index), implicitSignals, knownAttributes);
             }
         }
@@ -436,7 +442,7 @@ public:
                 prototypeName = getPrototypeNameForCompositeType(
                             superMetaObject, defaultReachableNames, objectsToMerge);
         } else {
-            prototypeName = convertToId(metaObject->className());
+            prototypeName = metaObject->className();
         }
         return prototypeName;
     }
@@ -451,6 +457,11 @@ public:
 
         QJsonObject object;
         QString qmlTyName = compositeType->qmlTypeName();
+
+        // Map filename-based PageHeadConfiguration11 to PageHeadConfiguration
+        QString filename(QFileInfo(compositeType->sourceUrl().fileName()).baseName());
+        cppToId.insert(qPrintable(filename.split(".")[0]), qPrintable(qmlTyName));
+
         // FIXME: Work-around to omit Qt types unintentionally included
         if (qmlTyName.startsWith("Q") || qmlTyName == "TestCase")
             return;
@@ -593,9 +604,7 @@ private:
         bool isList = false, isPointer = false;
         removePointerAndList(&typeName, &isList, &isPointer);
 
-        // Strip internal _QMLTYPE_xy suffix
-        QString normalizedType = QString(typeName).split("_")[0];
-        object->insert("type", normalizedType);
+        object->insert("type", QString(typeName));
 
         if (isList)
             object->insert("isList", true);
@@ -611,12 +620,13 @@ private:
         QByteArray propName = prop.name();
         if (knownAttributes && knownAttributes->knownProperty(propName, revision))
             return;
+        // Two leading underscores: internal API
         if (QString(propName).startsWith("__"))
             return;
 
         QJsonObject property;
         if (revision)
-            property["revision"] = revision;
+            property["revision"] = QString::number(revision);
         writeTypeProperties(&property, prop.typeName(), prop.isWritable());
         object->insert(prop.name(), property);
     }
@@ -632,6 +642,9 @@ private:
         }
 
         QByteArray name = meth.name();
+        // Two leading underscores: internal API
+        if (name.startsWith("__"))
+            return;
         const QString typeName = meth.typeName();
 
         if (implicitSignals.contains(name)
@@ -850,6 +863,7 @@ int main(int argc, char *argv[])
     qmlRegisterSingletonType<QObject>("Qt.test.qtestroot", 1, 0, "QTestRootObject", testRootObject);
 
     QQmlEngine engine;
+    QObject::connect(&engine, SIGNAL(quit()), QCoreApplication::instance(), SLOT(quit()));
     if (!pluginImportPath.isEmpty()) {
         QDir cur = QDir::current();
         cur.cd(pluginImportPath);
@@ -932,7 +946,6 @@ int main(int argc, char *argv[])
         // pluginImportVersion can be empty, pick latest
         int highestMajor = 0, highestMinor = 1;
         Q_FOREACH(QQmlDirParser::Component c, p.components()) {
-            qDebug() << c.typeName << c.majorVersion << c.minorVersion;
             if (c.majorVersion > highestMajor) {
                 highestMajor = c.majorVersion;
                 highestMinor = c.minorVersion;
@@ -941,12 +954,11 @@ int main(int argc, char *argv[])
             }
         }
         pluginImportVersion = QString("%1.%2").arg(highestMajor).arg(highestMinor);
-        qDebug() << "Automatically picked version" << pluginImportVersion;
     }
-    importCode += QString("import %1 %2 as %3\n").arg(pluginImportUri).arg(pluginImportVersion).arg(pluginAlias);
 
     // Create a component with all QML types to add them to the type system
     QByteArray code = importCode;
+    code += QString("import %1 %2 as %3\n").arg(pluginImportUri).arg(pluginImportVersion).arg(pluginAlias);
     code += "Item {\n";
 
     Q_FOREACH(QQmlDirParser::Component c, p.components()) {
@@ -1081,8 +1093,7 @@ int main(int argc, char *argv[])
                     continue;
 
                 QJsonObject object(value.toObject());
-                QString signature(exports);
-                signature += " " + convertToId(object["prototype"].toString());
+                QString signature(exports + " " + convertToId(object["prototype"].toString()));
                 if (object.contains("isSingleton"))
                     signature += " singleton";
                 signature += "\n";
@@ -1097,16 +1108,14 @@ int main(int argc, char *argv[])
                             signature += valu["type"].toString() + " ";
                             if (valu.contains("returns"))
                                 signature += convertToId(valu["returns"].toString()) + " ";
-                            signature += valu["name"].toString();
+                            QStringList args;
                             if (valu.contains("parameters")) {
-                                QStringList args;
                                 Q_FOREACH(const QJsonValue& parameterValue, valu["parameters"].toArray()) {
                                     QJsonObject parameter(parameterValue.toObject());
                                     args.append(convertToId(parameter["type"].toString()) + " " + parameter["name"].toString());
                                 }
-                                signature += "(" + args.join(", ") + ")";
-                                }
-                            signature += "\n";
+                            }
+                            signature += valu["name"].toString() + "(" + args.join(", ") + ")\n";
                         }
                         continue;
                     }
