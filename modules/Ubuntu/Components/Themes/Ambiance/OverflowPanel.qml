@@ -22,8 +22,12 @@ import Ubuntu.Components.ListItems 1.0 as ListItem
 /*!
   \internal
  */
-Popover {
+ActionSelectionPopover {
     id: overflow
+
+    // clicks next to the overflow panel must only close the panel,
+    // not trigger additional events.
+    grabDismissAreaEvents: true
 
     /*!
       The background color of the tabs panel and the actions overflow panel.
@@ -44,11 +48,6 @@ Popover {
     callerMargin: -units.gu(1) + units.dp(4)
     contentWidth: units.gu(20)
 
-    /*!
-      The actions to list in the popover.
-     */
-    property list<Action> model
-
     Binding {
         target: overflow.__foreground.__styleInstance
         property: "color"
@@ -57,77 +56,69 @@ Popover {
               overflow.__foreground.__styleInstance
     }
 
-    Column {
-        anchors {
-            left: parent.left
-            top: parent.top
-            right: parent.right
-        }
-        Repeater {
-            id: overflowRepeater
-            model: overflow.model
-            AbstractButton {
-                action: modelData
+    delegate: AbstractButton {
+        id: actionButton
+        action: modelData
 
-                // These objectNames are used in the CPOs for header and tabs.
-                objectName: action.objectName + "_header_overflow_button"
+        // These objectNames are used in the CPOs for header and tabs.
+        objectName: action.objectName + "_header_overflow_button"
 
-                // close after triggering the action.
-                onClicked: overflow.hide()
+        // close after triggering the action.
+        onClicked: overflow.hide()
 
-                implicitHeight: units.gu(6) + bottomDividerLine.height
-                width: parent ? parent.width : units.gu(31)
+        implicitHeight: units.gu(6) + bottomDividerLine.height
+        width: parent ? parent.width : units.gu(31)
 
-                Rectangle {
-                    visible: parent.pressed
-                    anchors {
-                        left: parent.left
-                        right: parent.right
-                        top: parent.top
-                    }
-                    height: parent.height - bottomDividerLine.height
-                    color: overflow.highlightColor
-                }
-
-                Icon {
-                    id: actionIcon
-                    visible: "" != action.iconSource
-                    source: action.iconSource
-                    color: overflow.foregroundColor
-                    anchors {
-                        verticalCenter: parent.verticalCenter
-                        verticalCenterOffset: units.dp(-1)
-                        left: parent.left
-                        leftMargin: units.gu(2)
-                    }
-                    width: units.gu(2)
-                    height: units.gu(2)
-                    opacity: action.enabled ? 1.0 : 0.5
-                }
-
-                Label {
-                    anchors {
-                        verticalCenter: parent.verticalCenter
-                        verticalCenterOffset: units.dp(-1)
-                        left: actionIcon.visible ? actionIcon.right : parent.left
-                        leftMargin: units.gu(2)
-                        right: parent.right
-                    }
-                    // In the tabs overflow panel there are no icons, and the font-size
-                    //  is medium as opposed to the small font-size in the actions overflow panel.
-                    fontSize: actionIcon.visible ? "small" : "medium"
-                    elide: Text.ElideRight
-                    text: action.text
-                    color: overflow.foregroundColor
-                    opacity: action.enabled ? 1.0 : 0.5
-                }
-
-                ListItem.ThinDivider {
-                    id: bottomDividerLine
-                    anchors.bottom: parent.bottom
-                    visible: index !== overflowRepeater.count - 1
-                }
+        Rectangle {
+            visible: parent.pressed
+            anchors {
+                left: parent.left
+                right: parent.right
+                top: parent.top
             }
+            height: parent.height - bottomDividerLine.height
+            color: overflow.highlightColor
+        }
+
+        Icon {
+            id: actionIcon
+            visible: "" != action.iconSource
+            source: action.iconSource
+            color: overflow.foregroundColor
+            anchors {
+                verticalCenter: parent.verticalCenter
+                verticalCenterOffset: units.dp(-1)
+                left: parent.left
+                leftMargin: units.gu(2)
+            }
+            width: units.gu(2)
+            height: units.gu(2)
+            opacity: action.enabled ? 1.0 : 0.5
+        }
+
+        Label {
+            anchors {
+                verticalCenter: parent.verticalCenter
+                verticalCenterOffset: units.dp(-1)
+                left: actionIcon.visible ? actionIcon.right : parent.left
+                leftMargin: units.gu(2)
+                right: parent.right
+            }
+            // In the tabs overflow panel there are no icons, and the font-size
+            //  is medium as opposed to the small font-size in the actions overflow panel.
+            fontSize: actionIcon.visible ? "small" : "medium"
+            elide: Text.ElideRight
+            text: action.text
+            color: overflow.foregroundColor
+            opacity: action.enabled ? 1.0 : 0.5
+        }
+
+        // The value of showDivider is automatically set by ActionSelectionPopover.
+        property bool showDivider
+        ListItem.ThinDivider {
+            id: bottomDividerLine
+            anchors.bottom: parent.bottom
+            visible: actionButton.showDivider
         }
     }
 }

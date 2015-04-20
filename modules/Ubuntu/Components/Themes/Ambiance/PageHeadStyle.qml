@@ -357,7 +357,8 @@ Style.PageHeadStyle {
                     OverflowPanel {
                         id: tabsPopover
                         objectName: "tabsPopover"
-                        model: actionsFromTabs(styledItem.tabsModel)
+//                        model: actionsFromTabs(styledItem.tabsModel)
+                        actions: actionsFromTabs(styledItem.tabsModel)
 
                         function getActionFromTab(tab) {
                             return tab.__protected.action;
@@ -522,7 +523,7 @@ Style.PageHeadStyle {
                             }
                         }
 
-                        model: actionsContainer.visibleActions.slice(numberOfSlots.used,
+                        actions: actionsContainer.visibleActions.slice(numberOfSlots.used,
                                                                      numberOfSlots.requested)
                     }
                 }
