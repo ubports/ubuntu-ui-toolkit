@@ -162,7 +162,7 @@ void ShapeShader::updateState(
     // and by 255 for distanceAAFactor dequantization. The factor is 1 most of the time apart when
     // the radius size is low, it linearly goes from 1 to 0 to make the corners prettier and to
     // prevent the opacity of the whole shape to slightly lower.
-    const float distanceAA = (shapeTextureInfo.distanceAA * distanceAApx * UCUnits::instance().devicePixelRatio()) / (2.0 * 255.0f);
+    const float distanceAA = (shapeTextureInfo.distanceAA * distanceAApx) / (2.0 * 255.0f);
     program()->setUniformValue(m_distanceAAId, data->distanceAAFactor * distanceAA);
 
     // Send screen-space derivative factors. Note that when rendering is redirected to a
@@ -1137,7 +1137,6 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
     if (radius > scaledDownRadius) {
         radius = scaledDownRadius;
     }
-    radius = radius / dpr; // convert to device pixels
 
     updateMaterial(node, radius, shapeTexture, sourceTexture && m_sourceOpacity);
 
@@ -1247,6 +1246,8 @@ void UCUbuntuShape::updateGeometry(
     // better optimization here.
     Q_UNUSED(shapeOffset);
 
+    const qreal dpr = UCUnits::instance().devicePixelRatio();
+
     ShapeNode::Vertex* v = reinterpret_cast<ShapeNode::Vertex*>(
         static_cast<ShapeNode*>(node)->geometry()->vertexData());
 
@@ -1262,7 +1263,7 @@ void UCUbuntuShape::updateGeometry(
     v[0].backgroundColor = backgroundColor[0];
     v[1].position[0] = 0.5f * itemSize.width();
     v[1].position[1] = 0.0f;
-    v[1].shapeCoordinate[0] = (0.5f * itemSize.width()) / radius - shapeTextureInfo.offset;
+    v[1].shapeCoordinate[0] = (0.5f * itemSize.width() * dpr) / radius - shapeTextureInfo.offset;
     v[1].shapeCoordinate[1] = shapeTextureInfo.offset;
     v[1].sourceCoordinate[0] = 0.5f * sourceCoordTransform.x() + sourceCoordTransform.z();
     v[1].sourceCoordinate[1] = sourceCoordTransform.w();
@@ -1283,7 +1284,7 @@ void UCUbuntuShape::updateGeometry(
     v[3].position[0] = 0.0f;
     v[3].position[1] = 0.5f * itemSize.height();
     v[3].shapeCoordinate[0] = shapeTextureInfo.offset;
-    v[3].shapeCoordinate[1] = (0.5f * itemSize.height()) / radius - shapeTextureInfo.offset;
+    v[3].shapeCoordinate[1] = (0.5f * itemSize.height() * dpr) / radius - shapeTextureInfo.offset;
     v[3].sourceCoordinate[0] = sourceCoordTransform.z();
     v[3].sourceCoordinate[1] = 0.5f * sourceCoordTransform.y() + sourceCoordTransform.w();
     v[3].sourceCoordinate[2] = sourceMaskTransform.z();
@@ -1291,8 +1292,8 @@ void UCUbuntuShape::updateGeometry(
     v[3].backgroundColor = backgroundColor[1];
     v[4].position[0] = 0.5f * itemSize.width();
     v[4].position[1] = 0.5f * itemSize.height();
-    v[4].shapeCoordinate[0] = (0.5f * itemSize.width()) / radius - shapeTextureInfo.offset;
-    v[4].shapeCoordinate[1] = (0.5f * itemSize.height()) / radius - shapeTextureInfo.offset;
+    v[4].shapeCoordinate[0] = (0.5f * itemSize.width() * dpr) / radius - shapeTextureInfo.offset;
+    v[4].shapeCoordinate[1] = (0.5f * itemSize.height() * dpr) / radius - shapeTextureInfo.offset;
     v[4].sourceCoordinate[0] = 0.5f * sourceCoordTransform.x() + sourceCoordTransform.z();
     v[4].sourceCoordinate[1] = 0.5f * sourceCoordTransform.y() + sourceCoordTransform.w();
     v[4].sourceCoordinate[2] = 0.5f * sourceMaskTransform.x() + sourceMaskTransform.z();
@@ -1301,7 +1302,7 @@ void UCUbuntuShape::updateGeometry(
     v[5].position[0] = itemSize.width();
     v[5].position[1] = 0.5f * itemSize.height();
     v[5].shapeCoordinate[0] = shapeTextureInfo.offset;
-    v[5].shapeCoordinate[1] = (0.5f * itemSize.height()) / radius - shapeTextureInfo.offset;
+    v[5].shapeCoordinate[1] = (0.5f * itemSize.height() * dpr) / radius - shapeTextureInfo.offset;
     v[5].sourceCoordinate[0] = sourceCoordTransform.x() + sourceCoordTransform.z();
     v[5].sourceCoordinate[1] = 0.5f * sourceCoordTransform.y() + sourceCoordTransform.w();
     v[5].sourceCoordinate[2] = sourceMaskTransform.x() + sourceMaskTransform.z();
@@ -1320,7 +1321,7 @@ void UCUbuntuShape::updateGeometry(
     v[6].backgroundColor = backgroundColor[2];
     v[7].position[0] = 0.5f * itemSize.width();
     v[7].position[1] = itemSize.height();
-    v[7].shapeCoordinate[0] = (0.5f * itemSize.width()) / radius - shapeTextureInfo.offset;
+    v[7].shapeCoordinate[0] = (0.5f * itemSize.width() * dpr) / radius - shapeTextureInfo.offset;
     v[7].shapeCoordinate[1] = shapeTextureInfo.offset;
     v[7].sourceCoordinate[0] = 0.5f * sourceCoordTransform.x() + sourceCoordTransform.z();
     v[7].sourceCoordinate[1] = sourceCoordTransform.y() + sourceCoordTransform.w();
