@@ -1,5 +1,5 @@
 TEMPLATE = app
-QT += qml quick declarative declarative-private gui qml-private
+QT += qml quick declarative qml-private
 # For setSharedOpenGLContext
 QT += core-private gui-private testlib quick-private
 CONFIG += no_keywords
