@@ -592,7 +592,7 @@ private Q_SLOTS:
         movableItem->setParentItem(Q_NULLPTR);
         spy.wait(500);
         QCOMPARE(spy.count(), 1);
-        QCOMPARE(UCStyledItemBasePrivate::get(root)->getTheme(), &UCTheme::defaultTheme());
+        QCOMPARE(UCStyledItemBasePrivate::get(movableItem)->getTheme(), &UCTheme::defaultTheme());
     }
 
     void test_reparented_styleditem_special_case()
