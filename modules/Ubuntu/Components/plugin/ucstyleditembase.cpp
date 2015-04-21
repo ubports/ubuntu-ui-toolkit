@@ -581,8 +581,13 @@ void UCStyledItemBase::itemChange(ItemChange change, const ItemChangeData &data)
     if (change == ItemParentHasChanged) {
         if (!data.item) {
             d->disconnectTillItem(0);
-        } else if (d->connectParents(0)) {
-            Q_EMIT themeChanged();
+        } else {
+            if (d->parentItem) {
+                d->disconnectTillItem(d->parentItem);
+            }
+            if (d->connectParents(0)) {
+                Q_EMIT themeChanged();
+            }
         }
     }
 }
