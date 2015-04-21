@@ -1,3 +1,23 @@
+ubuntu-ui-toolkit (1.2.1485+15.04.20150421-0ubuntu1) vivid; urgency=medium
+
+  [ Christian Dywan ]
+  * Christian Dywan's change: Ship generated HTML and JSON docs for
+    Autopilot helpers (LP: #1446533)
+
+  [ Loïc Molinari ]
+  * Christian Dywan's change: Ship generated HTML and JSON docs for
+    Autopilot helpers (LP: #1446533)
+
+  [ Tim Peeters ]
+  * Christian Dywan's change: Ship generated HTML and JSON docs for
+    Autopilot helpers (LP: #1446533)
+
+  [ Zoltán Balogh ]
+  * Christian Dywan's change: Ship generated HTML and JSON docs for
+    Autopilot helpers (LP: #1446533)
+
+ -- CI Train Bot <ci-train-bot@canonical.com>  Tue, 21 Apr 2015 16:31:51 +0000
+
 ubuntu-ui-toolkit (1.2.1485+15.04.20150417.1-0ubuntu1) vivid; urgency=medium
 
   [ Christian Dywan]   
