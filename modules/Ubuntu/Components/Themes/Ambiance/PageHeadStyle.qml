@@ -357,8 +357,21 @@ Style.PageHeadStyle {
                     OverflowPanel {
                         id: tabsPopover
                         objectName: "tabsPopover"
-                        tabsOverflow: true
-                        model: styledItem.tabsModel
+                        model: actionsFromTabs(styledItem.tabsModel)
+
+                        function getActionFromTab(tab) {
+                            return tab.__protected.action;
+                        }
+
+                        function actionsFromTabs(tabsList) {
+                            var result = [];
+                            var tab;
+                            for (var i=0; i < tabsList.count; i++) {
+                                tab = tabsList.get(i).tab;
+                                result.push(getActionFromTab(tab));
+                            }
+                            return result;
+                        }
                         backgroundColor: headerStyle.panelBackgroundColor
                         foregroundColor: headerStyle.panelForegroundColor
                         highlightColor: headerStyle.panelHighlightColor
@@ -509,7 +522,6 @@ Style.PageHeadStyle {
                             }
                         }
 
-                        tabsOverflow: false
                         model: actionsContainer.visibleActions.slice(numberOfSlots.used,
                                                                      numberOfSlots.requested)
                     }
