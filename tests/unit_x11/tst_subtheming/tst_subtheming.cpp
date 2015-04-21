@@ -572,6 +572,8 @@ private Q_SLOTS:
 
     void test_reparented_styleditem_special_case()
     {
+        qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "");
+        qputenv("XDG_DATA_DIRS", "./themes:./themes/TestModule");
         QScopedPointer<ThemeTestCase> view(new ThemeTestCase("ReparentStyledItemFollowsNewPathOnly.qml"));
         UCStyledItemBase *root = static_cast<UCStyledItemBase*>(view->rootObject());
         UCTheme *suruTheme = view->findItem<UCTheme*>("suruTheme");
