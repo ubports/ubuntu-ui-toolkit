@@ -569,6 +569,29 @@ private Q_SLOTS:
         ThemeTestCase::ignoreWarning("InvalidPalette.qml", 22, 20, "QML QtObject: Not a Palette component.");
         QScopedPointer<ThemeTestCase> view(new ThemeTestCase("InvalidPalette.qml"));
     }
+
+    void test_reparented_styleditem_special_case()
+    {
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase("ReparentStyledItemFollowsNewPathOnly.qml"));
+        UCStyledItemBase *root = static_cast<UCStyledItemBase*>(view->rootObject());
+        UCTheme *suruTheme = view->findItem<UCTheme*>("suruTheme");
+        UCStyledItemBase *customThemedItem = view->findItem<UCStyledItemBase*>("customThemed");
+        UCStyledItemBase *movableItem = view->findItem<UCStyledItemBase*>("movable");
+
+        // check the themes
+        QCOMPARE(UCStyledItemBasePrivate::get(root)->getTheme()->name(), QString("Ubuntu.Components.Themes.Ambiance"));
+        QCOMPARE(UCStyledItemBasePrivate::get(customThemedItem)->getTheme()->name(), QString("CustomTheme"));
+        QCOMPARE(UCStyledItemBasePrivate::get(movableItem)->getTheme()->name(), QString("Ubuntu.Components.Themes.Ambiance"));
+
+        // move the movableItem under customThemedItem
+        movableItem->setParentItem(customThemedItem);
+        QCOMPARE(UCStyledItemBasePrivate::get(movableItem)->getTheme()->name(), QString("CustomTheme"));
+
+        // set a new theme for the root, and make sure our theme stays the same
+        UCStyledItemBasePrivate::get(root)->setTheme(suruTheme);
+        QTest::waitForEvents();
+        QCOMPARE(UCStyledItemBasePrivate::get(movableItem)->getTheme()->name(), QString("CustomTheme"));
+    }
 };
 
 QTEST_MAIN(tst_Subtheming)

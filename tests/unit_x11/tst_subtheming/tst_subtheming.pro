@@ -21,6 +21,7 @@ OTHER_FILES += \
     ChangeDefaultPaletteInChildren.qml \
     MultiplePaletteInstances.qml \
     DynamicPalette.qml \
-    InvalidPalette.qml
+    InvalidPalette.qml \
+    ReparentStyledItemFollowsNewPathOnly.qml
 
 
