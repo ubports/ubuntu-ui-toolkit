@@ -576,20 +576,17 @@ bool UCStyledItemBase::childMouseEventFilter(QQuickItem *child, QEvent *event)
 // catch parent change event so we can lookup for the parent chain theme
 void UCStyledItemBase::itemChange(ItemChange change, const ItemChangeData &data)
 {
-    QQuickItem::itemChange(change, data);
-    Q_D(UCStyledItemBase);
     if (change == ItemParentHasChanged) {
-        if (!data.item) {
+        Q_D(UCStyledItemBase);
+        // disconnect from previous parentItem
+        if (d->parentItem) {
             d->disconnectTillItem(0);
-        } else {
-            if (d->parentItem) {
-                d->disconnectTillItem(d->parentItem);
-            }
-            if (d->connectParents(0)) {
-                Q_EMIT themeChanged();
-            }
+        }
+        if (data.item && d->connectParents(data.item)) {
+            Q_EMIT themeChanged();
         }
     }
+    QQuickItem::itemChange(change, data);
 }
 
 #include "moc_ucstyleditembase.cpp"
