@@ -473,7 +473,7 @@ public:
         // Get C++ base class name for the composite type
         QString prototypeName = getPrototypeNameForCompositeType(mainMeta, defaultReachableNames,
                                                                  &objectsToMerge);
-        object.insert("prototype", prototypeName);
+        object.insert("prototype", mainMeta->superClass()->className());
 
         QStringList exportStrings(QStringList() << getExportString(qmlTyName, compositeType->majorVersion(), compositeType->minorVersion()));
         // Merge objects to get all exported versions of the same type
