@@ -83,6 +83,7 @@ Item {
             }
         }
     }
+
     UbuntuTestCase {
         name: "PageHeadSectionsAPI"
         when: windowShown
