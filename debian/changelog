@@ -74,6 +74,14 @@ ubuntu-ui-toolkit (1.2.1485+15.04.20150417.1-0ubuntu1) vivid; urgency=medium
 
  -- CI Train Bot <ci-train-bot@canonical.com>  Fri, 17 Apr 2015 16:22:53 +0000
 
+ubuntu-ui-toolkit (1.2.1458+15.04.20150422-0ubuntu1) vivid; urgency=medium
+
+  [ Christian Dywan ]
+  * Ship generated HTML and JSON docs for Autopilot helpers, and drop
+    python-autopilot build dependency which is in universe.
+
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Wed, 22 Apr 2015 09:57:40 +0100
+
 ubuntu-ui-toolkit (1.2.1458+15.04.20150327-0ubuntu1) vivid; urgency=medium
 
   [ By Tim Peeters ]
