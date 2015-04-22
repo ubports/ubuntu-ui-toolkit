@@ -33,17 +33,56 @@ Item {
                 sections {
                     model: ["navy", "lightblue", "brown"]
                 }
+                actions: [
+                    Action {
+                        iconName: "appointment-new"
+                        text: "New"
+                    },
+                    Action {
+                        iconName: "attachment"
+                        text: "Attach"
+                    },
+                    Action {
+                        iconName: "calendar-today"
+                        text: "Today"
+                    },
+                    Action {
+                        iconName: "delete"
+                        text: "Delete"
+                    }
+
+                ]
             }
-            Rectangle {
-                anchors {
-                    fill: parent
-                    margins: units.gu(2)
+
+            ListView {
+                anchors.fill: parent
+                model: 50
+                delegate: ListItem {
+                    UbuntuShape {
+                        id: shape
+                        anchors {
+                            left: parent.left
+                            top: parent.top
+                            bottom: parent.bottom
+                            margins: units.gu(1)
+                        }
+                        width: height
+                        color: page.head.sections.model[page.head.sections.selectedIndex]
+                    }
+
+                    Label {
+                        id: label
+                        anchors {
+                            left: shape.right
+                            leftMargin: units.gu(2)
+                            verticalCenter: parent.verticalCenter
+                        }
+                        text: "List item #"+index
+                    }
                 }
-                color: page.head.sections.model[page.head.sections.selectedIndex]
             }
         }
     }
-
     UbuntuTestCase {
         name: "PageHeadSectionsAPI"
         when: windowShown
