@@ -17,7 +17,7 @@
 # Based on pbuilderjenkins license checking script.
 
 include_files="\.(c(c|pp|xx)?|h(h|pp|xx)?|p(l|m)|php|py(|x)|java|js|vala|qml)$"
-exclude_dirs="(3rd_party|qrc_|moc_)"
+exclude_dirs="(3rd_party|qrc_|moc_|_build)"
 allowed_licenses="(Canonical|Android|Google|Digia)"
 issues_count=`licensecheck --noconf -r * --copyright -m -c $include_files -i $exclude_dirs | egrep -v $allowed_licenses | wc -l`
 
