@@ -569,6 +569,56 @@ private Q_SLOTS:
         ThemeTestCase::ignoreWarning("InvalidPalette.qml", 22, 20, "QML QtObject: Not a Palette component.");
         QScopedPointer<ThemeTestCase> view(new ThemeTestCase("InvalidPalette.qml"));
     }
+
+    void test_removing_closest_parent_styled()
+    {
+        qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "");
+        qputenv("XDG_DATA_DIRS", "./themes:./themes/TestModule");
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase("ReparentStyledItemFollowsNewPathOnly.qml"));
+        UCTheme *suruTheme = view->findItem<UCTheme*>("suruTheme");
+        UCStyledItemBase *root = static_cast<UCStyledItemBase*>(view->rootObject());
+        UCStyledItemBase *movableItem = view->findItem<UCStyledItemBase*>("movable");
+
+        // verify movableItem's theme
+        QCOMPARE(UCStyledItemBasePrivate::get(root)->getTheme(), UCStyledItemBasePrivate::get(movableItem)->getTheme());
+
+        // set the theme for root
+        UCStyledItemBasePrivate::get(root)->setTheme(suruTheme);
+        QTest::waitForEvents();
+        QCOMPARE(UCStyledItemBasePrivate::get(root)->getTheme(), UCStyledItemBasePrivate::get(movableItem)->getTheme());
+
+        // set the parent item of the test item to 0
+        QSignalSpy spy(movableItem, SIGNAL(themeChanged()));
+        movableItem->setParentItem(Q_NULLPTR);
+        spy.wait(500);
+        QCOMPARE(spy.count(), 1);
+        QCOMPARE(UCStyledItemBasePrivate::get(movableItem)->getTheme(), &UCTheme::defaultTheme());
+    }
+
+    void test_reparented_styleditem_special_case()
+    {
+        qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "");
+        qputenv("XDG_DATA_DIRS", "./themes:./themes/TestModule");
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase("ReparentStyledItemFollowsNewPathOnly.qml"));
+        UCStyledItemBase *root = static_cast<UCStyledItemBase*>(view->rootObject());
+        UCTheme *suruTheme = view->findItem<UCTheme*>("suruTheme");
+        UCStyledItemBase *customThemedItem = view->findItem<UCStyledItemBase*>("customThemed");
+        UCStyledItemBase *movableItem = view->findItem<UCStyledItemBase*>("movable");
+
+        // check the themes
+        QCOMPARE(UCStyledItemBasePrivate::get(root)->getTheme()->name(), QString("Ubuntu.Components.Themes.Ambiance"));
+        QCOMPARE(UCStyledItemBasePrivate::get(customThemedItem)->getTheme()->name(), QString("CustomTheme"));
+        QCOMPARE(UCStyledItemBasePrivate::get(movableItem)->getTheme()->name(), QString("Ubuntu.Components.Themes.Ambiance"));
+
+        // move the movableItem under customThemedItem
+        movableItem->setParentItem(customThemedItem);
+        QCOMPARE(UCStyledItemBasePrivate::get(movableItem)->getTheme()->name(), QString("CustomTheme"));
+
+        // set a new theme for the root, and make sure our theme stays the same
+        UCStyledItemBasePrivate::get(root)->setTheme(suruTheme);
+        QTest::waitForEvents();
+        QCOMPARE(UCStyledItemBasePrivate::get(movableItem)->getTheme()->name(), QString("CustomTheme"));
+    }
 };
 
 QTEST_MAIN(tst_Subtheming)
