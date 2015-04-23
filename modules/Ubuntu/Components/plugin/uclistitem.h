@@ -43,9 +43,6 @@ class UCListItem : public UCStyledItemBase
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), UCAction *action READ action WRITE setAction NOTIFY actionChanged DESIGNABLE false)
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), QQmlListProperty<QObject> listItemData READ data DESIGNABLE false)
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), QQmlListProperty<QQuickItem> listItemChildren READ children NOTIFY listItemChildrenChanged DESIGNABLE false)
-    // FIXME move these to StyledItemBase with subtheming
-    Q_PRIVATE_PROPERTY(UCListItem::d_func(), QQmlComponent *style READ style WRITE setStyle RESET resetStyle NOTIFY styleChanged)
-    Q_PRIVATE_PROPERTY(UCListItem::d_func(), QQuickItem *__styleInstance READ styleInstance NOTIFY __styleInstanceChanged)
     Q_CLASSINFO("DefaultProperty", "listItemData")
 public:
     explicit UCListItem(QQuickItem *parent = 0);
@@ -65,6 +62,7 @@ public:
     void resetHighlightColor();
 
 protected:
+    void classBegin();
     void componentComplete();
     QSGNode *updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data);
     void itemChange(ItemChange change, const ItemChangeData &data);
@@ -95,14 +93,11 @@ Q_SIGNALS:
     void contentMovementStarted();
     void contentMovementEnded();
 
-    void styleChanged();
-    void __styleInstanceChanged();
-
 public Q_SLOTS:
 
 private:
     Q_DECLARE_PRIVATE(UCListItem)
-    Q_PRIVATE_SLOT(d_func(), void _q_updateThemedData())
+    Q_PRIVATE_SLOT(d_func(), void _q_themeChanged())
     Q_PRIVATE_SLOT(d_func(), void _q_relayout())
     Q_PRIVATE_SLOT(d_func(), void _q_updateSwiping())
     Q_PRIVATE_SLOT(d_func(), void _q_updateSize())

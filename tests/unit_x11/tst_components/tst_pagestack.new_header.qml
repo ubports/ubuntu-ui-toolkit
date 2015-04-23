@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2014 Canonical Ltd.
+ * Copyright 2012-2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,7 +16,7 @@
 
 import QtQuick 2.2
 import Ubuntu.Test 1.0
-import Ubuntu.Components 1.1
+import Ubuntu.Components 1.2
 
 // pagestack tests for deprecated toolbar are in
 // unit/tst_components/tst_pagestack_deprecated_toolbar.qml
@@ -28,7 +28,6 @@ Item {
     MainView {
         id: mainView
         anchors.fill: parent
-        useDeprecatedToolbar: false
         PageStack {
             id: pageStack
             Page {
@@ -73,43 +72,36 @@ Item {
         when: windowShown
         id: testCase
 
-        property var head_style
-
         function initTestCase() {
-            testCase.head_style = findChild(mainView, "PageHeadStyle");
-            wait_for_animation();
+            waitForHeaderAnimation(mainView);
             compare(pageStack.currentPage, null, "is not set by default");
             compare(pageStack.__propagated, mainView.__propagated, "propagated property of pageStack equals mainView.__propagated")
             compare(mainView.__propagated.header.title, "", "empty title by default");
         }
 
-        function wait_for_animation() {
-            tryCompareFunction(function(){return testCase.head_style.animating}, false);
-        }
-
         function test_depth() {
             compare(pageStack.depth, 0, "depth is 0 by default");
             pageStack.push(page1);
-            wait_for_animation();
+            waitForHeaderAnimation(mainView);
             compare(pageStack.depth, 1, "depth is correctly increased when pushing a page");
             pageStack.push(page2);
-            wait_for_animation();
+            waitForHeaderAnimation(mainView);
             compare(pageStack.depth, 2, "depth is correctly updated when pushing a page");
             pageStack.pop();
-            wait_for_animation();
+            waitForHeaderAnimation(mainView);
             compare(pageStack.depth, 1, "depth is correctly decreased when popping a page");
             pageStack.clear();
-            wait_for_animation();
+            waitForHeaderAnimation(mainView);
             compare(pageStack.depth, 0, "depth is after clearing");
         }
 
         function test_currentPage() {
             compare(pageStack.currentPage, null, "currentPage is null by default");
             pageStack.push(page1);
-            wait_for_animation();
+            waitForHeaderAnimation(mainView);
             compare(pageStack.currentPage, page1, "currentPage properly updated");
             pageStack.clear();
-            wait_for_animation();
+            waitForHeaderAnimation(mainView);
             compare(pageStack.currentPage, null, "currentPage properly reset");
         }
 
@@ -117,60 +109,60 @@ Item {
             compare(pageStack.depth, 0, "depth is 0 initially");
             pageStack.push(page1);
             pageStack.push(page2);
-            wait_for_animation();
+            waitForHeaderAnimation(mainView);
             compare(pageStack.currentPage, page2, "last pushed page is on top");
             pageStack.pop();
-            wait_for_animation();
+            waitForHeaderAnimation(mainView);
             compare(pageStack.currentPage, page1, "popping puts previously pushed page on top");
             pageStack.clear();
-            wait_for_animation();
+            waitForHeaderAnimation(mainView);
         }
 
         function test_active_bug1260116() {
             pageStack.push(page1);
-            wait_for_animation();
+            waitForHeaderAnimation(mainView);
 
             compare(page1.active, true, "Page is active after pushing");
             pageStack.push(page2);
-            wait_for_animation();
+            waitForHeaderAnimation(mainView);
 
             compare(page1.active, false, "Page no longer active after pushing a new page");
             compare(page2.active, true, "New page is active after pushing");
             pageStack.pop();
-            wait_for_animation();
+            waitForHeaderAnimation(mainView);
             compare(page1.active, true, "Page re-activated when on top of the stack");
             compare(page2.active, false, "Page no longer active after being popped");
             pageStack.clear();
-            wait_for_animation();
+            waitForHeaderAnimation(mainView);
 
             compare(pageInStack.active, false, "Page defined inside PageStack is not active by default");
             pageStack.push(pageInStack);
-            wait_for_animation();
+            waitForHeaderAnimation(mainView);
             compare(pageInStack.active, true, "Pushing a page on PageStack makes it active");
             pageStack.pop();
-            wait_for_animation();
+            waitForHeaderAnimation(mainView);
             compare(pageInStack.active, false, "Popping a page from PageStack makes it inactive");
             pageStack.clear();
-            wait_for_animation();
+            waitForHeaderAnimation(mainView);
         }
 
         function test_title_bug1143345_bug1317902() {
             pageStack.push(page1);
-            wait_for_animation();
+            waitForHeaderAnimation(mainView);
             compare(mainView.__propagated.header.title, "Title 1", "Header title is correctly set by page");
             page1.title = "New title";
             compare(mainView.__propagated.header.title, "New title", "Header title correctly updated by page");
             pageStack.push(page2);
-            wait_for_animation();
+            waitForHeaderAnimation(mainView);
             compare(mainView.__propagated.header.title, "Title 2", "Header title is correctly set by page");
             pageStack.clear();
             page1.title = "Title 1";
 
             pageStack.push(pageWithPage);
-            wait_for_animation();
+            waitForHeaderAnimation(mainView);
             compare(mainView.__propagated.header.title, pageWithPage.title, "Embedded page sets title of outer page");
             pageStack.clear();
-            wait_for_animation();
+            waitForHeaderAnimation(mainView);
         }
 
         function get_tabs_button() {
@@ -182,36 +174,36 @@ Item {
         function test_tabs_inside_stack_bug1187850() {
             compare(get_tabs_button(), null, "Without tabs there is no visible tabs button.");
             pageStack.push(tabs);
-            wait_for_animation();
+            waitForHeaderAnimation(mainView);
             compare(pageStack.currentPage, tabs, "Tabs can be pushed on a PageStack");
             compare(tabs.active, true, "Tabs on top of a PageStack are active");
             compare(get_tabs_button().visible, true, "Pushing tabs on pagestack enables the tabs button");
             pageStack.push(page1);
-            wait_for_animation();
+            waitForHeaderAnimation(mainView);
             compare(pageStack.currentPage, page1, "A page can be pushed on top of a Tabs");
             compare(tabs.active, false, "Tabs on a PageStack, but not on top, are inactive");
             compare(get_tabs_button(), null, "Contents of inactive Tabs is not applied to header");
             pageStack.pop();
-            wait_for_animation();
+            waitForHeaderAnimation(mainView);
             compare(tabs.active, true, "Tabs on top of PageStack is active");
             compare(get_tabs_button().visible, true, "Active Tabs controls header contents");
             pageStack.clear();
-            wait_for_animation();
+            waitForHeaderAnimation(mainView);
         }
 
         function test_pop_to_tabs_bug1316736() {
             pageStack.push(tabs);
-            wait_for_animation();
+            waitForHeaderAnimation(mainView);
             tabs.selectedTabIndex = 1;
             pageStack.push(page1);
-            wait_for_animation();
+            waitForHeaderAnimation(mainView);
             compare(tabs.active, false, "Tabs on a PageStack, but not on top, are inactive");
             pageStack.pop();
-            wait_for_animation();
+            waitForHeaderAnimation(mainView);
             compare(tabs.active, true, "Tabs on top of PageStack is active");
             compare(tabs.selectedTabIndex, 1, "Pushing and popping another page on top of Tabs does not change selectedTabsIndex");
             pageStack.clear();
-            wait_for_animation();
+            waitForHeaderAnimation(mainView);
         }
 
         function test_push_return_values() {
@@ -225,7 +217,7 @@ Item {
             compare(pushedPage.title, "Page from QML file",
                     "PageStack.push() returns Page created from QML file");
             pageStack.clear();
-            wait_for_animation();
+            waitForHeaderAnimation(mainView);
         }
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.2 as Ubuntu
+import Ubuntu.Components 1.3 as Ubuntu
 import Ubuntu.Components.Popups 1.0
 
 /*!
@@ -110,7 +110,7 @@ ActionItem {
       text input. This property allows to control the highlight separately from
       the focused behavior.
       */
-    property bool highlighted: focus
+    property bool highlighted: activeFocus
 
     /*!
       Text that appears when there is no content in the component.
@@ -844,9 +844,7 @@ ActionItem {
     QtObject {
         id: internal
         // array of borders in left, top, right, bottom order
-        property real spacing: control.__styleInstance.overlaySpacing
-        property real lineSpacing: units.dp(3)
-        property real lineSize: editor.font.pixelSize + lineSpacing
+        property real spacing: control.__styleInstance.frameSpacing
 
         property int type: action ? action.parameterType : Ubuntu.Action.None
         onTypeChanged: {
@@ -871,6 +869,8 @@ ActionItem {
         // the left pane width depends on its children width
         height: parent.height
         width: childrenRect.width
+        // Overlay needs to have priority
+        z: 1
         onChildrenChanged: {
             // reparenting
             for (var i = 0; i < children.length; i++) {
@@ -891,6 +891,8 @@ ActionItem {
         // the right pane width depends on its children width
         height: parent.height
         width: childrenRect.width
+        // Overlay needs to have priority
+        z: 1
         onChildrenChanged: {
             // reparenting
             for (var i = 0; i < children.length; i++) {
@@ -947,7 +949,7 @@ ActionItem {
         }
         // hint is shown till user types something in the field
         visible: (editor.text == "") && !editor.inputMethodComposing
-        color: Theme.palette.normal.backgroundText
+        color: theme.palette.normal.backgroundText
         font: editor.font
         elide: Text.ElideRight
     }
@@ -1008,12 +1010,6 @@ ActionItem {
                 main: control
                 input: editor
                 flickable: flicker
-                /*
-                  In x direction we use the Flickable x position as we can have overlays
-                  which can shift the cursor caret. On y direction we only use the topMargin
-                  spacing.
-                  */
-                frameDistance: Qt.point(flicker.x, flicker.topMargin)
             }
         }
     }
@@ -1023,5 +1019,5 @@ ActionItem {
         cursorPosition = 0;
     }
 
-    style: Theme.createStyleComponent("TextFieldStyle.qml", control)
+    style: theme.createStyleComponent("TextFieldStyle.qml", control)
 }

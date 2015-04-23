@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.2
+import Ubuntu.Components 1.3
 
 /*
   The default slider style consists of a bar and a thumb shape.
@@ -27,7 +27,7 @@ Item {
     id: sliderStyle
 
     property color foregroundColor: UbuntuColors.orange
-    property color backgroundColor: Theme.palette.normal.base
+    property color backgroundColor: theme.palette.normal.base
 
     property real thumbSpacing: units.gu(0)
     property Item bar: background
@@ -81,13 +81,16 @@ Item {
         width: units.gu(2)
         height: units.gu(2)
         opacity: 0.97
-        backgroundColor: Theme.palette.normal.overlay
+        backgroundColor: theme.palette.normal.overlay
     }
 
     BubbleShape {
         id: bubbleShape
 
-        width: units.gu(8)
+        property real minimumWidth: units.gu(8)
+        property real horizontalPadding: units.gu(1)
+
+        width: Math.max(minimumWidth, label.implicitWidth + 2*horizontalPadding)
         height: units.gu(6)
 
         // FIXME: very temporary implementation
@@ -114,7 +117,7 @@ Item {
             anchors.centerIn: parent
             text: styledItem.formatValue(SliderUtils.liveValue(styledItem))
             fontSize: "large"
-            color: Theme.palette.normal.overlayText
+            color: theme.palette.normal.overlayText
         }
     }
 }

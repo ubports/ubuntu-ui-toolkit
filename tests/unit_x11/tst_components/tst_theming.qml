@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,15 +16,13 @@
 
 import QtQuick 2.0
 import QtTest 1.0
-import Ubuntu.Components 1.1
+import Ubuntu.Components 1.3
 import Ubuntu.Test 1.0
 
 MainView {
     id: mainView
     width: units.gu(50)
     height: units.gu(10)
-
-    useDeprecatedToolbar: false
 
     UbuntuTestCase {
         when: windowShown
@@ -46,15 +44,15 @@ MainView {
             ];
         }
         function test_backgroundcolor_change(data) {
-            if (data.oldTheme !== Theme.name) {
-                Theme.name = data.oldTheme;
+            if (data.oldTheme !== mainView.theme.name) {
+                mainView.theme.name = data.oldTheme;
                 themeSpy.wait();
             }
             // change color;
             themeSpy.clear();
             mainView.backgroundColor = data.color;
             themeSpy.wait();
-            compare(Theme.name, data.newTheme, "Theme not chnaged");
+            compare(mainView.theme.name, data.newTheme, "Theme not chnaged");
         }
     }
 }

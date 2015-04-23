@@ -24,10 +24,10 @@
 
 uniform sampler2D shapeTexture;
 uniform sampler2D sourceTexture;
-uniform lowp vec2 factors;
+uniform lowp vec2 dfdtFactors;
+uniform lowp vec2 opacityFactors;
 uniform lowp float sourceOpacity;
 uniform lowp float distanceAA;
-uniform lowp float dfdtFlip;
 uniform bool textured;
 uniform mediump int aspect;
 
@@ -54,21 +54,23 @@ void main(void)
         color = vec4(1.0 - source.a) * color + source;
     }
 
+    // Get screen-space derivative of texture coordinate t representing the normalized distance
+    // between 2 pixels. dFd*() unfortunately have to be called outside of branches in order to work
+    // correctly with VMware's "Gallium 0.4 on SVGA3D".
+    lowp vec2 derivatives = vec2(dFdx(shapeCoord.t), dFdy(shapeCoord.t));
+    lowp float dfdt = dfdtFactors.x != 0.0 ? derivatives.x : derivatives.y;
+
     if (aspect == FLAT) {
-        // Get screen-space derivative of texture coordinate t representing the normalized distance
-        // between 2 pixels then mask the current color with an anti-aliased and resolution
-        // independent shape mask built from distance fields.
-        lowp float dfdt = dFdy(shapeCoord.t);
+        // Mask the current color with an anti-aliased and resolution independent shape mask built
+        // from distance fields.
         lowp float distanceMin = abs(dfdt) * -distanceAA + 0.5;
         lowp float distanceMax = abs(dfdt) * distanceAA + 0.5;
         color *= smoothstep(distanceMin, distanceMax, shapeData.b);
 
     } else if (aspect == INSET) {
-        // Get screen-space derivative of texture coordinate t representing the normalized distance
-        // between 2 pixels. The vertex layout of the shape is made so that the derivative is
-        // negative from top to middle and positive from middle to bottom.
-        lowp float dfdt = dFdy(shapeCoord.t) * dfdtFlip;
-        lowp float shapeSide = dfdt <= 0.0 ? 0.0 : 1.0;
+        // The vertex layout of the shape is made so that the derivative is negative from top to
+        // middle and positive from middle to bottom.
+        lowp float shapeSide = dfdt * dfdtFactors.y <= 0.0 ? 0.0 : 1.0;
         // Blend the shape inner shadow over the current color. The shadow color is black, its
         // translucency is stored in the texture.
         lowp float shadow = shapeData[int(shapeSide)];
@@ -88,5 +90,5 @@ void main(void)
         color = (color * vec4(mask[int(shapeSide)])) + vec4(bevel);
     }
 
-    gl_FragColor = color * vec4(factors.x, factors.x, factors.x, factors.y);
+    gl_FragColor = color * opacityFactors.xxxy;
 }

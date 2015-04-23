@@ -50,7 +50,7 @@ void ListItemDragHandler::init()
 // handles drop gesture animated if the style has animation defined for it
 void ListItemDragHandler::drop()
 {
-    QQuickPropertyAnimation *animation = UCListItemPrivate::get(listItem)->styleItem->m_dropAnimation;
+    QQuickPropertyAnimation *animation = UCListItemPrivate::get(listItem)->listItemStyle()->m_dropAnimation;
     if (animation) {
         // complete any previous animation
         animation->complete();

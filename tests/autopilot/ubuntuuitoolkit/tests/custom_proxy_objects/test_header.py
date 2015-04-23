@@ -34,7 +34,7 @@ class HideShowTestCase(tests.QMLFileAppTestCase):
         'test_header.HideShowTestCase.qml')
 
     def setUp(self):
-        super(HideShowTestCase, self).setUp()
+        super().setUp()
         self.header = self.main_view.get_header()
 
     def test_ensure_header_visible_must_show_it_when_not_visible(self):
@@ -70,7 +70,7 @@ class ActionsTestCase(tests.QMLFileAppTestCase):
     ]
 
     def setUp(self):
-        super(ActionsTestCase, self).setUp()
+        super().setUp()
         self.header = self.main_view.get_header()
         self.label = self.app.select_single(
             'Label', objectName='clicked_label')
@@ -134,7 +134,7 @@ class SectionsTestCase(tests.QMLFileAppTestCase):
         dir_path, 'test_header.SectionsTestCase.qml')
 
     def setUp(self):
-        super(SectionsTestCase, self).setUp()
+        super().setUp()
         self.header = self.main_view.get_header()
         # initially, section 0 is selected
         self.assertEqual(self.header.get_selected_section_index(), 0)
@@ -162,7 +162,7 @@ class DeprecatedHeaderSectionsTestCase(tests.QMLFileAppTestCase):
         dir_path, 'test_header.DeprecatedHeaderSectionsTestCase.qml')
 
     def setUp(self):
-        super(DeprecatedHeaderSectionsTestCase, self).setUp()
+        super().setUp()
         self.header = self.main_view.get_header()
 
     def test_get_selection_index(self):

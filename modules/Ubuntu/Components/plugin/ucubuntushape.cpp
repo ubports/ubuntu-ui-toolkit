@@ -29,6 +29,8 @@
 #include "ucubuntushapetexture.h"
 #include "ucunits.h"
 #include <QtCore/QPointer>
+#include <QtGui/QGuiApplication>
+#include <QtGui/QScreen>
 #include <QtQuick/QQuickWindow>
 #include <QtQuick/QSGTextureProvider>
 #include <QtQuick/private/qquickimage_p.h>
@@ -47,8 +49,36 @@ const float pressedFactor = 0.85f;
 
 // --- Scene graph shader ---
 
+// Factors used to know which screen-space derivatives must be used in the fragment shaders based on
+// the primary orientation and current orientation.
+static float dfdtFactors[2];
+
+static void orientationChanged(Qt::ScreenOrientation orientation)
+{
+    const quint8 landscapeMask = Qt::LandscapeOrientation | Qt::InvertedLandscapeOrientation;
+    const quint8 portraitMask = Qt::PortraitOrientation | Qt::InvertedPortraitOrientation;
+    if (QGuiApplication::primaryScreen()->primaryOrientation() & landscapeMask) {
+        const quint8 flippedMask =
+            Qt::InvertedLandscapeOrientation | Qt::InvertedPortraitOrientation;
+        dfdtFactors[0] = orientation & landscapeMask ? 0.0f : 1.0f;
+        dfdtFactors[1] = orientation & flippedMask ? -1.0f : 1.0f;
+    } else {
+        const quint8 flippedMask = Qt::InvertedPortraitOrientation | Qt::LandscapeOrientation;
+        dfdtFactors[0] = orientation & portraitMask ? 0.0f : 1.0f;
+        dfdtFactors[1] = orientation & flippedMask ? -1.0f : 1.0f;
+    }
+}
+
 ShapeShader::ShapeShader()
 {
+    static bool once = true;
+    if (once) {
+        const QScreen* primaryScreen = QGuiApplication::primaryScreen();
+        orientationChanged(primaryScreen->orientation());
+        QObject::connect(primaryScreen, &QScreen::orientationChanged, orientationChanged);
+        once = false;
+    }
+
     setShaderSourceFile(QOpenGLShader::Vertex, QStringLiteral(":/uc/shaders/shape.vert"));
     setShaderSourceFile(QOpenGLShader::Fragment, QStringLiteral(":/uc/shaders/shape.frag"));
 }
@@ -71,10 +101,10 @@ void ShapeShader::initialize()
 
     m_functions = QOpenGLContext::currentContext()->functions();
     m_matrixId = program()->uniformLocation("matrix");
-    m_factorsId = program()->uniformLocation("factors");
+    m_dfdtFactorsId = program()->uniformLocation("dfdtFactors");
+    m_opacityFactorsId = program()->uniformLocation("opacityFactors");
     m_sourceOpacityId = program()->uniformLocation("sourceOpacity");
     m_distanceAAId = program()->uniformLocation("distanceAA");
-    m_dfdtFlipId = program()->uniformLocation("dfdtFlip");
     m_texturedId = program()->uniformLocation("textured");
     m_aspectId = program()->uniformLocation("aspect");
 }
@@ -125,9 +155,9 @@ void ShapeShader::updateState(
     // actually only used in the toolkit and never documented. The factor is multiplied with the Qt
     // opacity to avoid useless operations in the shader.
     const float opacity = state.opacity();
-    const QVector2D factors(
+    const QVector2D opacityFactorsVector(
         data->flags & ShapeMaterial::Data::Pressed ? pressedFactor * opacity : opacity, opacity);
-    program()->setUniformValue(m_factorsId, factors);
+    program()->setUniformValue(m_opacityFactorsId, opacityFactorsVector);
 
     // Send anti-aliasing distance in distance field space, needs to be divided by 2 for the shader
     // and by 255 for distanceAAFactor dequantization. The factor is 1 most of the time apart when
@@ -136,11 +166,11 @@ void ShapeShader::updateState(
     const float distanceAA = (shapeTextureInfo.distanceAA * distanceAApx) / (2.0 * 255.0f);
     program()->setUniformValue(m_distanceAAId, data->distanceAAFactor * distanceAA);
 
-    // FIXME(loicm) When rendering is redirected to a ShaderEffectSource (FBO), the dFdy() fragment
-    //     shader function return value has its sign flipped. Not sure if that's a QtQuick thing, a
-    //     graphics driver issue or specified by the OpenGL spec, so we need to detect that case and
-    //     set a flip uniform variable as a workaround for now.
-    program()->setUniformValue(m_dfdtFlipId, state.projectionMatrix()(1, 3) < 0 ? -1.0f : 1.0f);
+    // Send screen-space derivative factors. Note that when rendering is redirected to a
+    // ShaderEffectSource (FBO), dFdy() sign is flipped.
+    const bool flipped = dfdtFactors[0] != 1.0f && state.projectionMatrix()(1, 3) < 0.0f;
+    const QVector2D dfdtFactorsVector(dfdtFactors[0], flipped ? -dfdtFactors[1] : dfdtFactors[1]);
+    program()->setUniformValue(m_dfdtFactorsId, dfdtFactorsVector);
 
     // Update QtQuick engine uniforms.
     if (state.isMatrixDirty()) {
@@ -192,6 +222,9 @@ ShapeNode::ShapeNode()
     m_geometry.setVertexDataPattern(vertexDataPattern);
     setMaterial(&m_material);
     setGeometry(&m_geometry);
+#ifdef QSG_RUNTIME_DESCRIPTION
+    qsgnode_set_description(this, QLatin1String("ubuntushape"));
+#endif
 }
 
 // static
@@ -315,7 +348,7 @@ void UCUbuntuShape::setRadius(const QString& radius)
 /*! \qmlproperty enumeration UbuntuShape::aspect
 
     This property defines the graphical style of the UbuntuShape. The default value is \c
-    UbuntuShape.Flat.
+    UbuntuShape.Inset.
 
     \note Setting this disables support for the deprecated \l borderSource property. Use the
     UbuntuShapeOverlay item in order to provide the inset "pressed" aspect previously supported by
@@ -1120,10 +1153,12 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
     }
 
     // Get the radius size. When the item width and/or height is less than 2 * radius, the size is
-    // scaled down accordingly.
+    // scaled down accordingly. The shape was using a fixed image for the corner before switching to
+    // a distance field, since the corner wasn't taking the whole image (ending at ~80%) we need
+    // to take that into account when the size is scaled down.
     float radius = UCUnits::instance().gridUnit()
         * (m_radius == Small ? smallRadiusGU : mediumRadiusGU);
-    const float scaledDownRadius = qMin(itemSize.width(), itemSize.height()) * 0.5f;
+    const float scaledDownRadius = qMin(itemSize.width(), itemSize.height()) * 0.5f * 0.8f;
     if (radius > scaledDownRadius) {
         radius = scaledDownRadius;
     }

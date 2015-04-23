@@ -59,6 +59,7 @@ public:
     virtual void reset() = 0;
     virtual void completeSave() = 0;
     virtual void completeCancel() = 0;
+    virtual void copyAlarmData(const UCAlarm &other) = 0;
 
     // common privates
     UCAlarm *q_ptr;

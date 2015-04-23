@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.2
+import Ubuntu.Components 1.3
 
 // frame
 // FIXME: stabilize API
@@ -25,29 +25,21 @@ Item {
     // FIXME: needs type checking in themes to define the proper type to be used
     // if color type is used, alpha value gets lost
 
-    property color color: (styledItem.focus || styledItem.highlighted) ? Theme.palette.selected.fieldText : Theme.palette.normal.fieldText
-    property color selectedTextColor: Theme.palette.selected.foregroundText
-    property color selectionColor: Theme.palette.selected.foreground
+    property color color: (styledItem.activeFocus || styledItem.highlighted) ? theme.palette.selected.fieldText : theme.palette.normal.fieldText
+    property color selectedTextColor: theme.palette.selected.foregroundText
+    property color selectionColor: theme.palette.selected.foreground
     /*!
       Background fill color
       */
-    property color backgroundColor: (styledItem.focus || styledItem.highlighted) ? Theme.palette.selected.field : Theme.palette.normal.field
+    property color backgroundColor: (styledItem.activeFocus || styledItem.highlighted) ? theme.palette.selected.field : theme.palette.normal.field
     property color errorColor: UbuntuColors.orange
 
     /*!
       Spacing between the frame and the text editor area
       */
     property real frameSpacing: units.gu(1)
-    property real overlaySpacing: frameSpacing / 2
-
-    /*!
-      The following properties define the name of the style components declaring
-      the styles for the main and the selection cursors. All cursors must defive
-      from TextCursorStyle.
-      */
-    property string mainCursorStyle: "TextCursorStyle.qml"
-    property string selectionStartCursorStyle: "TextCursorStyle.qml"
-    property string selectionEndCursorStyle: "TextCursorStyle.qml"
+    // Obsolete
+    property alias overlaySpacing: visuals.frameSpacing
 
     // style body
     anchors.fill: parent

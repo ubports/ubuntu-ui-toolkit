@@ -27,7 +27,7 @@ class ListItemTestCase(tests.QMLFileAppTestCase):
         dir_path, 'test_listitem.ListItemTestCase.qml')
 
     def setUp(self):
-        super(ListItemTestCase, self).setUp()
+        super().setUp()
         self.list_view = self.main_view.select_single(
             ubuntuuitoolkit.QQuickListView, objectName='test_view')
         self.test_listitem = self.main_view.select_single(

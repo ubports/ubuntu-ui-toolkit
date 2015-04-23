@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,13 +15,14 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.2
+import Ubuntu.Components 1.3
 
 /*!
     \qmltype Dialer
     \inqmlmodule Ubuntu.Components.Pickers 1.0
     \ingroup ubuntu-pickers
     \brief Dialer is a phone dialer style picker component.
+    \deprecated
 
     The Dialer component is dedicated for value selection where the value is
     compound of several sections, i.e. hour, minute and second, or integral and
@@ -144,7 +145,7 @@ StyledItem {
     implicitHeight: size
     activeFocusOnPress: true
 
-    style: Theme.createStyleComponent("DialerStyle.qml", dialer)
+    style: theme.createStyleComponent("DialerStyle.qml", dialer)
 
     Item {
         id: internal
