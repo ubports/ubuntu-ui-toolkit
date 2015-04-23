@@ -137,8 +137,8 @@ Style.PageHeadStyle {
                 AbstractButton {
                     id: sectionButton
                     anchors {
-                        top: parent.top
-                        bottom: parent.bottom
+                        top: parent ? parent.top : undefined
+                        bottom: parent ? parent.bottom : undefined
                     }
                     objectName: "section_button_" + index
                     enabled: sectionsRow.enabled
