@@ -25,5 +25,6 @@ StyledItem {
     property bool showSplit: false
     property real splitMargin
 
+    theme.version: Ubuntu.toolkitVersion
     style: theme.createStyleComponent("ProgressionVisualStyle.qml", progressionVisual)
 }

@@ -222,6 +222,7 @@ StyledItem {
       */
     signal refresh()
 
+    theme.version: Ubuntu.toolkitVersion
     style: theme.createStyleComponent("PullToRefreshStyle.qml", control)
     implicitHeight: __styleInstance.implicitHeight
     anchors {

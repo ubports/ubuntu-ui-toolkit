@@ -628,7 +628,7 @@ QQmlComponent* UCTheme::createStyleComponent(const QString& styleName, QObject* 
             QUrl url = styleUrl(styleName);
             if (url.isValid()) {
 
-                qDebug() << (m_version > 8) << (m_version & 0x00FF);
+                qDebug() << (int)(m_version > 8) << (m_version & 0x00FF);
                 component = new QQmlComponent(engine, url, QQmlComponent::PreferSynchronous, parent);
                 if (component->isError()) {
                     qmlInfo(parent) << component->errorString();
