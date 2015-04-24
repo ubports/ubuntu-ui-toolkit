@@ -41,11 +41,7 @@
 #include <QtQml/private/qqmlabstractbinding_p.h>
 #define foreach Q_FOREACH
 #include <QtQml/private/qqmlbinding_p.h>
-#include <QtQml/private/qv4compileddata_p.h>
 #undef foreach
-
-#include <QtQml/private/qqmlmetatype_p.h>
-#include <QtQml/private/qqmlcontext_p.h>
 
 /*!
  * \qmltype ThemeSettings
