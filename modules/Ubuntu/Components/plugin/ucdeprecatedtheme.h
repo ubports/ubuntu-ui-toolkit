@@ -50,7 +50,7 @@ Q_SIGNALS:
     void paletteChanged();
 
 private:
-    void showDeprecatedNote(const char *note);
+    void showDeprecatedNote(QObject *onItem, const char *note);
 };
 
 #endif // UCDEPRECATEDTHEME_H

@@ -6,7 +6,7 @@ uri = Ubuntu.Components.Themes.Ambiance
 installPath = $$[QT_INSTALL_QML]/$$replace(uri, \\., /)
 
 QMLDIR_FILE = qmldir
-QML_FILES = *.qml
+QML_FILES = ./1.3/*.qml
 ARTWORK_FILES += artwork/*.png \
                  artwork/*.svg \
                  artwork/*.sci

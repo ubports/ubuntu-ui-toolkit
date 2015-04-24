@@ -26,7 +26,7 @@ Image {
     fillMode: Image.PreserveAspectFit
     horizontalAlignment: Image.AlignHCenter
     verticalAlignment: Image.AlignVCenter
-    source: "artwork/spinner.png"
+    source: Qt.resolvedUrl("../artwork/spinner.png")
 
     RotationAnimator on rotation {
         running: styledItem.running

@@ -104,7 +104,7 @@ Item {
         anchors.fill: parent
         anchors.margins: square ? -units.gu(1) : -units.dp(2)
         anchors.topMargin: square ? 0 : anchors.margins
-        source: !square ? "artwork/bubble_shadow.sci" : "artwork/header_overflow_dropshadow.sci"
+        source: !square ? Qt.resolvedUrl("../artwork/bubble_shadow.sci") : Qt.resolvedUrl("../artwork/header_overflow_dropshadow.sci")
         opacity: 0.8
     }
 
@@ -166,7 +166,7 @@ Item {
             y: -height
             transformOrigin: Item.Bottom
             rotation: directionToRotation(bubbleShape.direction)
-            source: "artwork/bubble_arrow.png"
+            source: Qt.resolvedUrl("../artwork/bubble_arrow.png")
         }
     }
 }

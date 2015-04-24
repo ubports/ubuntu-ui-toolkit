@@ -38,7 +38,7 @@ Item {
         value: styledItem.animate
     }
     property int headerTextFadeDuration: animate ? 350 : 0
-    property url indicatorImageSource: "artwork/chevron.png"
+    property url indicatorImageSource: Qt.resolvedUrl("../artwork/chevron.png")
 
     property string headerFontSize: "x-large"
     property int headerTextStyle: Text.Normal

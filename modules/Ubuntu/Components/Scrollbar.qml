@@ -146,6 +146,6 @@ Toolkit.StyledItem {
         }
     }
 
-    theme.version: Ubuntu.toolkitVersion
+    theme.version: Toolkit.Ubuntu.toolkitVersion
     style: theme.createStyleComponent("ScrollbarStyle.qml", scrollbar)
 }

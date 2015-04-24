@@ -26,7 +26,7 @@ Item {
       The background texture of the main view. The image will be drawn over the background color,
       so if it has (semi-)transparent pixels, in those pixels the background color will be visible.
      */
-    property url backgroundSource: "artwork/background_paper.png"
+    property url backgroundSource: Qt.resolvedUrl("../artwork/background_paper.png")
 
     Gradient {
         id: backgroundGradient

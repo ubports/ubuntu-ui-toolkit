@@ -73,11 +73,11 @@ UCDeprecatedTheme::UCDeprecatedTheme(QObject *parent)
 //    UCTheme::defaultTheme().setVersion(BUILD_VERSION(1, 2));
 }
 
-void UCDeprecatedTheme::showDeprecatedNote(const char *note)
+void UCDeprecatedTheme::showDeprecatedNote(QObject *onItem, const char *note)
 {
     QByteArray suppressNote = qgetenv("SUPPRESS_DEPRECATED_NOTE");
     if (suppressNote.isEmpty() || suppressNote != "yes") {
-        qmlInfo(this) << note;
+        qmlInfo(onItem) << note;
     }
 }
 
@@ -88,17 +88,17 @@ void UCDeprecatedTheme::showDeprecatedNote(const char *note)
 */
 QString UCDeprecatedTheme::name()
 {
-    showDeprecatedNote("Theme.name is deprecated. Use ThemeSettings instead.");
+    showDeprecatedNote(this, "Theme.name is deprecated. Use ThemeSettings instead.");
     return UCTheme::defaultTheme().name();
 }
 void UCDeprecatedTheme::setName(const QString& name)
 {
-    showDeprecatedNote("Theme.name is deprecated. Use ThemeSettings instead.");
+    showDeprecatedNote(this, "Theme.name is deprecated. Use ThemeSettings instead.");
     UCTheme::defaultTheme().setName(name);
 }
 void UCDeprecatedTheme::resetName()
 {
-    showDeprecatedNote("Theme.name is deprecated. Use ThemeSettings instead.");
+    showDeprecatedNote(this, "Theme.name is deprecated. Use ThemeSettings instead.");
     UCTheme::defaultTheme().resetName();
 }
 
@@ -109,7 +109,7 @@ void UCDeprecatedTheme::resetName()
 */
 QObject* UCDeprecatedTheme::palette()
 {
-    showDeprecatedNote("Theme.palette is deprecated. Use ThemeSettings instead.");
+    showDeprecatedNote(this, "Theme.palette is deprecated. Use ThemeSettings instead.");
     return UCTheme::defaultTheme().palette();
 }
 
@@ -120,7 +120,7 @@ QObject* UCDeprecatedTheme::palette()
 */
 QQmlComponent* UCDeprecatedTheme::createStyleComponent(const QString& styleName, QObject* parent)
 {
-    showDeprecatedNote("Theme.createStyleComponent() is deprecated. Use ThemeSettings instead.");
+    showDeprecatedNote(parent, "Theme.createStyleComponent() is deprecated. Use ThemeSettings instead.");
     return UCTheme::defaultTheme().createStyleComponent(styleName, parent);
 }
 

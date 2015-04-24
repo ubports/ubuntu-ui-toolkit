@@ -21,7 +21,17 @@ import Ubuntu.Components 1.2
 Item {
     id: ambianceStyle
 
-    property url chevron: "artwork/chevron_down.png"
-    property url tick: "artwork/tick.png"
+    property url chevron: Qt.resolvedUrl("../artwork/chevron_down.png")
+    property url tick: Qt.resolvedUrl("../artwork/tick.png")
     property bool colourComponent: true
+
+    UbuntuShape {
+        id: background
+
+        width: styledItem.width
+        height: styledItem.height
+        radius: "medium"
+
+        color: Qt.rgba(0, 0, 0, 0.05)
+    }
 }
