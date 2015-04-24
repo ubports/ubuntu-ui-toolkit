@@ -34,10 +34,10 @@ Item {
             anchors {
                 right: parent.right
             }
-
+            numberOfSlots: 2
             actions: [
                 Action {
-                    iconName: "alarmClock"
+                    iconName: "alarm-clock"
                     text: "Tick tock"
                 },
                 Action {
@@ -47,7 +47,12 @@ Item {
                 Action {
                     iconName: "attachment"
                     text: "Attach"
+                },
+                Action {
+                    iconName: "contact"
+                    text: "Contact"
                 }
+
             ]
         }
     }

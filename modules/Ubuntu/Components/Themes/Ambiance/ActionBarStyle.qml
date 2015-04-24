@@ -15,6 +15,7 @@
  */
 import QtQuick 2.4
 import Ubuntu.Components 1.3
+import Ubuntu.Components.Popups 1.0
 //import Ubuntu.Components.Styles 1.2 as Style
 
 Item {
@@ -24,7 +25,7 @@ Item {
     Row {
         id: actionsContainer
 
-        property var visibleActions: getVisibleActions(styledItem.config.actions)
+        property var visibleActions: getVisibleActions(styledItem.actions)
         function getVisibleActions(actions) {
             var visibleActionList = [];
             for (var i in actions) {
@@ -39,42 +40,51 @@ Item {
         QtObject {
             id: numberOfSlots
             property int requested: actionsContainer.visibleActions.length
-            property int left: tabsButton.visible || backButton.visible ||
-                               customBackButton.visible ? 1 : 0
-            property int right: headerStyle.maximumNumberOfActions - left
+//            property int left: tabsButton.visible || backButton.visible ||
+//                               customBackButton.visible ? 1 : 0
+//            property int right: headerStyle.maximumNumberOfActions - left
+            property int available: styledItem.numberOfSlots
             property int overflow: actionsOverflowButton.visible ? 1 : 0
-            property int used: Math.min(right - overflow, requested)
+            property int used: Math.min(available - overflow, requested)
         }
 
+        // FIXME TIM: anchors
         anchors {
             top: parent.top
-            right: rightAnchor.left
+//            right: rightAnchor.left
+            right: parent.right
             rightMargin: actionsContainer.width > 0 ? units.gu(1) : 0
         }
         width: childrenRect.width
-        height: headerStyle.contentHeight
+//        height: headerStyle.contentHeight
+        height: units.gu(5)
 
         Repeater {
             model: numberOfSlots.used
             PageHeadButton {
                 id: actionButton
+                // FIXME: replace _header by ActionBar objectName.
                 objectName: action.objectName + "_header_button"
                 action: actionsContainer.visibleActions[index]
-                color: headerStyle.buttonColor
-                state: styledItem.config.preset === "select" ?
-                           "IconAndLabel" : ""
+//                color: headerStyle.buttonColor
+                color: "navy"
+
+                // FIXME TIM: instead of using state, add delegate property later
+//                state: styledItem.config.preset === "select" ?
+//                           "IconAndLabel" : ""
             }
         }
 
         PageHeadButton {
             id: actionsOverflowButton
+            // FIXME TIM: add ActionBar(Style) objectName here
             objectName: "actions_overflow_button"
-            visible: numberOfSlots.requested > numberOfSlots.right
+            visible: numberOfSlots.requested > numberOfSlots.available
             // Ensure resetting of X when this button is not visible to avoid
             // miscalculation of actionsContainer.width. Fixes bug #1408481.
             onVisibleChanged: if (!visible) x = 0
             iconName: "contextual-menu"
-            color: headerStyle.buttonColor
+            color: "pink"
             height: actionsContainer.height
             onTriggered: PopupUtils.open(actionsOverflowPopoverComponent, actionsOverflowButton)
 
@@ -83,28 +93,32 @@ Item {
 
                 OverflowPanel {
                     id: actionsOverflowPopover
+                    // FIXME TIM: Rename
                     objectName: "actions_overflow_popover"
 
-                    backgroundColor: headerStyle.panelBackgroundColor
-                    foregroundColor: headerStyle.panelForegroundColor
-                    highlightColor: headerStyle.panelHighlightColor
+                    backgroundColor: "white"
+//                    backgroundColor: headerStyle.panelBackgroundColor
+//                    foregroundColor: headerStyle.panelForegroundColor
+//                    highlightColor: headerStyle.panelHighlightColor
+
+                    // TODO TIM: Verify that the bug doesn't come back
 
                     // Ensure the popover closes when actions change and
                     // the list item below may be destroyed before its
                     // onClicked is executed. See bug
                     // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1326963
                     Connections {
-                        target: styledItem.config
+                        target: styledItem
                         onActionsChanged: {
                             actionsOverflowPopover.hide();
                         }
                     }
-                    Connections {
-                        target: styledItem
-                        onConfigChanged: {
-                            actionsOverflowPopover.hide();
-                        }
-                    }
+//                    Connections {
+//                        target: styledItem
+//                        onConfigChanged: {
+//                            actionsOverflowPopover.hide();
+//                        }
+//                    }
 
                     actions: actionsContainer.visibleActions.slice(numberOfSlots.used,
                                                                  numberOfSlots.requested)

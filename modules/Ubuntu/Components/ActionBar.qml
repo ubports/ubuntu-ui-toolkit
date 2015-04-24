@@ -25,7 +25,7 @@ import Ubuntu.Components 1.3
 
     Examples: TODO
 */
-Item {
+StyledItem {
     id: bar
 
 
