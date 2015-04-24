@@ -41,8 +41,28 @@
  *      \li The Captions labels are configured to represent a summary-like description.
  * \endtable
  */
-UCNamespace::UCNamespace(QObject *parent) :
-    QObject(parent)
+UCNamespace::UCNamespace(QObject *parent)
+    : QObject(parent)
 {
 }
 
+/*!
+ * \qmlproperty uint16 Ubuntu::toolkitVersion
+ * \since Ubuntu.Components 1.3
+ * \readonly
+ * The property holds the version of the current toolkit imported.
+ */
+quint16 UCNamespaceV13::toolkitVersion() const
+{
+    return LATEST_UITK_VERSION;
+}
+
+/*!
+ * \qmlmethod uint16 Ubuntu::version(int major, int minor)
+ * \since Ubuntu.Components 1.3
+ * The function builds a version identifier using a major and minor components.
+ */
+quint16 UCNamespaceV13::version(quint8 major, quint8 minor)
+{
+    return BUILD_VERSION(major, minor);
+}

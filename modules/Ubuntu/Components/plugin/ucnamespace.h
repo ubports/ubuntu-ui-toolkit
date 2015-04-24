@@ -18,19 +18,39 @@
 #ifndef UCNAMESPACE_H
 #define UCNAMESPACE_H
 
-#include <QObject>
+#include <QtCore/QObject>
 
 class UCNamespace : public QObject
 {
     Q_OBJECT
     Q_ENUMS(CaptionsStyle)
+
 public:
     enum CaptionsStyle {
         TitleCaptionStyle = 5000,
         SummaryCaptionStyle
     };
     explicit UCNamespace(QObject *parent = 0);
-
 };
+
+// this class is for next version, no need to revision it
+class UCNamespaceV13 : public UCNamespace
+{
+    Q_OBJECT
+    Q_PROPERTY(quint16 toolkitVersion READ toolkitVersion NOTIFY toolkitVersionChanged)
+public:
+    explicit UCNamespaceV13(QObject *parent = 0) : UCNamespace(parent) {}
+
+    Q_INVOKABLE quint16 version(quint8 major, quint8 minor);
+
+Q_SIGNALS:
+    void toolkitVersionChanged();
+
+protected:
+    virtual quint16 toolkitVersion() const;
+};
+
+#define BUILD_VERSION(major, minor)     ((((major) & 0x00FF) << 8) | ((minor) & 0x00FF))
+#define LATEST_UITK_VERSION             BUILD_VERSION(1, 3)
 
 #endif // UCNAMESPACE_H
