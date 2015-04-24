@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.3 as Toolkit
+import Ubuntu.Components 1.3
 
 /*!
     \qmltype ActionBar
@@ -27,6 +27,20 @@ import Ubuntu.Components 1.3 as Toolkit
 */
 Item {
     id: bar
+
+
+    style: theme.createStyleComponent("ActionBarStyle.qml", bar)
+
+//    //TODO: set implicit width and height (from style)
+//    Rectangle {
+//        anchors.fill: parent
+//        color: "lightgreen"
+
+//        border.width: 2
+//    }
+
+    implicitWidth: 200
+    implicitHeight: 80
 
     /*
       The actions to display in the bar.
