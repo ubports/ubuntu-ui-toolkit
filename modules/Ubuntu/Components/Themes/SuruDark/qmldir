@@ -4,4 +4,4 @@ module Ubuntu.Components.Themes.SuruDark
 Palette 1.1 Palette.qml
 
 #version 1.3
-Palette 1.3 Palette.qml
+Palette 1.3 ./1.3/Palette.qml
