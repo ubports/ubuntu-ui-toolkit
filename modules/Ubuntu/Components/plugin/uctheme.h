@@ -57,6 +57,8 @@ public:
     void setPalette(QObject *config);
     void setVersion(quint16 version);
 
+    // internal, used by the deprecated Theme.createStyledComponent()
+    QQmlComponent* createStyleComponent(const QString& styleName, QObject* parent, quint16 version);
     Q_INVOKABLE QQmlComponent* createStyleComponent(const QString& styleName, QObject* parent);
     static void registerToContext(QQmlContext* context);
 
@@ -85,7 +87,7 @@ private:
     void init();
     void updateEnginePaths();
     void updateThemePaths();
-    QUrl styleUrl(const QString& styleName);
+    QUrl styleUrl(const QString& styleName, quint16 version);
     void loadPalette(bool notify = true);
 
     class PaletteConfig

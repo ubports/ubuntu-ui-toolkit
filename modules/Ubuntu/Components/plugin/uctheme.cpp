@@ -549,13 +549,13 @@ void UCTheme::resetPalette()
     setPalette(NULL);
 }
 
-QUrl UCTheme::styleUrl(const QString& styleName)
+QUrl UCTheme::styleUrl(const QString& styleName, quint16 version)
 {
     Q_FOREACH (const QUrl& themePath, m_themePaths) {
         // check versioned style first
         QUrl styleUrl;
-        for (int minor = MINOR_VERSION(m_version); minor >= 0; minor--) {
-            QString versionedName = QStringLiteral("%1.%2/%3").arg(MAJOR_VERSION(m_version)).arg(minor).arg(styleName);
+        for (int minor = MINOR_VERSION(version); minor >= 0; minor--) {
+            QString versionedName = QStringLiteral("%1.%2/%3").arg(MAJOR_VERSION(version)).arg(minor).arg(styleName);
             styleUrl = themePath.resolved(versionedName);
             if (styleUrl.isValid() && QFile::exists(styleUrl.toLocalFile())) {
                 return styleUrl;
@@ -626,6 +626,11 @@ void UCTheme::setVersion(quint16 version)
  */
 QQmlComponent* UCTheme::createStyleComponent(const QString& styleName, QObject* parent)
 {
+    return createStyleComponent(styleName, parent, m_version);
+}
+
+QQmlComponent* UCTheme::createStyleComponent(const QString& styleName, QObject* parent, quint16 version)
+{
     QQmlComponent *component = NULL;
 
     if (parent != NULL) {
@@ -636,7 +641,7 @@ QQmlComponent* UCTheme::createStyleComponent(const QString& styleName, QObject* 
         }
         // make sure we have the paths
         if (engine != NULL) {
-            QUrl url = styleUrl(styleName);
+            QUrl url = styleUrl(styleName, version);
             if (url.isValid()) {
                 component = new QQmlComponent(engine, url, QQmlComponent::PreferSynchronous, parent);
                 if (component->isError()) {
@@ -666,7 +671,7 @@ void UCTheme::loadPalette(bool notify)
         m_palette = 0;
     }
     // theme may not have palette defined
-    QUrl paletteUrl = styleUrl("Palette.qml");
+    QUrl paletteUrl = styleUrl("Palette.qml", m_version);
     if (paletteUrl.isValid()) {
         m_palette = QuickUtils::instance().createQmlObject(paletteUrl, m_engine);
         if (m_palette) {

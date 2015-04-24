@@ -69,8 +69,6 @@ UCDeprecatedTheme::UCDeprecatedTheme(QObject *parent)
             this, &UCDeprecatedTheme::nameChanged);
     connect(&UCTheme::defaultTheme(), &UCTheme::paletteChanged,
             this, &UCDeprecatedTheme::paletteChanged);
-//    // force default theme to load 1.2 toolkit themes!
-//    UCTheme::defaultTheme().setVersion(BUILD_VERSION(1, 2));
 }
 
 void UCDeprecatedTheme::showDeprecatedNote(QObject *onItem, const char *note)
