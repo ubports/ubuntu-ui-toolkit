@@ -552,7 +552,18 @@ void UCTheme::resetPalette()
 QUrl UCTheme::styleUrl(const QString& styleName)
 {
     Q_FOREACH (const QUrl& themePath, m_themePaths) {
-        QUrl styleUrl = themePath.resolved(styleName);
+        // check versioned style first
+        QUrl styleUrl;
+        for (int minor = MINOR_VERSION(m_version); minor >= 0; minor--) {
+            QString versionedName = QStringLiteral("%1.%2/%3").arg(MAJOR_VERSION(m_version)).arg(minor).arg(styleName);
+            styleUrl = themePath.resolved(versionedName);
+            if (styleUrl.isValid() && QFile::exists(styleUrl.toLocalFile())) {
+                return styleUrl;
+            }
+        }
+
+        // fall back to the old one
+        styleUrl = themePath.resolved(styleName);
         if (styleUrl.isValid() && QFile::exists(styleUrl.toLocalFile())) {
             return styleUrl;
         }
@@ -627,8 +638,6 @@ QQmlComponent* UCTheme::createStyleComponent(const QString& styleName, QObject* 
         if (engine != NULL) {
             QUrl url = styleUrl(styleName);
             if (url.isValid()) {
-
-                qDebug() << (int)(m_version > 8) << (m_version & 0x00FF);
                 component = new QQmlComponent(engine, url, QQmlComponent::PreferSynchronous, parent);
                 if (component->isError()) {
                     qmlInfo(parent) << component->errorString();
