@@ -109,7 +109,7 @@ Style.ComboButtonStyle {
                 width: comboStyle.dropDownWidth
                 color: mainButton.__colorHack(combo.dropdownColor)
                 Image {
-                    source: "artwork/chevron.png"
+                    source: Qt.resolvedUrl("../artwork/chevron.png")
                     anchors.centerIn: parent
                     rotation: combo.expanded ? -90 : 90
                 }
@@ -156,7 +156,7 @@ Style.ComboButtonStyle {
                 rightMargin: -units.gu(0.5)
                 bottomMargin: -units.gu(0.5)
             }
-            source: "artwork/bubble_shadow.sci"
+            source: Qt.resolvedUrl("../artwork/bubble_shadow.sci")
         }
         UbuntuShape {
             id: shape
@@ -170,7 +170,7 @@ Style.ComboButtonStyle {
         }
 
         Image {
-            source: "artwork/bubble_arrow.png"
+            source: Qt.resolvedUrl("../artwork/bubble_arrow.png")
             rotation: 180
             anchors {
                 bottom: shape.top

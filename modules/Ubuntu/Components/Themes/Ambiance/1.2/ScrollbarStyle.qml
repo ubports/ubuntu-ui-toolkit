@@ -73,10 +73,10 @@ Item {
     property color sliderColor: Theme.palette.normal.base
     property real sliderRadius: units.gu(0.5)
     property color thumbConnectorColor: "white"
-    property url forwardThumbReleased: (styledItem.align === Qt.AlignLeading || styledItem.align === Qt.AlignTrailing) ? "artwork/ScrollbarBottomIdle.png" : "artwork/ScrollbarRightIdle.png"
-    property url forwardThumbPressed: (styledItem.align === Qt.AlignLeading || styledItem.align === Qt.AlignTrailing) ? "artwork/ScrollbarBottomPressed.png" : "artwork/ScrollbarRightPressed.png"
-    property url backwardThumbReleased: (styledItem.align === Qt.AlignLeading || styledItem.align === Qt.AlignTrailing) ? "artwork/ScrollbarTopIdle.png" : "artwork/ScrollbarLeftIdle.png"
-    property url backwardThumbPressed: (styledItem.align === Qt.AlignLeading || styledItem.align === Qt.AlignTrailing) ? "artwork/ScrollbarTopPressed.png" : "artwork/ScrollbarLeftPressed.png"
+    property url forwardThumbReleased: (styledItem.align === Qt.AlignLeading || styledItem.align === Qt.AlignTrailing) ? Qt.resolvedUrl("../artwork/ScrollbarBottomIdle.png") : Qt.resolvedUrl("../artwork/ScrollbarRightIdle.png")
+    property url forwardThumbPressed: (styledItem.align === Qt.AlignLeading || styledItem.align === Qt.AlignTrailing) ? Qt.resolvedUrl("../artwork/ScrollbarBottomPressed.png") : Qt.resolvedUrl("../artwork/ScrollbarRightPressed.png")
+    property url backwardThumbReleased: (styledItem.align === Qt.AlignLeading || styledItem.align === Qt.AlignTrailing) ? Qt.resolvedUrl("../artwork/ScrollbarTopIdle.png") : Qt.resolvedUrl("../artwork/ScrollbarLeftIdle.png")
+    property url backwardThumbPressed: (styledItem.align === Qt.AlignLeading || styledItem.align === Qt.AlignTrailing) ? Qt.resolvedUrl("../artwork/ScrollbarTopPressed.png") : Qt.resolvedUrl("../artwork/ScrollbarLeftPressed.png")
 
     property real scrollAreaThickness: units.gu(0.5)
     property real thumbConnectorMargin: units.dp(3)

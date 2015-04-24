@@ -28,13 +28,13 @@ Item {
       The source of the image that separates the header from the contents of a \l MainView.
       The separator will be drawn over the contents.
      */
-    property url separatorSource: "artwork/PageHeaderBaseDividerLight.sci"
+    property url separatorSource: Qt.resolvedUrl("../artwork/PageHeaderBaseDividerLight.sci")
 
     /*!
       The source of an additional image attached to the bottom of the separator. The contents
       of the \l MainView will be drawn on top of the separator bottom image.
      */
-    property url separatorBottomSource: "artwork/PageHeaderBaseDividerBottom.png"
+    property url separatorBottomSource: Qt.resolvedUrl("../artwork/PageHeaderBaseDividerBottom.png")
 
     property int fontWeight: Font.Light
     property string fontSize: "x-large"

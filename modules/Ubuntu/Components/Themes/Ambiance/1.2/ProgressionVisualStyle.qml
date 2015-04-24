@@ -20,8 +20,8 @@ import Ubuntu.Components 1.2
 Item {
     id: progressionVisualStyle
 
-    property url progressionDividerSource: "artwork/progression_divider.png"
-    property url progressionIconSource: "artwork/chevron.png"
+    property url progressionDividerSource: Qt.resolvedUrl("../artwork/progression_divider.png")
+    property url progressionIconSource: Qt.resolvedUrl("../artwork/chevron.png")
 
     implicitWidth: progressIcon.width + (styledItem.showSplit ? styledItem.splitMargin + progressionDivider.width : 0)
 
