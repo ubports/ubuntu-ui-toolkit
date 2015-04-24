@@ -78,19 +78,23 @@ void UCQQuickImageExtension::reloadSource()
     QString selectedFilePath = resolved.mid(separatorPosition+1);
 
     if (scaleFactor == "1") {
-        if (qFuzzyCompare(UCUnits::instance().devicePixelRatio(), 1.0f)) {
-            // No scaling. Just pass the file as is.
+        if (qFuzzyCompare(UCUnits::instance().devicePixelRatio(), 1.0f)
+                || selectedFilePath.endsWith(".svg") || selectedFilePath.endsWith(".svgz")) {
+            // No scaling necessary. Just pass the file as is.
             m_image->setSource(QUrl::fromLocalFile(selectedFilePath));
         } else {
+            // Need to scale the pixel-based image to suit the devicePixelRatio setting ourselves.
+            // If we let Qt do it, Qt will not choose the UITK-supported "@gu" scaled images.
             m_image->setSource(QUrl("image://scaling/1/" + selectedFilePath));
-            m_image->setSourceSize(m_image->sourceSize()); // explicitly set the source size as we know it
+            // explicitly set the source size in the QQuickImageBase, this persuades it that the
+            // supplied image is suitable for the current devicePixelRatio.
+            m_image->setSourceSize(m_image->sourceSize());
         }
     } else {
         // Prepend "image://scaling" for the image to be loaded by UCScalingImageProvider.
         if (!m_source.path().endsWith(".sci")) {
             // Regular image file
             m_image->setSource(QUrl("image://scaling/" + resolved));
-            m_image->setSourceSize(m_image->sourceSize()); // explicitly set the source size as we know it
         } else {
             // .sci image file. Rewrite the .sci file into a temporary file.
             bool rewritten = true;
@@ -117,8 +121,10 @@ void UCQQuickImageExtension::reloadSource()
             } else {
                 m_image->setSource(m_source);
             }
-            m_image->setSourceSize(m_image->sourceSize()); // explicitly set the source size as we know it
         }
+        // explicitly set the source size in the QQuickImageBase, this persuades it that the
+        // supplied image is suitable for the current devicePixelRatio.
+        m_image->setSourceSize(m_image->sourceSize());
     }
 }
 
