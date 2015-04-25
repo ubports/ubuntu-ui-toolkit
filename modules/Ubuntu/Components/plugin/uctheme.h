@@ -39,6 +39,7 @@ class UCTheme : public QObject, public QQmlParserStatus
     Q_PROPERTY(UCTheme *parentTheme READ parentTheme NOTIFY parentThemeChanged FINAL)
     Q_PROPERTY(QString name READ name WRITE setName RESET resetName NOTIFY nameChanged FINAL)
     Q_PROPERTY(QObject* palette READ palette WRITE setPalette RESET resetPalette NOTIFY paletteChanged FINAL)
+    Q_PROPERTY(quint16 version MEMBER m_version WRITE setVersion NOTIFY versionChanged FINAL)
 public:
     explicit UCTheme(QObject *parent = 0);
     static UCTheme &defaultTheme()
@@ -54,7 +55,10 @@ public:
     void resetName();
     QObject* palette();
     void setPalette(QObject *config);
+    void setVersion(quint16 version);
 
+    // internal, used by the deprecated Theme.createStyledComponent()
+    QQmlComponent* createStyleComponent(const QString& styleName, QObject* parent, quint16 version);
     Q_INVOKABLE QQmlComponent* createStyleComponent(const QString& styleName, QObject* parent);
     static void registerToContext(QQmlContext* context);
 
@@ -65,6 +69,7 @@ Q_SIGNALS:
     void parentThemeChanged();
     void nameChanged();
     void paletteChanged();
+    void versionChanged();
 
 protected:
     void classBegin();
@@ -82,7 +87,7 @@ private:
     void init();
     void updateEnginePaths();
     void updateThemePaths();
-    QUrl styleUrl(const QString& styleName);
+    QUrl styleUrl(const QString& styleName, quint16 version);
     void loadPalette(bool notify = true);
 
     class PaletteConfig
@@ -135,6 +140,7 @@ private:
     PaletteConfig m_config;
     QList<QUrl> m_themePaths;
     UCDefaultTheme m_defaultTheme;
+    quint16 m_version;
     bool m_defaultStyle:1;
     bool m_completed:1;
 

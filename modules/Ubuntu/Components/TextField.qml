@@ -1019,5 +1019,6 @@ ActionItem {
         cursorPosition = 0;
     }
 
+    theme.version: Ubuntu.Ubuntu.toolkitVersion
     style: theme.createStyleComponent("TextFieldStyle.qml", control)
 }

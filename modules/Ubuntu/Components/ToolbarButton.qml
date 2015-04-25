@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.4
+import Ubuntu.Components 1.3
 
 /*!
     \qmltype ToolbarButton
@@ -83,5 +84,6 @@ ActionItem {
     height: parent ? parent.height : undefined
     width: units.gu(5)
 
+    theme.version: Ubuntu.toolkitVersion
     style: theme.createStyleComponent("ToolbarButtonStyle.qml", toolbarButton)
 }
