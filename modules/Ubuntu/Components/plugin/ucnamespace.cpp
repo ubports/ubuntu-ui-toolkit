@@ -52,10 +52,6 @@ UCNamespace::UCNamespace(QObject *parent)
  * \readonly
  * The property holds the version of the current toolkit imported.
  */
-quint16 UCNamespaceV13::toolkitVersion() const
-{
-    return LATEST_UITK_VERSION;
-}
 
 /*!
  * \qmlmethod uint16 Ubuntu::version(int major, int minor)

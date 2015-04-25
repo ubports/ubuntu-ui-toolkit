@@ -1043,6 +1043,8 @@ plugins.qmltypes
     prototype: "UCNamespace"
     exports: ["Ubuntu 1.3"]
     Property { name: "toolkitVersion"; type: "ushort"; isReadonly: true }
+    Property { name: "toolkitVersionMajor"; type: "ushort"; isReadonly: true }
+    Property { name: "toolkitVersionMinor"; type: "ushort"; isReadonly: true }
     Method {
     name: "version"
     Parameter { name: "major"; type: "uchar" }

@@ -43,8 +43,13 @@ class UCNamespaceV13 : public UCNamespace
 {
     Q_OBJECT
     Q_PROPERTY(quint16 toolkitVersion READ toolkitVersion NOTIFY toolkitVersionChanged)
+    Q_PROPERTY(quint16 toolkitVersionMajor READ toolkitVersionMajor NOTIFY toolkitVersionChanged)
+    Q_PROPERTY(quint16 toolkitVersionMinor READ toolkitVersionMinor NOTIFY toolkitVersionChanged)
 public:
-    explicit UCNamespaceV13(QObject *parent = 0) : UCNamespace(parent) {}
+    explicit UCNamespaceV13(QObject *parent = 0) : UCNamespace(parent)
+    {
+        m_toolkitVersion = LATEST_UITK_VERSION;
+    }
 
     Q_INVOKABLE quint16 version(quint8 major, quint8 minor);
 
@@ -52,7 +57,21 @@ Q_SIGNALS:
     void toolkitVersionChanged();
 
 protected:
-    virtual quint16 toolkitVersion() const;
+    virtual quint16 toolkitVersion() const
+    {
+        return m_toolkitVersion;
+    }
+    quint16 toolkitVersionMajor() const
+    {
+        return MAJOR_VERSION(m_toolkitVersion);
+    }
+    quint16 toolkitVersionMinor() const
+    {
+        return MINOR_VERSION(m_toolkitVersion);
+    }
+
+private:
+    quint16 m_toolkitVersion;
 };
 
 #endif // UCNAMESPACE_H
