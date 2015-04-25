@@ -19,7 +19,7 @@ import QtQuick 2.4
 // we need to use named imports otherwise namespace collision is reported
 // by the QML engine. As workaround, we use Ubuntu named import.
 // Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
-import Ubuntu.Components 1.2 as Ubuntu
+import Ubuntu.Components 1.3 as Ubuntu
 
 /*!
   \internal

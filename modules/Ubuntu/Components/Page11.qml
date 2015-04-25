@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.4
+// FIXME must merge Page10, Page11 and Page13 files
 import Ubuntu.Components 1.0 as Toolkit10
 import Ubuntu.Components 1.1 as Toolkit11
 
