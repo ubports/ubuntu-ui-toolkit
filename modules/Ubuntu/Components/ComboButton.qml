@@ -42,7 +42,7 @@ import "mathUtils.js" as MathUtils
         list will be expanded only to the height of the content.
         \qml
         import QtQuick 2.4
-        import Ubuntu.Components 1.2
+        import Ubuntu.Components 1.3
         ComboButton {
             text: "smaller content"
             Rectangle {
@@ -58,7 +58,7 @@ import "mathUtils.js" as MathUtils
         itself.
         \qml
         import QtQuick 2.4
-        import Ubuntu.Components 1.2
+        import Ubuntu.Components 1.3
         ComboButton {
             text: "long scrolled content"
             Column {
@@ -77,7 +77,7 @@ import "mathUtils.js" as MathUtils
         the content will be filling the entire combo list area defined.
         \qml
         import QtQuick 2.4
-        import Ubuntu.Components 1.2
+        import Ubuntu.Components 1.3
         import Ubuntu.Components.ListItems 1.0
         ComboButton {
             text: "listview"
@@ -95,7 +95,7 @@ import "mathUtils.js" as MathUtils
         bind its height to the \l comboListHeight property.
         \qml
         import QtQuick 2.4
-        import Ubuntu.Components 1.2
+        import Ubuntu.Components 1.3
         ComboButton {
             id: combo
             text: "smaller content"
@@ -109,7 +109,7 @@ import "mathUtils.js" as MathUtils
         expandedHeight should be set to -1.
         \qml
         import QtQuick 2.4
-        import Ubuntu.Components 1.2
+        import Ubuntu.Components 1.3
         ComboButton {
             text: "auto-sized content"
             expandedHeight: -1
@@ -135,7 +135,7 @@ import "mathUtils.js" as MathUtils
 
     \qml
     import QtQuick 2.4
-    import Ubuntu.Components 1.2
+    import Ubuntu.Components 1.3
 
     ComboButton {
         id: combo
@@ -202,7 +202,7 @@ Button {
       that can be used to size the combo list content.
       \qml
       import QtQuick 2.4
-      import Ubuntu.Components 1.2
+      import Ubuntu.Components 1.3
       import Ubuntu.Components.ListItems 0.1
       ComboButton {
           id: combo

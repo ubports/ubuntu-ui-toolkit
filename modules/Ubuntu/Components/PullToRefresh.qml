@@ -34,7 +34,7 @@ import Ubuntu.Components 1.3
     \qml
     import QtQuick 2.4
     import QtQuick.XmlListModel 2.0
-    import Ubuntu.Components 1.2
+    import Ubuntu.Components 1.3
     import Ubuntu.Components.ListItems 1.0
 
     MainView {
@@ -84,7 +84,7 @@ import Ubuntu.Components 1.3
     \qml
     import QtQuick 2.4
     import QtQuick.XmlListModel 2.0
-    import Ubuntu.Components 1.2
+    import Ubuntu.Components 1.3
     import Ubuntu.Components.ListItems 1.0
 
     MainView {
@@ -132,7 +132,7 @@ import Ubuntu.Components 1.3
     \qml
     import QtQuick 2.4
     import QtQuick.XmlListModel 2.0
-    import Ubuntu.Components 1.2
+    import Ubuntu.Components 1.3
     import Ubuntu.Components.ListItems 1.0
 
     MainView {
@@ -222,6 +222,7 @@ StyledItem {
       */
     signal refresh()
 
+    theme.version: Ubuntu.toolkitVersion
     style: theme.createStyleComponent("PullToRefreshStyle.qml", control)
     implicitHeight: __styleInstance.implicitHeight
     anchors {

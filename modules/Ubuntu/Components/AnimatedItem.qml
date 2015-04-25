@@ -33,5 +33,6 @@ Toolkit.StyledItem {
       \deprecated
       Specifies whether the component is on the visible area of the Flickable or not.
     */
+    theme.version: Toolkit.Ubuntu.toolkitVersion
     property bool onScreen: true
 }

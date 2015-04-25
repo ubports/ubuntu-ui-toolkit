@@ -527,7 +527,7 @@ ActionItem {
 
       \qml
       import QtQuick 2.4
-      import Ubuntu.Components 1.2
+      import Ubuntu.Components 1.3
       TextField{
           validator: IntValidator{bottom: 11; top: 31;}
           focus: true
@@ -1019,5 +1019,6 @@ ActionItem {
         cursorPosition = 0;
     }
 
+    theme.version: Ubuntu.Ubuntu.toolkitVersion
     style: theme.createStyleComponent("TextFieldStyle.qml", control)
 }

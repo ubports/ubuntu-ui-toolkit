@@ -27,7 +27,7 @@ import Ubuntu.Components 1.3 as Toolkit
 
     Examples:
     \qml
-        import Ubuntu.Components 1.2
+        import Ubuntu.Components 1.3
         Column {
             spacing: units.gu(3)
 
@@ -225,6 +225,7 @@ ListItem.Empty {
                 right: parent.right
             }
             state: optionSelector.expanded ? "expanded" : "collapsed"
+            theme.version: Toolkit.Ubuntu.toolkitVersion
             style: theme.createStyleComponent("OptionSelectorStyle.qml", listContainer)
             states: [ State {
                     name: "expanded"
