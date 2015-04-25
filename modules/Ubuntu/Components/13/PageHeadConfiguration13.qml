@@ -14,13 +14,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import Ubuntu.Components 1.3 as Toolkit12
+//import Ubuntu.Components 1.3 as Toolkit12
 
 /*!
   \internal
   documented in PageHeadConfiguration.qdoc
  */
-Toolkit12.PageHeadConfiguration {
+PageHeadConfiguration11 {
     id: headerConfig
 
     property bool locked: false

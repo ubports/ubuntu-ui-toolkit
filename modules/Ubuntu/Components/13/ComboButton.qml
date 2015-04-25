@@ -16,7 +16,6 @@
 
 import QtQuick 2.4
 import Ubuntu.Components.Popups 1.0
-import "mathUtils.js" as MathUtils
 
 /*!
     \qmltype ComboButton

@@ -17,7 +17,6 @@
 // FIXME(loicm) Add support for keyboard shortcuts (basically left/right).
 
 import QtQuick 2.4
-import "mathUtils.js" as MathUtils
 import Ubuntu.Components 1.3 as Toolkit
 
 /*!
@@ -157,7 +156,7 @@ Toolkit.StyledItem {
         }
         function normalizedValueFromValue(value) {
             if (Qt.application.layoutDirection == Qt.RightToLeft) {
-                return MathUtils.clampAndProject(value, slider.minimumValue,
+                return Toolkit.MathUtils.clampAndProject(value, slider.minimumValue,
                                                  slider.maximumValue, 1.0, 0.0);
             } else {
                 return MathUtils.clampAndProject(value, slider.minimumValue,

@@ -16,18 +16,17 @@
 
 import QtQuick 2.4
 // FIXME must merge Page10, Page11 and Page13 files
-import Ubuntu.Components 1.0 as Toolkit10
-import Ubuntu.Components 1.1 as Toolkit11
+//import Ubuntu.Components 1.1 as Toolkit11
 
 /*! \internal */
 // Documentation in Page.qdoc
-Toolkit10.Page {
+Page10 {
     id: page
     /*!
       \qmlproperty PageHeadConfiguration head
      */
     readonly property alias head: headerConfig
-    Toolkit11.PageHeadConfiguration {
+    PageHeadConfiguration11 {
         id: headerConfig
     }
 
@@ -35,7 +34,7 @@ Toolkit10.Page {
         print("Page.tools is a deprecated property. Please use Page.head instead.");
     }
 
-    Toolkit11.Object {
+    Object {
         id: internal
 
         // Note: The bindings below need to check whether headerConfig.contents

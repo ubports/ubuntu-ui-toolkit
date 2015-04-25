@@ -13,15 +13,11 @@ qmldir_file.files = qmldir
 qml_files.installPath = $$installPath
 qml_files.files = *.qml
 
-# javascript files
-js_files.installPath = $$installPath
-js_files.files = *.js
-
 #artwork files
 artwork_files.installPath = $$installPath/artwork
 artwork_files.files = $$system(find artwork -type f)
 
-UBUNTU_QML_MODULE_FILES += qmldir_file qml_files js_files artwork_files
+UBUNTU_QML_MODULE_FILES += qmldir_file qml_files artwork_files
 
 plugins_qmltypes.path = $$installPath
 plugins_qmltypes.files = plugins.qmltypes
