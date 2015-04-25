@@ -87,7 +87,7 @@ class GalleryTestCase(ubuntuuitoolkit.tests.QMLFileAppTestCase):
     def _get_path_to_gallery_source(self):
         return os.path.join(
             ubuntuuitoolkit.tests.get_path_to_source_root(), 'examples',
-            'ubuntu-ui-toolkit-gallery')
+            'Toolkit.1.3', 'ubuntu-ui-toolkit-gallery')
 
     def _application_source_exists(self):
         return 'UBUNTU_UI_TOOLKIT_AUTOPILOT_FROM_SOURCE' in os.environ
@@ -98,7 +98,7 @@ class GalleryTestCase(ubuntuuitoolkit.tests.QMLFileAppTestCase):
             'ubuntu-ui-toolkit-gallery.qml')
 
     def _get_path_to_installed_gallery(self):
-        return '/usr/lib/ubuntu-ui-toolkit/examples/ubuntu-ui-toolkit-gallery'
+        return '/usr/lib/ubuntu-ui-toolkit/examples/Toolkit.1.3/ubuntu-ui-toolkit-gallery'
 
     def _get_desktop_file_path(self):
         desktop_file_path = os.path.join(
