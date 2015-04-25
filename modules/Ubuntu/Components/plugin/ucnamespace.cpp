@@ -54,6 +54,20 @@ UCNamespace::UCNamespace(QObject *parent)
  */
 
 /*!
+ * \qmlproperty uint16 Ubuntu::toolkitVersionMajor
+ * \since Ubuntu.Components 1.3
+ * \readonly
+ * The property holds the major version of the current toolkit imported.
+ */
+
+/*!
+ * \qmlproperty uint16 Ubuntu::toolkitVersionMinor
+ * \since Ubuntu.Components 1.3
+ * \readonly
+ * The property holds the minor version of the current toolkit imported.
+ */
+
+/*!
  * \qmlmethod uint16 Ubuntu::version(int major, int minor)
  * \since Ubuntu.Components 1.3
  * The function builds a version identifier using a major and minor components.
