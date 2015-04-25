@@ -554,7 +554,8 @@ QUrl UCTheme::styleUrl(const QString& styleName, quint16 version)
     Q_FOREACH (const QUrl& themePath, m_themePaths) {
         // check versioned style first
         QUrl styleUrl;
-        for (int minor = MINOR_VERSION(version); minor >= 0; minor--) {
+        // we stop at version 1.2 as we do not have support for earlier themes anymore.
+        for (int minor = MINOR_VERSION(version); minor >= 2; minor--) {
             QString versionedName = QStringLiteral("%1.%2/%3").arg(MAJOR_VERSION(version)).arg(minor).arg(styleName);
             styleUrl = themePath.resolved(versionedName);
             if (styleUrl.isValid() && QFile::exists(styleUrl.toLocalFile())) {
