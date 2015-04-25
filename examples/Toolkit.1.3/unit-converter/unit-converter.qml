@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.2
+import Ubuntu.Components 1.3
 import "conversion.js" as Converter
 
 /*!
@@ -140,13 +140,12 @@ MainView {
                     }
                 }
             }
-            tools: ToolbarActions {
-                Action {
-                    objectName: "action"
-                    iconSource: Qt.resolvedUrl("toolbarIcon.png")
-                    text: i18n.tr("Clear")
-                    onTriggered: Converter.clear(converter)
-                }
+
+            head.actions: Action {
+                objectName: "action"
+                iconName: "clear"
+                text: i18n.tr("Clear")
+                onTriggered: Converter.clear(converter)
             }
         }
     }
