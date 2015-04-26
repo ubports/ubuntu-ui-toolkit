@@ -47,6 +47,7 @@ AbstractButton {
         internal.itemList.currentIndex = index;
     }
 
+    theme.version: Ubuntu.toolkitVersion
     style: theme.createStyleComponent("PickerDelegateStyle.qml", pickerDelegate)
 
     QtObject {

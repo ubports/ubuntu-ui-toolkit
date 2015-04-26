@@ -22,6 +22,10 @@ OTHER_FILES += \
     MultiplePaletteInstances.qml \
     DynamicPalette.qml \
     InvalidPalette.qml \
-    ReparentStyledItemFollowsNewPathOnly.qml
+    ReparentStyledItemFollowsNewPathOnly.qml \
+    themes/TestModule/TestTheme/1.3/TestStyle.qml \
+    themes/CustomTheme/1.3/TestStyle.qml \
+    StyledItemV12.qml \
+    StyledItemV13.qml
 
 

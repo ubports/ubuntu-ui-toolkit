@@ -622,11 +622,28 @@ ActionItem
     function undo()
     function remove(start, end)
     function getText(start, end)
-Palette 0.1 1.0
+Palette 0.1
 QtObject
     property PaletteValues normal
     property PaletteValues selected
-PaletteValues 0.1 1.0
+PaletteValues 0.1
+QtObject
+    property color background
+    property color backgroundText
+    property color base
+    property color baseText
+    property color foreground
+    property color foregroundText
+    property color overlay
+    property color overlayText
+    property color field
+    property color fieldText
+    property color selection
+Palette 1.3
+QtObject
+    property PaletteValues normal
+    property PaletteValues selected
+PaletteValues 1.3
 QtObject
     property color background
     property color backgroundText
@@ -1022,6 +1039,16 @@ plugins.qmltypes
     prototype: "QObject"
     exports: ["Ubuntu 1.2"]
     name: "CaptionsStyle"
+    name: "UCNamespaceV13"
+    prototype: "UCNamespace"
+    exports: ["Ubuntu 1.3"]
+    Property { name: "toolkitVersion"; type: "ushort"; isReadonly: true }
+    Property { name: "toolkitVersionMajor"; type: "ushort"; isReadonly: true }
+    Property { name: "toolkitVersionMinor"; type: "ushort"; isReadonly: true }
+    Method {
+    name: "version"
+    Parameter { name: "major"; type: "uchar" }
+    Parameter { name: "minor"; type: "uchar" }
     name: "UCQQuickImageExtension"
     prototype: "QQuickImageBase"
     exports: ["QQuickImageBase 0.1", "QQuickImageBase 1.0"]
@@ -1075,6 +1102,7 @@ plugins.qmltypes
     Property { name: "parentTheme"; type: "UCTheme"; isReadonly: true; isPointer: true }
     Property { name: "name"; type: "string" }
     Property { name: "palette"; type: "QObject"; isPointer: true }
+    Property { name: "version"; type: "ushort" }
     Method {
     name: "createStyleComponent"
     Parameter { name: "styleName"; type: "string" }

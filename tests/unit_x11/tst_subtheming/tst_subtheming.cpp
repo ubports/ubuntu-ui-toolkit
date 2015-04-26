@@ -23,6 +23,7 @@
 #include "uctheme.h"
 #include "uctestcase.h"
 #include "ucstyleditembase_p.h"
+#include "ucnamespace.h"
 
 class ThemeTestCase : public UbuntuTestCase
 {
@@ -90,6 +91,7 @@ private Q_SLOTS:
     {
         m_xdgDataPath = QLatin1String(getenv("XDG_DATA_DIRS"));
         m_themesPath = QLatin1String(getenv("UBUNTU_UI_TOOLKIT_THEMES_PATH"));
+        qputenv("SUPPRESS_DEPRECATED_NOTE", "yes");
     }
 
     void cleanup()
@@ -618,6 +620,34 @@ private Q_SLOTS:
         UCStyledItemBasePrivate::get(root)->setTheme(suruTheme);
         QTest::waitForEvents();
         QCOMPARE(UCStyledItemBasePrivate::get(movableItem)->getTheme()->name(), QString("CustomTheme"));
+    }
+
+    void test_theme_versions_data()
+    {
+        QTest::addColumn<QString>("document");
+        QTest::addColumn<QString>("testValue");
+
+        QTest::newRow("Theming version 1.2")
+                << "StyledItemV12.qml"
+                << "";
+        QTest::newRow("Theming version 1.3")
+                << "StyledItemV13.qml"
+                << "version1.3";
+    }
+    void test_theme_versions()
+    {
+        QFETCH(QString, document);
+        QFETCH(QString, testValue);
+
+        qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "");
+        qputenv("XDG_DATA_DIRS", "./themes:./themes/TestModule");
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase(document));
+        UCStyledItemBase *styledItem = qobject_cast<UCStyledItemBase*>(view->rootObject());
+        QString newProperty(UCStyledItemBasePrivate::get(styledItem)->styleItem->property("newProperty").toString());
+        QCOMPARE(newProperty, testValue);
+        // NOTE TestTheme resets the theme therefore the theming will look for the tested style under Ambiance theme
+        // which will cause a warning; therefore we mark the warning to be ignored
+        ThemeTestCase::ignoreWarning(document, 19, 1, "QML StyledItem: Warning: Style TestStyle.qml not found in theme Ubuntu.Components.Themes.Ambiance");
     }
 };
 
