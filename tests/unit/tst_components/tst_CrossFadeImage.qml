@@ -41,7 +41,7 @@ TestCase {
             width: 123
             height: 321
         }
-        source: Qt.resolvedUrl("../../../examples/ubuntu-ui-toolkit-gallery/demo_image.jpg")
+        source: Qt.resolvedUrl("demo_image.jpg")
     }
 
     function loadImage(url) {
@@ -91,8 +91,8 @@ TestCase {
 
     function test_fade(data) {
         crossFadeImage.fadeStyle = data.style;
-        loadImage("../../../examples/ubuntu-ui-toolkit-gallery/demo_image.jpg");
-        loadImage("../../../examples/ubuntu-ui-toolkit-gallery/map_icon.png");
+        loadImage("demo_image.jpg");
+        loadImage("map_icon.png");
         waitForAnimation();
         cleanupTest();
     }
@@ -107,8 +107,8 @@ TestCase {
     function test_fadeDuration(data) {
         crossFadeImage.fadeStyle = data.style;
         fadeDuration = UbuntuAnimation.SleepyDuration;
-        loadImage("../../../examples/ubuntu-ui-toolkit-gallery/demo_image.jpg");
-        loadImage("../../../examples/ubuntu-ui-toolkit-gallery/map_icon.png");
+        loadImage("demo_image.jpg");
+        loadImage("map_icon.png");
         sleep(UbuntuAnimation.SleepyDuration / 2); // < fadeDuration
         compare(running, true, "Animation stopped before 1000 ms");
         waitForAnimation();
@@ -116,7 +116,7 @@ TestCase {
     }
 
     function test_sourceSize() {
-        loadImage("../../../examples/ubuntu-ui-toolkit-gallery/demo_image.jpg");
+        loadImage("demo_image.jpg");
         compare(crossFadeImage.sourceSize.width, 640, "Source width incorrectly initialized.");
         compare(crossFadeImage.sourceSize.height, 427, "Source height incorrectly initialized.");
         crossFadeImage.sourceSize.width = 100;
