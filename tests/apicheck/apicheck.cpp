@@ -130,16 +130,22 @@ static QHash<QByteArray, QByteArray> cppToId;
 QByteArray convertToId(const QString &cppName)
 {
     QString qmlType(cppName);
+    if (qmlType.contains("::")) {
+        QStringList parts(qmlType.split("::"));
+        return qPrintable(convertToId(parts[0]) + "." + convertToId(parts[1]));
+    }
+
     QList<const QQmlType*>types(qmlTypesByCppName[qPrintable(cppName)].toList());
     std::sort(types.begin(), types.end());
+    // Strip internal _QMLTYPE_xy suffix
+    qmlType = qmlType.split("_")[0];
     if (!types.isEmpty())
         qmlType = QString(types[0]->qmlTypeName()).split("/")[1].toUtf8();
     else
-        qmlType = cppToId.value(qPrintable(cppName), qPrintable(cppName));
+        qmlType = cppToId.value(qPrintable(qmlType), qPrintable(cppName));
     // Strip internal _QMLTYPE_xy suffix
     qmlType = qmlType.split("_")[0];
-    // QML . for namespace rather than C++ ::
-    return qPrintable(qmlType.replace("::", ".").replace("QTestRootObject", "QtObject"));
+    return qPrintable(qmlType.replace("QTestRootObject", "QtObject"));
 }
 
 QByteArray convertToId(const QMetaObject *mo)
@@ -424,61 +430,20 @@ public:
             object->insert("methods", methods);
     }
 
-    QString getPrototypeNameForCompositeType(const QMetaObject *metaObject, QSet<QByteArray> &defaultReachableNames,
-                                             QList<const QMetaObject *> *objectsToMerge)
+    bool dumpQMLComponent(QQmlEngine *engine, const QString& qmlTyName, const QUrl& sourceUrl, const QString& exportString, bool isSingleton, const QStringList& internalTypes)
     {
-        QString prototypeName;
-        if (!defaultReachableNames.contains(metaObject->className())) {
-            // dynamic meta objects can break things badly
-            // but extended types are usually fine
-            const QMetaObjectPrivate *mop = reinterpret_cast<const QMetaObjectPrivate *>(metaObject->d.data);
-            if (!(mop->flags & DynamicMetaObject) && objectsToMerge
-                    && !objectsToMerge->contains(metaObject))
-                objectsToMerge->append(metaObject);
-            const QMetaObject *superMetaObject = metaObject->superClass();
-            if (!superMetaObject)
-                prototypeName = "QObject";
-            else
-                prototypeName = getPrototypeNameForCompositeType(
-                            superMetaObject, defaultReachableNames, objectsToMerge);
-        } else {
-            prototypeName = metaObject->className();
-        }
-        return prototypeName;
-    }
-
-    void dumpComposite(QQmlEngine *engine, const QQmlType *compositeType, QSet<QByteArray> &defaultReachableNames)
-    {
-        QQmlComponent e(engine, compositeType->sourceUrl());
+        QQmlComponent e(engine, sourceUrl);
         QObject *qtobject = e.create();
 
         if (!qtobject)
-            return;
-
-        QJsonObject object;
-        QString qmlTyName = compositeType->qmlTypeName();
-
-        // Map filename-based PageHeadConfiguration11 to PageHeadConfiguration
-        QString filename(QFileInfo(compositeType->sourceUrl().fileName()).baseName());
-        cppToId.insert(qPrintable(filename.split(".")[0]), qPrintable(qmlTyName));
-
-        // FIXME: Work-around to omit Qt types unintentionally included
-        if (qmlTyName.startsWith("Q") || qmlTyName == "TestCase")
-            return;
+            return false;
 
         const QMetaObject *mainMeta = qtobject->metaObject();
-
-        QList<const QMetaObject *> objectsToMerge;
-        KnownAttributes knownAttributes;
-        // Get C++ base class name for the composite type
-        QString prototypeName = getPrototypeNameForCompositeType(mainMeta, defaultReachableNames,
-                                                                 &objectsToMerge);
-        object.insert("prototype", mainMeta->superClass()->className());
-
-        QStringList exportStrings(QStringList() << getExportString(qmlTyName, compositeType->majorVersion(), compositeType->minorVersion()));
+        QJsonObject object;
+        QStringList exportStrings(QStringList() << exportString);
         // Merge objects to get all exported versions of the same type
-        if (json->contains(qmlTyName)) {
-            object = json->value(qmlTyName).toObject();
+        if (json->contains(relocatableModuleUri + qmlTyName)) {
+            object = json->value(relocatableModuleUri + qmlTyName).toObject();
             QJsonArray exports(object["exports"].toArray());
             Q_FOREACH(QJsonValue expor, exports) {
                 exportStrings.append(QString("%1").arg(expor.toString()));
@@ -486,12 +451,11 @@ public:
         }
         exportStrings.removeDuplicates();
         exportStrings.sort();
-
         object.insert("exports", QJsonArray::fromStringList(exportStrings));
-        object.insert("exportMetaObjectRevisions", QJsonArray::fromStringList((QStringList() << QString::number(compositeType->minorVersion()))));
+        object.insert("prototype", mainMeta->superClass()->className());
+        object.insert("exportMetaObjectRevisions", QJsonArray::fromStringList((QStringList() << exportString.split(".")[1])));
         object.insert("isComposite", true);
-
-        if (compositeType->isSingleton()) {
+        if (isSingleton) {
             object.insert("isCreatable", false);
             object.insert("isSingleton", true);
         }
@@ -504,12 +468,15 @@ public:
             }
         }
 
-        Q_FOREACH (const QMetaObject *meta, objectsToMerge) {
-            if (!QString(meta->className()).contains(qmlTyName))
-                continue;
-            writeMetaContent(&object, meta, &knownAttributes);
-        }
-        json->insert(qmlTyName, object);
+        KnownAttributes knownAttributes;
+        // Strip internal _QMLTYPE_xy suffix
+        QString prototype(QString(mainMeta->superClass()->className()).split("_")[0]);
+        // Merge internal base class
+        if (internalTypes.contains(prototype))
+            writeMetaContent(&object, mainMeta->superClass(), &knownAttributes);
+        writeMetaContent(&object, mainMeta, &knownAttributes);
+        json->insert(relocatableModuleUri + qmlTyName, object);
+        return true;
     }
 
     void dump(const QMetaObject *meta, bool isUncreatable, bool isSingleton)
@@ -688,6 +655,10 @@ private:
 
     void dump(const QMetaEnum &e)
     {
+        // FIXME: Work-around to omit Qt types unintentionally included
+        if (QString(e.scope()).startsWith("Q"))
+            return;
+
         QJsonObject object;
         object["prototype"] = e.isFlag() ? "Flag" : "Enum";
 
@@ -695,7 +666,7 @@ private:
         for (int index = 0; index < e.keyCount(); ++index) {
             object[e.key(index)] = QString::number(e.value(index));
         }
-        json->insert(QString("%1.%2").arg(e.scope()).arg(e.name()), object);
+        json->insert(QString("%1::%2").arg(e.scope()).arg(e.name()), object);
     }
 };
 
@@ -941,32 +912,52 @@ int main(int argc, char *argv[])
         pluginImportUri = p.typeNamespace();
 
     // find all QMetaObjects reachable when the specified module is imported
-    QString pluginAlias(QString("%1").arg(pluginImportUri).replace(".", ""));
+    QStringList importVersions;
     if (pluginImportVersion.isEmpty()) {
-        // pluginImportVersion can be empty, pick latest
+        // Collect all the available versioned imports
         int highestMajor = 0, highestMinor = 1;
         Q_FOREACH(QQmlDirParser::Component c, p.components()) {
+            // pluginImportVersion can be empty, pick latest
             if (c.majorVersion > highestMajor) {
                 highestMajor = c.majorVersion;
                 highestMinor = c.minorVersion;
             } else if (c.majorVersion == highestMajor && c.minorVersion > highestMinor) {
                 highestMinor = c.minorVersion;
             }
+
+            // Work-around for version -1, -1
+            if (c.majorVersion == -1)
+                continue;
+            importVersions << QString("%1.%2").arg(c.majorVersion).arg(c.minorVersion);
         }
         pluginImportVersion = QString("%1.%2").arg(highestMajor).arg(highestMinor);
     }
+    importVersions << pluginImportVersion;
+    importVersions.removeDuplicates();
 
     // Create a component with all QML types to add them to the type system
     QByteArray code = importCode;
-    code += QString("import %1 %2 as %3\n").arg(pluginImportUri).arg(pluginImportVersion).arg(pluginAlias);
+    Q_FOREACH(const QString& version, importVersions) {
+        QString pluginAlias(QString("%1.%2").arg(pluginImportUri).arg(version).replace(".", "_"));
+        code += QString("import %1 %2 as %3\n").arg(pluginImportUri).arg(version).arg(pluginAlias);
+    }
     code += "Item {\n";
 
+    QStringList exportedTypes;
+    QMap<QString, QString> exportedVersions;
     Q_FOREACH(QQmlDirParser::Component c, p.components()) {
+        // Map filename-based PageHeadConfiguration11 to PageHeadConfiguration
+        QString filename(QFileInfo(c.fileName).baseName());
+        cppToId.insert(qPrintable(filename), qPrintable(c.typeName));
+
         if (c.internal) {
             internalTypes.append(c.typeName);
             continue;
         }
-        code += QString("%1.%2 {}\n").arg(pluginAlias).arg(c.typeName);
+        exportedTypes.append(QFileInfo(c.fileName).fileName());
+        QString version(QString("%1.%2").arg(c.majorVersion).arg(c.minorVersion));
+        if (version > exportedVersions[c.typeName])
+            exportedVersions.insert(c.typeName, version);
     }
 
     code += "}";
@@ -983,6 +974,7 @@ int main(int argc, char *argv[])
             if (error.description().contains(QRegExp("(Composite Singleton Type .+|Element) is not creatable")))
                 continue;
             std::cerr << "Failed to load " << qPrintable(pluginImportUri) << std::endl;
+            std::cerr << qPrintable(code) << std::endl;
             std::cerr << qPrintable( error.toString() ) << std::endl;
             return EXIT_IMPORTERROR;
         }
@@ -1042,8 +1034,17 @@ int main(int argc, char *argv[])
     Q_FOREACH (const QMetaObject *meta, nameToMeta) {
         dumper.dump(meta, uncreatableMetas.contains(meta), singletonMetas.contains(meta));
     }
-    Q_FOREACH (const QQmlType *compositeType, qmlTypesByCompositeName)
-        dumper.dumpComposite(&engine, compositeType, defaultReachableNames);
+    Q_FOREACH(QQmlDirParser::Component c, p.components()) {
+        if (c.internal)
+            continue;
+        QString version(QString("%1.%2").arg(c.majorVersion).arg(c.minorVersion));
+        if (c.majorVersion == -1)
+            version = pluginImportVersion;
+        if (!dumper.dumpQMLComponent(&engine, c.typeName, pluginModulePath + "/" + c.fileName, QString("%1 %2").arg(c.typeName).arg(version), c.singleton, internalTypes)) {
+            std::cerr << "Failed to instantiate " << qPrintable(c.typeName) << " from " << qPrintable(c.fileName) << std::endl;
+            exit(1);
+        }
+    }
 
     }
 
@@ -1062,9 +1063,6 @@ int main(int argc, char *argv[])
         Q_FOREACH(const QString& key, keys) {
             QJsonValue value(json[key]);
             if (value.isObject()) {
-                if (internalTypes.contains(key))
-                    continue;
-
                 QJsonObject object(value.toObject());
                 QJsonArray exports(object["exports"].toArray());
                 QStringList exportsSl;
@@ -1078,8 +1076,9 @@ int main(int argc, char *argv[])
                 if (!exportsSl.isEmpty())
                     sortedExports = exportsSl.join(" ");
                 else
-                    sortedExports = key;
-                byExports.insert(sortedExports, key);
+                    sortedExports = convertToId(key);
+                // Exports may not be unique across namespaces ie. Header
+                byExports.insertMulti(sortedExports, key);
             }
         }
 
@@ -1089,11 +1088,10 @@ int main(int argc, char *argv[])
             QString key(i.value());
             QJsonValue value(json[key]);
             if (value.isObject()) {
-                if (internalTypes.contains(key))
-                    continue;
-
                 QJsonObject object(value.toObject());
-                QString signature(exports + " " + convertToId(object["prototype"].toString()));
+                QString signature(exports);
+                if (object.contains("prototype"))
+                    signature += " " + convertToId(object["prototype"].toString());
                 if (object.contains("isSingleton"))
                     signature += " singleton";
                 signature += "\n";
@@ -1120,10 +1118,10 @@ int main(int argc, char *argv[])
                         continue;
                     }
                     QJsonObject field(object[fieldName].toObject());
-                    if (!field.contains("type") && object["prototype"] != "Enum")
+                    if (!field.contains("type") && object["prototype"] != "Enum" && object["prototype"] != "Flag")
                         continue;
                     signature += "    ";
-                    if (object["prototype"] != "Enum") {
+                    if (object["prototype"] != "Enum" && object["prototype"] != "Flag") {
                         if (object["defaultProperty"] == fieldName)
                             signature += "default ";
                         if (field.contains("isReadonly"))
