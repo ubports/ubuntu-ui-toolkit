@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -13,32 +13,19 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-import QtQuick 2.0
-import Ubuntu.Components 1.2
-
-/*!
-    \brief MainView with a Label and Button elements.
-*/
+//![0]
+import QtQuick 2.4
+import Ubuntu.Components 1.3
 
 MainView {
     id: mainView
-    // objectName for functional testing purposes (autopilot-qt5)
     objectName: "mainView"
-
-    // Note! applicationName needs to match the "name" field of the click manifest
     applicationName: "customtheme"
-
-    /*
-     This property enables the application to change orientation
-     when the device is rotated. The default is false.
-    */
-    //automaticOrientation: true
 
     width: units.gu(100)
     height: units.gu(75)
 
-    Component.onCompleted: Theme.name = "theme"
+    theme.name: "theme"
 
     Page {
         title: i18n.tr("Theme sample")
@@ -51,31 +38,15 @@ MainView {
             }
 
             Label {
-                text: i18n.tr("Theme.name:") + " " + Theme.name
+                text: i18n.tr("Theme.name:") + " " + theme.name
             }
 
-            Button {
-                width: parent.width
-                text: i18n.tr("Light background")
-
-                onClicked: {
-                    mainView.backgroundColor = "white";
-                }
-            }
-            Button {
-                width: parent.width
-                text: i18n.tr("Dark background")
-
-                onClicked: {
-                    mainView.backgroundColor = "blue";
-                }
-            }
             Button {
                 width: parent.width
                 text: i18n.tr("Set Ambiance theme")
 
                 onClicked: {
-                    Theme.name = "Ubuntu.Components.Themes.Ambiance";
+                    theme.name = "Ubuntu.Components.Themes.Ambiance";
                 }
             }
             Button {
@@ -83,7 +54,7 @@ MainView {
                 text: i18n.tr("Set SuruDark theme")
 
                 onClicked: {
-                    Theme.name = "Ubuntu.Components.Themes.SuruDark";
+                    theme.name = "Ubuntu.Components.Themes.SuruDark";
                 }
             }
             Button {
@@ -91,10 +62,10 @@ MainView {
                 text: i18n.tr("Application theme")
 
                 onClicked: {
-                    Theme.name = "theme";
+                    theme.name = "theme";
                 }
             }
         }
     }
 }
-
+//![0]

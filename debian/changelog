@@ -1,3 +1,87 @@
+ubuntu-ui-toolkit (1.2.1485+15.04.20150421-0ubuntu1) vivid; urgency=medium
+
+  [ Christian Dywan ]
+  * Christian Dywan's change: Ship generated HTML and JSON docs for
+    Autopilot helpers (LP: #1446533)
+
+  [ Loïc Molinari ]
+  * Christian Dywan's change: Ship generated HTML and JSON docs for
+    Autopilot helpers (LP: #1446533)
+
+  [ Tim Peeters ]
+  * Christian Dywan's change: Ship generated HTML and JSON docs for
+    Autopilot helpers (LP: #1446533)
+
+  [ Zoltán Balogh ]
+  * Christian Dywan's change: Ship generated HTML and JSON docs for
+    Autopilot helpers (LP: #1446533)
+
+ -- CI Train Bot <ci-train-bot@canonical.com>  Tue, 21 Apr 2015 16:31:51 +0000
+
+ubuntu-ui-toolkit (1.2.1485+15.04.20150417.1-0ubuntu1) vivid; urgency=medium
+
+  [ Christian Dywan]   
+  * Use activeFocus rather than focus to determine that Text* has focus. 
+    Fixes LP: #1378231
+  
+  [ Leo Arias ]   
+  * Added a grids unit helper for autopilot tests.
+  * Make it possible to overwrite the bottom margin for the flickable autopilot
+    helper. Fixes  LP: #1401517.
+  * Removed python2 support from autopilot tests and helpers. Fixes LP: #1429163 
+ 
+  [ Loïc Molinari ]   
+  * Bumped matrix precision in vertex shaders. mediump, which should actually be
+    enough, was interpreted as lowp on arale (PowerVR Rogue G6200).
+  * Fixed build.
+  * Synchronized license checking script with PBuilder Jenkins.
+    Fixes  LP: #1441580.
+  * [UbuntuShape] Added support for resolution independent rendering. 
+    Fixes  LP: #1427253.
+  * Updated unknown Makefiles in .bzrignore.
+  
+  [ Sebastien Bacher ] 
+  * Change cursor when over the documentation urls to show they can be clicked.
+
+  [ Timo Jyrinki ]  
+  * Clean up cruft from build dependencies. Fixes  LP: #1441499.
+  * uitk_test_plan.sh: Remove terminal app before trying to run the tests.
+    Fixes  LP: #1434537.
+
+  [ Tim Peeters ] 
+  * Add UbuntuTestCase.waitForHeaderAnimation().
+  * Add visible and locked properties to Page.head.
+    Fixes LP: #1402054, LP: #1424592.
+  * Create Page 1.3.
+  * Merge header tests in resources with header unit tests.
+  * Move duplicate code for the overflows that was in PageHeadStyle twice
+    (for Tabs and Actions overflows) into OverflowPanel.
+  * New header visuals.
+  * Re-introduce the panel color properties to Ambience PageHeadStyle.
+
+  [ Zsombor Egri ]
+  * Applying sub-theming on toolkit.
+  * Introducing StyledItem.theme and ThemeSettings.parentTheme properties
+    into v1.3.
+  * Introducing ThemeSettings component, exported to UI Toolkit version 1.3.
+  * Make ThemeSettings.palette writable to configure individual colors as well
+    as Palette as a whole.
+  * Separating Theme context property from theme engine, giving the possibility 
+    to use the theming engine by multiple instances. Preparations for deprecation. 
+    Theming unit tests fixed. Fixes  LP: #1248982.
+  * Theming tutorial
+  * Remove extra StyledItem.qml layer for styled items, keep only UCStyledItemBase.
+
+ -- CI Train Bot <ci-train-bot@canonical.com>  Fri, 17 Apr 2015 16:22:53 +0000
+
+ubuntu-ui-toolkit (1.2.1458+15.04.20150422-0ubuntu1) vivid; urgency=medium
+
+  [ Christian Dywan ]
+  * Ship generated HTML and JSON docs for Autopilot helpers, and drop
+    python-autopilot build dependency which is in universe.
+
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Wed, 22 Apr 2015 09:57:40 +0100
+
 ubuntu-ui-toolkit (1.2.1458+15.04.20150327-0ubuntu1) vivid; urgency=medium
 
   [ By Tim Peeters ]

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Canonical Ltd.
+ * Copyright (C) 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.2 as Toolkit
+import Ubuntu.Components 1.3 as Toolkit
 
 /*!
     \qmltype Panel
@@ -55,7 +55,7 @@ import Ubuntu.Components 1.2 as Toolkit
 
                 Rectangle {
                     anchors.fill: parent
-                    color: Theme.palette.normal.overlay
+                    color: theme.palette.normal.overlay
 
                     Button {
                         anchors.centerIn: parent
@@ -109,7 +109,7 @@ import Ubuntu.Components 1.2 as Toolkit
         import Ubuntu.Components 1.2
 
         Rectangle {
-            color: Theme.palette.normal.background
+            color: theme.palette.normal.background
             width: units.gu(40)
             height: units.gu(40)
 
@@ -123,7 +123,7 @@ import Ubuntu.Components 1.2 as Toolkit
                 height: units.gu(8)
 
                 Rectangle {
-                    color: Theme.palette.normal.overlay
+                    color: theme.palette.normal.overlay
                     anchors.fill: parent
                     Rectangle {
                         width: units.gu(8)

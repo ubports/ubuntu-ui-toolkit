@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.4
+import Ubuntu.Components 1.3 as Toolkit
 
 /*!
     \qmltype TabBar
@@ -24,7 +25,7 @@ import QtQuick 2.4
         This component does not need to be instantiated by the developer, it is
         automatically created by the \l Tabs.
 */
-StyledItem {
+Toolkit.StyledItem {
     id: tabBar
 
     /*!
@@ -96,8 +97,8 @@ StyledItem {
 
     implicitHeight: units.gu(7.5)
     activeFocusOnPress: true
-
-    style: Theme.createStyleComponent("TabBarStyle.qml", tabBar)
+    theme.version: Toolkit.Ubuntu.toolkitVersion
+    style: theme.createStyleComponent("TabBarStyle.qml", tabBar)
 
     QtObject {
         id: internal

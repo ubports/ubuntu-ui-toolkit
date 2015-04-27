@@ -14,14 +14,15 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-try:
-    from unittest import mock
-except ImportError:
-    import mock
+from unittest import mock
 
 import testtools
 import ubuntuuitoolkit
-from ubuntuuitoolkit import tests
+from ubuntuuitoolkit import (
+    tests,
+    units,
+)
+from ubuntuuitoolkit._custom_proxy_objects import _flickable
 
 
 class FlickableTestCase(testtools.TestCase):
@@ -143,7 +144,7 @@ MainView {
 """)
 
     def setUp(self):
-        super(SwipeFlickableTestCase, self).setUp()
+        super().setUp()
         self.flickable = self.main_view.select_single(
             ubuntuuitoolkit.QQuickFlickable, objectName='flickable')
         self.label = self.main_view.select_single(
@@ -217,6 +218,45 @@ MainView {
 
         self.flickable.swipe_to_show_more_below()
         self.assertFalse(self.flickable.atYBeginning)
+
+    def test_swipe_to_show_more_below_with_bottom_margin(self):
+        """Calling swipe to show more below will use the margin in the drag."""
+        qquickflickable = self.main_view.select_single(
+            ubuntuuitoolkit.QQuickFlickable, objectName='flickable')
+        qquickflickable.margin_to_swipe_from_bottom = units.gu(6)
+        containers = qquickflickable._get_containers()
+        bottom = _flickable._get_visible_container_bottom(containers)
+
+        with mock.patch.object(
+                qquickflickable.pointing_device, 'drag') as mock_drag:
+            try:
+                qquickflickable.swipe_to_show_more_below()
+            except ubuntuuitoolkit.ToolkitException:
+                # An exception will be raised because the drag was faked.
+                pass
+
+        mock_drag.assert_called_with(
+            mock.ANY, bottom - units.gu(6), mock.ANY, mock.ANY, rate=mock.ANY)
+
+    def test_swipe_to_show_more_above_with_top_margin(self):
+        """Calling swipe to show more above will use the margin in the drag."""
+        qquickflickable = self.main_view.select_single(
+            ubuntuuitoolkit.QQuickFlickable, objectName='flickable')
+        qquickflickable.margin_to_swipe_from_top = units.gu(6)
+        containers = qquickflickable._get_containers()
+        top = _flickable._get_visible_container_top(containers)
+
+        qquickflickable.swipe_to_bottom()
+        with mock.patch.object(
+                qquickflickable.pointing_device, 'drag') as mock_drag:
+            try:
+                qquickflickable.swipe_to_show_more_above()
+            except ubuntuuitoolkit.ToolkitException:
+                # An exception will be raised because the drag was faked.
+                pass
+
+        mock_drag.assert_called_with(
+            mock.ANY, top + units.gu(6), mock.ANY, mock.ANY, rate=mock.ANY)
 
     def test_failed_drag_must_raise_exception(self):
         dummy_coordinates = (0, 0, 10, 10)

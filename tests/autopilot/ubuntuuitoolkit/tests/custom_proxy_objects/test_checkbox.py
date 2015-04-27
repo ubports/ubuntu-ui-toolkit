@@ -18,10 +18,7 @@ import time
 
 from autopilot import input
 from testtools.matchers import GreaterThan, LessThan
-try:
-    from unittest import mock
-except ImportError:
-    import mock
+from unittest import mock
 
 import ubuntuuitoolkit
 from ubuntuuitoolkit import tests
@@ -75,7 +72,7 @@ class ToggleTestCase(tests.QMLStringAppTestCase):
     ]
 
     def setUp(self):
-        super(ToggleTestCase, self).setUp()
+        super().setUp()
         self.toggle = self.main_view.select_single(
             ubuntuuitoolkit.CheckBox, objectName=self.objectName)
         self.assertFalse(self.toggle.checked)

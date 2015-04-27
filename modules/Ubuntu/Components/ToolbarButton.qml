@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Canonical Ltd.
+ * Copyright (C) 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.4
+import Ubuntu.Components 1.3
 
 /*!
     \qmltype ToolbarButton
@@ -83,5 +84,6 @@ ActionItem {
     height: parent ? parent.height : undefined
     width: units.gu(5)
 
-    style: Theme.createStyleComponent("ToolbarButtonStyle.qml", toolbarButton)
+    theme.version: Ubuntu.toolkitVersion
+    style: theme.createStyleComponent("ToolbarButtonStyle.qml", toolbarButton)
 }

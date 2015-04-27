@@ -27,4 +27,7 @@ OTHER_FILES += \
     ListItemWithInlineActionsList.qml \
     ListItemWithActionsList.qml \
     StyledItemOldTheming.qml \
-    Styling.qml
+    Styling.qml \
+    PaletteConfigurationOneColor.qml \
+    PaletteConfigurationAllColors.qml \
+    StyledItemNewTheming.qml

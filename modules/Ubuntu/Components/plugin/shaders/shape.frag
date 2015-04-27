@@ -55,9 +55,10 @@ void main(void)
     }
 
     // Get screen-space derivative of texture coordinate t representing the normalized distance
-    // between 2 pixels. dFd*() unfortunately have to be called outside of the following branches
-    // (evaluated using a uniform variable) in order to work correctly with Mesa.
-    lowp float dfdt = dfdtFactors.x != 0.0 ? dFdy(shapeCoord.t) : dFdx(shapeCoord.t);
+    // between 2 pixels. dFd*() unfortunately have to be called outside of branches in order to work
+    // correctly with VMware's "Gallium 0.4 on SVGA3D".
+    lowp vec2 derivatives = vec2(dFdx(shapeCoord.t), dFdy(shapeCoord.t));
+    lowp float dfdt = dfdtFactors.x != 0.0 ? derivatives.x : derivatives.y;
 
     if (aspect == FLAT) {
         // Mask the current color with an anti-aliased and resolution independent shape mask built

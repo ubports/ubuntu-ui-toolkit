@@ -59,11 +59,11 @@ static void orientationChanged(Qt::ScreenOrientation orientation)
     if (QGuiApplication::primaryScreen()->primaryOrientation() & landscapeMask) {
         const quint8 flippedMask =
             Qt::InvertedLandscapeOrientation | Qt::InvertedPortraitOrientation;
-        dfdtFactors[0] = orientation & landscapeMask ? 1.0f : 0.0f;
+        dfdtFactors[0] = orientation & landscapeMask ? 0.0f : 1.0f;
         dfdtFactors[1] = orientation & flippedMask ? -1.0f : 1.0f;
     } else {
         const quint8 flippedMask = Qt::InvertedPortraitOrientation | Qt::LandscapeOrientation;
-        dfdtFactors[0] = orientation & portraitMask ? 1.0f : 0.0f;
+        dfdtFactors[0] = orientation & portraitMask ? 0.0f : 1.0f;
         dfdtFactors[1] = orientation & flippedMask ? -1.0f : 1.0f;
     }
 }
@@ -167,7 +167,7 @@ void ShapeShader::updateState(
 
     // Send screen-space derivative factors. Note that when rendering is redirected to a
     // ShaderEffectSource (FBO), dFdy() sign is flipped.
-    const bool flipped = dfdtFactors[0] != 0.0f && state.projectionMatrix()(1, 3) < 0.0f;
+    const bool flipped = dfdtFactors[0] != 1.0f && state.projectionMatrix()(1, 3) < 0.0f;
     const QVector2D dfdtFactorsVector(dfdtFactors[0], flipped ? -dfdtFactors[1] : dfdtFactors[1]);
     program()->setUniformValue(m_dfdtFactorsId, dfdtFactorsVector);
 
@@ -221,6 +221,9 @@ ShapeNode::ShapeNode()
     m_geometry.setVertexDataPattern(vertexDataPattern);
     setMaterial(&m_material);
     setGeometry(&m_geometry);
+#ifdef QSG_RUNTIME_DESCRIPTION
+    qsgnode_set_description(this, QLatin1String("ubuntushape"));
+#endif
 }
 
 // static

@@ -1,6 +1,6 @@
 # -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
 #
-# Copyright (C) 2014 Canonical Ltd.
+# Copyright (C) 2014, 2015 Canonical Ltd.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -25,7 +25,7 @@ class ScrollBarTestCase(gallery.GalleryTestCase):
     scenarios = ubuntu_scenarios.get_device_simulation_scenarios()
 
     def setUp(self):
-        super(ScrollBarTestCase, self).setUp()
+        super().setUp()
         self.open_page('navigationElement')
         self.scrollbar = self.main_view.wait_select_single(
             'Scrollbar', objectName="TemplateScrollbar")

@@ -14,10 +14,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-try:
-    from unittest import mock
-except ImportError:
-    import mock
+from unittest import mock
 
 from autopilot import platform
 
@@ -52,7 +49,7 @@ MainView {
 """)
 
     def setUp(self):
-        super(TextFieldTestCase, self).setUp()
+        super().setUp()
         self.simple_text_field = self.main_view.select_single(
             ubuntuuitoolkit.TextField, objectName='simple_text_field')
 

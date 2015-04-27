@@ -105,6 +105,14 @@ static QObject *registerUbuntuNamespace(QQmlEngine *engine, QJSEngine *scriptEng
     return new UCNamespace();
 }
 
+static QObject *registerUbuntuNamespace13(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+    Q_UNUSED(engine)
+    Q_UNUSED(scriptEngine)
+
+    return new UCNamespaceV13();
+}
+
 void UbuntuComponentsPlugin::registerWindowContextProperty()
 {
     setWindowContextProperty(QGuiApplication::focusWindow());
@@ -135,7 +143,7 @@ void UbuntuComponentsPlugin::registerTypesToVersion(const char *uri, int major, 
     qmlRegisterType<UCAction>(uri, major, minor, "Action");
     qmlRegisterType<UCActionContext>(uri, major, minor, "ActionContext");
     qmlRegisterType<UCActionManager>(uri, major, minor, "ActionManager");
-    qmlRegisterType<UCStyledItemBase>(uri, major, minor, "StyledItemBase");
+    qmlRegisterType<UCStyledItemBase>(uri, major, minor, "StyledItem");
     qmlRegisterUncreatableType<UbuntuI18n>(uri, major, minor, "i18n", "Singleton object");
     qmlRegisterExtendedType<QQuickImageBase, UCQQuickImageExtension>(uri, major, minor, "QQuickImageBase");
     qmlRegisterUncreatableType<UCUnits>(uri, major, minor, "UCUnits", "Not instantiable");
@@ -173,7 +181,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterUncreatableType<QAbstractItemModel>(uri, 1, 1, "QAbstractItemModel", "Not instantiable");
 
     // register 1.1 only API
-    qmlRegisterType<UCStyledItemBase, 1>(uri, 1, 1, "StyledItemBase");
+    qmlRegisterType<UCStyledItemBase, 1>(uri, 1, 1, "StyledItem");
     qmlRegisterType<QSortFilterProxyModelQML>(uri, 1, 1, "SortFilterModel");
     qmlRegisterUncreatableType<FilterBehavior>(uri, 1, 1, "FilterBehavior", "Not instantiable");
     qmlRegisterUncreatableType<SortBehavior>(uri, 1, 1, "SortBehavior", "Not instantiable");
@@ -192,7 +200,8 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
 
     // register 1.3 API
     qmlRegisterType<UCTheme>(uri, 1, 3, "ThemeSettings");
-    qmlRegisterType<UCStyledItemBase, 2>(uri, 1, 3, "StyledItemBase");
+    qmlRegisterType<UCStyledItemBase, 2>(uri, 1, 3, "StyledItem");
+    qmlRegisterSingletonType<UCNamespaceV13>(uri, 1, 3, "Ubuntu", registerUbuntuNamespace13);
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
@@ -202,7 +211,8 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
 
     // register internal styles
     const char *styleUri = "Ubuntu.Components.Styles";
-    qmlRegisterType<UCListItemStyle, 2>(styleUri, 1, 2, "ListItemStyle");
+    qmlRegisterType<UCListItemStyle>(styleUri, 1, 2, "ListItemStyle");
+    qmlRegisterType<UCListItemStyle, 1>(styleUri, 1, 3, "ListItemStyle");
 
     QQmlExtensionPlugin::initializeEngine(engine, uri);
     QQmlContext* context = engine->rootContext();
