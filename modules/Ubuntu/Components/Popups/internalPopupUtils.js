@@ -16,7 +16,7 @@
 
 .pragma library
 
-.import "../mathUtils.js" as MathUtils
+.import Ubuntu.Components 1.3 as Toolkit
 
 // Simple positioning on the screen, not relative to a caller Item.
 function SimplePositioning(foreground, area, edgeMargins) {
@@ -115,23 +115,23 @@ function CallerPositioning(foreground, pointer, area, caller, pointerTarget, edg
     // return x-coordinate to align center of item horizontally with center of caller
     this.horizontalAlign = function(item, anchorItem) {
         var x = area.mapFromItem(anchorItem, anchorItem.width/2, -1).x - item.width/2;
-        return MathUtils.clamp(x, edgeMargins, area.width - item.width - edgeMargins);
+        return Toolkit.MathUtils.clamp(x, edgeMargins, area.width - item.width - edgeMargins);
     }
 
     // return y-coordinate to align center of item vertically with center of caller
     this.verticalAlign = function(item, anchorItem) {
         var y = area.mapFromItem(anchorItem, -1, anchorItem.height/2).y - item.height/2;
-        return MathUtils.clamp(y, edgeMargins, area.height - item.height - edgeMargins);
+        return Toolkit.MathUtils.clamp(y, edgeMargins, area.height - item.height - edgeMargins);
     }
 
     this.closestToHorizontalCenter = function(anchorItem, margin) {
         var center = area.mapFromItem(anchorItem, anchorItem.width/2, -1).x;
-        return MathUtils.clamp(center, edgeMargins + margin, area.width - (edgeMargins + margin));
+        return Toolkit.MathUtils.clamp(center, edgeMargins + margin, area.width - (edgeMargins + margin));
     }
 
     this.closestToVerticalCenter = function(anchorItem, margin) {
         var center = area.mapFromItem(anchorItem, -1, anchorItem.height/2).y;
-        return MathUtils.clamp(center, edgeMargins + margin, area.height - (edgeMargins + margin));
+        return Toolkit.MathUtils.clamp(center, edgeMargins + margin, area.height - (edgeMargins + margin));
     }
 
     // position foreground and pointer automatically on a small screen in portrait mode

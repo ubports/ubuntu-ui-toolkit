@@ -123,6 +123,7 @@ void UbuntuComponentsPlugin::initializeBaseUrl()
 QUrl UbuntuComponentsPlugin::versionedUrl(const QString &file, int major, int minor)
 {
     QString relativeFile = QString("%1%2/%3").arg(major).arg(minor).arg(file);
+    qDebug() << "F" << m_baseUrl.resolved(relativeFile).toString();
     return m_baseUrl.resolved(relativeFile);
 }
 

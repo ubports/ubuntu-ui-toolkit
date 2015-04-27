@@ -177,4 +177,6 @@ Object {
         adaptorInterface: "com.ubuntu.touch.AccountsService.Sound"
         property bool otherVibrate: true
     }
+
+    Component.onCompleted: print("Haptics13 completed")
 }
