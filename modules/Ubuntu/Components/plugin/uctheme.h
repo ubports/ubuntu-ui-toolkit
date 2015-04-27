@@ -134,11 +134,19 @@ private:
         QList<Data> configList;
     };
 
+    struct ThemeRecord {
+        ThemeRecord(const QUrl &path, bool shared) :
+            path(path), shared(shared)
+        {}
+        QUrl path;
+        bool shared;
+    };
+
     QString m_name;
     QPointer<QObject> m_palette; // the palette might be from the default style if the theme doesn't define palette
     QQmlEngine *m_engine;
     PaletteConfig m_config;
-    QList<QUrl> m_themePaths;
+    QList<ThemeRecord> m_themePaths;
     UCDefaultTheme m_defaultTheme;
     quint16 m_version;
     bool m_defaultStyle:1;
@@ -147,6 +155,6 @@ private:
     friend class UCDeprecatedTheme;
 };
 
-QUrl pathFromThemeName(QString themeName);
+QUrl pathFromThemeName(QString themeName, bool *sharedTheme);
 
 #endif // UCTHEME_H

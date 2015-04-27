@@ -142,7 +142,7 @@
 const QString THEME_FOLDER_FORMAT("%1/%2/");
 const QString PARENT_THEME_FILE("parent_theme");
 
-QStringList sharedThemePaths()
+QStringList themeSearchPath()
 {
     QString envPath = QLatin1String(getenv("UBUNTU_UI_TOOLKIT_THEMES_PATH"));
     QStringList pathList = envPath.split(':', QString::SkipEmptyParts);
@@ -170,42 +170,29 @@ QStringList sharedThemePaths()
             result << path + '/';
         }
     }
-    return result;
-}
-
-bool isSharedTheme(const QUrl &themePath)
-{
-    bool result = false;
-    const QString theme = themePath.toString();
-    QStringList sharedThemes = sharedThemePaths();
-    Q_FOREACH(QString path, sharedThemes) {
-        QString absolutePath = QUrl::fromLocalFile(QDir(path).absolutePath()).toString();
-        if (theme.startsWith(absolutePath)) {
-            return true;
-        }
-    }
-
-    return result;
-}
-
-QStringList themeSearchPath()
-{
-    QStringList result = sharedThemePaths();
     // prepend current folder
     result.prepend(QDir::currentPath());
     return result;
 }
 
-QUrl pathFromThemeName(QString themeName)
+QUrl pathFromThemeName(QString themeName, bool *sharedTheme)
 {
     themeName.replace('.', '/');
     QStringList pathList = themeSearchPath();
+    // the first entry from pathList is the app's current folder
+    if (sharedTheme) {
+        (*sharedTheme) = false;
+    }
     Q_FOREACH(const QString &path, pathList) {
         QString themeFolder = THEME_FOLDER_FORMAT.arg(path, themeName);
         // QUrl needs a trailing slash to understand it's a directory
         QString absoluteThemeFolder = QDir(themeFolder).absolutePath().append('/');
         if (QDir(absoluteThemeFolder).exists()) {
             return QUrl::fromLocalFile(absoluteThemeFolder);
+        }
+        // the others are shared themes all
+        if (sharedTheme) {
+            (*sharedTheme) = true;
         }
     }
     return QUrl();
@@ -214,7 +201,7 @@ QUrl pathFromThemeName(QString themeName)
 QString parentThemeName(const QString& themeName)
 {
     QString parentTheme;
-    QUrl themePath = pathFromThemeName(themeName);
+    QUrl themePath = pathFromThemeName(themeName, Q_NULLPTR);
     if (!themePath.isValid()) {
         qWarning() << qPrintable(UbuntuI18n::instance().tr("Theme not found: \"%1\"").arg(themeName));
     } else {
@@ -421,9 +408,10 @@ void UCTheme::updateThemePaths()
 
     QString themeName = name();
     while (!themeName.isEmpty()) {
-        QUrl themePath = pathFromThemeName(themeName);
+        bool sharedTheme;
+        QUrl themePath = pathFromThemeName(themeName, &sharedTheme);
         if (themePath.isValid()) {
-            m_themePaths.append(themePath);
+            m_themePaths.append(ThemeRecord(themePath, sharedTheme));
         }
         themeName = parentThemeName(themeName);
     }
@@ -572,32 +560,33 @@ void UCTheme::resetPalette()
 
 QUrl UCTheme::styleUrl(const QString& styleName, quint16 version, bool *isFallback)
 {
-    Q_FOREACH (const QUrl& themePath, m_themePaths) {
+    Q_FOREACH (const ThemeRecord &themePath, m_themePaths) {
         // check versioned style first
         QUrl styleUrl;
         if (version < BUILD_VERSION(1, 2)) {
-            if (isFallback) {
+            if (isFallback && themePath.shared) {
                 (*isFallback) = true;
             }
-            version = BUILD_VERSION(1, 2);
+            version = LATEST_UITK_VERSION;
         }
         // we stop at version 1.2 as we do not have support for earlier themes anymore.
         for (int minor = MINOR_VERSION(version); minor >= 2; minor--) {
             QString versionedName = QStringLiteral("%1.%2/%3").arg(MAJOR_VERSION(version)).arg(minor).arg(styleName);
-            styleUrl = themePath.resolved(versionedName);
+            styleUrl = themePath.path.resolved(versionedName);
             if (styleUrl.isValid() && QFile::exists(styleUrl.toLocalFile())) {
                 return styleUrl;
             }
         }
 
         // if we get here, that means we haven't got a shared theme or the shared theme is broken
-        if (!isSharedTheme(themePath)) {
+        // themePath.second specifies whether the theme is shared or not
+        if (!themePath.shared) {
             // not a fallback theme loading
             if (isFallback) {
                 (*isFallback) = false;
             }
             // we can load unversioned application styles
-            styleUrl = themePath.resolved(styleName);
+            styleUrl = themePath.path.resolved(styleName);
             if (styleUrl.isValid() && QFile::exists(styleUrl.toLocalFile())) {
                 return styleUrl;
             }
