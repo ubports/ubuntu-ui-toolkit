@@ -113,6 +113,19 @@ static QObject *registerUbuntuNamespace13(QQmlEngine *engine, QJSEngine *scriptE
     return new UCNamespaceV13();
 }
 
+void UbuntuComponentsPlugin::initializeBaseUrl()
+{
+    if (!m_baseUrl.isValid()) {
+        m_baseUrl = QUrl(baseUrl().toString() + '/');
+    }
+}
+
+QUrl UbuntuComponentsPlugin::versionedUrl(const QString &file, int major, int minor)
+{
+    QString relativeFile = QString("%1%2/%3").arg(major).arg(minor).arg(file);
+    return m_baseUrl.resolved(relativeFile);
+}
+
 void UbuntuComponentsPlugin::registerWindowContextProperty()
 {
     setWindowContextProperty(QGuiApplication::focusWindow());
@@ -164,11 +177,14 @@ void UbuntuComponentsPlugin::registerTypesToVersion(const char *uri, int major, 
     qmlRegisterSingletonType<UCUriHandler>(uri, major, minor, "UriHandler", registerUriHandler);
     qmlRegisterType<UCMouse>(uri, major, minor, "Mouse");
     qmlRegisterType<UCInverseMouse>(uri, major, minor, "InverseMouse");
+
+    qmlRegisterSingletonType(versionedUrl("Haptics.qml", 1, 2), uri, major, minor, "Haptics");
 }
 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QLatin1String("Ubuntu.Components"));
+    initializeBaseUrl();
 
     // register 0.1 for backward compatibility
     registerTypesToVersion(uri, 0, 1);
@@ -199,6 +215,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCUbuntuShapeOverlay>(uri, 1, 2, "UbuntuShapeOverlay");
 
     // register 1.3 API
+    qmlRegisterSingletonType(versionedUrl("Haptics.qml", 1, 3), uri, 1, 3, "Haptics");
     qmlRegisterType<UCTheme>(uri, 1, 3, "ThemeSettings");
     qmlRegisterType<UCStyledItemBase, 2>(uri, 1, 3, "StyledItem");
     qmlRegisterSingletonType<UCNamespaceV13>(uri, 1, 3, "Ubuntu", registerUbuntuNamespace13);
@@ -207,7 +224,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 {
     // initialize baseURL
-    m_baseUrl = QUrl(baseUrl().toString() + '/');
+    initializeBaseUrl();
 
     // register internal styles
     const char *styleUri = "Ubuntu.Components.Styles";
