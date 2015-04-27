@@ -146,7 +146,7 @@ private Q_SLOTS:
         if (styleName == "NotExistingTestStyle.qml") {
             ThemeTestCase::ignoreWarning(parentName, 20, 1, "QML SimpleItem: Warning: Style NotExistingTestStyle.qml not found in theme TestModule.TestTheme");
         }
-        qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", ".");
+        qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "./themes");
 
         QScopedPointer<ThemeTestCase> view(new ThemeTestCase(parentName));
         view->setTheme("TestModule.TestTheme");
@@ -633,6 +633,9 @@ private Q_SLOTS:
         QTest::newRow("Theming version 1.3")
                 << "StyledItemV13.qml"
                 << "version1.3";
+        QTest::newRow("Fall back to 1.2")
+                << "StyledItemFallback.qml"
+                << "";
     }
     void test_theme_versions()
     {
@@ -640,9 +643,10 @@ private Q_SLOTS:
         QFETCH(QString, testValue);
 
         qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "");
-        qputenv("XDG_DATA_DIRS", "./themes:./themes/TestModule");
+        qputenv("XDG_DATA_DIRS", "./themes/TestModule");
         QScopedPointer<ThemeTestCase> view(new ThemeTestCase(document));
         UCStyledItemBase *styledItem = qobject_cast<UCStyledItemBase*>(view->rootObject());
+        QVERIFY(UCStyledItemBasePrivate::get(styledItem)->styleItem);
         QString newProperty(UCStyledItemBasePrivate::get(styledItem)->styleItem->property("newProperty").toString());
         QCOMPARE(newProperty, testValue);
         // NOTE TestTheme resets the theme therefore the theming will look for the tested style under Ambiance theme

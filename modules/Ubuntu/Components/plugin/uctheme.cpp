@@ -142,7 +142,8 @@
 const QString THEME_FOLDER_FORMAT("%1/%2/");
 const QString PARENT_THEME_FILE("parent_theme");
 
-QStringList themeSearchPath() {
+QStringList sharedThemePaths()
+{
     QString envPath = QLatin1String(getenv("UBUNTU_UI_TOOLKIT_THEMES_PATH"));
     QStringList pathList = envPath.split(':', QString::SkipEmptyParts);
     if (pathList.isEmpty()) {
@@ -162,7 +163,6 @@ QStringList themeSearchPath() {
         pathList << qml2ImportPath.split(':', QString::SkipEmptyParts);
     }
     pathList << QLibraryInfo::location(QLibraryInfo::Qml2ImportsPath).split(':', QString::SkipEmptyParts);
-
     // fix folders
     QStringList result;
     Q_FOREACH(const QString &path, pathList) {
@@ -170,6 +170,27 @@ QStringList themeSearchPath() {
             result << path + '/';
         }
     }
+    return result;
+}
+
+bool isSharedTheme(const QUrl &themePath)
+{
+    bool result = false;
+    const QString theme = themePath.toString();
+    QStringList sharedThemes = sharedThemePaths();
+    Q_FOREACH(QString path, sharedThemes) {
+        QString absolutePath = QUrl::fromLocalFile(QDir(path).absolutePath()).toString();
+        if (theme.startsWith(absolutePath)) {
+            return true;
+        }
+    }
+
+    return result;
+}
+
+QStringList themeSearchPath()
+{
+    QStringList result = sharedThemePaths();
     // prepend current folder
     result.prepend(QDir::currentPath());
     return result;
@@ -549,11 +570,17 @@ void UCTheme::resetPalette()
     setPalette(NULL);
 }
 
-QUrl UCTheme::styleUrl(const QString& styleName, quint16 version)
+QUrl UCTheme::styleUrl(const QString& styleName, quint16 version, bool *isFallback)
 {
     Q_FOREACH (const QUrl& themePath, m_themePaths) {
         // check versioned style first
         QUrl styleUrl;
+        if (version < BUILD_VERSION(1, 2)) {
+            if (isFallback) {
+                (*isFallback) = true;
+            }
+            version = BUILD_VERSION(1, 2);
+        }
         // we stop at version 1.2 as we do not have support for earlier themes anymore.
         for (int minor = MINOR_VERSION(version); minor >= 2; minor--) {
             QString versionedName = QStringLiteral("%1.%2/%3").arg(MAJOR_VERSION(version)).arg(minor).arg(styleName);
@@ -563,10 +590,17 @@ QUrl UCTheme::styleUrl(const QString& styleName, quint16 version)
             }
         }
 
-        // fall back to the old one
-        styleUrl = themePath.resolved(styleName);
-        if (styleUrl.isValid() && QFile::exists(styleUrl.toLocalFile())) {
-            return styleUrl;
+        // if we get here, that means we haven't got a shared theme or the shared theme is broken
+        if (!isSharedTheme(themePath)) {
+            // not a fallback theme loading
+            if (isFallback) {
+                (*isFallback) = false;
+            }
+            // we can load unversioned application styles
+            styleUrl = themePath.resolved(styleName);
+            if (styleUrl.isValid() && QFile::exists(styleUrl.toLocalFile())) {
+                return styleUrl;
+            }
         }
     }
 
@@ -642,8 +676,13 @@ QQmlComponent* UCTheme::createStyleComponent(const QString& styleName, QObject* 
         }
         // make sure we have the paths
         if (engine != NULL) {
-            QUrl url = styleUrl(styleName, version);
+            bool fallback = false;
+            QUrl url = styleUrl(styleName, version, &fallback);
             if (url.isValid()) {
+                if (fallback) {
+                    qmlInfo(parent) << QStringLiteral("Theme '%1' has no '%2' style for version %3.%4, use version 1.2")
+                                       .arg(name()).arg(styleName).arg(MAJOR_VERSION(version)).arg(MINOR_VERSION(version));
+                }
                 component = new QQmlComponent(engine, url, QQmlComponent::PreferSynchronous, parent);
                 if (component->isError()) {
                     qmlInfo(parent) << component->errorString();
