@@ -18,7 +18,7 @@ import Ubuntu.Components 1.3
 
 StyledItem {
     id: item
-    theme.name: "themes.CustomTheme"
+    theme.name: "TestModule.TestTheme"
     theme.version: Ubuntu.version(1, 0)
     style: theme.createStyleComponent("TestStyle.qml", item)
 }
