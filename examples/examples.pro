@@ -1,7 +1,7 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \ 
-    Toolkit.1.3
+    1.3
 
 
 #examples = jokes unit-converter
