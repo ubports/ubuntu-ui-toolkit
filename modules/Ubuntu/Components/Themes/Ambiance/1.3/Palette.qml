@@ -34,7 +34,7 @@ Palette {
     selected {
         background: Qt.rgba(0, 0, 0, 0.05)
         backgroundText: UbuntuColors.darkGrey
-        selection: selected.foreground // unused
+        selection: selected.foreground
         foreground: Qt.rgba(UbuntuColors.blue.r, UbuntuColors.blue.g, UbuntuColors.blue.b, 0.2)
         foregroundText: UbuntuColors.darkGrey
         field: "#FFFFFF"
