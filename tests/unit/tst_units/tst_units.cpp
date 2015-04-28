@@ -224,10 +224,10 @@ private Q_SLOTS:
         units.setGridUnit(20);
 
         QCOMPARE(units.dp(1.0), 1.0f);
-        QCOMPARE(units.dp(1.32), 1.0f);
-        QCOMPARE(units.dp(1.72), 2.0f);
+        QCOMPARE(units.dp(1.32), 1.5f);
+        QCOMPARE(units.dp(1.72), 1.5f);
         QCOMPARE(units.dp(0.23), 0.0f);
-        QCOMPARE(units.dp(0.51), 1.0f);
+        QCOMPARE(units.dp(0.51), 0.5f);
         QCOMPARE(units.dp(0.9999), 1.0f);
         QCOMPARE(units.dp(1000.01), 1250.0f);
     }
