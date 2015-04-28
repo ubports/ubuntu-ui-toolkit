@@ -24,7 +24,7 @@ Scrollbar 0.1 Scrollbar.qml
 Object 0.1 Object.qml
 OptionSelector 0.1 OptionSelector.qml
 OptionSelectorDelegate 0.1 OptionSelectorDelegate.qml
-Page 0.1 Page10.qml
+Page 0.1 13/Page10.qml
 internal PageTreeNode PageTreeNode.qml
 PageStack 0.1 PageStack.qml
 internal Toolbar Toolbar.qml
@@ -53,13 +53,13 @@ ActionItem 1.0 ActionItem.qml
 ActionList 1.0 ActionList.qml
 ToolbarItems 1.0 ToolbarItems.qml
 ToolbarButton 1.0 ToolbarButton.qml
-MainView 1.0 MainView.qml
+MainView 1.0 13/MainView.qml
 Button 1.0 10/Button.qml
 Panel 1.0 Panel.qml
 Tab 1.0 Tab.qml
 TabBar 1.0 TabBar.qml
 Tabs 1.0 Tabs.qml
-Label 1.0 Label.qml
+Label 1.0 13/Label.qml
 AbstractButton 1.0 AbstractButton.qml
 ActivityIndicator 1.0 ActivityIndicator.qml
 ProgressBar 1.0 ProgressBar10.qml
@@ -72,7 +72,7 @@ Scrollbar 1.0 Scrollbar.qml
 Object 1.0 Object.qml
 OptionSelector 1.0 OptionSelector.qml
 OptionSelectorDelegate 1.0 OptionSelectorDelegate.qml
-Page 1.0 Page10.qml
+Page 1.0 13/Page10.qml
 PageStack 1.0 PageStack.qml
 Header 1.0 Header.qml
 CrossFadeImage 1.0 CrossFadeImage10.qml
@@ -94,7 +94,7 @@ ProgressBar 1.1 ProgressBar11.qml
 CrossFadeImage 1.1 CrossFadeImage11.qml
 PullToRefresh 1.1 PullToRefresh.qml
 UbuntuListView 1.1 UbuntuListView11.qml
-Page 1.1 Page11.qml
+Page 1.1 13/Page11.qml
 PageHeadConfiguration 1.1 PageHeadConfiguration11.qml
 PageHeadSections 1.1 PageHeadSections.qml
 PageHeadState 1.1 PageHeadState.qml
@@ -105,7 +105,7 @@ singleton Haptics 0.1 11/Haptics.qml
 singleton Haptics 1.0 11/Haptics.qml
 
 #version 1.2
-MainView 1.2 MainView12.qml
+MainView 1.2 13/MainView12.qml
 Captions 1.2 Captions.qml
 
 #################################################
