@@ -16,7 +16,7 @@
 
 import QtQuick 2.4
 import Ubuntu.Components 1.3
-import Ubuntu.Components.Themes.Ambiance 1.1 as Suru
+import Ubuntu.Components.Themes.Ambiance 1.3 as Suru
 
 Suru.Palette {
     normal.selection: "#A21E1C"

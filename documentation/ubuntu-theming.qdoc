@@ -231,6 +231,13 @@
  * typically there to configure the style itself, or to turn on/off features provided by styles
  * in derived themes.
  *
+ * Starting with Ubuntu Components version 1.3, themes must provide versioned styles. This means
+ * that themes must store the styles in subfolders, meaning that toolkit version 1.3 must have
+ * the version specific styles under the theme's 1.3/ subfolder. The styling engine will look
+ * for the styles based on the theme version used by the component. If the style is not found
+ * with the requested version, it will fall back to the previous version of that style.
+ * \image surudark-theme-13.png
+ *
  * \section3 Standalone theme
  * A standalone theme is a theme which defines all style documents and theme palette,
  * and it is not derived from any theme. The only standalone theme UI Toolkit provides is
@@ -259,12 +266,12 @@
  *
  * SuruDark theme overrides the Ambiance theme's MainViewStyle, therefore declares the
  * MainViewStyle.qml document, with the following content:
- * \snippet Themes/SuruDark/MainViewStyle.qml 0
+ * \snippet Themes/SuruDark/1.3/MainViewStyle.qml 0
  *
  * The style imports the Ambiance theme module, and extends the Ambiance MainViewStyle
  * component. The same is done in the other style components. However, Palette defines
  * own values, and does not re-use Ambiance palette values.
- * \snippet Themes/SuruDark/Palette.qml 0
+ * \snippet Themes/SuruDark/1.3/Palette.qml 0
  *
  * The same is done with TabBarStyle and OptionSelectorStyle components.
  *
@@ -276,7 +283,7 @@
  * \qml
  * import QtQuick 2.4
  * import Ubuntu.Components 1.3
- * import Ubuntu.Components.Themes.Ambiance 1.2 as Ambiance
+ * import Ubuntu.Components.Themes.Ambiance 1.3 as Ambiance
  * Ambiance.SwitchStyle {
  *     // [...]
  * }
@@ -308,6 +315,11 @@
  *
  * The application can use its own theme in the following way:
  * \snippet customtheme/main.qml 0
+ *
+ * \note An application, which overrides multiple shared theme versions must provide separate
+ * style versions in its theme so the styling engine can identify the proper styles for the
+ * components. Note however that this is not mandatory, and it is up to the application developer
+ * to decide whether the application should support multiple style versions or not.
  */
 
 /*!
@@ -374,7 +386,7 @@
  * \qml
  * import QtQuick 2.4
  * import Ubuntu.Components 1.3
- * import Ubuntu.Components.Themes 1.0
+ * import Ubuntu.Components.Themes 1.3
  *
  * MainView {
  *     width: units.gu(40)
@@ -443,6 +455,66 @@
  * values with the ones defined in the \c config Palette instance, namely the \c
  * foregroundText and \c overlayText of \c normal, as well as \c fieldText, \c foregroundText,
  * \c overlayText and \c foreground on \c selected groups.
+ *
+ * There may be cases when a subset of components wants to use different style versions
+ * than the one provided by the module version. Remember, using earlier minor versions
+ * of the theme is perfectly fine while using newer versions may not work, as component
+ * styles may use newer APIs of the component which is not present in the component, thus
+ * the style will fail.
+ *
+ * Let's take the example above, and assume that we want to show the Dialog with the same
+ * theme as the application but with an earlier version. We can do this by specifying the
+ * theme version with \l {Ubuntu::version}{Ubuntu.version()} as follows:
+ * \qml
+ * import QtQuick 2.4
+ * import Ubuntu.Components 1.3
+ * import Ubuntu.Components.Themes 1.3
+ *
+ * MainView {
+ *     width: units.gu(40)
+ *     height: units.gu(71)
+ *
+ *     applicationName: "subthemed"
+ *
+ *     Component {
+ *         id: dialogComponent
+ *         Dialog {
+ *             id: dialog
+ *             title: "Input dialog"
+ *             // make sure the dialog and its children will use the same
+ *             // theme as the rest of the application
+ *             theme: ThemeSettings {
+ *                 name: parentTheme.name
+ *                 // use version 1.2 of the theme
+ *                 version: Ubuntu.version(1, 2)
+ *             }
+ *             TextField {
+ *                 placeholderText: "enter text"
+ *             }
+ *             Button {
+ *                 text: "Close"
+ *                 onClicked: PopupUtils.close(dialog)
+ *             }
+ *         }
+ *     }
+ *
+ *     Column {
+ *         spacing: units.gu(1)
+ *         Button {
+ *             text: "Set Ambiance theme"
+ *             onClicked: theme.name = "Ubuntu.Components.Themes.Ambiance"
+ *         }
+ *         Button {
+ *             text: "Set SuruDark theme"
+ *             onClicked: theme.name = "Ubuntu.Components.Themes.SuruDark"
+ *         }
+ *         Button {
+ *             text: "Open dialog"
+ *             onClicked: PopupUtils.open(dialogComponent)
+ *         }
+ *     }
+ * }
+ * \endqml
  *
  * \section1 That's it
  * By now you should have learned what the styling means, what are the themes, what

@@ -23,6 +23,7 @@
 #include "uctheme.h"
 #include "uctestcase.h"
 #include "ucstyleditembase_p.h"
+#include "ucnamespace.h"
 
 class ThemeTestCase : public UbuntuTestCase
 {
@@ -90,6 +91,7 @@ private Q_SLOTS:
     {
         m_xdgDataPath = QLatin1String(getenv("XDG_DATA_DIRS"));
         m_themesPath = QLatin1String(getenv("UBUNTU_UI_TOOLKIT_THEMES_PATH"));
+        qputenv("SUPPRESS_DEPRECATED_NOTE", "yes");
     }
 
     void cleanup()
@@ -568,6 +570,84 @@ private Q_SLOTS:
     {
         ThemeTestCase::ignoreWarning("InvalidPalette.qml", 22, 20, "QML QtObject: Not a Palette component.");
         QScopedPointer<ThemeTestCase> view(new ThemeTestCase("InvalidPalette.qml"));
+    }
+
+    void test_removing_closest_parent_styled()
+    {
+        qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "");
+        qputenv("XDG_DATA_DIRS", "./themes:./themes/TestModule");
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase("ReparentStyledItemFollowsNewPathOnly.qml"));
+        UCTheme *suruTheme = view->findItem<UCTheme*>("suruTheme");
+        UCStyledItemBase *root = static_cast<UCStyledItemBase*>(view->rootObject());
+        UCStyledItemBase *movableItem = view->findItem<UCStyledItemBase*>("movable");
+
+        // verify movableItem's theme
+        QCOMPARE(UCStyledItemBasePrivate::get(root)->getTheme(), UCStyledItemBasePrivate::get(movableItem)->getTheme());
+
+        // set the theme for root
+        UCStyledItemBasePrivate::get(root)->setTheme(suruTheme);
+        QTest::waitForEvents();
+        QCOMPARE(UCStyledItemBasePrivate::get(root)->getTheme(), UCStyledItemBasePrivate::get(movableItem)->getTheme());
+
+        // set the parent item of the test item to 0
+        QSignalSpy spy(movableItem, SIGNAL(themeChanged()));
+        movableItem->setParentItem(Q_NULLPTR);
+        spy.wait(500);
+        QCOMPARE(spy.count(), 1);
+        QCOMPARE(UCStyledItemBasePrivate::get(movableItem)->getTheme(), &UCTheme::defaultTheme());
+    }
+
+    void test_reparented_styleditem_special_case()
+    {
+        qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "");
+        qputenv("XDG_DATA_DIRS", "./themes:./themes/TestModule");
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase("ReparentStyledItemFollowsNewPathOnly.qml"));
+        UCStyledItemBase *root = static_cast<UCStyledItemBase*>(view->rootObject());
+        UCTheme *suruTheme = view->findItem<UCTheme*>("suruTheme");
+        UCStyledItemBase *customThemedItem = view->findItem<UCStyledItemBase*>("customThemed");
+        UCStyledItemBase *movableItem = view->findItem<UCStyledItemBase*>("movable");
+
+        // check the themes
+        QCOMPARE(UCStyledItemBasePrivate::get(root)->getTheme()->name(), QString("Ubuntu.Components.Themes.Ambiance"));
+        QCOMPARE(UCStyledItemBasePrivate::get(customThemedItem)->getTheme()->name(), QString("CustomTheme"));
+        QCOMPARE(UCStyledItemBasePrivate::get(movableItem)->getTheme()->name(), QString("Ubuntu.Components.Themes.Ambiance"));
+
+        // move the movableItem under customThemedItem
+        movableItem->setParentItem(customThemedItem);
+        QCOMPARE(UCStyledItemBasePrivate::get(movableItem)->getTheme()->name(), QString("CustomTheme"));
+
+        // set a new theme for the root, and make sure our theme stays the same
+        UCStyledItemBasePrivate::get(root)->setTheme(suruTheme);
+        QTest::waitForEvents();
+        QCOMPARE(UCStyledItemBasePrivate::get(movableItem)->getTheme()->name(), QString("CustomTheme"));
+    }
+
+    void test_theme_versions_data()
+    {
+        QTest::addColumn<QString>("document");
+        QTest::addColumn<QString>("testValue");
+
+        QTest::newRow("Theming version 1.2")
+                << "StyledItemV12.qml"
+                << "";
+        QTest::newRow("Theming version 1.3")
+                << "StyledItemV13.qml"
+                << "version1.3";
+    }
+    void test_theme_versions()
+    {
+        QFETCH(QString, document);
+        QFETCH(QString, testValue);
+
+        qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "");
+        qputenv("XDG_DATA_DIRS", "./themes:./themes/TestModule");
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase(document));
+        UCStyledItemBase *styledItem = qobject_cast<UCStyledItemBase*>(view->rootObject());
+        QString newProperty(UCStyledItemBasePrivate::get(styledItem)->styleItem->property("newProperty").toString());
+        QCOMPARE(newProperty, testValue);
+        // NOTE TestTheme resets the theme therefore the theming will look for the tested style under Ambiance theme
+        // which will cause a warning; therefore we mark the warning to be ignored
+        ThemeTestCase::ignoreWarning(document, 19, 1, "QML StyledItem: Warning: Style TestStyle.qml not found in theme Ubuntu.Components.Themes.Ambiance");
     }
 };
 

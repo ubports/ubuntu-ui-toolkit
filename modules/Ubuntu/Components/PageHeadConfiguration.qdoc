@@ -182,7 +182,7 @@
 
 /*!
   \qmlproperty bool PageHeadConfiguration::locked
-  \since 1.2
+  \since 1.3
   When the \l Page is active, the locked property controls the behavior
   of the header. A locked header stays visible or invisible, depending
   on the value of the \l visible property. An unlocked header automatically
@@ -193,7 +193,7 @@
 
 /*!
   \qmlproperty bool PageHeadConfiguration::visible
-  \since 1.2
+  \since 1.3
   Update the value of the visible property to show or hide the header.
   This works both when the header is \l locked and unlocked. An unlocked
   header can also become visible or hidden when the user scrolls the
