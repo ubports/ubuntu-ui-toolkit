@@ -1,0 +1,936 @@
+AbstractButton 1.0 AbstractButton 0.1 ActionItem
+    property bool hovered
+    signal clicked()
+    signal pressAndHold()
+    property bool pressed
+Action 1.0 Action 0.1 QtObject
+    property string description
+    property bool enabled
+    property string iconName
+    property url iconSource
+    property Component itemHint
+    property string keywords
+    signal triggered(var value)
+    function trigger(var value)
+    function trigger()
+    property string name
+    property Type parameterType
+    property string text
+    property bool visible
+Action.Type Enum
+    Bool
+    Integer
+    None
+    Object
+    Real
+    String
+ActionContext 1.0 ActionContext 0.1 QtObject
+    default readonly property QtObject actions
+    property bool active
+    function addAction(QtObject action)
+    function removeAction(QtObject action)
+ActionItem 1.0 ActionItem 0.1 StyledItem
+    property Action action
+    property string iconName
+    property url iconSource
+    signal triggered(var value)
+    function var trigger(var value)
+    property string text
+ActionList 1.0 ActionList 0.1 QtObject
+    readonly property Action actions
+    default readonly property Action children
+ActionManager 1.0 ActionManager 0.1 QtObject
+    default readonly property QtObject actions
+    readonly property ActionContext globalContext
+    readonly property QtObject localContexts
+    signal quit()
+    function addAction(QtObject action)
+    function removeAction(QtObject action)
+    function addLocalContext(QtObject context)
+    function removeLocalContext(QtObject context)
+ActionSelectionPopover 1.0 ActionSelectionPopover 0.1 Popover
+    property var actions
+    property Component delegate
+    property Item target
+ActivityIndicator 1.0 ActivityIndicator 0.1 AnimatedItem
+    property bool onScreen
+    property bool running
+Alarm 1.0 Alarm 0.1 QtObject
+    property QDateTime date
+    property DaysOfWeek daysOfWeek
+    property bool enabled
+    readonly property int error
+    property string message
+    function save()
+    function cancel()
+    function reset()
+    property url sound
+    readonly property Status status
+Alarm.AlarmType Enum
+    OneTime
+    Repeating
+Alarm.DayOfWeek Enum
+    AutoDetect
+    Daily
+    Friday
+    Monday
+    Saturday
+    Sunday
+    Thursday
+    Tuesday
+    Wednesday
+Alarm.DaysOfWeek Flag
+    AutoDetect
+    Daily
+    Friday
+    Monday
+    Saturday
+    Sunday
+    Thursday
+    Tuesday
+    Wednesday
+Alarm.Error Enum
+    AdaptationError
+    EarlyDate
+    InvalidDate
+    InvalidEvent
+    NoDaysOfWeek
+    NoError
+    OneTimeOnMoreDays
+    OperationPending
+Alarm.Operation Enum
+    Canceling
+    NoOperation
+    Reseting
+    Saving
+Alarm.Status Enum
+    Fail
+    InProgress
+    Ready
+AlarmModel 1.0 AlarmModel 0.1 QAbstractListModel
+    readonly property int count
+    function refresh()
+    function UCAlarm* get(int index)
+Argument 1.0 Argument 0.1 QtObject
+    property string help
+    function var at(int i)
+    property string name
+    property bool required
+    property QStringList valueNames
+Arguments 1.0 Arguments 0.1 QtObject
+    default readonly property Argument arguments
+    property Argument defaultArgument
+    readonly property bool error
+    readonly property string errorMessage
+    function printUsage()
+    function quitWithError(string errorMessage)
+    function quitWithError()
+    readonly property QQmlPropertyMap values
+Base 1.0 Base 0.1 Empty
+    default readonly property QtObject children
+    property string fallbackIconName
+    property url fallbackIconSource
+    property var icon
+    property bool iconFrame
+    property bool progression
+Button 1.1 Button 1.0 Button 0.1 AbstractButton
+    property color color
+    property QFont font
+    property Gradient gradient
+    property string iconPosition
+    property color strokeColor
+Caption 1.0 Caption 0.1 Item
+    property string text
+Captions 1.2 ColumnLayout
+    property int captionStyle
+    readonly property Label subtitle
+    readonly property Label title
+CheckBox 1.0 CheckBox 0.1 AbstractButton
+    property bool checked
+Clipboard 1.0 Clipboard 0.1 QtObject singleton
+    readonly property MimeData data
+    function push(var data)
+    function clear()
+    function QQuickMimeData* newData()
+ColorUtils 0.1 ColorUtils 1.0
+ComboButton 1.1 Button
+    property double collapsedHeight
+    default readonly property QtObject comboList
+    readonly property double comboListHeight
+    property color dropdownColor
+    property bool expanded
+    property double expandedHeight
+ComboButtonStyle 1.1 Item
+    property Item comboListHolder
+    property double comboListMargin
+    property Item comboListPanel
+    property color defaultColor
+    property color defaultDropdownColor
+    property QFont defaultFont
+    property Gradient defaultGradient
+    property double dropDownSeparatorWidth
+    property double dropDownWidth
+ComposerSheet 1.0 ComposerSheet 0.1 SheetBase
+    signal cancelClicked()
+    signal confirmClicked()
+ConditionalLayout 1.0 ConditionalLayout 0.1 QtObject
+    default property Component layout
+    property string name
+    property QQmlBinding when
+CpuUsage 1.0 CpuUsage 0.1 Item
+    readonly property UPMGraphModel graphModel
+    property int period
+    property int samplingInterval
+CrossFadeImage 1.1 CrossFadeImage 1.0 CrossFadeImage 0.1 Item
+    property int fadeDuration
+    property string fadeStyle
+    property int fillMode
+    readonly property bool running
+    property url source
+    property QSizeF sourceSize
+    readonly property int status
+DateUtils 0.1 DateUtils 1.0
+DefaultSheet 1.0 DefaultSheet 0.1 SheetBase
+    property bool doneButton
+    signal closeClicked()
+    signal doneClicked()
+Dialog 1.0 Dialog 0.1 PopupBase
+    property Item caller
+    property double callerMargin
+    default readonly property QtObject contents
+    property double edgeMargins
+    property bool modal
+    property Item pointerTarget
+    property string text
+    property string title
+Divider 1.0 Divider 0.1 QQuickImageBase
+    property FillMode fillMode
+    property HAlignment horizontalAlignment
+    property bool mipmap
+    readonly property double paintedHeight
+    readonly property double paintedWidth
+    property VAlignment verticalAlignment
+Empty 1.0 Empty 0.1 AbstractButton
+    readonly property Item backgroundIndicator
+    default readonly property QtObject children
+    property bool confirmRemoval
+    readonly property ThinDivider divider
+    property bool highlightWhenPressed
+    signal itemRemoved()
+    function var cancelItemRemoval()
+    property bool removable
+    property bool selected
+    property bool showDivider
+    readonly property string swipingState
+    readonly property bool waitingConfirmationForRemoval
+Expandable 1.0 Expandable 0.1 Empty
+    default readonly property QtObject children
+    property bool collapseOnClick
+    property double collapsedHeight
+    property bool expanded
+    property double expandedHeight
+ExpandablesColumn 1.0 ExpandablesColumn 0.1 Flickable
+    default readonly property QtObject children
+    readonly property var expandedItem
+    function var expandItem(var item)
+    function var collapse()
+FilterBehavior 1.1 QtObject
+    property QRegExp pattern
+    property string property
+Haptics 1.0 Haptics 0.1 Object singleton
+    readonly property HapticsEffect effect
+    readonly property bool enabled
+    function var play(var customEffect)
+Header 1.0 Header 0.1 AppHeader
+    property string _for_autopilot
+    property var actions
+    property bool animate
+    property Object config
+    property Item contents
+    property color dividerColor
+    property Flickable flickable
+    function var show()
+    function var hide()
+    readonly property bool moving
+    property var pageStack
+    property color panelColor
+    property var tabsModel
+    property string title
+    property bool useDeprecatedToolbar
+Header 1.0 Header 0.1 Item
+    property string text
+Icon 1.1 Icon 1.0 Icon 0.1 Item
+    property color color
+    property color keyColor
+    property string name
+    property url source
+InverseMouse 1.0 InverseMouse 0.1 Mouse
+InverseMouseArea 1.0 InverseMouseArea 0.1 MouseArea
+    function bool contains(QPointF point)
+    property Item sensingArea
+    property bool topmostItem
+ItemLayout 1.0 ItemLayout 0.1 Item
+    property string item
+ItemSelector 1.0 ItemSelector 0.1 Empty
+    property bool colourImage
+    property double containerHeight
+    property bool currentlyExpanded
+    property Component delegate
+    property bool expanded
+    readonly property double itemHeight
+    signal delegateClicked(int index)
+    signal expansionCompleted()
+    property var model
+    property bool multiSelection
+    property int selectedIndex
+Label 1.0 Label 0.1 Text
+    property string fontSize
+Layouts 1.0 Layouts 0.1 Item
+    readonly property Item children
+    readonly property string currentLayout
+    default readonly property QtObject data
+    readonly property ConditionalLayout layouts
+ListItem 1.2 StyledItem
+    property Action action
+    property color color
+    readonly property Item contentItem
+    readonly property bool contentMoving
+    readonly property UCListItemDivider divider
+    property bool dragMode
+    readonly property bool dragging
+    property color highlightColor
+    readonly property bool highlighted
+    property ListItemActions leadingActions
+    readonly property Item listItemChildren
+    default readonly property QtObject listItemData
+    signal clicked()
+    signal pressAndHold()
+    signal contentMovementStarted()
+    signal contentMovementEnded()
+    property bool selectMode
+    property bool selected
+    property ListItemActions trailingActions
+ListItemActions 1.2 QtObject
+    readonly property Action actions
+    default readonly property QtObject data
+    property Component delegate
+ListItemDrag 1.2 QtObject
+    property bool accept
+    readonly property int from
+    property int maximumIndex
+    property int minimumIndex
+    readonly property Status status
+    readonly property int to
+ListItemDrag.Status Enum
+    Dropped
+    Moving
+    Started
+ListItemStyle 1.3 ListItemStyle 1.2 Item
+    readonly property bool animatePanels
+    property Item dragPanel
+    property PropertyAnimation dropAnimation
+    readonly property int listItemIndex
+    function swipeEvent(SwipeEvent event)
+    function rebound()
+    property Animation snapAnimation
+MainView 1.2 MainView 1.0 MainView 0.1 MainViewBase
+    readonly property ActionManager actionManager
+    readonly property QtObject actions
+    property bool anchorToKeyboard
+    property string applicationName
+    property bool automaticOrientation
+    property color backgroundColor
+    default readonly property QtObject contentsItem
+    property color footerColor
+    property color headerColor
+    property bool useDeprecatedToolbar
+MathUtils 0.1 MathUtils 1.0
+MimeData 1.0 MimeData 0.1 QtObject
+    property color color
+    property var data
+    readonly property QStringList formats
+    property string html
+    property string text
+    property QList<QUrl> urls
+Mouse 1.0 Mouse 0.1 QtObject
+    readonly property Qt.MouseButtons acceptedButtons
+    property int clickAndHoldThreshold
+    property bool enabled
+    readonly property Item forwardTo
+    readonly property bool hoverEnabled
+    signal pressed(QQuickMouseEvent mouse, Item host)
+    signal released(QQuickMouseEvent mouse, Item host)
+    signal clicked(QQuickMouseEvent mouse, Item host)
+    signal pressAndHold(QQuickMouseEvent mouse, Item host)
+    signal doubleClicked(QQuickMouseEvent mouse, Item host)
+    signal entered(QQuickMouseEvent event, Item host)
+    signal exited(QQuickMouseEvent event, Item host)
+    property Priority priority
+Mouse.Priority Enum
+    AfterItem
+    BeforeItem
+MultiValue 1.0 MultiValue 0.1 Base
+    property var values
+Object 1.0 Object 0.1 QtObject
+    default readonly property QtObject children
+OptionSelector 1.0 OptionSelector 0.1 Empty
+    property bool colourImage
+    property double containerHeight
+    property bool currentlyExpanded
+    property Component delegate
+    property bool expanded
+    readonly property double itemHeight
+    signal delegateClicked(int index)
+    signal expansionCompleted()
+    property var model
+    property bool multiSelection
+    property int selectedIndex
+OptionSelectorDelegate 1.0 OptionSelectorDelegate 0.1 Empty
+    property color assetColour
+    property bool colourImage
+    property bool constrainImage
+    readonly property string fragColourShader
+    property url icon
+    readonly property ListView listView
+    property string subText
+OrientationHelper 1.0 OrientationHelper 0.1 Item
+    property bool anchorToKeyboard
+    property bool automaticOrientation
+    property int orientationAngle
+    readonly property bool rotating
+    property bool transitionEnabled
+Page 1.3 Page 1.1 Page 1.0 Page 0.1 PageTreeNode
+    readonly property QtObject actions
+    property bool active
+    property Item activeLeafNode
+    property Flickable flickable
+    readonly property PageHeadConfiguration head
+    property AppHeader header
+    property bool isLeaf
+    property Item pageStack
+    property Item parentNode
+    property string title
+    property Toolbar toolbar
+    property Item tools
+PageHeadConfiguration 1.3 PageHeadConfiguration 1.1 Object
+    readonly property Action actions
+    property Action backAction
+    property Item contents
+    property color foregroundColor
+    property bool locked
+    property string preset
+    readonly property PageHeadSections sections
+    property bool visible
+PageHeadSections 1.1 QtObject
+    property bool enabled
+    property var model
+    property int selectedIndex
+PageHeadState 1.1 State
+    readonly property Action actions
+    property Action backAction
+    property Item contents
+    property PageHeadConfiguration head
+PageHeadStyle 1.1 Item
+    property double contentHeight
+    property string fontSize
+    property int fontWeight
+    property int maximumNumberOfActions
+    property url separatorBottomSource
+    property url separatorSource
+    property color textColor
+    property double textLeftMargin
+PageStack 1.0 PageStack 0.1 PageTreeNode
+    property bool active
+    property Item activeLeafNode
+    property Item currentPage
+    default readonly property QtObject data
+    property int depth
+    property AppHeader header
+    property bool isLeaf
+    function var push(var page, var properties)
+    function var pop()
+    function var clear()
+    property Item pageStack
+    property Item parentNode
+    property Toolbar toolbar
+Palette QtObject
+    property PaletteValues normal
+    property PaletteValues selected
+Palette 1.3 Palette 0.1 QtObject
+    property PaletteValues normal
+    property PaletteValues selected
+PaletteValues 1.3 PaletteValues 0.1 QtObject
+    property color background
+    property color backgroundText
+    property color base
+    property color baseText
+    property color field
+    property color fieldText
+    property color foreground
+    property color foregroundText
+    property color overlay
+    property color overlayText
+    property color selection
+Panel 1.0 Panel 0.1 Item
+    property int align
+    property bool animate
+    readonly property bool animating
+    default readonly property QtObject contents
+    property int hideTimeout
+    property double hintSize
+    property bool locked
+    function var open()
+    function var close()
+    property bool opened
+    readonly property double position
+    readonly property bool pressed
+    property double triggerSize
+PerformanceOverlay 1.0 PerformanceOverlay 0.1 Item
+    property bool active
+Popover 1.0 Popover 0.1 PopupBase
+    property bool autoClose
+    property Item caller
+    property double callerMargin
+    default readonly property QtObject container
+    property double contentHeight
+    property double contentWidth
+    property double edgeMargins
+    property Component foregroundStyle
+    function var show()
+    function var hide()
+    property Item pointerTarget
+PopupBase 1.0 PopupBase 0.1 OrientationHelper
+    property Item dismissArea
+    property PropertyAnimation fadingAnimation
+    property bool grabDismissAreaEvents
+    function var show()
+    function var hide()
+PopupUtils 0.1 PopupUtils 1.0
+ProgressBar 1.1 ProgressBar 1.0 ProgressBar 0.1 AnimatedItem
+    property bool indeterminate
+    property double maximumValue
+    property double minimumValue
+    property bool onScreen
+    property bool showProgressPercentage
+    property double value
+PullToRefresh 1.1 StyledItem
+    property Component content
+    signal refresh()
+    readonly property double offset
+    property bool refreshing
+    readonly property bool releaseToRefresh
+    property Flickable target
+PullToRefreshStyle 1.1 Item
+    property double activationThreshold
+    property Component defaultContent
+    property bool releaseToRefresh
+RenderingTimes 1.0 RenderingTimes 0.1 Item
+    readonly property UPMGraphModel graphModel
+    signal frameRendered(qlonglong renderTime)
+    property int period
+    property int samples
+    property RenderTimer.TimerType timerType
+Scrollbar 1.0 Scrollbar 0.1 StyledItem
+    property int align
+    property Flickable flickableItem
+ScrollbarUtils 0.1 ScrollbarUtils 1.0
+ServiceProperties 1.1 QtObject
+    property string adaptorInterface
+    readonly property string error
+    property string path
+    property string service
+    property string serviceInterface
+    readonly property Status status
+ServiceProperties.ServiceType Enum
+    Session
+    System
+    Undefined
+ServiceProperties.Status Enum
+    Active
+    ConnectionError
+    Inactive
+    Synchronizing
+SheetBase 1.0 SheetBase 0.1 PopupBase
+    default readonly property QtObject container
+    property double contentsHeight
+    property double contentsWidth
+    property bool modal
+    property string title
+SingleControl 1.0 SingleControl 0.1 Empty
+    property Item control
+SingleValue 1.0 SingleValue 0.1 Base
+    property string value
+Slider 1.0 Slider 0.1 StyledItem
+    property bool live
+    property double maximumValue
+    signal touched(bool onThumb)
+    function var formatValue(var v)
+    property double minimumValue
+    readonly property bool pressed
+    property double value
+SliderUtils 0.1 SliderUtils 1.0
+SortBehavior 1.1 QtObject
+    property Qt.SortOrder order
+    property string property
+SortFilterModel 1.1 QSortFilterProxyModel
+    readonly property int count
+    readonly property FilterBehavior filter
+    function QVariantMap get(int row)
+    function int count()
+    property QAbstractItemModel model
+    readonly property SortBehavior sort
+Standard 1.0 Standard 0.1 Empty
+    property Item control
+    property string fallbackIconName
+    property url fallbackIconSource
+    property var icon
+    property bool iconFrame
+    property bool progression
+StateSaver 1.0 StateSaver 0.1 QtObject
+StyledItem 1.3 StyledItem 1.1 StyledItem 1.0 StyledItem 0.1 Item
+    property bool activeFocusOnPress
+    function bool requestFocus(Qt.FocusReason reason)
+    function bool requestFocus()
+    property Component style
+    property ThemeSettings theme
+Subtitled 1.0 Subtitled 0.1 Base
+    property string subText
+SwipeEvent 1.2 QtObject
+    property QPointF content
+    readonly property QPointF from
+    readonly property Status status
+    readonly property QPointF to
+SwipeEvent.Status Enum
+    Finished
+    Started
+    Updated
+Switch 1.0 Switch 0.1 AbstractButton
+    property bool checked
+Tab 1.0 Tab 0.1 PageTreeNode
+    property bool active
+    property Item activeLeafNode
+    property AppHeader header
+    property url iconSource
+    readonly property int index
+    property bool isLeaf
+    property Item page
+    property Item pageStack
+    property Item parentNode
+    property string title
+    property Toolbar toolbar
+TabBar 1.0 TabBar 0.1 StyledItem
+    property bool alwaysSelectionMode
+    property bool animate
+    property var model
+    readonly property bool pressed
+    property int selectedIndex
+    property bool selectionMode
+    property Item tabsItem
+Tabs 1.0 Tabs 0.1 PageTreeNode
+    property bool active
+    property Item activeLeafNode
+    readonly property int count
+    readonly property Item currentPage
+    property AppHeader header
+    property bool isLeaf
+    property Item pageStack
+    property Item parentNode
+    readonly property Tab selectedTab
+    property int selectedTabIndex
+    property TabBar tabBar
+    default readonly property QtObject tabChildren
+    property Toolbar toolbar
+TestExtras 1.0 QtObject singleton
+    function string openGLflavor()
+    function string cpuArchitecture()
+    function bool touchDevicePresent()
+    function registerTouchDevice()
+    function touchPress(int touchId, Item item, Qt.point point)
+    function touchRelease(int touchId, Item item, Qt.point point)
+    function touchClick(int touchId, Item item, Qt.point point)
+    function touchLongPress(int touchId, Item item, Qt.point point)
+    function touchDoubleClick(int touchId, Item item, Qt.point point)
+    function touchMove(int touchId, Item item, Qt.point point)
+    function touchDrag(int touchId, Item item, Qt.point from, Qt.point delta, int steps)
+    function touchDrag(int touchId, Item item, Qt.point from, Qt.point delta)
+    readonly property bool touchPresent
+TextArea 1.0 TextArea 0.1 StyledItem
+    property bool activeFocusOnPress
+    property bool autoExpand
+    property bool autoSize
+    property url baseUrl
+    readonly property bool canPaste
+    readonly property bool canRedo
+    readonly property bool canUndo
+    property color color
+    property double contentHeight
+    property double contentWidth
+    property Component cursorDelegate
+    property int cursorPosition
+    readonly property QRectF cursorRectangle
+    property bool cursorVisible
+    readonly property string displayText
+    readonly property int effectiveHorizontalAlignment
+    property QFont font
+    property bool highlighted
+    property int horizontalAlignment
+    readonly property bool inputMethodComposing
+    property int inputMethodHints
+    readonly property int length
+    readonly property int lineCount
+    property int maximumLineCount
+    signal linkActivated(string link)
+    function var copy()
+    function var cut()
+    function var deselect()
+    function var insert(var position, var text)
+    function var positionAt(var x, var y)
+    function var isRightToLeft(var start, var end)
+    function var moveCursorSelection(var position, var mode)
+    function var paste(var data)
+    function var positionToRectangle(var position)
+    function var redo()
+    function var select(var start, var end)
+    function var selectAll()
+    function var selectWord()
+    function var getFormattedText(var start, var end)
+    function var getText(var start, var end)
+    function var remove(var start, var end)
+    function var undo()
+    property int mouseSelectionMode
+    property bool persistentSelection
+    property string placeholderText
+    property var popover
+    property bool readOnly
+    property int renderType
+    property bool selectByMouse
+    readonly property string selectedText
+    property color selectedTextColor
+    property color selectionColor
+    readonly property int selectionEnd
+    readonly property int selectionStart
+    property string text
+    property int textFormat
+    property int verticalAlignment
+    property int wrapMode
+TextField 1.0 TextField 0.1 ActionItem
+    readonly property bool acceptableInput
+    property bool activeFocusOnPress
+    property bool autoScroll
+    readonly property bool canPaste
+    readonly property bool canRedo
+    readonly property bool canUndo
+    property color color
+    readonly property double contentHeight
+    readonly property double contentWidth
+    property Component cursorDelegate
+    property int cursorPosition
+    readonly property QRectF cursorRectangle
+    property bool cursorVisible
+    property Component customSoftwareInputPanel
+    readonly property string displayText
+    property int echoMode
+    readonly property int effectiveHorizontalAlignment
+    property bool errorHighlight
+    property QFont font
+    property bool hasClearButton
+    property bool highlighted
+    property int horizontalAlignment
+    property string inputMask
+    readonly property bool inputMethodComposing
+    property int inputMethodHints
+    readonly property int length
+    property int maximumLength
+    signal accepted()
+    function var copy()
+    function var cut()
+    function var paste(var data)
+    function var deselect()
+    function var insert(var position, var text)
+    function var positionAt(var x, var position)
+    function var positionToRectangle(var pos)
+    function var select(var start, var end)
+    function var selectAll()
+    function var selectWord()
+    function var isRightToLeft(var start, var end)
+    function var moveCursorSelection(var position, var mode)
+    function var redo()
+    function var undo()
+    function var remove(var start, var end)
+    function var getText(var start, var end)
+    property int mouseSelectionMode
+    property string passwordCharacter
+    property bool persistentSelection
+    property string placeholderText
+    property var popover
+    readonly property QtObject primaryItem
+    property bool readOnly
+    property int renderType
+    readonly property QtObject secondaryItem
+    property bool selectByMouse
+    readonly property string selectedText
+    property color selectedTextColor
+    property color selectionColor
+    readonly property int selectionEnd
+    readonly property int selectionStart
+    property string text
+    property QValidator validator
+    property int verticalAlignment
+TextureFromImage 1.0 TextureFromImage 0.1 Item
+    property QImage image
+ThemeSettings 1.3 QtObject
+    function QQmlComponent* createStyleComponent(string styleName, QtObject parent)
+    property string name
+    property QtObject palette
+    readonly property ThemeSettings parentTheme
+    property ushort version
+ThinDivider 1.0 ThinDivider 0.1 Rectangle
+ToolbarButton 1.0 ToolbarButton 0.1 StyledItem
+    property Action action
+    property string iconName
+    property url iconSource
+    signal triggered(var value)
+    function var trigger(var value)
+    property string text
+ToolbarItems 1.0 ToolbarItems 0.1 Item
+    property Item back
+    default readonly property QtObject contents
+    property bool locked
+    property bool opened
+    property Item pageStack
+UCListItemDivider Item
+    property color colorFrom
+    property color colorTo
+UCStateSaverAttached QtObject
+    property bool enabled
+    property string properties
+UCUnits 1.0 UCUnits 0.1 QtObject
+    property float gridUnit
+    function float dp(float value)
+    function float gu(float value)
+ULLayoutsAttached QtObject
+    property string item
+UPMGraphModel QtObject
+    readonly property int currentValue
+    readonly property QImage image
+    property int samples
+    readonly property int shift
+Ubuntu 1.2 QtObject singleton
+Ubuntu.CaptionsStyle Enum
+    SummaryCaptionStyle
+    TitleCaptionStyle
+UbuntuAnimation 1.0 UbuntuAnimation 0.1 QtObject singleton
+    readonly property int BriskDuration
+    readonly property int FastDuration
+    readonly property int SleepyDuration
+    readonly property int SlowDuration
+    readonly property int SnapDuration
+    readonly property QEasingCurve StandardEasing
+    readonly property QEasingCurve StandardEasingReverse
+UbuntuColors 1.1 UbuntuColors 1.0 UbuntuColors 0.1 QtObject singleton
+    readonly property color blue
+    readonly property color coolGrey
+    readonly property color darkAubergine
+    readonly property color darkGrey
+    readonly property color green
+    property Gradient greyGradient
+    readonly property color lightAubergine
+    readonly property color lightGrey
+    readonly property color midAubergine
+    readonly property color orange
+    property Gradient orangeGradient
+    readonly property color purple
+    readonly property color red
+    readonly property color warmGrey
+UbuntuListView 1.1 UbuntuListView 1.0 UbuntuListView 0.1 ListView
+    property int expandedIndex
+    readonly property PullToRefresh pullToRefresh
+UbuntuNumberAnimation 1.0 UbuntuNumberAnimation 0.1 PropertyAnimation
+    property double from
+    property double to
+UbuntuShape 1.2 UbuntuShape 1.0 UbuntuShape 0.1 Shape 1.0 Shape 0.1 Item
+    property Aspect aspect
+    property color backgroundColor
+    property BackgroundMode backgroundMode
+    property string borderSource
+    property color color
+    property color gradientColor
+    property HAlignment horizontalAlignment
+    property var image
+    property string radius
+    property color secondaryBackgroundColor
+    property var source
+    property FillMode sourceFillMode
+    property HAlignment sourceHorizontalAlignment
+    property WrapMode sourceHorizontalWrapMode
+    property double sourceOpacity
+    property vector2d sourceScale
+    property vector2d sourceTranslation
+    property VAlignment sourceVerticalAlignment
+    property WrapMode sourceVerticalWrapMode
+    property bool stretched
+    property VAlignment verticalAlignment
+UbuntuShape.Aspect Enum
+    Flat
+    Inset
+UbuntuShape.BackgroundMode Enum
+    SolidColor
+    VerticalGradient
+UbuntuShape.FillMode Enum
+    Pad
+    PreserveAspectCrop
+    PreserveAspectFit
+    Stretch
+UbuntuShape.HAlignment Enum
+    AlignHCenter
+    AlignLeft
+    AlignRight
+UbuntuShape.VAlignment Enum
+    AlignBottom
+    AlignTop
+    AlignVCenter
+UbuntuShape.WrapMode Enum
+    Repeat
+    Transparent
+UbuntuShapeOverlay 1.2 UbuntuShape
+    property color overlayColor
+    property QRectF overlayRect
+UbuntuTestCase 1.0 UbuntuTestCase 0.1 TestCase
+    function var findChild(var obj, var objectName)
+    function var findInvisibleChild(var obj, var objectName)
+    function var findChildWithProperty(var item, var property, var value)
+    function var centerOf(var item)
+    function var mouseMoveSlowly(var item, var x, var y, var dx, var dy, var steps, var stepdelay)
+    function var flick(var item, var x, var y, var dx, var dy, var pressTimeout, var steps, var button, var modifiers, var delay)
+    function var mouseLongPress(var item, var x, var y, var button, var modifiers, var delay)
+    function var tryCompareFunction(var func, var expectedResult, var timeout)
+    function var typeString(var string)
+    function var warningFormat(var line, var column, var message)
+    function var waitForHeaderAnimation(var mainView)
+UriHandler 1.0 UriHandler 0.1 QtObject singleton
+    signal opened(QStringList uris)
+ValueSelector 1.0 ValueSelector 0.1 Empty
+    property bool expanded
+    property string fallbackIconName
+    property url fallbackIconSource
+    property var icon
+    property bool iconFrame
+    property int selectedIndex
+    property var values
+ViewItems 1.2 QtObject
+    property bool dragMode
+    signal dragUpdated(ListItemDrag event)
+    property bool selectMode
+    property QList<int> selectedIndices
+i18n 1.0 i18n 0.1 QtObject
+    property string domain
+    property string language
+    function bindtextdomain(string domain_name, string dir_name)
+    function string tr(string text)
+    function string tr(string singular, string plural, int n)
+    function string dtr(string domain, string text)
+    function string dtr(string domain, string singular, string plural, int n)
+    function string ctr(string context, string text)
+    function string dctr(string domain, string context, string text)
+    function string tag(string text)
+    function string tag(string context, string text)
