@@ -430,14 +430,8 @@ public:
             object->insert("methods", methods);
     }
 
-    bool dumpQMLComponent(QQmlEngine *engine, const QString& qmlTyName, const QUrl& sourceUrl, const QString& exportString, bool isSingleton, const QStringList& internalTypes)
+    void dumpQMLComponent(QObject* qtobject, const QString& qmlTyName, const QString& exportString, bool isSingleton, const QStringList& internalTypes)
     {
-        QQmlComponent e(engine, sourceUrl);
-        QObject *qtobject = e.create();
-
-        if (!qtobject)
-            return false;
-
         const QMetaObject *mainMeta = qtobject->metaObject();
         QJsonObject object;
         QStringList exportStrings(QStringList() << exportString);
@@ -476,7 +470,6 @@ public:
             writeMetaContent(&object, mainMeta->superClass(), &knownAttributes);
         writeMetaContent(&object, mainMeta, &knownAttributes);
         json->insert(relocatableModuleUri + qmlTyName, object);
-        return true;
     }
 
     void dump(const QMetaObject *meta, bool isUncreatable, bool isSingleton)
@@ -1040,10 +1033,15 @@ int main(int argc, char *argv[])
         QString version(QString("%1.%2").arg(c.majorVersion).arg(c.minorVersion));
         if (c.majorVersion == -1)
             version = pluginImportVersion;
-        if (!dumper.dumpQMLComponent(&engine, c.typeName, pluginModulePath + "/" + c.fileName, QString("%1 %2").arg(c.typeName).arg(version), c.singleton, internalTypes)) {
-            std::cerr << "Failed to instantiate " << qPrintable(c.typeName) << " from " << qPrintable(c.fileName) << std::endl;
+        QQmlComponent e(&engine, pluginModulePath + "/" + c.fileName);
+        QObject* qtobject(e.create());
+        if (!qtobject) {
+            std::cerr << "Failed to instantiate " << qPrintable(c.typeName) << " from " << qPrintable(pluginModulePath + "/" + c.fileName) << std::endl;
+            Q_FOREACH (const QQmlError &error, e.errors())
+                std::cerr << qPrintable(error.toString()) << std::endl;
             exit(1);
         }
+        dumper.dumpQMLComponent(qtobject, c.typeName, QString("%1 %2").arg(c.typeName).arg(version), c.singleton, internalTypes);
     }
 
     }
