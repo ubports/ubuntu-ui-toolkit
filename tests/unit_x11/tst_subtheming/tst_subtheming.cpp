@@ -244,18 +244,18 @@ private Q_SLOTS:
 
         qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "");
         qputenv("XDG_DATA_DIRS", "");
-        qputenv("QML2_IMPORT_PATH", "/no/plugins/here:./themes");
+        qputenv("QML2_IMPORT_PATH", "/no/plugins/here");
 
         QScopedPointer<ThemeTestCase> view(new ThemeTestCase("SimpleItem.qml"));
-        view->setTheme("TestModule.TestTheme");
+        view->setTheme("CustomModule.TestTheme");
     }
 
     void test_theme_not_root_theme()
     {
-        qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "./themes");
+        qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", ".");
 
         QScopedPointer<ThemeTestCase> view(new ThemeTestCase("SimpleItem.qml"));
-        view->setTheme("TestModule.TestTheme");
+        view->setTheme("CustomModule.TestTheme");
         UCTheme *theme = view->theme();
         UCTheme *globalTheme = view->globalTheme();
         QVERIFY(theme);
@@ -656,7 +656,7 @@ private Q_SLOTS:
         QFETCH(QString, warning);
 
         qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "");
-        qputenv("XDG_DATA_DIRS", "./themes/TestModule");
+        qputenv("XDG_DATA_DIRS", "./themes:./themes/TestModule");
         if (!warning.isEmpty()) {
             ThemeTestCase::ignoreWarning(document, row, column, warning, 2);
         }
