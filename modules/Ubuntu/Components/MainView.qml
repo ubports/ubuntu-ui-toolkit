@@ -15,7 +15,6 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.3 as Toolkit
 import Ubuntu.PerformanceMetrics 1.0
 import QtQuick.Window 2.0
 
@@ -137,7 +136,7 @@ MainViewBase {
             flickable: internal.activePage ? internal.activePage.flickable : null
             pageStack: internal.activePage ? internal.activePage.pageStack : null
 
-            Toolkit.PageHeadConfiguration {
+            PageHeadConfiguration11 {
                 id: headerConfig
                 // for backwards compatibility with deprecated tools property
                 actions: internal.activePage ?
@@ -243,8 +242,8 @@ MainViewBase {
         id: internal
 
         // Even when using MainView 1.1, we still support Page 1.0.
-        // PageBase (=Page 1.0) is the superclass of Page 1.1.
-        property PageBase activePage: isPage(mainView.activeLeafNode) ? mainView.activeLeafNode : null
+        // we use PageTreeNode being the base class of all pages.
+        property PageTreeNode activePage: isPage(mainView.activeLeafNode) ? mainView.activeLeafNode : null
 
         function isPage(item) {
             return item && item.hasOwnProperty("__isPageTreeNode") && item.__isPageTreeNode &&
