@@ -20,3 +20,15 @@ ComposerSheet 1.0 ComposerSheet.qml
 ActionSelectionPopover 1.0 ActionSelectionPopover.qml
 
 PopupUtils 1.0 popupUtils.js
+
+#################################################
+#version 1.3
+Dialog 1.3 ../13/Popups/Dialog.qml
+PopupBase 1.3 ../13/Popups/PopupBase.qml
+Popover 1.3 ../13/Popups/Popover.qml
+SheetBase 1.3 ../13/Popups/SheetBase.qml
+DefaultSheet 1.3 ../13/Popups/DefaultSheet.qml
+ComposerSheet 1.3 ../13/Popups/ComposerSheet.qml
+ActionSelectionPopover 1.3 ../13/Popups/ActionSelectionPopover.qml
+
+PopupUtils 1.3 ../13/Popups/popupUtils.js

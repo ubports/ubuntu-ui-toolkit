@@ -33,7 +33,7 @@ import Ubuntu.Components 1.3
     Example:
     \qml
         import Ubuntu.Components 1.3
-        import Ubuntu.Components.Popups 1.0
+        import Ubuntu.Components.Popups 1.3
 
         Item {
             Component {
