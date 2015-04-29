@@ -209,4 +209,15 @@ Template {
             }
         }
     }
+
+    TemplateSection {
+        title: "PickerPanel"
+        TextField {
+            id: textField
+            readOnly: true
+            property date date: new Date()
+            text: date.toISOString()
+            Mouse.onClicked: PickerPanel.openDatePicker(textField, "date");
+        }
+    }
 }
