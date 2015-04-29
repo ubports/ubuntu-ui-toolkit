@@ -35,7 +35,7 @@ import Ubuntu.Components 1.3
     import QtQuick 2.4
     import QtQuick.XmlListModel 2.0
     import Ubuntu.Components 1.3
-    import Ubuntu.Components.ListItems 1.0
+    import Ubuntu.Components.ListItems 1.3
 
     MainView {
         width: units.gu(40)
@@ -85,7 +85,7 @@ import Ubuntu.Components 1.3
     import QtQuick 2.4
     import QtQuick.XmlListModel 2.0
     import Ubuntu.Components 1.3
-    import Ubuntu.Components.ListItems 1.0
+    import Ubuntu.Components.ListItems 1.3
 
     MainView {
         width: units.gu(40)
@@ -133,7 +133,7 @@ import Ubuntu.Components 1.3
     import QtQuick 2.4
     import QtQuick.XmlListModel 2.0
     import Ubuntu.Components 1.3
-    import Ubuntu.Components.ListItems 1.0
+    import Ubuntu.Components.ListItems 1.3
 
     MainView {
         id: main

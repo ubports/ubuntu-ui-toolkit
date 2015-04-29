@@ -32,7 +32,7 @@ import QtQuick 2.4
     \qml
         import QtQuick 2.4
         import Ubuntu.Components 1.3
-        import Ubuntu.Components.ListItems 1.0 as ListItem
+        import Ubuntu.Components.ListItems 1.3 as ListItem
 
         MainView {
             width: units.gu(48)

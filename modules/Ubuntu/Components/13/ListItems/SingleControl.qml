@@ -16,7 +16,7 @@
 
 import QtQuick 2.4
 import Ubuntu.Components 1.3
-import Ubuntu.Components.ListItems 1.0
+import Ubuntu.Components.ListItems 1.3
 
 /*!
     \qmltype SingleControl
@@ -28,7 +28,7 @@ import Ubuntu.Components.ListItems 1.0
     Examples:
     \qml
         import Ubuntu.Components 1.3
-        import Ubuntu.Components.ListItems 1.0 as ListItem
+        import Ubuntu.Components.ListItems 1.3 as ListItem
         Column {
             ListItem.SingleControl {
                 control: Button {

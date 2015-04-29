@@ -77,7 +77,7 @@ import Ubuntu.Components.Popups 1.0
         \qml
         import QtQuick 2.4
         import Ubuntu.Components 1.3
-        import Ubuntu.Components.ListItems 1.0
+        import Ubuntu.Components.ListItems 1.3
         ComboButton {
             text: "listview"
             ListView {
@@ -202,7 +202,7 @@ Button {
       \qml
       import QtQuick 2.4
       import Ubuntu.Components 1.3
-      import Ubuntu.Components.ListItems 0.1
+      import Ubuntu.Components.ListItems 1.3
       ComboButton {
           id: combo
           text: "Full comboList size"

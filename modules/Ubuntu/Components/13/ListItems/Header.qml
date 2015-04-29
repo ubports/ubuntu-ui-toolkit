@@ -24,7 +24,7 @@ import QtQuick 2.4
 
     Examples:
     \qml
-        import Ubuntu.Components.ListItems 1.0 as ListItem
+        import Ubuntu.Components.ListItems 1.3 as ListItem
         Column {
             ListItem.Header { text: "Title" }
             ListItem.Standard { text: "Item one" }

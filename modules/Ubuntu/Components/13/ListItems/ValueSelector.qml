@@ -28,7 +28,7 @@ import Ubuntu.Components 1.3
 
     Examples:
     \qml
-        import Ubuntu.Components.ListItems 1.0 as ListItem
+        import Ubuntu.Components.ListItems 1.3 as ListItem
         Column {
             width: 250
             ListItem.ValueSelector {
@@ -202,7 +202,7 @@ Empty {
                     id: accordionIcon
                     anchors.right: parent.right
                     anchors.verticalCenter: parent.verticalCenter
-                    source: "artwork/chevron.png"
+                    source: Qt.resolvedUrl("../../artwork/chevron.png")
                     opacity: enabled ? 1.0 : 0.5
                     rotation: expanded ? 270 : 90
                     width: implicitWidth / 1.5

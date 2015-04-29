@@ -27,7 +27,7 @@ import Ubuntu.Components 1.3
     Examples: see \l Header
 */
 Image {
-    source: "artwork/ListItemDivider6px.png"
+    source: Qt.resolvedUrl("../../artwork/ListItemDivider6px.png")
     anchors {
         left: parent ? parent.left : undefined
         right: parent ? parent.right : undefined

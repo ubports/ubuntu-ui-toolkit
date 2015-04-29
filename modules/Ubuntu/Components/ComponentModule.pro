@@ -9,15 +9,11 @@ installPath = $$[QT_INSTALL_QML]/$$replace(uri, \\., /)
 qmldir_file.installPath = $$installPath
 qmldir_file.files = qmldir
 
-# qml source files
-qml_files.installPath = $$installPath
-qml_files.files = *.qml
-
 #artwork files
 artwork_files.installPath = $$installPath/artwork
 artwork_files.files = $$system(find artwork -type f)
 
-UBUNTU_QML_MODULE_FILES += qmldir_file qml_files artwork_files
+UBUNTU_QML_MODULE_FILES += qmldir_file artwork_files
 
 plugins_qmltypes.path = $$installPath
 plugins_qmltypes.files = plugins.qmltypes
