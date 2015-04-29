@@ -47,7 +47,6 @@
 #endif
 
 bool verbose = false;
-bool creatable = true;
 
 QString currentProperty;
 QString inObjectInstantiation;
@@ -72,15 +71,11 @@ void collectReachableMetaObjects(QObject *object, QSet<const QMetaObject *> *met
         return;
 
     const QMetaObject *meta = object->metaObject();
-    if (verbose)
-        std::cerr << "Processing object" << qPrintable( meta->className() ) << std::endl;
     collectReachableMetaObjects(meta, metas);
 
     for (int index = 0; index < meta->propertyCount(); ++index) {
         QMetaProperty prop = meta->property(index);
         if (QQmlMetaType::isQObject(prop.userType())) {
-            if (verbose)
-                std::cerr << "  Processing property" << qPrintable( prop.name() ) << std::endl;
             currentProperty = QString("%1::%2").arg(meta->className(), prop.name());
 
             // if the property was not initialized during construction,
@@ -182,7 +177,7 @@ void collectReachableMetaObjectsWithoutQmlName( QSet<const QMetaObject *>& metas
             } else {
                 qmlTypesByCompositeName[ty->elementName()] = ty;
             }
-       }
+        }
     }
 }
 
@@ -242,64 +237,53 @@ QSet<const QMetaObject *> collectReachableMetaObjects(QQmlEngine *engine,
         qmlTypesByCppName[baseCpp] = baseExports;
     }
 
-    if (creatable) {
-        // find even more QMetaObjects by instantiating QML types and running
-        // over the instances
-        Q_FOREACH (QQmlType *ty, QQmlMetaType::qmlTypes()) {
-            if (skip.contains(ty))
-                continue;
-            if (ty->isExtendedType())
-                continue;
-            if (!ty->isCreatable())
-                continue;
-            if (ty->typeName() == "QQmlComponent")
-                continue;
+    // find even more QMetaObjects by instantiating QML types and running
+    // over the instances
+    Q_FOREACH (QQmlType *ty, QQmlMetaType::qmlTypes()) {
+        if (skip.contains(ty))
+            continue;
+        if (ty->isExtendedType())
+            continue;
+        if (!ty->isCreatable())
+            continue;
+        if (ty->typeName() == "QQmlComponent")
+            continue;
 
-            QString tyName = ty->qmlTypeName();
-            tyName = tyName.mid(tyName.lastIndexOf(QLatin1Char('/')) + 1);
-            if (tyName.isEmpty())
+        QString tyName = ty->qmlTypeName();
+        tyName = tyName.mid(tyName.lastIndexOf(QLatin1Char('/')) + 1);
+        if (tyName.isEmpty())
+            continue;
+
+        inObjectInstantiation = tyName;
+        QObject *object = 0;
+
+        if (ty->isSingleton()) {
+            QQmlType::SingletonInstanceInfo *siinfo = ty->singletonInstanceInfo();
+            if (!siinfo) {
+                std::cerr << "Internal error, " << qPrintable(tyName)
+                          << "(" << qPrintable( QString::fromUtf8(ty->typeName()) ) << ")"
+                          << " is singleton, but has no singletonInstanceInfo" << std::endl;
                 continue;
-
-            inObjectInstantiation = tyName;
-            QObject *object = 0;
-
-            if (ty->isSingleton()) {
-                QQmlType::SingletonInstanceInfo *siinfo = ty->singletonInstanceInfo();
-                if (!siinfo) {
-                    std::cerr << "Internal error, " << qPrintable(tyName)
-                              << "(" << qPrintable( QString::fromUtf8(ty->typeName()) ) << ")"
-                              << " is singleton, but has no singletonInstanceInfo" << std::endl;
-                    continue;
-                }
-                if (siinfo->qobjectCallback) {
-                    if (verbose)
-                        std::cerr << "Trying to get singleton for " << qPrintable(tyName)
-                                  << " (" << qPrintable( siinfo->typeName )  << ")" << std::endl;
-                    siinfo->init(engine);
-                    collectReachableMetaObjects(object, &metas);
-                    object = siinfo->qobjectApi(engine);
-                } else {
-                    inObjectInstantiation.clear();
-                    continue; // we don't handle QJSValue singleton types.
-                }
-            } else {
-                if (verbose)
-                    std::cerr << "Trying to create object " << qPrintable( tyName )
-                              << " (" << qPrintable( QString::fromUtf8(ty->typeName()) )  << ")" << std::endl;
-                object = ty->create();
             }
-
-            inObjectInstantiation.clear();
-
-            if (object) {
-                if (verbose)
-                    std::cerr << "Got " << qPrintable( tyName )
-                              << " (" << qPrintable( QString::fromUtf8(ty->typeName()) ) << ")" << std::endl;
+            if (siinfo->qobjectCallback) {
+                siinfo->init(engine);
                 collectReachableMetaObjects(object, &metas);
-                object->deleteLater();
+                object = siinfo->qobjectApi(engine);
             } else {
-                std::cerr << "Could not create" << qPrintable(tyName) << std::endl;
+                inObjectInstantiation.clear();
+                continue; // we don't handle QJSValue singleton types.
             }
+        } else {
+            object = ty->create();
+        }
+
+        inObjectInstantiation.clear();
+
+        if (object) {
+            collectReachableMetaObjects(object, &metas);
+            object->deleteLater();
+        } else {
+            std::cerr << "Could not create" << qPrintable(tyName) << std::endl;
         }
     }
 
@@ -436,7 +420,8 @@ public:
         QJsonObject object;
         QStringList exportStrings(QStringList() << exportString);
         // Merge objects to get all exported versions of the same type
-        if (json->contains(relocatableModuleUri + qmlTyName)) {
+        QString id(relocatableModuleUri + qmlTyName);
+        if (json->contains(id)) {
             object = json->value(relocatableModuleUri + qmlTyName).toObject();
             QJsonArray exports(object["exports"].toArray());
             Q_FOREACH(QJsonValue expor, exports) {
@@ -469,7 +454,7 @@ public:
         if (internalTypes.contains(prototype))
             writeMetaContent(&object, mainMeta->superClass(), &knownAttributes);
         writeMetaContent(&object, mainMeta, &knownAttributes);
-        json->insert(relocatableModuleUri + qmlTyName, object);
+        json->insert(id, object);
     }
 
     void dump(const QMetaObject *meta, bool isUncreatable, bool isSingleton)
@@ -534,8 +519,6 @@ public:
         QString id(meta->className());
         // FIXME: Work-around to omit Qt types unintentionally included
         if (convertToId(meta).startsWith("Q")) {
-            if (verbose)
-                std::cout << "Omitting " << qPrintable(id) << std::endl;
             return;
         }
 
@@ -686,10 +669,10 @@ void sigSegvHandler(int) {
 void printUsage(const QString &appName)
 {
     std::cerr << qPrintable(QString(
-                                 "Usage: %1 [-v] [-qml] [-json] IMPORT_URI [...IMPORT_URI]\n"
-                                 "Example: %1 Ubuntu.Components\n"
-                                 "         %1 --json Ubuntu.DownloadManager").arg(
-                                 appName)) << std::endl;
+                                "Usage: %1 [-v[v]] [-qml] [-json] IMPORT_URI [...IMPORT_URI]\n"
+                                "Example: %1 Ubuntu.Components\n"
+                                "         %1 --json Ubuntu.DownloadManager").arg(
+                                appName)) << std::endl;
 }
 
 inline std::wostream &operator<<(std::wostream &str, const QString &s)
@@ -731,9 +714,7 @@ int main(int argc, char *argv[])
 #endif
 
     // don't require a window manager even though we're a QGuiApplication
-    bool requireWindowManager = false;
-    if (!requireWindowManager)
-        qputenv("QT_QPA_PLATFORM", QByteArrayLiteral("minimal"));
+    qputenv("QT_QPA_PLATFORM", QByteArrayLiteral("minimal"));
 
     QGuiApplication app(argc, argv);
     QStringList args = app.arguments();
@@ -748,28 +729,26 @@ int main(int argc, char *argv[])
     QStringList modules;
     bool relocatable = true;
     bool output_json = false, output_qml = false;
-        Q_FOREACH (const QString &arg, args) {
-            if (!arg.startsWith(QLatin1Char('-'))) {
-                modules << arg;
-                continue;
-            }
-
-            if (arg == QLatin1String("--json")
-                        || arg == QLatin1String("-json")) {
-                output_json = true;
-            } else if (arg == QLatin1String("--qml")
-                        || arg == QLatin1String("-qml")) {
-                output_qml = true;
-            } else if (arg == QLatin1String("-v")) {
-                verbose = true;
-            } else if (arg == QLatin1String("-vv")) {
-                verbose = true;
-                QLoggingCategory::setFilterRules("*");
-            } else {
-                std::cerr << "Invalid argument: " << qPrintable(arg) << std::endl;
-                return EXIT_INVALIDARGUMENTS;
-            }
+    Q_FOREACH (const QString &arg, args) {
+        if (!arg.startsWith(QLatin1Char('-'))) {
+            modules << arg;
+            continue;
         }
+
+        if (arg == QLatin1String("--json") || arg == QLatin1String("-json")) {
+            output_json = true;
+        } else if (arg == QLatin1String("--qml") || arg == QLatin1String("-qml")) {
+            output_qml = true;
+        } else if (arg == QLatin1String("-v")) {
+            verbose = true;
+        } else if (arg == QLatin1String("-vv")) {
+            verbose = true;
+            QLoggingCategory::setFilterRules("*");
+        } else {
+            std::cerr << "Invalid argument: " << qPrintable(arg) << std::endl;
+            return EXIT_INVALIDARGUMENTS;
+        }
+    }
     if (modules.isEmpty()) {
         std::cerr << "No import URI(s) provided" << std::endl;
         printUsage(appName);
@@ -814,6 +793,17 @@ int main(int argc, char *argv[])
     // this will hold the meta objects we want to dump information of
     QSet<const QMetaObject *> metas;
 
+    // setup static rewrites of type names
+    cppToId.insert("QString", "string");
+    cppToId.insert("QUrl", "url");
+    cppToId.insert("QVariant", "var");
+    cppToId.insert("QVector2D", "vector2d");
+    cppToId.insert("QVector3D", "vector3d");
+    cppToId.insert("QVector4D", "vector4d");
+    cppToId.insert("QPoint", "Qt.point");
+    cppToId.insert("QColor", "color");
+    cppToId.insert("QQmlEasingValueType::Type", "Type");
+
     // find a valid QtQuick import
     QByteArray importCode;
     QQmlType *qtObjectType = QQmlMetaType::qmlType(&QObject::staticMetaObject);
@@ -836,176 +826,161 @@ int main(int argc, char *argv[])
         // FIXME: Bacon2D.1.0 → Bacon2D 1.0
         QString pluginImportVersion;
 
-    QStringList pathList((QString(getenv("QML2_IMPORT_PATH"))
-        + ":" + QLibraryInfo::location(QLibraryInfo::Qml2ImportsPath))
-        .split(':', QString::SkipEmptyParts));
+        QStringList pathList((QString(getenv("QML2_IMPORT_PATH"))
+                              + ":" + QLibraryInfo::location(QLibraryInfo::Qml2ImportsPath))
+                             .split(':', QString::SkipEmptyParts));
 
-    QFile qmlDirFile;
-    QString pluginModulePath;
-    Q_FOREACH(const QString& path, pathList) {
-        pluginModulePath = path + "/" + QString(pluginImportUri).replace(".", "/");
-        qmlDirFile.setFileName(pluginModulePath + "/qmldir");
-        if (qmlDirFile.exists() && qmlDirFile.open(QIODevice::ReadOnly)) {
-            engine.addImportPath(pluginModulePath);
-            break;
-        }
-    }
-    if (verbose)
-        std::cout << "Reading " << qPrintable(qmlDirFile.fileName()) << std::endl;
-    if (!qmlDirFile.isOpen()) {
-        std::cerr << "Failed to read " << qPrintable(qmlDirFile.fileName()) << std::endl;
-        return EXIT_IMPORTERROR;
-    }
-
-    QQmlDirParser p;
-    p.parse(qmlDirFile.readAll());
-    if (p.hasError()) {
-        std::cerr << "Failed to read " << qPrintable(qmlDirFile.fileName()) << std::endl;
-        Q_FOREACH (const QQmlError &error, p.errors(qmlDirFile.fileName()))
-            std::cerr << qPrintable( error.toString() ) << std::endl;
-        return EXIT_IMPORTERROR;
-    }
-
-    // find all QMetaObjects reachable when the specified module is imported
-    QStringList importVersions;
-    if (pluginImportVersion.isEmpty()) {
-        // Collect all the available versioned imports
-        int highestMajor = 0, highestMinor = 1;
-        Q_FOREACH(QQmlDirParser::Component c, p.components()) {
-            // pluginImportVersion can be empty, pick latest
-            if (c.majorVersion > highestMajor) {
-                highestMajor = c.majorVersion;
-                highestMinor = c.minorVersion;
-            } else if (c.majorVersion == highestMajor && c.minorVersion > highestMinor) {
-                highestMinor = c.minorVersion;
+        QFile qmlDirFile;
+        QString pluginModulePath;
+        Q_FOREACH(const QString& path, pathList) {
+            pluginModulePath = path + "/" + QString(pluginImportUri).replace(".", "/");
+            qmlDirFile.setFileName(pluginModulePath + "/qmldir");
+            if (qmlDirFile.exists() && qmlDirFile.open(QIODevice::ReadOnly)) {
+                engine.addImportPath(pluginModulePath);
+                break;
             }
+        }
+        if (verbose)
+            std::cout << "Reading " << qPrintable(qmlDirFile.fileName()) << std::endl;
+        if (!qmlDirFile.isOpen()) {
+            std::cerr << "Failed to read " << qPrintable(qmlDirFile.fileName()) << std::endl;
+            return EXIT_IMPORTERROR;
+        }
 
-            // Work-around for version -1, -1
+        QQmlDirParser p;
+        p.parse(qmlDirFile.readAll());
+        if (p.hasError()) {
+            std::cerr << "Failed to read " << qPrintable(qmlDirFile.fileName()) << std::endl;
+            Q_FOREACH (const QQmlError &error, p.errors(qmlDirFile.fileName()))
+                std::cerr << qPrintable( error.toString() ) << std::endl;
+            return EXIT_IMPORTERROR;
+        }
+
+        // find all QMetaObjects reachable when the specified module is imported
+        QStringList importVersions;
+        if (pluginImportVersion.isEmpty()) {
+            // Collect all the available versioned imports
+            int highestMajor = 0, highestMinor = 1;
+            Q_FOREACH(QQmlDirParser::Component c, p.components()) {
+                // pluginImportVersion can be empty, pick latest
+                if (c.majorVersion > highestMajor) {
+                    highestMajor = c.majorVersion;
+                    highestMinor = c.minorVersion;
+                } else if (c.majorVersion == highestMajor && c.minorVersion > highestMinor) {
+                    highestMinor = c.minorVersion;
+                }
+
+                // Work-around for version -1, -1
+                if (c.majorVersion == -1)
+                    continue;
+                importVersions << QString("%1.%2").arg(c.majorVersion).arg(c.minorVersion);
+            }
+            pluginImportVersion = QString("%1.%2").arg(highestMajor).arg(highestMinor);
+        }
+        importVersions << pluginImportVersion;
+        importVersions.removeDuplicates();
+
+        // Create a component with all QML types to add them to the type system
+        QByteArray code = importCode;
+        Q_FOREACH(const QString& version, importVersions) {
+            QString pluginAlias(QString("%1.%2").arg(pluginImportUri).arg(version).replace(".", "_"));
+            code += QString("import %1 %2 as %3\n").arg(pluginImportUri).arg(version).arg(pluginAlias);
+        }
+        code += "Item {\n";
+
+        QStringList exportedTypes;
+        Q_FOREACH(QQmlDirParser::Component c, p.components()) {
+            // Map filename-based PageHeadConfiguration11 to PageHeadConfiguration
+            QString filename(QFileInfo(c.fileName).baseName());
+            cppToId.insert(qPrintable(filename), qPrintable(c.typeName));
+
+            if (c.internal) {
+                internalTypes.append(c.typeName);
+                continue;
+            }
+            exportedTypes.append(QFileInfo(c.fileName).fileName());
+            QString version(QString("%1.%2").arg(c.majorVersion).arg(c.minorVersion));
+        }
+
+        code += "}";
+        if (verbose)
+            std::cerr << "Importing QML components:" << std::endl << qPrintable(code) << std::endl;
+
+        QQmlComponent c(&engine);
+        c.setData(code, QUrl::fromLocalFile(qmlDirFile.fileName()));
+        std::cerr << "Creating QML component for " << qPrintable(pluginImportUri) << std::endl;
+        c.create();
+        if (!c.errors().isEmpty()) {
+            Q_FOREACH (const QQmlError &error, c.errors()) {
+                // Despite the error we get all type information we need from singletons
+                if (error.description().contains(QRegExp("(Composite Singleton Type .+|Element) is not creatable")))
+                    continue;
+                std::cerr << "Failed to load " << qPrintable(pluginImportUri) << std::endl;
+                std::cerr << qPrintable(code) << std::endl;
+                std::cerr << qPrintable( error.toString() ) << std::endl;
+                return EXIT_IMPORTERROR;
+            }
+        }
+
+        QSet<const QMetaObject *> candidates = collectReachableMetaObjects(&engine, uncreatableMetas, singletonMetas, defaultTypes);
+        candidates.subtract(defaultReachable);
+
+        // Also eliminate meta objects with the same classname.
+        // This is required because extended objects seem not to share
+        // a single meta object instance.
+        Q_FOREACH (const QMetaObject *mo, defaultReachable)
+            defaultReachableNames.insert(QByteArray(mo->className()));
+        Q_FOREACH (const QMetaObject *mo, candidates) {
+            if (!defaultReachableNames.contains(mo->className()))
+                metas.insert(mo);
+        }
+
+        QMap<QString, QString> scripts;
+        Q_FOREACH(QQmlDirParser::Script s, p.scripts()) {
+            QFile sf(pluginModulePath + "/" + s.fileName);
+            if (!sf.open(QIODevice::ReadOnly)) {
+                std::cerr << "Failed to read " << qPrintable(sf.fileName()) << std::endl;
+                return EXIT_IMPORTERROR;
+            }
+            scripts.insertMulti(s.nameSpace, QString("%1 %2.%3").arg(s.nameSpace).arg(s.majorVersion).arg(s.minorVersion));
+        }
+
+        Q_FOREACH(QString nameSpace, scripts.uniqueKeys()) {
+            QJsonObject script;
+            script["type"] = "script";
+            QJsonArray exports(QJsonArray::fromStringList(scripts.values(nameSpace)));
+            script["exports"] = exports;
+            json[nameSpace] = script;
+        }
+
+        // put the metaobjects into a map so they are always dumped in the same order
+        QMap<QString, const QMetaObject *> nameToMeta;
+        Q_FOREACH (const QMetaObject *meta, metas)
+            nameToMeta.insertMulti(convertToId(meta), meta);
+
+        Dumper dumper(&json);
+        if (relocatable)
+            dumper.setRelocatableModuleUri(pluginImportUri);
+        dumper.setImportVersion(pluginImportVersion);
+        Q_FOREACH (const QMetaObject *meta, nameToMeta) {
+            dumper.dump(meta, uncreatableMetas.contains(meta), singletonMetas.contains(meta));
+        }
+        Q_FOREACH(QQmlDirParser::Component c, p.components()) {
+            if (c.internal)
+                continue;
+            QString version(QString("%1.%2").arg(c.majorVersion).arg(c.minorVersion));
             if (c.majorVersion == -1)
-                continue;
-            importVersions << QString("%1.%2").arg(c.majorVersion).arg(c.minorVersion);
+                version = pluginImportVersion;
+            QQmlComponent e(&engine, pluginModulePath + "/" + c.fileName);
+            QObject* qtobject(e.create());
+            if (!qtobject) {
+                std::cerr << "Failed to instantiate " << qPrintable(c.typeName) << " from " << qPrintable(pluginModulePath + "/" + c.fileName) << std::endl;
+                Q_FOREACH (const QQmlError &error, e.errors())
+                    std::cerr << qPrintable(error.toString()) << std::endl;
+                exit(1);
+            }
+            dumper.dumpQMLComponent(qtobject, c.typeName, QString("%1 %2").arg(c.typeName).arg(version), c.singleton, internalTypes);
         }
-        pluginImportVersion = QString("%1.%2").arg(highestMajor).arg(highestMinor);
-    }
-    importVersions << pluginImportVersion;
-    importVersions.removeDuplicates();
-
-    // Create a component with all QML types to add them to the type system
-    QByteArray code = importCode;
-    Q_FOREACH(const QString& version, importVersions) {
-        QString pluginAlias(QString("%1.%2").arg(pluginImportUri).arg(version).replace(".", "_"));
-        code += QString("import %1 %2 as %3\n").arg(pluginImportUri).arg(version).arg(pluginAlias);
-    }
-    code += "Item {\n";
-
-    QStringList exportedTypes;
-    QMap<QString, QString> exportedVersions;
-    Q_FOREACH(QQmlDirParser::Component c, p.components()) {
-        // Map filename-based PageHeadConfiguration11 to PageHeadConfiguration
-        QString filename(QFileInfo(c.fileName).baseName());
-        cppToId.insert(qPrintable(filename), qPrintable(c.typeName));
-
-        if (c.internal) {
-            internalTypes.append(c.typeName);
-            continue;
-        }
-        exportedTypes.append(QFileInfo(c.fileName).fileName());
-        QString version(QString("%1.%2").arg(c.majorVersion).arg(c.minorVersion));
-        if (version > exportedVersions[c.typeName])
-            exportedVersions.insert(c.typeName, version);
-    }
-
-    code += "}";
-    if (verbose)
-        std::cerr << "Importing QML components:" << std::endl << qPrintable(code) << std::endl;
-
-    QQmlComponent c(&engine);
-    c.setData(code, QUrl::fromLocalFile(qmlDirFile.fileName()));
-    std::cerr << "Creating QML component for " << qPrintable(pluginImportUri) << std::endl;
-    c.create();
-    if (!c.errors().isEmpty()) {
-        Q_FOREACH (const QQmlError &error, c.errors()) {
-            // Despite the error we get all type information we need from singletons
-            if (error.description().contains(QRegExp("(Composite Singleton Type .+|Element) is not creatable")))
-                continue;
-            std::cerr << "Failed to load " << qPrintable(pluginImportUri) << std::endl;
-            std::cerr << qPrintable(code) << std::endl;
-            std::cerr << qPrintable( error.toString() ) << std::endl;
-            return EXIT_IMPORTERROR;
-        }
-    }
-
-    QSet<const QMetaObject *> candidates = collectReachableMetaObjects(&engine, uncreatableMetas, singletonMetas, defaultTypes);
-    candidates.subtract(defaultReachable);
-
-    // Also eliminate meta objects with the same classname.
-    // This is required because extended objects seem not to share
-    // a single meta object instance.
-    Q_FOREACH (const QMetaObject *mo, defaultReachable)
-        defaultReachableNames.insert(QByteArray(mo->className()));
-    Q_FOREACH (const QMetaObject *mo, candidates) {
-        if (!defaultReachableNames.contains(mo->className()))
-            metas.insert(mo);
-    }
-
-    // setup static rewrites of type names
-    cppToId.insert("QString", "string");
-    cppToId.insert("QUrl", "url");
-    cppToId.insert("QVariant", "var");
-    cppToId.insert("QVector2D", "vector2d");
-    cppToId.insert("QVector3D", "vector3d");
-    cppToId.insert("QVector4D", "vector4d");
-    cppToId.insert("QPoint", "Qt.point");
-    cppToId.insert("QColor", "color");
-    cppToId.insert("QQmlEasingValueType::Type", "Type");
-
-    QMap<QString, QString> scripts;
-    Q_FOREACH(QQmlDirParser::Script s, p.scripts()) {
-        QFile sf(pluginModulePath + "/" + s.fileName);
-        if (!sf.open(QIODevice::ReadOnly)) {
-            std::cerr << "Failed to read " << qPrintable(sf.fileName()) << std::endl;
-            return EXIT_IMPORTERROR;
-        }
-        scripts.insertMulti(s.nameSpace, QString("%1 %2.%3").arg(s.nameSpace).arg(s.majorVersion).arg(s.minorVersion));
-    }
-
-    Q_FOREACH(QString nameSpace, scripts.uniqueKeys()) {
-        QJsonObject script;
-        script["type"] = "script";
-        QJsonArray exports(QJsonArray::fromStringList(scripts.values(nameSpace)));
-        script["exports"] = exports;
-        json[nameSpace] = script;
-    }
-
-    // put the metaobjects into a map so they are always dumped in the same order
-    QMap<QString, const QMetaObject *> nameToMeta;
-    Q_FOREACH (const QMetaObject *meta, metas)
-        nameToMeta.insertMulti(convertToId(meta), meta);
-
-    Dumper dumper(&json);
-    if (relocatable)
-        dumper.setRelocatableModuleUri(pluginImportUri);
-    dumper.setImportVersion(pluginImportVersion);
-    Q_FOREACH (const QMetaObject *meta, nameToMeta) {
-        dumper.dump(meta, uncreatableMetas.contains(meta), singletonMetas.contains(meta));
-    }
-    Q_FOREACH(QQmlDirParser::Component c, p.components()) {
-        if (c.internal)
-            continue;
-        QString version(QString("%1.%2").arg(c.majorVersion).arg(c.minorVersion));
-        if (c.majorVersion == -1)
-            version = pluginImportVersion;
-        QQmlComponent e(&engine, pluginModulePath + "/" + c.fileName);
-        QObject* qtobject(e.create());
-        if (!qtobject) {
-            std::cerr << "Failed to instantiate " << qPrintable(c.typeName) << " from " << qPrintable(pluginModulePath + "/" + c.fileName) << std::endl;
-            Q_FOREACH (const QQmlError &error, e.errors())
-                std::cerr << qPrintable(error.toString()) << std::endl;
-            exit(1);
-        }
-        dumper.dumpQMLComponent(qtobject, c.typeName, QString("%1 %2").arg(c.typeName).arg(version), c.singleton, internalTypes);
-    }
-
     }
 
     if (output_json) {
