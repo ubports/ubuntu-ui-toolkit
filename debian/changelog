@@ -1,3 +1,10 @@
+ubuntu-ui-toolkit (1.2.1485+15.04.20150429-0ubuntu1) vivid; urgency=medium
+
+  [ Tim Peeters ]
+  * Revert to use the old header in trunk.
+
+ -- CI Train Bot <ci-train-bot@canonical.com>  Wed, 29 Apr 2015 10:21:19 +0000
+
 ubuntu-ui-toolkit (1.2.1485+15.04.20150421-0ubuntu1) vivid; urgency=medium
 
   [ Christian Dywan ]
