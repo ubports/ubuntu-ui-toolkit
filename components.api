@@ -816,6 +816,11 @@ UPMGraphModel QtObject
     property int samples
     readonly property int shift
 Ubuntu 1.2 QtObject singleton
+Ubuntu 1.3 Ubuntu singleton
+    function ushort version(uchar major, uchar minor)
+    readonly property ushort toolkitVersion
+    readonly property ushort toolkitVersionMajor
+    readonly property ushort toolkitVersionMinor
 Ubuntu.CaptionsStyle Enum
     SummaryCaptionStyle
     TitleCaptionStyle

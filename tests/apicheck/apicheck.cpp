@@ -531,10 +531,13 @@ public:
 
         writeMetaContent(&object, meta);
 
+        QString id(meta->className());
         // FIXME: Work-around to omit Qt types unintentionally included
-        QByteArray id = convertToId(meta);
-        if (QString(id).startsWith("Q"))
+        if (convertToId(meta).startsWith("Q")) {
+            if (verbose)
+                std::cout << "Omitting " << qPrintable(id) << std::endl;
             return;
+        }
 
         json->insert(id, object);
     }
@@ -1018,7 +1021,7 @@ int main(int argc, char *argv[])
     // put the metaobjects into a map so they are always dumped in the same order
     QMap<QString, const QMetaObject *> nameToMeta;
     Q_FOREACH (const QMetaObject *meta, metas)
-        nameToMeta.insert(convertToId(meta), meta);
+        nameToMeta.insertMulti(convertToId(meta), meta);
 
     Dumper dumper(&json);
     if (relocatable)
