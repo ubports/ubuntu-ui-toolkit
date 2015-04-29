@@ -16,7 +16,7 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 1.3
-import Ubuntu.Components.Pickers 1.0
+import Ubuntu.Components.Pickers 1.3
 
 Template {
     objectName: "pickersTemplate"
