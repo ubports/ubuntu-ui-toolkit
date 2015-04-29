@@ -29,12 +29,12 @@ CPP="Ubuntu.Components Ubuntu.Components.ListItems Ubuntu.Components.Popups Ubun
 ERRORS=0
 echo Dumping QML API of C++ components
 test -s $BUILD_DIR/components.api.new && rm $BUILD_DIR/components.api.new
-    echo "Processing $i"
     # Silence spam on stderr due to fonts
     # https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1256999
     # https://bugreports.qt-project.org/browse/QTBUG-36243
-    env ALARM_BACKEND=memory $BUILD_DIR/tests/apicheck/apicheck \
-        --qml "$CPP" $BUILD_DIR/modules 1>> $BUILD_DIR/components.api.new &&
+    env ALARM_BACKEND=memory QML2_IMPORT_PATH=$BUILD_DIR/modules \
+        $BUILD_DIR/tests/apicheck/apicheck \
+        --qml $CPP 1>> $BUILD_DIR/components.api.new &&
         echo Verifying the diff between existing and generated API
     test $? != 0 && echo Error: apicheck failed && ERRORS=1
 if [ "x$ERRORS" != "x1" ]; then

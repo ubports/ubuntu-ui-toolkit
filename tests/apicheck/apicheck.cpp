@@ -22,6 +22,7 @@
 #include <QtQuick/private/qquickpincharea_p.h>
 
 #include <QtGui/QGuiApplication>
+#include <QtCore/QLibraryInfo>
 #include <QtCore/QDir>
 #include <QtCore/QFileInfo>
 #include <QtCore/QSet>
@@ -45,7 +46,6 @@
 #include <signal.h>
 #endif
 
-QString pluginImportPath;
 bool verbose = false;
 bool creatable = true;
 
@@ -686,9 +686,9 @@ void sigSegvHandler(int) {
 void printUsage(const QString &appName)
 {
     std::cerr << qPrintable(QString(
-                                 "Usage: %1 [-v] [-noinstantiate] [-defaultplatform] [-[non]relocatable] [-qml] [-json] module.uri version [module/import/path]\n"
-                                 "       %1 [-v] [-noinstantiate] [-qml] [-json] -path path/to/qmldir/directory [version]\n"
-                                 "Example: %1 -json Qt.labs.folderlistmodel 2.0 /home/user/dev/qt-install/imports").arg(
+                                 "Usage: %1 [-v] [-qml] [-json] IMPORT_URI [...IMPORT_URI]\n"
+                                 "Example: %1 Ubuntu.Components\n"
+                                 "         %1 --json Ubuntu.DownloadManager").arg(
                                  appName)) << std::endl;
 }
 
@@ -732,118 +732,65 @@ int main(int argc, char *argv[])
 
     // don't require a window manager even though we're a QGuiApplication
     bool requireWindowManager = false;
-    for (int index = 1; index < argc; ++index) {
-        if (QString::fromLocal8Bit(argv[index]) == "--defaultplatform"
-                || QString::fromLocal8Bit(argv[index]) == "-defaultplatform") {
-            requireWindowManager = true;
-            break;
-        }
-    }
-
     if (!requireWindowManager)
         qputenv("QT_QPA_PLATFORM", QByteArrayLiteral("minimal"));
 
     QGuiApplication app(argc, argv);
-    const QStringList args = app.arguments();
+    QStringList args = app.arguments();
+    args.removeFirst();
     const QString appName = QFileInfo(app.applicationFilePath()).baseName();
-    if (args.size() < 2) {
+    if (args.size() < 1) {
         printUsage(appName);
         return EXIT_INVALIDARGUMENTS;
     }
 
-    QString pluginImportUri;
-    QString pluginImportVersion;
+    QLoggingCategory::setFilterRules(QStringLiteral("*=false"));
+    QStringList modules;
     bool relocatable = true;
     bool output_json = false, output_qml = false;
-    enum Action { Uri, Path };
-    Action action = Uri;
-    {
-        QStringList positionalArgs;
         Q_FOREACH (const QString &arg, args) {
             if (!arg.startsWith(QLatin1Char('-'))) {
-                positionalArgs.append(arg);
+                modules << arg;
                 continue;
             }
 
-            if (arg == QLatin1String("--notrelocatable")
-                    || arg == QLatin1String("-notrelocatable")
-                    || arg == QLatin1String("--nonrelocatable")
-                    || arg == QLatin1String("-nonrelocatable")) {
-                relocatable = false;
-            } else if (arg == QLatin1String("--relocatable")
-                        || arg == QLatin1String("-relocatable")) {
-                relocatable = true;
-            } else if (arg == QLatin1String("--json")
+            if (arg == QLatin1String("--json")
                         || arg == QLatin1String("-json")) {
                 output_json = true;
             } else if (arg == QLatin1String("--qml")
                         || arg == QLatin1String("-qml")) {
                 output_qml = true;
-            } else if (arg == QLatin1String("--noinstantiate")
-                       || arg == QLatin1String("-noinstantiate")) {
-                creatable = false;
-            } else if (arg == QLatin1String("--path")
-                       || arg == QLatin1String("-path")) {
-                action = Path;
             } else if (arg == QLatin1String("-v")) {
                 verbose = true;
-            } else if (arg == QLatin1String("--defaultplatform")
-                       || arg == QLatin1String("-defaultplatform")) {
-                continue;
+            } else if (arg == QLatin1String("-vv")) {
+                verbose = true;
+                QLoggingCategory::setFilterRules("*");
             } else {
                 std::cerr << "Invalid argument: " << qPrintable(arg) << std::endl;
                 return EXIT_INVALIDARGUMENTS;
             }
         }
-
-        if (action == Uri) {
-            if (positionalArgs.size() != 3 && positionalArgs.size() != 4) {
-                std::cerr << "Incorrect number of positional arguments" << std::endl;
-                return EXIT_INVALIDARGUMENTS;
-            }
-            pluginImportUri = positionalArgs[1];
-            if (positionalArgs[2].toDouble() != 0.0) {
-                pluginImportVersion = positionalArgs[2];
-                if (positionalArgs.size() >= 4)
-                    pluginImportPath = positionalArgs[3];
-            } else
-                pluginImportPath = positionalArgs[2];
-        } else if (action == Path) {
-            if (positionalArgs.size() != 2 && positionalArgs.size() != 3) {
-                std::cerr << "Incorrect number of positional arguments" << std::endl;
-                return EXIT_INVALIDARGUMENTS;
-            }
-            pluginImportPath = QDir::fromNativeSeparators(positionalArgs[1]);
-            if (positionalArgs.size() == 3)
-                pluginImportVersion = positionalArgs[2];
-        }
+    if (modules.isEmpty()) {
+        std::cerr << "No import URI(s) provided" << std::endl;
+        printUsage(appName);
+        return EXIT_INVALIDARGUMENTS;
     }
 
     // By default output JSON
     if (!output_json and !output_qml)
-        output_json = true;
-
-    if (!verbose)
-        QLoggingCategory::setFilterRules(QStringLiteral("*=false"));
+        output_qml = true;
 
     // Allow import of Qt.Test
     qmlRegisterSingletonType<QObject>("Qt.test.qtestroot", 1, 0, "QTestRootObject", testRootObject);
 
     QQmlEngine engine;
     QObject::connect(&engine, SIGNAL(quit()), QCoreApplication::instance(), SLOT(quit()));
-    if (!pluginImportPath.isEmpty()) {
-        QDir cur = QDir::current();
-        cur.cd(pluginImportPath);
-        pluginImportPath = cur.canonicalPath();
-        QDir::setCurrent(pluginImportPath);
-        engine.addImportPath(pluginImportPath);
-    }
 
     // load the QtQuick 2 plugin
     {
         QByteArray code("import QtQuick 2.0\nQtObject {}");
         QQmlComponent c(&engine);
-        c.setData(code, QUrl::fromLocalFile(pluginImportPath + "/loadqtquick2.qml"));
+        c.setData(code, QString("loadqtquick2.qml"));
         c.create();
         if (!c.errors().isEmpty()) {
             std::cerr << "Failed to load QtQuick2 built-in" << std::endl;
@@ -885,27 +832,39 @@ int main(int argc, char *argv[])
     // create an object that will be the API description
     QJsonObject json;
 
-    QStringList modules(pluginImportUri.split(" "));
-    Q_FOREACH (const QString& plugin, modules) {
-        pluginImportUri = plugin;
-        pluginImportVersion = "";
+    Q_FOREACH (const QString& pluginImportUri, modules) {
+        // FIXME: Bacon2D.1.0 → Bacon2D 1.0
+        QString pluginImportVersion;
 
-    QString pluginModulePath(pluginImportPath + "/" + QString(pluginImportUri).replace(".", "/"));
-    QFile f(pluginModulePath + "/qmldir");
-    if (!f.open(QIODevice::ReadOnly)) {
-        std::cerr << "Failed to read " << qPrintable(f.fileName()) << std::endl;
+    QStringList pathList((QString(getenv("QML2_IMPORT_PATH"))
+        + ":" + QLibraryInfo::location(QLibraryInfo::Qml2ImportsPath))
+        .split(':', QString::SkipEmptyParts));
+
+    QFile qmlDirFile;
+    QString pluginModulePath;
+    Q_FOREACH(const QString& path, pathList) {
+        pluginModulePath = path + "/" + QString(pluginImportUri).replace(".", "/");
+        qmlDirFile.setFileName(pluginModulePath + "/qmldir");
+        if (qmlDirFile.exists() && qmlDirFile.open(QIODevice::ReadOnly)) {
+            engine.addImportPath(pluginModulePath);
+            break;
+        }
+    }
+    if (verbose)
+        std::cout << "Reading " << qPrintable(qmlDirFile.fileName()) << std::endl;
+    if (!qmlDirFile.isOpen()) {
+        std::cerr << "Failed to read " << qPrintable(qmlDirFile.fileName()) << std::endl;
         return EXIT_IMPORTERROR;
     }
+
     QQmlDirParser p;
-    p.parse(f.readAll());
+    p.parse(qmlDirFile.readAll());
     if (p.hasError()) {
-        std::cerr << "Failed to read " << qPrintable(f.fileName()) << std::endl;
-        Q_FOREACH (const QQmlError &error, p.errors("qmldir"))
+        std::cerr << "Failed to read " << qPrintable(qmlDirFile.fileName()) << std::endl;
+        Q_FOREACH (const QQmlError &error, p.errors(qmlDirFile.fileName()))
             std::cerr << qPrintable( error.toString() ) << std::endl;
         return EXIT_IMPORTERROR;
     }
-    if (pluginImportUri.isEmpty())
-        pluginImportUri = p.typeNamespace();
 
     // find all QMetaObjects reachable when the specified module is imported
     QStringList importVersions;
@@ -961,7 +920,7 @@ int main(int argc, char *argv[])
         std::cerr << "Importing QML components:" << std::endl << qPrintable(code) << std::endl;
 
     QQmlComponent c(&engine);
-    c.setData(code, QUrl::fromLocalFile(pluginModulePath + "/qmldir"));
+    c.setData(code, QUrl::fromLocalFile(qmlDirFile.fileName()));
     std::cerr << "Creating QML component for " << qPrintable(pluginImportUri) << std::endl;
     c.create();
     if (!c.errors().isEmpty()) {
