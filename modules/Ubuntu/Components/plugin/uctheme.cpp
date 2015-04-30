@@ -558,12 +558,15 @@ void UCTheme::resetPalette()
     setPalette(NULL);
 }
 
-QUrl UCTheme::styleUrl(const QString& styleName, quint16 version, bool *isFallback)
+QUrl UCTheme::styleUrl(const QString& styleName, quint16 version, bool *isFallback, bool debugLog)
 {
     Q_FOREACH (const ThemeRecord &themePath, m_themePaths) {
         // check versioned style first
         QUrl styleUrl;
         if (version < BUILD_VERSION(1, 2)) {
+            if (debugLog) {
+                qDebug() << "FALLBACK to 1.3";
+            }
             if (isFallback && themePath.shared) {
                 (*isFallback) = true;
             }
@@ -573,13 +576,22 @@ QUrl UCTheme::styleUrl(const QString& styleName, quint16 version, bool *isFallba
         for (int minor = MINOR_VERSION(version); minor >= 2; minor--) {
             QString versionedName = QStringLiteral("%1.%2/%3").arg(MAJOR_VERSION(version)).arg(minor).arg(styleName);
             styleUrl = themePath.path.resolved(versionedName);
+            if (debugLog) {
+                qDebug() << "LOOKUP" << styleUrl.toString();
+            }
             if (styleUrl.isValid() && QFile::exists(styleUrl.toLocalFile())) {
+                if (debugLog) {
+                    qDebug() << "STYLE FOUND";
+                }
                 return styleUrl;
             }
         }
 
         // if we get here, that means we haven't got a shared theme or the shared theme is broken
         // themePath.second specifies whether the theme is shared or not
+        if (debugLog) {
+            qDebug() << "NOT FOUND, IS" << themePath.path.toString() << "SHARED?" << themePath.shared;
+        }
         if (!themePath.shared) {
             // not a fallback theme loading
             if (isFallback) {
@@ -587,7 +599,13 @@ QUrl UCTheme::styleUrl(const QString& styleName, quint16 version, bool *isFallba
             }
             // we can load unversioned application styles
             styleUrl = themePath.path.resolved(styleName);
+            if (debugLog) {
+                qDebug() << "LOOKUP IN APP STYLE" << styleUrl.toString();
+            }
             if (styleUrl.isValid() && QFile::exists(styleUrl.toLocalFile())) {
+                if (debugLog) {
+                    qDebug() << "APP STYLE FOUND";
+                }
                 return styleUrl;
             }
         }
@@ -681,6 +699,7 @@ QQmlComponent* UCTheme::createStyleComponent(const QString& styleName, QObject* 
             } else {
                 qmlInfo(parent) <<
                    UbuntuI18n::instance().tr(QString("Warning: Style %1 not found in theme %2").arg(styleName).arg(name()));
+                styleUrl(styleName, version, &fallback, true);
             }
         }
     }
