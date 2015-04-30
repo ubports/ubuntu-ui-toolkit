@@ -119,7 +119,7 @@ QObject* UCDeprecatedTheme::palette()
 QQmlComponent* UCDeprecatedTheme::createStyleComponent(const QString& styleName, QObject* parent)
 {
     showDeprecatedNote(parent, "Theme.createStyleComponent() is deprecated. Use ThemeSettings instead.");
-    return UCTheme::defaultTheme().createStyleComponent(styleName, parent);
+    return UCTheme::defaultTheme().createStyleComponent(styleName, parent, BUILD_VERSION(1, 2));
 }
 
 void UCDeprecatedTheme::registerToContext(QQmlContext* context)

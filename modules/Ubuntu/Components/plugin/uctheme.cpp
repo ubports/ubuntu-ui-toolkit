@@ -560,24 +560,24 @@ void UCTheme::resetPalette()
 
 QUrl UCTheme::styleUrl(const QString& styleName, quint16 version, bool *isFallback, bool debugLog)
 {
+    if (version < BUILD_VERSION(1, 2)) {
+        if (debugLog) {
+            qDebug() << "FALLBACK to 1.3";
+        }
+        if (isFallback) {
+            (*isFallback) = true;
+        }
+        version = LATEST_UITK_VERSION;
+    }
     Q_FOREACH (const ThemeRecord &themePath, m_themePaths) {
         // check versioned style first
         QUrl styleUrl;
-        if (version < BUILD_VERSION(1, 2)) {
-            if (debugLog) {
-                qDebug() << "FALLBACK to 1.3";
-            }
-            if (isFallback && themePath.shared) {
-                (*isFallback) = true;
-            }
-            version = LATEST_UITK_VERSION;
-        }
         // we stop at version 1.2 as we do not have support for earlier themes anymore.
         for (int minor = MINOR_VERSION(version); minor >= 2; minor--) {
             QString versionedName = QStringLiteral("%1.%2/%3").arg(MAJOR_VERSION(version)).arg(minor).arg(styleName);
             styleUrl = themePath.path.resolved(versionedName);
             if (debugLog) {
-                qDebug() << "LOOKUP" << styleUrl.toString();
+                qDebug() << "LOOKUP" << styleUrl.toString() << "VALID?" << styleUrl.isValid() << "LOCALFILE:" << styleUrl.toLocalFile();
             }
             if (styleUrl.isValid() && QFile::exists(styleUrl.toLocalFile())) {
                 if (debugLog) {
@@ -589,14 +589,7 @@ QUrl UCTheme::styleUrl(const QString& styleName, quint16 version, bool *isFallba
 
         // if we get here, that means we haven't got a shared theme or the shared theme is broken
         // themePath.second specifies whether the theme is shared or not
-        if (debugLog) {
-            qDebug() << "NOT FOUND, IS" << themePath.path.toString() << "SHARED?" << themePath.shared;
-        }
         if (!themePath.shared) {
-            // not a fallback theme loading
-            if (isFallback) {
-                (*isFallback) = false;
-            }
             // we can load unversioned application styles
             styleUrl = themePath.path.resolved(styleName);
             if (debugLog) {
@@ -606,8 +599,18 @@ QUrl UCTheme::styleUrl(const QString& styleName, quint16 version, bool *isFallba
                 if (debugLog) {
                     qDebug() << "APP STYLE FOUND";
                 }
+                // not a fallback theme loading
+                if (isFallback) {
+                    (*isFallback) = false;
+                }
                 return styleUrl;
             }
+        }
+        if (debugLog) {
+            qDebug() << "STYLE NOT FOUND," << themePath.path.toString() << "IS SHARED?" << themePath.shared;
+            styleUrl = themePath.path.resolved(styleName);
+            qDebug() << "TRY UNVERSIONED STYLE" << styleUrl.toString() << styleUrl.toLocalFile() << "VALID?" << styleUrl.isValid();
+            qDebug() << "UNVERSIONED FILE EXISTS?" << QFile::exists(styleUrl.toLocalFile());
         }
     }
 
