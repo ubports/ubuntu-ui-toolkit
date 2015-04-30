@@ -1,8 +1,10 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \ 
-    1.2 \
-    1.3
+    ubuntu-ui-toolkit-gallery\
+    locale \
+    unit-converter \
+    calculator
 
 
 #examples = jokes unit-converter

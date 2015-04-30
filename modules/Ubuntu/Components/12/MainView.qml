@@ -136,7 +136,7 @@ MainViewBase {
             flickable: internal.activePage ? internal.activePage.flickable : null
             pageStack: internal.activePage ? internal.activePage.pageStack : null
 
-            PageHeadConfiguration11 {
+            PageHeadConfiguration {
                 id: headerConfig
                 // for backwards compatibility with deprecated tools property
                 actions: internal.activePage ?

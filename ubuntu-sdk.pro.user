@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 3.1.1, 2015-04-30T10:27:33. -->
+<!-- Written by QtCreator 3.1.1, 2015-04-30T12:21:46. -->
 <qtcreator>
  <data>
   <variable>ProjectExplorer.Project.ActiveTarget</variable>
@@ -1478,7 +1478,7 @@
     </valuelist>
     <value type="int" key="PE.EnvironmentAspect.Base">2</value>
     <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
-    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Arguments">-I modules examples/1.3/ubuntu-ui-toolkit-gallery/ubuntu-ui-toolkit-gallery.qml</value>
+    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Arguments">-I modules examples/1.2/ubuntu-ui-toolkit-gallery/ubuntu-ui-toolkit-gallery.qml</value>
     <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Executable">qmlscene</value>
     <value type="bool" key="ProjectExplorer.CustomExecutableRunConfiguration.UseTerminal">false</value>
     <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.WorkingDirectory">%{buildDir}</value>
