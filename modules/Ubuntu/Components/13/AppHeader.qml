@@ -182,7 +182,7 @@ Components.StyledItem {
       however will use the latest version (1.3) and a Page that uses an older
       version (1.1) will no longer work.
      */
-    property Object config: null
+    property QtObject config: null
     onConfigChanged: {
         // set internal.newConfig because when we rely on the binding,
         //  the value of newConfig may be updated after executing the code below.

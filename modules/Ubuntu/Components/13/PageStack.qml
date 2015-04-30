@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.4
-import "stack.js" as Stack
+import "../12/stack.js" as Stack
 
 /*!
     \qmltype PageStack

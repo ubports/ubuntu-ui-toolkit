@@ -15,9 +15,7 @@
  */
 
 import QtQuick 2.4
-// FIXME must merge Page10, Page11 and Page13 files
-import Ubuntu.Components 1.0 as Toolkit
-import "pageUtils.js" as Utils
+import Ubuntu.Components 1.2 as Toolkit
 
 /*!
   \internal
@@ -55,7 +53,7 @@ PageTreeNode {
      */
     property Item __customHeaderContents: null
 
-    property Flickable flickable: Utils.getFlickableChild(page)
+    property Flickable flickable: internal.getFlickableChild(page)
 
     /*! \internal */
     onActiveChanged: {
@@ -96,6 +94,35 @@ PageTreeNode {
             value: false
             when: internal.header && !internal.header.useDeprecatedToolbar &&
                   page.tools !== null
+        }
+
+        function isVerticalFlickable(object) {
+            if (object && object.hasOwnProperty("flickableDirection") && object.hasOwnProperty("contentHeight")) {
+                var direction = object.flickableDirection;
+                if ( ((direction === Flickable.AutoFlickDirection) && (object.contentHeight !== object.height) )
+                        || direction === Flickable.VerticalFlick
+                        || direction === Flickable.HorizontalAndVerticalFlick) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /*!
+          Return the first flickable child of this page.
+         */
+        function getFlickableChild(item) {
+            if (item && item.hasOwnProperty("children")) {
+                for (var i=0; i < item.children.length; i++) {
+                    var child = item.children[i];
+                    if (internal.isVerticalFlickable(child)) {
+                        if (child.anchors.top === page.top || child.anchors.fill === page) {
+                            return item.children[i];
+                        }
+                    }
+                }
+            }
+            return null;
         }
     }
 }

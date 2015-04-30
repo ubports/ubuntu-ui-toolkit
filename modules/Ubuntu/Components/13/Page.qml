@@ -45,7 +45,7 @@ PageTreeNode {
         id: headerConfig
     }
 
-    Object {
+    Toolkit13.Object {
         id: internal
 
         property AppHeader header: page.__propagated && page.__propagated.header ? page.__propagated.header : null

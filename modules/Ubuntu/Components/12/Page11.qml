@@ -15,7 +15,6 @@
  */
 
 import QtQuick 2.4
-// FIXME must merge Page10, Page11 and Page13 files
 
 /*! \internal */
 // Documentation in Page.qdoc
@@ -25,7 +24,7 @@ Page10 {
       \qmlproperty PageHeadConfiguration head
      */
     readonly property alias head: headerConfig
-    PageHeadConfiguration11 {
+    PageHeadConfiguration {
         id: headerConfig
     }
 
