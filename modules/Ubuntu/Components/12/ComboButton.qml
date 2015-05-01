@@ -16,7 +16,7 @@
 
 import QtQuick 2.4
 import Ubuntu.Components.Popups 1.0
-import "mathUtils.js" as MathUtils
+import Ubuntu.Components 1.2 as Toolkit
 
 /*!
     \qmltype ComboButton
@@ -161,7 +161,7 @@ import "mathUtils.js" as MathUtils
     \section2 Styling
     The style of the component is defined in \l ComboButtonStyle.
   */
-Button {
+Toolkit.Button {
     id: combo
 
     /*!
@@ -361,7 +361,7 @@ Button {
                 return max;
             }
 
-            return MathUtils.clamp(h, 0, max);
+            return Toolkit.MathUtils.clamp(h, 0, max);
         }
     }
 }

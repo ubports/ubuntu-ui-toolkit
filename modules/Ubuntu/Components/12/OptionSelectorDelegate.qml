@@ -42,7 +42,7 @@
 */
 
 import QtQuick 2.4
-import "ListItems" as ListItem
+import Ubuntu.Components.ListItems 1.0 as ListItem
 import Ubuntu.Components 1.2 as Toolkit
 
 ListItem.Empty {
