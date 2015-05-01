@@ -1,24 +1,24 @@
 module Ubuntu.Components.Pickers
-Picker 0.1 ../12/Pickers/Picker.qml
-PickerDelegate 0.1 ../12/Pickers/PickerDelegate.qml
-Dialer 0.1 ../12/Pickers/Dialer.qml
-DialerHand 0.1 ../12/Pickers/DialerHand.qml
-DatePicker 0.1 ../12/Pickers/DatePicker.qml
-singleton PickerPanel 0.1 ../12/Pickers/PickerPanel.qml
+Picker 0.1 12/Picker.qml
+PickerDelegate 0.1 12/PickerDelegate.qml
+Dialer 0.1 12/Dialer.qml
+DialerHand 0.1 12/DialerHand.qml
+DatePicker 0.1 12/DatePicker.qml
+singleton PickerPanel 0.1 12/PickerPanel.qml
 
 #version 1.0
-Picker 1.0 ../12/Pickers/Picker.qml
-PickerDelegate 1.0 ../12/Pickers/PickerDelegate.qml
-Dialer 1.0 ../12/Pickers/Dialer.qml
-DialerHand 1.0 ../12/Pickers/DialerHand.qml
-DatePicker 1.0 ../12/Pickers/DatePicker.qml
-singleton PickerPanel 1.0 ../12/Pickers/PickerPanel.qml
+Picker 1.0 12/Picker.qml
+PickerDelegate 1.0 12/PickerDelegate.qml
+Dialer 1.0 12/Dialer.qml
+DialerHand 1.0 12/DialerHand.qml
+DatePicker 1.0 12/DatePicker.qml
+singleton PickerPanel 1.0 12/PickerPanel.qml
 
 #################################################
 #version 1.3
-Picker 1.3 ../13/Pickers/Picker.qml
-PickerDelegate 1.3 ../13/Pickers/PickerDelegate.qml
-Dialer 1.3 ../13/Pickers/Dialer.qml
-DialerHand 1.3 ../13/Pickers/DialerHand.qml
-DatePicker 1.3 ../13/Pickers/DatePicker.qml
-singleton PickerPanel 1.3 ../13/Pickers/PickerPanel.qml
+Picker 1.3 13/Picker.qml
+PickerDelegate 1.3 13/PickerDelegate.qml
+Dialer 1.3 13/Dialer.qml
+DialerHand 1.3 13/DialerHand.qml
+DatePicker 1.3 13/DatePicker.qml
+singleton PickerPanel 1.3 13/PickerPanel.qml

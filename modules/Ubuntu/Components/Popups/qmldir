@@ -1,32 +1,32 @@
 module Ubuntu.Components.Popups
 
-Dialog 0.1 ../12/Popups/Dialog.qml
-PopupBase 0.1 ../12/Popups/PopupBase.qml
-Popover 0.1 ../12/Popups/Popover.qml
-SheetBase 0.1 ../12/Popups/SheetBase.qml
-DefaultSheet 0.1 ../12/Popups/DefaultSheet.qml
-ComposerSheet 0.1 ../12/Popups/ComposerSheet.qml
-ActionSelectionPopover 0.1 ../12/Popups/ActionSelectionPopover.qml
+Dialog 0.1 12/Dialog.qml
+PopupBase 0.1 12/PopupBase.qml
+Popover 0.1 12/Popover.qml
+SheetBase 0.1 12/SheetBase.qml
+DefaultSheet 0.1 12/DefaultSheet.qml
+ComposerSheet 0.1 12/ComposerSheet.qml
+ActionSelectionPopover 0.1 12/ActionSelectionPopover.qml
 
-PopupUtils 0.1 ../12/Popups/popupUtils.js
+PopupUtils 0.1 12/popupUtils.js
 
 #version 1.0
-Dialog 1.0 ../12/Popups/Dialog.qml
-PopupBase 1.0 ../12/Popups/PopupBase.qml
-Popover 1.0 ../12/Popups/Popover.qml
-SheetBase 1.0 ../12/Popups/SheetBase.qml
-DefaultSheet 1.0 ../12/Popups/DefaultSheet.qml
-ComposerSheet 1.0 ../12/Popups/ComposerSheet.qml
-ActionSelectionPopover 1.0 ../12/Popups/ActionSelectionPopover.qml
+Dialog 1.0 12/Dialog.qml
+PopupBase 1.0 12/PopupBase.qml
+Popover 1.0 12/Popover.qml
+SheetBase 1.0 12/SheetBase.qml
+DefaultSheet 1.0 12/DefaultSheet.qml
+ComposerSheet 1.0 12/ComposerSheet.qml
+ActionSelectionPopover 1.0 12/ActionSelectionPopover.qml
 
-PopupUtils 1.0 ../12/Popups/popupUtils.js
+PopupUtils 1.0 12/popupUtils.js
 
 #################################################
 #version 1.3
-Dialog 1.3 ../13/Popups/Dialog.qml
-PopupBase 1.3 ../13/Popups/PopupBase.qml
-Popover 1.3 ../13/Popups/Popover.qml
-SheetBase 1.3 ../13/Popups/SheetBase.qml
-DefaultSheet 1.3 ../13/Popups/DefaultSheet.qml
-ComposerSheet 1.3 ../13/Popups/ComposerSheet.qml
-ActionSelectionPopover 1.3 ../13/Popups/ActionSelectionPopover.qml
+Dialog 1.3 13/Dialog.qml
+PopupBase 1.3 13/PopupBase.qml
+Popover 1.3 13/Popover.qml
+SheetBase 1.3 13/SheetBase.qml
+DefaultSheet 1.3 13/DefaultSheet.qml
+ComposerSheet 1.3 13/ComposerSheet.qml
+ActionSelectionPopover 1.3 13/ActionSelectionPopover.qml
