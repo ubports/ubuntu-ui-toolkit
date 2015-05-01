@@ -2,8 +2,8 @@ TEMPLATE=aux
 
 CONFIG+=ubuntu_qml_module
 
-uri = Ubuntu.Components.Themes.Ambiance.1.3
-installPath = $$[QT_INSTALL_QML]/$$replace(uri, \\., /)
+uri = Ubuntu.Components.Themes.Ambiance
+installPath = $$[QT_INSTALL_QML]/$$replace(uri, \\., /)/1.3
 
 QML_FILES = *.qml
 
