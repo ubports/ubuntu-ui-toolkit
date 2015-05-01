@@ -641,7 +641,7 @@ private Q_SLOTS:
         QTest::newRow("Fall back to 1.3")
                 << "StyledItemFallback.qml"
                 << "version1.3"
-                << 19 << 1 << "QML StyledItem: Theme 'TestModule.TestTheme' has no 'TestStyle.qml' style for version 1.0, use version 1.2";
+                << 19 << 1 << "QML StyledItem: Theme 'TestModule.TestTheme' has no 'TestStyle.qml' style for version 1.0, fall back to version 1.3.";
         QTest::newRow("App theme fallback to 1.3")
                 << "StyledItemAppThemeFallback.qml"
                 << "version1.3"
@@ -668,6 +668,16 @@ private Q_SLOTS:
         // NOTE TestTheme resets the theme therefore the theming will look for the tested style under Ambiance theme
         // which will cause a warning; therefore we mark the warning to be ignored
         ThemeTestCase::ignoreWarning(document, 19, 1, "QML StyledItem: Warning: Style TestStyle.qml not found in theme Ubuntu.Components.Themes.Ambiance");
+    }
+
+    void test_deprecated_theme()
+    {
+        qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "");
+        qputenv("XDG_DATA_DIRS", "./themes:./themes/TestModule:" + m_themesPath.toLatin1());
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase("DeprecatedTheme.qml"));
+        // NOTE TestTheme resets the theme therefore the theming will look for the tested style version under Ambiance theme
+        // which will cause a warning; therefore we mark the warning to be ignored
+        ThemeTestCase::ignoreWarning("DeprecatedTheme.qml", 19, 1, "QML StyledItem: Theme 'Ubuntu.Components.Themes.Ambiance' has no 'OptionSelectorStyle.qml' style for version 1.0, fall back to version 1.3.");
     }
 };
 

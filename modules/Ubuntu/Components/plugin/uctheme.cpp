@@ -175,37 +175,34 @@ QStringList themeSearchPath()
     return result;
 }
 
-QUrl pathFromThemeName(QString themeName, bool *sharedTheme)
+UCTheme::ThemeRecord pathFromThemeName(QString themeName)
 {
+    // the first entry from pathList is the app's current folder
+    UCTheme::ThemeRecord record(themeName, QUrl(), false, false);
     themeName.replace('.', '/');
     QStringList pathList = themeSearchPath();
-    // the first entry from pathList is the app's current folder
-    if (sharedTheme) {
-        (*sharedTheme) = false;
-    }
     Q_FOREACH(const QString &path, pathList) {
         QString themeFolder = THEME_FOLDER_FORMAT.arg(path, themeName);
         // QUrl needs a trailing slash to understand it's a directory
         QString absoluteThemeFolder = QDir(themeFolder).absolutePath().append('/');
         if (QDir(absoluteThemeFolder).exists()) {
-            return QUrl::fromLocalFile(absoluteThemeFolder);
+            record.deprecated = QFile::exists(absoluteThemeFolder + "deprecated");
+            record.path = QUrl::fromLocalFile(absoluteThemeFolder);
+            break;
         }
         // the others are shared themes all
-        if (sharedTheme) {
-            (*sharedTheme) = true;
-        }
+        record.shared = true;
     }
-    return QUrl();
+    return record;
 }
 
-QString parentThemeName(const QString& themeName)
+QString parentThemeName(const UCTheme::ThemeRecord& themePath)
 {
     QString parentTheme;
-    QUrl themePath = pathFromThemeName(themeName, Q_NULLPTR);
     if (!themePath.isValid()) {
-        qWarning() << qPrintable(UbuntuI18n::instance().tr("Theme not found: \"%1\"").arg(themeName));
+        qWarning() << qPrintable(UbuntuI18n::instance().tr("Theme not found: \"%1\"").arg(themePath.name));
     } else {
-        QFile file(themePath.resolved(PARENT_THEME_FILE).toLocalFile());
+        QFile file(themePath.path.resolved(PARENT_THEME_FILE).toLocalFile());
         if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
             QTextStream in(&file);
             parentTheme = in.readLine();
@@ -408,12 +405,11 @@ void UCTheme::updateThemePaths()
 
     QString themeName = name();
     while (!themeName.isEmpty()) {
-        bool sharedTheme;
-        QUrl themePath = pathFromThemeName(themeName, &sharedTheme);
+        ThemeRecord themePath = pathFromThemeName(themeName);
         if (themePath.isValid()) {
-            m_themePaths.append(ThemeRecord(themePath, sharedTheme));
+            m_themePaths.append(themePath);
         }
-        themeName = parentThemeName(themeName);
+        themeName = parentThemeName(themePath);
     }
 }
 
@@ -570,47 +566,64 @@ QUrl UCTheme::styleUrl(const QString& styleName, quint16 version, bool *isFallba
         version = LATEST_UITK_VERSION;
     }
     Q_FOREACH (const ThemeRecord &themePath, m_themePaths) {
-        // check versioned style first
         QUrl styleUrl;
-        // we stop at version 1.2 as we do not have support for earlier themes anymore.
-        for (int minor = MINOR_VERSION(version); minor >= 2; minor--) {
-            QString versionedName = QStringLiteral("%1.%2/%3").arg(MAJOR_VERSION(version)).arg(minor).arg(styleName);
-            styleUrl = themePath.path.resolved(versionedName);
+        // if the theme is deprecated, means we have a non-versioned theme
+        // there should be only SuruGradient falling into this category
+        if (themePath.deprecated) {
+            // we consider only non-versioned styles here
             if (debugLog) {
-                qDebug() << "LOOKUP" << styleUrl.toString() << "VALID?" << styleUrl.isValid() << "LOCALFILE:" << styleUrl.toLocalFile();
+                qDebug() << "LOADING DEPRECATED STYLE" << styleName;
+                qDebug() << "FROM" << themePath.name << "PATH" << themePath.path;
             }
+            if (isFallback) {
+                (*isFallback) = false;
+            }
+            styleUrl = themePath.path.resolved(styleName);
             if (styleUrl.isValid() && QFile::exists(styleUrl.toLocalFile())) {
-                if (debugLog) {
-                    qDebug() << "STYLE FOUND";
-                }
                 return styleUrl;
             }
-        }
+        } else {
+            // check versioned styles first
+            // we stop at version 1.2 as we do not have support for earlier themes anymore.
+            for (int minor = MINOR_VERSION(version); minor >= 2; minor--) {
+                QString versionedName = QStringLiteral("%1.%2/%3").arg(MAJOR_VERSION(version)).arg(minor).arg(styleName);
+                styleUrl = themePath.path.resolved(versionedName);
+                if (debugLog) {
+                    qDebug() << "LOOKUP" << styleUrl.toString() << "VALID?" << styleUrl.isValid() << "LOCALFILE:" << styleUrl.toLocalFile();
+                }
+                if (styleUrl.isValid() && QFile::exists(styleUrl.toLocalFile())) {
+                    if (debugLog) {
+                        qDebug() << "STYLE FOUND";
+                    }
+                    return styleUrl;
+                }
+            }
 
-        // if we get here, that means we haven't got a shared theme or the shared theme is broken
-        // themePath.second specifies whether the theme is shared or not
-        if (!themePath.shared) {
-            // we can load unversioned application styles
-            styleUrl = themePath.path.resolved(styleName);
-            if (debugLog) {
-                qDebug() << "LOOKUP IN APP STYLE" << styleUrl.toString();
-            }
-            if (styleUrl.isValid() && QFile::exists(styleUrl.toLocalFile())) {
+            // if we get here, that means we haven't got a shared theme or the shared theme is broken
+            // themePath.second specifies whether the theme is shared or not
+            if (!themePath.shared) {
+                // we can load unversioned application styles
+                styleUrl = themePath.path.resolved(styleName);
                 if (debugLog) {
-                    qDebug() << "APP STYLE FOUND";
+                    qDebug() << "LOOKUP IN APP STYLE" << styleUrl.toString();
                 }
-                // not a fallback theme loading
-                if (isFallback) {
-                    (*isFallback) = false;
+                if (styleUrl.isValid() && QFile::exists(styleUrl.toLocalFile())) {
+                    if (debugLog) {
+                        qDebug() << "APP STYLE FOUND";
+                    }
+                    // not a fallback theme loading
+                    if (isFallback) {
+                        (*isFallback) = false;
+                    }
+                    return styleUrl;
                 }
-                return styleUrl;
             }
-        }
-        if (debugLog) {
-            qDebug() << "STYLE NOT FOUND," << themePath.path.toString() << "IS SHARED?" << themePath.shared;
-            styleUrl = themePath.path.resolved(styleName);
-            qDebug() << "TRY UNVERSIONED STYLE" << styleUrl.toString() << styleUrl.toLocalFile() << "VALID?" << styleUrl.isValid();
-            qDebug() << "UNVERSIONED FILE EXISTS?" << QFile::exists(styleUrl.toLocalFile());
+            if (debugLog) {
+                qDebug() << "STYLE NOT FOUND," << themePath.path.toString() << "IS SHARED?" << themePath.shared;
+                styleUrl = themePath.path.resolved(styleName);
+                qDebug() << "TRY UNVERSIONED STYLE" << styleUrl.toString() << styleUrl.toLocalFile() << "VALID?" << styleUrl.isValid();
+                qDebug() << "UNVERSIONED FILE EXISTS?" << QFile::exists(styleUrl.toLocalFile());
+            }
         }
     }
 
@@ -690,8 +703,9 @@ QQmlComponent* UCTheme::createStyleComponent(const QString& styleName, QObject* 
             QUrl url = styleUrl(styleName, version, &fallback);
             if (url.isValid()) {
                 if (fallback) {
-                    qmlInfo(parent) << QStringLiteral("Theme '%1' has no '%2' style for version %3.%4, use version 1.2")
-                                       .arg(name()).arg(styleName).arg(MAJOR_VERSION(version)).arg(MINOR_VERSION(version));
+                    qmlInfo(parent) << QStringLiteral("Theme '%1' has no '%2' style for version %3.%4, fall back to version %5.%6.")
+                                       .arg(name()).arg(styleName).arg(MAJOR_VERSION(version)).arg(MINOR_VERSION(version))
+                                       .arg(MAJOR_VERSION(LATEST_UITK_VERSION)).arg(MINOR_VERSION(LATEST_UITK_VERSION));
                 }
                 component = new QQmlComponent(engine, url, QQmlComponent::PreferSynchronous, parent);
                 if (component->isError()) {

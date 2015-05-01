@@ -5,6 +5,7 @@ uri = Ubuntu.Components.Themes.SuruGradient
 installPath = $$[QT_INSTALL_QML]/$$replace(uri, \\., /)
 
 PARENT_THEME_FILE = parent_theme
+DEPRECATED_FILE = deprecated
 QMLDIR_FILE = qmldir
 QML_FILES = *.qml
 ARTWORK_FILES += artwork/*.png \
@@ -13,6 +14,9 @@ ARTWORK_FILES += artwork/*.png \
 
 parent_theme_file.installPath = $$installPath
 parent_theme_file.files = $$PARENT_THEME_FILE
+
+deprecated_file.installPath = $$installPath
+deprecated_file.files = $$DEPRECATED_FILE
 
 qmldir_file.installPath = $$installPath
 qmldir_file.files = $$QMLDIR_FILE
@@ -24,4 +28,4 @@ artwork_files.installPath = $$installPath/artwork
 artwork_files.files = $$ARTWORK_FILES
 
 
-UBUNTU_QML_MODULE_FILES += parent_theme_file qmldir_file qml_files artwork_files
+UBUNTU_QML_MODULE_FILES += parent_theme_file deprecated_file qmldir_file qml_files artwork_files
