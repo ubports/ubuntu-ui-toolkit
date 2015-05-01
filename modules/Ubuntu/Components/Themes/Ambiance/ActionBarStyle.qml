@@ -19,11 +19,21 @@ import Ubuntu.Components.Popups 1.0
 //import Ubuntu.Components.Styles 1.2 as Style
 
 Item {
-    width: actionsContainer.width
-    height: actionsContainer.height
+    id: actionBarStyle
+    //FIXME TIM: margins? no
+
+    implicitWidth: actionsContainer.implicitWidth
+    implicitHeight: units.gu(5) //actionsContainer.height
+
+    property real buttonWidth: units.gu(4)
 
     Row {
         id: actionsContainer
+
+//        height: parent.height
+
+        //auto
+//        implicitWidth: (numberOfSlots.used + numberOfSlots.overflow) * actionBarStyle.buttonWidth
 
         property var visibleActions: getVisibleActions(styledItem.actions)
         function getVisibleActions(actions) {
@@ -40,9 +50,6 @@ Item {
         QtObject {
             id: numberOfSlots
             property int requested: actionsContainer.visibleActions.length
-//            property int left: tabsButton.visible || backButton.visible ||
-//                               customBackButton.visible ? 1 : 0
-//            property int right: headerStyle.maximumNumberOfActions - left
             property int available: styledItem.numberOfSlots
             property int overflow: actionsOverflowButton.visible ? 1 : 0
             property int used: Math.min(available - overflow, requested)
@@ -50,14 +57,16 @@ Item {
 
         // FIXME TIM: anchors
         anchors {
-            top: parent.top
+            fill: parent
+//            top: parent.top
+//            bottom: parent.bottom
 //            right: rightAnchor.left
-            right: parent.right
-            rightMargin: actionsContainer.width > 0 ? units.gu(1) : 0
+//            right: parent.right
+//            rightMargin: actionsContainer.width > 0 ? units.gu(1) : 0
         }
-        width: childrenRect.width
+//        width: childrenRect.width
 //        height: headerStyle.contentHeight
-        height: units.gu(5)
+//        height: units.gu(5)
 
         Repeater {
             model: numberOfSlots.used
@@ -67,7 +76,7 @@ Item {
                 objectName: action.objectName + "_header_button"
                 action: actionsContainer.visibleActions[index]
 //                color: headerStyle.buttonColor
-                color: "navy"
+//                color: "navy"
 
                 // FIXME TIM: instead of using state, add delegate property later
 //                state: styledItem.config.preset === "select" ?
@@ -84,8 +93,6 @@ Item {
             // miscalculation of actionsContainer.width. Fixes bug #1408481.
             onVisibleChanged: if (!visible) x = 0
             iconName: "contextual-menu"
-            color: "pink"
-            height: actionsContainer.height
             onTriggered: PopupUtils.open(actionsOverflowPopoverComponent, actionsOverflowButton)
 
             Component {

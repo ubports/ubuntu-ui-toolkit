@@ -23,24 +23,28 @@ import Ubuntu.Components 1.3
     \ingroup ubuntu
     \brief Show a row of buttons that trigger actions.
 
+
+
     Examples: TODO
 */
 StyledItem {
     id: bar
 
-
     style: theme.createStyleComponent("ActionBarStyle.qml", bar)
 
+
 //    //TODO: set implicit width and height (from style)
-//    Rectangle {
-//        anchors.fill: parent
-//        color: "lightgreen"
+    Rectangle {
+        anchors.fill: parent
+        color: "lightgreen"
+        opacity: 0.2
+        border.width: 1
+    }
 
-//        border.width: 2
-//    }
-
-    implicitWidth: 200
-    implicitHeight: 80
+//    width: 200
+//    height: 80
+//    implicitWidth: 200
+//    implicitHeight: 80
 
     /*
       The actions to display in the bar.

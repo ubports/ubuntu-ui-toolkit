@@ -19,8 +19,28 @@ import Ubuntu.Test 1.0
 import Ubuntu.Components 1.3
 
 Item {
+    id: root
     width: 400
     height: 600
+
+    property list<Action> actionList:  [
+        Action {
+            iconName: "alarm-clock"
+            text: "Tick tock"
+        },
+        Action {
+            iconName: "appointment"
+            text: "Appointment"
+        },
+        Action {
+            iconName: "attachment"
+            text: "Attach"
+        },
+        Action {
+            iconName: "contact"
+            text: "Contact"
+        }
+    ]
 
     Column {
         anchors {
@@ -30,39 +50,44 @@ Item {
         }
         height: childrenRect.height
 
-        ActionBar {
-            anchors {
-                right: parent.right
-            }
-            numberOfSlots: 2
-            actions: [
-                Action {
-                    iconName: "alarm-clock"
-                    text: "Tick tock"
-                },
-                Action {
-                    iconName: "appointment"
-                    text: "Appointment"
-                },
-                Action {
-                    iconName: "attachment"
-                    text: "Attach"
-                },
-                Action {
-                    iconName: "contact"
-                    text: "Contact"
+        Repeater {
+            model: 7
+            Item {
+                width: parent.width
+                height: childrenRect.height
+
+                Label {
+                    anchors {
+                        left: parent.left
+                        verticalCenter: parent.verticalCenter
+                    }
+
+                    text: "" + index + " slot(s):"
                 }
 
-            ]
+                ActionBar {
+                    anchors.right: parent.right
+                    numberOfSlots: index
+                    actions: root.actionList
+                }
+            }
         }
+
+        //        ActionBar {
+        ////            anchors {
+        ////                right: parent.right
+        ////            }
+        //            numberOfSlots: 3
+        //            actions: root.actionList
+        //        }
     }
 
-//    UbuntuTestCase {
-//        id: testCase
-//        name: "ActionBarApi"
-//        when: windowShown
+    //    UbuntuTestCase {
+    //        id: testCase
+    //        name: "ActionBarApi"
+    //        when: windowShown
 
-//        function init() {
-//        }
-//    }
+    //        function init() {
+    //        }
+    //    }
 }

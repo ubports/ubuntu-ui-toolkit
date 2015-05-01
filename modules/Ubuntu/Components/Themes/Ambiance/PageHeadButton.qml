@@ -20,6 +20,13 @@ import Ubuntu.Components 1.3
 AbstractButton {
     id: button
 
+    Rectangle {
+        anchors.fill: parent
+        color: "transparent"
+        border.width: 1
+        border.color: "green"
+    }
+
     property real iconWidth: units.gu(2)
     property real iconHeight: iconWidth
 
