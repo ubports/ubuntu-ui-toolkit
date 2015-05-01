@@ -2,7 +2,7 @@ TEMPLATE = aux
 
 CONFIG+=ubuntu_qml_module
 
-uri = Ubuntu.Components.12
+uri = Ubuntu.Components.Popups.13
 installPath = $$[QT_INSTALL_QML]/$$replace(uri, \\., /)
 
 qml_files.installPath = $$installPath

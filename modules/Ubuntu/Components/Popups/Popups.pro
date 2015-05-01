@@ -1,13 +1,5 @@
-TEMPLATE=aux
+TEMPLATE=subdirs
 
-CONFIG+=ubuntu_qml_module
-
-uri = Ubuntu.Components.Popups
-installPath = $$[QT_INSTALL_QML]/$$replace(uri, \\., /)
-
-# qmldir file
-qmldir_file.installPath = $$installPath
-qmldir_file.files = qmldir
-
-UBUNTU_QML_MODULE_FILES += qmldir_file
-
+SUBDIRS += PopupModule.pro \
+           12 \
+           13

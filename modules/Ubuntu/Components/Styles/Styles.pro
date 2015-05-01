@@ -22,4 +22,3 @@ artwork_files.installPath = $$installPath/artwork
 artwork_files.files = $$system(find artwork -type f)
 
 UBUNTU_QML_MODULE_FILES += qmldir_file qml_files js_files artwork_files
-
