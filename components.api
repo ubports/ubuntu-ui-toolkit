@@ -30,7 +30,7 @@ CheckBox 0.1 1.0
 AbstractButton
     property bool checked
 ComboButton 1.1
-Button
+Toolkit.Button
     property bool expanded
     property real collapsedHeight
     property real expandedHeight
