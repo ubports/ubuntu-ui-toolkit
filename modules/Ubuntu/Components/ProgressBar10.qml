@@ -64,5 +64,6 @@ AnimatedItem {
     */
     property real value: 0.5
 
+    theme.version: Ubuntu.toolkitVersion
     style: theme.createStyleComponent("ProgressBarStyle.qml", progressBar)
 }

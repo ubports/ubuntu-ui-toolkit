@@ -155,4 +155,6 @@ Toolkit.StyledItem {
             node.parentNode = internal.getParentPageTreeNode(node);
         }
     }
+
+    theme.version: Toolkit.Ubuntu.toolkitVersion
 }

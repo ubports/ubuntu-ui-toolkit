@@ -135,6 +135,7 @@ Panel {
         property bool opened: toolbar.opened
         property bool animating: toolbar.animating
 
+        theme.version: Toolkit.Ubuntu.toolkitVersion
         style: theme.createStyleComponent("ToolbarStyle.qml", background)
     }
 

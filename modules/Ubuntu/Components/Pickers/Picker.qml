@@ -159,6 +159,7 @@ StyledItem {
     implicitHeight: units.gu(20)
     activeFocusOnPress: true
 
+    theme.version: Ubuntu.toolkitVersion
     style: theme.createStyleComponent("PickerStyle.qml", picker)
 
     /*! \internal */

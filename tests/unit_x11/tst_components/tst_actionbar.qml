@@ -59,13 +59,14 @@ Item {
                 Label {
                     anchors {
                         left: parent.left
-                        verticalCenter: parent.verticalCenter
+                        verticalCenter: bar.verticalCenter
                     }
 
                     text: "" + index + " slot(s):"
                 }
 
                 ActionBar {
+                    id: bar
                     anchors.right: parent.right
                     numberOfSlots: index
                     actions: root.actionList

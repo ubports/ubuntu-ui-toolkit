@@ -15,8 +15,6 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components.Themes.Ambiance 0.1
 
 Item {
-    Component.onCompleted: console.log("PARENT")
 }
