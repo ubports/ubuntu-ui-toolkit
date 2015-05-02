@@ -105,7 +105,7 @@ private:
     void init();
     void updateEnginePaths();
     void updateThemePaths();
-    QUrl styleUrl(const QString& styleName, quint16 version, bool *isFallback = NULL, bool debugLog = false);
+    QUrl styleUrl(const QString& styleName, quint16 version, bool *isFallback = NULL);
     void loadPalette(bool notify = true);
 
     class PaletteConfig

@@ -187,11 +187,10 @@ UCTheme::ThemeRecord pathFromThemeName(QString themeName)
         QString absoluteThemeFolder = QDir(themeFolder).absolutePath().append('/');
         if (QDir(absoluteThemeFolder).exists()) {
             record.deprecated = QFile::exists(absoluteThemeFolder + "deprecated");
+            record.shared = QFile::exists(absoluteThemeFolder + "qmldir");
             record.path = QUrl::fromLocalFile(absoluteThemeFolder);
             break;
         }
-        // the others are shared themes all
-        record.shared = true;
     }
     return record;
 }
@@ -554,12 +553,9 @@ void UCTheme::resetPalette()
     setPalette(NULL);
 }
 
-QUrl UCTheme::styleUrl(const QString& styleName, quint16 version, bool *isFallback, bool debugLog)
+QUrl UCTheme::styleUrl(const QString& styleName, quint16 version, bool *isFallback)
 {
     if (version < BUILD_VERSION(1, 2)) {
-        if (debugLog) {
-            qDebug() << "FALLBACK to 1.3";
-        }
         if (isFallback) {
             (*isFallback) = true;
         }
@@ -571,10 +567,6 @@ QUrl UCTheme::styleUrl(const QString& styleName, quint16 version, bool *isFallba
         // there should be only SuruGradient falling into this category
         if (themePath.deprecated) {
             // we consider only non-versioned styles here
-            if (debugLog) {
-                qDebug() << "LOADING DEPRECATED STYLE" << styleName;
-                qDebug() << "FROM" << themePath.name << "PATH" << themePath.path;
-            }
             if (isFallback) {
                 (*isFallback) = false;
             }
@@ -588,12 +580,10 @@ QUrl UCTheme::styleUrl(const QString& styleName, quint16 version, bool *isFallba
             for (int minor = MINOR_VERSION(version); minor >= 2; minor--) {
                 QString versionedName = QStringLiteral("%1.%2/%3").arg(MAJOR_VERSION(version)).arg(minor).arg(styleName);
                 styleUrl = themePath.path.resolved(versionedName);
-                if (debugLog) {
-                    qDebug() << "LOOKUP" << styleUrl.toString() << "VALID?" << styleUrl.isValid() << "LOCALFILE:" << styleUrl.toLocalFile();
-                }
                 if (styleUrl.isValid() && QFile::exists(styleUrl.toLocalFile())) {
-                    if (debugLog) {
-                        qDebug() << "STYLE FOUND";
+                    //reset fallback warning if the theme si not shared
+                    if (isFallback && !themePath.shared) {
+                        (*isFallback) = false;
                     }
                     return styleUrl;
                 }
@@ -604,25 +594,13 @@ QUrl UCTheme::styleUrl(const QString& styleName, quint16 version, bool *isFallba
             if (!themePath.shared) {
                 // we can load unversioned application styles
                 styleUrl = themePath.path.resolved(styleName);
-                if (debugLog) {
-                    qDebug() << "LOOKUP IN APP STYLE" << styleUrl.toString();
-                }
                 if (styleUrl.isValid() && QFile::exists(styleUrl.toLocalFile())) {
-                    if (debugLog) {
-                        qDebug() << "APP STYLE FOUND";
-                    }
                     // not a fallback theme loading
                     if (isFallback) {
                         (*isFallback) = false;
                     }
                     return styleUrl;
                 }
-            }
-            if (debugLog) {
-                qDebug() << "STYLE NOT FOUND," << themePath.path.toString() << "IS SHARED?" << themePath.shared;
-                styleUrl = themePath.path.resolved(styleName);
-                qDebug() << "TRY UNVERSIONED STYLE" << styleUrl.toString() << styleUrl.toLocalFile() << "VALID?" << styleUrl.isValid();
-                qDebug() << "UNVERSIONED FILE EXISTS?" << QFile::exists(styleUrl.toLocalFile());
             }
         }
     }
@@ -716,7 +694,6 @@ QQmlComponent* UCTheme::createStyleComponent(const QString& styleName, QObject* 
             } else {
                 qmlInfo(parent) <<
                    UbuntuI18n::instance().tr(QString("Warning: Style %1 not found in theme %2").arg(styleName).arg(name()));
-                styleUrl(styleName, version, &fallback, true);
             }
         }
     }
