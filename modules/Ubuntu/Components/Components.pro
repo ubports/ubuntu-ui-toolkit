@@ -7,7 +7,7 @@ SUBDIRS += ListItems \
            Styles    \
            plugin    \
            Themes    \
-           10        \
-           11        \
-           12        \
-           13
+           1.0       \
+           1.1       \
+           1.2       \
+           1.3

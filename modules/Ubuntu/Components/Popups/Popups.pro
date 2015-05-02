@@ -1,5 +1,5 @@
 TEMPLATE=subdirs
 
 SUBDIRS += PopupModule.pro \
-           12 \
-           13
+           1.2 \
+           1.3

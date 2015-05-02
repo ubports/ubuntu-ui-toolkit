@@ -1,4 +1,4 @@
 TEMPLATE=subdirs
 
 SUBDIRS += StylesModule.pro \
-           12
+           1.2
