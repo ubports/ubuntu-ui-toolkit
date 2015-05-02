@@ -642,9 +642,13 @@ private Q_SLOTS:
                 << "StyledItemFallback.qml"
                 << "version1.3"
                 << 19 << 1 << "QML StyledItem: Theme 'TestModule.TestTheme' has no 'TestStyle.qml' style for version 1.0, fall back to version 1.3.";
-        QTest::newRow("App theme fallback to 1.3")
-                << "StyledItemAppThemeFallback.qml"
+        QTest::newRow("App theme versioned")
+                << "StyledItemAppThemeVersioned.qml"
                 << "version1.3"
+                << 0 << 0 << "";
+        QTest::newRow("App theme fallback to non-versioned")
+                << "StyledItemAppThemeFallback.qml"
+                << ""
                 << 0 << 0 << "";
     }
     void test_theme_versions()

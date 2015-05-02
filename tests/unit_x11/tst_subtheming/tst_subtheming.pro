@@ -30,6 +30,7 @@ OTHER_FILES += \
     StyledItemV13.qml \
     StyledItemFallback.qml \
     StyledItemAppThemeFallback.qml \
-    DeprecatedTheme.qml
+    DeprecatedTheme.qml \
+    StyledItemAppThemeVersioned.qml
 
 

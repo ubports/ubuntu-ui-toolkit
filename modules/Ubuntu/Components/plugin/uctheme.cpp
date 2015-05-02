@@ -555,52 +555,43 @@ void UCTheme::resetPalette()
 
 QUrl UCTheme::styleUrl(const QString& styleName, quint16 version, bool *isFallback)
 {
-    if (version < BUILD_VERSION(1, 2)) {
-        if (isFallback) {
-            (*isFallback) = true;
-        }
-        version = LATEST_UITK_VERSION;
+    if (isFallback) {
+        (*isFallback) = false;
     }
     Q_FOREACH (const ThemeRecord &themePath, m_themePaths) {
         QUrl styleUrl;
-        // if the theme is deprecated, means we have a non-versioned theme
-        // there should be only SuruGradient falling into this category
+        /*
+         * There are two cases where we have to deal with non-versioned styles: application
+         * themes made for the previous theming and deprecated themes. For shared themes,
+         * we have to check the fallback case.
+         */
+        quint16 styleVersion = version;
         if (themePath.deprecated) {
-            // we consider only non-versioned styles here
-            if (isFallback) {
-                (*isFallback) = false;
+            styleVersion = 0;
+        }
+        if (themePath.shared && (version < BUILD_VERSION(1, 2))) {
+            styleVersion = LATEST_UITK_VERSION;
+        }
+
+        // loop through the versions to see if we have one matching
+        // we stop at version 1.2 as we do not have support for earlier themes anymore.
+        for (int minor = MINOR_VERSION(styleVersion); minor >= 2; minor--) {
+            QString versionedName = QStringLiteral("%1.%2/%3").arg(MAJOR_VERSION(styleVersion)).arg(minor).arg(styleName);
+            styleUrl = themePath.path.resolved(versionedName);
+            if (styleUrl.isValid() && QFile::exists(styleUrl.toLocalFile())) {
+                // set fallback warning if the theme is shared
+                if (isFallback && themePath.shared && (version != styleVersion)) {
+                    (*isFallback) = true;
+                }
+                return styleUrl;
             }
+        }
+
+        // if we don't get any style, get the non-versioned ones for non-shared and deprecated styles
+        if (!themePath.shared || themePath.deprecated) {
             styleUrl = themePath.path.resolved(styleName);
             if (styleUrl.isValid() && QFile::exists(styleUrl.toLocalFile())) {
                 return styleUrl;
-            }
-        } else {
-            // check versioned styles first
-            // we stop at version 1.2 as we do not have support for earlier themes anymore.
-            for (int minor = MINOR_VERSION(version); minor >= 2; minor--) {
-                QString versionedName = QStringLiteral("%1.%2/%3").arg(MAJOR_VERSION(version)).arg(minor).arg(styleName);
-                styleUrl = themePath.path.resolved(versionedName);
-                if (styleUrl.isValid() && QFile::exists(styleUrl.toLocalFile())) {
-                    //reset fallback warning if the theme si not shared
-                    if (isFallback && !themePath.shared) {
-                        (*isFallback) = false;
-                    }
-                    return styleUrl;
-                }
-            }
-
-            // if we get here, that means we haven't got a shared theme or the shared theme is broken
-            // themePath.second specifies whether the theme is shared or not
-            if (!themePath.shared) {
-                // we can load unversioned application styles
-                styleUrl = themePath.path.resolved(styleName);
-                if (styleUrl.isValid() && QFile::exists(styleUrl.toLocalFile())) {
-                    // not a fallback theme loading
-                    if (isFallback) {
-                        (*isFallback) = false;
-                    }
-                    return styleUrl;
-                }
             }
         }
     }
