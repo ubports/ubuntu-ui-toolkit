@@ -29,6 +29,8 @@ OTHER_FILES += \
     StyledItemV12.qml \
     StyledItemV13.qml \
     StyledItemFallback.qml \
-    StyledItemAppThemeFallback.qml
+    StyledItemAppThemeFallback.qml \
+    DeprecatedTheme.qml \
+    StyledItemAppThemeVersioned.qml
 
 
