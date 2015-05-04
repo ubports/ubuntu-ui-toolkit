@@ -15,12 +15,12 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.0 as Toolkit10
+// FIXME must merge Page10, Page11 and Page13 files
 import Ubuntu.Components 1.1 as Toolkit11
 
 /*! \internal */
 // Documentation in Page.qdoc
-Toolkit10.Page {
+Page10 {
     id: page
     /*!
       \qmlproperty PageHeadConfiguration head

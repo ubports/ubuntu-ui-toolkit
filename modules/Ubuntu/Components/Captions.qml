@@ -16,7 +16,7 @@
 
 import QtQuick 2.4
 import QtQuick.Layouts 1.1
-import Ubuntu.Components 1.2
+import Ubuntu.Components 1.3
 
 /*!
   \qmltype Captions
@@ -37,7 +37,7 @@ import Ubuntu.Components 1.2
 
   \qml
   import QtQuick 2.4
-  import Ubuntu.Components 1.2
+  import Ubuntu.Components 1.3
 
   ListItem {
       RowLayout {

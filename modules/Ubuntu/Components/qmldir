@@ -94,7 +94,6 @@ ProgressBar 1.1 ProgressBar11.qml
 CrossFadeImage 1.1 CrossFadeImage11.qml
 PullToRefresh 1.1 PullToRefresh.qml
 UbuntuListView 1.1 UbuntuListView11.qml
-internal PageBase Page10.qml
 Page 1.1 Page11.qml
 PageHeadConfiguration 1.1 PageHeadConfiguration11.qml
 PageHeadSections 1.1 PageHeadSections.qml

@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.2 // for Action
+import Ubuntu.Components 1.3 // for Action
 
 /*!
     \qmltype PageHeadState
@@ -29,7 +29,7 @@ import Ubuntu.Components 1.2 // for Action
    enables the user to enter search/input mode:
    \qml
         import QtQuick 2.4
-        import Ubuntu.Components 1.2
+        import Ubuntu.Components 1.3
 
         MainView {
             id: mainView

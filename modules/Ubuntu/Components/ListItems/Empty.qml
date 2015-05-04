@@ -35,7 +35,7 @@ import Ubuntu.Components 1.3
 
     Examples:
     \qml
-        import Ubuntu.Components 1.2
+        import Ubuntu.Components 1.3
         import Ubuntu.Components.ListItems 1.0 as ListItem
 
         Item {
