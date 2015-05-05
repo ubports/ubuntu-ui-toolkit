@@ -1,5 +1,9 @@
 TEMPLATE = subdirs
 
-SUBDIRS += \ 
-    1.2 \
-    1.3
+SUBDIRS += \
+    ubuntu-ui-toolkit-gallery\
+    locale \
+    jokes \
+    unit-converter \
+    calculator \
+    customtheme

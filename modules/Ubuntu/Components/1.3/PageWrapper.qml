@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.4
-import "../12/PageWrapperUtils.js" as Utils
+import "../1.2/PageWrapperUtils.js" as Utils
 
 /*!
     \internal
