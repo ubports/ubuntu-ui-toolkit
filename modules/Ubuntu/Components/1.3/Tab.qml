@@ -138,7 +138,7 @@ PageTreeNode {
       \internal
       */
     property alias __protected: internal
-    Object {
+    Toolkit.Object {
         id: internal
         /*
           Specifies the index of the Tab in Tabs.

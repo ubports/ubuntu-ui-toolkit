@@ -25,7 +25,6 @@ Object 0.1 1.2/Object.qml
 OptionSelector 0.1 1.2/OptionSelector.qml
 OptionSelectorDelegate 0.1 1.2/OptionSelectorDelegate.qml
 Page 0.1 1.2/Page10.qml
-internal PageTreeNode 1.2/PageTreeNode.qml
 PageStack 0.1 1.2/PageStack.qml
 internal Toolbar 1.2/Toolbar.qml
 internal AppHeader 1.2/AppHeader.qml

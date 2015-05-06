@@ -46,7 +46,7 @@ StyledItem {
       The header of the node. Propagates down from the root node.
       This property is DEPRECATED.
      */
-    property AppHeader header: node.__propagated ? node.__propagated.header : null
+    property Item header: node.__propagated ? node.__propagated.header : null
 
     /*!
       \deprecated

@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.4
+import Ubuntu.Components 1.3 as Toolkit
 
 /*!
     \qmltype Tabs
@@ -297,7 +298,7 @@ PageTreeNode {
         }
     }
 
-    Object {
+    Toolkit.Object {
         id: internal
         property AppHeader header: tabs.__propagated ? tabs.__propagated.header : null
 
