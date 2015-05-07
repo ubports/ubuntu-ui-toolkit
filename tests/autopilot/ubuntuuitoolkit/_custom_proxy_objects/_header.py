@@ -65,7 +65,6 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
             return
 
         # Wait showing/hiding animation of the header.
-
         if hasattr(self, 'moving'):
             self.moving.wait_for(False)
 
