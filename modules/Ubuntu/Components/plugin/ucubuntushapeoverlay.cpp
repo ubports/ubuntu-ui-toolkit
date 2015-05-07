@@ -21,6 +21,7 @@
 //     plotting the rendering speed of a scene with an increasing number of overlaid shapes.
 
 #include "ucubuntushapeoverlay.h"
+#include "ucunits.h"
 
 // -- Scene graph shader ---
 
@@ -240,6 +241,8 @@ void UCUbuntuShapeOverlay::updateGeometry(
     const quint32 overlayColor = qIsFinite(invOverlayHeight + invOverlayWidth) ?
         packColor(m_overlayColor) : 0x00000000;
 
+    const qreal dpr = UCUnits::instance().devicePixelRatio();
+
     // Set top row of 3 vertices.
     v[0].position[0] = 0.0f;
     v[0].position[1] = 0.0f;
@@ -255,7 +258,7 @@ void UCUbuntuShapeOverlay::updateGeometry(
     v[0].overlayColor = overlayColor;
     v[1].position[0] = 0.5f * itemSize.width();
     v[1].position[1] = 0.0f;
-    v[1].shapeCoordinate[0] = (0.5f * itemSize.width()) / radius - shapeOffset;
+    v[1].shapeCoordinate[0] = (0.5f * itemSize.width() * dpr) / radius - shapeOffset;
     v[1].shapeCoordinate[1] = shapeOffset;
     v[1].sourceCoordinate[0] = 0.5f * sourceCoordTransform.x() + sourceCoordTransform.z();
     v[1].sourceCoordinate[1] = sourceCoordTransform.w();
@@ -282,7 +285,7 @@ void UCUbuntuShapeOverlay::updateGeometry(
     v[3].position[0] = 0.0f;
     v[3].position[1] = 0.5f * itemSize.height();
     v[3].shapeCoordinate[0] = shapeOffset;
-    v[3].shapeCoordinate[1] = (0.5f * itemSize.height()) / radius - shapeOffset;
+    v[3].shapeCoordinate[1] = (0.5f * itemSize.height() * dpr) / radius - shapeOffset;
     v[3].sourceCoordinate[0] = sourceCoordTransform.z();
     v[3].sourceCoordinate[1] = 0.5f * sourceCoordTransform.y() + sourceCoordTransform.w();
     v[3].sourceCoordinate[2] = sourceMaskTransform.z();
@@ -293,8 +296,8 @@ void UCUbuntuShapeOverlay::updateGeometry(
     v[3].overlayColor = overlayColor;
     v[4].position[0] = 0.5f * itemSize.width();
     v[4].position[1] = 0.5f * itemSize.height();
-    v[4].shapeCoordinate[0] = (0.5f * itemSize.width()) / radius - shapeOffset;
-    v[4].shapeCoordinate[1] = (0.5f * itemSize.height()) / radius - shapeOffset;
+    v[4].shapeCoordinate[0] = (0.5f * itemSize.width() * dpr) / radius - shapeOffset;
+    v[4].shapeCoordinate[1] = (0.5f * itemSize.height() * dpr) / radius - shapeOffset;
     v[4].sourceCoordinate[0] = 0.5f * sourceCoordTransform.x() + sourceCoordTransform.z();
     v[4].sourceCoordinate[1] = 0.5f * sourceCoordTransform.y() + sourceCoordTransform.w();
     v[4].sourceCoordinate[2] = 0.5f * sourceMaskTransform.x() + sourceMaskTransform.z();
@@ -306,7 +309,7 @@ void UCUbuntuShapeOverlay::updateGeometry(
     v[5].position[0] = itemSize.width();
     v[5].position[1] = 0.5f * itemSize.height();
     v[5].shapeCoordinate[0] = shapeOffset;
-    v[5].shapeCoordinate[1] = (0.5f * itemSize.height()) / radius - shapeOffset;
+    v[5].shapeCoordinate[1] = (0.5f * itemSize.height() * dpr) / radius - shapeOffset;
     v[5].sourceCoordinate[0] = sourceCoordTransform.x() + sourceCoordTransform.z();
     v[5].sourceCoordinate[1] = 0.5f * sourceCoordTransform.y() + sourceCoordTransform.w();
     v[5].sourceCoordinate[2] = sourceMaskTransform.x() + sourceMaskTransform.z();
@@ -331,7 +334,7 @@ void UCUbuntuShapeOverlay::updateGeometry(
     v[6].overlayColor = overlayColor;
     v[7].position[0] = 0.5f * itemSize.width();
     v[7].position[1] = itemSize.height();
-    v[7].shapeCoordinate[0] = (0.5f * itemSize.width()) / radius - shapeOffset;
+    v[7].shapeCoordinate[0] = (0.5f * itemSize.width() * dpr) / radius - shapeOffset;
     v[7].shapeCoordinate[1] = shapeOffset;
     v[7].sourceCoordinate[0] = 0.5f * sourceCoordTransform.x() + sourceCoordTransform.z();
     v[7].sourceCoordinate[1] = sourceCoordTransform.y() + sourceCoordTransform.w();
