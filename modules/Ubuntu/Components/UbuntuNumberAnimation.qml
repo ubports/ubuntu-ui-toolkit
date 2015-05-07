@@ -16,7 +16,7 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.2
+import Ubuntu.Components 1.3
 
 /*!
     \qmltype UbuntuNumberAnimation
@@ -29,7 +29,7 @@ import Ubuntu.Components 1.2
 
     \qml
     import QtQuick 2.4
-    import Ubuntu.Components 1.2
+    import Ubuntu.Components 1.3
 
     Rectangle {
         width: 100; height: 100

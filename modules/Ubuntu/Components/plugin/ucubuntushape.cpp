@@ -34,6 +34,7 @@
 #include <QtQuick/QQuickWindow>
 #include <QtQuick/QSGTextureProvider>
 #include <QtQuick/private/qquickimage_p.h>
+#include <QtQuick/private/qsgadaptationlayer_p.h>
 #include <math.h>
 
 // Anti-aliasing distance of the contour in pixels.
@@ -208,6 +209,15 @@ int ShapeMaterial::compare(const QSGMaterial* other) const
         | (m_data.flags & ShapeMaterial::Data::Repeated);
 }
 
+void ShapeMaterial::updateTextures()
+{
+    if (m_data.flags & ShapeMaterial::Data::Textured && m_data.sourceTextureProvider) {
+        if (QSGLayer* texture = qobject_cast<QSGLayer*>(m_data.sourceTextureProvider->texture())) {
+            texture->updateTexture();
+        }
+    }
+}
+
 // --- Scene graph node ---
 
 ShapeNode::ShapeNode()
@@ -215,6 +225,7 @@ ShapeNode::ShapeNode()
     , m_material()
     , m_geometry(attributeSet(), vertexCount, indexCount, indexType)
 {
+    QSGNode::setFlag(UsePreprocess, true);
     memcpy(m_geometry.indexData(), indices(), indexCount * indexTypeSize);
     m_geometry.setDrawingMode(drawingMode);
     m_geometry.setIndexDataPattern(indexDataPattern);
