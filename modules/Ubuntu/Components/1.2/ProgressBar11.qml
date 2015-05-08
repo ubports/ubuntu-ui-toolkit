@@ -16,6 +16,6 @@
 
 import QtQuick 2.4
 
-ProgressBar {
+ProgressBar10 {
     property bool showProgressPercentage: true
 }
