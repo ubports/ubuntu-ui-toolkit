@@ -212,7 +212,7 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
         except dbus.StateNotFoundError:
             try:
                 tab_button = self.get_root_instance().select_single(
-                objectName='tabButton' + str(index))
+                    objectName='tabButton' + str(index))
             except dbus.StateNotFoundError:
                 raise _common.ToolkitException(
                     "Tab button {0} not found.".format(index))
