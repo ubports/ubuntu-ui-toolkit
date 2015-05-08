@@ -65,8 +65,7 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
             return
 
         # Wait showing/hiding animation of the header.
-        if hasattr(self, 'moving'):
-            self.moving.wait_for(False)
+        self.moving.wait_for(False)
 
     @autopilot_logging.log_action(logger.info)
     def switch_to_section_by_index(self, index):
@@ -212,7 +211,7 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
         except dbus.StateNotFoundError:
             try:
                 tab_button = self.get_root_instance().select_single(
-                objectName='tabButton' + str(index))
+                    objectName='tabButton' + str(index))
             except dbus.StateNotFoundError:
                 raise _common.ToolkitException(
                     "Tab button {0} not found.".format(index))
