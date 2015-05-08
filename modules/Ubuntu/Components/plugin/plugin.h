@@ -43,6 +43,7 @@ private Q_SLOTS:
 
 private:
     static QUrl m_baseUrl;
+    void initializeBaseUrl();
     void registerTypesToVersion(const char *uri, int major, int minor);
 };
 #endif // UBUNTU_COMPONENTS_PLUGIN_H

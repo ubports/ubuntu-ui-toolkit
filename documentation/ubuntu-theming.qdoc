@@ -125,7 +125,7 @@
  * Other styles are requested to provide additional \e content elements, which are then
  * positioned by the styled component separately from the main visuals given by the style.
  * A typical example of such a style API is the PullToRefresh component's style:
- * \snippet Styles/PullToRefreshStyle.qml 0
+ * \snippet Styles/1.2/PullToRefreshStyle.qml 0
  * The default style implementation can be found under Ubuntu.Components.Themes.Ambiance
  * theme \l {http://bazaar.launchpad.net/~ubuntu-sdk-team/ubuntu-ui-toolkit/trunk/view/head:/modules/Ubuntu/Components/Themes/Ambiance/PullToRefreshStyle.qml}
  * {PullToRefreshStyle.qml}.

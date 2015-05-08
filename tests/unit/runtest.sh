@@ -62,7 +62,7 @@ function execute_test_cmd {
     # https://bugreports.qt-project.org/browse/QTBUG-36243
 	
     QML2_IMPORT_PATH=${_IMPORT_PATH} UBUNTU_UI_TOOLKIT_THEMES_PATH=${_THEMES_PATH} \
-    ALARM_BACKEND=memory \
+    ALARM_BACKEND=memory SUPPRESS_DEPRECATED_NOTE=yes \
     $_CMD $_ARGS 2>&1 | grep -v 'QFontDatabase: Cannot find font directory'
     RESULT=0
     if [ "x$UITK_TEST_KEEP_RUNNING" != "x1" ]; then
