@@ -217,7 +217,7 @@ AnimatedItem
     property real maximumValue
     property real value
 ProgressBar 1.1
-ProgressBar
+ProgressBar10
     property bool showProgressPercentage
 PullToRefresh 1.1
 StyledItem
