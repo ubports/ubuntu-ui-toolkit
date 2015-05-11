@@ -37,25 +37,31 @@ Style.PageHeadStyle {
      */
     property color titleColor: styledItem.config.foregroundColor
 
+    // FIXME: When the three panel color properties below are removed,
+    //  update unity8/Dash/PageHeader to use the new theming (currently
+    //  in progress) to set these colors.
     /*!
+      \deprecated
       The background color of the tabs panel and the actions overflow panel.
      */
     property color panelBackgroundColor: styledItem.panelColor
 
     /*!
+      \deprecated
       The background color of the tapped item in the panel.
      */
-    property color panelHighlightColor: Theme.palette.selected.background
+    property color panelHighlightColor: theme.palette.selected.background
 
     /*!
+      \deprecated
       The foreground color (icon and text) of actions in the panel.
      */
-    property color panelForegroundColor: Theme.palette.selected.backgroundText
+    property color panelForegroundColor: theme.palette.selected.backgroundText
 
     /*!
       The text color of unselected sections and the section divider.
      */
-    property color sectionColor: Theme.palette.selected.backgroundText
+    property color sectionColor: theme.palette.selected.backgroundText
 
     /*!
       The text color of the selected section.
@@ -65,7 +71,7 @@ Style.PageHeadStyle {
     /*!
       The background color of the pressed section.
      */
-    property color sectionHighlightColor: Theme.palette.selected.background
+    property color sectionHighlightColor: theme.palette.selected.background
 
     implicitHeight: headerStyle.contentHeight + divider.height
 
@@ -100,7 +106,7 @@ Style.PageHeadStyle {
         // backgroundColor is used in the new HeadDividerStyle
         property color backgroundColor: styledItem.dividerColor
 
-        style: Theme.createStyleComponent("HeadDividerStyle.qml", divider)
+        style: theme.createStyleComponent("HeadDividerStyle.qml", divider)
 
         property PageHeadSections sections: styledItem.config.sections
 
