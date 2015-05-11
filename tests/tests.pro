@@ -9,7 +9,3 @@ SUBDIRS += launcher
 SUBDIRS += apicheck
 
 INSTALLS += autopilot_module
-
-check.commands += cd ..;
-check.commands += tests/qmlapicheck.sh || exit 1;
-check.commands += cd tests

@@ -414,15 +414,15 @@ public:
             object->insert("methods", methods);
     }
 
-    void dumpQMLComponent(QObject* qtobject, const QString& qmlTyName, const QString& exportString, bool isSingleton, const QStringList& internalTypes)
+    void dumpQMLComponent(QObject* qtobject, const QString& qmlTyName, const QString& version, const QString& filename, bool isSingleton, const QStringList& internalTypes)
     {
         const QMetaObject *mainMeta = qtobject->metaObject();
         QJsonObject object;
-        QStringList exportStrings(QStringList() << exportString);
+        QStringList exportStrings(QStringList() << QString("%1 %2").arg(qmlTyName).arg(version));
         // Merge objects to get all exported versions of the same type
-        QString id(relocatableModuleUri + qmlTyName);
+        QString id(filename);
         if (json->contains(id)) {
-            object = json->value(relocatableModuleUri + qmlTyName).toObject();
+            object = json->value(id).toObject();
             QJsonArray exports(object["exports"].toArray());
             Q_FOREACH(QJsonValue expor, exports) {
                 exportStrings.append(QString("%1").arg(expor.toString()));
@@ -432,7 +432,6 @@ public:
         exportStrings.sort();
         object.insert("exports", QJsonArray::fromStringList(exportStrings));
         object.insert("prototype", mainMeta->superClass()->className());
-        object.insert("exportMetaObjectRevisions", QJsonArray::fromStringList((QStringList() << exportString.split(".")[1])));
         object.insert("isComposite", true);
         if (isSingleton) {
             object.insert("isCreatable", false);
@@ -454,6 +453,8 @@ public:
         if (internalTypes.contains(prototype))
             writeMetaContent(&object, mainMeta->superClass(), &knownAttributes);
         writeMetaContent(&object, mainMeta, &knownAttributes);
+
+        object["namespace"] = relocatableModuleUri;
         json->insert(id, object);
     }
 
@@ -496,6 +497,7 @@ public:
 
         if (!qmlTypes.isEmpty()) {
             object.insert("exports", QJsonArray::fromStringList(exportStrings));
+            object["namespace"] = qmlTypes.toList()[0]->qmlTypeName().split("/")[0];
 
             if (isUncreatable)
                 object.insert("isCreatable", false);
@@ -640,6 +642,7 @@ private:
 
         QJsonObject object;
         object["prototype"] = e.isFlag() ? "Flag" : "Enum";
+        object["namespace"] = relocatableModuleUri;
 
         QList<QPair<QString, QString> > namesValues;
         for (int index = 0; index < e.keyCount(); ++index) {
@@ -670,8 +673,17 @@ void printUsage(const QString &appName)
 {
     std::cerr << qPrintable(QString(
                                 "Usage: %1 [-v[v]] [-qml] [-json] IMPORT_URI [...IMPORT_URI]\n"
+                                "\n"
+                                "Generate an API description file of one or multiple components.\n"
                                 "Example: %1 Ubuntu.Components\n"
-                                "         %1 --json Ubuntu.DownloadManager").arg(
+                                "         %1 --json Ubuntu.DownloadManager\n"
+                                "\n"
+                                "The following rules apply for inclusion of public API:\n"
+                                "    - Types not declared as internal in qmldir\n"
+                                "    - C++ types exported from a plugin\n"
+                                "    - Properties and functions not prefixed with __ (two underscores)\n"
+                                "    - Members of internal base classes become part of public components\n"
+                                "").arg(
                                 appName)) << std::endl;
 }
 
@@ -950,6 +962,7 @@ int main(int argc, char *argv[])
             script["type"] = "script";
             QJsonArray exports(QJsonArray::fromStringList(scripts.values(nameSpace)));
             script["exports"] = exports;
+            script["namespace"] = pluginImportUri;
             json[nameSpace] = script;
         }
 
@@ -974,12 +987,12 @@ int main(int argc, char *argv[])
             QQmlComponent e(&engine, pluginModulePath + "/" + c.fileName);
             QObject* qtobject(e.create());
             if (!qtobject) {
-                std::cerr << "Failed to instantiate " << qPrintable(c.typeName) << " from " << qPrintable(pluginModulePath + "/" + c.fileName) << std::endl;
+                std::cerr << "Failed to instantiate " << qPrintable(c.typeName) << " from " << qPrintable(e.url().toString()) << std::endl;
                 Q_FOREACH (const QQmlError &error, e.errors())
                     std::cerr << qPrintable(error.toString()) << std::endl;
                 exit(1);
             }
-            dumper.dumpQMLComponent(qtobject, c.typeName, QString("%1 %2").arg(c.typeName).arg(version), c.singleton, internalTypes);
+            dumper.dumpQMLComponent(qtobject, c.typeName, version, e.url().toString(), c.singleton, internalTypes);
         }
     }
 
@@ -999,21 +1012,27 @@ int main(int argc, char *argv[])
             QJsonValue value(json[key]);
             if (value.isObject()) {
                 QJsonObject object(value.toObject());
-                QJsonArray exports(object["exports"].toArray());
-                QStringList exportsSl;
-                Q_FOREACH(QJsonValue expor, exports) {
-                    exportsSl.append(convertToId(expor.toString()));
-                }
+                QStringList exports;
+                Q_FOREACH (const QJsonValue& expor, object["exports"].toArray())
+                    exports.append(expor.toString());
                 // Reverse exports: latest to oldest
-                for(int k = 0; k < (exportsSl.size() / 2); k++)
-                    exportsSl.swap(k, exportsSl.size() - (1 + k));
-                QString sortedExports;
-                if (!exportsSl.isEmpty())
-                    sortedExports = exportsSl.join(" ");
-                else
-                    sortedExports = convertToId(key);
+                for(int k = 0; k < (exports.size() / 2); k++)
+                    exports.swap(k, exports.size() - (1 + k));
+                QStringList sortedExports;
+                if (!exports.isEmpty()) {
+                    QString currentTypeName;
+                    Q_FOREACH(QJsonValue expor, exports) {
+                        QStringList nextType(expor.toString().split(" "));
+                        if (nextType[0] != currentTypeName) {
+                            currentTypeName = nextType[0];
+                            sortedExports.append(currentTypeName);
+                        }
+                        sortedExports.append(nextType[1]);
+                    }
+                } else
+                    sortedExports.append(convertToId(key));
                 // Exports may not be unique across namespaces ie. Header
-                byExports.insertMulti(sortedExports, key);
+                byExports.insertMulti(sortedExports.join(" "), key);
             }
         }
 
@@ -1025,8 +1044,10 @@ int main(int argc, char *argv[])
             if (value.isObject()) {
                 QJsonObject object(value.toObject());
                 QString signature(exports);
+                if (object.contains("namespace"))
+                    signature = object.take("namespace").toString() + "." + signature;
                 if (object.contains("prototype"))
-                    signature += " " + convertToId(object["prototype"].toString());
+                    signature += ": " + convertToId(object["prototype"].toString());
                 if (object.contains("isSingleton"))
                     signature += " singleton";
                 signature += "\n";
