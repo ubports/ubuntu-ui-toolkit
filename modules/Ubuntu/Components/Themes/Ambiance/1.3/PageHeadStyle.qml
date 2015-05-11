@@ -47,14 +47,14 @@ Style.PageHeadStyle {
     property color panelBackgroundColor: styledItem.panelColor
 
     /*!
-      \deprecated
-      The background color of the tapped item in the panel.
+       \deprecated
+       The background color of the tapped item in the panel.
      */
     property color panelHighlightColor: theme.palette.selected.background
 
     /*!
-      \deprecated
-      The foreground color (icon and text) of actions in the panel.
+       \deprecated
+       The foreground color (icon and text) of actions in the panel.
      */
     property color panelForegroundColor: theme.palette.selected.backgroundText
 
@@ -515,7 +515,7 @@ Style.PageHeadStyle {
                         }
 
                         actions: actionsContainer.visibleActions.slice(numberOfSlots.used,
-                                                                     numberOfSlots.requested)
+                                                                       numberOfSlots.requested)
                     }
                 }
             }
