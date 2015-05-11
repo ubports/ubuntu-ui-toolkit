@@ -60,6 +60,7 @@ ShapeOverlayNode::ShapeOverlayNode()
     , m_geometry(attributeSet(), ShapeNode::vertexCount, ShapeNode::indexCount,
                  ShapeNode::indexType)
 {
+    QSGNode::setFlag(UsePreprocess, true);
     memcpy(m_geometry.indexData(), ShapeNode::indices(),
            ShapeNode::indexCount * ShapeNode::indexTypeSize);
     m_geometry.setDrawingMode(ShapeNode::drawingMode);

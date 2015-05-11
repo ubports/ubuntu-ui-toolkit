@@ -41,6 +41,24 @@ class UCTheme : public QObject, public QQmlParserStatus
     Q_PROPERTY(QObject* palette READ palette WRITE setPalette RESET resetPalette NOTIFY paletteChanged FINAL)
     Q_PROPERTY(quint16 version MEMBER m_version WRITE setVersion NOTIFY versionChanged FINAL)
 public:
+    struct ThemeRecord {
+        ThemeRecord() :
+            shared(false), deprecated(false)
+        {}
+        ThemeRecord(const QString &name, const QUrl &path, bool shared, bool deprecated) :
+            name(name), path(path), shared(shared), deprecated(deprecated)
+        {}
+        bool isValid() const
+        {
+            return path.isValid();
+        }
+
+        QString name;
+        QUrl path;
+        bool shared:1;
+        bool deprecated:1;
+    };
+
     explicit UCTheme(QObject *parent = 0);
     static UCTheme &defaultTheme()
     {
@@ -87,7 +105,7 @@ private:
     void init();
     void updateEnginePaths();
     void updateThemePaths();
-    QUrl styleUrl(const QString& styleName, quint16 version);
+    QUrl styleUrl(const QString& styleName, quint16 version, bool *isFallback = NULL);
     void loadPalette(bool notify = true);
 
     class PaletteConfig
@@ -138,7 +156,7 @@ private:
     QPointer<QObject> m_palette; // the palette might be from the default style if the theme doesn't define palette
     QQmlEngine *m_engine;
     PaletteConfig m_config;
-    QList<QUrl> m_themePaths;
+    QList<ThemeRecord> m_themePaths;
     UCDefaultTheme m_defaultTheme;
     quint16 m_version;
     bool m_defaultStyle:1;
@@ -147,6 +165,6 @@ private:
     friend class UCDeprecatedTheme;
 };
 
-QUrl pathFromThemeName(QString themeName);
+UCTheme::ThemeRecord pathFromThemeName(QString themeName);
 
 #endif // UCTHEME_H

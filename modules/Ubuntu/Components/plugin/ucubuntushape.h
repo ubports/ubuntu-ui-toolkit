@@ -75,6 +75,7 @@ public:
     virtual QSGMaterialType* type() const;
     virtual QSGMaterialShader* createShader() const;
     virtual int compare(const QSGMaterial* other) const;
+    virtual void updateTextures();
     const Data* constData() const { return &m_data; }
     Data* data() { return &m_data; }
 
@@ -107,6 +108,7 @@ public:
     ShapeNode();
     ShapeMaterial* material() { return &m_material; }
     QSGGeometry* geometry() { return &m_geometry; }
+    void preprocess() { m_material.updateTextures(); }
 
 private:
     ShapeMaterial m_material;
