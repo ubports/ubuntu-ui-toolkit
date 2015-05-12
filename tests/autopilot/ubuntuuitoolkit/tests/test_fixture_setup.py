@@ -313,6 +313,7 @@ class InitctlGlobalEnvironmentVariableTestCase(
         ('global set unexisting variable', {
             'is_variable_set': False,
             'global_value': 'value',
+            'new_variable_value': 'new test value',
             'expected_calls': [
                 mock.call.is_initctl_env_var_set(
                     'testenvvarforfixture', global_='value'),
@@ -326,6 +327,7 @@ class InitctlGlobalEnvironmentVariableTestCase(
             'is_variable_set': True,
             'existing_variable_value': 'original_value',
             'global_value': 'value',
+            'new_variable_value': 'new test value',
             'expected_calls': [
                 mock.call.is_initctl_env_var_set(
                     'testenvvarforfixture', global_='value'),
@@ -340,6 +342,7 @@ class InitctlGlobalEnvironmentVariableTestCase(
         ('default set unexisting variable', {
             'is_variable_set': False,
             'global_value': 'default',
+            'new_variable_value': 'new test value',
             'expected_calls': [
                 mock.call.is_initctl_env_var_set(
                     'testenvvarforfixture', global_=False),
@@ -353,6 +356,7 @@ class InitctlGlobalEnvironmentVariableTestCase(
             'is_variable_set': True,
             'existing_variable_value': 'original_value',
             'global_value': 'default',
+            'new_variable_value': 'new test value',
             'expected_calls': [
                 mock.call.is_initctl_env_var_set(
                     'testenvvarforfixture', global_=False),
@@ -364,15 +368,74 @@ class InitctlGlobalEnvironmentVariableTestCase(
                     'testenvvarforfixture', 'original_value', global_=False)
             ]
         }),
+        ('global unset unexisting variable', {
+            'is_variable_set': False,
+            'global_value': 'value',
+            'new_variable_value': None,
+            'expected_calls': [
+                mock.call.is_initctl_env_var_set(
+                    'testenvvarforfixture', global_='value'),
+                mock.call.unset_initctl_env_var(
+                    'testenvvarforfixture', global_='value'),
+                mock.call.unset_initctl_env_var(
+                    'testenvvarforfixture', global_='value')
+            ]
+        }),
+        ('global unset existing variable', {
+            'is_variable_set': True,
+            'existing_variable_value': 'original_value',
+            'global_value': 'value',
+            'new_variable_value': None,
+            'expected_calls': [
+                mock.call.is_initctl_env_var_set(
+                    'testenvvarforfixture', global_='value'),
+                mock.call.get_initctl_env_var(
+                    'testenvvarforfixture', global_='value'),
+                mock.call.unset_initctl_env_var(
+                    'testenvvarforfixture', global_='value'),
+                mock.call.set_initctl_env_var(
+                    'testenvvarforfixture', 'original_value', global_='value')
+            ]
+        }),
+        ('default unset unexisting variable', {
+            'is_variable_set': False,
+            'global_value': 'default',
+            'new_variable_value': None,
+            'expected_calls': [
+                mock.call.is_initctl_env_var_set(
+                    'testenvvarforfixture', global_=False),
+                mock.call.unset_initctl_env_var(
+                    'testenvvarforfixture', global_=False),
+                mock.call.unset_initctl_env_var(
+                    'testenvvarforfixture', global_=False)
+            ]
+        }),
+        ('default unset existing variable', {
+            'is_variable_set': True,
+            'existing_variable_value': 'original_value',
+            'global_value': 'default',
+            'new_variable_value': None,
+            'expected_calls': [
+                mock.call.is_initctl_env_var_set(
+                    'testenvvarforfixture', global_=False),
+                mock.call.get_initctl_env_var(
+                    'testenvvarforfixture', global_=False),
+                mock.call.unset_initctl_env_var(
+                    'testenvvarforfixture', global_=False),
+                mock.call.set_initctl_env_var(
+                    'testenvvarforfixture', 'original_value', global_=False)
+            ]
+        }),
+
     ]
 
     def test_use_initctl_environment_variable_with_global_unset_variable(self):
         if self.global_value == 'default':
             initctl_env_var = fixture_setup.InitctlEnvironmentVariable(
-                testenvvarforfixture='new test value')
+                testenvvarforfixture=self.new_variable_value)
         else:
             initctl_env_var = fixture_setup.InitctlEnvironmentVariable(
-                testenvvarforfixture='new test value',
+                testenvvarforfixture=self.new_variable_value,
                 global_=self.global_value)
 
         mock_env = mock.Mock()
