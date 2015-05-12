@@ -236,6 +236,73 @@ class InitctlEnvironmentVariableTestCase(testtools.TestCase):
             'original test value',
             environment.get_initctl_env_var('testenvvarforfixture'))
 
+    def test_use_initctl_environment_variable_to_unset_existing_variable(self):
+        """Test the initctl env var fixture to unset a variable.
+
+        During the test, the variable must be unset.
+        After the test, the old value must be set again.
+
+        """
+        self.addCleanup(
+            environment.unset_initctl_env_var, 'testenvvarforfixture')
+        environment.set_initctl_env_var(
+            'testenvvarforfixture', 'original test value')
+
+        initctl_env_var = fixture_setup.InitctlEnvironmentVariable(
+            testenvvarforfixture=None)
+
+        result = testtools.TestResult()
+
+        def inner_test():
+            class TestWithInitctlEnvVarUnset(testtools.TestCase):
+                def test_it(self):
+                    self.useFixture(initctl_env_var)
+                    self.assertFalse(
+                        environment.is_initctl_env_var_set(
+                            'testenvvarforfixture'))
+            return TestWithInitctlEnvVarUnset('test_it')
+
+        inner_test().run(result)
+
+        self.assertTrue(
+            result.wasSuccessful(),
+            'Failed to unset the environment variable.')
+        self.assertEqual(
+            'original test value',
+            environment.get_initctl_env_var('testenvvarforfixture'))
+
+    def test_use_initctl_environment_variable_to_unset_nonexisting_variable(
+            self):
+        """Test the initctl env var fixture to unset a variable.
+
+        During the test, the variable must be unset.
+        After the test, the variable must remain unset.
+
+        """
+        self.addCleanup(
+            environment.unset_initctl_env_var, 'testenvvarforfixture')
+
+        initctl_env_var = fixture_setup.InitctlEnvironmentVariable(
+            testenvvarforfixture=None)
+
+        result = testtools.TestResult()
+
+        def inner_test():
+            class TestWithInitctlEnvVarUnset(testtools.TestCase):
+                def test_it(self):
+                    self.useFixture(initctl_env_var)
+                    self.assertFalse(
+                        environment.is_initctl_env_var_set(
+                            'testenvvarforfixture'))
+            return TestWithInitctlEnvVarUnset('test_it')
+
+        inner_test().run(result)
+
+        self.assertTrue(
+            result.wasSuccessful(),
+            'Failed to unset the environment variable.')
+        self.assertFalse(
+            environment.is_initctl_env_var_set('testenvvarforfixture'))
 
 class InitctlGlobalEnvironmentVariableTestCase(
         testscenarios.TestWithScenarios):
