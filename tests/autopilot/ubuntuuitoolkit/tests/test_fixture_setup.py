@@ -310,7 +310,7 @@ class InitctlGlobalEnvironmentVariableTestCase(
         testscenarios.TestWithScenarios):
 
     scenarios = [
-        ('global set unexisting variable', {
+        ('global, set unexisting variable', {
             'is_variable_set': False,
             'global_value': 'value',
             'new_variable_value': 'new test value',
@@ -323,7 +323,7 @@ class InitctlGlobalEnvironmentVariableTestCase(
                     'testenvvarforfixture', global_='value')
             ]
         }),
-        ('global set existing variable', {
+        ('global, set existing variable', {
             'is_variable_set': True,
             'existing_variable_value': 'original_value',
             'global_value': 'value',
@@ -339,7 +339,7 @@ class InitctlGlobalEnvironmentVariableTestCase(
                     'testenvvarforfixture', 'original_value', global_='value')
             ]
         }),
-        ('default set unexisting variable', {
+        ('default, set unexisting variable', {
             'is_variable_set': False,
             'global_value': 'default',
             'new_variable_value': 'new test value',
@@ -352,7 +352,7 @@ class InitctlGlobalEnvironmentVariableTestCase(
                     'testenvvarforfixture', global_=False)
             ]
         }),
-        ('default set existing variable', {
+        ('default, set existing variable', {
             'is_variable_set': True,
             'existing_variable_value': 'original_value',
             'global_value': 'default',
@@ -368,7 +368,7 @@ class InitctlGlobalEnvironmentVariableTestCase(
                     'testenvvarforfixture', 'original_value', global_=False)
             ]
         }),
-        ('global unset unexisting variable', {
+        ('global, unset unexisting variable', {
             'is_variable_set': False,
             'global_value': 'value',
             'new_variable_value': None,
@@ -381,7 +381,7 @@ class InitctlGlobalEnvironmentVariableTestCase(
                     'testenvvarforfixture', global_='value')
             ]
         }),
-        ('global unset existing variable', {
+        ('global, unset existing variable', {
             'is_variable_set': True,
             'existing_variable_value': 'original_value',
             'global_value': 'value',
@@ -397,7 +397,7 @@ class InitctlGlobalEnvironmentVariableTestCase(
                     'testenvvarforfixture', 'original_value', global_='value')
             ]
         }),
-        ('default unset unexisting variable', {
+        ('default, unset unexisting variable', {
             'is_variable_set': False,
             'global_value': 'default',
             'new_variable_value': None,
@@ -410,7 +410,7 @@ class InitctlGlobalEnvironmentVariableTestCase(
                     'testenvvarforfixture', global_=False)
             ]
         }),
-        ('default unset existing variable', {
+        ('default, unset existing variable', {
             'is_variable_set': True,
             'existing_variable_value': 'original_value',
             'global_value': 'default',
@@ -429,7 +429,7 @@ class InitctlGlobalEnvironmentVariableTestCase(
 
     ]
 
-    def test_use_initctl_environment_variable_with_global_unset_variable(self):
+    def test_use_initctl_environment_variable_with_global_argument(self):
         if self.global_value == 'default':
             initctl_env_var = fixture_setup.InitctlEnvironmentVariable(
                 testenvvarforfixture=self.new_variable_value)
