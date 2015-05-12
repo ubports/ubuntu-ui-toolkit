@@ -62,13 +62,13 @@ Item {
                         verticalCenter: bar.verticalCenter
                     }
 
-                    text: "" + index + " slot(s):"
+                    text: "" + bar.numberOfSlots + " slot(s):"
                 }
 
                 ActionBar {
                     id: bar
                     anchors.right: parent.right
-                    numberOfSlots: index
+                    numberOfSlots: index-1
                     actions: root.actionList
                 }
             }

@@ -52,7 +52,9 @@ Item {
             property int requested: actionsContainer.visibleActions.length
             property int available: styledItem.numberOfSlots
             property int overflow: actionsOverflowButton.visible ? 1 : 0
-            property int used: Math.min(available - overflow, requested)
+            // when numberOfSlots < 1, show the overflow button, but set used
+            // to 0 so that all actions will appear in the overflow panel.
+            property int used: Math.min(Math.max(0, available - overflow), requested)
         }
 
         // FIXME TIM: anchors

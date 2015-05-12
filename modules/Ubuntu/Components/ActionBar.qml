@@ -58,6 +58,9 @@ StyledItem {
       The number of actions to be shown in the bar directly.
       If the actions don't fit, an overflow button (using one slot)
       will be shown which opens a popover with the remaining actions.
+
+      Setting the numberOfSlots to 0 will always show the overflow button
+      and no other action buttons.
      */
     property int numberOfSlots: 3
     
