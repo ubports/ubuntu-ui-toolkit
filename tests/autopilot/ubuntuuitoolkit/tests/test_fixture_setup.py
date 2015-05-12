@@ -445,8 +445,8 @@ class InitctlGlobalEnvironmentVariableTestCase(
             mock_env.get_initctl_env_var.return_value = (
                 self.existing_variable_value)
         else:
-             mock_env.side_effect = subprocess.CalledProcessError(
-                 'dummy', 'dummy')
+            mock_env.side_effect = subprocess.CalledProcessError(
+                'dummy', 'dummy')
 
         def inner_test():
             class TestWithInitctlEnvVar(testtools.TestCase):
