@@ -19,6 +19,7 @@ import Ubuntu.Components.Popups 1.3
 
 Item {
     id: actionBarStyle
+    objectName: "ActionBarStyle"
     implicitWidth: actionsContainer.implicitWidth
     implicitHeight: units.gu(5)
 
@@ -40,8 +41,11 @@ Item {
             return visibleActionList;
         }
 
-        QtObject {
+        // FIXME: This could be a QtObject, but we need an Item to be able to
+        //  select it in tst_actionbar.qml.
+        Item {
             id: numberOfSlots
+            objectName: "NumberOfSlots"
             property int requested: actionsContainer.visibleActions.length
             property int available: styledItem.numberOfSlots
             property int overflow: actionsOverflowButton.visible ? 1 : 0

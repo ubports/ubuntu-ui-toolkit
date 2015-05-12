@@ -24,7 +24,6 @@ import Ubuntu.Components 1.3
     \brief Show a row of buttons that trigger actions.
 
 
-
     Examples: TODO
 */
 StyledItem {
@@ -49,5 +48,4 @@ StyledItem {
       and no other action buttons.
      */
     property int numberOfSlots: 3
-    
 }
