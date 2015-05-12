@@ -15,6 +15,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import os
+import subprocess
 import tempfile
 
 from unittest import mock
@@ -304,13 +305,13 @@ class InitctlEnvironmentVariableTestCase(testtools.TestCase):
         self.assertFalse(
             environment.is_initctl_env_var_set('testenvvarforfixture'))
 
+
 class InitctlGlobalEnvironmentVariableTestCase(
         testscenarios.TestWithScenarios):
 
     scenarios = [
-        ('global unset variable', {
+        ('global set unexisting variable', {
             'is_variable_set': False,
-            'variable_value': 'dummy',
             'global_value': 'value',
             'expected_calls': [
                 mock.call.is_initctl_env_var_set(
@@ -321,9 +322,9 @@ class InitctlGlobalEnvironmentVariableTestCase(
                     'testenvvarforfixture', global_='value')
             ]
         }),
-        ('global set variable', {
+        ('global set existing variable', {
             'is_variable_set': True,
-            'variable_value': 'original_value',
+            'existing_variable_value': 'original_value',
             'global_value': 'value',
             'expected_calls': [
                 mock.call.is_initctl_env_var_set(
@@ -336,9 +337,8 @@ class InitctlGlobalEnvironmentVariableTestCase(
                     'testenvvarforfixture', 'original_value', global_='value')
             ]
         }),
-        ('default unset variable', {
+        ('default set unexisting variable', {
             'is_variable_set': False,
-            'variable_value': 'dummy',
             'global_value': 'default',
             'expected_calls': [
                 mock.call.is_initctl_env_var_set(
@@ -349,9 +349,9 @@ class InitctlGlobalEnvironmentVariableTestCase(
                     'testenvvarforfixture', global_=False)
             ]
         }),
-        ('global set variable', {
+        ('default set existing variable', {
             'is_variable_set': True,
-            'variable_value': 'original_value',
+            'existing_variable_value': 'original_value',
             'global_value': 'default',
             'expected_calls': [
                 mock.call.is_initctl_env_var_set(
@@ -378,7 +378,12 @@ class InitctlGlobalEnvironmentVariableTestCase(
         mock_env = mock.Mock()
         initctl_env_var.environment = mock_env
         mock_env.is_initctl_env_var_set.return_value = self.is_variable_set
-        mock_env.get_initctl_env_var.return_value = self.variable_value
+        if self.is_variable_set:
+            mock_env.get_initctl_env_var.return_value = (
+                self.existing_variable_value)
+        else:
+             mock_env.side_effect = subprocess.CalledProcessError(
+                 'dummy', 'dummy')
 
         def inner_test():
             class TestWithInitctlEnvVar(testtools.TestCase):
