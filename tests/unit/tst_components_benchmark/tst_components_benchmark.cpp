@@ -32,7 +32,8 @@ private Q_SLOTS:
         QTest::addColumn<QString>("fileName");
 
         QDir dir;
-        dir.setPath(UBUNTU_COMPONENT_PATH);
+        dir.setPath(QString(UBUNTU_COMPONENT_PATH)+"/1.3");
+        QVERIFY2(dir.exists(), qPrintable(dir.absolutePath()));
         QStringList nameFilters;
         nameFilters << "*.qml";
         dir.setNameFilters(nameFilters);
@@ -40,8 +41,7 @@ private Q_SLOTS:
         dir.setSorting(QDir::Size | QDir::Reversed);
 
         QFileInfoList list = dir.entryInfoList();
-
-        qDebug() << "Found" << list.size() << "tests.";
+        QVERIFY2(list.size(), qPrintable(dir.absolutePath()));
 
         for (int i = 0; i < list.size(); ++i) {
             QFileInfo fileInfo = list.at(i);
@@ -51,8 +51,6 @@ private Q_SLOTS:
 
     void benchmark_creation_components() {
         QFETCH(QString, fileName);
-
-        qDebug() << "Loading" << fileName;
 
         QQmlComponent component(&engine, fileName);
         QObject *obj = component.create();
@@ -67,7 +65,8 @@ private Q_SLOTS:
         QTest::addColumn<QString>("fileName");
 
         QDir dir;
-        dir.setPath(QString(UBUNTU_COMPONENT_PATH)+"/ListItems");
+        dir.setPath(QString(UBUNTU_COMPONENT_PATH)+"/ListItems/1.3");
+        QVERIFY2(dir.exists(), qPrintable(dir.absolutePath()));
         QStringList nameFilters;
         nameFilters << "*.qml";
         dir.setNameFilters(nameFilters);
@@ -75,8 +74,7 @@ private Q_SLOTS:
         dir.setSorting(QDir::Size | QDir::Reversed);
 
         QFileInfoList list = dir.entryInfoList();
-
-        qDebug() << "Found" << list.size() << "tests.";
+        QVERIFY2(list.size(), qPrintable(dir.absolutePath()));
 
         for (int i = 0; i < list.size(); ++i) {
             QFileInfo fileInfo = list.at(i);
@@ -86,8 +84,6 @@ private Q_SLOTS:
 
     void benchmark_creation_listitems() {
         QFETCH(QString, fileName);
-
-        qDebug() << "Loading" << fileName;
 
         QQmlComponent component(&engine, fileName);
         QObject *obj = component.create();
