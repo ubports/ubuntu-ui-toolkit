@@ -32,20 +32,6 @@ StyledItem {
 
     style: theme.createStyleComponent("ActionBarStyle.qml", bar)
 
-
-//    //TODO: set implicit width and height (from style)
-    Rectangle {
-        anchors.fill: parent
-        color: "lightgreen"
-        opacity: 0.2
-        border.width: 1
-    }
-
-//    width: 200
-//    height: 80
-//    implicitWidth: 200
-//    implicitHeight: 80
-
     /*
       The actions to display in the bar.
       If more actions are specified than there are slots, an overflow

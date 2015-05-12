@@ -15,25 +15,18 @@
  */
 import QtQuick 2.4
 import Ubuntu.Components 1.3
-import Ubuntu.Components.Popups 1.0
-//import Ubuntu.Components.Styles 1.2 as Style
+import Ubuntu.Components.Popups 1.3
 
 Item {
     id: actionBarStyle
-    //FIXME TIM: margins? no
-
     implicitWidth: actionsContainer.implicitWidth
-    implicitHeight: units.gu(5) //actionsContainer.height
+    implicitHeight: units.gu(5)
 
-    property real buttonWidth: units.gu(4)
+    // FIXME: Add color and label configuration properties or make
+    //  the action delegates configurable.
 
     Row {
         id: actionsContainer
-
-//        height: parent.height
-
-        //auto
-//        implicitWidth: (numberOfSlots.used + numberOfSlots.overflow) * actionBarStyle.buttonWidth
 
         property var visibleActions: getVisibleActions(styledItem.actions)
         function getVisibleActions(actions) {
@@ -57,40 +50,27 @@ Item {
             property int used: Math.min(Math.max(0, available - overflow), requested)
         }
 
-        // FIXME TIM: anchors
         anchors {
-            fill: parent
-//            top: parent.top
-//            bottom: parent.bottom
-//            right: rightAnchor.left
-//            right: parent.right
-//            rightMargin: actionsContainer.width > 0 ? units.gu(1) : 0
+            top: parent.top
+            bottom: parent.bottom
         }
-//        width: childrenRect.width
-//        height: headerStyle.contentHeight
-//        height: units.gu(5)
 
         Repeater {
             model: numberOfSlots.used
             PageHeadButton {
                 id: actionButton
-                // FIXME: replace _header by ActionBar objectName.
-                objectName: action.objectName + "_header_button"
+                objectName: action.objectName + "_action_button"
                 action: actionsContainer.visibleActions[index]
-//                color: headerStyle.buttonColor
-//                color: "navy"
-
-                // FIXME TIM: instead of using state, add delegate property later
-//                state: styledItem.config.preset === "select" ?
-//                           "IconAndLabel" : ""
+                iconWidth: units.gu(2)
             }
         }
 
         PageHeadButton {
             id: actionsOverflowButton
-            // FIXME TIM: add ActionBar(Style) objectName here
             objectName: "actions_overflow_button"
             visible: numberOfSlots.requested > numberOfSlots.available
+            iconWidth: units.gu(2)
+
             // Ensure resetting of X when this button is not visible to avoid
             // miscalculation of actionsContainer.width. Fixes bug #1408481.
             onVisibleChanged: if (!visible) x = 0
@@ -102,15 +82,9 @@ Item {
 
                 OverflowPanel {
                     id: actionsOverflowPopover
-                    // FIXME TIM: Rename
                     objectName: "actions_overflow_popover"
 
                     backgroundColor: "white"
-//                    backgroundColor: headerStyle.panelBackgroundColor
-//                    foregroundColor: headerStyle.panelForegroundColor
-//                    highlightColor: headerStyle.panelHighlightColor
-
-                    // TODO TIM: Verify that the bug doesn't come back
 
                     // Ensure the popover closes when actions change and
                     // the list item below may be destroyed before its
@@ -122,18 +96,11 @@ Item {
                             actionsOverflowPopover.hide();
                         }
                     }
-//                    Connections {
-//                        target: styledItem
-//                        onConfigChanged: {
-//                            actionsOverflowPopover.hide();
-//                        }
-//                    }
 
                     actions: actionsContainer.visibleActions.slice(numberOfSlots.used,
-                                                                 numberOfSlots.requested)
+                                                                   numberOfSlots.requested)
                 }
             }
         }
     }
-
 }
