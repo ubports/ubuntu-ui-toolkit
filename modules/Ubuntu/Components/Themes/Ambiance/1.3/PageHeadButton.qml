@@ -27,7 +27,7 @@ AbstractButton {
         border.color: "green"
     }
 
-    property real iconWidth: units.gu(2)
+    property real iconWidth: units.gu(2.5) // new spec: 2.0
     property real iconHeight: iconWidth
 
     width: visible ? units.gu(5) : 0

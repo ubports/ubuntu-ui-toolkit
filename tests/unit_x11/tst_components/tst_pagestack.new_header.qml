@@ -15,8 +15,8 @@
  */
 
 import QtQuick 2.2
+import Ubuntu.Components 1.3
 import Ubuntu.Test 1.0
-import Ubuntu.Components 1.2
 
 // pagestack tests for deprecated toolbar are in
 // unit/tst_components/tst_pagestack_deprecated_toolbar.qml

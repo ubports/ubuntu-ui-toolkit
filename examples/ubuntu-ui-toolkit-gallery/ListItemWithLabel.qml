@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.2
-import Ubuntu.Components 1.2
+import Ubuntu.Components 1.3
 
 ListItem {
     property alias text: label.text

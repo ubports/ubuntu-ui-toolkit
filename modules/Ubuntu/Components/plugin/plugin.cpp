@@ -113,6 +113,13 @@ static QObject *registerUbuntuNamespace13(QQmlEngine *engine, QJSEngine *scriptE
     return new UCNamespaceV13();
 }
 
+void UbuntuComponentsPlugin::initializeBaseUrl()
+{
+    if (!m_baseUrl.isValid()) {
+        m_baseUrl = QUrl(baseUrl().toString() + '/');
+    }
+}
+
 void UbuntuComponentsPlugin::registerWindowContextProperty()
 {
     setWindowContextProperty(QGuiApplication::focusWindow());
@@ -169,6 +176,7 @@ void UbuntuComponentsPlugin::registerTypesToVersion(const char *uri, int major, 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QLatin1String("Ubuntu.Components"));
+    initializeBaseUrl();
 
     // register 0.1 for backward compatibility
     registerTypesToVersion(uri, 0, 1);
@@ -207,7 +215,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 {
     // initialize baseURL
-    m_baseUrl = QUrl(baseUrl().toString() + '/');
+    initializeBaseUrl();
 
     // register internal styles
     const char *styleUri = "Ubuntu.Components.Styles";
