@@ -28,6 +28,7 @@ Item {
 
     Row {
         id: actionsContainer
+        objectName: "ActionsContainer"
 
         property var visibleActions: getVisibleActions(styledItem.actions)
         function getVisibleActions(actions) {
@@ -41,11 +42,11 @@ Item {
             return visibleActionList;
         }
 
-        // FIXME: This could be a QtObject, but we need an Item to be able to
-        //  select it in tst_actionbar.qml.
-        Item {
+        // Alias property for unit tests because we cannot directly select
+        //  a non-Item object.
+        property alias numberOfSlotsForUnitTests: numberOfSlots
+        QtObject {
             id: numberOfSlots
-            objectName: "NumberOfSlots"
             property int requested: actionsContainer.visibleActions.length
             property int available: styledItem.numberOfSlots
             property int overflow: actionsOverflowButton.visible ? 1 : 0

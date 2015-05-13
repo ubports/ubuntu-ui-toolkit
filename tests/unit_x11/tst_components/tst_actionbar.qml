@@ -132,34 +132,47 @@ Item {
             compare(shortBar.numberOfSlots, 3, "Default number of slots should be 3.");
         }
 
+        function init() {
+            // revert to initial values
+            bar.numberOfSlots = 3;
+            shortBar.numberOfSlots = 3;
+            bar.actions = root.actionList;
+            shortBar.actions = root.shortActionList;
+        }
+
+        function get_number_of_slots_object(actionBar) {
+            var container = findChild(actionBar, "ActionsContainer");
+            verify(container !== null, "Could not find actions container item.");
+            var n = container.numberOfSlotsForUnitTests;
+            verify(n !== null, "Could not find number of slots object.");
+            return n;
+        }
+
         function get_number_of_visible_buttons(actionBar) {
-            var style = findChild(actionBar, "ActionBarStyle");
-            verify (style !== null, "Could not find ActionBarStyle");
-            var numberOfSlots = findChild(style, "NumberOfSlots");
-            verify(numberOfSlots !== null, "numberOfSlots not found.");
-            return numberOfSlots.used + numberOfSlots.overflow;
+            var n = get_number_of_slots_object(actionBar);
+            return n.used + n.overflow;
+        }
+
+        function get_number_of_actions_in_overflow(actionBar) {
+            var n = get_number_of_slots_object(actionBar);
+            return n.requested - n.used;
         }
 
         function get_overflow_button_visible(actionBar) {
-            var style = findChild(actionBar, "ActionBarStyle");
-            verify (style !== null, "Could not find ActionBarStyle");
-            var numberOfSlots = findChild(style, "NumberOfSlots");
-            verify(numberOfSlots !== null, "numberOfSlots not found.");
-            return (numberOfSlots.overflow === 1);
+            var n = get_number_of_slots_object(actionBar);
+            return (n.overflow === 1);
         }
 
         function test_number_of_slots() {
             compare(shortBar.numberOfSlots, 3, "Initial number of slots should be 3.");
             shortBar.numberOfSlots = 10;
             compare(shortBar.numberOfSlots, 10, "Number of slots cannot be set.");
-            shortBar.numberOfSlots = 3;
         }
 
         function test_actions() {
             compare(bar.actions, root.actionList, "Actions property can be initialized.");
             bar.actions = root.shortActionList;
             compare(bar.actions, root.shortActionList, "Actions property can be updated.");
-            bar.actions = root.actionList;
         }
 
         function test_number_of_visible_buttons() {
@@ -184,7 +197,21 @@ Item {
         }
 
         function test_number_of_actions_in_overflow() {
-            // TODO
+            compare(0, get_number_of_actions_in_overflow(shortBar),
+                    "Incorrect number of actions in overflow when num actions < num slots.");
+            bar.numberOfSlots = actionList.length;
+            compare(0, get_number_of_actions_in_overflow(bar),
+                    "Incorrect number of actions in overflow when num actions = num slots.");
+            bar.numberOfSlots--;
+            // one action too many, plus one slot used for the overflow button:
+            compare(2, get_number_of_actions_in_overflow(bar),
+                    "Incorrect number of actions in overflow when num actions = num slots + 1.");
+            bar.numberOfSlots--;
+            compare(3, get_number_of_actions_in_overflow(bar),
+                    "Incorrect number of actions in overflow when num actions = num slots + 2.");
+            bar.numberOfSlots = 0;
+            compare(actionList.length, get_number_of_actions_in_overflow(bar),
+                    "Incorrect number of actions in overflow when num slots = 0.");
         }
     }
 }
