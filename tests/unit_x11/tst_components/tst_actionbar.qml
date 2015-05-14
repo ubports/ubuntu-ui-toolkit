@@ -162,7 +162,10 @@ Item {
                 // the overflow panel is not a child of the ActionBar, so use
                 //  root to find it
                 var panel = findChild(root, "actions_overflow_panel");
-                return panel.actions.length;
+                var n = panel.actions.length;
+                // click again to close the overflow panel
+                mouseClick(overflowButton, overflowButton.width/2, overflowButton.height/2);
+                return n;
             } else {
                 // empty overflow
                 return 0;
