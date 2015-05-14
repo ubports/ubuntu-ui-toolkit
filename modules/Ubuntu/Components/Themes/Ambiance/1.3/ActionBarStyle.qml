@@ -87,7 +87,7 @@ Item {
 
                 OverflowPanel {
                     id: actionsOverflowPopover
-                    objectName: "actions_overflow_popover"
+                    objectName: "actions_overflow_panel"
 
                     backgroundColor: "white"
 
