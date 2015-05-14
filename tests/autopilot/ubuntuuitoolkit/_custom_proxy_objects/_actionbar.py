@@ -16,6 +16,7 @@
 
 import logging
 
+from autopilot import logging as autopilot_logging
 from autopilot.introspection import dbus
 from ubuntuuitoolkit._custom_proxy_objects import _common
 
@@ -63,6 +64,7 @@ class ActionBar(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
         return popover.select_single(objectName=object_name)
 
+    @autopilot_logging.log_action(logger.info)
     def click_action_button(self, action_object_name):
         """Click an action button of the header.
 
