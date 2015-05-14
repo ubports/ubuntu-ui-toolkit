@@ -74,8 +74,5 @@ class ActionBar(_common.UbuntuUIToolkitCustomProxyObjectBase):
             name.
 
         """
-        self.ensure_visible()
-
         button = self._get_action_button(action_object_name)
         self.pointing_device.click_object(button)
-        self.wait_for_animation()
