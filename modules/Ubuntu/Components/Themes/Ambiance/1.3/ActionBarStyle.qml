@@ -19,7 +19,6 @@ import Ubuntu.Components.Popups 1.3
 
 Item {
     id: actionBarStyle
-    objectName: "ActionBarStyle"
     implicitWidth: actionsContainer.implicitWidth
     implicitHeight: units.gu(5)
 
@@ -28,7 +27,6 @@ Item {
 
     Row {
         id: actionsContainer
-        objectName: "ActionsContainer"
 
         property var visibleActions: getVisibleActions(styledItem.actions)
         function getVisibleActions(actions) {
@@ -88,7 +86,7 @@ Item {
 
                 OverflowPanel {
                     id: actionsOverflowPopover
-                    objectName: "ActionsOverflowPanel"
+                    objectName: "actions_overflow_panel"
 
                     backgroundColor: "white"
 

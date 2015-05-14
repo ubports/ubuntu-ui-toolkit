@@ -161,7 +161,7 @@ Item {
                 mouseClick(overflowButton, overflowButton.width/2, overflowButton.height/2);
                 // the overflow panel is not a child of the ActionBar, so use
                 //  root to find it
-                var panel = findChild(root, "ActionsOverflowPanel");
+                var panel = findChild(root, "actions_overflow_panel");
                 return panel.actions.length;
             } else {
                 // empty overflow
