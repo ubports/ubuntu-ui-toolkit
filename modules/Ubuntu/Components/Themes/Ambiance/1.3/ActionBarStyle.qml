@@ -40,9 +40,6 @@ Item {
             return visibleActionList;
         }
 
-        // Alias property for unit tests because we cannot directly select
-        //  a non-Item object.
-        property alias numberOfSlotsForUnitTests: numberOfSlots
         QtObject {
             id: numberOfSlots
             property int requested: actionsContainer.visibleActions.length
