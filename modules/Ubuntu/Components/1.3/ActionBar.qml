@@ -21,17 +21,38 @@ import Ubuntu.Components 1.3
     \qmltype ActionBar
     \inqmlmodule Ubuntu.Components 1.3
     \ingroup ubuntu
-    \brief Show a row of buttons that trigger actions.
+    \brief Show a row of buttons that trigger actions. When the
+        number of visible actions specified is larger than
+        \l numberOfSlots, an overflow button will be shown which
+        triggers an overflow panel that shows the remaining actions.
 
+    Example:
 
-    Examples: TODO
+    \qml
+        ActionBar {
+            numberOfSlots: 2
+            actions: [
+                Action {
+                    iconName: "share"
+                    text: "Share"
+                },
+                Action {
+                    iconName: "starred"
+                    text: "Favorite"
+                },
+                Action {
+                    iconName: "lock"
+                    text: "Lock"
+                }
+            ]
+        }
+    \endqml
 */
 StyledItem {
     id: bar
-
     style: theme.createStyleComponent("ActionBarStyle.qml", bar)
 
-    /*
+    /*!
       The actions to display in the bar.
       If more actions are specified than there are slots, an overflow
       button will be show which opens a popover with the actions that
@@ -44,8 +65,8 @@ StyledItem {
       If the actions don't fit, an overflow button (using one slot)
       will be shown which opens a popover with the remaining actions.
 
-      Setting the numberOfSlots to 0 will always show the overflow button
-      and no other action buttons.
+      Setting numberOfSlots to 0 will always show the overflow button
+      and no other action buttons. Default value is 3.
      */
     property int numberOfSlots: 3
 }
