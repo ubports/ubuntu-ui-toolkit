@@ -61,6 +61,7 @@ Item {
         }
 
         Repeater {
+            objectName: "actions_repeater"
             model: numberOfSlots.used
             PageHeadButton {
                 id: actionButton
@@ -87,7 +88,7 @@ Item {
 
                 OverflowPanel {
                     id: actionsOverflowPopover
-                    objectName: "actions_overflow_panel"
+                    objectName: "ActionsOverflowPanel"
 
                     backgroundColor: "white"
 

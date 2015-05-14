@@ -140,27 +140,33 @@ Item {
             shortBar.actions = root.shortActionList;
         }
 
-        function get_number_of_slots_object(actionBar) {
-            var container = findChild(actionBar, "ActionsContainer");
-            verify(container !== null, "Could not find actions container item.");
-            var n = container.numberOfSlotsForUnitTests;
-            verify(n !== null, "Could not find number of slots object.");
-            return n;
+        function get_overflow_button_visible(actionBar) {
+            var overflowButton = findChild(actionBar, "actions_overflow_button")
+            return overflowButton.visible
         }
 
         function get_number_of_visible_buttons(actionBar) {
-            var n = get_number_of_slots_object(actionBar);
-            return n.used + n.overflow;
+            var repeater = findChild(actionBar, "actions_repeater");
+            var n = repeater.model;
+            if (get_overflow_button_visible(actionBar)) {
+                n++;
+            }
+            return n;
         }
 
         function get_number_of_actions_in_overflow(actionBar) {
-            var n = get_number_of_slots_object(actionBar);
-            return n.requested - n.used;
-        }
-
-        function get_overflow_button_visible(actionBar) {
-            var n = get_number_of_slots_object(actionBar);
-            return (n.overflow === 1);
+            if (get_overflow_button_visible(actionBar)) {
+                var overflowButton = findChild(actionBar, "actions_overflow_button");
+                // click the overflow button in order to create the overflow panel
+                mouseClick(overflowButton, overflowButton.width/2, overflowButton.height/2);
+                // the overflow panel is not a child of the ActionBar, so use
+                //  root to find it
+                var panel = findChild(root, "ActionsOverflowPanel");
+                return panel.actions.length;
+            } else {
+                // empty overflow
+                return 0;
+            }
         }
 
         function test_number_of_slots() {
