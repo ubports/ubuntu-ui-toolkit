@@ -16,7 +16,6 @@
 
 import logging
 
-from autopilot import logging as autopilot_logging
 from autopilot.introspection import dbus
 from ubuntuuitoolkit._custom_proxy_objects import _common
 
@@ -42,7 +41,6 @@ class ActionBar(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
         return button
 
-
     def _get_action_button_in_overflow(self, action_object_name):
         actions_overflow_button = self.select_single(
             objectName='actions_overflow_button')
@@ -54,8 +52,8 @@ class ActionBar(_common.UbuntuUIToolkitCustomProxyObjectBase):
         self.pointing_device.click_object(actions_overflow_button)
         object_name = action_object_name + "_header_overflow_button"
 
-        # the popover is not a child of the ActionBar, so use the popover object
-        # to find the requested button
+        # the popover is not a child of the ActionBar, so use the popover
+        # object to find the requested button
         try:
             popover = self.get_root_instance().select_single(
                 objectName='actions_overflow_panel')
@@ -64,7 +62,6 @@ class ActionBar(_common.UbuntuUIToolkitCustomProxyObjectBase):
                 'Failed to select overflow panel')
 
         return popover.select_single(objectName=object_name)
-
 
     def click_action_button(self, action_object_name):
         """Click an action button of the header.

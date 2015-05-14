@@ -15,7 +15,6 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import os
-import fixtures
 import ubuntuuitoolkit
 from ubuntuuitoolkit import tests
 
@@ -51,8 +50,8 @@ class ActionBarTestCase(tests.QMLFileAppTestCase):
 
     def test_click_unexisting_action_button(self):
         error = self.assertRaises(
-            ubuntuuitoolkit.ToolkitException, self.actionbar.click_action_button,
-            'unexisting')
+            ubuntuuitoolkit.ToolkitException,
+            self.actionbar.click_action_button, 'unexisting')
         self.assertEqual(
             str(error),
             'Button not found in ActionBar or overflow')
