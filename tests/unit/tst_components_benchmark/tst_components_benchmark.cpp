@@ -22,6 +22,7 @@
 
 #include <QDir>
 #include <QUrl>
+#include <ucnamespace.h>
 
 class tst_components_benchmark: public QObject
 {
@@ -32,7 +33,7 @@ private Q_SLOTS:
         QTest::addColumn<QString>("fileName");
 
         QDir dir;
-        dir.setPath(QString(UBUNTU_COMPONENT_PATH)+"/1.3");
+        dir.setPath(QString("%1/%2.%3").arg(UBUNTU_COMPONENT_PATH).arg(MAJOR_VERSION(LATEST_UITK_VERSION)).arg(MINOR_VERSION(LATEST_UITK_VERSION)));
         QVERIFY2(dir.exists(), qPrintable(dir.absolutePath()));
         QStringList nameFilters;
         nameFilters << "*.qml";
@@ -65,7 +66,7 @@ private Q_SLOTS:
         QTest::addColumn<QString>("fileName");
 
         QDir dir;
-        dir.setPath(QString(UBUNTU_COMPONENT_PATH)+"/ListItems/1.3");
+        dir.setPath(QString("%1/ListItems/%2.%3").arg(UBUNTU_COMPONENT_PATH).arg(MAJOR_VERSION(LATEST_UITK_VERSION)).arg(MINOR_VERSION(LATEST_UITK_VERSION)));
         QVERIFY2(dir.exists(), qPrintable(dir.absolutePath()));
         QStringList nameFilters;
         nameFilters << "*.qml";
