@@ -177,37 +177,27 @@ class InitctlEnvironmentVariableTestCase(testscenarios.TestWithScenarios):
         ('local_variable', {'global_': False})
     ]
 
-    def assertSetValueIsSuccessful(self, expected_value, initctl_env_var):
+    def assertTestIsSuccessful(self, test_name, initctl_env_var,
+                               expected_value=None):
         result = testtools.TestResult()
 
-        def inner_test():
-            class TestWithInitctlEnvVar(testtools.TestCase):
-                def test_it(inner):
-                    inner.useFixture(initctl_env_var)
-                    inner.assertEqual(
-                        expected_value,
-                        environment.get_initctl_env_var(
-                            'testenvvarforfixture', global_=self.global_))
-            return TestWithInitctlEnvVar('test_it')
+        class TestWithInitctlEnvVar(testtools.TestCase):
+            def setUp(inner):
+                super().setUp()
+                inner.useFixture(initctl_env_var)
 
-        inner_test().run(result)
-        self.assertTrue(
-            result.wasSuccessful(), 'Failed to set the environment variable.')
+            def test_value_set(inner):
+                inner.assertEqual(
+                    expected_value,
+                    environment.get_initctl_env_var(
+                        'testenvvarforfixture', global_=self.global_))
 
+            def test_value_not_set(inner):
+                inner.assertFalse(
+                    environment.is_initctl_env_var_set(
+                        'testenvvarforfixture', global_=self.global_))
 
-    def assertUnsetValueIsSuccessful(self, initctl_env_var):
-        result = testtools.TestResult()
-
-        def inner_test():
-            class TestWithInitctlEnvVar(testtools.TestCase):
-                def test_it(inner):
-                    inner.useFixture(initctl_env_var)
-                    inner.assertFalse(
-                        environment.is_initctl_env_var_set(
-                            'testenvvarforfixture', global_=self.global_))
-            return TestWithInitctlEnvVar('test_it')
-
-        inner_test().run(result)
+        TestWithInitctlEnvVar(test_name).run(result)
         self.assertTrue(
             result.wasSuccessful(), 'Failed to set the environment variable.')
 
@@ -232,7 +222,8 @@ class InitctlEnvironmentVariableTestCase(testscenarios.TestWithScenarios):
         initctl_env_var = fixture_setup.InitctlEnvironmentVariable(
             testenvvarforfixture='test value', global_=self.global_)
 
-        self.assertSetValueIsSuccessful('test value', initctl_env_var)
+        self.assertTestIsSuccessful('test_value_set', initctl_env_var,
+                                    'test value')
         self.assertUnset()
 
     def test_use_initctl_environment_variable_to_set_existing_variable(self):
@@ -252,8 +243,9 @@ class InitctlEnvironmentVariableTestCase(testscenarios.TestWithScenarios):
         initctl_env_var = fixture_setup.InitctlEnvironmentVariable(
             testenvvarforfixture='new test value', global_=self.global_)
 
-        self.assertSetValueIsSuccessful('new test value', initctl_env_var)
-        self.assertValue('original test value',)
+        self.assertTestIsSuccessful('test_value_set', initctl_env_var,
+                                    'new test value')
+        self.assertValue('original test value')
 
     def test_use_initctl_environment_variable_to_unset_existing_variable(self):
         """Test the initctl env var fixture to unset a variable.
@@ -272,7 +264,7 @@ class InitctlEnvironmentVariableTestCase(testscenarios.TestWithScenarios):
         initctl_env_var = fixture_setup.InitctlEnvironmentVariable(
             testenvvarforfixture=None, global_=self.global_)
 
-        self.assertUnsetValueIsSuccessful(initctl_env_var)
+        self.assertTestIsSuccessful('test_value_not_set', initctl_env_var)
         self.assertValue('original test value',)
 
     def test_use_initctl_environment_variable_to_unset_nonexisting_variable(
@@ -290,7 +282,7 @@ class InitctlEnvironmentVariableTestCase(testscenarios.TestWithScenarios):
         initctl_env_var = fixture_setup.InitctlEnvironmentVariable(
             testenvvarforfixture=None, global_=self.global_)
 
-        self.assertUnsetValueIsSuccessful(initctl_env_var)
+        self.assertTestIsSuccessful('test_value_not_set', initctl_env_var)
         self.assertUnset()
 
 
