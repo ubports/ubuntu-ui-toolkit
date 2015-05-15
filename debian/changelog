@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (1.2.1485+15.04.20150429-0ubuntu2) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.3.1506+15.04.20150429-0ubuntu2) UNRELEASED; urgency=medium
 
   [ Loïc Molinari ]
   * Set QSGNode debug description on the shape-based nodes to ease renderer 
@@ -24,6 +24,9 @@ ubuntu-ui-toolkit (1.2.1485+15.04.20150429-0ubuntu2) UNRELEASED; urgency=medium
   [ Zoltan Balogh ]
   * Fix header CPO for 1.2 without moving attribute. Let the header CPO try 
     both old and new buttons.
+
+  [ Christian Dywan ]
+  * Add version subfolder to benchmark test paths.
 
  -- Zoltán Balogh <zoltan@bakter.hu>  Fri, 15 May 2015 12:57:30 +0300
 
