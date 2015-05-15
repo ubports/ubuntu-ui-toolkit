@@ -177,30 +177,6 @@ class InitctlEnvironmentVariableTestCase(testscenarios.TestWithScenarios):
         ('local_variable', {'global_': False})
     ]
 
-    def assertTestIsSuccessful(self, test_name, initctl_env_var,
-                               expected_value=None):
-        result = testtools.TestResult()
-
-        class TestWithInitctlEnvVar(testtools.TestCase):
-            def setUp(inner):
-                super().setUp()
-                inner.useFixture(initctl_env_var)
-
-            def test_value_set(inner):
-                inner.assertEqual(
-                    expected_value,
-                    environment.get_initctl_env_var(
-                        'testenvvarforfixture', global_=self.global_))
-
-            def test_value_not_set(inner):
-                inner.assertFalse(
-                    environment.is_initctl_env_var_set(
-                        'testenvvarforfixture', global_=self.global_))
-
-        TestWithInitctlEnvVar(test_name).run(result)
-        self.assertTrue(
-            result.wasSuccessful(), 'Failed to set the environment variable.')
-
     def assertValue(self, expected_value):
         self.assertEqual(
             expected_value,
@@ -211,6 +187,25 @@ class InitctlEnvironmentVariableTestCase(testscenarios.TestWithScenarios):
         self.assertFalse(
             environment.is_initctl_env_var_set(
                 'testenvvarforfixture', global_=self.global_))
+
+    def assertTestIsSuccessful(self, test_name, initctl_env_var,
+                               expected_value=None):
+        result = testtools.TestResult()
+
+        class TestWithInitctlEnvVar(testtools.TestCase):
+            def setUp(inner):
+                super().setUp()
+                inner.useFixture(initctl_env_var)
+
+            def test_value_set(inner):
+                self.assertValue(expected_value)
+
+            def test_value_not_set(inner):
+                self.assertUnset()
+
+        TestWithInitctlEnvVar(test_name).run(result)
+        self.assertTrue(
+            result.wasSuccessful(), 'Failed to set the environment variable.')
 
     def test_use_initctl_environment_variable_to_set_unexisting_variable(self):
         """Test the initctl env var fixture when the var is unset.
