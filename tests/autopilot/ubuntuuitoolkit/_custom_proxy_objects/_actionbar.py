@@ -66,7 +66,7 @@ class ActionBar(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
     @autopilot_logging.log_action(logger.info)
     def click_action_button(self, action_object_name):
-        """Click an action button of the header.
+        """Click an action button of the action bar.
 
         :parameter object_name: The QML objectName property of the action
         :raise ToolkitException: If there is no action button with that object
