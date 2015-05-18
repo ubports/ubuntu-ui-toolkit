@@ -97,7 +97,7 @@ Toolkit.StyledItem {
     /*!
       This function is used by the value indicator to show the current value.
       Reimplement this function if you want to show different information. By
-      default, the value v is rounded to the nearest interger value.
+      default, the value v is rounded to the nearest integer value.
     */
     function formatValue(v) {
         return v.toFixed(0)

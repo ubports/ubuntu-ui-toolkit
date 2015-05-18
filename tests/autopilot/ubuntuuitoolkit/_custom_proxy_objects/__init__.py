@@ -19,6 +19,7 @@
 
 __all__ = [
     'AppHeader',
+    'ActionBar',
     'check_autopilot_version',
     'CheckBox',
     'get_keyboard',
@@ -44,6 +45,7 @@ __all__ = [
     'UbuntuUIToolkitCustomProxyObjectBase',
 ]
 
+from ubuntuuitoolkit._custom_proxy_objects._actionbar import ActionBar
 from ubuntuuitoolkit._custom_proxy_objects._checkbox import CheckBox
 from ubuntuuitoolkit._custom_proxy_objects._common import (
     check_autopilot_version,
