@@ -1,0 +1,5 @@
+load(qml_plugin)
+CONFIG -= hide_symbols
+
+load(ubuntu_enable_testing)
+
