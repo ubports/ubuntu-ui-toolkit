@@ -20,6 +20,7 @@
 #define UCDEPRECATEDTHEME_H
 
 #include <QtCore/QObject>
+#include <QtCore/QHash>
 
 class QQmlComponent;
 class QQmlContext;
@@ -51,6 +52,7 @@ Q_SIGNALS:
 
 private:
     void showDeprecatedNote(QObject *onItem, const char *note);
+    QHash<QString, bool> m_notes;
 };
 
 #endif // UCDEPRECATEDTHEME_H
