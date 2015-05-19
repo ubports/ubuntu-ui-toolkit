@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Copyright 2012 Canonical Ltd.
 #
@@ -26,25 +26,25 @@ fi
 mkdir -p $DOC_PATH
 
 # Offline docs for QtCreator
-$QDOC $SRC/ubuntu-ui-toolkit-qtcreator.qdocconf 2> $DOC_PATH/qdoc.log
+eval "$QDOC $SRC/ubuntu-ui-toolkit-qtcreator.qdocconf 2> $DOC_PATH/qdoc.log"
 # FIXME: With Qt 5.2 this warning shows up, forcibly omit it from errors
 grep -v "error: HTML file already exists; overwriting" $DOC_PATH/qdoc.log | grep -v "qdoc: warning: No documentation for 'global'" > $DOC_PATH/qdoc.err
 cat $DOC_PATH/qdoc.err
 test ! -s $DOC_PATH/qdoc.err || exit 1
 echo docs: Offline done.
 
-$QHELPGENERATOR -o "$DOC_PATH/ubuntuuserinterfacetoolkit.qch" "$DOC_PATH/offline/ubuntuuserinterfacetoolkit.qhp" | grep -v ' does not exist! Skipping it'
+eval "$QHELPGENERATOR -o '$DOC_PATH/ubuntuuserinterfacetoolkit.qch' '$DOC_PATH/offline/ubuntuuserinterfacetoolkit.qhp' | grep -v ' does not exist! Skipping it'"
 echo docs: qch done: $DOC_PATH
 
 # Online docs. Run qdoc twice: the second run with indexes for cross-referencing
 # other APIs but discard errors because qdoc inherits all doc bugs otherwise
-$QDOC $SRC/ubuntu-ui-toolkit-online.qdocconf 2> $DOC_PATH/qdoc.log
+eval "$QDOC $SRC/ubuntu-ui-toolkit-online.qdocconf 2> $DOC_PATH/qdoc.log"
 grep -v "error: HTML file already exists; overwriting" $DOC_PATH/qdoc.log | grep -v "qdoc: warning: No documentation for 'global'" > $DOC_PATH/qdoc.err
 cat $DOC_PATH/qdoc.err
 test ! -s $DOC_PATH/qdoc.err || exit 1
 echo docs: Online done.
 
-$QDOC $SRC/ubuntu-ui-toolkit-online-indexes.qdocconf 2> /dev/null
+eval "$QDOC $SRC/ubuntu-ui-toolkit-online-indexes.qdocconf 2> /dev/null"
 echo docs: Cross-referenced done.
 
 sed -r -i 's@(</p>)<p/>@\1@g' $DOC_PATH/html/*.html
