@@ -21,7 +21,6 @@
 //     plotting the rendering speed of a scene with an increasing number of overlaid shapes.
 
 #include "ucubuntushapeoverlay.h"
-#include "ucunits.h"
 
 // -- Scene graph shader ---
 

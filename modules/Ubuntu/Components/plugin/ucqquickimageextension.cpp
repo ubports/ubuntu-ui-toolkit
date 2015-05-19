@@ -19,6 +19,7 @@
 #include <QtCore/QFile>
 #include <QtCore/QFileInfo>
 #include <QtCore/QDir>
+#include <QtGui/QGuiApplication>
 #include <QtQuick/private/qquickimagebase_p.h>
 
 #include "ucqquickimageextension.h"
@@ -78,7 +79,7 @@ void UCQQuickImageExtension::reloadSource()
     QString selectedFilePath = resolved.mid(separatorPosition+1);
 
     if (scaleFactor == "1") {
-        if (qFuzzyCompare(UCUnits::instance().devicePixelRatio(), 1.0f)
+        if (qFuzzyCompare(qGuiApp->devicePixelRatio(), (qreal)1.0)
                 || selectedFilePath.endsWith(".svg") || selectedFilePath.endsWith(".svgz")) {
             // No scaling necessary. Just pass the file as is.
             m_image->setSource(QUrl::fromLocalFile(selectedFilePath));

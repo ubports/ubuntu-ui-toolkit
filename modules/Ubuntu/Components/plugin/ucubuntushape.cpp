@@ -979,7 +979,7 @@ void UCUbuntuShape::_q_openglContextDestroyed()
 
 void UCUbuntuShape::_q_gridUnitChanged()
 {
-    const float gridUnitInDevicePixels = UCUnits::instance().gridUnit() / UCUnits::instance().devicePixelRatio();
+    const float gridUnitInDevicePixels = UCUnits::instance().gridUnit() / qGuiApp->devicePixelRatio();
     setImplicitWidth(implicitWidthGU * gridUnitInDevicePixels);
     setImplicitHeight(implicitHeightGU * gridUnitInDevicePixels);
     update();
@@ -1074,7 +1074,6 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
 {
     Q_UNUSED(data);
 
-    const float dpr = UCUnits::instance().devicePixelRatio();
     const QSizeF itemSize(width(), height());
     if (itemSize.isEmpty()) {
         delete oldNode;
@@ -1112,6 +1111,8 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
             sourceTextureRect = sourceTexture->normalizedTextureSubRect();
         }
         if (m_flags & DirtySourceTransform) {
+            const float dpr = qGuiApp->devicePixelRatio();
+
             if (m_flags & SourceApiSet) {
                 updateSourceTransform(itemSize.width() * dpr, itemSize.height() * dpr, m_sourceFillMode,
                                       m_sourceHorizontalAlignment, m_sourceVerticalAlignment,
@@ -1145,7 +1146,7 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
     // scaled down accordingly. The shape was using a fixed image for the corner before switching to
     // a distance field, since the corner wasn't taking the whole image (ending at ~80%) we need
     // to take that into account when the size is scaled down. (calculation in device pixels)
-    float radius = UCUnits::instance().gridUnit() / dpr
+    float radius = UCUnits::instance().gridUnit() / qGuiApp->devicePixelRatio()
         * (m_radius == Small ? smallRadiusGU : mediumRadiusGU);
     const float scaledDownRadius = qMin(itemSize.width(), itemSize.height()) * 0.5f * 0.8f;
     if (radius > scaledDownRadius) {
@@ -1228,7 +1229,7 @@ void UCUbuntuShape::updateMaterial(QSGNode* node, float radius, quint32 shapeTex
         materialData->sourceOpacity = 0;
     }
 
-    const float dpr = UCUnits::instance().devicePixelRatio();
+    const float dpr = qGuiApp->devicePixelRatio();
     const float physicalRadius = dpr * radius;
 
     // Mapping of radius size range from [0, 4] to [0, 1] with clamping, plus quantization.

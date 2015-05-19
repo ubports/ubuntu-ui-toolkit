@@ -67,14 +67,8 @@ static float getenvFloat(const char* name, float defaultValue)
 
 UCUnits::UCUnits(QObject *parent) :
     QObject(parent),
-    m_devicePixelRatio(1.0)
+    m_devicePixelRatio(qGuiApp->devicePixelRatio())
 {
-    // While QScreen::devicePixelRatio is a qreal, Qt will have rendering issues unless it is an integer value
-    int dpr = qgetenv("QT_DEVICE_PIXEL_RATIO").toInt();
-    if (dpr > 1) {
-        m_devicePixelRatio = dpr;
-    }
-
     // If GRID_UNIT_PX set, always use it. If not, 1GU := DEFAULT_GRID_UNIT_PX * m_devicePixelRatio
     if (qEnvironmentVariableIsSet(ENV_GRID_UNIT_PX)) {
         m_gridUnit = getenvFloat(ENV_GRID_UNIT_PX, DEFAULT_GRID_UNIT_PX);
