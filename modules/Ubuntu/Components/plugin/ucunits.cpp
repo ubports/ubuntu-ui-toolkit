@@ -93,7 +93,7 @@ float UCUnits::gridUnit()
     return m_gridUnit;
 }
 
-void UCUnits::setGridUnit(const float gridUnit)
+void UCUnits::setGridUnit(float gridUnit)
 {
     m_gridUnit = gridUnit;
     Q_EMIT gridUnitChanged();
@@ -105,7 +105,7 @@ void UCUnits::setGridUnit(const float gridUnit)
     Returns the number of device pixels \a value density independent pixels correspond to.
 */
 // Device pixels (and not actual pixels) because QML sizes in terms of device pixels.
-float UCUnits::dp(const float value)
+float UCUnits::dp(float value)
 {
     const float ratio = m_gridUnit / DEFAULT_GRID_UNIT_PX;
     if (value <= 2.0) {
@@ -123,7 +123,7 @@ float UCUnits::dp(const float value)
 */
 // Device pixels (and not actual pixels) because QML sizes in terms of device pixels.
 
-float UCUnits::gu(const float value)
+float UCUnits::gu(float value)
 {
     return qRound(value * m_gridUnit) / m_devicePixelRatio;
 }
