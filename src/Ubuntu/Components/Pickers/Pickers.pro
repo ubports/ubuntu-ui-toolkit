@@ -1,4 +1,4 @@
-TARGETPATH = Ubuntu/Component/Pickers
+TARGETPATH = Ubuntu/Components/Pickers
 
 QML_FILES += 1.2/DatePicker.qml \
              1.2/DayModel.qml \

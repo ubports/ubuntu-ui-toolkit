@@ -13,7 +13,7 @@ equals(QT_MAJOR_VERSION, 5):lessThan(QT_MINOR_VERSION, 2) {
 }
 
 DOC_PATH=$$shadowed($$ROOT_SOURCE_DIR)/documentation
-generate_docs.commands = cd $$ROOT_SOURCE_DIR; SRC=$$ROOT_SOURCE_DIR/documentation BLD=$$ROOT_BUILD_DIR/documentation $$ROOT_SOURCE_DIR/documentation/docs.sh $$QDOC $$QHELPGENERATOR $$DOC_PATH
+generate_docs.commands = cd $$ROOT_SOURCE_DIR; SRC=$$ROOT_SOURCE_DIR/documentation BLD=$$ROOT_BUILD_DIR/documentation $$ROOT_SOURCE_DIR/documentation/docs.sh \'$$QDOC\' \'$$QHELPGENERATOR\' $$DOC_PATH
 
 install_docs.files = $$shadowed($$ROOT_SOURCE_DIR)/documentation/html
 install_docs.path = /usr/share/ubuntu-ui-toolkit/doc

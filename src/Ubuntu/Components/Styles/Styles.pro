@@ -1,4 +1,4 @@
-TARGETPATH = Ubuntu/Component/Popups
+TARGETPATH = Ubuntu/Components/Popups
 
 ARTWORK_FILES = $$system(find artwork -type f)
 

@@ -1,4 +1,4 @@
-TARGETPATH = Ubuntu/Component/Themes/SuruGradient
+TARGETPATH = Ubuntu/Components/Themes/SuruGradient
 
 PARENT_THEME_FILE = parent_theme
 DEPRECATED_FILE = deprecated

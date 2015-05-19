@@ -1,4 +1,4 @@
-TARGETPATH = Ubuntu/Component/ListItems
+TARGETPATH = Ubuntu/Components/ListItems
 
 QML_FILES += 1.2/Base.qml \
              1.2/Caption.qml \

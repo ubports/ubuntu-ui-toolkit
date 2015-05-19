@@ -1,4 +1,4 @@
-TARGETPATH = Ubuntu/Component/Themes/Ambiance
+TARGETPATH = Ubuntu/Components/Themes/Ambiance
 
 PARENT_THEME_FILE = parent_theme
 DEPRECATED_FILE = deprecated

@@ -1,4 +1,4 @@
-TARGETPATH = Ubuntu/Component/Themes/SuruDark
+TARGETPATH = Ubuntu/Components/Themes/SuruDark
 
 PARENT_THEME_FILE = parent_theme
 DEPRECATED_FILE = deprecated

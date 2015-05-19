@@ -1,4 +1,4 @@
-TARGETPATH = Ubuntu/Component/Themes
+TARGETPATH = Ubuntu/Components/Themes
 
 
 ARTWORK_FILES = $$system(find artwork -type f)

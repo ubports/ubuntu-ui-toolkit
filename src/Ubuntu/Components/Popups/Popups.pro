@@ -1,4 +1,4 @@
-TARGETPATH = Ubuntu/Component/Popups
+TARGETPATH = Ubuntu/Components/Popups
 
 QML_FILES += 1.2/ActionSelectionPopover.qml \
              1.2/ComposerSheet.qml \
