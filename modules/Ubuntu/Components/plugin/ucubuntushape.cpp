@@ -1144,10 +1144,10 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
     // Get the radius size. When the item width and/or height is less than 2 * radius, the size is
     // scaled down accordingly. The shape was using a fixed image for the corner before switching to
     // a distance field, since the corner wasn't taking the whole image (ending at ~80%) we need
-    // to take that into account when the size is scaled down. (calculation in physical pixels)
-    float radius = UCUnits::instance().gridUnit()
+    // to take that into account when the size is scaled down. (calculation in device pixels)
+    float radius = UCUnits::instance().gridUnit() / dpr
         * (m_radius == Small ? smallRadiusGU : mediumRadiusGU);
-    const float scaledDownRadius = qMin(itemSize.width(), itemSize.height()) * dpr * 0.5f * 0.8f;
+    const float scaledDownRadius = qMin(itemSize.width(), itemSize.height()) * 0.5f * 0.8f;
     if (radius > scaledDownRadius) {
         radius = scaledDownRadius;
     }
@@ -1228,16 +1228,19 @@ void UCUbuntuShape::updateMaterial(QSGNode* node, float radius, quint32 shapeTex
         materialData->sourceOpacity = 0;
     }
 
+    const float dpr = UCUnits::instance().devicePixelRatio();
+    const float physicalRadius = dpr * radius;
+
     // Mapping of radius size range from [0, 4] to [0, 1] with clamping, plus quantization.
     const float start = 0.0f + radiusSizeOffset;
     const float end = 4.0f + radiusSizeOffset;
     materialData->distanceAAFactor = qMin(
-        (radius / (end - start)) - (start / (end - start)), 1.0f) * 255.0f;
+        (physicalRadius / (end - start)) - (start / (end - start)), 1.0f) * 255.0f;
 
     // When the radius is equal to radiusSizeOffset (which means radius size is 0), no aspect is
     // flagged so that a dedicated (statically flow controlled) shaved off shader can be used for
     // optimal performance.
-    if (radius > radiusSizeOffset) {
+    if (physicalRadius > radiusSizeOffset) {
         const quint8 aspectFlags[] = {
             ShapeMaterial::Data::Flat, ShapeMaterial::Data::Inset,
             ShapeMaterial::Data::Inset | ShapeMaterial::Data::Pressed
@@ -1260,8 +1263,6 @@ void UCUbuntuShape::updateGeometry(
     // better optimization here.
     Q_UNUSED(shapeOffset);
 
-    const qreal dpr = UCUnits::instance().devicePixelRatio();
-
     ShapeNode::Vertex* v = reinterpret_cast<ShapeNode::Vertex*>(
         static_cast<ShapeNode*>(node)->geometry()->vertexData());
 
@@ -1277,7 +1278,7 @@ void UCUbuntuShape::updateGeometry(
     v[0].backgroundColor = backgroundColor[0];
     v[1].position[0] = 0.5f * itemSize.width();
     v[1].position[1] = 0.0f;
-    v[1].shapeCoordinate[0] = (0.5f * itemSize.width() * dpr) / radius - shapeTextureInfo.offset;
+    v[1].shapeCoordinate[0] = (0.5f * itemSize.width()) / radius - shapeTextureInfo.offset;
     v[1].shapeCoordinate[1] = shapeTextureInfo.offset;
     v[1].sourceCoordinate[0] = 0.5f * sourceCoordTransform.x() + sourceCoordTransform.z();
     v[1].sourceCoordinate[1] = sourceCoordTransform.w();
@@ -1298,7 +1299,7 @@ void UCUbuntuShape::updateGeometry(
     v[3].position[0] = 0.0f;
     v[3].position[1] = 0.5f * itemSize.height();
     v[3].shapeCoordinate[0] = shapeTextureInfo.offset;
-    v[3].shapeCoordinate[1] = (0.5f * itemSize.height() * dpr) / radius - shapeTextureInfo.offset;
+    v[3].shapeCoordinate[1] = (0.5f * itemSize.height()) / radius - shapeTextureInfo.offset;
     v[3].sourceCoordinate[0] = sourceCoordTransform.z();
     v[3].sourceCoordinate[1] = 0.5f * sourceCoordTransform.y() + sourceCoordTransform.w();
     v[3].sourceCoordinate[2] = sourceMaskTransform.z();
@@ -1306,8 +1307,8 @@ void UCUbuntuShape::updateGeometry(
     v[3].backgroundColor = backgroundColor[1];
     v[4].position[0] = 0.5f * itemSize.width();
     v[4].position[1] = 0.5f * itemSize.height();
-    v[4].shapeCoordinate[0] = (0.5f * itemSize.width() * dpr) / radius - shapeTextureInfo.offset;
-    v[4].shapeCoordinate[1] = (0.5f * itemSize.height() * dpr) / radius - shapeTextureInfo.offset;
+    v[4].shapeCoordinate[0] = (0.5f * itemSize.width()) / radius - shapeTextureInfo.offset;
+    v[4].shapeCoordinate[1] = (0.5f * itemSize.height()) / radius - shapeTextureInfo.offset;
     v[4].sourceCoordinate[0] = 0.5f * sourceCoordTransform.x() + sourceCoordTransform.z();
     v[4].sourceCoordinate[1] = 0.5f * sourceCoordTransform.y() + sourceCoordTransform.w();
     v[4].sourceCoordinate[2] = 0.5f * sourceMaskTransform.x() + sourceMaskTransform.z();
@@ -1316,7 +1317,7 @@ void UCUbuntuShape::updateGeometry(
     v[5].position[0] = itemSize.width();
     v[5].position[1] = 0.5f * itemSize.height();
     v[5].shapeCoordinate[0] = shapeTextureInfo.offset;
-    v[5].shapeCoordinate[1] = (0.5f * itemSize.height() * dpr) / radius - shapeTextureInfo.offset;
+    v[5].shapeCoordinate[1] = (0.5f * itemSize.height()) / radius - shapeTextureInfo.offset;
     v[5].sourceCoordinate[0] = sourceCoordTransform.x() + sourceCoordTransform.z();
     v[5].sourceCoordinate[1] = 0.5f * sourceCoordTransform.y() + sourceCoordTransform.w();
     v[5].sourceCoordinate[2] = sourceMaskTransform.x() + sourceMaskTransform.z();
@@ -1335,7 +1336,7 @@ void UCUbuntuShape::updateGeometry(
     v[6].backgroundColor = backgroundColor[2];
     v[7].position[0] = 0.5f * itemSize.width();
     v[7].position[1] = itemSize.height();
-    v[7].shapeCoordinate[0] = (0.5f * itemSize.width() * dpr) / radius - shapeTextureInfo.offset;
+    v[7].shapeCoordinate[0] = (0.5f * itemSize.width()) / radius - shapeTextureInfo.offset;
     v[7].shapeCoordinate[1] = shapeTextureInfo.offset;
     v[7].sourceCoordinate[0] = 0.5f * sourceCoordTransform.x() + sourceCoordTransform.z();
     v[7].sourceCoordinate[1] = sourceCoordTransform.y() + sourceCoordTransform.w();
