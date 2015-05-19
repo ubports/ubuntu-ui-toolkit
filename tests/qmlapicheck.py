@@ -28,7 +28,7 @@ if len(sys.argv) < 2 or '-h' in sys.argv or '--help' in sys.argv:
         '  Generate a QML API file\n'
         'Example:\n'
         '  env BUILTINS=QQuick,QQml,U1db:: '
-        '%s modules/Ubuntu/Components/qmldir plugins.qmltypes'
+        '%s qml/Ubuntu/Components/qmldir plugins.qmltypes'
         ' > components.api.new\n'
         '\n'
         '  It is recommended to pass qmldir files over a list of qml files\n'

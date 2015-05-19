@@ -18,7 +18,7 @@
 
 . `dirname $0`/../build_paths.inc
 
-QML="modules/Ubuntu/*/qmldir modules/Ubuntu/Components/*/qmldir"
+QML="qml/Ubuntu/*/qmldir qml/Ubuntu/Components/*/qmldir"
 CPP="Ubuntu.Components Ubuntu.Layouts Ubuntu.PerformanceMetrics Ubuntu.Test"
 
 echo Dumping QML API of C++ components
