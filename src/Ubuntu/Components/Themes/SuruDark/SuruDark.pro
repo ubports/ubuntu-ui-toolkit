@@ -1,7 +1,6 @@
 TARGETPATH = Ubuntu/Components/Themes/SuruDark
 
 PARENT_THEME_FILE = parent_theme
-DEPRECATED_FILE = deprecated
 ARTWORK_FILES +=  artwork/chevron@27.png
 
 QML_FILES += 1.2/MainViewStyle.qml \
@@ -13,7 +12,6 @@ QML_FILES += 1.2/MainViewStyle.qml \
              1.3/Palette.qml \
              1.3/TabBarStyle.qml \
              $$ARTWORK_FILES \
-             $$PARENT_THEME_FILE \
-             $$DEPRECATED_FILE
+             $$PARENT_THEME_FILE
 
 load(ubuntu_qml_module)

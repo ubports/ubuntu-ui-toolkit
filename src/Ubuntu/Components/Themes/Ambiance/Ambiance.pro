@@ -1,7 +1,5 @@
 TARGETPATH = Ubuntu/Components/Themes/Ambiance
 
-PARENT_THEME_FILE = parent_theme
-DEPRECATED_FILE = deprecated
 ARTWORK_FILES += artwork/background_paper@27.png \
              artwork/bubble_arrow@20.png \
              artwork/bubble_arrow@30.png \
@@ -114,8 +112,6 @@ QML_FILES += 1.2/ActivityIndicatorStyle.qml \
              1.3/TextFieldStyle.qml \
              1.3/ToolbarButtonStyle.qml \
              1.3/ToolbarStyle.qml \
-    $$ARTWORK_FILES \
-    $$PARENT_THEME_FILE \
-    $$DEPRECATED_FILE
+    $$ARTWORK_FILES
 
 load(ubuntu_qml_module)

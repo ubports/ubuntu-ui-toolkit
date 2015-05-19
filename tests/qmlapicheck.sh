@@ -28,8 +28,8 @@ for i in $CPP; do
     # Silence spam on stderr due to fonts
     # https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1256999
     # https://bugreports.qt-project.org/browse/QTBUG-36243
-    env UBUNTU_UI_TOOLKIT_THEMES_PATH=$BUILD_DIR/modules ALARM_BACKEND=memory \
-        qmlplugindump -noinstantiate $i 0.1 $BUILD_DIR/modules 1>> $BUILD_DIR/plugins.qmltypes
+    env UBUNTU_UI_TOOLKIT_THEMES_PATH=$BUILD_DIR/qml ALARM_BACKEND=memory \
+        qmlplugindump -noinstantiate $i 0.1 $BUILD_DIR/qml 1>> $BUILD_DIR/plugins.qmltypes
     test $? != 0 && ERRORS=1
 done
 test $ERRORS = 1 && echo Error: qmlplugindump failed && exit 1
