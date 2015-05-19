@@ -1,4 +1,4 @@
-TARGETPATH = Ubuntu/Components/Popups
+TARGETPATH = Ubuntu/Components/Styles
 
 ARTWORK_FILES = $$system(find artwork -type f)
 
@@ -8,6 +8,8 @@ QML_FILES += 1.2/ComboButtonStyle.qml \
              $$ARTWORK_FILES
 
 load(ubuntu_qml_module)
+
+OTHER_FILES+=qmldir
 
 
 

@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 #
 # Copyright 2013 Canonical Ltd.
 #
@@ -36,11 +36,11 @@ test $ERRORS = 1 && echo Error: qmlplugindump failed && exit 1
 
 echo Running QML API check for $QML
 # Palette and UbuntuColors gets included in Qt > 5.2 qmlplugindump even though it's qml
-BUILTINS=QQuick,QQml,U1db::,Palette,UbuntuColors python3 tests/qmlapicheck.py $QML $BUILD_DIR/plugins.qmltypes > $BUILD_DIR/components.api.new
+BUILTINS=QQuick,QQml,U1db::,Palette,UbuntuColors python3 $SRC_DIR/tests/qmlapicheck.py $QML $BUILD_DIR/plugins.qmltypes > $BUILD_DIR/components.api.new
 test $? != 0 && echo Error: qmlapicheck.py failed && exit 1
 
 echo Verifying the diff between existing and generated API
-diff -Fqml -u components.api $BUILD_DIR/components.api.new
+diff -Fqml -u $SRC_DIR/components.api $BUILD_DIR/components.api.new
 test $? != 0 && ERRORS=1
 
 if [ "x$ERRORS" != "x1" ]; then
