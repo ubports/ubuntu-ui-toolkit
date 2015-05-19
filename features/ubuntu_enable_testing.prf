@@ -1,6 +1,6 @@
 instbase = $$ROOT_BUILD_DIR/qml
 
-force_independent:if(debug_and_release|build_all|!CONFIG(release, debug|release)) {
+force_independent: {
     # These bizarre rules copy the files to the build directory
 
     defineReplace(qmlModStripSrcDir) {
