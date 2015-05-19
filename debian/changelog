@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (1.3.1510+15.04.20150429-0ubuntu2) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.3.1510+15.10.20150519-0ubuntu1) wily; urgency=medium
 
   [ Loïc Molinari ]
   * Set QSGNode debug description on the shape-based nodes to ease renderer 
@@ -32,7 +32,10 @@ ubuntu-ui-toolkit (1.3.1510+15.04.20150429-0ubuntu2) UNRELEASED; urgency=medium
   * Only show handlers if text isn't empty. Fixes LP: #1450213.
   * Only print unique deprecation notes. Fixes LP: #1454281.
 
- -- Zoltán Balogh <zoltan@bakter.hu>  Fri, 15 May 2015 12:57:30 +0300
+  [ CI Train Bot ]
+  * New rebuild forced.
+
+ -- CI Train Bot <ci-train-bot@canonical.com>  Tue, 19 May 2015 10:47:09 +0000
 
 ubuntu-ui-toolkit (1.2.1485+15.04.20150421-0ubuntu1) vivid; urgency=medium
 
