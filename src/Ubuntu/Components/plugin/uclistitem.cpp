@@ -954,7 +954,7 @@ void UCListItem::componentComplete()
 
     if (d->parentAttached) {
         // connect selectedIndicesChanged
-        connect(d->parentAttached, &UCViewItemsAttached::selectedIndicesChanged,
+        connect(d->parentAttached.data(), &UCViewItemsAttached::selectedIndicesChanged,
                 this, &UCListItem::selectedChanged);
         // sync selectModeChanged()
         connect(d->parentAttached, SIGNAL(selectModeChanged()),
