@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (1.3.1506+15.04.20150429-0ubuntu2) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.3.1510+15.04.20150429-0ubuntu2) UNRELEASED; urgency=medium
 
   [ Loïc Molinari ]
   * Set QSGNode debug description on the shape-based nodes to ease renderer 
@@ -11,6 +11,8 @@ ubuntu-ui-toolkit (1.3.1506+15.04.20150429-0ubuntu2) UNRELEASED; urgency=medium
   * Document the correct version when Page.head.visible and Page.head.locked
     were added.
   * Revert to use the old header in trunk.
+  * Introduce the new ActionBar component.
+  * Restore moving property on AppHeader 1.2.
 
   [ Zsombor Egri ]
   * Provide versioning for theme loading. Each toolkit must be released with a 
@@ -27,6 +29,8 @@ ubuntu-ui-toolkit (1.3.1506+15.04.20150429-0ubuntu2) UNRELEASED; urgency=medium
 
   [ Christian Dywan ]
   * Add version subfolder to benchmark test paths.
+  * Only show handlers if text isn't empty. Fixes LP: #1450213.
+  * Only print unique deprecation notes. Fixes LP: #1454281.
 
  -- Zoltán Balogh <zoltan@bakter.hu>  Fri, 15 May 2015 12:57:30 +0300
 

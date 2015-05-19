@@ -70,11 +70,19 @@ class CaretTextInputTestCase(tests.QMLFileAppTestCase):
         return self.main_view.select_single(
             objectName=positionProperty + '_draggeditem')
 
+    def test_caret_hidden_if_empty(self):
+        cursorName = 'text_cursor_style_caret_cursorPosition'
+        self._assert_not_visible(objectName=cursorName)
+        self.pointing_device.click_object(self.textfield)
+        self.assertTrue(self.textfield.focus)
+        self._assert_not_visible(objectName=cursorName)
+
     def test_caret_visible_on_focus(self):
         cursorName = 'text_cursor_style_caret_cursorPosition'
         self._assert_not_visible(objectName=cursorName)
         self.pointing_device.click_object(self.textfield)
         self.assertTrue(self.textfield.focus)
+        self.textfield.keyboard.type('Lorem ipsum')
         self.main_view.select_single(objectName=cursorName)
 
     def test_caret_hide_while_typing(self):
