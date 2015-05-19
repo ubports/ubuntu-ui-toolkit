@@ -146,6 +146,7 @@ Ubuntu.StyledItem {
         property: "visible"
         value: QuickUtils.touchScreenAvailable
          && (contextMenuVisible || !typing)
+         && handler.main.text !== ""
     }
     property bool typing: false
     property bool contextMenuVisible: false

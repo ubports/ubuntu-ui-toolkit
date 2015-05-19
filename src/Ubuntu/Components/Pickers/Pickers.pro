@@ -31,4 +31,4 @@ QML_FILES += 1.2/DatePicker.qml \
              1.3/SecondsModel.qml \
              1.3/YearModel.qml
 
-load(qml_module)
+load(ubuntu_qml_module)

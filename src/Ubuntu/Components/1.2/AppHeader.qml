@@ -166,6 +166,20 @@ Components.StyledItem {
      */
     property PageHeadConfiguration config: null
 
+    /*!
+      The header is not fully opened or fully closed.
+
+      This property is true if the header is animating towards a fully
+      opened or fully closed state, or if the header is moving due to user
+      interaction with the flickable.
+
+      The value of moving is always false when using an old version of
+      PageHeadConfiguration (which does not have the visible property).
+
+      Used in tst_header_locked_visible.qml.
+    */
+    readonly property bool moving: false
+
     QtObject {
         id: internal
 

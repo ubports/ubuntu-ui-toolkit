@@ -39,4 +39,4 @@ QML_FILES += 1.2/Base.qml \
              1.3/ThinDivider.qml \
              1.3/ValueSelector.qml \
 
-load(qml_module)
+load(ubuntu_qml_module)

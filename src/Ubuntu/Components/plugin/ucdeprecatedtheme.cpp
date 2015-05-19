@@ -65,6 +65,7 @@
 UCDeprecatedTheme::UCDeprecatedTheme(QObject *parent)
     : QObject(parent)
 {
+    m_notes = QHash<QString, bool>();
     connect(&UCTheme::defaultTheme(), &UCTheme::nameChanged,
             this, &UCDeprecatedTheme::nameChanged);
     connect(&UCTheme::defaultTheme(), &UCTheme::paletteChanged,
@@ -73,9 +74,13 @@ UCDeprecatedTheme::UCDeprecatedTheme(QObject *parent)
 
 void UCDeprecatedTheme::showDeprecatedNote(QObject *onItem, const char *note)
 {
+    QString noteId(QString("%1.%2").arg(note).arg(onItem->metaObject()->className()));
+    if (m_notes.contains(noteId))
+        return;
     QByteArray suppressNote = qgetenv("SUPPRESS_DEPRECATED_NOTE");
     if (suppressNote.isEmpty() || suppressNote != "yes") {
         qmlInfo(onItem) << note;
+        m_notes.insert(noteId, true);
     }
 }
 

@@ -7,7 +7,7 @@ QML_FILES += 1.2/ComboButtonStyle.qml \
              1.2/PullToRefreshStyle.qml \
              $$ARTWORK_FILES
 
-load(qml_module)
+load(ubuntu_qml_module)
 
 
 

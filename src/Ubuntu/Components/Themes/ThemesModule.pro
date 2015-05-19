@@ -9,4 +9,4 @@ QML_FILES += 1.2/Palette.qml \
              1.3/PaletteValues.qml \
              $$ARTWORK_FILES
 
-load(qml_module)
+load(ubuntu_qml_module)

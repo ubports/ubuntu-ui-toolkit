@@ -75,6 +75,7 @@ QML_FILES += 1.2/ActivityIndicatorStyle.qml \
              1.2/TextFieldStyle.qml \
              1.2/ToolbarButtonStyle.qml \
              1.2/ToolbarStyle.qml \
+             1.3/ActionBarStyle.qml \
              1.3/ActivityIndicatorStyle.qml \
              1.3/BubbleShape.qml \
              1.3/ButtonForeground.qml \
@@ -117,4 +118,4 @@ QML_FILES += 1.2/ActivityIndicatorStyle.qml \
     $$PARENT_THEME_FILE \
     $$DEPRECATED_FILE
 
-load(qml_module)
+load(ubuntu_qml_module)

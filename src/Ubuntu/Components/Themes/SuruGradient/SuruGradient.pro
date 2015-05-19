@@ -14,4 +14,4 @@ QML_FILES += MainViewStyle.qml \
     $$PARENT_THEME_FILE \
     $$DEPRECATED_FILE
 
-load(qml_module)
+load(ubuntu_qml_module)

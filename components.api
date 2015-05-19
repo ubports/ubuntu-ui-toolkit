@@ -420,6 +420,10 @@ ActionItem
     property bool hovered
     property bool __acceptEvents
     property internal __mouseArea
+ActionBar 1.3
+StyledItem
+    property list<Action> actions
+    property int numberOfSlots
 ActionItem 1.3
 StyledItem
     property Action action
