@@ -105,6 +105,21 @@ static QObject *registerUbuntuNamespace(QQmlEngine *engine, QJSEngine *scriptEng
     return new UCNamespace();
 }
 
+static QObject *registerUbuntuNamespace13(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+    Q_UNUSED(engine)
+    Q_UNUSED(scriptEngine)
+
+    return new UCNamespaceV13();
+}
+
+void UbuntuComponentsPlugin::initializeBaseUrl()
+{
+    if (!m_baseUrl.isValid()) {
+        m_baseUrl = QUrl(baseUrl().toString() + '/');
+    }
+}
+
 void UbuntuComponentsPlugin::registerWindowContextProperty()
 {
     setWindowContextProperty(QGuiApplication::focusWindow());
@@ -161,6 +176,7 @@ void UbuntuComponentsPlugin::registerTypesToVersion(const char *uri, int major, 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QLatin1String("Ubuntu.Components"));
+    initializeBaseUrl();
 
     // register 0.1 for backward compatibility
     registerTypesToVersion(uri, 0, 1);
@@ -193,12 +209,13 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     // register 1.3 API
     qmlRegisterType<UCTheme>(uri, 1, 3, "ThemeSettings");
     qmlRegisterType<UCStyledItemBase, 2>(uri, 1, 3, "StyledItem");
+    qmlRegisterSingletonType<UCNamespaceV13>(uri, 1, 3, "Ubuntu", registerUbuntuNamespace13);
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 {
     // initialize baseURL
-    m_baseUrl = QUrl(baseUrl().toString() + '/');
+    initializeBaseUrl();
 
     // register internal styles
     const char *styleUri = "Ubuntu.Components.Styles";

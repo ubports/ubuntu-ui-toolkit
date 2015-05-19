@@ -37,6 +37,10 @@ MainView {
             Action {
                 iconName: "close"
                 text: "three"
+            },
+            Action {
+                iconName: "close"
+                text: "four"
             }
         ]
 

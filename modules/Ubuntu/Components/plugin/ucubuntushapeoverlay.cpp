@@ -60,6 +60,7 @@ ShapeOverlayNode::ShapeOverlayNode()
     , m_geometry(attributeSet(), ShapeNode::vertexCount, ShapeNode::indexCount,
                  ShapeNode::indexType)
 {
+    QSGNode::setFlag(UsePreprocess, true);
     memcpy(m_geometry.indexData(), ShapeNode::indices(),
            ShapeNode::indexCount * ShapeNode::indexTypeSize);
     m_geometry.setDrawingMode(ShapeNode::drawingMode);
@@ -67,6 +68,9 @@ ShapeOverlayNode::ShapeOverlayNode()
     m_geometry.setVertexDataPattern(ShapeNode::vertexDataPattern);
     setMaterial(&m_material);
     setGeometry(&m_geometry);
+#ifdef QSG_RUNTIME_DESCRIPTION
+    qsgnode_set_description(this, QLatin1String("ubuntushapeoverlay"));
+#endif
 }
 
 // static

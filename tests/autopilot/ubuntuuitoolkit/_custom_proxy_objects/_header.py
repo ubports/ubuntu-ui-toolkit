@@ -209,9 +209,12 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
                 objectName='select_tab_' + str(index)
                 + '_header_overflow_button')
         except dbus.StateNotFoundError:
-            raise _common.ToolkitException(
-                "Tab button {0} not found.".format(index))
-
+            try:
+                tab_button = self.get_root_instance().select_single(
+                    objectName='tabButton' + str(index))
+            except dbus.StateNotFoundError:
+                raise _common.ToolkitException(
+                    "Tab button {0} not found.".format(index))
         self.pointing_device.click_object(tab_button)
         self.wait_for_animation()
 

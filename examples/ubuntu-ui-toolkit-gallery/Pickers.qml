@@ -16,7 +16,7 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 1.3
-import Ubuntu.Components.Pickers 1.0
+import Ubuntu.Components.Pickers 1.3
 
 Template {
     objectName: "pickersTemplate"
@@ -207,6 +207,17 @@ Template {
                 width: Math.min(root.width - units.gu(16), units.gu(40))
                 onDateChanged: print("picked time="+Qt.formatTime(date, "hh:mm:ss"))
             }
+        }
+    }
+
+    TemplateSection {
+        title: "PickerPanel"
+        TextField {
+            id: textField
+            readOnly: true
+            property date date: new Date()
+            text: date.toISOString()
+            Mouse.onClicked: PickerPanel.openDatePicker(textField, "date");
         }
     }
 }

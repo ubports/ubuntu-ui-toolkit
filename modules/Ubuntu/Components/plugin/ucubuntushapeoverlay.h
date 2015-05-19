@@ -57,6 +57,7 @@ public:
 
     ShapeOverlayNode();
     QSGGeometry* geometry() { return &m_geometry; }
+    void preprocess() { m_material.updateTextures(); }
 
 private:
     ShapeOverlayMaterial m_material;

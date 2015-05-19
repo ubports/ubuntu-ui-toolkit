@@ -512,6 +512,7 @@ void UCStyledItemBasePrivate::_q_ascendantChanged(QQuickItem *ascendant)
     if (ascendant) {
         // disconnect from the previous ones
         disconnectTillItem(sender);
+        parentStyledItem.clear();
         // traverse ascendants till we reach a StyledItem or root and push them into the stack
         if (connectParents(ascendant)) {
             Q_EMIT q->themeChanged();
@@ -577,13 +578,15 @@ bool UCStyledItemBase::childMouseEventFilter(QQuickItem *child, QEvent *event)
 void UCStyledItemBase::itemChange(ItemChange change, const ItemChangeData &data)
 {
     QQuickItem::itemChange(change, data);
-    Q_D(UCStyledItemBase);
     if (change == ItemParentHasChanged) {
-        if (!data.item) {
-            d->disconnectTillItem(0);
-        } else if (d->connectParents(0)) {
-            Q_EMIT themeChanged();
-        }
+        Q_D(UCStyledItemBase);
+        // clean stack
+        d->disconnectTillItem(0);
+        // make sure we reset parent StyledItem
+        d->parentStyledItem.clear();
+        // build the stack - if possible
+        d->connectParents(0);
+        Q_EMIT themeChanged();
     }
 }
 

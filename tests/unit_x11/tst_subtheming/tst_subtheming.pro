@@ -8,7 +8,8 @@ OTHER_FILES += \
     themes/CustomTheme/TestStyle.qml \
     themes/CustomTheme/Palette.qml \
     themes/CustomTheme/parent_theme \
-    themes/TestModule/TestTheme/TestStyle.qml \
+    themes/TestModule/TestTheme/1.2/TestStyle.qml \
+    themes/TestModule/TestTheme/1.3/TestStyle.qml \
     themes/TestModule/TestTheme/qmldir \
     themes/TestModule/TestTheme/parent_theme \
     DynamicAssignment.qml \
@@ -21,6 +22,15 @@ OTHER_FILES += \
     ChangeDefaultPaletteInChildren.qml \
     MultiplePaletteInstances.qml \
     DynamicPalette.qml \
-    InvalidPalette.qml
+    InvalidPalette.qml \
+    ReparentStyledItemFollowsNewPathOnly.qml \
+    themes/TestModule/TestTheme/1.3/TestStyle.qml \
+    themes/CustomTheme/1.3/TestStyle.qml \
+    StyledItemV12.qml \
+    StyledItemV13.qml \
+    StyledItemFallback.qml \
+    StyledItemAppThemeFallback.qml \
+    DeprecatedTheme.qml \
+    StyledItemAppThemeVersioned.qml
 
 

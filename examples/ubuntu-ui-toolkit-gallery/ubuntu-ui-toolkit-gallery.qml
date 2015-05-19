@@ -15,8 +15,8 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.1 // keep 1.1 till we remove the deprecated toolbar and toolbar in general
-import Ubuntu.Components.ListItems 0.1 as ListItem
+import Ubuntu.Components 1.3
+import Ubuntu.Components.ListItems 1.3 as ListItem
 
 MainView {
     id: gallery
@@ -25,8 +25,6 @@ MainView {
 
     // Note! applicationName needs to match the .desktop filename
     applicationName: "ubuntu-ui-toolkit-gallery"
-
-    useDeprecatedToolbar: false
 
     width: units.gu(120)
     height: units.gu(75)
@@ -144,9 +142,6 @@ MainView {
         onActiveChanged: if (gallery.state == "narrow" && !active) {
                              selectedWidget = null;
                          }
-
-        ToolbarItems{ id: defTools}
-        tools: contentLoader.item && contentLoader.item.tools ? contentLoader.item.tools : defTools
 
         Loader {
             id: contentLoader

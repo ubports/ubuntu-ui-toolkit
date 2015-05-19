@@ -20,6 +20,7 @@
 __all__ = [
     'AppHeader',
     'base',
+    'ActionBar',
     'check_autopilot_version',
     'CheckBox',
     'environment',
@@ -58,6 +59,7 @@ from ubuntuuitoolkit import (
     ubuntu_scenarios
 )
 from ubuntuuitoolkit._custom_proxy_objects import (
+    ActionBar,
     AppHeader,
     check_autopilot_version,
     CheckBox,

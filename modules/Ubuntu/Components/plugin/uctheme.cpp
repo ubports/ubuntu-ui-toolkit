@@ -17,6 +17,7 @@
  *          Florian Boucault <florian.boucault@canonical.com>
  */
 
+#include "ucnamespace.h"
 #include "uctheme.h"
 #include "listener.h"
 #include "quickutils.h"
@@ -141,7 +142,8 @@
 const QString THEME_FOLDER_FORMAT("%1/%2/");
 const QString PARENT_THEME_FILE("parent_theme");
 
-QStringList themeSearchPath() {
+QStringList themeSearchPath()
+{
     QString envPath = QLatin1String(getenv("UBUNTU_UI_TOOLKIT_THEMES_PATH"));
     QStringList pathList = envPath.split(':', QString::SkipEmptyParts);
     if (pathList.isEmpty()) {
@@ -161,7 +163,6 @@ QStringList themeSearchPath() {
         pathList << qml2ImportPath.split(':', QString::SkipEmptyParts);
     }
     pathList << QLibraryInfo::location(QLibraryInfo::Qml2ImportsPath).split(':', QString::SkipEmptyParts);
-
     // fix folders
     QStringList result;
     Q_FOREACH(const QString &path, pathList) {
@@ -174,8 +175,10 @@ QStringList themeSearchPath() {
     return result;
 }
 
-QUrl pathFromThemeName(QString themeName)
+UCTheme::ThemeRecord pathFromThemeName(QString themeName)
 {
+    // the first entry from pathList is the app's current folder
+    UCTheme::ThemeRecord record(themeName, QUrl(), false, false);
     themeName.replace('.', '/');
     QStringList pathList = themeSearchPath();
     Q_FOREACH(const QString &path, pathList) {
@@ -183,20 +186,22 @@ QUrl pathFromThemeName(QString themeName)
         // QUrl needs a trailing slash to understand it's a directory
         QString absoluteThemeFolder = QDir(themeFolder).absolutePath().append('/');
         if (QDir(absoluteThemeFolder).exists()) {
-            return QUrl::fromLocalFile(absoluteThemeFolder);
+            record.deprecated = QFile::exists(absoluteThemeFolder + "deprecated");
+            record.shared = QFile::exists(absoluteThemeFolder + "qmldir");
+            record.path = QUrl::fromLocalFile(absoluteThemeFolder);
+            break;
         }
     }
-    return QUrl();
+    return record;
 }
 
-QString parentThemeName(const QString& themeName)
+QString parentThemeName(const UCTheme::ThemeRecord& themePath)
 {
     QString parentTheme;
-    QUrl themePath = pathFromThemeName(themeName);
     if (!themePath.isValid()) {
-        qWarning() << qPrintable(UbuntuI18n::instance().tr("Theme not found: \"%1\"").arg(themeName));
+        qWarning() << qPrintable(UbuntuI18n::instance().tr("Theme not found: \"%1\"").arg(themePath.name));
     } else {
-        QFile file(themePath.resolved(PARENT_THEME_FILE).toLocalFile());
+        QFile file(themePath.path.resolved(PARENT_THEME_FILE).toLocalFile());
         if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
             QTextStream in(&file);
             parentTheme = in.readLine();
@@ -336,6 +341,7 @@ UCTheme::UCTheme(QObject *parent)
     : QObject(parent)
     , m_palette(UCTheme::defaultTheme().m_palette)
     , m_engine(UCTheme::defaultTheme().m_engine)
+    , m_version(UCTheme::defaultTheme().m_version)
     , m_defaultStyle(false)
 {
     init();
@@ -345,6 +351,7 @@ UCTheme::UCTheme(bool defaultStyle, QObject *parent)
     : QObject(parent)
     , m_palette(NULL)
     , m_engine(NULL)
+    , m_version(LATEST_UITK_VERSION)
     , m_defaultStyle(defaultStyle)
 {
     init();
@@ -397,11 +404,11 @@ void UCTheme::updateThemePaths()
 
     QString themeName = name();
     while (!themeName.isEmpty()) {
-        QUrl themePath = pathFromThemeName(themeName);
+        ThemeRecord themePath = pathFromThemeName(themeName);
         if (themePath.isValid()) {
             m_themePaths.append(themePath);
         }
-        themeName = parentThemeName(themeName);
+        themeName = parentThemeName(themePath);
     }
 }
 
@@ -546,12 +553,46 @@ void UCTheme::resetPalette()
     setPalette(NULL);
 }
 
-QUrl UCTheme::styleUrl(const QString& styleName)
+QUrl UCTheme::styleUrl(const QString& styleName, quint16 version, bool *isFallback)
 {
-    Q_FOREACH (const QUrl& themePath, m_themePaths) {
-        QUrl styleUrl = themePath.resolved(styleName);
-        if (styleUrl.isValid() && QFile::exists(styleUrl.toLocalFile())) {
-            return styleUrl;
+    if (isFallback) {
+        (*isFallback) = false;
+    }
+    Q_FOREACH (const ThemeRecord &themePath, m_themePaths) {
+        QUrl styleUrl;
+        /*
+         * There are two cases where we have to deal with non-versioned styles: application
+         * themes made for the previous theming and deprecated themes. For shared themes,
+         * we have to check the fallback case.
+         */
+        quint16 styleVersion = version;
+        if (themePath.deprecated) {
+            styleVersion = 0;
+        }
+        if (themePath.shared && (version < BUILD_VERSION(1, 2))) {
+            styleVersion = LATEST_UITK_VERSION;
+        }
+
+        // loop through the versions to see if we have one matching
+        // we stop at version 1.2 as we do not have support for earlier themes anymore.
+        for (int minor = MINOR_VERSION(styleVersion); minor >= 2; minor--) {
+            QString versionedName = QStringLiteral("%1.%2/%3").arg(MAJOR_VERSION(styleVersion)).arg(minor).arg(styleName);
+            styleUrl = themePath.path.resolved(versionedName);
+            if (styleUrl.isValid() && QFile::exists(styleUrl.toLocalFile())) {
+                // set fallback warning if the theme is shared
+                if (isFallback && themePath.shared && (version != styleVersion)) {
+                    (*isFallback) = true;
+                }
+                return styleUrl;
+            }
+        }
+
+        // if we don't get any style, get the non-versioned ones for non-shared and deprecated styles
+        if (!themePath.shared || themePath.deprecated) {
+            styleUrl = themePath.path.resolved(styleName);
+            if (styleUrl.isValid() && QFile::exists(styleUrl.toLocalFile())) {
+                return styleUrl;
+            }
         }
     }
 
@@ -573,11 +614,49 @@ void UCTheme::registerToContext(QQmlContext* context)
 }
 
 /*!
+ * \qmlproperty uint16 ThemeSettings::version
+ * \since Ubuntu.Components 1.3
+ * The property specifies the version of the toolkit the component is declared.
+ * This equivalent with the toolkit version the component document imports. Themes,
+ * starting of version 1.3, should follow the same versioning as the toolkit does.
+ * If a component's style is not found under the given version, styling will try
+ * to locate the style with a lower minor version until it finds a match.
+ *
+ * The current version of an imported toolkit module is reported by the
+ * \l Ubuntu::toolkitVersion property. If a document imports Ubuntu.Components 1.2,
+ * the components will load the system or application themes associated to that
+ * version, and \l Ubuntu::toolkitVersion will report that version. If the document
+ * imports 1.3 version, the components will load 1.3 themes. Setting this property
+ * will initiate a full theme reload.
+ *
+ * Usually developers do not need to set this property on toolkit components as
+ * those already set the version. However themes provided by applications should
+ * take care of versioning the styles and on how to do theming.
+ *
+ * \sa Ubuntu::toolkitVersion, Ubuntu::version, {Themes}
+ */
+void UCTheme::setVersion(quint16 version)
+{
+    if (m_version == version) {
+        return;
+    }
+    m_version = version;
+    Q_EMIT versionChanged();
+    // emit also nameChanged() so we reload the theme/style
+    Q_EMIT nameChanged();
+}
+
+/*!
  * \qmlmethod Component ThemeSettings::createStyleComponent(string styleName, object parent)
  * Returns an instance of the style component named \a styleName and parented
  * to \a parent.
  */
 QQmlComponent* UCTheme::createStyleComponent(const QString& styleName, QObject* parent)
+{
+    return createStyleComponent(styleName, parent, m_version);
+}
+
+QQmlComponent* UCTheme::createStyleComponent(const QString& styleName, QObject* parent, quint16 version)
 {
     QQmlComponent *component = NULL;
 
@@ -589,8 +668,14 @@ QQmlComponent* UCTheme::createStyleComponent(const QString& styleName, QObject* 
         }
         // make sure we have the paths
         if (engine != NULL) {
-            QUrl url = styleUrl(styleName);
+            bool fallback = false;
+            QUrl url = styleUrl(styleName, version, &fallback);
             if (url.isValid()) {
+                if (fallback) {
+                    qmlInfo(parent) << QStringLiteral("Theme '%1' has no '%2' style for version %3.%4, fall back to version %5.%6.")
+                                       .arg(name()).arg(styleName).arg(MAJOR_VERSION(version)).arg(MINOR_VERSION(version))
+                                       .arg(MAJOR_VERSION(LATEST_UITK_VERSION)).arg(MINOR_VERSION(LATEST_UITK_VERSION));
+                }
                 component = new QQmlComponent(engine, url, QQmlComponent::PreferSynchronous, parent);
                 if (component->isError()) {
                     qmlInfo(parent) << component->errorString();
@@ -619,7 +704,7 @@ void UCTheme::loadPalette(bool notify)
         m_palette = 0;
     }
     // theme may not have palette defined
-    QUrl paletteUrl = styleUrl("Palette.qml");
+    QUrl paletteUrl = styleUrl("Palette.qml", m_version);
     if (paletteUrl.isValid()) {
         m_palette = QuickUtils::instance().createQmlObject(paletteUrl, m_engine);
         if (m_palette) {
