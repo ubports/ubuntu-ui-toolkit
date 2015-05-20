@@ -68,6 +68,7 @@ public:
         quint32 shapeTexture;
         quint8 distanceAAFactor;
         quint8 sourceOpacity;
+        quint8 dfdtFactors;
         quint8 flags;
     };
 
