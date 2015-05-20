@@ -3,20 +3,18 @@
 # Uncomment this to turn on verbose mode.
 # export DH_VERBOSE=1
 export DPKG_GENSYMBOLS_CHECK_LEVEL=4
-export QMAKEFEATURES=$(CURDIR)/features
 export QT_SELECT := qt5
+export CFLAGS := $(shell dpkg-buildflags --get CFLAGS) $(shell dpkg-buildflags --get CPPFLAGS)
+export CXXFLAGS := $(shell dpkg-buildflags --get CXXFLAGS) $(shell dpkg-buildflags --get CPPFLAGS)
+export LDFLAGS := $(shell dpkg-buildflags --get LDFLAGS) -Wl,--as-needed
 DEB_HOST_MULTI_ARCH ?= $(shell dpkg-architecture -qDEB_BUILD_MULTIARCH)
 DEB_HOST_ARCH ?= $(shell dpkg-architecture -qDEB_HOST_ARCH)
-
-CONFIGURE_SWITCHES = "-r" \
-                     "ROOT_SOURCE_DIR=$(CURDIR)" \
-                     "ROOT_BUILD_DIR=$(CURDIR)" 
 
 # Skip tests on the archs they are known to be flaky  with current configuration
 testskip_architectures := powerpc arm64 ppc64el
 
 override_dh_auto_configure:
-	dh_auto_configure -- $(CONFIGURE_SWITCHES)
+	qmake -r
 
 %:
 	dh $@ --fail-missing
