@@ -22,12 +22,14 @@ Popover {
     id: popover
     objectName: "text_input_contextmenu"
     property Item target
+    property bool canCopy: target && target.selectedText !== "" && !popover.password
+    property bool password: target && target.hasOwnProperty('echoMode') && target.echoMode == TextInput.Password
     property list<Action> actions: [
         Action {
             text: i18n.dtr('ubuntu-ui-toolkit', "Select All")
             iconName: "edit-select-all"
-            enabled: target.text !== ""
-            visible: target && target.selectedText === ""
+            enabled: target && target.text !== "" && target.selectedText === ""
+            visible: target && (target.selectedText === "" || popover.password)
             onTriggered: target.selectAll()
         },
         Action {
@@ -35,8 +37,8 @@ Popover {
             iconName: "edit-cut"
             // If paste/editing is not possible, then disable also "Cut" operation
             // It is applicable for ReadOnly's TextFields and TextAreas
-            enabled: target && target.selectedText !== "" && !target.readOnly
-            visible: target.selectedText !== ""
+            enabled: !target.readOnly
+            visible: popover.canCopy
             onTriggered: {
                 PopupUtils.close(popover);
                 target.cut();
@@ -45,8 +47,7 @@ Popover {
         Action {
             text: i18n.dtr('ubuntu-ui-toolkit', "Copy")
             iconName: "edit-copy"
-            enabled: target && target.selectedText !== ""
-            visible: target.selectedText !== ""
+            visible: popover.canCopy
             onTriggered: {
                 PopupUtils.close(popover);
                 target.copy();
