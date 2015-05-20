@@ -21,14 +21,14 @@ force_independent: {
     install_docs.path = /usr/share/ubuntu-ui-toolkit/doc
     install_docs.CONFIG += no_check_exist directory no_build
     install_docs.depends = docs
+    INSTALLS += install_docs
 }
 
 install_qch.files = $$shadowed($$ROOT_SOURCE_DIR)/documentation/ubuntuuserinterfacetoolkit.qch
 install_qch.path =  $$[QT_INSTALL_DOCS]
 install_qch.CONFIG += no_check_exist no_build
 install_qch.depends = docs
-
-INSTALLS += install_qch install_docs
+INSTALLS += install_qch
 
 OTHER_FILES += *.qdocconf \
                docs.sh
