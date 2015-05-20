@@ -32,6 +32,11 @@ Item {
         TextArea {
             id: textArea
         }
+        TextField {
+            id: password
+            echoMode: TextInput.Password
+            text: 'deadbeef'
+        }
     }
 
     SignalSpy {
@@ -92,6 +97,43 @@ Item {
             movementYSpy.clear();
             cursorRectSpy.clear();
             scrollerSpy.clear();
+        }
+
+        function test_context_menu_items_data() {
+            return [
+                { tag: 'textField with text', input: textField, text: "lalelu", all: true, copy: false },
+                { tag: 'textField selected', input: textField, text: "lalelu", select: true, all: false, copy: true },
+                { tag: 'textArea with text', input: textArea, text: "lalelu", all: true, copy: false },
+                { tag: 'textArea selected', input: textArea, text: "lalelu", select: true, all: false, copy: true },
+                { tag: 'textField with password', input: password, text: "deadbeef", all: true, copy: false },
+            ]
+        }
+
+        function test_context_menu_items(data) {
+            var handler = findChild(data.input, "input_handler");
+            popupSpy.target = handler;
+            data.input.focus = true;
+
+            var x = data.input.width / 2;
+            var y = data.input.height / 2;
+            mouseClick(data.input, x, y, Qt.RightButton);
+            popupSpy.wait();
+            var popover = findChild(testMain, "text_input_contextmenu");
+            verify(popover, "Cannot retrieve default TextInputPopover");
+            waitForRendering(popover);
+
+            if (data.select) {
+                var selectAll = findChildWithProperty(popover, "text", "Select All");
+                verify(selectAll, "Select All item not found");
+                mouseClick(selectAll, selectAll.width / 2, selectAll.height / 2);
+                waitForRendering(data.input, 1000);
+                compare(data.input.text, data.input.selectedText, "Not all the text is selected");
+            }
+
+            var all = findChildWithProperty(popover, "text", "Select All");
+            compare(all.visible, data.all, "Select All%1expected".arg(data.all ? " " : " not "))
+            var copy = findChildWithProperty(popover, "text", "Copy");
+            compare(copy.visible, data.copy, "Copy%1expected".arg(data.copy ? " " : " not "))
         }
 
         function test_clear_text_using_popover_data() {
