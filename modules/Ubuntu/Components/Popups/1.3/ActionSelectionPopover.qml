@@ -141,7 +141,7 @@ Popover {
             id: repeater
             model: body.isActionsObject ? popover.actions.children : popover.actions
             Loader {
-                width: parent.width
+                width: body.width
                 height: modelData.visible ? item.height : 0
                 sourceComponent: delegate
                 onStatusChanged: {
