@@ -1,1904 +1,1394 @@
-Button 0.1 1.0
-AbstractButton
-    property color color
-    property Gradient gradient
-    property font font
-    property string iconPosition
-UbuntuColors 0.1 1.0
-QtObject
-    readonly property color orange
-    readonly property color lightAubergine
-    readonly property color midAubergine
-    readonly property color darkAubergine
-    readonly property color warmGrey
-    readonly property color coolGrey
-    property Gradient orangeGradient
-    property Gradient greyGradient
-Button 1.1
-AbstractButton
-    property color strokeColor
-    property color color
-    property Gradient gradient
-    property font font
-    property string iconPosition
-Haptics 0.1 1.0
-Object
-    readonly property bool enabled
-    property HapticsEffect effect
-    function play(customEffect)
-UbuntuColors 1.1
-QtObject
-    readonly property color orange
-    readonly property color lightAubergine
-    readonly property color midAubergine
-    readonly property color darkAubergine
-    readonly property color warmGrey
-    readonly property color coolGrey
-    property Gradient orangeGradient
-    property Gradient greyGradient
-    readonly property color lightGrey
-    readonly property color darkGrey
-    readonly property color red
-    readonly property color green
-    readonly property color blue
-    readonly property color purple
-AbstractButton 0.1 1.0
-ActionItem
+Ubuntu.Components.AbstractButton 1.0 0.1: ActionItem
+    property bool hovered
     signal clicked()
     signal pressAndHold()
     property bool pressed
+Ubuntu.Components.AbstractButton 1.3: ActionItem
     property bool hovered
-    property bool __acceptEvents
-    property internal __mouseArea
-ActionItem 0.1 1.0
-StyledItem
-    property Action action
-    property string text
-    property url iconSource
+    signal clicked()
+    signal pressAndHold()
+    property bool pressed
+Ubuntu.Components.Action 1.0 0.1: QtObject
+    property string description
+    property bool enabled
     property string iconName
+    property url iconSource
+    property Component itemHint
+    property string keywords
     signal triggered(var value)
-    function trigger(value)
-ActionList 0.1 1.0
-QtObject
-    default property list<Action> children
-    property list<Action> actions
-ActivityIndicator 0.1 1.0
-AnimatedItem
-    property bool running
-Captions 1.2
-ColumnLayout
-    property int captionStyle
-    property Label title
-    property Label subtitle
-CheckBox 0.1 1.0
-AbstractButton
-    property bool checked
-ComboButton 1.1
-Toolkit.Button
-    property bool expanded
-    property real collapsedHeight
-    property real expandedHeight
-    readonly property real comboListHeight
-    default property list<Item> comboList
-    property color dropdownColor
-CrossFadeImage 0.1 1.0
-Item
-    property url source
-    property int fillMode
-    property int fadeDuration
-    property size sourceSize
-    readonly property bool running
-    readonly property int status
-CrossFadeImage 1.1
-Item
-    property url source
-    property int fillMode
-    property int fadeDuration
-    property size sourceSize
-    property string fadeStyle
-    readonly property bool running
-    readonly property int status
-Header 0.1 1.0
-AppHeader
-    property string _for_autopilot
-Icon 0.1 1.0
-Item
+    function trigger(var value)
+    function trigger()
     property string name
-    property color color
-    property color keyColor
-Icon 1.1
-Icon10
-    property url source
-Label 0.1 1.0
-Text
-    property string fontSize
-MainView 0.1 1.0
-MainViewBase
-    property bool automaticOrientation
-    property bool useDeprecatedToolbar
-    default property internal contentsItem
-MainView 1.2
-MainViewBase
-    property internal automaticOrientation
-    default property internal contentsItem
-Object 0.1 1.0
-QtObject
-    default property internal children
-    property list<QtObject> __defaultPropertyFix
-OptionSelector 0.1 1.0
-ListItem.Empty
-    property var model
-    property bool expanded
-    property bool multiSelection
-    property bool colourImage
-    property Component delegate
-    property real containerHeight
-    property int selectedIndex
-    property bool currentlyExpanded
-    readonly property real itemHeight
-    signal delegateClicked(int index)
-    signal expansionCompleted()
-OptionSelectorDelegate 0.1 1.0
-ListItem.Empty
-    property string subText
-    property url icon
-    property bool constrainImage
-    property bool colourImage
-    property color assetColour
-    readonly property ListView listView
-    readonly property string fragColourShader
-OrientationHelper 0.1 1.0
-Item
-    property bool automaticOrientation
-    property bool transitionEnabled
-    readonly property bool rotating
-    property int __orientationAngle
-    property int orientationAngle
-    property bool anchorToKeyboard
-Page 0.1 1.0
-PageTreeNode
-    property string title
-    property Item tools
-    property Item __customHeaderContents
-    property Flickable flickable
-    property list<Action> actions
-Page 1.1
-Page10
-    readonly property PageHeadConfiguration head
-PageHeadConfiguration 1.1
-Object
-    property list<Action> actions
-    property Action backAction
-    property Item contents
-    property string preset
-    readonly property PageHeadSections sections
-    property color foregroundColor
-PageHeadSections 1.1
-QtObject
-    property bool enabled
-    property var model
-    property int selectedIndex
-PageHeadState 1.1
-State
-    property PageHeadConfiguration head
-    property list<Action> actions
-    property Action backAction
-    property Item contents
-PageStack 0.1 1.0
-PageTreeNode
-    property bool __showHeader
-    property int depth
-    property Item currentPage
-    function push(page, properties)
-    function pop()
-    function clear()
-    default property list<Object> data
-Panel 0.1 1.0
-Item
-    default property list<Object> contents
-    property int align
-    property bool opened
-    function open()
-    function close()
-    property int hideTimeout
-    property bool locked
-    property real hintSize
-    property real triggerSize
-    readonly property real position
-    property bool animate
-    readonly property bool animating
-    property bool __closeOnContentsClicks
-    property bool __openOnHover
-    property bool pressed
-ProgressBar 0.1 1.0
-AnimatedItem
-    property bool indeterminate
-    property real minimumValue
-    property real maximumValue
-    property real value
-ProgressBar 1.1
-ProgressBar10
-    property bool showProgressPercentage
-PullToRefresh 1.1
-StyledItem
-    readonly property bool releaseToRefresh
-    readonly property real offset
-    property Component content
-    property Flickable target
-    property bool refreshing
-    signal refresh()
-Scrollbar 0.1 1.0
-StyledItem
-    property Flickable flickableItem
-    property int align
-    property bool __interactive
-    property internal __private
-Slider 0.1 1.0
-StyledItem
-    property real minimumValue
-    property real maximumValue
-    property real value
-    property bool live
-    property bool pressed
-    signal touched(bool onThumb)
-    function formatValue(v)
-    property internal __internals
-Switch 0.1 1.0
-CheckBox
-Tab 0.1 1.0
-PageTreeNode
-    property string title
-    property url iconSource
-    property Item page
-    readonly property int index
-    property internal __protected
-TabBar 0.1 1.0
-StyledItem
-    property Item tabsItem
-    property var model
-    readonly property bool pressed
-    property bool selectionMode
-    property int selectedIndex
-    property bool alwaysSelectionMode
-    property bool animate
-Tabs 0.1 1.0
-PageTreeNode
-    property int selectedTabIndex
-    readonly property Tab selectedTab
-    readonly property Item currentPage
-    property TabBar tabBar
-    default property list<Item> tabChildren
-    readonly property int count
-    signal modelChanged()
-    property var __model
-TextArea 0.1 1.0
-Ubuntu.StyledItem
-    property bool highlighted
-    property string placeholderText
-    readonly property string displayText
-    property bool selectByMouse
-    property bool autoExpand
-    property bool autoSize
-    property int maximumLineCount
-    property real contentWidth
-    property real contentHeight
-    property var popover
-    property bool activeFocusOnPress
-    property url baseUrl
-    property bool canPaste
-    property bool canRedo
-    property bool canUndo
-    property color color
-    property Component cursorDelegate
-    property int cursorPosition
-    property rectangle cursorRectangle
-    property bool cursorVisible
-    property enumeration effectiveHorizontalAlignment
-    property font font
-    property enumeration horizontalAlignment
-    property bool inputMethodComposing
-    property enumeration inputMethodHints
-    property int length
-    property int lineCount
-    property enumeration mouseSelectionMode
-    property enumeration persistentSelection
-    property bool readOnly
-    property enumeration renderType
-    property string selectedText
-    property color selectedTextColor
-    property color selectionColor
-    property int selectionEnd
-    property int selectionStart
+    property Type parameterType
     property string text
-    property enumeration textFormat
-    property enumeration verticalAlignment
-    property enumeration wrapMode
-    signal linkActivated(string link)
-    function copy()
-    function cut()
-    function deselect()
-    function insert(position, text)
-    function positionAt(x, y)
-    function isRightToLeft(start, end)
-    function moveCursorSelection(position, mode)
-    function paste(data)
-    function positionToRectangle(position)
-    function redo()
-    function select(start, end)
-    function selectAll()
-    function selectWord()
-    function getFormattedText(start, end)
-    function getText(start, end)
-    function remove(start, end)
-    function undo()
-TextField 0.1 1.0
-ActionItem
-    property bool highlighted
-    property string placeholderText
-    property bool hasClearButton
-    property Component customSoftwareInputPanel
-    property var popover
-    property list<Object> primaryItem
-    property list<Object> secondaryItem
-    property bool errorHighlight
-    property bool acceptableInput
-    property bool activeFocusOnPress
-    property bool autoScroll
-    property bool canPaste
-    property bool canRedo
-    property bool canUndo
-    property color color
-    property real contentHeight
-    property real contentWidth
-    property Component cursorDelegate
-    property int cursorPosition
-    property rectangle cursorRectangle
-    property bool cursorVisible
-    property string displayText
-    property enumeration echoMode
-    property font font
-    property string inputMask
-    property bool inputMethodComposing
-    property enumeration inputMethodHints
-    property int length
-    property int maximumLength
-    property enumeration mouseSelectionMode
-    property bool persistentSelection
-    property bool readOnly
-    property enumeration renderType
-    property bool selectByMouse
-    readonly property string selectedText
-    property int selectionStart
-    property int selectionEnd
-    property string text
-    property Validator validator
-    property enumeration horizontalAlignment
-    property enumeration effectiveHorizontalAlignment
-    property enumeration verticalAlignment
-    property string passwordCharacter
-    property color selectionColor
-    property color selectedTextColor
-    signal accepted()
-    function copy()
-    function cut()
-    function paste(data)
-    function deselect()
-    function insert(position, text)
-    function positionAt(x, position)
-    function positionToRectangle(pos)
-    function select(start, end)
-    function selectAll()
-    function selectWord()
-    function isRightToLeft(start, end)
-    function moveCursorSelection(position, mode)
-    function redo()
-    function undo()
-    function remove(start, end)
-    function getText(start, end)
-ToolbarButton 0.1 1.0
-ActionItem
-ToolbarItems 0.1 1.0
-Item
-    default property list<Object> contents
-    property Item back
-    property Item pageStack
-    property bool opened
-    property bool locked
-UbuntuListView 0.1 1.0
-ListView
-    property int expandedIndex
-UbuntuListView 1.1
-UbuntuListView
-    property PullToRefresh pullToRefresh
-UbuntuNumberAnimation 0.1 1.0
-NumberAnimation
-AbstractButton 1.3
-ActionItem
-    signal clicked()
-    signal pressAndHold()
-    property bool pressed
-    property bool hovered
-    property bool __acceptEvents
-    property internal __mouseArea
-ActionBar 1.3
-StyledItem
-    property list<Action> actions
-    property int numberOfSlots
-ActionItem 1.3
-StyledItem
-    property Action action
-    property string text
-    property url iconSource
-    property string iconName
-    signal triggered(var value)
-    function trigger(value)
-ActionList 1.3
-QtObject
-    default property list<Action> children
-    property list<Action> actions
-ActivityIndicator 1.3
-AnimatedItem
-    property bool running
-Button 1.3
-AbstractButton
-    property color strokeColor
-    property color color
-    property Gradient gradient
-    property font font
-    property string iconPosition
-Captions 1.3
-ColumnLayout
-    property int captionStyle
-    property Label title
-    property Label subtitle
-CheckBox 1.3
-AbstractButton
-    property bool checked
-ComboButton 1.3
-Button
-    property bool expanded
-    property real collapsedHeight
-    property real expandedHeight
-    readonly property real comboListHeight
-    default property list<Item> comboList
-    property color dropdownColor
-CrossFadeImage 1.3
-Item
-    property url source
-    property int fillMode
-    property int fadeDuration
-    property size sourceSize
-    property string fadeStyle
-    readonly property bool running
-    readonly property int status
-Header 1.3
-AppHeader
-    property string _for_autopilot
-Label 1.3
-Text
-    property string fontSize
-MainView 1.3
-MainViewBase
-    property internal automaticOrientation
-    default property internal contentsItem
-OptionSelector 1.3
-ListItem.Empty
-    property var model
-    property bool expanded
-    property bool multiSelection
-    property bool colourImage
-    property Component delegate
-    property real containerHeight
-    property int selectedIndex
-    property bool currentlyExpanded
-    readonly property real itemHeight
-    signal delegateClicked(int index)
-    signal expansionCompleted()
-OptionSelectorDelegate 1.3
-ListItem.Empty
-    property string subText
-    property url icon
-    property bool constrainImage
-    property bool colourImage
-    property color assetColour
-    readonly property ListView listView
-    readonly property string fragColourShader
-OrientationHelper 1.3
-Item
-    property bool automaticOrientation
-    property bool transitionEnabled
-    readonly property bool rotating
-    property int __orientationAngle
-    property int orientationAngle
-    property bool anchorToKeyboard
-Page 1.3
-PageTreeNode
-    property string title
-    property Flickable flickable
-    readonly property PageHeadConfiguration head
-PageHeadConfiguration 1.3
-Object
-    property list<Action> actions
-    property Action backAction
-    property Item contents
-    property string preset
-    readonly property PageHeadSections sections
-    property color foregroundColor
-    property bool locked
     property bool visible
-PageHeadSections 1.3
-QtObject
-    property bool enabled
-    property var model
-    property int selectedIndex
-PageHeadState 1.3
-State
-    property PageHeadConfiguration head
-    property list<Action> actions
-    property Action backAction
-    property Item contents
-PageStack 1.3
-PageTreeNode
-    property bool __showHeader
-    property int depth
-    property Item currentPage
-    function push(page, properties)
-    function pop()
-    function clear()
-    default property list<Object> data
-Panel 1.3
-Item
-    default property list<Object> contents
-    property int align
-    property bool opened
-    function open()
-    function close()
-    property int hideTimeout
-    property bool locked
-    property real hintSize
-    property real triggerSize
-    readonly property real position
-    property bool animate
-    readonly property bool animating
-    property bool __closeOnContentsClicks
-    property bool __openOnHover
-    property bool pressed
-ProgressBar 1.3
-AnimatedItem
-    property bool indeterminate
-    property real minimumValue
-    property real maximumValue
-    property real value
-    property bool showProgressPercentage
-PullToRefresh 1.3
-StyledItem
-    readonly property bool releaseToRefresh
-    readonly property real offset
-    property Component content
-    property Flickable target
-    property bool refreshing
-    signal refresh()
-Scrollbar 1.3
-Toolkit.StyledItem
-    property Flickable flickableItem
-    property int align
-    property bool __interactive
-    property internal __private
-Slider 1.3
-Toolkit.StyledItem
-    property real minimumValue
-    property real maximumValue
-    property real value
-    property bool live
-    property bool pressed
-    signal touched(bool onThumb)
-    function formatValue(v)
-    property internal __internals
-Switch 1.3
-CheckBox
-Tab 1.3
-PageTreeNode
-    property string title
+Ubuntu.Components.Action.Type: Enum
+    Bool
+    Integer
+    None
+    Object
+    Real
+    String
+Ubuntu.Components.ActionBar 1.3: StyledItem
+    readonly property Action actions
+    property int numberOfSlots
+Ubuntu.Components.ActionContext 1.0 0.1: QtObject
+    default readonly property QtObject actions
+    property bool active
+    function addAction(QtObject action)
+    function removeAction(QtObject action)
+Ubuntu.Components.ActionItem 1.0 0.1: StyledItem
+    property Action action
+    property string iconName
     property url iconSource
-    property Item page
-    readonly property int index
-    property internal __protected
-TabBar 1.3
-Toolkit.StyledItem
-    property Item tabsItem
-    property var model
-    readonly property bool pressed
-    property bool selectionMode
-    property int selectedIndex
-    property bool alwaysSelectionMode
-    property bool animate
-Tabs 1.3
-PageTreeNode
-    property int selectedTabIndex
-    readonly property Tab selectedTab
-    readonly property Item currentPage
-    property TabBar tabBar
-    default property list<Item> tabChildren
+    signal triggered(var value)
+    function var trigger(var value)
+    property string text
+Ubuntu.Components.ActionItem 1.3: StyledItem
+    property Action action
+    property string iconName
+    property url iconSource
+    signal triggered(var value)
+    function var trigger(var value)
+    property string text
+Ubuntu.Components.ActionList 1.0 0.1: QtObject
+    readonly property Action actions
+    default readonly property Action children
+Ubuntu.Components.ActionList 1.3: QtObject
+    readonly property Action actions
+    default readonly property Action children
+Ubuntu.Components.ActionManager 1.0 0.1: QtObject
+    default readonly property QtObject actions
+    readonly property ActionContext globalContext
+    readonly property QtObject localContexts
+    signal quit()
+    function addAction(QtObject action)
+    function removeAction(QtObject action)
+    function addLocalContext(QtObject context)
+    function removeLocalContext(QtObject context)
+Ubuntu.Components.Popups.ActionSelectionPopover 1.0 0.1: Popover
+    property var actions
+    property Component delegate
+    property Item target
+Ubuntu.Components.Popups.ActionSelectionPopover 1.3: Popover
+    property var actions
+    property Component delegate
+    property Item target
+Ubuntu.Components.ActivityIndicator 1.0 0.1: AnimatedItem
+    property bool onScreen
+    property bool running
+Ubuntu.Components.ActivityIndicator 1.3: AnimatedItem
+    property bool onScreen
+    property bool running
+Ubuntu.Components.Alarm 1.0 0.1: QtObject
+    property QDateTime date
+    property DaysOfWeek daysOfWeek
+    property bool enabled
+    readonly property int error
+    property string message
+    function save()
+    function cancel()
+    function reset()
+    property url sound
+    readonly property Status status
+Ubuntu.Components.Alarm.AlarmType: Enum
+    OneTime
+    Repeating
+Ubuntu.Components.Alarm.DayOfWeek: Enum
+    AutoDetect
+    Daily
+    Friday
+    Monday
+    Saturday
+    Sunday
+    Thursday
+    Tuesday
+    Wednesday
+Ubuntu.Components.Alarm.DaysOfWeek: Flag
+    AutoDetect
+    Daily
+    Friday
+    Monday
+    Saturday
+    Sunday
+    Thursday
+    Tuesday
+    Wednesday
+Ubuntu.Components.Alarm.Error: Enum
+    AdaptationError
+    EarlyDate
+    InvalidDate
+    InvalidEvent
+    NoDaysOfWeek
+    NoError
+    OneTimeOnMoreDays
+    OperationPending
+Ubuntu.Components.Alarm.Operation: Enum
+    Canceling
+    NoOperation
+    Reseting
+    Saving
+Ubuntu.Components.Alarm.Status: Enum
+    Fail
+    InProgress
+    Ready
+Ubuntu.Components.AlarmModel 1.0 0.1: QAbstractListModel
     readonly property int count
-    signal modelChanged()
-    property var __model
-TextArea 1.3
-Ubuntu.StyledItem
-    property bool highlighted
-    property string placeholderText
-    readonly property string displayText
-    property bool selectByMouse
-    property bool autoExpand
-    property bool autoSize
-    property int maximumLineCount
-    property real contentWidth
-    property real contentHeight
-    property var popover
-    property bool activeFocusOnPress
-    property url baseUrl
-    property bool canPaste
-    property bool canRedo
-    property bool canUndo
+    function refresh()
+    function UCAlarm* get(int index)
+Ubuntu.Components.Argument 1.0 0.1: QtObject
+    property string help
+    function var at(int i)
+    property string name
+    property bool required
+    property QStringList valueNames
+Ubuntu.Components.Arguments 1.0 0.1: QtObject
+    default readonly property Argument arguments
+    property Argument defaultArgument
+    readonly property bool error
+    readonly property string errorMessage
+    function printUsage()
+    function quitWithError(string errorMessage)
+    function quitWithError()
+    readonly property QQmlPropertyMap values
+Ubuntu.Components.ListItems.Base 1.0 0.1: Empty
+    default readonly property QtObject children
+    property string fallbackIconName
+    property url fallbackIconSource
+    property var icon
+    property bool iconFrame
+    property bool progression
+Ubuntu.Components.ListItems.Base 1.3: Empty
+    default readonly property QtObject children
+    property string fallbackIconName
+    property url fallbackIconSource
+    property var icon
+    property bool iconFrame
+    property bool progression
+Ubuntu.Components.Button 1.0 0.1: AbstractButton
     property color color
-    property Component cursorDelegate
-    property int cursorPosition
-    property rectangle cursorRectangle
-    property bool cursorVisible
-    property enumeration effectiveHorizontalAlignment
-    property font font
-    property enumeration horizontalAlignment
-    property bool inputMethodComposing
-    property enumeration inputMethodHints
-    property int length
-    property int lineCount
-    property enumeration mouseSelectionMode
-    property enumeration persistentSelection
-    property bool readOnly
-    property enumeration renderType
-    property string selectedText
-    property color selectedTextColor
-    property color selectionColor
-    property int selectionEnd
-    property int selectionStart
-    property string text
-    property enumeration textFormat
-    property enumeration verticalAlignment
-    property enumeration wrapMode
-    signal linkActivated(string link)
-    function copy()
-    function cut()
-    function deselect()
-    function insert(position, text)
-    function positionAt(x, y)
-    function isRightToLeft(start, end)
-    function moveCursorSelection(position, mode)
-    function paste(data)
-    function positionToRectangle(position)
-    function redo()
-    function select(start, end)
-    function selectAll()
-    function selectWord()
-    function getFormattedText(start, end)
-    function getText(start, end)
-    function remove(start, end)
-    function undo()
-TextField 1.3
-ActionItem
-    property bool highlighted
-    property string placeholderText
-    property bool hasClearButton
-    property Component customSoftwareInputPanel
-    property var popover
-    property list<Object> primaryItem
-    property list<Object> secondaryItem
-    property bool errorHighlight
-    property bool acceptableInput
-    property bool activeFocusOnPress
-    property bool autoScroll
-    property bool canPaste
-    property bool canRedo
-    property bool canUndo
+    property QFont font
+    property Gradient gradient
+    property string iconPosition
+Ubuntu.Components.Button 1.1: AbstractButton
     property color color
-    property real contentHeight
-    property real contentWidth
-    property Component cursorDelegate
-    property int cursorPosition
-    property rectangle cursorRectangle
-    property bool cursorVisible
-    property string displayText
-    property enumeration echoMode
-    property font font
-    property string inputMask
-    property bool inputMethodComposing
-    property enumeration inputMethodHints
-    property int length
-    property int maximumLength
-    property enumeration mouseSelectionMode
-    property bool persistentSelection
-    property bool readOnly
-    property enumeration renderType
-    property bool selectByMouse
-    readonly property string selectedText
-    property int selectionStart
-    property int selectionEnd
+    property QFont font
+    property Gradient gradient
+    property string iconPosition
+    property color strokeColor
+Ubuntu.Components.Button 1.3: AbstractButton
+    property color color
+    property QFont font
+    property Gradient gradient
+    property string iconPosition
+    property color strokeColor
+Ubuntu.Components.ListItems.Caption 1.0 0.1: Item
     property string text
-    property Validator validator
-    property enumeration horizontalAlignment
-    property enumeration effectiveHorizontalAlignment
-    property enumeration verticalAlignment
-    property string passwordCharacter
-    property color selectionColor
-    property color selectedTextColor
-    signal accepted()
-    function copy()
-    function cut()
-    function paste(data)
-    function deselect()
-    function insert(position, text)
-    function positionAt(x, position)
-    function positionToRectangle(pos)
-    function select(start, end)
-    function selectAll()
-    function selectWord()
-    function isRightToLeft(start, end)
-    function moveCursorSelection(position, mode)
-    function redo()
-    function undo()
-    function remove(start, end)
-    function getText(start, end)
-ToolbarButton 1.3
-ActionItem
-ToolbarItems 1.3
-Item
-    default property list<Object> contents
-    property Item back
-    property Item pageStack
-    property bool opened
-    property bool locked
-UbuntuListView 1.3
-UbuntuListView
-    property PullToRefresh pullToRefresh
-UbuntuNumberAnimation 1.3
-NumberAnimation
-Base 0.1 1.0
-Empty
-    property variant icon
-    property url fallbackIconSource
-    property string fallbackIconName
-    property bool progression
-    property bool iconFrame
-    property real __iconWidth
-    property real __iconHeight
-    property real __leftIconMargin
-    property real __rightIconMargin
-    property bool __iconIsItem
-    default property internal children
-Caption 0.1 1.0
-Item
+Ubuntu.Components.ListItems.Caption 1.3: Item
     property string text
-Divider 0.1 1.0
-Image
-Empty 0.1 1.0
-AbstractButton
-    property bool selected
-    property bool highlightWhenPressed
-    property bool removable
-    property bool confirmRemoval
-    readonly property string swipingState
-    readonly property bool waitingConfirmationForRemoval
-    signal itemRemoved
-    property int __height
-    property bool showDivider
-    default property internal children
-    property internal __contents
-    property list<Item> backgroundIndicator
-    property ThinDivider divider
-    property real __contentsMargins
-    function cancelItemRemoval()
-Expandable 0.1 1.0
-Empty
+Ubuntu.Components.Captions 1.2: ColumnLayout
+    property int captionStyle
+    readonly property Label subtitle
+    readonly property Label title
+Ubuntu.Components.Captions 1.3: ColumnLayout
+    property int captionStyle
+    readonly property Label subtitle
+    readonly property Label title
+Ubuntu.Components.CheckBox 1.0 0.1: AbstractButton
+    property bool checked
+Ubuntu.Components.CheckBox 1.3: AbstractButton
+    property bool checked
+Ubuntu.Components.Clipboard 1.0 0.1: QtObject singleton
+    readonly property MimeData data
+    function push(var data)
+    function clear()
+    function QQuickMimeData* newData()
+Ubuntu.Components.ColorUtils 0.1 1.0
+Ubuntu.Components.ComboButton 1.1: Button
+    property double collapsedHeight
+    default readonly property QtObject comboList
+    readonly property double comboListHeight
+    property color dropdownColor
     property bool expanded
-    property real collapsedHeight
-    property real expandedHeight
-    property bool collapseOnClick
-    default property QtObject children
-ExpandablesColumn 0.1 1.0
-Flickable
-    readonly property Item expandedItem
-    function expandItem(item)
-    function collapse()
-    default property QtObject children
-Header 0.1 1.0
-Item
-    property string text
-    property internal __foregroundColor
-ItemSelector 0.1 1.0
-ListItem.Empty
-    property var model
+    property double expandedHeight
+Ubuntu.Components.ComboButton 1.3: Button
+    property double collapsedHeight
+    default readonly property QtObject comboList
+    readonly property double comboListHeight
+    property color dropdownColor
     property bool expanded
-    property bool multiSelection
-    property bool colourImage
-    property Component delegate
-    property real containerHeight
-    property int selectedIndex
-    property bool currentlyExpanded
-    readonly property real itemHeight
-    signal delegateClicked(int index)
-    signal expansionCompleted()
-MultiValue 0.1 1.0
-Base
-    property variant values
-SingleControl 0.1 1.0
-Empty
-    property Item control
-    function __updateControl()
-SingleValue 0.1 1.0
-Base
-    property string value
-Standard 0.1 1.0
-Empty
-    property variant icon
-    property url fallbackIconSource
-    property string fallbackIconName
-    property bool progression
-    property real __iconWidth
-    property real __iconHeight
-    property real __leftIconMargin
-    property real __rightIconMargin
-    property Item control
-    property bool iconFrame
-    property bool __controlAreaPressed
-    property bool __iconIsItem
-    property internal __foregroundColor
-Subtitled 0.1 1.0
-Base
-    property string subText
-ThinDivider 0.1 1.0
-Rectangle
-    property bool __lightBackground
-ValueSelector 0.1 1.0
-Empty
-    property variant icon
-    property url fallbackIconSource
-    property string fallbackIconName
-    property real __iconWidth
-    property real __iconHeight
-    property real __leftIconMargin
-    property real __rightIconMargin
-    property bool iconFrame
-    property variant values
-    property int selectedIndex
-    property bool expanded
-Base 1.3
-Empty
-    property variant icon
-    property url fallbackIconSource
-    property string fallbackIconName
-    property bool progression
-    property bool iconFrame
-    property real __iconWidth
-    property real __iconHeight
-    property real __leftIconMargin
-    property real __rightIconMargin
-    property bool __iconIsItem
-    default property internal children
-Caption 1.3
-Item
-    property string text
-Divider 1.3
-Image
-Empty 1.3
-AbstractButton
-    property bool selected
-    property bool highlightWhenPressed
-    property bool removable
-    property bool confirmRemoval
-    readonly property string swipingState
-    readonly property bool waitingConfirmationForRemoval
-    signal itemRemoved
-    property int __height
-    property bool showDivider
-    default property internal children
-    property internal __contents
-    property list<Item> backgroundIndicator
-    property ThinDivider divider
-    property real __contentsMargins
-    function cancelItemRemoval()
-Expandable 1.3
-Empty
-    property bool expanded
-    property real collapsedHeight
-    property real expandedHeight
-    property bool collapseOnClick
-    default property QtObject children
-ExpandablesColumn 1.3
-Flickable
-    readonly property Item expandedItem
-    function expandItem(item)
-    function collapse()
-    default property QtObject children
-Header 1.3
-Item
-    property string text
-    property internal __foregroundColor
-ItemSelector 1.3
-ListItem.Empty
-    property var model
-    property bool expanded
-    property bool multiSelection
-    property bool colourImage
-    property Component delegate
-    property real containerHeight
-    property int selectedIndex
-    property bool currentlyExpanded
-    readonly property real itemHeight
-    signal delegateClicked(int index)
-    signal expansionCompleted()
-MultiValue 1.3
-Base
-    property variant values
-SingleControl 1.3
-Empty
-    property Item control
-    function __updateControl()
-SingleValue 1.3
-Base
-    property string value
-Standard 1.3
-Empty
-    property variant icon
-    property url fallbackIconSource
-    property string fallbackIconName
-    property bool progression
-    property real __iconWidth
-    property real __iconHeight
-    property real __leftIconMargin
-    property real __rightIconMargin
-    property Item control
-    property bool iconFrame
-    property bool __controlAreaPressed
-    property bool __iconIsItem
-    property internal __foregroundColor
-Subtitled 1.3
-Base
-    property string subText
-ThinDivider 1.3
-Rectangle
-    property bool __lightBackground
-ValueSelector 1.3
-Empty
-    property variant icon
-    property url fallbackIconSource
-    property string fallbackIconName
-    property real __iconWidth
-    property real __iconHeight
-    property real __leftIconMargin
-    property real __rightIconMargin
-    property bool iconFrame
-    property variant values
-    property int selectedIndex
-    property bool expanded
-DatePicker 0.1 1.0
-StyledItem
-    property string mode
-    property date date
-    property date minimum
-    property date maximum
-    readonly property int year
-    readonly property int month
-    readonly property int day
-    readonly property int week
-    readonly property int hours
-    readonly property int minutes
-    readonly property int seconds
-    property var locale
-    readonly property bool moving
-Dialer 0.1 1.0
-StyledItem
-    property real minimumValue
-    property real maximumValue
-    property real size
-    property real handSpace
-    readonly property Item centerItem
-    property list<var> centerContent
-    readonly property list<DialerHands> hands
-    signal handUpdated(var hand)
-DialerHand 0.1 1.0
-StyledItem
-    property real value
-    property DialerHandGroup hand
-    readonly property Dialer dialer
-    default property list<QtObject> overlay
-    readonly property int index
-    property internal __grabber
-Picker 0.1 1.0
-StyledItem
-    property bool circular
-    property var model
-    property Component delegate
-    property int selectedIndex
-    property bool live
-    readonly property bool moving
-    function positionViewAtIndex(index)
-    property int __clickedIndex
-PickerDelegate 0.1 1.0
-AbstractButton
-    readonly property Picker picker
-PickerPanel 0.1 1.0
-Object
-    function openDatePicker(caller, property, mode)
-DatePicker 1.3
-StyledItem
-    property string mode
-    property date date
-    property date minimum
-    property date maximum
-    readonly property int year
-    readonly property int month
-    readonly property int day
-    readonly property int week
-    readonly property int hours
-    readonly property int minutes
-    readonly property int seconds
-    property var locale
-    readonly property bool moving
-Dialer 1.3
-StyledItem
-    property real minimumValue
-    property real maximumValue
-    property real size
-    property real handSpace
-    readonly property Item centerItem
-    property list<var> centerContent
-    readonly property list<DialerHands> hands
-    signal handUpdated(var hand)
-DialerHand 1.3
-StyledItem
-    property real value
-    property DialerHandGroup hand
-    readonly property Dialer dialer
-    default property list<QtObject> overlay
-    readonly property int index
-    property internal __grabber
-Picker 1.3
-StyledItem
-    property bool circular
-    property var model
-    property Component delegate
-    property int selectedIndex
-    property bool live
-    readonly property bool moving
-    function positionViewAtIndex(index)
-    property int __clickedIndex
-PickerDelegate 1.3
-AbstractButton
-    readonly property Picker picker
-PickerPanel 1.3
-Object
-    function openDatePicker(caller, property, mode)
-ActionSelectionPopover 0.1 1.0
-Popover
-    property Item target
-    property var actions
-    property Component delegate
-ComposerSheet 0.1 1.0
-SheetBase
-    signal cancelClicked
-    signal confirmClicked
-DefaultSheet 0.1 1.0
-SheetBase
-    property bool doneButton
-    signal closeClicked
-    signal doneClicked
-Dialog 0.1 1.0
-PopupBase
-    default property list<Object> contents
-    property string title
-    property string text
-    property Item caller
-    property Item pointerTarget
-    property real edgeMargins
-    property real callerMargin
-    property bool modal
-Popover 0.1 1.0
-PopupBase
-    default property list<Object> container
-    property real contentWidth
-    property real contentHeight
-    property Item caller
-    property Item pointerTarget
-    property real edgeMargins
-    property real callerMargin
-    property bool autoClose
-    property Component foregroundStyle
-    function show()
-    function hide()
-    function __makeInvisible()
-PopupBase 0.1 1.0
-OrientationHelper
-    property Item dismissArea
-    property bool grabDismissAreaEvents
-    property PropertyAnimation fadingAnimation
-    function show()
-    function hide()
-    function __closeIfHidden()
-    function __closePopup()
-    property Item __foreground
-    property bool __closeOnDismissAreaPress
-    property internal __dimBackground
-    property internal __eventGrabber
-SheetBase 0.1 1.0
-PopupBase
-    default property list<Object> container
-    property real contentsWidth
-    property real contentsHeight
-    property string title
-    property bool modal
-    property internal __leftButton
-    property internal __rightButton
-ActionSelectionPopover 1.3
-Popover
-    property Item target
-    property var actions
-    property Component delegate
-ComposerSheet 1.3
-SheetBase
-    signal cancelClicked
-    signal confirmClicked
-DefaultSheet 1.3
-SheetBase
-    property bool doneButton
-    signal closeClicked
-    signal doneClicked
-Dialog 1.3
-PopupBase
-    default property list<Object> contents
-    property string title
-    property string text
-    property Item caller
-    property Item pointerTarget
-    property real edgeMargins
-    property real callerMargin
-    property bool modal
-Popover 1.3
-PopupBase
-    default property list<Object> container
-    property real contentWidth
-    property real contentHeight
-    property Item caller
-    property Item pointerTarget
-    property real edgeMargins
-    property real callerMargin
-    property bool autoClose
-    property Component foregroundStyle
-    function show()
-    function hide()
-    function __makeInvisible()
-PopupBase 1.3
-OrientationHelper
-    property Item dismissArea
-    property bool grabDismissAreaEvents
-    property PropertyAnimation fadingAnimation
-    function show()
-    function hide()
-    function __closeIfHidden()
-    function __closePopup()
-    property Item __foreground
-    property bool __closeOnDismissAreaPress
-    property internal __dimBackground
-    property internal __eventGrabber
-SheetBase 1.3
-PopupBase
-    default property list<Object> container
-    property real contentsWidth
-    property real contentsHeight
-    property string title
-    property bool modal
-    property internal __leftButton
-    property internal __rightButton
-ComboButtonStyle 1.1
-Item
-    property real dropDownWidth
-    property real dropDownSeparatorWidth
-    property real comboListMargin
+    property double expandedHeight
+Ubuntu.Components.Styles.ComboButtonStyle 1.1: Item
     property Item comboListHolder
+    property double comboListMargin
     property Item comboListPanel
     property color defaultColor
-    property Gradient defaultGradient
     property color defaultDropdownColor
-    property font defaultFont
-PageHeadStyle 1.1
-Item
-    property real contentHeight
-    property url separatorSource
-    property url separatorBottomSource
+    property QFont defaultFont
+    property Gradient defaultGradient
+    property double dropDownSeparatorWidth
+    property double dropDownWidth
+Ubuntu.Components.Popups.ComposerSheet 1.0 0.1: SheetBase
+    signal cancelClicked()
+    signal confirmClicked()
+Ubuntu.Components.Popups.ComposerSheet 1.3: SheetBase
+    signal cancelClicked()
+    signal confirmClicked()
+Ubuntu.Layouts.ConditionalLayout 1.0 0.1: QtObject
+    default property Component layout
+    property string name
+    property QQmlBinding when
+Ubuntu.PerformanceMetrics.CpuUsage 1.0 0.1: Item
+    readonly property UPMGraphModel graphModel
+    property int period
+    property int samplingInterval
+Ubuntu.Components.CrossFadeImage 1.0 0.1: Item
+    property int fadeDuration
+    property int fillMode
+    readonly property bool running
+    property url source
+    property QSizeF sourceSize
+    readonly property int status
+Ubuntu.Components.CrossFadeImage 1.1: Item
+    property int fadeDuration
+    property string fadeStyle
+    property int fillMode
+    readonly property bool running
+    property url source
+    property QSizeF sourceSize
+    readonly property int status
+Ubuntu.Components.CrossFadeImage 1.3: Item
+    property int fadeDuration
+    property string fadeStyle
+    property int fillMode
+    readonly property bool running
+    property url source
+    property QSizeF sourceSize
+    readonly property int status
+Ubuntu.Components.DateUtils 0.1 1.0
+Ubuntu.Components.Popups.DefaultSheet 1.0 0.1: SheetBase
+    property bool doneButton
+    signal closeClicked()
+    signal doneClicked()
+Ubuntu.Components.Popups.DefaultSheet 1.3: SheetBase
+    property bool doneButton
+    signal closeClicked()
+    signal doneClicked()
+Ubuntu.Components.Popups.Dialog 1.0 0.1: PopupBase
+    property Item caller
+    property double callerMargin
+    default readonly property QtObject contents
+    property double edgeMargins
+    property bool modal
+    property Item pointerTarget
+    property string text
+    property string title
+Ubuntu.Components.Popups.Dialog 1.3: PopupBase
+    property Item caller
+    property double callerMargin
+    default readonly property QtObject contents
+    property double edgeMargins
+    property bool modal
+    property Item pointerTarget
+    property string text
+    property string title
+Ubuntu.Components.ListItems.Divider 1.0 0.1: QQuickImageBase
+    property FillMode fillMode
+    property HAlignment horizontalAlignment
+    property bool mipmap
+    readonly property double paintedHeight
+    readonly property double paintedWidth
+    property VAlignment verticalAlignment
+Ubuntu.Components.ListItems.Divider 1.3: QQuickImageBase
+    property FillMode fillMode
+    property HAlignment horizontalAlignment
+    property bool mipmap
+    readonly property double paintedHeight
+    readonly property double paintedWidth
+    property VAlignment verticalAlignment
+Ubuntu.Components.ListItems.Empty 1.0 0.1: AbstractButton
+    readonly property Item backgroundIndicator
+    default readonly property QtObject children
+    property bool confirmRemoval
+    readonly property ThinDivider divider
+    property bool highlightWhenPressed
+    signal itemRemoved()
+    function var cancelItemRemoval()
+    property bool removable
+    property bool selected
+    property bool showDivider
+    readonly property string swipingState
+    readonly property bool waitingConfirmationForRemoval
+Ubuntu.Components.ListItems.Empty 1.3: AbstractButton
+    readonly property Item backgroundIndicator
+    default readonly property QtObject children
+    property bool confirmRemoval
+    readonly property ThinDivider divider
+    property bool highlightWhenPressed
+    signal itemRemoved()
+    function var cancelItemRemoval()
+    property bool removable
+    property bool selected
+    property bool showDivider
+    readonly property string swipingState
+    readonly property bool waitingConfirmationForRemoval
+Ubuntu.Components.ListItems.Expandable 1.0 0.1: Empty
+    default readonly property QtObject children
+    property bool collapseOnClick
+    property double collapsedHeight
+    property bool expanded
+    property double expandedHeight
+Ubuntu.Components.ListItems.Expandable 1.3: Empty
+    default readonly property QtObject children
+    property bool collapseOnClick
+    property double collapsedHeight
+    property bool expanded
+    property double expandedHeight
+Ubuntu.Components.ListItems.ExpandablesColumn 1.0 0.1: Flickable
+    default readonly property QtObject children
+    readonly property var expandedItem
+    function var expandItem(var item)
+    function var collapse()
+Ubuntu.Components.ListItems.ExpandablesColumn 1.3: Flickable
+    default readonly property QtObject children
+    readonly property var expandedItem
+    function var expandItem(var item)
+    function var collapse()
+Ubuntu.Components.FilterBehavior 1.1: QtObject
+    property QRegExp pattern
+    property string property
+Ubuntu.Components.Haptics 1.0 0.1: Object singleton
+    readonly property HapticsEffect effect
+    readonly property bool enabled
+    function var play(var customEffect)
+Ubuntu.Components.ListItems.Header 1.0 0.1: Item
+    property string text
+Ubuntu.Components.Header 1.0 0.1: AppHeader
+    property string _for_autopilot
+    property var actions
+    property bool animate
+    property PageHeadConfiguration config
+    property Item contents
+    property color dividerColor
+    property Flickable flickable
+    function var show()
+    function var hide()
+    readonly property bool moving
+    property var pageStack
+    property color panelColor
+    property var tabsModel
+    property string title
+    property bool useDeprecatedToolbar
+Ubuntu.Components.ListItems.Header 1.3: Item
+    property string text
+Ubuntu.Components.Header 1.3: AppHeader
+    property string _for_autopilot
+    property var actions
+    property bool animate
+    property QtObject config
+    property Item contents
+    property color dividerColor
+    property Flickable flickable
+    function var show()
+    function var hide()
+    readonly property bool moving
+    property var pageStack
+    property color panelColor
+    property var tabsModel
+    property string title
+    property bool useDeprecatedToolbar
+Ubuntu.Components.Icon 1.0 0.1: Item
+    property color color
+    property color keyColor
+    property string name
+Ubuntu.Components.Icon 1.1: Icon
+    property url source
+Ubuntu.Components.InverseMouse 1.0 0.1: Mouse
+Ubuntu.Components.InverseMouseArea 1.0 0.1: MouseArea
+    function bool contains(QPointF point)
+    property Item sensingArea
+    property bool topmostItem
+Ubuntu.Layouts.ItemLayout 1.0 0.1: Item
+    property string item
+Ubuntu.Components.ListItems.ItemSelector 1.0 0.1: Empty
+    property bool colourImage
+    property double containerHeight
+    property bool currentlyExpanded
+    property Component delegate
+    property bool expanded
+    readonly property double itemHeight
+    signal delegateClicked(int index)
+    signal expansionCompleted()
+    property var model
+    property bool multiSelection
+    property int selectedIndex
+Ubuntu.Components.ListItems.ItemSelector 1.3: Empty
+    property bool colourImage
+    property double containerHeight
+    property bool currentlyExpanded
+    property Component delegate
+    property bool expanded
+    readonly property double itemHeight
+    signal delegateClicked(int index)
+    signal expansionCompleted()
+    property var model
+    property bool multiSelection
+    property int selectedIndex
+Ubuntu.Components.Label 1.0 0.1: Text
+    property string fontSize
+Ubuntu.Components.Label 1.3: Text
+    property string fontSize
+Ubuntu.Layouts.Layouts 1.0 0.1: Item
+    readonly property Item children
+    readonly property string currentLayout
+    default readonly property QtObject data
+    readonly property ConditionalLayout layouts
+Ubuntu.Components.ListItem 1.2: StyledItem
+    property Action action
+    property color color
+    readonly property Item contentItem
+    readonly property bool contentMoving
+    readonly property UCListItemDivider divider
+    property bool dragMode
+    readonly property bool dragging
+    property color highlightColor
+    readonly property bool highlighted
+    property ListItemActions leadingActions
+    readonly property Item listItemChildren
+    default readonly property QtObject listItemData
+    signal clicked()
+    signal pressAndHold()
+    signal contentMovementStarted()
+    signal contentMovementEnded()
+    property bool selectMode
+    property bool selected
+    property ListItemActions trailingActions
+Ubuntu.Components.ListItemActions 1.2: QtObject
+    readonly property Action actions
+    default readonly property QtObject data
+    property Component delegate
+Ubuntu.Components.ListItemDrag 1.2: QtObject
+    property bool accept
+    readonly property int from
+    property int maximumIndex
+    property int minimumIndex
+    readonly property Status status
+    readonly property int to
+Ubuntu.Components.ListItemDrag.Status: Enum
+    Dropped
+    Moving
+    Started
+Ubuntu.Components.Styles.ListItemStyle 1.3 1.2: Item
+    readonly property bool animatePanels
+    property Item dragPanel
+    property PropertyAnimation dropAnimation
+    readonly property int listItemIndex
+    function swipeEvent(SwipeEvent event)
+    function rebound()
+    property Animation snapAnimation
+Ubuntu.Components.MainView 1.0 0.1: MainViewBase
+    property bool automaticOrientation
+    default readonly property QtObject contentsItem
+    property bool useDeprecatedToolbar
+Ubuntu.Components.MainView 1.2: MainViewBase
+    property bool automaticOrientation
+    default readonly property QtObject contentsItem
+Ubuntu.Components.MainView 1.3: MainViewBase
+    property bool automaticOrientation
+    default readonly property QtObject contentsItem
+Ubuntu.Components.MathUtils 0.1 1.0
+Ubuntu.Components.MimeData 1.0 0.1: QtObject
+    property color color
+    property var data
+    readonly property QStringList formats
+    property string html
+    property string text
+    property QList<QUrl> urls
+Ubuntu.Components.Mouse 1.0 0.1: QtObject
+    readonly property Qt.MouseButtons acceptedButtons
+    property int clickAndHoldThreshold
+    property bool enabled
+    readonly property Item forwardTo
+    readonly property bool hoverEnabled
+    signal pressed(QQuickMouseEvent mouse, Item host)
+    signal released(QQuickMouseEvent mouse, Item host)
+    signal clicked(QQuickMouseEvent mouse, Item host)
+    signal pressAndHold(QQuickMouseEvent mouse, Item host)
+    signal doubleClicked(QQuickMouseEvent mouse, Item host)
+    signal entered(QQuickMouseEvent event, Item host)
+    signal exited(QQuickMouseEvent event, Item host)
+    property Priority priority
+Ubuntu.Components.Mouse.Priority: Enum
+    AfterItem
+    BeforeItem
+Ubuntu.Components.ListItems.MultiValue 1.0 0.1: Base
+    property var values
+Ubuntu.Components.ListItems.MultiValue 1.3: Base
+    property var values
+Ubuntu.Components.Object 1.0 0.1: QtObject
+    default readonly property QtObject children
+Ubuntu.Components.OptionSelector 1.0 0.1: Empty
+    property bool colourImage
+    property double containerHeight
+    property bool currentlyExpanded
+    property Component delegate
+    property bool expanded
+    readonly property double itemHeight
+    signal delegateClicked(int index)
+    signal expansionCompleted()
+    property var model
+    property bool multiSelection
+    property int selectedIndex
+Ubuntu.Components.OptionSelector 1.3: Empty
+    property bool colourImage
+    property double containerHeight
+    property bool currentlyExpanded
+    property Component delegate
+    property bool expanded
+    readonly property double itemHeight
+    signal delegateClicked(int index)
+    signal expansionCompleted()
+    property var model
+    property bool multiSelection
+    property int selectedIndex
+Ubuntu.Components.OptionSelectorDelegate 1.0 0.1: Empty
+    property color assetColour
+    property bool colourImage
+    property bool constrainImage
+    readonly property string fragColourShader
+    property url icon
+    readonly property ListView listView
+    property string subText
+Ubuntu.Components.OptionSelectorDelegate 1.3: Empty
+    property color assetColour
+    property bool colourImage
+    property bool constrainImage
+    readonly property string fragColourShader
+    property url icon
+    readonly property ListView listView
+    property string subText
+Ubuntu.Components.OrientationHelper 1.0 0.1: Item
+    property bool anchorToKeyboard
+    property bool automaticOrientation
+    property int orientationAngle
+    readonly property bool rotating
+    property bool transitionEnabled
+Ubuntu.Components.OrientationHelper 1.3: Item
+    property bool anchorToKeyboard
+    property bool automaticOrientation
+    property int orientationAngle
+    readonly property bool rotating
+    property bool transitionEnabled
+Ubuntu.Components.Page 1.0 0.1: PageTreeNode
+    readonly property QtObject actions
+    property Flickable flickable
+    property string title
+    property Item tools
+Ubuntu.Components.Page 1.1: Page
+    readonly property PageHeadConfiguration head
+Ubuntu.Components.Page 1.3: PageTreeNode
+    property Flickable flickable
+    readonly property PageHeadConfiguration head
+    property string title
+Ubuntu.Components.PageHeadConfiguration 1.1: Object
+    readonly property Action actions
+    property Action backAction
+    property Item contents
+    property color foregroundColor
+    property string preset
+    readonly property PageHeadSections sections
+Ubuntu.Components.PageHeadConfiguration 1.3: Object
+    readonly property Action actions
+    property Action backAction
+    property Item contents
+    property color foregroundColor
+    property bool locked
+    property string preset
+    readonly property PageHeadSections sections
+    property bool visible
+Ubuntu.Components.PageHeadSections 1.1: QtObject
+    property bool enabled
+    property var model
+    property int selectedIndex
+Ubuntu.Components.PageHeadSections 1.3: QtObject
+    property bool enabled
+    property var model
+    property int selectedIndex
+Ubuntu.Components.PageHeadState 1.1: State
+    readonly property Action actions
+    property Action backAction
+    property Item contents
+    property PageHeadConfiguration head
+Ubuntu.Components.PageHeadState 1.3: State
+    readonly property Action actions
+    property Action backAction
+    property Item contents
+    property PageHeadConfiguration head
+Ubuntu.Components.Styles.PageHeadStyle 1.1: Item
+    property double contentHeight
     property string fontSize
     property int fontWeight
-    property color textColor
-    property real textLeftMargin
     property int maximumNumberOfActions
-PullToRefreshStyle 1.1
-Item
-    property Component defaultContent
-    property real activationThreshold
-    property bool releaseToRefresh
-Palette 0.1
-QtObject
+    property url separatorBottomSource
+    property url separatorSource
+    property color textColor
+    property double textLeftMargin
+Ubuntu.Components.PageStack 1.0 0.1: PageTreeNode
+    property Item currentPage
+    default readonly property QtObject data
+    property int depth
+    function var push(var page, var properties)
+    function var pop()
+    function var clear()
+Ubuntu.Components.PageStack 1.3: PageTreeNode
+    property Item currentPage
+    default readonly property QtObject data
+    property int depth
+    function var push(var page, var properties)
+    function var pop()
+    function var clear()
+Palette: QtObject
     property PaletteValues normal
     property PaletteValues selected
-PaletteValues 0.1
-QtObject
+Ubuntu.Components.Themes.Palette 0.1: QtObject
+    property PaletteValues normal
+    property PaletteValues selected
+Ubuntu.Components.Themes.Palette 1.3: QtObject
+    property PaletteValues normal
+    property PaletteValues selected
+Ubuntu.Components.Themes.PaletteValues 0.1: QtObject
     property color background
     property color backgroundText
     property color base
     property color baseText
+    property color field
+    property color fieldText
     property color foreground
     property color foregroundText
     property color overlay
     property color overlayText
-    property color field
-    property color fieldText
     property color selection
-Palette 1.3
-QtObject
-    property PaletteValues normal
-    property PaletteValues selected
-PaletteValues 1.3
-QtObject
+Ubuntu.Components.Themes.PaletteValues 1.3: QtObject
     property color background
     property color backgroundText
     property color base
     property color baseText
+    property color field
+    property color fieldText
     property color foreground
     property color foregroundText
     property color overlay
     property color overlayText
-    property color field
-    property color fieldText
     property color selection
-PerformanceOverlay 0.1 1.0
-Item
+Ubuntu.Components.Panel 1.0 0.1: Item
+    property int align
+    property bool animate
+    readonly property bool animating
+    default readonly property QtObject contents
+    property int hideTimeout
+    property double hintSize
+    property bool locked
+    function var open()
+    function var close()
+    property bool opened
+    readonly property double position
+    readonly property bool pressed
+    property double triggerSize
+Ubuntu.Components.Panel 1.3: Item
+    property int align
+    property bool animate
+    readonly property bool animating
+    default readonly property QtObject contents
+    property int hideTimeout
+    property double hintSize
+    property bool locked
+    function var open()
+    function var close()
+    property bool opened
+    readonly property double position
+    readonly property bool pressed
+    property double triggerSize
+Ubuntu.PerformanceMetrics.PerformanceOverlay 1.0 0.1: Item
     property bool active
-UbuntuTestCase 0.1 1.0
-TestCase
-    function findChild(obj,objectName)
-    function findInvisibleChild(obj,objectName)
-    function findChildWithProperty(item, property, value)
-    function centerOf(item)
-    function mouseMoveSlowly(item,x,y,dx,dy,steps,stepdelay)
-    function flick(item, x, y, dx, dy, pressTimeout, steps, button, modifiers, delay)
-    function mouseLongPress(item, x, y, button, modifiers, delay)
-    function tryCompareFunction(func, expectedResult, timeout)
-    function typeString(string)
-    function warningFormat(line, column, message)
-    function waitForHeaderAnimation(mainView)
-plugins.qmltypes
-    name: "FilterBehavior"
-    prototype: "QObject"
-    exports: ["FilterBehavior 1.1"]
-    Property { name: "property"; type: "string" }
-    Property { name: "pattern"; type: "QRegExp" }
-    name: "InverseMouseAreaType"
-    prototype: "QQuickMouseArea"
-    exports: ["InverseMouseArea 0.1", "InverseMouseArea 1.0"]
-    Property { name: "sensingArea"; type: "QQuickItem"; isPointer: true }
-    Property { name: "topmostItem"; type: "bool" }
-    Method {
-    name: "contains"
-    Parameter { name: "point"; type: "QPointF" }
-    name: "QAbstractProxyModel"
-    prototype: "QAbstractItemModel"
-    Property { name: "sourceModel"; type: "QAbstractItemModel"; isPointer: true }
-    name: "QDeclarativeFeedbackActuator"
-    prototype: "QObject"
-    exports: ["QtFeedback/Actuator 5.0"]
-    name: "Capability"
-    name: "State"
-    Property { name: "actuatorId"; type: "int"; isReadonly: true }
-    Property { name: "name"; type: "string"; isReadonly: true }
-    Property { name: "state"; type: "State"; isReadonly: true }
-    Property { name: "valid"; type: "bool"; isReadonly: true }
-    Property { name: "enabled"; type: "bool" }
-    Method {
-    name: "isCapabilitySupported"
-    Parameter { name: "capability"; type: "Capability" }
-    name: "QDeclarativeFeedbackEffect"
-    prototype: "QObject"
-    exports: ["QtFeedback/Feedback 5.0", "QtFeedback/FeedbackEffect 5.0"]
-    name: "Duration"
-    name: "State"
-    name: "ErrorType"
-    Property { name: "running"; type: "bool" }
-    Property { name: "paused"; type: "bool" }
-    Property { name: "duration"; type: "int" }
-    Property { name: "state"; type: "State" }
-    Property { name: "error"; type: "ErrorType"; isReadonly: true }
-    Method { name: "updateState" }
-    Method { name: "start" }
-    Method { name: "stop" }
-    Method { name: "pause" }
-    name: "QDeclarativeFileEffect"
-    prototype: "QDeclarativeFeedbackEffect"
-    exports: ["QtFeedback/FileEffect 5.0"]
-    Property { name: "loaded"; type: "bool" }
-    Property { name: "source"; type: "QUrl" }
-    Property { name: "supportedMimeTypes"; type: "QStringList"; isReadonly: true }
-    Method { name: "load" }
-    Method { name: "unload" }
-    name: "QDeclarativeHapticsEffect"
-    prototype: "QDeclarativeFeedbackEffect"
-    exports: ["QtFeedback/HapticsEffect 5.0"]
-    Property {
-    name: "availableActuators"
-    Property { name: "intensity"; type: "double" }
-    Property { name: "attackTime"; type: "int" }
-    Property { name: "attackIntensity"; type: "double" }
-    Property { name: "fadeTime"; type: "int" }
-    Property { name: "fadeIntensity"; type: "double" }
-    Property { name: "period"; type: "int" }
-    Property { name: "actuator"; type: "QDeclarativeFeedbackActuator"; isPointer: true }
-    name: "QDeclarativeThemeEffect"
-    prototype: "QObject"
-    exports: ["QtFeedback/EffectPlayer 5.0", "QtFeedback/ThemeEffect 5.0"]
-    name: "Effect"
-    Property { name: "supported"; type: "bool"; isReadonly: true }
-    Property { name: "effect"; type: "Effect" }
-    Method { name: "play" }
-    Method {
-    name: "play"
-    Parameter { name: "effect"; type: "Effect" }
-    name: "QSortFilterProxyModel"
-    prototype: "QAbstractProxyModel"
-    Property { name: "filterRegExp"; type: "QRegExp" }
-    Property { name: "filterKeyColumn"; type: "int" }
-    Property { name: "dynamicSortFilter"; type: "bool" }
-    Property { name: "filterCaseSensitivity"; type: "Qt::CaseSensitivity" }
-    Property { name: "sortCaseSensitivity"; type: "Qt::CaseSensitivity" }
-    Property { name: "isSortLocaleAware"; type: "bool" }
-    Property { name: "sortRole"; type: "int" }
-    Property { name: "filterRole"; type: "int" }
-    Method {
-    name: "setFilterRegExp"
-    Parameter { name: "pattern"; type: "string" }
-    Method {
-    name: "setFilterWildcard"
-    Parameter { name: "pattern"; type: "string" }
-    Method {
-    name: "setFilterFixedString"
-    Parameter { name: "pattern"; type: "string" }
-    Method { name: "clear" }
-    Method { name: "invalidate" }
-    name: "QSortFilterProxyModelQML"
-    prototype: "QSortFilterProxyModel"
-    exports: ["SortFilterModel 1.1"]
-    Property { name: "model"; type: "QAbstractItemModel"; isPointer: true }
-    Property { name: "count"; type: "int"; isReadonly: true }
-    Property { name: "sort"; type: "SortBehavior"; isReadonly: true; isPointer: true }
-    Property { name: "filter"; type: "FilterBehavior"; isReadonly: true; isPointer: true }
-    Method {
-    name: "get"
-    Parameter { name: "row"; type: "int" }
-    Method { name: "count"; type: "int" }
-    name: "SortBehavior"
-    prototype: "QObject"
-    exports: ["SortBehavior 1.1"]
-    Property { name: "property"; type: "string" }
-    Property { name: "order"; type: "Qt::SortOrder" }
-    name: "UCAction"
-    prototype: "QObject"
-    exports: ["Action 0.1", "Action 1.0"]
-    name: "Type"
-    Property { name: "name"; type: "string" }
-    Property { name: "text"; type: "string" }
-    Property { name: "iconName"; type: "string" }
-    Property { name: "description"; type: "string" }
-    Property { name: "keywords"; type: "string" }
-    Property { name: "enabled"; type: "bool" }
-    Property { name: "parameterType"; type: "Type" }
-    Property { name: "iconSource"; type: "QUrl" }
-    Property { name: "visible"; type: "bool" }
-    Property { name: "itemHint"; type: "QQmlComponent"; isPointer: true }
-    Signal {
-    name: "triggered"
-    Parameter { name: "value"; type: "QVariant" }
-    Method {
-    name: "trigger"
-    Parameter { name: "value"; type: "QVariant" }
-    Method { name: "trigger" }
-    name: "UCActionContext"
-    prototype: "QObject"
-    exports: ["ActionContext 0.1", "ActionContext 1.0"]
-    Property { name: "actions"; type: "QObject"; isList: true; isReadonly: true }
-    Property { name: "active"; type: "bool" }
-    Signal {
-    name: "activeChanged"
-    Parameter { type: "bool" }
-    Method {
-    name: "addAction"
-    Parameter { name: "action"; type: "QObject"; isPointer: true }
-    Method {
-    name: "removeAction"
-    Parameter { name: "action"; type: "QObject"; isPointer: true }
-    name: "UCActionManager"
-    prototype: "QObject"
-    exports: ["ActionManager 0.1", "ActionManager 1.0"]
-    Property { name: "actions"; type: "QObject"; isList: true; isReadonly: true }
-    Property { name: "localContexts"; type: "QObject"; isList: true; isReadonly: true }
-    Property { name: "globalContext"; type: "UCActionContext"; isReadonly: true; isPointer: true }
-    Signal { name: "quit" }
-    Method {
-    name: "addAction"
-    Parameter { name: "action"; type: "QObject"; isPointer: true }
-    Method {
-    name: "removeAction"
-    Parameter { name: "action"; type: "QObject"; isPointer: true }
-    Method {
-    name: "addLocalContext"
-    Parameter { name: "context"; type: "QObject"; isPointer: true }
-    Method {
-    name: "removeLocalContext"
-    Parameter { name: "context"; type: "QObject"; isPointer: true }
-    name: "UCAlarm"
-    prototype: "QObject"
-    exports: ["Alarm 0.1", "Alarm 1.0"]
-    name: "Status"
-    name: "Operation"
-    name: "Error"
-    name: "AlarmType"
-    name: "DayOfWeek"
-    name: "DaysOfWeek"
-    Property { name: "enabled"; type: "bool" }
-    Property { name: "message"; type: "string" }
-    Property { name: "date"; type: "QDateTime" }
-    Property { name: "type"; type: "AlarmType" }
-    Property { name: "daysOfWeek"; type: "DaysOfWeek" }
-    Property { name: "sound"; type: "QUrl" }
-    Property { name: "error"; type: "int"; isReadonly: true }
-    Property { name: "status"; type: "Status"; isReadonly: true }
-    Signal {
-    name: "statusChanged"
-    Parameter { name: "operation"; type: "Operation" }
-    Method { name: "save" }
-    Method { name: "cancel" }
-    Method { name: "reset" }
-    name: "UCAlarmModel"
-    prototype: "QAbstractListModel"
-    exports: ["AlarmModel 0.1", "AlarmModel 1.0"]
-    Property { name: "count"; type: "int"; isReadonly: true }
-    Method { name: "refresh"; revision: 1 }
-    Method {
-    name: "get"
-    Parameter { name: "index"; type: "int" }
-    name: "UCArgument"
-    prototype: "QObject"
-    exports: ["Argument 0.1", "Argument 1.0"]
-    Property { name: "name"; type: "string" }
-    Property { name: "help"; type: "string" }
-    Property { name: "required"; type: "bool" }
-    Property { name: "valueNames"; type: "QStringList" }
-    Method {
-    name: "at"
-    Parameter { name: "i"; type: "int" }
-    name: "UCArguments"
-    prototype: "QObject"
-    exports: ["Arguments 0.1", "Arguments 1.0"]
-    Property { name: "defaultArgument"; type: "UCArgument"; isPointer: true }
-    Property { name: "arguments"; type: "UCArgument"; isList: true; isReadonly: true }
-    Property { name: "values"; type: "QQmlPropertyMap"; isReadonly: true; isPointer: true }
-    Property { name: "error"; type: "bool"; isReadonly: true }
-    Property { name: "errorMessage"; type: "string"; isReadonly: true }
-    Method { name: "printUsage" }
-    Method {
-    name: "quitWithError"
-    Parameter { name: "errorMessage"; type: "string" }
-    Method { name: "quitWithError" }
-    name: "UCDragEvent"
-    prototype: "QObject"
-    exports: ["ListItemDrag 1.2"]
-    name: "Status"
-    Property { name: "status"; type: "Status"; isReadonly: true }
-    Property { name: "from"; type: "int"; isReadonly: true }
-    Property { name: "to"; type: "int"; isReadonly: true }
-    Property { name: "minimumIndex"; type: "int" }
-    Property { name: "maximumIndex"; type: "int" }
-    Property { name: "accept"; type: "bool" }
-    name: "UCInverseMouse"
-    prototype: "UCMouse"
-    exports: ["InverseMouse 0.1", "InverseMouse 1.0"]
-    name: "UCListItem"
-    prototype: "UCStyledItemBase"
-    exports: ["ListItem 1.2"]
-    Property { name: "contentItem"; type: "QQuickItem"; isReadonly: true; isPointer: true }
-    Property { name: "divider"; type: "UCListItemDivider"; isReadonly: true; isPointer: true }
-    Property { name: "leadingActions"; type: "UCListItemActions"; isPointer: true }
-    Property { name: "trailingActions"; type: "UCListItemActions"; isPointer: true }
-    Property { name: "highlighted"; type: "bool"; isReadonly: true }
-    Property { name: "contentMoving"; type: "bool"; isReadonly: true }
-    Property { name: "color"; type: "QColor" }
-    Property { name: "highlightColor"; type: "QColor" }
-    Property { name: "dragging"; type: "bool"; isReadonly: true }
-    Property { name: "dragMode"; type: "bool" }
-    Property { name: "selected"; type: "bool" }
-    Property { name: "selectMode"; type: "bool" }
-    Property { name: "action"; type: "UCAction"; isPointer: true }
-    Property { name: "listItemData"; type: "QObject"; isList: true; isReadonly: true }
-    Property { name: "listItemChildren"; type: "QQuickItem"; isList: true; isReadonly: true }
-    Signal { name: "clicked" }
-    Signal { name: "pressAndHold" }
-    Signal { name: "contentMovementStarted" }
-    Signal { name: "contentMovementEnded" }
-    name: "UCListItemActions"
-    prototype: "QObject"
-    exports: ["ListItemActions 1.2"]
-    Property { name: "delegate"; type: "QQmlComponent"; isPointer: true }
-    Property { name: "actions"; type: "UCAction"; isList: true; isReadonly: true }
-    Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
-    name: "UCListItemDivider"
-    prototype: "QQuickItem"
-    Property { name: "colorFrom"; type: "QColor" }
-    Property { name: "colorTo"; type: "QColor" }
-    name: "UCListItemStyle"
-    prototype: "QQuickItem"
-    exports: [
-    Property { name: "snapAnimation"; type: "QQuickAbstractAnimation"; isPointer: true }
-    Property { name: "dropAnimation"; type: "QQuickPropertyAnimation"; isPointer: true }
-    Property { name: "animatePanels"; type: "bool"; isReadonly: true }
-    Property { name: "dragPanel"; type: "QQuickItem"; isPointer: true }
-    Property { name: "listItemIndex"; revision: 1; type: "int"; isReadonly: true }
-    Signal { name: "listItemIndexChanged"; revision: 1 }
-    Method {
-    name: "swipeEvent"
-    Parameter { name: "event"; type: "UCSwipeEvent"; isPointer: true }
-    Method { name: "rebound" }
-    name: "UCMouse"
-    prototype: "QObject"
-    exports: ["Mouse 0.1", "Mouse 1.0"]
-    name: "Priority"
-    Property { name: "enabled"; type: "bool" }
-    Property { name: "acceptedButtons"; type: "Qt::MouseButtons"; isReadonly: true }
-    Property { name: "hoverEnabled"; type: "bool"; isReadonly: true }
-    Property { name: "clickAndHoldThreshold"; type: "int" }
-    Property { name: "forwardTo"; type: "QQuickItem"; isList: true; isReadonly: true }
-    Property { name: "priority"; type: "Priority" }
-    Signal {
-    name: "pressed"
-    Parameter { name: "mouse"; type: "QQuickMouseEvent"; isPointer: true }
-    Parameter { name: "host"; type: "QQuickItem"; isPointer: true }
-    Signal {
-    name: "released"
-    Parameter { name: "mouse"; type: "QQuickMouseEvent"; isPointer: true }
-    Parameter { name: "host"; type: "QQuickItem"; isPointer: true }
-    Signal {
-    name: "clicked"
-    Parameter { name: "mouse"; type: "QQuickMouseEvent"; isPointer: true }
-    Parameter { name: "host"; type: "QQuickItem"; isPointer: true }
-    Signal {
-    name: "pressAndHold"
-    Parameter { name: "mouse"; type: "QQuickMouseEvent"; isPointer: true }
-    Parameter { name: "host"; type: "QQuickItem"; isPointer: true }
-    Signal {
-    name: "doubleClicked"
-    Parameter { name: "mouse"; type: "QQuickMouseEvent"; isPointer: true }
-    Parameter { name: "host"; type: "QQuickItem"; isPointer: true }
-    Signal {
-    name: "positionChanged"
-    Parameter { name: "mouse"; type: "QQuickMouseEvent"; isPointer: true }
-    Parameter { name: "host"; type: "QQuickItem"; isPointer: true }
-    Signal {
-    name: "entered"
-    Parameter { name: "event"; type: "QQuickMouseEvent"; isPointer: true }
-    Parameter { name: "host"; type: "QQuickItem"; isPointer: true }
-    Signal {
-    name: "exited"
-    Parameter { name: "event"; type: "QQuickMouseEvent"; isPointer: true }
-    Parameter { name: "host"; type: "QQuickItem"; isPointer: true }
-    name: "UCNamespace"
-    prototype: "QObject"
-    exports: ["Ubuntu 1.2"]
-    name: "CaptionsStyle"
-    name: "UCNamespaceV13"
-    prototype: "UCNamespace"
-    exports: ["Ubuntu 1.3"]
-    Property { name: "toolkitVersion"; type: "ushort"; isReadonly: true }
-    Property { name: "toolkitVersionMajor"; type: "ushort"; isReadonly: true }
-    Property { name: "toolkitVersionMinor"; type: "ushort"; isReadonly: true }
-    Method {
-    name: "version"
-    Parameter { name: "major"; type: "uchar" }
-    Parameter { name: "minor"; type: "uchar" }
-    name: "UCQQuickImageExtension"
-    prototype: "QQuickImageBase"
-    exports: ["QQuickImageBase 0.1", "QQuickImageBase 1.0"]
-    Property { name: "source"; type: "QUrl" }
-    Signal { name: "extendedSourceChanged" }
-    Signal { name: "extendedSourceChanged" }
-    name: "UCServiceProperties"
-    prototype: "QObject"
-    exports: ["ServiceProperties 1.1"]
-    name: "ServiceType"
-    name: "Status"
-    Property { name: "type"; revision: 1; type: "ServiceType" }
-    Property { name: "service"; revision: 1; type: "string" }
-    Property { name: "path"; revision: 1; type: "string" }
-    Property { name: "serviceInterface"; revision: 1; type: "string" }
-    Property { name: "adaptorInterface"; revision: 1; type: "string" }
-    Property { name: "error"; revision: 1; type: "string"; isReadonly: true }
-    Property { name: "status"; revision: 1; type: "Status"; isReadonly: true }
-    name: "UCStateSaver"
-    prototype: "QObject"
-    exports: ["StateSaver 0.1", "StateSaver 1.0"]
-    name: "UCStateSaverAttached"
-    prototype: "QObject"
-    Property { name: "enabled"; type: "bool" }
-    Property { name: "properties"; type: "string" }
-    name: "UCStyledItemBase"
-    prototype: "QQuickItem"
-    exports: [
-    Property { name: "activeFocusOnPress"; revision: 1; type: "bool" }
-    Property { name: "style"; type: "QQmlComponent"; isPointer: true }
-    Property { name: "__styleInstance"; type: "QQuickItem"; isReadonly: true; isPointer: true }
-    Property { name: "theme"; revision: 2; type: "UCTheme"; isPointer: true }
-    Signal { name: "styleInstanceChanged" }
-    Signal { name: "activeFocusOnPressChanged"; revision: 1 }
-    Signal { name: "themeChanged"; revision: 2 }
-    Method {
-    name: "requestFocus"
-    Parameter { name: "reason"; type: "Qt::FocusReason" }
-    Method { name: "requestFocus"; revision: 1; type: "bool" }
-    name: "UCSwipeEvent"
-    prototype: "QObject"
-    exports: ["SwipeEvent 1.2"]
-    name: "Status"
-    Property { name: "to"; type: "QPointF"; isReadonly: true }
-    Property { name: "from"; type: "QPointF"; isReadonly: true }
-    Property { name: "content"; type: "QPointF" }
-    Property { name: "status"; type: "Status"; isReadonly: true }
-    name: "UCTheme"
-    prototype: "QObject"
-    exports: ["ThemeSettings 1.3"]
-    Property { name: "parentTheme"; type: "UCTheme"; isReadonly: true; isPointer: true }
-    Property { name: "name"; type: "string" }
-    Property { name: "palette"; type: "QObject"; isPointer: true }
-    Property { name: "version"; type: "ushort" }
-    Method {
-    name: "createStyleComponent"
-    Parameter { name: "styleName"; type: "string" }
-    Parameter { name: "parent"; type: "QObject"; isPointer: true }
-    name: "UCUbuntuAnimation"
-    prototype: "QObject"
-    exports: ["UbuntuAnimation 0.1", "UbuntuAnimation 1.0"]
-    Property { name: "SnapDuration"; type: "int"; isReadonly: true }
-    Property { name: "FastDuration"; type: "int"; isReadonly: true }
-    Property { name: "BriskDuration"; type: "int"; isReadonly: true }
-    Property { name: "SlowDuration"; type: "int"; isReadonly: true }
-    Property { name: "SleepyDuration"; type: "int"; isReadonly: true }
-    Property { name: "StandardEasing"; type: "QEasingCurve"; isReadonly: true }
-    Property { name: "StandardEasingReverse"; type: "QEasingCurve"; isReadonly: true }
-    name: "UCUbuntuShape"
-    prototype: "QQuickItem"
-    exports: [
-    name: "Aspect"
-    name: "BackgroundMode"
-    name: "HAlignment"
-    name: "VAlignment"
-    name: "FillMode"
-    name: "WrapMode"
-    Property { name: "radius"; type: "string" }
-    Property { name: "aspect"; revision: 1; type: "Aspect" }
-    Property { name: "source"; revision: 1; type: "QVariant" }
-    Property { name: "sourceOpacity"; revision: 1; type: "double" }
-    Property { name: "sourceFillMode"; revision: 1; type: "FillMode" }
-    Property { name: "sourceHorizontalWrapMode"; revision: 1; type: "WrapMode" }
-    Property { name: "sourceVerticalWrapMode"; revision: 1; type: "WrapMode" }
-    Property { name: "sourceHorizontalAlignment"; revision: 1; type: "HAlignment" }
-    Property { name: "sourceVerticalAlignment"; revision: 1; type: "VAlignment" }
-    Property { name: "sourceTranslation"; revision: 1; type: "QVector2D" }
-    Property { name: "sourceScale"; revision: 1; type: "QVector2D" }
-    Property { name: "backgroundColor"; revision: 1; type: "QColor" }
-    Property { name: "secondaryBackgroundColor"; revision: 1; type: "QColor" }
-    Property { name: "backgroundMode"; revision: 1; type: "BackgroundMode" }
-    Property { name: "borderSource"; type: "string" }
-    Property { name: "color"; type: "QColor" }
-    Property { name: "gradientColor"; type: "QColor" }
-    Property { name: "image"; type: "QVariant" }
-    Property { name: "stretched"; type: "bool" }
-    Property { name: "horizontalAlignment"; type: "HAlignment" }
-    Property { name: "verticalAlignment"; type: "VAlignment" }
-    Signal { name: "aspectChanged"; revision: 1 }
-    Signal { name: "sourceChanged"; revision: 1 }
-    Signal { name: "sourceOpacityChanged"; revision: 1 }
-    Signal { name: "sourceFillModeChanged"; revision: 1 }
-    Signal { name: "sourceHorizontalWrapModeChanged"; revision: 1 }
-    Signal { name: "sourceVerticalWrapModeChanged"; revision: 1 }
-    Signal { name: "sourceHorizontalAlignmentChanged"; revision: 1 }
-    Signal { name: "sourceVerticalAlignmentChanged"; revision: 1 }
-    Signal { name: "sourceTranslationChanged"; revision: 1 }
-    Signal { name: "sourceScaleChanged"; revision: 1 }
-    Signal { name: "backgroundColorChanged"; revision: 1 }
-    Signal { name: "secondaryBackgroundColorChanged"; revision: 1 }
-    Signal { name: "backgroundModeChanged"; revision: 1 }
-    name: "UCUbuntuShapeOverlay"
-    prototype: "UCUbuntuShape"
-    exports: ["UbuntuShapeOverlay 1.2"]
-    Property { name: "overlayRect"; type: "QRectF" }
-    Property { name: "overlayColor"; type: "QColor" }
-    name: "UCUnits"
-    prototype: "QObject"
-    exports: ["UCUnits 0.1", "UCUnits 1.0"]
-    Property { name: "gridUnit"; type: "float" }
-    Method {
-    name: "dp"
-    Parameter { name: "value"; type: "float" }
-    Method {
-    name: "gu"
-    Parameter { name: "value"; type: "float" }
-    name: "UCUriHandler"
-    prototype: "QObject"
-    exports: ["UriHandler 0.1", "UriHandler 1.0"]
-    Signal {
-    name: "opened"
-    Parameter { name: "uris"; type: "QStringList" }
-    name: "UCViewItemsAttached"
-    prototype: "QObject"
-    exports: ["ViewItems 1.2"]
-    Property { name: "selectMode"; type: "bool" }
-    Property { name: "selectedIndices"; type: "QList<int>" }
-    Property { name: "dragMode"; type: "bool" }
-    Signal {
-    name: "dragUpdated"
-    Parameter { name: "event"; type: "UCDragEvent"; isPointer: true }
-    name: "UbuntuI18n"
-    prototype: "QObject"
-    exports: ["i18n 0.1", "i18n 1.0"]
-    Property { name: "domain"; type: "string" }
-    Property { name: "language"; type: "string" }
-    Method {
-    name: "bindtextdomain"
-    Parameter { name: "domain_name"; type: "string" }
-    Parameter { name: "dir_name"; type: "string" }
-    Method {
-    name: "tr"
-    Parameter { name: "text"; type: "string" }
-    Method {
-    name: "tr"
-    Parameter { name: "singular"; type: "string" }
-    Parameter { name: "plural"; type: "string" }
-    Parameter { name: "n"; type: "int" }
-    Method {
-    name: "dtr"
-    Parameter { name: "domain"; type: "string" }
-    Parameter { name: "text"; type: "string" }
-    Method {
-    name: "dtr"
-    Parameter { name: "domain"; type: "string" }
-    Parameter { name: "singular"; type: "string" }
-    Parameter { name: "plural"; type: "string" }
-    Parameter { name: "n"; type: "int" }
-    Method {
-    name: "ctr"
-    Parameter { name: "context"; type: "string" }
-    Parameter { name: "text"; type: "string" }
-    Method {
-    name: "dctr"
-    Parameter { name: "domain"; type: "string" }
-    Parameter { name: "context"; type: "string" }
-    Parameter { name: "text"; type: "string" }
-    Method {
-    name: "tag"
-    Parameter { name: "text"; type: "string" }
-    Method {
-    name: "tag"
-    Parameter { name: "context"; type: "string" }
-    Parameter { name: "text"; type: "string" }
-    prototype: "QObject"
-    name: "Haptics"
-    exports: ["Haptics -1.-1"]
-    Property { name: "enabled"; type: "bool"; isReadonly: true }
-    Property { name: "effect"; type: "QDeclarativeHapticsEffect"; isReadonly: true; isPointer: true }
-    Method {
-    name: "play"
-    Parameter { name: "customEffect"; type: "QVariant" }
-    Property { name: "__defaultPropertyFix"; type: "QObject"; isList: true; isReadonly: true }
-    Property { name: "children"; type: "QObject"; isList: true; isReadonly: true }
-    prototype: "QObject"
-    name: "Object"
-    exports: ["Object -1.-1"]
-    Property { name: "__defaultPropertyFix"; type: "QObject"; isList: true; isReadonly: true }
-    Property { name: "children"; type: "QObject"; isList: true; isReadonly: true }
-    name: "ULConditionalLayout"
-    prototype: "QObject"
-    exports: ["ConditionalLayout 0.1", "ConditionalLayout 1.0"]
-    Property { name: "name"; type: "string" }
-    Property { name: "when"; type: "QQmlBinding"; isPointer: true }
-    Property { name: "layout"; type: "QQmlComponent"; isPointer: true }
-    name: "ULItemLayout"
-    prototype: "QQuickItem"
-    exports: ["ItemLayout 0.1", "ItemLayout 1.0"]
-    Property { name: "item"; type: "string" }
-    name: "ULLayouts"
-    prototype: "QQuickItem"
-    exports: ["Layouts 0.1", "Layouts 1.0"]
-    Property { name: "currentLayout"; type: "string"; isReadonly: true }
-    Property { name: "layouts"; type: "ULConditionalLayout"; isList: true; isReadonly: true }
-    Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
-    Property { name: "children"; type: "QQuickItem"; isList: true; isReadonly: true }
-    name: "ULLayoutsAttached"
-    prototype: "QObject"
-    Property { name: "item"; type: "string" }
-    name: "UPMCpuUsage"
-    prototype: "QQuickItem"
-    exports: ["CpuUsage 0.1", "CpuUsage 1.0"]
-    Property { name: "graphModel"; type: "UPMGraphModel"; isReadonly: true; isPointer: true }
-    Property { name: "period"; type: "int" }
-    Property { name: "samplingInterval"; type: "int" }
-    name: "UPMGraphModel"
-    prototype: "QObject"
-    Property { name: "image"; type: "QImage"; isReadonly: true }
-    Property { name: "shift"; type: "int"; isReadonly: true }
-    Property { name: "samples"; type: "int" }
-    Property { name: "currentValue"; type: "int"; isReadonly: true }
-    name: "UPMRenderingTimes"
-    prototype: "QQuickItem"
-    exports: ["RenderingTimes 0.1", "RenderingTimes 1.0"]
-    Property { name: "period"; type: "int" }
-    Property { name: "samples"; type: "int" }
-    Property { name: "graphModel"; type: "UPMGraphModel"; isReadonly: true; isPointer: true }
-    Property { name: "timerType"; type: "RenderTimer::TimerType" }
-    Signal {
-    name: "frameRendered"
-    Parameter { name: "renderTime"; type: "qlonglong" }
-    name: "UPMTextureFromImage"
-    prototype: "QQuickItem"
-    exports: ["TextureFromImage 0.1", "TextureFromImage 1.0"]
-    Property { name: "image"; type: "QImage" }
-    name: "UCTestExtras"
-    prototype: "QObject"
-    exports: ["TestExtras 1.0"]
-    Property { name: "touchPresent"; type: "bool"; isReadonly: true }
-    Method { name: "openGLflavor"; type: "string" }
-    Method { name: "cpuArchitecture"; type: "string" }
-    Method { name: "touchDevicePresent"; type: "bool" }
-    Method { name: "registerTouchDevice" }
-    Method {
-    name: "touchPress"
-    Parameter { name: "touchId"; type: "int" }
-    Parameter { name: "item"; type: "QQuickItem"; isPointer: true }
-    Parameter { name: "point"; type: "QPoint" }
-    Method {
-    name: "touchRelease"
-    Parameter { name: "touchId"; type: "int" }
-    Parameter { name: "item"; type: "QQuickItem"; isPointer: true }
-    Parameter { name: "point"; type: "QPoint" }
-    Method {
-    name: "touchClick"
-    Parameter { name: "touchId"; type: "int" }
-    Parameter { name: "item"; type: "QQuickItem"; isPointer: true }
-    Parameter { name: "point"; type: "QPoint" }
-    Method {
-    name: "touchLongPress"
-    Parameter { name: "touchId"; type: "int" }
-    Parameter { name: "item"; type: "QQuickItem"; isPointer: true }
-    Parameter { name: "point"; type: "QPoint" }
-    Method {
-    name: "touchDoubleClick"
-    Parameter { name: "touchId"; type: "int" }
-    Parameter { name: "item"; type: "QQuickItem"; isPointer: true }
-    Parameter { name: "point"; type: "QPoint" }
-    Method {
-    name: "touchMove"
-    Parameter { name: "touchId"; type: "int" }
-    Parameter { name: "item"; type: "QQuickItem"; isPointer: true }
-    Parameter { name: "point"; type: "QPoint" }
-    Method {
-    name: "touchDrag"
-    Parameter { name: "touchId"; type: "int" }
-    Parameter { name: "item"; type: "QQuickItem"; isPointer: true }
-    Parameter { name: "from"; type: "QPoint" }
-    Parameter { name: "delta"; type: "QPoint" }
-    Parameter { name: "steps"; type: "int" }
-    Method {
-    name: "touchDrag"
-    Parameter { name: "touchId"; type: "int" }
-    Parameter { name: "item"; type: "QQuickItem"; isPointer: true }
-    Parameter { name: "from"; type: "QPoint" }
-    Parameter { name: "delta"; type: "QPoint" }
+Ubuntu.Components.Popups.Popover 1.0 0.1: PopupBase
+    property bool autoClose
+    property Item caller
+    property double callerMargin
+    default readonly property QtObject container
+    property double contentHeight
+    property double contentWidth
+    property double edgeMargins
+    property Component foregroundStyle
+    function var show()
+    function var hide()
+    property Item pointerTarget
+Ubuntu.Components.Popups.Popover 1.3: PopupBase
+    property bool autoClose
+    property Item caller
+    property double callerMargin
+    default readonly property QtObject container
+    property double contentHeight
+    property double contentWidth
+    property double edgeMargins
+    property Component foregroundStyle
+    function var show()
+    function var hide()
+    property Item pointerTarget
+Ubuntu.Components.Popups.PopupBase 1.0 0.1: OrientationHelper
+    property Item dismissArea
+    property PropertyAnimation fadingAnimation
+    property bool grabDismissAreaEvents
+    function var show()
+    function var hide()
+Ubuntu.Components.Popups.PopupBase 1.3: OrientationHelper
+    property Item dismissArea
+    property PropertyAnimation fadingAnimation
+    property bool grabDismissAreaEvents
+    function var show()
+    function var hide()
+Ubuntu.Components.Popups.PopupUtils 0.1 1.0
+Ubuntu.Components.ProgressBar 1.0 0.1: AnimatedItem
+    property bool indeterminate
+    property double maximumValue
+    property double minimumValue
+    property bool onScreen
+    property double value
+Ubuntu.Components.ProgressBar 1.1: ProgressBar
+    property bool showProgressPercentage
+Ubuntu.Components.ProgressBar 1.3: AnimatedItem
+    property bool indeterminate
+    property double maximumValue
+    property double minimumValue
+    property bool onScreen
+    property bool showProgressPercentage
+    property double value
+Ubuntu.Components.PullToRefresh 1.1: StyledItem
+    property Component content
+    signal refresh()
+    readonly property double offset
+    property bool refreshing
+    readonly property bool releaseToRefresh
+    property Flickable target
+Ubuntu.Components.PullToRefresh 1.3: StyledItem
+    property Component content
+    signal refresh()
+    readonly property double offset
+    property bool refreshing
+    readonly property bool releaseToRefresh
+    property Flickable target
+Ubuntu.Components.Styles.PullToRefreshStyle 1.1: Item
+    property double activationThreshold
+    property Component defaultContent
+    property bool releaseToRefresh
+Ubuntu.PerformanceMetrics.RenderingTimes 1.0 0.1: Item
+    readonly property UPMGraphModel graphModel
+    signal frameRendered(qlonglong renderTime)
+    property int period
+    property int samples
+    property RenderTimer.TimerType timerType
+Ubuntu.Components.Scrollbar 1.0 0.1: StyledItem
+    property int align
+    property Flickable flickableItem
+Ubuntu.Components.Scrollbar 1.3: StyledItem
+    property int align
+    property Flickable flickableItem
+Ubuntu.Components.ScrollbarUtils 0.1 1.0
+Ubuntu.Components.ServiceProperties 1.1: QtObject
+    property string adaptorInterface
+    readonly property string error
+    property string path
+    property string service
+    property string serviceInterface
+    readonly property Status status
+Ubuntu.Components.ServiceProperties.ServiceType: Enum
+    Session
+    System
+    Undefined
+Ubuntu.Components.ServiceProperties.Status: Enum
+    Active
+    ConnectionError
+    Inactive
+    Synchronizing
+Ubuntu.Components.Popups.SheetBase 1.0 0.1: PopupBase
+    default readonly property QtObject container
+    property double contentsHeight
+    property double contentsWidth
+    property bool modal
+    property string title
+Ubuntu.Components.Popups.SheetBase 1.3: PopupBase
+    default readonly property QtObject container
+    property double contentsHeight
+    property double contentsWidth
+    property bool modal
+    property string title
+Ubuntu.Components.ListItems.SingleControl 1.0 0.1: Empty
+    property Item control
+Ubuntu.Components.ListItems.SingleControl 1.3: Empty
+    property Item control
+Ubuntu.Components.ListItems.SingleValue 1.0 0.1: Base
+    property string value
+Ubuntu.Components.ListItems.SingleValue 1.3: Base
+    property string value
+Ubuntu.Components.Slider 1.0 0.1: StyledItem
+    property bool live
+    property double maximumValue
+    signal touched(bool onThumb)
+    function var formatValue(var v)
+    property double minimumValue
+    readonly property bool pressed
+    property double value
+Ubuntu.Components.Slider 1.3: StyledItem
+    property bool live
+    property double maximumValue
+    signal touched(bool onThumb)
+    function var formatValue(var v)
+    property double minimumValue
+    readonly property bool pressed
+    property double value
+Ubuntu.Components.SliderUtils 0.1 1.0
+Ubuntu.Components.SortBehavior 1.1: QtObject
+    property Qt.SortOrder order
+    property string property
+Ubuntu.Components.SortFilterModel 1.1: QSortFilterProxyModel
+    readonly property int count
+    readonly property FilterBehavior filter
+    function QVariantMap get(int row)
+    function int count()
+    property QAbstractItemModel model
+    readonly property SortBehavior sort
+Ubuntu.Components.ListItems.Standard 1.0 0.1: Empty
+    property Item control
+    property string fallbackIconName
+    property url fallbackIconSource
+    property var icon
+    property bool iconFrame
+    property bool progression
+Ubuntu.Components.ListItems.Standard 1.3: Empty
+    property Item control
+    property string fallbackIconName
+    property url fallbackIconSource
+    property var icon
+    property bool iconFrame
+    property bool progression
+Ubuntu.Components.StateSaver 1.0 0.1: QtObject
+Ubuntu.Components.StyledItem 1.3 1.1 1.0 0.1: Item
+    property bool activeFocusOnPress
+    function bool requestFocus(Qt.FocusReason reason)
+    function bool requestFocus()
+    property Component style
+    property ThemeSettings theme
+Ubuntu.Components.ListItems.Subtitled 1.0 0.1: Base
+    property string subText
+Ubuntu.Components.ListItems.Subtitled 1.3: Base
+    property string subText
+Ubuntu.Components.SwipeEvent 1.2: QtObject
+    property QPointF content
+    readonly property QPointF from
+    readonly property Status status
+    readonly property QPointF to
+Ubuntu.Components.SwipeEvent.Status: Enum
+    Finished
+    Started
+    Updated
+Ubuntu.Components.Switch 1.0 0.1: AbstractButton
+    property bool checked
+Ubuntu.Components.Switch 1.3: AbstractButton
+    property bool checked
+Ubuntu.Components.Tab 1.0 0.1: PageTreeNode
+    property url iconSource
+    readonly property int index
+    property Item page
+    property string title
+Ubuntu.Components.Tab 1.3: PageTreeNode
+    property url iconSource
+    readonly property int index
+    property Item page
+    property string title
+Ubuntu.Components.TabBar 1.0 0.1: StyledItem
+    property bool alwaysSelectionMode
+    property bool animate
+    property var model
+    readonly property bool pressed
+    property int selectedIndex
+    property bool selectionMode
+    property Item tabsItem
+Ubuntu.Components.TabBar 1.3: StyledItem
+    property bool alwaysSelectionMode
+    property bool animate
+    property var model
+    readonly property bool pressed
+    property int selectedIndex
+    property bool selectionMode
+    property Item tabsItem
+Ubuntu.Components.Tabs 1.0 0.1: PageTreeNode
+    readonly property int count
+    readonly property Item currentPage
+    readonly property Tab selectedTab
+    property int selectedTabIndex
+    property TabBar tabBar
+    default readonly property QtObject tabChildren
+Ubuntu.Components.Tabs 1.3: PageTreeNode
+    readonly property int count
+    readonly property Item currentPage
+    readonly property Tab selectedTab
+    property int selectedTabIndex
+    property TabBar tabBar
+    default readonly property QtObject tabChildren
+Ubuntu.Test.TestExtras 1.0: QtObject singleton
+    function string openGLflavor()
+    function string cpuArchitecture()
+    function bool touchDevicePresent()
+    function registerTouchDevice()
+    function touchPress(int touchId, Item item, Qt.point point)
+    function touchRelease(int touchId, Item item, Qt.point point)
+    function touchClick(int touchId, Item item, Qt.point point)
+    function touchLongPress(int touchId, Item item, Qt.point point)
+    function touchDoubleClick(int touchId, Item item, Qt.point point)
+    function touchMove(int touchId, Item item, Qt.point point)
+    function touchDrag(int touchId, Item item, Qt.point from, Qt.point delta, int steps)
+    function touchDrag(int touchId, Item item, Qt.point from, Qt.point delta)
+    readonly property bool touchPresent
+Ubuntu.Components.TextArea 1.0 0.1: StyledItem
+    property bool activeFocusOnPress
+    property bool autoExpand
+    property bool autoSize
+    property url baseUrl
+    readonly property bool canPaste
+    readonly property bool canRedo
+    readonly property bool canUndo
+    property color color
+    property double contentHeight
+    property double contentWidth
+    property Component cursorDelegate
+    property int cursorPosition
+    readonly property QRectF cursorRectangle
+    property bool cursorVisible
+    readonly property string displayText
+    readonly property int effectiveHorizontalAlignment
+    property QFont font
+    property bool highlighted
+    property int horizontalAlignment
+    readonly property bool inputMethodComposing
+    property int inputMethodHints
+    readonly property int length
+    readonly property int lineCount
+    property int maximumLineCount
+    signal linkActivated(string link)
+    function var copy()
+    function var cut()
+    function var deselect()
+    function var insert(var position, var text)
+    function var positionAt(var x, var y)
+    function var isRightToLeft(var start, var end)
+    function var moveCursorSelection(var position, var mode)
+    function var paste(var data)
+    function var positionToRectangle(var position)
+    function var redo()
+    function var select(var start, var end)
+    function var selectAll()
+    function var selectWord()
+    function var getFormattedText(var start, var end)
+    function var getText(var start, var end)
+    function var remove(var start, var end)
+    function var undo()
+    property int mouseSelectionMode
+    property bool persistentSelection
+    property string placeholderText
+    property var popover
+    property bool readOnly
+    property int renderType
+    property bool selectByMouse
+    readonly property string selectedText
+    property color selectedTextColor
+    property color selectionColor
+    readonly property int selectionEnd
+    readonly property int selectionStart
+    property string text
+    property int textFormat
+    property int verticalAlignment
+    property int wrapMode
+Ubuntu.Components.TextArea 1.3: StyledItem
+    property bool activeFocusOnPress
+    property bool autoExpand
+    property bool autoSize
+    property url baseUrl
+    readonly property bool canPaste
+    readonly property bool canRedo
+    readonly property bool canUndo
+    property color color
+    property double contentHeight
+    property double contentWidth
+    property Component cursorDelegate
+    property int cursorPosition
+    readonly property QRectF cursorRectangle
+    property bool cursorVisible
+    readonly property string displayText
+    readonly property int effectiveHorizontalAlignment
+    property QFont font
+    property bool highlighted
+    property int horizontalAlignment
+    readonly property bool inputMethodComposing
+    property int inputMethodHints
+    readonly property int length
+    readonly property int lineCount
+    property int maximumLineCount
+    signal linkActivated(string link)
+    function var copy()
+    function var cut()
+    function var deselect()
+    function var insert(var position, var text)
+    function var positionAt(var x, var y)
+    function var isRightToLeft(var start, var end)
+    function var moveCursorSelection(var position, var mode)
+    function var paste(var data)
+    function var positionToRectangle(var position)
+    function var redo()
+    function var select(var start, var end)
+    function var selectAll()
+    function var selectWord()
+    function var getFormattedText(var start, var end)
+    function var getText(var start, var end)
+    function var remove(var start, var end)
+    function var undo()
+    property int mouseSelectionMode
+    property bool persistentSelection
+    property string placeholderText
+    property var popover
+    property bool readOnly
+    property int renderType
+    property bool selectByMouse
+    readonly property string selectedText
+    property color selectedTextColor
+    property color selectionColor
+    readonly property int selectionEnd
+    readonly property int selectionStart
+    property string text
+    property int textFormat
+    property int verticalAlignment
+    property int wrapMode
+Ubuntu.Components.TextField 1.0 0.1: ActionItem
+    readonly property bool acceptableInput
+    property bool activeFocusOnPress
+    property bool autoScroll
+    readonly property bool canPaste
+    readonly property bool canRedo
+    readonly property bool canUndo
+    property color color
+    readonly property double contentHeight
+    readonly property double contentWidth
+    property Component cursorDelegate
+    property int cursorPosition
+    readonly property QRectF cursorRectangle
+    property bool cursorVisible
+    property Component customSoftwareInputPanel
+    readonly property string displayText
+    property int echoMode
+    readonly property int effectiveHorizontalAlignment
+    property bool errorHighlight
+    property QFont font
+    property bool hasClearButton
+    property bool highlighted
+    property int horizontalAlignment
+    property string inputMask
+    readonly property bool inputMethodComposing
+    property int inputMethodHints
+    readonly property int length
+    property int maximumLength
+    signal accepted()
+    function var copy()
+    function var cut()
+    function var paste(var data)
+    function var deselect()
+    function var insert(var position, var text)
+    function var positionAt(var x, var position)
+    function var positionToRectangle(var pos)
+    function var select(var start, var end)
+    function var selectAll()
+    function var selectWord()
+    function var isRightToLeft(var start, var end)
+    function var moveCursorSelection(var position, var mode)
+    function var redo()
+    function var undo()
+    function var remove(var start, var end)
+    function var getText(var start, var end)
+    property int mouseSelectionMode
+    property string passwordCharacter
+    property bool persistentSelection
+    property string placeholderText
+    property var popover
+    readonly property QtObject primaryItem
+    property bool readOnly
+    property int renderType
+    readonly property QtObject secondaryItem
+    property bool selectByMouse
+    readonly property string selectedText
+    property color selectedTextColor
+    property color selectionColor
+    readonly property int selectionEnd
+    readonly property int selectionStart
+    property string text
+    property QValidator validator
+    property int verticalAlignment
+Ubuntu.Components.TextField 1.3: ActionItem
+    readonly property bool acceptableInput
+    property bool activeFocusOnPress
+    property bool autoScroll
+    readonly property bool canPaste
+    readonly property bool canRedo
+    readonly property bool canUndo
+    property color color
+    readonly property double contentHeight
+    readonly property double contentWidth
+    property Component cursorDelegate
+    property int cursorPosition
+    readonly property QRectF cursorRectangle
+    property bool cursorVisible
+    property Component customSoftwareInputPanel
+    readonly property string displayText
+    property int echoMode
+    readonly property int effectiveHorizontalAlignment
+    property bool errorHighlight
+    property QFont font
+    property bool hasClearButton
+    property bool highlighted
+    property int horizontalAlignment
+    property string inputMask
+    readonly property bool inputMethodComposing
+    property int inputMethodHints
+    readonly property int length
+    property int maximumLength
+    signal accepted()
+    function var copy()
+    function var cut()
+    function var paste(var data)
+    function var deselect()
+    function var insert(var position, var text)
+    function var positionAt(var x, var position)
+    function var positionToRectangle(var pos)
+    function var select(var start, var end)
+    function var selectAll()
+    function var selectWord()
+    function var isRightToLeft(var start, var end)
+    function var moveCursorSelection(var position, var mode)
+    function var redo()
+    function var undo()
+    function var remove(var start, var end)
+    function var getText(var start, var end)
+    property int mouseSelectionMode
+    property string passwordCharacter
+    property bool persistentSelection
+    property string placeholderText
+    property var popover
+    readonly property QtObject primaryItem
+    property bool readOnly
+    property int renderType
+    readonly property QtObject secondaryItem
+    property bool selectByMouse
+    readonly property string selectedText
+    property color selectedTextColor
+    property color selectionColor
+    readonly property int selectionEnd
+    readonly property int selectionStart
+    property string text
+    property QValidator validator
+    property int verticalAlignment
+Ubuntu.PerformanceMetrics.TextureFromImage 1.0 0.1: Item
+    property QImage image
+Ubuntu.Components.ThemeSettings 1.3: QtObject
+    function QQmlComponent* createStyleComponent(string styleName, QtObject parent)
+    property string name
+    property QtObject palette
+    readonly property ThemeSettings parentTheme
+    property ushort version
+Ubuntu.Components.ListItems.ThinDivider 1.0 0.1: Rectangle
+Ubuntu.Components.ListItems.ThinDivider 1.3: Rectangle
+Ubuntu.Components.ToolbarButton 1.0 0.1: StyledItem
+    property Action action
+    property string iconName
+    property url iconSource
+    signal triggered(var value)
+    function var trigger(var value)
+    property string text
+Ubuntu.Components.ToolbarButton 1.3: StyledItem
+    property Action action
+    property string iconName
+    property url iconSource
+    signal triggered(var value)
+    function var trigger(var value)
+    property string text
+Ubuntu.Components.ToolbarItems 1.0 0.1: Item
+    property Item back
+    default readonly property QtObject contents
+    property bool locked
+    property bool opened
+    property Item pageStack
+Ubuntu.Components.ToolbarItems 1.3: Item
+    property Item back
+    default readonly property QtObject contents
+    property bool locked
+    property bool opened
+    property Item pageStack
+UCListItemDivider: Item
+    property color colorFrom
+    property color colorTo
+UCStateSaverAttached: QtObject
+    property bool enabled
+    property string properties
+Ubuntu.Components.UCUnits 1.0 0.1: QtObject
+    property float gridUnit
+    function float dp(float value)
+    function float gu(float value)
+ULLayoutsAttached: QtObject
+    property string item
+UPMGraphModel: QtObject
+    readonly property int currentValue
+    readonly property QImage image
+    property int samples
+    readonly property int shift
+Ubuntu.Components.Ubuntu 1.2: QtObject singleton
+Ubuntu.Components.Ubuntu 1.3: Ubuntu singleton
+    function ushort version(uchar major, uchar minor)
+    readonly property ushort toolkitVersion
+    readonly property ushort toolkitVersionMajor
+    readonly property ushort toolkitVersionMinor
+Ubuntu.Components.Ubuntu.CaptionsStyle: Enum
+    SummaryCaptionStyle
+    TitleCaptionStyle
+Ubuntu.Components.UbuntuAnimation 1.0 0.1: QtObject singleton
+    readonly property int BriskDuration
+    readonly property int FastDuration
+    readonly property int SleepyDuration
+    readonly property int SlowDuration
+    readonly property int SnapDuration
+    readonly property QEasingCurve StandardEasing
+    readonly property QEasingCurve StandardEasingReverse
+Ubuntu.Components.UbuntuColors 1.0 0.1: QtObject singleton
+    readonly property color coolGrey
+    readonly property color darkAubergine
+    property Gradient greyGradient
+    readonly property color lightAubergine
+    readonly property color midAubergine
+    readonly property color orange
+    property Gradient orangeGradient
+    readonly property color warmGrey
+Ubuntu.Components.UbuntuColors 1.1: QtObject singleton
+    readonly property color blue
+    readonly property color coolGrey
+    readonly property color darkAubergine
+    readonly property color darkGrey
+    readonly property color green
+    property Gradient greyGradient
+    readonly property color lightAubergine
+    readonly property color lightGrey
+    readonly property color midAubergine
+    readonly property color orange
+    property Gradient orangeGradient
+    readonly property color purple
+    readonly property color red
+    readonly property color warmGrey
+Ubuntu.Components.UbuntuListView 1.0 0.1: ListView
+    property int expandedIndex
+Ubuntu.Components.UbuntuListView 1.1: UbuntuListView
+    readonly property PullToRefresh pullToRefresh
+Ubuntu.Components.UbuntuListView 1.3: UbuntuListView
+    readonly property PullToRefresh pullToRefresh
+Ubuntu.Components.UbuntuNumberAnimation 1.0 0.1: PropertyAnimation
+    property double from
+    property double to
+Ubuntu.Components.UbuntuNumberAnimation 1.3: PropertyAnimation
+    property double from
+    property double to
+Ubuntu.Components.UbuntuShape 1.2 1.0 0.1 Shape 1.0 0.1: Item
+    property Aspect aspect
+    property color backgroundColor
+    property BackgroundMode backgroundMode
+    property string borderSource
+    property color color
+    property color gradientColor
+    property HAlignment horizontalAlignment
+    property var image
+    property string radius
+    property color secondaryBackgroundColor
+    property var source
+    property FillMode sourceFillMode
+    property HAlignment sourceHorizontalAlignment
+    property WrapMode sourceHorizontalWrapMode
+    property double sourceOpacity
+    property vector2d sourceScale
+    property vector2d sourceTranslation
+    property VAlignment sourceVerticalAlignment
+    property WrapMode sourceVerticalWrapMode
+    property bool stretched
+    property VAlignment verticalAlignment
+Ubuntu.Components.UbuntuShape.Aspect: Enum
+    Flat
+    Inset
+Ubuntu.Components.UbuntuShape.BackgroundMode: Enum
+    SolidColor
+    VerticalGradient
+Ubuntu.Components.UbuntuShape.FillMode: Enum
+    Pad
+    PreserveAspectCrop
+    PreserveAspectFit
+    Stretch
+Ubuntu.Components.UbuntuShape.HAlignment: Enum
+    AlignHCenter
+    AlignLeft
+    AlignRight
+Ubuntu.Components.UbuntuShape.VAlignment: Enum
+    AlignBottom
+    AlignTop
+    AlignVCenter
+Ubuntu.Components.UbuntuShape.WrapMode: Enum
+    Repeat
+    Transparent
+Ubuntu.Components.UbuntuShapeOverlay 1.2: UbuntuShape
+    property color overlayColor
+    property QRectF overlayRect
+Ubuntu.Test.UbuntuTestCase 1.0 0.1: TestCase
+    function var findChild(var obj, var objectName)
+    function var findInvisibleChild(var obj, var objectName)
+    function var findChildWithProperty(var item, var property, var value)
+    function var centerOf(var item)
+    function var mouseMoveSlowly(var item, var x, var y, var dx, var dy, var steps, var stepdelay)
+    function var flick(var item, var x, var y, var dx, var dy, var pressTimeout, var steps, var button, var modifiers, var delay)
+    function var mouseLongPress(var item, var x, var y, var button, var modifiers, var delay)
+    function var tryCompareFunction(var func, var expectedResult, var timeout)
+    function var typeString(var string)
+    function var warningFormat(var line, var column, var message)
+    function var waitForHeaderAnimation(var mainView)
+Ubuntu.Components.UriHandler 1.0 0.1: QtObject singleton
+    signal opened(QStringList uris)
+Ubuntu.Components.ListItems.ValueSelector 1.0 0.1: Empty
+    property bool expanded
+    property string fallbackIconName
+    property url fallbackIconSource
+    property var icon
+    property bool iconFrame
+    property int selectedIndex
+    property var values
+Ubuntu.Components.ListItems.ValueSelector 1.3: Empty
+    property bool expanded
+    property string fallbackIconName
+    property url fallbackIconSource
+    property var icon
+    property bool iconFrame
+    property int selectedIndex
+    property var values
+Ubuntu.Components.ViewItems 1.2: QtObject
+    property bool dragMode
+    signal dragUpdated(ListItemDrag event)
+    property bool selectMode
+    property QList<int> selectedIndices
+Ubuntu.Components.i18n 1.0 0.1: QtObject
+    property string domain
+    property string language
+    function bindtextdomain(string domain_name, string dir_name)
+    function string tr(string text)
+    function string tr(string singular, string plural, int n)
+    function string dtr(string domain, string text)
+    function string dtr(string domain, string singular, string plural, int n)
+    function string ctr(string context, string text)
+    function string dctr(string domain, string context, string text)
+    function string tag(string text)
+    function string tag(string context, string text)
