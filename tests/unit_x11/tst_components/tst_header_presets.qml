@@ -35,6 +35,13 @@ Item {
                     objectName: "selectAction"
                     text: "Select all"
                     iconName: "select"
+                    onTriggered: {
+                        if (page.head.preset === "") {
+                            page.head.preset = "select";
+                        } else {
+                            page.head.preset = "";
+                        }
+                    }
                 }
             ]
         }

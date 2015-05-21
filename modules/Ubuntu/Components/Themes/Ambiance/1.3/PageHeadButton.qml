@@ -17,54 +17,34 @@
 import QtQuick 2.4
 import Ubuntu.Components 1.3
 
+//Button {
 AbstractButton {
     id: button
-
-    property real iconWidth: units.gu(2.5)
-    property real iconHeight: iconWidth
 
     width: visible ? units.gu(5) : 0
     height: parent ? parent.height : undefined
 
-    property alias color: icon.color
+    theme.version: Ubuntu.toolkitVersion
+    style: theme.createStyleComponent("IconButtonStyle.qml", button)
 
-    Rectangle {
-        visible: button.pressed
-        anchors.fill: parent
-        color: theme.palette.selected.background
-    }
 
-    Icon {
-        id: icon
-        anchors {
-            centerIn: parent
-        }
-        // prevent trying to render the icon with an invalid source
-        // when the button is invisible by setting width and height to 0
-        width: visible ? button.iconWidth : 0
-        height: visible ? button.iconHeight : 0
-        source: button.iconSource
-        color: Qt.rgba(0, 0, 0, 0)
-        opacity: button.enabled ? 1.0 : 0.3
-    }
-
-    Component {
-        id: labelComponent
-        Label {
-            id: label
-            objectName: button.objectName + "_label"
-            color: button.color
-            opacity: button.enabled ? 1.0 : 0.3
-            text: button.text
-            fontSize: "xx-small"
-        }
-    }
-    Loader {
-        anchors {
-            top: icon.bottom
-            topMargin: units.gu(0.5)
-            horizontalCenter: parent.horizontalCenter
-        }
-        sourceComponent: button.state === "IconAndLabel" ? labelComponent : null
-    }
+//    Component {
+//        id: labelComponent
+//        Label {
+//            id: label
+//            objectName: button.objectName + "_label"
+//            color: button.color
+//            opacity: button.enabled ? 1.0 : 0.3
+//            text: button.text
+//            fontSize: "xx-small"
+//        }
+//    }
+//    Loader {
+//        anchors {
+//            top: icon.bottom
+//            topMargin: units.gu(0.5)
+//            horizontalCenter: parent.horizontalCenter
+//        }
+//        sourceComponent: button.state === "IconAndLabel" ? labelComponent : null
+//    }
 }
