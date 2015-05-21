@@ -53,4 +53,24 @@ Item {
 //        color: Qt.rgba(0, 0, 0, 0)
         opacity: styledItem.enabled ? 1.0 : 0.3
     }
+
+    Component {
+        id: labelComponent
+        Label {
+            id: label
+            objectName: styledItem.objectName + "_label"
+            color: style.foregroundColor
+            opacity: styledItem.enabled ? 1.0 : 0.3
+            text: styledItem.text
+            fontSize: "xx-small"
+        }
+    }
+    Loader {
+        anchors {
+            top: icon.bottom
+            topMargin: units.gu(0.5)
+            horizontalCenter: parent.horizontalCenter
+        }
+        sourceComponent: styledItem.state === "IconAndLabel" ? labelComponent : null
+    }
 }
