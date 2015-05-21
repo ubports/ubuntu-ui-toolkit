@@ -24,7 +24,7 @@
 
 UCStyledItemBasePrivate::UCStyledItemBasePrivate()
     : activeFocusOnPress(false)
-    , styleLoadingMethod(Immediate)
+    , styleLoadingMethod(LoadOnCompleted)
     , styleComponent(0)
     , styleItemContext(0)
     , styleItem(0)
@@ -90,12 +90,17 @@ bool UCStyledItemBasePrivate::isParentFocusable()
  * \qml
  * StyledItem {
  *     id: myItem
- *     style: theme.createStyleComponent("MyItemStyle.qml", myItem)
+ *     styleName: "MyItemStyle"
  * }
  * \endqml
  *
- * The Component set on \l style is instantiated and placed below everything else
- * that the Item contains.
+ * The style set on \l styleName is instantiated and placed below everything else
+ * that the Item contains. When the style is defined in this way, the style is taken
+ * from the current theme the StyledItem is themed with. Another way tpo set the
+ * style of a component is to set the \l style property. This property expects a
+ * component and it has precedence over the \l styleName, meaning that when both
+ * \l styleName and \l style are set, the style will be created from the \l style
+ * componment.
  *
  * A reference to the Item being styled is accessible from the style and named
  * 'styledItem'.
@@ -201,7 +206,26 @@ void UCStyledItemBase::setActiveFocusOnPress(bool value)
 
 /*!
  * \qmlproperty Component StyledItem::style
- * Component instantiated immediately and placed below everything else.
+ * Style component instantiated immediately and placed below everything else.
+ * Has precedence over the \l styleName. When both set, the style will be
+ * created from the component given as property value, and can be reset to the
+ * theme style when set to null or reset (set to undefined).
+ * \qml
+ * Button {
+ *     text: "Press to reset"
+ *     style: Rectangle {
+ *         color: "tan"
+ *         Label {
+ *             anchors {
+ *                 fill: parent
+ *                 margins: units.gu(1)
+ *             }
+ *             text: styledItem.text
+ *         }
+ *     }
+ *     onClicked: style = undefined
+ * }
+ * \endqml
  */
 QQmlComponent *UCStyledItemBasePrivate::style() const
 {
@@ -228,43 +252,30 @@ void UCStyledItemBasePrivate::resetStyle()
  * The property specifies the component style name. The style name is a document
  * in the current theme, and may contain or not the qml file extension. If not
  * specified, the extension will be appended during style creation.
+ * \qml
+ * StyledItem {
+ *     id: myItem
+ *     styleName: "MyItemStyle.qml"
+ * }
+ * \endqml
  * \note \l style property has precedence over styleName.
  */
 QString UCStyledItemBasePrivate::styleName() const
 {
-    return styleDocument.isEmpty() ? styleDocument : implicitStyleDocument;
+    return styleDocument;
 }
 void UCStyledItemBasePrivate::setStyleName(const QString &name)
 {
     if (name == styleDocument) {
         return;
     }
-    QString prevName = styleName();
+    QString prevName = styleDocument;
     styleDocument = name;
-    if (prevName != styleName()) {
+    if (prevName != styleDocument && !styleComponent) {
         preStyleChanged();
         postStyleChanged();
     }
     Q_EMIT q_func()->styleNameChanged();
-    loadStyleItem();
-}
-
-QString UCStyledItemBasePrivate::implicitStyleName() const
-{
-    return implicitStyleDocument;
-}
-void UCStyledItemBasePrivate::setImplicitStyleName(const QString &name)
-{
-    if (name == implicitStyleDocument) {
-        return;
-    }
-    QString prevName = styleName();
-    implicitStyleDocument = name;
-    if (prevName != styleName()) {
-        preStyleChanged();
-        postStyleChanged();
-    }
-    Q_EMIT q_func()->implicitStyleNameChanged();
     loadStyleItem();
 }
 
@@ -289,7 +300,7 @@ void UCStyledItemBasePrivate::preStyleChanged()
 // style item will be created in
 void UCStyledItemBasePrivate::postStyleChanged()
 {
-    if (!styleComponent || styleName().isEmpty() || styleItemContext) {
+    if ((!styleComponent && styleDocument.isEmpty()) || styleItemContext) {
         return;
     }
     Q_Q(UCStyledItemBase);
@@ -304,27 +315,27 @@ void UCStyledItemBasePrivate::postStyleChanged()
 }
 
 // loads the style animated or not, depending on the loading time
-void UCStyledItemBasePrivate::loadStyleItem(bool animated)
+// returns true on successful style loading
+bool UCStyledItemBasePrivate::loadStyleItem(bool animated)
 {
-    QString document = styleName();
-    if (styleItem || (!styleComponent && document.isEmpty()) || !styleItemContext || !componentComplete) {
+    if (styleItem || (!styleComponent && styleDocument.isEmpty()) || !styleItemContext || !componentComplete) {
         // the style loading is delayed
-        return;
+        return false;
     }
     Q_Q(UCStyledItemBase);
     // either styleComponent or styleName is valid
     QQmlComponent *component = styleComponent;
     if (!component) {
-        QString doc = document;
+        QString doc = styleDocument;
         if (!doc.endsWith(".qml")) {
             doc.append(".qml");
         }
-        component = theme->createStyleComponent(doc, q);
+        component = getTheme()->createStyleComponent(doc, q);
     }
     styleItemContext->setContextProperty("animated", animated);
     QObject *object = component->beginCreate(styleItemContext);
     if (!object) {
-        return;
+        return false;
     }
     // link context to the style item to delete them together
     QQml_setParent_noEvent(styleItemContext, object);
@@ -355,6 +366,7 @@ void UCStyledItemBasePrivate::loadStyleItem(bool animated)
     _q_styleResized();
     connectStyleSizeChanges(true);
     Q_EMIT q->styleInstanceChanged();
+    return true;
 }
 
 /*!
@@ -500,6 +512,11 @@ void UCStyledItemBasePrivate::setTheme(UCTheme *newTheme)
     postThemeChanged();
 
     Q_EMIT q->themeChanged();
+
+    // perform style reload
+    preStyleChanged();
+    postStyleChanged();
+    loadStyleItem();
 }
 void UCStyledItemBasePrivate::resetTheme()
 {
@@ -605,8 +622,10 @@ void UCStyledItemBase::componentComplete()
 {
     QQuickItem::componentComplete();
     Q_D(UCStyledItemBase);
-    if (d->styleLoadingMethod == UCStyledItemBasePrivate::DelayTillCompleted) {
-        // the delayed completion disables animations
+    if (d->styleLoadingMethod == UCStyledItemBasePrivate::LoadOnCompleted) {
+        // no animation at this time
+        // prepare style context if not been done yet
+        d->postStyleChanged();
         d->loadStyleItem(false);
     }
 }

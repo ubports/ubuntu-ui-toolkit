@@ -56,12 +56,10 @@ public:
 
     QString styleName() const;
     void setStyleName(const QString &name);
-    QString implicitStyleName() const;
-    void setImplicitStyleName(const QString &name);
 
     virtual void preStyleChanged();
     virtual void postStyleChanged();
-    virtual void loadStyleItem(bool animated = true);
+    virtual bool loadStyleItem(bool animated = true);
 
     UCTheme *getTheme() const;
     void setTheme(UCTheme *theme);
@@ -74,7 +72,6 @@ public:
     bool activeFocusOnPress:1;
     StyleLoadingMethod styleLoadingMethod;
     QString styleDocument;
-    QString implicitStyleDocument;
     QQmlComponent *styleComponent;
     QPointer<QQmlContext> styleItemContext;
     QQuickItem *styleItem;

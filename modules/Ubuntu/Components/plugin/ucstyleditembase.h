@@ -32,7 +32,6 @@ class UCStyledItemBase : public QQuickItem
     Q_PRIVATE_PROPERTY(UCStyledItemBase::d_func(), QQmlComponent *style READ style WRITE setStyle RESET resetStyle NOTIFY styleChanged FINAL DESIGNABLE false)
     Q_PRIVATE_PROPERTY(UCStyledItemBase::d_func(), QQuickItem *__styleInstance READ styleInstance NOTIFY styleInstanceChanged FINAL DESIGNABLE false)
     Q_PRIVATE_PROPERTY(UCStyledItemBase::d_func(), QString styleName READ styleName WRITE setStyleName NOTIFY styleNameChanged FINAL REVISION 2)
-    Q_PRIVATE_PROPERTY(UCStyledItemBase::d_func(), QString implicitStyleName READ implicitStyleName WRITE setIimplicitStyleName NOTIFY implicitStyleNameChanged FINAL REVISION 2)
     Q_PRIVATE_PROPERTY(d_func(), UCTheme *theme READ getTheme WRITE setTheme RESET resetTheme NOTIFY themeChanged FINAL REVISION 2)
 public:
     explicit UCStyledItemBase(QQuickItem *parent = 0);
@@ -49,7 +48,6 @@ Q_SIGNALS:
     Q_REVISION(1) void activeFocusOnPressChanged();
     Q_REVISION(2) void themeChanged();
     Q_REVISION(2) void styleNameChanged();
-    Q_REVISION(2) void implicitStyleNameChanged();
 
 protected:
     UCStyledItemBase(UCStyledItemBasePrivate &, QQuickItem *parent);
