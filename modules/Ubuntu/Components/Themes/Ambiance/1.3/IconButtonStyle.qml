@@ -18,7 +18,10 @@ import QtQuick 2.4
 import Ubuntu.Components 1.3
 
 Item {
-    id: style
+    id: iconButtonStyle
+
+    implicitWidth: visible ? units.gu(5) : 0
+    implicitHeight: units.gu(5) //parent ? parent.height : undefined
 
     /*!
       \qmlproperty color foregroundColor
@@ -37,29 +40,27 @@ Item {
     property real iconHeight: iconWidth
 
     Rectangle {
-        color: style.backgroundColor
+        color: iconButtonStyle.backgroundColor
         anchors.fill: parent
     }
 
     Icon {
         id: icon
         anchors.centerIn: parent
-
         // prevent trying to render the icon with an invalid source
         // when the button is invisible by setting width and height to 0
-        width: visible ? style.iconWidth : 0
-        height: visible ? style.iconHeight : 0
+        width: visible ? iconButtonStyle.iconWidth : 0
+        height: visible ? iconButtonStyle.iconHeight : 0
         source: styledItem.iconSource
-//        color: Qt.rgba(0, 0, 0, 0)
+        color: Qt.rgba(0, 0, 0, 0)
         opacity: styledItem.enabled ? 1.0 : 0.3
     }
 
     Component {
         id: labelComponent
         Label {
-            id: label
             objectName: styledItem.objectName + "_label"
-            color: style.foregroundColor
+            color: iconButtonStyle.foregroundColor
             opacity: styledItem.enabled ? 1.0 : 0.3
             text: styledItem.text
             fontSize: "xx-small"
