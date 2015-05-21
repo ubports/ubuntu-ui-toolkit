@@ -58,34 +58,24 @@ Item {
         Repeater {
             objectName: "actions_repeater"
             model: numberOfSlots.used
-            PageHeadButton {
-                // TODO TIM: Replace by AbstractButton with IconButtonStyle
-
+            AbstractButton {
+                style: IconButtonStyle {
+                    iconWidth: units.gu(2)
+                }
                 id: actionButton
                 objectName: action.objectName + "_action_button"
                 action: actionsContainer.visibleActions[index]
-                Binding {
-                    target: actionButton.__styledItem
-                    when: actionButton.__styledItem
-                    property: "iconWidth"
-                    value: units.gu(2)
-                }
-//                iconWidth: units.gu(2)
             }
         }
 
-        PageHeadButton {
-            // TODO TIM: Replace by AbstractButton with IconButtonStyle
+        AbstractButton {
+            style: IconButtonStyle {
+                iconWidth: units.gu(2)
+            }
+
             id: actionsOverflowButton
             objectName: "actions_overflow_button"
             visible: numberOfSlots.requested > numberOfSlots.available
-//            iconWidth: units.gu(2)
-            Binding {
-                target: actionButton.__styledItem
-                when: actionButton.__styledItem
-                property: "iconWidth"
-                value: units.gu(2)
-            }
 
             // Ensure resetting of X when this button is not visible to avoid
             // miscalculation of actionsContainer.width. Fixes bug #1408481.
