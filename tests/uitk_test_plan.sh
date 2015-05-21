@@ -28,9 +28,9 @@ OUTPUTDIR=$HOME
 FILTER=.*
 RTM=true
 REVISION=105
-DISTRO="ubuntu-rtm" 
-SERIES="14.09"
-CHANNEL="ubuntu-touch/${DISTRO}/${SERIES}-proposed"
+DISTRO="ubuntu" 
+SERIES="vivid"
+CHANNEL="ubuntu-touch/rc-proposed/${DISTRO}"
 PASSWORD="0000"
 BOOTTIME=500
 ONLYCOMPARE=false
@@ -44,6 +44,7 @@ declare -a TEST_SUITE=(
     " -p address-book-app-autopilot address_book_app" 
     " sudoku_app"
     " online_accounts_ui"
+# comment out if calculator AP:s broken
     " ubuntu_calculator_app"
     " -p mediaplayer-app-autopilot mediaplayer_app"
     " dropping_letters_app"
@@ -52,8 +53,9 @@ declare -a TEST_SUITE=(
     " -p ubuntu-system-settings-autopilot ubuntu_system_settings"
     " music_app"
     " gallery_app"
-    " filemanager"
-    " ubuntu_terminal_app"
+# comment out if filemanager AP:s broken
+#   " filemanager"
+#    " ubuntu_terminal_app"
     " -n unity8"
     " ubuntu_clock_app"
 #    " -p dialer-app-autopilot dialer_app"
@@ -176,6 +178,10 @@ function device_comission {
     network
     adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S reboot 2>&1|grep -v password"
     sleep_indicator 120
+    # Required for at least rtm-14.09/mako, phablet-click-test-setup fails otherwise and we don't need terminal
+    adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S click unregister com.ubuntu.terminal 2>&1|grep -v password"
+    # Enable if calculator AP:s broken, to prevent phablet-click-test-setup trying to check out its tests.
+    #adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S click unregister com.ubuntu.calculator 2>&1|grep -v password"
     echo -e "phablet-click-test-setup  \e[31m${DISTRO} ${SERIES}\e[0m"
     phablet-click-test-setup -s ${SERIALNUMBER} --distribution=${DISTRO} --series=${SERIES} 2>&1 || fatal_failure "phablet-click-test-setup has failed" 
     echo "Sleep after phablet-click-test-setup";
@@ -290,9 +296,9 @@ while getopts ":hrcintduslwbv:o:p:f:a:" opt; do
             ;;
         u)
             RTM=false
-            CHANNEL="ubuntu-touch/devel-proposed"
+            CHANNEL="ubuntu-touch/devel-proposed/ubuntu"
             DISTRO="ubuntu"
-            SERIES="vivid"
+            SERIES="wily"
             ;;
         w)
             DISTUPGRADE=true
@@ -314,29 +320,29 @@ while getopts ":hrcintduslwbv:o:p:f:a:" opt; do
             echo -e "\t-p : Source PPA for the UITK. Default $PPA. Use -p archive to test stock image or -p [0-9]* to set a silo."
             echo -e "\t-f : Filter for the test suite. Default $FILTER"
             echo -e "\t-a : Start the test suite from the given test."
-            echo -e "\t-u : Provision the Development release of Ubuntu. Default is RTM."
+            echo -e "\t-u : Provision the Development release of Ubuntu, Wily. Default is vivid-overlay (formerly RTM)."
             echo -e "\t-w : dist-upgrade to the whole PPA instead of just Ubuntu UI Toolkit. Default is only UITK."
             echo -e "\t-b : Bootstrap the device with the ${PPA} enabled."
             echo ""
-            echo "By default tihe uitk_test_plan.sh flashes the latest RTM image on the device, installs the click application"
+            echo "By default tihe uitk_test_plan.sh flashes the latest vivid-overlay image on the device, installs the click application"
             echo "tests, configures the ppa:ubuntu-sdk-team/staging PPA, installs the UITK from the PPA and executes the test plan."
             echo ""
-            echo "Validate the staging branch of the UITK against the RTM image"
+            echo "Validate the staging branch of the UITK against the vivid-overlay image"
             echo -e "\t$ ./uitk_test_plan.sh -c"
             echo ""
-            echo "Validate the UITK from a CI silo on an RTM image"
+            echo "Validate the UITK from a CI silo on an vivid-overlay image"
             echo -e "\t$ ./uitk_test_plan.sh -c -p 001"
             echo ""
-            echo "Validate the UITK from teh archive on an RTM image"
+            echo "Validate the UITK from teh archive on an vivid-overlay image"
             echo -e "\t$ ./uitk_test_plan.sh -c -p archive"
             echo ""
-            echo "Validate the UITK from a specific CI silo on an Ubuntu Utopic image"
+            echo "Validate the UITK from a specific CI silo on an Ubuntu Wily image"
             echo -e "\t$ ./uitk_test_plan.sh -c -p 001 -u"
             echo ""
-            echo "Provision the device for manual testing with the latest RTM image"
+            echo "Provision the device for manual testing with the latest vivid-overlay image"
             echo -e "\t$ ./uitk_test_plan.sh -c -p archive -n"
             echo ""
-            echo "Provision the device for manual testing with the latest Ubuntu Utopic image"
+            echo "Provision the device for manual testing with the latest Ubuntu Wily image"
             echo -e "\t$ ./uitk_test_plan.sh -c -p archive -u -n"
             echo ""
             echo "Run the test plan on an already provisioned device"

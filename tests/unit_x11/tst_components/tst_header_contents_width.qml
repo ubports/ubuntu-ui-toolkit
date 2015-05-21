@@ -14,9 +14,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.2
+import QtQuick 2.4
 import Ubuntu.Test 1.0
-import Ubuntu.Components 1.1
+import Ubuntu.Components 1.3
 
 Item {
     width: units.gu(50)
@@ -25,7 +25,6 @@ Item {
     MainView {
         id: mainView
         anchors.fill: parent
-        useDeprecatedToolbar: false
 
         Tabs {
             id: tabs
@@ -63,18 +62,14 @@ Item {
     }
 
     UbuntuTestCase {
-        name: "HeaderSelectionPreset"
+        name: "HeaderContents"
         when: windowShown
         id: testCase
 
         property var head_style
 
-        function wait_for_animation() {
-            tryCompareFunction(function(){return testCase.head_style.animating}, false);
-        }
         function initTestCase() {
-            testCase.head_style = findChild(mainView, "PageHeadStyle");
-            testCase.wait_for_animation();
+            waitForHeaderAnimation(mainView);
         }
 
         function test_header_contents_width_bug1408481() {
@@ -82,14 +77,14 @@ Item {
             testCase.verify(initialWidth > 0, "Initial width has a positive value.");
             // Select the tab that has more actions.
             tabs.selectedTabIndex = 1;
-            testCase.wait_for_animation();
+            waitForHeaderAnimation(mainView);
             // Now less space is available for the header contents, so that the action buttons fit.
             testCase.verify(searchField.width < initialWidth, "Contents width is reduced.");
             // Without this wait(), the test does not reproduce bug 1408481.
             wait(100);
             // Select the first tab again:
             tabs.selectedTabIndex = 0;
-            testCase.wait_for_animation();
+            waitForHeaderAnimation(mainView);
             // Without actions in tab one, the full width is available again for contents
             testCase.verify(searchField.width === initialWidth, "Contents width is reset.");
         }

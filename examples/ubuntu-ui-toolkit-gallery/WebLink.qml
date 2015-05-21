@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.3
 
 Label {
     id: webLink
@@ -27,4 +27,9 @@ Label {
     text: "<a href=\"%1\">%2</a>".arg(webLink.url).arg(webLink.label)
     linkColor: UbuntuColors.orange
     onLinkActivated: Qt.openUrlExternally(link)
+    MouseArea {
+        anchors.fill: webLink
+        cursorShape: Qt.PointingHandCursor
+        acceptedButtons: Qt.NoButton
+   }
 }

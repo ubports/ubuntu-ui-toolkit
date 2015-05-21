@@ -1,6 +1,6 @@
 # -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
 #
-# Copyright (C) 2013, 2014 Canonical Ltd.
+# Copyright (C) 2013, 2014, 2015 Canonical Ltd.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -24,9 +24,6 @@ class DialogTestCase(tests.QMLFileAppTestCase):
     dir_path = os.path.dirname(path)
     test_qml_file_path = os.path.join(
         dir_path, 'test_dialog.DialogTestCase.qml')
-
-    def setUp(self):
-        super(DialogTestCase, self).setUp()
 
     def test_dialog(self):
         open_button = self.main_view.wait_select_single('Button',

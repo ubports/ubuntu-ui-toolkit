@@ -15,15 +15,15 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.2
-import Ubuntu.Components.Popups 1.0
+import Ubuntu.Components 1.3
+import Ubuntu.Components.Popups 1.3
 
 Template {
     objectName: "dialogsTemplate"
 
     TemplateSection {
         className: "Dialog"
-        documentation: "qml-ubuntu-components-popups0-%1.html".arg(className.toLowerCase())
+        documentation: "qml-ubuntu-components-popups-%1.html".arg(className.toLowerCase())
 
         TemplateRow {
             title: i18n.tr("Standard")

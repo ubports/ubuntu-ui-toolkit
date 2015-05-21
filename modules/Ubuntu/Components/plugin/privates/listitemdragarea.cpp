@@ -98,10 +98,10 @@ void ListItemDragArea::mousePressEvent(QMouseEvent *event)
     }
     // check if we tapped over the drag panel
     UCListItemPrivate *pListItem = UCListItemPrivate::get(listItem);
-    if (pListItem->styleItem && pListItem->styleItem->m_dragPanel) {
+    if (pListItem->styleItem && pListItem->listItemStyle()->m_dragPanel) {
         // convert mouse into local panel coordinates
-        QPointF panelPos = pListItem->styleItem->m_dragPanel->mapFromItem(this, mousePos);
-        if (!pListItem->styleItem->m_dragPanel->contains(panelPos)) {
+        QPointF panelPos = pListItem->listItemStyle()->m_dragPanel->mapFromItem(this, mousePos);
+        if (!pListItem->listItemStyle()->m_dragPanel->contains(panelPos)) {
             // not tapped over the drag panel, leave
             event->setAccepted(false);
             return;

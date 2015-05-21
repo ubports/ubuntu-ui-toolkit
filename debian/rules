@@ -4,6 +4,7 @@
 # export DH_VERBOSE=1
 export DPKG_GENSYMBOLS_CHECK_LEVEL=4
 export QMAKEFEATURES=$(CURDIR)/features
+export QT_SELECT := qt5
 DEB_HOST_MULTI_ARCH ?= $(shell dpkg-architecture -qDEB_BUILD_MULTIARCH)
 DEB_HOST_ARCH ?= $(shell dpkg-architecture -qDEB_HOST_ARCH)
 
@@ -35,8 +36,9 @@ override_dh_build:
 
 override_dh_install:
 	dh_auto_build -- docs
-	sphinx-build -b singlehtml documentation/autopilot-helpers documentation/autopilot-helpers/_build/html
-	sphinx-build -b json documentation/autopilot-helpers documentation/autopilot-helpers/_build/json
+	# FIXME: Due to autopilot not being in the archive we ship docs for now
+	# sphinx-build -b singlehtml documentation/autopilot-helpers documentation/autopilot-helpers/_build/html
+	# sphinx-build -b json documentation/autopilot-helpers documentation/autopilot-helpers/_build/json
 	mkdir -p debian/tmp/`qmake -query QT_INSTALL_DOCS`/qch
 	mkdir -p debian/tmp/usr/share/ubuntu-ui-toolkit/doc
 	cp -r $(CURDIR)/documentation/*qch debian/tmp/`qmake -query QT_INSTALL_DOCS`/qch

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,8 +16,8 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 1.2
-import Ubuntu.Components.ListItems 1.0 as ListItem
+import Ubuntu.Components 1.3
+import Ubuntu.Components.ListItems 1.3 as ListItem
 
 /*!
   \brief An application to test locales on the device
@@ -89,7 +89,7 @@ MainView {
                 highlight: Rectangle {
                     height: units.gu(2)
                     width: view.width
-                    color: Theme.palette.selected.background
+                    color: theme.palette.selected.background
                 }
             }
         }
@@ -100,7 +100,7 @@ MainView {
                 leftMargin: units.gu(0.5)
                 bottom: parent.bottom
             }
-            color: Theme.palette.normal.base
+            color: theme.palette.normal.base
             width: parent.width
             Column {
                 anchors.fill: parent

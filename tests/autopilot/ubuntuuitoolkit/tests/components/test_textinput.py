@@ -1,6 +1,6 @@
 # -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
 #
-# Copyright (C) 2014 Canonical Ltd.
+# Copyright (C) 2014, 2015 Canonical Ltd.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -59,7 +59,7 @@ class CaretTextInputTestCase(tests.QMLFileAppTestCase):
         return command_line
 
     def setUp(self):
-        super(CaretTextInputTestCase, self).setUp()
+        super().setUp()
         self.textfield = self.main_view.select_single(
             objectName=self.objectName)
         self.assertFalse(self.textfield.focus)
@@ -70,11 +70,19 @@ class CaretTextInputTestCase(tests.QMLFileAppTestCase):
         return self.main_view.select_single(
             objectName=positionProperty + '_draggeditem')
 
+    def test_caret_hidden_if_empty(self):
+        cursorName = 'text_cursor_style_caret_cursorPosition'
+        self._assert_not_visible(objectName=cursorName)
+        self.pointing_device.click_object(self.textfield)
+        self.assertTrue(self.textfield.focus)
+        self._assert_not_visible(objectName=cursorName)
+
     def test_caret_visible_on_focus(self):
         cursorName = 'text_cursor_style_caret_cursorPosition'
         self._assert_not_visible(objectName=cursorName)
         self.pointing_device.click_object(self.textfield)
         self.assertTrue(self.textfield.focus)
+        self.textfield.keyboard.type('Lorem ipsum')
         self.main_view.select_single(objectName=cursorName)
 
     def test_caret_hide_while_typing(self):
@@ -130,7 +138,7 @@ class InsertModeTextInputTestCase(tests.QMLFileAppTestCase):
         return command_line
 
     def setUp(self):
-        super(InsertModeTextInputTestCase, self).setUp()
+        super().setUp()
         self.textfield = self.main_view.select_single(
             objectName=self.objectName)
         self.assertFalse(self.textfield.focus)
@@ -145,8 +153,8 @@ class InsertModeTextInputTestCase(tests.QMLFileAppTestCase):
     def assert_discard_popover(self):
         # Discard popover by tap
         self.pointing_device.move(
-            self.textfield.globalRect.x + self.textfield.width * 0.7,
-            self.textfield.globalRect.y + self.textfield.height * 0.9)
+            self.textfield.globalRect.x + self.textfield.width * 0.6,
+            self.textfield.globalRect.y + self.textfield.height * 0.95)
         self.pointing_device.click()
 
         self._assert_not_visible(objectName='text_input_contextmenu')
