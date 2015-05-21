@@ -21,7 +21,7 @@ Item {
     id: iconButtonStyle
 
     implicitWidth: visible ? units.gu(5) : 0
-    implicitHeight: units.gu(5) //parent ? parent.height : undefined
+    implicitHeight: units.gu(5)
 
     /*!
       \qmlproperty color foregroundColor

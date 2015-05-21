@@ -17,7 +17,7 @@
 import QtQuick 2.4
 import Ubuntu.Components 1.3
 
-// TODO: Deprecate this component when PageHeadStyle uses ActionBar
+// TODO: Remove this component when PageHeadStyle uses ActionBar
 AbstractButton {
     id: button
 

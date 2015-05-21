@@ -64,6 +64,7 @@ Item {
                 }
                 id: actionButton
                 objectName: action.objectName + "_action_button"
+                height: actionsContainer.height
                 action: actionsContainer.visibleActions[index]
             }
         }
@@ -75,6 +76,7 @@ Item {
 
             id: actionsOverflowButton
             objectName: "actions_overflow_button"
+            height: actionsContainer.height
             visible: numberOfSlots.requested > numberOfSlots.available
 
             // Ensure resetting of X when this button is not visible to avoid
