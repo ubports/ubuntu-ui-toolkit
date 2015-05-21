@@ -6,8 +6,6 @@ autopilot_module.files = autopilot/ubuntuuitoolkit/*
 
 SUBDIRS += launcher
 
-INSTALLS += autopilot_module
+SUBDIRS += apicheck
 
-check.commands += cd ..;
-check.commands += tests/qmlapicheck.sh || exit 1;
-check.commands += cd tests
+INSTALLS += autopilot_module
