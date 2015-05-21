@@ -30,9 +30,8 @@ class UCStyledItemBasePrivate : public QQuickItemPrivate
 public:
 
     enum StyleLoadingMethod {
-        Immediate,
-        DelayTillCompleted,
-        DelayTillExplicitRequested
+        LoadOnCompleted,
+        LoadOnRequest
     };
 
     static UCStyledItemBasePrivate *get(UCStyledItemBase *item) {
@@ -52,7 +51,13 @@ public:
 
     QQmlComponent *style() const;
     void setStyle(QQmlComponent *style);
+    void resetStyle();
     QQuickItem *styleInstance();
+
+    QString styleName() const;
+    void setStyleName(const QString &name);
+    QString implicitStyleName() const;
+    void setImplicitStyleName(const QString &name);
 
     virtual void preStyleChanged();
     virtual void postStyleChanged();
@@ -68,6 +73,8 @@ public:
 public:
     bool activeFocusOnPress:1;
     StyleLoadingMethod styleLoadingMethod;
+    QString styleDocument;
+    QString implicitStyleDocument;
     QQmlComponent *styleComponent;
     QPointer<QQmlContext> styleItemContext;
     QQuickItem *styleItem;

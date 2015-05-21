@@ -218,6 +218,55 @@ void UCStyledItemBasePrivate::setStyle(QQmlComponent *style)
     postStyleChanged();
     loadStyleItem();
 }
+void UCStyledItemBasePrivate::resetStyle()
+{
+    setStyle(Q_NULLPTR);
+}
+
+/*!
+ * \qmlproperty string StyledItem::styleName
+ * The property specifies the component style name. The style name is a document
+ * in the current theme, and may contain or not the qml file extension. If not
+ * specified, the extension will be appended during style creation.
+ * \note \l style property has precedence over styleName.
+ */
+QString UCStyledItemBasePrivate::styleName() const
+{
+    return styleDocument.isEmpty() ? styleDocument : implicitStyleDocument;
+}
+void UCStyledItemBasePrivate::setStyleName(const QString &name)
+{
+    if (name == styleDocument) {
+        return;
+    }
+    QString prevName = styleName();
+    styleDocument = name;
+    if (prevName != styleName()) {
+        preStyleChanged();
+        postStyleChanged();
+    }
+    Q_EMIT q_func()->styleNameChanged();
+    loadStyleItem();
+}
+
+QString UCStyledItemBasePrivate::implicitStyleName() const
+{
+    return implicitStyleDocument;
+}
+void UCStyledItemBasePrivate::setImplicitStyleName(const QString &name)
+{
+    if (name == implicitStyleDocument) {
+        return;
+    }
+    QString prevName = styleName();
+    implicitStyleDocument = name;
+    if (prevName != styleName()) {
+        preStyleChanged();
+        postStyleChanged();
+    }
+    Q_EMIT q_func()->implicitStyleNameChanged();
+    loadStyleItem();
+}
 
 // performs pre-style change actions, removes style item size change
 // connections and destroys the style component
@@ -240,12 +289,12 @@ void UCStyledItemBasePrivate::preStyleChanged()
 // style item will be created in
 void UCStyledItemBasePrivate::postStyleChanged()
 {
-    if (!styleComponent || styleItemContext) {
+    if (!styleComponent || styleName().isEmpty() || styleItemContext) {
         return;
     }
     Q_Q(UCStyledItemBase);
     // use creation context as parent to create the context we load the style item with
-    QQmlContext *creationContext = styleComponent->creationContext();
+    QQmlContext *creationContext = (styleComponent) ? styleComponent->creationContext() : Q_NULLPTR;
     if (!creationContext) {
         creationContext = qmlContext(q);
     }
@@ -257,13 +306,23 @@ void UCStyledItemBasePrivate::postStyleChanged()
 // loads the style animated or not, depending on the loading time
 void UCStyledItemBasePrivate::loadStyleItem(bool animated)
 {
-    if (styleItem || !styleComponent || !styleItemContext || (styleLoadingMethod != Immediate && !componentComplete)) {
+    QString document = styleName();
+    if (styleItem || (!styleComponent && document.isEmpty()) || !styleItemContext || !componentComplete) {
         // the style loading is delayed
         return;
     }
     Q_Q(UCStyledItemBase);
+    // either styleComponent or styleName is valid
+    QQmlComponent *component = styleComponent;
+    if (!component) {
+        QString doc = document;
+        if (!doc.endsWith(".qml")) {
+            doc.append(".qml");
+        }
+        component = theme->createStyleComponent(doc, q);
+    }
     styleItemContext->setContextProperty("animated", animated);
-    QObject *object = styleComponent->beginCreate(styleItemContext);
+    QObject *object = component->beginCreate(styleItemContext);
     if (!object) {
         return;
     }
@@ -281,7 +340,11 @@ void UCStyledItemBasePrivate::loadStyleItem(bool animated)
     } else {
         delete object;
     }
-    styleComponent->completeCreate();
+    component->completeCreate();
+    // delete temporary component
+    if (!styleComponent) {
+        delete component;
+    }
 
     // make sure we reset the animated property to true
     if (!animated) {
