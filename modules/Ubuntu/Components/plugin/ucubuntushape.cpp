@@ -232,7 +232,7 @@ const QSGGeometry::AttributeSet& ShapeNode::attributeSet()
 // --- QtQuick item ---
 
 static QHash<QOpenGLContext*, quint32> shapeTextureHash;
-static bool isPrimaryOrientationLandscape;
+static bool isPrimaryOrientationLandscape = false;
 
 const float implicitWidthGU = 8.0f;
 const float implicitHeightGU = 8.0f;
