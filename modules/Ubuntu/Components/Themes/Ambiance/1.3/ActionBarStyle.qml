@@ -59,9 +59,7 @@ Item {
             objectName: "actions_repeater"
             model: numberOfSlots.used
             AbstractButton {
-                style: IconButtonStyle {
-                    iconWidth: units.gu(2)
-                }
+                style: IconButtonStyle { }
                 id: actionButton
                 objectName: action.objectName + "_action_button"
                 height: actionsContainer.height
@@ -70,10 +68,7 @@ Item {
         }
 
         AbstractButton {
-            style: IconButtonStyle {
-                iconWidth: units.gu(2)
-            }
-
+            style: IconButtonStyle { }
             id: actionsOverflowButton
             objectName: "actions_overflow_button"
             height: actionsContainer.height

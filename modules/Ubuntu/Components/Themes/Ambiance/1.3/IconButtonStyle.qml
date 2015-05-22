@@ -36,7 +36,7 @@ Item {
                                         theme.palette.selected.background :
                                         "transparent"
 
-    property real iconWidth: units.gu(2.5)
+    property real iconWidth: units.gu(2)
     property real iconHeight: iconWidth
 
     /*!
@@ -78,6 +78,6 @@ Item {
             topMargin: units.gu(0.5)
             horizontalCenter: parent.horizontalCenter
         }
-        sourceComponent: iconButtonStyle.showLabel ? labelComponent : null
+        sourceComponent: labelComponent //iconButtonStyle.showLabel ? labelComponent : null
     }
 }
