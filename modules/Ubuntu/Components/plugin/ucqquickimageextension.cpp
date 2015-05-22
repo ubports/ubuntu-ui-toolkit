@@ -111,7 +111,13 @@ void UCQQuickImageExtension::reloadSource()
                 rewrittenSciFile->setFileTemplate(QDir::tempPath() + QDir::separator() + "XXXXXX.sci");
                 rewrittenSciFile->open();
                 QTextStream output(rewrittenSciFile);
-                rewritten = rewriteSciFile(selectedFilePath, scaleFactor, output);
+
+                if (qFuzzyCompare(qGuiApp->devicePixelRatio(), (qreal)1.0)) {
+                    rewritten = rewriteSciFile(selectedFilePath, scaleFactor, output);
+                } else {
+                    QString scaleFactorInDevicePixels = QString::number(scaleFactor.toFloat() / qGuiApp->devicePixelRatio());
+                    rewritten = rewriteSciFile(selectedFilePath, scaleFactorInDevicePixels, output);
+                }
                 rewrittenSciFile->close();
 
                 s_rewrittenSciFiles.insert(m_source, QSharedPointer<QTemporaryFile>(rewrittenSciFile));
