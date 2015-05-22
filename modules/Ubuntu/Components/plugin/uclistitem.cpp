@@ -196,7 +196,6 @@ UCListItemPrivate::UCListItemPrivate()
     , mainAction(0)
 {
     styleLoadingMethod = LoadOnRequest;
-    setStyleName("ListItemStyle");
 }
 UCListItemPrivate::~UCListItemPrivate()
 {
@@ -229,6 +228,7 @@ void UCListItemPrivate::init()
     // watch grid unit size change and set implicit size
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_updateSize()));
     _q_updateSize();
+    setStyleName("ListItemStyle");
 }
 
 void UCListItemPrivate::_q_themeChanged()
