@@ -39,7 +39,13 @@ Item {
     property real iconWidth: units.gu(2.5)
     property real iconHeight: iconWidth
 
+    /*!
+      Show a text label under the icon.
+     */
+    property bool showLabel: false
+
     Rectangle {
+        id: background
         color: iconButtonStyle.backgroundColor
         anchors.fill: parent
     }
@@ -72,6 +78,6 @@ Item {
             topMargin: units.gu(0.5)
             horizontalCenter: parent.horizontalCenter
         }
-        sourceComponent: styledItem.state === "IconAndLabel" ? labelComponent : null
+        sourceComponent: iconButtonStyle.showLabel ? labelComponent : null
     }
 }
