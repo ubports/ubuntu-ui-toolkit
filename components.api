@@ -1051,6 +1051,8 @@ Ubuntu.Components.TextArea 1.3: StyledItem
     function var remove(var start, var end)
     function var undo()
     property int mouseSelectionMode
+    readonly property double paintedHeight
+    readonly property double paintedWidth
     property bool persistentSelection
     property string placeholderText
     property var popover
@@ -1063,6 +1065,7 @@ Ubuntu.Components.TextArea 1.3: StyledItem
     readonly property int selectionEnd
     readonly property int selectionStart
     property string text
+    readonly property QQuickTextDocument textDocument
     property int textFormat
     property int verticalAlignment
     property int wrapMode
