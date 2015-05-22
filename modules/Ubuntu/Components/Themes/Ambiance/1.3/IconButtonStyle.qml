@@ -20,7 +20,7 @@ import Ubuntu.Components 1.3
 Item {
     id: iconButtonStyle
 
-    implicitWidth: visible ? units.gu(5) : 0
+    implicitWidth: units.gu(5)
     implicitHeight: units.gu(5)
 
     /*!
