@@ -122,11 +122,6 @@ float UCUnits::gu(float value)
     return qRound(value * m_gridUnit) / m_devicePixelRatio;
 }
 
-float UCUnits::devicePixelRatio() const
-{
-    return m_devicePixelRatio;
-}
-
 QString UCUnits::resolveResource(const QUrl& url)
 {
     if (url.isEmpty()) {

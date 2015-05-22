@@ -1,3 +1,6 @@
-include(../test-include.pri)
-SOURCES += tst_units.cpp
-RESOURCES += tst_units.qrc
+TEMPLATE = subdirs
+
+SUBDIRS += \
+    dpr1 \
+    dpr2 \
+    dpr3

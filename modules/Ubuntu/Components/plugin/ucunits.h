@@ -41,7 +41,6 @@ public:
 
     // getters
     float gridUnit();
-    float devicePixelRatio() const;
 
     // setters
     void setGridUnit(float gridUnit);
