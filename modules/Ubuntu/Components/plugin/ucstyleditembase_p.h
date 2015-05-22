@@ -38,6 +38,7 @@ public:
         return item->d_func();
     }
 
+    void _q_reloadStyle();
     void _q_styleResized();
     void _q_ascendantChanged(QQuickItem *ascendant);
     void _q_parentStyleChanged();

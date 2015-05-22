@@ -41,8 +41,10 @@ void UCStyledItemBasePrivate::init()
 {
     Q_Q(UCStyledItemBase);
     q->setFlag(QQuickItem::ItemIsFocusScope);
-    QObject::connect(&UCTheme::defaultTheme(), &UCTheme::nameChanged,
-                     q, &UCStyledItemBase::themeChanged);
+    QObject::connect(&UCTheme::defaultTheme(), SIGNAL(nameChanged()),
+                     q, SLOT(_q_reloadStyle()));
+    QObject::connect(&UCTheme::defaultTheme(), SIGNAL(versionChanged()),
+                     q, SLOT(_q_reloadStyle()));
 }
 
 
@@ -332,6 +334,9 @@ bool UCStyledItemBasePrivate::loadStyleItem(bool animated)
         }
         component = getTheme()->createStyleComponent(doc, q);
     }
+    if (!component) {
+        return false;
+    }
     styleItemContext->setContextProperty("animated", animated);
     QObject *object = component->beginCreate(styleItemContext);
     if (!object) {
@@ -414,6 +419,19 @@ void UCStyledItemBasePrivate::connectStyleSizeChanges(bool attach)
     }
 }
 
+// reloads style component due to theme, theme.name or theme.version change
+void UCStyledItemBasePrivate::_q_reloadStyle()
+{
+    if (styleComponent) {
+        return;
+    }
+    Q_Q(UCStyledItemBase);
+    preStyleChanged();
+    postStyleChanged();
+    loadStyleItem();
+    Q_EMIT q->themeChanged();
+}
+
 // handle implicit size changes implied by the style components
 void UCStyledItemBasePrivate::_q_styleResized()
 {
@@ -470,8 +488,10 @@ void UCStyledItemBasePrivate::setTheme(UCTheme *newTheme)
                                 theme :
                                 (!parentStyledItem ? &UCTheme::defaultTheme() : NULL);
     if (connectedSet) {
-        QObject::disconnect(connectedSet, &UCTheme::nameChanged,
-                            q, &UCStyledItemBase::themeChanged);
+        QObject::disconnect(connectedSet, SIGNAL(nameChanged()),
+                            q, SLOT(_q_reloadStyle()));
+        QObject::disconnect(connectedSet, SIGNAL(versionChanged()),
+                            q, SLOT(_q_reloadStyle()));
     }
 
     UCTheme *prevSet = theme;
@@ -494,8 +514,10 @@ void UCStyledItemBasePrivate::setTheme(UCTheme *newTheme)
                     theme :
                     (!parentStyledItem ? &UCTheme::defaultTheme() : NULL);
     if (connectedSet) {
-        QObject::connect(connectedSet, &UCTheme::nameChanged,
-                         q, &UCStyledItemBase::themeChanged);
+        QObject::connect(connectedSet, SIGNAL(nameChanged()),
+                         q, SLOT(_q_reloadStyle()));
+        QObject::connect(connectedSet, SIGNAL(versionChanged()),
+                         q, SLOT(_q_reloadStyle()));
     }
     // detach previous set and attach the new one
     if (prevSet) {
@@ -514,9 +536,11 @@ void UCStyledItemBasePrivate::setTheme(UCTheme *newTheme)
     Q_EMIT q->themeChanged();
 
     // perform style reload
-    preStyleChanged();
-    postStyleChanged();
-    loadStyleItem();
+    if (!styleComponent) {
+        preStyleChanged();
+        postStyleChanged();
+        loadStyleItem();
+    }
 }
 void UCStyledItemBasePrivate::resetTheme()
 {

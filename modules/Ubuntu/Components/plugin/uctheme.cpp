@@ -642,8 +642,6 @@ void UCTheme::setVersion(quint16 version)
     }
     m_version = version;
     Q_EMIT versionChanged();
-    // emit also nameChanged() so we reload the theme/style
-    Q_EMIT nameChanged();
 }
 
 /*!
