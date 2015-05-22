@@ -24,10 +24,9 @@ Item {
     implicitHeight: units.gu(5)
 
     /*!
-      \qmlproperty color foregroundColor
       The color of the icons.
      */
-    property alias foregroundColor: icon.color
+    property color foregroundColor: "#808080"
 
     /*!
       The background color of the button.
@@ -58,7 +57,7 @@ Item {
         width: visible ? iconButtonStyle.iconWidth : 0
         height: visible ? iconButtonStyle.iconHeight : 0
         source: styledItem.iconSource
-        color: Qt.rgba(0, 0, 0, 0)
+        color: iconButtonStyle.foregroundColor
         opacity: styledItem.enabled ? 1.0 : 0.3
     }
 
@@ -78,6 +77,6 @@ Item {
             topMargin: units.gu(0.5)
             horizontalCenter: parent.horizontalCenter
         }
-        sourceComponent: labelComponent //iconButtonStyle.showLabel ? labelComponent : null
+        sourceComponent: iconButtonStyle.showLabel ? labelComponent : null
     }
 }
