@@ -1,3 +1,22 @@
+ubuntu-ui-toolkit (1.3.1517+15.10.20150519-0ubuntu2) UNRELEASED; urgency=medium
+
+  [ Christian Dywan ]
+  * Expose textDocument of TextField. Fixes LP: #1392276
+  * Unset GRID_UNIT_PX before checking default value. Fixes LP: #1457421
+  * No cutting and copying of passwords. Fixes LP: #1438976
+  * Implement new API tool based on qmlplugindump producing JSON. 
+    Fixes LP: #1187010
+
+  [ Leo Arias ]
+  * Make explicit the dependency on upstart for the autopilot helpers.
+  
+  [ Timo Jyrinki ]
+  * uitk_test_plan.sh: Switch to vivid-overlay & wily instead of rtm-14.09 & 
+    vivid. Fixes LP: #1457015.
+
+
+ -- Zoltán Balogh <zoltan@bakter.hu>  Sat, 23 May 2015 19:27:30 +0300
+
 ubuntu-ui-toolkit (1.3.1510+15.10.20150519-0ubuntu1) wily; urgency=medium
 
   [ Loïc Molinari ]
