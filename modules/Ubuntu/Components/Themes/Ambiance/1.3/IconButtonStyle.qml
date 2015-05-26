@@ -52,10 +52,8 @@ Item {
     Icon {
         id: icon
         anchors.centerIn: parent
-        // prevent trying to render the icon with an invalid source
-        // when the button is invisible by setting width and height to 0
-        width: visible ? iconButtonStyle.iconWidth : 0
-        height: visible ? iconButtonStyle.iconHeight : 0
+        width: iconButtonStyle.iconWidth
+        height: iconButtonStyle.iconHeight
         source: styledItem.iconSource
         color: iconButtonStyle.foregroundColor
         opacity: styledItem.enabled ? 1.0 : 0.3
