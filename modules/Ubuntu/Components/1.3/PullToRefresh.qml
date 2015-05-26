@@ -223,7 +223,7 @@ StyledItem {
     signal refresh()
 
     theme.version: Ubuntu.toolkitVersion
-    style: theme.createStyleComponent("PullToRefreshStyle.qml", control)
+    styleName: "PullToRefreshStyle"
     implicitHeight: __styleInstance.implicitHeight
     anchors {
         left: target.left

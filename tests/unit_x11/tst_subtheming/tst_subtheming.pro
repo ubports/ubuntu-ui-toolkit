@@ -31,6 +31,8 @@ OTHER_FILES += \
     StyledItemFallback.qml \
     StyledItemAppThemeFallback.qml \
     DeprecatedTheme.qml \
-    StyledItemAppThemeVersioned.qml
+    StyledItemAppThemeVersioned.qml \
+    StyleOverride.qml \
+    StyleKept.qml
 
 

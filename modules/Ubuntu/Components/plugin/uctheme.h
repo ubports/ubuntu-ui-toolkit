@@ -77,7 +77,7 @@ public:
 
     // internal, used by the deprecated Theme.createStyledComponent()
     QQmlComponent* createStyleComponent(const QString& styleName, QObject* parent, quint16 version);
-    Q_INVOKABLE QQmlComponent* createStyleComponent(const QString& styleName, QObject* parent);
+    QQmlComponent* createStyleComponent(const QString& styleName, QObject* parent);
     static void registerToContext(QQmlContext* context);
 
     // helper functions

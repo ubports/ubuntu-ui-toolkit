@@ -98,7 +98,7 @@ Popover {
                 height: units.gu(6)
                 action: actions[modelData]
                 theme.version: Ubuntu.toolkitVersion
-                style: theme.createStyleComponent("ToolbarButtonStyle.qml", button)
+                styleName: "ToolbarButtonStyle"
             }
         }
     }

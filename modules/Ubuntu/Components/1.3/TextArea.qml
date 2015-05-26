@@ -892,5 +892,5 @@ Ubuntu.StyledItem {
     }
 
     theme.version: Ubuntu.Ubuntu.toolkitVersion
-    style: theme.createStyleComponent("TextAreaStyle.qml", control)
+    styleName: "TextAreaStyle"
 }

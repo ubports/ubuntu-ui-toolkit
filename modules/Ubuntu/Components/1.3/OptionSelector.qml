@@ -226,7 +226,7 @@ ListItem.Empty {
             }
             state: optionSelector.expanded ? "expanded" : "collapsed"
             theme.version: Toolkit.Ubuntu.toolkitVersion
-            style: theme.createStyleComponent("OptionSelectorStyle.qml", listContainer)
+            styleName: "OptionSelectorStyle"
             states: [ State {
                     name: "expanded"
                     when: listContainer.currentlyExpanded
