@@ -320,7 +320,7 @@ void UCListItemPrivate::preStyleChanged()
 bool UCListItemPrivate::loadStyleItem(bool animated)
 {
     // the style should be loaded only if one of the condition is satisfied
-    if (!swiped || !selectMode() || !dragMode()) {
+    if (!swiped && !selectMode() && !dragMode()) {
         return false;
     }
 
@@ -1127,6 +1127,7 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
                 d->parentAttached->disableInteractive(this, true);
             }
             d->setSwiped(true);
+            d->loadStyleItem();
         }
     }
 

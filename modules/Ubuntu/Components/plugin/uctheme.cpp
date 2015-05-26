@@ -679,6 +679,9 @@ QQmlComponent* UCTheme::createStyleComponent(const QString& styleName, QObject* 
                     qmlInfo(parent) << component->errorString();
                     delete component;
                     component = NULL;
+                } else {
+                    // set context for the component
+                    QQmlEngine::setContextForObject(component, qmlContext(parent));
                 }
             } else {
                 qmlInfo(parent) <<

@@ -302,25 +302,13 @@ void UCStyledItemBasePrivate::preStyleChanged()
 // style item will be created in
 void UCStyledItemBasePrivate::postStyleChanged()
 {
-    if ((!styleComponent && styleDocument.isEmpty()) || styleItemContext) {
-        return;
-    }
-    Q_Q(UCStyledItemBase);
-    // use creation context as parent to create the context we load the style item with
-    QQmlContext *creationContext = (styleComponent) ? styleComponent->creationContext() : Q_NULLPTR;
-    if (!creationContext) {
-        creationContext = qmlContext(q);
-    }
-    styleItemContext = new QQmlContext(creationContext);
-    styleItemContext->setContextObject(q);
-    styleItemContext->setContextProperty("styledItem", q);
 }
 
 // loads the style animated or not, depending on the loading time
 // returns true on successful style loading
 bool UCStyledItemBasePrivate::loadStyleItem(bool animated)
 {
-    if (styleItem || (!styleComponent && styleDocument.isEmpty()) || !styleItemContext || !componentComplete) {
+    if (styleItem || (!styleComponent && styleDocument.isEmpty()) || !componentComplete) {
         // the style loading is delayed
         return false;
     }
@@ -337,9 +325,19 @@ bool UCStyledItemBasePrivate::loadStyleItem(bool animated)
     if (!component) {
         return false;
     }
+    // create context
+    // use creation context as parent to create the context we load the style item with
+    QQmlContext *creationContext = component->creationContext();
+    if (!creationContext) {
+        creationContext = qmlContext(q);
+    }
+    styleItemContext = new QQmlContext(creationContext);
+    styleItemContext->setContextObject(q);
+    styleItemContext->setContextProperty("styledItem", q);
     styleItemContext->setContextProperty("animated", animated);
     QObject *object = component->beginCreate(styleItemContext);
     if (!object) {
+        delete styleItemContext;
         return false;
     }
     // link context to the style item to delete them together
