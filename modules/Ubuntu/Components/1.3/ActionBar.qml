@@ -50,7 +50,7 @@ import Ubuntu.Components 1.3
 */
 StyledItem {
     id: bar
-    styleName: "ActionBarStyle.qml"
+    styleName: "ActionBarStyle"
 
     /*!
       The actions to display in the bar.

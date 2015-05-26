@@ -251,12 +251,12 @@ void UCStyledItemBasePrivate::resetStyle()
 /*!
  * \qmlproperty string StyledItem::styleName
  * The property specifies the component style name. The style name is a document
- * in the current theme, and may contain or not the qml file extension. If not
- * specified, the extension will be appended during style creation.
+ * in the current theme, and should not contain the qml file extension. If specified
+ * an error will be shown.
  * \qml
  * StyledItem {
  *     id: myItem
- *     styleName: "MyItemStyle.qml"
+ *     styleName: "MyItemStyle"
  * }
  * \endqml
  * \note \l style property has precedence over styleName.
@@ -309,11 +309,7 @@ bool UCStyledItemBasePrivate::loadStyleItem(bool animated)
     // either styleComponent or styleName is valid
     QQmlComponent *component = styleComponent;
     if (!component) {
-        QString doc = styleDocument;
-        if (!doc.endsWith(".qml")) {
-            doc.append(".qml");
-        }
-        component = getTheme()->createStyleComponent(doc, q);
+        component = getTheme()->createStyleComponent(styleDocument + ".qml", q);
     }
     if (!component) {
         return false;
