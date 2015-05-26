@@ -60,6 +60,8 @@ public:
     UCTheme *getTheme() const;
     void setTheme(UCTheme *theme);
     void resetTheme();
+    UCStyleHints *getStyleHints() const;
+    void setStyleHints(UCStyleHints *hints);
 
     virtual void preThemeChanged(){}
     virtual void postThemeChanged(){}
@@ -69,6 +71,7 @@ public:
     QString styleDocument;
     QQmlComponent *styleComponent;
     QPointer<QQmlContext> styleItemContext;
+    UCStyleHints *styleHints;
     QQuickItem *styleItem;
     UCTheme *theme;
     QPointer<UCStyledItemBase> parentStyledItem;

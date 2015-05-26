@@ -19,6 +19,7 @@
 #include "ucstyleditembase.h"
 #include "ucstyleditembase_p.h"
 #include "uctheme.h"
+#include "ucstylehints.h"
 #include <QtQml/QQmlEngine>
 #include <QtQuick/private/qquickanchors_p.h>
 
@@ -26,6 +27,7 @@ UCStyledItemBasePrivate::UCStyledItemBasePrivate()
     : activeFocusOnPress(false)
     , styleComponent(0)
     , styleItemContext(0)
+    , styleHints(0)
     , styleItem(0)
     , theme(0)
     , parentStyledItem(0)
@@ -536,6 +538,29 @@ void UCStyledItemBasePrivate::setTheme(UCTheme *newTheme)
 void UCStyledItemBasePrivate::resetTheme()
 {
     setTheme(NULL);
+}
+
+/*!
+ * \qmlproperty StyleHints StyledItem::styleHints
+ */
+UCStyleHints * UCStyledItemBasePrivate::getStyleHints() const
+{
+    return styleHints;
+}
+void UCStyledItemBasePrivate::setStyleHints(UCStyleHints *hints)
+{
+    if (styleHints == hints) {
+        return;
+    }
+    if (styleHints) {
+        styleHints->unsetStyledItem();
+    }
+    styleHints = hints;
+    Q_Q(UCStyledItemBase);
+    if (styleHints) {
+        styleHints->setStyledItem(q);
+    }
+    Q_EMIT q->styleHintsChanged();
 }
 
 // link/unlink all ascendant items until we reach a StyledItem, returns true if the
