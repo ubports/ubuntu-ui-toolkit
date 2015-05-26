@@ -877,7 +877,6 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  * item enters in select- or drag mode. The component does not assume any visuals
  * to be present in the style.
  * \sa ListItemStyle
-
  */
 
 /*!
