@@ -55,5 +55,5 @@ AnimatedItem {
     implicitWidth: units.gu(3)
     implicitHeight: units.gu(3)
 
-    styleName: "ActivityIndicatorStyle.qml"
+    styleName: "ActivityIndicatorStyle"
 }

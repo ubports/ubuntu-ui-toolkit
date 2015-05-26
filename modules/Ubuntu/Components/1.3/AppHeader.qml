@@ -343,5 +343,5 @@ Components.StyledItem {
     }
 
     theme.version: Components.Ubuntu.toolkitVersion
-    styleName: header.useDeprecatedToolbar ? "HeaderStyle.qml" : "PageHeadStyle.qml"
+    styleName: header.useDeprecatedToolbar ? "HeaderStyle" : "PageHeadStyle"
 }

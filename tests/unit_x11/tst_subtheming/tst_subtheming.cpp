@@ -129,17 +129,19 @@ private Q_SLOTS:
         QTest::addColumn<QString>("styleName");
         QTest::addColumn<QString>("parentName");
         QTest::addColumn<bool>("success");
-        QTest::newRow("Existing style") << "TestStyle.qml" << "SimpleItem.qml" << true;
-        QTest::newRow("Non existing style") << "NotExistingTestStyle.qml" << "SimpleItem.qml" << false;
+        QTest::addColumn<QString>("warning");
+        QTest::newRow("Existing style") << "TestStyle" << "SimpleItem.qml" << true << QString();
+        QTest::newRow("Non existing style") << "NotExistingTestStyle" << "SimpleItem.qml" << false << "QML SimpleItem: Warning: Style NotExistingTestStyle.qml not found in theme TestModule.TestTheme";
     }
     void test_create_style_component()
     {
         QFETCH(QString, styleName);
         QFETCH(QString, parentName);
         QFETCH(bool, success);
+        QFETCH(QString, warning);
 
-        if (styleName == "NotExistingTestStyle.qml") {
-            ThemeTestCase::ignoreWarning(parentName, 20, 1, "QML SimpleItem: Warning: Style NotExistingTestStyle.qml not found in theme TestModule.TestTheme");
+        if (!warning.isEmpty()) {
+            ThemeTestCase::ignoreWarning(parentName, 20, 1, warning);
         }
         qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "./themes");
 
@@ -161,23 +163,23 @@ private Q_SLOTS:
 
         QTest::newRow("One toolkit theme path")
                 << "./themes" << ""
-                << "TestModule.TestTheme" << "TestStyle.qml"
+                << "TestModule.TestTheme" << "TestStyle"
                 << "" << true;
         QTest::newRow("Two toolkit theme paths")
                 << "./themes:./themes/TestModule" << ""
-                << "CustomTheme" << "TestStyle.qml"
+                << "CustomTheme" << "TestStyle"
                 << "" << true;
         QTest::newRow("One XDG path")
                 << "" << "./themes"
-                << "TestModule.TestTheme" << "TestStyle.qml"
+                << "TestModule.TestTheme" << "TestStyle"
                 << "" << true;
         QTest::newRow("Two XDG paths")
                 << "" << "./themes:./themes/TestModule"
-                << "CustomTheme" << "TestStyle.qml"
+                << "CustomTheme" << "TestStyle"
                 << "" << true;
         QTest::newRow("No variables")
                 << "" << ""
-                << QString() << "TestStyle.qml"
+                << QString() << "TestStyle"
                 << "QML SimpleItem: Warning: Style TestStyle.qml not found in theme Ubuntu.Components.Themes.Ambiance" << false;
     }
 
@@ -729,6 +731,15 @@ private Q_SLOTS:
         UCStyledItemBasePrivate::get(button)->resetStyle();
         QQuickItem *styleItem = UCStyledItemBasePrivate::get(button)->styleInstance();
         QCOMPARE(QuickUtils::className(styleItem), QString("ButtonStyle"));
+    }
+
+    void test_stylename_extension_failure()
+    {
+        ThemeTestCase::ignoreWarning("DeprecatedTheme.qml", 19, 1, "QML StyledItem: Warning: Style OptionSelectorStyle.qml.qml not found in theme Ubuntu.Components.Themes.SuruGradient");
+        // add also for Ambiance, as ThemeTestCase destructor resets the theme, which will cause style warning for the default theme
+        ThemeTestCase::ignoreWarning("DeprecatedTheme.qml", 19, 1, "QML StyledItem: Warning: Style OptionSelectorStyle.qml.qml not found in theme Ubuntu.Components.Themes.Ambiance");
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase("DeprecatedTheme.qml"));
+        view->rootObject()->setProperty("styleName", "OptionSelectorStyle.qml");
     }
 };
 

@@ -122,5 +122,5 @@ AbstractButton {
     property string iconPosition: "left"
 
     theme.version: Ubuntu.toolkitVersion
-    styleName: "ButtonStyle.qml"
+    styleName: "ButtonStyle"
 }
