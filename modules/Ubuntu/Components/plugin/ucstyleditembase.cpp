@@ -24,7 +24,6 @@
 
 UCStyledItemBasePrivate::UCStyledItemBasePrivate()
     : activeFocusOnPress(false)
-    , styleLoadingMethod(LoadOnCompleted)
     , styleComponent(0)
     , styleItemContext(0)
     , styleItem(0)
@@ -296,12 +295,6 @@ void UCStyledItemBasePrivate::preStyleChanged()
         styleItem->deleteLater();
         styleItem = 0;
     }
-}
-
-// performs post-style change actions, creates the context object the
-// style item will be created in
-void UCStyledItemBasePrivate::postStyleChanged()
-{
 }
 
 // loads the style animated or not, depending on the loading time
@@ -644,12 +637,10 @@ void UCStyledItemBase::componentComplete()
 {
     QQuickItem::componentComplete();
     Q_D(UCStyledItemBase);
-    if (d->styleLoadingMethod == UCStyledItemBasePrivate::LoadOnCompleted) {
-        // no animation at this time
-        // prepare style context if not been done yet
-        d->postStyleChanged();
-        d->loadStyleItem(false);
-    }
+    // no animation at this time
+    // prepare style context if not been done yet
+    d->postStyleChanged();
+    d->loadStyleItem(false);
 }
 
 // grab pressed state and focus if it can be

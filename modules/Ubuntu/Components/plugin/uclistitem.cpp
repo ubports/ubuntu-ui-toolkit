@@ -195,7 +195,6 @@ UCListItemPrivate::UCListItemPrivate()
     , trailingActions(0)
     , mainAction(0)
 {
-    styleLoadingMethod = LoadOnRequest;
 }
 UCListItemPrivate::~UCListItemPrivate()
 {
