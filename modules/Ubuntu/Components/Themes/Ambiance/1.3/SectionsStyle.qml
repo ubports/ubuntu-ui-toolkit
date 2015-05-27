@@ -85,7 +85,6 @@ Item {
                 Rectangle {
                     visible: parent.pressed
                     anchors.fill: parent
-                    height: sectionsRow.height
                     color: sectionsStyle.pressedBackgroundColor
                 }
 
