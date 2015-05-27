@@ -38,7 +38,7 @@ import Ubuntu.Components 1.3
     \endqml
 */
 Item {
-    height: captionText.height + units.gu(1)
+    height: captionText.contentHeight + __contentMargin * 2
     width: parent ? parent.width : units.gu(31)
 
     /*!
@@ -47,10 +47,18 @@ Item {
      */
     property alias text: captionText.text
 
+    /*! \internal
+      The spacing inside the list item. This is already defined in ListItem.Empty but we can't access that from here.
+     */
+    property real __contentMargin: units.gu(2)
+
     Label {
         id: captionText
-        anchors.centerIn: parent
-        width: parent.width - units.gu(1)
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.leftMargin: __contentMargin
+        anchors.rightMargin: __contentMargin
         wrapMode: Text.Wrap
         color: theme.palette.normal.backgroundText
         horizontalAlignment: Text.AlignLeft
