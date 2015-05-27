@@ -29,12 +29,6 @@ StyledItem {
     style: theme.createStyleComponent("SectionsStyle.qml", sections)
 
     /*!
-      Set this property to false to disable user interaction to change the selected section.
-      Default value: true
-     */
-    property bool enabled: true
-
-    /*!
       List of strings that represent section names. Example:
       FIXME TIM
       \qml
