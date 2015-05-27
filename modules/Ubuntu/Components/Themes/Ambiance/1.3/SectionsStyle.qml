@@ -94,7 +94,6 @@ Item {
                     text: modelData
                     fontSize: sectionsStyle.fontSize
                     anchors.centerIn: parent
-//                    horizontalAlignment: Text.AlignHCenter
                     color: sectionButton.selected ?
                                sectionsStyle.selectedSectionColor :
                                sectionsStyle.sectionColor
