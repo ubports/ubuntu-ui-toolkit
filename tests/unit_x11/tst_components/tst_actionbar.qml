@@ -30,7 +30,7 @@ Item {
         },
         Action {
             iconName: "appointment"
-            text: "Appointment"
+            text: "Date"
         },
         Action {
             iconName: "attachment"
