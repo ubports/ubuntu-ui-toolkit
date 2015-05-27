@@ -38,7 +38,7 @@ import Ubuntu.Components 1.3
     \endqml
 */
 Item {
-    height: captionText.height + units.gu(1)
+    height: captionText.contentHeight + units.gu(2) * 2
     width: parent ? parent.width : units.gu(31)
 
     /*!
@@ -49,8 +49,14 @@ Item {
 
     Label {
         id: captionText
-        anchors.centerIn: parent
-        width: parent.width - units.gu(1)
+        anchors {
+            verticalCenter: parent.verticalCenter
+            left: parent.left
+            right: parent.right
+            //Margins are currently hardcoded to avoid adding new API
+            leftMargin: units.gu(2)
+            rightMargin: units.gu(2)
+        }
         wrapMode: Text.Wrap
         color: theme.palette.normal.backgroundText
         horizontalAlignment: Text.AlignLeft
