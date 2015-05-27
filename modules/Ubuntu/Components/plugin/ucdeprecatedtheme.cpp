@@ -77,7 +77,7 @@ void UCDeprecatedTheme::showDeprecatedNote(QObject *onItem, const char *note)
 {
     QQmlContext ctx(QQmlEngine::contextForObject(onItem));
     // No warnings due to deprecated code used in the components themselves
-    if (ctx.baseUrl().toString().contains("/modules/Ubuntu/Components/"))
+    if (ctx.baseUrl().toString().contains("/Ubuntu/Components/"))
         return;
     // Warnings without a filename are not helpful
     if (ctx.baseUrl().isEmpty())
