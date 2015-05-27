@@ -41,6 +41,11 @@ Item {
     property color pressedBackgroundColor: theme.palette.selected.background
 
     /*!
+      The font size for the text in the buttons.
+     */
+    property string fontSize: "small"
+
+    /*!
       The spacing on the left and right sides of the label
       inside a section button.
      */
@@ -50,11 +55,6 @@ Item {
       The height of the bar underlining the sections.
      */
     property real underlineHeight: units.dp(2)
-
-    /*!
-      The font size for the text in the buttons.
-     */
-    property string fontSize: "small"
 
     Row {
         id: sectionsRow
