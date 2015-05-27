@@ -81,14 +81,15 @@ Item {
                 property bool selected: index === styledItem.selectedIndex
                 onClicked: styledItem.selectedIndex = index;
 
+                // Background pressed highlight
                 Rectangle {
-                    id: highlight
                     visible: parent.pressed
                     anchors.fill: parent
                     height: sectionsRow.height
                     color: sectionsStyle.pressedBackgroundColor
                 }
 
+                // Section title
                 Label {
                     id: label
                     text: modelData
@@ -100,8 +101,8 @@ Item {
                                sectionsStyle.sectionColor
                 }
 
+                // Section title underline
                 Rectangle {
-                    id: sectionLine
                     anchors {
                         bottom: parent.bottom
                         left: parent.left
