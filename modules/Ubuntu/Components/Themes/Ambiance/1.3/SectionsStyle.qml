@@ -18,23 +18,43 @@ import Ubuntu.Components 1.3
 
 Item {
     id: sectionsStyle
-    // TODO: Total width of the contents
-    //    implicitWidth: actionsContainer.implicitWidth
 
     implicitWidth: sectionsRow.width
     implicitHeight: units.gu(4)
 
-    // TODO TIM: Should the divider go here, or outside?
-    Rectangle {
-        id: divider
-        anchors {
-            left: parent.left
-            right: parent.right
-            bottom: parent.bottom
-        }
-        height: units.dp(1)
-        color: "red"
-    }
+    enabled: styledItem.enabled
+    opacity: enabled ? 1.0 : 0.5
+
+    /*!
+      The foreground color of unselected sections.
+     */
+    property color sectionColor: theme.palette.selected.backgroundText
+
+    /*!
+      The foreground color of the selected section.
+     */
+    property color selectedSectionColor: UbuntuColors.orange
+
+    /*!
+      The background color for the pressed section button.
+     */
+    property color pressedBackgroundColor: theme.palette.selected.background
+
+    /*!
+      The spacing on the left and right sides of the label
+      inside a section button.
+     */
+    property real horizontalLabelSpacing: units.gu(2)
+
+    /*!
+      The height of the bar underlining the sections.
+     */
+    property real underlineHeight: units.dp(2)
+
+    /*!
+      The font size for the text in the buttons.
+     */
+    property string fontSize: "small"
 
     Row {
         id: sectionsRow
@@ -44,9 +64,6 @@ Item {
             horizontalCenter: parent.horizontalCenter
         }
         width: childrenRect.width
-        //        enabled: sectionsItem.sections.enabled
-        //        visible: sectionsItem.sections.model !== undefined
-        opacity: enabled ? 1.0 : 0.5
 
         Repeater {
             id: sectionsRepeater
@@ -59,38 +76,28 @@ Item {
                     bottom: parent ? parent.bottom : undefined
                 }
                 objectName: "section_button_" + index
-                enabled: sectionsRow.enabled
-                width: label.width + units.gu(4) // FIXME: expose spacing as style property
-                height: sectionsRow.height //+ units.gu(2) // TODO TIM: check this
+                width: label.width + 2*sectionsStyle.horizontalLabelSpacing
+                height: sectionsRow.height
                 property bool selected: index === styledItem.selectedIndex
                 onClicked: styledItem.selectedIndex = index;
 
-                // TODO
-                //                Rectangle {
-                //                    id: highlight
-                //                    visible: parent.pressed
-                //                    anchors {
-                //                        verticalCenter: parent.verticalCenter
-                //                        left: parent.left
-                //                        right: parent.right
-                //                        rightMargin: verticalDividerLine.width
-
-                //                    }
-                //                    height: sectionsRow.height
-                //                color: headerStyle.sectionHighlightColor
-                //                }
+                Rectangle {
+                    id: highlight
+                    visible: parent.pressed
+                    anchors.fill: parent
+                    height: sectionsRow.height
+                    color: sectionsStyle.pressedBackgroundColor
+                }
 
                 Label {
                     id: label
                     text: modelData
-                    fontSize: "small"
+                    fontSize: sectionsStyle.fontSize
                     anchors.centerIn: parent
                     horizontalAlignment: Text.AlignHCenter
                     color: sectionButton.selected ?
-                               "red" :
-                               "blue"
-                    //                               headerStyle.selectedSectionColor :
-                    //                               headerStyle.sectionColor
+                               sectionsStyle.selectedSectionColor :
+                               sectionsStyle.sectionColor
                 }
 
                 Rectangle {
@@ -100,12 +107,10 @@ Item {
                         left: parent.left
                         right: parent.right
                     }
-                    height: units.dp(2) // FIXME: Expose as style property
+                    height: sectionsStyle.underlineHeight
                     color: sectionButton.selected ?
-                               //                               headerStyle.selectedSectionColor :
-                               //                               styledItem.dividerColor
-                               "red" :
-                               "blue"
+                               sectionsStyle.selectedSectionColor :
+                               sectionsStyle.sectionColor
                 }
             }
         }

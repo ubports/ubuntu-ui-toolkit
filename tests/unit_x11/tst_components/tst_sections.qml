@@ -18,10 +18,11 @@ import QtQuick 2.4
 import Ubuntu.Test 1.0
 import Ubuntu.Components 1.3
 
-Item {
+Rectangle {
     id: root
     width: 400
     height: 600
+    color: "white"
 
     property var sectionNames: [
         "first",
@@ -30,20 +31,24 @@ Item {
     ]
 
     Sections {
+        id: sections
         anchors {
             left: parent.left
-            right: parent.right
             top: parent.top
             margins: units.gu(1)
         }
-
         model: root.sectionNames
-
-        Rectangle {
-            anchors.fill: parent
-            color: "grey"
-            opacity: 0.2
+    }
+    Sections {
+        id: disabledSections
+        anchors {
+            left: parent.left
+            top: sections.bottom
+            margins: units.gu(1)
         }
+        selectedIndex: 2
+        model: root.sectionNames
+        enabled: false
     }
 
 //    UbuntuTestCase {
