@@ -54,11 +54,13 @@ Item {
 
     Label {
         id: captionText
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.leftMargin: __contentMargin
-        anchors.rightMargin: __contentMargin
+        anchors {
+            verticalCenter: parent.verticalCenter
+            left: parent.left
+            right: parent.right
+            leftMargin: __contentMargin
+            rightMargin: __contentMargin
+        }
         wrapMode: Text.Wrap
         color: Theme.palette.normal.backgroundText
         horizontalAlignment: Text.AlignLeft
