@@ -1,0 +1,13 @@
+Extinct.Animals.Excavator 1.0
+Extinct.Animals.Titanoboa 4.2: Item
+    property string bar
+    property var basket
+    property url bazz
+    property string eggs
+    signal jump()
+    signal bounce(int length)
+    signal fly(var wing)
+    function var first()
+    function var second(var sliff)
+    function var third(var sloff)
+    property string spam
