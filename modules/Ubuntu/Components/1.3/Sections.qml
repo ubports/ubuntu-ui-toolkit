@@ -26,6 +26,7 @@ import Ubuntu.Components 1.3
  */
 StyledItem {
     id: sections
+    style: theme.createStyleComponent("SectionsStyle.qml", sections)
 
     /*!
       Set this property to false to disable user interaction to change the selected section.
