@@ -29,6 +29,7 @@
 
 class UCStyleHintsParser;
 class UCStyledItemBase;
+class QQuickItem;
 class UCStyleHints : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
@@ -48,15 +49,29 @@ protected:
     void componentComplete();
 
 private:
+    class Expression {
+    public:
+        Expression(const QString &name, QQmlBinding::Identifier id, const QString& expr,
+                         const QUrl &url, int line, int column)
+            : name(name), id(id), expression(expr), url(url), line(line), column(column) {}
+        QString name;
+        QQmlBinding::Identifier id;
+        QString expression;
+        QUrl url;
+        int line;
+        int column;
+    };
+
     bool m_decoded:1;
     bool m_completed:1;
     QPointer<UCStyledItemBase> m_styledItem;
-    QList<const QV4::CompiledData::Binding *> m_bindings;
+    QList<Expression> m_expressions;
+    QList< QPair<QString, QVariant> > m_values;
     QQmlRefPointer<QQmlCompiledData> m_cdata;
 
     friend class UCStyleHintsParser;
 
-    void applyProperty(QObject *valueSet, const QString &propertyPrefix, const QV4::CompiledData::Unit *qmlUnit, const QV4::CompiledData::Binding *binding);
+    void decodeBinding(QQuickItem *styleInstance, const QString &propertyPrefix, const QV4::CompiledData::Unit *qmlUnit, const QV4::CompiledData::Binding *binding);
 };
 
 class UCStyleHintsParser : public QQmlCustomParser
