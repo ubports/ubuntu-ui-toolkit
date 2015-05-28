@@ -18,7 +18,14 @@
 
 #include "ucstylehints.h"
 #include "ucstyleditembase_p.h"
+#include "propertychange_p.h"
 #include <QtQml/QQmlInfo>
+
+void propertyNotFound(QObject *object, const QString &styleName, const QString &property)
+{
+    // TODO: show warning based on an env var
+    qmlInfo(object) << QString("Style '%1' has no property called '%2'.").arg(styleName).arg(property);
+}
 
 void UCStyleHintsParser::verifyBindings(const QV4::CompiledData::Unit *qmlUnit, const QList<const QV4::CompiledData::Binding *> &bindings)
 {
@@ -57,20 +64,22 @@ void UCStyleHintsParser::applyBindings(QObject *obj, QQmlCompiledData *cdata, co
     UCStyleHints *hints = static_cast<UCStyleHints*>(obj);
     QV4::CompiledData::Unit *qmlUnit = cdata->compilationUnit->data;
 
-    if (!hints->m_styledItem) {
+    UCStyledItemBase *styledItem = qobject_cast<UCStyledItemBase*>(hints->parent());
+
+    if (!styledItem) {
         error(qmlUnit->objectAt(bindings[0]->value.objectIndex), "StyleHints not assigned to StyledItem.styleHints property.");
         return;
     }
 
     Q_FOREACH(const QV4::CompiledData::Binding *binding, bindings) {
-        hints->decodeBinding(UCStyledItemBasePrivate::get(hints->m_styledItem)->styleItem, QString(), qmlUnit, binding);
+        hints->decodeBinding(QString(), qmlUnit, binding);
     }
 
     hints->m_cdata = cdata;
     hints->m_decoded = true;
 }
 
-void UCStyleHints::decodeBinding(QQuickItem *styleInstance, const QString &propertyPrefix, const QV4::CompiledData::Unit *qmlUnit, const QV4::CompiledData::Binding *binding)
+void UCStyleHints::decodeBinding(const QString &propertyPrefix, const QV4::CompiledData::Unit *qmlUnit, const QV4::CompiledData::Binding *binding)
 {
     QString propertyName = propertyPrefix + qmlUnit->stringAt(binding->propertyNameIndex);
 
@@ -82,15 +91,8 @@ void UCStyleHints::decodeBinding(QQuickItem *styleInstance, const QString &prope
         const QV4::CompiledData::Binding *subBinding = subObj->bindingTable();
         QString pre = propertyName + ".";
         for (quint32 i = 0; i < subObj->nBindings; ++i, ++subBinding) {
-            decodeBinding(styleInstance, pre, qmlUnit, subBinding);
+            decodeBinding(pre, qmlUnit, subBinding);
         }
-        return;
-    }
-
-    if (styleInstance->metaObject()->indexOfProperty(qmlUnit->stringAt(binding->propertyNameIndex).toUtf8()) < 0) {
-        QString warning("Style '%1' has no property called '%2'.");
-        // TODO: show warning based on an env var
-        qmlInfo(this) << warning.arg(UCStyledItemBasePrivate::get(m_styledItem)->styleName()).arg(propertyName);
         return;
     }
 
@@ -141,6 +143,12 @@ UCStyleHints::UCStyleHints(QObject *parent)
 {
 }
 
+UCStyleHints::~UCStyleHints()
+{
+    qDeleteAll(m_propertyBackup);
+    m_propertyBackup.clear();
+}
+
 void UCStyleHints::classBegin()
 {
 }
@@ -162,36 +170,49 @@ void UCStyleHints::setStyledItem(UCStyledItemBase *item)
 {
     m_styledItem = item;
     if (m_styledItem) {
-        connect(m_styledItem, SIGNAL(themeChanged()),
-                this, SLOT(_q_applyStyleHints()));
-        connect(m_styledItem, SIGNAL(styleNameChanged()),
+        connect(m_styledItem, SIGNAL(styleInstanceChanged()),
                 this, SLOT(_q_applyStyleHints()));
         setParent(item);
+        _q_applyStyleHints();
     }
 }
 
 void UCStyleHints::unsetStyledItem()
 {
     if (m_styledItem) {
-        disconnect(m_styledItem, SIGNAL(themeChanged()),
+        disconnect(m_styledItem, SIGNAL(styleInstanceChanged()),
                    this, SLOT(_q_applyStyleHints()));
-        disconnect(m_styledItem, SIGNAL(styleNameChanged()),
-                   this, SLOT(_q_applyStyleHints()));
+        // restore changed properties
+        qDeleteAll(m_propertyBackup);
+        m_propertyBackup.clear();
     }
     m_styledItem.clear();
 }
 
+// apply the style hints and check each property existence
 void UCStyleHints::_q_applyStyleHints()
 {
     if (!m_completed || !m_decoded || !m_styledItem || !UCStyledItemBasePrivate::get(m_styledItem)->styleItem) {
         return;
     }
 
+    // restore properties first
+    qDeleteAll(m_propertyBackup);
+    m_propertyBackup.clear();
+
     QQuickItem *item = UCStyledItemBasePrivate::get(m_styledItem)->styleItem;
+    const QMetaObject *mo = item->metaObject();
     QQmlContext *context = qmlContext(item);
+    const QString styleName = UCStyledItemBasePrivate::get(m_styledItem)->styleName();
     // apply values first
     for (int i = 0; i < m_values.size(); i++) {
-        QQmlProperty::write(item, m_values[i].first, m_values[i].second, context);
+        if (mo->indexOfProperty(m_values[i].first.toUtf8()) < 0) {
+            propertyNotFound(this, styleName, m_values[i].first);
+            continue;
+        }
+        PropertyChange *change = new PropertyChange(item, m_values[i].first.toUtf8());
+        PropertyChange::setValue(change, m_values[i].second);
+        m_propertyBackup << change;
     }
 
     // override context to use this context
@@ -201,6 +222,7 @@ void UCStyleHints::_q_applyStyleHints()
         Expression e = m_expressions[ii];
         QQmlProperty prop(item, e.name, qmlContext(item));
         if (!prop.isValid()) {
+            propertyNotFound(this, styleName, e.name);
             continue;
         }
 

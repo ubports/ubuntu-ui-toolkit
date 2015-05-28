@@ -33,6 +33,8 @@ OTHER_FILES += \
     DeprecatedTheme.qml \
     StyledItemAppThemeVersioned.qml \
     StyleOverride.qml \
-    StyleKept.qml
+    StyleKept.qml \
+    SimplePropertyHints.qml \
+    StyleHintsWithSignal.qml
 
 

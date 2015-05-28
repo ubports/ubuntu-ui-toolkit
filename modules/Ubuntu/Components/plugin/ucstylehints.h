@@ -30,6 +30,7 @@
 class UCStyleHintsParser;
 class UCStyledItemBase;
 class QQuickItem;
+class PropertyChange;
 class UCStyleHints : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
@@ -37,6 +38,7 @@ class UCStyleHints : public QObject, public QQmlParserStatus
 
 public:
     explicit UCStyleHints(QObject *parent = 0);
+    ~UCStyleHints();
 
     void setStyledItem(UCStyledItemBase *item);
     void unsetStyledItem();
@@ -67,11 +69,12 @@ private:
     QPointer<UCStyledItemBase> m_styledItem;
     QList<Expression> m_expressions;
     QList< QPair<QString, QVariant> > m_values;
+    QList< PropertyChange* > m_propertyBackup;
     QQmlRefPointer<QQmlCompiledData> m_cdata;
 
     friend class UCStyleHintsParser;
 
-    void decodeBinding(QQuickItem *styleInstance, const QString &propertyPrefix, const QV4::CompiledData::Unit *qmlUnit, const QV4::CompiledData::Binding *binding);
+    void decodeBinding(const QString &propertyPrefix, const QV4::CompiledData::Unit *qmlUnit, const QV4::CompiledData::Binding *binding);
 };
 
 class UCStyleHintsParser : public QQmlCustomParser

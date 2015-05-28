@@ -741,6 +741,25 @@ private Q_SLOTS:
         QScopedPointer<ThemeTestCase> view(new ThemeTestCase("DeprecatedTheme.qml"));
         view->rootObject()->setProperty("styleName", "OptionSelectorStyle.qml");
     }
+
+    void test_stylehints_data()
+    {
+        QTest::addColumn<QString>("document");
+        QTest::addColumn<QString>("xfail");
+
+        QTest::newRow("simple properties")
+                << "SimplePropertyHints.qml" << false;
+    }
+    void test_stylehints()
+    {
+        QFETCH(QString, document);
+        QFETCH(QString, xfail);
+
+        if (!xfail.isEmpty()) {
+            QEXPECT_FAIL(0, xfail.toLocal8Bit(), Continue);
+        }
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase(document));
+    }
 };
 
 QTEST_MAIN(tst_Subtheming)
