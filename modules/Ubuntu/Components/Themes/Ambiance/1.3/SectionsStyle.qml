@@ -76,7 +76,7 @@ Item {
                     bottom: parent ? parent.bottom : undefined
                 }
                 objectName: "section_button_" + index
-                width: label.width + 2*sectionsStyle.horizontalLabelSpacing
+                width: label.width + 2 * sectionsStyle.horizontalLabelSpacing
                 height: sectionsRow.height
                 property bool selected: index === styledItem.selectedIndex
                 onClicked: styledItem.selectedIndex = index;
@@ -91,7 +91,7 @@ Item {
                 // Section title
                 Label {
                     id: label
-                    objectName: "section_button_label_"+index
+                    objectName: "section_button_label_" + index
                     text: modelData
                     fontSize: sectionsStyle.fontSize
                     anchors.centerIn: parent
