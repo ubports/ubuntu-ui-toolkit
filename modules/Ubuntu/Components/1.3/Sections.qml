@@ -33,6 +33,9 @@ StyledItem {
       \qml
         Sections {
             model: [ "first", "second", "third" ]
+            onSelectedIndexChanged: {
+                print("Selected " + model[selectedIndex] + " section.");
+            }
         }
      \endqml
      It is strongly recommended to limit the number of sections to two or three.
