@@ -134,7 +134,43 @@ void UCStyleHints::propertyNotFound(const QString &styleName, const QString &pro
 }
 
 /*!
+ * \qmltype StyleHints
+ * \instantiates UCStyleHints
+ * \inmodule Ubuntu Components 1.3
+ * \ingroup ubuntu
+ * \since Ubuntu.Components 1.3
+ * \brief Component holding style specific properties to configure a particular
+ * StyledItem's style runtime.
  *
+ * StyleHints is a custom parser, meaning style properties can be listed without
+ * any property declaration, same way as in PropertyChanges or Connections, which
+ * are similar custom parsers. Properties enumerated do not have to be present in
+ * the component's style as default, behavior which can be chenged by setting \l
+ * ignoreUnknownProperties to true. In this case properties not found in the style
+ * will be displayed as warnings.
+ *
+ * In the following example the Button will be drawn as white when not pressed, and
+ * colored as blue when pressed.
+ * \qml
+ * Button {
+ *     id: button
+ *     styleHints: StyleHints {
+ *         defaultColor: button.pressed ? "blue" : "white"
+ *     }
+ * }
+ * \endqml
+ *
+ * StyleHints does not support signal properties (i.e signal handlers) and object
+ * declarations as property values.
+ *
+ * StyleHints can be only declared as property value for \l {StyledItem::styleHints}
+ * {StyledItem.styleHints}.
+ */
+
+/*!
+ * \qmlproperty bool StyleHints::ignoreUnknownProperties
+ * The property drives whether component shoyuld warn on properties not found in
+ * the component's style or not. The default setting is not to warn.
  */
 UCStyleHints::UCStyleHints(QObject *parent)
     : QObject(parent)

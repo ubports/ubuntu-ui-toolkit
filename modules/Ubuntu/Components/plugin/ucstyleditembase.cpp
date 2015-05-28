@@ -538,6 +538,15 @@ void UCStyledItemBasePrivate::resetTheme()
 
 /*!
  * \qmlproperty StyleHints StyledItem::styleHints
+ * The property holds the component which configures style specific properties.
+ * These properties are typically theme specific style properties, and are usually
+ * color values, margins or other behavior-affecting properties. By using style
+ * hints developers can change visuals of the component styles without defining
+ * application themes, which would nail the style used to a particular theme.
+ *
+ * \note Setting a style hint will restore the properties changed by any previous
+ * style hint, meaning there can be only one valid StyleHints active at a time.
+ * \sa StyleHints
  */
 UCStyleHints * UCStyledItemBasePrivate::getStyleHints() const
 {
