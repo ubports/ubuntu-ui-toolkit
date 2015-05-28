@@ -27,51 +27,23 @@ logger = logging.getLogger(__name__)
 class Sections(_common.UbuntuUIToolkitCustomProxyObjectBase):
     """Sections Autopilot custom proxy object."""
 
-#    def _get_action_button(self, action_object_name):
-#        try:
-#            object_name = action_object_name + "_action_button"
-#            button = self.select_single(objectName=object_name)
-#        except dbus.StateNotFoundError:
-#            # the button is not in the ActionBar, but it may be in the overflow
-#            try:
-#                button = self._get_action_button_in_overflow(
-#                    action_object_name)
-#            except dbus.StateNotFoundError:
-#                raise _common.ToolkitException(
-#                    'Button not found in ActionBar or overflow')
+    def _get_section_button(self, section_index):
+        try:
+            object_name = "section_button_" + str(section_index)
+            button = self.select_single(objectName=object_name)
+        except dbus.StateNotFoundError:
+            raise _common.ToolkitException(
+                'Button not found in Sections.')
 
-#        return button
+        return button
 
-#    def _get_action_button_in_overflow(self, action_object_name):
-#        actions_overflow_button = self.select_single(
-#            objectName='actions_overflow_button')
+    @autopilot_logging.log_action(logger.info)
+    def click_section_button(self, section_index):
+        """Click a section button of the Sections.
 
-#        if not actions_overflow_button.visible:
-#            raise _common.ToolkitException('No actions in overflow')
+        :parameter section_index: The index of the section to click.
+        :raise ToolkitException: If there is no section button with that index.
 
-#        # open the popover
-#        self.pointing_device.click_object(actions_overflow_button)
-#        object_name = action_object_name + "_header_overflow_button"
-
-#        # the popover is not a child of the ActionBar, so use the popover
-#        # object to find the requested button
-#        try:
-#            popover = self.get_root_instance().select_single(
-#                objectName='actions_overflow_panel')
-#        except dbus.StateNotFoundError:
-#            raise _common.ToolkitException(
-#                'Failed to select overflow panel')
-
-#        return popover.select_single(objectName=object_name)
-
-#    @autopilot_logging.log_action(logger.info)
-#    def click_action_button(self, action_object_name):
-#        """Click an action button of the action bar.
-
-#        :parameter object_name: The QML objectName property of the action
-#        :raise ToolkitException: If there is no action button with that object
-#            name.
-
-#        """
-#        button = self._get_action_button(action_object_name)
-#        self.pointing_device.click_object(button)
+        """
+        button = self._get_section_button(section_index)
+        self.pointing_device.click_object(button)

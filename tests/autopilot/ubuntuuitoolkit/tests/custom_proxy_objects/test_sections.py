@@ -38,20 +38,14 @@ class SectionsTestCase(tests.QMLFileAppTestCase):
         self.assertIsInstance(self.sections, ubuntuuitoolkit.Sections)
         self.assertTrue(self.sections.visible)
 
-#    def test_click_action_button(self):
-#        self.actionbar.click_action_button('Action1')
-#        self.assertEqual(self.label.text, 'Action 1 triggered.')
+    def test_click_section_button(self):
+        self.sections.click_section_button(2)
+        self.assertEqual(self.label.text, 'Section 2 is selected.')
 
-#    def test_click_overflow_action_button(self):
-#        # Action1 is directly the ActionBar, Action2 and Action3
-#        #   are in the overflow panel.
-#        self.actionbar.click_action_button('Action3')
-#        self.assertEqual(self.label.text, 'Action 3 triggered.')
-
-#    def test_click_unexisting_action_button(self):
-#        error = self.assertRaises(
-#            ubuntuuitoolkit.ToolkitException,
-#            self.actionbar.click_action_button, 'unexisting')
-#        self.assertEqual(
-#            str(error),
-#            'Button not found in ActionBar or overflow')
+    def test_click_unexisting_section_button(self):
+        error = self.assertRaises(
+            ubuntuuitoolkit.ToolkitException,
+            self.sections.click_section_button, 3)
+        self.assertEqual(
+            str(error),
+            'Button not found in Sections.')
