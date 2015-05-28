@@ -31,7 +31,7 @@ Rectangle {
     ]
 
     Sections {
-        id: sections
+        id: enabledSections
         anchors {
             left: parent.left
             top: parent.top
@@ -51,104 +51,99 @@ Rectangle {
         enabled: false
     }
 
-//    UbuntuTestCase {
-//        id: testCase
-//        name: "ActionBarApi"
-//        when: windowShown
+    UbuntuTestCase {
+        id: testCase
+        name: "SectionsApi"
+        when: windowShown
 
-//        function initTestCase() {
-//            compare(shortBar.numberOfSlots, 3, "Default number of slots should be 3.");
-//        }
+        function initTestCase() {
+            //            compare(shortBar.numberOfSlots, 3, "Default number of slots should be 3.");
+        }
 
-//        function init() {
-//            // revert to initial values
-//            bar.numberOfSlots = 3;
-//            shortBar.numberOfSlots = 3;
-//            bar.actions = root.actionList;
-//            shortBar.actions = root.shortActionList;
-//        }
+        // before each test
+        function init() {
+        }
 
-//        function get_overflow_button_visible(actionBar) {
-//            var overflowButton = findChild(actionBar, "actions_overflow_button")
-//            return overflowButton.visible
-//        }
+        function cleanup() {
+            enabledSections.selectedIndex = 0;
+            disabledSections.selectedIndex = 0;
+        }
 
-//        function get_number_of_visible_buttons(actionBar) {
-//            var repeater = findChild(actionBar, "actions_repeater");
-//            var n = repeater.model;
-//            if (get_overflow_button_visible(actionBar)) {
-//                n++;
-//            }
-//            return n;
-//        }
+        function wait_for_animation(sections) {
+            // TODO when animations are added
+        }
 
-//        function get_number_of_actions_in_overflow(actionBar) {
-//            if (get_overflow_button_visible(actionBar)) {
-//                var overflowButton = findChild(actionBar, "actions_overflow_button");
-//                // click the overflow button in order to create the overflow panel
-//                mouseClick(overflowButton, overflowButton.width/2, overflowButton.height/2);
-//                // the overflow panel is not a child of the ActionBar, so use
-//                //  root to find it
-//                var panel = findChild(root, "actions_overflow_panel");
-//                var n = panel.actions.length;
-//                // click again to close the overflow panel
-//                mouseClick(overflowButton, overflowButton.width/2, overflowButton.height/2);
-//                return n;
-//            } else {
-//                // empty overflow
-//                return 0;
-//            }
-//        }
+        function get_number_of_section_buttons(sections) {
+            // TODO
+            return 0;
+        }
 
-//        function test_number_of_slots() {
-//            compare(shortBar.numberOfSlots, 3, "Initial number of slots should be 3.");
-//            shortBar.numberOfSlots = 10;
-//            compare(shortBar.numberOfSlots, 10, "Number of slots cannot be set.");
-//        }
+        function get_selected_section_button_index(sections) {
+            // TODO
+            return 0;
+        }
 
-//        function test_actions() {
-//            compare(bar.actions, root.actionList, "Actions property can be initialized.");
-//            bar.actions = root.shortActionList;
-//            compare(bar.actions, root.shortActionList, "Actions property can be updated.");
-//        }
+        function get_selected_section_button_text(sections) {
+            // TODO
+            return "";
+        }
 
-//        function test_number_of_visible_buttons() {
-//            compare(shortActionList.length, get_number_of_visible_buttons(shortBar),
-//                    "Incorrect number of actions visible for num actions < num slots.");
-//            compare(bar.numberOfSlots, get_number_of_visible_buttons(bar),
-//                    "Incorrect number of actions visible for num actions > num slots.");
-//            bar.numberOfSlots = 0;
-//            compare(1, get_number_of_visible_buttons(bar),
-//                    "No slot visible when numberOfSlots < 1.");
-//        }
+        function click_section_button(sections, sectionName) {
+            // TODO
+        }
 
-//        function test_overflow_button_visible() {
-//            compare (false, get_overflow_button_visible(shortBar),
-//                     "Overflow button visible when num actions < num slots.");
-//            bar.numberOfSlots = actionList.length;
-//            compare(false, get_overflow_button_visible(bar),
-//                    "Overflow button visible when num actions = num slots.");
-//            bar.numberOfSlots = actionList.length - 1;
-//            compare(true, get_overflow_button_visible(bar),
-//                    "Overflow button not visible when num actions > num slots.");
-//        }
+        function check_selected_section(sections, index, name, message) {
+            var v = sections.selectedIndex;
+            compare(v, index,  message+"selectedIndex "+v+" does not match "+index);
+            v = get_selected_section_button_index(sections);
+            compare(v, index, message+"selected button index "+v+" does not match "+index);
+            var w = get_selected_section_button_text();
+            compare(w, name, message+"selected button text \'"+w+"\' does not match \'"+name+"\'");
+        }
 
-//        function test_number_of_actions_in_overflow() {
-//            compare(0, get_number_of_actions_in_overflow(shortBar),
-//                    "Incorrect number of actions in overflow when num actions < num slots.");
-//            bar.numberOfSlots = actionList.length;
-//            compare(0, get_number_of_actions_in_overflow(bar),
-//                    "Incorrect number of actions in overflow when num actions = num slots.");
-//            bar.numberOfSlots--;
-//            // one action too many, plus one slot used for the overflow button:
-//            compare(2, get_number_of_actions_in_overflow(bar),
-//                    "Incorrect number of actions in overflow when num actions = num slots + 1.");
-//            bar.numberOfSlots--;
-//            compare(3, get_number_of_actions_in_overflow(bar),
-//                    "Incorrect number of actions in overflow when num actions = num slots + 2.");
-//            bar.numberOfSlots = 0;
-//            compare(actionList.length, get_number_of_actions_in_overflow(bar),
-//                    "Incorrect number of actions in overflow when num slots = 0.");
-//        }
-//    }
+        // in each test function below, test the desired behavior
+        //  for both sections and disabledSections.
+
+        function test_0_first_section_initially_selected() {
+            var index = 0;
+            var name = sectionNames[0];
+            check_selected_section(enabledSections, 0, sectionNames[0], "(init): ");
+            check_selected_section(disabledSections, 0, sectionNames[0], "(init disabled): ");
+        }
+
+        function test_number_of_section_buttons() {
+            var n = root.sectionNames.length;
+            compare(get_number_of_section_buttons(enabledSections), n,
+                    "Showing incorrect number of sections.");
+            compare(get_number_of_section_buttons(disabledSections), n,
+                    "Showing incorrect number of disabled sections.")
+        }
+
+        function test_click_to_select_section() {
+            var index = 2;
+            var name = "third";
+            click_section_button(enabledSections, name);
+            wait_for_animation(enabledSections);
+            check_selected_section(enabledSections, index, name, "(click): ");
+
+            click_section_button(disabledSections, name);
+            // first button should still be selected:
+            index = disabledSections.selectedIndex;
+            name = "first";
+            wait_for_animation(disabledSections);
+            check_selected_section(disabledSections, index, name, "(click disabled): ");
+        }
+
+        function test_set_selectedIndex_to_select_section() {
+            var index = 2;
+            var name = "third";
+            enabledSections.selectedIndex = index;
+            wait_for_animation(enabledSections);
+            check_selected_section(enabledSections, index, name, "(set index): ");
+
+            disabledSections.selectedIndex = index;
+            wait_for_animation(disabledSections);
+            check_selected_section(disabledSections, index, name, "(set index disabled): ");
+        }
+    }
 }
