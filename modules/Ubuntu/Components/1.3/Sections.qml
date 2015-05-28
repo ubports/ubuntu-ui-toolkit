@@ -32,11 +32,7 @@ StyledItem {
       List of strings that represent section names. Example:
       \qml
         Sections {
-            model: [
-                "first",
-                "second",
-                "third"
-            ]
+            model: [ "first", "second", "third" ]
         }
      \endqml
      It is strongly recommended to limit the number of sections to two or three.
