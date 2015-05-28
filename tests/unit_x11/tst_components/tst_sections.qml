@@ -43,10 +43,9 @@ Rectangle {
         id: disabledSections
         anchors {
             left: parent.left
-            top: sections.bottom
+            top: enabledSections.bottom
             margins: units.gu(1)
         }
-        selectedIndex: 2
         model: root.sectionNames
         enabled: false
     }
@@ -57,7 +56,6 @@ Rectangle {
         when: windowShown
 
         function initTestCase() {
-            //            compare(shortBar.numberOfSlots, 3, "Default number of slots should be 3.");
         }
 
         // before each test
@@ -74,22 +72,35 @@ Rectangle {
         }
 
         function get_number_of_section_buttons(sections) {
-            // TODO
-            return 0;
+            var repeater = findChild(sections, "sections_repeater");
+            return repeater.count;
         }
 
+        // return the index of the selected section button,
+        //  or -1 if no selected section button is found.
         function get_selected_section_button_index(sections) {
-            // TODO
-            return 0;
+            var n = get_number_of_section_buttons(sections);
+            var button;
+            for (var i=0; i < n; i++) {
+                button = findChild(sections, "section_button_"+i);
+                if (button.selected) {
+                    return i;
+                }
+            }
+            return -1;
         }
 
         function get_selected_section_button_text(sections) {
-            // TODO
-            return "";
+            var index = get_selected_section_button_index(sections);
+            if (index < 0) return "BUTTON NOT FOUND.";
+            var button = findChild(sections, "section_button_label_"+index);
+            return button.text;
         }
 
         function click_section_button(sections, sectionName) {
-            // TODO
+            var index = sections.model.indexOf(sectionName);
+            var button = findChild(sections, "section_button_"+index);
+            mouseClick(button, button.width/2, button.height/2);
         }
 
         function check_selected_section(sections, index, name, message) {
@@ -97,7 +108,7 @@ Rectangle {
             compare(v, index,  message+"selectedIndex "+v+" does not match "+index);
             v = get_selected_section_button_index(sections);
             compare(v, index, message+"selected button index "+v+" does not match "+index);
-            var w = get_selected_section_button_text();
+            var w = get_selected_section_button_text(sections);
             compare(w, name, message+"selected button text \'"+w+"\' does not match \'"+name+"\'");
         }
 
@@ -105,10 +116,8 @@ Rectangle {
         //  for both sections and disabledSections.
 
         function test_0_first_section_initially_selected() {
-            var index = 0;
-            var name = sectionNames[0];
-            check_selected_section(enabledSections, 0, sectionNames[0], "(init): ");
-            check_selected_section(disabledSections, 0, sectionNames[0], "(init disabled): ");
+            check_selected_section(enabledSections, 0, "first", "(init): ");
+            check_selected_section(disabledSections, 0, "first", "(init disabled): ");
         }
 
         function test_number_of_section_buttons() {

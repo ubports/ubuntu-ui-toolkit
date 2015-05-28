@@ -91,6 +91,7 @@ Item {
                 // Section title
                 Label {
                     id: label
+                    objectName: "section_button_label_"+index
                     text: modelData
                     fontSize: sectionsStyle.fontSize
                     anchors.centerIn: parent
