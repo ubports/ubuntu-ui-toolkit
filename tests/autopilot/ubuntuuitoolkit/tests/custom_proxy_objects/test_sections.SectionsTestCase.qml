@@ -21,10 +21,8 @@ MainView {
     width: units.gu(48)
     height: units.gu(60)
     objectName: "mainView"
-
     Page {
         title: "Sections test"
-
         Label {
             id: label
             objectName: "label"
@@ -34,16 +32,11 @@ MainView {
             }
             text: "Section " + sections.selectedIndex + " is selected."
         }
-
         Sections {
             id: sections
             objectName: "sections"
             anchors.centerIn: parent
-            model: [
-                "first",
-                "second",
-                "third"
-            ]
+            model: [ "first", "second", "third" ]
         }
     }
 }
