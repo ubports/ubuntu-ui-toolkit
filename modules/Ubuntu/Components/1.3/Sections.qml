@@ -30,29 +30,13 @@ StyledItem {
 
     /*!
       List of strings that represent section names. Example:
-      FIXME TIM
       \qml
-        import Ubuntu.Components 1.3
-        import QtQuick 2.4
-
-        MainView {
-            width: units.gu(50)
-            height: units.gu(80)
-
-            Page {
-                id: page
-                title: "Sections"
-                head {
-                    sections {
-                        model: ["one", "two", "three"]
-                    }
-                }
-
-                Label {
-                    anchors.centerIn: parent
-                    text: "Section " + page.head.sections.selectedIndex
-                }
-            }
+        Sections {
+            model: [
+                "first",
+                "second",
+                "third"
+            ]
         }
      \endqml
      It is strongly recommended to limit the number of sections to two or three.
