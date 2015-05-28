@@ -25,9 +25,7 @@ Rectangle {
     color: "white"
 
     property var sectionNames: [
-        "first",
-        "second",
-        "third"
+        "first", "second", "third"
     ]
 
     Sections {
@@ -54,13 +52,6 @@ Rectangle {
         id: testCase
         name: "SectionsApi"
         when: windowShown
-
-        function initTestCase() {
-        }
-
-        // before each test
-        function init() {
-        }
 
         function cleanup() {
             enabledSections.selectedIndex = 0;
