@@ -21,12 +21,6 @@
 #include "propertychange_p.h"
 #include <QtQml/QQmlInfo>
 
-void propertyNotFound(QObject *object, const QString &styleName, const QString &property)
-{
-    // TODO: show warning based on an env var
-    qmlInfo(object) << QString("Style '%1' has no property called '%2'.").arg(styleName).arg(property);
-}
-
 void UCStyleHintsParser::verifyBindings(const QV4::CompiledData::Unit *qmlUnit, const QList<const QV4::CompiledData::Binding *> &bindings)
 {
     Q_FOREACH(const QV4::CompiledData::Binding *binding, bindings) {
@@ -65,9 +59,8 @@ void UCStyleHintsParser::applyBindings(QObject *obj, QQmlCompiledData *cdata, co
     QV4::CompiledData::Unit *qmlUnit = cdata->compilationUnit->data;
 
     UCStyledItemBase *styledItem = qobject_cast<UCStyledItemBase*>(hints->parent());
-
     if (!styledItem) {
-        error(qmlUnit->objectAt(bindings[0]->value.objectIndex), "StyleHints not assigned to StyledItem.styleHints property.");
+        // error will be reported in componentCompleted
         return;
     }
 
@@ -133,6 +126,13 @@ void UCStyleHints::decodeBinding(const QString &propertyPrefix, const QV4::Compi
     }
 }
 
+void UCStyleHints::propertyNotFound(const QString &styleName, const QString &property)
+{
+    if (!m_ignoreUnknownProperties) {
+        qmlInfo(this) << QString("Style '%1' has no property called '%2'.").arg(styleName).arg(property);
+    }
+}
+
 /*!
  *
  */
@@ -140,6 +140,7 @@ UCStyleHints::UCStyleHints(QObject *parent)
     : QObject(parent)
     , m_decoded(false)
     , m_completed(false)
+    , m_ignoreUnknownProperties(true)
 {
 }
 
@@ -155,11 +156,13 @@ void UCStyleHints::classBegin()
 
 void UCStyleHints::componentComplete()
 {
-    if (!m_styledItem) {
+    if (qobject_cast<UCStyledItemBase*>(parent())) {
+        if (!m_styledItem) {
+            qmlInfo(this) << "StyleHints must be set as value for styleHints property.";
+            return;
+        }
+    } else {
         qmlInfo(this) << "StyleHints must be declared as property value for StyledItem or a derivate of it.";
-    }
-    if (parent()->findChildren<UCStyleHints*>().size() > 1) {
-        qmlInfo(this) << "StyleHints cannot be declared as a standalone type, must be set as value for styleHints property.";
         return;
     }
     m_completed = true;
@@ -207,7 +210,7 @@ void UCStyleHints::_q_applyStyleHints()
     // apply values first
     for (int i = 0; i < m_values.size(); i++) {
         if (mo->indexOfProperty(m_values[i].first.toUtf8()) < 0) {
-            propertyNotFound(this, styleName, m_values[i].first);
+            propertyNotFound(styleName, m_values[i].first);
             continue;
         }
         PropertyChange *change = new PropertyChange(item, m_values[i].first.toUtf8());
@@ -222,7 +225,7 @@ void UCStyleHints::_q_applyStyleHints()
         Expression e = m_expressions[ii];
         QQmlProperty prop(item, e.name, qmlContext(item));
         if (!prop.isValid()) {
-            propertyNotFound(this, styleName, e.name);
+            propertyNotFound(styleName, e.name);
             continue;
         }
 

@@ -22,9 +22,9 @@ Item {
     height: units.gu(71)
 
     Button {
-        id: button
+        objectName: "Button"
         styleHints: StyleHints {
-            defaultColor: button.pressed ? "blue" : "tan"
+            defaultColor: "blue"
         }
     }
 }

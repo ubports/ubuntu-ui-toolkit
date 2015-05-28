@@ -30,8 +30,8 @@ class ThemeTestCase : public UbuntuTestCase
 {
     Q_OBJECT
 public:
-    ThemeTestCase(const QString& file, QWindow* parent = 0)
-        : UbuntuTestCase(file, parent)
+    ThemeTestCase(const QString& file, bool assertOnFailure = true, QWindow* parent = 0)
+        : UbuntuTestCase(file, assertOnFailure, parent)
     {
     }
 
@@ -742,23 +742,62 @@ private Q_SLOTS:
         view->rootObject()->setProperty("styleName", "OptionSelectorStyle.qml");
     }
 
-    void test_stylehints_data()
+    void test_stylehints_errors_data()
     {
         QTest::addColumn<QString>("document");
+        QTest::addColumn<int>("row");
+        QTest::addColumn<int>("col");
         QTest::addColumn<QString>("xfail");
 
-        QTest::newRow("simple properties")
-                << "SimplePropertyHints.qml" << false;
+        QTest::newRow("No signals")
+                << "StyleHintsWithSignal.qml" << 26 << 13 << "Signal properties are not supported. \n" \
+"                 onDefaultColorChanged: {} \n" \
+"                 ^";
+        QTest::newRow("No embedded objects")
+                << "StyleHintsWithObject.qml" << 26 << 26 << "StyleHints does not support creating state-specific objects. \n" \
+"                 anyProperty: QtObject{} \n" \
+"                              ^";
+        QTest::newRow("StyleHints declared elsewhere")
+                << "StyleHintsElsewhere.qml" << 24 << 5 << "QML StyleHints: StyleHints must be declared as property value for StyledItem or a derivate of it.";
+        QTest::newRow("More StyleHints")
+                << "StyleHintsTooMany.qml" << 29 << 9 << "QML StyleHints: StyleHints must be set as value for styleHints property.";
+        QTest::newRow("Invalid property")
+                << "StyleHintsInvalidProperty.qml" << 25 << 21 << "QML StyleHints: Style 'ButtonStyle' has no property called 'invalidProperty'.";
     }
-    void test_stylehints()
+    void test_stylehints_errors()
     {
         QFETCH(QString, document);
+        QFETCH(int, row);
+        QFETCH(int, col);
         QFETCH(QString, xfail);
 
         if (!xfail.isEmpty()) {
-            QEXPECT_FAIL(0, xfail.toLocal8Bit(), Continue);
+            ThemeTestCase::ignoreWarning(document, row, col, xfail);
         }
-        QScopedPointer<ThemeTestCase> view(new ThemeTestCase(document));
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase(document, false));
+    }
+
+    void test_stylehints_simple_property()
+    {
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase("SimplePropertyHints.qml"));
+        QQuickItem *button = view->findItem<QQuickItem*>("Button");
+        QColor color = button->property("color").value<QColor>();
+        QCOMPARE(color, QColor("blue"));
+    }
+
+    void test_stylehints_bindings()
+    {
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase("PropertyBindingHints.qml"));
+        QQuickItem *button = view->findItem<QQuickItem*>("Button");
+        QColor color = button->property("color").value<QColor>();
+        QCOMPARE(color, QColor("blue"));
+        // press the button
+        QPointF pressPt(button->width()/2, button->height()/2);
+        pressPt = view->rootObject()->mapFromItem(button, pressPt);
+        QTest::mousePress(view.data(), Qt::LeftButton, 0, pressPt.toPoint());
+        color = button->property("color").value<QColor>();
+        QCOMPARE(color, QColor("tan"));
+        QTest::mouseRelease(view.data(), Qt::LeftButton, 0, pressPt.toPoint());
     }
 };
 

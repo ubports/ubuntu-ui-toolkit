@@ -23,7 +23,7 @@ Item {
 
     Button {
         styleHints: StyleHints {
-            onDefaultColorChanged: {}
+            anyProperty: QtObject{}
         }
     }
 }

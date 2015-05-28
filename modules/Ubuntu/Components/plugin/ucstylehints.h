@@ -35,6 +35,7 @@ class UCStyleHints : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
     Q_INTERFACES(QQmlParserStatus)
+    Q_PROPERTY(bool ignoreUnknownProperties MEMBER m_ignoreUnknownProperties)
 
 public:
     explicit UCStyleHints(QObject *parent = 0);
@@ -66,6 +67,7 @@ private:
 
     bool m_decoded:1;
     bool m_completed:1;
+    bool m_ignoreUnknownProperties:1;
     QPointer<UCStyledItemBase> m_styledItem;
     QList<Expression> m_expressions;
     QList< QPair<QString, QVariant> > m_values;
@@ -74,6 +76,7 @@ private:
 
     friend class UCStyleHintsParser;
 
+    void propertyNotFound(const QString &styleName, const QString &property);
     void decodeBinding(const QString &propertyPrefix, const QV4::CompiledData::Unit *qmlUnit, const QV4::CompiledData::Binding *binding);
 };
 

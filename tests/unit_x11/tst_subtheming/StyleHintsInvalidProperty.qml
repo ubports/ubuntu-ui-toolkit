@@ -23,7 +23,8 @@ Item {
 
     Button {
         styleHints: StyleHints {
-            onDefaultColorChanged: {}
+            ignoreUnknownProperties: false
+            invalidProperty: 10
         }
     }
 }

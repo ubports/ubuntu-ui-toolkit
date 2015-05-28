@@ -23,7 +23,11 @@ Item {
 
     Button {
         styleHints: StyleHints {
-            onDefaultColorChanged: {}
+            minimumWidth: units.gu(20)
+        }
+
+        StyleHints {
+            defaultColor: "brown"
         }
     }
 }

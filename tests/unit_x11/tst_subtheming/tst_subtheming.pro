@@ -35,6 +35,11 @@ OTHER_FILES += \
     StyleOverride.qml \
     StyleKept.qml \
     SimplePropertyHints.qml \
-    StyleHintsWithSignal.qml
+    StyleHintsWithSignal.qml \
+    StyleHintsWithObject.qml \
+    StyleHintsElsewhere.qml \
+    StyleHintsTooMany.qml \
+    StyleHintsInvalidProperty.qml \
+    PropertyBindingHints.qml
 
 

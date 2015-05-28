@@ -21,9 +21,7 @@ Item {
     width: units.gu(40)
     height: units.gu(71)
 
-    Button {
-        styleHints: StyleHints {
-            onDefaultColorChanged: {}
-        }
+    StyleHints {
+        anyProperty: true
     }
 }
