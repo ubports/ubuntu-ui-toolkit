@@ -104,7 +104,7 @@ Rectangle {
         }
 
         // in each test function below, test the desired behavior
-        //  for both sections and disabledSections.
+        //  for both enabledSections and disabledSections.
 
         function test_0_first_section_initially_selected() {
             check_selected_section(enabledSections, 0, "first", "(init): ");
