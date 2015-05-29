@@ -86,13 +86,15 @@ void PropertyChange::restore(PropertyChange *change)
         return;
     }
     if (change->backedUp) {
-        if (change->backupBinding) {
-            QQmlAbstractBinding *prev = QQmlPropertyPrivate::setBinding(change->qmlProperty, change->backupBinding);
-            if (prev != change->backupBinding && prev) {
-                prev->destroy();
+        if (change->qmlProperty.isValid()) {
+            if (change->backupBinding) {
+                QQmlAbstractBinding *prev = QQmlPropertyPrivate::setBinding(change->qmlProperty, change->backupBinding);
+                if (prev != change->backupBinding && prev) {
+                    prev->destroy();
+                }
+            } else {
+                change->qmlProperty.write(change->backupValue);
             }
-        } else {
-            change->qmlProperty.write(change->backupValue);
         }
         change->backedUp = false;
     }

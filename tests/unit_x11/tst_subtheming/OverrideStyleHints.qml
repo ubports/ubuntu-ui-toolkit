@@ -21,10 +21,10 @@ Item {
     width: units.gu(40)
     height: units.gu(71)
 
-    Button {
+    HintedButton {
+        objectName: "Button"
         StyleHints {
-            ignoreUnknownProperties: false
-            invalidProperty: 10
+            minimumWidth: 5
         }
     }
 }

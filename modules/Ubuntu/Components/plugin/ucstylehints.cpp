@@ -188,44 +188,19 @@ UCStyleHints::~UCStyleHints()
 
 void UCStyleHints::classBegin()
 {
+    m_styledItem = qobject_cast<UCStyledItemBase*>(parent());
+    if (m_styledItem) {
+        connect(m_styledItem, SIGNAL(styleInstanceChanged()),
+                this, SLOT(_q_applyStyleHints()));
+    } else {
+        qmlInfo(this) << "StyleHints must be declared in StyledItem or a derivate of it.";
+    }
 }
 
 void UCStyleHints::componentComplete()
 {
-    if (qobject_cast<UCStyledItemBase*>(parent())) {
-        if (!m_styledItem) {
-            qmlInfo(this) << "StyleHints must be set as value for styleHints property.";
-            return;
-        }
-    } else {
-        qmlInfo(this) << "StyleHints must be declared as property value for StyledItem or a derivate of it.";
-        return;
-    }
-    m_completed = true;
+    m_completed = (m_styledItem != Q_NULLPTR);
     _q_applyStyleHints();
-}
-
-void UCStyleHints::setStyledItem(UCStyledItemBase *item)
-{
-    m_styledItem = item;
-    if (m_styledItem) {
-        connect(m_styledItem, SIGNAL(styleInstanceChanged()),
-                this, SLOT(_q_applyStyleHints()));
-        setParent(item);
-        _q_applyStyleHints();
-    }
-}
-
-void UCStyleHints::unsetStyledItem()
-{
-    if (m_styledItem) {
-        disconnect(m_styledItem, SIGNAL(styleInstanceChanged()),
-                   this, SLOT(_q_applyStyleHints()));
-        // restore changed properties
-        qDeleteAll(m_propertyBackup);
-        m_propertyBackup.clear();
-    }
-    m_styledItem.clear();
 }
 
 // apply the style hints and check each property existence

@@ -38,9 +38,10 @@ OTHER_FILES += \
     StyleHintsWithSignal.qml \
     StyleHintsWithObject.qml \
     StyleHintsElsewhere.qml \
-    StyleHintsTooMany.qml \
     StyleHintsInvalidProperty.qml \
     PropertyBindingHints.qml \
-    GroupPropertyBindingHints.qml
+    GroupPropertyBindingHints.qml \
+    OverrideStyleHints.qml \
+    HintedButton.qml
 
 

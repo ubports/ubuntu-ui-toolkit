@@ -17,17 +17,9 @@
 import QtQuick 2.4
 import Ubuntu.Components 1.3
 
-Item {
-    width: units.gu(40)
-    height: units.gu(71)
-
-    Button {
-        styleHints: StyleHints {
-            minimumWidth: units.gu(20)
-        }
-
-        StyleHints {
-            defaultColor: "brown"
-        }
+Button {
+    id: button
+    StyleHints {
+        defaultColor: button.pressed ? "tan" : "blue"
     }
 }

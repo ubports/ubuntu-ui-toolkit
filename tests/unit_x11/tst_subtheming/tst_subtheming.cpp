@@ -758,11 +758,9 @@ private Q_SLOTS:
 "                 anyProperty: QtObject{} \n" \
 "                              ^";
         QTest::newRow("StyleHints declared elsewhere")
-                << "StyleHintsElsewhere.qml" << 24 << 5 << "QML StyleHints: StyleHints must be declared as property value for StyledItem or a derivate of it.";
-        QTest::newRow("More StyleHints")
-                << "StyleHintsTooMany.qml" << 29 << 9 << "QML StyleHints: StyleHints must be set as value for styleHints property.";
+                << "StyleHintsElsewhere.qml" << 24 << 5 << "QML StyleHints: StyleHints must be declared in StyledItem or a derivate of it.";
         QTest::newRow("Invalid property")
-                << "StyleHintsInvalidProperty.qml" << 25 << 21 << "QML StyleHints: Style 'ButtonStyle' has no property called 'invalidProperty'.";
+                << "StyleHintsInvalidProperty.qml" << 25 << 9 << "QML StyleHints: Style 'ButtonStyle' has no property called 'invalidProperty'.";
     }
     void test_stylehints_errors()
     {
@@ -816,6 +814,15 @@ private Q_SLOTS:
         topColor = proxy.read().value<QColor>();
         QCOMPARE(topColor, QColor("tan"));
         QTest::mouseRelease(view.data(), Qt::LeftButton, 0, pressPt.toPoint());
+    }
+
+    void test_stylehints_more_styleset()
+    {
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase("OverrideStyleHints.qml"));
+        UCStyledItemBase *button = view->findItem<UCStyledItemBase*>("Button");
+        QQuickItem *styleItem = UCStyledItemBasePrivate::get(button)->styleInstance();
+        QCOMPARE(styleItem->property("minimumWidth").toInt(), 5);
+//        QCOMPARE(styleItem->property("defaultColor").value<QColor>(), QColor("blue"));
     }
 };
 

@@ -27,7 +27,6 @@ UCStyledItemBasePrivate::UCStyledItemBasePrivate()
     : activeFocusOnPress(false)
     , styleComponent(0)
     , styleItemContext(0)
-    , styleHints(0)
     , styleItem(0)
     , theme(0)
     , parentStyledItem(0)
@@ -534,38 +533,6 @@ void UCStyledItemBasePrivate::setTheme(UCTheme *newTheme)
 void UCStyledItemBasePrivate::resetTheme()
 {
     setTheme(NULL);
-}
-
-/*!
- * \qmlproperty StyleHints StyledItem::styleHints
- * The property holds the component which configures style specific properties.
- * These properties are typically theme specific style properties, and are usually
- * color values, margins or other behavior-affecting properties. By using style
- * hints developers can change visuals of the component styles without defining
- * application themes, which would nail the style used to a particular theme.
- *
- * \note Setting a style hint will restore the properties changed by any previous
- * style hint, meaning there can be only one valid StyleHints active at a time.
- * \sa StyleHints
- */
-UCStyleHints * UCStyledItemBasePrivate::getStyleHints() const
-{
-    return styleHints;
-}
-void UCStyledItemBasePrivate::setStyleHints(UCStyleHints *hints)
-{
-    if (styleHints == hints) {
-        return;
-    }
-    if (styleHints) {
-        styleHints->unsetStyledItem();
-    }
-    styleHints = hints;
-    Q_Q(UCStyledItemBase);
-    if (styleHints) {
-        styleHints->setStyledItem(q);
-    }
-    Q_EMIT q->styleHintsChanged();
 }
 
 // link/unlink all ascendant items until we reach a StyledItem, returns true if the

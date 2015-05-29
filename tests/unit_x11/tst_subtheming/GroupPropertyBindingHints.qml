@@ -25,7 +25,7 @@ Item {
         objectName: "Button"
         id: button
         gradient: UbuntuColors.greyGradient
-        styleHints: StyleHints {
+        StyleHints {
             gradientProxy.topColor: button.pressed ? "tan" : "blue"
         }
     }
