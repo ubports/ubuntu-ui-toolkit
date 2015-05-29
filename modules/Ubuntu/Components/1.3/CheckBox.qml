@@ -50,5 +50,5 @@ AbstractButton {
     onTriggered: checked = !checked
 
     theme.version: Ubuntu.toolkitVersion
-    style: theme.createStyleComponent("CheckBoxStyle.qml", checkBox)
+    styleName: "CheckBoxStyle"
 }

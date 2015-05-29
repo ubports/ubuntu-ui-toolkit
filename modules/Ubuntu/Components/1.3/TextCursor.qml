@@ -42,7 +42,7 @@ Ubuntu.StyledItem {
                                            __styleInstance.cursorDelegate
 
     theme.version: Ubuntu.Ubuntu.toolkitVersion
-    style: theme.createStyleComponent("TextCursorStyle.qml", cursorItem);
+    styleName: "TextCursorStyle"
 
     objectName: "textCursor"
     //Caret instance from the style.

@@ -160,7 +160,7 @@ StyledItem {
     activeFocusOnPress: true
 
     theme.version: Ubuntu.toolkitVersion
-    style: theme.createStyleComponent("PickerStyle.qml", picker)
+    styleName: "PickerStyle"
 
     /*! \internal */
     property int __clickedIndex: -1

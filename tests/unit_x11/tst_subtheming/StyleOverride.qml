@@ -16,10 +16,31 @@
 import QtQuick 2.4
 import Ubuntu.Components 1.3
 
-StyledItem {
-    id: item
+Item {
     width: units.gu(40)
     height: units.gu(40)
-    theme.name: "Ubuntu.Components.Themes.SuruGradient"
-    styleName: "OptionSelectorStyle"
+
+    Button {
+        objectName: "TestButton"
+        text: "PressMe..."
+    }
+
+    property Component customStyle: Component {
+        Rectangle {
+            objectName: "TestStyle"
+            // FIXME: move these properties to the Style API
+            property color defaultColor: "blue"
+            property Gradient defaultGradient
+            property font defaultFont
+
+            anchors.fill: styledItem
+            color: defaultColor
+            Label {
+                anchors.fill: parent
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                text: styledItem.text
+            }
+        }
+    }
 }

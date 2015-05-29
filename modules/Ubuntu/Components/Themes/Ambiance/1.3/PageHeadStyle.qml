@@ -106,7 +106,7 @@ Style.PageHeadStyle {
         // backgroundColor is used in the new HeadDividerStyle
         property color backgroundColor: styledItem.dividerColor
 
-        style: theme.createStyleComponent("HeadDividerStyle.qml", divider)
+        styleName: "HeadDividerStyle"
 
         property PageHeadSections sections: styledItem.config.sections
 

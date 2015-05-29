@@ -36,7 +36,7 @@ PageTreeNode {
         id: background
         anchors.fill: parent
         // theme is inherited from PageTreeNode, no need to update versioning
-        style: theme.createStyleComponent("MainViewStyle.qml", background)
+        styleName: "MainViewStyle"
 
         property color headerColor: backgroundColor
         property color backgroundColor: theme.palette.normal.background
