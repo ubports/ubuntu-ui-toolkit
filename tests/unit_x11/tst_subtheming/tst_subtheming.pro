@@ -40,6 +40,7 @@ OTHER_FILES += \
     StyleHintsElsewhere.qml \
     StyleHintsTooMany.qml \
     StyleHintsInvalidProperty.qml \
-    PropertyBindingHints.qml
+    PropertyBindingHints.qml \
+    GroupPropertyBindingHints.qml
 
 

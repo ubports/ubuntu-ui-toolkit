@@ -169,8 +169,8 @@ void UCStyleHints::propertyNotFound(const QString &styleName, const QString &pro
 
 /*!
  * \qmlproperty bool StyleHints::ignoreUnknownProperties
- * The property drives whether component shoyuld warn on properties not found in
- * the component's style or not. The default setting is not to warn.
+ * The property drives whether component should warn on properties not found in
+ * the component's style. The default setting is not to warn.
  */
 UCStyleHints::UCStyleHints(QObject *parent)
     : QObject(parent)
@@ -241,7 +241,6 @@ void UCStyleHints::_q_applyStyleHints()
 
     QQuickItem *item = UCStyledItemBasePrivate::get(m_styledItem)->styleItem;
     const QMetaObject *mo = item->metaObject();
-    QQmlContext *context = qmlContext(item);
     const QString styleName = UCStyledItemBasePrivate::get(m_styledItem)->styleName();
     // apply values first
     for (int i = 0; i < m_values.size(); i++) {
@@ -254,14 +253,14 @@ void UCStyleHints::_q_applyStyleHints()
         m_propertyBackup << change;
     }
 
-    // override context to use this context
-    context = qmlContext(this);
+    QQmlContext *context = qmlContext(this);
     // then apply expressions/bindings
     for (int ii = 0; ii < m_expressions.count(); ii++) {
         Expression e = m_expressions[ii];
-        QQmlProperty prop(item, e.name, qmlContext(item));
-        if (!prop.isValid()) {
+        PropertyChange *change = new PropertyChange(item, e.name.toUtf8());
+        if (!change->property().isValid()) {
             propertyNotFound(styleName, e.name);
+            delete change;
             continue;
         }
 
@@ -277,11 +276,8 @@ void UCStyleHints::_q_applyStyleHints()
             newBinding = new QQmlBinding(e.expression, item, cdata, e.url.toString(), e.line, e.column);
         }
 
-        newBinding->setTarget(prop);
-        QQmlAbstractBinding *prevBinding = QQmlPropertyPrivate::setBinding(prop, newBinding);
-        if (prevBinding && prevBinding != newBinding) {
-            prevBinding->destroy();
-        }
+        newBinding->setTarget(change->property());
+        PropertyChange::setBinding(change, newBinding);
     }
 }
 

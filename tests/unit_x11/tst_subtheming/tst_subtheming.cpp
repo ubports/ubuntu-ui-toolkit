@@ -799,6 +799,24 @@ private Q_SLOTS:
         QCOMPARE(color, QColor("tan"));
         QTest::mouseRelease(view.data(), Qt::LeftButton, 0, pressPt.toPoint());
     }
+
+    void test_stylehints_groupproperties()
+    {
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase("GroupPropertyBindingHints.qml"));
+        UCStyledItemBase *button = view->findItem<UCStyledItemBase*>("Button");
+        QQuickItem *styleItem = UCStyledItemBasePrivate::get(button)->styleInstance();
+        QQmlProperty proxy(styleItem, "gradientProxy.topColor", qmlContext(styleItem));
+        QVERIFY(proxy.isValid());
+        QColor topColor = proxy.read().value<QColor>();
+        QCOMPARE(topColor, QColor("blue"));
+        // press the button
+        QPointF pressPt(button->width()/2, button->height()/2);
+        pressPt = view->rootObject()->mapFromItem(button, pressPt);
+        QTest::mousePress(view.data(), Qt::LeftButton, 0, pressPt.toPoint());
+        topColor = proxy.read().value<QColor>();
+        QCOMPARE(topColor, QColor("tan"));
+        QTest::mouseRelease(view.data(), Qt::LeftButton, 0, pressPt.toPoint());
+    }
 };
 
 QTEST_MAIN(tst_Subtheming)
