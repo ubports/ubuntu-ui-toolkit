@@ -22,7 +22,7 @@ import Ubuntu.Components.Themes 1.3
 Palette {
     normal {
         background: "#221E1C"
-        backgroundText: "#33F3F3E7"
+        backgroundText: "#5D5D5D"
         base: "#19000000"
         baseText: "#FFFFFF"
         foreground: "#888888"
