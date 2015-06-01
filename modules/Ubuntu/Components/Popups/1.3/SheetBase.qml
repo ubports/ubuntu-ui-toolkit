@@ -110,6 +110,6 @@ PopupBase {
         }
 
         theme.version: Ubuntu.toolkitVersion
-        style: theme.createStyleComponent("SheetForegroundStyle.qml", sheet)
+        styleName: "SheetForegroundStyle"
     }
 }

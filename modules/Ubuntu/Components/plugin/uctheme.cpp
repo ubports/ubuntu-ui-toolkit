@@ -121,15 +121,18 @@
  * }
  * \endqml
  *
- * The \l createStyleComponent function can be used to create the style for a
- * component. The following example will create the style with the inherited
- * theme.
+ * The style can be set on a StyledItem either using \l StyledItem::styleName or
+ * \l StyledItem::style properties. When set through \l StyledItem::styleName,
+ * the component will load the style from the current theme set, and must be a
+ * QML document. The \l StyledItem::style property is a Component which can be
+ * declared local, or loaded with a Loader or created using Qt.createComponent()
+ * function.
+ * The following example will create the style with the inherited theme.
  * \qml
  * import QtQuick 2.4
  * import Ubuntu.Components 1.3
  * StyledItem {
- *     id: myItem
- *     style: theme.createStyleComponent("MyItemStyle.qml", myItem)
+ *     styleName: "MyItemStyle"
  * }
  * \endqml
  * All styled toolkit components such as \l Button, \l CheckBox, \l Switch, etc.
@@ -642,23 +645,19 @@ void UCTheme::setVersion(quint16 version)
     }
     m_version = version;
     Q_EMIT versionChanged();
-    // emit also nameChanged() so we reload the theme/style
-    Q_EMIT nameChanged();
 }
 
-/*!
- * \qmlmethod Component ThemeSettings::createStyleComponent(string styleName, object parent)
+/*
  * Returns an instance of the style component named \a styleName and parented
  * to \a parent.
  */
-QQmlComponent* UCTheme::createStyleComponent(const QString& styleName, QObject* parent)
-{
-    return createStyleComponent(styleName, parent, m_version);
-}
-
 QQmlComponent* UCTheme::createStyleComponent(const QString& styleName, QObject* parent, quint16 version)
 {
     QQmlComponent *component = NULL;
+
+    if (!version) {
+        version = m_version;
+    }
 
     if (parent != NULL) {
         QQmlEngine* engine = qmlEngine(parent);
@@ -681,6 +680,9 @@ QQmlComponent* UCTheme::createStyleComponent(const QString& styleName, QObject* 
                     qmlInfo(parent) << component->errorString();
                     delete component;
                     component = NULL;
+                } else {
+                    // set context for the component
+                    QQmlEngine::setContextForObject(component, qmlContext(parent));
                 }
             } else {
                 qmlInfo(parent) <<
