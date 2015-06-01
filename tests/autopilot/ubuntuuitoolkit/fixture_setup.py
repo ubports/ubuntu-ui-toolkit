@@ -44,7 +44,7 @@ MainView {
 DEFAULT_DESKTOP_FILE_DICT = {
     'Type': 'Application',
     'Name': 'test',
-    'Exec': '{qmlscene} {qml_file_path}',
+    'Exec': '{launcher} {qml_file_path}',
     'Icon': 'Not important'
 }
 
@@ -99,7 +99,7 @@ class FakeApplication(fixtures.Fixture):
                                                   dir=desktop_file_dir)
         self._desktop_file_dict['Exec'] = (
             self._desktop_file_dict['Exec'].format(
-                qmlscene=base.get_qmlscene_launch_command(),
+                launcher=base.get_toolkit_launcher_command(),
                 qml_file_path=qml_file_path))
         desktop_file.write('[Desktop Entry]\n')
         for key, value in self._desktop_file_dict.items():
