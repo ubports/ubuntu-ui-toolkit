@@ -26,7 +26,7 @@ import Ubuntu.Components 1.3
  */
 StyledItem {
     id: sections
-    style: theme.createStyleComponent("SectionsStyle.qml", sections)
+    styleName: "SectionsStyle"
 
     /*!
       List of strings that represent section names. Example:
