@@ -32,6 +32,7 @@ private Q_SLOTS:
     }
 
     void defaultGridUnit() {
+        qputenv("GRID_UNIT_PX", "");
         UCUnits units;
         QCOMPARE(units.gridUnit(), 8.0f);
     }

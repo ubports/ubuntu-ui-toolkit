@@ -1,9 +1,60 @@
-ubuntu-ui-toolkit (1.2.1485+15.04.20150429-0ubuntu1) vivid; urgency=medium
+ubuntu-ui-toolkit (1.3.1517+15.10.20150523-0ubuntu1) wily; urgency=medium
+
+  [ Christian Dywan ]
+  * Expose textDocument of TextField. Fixes LP: #1392276
+  * Unset GRID_UNIT_PX before checking default value. Fixes LP: #1457421
+  * No cutting and copying of passwords. Fixes LP: #1438976
+  * Implement new API tool based on qmlplugindump producing JSON. 
+    Fixes LP: #1187010
+
+  [ Leo Arias ]
+  * Make explicit the dependency on upstart for the autopilot helpers.
+  
+  [ Timo Jyrinki ]
+  * uitk_test_plan.sh: Switch to vivid-overlay & wily instead of rtm-14.09 & 
+    vivid. Fixes LP: #1457015.
+
+
+ -- CI Train Bot <ci-train-bot@canonical.com>  Sat, 23 May 2015 17:24:43 +0000
+
+ubuntu-ui-toolkit (1.3.1510+15.10.20150519-0ubuntu1) wily; urgency=medium
+
+  [ Loïc Molinari ]
+  * Set QSGNode debug description on the shape-based nodes to ease renderer 
+    debugging. Fixes LP: #1437270 
+  * Ensured QSGLayer-based source textures (like ShaderEffectSource) are 
+    updated before rendering. Fixes LP: #1447495
 
   [ Tim Peeters ]
+  * Update sections test program.
+  * Document the correct version when Page.head.visible and Page.head.locked
+    were added.
   * Revert to use the old header in trunk.
+  * Introduce the new ActionBar component.
+  * Restore moving property on AppHeader 1.2.
 
- -- CI Train Bot <ci-train-bot@canonical.com>  Wed, 29 Apr 2015 10:21:19 +0000
+  [ Zsombor Egri ]
+  * Provide versioning for theme loading. Each toolkit must be released with a 
+    well defined system theme version, and theme modules must have the same 
+    version as the toolkit. Fixes LP: #1447113
+  * Fix import versions in entire UITK and examples. Move example code under 
+    1.3 folder. Fixes LP: #1447113
+  * Separate 1.2 from 1.3 versions in all Ubuntu.Component modules. 
+    Fixes LP: #1447113
+ 
+  [ Zoltan Balogh ]
+  * Fix header CPO for 1.2 without moving attribute. Let the header CPO try 
+    both old and new buttons.
+
+  [ Christian Dywan ]
+  * Add version subfolder to benchmark test paths.
+  * Only show handlers if text isn't empty. Fixes LP: #1450213.
+  * Only print unique deprecation notes. Fixes LP: #1454281.
+
+  [ CI Train Bot ]
+  * New rebuild forced.
+
+ -- CI Train Bot <ci-train-bot@canonical.com>  Tue, 19 May 2015 10:47:09 +0000
 
 ubuntu-ui-toolkit (1.2.1485+15.04.20150421-0ubuntu1) vivid; urgency=medium
 
