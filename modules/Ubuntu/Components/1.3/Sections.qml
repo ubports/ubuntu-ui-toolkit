@@ -22,7 +22,9 @@ import Ubuntu.Components 1.3
     \inqmlmodule Ubuntu.Components 1.3
     \ingroup ubuntu
     \since Ubuntu.Components 1.3
-    \brief Display a list of sections that the user can select.
+    \brief Display a list of sections that the user can select. By tapping
+        on a section name the \l selectedIndex will be updated, and the
+        associated \l Action is triggered.
  */
 StyledItem {
     id: sections
