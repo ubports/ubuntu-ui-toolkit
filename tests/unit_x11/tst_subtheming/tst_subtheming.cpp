@@ -802,24 +802,40 @@ private Q_SLOTS:
     void test_stylehints_multiple_data()
     {
         QTest::addColumn<QString>("document");
-        QTest::addColumn<QColor>("defaultColor");
-        QTest::addColumn<float>("minimumWidth");
+        QTest::addColumn<QString>("colorProperty");
+        QTest::addColumn<QColor>("colorReleased");
+        QTest::addColumn<QColor>("colorPressed");
+        QTest::addColumn<QString>("widthProperty");
+        QTest::addColumn<float>("width");
 
         QTest::newRow("Same document")
-                << "MoreStyleHints.qml" << QColor("brown") << UCUnits::instance().gu(20);
+                << "MoreStyleHints.qml" << "defaultColor" << QColor("brown") << QColor("brown") << "minimumWidth" << UCUnits::instance().gu(20);
+        QTest::newRow("Different document")
+                << "GroupPropertyBindingHints.qml" << "gradientProxy.topColor" << QColor("blue") << QColor("tan") << "minimumWidth" << UCUnits::instance().gu(20);
     }
     void test_stylehints_multiple()
     {
         QFETCH(QString, document);
-        QFETCH(QColor, defaultColor);
-        QFETCH(float, minimumWidth);
+        QFETCH(QString, colorProperty);
+        QFETCH(QColor, colorReleased);
+        QFETCH(QColor, colorPressed);
+        QFETCH(QString, widthProperty);
+        QFETCH(float, width);
 
         QScopedPointer<ThemeTestCase> view(new ThemeTestCase(document));
         UCStyledItemBase *button = view->findItem<UCStyledItemBase*>("Button");
         QQuickItem *styleItem = UCStyledItemBasePrivate::get(button)->styleItem;
         QVERIFY(styleItem);
-        QCOMPARE(styleItem->property("defaultColor").value<QColor>(), defaultColor);
-        QCOMPARE(styleItem->property("minimumWidth").toReal(), minimumWidth);
+        QQmlProperty qmlProperty(styleItem, colorProperty, qmlContext(styleItem));
+        QCOMPARE(qmlProperty.read().value<QColor>(), colorReleased);
+        QCOMPARE(styleItem->property(widthProperty.toUtf8()).toReal(), width);
+
+        QPointF pressPt(button->width()/2, button->height()/2);
+        pressPt = view->rootObject()->mapFromItem(button, pressPt);
+        QTest::mousePress(view.data(), Qt::LeftButton, 0, pressPt.toPoint());
+        QColor pressedColor = qmlProperty.read().value<QColor>();
+        QTest::mouseRelease(view.data(), Qt::LeftButton, 0, pressPt.toPoint());
+        QCOMPARE(pressedColor, colorPressed);
     }
 };
 

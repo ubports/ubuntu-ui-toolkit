@@ -40,6 +40,9 @@ OTHER_FILES += \
     StyleHintsElsewhere.qml \
     StyleHintsInvalidProperty.qml \
     PropertyBindingHints.qml \
-    MoreStyleHints.qml
+    MoreStyleHints.qml \
+    GroupPropertyBindingHints.qml \
+    OverrideStyleHints.qml \
+    HintedButton.qml
 
 

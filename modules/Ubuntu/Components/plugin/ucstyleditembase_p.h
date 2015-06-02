@@ -69,7 +69,6 @@ public:
     QString styleDocument;
     QQmlComponent *styleComponent;
     QPointer<QQmlContext> styleItemContext;
-    UCStyleHints *styleHints;
     QQuickItem *styleItem;
     UCTheme *theme;
     QPointer<UCStyledItemBase> parentStyledItem;

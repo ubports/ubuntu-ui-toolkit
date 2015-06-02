@@ -21,6 +21,7 @@
 #include <QtCore/QObject>
 #include <QtQml/QQmlProperty>
 
+class QQmlAbstractBinding;
 class PropertyChange
 {
 public:
@@ -28,11 +29,19 @@ public:
     ~PropertyChange();
 
     static void setValue(PropertyChange* change, const QVariant &value);
+    static void setBinding(PropertyChange *change, QQmlAbstractBinding *binding);
     static void restore(PropertyChange* change);
+
+    const QQmlProperty &property()
+    {
+        return qmlProperty;
+    }
+
 private:
     bool backedUp;
     QQmlProperty qmlProperty;
     QVariant backupValue;
+    QQmlAbstractBinding *backupBinding;
 
     void backup();
 };
