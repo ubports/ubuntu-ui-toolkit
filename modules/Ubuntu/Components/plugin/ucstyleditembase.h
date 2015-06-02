@@ -23,6 +23,7 @@
 
 class UCStyledItemBasePrivate;
 class UCTheme;
+class UCStyleHints;
 class UCStyledItemBase : public QQuickItem
 {
     Q_OBJECT
