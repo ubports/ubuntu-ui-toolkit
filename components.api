@@ -794,7 +794,7 @@ Ubuntu.Components.Scrollbar 1.3: StyledItem
     property Flickable flickableItem
 Ubuntu.Components.ScrollbarUtils 0.1 1.0
 Ubuntu.Components.Sections 1.3: StyledItem
-    property var model
+    property var actions
     property int selectedIndex
 Ubuntu.Components.ServiceProperties 1.1: QtObject
     property string adaptorInterface
