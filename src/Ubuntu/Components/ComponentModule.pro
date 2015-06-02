@@ -3,8 +3,6 @@ TARGET  = UbuntuComponents
 TARGETPATH = Ubuntu/Components
 IMPORT_VERSION = 0.1
 
-#QMAKE_DOCS = $$PWD/doc/qtquicklayouts.qdocconf
-
 include(plugin/plugin.pri)
 
 #artwork files

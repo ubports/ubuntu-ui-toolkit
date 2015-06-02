@@ -1,6 +1,7 @@
 TEMPLATE=aux
 TARGET=documentation
 
+load(qt_build_config)
 load(qt_functions)
 
 #find the path to qdoc and qhelpgenerator
