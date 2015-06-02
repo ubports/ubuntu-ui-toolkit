@@ -28,7 +28,7 @@ class UbuntuTestCase : public QQuickView
 {
     Q_OBJECT
 public:
-    UbuntuTestCase(const QString& file, QWindow* parent = 0);
+    UbuntuTestCase(const QString& file, bool assertOnFailure = true, QWindow* parent = 0);
     int warnings() const;
     // getter
     template<class T>

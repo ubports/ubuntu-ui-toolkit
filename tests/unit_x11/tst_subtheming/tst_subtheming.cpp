@@ -25,13 +25,14 @@
 #include "uctestcase.h"
 #include "ucstyleditembase_p.h"
 #include "ucnamespace.h"
+#include "ucunits.h"
 
 class ThemeTestCase : public UbuntuTestCase
 {
     Q_OBJECT
 public:
-    ThemeTestCase(const QString& file, QWindow* parent = 0)
-        : UbuntuTestCase(file, parent)
+    ThemeTestCase(const QString& file, bool assertOnFailure = true, QWindow* parent = 0)
+        : UbuntuTestCase(file, assertOnFailure, parent)
     {
     }
 
@@ -740,6 +741,101 @@ private Q_SLOTS:
         ThemeTestCase::ignoreWarning("DeprecatedTheme.qml", 19, 1, "QML StyledItem: Warning: Style OptionSelectorStyle.qml.qml not found in theme Ubuntu.Components.Themes.Ambiance");
         QScopedPointer<ThemeTestCase> view(new ThemeTestCase("DeprecatedTheme.qml"));
         view->rootObject()->setProperty("styleName", "OptionSelectorStyle.qml");
+    }
+
+    void test_stylehints_errors_data()
+    {
+        QTest::addColumn<QString>("document");
+        QTest::addColumn<int>("row");
+        QTest::addColumn<int>("col");
+        QTest::addColumn<QString>("xfail");
+
+        QTest::newRow("No signals")
+                << "StyleHintsWithSignal.qml" << 26 << 13 << "Signal properties are not supported. \n" \
+"                 onDefaultColorChanged: {} \n" \
+"                 ^";
+        QTest::newRow("No embedded objects")
+                << "StyleHintsWithObject.qml" << 26 << 26 << "StyleHints does not support creating state-specific objects. \n" \
+"                 anyProperty: QtObject{} \n" \
+"                              ^";
+        QTest::newRow("StyleHints declared elsewhere")
+                << "StyleHintsElsewhere.qml" << 24 << 5 << "QML StyleHints: StyleHints must be declared in a StyledItem or a derivate of it.";
+        QTest::newRow("Invalid property")
+                << "StyleHintsInvalidProperty.qml" << 25 << 9 << "QML StyleHints: Style 'ButtonStyle' has no property called 'invalidProperty'.";
+    }
+    void test_stylehints_errors()
+    {
+        QFETCH(QString, document);
+        QFETCH(int, row);
+        QFETCH(int, col);
+        QFETCH(QString, xfail);
+
+        if (!xfail.isEmpty()) {
+            ThemeTestCase::ignoreWarning(document, row, col, xfail);
+        }
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase(document, false));
+    }
+
+    void test_stylehints_simple_property()
+    {
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase("SimplePropertyHints.qml"));
+        QQuickItem *button = view->findItem<QQuickItem*>("Button");
+        QColor color = button->property("color").value<QColor>();
+        QCOMPARE(color, QColor("blue"));
+    }
+
+    void test_stylehints_bindings()
+    {
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase("PropertyBindingHints.qml"));
+        QQuickItem *button = view->findItem<QQuickItem*>("Button");
+        QColor color = button->property("color").value<QColor>();
+        QCOMPARE(color, QColor("blue"));
+        // press the button
+        QPointF pressPt(button->width()/2, button->height()/2);
+        pressPt = view->rootObject()->mapFromItem(button, pressPt);
+        QTest::mousePress(view.data(), Qt::LeftButton, 0, pressPt.toPoint());
+        color = button->property("color").value<QColor>();
+        QCOMPARE(color, QColor("tan"));
+        QTest::mouseRelease(view.data(), Qt::LeftButton, 0, pressPt.toPoint());
+    }
+
+    void test_stylehints_multiple_data()
+    {
+        QTest::addColumn<QString>("document");
+        QTest::addColumn<QString>("colorProperty");
+        QTest::addColumn<QColor>("colorReleased");
+        QTest::addColumn<QColor>("colorPressed");
+        QTest::addColumn<QString>("widthProperty");
+        QTest::addColumn<float>("width");
+
+        QTest::newRow("Same document")
+                << "MoreStyleHints.qml" << "defaultColor" << QColor("brown") << QColor("brown") << "minimumWidth" << UCUnits::instance().gu(20);
+        QTest::newRow("Different document")
+                << "GroupPropertyBindingHints.qml" << "gradientProxy.topColor" << QColor("blue") << QColor("tan") << "minimumWidth" << UCUnits::instance().gu(20);
+    }
+    void test_stylehints_multiple()
+    {
+        QFETCH(QString, document);
+        QFETCH(QString, colorProperty);
+        QFETCH(QColor, colorReleased);
+        QFETCH(QColor, colorPressed);
+        QFETCH(QString, widthProperty);
+        QFETCH(float, width);
+
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase(document));
+        UCStyledItemBase *button = view->findItem<UCStyledItemBase*>("Button");
+        QQuickItem *styleItem = UCStyledItemBasePrivate::get(button)->styleItem;
+        QVERIFY(styleItem);
+        QQmlProperty qmlProperty(styleItem, colorProperty, qmlContext(styleItem));
+        QCOMPARE(qmlProperty.read().value<QColor>(), colorReleased);
+        QCOMPARE(styleItem->property(widthProperty.toUtf8()).toReal(), width);
+
+        QPointF pressPt(button->width()/2, button->height()/2);
+        pressPt = view->rootObject()->mapFromItem(button, pressPt);
+        QTest::mousePress(view.data(), Qt::LeftButton, 0, pressPt.toPoint());
+        QColor pressedColor = qmlProperty.read().value<QColor>();
+        QTest::mouseRelease(view.data(), Qt::LeftButton, 0, pressPt.toPoint());
+        QCOMPARE(pressedColor, colorPressed);
     }
 };
 
