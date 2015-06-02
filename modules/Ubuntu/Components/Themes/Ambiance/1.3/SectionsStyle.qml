@@ -79,11 +79,7 @@ Item {
                 width: label.width + 2 * sectionsStyle.horizontalLabelSpacing
                 height: sectionsRow.height
                 property bool selected: index === styledItem.selectedIndex
-                action: modelData
-                onClicked: {
-                    print("X")
-                    styledItem.selectedIndex = index;
-                }
+                onClicked: styledItem.selectedIndex = index
 
                 // Background pressed highlight
                 Rectangle {

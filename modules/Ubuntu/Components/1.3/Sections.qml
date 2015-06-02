@@ -32,8 +32,11 @@ StyledItem {
 
     /*!
       List of actions that represent the sections.
-      The text of each action is displayed as the section name, and upon
-      selecting a section, the associated \l Action is triggered.
+      The text of each action is displayed as the section name and clicking
+      a section will update the \selectedIndex.
+
+      When \l selectedIndex is changed (by user interaction or by setting
+      the value), \l Action actions[selectedIndex] will be triggered.
 
       Example:
       \qml
@@ -62,4 +65,10 @@ StyledItem {
       The index of the currently selected section in \l model.
      */
     property int selectedIndex: actions ? 0 : -1
+
+    onSelectedIndexChanged: {
+        if ((selectedIndex >= 0) && (selectedIndex < actions.length)) {
+            actions[selectedIndex].trigger();
+        }
+    }
 }

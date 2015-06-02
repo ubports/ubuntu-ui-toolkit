@@ -25,9 +25,18 @@ Rectangle {
     color: "white"
 
     property list<Action> actionList: [
-        Action { text: "first"; onTriggered: print("A") },
-        Action { text: "second"; onTriggered: print("B") },
-        Action { text: "third"; onTriggered: print("C") }
+        Action {
+            text: "first";
+            onTriggered: label.text = "First action triggered.";
+        },
+        Action {
+            text: "second";
+            onTriggered: label.text = "Second action triggered.";
+        },
+        Action {
+            text: "third";
+            onTriggered: label.text = "Third action triggered.";
+        }
     ]
 
     Sections {
@@ -49,11 +58,20 @@ Rectangle {
         actions: root.actionList
         enabled: false
     }
+    Label {
+        id: label
+        anchors.centerIn: parent
+        text: "No action triggered."
+    }
 
     UbuntuTestCase {
         id: testCase
         name: "SectionsApi"
         when: windowShown
+
+        function initTestCase() {
+            compare(label.text, "No action triggered.", "An action was triggered initially.");
+        }
 
         function cleanup() {
             enabledSections.selectedIndex = 0;
@@ -91,7 +109,13 @@ Rectangle {
         }
 
         function click_section_button(sections, sectionName) {
-            var index = sections.model.indexOf(sectionName);
+            var index = -1;
+            for (index = 0; index < sections.actions.length; index++) {
+                if (sections.actions[index].text === sectionName) {
+                    break;
+                }
+            }
+            verify(index >= 0, "Button with name \'"+sectionName+"\' not found.");
             var button = findChild(sections, "section_button_"+index);
             mouseClick(button, button.width/2, button.height/2);
         }
@@ -114,7 +138,7 @@ Rectangle {
         }
 
         function test_number_of_section_buttons() {
-            var n = root.sectionNames.length;
+            var n = root.actionList.length;
             compare(get_number_of_section_buttons(enabledSections), n,
                     "Showing incorrect number of sections.");
             compare(get_number_of_section_buttons(disabledSections), n,
@@ -127,6 +151,8 @@ Rectangle {
             click_section_button(enabledSections, name);
             wait_for_animation(enabledSections);
             check_selected_section(enabledSections, index, name, "(click): ");
+            var text = "Third action triggered.";
+            compare(label.text, text, "Action for clicked button not triggered.");
 
             click_section_button(disabledSections, name);
             // first button should still be selected:
@@ -134,18 +160,26 @@ Rectangle {
             name = "first";
             wait_for_animation(disabledSections);
             check_selected_section(disabledSections, index, name, "(click disabled): ");
+            compare(label.text, text, "Clicking disabled button triggered something.");
         }
 
         function test_set_selectedIndex_to_select_section() {
-            var index = 2;
-            var name = "third";
+            var index = 1;
+            var name = "second";
             enabledSections.selectedIndex = index;
             wait_for_animation(enabledSections);
             check_selected_section(enabledSections, index, name, "(set index): ");
+            var text = "Second action triggered.";
+            compare(label.text, text, "Changing selected index did not trigger action.");
 
+            index = 2;
+            name = "third";
             disabledSections.selectedIndex = index;
             wait_for_animation(disabledSections);
             check_selected_section(disabledSections, index, name, "(set index disabled): ");
+            text = "Third action triggered.";
+            compare(label.text, text, "Changing selected index for disabled Sections "+
+                                        "did not trigger action.");
         }
     }
 }
