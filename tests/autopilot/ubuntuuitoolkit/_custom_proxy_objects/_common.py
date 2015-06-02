@@ -17,16 +17,17 @@
 """Common helpers for Ubuntu UI Toolkit Autopilot custom proxy objects."""
 
 import logging
+import subprocess
 from distutils import version
 
 import autopilot
 from autopilot import (
     input,
+    introspection,
     logging as autopilot_logging,
     platform
 )
 from autopilot.introspection import dbus
-
 
 logger = logging.getLogger(__name__)
 
@@ -52,7 +53,103 @@ def get_pointing_device():
 def get_keyboard():
     """Return the keyboard device."""
     # TODO return the OSK if we are on the phone. --elopio - 2014-01-13
-    return input.Keyboard.create()
+    from ubuntu_keyboard.emulators.keyboard import Keyboard
+    pid = restart_maliit_with_testability()
+    return Keyboard()
+    #return input.Keyboard.create()
+
+
+def restart_maliit_with_testability():
+    """Restart maliit-server with testability enabled."""
+    MALIIT = 'maliit-server'
+    if is_process_running(MALIIT):
+        _stop_process(MALIIT)
+    return _start_process(MALIIT, 'QT_LOAD_TESTABILITY=1')
+        
+
+def _stop_process(proc_name):
+    """Stop process with name proc_name."""
+    logger.info('Stoping process {}.'.format(proc_name))
+    command = ['/sbin/initctl', 'stop', proc_name]
+    try:
+        output = subprocess.check_output(
+            command,
+            stderr=subprocess.STDOUT,
+            universal_newlines=True,
+        )
+        logger.info(output)
+    except subprocess.CalledProcessError as e:
+        e.args += ('Failed to stop {}: {}.'.format(proc_name, e.output),)
+        raise
+
+
+def _start_process(proc_name, *args):
+    """Start a process.
+
+    :param proc_name: The name of the process.
+    :param args: The arguments to be used when starting the job.
+    :return: The process id of the started job.
+    :raises CalledProcessError: if the job failed to start.
+
+    """
+    logger.info('Starting job {} with arguments {}.'.format(proc_name, args))
+    command = ['/sbin/initctl', 'start', proc_name] + list(args)
+    try:
+        output = subprocess.check_output(
+            command,
+            stderr=subprocess.STDOUT,
+            universal_newlines=True,
+        )
+        logger.info(output)
+        pid = get_job_pid(proc_name)
+    except subprocess.CalledProcessError as e:
+        e.args += ('Failed to start {}: {}.'.format(proc_name, e.output),)
+        raise
+    else:
+        return pid
+
+
+def get_job_pid(proc_name):
+    """Return the process id of a running job.
+
+    :param str name: The name of the job.
+    :raises JobError: if the job is not running.
+
+    """
+    status = get_process_status(proc_name)
+    if "start/" not in status:
+        raise JobError('{} is not in the running state.'.format(proc_name))
+    return int(status.split()[-1])
+
+
+def get_process_status(name):
+    """
+    Return the status of a process.
+
+    :param str name: The name of the process.
+    :raises JobError: if it's not possible to get the status of the job.
+
+    """
+    try:
+        return subprocess.check_output([
+            '/sbin/initctl',
+            'status',
+            name
+        ], universal_newlines=True)
+    except subprocess.CalledProcessError as error:
+        raise JobError(
+            "Unable to get {}'s status: {}".format(name, error)
+        )
+
+
+def is_process_running(name):
+    """Return True if the process is running. Otherwise, False.
+
+    :param str name: The name of the process.
+    :raises JobError: if it's not possible to get the status of the process.
+
+    """
+    return 'start/' in get_process_status(name)
 
 
 def check_autopilot_version():

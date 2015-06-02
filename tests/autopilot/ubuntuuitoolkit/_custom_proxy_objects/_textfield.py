@@ -26,7 +26,6 @@ from ubuntuuitoolkit._custom_proxy_objects import (
     _mainview
 )
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -49,6 +48,7 @@ class TextField(_common.UbuntuUIToolkitCustomProxyObjectBase):
         """
         with self.keyboard.focused_type(self):
             self.focus.wait_for(True)
+            self.keyboard.wait_for_keyboard_ready()
             if clear:
                 self.clear()
             else:
