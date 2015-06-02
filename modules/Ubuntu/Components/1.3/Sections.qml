@@ -31,20 +31,28 @@ StyledItem {
     styleName: "SectionsStyle"
 
     /*!
-      List of strings that represent section names. Example:
+      List of actions that represent the sections.
+      The text of each action is displayed as the section name, and upon
+      selecting a section, the associated \l Action is triggered.
+
+      Example:
       \qml
         Sections {
-            model: [ "first", "second", "third" ]
+            actions: [
+                Action { text: "first" },
+                Action { text: "second" },
+                Action { text: "third" }
+            ]
             onSelectedIndexChanged: {
-                print("Selected " + model[selectedIndex] + " section.");
+                print("Selected " + actions[selectedIndex].text + " section.");
             }
         }
      \endqml
      It is strongly recommended to limit the number of sections to two or three.
      */
-    property var model
-    onModelChanged: {
-        if (model && model.length > 3) {
+    property var actions
+    onActionsChanged: {
+        if (actions && actions.length > 3) {
             // FIXME: Make the Sections scrollable for more than 3 sections.
             console.warn("It is not YET recommended or supported to use more than three sections.");
         }
@@ -53,5 +61,5 @@ StyledItem {
     /*!
       The index of the currently selected section in \l model.
      */
-    property int selectedIndex: model ? 0 : -1
+    property int selectedIndex: actions ? 0 : -1
 }

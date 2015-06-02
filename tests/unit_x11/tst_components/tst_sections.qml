@@ -24,8 +24,10 @@ Rectangle {
     height: 600
     color: "white"
 
-    property var sectionNames: [
-        "first", "second", "third"
+    property list<Action> actionList: [
+        Action { text: "first"; onTriggered: print("A") },
+        Action { text: "second"; onTriggered: print("B") },
+        Action { text: "third"; onTriggered: print("C") }
     ]
 
     Sections {
@@ -35,7 +37,7 @@ Rectangle {
             top: parent.top
             margins: units.gu(1)
         }
-        model: root.sectionNames
+        actions: root.actionList
     }
     Sections {
         id: disabledSections
@@ -44,7 +46,7 @@ Rectangle {
             top: enabledSections.bottom
             margins: units.gu(1)
         }
-        model: root.sectionNames
+        actions: root.actionList
         enabled: false
     }
 

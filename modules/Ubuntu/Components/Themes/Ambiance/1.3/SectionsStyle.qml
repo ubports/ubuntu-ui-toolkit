@@ -67,7 +67,7 @@ Item {
 
         Repeater {
             id: sectionsRepeater
-            model: styledItem.model
+            model: styledItem.actions
             objectName: "sections_repeater"
             AbstractButton {
                 id: sectionButton
@@ -79,7 +79,11 @@ Item {
                 width: label.width + 2 * sectionsStyle.horizontalLabelSpacing
                 height: sectionsRow.height
                 property bool selected: index === styledItem.selectedIndex
-                onClicked: styledItem.selectedIndex = index;
+                action: modelData
+                onClicked: {
+                    print("X")
+                    styledItem.selectedIndex = index;
+                }
 
                 // Background pressed highlight
                 Rectangle {
@@ -92,7 +96,7 @@ Item {
                 Label {
                     id: label
                     objectName: "section_button_label_" + index
-                    text: modelData
+                    text: modelData.text
                     fontSize: sectionsStyle.fontSize
                     anchors.centerIn: parent
                     color: sectionButton.selected ?
