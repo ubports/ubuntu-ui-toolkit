@@ -15,13 +15,16 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import os
+import subprocess
 import tempfile
+import time
 
 from unittest import mock
 import testscenarios
 import testtools
 from autopilot import (
     display,
+    introspection,
     platform,
     testcase as autopilot_testcase
 )
@@ -155,11 +158,27 @@ class FakeApplicationTestCase(testtools.TestCase):
 
 class LaunchFakeApplicationTestCase(autopilot_testcase.AutopilotTestCase):
 
+    def _get_pid(self, process_name):
+        """Returns pid for currently running browser process."""
+        for i in range(10):
+            try:
+                return int(
+                    subprocess.check_output(
+                        ['pidof', process_name]).strip()
+                    )
+            except subprocess.CalledProcessError:
+                time.sleep(1)
+        else:
+            raise RuntimeError(
+                'Could not find autopilot interface for {} after 10 '
+                'seconds'.format(process_name)
+            )
+
     def test_launch_fake_application_with_qmlscene(self):
         fake_application = fixture_setup.FakeApplication()
         self.useFixture(fake_application)
 
-        self.application = self.launch_test_application(
+        application = self.launch_test_application(
             base.get_qmlscene_launch_command(),
             fake_application.qml_file_path,
             '--desktop_file_hint={0}'.format(
@@ -167,7 +186,29 @@ class LaunchFakeApplicationTestCase(autopilot_testcase.AutopilotTestCase):
             app_type='qt')
 
         # We can select a component from the application.
-        self.application.select_single('Label', objectName='testLabel')
+        application.select_single('Label', objectName='testLabel')
+
+    def test_launch_fake_application_from_url_dispatcher(self):
+        test_protocols = ['testprotocol1', 'testprotocol2']
+        fake_application = fixture_setup.FakeApplication(
+            url_dispatcher_protocols=test_protocols)
+        self.useFixture(fake_application)
+
+        self.useFixture(fixture_setup.InitctlEnvironmentVariable(
+            QT_LOAD_TESTABILITY=1))
+
+        for test_protocol in test_protocols:
+            subprocess.check_output(
+                ['url-dispatcher', '{}://test'.format(test_protocol)])
+
+            application = introspection.get_proxy_object_for_existing_process(
+                pid=self._get_pid('qmlscene'))
+
+            # We can select a component from the application.
+            application.select_single('Label', objectName='testLabel')
+
+            subprocess.check_output(
+                ['ubuntu-app-stop', fake_application.application_name])
 
 
 class InitctlEnvironmentVariableTestCase(testtools.TestCase):
