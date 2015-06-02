@@ -22,7 +22,8 @@ Item {
     height: units.gu(71)
 
     Button {
-        styleHints: StyleHints {
+        objectName: "Button"
+        StyleHints {
             minimumWidth: units.gu(20)
         }
 

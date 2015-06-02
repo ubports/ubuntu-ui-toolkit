@@ -41,9 +41,6 @@ public:
     explicit UCStyleHints(QObject *parent = 0);
     ~UCStyleHints();
 
-    void setStyledItem(UCStyledItemBase *item);
-    void unsetStyledItem();
-
 private Q_SLOTS:
     void _q_applyStyleHints();
 

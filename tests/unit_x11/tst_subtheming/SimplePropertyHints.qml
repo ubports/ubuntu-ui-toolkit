@@ -23,7 +23,7 @@ Item {
 
     Button {
         objectName: "Button"
-        styleHints: StyleHints {
+        StyleHints {
             defaultColor: "blue"
         }
     }

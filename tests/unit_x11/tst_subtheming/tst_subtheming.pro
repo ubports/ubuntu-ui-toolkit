@@ -38,8 +38,8 @@ OTHER_FILES += \
     StyleHintsWithSignal.qml \
     StyleHintsWithObject.qml \
     StyleHintsElsewhere.qml \
-    StyleHintsTooMany.qml \
     StyleHintsInvalidProperty.qml \
-    PropertyBindingHints.qml
+    PropertyBindingHints.qml \
+    MoreStyleHints.qml
 
 

@@ -60,8 +60,6 @@ public:
     UCTheme *getTheme() const;
     void setTheme(UCTheme *theme);
     void resetTheme();
-    UCStyleHints *getStyleHints() const;
-    void setStyleHints(UCStyleHints *hints);
 
     virtual void preThemeChanged(){}
     virtual void postThemeChanged(){}

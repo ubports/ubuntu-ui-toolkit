@@ -25,6 +25,7 @@
 #include "uctestcase.h"
 #include "ucstyleditembase_p.h"
 #include "ucnamespace.h"
+#include "ucunits.h"
 
 class ThemeTestCase : public UbuntuTestCase
 {
@@ -758,11 +759,9 @@ private Q_SLOTS:
 "                 anyProperty: QtObject{} \n" \
 "                              ^";
         QTest::newRow("StyleHints declared elsewhere")
-                << "StyleHintsElsewhere.qml" << 24 << 5 << "QML StyleHints: StyleHints must be declared as property value for StyledItem or a derivate of it.";
-        QTest::newRow("More StyleHints")
-                << "StyleHintsTooMany.qml" << 29 << 9 << "QML StyleHints: StyleHints must be set as value for styleHints property.";
+                << "StyleHintsElsewhere.qml" << 24 << 5 << "QML StyleHints: StyleHints must be declared in a StyledItem or a derivate of it.";
         QTest::newRow("Invalid property")
-                << "StyleHintsInvalidProperty.qml" << 25 << 21 << "QML StyleHints: Style 'ButtonStyle' has no property called 'invalidProperty'.";
+                << "StyleHintsInvalidProperty.qml" << 25 << 9 << "QML StyleHints: Style 'ButtonStyle' has no property called 'invalidProperty'.";
     }
     void test_stylehints_errors()
     {
@@ -798,6 +797,29 @@ private Q_SLOTS:
         color = button->property("color").value<QColor>();
         QCOMPARE(color, QColor("tan"));
         QTest::mouseRelease(view.data(), Qt::LeftButton, 0, pressPt.toPoint());
+    }
+
+    void test_stylehints_multiple_data()
+    {
+        QTest::addColumn<QString>("document");
+        QTest::addColumn<QColor>("defaultColor");
+        QTest::addColumn<float>("minimumWidth");
+
+        QTest::newRow("Same document")
+                << "MoreStyleHints.qml" << QColor("brown") << UCUnits::instance().gu(20);
+    }
+    void test_stylehints_multiple()
+    {
+        QFETCH(QString, document);
+        QFETCH(QColor, defaultColor);
+        QFETCH(float, minimumWidth);
+
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase(document));
+        UCStyledItemBase *button = view->findItem<UCStyledItemBase*>("Button");
+        QQuickItem *styleItem = UCStyledItemBasePrivate::get(button)->styleItem;
+        QVERIFY(styleItem);
+        QCOMPARE(styleItem->property("defaultColor").value<QColor>(), defaultColor);
+        QCOMPARE(styleItem->property("minimumWidth").toReal(), minimumWidth);
     }
 };
 

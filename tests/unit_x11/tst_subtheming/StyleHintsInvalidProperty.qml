@@ -22,7 +22,7 @@ Item {
     height: units.gu(71)
 
     Button {
-        styleHints: StyleHints {
+        StyleHints {
             ignoreUnknownProperties: false
             invalidProperty: 10
         }

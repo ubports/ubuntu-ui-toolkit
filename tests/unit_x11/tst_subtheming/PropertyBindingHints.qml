@@ -24,7 +24,7 @@ Item {
     Button {
         objectName: "Button"
         id: button
-        styleHints: StyleHints {
+        StyleHints {
             defaultColor: button.pressed ? "tan" : "blue"
         }
     }
