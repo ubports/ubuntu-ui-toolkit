@@ -156,7 +156,7 @@ void UCStyleHints::propertyNotFound(const QString &styleName, const QString &pro
  * \qml
  * Button {
  *     id: button
- *     styleHints: StyleHints {
+ *     StyleHints {
  *         defaultColor: button.pressed ? "blue" : "white"
  *     }
  * }
@@ -165,8 +165,7 @@ void UCStyleHints::propertyNotFound(const QString &styleName, const QString &pro
  * StyleHints does not support signal properties (i.e signal handlers) and object
  * declarations as property values.
  *
- * StyleHints can be only declared as property value for \l {StyledItem::styleHints}
- * {StyledItem.styleHints}.
+ * StyleHints can be only declared in a \l StyledItem or as a derivate of it.
  */
 
 /*!

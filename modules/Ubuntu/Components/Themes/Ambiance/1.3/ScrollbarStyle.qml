@@ -60,7 +60,7 @@ Item {
     property real minimumSliderSize: units.gu(2)
 
     property bool overlay: !interactive
-    property real overlayOpacityWhenShown: 0.6
+    property real overlayOpacityWhenShown: 1.0
     property real overlayOpacityWhenHidden: 0.0
 
     property PropertyAnimation scrollbarFadeInAnimation: UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration }
@@ -78,7 +78,7 @@ Item {
     property url backwardThumbReleased: (styledItem.align === Qt.AlignLeading || styledItem.align === Qt.AlignTrailing) ? Qt.resolvedUrl("../artwork/ScrollbarTopIdle.png") : Qt.resolvedUrl("../artwork/ScrollbarLeftIdle.png")
     property url backwardThumbPressed: (styledItem.align === Qt.AlignLeading || styledItem.align === Qt.AlignTrailing) ? Qt.resolvedUrl("../artwork/ScrollbarTopPressed.png") : Qt.resolvedUrl("../artwork/ScrollbarLeftPressed.png")
 
-    property real scrollAreaThickness: units.gu(0.5)
+    property real scrollAreaThickness: units.gu(1)
     property real thumbConnectorMargin: units.dp(3)
 
     // helper properties to ease code readability
@@ -194,10 +194,10 @@ Item {
         property real proximityThickness: (isVertical) ? styledItem.width - thickness : styledItem.height - thickness
         anchors {
             fill: parent
-            leftMargin: (!isVertical || frontAligned) ? 0 : proximityThickness
-            rightMargin: (!isVertical || rearAligned) ? 0 : proximityThickness
-            topMargin: (isVertical || topAligned) ? 0 : proximityThickness
-            bottomMargin: (isVertical || bottomAligned) ? 0 : proximityThickness
+            leftMargin: (!isVertical || frontAligned) ? units.gu(0.25) : proximityThickness
+            rightMargin: (!isVertical || rearAligned) ? units.gu(0.25) : proximityThickness
+            topMargin: (isVertical || topAligned) ? units.gu(0.25) : proximityThickness
+            bottomMargin: (isVertical || bottomAligned) ? units.gu(0.25) : proximityThickness
         }
     }
     // The thumb appears whenever the mouse gets close enough to the scrollbar
