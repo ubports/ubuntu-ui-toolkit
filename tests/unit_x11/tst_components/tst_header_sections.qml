@@ -31,7 +31,12 @@ Item {
             title: "Sections"
             head {
                 sections {
-                    model: ["navy", "lightblue", "brown"]
+//                    model: ["navy", "lightblue", "brown"]
+                    actions: [
+                        Action { text: "navy" },
+                        Action { text: "lightblue" },
+                        Action { text: "brown" }
+                    ]
                 }
                 actions: [
                     Action {
@@ -67,7 +72,7 @@ Item {
                             margins: units.gu(1)
                         }
                         width: height
-                        color: page.head.sections.model[page.head.sections.selectedIndex]
+                        color: page.head.sections.actions[page.head.sections.selectedIndex].text
                     }
 
                     Label {

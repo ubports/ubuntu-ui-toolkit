@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.4
+import Ubuntu.Components 1.3
 
 /*!
     \qmltype PageHeadSections
@@ -64,15 +65,16 @@ QtObject {
      \endqml
      It is strongly recommended to limit the number of sections to two or three.
      */
-    property var model
-    onModelChanged: {
-        if (model && model.length > 3) {
-            console.warn("It is not recommended or supported to use more than three sections in Page.head.sections.model.");
-        }
-    }
+//    property var model
+//    onModelChanged: {
+//        if (model && model.length > 3) {
+//            console.warn("It is not recommended or supported to use more than three sections in Page.head.sections.model.");
+//        }
+//    }
+    property list<Action> actions // TODO TIM: auto-fill when model of strings is given.
 
     /*!
       The index of the currently selected section in \l model.
      */
-    property int selectedIndex: model ? 0 : -1
+    property int selectedIndex: actions ? 0 : -1 // TODO TIM: this must be updated automatically.
 }

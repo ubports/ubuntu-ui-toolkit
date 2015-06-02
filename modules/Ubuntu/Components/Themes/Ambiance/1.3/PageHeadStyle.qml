@@ -21,9 +21,9 @@ import Ubuntu.Components.Styles 1.3 as Style
 Style.PageHeadStyle {
     id: headerStyle
     objectName: "PageHeadStyle" // used in unit tests
-    contentHeight: units.gu(7)
+    contentHeight: units.gu(6)
     fontWeight: Font.Light
-    fontSize: "x-large"
+    fontSize: "large"
     textLeftMargin: units.gu(2)
     maximumNumberOfActions: 3
 
@@ -73,11 +73,17 @@ Style.PageHeadStyle {
      */
     property color sectionHighlightColor: theme.palette.selected.background
 
-    implicitHeight: headerStyle.contentHeight + divider.height
+    implicitHeight: headerStyle.contentHeight + divider.height + sectionsItem.height
+
+                    /*!
+                      The height of the row displaying the sections, if sections are specified.
+                     */
+                //    property real sectionsHeight: units.gu(4)
+
 
     // FIXME: Workaround to get sectionsRepeater.count in autopilot tests,
     //  see also FIXME in AppHeader where this property is used.
-    property alias __sections_repeater_for_autopilot: sectionsRepeater
+//    property alias __sections_repeater_for_autopilot: sectionsRepeater
 
     // Used by unit tests and autopilot tests to wait for animations to finish
     readonly property bool animating: headerStyle.state == "OUT"
@@ -88,94 +94,39 @@ Style.PageHeadStyle {
     //  have a separator.
     property alias __separator_visible: divider.visible
 
-    StyledItem {
+
+    Rectangle {
         id: divider
         anchors {
-            bottom: parent.bottom
             left: parent.left
             right: parent.right
+            bottom: parent.bottom
+        }
+        height: units.dp(1)
+        color: styledItem.dividerColor
+    }
+
+    Sections {
+        id: sectionsItem
+        anchors {
+            left: parent.left
+            leftMargin: units.gu(2)
+//            right: parent.right
+            bottom: divider.top // FIXME TIM
         }
 
-        height: sectionsRow.visible ? units.gu(3) : units.gu(2)
-
-        // separatorSource and separatorBottomSource are needed for the deprecated
-        // HeadSeparatorImageStyle.
-        property url separatorSource: headerStyle.separatorSource
-        property url separatorBottomSource: headerStyle.separatorBottomSource
-
-        // backgroundColor is used in the new HeadDividerStyle
-        property color backgroundColor: styledItem.dividerColor
-
-        styleName: "HeadDividerStyle"
+        height: actions && actions.length > 0 ? implicitHeight : 0
 
         property PageHeadSections sections: styledItem.config.sections
+        actions: sections.actions
 
-        Row {
-            id: sectionsRow
-            anchors.centerIn: parent
-            width: childrenRect.width
-            height: parent.height
-            enabled: divider.sections.enabled
-            visible: divider.sections.model !== undefined
-            opacity: enabled ? 1.0 : 0.5
-
-            Repeater {
-                id: sectionsRepeater
-                model: divider.sections.model
-                objectName: "page_head_sections_repeater"
-                AbstractButton {
-                    id: sectionButton
-                    anchors {
-                        top: parent ? parent.top : undefined
-                        bottom: parent ? parent.bottom : undefined
-                    }
-                    objectName: "section_button_" + index
-                    enabled: sectionsRow.enabled
-                    width: label.width + units.gu(4)
-                    height: sectionsRow.height + units.gu(2)
-                    property bool selected: index === divider.sections.selectedIndex
-                    onClicked: divider.sections.selectedIndex = index;
-
-                    Rectangle {
-                        visible: parent.pressed
-                        anchors {
-                            verticalCenter: parent.verticalCenter
-                            left: parent.left
-                            right: parent.right
-                            rightMargin: verticalDividerLine.width
-                        }
-                        height: sectionsRow.height
-                        color: headerStyle.sectionHighlightColor
-                    }
-
-                    Label {
-                        id: label
-                        text: modelData
-                        fontSize: "small"
-                        anchors.centerIn: sectionButton
-                        horizontalAlignment: Text.AlignHCenter
-                        color: sectionButton.selected ?
-                                   headerStyle.selectedSectionColor :
-                                   headerStyle.sectionColor
-                    }
-
-                    // vertical divider line
-                    Rectangle {
-                        id: verticalDividerLine
-                        anchors {
-                            verticalCenter: parent.verticalCenter
-                            right: parent.right
-                        }
-                        height: units.dp(10)
-                        width: units.dp(1)
-                        visible: index < sectionsRepeater.model.length - 1
-                        color: headerStyle.sectionColor
-                        opacity: 0.2
-                    }
-                }
-            }
+        onSelectedIndexChanged: sections.selectedIndex = sectionsItem.selectedIndex
+        Connections {
+            target: sectionsItem.sections
+            onSelectedIndexChanged: sectionsItem.selectedIndex = sectionsItem.sections.selectedIndex
         }
     }
+
 
     states: [
         State {
