@@ -78,10 +78,10 @@ class FakeApplicationTestCase(testtools.TestCase):
         self.assert_desktop_file_contents(
             desktop_file_contents, test_desktop_file_dict)
 
-    def test_desktop_file_with_qmlscene_launch_command(self):
-        test_desktop_file_dict = {'Exec': '{qmlscene} application'}
+    def test_desktop_file_with_launch_command(self):
+        test_desktop_file_dict = {'Exec': '{launcher} application'}
 
-        qmlscene = 'ubuntuuitoolkit.base.get_qmlscene_launch_command'
+        qmlscene = 'ubuntuuitoolkit.base.get_toolkit_launcher_command'
         with mock.patch(qmlscene) as mock_qmlscene:
             mock_qmlscene.return_value = 'test_qmlscene_command'
             fake_application = fixture_setup.FakeApplication(
@@ -111,9 +111,9 @@ class FakeApplicationTestCase(testtools.TestCase):
                 'Exec=qmlscene {}'.format(fake_application.qml_file_path)))
 
     def test_desktop_file_with_default_contents(self):
-        qmlscene = 'ubuntuuitoolkit.base.get_qmlscene_launch_command'
-        with mock.patch(qmlscene) as mock_qmlscene:
-            mock_qmlscene.return_value = 'qmlscene'
+        get_launcher = 'ubuntuuitoolkit.base.get_toolkit_launcher_command'
+        with mock.patch(get_launcher) as mock_launcher:
+            mock_launcher.return_value = 'testlauncher'
             fake_application = fixture_setup.FakeApplication()
             self.useFixture(fake_application)
 
@@ -124,7 +124,7 @@ class FakeApplicationTestCase(testtools.TestCase):
             'Type': 'Application',
             'Name': 'test',
             'Icon': 'Not important',
-            'Exec': 'qmlscene {}'.format(fake_application.qml_file_path),
+            'Exec': 'testlauncher {}'.format(fake_application.qml_file_path),
         }
         self.assert_desktop_file_contents(
             desktop_file_contents, expected_desktop_file_dict)
