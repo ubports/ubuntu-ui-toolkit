@@ -46,28 +46,28 @@ class TextField(_common.UbuntuUIToolkitCustomProxyObjectBase):
             of the text field. Default is True.
 
         """
-        with self.keyboard.focused_type(self):
-            self.focus.wait_for(True)
-            if clear:
-                self.clear()
-            else:
-                if not self.is_empty():
-                    self.keyboard.press_and_release('End')
-            self.keyboard.type(text)
+        self._ensure_focused()
+        if clear:
+            self.clear()
+        else:
+            if not self.is_empty():
+                self._go_to_end()
+        self.keyboard.type(text)
 
     @autopilot_logging.log_action(logger.info)
     def clear(self):
         """Clear the text field."""
+        self._ensure_focused()
         if not self.is_empty():
             if self.hasClearButton:
                 self._click_clear_button()
             else:
                 self._clear_with_keys()
-            self.text.wait_for('')
+            self.displayText.wait_for('')
 
     def is_empty(self):
         """Return True if the text field is empty. False otherwise."""
-        return self.text == ''
+        return self.displayText == ''
 
     @autopilot_logging.log_action(logger.debug)
     def _click_clear_button(self):
@@ -87,8 +87,8 @@ class TextField(_common.UbuntuUIToolkitCustomProxyObjectBase):
             # we can't select all the text.
             # Reported as bug http://pad.lv/1268782 --elopio - 2014-01-13
             self._go_to_end()
-            while self.cursorPosition != 0:
-                self._delete_one_character()
+            while self.displayText != '':
+                self._delete_one_character_using_osk()
         if not self.is_empty():
             raise _common.ToolkitException('Failed to clear the text field.')
 
@@ -104,19 +104,30 @@ class TextField(_common.UbuntuUIToolkitCustomProxyObjectBase):
             popover.click_option_by_text('Select All')
 
     def _is_all_text_selected(self):
-        return self.text == self.selectedText
+        return self.displayText == self.selectedText
 
     @autopilot_logging.log_action(logger.debug)
     def _go_to_end(self):
-        # XXX Here we are cheating because the on-screen keyboard doesn't have
-        # an END key. --elopio - 2014-08-20
-        self.keyboard.press_and_release('End')
+        from autopilot import input
+        if isinstance(self.keyboard, input._osk.Keyboard):
+            # XXX Here we are cheating because the on-screen keyboard doesn't
+            # have an END key. --elopio - 2014-08-20
+            keyboard = input.Keyboard.create()
+            keyboard.press_and_release('End')
+        else:
+            self.keyboard.press_and_release('End')
 
     @autopilot_logging.log_action(logger.debug)
-    def _delete_one_character(self):
-        original_text = self.text
+    def _delete_one_character_using_osk(self):
+        original_text = self.displayText
         # We delete with backspace because the on-screen keyboard has
         # that key.
-        self.keyboard.press_and_release('BackSpace')
-        if len(self.text) != len(original_text) - 1:
+        self.keyboard.press_and_release('backspace')
+        if len(self.displayText) != len(original_text) - 1:
             raise _common.ToolkitException('Failed to delete one character.')
+
+    @autopilot_logging.log_action(logger.debug)
+    def _ensure_focused(self):
+        if not self.focus:
+            self.pointing_device.click_object(self)
+            self.focus.wait_for(True)

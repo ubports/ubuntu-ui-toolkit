@@ -17,6 +17,7 @@
 from unittest import mock
 
 from autopilot import platform
+from testtools import skipUnless
 
 import ubuntuuitoolkit
 from ubuntuuitoolkit import tests
@@ -59,12 +60,15 @@ MainView {
 
     def test_write(self):
         self.simple_text_field.write('test')
-        self.assertEqual(self.simple_text_field.text, 'test')
+        self.assertEqual(self.simple_text_field.displayText, 'test')
 
+    @skipUnless(platform.model() == 'Desktop',
+                'Due to launchpad.net/bugs/1461571 this only runs on desktop.')
+    # Once launchpad.net/bugs/1461571 is fixed this will work on touch.
     def test_clear_with_clear_button(self):
         self.simple_text_field.write('test')
         self.simple_text_field.clear()
-        self.assertEqual(self.simple_text_field.text, '')
+        self.assertEqual(self.simple_text_field.displayText, '')
 
     def test_clear_without_clear_button(self):
         text_field = self.main_view.select_single(
@@ -72,24 +76,24 @@ MainView {
             objectName='text_field_without_clear_button')
         text_field.write('test')
         text_field.clear()
-        self.assertEqual(text_field.text, '')
+        self.assertEqual(text_field.displayText, '')
 
     def test_clear_and_write(self):
         self.simple_text_field.write('test1')
         self.simple_text_field.write('test2')
-        self.assertEqual(self.simple_text_field.text, 'test2')
+        self.assertEqual(self.simple_text_field.displayText, 'test2')
 
     def test_write_without_clear(self):
         self.simple_text_field.write('test1')
         self.simple_text_field.write('test2', clear=False)
-        self.assertEqual(self.simple_text_field.text, 'test1test2')
+        self.assertEqual(self.simple_text_field.displayText, 'test1test2')
 
     def test_write_without_clear_writes_at_the_end(self):
         self.simple_text_field.write(
             'long text that will fill more than half of the text field.')
         self.simple_text_field.write('append', clear=False)
         self.assertEqual(
-            self.simple_text_field.text,
+            self.simple_text_field.displayText,
             'long text that will fill more than half of the text field.append')
 
     def test_is_empty(self):

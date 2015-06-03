@@ -23,7 +23,6 @@ from distutils import version
 import autopilot
 from autopilot import (
     input,
-    introspection,
     logging as autopilot_logging,
     platform
 )
