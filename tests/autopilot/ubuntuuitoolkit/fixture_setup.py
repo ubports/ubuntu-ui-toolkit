@@ -149,8 +149,8 @@ class FakeApplication(fixtures.Fixture):
     def _update_url_dispatcher_directory(self, url_dispatcher_file_path):
         # FIXME This should be updated calling
         # initctl start url-dispatcher-update-user, but it is not working.
+        # https://bugs.launchpad.net/ubuntu/+source/url-dispatcher/+bug/1461496
         # --elopio - 2015-06-02
-        # TODO file the bug.
         subprocess.check_output(
             '/usr/lib/*/url-dispatcher/update-directory ' +
              url_dispatcher_file_path, shell=True)
