@@ -153,7 +153,7 @@ class FakeApplication(fixtures.Fixture):
         # --elopio - 2015-06-02
         subprocess.check_output(
             '/usr/lib/*/url-dispatcher/update-directory ' +
-             url_dispatcher_file_path, shell=True)
+            url_dispatcher_file_path, shell=True)
 
 
 class InitctlEnvironmentVariable(fixtures.Fixture):
