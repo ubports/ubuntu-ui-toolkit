@@ -143,7 +143,8 @@ class FakeApplicationTestCase(testtools.TestCase):
             os.path.dirname(fake_application.desktop_file_path))
 
     def test_fake_application_files_must_be_removed_after_test(self):
-        fake_application = fixture_setup.FakeApplication()
+        fake_application = fixture_setup.FakeApplication(
+            url_dispatcher_protocols=['testprotocol'])
 
         def inner_test():
             class TestWithFakeApplication(testtools.TestCase):
@@ -154,6 +155,8 @@ class FakeApplicationTestCase(testtools.TestCase):
         inner_test().run()
         self.assertThat(fake_application.qml_file_path, Not(FileExists()))
         self.assertThat(fake_application.desktop_file_path, Not(FileExists()))
+        self.assertThat(
+            fake_application.url_dispatcher_file_path, Not(FileExists()))
 
 
 class LaunchFakeApplicationTestCase(autopilot_testcase.AutopilotTestCase):
@@ -189,26 +192,36 @@ class LaunchFakeApplicationTestCase(autopilot_testcase.AutopilotTestCase):
         application.select_single('Label', objectName='testLabel')
 
     def test_launch_fake_application_from_url_dispatcher(self):
-        test_protocols = ['testprotocol1', 'testprotocol2']
+        if platform.model() == 'Desktop':
+            self.skipTest('Not yet working on desktop')
+
+        path = os.path.abspath(__file__)
+        dir_path = os.path.dirname(path)
+        qml_file_path = os.path.join(
+            dir_path, 'test_fixture_setup.LaunchFakeApplicationTestCase.qml')
+        with open(qml_file_path) as qml_file:
+            qml_file_contents = qml_file.read()
+
         fake_application = fixture_setup.FakeApplication(
-            url_dispatcher_protocols=test_protocols)
+            qml_file_contents=qml_file_contents,
+            url_dispatcher_protocols=['testprotocol'])
         self.useFixture(fake_application)
 
         self.useFixture(fixture_setup.InitctlEnvironmentVariable(
             QT_LOAD_TESTABILITY=1))
 
-        for test_protocol in test_protocols:
-            subprocess.check_output(
-                ['url-dispatcher', '{}://test'.format(test_protocol)])
+        self.addCleanup(
+            subprocess.check_output,
+            ['ubuntu-app-stop', fake_application.application_name])
 
-            application = introspection.get_proxy_object_for_existing_process(
-                pid=self._get_pid('qmlscene'))
+        subprocess.check_output(
+            ['url-dispatcher', 'testprotocol://test'])
 
-            # We can select a component from the application.
-            application.select_single('Label', objectName='testLabel')
+        application = introspection.get_proxy_object_for_existing_process(
+            pid=self._get_pid('qmlscene'))
 
-            subprocess.check_output(
-                ['ubuntu-app-stop', fake_application.application_name])
+        # We can select a component from the application.
+        application.select_single('Label', objectName='testLabel')
 
 
 class InitctlEnvironmentVariableTestCase(testtools.TestCase):

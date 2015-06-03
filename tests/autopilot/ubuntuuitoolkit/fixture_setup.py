@@ -74,7 +74,8 @@ class FakeApplication(fixtures.Fixture):
         desktop_file_name = os.path.basename(self.desktop_file_path)
         self.application_name, _ = os.path.splitext(desktop_file_name)
         if self.url_dispatcher_protocols:
-            self._register_url_dispatcher_protocols(self.application_name)
+            self.url_dispatcher_file_path = (
+                self._register_url_dispatcher_protocols(self.application_name))
 
     def _create_test_application(self):
         qml_file_path = self._write_test_qml_file()
@@ -123,6 +124,7 @@ class FakeApplication(fixtures.Fixture):
             application_name)
         self.addCleanup(os.remove, url_dispatcher_file_path)
         self._update_url_dispatcher_directory(url_dispatcher_file_path)
+        return url_dispatcher_file_path
 
     def _write_url_dispatcher_file(self, application_name):
         url_dispatcher_dir = self._get_local_url_dispatcher_directory()
