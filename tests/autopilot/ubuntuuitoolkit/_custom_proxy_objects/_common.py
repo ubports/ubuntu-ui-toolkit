@@ -52,20 +52,40 @@ def get_pointing_device():
 
 def get_keyboard():
     """Return the keyboard device."""
-    # TODO return the OSK if we are on the phone. --elopio - 2014-01-13
-    from ubuntu_keyboard.emulators.keyboard import Keyboard
-    pid = restart_maliit_with_testability()
-    return Keyboard()
-    #return input.Keyboard.create()
+    if platform.model() == 'Desktop':
+        return input.Keyboard.create()
+    else:
+        restart_maliit_with_testability()
+        return input.Keyboard.create('OSK')
 
 
 def restart_maliit_with_testability():
     """Restart maliit-server with testability enabled."""
     MALIIT = 'maliit-server'
     if is_process_running(MALIIT):
+        pid = get_process_pid(MALIIT)
+        if _is_testability_enabled_for_process(pid):
+            return
         _stop_process(MALIIT)
-    return _start_process(MALIIT, 'QT_LOAD_TESTABILITY=1')
-        
+    _start_process(MALIIT, 'QT_LOAD_TESTABILITY=1')
+
+
+def _is_testability_enabled_for_process(pid):
+    """Return True if testability is enabled for specified process."""
+    proc_env = '/proc/{pid}/environ'.format(pid=pid)
+    command = ['cat', proc_env]
+    try:
+        output = subprocess.check_output(
+            command,
+            stderr=subprocess.STDOUT,
+            universal_newlines=True,
+        )
+    except subprocess.CalledProcessError as e:
+        e.args += ('Failed to get environment for pid {}: {}.'.format(
+            pid, e.output),)
+        raise
+    return output.find('QT_LOAD_TESTABILITY=1') >= 0
+
 
 def _stop_process(proc_name):
     """Stop process with name proc_name."""
@@ -101,7 +121,7 @@ def _start_process(proc_name, *args):
             universal_newlines=True,
         )
         logger.info(output)
-        pid = get_job_pid(proc_name)
+        pid = get_process_pid(proc_name)
     except subprocess.CalledProcessError as e:
         e.args += ('Failed to start {}: {}.'.format(proc_name, e.output),)
         raise
@@ -109,7 +129,7 @@ def _start_process(proc_name, *args):
         return pid
 
 
-def get_job_pid(proc_name):
+def get_process_pid(proc_name):
     """Return the process id of a running job.
 
     :param str name: The name of the job.
