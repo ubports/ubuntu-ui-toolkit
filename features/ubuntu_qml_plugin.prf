@@ -29,6 +29,8 @@ for(qmod, QTREPOS) {
     exists($$qmod): importpath.value += $$shell_path($$qmod)
 }
 
+#add our path, somehow its not added automatically
+importpath.value += $$shell_path($$instbase)
 importpath.value = $$unique(importpath.value)
 
 membackend.name = ALARM_BACKEND

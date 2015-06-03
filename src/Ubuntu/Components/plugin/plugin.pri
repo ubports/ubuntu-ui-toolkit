@@ -77,7 +77,8 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/privates/listitemdraghandler.h \
     $$PWD/ucnamespace.h \
     $$PWD/ucdeprecatedtheme.h \
-    $$PWD/ucdefaulttheme.h
+    $$PWD/ucdefaulttheme.h \
+    $$PWD/ucstylehints.h
 
 SOURCES += $$PWD/plugin.cpp \
     $$PWD/uctheme.cpp \
@@ -125,7 +126,8 @@ SOURCES += $$PWD/plugin.cpp \
     $$PWD/privates/listitemdraghandler.cpp \
     $$PWD/ucnamespace.cpp \
     $$PWD/ucdeprecatedtheme.cpp \
-    $$PWD/ucdefaulttheme.cpp
+    $$PWD/ucdefaulttheme.cpp \
+    $$PWD/ucstylehints.cpp
 
 # adapters
 SOURCES += $$PWD/adapters/alarmsadapter_organizer.cpp

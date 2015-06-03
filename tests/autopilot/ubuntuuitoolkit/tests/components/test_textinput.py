@@ -167,6 +167,8 @@ class InsertModeTextInputTestCase(tests.QMLFileAppTestCase):
 
     def test_popover_not_obscured(self):
         self.pointing_device.click_object(self.textfield)
+        self.textfield.keyboard.type('Lorem ipsum')
+        self.pointing_device.click_object(self.textfield)
         cursor = self.select_cursor('cursorPosition')
         self.pointing_device.click_object(cursor)
         popover = self.main_view.get_text_input_context_menu(
@@ -184,6 +186,8 @@ class InsertModeTextInputTestCase(tests.QMLFileAppTestCase):
 
     def test_popover_visible_after_tapping_caret(self):
         # Insert Mode
+        self.pointing_device.click_object(self.textfield)
+        self.textfield.keyboard.type('Lorem ipsum')
         self.pointing_device.click_object(self.textfield)
         cursor = self.select_cursor('cursorPosition')
         self.pointing_device.click_object(cursor)
