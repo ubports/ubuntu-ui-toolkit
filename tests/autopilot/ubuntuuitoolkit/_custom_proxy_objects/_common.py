@@ -30,6 +30,8 @@ from autopilot.introspection import dbus
 
 logger = logging.getLogger(__name__)
 
+MALIIT = 'maliit-server'
+
 
 class ToolkitException(Exception):
     """Exception raised when there is an error with the custom proxy object."""
@@ -51,7 +53,7 @@ def get_pointing_device():
 
 def get_keyboard():
     """Return the keyboard device."""
-    if platform.model() == 'Desktop':
+    if not is_process_running(MALIIT):
         return input.Keyboard.create()
     else:
         restart_maliit_with_testability()
@@ -60,7 +62,6 @@ def get_keyboard():
 
 def restart_maliit_with_testability():
     """Restart maliit-server with testability enabled."""
-    MALIIT = 'maliit-server'
     if is_process_running(MALIIT):
         pid = get_process_pid(MALIIT)
         if _is_testability_enabled_for_process(pid):
