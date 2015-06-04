@@ -79,16 +79,16 @@ class TextField(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
     @autopilot_logging.log_action(logger.debug)
     def _clear_with_keys(self):
-        if platform.model() == 'Desktop':
-            self._select_all()
-            self.keyboard.press_and_release('BackSpace')
-        else:
+        if self._is_keyboard_osk():
             # Touch tap currently doesn't have a press_duration parameter, so
             # we can't select all the text.
             # Reported as bug http://pad.lv/1268782 --elopio - 2014-01-13
             self._go_to_end()
             while self.displayText != '':
                 self._delete_one_character_using_osk()
+        else:
+            self._select_all()
+            self.keyboard.press_and_release('BackSpace')
         if not self.is_empty():
             raise _common.ToolkitException('Failed to clear the text field.')
 
@@ -106,10 +106,15 @@ class TextField(_common.UbuntuUIToolkitCustomProxyObjectBase):
     def _is_all_text_selected(self):
         return self.displayText == self.selectedText
 
+    def _is_keyboard_osk(self):
+        """Return True if the keyboard instance is the OSK."""
+        from autopilot.input import _osk
+        return isinstance(self.keyboard, _osk.Keyboard)
+
     @autopilot_logging.log_action(logger.debug)
     def _go_to_end(self):
         from autopilot import input
-        if isinstance(self.keyboard, input._osk.Keyboard):
+        if self._is_keyboard_osk():
             # XXX Here we are cheating because the on-screen keyboard doesn't
             # have an END key. --elopio - 2014-08-20
             keyboard = input.Keyboard.create()

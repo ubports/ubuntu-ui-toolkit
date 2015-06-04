@@ -53,11 +53,11 @@ def get_pointing_device():
 
 def get_keyboard():
     """Return the keyboard device."""
-    if not is_process_running(MALIIT):
-        return input.Keyboard.create()
-    else:
+    if is_process_running(MALIIT):
         restart_maliit_with_testability()
         return input.Keyboard.create('OSK')
+    else:
+        return input.Keyboard.create()
 
 
 def restart_maliit_with_testability():
