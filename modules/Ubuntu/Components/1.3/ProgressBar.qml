@@ -71,5 +71,5 @@ AnimatedItem {
     property bool showProgressPercentage: true
 
     theme.version: Ubuntu.toolkitVersion
-    style: theme.createStyleComponent("ProgressBarStyle.qml", progressBar)
+    styleName: "ProgressBarStyle"
 }

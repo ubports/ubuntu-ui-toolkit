@@ -97,12 +97,12 @@ Multi-Arch: foreign
 Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
 Depends: ${misc:Depends},
          ${shlibs:Depends},
-         qtdeclarative5-doc-html,
-         qtwebkit5-doc-html,
-         qtsvg5-doc-html,
-         qtscript5-doc-html,
-         qtmultimedia5-doc-html,
-         unity-action-doc,
+Suggests: qtdeclarative5-doc-html,
+          qtwebkit5-doc-html,
+          qtsvg5-doc-html,
+          qtscript5-doc-html,
+          qtmultimedia5-doc-html,
+          unity-action-doc,
 Conflicts: qt-components-ubuntu-doc
 Replaces: qt-components-ubuntu-doc
 Provides: qt-components-ubuntu-doc

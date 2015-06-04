@@ -17,13 +17,9 @@
 import QtQuick 2.4
 import Ubuntu.Components 1.3
 
-Item {
+StyledItem {
     id: item
-    property ThemeSettings theme: ThemeSettings {}
-    property Component style
-
-    property string styleDocument
-    onStyleDocumentChanged: style = theme.createStyleComponent(styleDocument, item)
+    theme: ThemeSettings {}
 
     property string themeName
     onThemeNameChanged: theme.name = themeName;

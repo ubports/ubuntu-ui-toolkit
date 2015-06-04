@@ -1020,5 +1020,5 @@ ActionItem {
     }
 
     theme.version: Ubuntu.Ubuntu.toolkitVersion
-    style: theme.createStyleComponent("TextFieldStyle.qml", control)
+    styleName: "TextFieldStyle"
 }
