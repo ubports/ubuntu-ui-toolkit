@@ -60,11 +60,11 @@ class TextField(_common.UbuntuUIToolkitCustomProxyObjectBase):
                 self._click_clear_button()
             else:
                 self._clear_with_keys()
-            self.displayText.wait_for('')
+            self.text.wait_for('')
 
     def is_empty(self):
         """Return True if the text field is empty. False otherwise."""
-        return self.displayText == ''
+        return self.text == ''
 
     @autopilot_logging.log_action(logger.debug)
     def _click_clear_button(self):
@@ -81,7 +81,7 @@ class TextField(_common.UbuntuUIToolkitCustomProxyObjectBase):
             # we can't select all the text.
             # Reported as bug http://pad.lv/1268782 --elopio - 2014-01-13
             self._go_to_end()
-            while self.displayText != '':
+            while self.text != '':
                 self._delete_one_character_using_osk()
         else:
             self._select_all()
@@ -101,7 +101,7 @@ class TextField(_common.UbuntuUIToolkitCustomProxyObjectBase):
             popover.click_option_by_text('Select All')
 
     def _is_all_text_selected(self):
-        return self.displayText == self.selectedText
+        return self.text == self.selectedText
 
     def _is_keyboard_osk(self):
         """Return True if the keyboard instance is the OSK."""
@@ -121,11 +121,11 @@ class TextField(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
     @autopilot_logging.log_action(logger.debug)
     def _delete_one_character_using_osk(self):
-        original_text = self.displayText
+        original_text = self.text
         # We delete with backspace because the on-screen keyboard has
         # that key.
         self.keyboard.press_and_release('backspace')
-        if len(self.displayText) != len(original_text) - 1:
+        if len(self.text) != len(original_text) - 1:
             raise _common.ToolkitException('Failed to delete one character.')
 
     @autopilot_logging.log_action(logger.debug)

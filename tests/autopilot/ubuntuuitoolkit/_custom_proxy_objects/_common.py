@@ -19,6 +19,7 @@
 import logging
 import subprocess
 from distutils import version
+from gi.repository import Gio
 
 import autopilot
 from autopilot import (
@@ -54,6 +55,7 @@ def get_pointing_device():
 def get_keyboard():
     """Return the keyboard device."""
     if is_process_running(MALIIT):
+        configure_osk_settings()
         restart_maliit_with_testability()
         return input.Keyboard.create('OSK')
     else:
@@ -68,6 +70,17 @@ def restart_maliit_with_testability():
             return
         _stop_process(MALIIT)
     _start_process(MALIIT, 'QT_LOAD_TESTABILITY=1')
+
+
+def configure_osk_settings():
+    """Configure OSK ready for testing by turning off all helpers."""
+    gsettings = Gio.Settings.new("com.canonical.keyboard.maliit")
+    gsettings.set_string("active-language", "en")
+    gsettings.set_boolean("auto-capitalization", False)
+    gsettings.set_boolean("auto-completion", False)
+    gsettings.set_boolean("predictive-text", False)
+    gsettings.set_boolean("spell-checking", False)
+    gsettings.set_boolean("double-space-full-stop", False)
 
 
 def _is_testability_enabled_for_process(pid):

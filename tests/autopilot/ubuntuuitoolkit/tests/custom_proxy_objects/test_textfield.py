@@ -60,7 +60,7 @@ MainView {
 
     def test_write(self):
         self.simple_text_field.write('test')
-        self.assertEqual(self.simple_text_field.displayText, 'test')
+        self.assertEqual(self.simple_text_field.text, 'test')
 
     @skipUnless(platform.model() == 'Desktop',
                 'Due to launchpad.net/bugs/1461571 this only runs on desktop.')
@@ -68,7 +68,7 @@ MainView {
     def test_clear_with_clear_button(self):
         self.simple_text_field.write('test')
         self.simple_text_field.clear()
-        self.assertEqual(self.simple_text_field.displayText, '')
+        self.assertEqual(self.simple_text_field.text, '')
 
     def test_clear_without_clear_button(self):
         text_field = self.main_view.select_single(
@@ -76,24 +76,24 @@ MainView {
             objectName='text_field_without_clear_button')
         text_field.write('test')
         text_field.clear()
-        self.assertEqual(text_field.displayText, '')
+        self.assertEqual(text_field.text, '')
 
     def test_clear_and_write(self):
         self.simple_text_field.write('test1')
         self.simple_text_field.write('test2')
-        self.assertEqual(self.simple_text_field.displayText, 'test2')
+        self.assertEqual(self.simple_text_field.text, 'test2')
 
     def test_write_without_clear(self):
         self.simple_text_field.write('test1')
         self.simple_text_field.write('test2', clear=False)
-        self.assertEqual(self.simple_text_field.displayText, 'test1test2')
+        self.assertEqual(self.simple_text_field.text, 'test1test2')
 
     def test_write_without_clear_writes_at_the_end(self):
         self.simple_text_field.write(
             'long text that will fill more than half of the text field.')
         self.simple_text_field.write('append', clear=False)
         self.assertEqual(
-            self.simple_text_field.displayText,
+            self.simple_text_field.text,
             'long text that will fill more than half of the text field.append')
 
     def test_is_empty(self):
