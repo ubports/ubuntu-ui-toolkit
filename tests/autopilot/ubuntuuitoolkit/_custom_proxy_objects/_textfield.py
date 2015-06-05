@@ -130,6 +130,6 @@ class TextField(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
     @autopilot_logging.log_action(logger.debug)
     def _ensure_focused(self):
-        if not self.focus:
+        if not self.activeFocus:
             self.pointing_device.click_object(self)
-            self.focus.wait_for(True)
+            self.activeFocus.wait_for(True)
