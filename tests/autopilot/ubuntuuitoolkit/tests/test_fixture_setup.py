@@ -17,7 +17,6 @@
 import os
 import subprocess
 import tempfile
-import time
 
 from unittest import mock
 import testscenarios
@@ -161,22 +160,6 @@ class FakeApplicationTestCase(testtools.TestCase):
 
 class LaunchFakeApplicationTestCase(autopilot_testcase.AutopilotTestCase):
 
-    def _get_pid(self, process_name):
-        """Returns pid for currently running browser process."""
-        for i in range(10):
-            try:
-                return int(
-                    subprocess.check_output(
-                        ['pidof', process_name]).strip()
-                    )
-            except subprocess.CalledProcessError:
-                time.sleep(1)
-        else:
-            raise RuntimeError(
-                'Could not find autopilot interface for {} after 10 '
-                'seconds'.format(process_name)
-            )
-
     def test_launch_fake_application_with_qmlscene(self):
         fake_application = fixture_setup.FakeApplication()
         self.useFixture(fake_application)
@@ -217,8 +200,11 @@ class LaunchFakeApplicationTestCase(autopilot_testcase.AutopilotTestCase):
         subprocess.check_output(
             ['url-dispatcher', 'testprotocol://test'])
 
+        pid = subprocess.check_output(
+            ['ubuntu-app-pid', fake_application.application_name]).strip()
+
         application = introspection.get_proxy_object_for_existing_process(
-            pid=self._get_pid('qmlscene'))
+            pid=pid)
 
         # We can select a component from the application.
         application.select_single('Label', objectName='testLabel')
