@@ -110,11 +110,11 @@ class TextField(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
     @autopilot_logging.log_action(logger.debug)
     def _go_to_end(self):
-        from autopilot import input
         if self._is_keyboard_osk():
             # XXX Here we are cheating because the on-screen keyboard doesn't
             # have an END key. --elopio - 2014-08-20
-            keyboard = input.Keyboard.create()
+            from autopilot.input import Keyboard
+            keyboard = Keyboard.create()
             keyboard.press_and_release('End')
         else:
             self.keyboard.press_and_release('End')
