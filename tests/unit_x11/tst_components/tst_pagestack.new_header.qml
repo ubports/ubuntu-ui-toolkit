@@ -118,6 +118,23 @@ Item {
             waitForHeaderAnimation(mainView);
         }
 
+        function test_multipop_bug1461729() {
+            for (var i=0; i < 10; i++) {
+                pageStack.push(pageComponent);
+            }
+            waitForHeaderAnimation(mainView);
+            compare(pageStack.depth, 10, "couldn't push 10 new pages");
+            while(pageStack.depth > 1) {
+                pageStack.pop();
+            }
+            waitForHeaderAnimation(mainView);
+            compare(pageStack.depth, 1, "pushing until one page is left failed. " +
+                        pageStack.depth + " pages left on stack");
+
+            pageStack.clear();
+            waitForHeaderAnimation(mainView);
+        }
+
         function test_active_bug1260116() {
             pageStack.push(page1);
             waitForHeaderAnimation(mainView);
