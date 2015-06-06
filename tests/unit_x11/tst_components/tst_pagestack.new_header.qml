@@ -130,7 +130,7 @@ Item {
                 pageStack.pop();
             }
             waitForHeaderAnimation(mainView);
-            compare(pageStack.depth, 1, "pushing until one page is left failed. " +
+            compare(pageStack.depth, 1, "popping until one page is left failed. " +
                         pageStack.depth + " pages left on stack");
 
             pageStack.clear();
