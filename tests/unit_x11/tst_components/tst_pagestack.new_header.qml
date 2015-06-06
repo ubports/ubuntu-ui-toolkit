@@ -124,6 +124,8 @@ Item {
             }
             waitForHeaderAnimation(mainView);
             compare(pageStack.depth, 10, "couldn't push 10 new pages");
+            // When updating depth after animating out the header, depth
+            // is not reliable to be used to guard a loop:
             while(pageStack.depth > 1) {
                 pageStack.pop();
             }
