@@ -180,7 +180,7 @@ def is_process_running(name):
     """Return True if the process is running. Otherwise, False.
 
     :param str name: The name of the process.
-    :raises JobError: if it's not possible to get the status of the process.
+    :raises ToolkitException: if not possible to get status of the process.
 
     """
     return 'start/' in get_process_status(name)
