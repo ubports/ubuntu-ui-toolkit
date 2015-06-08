@@ -146,12 +146,13 @@ def get_process_pid(proc_name):
     """Return the process id of a running job.
 
     :param str name: The name of the job.
-    :raises JobError: if the job is not running.
+    :raises ToolkitException: if the job is not running.
 
     """
     status = get_process_status(proc_name)
     if "start/" not in status:
-        raise JobError('{} is not in the running state.'.format(proc_name))
+        raise ToolkitException(
+            '{} is not in the running state.'.format(proc_name))
     return int(status.split()[-1])
 
 
@@ -160,7 +161,7 @@ def get_process_status(name):
     Return the status of a process.
 
     :param str name: The name of the process.
-    :raises JobError: if it's not possible to get the status of the job.
+    :raises ToolkitException: if it's not possible to get status of the job.
 
     """
     try:
@@ -170,7 +171,7 @@ def get_process_status(name):
             name
         ], universal_newlines=True)
     except subprocess.CalledProcessError as error:
-        raise JobError(
+        raise ToolkitException(
             "Unable to get {}'s status: {}".format(name, error)
         )
 
