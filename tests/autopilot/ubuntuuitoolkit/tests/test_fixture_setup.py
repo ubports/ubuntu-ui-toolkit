@@ -200,8 +200,8 @@ class LaunchFakeApplicationTestCase(autopilot_testcase.AutopilotTestCase):
         subprocess.check_output(
             ['url-dispatcher', 'testprotocol://test'])
 
-        pid = subprocess.check_output(
-            ['ubuntu-app-pid', fake_application.application_name]).strip()
+        pid = int(subprocess.check_output(
+            ['ubuntu-app-pid', fake_application.application_name]).strip())
 
         application = introspection.get_proxy_object_for_existing_process(
             pid=pid)
