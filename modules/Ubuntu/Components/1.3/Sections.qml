@@ -33,7 +33,7 @@ StyledItem {
     /*!
       List of actions that represent the sections.
       The text of each action is displayed as the section name and clicking
-      a section will update the \selectedIndex.
+      a section will update the \l selectedIndex.
 
       When \l selectedIndex is changed (by user interaction or by setting
       the value), \l Action actions[selectedIndex] will be triggered.
@@ -62,7 +62,7 @@ StyledItem {
     }
 
     /*!
-      The index of the currently selected section in \l model.
+      The index of the currently selected section in \l actions.
      */
     property int selectedIndex: actions ? 0 : -1
 
