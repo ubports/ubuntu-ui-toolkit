@@ -46,6 +46,21 @@ PageTreeNode {
     property bool canDestroy: false
 
     /*!
+      Column number in MultiColumnView.
+      */
+    property int column: 0
+
+    /*!
+      Parent Page.
+      */
+    property Item parentPage
+
+    /*!
+      Page holder in MultiColumnView
+      */
+    property Item pageHolder
+
+    /*!
       This value is updated when a PageWrapper is pushed to/popped from a PageStack.
      */
     active: false

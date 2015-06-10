@@ -41,4 +41,31 @@ function Stack() {
         if (this.size() < 1) return undefined;
         return elements[elements.length-1];
     }
+
+    this.topForColumn = function(column) {
+        for (var i = elements.length - 1; i >= 0; i--) {
+            if (elements[i].column == column) {
+                return elements[i];
+            }
+        }
+        return undefined;
+    }
+
+    this.find = function(page) {
+        for (var i = elements.length - 1; i >= 0; i--) {
+            if (elements[i].object == page) {
+                return elements[i];
+            }
+        }
+        return undefined;
+    }
+
+    this.lastPushedPageToColumn = function(column) {
+        for (var i = elements.length - 1; i >= 0; i--) {
+            if (elements[i].column == column) {
+                return elements[i];
+            }
+        }
+        return undefined;
+    }
 }
