@@ -34,10 +34,21 @@ Item {
         height: units.gu(50)
     }
 
+    Rectangle {
+        id: rect2
+        color: "green"
+        width: units.gu(30)
+        height: units.gu(50)
+    }
+
     MultiColumnView {
+        id: view
         anchors.fill: parent
         columns: width > units.gu(80) ? 2 : 1
-        Component.onCompleted: addToNextColumn(null, rect)
+        Component.onCompleted: {
+            addToNextColumn(null, rect)
+            addToNextColumn(rect, rect2);
+        }
     }
 
 }

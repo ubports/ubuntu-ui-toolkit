@@ -33,6 +33,7 @@ import "../1.2/stack.js" as Stack
   */
 
 PageTreeNode {
+    id: multiColumnView
 
     /*!
       Specifies the number of columns in the view. A condition must be set to
@@ -44,7 +45,7 @@ PageTreeNode {
       }
       \endqml
       */
-    property int columns: 0
+    property int columns: 1
 
     /*!
       \qmlmethod Item addToCurrentColumn(Item sourcePage, var page[, var properties])
@@ -58,11 +59,9 @@ PageTreeNode {
         if (columns <= 0) {
             return;
         }
+        print("addToCurrentColumn", page)
         var wrapper = d.createWrapper(page, properties);
         wrapper.column = d.columnForPage(sourcePage);
-        if (wrapper.column <= 0) {
-            wrapper.column = 1;
-        }
         wrapper.parentPage = sourcePage;
         d.addPage(wrapper);
         return wrapper.object;
@@ -70,7 +69,7 @@ PageTreeNode {
 
     /*!
       \qmlmethod Item addToNextColumn(Item sourcePage, var page[, var properties])
-      Same as \l addToCurrentColumn except that the \c page is added to the column
+      Same as \l addTotargetColumn except that the \c page is added to the column
       next to the one the \c sourcePage resides. If \c sourcePage is null, the new
       page will be added to the leftmost column. If \c sourcePage is located in the
       rightmost column, the new page will be pushed to the same column as \c sourcePage.
@@ -79,27 +78,26 @@ PageTreeNode {
         if (columns <= 0) {
             return;
         }
+        print("addToNextColumn", page)
         var wrapper = d.createWrapper(page, properties);
-        wrapper.column = d.columnForPage(sourcePage) + 1;
-        if (wrapper.column <= 0) {
-            wrapper.column = 1;
-        }
+        wrapper.column = (!sourcePage) ? 0 : d.columnForPage(sourcePage) + 1;
         wrapper.parentPage = sourcePage;
         d.addPage(wrapper);
         return wrapper.object;
     }
 
     /*!
-      \qmlmethod void removeUntilPage(Item page)
+      \qmlmethod void removePagesUntil(Item page)
       The function removes and deletes all pages from the view columns until \c page
       is reached.
       */
-    function removeUntilPage(page) {
-        while (d.stack.top().parentPage == page) {
-            d.setPreviousPageForColumn(d.stack.top());
+    function removePagesUntil(page) {
+        var node = d.stack.top();
+        while ((node = d.stack.top()).parentPage == page) {
+            d.popAndSetPageForColumn(node);
         }
         while (d.stack.top() == page) {
-            d.setPreviousPageForColumn(d.stack.top());
+            d.popAndSetPageForColumn(d.stack.top());
         }
     }
 
@@ -135,31 +133,28 @@ PageTreeNode {
 
         function addPage(pageWrapper) {
             stack.push(pageWrapper);
-            var column = (pageWrapper.column >= columns) ? columns - 1 : pageWrapper.column;
-            if (column >= 0) {
-                // replace page holder's child
-                if (body.children[column].pageWrapper) {
-                    print('body.children[column].children[0]', body.children[column].children[0])
-                    body.children[column].pageWrapper.active = false;
-                    body.children[column].pageWrapper.parent = hiddenPages;
-                }
-                body.children[column].pageWrapper = pageWrapper;
-                pageWrapper.active = true;
-            }
+            var targetColumn = MathUtils.clamp(pageWrapper.column, 0, columns - 1);
+            // replace page holder's child
+            var holder = body.children[targetColumn];
+            print("add page", pageWrapper.object, "to holder", holder)
+            holder.detachCurrentPage();
+            holder.attachPage(pageWrapper)
         }
 
         function columnForPage(page) {
             var wrapper = stack.find(page);
-            return wrapper ? wrapper.column : -1;
+            return wrapper ? wrapper.column : 0;
         }
 
         // node is a triplet of {page, column, parentPage}
-        function setPreviousPageForColumn(node) {
+        function popAndSetPageForColumn(node) {
+            stack.pop();
             node.active = false;
             node.parent = null;
-            var prevPage = stack.lastPushedPageToColumn(node.column);
+            var effectiveColumn = MathUtils.clamp(node.column, 0, columns - 1);
+            var prevPage = stack.topForColumn(node.column, node.column < effectiveColumn);
             if (prevPage) {
-                prevPage.parent = body.children[node.column - 1];
+                prevPage.parent = body.children[effectiveColumn];
                 prevPage.active = true;
             }
             if (node.canDestroy) {
@@ -173,34 +168,63 @@ PageTreeNode {
                 // need to remove few columns, the first ones
                 while (body.children.length > columns) {
                     var holder = body.children[0];
-                    var pageWrapper = holder.pageWrapper;
-                    print(pageWrapper)
-                    pageWrapper.parent = hiddenPages;
-                    holder.destroy();
+                    holder.detachCurrentPage();
+                    holder.parent = null;
+//                    holder.destroy();
                 }
             } else {
-                while (body.children.length < columns) {
+                var prevColumns = body.children.length;
+
+                // add columns
+                for (var i = 0; i < columns - prevColumns; i++) {
                     var holder = pageHolderComponent.createObject(body);
-                    holder.parent = body;
-                    holder.column = body.children.length;
-                    print(holder)
-                    rearrangeColumnPages();
+                    holder.column = prevColumns + i;
                 }
+                // populate new columns if we have data for them
+                for (var column = columns - 1; column >= 0; column--) {
+                    var holder = body.children[column];
+                    var pageWrapper = stack.topForColumn(column, (column + 1) >= columns);
+                    if (!pageWrapper) {
+                        print("   no page for column", column);
+                        continue;
+                    }
+                    if (!pageWrapper.parent) {
+                        // this should never happen, so if it does, we have a bug!
+                        console.error("Found a page which wasn't parented anywhere!");
+                        continue;
+                    }
+                    if (pageWrapper.parent == hiddenPages) {
+                        // add the page to the column
+                        holder.attachPage(pageWrapper);
+                    } else if (pageWrapper.parent != holder) {
+                        // the page is set to a column, so we move to the new one
+                        // detach the current page content
+                        holder.detachCurrentPage();
+                        // detach the pageWrapper from its holder
+                        pageWrapper.parent.detachCurrentPage();
+                        // then attach to this holder
+                        holder.attachPage(pageWrapper);
+                    }
+                }
+
+//                while (body.children.length < columns) {
+//                    var lastHolder = body.children.length > 0 ? body.children[body.children.length - 1] : null;
+//                    var holder = pageHolderComponent.createObject(body);
+//                    holder.column = body.children.length - 1;
+//                    print(holder)
+//                    // is the last holder's pageWrapper column number bigger than it should?
+//                    var pageWrapper = null;
+//                    if (lastHolder && lastHolder.pageWrapper && lastHolder.pageWrapper.column > lastHolder.column) {
+//                        // move the page to the new column
+//                        pageWrapper = lastHolder.detachCurrentPage();
+//                    } else {
+//                        // find the topmost page from the stack and put it into the column
+//                        pageWrapper = stack.topForColumn(body.children.length - 1, false);
+//                    }
+//                    holder.attachPage(pageWrapper);
+//                }
             }
         }
-
-        function rearrangeColumnPages() {
-            for (var i = body.children.length - 1; i >= 0; i--) {
-                var pageWrapper = stack.topForColumn(i);
-                var holder = body.children[i];
-
-                if (!pageWrapper) {
-                    return;
-                }
-                pageWrapper.parent = holder;
-            }
-        }
-
     }
 
     // Page holder component, can have only one Page as child at a time, all stacked pages
@@ -236,12 +260,39 @@ PageTreeNode {
 //                holder.Layout.maximumWidth = Qt.binding(function (){ return pageWrapper.object.Layout.maximumWidth });
 //                holder.Layout.preferredWidth = Qt.binding(function(){ return units.gu(40)});
                 pageWrapper.parent = holder;
-                pageWrapper.anchors.left = holder.left;
-                pageWrapper.anchors.top = holder.top;
-                pageWrapper.anchors.bottom = holder.bottom;
-                pageWrapper.anchors.right = divider.left;
             }
             onColumnChanged: holder.Layout.fillWidth = (column == columns)
+
+            states: State {
+                name: "content_set"
+                AnchorChanges {
+                    target: pageWrapper
+                    anchors {
+                        left: holder.left
+                        top: holder.top
+                        bottom: holder.bottom
+                        right: divider.left
+                    }
+                }
+            }
+
+            function attachPage(page) {
+                if (!page) return;
+                print("attach", page)
+                pageWrapper = page;
+                state = "content_set";
+                pageWrapper.active = true;
+            }
+            function detachCurrentPage() {
+                if (!pageWrapper) return undefined;
+                print("detach", pageWrapper)
+                var wrapper = pageWrapper;
+                wrapper.active = false;
+                state = "";
+                pageWrapper = null;
+                wrapper.parent = hiddenPages;
+                return wrapper;
+            }
         }
     }
 
@@ -263,10 +314,13 @@ PageTreeNode {
             // all children should have Layout.fillWidth false, except the last one
             for (var i = 0; i < children.length - 1; i++) {
                 children[i].Layout.fillWidth = false;
+                children[i].parentNode = multiColumnView;
             }
             if (i >= 0) {
                 children[i].Layout.fillWidth = true;
+                children[i].parentNode = multiColumnView;
             }
+            print("holder added:", children[children.length - 1])
         }
     }
 }
