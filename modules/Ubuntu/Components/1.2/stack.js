@@ -50,7 +50,7 @@ function Stack() {
         }
 
         for (var i = elements.length - 1; i >= 0; i--) {
-            if ((exactMatch && elements[i].column == column) || (elements[i].column >= column)) {
+            if ((exactMatch && elements[i].column == column) || (!exactMatch && elements[i].column >= column)) {
                 return elements[i];
             }
         }

@@ -30,24 +30,36 @@ Item {
     Rectangle {
         id: rect
         color: "pink"
-        width: units.gu(30)
-        height: units.gu(50)
+        anchors.fill: parent
+        objectName: "PinkPage"
     }
 
     Rectangle {
         id: rect2
         color: "green"
-        width: units.gu(30)
-        height: units.gu(50)
+        anchors.fill: parent
+        objectName: "GreenPage"
+    }
+
+    Rectangle {
+        id: rect3
+        color: "blue"
+        anchors.fill: parent
+        objectName: "BluePage"
     }
 
     MultiColumnView {
         id: view
         anchors.fill: parent
-        columns: width > units.gu(80) ? 2 : 1
+        columns: {
+            if (width > units.gu(120)) return 3;
+            if (width > units.gu(80)) return 2;
+            return 1;
+        }
         Component.onCompleted: {
             addToNextColumn(null, rect)
             addToNextColumn(rect, rect2);
+            addToCurrentColumn(rect2, rect3);
         }
     }
 
