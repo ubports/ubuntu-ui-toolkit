@@ -82,7 +82,7 @@ class CaretTextInputTestCase(tests.QMLFileAppTestCase):
         self._assert_not_visible(objectName=cursorName)
         self.pointing_device.click_object(self.textfield)
         self.assertTrue(self.textfield.focus)
-        self.textfield.keyboard.type('Lorem ipsum')
+        self.textfield.write('Lorem ipsum')
         self.main_view.select_single(objectName=cursorName)
 
     def test_caret_hide_while_typing(self):
@@ -90,7 +90,7 @@ class CaretTextInputTestCase(tests.QMLFileAppTestCase):
         self.assertTrue(self.textfield.focus)
         cursor = self.select_cursor('cursorPosition')
 
-        self.textfield.keyboard.type('Lorem ipsum')
+        self.textfield.write('Lorem ipsum')
         self.assertFalse(cursor.visible)
 
     def test_caret_visible_after_tapping(self):
@@ -167,7 +167,7 @@ class InsertModeTextInputTestCase(tests.QMLFileAppTestCase):
 
     def test_popover_not_obscured(self):
         self.pointing_device.click_object(self.textfield)
-        self.textfield.keyboard.type('Lorem ipsum')
+        self.textfield.write('Lorem ipsum')
         self.pointing_device.click_object(self.textfield)
         cursor = self.select_cursor('cursorPosition')
         self.pointing_device.click_object(cursor)
@@ -187,7 +187,7 @@ class InsertModeTextInputTestCase(tests.QMLFileAppTestCase):
     def test_popover_visible_after_tapping_caret(self):
         # Insert Mode
         self.pointing_device.click_object(self.textfield)
-        self.textfield.keyboard.type('Lorem ipsum')
+        self.textfield.write('Lorem ipsum')
         self.pointing_device.click_object(self.textfield)
         cursor = self.select_cursor('cursorPosition')
         self.pointing_device.click_object(cursor)
@@ -197,7 +197,7 @@ class InsertModeTextInputTestCase(tests.QMLFileAppTestCase):
     def test_popover_visible_after_dragging_caret(self):
         # Insert Mode
         self.pointing_device.click_object(self.textfield)
-        self.textfield.keyboard.type('Lorem ipsum')
+        self.textfield.write('Lorem ipsum')
         self.pointing_device.click_object(self.textfield)
         cursor = self.select_cursor('cursorPosition')
         x, y = get_center_point(cursor)
@@ -209,7 +209,7 @@ class InsertModeTextInputTestCase(tests.QMLFileAppTestCase):
     def test_popover_visible_after_long_press(self):
         # Select Mode
         self.pointing_device.click_object(self.textfield)
-        self.textfield.keyboard.type('Lorem ipsum')
+        self.textfield.write('Lorem ipsum')
         self.pointing_device.move(
             self.textfield.globalRect.x + self.textfield.width // 8,
             self.textfield.globalRect.y + self.textfield.height // 2)
