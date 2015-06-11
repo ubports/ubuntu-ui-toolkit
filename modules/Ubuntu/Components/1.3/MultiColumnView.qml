@@ -90,12 +90,16 @@ PageTreeNode {
       is reached.
       */
     function removePagesUntil(page) {
+        // remove nodes which have page as ascendant
         var node = d.stack.top();
-        while ((node = d.stack.top()).parentPage == page) {
+        while (node && node.childOf(page)) {
             d.popAndSetPageForColumn(node);
+            node = d.stack.top();
         }
-        while (d.stack.top() == page) {
-            d.popAndSetPageForColumn(d.stack.top());
+        node = d.stack.top();
+        while (node.object == page) {
+            d.popAndSetPageForColumn(node);
+            node = d.stack.top();
         }
     }
 
@@ -121,7 +125,7 @@ PageTreeNode {
         function createWrapper(page, properties) {
             var wrapperComponent = Qt.createComponent("PageWrapper.qml");
             var wrapperObject = wrapperComponent.createObject(body);
-            wrapperObject.pageStack = null;
+            wrapperObject.pageStack = multiColumnView;
             wrapperObject.properties = properties;
             // set reference last because it will trigger creation of the object
             //  with specified properties.
@@ -131,6 +135,7 @@ PageTreeNode {
 
         function addPage(pageWrapper) {
             stack.push(pageWrapper);
+            pageWrapper.parentWrapper = stack.find(pageWrapper.parentPage);
             var targetColumn = MathUtils.clamp(pageWrapper.column, 0, columns - 1);
             // replace page holder's child
             var holder = body.children[targetColumn];
@@ -231,7 +236,7 @@ PageTreeNode {
                     bottom: parent.bottom
                     right: parent.right
                 }
-                width: 1
+                width: column == (columns - 1) ? 0 : units.dp(4)
                 color: theme.palette.normal.background
             }
 
@@ -282,7 +287,6 @@ PageTreeNode {
         onChildrenChanged: {
             // all children should have Layout.fillWidth false, except the last one
             for (var i = 0; i <= children.length - 1; i++) {
-                children[i].parentNode = multiColumnView;
                 children[i].column = i;
             }
         }

@@ -11,41 +11,80 @@ Item {
         id: page1
         title: "Page #1"
 
-        Layout.maximumWidth: units.gu(40)
+        Rectangle {
+            anchors.fill: parent
+            color: "red"
+        }
+        Column {
+            Button {
+                text: "Add page2 next"
+                onClicked: page1.pageStack.addToNextColumn(page1, page2)
+            }
+            Button {
+                text: "Add page4 above"
+                onClicked: page1.pageStack.addToCurrentColumn(page1, page4)
+            }
+        }
     }
 
     Page {
         id: page2
         title: "Page #2"
+
+        Rectangle {
+            anchors.fill: parent
+            color: "green"
+        }
+        Column {
+            Button {
+                text: "Back..."
+                onClicked: page2.pageStack.removePagesUntil(page2)
+            }
+            Button {
+                text: "Add page3 next"
+                onClicked: page2.pageStack.addToNextColumn(page2, page3)
+            }
+        }
     }
     Page {
         id: page3
         title: "Page #3"
+
+        Rectangle {
+            anchors.fill: parent
+            color: "blue"
+        }
     }
     Page {
         id: page4
         title: "Page #4"
-    }
 
-    Rectangle {
-        id: rect
-        color: "pink"
-        anchors.fill: parent
-        objectName: "PinkPage"
+        Rectangle {
+            anchors.fill: parent
+            color: "teal"
+        }
+        Column {
+            Button {
+                text: "Back..."
+                onClicked: page4.pageStack.removePagesUntil(page4)
+            }
+            Button {
+                text: "Add page5 next"
+                onClicked: page4.pageStack.addToNextColumn(page4, page5)
+            }
+        }
     }
-
-    Rectangle {
-        id: rect2
-        color: "green"
-        anchors.fill: parent
-        objectName: "GreenPage"
-    }
-
-    Rectangle {
-        id: rect3
-        color: "blue"
-        anchors.fill: parent
-        objectName: "BluePage"
+    Page {
+        id: page5
+        title: "Page #5"
+        Rectangle {
+            anchors.fill: parent
+            color: "teal"
+        }
+        Button {
+            text: "Back..."
+            onClicked: page5.pageStack.removePagesUntil(page5)
+        }
     }
 
     MultiColumnView {
@@ -57,9 +96,7 @@ Item {
             return 1;
         }
         Component.onCompleted: {
-            addToNextColumn(null, rect)
-            addToNextColumn(rect, rect2);
-            addToCurrentColumn(rect2, rect3);
+            addToNextColumn(null, page1)
         }
     }
 

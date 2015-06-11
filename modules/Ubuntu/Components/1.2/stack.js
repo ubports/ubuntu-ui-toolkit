@@ -59,12 +59,12 @@ function Stack() {
 
     // returns the node the Page is stored; undefined if not found
     this.find = function(page) {
-        if (!page) return undefined;
+        if (!page) return null;
         for (var i = elements.length - 1; i >= 0; i--) {
             if (elements[i].object == page) {
                 return elements[i];
             }
         }
-        return undefined;
+        return null;
     }
 }
