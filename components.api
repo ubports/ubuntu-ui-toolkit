@@ -521,6 +521,11 @@ Ubuntu.Components.Mouse 1.0 0.1: QtObject
 Ubuntu.Components.Mouse.Priority: Enum
     AfterItem
     BeforeItem
+Ubuntu.Components.MultiColumnView 1.3: PageTreeNode
+    property int columns
+    function var addToCurrentColumn(var sourcePage, var page, var properties)
+    function var addToNextColumn(var sourcePage, var page, var properties)
+    function var removePagesUntil(var page)
 Ubuntu.Components.ListItems.MultiValue 1.0 0.1: Base
     property var values
 Ubuntu.Components.ListItems.MultiValue 1.3: Base
