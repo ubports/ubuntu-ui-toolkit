@@ -33,6 +33,16 @@ OTHER_FILES += \
     DeprecatedTheme.qml \
     StyledItemAppThemeVersioned.qml \
     StyleOverride.qml \
-    StyleKept.qml
+    StyleKept.qml \
+    SimplePropertyHints.qml \
+    StyleHintsWithSignal.qml \
+    StyleHintsWithObject.qml \
+    StyleHintsElsewhere.qml \
+    StyleHintsInvalidProperty.qml \
+    PropertyBindingHints.qml \
+    MoreStyleHints.qml \
+    GroupPropertyBindingHints.qml \
+    OverrideStyleHints.qml \
+    HintedButton.qml
 
 

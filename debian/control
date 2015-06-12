@@ -150,6 +150,7 @@ Depends: ${misc:Depends},
          ubuntu-keyboard-autopilot,
          ubuntu-ui-toolkit-examples (>= ${source:Version}),
          upstart,
+         url-dispatcher-tools,
          qtdeclarative5-ubuntu-ui-toolkit-plugin (>= ${source:Version}) | qtdeclarative5-ubuntu-ui-toolkit-plugin-gles,
          qml-module-qttest | qtdeclarative5-test-plugin,
 Description: Test package for Ubuntu UI Toolkit

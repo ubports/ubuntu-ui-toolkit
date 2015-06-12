@@ -80,9 +80,8 @@ class CaretTextInputTestCase(tests.QMLFileAppTestCase):
     def test_caret_visible_on_focus(self):
         cursorName = 'text_cursor_style_caret_cursorPosition'
         self._assert_not_visible(objectName=cursorName)
-        self.pointing_device.click_object(self.textfield)
-        self.assertTrue(self.textfield.focus)
         self.textfield.write('Lorem ipsum')
+        self.pointing_device.click_object(self.textfield)
         self.main_view.select_single(objectName=cursorName)
 
     def test_caret_hide_while_typing(self):
@@ -167,7 +166,6 @@ class InsertModeTextInputTestCase(tests.QMLFileAppTestCase):
             objectName=positionProperty + '_draggeditem')
 
     def test_popover_not_obscured(self):
-        self.pointing_device.click_object(self.textfield)
         self.textfield.write('Lorem ipsum')
         self.pointing_device.click_object(self.textfield)
         cursor = self.select_cursor('cursorPosition')
@@ -187,7 +185,6 @@ class InsertModeTextInputTestCase(tests.QMLFileAppTestCase):
 
     def test_popover_visible_after_tapping_caret(self):
         # Insert Mode
-        self.pointing_device.click_object(self.textfield)
         self.textfield.write('Lorem ipsum')
         self.pointing_device.click_object(self.textfield)
         cursor = self.select_cursor('cursorPosition')
@@ -197,7 +194,6 @@ class InsertModeTextInputTestCase(tests.QMLFileAppTestCase):
 
     def test_popover_visible_after_dragging_caret(self):
         # Insert Mode
-        self.pointing_device.click_object(self.textfield)
         self.textfield.write('Lorem ipsum')
         self.pointing_device.click_object(self.textfield)
         cursor = self.select_cursor('cursorPosition')
@@ -209,7 +205,6 @@ class InsertModeTextInputTestCase(tests.QMLFileAppTestCase):
     @testtools.skipIf(platform.model() == 'Desktop', 'Touch only')
     def test_popover_visible_after_long_press(self):
         # Select Mode
-        self.pointing_device.click_object(self.textfield)
         self.textfield.write('Lorem ipsum')
         self.pointing_device.move(
             self.textfield.globalRect.x + self.textfield.width // 8,

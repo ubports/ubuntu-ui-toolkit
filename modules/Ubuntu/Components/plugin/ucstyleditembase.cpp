@@ -19,6 +19,7 @@
 #include "ucstyleditembase.h"
 #include "ucstyleditembase_p.h"
 #include "uctheme.h"
+#include "ucstylehints.h"
 #include <QtQml/QQmlEngine>
 #include <QtQuick/private/qquickanchors_p.h>
 
