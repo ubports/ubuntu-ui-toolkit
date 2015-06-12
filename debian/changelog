@@ -1,3 +1,43 @@
+ubuntu-ui-toolkit (1.3.1533+15.10.20150523-0ubuntu2) UNRELEASED; urgency=medium
+
+  [ Christian Dywan ]
+  * Use TextField.write rather than keyboard.type.
+  * Update normal.backgroundText in SuruDark to #5D5D5D. Fixes LP: #1413801.
+  * Fix "runtest.sh: line 78: [: -eq: unary operator expected]".
+  * Consider caret visibility to decide text menu anchor. Fixes LP: #1462419.
+  * Remove text from header textinput AP test QML. Fixes LP: #1459632.
+  * No deprecation notes for our own components. Fixes LP: #1457528.
+ 
+  [ Leonardo Arias Fonseca ]
+  * Add url protocols to the fake application.
+  * Adds a dependency to url-dispatcher-tools in ubuntu-ui-toolkit-autopilot.
+  * Use the test launcher for all the toolkit autopilot tests.
+ 
+  [ Zsombor Egri ]
+  * Remove property bindings before property write does it. Fixes LP: #1462738.
+  * Introducing StyleHints to provide style specific property changes.
+  * Remove ThemeSettings.createStyleComponent() and add styleName to StyledItem.
+    Fixes LP: #1458845.
+ 
+  [ Loïc Molinari ]
+  * [UbuntuShape] Computed dfdt factors based on window content orientation.
+  * Previous logic was based on screen orientation which is not in sync with 
+    OrientationHelper.qml. Fixes LP: #1455567.
+ 
+  [ Timo Jyrinki ] 
+  * Change -html documentation runtime dependencies into Suggests only to limit
+    ubuntu-sdk download size. We're switching to offering only .qch offline 
+    documentation in SDK (inside of it), and they're being added to the seed. 
+    Fixes LP: #1461034.
+ 
+  [ Andrea Bernabei ]
+  * Modify ListItem.Caption label margins. Fixes LP: #1314672.
+ 
+  [ Tim Peeters ]
+  * Introduce IconButtonStyle. 
+
+ -- Zoltán Balogh <zoltan@bakter.hu>  Fri, 12 Jun 2015 11:49:32 +0300
+
 ubuntu-ui-toolkit (1.3.1517+15.10.20150523-0ubuntu1) wily; urgency=medium
 
   [ Christian Dywan ]
