@@ -282,10 +282,10 @@ PageTreeNode {
                 pageWrapper = page;
                 pageWrapper.parent = holderBody;
                 pageWrapper.pageHolder = holder;
+                pageWrapper.active = true;
                 if (pageWrapper.object.hasOwnProperty("head")) {
                     header.config = pageWrapper.object.head;
                 }
-                pageWrapper.active = true;
             }
             function detachCurrentPage() {
                 if (!pageWrapper) return undefined;
