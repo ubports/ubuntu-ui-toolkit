@@ -31,7 +31,7 @@ class ListItemTestCase(tests.QMLFileAppTestCase):
         self.list_view = self.main_view.select_single(
             ubuntuuitoolkit.QQuickListView, objectName='test_view')
         self.test_listitem = self.main_view.select_single(
-            'UCListItem', objectName='listitem0')
+            ubuntuuitoolkit.UCListItem, objectName='listitem0')
         self.test_page = self.main_view.select_single(
             objectName='test_page')
         self.assertEqual(self.test_page.title, 'No action triggered')
