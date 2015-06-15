@@ -272,7 +272,7 @@ PageTreeNode {
                 objectName: parent.objectName + "Body"
                 anchors {
                     fill: parent
-                    topMargin: header.height
+//                    topMargin: header.height
                     rightMargin: divider.width
                 }
             }
@@ -301,6 +301,9 @@ PageTreeNode {
         }
     }
 
+    /*! \internal */
+    // Pages declared as children will be placed directly into hiddenPages
+    default property alias data: hiddenPages.data
     Item {
         id: hiddenPages
         objectName: "HiddenPagePool"
