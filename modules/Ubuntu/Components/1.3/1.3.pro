@@ -13,6 +13,3 @@ js_files.installPath = $$installPath
 js_files.files = *.js
 
 UBUNTU_QML_MODULE_FILES += qml_files js_files
-
-OTHER_FILES += \
-    MultiColumnView.qml

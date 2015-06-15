@@ -36,6 +36,7 @@ PageTreeNode {
     id: multiColumnView
 
     /*!
+      \preliminary
       Specifies the number of columns in the view. A condition must be set to
       control the number of columns depending on the space available.
       \qml
@@ -68,7 +69,7 @@ PageTreeNode {
 
     /*!
       \qmlmethod Item addToNextColumn(Item sourcePage, var page[, var properties])
-      Same as \l addTotargetColumn except that the \c page is added to the column
+      Same as \l addToCurrentColumn except that the \c page is added to the column
       next to the one the \c sourcePage resides. If \c sourcePage is null, the new
       page will be added to the leftmost column. If \c sourcePage is located in the
       rightmost column, the new page will be pushed to the same column as \c sourcePage.
@@ -203,9 +204,9 @@ PageTreeNode {
                     continue;
                 }
                 // detach current page from holder if differs
-//                if (holder.pageWrapper != pageWrapper) {
+                if (holder.pageWrapper != pageWrapper) {
                     holder.detachCurrentPage();
-//                }
+                }
                 if (pageWrapper.parent == hiddenPages) {
                     // add the page to the column
                     holder.attachPage(pageWrapper);
