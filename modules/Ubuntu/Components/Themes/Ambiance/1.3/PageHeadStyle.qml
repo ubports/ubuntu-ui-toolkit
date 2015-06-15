@@ -23,7 +23,7 @@ Style.PageHeadStyle {
     objectName: "PageHeadStyle" // used in unit tests
     contentHeight: units.gu(7)
     fontWeight: Font.Light
-    fontSize: "x-large"
+    fontSize: "large"
     textLeftMargin: units.gu(2)
     maximumNumberOfActions: 3
 
@@ -394,7 +394,7 @@ Style.PageHeadStyle {
                     right: parent.right
                     verticalCenter: parent.verticalCenter
                 }
-                text: styledItem.title
+                text: styledItem.config.title
                 font.weight: headerStyle.fontWeight
                 fontSize: headerStyle.fontSize
                 color: headerStyle.titleColor

@@ -151,13 +151,17 @@ PageTreeNode {
         // node is a triplet of {page, column, parentPage}
         function popAndSetPageForColumn(node) {
             stack.pop();
-            node.active = false;
-            node.parent = null;
             var effectiveColumn = MathUtils.clamp(node.column, 0, columns - 1);
-            var prevPage = stack.topForColumn(node.column, node.column < effectiveColumn);
+            var columnHolder = body.children[effectiveColumn];
+            // is the page in a column?
+            if (node == columnHolder.pageWrapper) {
+                // detach page from column
+                columnHolder.detachCurrentPage();
+            }
+            node.parent = null;
+            var prevPage = stack.topForColumn(node.column, effectiveColumn < columns - 1);
             if (prevPage) {
-                prevPage.parent = body.children[effectiveColumn];
-                prevPage.active = true;
+                columnHolder.attachPage(prevPage);
             }
             if (node.canDestroy) {
                 node.destroyObject();
@@ -168,9 +172,9 @@ PageTreeNode {
         function relayout() {
             if (body.children.length == columns) return;
             if (body.children.length > columns) {
-                // need to remove few columns, the first ones
+                // need to remove few columns, the last ones
                 while (body.children.length > columns) {
-                    var holder = body.children[0];
+                    var holder = body.children[body.children.length - 1];
                     holder.detachCurrentPage();
                     holder.parent = null;
                     holder.destroy();
@@ -195,18 +199,21 @@ PageTreeNode {
                 }
                 if (!pageWrapper.parent) {
                     // this should never happen, so if it does, we have a bug!
-                    console.error("Found a page which wasn't parented anywhere!");
+                    console.error("Found a page which wasn't parented anywhere!", pageWrapper.object.title);
                     continue;
+                }
+                // detach current page from holder if differs
+                if (holder.pageWrapper != pageWrapper) {
+                    holder.detachCurrentPage();
                 }
                 if (pageWrapper.parent == hiddenPages) {
                     // add the page to the column
                     holder.attachPage(pageWrapper);
-                } else if (pageWrapper.parent != holder) {
-                    // the page is set to a column, so we move to the new one
-                    // detach the current page content
-                    holder.detachCurrentPage();
+                } else if (pageWrapper.pageHolder != holder) {
                     // detach the pageWrapper from its holder
-                    pageWrapper.parent.detachCurrentPage();
+                    if (pageWrapper.pageHolder) {
+                        pageWrapper.pageHolder.detachCurrentPage();
+                    }
                     // then attach to this holder
                     holder.attachPage(pageWrapper);
                 }
@@ -218,16 +225,35 @@ PageTreeNode {
     // will be parented into hiddenPages
     Component {
         id: pageHolderComponent
-        PageTreeNode {
+        Item {
             id: holder
             property PageWrapper pageWrapper
             property int column
+            property alias config: header.config
 
             objectName: "PageWrapperHolder" + column
 
             Layout.fillWidth: column == (columns - 1)
             Layout.fillHeight: true
             Layout.preferredWidth: units.gu(40)
+
+            // header
+            StyledItem {
+                id: header
+                anchors {
+                    left: parent.left
+                    top: parent.top
+                    right: parent.right
+                }
+                implicitHeight: units.gu(8)
+                styleName: config ? "PageHeadStyle" : ""
+
+                property PageHeadConfiguration config: null
+                property Item contents: null
+
+                property color dividerColor: theme.palette.normal.background
+                property color panelColor
+            }
 
             Rectangle {
                 id: divider
@@ -236,33 +262,38 @@ PageTreeNode {
                     bottom: parent.bottom
                     right: parent.right
                 }
-                width: column == (columns - 1) ? 0 : units.dp(4)
+                width: (column == (columns - 1)) || !pageWrapper ? 0 : units.dp(4)
                 color: theme.palette.normal.background
             }
 
-            states: State {
-                name: "anchorPageWrapper"
-                // PageWrapper anchor.fills to its parent, so we only have to set the right marging
-                PropertyChanges {
-                    target: pageWrapper
-                    anchors.rightMargin: divider.width
+            Item {
+                id: holderBody
+                objectName: parent.objectName + "Body"
+                anchors {
+                    fill: parent
+                    topMargin: header.height
+                    rightMargin: divider.width
                 }
             }
 
             function attachPage(page) {
                 if (!page) return;
                 pageWrapper = page;
-                pageWrapper.parent = holder;
-                state = "anchorPageWrapper";
+                pageWrapper.parent = holderBody;
+                pageWrapper.pageHolder = holder;
+                // configure header before we activate
+                header.config = pageWrapper.object.head;
                 pageWrapper.active = true;
             }
             function detachCurrentPage() {
                 if (!pageWrapper) return undefined;
                 var wrapper = pageWrapper;
+                // remove header
                 wrapper.active = false;
-                state = "";
+                header.config = null;
                 pageWrapper = null;
                 wrapper.parent = hiddenPages;
+                wrapper.pageHolder = null;
                 return wrapper;
             }
         }
@@ -270,6 +301,7 @@ PageTreeNode {
 
     Item {
         id: hiddenPages
+        objectName: "HiddenPagePool"
         visible: false
         // make sure nothing is shown eventually
         clip: true

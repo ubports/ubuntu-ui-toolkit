@@ -76,7 +76,7 @@ PageTreeNode {
                 if (wrapper.object == page) {
                     return true;
                 }
-                wrapper = parentWrapper.parentWrapper;
+                wrapper = wrapper.parentWrapper;
             }
         }
         return false;

@@ -56,4 +56,6 @@ Object {
 
     // auto-updated by AppHeader, but may be set by the developer
     property bool visible
+
+    property string title
 }

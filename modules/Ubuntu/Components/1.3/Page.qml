@@ -43,6 +43,7 @@ PageTreeNode {
     readonly property alias head: headerConfig
     Toolkit13.PageHeadConfiguration {
         id: headerConfig
+        title: page.title
     }
 
     Toolkit13.Object {

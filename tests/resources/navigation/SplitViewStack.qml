@@ -54,6 +54,10 @@ Item {
             anchors.fill: parent
             color: "blue"
         }
+        Button {
+            text: "Back..."
+            onClicked: page3.pageStack.removePagesUntil(page3)
+        }
     }
     Page {
         id: page4
@@ -79,7 +83,7 @@ Item {
         title: "Page #5"
         Rectangle {
             anchors.fill: parent
-            color: "teal"
+            color: "tan"
         }
         Button {
             text: "Back..."
