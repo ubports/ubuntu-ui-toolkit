@@ -159,7 +159,7 @@ PageTreeNode {
                 columnHolder.detachCurrentPage();
             }
             node.parent = null;
-            var prevPage = stack.topForColumn(node.column, effectiveColumn < columns - 1);
+            var prevPage = stack.topForColumn(effectiveColumn, effectiveColumn < columns - 1);
             if (prevPage) {
                 columnHolder.attachPage(prevPage);
             }
@@ -203,9 +203,9 @@ PageTreeNode {
                     continue;
                 }
                 // detach current page from holder if differs
-                if (holder.pageWrapper != pageWrapper) {
+//                if (holder.pageWrapper != pageWrapper) {
                     holder.detachCurrentPage();
-                }
+//                }
                 if (pageWrapper.parent == hiddenPages) {
                     // add the page to the column
                     holder.attachPage(pageWrapper);
@@ -246,7 +246,7 @@ PageTreeNode {
                     right: parent.right
                 }
                 implicitHeight: units.gu(8)
-                styleName: config ? "PageHeadStyle" : ""
+//                styleName: config ? "PageHeadStyle" : ""
 
                 property PageHeadConfiguration config: null
                 property Item contents: null
