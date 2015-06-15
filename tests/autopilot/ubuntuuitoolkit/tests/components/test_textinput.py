@@ -23,7 +23,10 @@ from time import sleep
 from autopilot.input._common import get_center_point
 from autopilot import platform
 
-from ubuntuuitoolkit import tests
+from ubuntuuitoolkit import (
+    MainView,
+    tests
+)
 
 
 class CaretTextInputTestCase(tests.QMLFileAppTestCase):
@@ -138,7 +141,12 @@ class InsertModeTextInputTestCase(tests.QMLFileAppTestCase):
         return command_line
 
     def setUp(self):
-        super().setUp()
+
+        # Work around bug LP:1457629
+        class MainView12(MainView):
+            pass
+
+        super().setUp(mainview_class=MainView12)
         self.textfield = self.main_view.select_single(
             objectName=self.objectName)
         self.assertFalse(self.textfield.focus)

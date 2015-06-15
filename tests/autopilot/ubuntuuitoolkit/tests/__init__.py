@@ -25,6 +25,7 @@ from testtools.matchers import Is, Not, Equals
 
 import ubuntuuitoolkit
 from ubuntuuitoolkit import base, fixture_setup
+from ubuntuuitoolkit._custom_proxy_objects._mainview import MainView
 
 
 _DESKTOP_FILE_CONTENTS = ("""[Desktop Entry]
@@ -155,8 +156,10 @@ class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
     test_qml_file_path = '/path/to/file.qml'
     desktop_file_path = None
 
-    def setUp(self):
+    def setUp(self, mainview_class=MainView):
         super().setUp()
+        # Allow a test case to use a different CPO
+        self.mainview_class = mainview_class
         self.pointing_device = Pointer(self.input_device_class.create())
         self.launch_application()
 
@@ -195,11 +198,10 @@ class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
         QML code used for testing must define the objectName
         of the MainView to be 'mainView'.
         """
-        # Temp Note (veebers): assume always MainView for now. Docs need
-        # updating perhaps (assume objectName=mainView is to change out CPO if
+        # Docs will need updating (objectName=mainView is to change out CPO if
         # needed).
         return self.app.select_single(
-            ubuntuuitoolkit.MainView,
+            self.mainview_class,
             objectName='mainView'
         )
 
