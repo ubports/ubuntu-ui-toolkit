@@ -9,7 +9,7 @@ for(filetype, filetypes) {
 }
 
 
-desktop_files.path = /usr/share/applications
+desktop_files.path = $$[QT_INSTALL_EXAMPLES]/ubuntu-ui-toolkit/examples/locale
 desktop_files.files = locale.desktop
 
 other_files.path = $$[QT_INSTALL_EXAMPLES]/ubuntu-ui-toolkit/examples/locale
