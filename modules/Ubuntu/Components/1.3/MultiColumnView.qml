@@ -246,7 +246,7 @@ PageTreeNode {
                     right: parent.right
                 }
                 implicitHeight: units.gu(8)
-//                styleName: config ? "PageHeadStyle" : ""
+                styleName: config ? "PageHeadStyle" : ""
 
                 property PageHeadConfiguration config: null
                 property Item contents: null
