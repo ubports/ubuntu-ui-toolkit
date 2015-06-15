@@ -13,7 +13,7 @@ for(filetype, filetypes) {
 desktop_files.path = /usr/share/applications
 desktop_files.files = calculator.desktop
 
-other_files.path = /usr/lib/ubuntu-ui-toolkit/examples/calculator
+other_files.path = $$[QT_INSTALL_EXAMPLES]/ubuntu-ui-toolkit/examples/calculator
 other_files.files = $$OTHER_FILES
 
 INSTALLS += other_files desktop_files
