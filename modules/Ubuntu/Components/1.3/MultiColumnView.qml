@@ -17,7 +17,7 @@
 import QtQuick 2.4
 import QtQuick.Layouts 1.1
 import Ubuntu.Components 1.3
-import "../1.2/stack.js" as Stack
+import "stack.js" as Stack
 
 /*!
   \qmltype MultiColumnView
@@ -263,7 +263,7 @@ PageTreeNode {
                     bottom: parent.bottom
                     right: parent.right
                 }
-                width: (column == (columns - 1)) || !pageWrapper ? 0 : units.dp(4)
+                width: (column == (columns - 1)) || !pageWrapper ? 0 : units.dp(2)
                 color: theme.palette.normal.background
             }
 
@@ -282,8 +282,9 @@ PageTreeNode {
                 pageWrapper = page;
                 pageWrapper.parent = holderBody;
                 pageWrapper.pageHolder = holder;
-                // configure header before we activate
-                header.config = pageWrapper.object.head;
+                if (pageWrapper.object.hasOwnProperty("head")) {
+                    header.config = pageWrapper.object.head;
+                }
                 pageWrapper.active = true;
             }
             function detachCurrentPage() {

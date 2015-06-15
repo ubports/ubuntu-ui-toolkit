@@ -85,9 +85,15 @@ Item {
             anchors.fill: parent
             color: "tan"
         }
-        Button {
-            text: "Back..."
-            onClicked: page5.pageStack.removePagesUntil(page5)
+        Column {
+            Button {
+                text: "Back..."
+                onClicked: page5.pageStack.removePagesUntil(page5)
+            }
+            Button {
+                text: "Custom page on same column"
+                onClicked: page5.pageStack.addToCurrentColumn(page5, Qt.resolvedUrl("MyCustomPage.qml"))
+            }
         }
     }
 

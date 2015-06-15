@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -42,4 +42,30 @@ function Stack() {
         return elements[elements.length-1];
     }
 
+    // returns the topmost element for the column, using exact column match
+    // in case the column to be extracted is less than the columns available
+    this.topForColumn = function(column, exactMatch) {
+        if (exactMatch == undefined) {
+            exactMatch = false;
+        }
+
+        for (var i = elements.length - 1; i >= 0; i--) {
+            var node = elements[i];
+            if ((exactMatch && elements[i].column == column) || (!exactMatch && elements[i].column >= column)) {
+                return elements[i];
+            }
+        }
+        return undefined;
+    }
+
+    // returns the node the Page is stored; undefined if not found
+    this.find = function(page) {
+        if (!page) return null;
+        for (var i = elements.length - 1; i >= 0; i--) {
+            if (elements[i].object == page) {
+                return elements[i];
+            }
+        }
+        return null;
+    }
 }
