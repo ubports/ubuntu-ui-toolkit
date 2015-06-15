@@ -49,14 +49,14 @@ PageTreeNode {
     property int columns: 1
 
     /*!
-      \qmlmethod Item addToCurrentColumn(Item sourcePage, var page[, var properties])
+      \qmlmethod Item addPageToCurrentColumn(Item sourcePage, var page[, var properties])
       Adds a \c page to the column the \c sourcePage resides in. If \c sourcePage
       is null, the \c page will be added to the leftmost column. \c page can be a
       Component or a file. \c properties is a JSon object containing properties
       to be set when page is created. \c sourcePage must be active. Returns the
       instance of the page created.
       */
-    function addToCurrentColumn(sourcePage, page, properties) {
+    function addPageToCurrentColumn(sourcePage, page, properties) {
         if (columns <= 0) {
             return;
         }
@@ -68,13 +68,13 @@ PageTreeNode {
     }
 
     /*!
-      \qmlmethod Item addToNextColumn(Item sourcePage, var page[, var properties])
-      Same as \l addToCurrentColumn except that the \c page is added to the column
+      \qmlmethod Item addPageToNextColumn(Item sourcePage, var page[, var properties])
+      Same as \l addPageToCurrentColumn except that the \c page is added to the column
       next to the one the \c sourcePage resides. If \c sourcePage is null, the new
       page will be added to the leftmost column. If \c sourcePage is located in the
       rightmost column, the new page will be pushed to the same column as \c sourcePage.
       */
-    function addToNextColumn(sourcePage, page, properties) {
+    function addPageToNextColumn(sourcePage, page, properties) {
         if (columns <= 0) {
             return;
         }
@@ -86,11 +86,11 @@ PageTreeNode {
     }
 
     /*!
-      \qmlmethod void removePagesUntil(Item page)
+      \qmlmethod void removePages(Item page)
       The function removes and deletes all pages from the view columns until \c page
       is reached.
       */
-    function removePagesUntil(page) {
+    function removePages(page) {
         // remove nodes which have page as ascendant
         var node = d.stack.top();
         while (node && node.childOf(page)) {

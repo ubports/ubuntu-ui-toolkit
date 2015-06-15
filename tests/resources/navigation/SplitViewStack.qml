@@ -18,11 +18,11 @@ Item {
         Column {
             Button {
                 text: "Add page2 next"
-                onClicked: page1.pageStack.addToNextColumn(page1, page2)
+                onClicked: page1.pageStack.addPageToNextColumn(page1, page2)
             }
             Button {
                 text: "Add page4 above"
-                onClicked: page1.pageStack.addToCurrentColumn(page1, page4)
+                onClicked: page1.pageStack.addPageToCurrentColumn(page1, page4)
             }
         }
     }
@@ -38,11 +38,11 @@ Item {
         Column {
             Button {
                 text: "Back..."
-                onClicked: page2.pageStack.removePagesUntil(page2)
+                onClicked: page2.pageStack.removePages(page2)
             }
             Button {
                 text: "Add page3 next"
-                onClicked: page2.pageStack.addToNextColumn(page2, page3)
+                onClicked: page2.pageStack.addPageToNextColumn(page2, page3)
             }
         }
     }
@@ -56,7 +56,7 @@ Item {
         }
         Button {
             text: "Back..."
-            onClicked: page3.pageStack.removePagesUntil(page3)
+            onClicked: page3.pageStack.removePages(page3)
         }
     }
     Page {
@@ -70,11 +70,11 @@ Item {
         Column {
             Button {
                 text: "Back..."
-                onClicked: page4.pageStack.removePagesUntil(page4)
+                onClicked: page4.pageStack.removePages(page4)
             }
             Button {
                 text: "Add page5 next"
-                onClicked: page4.pageStack.addToNextColumn(page4, page5)
+                onClicked: page4.pageStack.addPageToNextColumn(page4, page5)
             }
         }
     }
@@ -88,11 +88,11 @@ Item {
         Column {
             Button {
                 text: "Back..."
-                onClicked: page5.pageStack.removePagesUntil(page5)
+                onClicked: page5.pageStack.removePages(page5)
             }
             Button {
                 text: "Custom page on same column"
-                onClicked: page5.pageStack.addToCurrentColumn(page5, Qt.resolvedUrl("MyCustomPage.qml"))
+                onClicked: page5.pageStack.addPageToCurrentColumn(page5, Qt.resolvedUrl("MyCustomPage.qml"))
             }
         }
     }
@@ -106,7 +106,7 @@ Item {
             return 1;
         }
         Component.onCompleted: {
-            addToNextColumn(null, page1)
+            addPageToNextColumn(null, page1)
         }
     }
 
