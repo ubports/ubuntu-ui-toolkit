@@ -43,49 +43,76 @@ Rectangle {
         "string one", "string two", "string three"
     ]
 
-    Sections {
-        id: enabledSections
+    Column {
+        id: column
         anchors {
             left: parent.left
+            right: parent.right
             top: parent.top
-            margins: units.gu(1)
+            margins: units.gu(2)
         }
-        model: root.actionList
-    }
-    Sections {
-        id: disabledSections
-        anchors {
-            left: parent.left
-            top: enabledSections.bottom
-            margins: units.gu(1)
-        }
-        model: root.actionList
-        enabled: false
-    }
-    Sections {
-        id: enabledStringSections
-        anchors {
-            right: parent.right
-            top: disabledSections.bottom
-            margins: units.gu(1)
-        }
-        model: root.stringList
-    }
-    Sections {
-        id: disabledStringSections
-        anchors {
-            right: parent.right
-            top: enabledStringSections.bottom
-            margins: units.gu(1)
-        }
-        model: root.stringList
-        enabled: false
-    }
+        spacing: units.gu(2)
 
-    Label {
-        id: label
-        anchors.centerIn: parent
-        text: "No action triggered."
+        Label {
+            anchors.horizontalCenter: parent.horizontalCenter
+            text: "Sections with actions"
+        }
+        Label {
+            anchors.left: parent.left
+            text: "enabled:"
+            fontSize: "small"
+        }
+        Sections {
+            id: enabledSections
+            model: root.actionList
+        }
+        Label {
+            text: "disabled:"
+            fontSize: "small"
+        }
+        Sections {
+            id: disabledSections
+            model: root.actionList
+            enabled: false
+        }
+        Rectangle {
+            anchors {
+                left: parent.left
+                right: parent.right
+                margins: units.gu(2)
+            }
+            color: UbuntuColors.blue
+            height: units.gu(10)
+            Label {
+                id: label
+                anchors.centerIn: parent
+                text: "No action triggered."
+                color: "white"
+            }
+        }
+        Label {
+            anchors.horizontalCenter: parent.horizontalCenter
+            text: "Sections with strings"
+        }
+        Label {
+            anchors.left: parent.left
+            text: "enabled:"
+            fontSize: "small"
+        }
+        Sections {
+            id: enabledStringSections
+            model: root.stringList
+        }
+        Label {
+            anchors.left: parent.left
+            text: "disabled:"
+            fontSize: "small"
+        }
+        Sections {
+            id: disabledStringSections
+            model: root.stringList
+            enabled: false
+        }
     }
 
     UbuntuTestCase {
