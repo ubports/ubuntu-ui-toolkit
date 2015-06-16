@@ -39,6 +39,10 @@ Rectangle {
         }
     ]
 
+    property var stringList: [
+        "string one", "string two", "string three"
+    ]
+
     Sections {
         id: enabledSections
         anchors {
@@ -58,6 +62,26 @@ Rectangle {
         actions: root.actionList
         enabled: false
     }
+    Sections {
+        id: enabledStringSections
+        anchors {
+            right: parent.right
+            top: disabledSections.bottom
+            margins: units.gu(1)
+        }
+        // model
+    }
+    Sections {
+        id: disabledStringSections
+        anchors {
+            right: parent.right
+            top: enabledStringSections.bottom
+            margins: units.gu(1)
+        }
+        // model
+        enabled: false
+    }
+
     Label {
         id: label
         anchors.centerIn: parent
@@ -135,6 +159,8 @@ Rectangle {
         function test_0_first_section_initially_selected() {
             check_selected_section(enabledSections, 0, "first", "(init): ");
             check_selected_section(disabledSections, 0, "first", "(init disabled): ");
+            check_selected_section(enabledStringSections, 0, "string one", "(init str): ");
+            check_selected_section(disabledStringSections, 0, "string one", "(init disabled str): ");
         }
 
         function test_number_of_section_buttons() {
@@ -155,12 +181,27 @@ Rectangle {
             compare(label.text, text, "Action for clicked button not triggered.");
 
             click_section_button(disabledSections, name);
-            // first button should still be selected:
-            index = disabledSections.selectedIndex;
-            name = "first";
             wait_for_animation(disabledSections);
+            // first button should still be selected:
+            index = 0;
+            name = "first";
             check_selected_section(disabledSections, index, name, "(click disabled): ");
             compare(label.text, text, "Clicking disabled button triggered something.");
+
+            name = "string three";
+            index = 2;
+            click_section_button(enabledStringSections, name);
+            wait_for_animation(enabledStringSections);
+            check_selected_section(enabledStringSections, index, name, "(click str): ");
+            // no actions triggered
+
+            click_section_button(disabledStringSections, name);
+            wait_for_animation(disabledStringSections);
+            // first button should still be selected:
+            index = 0;
+            name = "string one";
+            check_selected_section(disabledStringSections, index, name, "(click disabled str): ");
+            // no actions triggered
         }
 
         function test_set_selectedIndex_to_select_section() {
@@ -178,8 +219,21 @@ Rectangle {
             wait_for_animation(disabledSections);
             check_selected_section(disabledSections, index, name, "(set index disabled): ");
             text = "Third action triggered.";
-            compare(label.text, text, "Changing selected index for disabled Sections "+
+            compare(label.text, text, "Changing selected index for disabled Sections " +
                                         "did not trigger action.");
+
+            index = 1;
+            name = "string two";
+            enabledStringSections.selectedIndex = index;
+            wait_for_animation(enabledStringSections);
+            check_selected_section(enabledStringSections, index, name, "(set str index): ");
+            // no action triggered
+
+            index = 2;
+            name = "string three";
+            disabledStringSections.selectedIndex = index;
+            check_selected_section(disabledStringSections, index, name, "(set str index disabled): ");
+            // no action triggered
         }
     }
 }
