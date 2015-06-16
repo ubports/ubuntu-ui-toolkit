@@ -23,6 +23,9 @@ from ubuntuuitoolkit import (
     units,
 )
 from ubuntuuitoolkit._custom_proxy_objects import _flickable
+from ubuntuuitoolkit._custom_proxy_objects._common import (
+    UbuntuUIToolkitCustomProxyObjectBase as ProxyBase
+)
 
 
 class FlickableTestCase(testtools.TestCase):
@@ -88,7 +91,9 @@ MainView {
 
     def test_is_flickable(self):
         """Test that is_flickable identifies the elements correctly."""
-        element = self.app.select_single(objectName=self.object_name)
+        element = ProxyBase.from_proxy_object(
+            self.app.select_single(objectName=self.object_name)
+        )
         self.assertEqual(element.is_flickable(), self.is_flickable)
 
 
@@ -152,9 +157,6 @@ MainView {
         self.assertEqual(self.label.text, 'No element clicked.')
 
     def test_swipe_into_view_bottom_element(self):
-        from ubuntuuitoolkit import (
-            UbuntuUIToolkitCustomProxyObjectBase as ProxyBase
-        )
         self.main_view.close_toolbar()
 
         button = ProxyBase.from_proxy_object(
@@ -167,10 +169,14 @@ MainView {
 
     def test_swipe_into_view_top_element(self):
         self.main_view.close_toolbar()
-        bottomButton = self.main_view.select_single(objectName='bottomButton')
+        bottomButton = button = ProxyBase.from_proxy_object(
+            self.main_view.select_single(objectName='bottomButton')
+        )
         bottomButton.swipe_into_view()
 
-        topButton = self.main_view.select_single(objectName='topButton')
+        topButton = button = ProxyBase.from_proxy_object(
+            self.main_view.select_single(objectName='topButton')
+        )
         topButton.swipe_into_view()
 
         self.pointing_device.click_object(topButton)
