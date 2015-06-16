@@ -50,7 +50,7 @@ Rectangle {
             top: parent.top
             margins: units.gu(1)
         }
-        actions: root.actionList
+        model: root.actionList
     }
     Sections {
         id: disabledSections
@@ -59,7 +59,7 @@ Rectangle {
             top: enabledSections.bottom
             margins: units.gu(1)
         }
-        actions: root.actionList
+        model: root.actionList
         enabled: false
     }
     Sections {
@@ -69,7 +69,7 @@ Rectangle {
             top: disabledSections.bottom
             margins: units.gu(1)
         }
-        // model
+        model: root.stringList
     }
     Sections {
         id: disabledStringSections
@@ -78,7 +78,7 @@ Rectangle {
             top: enabledStringSections.bottom
             margins: units.gu(1)
         }
-        // model
+        model: root.stringList
         enabled: false
     }
 
@@ -134,9 +134,18 @@ Rectangle {
 
         function click_section_button(sections, sectionName) {
             var index = -1;
-            for (index = 0; index < sections.actions.length; index++) {
-                if (sections.actions[index].text === sectionName) {
-                    break;
+            var object;
+            for (index = 0; index < sections.model.length; index++) {
+                object = sections.model[index];
+                // object may be a string or an Action
+                if (object.hasOwnProperty("text")) {
+                    if (object.text === sectionName) {
+                        break;
+                    }
+                } else {
+                    if (object === sectionName) {
+                        break;
+                    }
                 }
             }
             verify(index >= 0, "Button with name \'"+sectionName+"\' not found.");

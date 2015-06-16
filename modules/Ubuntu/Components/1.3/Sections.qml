@@ -41,21 +41,31 @@ StyledItem {
       Example:
       \qml
         Sections {
-            actions: [
+            model: [
                 Action { text: "first" },
                 Action { text: "second" },
                 Action { text: "third" }
             ]
             onSelectedIndexChanged: {
-                print("Selected " + actions[selectedIndex].text + " section.");
+                print("Selected " + model[selectedIndex].text + " section.");
             }
         }
      \endqml
      It is strongly recommended to limit the number of sections to two or three.
+     If no trigger functions need to be specified, the model may be simplified
+     to a list of strings naming the sections:
+     \qml
+        Sections {
+            model: [ "one", "two", "three" ]
+            onSelectedIndexChanged: {
+                print("Selected section " + model[selectedIndex];
+            }
+        }
+     \endqml
      */
-    property var actions
-    onActionsChanged: {
-        if (actions && actions.length > 3) {
+    property var model
+    onModelChanged: {
+        if (model && model.length > 3) {
             // FIXME: Make the Sections scrollable for more than 3 sections.
             console.warn("It is not YET recommended or supported to use more than three sections.");
         }
@@ -64,11 +74,13 @@ StyledItem {
     /*!
       The index of the currently selected section in \l actions.
      */
-    property int selectedIndex: actions ? 0 : -1
+    property int selectedIndex: model ? 0 : -1
 
     onSelectedIndexChanged: {
-        if ((selectedIndex >= 0) && (selectedIndex < actions.length)) {
-            actions[selectedIndex].trigger();
+        if ((selectedIndex >= 0) && (selectedIndex < model.length)) {
+            if (model[selectedIndex].hasOwnProperty("trigger")) {
+                model[selectedIndex].trigger();
+            }
         }
     }
 }
