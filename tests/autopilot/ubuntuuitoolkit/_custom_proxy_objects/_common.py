@@ -102,9 +102,13 @@ class UbuntuUIToolkitCustomProxyObjectBase(dbus.CustomEmulatorBase):
         flickable_parent.swipe_child_into_view(self)
 
     def _get_flickable_parent(self):
+        from ubuntuuitoolkit._custom_proxy_objects._flickable import (
+            QQuickFlickable
+        )
         parent = self.get_parent()
         root = self.get_root_instance()
         while parent.id != root.id:
+            parent = QQuickFlickable.from_proxy_object(parent)
             if parent.is_flickable():
                 return parent
             parent = parent.get_parent()
@@ -126,4 +130,7 @@ class UbuntuUIToolkitCustomProxyObjectBase(dbus.CustomEmulatorBase):
         if top_container is None:
             raise ToolkitException('Could not find the top-most container.')
         else:
-            return top_container
+            from ubuntuuitoolkit._custom_proxy_objects._mainview import (
+                MainView
+            )
+            return MainView.from_proxy_object(top_container)

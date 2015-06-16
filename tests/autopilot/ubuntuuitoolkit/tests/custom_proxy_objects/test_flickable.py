@@ -152,9 +152,14 @@ MainView {
         self.assertEqual(self.label.text, 'No element clicked.')
 
     def test_swipe_into_view_bottom_element(self):
+        from ubuntuuitoolkit import (
+            UbuntuUIToolkitCustomProxyObjectBase as ProxyBase
+        )
         self.main_view.close_toolbar()
 
-        button = self.main_view.select_single(objectName='bottomButton')
+        button = ProxyBase.from_proxy_object(
+            self.main_view.select_single(objectName='bottomButton')
+        )
         button.swipe_into_view()
 
         self.pointing_device.click_object(button)
