@@ -17,7 +17,10 @@
 import os
 
 import ubuntuuitoolkit
-from ubuntuuitoolkit import tests
+from ubuntuuitoolkit import (
+    MainView,
+    tests
+)
 
 
 class ListItemTestCase(tests.QMLFileAppTestCase):
@@ -27,7 +30,12 @@ class ListItemTestCase(tests.QMLFileAppTestCase):
         dir_path, 'test_listitem.ListItemTestCase.qml')
 
     def setUp(self):
-        super().setUp()
+
+        # Work around bug LP:1457629
+        class MainView12(MainView):
+            pass
+
+        super().setUp(MainView12)
         self.list_view = self.main_view.select_single(
             ubuntuuitoolkit.QQuickListView, objectName='test_view')
         self.test_listitem = self.main_view.select_single(
@@ -93,6 +101,6 @@ class ListItemTestCase(tests.QMLFileAppTestCase):
         self.assertTrue(self.test_listitem.selected)
         # select an other one
         listItem3 = self.main_view.select_single(
-            'UCListItem', objectName='listitem3')
+            ubuntuuitoolkit.UCListItem, objectName='listitem3')
         listItem3.toggle_selected()
         self.assertTrue(listItem3.selected)
