@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
- * Copyright (C) 2015 Christian Dywan
+ * Copyright (C) 2015 Canonical
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by

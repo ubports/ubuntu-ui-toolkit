@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (1.3.1533+15.10.20150523-0ubuntu2) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.3.1534+15.10.20150523-0ubuntu2) UNRELEASED; urgency=medium
 
   [ Christian Dywan ]
   * Use TextField.write rather than keyboard.type.
@@ -29,6 +29,8 @@ ubuntu-ui-toolkit (1.3.1533+15.10.20150523-0ubuntu2) UNRELEASED; urgency=medium
     ubuntu-sdk download size. We're switching to offering only .qch offline 
     documentation in SDK (inside of it), and they're being added to the seed. 
     Fixes LP: #1461034.
+  * Licensecheck started complaining about a person name, change to Canonical. 
+    Fixes LP: #1464549
  
   [ Andrea Bernabei ]
   * Modify ListItem.Caption label margins. Fixes LP: #1314672.
