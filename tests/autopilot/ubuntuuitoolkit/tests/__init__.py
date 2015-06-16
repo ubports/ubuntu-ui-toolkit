@@ -126,8 +126,9 @@ MainView {
 class QMLStringAppTestCase(UbuntuUIToolkitWithFakeAppRunningTestCase):
     """Base test case for self tests that define the QML on an string."""
 
-    def setUp(self):
+    def setUp(self, mainview_class=MainView):
         super().setUp()
+        self.mainview_class = mainview_class
         self.assertThat(
             self.main_view.visible, Eventually(Equals(True)))
 
@@ -141,7 +142,12 @@ class QMLStringAppTestCase(UbuntuUIToolkitWithFakeAppRunningTestCase):
         QML code used for testing must define the objectName
         of the MainView to be 'mainView'.
         """
-        return self.app.select_single(objectName='mainView')
+        # Docs will need updating (objectName=mainView is to change out CPO if
+        # needed).
+        return self.app.select_single(
+            self.mainview_class,
+            objectName='mainView'
+        )
 
 
 class FlickDirection:

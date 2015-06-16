@@ -23,7 +23,10 @@ from autopilot import platform
 from autopilot.introspection import dbus
 
 import ubuntuuitoolkit
-from ubuntuuitoolkit import tests
+from ubuntuuitoolkit import (
+    MainView,
+    tests
+)
 
 
 class QQuickListViewTestCase(tests.QMLStringAppTestCase):
@@ -204,6 +207,7 @@ MainView {
 
     def setUp(self):
         super().setUp()
+
         self.list_view = self.main_view.select_single(
             ubuntuuitoolkit.QQuickListView, objectName='testListView')
         self.label = self.main_view.select_single(
@@ -235,7 +239,11 @@ class QQuickListViewDraggingBaseTestCase(tests.QMLFileAppTestCase):
         self.test_qml_file_path = os.path.join(
             dir_path, self.qml_file_name)
 
-        super().setUp()
+        # Work around bug LP:1457629
+        class MainView12(MainView):
+            pass
+
+        super().setUp(MainView12)
         self.list_view = self.main_view.select_single(
             ubuntuuitoolkit.QQuickListView, objectName='test_view')
 
