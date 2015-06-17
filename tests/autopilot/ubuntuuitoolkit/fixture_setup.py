@@ -15,9 +15,11 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import copy
+import json
 import logging
 import os
 import shutil
+import subprocess
 import tempfile
 
 import fixtures
@@ -44,7 +46,7 @@ MainView {
 DEFAULT_DESKTOP_FILE_DICT = {
     'Type': 'Application',
     'Name': 'test',
-    'Exec': '{qmlscene} {qml_file_path}',
+    'Exec': '{launcher} {qml_file_path}',
     'Icon': 'Not important'
 }
 
@@ -56,18 +58,24 @@ class FakeApplication(fixtures.Fixture):
 
     def __init__(
             self, qml_file_contents=DEFAULT_QML_FILE_CONTENTS,
-            desktop_file_dict=None):
+            desktop_file_dict=None, url_dispatcher_protocols=None):
         super().__init__()
         self._qml_file_contents = qml_file_contents
         if desktop_file_dict is None:
             self._desktop_file_dict = copy.deepcopy(DEFAULT_DESKTOP_FILE_DICT)
         else:
             self._desktop_file_dict = copy.deepcopy(desktop_file_dict)
+        self.url_dispatcher_protocols = url_dispatcher_protocols
 
     def setUp(self):
         super().setUp()
         self.qml_file_path, self.desktop_file_path = (
             self._create_test_application())
+        desktop_file_name = os.path.basename(self.desktop_file_path)
+        self.application_name, _ = os.path.splitext(desktop_file_name)
+        if self.url_dispatcher_protocols:
+            self.url_dispatcher_file_path = (
+                self._register_url_dispatcher_protocols(self.application_name))
 
     def _create_test_application(self):
         qml_file_path = self._write_test_qml_file()
@@ -99,7 +107,7 @@ class FakeApplication(fixtures.Fixture):
                                                   dir=desktop_file_dir)
         self._desktop_file_dict['Exec'] = (
             self._desktop_file_dict['Exec'].format(
-                qmlscene=base.get_qmlscene_launch_command(),
+                launcher=base.get_toolkit_launcher_command(),
                 qml_file_path=qml_file_path))
         desktop_file.write('[Desktop Entry]\n')
         for key, value in self._desktop_file_dict.items():
@@ -110,6 +118,42 @@ class FakeApplication(fixtures.Fixture):
     def _get_local_desktop_file_directory(self):
         return os.path.join(
             os.environ.get('HOME'), '.local', 'share', 'applications')
+
+    def _register_url_dispatcher_protocols(self, application_name):
+        url_dispatcher_file_path = self._write_url_dispatcher_file(
+            application_name)
+        self.addCleanup(os.remove, url_dispatcher_file_path)
+        self._update_url_dispatcher_directory(url_dispatcher_file_path)
+        return url_dispatcher_file_path
+
+    def _write_url_dispatcher_file(self, application_name):
+        url_dispatcher_dir = self._get_local_url_dispatcher_directory()
+        if not os.path.exists(url_dispatcher_dir):
+            os.makedirs(url_dispatcher_dir)
+
+        protocol_list = [
+            {'protocol': protocol}
+            for protocol in self.url_dispatcher_protocols]
+
+        url_dispatcher_file_path = os.path.join(
+            url_dispatcher_dir, application_name + '.url-dispatcher')
+        with open(url_dispatcher_file_path, 'w') as url_dispatcher_file:
+            url_dispatcher_file.write(json.dumps(protocol_list))
+
+        return url_dispatcher_file_path
+
+    def _get_local_url_dispatcher_directory(self):
+        return os.path.join(
+            os.environ.get('HOME'), '.config', 'url-dispatcher', 'urls')
+
+    def _update_url_dispatcher_directory(self, url_dispatcher_file_path):
+        # FIXME This should be updated calling
+        # initctl start url-dispatcher-update-user, but it is not working.
+        # https://bugs.launchpad.net/ubuntu/+source/url-dispatcher/+bug/1461496
+        # --elopio - 2015-06-02
+        subprocess.check_output(
+            '/usr/lib/*/url-dispatcher/update-directory ' +
+            url_dispatcher_file_path, shell=True)
 
 
 class InitctlEnvironmentVariable(fixtures.Fixture):
