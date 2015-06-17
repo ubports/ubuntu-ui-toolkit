@@ -2,6 +2,8 @@ import QtQuick 2.4
 import Ubuntu.Components.Popups 1.3
 
 ActionSelectionPopover {
+    objectName: 'listItemContextMenu'
+
     function mergeActions(to, from) {
         if (from == null)
             return;

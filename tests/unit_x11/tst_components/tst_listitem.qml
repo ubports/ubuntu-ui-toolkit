@@ -40,6 +40,7 @@ Item {
             },
             Action {
                 iconName: "edit"
+                text: 'Edit'
                 objectName: "leading_2"
             },
             Action {
@@ -374,6 +375,19 @@ Item {
             clickSpy.target = testItem;
             TestExtras.touchClick(0, testItem, centerOf(testItem));
             clickSpy.wait();
+        }
+
+        function test_context_menu() {
+            mouseClick(testItem, testItem.width / 2, testItem.height / 2, Qt.RightButton);
+            wait(1000);
+            var context_menu = findChild(testItem, "listItemContextMenu");
+            verify(context_menu, "Context menu didn't open on right-click'");
+            waitForRendering(context_menu);
+            var edit = findChildWithProperty(context_menu, "text", "Edit");
+            verify(edit, "Context menu has no 'Edit' item");
+            mouseClick(edit, edit.width / 2, edit.height / 2);
+            waitForRendering(testItem);
+            compare(context_menu.visible, false, "Menu did not hide after action");
         }
 
         function test_no_click_when_swiped() {
