@@ -42,26 +42,41 @@ StyledItem {
       \qml
         Sections {
             model: [
-                Action { text: "first" },
-                Action { text: "second" },
-                Action { text: "third" }
+                Action {
+                    text: "first"
+                    onTriggered: print("one")
+                },
+                Action {
+                    text: "second"
+                    onTriggered: print("two")
+                },
+                Action {
+                    text: "third"
+                    onTriggered: print("three")
+                }
             ]
-            onSelectedIndexChanged: {
-                print("Selected " + model[selectedIndex].text + " section.");
-            }
         }
      \endqml
      It is strongly recommended to limit the number of sections to two or three.
-     If no trigger functions need to be specified, the model may be simplified
-     to a list of strings naming the sections:
-     \qml
-        Sections {
-            model: [ "one", "two", "three" ]
-            onSelectedIndexChanged: {
-                print("Selected section " + model[selectedIndex]);
+     The actions are used as the model for the Sections by default.
+     If no trigger functions need to be specified, \l model may be used directly
+     without setting the actions property. If both \l actions and \l model are set,
+     model overrides the actions.
+     */
+    property list<Action> actions
+
+    /*!
+      The input model for the sections. By default model takes the \l actions
+      as input, but if no trigger functions need to be specified, it can be
+      simplified to a list of strings naming the sections:
+         \qml
+            Sections {
+                model: [ "one", "two", "three" ]
+                onSelectedIndexChanged: {
+                    print("Selected section " + model[selectedIndex]);
+                }
             }
-        }
-     \endqml
+         \endqml
      */
     property var model: actions
     onModelChanged: {
@@ -70,7 +85,6 @@ StyledItem {
             console.warn("It is not YET recommended or supported to use more than three sections.");
         }
     }
-    property list<Action> actions
 
     /*!
       The index of the currently selected section in \l model.
