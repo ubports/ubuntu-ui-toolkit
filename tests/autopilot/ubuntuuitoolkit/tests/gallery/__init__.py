@@ -99,8 +99,9 @@ class GalleryTestCase(ubuntuuitoolkit.tests.QMLFileAppTestCase):
             'ubuntu-ui-toolkit-gallery.qml')
 
     def _get_path_to_installed_gallery(self):
-	arch = ubuntuuitoolkit.base.get_host_multiarch()
-	return '/usr/lib/{}/qt5/examples//ubuntu-ui-toolkit/examples/ubuntu-ui-toolkit-gallery'.format(arch)
+        arch = ubuntuuitoolkit.base.get_host_multiarch()
+        return '/usr/lib/{}/qt5/examples//ubuntu-ui-toolkit/examples/' \
+               'ubuntu-ui-toolkit-gallery'.format(arch)
 
     def _get_desktop_file_path(self):
         desktop_file_path = os.path.join(
