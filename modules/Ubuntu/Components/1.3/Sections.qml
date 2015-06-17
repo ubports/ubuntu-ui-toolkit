@@ -36,7 +36,7 @@ StyledItem {
       a section will update the \l selectedIndex.
 
       When \l selectedIndex is changed (by user interaction or by setting
-      the value), \l Action model[selectedIndex] will be triggered.
+      the value), actions[selectedIndex] will be triggered.
 
       Example:
       \qml
