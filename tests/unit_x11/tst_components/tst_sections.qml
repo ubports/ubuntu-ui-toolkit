@@ -53,6 +53,13 @@ Rectangle {
         }
         spacing: units.gu(2)
 
+        Sections {
+            actions: [
+                Action { text: "1" },
+                Action { text: "2" }
+            ]
+        }
+
         Label {
             anchors.horizontalCenter: parent.horizontalCenter
             text: "Sections with actions"

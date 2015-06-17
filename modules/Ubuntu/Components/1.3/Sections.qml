@@ -63,13 +63,14 @@ StyledItem {
         }
      \endqml
      */
-    property var model
+    property var model: actions
     onModelChanged: {
         if (model && model.length > 3) {
             // FIXME: Make the Sections scrollable for more than 3 sections.
             console.warn("It is not YET recommended or supported to use more than three sections.");
         }
     }
+    property list<Action> actions
 
     /*!
       The index of the currently selected section in \l model.
