@@ -93,21 +93,14 @@ class GalleryTestCase(ubuntuuitoolkit.tests.QMLFileAppTestCase):
     def _application_source_exists(self):
         return 'UBUNTU_UI_TOOLKIT_AUTOPILOT_FROM_SOURCE' in os.environ
 
-    def get_host_multiarch():
-        if 'deb_host_multiarch' not in os.environ:
-            # Discard errors: the one known message is "GCC not installed"
-            os.environ['deb_host_multiarch'] = subprocess.check_output(
-                ["dpkg-architecture", "-qDEB_HOST_MULTIARCH"],
-                universal_newlines=True, stderr=subprocess.PIPE).strip()
-        return os.environ['deb_host_multiarch']
-
     def _get_test_qml_file_path(self):
         return os.path.join(
             self.test_source_path,
             'ubuntu-ui-toolkit-gallery.qml')
 
     def _get_path_to_installed_gallery(self):
-        return '/usr/lib/'+get_host_multiarch()+'/qt5/examples/ubuntu-ui-toolkit/examples/ubuntu-ui-toolkit-gallery/'
+	arch = ubuntuuitoolkit.base.get_host_multiarch()
+	return '/usr/lib/{}/qt5/examples//ubuntu-ui-toolkit/examples/ubuntu-ui-toolkit-gallery'.format(arch)
 
     def _get_desktop_file_path(self):
         desktop_file_path = os.path.join(
