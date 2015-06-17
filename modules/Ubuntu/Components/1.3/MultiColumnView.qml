@@ -41,6 +41,11 @@ import "stack.js" as Stack
   the column next to the source page. Giving a null value to the source page will
   add the page to the leftmost column of the view.
 
+  The primary page, the very first page must be specified through the \l primaryPage
+  property. The property cannot be changed after component completion and can hold
+  a Page instance, a Component or a url to a document defining a Page. The page
+  cannot be removed from the view.
+
   \note Unlike PageStack, the component does not fill its parent content.
 
   \qml
@@ -221,6 +226,15 @@ PageTreeNode {
         if (columns <= 0) {
             return;
         }
+        if (!sourcePage) {
+            console.warn("No sourcePage specified. Page will not be added.");
+            return;
+        }
+        if (!d.stack.find(sourcePage)) {
+            console.warn("sourcePage must be added to the view to add new page.");
+            return;
+        }
+
         var wrapper = d.createWrapper(page, properties);
         wrapper.column = d.columnForPage(sourcePage);
         wrapper.parentPage = sourcePage;
@@ -239,6 +253,15 @@ PageTreeNode {
         if (columns <= 0) {
             return;
         }
+        if (!sourcePage) {
+            console.warn("No sourcePage specified. Page will not be added.");
+            return;
+        }
+        if (!d.stack.find(sourcePage)) {
+            console.warn("sourcePage must be added to the view to add new page.");
+            return;
+        }
+
         var wrapper = d.createWrapper(page, properties);
         wrapper.column = (!sourcePage) ? 0 : d.columnForPage(sourcePage) + 1;
         wrapper.parentPage = sourcePage;
@@ -249,7 +272,8 @@ PageTreeNode {
     /*!
       \qmlmethod void removePages(Item page)
       The function removes and deletes all pages from the view columns until \c page
-      is reached.
+      is reached. If the \a page is the same as the \l primaryPage, only its child
+      pages will be removed.
       */
     function removePages(page) {
         // remove nodes which have page as ascendant
@@ -258,8 +282,7 @@ PageTreeNode {
             d.popAndSetPageForColumn(node);
             node = d.stack.top();
         }
-        node = d.stack.top();
-        while (node.object == page) {
+        while (node && node.object == page && node != d.stack.first()) {
             d.popAndSetPageForColumn(node);
             node = d.stack.top();
         }
@@ -280,12 +303,15 @@ PageTreeNode {
         d.relayout();
         d.completed = true;
         if (primaryPage) {
-            addPageToCurrentColumn(null, primaryPage);
+            var wrapper = d.createWrapper(primaryPage);
+            d.addPage(wrapper);
+        } else {
+            console.warn("No primary page set. No pages can be added without a primary page.");
         }
     }
     onPrimaryPageChanged: {
         if (d.completed) {
-            console.error("Cannot change primaryPage after completion.");
+            console.warn("Cannot change primaryPage after completion.");
             return;
         }
     }
@@ -411,7 +437,7 @@ PageTreeNode {
         id: pageHolderComponent
         Item {
             id: holder
-            objectName: "PageWrapperHolder" + column
+            objectName: "ColumnHolder" + column
             property PageWrapper pageWrapper
             property int column
             property alias config: header.config
@@ -434,7 +460,7 @@ PageTreeNode {
                     right: parent.right
                 }
                 implicitHeight: units.gu(8)
-                styleName: config ? "PageHeadStyle" : ""
+//                styleName: config ? "PageHeadStyle" : ""
 
                 property PageHeadConfiguration config: null
                 property Item contents: null
@@ -533,7 +559,6 @@ PageTreeNode {
                         break;
                     }
                 }
-                print(holder)
                 if (!metrics) {
                     metrics = holder.setDefaultMetrics();
                 }

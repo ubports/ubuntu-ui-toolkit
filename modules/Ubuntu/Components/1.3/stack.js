@@ -37,6 +37,10 @@ function Stack() {
         return elements.length;
     }
 
+    this.first = function() {
+        return this.size() > 0 ? elements[0] : null;
+    }
+
     this.top = function() {
         if (this.size() < 1) return undefined;
         return elements[elements.length-1];

@@ -206,7 +206,7 @@ Ubuntu.Components.Clipboard 1.0 0.1: QtObject singleton
 Ubuntu.Components.ColorUtils 0.1 1.0
 Ubuntu.Components.ColumnMetrics 1.3: QtObject
     property int column
-    property bool fill
+    property bool fillWidth
     property double maximumWidth
     property double minimumWidth
 Ubuntu.Components.ComboButton 1.1: Button
