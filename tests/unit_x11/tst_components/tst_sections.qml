@@ -53,16 +53,23 @@ Rectangle {
         }
         spacing: units.gu(2)
 
+        Label {
+            anchors.horizontalCenter: parent.horizontalCenter
+            text: "Sections with actions"
+        }
+        Label {
+            anchors.left: parent.left
+            text: "actions in-line:"
+            fontSize: small
+        }
         Sections {
+            // Not used in the tests below, but added here to
+            //  verify that the Actions can be defined directly
+            //  inside the list of actions.
             actions: [
                 Action { text: "1" },
                 Action { text: "2" }
             ]
-        }
-
-        Label {
-            anchors.horizontalCenter: parent.horizontalCenter
-            text: "Sections with actions"
         }
         Label {
             anchors.left: parent.left
@@ -71,7 +78,7 @@ Rectangle {
         }
         Sections {
             id: enabledSections
-            model: root.actionList
+            actions: root.actionList
         }
         Label {
             text: "disabled:"
@@ -79,7 +86,7 @@ Rectangle {
         }
         Sections {
             id: disabledSections
-            model: root.actionList
+            actions: root.actionList
             enabled: false
         }
         Rectangle {
