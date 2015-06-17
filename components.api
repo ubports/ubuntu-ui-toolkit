@@ -794,7 +794,7 @@ Ubuntu.Components.Scrollbar 1.3: StyledItem
     property Flickable flickableItem
 Ubuntu.Components.ScrollbarUtils 0.1 1.0
 Ubuntu.Components.Sections 1.3: StyledItem
-    property var actions
+    property var model
     property int selectedIndex
 Ubuntu.Components.ServiceProperties 1.1: QtObject
     property string adaptorInterface
@@ -874,8 +874,6 @@ Ubuntu.Components.ListItems.Standard 1.3: Empty
     property bool iconFrame
     property bool progression
 Ubuntu.Components.StateSaver 1.0 0.1: QtObject
-Ubuntu.Components.StyleHints 1.3: QtObject
-    property bool ignoreUnknownProperties
 Ubuntu.Components.StyledItem 1.3 1.1 1.0 0.1: Item
     property bool activeFocusOnPress
     function bool requestFocus(Qt.FocusReason reason)
