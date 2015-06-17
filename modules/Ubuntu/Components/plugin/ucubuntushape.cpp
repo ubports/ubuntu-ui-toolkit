@@ -1229,8 +1229,7 @@ void UCUbuntuShape::updateMaterial(QSGNode* node, float radius, quint32 shapeTex
         materialData->sourceOpacity = 0;
     }
 
-    const float dpr = qGuiApp->devicePixelRatio();
-    const float physicalRadius = dpr * radius;
+    const float physicalRadius = radius * qGuiApp->devicePixelRatio();
 
     // Mapping of radius size range from [0, 4] to [0, 1] with clamping, plus quantization.
     const float start = 0.0f + radiusSizeOffset;
