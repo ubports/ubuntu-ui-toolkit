@@ -36,7 +36,7 @@ StyledItem {
       a section will update the \l selectedIndex.
 
       When \l selectedIndex is changed (by user interaction or by setting
-      the value), \l Action actions[selectedIndex] will be triggered.
+      the value), \l Action model[selectedIndex] will be triggered.
 
       Example:
       \qml
@@ -58,7 +58,7 @@ StyledItem {
         Sections {
             model: [ "one", "two", "three" ]
             onSelectedIndexChanged: {
-                print("Selected section " + model[selectedIndex];
+                print("Selected section " + model[selectedIndex]);
             }
         }
      \endqml
@@ -72,7 +72,7 @@ StyledItem {
     }
 
     /*!
-      The index of the currently selected section in \l actions.
+      The index of the currently selected section in \l model.
      */
     property int selectedIndex: model ? 0 : -1
 
