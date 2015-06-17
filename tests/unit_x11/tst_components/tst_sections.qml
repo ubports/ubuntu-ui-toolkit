@@ -127,6 +127,8 @@ Rectangle {
         function cleanup() {
             enabledSections.selectedIndex = 0;
             disabledSections.selectedIndex = 0;
+            enabledStringSections.selectedIndex = 0;
+            disabledStringSections.selectedIndex = 0;
         }
 
         function wait_for_animation(sections) {
@@ -180,23 +182,29 @@ Rectangle {
             mouseClick(button, button.width/2, button.height/2);
         }
 
-        function check_selected_section(sections, index, name, message) {
+        function check_selected_section(sections, index, name) {
             var v = sections.selectedIndex;
-            compare(v, index,  message+"selectedIndex "+v+" does not match "+index);
+            compare(v, index, "selectedIndex "+v+" does not match "+index);
             v = get_selected_section_button_index(sections);
-            compare(v, index, message+"selected button index "+v+" does not match "+index);
+            compare(v, index, "selected button index "+v+" does not match "+index);
             var w = get_selected_section_button_text(sections);
-            compare(w, name, message+"selected button text \'"+w+"\' does not match \'"+name+"\'");
+            compare(w, name, "selected button text \'"+w+"\' does not match \'"+name+"\'");
         }
 
         // in each test function below, test the desired behavior
         //  for both enabledSections and disabledSections.
 
-        function test_0_first_section_initially_selected() {
-            check_selected_section(enabledSections, 0, "first", "(init): ");
-            check_selected_section(disabledSections, 0, "first", "(init disabled): ");
-            check_selected_section(enabledStringSections, 0, "string one", "(init str): ");
-            check_selected_section(disabledStringSections, 0, "string one", "(init disabled str): ");
+        function test_0_first_section_initially_selected_actions_enabled() {
+            check_selected_section(enabledSections, 0, "first");
+        }
+        function test_0_first_section_initially_selected_actions_disabled() {
+            check_selected_section(disabledSections, 0, "first");
+        }
+        function test_0_first_section_initially_selected_strings_enabled() {
+            check_selected_section(enabledStringSections, 0, "string one");
+        }
+        function test_0_first_section_initially_selected_strings_disabled() {
+            check_selected_section(disabledStringSections, 0, "string one");
         }
 
         function test_number_of_section_buttons() {
@@ -207,69 +215,81 @@ Rectangle {
                     "Showing incorrect number of disabled sections.")
         }
 
-        function test_click_to_select_section() {
+        function test_click_to_select_section_and_trigger_action() {
             var index = 2;
             var name = "third";
             click_section_button(enabledSections, name);
             wait_for_animation(enabledSections);
-            check_selected_section(enabledSections, index, name, "(click): ");
+            check_selected_section(enabledSections, index, name);
             var text = "Third action triggered.";
             compare(label.text, text, "Action for clicked button not triggered.");
+        }
 
+        function test_click_disabled_section_action() {
+            var index = 2;
+            var name = "third";
             click_section_button(disabledSections, name);
             wait_for_animation(disabledSections);
             // first button should still be selected:
             index = 0;
             name = "first";
-            check_selected_section(disabledSections, index, name, "(click disabled): ");
+            check_selected_section(disabledSections, index, name);
+            var text = "No action triggered.";
             compare(label.text, text, "Clicking disabled button triggered something.");
+        }
 
-            name = "string three";
-            index = 2;
+        function test_click_to_select_section_string() {
+            var index = 2;
+            var name = "string three";
             click_section_button(enabledStringSections, name);
             wait_for_animation(enabledStringSections);
-            check_selected_section(enabledStringSections, index, name, "(click str): ");
-            // no actions triggered
+            check_selected_section(enabledStringSections, index, name);
+        }
 
+        function test_click_disabled_section_string() {
+            var name = "string three";
             click_section_button(disabledStringSections, name);
             wait_for_animation(disabledStringSections);
             // first button should still be selected:
-            index = 0;
+            var index = 0;
             name = "string one";
-            check_selected_section(disabledStringSections, index, name, "(click disabled str): ");
-            // no actions triggered
+            check_selected_section(disabledStringSections, index, name);
         }
 
-        function test_set_selectedIndex_to_select_section() {
+        function test_set_selectedIndex_to_select_section_and_trigger_action_enabled() {
             var index = 1;
             var name = "second";
             enabledSections.selectedIndex = index;
             wait_for_animation(enabledSections);
-            check_selected_section(enabledSections, index, name, "(set index): ");
+            check_selected_section(enabledSections, index, name);
             var text = "Second action triggered.";
             compare(label.text, text, "Changing selected index did not trigger action.");
+        }
 
-            index = 2;
-            name = "third";
+        function test_set_selectedIndex_to_select_section_and_trigger_action_disabled() {
+            var index = 2;
+            var name = "third";
             disabledSections.selectedIndex = index;
             wait_for_animation(disabledSections);
-            check_selected_section(disabledSections, index, name, "(set index disabled): ");
-            text = "Third action triggered.";
+            check_selected_section(disabledSections, index, name);
+            var text = "Third action triggered.";
             compare(label.text, text, "Changing selected index for disabled Sections " +
-                                        "did not trigger action.");
+                    "did not trigger action.");
+        }
 
-            index = 1;
-            name = "string two";
+        function test_set_selectedIndex_to_select_section_string_enabled() {
+            var index = 1;
+            var name = "string two";
             enabledStringSections.selectedIndex = index;
             wait_for_animation(enabledStringSections);
-            check_selected_section(enabledStringSections, index, name, "(set str index): ");
-            // no action triggered
+            check_selected_section(enabledStringSections, index, name);
+        }
 
-            index = 2;
-            name = "string three";
+        function test_set_selectedIndex_to_select_section_string_disabled() {
+            var index = 2;
+            var name = "string three";
             disabledStringSections.selectedIndex = index;
-            check_selected_section(disabledStringSections, index, name, "(set str index disabled): ");
-            // no action triggered
+            check_selected_section(disabledStringSections, index, name);
         }
     }
 }
