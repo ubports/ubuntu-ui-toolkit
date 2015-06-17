@@ -36,6 +36,8 @@
 #include "uclistitemstyle.h"
 #include <QtQuick/private/qquickbehavior_p.h>
 #include <QtQml/QQmlEngine>
+#include <QFileInfo>
+#include <QLibraryInfo>
 
 /******************************************************************************
  * Divider
@@ -1063,6 +1065,40 @@ void UCListItem::mousePressEvent(QMouseEvent *event)
         }
         // stop any ongoing animation!
         d->swipeEvent(event->localPos(), UCSwipeEvent::Started);
+    } else if (event->button() == Qt::RightButton) {
+        // Right-click context menu
+        if(leadingActions() || trailingActions()) {
+            Q_D(UCListItem);
+            d->suppressClick = true;
+
+            // Find QML file relative to Ubuntu.Components 1.3
+            QStringList pathList;
+            pathList << QString(getenv("QML2_IMPORT_PATH")).split(':', QString::SkipEmptyParts);
+            pathList << QLibraryInfo::location(QLibraryInfo::Qml2ImportsPath).split(':', QString::SkipEmptyParts);
+            QUrl url;
+            Q_FOREACH(const QString &path, pathList) {
+                QFileInfo file(path + "/Ubuntu/Components/1.3/ListItemPopover.qml");
+                if (file.exists()) {
+                    url = QUrl::fromLocalFile(file.absoluteFilePath());
+                    break;
+                }
+            }
+
+            // Open Popover
+            QQmlEngine* engine = qmlEngine(this);
+            QQmlComponent* component = new QQmlComponent(engine, url, QQmlComponent::PreferSynchronous, this);
+            if (component->isError()) {
+                qmlInfo(this) << component->errorString();
+                delete component;
+                component = NULL;
+            } else {
+                QQmlEngine::setContextForObject(component, qmlContext(this));
+                QQuickItem* item = static_cast<QQuickItem*>(component->create(qmlContext(this)));
+                item->setProperty("caller", QVariant::fromValue(this));
+                item->setParentItem(QuickUtils::instance().rootItem(this));
+                QMetaObject::invokeMethod(item, "show");
+            }
+        }
     }
     // accept the event so we get the rest of the events as well
     event->setAccepted(true);
