@@ -22,21 +22,165 @@ import "stack.js" as Stack
 /*!
   \qmltype MultiColumnView
   \inqmlmodule Ubuntu.Components 1.3
+  \since Ubuntu.Components 1.3
   \ingroup ubuntu
-  \brief View with multiple columns.
-*/
+  \brief View with multiple columns of Pages.
 
-/*
-  TODO:
-  - add column sizing configuration properties, maybe embedd conditions when these should
-    be applied together with the number of columns
-  */
+  The component provides a flexible way of viewing a stack of pages in one or
+  more columns. Unlike in PageStack, there can be more than one Page active at
+  a time, depending on the number of the columns in the view.
+
+  MultiColumnView stores pages added in a tree. Pages are added relative to a
+  given page, either as sibling (\l addPageToCurrentColumn) or as child
+  (\l addPageToNextColumn). This means that removing a non-leaf page from the Page
+  tree will remove all its children from the page tree.
+
+  The columns are populated from left to right. The column a page is added to is
+  detected based on the source page that is given to the functions adding the page.
+  The pages can be added either to the same column the source page resides or to
+  the column next to the source page. Giving a null value to the source page will
+  add the page to the leftmost column of the view.
+
+  \note Unlike PageStack, the component does not fill its parent content.
+
+  \qml
+  import QtQuick 2.4
+  import Ubuntu.Components 1.3
+
+  MainView {
+      width: units.gu(80)
+      height: units.gu(71)
+
+      MultiColumnView {
+          anchors.fill: parent
+          columns: 2
+          primaryPage: page1
+          Page {
+              id: page1
+              title: "Main page"
+              Column {
+                  Button {
+                      text: "Add Page2 above " + title
+                      onClicked: page1.pageStack.addPageToCurrentColumn(page1, page2)
+                  }
+                  Button {
+                      text: "Add Page3 next to " + title
+                      onClicked: page1.pageStack.addPageToNextColumn(page1, page3)
+                  }
+              }
+          }
+          Page {
+              id: page2
+              title: "Page #2"
+          }
+          Page {
+              id: page3
+              title: "Page #3"
+          }
+      }
+  }
+  \endqml
+
+  Column widths are controlled by the \l defaultColumnWidth property and the \l columnMetrics
+  properties. The \l columnMetrics contains a list of metrics configuring a specific
+  column. If no metrics are set, the component will use \l defaultColumnWidth on
+  each column. If the component is set to have one column only, the content will
+  be stretched to the entire component area no matter of the metrics specified.
+  When multiple columns are set, the last column is set to fill the available
+  width and the rest are configured with the \l defaultColumnWidth. This behavior
+  can be changed by specifying the \l ColumnMetrics::fillWidth for the column that
+  needs to fill the available width. There can be more columns filling the available
+  width at a time.
+
+  Let's modify the example above, to have 3 columns, where columns 1 and 3
+  should have fixed widths of 40 GU and column 2 should fill to the space
+  available. The code handling this would look as follows:
+  \qml
+  MultiColumnView {
+      columns: 3
+      defaultColumnWidth: units.gu(40)
+      columnMetrics: [
+          ColumnMetrics {
+              column: 2
+              fillWidth: true
+          },
+          ColumnMetrics {
+              column: 3
+              fillWidth: false
+          }
+      ]
+  }
+  \endqml
+
+  MultiColumnView supports adaptive column handling. When columns number changes
+  runtime, the pages are automatically rearranged to the closest columns they were
+  added to. To understand it better, let's take the following example:
+  \qml
+  import QtQuick 2.4
+  import Ubuntu.Components 1.3
+
+  MainView {
+      width: units.gu(120)
+      height: units.gu(71)
+
+      MultiColumnView {
+          anchors.fill: parent
+          columns: width > units.gu(100) ? 3 :
+                        (width >= units.gu(80) ? 2 : 1)
+          primaryPage: page1
+          Page {
+              id: page1
+              title: "Main page"
+              Button {
+                  text: "Add Page2 next to " + title
+                  onClicked: page1.pageStack.addPageToNextColumn(page1, page2)
+              }
+          }
+          Page {
+              id: page2
+              title: "Page #2"
+              Button {
+                  text: "Add Page3 next to " + title
+                  onClicked: page2.pageStack.addPageToNextColumn(page2, page3)
+              }
+          }
+          Page {
+              id: page3
+              title: "Page #3"
+          }
+      }
+  }
+  \endqml
+
+  When the code is run on desktop, it will launch with a space for three columns.
+  \c page1 is set to be the primary page, \c page2 will be added to column next to
+  \c page1 (to column 2) and \c page3 next to \c page2 (column 3). When the window
+  is resized to have its size below 100 GU, the component will switch to 2 column
+  mode, and \c page3 will be placed in the last column, and the header for \c page2
+  will have a back button, indicating that there is a page below it. If the window
+  is resized to contain only one column, all pages will be shown in that column, so
+  the component will act as PageStack. Resizing the window back to 2 respectively
+  3 columns will place the pages side-by-side.
+
+  \note In the above example if \c page2 is removed, that will remove all its child
+  pages, meaning \c page3 will also be removed.
+
+  \sa PageStack, ColumnMetrics
+*/
 
 PageTreeNode {
     id: multiColumnView
 
     /*!
-      \preliminary
+      The property holds the first Page which will be added to the view. If the
+      view has more than one column, the page will be added to the leftmost column.
+      The proeprty can hold either a Page instance, a component holding a Page
+      or a QML document defining the Page. The property cannot be changed after
+      component completion.
+      */
+    property var primaryPage
+
+    /*!
       Specifies the number of columns in the view. A condition must be set to
       control the number of columns depending on the space available.
       \qml
@@ -47,6 +191,23 @@ PageTreeNode {
       \endqml
       */
     property int columns: 1
+
+    /*!
+      The property specifies the default width of each column. The property is
+      applied on each column. If the \a minimumWidth specified for the column is
+      bigger than this value, the minimum width will be applied.
+      */
+    property real defaultColumnWidth: units.gu(40)
+
+    /*!
+      The property configures the size constraints and area filling for columns.
+      If a column is not specified, the default sizing and filling will be applied.
+      By default, only the last column is filling the available width, al other
+      columns are sized to \l defaultColumnWidth as maximum. By default the list
+      is empty. Only columns requiring special handling than the default should
+      be specified.
+      */
+    property list<ColumnMetrics> columnMetrics
 
     /*!
       \qmlmethod Item addPageToCurrentColumn(Item sourcePage, var page[, var properties])
@@ -115,17 +276,30 @@ PageTreeNode {
         }
         d.relayout();
     }
-    Component.onCompleted: d.relayout()
+    Component.onCompleted: {
+        d.relayout();
+        d.completed = true;
+        if (primaryPage) {
+            addPageToCurrentColumn(null, primaryPage);
+        }
+    }
+    onPrimaryPageChanged: {
+        if (d.completed) {
+            console.error("Cannot change primaryPage after completion.");
+            return;
+        }
+    }
+    onDefaultColumnWidthChanged: body.applyMetrics()
 
     QtObject {
         id: d
 
-        property int prevColumns: 0
+        property bool completed: false
         property var stack: new Stack.Stack()
 
         function createWrapper(page, properties) {
             var wrapperComponent = Qt.createComponent("PageWrapper.qml");
-            var wrapperObject = wrapperComponent.createObject(body);
+            var wrapperObject = wrapperComponent.createObject(hiddenPages);
             wrapperObject.pageStack = multiColumnView;
             wrapperObject.properties = properties;
             // set reference last because it will trigger creation of the object
@@ -222,21 +396,34 @@ PageTreeNode {
         }
     }
 
+    // default metrics
+    Component {
+        id: defaultMetrics
+        ColumnMetrics {
+            fillWidth: column == columns
+            minimumWidth: defaultColumnWidth
+        }
+    }
+
     // Page holder component, can have only one Page as child at a time, all stacked pages
     // will be parented into hiddenPages
     Component {
         id: pageHolderComponent
         Item {
             id: holder
+            objectName: "PageWrapperHolder" + column
             property PageWrapper pageWrapper
             property int column
             property alias config: header.config
+            property ColumnMetrics metrics: setDefaultMetrics()
 
-            objectName: "PageWrapperHolder" + column
-
-            Layout.fillWidth: column == (columns - 1)
+            Layout.fillWidth: metrics.fillWidth
             Layout.fillHeight: true
-            Layout.preferredWidth: units.gu(40)
+            Layout.preferredWidth: metrics.maximumWidth > 0 ?
+                                       MathUtils.clamp(defaultColumnWidth, metrics.minimumWidth, metrics.maximumWidth) :
+                                       defaultColumnWidth
+            Layout.minimumWidth: metrics.minimumWidth
+            Layout.maximumWidth: metrics.maximumWidth
 
             // header
             StyledItem {
@@ -298,6 +485,12 @@ PageTreeNode {
                 wrapper.pageHolder = null;
                 return wrapper;
             }
+
+            function setDefaultMetrics() {
+                var result = defaultMetrics.createObject(holder);
+                result.column = Qt.binding(function() { return holder.column + 1; });
+                return result;
+            }
         }
     }
 
@@ -323,8 +516,28 @@ PageTreeNode {
 
         onChildrenChanged: {
             // all children should have Layout.fillWidth false, except the last one
-            for (var i = 0; i <= children.length - 1; i++) {
+            for (var i = 0; i < children.length; i++) {
                 children[i].column = i;
+            }
+            applyMetrics();
+        }
+
+        function applyMetrics() {
+            for (var i = 0; i < children.length; i++) {
+                var holder = children[i];
+                // search for the column metrics
+                var metrics = null;
+                for (var j = 0; j < columnMetrics.length; j++) {
+                    if (columnMetrics[j].column == (i + 1)) {
+                        metrics = columnMetrics[j];
+                        break;
+                    }
+                }
+                print(holder)
+                if (!metrics) {
+                    metrics = holder.setDefaultMetrics();
+                }
+                holder.metrics = metrics;
             }
         }
     }

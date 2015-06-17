@@ -15,9 +15,18 @@ MainView {
             if (width > units.gu(80)) return 2;
             return 1;
         }
-        Component.onCompleted: {
-            addPageToNextColumn(null, page1)
-        }
+        columnMetrics: [
+            ColumnMetrics {
+                column: 2
+                fillWidth: true
+            },
+            ColumnMetrics {
+                column: 3
+                fillWidth: false
+                minimumWidth: units.gu(50)
+            }
+        ]
+        primaryPage: page1
 
         Page {
             id: page1
