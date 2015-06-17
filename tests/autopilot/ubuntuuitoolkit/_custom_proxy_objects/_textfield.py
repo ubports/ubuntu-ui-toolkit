@@ -18,10 +18,7 @@ import logging
 
 from autopilot import logging as autopilot_logging
 
-from ubuntuuitoolkit._custom_proxy_objects import (
-    _common,
-    _mainview
-)
+from ubuntuuitoolkit._custom_proxy_objects import _common
 
 logger = logging.getLogger(__name__)
 
@@ -92,32 +89,41 @@ class TextField(_common.UbuntuUIToolkitCustomProxyObjectBase):
     @autopilot_logging.log_action(logger.debug)
     def _select_all(self):
         if not self._is_all_text_selected():
-            # right click is needed
-            self.pointing_device.click_object(self, button=3)
-            root = self.get_root_instance()
-            main_view = root.select_single(_mainview.MainView)
-            popover = main_view.get_text_input_context_menu(
-                'text_input_contextmenu')
-            popover.click_option_by_text('Select All')
+            self._go_to_start()
+            self._go_to_end(select_text=True)
 
     def _is_all_text_selected(self):
         return self.text == self.selectedText
 
     def _is_keyboard_osk(self):
         """Return True if the keyboard instance is the OSK."""
-        from autopilot.input import _osk
-        return isinstance(self.keyboard, _osk.Keyboard)
+        return _common.is_maliit_process_running()
 
     @autopilot_logging.log_action(logger.debug)
-    def _go_to_end(self):
+    def _go_to_end(self, select_text=False):
+        key = 'End'
+        if select_text:
+            key = 'Shift+' + key
         if self._is_keyboard_osk():
             # XXX Here we are cheating because the on-screen keyboard doesn't
             # have an END key. --elopio - 2014-08-20
             from autopilot.input import Keyboard
             keyboard = Keyboard.create()
-            keyboard.press_and_release('End')
         else:
-            self.keyboard.press_and_release('End')
+            keyboard = self.keyboard
+        keyboard.press_and_release(key)
+
+    @autopilot_logging.log_action(logger.debug)
+    def _go_to_start(self, select_text=False):
+        key = 'Home'
+        if select_text:
+            key = 'Shift+' + key
+        if self._is_keyboard_osk():
+            from autopilot.input import Keyboard
+            keyboard = Keyboard.create()
+        else:
+            keyboard = self.keyboard
+        keyboard.press_and_release(key)
 
     @autopilot_logging.log_action(logger.debug)
     def _delete_one_character_using_osk(self):

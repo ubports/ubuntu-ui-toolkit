@@ -18,6 +18,7 @@
 
 import logging
 import subprocess
+import time
 from distutils import version
 from gi.repository import Gio
 
@@ -54,7 +55,7 @@ def get_pointing_device():
 
 def get_keyboard():
     """Return the keyboard device."""
-    if is_process_running(MALIIT):
+    if is_maliit_process_running():
         configure_osk_settings()
         restart_maliit_with_testability()
         return input.Keyboard.create('OSK')
@@ -64,12 +65,14 @@ def get_keyboard():
 
 def restart_maliit_with_testability():
     """Restart maliit-server with testability enabled."""
-    if is_process_running(MALIIT):
+    if is_maliit_process_running():
         pid = get_process_pid(MALIIT)
         if _is_testability_enabled_for_process(pid):
             return
         _stop_process(MALIIT)
     _start_process(MALIIT, 'QT_LOAD_TESTABILITY=1')
+    # This is needed to work around launchpad.net/bugs/1248913
+    time.sleep(5)
 
 
 def configure_osk_settings():
@@ -184,6 +187,11 @@ def is_process_running(name):
 
     """
     return 'start/' in get_process_status(name)
+
+
+def is_maliit_process_running():
+    """Return True if malitt-server process is running, False otherwise."""
+    return is_process_running(MALIIT)
 
 
 def check_autopilot_version():

@@ -27,13 +27,30 @@ class TextArea(_textfield.TextField):
             self._clear_with_keys()
             self.text.wait_for('')
 
-    def _go_to_end(self):
+    def _go_to_end(self, select_text=False):
         # We override this because the text areas can have more than one line.
+        key = 'Ctrl+End'
+        if select_text:
+            key = 'Shift+' + key
         if self._is_keyboard_osk():
             # XXX Here we are cheating because the on-screen keyboard doesn't
-            # have an END key. --elopio - 2014-08-20
+            # have an END key.
             from autopilot.input import Keyboard
             keyboard = Keyboard.create()
-            keyboard.press_and_release('Ctrl+End')
         else:
-            self.keyboard.press_and_release('Ctrl+End')
+            keyboard = self.keyboard
+        keyboard.press_and_release(key)
+
+    def _go_to_start(self, select_text=False):
+        # We override this because the text areas can have more than one line.
+        key = 'Ctrl+Home'
+        if select_text:
+            key = 'Shift+' + key
+        if self._is_keyboard_osk():
+            # XXX Here we are cheating because the on-screen keyboard doesn't
+            # have a HOME key.
+            from autopilot.input import Keyboard
+            keyboard = Keyboard.create()
+        else:
+            keyboard = self.keyboard
+        keyboard.press_and_release(key)
