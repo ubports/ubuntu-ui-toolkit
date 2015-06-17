@@ -77,8 +77,12 @@ class ActionsTestCase(tests.QMLFileAppTestCase):
     def setUp(self):
         super().setUp()
         self.header = self.main_view.get_header()
-        self.label = self.app.select_single(
-            'Label', objectName='clicked_label')
+        self.label = ProxyBase.from_proxy_object(
+            self.app.select_single(
+                'Label',
+                objectName='clicked_label'
+            )
+        )
         self.assertEqual(self.label.text, 'No button clicked.')
 
     def test_header_custom_proxy_object(self):
@@ -190,7 +194,7 @@ class DeprecatedHeaderSectionsTestCase(tests.QMLFileAppTestCase):
 
     def test_select_sections_with_sections_disabled(self):
         sectionsEnabledSwitch = self.app.select_single(
-            'CheckBox', objectName='sections_enabled_switch')
+            CheckBox, objectName='sections_enabled_switch')
         sectionsEnabledSwitch.uncheck()
         error = self.assertRaises(
             ubuntuuitoolkit.ToolkitException,
