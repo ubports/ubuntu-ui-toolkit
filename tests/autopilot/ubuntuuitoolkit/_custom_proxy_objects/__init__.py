@@ -35,6 +35,7 @@ __all__ = [
     'QQuickFlickable',
     'QQuickGridView',
     'QQuickListView',
+    'Sections',
     'TabBar',
     'Tabs',
     'TextArea',
@@ -46,6 +47,7 @@ __all__ = [
 ]
 
 from ubuntuuitoolkit._custom_proxy_objects._actionbar import ActionBar
+from ubuntuuitoolkit._custom_proxy_objects._sections import Sections
 from ubuntuuitoolkit._custom_proxy_objects._checkbox import CheckBox
 from ubuntuuitoolkit._custom_proxy_objects._common import (
     check_autopilot_version,

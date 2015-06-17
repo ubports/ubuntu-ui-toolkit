@@ -15,6 +15,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import os
+import subprocess
 import tempfile
 
 from unittest import mock
@@ -22,6 +23,7 @@ import testscenarios
 import testtools
 from autopilot import (
     display,
+    introspection,
     platform,
     testcase as autopilot_testcase
 )
@@ -78,10 +80,10 @@ class FakeApplicationTestCase(testtools.TestCase):
         self.assert_desktop_file_contents(
             desktop_file_contents, test_desktop_file_dict)
 
-    def test_desktop_file_with_qmlscene_launch_command(self):
-        test_desktop_file_dict = {'Exec': '{qmlscene} application'}
+    def test_desktop_file_with_launch_command(self):
+        test_desktop_file_dict = {'Exec': '{launcher} application'}
 
-        qmlscene = 'ubuntuuitoolkit.base.get_qmlscene_launch_command'
+        qmlscene = 'ubuntuuitoolkit.base.get_toolkit_launcher_command'
         with mock.patch(qmlscene) as mock_qmlscene:
             mock_qmlscene.return_value = 'test_qmlscene_command'
             fake_application = fixture_setup.FakeApplication(
@@ -111,9 +113,9 @@ class FakeApplicationTestCase(testtools.TestCase):
                 'Exec=qmlscene {}'.format(fake_application.qml_file_path)))
 
     def test_desktop_file_with_default_contents(self):
-        qmlscene = 'ubuntuuitoolkit.base.get_qmlscene_launch_command'
-        with mock.patch(qmlscene) as mock_qmlscene:
-            mock_qmlscene.return_value = 'qmlscene'
+        get_launcher = 'ubuntuuitoolkit.base.get_toolkit_launcher_command'
+        with mock.patch(get_launcher) as mock_launcher:
+            mock_launcher.return_value = 'testlauncher'
             fake_application = fixture_setup.FakeApplication()
             self.useFixture(fake_application)
 
@@ -124,7 +126,7 @@ class FakeApplicationTestCase(testtools.TestCase):
             'Type': 'Application',
             'Name': 'test',
             'Icon': 'Not important',
-            'Exec': 'qmlscene {}'.format(fake_application.qml_file_path),
+            'Exec': 'testlauncher {}'.format(fake_application.qml_file_path),
         }
         self.assert_desktop_file_contents(
             desktop_file_contents, expected_desktop_file_dict)
@@ -140,7 +142,8 @@ class FakeApplicationTestCase(testtools.TestCase):
             os.path.dirname(fake_application.desktop_file_path))
 
     def test_fake_application_files_must_be_removed_after_test(self):
-        fake_application = fixture_setup.FakeApplication()
+        fake_application = fixture_setup.FakeApplication(
+            url_dispatcher_protocols=['testprotocol'])
 
         def inner_test():
             class TestWithFakeApplication(testtools.TestCase):
@@ -151,6 +154,8 @@ class FakeApplicationTestCase(testtools.TestCase):
         inner_test().run()
         self.assertThat(fake_application.qml_file_path, Not(FileExists()))
         self.assertThat(fake_application.desktop_file_path, Not(FileExists()))
+        self.assertThat(
+            fake_application.url_dispatcher_file_path, Not(FileExists()))
 
 
 class LaunchFakeApplicationTestCase(autopilot_testcase.AutopilotTestCase):
@@ -159,7 +164,7 @@ class LaunchFakeApplicationTestCase(autopilot_testcase.AutopilotTestCase):
         fake_application = fixture_setup.FakeApplication()
         self.useFixture(fake_application)
 
-        self.application = self.launch_test_application(
+        application = self.launch_test_application(
             base.get_qmlscene_launch_command(),
             fake_application.qml_file_path,
             '--desktop_file_hint={0}'.format(
@@ -167,7 +172,42 @@ class LaunchFakeApplicationTestCase(autopilot_testcase.AutopilotTestCase):
             app_type='qt')
 
         # We can select a component from the application.
-        self.application.select_single('Label', objectName='testLabel')
+        application.select_single('Label', objectName='testLabel')
+
+    def test_launch_fake_application_from_url_dispatcher(self):
+        if platform.model() == 'Desktop':
+            self.skipTest('Not yet working on desktop')
+
+        path = os.path.abspath(__file__)
+        dir_path = os.path.dirname(path)
+        qml_file_path = os.path.join(
+            dir_path, 'test_fixture_setup.LaunchFakeApplicationTestCase.qml')
+        with open(qml_file_path) as qml_file:
+            qml_file_contents = qml_file.read()
+
+        fake_application = fixture_setup.FakeApplication(
+            qml_file_contents=qml_file_contents,
+            url_dispatcher_protocols=['testprotocol'])
+        self.useFixture(fake_application)
+
+        self.useFixture(fixture_setup.InitctlEnvironmentVariable(
+            QT_LOAD_TESTABILITY=1))
+
+        self.addCleanup(
+            subprocess.check_output,
+            ['ubuntu-app-stop', fake_application.application_name])
+
+        subprocess.check_output(
+            ['url-dispatcher', 'testprotocol://test'])
+
+        pid = int(subprocess.check_output(
+            ['ubuntu-app-pid', fake_application.application_name]).strip())
+
+        application = introspection.get_proxy_object_for_existing_process(
+            pid=pid)
+
+        # We can select a component from the application.
+        application.select_single('Label', objectName='testLabel')
 
 
 class InitctlEnvironmentVariableTestCase(testtools.TestCase):
