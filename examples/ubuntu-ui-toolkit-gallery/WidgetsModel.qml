@@ -72,6 +72,11 @@ ListModel {
         source: "ProgressBars.qml"
     }
     ListElement {
+        objectName: "sectionsElement"
+        label: "Sections"
+        source: "Sections.qml"
+    }
+    ListElement {
         objectName: "ubuntuShapesElement"
         label: "Ubuntu Shape"
         source: "UbuntuShape.qml"
