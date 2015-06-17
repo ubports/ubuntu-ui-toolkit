@@ -41,7 +41,7 @@ StyledItem {
       Example:
       \qml
         Sections {
-            model: [
+            actions: [
                 Action {
                     text: "first"
                     onTriggered: print("one")
