@@ -65,20 +65,18 @@ def get_keyboard():
 
 def restart_maliit_with_testability():
     """Restart maliit-server with testability enabled."""
-    if is_maliit_process_running():
-        pid = get_process_pid(MALIIT)
-        if _is_testability_enabled_for_process(pid):
-            return
-        _stop_process(MALIIT)
+    pid = get_process_pid(MALIIT)
+    if _is_testability_enabled_for_process(pid):
+        return
+    _stop_process(MALIIT)
     _start_process(MALIIT, 'QT_LOAD_TESTABILITY=1')
-    # This is needed to work around launchpad.net/bugs/1248913
+    # This is needed to work around https://launchpad.net/bugs/1248913
     time.sleep(5)
 
 
 def configure_osk_settings():
     """Configure OSK ready for testing by turning off all helpers."""
     gsettings = Gio.Settings.new("com.canonical.keyboard.maliit")
-    gsettings.set_string("active-language", "en")
     gsettings.set_boolean("auto-capitalization", False)
     gsettings.set_boolean("auto-completion", False)
     gsettings.set_boolean("predictive-text", False)

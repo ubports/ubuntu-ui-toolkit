@@ -17,7 +17,6 @@
 from unittest import mock
 
 from autopilot import platform
-from testtools import skipUnless
 
 import ubuntuuitoolkit
 from ubuntuuitoolkit import tests
@@ -62,9 +61,6 @@ MainView {
         self.simple_text_field.write('test')
         self.assertEqual(self.simple_text_field.text, 'test')
 
-    @skipUnless(platform.model() == 'Desktop',
-                'Due to launchpad.net/bugs/1461571 this only runs on desktop.')
-    # Once launchpad.net/bugs/1461571 is fixed this will work on touch.
     def test_clear_with_clear_button(self):
         self.simple_text_field.write('test')
         self.simple_text_field.clear()
