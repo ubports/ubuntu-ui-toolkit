@@ -114,6 +114,7 @@ QML_FILES += 1.3/AbstractButton.qml \
              1.3/ProgressBar.qml \
              1.3/PullToRefresh.qml \
              1.3/Scrollbar.qml \
+             1.3/Sections.qml \
              1.3/Slider.qml \
              1.3/Switch.qml \
              1.3/TabBar.qml \
