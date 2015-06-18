@@ -25,6 +25,8 @@ from autopilot import platform
 
 from ubuntuuitoolkit import (
     MainView,
+    TextArea,
+    TextField,
     tests
 )
 
@@ -45,16 +47,20 @@ class CaretTextInputTestCase(tests.QMLFileAppTestCase):
     scenarios = [
         ('textfield',
             dict(test_qml_file_path=textfield_qml_file_path,
-                 objectName='textfield')),
+                 objectName='textfield',
+                 cpo_class=TextField)),
         ('textarea',
             dict(test_qml_file_path=textarea_qml_file_path,
-                 objectName='textarea')),
+                 objectName='textarea',
+                 cpo_class=TextArea)),
         ('customfield',
             dict(test_qml_file_path=customfield_qml_file_path,
-                 objectName='textfield')),
+                 objectName='textfield',
+                 cpo_class=TextField)),
         ('header',
             dict(test_qml_file_path=header_qml_file_path,
-                 objectName='textfield')),
+                 objectName='textfield',
+                 cpo_class=TextField)),
     ]
 
     def get_command_line(self, command_line):
@@ -63,8 +69,10 @@ class CaretTextInputTestCase(tests.QMLFileAppTestCase):
 
     def setUp(self):
         super().setUp()
-        self.textfield = self.main_view.select_single(
-            objectName=self.objectName)
+        # Create either a TextField or TextArea.
+        self.textfield = self.cpo_class.from_proxy_object(
+            self.main_view.select_single(objectName=self.objectName)
+        )
         self.assertFalse(self.textfield.focus)
 
     def select_cursor(self, positionProperty):
@@ -124,16 +132,20 @@ class InsertModeTextInputTestCase(tests.QMLFileAppTestCase):
     scenarios = [
         ('textfield',
          dict(test_qml_file_path=textfield_qml_file_path,
-              objectName='textfield')),
+              objectName='textfield',
+              cpo_class=TextField)),
         ('textarea',
          dict(test_qml_file_path=textarea_qml_file_path,
-              objectName='textarea')),
+              objectName='textarea',
+              cpo_class=TextField)),
         ('customfield',
          dict(test_qml_file_path=customfield_qml_file_path,
-              objectName='textfield')),
+              objectName='textfield',
+              cpo_class=TextField)),
         ('header',
          dict(test_qml_file_path=header_qml_file_path,
-              objectName='textfield')),
+              objectName='textfield',
+              cpo_class=TextField)),
     ]
 
     def get_command_line(self, command_line):
@@ -142,13 +154,11 @@ class InsertModeTextInputTestCase(tests.QMLFileAppTestCase):
 
     def setUp(self):
 
-        # Work around bug LP:1457629
-        class MainView12(MainView):
-            pass
-
-        super().setUp(mainview_class=MainView12)
-        self.textfield = self.main_view.select_single(
-            objectName=self.objectName)
+        super().setUp()
+        # textfield will either be a textfield or textarea.
+        self.textfield = self.cpo_class.from_proxy_object(
+            self.main_view.select_single(objectName=self.objectName)
+        )
         self.assertFalse(self.textfield.focus)
 
     def assert_buttons(self, texts):

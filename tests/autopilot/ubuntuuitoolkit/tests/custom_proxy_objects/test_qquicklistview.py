@@ -239,11 +239,7 @@ class QQuickListViewDraggingBaseTestCase(tests.QMLFileAppTestCase):
         self.test_qml_file_path = os.path.join(
             dir_path, self.qml_file_name)
 
-        # Work around bug LP:1457629
-        class MainView12(MainView):
-            pass
-
-        super().setUp(MainView12)
+        super().setUp()
         self.list_view = self.main_view.select_single(
             ubuntuuitoolkit.QQuickListView, objectName='test_view')
 

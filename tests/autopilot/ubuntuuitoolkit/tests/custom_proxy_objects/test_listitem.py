@@ -31,11 +31,7 @@ class ListItemTestCase(tests.QMLFileAppTestCase):
 
     def setUp(self):
 
-        # Work around bug LP:1457629
-        class MainView12(MainView):
-            pass
-
-        super().setUp(MainView12)
+        super().setUp()
         self.list_view = self.main_view.select_single(
             ubuntuuitoolkit.QQuickListView, objectName='test_view')
         self.test_listitem = self.main_view.select_single(

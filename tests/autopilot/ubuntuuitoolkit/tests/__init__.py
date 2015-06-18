@@ -142,11 +142,8 @@ class QMLStringAppTestCase(UbuntuUIToolkitWithFakeAppRunningTestCase):
         QML code used for testing must define the objectName
         of the MainView to be 'mainView'.
         """
-        # Docs will need updating (objectName=mainView is to change out CPO if
-        # needed).
-        return self.app.select_single(
-            self.mainview_class,
-            objectName='mainView'
+        return self.mainview_class.from_proxy_object(
+            self.app.select_single(objectName='mainView')
         )
 
 
@@ -204,11 +201,8 @@ class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
         QML code used for testing must define the objectName
         of the MainView to be 'mainView'.
         """
-        # Docs will need updating (objectName=mainView is to change out CPO if
-        # needed).
-        return self.app.select_single(
-            self.mainview_class,
-            objectName='mainView'
+        return self.mainview_class.from_proxy_object(
+            self.app.select_single(objectName='mainView')
         )
 
     def getOrientationHelper(self):
