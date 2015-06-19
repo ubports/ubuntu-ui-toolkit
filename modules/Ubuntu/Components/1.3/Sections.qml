@@ -36,39 +36,66 @@ StyledItem {
       a section will update the \l selectedIndex.
 
       When \l selectedIndex is changed (by user interaction or by setting
-      the value), \l Action actions[selectedIndex] will be triggered.
+      the value), actions[selectedIndex] will be triggered.
 
       Example:
       \qml
         Sections {
             actions: [
-                Action { text: "first" },
-                Action { text: "second" },
-                Action { text: "third" }
+                Action {
+                    text: "first"
+                    onTriggered: print("one")
+                },
+                Action {
+                    text: "second"
+                    onTriggered: print("two")
+                },
+                Action {
+                    text: "third"
+                    onTriggered: print("three")
+                }
             ]
-            onSelectedIndexChanged: {
-                print("Selected " + actions[selectedIndex].text + " section.");
-            }
         }
      \endqml
      It is strongly recommended to limit the number of sections to two or three.
+     The actions are used as the model for the Sections by default.
+     If no trigger functions need to be specified, \l model may be used directly
+     without setting the actions property. If both \l actions and \l model are set,
+     model overrides the actions.
      */
-    property var actions
-    onActionsChanged: {
-        if (actions && actions.length > 3) {
+    property list<Action> actions
+
+    /*!
+      The input model for the sections. By default model takes the \l actions
+      as input, but if no trigger functions need to be specified, it can be
+      simplified to a list of strings naming the sections:
+         \qml
+            Sections {
+                model: [ "one", "two", "three" ]
+                onSelectedIndexChanged: {
+                    print("Selected section " + model[selectedIndex]);
+                }
+            }
+         \endqml
+     */
+    property var model: actions
+    onModelChanged: {
+        if (model && model.length > 3) {
             // FIXME: Make the Sections scrollable for more than 3 sections.
             console.warn("It is not YET recommended or supported to use more than three sections.");
         }
     }
 
     /*!
-      The index of the currently selected section in \l actions.
+      The index of the currently selected section in \l model.
      */
-    property int selectedIndex: actions ? 0 : -1
+    property int selectedIndex: model ? 0 : -1
 
     onSelectedIndexChanged: {
-        if ((selectedIndex >= 0) && (selectedIndex < actions.length)) {
-            actions[selectedIndex].trigger();
+        if ((selectedIndex >= 0) && (selectedIndex < model.length)) {
+            if (model[selectedIndex].hasOwnProperty("trigger")) {
+                model[selectedIndex].trigger();
+            }
         }
     }
 }

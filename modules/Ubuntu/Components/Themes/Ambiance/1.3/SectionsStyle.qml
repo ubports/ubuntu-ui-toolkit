@@ -67,7 +67,7 @@ Item {
 
         Repeater {
             id: sectionsRepeater
-            model: styledItem.actions
+            model: styledItem.model
             objectName: "sections_repeater"
             AbstractButton {
                 id: sectionButton
@@ -92,7 +92,8 @@ Item {
                 Label {
                     id: label
                     objectName: "section_button_label_" + index
-                    text: modelData.text
+                    // modelData may be either a string, or an Action
+                    text: modelData.hasOwnProperty("text") ? modelData.text : modelData
                     fontSize: sectionsStyle.fontSize
                     anchors.centerIn: parent
                     color: sectionButton.selected ?
