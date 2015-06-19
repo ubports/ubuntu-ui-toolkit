@@ -18,7 +18,10 @@
 
 import os
 
-from ubuntuuitoolkit import tests
+from ubuntuuitoolkit import (
+    QQuickFlickable,
+    tests
+)
 
 
 class DialogScrollTestCase(tests.QMLFileAppTestCase):
@@ -40,7 +43,7 @@ class DialogScrollTestCase(tests.QMLFileAppTestCase):
         button = self.main_view.select_single(objectName='button_huge')
         self.pointing_device.click_object(button)
         dialog = self.main_view.select_single(objectName='dialog_huge')
-        flickable = dialog.select_single('QQuickFlickable')
+        flickable = dialog.select_single(QQuickFlickable)
         buttlet = dialog.select_single(objectName='buttlet49')
         # We can scroll
         self.assertFalse(flickable.atYEnd)

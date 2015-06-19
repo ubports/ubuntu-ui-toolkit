@@ -14,18 +14,21 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from ubuntuuitoolkit._custom_proxy_objects import _qquicklistview
+from ubuntuuitoolkit._custom_proxy_objects import (
+    _flickable,
+    _qquicklistview
+)
 
 
 class UbuntuListView11(_qquicklistview.QQuickListView):
     """Autopilot helper for the UbuntuListView 1.1."""
 
     def pull_to_refresh_enabled(self):
-        refresh = self.select_single('PullToRefresh')
+        refresh = self.select_single(_flickable.PullToRefresh)
         return refresh.enabled
 
     def manual_refresh_wait(self):
-        refresh = self.select_single('PullToRefresh')
+        refresh = self.select_single(_flickable.PullToRefresh)
         if refresh.enabled:
             self.pull_to_refresh()
             refresh.wait_for_refresh()
@@ -33,14 +36,14 @@ class UbuntuListView11(_qquicklistview.QQuickListView):
         return False
 
     def manual_refresh_nowait(self):
-        refresh = self.select_single('PullToRefresh')
+        refresh = self.select_single(_flickable.PullToRefresh)
         if refresh.enabled:
             self.pull_to_refresh()
             return True
         return False
 
     def wait_refresh_completed(self):
-        refresh = self.select_single('PullToRefresh')
+        refresh = self.select_single(_flickable.PullToRefresh)
         if refresh.enabled:
             refresh.wait_for_refresh()
             return True

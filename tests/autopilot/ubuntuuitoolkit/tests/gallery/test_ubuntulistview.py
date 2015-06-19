@@ -32,8 +32,12 @@ class UbuntuListViewTestCase(GalleryTestCase):
         self.checkPageHeader(element.text)
         self.main_view.wait_select_single(
             "Template", objectName="ubuntuListViewTemplate")
-        self.listView = self.main_view.select_single(
-            ubuntuuitoolkit.UbuntuListView11, objectName="ubuntuListView")
+        self.listView = ubuntuuitoolkit.UbuntuListView11.from_proxy_object(
+            self.main_view.select_single(
+                ubuntuuitoolkit.UbuntuListView11,
+                objectName="ubuntuListView"
+            )
+        )
 
     def test_pull_to_refresh_enabled(self):
         self._open_page()
