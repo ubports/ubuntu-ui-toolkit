@@ -20,6 +20,7 @@ Ubuntu.Components.Action 1.0 0.1: QtObject
     function trigger()
     property string name
     property Type parameterType
+    property var shortcut
     property string text
     property bool visible
 Ubuntu.Components.Action.Type: Enum
