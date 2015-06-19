@@ -40,6 +40,14 @@ ubuntu-ui-toolkit (1.3.1534+15.10.20150523-0ubuntu2) UNRELEASED; urgency=medium
 
  -- Zoltán Balogh <zoltan@bakter.hu>  Fri, 12 Jun 2015 11:49:32 +0300
 
+ubuntu-ui-toolkit (1.3.1517+15.10.20150523-0ubuntu3) wily; urgency=medium
+
+  * Rebuild against Qt 5.4.2
+  * debian/patches/fix_copyright.patch:
+    - licensecheck started complaining about a person name, change to Canonical
+
+ -- Timo Jyrinki <timo-jyrinki@ubuntu.com>  Fri, 12 Jun 2015 07:48:37 +0000
+
 ubuntu-ui-toolkit (1.3.1517+15.10.20150523-0ubuntu1) wily; urgency=medium
 
   [ Christian Dywan ]
