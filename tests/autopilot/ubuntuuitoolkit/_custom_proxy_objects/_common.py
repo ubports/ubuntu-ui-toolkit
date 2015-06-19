@@ -77,6 +77,7 @@ def restart_maliit_with_testability():
 def configure_osk_settings():
     """Configure OSK ready for testing by turning off all helpers."""
     gsettings = Gio.Settings.new("com.canonical.keyboard.maliit")
+    gsettings.set_string("active-language", "en")
     gsettings.set_boolean("auto-capitalization", False)
     gsettings.set_boolean("auto-completion", False)
     gsettings.set_boolean("predictive-text", False)
