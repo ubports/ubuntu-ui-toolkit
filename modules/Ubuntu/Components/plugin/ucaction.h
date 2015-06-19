@@ -42,7 +42,7 @@ class UCAction : public QObject
     Q_PROPERTY(QQmlComponent *itemHint MEMBER m_itemHint WRITE setItemHint)
 
     // QtQuickControls.Action
-    Q_PROPERTY(QVariant shortcut MEMBER m_shortcut WRITE setShortcut NOTIFY shortcutChanged REVISION 3)
+    Q_PROPERTY(QVariant shortcut MEMBER m_shortcut WRITE setShortcut NOTIFY shortcutChanged)
 public:
     enum Type {
         None,
@@ -70,7 +70,7 @@ Q_SIGNALS:
     void parameterTypeChanged();
     void iconSourceChanged();
     void visibleChanged();
-    Q_REVISION(3) void shortcutChanged(const QVariant& shortcut);
+    void shortcutChanged(const QVariant& shortcut);
     void triggered(const QVariant &value);
 
 public Q_SLOTS:
