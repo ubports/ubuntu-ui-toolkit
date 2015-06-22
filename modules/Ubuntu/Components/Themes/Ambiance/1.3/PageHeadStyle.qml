@@ -111,14 +111,13 @@ Style.PageHeadStyle {
         anchors {
             left: parent.left
             leftMargin: units.gu(2)
-//            right: parent.right
-            bottom: divider.top // FIXME TIM
+            bottom: divider.top
         }
 
-        height: actions && actions.length > 0 ? implicitHeight : 0
+        height: model && model.length > 0 ? implicitHeight : 0
 
         property PageHeadSections sections: styledItem.config.sections
-        actions: sections.actions
+        model: sections.model
 
         onSelectedIndexChanged: sections.selectedIndex = sectionsItem.selectedIndex
         Connections {

@@ -72,7 +72,8 @@ Item {
                             margins: units.gu(1)
                         }
                         width: height
-                        color: page.head.sections.actions[page.head.sections.selectedIndex].text
+//                        color: page.head.sections.actions[page.head.sections.selectedIndex].text
+                        color: page.head.sections.model[page.head.sections.selectedIndex]
                     }
 
                     Label {

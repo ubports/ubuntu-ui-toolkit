@@ -38,6 +38,7 @@ QtObject {
     property bool enabled: true
 
     /*!
+      FIXME TIM: docs.
       List of strings that represent section names. Example:
       \qml
         import Ubuntu.Components 1.3
@@ -65,16 +66,11 @@ QtObject {
      \endqml
      It is strongly recommended to limit the number of sections to two or three.
      */
-//    property var model
-//    onModelChanged: {
-//        if (model && model.length > 3) {
-//            console.warn("It is not recommended or supported to use more than three sections in Page.head.sections.model.");
-//        }
-//    }
-    property list<Action> actions // TODO TIM: auto-fill when model of strings is given.
+    property var model: actions
+    property list<Action> actions
 
     /*!
       The index of the currently selected section in \l model.
      */
-    property int selectedIndex: actions ? 0 : -1 // TODO TIM: this must be updated automatically.
+    property int selectedIndex: actions ? 0 : -1
 }
