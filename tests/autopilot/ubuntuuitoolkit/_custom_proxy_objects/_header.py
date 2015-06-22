@@ -81,24 +81,19 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
         if self.useDeprecatedToolbar:
             raise _common.ToolkitException('Old header has no sections')
 
-        try:
-            self.wait_for_animation()
-            object_name = "section_button_" + str(index)
-            button = self.select_single(objectName=object_name)
-        except dbus.StateNotFoundError:
-            raise _common.ToolkitException(
-                'Button for section with given index not found')
-
-        self.pointing_device.click_object(button)
+        self.wait_for_animation()
+        sections = self.select_single(
+            'Sections', objectName='headerSectionsItem')
+        sections.click_section_button(index)
 
     def get_selected_section_index(self):
         if self.useDeprecatedToolbar:
             raise _common.ToolkitException('Old header has no sections')
 
         self.wait_for_animation()
-        sectionsProperties = self.select_single(
-            'QQuickItem', objectName='sectionsProperties')
-        return sectionsProperties.selectedIndex
+        sections = self.select_single(
+            'Sections', objectName='headerSectionsItem')
+        return sections.selectedIndex
 
     def click_back_button(self):
         self.ensure_visible()

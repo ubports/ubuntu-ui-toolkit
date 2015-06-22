@@ -107,7 +107,7 @@ Style.PageHeadStyle {
             leftMargin: units.gu(2)
             bottom: divider.top
         }
-
+        enabled: sections.enabled
         height: model && model.length > 0 ? implicitHeight : 0
 
         property PageHeadSections sections: styledItem.config.sections
