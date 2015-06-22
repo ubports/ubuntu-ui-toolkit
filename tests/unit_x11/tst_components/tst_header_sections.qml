@@ -31,12 +31,12 @@ Item {
             title: "Sections"
             head {
                 sections {
-//                    model: ["navy", "lightblue", "brown"]
-                    actions: [
-                        Action { text: "navy" },
-                        Action { text: "lightblue" },
-                        Action { text: "brown" }
-                    ]
+                    model: ["navy", "lightblue", "brown"]
+//                    actions: [
+//                        Action { text: "navy" },
+//                        Action { text: "lightblue" },
+//                        Action { text: "brown" }
+//                    ]
                 }
                 actions: [
                     Action {
