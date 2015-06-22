@@ -46,7 +46,7 @@ import "stack.js" as Stack
   a Page instance, a Component or a url to a document defining a Page. The page
   cannot be removed from the view.
 
-  \note Unlike PageStack, the component does not fill its parent content.
+  \note Unlike PageStack or Page the component does not fill its parent by default.
 
   \qml
   import QtQuick 2.4
@@ -58,7 +58,6 @@ import "stack.js" as Stack
 
       MultiColumnView {
           anchors.fill: parent
-          columns: 2
           primaryPage: page1
           Page {
               id: page1
@@ -86,40 +85,8 @@ import "stack.js" as Stack
   }
   \endqml
 
-  Column widths are controlled by the \l defaultColumnWidth property and the \l columnMetrics
-  properties. The \l columnMetrics contains a list of metrics configuring a specific
-  column. If no metrics are set, the component will use \l defaultColumnWidth on
-  each column. If the component is set to have one column only, the content will
-  be stretched to the entire component area no matter of the metrics specified.
-  When multiple columns are set, the last column is set to fill the available
-  width and the rest are configured with the \l defaultColumnWidth. This behavior
-  can be changed by specifying the \l ColumnMetrics::fillWidth for the column that
-  needs to fill the available width. There can be more columns filling the available
-  width at a time.
-
-  Let's modify the example above, to have 3 columns, where columns 1 and 3
-  should have fixed widths of 40 GU and column 2 should fill to the space
-  available. The code handling this would look as follows:
-  \qml
-  MultiColumnView {
-      columns: 3
-      defaultColumnWidth: units.gu(40)
-      columnMetrics: [
-          ColumnMetrics {
-              column: 2
-              fillWidth: true
-          },
-          ColumnMetrics {
-              column: 3
-              fillWidth: false
-          }
-      ]
-  }
-  \endqml
-
-  MultiColumnView supports adaptive column handling. When columns number changes
-  runtime, the pages are automatically rearranged to the closest columns they were
-  added to. To understand it better, let's take the following example:
+  MultiColumnView supports adaptive column handling. When the number of columns changes at
+  runtime the pages are automatically rearranged. To understand it better, let's take the following example:
   \qml
   import QtQuick 2.4
   import Ubuntu.Components 1.3
@@ -130,8 +97,6 @@ import "stack.js" as Stack
 
       MultiColumnView {
           anchors.fill: parent
-          columns: width > units.gu(100) ? 3 :
-                        (width >= units.gu(80) ? 2 : 1)
           primaryPage: page1
           Page {
               id: page1
@@ -157,15 +122,16 @@ import "stack.js" as Stack
   }
   \endqml
 
-  When the code is run on desktop, it will launch with a space for three columns.
+  When the code is run on sufficiently wide screen, like a desktop or TV,
+  it will launch with multiple columns.
+
   \c page1 is set to be the primary page, \c page2 will be added to column next to
   \c page1 (to column 2) and \c page3 next to \c page2 (column 3). When the window
-  is resized to have its size below 100 GU, the component will switch to 2 column
+  is resized to have its size below 80 GU, the component will switch to 1 column
   mode, and \c page3 will be placed in the last column, and the header for \c page2
   will have a back button, indicating that there is a page below it. If the window
   is resized to contain only one column, all pages will be shown in that column, so
-  the component will act as PageStack. Resizing the window back to 2 respectively
-  3 columns will place the pages side-by-side.
+  the component will act as PageStack. Resizing the window back to 2 columns will place the pages side-by-side.
 
   \note In the above example if \c page2 is removed, that will remove all its child
   pages, meaning \c page3 will also be removed.
@@ -179,67 +145,21 @@ PageTreeNode {
     /*!
       The property holds the first Page which will be added to the view. If the
       view has more than one column, the page will be added to the leftmost column.
-      The proeprty can hold either a Page instance, a component holding a Page
+      The property can hold either a Page instance, a component holding a Page
       or a QML document defining the Page. The property cannot be changed after
       component completion.
       */
     property var primaryPage
 
     /*!
-      Specifies the number of columns in the view. A condition must be set to
-      control the number of columns depending on the space available.
-      \qml
-      MultiColumnView {
-           id: view
-           columns: view.width > units.gu(50) ? 2 : 1
-      }
-      \endqml
-      */
-    property int columns: 1
-
-    /*!
-      The property specifies the default width of each column. The property is
-      applied on each column. If the \a minimumWidth specified for the column is
-      bigger than this value, the minimum width will be applied.
-      */
-    property real defaultColumnWidth: units.gu(40)
-
-    /*!
-      The property configures the size constraints and area filling for columns.
-      If a column is not specified, the default sizing and filling will be applied.
-      By default, only the last column is filling the available width, al other
-      columns are sized to \l defaultColumnWidth as maximum. By default the list
-      is empty. Only columns requiring special handling than the default should
-      be specified.
-      */
-    property list<ColumnMetrics> columnMetrics
-
-    /*!
       \qmlmethod Item addPageToCurrentColumn(Item sourcePage, var page[, var properties])
-      Adds a \c page to the column the \c sourcePage resides in. If \c sourcePage
-      is null, the \c page will be added to the leftmost column. \c page can be a
-      Component or a file. \c properties is a JSon object containing properties
+      Adds a \c page to the column the \c sourcePage resides in. \c page can be a
+      Component or a file. \c properties is a JSON object containing properties
       to be set when page is created. \c sourcePage must be active. Returns the
       instance of the page created.
       */
     function addPageToCurrentColumn(sourcePage, page, properties) {
-        if (columns <= 0) {
-            return;
-        }
-        if (!sourcePage) {
-            console.warn("No sourcePage specified. Page will not be added.");
-            return;
-        }
-        if (!d.stack.find(sourcePage)) {
-            console.warn("sourcePage must be added to the view to add new page.");
-            return;
-        }
-
-        var wrapper = d.createWrapper(page, properties);
-        wrapper.column = d.columnForPage(sourcePage);
-        wrapper.parentPage = sourcePage;
-        d.addPage(wrapper);
-        return wrapper.object;
+        return d.addPageToColumn(d.columnForPage(sourcePage), sourcePage, page, properties);
     }
 
     /*!
@@ -250,28 +170,12 @@ PageTreeNode {
       rightmost column, the new page will be pushed to the same column as \c sourcePage.
       */
     function addPageToNextColumn(sourcePage, page, properties) {
-        if (columns <= 0) {
-            return;
-        }
-        if (!sourcePage) {
-            console.warn("No sourcePage specified. Page will not be added.");
-            return;
-        }
-        if (!d.stack.find(sourcePage)) {
-            console.warn("sourcePage must be added to the view to add new page.");
-            return;
-        }
-
-        var wrapper = d.createWrapper(page, properties);
-        wrapper.column = (!sourcePage) ? 0 : d.columnForPage(sourcePage) + 1;
-        wrapper.parentPage = sourcePage;
-        d.addPage(wrapper);
-        return wrapper.object;
+        return d.addPageToColumn(d.columnForPage(sourcePage) + 1, sourcePage, page, properties);
     }
 
     /*!
       \qmlmethod void removePages(Item page)
-      The function removes and deletes all pages from the view columns until \c page
+      The function removes and deletes all pages up to and including \c page
       is reached. If the \a page is the same as the \l primaryPage, only its child
       pages will be removed.
       */
@@ -292,13 +196,6 @@ PageTreeNode {
       internals
       */
 
-    /*! internal */
-    onColumnsChanged: {
-        if (columns <= 0) {
-            console.warn("There must me a minimum of one column set.");
-        }
-        d.relayout();
-    }
     Component.onCompleted: {
         d.relayout();
         d.completed = true;
@@ -315,13 +212,25 @@ PageTreeNode {
             return;
         }
     }
-    onDefaultColumnWidthChanged: body.applyMetrics()
 
     QtObject {
         id: d
 
         property bool completed: false
         property var stack: new Stack.Stack()
+
+        property int columns: multiColumnView.width >= units.gu(80) ? 2 : 1
+        /*! internal */
+        onColumnsChanged: {
+            if (columns <= 0) {
+                console.warn("There must be a minimum of one column set.");
+                columns = 1;
+            }
+            d.relayout();
+        }
+        property real defaultColumnWidth: units.gu(40)
+        onDefaultColumnWidthChanged: body.applyMetrics()
+        property list<ColumnMetrics> columnMetrics
 
         function createWrapper(page, properties) {
             var wrapperComponent = Qt.createComponent("PageWrapper.qml");
@@ -337,7 +246,7 @@ PageTreeNode {
         function addPage(pageWrapper) {
             stack.push(pageWrapper);
             pageWrapper.parentWrapper = stack.find(pageWrapper.parentPage);
-            var targetColumn = MathUtils.clamp(pageWrapper.column, 0, columns - 1);
+            var targetColumn = MathUtils.clamp(pageWrapper.column, 0, d.columns - 1);
             // replace page holder's child
             var holder = body.children[targetColumn];
             holder.detachCurrentPage();
@@ -349,10 +258,31 @@ PageTreeNode {
             return wrapper ? wrapper.column : 0;
         }
 
+        function addPageToColumn(column, sourcePage, page, properties) {
+            if (column < 0) {
+                console.warn("Column must be >= 0.");
+                return;
+            }
+            if (!sourcePage) {
+                console.warn("No sourcePage specified. Page will not be added.");
+                return;
+            }
+            if (!d.stack.find(sourcePage)) {
+                console.warn("sourcePage must be added to the view to add new page.");
+                return;
+            }
+
+            var wrapper = d.createWrapper(page, properties);
+            wrapper.parentPage = sourcePage;
+            wrapper.column = column;
+            d.addPage(wrapper);
+            return wrapper.object;
+        }
+
         // node is a triplet of {page, column, parentPage}
         function popAndSetPageForColumn(node) {
             stack.pop();
-            var effectiveColumn = MathUtils.clamp(node.column, 0, columns - 1);
+            var effectiveColumn = MathUtils.clamp(node.column, 0, d.columns - 1);
             var columnHolder = body.children[effectiveColumn];
             // is the page in a column?
             if (node == columnHolder.pageWrapper) {
@@ -360,7 +290,7 @@ PageTreeNode {
                 columnHolder.detachCurrentPage();
             }
             node.parent = null;
-            var prevPage = stack.topForColumn(effectiveColumn, effectiveColumn < columns - 1);
+            var prevPage = stack.topForColumn(effectiveColumn, effectiveColumn < d.columns - 1);
             if (prevPage) {
                 columnHolder.attachPage(prevPage);
             }
@@ -371,10 +301,10 @@ PageTreeNode {
 
         // relayouts when column count changes
         function relayout() {
-            if (body.children.length == columns) return;
-            if (body.children.length > columns) {
+            if (body.children.length == d.columns) return;
+            if (body.children.length > d.columns) {
                 // need to remove few columns, the last ones
-                while (body.children.length > columns) {
+                while (body.children.length > d.columns) {
                     var holder = body.children[body.children.length - 1];
                     holder.detachCurrentPage();
                     holder.parent = null;
@@ -384,7 +314,7 @@ PageTreeNode {
                 var prevColumns = body.children.length;
 
                 // add columns
-                for (var i = 0; i < columns - prevColumns; i++) {
+                for (var i = 0; i < d.columns - prevColumns; i++) {
                     pageHolderComponent.createObject(body);
                 }
             }
@@ -392,9 +322,9 @@ PageTreeNode {
         }
 
         function rearrangePages() {
-            for (var column = columns - 1; column >= 0; column--) {
+            for (var column = d.columns - 1; column >= 0; column--) {
                 var holder = body.children[column];
-                var pageWrapper = stack.topForColumn(column, column < (columns - 1));
+                var pageWrapper = stack.topForColumn(column, column < (d.columns - 1));
                 if (!pageWrapper) {
                     continue;
                 }
@@ -426,8 +356,8 @@ PageTreeNode {
     Component {
         id: defaultMetrics
         ColumnMetrics {
-            fillWidth: column == columns
-            minimumWidth: defaultColumnWidth
+            fillWidth: column == d.columns
+            minimumWidth: d.defaultColumnWidth
         }
     }
 
@@ -446,8 +376,8 @@ PageTreeNode {
             Layout.fillWidth: metrics.fillWidth
             Layout.fillHeight: true
             Layout.preferredWidth: metrics.maximumWidth > 0 ?
-                                       MathUtils.clamp(defaultColumnWidth, metrics.minimumWidth, metrics.maximumWidth) :
-                                       defaultColumnWidth
+                                       MathUtils.clamp(d.defaultColumnWidth, metrics.minimumWidth, metrics.maximumWidth) :
+                                       d.defaultColumnWidth
             Layout.minimumWidth: metrics.minimumWidth
             Layout.maximumWidth: metrics.maximumWidth
 
@@ -476,7 +406,7 @@ PageTreeNode {
                     bottom: parent.bottom
                     right: parent.right
                 }
-                width: (column == (columns - 1)) || !pageWrapper ? 0 : units.dp(2)
+                width: (column == (d.columns - 1)) || !pageWrapper ? 0 : units.dp(2)
                 color: theme.palette.normal.background
             }
 
@@ -491,11 +421,11 @@ PageTreeNode {
             }
 
             function attachPage(page) {
-                if (!page) return;
                 pageWrapper = page;
                 pageWrapper.parent = holderBody;
                 pageWrapper.pageHolder = holder;
                 pageWrapper.active = true;
+
                 if (pageWrapper.object.hasOwnProperty("head")) {
                     header.config = pageWrapper.object.head;
                 }
@@ -553,9 +483,9 @@ PageTreeNode {
                 var holder = children[i];
                 // search for the column metrics
                 var metrics = null;
-                for (var j = 0; j < columnMetrics.length; j++) {
-                    if (columnMetrics[j].column == (i + 1)) {
-                        metrics = columnMetrics[j];
+                for (var j = 0; j < d.columnMetrics.length; j++) {
+                    if (d.columnMetrics[j].column == (i + 1)) {
+                        metrics = d.columnMetrics[j];
                         break;
                     }
                 }

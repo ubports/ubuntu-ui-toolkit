@@ -38,14 +38,14 @@ QtObject {
 
     /*!
       Specifies the minimum width of the column. If the value is greater than
-      \l MultiColumnView::defaultColumnWidth, the value will be set as width for
+      \b MultiColumnView::defaultColumnWidth, the value will be set as width for
       the column.
       */
     property real minimumWidth: 0
 
     /*!
       Specifies the maximum width of the column. If the value is smaller than
-      \l MultiColumnView::defaultColumnWidth, the value will be set as width for
+      \b MultiColumnView::defaultColumnWidth, the value will be set as width for
       the column. A maximum value of 0 will be ignored.
       */
     property real maximumWidth: Number.POSITIVE_INFINITY
