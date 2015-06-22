@@ -72,5 +72,5 @@ QtObject {
     /*!
       The index of the currently selected section in \l model.
      */
-    property int selectedIndex: actions ? 0 : -1
+    property int selectedIndex: model ? 0 : -1
 }

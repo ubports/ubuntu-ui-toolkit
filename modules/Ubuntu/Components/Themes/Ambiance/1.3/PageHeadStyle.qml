@@ -75,12 +75,6 @@ Style.PageHeadStyle {
 
     implicitHeight: headerStyle.contentHeight + divider.height + sectionsItem.height
 
-                    /*!
-                      The height of the row displaying the sections, if sections are specified.
-                     */
-                //    property real sectionsHeight: units.gu(4)
-
-
     // FIXME: Workaround to get sectionsRepeater.count in autopilot tests,
     //  see also FIXME in AppHeader where this property is used.
 //    property alias __sections_repeater_for_autopilot: sectionsRepeater
@@ -93,7 +87,6 @@ Style.PageHeadStyle {
     // FIXME: Remove this property when we introduce a header preset that does not
     //  have a separator.
     property alias __separator_visible: divider.visible
-
 
     Rectangle {
         id: divider
@@ -126,7 +119,6 @@ Style.PageHeadStyle {
             onSelectedIndexChanged: sectionsItem.selectedIndex = sectionsItem.sections.selectedIndex
         }
     }
-
 
     states: [
         State {
