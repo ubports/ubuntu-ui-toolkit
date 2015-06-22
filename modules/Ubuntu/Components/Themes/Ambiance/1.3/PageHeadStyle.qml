@@ -108,6 +108,7 @@ Style.PageHeadStyle {
 
     Sections {
         id: sectionsItem
+        objectName: "headerSectionsItem"
         anchors {
             left: parent.left
             leftMargin: units.gu(2)
