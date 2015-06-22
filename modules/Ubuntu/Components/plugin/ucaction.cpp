@@ -270,7 +270,7 @@ QKeySequence sequenceFromVariant(const QVariant& variant) {
 /*!
  * \qmlproperty Component Action::shortcut
  * The keyboard shortcut that can be used to trigger the action.
- * \l StandardKey values such as StandardKey.Copy
+ * \b StandardKey values such as \b StandardKey.Copy
  * as well as strings in the form "Ctrl+C" are accepted values.
  * \since 1.3
  */
