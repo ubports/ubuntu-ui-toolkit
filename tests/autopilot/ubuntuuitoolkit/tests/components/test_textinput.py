@@ -97,6 +97,8 @@ class CaretTextInputTestCase(tests.QMLFileAppTestCase):
         self.pointing_device.click_object(self.textfield)
         self.select_cursor('cursorPosition')
 
+    @testtools.skipUnless(platform.model() == 'Desktop',
+                          'Desktop only due to non-OSK key used.')
     def test_caret_visible_after_selecting(self):
         self.test_caret_hide_while_typing()
         # Select a character
