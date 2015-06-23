@@ -26,6 +26,8 @@ import Ubuntu.Components 1.3
 
     These sections will be shown in the bottom part of the header. This component does not
     need to be instantiated by the developer, it is automatically part of \l PageHeadConfiguration.
+
+    See also \l Sections.
  */
 QtObject {
     // To be used inside PageHeadConfiguration
@@ -38,8 +40,9 @@ QtObject {
     property bool enabled: true
 
     /*!
-      FIXME TIM: docs.
-      List of strings that represent section names. Example:
+      The input model for the sections. By default model takes the \l actions
+      as input, but if no trigger functions need to be specified, it can be
+      simplified to a list of strings naming the sections:
       \qml
         import Ubuntu.Components 1.3
         import QtQuick 2.4
@@ -56,7 +59,6 @@ QtObject {
                         model: ["one", "two", "three"]
                     }
                 }
-
                 Label {
                     anchors.centerIn: parent
                     text: "Section " + page.head.sections.selectedIndex
@@ -67,6 +69,16 @@ QtObject {
      It is strongly recommended to limit the number of sections to two or three.
      */
     property var model: actions
+
+    /*!
+      List of actions that represent the sections.
+      The text of each action is displayed as the section name and clicking
+      a section will update the \l selectedIndex.
+
+      When \l selectedIndex is changed (by user interaction or by setting
+      the value), actions[selectedIndex] will be triggered.
+
+     */
     property list<Action> actions
 
     /*!
