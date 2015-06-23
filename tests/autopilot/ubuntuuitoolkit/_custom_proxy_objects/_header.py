@@ -111,7 +111,7 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
         except dbus.StateNotFoundError:
             # Ubuntu.Components < 1.3, has no headerSectionsItem.
             sectionsProperties = self.select_single(
-                 'QQuickItem', objectName='sectionsProperties')
+                'QQuickItem', objectName='sectionsProperties')
             return sectionsProperties.selectedIndex
 
     def click_back_button(self):

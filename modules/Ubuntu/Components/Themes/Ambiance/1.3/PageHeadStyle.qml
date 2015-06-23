@@ -75,10 +75,6 @@ Style.PageHeadStyle {
 
     implicitHeight: headerStyle.contentHeight + divider.height + sectionsItem.height
 
-    // FIXME: Workaround to get sectionsRepeater.count in autopilot tests,
-    //  see also FIXME in AppHeader where this property is used.
-//    property alias __sections_repeater_for_autopilot: sectionsRepeater
-
     // Used by unit tests and autopilot tests to wait for animations to finish
     readonly property bool animating: headerStyle.state == "OUT"
                                       || leftAnchor.anchors.leftMargin < 0
