@@ -29,7 +29,6 @@ Item {
         width: parent.width
         height: parent.height
 
-        columns: width > units.gu(100) ? 3 : (width > units.gu(80) ? 2 : 1)
         primaryPage: page1
 
         Page {
@@ -68,10 +67,7 @@ Item {
         }
 
         function test_0_API() {
-            compare(defaults.columns, 1, "wrong columns");
-            compare(defaults.defaultColumnWidth, units.gu(40), "wrong defaultColumnWidth");
-            compare(defaults.columnMetrics.length, 0, "wrong columnMetrics list");
-            compare(defaults.primaryPage, undefined, "wrong primaryPage");
+            compare(defaults.primaryPage, undefined, "primaryPage not undefined by default");
         }
 
         function test_add_to_first_column_data() {
@@ -112,11 +108,6 @@ Item {
                 expectFail(data.tag, "Fail");
             }
             verify(secondColumn.pageWrapper);
-        }
-
-        function test_invalid_column() {
-            ignoreWarning("There must me a minimum of one column set.");
-            defaults.columns = 0;
         }
 
         function test_change_primaryPage() {
