@@ -242,8 +242,20 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
         """
         self.ensure_visible()
 
-        button = self._get_action_button(action_object_name)
-        self.pointing_device.click_object(button)
+        try:
+            # for Ubuntu.Components 1.3
+            actionbar = self.select_single(
+                'ActionBar', objectName='headerActionBar')
+            actionbar.click_action_button(action_object_name)
+        except dbus.StateNotFoundError:
+            # for Ubuntu.Components < 1.3
+            button = self._get_action_button(action_object_name)
+            self.pointing_device.click_object(button)
+        except _common.ToolkitException:
+            # Catch 'Button not found in ActionBar or overflow' exception
+            raise _common.ToolkitException(
+                'Button not found in header or overflow')
+
         self.wait_for_animation()
 
     def _get_action_button(self, action_object_name):

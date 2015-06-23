@@ -370,6 +370,7 @@ Style.PageHeadStyle {
 
         ActionBar {
             id: actionsContainer
+            objectName: "headerActionBar"
             anchors {
                 top: parent.top
                 right: rightAnchor.left

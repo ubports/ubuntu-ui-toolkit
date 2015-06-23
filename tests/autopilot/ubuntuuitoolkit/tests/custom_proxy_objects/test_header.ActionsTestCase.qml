@@ -21,7 +21,6 @@ MainView {
     width: units.gu(48)
     height: units.gu(60)
     objectName: "mainView"
-//    useDeprecatedToolbar: false
 
     Page {
         id: page
