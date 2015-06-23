@@ -21,9 +21,9 @@ import Ubuntu.Components.Styles 1.3 as Style
 Style.PageHeadStyle {
     id: headerStyle
     objectName: "PageHeadStyle" // used in unit tests
-    contentHeight: units.gu(7)
+    contentHeight: units.gu(6)
     fontWeight: Font.Light
-    fontSize: "x-large"
+    fontSize: "large"
     textLeftMargin: units.gu(2)
     maximumNumberOfActions: 3
 
@@ -73,11 +73,7 @@ Style.PageHeadStyle {
      */
     property color sectionHighlightColor: theme.palette.selected.background
 
-    implicitHeight: headerStyle.contentHeight + divider.height
-
-    // FIXME: Workaround to get sectionsRepeater.count in autopilot tests,
-    //  see also FIXME in AppHeader where this property is used.
-    property alias __sections_repeater_for_autopilot: sectionsRepeater
+    implicitHeight: headerStyle.contentHeight + divider.height + sectionsItem.height
 
     // Used by unit tests and autopilot tests to wait for animations to finish
     readonly property bool animating: headerStyle.state == "OUT"
@@ -88,92 +84,35 @@ Style.PageHeadStyle {
     //  have a separator.
     property alias __separator_visible: divider.visible
 
-    StyledItem {
+    Rectangle {
         id: divider
         anchors {
-            bottom: parent.bottom
             left: parent.left
             right: parent.right
+            bottom: parent.bottom
         }
+        height: units.dp(1)
+        color: styledItem.dividerColor
+    }
 
-        height: sectionsRow.visible ? units.gu(3) : units.gu(2)
-
-        // separatorSource and separatorBottomSource are needed for the deprecated
-        // HeadSeparatorImageStyle.
-        property url separatorSource: headerStyle.separatorSource
-        property url separatorBottomSource: headerStyle.separatorBottomSource
-
-        // backgroundColor is used in the new HeadDividerStyle
-        property color backgroundColor: styledItem.dividerColor
-
-        styleName: "HeadDividerStyle"
+    Sections {
+        id: sectionsItem
+        objectName: "headerSectionsItem"
+        anchors {
+            left: parent.left
+            leftMargin: units.gu(2)
+            bottom: divider.top
+        }
+        enabled: sections.enabled
+        height: model && model.length > 0 ? implicitHeight : 0
 
         property PageHeadSections sections: styledItem.config.sections
+        model: sections.model
 
-        Row {
-            id: sectionsRow
-            anchors.centerIn: parent
-            width: childrenRect.width
-            height: parent.height
-            enabled: divider.sections.enabled
-            visible: divider.sections.model !== undefined
-            opacity: enabled ? 1.0 : 0.5
-
-            Repeater {
-                id: sectionsRepeater
-                model: divider.sections.model
-                objectName: "page_head_sections_repeater"
-                AbstractButton {
-                    id: sectionButton
-                    anchors {
-                        top: parent ? parent.top : undefined
-                        bottom: parent ? parent.bottom : undefined
-                    }
-                    objectName: "section_button_" + index
-                    enabled: sectionsRow.enabled
-                    width: label.width + units.gu(4)
-                    height: sectionsRow.height + units.gu(2)
-                    property bool selected: index === divider.sections.selectedIndex
-                    onClicked: divider.sections.selectedIndex = index;
-
-                    Rectangle {
-                        visible: parent.pressed
-                        anchors {
-                            verticalCenter: parent.verticalCenter
-                            left: parent.left
-                            right: parent.right
-                            rightMargin: verticalDividerLine.width
-                        }
-                        height: sectionsRow.height
-                        color: headerStyle.sectionHighlightColor
-                    }
-
-                    Label {
-                        id: label
-                        text: modelData
-                        fontSize: "small"
-                        anchors.centerIn: sectionButton
-                        horizontalAlignment: Text.AlignHCenter
-                        color: sectionButton.selected ?
-                                   headerStyle.selectedSectionColor :
-                                   headerStyle.sectionColor
-                    }
-
-                    // vertical divider line
-                    Rectangle {
-                        id: verticalDividerLine
-                        anchors {
-                            verticalCenter: parent.verticalCenter
-                            right: parent.right
-                        }
-                        height: units.dp(10)
-                        width: units.dp(1)
-                        visible: index < sectionsRepeater.model.length - 1
-                        color: headerStyle.sectionColor
-                        opacity: 0.2
-                    }
-                }
-            }
+        onSelectedIndexChanged: sections.selectedIndex = sectionsItem.selectedIndex
+        Connections {
+            target: sectionsItem.sections
+            onSelectedIndexChanged: sectionsItem.selectedIndex = sectionsItem.sections.selectedIndex
         }
     }
 
@@ -429,96 +368,18 @@ Style.PageHeadStyle {
             }
         }
 
-        Row {
+        ActionBar {
             id: actionsContainer
-
-            property var visibleActions: getVisibleActions(styledItem.config.actions)
-            function getVisibleActions(actions) {
-                var visibleActionList = [];
-                for (var i in actions) {
-                    var action = actions[i];
-                    if (action && action.hasOwnProperty("visible") && action.visible) {
-                        visibleActionList.push(action);
-                    }
-                }
-                return visibleActionList;
-            }
-
-            QtObject {
-                id: numberOfSlots
-                property int requested: actionsContainer.visibleActions.length
-                property int left: tabsButton.visible || backButton.visible ||
-                                   customBackButton.visible ? 1 : 0
-                property int right: headerStyle.maximumNumberOfActions - left
-                property int overflow: actionsOverflowButton.visible ? 1 : 0
-                property int used: Math.min(right - overflow, requested)
-            }
-
+            objectName: "headerActionBar"
             anchors {
                 top: parent.top
                 right: rightAnchor.left
                 rightMargin: actionsContainer.width > 0 ? units.gu(1) : 0
             }
-            width: childrenRect.width
             height: headerStyle.contentHeight
 
-            Repeater {
-                model: numberOfSlots.used
-                PageHeadButton {
-                    id: actionButton
-                    objectName: action.objectName + "_header_button"
-                    action: actionsContainer.visibleActions[index]
-                    color: headerStyle.buttonColor
-                    state: styledItem.config.preset === "select" ?
-                               "IconAndLabel" : ""
-                }
-            }
-
-            PageHeadButton {
-                id: actionsOverflowButton
-                objectName: "actions_overflow_button"
-                visible: numberOfSlots.requested > numberOfSlots.right
-                // Ensure resetting of X when this button is not visible to avoid
-                // miscalculation of actionsContainer.width. Fixes bug #1408481.
-                onVisibleChanged: if (!visible) x = 0
-                iconName: "contextual-menu"
-                color: headerStyle.buttonColor
-                height: actionsContainer.height
-                onTriggered: PopupUtils.open(actionsOverflowPopoverComponent, actionsOverflowButton)
-
-                Component {
-                    id: actionsOverflowPopoverComponent
-
-                    OverflowPanel {
-                        id: actionsOverflowPopover
-                        objectName: "actions_overflow_popover"
-
-                        backgroundColor: headerStyle.panelBackgroundColor
-                        foregroundColor: headerStyle.panelForegroundColor
-                        highlightColor: headerStyle.panelHighlightColor
-
-                        // Ensure the popover closes when actions change and
-                        // the list item below may be destroyed before its
-                        // onClicked is executed. See bug
-                        // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1326963
-                        Connections {
-                            target: styledItem.config
-                            onActionsChanged: {
-                                actionsOverflowPopover.hide();
-                            }
-                        }
-                        Connections {
-                            target: styledItem
-                            onConfigChanged: {
-                                actionsOverflowPopover.hide();
-                            }
-                        }
-
-                        actions: actionsContainer.visibleActions.slice(numberOfSlots.used,
-                                                                       numberOfSlots.requested)
-                    }
-                }
-            }
+            actions: styledItem.config.actions
+            numberOfSlots: 3
         }
     }
 }
