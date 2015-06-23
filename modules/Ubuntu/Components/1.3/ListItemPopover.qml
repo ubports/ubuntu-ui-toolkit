@@ -15,10 +15,37 @@
  */
 
 import QtQuick 2.4
+import Ubuntu.Components 1.3
 import Ubuntu.Components.Popups 1.3
 
 ActionSelectionPopover {
+    id: popover
     objectName: 'listItemContextMenu'
+    contentWidth: units.gu(25)
+
+    delegate: ListItem {
+        contentItem.anchors {
+             leftMargin: units.gu(2)
+             rightMargin: units.gu(2)
+             topMargin: units.gu(0.5)
+             bottomMargin: units.gu(0.5)
+        }
+        divider.visible: action != actions[actions.length - 1]
+
+        Label {
+            anchors.verticalCenter: parent.verticalCenter
+            text: action.text
+            color: '#5D5D5D'
+        }
+
+        MouseArea {
+            anchors.fill: parent
+            onReleased: {
+                popover.hide();
+                action.trigger();
+            }
+        }
+    }
 
     function mergeActions(to, from) {
         if (from == null)
@@ -33,11 +60,11 @@ ActionSelectionPopover {
         }
     }
 
-    actions: {
+    onCallerChanged: {
         var all = [];
         mergeActions(all, caller.leadingActions);
         mergeActions(all, caller.trailingActions);
-        return all;
+        actions = all;
     }
 
     // Hide the arrow

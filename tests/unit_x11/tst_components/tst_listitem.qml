@@ -28,23 +28,27 @@ Item {
 
     Action {
         id: stockAction
-        iconName: "starred"
+        iconName: "lights-on"
         objectName: "stockAction"
+        text: 'Switch lights on'
     }
     ListItemActions {
         id: leading
         actions: [
             Action {
                 iconName: "starred"
+                text: 'Bookmark'
                 objectName: "leading_1"
             },
             Action {
                 iconName: "edit"
                 text: 'Edit'
                 objectName: "leading_2"
+                onTriggered: text = 'Edit Again'
             },
             Action {
                 iconName: "camcorder"
+                text: 'Record'
                 objectName: "leading_3"
             }
         ]
@@ -388,6 +392,7 @@ Item {
             mouseClick(edit, edit.width / 2, edit.height / 2);
             waitForRendering(testItem);
             compare(context_menu.visible, false, "Menu did not hide after action");
+            compare(edit.text, 'Edit Again', "Item wasn't triggered'");
         }
 
         function test_no_click_when_swiped() {
