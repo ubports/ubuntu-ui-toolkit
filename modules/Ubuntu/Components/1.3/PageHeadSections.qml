@@ -78,6 +78,7 @@ QtObject {
       When \l selectedIndex is changed (by user interaction or by setting
       the value), actions[selectedIndex] will be triggered.
 
+      \since Ubuntu.Components 1.3
      */
     property list<Action> actions
 
