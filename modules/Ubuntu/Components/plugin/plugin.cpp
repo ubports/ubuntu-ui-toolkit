@@ -208,6 +208,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCUbuntuShapeOverlay>(uri, 1, 2, "UbuntuShapeOverlay");
 
     // register 1.3 API
+    qmlRegisterType<UCListItem13>(uri, 1, 3, "ListItem");
     qmlRegisterType<UCTheme>(uri, 1, 3, "ThemeSettings");
     qmlRegisterType<UCStyledItemBase, 2>(uri, 1, 3, "StyledItem");
     qmlRegisterSingletonType<UCNamespaceV13>(uri, 1, 3, "Ubuntu", registerUbuntuNamespace13);

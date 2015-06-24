@@ -1066,13 +1066,18 @@ void UCListItem::mousePressEvent(QMouseEvent *event)
         }
         // stop any ongoing animation!
         d->swipeEvent(event->localPos(), UCSwipeEvent::Started);
-    } else if (event->button() == Qt::RightButton) {
+    }
+    // accept the event so we get the rest of the events as well
+    event->setAccepted(true);
+}
+
+void UCListItem13::mousePressEvent(QMouseEvent *event)
+{
+    UCListItem::mousePressEvent(event);
+    if (event->button() == Qt::RightButton) {
         // Right-click context menu
         quint16 version(this->property("theme").value<UCTheme*>()->property("version").toUInt());
-        if((leadingActions() || trailingActions()) && version >= BUILD_VERSION(1, 3)) {
-            Q_D(UCListItem);
-            //d->suppressClick = true;
-
+        if(leadingActions() || trailingActions()) {
             // Find QML file relative to Ubuntu.Components
             QStringList pathList;
             pathList << QString(getenv("QML2_IMPORT_PATH")).split(':', QString::SkipEmptyParts);
@@ -1103,8 +1108,6 @@ void UCListItem::mousePressEvent(QMouseEvent *event)
             }
         }
     }
-    // accept the event so we get the rest of the events as well
-    event->setAccepted(true);
 }
 
 void UCListItem::mouseReleaseEvent(QMouseEvent *event)

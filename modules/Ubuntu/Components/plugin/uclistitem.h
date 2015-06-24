@@ -107,6 +107,13 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_syncDragMode())
 };
 
+class UCListItem13 : public UCListItem
+{
+    Q_OBJECT
+protected:
+    void mousePressEvent(QMouseEvent *event);
+};
+
 class UCListItemDividerPrivate;
 class UCListItemDivider : public QQuickItem
 {
