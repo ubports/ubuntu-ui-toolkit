@@ -22,6 +22,7 @@ import QtQuick 2.4
   \since Ubuntu.Components 1.3
   \ingroup ubuntu
   \brief Component configuring the metrics of a column in MultiColumnView.
+  \internal
 
   */
 QtObject {

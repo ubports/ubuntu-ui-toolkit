@@ -136,7 +136,7 @@ import "stack.js" as Stack
   \note In the above example if \c page2 is removed, that will remove all its child
   pages, meaning \c page3 will also be removed.
 
-  \sa PageStack, ColumnMetrics
+  \sa PageStack
 */
 
 PageTreeNode {
