@@ -381,18 +381,23 @@ Item {
             clickSpy.wait();
         }
 
+        SignalSpy {
+            id: visibleSpy
+            signalName: "visibleChanged"
+        }
+
         function test_context_menu() {
             mouseClick(testItem, testItem.width / 2, testItem.height / 2, Qt.RightButton);
             wait(1000);
-            var context_menu = findChild(testItem, "listItemContextMenu");
-            verify(context_menu, "Context menu didn't open on right-click'");
+            var context_menu = findChild(main, "listItemContextMenu");
+            verify(context_menu, "Context menu didn't open on right-click");
             waitForRendering(context_menu);
             var edit = findChildWithProperty(context_menu, "text", "Edit");
             verify(edit, "Context menu has no 'Edit' item");
+            visibleSpy.target = context_menu;
             mouseClick(edit, edit.width / 2, edit.height / 2);
-            waitForRendering(testItem);
-            compare(context_menu.visible, false, "Menu did not hide after action");
             compare(edit.text, 'Edit Again', "Item wasn't triggered'");
+            visibleSpy.wait()
         }
 
         function test_no_click_when_swiped() {
