@@ -28,7 +28,7 @@ Item {
 
     Action {
         id: stockAction
-        iconName: "lights-on"
+        iconName: "torch-on"
         objectName: "stockAction"
         text: 'Switch lights on'
     }

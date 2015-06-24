@@ -16,6 +16,7 @@
 
 #include "ucunits.h"
 #include "uctheme.h"
+#include "ucnamespace.h"
 #include "uclistitem.h"
 #include "uclistitem_p.h"
 #include "uclistitemactions.h"
@@ -1067,17 +1068,19 @@ void UCListItem::mousePressEvent(QMouseEvent *event)
         d->swipeEvent(event->localPos(), UCSwipeEvent::Started);
     } else if (event->button() == Qt::RightButton) {
         // Right-click context menu
-        if(leadingActions() || trailingActions()) {
+        quint16 version(this->property("theme").value<UCTheme*>()->property("version").toUInt());
+        if((leadingActions() || trailingActions()) && version >= BUILD_VERSION(1, 3)) {
             Q_D(UCListItem);
-            d->suppressClick = true;
+            //d->suppressClick = true;
 
-            // Find QML file relative to Ubuntu.Components 1.3
+            // Find QML file relative to Ubuntu.Components
             QStringList pathList;
             pathList << QString(getenv("QML2_IMPORT_PATH")).split(':', QString::SkipEmptyParts);
             pathList << QLibraryInfo::location(QLibraryInfo::Qml2ImportsPath).split(':', QString::SkipEmptyParts);
+            QString versionString(QString("%1.%2").arg(MAJOR_VERSION(version)).arg(MINOR_VERSION(version)));
             QUrl url;
             Q_FOREACH(const QString &path, pathList) {
-                QFileInfo file(path + "/Ubuntu/Components/1.3/ListItemPopover.qml");
+                QFileInfo file(path + "/Ubuntu/Components/" + versionString + "/ListItemPopover.qml");
                 if (file.exists()) {
                     url = QUrl::fromLocalFile(file.absoluteFilePath());
                     break;
