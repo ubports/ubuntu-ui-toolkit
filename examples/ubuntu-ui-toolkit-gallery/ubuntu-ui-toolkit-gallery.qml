@@ -38,72 +38,15 @@ MainView {
     LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
     LayoutMirroring.childrenInherit: true
 
-    state: width >= units.gu(80) ? "wide" : "narrow"
-    states: [
-        State {
-            name: "narrow"
-            StateChangeScript {
-                script: {
-                    pageStack.push(mainPage);
-                    if (selectedWidget) {
-                        pageStack.push(contentPage);
-                    }
-                }
-            }
-            PropertyChanges {
-                target: mainPage
-                flickable: widgetList
-            }
-            PropertyChanges {
-                target: contentPage
-                flickable: contentLoader.item ? contentLoader.item.flickable : null
-            }
-        },
-        State {
-            name: "wide"
-            StateChangeScript {
-                script: {
-                    pageStack.clear();
-
-                    /* When pushing Pages into a PageStack they are reparented
-                       to internally created PageWrappers. This undoes it as to
-                       allow us to anchor the Pages freely again.
-                    */
-                    mainPage.parent = gallery;
-                    contentPage.parent = gallery;
-                }
-            }
-            PropertyChanges {
-                target: mainPage
-                width: units.gu(40)
-                clip: true
-            }
-            AnchorChanges {
-                target: mainPage
-                anchors.right: undefined
-            }
-            PropertyChanges {
-                target: contentPage
-                clip: true
-            }
-            AnchorChanges {
-                target: contentPage
-                anchors.left: mainPage.right
-            }
-        }
-    ]
-
-    property var selectedWidget: null
+    MultiColumnView {
+        id: columns
+        anchors.fill: parent
+        primaryPage: mainPage
+    }
 
     Page {
         id: mainPage
-        active: selectedWidget == null
-
         title: "Ubuntu UI Toolkit"
-        /* Page internally sets the topMargin of its flickable to account for
-           the height of the header. Undo it when unsetting the flickable.
-        */
-        onFlickableChanged: if (!flickable) widgetList.topMargin = 0;
 
         Rectangle {
             color: Qt.rgba(0.0, 0.0, 0.0, 0.01)
@@ -119,40 +62,17 @@ MainView {
                     objectName: model.objectName
                     enabled: model.source != ""
                     progression: true
-                    selected: enabled && selectedWidget == model
+                    selected: mainPage.__propagated.header.title == model.label
                     onClicked: {
-                        selectedWidget = model;
-                        if (gallery.state == "narrow") {
-                            pageStack.push(contentPage);
-                        }
+                        var source = Qt.resolvedUrl(model.source);
+                        var newPage = columns.addPageToNextColumn(mainPage, source);
+                        // FIXME: Take header into consideration
+                        newPage.flickable.topMargin = mainPage.__propagated.header.height;
+                        newPage.title = model.label
                     }
                 }
             }
         }
-    }
-
-    Page {
-        id: contentPage
-        active: selectedWidget != null
-        title: selectedWidget ? selectedWidget.label : ""
-        /* Page internally sets the topMargin of its flickable to account for
-           the height of the header. Undo it when unsetting the flickable.
-        */
-        onFlickableChanged: if (!flickable && contentLoader.item) contentLoader.item.flickable.topMargin = 0;
-        onActiveChanged: if (gallery.state == "narrow" && !active) {
-                             selectedWidget = null;
-                         }
-
-        Loader {
-            id: contentLoader
-            objectName: "contentLoader"
-            anchors.fill: parent
-            source: selectedWidget ? selectedWidget.source : ""
-        }
-    }
-
-    PageStack {
-        id: pageStack
     }
 
     WidgetsModel {

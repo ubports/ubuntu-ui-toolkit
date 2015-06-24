@@ -17,16 +17,18 @@
 import QtQuick 2.0
 import Ubuntu.Components 1.3
 
-Item {
+Page {
     id: template
 
-    width: units.gu(40)
+    head.backAction: Action {
+        iconName: 'back'
+        onTriggered: columns.removePages(template)
+    }
+
     height: units.gu(75)
 
     default property alias content: layout.children
     property alias spacing: layout.spacing
-    property Item tools: null
-    property Flickable flickable: flickable
 
     Flickable {
         id: flickable
