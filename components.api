@@ -611,6 +611,7 @@ Ubuntu.Components.PageHeadSections 1.1: QtObject
     property var model
     property int selectedIndex
 Ubuntu.Components.PageHeadSections 1.3: QtObject
+    readonly property Action actions
     property bool enabled
     property var model
     property int selectedIndex

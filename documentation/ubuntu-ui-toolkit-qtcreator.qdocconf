@@ -4,3 +4,4 @@ outputdir = $BLD/offline
 qhp.projects = UbuntuUserInterfaceToolkit
 qhp.UbuntuUserInterfaceToolkit.namespace = com.canonical.ubuntuuitoolkit.0.1
 qhp.UbuntuUserInterfaceToolkit.virtualFolder = UbuntuUserInterfaceToolkit
+qhp.UbuntuUserInterfaceToolkit.extraFiles = style/*.css style/*.js
