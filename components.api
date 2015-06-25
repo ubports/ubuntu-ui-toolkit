@@ -871,11 +871,14 @@ Ubuntu.Components.ListItems.Standard 1.3: Empty
     property bool iconFrame
     property bool progression
 Ubuntu.Components.StateSaver 1.0 0.1: QtObject
+Ubuntu.Components.StyleHints 1.3: QtObject
+    property bool ignoreUnknownProperties
 Ubuntu.Components.StyledItem 1.3 1.1 1.0 0.1: Item
     property bool activeFocusOnPress
     function bool requestFocus(Qt.FocusReason reason)
     function bool requestFocus()
     property Component style
+    property string styleName
     property ThemeSettings theme
 Ubuntu.Components.ListItems.Subtitled 1.0 0.1: Base
     property string subText
@@ -1198,7 +1201,6 @@ Ubuntu.Components.TextField 1.3: ActionItem
 Ubuntu.PerformanceMetrics.TextureFromImage 1.0 0.1: Item
     property QImage image
 Ubuntu.Components.ThemeSettings 1.3: QtObject
-    function QQmlComponent* createStyleComponent(string styleName, QtObject parent)
     property string name
     property QtObject palette
     readonly property ThemeSettings parentTheme

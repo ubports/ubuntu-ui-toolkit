@@ -207,5 +207,5 @@ Toolkit.StyledItem {
     }
 
     theme.version: Toolkit.Ubuntu.toolkitVersion
-    style: theme.createStyleComponent("SliderStyle.qml", slider)
+    styleName: "SliderStyle"
 }
