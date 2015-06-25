@@ -42,7 +42,7 @@ PropertyChange::~PropertyChange()
 void PropertyChange::backup()
 {
     if (!backedUp) {
-        backupBinding = QQmlPropertyPrivate::binding(qmlProperty);
+        backupBinding = QQmlPropertyPrivate::setBinding(qmlProperty, Q_NULLPTR);
         backupValue = qmlProperty.read();
         backedUp = true;
     }
