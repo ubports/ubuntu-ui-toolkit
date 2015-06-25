@@ -27,15 +27,22 @@ Style.PageHeadStyle {
     textLeftMargin: units.gu(2)
     maximumNumberOfActions: 3
 
+    PageHeadConfiguration {
+        id: defaultConfig
+    }
+
+    property PageHeadConfiguration config: styledItem.config ?
+                                               styledItem.config :
+                                               defaultConfig
     /*!
       The color of the buttons in the header.
      */
-    property color buttonColor: styledItem.config.foregroundColor
+    property color buttonColor: headerStyle.config.foregroundColor
 
     /*!
       The color of the title text.
      */
-    property color titleColor: styledItem.config.foregroundColor
+    property color titleColor: headerStyle.config.foregroundColor
 
     // FIXME: When the three panel color properties below are removed,
     //  update unity8/Dash/PageHeader to use the new theming (currently
@@ -103,13 +110,19 @@ Style.PageHeadStyle {
             leftMargin: units.gu(2)
             bottom: divider.top
         }
+        visible: model && model.length > 0
         enabled: sections.enabled
-        height: model && model.length > 0 ? implicitHeight : 0
+        height: visible ? implicitHeight : 0
 
-        property PageHeadSections sections: styledItem.config.sections
-        model: sections.model
+        property PageHeadSections sections: headerStyle.config.sections
+        model: sections ? sections.model : null
 
-        onSelectedIndexChanged: sections.selectedIndex = sectionsItem.selectedIndex
+        onSelectedIndexChanged: {
+            if (sections) {
+                sections.selectedIndex = sectionsItem.selectedIndex;
+            }
+        }
+
         Connections {
             target: sectionsItem.sections
             onSelectedIndexChanged: sectionsItem.selectedIndex = sectionsItem.sections.selectedIndex
@@ -244,10 +257,10 @@ Style.PageHeadStyle {
             PageHeadButton {
                 id: customBackButton
                 objectName: "customBackButton"
-                action: styledItem.config.backAction
-                visible: null !== styledItem.config.backAction &&
-                         styledItem.config.backAction.visible
-                color: styledItem.config.foregroundColor
+                action: headerStyle.config.backAction
+                visible: null !== headerStyle.config.backAction &&
+                         headerStyle.config.backAction.visible
+                color: headerStyle.config.foregroundColor
             }
 
             PageHeadButton {
@@ -258,10 +271,10 @@ Style.PageHeadStyle {
                 visible: styledItem.pageStack !== null &&
                          styledItem.pageStack !== undefined &&
                          styledItem.pageStack.depth > 1 &&
-                         !styledItem.config.backAction
+                         !headerStyle.config.backAction
 
                 text: "back"
-                color: styledItem.config.foregroundColor
+                color: headerStyle.config.foregroundColor
 
                 onTriggered: {
                     styledItem.pageStack.pop();
@@ -327,13 +340,13 @@ Style.PageHeadStyle {
             Label {
                 objectName: "header_title_label"
                 LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
-                visible: !contentsContainer.visible && styledItem.config.preset === ""
+                visible: !contentsContainer.visible && headerStyle.config.preset === ""
                 anchors {
                     left: parent.left
                     right: parent.right
                     verticalCenter: parent.verticalCenter
                 }
-                text: styledItem.config.title
+                text: headerStyle.config.title
                 font.weight: headerStyle.fontWeight
                 fontSize: headerStyle.fontSize
                 color: headerStyle.titleColor
@@ -346,7 +359,7 @@ Style.PageHeadStyle {
                 // when the bindings below is no longer active
                 id: contentsContainer
                 anchors.fill: parent
-                visible: styledItem.contents || styledItem.config.contents
+                visible: styledItem.contents || headerStyle.config.contents
             }
             Binding {
                 target: styledItem.contents
@@ -361,10 +374,10 @@ Style.PageHeadStyle {
                 when: styledItem.contents
             }
             Binding {
-                target: styledItem.config.contents
+                target: headerStyle.config.contents
                 property: "parent"
                 value: contentsContainer
-                when: styledItem.config.contents && !styledItem.contents
+                when: headerStyle.config.contents && !styledItem.contents
             }
         }
 
@@ -378,7 +391,7 @@ Style.PageHeadStyle {
             }
             height: headerStyle.contentHeight
 
-            actions: styledItem.config.actions
+            actions: headerStyle.config.actions
             numberOfSlots: 3
         }
     }

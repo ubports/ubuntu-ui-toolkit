@@ -141,6 +141,7 @@ import "stack.js" as Stack
 
 PageTreeNode {
     id: multiColumnView
+    active: false
 
     /*!
       The property holds the first Page which will be added to the view. If the
@@ -370,7 +371,7 @@ PageTreeNode {
             objectName: "ColumnHolder" + column
             property PageWrapper pageWrapper
             property int column
-            property alias config: header.config
+            property alias config: subHeader.config
             property ColumnMetrics metrics: setDefaultMetrics()
 
             Layout.fillWidth: metrics.fillWidth
@@ -383,14 +384,15 @@ PageTreeNode {
 
             // header
             StyledItem {
-                id: header
+                id: subHeader
                 anchors {
                     left: parent.left
                     top: parent.top
                     right: parent.right
                 }
-                implicitHeight: units.gu(8)
-//                styleName: config ? "PageHeadStyle" : ""
+//                implicitHeight: units.gu(8)
+                styleName: config ? "PageHeadStyle" : ""
+//                styleName: "PageHeadStyle"
 
                 property PageHeadConfiguration config: null
                 property Item contents: null
@@ -427,7 +429,7 @@ PageTreeNode {
                 pageWrapper.active = true;
 
                 if (pageWrapper.object.hasOwnProperty("head")) {
-                    header.config = pageWrapper.object.head;
+                    subHeader.config = pageWrapper.object.head;
                 }
             }
             function detachCurrentPage() {
@@ -435,7 +437,7 @@ PageTreeNode {
                 var wrapper = pageWrapper;
                 // remove header
                 wrapper.active = false;
-                header.config = null;
+                subHeader.config = null;
                 pageWrapper = null;
                 wrapper.parent = hiddenPages;
                 wrapper.pageHolder = null;
