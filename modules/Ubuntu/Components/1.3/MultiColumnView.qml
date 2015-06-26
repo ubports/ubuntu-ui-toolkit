@@ -382,7 +382,16 @@ PageTreeNode {
             Layout.minimumWidth: metrics.minimumWidth
             Layout.maximumWidth: metrics.maximumWidth
 
-            // header
+            Item {
+                id: holderBody
+                objectName: parent.objectName + "Body"
+                anchors {
+                    fill: parent
+//                    topMargin: header.height
+                    rightMargin: divider.width
+                }
+            }
+
             StyledItem {
                 id: subHeader
                 anchors {
@@ -412,16 +421,6 @@ PageTreeNode {
                 }
                 width: (column == (d.columns - 1)) || !pageWrapper ? 0 : units.dp(2)
                 color: theme.palette.normal.background
-            }
-
-            Item {
-                id: holderBody
-                objectName: parent.objectName + "Body"
-                anchors {
-                    fill: parent
-//                    topMargin: header.height
-                    rightMargin: divider.width
-                }
             }
 
             function attachPage(page) {

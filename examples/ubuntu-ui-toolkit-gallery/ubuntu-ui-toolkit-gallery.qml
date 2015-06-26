@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -47,6 +47,15 @@ MainView {
             id: mainPage
             title: "Ubuntu UI Toolkit"
 
+            Action {
+                id: homeAction
+                onTriggered: {
+                    // initial page will not be removed.
+                    columns.removePages(mainPage);
+                }
+                iconName: "back"
+            }
+
             Rectangle {
                 color: Qt.rgba(0.0, 0.0, 0.0, 0.01)
                 anchors.fill: parent
@@ -67,7 +76,8 @@ MainView {
                             var newPage = columns.addPageToNextColumn(mainPage, source);
                             // FIXME: Take header into consideration
                             newPage.flickable.topMargin = mainPage.__propagated.header.height;
-                            newPage.title = model.label
+                            newPage.title = model.label;
+                            newPage.head.backAction = homeAction;
                         }
                     }
                 }
