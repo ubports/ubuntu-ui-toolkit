@@ -399,6 +399,8 @@ PageTreeNode {
 
                 property color dividerColor: theme.palette.normal.background
                 property color panelColor
+
+                visible: holder.pageWrapper && holder.pageWrapper.active
             }
 
             Rectangle {

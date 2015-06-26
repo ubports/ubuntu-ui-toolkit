@@ -42,33 +42,33 @@ MainView {
         id: columns
         anchors.fill: parent
         primaryPage: mainPage
-    }
 
-    Page {
-        id: mainPage
-        title: "Ubuntu UI Toolkit"
+        Page {
+            id: mainPage
+            title: "Ubuntu UI Toolkit"
 
-        Rectangle {
-            color: Qt.rgba(0.0, 0.0, 0.0, 0.01)
-            anchors.fill: parent
-
-            ListView {
-                id: widgetList
-                objectName: "widgetList"
+            Rectangle {
+                color: Qt.rgba(0.0, 0.0, 0.0, 0.01)
                 anchors.fill: parent
-                model: widgetsModel
-                delegate: ListItem.Standard {
-                    text: model.label
-                    objectName: model.objectName
-                    enabled: model.source != ""
-                    progression: true
-                    selected: mainPage.__propagated.header.title == model.label
-                    onClicked: {
-                        var source = Qt.resolvedUrl(model.source);
-                        var newPage = columns.addPageToNextColumn(mainPage, source);
-                        // FIXME: Take header into consideration
-                        newPage.flickable.topMargin = mainPage.__propagated.header.height;
-                        newPage.title = model.label
+
+                ListView {
+                    id: widgetList
+                    objectName: "widgetList"
+                    anchors.fill: parent
+                    model: widgetsModel
+                    delegate: ListItem.Standard {
+                        text: model.label
+                        objectName: model.objectName
+                        enabled: model.source != ""
+                        progression: true
+                        selected: mainPage.__propagated.header.title == model.label
+                        onClicked: {
+                            var source = Qt.resolvedUrl(model.source);
+                            var newPage = columns.addPageToNextColumn(mainPage, source);
+                            // FIXME: Take header into consideration
+                            newPage.flickable.topMargin = mainPage.__propagated.header.height;
+                            newPage.title = model.label
+                        }
                     }
                 }
             }
