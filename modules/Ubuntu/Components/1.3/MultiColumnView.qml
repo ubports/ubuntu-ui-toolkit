@@ -387,7 +387,6 @@ PageTreeNode {
                 objectName: parent.objectName + "Body"
                 anchors {
                     fill: parent
-//                    topMargin: header.height
                     rightMargin: divider.width
                 }
             }
@@ -399,9 +398,7 @@ PageTreeNode {
                     top: parent.top
                     right: parent.right
                 }
-//                implicitHeight: units.gu(8)
                 styleName: config ? "PageHeadStyle" : ""
-//                styleName: "PageHeadStyle"
 
                 property PageHeadConfiguration config: null
                 property Item contents: null

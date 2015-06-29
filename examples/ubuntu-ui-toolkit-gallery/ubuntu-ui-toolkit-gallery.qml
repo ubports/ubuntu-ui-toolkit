@@ -47,15 +47,6 @@ MainView {
             id: mainPage
             title: "Ubuntu UI Toolkit"
 
-            Action {
-                id: homeAction
-                onTriggered: {
-                    // initial page will not be removed.
-                    columns.removePages(mainPage);
-                }
-                iconName: "back"
-            }
-
             Rectangle {
                 color: Qt.rgba(0.0, 0.0, 0.0, 0.01)
                 anchors.fill: parent
@@ -77,7 +68,6 @@ MainView {
                             // FIXME: Take header into consideration
                             newPage.flickable.topMargin = mainPage.__propagated.header.height;
                             newPage.title = model.label;
-                            newPage.head.backAction = homeAction;
                         }
                     }
                 }
