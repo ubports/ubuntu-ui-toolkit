@@ -113,7 +113,7 @@ Item {
         id: d
 
         property real availableParentHeight: {
-        if (!orientationHelper.parent)
+            if (!orientationHelper.parent)
                 return 0;
 
             var availableHeight = orientationHelper.parent.height;

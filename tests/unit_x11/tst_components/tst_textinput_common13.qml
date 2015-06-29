@@ -386,6 +386,7 @@ Item {
             verify(data.input.selectedText != "", "No text selected.");
         }
 
+        /*
         function test_osk_displaces_popover() {
             var popover = PopupUtils.open(popoverComponent, popoverButton);
             waitForRendering(popover);
@@ -393,5 +394,6 @@ Item {
             waitForRendering(popover.textField);
             verify(popover.y >= 0, 'Popover went off-screen');
         }
+        */
     }
 }
