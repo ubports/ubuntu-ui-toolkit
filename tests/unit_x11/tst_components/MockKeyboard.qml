@@ -22,12 +22,12 @@ Object {
     function show() { visible = true; }
     function commit() { }
     property bool visible: false
-    property rect keyboardRectangle: Qt.rect(0, 0, parent.width, units.gu(20))
+    property rect keyboardRectangle: Qt.rect(0, 0, 0, units.gu(20))
 
     Rectangle {
         x: parent.x
         y: parent.height - height
-        width: inputMethod.keyboardRectangle.width
+        width: parent.width
         height: inputMethod.keyboardRectangle.height
         visible: inputMethod.visible
 
