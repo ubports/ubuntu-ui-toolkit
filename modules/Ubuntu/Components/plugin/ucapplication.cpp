@@ -23,6 +23,7 @@
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlEngine>
 #include <QtCore/QStandardPaths>
+#include <QtGui/QGuiApplication>
 
 /*!
  * \qmltype UbuntuApplication
@@ -34,6 +35,7 @@
  * UbuntuApplication is a context property in QML.
  */
 UCApplication::UCApplication(QObject* parent) : QObject(parent), m_context(0)
+                                                               , m_inputMethod(QGuiApplication::inputMethod())
 {
     // Make sure we receive application name changes from C++ modules
     connect(QCoreApplication::instance(), &QCoreApplication::applicationNameChanged,
@@ -73,3 +75,15 @@ void UCApplication::setApplicationName(const QString& applicationName) {
     QCoreApplication::setOrganizationDomain(applicationName);
 }
 
+/*!
+ * \qmlproperty string Application::inputMethod
+ * \internal
+ * The global input method. Can be overridden for testing.
+ */
+QObject* UCApplication::inputMethod() {
+    return m_inputMethod;
+}
+
+void UCApplication::setInputMethod(QObject* inputMethod) {
+    m_inputMethod = inputMethod;
+}
