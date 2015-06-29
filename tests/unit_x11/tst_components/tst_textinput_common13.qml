@@ -19,7 +19,6 @@ import QtTest 1.0
 import Ubuntu.Test 1.0
 import Ubuntu.Components 1.3
 import Ubuntu.Components.Popups 1.0
-import '.'
 
 Item {
     id: testMain
