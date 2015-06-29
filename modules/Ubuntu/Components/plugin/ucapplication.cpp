@@ -47,7 +47,6 @@ void UCApplication::setContext(QQmlContext* context) {
 }
 
 /*!
- * \qmlproperty string Application::applicationName
  * \internal
  * The name of the application, see QCoreApplication::applicationName
  */
@@ -76,7 +75,6 @@ void UCApplication::setApplicationName(const QString& applicationName) {
 }
 
 /*!
- * \qmlproperty string Application::inputMethod
  * \internal
  * The global input method. Can be overridden for testing.
  */
