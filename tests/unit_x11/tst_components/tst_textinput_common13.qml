@@ -111,7 +111,7 @@ Item {
     }
 
     UbuntuTestCase {
-        name: "TextInputCommonTest"
+        name: "TextInputCommonTest13"
         when: windowShown
 
         function init() {
