@@ -50,6 +50,10 @@ Item {
 
     Column {
         spacing: units.gu(1)
+        anchors {
+            topMargin: units.gu(4)
+            top: parent.top
+        }
         Button {
             id: popoverButton
             text: 'Open Popover'
