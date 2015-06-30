@@ -17,15 +17,49 @@
 import QtQuick 2.0
 import QtTest 1.0
 import Ubuntu.Test 1.0
-import Ubuntu.Components 1.1
+import Ubuntu.Components 1.2
+import Ubuntu.Components.Popups 1.0
 
 Item {
     id: testMain
     width: units.gu(40)
     height: units.gu(71)
 
+    Component {
+        id: popoverComponent
+        Popover {
+            property var textField: textFieldInPopover
+            Rectangle {
+                anchors.fill: parent
+                color: UbuntuColors.orange
+            }
+            Column {
+                anchors.margins: units.gu(2)
+                Label {
+                    text: 'This is a text field in a popover'
+                }
+                TextField {
+                    id: textFieldInPopover
+                }
+                Label {
+                    text: 'Focus the text field'
+                }
+            }
+        }
+    }
+
     Column {
         spacing: units.gu(1)
+        anchors {
+            topMargin: units.gu(4)
+            top: parent.top
+        }
+        Button {
+            id: popoverButton
+            text: 'Open Popover'
+            onClicked: PopupUtils.open(popoverComponent, popoverButton)
+        }
+
         TextField {
             id: textField
         }
@@ -37,6 +71,10 @@ Item {
             echoMode: TextInput.Password
             text: 'deadbeef'
         }
+    }
+
+    MockKeyboard {
+        Component.onCompleted: UbuntuApplication.inputMethod = this
     }
 
     SignalSpy {
@@ -345,5 +383,19 @@ Item {
             expectFail(data.tag, "mouseDoubleClick() fails to trigger")
             verify(data.input.selectedText != "", "No text selected.");
         }
+
+        function test_osk_displaces_popover() {
+            var popover = PopupUtils.open(popoverComponent, popoverButton);
+            waitForRendering(popover);
+            popover.textField.forceActiveFocus();
+            waitForRendering(popover.textField);
+            verify(popover.y >= 0, 'Popover went off-screen');
+
+            // dismiss popover
+            mouseClick(testMain, 0, 0);
+            // add some timeout to get the event buffer cleaned
+            wait(500);
+        }
+
     }
 }

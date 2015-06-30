@@ -98,7 +98,7 @@ Item {
     property bool anchorToKeyboard: false
 
     x: parent ? (parent.width - width) / 2 : 0
-    y: parent ? (d.availableParentHeight - height) / 2 : 0
+    y: parent ? (parent.height - height) / 2 : 0
     width: parent ? (d.flipDimensions ? d.availableParentHeight : parent.width) : 0
     height: parent ? (d.flipDimensions ? parent.width : d.availableParentHeight) : 0
 
@@ -116,11 +116,10 @@ Item {
             if (!orientationHelper.parent)
                 return 0;
 
-            if (d.stateAngle === 0 && Qt.inputMethod.visible && anchorToKeyboard) {
-                return orientationHelper.parent.height - Qt.inputMethod.keyboardRectangle.height;
-            } else {
-                return orientationHelper.parent.height;
-            }
+            var availableHeight = orientationHelper.parent.height;
+            if (d.stateAngle === 0 && UbuntuApplication.inputMethod.visible && anchorToKeyboard)
+                availableHeight -= UbuntuApplication.inputMethod.keyboardRectangle.height;
+            return availableHeight;
         }
 
         /*!
