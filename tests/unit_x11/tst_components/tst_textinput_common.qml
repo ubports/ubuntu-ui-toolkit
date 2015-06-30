@@ -34,12 +34,7 @@ Item {
                 color: UbuntuColors.orange
             }
             Column {
-                anchors {
-                    left: parent.left
-                    bottom: parent.bottom
-                    right: parent.right
-                    margins: units.gu(2)
-                }
+                anchors.margins: units.gu(2)
                 Label {
                     text: 'This is a text field in a popover'
                 }
