@@ -399,6 +399,7 @@ PageTreeNode {
                     right: parent.right
                 }
                 styleName: config ? "PageHeadStyle" : ""
+                objectName: "Header" + column
 
                 property PageHeadConfiguration config: null
                 property Item contents: null
@@ -467,6 +468,7 @@ PageTreeNode {
     // once they become visible.
     RowLayout {
         id: body
+        objectName: "body"
         anchors.fill: parent
         spacing: 0
 
