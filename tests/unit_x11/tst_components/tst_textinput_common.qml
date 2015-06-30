@@ -390,6 +390,11 @@ Item {
             popover.textField.forceActiveFocus();
             waitForRendering(popover.textField);
             verify(popover.y >= 0, 'Popover went off-screen');
+
+            // dismiss popover
+            mouseClick(testMain, 0, 0);
+            // add some timeout to get the event buffer cleaned
+            wait(500);
         }
 
     }
