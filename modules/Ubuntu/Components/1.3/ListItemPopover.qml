@@ -38,13 +38,7 @@ ActionSelectionPopover {
             color: '#5D5D5D'
         }
 
-        MouseArea {
-            anchors.fill: parent
-            onReleased: {
-                popover.hide();
-                action.trigger();
-            }
-        }
+        onClicked: popover.hide()
     }
 
     function mergeActions(to, from) {
