@@ -18,7 +18,8 @@ import QtQuick 2.4
 import Ubuntu.Test 1.0
 import Ubuntu.Components 1.3
 
-Item {
+MainView {
+//Item {
     id: root
     width: units.gu(120)
     height: units.gu(71)
@@ -58,18 +59,67 @@ Item {
         Page {
             id: leftPage
             title: "First column"
+            Rectangle {
+                anchors {
+                    fill: parent
+                    margins: units.gu(2)
+                }
+                color: "orange"
+            }
         }
         Page {
             id: rightPage
             title: "Second column"
+            Rectangle {
+                anchors {
+                    fill: parent
+                    margins: units.gu(2)
+                }
+                color: "green"
+            }
         }
         Page {
             id: sectionsPage
             title: "Page with sections"
             head.sections.model: ["uno", "dos", "tres"]
+
+            Rectangle {
+                anchors {
+                    fill: parent
+                    margins: units.gu(2)
+                }
+                color: "blue"
+            }
+
+//            Flickable {
+////                anchors.fill: parent
+//                contentHeight: column.height
+
+//                Column {
+//                    id: column
+//                    anchors {
+//                        left: parent.left
+//                        right: parent.right
+//                        top: parent.top
+//                    }
+//                    height: childrenRect.height
+
+//                    Repeater {
+//                        model: 20
+//                        Rectangle {
+//                            anchors {
+//                                left: parent.left
+//                                right: parent.right
+//                                margins: units.gu(1)
+//                            }
+//                            height: units.gu(10)
+//                            color: "blue"
+//                        }
+//                    }
+//                }
+//            }
         }
     }
-
     UbuntuTestCase {
         when: windowShown
 

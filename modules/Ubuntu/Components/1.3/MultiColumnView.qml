@@ -140,6 +140,7 @@ import "stack.js" as Stack
 */
 
 PageTreeNode {
+//MainViewBase {
     id: multiColumnView
     active: false
 
@@ -196,7 +197,6 @@ PageTreeNode {
     /*
       internals
       */
-
     Component.onCompleted: {
         d.relayout();
         d.completed = true;
@@ -405,6 +405,7 @@ PageTreeNode {
                 height: body.headerHeight
 
                 styleName: config ? "PageHeadStyle" : ""
+                theme.version: Ubuntu.toolkitVersion
                 objectName: "Header" + column
 
                 property real preferredHeight: subHeader.__styleInstance ?
@@ -417,7 +418,9 @@ PageTreeNode {
                 property PageHeadConfiguration config: null
                 property Item contents: null
 
-                property color dividerColor: theme.palette.normal.background
+                // FIXME: theme.palette.normal.background does not work
+                //  when the MultiColumnView is inside a MainView.
+                property color dividerColor: "grey"//theme.palette.normal.background
                 property color panelColor
 
                 visible: holder.pageWrapper && holder.pageWrapper.active
@@ -431,7 +434,9 @@ PageTreeNode {
                     right: parent.right
                 }
                 width: (column == (d.columns - 1)) || !pageWrapper ? 0 : units.dp(2)
-                color: theme.palette.normal.background
+                // FIXME: theme.palette.normal.background does not work
+                //  when the MultiColumnView is inside a MainView.
+                color: "grey"// theme.palette.normal.background
             }
 
             function attachPage(page) {
