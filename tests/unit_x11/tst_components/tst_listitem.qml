@@ -389,6 +389,7 @@ Item {
         function test_context_menu() {
             mouseClick(testItem, testItem.width / 2, testItem.height / 2, Qt.RightButton);
             wait(1000);
+            compare(testItem.highlighted, true, "List item didn't highlight on right-click");
             var context_menu = findChild(main, "listItemContextMenu");
             verify(context_menu, "Context menu didn't open on right-click");
             waitForRendering(context_menu);

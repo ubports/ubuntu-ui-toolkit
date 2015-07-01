@@ -1071,43 +1071,63 @@ void UCListItem::mousePressEvent(QMouseEvent *event)
     event->setAccepted(true);
 }
 
+bool UCListItem13::shouldShowContextMenu(QMouseEvent *event)
+{
+    if (event->button() != Qt::RightButton)
+        return false;
+    return leadingActions() || trailingActions();
+}
+
 void UCListItem13::mousePressEvent(QMouseEvent *event)
 {
     UCListItem::mousePressEvent(event);
-    if (event->button() == Qt::RightButton) {
-        // Right-click context menu
-        quint16 version(this->property("theme").value<UCTheme*>()->property("version").toUInt());
-        if(leadingActions() || trailingActions()) {
-            // Find QML file relative to Ubuntu.Components
-            QStringList pathList;
-            pathList << QString(getenv("QML2_IMPORT_PATH")).split(':', QString::SkipEmptyParts);
-            pathList << QLibraryInfo::location(QLibraryInfo::Qml2ImportsPath).split(':', QString::SkipEmptyParts);
-            QString versionString(QString("%1.%2").arg(MAJOR_VERSION(version)).arg(MINOR_VERSION(version)));
-            QUrl url;
-            Q_FOREACH(const QString &path, pathList) {
-                QFileInfo file(path + "/Ubuntu/Components/" + versionString + "/ListItemPopover.qml");
-                if (file.exists()) {
-                    url = QUrl::fromLocalFile(file.absoluteFilePath());
-                    break;
-                }
-            }
+    if (shouldShowContextMenu(event)) {
+        // Highlight the Item while the menu is showing
+        setHighlighted(true);
 
-            // Open Popover
-            QQmlEngine* engine = qmlEngine(this);
-            QQmlComponent* component = new QQmlComponent(engine, url, QQmlComponent::PreferSynchronous, this);
-            if (component->isError()) {
-                qmlInfo(this) << component->errorString();
-                delete component;
-                component = NULL;
-            } else {
-                QQmlEngine::setContextForObject(component, qmlContext(this));
-                QQuickItem* item = static_cast<QQuickItem*>(component->create(qmlContext(this)));
-                item->setProperty("caller", QVariant::fromValue(this));
-                item->setParentItem(QuickUtils::instance().rootItem(this));
-                QMetaObject::invokeMethod(item, "show");
+        // Find QML file relative to Ubuntu.Components
+        QStringList pathList;
+        pathList << QString(getenv("QML2_IMPORT_PATH")).split(':', QString::SkipEmptyParts);
+        pathList << QLibraryInfo::location(QLibraryInfo::Qml2ImportsPath).split(':', QString::SkipEmptyParts);
+        quint16 version(this->property("theme").value<UCTheme*>()->property("version").toUInt());
+        QString versionString(QString("%1.%2").arg(MAJOR_VERSION(version)).arg(MINOR_VERSION(version)));
+        QUrl url;
+        Q_FOREACH(const QString &path, pathList) {
+            QFileInfo file(path + "/Ubuntu/Components/" + versionString + "/ListItemPopover.qml");
+            if (file.exists()) {
+                url = QUrl::fromLocalFile(file.absoluteFilePath());
+                break;
             }
         }
+
+        // Open Popover
+        QQmlEngine* engine = qmlEngine(this);
+        QQmlComponent* component = new QQmlComponent(engine, url, QQmlComponent::PreferSynchronous, this);
+        if (component->isError()) {
+            qmlInfo(this) << component->errorString();
+            delete component;
+            component = NULL;
+        } else {
+            QQmlEngine::setContextForObject(component, qmlContext(this));
+            QQuickItem* item = static_cast<QQuickItem*>(component->create(qmlContext(this)));
+            item->setProperty("caller", QVariant::fromValue(this));
+            item->setParentItem(QuickUtils::instance().rootItem(this));
+            QMetaObject::invokeMethod(item, "show");
+            connect(item, &QQuickItem::visibleChanged, this,
+                &UCListItem13::popoverClosed, Qt::DirectConnection);
+        }
     }
+}
+
+void UCListItem13::popoverClosed()
+{
+    setHighlighted(false);
+}
+
+void UCListItem::setHighlighted(bool highlighted)
+{
+    Q_D(UCListItem);
+    d->setHighlighted(highlighted);
 }
 
 void UCListItem::mouseReleaseEvent(QMouseEvent *event)
@@ -1136,8 +1156,14 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
             d->swipeEvent(event->localPos(), UCSwipeEvent::Finished);
             d->suppressClick = false;
         }
+        d->setHighlighted(false);
     }
-    d->setHighlighted(false);
+}
+
+void UCListItem13::mouseReleaseEvent(QMouseEvent *event)
+{
+    if (!shouldShowContextMenu(event))
+        UCListItem::mouseReleaseEvent(event);
 }
 
 void UCListItem::mouseMoveEvent(QMouseEvent *event)
