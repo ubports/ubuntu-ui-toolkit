@@ -32,6 +32,28 @@ Item {
         Page {
             id: rootPage
             title: "Root"
+
+            Column {
+                anchors {
+                    top: parent.top
+                    left: parent.left
+                    right: parent.right
+                }
+                height: childrenRect.height
+
+                ListItemWithLabel {
+                    text: "Add page left"
+                    onClicked: multiColumnView.addPageToCurrentColumn(rootPage, leftPage)
+                }
+                ListItemWithLabel {
+                    text: "Add page right"
+                    onClicked: multiColumnView.addPageToNextColumn(rootPage, rightPage)
+                }
+                ListItemWithLabel {
+                    text: "Add sections page right"
+                    onClicked: multiColumnView.addPageToNextColumn(rootPage, sectionsPage)
+                }
+            }
         }
         Page {
             id: leftPage
@@ -135,7 +157,7 @@ Item {
                 compare(get_header(i).height, withSectionsHeight,
                         "Header " + i + " height is incorrect after adding single Page with sections.");
             }
-            multiColumnView.removePage(sectionsPage);
+            multiColumnView.removePages(sectionsPage);
             for (i = 0; i < n; i++) {
                 compare(get_header(i).height, baseHeight,
                         "Header " + i + " height is not correctly reverted after removing Page with sections.");

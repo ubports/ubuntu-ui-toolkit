@@ -385,12 +385,16 @@ PageTreeNode {
             Item {
                 id: holderBody
                 objectName: parent.objectName + "Body"
-                anchors {
-                    fill: parent
-                    rightMargin: divider.width
+                anchors {                    
+                    top: subHeader.bottom
+                    bottom: parent.bottom
+                    left: parent.left
+                    right: parent.right
+                    rightMargin: verticalDivider.width
                 }
             }
 
+            property alias head: subHeader
             StyledItem {
                 id: subHeader
                 anchors {
@@ -398,8 +402,17 @@ PageTreeNode {
                     top: parent.top
                     right: parent.right
                 }
+                height: body.headerHeight
+
                 styleName: config ? "PageHeadStyle" : ""
                 objectName: "Header" + column
+
+                property real preferredHeight: subHeader.__styleInstance ?
+                                                   subHeader.__styleInstance.implicitHeight :
+                                                   0
+                onPreferredHeightChanged: {
+                    body.updateHeaderHeight(preferredHeight);
+                }
 
                 property PageHeadConfiguration config: null
                 property Item contents: null
@@ -411,7 +424,7 @@ PageTreeNode {
             }
 
             Rectangle {
-                id: divider
+                id: verticalDivider
                 anchors {
                     top: parent.top
                     bottom: parent.bottom
@@ -472,6 +485,22 @@ PageTreeNode {
         anchors.fill: parent
         spacing: 0
 
+        property real headerHeight: 0
+
+        function updateHeaderHeight(newHeight) {
+            if (newHeight > body.headerHeight) {
+                body.headerHeight = newHeight;
+            } else {
+                var h = 0;
+                var subHeight = 0;
+                for (var i = 0; i < children.length; i++) {
+                    subHeight = children[i].head.preferredHeight;
+                    if (subHeight > h) h = subHeight;
+                }
+                body.headerHeight = h;
+            }
+        }
+
         onChildrenChanged: {
             // all children should have Layout.fillWidth false, except the last one
             for (var i = 0; i < children.length; i++) {
@@ -495,6 +524,7 @@ PageTreeNode {
                     metrics = holder.setDefaultMetrics();
                 }
                 holder.metrics = metrics;
+                updateHeaderHeight(0);
             }
         }
     }
