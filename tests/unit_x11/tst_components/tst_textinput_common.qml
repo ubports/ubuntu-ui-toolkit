@@ -51,6 +51,7 @@ Item {
     Component {
         id: dialogComponent
         Dialog {
+            id: dialog
             property var textField: textFieldInDialog
             Label {
                 text: 'This is a text field in a dialog'
@@ -63,6 +64,10 @@ Item {
             Label {
                 text: 'Focus the text field'
                 height: units.gu(10)
+            }
+            Button {
+                text: 'Close'
+                onClicked: PopupUtils.close(dialog)
             }
         }
     }
@@ -414,9 +419,9 @@ Item {
 
         function test_osk_displaces_popover_data() {
             return [
-                { tag: 'popover', component: popoverComponent, target: popoverButton },
-                { tag: 'popover', component: popoverComponent, target: null },
-                { tag: 'dialog', component: dialogComponent, target: dialogButton },
+                { tag: 'popover', component: popoverComponent, target: popoverButton, offScreen: false },
+                { tag: 'popover', component: popoverComponent, target: null, offScreen: false },
+                { tag: 'dialog', component: dialogComponent, target: dialogButton, offScreen: true },
             ]
         }
 
@@ -425,12 +430,19 @@ Item {
             waitForRendering(popover);
             popover.textField.forceActiveFocus();
             waitForRendering(popover.textField);
-            verify(popover.y >= 0, 'Popover went off-screen');
+
+            // Only get the value here so in case of failure the popover won't get stuck
+            var popoverY = popover.y;
 
             // dismiss popover
-            mouseClick(testMain, 0, 0);
+            PopupUtils.close(popover);
             // add some timeout to get the event buffer cleaned
             wait(500);
+
+            if (data.offScreen)
+                verify(popoverY < 0, 'Dialog did not shift upwards: %1'.arg(popoverY));
+            else
+                verify(popoverY >= 0, 'Popover went off-screen: %1'.arg(popoverY));
         }
 
     }
