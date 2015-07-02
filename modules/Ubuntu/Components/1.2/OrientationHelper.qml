@@ -98,7 +98,7 @@ Item {
     property bool anchorToKeyboard: false
 
     x: parent ? (parent.width - width) / 2 : 0
-    y: parent ? (parent.height - height) / 2 : 0
+    y: parent ? (d.availableParentHeight - height) / 2 : 0
     width: parent ? (d.flipDimensions ? d.availableParentHeight : parent.width) : 0
     height: parent ? (d.flipDimensions ? parent.width : d.availableParentHeight) : 0
 
