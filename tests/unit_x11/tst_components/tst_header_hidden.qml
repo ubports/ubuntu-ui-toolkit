@@ -32,6 +32,12 @@ Item {
                 visible: false
                 locked: true
             }
+            Label {
+                text: "Top of the page"
+                anchors {
+                    top: parent.top
+                }
+            }
         }
     }
 
