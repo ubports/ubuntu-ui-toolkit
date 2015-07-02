@@ -169,12 +169,12 @@ MainView {
 
     def test_swipe_into_view_top_element(self):
         self.main_view.close_toolbar()
-        bottomButton = button = ProxyBase.from_proxy_object(
+        bottomButton = ProxyBase.from_proxy_object(
             self.main_view.select_single(objectName='bottomButton')
         )
         bottomButton.swipe_into_view()
 
-        topButton = button = ProxyBase.from_proxy_object(
+        topButton = ProxyBase.from_proxy_object(
             self.main_view.select_single(objectName='topButton')
         )
         topButton.swipe_into_view()

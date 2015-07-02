@@ -24,7 +24,6 @@ from autopilot.introspection import dbus
 
 import ubuntuuitoolkit
 from ubuntuuitoolkit import (
-    MainView,
     tests
 )
 
