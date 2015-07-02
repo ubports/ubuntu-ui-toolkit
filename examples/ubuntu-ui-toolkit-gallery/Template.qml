@@ -25,8 +25,6 @@ Page {
         onTriggered: columns.removePages(template)
     }
 
-    height: units.gu(75)
-
     default property alias content: layout.children
     property alias spacing: layout.spacing
 

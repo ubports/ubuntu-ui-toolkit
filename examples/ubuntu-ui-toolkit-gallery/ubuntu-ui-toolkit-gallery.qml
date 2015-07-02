@@ -61,12 +61,12 @@ MainView {
                         objectName: model.objectName
                         enabled: model.source != ""
                         progression: true
-                        selected: mainPage.__propagated.header.title == model.label
+                        selected: gallery.__propagated.header.title == model.label
                         onClicked: {
                             var source = Qt.resolvedUrl(model.source);
                             var newPage = columns.addPageToNextColumn(mainPage, source);
                             // FIXME: Take header into consideration
-                            newPage.flickable.topMargin = mainPage.__propagated.header.height;
+//                            newPage.flickable.topMargin = mainPage.__propagated.header.height;
                             newPage.title = model.label;
                         }
                     }

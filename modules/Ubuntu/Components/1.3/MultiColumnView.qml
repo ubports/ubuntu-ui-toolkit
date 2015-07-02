@@ -383,6 +383,8 @@ PageTreeNode {
             Layout.minimumWidth: metrics.minimumWidth
             Layout.maximumWidth: metrics.maximumWidth
 
+            // prevent the pages from taking the app header height into account.
+            __propagated: null
             Item {
                 id: holderBody
                 objectName: parent.objectName + "Body"
