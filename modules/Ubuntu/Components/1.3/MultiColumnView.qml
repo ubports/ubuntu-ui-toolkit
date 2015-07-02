@@ -140,7 +140,6 @@ import "stack.js" as Stack
 */
 
 PageTreeNode {
-//MainViewBase {
     id: multiColumnView
     active: false
 
@@ -366,7 +365,9 @@ PageTreeNode {
     // will be parented into hiddenPages
     Component {
         id: pageHolderComponent
-        Item {
+        // Page uses the height of the parentNode for its height, so make
+        //  the holder a PageTreeNode that determines the Page height.
+        PageTreeNode {
             id: holder
             objectName: "ColumnHolder" + column
             property PageWrapper pageWrapper
@@ -392,6 +393,8 @@ PageTreeNode {
                     right: parent.right
                     rightMargin: verticalDivider.width
                 }
+                // we need to clip because the header does not have a background
+                clip: true
             }
 
             property alias head: subHeader
