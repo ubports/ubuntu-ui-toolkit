@@ -644,7 +644,6 @@ private:
         object["prototype"] = e.isFlag() ? "Flag" : "Enum";
         object["namespace"] = relocatableModuleUri;
 
-        QList<QPair<QString, QString> > namesValues;
         for (int index = 0; index < e.keyCount(); ++index) {
             object[e.key(index)] = QString::number(e.value(index));
         }
@@ -795,7 +794,6 @@ int main(int argc, char *argv[])
     QSet<const QMetaObject *> uncreatableMetas;
     QSet<const QMetaObject *> singletonMetas;
     QSet<const QMetaObject *> defaultReachable = collectReachableMetaObjects(&engine, uncreatableMetas, singletonMetas);
-    QList<QQmlType *> defaultTypes = QQmlMetaType::qmlTypes();
 
     // add some otherwise unreachable QMetaObjects
     defaultReachable.insert(&QQuickMouseEvent::staticMetaObject);
@@ -934,6 +932,7 @@ int main(int argc, char *argv[])
             }
         }
 
+        QList<QQmlType *> defaultTypes = QQmlMetaType::qmlTypes();
         QSet<const QMetaObject *> candidates = collectReachableMetaObjects(&engine, uncreatableMetas, singletonMetas, defaultTypes);
         candidates.subtract(defaultReachable);
 

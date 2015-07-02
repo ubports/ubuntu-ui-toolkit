@@ -648,9 +648,6 @@ Ubuntu.Components.PageStack 1.3: PageTreeNode
     function var push(var page, var properties)
     function var pop()
     function var clear()
-Palette: QtObject
-    property PaletteValues normal
-    property PaletteValues selected
 Ubuntu.Components.Themes.Palette 0.1: QtObject
     property PaletteValues normal
     property PaletteValues selected
