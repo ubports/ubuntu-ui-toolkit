@@ -19,7 +19,6 @@ import Ubuntu.Test 1.0
 import Ubuntu.Components 1.3
 
 MainView {
-//Item {
     id: root
     width: units.gu(120)
     height: units.gu(71)
@@ -90,34 +89,6 @@ MainView {
                 }
                 color: "blue"
             }
-
-//            Flickable {
-////                anchors.fill: parent
-//                contentHeight: column.height
-
-//                Column {
-//                    id: column
-//                    anchors {
-//                        left: parent.left
-//                        right: parent.right
-//                        top: parent.top
-//                    }
-//                    height: childrenRect.height
-
-//                    Repeater {
-//                        model: 20
-//                        Rectangle {
-//                            anchors {
-//                                left: parent.left
-//                                right: parent.right
-//                                margins: units.gu(1)
-//                            }
-//                            height: units.gu(10)
-//                            color: "blue"
-//                        }
-//                    }
-//                }
-//            }
         }
     }
     UbuntuTestCase {
@@ -210,7 +181,8 @@ MainView {
             multiColumnView.removePages(sectionsPage);
             for (i = 0; i < n; i++) {
                 compare(get_header(i).height, baseHeight,
-                        "Header " + i + " height is not correctly reverted after removing Page with sections.");
+                        "Header " + i +
+                        " height is not correctly reverted after removing Page with sections.");
             }
         }
     }

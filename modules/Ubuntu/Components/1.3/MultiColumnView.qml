@@ -141,15 +141,16 @@ import "stack.js" as Stack
 
 PageTreeNode {
     id: multiColumnView
-//    active: false
 
     Page {
-        // controls the AppHeader
+        // MultiColumnView has its own split headers, so
+        //  disable the application header.
         id: appHeaderControlPage
         head {
             locked: true
             visible: false
         }
+        // title is set in attachPage() when the attached Page.column === 0
     }
 
     /*!
@@ -205,6 +206,7 @@ PageTreeNode {
     /*
       internals
       */
+
     Component.onCompleted: {
         d.relayout();
         d.completed = true;
@@ -433,8 +435,6 @@ PageTreeNode {
                 property PageHeadConfiguration config: null
                 property Item contents: null
 
-                // FIXME: theme.palette.normal.background does not work
-                //  when the MultiColumnView is inside a MainView.
                 property color dividerColor: multiColumnView.__propagated.header.dividerColor
                 property color panelColor: multiColumnView.__propagated.header.panelColor
 
@@ -463,7 +463,7 @@ PageTreeNode {
                 }
                 if (pageWrapper.column === 0 && pageWrapper.object.hasOwnProperty("title")) {
                     // set the application title
-                    appHeaderControlPage.title = pageWrapper.object.title
+                    appHeaderControlPage.title = pageWrapper.object.title;
                 }
             }
             function detachCurrentPage() {
