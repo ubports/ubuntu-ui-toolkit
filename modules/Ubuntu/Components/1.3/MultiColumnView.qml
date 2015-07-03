@@ -145,12 +145,11 @@ PageTreeNode {
 
     Page {
         // controls the AppHeader
-        title: "___________________lalala"
+        id: appHeaderControlPage
         head {
             locked: true
             visible: false
         }
-//        Component.onCompleted: head.visible = false
     }
 
     /*!
@@ -461,6 +460,10 @@ PageTreeNode {
 
                 if (pageWrapper.object.hasOwnProperty("head")) {
                     subHeader.config = pageWrapper.object.head;
+                }
+                if (pageWrapper.column === 0 && pageWrapper.object.hasOwnProperty("title")) {
+                    // set the application title
+                    appHeaderControlPage.title = pageWrapper.object.title
                 }
             }
             function detachCurrentPage() {
