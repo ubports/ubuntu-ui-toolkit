@@ -262,13 +262,15 @@ bool shortcutContextMatcher(QObject* object, Qt::ShortcutContext)
 }
 
 QKeySequence sequenceFromVariant(const QVariant& variant) {
-    return variant.type() == QVariant::Int
-     ? static_cast<QKeySequence::StandardKey>(variant.toInt())
-     : QKeySequence::fromString(variant.toString());
+    if (variant.type() == QVariant::Int)
+        return static_cast<QKeySequence::StandardKey>(variant.toInt());
+    if (variant.type() == QVariant::String)
+        return QKeySequence::fromString(variant.toString());
+    return QKeySequence();
 }
 
 /*!
- * \qmlproperty Component Action::shortcut
+ * \qmlproperty var Action::shortcut
  * The keyboard shortcut that can be used to trigger the action.
  * \b StandardKey values such as \b StandardKey.Copy
  * as well as strings in the form "Ctrl+C" are accepted values.
