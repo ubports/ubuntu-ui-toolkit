@@ -52,7 +52,8 @@ PageTreeNode {
         property AppHeader header: page.__propagated && page.__propagated.header ? page.__propagated.header : null
         // Used to position the Page when there is no flickable.
         // When there is a flickable, the header will automatically position it.
-        property real headerHeight: internal.header && internal.header.visible ? internal.header.height : 0
+        property real headerHeight: internal.header && internal.header.visible ?
+                                        internal.header.height + internal.header.y : 0
 
         // Note: The bindings below need to check whether headerConfig.contents
         // is valid in the "value", even when that is required in the Binding's "when"
