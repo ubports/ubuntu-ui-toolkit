@@ -28,6 +28,7 @@ class UCApplication : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString applicationName READ applicationName WRITE setApplicationName NOTIFY applicationNameChanged)
+    Q_PROPERTY(QObject* inputMethod READ inputMethod WRITE setInputMethod NOTIFY inputMethodChanged)
 
 private:
     Q_DISABLE_COPY(UCApplication)
@@ -42,16 +43,20 @@ public:
 
     // getter
     QString applicationName();
+    QObject* inputMethod();
 
     // setter
     void setContext(QQmlContext* context);
     void setApplicationName(const QString& applicationName);
+    void setInputMethod(QObject* inputMethod);
 
 private:
     QQmlContext* m_context;
+    QObject* m_inputMethod;
 
 Q_SIGNALS:
     void applicationNameChanged();
+    void inputMethodChanged();
 };
 
 #endif // UBUNTU_COMPONENTS_I18N_H
