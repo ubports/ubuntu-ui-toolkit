@@ -115,6 +115,11 @@ static QMap<QString, const QQmlType * > qmlTypesByCompositeName;
 
 static QHash<QByteArray, QByteArray> cppToId;
 
+bool typeNameSort(const QQmlType* type1, const QQmlType* type2)
+{
+    return type1->qmlTypeName() > type2->qmlTypeName();
+}
+
 /* Takes a C++ type name, such as Qt::LayoutDirection or QString and
    maps it to how it should appear in the description file.
 
@@ -131,7 +136,7 @@ QByteArray convertToId(const QString &cppName)
     }
 
     QList<const QQmlType*>types(qmlTypesByCppName[qPrintable(cppName)].toList());
-    std::sort(types.begin(), types.end());
+    std::sort(types.begin(), types.end(), typeNameSort);
     // Strip internal _QMLTYPE_xy suffix
     qmlType = qmlType.split("_")[0];
     if (!types.isEmpty())
