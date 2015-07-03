@@ -67,7 +67,6 @@ MainViewBase {
           in \l Page to determine the area for the \l Page to fill.
          */
         AppHeader {
-            visible: false
             // This objectName is used in the MainView autopilot custom proxy object
             // in order to select the application header.
             // Also used in tst_header_locked_visible.qml.

@@ -141,7 +141,17 @@ import "stack.js" as Stack
 
 PageTreeNode {
     id: multiColumnView
-    active: false
+//    active: false
+
+    Page {
+        // controls the AppHeader
+        title: "___________________lalala"
+        head {
+            locked: true
+            visible: false
+        }
+//        Component.onCompleted: head.visible = false
+    }
 
     /*!
       The property holds the first Page which will be added to the view. If the
@@ -369,6 +379,7 @@ PageTreeNode {
         //  the holder a PageTreeNode that determines the Page height.
         PageTreeNode {
             id: holder
+            active: false
             objectName: "ColumnHolder" + column
             property PageWrapper pageWrapper
             property int column
