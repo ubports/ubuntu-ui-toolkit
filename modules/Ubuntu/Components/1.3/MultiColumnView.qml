@@ -436,8 +436,8 @@ PageTreeNode {
 
                 // FIXME: theme.palette.normal.background does not work
                 //  when the MultiColumnView is inside a MainView.
-                property color dividerColor: "grey"//theme.palette.normal.background
-                property color panelColor
+                property color dividerColor: multiColumnView.__propagated.header.dividerColor
+                property color panelColor: multiColumnView.__propagated.header.panelColor
 
                 visible: holder.pageWrapper && holder.pageWrapper.active
             }
@@ -449,10 +449,8 @@ PageTreeNode {
                     bottom: parent.bottom
                     right: parent.right
                 }
-                width: (column == (d.columns - 1)) || !pageWrapper ? 0 : units.dp(2)
-                // FIXME: theme.palette.normal.background does not work
-                //  when the MultiColumnView is inside a MainView.
-                color: "grey"// theme.palette.normal.background
+                width: (column == (d.columns - 1)) || !pageWrapper ? 0 : units.dp(1)
+                color: subHeader.dividerColor
             }
 
             function attachPage(page) {
