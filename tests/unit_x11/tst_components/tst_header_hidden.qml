@@ -48,10 +48,7 @@ Item {
 
         function get_header_visible() {
             var header = findChild(mainView, "MainView_Header");
-            if (!header.visible) return false;
-            if (header.height === 0) return false;
-            if (header.y === -header.height) return false;
-            return true;
+            return (header.y !== -header.height)
         }
 
         function test_header_hidden() {
