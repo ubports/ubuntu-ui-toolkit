@@ -425,7 +425,7 @@ Item {
             ]
         }
 
-        function test_osk_displaces_popover() {
+        function test_osk_displaces_popover(data) {
             var popover = PopupUtils.open(data.component, data.target);
             waitForRendering(popover);
             popover.textField.forceActiveFocus();
