@@ -191,6 +191,8 @@ PopupBase {
 
         // private
         function updatePosition() {
+            if (pointerTarget && pointerTarget.parent)
+                popover.y = (popover.parent.height - popover.height) / 2;
             var pos = new InternalPopupUtils.CallerPositioning(foreground, pointer, dismissArea, caller, pointerTarget, edgeMargins, callerMargin);
             pos.auto();
         }
@@ -199,6 +201,8 @@ PopupBase {
     __foreground: foreground
     __eventGrabber.enabled: autoClose
     __closeOnDismissAreaPress: true
+
+    y: parent ? (parent.height - height) / 2 : 0
 
     StyledItem {
         id: foreground

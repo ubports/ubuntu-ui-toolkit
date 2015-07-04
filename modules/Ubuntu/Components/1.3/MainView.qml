@@ -118,7 +118,7 @@ MainViewBase {
                 if (Qt.application.active) {
                     if (!(headerItem.config &&
                           headerItem.config.hasOwnProperty("locked") &&
-                          headerItem.locked)) {
+                          headerItem.config.locked)) {
                         headerItem.animate = false;
                         headerItem.show();
                         headerItem.animate = true;
