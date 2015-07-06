@@ -71,16 +71,18 @@ MainView {
                     objectName: "widgetList"
                     anchors.fill: parent
                     model: widgetsModel
+                    currentIndex: -1
                     delegate: ListItem.Standard {
                         text: model.label
                         objectName: model.objectName
                         enabled: model.source != ""
                         progression: true
-                        selected: gallery.__propagated.header.title == model.label
+                        selected: index === widgetList.currentIndex //gallery.__propagated.header.title == model.label
                         onClicked: {
                             var source = Qt.resolvedUrl(model.source);
                             var newPage = columns.addPageToNextColumn(mainPage, source);
                             newPage.title = model.label;
+                            widgetList.currentIndex = index;
                         }
                     }
                 }
