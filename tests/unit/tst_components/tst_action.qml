@@ -17,7 +17,6 @@
 import QtQuick 2.0
 import QtTest 1.0
 import Ubuntu.Components 1.1
-// FIXME: do cleanup https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1369874
 import Ubuntu.Unity.Action 1.1 as Unity
 
 TestCase {

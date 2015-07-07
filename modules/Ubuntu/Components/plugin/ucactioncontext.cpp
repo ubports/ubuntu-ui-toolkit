@@ -59,12 +59,11 @@ void UCActionContext::markActionsPublished(bool mark)
  * \default
  * List of Actions in this ActionContext.
  */
-// FIXME: do cleanup https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1369874
 QQmlListProperty<QObject> UCActionContext::actions()
 {
     return QQmlListProperty<QObject>(this, 0, UCActionContext::append, UCActionContext::count, 0, UCActionContext::clear);
 }
-// FIXME: do cleanup https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1369874
+
 void UCActionContext::append(QQmlListProperty<QObject> *list, QObject *action)
 {
     UCActionContext *context = qobject_cast<UCActionContext*>(list->object);
@@ -77,7 +76,7 @@ void UCActionContext::append(QQmlListProperty<QObject> *list, QObject *action)
         }
     }
 }
-// FIXME: do cleanup https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1369874
+
 void UCActionContext::clear(QQmlListProperty<QObject> *list)
 {
     UCActionContext *context = qobject_cast<UCActionContext*>(list->object);
@@ -85,7 +84,7 @@ void UCActionContext::clear(QQmlListProperty<QObject> *list)
         context->m_actions.clear();
     }
 }
-// FIXME: do cleanup https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1369874
+
 int UCActionContext::count(QQmlListProperty<QObject> *list)
 {
     UCActionContext *context = qobject_cast<UCActionContext*>(list->object);
@@ -129,7 +128,6 @@ void UCActionContext::setActive(bool active)
  * \deprecated
  * Adds an Action to the context programatically.
  */
-// FIXME: do cleanup https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1369874
 void UCActionContext::addAction(QObject *action)
 {
     UCAction *toolkitAction = qobject_cast<UCAction*>(action);
@@ -148,7 +146,6 @@ void UCActionContext::addAction(QObject *action)
  * \deprecated
  * Removes an action from the context programatically.
  */
-// FIXME: do cleanup https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1369874
 void UCActionContext::removeAction(QObject *action)
 {
     if (!action) {
