@@ -53,6 +53,11 @@ MainView {
                     text: "Add sections page right"
                     onClicked: multiColumnView.addPageToNextColumn(rootPage, sectionsPage)
                 }
+                ListItemWithLabel {
+                    text: "Add external page right"
+                    onClicked: multiColumnView.addPageToNextColumn(
+                                   rootPage, Qt.resolvedUrl("MyExternalPage.qml"))
+                }
             }
         }
         Page {
@@ -155,6 +160,12 @@ MainView {
             multiColumnView.removePages(rightPage);
             compare(get_header(1).config, null,
                     "Second column header is not reverted properly.");
+        }
+
+        function test_header_title_for_external_page() {
+            multiColumnView.addPageToNextColumn(rootPage, Qt.resolvedUrl("MyExternalPage.qml"));
+            compare(get_header(1).config.title, "Page from QML file",
+                    "Adding external Page does not update the header title.");
         }
 
         function test_header_height() {

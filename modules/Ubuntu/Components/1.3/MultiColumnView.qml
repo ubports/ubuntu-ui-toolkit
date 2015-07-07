@@ -212,7 +212,7 @@ PageTreeNode {
         d.completed = true;
         if (primaryPage) {
             var wrapper = d.createWrapper(primaryPage);
-            d.addPage(wrapper);
+            d.addWrappedPage(wrapper);
         } else {
             console.warn("No primary page set. No pages can be added without a primary page.");
         }
@@ -254,7 +254,7 @@ PageTreeNode {
             return wrapperObject;
         }
 
-        function addPage(pageWrapper) {
+        function addWrappedPage(pageWrapper) {
             stack.push(pageWrapper);
             pageWrapper.parentWrapper = stack.find(pageWrapper.parentPage);
             var targetColumn = MathUtils.clamp(pageWrapper.column, 0, d.columns - 1);
@@ -286,7 +286,7 @@ PageTreeNode {
             var wrapper = d.createWrapper(page, properties);
             wrapper.parentPage = sourcePage;
             wrapper.column = column;
-            d.addPage(wrapper);
+            d.addWrappedPage(wrapper);
             return wrapper.object;
         }
 
