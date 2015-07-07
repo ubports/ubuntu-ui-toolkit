@@ -77,7 +77,7 @@ MainView {
                         objectName: model.objectName
                         enabled: model.source != ""
                         progression: true
-                        selected: index === widgetList.currentIndex //gallery.__propagated.header.title == model.label
+                        selected: index === widgetList.currentIndex
                         onClicked: {
                             var source = Qt.resolvedUrl(model.source);
                             var newPage = columns.addPageToNextColumn(mainPage, source);
