@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -42,48 +42,48 @@ MainView {
         id: columns
         anchors.fill: parent
         primaryPage: mainPage
-    }
 
-    Page {
-        id: mainPage
-        title: "Ubuntu UI Toolkit"
+        Page {
+            id: mainPage
+            title: "Ubuntu UI Toolkit"
 
-        head.actions: [
-            Action {
-                text: i18n.tr('Use dark theme')
-                iconName: 'torch-on'
-                visible: theme.name == 'Ubuntu.Components.Themes.Ambiance'
-                onTriggered: theme.name = 'Ubuntu.Components.Themes.SuruDark'
-            },
-            Action {
-                text: i18n.tr('Use light theme')
-                iconName: 'torch-off'
-                visible: theme.name == 'Ubuntu.Components.Themes.SuruDark'
-                onTriggered: theme.name = 'Ubuntu.Components.Themes.Ambiance'
-            }
-        ]
+            head.actions: [
+                Action {
+                    text: i18n.tr('Use dark theme')
+                    iconName: 'torch-on'
+                    visible: theme.name == 'Ubuntu.Components.Themes.Ambiance'
+                    onTriggered: theme.name = 'Ubuntu.Components.Themes.SuruDark'
+                },
+                Action {
+                    text: i18n.tr('Use light theme')
+                    iconName: 'torch-off'
+                    visible: theme.name == 'Ubuntu.Components.Themes.SuruDark'
+                    onTriggered: theme.name = 'Ubuntu.Components.Themes.Ambiance'
+                }
+            ]
 
-        Rectangle {
-            color: Qt.rgba(0.0, 0.0, 0.0, 0.01)
-            anchors.fill: parent
-
-            ListView {
-                id: widgetList
-                objectName: "widgetList"
+            Rectangle {
+                color: Qt.rgba(0.0, 0.0, 0.0, 0.01)
                 anchors.fill: parent
-                model: widgetsModel
-                delegate: ListItem.Standard {
-                    text: model.label
-                    objectName: model.objectName
-                    enabled: model.source != ""
-                    progression: true
-                    selected: mainPage.__propagated.header.title == model.label
-                    onClicked: {
-                        var source = Qt.resolvedUrl(model.source);
-                        var newPage = columns.addPageToNextColumn(mainPage, source);
-                        // FIXME: Take header into consideration
-                        newPage.flickable.topMargin = mainPage.__propagated.header.height;
-                        newPage.title = model.label
+
+                ListView {
+                    id: widgetList
+                    objectName: "widgetList"
+                    anchors.fill: parent
+                    model: widgetsModel
+                    currentIndex: -1
+                    delegate: ListItem.Standard {
+                        text: model.label
+                        objectName: model.objectName
+                        enabled: model.source != ""
+                        progression: true
+                        selected: index === widgetList.currentIndex
+                        onClicked: {
+                            var source = Qt.resolvedUrl(model.source);
+                            var newPage = columns.addPageToNextColumn(mainPage, source);
+                            newPage.title = model.label;
+                            widgetList.currentIndex = index;
+                        }
                     }
                 }
             }

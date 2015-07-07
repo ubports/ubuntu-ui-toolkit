@@ -142,6 +142,17 @@ import "stack.js" as Stack
 PageTreeNode {
     id: multiColumnView
 
+    Page {
+        // MultiColumnView has its own split headers, so
+        //  disable the application header.
+        id: appHeaderControlPage
+        head {
+            locked: true
+            visible: false
+        }
+        // title is set in attachPage() when the attached Page.column === 0
+    }
+
     /*!
       The property holds the first Page which will be added to the view. If the
       view has more than one column, the page will be added to the leftmost column.
@@ -201,7 +212,7 @@ PageTreeNode {
         d.completed = true;
         if (primaryPage) {
             var wrapper = d.createWrapper(primaryPage);
-            d.addPage(wrapper);
+            d.addWrappedPage(wrapper);
         } else {
             console.warn("No primary page set. No pages can be added without a primary page.");
         }
@@ -243,7 +254,7 @@ PageTreeNode {
             return wrapperObject;
         }
 
-        function addPage(pageWrapper) {
+        function addWrappedPage(pageWrapper) {
             stack.push(pageWrapper);
             pageWrapper.parentWrapper = stack.find(pageWrapper.parentPage);
             var targetColumn = MathUtils.clamp(pageWrapper.column, 0, d.columns - 1);
@@ -275,7 +286,7 @@ PageTreeNode {
             var wrapper = d.createWrapper(page, properties);
             wrapper.parentPage = sourcePage;
             wrapper.column = column;
-            d.addPage(wrapper);
+            d.addWrappedPage(wrapper);
             return wrapper.object;
         }
 
@@ -365,12 +376,15 @@ PageTreeNode {
     // will be parented into hiddenPages
     Component {
         id: pageHolderComponent
-        Item {
+        // Page uses the height of the parentNode for its height, so make
+        //  the holder a PageTreeNode that determines the Page height.
+        PageTreeNode {
             id: holder
+            active: false
             objectName: "ColumnHolder" + column
             property PageWrapper pageWrapper
             property int column
-            property alias config: header.config
+            property alias config: subHeader.config
             property ColumnMetrics metrics: setDefaultMetrics()
 
             Layout.fillWidth: metrics.fillWidth
@@ -381,43 +395,61 @@ PageTreeNode {
             Layout.minimumWidth: metrics.minimumWidth
             Layout.maximumWidth: metrics.maximumWidth
 
-            // header
+            // prevent the pages from taking the app header height into account.
+            __propagated: null
+            Item {
+                id: holderBody
+                objectName: parent.objectName + "Body"
+                anchors {                    
+                    top: subHeader.bottom
+                    bottom: parent.bottom
+                    left: parent.left
+                    right: parent.right
+                    rightMargin: verticalDivider.width
+                }
+                // we need to clip because the header does not have a background
+                clip: true
+            }
+
+            property alias head: subHeader
             StyledItem {
-                id: header
+                id: subHeader
                 anchors {
                     left: parent.left
                     top: parent.top
                     right: parent.right
                 }
-                implicitHeight: units.gu(8)
-//                styleName: config ? "PageHeadStyle" : ""
+                height: body.headerHeight
+
+                styleName: config ? "PageHeadStyle" : ""
+                theme.version: Ubuntu.toolkitVersion
+                objectName: "Header" + column
+
+                property real preferredHeight: subHeader.__styleInstance ?
+                                                   subHeader.__styleInstance.implicitHeight :
+                                                   0
+                onPreferredHeightChanged: {
+                    body.updateHeaderHeight(preferredHeight);
+                }
 
                 property PageHeadConfiguration config: null
                 property Item contents: null
 
-                property color dividerColor: theme.palette.normal.background
-                property color panelColor
+                property color dividerColor: multiColumnView.__propagated.header.dividerColor
+                property color panelColor: multiColumnView.__propagated.header.panelColor
+
+                visible: holder.pageWrapper && holder.pageWrapper.active
             }
 
             Rectangle {
-                id: divider
+                id: verticalDivider
                 anchors {
                     top: parent.top
                     bottom: parent.bottom
                     right: parent.right
                 }
-                width: (column == (d.columns - 1)) || !pageWrapper ? 0 : units.dp(2)
-                color: theme.palette.normal.background
-            }
-
-            Item {
-                id: holderBody
-                objectName: parent.objectName + "Body"
-                anchors {
-                    fill: parent
-//                    topMargin: header.height
-                    rightMargin: divider.width
-                }
+                width: (column == (d.columns - 1)) || !pageWrapper ? 0 : units.dp(1)
+                color: subHeader.dividerColor
             }
 
             function attachPage(page) {
@@ -427,7 +459,11 @@ PageTreeNode {
                 pageWrapper.active = true;
 
                 if (pageWrapper.object.hasOwnProperty("head")) {
-                    header.config = pageWrapper.object.head;
+                    subHeader.config = pageWrapper.object.head;
+                }
+                if (pageWrapper.column === 0 && pageWrapper.object.hasOwnProperty("title")) {
+                    // set the application title
+                    appHeaderControlPage.title = pageWrapper.object.title;
                 }
             }
             function detachCurrentPage() {
@@ -435,7 +471,7 @@ PageTreeNode {
                 var wrapper = pageWrapper;
                 // remove header
                 wrapper.active = false;
-                header.config = null;
+                subHeader.config = null;
                 pageWrapper = null;
                 wrapper.parent = hiddenPages;
                 wrapper.pageHolder = null;
@@ -467,8 +503,25 @@ PageTreeNode {
     // once they become visible.
     RowLayout {
         id: body
+        objectName: "body"
         anchors.fill: parent
         spacing: 0
+
+        property real headerHeight: 0
+
+        function updateHeaderHeight(newHeight) {
+            if (newHeight > body.headerHeight) {
+                body.headerHeight = newHeight;
+            } else {
+                var h = 0;
+                var subHeight = 0;
+                for (var i = 0; i < children.length; i++) {
+                    subHeight = children[i].head.preferredHeight;
+                    if (subHeight > h) h = subHeight;
+                }
+                body.headerHeight = h;
+            }
+        }
 
         onChildrenChanged: {
             // all children should have Layout.fillWidth false, except the last one
@@ -493,6 +546,7 @@ PageTreeNode {
                     metrics = holder.setDefaultMetrics();
                 }
                 holder.metrics = metrics;
+                updateHeaderHeight(0);
             }
         }
     }
