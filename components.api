@@ -8,7 +8,7 @@ Ubuntu.Components.AbstractButton 1.3: ActionItem
     signal clicked()
     signal pressAndHold()
     property bool pressed
-Ubuntu.Components.Action 1.0 0.1: QtObject
+Ubuntu.Components.Action 1.3 1.0 0.1: QtObject
     property string description
     property bool enabled
     property string iconName
@@ -20,6 +20,7 @@ Ubuntu.Components.Action 1.0 0.1: QtObject
     function trigger()
     property string name
     property Type parameterType
+    property var shortcut
     property string text
     property bool visible
 Ubuntu.Components.Action.Type: Enum
