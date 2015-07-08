@@ -210,160 +210,99 @@ class LaunchFakeApplicationTestCase(autopilot_testcase.AutopilotTestCase):
         application.select_single('Label', objectName='testLabel')
 
 
-class InitctlEnvironmentVariableTestCase(testtools.TestCase):
+class InitctlEnvironmentVariableTestCase(testscenarios.TestWithScenarios):
 
-    def test_use_initctl_environment_variable_with_unset_variable(self):
+    scenarios = [
+        ('global_variable', {'global_': True}),
+        ('local_variable', {'global_': False})
+    ]
+
+    def set_original_value(self, value):
+        self.addCleanup(
+            environment.unset_initctl_env_var, 'testenvvarforfixture',
+            global_=self.global_)
+        environment.set_initctl_env_var('testenvvarforfixture',
+                                        value, global_=self.global_)
+
+    def create_fixture(self, value):
+        self.initctl_env_var = fixture_setup.InitctlEnvironmentVariable(
+            testenvvarforfixture=value, global_=self.global_)
+
+    def assertValueIs(self, expected_value):
+        self.assertEqual(
+            expected_value,
+            environment.get_initctl_env_var(
+                'testenvvarforfixture', global_=self.global_))
+
+    def assertVariableIsNotSet(self):
+        self.assertFalse(
+            environment.is_initctl_env_var_set(
+                'testenvvarforfixture', global_=self.global_))
+
+    def assertTestIsSuccessful(self, expected_value, test_name):
+        result = testtools.TestResult()
+
+        class TestWithInitctlEnvVar(testtools.TestCase):
+            def setUp(inner):
+                super().setUp()
+                inner.useFixture(self.initctl_env_var)
+
+            def test_value_set(inner):
+                self.assertValueIs(expected_value)
+
+            def test_variable_not_set(inner):
+                self.assertVariableIsNotSet()
+
+        TestWithInitctlEnvVar(test_name).run(result)
+        self.assertTrue(
+            result.wasSuccessful(), 'Failed to set the environment variable.')
+
+    def test_use_initctl_environment_variable_to_set_unexisting_variable(self):
         """Test the initctl env var fixture when the var is unset.
 
         During the test, the new value must be in place.
         After the test, the variable must be unset again.
 
         """
-        initctl_env_var = fixture_setup.InitctlEnvironmentVariable(
-            testenvvarforfixture='test value')
+        self.create_fixture('test value')
+        self.assertTestIsSuccessful('test value', 'test_value_set')
+        self.assertVariableIsNotSet()
 
-        result = testtools.TestResult()
-
-        def inner_test():
-            class TestWithInitctlEnvVar(testtools.TestCase):
-                def test_it(self):
-                    self.useFixture(initctl_env_var)
-                    self.assertEqual(
-                        'test value',
-                        environment.get_initctl_env_var(
-                            'testenvvarforfixture'))
-            return TestWithInitctlEnvVar('test_it')
-
-        inner_test().run(result)
-
-        self.assertTrue(
-            result.wasSuccessful(), 'Failed to set the environment variable.')
-        self.assertFalse(
-            environment.is_initctl_env_var_set('testenvvarforfixture'))
-
-    def test_use_initctl_environment_variable_with_set_variable(self):
+    def test_use_initctl_environment_variable_to_set_existing_variable(self):
         """Test the initctl env var fixture when the var is unset.
 
         During the test, the new value must be in place.
         After the test, the old value must be set again.
 
         """
-        self.addCleanup(
-            environment.unset_initctl_env_var, 'testenvvarforfixture')
-        environment.set_initctl_env_var(
-            'testenvvarforfixture', 'original test value')
+        self.set_original_value('original test value')
+        self.create_fixture('new test value')
+        self.assertTestIsSuccessful('new test value', 'test_value_set')
+        self.assertValueIs('original test value')
 
-        initctl_env_var = fixture_setup.InitctlEnvironmentVariable(
-            testenvvarforfixture='new test value')
+    def test_use_initctl_environment_variable_to_unset_existing_variable(self):
+        """Test the initctl env var fixture to unset a variable.
 
-        result = testtools.TestResult()
+        During the test, the variable must be unset.
+        After the test, the old value must be set again.
 
-        def inner_test():
-            class TestWithInitctlEnvVar(testtools.TestCase):
-                def test_it(self):
-                    self.useFixture(initctl_env_var)
-                    self.assertEqual(
-                        'new test value',
-                        environment.get_initctl_env_var(
-                            'testenvvarforfixture'))
-            return TestWithInitctlEnvVar('test_it')
+        """
+        self.set_original_value('original test value')
+        self.create_fixture(None)
+        self.assertTestIsSuccessful(None, 'test_variable_not_set')
+        self.assertValueIs('original test value',)
 
-        inner_test().run(result)
+    def test_use_initctl_environment_variable_to_unset_nonexisting_variable(
+            self):
+        """Test the initctl env var fixture to unset a variable.
 
-        self.assertTrue(
-            result.wasSuccessful(), 'Failed to set the environment variable.')
-        self.assertEqual(
-            'original test value',
-            environment.get_initctl_env_var('testenvvarforfixture'))
+        During the test, the variable must be unset.
+        After the test, the variable must remain unset.
 
-
-class InitctlGlobalEnvironmentVariableTestCase(
-        testscenarios.TestWithScenarios):
-
-    scenarios = [
-        ('global unset variable', {
-            'is_variable_set': False,
-            'variable_value': 'dummy',
-            'global_value': 'value',
-            'expected_calls': [
-                mock.call.is_initctl_env_var_set(
-                    'testenvvarforfixture', global_='value'),
-                mock.call.set_initctl_env_var(
-                    'testenvvarforfixture', 'new test value', global_='value'),
-                mock.call.unset_initctl_env_var(
-                    'testenvvarforfixture', global_='value')
-            ]
-        }),
-        ('global set variable', {
-            'is_variable_set': True,
-            'variable_value': 'original_value',
-            'global_value': 'value',
-            'expected_calls': [
-                mock.call.is_initctl_env_var_set(
-                    'testenvvarforfixture', global_='value'),
-                mock.call.get_initctl_env_var(
-                    'testenvvarforfixture', global_='value'),
-                mock.call.set_initctl_env_var(
-                    'testenvvarforfixture', 'new test value', global_='value'),
-                mock.call.set_initctl_env_var(
-                    'testenvvarforfixture', 'original_value', global_='value')
-            ]
-        }),
-        ('default unset variable', {
-            'is_variable_set': False,
-            'variable_value': 'dummy',
-            'global_value': 'default',
-            'expected_calls': [
-                mock.call.is_initctl_env_var_set(
-                    'testenvvarforfixture', global_=False),
-                mock.call.set_initctl_env_var(
-                    'testenvvarforfixture', 'new test value', global_=False),
-                mock.call.unset_initctl_env_var(
-                    'testenvvarforfixture', global_=False)
-            ]
-        }),
-        ('global set variable', {
-            'is_variable_set': True,
-            'variable_value': 'original_value',
-            'global_value': 'default',
-            'expected_calls': [
-                mock.call.is_initctl_env_var_set(
-                    'testenvvarforfixture', global_=False),
-                mock.call.get_initctl_env_var(
-                    'testenvvarforfixture', global_=False),
-                mock.call.set_initctl_env_var(
-                    'testenvvarforfixture', 'new test value', global_=False),
-                mock.call.set_initctl_env_var(
-                    'testenvvarforfixture', 'original_value', global_=False)
-            ]
-        }),
-    ]
-
-    def test_use_initctl_environment_variable_with_global_unset_variable(self):
-        if self.global_value == 'default':
-            initctl_env_var = fixture_setup.InitctlEnvironmentVariable(
-                testenvvarforfixture='new test value')
-        else:
-            initctl_env_var = fixture_setup.InitctlEnvironmentVariable(
-                testenvvarforfixture='new test value',
-                global_=self.global_value)
-
-        mock_env = mock.Mock()
-        initctl_env_var.environment = mock_env
-        mock_env.is_initctl_env_var_set.return_value = self.is_variable_set
-        mock_env.get_initctl_env_var.return_value = self.variable_value
-
-        def inner_test():
-            class TestWithInitctlEnvVar(testtools.TestCase):
-                def test_it(self):
-                    self.useFixture(initctl_env_var)
-
-            return TestWithInitctlEnvVar('test_it')
-
-        inner_test().run()
-
-        self.assertEquals(
-            self.expected_calls, mock_env.mock_calls)
+        """
+        self.create_fixture(None)
+        self.assertTestIsSuccessful(None, 'test_variable_not_set')
+        self.assertVariableIsNotSet()
 
 
 class FakeHomeTestCase(testtools.TestCase):

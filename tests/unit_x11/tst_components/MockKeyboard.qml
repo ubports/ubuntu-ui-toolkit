@@ -34,6 +34,8 @@ Object {
         parent: QuickUtils.rootItem(inputMethod)
         color: UbuntuColors.lightGrey
         opacity: 0.5
+        // Always on top, even modal Dialog overlay
+        z: 100
 
         Flow {
             anchors.fill: parent

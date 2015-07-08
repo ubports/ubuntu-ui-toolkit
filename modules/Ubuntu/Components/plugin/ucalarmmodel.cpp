@@ -125,6 +125,7 @@
 
 UCAlarmModel::UCAlarmModel(QObject *parent)
     : QAbstractListModel(parent)
+    , m_moved(false)
 {
     // keep in sync with alarms collection changes
     // some of the connections can be asynchronous, others synchronous
@@ -318,7 +319,10 @@ void UCAlarmModel::insertFinished()
  */
 void UCAlarmModel::moveStarted(int from, int to)
 {
-    beginMoveRows(QModelIndex(), from, from, QModelIndex(), to);
+    if (m_moved) {
+        return;
+    }
+    m_moved = beginMoveRows(QModelIndex(), from, from, QModelIndex(), to);
 }
 
 /*!
@@ -327,5 +331,8 @@ void UCAlarmModel::moveStarted(int from, int to)
  */
 void UCAlarmModel::moveFinished()
 {
-    endMoveRows();
+    if (m_moved) {
+        endMoveRows();
+    }
+    m_moved = false;
 }

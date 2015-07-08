@@ -48,6 +48,30 @@ Item {
         }
     }
 
+    Component {
+        id: dialogComponent
+        Dialog {
+            id: dialog
+            property var textField: textFieldInDialog
+            Label {
+                text: 'This is a text field in a dialog'
+                height: units.gu(10)
+            }
+            TextField {
+                id: textFieldInDialog
+                height: units.gu(10)
+            }
+            Label {
+                text: 'Focus the text field'
+                height: units.gu(10)
+            }
+            Button {
+                text: 'Close'
+                onClicked: PopupUtils.close(dialog)
+            }
+        }
+    }
+
     Column {
         spacing: units.gu(1)
         anchors {
@@ -58,6 +82,15 @@ Item {
             id: popoverButton
             text: 'Open Popover'
             onClicked: PopupUtils.open(popoverComponent, popoverButton)
+        }
+        Button {
+            text: 'Open Popover with no target'
+            onClicked: PopupUtils.open(popoverComponent)
+        }
+        Button {
+            id: dialogButton
+            text: 'Open Dialog'
+            onClicked: PopupUtils.open(dialogComponent, dialogButton)
         }
 
         TextField {
@@ -384,17 +417,32 @@ Item {
             verify(data.input.selectedText != "", "No text selected.");
         }
 
-        function test_osk_displaces_popover() {
-            var popover = PopupUtils.open(popoverComponent, popoverButton);
+        function test_osk_displaces_popover_data() {
+            return [
+                { tag: 'popover', component: popoverComponent, target: popoverButton, offScreen: false },
+                { tag: 'popover', component: popoverComponent, target: null, offScreen: false },
+                { tag: 'dialog', component: dialogComponent, target: dialogButton, offScreen: true },
+            ]
+        }
+
+        function test_osk_displaces_popover(data) {
+            var popover = PopupUtils.open(data.component, data.target);
             waitForRendering(popover);
             popover.textField.forceActiveFocus();
             waitForRendering(popover.textField);
-            verify(popover.y >= 0, 'Popover went off-screen');
+
+            // Only get the value here so in case of failure the popover won't get stuck
+            var popoverY = popover.y;
 
             // dismiss popover
-            mouseClick(testMain, 0, 0);
+            PopupUtils.close(popover);
             // add some timeout to get the event buffer cleaned
             wait(500);
+
+            if (data.offScreen)
+                verify(popoverY < 0, 'Dialog did not shift upwards: %1'.arg(popoverY));
+            else
+                verify(popoverY >= 0, 'Popover went off-screen: %1'.arg(popoverY));
         }
 
     }
