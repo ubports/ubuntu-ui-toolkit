@@ -53,31 +53,25 @@ void UCActionContext::markActionsPublished(bool mark)
     }
 }
 
-
 /*!
  * \qmlproperty list<Action> ActionContext::actions
  * \default
  * List of Actions in this ActionContext.
  */
-QQmlListProperty<QObject> UCActionContext::actions()
+QQmlListProperty<UCAction> UCActionContext::actions()
 {
-    return QQmlListProperty<QObject>(this, 0, UCActionContext::append, UCActionContext::count, 0, UCActionContext::clear);
+    return QQmlListProperty<UCAction>(this, 0, UCActionContext::append, UCActionContext::count, 0, UCActionContext::clear);
 }
 
-void UCActionContext::append(QQmlListProperty<QObject> *list, QObject *action)
+void UCActionContext::append(QQmlListProperty<UCAction> *list, UCAction *action)
 {
     UCActionContext *context = qobject_cast<UCActionContext*>(list->object);
     if (context) {
-        UCAction *toolkitAction = qobject_cast<UCAction*>(action);
-        if (toolkitAction) {
-            context->m_actions.insert(toolkitAction);
-        } else {
-            qmlInfo(action) << "Invalid Action. Please use Action from Ubuntu.Components.";
-        }
+        context->m_actions.insert(action);
     }
 }
 
-void UCActionContext::clear(QQmlListProperty<QObject> *list)
+void UCActionContext::clear(QQmlListProperty<UCAction> *list)
 {
     UCActionContext *context = qobject_cast<UCActionContext*>(list->object);
     if (context) {
@@ -85,7 +79,7 @@ void UCActionContext::clear(QQmlListProperty<QObject> *list)
     }
 }
 
-int UCActionContext::count(QQmlListProperty<QObject> *list)
+int UCActionContext::count(QQmlListProperty<UCAction> *list)
 {
     UCActionContext *context = qobject_cast<UCActionContext*>(list->object);
     if (context) {
@@ -128,17 +122,12 @@ void UCActionContext::setActive(bool active)
  * \deprecated
  * Adds an Action to the context programatically.
  */
-void UCActionContext::addAction(QObject *action)
+void UCActionContext::addAction(UCAction *action)
 {
-    UCAction *toolkitAction = qobject_cast<UCAction*>(action);
-    if (!toolkitAction) {
-        qmlInfo(action) << "Unity.Action deprecated. Please use Action from Ubuntu.Components.";
+    if (m_actions.contains(action)) {
         return;
     }
-    if (m_actions.contains(toolkitAction)) {
-        return;
-    }
-    m_actions.insert(toolkitAction);
+    m_actions.insert(action);
 }
 
 /*!
@@ -146,15 +135,10 @@ void UCActionContext::addAction(QObject *action)
  * \deprecated
  * Removes an action from the context programatically.
  */
-void UCActionContext::removeAction(QObject *action)
+void UCActionContext::removeAction(UCAction *action)
 {
     if (!action) {
         return;
     }
-    UCAction *toolkitAction = qobject_cast<UCAction*>(action);
-    if (!toolkitAction) {
-        qmlInfo(action) << "Unity.Action deprecated. Please use Action from Ubuntu.Components.";
-        return;
-    }
-    m_actions.remove(toolkitAction);
+    m_actions.remove(action);
 }
