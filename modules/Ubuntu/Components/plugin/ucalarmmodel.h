@@ -63,6 +63,9 @@ private Q_SLOTS:
     void insertFinished();
     void moveStarted(int from, int to);
     void moveFinished();
+
+private:
+    bool m_moved:1;
 };
 
 #endif // UCALARMSMODEL_H

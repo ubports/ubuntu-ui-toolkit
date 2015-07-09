@@ -611,6 +611,7 @@ Ubuntu.Components.PageHeadSections 1.1: QtObject
     property var model
     property int selectedIndex
 Ubuntu.Components.PageHeadSections 1.3: QtObject
+    readonly property Action actions
     property bool enabled
     property var model
     property int selectedIndex
@@ -793,6 +794,10 @@ Ubuntu.Components.Scrollbar 1.3: StyledItem
     property int align
     property Flickable flickableItem
 Ubuntu.Components.ScrollbarUtils 0.1 1.0
+Ubuntu.Components.Sections 1.3: StyledItem
+    readonly property Action actions
+    property var model
+    property int selectedIndex
 Ubuntu.Components.ServiceProperties 1.1: QtObject
     property string adaptorInterface
     readonly property string error
