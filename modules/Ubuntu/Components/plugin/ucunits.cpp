@@ -72,8 +72,9 @@ static float getenvFloat(const char* name, float defaultValue)
  * variable. This accepts only integer values, thus allowing a x2 or x3 scaling of any
  * Qt-based UI, that includes QWidget as well as any QML UI.
  *
- * Setting QT_DEVICE_PIXEL_RATIO=2 implies one device pixel corresponds to 2 physical pixels.
- * Developers describe their UI in terms of device pixels. Qt scales accordingly.
+ * Setting QT_DEVICE_PIXEL_RATIO=2 implies one density-independent pixel corresponds to 2
+ * physical pixels. Developers describe their UI in terms of density-independent pixels.
+ * Qt scales accordingly.
  *
  * The Ubuntu UI Toolkit has solved the scaling problem with the GRID_UNIT_PX variable.
  * It offers more flexibility, but only scales QML applications written to use the UITK
@@ -81,15 +82,16 @@ static float getenvFloat(const char* name, float defaultValue)
  *
  * There are additional areas in Qt where QT_DEVICE_PIXEL_RATIO causes correct scaling which
  * GRID_UNIT_PX cannot, for example:
- *   1. cacheBuffer for ListView/GridViews - specified in device pixels
- *   2. gesture recognition  matches what is on screen better, as it is device-pixel aware
+ *   1. cacheBuffer for ListView/GridViews - specified in density-independent pixels
+ *   2. gesture recognition  matches what is on screen better, as it is density-independent
+ *      pixel aware
  *
  * In order to get the best of both worlds, Ubuntu will set both GRID_UNIT_PX and
  * QT_DEVICE_PIXEL_RATIO. Thus all Qt apps will scale reasonably well, with UITK-based apps
  * scaling perfectly for any desired scale (i.e. non-integer scales).
  *
  * However UITK developers can just use this Units class as usual, and will be almost totally
- * isolated from the device pixel ratio concept.
+ * isolated from Qt's own scaling concept.
  */
 
 UCUnits::UCUnits(QObject *parent) :
@@ -123,9 +125,9 @@ void UCUnits::setGridUnit(float gridUnit)
 /*!
     \qmlmethod real Units::dp(real value)
 
-    Returns the number of device pixels \a value density independent pixels correspond to.
+    Returns the number of pixels \a value density independent pixels correspond to.
 */
-// Device pixels (and not actual pixels) because QML sizes in terms of device pixels.
+// Density-independent pixels (and not physical pixels) because Qt sizes in terms of density-independent pixels.
 float UCUnits::dp(float value)
 {
     const float ratio = m_gridUnit / DEFAULT_GRID_UNIT_PX;
@@ -140,9 +142,9 @@ float UCUnits::dp(float value)
 /*!
     \qmlmethod real Units::gu(real value)
 
-    Returns the number of device pixels \a value grid units correspond to.
+    Returns the number of pixels \a value grid units correspond to.
 */
-// Device pixels (and not actual pixels) because QML sizes in terms of device pixels.
+// Density-independent pixels (and not physical pixels) because Qt sizes in terms of density-independent pixels.
 
 float UCUnits::gu(float value)
 {
