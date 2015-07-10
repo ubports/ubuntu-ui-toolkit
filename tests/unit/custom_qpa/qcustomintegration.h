@@ -45,6 +45,7 @@ public:
     QRect geometry() const override { return mGeometry; }
     int depth() const override { return mDepth; }
     QImage::Format format() const override { return mFormat; }
+    qreal devicePixelRatio() const override { return mDpr; }
 
 public:
     QRect mGeometry;

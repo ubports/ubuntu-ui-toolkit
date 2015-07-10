@@ -40,7 +40,7 @@
 
 #include <QtPlatformSupport/private/qgenericunixeventdispatcher_p.h>
 
-static const char devicePixelRatioEnvironmentVariable[] = "DEVICE_PIXEL_RATIO";
+static const char devicePixelRatioEnvironmentVariable[] = "QT_DEVICE_PIXEL_RATIO";
 
 QCustomScreen::QCustomScreen()
     : mDepth(32), mFormat(QImage::Format_ARGB32_Premultiplied), mDpr(1.0)

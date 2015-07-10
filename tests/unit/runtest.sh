@@ -43,6 +43,8 @@ function create_test_cmd {
 
   if [ "$_MINIMAL" = "minimal" ]; then
       _CMD="$_CMD -p -platform -p minimal"
+  elif [ "$_MINIMAL" = "custom" ]; then
+      _CMD="$_CMD -p -platform -p custom"
   fi
 
   if [ $_TARGETPATH != $_TESTFILEPATH ]; then
