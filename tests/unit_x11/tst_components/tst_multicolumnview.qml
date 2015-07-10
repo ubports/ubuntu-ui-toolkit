@@ -24,35 +24,38 @@ Item {
     width: units.gu(120)
     height: units.gu(71)
 
-    MultiColumnView {
-        id: testView
-        width: parent.width
-        height: parent.height
+    MainView {
+        anchors.fill: parent
 
-        primaryPage: page1
+        MultiColumnView {
+            id: testView
+            width: parent.width
+            height: parent.height
 
-        Page {
-            id: page1
-            title: "Page1"
+            primaryPage: page1
+
+            Page {
+                id: page1
+                title: "Page1"
+            }
+            Page {
+                id: page2
+                title: "Page2"
+            }
+            Page {
+                id: page3
+                title: "Page3"
+            }
+            Page {
+                id: page4
+                title: "Page4"
+            }
         }
-        Page {
-            id: page2
-            title: "Page2"
-        }
-        Page {
-            id: page3
-            title: "Page3"
-        }
-        Page {
-            id: page4
-            title: "Page4"
+
+        MultiColumnView {
+            id: defaults
         }
     }
-
-    MultiColumnView {
-        id: defaults
-    }
-
     UbuntuTestCase {
         when: windowShown
 

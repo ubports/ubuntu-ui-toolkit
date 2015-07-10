@@ -1,0 +1,122 @@
+/*
+ * Copyright 2015 Canonical Ltd.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+.pragma library
+
+function Tree() {
+    // list<object> of nodes
+    var nodes = [];
+
+    // list<int> of stems
+    var stems = [];
+
+    // list<int> of indices of parent nodes
+    var parents = [];
+
+    // int number of nodes in the tree
+    var size = 0;
+
+    // Return the index of the given node.
+    // Throws an exception when the node was not found.
+    this.index = function(node) {
+        var i = nodes.indexOf(node);
+        if (i === -1) {
+            throw "Specified node not found in tree.";
+        }
+        return i;
+    }
+
+    // Add root node in stem 0 with no parent node.
+    this.addRoot = function(node) {
+        return this.add(0, null, node);
+    }
+
+    // Add newNode to the tree in the specified stem, with the specified parent node.
+    // Default value for stem: 0.
+    // Default value for parentNode: null.
+    // Returns the index of the newly added node.
+    this.add = function(stem, parentNode, newNode) {
+        if (nodes.indexOf(newNode) !== -1) {
+            throw "Cannot add the same node twice to a tree.";
+        }
+        var parentIndex = nodes.indexOf(parentNode);
+        if (parentIndex === -1 && size !== 0) {
+            throw "Cannot add non-root node if parentNode is not in the tree.";
+        }
+        if (parentNode === null && size !== 0) {
+            throw "Only root node has parent null."
+        }
+
+        nodes.push(newNode);
+        stems.push(stem);
+        parents.push(parentIndex);
+        return size++;
+    }
+
+    // Chops the given node and each node with an index higher than the
+    //  specified node. If no node is given, only the single top-most node is chopped.
+    // Returns a list that contains the nodes that were chopped.
+    this.chop = function(node) {
+        node = typeof node !== 'undefined' ? node : this.top();
+        size = this.index(node);
+        var oldNodes = nodes;
+        nodes = nodes.slice(0, size);
+        stems = stems.slice(0, size);
+        parents = parents.slice(0, size);
+        return oldNodes.slice(size);
+    }
+
+    // If exactMatch, return the node on top of the specified stem.
+    // If !exactMatch, return the node with the highest index for stem <= the returned node stem
+    // Default value for exactMatch: false
+    // Returns null if no matching node was found.
+    this.top = function(stem, exactMatch) {
+        stem = typeof stem !== 'undefined' ? stem : 0
+        exactMatch = typeof exactMatch !== 'undefined' ? exactMatch : false
+
+        var st;
+        for (var i = size-1; i >= 0; i--) {
+            st = stems[i];
+            if ((exactMatch && st === stem) || (!exactMatch && st >= stem)) {
+                return nodes[i];
+            }
+        }
+        return null;
+    }
+
+    // Return the parent node of the specified node in the tree
+    this.parent = function(node) {
+        var i = nodes.indexOf(node);
+        if (i === -1) {
+            throw "Specified node not found in tree.";
+        }
+        return nodes[parents[i]];
+    }
+
+    // FIXME TIM: I don't like having this function here because
+    //  it is specific to the contents in the nodes.
+    //  See if we can get rid of it.
+    // returns the node the Page is stored; undefined if not found
+    this.findPageInWrapper = function(page) {
+        if (!page) return null;
+        for (var i = nodes.length - 1; i >= 0; i--) {
+            if (nodes[i].object == page) {
+                return nodes[i];
+            }
+        }
+        return null;
+    }
+}

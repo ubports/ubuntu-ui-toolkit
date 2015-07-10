@@ -17,7 +17,7 @@
 import QtQuick 2.4
 import QtQuick.Layouts 1.1
 import Ubuntu.Components 1.3
-import "stack.js" as Stack
+import "tree.js" as Tree
 
 /*!
   \qmltype MultiColumnView
@@ -191,15 +191,17 @@ PageTreeNode {
       pages will be removed.
       */
     function removePages(page) {
+        // FIXME: This can be optimized by using tree.crop(page).
         // remove nodes which have page as ascendant
-        var node = d.stack.top();
+        var node = d.tree.top();
+        if (!node) return; // empty tree
+
         while (node && node.childOf(page)) {
             d.popAndSetPageForColumn(node);
-            node = d.stack.top();
+            node = d.tree.top();
         }
-        while (node && node.object == page && node != d.stack.first()) {
+        if (node.object == page && node.object != multiColumnView.primaryPage) {
             d.popAndSetPageForColumn(node);
-            node = d.stack.top();
         }
     }
 
@@ -228,7 +230,7 @@ PageTreeNode {
         id: d
 
         property bool completed: false
-        property var stack: new Stack.Stack()
+        property var tree: new Tree.Tree()
 
         property int columns: multiColumnView.width >= units.gu(80) ? 2 : 1
         /*! internal */
@@ -255,8 +257,10 @@ PageTreeNode {
         }
 
         function addWrappedPage(pageWrapper) {
-            stack.push(pageWrapper);
-            pageWrapper.parentWrapper = stack.find(pageWrapper.parentPage);
+            // FIXME TIM: Can we get rid of this function call?
+            //  and remove the function from tree.js
+            pageWrapper.parentWrapper = tree.findPageInWrapper(pageWrapper.parentPage);
+            tree.add(pageWrapper.column, pageWrapper.parentWrapper, pageWrapper);
             var targetColumn = MathUtils.clamp(pageWrapper.column, 0, d.columns - 1);
             // replace page holder's child
             var holder = body.children[targetColumn];
@@ -265,7 +269,7 @@ PageTreeNode {
         }
 
         function columnForPage(page) {
-            var wrapper = stack.find(page);
+            var wrapper = tree.findPageInWrapper(page);
             return wrapper ? wrapper.column : 0;
         }
 
@@ -278,7 +282,7 @@ PageTreeNode {
                 console.warn("No sourcePage specified. Page will not be added.");
                 return;
             }
-            if (!d.stack.find(sourcePage)) {
+            if (!d.tree.findPageInWrapper(sourcePage)) {
                 console.warn("sourcePage must be added to the view to add new page.");
                 return;
             }
@@ -292,7 +296,7 @@ PageTreeNode {
 
         // node is a triplet of {page, column, parentPage}
         function popAndSetPageForColumn(node) {
-            stack.pop();
+            tree.chop();
             var effectiveColumn = MathUtils.clamp(node.column, 0, d.columns - 1);
             var columnHolder = body.children[effectiveColumn];
             // is the page in a column?
@@ -301,7 +305,7 @@ PageTreeNode {
                 columnHolder.detachCurrentPage();
             }
             node.parent = null;
-            var prevPage = stack.topForColumn(effectiveColumn, effectiveColumn < d.columns - 1);
+            var prevPage = tree.top(effectiveColumn, effectiveColumn < d.columns - 1);
             if (prevPage) {
                 columnHolder.attachPage(prevPage);
             }
@@ -335,7 +339,7 @@ PageTreeNode {
         function rearrangePages() {
             for (var column = d.columns - 1; column >= 0; column--) {
                 var holder = body.children[column];
-                var pageWrapper = stack.topForColumn(column, column < (d.columns - 1));
+                var pageWrapper = tree.top(column, column < (d.columns - 1));
                 if (!pageWrapper) {
                     continue;
                 }
