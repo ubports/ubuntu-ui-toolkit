@@ -116,11 +116,10 @@ Item {
             if (!orientationHelper.parent)
                 return 0;
 
-            if (d.stateAngle === 0 && Qt.inputMethod.visible && anchorToKeyboard) {
-                return orientationHelper.parent.height - Qt.inputMethod.keyboardRectangle.height;
-            } else {
-                return orientationHelper.parent.height;
-            }
+            var availableHeight = orientationHelper.parent.height;
+            if (d.stateAngle === 0 && UbuntuApplication.inputMethod.visible && anchorToKeyboard)
+                availableHeight -= UbuntuApplication.inputMethod.keyboardRectangle.height;
+            return availableHeight;
         }
 
         /*!

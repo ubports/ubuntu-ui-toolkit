@@ -43,6 +43,10 @@ Template {
                 title: "Sample Dialog"
                 text: "Descriptive text goes here"
 
+                TextField {
+                    placeholderText: "Type like your lifes depends on it"
+                }
+
                 Row {
                     id: row
                     width: parent.width

@@ -59,17 +59,10 @@ MultiPointTouchArea {
     }
 
     function showInputPanel() {
-        if (!Qt.inputMethod.visible) {
-            Qt.inputMethod.show();
+        if (!UbuntuApplication.inputMethod.visible) {
+            UbuntuApplication.inputMethod.show();
         }
         textChanged = false;
-    }
-    function hideInputPanel() {
-        Qt.inputMethod.hide();
-        // emit accepted signal if changed
-        if (textChanged && input.hasOwnProperty("accepted")) {
-            input.accepted();
-        }
     }
 
     // internal properties/functions
@@ -297,7 +290,7 @@ MultiPointTouchArea {
         target: main
         ignoreUnknownSignals: true
         onFocusChanged: {
-            Qt.inputMethod.commit()
+            UbuntuApplication.inputMethod.commit()
             state = (main.focus) ? "" : "inactive";
         }
     }

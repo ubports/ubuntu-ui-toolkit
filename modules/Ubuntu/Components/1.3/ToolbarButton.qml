@@ -85,5 +85,5 @@ ActionItem {
     width: units.gu(5)
 
     theme.version: Ubuntu.toolkitVersion
-    style: theme.createStyleComponent("ToolbarButtonStyle.qml", toolbarButton)
+    styleName: "ToolbarButtonStyle"
 }

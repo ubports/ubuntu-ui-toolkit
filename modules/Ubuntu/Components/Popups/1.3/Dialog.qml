@@ -214,6 +214,6 @@ PopupBase {
         }
 
         theme.version: Ubuntu.toolkitVersion
-        style: theme.createStyleComponent("DialogForegroundStyle.qml", foreground)
+        styleName: "DialogForegroundStyle"
     }
 }

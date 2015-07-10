@@ -24,11 +24,6 @@ ListModel {
         source: "Navigation.qml"
     }
     ListElement {
-        objectName: "stylesElement"
-        label: "Styles"
-        source: "Styles.qml"
-    }
-    ListElement {
         objectName: "colorsElement"
         label: "Colors"
         source: "Colors.qml"
@@ -70,6 +65,11 @@ ListModel {
         objectName: "progressBarsElement"
         label: "Progress and activity"
         source: "ProgressBars.qml"
+    }
+    ListElement {
+        objectName: "sectionsElement"
+        label: "Sections"
+        source: "Sections.qml"
     }
     ListElement {
         objectName: "ubuntuShapesElement"

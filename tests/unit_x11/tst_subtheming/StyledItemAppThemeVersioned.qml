@@ -20,5 +20,5 @@ StyledItem {
     id: item
     theme.name: "themes.CustomTheme"
     theme.version: Ubuntu.toolkitVersion
-    style: theme.createStyleComponent("TestStyle.qml", item)
+    styleName: "TestStyle"
 }

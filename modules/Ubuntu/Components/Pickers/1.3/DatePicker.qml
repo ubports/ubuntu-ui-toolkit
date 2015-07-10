@@ -421,7 +421,7 @@ StyledItem {
     }
 
     theme.version: Ubuntu.toolkitVersion
-    style: theme.createStyleComponent("DatePickerStyle.qml", datePicker)
+    styleName: "DatePickerStyle"
     Binding {
         target: __styleInstance
         property: "view"

@@ -42,7 +42,7 @@ Ubuntu.StyledItem {
                                            __styleInstance.cursorDelegate
 
     theme.version: Ubuntu.Ubuntu.toolkitVersion
-    style: theme.createStyleComponent("TextCursorStyle.qml", cursorItem);
+    styleName: "TextCursorStyle"
 
     objectName: "textCursor"
     //Caret instance from the style.
@@ -111,7 +111,7 @@ Ubuntu.StyledItem {
 
         // if the cursor is out of the visible viewport, anchor the
         // contextual menu to the input field
-        var anchor = fakeCursor.visible ? draggedItem : handler.main
+        var anchor = caret.visible ? draggedItem : handler.main
         var popup = PopupUtils.open(component, anchor, {
             "target": handler.main,
         });
