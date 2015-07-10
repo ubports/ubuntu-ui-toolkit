@@ -65,6 +65,33 @@ static float getenvFloat(const char* name, float defaultValue)
     \sa {Resolution Independence}
 */
 
+/*
+ * Note on the interaction between GRID_UNIT_PX and QT_DEVICE_PIXEL_RATIO
+ *
+ * In Qt5.4 there is a single means to scale the UI: the QT_DEVICE_PIXEL_RATIO environment
+ * variable. This accepts only integer values, thus allowing a x2 or x3 scaling of any
+ * Qt-based UI, that includes QWidget as well as any QML UI.
+ *
+ * Setting QT_DEVICE_PIXEL_RATIO=2 implies one device pixel corresponds to 2 physical pixels.
+ * Developers describe their UI in terms of device pixels. Qt scales accordingly.
+ *
+ * The Ubuntu UI Toolkit has solved the scaling problem with the GRID_UNIT_PX variable.
+ * It offers more flexibility, but only scales QML applications written to use the UITK
+ * (since it uses this Units class) as it is built on top of QML.
+ *
+ * There are additional areas in Qt where QT_DEVICE_PIXEL_RATIO causes correct scaling which
+ * GRID_UNIT_PX cannot, for example:
+ *   1. cacheBuffer for ListView/GridViews - specified in device pixels
+ *   2. gesture recognition  matches what is on screen better, as it is device-pixel aware
+ *
+ * In order to get the best of both worlds, Ubuntu will set both GRID_UNIT_PX and
+ * QT_DEVICE_PIXEL_RATIO. Thus all Qt apps will scale reasonably well, with UITK-based apps
+ * scaling perfectly for any desired scale (i.e. non-integer scales).
+ *
+ * However UITK developers can just use this Units class as usual, and will be almost totally
+ * isolated from the device pixel ratio concept.
+ */
+
 UCUnits::UCUnits(QObject *parent) :
     QObject(parent),
     m_devicePixelRatio(qGuiApp->devicePixelRatio())
