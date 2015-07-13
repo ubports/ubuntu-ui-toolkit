@@ -32,9 +32,7 @@ function Tree() {
     // Return the index of the given node.
     // Throws an exception when the node was not found.
     this.index = function(node) {
-        print("getting index of "+node)
         var i = nodes.indexOf(node);
-        print("index = "+i)
 //        if (i === -1) {
 //            throw "Specified node not found in tree.";
 //        }
@@ -73,10 +71,8 @@ function Tree() {
     // Default values for node or inclusive, top() and true.
     // Returns a list that contains the nodes that were chopped.
     this.chop = function(node, inclusive) {
-        print("gonna chop chop chop! " + size);
         node = typeof node !== 'undefined' ? node : this.top();
         inclusive = typeof inclusive !== 'undefined' ? inclusive : true
-        print("YYY. node = "+node)
         var nodeIndex = this.index(node);
         if (nodeIndex >= 0) {
             if (inclusive) {
@@ -84,16 +80,13 @@ function Tree() {
             } else {
                 size = nodeIndex + 1;
             }
-            print("size = "+size)
             var oldNodes = nodes;
             nodes = nodes.slice(0, size);
             stems = stems.slice(0, size);
             parents = parents.slice(0, size);
-            print("chopped node in tree. new size is "+size)
             return oldNodes.slice(size);
         } else {
             // given node is not in the tree
-            print("trying to chop node not in the tree. doing nothing.")
             return [];
         }
     }
@@ -103,7 +96,6 @@ function Tree() {
     // Default value for exactMatch: false
     // Returns null if no matching node was found.
     this.top = function(stem, exactMatch) {
-        print("calling TOP")
         stem = typeof stem !== 'undefined' ? stem : 0
         exactMatch = typeof exactMatch !== 'undefined' ? exactMatch : false
 
@@ -111,11 +103,9 @@ function Tree() {
         for (var i = size-1; i >= 0; i--) {
             st = stems[i];
             if ((exactMatch && st === stem) || (!exactMatch && st >= stem)) {
-                print("returning "+nodes[i]+" for top!")
                 return nodes[i];
             }
         }
-        print("returning null for top!")
         return null;
     }
 
@@ -136,11 +126,9 @@ function Tree() {
         if (!page) return null;
         for (var i = nodes.length - 1; i >= 0; i--) {
             if (nodes[i].object == page) {
-                print("findPageInWrapper is returning "+nodes[i])
                 return nodes[i];
             }
         }
-        print("findPageInWrapper is returning null")
         return null;
     }
 }
