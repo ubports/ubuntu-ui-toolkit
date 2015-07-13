@@ -117,18 +117,4 @@ function Tree() {
         }
         return nodes[parents[i]];
     }
-
-    // FIXME TIM: I don't like having this function here because
-    //  it is specific to the contents in the nodes.
-    //  See if we can get rid of it.
-    // returns the node the Page is stored; undefined if not found
-    this.findPageInWrapper = function(page) {
-        if (!page) return null;
-        for (var i = nodes.length - 1; i >= 0; i--) {
-            if (nodes[i].object == page) {
-                return nodes[i];
-            }
-        }
-        return null;
-    }
 }

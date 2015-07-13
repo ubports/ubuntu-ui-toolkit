@@ -206,7 +206,7 @@ PageTreeNode {
 //            d.setPageForColumn(node);
 //        }
 
-        var nodeToRemove = d.tree.findPageInWrapper(page);
+        var nodeToRemove = d.getWrapper(page);
         var removedNodes = d.tree.chop(nodeToRemove, page != multiColumnView.primaryPage);
         for (var i = removedNodes.length-1; i >= 0; i--) {
             var node = removedNodes[i];
@@ -267,9 +267,7 @@ PageTreeNode {
         }
 
         function addWrappedPage(pageWrapper) {
-            // FIXME TIM: Can we get rid of this function call?
-            //  and remove the function from tree.js
-            pageWrapper.parentWrapper = tree.findPageInWrapper(pageWrapper.parentPage);
+            pageWrapper.parentWrapper = d.getWrapper(pageWrapper.parentPage);
             tree.add(pageWrapper.column, pageWrapper.parentWrapper, pageWrapper);
             var targetColumn = MathUtils.clamp(pageWrapper.column, 0, d.columns - 1);
             // replace page holder's child
@@ -278,8 +276,28 @@ PageTreeNode {
             holder.attachPage(pageWrapper)
         }
 
+        function getWrapper(page) {
+            if (page && page.hasOwnProperty("parentNode")) {
+                var w = page.parentNode;
+                if (w.hasOwnProperty("object") && w.hasOwnProperty("reference")) {
+                    if (w.object == page) {
+                        return w;
+                    } else {
+                        print("Page is not wrapped by its parentNode. This should not happen!");
+                        return null;
+                    }
+                } else {
+                    // invalid wrapper
+                    return null;
+                }
+            } else {
+                // invalid page
+                return null;
+            }
+        }
+
         function columnForPage(page) {
-            var wrapper = tree.findPageInWrapper(page);
+            var wrapper = d.getWrapper(page);
             return wrapper ? wrapper.column : 0;
         }
 
@@ -292,7 +310,8 @@ PageTreeNode {
                 console.warn("No sourcePage specified. Page will not be added.");
                 return;
             }
-            if (!d.tree.findPageInWrapper(sourcePage)) {
+            var sourceWrapper = d.getWrapper(sourcePage);
+            if (d.tree.index(sourceWrapper) === -1) {
                 console.warn("sourcePage must be added to the view to add new page.");
                 return;
             }
