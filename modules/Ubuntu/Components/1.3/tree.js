@@ -38,6 +38,7 @@ function Tree() {
     // Add newNode to the tree in the specified stem, with the specified parent node.
     // The root node should be added with parentNode null. All other nodes must be added
     // with a parentNode that is already in the tree.
+    //
     // Returns the index of the newly added node.
     this.add = function(stem, parentNode, newNode) {
         if (this.index(newNode) !== -1) {
@@ -66,6 +67,7 @@ function Tree() {
 
     // Chops all nodes with an index higher than the given node.
     // If, and only if, (inclusive) then also chop the given node.
+    //
     // Default values for node and inclusive are top() and true.
     // Returns a list that contains the nodes that were chopped.
     this.chop = function(node, inclusive) {
@@ -91,7 +93,10 @@ function Tree() {
 
     // If exactMatch, return the node on top of the specified stem.
     // If !exactMatch, return the node with the highest index for stem <= the returned node stem
+    //
+    // Default value for stem: 0
     // Default value for exactMatch: false
+    //
     // Returns null if no matching node was found.
     this.top = function(stem, exactMatch) {
         stem = typeof stem !== 'undefined' ? stem : 0
