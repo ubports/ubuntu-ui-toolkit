@@ -100,15 +100,17 @@ void UCStyleHints::decodeBinding(const QString &propertyPrefix, const QV4::Compi
         int column = -1;
 
         QQmlData *ddata = QQmlData::get(this);
+        if (ddata && ddata->outerContext) {
 #if QT_VERSION >= QT_VERSION_CHECK(5, 5, 0)
-        QUrl outerContextUrl(ddata->outerContext->url());
+            QUrl outerContextUrl(ddata->outerContext->url());
 #else
-        QUrl outerContextUrl(ddata->outerContext->url);
+            QUrl outerContextUrl(ddata->outerContext->url);
 #endif
-        if (ddata && ddata->outerContext && !outerContextUrl.isEmpty()) {
-            url = ddata->outerContext->url();
-            line = ddata->lineNumber;
-            column = ddata->columnNumber;
+            if (!outerContextUrl.isEmpty()) {
+                url = outerContextUrl;
+                line = ddata->lineNumber;
+                column = ddata->columnNumber;
+            }
         }
         m_expressions << Expression(propertyName, binding->value.compiledScriptIndex, expression, url, line, column);
         break;
