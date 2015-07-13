@@ -626,7 +626,7 @@ Ubuntu.Components.PageHeadState 1.3: State
     property Action backAction
     property Item contents
     property PageHeadConfiguration head
-Ubuntu.Components.Styles.PageHeadStyle 1.1: Item
+Ubuntu.Components.Styles.PageHeadStyle 1.3 1.1: Item
     property double contentHeight
     property string fontSize
     property int fontWeight
