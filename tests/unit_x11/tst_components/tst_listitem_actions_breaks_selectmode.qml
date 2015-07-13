@@ -112,13 +112,13 @@ MainView {
             wait(400);
         }
 
-        function test_long_press_after_swipe_breaks_selectmode_data() {
+        function test_long_press_after_swipe_breaks_selectmode_bug1468100_data() {
             return [
                 {tag: "leading", view: testView, dx: units.gu(10)},
                 {tag: "trailing", view: testView2, dx: -units.gu(10)},
             ]
         }
-        function test_long_press_after_swipe_breaks_selectmode(data) {
+        function test_long_press_after_swipe_breaks_selectmode_bug1468100(data) {
             var listItem = findChild(data.view, "listItem2");
             verify(listItem);
             swipe(listItem, centerOf(listItem).x, centerOf(listItem).y, data.dx, 0);
@@ -131,13 +131,13 @@ MainView {
             compare(listItem.selectMode, true, "selectMode not turned on");
         }
 
-        function test_long_press_on_other_after_swipe_breaks_selectmode_data() {
+        function test_long_press_on_other_after_swipe_breaks_selectmode_bug1468100_data() {
             return [
                 {tag: "leading", view: testView, dx: units.gu(10)},
                 {tag: "trailing", view: testView2, dx: -units.gu(10)},
             ]
         }
-        function test_long_press_on_other_after_swipe_breaks_selectmode(data) {
+        function test_long_press_on_other_after_swipe_breaks_selectmode_bug1468100(data) {
             var listItem = findChild(data.view, "listItem2");
             verify(listItem);
             var otherListItem = findChild(data.view, "listItem0");
