@@ -63,9 +63,7 @@ MainView {
         delegate: ListItem {
             objectName: "listItem" + index
             trailingActions: itemActions
-            onPressAndHold: {
-                selectMode = !selectMode
-            }
+            onPressAndHold: selectMode = !selectMode
 
             Label {
                 anchors.centerIn: parent
@@ -86,9 +84,7 @@ MainView {
         delegate: ListItem {
             objectName: "listItem" + index
             leadingActions: itemActions
-            onPressAndHold: {
-                selectMode = !selectMode
-            }
+            onPressAndHold: selectMode = !selectMode
 
             Label {
                 anchors.centerIn: parent
