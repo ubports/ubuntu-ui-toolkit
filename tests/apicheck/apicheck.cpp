@@ -1050,14 +1050,13 @@ int main(int argc, char *argv[])
                 QString signature(exports);
                 if (object.contains("namespace"))
                     signature = object.take("namespace").toString() + "." + signature;
-                if (object.contains("prototype"))
-                    signature += ": " + convertToId(object["prototype"].toString());
+                QString prototype(object.take("prototype").toString());
+                if (!prototype.isEmpty())
+                    signature += ": " + convertToId(prototype);
                 if (object.contains("isSingleton"))
                     signature += " singleton";
                 signature += "\n";
                 Q_FOREACH(const QString& fieldName, object.keys()) {
-                    if (fieldName == "exports" || fieldName == "prototype" || fieldName == "type")
-                        continue;
                     if (fieldName == "methods") {
                         QJsonArray values(object[fieldName].toArray());
                         Q_FOREACH(const QJsonValue& value, values) {
@@ -1078,18 +1077,15 @@ int main(int argc, char *argv[])
                         continue;
                     }
                     QJsonObject field(object[fieldName].toObject());
-                    if (!field.contains("type") && object["prototype"] != "Enum" && object["prototype"] != "Flag")
+                    if (!(field.contains("type") || prototype == "Enum" || prototype == "Flag"))
                         continue;
                     signature += "    ";
-                    if (object["prototype"] != "Enum" && object["prototype"] != "Flag") {
-                        if (object["defaultProperty"] == fieldName)
-                            signature += "default ";
-                        if (field.contains("isReadonly"))
-                            signature += "readonly ";
-                        signature += "property ";
-                    }
+                    if (object["defaultProperty"] == fieldName)
+                        signature += "default ";
+                    if (field.contains("isReadonly"))
+                        signature += "readonly ";
                     if (field.contains("type"))
-                        signature += QString(convertToId(field["type"].toString())) + " ";
+                        signature += "property " + QString(convertToId(field["type"].toString())) + " ";
                     signature += fieldName;
                     signature += "\n";
                 }
