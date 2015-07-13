@@ -193,16 +193,31 @@ PageTreeNode {
     function removePages(page) {
         // FIXME: This can be optimized by using tree.crop(page).
         // remove nodes which have page as ascendant
-        var node = d.tree.top();
-        if (!node) return; // empty tree
+//        var node = d.tree.top();
+//        if (!node) return; // empty tree
 
-        while (node && node.childOf(page)) {
-            d.popAndSetPageForColumn(node);
-            node = d.tree.top();
+//        while (node && node.childOf(page)) {
+//            d.tree.chop();
+//            d.setPageForColumn(node);
+//            node = d.tree.top();
+//        }
+//        if (node.object == page && node.object != multiColumnView.primaryPage) {
+//            d.tree.chop();
+//            d.setPageForColumn(node);
+//        }
+
+        print("============== removePages")
+        var nodeToRemove = d.tree.findPageInWrapper(page);
+        print("node to remove = "+nodeToRemove)
+        var removedNodes = d.tree.chop(nodeToRemove, page != multiColumnView.primaryPage);
+        print("going to remove "+removedNodes.length+" nodes.");
+        for (var i = removedNodes.length-1; i >= 0; i--) {
+            var node = removedNodes[i];
+            // FIXME TIM: Don't have to call it that often. optimize this.
+            d.setPageForColumn(node);
         }
-        if (node.object == page && node.object != multiColumnView.primaryPage) {
-            d.popAndSetPageForColumn(node);
-        }
+
+        print("DONE PURGING")
     }
 
     /*
@@ -274,6 +289,7 @@ PageTreeNode {
         }
 
         function addPageToColumn(column, sourcePage, page, properties) {
+            print("addPageToColumn("+column+", "+sourcePage+", "+page+")");
             if (column < 0) {
                 console.warn("Column must be >= 0.");
                 return;
@@ -295,8 +311,8 @@ PageTreeNode {
         }
 
         // node is a triplet of {page, column, parentPage}
-        function popAndSetPageForColumn(node) {
-            tree.chop();
+        function setPageForColumn(node) {
+//            tree.chop();
             var effectiveColumn = MathUtils.clamp(node.column, 0, d.columns - 1);
             var columnHolder = body.children[effectiveColumn];
             // is the page in a column?
