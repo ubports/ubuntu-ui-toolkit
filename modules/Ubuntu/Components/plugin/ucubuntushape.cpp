@@ -49,36 +49,8 @@ const float pressedFactor = 0.85f;
 
 // --- Scene graph shader ---
 
-// Factors used to know which screen-space derivatives must be used in the fragment shaders based on
-// the primary orientation and current orientation.
-static float dfdtFactors[2];
-
-static void orientationChanged(Qt::ScreenOrientation orientation)
-{
-    const quint8 landscapeMask = Qt::LandscapeOrientation | Qt::InvertedLandscapeOrientation;
-    const quint8 portraitMask = Qt::PortraitOrientation | Qt::InvertedPortraitOrientation;
-    if (QGuiApplication::primaryScreen()->primaryOrientation() & landscapeMask) {
-        const quint8 flippedMask =
-            Qt::InvertedLandscapeOrientation | Qt::InvertedPortraitOrientation;
-        dfdtFactors[0] = orientation & landscapeMask ? 0.0f : 1.0f;
-        dfdtFactors[1] = orientation & flippedMask ? -1.0f : 1.0f;
-    } else {
-        const quint8 flippedMask = Qt::InvertedPortraitOrientation | Qt::LandscapeOrientation;
-        dfdtFactors[0] = orientation & portraitMask ? 0.0f : 1.0f;
-        dfdtFactors[1] = orientation & flippedMask ? -1.0f : 1.0f;
-    }
-}
-
 ShapeShader::ShapeShader()
 {
-    static bool once = true;
-    if (once) {
-        const QScreen* primaryScreen = QGuiApplication::primaryScreen();
-        orientationChanged(primaryScreen->orientation());
-        QObject::connect(primaryScreen, &QScreen::orientationChanged, orientationChanged);
-        once = false;
-    }
-
     setShaderSourceFile(QOpenGLShader::Vertex, QStringLiteral(":/uc/shaders/shape.vert"));
     setShaderSourceFile(QOpenGLShader::Fragment, QStringLiteral(":/uc/shaders/shape.frag"));
 }
@@ -168,9 +140,11 @@ void ShapeShader::updateState(
 
     // Send screen-space derivative factors. Note that when rendering is redirected to a
     // ShaderEffectSource (FBO), dFdy() sign is flipped.
-    const bool flipped = dfdtFactors[0] != 1.0f && state.projectionMatrix()(1, 3) < 0.0f;
-    const QVector2D dfdtFactorsVector(dfdtFactors[0], flipped ? -dfdtFactors[1] : dfdtFactors[1]);
-    program()->setUniformValue(m_dfdtFactorsId, dfdtFactorsVector);
+    const float orientation = static_cast<float>(data->dfdtFactors & 0x4);
+    const float flip = static_cast<float>(data->dfdtFactors & 0x3) - 1.0f;
+    const bool flipped = orientation != 1.0f && state.projectionMatrix()(1, 3) < 0.0f;
+    const QVector2D dfdtFactors(orientation, flipped ? -flip : flip);
+    program()->setUniformValue(m_dfdtFactorsId, dfdtFactors);
 
     // Update QtQuick engine uniforms.
     if (state.isMatrixDirty()) {
@@ -272,6 +246,7 @@ const QSGGeometry::AttributeSet& ShapeNode::attributeSet()
 // --- QtQuick item ---
 
 static QHash<QOpenGLContext*, quint32> shapeTextureHash;
+static bool isPrimaryOrientationLandscape = false;
 
 const float implicitWidthGU = 8.0f;
 const float implicitHeightGU = 8.0f;
@@ -331,6 +306,17 @@ UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
     , m_sourceOpacity(255)
     , m_flags(Stretched)
 {
+    static bool once = true;
+    if (once) {
+        // Stored statically as the primary orientation is fixed and we don't support multiple
+        // screens for now.
+        if (QGuiApplication::primaryScreen()->primaryOrientation() &
+            (Qt::LandscapeOrientation | Qt::InvertedLandscapeOrientation)) {
+            isPrimaryOrientationLandscape = true;
+        }
+        once = false;
+    }
+
     setFlag(ItemHasContents);
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this,
                      SLOT(_q_gridUnitChanged()));
@@ -1235,6 +1221,25 @@ void UCUbuntuShape::updateMaterial(QSGNode* node, float radius, quint32 shapeTex
     const float end = 4.0f + radiusSizeOffset;
     materialData->distanceAAFactor = qMin(
         (radius / (end - start)) - (start / (end - start)), 1.0f) * 255.0f;
+
+    // Screen-space derivatives factors for fragment shaders depend on the primary orientation and
+    // content orientation. A flag indicating a 90° rotation around the primary orientation is
+    // stored on the 3rd bit of dfdtFactors, the flip factor is stored on the first 2 bits as 0 for
+    // -1 and as 2 for 1 (efficiently converted using: float(x & 0x3) - 1.0f).
+    const Qt::ScreenOrientation contentOrientation = window()->contentOrientation();
+    if (isPrimaryOrientationLandscape) {
+        const quint8 portraitMask = Qt::PortraitOrientation | Qt::InvertedPortraitOrientation;
+        const quint8 flipMask = Qt::InvertedLandscapeOrientation | Qt::InvertedPortraitOrientation;
+        quint8 factors = contentOrientation & portraitMask ? 0x4 : 0x0;
+        factors |= contentOrientation & flipMask ? 0x0 : 0x2;
+        materialData->dfdtFactors = factors;
+    } else {
+        const quint8 landscapeMask = Qt::LandscapeOrientation | Qt::InvertedLandscapeOrientation;
+        const quint8 flipMask = Qt::InvertedPortraitOrientation | Qt::LandscapeOrientation;
+        quint8 factors = contentOrientation & landscapeMask ? 0x4 : 0x0;
+        factors |= contentOrientation & flipMask ? 0x0 : 0x2;
+        materialData->dfdtFactors = factors;
+    }
 
     // When the radius is equal to radiusSizeOffset (which means radius size is 0), no aspect is
     // flagged so that a dedicated (statically flow controlled) shaved off shader can be used for

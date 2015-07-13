@@ -81,8 +81,13 @@ QString UCStateSaverAttachedPrivate::absoluteId(const QString &id)
 {
     QQmlContext *attacheeContext = qmlContext(m_attachee);
     QQmlContextData *cdata = QQmlContextData::get(attacheeContext);
+#if QT_VERSION >= QT_VERSION_CHECK(5, 5, 0)
+    QUrl url(cdata->url());
+#else
+    QUrl url(cdata->url);
+#endif
     QQmlData *ddata = QQmlData::get(m_attachee);
-    QString path = cdata->url.path().replace('/', '_') + ':'
+    QString path = url.path().replace('/', '_') + ':'
             + QString::number(ddata->lineNumber) + ':'
             + QString::number(ddata->columnNumber) + ':' + id;
     QObject *parent = m_attachee->parent();

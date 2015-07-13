@@ -58,6 +58,11 @@ Components.StyledItem {
     onHeightChanged: {
         internal.checkFlickableMargins();
         internal.movementEnded();
+        if (header.config.visible) {
+            header.show();
+        } else {
+            header.hide();
+        }
     }
 
     // with PageHeadConfiguration 1.2, always be visible.
@@ -343,6 +348,5 @@ Components.StyledItem {
     }
 
     theme.version: Components.Ubuntu.toolkitVersion
-    style: header.useDeprecatedToolbar ? theme.createStyleComponent("HeaderStyle.qml", header) :
-                                         theme.createStyleComponent("PageHeadStyle.qml", header)
+    styleName: header.useDeprecatedToolbar ? "HeaderStyle" : "PageHeadStyle"
 }

@@ -185,7 +185,6 @@ UCListItemPrivate::UCListItemPrivate()
     , suppressClick(false)
     , ready(false)
     , customColor(false)
-    , customStyle(false)
     , xAxisMoveThresholdGU(DEFAULT_SWIPE_THRESHOLD_GU)
     , color(Qt::transparent)
     , highlightColor(Qt::transparent)
@@ -196,7 +195,6 @@ UCListItemPrivate::UCListItemPrivate()
     , trailingActions(0)
     , mainAction(0)
 {
-    styleLoadingMethod = DelayTillExplicitRequested;
 }
 UCListItemPrivate::~UCListItemPrivate()
 {
@@ -229,6 +227,7 @@ void UCListItemPrivate::init()
     // watch grid unit size change and set implicit size
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_updateSize()));
     _q_updateSize();
+    setStyleName("ListItemStyle");
 }
 
 void UCListItemPrivate::_q_themeChanged()
@@ -260,12 +259,6 @@ void UCListItemPrivate::postThemeChanged()
     Q_Q(UCListItem);
     // update divider colors
     divider->paletteChanged();
-    // if not using custom style, reload style component from theme
-    if (!customStyle && componentComplete) {
-        // use style setter but reset custom style flag
-        setStyle(getTheme()->createStyleComponent("ListItemStyle.qml", q));
-        customStyle = false;
-    }
 
     // update colors, panels
     if (!customColor) {
@@ -315,44 +308,35 @@ void UCListItemPrivate::_q_syncDragMode()
     Q_EMIT q->dragModeChanged();
 }
 
-/*!
- * \qmlproperty Component ListItem::style
- * Holds the style of the component defining the components visualizing the leading/
- * trailing actions, selection and dragging mode handlers as well as different
- * animations. The component does not assume any visuals present in the style,
- * and will load its content only when requested.
- * \sa ListItemStyle
- */
 void UCListItemPrivate::preStyleChanged()
 {
     snapOut();
     UCStyledItemBasePrivate::preStyleChanged();
-    // delete style if it was non-custom style
-    if (!customStyle && styleComponent) {
-        styleComponent->deleteLater();
-        styleComponent = 0;
-    }
-    customStyle = true;
 }
 
 // creates the style item, with altered default value of the animatePanels style property
 // the property is turned on after the panel initialization.
-void UCListItemPrivate::loadStyleItem(bool animated)
+bool UCListItemPrivate::loadStyleItem(bool animated)
 {
-    if (!styleComponent) {
-        // try to create the style if possible
-        postThemeChanged();
+    // the style should be loaded only if one of the condition is satisfied
+    if (!swiped && !selectMode() && !dragMode()) {
+        return false;
     }
-    UCStyledItemBasePrivate::loadStyleItem(animated);
+
+    if (!UCStyledItemBasePrivate::loadStyleItem(animated)) {
+        return false;
+    }
+
     UCListItemStyle *myStyle = qobject_cast<UCListItemStyle*>(styleItem);
     if (!myStyle) {
         // the style is not derived from ListItemStyle, clean
         preStyleChanged();
-        return;
+        return false;
     }
     // bring the panels foreground
     styleItem->setZ(0);
     listItemStyle()->setAnimatePanels(true);
+    return true;
 }
 
 // called when units size changes
@@ -885,6 +869,13 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  * \endqml
  *
  * \sa ViewItems::dragMode, ViewItems::dragUpdated
+ *
+ * \section2 Note on styling
+ * ListItem's styling differs from the other component sstyling, as ListItem loads
+ * the style only when either of the leadin/trailing panels are swiped, or when the
+ * item enters in select- or drag mode. The component does not assume any visuals
+ * to be present in the style.
+ * \sa ListItemStyle
  */
 
 /*!
@@ -1134,6 +1125,7 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
                 d->parentAttached->disableInteractive(this, true);
             }
             d->setSwiped(true);
+            d->loadStyleItem();
         }
     }
 

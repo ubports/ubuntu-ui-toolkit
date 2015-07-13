@@ -78,7 +78,7 @@
  * \section2 Naming conventions
  * With few exception, each toolkit component is having StyledItem as its base
  * component. The component is aimed to be the base component for all styled
- * elements in the toolkit. Modules providing additional  components to UI Toolkit
+ * elements in the toolkit. Modules providing additional components to UI Toolkit
  * can also use this component as base, especially if they want to provide styling
  * capabilities.
  *
@@ -93,7 +93,7 @@
  * AbstractButton {
  *     id: button
  *     // [...]
- *     style: theme.createStyleComponent("ButtonStyle.qml", button)
+ *     styleName: "ButtonStyle"
  * }
  * \endqml
  * Developers can override the style in two ways, depending on how they want to style
@@ -127,7 +127,7 @@
  * A typical example of such a style API is the PullToRefresh component's style:
  * \snippet Styles/1.2/PullToRefreshStyle.qml 0
  * The default style implementation can be found under Ubuntu.Components.Themes.Ambiance
- * theme \l {http://bazaar.launchpad.net/~ubuntu-sdk-team/ubuntu-ui-toolkit/trunk/view/head:/modules/Ubuntu/Components/Themes/Ambiance/PullToRefreshStyle.qml}
+ * theme \l {http://bazaar.launchpad.net/~ubuntu-sdk-team/ubuntu-ui-toolkit/trunk/view/head:/modules/Ubuntu/Components/Themes/Ambiance/1.3/PullToRefreshStyle.qml}
  * {PullToRefreshStyle.qml}.
  *
  * Beside these, component styles may provide default values for colors, fonts, widths,
@@ -141,15 +141,17 @@
  *
  * \section3 Override with a different style from the theme
  * Returning back to the ways to override a component's style, overriding by using a different
- * style from the theme can simply be done by calling the theme's \l{Theme::createStyleComponent}
- * {createStyleComponent()} function with the alternative style document name as follows:
+ * style from the theme can simply be done by assigning the document name to the \l {StyledItem::styleName}
+ * {StyledItem.styleName} property as follows:
  * \qml
  * Button {
  *     id: button
- *     style: theme.createStyleComponent("SquaryButtonStyle.qml", button)
+ *     styleName: "SquaryButtonStyle"
  * }
  * \endqml
- * \note This assumes that the \c SquaryButtonStyle.qml document is present in the theme.
+ * \note The document extension doesn't have to be specified, the style creation will automatically
+ * append the .qml extension to it. This kind of style override assumes that the \c SquaryButtonStyle.qml
+ * document is present in the theme.
  * This type of component styling makes sure the style will always have theme specific implementation
  * or coloring, however it also requires the style document to be present in all the themes
  * used by the application.
@@ -178,6 +180,10 @@
  *     }
  * }
  * \endqml
+ * \note Specifying a component for the \l {StyledItem::style}{StyledItem.style} has precedence
+ * over the \l {StyledItem::styleName}{StyledItem::styleName}. When both set, the stlke specified
+ * \c style property will be used. When this property is set to undefined or null, the style specified
+ * in \c styleName will be used. Obviously, when both properties are invalid, no style will be used.
  */
 
 /*!

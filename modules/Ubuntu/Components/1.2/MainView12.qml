@@ -154,10 +154,13 @@ MainViewBase {
           \internal
           Used by PageStack. This property only exists in MainView 1.2 and later.
          */
-        readonly property bool animateHeader: headerItem.__styleInstance &&
-                                              headerItem.__styleInstance.hasOwnProperty("animateIn") &&
-                                              headerItem.__styleInstance.hasOwnProperty("animateOut") &&
-                                              headerItem.__styleInstance.hasOwnProperty("animateInFinished") &&
-                                              headerItem.__styleInstance.hasOwnProperty("animateOutFinished")
+        readonly property bool animateHeader: false
+
+        // FIXME: Currently disabled to prevent bug 1461729
+//        readonly property bool animateHeader: headerItem.__styleInstance &&
+//                                              headerItem.__styleInstance.hasOwnProperty("animateIn") &&
+//                                              headerItem.__styleInstance.hasOwnProperty("animateOut") &&
+//                                              headerItem.__styleInstance.hasOwnProperty("animateInFinished") &&
+//                                              headerItem.__styleInstance.hasOwnProperty("animateOutFinished")
     }
 }

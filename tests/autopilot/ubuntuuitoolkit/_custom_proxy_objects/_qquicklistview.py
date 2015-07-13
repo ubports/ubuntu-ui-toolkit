@@ -37,7 +37,8 @@ class QQuickListView(_flickable.QQuickFlickable):
 
         It swipes the element into view if it's center is not visible.
 
-        :parameter objectName: The objectName property of the element to click.
+        :parameter object_name: The objectName property of the element to
+            click.
         :parameter direction: The direction where the element is, it can be
             either 'above' or 'below'. Default value is None, which means we
             don't know where the object is and we will need to search the full

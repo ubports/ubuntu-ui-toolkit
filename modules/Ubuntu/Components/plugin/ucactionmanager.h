@@ -27,8 +27,8 @@ class UCActionManager : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
     Q_INTERFACES(QQmlParserStatus)
-    Q_PROPERTY(QQmlListProperty<QObject> actions READ actions)
-    Q_PROPERTY(QQmlListProperty<QObject> localContexts READ localContexts)
+    Q_PROPERTY(QQmlListProperty<UCAction> actions READ actions)
+    Q_PROPERTY(QQmlListProperty<UCActionContext> localContexts READ localContexts)
     Q_PROPERTY(UCActionContext *globalContext READ globalContext CONSTANT)
     Q_CLASSINFO("DefaultProperty", "actions")
 public:
@@ -37,27 +37,27 @@ public:
     void classBegin() {}
     void componentComplete();
 
-    QQmlListProperty<QObject> actions();
-    QQmlListProperty<QObject> localContexts();
+    QQmlListProperty<UCAction> actions();
+    QQmlListProperty<UCActionContext> localContexts();
     UCActionContext *globalContext() const;
 
 Q_SIGNALS:
     void quit();
 
 public Q_SLOTS:
-    void addAction(QObject *action);
-    void removeAction(QObject *action);
-    void addLocalContext(QObject *context);
-    void removeLocalContext(QObject *context);
+    void addAction(UCAction *action);
+    void removeAction(UCAction *action);
+    void addLocalContext(UCActionContext *context);
+    void removeLocalContext(UCActionContext *context);
 
 private:
-    static void contextAppend(QQmlListProperty<QObject> *list, QObject *context);
-    static void contextClear(QQmlListProperty<QObject> *list);
-    static int contextCount(QQmlListProperty<QObject> *list);
+    static void contextAppend(QQmlListProperty<UCActionContext> *list, UCActionContext *context);
+    static void contextClear(QQmlListProperty<UCActionContext> *list);
+    static int contextCount(QQmlListProperty<UCActionContext> *list);
 
-    static void actionAppend(QQmlListProperty<QObject> *list, QObject *action);
-    static void actionClear(QQmlListProperty<QObject> *list);
-    static int actionCount(QQmlListProperty<QObject> *list);
+    static void actionAppend(QQmlListProperty<UCAction> *list, UCAction *action);
+    static void actionClear(QQmlListProperty<UCAction> *list);
+    static int actionCount(QQmlListProperty<UCAction> *list);
 };
 
 #endif // UCACTIONMANAGER_H
