@@ -22,6 +22,7 @@ import Ubuntu.Components 1.3
     \inqmlmodule Ubuntu.Components.ListItems 1.0
     \ingroup ubuntu-listitems
     \brief Narrow line used as a divider between ListItems.
+    \note \b{The component is deprecated. Use ListItem component's divider property instead.}
 
     ListItems will usually include this line at the bottom of the item
     to give a visually pleasing list of items. But a divider line can

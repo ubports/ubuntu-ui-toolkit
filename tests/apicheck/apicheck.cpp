@@ -115,6 +115,11 @@ static QMap<QString, const QQmlType * > qmlTypesByCompositeName;
 
 static QHash<QByteArray, QByteArray> cppToId;
 
+bool typeNameSort(const QQmlType* type1, const QQmlType* type2)
+{
+    return type1->qmlTypeName() > type2->qmlTypeName();
+}
+
 /* Takes a C++ type name, such as Qt::LayoutDirection or QString and
    maps it to how it should appear in the description file.
 
@@ -131,7 +136,7 @@ QByteArray convertToId(const QString &cppName)
     }
 
     QList<const QQmlType*>types(qmlTypesByCppName[qPrintable(cppName)].toList());
-    std::sort(types.begin(), types.end());
+    std::sort(types.begin(), types.end(), typeNameSort);
     // Strip internal _QMLTYPE_xy suffix
     qmlType = qmlType.split("_")[0];
     if (!types.isEmpty())
@@ -644,7 +649,6 @@ private:
         object["prototype"] = e.isFlag() ? "Flag" : "Enum";
         object["namespace"] = relocatableModuleUri;
 
-        QList<QPair<QString, QString> > namesValues;
         for (int index = 0; index < e.keyCount(); ++index) {
             object[e.key(index)] = QString::number(e.value(index));
         }
@@ -795,7 +799,6 @@ int main(int argc, char *argv[])
     QSet<const QMetaObject *> uncreatableMetas;
     QSet<const QMetaObject *> singletonMetas;
     QSet<const QMetaObject *> defaultReachable = collectReachableMetaObjects(&engine, uncreatableMetas, singletonMetas);
-    QList<QQmlType *> defaultTypes = QQmlMetaType::qmlTypes();
 
     // add some otherwise unreachable QMetaObjects
     defaultReachable.insert(&QQuickMouseEvent::staticMetaObject);
@@ -934,6 +937,7 @@ int main(int argc, char *argv[])
             }
         }
 
+        QList<QQmlType *> defaultTypes = QQmlMetaType::qmlTypes();
         QSet<const QMetaObject *> candidates = collectReachableMetaObjects(&engine, uncreatableMetas, singletonMetas, defaultTypes);
         candidates.subtract(defaultReachable);
 

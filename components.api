@@ -8,7 +8,7 @@ Ubuntu.Components.AbstractButton 1.3: ActionItem
     signal clicked()
     signal pressAndHold()
     property bool pressed
-Ubuntu.Components.Action 1.0 0.1: QtObject
+Ubuntu.Components.Action 1.3 1.0 0.1: QtObject
     property string description
     property bool enabled
     property string iconName
@@ -20,6 +20,7 @@ Ubuntu.Components.Action 1.0 0.1: QtObject
     function trigger()
     property string name
     property Type parameterType
+    property var shortcut
     property string text
     property bool visible
 Ubuntu.Components.Action.Type: Enum
@@ -33,10 +34,10 @@ Ubuntu.Components.ActionBar 1.3: StyledItem
     readonly property Action actions
     property int numberOfSlots
 Ubuntu.Components.ActionContext 1.0 0.1: QtObject
-    default readonly property QtObject actions
+    default readonly property Action actions
     property bool active
-    function addAction(QtObject action)
-    function removeAction(QtObject action)
+    function addAction(Action action)
+    function removeAction(Action action)
 Ubuntu.Components.ActionItem 1.0 0.1: StyledItem
     property Action action
     property string iconName
@@ -58,14 +59,14 @@ Ubuntu.Components.ActionList 1.3: QtObject
     readonly property Action actions
     default readonly property Action children
 Ubuntu.Components.ActionManager 1.0 0.1: QtObject
-    default readonly property QtObject actions
+    default readonly property Action actions
     readonly property ActionContext globalContext
-    readonly property QtObject localContexts
+    readonly property ActionContext localContexts
     signal quit()
-    function addAction(QtObject action)
-    function removeAction(QtObject action)
-    function addLocalContext(QtObject context)
-    function removeLocalContext(QtObject context)
+    function addAction(Action action)
+    function removeAction(Action action)
+    function addLocalContext(ActionContext context)
+    function removeLocalContext(ActionContext context)
 Ubuntu.Components.Popups.ActionSelectionPopover 1.0 0.1: Popover
     property var actions
     property Component delegate
@@ -580,7 +581,7 @@ Ubuntu.Components.OrientationHelper 1.3: Item
     readonly property bool rotating
     property bool transitionEnabled
 Ubuntu.Components.Page 1.0 0.1: PageTreeNode
-    readonly property QtObject actions
+    readonly property Action actions
     property Flickable flickable
     property string title
     property Item tools
@@ -648,9 +649,6 @@ Ubuntu.Components.PageStack 1.3: PageTreeNode
     function var push(var page, var properties)
     function var pop()
     function var clear()
-Palette: QtObject
-    property PaletteValues normal
-    property PaletteValues selected
 Ubuntu.Components.Themes.Palette 0.1: QtObject
     property PaletteValues normal
     property PaletteValues selected
