@@ -30,13 +30,9 @@ function Tree() {
     var size = 0;
 
     // Return the index of the given node.
-    // Throws an exception when the node was not found.
+    // Returns -1 the node was not found.
     this.index = function(node) {
-        var i = nodes.indexOf(node);
-//        if (i === -1) {
-//            throw "Specified node not found in tree.";
-//        }
-        return i;
+        return nodes.indexOf(node);
     }
 
     // Add root node in stem 0 with no parent node.
@@ -53,11 +49,19 @@ function Tree() {
             throw "Cannot add the same node twice to a tree.";
         }
         var parentIndex = nodes.indexOf(parentNode);
-        if (parentIndex === -1 && size !== 0) {
-            throw "Cannot add non-root node if parentNode is not in the tree.";
-        }
-        if (parentNode === null && size !== 0) {
-            throw "Only root node has parent null."
+        if (size === 0) {
+            // adding root node
+            if (parentNode !== null) {
+                throw "Root node must have parentNode null.";
+            }
+        } else {
+            // adding non-root node
+            if (parentNode === null) {
+                throw "Only root node has parent null."
+            }
+            if (parentIndex === -1) {
+                throw "Cannot add non-root node if parentNode is not in the tree.";
+            }
         }
 
         nodes.push(newNode);

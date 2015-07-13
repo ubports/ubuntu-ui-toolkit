@@ -195,7 +195,6 @@ PageTreeNode {
         var removedNodes = d.tree.chop(nodeToRemove, page != multiColumnView.primaryPage);
         for (var i = removedNodes.length-1; i >= 0; i--) {
             var node = removedNodes[i];
-            // FIXME TIM: Don't have to call it that often. optimize this.
             d.updatePageForColumn(node.column);
         }
     }
@@ -308,34 +307,13 @@ PageTreeNode {
             return wrapper.object;
         }
 
-        // node is a triplet of {page, column, parentPage}
-        // page is a page that was removed.
-//        function setPageForColumn(node) {
-////            tree.chop();
-//            var effectiveColumn = MathUtils.clamp(node.column, 0, d.columns - 1);
-//            var columnHolder = body.children[effectiveColumn];
-//            // is the page in a column?
-//            if (node == columnHolder.pageWrapper) {
-//                // detach page from column
-//                columnHolder.detachCurrentPage();
-//            }
-//            node.parent = null;
-//            var prevPage = tree.top(effectiveColumn, effectiveColumn < d.columns - 1);
-//            if (prevPage) {
-//                columnHolder.attachPage(prevPage);
-//            }
-//            if (node.canDestroy) {
-//                node.destroyObject();
-//            }
-//        }
-
         // update the page for the specified column
         function updatePageForColumn(column) {
             var effectiveColumn = MathUtils.clamp(column, 0, d.columns - 1);
             var columnHolder = body.children[effectiveColumn];
-
             var newWrapper = tree.top(effectiveColumn, effectiveColumn < d.columns - 1);
             var oldWrapper = columnHolder.pageWrapper;
+
             if (newWrapper != oldWrapper) {
                 columnHolder.detachCurrentPage();
                 oldWrapper.parent = null;
