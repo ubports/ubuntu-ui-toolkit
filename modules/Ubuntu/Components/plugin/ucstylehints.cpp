@@ -101,12 +101,12 @@ void UCStyleHints::decodeBinding(const QString &propertyPrefix, const QV4::Compi
 
         QQmlData *ddata = QQmlData::get(this);
 #if QT_VERSION >= QT_VERSION_CHECK(5, 5, 0)
-        if (ddata && ddata->outerContext && !ddata->outerContext->url().isEmpty()) {
-            url = ddata->outerContext->url();
+        QUrl outerContextUrl(ddata->outerContext->url());
 #else
-        if (ddata && ddata->outerContext && !ddata->outerContext->url.isEmpty()) {
-            url = ddata->outerContext->url;
+        QUrl outerContextUrl(ddata->outerContext->url);
 #endif
+        if (ddata && ddata->outerContext && !outerContextUrl.isEmpty()) {
+            url = ddata->outerContext->url();
             line = ddata->lineNumber;
             column = ddata->columnNumber;
         }
