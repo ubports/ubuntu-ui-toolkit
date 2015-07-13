@@ -18,6 +18,8 @@ import QtQuick 2.4
 import Ubuntu.Components.Themes.Ambiance 1.3 as Ambiance
 
 Ambiance.ListItemStyle {
-    trailingPanelColor: Qt.lighter(theme.palette.normal.background, 1.4)
+    // 20% lighter that background color
+    trailingPanelColor: Qt.lighter(theme.palette.normal.background, 1.2)
+    // 40% lighter than foreground color
     trailingForegroundColor: Qt.lighter(theme.palette.normal.foreground, 1.4)
 }
