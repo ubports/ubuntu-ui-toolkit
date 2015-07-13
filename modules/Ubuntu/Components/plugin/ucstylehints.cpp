@@ -100,10 +100,11 @@ void UCStyleHints::decodeBinding(const QString &propertyPrefix, const QV4::Compi
         int column = -1;
 
         QQmlData *ddata = QQmlData::get(this);
-        if (ddata && ddata->outerContext && !ddata->outerContext->url.isEmpty()) {
 #if QT_VERSION >= QT_VERSION_CHECK(5, 5, 0)
+        if (ddata && ddata->outerContext && !ddata->outerContext->url().isEmpty()) {
             url = ddata->outerContext->url();
 #else
+        if (ddata && ddata->outerContext && !ddata->outerContext->url.isEmpty()) {
             url = ddata->outerContext->url;
 #endif
             line = ddata->lineNumber;
