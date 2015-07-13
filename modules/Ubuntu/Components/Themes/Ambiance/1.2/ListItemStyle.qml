@@ -27,6 +27,14 @@ Styles.ListItemStyle {
      */
     readonly property int listItemIndex: index
 
+    /*
+     * Coloring properties
+     */
+    property color leadingPanelColor: UbuntuColors.red
+    property color trailingPanelColor: "white"
+    property color leadingForegroundColor: "white"
+    property color trailingForegroundColor: theme.palette.normal.foreground
+
     // anchoring
     anchors {
         // do not anchor fill
@@ -50,7 +58,7 @@ Styles.ListItemStyle {
             readonly property real panelWidth: actionsRow.width
 
             // FIXME use theme palette colors once stabilized
-            color: leading ? UbuntuColors.red : "white"
+            color: leading ? leadingPanelColor : trailingPanelColor
             anchors.fill: parent
             width: parent ? parent.width : 0
 
@@ -119,7 +127,7 @@ Styles.ListItemStyle {
                         height: width
                         name: action.iconName
                         // FIXME use theme palette colors once stabilized
-                        color: leading ? "white" : UbuntuColors.darkGrey
+                        color: leading ? leadingForegroundColor : trailingForegroundColor
                         anchors.centerIn: parent
                     }
                 }
