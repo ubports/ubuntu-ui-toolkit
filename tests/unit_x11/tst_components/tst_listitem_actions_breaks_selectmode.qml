@@ -20,52 +20,78 @@ import QtTest 1.0
 import Ubuntu.Test 1.0
 
 MainView {
+    id: main
     width: units.gu(40)
     height: units.gu(71)
 
+    ListModel {
+        id: testModel
+        ListElement {
+            text: "a"
+        }
+        ListElement {
+            text: "b"
+        }
+        ListElement {
+            text: "c"
+        }
+        ListElement {
+            text: "d"
+        }
+        ListElement {
+            text: "e"
+        }
+    }
+    ListItemActions {
+        id: itemActions
+        actions: [
+            Action {
+                iconName: "edit"
+            }
+        ]
+    }
 
     ListView {
-        id: listView
+        id: testView
         anchors {
-            fill: parent
+            left: parent.left
+            right: parent.right
         }
-
-        model: ListModel {
-            ListElement {
-                text: "a"
-            }
-            ListElement {
-                text: "b"
-            }
-            ListElement {
-                text: "c"
-            }
-            ListElement {
-                text: "d"
-            }
-            ListElement {
-                text: "e"
-            }
-        }
-
+        height: main.height / 2
+        clip: true
+        model: testModel
         delegate: ListItem {
             objectName: "listItem" + index
-            trailingActions: ListItemActions {
-                actions: [
-                    Action {
-                        iconName: "edit"
-                    }
-                ]
-            }
-
+            trailingActions: itemActions
             onPressAndHold: {
-                ListView.view.ViewItems.selectMode = !ListView.view.ViewItems.selectMode
+                selectMode = !selectMode
             }
 
             Label {
-                anchors {
-                    centerIn: parent
-                }
+                anchors.centerIn: parent
+                text: model.text
+            }
+        }
+    }
+    ListView {
+        id: testView2
+        anchors {
+            top: testView.bottom
+            left: parent.left
+            right: parent.right
+        }
+        height: main.height / 2
+        clip: true
+        model: testModel
+        delegate: ListItem {
+            objectName: "listItem" + index
+            leadingActions: itemActions
+            onPressAndHold: {
+                selectMode = !selectMode
+            }
+
+            Label {
+                anchors.centerIn: parent
                 text: model.text
             }
         }
@@ -81,32 +107,47 @@ MainView {
         }
 
         function cleanup() {
-            listView.ViewItems.selectMode = false;
+            testView.ViewItems.selectMode = false;
+            testView2.ViewItems.selectMode = false;
             wait(400);
         }
 
-        function test_long_press_after_swipe_breaks_selectmode() {
-            var listItem = findChild(listView, "listItem2");
+        function test_long_press_after_swipe_breaks_selectmode_data() {
+            return [
+                {tag: "leading", view: testView, dx: units.gu(10)},
+                {tag: "trailing", view: testView2, dx: -units.gu(10)},
+            ]
+        }
+        function test_long_press_after_swipe_breaks_selectmode(data) {
+            var listItem = findChild(data.view, "listItem2");
             verify(listItem);
-            swipe(listItem, centerOf(listItem).x, centerOf(listItem).y, units.gu(5), 0);
+            swipe(listItem, centerOf(listItem).x, centerOf(listItem).y, data.dx, 0);
             wait(200);
 
             // press and hold to activate select mode
             mouseLongPress(listItem, centerOf(listItem).x, centerOf(listItem).y);
+            mouseRelease(listItem, centerOf(listItem).x, centerOf(listItem).y);
             wait(200);
             compare(listItem.selectMode, true, "selectMode not turned on");
         }
 
-        function test_long_press_on_other_after_swipe_breaks_selectmode() {
-            var listItem = findChild(listView, "listItem2");
+        function test_long_press_on_other_after_swipe_breaks_selectmode_data() {
+            return [
+                {tag: "leading", view: testView, dx: units.gu(10)},
+                {tag: "trailing", view: testView2, dx: -units.gu(10)},
+            ]
+        }
+        function test_long_press_on_other_after_swipe_breaks_selectmode(data) {
+            var listItem = findChild(data.view, "listItem2");
             verify(listItem);
-            var otherListItem = findChild(listView, "listItem0");
+            var otherListItem = findChild(data.view, "listItem0");
             verify(otherListItem);
-            swipe(listItem, centerOf(listItem).x, centerOf(listItem).y, units.gu(5), 0);
+            swipe(listItem, centerOf(listItem).x, centerOf(listItem).y, data.dx, 0);
             wait(200);
 
             // long press on otherListItem
             mouseLongPress(otherListItem, centerOf(otherListItem).x, centerOf(otherListItem).y);
+            mouseRelease(otherListItem, centerOf(otherListItem).x, centerOf(otherListItem).y);
             wait(200);
             compare(listItem.selectMode, true, "selectMode not turned on on swiped");
         }
