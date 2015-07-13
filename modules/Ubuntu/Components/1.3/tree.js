@@ -65,8 +65,8 @@ function Tree() {
     }
 
     // Chops all nodes with an index higher than the given node.
-    //  If, and only if, (inclusive) then also chop the given node.
-    // Default values for node or inclusive, top() and true.
+    // If, and only if, (inclusive) then also chop the given node.
+    // Default values for node and inclusive are top() and true.
     // Returns a list that contains the nodes that were chopped.
     this.chop = function(node, inclusive) {
         node = typeof node !== 'undefined' ? node : this.top();
