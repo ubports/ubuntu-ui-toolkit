@@ -35,12 +35,9 @@ function Tree() {
         return nodes.indexOf(node);
     }
 
-    // Add root node in stem 0 with no parent node.
-    this.addRoot = function(node) {
-        return this.add(0, null, node);
-    }
-
     // Add newNode to the tree in the specified stem, with the specified parent node.
+    // When adding the root node, add parentNode null. All other nodes must be added
+    // with a parentNode that is already in the tree.
     // Default value for stem: 0.
     // Default value for parentNode: null.
     // Returns the index of the newly added node.
