@@ -214,7 +214,8 @@ PageTreeNode {
                                     ? pageStack.__propagated.header.__styleInstance
                                     : null
 
-        property bool animateHeader: pageStack.__propagated.hasOwnProperty("animateHeader") &&
+        property bool animateHeader: pageStack.__propagated &&
+                                     pageStack.__propagated.hasOwnProperty("animateHeader") &&
                                      pageStack.__propagated.animateHeader
 
         // Call this function before pushing or popping to ensure correct order
