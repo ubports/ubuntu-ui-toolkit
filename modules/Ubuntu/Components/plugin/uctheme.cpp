@@ -354,7 +354,7 @@ UCTheme::UCTheme(bool defaultStyle, QObject *parent)
     : QObject(parent)
     , m_palette(NULL)
     , m_engine(NULL)
-    , m_version(LATEST_UITK_VERSION)
+    , m_version(BUILD_VERSION(1, 2))
     , m_defaultStyle(defaultStyle)
 {
     init();
