@@ -52,7 +52,7 @@ function Tree() {
         } else {
             // adding non-root node
             if (parentNode === null) {
-                throw "Only root node has parent null."
+                throw "Only root node has parentNode null."
             }
             if (parentIndex === -1) {
                 throw "Cannot add non-root node if parentNode is not in the tree.";
