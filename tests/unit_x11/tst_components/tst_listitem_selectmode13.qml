@@ -79,8 +79,7 @@ MainView {
     UbuntuTestCase {
         when: windowShown
 
-        // bug lp:#1469471
-        function test_select_toggle_breaks_property_binding() {
+        function test_select_toggle_breaks_property_binding_bug1469471() {
             listView.ViewItems.selectMode = true;
             wait(400);
 
