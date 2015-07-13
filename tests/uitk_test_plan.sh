@@ -16,7 +16,7 @@
 # Author: Zoltán Balogh <zoltan.baloghn@canonical.com>
 
 LAZY=true
-SERIALNUMBER=01d3136a8a19434a
+SERIALNUMBER=086e443edf51b915
 RESET=false
 COMISSION=false
 DONOTRUNTESTS=false
@@ -45,7 +45,7 @@ declare -a TEST_SUITE=(
     " sudoku_app"
     " online_accounts_ui"
 # comment out if calculator AP:s broken
-#    " ubuntu_calculator_app"
+    " ubuntu_calculator_app"
     " -p mediaplayer-app-autopilot mediaplayer_app"
     " dropping_letters_app"
     " shorts_app"
@@ -181,7 +181,7 @@ function device_comission {
     # Required for at least rtm-14.09/mako, phablet-click-test-setup fails otherwise and we don't need terminal
     adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S click unregister com.ubuntu.terminal 2>&1|grep -v password"
     # Enable if calculator AP:s broken, to prevent phablet-click-test-setup trying to check out its tests.
-    adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S click unregister com.ubuntu.calculator 2>&1|grep -v password"
+    #adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S click unregister com.ubuntu.calculator 2>&1|grep -v password"
     echo -e "phablet-click-test-setup  \e[31m${DISTRO} ${SERIES}\e[0m"
     phablet-click-test-setup -s ${SERIALNUMBER} --distribution=${DISTRO} --series=${SERIES} 2>&1 || fatal_failure "phablet-click-test-setup has failed" 
     echo "Sleep after phablet-click-test-setup";
