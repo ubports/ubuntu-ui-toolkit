@@ -57,7 +57,6 @@ Styles.ListItemStyle {
             objectName: "ListItemPanel" + (leading ? "Leading" : "Trailing")
             readonly property real panelWidth: actionsRow.width
 
-            // FIXME use theme palette colors once stabilized
             color: leading ? leadingPanelColor : trailingPanelColor
             anchors.fill: parent
             width: parent ? parent.width : 0
@@ -126,7 +125,6 @@ Styles.ListItemStyle {
                         width: units.gu(2.5)
                         height: width
                         name: action.iconName
-                        // FIXME use theme palette colors once stabilized
                         color: leading ? leadingForegroundColor : trailingForegroundColor
                         anchors.centerIn: parent
                     }
