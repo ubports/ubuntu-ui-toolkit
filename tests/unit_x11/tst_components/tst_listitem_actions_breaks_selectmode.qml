@@ -53,7 +53,7 @@ MainView {
             trailingActions: ListItemActions {
                 actions: [
                     Action {
-                        iconName: "action"
+                        iconName: "edit"
                     }
                 ]
             }
@@ -78,6 +78,11 @@ MainView {
         // so Repeater has time to create the panel actions in style
         function swipe(item, x, y, dx, dy) {
             flick(item, x, y, dx, dy, 0, 0, undefined, undefined, 100);
+        }
+
+        function cleanup() {
+            listView.ViewItems.selectMode = false;
+            wait(400);
         }
 
         function test_long_press_after_swipe_breaks_selectmode() {
