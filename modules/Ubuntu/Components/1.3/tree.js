@@ -36,7 +36,7 @@ function Tree() {
     }
 
     // Add newNode to the tree in the specified stem, with the specified parent node.
-    // When adding the root node, add parentNode null. All other nodes must be added
+    // The root node should be added with parentNode null. All other nodes must be added
     // with a parentNode that is already in the tree.
     // Default value for stem: 0.
     // Default value for parentNode: null.
