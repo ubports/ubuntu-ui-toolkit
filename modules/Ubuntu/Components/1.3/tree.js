@@ -42,10 +42,10 @@ function Tree() {
     // Default value for parentNode: null.
     // Returns the index of the newly added node.
     this.add = function(stem, parentNode, newNode) {
-        if (nodes.indexOf(newNode) !== -1) {
+        if (this.index(newNode) !== -1) {
             throw "Cannot add the same node twice to a tree.";
         }
-        var parentIndex = nodes.indexOf(parentNode);
+        var parentIndex = this.index(parentNode);
         if (size === 0) {
             // adding root node
             if (parentNode !== null) {
@@ -60,7 +60,6 @@ function Tree() {
                 throw "Cannot add non-root node if parentNode is not in the tree.";
             }
         }
-
         nodes.push(newNode);
         stems.push(stem);
         parents.push(parentIndex);
@@ -68,7 +67,7 @@ function Tree() {
     }
 
     // Chops all nodes with an index higher than the given node.
-    //  If (inclusive) then also chop the given node.
+    //  If, and only if, (inclusive) then also chop the given node.
     // Default values for node or inclusive, top() and true.
     // Returns a list that contains the nodes that were chopped.
     this.chop = function(node, inclusive) {
