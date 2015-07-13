@@ -92,6 +92,7 @@ Ubuntu.Components.Alarm 1.0 0.1: QtObject
     function reset()
     property url sound
     readonly property Status status
+    property AlarmType type
 Ubuntu.Components.Alarm.AlarmType: Enum
     OneTime
     Repeating
@@ -803,6 +804,7 @@ Ubuntu.Components.ServiceProperties 1.1: QtObject
     property string service
     property string serviceInterface
     readonly property Status status
+    property ServiceType type
 Ubuntu.Components.ServiceProperties.ServiceType: Enum
     Session
     System

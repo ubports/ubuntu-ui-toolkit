@@ -63,6 +63,9 @@ Item {
     }
     function third(sloff) { }
 
+    // Member name may overlap with internal name in apicheck
+    property var type
+
     Item {
         id: one
         function two() {
