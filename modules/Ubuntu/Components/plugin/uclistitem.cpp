@@ -1126,13 +1126,16 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
         if ((mouseX < (pressedX - threshold)) || (mouseX > (pressedX + threshold))) {
             // the press went out of the threshold area, enable move, if the direction allows it
             d->lastPos = event->localPos();
-            // unlock contentItem's left/right edges
-            d->lockContentItem(false);
             if (d->parentAttached) {
                 d->parentAttached->disableInteractive(this, true);
             }
-            d->setSwiped(true);
+            bool doSwipe = (d->leadingActions && (mouseX > pressedX)) ||
+                           (d->trailingActions && (mouseX < pressedX));
+            d->setSwiped(doSwipe);
+            // unlock contentItem's left/right edges
+            d->lockContentItem(!doSwipe);
             d->loadStyleItem();
+            d->pressAndHoldTimer.stop();
         }
     }
 
