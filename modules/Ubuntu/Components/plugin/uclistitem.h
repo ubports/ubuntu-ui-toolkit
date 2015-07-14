@@ -95,8 +95,10 @@ Q_SIGNALS:
 
 public Q_SLOTS:
 
-private:
+protected:
     Q_DECLARE_PRIVATE(UCListItem)
+
+private:
     Q_PRIVATE_SLOT(d_func(), void _q_themeChanged())
     Q_PRIVATE_SLOT(d_func(), void _q_relayout())
     Q_PRIVATE_SLOT(d_func(), void _q_updateSwiping())
@@ -105,6 +107,13 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_contentMoving())
     Q_PRIVATE_SLOT(d_func(), void _q_syncSelectMode())
     Q_PRIVATE_SLOT(d_func(), void _q_syncDragMode())
+};
+
+class UCListItem13 : public UCListItem
+{
+    Q_OBJECT
+public:
+    explicit UCListItem13(QQuickItem *parent = 0);
 };
 
 class UCListItemDividerPrivate;

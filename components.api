@@ -465,6 +465,7 @@ Ubuntu.Components.ListItem 1.2: StyledItem
     property bool selectMode
     property bool selected
     property ListItemActions trailingActions
+Ubuntu.Components.ListItem 1.3: ListItem
 Ubuntu.Components.ListItemActions 1.2: QtObject
     readonly property Action actions
     default readonly property QtObject data

@@ -29,6 +29,8 @@ Styles.ListItemStyle {
 
     // anchoring
     anchors {
+        // do not anchor fill
+        fill: undefined
         top: parent ? parent.top : undefined
         bottom: parent ? parent.bottom : undefined
         bottomMargin: styledItem.divider.visible ? styledItem.divider.height : 0
@@ -141,6 +143,11 @@ Styles.ListItemStyle {
                 // for the initial value
                 checked: styledItem.selected
                 onCheckedChanged: styledItem.selected = checked;
+                Binding {
+                    target: checkbox
+                    property: "checked"
+                    value: styledItem.selected
+                }
             }
 
             states: State {

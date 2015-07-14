@@ -138,6 +138,11 @@ Styles.ListItemStyle {
                 // for the initial value
                 checked: styledItem.selected
                 onCheckedChanged: styledItem.selected = checked;
+                Binding {
+                    target: checkbox
+                    property: "checked"
+                    value: styledItem.selected
+                }
             }
 
             states: State {
