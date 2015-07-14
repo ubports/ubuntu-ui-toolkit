@@ -12,3 +12,4 @@ Extinct.Animals.Titanoboa 4.2: Item
     function var third(var sloff)
     property string spam
     property var type
+    property var version

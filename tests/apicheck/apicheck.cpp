@@ -379,7 +379,7 @@ public:
                         || signature == QByteArrayLiteral("destroyed()")
                         || signature == QByteArrayLiteral("deleteLater()"))
                     continue;
-                dump(&methods, method, implicitSignals, knownAttributes);
+                dump(object, &methods, method, implicitSignals, knownAttributes);
             }
 
             // and add toString(), destroy() and destroy(int)
@@ -412,7 +412,7 @@ public:
                 QByteArray methName(meta->method(index).name());
                 if (!methName.isEmpty() && methName.endsWith("Changed"))
                     continue;
-                dump(&methods, meta->method(index), implicitSignals, knownAttributes);
+                dump(object, &methods, meta->method(index), implicitSignals, knownAttributes);
             }
         }
         if (!methods.empty())
@@ -469,13 +469,12 @@ public:
         QSet<const QQmlType *> qmlTypes = qmlTypesByCppName.value(meta->className());
         if (!qmlTypes.isEmpty()) {
             bool foreignNamespace = false;
-            QHash<QString, const QQmlType *> exports;
 
             Q_FOREACH (const QQmlType *qmlTy, qmlTypes) {
                 const QString exportString = getExportString(qmlTy->qmlTypeName(), qmlTy->majorVersion(), qmlTy->minorVersion());
                 if (exportString.contains("/"))
                     foreignNamespace = true;
-                exports.insert( exportString, qmlTy);
+                exportStrings.append(exportString);
             }
 
             // Ignore classes from different namespaces
@@ -483,7 +482,6 @@ public:
                 return;
 
             // ensure exports are sorted and don't change order when the plugin is dumped again
-            exportStrings = exports.keys();
             std::sort(exportStrings.begin(), exportStrings.end());
         }
 
@@ -503,6 +501,7 @@ public:
         if (!qmlTypes.isEmpty()) {
             object.insert("exports", QJsonArray::fromStringList(exportStrings));
             object["namespace"] = qmlTypes.toList()[0]->qmlTypeName().split("/")[0];
+            object["#version"] = exportStrings.last().split(" ")[1];
 
             if (isUncreatable)
                 object.insert("isCreatable", false);
@@ -580,11 +579,13 @@ private:
         QJsonObject property;
         if (revision)
             property["revision"] = QString::number(revision);
+        if (revision && object->contains("#version"))
+            property["version"] = object->value("#version").toString();
         writeTypeProperties(&property, prop.typeName(), prop.isWritable());
         object->insert(prop.name(), property);
     }
 
-    void dump(QJsonArray* array, const QMetaMethod &meth, const QSet<QString> &implicitSignals,
+    void dump(QJsonObject* object, QJsonArray* array, const QMetaMethod &meth, const QSet<QString> &implicitSignals,
               KnownAttributes *knownAttributes = 0)
     {
         if (meth.methodType() == QMetaMethod::Signal) {
@@ -621,6 +622,8 @@ private:
 
         if (revision)
             method["revision"] = QString::number(revision);
+        if (revision && object->contains("#version"))
+            method["version"] = object->value("#version").toString();
 
         if (typeName != QLatin1String("void"))
             method["returns"] = typeName;
@@ -1072,7 +1075,10 @@ int main(int argc, char *argv[])
                                     args.append(convertToId(parameter["type"].toString()) + " " + parameter["name"].toString());
                                 }
                             }
-                            signature += valu["name"].toString() + "(" + args.join(", ") + ")\n";
+                            signature += valu["name"].toString() + "(" + args.join(", ") + ")";
+                            if (valu.contains("version"))
+                                signature += " " + valu["version"].toString();
+                            signature += "\n";
                         }
                         continue;
                     }
@@ -1087,6 +1093,8 @@ int main(int argc, char *argv[])
                     if (field.contains("type"))
                         signature += "property " + QString(convertToId(field["type"].toString())) + " ";
                     signature += fieldName;
+                    if (field.contains("version"))
+                        signature += " " + QString(field["version"].toString());
                     signature += "\n";
                 }
                 std::cout << qPrintable(signature);
