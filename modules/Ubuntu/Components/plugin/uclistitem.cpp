@@ -25,6 +25,7 @@
 #include "i18n.h"
 #include "quickutils.h"
 #include "ucaction.h"
+#include "ucnamespace.h"
 #include <QtQml/QQmlInfo>
 #include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickflickable_p.h>
@@ -179,6 +180,7 @@ void UCListItemDivider::setColorTo(const QColor &color)
  */
 UCListItemPrivate::UCListItemPrivate()
     : UCStyledItemBasePrivate()
+    , defaultThemeVersion(0)
     , highlighted(false)
     , contentMoved(false)
     , swiped(false)
@@ -901,6 +903,7 @@ UCListItem::UCListItem(QQuickItem *parent)
 {
     Q_D(UCListItem);
     d->init();
+    d->defaultThemeVersion = BUILD_VERSION(1, 2);
 }
 
 UCListItem::~UCListItem()
@@ -912,6 +915,10 @@ void UCListItem::classBegin()
     UCStyledItemBase::classBegin();
     Q_D(UCListItem);
     // initialize theme
+    UCTheme *theme = d->getTheme();
+    if (theme == &UCTheme::defaultTheme()) {
+        theme->setVersion(d->defaultThemeVersion);
+    }
     d->_q_themeChanged();
     d->divider->paletteChanged();
 }
@@ -1119,13 +1126,16 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
         if ((mouseX < (pressedX - threshold)) || (mouseX > (pressedX + threshold))) {
             // the press went out of the threshold area, enable move, if the direction allows it
             d->lastPos = event->localPos();
-            // unlock contentItem's left/right edges
-            d->lockContentItem(false);
             if (d->parentAttached) {
                 d->parentAttached->disableInteractive(this, true);
             }
-            d->setSwiped(true);
+            bool doSwipe = (d->leadingActions && (mouseX > pressedX)) ||
+                           (d->trailingActions && (mouseX < pressedX));
+            d->setSwiped(doSwipe);
+            // unlock contentItem's left/right edges
+            d->lockContentItem(!doSwipe);
             d->loadStyleItem();
+            d->pressAndHoldTimer.stop();
         }
     }
 
@@ -1549,6 +1559,16 @@ QQmlListProperty<QObject> UCListItemPrivate::data()
 QQmlListProperty<QQuickItem> UCListItemPrivate::children()
 {
     return QQuickItemPrivate::get(contentItem)->children();
+}
+
+/******************************************************************************
+ * Versioning
+ */
+UCListItem13::UCListItem13(QQuickItem *parent)
+    : UCListItem(parent)
+{
+    Q_D(UCListItem);
+    d->defaultThemeVersion = BUILD_VERSION(1, 3);
 }
 
 #include "moc_uclistitem.cpp"
