@@ -38,8 +38,6 @@ function Tree() {
     // Add newNode to the tree in the specified stem, with the specified parent node.
     // The root node should be added with parentNode null. All other nodes must be added
     // with a parentNode that is already in the tree.
-    //
-    // Returns the index of the newly added node.
     this.add = function(stem, parentNode, newNode) {
         if (this.index(newNode) !== -1) {
             throw "Cannot add the same node twice to a tree.";
@@ -62,7 +60,7 @@ function Tree() {
         nodes.push(newNode);
         stems.push(stem);
         parents.push(parentIndex);
-        return size++;
+        size++;
     }
 
     // Chops all nodes with an index higher than the given node.
