@@ -455,6 +455,24 @@ PageTreeNode {
                 property color panelColor: multiColumnView.__propagated.header.panelColor
 
                 visible: holder.pageWrapper && holder.pageWrapper.active
+                property var pageStack: multiColumnView
+                property var page: holder.pageWrapper ? holder.pageWrapper.object : null
+                property bool showBackButton: {
+                    if (!page) {
+                        return false;
+                    }
+                    var parentWrapper;
+                    try {
+                        parentWrapper = d.tree.parent(holder.pageWrapper);
+                    } catch(err) {
+                        // wrapper was not added to the tree yet.
+                        return false;
+                    }
+
+                    var nextWrapperInStem = d.tree.top(holder.column, holder.column < d.columns - 1, 1);
+                    print("column = "+holder.column+", parentWrapper = "+parentWrapper+", nextWrapperInStem = "+nextWrapperInStem)
+                    return parentWrapper === nextWrapperInStem;
+                }
             }
 
             Rectangle {

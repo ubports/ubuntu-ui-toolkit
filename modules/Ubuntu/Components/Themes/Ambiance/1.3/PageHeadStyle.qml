@@ -268,16 +268,30 @@ Style.PageHeadStyle {
                 objectName: "backButton"
 
                 iconName: "back"
-                visible: styledItem.pageStack !== null &&
-                         styledItem.pageStack !== undefined &&
-                         styledItem.pageStack.depth > 1 &&
-                         !headerStyle.config.backAction
+                property bool stackBack: styledItem.pageStack !== null &&
+                                        styledItem.pageStack !== undefined &&
+                                        styledItem.pageStack.hasOwnProperty("push") &&
+                                        styledItem.pageStack.hasOwnProperty("depth") &&
+                                        styledItem.pageStack.depth > 1
+
+                // the properties used here are defined in subHeader inside MultiColumnView.
+                property bool treeBack: styledItem.pageStack !== null &&
+                                        styledItem.pageStack !== undefined &&
+                                        styledItem.pageStack.hasOwnProperty("removePages") &&
+                                        styledItem.hasOwnProperty("showBackButton") &&
+                                        styledItem.showBackButton
+
+                visible: !headerStyle.config.backAction && (stackBack || treeBack)
 
                 text: "back"
                 color: headerStyle.config.foregroundColor
 
                 onTriggered: {
-                    styledItem.pageStack.pop();
+                    if (stackBack) {
+                        styledItem.pageStack.pop();
+                    } else {
+                        styledItem.pageStack.removePages(styledItem.page);
+                    }
                 }
             }
 

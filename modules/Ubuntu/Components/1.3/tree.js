@@ -57,6 +57,7 @@ function Tree() {
                 throw "Cannot add non-root node if parentNode is not in the tree.";
             }
         }
+        print("add "+newNode.object.title+" to stem "+stem)
         nodes.push(newNode);
         stems.push(stem);
         parents.push(parentIndex);
@@ -89,24 +90,35 @@ function Tree() {
         }
     }
 
-    // If exactMatch, return the node on top of the specified stem.
-    // If !exactMatch, return the node with the highest index for stem <= the returned node stem
+    // If exactMatch, return the (count)th node on top of the specified stem.
+    // If !exactMatch, return the node with the (count)th highest index
+    //                  for stem <= the returned node stem
     //
     // Default value for stem: 0
     // Default value for exactMatch: false
+    // Default value for count: 0 (first node)
     //
     // Returns null if no matching node was found.
-    this.top = function(stem, exactMatch) {
+    this.top = function(stem, exactMatch, count) {
         stem = typeof stem !== 'undefined' ? stem : 0
         exactMatch = typeof exactMatch !== 'undefined' ? exactMatch : false
+        count = typeof count !== 'undefined' ? count : 0
 
         var st;
+        // FIXME TIM: count the other way around to make it cleaner
+        var found = 0;
         for (var i = size-1; i >= 0; i--) {
             st = stems[i];
             if ((exactMatch && st === stem) || (!exactMatch && st >= stem)) {
+                found++;
+                print("found = "+found+" for st = "+st+", node "+i)
+            }
+            if (found > count) {
+                print("top("+stem+", "+exactMatch+", "+count+") returns "+nodes[i].object.title)
                 return nodes[i];
             }
         }
+        print("top("+stem+", "+exactMatch+", "+count+") returns null.");
         return null;
     }
 
