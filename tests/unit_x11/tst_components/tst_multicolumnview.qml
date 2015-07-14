@@ -19,43 +19,40 @@ import QtTest 1.0
 import Ubuntu.Test 1.0
 import Ubuntu.Components 1.3
 
-Item {
+MainView {
     id: test
     width: units.gu(120)
     height: units.gu(71)
 
-    MainView {
-        anchors.fill: parent
+    MultiColumnView {
+        id: testView
+        width: parent.width
+        height: parent.height
 
-        MultiColumnView {
-            id: testView
-            width: parent.width
-            height: parent.height
+        primaryPage: page1
 
-            primaryPage: page1
-
-            Page {
-                id: page1
-                title: "Page1"
-            }
-            Page {
-                id: page2
-                title: "Page2"
-            }
-            Page {
-                id: page3
-                title: "Page3"
-            }
-            Page {
-                id: page4
-                title: "Page4"
-            }
+        Page {
+            id: page1
+            title: "Page1"
         }
-
-        MultiColumnView {
-            id: defaults
+        Page {
+            id: page2
+            title: "Page2"
+        }
+        Page {
+            id: page3
+            title: "Page3"
+        }
+        Page {
+            id: page4
+            title: "Page4"
         }
     }
+
+    MultiColumnView {
+        id: defaults
+    }
+
     UbuntuTestCase {
         when: windowShown
 
