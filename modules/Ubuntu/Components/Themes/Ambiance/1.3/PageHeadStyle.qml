@@ -277,7 +277,7 @@ Style.PageHeadStyle {
                 // the properties used here are defined in subHeader inside MultiColumnView.
                 property bool treeBack: styledItem.hasOwnProperty("multiColumn") &&
                                         styledItem.multiColumn &&
-                                        styledItem.hasOwnProperty("page") &&s
+                                        styledItem.hasOwnProperty("page") &&
                                         styledItem.multiColumn.hasOwnProperty("removePages") &&
                                         styledItem.hasOwnProperty("showBackButton") &&
                                         styledItem.showBackButton

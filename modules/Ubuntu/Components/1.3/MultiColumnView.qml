@@ -468,12 +468,11 @@ PageTreeNode {
                     try {
                         parentWrapper = d.tree.parent(holder.pageWrapper);
                     } catch(err) {
-                        // wrapper was not added to the tree yet.
+                        // Root node has no parent node.
                         return false;
                     }
-
-                    var nextWrapperInStem = d.tree.top(holder.column, holder.column < d.columns - 1, 1);
-                    return parentWrapper === nextWrapperInStem;
+                    var nextInColumn = d.tree.top(holder.column, holder.column < d.columns - 1, 1);
+                    return parentWrapper === nextInColumn;
                 }
             }
 

@@ -130,6 +130,8 @@ function Tree() {
         var i = nodes.indexOf(node);
         if (i === -1) {
             throw "Specified node not found in tree.";
+        } else if (i === 0) {
+            throw "Root node has no parent node.";
         }
         return nodes[parents[i]];
     }
