@@ -80,6 +80,11 @@ MainView {
                     margins: units.gu(2)
                 }
                 color: "green"
+                Button {
+                    anchors.centerIn: parent
+                    text: "Another page!"
+                    onTriggered: multiColumnView.addPageToCurrentColumn(rightPage, sectionsPage)
+                }
             }
         }
         Page {
@@ -104,8 +109,8 @@ MainView {
             return body.children.length;
         }
 
-        function get_header(index) {
-            return findChild(multiColumnView, "Header" + index);
+        function get_header(column) {
+            return findChild(multiColumnView, "Header" + column);
         }
 
         function get_number_of_headers() {
@@ -121,9 +126,13 @@ MainView {
             return numHeaders;
         }
 
+        function get_back_button_visible(column) {
+            var header = get_header(column);
+            var back_button = findChild(header, "backButton");
+            return back_button.visible;
+        }
+
         function cleanup() {
-            multiColumnView.width = root.width;
-            multiColumnView.height = root.height;
             multiColumnView.removePages(rootPage);
         }
 
@@ -195,6 +204,26 @@ MainView {
                         "Header " + i +
                         " height is not correctly reverted after removing Page with sections.");
             }
+        }
+
+        function test_first_page_in_column_has_no_back_button() {
+            // primary page has no back button
+            compare(get_back_button_visible(0), false,
+                    "Back button is visible for primary page.");
+            multiColumnView.addPageToNextColumn(rootPage, rightPage);
+            compare(get_back_button_visible(1), false,
+                    "Back button is visible for first page added to column.");
+        }
+
+        function test_second_page_in_column_has_back_button() {
+            multiColumnView.addPageToCurrentColumn(rootPage, leftPage);
+            compare(get_back_button_visible(0), true,
+                    "Back button not visible for second page in first column.");
+            multiColumnView.removePages(leftPage);
+            multiColumnView.addPageToNextColumn(rootPage, rightPage);
+            multiColumnView.addPageToCurrentColumn(rightPage, sectionsPage);
+            compare(get_back_button_visible(1), true,
+                    "Back button is not visible for second page in second column.");
         }
     }
 }

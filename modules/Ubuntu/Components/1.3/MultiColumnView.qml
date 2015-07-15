@@ -470,7 +470,6 @@ PageTreeNode {
                     }
 
                     var nextWrapperInStem = d.tree.top(holder.column, holder.column < d.columns - 1, 1);
-                    print("column = "+holder.column+", parentWrapper = "+parentWrapper+", nextWrapperInStem = "+nextWrapperInStem)
                     return parentWrapper === nextWrapperInStem;
                 }
             }

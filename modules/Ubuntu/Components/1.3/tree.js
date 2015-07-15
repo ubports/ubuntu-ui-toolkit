@@ -57,7 +57,6 @@ function Tree() {
                 throw "Cannot add non-root node if parentNode is not in the tree.";
             }
         }
-        print("add "+newNode.object.title+" to stem "+stem)
         nodes.push(newNode);
         stems.push(stem);
         parents.push(parentIndex);
@@ -111,14 +110,11 @@ function Tree() {
             st = stems[i];
             if ((exactMatch && st === stem) || (!exactMatch && st >= stem)) {
                 found++;
-                print("found = "+found+" for st = "+st+", node "+i)
             }
             if (found > count) {
-                print("top("+stem+", "+exactMatch+", "+count+") returns "+nodes[i].object.title)
                 return nodes[i];
             }
         }
-        print("top("+stem+", "+exactMatch+", "+count+") returns null.");
         return null;
     }
 
