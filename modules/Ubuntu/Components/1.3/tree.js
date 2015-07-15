@@ -63,7 +63,8 @@ function Tree() {
         size++;
     }
 
-    // Chops all nodes with an index higher than the given node.
+    // Chops all nodes with an index higher than the given node which
+    //  are in the same stem or a stem with higher index.
     // If, and only if, (inclusive) then also chop the given node.
     //
     // Default values for node and inclusive are top() and true.
@@ -72,21 +73,47 @@ function Tree() {
         node = typeof node !== 'undefined' ? node : this.top();
         inclusive = typeof inclusive !== 'undefined' ? inclusive : true
         var nodeIndex = this.index(node);
-        if (nodeIndex >= 0) {
-            if (inclusive) {
-                size = nodeIndex;
-            } else {
-                size = nodeIndex + 1;
-            }
-            var oldNodes = nodes;
-            nodes = nodes.slice(0, size);
-            stems = stems.slice(0, size);
-            parents = parents.slice(0, size);
-            return oldNodes.slice(size);
-        } else {
-            // given node is not in the tree
+
+        if (nodeIndex < 0) {
+            // given node is not in the tree.
             return [];
         }
+
+        if (inclusive) {
+            size = nodeIndex;
+        } else {
+            size = nodeIndex + 1;
+        }
+
+        // nodes with index(node) >= nodeIndex && stem >= stems[nodeIndex];
+        var badNodes = []; // to fill below
+
+        // nodes with index(node) >= nodeIndex (any stem).
+        // Each of these will go into either nodes or badNodes.
+        var uglyNodes = nodes.slice(size);
+        var uglyStems = stems.slice(size); // to check below
+        var uglyParents = parents.slice(size);
+
+        var stem = stems[nodeIndex];
+        // good nodes
+        // nodes with index(node) < nodeIndex && stem < stems[nodeIndex]:
+        nodes = nodes.slice(0, size);
+        stems = stems.slice(0, size);
+        parents = parents.slice(0, size);
+
+        // add nodes with index(node) > nodeIndex && stem < stems[nodeIndex] back:
+        for (var i = 0; i < uglyNodes.length; i++) {
+            if (uglyStems[i] < stem) {
+                // because the stem of the parentNode <= stem of the node,
+                //  the node that is added back has the parentNode in nodes.
+                nodes.push(uglyNodes[i]);
+                stems.push(uglyStems[i]);
+                parents.push(uglyParents[i]);
+            } else {
+                badNodes.push(uglyNodes[i]);
+            }
+        }
+        return badNodes;
     }
 
     // If exactMatch, return the (count)th node on top of the specified stem.

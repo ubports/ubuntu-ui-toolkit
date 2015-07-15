@@ -280,10 +280,10 @@ MainView {
                     "Adding page 2 to column A hides back button in column B.");
 
             multiColumnView.removePages(sectionsPage);
-            // A: 2, B:1
+            // A:2, B:1
             compare(get_back_button_visible(0), true,
                     "Removing page 2 from column B hides back button in column A.");
-            compare(get_back_button_visible(0), false,
+            compare(get_back_button_visible(1), false,
                     "Removing page 2 from column B does not hide back button when column A has 2 pages.");
         }
 
