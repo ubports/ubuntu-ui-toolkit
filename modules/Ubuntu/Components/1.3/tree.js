@@ -93,25 +93,32 @@ function Tree() {
     // If !exactMatch, return the node with the (count)th highest index
     //                  for stem <= the returned node stem
     //
+    // Returns the n'th node when traversing one or more stems from the
+    //  top down. When exactMatch, only the specified stem is taken into account,
+    //  and when !exactMatch the specified stem and all stems after that are
+    //  taken into account.
+    //
     // Default value for stem: 0
     // Default value for exactMatch: false
-    // Default value for count: 0 (first node)
+    // Default value for n: 0 (first node)
+    //
+    // Calling top() with no parameters returns top(0, false, 0) which is the
+    //  last node that was added to the tree.
     //
     // Returns null if no matching node was found.
-    this.top = function(stem, exactMatch, count) {
+    this.top = function(stem, exactMatch, n) {
         stem = typeof stem !== 'undefined' ? stem : 0
         exactMatch = typeof exactMatch !== 'undefined' ? exactMatch : false
-        count = typeof count !== 'undefined' ? count : 0
+        n = typeof n !== 'undefined' ? n : 0
 
         var st;
-        // FIXME TIM: count the other way around to make it cleaner
-        var found = 0;
+        var count = n;
         for (var i = size-1; i >= 0; i--) {
             st = stems[i];
             if ((exactMatch && st === stem) || (!exactMatch && st >= stem)) {
-                found++;
+                count--;
             }
-            if (found > count) {
+            if (count < 0) {
                 return nodes[i];
             }
         }
