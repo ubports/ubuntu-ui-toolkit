@@ -473,7 +473,6 @@ PageTreeNode {
                     }
                     var nextInColumn = d.tree.top(holder.column, holder.column < d.columns - 1, 1);
                     return parentWrapper === nextInColumn;
-//                    return !parentWrapper.visible;
                 }
             }
 
