@@ -270,16 +270,11 @@ Style.PageHeadStyle {
                 iconName: "back"
                 property bool stackBack: styledItem.pageStack !== null &&
                                         styledItem.pageStack !== undefined &&
-                                        styledItem.pageStack.hasOwnProperty("push") &&
                                         styledItem.pageStack.hasOwnProperty("depth") &&
                                         styledItem.pageStack.depth > 1
 
-                // the properties used here are defined in subHeader inside MultiColumnView.
+                // MultiColumnView adds the following properties: multiColumn, page, showBackButton.
                 property bool treeBack: styledItem.hasOwnProperty("multiColumn") &&
-                                        styledItem.multiColumn &&
-                                        styledItem.hasOwnProperty("page") &&
-                                        styledItem.multiColumn.hasOwnProperty("removePages") &&
-                                        styledItem.hasOwnProperty("showBackButton") &&
                                         styledItem.showBackButton
 
                 visible: !headerStyle.config.backAction && (stackBack || treeBack)
