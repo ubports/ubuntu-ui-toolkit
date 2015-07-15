@@ -455,7 +455,10 @@ PageTreeNode {
                 property color panelColor: multiColumnView.__propagated.header.panelColor
 
                 visible: holder.pageWrapper && holder.pageWrapper.active
-                property var pageStack: multiColumnView
+
+                // The multiColumn, page and showBackButton properties are used in
+                //  PageHeadStyle to show/hide the back button.
+                property var multiColumn: multiColumnView
                 property var page: holder.pageWrapper ? holder.pageWrapper.object : null
                 property bool showBackButton: {
                     if (!page) {

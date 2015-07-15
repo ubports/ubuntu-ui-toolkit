@@ -275,9 +275,10 @@ Style.PageHeadStyle {
                                         styledItem.pageStack.depth > 1
 
                 // the properties used here are defined in subHeader inside MultiColumnView.
-                property bool treeBack: styledItem.pageStack !== null &&
-                                        styledItem.pageStack !== undefined &&
-                                        styledItem.pageStack.hasOwnProperty("removePages") &&
+                property bool treeBack: styledItem.hasOwnProperty("multiColumn") &&
+                                        styledItem.multiColumn &&
+                                        styledItem.hasOwnProperty("page") &&s
+                                        styledItem.multiColumn.hasOwnProperty("removePages") &&
                                         styledItem.hasOwnProperty("showBackButton") &&
                                         styledItem.showBackButton
 
@@ -290,7 +291,8 @@ Style.PageHeadStyle {
                     if (stackBack) {
                         styledItem.pageStack.pop();
                     } else {
-                        styledItem.pageStack.removePages(styledItem.page);
+                        // treeBack
+                        styledItem.multiColumn.removePages(styledItem.page);
                     }
                 }
             }
