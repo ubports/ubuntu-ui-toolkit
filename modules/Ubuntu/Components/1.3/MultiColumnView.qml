@@ -175,13 +175,24 @@ PageTreeNode {
 
     /*!
       \qmlmethod Item addPageToNextColumn(Item sourcePage, var page[, var properties])
-      Same as \l addPageToCurrentColumn except that the \c page is added to the column
+      Similar to \l addPageToCurrentColumn but the \c page is added to the column
       next to the one the \c sourcePage resides. If \c sourcePage is null, the new
       page will be added to the leftmost column. If \c sourcePage is located in the
       rightmost column, the new page will be pushed to the same column as \c sourcePage.
+
+      This will clear all previous pages in the next column and all following columns!
       */
     function addPageToNextColumn(sourcePage, page, properties) {
-        return d.addPageToColumn(d.columnForPage(sourcePage) + 1, sourcePage, page, properties);
+        var nextColumn = d.columnForPage(sourcePage) + 1;
+//        var firstPageInNextColumn = d.tree.bottom(nextColumn);
+        d.tree.prune(nextColumn);
+//        if (firstPageInNextColumn) {
+//            d.tree.chop(firstPageInNextColumn, true);
+            for (var i = nextColumn; i < d.columns; i++) {
+                d.updatePageForColumn(i);
+            }
+//        }
+        return d.addPageToColumn(nextColumn, sourcePage, page, properties);
     }
 
     /*!
@@ -300,6 +311,8 @@ PageTreeNode {
                 return;
             }
 
+            // FIXME TIM: First check that the page is not in a column already.
+            // The tree checks for the node, but that's the wrapper only, not the Page inside.
             var wrapper = d.createWrapper(page, properties);
             wrapper.parentPage = sourcePage;
             wrapper.column = column;

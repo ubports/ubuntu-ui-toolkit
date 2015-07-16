@@ -42,7 +42,6 @@ function Tree() {
         if (this.index(newNode) !== -1) {
             throw "Cannot add the same node twice to a tree.";
         }
-        var parentIndex = this.index(parentNode);
         if (size === 0) {
             // adding root node
             if (parentNode !== null) {
@@ -53,18 +52,42 @@ function Tree() {
             if (parentNode === null) {
                 throw "Only root node has parentNode null."
             }
-            if (parentIndex === -1) {
+            if (this.index(parentNode) === -1) {
                 throw "Cannot add non-root node if parentNode is not in the tree.";
             }
         }
         nodes.push(newNode);
         stems.push(stem);
-        parents.push(parentIndex);
+        parents.push(parentNode);
         size++;
     }
 
+    // Remove all nodes with a stem that is at least the specified stem.
+    //
+    // Returns the removed nodes.
+    this.prune = function(stem) {
+        var newNodes = [];
+        var newStems = [];
+        var newParents = [];
+        var removedNodes = [];
+        for (var i = 0; i < nodes.length; i++) {
+            if (stems[i] < stem) {
+                newNodes.push(nodes[i]);
+                newStems.push(stems[i]);
+                newParents.push(parents[i]);
+            } else {
+                removedNodes.push(nodes[i]);
+            }
+        }
+        nodes = newNodes;
+        stems = newStems;
+        parents = newParents;
+        size = nodes.length;
+    }
+
     // Chops all nodes with an index higher than the given node which
-    //  are in the same stem or a stem with higher index.
+    //  are in the same stem or a higher stem.
+    //
     // If, and only if, (inclusive) then also chop the given node.
     //
     // Default values for node and inclusive are top() and true.
@@ -73,42 +96,40 @@ function Tree() {
         node = typeof node !== 'undefined' ? node : this.top();
         inclusive = typeof inclusive !== 'undefined' ? inclusive : true
         var nodeIndex = this.index(node);
-
         if (nodeIndex < 0) {
             // given node is not in the tree.
             return [];
         }
-
         if (inclusive) {
             size = nodeIndex;
         } else {
             size = nodeIndex + 1;
         }
 
-        // nodes with index(node) >= nodeIndex && stem >= stems[nodeIndex];
+        // Nodes with index(node) >= nodeIndex && stem >= stems[nodeIndex];
         var badNodes = []; // to fill below
 
-        // nodes with index(node) >= nodeIndex (any stem).
-        // Each of these will go into either nodes or badNodes.
+        // Nodes with index(node) >= nodeIndex (any stem).
+        // Potential bad nodes to be removed.
         var uglyNodes = nodes.slice(size);
         var uglyStems = stems.slice(size); // to check below
         var uglyParents = parents.slice(size);
 
         var stem = stems[nodeIndex];
-        // good nodes
-        // nodes with index(node) < nodeIndex && stem < stems[nodeIndex]:
+        // Good nodes, with index(node) < nodeIndex && stem < stems[nodeIndex]:
         nodes = nodes.slice(0, size);
         stems = stems.slice(0, size);
         parents = parents.slice(0, size);
 
-        // add nodes with index(node) > nodeIndex && stem < stems[nodeIndex] back:
+        // Add nodes with index(node) > nodeIndex && stem < stems[nodeIndex] back:
         for (var i = 0; i < uglyNodes.length; i++) {
             if (uglyStems[i] < stem) {
-                // because the stem of the parentNode <= stem of the node,
+                // Because the stem of the parentNode <= stem of the node,
                 //  the node that is added back has the parentNode in nodes.
                 nodes.push(uglyNodes[i]);
                 stems.push(uglyStems[i]);
                 parents.push(uglyParents[i]);
+                size++;
             } else {
                 badNodes.push(uglyNodes[i]);
             }
@@ -116,14 +137,11 @@ function Tree() {
         return badNodes;
     }
 
-    // If exactMatch, return the (count)th node on top of the specified stem.
-    // If !exactMatch, return the node with the (count)th highest index
-    //                  for stem <= the returned node stem
-    //
     // Returns the n'th node when traversing one or more stems from the
-    //  top down. When exactMatch, only the specified stem is taken into account,
-    //  and when !exactMatch the specified stem and all stems after that are
-    //  taken into account.
+    //  top down. When exactMatch, only the specified stem is traversed, and
+    //  when !exactMatch the specified stem and all higher stems are traversed.
+    //
+    // Returns null if no matching node was found.
     //
     // Default value for stem: 0
     // Default value for exactMatch: false
@@ -131,8 +149,6 @@ function Tree() {
     //
     // Calling top() with no parameters returns top(0, false, 0) which is the
     //  last node that was added to the tree.
-    //
-    // Returns null if no matching node was found.
     this.top = function(stem, exactMatch, n) {
         stem = typeof stem !== 'undefined' ? stem : 0
         exactMatch = typeof exactMatch !== 'undefined' ? exactMatch : false
@@ -140,7 +156,7 @@ function Tree() {
 
         var st;
         var count = n;
-        for (var i = size-1; i >= 0; i--) {
+        for (var i = size - 1; i >= 0; i--) {
             st = stems[i];
             if ((exactMatch && st === stem) || (!exactMatch && st >= stem)) {
                 count--;
@@ -160,6 +176,6 @@ function Tree() {
         } else if (i === 0) {
             throw "Root node has no parent node.";
         }
-        return nodes[parents[i]];
+        return parents[i];
     }
 }

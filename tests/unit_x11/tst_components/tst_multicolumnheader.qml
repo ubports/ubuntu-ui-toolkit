@@ -105,18 +105,8 @@ MainView {
                 color: "blue"
             }
         }
-//        Page {
-//            id: blackPage
-//            title: "Black"
-//            Rectangle {
-//                anchors {
-//                    fill: parent
-//                    margins: units.gu(1)
-//                }
-//                color: "black"
-//            }
-//        }
     }
+
     UbuntuTestCase {
         when: windowShown
 
@@ -223,7 +213,7 @@ MainView {
         }
 
         function test_back_button() {
-            // A is first column, B is second column.
+            // A is the first column, B is the second column.
             // A:i, B:j = i pages in A, j pages in B.
 
             // primary page has no back button
@@ -257,7 +247,7 @@ MainView {
             // A:1, B:1
 
             multiColumnView.addPageToNextColumn(rootPage, sectionsPage);
-            // A:1, B:2
+            // A:1, B:2 <== FIXME TIM: FROM HERE INCORRECT. B:1.
             compare(get_back_button_visible(0), false,
                     "Adding page 2 to column B from column A shows back button in column A.");
             compare(get_back_button_visible(1), false,
@@ -285,43 +275,22 @@ MainView {
                     "Removing page 2 from column B hides back button in column A.");
             compare(get_back_button_visible(1), false,
                     "Removing page 2 from column B does not hide back button when column A has 2 pages.");
+
+            // some weird case that I encountered with manual testing:
+            multiColumnView.removePages(rootPage);
+            // A:1, B:0
+            multiColumnView.addPageToNextColumn(rootPage, Qt.resolvedUrl("MyExternalPage.qml"));
+            // A:1, B:1
+            multiColumnView.addPageToCurrentColumn(rootPage, leftPage);
+            // A:2, B:1
+            multiColumnView.addPageToNextColumn(rootPage, rightPage);
+            // A:2, B:2
+            multiColumnView.addPageToCurrentColumn(rightPage, sectionsPage);
+            // A:2, B:3
+            compare(get_back_button_visible(0), true,
+                    "fail left");
+            compare(get_back_button_visible(1), true,
+                    "fail right");
         }
-
-//            multiColumnView.addPageToCurrentColumn(rightPage, sectionsPage);
-//            compare(get_back_button_visible(0), false,
-//                    "Adding second page to the second column shows back button in first column.");
-//        }
-
-//        function test_back_button_next_column() {
-//            multiColumnView.addPageToNextColumn(rootPage, rightPage);
-//            compare(get_back_button_visible(1), false,
-//                    "First page on second column shows a back button.");
-//            multiColumnView.addPageToCurrentColumn(rightPage, sectionsPage);
-//            compare(get_back_button_visible(1), true,
-//                    "Adding a second page on the second column does not show back button.");
-//        }
-//        function test_no_back_button() {
-//            // primary page has no back button
-//            compare(get_back_button_visible(0), false,
-//                    "Back button is visible for primary page.");
-//            multiColumnView.addPageToNextColumn(rootPage, rightPage);
-//            compare(get_back_button_visible(1), false,
-//                    "Back button is visible for first page added to column.");
-//            multiColumnView.addPageToCurrentColumn(rootPage, leftPage);
-//            compare(get_back_button_visible(1), false,
-//                    "Adding a second page to the first column shows back button in the second column.");
-//        }
-
-//        function test_show_back_button() {
-//            multiColumnView.addPageToCurrentColumn(rootPage, leftPage);
-//            compare(get_back_button_visible(0), true,
-//                    "Back button not visible for second page in first column.");
-//            multiColumnView.removePages(leftPage);
-//            multiColumnView.addPageToNextColumn(rootPage, rightPage);
-//            multiColumnView.addPageToCurrentColumn(rightPage, sectionsPage);
-//            compare(get_back_button_visible(1), true,
-//                    "Back button is not visible for second page in second column.");
-//        }
-
     }
 }

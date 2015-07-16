@@ -20,10 +20,10 @@ import Ubuntu.Components 1.3
 Page {
     id: template
 
-    head.backAction: Action {
-        iconName: 'back'
-        onTriggered: columns.removePages(template)
-    }
+//    head.backAction: Action {
+//        iconName: 'back'
+//        onTriggered: columns.removePages(template)
+//    }
 
     default property alias content: layout.children
     property alias spacing: layout.spacing
