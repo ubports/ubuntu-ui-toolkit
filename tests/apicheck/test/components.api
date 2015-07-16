@@ -16,3 +16,4 @@ Extinct.Animals.Titanoboa 4.2 MonsterSnake 3.1: Item
     function var third(var sloff)
     property string spam
     property var type
+    property var version
