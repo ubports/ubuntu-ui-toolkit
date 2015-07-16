@@ -268,7 +268,7 @@ PageTreeNode {
         function getWrapper(page) {
             if (page && page.hasOwnProperty("parentNode")) {
                 var w = page.parentNode;
-                if (w.hasOwnProperty("object") && w.hasOwnProperty("reference")) {
+                if (w && w.hasOwnProperty("object") && w.hasOwnProperty("reference")) {
                     if (w.object == page) {
                         return w;
                     } else {
@@ -309,31 +309,20 @@ PageTreeNode {
             if (typeof page !== "string" && !page.createObject) {
                 // page is neither a url or a Component so it must be a Page object.
 
-                var i;
-                // check visible pages:
-                for (i = 0; i < body.children.length; i++) {
-                    var holder = body.children[i];
-                    if (holder.pageWrapper && page == holder.pageWrapper.object) {
-                        throw "Cannot add a Page that is already visible.";
-                    }
-                }
-
-                // check hidden pages:
-                for (i = 0; i < hiddenPages.children.length; i++) {
-                    var wrapper = hiddenPages.children[i];
-                    if (page == wrapper.object) {
-                        throw "Cannot add a Page that was already added.";
-                    }
+                var oldWrapper = getWrapper(page);
+                if (oldWrapper && d.tree.index(oldWrapper) !== -1) {
+                    console.warn("Cannot add a Page that was already added.");
+                    return null;
                 }
             }
 
             // FIXME TIM: First check that the page is not in a column already.
             // The tree checks for the node, but that's the wrapper only, not the Page inside.
-            var wrapper = d.createWrapper(page, properties);
-            wrapper.parentPage = sourcePage;
-            wrapper.column = column;
-            d.addWrappedPage(wrapper);
-            return wrapper.object;
+            var newWrapper = d.createWrapper(page, properties);
+            newWrapper.parentPage = sourcePage;
+            newWrapper.column = column;
+            d.addWrappedPage(newWrapper);
+            return newWrapper.object;
         }
 
         // update the page for the specified column
