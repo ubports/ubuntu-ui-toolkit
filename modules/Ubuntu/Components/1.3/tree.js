@@ -62,7 +62,7 @@ function Tree() {
         size++;
     }
 
-    // Remove all nodes with a stem that is at least the specified stem.
+    // Remove all nodes from the specified stem and higher stems.
     //
     // Returns the removed nodes.
     this.prune = function(stem) {
