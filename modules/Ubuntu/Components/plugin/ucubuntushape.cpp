@@ -250,8 +250,7 @@ static bool isPrimaryOrientationLandscape = false;
 
 const float implicitWidthGU = 8.0f;
 const float implicitHeightGU = 8.0f;
-const float smallRadiusGU = 1.45f;
-const float mediumRadiusGU = 2.55f;
+const float radiusGuMap[3] = { 1.45f, 2.55f, 3.65f };
 
 /*! \qmltype UbuntuShape
     \instantiates UCUbuntuShape
@@ -328,12 +327,12 @@ UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
 
 /*! \qmlproperty string UbuntuShape::radius
 
-    This property defines the corner radius. Two fixed values are supported: \c "small" and \c
-    "medium". The default value is \c "small".
+    This property defines the corner radius. Three fixed values are supported: \c "small",
+    \c "medium" and \c "large". The default value is \c "small".
 */
 void UCUbuntuShape::setRadius(const QString& radius)
 {
-    const Radius newRadius = (radius == "medium") ? Medium : Small;
+  const Radius newRadius = (radius == "medium") ? Medium : ((radius == "large") ? Large : Small);
     if (m_radius != newRadius) {
         m_radius = newRadius;
         update();
@@ -1133,8 +1132,7 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
     // scaled down accordingly. The shape was using a fixed image for the corner before switching to
     // a distance field, since the corner wasn't taking the whole image (ending at ~80%) we need
     // to take that into account when the size is scaled down.
-    float radius = UCUnits::instance().gridUnit()
-        * (m_radius == Small ? smallRadiusGU : mediumRadiusGU);
+    float radius = UCUnits::instance().gridUnit() * radiusGuMap[m_radius];
     const float scaledDownRadius = qMin(itemSize.width(), itemSize.height()) * 0.5f * 0.8f;
     if (radius > scaledDownRadius) {
         radius = scaledDownRadius;
