@@ -305,6 +305,28 @@ PageTreeNode {
                 return;
             }
 
+            // Check that the Page was not already added.
+            if (typeof page !== "string" && !page.createObject) {
+                // page is neither a url or a Component so it must be a Page object.
+
+                var i;
+                // check visible pages:
+                for (i = 0; i < body.children.length; i++) {
+                    var holder = body.children[i];
+                    if (holder.pageWrapper && page == holder.pageWrapper.object) {
+                        throw "Cannot add a Page that is already visible.";
+                    }
+                }
+
+                // check hidden pages:
+                for (i = 0; i < hiddenPages.children.length; i++) {
+                    var wrapper = hiddenPages.children[i];
+                    if (page == wrapper.object) {
+                        throw "Cannot add a Page that was already added.";
+                    }
+                }
+            }
+
             // FIXME TIM: First check that the page is not in a column already.
             // The tree checks for the node, but that's the wrapper only, not the Page inside.
             var wrapper = d.createWrapper(page, properties);
