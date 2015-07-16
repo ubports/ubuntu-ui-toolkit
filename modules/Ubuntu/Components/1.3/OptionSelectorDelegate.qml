@@ -325,9 +325,12 @@ ListItem.Empty {
             Label {
                 text: option.text === "" ? modelData : option.text
                 width: parent.width
+                elide: Text.ElideRight
             }
             Label {
                 text: option.subText
+                width: parent.width
+                elide: Text.ElideRight
                 visible: option.subText !== "" ? true : false
                 fontSize: "small"
             }
