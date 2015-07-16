@@ -24,10 +24,8 @@ if [ ! -e $BUILD_DIR/tests/apicheck/apicheck ]; then
 fi
 
 echo Self-testing API dump
-# Silence spam on stderr due to fonts
-# https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1256999
-# https://bugreports.qt-project.org/browse/QTBUG-36243
-env QML2_IMPORT_PATH=$SRC_DIR/tests/apicheck/test LANG=C \
+env QML2_IMPORT_PATH=$SRC_DIR/tests/apicheck/test \
     $BUILD_DIR/tests/apicheck/apicheck --qml Extinct.Animals | \
     diff -F '[.0-9]' -u $SRC_DIR/tests/apicheck/test/components.api -
-test $? != 0 && echo Error: Mismatch || echo All fine.
+test $? != 0 && echo Error: Mismatch && exit 1
+echo All fine.
