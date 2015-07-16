@@ -362,11 +362,13 @@ public:
         QSet<QString> implicitSignals;
         for (int index = meta->propertyOffset(); index < meta->propertyCount(); ++index) {
             const QMetaProperty &property = meta->property(index);
-            dump(object, property, knownAttributes);
+            const QMetaObject* superClass(meta->superClass());
+            if (!(superClass && superClass->indexOfProperty(property.name()) > -1))
+                dump(object, property, knownAttributes);
             if (knownAttributes)
-                knownAttributes->knownMethod(QByteArray(property.name()).append("Changed"),
+                knownAttributes->knownMethod(property.notifySignal().name(),
                                              0, property.revision());
-            implicitSignals.insert(QString("%1Changed").arg(QString::fromUtf8(property.name())));
+            implicitSignals.insert(property.notifySignal().name());
         }
 
         QJsonArray methods;
