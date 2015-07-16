@@ -80,7 +80,6 @@ MainView {
                         selected: index === widgetList.currentIndex
                         onClicked: {
                             var source = Qt.resolvedUrl(model.source);
-//                            columns.removePages(mainPage); // clear all except mainPage
                             var newPage = columns.addPageToNextColumn(mainPage, source);
                             newPage.title = model.label;
                             widgetList.currentIndex = index;
