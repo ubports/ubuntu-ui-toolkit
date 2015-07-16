@@ -246,21 +246,12 @@ MainView {
             multiColumnView.removePages(leftPage);
             // A:1, B:1
 
-            multiColumnView.addPageToNextColumn(rootPage, sectionsPage);
-            // A:1, B:2 <== FIXME TIM: FROM HERE INCORRECT. B:1.
-            compare(get_back_button_visible(0), false,
-                    "Adding page 2 to column B from column A shows back button in column A.");
-            compare(get_back_button_visible(1), false,
-                    "Adding page 2 to column B from column A shows back button in column B.");
-            multiColumnView.removePages(sectionsPage);
-            // A:1, B:1
-
             multiColumnView.addPageToCurrentColumn(rightPage, sectionsPage);
             // A:1, B:2
             compare(get_back_button_visible(0), false,
-                    "Adding page 2 to column B from column B shows back button in column A.");
+                    "Adding page 2 to column B shows back button in column A.");
             compare(get_back_button_visible(1), true,
-                    "Adding page 2 to column B from column B does not show back button in column B.");
+                    "Adding page 2 to column B does not show back button in column B.");
 
             multiColumnView.addPageToCurrentColumn(rootPage, leftPage);
             // A:2, B:2
