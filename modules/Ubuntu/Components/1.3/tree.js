@@ -83,6 +83,7 @@ function Tree() {
         stems = newStems;
         parents = newParents;
         size = nodes.length;
+        return removedNodes;
     }
 
     // Chops all nodes with an index higher than the given node which

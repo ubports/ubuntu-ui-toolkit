@@ -269,9 +269,8 @@ Style.PageHeadStyle {
 
                 iconName: "back"
                 property bool stackBack: styledItem.pageStack !== null &&
-                                        styledItem.pageStack !== undefined &&
-                                        styledItem.pageStack.hasOwnProperty("depth") &&
-                                        styledItem.pageStack.depth > 1
+                                         styledItem.pageStack !== undefined &&
+                                         styledItem.pageStack.depth > 1
 
                 // MultiColumnView adds the following properties: multiColumn, page, showBackButton.
                 property bool treeBack: styledItem.hasOwnProperty("multiColumn") &&

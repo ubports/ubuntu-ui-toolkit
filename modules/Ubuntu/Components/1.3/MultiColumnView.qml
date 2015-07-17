@@ -316,8 +316,6 @@ PageTreeNode {
                 }
             }
 
-            // FIXME TIM: First check that the page is not in a column already.
-            // The tree checks for the node, but that's the wrapper only, not the Page inside.
             var newWrapper = d.createWrapper(page, properties);
             newWrapper.parentPage = sourcePage;
             newWrapper.column = column;
