@@ -23,7 +23,7 @@
 
 /*!
   \qmlmethod popupUtils::open(popup, caller, params)
-  The function opens a popup object which can be either a \b Component or URL of a
+  The function creates and shows a popup object from either a \b Component or URL of a
   QML document. The caller drives the placement of the popup as well as the
   pointer's. The third parameter (param) can hold a series of properties configuring
   the popup to be opened. This can be any property defined by the popups and additional
