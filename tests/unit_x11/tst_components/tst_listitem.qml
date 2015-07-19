@@ -1001,7 +1001,7 @@ Item {
         }
         function test_dragmode_availability(data) {
             if (data.xfail) {
-                ignoreWarning(warningFormat(80, 5, "QML Column: Dragging mode requires ListView"));
+                ignoreWarning(warningFormat(85, 5, "QML Column: Dragging mode requires ListView"));
             }
             data.item.ViewItems.dragMode = true;
             wait(400);
@@ -1172,7 +1172,7 @@ Item {
 
         // must run this immediately after the defaults are checked otherwise drag handler connected check will fail
         function test_1_warn_missing_dragUpdated_signal_handler() {
-            ignoreWarning(warningFormat(116, 9, "QML ListView: ListView has no ViewItems.dragUpdated() signal handler implemented. No dragging will be possible."));
+            ignoreWarning(warningFormat(121, 9, "QML ListView: ListView has no ViewItems.dragUpdated() signal handler implemented. No dragging will be possible."));
             toggleDragMode(listView, true);
             drag(listView, 0, 1);
             toggleDragMode(listView, true);
@@ -1210,7 +1210,7 @@ Item {
         function test_warn_model(data) {
             function dummyFunc() {}
             if (data.warning !== "") {
-                ignoreWarning(warningFormat(116, 9, "QML ListView: " + data.warning));
+                ignoreWarning(warningFormat(121, 9, "QML ListView: " + data.warning));
             }
             listView.model = data.model;
             if (typeof data.modelModel !== "undefined") {
