@@ -39,6 +39,7 @@
 #include <QtQml/QQmlEngine>
 #include <QFileInfo>
 #include <QLibraryInfo>
+#include "plugin.h"
 
 /******************************************************************************
  * Divider
@@ -1085,20 +1086,9 @@ void UCListItem13::mousePressEvent(QMouseEvent *event)
         // Highlight the Item while the menu is showing
         setHighlighted(true);
 
-        // Find QML file relative to Ubuntu.Components
-        QStringList pathList;
-        pathList << QString(getenv("QML2_IMPORT_PATH")).split(':', QString::SkipEmptyParts);
-        pathList << QLibraryInfo::location(QLibraryInfo::Qml2ImportsPath).split(':', QString::SkipEmptyParts);
         quint16 version(this->property("theme").value<UCTheme*>()->property("version").toUInt());
         QString versionString(QString("%1.%2").arg(MAJOR_VERSION(version)).arg(MINOR_VERSION(version)));
-        QUrl url;
-        Q_FOREACH(const QString &path, pathList) {
-            QFileInfo file(path + "/Ubuntu/Components/" + versionString + "/ListItemPopover.qml");
-            if (file.exists()) {
-                url = QUrl::fromLocalFile(file.absoluteFilePath());
-                break;
-            }
-        }
+        QUrl url(UbuntuComponentsPlugin::pluginUrl().resolved(versionString + "/ListItemPopover.qml"));
 
         // Open Popover
         QQmlEngine* engine = qmlEngine(this);
