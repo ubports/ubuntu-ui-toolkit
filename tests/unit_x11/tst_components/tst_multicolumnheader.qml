@@ -121,9 +121,9 @@ MainView {
 
         function get_number_of_headers() {
             // FIXME: With only one column, revert to using the AppHeader
-            //  so multiColumnView sill not include any headers.
+            //  so multiColumnView will not include any headers.
             var numHeaders = 0;
-            var header = findChild(multiColumnView, "Header0");
+            var header = get_header(0);
             verify(header !== null, "No header found!");
             while (header !== null) {
                 numHeaders++;
