@@ -191,7 +191,7 @@ PopupBase {
 
         // private
         function updatePosition() {
-            if (pointerTarget && pointerTarget.parent)
+            if (pointerTarget && pointerTarget.parent && popover.parent)
                 popover.y = (popover.parent.height - popover.height) / 2;
             var pos = new InternalPopupUtils.CallerPositioning(foreground, pointer, dismissArea, caller, pointerTarget, edgeMargins, callerMargin);
             pos.auto();
