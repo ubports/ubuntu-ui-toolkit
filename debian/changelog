@@ -1,3 +1,105 @@
+ubuntu-ui-toolkit (1.3.1549+15.10.20150710.1-0ubuntu1) wily; urgency=medium
+
+  [ Timo Jyrinki ]
+  * arch specific deps (LP: #1473035) (LP: #1473035)
+
+ -- CI Train Bot <ci-train-bot@canonical.com>  Fri, 10 Jul 2015 06:31:57 +0000
+
+ubuntu-ui-toolkit (1.3.1549+15.10.20150706-0ubuntu1) wily; urgency=medium
+
+  [ Tim Peeters ]
+  * Disable header animations to avoid bugs when popping a PageStack in a loop. 
+    Fixes LP: #1461729
+  * New header visuals, using the ActionBar and Sections components.  
+  * Introduce the new Sections component.
+  * Fix initialization for hidden and locked header.
+
+  [ Benjamin Zeller ]
+  * Fixes LP: #1461042 Qthelp documentation (pressing in F1) has no style in 
+    qtcreator.
+  
+  [ Richard Huddie ]
+  * Use the real OSK for keyboard input.
+
+  [ Zsombor Egri ]
+  * Fix AlamrModel segfault when updating elements. Fixes LP: #1463430
+
+  [ Vincent Ladeuil ]
+  * In the initctl test fixture,add the option to unset an environment variable
+  
+  [ Christian Dywan ]
+  * QQmlContextData.url is a method in 5.5.0. Fixes LP: #1461897.
+  * OrientationHelper shouldn't move depending on availableHeight. The 
+    parentChanged/availableHeight change in OrientationHelper is the bug fix 
+    itself. The new property UbuntuApplication.inputMethod defaults to 
+    Qt.inputMethod and the unit test overrides it to reproduce the bug (fix) 
+    regardless of device and input method setup - the mock keyboard is NOT 
+    expected to be fully functional, buttons are but a placeholder irrelevant 
+    for the test case.
+    I removed hideInputPanel() as it's not being used anywhere, not essential 
+    to the bug, but mainly unconfusing anyone working with the code as to what 
+    actually affects inputMethod visibility. 
+    Fixes LP: #1428206, LP: #1455406, LP: #1466222.
+  * Use a custom sort function for type names.
+  * Popover sizing should depend on whether it has a target.
+  * Replace Styles page with a header action.
+
+  [ Leo Arias ]
+  * Updated the documentation of the autopilot click_element helpers. 
+    Fixes LP: #1451945
+
+ -- CI Train Bot <ci-train-bot@canonical.com>  Mon, 06 Jul 2015 18:24:30 +0000
+
+ubuntu-ui-toolkit (1.3.1534+15.10.20150625-0ubuntu1) wily; urgency=medium
+
+  [ Christian Dywan ]
+  * Use TextField.write rather than keyboard.type.
+  * Update normal.backgroundText in SuruDark to #5D5D5D. Fixes LP: #1413801.
+  * Fix "runtest.sh: line 78: [: -eq: unary operator expected]".
+  * Consider caret visibility to decide text menu anchor. Fixes LP: #1462419.
+  * Remove text from header textinput AP test QML. Fixes LP: #1459632.
+  * No deprecation notes for our own components. Fixes LP: #1457528.
+ 
+  [ Leonardo Arias Fonseca ]
+  * Add url protocols to the fake application.
+  * Adds a dependency to url-dispatcher-tools in ubuntu-ui-toolkit-autopilot.
+  * Use the test launcher for all the toolkit autopilot tests.
+ 
+  [ Zsombor Egri ]
+  * Remove property bindings before property write does it. Fixes LP: #1462738.
+  * Introducing StyleHints to provide style specific property changes.
+  * Remove ThemeSettings.createStyleComponent() and add styleName to StyledItem.
+    Fixes LP: #1458845.
+ 
+  [ Loïc Molinari ]
+  * [UbuntuShape] Computed dfdt factors based on window content orientation.
+  * Previous logic was based on screen orientation which is not in sync with 
+    OrientationHelper.qml. Fixes LP: #1455567.
+ 
+  [ Timo Jyrinki ] 
+  * Change -html documentation runtime dependencies into Suggests only to limit
+    ubuntu-sdk download size. We're switching to offering only .qch offline 
+    documentation in SDK (inside of it), and they're being added to the seed. 
+    Fixes LP: #1461034.
+  * Licensecheck started complaining about a person name, change to Canonical. 
+    Fixes LP: #1464549
+ 
+  [ Andrea Bernabei ]
+  * Modify ListItem.Caption label margins. Fixes LP: #1314672.
+ 
+  [ Tim Peeters ]
+  * Introduce IconButtonStyle. 
+
+ -- CI Train Bot <ci-train-bot@canonical.com>  Thu, 25 Jun 2015 04:37:52 +0000
+
+ubuntu-ui-toolkit (1.3.1517+15.10.20150523-0ubuntu3) wily; urgency=medium
+
+  * Rebuild against Qt 5.4.2
+  * debian/patches/fix_copyright.patch:
+    - licensecheck started complaining about a person name, change to Canonical
+
+ -- Timo Jyrinki <timo-jyrinki@ubuntu.com>  Fri, 12 Jun 2015 07:48:37 +0000
+
 ubuntu-ui-toolkit (1.3.1517+15.10.20150523-0ubuntu1) wily; urgency=medium
 
   [ Christian Dywan ]

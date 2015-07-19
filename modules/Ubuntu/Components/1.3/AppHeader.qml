@@ -58,6 +58,11 @@ Components.StyledItem {
     onHeightChanged: {
         internal.checkFlickableMargins();
         internal.movementEnded();
+        if (header.config.visible) {
+            header.show();
+        } else {
+            header.hide();
+        }
     }
 
     // with PageHeadConfiguration 1.2, always be visible.

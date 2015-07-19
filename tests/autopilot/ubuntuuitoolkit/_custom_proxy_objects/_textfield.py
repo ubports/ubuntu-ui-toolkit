@@ -16,16 +16,9 @@
 
 import logging
 
-from autopilot import (
-    logging as autopilot_logging,
-    platform
-)
+from autopilot import logging as autopilot_logging
 
-from ubuntuuitoolkit._custom_proxy_objects import (
-    _common,
-    _mainview
-)
-
+from ubuntuuitoolkit._custom_proxy_objects import _common
 
 logger = logging.getLogger(__name__)
 
@@ -47,18 +40,18 @@ class TextField(_common.UbuntuUIToolkitCustomProxyObjectBase):
             of the text field. Default is True.
 
         """
-        with self.keyboard.focused_type(self):
-            self.focus.wait_for(True)
-            if clear:
-                self.clear()
-            else:
-                if not self.is_empty():
-                    self.keyboard.press_and_release('End')
-            self.keyboard.type(text)
+        self._ensure_focused()
+        if clear:
+            self.clear()
+        else:
+            if not self.is_empty():
+                self._go_to_end()
+        self.keyboard.type(text)
 
     @autopilot_logging.log_action(logger.info)
     def clear(self):
         """Clear the text field."""
+        self._ensure_focused()
         if not self.is_empty():
             if self.hasClearButton:
                 self._click_clear_button()
@@ -80,44 +73,69 @@ class TextField(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
     @autopilot_logging.log_action(logger.debug)
     def _clear_with_keys(self):
-        if platform.model() == 'Desktop':
-            self._select_all()
-            self.keyboard.press_and_release('BackSpace')
-        else:
+        if self._is_keyboard_osk():
             # Touch tap currently doesn't have a press_duration parameter, so
             # we can't select all the text.
             # Reported as bug http://pad.lv/1268782 --elopio - 2014-01-13
             self._go_to_end()
-            while self.cursorPosition != 0:
-                self._delete_one_character()
+            while self.text != '':
+                self._delete_one_character_using_osk()
+        else:
+            self._select_all()
+            self.keyboard.press_and_release('BackSpace')
         if not self.is_empty():
             raise _common.ToolkitException('Failed to clear the text field.')
 
     @autopilot_logging.log_action(logger.debug)
     def _select_all(self):
         if not self._is_all_text_selected():
-            # right click is needed
-            self.pointing_device.click_object(self, button=3)
-            root = self.get_root_instance()
-            main_view = root.select_single(_mainview.MainView)
-            popover = main_view.get_text_input_context_menu(
-                'text_input_contextmenu')
-            popover.click_option_by_text('Select All')
+            self._go_to_start()
+            self._go_to_end(select_text=True)
 
     def _is_all_text_selected(self):
         return self.text == self.selectedText
 
-    @autopilot_logging.log_action(logger.debug)
-    def _go_to_end(self):
-        # XXX Here we are cheating because the on-screen keyboard doesn't have
-        # an END key. --elopio - 2014-08-20
-        self.keyboard.press_and_release('End')
+    def _is_keyboard_osk(self):
+        """Return True if the keyboard instance is the OSK."""
+        return _common.is_maliit_process_running()
 
     @autopilot_logging.log_action(logger.debug)
-    def _delete_one_character(self):
+    def _go_to_end(self, select_text=False):
+        key = 'End'
+        if select_text:
+            key = 'Shift+' + key
+        if self._is_keyboard_osk():
+            # XXX Here we are cheating because the on-screen keyboard doesn't
+            # have an END key. --elopio - 2014-08-20
+            from autopilot.input import Keyboard
+            keyboard = Keyboard.create()
+        else:
+            keyboard = self.keyboard
+        keyboard.press_and_release(key)
+
+    @autopilot_logging.log_action(logger.debug)
+    def _go_to_start(self, select_text=False):
+        key = 'Home'
+        if select_text:
+            key = 'Shift+' + key
+        if self._is_keyboard_osk():
+            from autopilot.input import Keyboard
+            keyboard = Keyboard.create()
+        else:
+            keyboard = self.keyboard
+        keyboard.press_and_release(key)
+
+    @autopilot_logging.log_action(logger.debug)
+    def _delete_one_character_using_osk(self):
         original_text = self.text
         # We delete with backspace because the on-screen keyboard has
         # that key.
-        self.keyboard.press_and_release('BackSpace')
+        self.keyboard.press_and_release('backspace')
         if len(self.text) != len(original_text) - 1:
             raise _common.ToolkitException('Failed to delete one character.')
+
+    @autopilot_logging.log_action(logger.debug)
+    def _ensure_focused(self):
+        if not self.activeFocus:
+            self.pointing_device.click_object(self)
+            self.activeFocus.wait_for(True)

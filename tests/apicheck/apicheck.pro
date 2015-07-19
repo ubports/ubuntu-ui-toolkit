@@ -9,4 +9,6 @@ apicheck.path = $$installPath
 apicheck.files = apicheck
 INSTALLS += apicheck
 
+check.commands += test/test.sh || exit 1;
+
 check.commands += ../qmlapicheck.sh || exit 1;

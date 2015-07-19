@@ -40,6 +40,9 @@ class UCAction : public QObject
     Q_PROPERTY(QUrl iconSource MEMBER m_iconSource WRITE setIconSource NOTIFY iconSourceChanged)
     Q_PROPERTY(bool visible MEMBER m_visible NOTIFY visibleChanged)
     Q_PROPERTY(QQmlComponent *itemHint MEMBER m_itemHint WRITE setItemHint)
+
+    // QtQuickControls.Action
+    Q_PROPERTY(QVariant shortcut MEMBER m_shortcut WRITE setShortcut NOTIFY shortcutChanged REVISION 1)
 public:
     enum Type {
         None,
@@ -67,6 +70,7 @@ Q_SIGNALS:
     void parameterTypeChanged();
     void iconSourceChanged();
     void visibleChanged();
+    void shortcutChanged(const QVariant& shortcut);
     void triggered(const QVariant &value);
 
 public Q_SLOTS:
@@ -85,6 +89,7 @@ private:
     QString m_description;
     QString m_keywords;
     Type m_parameterType;
+    QVariant m_shortcut;
 
     friend class UCActionContext;
     friend class UCListItemPrivate;
@@ -97,6 +102,8 @@ private:
     void setIconName(const QString &name);
     void setIconSource(const QUrl &url);
     void setItemHint(QQmlComponent *);
+    void setShortcut(const QVariant&);
+    bool event(QEvent *event);
 };
 
 #endif // UCACTION_H

@@ -96,8 +96,10 @@ Q_SIGNALS:
 
 public Q_SLOTS:
 
-private:
+protected:
     Q_DECLARE_PRIVATE(UCListItem)
+
+private:
     Q_PRIVATE_SLOT(d_func(), void _q_themeChanged())
     Q_PRIVATE_SLOT(d_func(), void _q_relayout())
     Q_PRIVATE_SLOT(d_func(), void _q_updateSwiping())
@@ -117,6 +119,8 @@ protected:
 private:
     bool shouldShowContextMenu(QMouseEvent *event);
     void popoverClosed();
+public:
+    explicit UCListItem13(QQuickItem *parent = 0);
 };
 
 class UCListItemDividerPrivate;
