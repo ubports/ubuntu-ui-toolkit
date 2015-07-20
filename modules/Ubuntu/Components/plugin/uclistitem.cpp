@@ -1094,8 +1094,8 @@ void UCListItem13::mousePressEvent(QMouseEvent *event)
         setHighlighted(true);
 
         Q_D(UCListItem);
-        quint16 version(d->getTheme()->property("version").toUInt());
-        QString versionString(QString("%1.%2").arg(MAJOR_VERSION(version)).arg(MINOR_VERSION(version)));
+        quint16 version(d->getTheme()->version());
+        QString versionString(QStringLiteral("%1.%2").arg(MAJOR_VERSION(version)).arg(MINOR_VERSION(version)));
         QUrl url(UbuntuComponentsPlugin::pluginUrl().resolved(versionString + "/ListItemPopover.qml"));
 
         // Open Popover
@@ -1103,8 +1103,6 @@ void UCListItem13::mousePressEvent(QMouseEvent *event)
         QQmlComponent* component = new QQmlComponent(engine, url, QQmlComponent::PreferSynchronous, this);
         if (component->isError()) {
             qmlInfo(this) << component->errorString();
-            delete component;
-            component = NULL;
         } else {
             QQmlEngine::setContextForObject(component, qmlContext(this));
             QQuickItem* item = static_cast<QQuickItem*>(component->create(qmlContext(this)));
@@ -1114,6 +1112,7 @@ void UCListItem13::mousePressEvent(QMouseEvent *event)
             connect(item, &QQuickItem::visibleChanged, this,
                 &UCListItem13::popoverClosed, Qt::DirectConnection);
         }
+        delete component;
     }
 }
 
