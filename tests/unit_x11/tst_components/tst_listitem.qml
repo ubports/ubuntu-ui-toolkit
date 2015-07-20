@@ -28,22 +28,27 @@ Item {
 
     Action {
         id: stockAction
-        iconName: "starred"
+        iconName: "torch-on"
         objectName: "stockAction"
+        text: 'Switch lights on'
     }
     ListItemActions {
         id: leading
         actions: [
             Action {
                 iconName: "starred"
+                text: 'Bookmark'
                 objectName: "leading_1"
             },
             Action {
                 iconName: "edit"
+                text: 'Edit'
                 objectName: "leading_2"
+                onTriggered: text = 'Edit Again'
             },
             Action {
                 iconName: "camcorder"
+                text: 'Record'
                 objectName: "leading_3"
             }
         ]
@@ -374,6 +379,26 @@ Item {
             clickSpy.target = testItem;
             TestExtras.touchClick(0, testItem, centerOf(testItem));
             clickSpy.wait();
+        }
+
+        SignalSpy {
+            id: visibleSpy
+            signalName: "visibleChanged"
+        }
+
+        function test_context_menu() {
+            mouseClick(testItem, testItem.width / 2, testItem.height / 2, Qt.RightButton);
+            wait(1000);
+            compare(testItem.highlighted, true, "List item didn't highlight on right-click");
+            var context_menu = findChild(main, "listItemContextMenu");
+            verify(context_menu, "Context menu didn't open on right-click");
+            waitForRendering(context_menu);
+            var edit = findChildWithProperty(context_menu, "text", "Edit");
+            verify(edit, "Context menu has no 'Edit' item");
+            visibleSpy.target = context_menu;
+            mouseClick(edit, edit.width / 2, edit.height / 2);
+            compare(edit.text, 'Edit Again', "Item wasn't triggered'");
+            visibleSpy.wait()
         }
 
         function test_no_click_when_swiped() {
@@ -976,7 +1001,7 @@ Item {
         }
         function test_dragmode_availability(data) {
             if (data.xfail) {
-                ignoreWarning(warningFormat(80, 5, "QML Column: Dragging mode requires ListView"));
+                ignoreWarning(warningFormat(85, 5, "QML Column: Dragging mode requires ListView"));
             }
             data.item.ViewItems.dragMode = true;
             wait(400);
@@ -1147,7 +1172,7 @@ Item {
 
         // must run this immediately after the defaults are checked otherwise drag handler connected check will fail
         function test_1_warn_missing_dragUpdated_signal_handler() {
-            ignoreWarning(warningFormat(116, 9, "QML ListView: ListView has no ViewItems.dragUpdated() signal handler implemented. No dragging will be possible."));
+            ignoreWarning(warningFormat(121, 9, "QML ListView: ListView has no ViewItems.dragUpdated() signal handler implemented. No dragging will be possible."));
             toggleDragMode(listView, true);
             drag(listView, 0, 1);
             toggleDragMode(listView, true);
@@ -1185,7 +1210,7 @@ Item {
         function test_warn_model(data) {
             function dummyFunc() {}
             if (data.warning !== "") {
-                ignoreWarning(warningFormat(116, 9, "QML ListView: " + data.warning));
+                ignoreWarning(warningFormat(121, 9, "QML ListView: " + data.warning));
             }
             listView.model = data.model;
             if (typeof data.modelModel !== "undefined") {

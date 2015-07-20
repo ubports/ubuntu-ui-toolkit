@@ -191,7 +191,7 @@ PopupBase {
 
         // private
         function updatePosition() {
-            if (pointerTarget && pointerTarget.parent)
+            if (pointerTarget && pointerTarget.parent && popover.parent)
                 popover.y = (popover.parent.height - popover.height) / 2;
             var pos = new InternalPopupUtils.CallerPositioning(foreground, pointer, dismissArea, caller, pointerTarget, edgeMargins, callerMargin);
             pos.auto();
@@ -210,7 +210,7 @@ PopupBase {
         objectName: "popover_foreground"
 
         //styling properties
-        property real minimumWidth: units.gu(40)
+        property real minimumWidth: units.gu(25)
 
         property real maxWidth: dismissArea ? (internal.portrait ? dismissArea.width : dismissArea.width * 3/4) : 0.0
         property real maxHeight: dismissArea ? (internal.portrait ? dismissArea.height * 3/4 : dismissArea.height) : 0.0

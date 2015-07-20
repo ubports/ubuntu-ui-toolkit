@@ -16,6 +16,7 @@
 
 #include "ucunits.h"
 #include "uctheme.h"
+#include "ucnamespace.h"
 #include "uclistitem.h"
 #include "uclistitem_p.h"
 #include "uclistitemactions.h"
@@ -37,6 +38,9 @@
 #include "uclistitemstyle.h"
 #include <QtQuick/private/qquickbehavior_p.h>
 #include <QtQml/QQmlEngine>
+#include <QFileInfo>
+#include <QLibraryInfo>
+#include "plugin.h"
 
 /******************************************************************************
  * Divider
@@ -1075,6 +1079,54 @@ void UCListItem::mousePressEvent(QMouseEvent *event)
     event->setAccepted(true);
 }
 
+bool UCListItem13::shouldShowContextMenu(QMouseEvent *event)
+{
+    if (event->button() != Qt::RightButton)
+        return false;
+    return leadingActions() || trailingActions();
+}
+
+void UCListItem13::mousePressEvent(QMouseEvent *event)
+{
+    UCListItem::mousePressEvent(event);
+    if (shouldShowContextMenu(event)) {
+        // Highlight the Item while the menu is showing
+        setHighlighted(true);
+
+        Q_D(UCListItem);
+        quint16 version(d->getTheme()->version());
+        QString versionString(QStringLiteral("%1.%2").arg(MAJOR_VERSION(version)).arg(MINOR_VERSION(version)));
+        QUrl url(UbuntuComponentsPlugin::pluginUrl().resolved(versionString + "/ListItemPopover.qml"));
+
+        // Open Popover
+        QQmlEngine* engine = qmlEngine(this);
+        QQmlComponent* component = new QQmlComponent(engine, url, QQmlComponent::PreferSynchronous, this);
+        if (component->isError()) {
+            qmlInfo(this) << component->errorString();
+        } else {
+            QQmlEngine::setContextForObject(component, qmlContext(this));
+            QQuickItem* item = static_cast<QQuickItem*>(component->create(qmlContext(this)));
+            item->setProperty("caller", QVariant::fromValue(this));
+            item->setParentItem(QuickUtils::instance().rootItem(this));
+            QMetaObject::invokeMethod(item, "show");
+            connect(item, &QQuickItem::visibleChanged, this,
+                &UCListItem13::popoverClosed, Qt::DirectConnection);
+        }
+        delete component;
+    }
+}
+
+void UCListItem13::popoverClosed()
+{
+    setHighlighted(false);
+}
+
+void UCListItem::setHighlighted(bool highlighted)
+{
+    Q_D(UCListItem);
+    d->setHighlighted(highlighted);
+}
+
 void UCListItem::mouseReleaseEvent(QMouseEvent *event)
 {
     UCStyledItemBase::mouseReleaseEvent(event);
@@ -1101,8 +1153,14 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
             d->swipeEvent(event->localPos(), UCSwipeEvent::Finished);
             d->suppressClick = false;
         }
+        d->setHighlighted(false);
     }
-    d->setHighlighted(false);
+}
+
+void UCListItem13::mouseReleaseEvent(QMouseEvent *event)
+{
+    if (!shouldShowContextMenu(event))
+        UCListItem::mouseReleaseEvent(event);
 }
 
 void UCListItem::mouseMoveEvent(QMouseEvent *event)
