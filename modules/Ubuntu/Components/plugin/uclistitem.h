@@ -64,6 +64,7 @@ public:
 protected:
     void classBegin();
     void componentComplete();
+    void setHighlighted(bool);
     QSGNode *updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data);
     void itemChange(ItemChange change, const ItemChangeData &data);
     void mousePressEvent(QMouseEvent *event);
@@ -95,8 +96,10 @@ Q_SIGNALS:
 
 public Q_SLOTS:
 
-private:
+protected:
     Q_DECLARE_PRIVATE(UCListItem)
+
+private:
     Q_PRIVATE_SLOT(d_func(), void _q_themeChanged())
     Q_PRIVATE_SLOT(d_func(), void _q_relayout())
     Q_PRIVATE_SLOT(d_func(), void _q_updateSwiping())
@@ -105,6 +108,19 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_contentMoving())
     Q_PRIVATE_SLOT(d_func(), void _q_syncSelectMode())
     Q_PRIVATE_SLOT(d_func(), void _q_syncDragMode())
+};
+
+class UCListItem13 : public UCListItem
+{
+    Q_OBJECT
+protected:
+    void mousePressEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
+private:
+    bool shouldShowContextMenu(QMouseEvent *event);
+    void popoverClosed();
+public:
+    explicit UCListItem13(QQuickItem *parent = 0);
 };
 
 class UCListItemDividerPrivate;

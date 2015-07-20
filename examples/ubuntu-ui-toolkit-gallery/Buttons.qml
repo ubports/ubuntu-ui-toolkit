@@ -48,8 +48,14 @@ Template {
 
             Button {
                 objectName: "button_color"
-                text: i18n.tr("Call")
-                color: UbuntuColors.green
+                width: units.gu(20)
+                action: Action {
+                    text: i18n.tr("Call %1").arg(shortcut)
+                    shortcut: 'Ctrl+C'
+                    property bool flipped
+                    onTriggered: flipped = !flipped
+                }
+                color: action.flipped ? UbuntuColors.blue : UbuntuColors.green
             }
         }
 

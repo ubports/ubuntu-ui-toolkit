@@ -68,6 +68,7 @@ public:
     void snapOut();
     void swipeEvent(const QPointF &localPos, UCSwipeEvent::Status status);
 
+    quint16 defaultThemeVersion;
     bool highlighted:1;
     bool contentMoved:1;
     bool swiped:1;

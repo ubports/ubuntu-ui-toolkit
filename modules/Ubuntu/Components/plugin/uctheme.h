@@ -39,7 +39,7 @@ class UCTheme : public QObject, public QQmlParserStatus
     Q_PROPERTY(UCTheme *parentTheme READ parentTheme NOTIFY parentThemeChanged FINAL)
     Q_PROPERTY(QString name READ name WRITE setName RESET resetName NOTIFY nameChanged FINAL)
     Q_PROPERTY(QObject* palette READ palette WRITE setPalette RESET resetPalette NOTIFY paletteChanged FINAL)
-    Q_PROPERTY(quint16 version MEMBER m_version WRITE setVersion NOTIFY versionChanged FINAL)
+    Q_PROPERTY(quint16 version READ version WRITE setVersion NOTIFY versionChanged FINAL)
 public:
     struct ThemeRecord {
         ThemeRecord() :
@@ -73,6 +73,7 @@ public:
     void resetName();
     QObject* palette();
     void setPalette(QObject *config);
+    quint16 version();
     void setVersion(quint16 version);
 
     // internal, used by the deprecated Theme.createStyledComponent()
