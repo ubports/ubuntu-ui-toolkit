@@ -107,9 +107,7 @@ MainView {
         desktop_file_name = os.path.basename(
             fake_application.desktop_file_path)
         application_name, _ = os.path.splitext(desktop_file_name)
-        self.app = self.launch_upstart_application(
-            application_name,
-            emulator_base=ubuntuuitoolkit.UbuntuUIToolkitCustomProxyObjectBase)
+        self.app = self.launch_upstart_application(application_name)
 
     def use_local_modules(self, local_modules_path):
         env_vars = [
@@ -179,7 +177,6 @@ class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
             ]
         self.app = self.launch_test_application(
             *self.get_command_line(command_line),
-            emulator_base=ubuntuuitoolkit.UbuntuUIToolkitCustomProxyObjectBase,
             app_type='qt')
 
         self.assertThat(
