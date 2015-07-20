@@ -24,7 +24,6 @@ from autopilot.input._common import get_center_point
 from autopilot import platform
 
 from ubuntuuitoolkit import (
-    MainView,
     TextArea,
     TextField,
     tests

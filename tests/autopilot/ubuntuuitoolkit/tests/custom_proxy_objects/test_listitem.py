@@ -18,7 +18,6 @@ import os
 
 import ubuntuuitoolkit
 from ubuntuuitoolkit import (
-    MainView,
     tests
 )
 
