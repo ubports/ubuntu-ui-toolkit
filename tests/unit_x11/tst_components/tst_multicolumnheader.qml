@@ -113,6 +113,15 @@ MainView {
     UbuntuTestCase {
         when: windowShown
 
+        function resize_single_column_width() {
+            multiColumnView.width = units.gu(40);
+        }
+
+        // resize to use the full window width
+        function resize_full_width() {
+            multiColumnView.width = root.width;
+        }
+
         function get_number_of_columns() {
             var body = findChild(multiColumnView, "body");
             return body.children.length;
@@ -143,6 +152,7 @@ MainView {
 
         function cleanup() {
             multiColumnView.removePages(rootPage);
+            resize_full_width();
         }
 
         function test_number_of_headers_equals_number_of_columns_wide() {
@@ -159,7 +169,7 @@ MainView {
 
         function test_number_of_headers_equals_number_of_columns_narrow() {
             if (root.columns !== 1) {
-                skip("Only for narrow view.");
+                resize_single_column_width();
             }
             compare(get_number_of_columns(), 1, "Number of columns is not 1 on narrow screen.");
             compare(get_number_of_headers(), 1, "Number of headers is not 1 on narrow screen.");
@@ -196,7 +206,7 @@ MainView {
 
         function test_header_configuration_equals_column_page_configuration_narrow() {
             if (root.columns !== 1) {
-                skip("Only for narrow view.");
+                resize_single_column_width();
             }
             compare(get_number_of_headers(), 1, "Number of headers is not 1.");
             compare(get_header(0).config, rootPage.head,
@@ -330,7 +340,7 @@ MainView {
 
         function test_back_button_narrow() {
             if (root.columns !== 1) {
-                skip("Only for narrow view.");
+                resize_single_column_width();
             }
 
             compare(get_back_button_visible(0), false,
