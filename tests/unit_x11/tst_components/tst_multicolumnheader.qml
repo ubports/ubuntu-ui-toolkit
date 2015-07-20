@@ -159,10 +159,6 @@ MainView {
             if (root.columns !== 2) {
                 skip("Only for wide view.");
             }
-            multiColumnView.width = units.gu(40);
-            compare(get_number_of_columns(), 1, "Number of columns is not 1.");
-            compare(get_number_of_headers(), 1, "Number of headers is not 1.");
-            multiColumnView.width = root.width;
             compare(get_number_of_columns(), 2, "Number of columns is not 2.");
             compare(get_number_of_headers(), 2, "Number of headers is not 2.");
         }
