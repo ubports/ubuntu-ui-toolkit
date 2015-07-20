@@ -1174,7 +1174,7 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
     }
 
     // accept the tugging only if the move is within the threshold
-    if (d->highlighted && !d->swiped && (d->leadingActions || d->trailingActions)) {
+    if (event->buttons() == Qt::LeftButton && d->highlighted && !d->swiped && (d->leadingActions || d->trailingActions)) {
         // check if we can initiate the drag at all
         // only X direction matters, if Y-direction leaves the threshold, but X not, the tug is not valid
         qreal threshold = UCUnits::instance().gu(d->xAxisMoveThresholdGU);
