@@ -486,6 +486,16 @@ Ubuntu.Components.Styles.ListItemStyle 1.3 1.2: Item
     function swipeEvent(SwipeEvent event)
     function rebound()
     property Animation snapAnimation
+Ubuntu.Components.LiveTimer 1.0 0.1: QtObject
+    property Frequency frequency
+    signal trigger()
+    property QDateTime relativeTime
+Ubuntu.Components.LiveTimer.Frequency: Enum
+    Disabled
+    Hour
+    Minute
+    Relative
+    Second
 Ubuntu.Components.MainView 1.0 0.1: MainViewBase
     property bool automaticOrientation
     default readonly property QtObject contentsItem

@@ -27,6 +27,7 @@
 #include <QtQml/QQmlContext>
 #include "i18n.h"
 #include "listener.h"
+#include "livetimer.h"
 #include "ucunits.h"
 #include "ucscalingimageprovider.h"
 #include "ucqquickimageextension.h"
@@ -213,6 +214,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterSingletonType<UCNamespaceV13>(uri, 1, 3, "Ubuntu", registerUbuntuNamespace13);
     qmlRegisterType<UCStyledItemBase, 2>(uri, 1, 3, "StyledItem");
     qmlRegisterCustomType<UCStyleHints>(uri, 1, 3, "StyleHints", new UCStyleHintsParser);
+    qmlRegisterType<LiveTimer>(uri, 1, 3, "LiveTimer");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
