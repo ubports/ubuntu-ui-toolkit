@@ -29,7 +29,7 @@ class SectionsTestCase(tests.QMLFileAppTestCase):
     def setUp(self):
         super().setUp()
         self.sections = self.app.select_single(
-            'Sections', objectName='sections')
+            ubuntuuitoolkit.Sections, objectName='sections')
         self.label = self.app.select_single(
             'Label', objectName='label')
         self.assertEqual(self.label.text, 'Section 0 is selected.')

@@ -29,7 +29,7 @@ class ActionBarTestCase(tests.QMLFileAppTestCase):
     def setUp(self):
         super().setUp()
         self.actionbar = self.app.select_single(
-            'ActionBar', objectName='ActionBar')
+            ubuntuuitoolkit.ActionBar, objectName='ActionBar')
         self.label = self.app.select_single(
             'Label', objectName='Label')
         self.assertEqual(self.label.text, 'No action triggered.')
