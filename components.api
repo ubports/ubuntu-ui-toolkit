@@ -486,7 +486,7 @@ Ubuntu.Components.Styles.ListItemStyle 1.3 1.2: Item
     function swipeEvent(SwipeEvent event)
     function rebound()
     property Animation snapAnimation
-Ubuntu.Components.LiveTimer 1.0 0.1: QtObject
+Ubuntu.Components.LiveTimer 1.3: QtObject
     property Frequency frequency
     signal trigger()
     property QDateTime relativeTime
