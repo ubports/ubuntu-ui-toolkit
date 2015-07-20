@@ -23,6 +23,9 @@ MainView {
     width: units.gu(120)
     height: units.gu(71)
 
+    // 2 on desktop, 1 on phone.
+    property int columns: width >= units.gu(80) ? 2 : 1
+
     MultiColumnView {
         id: multiColumnView
         width: parent.width
@@ -142,7 +145,10 @@ MainView {
             multiColumnView.removePages(rootPage);
         }
 
-        function test_number_of_headers_equals_number_of_columns() {
+        function test_number_of_headers_equals_number_of_columns_wide() {
+            if (root.columns !== 2) {
+                skip("Only for wide view.");
+            }
             multiColumnView.width = units.gu(40);
             compare(get_number_of_columns(), 1, "Number of columns is not 1.");
             compare(get_number_of_headers(), 1, "Number of headers is not 1.");
@@ -151,7 +157,18 @@ MainView {
             compare(get_number_of_headers(), 2, "Number of headers is not 2.");
         }
 
-        function test_header_configuration_equals_column_page_configuration() {
+        function test_number_of_headers_equals_number_of_columns_narrow() {
+            if (root.columns !== 1) {
+                skip("Only for narrow view.");
+            }
+            compare(get_number_of_columns(), 1, "Number of columns is not 1 on narrow screen.");
+            compare(get_number_of_headers(), 1, "Number of headers is not 1 on narrow screen.");
+        }
+
+        function test_header_configuration_equals_column_page_configuration_wide() {
+            if (root.columns !== 2) {
+                skip("Only for wide view.");
+            }
             compare(get_number_of_headers(), 2, "Number of headers is not 2 initially.");
             compare(get_header(0).config, rootPage.head,
                     "First column header is not initialized with primaryPage header config.");
@@ -177,9 +194,33 @@ MainView {
                     "Second column header is not reverted properly.");
         }
 
+        function test_header_configuration_equals_column_page_configuration_narrow() {
+            if (root.columns !== 1) {
+                skip("Only for narrow view.");
+            }
+            compare(get_number_of_headers(), 1, "Number of headers is not 1.");
+            compare(get_header(0).config, rootPage.head,
+                    "First column header is not initialized with primaryPage header config.");
+
+            multiColumnView.addPageToCurrentColumn(rootPage, leftPage);
+            compare(get_header(0).config, leftPage.head,
+                    "Single column header is not updated properly.");
+            multiColumnView.removePages(leftPage);
+            compare(get_header(0).config, rootPage.head,
+                    "Single column header is not reverted properly.");
+
+            multiColumnView.addPageToNextColumn(rootPage, rightPage);
+            compare(get_header(0).config, rightPage.head,
+                    "Single column header is not updated properly when adding to next column.");
+            multiColumnView.removePages(rightPage);
+            compare(get_header(0).config, rootPage.head,
+                    "Single column header is not reverted properly after adding to next column.");
+        }
+
         function test_header_title_for_external_page() {
             multiColumnView.addPageToNextColumn(rootPage, Qt.resolvedUrl("MyExternalPage.qml"));
-            compare(get_header(1).config.title, "Page from QML file",
+            var n = root.columns === 2 ? 1 : 0
+            compare(get_header(n).config.title, "Page from QML file",
                     "Adding external Page does not update the header title.");
         }
 
@@ -212,7 +253,10 @@ MainView {
             }
         }
 
-        function test_back_button() {
+        function test_back_button_wide() {
+            if (root.columns !== 2) {
+                skip("Only for wide view.");
+            }
             // A is the first column, B is the second column.
             // A:i, B:j = i pages in A, j pages in B.
 
@@ -267,7 +311,7 @@ MainView {
             compare(get_back_button_visible(1), false,
                     "Removing page 2 from column B does not hide back button when column A has 2 pages.");
 
-            // some weird case that I encountered with manual testing:
+            // A weird case that I encountered with manual testing:
             multiColumnView.removePages(rootPage);
             // A:1, B:0
             multiColumnView.addPageToNextColumn(rootPage, Qt.resolvedUrl("MyExternalPage.qml"));
@@ -279,9 +323,31 @@ MainView {
             multiColumnView.addPageToCurrentColumn(rightPage, sectionsPage);
             // A:2, B:3
             compare(get_back_button_visible(0), true,
-                    "fail left");
+                    "No back button on the left with multiple pages per column.");
             compare(get_back_button_visible(1), true,
-                    "fail right");
+                    "No back button on the right with multiple pages per column.");
+        }
+
+        function test_back_button_narrow() {
+            if (root.columns !== 1) {
+                skip("Only for narrow view.");
+            }
+
+            compare(get_back_button_visible(0), false,
+                    "Back button is visible for primary page.");
+            multiColumnView.addPageToCurrentColumn(rootPage, leftPage);
+            compare(get_back_button_visible(0), true,
+                    "No back button visible with two pages in single column.");
+            multiColumnView.removePages(leftPage);
+            compare(get_back_button_visible(0), false,
+                    "Back button remains visible after removing second page from column.");
+
+            multiColumnView.addPageToNextColumn(rootPage, rightPage);
+            compare(get_back_button_visible(0), true,
+                    "No back button visible after pushing to next column when viewing single column.");
+            multiColumnView.removePages(rightPage);
+            compare(get_back_button_visible(0), false,
+                    "Back button remains visible after removing page from following column.");
         }
     }
 }
