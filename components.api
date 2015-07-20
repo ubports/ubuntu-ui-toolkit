@@ -1412,3 +1412,4 @@ Ubuntu.Components.i18n 1.0 0.1: QtObject
     function string dctr(string domain, string context, string text)
     function string tag(string text)
     function string tag(string context, string text)
+    function string relativeDateTime(QDateTime datetime)
