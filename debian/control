@@ -97,12 +97,12 @@ Multi-Arch: foreign
 Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
 Depends: ${misc:Depends},
          ${shlibs:Depends},
-         qtdeclarative5-doc-html,
-         qtwebkit5-doc-html,
-         qtsvg5-doc-html,
-         qtscript5-doc-html,
-         qtmultimedia5-doc-html,
-         unity-action-doc,
+Suggests: qtdeclarative5-doc-html,
+          qtwebkit5-doc-html,
+          qtsvg5-doc-html,
+          qtscript5-doc-html,
+          qtmultimedia5-doc-html,
+          unity-action-doc,
 Conflicts: qt-components-ubuntu-doc
 Replaces: qt-components-ubuntu-doc
 Provides: qt-components-ubuntu-doc
@@ -147,8 +147,10 @@ Depends: ${misc:Depends},
          python3-autopilot (>= 1.4),
          python3-autopilot-trace,
          qttestability-autopilot,
+         ubuntu-keyboard-autopilot [amd64 armhf i386],
          ubuntu-ui-toolkit-examples (>= ${source:Version}),
          upstart,
+         url-dispatcher-tools,
          qtdeclarative5-ubuntu-ui-toolkit-plugin (>= ${source:Version}) | qtdeclarative5-ubuntu-ui-toolkit-plugin-gles,
          qml-module-qttest | qtdeclarative5-test-plugin,
 Description: Test package for Ubuntu UI Toolkit

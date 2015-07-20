@@ -50,6 +50,7 @@
 #include "ucinversemouse.h"
 #include "sortfiltermodel.h"
 #include "ucstyleditembase.h"
+#include "ucstylehints.h"
 #include "ucaction.h"
 #include "ucactioncontext.h"
 #include "ucactionmanager.h"
@@ -210,6 +211,8 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCTheme>(uri, 1, 3, "ThemeSettings");
     qmlRegisterType<UCStyledItemBase, 2>(uri, 1, 3, "StyledItem");
     qmlRegisterSingletonType<UCNamespaceV13>(uri, 1, 3, "Ubuntu", registerUbuntuNamespace13);
+    qmlRegisterType<UCStyledItemBase, 2>(uri, 1, 3, "StyledItem");
+    qmlRegisterCustomType<UCStyleHints>(uri, 1, 3, "StyleHints", new UCStyleHintsParser);
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)

@@ -146,7 +146,7 @@ StyledItem {
     activeFocusOnPress: true
 
     theme.version: Ubuntu.toolkitVersion
-    style: theme.createStyleComponent("DialerStyle.qml", dialer)
+    styleName: "DialerStyle"
 
     Item {
         id: internal

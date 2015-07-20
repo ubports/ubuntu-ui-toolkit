@@ -58,19 +58,21 @@ Item {
         Repeater {
             objectName: "actions_repeater"
             model: numberOfSlots.used
-            PageHeadButton {
+            AbstractButton {
+                style: IconButtonStyle { }
                 id: actionButton
                 objectName: action.objectName + "_action_button"
+                height: actionsContainer.height
                 action: actionsContainer.visibleActions[index]
-                iconWidth: units.gu(2)
             }
         }
 
-        PageHeadButton {
+        AbstractButton {
+            style: IconButtonStyle { }
             id: actionsOverflowButton
             objectName: "actions_overflow_button"
+            height: actionsContainer.height
             visible: numberOfSlots.requested > numberOfSlots.available
-            iconWidth: units.gu(2)
 
             // Ensure resetting of X when this button is not visible to avoid
             // miscalculation of actionsContainer.width. Fixes bug #1408481.

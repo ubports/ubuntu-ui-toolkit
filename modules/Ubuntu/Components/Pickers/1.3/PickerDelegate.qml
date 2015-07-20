@@ -48,7 +48,7 @@ AbstractButton {
     }
 
     theme.version: Ubuntu.toolkitVersion
-    style: theme.createStyleComponent("PickerDelegateStyle.qml", pickerDelegate)
+    styleName: "PickerDelegateStyle"
 
     QtObject {
         id: internal
