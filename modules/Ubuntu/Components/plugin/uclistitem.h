@@ -64,6 +64,7 @@ public:
 protected:
     void classBegin();
     void componentComplete();
+    void setHighlighted(bool);
     QSGNode *updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data);
     void itemChange(ItemChange change, const ItemChangeData &data);
     void mousePressEvent(QMouseEvent *event);
@@ -112,6 +113,12 @@ private:
 class UCListItem13 : public UCListItem
 {
     Q_OBJECT
+protected:
+    void mousePressEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
+private:
+    bool shouldShowContextMenu(QMouseEvent *event);
+    void popoverClosed();
 public:
     explicit UCListItem13(QQuickItem *parent = 0);
 };
