@@ -24,6 +24,9 @@ MainView {
     width: units.gu(120)
     height: units.gu(71)
 
+    // 2 on desktop, 1 on phone.
+    property int columns: width >= units.gu(80) ? 2 : 1
+
     MultiColumnView {
         id: mcv
         width: parent.width
@@ -163,7 +166,7 @@ MainView {
         }
 
         function test_page_visible() {
-            // Two columns
+            // Two columns on desktop, one on phone
             compare(page1.visible, true, "Primary page not initially visible.");
             compare(page2.visible, false, "Page 2 visible before it was added.");
             compare(page3.visible, false, "Page 3 visible before it was added.");
@@ -172,7 +175,11 @@ MainView {
             compare(page1.visible, false, "Page still visible after adding new page in current column.");
             compare(page2.visible, true, "Page invisible after adding it to current column.");
             mcv.addPageToNextColumn(page2, page3);
-            compare(page2.visible, true, "Page in first column became invisibl after adding to next column.");
+            if (root.columns === 2) {
+                compare(page2.visible, true, "Page in first column became invisible after adding to next column.");
+            } else { // root.columns === 1
+                compare(page2.visible, false, "Page in single column still visible after adding page to next column.");
+            }
             compare(page3.visible, true, "Page invisible after adding it to next column.");
 
             // One column
@@ -191,10 +198,12 @@ MainView {
             compare(page1.visible, false, "Page remains visible after adding to next column in single column view.");
             compare(page4.visible, true, "Page added to next column with single column view is not visible.");
 
-            // Two columns
+            // Two columns on desktop, one on phone
             resize_multiple_columns();
-            compare(page1.visible, true, "Page in left column did not become visible when switching to multi-column view.");
-            compare(page4.visible, true, "Page in right column became invisible when switching to multi-column view.");
+            if (root.columns === 2) {
+                compare(page1.visible, true, "Page in left column did not become visible when switching to multi-column view.");
+                compare(page4.visible, true, "Page in right column became invisible when switching to multi-column view.");
+            }
         }
     }
 }
