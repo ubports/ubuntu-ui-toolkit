@@ -64,9 +64,9 @@ MainView {
         }
     }
 
-//    MultiColumnView {
-//        id: defaults
-//    }
+    MultiColumnView {
+        id: defaults
+    }
 
     UbuntuTestCase {
         when: windowShown
@@ -75,65 +75,19 @@ MainView {
             mcv.width = units.gu(40);
         }
 
+        // resize to use the full window width
         function resize_multiple_columns() {
             mcv.width = root.width;
         }
 
         function cleanup() {
-//            testView.columns = Qt.binding(function() {
-//                return test.width > units.gu(100) ? 3 : (test.width > units.gu(80) ? 2 : 1);
-//            });
-//            testView.width = root.width;
-//            testView.height = root.height;
             resize_multiple_columns();
-            // remove all pages
-//            print("cleanup!")
             mcv.removePages(page1);
         }
 
-//        function test_0_API() {
-//            compare(defaults.primaryPage, undefined, "primaryPage not undefined by default");
-//        }
-
-//        function test_add_to_first_column_data() {
-//            return [
-//                {tag: "null sourcePage, fail", sourcePage: null, page: page2, failMsg: "No sourcePage specified. Page will not be added."},
-//                {tag: "valid sourcePage, pass", sourcePage: page1, page: page2, failMsg: ""},
-//            ]
-//        }
-//        function test_add_to_first_column(data) {
-//            if (data.failMsg != "") {
-//                ignoreWarning(data.failMsg);
-//            }
-
-//            testView.addPageToCurrentColumn(data.sourcePage, data.page);
-//            var firstColumn = findChild(testView, "ColumnHolder0");
-//            verify(firstColumn);
-//            if (data.failMsg != "") {
-//                expectFail(data.tag, "Fail");
-//            }
-//            compare(firstColumn.pageWrapper.object, data.page);
-//        }
-
-//        function test_add_to_next_column_data() {
-//            return [
-//                {tag: "null sourcePage, fail", sourcePage: null, page: page2, failMsg: "No sourcePage specified. Page will not be added."},
-//                {tag: "valid sourcePage, pass", sourcePage: page1, page: page2, failMsg: ""},
-//            ]
-//        }
-//        function test_add_to_next_column(data) {
-//            if (data.failMsg != "") {
-//                ignoreWarning(data.failMsg);
-//            }
-
-//            testView.addPageToNextColumn(data.sourcePage, data.page);
-//            var secondColumn = findChild(testView, "ColumnHolder1");
-//            verify(secondColumn);
-//            if (data.failMsg != "") {
-//                expectFail(data.tag, "Fail");
-//            }
-//            verify(secondColumn.pageWrapper);
-//        }
+        function test_0_API() {
+            compare(defaults.primaryPage, undefined, "primaryPage not undefined by default");
+        }
 
         function test_zzz_change_primaryPage() {
             // this prints the warning but still changes the primary page,
