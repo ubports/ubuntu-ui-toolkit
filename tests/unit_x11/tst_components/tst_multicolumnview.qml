@@ -37,16 +37,17 @@ MainView {
         Page {
             id: page1
             title: "Page1"
-            Button {
-                anchors.centerIn: parent
-                text: "Page 2 left"
-            }
 
             Column {
-                width: parent.width
+                anchors.centerIn: parent
+                width: childrenRect.width
                 Button {
-                    text: "Page 2"
-                    onTriggered: mcv.addPageToCurrentColumn(page1, page2);
+                    text: "Page 2 left"
+                    onTriggered: mcv.addPageToCurrentColumn(page1, page2)
+                }
+                Button {
+                    text: "Page 3 right"
+                    onTriggered: mcv.addPageToNextColumn(page1, page3);
                 }
             }
         }
