@@ -46,36 +46,32 @@ import "tree.js" as Tree
   a Page instance, a Component or a url to a document defining a Page. The page
   cannot be removed from the view.
 
-  \note Unlike PageStack or Page the component does not fill its parent by default.
-
   \qml
   import QtQuick 2.4
   import Ubuntu.Components 1.3
 
-  MainView {
+  MultiColumnView {
       width: units.gu(80)
       height: units.gu(71)
 
-      MultiColumnView {
-          anchors.fill: parent
-          primaryPage: page1
-          Page {
-              id: page1
-              title: "Main page"
-              Column {
-                  Button {
-                      text: "Add Page2 above " + title
-                      onClicked: page1.pageStack.addPageToCurrentColumn(page1, page2)
-                  }
-                  Button {
-                      text: "Add Page3 next to " + title
-                      onClicked: page1.pageStack.addPageToNextColumn(page1, page3)
-                  }
+      primaryPage: page1
+      Page {
+          id: page1
+          title: "Main page"
+          Column {
+              Button {
+                  text: "Add Page2 above " + title
+                  onClicked: page1.pageStack.addPageToCurrentColumn(page1, page2)
+              }
+              Button {
+                  text: "Add Page3 next to " + title
+                  onClicked: page1.pageStack.addPageToNextColumn(page1, page3)
               }
           }
-          Page {
-              id: page2
-              title: "Page #2"
+      }
+      Page {
+          id: page2
+          title: "Page #2"
           }
           Page {
               id: page3
@@ -102,7 +98,7 @@ import "tree.js" as Tree
               id: page1
               title: "Main page"
               Button {
-                  text: "Add Page2 next to " + title
+                  text: "Add Page2 next to " + page1.title
                   onClicked: page1.pageStack.addPageToNextColumn(page1, page2)
               }
           }
@@ -110,8 +106,8 @@ import "tree.js" as Tree
               id: page2
               title: "Page #2"
               Button {
-                  text: "Add Page3 next to " + title
-                  onClicked: page2.pageStack.addPageToNextColumn(page2, page3)
+                  text: "Add Page3 here"
+                  onClicked: page2.pageStack.addPageToCurrentColumn(page2, page3)
               }
           }
           Page {
@@ -139,9 +135,10 @@ import "tree.js" as Tree
   \sa PageStack
 */
 
-PageTreeNode {
+MainViewBase {
     id: multiColumnView
 
+    // FIXME TIM: Remove this. Make AppHeader invisible for >1 columns. later.
     Page {
         // MultiColumnView has its own split headers, so
         //  disable the application header.
@@ -467,8 +464,8 @@ PageTreeNode {
                 property PageHeadConfiguration config: null
                 property Item contents: null
 
-                property color dividerColor: multiColumnView.__propagated.header.dividerColor
-                property color panelColor: multiColumnView.__propagated.header.panelColor
+                property color dividerColor: Qt.darker(multiColumnView.headerColor, 1.1)
+                property color panelColor: Qt.lighter(multiColumnView.headerColor, 1.1)
 
                 visible: holder.pageWrapper && holder.pageWrapper.active
 
