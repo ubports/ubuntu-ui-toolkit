@@ -122,12 +122,10 @@ import "tree.js" as Tree
   it will launch with multiple columns.
 
   \c page1 is set to be the primary page, \c page2 will be added to column next to
-  \c page1 (to column 2) and \c page3 next to \c page2 (column 3). When the window
-  is resized to have its size below 80 GU, the component will switch to 1 column
-  mode, and \c page3 will be placed in the last column, and the header for \c page2
-  will have a back button, indicating that there is a page below it. If the window
+  \c page1 (to column 2) and \c page3 in the same column as \c page2. If the window
   is resized to contain only one column, all pages will be shown in that column, so
-  the component will act as PageStack. Resizing the window back to 2 columns will place the pages side-by-side.
+  the component will act as PageStack. Resizing the window back to 2 columns will place
+  the pages side-by-side.
 
   \note In the above example if \c page2 is removed, that will remove all its child
   pages, meaning \c page3 will also be removed.
@@ -137,18 +135,6 @@ import "tree.js" as Tree
 
 MainViewBase {
     id: multiColumnView
-
-    // FIXME TIM: Remove this. Make AppHeader invisible for >1 columns. later.
-    Page {
-        // MultiColumnView has its own split headers, so
-        //  disable the application header.
-        id: appHeaderControlPage
-        head {
-            locked: true
-            visible: false
-        }
-        // title is set in attachPage() when the attached Page.column === 0
-    }
 
     /*!
       The property holds the first Page which will be added to the view. If the
@@ -508,10 +494,6 @@ MainViewBase {
 
                 if (pageWrapper.object.hasOwnProperty("head")) {
                     subHeader.config = pageWrapper.object.head;
-                }
-                if (pageWrapper.column === 0 && pageWrapper.object.hasOwnProperty("title")) {
-                    // set the application title
-                    appHeaderControlPage.title = pageWrapper.object.title;
                 }
             }
             function detachCurrentPage() {
