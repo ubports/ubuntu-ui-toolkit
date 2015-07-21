@@ -18,13 +18,14 @@ import QtQuick 2.4
 import Ubuntu.Components 1.3
 import Ubuntu.Components.ListItems 1.3 as ListItem
 
-MainView {
+//MainView {
+MultiColumnView {
     id: gallery
     // objectName for functional testing purposes (autopilot-qt5)
     objectName: "mainView"
 
     // Note! applicationName needs to match the .desktop filename
-    applicationName: "ubuntu-ui-toolkit-gallery"
+//    applicationName: "ubuntu-ui-toolkit-gallery"
 
     width: units.gu(120)
     height: units.gu(75)
@@ -33,14 +34,14 @@ MainView {
      This property enables the application to change orientation
      when the device is rotated. The default is false.
     */
-    automaticOrientation: true
+//    automaticOrientation: true
 
     LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
     LayoutMirroring.childrenInherit: true
 
-    MultiColumnView {
-        id: columns
-        anchors.fill: parent
+//    MultiColumnView {
+//        id: columns
+//        anchors.fill: parent
         primaryPage: mainPage
 
         Page {
@@ -80,7 +81,9 @@ MainView {
                         selected: index === widgetList.currentIndex
                         onClicked: {
                             var source = Qt.resolvedUrl(model.source);
-                            var newPage = columns.addPageToNextColumn(mainPage, source);
+//                            var newPage = columns.addPageToNextColumn(mainPage, source);
+                            var newPage = gallery.addPageToNextColumn(mainPage, source);
+
                             newPage.title = model.label;
                             widgetList.currentIndex = index;
                         }
@@ -88,7 +91,7 @@ MainView {
                 }
             }
         }
-    }
+//    }
 
     WidgetsModel {
         id: widgetsModel
