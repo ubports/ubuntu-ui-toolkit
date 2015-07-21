@@ -19,7 +19,7 @@ import QtTest 1.0
 import Ubuntu.Test 1.0
 import Ubuntu.Components 1.3
 
-MainView {
+Item {
     id: root
     width: units.gu(120)
     height: units.gu(71)
