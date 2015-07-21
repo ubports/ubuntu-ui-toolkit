@@ -29,7 +29,7 @@ from autopilot import (
     platform
 )
 from autopilot.introspection import dbus
-from ubuntuuitoolkit._custom_proxy_objects._flickable import QQuickFlickable
+import ubuntuuitoolkit
 
 logger = logging.getLogger(__name__)
 
@@ -244,7 +244,7 @@ class UbuntuUIToolkitCustomProxyObjectBase(dbus.CustomEmulatorBase):
         parent = self.get_parent()
         root = self.get_root_instance()
         while parent.id != root.id:
-            parent = QQuickFlickable.from_proxy_object(parent)
+            parent = ubuntuuitoolkit.QQuickFlickable.from_proxy_object(parent)
             if parent.is_flickable():
                 return parent
             parent = parent.get_parent()
