@@ -20,6 +20,7 @@
 __all__ = [
     'AppHeader',
     'base',
+    'ActionBar',
     'check_autopilot_version',
     'CheckBox',
     'environment',
@@ -37,6 +38,7 @@ __all__ = [
     'QQuickFlickable',
     'QQuickGridView',
     'QQuickListView',
+    'Sections',
     'TabBar',
     'Tabs',
     'tests',
@@ -58,6 +60,7 @@ from ubuntuuitoolkit import (
     ubuntu_scenarios
 )
 from ubuntuuitoolkit._custom_proxy_objects import (
+    ActionBar,
     AppHeader,
     check_autopilot_version,
     CheckBox,
@@ -74,6 +77,7 @@ from ubuntuuitoolkit._custom_proxy_objects import (
     QQuickFlickable,
     QQuickGridView,
     QQuickListView,
+    Sections,
     TabBar,
     Tabs,
     TextArea,

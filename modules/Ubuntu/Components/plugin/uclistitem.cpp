@@ -16,6 +16,7 @@
 
 #include "ucunits.h"
 #include "uctheme.h"
+#include "ucnamespace.h"
 #include "uclistitem.h"
 #include "uclistitem_p.h"
 #include "uclistitemactions.h"
@@ -25,6 +26,7 @@
 #include "i18n.h"
 #include "quickutils.h"
 #include "ucaction.h"
+#include "ucnamespace.h"
 #include <QtQml/QQmlInfo>
 #include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickflickable_p.h>
@@ -36,6 +38,9 @@
 #include "uclistitemstyle.h"
 #include <QtQuick/private/qquickbehavior_p.h>
 #include <QtQml/QQmlEngine>
+#include <QFileInfo>
+#include <QLibraryInfo>
+#include "plugin.h"
 
 /******************************************************************************
  * Divider
@@ -179,13 +184,13 @@ void UCListItemDivider::setColorTo(const QColor &color)
  */
 UCListItemPrivate::UCListItemPrivate()
     : UCStyledItemBasePrivate()
+    , defaultThemeVersion(0)
     , highlighted(false)
     , contentMoved(false)
     , swiped(false)
     , suppressClick(false)
     , ready(false)
     , customColor(false)
-    , customStyle(false)
     , xAxisMoveThresholdGU(DEFAULT_SWIPE_THRESHOLD_GU)
     , color(Qt::transparent)
     , highlightColor(Qt::transparent)
@@ -196,7 +201,6 @@ UCListItemPrivate::UCListItemPrivate()
     , trailingActions(0)
     , mainAction(0)
 {
-    styleLoadingMethod = DelayTillExplicitRequested;
 }
 UCListItemPrivate::~UCListItemPrivate()
 {
@@ -229,6 +233,7 @@ void UCListItemPrivate::init()
     // watch grid unit size change and set implicit size
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_updateSize()));
     _q_updateSize();
+    setStyleName("ListItemStyle");
 }
 
 void UCListItemPrivate::_q_themeChanged()
@@ -260,12 +265,6 @@ void UCListItemPrivate::postThemeChanged()
     Q_Q(UCListItem);
     // update divider colors
     divider->paletteChanged();
-    // if not using custom style, reload style component from theme
-    if (!customStyle && componentComplete) {
-        // use style setter but reset custom style flag
-        setStyle(getTheme()->createStyleComponent("ListItemStyle.qml", q));
-        customStyle = false;
-    }
 
     // update colors, panels
     if (!customColor) {
@@ -315,44 +314,35 @@ void UCListItemPrivate::_q_syncDragMode()
     Q_EMIT q->dragModeChanged();
 }
 
-/*!
- * \qmlproperty Component ListItem::style
- * Holds the style of the component defining the components visualizing the leading/
- * trailing actions, selection and dragging mode handlers as well as different
- * animations. The component does not assume any visuals present in the style,
- * and will load its content only when requested.
- * \sa ListItemStyle
- */
 void UCListItemPrivate::preStyleChanged()
 {
     snapOut();
     UCStyledItemBasePrivate::preStyleChanged();
-    // delete style if it was non-custom style
-    if (!customStyle && styleComponent) {
-        styleComponent->deleteLater();
-        styleComponent = 0;
-    }
-    customStyle = true;
 }
 
 // creates the style item, with altered default value of the animatePanels style property
 // the property is turned on after the panel initialization.
-void UCListItemPrivate::loadStyleItem(bool animated)
+bool UCListItemPrivate::loadStyleItem(bool animated)
 {
-    if (!styleComponent) {
-        // try to create the style if possible
-        postThemeChanged();
+    // the style should be loaded only if one of the condition is satisfied
+    if (!swiped && !selectMode() && !dragMode()) {
+        return false;
     }
-    UCStyledItemBasePrivate::loadStyleItem(animated);
+
+    if (!UCStyledItemBasePrivate::loadStyleItem(animated)) {
+        return false;
+    }
+
     UCListItemStyle *myStyle = qobject_cast<UCListItemStyle*>(styleItem);
     if (!myStyle) {
         // the style is not derived from ListItemStyle, clean
         preStyleChanged();
-        return;
+        return false;
     }
     // bring the panels foreground
     styleItem->setZ(0);
     listItemStyle()->setAnimatePanels(true);
+    return true;
 }
 
 // called when units size changes
@@ -885,6 +875,13 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  * \endqml
  *
  * \sa ViewItems::dragMode, ViewItems::dragUpdated
+ *
+ * \section2 Note on styling
+ * ListItem's styling differs from the other component sstyling, as ListItem loads
+ * the style only when either of the leadin/trailing panels are swiped, or when the
+ * item enters in select- or drag mode. The component does not assume any visuals
+ * to be present in the style.
+ * \sa ListItemStyle
  */
 
 /*!
@@ -910,6 +907,7 @@ UCListItem::UCListItem(QQuickItem *parent)
 {
     Q_D(UCListItem);
     d->init();
+    d->defaultThemeVersion = BUILD_VERSION(1, 2);
 }
 
 UCListItem::~UCListItem()
@@ -921,6 +919,10 @@ void UCListItem::classBegin()
     UCStyledItemBase::classBegin();
     Q_D(UCListItem);
     // initialize theme
+    UCTheme *theme = d->getTheme();
+    if (theme == &UCTheme::defaultTheme()) {
+        theme->setVersion(d->defaultThemeVersion);
+    }
     d->_q_themeChanged();
     d->divider->paletteChanged();
 }
@@ -1077,6 +1079,54 @@ void UCListItem::mousePressEvent(QMouseEvent *event)
     event->setAccepted(true);
 }
 
+bool UCListItem13::shouldShowContextMenu(QMouseEvent *event)
+{
+    if (event->button() != Qt::RightButton)
+        return false;
+    return leadingActions() || trailingActions();
+}
+
+void UCListItem13::mousePressEvent(QMouseEvent *event)
+{
+    UCListItem::mousePressEvent(event);
+    if (shouldShowContextMenu(event)) {
+        // Highlight the Item while the menu is showing
+        setHighlighted(true);
+
+        Q_D(UCListItem);
+        quint16 version(d->getTheme()->version());
+        QString versionString(QStringLiteral("%1.%2").arg(MAJOR_VERSION(version)).arg(MINOR_VERSION(version)));
+        QUrl url(UbuntuComponentsPlugin::pluginUrl().resolved(versionString + "/ListItemPopover.qml"));
+
+        // Open Popover
+        QQmlEngine* engine = qmlEngine(this);
+        QQmlComponent* component = new QQmlComponent(engine, url, QQmlComponent::PreferSynchronous, this);
+        if (component->isError()) {
+            qmlInfo(this) << component->errorString();
+        } else {
+            QQmlEngine::setContextForObject(component, qmlContext(this));
+            QQuickItem* item = static_cast<QQuickItem*>(component->create(qmlContext(this)));
+            item->setProperty("caller", QVariant::fromValue(this));
+            item->setParentItem(QuickUtils::instance().rootItem(this));
+            QMetaObject::invokeMethod(item, "show");
+            connect(item, &QQuickItem::visibleChanged, this,
+                &UCListItem13::popoverClosed, Qt::DirectConnection);
+        }
+        delete component;
+    }
+}
+
+void UCListItem13::popoverClosed()
+{
+    setHighlighted(false);
+}
+
+void UCListItem::setHighlighted(bool highlighted)
+{
+    Q_D(UCListItem);
+    d->setHighlighted(highlighted);
+}
+
 void UCListItem::mouseReleaseEvent(QMouseEvent *event)
 {
     UCStyledItemBase::mouseReleaseEvent(event);
@@ -1103,8 +1153,14 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
             d->swipeEvent(event->localPos(), UCSwipeEvent::Finished);
             d->suppressClick = false;
         }
+        d->setHighlighted(false);
     }
-    d->setHighlighted(false);
+}
+
+void UCListItem13::mouseReleaseEvent(QMouseEvent *event)
+{
+    if (!shouldShowContextMenu(event))
+        UCListItem::mouseReleaseEvent(event);
 }
 
 void UCListItem::mouseMoveEvent(QMouseEvent *event)
@@ -1128,12 +1184,16 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
         if ((mouseX < (pressedX - threshold)) || (mouseX > (pressedX + threshold))) {
             // the press went out of the threshold area, enable move, if the direction allows it
             d->lastPos = event->localPos();
-            // unlock contentItem's left/right edges
-            d->lockContentItem(false);
             if (d->parentAttached) {
                 d->parentAttached->disableInteractive(this, true);
             }
-            d->setSwiped(true);
+            bool doSwipe = (d->leadingActions && (mouseX > pressedX)) ||
+                           (d->trailingActions && (mouseX < pressedX));
+            d->setSwiped(doSwipe);
+            // unlock contentItem's left/right edges
+            d->lockContentItem(!doSwipe);
+            d->loadStyleItem();
+            d->pressAndHoldTimer.stop();
         }
     }
 
@@ -1557,6 +1617,16 @@ QQmlListProperty<QObject> UCListItemPrivate::data()
 QQmlListProperty<QQuickItem> UCListItemPrivate::children()
 {
     return QQuickItemPrivate::get(contentItem)->children();
+}
+
+/******************************************************************************
+ * Versioning
+ */
+UCListItem13::UCListItem13(QQuickItem *parent)
+    : UCListItem(parent)
+{
+    Q_D(UCListItem);
+    d->defaultThemeVersion = BUILD_VERSION(1, 3);
 }
 
 #include "moc_uclistitem.cpp"

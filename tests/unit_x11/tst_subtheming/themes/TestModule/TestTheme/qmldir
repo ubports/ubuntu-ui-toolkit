@@ -1,2 +1,5 @@
 module TestTheme
-TestStyle 1.0 TestStyle.qml
+TestStyle 1.0 ./1.2/TestStyle.qml
+
+#version 1.3
+TestStyle 1.3 ./1.3/TestStyle.qml

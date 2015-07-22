@@ -15,8 +15,8 @@
  */
 
 import QtQuick 2.2
+import Ubuntu.Components 1.3
 import Ubuntu.Test 1.0
-import Ubuntu.Components 1.2
 
 // pagestack tests for deprecated toolbar are in
 // unit/tst_components/tst_pagestack_deprecated_toolbar.qml
@@ -114,6 +114,25 @@ Item {
             pageStack.pop();
             waitForHeaderAnimation(mainView);
             compare(pageStack.currentPage, page1, "popping puts previously pushed page on top");
+            pageStack.clear();
+            waitForHeaderAnimation(mainView);
+        }
+
+        function test_multipop_bug1461729() {
+            for (var i=0; i < 10; i++) {
+                pageStack.push(pageComponent);
+            }
+            waitForHeaderAnimation(mainView);
+            compare(pageStack.depth, 10, "couldn't push 10 new pages");
+            // When updating depth after animating out the header, depth
+            // is not reliable to be used to guard a loop:
+            while(pageStack.depth > 1) {
+                pageStack.pop();
+            }
+            waitForHeaderAnimation(mainView);
+            compare(pageStack.depth, 1, "popping until one page is left failed. " +
+                        pageStack.depth + " pages left on stack");
+
             pageStack.clear();
             waitForHeaderAnimation(mainView);
         }

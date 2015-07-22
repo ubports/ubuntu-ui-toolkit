@@ -15,8 +15,8 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.2
-import Ubuntu.Components.Popups 1.0
+import Ubuntu.Components 1.3
+import Ubuntu.Components.Popups 1.3
 
 Template {
     objectName: "dialogsTemplate"
@@ -42,6 +42,10 @@ Template {
 
                 title: "Sample Dialog"
                 text: "Descriptive text goes here"
+
+                TextField {
+                    placeholderText: "Type like your lifes depends on it"
+                }
 
                 Row {
                     id: row

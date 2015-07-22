@@ -31,15 +31,59 @@ Item {
             title: "Sections"
             head {
                 sections {
-                    model: ["navy", "lightblue", "brown"]
+                    actions: [
+                        Action { text: "navy" },
+                        Action { text: "lightblue" },
+                        Action { text: "brown" }
+                    ]
                 }
+                actions: [
+                    Action {
+                        iconName: "appointment-new"
+                        text: "New"
+                    },
+                    Action {
+                        iconName: "attachment"
+                        text: "Attach"
+                    },
+                    Action {
+                        iconName: "calendar-today"
+                        text: "Today"
+                    },
+                    Action {
+                        iconName: "delete"
+                        text: "Delete"
+                    }
+
+                ]
             }
-            Rectangle {
-                anchors {
-                    fill: parent
-                    margins: units.gu(2)
+
+            ListView {
+                anchors.fill: parent
+                model: 50
+                delegate: ListItem {
+                    UbuntuShape {
+                        id: shape
+                        anchors {
+                            left: parent.left
+                            top: parent.top
+                            bottom: parent.bottom
+                            margins: units.gu(1)
+                        }
+                        width: height
+                        color: page.head.sections.actions[page.head.sections.selectedIndex].text
+                    }
+
+                    Label {
+                        id: label
+                        anchors {
+                            left: shape.right
+                            leftMargin: units.gu(2)
+                            verticalCenter: parent.verticalCenter
+                        }
+                        text: "List item #"+index
+                    }
                 }
-                color: page.head.sections.model[page.head.sections.selectedIndex]
             }
         }
     }
@@ -47,46 +91,45 @@ Item {
     UbuntuTestCase {
         name: "PageHeadSectionsAPI"
         when: windowShown
+        id: testCase
 
+        property var sectionsItem
         function initTestCase() {
             compare(mainView.active, true, "MainView always active.");
             compare(page.active, true, "Single page is active in MainView.");
+            testCase.sectionsItem = findChild(mainView, "headerSectionsItem");
         }
 
         function test_number_of_sections() {
-            var sectionsRepeater = findChild(mainView, "page_head_sections_repeater");
-            compare(sectionsRepeater.count, 3, "Number of sections initialization failed.");
-            page.head.sections.model = ["red"]
-            compare(sectionsRepeater.count, 1, "Number of sections not updated.");
+            compare(sectionsItem.model.length, 3, "Number of sections initialization failed.");
+            page.head.sections.model = ["red"];
+            compare(sectionsItem.model.length, 1, "Number of sections not updated.");
             page.head.sections.model = ["navy", "lightblue", "brown"];
-            compare(sectionsRepeater.count, 3, "Number of sections reverted.");
+            compare(sectionsItem.model.length, 3, "Number of sections reverted.");
+            // Tests for verifying that itemModel.length equals the amount
+            //  of section buttons are in tst_sections.qml.
         }
 
-        function check_selected_button(numberOfButtons, selectedButtonIndex) {
-            for (var i = 0; i < numberOfButtons; i++) {
-                var button = findChild(mainView, "section_button_"+i);
-                if (i === selectedButtonIndex) {
-                    compare(button.selected, true, "Button "+i+" is not selected.");
-                } else {
-                    compare(button.selected, false, "Button "+i+" is selected.");
-                }
-            }
+        function check_selected_button(selectedButtonIndex) {
+            compare(selectedButtonIndex, sectionsItem.selectedIndex,
+                    "Incorrect button selected.");
+            // Checks that the correct Item is visualized as selected
+            //  are in tst_sections.qml.
         }
 
         function test_selected_section() {
             var sectionsRepeater = findChild(mainView, "page_head_sections_repeater");
-            var count = sectionsRepeater.count;
-            check_selected_button(count, 0);
+            check_selected_button(0);
             page.head.sections.selectedIndex = 2;
-            check_selected_button(count, 2);
+            check_selected_button(2);
             page.head.sections.selectedIndex = 1;
-            check_selected_button(count, 1);
+            check_selected_button(1);
             page.head.sections.selectedIndex = 0;
-            check_selected_button(count, 0);
+            check_selected_button(0);
         }
 
         function test_warn_when_too_many_sections() {
-            ignoreWarning("It is not recommended or supported to use more than three sections in Page.head.sections.model.")
+            ignoreWarning("It is not YET recommended or supported to use more than three sections.")
             page.head.sections.model = ["red", "orange", "yellow", "green"];
         }
     }

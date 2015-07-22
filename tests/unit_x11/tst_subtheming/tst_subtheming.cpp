@@ -21,15 +21,18 @@
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlComponent>
 #include "uctheme.h"
+#include "quickutils.h"
 #include "uctestcase.h"
 #include "ucstyleditembase_p.h"
+#include "ucnamespace.h"
+#include "ucunits.h"
 
 class ThemeTestCase : public UbuntuTestCase
 {
     Q_OBJECT
 public:
-    ThemeTestCase(const QString& file, QWindow* parent = 0)
-        : UbuntuTestCase(file, parent)
+    ThemeTestCase(const QString& file, bool assertOnFailure = true, QWindow* parent = 0)
+        : UbuntuTestCase(file, assertOnFailure, parent)
     {
     }
 
@@ -61,12 +64,6 @@ public:
         QTest::waitForEvents();
     }
 
-    void setStyle(const QString &style)
-    {
-        rootObject()->setProperty("styleDocument", style);
-        QTest::waitForEvents();
-    }
-
     UCTheme *theme()
     {
         return rootObject()->property("theme").value<UCTheme*>();
@@ -90,6 +87,7 @@ private Q_SLOTS:
     {
         m_xdgDataPath = QLatin1String(getenv("XDG_DATA_DIRS"));
         m_themesPath = QLatin1String(getenv("UBUNTU_UI_TOOLKIT_THEMES_PATH"));
+        qputenv("SUPPRESS_DEPRECATED_NOTE", "yes");
     }
 
     void cleanup()
@@ -132,25 +130,27 @@ private Q_SLOTS:
         QTest::addColumn<QString>("styleName");
         QTest::addColumn<QString>("parentName");
         QTest::addColumn<bool>("success");
-        QTest::newRow("Existing style") << "TestStyle.qml" << "SimpleItem.qml" << true;
-        QTest::newRow("Non existing style") << "NotExistingTestStyle.qml" << "SimpleItem.qml" << false;
+        QTest::addColumn<QString>("warning");
+        QTest::newRow("Existing style") << "TestStyle" << "SimpleItem.qml" << true << QString();
+        QTest::newRow("Non existing style") << "NotExistingTestStyle" << "SimpleItem.qml" << false << "QML SimpleItem: Warning: Style NotExistingTestStyle.qml not found in theme TestModule.TestTheme";
     }
     void test_create_style_component()
     {
         QFETCH(QString, styleName);
         QFETCH(QString, parentName);
         QFETCH(bool, success);
+        QFETCH(QString, warning);
 
-        if (styleName == "NotExistingTestStyle.qml") {
-            ThemeTestCase::ignoreWarning(parentName, 20, 1, "QML SimpleItem: Warning: Style NotExistingTestStyle.qml not found in theme TestModule.TestTheme");
+        if (!warning.isEmpty()) {
+            ThemeTestCase::ignoreWarning(parentName, 20, 1, warning);
         }
-        qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", ".");
+        qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "./themes");
 
         QScopedPointer<ThemeTestCase> view(new ThemeTestCase(parentName));
         view->setTheme("TestModule.TestTheme");
-        view->setStyle(styleName);
-        QQmlComponent *style = view->rootObject()->property("style").value<QQmlComponent*>();
-        QCOMPARE(style != NULL, success);
+        view->rootObject()->setProperty("styleName", styleName);
+        QQuickItem *testStyle = view->rootObject()->findChild<QQuickItem*>("TestStyle");
+        QCOMPARE(testStyle != NULL, success);
     }
 
     void test_relative_theme_paths_environment_variables_data()
@@ -163,24 +163,24 @@ private Q_SLOTS:
         QTest::addColumn<bool>("success");
 
         QTest::newRow("One toolkit theme path")
-                << "../tst_theme_engine" << ""
-                << "TestModule.TestTheme" << "TestStyle.qml"
+                << "./themes" << ""
+                << "TestModule.TestTheme" << "TestStyle"
                 << "" << true;
         QTest::newRow("Two toolkit theme paths")
                 << "./themes:./themes/TestModule" << ""
-                << "CustomTheme" << "TestStyle.qml"
+                << "CustomTheme" << "TestStyle"
                 << "" << true;
         QTest::newRow("One XDG path")
-                << "" << "../tst_theme_engine"
-                << "TestModule.TestTheme" << "TestStyle.qml"
+                << "" << "./themes"
+                << "TestModule.TestTheme" << "TestStyle"
                 << "" << true;
         QTest::newRow("Two XDG paths")
                 << "" << "./themes:./themes/TestModule"
-                << "CustomTheme" << "TestStyle.qml"
+                << "CustomTheme" << "TestStyle"
                 << "" << true;
         QTest::newRow("No variables")
                 << "" << ""
-                << QString() << "TestStyle.qml"
+                << QString() << "TestStyle"
                 << "QML SimpleItem: Warning: Style TestStyle.qml not found in theme Ubuntu.Components.Themes.Ambiance" << false;
     }
 
@@ -204,9 +204,9 @@ private Q_SLOTS:
         if (!theme.isEmpty()) {
             view->setTheme(theme);
         }
-        view->setStyle(style);
-        QQmlComponent *styleComponent = view->rootObject()->property("style").value<QQmlComponent*>();
-        QCOMPARE(styleComponent != NULL, success);
+        view->rootObject()->setProperty("styleName", style);
+        QQuickItem *styleItem = view->rootObject()->findChild<QQuickItem*>("TestStyle");
+        QCOMPARE(styleItem != NULL, success);
     }
 
     void test_import_path()
@@ -242,10 +242,10 @@ private Q_SLOTS:
 
         qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "");
         qputenv("XDG_DATA_DIRS", "");
-        qputenv("QML2_IMPORT_PATH", "/no/plugins/here:.");
+        qputenv("QML2_IMPORT_PATH", "/no/plugins/here");
 
         QScopedPointer<ThemeTestCase> view(new ThemeTestCase("SimpleItem.qml"));
-        view->setTheme("TestModule.TestTheme");
+        view->setTheme("CustomModule.TestTheme");
     }
 
     void test_theme_not_root_theme()
@@ -253,7 +253,7 @@ private Q_SLOTS:
         qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", ".");
 
         QScopedPointer<ThemeTestCase> view(new ThemeTestCase("SimpleItem.qml"));
-        view->setTheme("TestModule.TestTheme");
+        view->setTheme("CustomModule.TestTheme");
         UCTheme *theme = view->theme();
         UCTheme *globalTheme = view->globalTheme();
         QVERIFY(theme);
@@ -263,7 +263,7 @@ private Q_SLOTS:
 
     void test_theme_reset_name()
     {
-        qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", ".");
+        qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "./themes");
 
         QScopedPointer<ThemeTestCase> view(new ThemeTestCase("SimpleItem.qml"));
         view->setTheme("TestModule.TestTheme");
@@ -618,6 +618,224 @@ private Q_SLOTS:
         UCStyledItemBasePrivate::get(root)->setTheme(suruTheme);
         QTest::waitForEvents();
         QCOMPARE(UCStyledItemBasePrivate::get(movableItem)->getTheme()->name(), QString("CustomTheme"));
+    }
+
+    void test_theme_versions_data()
+    {
+        QTest::addColumn<QString>("document");
+        QTest::addColumn<QString>("testValue");
+        QTest::addColumn<int>("row");
+        QTest::addColumn<int>("column");
+        QTest::addColumn<QString>("warning");
+
+        QTest::newRow("Theming version 1.2")
+                << "StyledItemV12.qml"
+                << ""
+                << 0 << 0 << "";
+        QTest::newRow("Theming version 1.3")
+                << "StyledItemV13.qml"
+                << "version1.3"
+                << 0 << 0 << "";
+        QTest::newRow("Fall back to 1.3")
+                << "StyledItemFallback.qml"
+                << "version1.3"
+                << 19 << 1 << "QML StyledItem: Theme 'TestModule.TestTheme' has no 'TestStyle.qml' style for version 1.0, fall back to version 1.3.";
+        QTest::newRow("App theme versioned")
+                << "StyledItemAppThemeVersioned.qml"
+                << "version1.3"
+                << 0 << 0 << "";
+        QTest::newRow("App theme fallback to non-versioned")
+                << "StyledItemAppThemeFallback.qml"
+                << ""
+                << 0 << 0 << "";
+    }
+    void test_theme_versions()
+    {
+        QFETCH(QString, document);
+        QFETCH(QString, testValue);
+        QFETCH(int, row);
+        QFETCH(int, column);
+        QFETCH(QString, warning);
+
+        qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "");
+        qputenv("XDG_DATA_DIRS", "./themes:./themes/TestModule");
+        if (!warning.isEmpty()) {
+            ThemeTestCase::ignoreWarning(document, row, column, warning);
+        }
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase(document));
+        UCStyledItemBase *styledItem = qobject_cast<UCStyledItemBase*>(view->rootObject());
+        QVERIFY(UCStyledItemBasePrivate::get(styledItem)->styleItem);
+        QString newProperty(UCStyledItemBasePrivate::get(styledItem)->styleItem->property("newProperty").toString());
+        QCOMPARE(newProperty, testValue);
+        // NOTE TestTheme resets the theme therefore the theming will look for the tested style under Ambiance theme
+        // which will cause a warning; therefore we mark the warning to be ignored
+        ThemeTestCase::ignoreWarning(document, 19, 1, "QML StyledItem: Warning: Style TestStyle.qml not found in theme Ubuntu.Components.Themes.Ambiance");
+    }
+
+    void test_deprecated_theme()
+    {
+        qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "");
+        qputenv("XDG_DATA_DIRS", "./themes:./themes/TestModule:" + m_themesPath.toLatin1());
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase("DeprecatedTheme.qml"));
+        // NOTE TestTheme resets the theme therefore the theming will look for the tested style version under Ambiance theme
+        // which will cause a warning; therefore we mark the warning to be ignored
+        ThemeTestCase::ignoreWarning("DeprecatedTheme.qml", 19, 1, "QML StyledItem: Theme 'Ubuntu.Components.Themes.Ambiance' has no 'OptionSelectorStyle.qml' style for version 1.0, fall back to version 1.3.");
+    }
+
+    void test_style_change_has_precedence()
+    {
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase("StyleOverride.qml"));
+        QQmlComponent *style = view->rootObject()->property("customStyle").value<QQmlComponent*>();
+        QQuickItem *button = view->findItem<QQuickItem*>("TestButton");
+
+        button->setProperty("style", QVariant::fromValue(style));
+        QVERIFY(button->findChild<QQuickItem*>("TestStyle"));
+    }
+
+    void test_style_kept_when_stylename_changes_data()
+    {
+        QTest::addColumn<QString>("styleName");
+
+        QTest::newRow("Empty style name") << QString();
+        QTest::newRow("Any style name") << "Bumblebee";
+    }
+    void test_style_kept_when_stylename_changes()
+    {
+        QFETCH(QString, styleName);
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase("StyleKept.qml"));
+        QQuickItem *button = view->findItem<QQuickItem*>("TestButton");
+
+        button->setProperty("styleName", styleName);
+        QVERIFY(button->findChild<QQuickItem*>("TestStyle"));
+    }
+
+    void test_style_kept_when_theme_changes()
+    {
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase("StyleKept.qml"));
+        QQuickItem *button = view->findItem<QQuickItem*>("TestButton");
+        UCTheme *theme = button->property("theme").value<UCTheme*>();
+        QVERIFY(theme);
+
+        theme->setName("Ubuntu.Components.Themes.SuruDark");
+        QVERIFY(button->findChild<QQuickItem*>("TestStyle"));
+    }
+
+    void test_style_reset_to_theme_style()
+    {
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase("StyleKept.qml"));
+        UCStyledItemBase *button = view->findItem<UCStyledItemBase*>("TestButton");
+        UCTheme *theme = UCStyledItemBasePrivate::get(button)->getTheme();
+        QVERIFY(theme);
+
+        QVERIFY(button->findChild<QQuickItem*>("TestStyle"));
+        // reset style property, which should reset style to the theme style
+        UCStyledItemBasePrivate::get(button)->resetStyle();
+        QQuickItem *styleItem = UCStyledItemBasePrivate::get(button)->styleInstance();
+        QCOMPARE(QuickUtils::className(styleItem), QString("ButtonStyle"));
+    }
+
+    void test_stylename_extension_failure()
+    {
+        ThemeTestCase::ignoreWarning("DeprecatedTheme.qml", 19, 1, "QML StyledItem: Warning: Style OptionSelectorStyle.qml.qml not found in theme Ubuntu.Components.Themes.SuruGradient");
+        // add also for Ambiance, as ThemeTestCase destructor resets the theme, which will cause style warning for the default theme
+        ThemeTestCase::ignoreWarning("DeprecatedTheme.qml", 19, 1, "QML StyledItem: Warning: Style OptionSelectorStyle.qml.qml not found in theme Ubuntu.Components.Themes.Ambiance");
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase("DeprecatedTheme.qml"));
+        view->rootObject()->setProperty("styleName", "OptionSelectorStyle.qml");
+    }
+
+    void test_stylehints_errors_data()
+    {
+        QTest::addColumn<QString>("document");
+        QTest::addColumn<int>("row");
+        QTest::addColumn<int>("col");
+        QTest::addColumn<QString>("xfail");
+
+        QTest::newRow("No signals")
+                << "StyleHintsWithSignal.qml" << 26 << 13 << "Signal properties are not supported. \n" \
+"                 onDefaultColorChanged: {} \n" \
+"                 ^";
+        QTest::newRow("No embedded objects")
+                << "StyleHintsWithObject.qml" << 26 << 26 << "StyleHints does not support creating state-specific objects. \n" \
+"                 anyProperty: QtObject{} \n" \
+"                              ^";
+        QTest::newRow("StyleHints declared elsewhere")
+                << "StyleHintsElsewhere.qml" << 24 << 5 << "QML StyleHints: StyleHints must be declared in a StyledItem or a derivate of it.";
+        QTest::newRow("Invalid property")
+                << "StyleHintsInvalidProperty.qml" << 25 << 9 << "QML StyleHints: Style 'ButtonStyle' has no property called 'invalidProperty'.";
+    }
+    void test_stylehints_errors()
+    {
+        QFETCH(QString, document);
+        QFETCH(int, row);
+        QFETCH(int, col);
+        QFETCH(QString, xfail);
+
+        if (!xfail.isEmpty()) {
+            ThemeTestCase::ignoreWarning(document, row, col, xfail);
+        }
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase(document, false));
+    }
+
+    void test_stylehints_simple_property()
+    {
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase("SimplePropertyHints.qml"));
+        QQuickItem *button = view->findItem<QQuickItem*>("Button");
+        QColor color = button->property("color").value<QColor>();
+        QCOMPARE(color, QColor("blue"));
+    }
+
+    void test_stylehints_bindings()
+    {
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase("PropertyBindingHints.qml"));
+        QQuickItem *button = view->findItem<QQuickItem*>("Button");
+        QColor color = button->property("color").value<QColor>();
+        QCOMPARE(color, QColor("blue"));
+        // press the button
+        QPointF pressPt(button->width()/2, button->height()/2);
+        pressPt = view->rootObject()->mapFromItem(button, pressPt);
+        QTest::mousePress(view.data(), Qt::LeftButton, 0, pressPt.toPoint());
+        color = button->property("color").value<QColor>();
+        QCOMPARE(color, QColor("tan"));
+        QTest::mouseRelease(view.data(), Qt::LeftButton, 0, pressPt.toPoint());
+    }
+
+    void test_stylehints_multiple_data()
+    {
+        QTest::addColumn<QString>("document");
+        QTest::addColumn<QString>("colorProperty");
+        QTest::addColumn<QColor>("colorReleased");
+        QTest::addColumn<QColor>("colorPressed");
+        QTest::addColumn<QString>("widthProperty");
+        QTest::addColumn<float>("width");
+
+        QTest::newRow("Same document")
+                << "MoreStyleHints.qml" << "defaultColor" << QColor("brown") << QColor("brown") << "minimumWidth" << UCUnits::instance().gu(20);
+        QTest::newRow("Different document")
+                << "GroupPropertyBindingHints.qml" << "gradientProxy.topColor" << QColor("blue") << QColor("tan") << "minimumWidth" << UCUnits::instance().gu(20);
+    }
+    void test_stylehints_multiple()
+    {
+        QFETCH(QString, document);
+        QFETCH(QString, colorProperty);
+        QFETCH(QColor, colorReleased);
+        QFETCH(QColor, colorPressed);
+        QFETCH(QString, widthProperty);
+        QFETCH(float, width);
+
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase(document));
+        UCStyledItemBase *button = view->findItem<UCStyledItemBase*>("Button");
+        QQuickItem *styleItem = UCStyledItemBasePrivate::get(button)->styleItem;
+        QVERIFY(styleItem);
+        QQmlProperty qmlProperty(styleItem, colorProperty, qmlContext(styleItem));
+        QCOMPARE(qmlProperty.read().value<QColor>(), colorReleased);
+        QCOMPARE(styleItem->property(widthProperty.toUtf8()).toReal(), width);
+
+        QPointF pressPt(button->width()/2, button->height()/2);
+        pressPt = view->rootObject()->mapFromItem(button, pressPt);
+        QTest::mousePress(view.data(), Qt::LeftButton, 0, pressPt.toPoint());
+        QColor pressedColor = qmlProperty.read().value<QColor>();
+        QTest::mouseRelease(view.data(), Qt::LeftButton, 0, pressPt.toPoint());
+        QCOMPARE(pressedColor, colorPressed);
     }
 };
 

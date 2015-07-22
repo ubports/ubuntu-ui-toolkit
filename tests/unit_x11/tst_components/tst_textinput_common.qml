@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2014-2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -17,21 +17,97 @@
 import QtQuick 2.0
 import QtTest 1.0
 import Ubuntu.Test 1.0
-import Ubuntu.Components 1.1
+import Ubuntu.Components 1.2
+import Ubuntu.Components.Popups 1.0
 
 Item {
     id: testMain
     width: units.gu(40)
     height: units.gu(71)
 
+    Component {
+        id: popoverComponent
+        Popover {
+            property var textField: textFieldInPopover
+            Rectangle {
+                anchors.fill: parent
+                color: UbuntuColors.orange
+            }
+            Column {
+                anchors.margins: units.gu(2)
+                Label {
+                    text: 'This is a text field in a popover'
+                }
+                TextField {
+                    id: textFieldInPopover
+                }
+                Label {
+                    text: 'Focus the text field'
+                }
+            }
+        }
+    }
+
+    Component {
+        id: dialogComponent
+        Dialog {
+            id: dialog
+            property var textField: textFieldInDialog
+            Label {
+                text: 'This is a text field in a dialog'
+                height: units.gu(10)
+            }
+            TextField {
+                id: textFieldInDialog
+                height: units.gu(10)
+            }
+            Label {
+                text: 'Focus the text field'
+                height: units.gu(10)
+            }
+            Button {
+                text: 'Close'
+                onClicked: PopupUtils.close(dialog)
+            }
+        }
+    }
+
     Column {
         spacing: units.gu(1)
+        anchors {
+            topMargin: units.gu(4)
+            top: parent.top
+        }
+        Button {
+            id: popoverButton
+            text: 'Open Popover'
+            onClicked: PopupUtils.open(popoverComponent, popoverButton)
+        }
+        Button {
+            text: 'Open Popover with no target'
+            onClicked: PopupUtils.open(popoverComponent)
+        }
+        Button {
+            id: dialogButton
+            text: 'Open Dialog'
+            onClicked: PopupUtils.open(dialogComponent, dialogButton)
+        }
+
         TextField {
             id: textField
         }
         TextArea {
             id: textArea
         }
+        TextField {
+            id: password
+            echoMode: TextInput.Password
+            text: 'deadbeef'
+        }
+    }
+
+    MockKeyboard {
+        Component.onCompleted: UbuntuApplication.inputMethod = this
     }
 
     SignalSpy {
@@ -92,6 +168,43 @@ Item {
             movementYSpy.clear();
             cursorRectSpy.clear();
             scrollerSpy.clear();
+        }
+
+        function test_context_menu_items_data() {
+            return [
+                { tag: 'textField with text', input: textField, text: "lalelu", all: true, copy: false },
+                { tag: 'textField selected', input: textField, text: "lalelu", select: true, all: false, copy: true },
+                { tag: 'textArea with text', input: textArea, text: "lalelu", all: true, copy: false },
+                { tag: 'textArea selected', input: textArea, text: "lalelu", select: true, all: false, copy: true },
+                { tag: 'textField with password', input: password, text: "deadbeef", all: true, copy: false },
+            ]
+        }
+
+        function test_context_menu_items(data) {
+            var handler = findChild(data.input, "input_handler");
+            popupSpy.target = handler;
+            data.input.focus = true;
+
+            var x = data.input.width / 2;
+            var y = data.input.height / 2;
+            mouseClick(data.input, x, y, Qt.RightButton);
+            popupSpy.wait();
+            var popover = findChild(testMain, "text_input_contextmenu");
+            verify(popover, "Cannot retrieve default TextInputPopover");
+            waitForRendering(popover);
+
+            if (data.select) {
+                var selectAll = findChildWithProperty(popover, "text", "Select All");
+                verify(selectAll, "Select All item not found");
+                mouseClick(selectAll, selectAll.width / 2, selectAll.height / 2);
+                waitForRendering(data.input, 1000);
+                compare(data.input.text, data.input.selectedText, "Not all the text is selected");
+            }
+
+            var all = findChildWithProperty(popover, "text", "Select All");
+            compare(all.visible, data.all, "Select All%1expected".arg(data.all ? " " : " not "))
+            var copy = findChildWithProperty(popover, "text", "Copy");
+            compare(copy.visible, data.copy, "Copy%1expected".arg(data.copy ? " " : " not "))
         }
 
         function test_clear_text_using_popover_data() {
@@ -303,5 +416,34 @@ Item {
             expectFail(data.tag, "mouseDoubleClick() fails to trigger")
             verify(data.input.selectedText != "", "No text selected.");
         }
+
+        function test_osk_displaces_popover_data() {
+            return [
+                { tag: 'popover', component: popoverComponent, target: popoverButton, offScreen: false },
+                { tag: 'popover', component: popoverComponent, target: null, offScreen: false },
+                { tag: 'dialog', component: dialogComponent, target: dialogButton, offScreen: true },
+            ]
+        }
+
+        function test_osk_displaces_popover(data) {
+            var popover = PopupUtils.open(data.component, data.target);
+            waitForRendering(popover);
+            popover.textField.forceActiveFocus();
+            waitForRendering(popover.textField);
+
+            // Only get the value here so in case of failure the popover won't get stuck
+            var popoverY = popover.y;
+
+            // dismiss popover
+            PopupUtils.close(popover);
+            // add some timeout to get the event buffer cleaned
+            wait(500);
+
+            if (data.offScreen)
+                verify(popoverY < 0, 'Dialog did not shift upwards: %1'.arg(popoverY));
+            else
+                verify(popoverY >= 0, 'Popover went off-screen: %1'.arg(popoverY));
+        }
+
     }
 }

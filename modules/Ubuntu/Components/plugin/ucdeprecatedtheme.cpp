@@ -16,12 +16,14 @@
  * Authors: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
+#include "ucnamespace.h"
 #include "ucdeprecatedtheme.h"
 #include "uctheme.h"
 #include "listener.h"
 #include <QtQml/QQmlComponent>
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlInfo>
+#include <QtQml/QQmlEngine>
 
 /*!
     \qmltype Theme
@@ -64,17 +66,30 @@
 UCDeprecatedTheme::UCDeprecatedTheme(QObject *parent)
     : QObject(parent)
 {
+    m_notes = QHash<QString, bool>();
     connect(&UCTheme::defaultTheme(), &UCTheme::nameChanged,
             this, &UCDeprecatedTheme::nameChanged);
     connect(&UCTheme::defaultTheme(), &UCTheme::paletteChanged,
             this, &UCDeprecatedTheme::paletteChanged);
 }
 
-void UCDeprecatedTheme::showDeprecatedNote(const char *note)
+void UCDeprecatedTheme::showDeprecatedNote(QObject *onItem, const char *note)
 {
+    QQmlContext ctx(QQmlEngine::contextForObject(onItem));
+    // No warnings due to deprecated code used in the components themselves
+    if (ctx.baseUrl().toString().contains("/Ubuntu/Components/"))
+        return;
+    // Warnings without a filename are not helpful
+    if (ctx.baseUrl().isEmpty())
+        return;
+
+    QString noteId(QString("%1.%2").arg(note).arg(onItem->metaObject()->className()));
+    if (m_notes.contains(noteId))
+        return;
     QByteArray suppressNote = qgetenv("SUPPRESS_DEPRECATED_NOTE");
     if (suppressNote.isEmpty() || suppressNote != "yes") {
-        qmlInfo(this) << note;
+        qmlInfo(onItem) << note;
+        m_notes.insert(noteId, true);
     }
 }
 
@@ -85,17 +100,17 @@ void UCDeprecatedTheme::showDeprecatedNote(const char *note)
 */
 QString UCDeprecatedTheme::name()
 {
-    showDeprecatedNote("Theme.name is deprecated. Use ThemeSettings instead.");
+    showDeprecatedNote(this, "Theme.name is deprecated. Use ThemeSettings instead.");
     return UCTheme::defaultTheme().name();
 }
 void UCDeprecatedTheme::setName(const QString& name)
 {
-    showDeprecatedNote("Theme.name is deprecated. Use ThemeSettings instead.");
+    showDeprecatedNote(this, "Theme.name is deprecated. Use ThemeSettings instead.");
     UCTheme::defaultTheme().setName(name);
 }
 void UCDeprecatedTheme::resetName()
 {
-    showDeprecatedNote("Theme.name is deprecated. Use ThemeSettings instead.");
+    showDeprecatedNote(this, "Theme.name is deprecated. Use ThemeSettings instead.");
     UCTheme::defaultTheme().resetName();
 }
 
@@ -106,7 +121,7 @@ void UCDeprecatedTheme::resetName()
 */
 QObject* UCDeprecatedTheme::palette()
 {
-    showDeprecatedNote("Theme.palette is deprecated. Use ThemeSettings instead.");
+    showDeprecatedNote(this, "Theme.palette is deprecated. Use ThemeSettings instead.");
     return UCTheme::defaultTheme().palette();
 }
 
@@ -117,8 +132,8 @@ QObject* UCDeprecatedTheme::palette()
 */
 QQmlComponent* UCDeprecatedTheme::createStyleComponent(const QString& styleName, QObject* parent)
 {
-    showDeprecatedNote("Theme.createStyleComponent() is deprecated. Use ThemeSettings instead.");
-    return UCTheme::defaultTheme().createStyleComponent(styleName, parent);
+    showDeprecatedNote(parent, "Theme.createStyleComponent() is deprecated. Use ThemeSettings instead.");
+    return UCTheme::defaultTheme().createStyleComponent(styleName, parent, BUILD_VERSION(1, 2));
 }
 
 void UCDeprecatedTheme::registerToContext(QQmlContext* context)

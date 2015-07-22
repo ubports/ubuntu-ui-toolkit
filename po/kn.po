@@ -6,16 +6,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ubuntu-ui-toolkit\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-11-05 14:29+0100\n"
 "PO-Revision-Date: 2014-10-01 13:10+0000\n"
 "Last-Translator: msj <mallikarjunasj@gmail.com>\n"
 "Language-Team: Kannada <kn@li.org>\n"
+"Language: kn\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-03-14 05:28+0000\n"
-"X-Generator: Launchpad (build 17389)\n"
+"X-Launchpad-Export-Date: 2015-06-23 05:29+0000\n"
+"X-Generator: Launchpad (build 17572)\n"
 
 #: Ubuntu/Components/ListItems/Empty.qml:413
 msgid "Delete"
@@ -68,14 +69,12 @@ msgstr "%1 ಇನ್ನೂ ಹಲವು ಹೆಚ್ಚುವರಿ ಅಂಶ �
 
 #: Ubuntu/Components/plugin/ucmousefilters.cpp:1064
 msgid "Ignoring AfterItem priority for InverseMouse filters."
-msgstr ""
-"ಇನ್ವರ್ಸ್ ಮೌಸ್ ಶೋಧಕಗಳ ಆಫ಼್ಟರ್ ಐಟಂ ಆದ್ಯತೆಗಳನ್ನು ನಿರ್ಲಕ್ಷ್ಯ  ಮಾಡಲಾಗುತ್ತಿದೆ"
+msgstr "ಇನ್ವರ್ಸ್ ಮೌಸ್ ಶೋಧಕಗಳ ಆಫ಼್ಟರ್ ಐಟಂ ಆದ್ಯತೆಗಳನ್ನು ನಿರ್ಲಕ್ಷ್ಯ  ಮಾಡಲಾಗುತ್ತಿದೆ"
 
 #: Ubuntu/Components/plugin/ucstatesaver.cpp:46
 msgid "Warning: attachee must have an ID. State will not be saved."
 msgstr ""
-"ಎಚ್ಚರಿಕೆ: ಅಟ್ಟಾಚ್ ಆಗಿರುವ ವಸ್ತುವಿಗೆ ಗುರುತಿನ ಚೀಟಿ ಇಲ್ಲ. ಸ್ಥಿತಿಯನ್ನು "
-"ಉಳಿಸಲಾಗುವುದಿಲ್ಲ."
+"ಎಚ್ಚರಿಕೆ: ಅಟ್ಟಾಚ್ ಆಗಿರುವ ವಸ್ತುವಿಗೆ ಗುರುತಿನ ಚೀಟಿ ಇಲ್ಲ. ಸ್ಥಿತಿಯನ್ನು ಉಳಿಸಲಾಗುವುದಿಲ್ಲ."
 
 #: Ubuntu/Components/plugin/ucstatesaver.cpp:56
 #, qt-format

@@ -19,6 +19,7 @@ plugins.qmltypes
 po/*.mo
 examples/ubuntu-ui-toolkit-gallery/po/*.mo
 tests/unit/tst_i18n/locale/en/LC_MESSAGES/*.mo
+tests/apicheck/apicheck
 tests/launcher/launcher
 build_paths.inc
 tests/unit/tst_i18n/localizedApp/share/locale/en/LC_MESSAGES/localizedApp.mo

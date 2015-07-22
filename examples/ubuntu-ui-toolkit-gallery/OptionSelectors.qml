@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.3
 
 Template {
     objectName: "optionSelectorsTemplate"
@@ -29,23 +29,24 @@ Template {
             anchors.right: parent.right
             spacing: units.gu(3)
 
+            property var model: [
+                i18n.tr("Value 1"),
+                i18n.tr("This is the second value"),
+                i18n.tr("Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."),
+                i18n.tr("Once upon a time there was a story nobody told."),
+            ]
+
             OptionSelector {
-               objectName: "optionselector_collapsed"
-               text: i18n.tr("Collapsed")
-               model: [i18n.tr("Value 1"),
-                       i18n.tr("Value 2"),
-                       i18n.tr("Value 3"),
-                       i18n.tr("Value 4")]
+                objectName: "optionselector_collapsed"
+                text: i18n.tr("Collapsed")
+                model: parent.model
             }
 
             OptionSelector {
                 objectName: "optionselector_expanded"
                 text: i18n.tr("Expanded")
                 expanded: true
-                model: [i18n.tr("Value 1"),
-                        i18n.tr("Value 2"),
-                        i18n.tr("Value 3"),
-                        i18n.tr("Value 4")]
+                model: parent.model
             }
 
             OptionSelector {
@@ -53,10 +54,7 @@ Template {
                 text: i18n.tr("Multiple Selection")
                 expanded: false
                 multiSelection: true
-                model: [i18n.tr("Value 1"),
-                        i18n.tr("Value 2"),
-                        i18n.tr("Value 3"),
-                        i18n.tr("Value 4")]
+                model: parent.model
             }
 
             OptionSelector {

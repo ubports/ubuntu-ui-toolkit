@@ -68,13 +68,13 @@ public:
     void snapOut();
     void swipeEvent(const QPointF &localPos, UCSwipeEvent::Status status);
 
+    quint16 defaultThemeVersion;
     bool highlighted:1;
     bool contentMoved:1;
     bool swiped:1;
     bool suppressClick:1;
     bool ready:1;
     bool customColor:1;
-    bool customStyle:1;
     qreal xAxisMoveThresholdGU;
     QBasicTimer pressAndHoldTimer;
     QPointF lastPos;
@@ -98,7 +98,7 @@ public:
     bool contentMoving() const;
     void setContentMoving(bool moved);
     virtual void preStyleChanged();
-    virtual void loadStyleItem(bool animated = true);
+    virtual bool loadStyleItem(bool animated = true);
     bool dragging();
     bool dragMode();
     void setDragMode(bool draggable);

@@ -17,6 +17,10 @@
 #include "ucaction.h"
 
 #include <QtDebug>
+#include <QtQml/QQmlInfo>
+#include <QtQuick/qquickitem.h>
+#include <QtQuick/qquickwindow.h>
+#include <private/qguiapplication_p.h>
 
 /*!
  * \qmltype Action
@@ -152,6 +156,7 @@ UCAction::UCAction(QObject *parent)
     , m_published(false)
     , m_itemHint(0)
     , m_parameterType(None)
+    , m_shortcut(0)
 {
     generateName();
 }
@@ -238,6 +243,67 @@ void UCAction::setIconSource(const QUrl &url)
 void UCAction::setItemHint(QQmlComponent *)
 {
     qWarning() << "Action.itemHint is a DEPRECATED property. Use ActionItems to specify the representation of an Action.";
+}
+
+bool shortcutContextMatcher(QObject* object, Qt::ShortcutContext)
+{
+    UCAction* action = static_cast<UCAction*>(object);
+    // Can't access member here because it's not public
+    if (!action->property("enabled").toBool())
+        return false;
+
+    QObject* window = object;
+    while (window && !window->isWindowType()) {
+        window = window->parent();
+        if (QQuickItem* item = qobject_cast<QQuickItem*>(window))
+            window = item->window();
+    }
+    return window && window == QGuiApplication::focusWindow();
+}
+
+QKeySequence sequenceFromVariant(const QVariant& variant) {
+    if (variant.type() == QVariant::Int)
+        return static_cast<QKeySequence::StandardKey>(variant.toInt());
+    if (variant.type() == QVariant::String)
+        return QKeySequence::fromString(variant.toString());
+    return QKeySequence();
+}
+
+/*!
+ * \qmlproperty var Action::shortcut
+ * The keyboard shortcut that can be used to trigger the action.
+ * \b StandardKey values such as \b StandardKey.Copy
+ * as well as strings in the form "Ctrl+C" are accepted values.
+ * \since 1.3
+ */
+void UCAction::setShortcut(const QVariant& shortcut)
+{
+    if (m_shortcut.isValid())
+        QGuiApplicationPrivate::instance()->shortcutMap.removeShortcut(0, this, sequenceFromVariant(m_shortcut));
+
+    QKeySequence sequence(sequenceFromVariant(shortcut));
+    if (!sequence.toString().isEmpty())
+        QGuiApplicationPrivate::instance()->shortcutMap.addShortcut(this, sequence, Qt::WindowShortcut, shortcutContextMatcher);
+    else
+        qmlInfo(this) << "Invalid shortcut: " << shortcut.toString();
+
+    m_shortcut = shortcut;
+    Q_EMIT shortcutChanged(shortcut);
+}
+
+bool UCAction::event(QEvent *event)
+{
+    if (event->type() != QEvent::Shortcut)
+        return false;
+
+    QShortcutEvent *shortcut_event(static_cast<QShortcutEvent*>(event));
+    if (shortcut_event->isAmbiguous()) {
+        qmlInfo(this) << "Ambiguous shortcut: " << shortcut_event->key().toString();
+        return false;
+    }
+
+    trigger();
+    return true;
 }
 
 /*!

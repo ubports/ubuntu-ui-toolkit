@@ -6,16 +6,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ubuntu-ui-toolkit\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-11-05 14:29+0100\n"
 "PO-Revision-Date: 2014-07-03 18:36+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Portuguese <pt@li.org>\n"
+"Language: pt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-03-14 05:29+0000\n"
-"X-Generator: Launchpad (build 17389)\n"
+"X-Launchpad-Export-Date: 2015-06-23 05:29+0000\n"
+"X-Generator: Launchpad (build 17572)\n"
 
 #: Ubuntu/Components/ListItems/Empty.qml:413
 msgid "Delete"
@@ -33,7 +34,7 @@ msgstr ""
 #: Ubuntu/Components/plugin/statesaverbackend_p.cpp:185
 #, qt-format
 msgid "property \"%1\" does not exist or is not writable for object %2"
-msgstr "propriedade \"%1\" não existe ou não editável para o objecto %2"
+msgstr "propriedade \"%1\" não existe ou não editável para o objeto %2"
 
 #: Ubuntu/Components/plugin/ucalarm.cpp:42
 #: Ubuntu/Components/plugin/ucalarm.cpp:136
@@ -141,4 +142,4 @@ msgstr "Puxar para atualizar..."
 
 #: Ubuntu/Components/ToolbarItems.qml:142
 msgid "Back"
-msgstr "Anterior"
+msgstr "Retroceder"
