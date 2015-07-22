@@ -385,6 +385,7 @@ void UCUbuntuShape::setAspect(Aspect aspect)
 */
 void UCUbuntuShape::setRelativeRadius(qreal relativeRadius)
 {
+    // m_relativeRadius is on 6 bits, increasing the higher bound might require higher precision.
     const quint8 relativeRadiusPacked = qRound(qBound(0.0, relativeRadius, 0.5) * 100.0);
     if (m_relativeRadius != relativeRadiusPacked) {
         m_relativeRadius = relativeRadiusPacked;
