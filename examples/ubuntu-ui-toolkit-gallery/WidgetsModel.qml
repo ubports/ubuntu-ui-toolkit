@@ -17,6 +17,11 @@
 import QtQuick 2.0
 
 ListModel {
+    ListElement {
+        objectName: "newListItemsElement"
+        label: "New list items (preview)"
+        source: "NewListItems.qml"
+    }
     // Already in design guidelines
     ListElement {
         objectName: "navigationElement"
@@ -97,11 +102,6 @@ ListModel {
         objectName: "listItemsElement"
         label: "List Items"
         source: "ListItems.qml"
-    }
-    ListElement {
-        objectName: "newListItemsElement"
-        label: "New list items (preview)"
-        source: "NewListItems.qml"
     }
     ListElement {
         objectName: "ubuntuListViewElement"

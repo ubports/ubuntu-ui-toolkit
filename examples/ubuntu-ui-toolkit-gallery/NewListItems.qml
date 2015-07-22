@@ -21,6 +21,82 @@ Template {
     objectName: "listItemsTemplate"
 
     TemplateSection {
+        className: "ListItemLayoutTemplates"
+        // no spacing between the list items in the Column
+        spacing: 0
+        /*GenericListItemLayout {
+            firstItem: CheckBox { id: box; }
+            thirdItem: Icon { width: units.gu(4); name: "email" }
+            fourthItem: Icon { width: units.gu(4); name: "edit" }
+            firstSlot.onClicked: box.checked = !box.checked
+            mainInputArea.onClicked: console.log("PRIMARY ACTION")
+
+        }
+
+        ListItem {
+            trailingActions: ListItemActions {
+                actions: [
+                    Action {}
+                ]
+            }
+            leadingActions: ListItemActions {
+                actions: [
+                    Action {},
+                    Action {},
+                    Action {}
+                ]
+            }
+
+            onClicked: console.log("LISTITEM CLICKED")
+
+            GenericListItemLayout {
+                firstItem: CheckBox { id: box1  }
+                thirdItem: Icon { id: icon1; width: units.gu(4); name: "email" }
+                fourthItem: Icon { width: units.gu(4); name: "edit" }
+                firstSlot.onClicked: box1.checked = !box1.checked
+                thirdSlot.onClicked: console.log("THIRDSLOT TRIGGERED")
+                mainInputArea.onClicked: console.log("PRIMARY ACTION")
+            }
+        }*/
+
+        ListItem {
+            trailingActions: ListItemActions {
+                actions: [
+                    Action {}
+                ]
+            }
+            leadingActions: ListItemActions {
+                actions: [
+                    Action {},
+                    Action {},
+                    Action {}
+                ]
+            }
+
+            GenericListItemLayout {
+                anchors.fill: parent
+                //the dev has to specify the width because the container will use that to
+                //resize itself
+                firstSlot: CheckBox { }
+                firstSlotArea.onClicked: doSomething()
+
+                secondSlot: Icon { width: units.gu(4); name: "email" }
+                secondSlotArea.onClicked: doSomethingElse()
+
+                thirdSlot: Icon { width: units.gu(4); name: "message" }
+                thirdSlotArea.onClicked: doSomethingAwesome()
+
+                mainArea.onClicked: console.log("PRIMARY ACTION")
+
+                //set this if your slots don't have actions associated
+                firstSlotArea.enabled: false
+                secondSlotArea.enabled: false
+                thirdSlotArea.enabled: false
+            }
+        }
+
+    }
+    TemplateSection {
         className: "ListItem"
         // no spacing between the list items in the Column
         spacing: 0
@@ -34,7 +110,7 @@ Template {
         // clip the action delegates while swiping left/right
         clip: true
 
-       ListItemWithLabel {
+        ListItemWithLabel {
             color: UbuntuColors.blue
             text: i18n.tr("Colored")
         }
