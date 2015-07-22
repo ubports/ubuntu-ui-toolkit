@@ -73,62 +73,15 @@ import "tree.js" as Tree
           id: page2
           title: "Page #2"
           }
-          Page {
-              id: page3
-              title: "Page #3"
-          }
+      Page {
+          id: page3
+          title: "Page #3"
       }
   }
   \endqml
 
   MultiColumnView supports adaptive column handling. When the number of columns changes at
-  runtime the pages are automatically rearranged. To understand it better, let's take the following example:
-  \qml
-  import QtQuick 2.4
-  import Ubuntu.Components 1.3
-
-  MainView {
-      width: units.gu(120)
-      height: units.gu(71)
-
-      MultiColumnView {
-          anchors.fill: parent
-          primaryPage: page1
-          Page {
-              id: page1
-              title: "Main page"
-              Button {
-                  text: "Add Page2 next to " + page1.title
-                  onClicked: page1.pageStack.addPageToNextColumn(page1, page2)
-              }
-          }
-          Page {
-              id: page2
-              title: "Page #2"
-              Button {
-                  text: "Add Page3 here"
-                  onClicked: page2.pageStack.addPageToCurrentColumn(page2, page3)
-              }
-          }
-          Page {
-              id: page3
-              title: "Page #3"
-          }
-      }
-  }
-  \endqml
-
-  When the code is run on sufficiently wide screen, like a desktop or TV,
-  it will launch with multiple columns.
-
-  \c page1 is set to be the primary page, \c page2 will be added to column next to
-  \c page1 (to column 2) and \c page3 in the same column as \c page2. If the window
-  is resized to contain only one column, all pages will be shown in that column, so
-  the component will act as PageStack. Resizing the window back to 2 columns will place
-  the pages side-by-side.
-
-  \note In the above example if \c page2 is removed, that will remove all its child
-  pages, meaning \c page3 will also be removed.
+  runtime the pages are automatically rearranged.
 
   \sa PageStack
 */
@@ -163,19 +116,19 @@ MainViewBase {
     */
 
     /*!
-      \qmlproperty color MainView::backgroundColor
+      \qmlproperty color MultiColumnView::backgroundColor
       Color of the background.
 
       The background is usually a single color. However if \l headerColor
       or \l footerColor are set then a gradient of colors will be drawn.
 
-      For example, in order for the MainView to draw a color gradient beneath
+      For example, in order for the MultiColumnView to draw a color gradient beneath
       the content:
       \qml
           import QtQuick 2.4
           import Ubuntu.Components 1.2
 
-          MainView {
+          MultiColumnView {
               width: units.gu(40)
               height: units.gu(60)
 
@@ -189,15 +142,15 @@ MainViewBase {
     */
 
     /*!
-      \qmlproperty color MainView::footerColor
+      \qmlproperty color MultiColumnView::footerColor
       Color of the footer's background.
 
       \sa backgroundColor, headerColor
     */
 
     /*!
-      \qmlproperty bool MainView::active
-      MainView is active by default.
+      \qmlproperty bool MultiColumnView::active
+      MultiColumnView is active by default.
     */
 
     /*!
