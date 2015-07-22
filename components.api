@@ -167,6 +167,12 @@ Ubuntu.Components.ListItems.Base 1.3: Empty
     property var icon
     property bool iconFrame
     property bool progression
+Ubuntu.Components.BottomEdgeHint 1.3: Item
+    property string iconName
+    property url iconSource
+    signal clicked()
+    property string state
+    property string text
 Ubuntu.Components.Button 1.0 0.1: AbstractButton
     property color color
     property QFont font

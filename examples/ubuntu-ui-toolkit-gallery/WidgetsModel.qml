@@ -91,6 +91,11 @@ ListModel {
         label: "CrossFadeImage"
         source: "CrossFadeImage.qml"
     }
+    ListElement {
+        objectName: "bottomEdgeHintElement"
+        label: "Bottom Edge Hint"
+        source: "BottomEdgeHint.qml"
+    }
 
     // Already in design guidelines but should be reordered
     ListElement {
