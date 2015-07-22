@@ -136,7 +136,6 @@ import "tree.js" as Tree
 MainViewBase {
     id: multiColumnView
 
-
     /*!
       \qmlproperty string MultiColumnView::applicationName
       The property holds the application's name, which must be the same as the
