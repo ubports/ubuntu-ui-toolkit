@@ -1280,13 +1280,13 @@ Item {
             waitForRendering(listView, 500);
         }
 
-        function test_2_listitem_actions_width_bug1465582_data() {
+        function test_listitem_actions_width_bug1465582_data() {
             return [
-                        {tag: "leading", dx: units.gu(5), action: "leading_1"},
-                        {tag: "trailing", dx: -units.gu(5), action: "stockAction"},
-                    ]
+                {tag: "leading", dx: units.gu(5), action: "leading_1"},
+                {tag: "trailing", dx: -units.gu(5), action: "stockAction"},
+            ];
         }
-        function test_2_listitem_actions_width_bug1465582(data) {
+        function test_listitem_actions_width_bug1465582(data) {
             var height = testItem.height;
             testItem.height = units.gu(15);
 
@@ -1296,7 +1296,7 @@ Item {
 
             var icon = findChild(testItem, data.action);
             verify(icon);
-            compare(icon.width, height, "icon height differs");
+            compare(icon.width, units.gu(5), "icon width should be the same no matter of the height set");
 
             rebound(testItem);
 
