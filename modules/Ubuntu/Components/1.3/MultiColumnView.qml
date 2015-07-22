@@ -136,6 +136,71 @@ import "tree.js" as Tree
 MainViewBase {
     id: multiColumnView
 
+
+    /*!
+      \qmlproperty string MultiColumnView::applicationName
+      The property holds the application's name, which must be the same as the
+      desktop file's name.
+      The name also sets the name of the QCoreApplication and defaults for data
+      and cache folders that work on the desktop and under confinement, as well as
+      the default gettext domain.
+      C++ code that writes files may use QStandardPaths::writableLocation with
+      QStandardPaths::DataLocation or QStandardPaths::CacheLocation.
+    */
+
+    /*!
+      \qmlproperty bool MultiColumnView::anchorToKeyboard
+      The property holds if the application should automatically resize the
+      contents when the input method appears
+
+      The default value is false.
+    */
+
+    /*!
+      \qmlproperty color MultiColumnView::headerColor
+      Color of the header's background.
+
+      \sa backgroundColor, footerColor
+    */
+
+    /*!
+      \qmlproperty color MainView::backgroundColor
+      Color of the background.
+
+      The background is usually a single color. However if \l headerColor
+      or \l footerColor are set then a gradient of colors will be drawn.
+
+      For example, in order for the MainView to draw a color gradient beneath
+      the content:
+      \qml
+          import QtQuick 2.4
+          import Ubuntu.Components 1.2
+
+          MainView {
+              width: units.gu(40)
+              height: units.gu(60)
+
+              headerColor: "#343C60"
+              backgroundColor: "#6A69A2"
+              footerColor: "#8896D5"
+          }
+      \endqml
+
+      \sa footerColor, headerColor
+    */
+
+    /*!
+      \qmlproperty color MainView::footerColor
+      Color of the footer's background.
+
+      \sa backgroundColor, headerColor
+    */
+
+    /*!
+      \qmlproperty bool MainView::active
+      MainView is active by default.
+    */
+
     /*!
       The property holds the first Page which will be added to the view. If the
       view has more than one column, the page will be added to the leftmost column.
