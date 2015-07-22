@@ -21,7 +21,7 @@ import QtQuick.Window 2.2
 
 /*!
     \qmltype MainView
-    \inqmlmodule Ubuntu.Components 1.2
+    \inqmlmodule Ubuntu.Components 1.3
     \ingroup ubuntu
     \brief MainView is the root Item that should be used for all applications.
         It automatically adds a header and toolbar for its contents and can
@@ -31,7 +31,7 @@ import QtQuick.Window 2.2
     inside the MainView:
     \qml
         import QtQuick 2.4
-        import Ubuntu.Components 1.2
+        import Ubuntu.Components 1.3
 
         MainView {
             width: units.gu(48)
@@ -61,7 +61,7 @@ import QtQuick.Window 2.2
     the header will automatically hide and show when the user scrolls up or down:
     \qml
         import QtQuick 2.4
-        import Ubuntu.Components 1.2
+        import Ubuntu.Components 1.3
 
         MainView {
             width: units.gu(48)
