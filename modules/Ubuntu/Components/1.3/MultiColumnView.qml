@@ -599,7 +599,13 @@ MainViewBase {
     RowLayout {
         id: body
         objectName: "body"
-        anchors.fill: parent
+        anchors {
+            fill: parent
+            bottomMargin: multiColumnView.anchorToKeyboard &&
+                          UbuntuApplication.inputMethod.visible ?
+                              UbuntuApplication.inputMethod.keyboardRectangle.height : 0
+        }
+
         spacing: 0
 
         property real headerHeight: 0
