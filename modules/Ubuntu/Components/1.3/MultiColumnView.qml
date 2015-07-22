@@ -90,7 +90,7 @@ MainViewBase {
     id: multiColumnView
 
     /*!
-      \qmlproperty string MultiColumnView::applicationName
+      \qmlproperty string applicationName
       The property holds the application's name, which must be the same as the
       desktop file's name.
       The name also sets the name of the QCoreApplication and defaults for data
@@ -101,7 +101,7 @@ MainViewBase {
     */
 
     /*!
-      \qmlproperty bool MultiColumnView::anchorToKeyboard
+      \qmlproperty bool anchorToKeyboard
       The property holds if the application should automatically resize the
       contents when the input method appears
 
@@ -109,14 +109,14 @@ MainViewBase {
     */
 
     /*!
-      \qmlproperty color MultiColumnView::headerColor
+      \qmlproperty color headerColor
       Color of the header's background.
 
       \sa backgroundColor, footerColor
     */
 
     /*!
-      \qmlproperty color MultiColumnView::backgroundColor
+      \qmlproperty color backgroundColor
       Color of the background.
 
       The background is usually a single color. However if \l headerColor
@@ -142,14 +142,14 @@ MainViewBase {
     */
 
     /*!
-      \qmlproperty color MultiColumnView::footerColor
+      \qmlproperty color footerColor
       Color of the footer's background.
 
       \sa backgroundColor, headerColor
     */
 
     /*!
-      \qmlproperty bool MultiColumnView::active
+      \qmlproperty bool active
       MultiColumnView is active by default.
     */
 
