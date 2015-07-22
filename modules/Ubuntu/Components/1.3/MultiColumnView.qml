@@ -160,7 +160,7 @@ MainViewBase {
       or a QML document defining the Page. The property cannot be changed after
       component completion.
       */
-    property var primaryPage
+    property Page primaryPage
 
     /*!
       \qmlmethod Item addPageToCurrentColumn(Item sourcePage, var page[, var properties])
