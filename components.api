@@ -1297,7 +1297,7 @@ Ubuntu.Components.UbuntuShape 1.2 1.0 0.1 Shape 1.0 0.1: Item
     property HAlignment horizontalAlignment
     property var image
     property string radius
-    property double relativeRadius 1.2
+    property double relativeRadius 1.3
     property color secondaryBackgroundColor 1.2
     property var source 1.2
     property FillMode sourceFillMode 1.2
