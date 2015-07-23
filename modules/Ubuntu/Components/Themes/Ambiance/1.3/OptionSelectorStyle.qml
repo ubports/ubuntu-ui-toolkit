@@ -32,6 +32,6 @@ Item {
         height: styledItem.height
         radius: "medium"
 
-        color: Qt.rgba(0, 0, 0, 0.05)
+        backgroundColor: Qt.rgba(0, 0, 0, 0.05)
     }
 }

@@ -23,6 +23,6 @@ Item {
     UbuntuShape {
         id: background
         anchors.fill: parent
-        color: "white"
+        backgroundColor: "white"
     }
 }

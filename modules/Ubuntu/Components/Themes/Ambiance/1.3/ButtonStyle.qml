@@ -123,21 +123,23 @@ Item {
     UbuntuShape {
         id: background
         anchors.fill: parent
-        borderSource: "radius_idle.sci"
-        visible: stroke ? false : ((color.a != 0.0) || backgroundSource)
-        image: backgroundSource
+        borderSource: "radius_idle.sci"  // Deprecated, use a dedicated shape.
+        visible: stroke ? false : ((backgroundColor.a != 0.0) || backgroundSource)
+        source: backgroundSource
 
-        color: stroke ? "" : (backgroundSource ? "#00000000" : (isGradient ? __colorHack(gradientProxy.topColor) : __colorHack(button.color)))
+        backgroundColor: backgroundSource ? "#00000000" : (isGradient ? __colorHack(gradientProxy.topColor) : __colorHack(button.color))
+        secondaryBackgroundColor: backgroundSource ? "#00000000" : (isGradient ? __colorHack(gradientProxy.bottomColor) : __colorHack(button.color))
+        backgroundMode: isGradient ? UbuntuShape.VerticalGradient : UbuntuShape.SolidColor
         opacity: styledItem.enabled ? 1.0 : 0.6
-        gradientColor: stroke ? "" : (backgroundSource ? "#00000000" : (isGradient ? __colorHack(gradientProxy.bottomColor) : __colorHack(button.color)))
     }
 
     UbuntuShape {
         id: backgroundPressed
         anchors.fill: parent
-        color: stroke ? button.strokeColor : background.color
-        gradientColor: stroke ? button.strokeColor : background.gradientColor
-        borderSource: "radius_pressed.sci"
+        backgroundColor: stroke ? button.strokeColor : background.backgroundColor
+        secondaryBackgroundColor: background.secondaryBackgroundColor
+        backgroundMode: stroke ? UbuntuShape.SolidColor : UbuntuShape.VerticalGradient
+        borderSource: "radius_pressed.sci"  // Deprecated, use a dedicated shape.
         opacity: button.pressed ? 1.0 : 0.0
         Behavior on opacity {
             NumberAnimation {
