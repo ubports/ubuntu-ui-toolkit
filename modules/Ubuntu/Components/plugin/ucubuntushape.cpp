@@ -89,7 +89,7 @@ void ShapeShader::updateState(
     const ShapeMaterial::Data* data = static_cast<ShapeMaterial*>(newEffect)->constData();
 
     // Bind shape texture.
-    glBindTexture(GL_TEXTURE_2D, data->shapeTexture);
+    glBindTexture(GL_TEXTURE_2D, data->shapeTextureId);
 
     // Bind source texture on the 2nd texture unit and update uniforms.
     bool textured = false;
@@ -248,11 +248,12 @@ const float implicitWidthGU = 8.0f;
 const float implicitHeightGU = 8.0f;
 const float radiusGuMap[3] = { 1.45f, 2.55f, 3.65f };
 const int maxShapeTextures = 16;
-static struct {
-    QOpenGLContext* openglContext;
-    quint32 textureId[shapeTextureCount];
-} shapeTextures[maxShapeTextures];
+
+static struct { QOpenGLContext* openglContext; quint32 textureId[shapeTextureCount]; }
+    shapeTextures[maxShapeTextures];
 static bool isPrimaryOrientationLandscape = false;
+
+static int getShapeTexturesIndex(const QOpenGLContext* openglContext);
 
 /*! \qmltype UbuntuShape
     \instantiates UCUbuntuShape
@@ -986,12 +987,8 @@ void UCUbuntuShape::_q_imagePropertiesChanged()
 void UCUbuntuShape::_q_openglContextDestroyed()
 {
     // Delete the shape textures that are stored per context and shared by all the shape items.
-    int index = 0;
-    const QOpenGLContext* openglContext = qobject_cast<QOpenGLContext*>(sender());
-    while (shapeTextures[index].openglContext != openglContext) {
-        index++;
-        Q_ASSERT(index < maxShapeTextures);
-    }
+    const int index = getShapeTexturesIndex(qobject_cast<QOpenGLContext*>(sender()));
+    Q_ASSERT(index >= 0);
     shapeTextures[index].openglContext = NULL;
     glDeleteTextures(shapeTextureCount, shapeTextures[index].textureId);
 }
@@ -1020,6 +1017,34 @@ void UCUbuntuShape::geometryChanged(const QRectF& newGeometry, const QRectF& old
 {
     QQuickItem::geometryChanged(newGeometry, oldGeometry);
     m_flags |= DirtySourceTransform;
+}
+
+// Gets the shapeTextures' slot used by the given context, or -1 if not stored.
+static int getShapeTexturesIndex(const QOpenGLContext* openglContext)
+{
+    int index = 0;
+    while (shapeTextures[index].openglContext != openglContext) {
+        index++;
+        if (index == maxShapeTextures) {
+            return -1;
+        }
+    }
+    return index;
+}
+
+// Gets an empty shapeTextures' slot.
+static int getEmptyShapeTexturesIndex()
+{
+    int index = 0;
+    while (shapeTextures[index].openglContext) {
+        index++;
+        if (index == maxShapeTextures) {
+            // Don't bother with a dynamic array, let's just set a high enough maxShapeTextures and
+            // increase the static array size if ever needed.
+            qFatal("reached maximum number of OpenGL contexts supported by UbuntuShape");
+        }
+    }
+    return index;
 }
 
 // Gets the nearest boundary to coord in the texel grid of the given size.
@@ -1106,18 +1131,9 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
     Q_ASSERT(window());
     QOpenGLContext* openglContext = window()->openglContext();
     Q_ASSERT(openglContext);
-    int index = 0;
-    while (index < maxShapeTextures && shapeTextures[index].openglContext != openglContext) {
-        index++;
-    }
-    if (index == maxShapeTextures) {
-        index = 0;
-        while (shapeTextures[index].openglContext) {
-            index++;
-            if (index == maxShapeTextures) {
-                qFatal("reached maximum number of OpenGL contexts supported by UbuntuShape");
-            }
-        }
+    int index = getShapeTexturesIndex(openglContext);
+    if (index < 0) {
+        index = getEmptyShapeTexturesIndex();
         shapeTextures[index].openglContext = openglContext;
         glGenTextures(shapeTextureCount, shapeTextures[index].textureId);
         for (int i = 0; i < shapeTextureCount; i++) {
@@ -1132,7 +1148,7 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
         QObject::connect(openglContext, SIGNAL(aboutToBeDestroyed()), this,
                          SLOT(_q_openglContextDestroyed()), Qt::DirectConnection);
     }
-    int index2 = m_aspect == DropShadow ? 1 : 0;
+    const quint32 shapeTextureId = shapeTextures[index].textureId[m_aspect != DropShadow ? 0 : 1];
 
     // Get the source texture info and update the source transform if needed.
     QSGTextureProvider* provider = m_source ? m_source->textureProvider() : NULL;
@@ -1188,8 +1204,7 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
         radius = qMin(itemSize.width(), itemSize.height()) * 0.5f * (m_relativeRadius * 0.01f);
     }
 
-    updateMaterial(node, radius, shapeTextures[index].textureId[index2],
-                   sourceTexture && m_sourceOpacity);
+    updateMaterial(node, radius, shapeTextureId, sourceTexture && m_sourceOpacity);
 
     // Get the affine transformation for the source texture coordinates.
     const QVector4D sourceCoordTransform(
@@ -1244,12 +1259,13 @@ QSGNode* UCUbuntuShape::createSceneGraphNode() const
     return new ShapeNode;
 }
 
-void UCUbuntuShape::updateMaterial(QSGNode* node, float radius, quint32 shapeTexture, bool textured)
+void UCUbuntuShape::updateMaterial(
+    QSGNode* node, float radius, quint32 shapeTextureId, bool textured)
 {
     ShapeMaterial::Data* materialData = static_cast<ShapeNode*>(node)->material()->data();
     quint8 flags = 0;
 
-    materialData->shapeTexture = shapeTexture;
+    materialData->shapeTextureId = shapeTextureId;
     if (textured) {
         materialData->sourceTextureProvider = m_sourceTextureProvider;
         materialData->sourceOpacity = m_sourceOpacity;

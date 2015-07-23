@@ -67,7 +67,7 @@ public:
             Pressed              = (1 << 6)
         };
         QSGTextureProvider* sourceTextureProvider;
-        quint32 shapeTexture;
+        quint32 shapeTextureId;
         quint8 distanceAAFactor;
         quint8 sourceOpacity;
         quint8 dfdtFactors;
@@ -289,7 +289,7 @@ protected:
 
     // Virtual functions for extended shapes.
     virtual QSGNode* createSceneGraphNode() const;
-    virtual void updateMaterial(QSGNode* node, float radius, quint32 shapeTexture, bool textured);
+    virtual void updateMaterial(QSGNode* node, float radius, quint32 shapeTextureId, bool textured);
     virtual void updateGeometry(
         QSGNode* node, const QSizeF& itemSize, float radius, float shapeOffset,
         const QVector4D& sourceCoordTransform, const QVector4D& sourceMaskTransform,
