@@ -98,14 +98,11 @@ void main(void)
         lowp float distanceMin = abs(dfdt) * -distanceAA + 0.5;
         lowp float distanceMax = abs(dfdt) * distanceAA + 0.5;
         lowp float mask = smoothstep(distanceMin, distanceMax, shapeData[int(shapeSide)]);
-        // Get the bevel color. The bevel is made of the top mask masked with the bottom mask. A
-        // gradient from the bottom (1) to the middle (0) of the shape is used to factor out values
-        // resulting from the mask anti-aliasing. The bevel color is white with 60% opacity.
+        // Get the shadow color outside of the shape mask.
         lowp float shadow = (shapeData.b * -mask) + shapeData.b;  // -ab + a = a(1 - b)
-        // Mask the current color then blend the bevel over the resulting color. We simply use
-        // additive blending since the bevel has already been masked.
+        // Mask the current color then blend the shadow over the resulting color. We simply use
+        // additive blending since the shadow has already been masked.
         color = (color * vec4(mask)) + vec4(0.0, 0.0, 0.0, shadow);
-        //color = vec4(0.0, 0.0, 0.0, shadow);
     }
 
     gl_FragColor = color * opacityFactors.xxxy;
