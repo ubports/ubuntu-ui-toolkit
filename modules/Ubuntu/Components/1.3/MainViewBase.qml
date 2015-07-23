@@ -19,14 +19,75 @@ import Ubuntu.Components 1.3 as Toolkit
 import Ubuntu.PerformanceMetrics 1.0
 import QtQuick.Window 2.0
 
-/*! \internal */
-// Documentation is in MainView.qdoc
+/*!
+  \internal
+  \qmlabstract MainViewBase
+  \inqmlmodule Ubuntu.Components 1.3
+  \ingroup ubuntu
+  \brief The base class for MainView and MultiColumnView.
+*/
 PageTreeNode {
     id: mainView
+    /*!
+      The property holds the application's name, which must be the same as the
+      desktop file's name.
+      The name also sets the name of the QCoreApplication and defaults for data
+      and cache folders that work on the desktop and under confinement, as well as
+      the default gettext domain.
+      C++ code that writes files may use QStandardPaths::writableLocation with
+      QStandardPaths::DataLocation or QStandardPaths::CacheLocation.
+    */
     property string applicationName: ""
+
+    /*!
+      The property holds if the application should automatically resize the
+      contents when the input method appears
+
+      The default value is false.
+    */
     property bool anchorToKeyboard: false
+
+    /*!
+      \qmlproperty color MainView::headerColor
+      Color of the header's background.
+
+      \sa backgroundColor, footerColor
+    */
     property alias headerColor: background.headerColor
+
+    /*!
+      \qmlproperty color MainView::backgroundColor
+      Color of the background.
+
+      The background is usually a single color. However if \l headerColor
+      or \l footerColor are set then a gradient of colors will be drawn.
+
+      For example, in order for the MainView to draw a color gradient beneath
+      the content:
+      \qml
+          import QtQuick 2.4
+          import Ubuntu.Components 1.2
+
+          MainView {
+              width: units.gu(40)
+              height: units.gu(60)
+
+              headerColor: "#343C60"
+              backgroundColor: "#6A69A2"
+              footerColor: "#8896D5"
+          }
+      \endqml
+
+      \sa footerColor, headerColor
+    */
     property alias backgroundColor: background.backgroundColor
+
+    /*!
+      \qmlproperty color MainView::footerColor
+      Color of the footer's background.
+
+      \sa backgroundColor, headerColor
+    */
     property alias footerColor: background.footerColor
 
     // FIXME: Make sure that the theming is only in the background, and the style
@@ -66,8 +127,30 @@ PageTreeNode {
         }
     }
 
+    /*!
+      \qmlproperty bool MainViewBase::active
+      Root views are active by default.
+    */
     active: true
+
+    /*!
+      \qmlproperty list<Action> MainViewBase::actions
+      A global list of actions that will be available to the system (including HUD)
+      as long as the application is running. For actions that are not always available to the
+      system, but only when a certain \l Page is active, see the actions property of \l Page.
+    */
     property alias actions: unityActionManager.actions
+
+    /*!
+      \qmlproperty ActionManager MainView::actionManager
+      \readonly
+
+      The ActionManager that supervises the global and local ActionContexts.
+      The \l actions property should be used preferably since it covers most
+      use cases. The ActionManager is accessible to have a more refined control
+      over the actions, e.g. if one wants to add/remove actions dynamically, create
+      specific action contexts, etc.
+    */
     property alias actionManager: unityActionManager
     Toolkit.ActionManager {
         id: unityActionManager
