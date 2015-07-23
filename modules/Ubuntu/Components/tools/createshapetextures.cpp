@@ -63,6 +63,7 @@ static double gradientY[size];
 // Final texture buffers.
 static uint textureData[2][size];
 
+// Creates the inset and flat aspect texture.
 static void createTexture1(QSvgRenderer* svg, QPainter* painter)
 {
     // Input data.
@@ -161,21 +162,17 @@ static void createTexture1(QSvgRenderer* svg, QPainter* painter)
         textureData[0][i] |= value << 8;  // Stored in channel G.
     }
 }
-#include <QDebug>
+
+// Creates the drop shadow aspect texture.
 static void createTexture2(QSvgRenderer* svg, QPainter* painter)
 {
     // Input data.
     const double shadowScale = 4.5;
     const double shadowTranslucency = 0.8;
-    const double distanceTx = 0.0546875 * 0.5;  // From shapeOffset.
-    const double distanceBottomTY = 0.0546875;  // From shapeOffset.
-    const double shadowTopTX = -0.01171875;     // From shapeOffset.
-    const double shadowTopTY = 0.03125;         // From shapeOffset.
-    const double shadowBottomTX = -0.01171875;  // From shapeOffset.
-    const double shadowBottomTY = -0.00390625;  // From shapeOffset.
+    const double distanceBottomTY = 0.0546875;         // From shapeOffset.
+    const double distanceTx = distanceBottomTY * 0.5;  // From shapeOffset.
 
-    // Render and store the distance field used for masking the top of the shape, for masking the
-    // bevel and for masking the unstyled shape.
+    // Render and store the distance field used for masking the top of the shape.
     memset(shapeData, 0, size * sizeof(uint));
     painter->resetTransform();
     painter->translate((shapeOffset + distanceTx) * width, shapeOffset * width);
@@ -200,11 +197,11 @@ static void createTexture2(QSvgRenderer* svg, QPainter* painter)
         textureData[1][i] = value << 0;  // Stored in channel B (exposed as R in the shaders).
     }
 
-    // Render and store the distance field used for masking the bottom of the shape and for masking
-    // the bevel.
+    // Render and store the distance field used for masking the bottom of the shape.
     memset(shapeData, 0, size * sizeof(uint));
     painter->resetTransform();
-    painter->translate((shapeOffset + distanceTx) * width, (shapeOffset + distanceBottomTY) * width);
+    painter->translate((shapeOffset + distanceTx) * width,
+                       (shapeOffset + distanceBottomTY) * width);
     svg->render(painter);
     for (int i = 0; i < size; i++) {
         shapeNormalized[i] = static_cast<double>(shapeData[i] >> 24) / 255.0;
@@ -229,7 +226,7 @@ static void createTexture2(QSvgRenderer* svg, QPainter* painter)
     // Render and store the top inner shadow.
     memset(shapeData, 0, size * sizeof(uint));
     painter->resetTransform();
-    painter->translate((shapeOffset /*+ shadowTopTX*/) * width, (shapeOffset/* + shadowTopTY*/) * width);
+    painter->translate(shapeOffset * width, shapeOffset * width);
     svg->render(painter);
     for (int i = 0; i < size; i++) {
         shapeNormalized[i] = 1.0 - (static_cast<double>(shapeData[i] >> 24) / 255.0);
@@ -239,7 +236,7 @@ static void createTexture2(QSvgRenderer* svg, QPainter* painter)
            distanceIn);
     for (int i = 0; i < size; i++) {
         double shadow = qBound(0.0, (distanceIn[i] * shadowScale * imageScale) / 255.0, 1.0);
-        shadow = (/*1.0 -*/ (2.0 * shadow - shadow * shadow)) * 255.0;
+        shadow = (2.0 * shadow - shadow * shadow) * 255.0;
         const uint value = qBound(0, qRound(shadow * shadowTranslucency), 255);
         textureData[1][i] |= value << 16;  // Stored in channel R (exposed as B in the shaders).
     }
@@ -298,10 +295,10 @@ int main(int argc, char* argv[])
         return 1;
     }
 
+    // Create the textures.
     QImage shape(reinterpret_cast<uchar*>(shapeData), width, height, width * 4,
                  QImage::Format_ARGB32_Premultiplied);
     QPainter painter(&shape);
-
     createTexture1(&svg, &painter);
     createTexture2(&svg, &painter);
 
