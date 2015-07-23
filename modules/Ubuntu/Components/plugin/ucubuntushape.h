@@ -62,7 +62,9 @@ public:
             Repeated             = (HorizontallyRepeated | VerticallyRepeated),
             Flat                 = (1 << 3),
             Inset                = (1 << 4),
-            Pressed              = (1 << 5)
+            DropShadow           = (1 << 5),
+            AspectMask           = (Flat | Inset | DropShadow),
+            Pressed              = (1 << 6)
         };
         QSGTextureProvider* sourceTextureProvider;
         quint32 shapeTexture;
@@ -178,7 +180,7 @@ class UCUbuntuShape : public QQuickItem
 public:
     UCUbuntuShape(QQuickItem* parent=0);
 
-    enum Aspect { Flat = 0, Inset = 1 };  // Don't forget to update private enum if extended.
+    enum Aspect { Flat = 0, Inset = 1, DropShadow = 2 };  // Don't forget to update private enum.
     enum BackgroundMode { SolidColor = 0, VerticalGradient = 1 };
     enum HAlignment { AlignLeft = 0, AlignHCenter = 1, AlignRight = 2 };
     enum VAlignment { AlignTop = 0, AlignVCenter = 1, AlignBottom = 2 };
@@ -312,7 +314,7 @@ private:
         VAlignment verticalAlignment, const QSize& textureSize);
 
     enum Radius { Small = 0, Medium = 1, Large = 2 };
-    enum { Pressed = 2 };  // Aspect extension (to keep support for deprecated aspects).
+    enum { Pressed = 3 };  // Aspect extension (to keep support for deprecated aspects).
     enum {
         AspectSet            = (1 << 0),
         GradientColorSet     = (1 << 1),
@@ -331,7 +333,7 @@ private:
     QVector4D m_sourceTransform;
     Radius m_radius : 2;
     quint8 m_relativeRadius : 6;
-    quint8 m_aspect : 2;
+    quint8 m_aspect : 3;
     HAlignment m_imageHorizontalAlignment : 2;
     VAlignment m_imageVerticalAlignment : 2;
     BackgroundMode m_backgroundMode : 1;
@@ -340,7 +342,6 @@ private:
     FillMode m_sourceFillMode : 2;
     WrapMode m_sourceHorizontalWrapMode : 1;
     WrapMode m_sourceVerticalWrapMode : 1;
-    quint8 __explicit_padding : 1;
     quint8 m_sourceOpacity;
     quint8 m_flags;
 
