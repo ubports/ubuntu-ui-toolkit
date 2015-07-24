@@ -1,0 +1,144 @@
+module Ubuntu.Components
+plugin UbuntuComponents
+ActionItem 0.1 1.2/ActionItem.qml
+ActionList 0.1 1.2/ActionList.qml
+ToolbarItems 0.1 1.2/ToolbarItems.qml
+ToolbarButton 0.1 1.2/ToolbarButton.qml
+MainView 0.1 1.2/MainView.qml
+Button 0.1 1.0/Button.qml
+Panel 0.1 1.2/Panel.qml
+internal DraggingArea 1.2/DraggingArea.qml
+Tab 0.1 1.2/Tab.qml
+TabBar 0.1 1.2/TabBar.qml
+Tabs 0.1 1.2/Tabs.qml
+Label 0.1 1.2/Label.qml
+AbstractButton 0.1 1.2/AbstractButton.qml
+ActivityIndicator 0.1 1.2/ActivityIndicator.qml
+ProgressBar 0.1 1.0/ProgressBar.qml
+TextField 0.1 1.2/TextField.qml
+TextArea 0.1 1.2/TextArea.qml
+Switch 0.1 1.2/Switch.qml
+CheckBox 0.1 1.2/CheckBox.qml
+Slider 0.1 1.2/Slider.qml
+Scrollbar 0.1 1.2/Scrollbar.qml
+Object 0.1 1.2/Object.qml
+OptionSelector 0.1 1.2/OptionSelector.qml
+OptionSelectorDelegate 0.1 1.2/OptionSelectorDelegate.qml
+Page 0.1 1.2/Page10.qml
+PageStack 0.1 1.2/PageStack.qml
+internal Toolbar 1.2/Toolbar.qml
+internal AppHeader 1.2/AppHeader.qml
+Header 0.1 1.2/Header.qml
+internal AnimatedItem 1.2/AnimatedItem.qml
+internal PageWrapper 1.2/PageWrapper.qml
+CrossFadeImage 0.1 1.2/CrossFadeImage10.qml
+Icon 0.1 1.0/Icon.qml
+OrientationHelper 0.1 1.2/OrientationHelper.qml
+UbuntuNumberAnimation 0.1 1.2/UbuntuNumberAnimation.qml
+UbuntuListView 0.1 1.2/UbuntuListView.qml
+singleton UbuntuColors 0.1 1.0/UbuntuColors.qml
+MathUtils 0.1 1.2/mathUtils.js
+SliderUtils 0.1 1.2/sliderUtils.js
+ScrollbarUtils 0.1 1.2/scrollbarUtils.js
+ColorUtils 0.1 1.2/colorUtils.js
+DateUtils 0.1 1.2/dateUtils.js
+
+#version 1.0
+ActionItem 1.0 1.2/ActionItem.qml
+ActionList 1.0 1.2/ActionList.qml
+ToolbarItems 1.0 1.2/ToolbarItems.qml
+ToolbarButton 1.0 1.2/ToolbarButton.qml
+MainView 1.0 1.2/MainView.qml
+Button 1.0 1.0/Button.qml
+Panel 1.0 1.2/Panel.qml
+Tab 1.0 1.2/Tab.qml
+TabBar 1.0 1.2/TabBar.qml
+Tabs 1.0 1.2/Tabs.qml
+Label 1.0 1.2/Label.qml
+AbstractButton 1.0 1.2/AbstractButton.qml
+ActivityIndicator 1.0 1.2/ActivityIndicator.qml
+ProgressBar 1.0 1.0/ProgressBar.qml
+TextField 1.0 1.2/TextField.qml
+TextArea 1.0 1.2/TextArea.qml
+Switch 1.0 1.2/Switch.qml
+CheckBox 1.0 1.2/CheckBox.qml
+Slider 1.0 1.2/Slider.qml
+Scrollbar 1.0 1.2/Scrollbar.qml
+Object 1.0 1.2/Object.qml
+OptionSelector 1.0 1.2/OptionSelector.qml
+OptionSelectorDelegate 1.0 1.2/OptionSelectorDelegate.qml
+Page 1.0 1.2/Page10.qml
+PageStack 1.0 1.2/PageStack.qml
+Header 1.0 1.2/Header.qml
+CrossFadeImage 1.0 1.2/CrossFadeImage10.qml
+Icon 1.0 1.0/Icon.qml
+OrientationHelper 1.0 1.2/OrientationHelper.qml
+UbuntuNumberAnimation 1.0 1.2/UbuntuNumberAnimation.qml
+singleton UbuntuColors 1.0 1.0/UbuntuColors.qml
+MathUtils 1.0 1.2/mathUtils.js
+SliderUtils 1.0 1.2/sliderUtils.js
+ScrollbarUtils 1.0 1.2/scrollbarUtils.js
+ColorUtils 1.0 1.2/colorUtils.js
+DateUtils 1.0 1.2/dateUtils.js
+UbuntuListView 1.0 1.2/UbuntuListView.qml
+
+#version 1.1
+ComboButton 1.1 1.2/ComboButton.qml
+Button 1.1 1.1/Button.qml
+ProgressBar 1.1 1.1/ProgressBar.qml
+CrossFadeImage 1.1 1.2/CrossFadeImage11.qml
+PullToRefresh 1.1 1.2/PullToRefresh.qml
+UbuntuListView 1.1 1.2/UbuntuListView11.qml
+Page 1.1 1.2/Page11.qml
+PageHeadConfiguration 1.1 1.2/PageHeadConfiguration.qml
+PageHeadSections 1.1 1.2/PageHeadSections.qml
+PageHeadState 1.1 1.2/PageHeadState.qml
+Icon 1.1 1.1/Icon.qml
+singleton UbuntuColors 1.1 1.1/UbuntuColors.qml
+singleton Haptics 0.1 1.1/Haptics.qml
+singleton Haptics 1.0 1.1/Haptics.qml
+
+#version 1.2
+MainView 1.2 1.2/MainView12.qml
+Captions 1.2 1.2/Captions.qml
+
+#################################################
+#version 1.3
+ActionBar 1.3 1.3/ActionBar.qml
+ActionItem 1.3 1.3/ActionItem.qml
+ActionList 1.3 1.3/ActionList.qml
+ToolbarItems 1.3 1.3/ToolbarItems.qml
+ToolbarButton 1.3 1.3/ToolbarButton.qml
+MainView 1.3 1.3/MainView.qml
+ComboButton 1.3 1.3/ComboButton.qml
+Button 1.3 1.3/Button.qml
+Panel 1.3 1.3/Panel.qml
+Tab 1.3 1.3/Tab.qml
+TabBar 1.3 1.3/TabBar.qml
+Tabs 1.3 1.3/Tabs.qml
+Label 1.3 1.3/Label.qml
+AbstractButton 1.3 1.3/AbstractButton.qml
+ActivityIndicator 1.3 1.3/ActivityIndicator.qml
+ProgressBar 1.3 1.3/ProgressBar.qml
+TextField 1.3 1.3/TextField.qml
+TextArea 1.3 1.3/TextArea.qml
+Switch 1.3 1.3/Switch.qml
+CheckBox 1.3 1.3/CheckBox.qml
+Slider 1.3 1.3/Slider.qml
+Scrollbar 1.3 1.3/Scrollbar.qml
+OptionSelector 1.3 1.3/OptionSelector.qml
+OptionSelectorDelegate 1.3 1.3/OptionSelectorDelegate.qml
+Page 1.3 1.3/Page.qml
+PageStack 1.3 1.3/PageStack.qml
+PageHeadConfiguration 1.3 1.3/PageHeadConfiguration.qml
+PageHeadSections 1.3 1.3/PageHeadSections.qml
+PageHeadState 1.3 1.3/PageHeadState.qml
+Sections 1.3 1.3/Sections.qml
+Header 1.3 1.3/Header.qml
+CrossFadeImage 1.3 1.3/CrossFadeImage.qml
+OrientationHelper 1.3 1.3/OrientationHelper.qml
+UbuntuNumberAnimation 1.3 1.3/UbuntuNumberAnimation.qml
+PullToRefresh 1.3 1.3/PullToRefresh.qml
+UbuntuListView 1.3 1.3/UbuntuListView11.qml
+Captions 1.3 1.3/Captions.qml
+BottomEdgeHint 1.3 1.3/BottomEdgeHint.qml

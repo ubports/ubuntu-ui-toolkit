@@ -106,6 +106,7 @@ MainView {
             id: testItem
             objectName: "single"
             color: "lime"
+            height: units.gu(15)
             onClicked: {
                 print("click")
                 units.gridUnit += 2;
