@@ -218,7 +218,8 @@ Item {
 
         // Styling.
         } else if (event.key == Qt.Key_R) {
-            shape.radius = (shape.radius == "medium") ? "small" : "medium";
+            shape.radius = (shape.radius == "large") ? "small" :
+                ((shape.radius == "small") ? "medium" : "large");
         } else if (event.key == Qt.Key_T) {
             shape.aspect = (shape.aspect + 1) % 2;
 
