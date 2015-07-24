@@ -50,11 +50,11 @@ Styles.ListItemStyle {
         Rectangle {
             id: panel
             objectName: "ListItemPanel" + (leading ? "Leading" : "Trailing")
-            readonly property real panelWidth: actionsRow.width
+            // add 0.5 GUs to the panel size so we get 2GU default margin on the first action
+            readonly property real panelWidth: actionsRow.width + units.gu(0.5)
 
             color: leading ? leadingPanelColor : trailingPanelColor
             anchors.fill: parent
-            width: parent ? parent.width : 0
 
             readonly property ListItemActions itemActions: leading ? styledItem.leadingActions : styledItem.trailingActions
 
@@ -63,12 +63,14 @@ Styles.ListItemStyle {
                 anchors {
                     left: leading ? undefined : parent.left
                     right: leading ? parent.right : undefined
+                    leftMargin: leading ? 0 : units.gu(0.5)
+                    rightMargin: leading ? units.gu(0.5) : 0
                     top: parent.top
                     bottom: parent.bottom
-                    leftMargin: spacing
                 }
 
                 readonly property real maxItemWidth: parent.width / itemActions.actions.length
+                readonly property real minItemWidth: units.gu(5) // 2GU icon + 2* 1.5GU margin
 
                 Repeater {
                     model: itemActions.actions
@@ -77,7 +79,7 @@ Styles.ListItemStyle {
                         action: modelData
                         enabled: action.enabled
                         opacity: action.enabled ? 1.0 : 0.5
-                        width: MathUtils.clamp(delegateLoader.item ? delegateLoader.item.width : 0, height, actionsRow.maxItemWidth)
+                        width: MathUtils.clamp(delegateLoader.item ? delegateLoader.item.width : 0, actionsRow.minItemWidth, actionsRow.maxItemWidth)
                         anchors {
                             top: parent ? parent.top : undefined
                             bottom: parent ? parent.bottom : undefined
@@ -115,9 +117,9 @@ Styles.ListItemStyle {
             Component {
                 id: defaultDelegate
                 Item {
-                    width: height
+                    width: actionsRow.minItemWidth
                     Icon {
-                        width: units.gu(2.5)
+                        width: units.gu(2)
                         height: width
                         name: action.iconName
                         color: leading ? leadingForegroundColor : trailingForegroundColor
@@ -231,7 +233,7 @@ Styles.ListItemStyle {
             bottom: parent.bottom
             right: parent.left
         }
-        width: parent.width
+        width: styledItem.width
         sourceComponent: internals.swiped && styledItem.leadingActions && styledItem.leadingActions.actions.length > 0 ?
                              panelComponent : null
         // context properties used in delegates
@@ -280,7 +282,7 @@ Styles.ListItemStyle {
             bottom: parent.bottom
             left: parent.right
         }
-        width: parent.width
+        width: styledItem.width
         sourceComponent: internals.swiped && styledItem.trailingActions && styledItem.trailingActions.actions.length > 0 ?
                              panelComponent : null
         // context properties used in delegates
@@ -388,9 +390,8 @@ Styles.ListItemStyle {
 
             stop();
             from = styledItem.contentItem.x;
-            if (!pos) {
-                pos = styledItem.contentItem.anchors.leftMargin;
-            }
+            // add leading margin as the snapped out item's X coordinate is the leftMargin
+            pos += styledItem.contentItem.anchors.leftMargin;
             to = pos;
             start();
         }
