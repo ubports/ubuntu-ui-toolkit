@@ -1090,10 +1090,13 @@ void UCListItem13::mousePressEvent(QMouseEvent *event)
 {
     UCListItem::mousePressEvent(event);
     if (shouldShowContextMenu(event)) {
+        Q_D(UCListItem);
+
         // Highlight the Item while the menu is showing
         setHighlighted(true);
+        // Reset the timer which otherwise is started with highlighting
+        d->pressAndHoldTimer.stop();
 
-        Q_D(UCListItem);
         quint16 version(d->getTheme()->version());
         QString versionString(QStringLiteral("%1.%2").arg(MAJOR_VERSION(version)).arg(MINOR_VERSION(version)));
         QUrl url(UbuntuComponentsPlugin::pluginUrl().resolved(versionString + "/ListItemPopover.qml"));
