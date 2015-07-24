@@ -183,7 +183,8 @@ public:
     enum FillMode { Stretch = 0, PreserveAspectFit = 1, PreserveAspectCrop = 2, Pad = 3 };
     enum WrapMode { Transparent = 0, Repeat = 1 };
 
-    QString radius() const { return (m_radius == Small) ? "small" : "medium"; }
+    QString radius() const {
+      return (m_radius == Small) ? "small" : ((m_radius == Medium) ? "medium" : "large"); }
     void setRadius(const QString& radius);
     Aspect aspect() const { return (m_flags & AspectSet) ? static_cast<Aspect>(m_aspect) : Flat; }
     void setAspect(Aspect aspect);
@@ -305,7 +306,7 @@ private:
         float itemWidth, float itemHeight, FillMode fillMode, HAlignment horizontalAlignment,
         VAlignment verticalAlignment, const QSize& textureSize);
 
-    enum Radius { Small = 0, Medium = 1 };
+    enum Radius { Small = 0, Medium = 1, Large = 2 };
     enum { Pressed = 2 };  // Aspect extension (to keep support for deprecated aspects).
     enum {
         AspectSet            = (1 << 0),
@@ -323,7 +324,7 @@ private:
     QVector2D m_sourceScale;
     QVector2D m_sourceTranslation;
     QVector4D m_sourceTransform;
-    Radius m_radius : 1;
+    Radius m_radius : 2;
     quint8 m_aspect : 2;
     HAlignment m_imageHorizontalAlignment : 2;
     VAlignment m_imageVerticalAlignment : 2;
@@ -333,6 +334,7 @@ private:
     FillMode m_sourceFillMode : 2;
     WrapMode m_sourceHorizontalWrapMode : 1;
     WrapMode m_sourceVerticalWrapMode : 1;
+    quint8 __explicit_padding : 7;
     quint8 m_sourceOpacity;
     quint8 m_flags;
 
