@@ -15,6 +15,7 @@
  */
 
 /*!
+  \internal
   \qmltype colorUtils
   \inqmlmodule Ubuntu.Components 1.3
   \ingroup ubuntu

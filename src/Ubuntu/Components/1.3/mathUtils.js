@@ -45,7 +45,7 @@ function lerp(delta, from, to) {
 }
 
 /*!
-  \qmlmethod mathUtils::getFlickableChild(item)
+  \qmlmethod mathUtils::projectValue(x, xmin, xmax, ymin, ymax)
   Linearly project a value x from [xmin, xmax] into [ymin, ymax]
  */
 function projectValue(x, xmin, xmax, ymin, ymax) {
