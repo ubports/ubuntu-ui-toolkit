@@ -35,6 +35,7 @@ HEADERS += plugin.h \
     ucubuntushapetexture.h \
     ucubuntushape.h \
     ucubuntushapeoverlay.h \
+    ucubuntushapeicon.h \
     inversemouseareatype.h \
     qquickclipboard.h \
     qquickmimedata.h \
@@ -93,6 +94,7 @@ SOURCES += plugin.cpp \
     quickutils.cpp \
     ucubuntushape.cpp \
     ucubuntushapeoverlay.cpp \
+    ucubuntushapeicon.cpp \
     inversemouseareatype.cpp \
     qquickclipboard.cpp \
     qquickmimedata.cpp \

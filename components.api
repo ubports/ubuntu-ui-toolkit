@@ -1333,6 +1333,7 @@ Ubuntu.Components.UbuntuShape.VAlignment: Enum
 Ubuntu.Components.UbuntuShape.WrapMode: Enum
     Repeat
     Transparent
+Ubuntu.Components.UbuntuShapeIcon 1.3: UbuntuShape
 Ubuntu.Components.UbuntuShapeOverlay 1.2: UbuntuShape
     property color overlayColor
     property QRectF overlayRect
