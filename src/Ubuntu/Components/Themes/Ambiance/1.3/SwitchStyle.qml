@@ -74,7 +74,7 @@ Item {
     UbuntuShape {
         id: background
         anchors.fill: parent
-        color: switchStyle.backgroundColor
+        backgroundColor: switchStyle.backgroundColor
         clip: true
 
         UbuntuShape {
@@ -86,7 +86,7 @@ Item {
                     PropertyChanges {
                         target: thumb
                         x: rightThumbPosition.x
-                        color: switchStyle.checkedThumbColor
+                        backgroundColor: switchStyle.checkedThumbColor
                     }
                 },
                 State {
@@ -95,7 +95,7 @@ Item {
                     PropertyChanges {
                         target: thumb
                         x: leftThumbPosition.x
-                        color: switchStyle.uncheckedThumbColor
+                        backgroundColor: switchStyle.uncheckedThumbColor
                     }
                 }
             ]
@@ -114,7 +114,7 @@ Item {
                     }
                     ColorAnimation {
                         target: thumb
-                        properties: "color"
+                        properties: "backgroundColor"
                         duration: UbuntuAnimation.FastDuration
                         easing: UbuntuAnimation.StandardEasing
                     }
@@ -130,7 +130,7 @@ Item {
                     }
                     ColorAnimation {
                         target: thumb
-                        properties: "color"
+                        properties: "backgroundColor"
                         duration: UbuntuAnimation.FastDuration
                         easing: UbuntuAnimation.StandardEasing
                     }

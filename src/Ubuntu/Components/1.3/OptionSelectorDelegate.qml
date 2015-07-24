@@ -318,48 +318,54 @@ ListItem.Empty {
             anchors {
                 verticalCenter: parent.verticalCenter
             }
+            clip: true
+            width: option.width - leftIcon.width - image.width
+                - parent.spacing * 2 - parent.anchors.leftMargin
+
             Label {
                 text: option.text === "" ? modelData : option.text
+                width: parent.width
+                elide: Text.ElideRight
             }
             Label {
                 text: option.subText
+                width: parent.width
+                elide: Text.ElideRight
                 visible: option.subText !== "" ? true : false
                 fontSize: "small"
             }
         }
-    }
 
-    Image {
-        id: image
+        Image {
+            id: image
 
-        width: units.gu(2)
-        height: units.gu(2)
-        source: listView.expanded || listView.multiSelection ? listView.container.tick : listView.container.chevron
-        opacity: option.selected ? 1.0 : 0.0
-        anchors {
-            right: parent.right
-            rightMargin: units.gu(2)
-            verticalCenter: parent.verticalCenter
-        }
-
-        //Our behaviour is only enabled for our expanded list due to flickering bugs in relation to all this other animations running on the expanding version.
-        Behavior on opacity {
-            enabled: listView.expanded
-
-            Toolkit.UbuntuNumberAnimation {
-                properties: "opacity"
-                duration: Toolkit.UbuntuAnimation.FastDuration
+            width: units.gu(2)
+            height: units.gu(2)
+            source: listView.expanded || listView.multiSelection ? listView.container.tick : listView.container.chevron
+            opacity: option.selected ? 1.0 : 0.0
+            anchors {
+                verticalCenter: parent.verticalCenter
             }
+
+            //Our behaviour is only enabled for our expanded list due to flickering bugs in relation to all this other animations running on the expanding version.
+            Behavior on opacity {
+                enabled: listView.expanded
+
+                Toolkit.UbuntuNumberAnimation {
+                    properties: "opacity"
+                    duration: Toolkit.UbuntuAnimation.FastDuration
+                }
+            }
+
+            ShaderEffect {
+                property color colour: assetColour
+                property Image source: parent
+
+                width: source.width
+                height: source.height
+
+                fragmentShader: fragColourShader
+             }
         }
-
-        ShaderEffect {
-            property color colour: assetColour
-            property Image source: parent
-
-            width: source.width
-            height: source.height
-
-            fragmentShader: fragColourShader
-         }
     }
 }

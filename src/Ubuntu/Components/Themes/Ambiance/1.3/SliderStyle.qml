@@ -81,7 +81,7 @@ Item {
         width: units.gu(2)
         height: units.gu(2)
         opacity: 0.97
-        color: theme.palette.normal.overlay
+        backgroundColor: theme.palette.normal.overlay
     }
 
     BubbleShape {

@@ -638,6 +638,10 @@ void UCTheme::registerToContext(QQmlContext* context)
  *
  * \sa Ubuntu::toolkitVersion, Ubuntu::version, {Themes}
  */
+quint16 UCTheme::version()
+{
+    return m_version;
+}
 void UCTheme::setVersion(quint16 version)
 {
     if (m_version == version) {

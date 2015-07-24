@@ -19,11 +19,91 @@ import Ubuntu.Components 1.3 as Toolkit
 import Ubuntu.PerformanceMetrics 1.0
 import QtQuick.Window 2.2
 
-/*! \internal */
-// Documentation is in MainView.qdoc
+/*!
+    \qmltype MainView
+    \inqmlmodule Ubuntu.Components 1.3
+    \ingroup ubuntu
+    \brief MainView is the root Item that should be used for all applications.
+        It automatically adds a header and toolbar for its contents and can
+        rotate its content based on the device orientation.
+
+    The simplest way to use a MainView is to include a single \l Page object
+    inside the MainView:
+    \qml
+        import QtQuick 2.4
+        import Ubuntu.Components 1.3
+
+        MainView {
+            width: units.gu(48)
+            height: units.gu(60)
+
+            Page {
+                title: "Simple page"
+                Button {
+                    anchors.centerIn: parent
+                    text: "Push me"
+                    width: units.gu(15)
+                    onClicked: print("Click!")
+                }
+            }
+        }
+    \endqml
+    It is not required to set the anchors of the \l Page as it will automatically fill its parent.
+    The MainView has a header that automatically shows the title of the \l Page.
+
+    Do not include multiple Pages directly inside the MainView, but use \l Tabs
+    or \l PageStack inside MainView to navigate between several Pages.
+
+    For the MainView to automatically rotate its content following the orientation
+    of the device, set the \l automaticOrientation property to true.
+
+    If the \l Page inside the MainView includes a Flickable with enough contents for scrolling,
+    the header will automatically hide and show when the user scrolls up or down:
+    \qml
+        import QtQuick 2.4
+        import Ubuntu.Components 1.3
+
+        MainView {
+            width: units.gu(48)
+            height: units.gu(60)
+
+            Page {
+                title: "Page with Flickable"
+
+                Flickable {
+                    anchors.fill: parent
+                    contentHeight: column.height
+
+                    Column {
+                        id: column
+                        Repeater {
+                            model: 100
+                            Label {
+                                text: "line "+index
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    \endqml
+    The same header behavior is automatic when using a ListView instead of a Flickable in the above
+    example.
+
+    The examples above show how to include a single \l Page inside a MainView, but more
+    advanced application structures are possible using \l PageStack and \l Tabs.
+*/
 MainViewBase {
     id: mainView
 
+    /*!
+      \qmlproperty bool MainView::automaticOrientation
+
+      Sets whether the application will be automatically rotating when the
+      device is.
+
+      The default value is false.
+    */
     property alias automaticOrientation: canvas.automaticOrientation
 
     /*!

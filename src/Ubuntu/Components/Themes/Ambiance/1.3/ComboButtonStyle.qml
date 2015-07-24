@@ -165,8 +165,7 @@ Style.ComboButtonStyle {
                 topMargin: comboListMargin
             }
             visible: true
-            borderSource: "radius_idle.sci"
-            image: listContent
+            source: listContent
         }
 
         Image {

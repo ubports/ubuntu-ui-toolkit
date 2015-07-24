@@ -29,6 +29,7 @@ import Ubuntu.Components 1.3
 StyledItem {
     id: sections
     styleName: "SectionsStyle"
+    theme.version: Ubuntu.toolkitVersion
 
     /*!
       List of actions that represent the sections.

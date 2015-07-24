@@ -59,8 +59,8 @@ Item {
     UbuntuShape {
         anchors.fill: parent
         radius: "medium"
-        color: theme.palette.normal.overlay
-        image: shapeSource
+        backgroundColor: theme.palette.normal.overlay
+        source: shapeSource
     }
 
     ShaderEffectSource {

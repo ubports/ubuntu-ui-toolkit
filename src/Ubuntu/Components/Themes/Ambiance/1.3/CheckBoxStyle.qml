@@ -86,7 +86,7 @@ Item {
                 }
                 PropertyChanges {
                     target: background
-                    color: checkBoxStyle.checkedBackgroundColor
+                    backgroundColor: checkBoxStyle.checkedBackgroundColor
                 }
             },
             State {
@@ -97,7 +97,7 @@ Item {
                 }
                 PropertyChanges {
                     target: background
-                    color: checkBoxStyle.uncheckedBackgroundColor
+                    backgroundColor: checkBoxStyle.uncheckedBackgroundColor
                 }
             }
         ]

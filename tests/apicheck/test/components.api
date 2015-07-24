@@ -1,0 +1,19 @@
+Extinct.Animals.Excavator 1.0
+Extinct.Animals.Gigantophis 4.3: QQuickItem
+    property bool extinct
+    function var first()
+    function var fourth()
+Extinct.Animals.Titanoboa 4.2 MonsterSnake 3.1: Item
+    property string bar
+    property var basket
+    property url bazz
+    property string eggs
+    signal jump()
+    signal bounce(int length)
+    signal fly(var wing)
+    function var first()
+    function var second(var sliff)
+    function var third(var sloff)
+    property string spam
+    property var type
+    property var version

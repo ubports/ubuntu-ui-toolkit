@@ -23,29 +23,18 @@ if [ ! -e $BUILD_DIR/qml/Ubuntu/Layouts/libUbuntuLayouts.so ]; then
     exit 1
 fi
 
-QML="qml/Ubuntu/*/qmldir qml/Ubuntu/Components/*/qmldir"
 CPP="Ubuntu.Components Ubuntu.Components.ListItems Ubuntu.Components.Popups Ubuntu.Components.Styles Ubuntu.Components.Themes Ubuntu.Layouts Ubuntu.PerformanceMetrics Ubuntu.Test"
-
-ERRORS=0
 echo Dumping QML API of C++ components
 test -s $BUILD_DIR/components.api.new && rm $BUILD_DIR/components.api.new
-    # Silence spam on stderr due to fonts
-    # https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1256999
-    # https://bugreports.qt-project.org/browse/QTBUG-36243
-    env ALARM_BACKEND=memory QML2_IMPORT_PATH=$BUILD_DIR/qml \
-        $BUILD_DIR/tests/apicheck/apicheck \
-        --qml $CPP 1>> $BUILD_DIR/components.api.new &&
-        echo Verifying the diff between existing and generated API
-    test $? != 0 && echo Error: apicheck failed && ERRORS=1
-if [ "x$ERRORS" != "x1" ]; then
-    diff -F '[.0-9]' -u $SRC_DIR/components.api $BUILD_DIR/components.api.new
-    test $? != 0 && echo Error: Differences in API. Did you forget to update components.api? && ERRORS=1
-fi
-
-if [ "x$ERRORS" != "x1" ]; then
-    echo API is all fine.
-    exit 0
+env ALARM_BACKEND=memory QML2_IMPORT_PATH=$BUILD_DIR/qml \
+    $BUILD_DIR/tests/apicheck/apicheck \
+    --qml $CPP 1>> $BUILD_DIR/components.api.new &&
+    echo Verifying the diff between existing and generated API
+if [ $? -gt 0 ]; then
+    echo Error: apicheck failed
 else
-    echo API test failed with errors.
+    diff -F '[.0-9]' -u $SRC_DIR/components.api $BUILD_DIR/components.api.new && \
+        echo API is all fine. && exit 0
+    echo Differences in API. Did you forget to update components.api?
     exit 1
 fi
