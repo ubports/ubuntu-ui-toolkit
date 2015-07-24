@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.4
+import "../1.2" as Internals
 
 /*!
     \qmltype ProgressBar
@@ -39,7 +40,7 @@ import QtQuick 2.4
     }
     \endqml
 */
-AnimatedItem {
+Internals.AnimatedItem {
     id: progressBar
 
     /*!

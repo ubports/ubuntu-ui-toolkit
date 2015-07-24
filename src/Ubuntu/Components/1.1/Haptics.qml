@@ -17,7 +17,7 @@
 pragma Singleton
 import QtQuick 2.4
 import QtFeedback 5.0
-import Ubuntu.Components 1.3 // FIXME move back to import 1.2 once we get 1.2 sources in
+import Ubuntu.Components 1.1
 
 /*!
   \qmltype Haptics

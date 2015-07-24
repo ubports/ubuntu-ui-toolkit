@@ -15,22 +15,24 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.3
 
-/*!
-   \internal
-   Documentation in 11/Button.qml
-*/
-AbstractButton {
-    id: button
+Item {
+    TemplateSection {
+        title: "Bottom Edge Hint"
+        className: "BottomEdgeHint"
 
-    property color color: __styleInstance.defaultColor
+        anchors {
+            top: parent.top
+            left: parent.left
+            right: parent.right
+            margins: units.gu(2)
+        }
+    }
 
-    property Gradient gradient: __styleInstance.defaultGradient
-
-    property font font: __styleInstance ? __styleInstance.defaultFont : Qt.font({family: "Ubuntu", pixelSize: FontUtils.sizeToPixels("medium")})
-
-    property string iconPosition: "left"
-
-    style: Theme.createStyleComponent("ButtonStyle.qml", button)
+    BottomEdgeHint {
+        iconName: "stock_message"
+        text: "Compose a new message"
+        onClicked: state = "Hidden"
+    }
 }
