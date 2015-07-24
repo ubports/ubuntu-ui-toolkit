@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.3
+import Ubuntu.Components 1.1
 
 /*!
     \qmltype Button
@@ -121,6 +121,5 @@ AbstractButton {
     */
     property string iconPosition: "left"
 
-    theme.version: Ubuntu.toolkitVersion
     style: Theme.createStyleComponent("ButtonStyle.qml", button)
 }
