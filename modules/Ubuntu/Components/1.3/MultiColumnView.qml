@@ -46,112 +46,48 @@ import "tree.js" as Tree
   a Page instance, a Component or a url to a document defining a Page. The page
   cannot be removed from the view.
 
-  \note Unlike PageStack or Page the component does not fill its parent by default.
-
   \qml
   import QtQuick 2.4
   import Ubuntu.Components 1.3
 
-  MainView {
+  MultiColumnView {
       width: units.gu(80)
       height: units.gu(71)
 
-      MultiColumnView {
-          anchors.fill: parent
-          primaryPage: page1
-          Page {
-              id: page1
-              title: "Main page"
-              Column {
-                  Button {
-                      text: "Add Page2 above " + title
-                      onClicked: page1.pageStack.addPageToCurrentColumn(page1, page2)
-                  }
-                  Button {
-                      text: "Add Page3 next to " + title
-                      onClicked: page1.pageStack.addPageToNextColumn(page1, page3)
-                  }
+      primaryPage: page1
+      Page {
+          id: page1
+          title: "Main page"
+          Column {
+              Button {
+                  text: "Add Page2 above " + title
+                  onClicked: page1.pageStack.addPageToCurrentColumn(page1, page2)
+              }
+              Button {
+                  text: "Add Page3 next to " + title
+                  onClicked: page1.pageStack.addPageToNextColumn(page1, page3)
               }
           }
-          Page {
-              id: page2
-              title: "Page #2"
+      }
+      Page {
+          id: page2
+          title: "Page #2"
           }
-          Page {
-              id: page3
-              title: "Page #3"
-          }
+      Page {
+          id: page3
+          title: "Page #3"
       }
   }
   \endqml
 
   MultiColumnView supports adaptive column handling. When the number of columns changes at
-  runtime the pages are automatically rearranged. To understand it better, let's take the following example:
-  \qml
-  import QtQuick 2.4
-  import Ubuntu.Components 1.3
-
-  MainView {
-      width: units.gu(120)
-      height: units.gu(71)
-
-      MultiColumnView {
-          anchors.fill: parent
-          primaryPage: page1
-          Page {
-              id: page1
-              title: "Main page"
-              Button {
-                  text: "Add Page2 next to " + title
-                  onClicked: page1.pageStack.addPageToNextColumn(page1, page2)
-              }
-          }
-          Page {
-              id: page2
-              title: "Page #2"
-              Button {
-                  text: "Add Page3 next to " + title
-                  onClicked: page2.pageStack.addPageToNextColumn(page2, page3)
-              }
-          }
-          Page {
-              id: page3
-              title: "Page #3"
-          }
-      }
-  }
-  \endqml
-
-  When the code is run on sufficiently wide screen, like a desktop or TV,
-  it will launch with multiple columns.
-
-  \c page1 is set to be the primary page, \c page2 will be added to column next to
-  \c page1 (to column 2) and \c page3 next to \c page2 (column 3). When the window
-  is resized to have its size below 80 GU, the component will switch to 1 column
-  mode, and \c page3 will be placed in the last column, and the header for \c page2
-  will have a back button, indicating that there is a page below it. If the window
-  is resized to contain only one column, all pages will be shown in that column, so
-  the component will act as PageStack. Resizing the window back to 2 columns will place the pages side-by-side.
-
-  \note In the above example if \c page2 is removed, that will remove all its child
-  pages, meaning \c page3 will also be removed.
+  runtime the pages are automatically rearranged.
 
   \sa PageStack
 */
 
-PageTreeNode {
+MainViewBase {
     id: multiColumnView
-
-    Page {
-        // MultiColumnView has its own split headers, so
-        //  disable the application header.
-        id: appHeaderControlPage
-        head {
-            locked: true
-            visible: false
-        }
-        // title is set in attachPage() when the attached Page.column === 0
-    }
 
     /*!
       The property holds the first Page which will be added to the view. If the
@@ -160,7 +96,7 @@ PageTreeNode {
       or a QML document defining the Page. The property cannot be changed after
       component completion.
       */
-    property var primaryPage
+    property Page primaryPage
 
     /*!
       \qmlmethod Item addPageToCurrentColumn(Item sourcePage, var page[, var properties])
@@ -467,8 +403,8 @@ PageTreeNode {
                 property PageHeadConfiguration config: null
                 property Item contents: null
 
-                property color dividerColor: multiColumnView.__propagated.header.dividerColor
-                property color panelColor: multiColumnView.__propagated.header.panelColor
+                property color dividerColor: Qt.darker(multiColumnView.headerColor, 1.1)
+                property color panelColor: Qt.lighter(multiColumnView.headerColor, 1.1)
 
                 visible: holder.pageWrapper && holder.pageWrapper.active
 
@@ -512,10 +448,6 @@ PageTreeNode {
                 if (pageWrapper.object.hasOwnProperty("head")) {
                     subHeader.config = pageWrapper.object.head;
                 }
-                if (pageWrapper.column === 0 && pageWrapper.object.hasOwnProperty("title")) {
-                    // set the application title
-                    appHeaderControlPage.title = pageWrapper.object.title;
-                }
             }
             function detachCurrentPage() {
                 if (!pageWrapper) return undefined;
@@ -555,7 +487,13 @@ PageTreeNode {
     RowLayout {
         id: body
         objectName: "body"
-        anchors.fill: parent
+        anchors {
+            fill: parent
+            bottomMargin: multiColumnView.anchorToKeyboard &&
+                          UbuntuApplication.inputMethod.visible ?
+                              UbuntuApplication.inputMethod.keyboardRectangle.height : 0
+        }
+
         spacing: 0
 
         property real headerHeight: 0
