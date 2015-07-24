@@ -44,7 +44,7 @@ MainView {
             clickSpy.clear();
         }
 
-        function test_default_state() {
+        function test_0_default_state() {
             compare(bottomEdgeHint.iconName, "");
             compare(bottomEdgeHint.text, "");
             compare(bottomEdgeHint.state, "Visible");
