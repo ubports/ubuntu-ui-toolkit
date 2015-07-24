@@ -65,6 +65,7 @@ Item {
 
     // Member name may overlap with internal name in apicheck
     property var type
+    property var version
 
     Item {
         id: one

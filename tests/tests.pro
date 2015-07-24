@@ -9,3 +9,5 @@ SUBDIRS += launcher
 SUBDIRS += apicheck
 
 INSTALLS += autopilot_module
+
+OTHER_FILES += qmlapicheck.sh
