@@ -13,12 +13,14 @@ QML_FILES += $$ARTWORK_FILES
 #1.0
 QML_FILES += 1.0/Button.qml \
              1.0/Icon.qml \
+             1.0/ProgressBar.qml \
              1.0/UbuntuColors.qml
 
 #1.1
 QML_FILES += 1.1/Button.qml \
              1.1/Haptics.qml \
              1.1/Icon.qml \
+             1.1/ProgressBar.qml \
              1.1/UbuntuColors.qml
 
 #1.2
@@ -57,8 +59,6 @@ QML_FILES += 1.2/AbstractButton.qml \
              1.2/PageWrapper.qml \
              1.2/PageWrapperUtils.js \
              1.2/Panel.qml \
-             1.2/ProgressBar10.qml \
-             1.2/ProgressBar11.qml \
              1.2/PullToRefresh.qml \
              1.2/Scrollbar.qml \
              1.2/scrollbarUtils.js \
