@@ -123,7 +123,7 @@ Item {
         property real hoverExpansion: mouseArea.containsMouse ? 0 : units.gu(0.5)
         Behavior on hoverExpansion { UbuntuNumberAnimation { duration: UbuntuAnimation.FastDuration } }
 
-        backgroundColor: Theme.palette.normal.overlay
+        backgroundColor: theme.palette.normal.overlay
     }
 
     Label {
