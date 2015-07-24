@@ -1,0 +1,58 @@
+load(qml_plugin)
+CONFIG -= hide_symbols
+
+
+load(ubuntu_enable_testing)
+
+#hacky hacks to build the qmltypes
+
+#should be already set by the qml_plugin.prf, but lets be safe
+isEmpty(IMPORT_VERSION): error("Must set IMPORT_VERSION")
+
+load(resolve_target)
+
+qml1_target {
+    qmlplugindump = qml1plugindump
+    importpath.name = QML_IMPORT_PATH
+} else {
+    qmlplugindump = qmlplugindump
+    importpath.name = QML2_IMPORT_PATH
+}
+
+qtPrepareTool(QMLPLUGINDUMP, $$qmlplugindump)
+importpath.value =
+for(qmod, QTREPOS) {
+    qml1_target: \
+        qmod = $$qmod/imports
+    else: \
+        qmod = $$qmod/qml
+    exists($$qmod): importpath.value += $$shell_path($$qmod)
+}
+
+#add our path, somehow its not added automatically
+importpath.value += $$shell_path($$instbase)
+importpath.value = $$unique(importpath.value)
+
+membackend.name = ALARM_BACKEND
+membackend.value = memory
+
+qtAddToolEnv(QMLPLUGINDUMP, importpath)
+qtAddToolEnv(QMLPLUGINDUMP, membackend)
+
+TARGETPATHBASE = $$replace(TARGETPATH, \\.\\d+\$, )
+
+QMLTYPEFILE = $$instbase/$$TARGETPATH/plugins.qmltypes
+autobld_qmltypes.target = $$QMLTYPEFILE
+autobld_qmltypes.commands = $$QMLPLUGINDUMP -nonrelocatable $$replace(TARGETPATHBASE, /, .) $$IMPORT_VERSION > $$QMLTYPEFILE
+autobld_qmltypes.commands += && sed -i \'s?-1.-1\"?0.1\"?\' $$QMLTYPEFILE
+autobld_qmltypes.commands += && sed -i \'s?exportMetaObjectRevisions: \\[-1\\]?exportMetaObjectRevisions: [0,0]?\' $$QMLTYPEFILE
+autobld_qmltypes.depends = $$QMAKE_RESOLVED_TARGET
+
+autobld_install_qmltypes.files = $$QMLTYPEFILE
+autobld_install_qmltypes.depends = $$QMLTYPEFILE
+autobld_install_qmltypes.path  = $$[QT_INSTALL_QML]/$$TARGETPATH
+autobld_install_qmltypes.CONFIG += no_check_exist
+
+INSTALLS+=autobld_install_qmltypes
+QMAKE_EXTRA_TARGETS += autobld_qmltypes
+

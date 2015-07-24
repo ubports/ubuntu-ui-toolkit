@@ -1,3 +1,55 @@
+ubuntu-ui-toolkit (1.3.1549+15.10.20150710.1-0ubuntu1) wily; urgency=medium
+
+  [ Timo Jyrinki ]
+  * arch specific deps (LP: #1473035) (LP: #1473035)
+
+ -- CI Train Bot <ci-train-bot@canonical.com>  Fri, 10 Jul 2015 06:31:57 +0000
+
+ubuntu-ui-toolkit (1.3.1549+15.10.20150706-0ubuntu1) wily; urgency=medium
+
+  [ Tim Peeters ]
+  * Disable header animations to avoid bugs when popping a PageStack in a loop. 
+    Fixes LP: #1461729
+  * New header visuals, using the ActionBar and Sections components.  
+  * Introduce the new Sections component.
+  * Fix initialization for hidden and locked header.
+
+  [ Benjamin Zeller ]
+  * Fixes LP: #1461042 Qthelp documentation (pressing in F1) has no style in 
+    qtcreator.
+  
+  [ Richard Huddie ]
+  * Use the real OSK for keyboard input.
+
+  [ Zsombor Egri ]
+  * Fix AlamrModel segfault when updating elements. Fixes LP: #1463430
+
+  [ Vincent Ladeuil ]
+  * In the initctl test fixture,add the option to unset an environment variable
+  
+  [ Christian Dywan ]
+  * QQmlContextData.url is a method in 5.5.0. Fixes LP: #1461897.
+  * OrientationHelper shouldn't move depending on availableHeight. The 
+    parentChanged/availableHeight change in OrientationHelper is the bug fix 
+    itself. The new property UbuntuApplication.inputMethod defaults to 
+    Qt.inputMethod and the unit test overrides it to reproduce the bug (fix) 
+    regardless of device and input method setup - the mock keyboard is NOT 
+    expected to be fully functional, buttons are but a placeholder irrelevant 
+    for the test case.
+    I removed hideInputPanel() as it's not being used anywhere, not essential 
+    to the bug, but mainly unconfusing anyone working with the code as to what 
+    actually affects inputMethod visibility. 
+    Fixes LP: #1428206, LP: #1455406, LP: #1466222.
+  * Use a custom sort function for type names.
+  * Popover sizing should depend on whether it has a target.
+  * Replace Styles page with a header action.
+
+  [ Leo Arias ]
+  * Updated the documentation of the autopilot click_element helpers. 
+    Fixes LP: #1451945
+
+ -- CI Train Bot <ci-train-bot@canonical.com>  Mon, 06 Jul 2015 18:24:30 +0000
+
 ubuntu-ui-toolkit (1.3.1534+15.10.20150625-0ubuntu1) wily; urgency=medium
 
   [ Christian Dywan ]
