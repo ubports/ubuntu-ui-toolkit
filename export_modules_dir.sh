@@ -16,9 +16,9 @@
 #
 
 . `dirname $0`/build_paths.inc
-export QML_IMPORT_PATH=$BUILD_DIR/modules
-export QML2_IMPORT_PATH=$BUILD_DIR/modules
-export UBUNTU_UI_TOOLKIT_THEMES_PATH=$BUILD_DIR/modules
-/sbin/initctl set-env --global QML_IMPORT_PATH=$BUILD_DIR/modules
-/sbin/initctl set-env --global QML2_IMPORT_PATH=$BUILD_DIR/modules
-/sbin/initctl set-env --global UBUNTU_UI_TOOLKIT_THEMES_PATH=$BUILD_DIR/modules
+export QML_IMPORT_PATH=$BUILD_DIR/qml
+export QML2_IMPORT_PATH=$BUILD_DIR/qml
+export UBUNTU_UI_TOOLKIT_THEMES_PATH=$BUILD_DIR/qml
+/sbin/initctl set-env --global QML_IMPORT_PATH=$BUILD_DIR/qml
+/sbin/initctl set-env --global QML2_IMPORT_PATH=$BUILD_DIR/qml
+/sbin/initctl set-env --global UBUNTU_UI_TOOLKIT_THEMES_PATH=$BUILD_DIR/qml
