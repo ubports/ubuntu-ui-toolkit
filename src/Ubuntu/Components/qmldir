@@ -32,11 +32,11 @@ Header 0.1 1.2/Header.qml
 internal AnimatedItem 1.2/AnimatedItem.qml
 internal PageWrapper 1.2/PageWrapper.qml
 CrossFadeImage 0.1 1.2/CrossFadeImage10.qml
-Icon 0.1 1.2/Icon10.qml
+Icon 0.1 1.0/Icon.qml
 OrientationHelper 0.1 1.2/OrientationHelper.qml
 UbuntuNumberAnimation 0.1 1.2/UbuntuNumberAnimation.qml
 UbuntuListView 0.1 1.2/UbuntuListView.qml
-singleton UbuntuColors 0.1 1.0/UbuntuColors10.qml
+singleton UbuntuColors 0.1 1.0/UbuntuColors.qml
 MathUtils 0.1 1.2/mathUtils.js
 SliderUtils 0.1 1.2/sliderUtils.js
 ScrollbarUtils 0.1 1.2/scrollbarUtils.js
@@ -71,10 +71,10 @@ Page 1.0 1.2/Page10.qml
 PageStack 1.0 1.2/PageStack.qml
 Header 1.0 1.2/Header.qml
 CrossFadeImage 1.0 1.2/CrossFadeImage10.qml
-Icon 1.0 1.2/Icon10.qml
+Icon 1.0 1.0/Icon.qml
 OrientationHelper 1.0 1.2/OrientationHelper.qml
 UbuntuNumberAnimation 1.0 1.2/UbuntuNumberAnimation.qml
-singleton UbuntuColors 1.0 1.0/UbuntuColors10.qml
+singleton UbuntuColors 1.0 1.0/UbuntuColors.qml
 MathUtils 1.0 1.2/mathUtils.js
 SliderUtils 1.0 1.2/sliderUtils.js
 ScrollbarUtils 1.0 1.2/scrollbarUtils.js
@@ -93,7 +93,7 @@ Page 1.1 1.2/Page11.qml
 PageHeadConfiguration 1.1 1.2/PageHeadConfiguration.qml
 PageHeadSections 1.1 1.2/PageHeadSections.qml
 PageHeadState 1.1 1.2/PageHeadState.qml
-Icon 1.1 1.2/Icon11.qml
+Icon 1.1 1.1/Icon.qml
 singleton UbuntuColors 1.1 1.1/UbuntuColors.qml
 singleton Haptics 0.1 1.1/Haptics.qml
 singleton Haptics 1.0 1.1/Haptics.qml

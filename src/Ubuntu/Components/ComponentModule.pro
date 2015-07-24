@@ -12,11 +12,13 @@ QML_FILES += $$ARTWORK_FILES
 
 #1.0
 QML_FILES += 1.0/Button.qml \
-             1.0/UbuntuColors10.qml \
+             1.0/Icon.qml \
+             1.0/UbuntuColors.qml
 
 #1.1
 QML_FILES += 1.1/Button.qml \
              1.1/Haptics.qml \
+             1.1/Icon.qml \
              1.1/UbuntuColors.qml
 
 #1.2
@@ -35,8 +37,6 @@ QML_FILES += 1.2/AbstractButton.qml \
              1.2/dateUtils.js \
              1.2/DraggingArea.qml \
              1.2/Header.qml \
-             1.2/Icon10.qml \
-             1.2/Icon11.qml \
              1.2/InputHandler.qml \
              1.2/Label.qml \
              1.2/MainView12.qml \
