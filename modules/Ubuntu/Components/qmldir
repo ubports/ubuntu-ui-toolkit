@@ -141,4 +141,6 @@ UbuntuNumberAnimation 1.3 1.3/UbuntuNumberAnimation.qml
 PullToRefresh 1.3 1.3/PullToRefresh.qml
 UbuntuListView 1.3 1.3/UbuntuListView11.qml
 Captions 1.3 1.3/Captions.qml
-GenericListItemLayout 1.3 1.3/GenericListItemLayout.qml
+HardcodedFourContainersLayout 1.3 1.3/HardcodedFourContainersLayout.qml
+SlotsLayout 1.3 1.3/SlotsLayout.qml
+SlotQML 1.3 1.3/SlotQML.qml

@@ -26,8 +26,8 @@ Template {
         spacing: 0
         /*GenericListItemLayout {
             firstItem: CheckBox { id: box; }
-            thirdItem: Icon { width: units.gu(4); name: "email" }
-            fourthItem: Icon { width: units.gu(4); name: "edit" }
+            thirdItem: Icon { width: units.gu(2); name: "email" }
+            fourthItem: Icon { width: units.gu(2); name: "edit" }
             firstSlot.onClicked: box.checked = !box.checked
             mainInputArea.onClicked: console.log("PRIMARY ACTION")
 
@@ -51,8 +51,8 @@ Template {
 
             GenericListItemLayout {
                 firstItem: CheckBox { id: box1  }
-                thirdItem: Icon { id: icon1; width: units.gu(4); name: "email" }
-                fourthItem: Icon { width: units.gu(4); name: "edit" }
+                thirdItem: Icon { id: icon1; width: units.gu(2); name: "email" }
+                fourthItem: Icon { width: units.gu(2); name: "edit" }
                 firstSlot.onClicked: box1.checked = !box1.checked
                 thirdSlot.onClicked: console.log("THIRDSLOT TRIGGERED")
                 mainInputArea.onClicked: console.log("PRIMARY ACTION")
@@ -73,17 +73,17 @@ Template {
                 ]
             }
 
-            GenericListItemLayout {
+            HardcodedFourContainersLayout {
                 anchors.fill: parent
                 //the dev has to specify the width because the container will use that to
                 //resize itself
                 firstSlot: CheckBox { }
                 firstSlotArea.onClicked: doSomething()
 
-                secondSlot: Icon { width: units.gu(4); name: "email" }
+                secondSlot: Icon { width: units.gu(2); name: "email" }
                 secondSlotArea.onClicked: doSomethingElse()
 
-                thirdSlot: Icon { width: units.gu(4); name: "message" }
+                thirdSlot: Icon { width: units.gu(2); name: "message" }
                 thirdSlotArea.onClicked: doSomethingAwesome()
 
                 mainArea.onClicked: console.log("PRIMARY ACTION")
@@ -92,6 +92,43 @@ Template {
                 firstSlotArea.enabled: false
                 secondSlotArea.enabled: false
                 thirdSlotArea.enabled: false
+            }
+        }
+
+        ListItem {
+            trailingActions: ListItemActions {
+                actions: [
+                    Action {}
+                ]
+            }
+            leadingActions: ListItemActions {
+                actions: [
+                    Action {},
+                    Action {},
+                    Action {}
+                ]
+            }
+
+            SlotsLayout {
+                anchors.fill: parent
+                SlotQML {
+                    position: "Slot.Leading"
+                    handleInnerItemPosition: false
+                    CheckBox { anchors.bottom: parent.bottom }
+                }
+
+                SlotQML {
+                    position: "Slot.Trailing"
+                    Icon { width: units.gu(2); name: "email" }
+                }
+
+                SlotQML {
+                    position: "Slot.Trailing"
+                    Icon { width: units.gu(2); name: "message" }
+                }
+
+                titleItem.text: "Prova"
+                subtitleItem.text: "Prova2"
             }
         }
 

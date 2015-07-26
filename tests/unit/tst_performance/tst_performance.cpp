@@ -109,8 +109,14 @@ private Q_SLOTS:
         //QTest::newRow("grid with UbuntuShapePair") << "PairOfUbuntuShapeGrid.qml" << QUrl();
         //QTest::newRow("grid with Button") << "ButtonGrid.qml" << QUrl();
         //QTest::newRow("grid with Slider") << "SliderGrid.qml" << QUrl();
-	QTest::newRow("list with empty GenericListItemLayout and inline actions") << "ListItemWithInlineActionsAndFourContainersList.qml" << QUrl();
-	QTest::newRow("list with GenericListItemLayout") << "GenericListItemLayoutList.qml" << QUrl();
+        QTest::newRow("list with a Row of 4 Items, WITH inline actions") << "ListItemWithInlineActionsAndFourContainersList.qml" << QUrl();
+        QTest::newRow("list with a Row of 4 MouseAreas, WITH inline actions") << "ListItemWithInlineActionsAndFourMouseAreas.qml" << QUrl();
+        QTest::newRow("list with HardcodedFourContainersLayout (QML), no actions, no items, containers only") << "ListOfHardcodedFourContainersLayout.qml" << QUrl();
+        QTest::newRow("list with HardcodedFourContainersLayout (QML), no actions, with Item inside containers") << "ListOfHardcodedFourContainersLayout_withItems.qml" << QUrl();
+        QTest::newRow("list with new ListItem (no actions) and empty SlotsLayout") << "ListOfEmptySlotsLayout.qml" << QUrl();
+        QTest::newRow("list with new ListItem (no actions) and SlotsLayout with defined labels") << "ListOfSlotsLayout_labelsOnly.qml" << QUrl();
+        QTest::newRow("list with new ListItem (no actions) and SlotsLayout with defined labels and 3 slots") << "ListOfSlotsLayout_complex1.qml" << QUrl();
+        QTest::newRow("list with new ListItem (inline actions!) and SlotsLayout with defined labels and 3 slots") << "ListOfSlotsLayout_complex2.qml" << QUrl();
         QTest::newRow("list with QtQuick Item") << "ItemList.qml" << QUrl();
         QTest::newRow("list with new ListItem") << "ListItemList.qml" << QUrl();
         QTest::newRow("list with new ListItem with actions") << "ListItemWithActionsList.qml" << QUrl();
@@ -118,7 +124,7 @@ private Q_SLOTS:
         QTest::newRow("list with Captions, preset: caption") << "ListOfCaptions.qml" << QUrl();
         QTest::newRow("list with ListItems.Empty (equivalent to the new ListItem") << "ListItemsEmptyList.qml" << QUrl();
         // disable this test as it takes >20 seconds. Kept still for measurements to be done during development
-//        QTest::newRow("list with ListItems.Base (one icon, one label and one chevron)") << "ListItemsBaseList.qml" << QUrl();
+        //        QTest::newRow("list with ListItems.Base (one icon, one label and one chevron)") << "ListItemsBaseList.qml" << QUrl();
         //QTest::newRow("single MainView") << "MainView.qml" << QUrl();
     }
 
