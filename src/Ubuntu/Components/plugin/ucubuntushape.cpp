@@ -294,6 +294,7 @@ UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
     , m_sourceTranslation(0.0f, 0.0f)
     , m_sourceTransform(1.0f, 1.0f, 0.0f, 0.0f)
     , m_radius(Small)
+    , m_relativeRadius(0)
     , m_aspect(Inset)
     , m_imageHorizontalAlignment(AlignHCenter)
     , m_imageVerticalAlignment(AlignVCenter)
@@ -330,6 +331,8 @@ UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
 
     This property defines the corner radius. Three fixed values are supported: \c "small",
     \c "medium" and \c "large". The default value is \c "small".
+
+    \note Setting a non-zero \l relativeRadius value disables this property temporarily.
 */
 void UCUbuntuShape::setRadius(const QString& radius)
 {
@@ -369,6 +372,26 @@ void UCUbuntuShape::setAspect(Aspect aspect)
         m_aspect = newAspect;
         update();
         Q_EMIT aspectChanged();
+    }
+}
+
+/*! \qmlproperty real UbuntuShape::relativeRadius
+    \since Ubuntu.Components 1.3
+
+    This property defines a radius relative to the size of the UbuntuShape. It is specified as a
+    number between 0.0 (0%) and 0.5 (50%) corresponding to the proportion of the radius with regards
+    to the smallest side (divided by 2 since a side has 2 angles). The default value is 0.0.
+
+    \note Setting a non-zero value takes over the \l radius property.
+*/
+void UCUbuntuShape::setRelativeRadius(qreal relativeRadius)
+{
+    // m_relativeRadius is on 6 bits, increasing the higher bound might require higher precision.
+    const quint8 relativeRadiusPacked = qRound(qBound(0.0, relativeRadius, 0.5) * 100.0);
+    if (m_relativeRadius != relativeRadiusPacked) {
+        m_relativeRadius = relativeRadiusPacked;
+        update();
+        Q_EMIT relativeRadiusChanged();
     }
 }
 
@@ -1148,14 +1171,20 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
         m_sourceTextureProvider = provider;
     }
 
-    // Get the radius size. When the item width and/or height is less than 2 * radius, the size is
-    // scaled down accordingly. The shape was using a fixed image for the corner before switching to
-    // a distance field, since the corner wasn't taking the whole image (ending at ~80%) we need
-    // to take that into account when the size is scaled down.
-    float radius = UCUnits::instance().gridUnit() * radiusGuMap[m_radius];
-    const float scaledDownRadius = qMin(itemSize.width(), itemSize.height()) * 0.5f * 0.8f;
-    if (radius > scaledDownRadius) {
-        radius = scaledDownRadius;
+    // Get the radius size.
+    float radius;
+    if (m_relativeRadius == 0) {
+        // When the item width and/or height is less than 2 * radius, the size is scaled down
+        // accordingly. The shape was using a fixed image for the corner before switching to a
+        // distance field, since the corner wasn't taking the whole image (ending at ~80%) we need
+        // to take that into account when the size is scaled down.
+        radius = UCUnits::instance().gridUnit() * radiusGuMap[m_radius];
+        const float scaledDownRadius = qMin(itemSize.width(), itemSize.height()) * 0.5f * 0.8f;
+        if (radius > scaledDownRadius) {
+            radius = scaledDownRadius;
+        }
+    } else {
+        radius = qMin(itemSize.width(), itemSize.height()) * 0.5f * (m_relativeRadius * 0.01f);
     }
 
     updateMaterial(node, radius, shapeTexture, sourceTexture && m_sourceOpacity);

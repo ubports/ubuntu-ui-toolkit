@@ -126,6 +126,8 @@ class UCUbuntuShape : public QQuickItem
     Q_ENUMS(Aspect)
     Q_PROPERTY(QString radius READ radius WRITE setRadius NOTIFY radiusChanged)
     Q_PROPERTY(Aspect aspect READ aspect WRITE setAspect NOTIFY aspectChanged REVISION 1)
+    Q_PROPERTY(qreal relativeRadius READ relativeRadius WRITE setRelativeRadius
+               NOTIFY relativeRadiusChanged REVISION 2)
 
     // Source properties.
     Q_ENUMS(FillMode)
@@ -188,6 +190,8 @@ public:
     void setRadius(const QString& radius);
     Aspect aspect() const { return (m_flags & AspectSet) ? static_cast<Aspect>(m_aspect) : Flat; }
     void setAspect(Aspect aspect);
+    qreal relativeRadius() const { return m_relativeRadius * 0.01; }
+    void setRelativeRadius(qreal relativeRadius);
 
     QVariant source() const {
         return QVariant::fromValue((m_flags & SourceApiSet) ? m_source : NULL); }
@@ -253,6 +257,7 @@ public:
 Q_SIGNALS:
     void radiusChanged();
     Q_REVISION(1) void aspectChanged();
+    Q_REVISION(2) void relativeRadiusChanged();
 
     Q_REVISION(1) void sourceChanged();
     Q_REVISION(1) void sourceOpacityChanged();
@@ -325,6 +330,7 @@ private:
     QVector2D m_sourceTranslation;
     QVector4D m_sourceTransform;
     Radius m_radius : 2;
+    quint8 m_relativeRadius : 6;
     quint8 m_aspect : 2;
     HAlignment m_imageHorizontalAlignment : 2;
     VAlignment m_imageVerticalAlignment : 2;
@@ -334,7 +340,7 @@ private:
     FillMode m_sourceFillMode : 2;
     WrapMode m_sourceHorizontalWrapMode : 1;
     WrapMode m_sourceVerticalWrapMode : 1;
-    quint8 __explicit_padding : 7;
+    quint8 __explicit_padding : 1;
     quint8 m_sourceOpacity;
     quint8 m_flags;
 
