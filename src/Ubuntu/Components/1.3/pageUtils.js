@@ -15,6 +15,15 @@
  */
 
 /*!
+  \qmltype pageUtils
+  \inqmlmodule Ubuntu.Components 1.3
+  \ingroup ubuntu
+  \internal
+  \brief Page-related utility functions.
+ */
+
+/*!
+  \qmlmethod pageUtils::isVerticalFlickable(object)
   Return true if the object is a Flickable that can be flicked in vertical direction.
  */
 function isVerticalFlickable(object) {
@@ -30,6 +39,7 @@ function isVerticalFlickable(object) {
 }
 
 /*!
+  \qmlmethod pageUtils::getFlickableChild(item)
   Return the first child of the item that is flickable in the vertical direction.
  */
 function getFlickableChild(item) {

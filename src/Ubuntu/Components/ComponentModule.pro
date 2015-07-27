@@ -93,12 +93,14 @@ QML_FILES += 1.3/AbstractButton.qml \
              1.3/CheckBox.qml \
              1.3/ComboButton.qml \
              1.3/CrossFadeImage.qml \
+             1.3/dateUtils.js \
              1.3/DraggingArea.qml \
              1.3/Header.qml \
              1.3/InputHandler.qml \
              1.3/Label.qml \
              1.3/MainViewBase.qml \
              1.3/MainView.qml \
+             1.3/mathUtils.js \
              1.3/OptionSelectorDelegate.qml \
              1.3/OptionSelector.qml \
              1.3/OrientationHelper.qml \

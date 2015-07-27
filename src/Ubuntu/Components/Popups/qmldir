@@ -30,3 +30,4 @@ SheetBase 1.3 1.3/SheetBase.qml
 DefaultSheet 1.3 1.3/DefaultSheet.qml
 ComposerSheet 1.3 1.3/ComposerSheet.qml
 ActionSelectionPopover 1.3 1.3/ActionSelectionPopover.qml
+PopupUtils 1.3 1.3/popupUtils.js

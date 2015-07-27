@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2012-2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,7 +16,7 @@
 
 /*!
   \qmltype mathUtils
-  \inqmlmodule Ubuntu.Components 1.2
+  \inqmlmodule Ubuntu.Components 1.3
   \ingroup ubuntu
   \brief Various mathematical utility functions.
  */
@@ -24,7 +24,7 @@
 .pragma library
 
 /*!
-  \qmlmethod clamp(x, min, max)
+  \qmlmethod mathUtils::clamp(x, min, max)
   Ensure the value x is between min and max
  */
 function clamp(x, min, max) {
@@ -37,7 +37,7 @@ function clamp(x, min, max) {
 }
 
 /*!
-  \qmlmethod lerp(delta, from, to)
+  \qmlmethod mathUtils::lerp(delta, from, to)
   Get the linear interpolation
  */
 function lerp(delta, from, to) {
@@ -45,7 +45,7 @@ function lerp(delta, from, to) {
 }
 
 /*!
-  \qmlmethod getFlickableChild(item)
+  \qmlmethod mathUtils::projectValue(x, xmin, xmax, ymin, ymax)
   Linearly project a value x from [xmin, xmax] into [ymin, ymax]
  */
 function projectValue(x, xmin, xmax, ymin, ymax) {
@@ -53,7 +53,7 @@ function projectValue(x, xmin, xmax, ymin, ymax) {
 }
 
 /*!
-  \qmlmethod clampAndProject(x, xmin, xmax, ymin, ymax)
+  \qmlmethod mathUtils::clampAndProject(x, xmin, xmax, ymin, ymax)
   Linearly project a value x, but in addition to projectValue it's clamped to xmin/xmax first
  */
 function clampAndProject(x, xmin, xmax, ymin, ymax) {

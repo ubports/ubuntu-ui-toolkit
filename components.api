@@ -270,7 +270,7 @@ Ubuntu.Components.CrossFadeImage 1.3: Item
     property url source
     property QSizeF sourceSize
     readonly property int status
-Ubuntu.Components.DateUtils 0.1 1.0
+Ubuntu.Components.DateUtils 0.1 1.0 1.3
 Ubuntu.Components.Popups.DefaultSheet 1.0 0.1: SheetBase
     property bool doneButton
     signal closeClicked()
@@ -494,7 +494,7 @@ Ubuntu.Components.MainView 1.2: MainViewBase
 Ubuntu.Components.MainView 1.3: MainViewBase
     property bool automaticOrientation
     default readonly property QtObject contentsItem
-Ubuntu.Components.MathUtils 0.1 1.0
+Ubuntu.Components.MathUtils 0.1 1.0 1.3
 Ubuntu.Components.MimeData 1.0 0.1: QtObject
     property color color
     property var data
@@ -740,7 +740,7 @@ Ubuntu.Components.Popups.PopupBase 1.3: OrientationHelper
     property bool grabDismissAreaEvents
     function var show()
     function var hide()
-Ubuntu.Components.Popups.PopupUtils 0.1 1.0
+Ubuntu.Components.Popups.PopupUtils 0.1 1.0 1.3
 Ubuntu.Components.ProgressBar 1.0 0.1: AnimatedItem
     property bool indeterminate
     property double maximumValue
