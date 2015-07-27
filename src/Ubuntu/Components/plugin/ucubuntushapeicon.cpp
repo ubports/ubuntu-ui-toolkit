@@ -37,7 +37,7 @@ UCUbuntuShapeIcon::UCUbuntuShapeIcon(QQuickItem* parent)
     : UCUbuntuShape(parent)
 {
     setAspect(UCUbuntuShape::DropShadow);
-    setRelativeRadius(0.5);
+    setRelativeRadius(0.67);
     setSourceFillMode(UCUbuntuShape::PreserveAspectCrop);
     connect(this, SIGNAL(widthChanged()), this, SLOT(_q_updateHeight()));
     connect(this, SIGNAL(heightChanged()), this, SLOT(_q_updateWidth()));

@@ -331,8 +331,8 @@ private:
     QVector2D m_sourceScale;
     QVector2D m_sourceTranslation;
     QVector4D m_sourceTransform;
+    quint8 m_relativeRadius;
     Radius m_radius : 2;
-    quint8 m_relativeRadius : 6;
     quint8 m_aspect : 3;
     HAlignment m_imageHorizontalAlignment : 2;
     VAlignment m_imageVerticalAlignment : 2;
@@ -342,6 +342,7 @@ private:
     FillMode m_sourceFillMode : 2;
     WrapMode m_sourceHorizontalWrapMode : 1;
     WrapMode m_sourceVerticalWrapMode : 1;
+    quint8 __explicit_padding : 6;
     quint8 m_sourceOpacity;
     quint8 m_flags;
 

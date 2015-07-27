@@ -296,8 +296,8 @@ UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
     , m_sourceScale(1.0f, 1.0f)
     , m_sourceTranslation(0.0f, 0.0f)
     , m_sourceTransform(1.0f, 1.0f, 0.0f, 0.0f)
-    , m_radius(Small)
     , m_relativeRadius(0)
+    , m_radius(Small)
     , m_aspect(Inset)
     , m_imageHorizontalAlignment(AlignHCenter)
     , m_imageVerticalAlignment(AlignVCenter)
@@ -382,15 +382,14 @@ void UCUbuntuShape::setAspect(Aspect aspect)
     \since Ubuntu.Components 1.3
 
     This property defines a radius relative to the size of the UbuntuShape. It is specified as a
-    number between 0.0 (0%) and 0.5 (50%) corresponding to the proportion of the radius with regards
-    to the smallest side (divided by 2 since a side has 2 angles). The default value is 0.0.
+    number between 0.0 (0%) and 0.75 (75%) corresponding to the proportion of the radius with
+    regards to the smallest side (divided by 2 since a side has 2 angles). The default value is 0.0.
 
     \note Setting a non-zero value takes over the \l radius property.
 */
 void UCUbuntuShape::setRelativeRadius(qreal relativeRadius)
 {
-    // m_relativeRadius is on 6 bits, increasing the higher bound might require higher precision.
-    const quint8 relativeRadiusPacked = qRound(qBound(0.0, relativeRadius, 0.5) * 100.0);
+    const quint8 relativeRadiusPacked = qRound(qBound(0.0, relativeRadius, 0.75) * 100.0);
     if (m_relativeRadius != relativeRadiusPacked) {
         m_relativeRadius = relativeRadiusPacked;
         update();
