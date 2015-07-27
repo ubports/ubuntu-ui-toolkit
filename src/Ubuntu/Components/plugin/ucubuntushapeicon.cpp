@@ -37,11 +37,11 @@ UCUbuntuShapeIcon::UCUbuntuShapeIcon(QQuickItem* parent)
 {
     setAspect(UCUbuntuShape::DropShadow);
     setRelativeRadius(0.5);
-    connect(this, SIGNAL(widthChanged()), this, SLOT(updateHeight()));
-    connect(this, SIGNAL(heightChanged()), this, SLOT(updateWidth()));
+    connect(this, SIGNAL(widthChanged()), this, SLOT(_q_updateHeight()));
+    connect(this, SIGNAL(heightChanged()), this, SLOT(_q_updateWidth()));
 }
 
-void UCUbuntuShapeIcon::updateWidth()
+void UCUbuntuShapeIcon::_q_updateWidth()
 {
     const qreal newWidth = height() * aspectRatio;
     if (qAbs(newWidth - width()) > 0.5) {
@@ -49,7 +49,7 @@ void UCUbuntuShapeIcon::updateWidth()
     }
 }
 
-void UCUbuntuShapeIcon::updateHeight()
+void UCUbuntuShapeIcon::_q_updateHeight()
 {
     const qreal newHeight = width() * invAspectRatio;
     if (qAbs(newHeight - height()) > 0.5) {

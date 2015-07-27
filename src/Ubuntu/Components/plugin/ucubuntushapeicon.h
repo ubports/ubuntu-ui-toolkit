@@ -29,8 +29,8 @@ public:
     UCUbuntuShapeIcon(QQuickItem* parent=0);
 
 private Q_SLOTS:
-    void updateWidth();
-    void updateHeight();
+    void _q_updateWidth();
+    void _q_updateHeight();
 
 private:
     Q_DISABLE_COPY(UCUbuntuShapeIcon)
