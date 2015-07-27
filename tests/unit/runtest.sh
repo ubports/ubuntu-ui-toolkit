@@ -26,8 +26,8 @@ _MINIMAL=$3
 
 _TARGET=$(basename $1)
 _TESTFILE=$(basename $2)
-_IMPORT_PATH="${BUILD_DIR}/modules:$QML2_IMPORT_PATH"
-_THEMES_PATH="${BUILD_DIR}/modules"
+_IMPORT_PATH="${BUILD_DIR}/qml:$QML2_IMPORT_PATH"
+_THEMES_PATH="${BUILD_DIR}/qml"
 _XML="${BUILD_DIR}/tests/test_$_TARGET_$_TESTFILE.xml"
 
 _ARGS="-p -o -p $_XML,xunitxml -p -o -p -,txt"
