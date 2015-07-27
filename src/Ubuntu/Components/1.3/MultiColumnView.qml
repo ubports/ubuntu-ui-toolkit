@@ -108,6 +108,9 @@ MainViewBase {
       */
     function addPageToCurrentColumn(sourcePage, page, properties) {
         var nextColumn = d.columnForPage(sourcePage) + 1;
+        // Clear all following columns. If we do not do this, we have no way to
+        //  determine which page needs to be on top when the view is resized
+        //  to have a single column.
         d.tree.prune(nextColumn);
         for (var i = nextColumn; i < d.columns; i++) {
             d.updatePageForColumn(i);
