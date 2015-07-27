@@ -143,3 +143,7 @@ UbuntuListView 1.3 1.3/UbuntuListView11.qml
 Captions 1.3 1.3/Captions.qml
 internal ColumnMetrics 1.3/ColumnMetrics.qml
 MultiColumnView 1.3 1.3/MultiColumnView.qml
+MathUtils 1.3 1.3/mathUtils.js
+internal ColorUtils 1.3/colorUtils.js
+DateUtils 1.3 1.3/dateUtils.js
+BottomEdgeHint 1.3 1.3/BottomEdgeHint.qml

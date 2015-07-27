@@ -94,12 +94,14 @@ QML_FILES += 1.3/AbstractButton.qml \
 	     1.3/ColumnMetrics.qml \
              1.3/ComboButton.qml \
              1.3/CrossFadeImage.qml \
+             1.3/dateUtils.js \
              1.3/DraggingArea.qml \
              1.3/Header.qml \
              1.3/InputHandler.qml \
              1.3/Label.qml \
              1.3/MainViewBase.qml \
              1.3/MainView.qml \
+             1.3/mathUtils.js \
 	     1.3/MultiColumnView.qml \
              1.3/OptionSelectorDelegate.qml \
              1.3/OptionSelector.qml \
@@ -134,7 +136,8 @@ QML_FILES += 1.3/AbstractButton.qml \
              1.3/UbuntuListView11.qml \
              1.3/UbuntuListView.qml \
              1.3/UbuntuNumberAnimation.qml \
-             1.3/ListItemPopover.qml
+             1.3/ListItemPopover.qml \
+             1.3/BottomEdgeHint.qml
 
 OTHER_FILES+= 1.3/CrossFadeImage.qdoc \
              1.3/UbuntuListView11.qdoc \

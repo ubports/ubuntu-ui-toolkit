@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 1.2
+import Ubuntu.Components 1.3
 
 Item {
     id: root
@@ -62,7 +62,8 @@ Item {
         "Background colors  (a/z):   " + shape.backgroundColor + ", " + shape.secondaryBackgroundColor + "\n" +
         "Background mode      (e):   " + root.backgroundModeTable[shape.backgroundMode] + "\n\n" +
         "Radius               (r):   " + "\"" + shape.radius + "\"\n" +
-        "Aspect               (t):   " + root.aspectTable[shape.aspect] + "\n\n" +
+        "Aspect               (t):   " + root.aspectTable[shape.aspect] + "\n" +
+        "relativeRadius       (y):   " + shape.relativeRadius.toFixed(2) + "\n\n" +
         "Source               (o):   " + shape.source + "\n" +
         "Source opacity       (p):   " + shape.sourceOpacity.toFixed(2) + "\n" +
         "Source fill          (q):   " + root.sourceFillModeTable[shape.sourceFillMode] + "\n" +
@@ -222,6 +223,9 @@ Item {
                 ((shape.radius == "small") ? "medium" : "large");
         } else if (event.key == Qt.Key_T) {
             shape.aspect = (shape.aspect + 1) % 2;
+        } else if (event.key == Qt.Key_Y) {
+            shape.relativeRadius = Math.max(0.0, Math.min(
+                1.0, shape.relativeRadius + ((event.modifiers & shift) ? 0.01 : -0.01)));
 
         // Source.
         } else if (event.key == Qt.Key_O) {
