@@ -100,13 +100,22 @@ MainViewBase {
 
     /*!
       \qmlmethod Item addPageToCurrentColumn(Item sourcePage, var page[, var properties])
-      Adds a \c page to the column the \c sourcePage resides in. \c page can be a
-      Component or a file. \c properties is a JSON object containing properties
+      Adds a \c page to the column the \c sourcePage resides in and removes all pages
+      from the higher columns. \c page can be a Component or a file.
+      \c properties is a JSON object containing properties
       to be set when page is created. \c sourcePage must be active. Returns the
       instance of the page created.
       */
     function addPageToCurrentColumn(sourcePage, page, properties) {
-        return d.addPageToColumn(d.columnForPage(sourcePage), sourcePage, page, properties);
+        var nextColumn = d.columnForPage(sourcePage) + 1;
+        // Clear all following columns. If we do not do this, we have no way to
+        //  determine which page needs to be on top when the view is resized
+        //  to have a single column.
+        d.tree.prune(nextColumn);
+        for (var i = nextColumn; i < d.columns; i++) {
+            d.updatePageForColumn(i);
+        }
+        return d.addPageToColumn(nextColumn - 1, sourcePage, page, properties);
     }
 
     /*!
@@ -368,7 +377,7 @@ MainViewBase {
             Item {
                 id: holderBody
                 objectName: parent.objectName + "Body"
-                anchors {                    
+                anchors {
                     top: subHeader.bottom
                     bottom: parent.bottom
                     left: parent.left

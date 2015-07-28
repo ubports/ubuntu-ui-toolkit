@@ -160,5 +160,28 @@ Item {
                 compare(page4.visible, true, "Page in right column became invisible when switching to multi-column view.");
             }
         }
+
+        function test_add_to_current_prunes_next() {
+            mcv.addPageToNextColumn(page1, page2);
+            compare(page2.visible, true, "Adding page to next column does not show that page.");
+            mcv.addPageToCurrentColumn(page1, page3);
+            compare(page2.visible, false, "Adding page to current column does not clear next column.");
+            mcv.removePages(page3);
+            compare(page2.visible, false, "Removing page from first column shows previous page in next column.");
+        }
+
+        function test_add_to_next_first_prunes_next() {
+            mcv.addPageToNextColumn(page1, page2);
+            mcv.addPageToNextColumn(page1, page3);
+            mcv.removePages(page3);
+            compare(page2.visible, false, "Adding page to next column did not prune that column.");
+        }
+
+        function test_add_page_to_current_does_not_prune_current() {
+            mcv.addPageToCurrentColumn(page1, page2);
+            mcv.addPageToCurrentColumn(page2, page3);
+            mcv.removePages(page3);
+            compare(page2.visible, true, "Adding page to current column pruned that column.");
+        }
     }
 }
