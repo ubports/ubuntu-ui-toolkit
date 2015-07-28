@@ -24,13 +24,13 @@ MainView {
     width: units.gu(120)
     height: units.gu(71)
 
+    // 2 on desktop, 1 on phone.
+    property int columns: width >= units.gu(80) ? 2 : 1
+
     AdaptivePageLayout {
         id: layout
         width: parent.width
         height: parent.height
-
-        // 2 on desktop, 1 on phone.
-        property int columns: width >= units.gu(80) ? 2 : 1
 
         primaryPage: page1
 
@@ -65,7 +65,7 @@ MainView {
         }
     }
 
-    AdaptivePageLyout {
+    AdaptivePageLayout {
         id: defaults
     }
 

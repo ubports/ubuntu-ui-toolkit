@@ -20,7 +20,7 @@ import Ubuntu.Components 1.3
 import "tree.js" as Tree
 
 /*!
-  \qmltype MultiColumnView
+  \qmltype AdaptivePageLayout
   \inqmlmodule Ubuntu.Components 1.3
   \since Ubuntu.Components 1.3
   \ingroup ubuntu
@@ -30,7 +30,7 @@ import "tree.js" as Tree
   more columns. Unlike in PageStack, there can be more than one Page active at
   a time, depending on the number of the columns in the view.
 
-  MultiColumnView stores pages added in a tree. Pages are added relative to a
+  AdaptivePageLayout stores pages added in a tree. Pages are added relative to a
   given page, either as sibling (\l addPageToCurrentColumn) or as child
   (\l addPageToNextColumn). This means that removing a non-leaf page from the Page
   tree will remove all its children from the page tree.
@@ -47,47 +47,61 @@ import "tree.js" as Tree
   cannot be removed from the view.
 
   \qml
-  import QtQuick 2.4
-  import Ubuntu.Components 1.3
+    import QtQuick 2.4
+    import Ubuntu.Components 1.3
 
-  MultiColumnView {
-      width: units.gu(80)
-      height: units.gu(71)
+    MainView {
+        width: units.gu(100)
+        height: units.gu(60)
 
-      primaryPage: page1
-      Page {
-          id: page1
-          title: "Main page"
-          Column {
-              Button {
-                  text: "Add Page2 above " + title
-                  onClicked: page1.pageStack.addPageToCurrentColumn(page1, page2)
-              }
-              Button {
-                  text: "Add Page3 next to " + title
-                  onClicked: page1.pageStack.addPageToNextColumn(page1, page3)
-              }
-          }
-      }
-      Page {
-          id: page2
-          title: "Page #2"
-          }
-      Page {
-          id: page3
-          title: "Page #3"
-      }
-  }
+        AdaptivePageLayout {
+            anchors.fill: parent
+            primaryPage: page1
+            Page {
+                id: page1
+                title: "Main page"
+                Column {
+                    Button {
+                        text: "Add Page2 above " + page1.title
+                        onClicked: page1.pageStack.addPageToCurrentColumn(page1, page2)
+                    }
+                    Button {
+                        text: "Add Page3 next to " + page1.title
+                        onClicked: page1.pageStack.addPageToNextColumn(page1, page3)
+                    }
+                }
+            }
+            Page {
+                id: page2
+                title: "Page #2"
+            }
+            Page {
+                id: page3
+                title: "Page #3"
+            }
+        }
+    }
   \endqml
 
-  MultiColumnView supports adaptive column handling. When the number of columns changes at
+  AdaptivePageLayout supports adaptive column handling. When the number of columns changes at
   runtime the pages are automatically rearranged.
 
   \sa PageStack
 */
 
-MainViewBase {
-    id: multiColumnView
+PageTreeNode {
+    id: layout
+
+    Page {
+        // AdaptivePageLayout has its own split headers, so
+        //  disable the application header.
+        id: appHeaderControlPage
+        head {
+            locked: true
+            visible: false
+        }
+        // title is set in attachPage() when the attached Page.column === 0
+    }
 
     /*!
       The property holds the first Page which will be added to the view. If the
@@ -142,7 +156,7 @@ MainViewBase {
       */
     function removePages(page) {
         var nodeToRemove = d.getWrapper(page);
-        var removedNodes = d.tree.chop(nodeToRemove, page != multiColumnView.primaryPage);
+        var removedNodes = d.tree.chop(nodeToRemove, page != layout.primaryPage);
         for (var i = removedNodes.length-1; i >= 0; i--) {
             var node = removedNodes[i];
             d.updatePageForColumn(node.column);
@@ -176,7 +190,7 @@ MainViewBase {
         property bool completed: false
         property var tree: new Tree.Tree()
 
-        property int columns: multiColumnView.width >= units.gu(80) ? 2 : 1
+        property int columns: layout.width >= units.gu(80) ? 2 : 1
         /*! internal */
         onColumnsChanged: {
             if (columns <= 0) {
@@ -192,7 +206,7 @@ MainViewBase {
         function createWrapper(page, properties) {
             var wrapperComponent = Qt.createComponent("PageWrapper.qml");
             var wrapperObject = wrapperComponent.createObject(hiddenPages);
-            wrapperObject.pageStack = multiColumnView;
+            wrapperObject.pageStack = layout;
             wrapperObject.properties = properties;
             // set reference last because it will trigger creation of the object
             //  with specified properties.
@@ -412,14 +426,14 @@ MainViewBase {
                 property PageHeadConfiguration config: null
                 property Item contents: null
 
-                property color dividerColor: Qt.darker(multiColumnView.headerColor, 1.1)
-                property color panelColor: Qt.lighter(multiColumnView.headerColor, 1.1)
+                property color dividerColor: layout.__propagated.header.dividerColor
+                property color panelColor: layout.__propagated.header.panelColor
 
                 visible: holder.pageWrapper && holder.pageWrapper.active
 
                 // The multiColumn, page and showBackButton properties are used in
                 //  PageHeadStyle to show/hide the back button.
-                property var multiColumn: multiColumnView
+                property var multiColumn: layout
                 property var page: holder.pageWrapper ? holder.pageWrapper.object : null
                 property bool showBackButton: {
                     if (!page) {
@@ -456,6 +470,10 @@ MainViewBase {
 
                 if (pageWrapper.object.hasOwnProperty("head")) {
                     subHeader.config = pageWrapper.object.head;
+                }
+                if (pageWrapper.column === 0) {
+                    // set the application title
+                    appHeaderControlPage.title = pageWrapper.object.title;
                 }
             }
             function detachCurrentPage() {
@@ -496,13 +514,7 @@ MainViewBase {
     RowLayout {
         id: body
         objectName: "body"
-        anchors {
-            fill: parent
-            bottomMargin: multiColumnView.anchorToKeyboard &&
-                          UbuntuApplication.inputMethod.visible ?
-                              UbuntuApplication.inputMethod.keyboardRectangle.height : 0
-        }
-
+        anchors.fill: parent
         spacing: 0
 
         property real headerHeight: 0
