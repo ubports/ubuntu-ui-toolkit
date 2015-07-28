@@ -163,7 +163,8 @@ def get_process_status(name):
     Return the status of a process.
 
     :param str name: The name of the process.
-    :raises ToolkitException: if it's not possible to get status of the job.
+    :return: Status of process as string, or zero length string if process
+             is not found.
 
     """
     try:
@@ -171,11 +172,9 @@ def get_process_status(name):
             '/sbin/initctl',
             'status',
             name
-        ], universal_newlines=True)
-    except subprocess.CalledProcessError as error:
-        raise ToolkitException(
-            "Unable to get {}'s status: {}".format(name, error)
-        )
+        ], universal_newlines=True, stderr=subprocess.DEVNULL)
+    except subprocess.CalledProcessError:
+        return ''
 
 
 def is_process_running(name):

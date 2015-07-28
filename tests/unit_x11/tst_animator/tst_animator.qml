@@ -49,7 +49,7 @@ Item {
                 fillMode: Image.PreserveAspectFit
                 horizontalAlignment: Image.AlignHCenter
                 verticalAlignment: Image.AlignVCenter
-                source: "../../../modules/Ubuntu/Components/Themes/Ambiance/artwork/spinner@8.png"
+                source: "../../../src/Ubuntu/Components/Themes/Ambiance/artwork/spinner@8.png"
 
 
                 RotationAnimator on rotation {

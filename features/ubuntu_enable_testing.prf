@@ -1,0 +1,18 @@
+instbase = $$ROOT_BUILD_DIR/qml
+
+force_independent: {
+    # These bizarre rules copy the files to the build directory
+
+    defineReplace(qmlModStripSrcDir) {
+        return($$relative_path($$1, $$_PRO_FILE_PWD_))
+    }
+
+    ubuntuqmlfiles2build.input = fq_qml_files
+    ubuntuqmlfiles2build.output = $$instbase/$$TARGETPATH/${QMAKE_FUNC_FILE_IN_qmlModStripSrcDir}
+    !contains(TEMPLATE, vc.*): ubuntuqmlfiles2build.variable_out = PRE_TARGETDEPS
+    ubuntuqmlfiles2build.commands = $$QMAKE_COPY ${QMAKE_FILE_IN} ${QMAKE_FILE_OUT}
+    ubuntuqmlfiles2build.name = COPY ${QMAKE_FILE_IN}
+    ubuntuqmlfiles2build.CONFIG = no_link no_clean
+
+    QMAKE_EXTRA_COMPILERS += ubuntuqmlfiles2build
+}

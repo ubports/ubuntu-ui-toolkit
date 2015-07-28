@@ -6,6 +6,6 @@
 !contains(QMAKE_HOST.arch,armv7l) {
     check.target = check
     check.commands += cd $$_PRO_FILE_PWD_;
-    check.commands += env LD_LIBRARY_PATH=$${ROOT_BUILD_DIR}/modules/Ubuntu/Components:$${ROOT_BUILD_DIR}/modules/Ubuntu/Layouts:$${ROOT_BUILD_DIR}/modules/Ubuntu/PerformanceMetrics:$${ROOT_BUILD_DIR}/modules/Ubuntu/Test UITK_TEST_KEEP_RUNNING=1
+    check.commands += env LD_LIBRARY_PATH=$${ROOT_BUILD_DIR}/qml/Ubuntu/Components:$${ROOT_BUILD_DIR}/qml/Ubuntu/Layouts:$${ROOT_BUILD_DIR}/qml/Ubuntu/PerformanceMetrics:$${ROOT_BUILD_DIR}/qml/Ubuntu/Test UITK_TEST_KEEP_RUNNING=1
     check.commands += '$${ROOT_SOURCE_DIR}/tests/unit/runtest.sh "$$shadowed($$_PRO_FILE_PWD_)/$${TARGET}" "$$shadowed($$_PRO_FILE_PWD_)/$${TARGET}"';
 }
