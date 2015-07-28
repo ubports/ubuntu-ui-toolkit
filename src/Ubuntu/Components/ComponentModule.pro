@@ -86,6 +86,7 @@ QML_FILES += 1.3/AbstractButton.qml \
              1.3/ActionItem.qml \
              1.3/ActionList.qml \
              1.3/ActivityIndicator.qml \
+	     1.3/AdaptivePageLayout.qml \
              1.3/AnimatedItem.qml \
              1.3/AppHeader.qml \
              1.3/Button.qml \
@@ -102,7 +103,6 @@ QML_FILES += 1.3/AbstractButton.qml \
              1.3/MainViewBase.qml \
              1.3/MainView.qml \
              1.3/mathUtils.js \
-	     1.3/MultiColumnView.qml \
              1.3/OptionSelectorDelegate.qml \
              1.3/OptionSelector.qml \
              1.3/OrientationHelper.qml \

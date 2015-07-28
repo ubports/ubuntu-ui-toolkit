@@ -18,7 +18,7 @@ import QtQuick 2.4
 import Ubuntu.Test 1.0
 import Ubuntu.Components 1.3
 
-Item {
+MainView {
     id: root
     width: units.gu(120)
     height: units.gu(71)
@@ -26,8 +26,8 @@ Item {
     // 2 on desktop, 1 on phone.
     property int columns: width >= units.gu(80) ? 2 : 1
 
-    MultiColumnView {
-        id: multiColumnView
+    AdaptivePageLayout {
+        id: layout
         width: parent.width
         height: parent.height
         primaryPage: rootPage
@@ -46,19 +46,19 @@ Item {
 
                 ListItemWithLabel {
                     text: "Add page left"
-                    onClicked: multiColumnView.addPageToCurrentColumn(rootPage, leftPage)
+                    onClicked: layout.addPageToCurrentColumn(rootPage, leftPage)
                 }
                 ListItemWithLabel {
                     text: "Add page right"
-                    onClicked: multiColumnView.addPageToNextColumn(rootPage, rightPage)
+                    onClicked: layout.addPageToNextColumn(rootPage, rightPage)
                 }
                 ListItemWithLabel {
                     text: "Add sections page right"
-                    onClicked: multiColumnView.addPageToNextColumn(rootPage, sectionsPage)
+                    onClicked: layout.addPageToNextColumn(rootPage, sectionsPage)
                 }
                 ListItemWithLabel {
                     text: "Add external page right"
-                    onClicked: multiColumnView.addPageToNextColumn(
+                    onClicked: layout.addPageToNextColumn(
                                    rootPage, Qt.resolvedUrl("MyExternalPage.qml"))
                 }
             }
@@ -75,7 +75,7 @@ Item {
                 Button {
                     anchors.centerIn: parent
                     text: "right"
-                    onTriggered: multiColumnView.addPageToNextColumn(leftPage, rightPage)
+                    onTriggered: layout.addPageToNextColumn(leftPage, rightPage)
                 }
             }
         }
@@ -91,7 +91,7 @@ Item {
                 Button {
                     anchors.centerIn: parent
                     text: "Another page!"
-                    onTriggered: multiColumnView.addPageToCurrentColumn(rightPage, sectionsPage)
+                    onTriggered: layout.addPageToCurrentColumn(rightPage, sectionsPage)
                 }
             }
         }
@@ -114,26 +114,26 @@ Item {
         when: windowShown
 
         function resize_single_column_width() {
-            multiColumnView.width = units.gu(40);
+            layout.width = units.gu(40);
         }
 
         // resize to use the full window width
         function resize_full_width() {
-            multiColumnView.width = root.width;
+            layout.width = root.width;
         }
 
         function get_number_of_columns() {
-            var body = findChild(multiColumnView, "body");
+            var body = findChild(layout, "body");
             return body.children.length;
         }
 
         function get_header(column) {
-            return findChild(multiColumnView, "Header" + column);
+            return findChild(layout, "Header" + column);
         }
 
         function get_number_of_headers() {
             // FIXME: With only one column, revert to using the AppHeader
-            //  so multiColumnView will not include any headers.
+            //  so layout will not include any headers.
             var numHeaders = 0;
             var header = get_header(0);
             verify(header !== null, "No header found!");
@@ -151,7 +151,7 @@ Item {
         }
 
         function cleanup() {
-            multiColumnView.removePages(rootPage);
+            layout.removePages(rootPage);
             resize_full_width();
         }
 
@@ -181,21 +181,21 @@ Item {
             compare(get_header(1).config, null,
                     "Second column header is not initalized with null.");
 
-            multiColumnView.addPageToCurrentColumn(rootPage, leftPage);
+            layout.addPageToCurrentColumn(rootPage, leftPage);
             compare(get_header(0).config, leftPage.head,
                     "First column header is not updated properly.");
             compare(get_header(1).config, null,
                     "Second column header is updated when it should not be.");
-            multiColumnView.removePages(leftPage);
+            layout.removePages(leftPage);
             compare(get_header(0).config, rootPage.head,
                     "First column header is not reverted properly.");
 
-            multiColumnView.addPageToNextColumn(rootPage, rightPage);
+            layout.addPageToNextColumn(rootPage, rightPage);
             compare(get_header(0).config, rootPage.head,
                     "First column header is updated when it should not be.");
             compare(get_header(1).config, rightPage.head,
                     "Second column header is not updated properly.");
-            multiColumnView.removePages(rightPage);
+            layout.removePages(rightPage);
             compare(get_header(1).config, null,
                     "Second column header is not reverted properly.");
         }
@@ -208,23 +208,23 @@ Item {
             compare(get_header(0).config, rootPage.head,
                     "First column header is not initialized with primaryPage header config.");
 
-            multiColumnView.addPageToCurrentColumn(rootPage, leftPage);
+            layout.addPageToCurrentColumn(rootPage, leftPage);
             compare(get_header(0).config, leftPage.head,
                     "Single column header is not updated properly.");
-            multiColumnView.removePages(leftPage);
+            layout.removePages(leftPage);
             compare(get_header(0).config, rootPage.head,
                     "Single column header is not reverted properly.");
 
-            multiColumnView.addPageToNextColumn(rootPage, rightPage);
+            layout.addPageToNextColumn(rootPage, rightPage);
             compare(get_header(0).config, rightPage.head,
                     "Single column header is not updated properly when adding to next column.");
-            multiColumnView.removePages(rightPage);
+            layout.removePages(rightPage);
             compare(get_header(0).config, rootPage.head,
                     "Single column header is not reverted properly after adding to next column.");
         }
 
         function test_header_title_for_external_page() {
-            multiColumnView.addPageToNextColumn(rootPage, Qt.resolvedUrl("MyExternalPage.qml"));
+            layout.addPageToNextColumn(rootPage, Qt.resolvedUrl("MyExternalPage.qml"));
             var n = root.columns === 2 ? 1 : 0
             compare(get_header(n).config.title, "Page from QML file",
                     "Adding external Page does not update the header title.");
@@ -240,18 +240,18 @@ Item {
                 compare(get_header(i).height, baseHeight,
                         "Header " + i + " height is not initialized correctly.");
             }
-            multiColumnView.addPageToNextColumn(rootPage, rightPage);
+            layout.addPageToNextColumn(rootPage, rightPage);
             for (i = 0; i < n; i++) {
                 compare(get_header(i).height, baseHeight,
                         "Header " + i + " height is incorrect after adding Page.");
             }
-            multiColumnView.removePages(rightPage);
-            multiColumnView.addPageToNextColumn(rootPage, sectionsPage);
+            layout.removePages(rightPage);
+            layout.addPageToNextColumn(rootPage, sectionsPage);
             for (i = 0; i < n; i++) {
                 compare(get_header(i).height, withSectionsHeight,
                         "Header " + i + " height is incorrect after adding single Page with sections.");
             }
-            multiColumnView.removePages(sectionsPage);
+            layout.removePages(sectionsPage);
             for (i = 0; i < n; i++) {
                 compare(get_header(i).height, baseHeight,
                         "Header " + i +
@@ -270,48 +270,48 @@ Item {
             // A:1, B:0
             compare(get_back_button_visible(0), false,
                     "Back button is visible for primary page.");
-            multiColumnView.addPageToCurrentColumn(rootPage, leftPage);
+            layout.addPageToCurrentColumn(rootPage, leftPage);
             // A:2, B:0
             compare(get_back_button_visible(0), true,
                     "Adding page 2 to column A does not show back button.");
 
-            multiColumnView.removePages(leftPage);
+            layout.removePages(leftPage);
             // A:1, B:0
             compare(get_back_button_visible(0), false,
                     "Removing page 2 from column A does not hide back button.");
 
-            multiColumnView.addPageToNextColumn(rootPage, rightPage);
+            layout.addPageToNextColumn(rootPage, rightPage);
             // A:1, B:1
             compare(get_back_button_visible(0), false,
                     "Adding page 1 to column B shows back button in column A.");
             compare(get_back_button_visible(1), false,
                     "Adding page 1 to column B shows back button in column B.");
 
-            multiColumnView.addPageToCurrentColumn(rootPage, leftPage);
+            layout.addPageToCurrentColumn(rootPage, leftPage);
             // A:2, B:0
             compare(get_back_button_visible(0), true,
                     "Adding page 2 to column A not show back button when column B has a page.");
-            multiColumnView.removePages(leftPage);
+            layout.removePages(leftPage);
             // A:1, B:0
 
-            multiColumnView.addPageToNextColumn(rootPage, rightPage);
-            multiColumnView.addPageToCurrentColumn(rightPage, sectionsPage);
+            layout.addPageToNextColumn(rootPage, rightPage);
+            layout.addPageToCurrentColumn(rightPage, sectionsPage);
             // A:1, B:2
             compare(get_back_button_visible(0), false,
                     "Adding page 2 to column B shows back button in column A.");
             compare(get_back_button_visible(1), true,
                     "Adding page 2 to column B does not show back button in column B.");
 
-            multiColumnView.addPageToCurrentColumn(rootPage, leftPage);
+            layout.addPageToCurrentColumn(rootPage, leftPage);
             // A:2, B:0
-            multiColumnView.addPageToNextColumn(leftPage, rightPage);
-            multiColumnView.addPageToCurrentColumn(rightPage, sectionsPage);
+            layout.addPageToNextColumn(leftPage, rightPage);
+            layout.addPageToCurrentColumn(rightPage, sectionsPage);
             compare(get_back_button_visible(0), true,
                     "Adding page 2 to column A does not show back button in column A when column B has 2 pages.");
             compare(get_back_button_visible(1), true,
                     "Adding page 2 to column A hides back button in column B.");
 
-            multiColumnView.removePages(sectionsPage);
+            layout.removePages(sectionsPage);
             // A:2, B:1
             compare(get_back_button_visible(0), true,
                     "Removing page 2 from column B hides back button in column A.");
@@ -326,17 +326,17 @@ Item {
 
             compare(get_back_button_visible(0), false,
                     "Back button is visible for primary page.");
-            multiColumnView.addPageToCurrentColumn(rootPage, leftPage);
+            layout.addPageToCurrentColumn(rootPage, leftPage);
             compare(get_back_button_visible(0), true,
                     "No back button visible with two pages in single column.");
-            multiColumnView.removePages(leftPage);
+            layout.removePages(leftPage);
             compare(get_back_button_visible(0), false,
                     "Back button remains visible after removing second page from column.");
 
-            multiColumnView.addPageToNextColumn(rootPage, rightPage);
+            layout.addPageToNextColumn(rootPage, rightPage);
             compare(get_back_button_visible(0), true,
                     "No back button visible after pushing to next column when viewing single column.");
-            multiColumnView.removePages(rightPage);
+            layout.removePages(rightPage);
             compare(get_back_button_visible(0), false,
                     "Back button remains visible after removing page from following column.");
         }
