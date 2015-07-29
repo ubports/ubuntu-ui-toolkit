@@ -87,7 +87,7 @@ MainView {
         }
 
         function test_0_API() {
-            compare(defaults.primaryPage, undefined, "primaryPage not undefined by default");
+            compare(defaults.primaryPage, null, "primaryPage not null by default");
         }
 
         function test_zzz_change_primaryPage() {
