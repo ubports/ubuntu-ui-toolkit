@@ -200,3 +200,10 @@
   active \l Page's flickable. The value of the visible property will be
   updated at the end of the showing/hiding animation of the header.
  */
+
+/*!
+  \qmlproperty string PageHeadConfiguration::title
+  \since 1.3
+  The title to show in the header. This is automatically copied from
+  the \l Page title.
+ */
