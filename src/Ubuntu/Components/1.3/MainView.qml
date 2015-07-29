@@ -98,13 +98,14 @@ MainViewBase {
 
     /*!
       \qmlproperty bool MainView::automaticOrientation
+      \deprecated
 
       Sets whether the application will be automatically rotating when the
       device is.
 
-      The default value is false.
+      This property has no significance anymore as the shell rotates.
     */
-    property alias automaticOrientation: canvas.automaticOrientation
+    property bool automaticOrientation: false
 
     /*!
       \internal
