@@ -178,13 +178,6 @@ Ubuntu.StyledItem {
 
     // forwarded properties
     /*!
-      Whether the TextArea should gain active focus on a mouse press. By default this
-      is set to true.
-      \qmlproperty bool activeFocusOnPress
-      */
-    property alias activeFocusOnPress: editor.activeFocusOnPress
-
-    /*!
       This property specifies a base URL which is used to resolve relative URLs within
       the text. The default value is the url of the QML file instantiating the TextArea
       item.
@@ -757,6 +750,7 @@ Ubuntu.StyledItem {
     //internals
 
     opacity: enabled ? 1.0 : 0.3
+    activeFocusOnPress: true
 
     /*!\internal */
     onVisibleChanged: {
@@ -863,7 +857,7 @@ Ubuntu.StyledItem {
             wrapMode: TextEdit.WrapAtWordBoundaryOrAnywhere
             mouseSelectionMode: TextEdit.SelectWords
             selectByMouse: true
-            activeFocusOnPress: true
+            activeFocusOnPress: control.activeFocusOnPress
             onActiveFocusChanged: if (!activeFocus && inputHandler.popover) PopupUtils.close(inputHandler.popover)
             cursorDelegate: TextCursor {
                 handler: inputHandler

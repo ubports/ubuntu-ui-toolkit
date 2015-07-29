@@ -172,13 +172,6 @@ ActionItem {
     property alias acceptableInput: editor.acceptableInput
 
     /*!
-      Whether the TextField should gain active focus on a mouse press. By default
-      this is set to true.
-      \qmlproperty bool activeFocusOnPress
-    */
-    property alias activeFocusOnPress: editor.activeFocusOnPress
-
-    /*!
       Whether the TextField should scroll when the text is longer than the width.
       By default this is set to true.
 
@@ -999,7 +992,7 @@ ActionItem {
 
             // overrides
             selectByMouse: true
-            activeFocusOnPress: true
+            activeFocusOnPress: control.activeFocusOnPress
             onActiveFocusChanged: if (!activeFocus && inputHandler.popover) PopupUtils.close(inputHandler.popover)
 
             // input selection and navigation handling
