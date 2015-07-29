@@ -203,8 +203,7 @@ void UCStyledItemBase::setActiveFocusOnPress(bool value)
         return;
     d->activeFocusOnPress = value;
     d->setFocusable(d->activeFocusOnPress);
-    // https://bugreports.qt.io/browse/QTBUG-40043
-    setProperty("activeFocusOnTab", value);
+    setActiveFocusOnTab(value);
     Q_EMIT activeFocusOnPressChanged();
 }
 
