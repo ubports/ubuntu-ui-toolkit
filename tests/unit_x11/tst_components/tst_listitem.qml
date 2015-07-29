@@ -507,6 +507,14 @@ Item {
             rebound(data.item);
         }
 
+        function test_tug_ignored_on_right_button() {
+            listView.positionViewAtBeginning();
+            var item = findChild(listView, "listItem0");
+            movingSpy.target = item;
+            flick(item, centerOf(item).x, centerOf(item).y, units.gu(20), 0, 0, 0, Qt.RightButton, undefined, 100);
+            compare(movingSpy.count, 0, "Action panel should not budge!")
+        }
+
         function test_rebound_when_pressed_outside_or_clicked_data() {
             var item0 = findChild(listView, "listItem0");
             var item1 = findChild(listView, "listItem1");

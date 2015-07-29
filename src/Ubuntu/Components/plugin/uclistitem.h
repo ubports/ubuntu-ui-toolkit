@@ -64,7 +64,6 @@ public:
 protected:
     void classBegin();
     void componentComplete();
-    void setHighlighted(bool);
     QSGNode *updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data);
     void itemChange(ItemChange change, const ItemChangeData &data);
     void mousePressEvent(QMouseEvent *event);
