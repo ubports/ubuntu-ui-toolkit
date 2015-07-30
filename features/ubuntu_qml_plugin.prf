@@ -65,3 +65,5 @@ force_independent: {
     }
 }
 
+QMAKE_CXXFLAGS += -Werror
+
