@@ -90,7 +90,7 @@ void ShapeShader::updateState(
     const ShapeMaterial::Data* data = static_cast<ShapeMaterial*>(newEffect)->constData();
 
     // Bind shape texture.
-    glBindTexture(GL_TEXTURE_2D, data->shapeTexture);
+    glBindTexture(GL_TEXTURE_2D, data->shapeTextureId);
 
     // Bind source texture on the 2nd texture unit and update uniforms.
     bool textured = false;
@@ -119,8 +119,7 @@ void ShapeShader::updateState(
         }
     }
     program()->setUniformValue(m_texturedId, textured);
-    program()->setUniformValue(
-        m_aspectId, data->flags & (ShapeMaterial::Data::Flat | ShapeMaterial::Data::Inset));
+    program()->setUniformValue(m_aspectId, data->flags & ShapeMaterial::Data::AspectMask);
 
     // The pressed aspect is implemented by scaling the final RGB fragment color. It's not a real
     // blending as it was done before deprecation, so for instance transparent colors remain the
@@ -136,7 +135,7 @@ void ShapeShader::updateState(
     // and by 255 for distanceAAFactor dequantization. The factor is 1 most of the time apart when
     // the radius size is low, it linearly goes from 1 to 0 to make the corners prettier and to
     // prevent the opacity of the whole shape to slightly lower.
-    const float distanceAA = (shapeTextureInfo.distanceAA * distanceAApx) / (2.0 * 255.0f);
+    const float distanceAA = (shapeTextureDistanceAA * distanceAApx) / (2.0 * 255.0f);
     program()->setUniformValue(m_distanceAAId, data->distanceAAFactor * distanceAA);
 
     // Send screen-space derivative factors. Note that when rendering is redirected to a
@@ -246,12 +245,16 @@ const QSGGeometry::AttributeSet& ShapeNode::attributeSet()
 
 // --- QtQuick item ---
 
-static QHash<QOpenGLContext*, quint32> shapeTextureHash;
-static bool isPrimaryOrientationLandscape = false;
-
 const float implicitWidthGU = 8.0f;
 const float implicitHeightGU = 8.0f;
 const float radiusGuMap[3] = { 1.45f, 2.55f, 3.65f };
+const int maxShapeTextures = 16;
+
+static struct { QOpenGLContext* openglContext; quint32 textureId[shapeTextureCount]; }
+    shapeTextures[maxShapeTextures];
+static bool isPrimaryOrientationLandscape = false;
+
+static int getShapeTexturesIndex(const QOpenGLContext* openglContext);
 
 /*! \qmltype UbuntuShape
     \instantiates UCUbuntuShape
@@ -1003,9 +1006,11 @@ void UCUbuntuShape::_q_imagePropertiesChanged()
 
 void UCUbuntuShape::_q_openglContextDestroyed()
 {
-    // Delete the shape texture that's stored per context and shared by all the shape items.
-    quint32 shapeTexture = shapeTextureHash.take(qobject_cast<QOpenGLContext*>(sender()));
-    glDeleteTextures(1, &shapeTexture);
+    // Delete the shape textures that are stored per context and shared by all the shape items.
+    const int index = getShapeTexturesIndex(qobject_cast<QOpenGLContext*>(sender()));
+    Q_ASSERT(index >= 0);
+    shapeTextures[index].openglContext = NULL;
+    glDeleteTextures(shapeTextureCount, shapeTextures[index].textureId);
 }
 
 void UCUbuntuShape::_q_gridUnitChanged()
@@ -1032,6 +1037,34 @@ void UCUbuntuShape::geometryChanged(const QRectF& newGeometry, const QRectF& old
 {
     QQuickItem::geometryChanged(newGeometry, oldGeometry);
     m_flags |= DirtySourceTransform;
+}
+
+// Gets the shapeTextures' slot used by the given context, or -1 if not stored.
+static int getShapeTexturesIndex(const QOpenGLContext* openglContext)
+{
+    int index = 0;
+    while (shapeTextures[index].openglContext != openglContext) {
+        index++;
+        if (index == maxShapeTextures) {
+            return -1;
+        }
+    }
+    return index;
+}
+
+// Gets an empty shapeTextures' slot.
+static int getEmptyShapeTexturesIndex()
+{
+    int index = 0;
+    while (shapeTextures[index].openglContext) {
+        index++;
+        if (index == maxShapeTextures) {
+            // Don't bother with a dynamic array, let's just set a high enough maxShapeTextures and
+            // increase the static array size if ever needed.
+            qFatal("reached maximum number of OpenGL contexts supported by UbuntuShape");
+        }
+    }
+    return index;
 }
 
 // Gets the nearest boundary to coord in the texel grid of the given size.
@@ -1118,20 +1151,24 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
     Q_ASSERT(window());
     QOpenGLContext* openglContext = window()->openglContext();
     Q_ASSERT(openglContext);
-    quint32 shapeTexture = shapeTextureHash[openglContext];
-    if (!shapeTexture) {
-        glGenTextures(1, &shapeTexture);
-        glBindTexture(GL_TEXTURE_2D, shapeTexture);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, shapeTextureInfo.size, shapeTextureInfo.size, 0,
-                     GL_RGBA, GL_UNSIGNED_BYTE, shapeTextureInfo.data);
-        shapeTextureHash[openglContext] = shapeTexture;
+    int index = getShapeTexturesIndex(openglContext);
+    if (index < 0) {
+        index = getEmptyShapeTexturesIndex();
+        shapeTextures[index].openglContext = openglContext;
+        glGenTextures(shapeTextureCount, shapeTextures[index].textureId);
+        for (int i = 0; i < shapeTextureCount; i++) {
+            glBindTexture(GL_TEXTURE_2D, shapeTextures[index].textureId[i]);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, shapeTextureSize, shapeTextureSize, 0, GL_RGBA,
+                         GL_UNSIGNED_BYTE, shapeTextureData[i]);
+        }
         QObject::connect(openglContext, SIGNAL(aboutToBeDestroyed()), this,
                          SLOT(_q_openglContextDestroyed()), Qt::DirectConnection);
     }
+    const quint32 shapeTextureId = shapeTextures[index].textureId[m_aspect != DropShadow ? 0 : 1];
 
     // Get the source texture info and update the source transform if needed.
     QSGTextureProvider* provider = m_source ? m_source->textureProvider() : NULL;
@@ -1187,7 +1224,7 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
         radius = qMin(itemSize.width(), itemSize.height()) * 0.5f * (m_relativeRadius * 0.01f);
     }
 
-    updateMaterial(node, radius, shapeTexture, sourceTexture && m_sourceOpacity);
+    updateMaterial(node, radius, shapeTextureId, sourceTexture && m_sourceOpacity);
 
     // Get the affine transformation for the source texture coordinates.
     const QVector4D sourceCoordTransform(
@@ -1231,7 +1268,7 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
     };
 
     updateGeometry(
-        node, itemSize, radius, shapeTextureInfo.offset, sourceCoordTransform, sourceMaskTransform,
+        node, itemSize, radius, shapeTextureOffset, sourceCoordTransform, sourceMaskTransform,
         backgroundColor);
 
     return node;
@@ -1242,12 +1279,13 @@ QSGNode* UCUbuntuShape::createSceneGraphNode() const
     return new ShapeNode;
 }
 
-void UCUbuntuShape::updateMaterial(QSGNode* node, float radius, quint32 shapeTexture, bool textured)
+void UCUbuntuShape::updateMaterial(
+    QSGNode* node, float radius, quint32 shapeTextureId, bool textured)
 {
     ShapeMaterial::Data* materialData = static_cast<ShapeNode*>(node)->material()->data();
     quint8 flags = 0;
 
-    materialData->shapeTexture = shapeTexture;
+    materialData->shapeTextureId = shapeTextureId;
     if (textured) {
         materialData->sourceTextureProvider = m_sourceTextureProvider;
         materialData->sourceOpacity = m_sourceOpacity;
@@ -1266,8 +1304,8 @@ void UCUbuntuShape::updateMaterial(QSGNode* node, float radius, quint32 shapeTex
     // Mapping of radius size range from [0, 4] to [0, 1] with clamping, plus quantization.
     const float start = 0.0f + radiusSizeOffset;
     const float end = 4.0f + radiusSizeOffset;
-    materialData->distanceAAFactor = qMin(
-        (radius / (end - start)) - (start / (end - start)), 1.0f) * 255.0f;
+    materialData->distanceAAFactor =
+        qMin((radius / (end - start)) - (start / (end - start)), 1.0f) * 255.0f;
 
     // Screen-space derivatives factors for fragment shaders depend on the primary orientation and
     // content orientation. A flag indicating a 90° rotation around the primary orientation is
@@ -1293,12 +1331,12 @@ void UCUbuntuShape::updateMaterial(QSGNode* node, float radius, quint32 shapeTex
     // optimal performance.
     if (radius > radiusSizeOffset) {
         const quint8 aspectFlags[] = {
-            ShapeMaterial::Data::Flat, ShapeMaterial::Data::Inset,
+            ShapeMaterial::Data::Flat, ShapeMaterial::Data::Inset, ShapeMaterial::Data::DropShadow,
             ShapeMaterial::Data::Inset | ShapeMaterial::Data::Pressed
         };
         flags |= aspectFlags[m_aspect];
     } else {
-        const quint8 aspectFlags[] = { 0, 0, ShapeMaterial::Data::Pressed };
+        const quint8 aspectFlags[] = { 0, 0, 0, ShapeMaterial::Data::Pressed };
         flags |= aspectFlags[m_aspect];
     }
 
@@ -1320,8 +1358,8 @@ void UCUbuntuShape::updateGeometry(
     // Set top row of 3 vertices.
     v[0].position[0] = 0.0f;
     v[0].position[1] = 0.0f;
-    v[0].shapeCoordinate[0] = shapeTextureInfo.offset;
-    v[0].shapeCoordinate[1] = shapeTextureInfo.offset;
+    v[0].shapeCoordinate[0] = shapeTextureOffset;
+    v[0].shapeCoordinate[1] = shapeTextureOffset;
     v[0].sourceCoordinate[0] = sourceCoordTransform.z();
     v[0].sourceCoordinate[1] = sourceCoordTransform.w();
     v[0].sourceCoordinate[2] = sourceMaskTransform.z();
@@ -1329,8 +1367,8 @@ void UCUbuntuShape::updateGeometry(
     v[0].backgroundColor = backgroundColor[0];
     v[1].position[0] = 0.5f * itemSize.width();
     v[1].position[1] = 0.0f;
-    v[1].shapeCoordinate[0] = (0.5f * itemSize.width()) / radius - shapeTextureInfo.offset;
-    v[1].shapeCoordinate[1] = shapeTextureInfo.offset;
+    v[1].shapeCoordinate[0] = (0.5f * itemSize.width()) / radius - shapeTextureOffset;
+    v[1].shapeCoordinate[1] = shapeTextureOffset;
     v[1].sourceCoordinate[0] = 0.5f * sourceCoordTransform.x() + sourceCoordTransform.z();
     v[1].sourceCoordinate[1] = sourceCoordTransform.w();
     v[1].sourceCoordinate[2] = 0.5f * sourceMaskTransform.x() + sourceMaskTransform.z();
@@ -1338,8 +1376,8 @@ void UCUbuntuShape::updateGeometry(
     v[1].backgroundColor = backgroundColor[0];
     v[2].position[0] = itemSize.width();
     v[2].position[1] = 0.0f;
-    v[2].shapeCoordinate[0] = shapeTextureInfo.offset;
-    v[2].shapeCoordinate[1] = shapeTextureInfo.offset;
+    v[2].shapeCoordinate[0] = shapeTextureOffset;
+    v[2].shapeCoordinate[1] = shapeTextureOffset;
     v[2].sourceCoordinate[0] = sourceCoordTransform.x() + sourceCoordTransform.z();
     v[2].sourceCoordinate[1] = sourceCoordTransform.w();
     v[2].sourceCoordinate[2] = sourceMaskTransform.x() + sourceMaskTransform.z();
@@ -1349,8 +1387,8 @@ void UCUbuntuShape::updateGeometry(
     // Set middle row of 3 vertices.
     v[3].position[0] = 0.0f;
     v[3].position[1] = 0.5f * itemSize.height();
-    v[3].shapeCoordinate[0] = shapeTextureInfo.offset;
-    v[3].shapeCoordinate[1] = (0.5f * itemSize.height()) / radius - shapeTextureInfo.offset;
+    v[3].shapeCoordinate[0] = shapeTextureOffset;
+    v[3].shapeCoordinate[1] = (0.5f * itemSize.height()) / radius - shapeTextureOffset;
     v[3].sourceCoordinate[0] = sourceCoordTransform.z();
     v[3].sourceCoordinate[1] = 0.5f * sourceCoordTransform.y() + sourceCoordTransform.w();
     v[3].sourceCoordinate[2] = sourceMaskTransform.z();
@@ -1358,8 +1396,8 @@ void UCUbuntuShape::updateGeometry(
     v[3].backgroundColor = backgroundColor[1];
     v[4].position[0] = 0.5f * itemSize.width();
     v[4].position[1] = 0.5f * itemSize.height();
-    v[4].shapeCoordinate[0] = (0.5f * itemSize.width()) / radius - shapeTextureInfo.offset;
-    v[4].shapeCoordinate[1] = (0.5f * itemSize.height()) / radius - shapeTextureInfo.offset;
+    v[4].shapeCoordinate[0] = (0.5f * itemSize.width()) / radius - shapeTextureOffset;
+    v[4].shapeCoordinate[1] = (0.5f * itemSize.height()) / radius - shapeTextureOffset;
     v[4].sourceCoordinate[0] = 0.5f * sourceCoordTransform.x() + sourceCoordTransform.z();
     v[4].sourceCoordinate[1] = 0.5f * sourceCoordTransform.y() + sourceCoordTransform.w();
     v[4].sourceCoordinate[2] = 0.5f * sourceMaskTransform.x() + sourceMaskTransform.z();
@@ -1367,8 +1405,8 @@ void UCUbuntuShape::updateGeometry(
     v[4].backgroundColor = backgroundColor[1];
     v[5].position[0] = itemSize.width();
     v[5].position[1] = 0.5f * itemSize.height();
-    v[5].shapeCoordinate[0] = shapeTextureInfo.offset;
-    v[5].shapeCoordinate[1] = (0.5f * itemSize.height()) / radius - shapeTextureInfo.offset;
+    v[5].shapeCoordinate[0] = shapeTextureOffset;
+    v[5].shapeCoordinate[1] = (0.5f * itemSize.height()) / radius - shapeTextureOffset;
     v[5].sourceCoordinate[0] = sourceCoordTransform.x() + sourceCoordTransform.z();
     v[5].sourceCoordinate[1] = 0.5f * sourceCoordTransform.y() + sourceCoordTransform.w();
     v[5].sourceCoordinate[2] = sourceMaskTransform.x() + sourceMaskTransform.z();
@@ -1378,8 +1416,8 @@ void UCUbuntuShape::updateGeometry(
     // Set bottom row of 3 vertices.
     v[6].position[0] = 0.0f;
     v[6].position[1] = itemSize.height();
-    v[6].shapeCoordinate[0] = shapeTextureInfo.offset;
-    v[6].shapeCoordinate[1] = shapeTextureInfo.offset;
+    v[6].shapeCoordinate[0] = shapeTextureOffset;
+    v[6].shapeCoordinate[1] = shapeTextureOffset;
     v[6].sourceCoordinate[0] = sourceCoordTransform.z();
     v[6].sourceCoordinate[1] = sourceCoordTransform.y() + sourceCoordTransform.w();
     v[6].sourceCoordinate[2] = sourceMaskTransform.z();
@@ -1387,8 +1425,8 @@ void UCUbuntuShape::updateGeometry(
     v[6].backgroundColor = backgroundColor[2];
     v[7].position[0] = 0.5f * itemSize.width();
     v[7].position[1] = itemSize.height();
-    v[7].shapeCoordinate[0] = (0.5f * itemSize.width()) / radius - shapeTextureInfo.offset;
-    v[7].shapeCoordinate[1] = shapeTextureInfo.offset;
+    v[7].shapeCoordinate[0] = (0.5f * itemSize.width()) / radius - shapeTextureOffset;
+    v[7].shapeCoordinate[1] = shapeTextureOffset;
     v[7].sourceCoordinate[0] = 0.5f * sourceCoordTransform.x() + sourceCoordTransform.z();
     v[7].sourceCoordinate[1] = sourceCoordTransform.y() + sourceCoordTransform.w();
     v[7].sourceCoordinate[2] = 0.5f * sourceMaskTransform.x() + sourceMaskTransform.z();
@@ -1396,8 +1434,8 @@ void UCUbuntuShape::updateGeometry(
     v[7].backgroundColor = backgroundColor[2];
     v[8].position[0] = itemSize.width();
     v[8].position[1] = itemSize.height();
-    v[8].shapeCoordinate[0] = shapeTextureInfo.offset;
-    v[8].shapeCoordinate[1] = shapeTextureInfo.offset;
+    v[8].shapeCoordinate[0] = shapeTextureOffset;
+    v[8].shapeCoordinate[1] = shapeTextureOffset;
     v[8].sourceCoordinate[0] = sourceCoordTransform.x() + sourceCoordTransform.z();
     v[8].sourceCoordinate[1] = sourceCoordTransform.y() + sourceCoordTransform.w();
     v[8].sourceCoordinate[2] = sourceMaskTransform.x() + sourceMaskTransform.z();
