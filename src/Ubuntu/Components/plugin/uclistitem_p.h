@@ -67,6 +67,8 @@ public:
     void update();
     void snapOut();
     void swipeEvent(const QPointF &localPos, UCSwipeEvent::Status status);
+    void grabLeftButtonEvents(QMouseEvent *event);
+    void ungrabLeftButtonEvents(QMouseEvent *event);
 
     quint16 defaultThemeVersion;
     bool highlighted:1;

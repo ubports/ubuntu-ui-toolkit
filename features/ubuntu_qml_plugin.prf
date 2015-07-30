@@ -56,3 +56,8 @@ autobld_install_qmltypes.CONFIG += no_check_exist
 INSTALLS+=autobld_install_qmltypes
 QMAKE_EXTRA_TARGETS += autobld_qmltypes
 
+CONFIG(debug, debug|release)  {
+    QMAKE_CFLAGS = $$QMAKE_CFLAGS_DEBUG
+    QMAKE_CXXFLAGS = $$QMAKE_CXXFLAGS_DEBUG
+}
+

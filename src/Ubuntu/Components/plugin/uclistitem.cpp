@@ -1053,6 +1053,24 @@ QSGNode *UCListItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data
     return oldNode;
 }
 
+// grabs the left mouse button event by turning highlight on, and triggering
+// swipe events; child items should no longer get mouse events
+void UCListItemPrivate::grabLeftButtonEvents(QMouseEvent *event)
+{
+    Q_Q(UCListItem);
+    // create style instance
+    loadStyleItem();
+    setHighlighted(true);
+    lastPos = pressedPos = event->localPos();
+    // connect the Flickable to know when to rebound
+    listenToRebind(true);
+    if (swiped && parentAttached) {
+        parentAttached->disableInteractive(q, true);
+    }
+    // stop any ongoing animation!
+    swipeEvent(event->localPos(), UCSwipeEvent::Started);
+}
+
 void UCListItem::mousePressEvent(QMouseEvent *event)
 {
     UCStyledItemBase::mousePressEvent(event);
@@ -1063,17 +1081,7 @@ void UCListItem::mousePressEvent(QMouseEvent *event)
         return;
     }
     if (d->canHighlight(event) && !d->highlighted && event->button() == Qt::LeftButton) {
-        // create style instance
-        d->loadStyleItem();
-        d->setHighlighted(true);
-        d->lastPos = d->pressedPos = event->localPos();
-        // connect the Flickable to know when to rebound
-        d->listenToRebind(true);
-        if (d->swiped && d->parentAttached) {
-            d->parentAttached->disableInteractive(this, true);
-        }
-        // stop any ongoing animation!
-        d->swipeEvent(event->localPos(), UCSwipeEvent::Started);
+        d->grabLeftButtonEvents(event);
     }
     // accept the event so we get the rest of the events as well
     event->setAccepted(true);
@@ -1125,35 +1133,42 @@ void UCListItem13::popoverClosed()
     d->setHighlighted(false);
 }
 
+// ungrabs any previously grabbed left mouse button event
+void UCListItemPrivate::ungrabLeftButtonEvents(QMouseEvent *event)
+{
+    Q_Q(UCListItem);
+    // set released
+    if (highlighted) {
+        // unblock ascending Flickables
+        listenToRebind(false);
+        if (parentAttached) {
+            parentAttached->disableInteractive(q, false);
+        }
+
+        if (!suppressClick) {
+            // emit clicked only if not swiped
+            if (!swiped) {
+                Q_EMIT q->clicked();
+                if (mainAction) {
+                    Q_EMIT mainAction->trigger(index());
+                }
+            }
+            snapOut();
+        } else {
+            // inform style about mouse/touch release
+            swipeEvent(event->localPos(), UCSwipeEvent::Finished);
+            suppressClick = false;
+            setHighlighted(false);
+        }
+    }
+    button = Qt::NoButton;
+}
+
 void UCListItem::mouseReleaseEvent(QMouseEvent *event)
 {
     UCStyledItemBase::mouseReleaseEvent(event);
     Q_D(UCListItem);
-    d->button = Qt::NoButton;
-    // set released
-    if (d->highlighted) {
-        // unblock ascending Flickables
-        d->listenToRebind(false);
-        if (d->parentAttached) {
-            d->parentAttached->disableInteractive(this, false);
-        }
-
-        if (!d->suppressClick) {
-            // emit clicked only if not swiped
-            if (!d->swiped) {
-                Q_EMIT clicked();
-                if (d->mainAction) {
-                    Q_EMIT d->mainAction->trigger(d->index());
-                }
-            }
-            d->snapOut();
-        } else {
-            // inform style about mouse/touch release
-            d->swipeEvent(event->localPos(), UCSwipeEvent::Finished);
-            d->suppressClick = false;
-            d->setHighlighted(false);
-        }
-    }
+    d->ungrabLeftButtonEvents(event);
 }
 
 void UCListItem13::mouseReleaseEvent(QMouseEvent *event)
