@@ -1058,6 +1058,7 @@ QSGNode *UCListItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data
 void UCListItemPrivate::grabLeftButtonEvents(QMouseEvent *event)
 {
     Q_Q(UCListItem);
+    button = event->button();
     // create style instance
     loadStyleItem();
     setHighlighted(true);
@@ -1169,12 +1170,23 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
     UCStyledItemBase::mouseReleaseEvent(event);
     Q_D(UCListItem);
     d->ungrabLeftButtonEvents(event);
+    // make sure we ungrab the mouse!
+    ungrabMouse();
 }
 
 void UCListItem13::mouseReleaseEvent(QMouseEvent *event)
 {
     if (!shouldShowContextMenu(event))
         UCListItem::mouseReleaseEvent(event);
+}
+
+// returns true if the mouse is swiped over the threshold value
+bool UCListItemPrivate::swipedOverThreshold(const QPointF &mousePos, const QPointF relativePos)
+{
+    qreal threshold = UCUnits::instance().gu(xAxisMoveThresholdGU);
+    qreal mouseX = mousePos.x();
+    qreal pressedX = relativePos.x();
+    return ((mouseX < (pressedX - threshold)) || (mouseX > (pressedX + threshold)));
 }
 
 void UCListItem::mouseMoveEvent(QMouseEvent *event)
@@ -1192,16 +1204,14 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
     if (d->button == Qt::LeftButton && d->highlighted && !d->swiped && (d->leadingActions || d->trailingActions)) {
         // check if we can initiate the drag at all
         // only X direction matters, if Y-direction leaves the threshold, but X not, the tug is not valid
-        qreal threshold = UCUnits::instance().gu(d->xAxisMoveThresholdGU);
-        qreal mouseX = event->localPos().x();
-        qreal pressedX = d->pressedPos.x();
-
-        if ((mouseX < (pressedX - threshold)) || (mouseX > (pressedX + threshold))) {
+        if (d->swipedOverThreshold(event->localPos(), d->pressedPos)) {
             // the press went out of the threshold area, enable move, if the direction allows it
             d->lastPos = event->localPos();
             if (d->parentAttached) {
                 d->parentAttached->disableInteractive(this, true);
             }
+            qreal mouseX = event->localPos().x();
+            qreal pressedX = d->pressedPos.x();
             bool doSwipe = (d->leadingActions && (mouseX > pressedX)) ||
                            (d->trailingActions && (mouseX < pressedX));
             d->setSwiped(doSwipe);
@@ -1223,20 +1233,38 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
 bool UCListItem::childMouseEventFilter(QQuickItem *child, QEvent *event)
 {
     QEvent::Type type = event->type();
+    Q_D(UCListItem);
     if (type == QEvent::MouseButtonPress) {
         // suppress click event if pressed over an active area, except Text, which can also handle
         // mouse clicks when content is an URL
         QMouseEvent *mouse = static_cast<QMouseEvent*>(event);
         if (child->isEnabled() && (child->acceptedMouseButtons() & mouse->button()) && !qobject_cast<QQuickText*>(child)) {
-            Q_D(UCListItem);
             // suppress click
             d->suppressClick = true;
             // listen for flickable to be able to rebind if movement started there!
             d->listenToRebind(true);
+            // if left button pressed, remember the position
+            if (mouse->button() == Qt::LeftButton) {
+                d->pressedPos = mapFromItem(child, mouse->localPos());
+                d->button = mouse->button();
+            }
         }
     } else if (type == QEvent::MouseButtonRelease) {
         Q_D(UCListItem);
         d->suppressClick = false;
+    } else if (type == QEvent::MouseMove) {
+        QMouseEvent *mouse = static_cast<QMouseEvent*>(event);
+        const QPointF localPos = mapFromItem(child, mouse->localPos());
+        if ((mouse->buttons() & Qt::LeftButton) && d->swipedOverThreshold(localPos, d->pressedPos) && !d->highlighted) {
+            // grab the event from the child, so the click doesn't happen anymore, and initiate swiping
+            QMouseEvent pressed(QEvent::MouseButtonPress, localPos, mouse->windowPos(), mouse->screenPos(),
+                                    Qt::LeftButton, mouse->buttons(), mouse->modifiers());
+            d->grabLeftButtonEvents(&pressed);
+            // stop click and pressAndHold, then grab the mouse so children do not get the mouse events anymore
+            d->suppressClick = true;
+            d->pressAndHoldTimer.stop();
+            grabMouse();
+        }
     }
     return UCStyledItemBase::childMouseEventFilter(child, event);
 }
