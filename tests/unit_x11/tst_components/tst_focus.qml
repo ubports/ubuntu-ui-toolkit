@@ -17,10 +17,10 @@
 import QtQuick 2.2
 import QtTest 1.0
 import Ubuntu.Test 1.0
-import Ubuntu.Components 1.1
-import Ubuntu.Components.Pickers 1.0
-import Ubuntu.Components.ListItems 1.0 as ListItem
-import Ubuntu.Components.Popups 1.0
+import Ubuntu.Components 1.3
+import Ubuntu.Components.Pickers 1.3
+import Ubuntu.Components.ListItems 1.3 as ListItem
+import Ubuntu.Components.Popups 1.3
 
 Item {
     id: main
@@ -44,6 +44,9 @@ Item {
             delegate: ListItem.Standard {
                 text: "Whatever"
             }
+        }
+        Button {
+            id: dummy
         }
         TextField {
             id: textField
@@ -176,6 +179,23 @@ Item {
                 mouseClick(main, 0, 0);
             }
             waitForRendering(data.focusOn, 200);
+        }
+
+        function test_tab_focus_data() {
+            return [
+                {tag: "TextField", from: dummy, to: textField, key: Qt.Key_Tab},
+                {tag: "TextField(back)", from: textField, to: dummy, key: Qt.Key_Backtab},
+                {tag: "TextArea", from: textField, to: textArea, key: Qt.Key_Tab},
+                {tag: "TextArea(back)", from: textArea, to: textField, key: Qt.Key_Backtab},
+                {tag: "Button(back)", from: button, to: textArea, key: Qt.Key_Backtab},
+            ];
+        }
+        function test_tab_focus(data) {
+            data.from.forceActiveFocus();
+            verify(data.from.focus, "Source component is not focused");
+            keyClick(data.key);
+            waitForRendering(data.to, 200);
+            verify(data.to.focus, "Target component is not focused");
         }
 
         function test_hide_osk_when_pickerpanel_opens() {

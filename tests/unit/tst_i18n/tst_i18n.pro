@@ -6,7 +6,8 @@ DOMAIN = localizedApp
 mo.target = mo
 mo.commands = set -e;
 mo.commands += echo Generating localization for $$DOMAIN;
-mo.commands += msgfmt po/en_US.po -o $${DOMAIN}/share/locale/en/LC_MESSAGES/$${DOMAIN}.mo;
+mo.commands += mkdir -p $${DOMAIN}/share/locale/en/LC_MESSAGES;
+mo.commands += msgfmt $$PWD/po/en_US.po -o $${DOMAIN}/share/locale/en/LC_MESSAGES/$${DOMAIN}.mo;
 QMAKE_EXTRA_TARGETS += mo
 PRE_TARGETDEPS += mo
 
