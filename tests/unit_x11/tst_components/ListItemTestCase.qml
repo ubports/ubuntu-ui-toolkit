@@ -18,6 +18,9 @@ import QtQuick 2.4
 import QtTest 1.0
 import Ubuntu.Test 1.0
 
+/*
+ * Common test case functions for ListItem. A CPO for unit tests.
+ */
 UbuntuTestCase {
     when: windowShown
 
@@ -25,13 +28,15 @@ UbuntuTestCase {
         id: signalSpy
     }
 
+    // set up the spy component for an item and a signal
     function setupSpy(item, signalName) {
         if (item.hasOwnProperty("leadingActions")) {
             signalSpy.target = item;
             signalSpy.signalName = signalName;
         }
     }
-    function spy(item, timeout) {
+    // wait on the previosuly set up spy
+    function spyWait(item, timeout) {
         if (timeout == undefined) {
             timeout = 500;
         }
@@ -44,10 +49,7 @@ UbuntuTestCase {
         }
     }
 
-    function panelItem(item, leading) {
-        return findInvisibleChild(item, (leading ? "ListItemPanelLeading" : "ListItemPanelTrailing"));
-    }
-
+    // rebounds a ListItem
     function rebound(item, watchTarget) {
         if (watchTarget === undefined) {
             watchTarget = item;
@@ -66,6 +68,6 @@ UbuntuTestCase {
     function swipe(item, x, y, dx, dy) {
         setupSpy(item, "contentMovementEnded");
         flick(item, x, y, dx, dy, 0, 0, undefined, undefined, 100);
-        spy(item);
+        spyWait(item);
     }
 }
