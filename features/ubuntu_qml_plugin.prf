@@ -56,3 +56,14 @@ autobld_install_qmltypes.CONFIG += no_check_exist
 INSTALLS+=autobld_install_qmltypes
 QMAKE_EXTRA_TARGETS += autobld_qmltypes
 
+# when building against the system Qt we pick up the CXX_FLAGS for a release build
+# reset them to the default debug build flags
+force_independent: {
+    CONFIG(debug, debug|release)  {
+        QMAKE_CFLAGS = $$QMAKE_CFLAGS_DEBUG
+        QMAKE_CXXFLAGS = $$QMAKE_CXXFLAGS_DEBUG
+    }
+}
+
+QMAKE_CXXFLAGS += -Werror
+
