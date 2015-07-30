@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (1.3.1584+15.10.20150710.1-0ubuntu2) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.3.1584+15.10.20150730-0ubuntu1) wily; urgency=medium
 
   [ Florian Boucault ]
   * New BottomEdgeHint component to represent extra features available from the 
@@ -62,7 +62,7 @@ ubuntu-ui-toolkit (1.3.1584+15.10.20150710.1-0ubuntu2) UNRELEASED; urgency=mediu
   * Fix warning if there's no __propagated
   * TypeError: Cannot call method 'hasOwnProperty' of null.
 
- -- Zoltán Balogh <zoltan@bakter.hu>  Thu, 30 Jul 2015 14:34:31 +0300
+ -- CI Train Bot <ci-train-bot@canonical.com>  Thu, 30 Jul 2015 13:04:18 +0000
 
 ubuntu-ui-toolkit (1.3.1549+15.10.20150710.1-0ubuntu1) wily; urgency=medium
 
