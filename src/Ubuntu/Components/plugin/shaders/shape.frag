@@ -24,8 +24,8 @@
 
 uniform sampler2D shapeTexture;
 uniform sampler2D sourceTexture;
-uniform lowp vec2 dfdtFactors;
 uniform lowp vec2 opacityFactors;
+uniform lowp float dfdtFactor;
 uniform lowp float sourceOpacity;
 uniform lowp float distanceAA;
 uniform bool textured;
@@ -56,10 +56,9 @@ void main(void)
     }
 
     // Get screen-space derivative of texture coordinate t representing the normalized distance
-    // between 2 pixels. dFd*() unfortunately have to be called outside of branches in order to work
+    // between 2 pixels. dFd*() functions have to be called outside of branches in order to work
     // correctly with VMware's "Gallium 0.4 on SVGA3D".
-    lowp vec2 derivatives = vec2(dFdx(shapeCoord.t), dFdy(shapeCoord.t));
-    lowp float dfdt = dfdtFactors.x != 0.0 ? derivatives.x : derivatives.y;
+    lowp float dfdt = dFdy(shapeCoord.t);
 
     if (aspect == FLAT) {
         // Mask the current color with an anti-aliased and resolution independent shape mask built
@@ -71,7 +70,7 @@ void main(void)
     } else if (aspect == INSET) {
         // The vertex layout of the shape is made so that the derivative is negative from top to
         // middle and positive from middle to bottom.
-        lowp float shapeSide = dfdt * dfdtFactors.y <= 0.0 ? 0.0 : 1.0;
+        lowp float shapeSide = dfdt * dfdtFactor <= 0.0 ? 0.0 : 1.0;
         // Blend the shape inner shadow over the current color. The shadow color is black, its
         // translucency is stored in the texture.
         lowp float shadow = shapeData[int(shapeSide)];
@@ -93,11 +92,11 @@ void main(void)
     } else if (aspect == DROP_SHADOW) {
         // The vertex layout of the shape is made so that the derivative is negative from top to
         // middle and positive from middle to bottom.
-        lowp float shapeSide = dfdt * dfdtFactors.y <= 0.0 ? 0.0 : 1.0;
+        lowp int shapeSide = dfdt * dfdtFactor <= 0.0 ? 0 : 1;
         // Get the anti-aliased and resolution independent shape mask using distance fields.
         lowp float distanceMin = abs(dfdt) * -distanceAA + 0.5;
         lowp float distanceMax = abs(dfdt) * distanceAA + 0.5;
-        lowp float mask = smoothstep(distanceMin, distanceMax, shapeData[int(shapeSide)]);
+        lowp float mask = smoothstep(distanceMin, distanceMax, shapeData[shapeSide]);
         // Get the shadow color outside of the shape mask.
         lowp float shadow = (shapeData.b * -mask) + shapeData.b;  // -ab + a = a(1 - b)
         // Mask the current color then blend the shadow over the resulting color. We simply use

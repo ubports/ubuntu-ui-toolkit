@@ -24,8 +24,8 @@
 
 uniform sampler2D shapeTexture;
 uniform sampler2D sourceTexture;
-uniform lowp vec2 dfdtFactors;
 uniform lowp vec2 opacityFactors;
+uniform lowp float dfdtFactor;
 uniform lowp float sourceOpacity;
 uniform lowp float distanceAA;
 uniform bool textured;
@@ -64,10 +64,9 @@ void main(void)
     color = vec4(1.0 - overlay.a) * color + overlay;
 
     // Get screen-space derivative of texture coordinate t representing the normalized distance
-    // between 2 pixels. dFd*() unfortunately have to be called outside of branches in order to work
+    // between 2 pixels. dFd*() functions have to be called outside of branches in order to work
     // correctly with VMware's "Gallium 0.4 on SVGA3D".
-    lowp vec2 derivatives = vec2(dFdx(shapeCoord.t), dFdy(shapeCoord.t));
-    lowp float dfdt = dfdtFactors.x != 0.0 ? derivatives.x : derivatives.y;
+    lowp float dfdt = dFdy(shapeCoord.t);
 
     if (aspect == FLAT) {
         // Mask the current color with an anti-aliased and resolution independent shape mask built
@@ -79,7 +78,7 @@ void main(void)
     } else if (aspect == INSET) {
         // The vertex layout of the shape is made so that the derivative is negative from top to
         // middle and positive from middle to bottom.
-        lowp float shapeSide = dfdt * dfdtFactors.y <= 0.0 ? 0.0 : 1.0;
+        lowp float shapeSide = dfdt * dfdtFactor <= 0.0 ? 0.0 : 1.0;
         // Blend the shape inner shadow over the current color. The shadow color is black, its
         // translucency is stored in the texture.
         lowp float shadow = shapeData[int(shapeSide)];
