@@ -172,15 +172,11 @@ Item {
         }
     }
 
-    UbuntuTestCase {
+    ListTestCase {
         id: testCase
         name: "ListItemAPI"
         when: windowShown
 
-        SignalSpy {
-            id: movingSpy
-            signalName: "contentMovementEnded"
-        }
         SignalSpy {
             id: highlightedSpy
             signalName: "highlightedChanged"
@@ -202,87 +198,11 @@ Item {
             signalName: "interactiveChanged"
         }
 
-        function panelItem(item, leading) {
-            return findInvisibleChild(item, (leading ? "ListItemPanelLeading" : "ListItemPanelTrailing"));
-        }
-
-        function rebound(item, watchTarget) {
-            if (watchTarget === undefined) {
-                watchTarget = item;
-            }
-
-            if (watchTarget.contentItem.x != watchTarget.contentItem.anchors.leftMargin) {
-                mouseClick(item, centerOf(item).x, centerOf(item).y);
-                tryCompareFunction(function() {
-                    return watchTarget.contentItem.x == watchTarget.contentItem.anchors.leftMargin;
-                }, true, 500);
-            }
-        }
-
-        // delayed swipe, gives few millisecond timeout between each move
-        // so Repeater has time to create the panel actions in style
-        function swipe(item, x, y, dx, dy) {
-            flick(item, x, y, dx, dy, 0, 0, undefined, undefined, 100);
-        }
-
         SignalSpy {
             id: dropSpy
             signalName: "stopped"
         }
 
-        function toggleSelectMode(view, enabled, scrollToTop) {
-            if (view.hasOwnProperty("positionViewAtBeginning") && scrollToTop) {
-                // use the topmost listItem to wait for rendering completion
-                view.positionViewAtBeginning();
-            }
-            var listItem = findChild(view, "listItem0");
-            verify(listItem);
-            view.ViewItems.selectMode = enabled;
-            // waitForRendering aint seems to be reliable here, so we wait ~400 msecs
-            wait(400);
-        }
-
-        function toggleDragMode(view, enabled) {
-            // use the topmost listItem to wait for rendering completion
-            view.positionViewAtBeginning();
-            var listItem = findChild(view, "listItem0");
-            verify(listItem);
-            view.ViewItems.dragMode = enabled;
-            // waitForRendering aint seems to be reliable here, so we wait ~400 msecs
-            wait(400);
-        }
-
-        function drag(view, from, to) {
-            var dragArea = findChild(view, "drag_area");
-            verify(dragArea, "Cannot locate drag area");
-
-            // grab the source item
-            view.positionViewAtBeginning(from,ListView.Beginning);
-            var panel = findChild(view, "drag_panel" + from);
-            verify(panel, "Cannot locate source panel");
-            var dragPos = dragArea.mapFromItem(panel, centerOf(panel).x, centerOf(panel).y);
-            // move the mouse
-            var dy = Math.abs(to - from) * panel.height + units.gu(1);
-            dy *= (to > from) ? 1 : -1;
-            mousePress(dragArea, dragPos.x, dragPos.y);
-            wait(100);
-            var draggedItem = findChild(view.contentItem, "DraggedListItem");
-            if (draggedItem) {
-                dropSpy.target = draggedItem.__styleInstance.dropAnimation;
-            }
-            // use 10 steps to be sure the move is properly detected by the drag area
-            mouseMoveSlowly(dragArea, dragPos.x, dragPos.y, 0, dy, 10, 100);
-            // drop it, needs two mouse releases, this generates the Drop event also
-            mouseRelease(dragArea, dragPos.x, dragPos.y + dy);
-            // needs one more mouse release
-            mouseRelease(dragArea, dragPos.x, dragPos.y + dy);
-            if (dropSpy.target) {
-                dropSpy.wait();
-            } else {
-                // draggedItem cannot be found, we might be trying to drag a restricted item
-                wait(200);
-            }
-        }
 
         function initTestCase() {
             TestExtras.registerTouchDevice();
@@ -298,7 +218,6 @@ Item {
             waitForRendering(testItem.contentItem, 200);
             controlItem.selected = false;
             waitForRendering(controlItem.contentItem, 200);
-            movingSpy.clear();
             highlightedSpy.clear();
             clickSpy.clear();
             actionSpy.clear();
@@ -310,8 +229,6 @@ Item {
             listView.ViewItems.dragMode = false;
             // make sure we collapse
             mouseClick(defaults, 0, 0)
-            movingSpy.target = null;
-            movingSpy.clear();
             interactiveSpy.target = null;
             interactiveSpy.clear();
             trailing.delegate = null;
@@ -405,32 +322,28 @@ Item {
             var item = findChild(listView, "listItem0");
             clickSpy.target = item;
             clickSpy.clear();
-            movingSpy.target = item;
             swipe(item, centerOf(item).x, centerOf(item).y, units.gu(20), 0);
-            movingSpy.wait();
 
             // click over the contentItem
-            movingSpy.clear();
+            setupSpy(item, "contentMovementEnded")
             mouseClick(item.contentItem, 1, 1);
             compare(clickSpy.count, 0, "No click() should be emitted on a swiped in ListItem.");
-            movingSpy.wait();
+            spyWait(item);
         }
 
         function test_no_pressAndHold_when_swiped() {
             var item = findChild(listView, "listItem0");
             pressAndHoldSpy.target = item;
             pressAndHoldSpy.clear();
-            movingSpy.target = item;
             swipe(item, centerOf(item).x, centerOf(item).y, units.gu(20), 0);
-            movingSpy.wait();
 
             // press and hold
-            movingSpy.clear();
+            setupSpy(item, "contentMovementEnded")
             mouseLongPress(item.contentItem, 1, 1);
             mouseRelease(item.contentItem, 1, 1);
             mouseRelease(item.contentItem, 1, 1);
             compare(pressAndHoldSpy.count, 0, "No pressAndHold() should be emitted on a swiped in ListItem.");
-            movingSpy.wait();
+            spyWait(item);
         }
 
         function test_vertical_listview_move_cancels_highlight_data() {
@@ -490,13 +403,13 @@ Item {
         }
         function test_tug_actions(data) {
             listView.positionViewAtBeginning();
-            movingSpy.target = data.item;
+            setupSpy(data.item, "contentMovementEnded");
             if (data.mouse) {
                 swipe(data.item, data.pos.x, data.pos.y, data.dx, 0);
             } else {
                 TestExtras.touchDrag(0, data.item, data.pos, Qt.point(data.dx, 0));
             }
-            movingSpy.wait();
+            spyWait(data.item);
             if (data.positiveDirection) {
                 verify(data.item.contentItem.x > 0, data.tag + " actions did not show up");
             } else {
@@ -505,6 +418,11 @@ Item {
 
             // dismiss
             rebound(data.item);
+        }
+
+        SignalSpy {
+            id: movingSpy
+            signalName: "contentMovementEnded"
         }
 
         function test_tug_ignored_on_right_button() {
@@ -527,13 +445,13 @@ Item {
         }
         function test_rebound_when_pressed_outside_or_clicked(data) {
             listView.positionViewAtBeginning();
-            movingSpy.target = data.item;
+            setupSpy(data.item, "contentMovementEnded")
             if (data.mouse) {
                 swipe(data.item, data.pos.x, data.pos.y, data.dx, 0);
             } else {
                 TestExtras.touchDrag(0, data.item, data.pos, Qt.point(data.dx, 0));
             }
-            movingSpy.wait();
+            spyWait(data.item);
             verify(data.item.contentItem.x != 0, "The component wasn't tugged!");
             // dismiss
             rebound(data.clickOn, data.item)
@@ -553,14 +471,12 @@ Item {
             listView.positionViewAtBeginning();
             interactiveSpy.target = listView;
             compare(listView.interactive, true, "ListView is not interactive");
-            movingSpy.target = data.item;
             interactiveSpy.target = listView;
             if (data.mouse) {
                 swipe(data.item, data.pos.x, data.pos.y, data.dx, data.dy);
             } else {
-                TestExtras.touchDrag(0, data.item, data.pos, Qt.point(data.dx, data.dy));
+                tug(data.item, data.pos.x, data.pos.y, data.dx, data.dy);
             }
-            movingSpy.wait();
             // animation should no longer be running!
             compare(listView.interactive, true, "The ListView is still non-interactive!");
             compare(interactiveSpy.count, 2, "Less/more times changed!");
@@ -580,9 +496,7 @@ Item {
             ];
         }
         function test_visualized_actions(data) {
-            movingSpy.target = data.item;
             swipe(data.item, centerOf(data.item).x, centerOf(data.item).y, data.leading ? units.gu(20) : -units.gu(20), 0);
-            movingSpy.wait();
 
             // check if the action is visible
             var panel = panelItem(data.item, data.leading);

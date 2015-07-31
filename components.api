@@ -1351,7 +1351,7 @@ Ubuntu.Test.UbuntuTestCase 1.0 0.1: TestCase
     function var findInvisibleChild(var obj, var objectName)
     function var findChildWithProperty(var item, var property, var value)
     function var centerOf(var item)
-    function var mouseMoveSlowly(var item, var x, var y, var dx, var dy, var steps, var stepdelay)
+    function var mouseMoveSlowly(var item, var x, var y, var dx, var dy, var steps, var stepdelay, var buttons)
     function var flick(var item, var x, var y, var dx, var dy, var pressTimeout, var steps, var button, var modifiers, var delay)
     function var mouseLongPress(var item, var x, var y, var button, var modifiers, var delay)
     function var tryCompareFunction(var func, var expectedResult, var timeout)

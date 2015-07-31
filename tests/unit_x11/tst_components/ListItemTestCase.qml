@@ -70,4 +70,72 @@ UbuntuTestCase {
         flick(item, x, y, dx, dy, 0, 0, undefined, undefined, 100);
         spyWait(item);
     }
+    function swipeNoWait(item, x, y, dx, dy) {
+        flick(item, x, y, dx, dy, 0, 0, undefined, undefined, 100);
+    }
+
+    function tug(item, x, y, dx, dy) {
+        setupSpy(item, "contentMovementEnded");
+        TestExtras.touchDrag(0, item, Qt.point(x, y), Qt.point(dx, dy));
+        spyWait(item);
+    }
+
+    // returns the leading or trailing panel item
+    function panelItem(item, leading) {
+        return findInvisibleChild(item, (leading ? "ListItemPanelLeading" : "ListItemPanelTrailing"));
+    }
+
+    function toggleSelectMode(view, enabled, scrollToTop) {
+        if (view.hasOwnProperty("positionViewAtBeginning") && scrollToTop) {
+            // use the topmost listItem to wait for rendering completion
+            view.positionViewAtBeginning();
+        }
+        var listItem = findChild(view, "listItem0");
+        verify(listItem);
+        view.ViewItems.selectMode = enabled;
+        // waitForRendering aint seems to be reliable here, so we wait ~400 msecs
+        wait(400);
+    }
+
+    function toggleDragMode(view, enabled) {
+        // use the topmost listItem to wait for rendering completion
+        view.positionViewAtBeginning();
+        var listItem = findChild(view, "listItem0");
+        verify(listItem);
+        view.ViewItems.dragMode = enabled;
+        // waitForRendering aint seems to be reliable here, so we wait ~400 msecs
+        wait(400);
+    }
+
+    function drag(view, from, to) {
+        var dragArea = findChild(view, "drag_area");
+        verify(dragArea, "Cannot locate drag area");
+
+        // grab the source item
+        view.positionViewAtBeginning(from,ListView.Beginning);
+        var panel = findChild(view, "drag_panel" + from);
+        verify(panel, "Cannot locate source panel");
+        var dragPos = dragArea.mapFromItem(panel, centerOf(panel).x, centerOf(panel).y);
+        // move the mouse
+        var dy = Math.abs(to - from) * panel.height + units.gu(1);
+        dy *= (to > from) ? 1 : -1;
+        mousePress(dragArea, dragPos.x, dragPos.y);
+        wait(100);
+        var draggedItem = findChild(view.contentItem, "DraggedListItem");
+        if (draggedItem) {
+            dropSpy.target = draggedItem.__styleInstance.dropAnimation;
+        }
+        // use 10 steps to be sure the move is properly detected by the drag area
+        mouseMoveSlowly(dragArea, dragPos.x, dragPos.y, 0, dy, 10, 100);
+        // drop it, needs two mouse releases, this generates the Drop event also
+        mouseRelease(dragArea, dragPos.x, dragPos.y + dy);
+        // needs one more mouse release
+        mouseRelease(dragArea, dragPos.x, dragPos.y + dy);
+        if (dropSpy.target) {
+            dropSpy.wait();
+        } else {
+            // draggedItem cannot be found, we might be trying to drag a restricted item
+            wait(200);
+        }
+    }
 }
