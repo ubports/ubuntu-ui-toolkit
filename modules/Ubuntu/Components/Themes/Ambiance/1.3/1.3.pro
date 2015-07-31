@@ -12,3 +12,5 @@ qml_files.files = $$QML_FILES
 
 UBUNTU_QML_MODULE_FILES += qml_files
 
+OTHER_FILES +=
+

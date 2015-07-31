@@ -81,7 +81,9 @@ HEADERS += plugin.h \
     ucnamespace.h \
     ucdeprecatedtheme.h \
     ucdefaulttheme.h \
-    ucstylehints.h
+    ucstylehints.h \
+    ucslotslayout.h \
+    ucslotslayout_p.h
 
 SOURCES += plugin.cpp \
     uctheme.cpp \
@@ -130,7 +132,8 @@ SOURCES += plugin.cpp \
     ucnamespace.cpp \
     ucdeprecatedtheme.cpp \
     ucdefaulttheme.cpp \
-    ucstylehints.cpp
+    ucstylehints.cpp \
+    ucslotslayout.cpp
 
 # adapters
 SOURCES += adapters/alarmsadapter_organizer.cpp

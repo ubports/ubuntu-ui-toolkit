@@ -59,7 +59,7 @@ Template {
             }
         }*/
 
-        ListItem {
+        /*ListItem {
             trailingActions: ListItemActions {
                 actions: [
                     Action {}
@@ -93,6 +93,137 @@ Template {
                 secondSlotArea.enabled: false
                 thirdSlotArea.enabled: false
             }
+        }*/
+
+        /*ListItem {
+
+            height: row.height
+
+            trailingActions: ListItemActions {
+                actions: [
+                    Action {}
+                ]
+            }
+            leadingActions: ListItemActions {
+                actions: [
+                    Action {},
+                    Action {},
+                    Action {}
+                ]
+            }
+
+            Row {
+                id: row
+                width: parent.width
+                //use the max height of the components + 2gu margin per side
+                height: Math.max(labelsContainer.height, Math.max(Math.max(item1.height, item2.height), item3.height)) + units.gu(4)
+                MouseArea {
+                    id: slot1
+                    height: parent.height
+                    width: item1.width + units.gu(3)
+                    Item { id: item1; anchors.centerIn: parent; width: units.gu(2) }
+                }
+                Item {
+                    id: labelsContainer
+                    height: title.height + subtitle.height + units.gu(1)
+                    width: parent.width - slot1.width - slot2.width - slot3.width
+                    anchors.verticalCenter: parent.verticalCenter
+                    Text { id: title; width: parent.width; text: "test"; font.weight: Font.Light; color: "#525252"; font.pixelSize: FontUtils.sizeToPixels("medium") }
+                    Text { id: subtitle
+                        anchors.top: title.baseline;
+                        anchors.topMargin: units.gu(1);
+                        width: parent.width;
+                        text: "test";
+                        font.weight: Font.Light;
+                        color: "#525252";
+                        font.pixelSize: FontUtils.sizeToPixels("small")
+                    }
+                }
+                MouseArea {
+                    id: slot2
+                    height: parent.height
+                    width: item2.width + units.gu(3)
+                    Item { id: item2; anchors.centerIn: parent; width: units.gu(2) }
+                }
+
+                MouseArea {
+                    id: slot3
+                    height: parent.height
+                    width: item3.width + units.gu(3)
+                    Item { id: item3; anchors.centerIn: parent; width: units.gu(2) }
+                }
+            }
+        }*/
+
+        /*ListItem {
+            id: benchmarkListItem
+            height: layoutBenchmark.height
+
+            trailingActions: ListItemActions {
+                actions: [
+                    Action {}
+                ]
+            }
+            leadingActions: ListItemActions {
+                actions: [
+                    Action {},
+                    Action {},
+                    Action {}
+                ]
+            }
+
+            SlotsLayoutCpp {
+                id: layoutBenchmark
+                SlotQML { position: "Slot.Leading"; Item { width: units.gu(2) } }
+                SlotQML { Item { width: units.gu(2) } }
+                SlotQML { Item { width: units.gu(2) } }
+                titleItem.text: "test"
+                subtitleItem.text: "test"
+            }
+        }*/
+
+        ListItem {
+            id: listItem
+
+            //FIXME: do we like this?
+            height: layout.height
+
+            trailingActions: ListItemActions {
+                actions: [
+                    Action {}
+                ]
+            }
+            leadingActions: ListItemActions {
+                actions: [
+                    Action {},
+                    Action {},
+                    Action {}
+                ]
+            }
+
+            SlotsLayoutCpp {
+                id: layout
+
+                SlotQML {
+                    position: "Slot.Leading"
+                    //handleInnerItemPosition: false
+                    CheckBox { }
+                }
+
+                SlotQML {
+                    position: "Slot.Trailing"
+                    Icon { width: units.gu(2); name: "email" }
+                }
+
+                SlotQML {
+                    position: "Slot.Trailing"
+                    Icon { width: units.gu(2); name: "message" }
+                }
+
+                titleItem.text: "Hello designers!"
+                subtitleItem.text:  "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
+                subsubtitleItem.text: "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
+            }
         }
 
         ListItem {
@@ -113,8 +244,8 @@ Template {
                 anchors.fill: parent
                 SlotQML {
                     position: "Slot.Leading"
-                    handleInnerItemPosition: false
-                    CheckBox { anchors.bottom: parent.bottom }
+                    //handleInnerItemPosition: false
+                    CheckBox { /*anchors.bottom: parent.bottom */}
                 }
 
                 SlotQML {
@@ -127,8 +258,8 @@ Template {
                     Icon { width: units.gu(2); name: "message" }
                 }
 
-                titleItem.text: "Prova"
-                subtitleItem.text: "Prova2"
+                titleItem.text: "TestTitle"
+                subtitleItem.text: "TestSubtitle"
             }
         }
 

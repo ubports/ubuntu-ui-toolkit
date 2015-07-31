@@ -60,6 +60,7 @@
 #include "uclistitemstyle.h"
 #include "ucserviceproperties.h"
 #include "ucnamespace.h"
+#include "ucslotslayout.h"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -215,6 +216,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCStyledItemBase, 2>(uri, 1, 3, "StyledItem");
     qmlRegisterCustomType<UCStyleHints>(uri, 1, 3, "StyleHints", new UCStyleHintsParser);
     qmlRegisterType<UCAction, 1>(uri, 1, 3, "Action");
+    qmlRegisterType<UCSlotsLayout>(uri, 1, 3, "SlotsLayoutCpp");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)

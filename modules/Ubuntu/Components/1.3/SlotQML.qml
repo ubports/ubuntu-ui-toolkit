@@ -9,8 +9,8 @@ MouseArea {
     //parent is not defined when first assigned to SlotsLayout's "slots" property
     implicitHeight: parent ? parent.height : 0
 
-    //FIXME: hardcoded 2gu margin
-    width: children[0] ? children[0].width + units.gu(2) * 2 : 0
+    //FIXME: hardcoded 1.5gu margin, as designed
+    width: children[0] ? children[0].width + units.gu(1.5) * 2 : 0
 
     //center the FIRST children (assumption made to avoid overcomplicating logic)
     Binding {

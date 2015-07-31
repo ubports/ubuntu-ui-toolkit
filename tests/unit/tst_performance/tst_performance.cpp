@@ -25,7 +25,7 @@
 class tst_Performance : public QObject
 {
     Q_OBJECT
-    
+
 public:
     tst_Performance() {}
 
@@ -114,9 +114,14 @@ private Q_SLOTS:
         QTest::newRow("list with new ListItem (no actions) with HardcodedFourContainersLayout (QML), 4 empty containers") << "ListOfHardcodedFourContainersLayout.qml" << QUrl();
         QTest::newRow("list with new ListItem (no actions) with HardcodedFourContainersLayout (QML) and Item inside each container") << "ListOfHardcodedFourContainersLayout_withItems.qml" << QUrl();
         QTest::newRow("list with new ListItem (no actions) and empty SlotsLayout") << "ListOfEmptySlotsLayout.qml" << QUrl();
-        QTest::newRow("list with new ListItem (no actions) and SlotsLayout with defined labels") << "ListOfSlotsLayout_labelsOnly.qml" << QUrl();
-        QTest::newRow("list with new ListItem (no actions) and SlotsLayout with defined labels and 3 slots") << "ListOfSlotsLayout_complex1.qml" << QUrl();
-        QTest::newRow("list with new ListItem (inline actions!) and SlotsLayout with defined labels and 3 slots") << "ListOfSlotsLayout_complex2.qml" << QUrl();
+        QTest::newRow("list with new ListItem (no actions) and SlotsLayout with 2 defined labels") << "ListOfSlotsLayout_labelsOnly.qml" << QUrl();
+        QTest::newRow("list with new ListItem (no actions) and SlotsLayout with 2 defined labels and 3 slots") << "ListOfSlotsLayout_complex1.qml" << QUrl();
+        QTest::newRow("list with new ListItem (inline actions!) and SlotsLayout with 2 defined labels and 3 slots") << "ListOfSlotsLayout_complex2.qml" << QUrl();
+        QTest::newRow("list with new ListItem (no actions) and empty SlotsLayoutCpp") << "ListOfEmptySlotsLayoutCpp.qml" << QUrl();
+        QTest::newRow("list with new ListItem (no actions) and SlotsLayoutCpp with 2 defined labels") << "ListOfSlotsLayoutCpp_labelsOnly.qml" << QUrl();
+        QTest::newRow("list with new ListItem (no actions) and SlotsLayoutCpp with 2 defined labels and 3 slots") << "ListOfSlotsLayoutCpp_complex1.qml" << QUrl();
+        QTest::newRow("list with new ListItem (inline actions!) and SlotsLayoutCpp with 3 labels and 3 slots") << "ListOfSlotsLayoutCpp_complex2.qml" << QUrl();
+        QTest::newRow("list with new ListItem (inline actions!) and a custom purpose-built layout which simulates SlotsLayoutCpp with 3 labels and 3 slots") << "ListOfCustomListItemLayouts.qml" << QUrl();
         QTest::newRow("list with QtQuick Item") << "ItemList.qml" << QUrl();
         QTest::newRow("list with new ListItem") << "ListItemList.qml" << QUrl();
         QTest::newRow("list with new ListItem with actions") << "ListItemWithActionsList.qml" << QUrl();
