@@ -17,6 +17,7 @@
 import QtQuick 2.4
 import QtTest 1.0
 import Ubuntu.Test 1.0
+import Ubuntu.Components 1.2
 
 /*
  * Common test case functions for ListItem. A CPO for unit tests.
@@ -36,11 +37,11 @@ UbuntuTestCase {
         }
     }
     // wait on the previosuly set up spy
-    function spyWait(item, timeout) {
+    function spyWait(timeout) {
         if (timeout == undefined) {
             timeout = 500;
         }
-        if (item.hasOwnProperty("leadingActions")) {
+        if (signalSpy.target) {
             signalSpy.wait(timeout);
             signalSpy.clear();
             signalSpy.target = null;
@@ -68,7 +69,7 @@ UbuntuTestCase {
     function swipe(item, x, y, dx, dy) {
         setupSpy(item, "contentMovementEnded");
         flick(item, x, y, dx, dy, 0, 0, undefined, undefined, 100);
-        spyWait(item);
+        spyWait();
     }
     function swipeNoWait(item, x, y, dx, dy) {
         flick(item, x, y, dx, dy, 0, 0, undefined, undefined, 100);
@@ -77,7 +78,7 @@ UbuntuTestCase {
     function tug(item, x, y, dx, dy) {
         setupSpy(item, "contentMovementEnded");
         TestExtras.touchDrag(0, item, Qt.point(x, y), Qt.point(dx, dy));
-        spyWait(item);
+        spyWait();
     }
 
     // returns the leading or trailing panel item
@@ -123,7 +124,7 @@ UbuntuTestCase {
         wait(100);
         var draggedItem = findChild(view.contentItem, "DraggedListItem");
         if (draggedItem) {
-            dropSpy.target = draggedItem.__styleInstance.dropAnimation;
+            setupSpy(draggedItem.__styleInstance.dropAnimation, "stopped");
         }
         // use 10 steps to be sure the move is properly detected by the drag area
         mouseMoveSlowly(dragArea, dragPos.x, dragPos.y, 0, dy, 10, 100);
@@ -131,11 +132,6 @@ UbuntuTestCase {
         mouseRelease(dragArea, dragPos.x, dragPos.y + dy);
         // needs one more mouse release
         mouseRelease(dragArea, dragPos.x, dragPos.y + dy);
-        if (dropSpy.target) {
-            dropSpy.wait();
-        } else {
-            // draggedItem cannot be found, we might be trying to drag a restricted item
-            wait(200);
-        }
+        spyWait();
     }
 }
