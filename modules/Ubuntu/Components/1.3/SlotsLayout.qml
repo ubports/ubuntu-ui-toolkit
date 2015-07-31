@@ -3,13 +3,19 @@ import QtQuick 2.4
 Item {
     id: root
     width: parent.width
-    height: units.gu(7)
+    implicitHeight: Math.max(row.maxSlotsChildrenHeight, labelContainer.height) + row.layoutTopBottomMargin * 2
 
     //we can't make this an alias of row.children because we have to make sure the labels are always
     //in the second position
     default property alias slots: row.rowSlots
     property alias titleItem: titleLabel
     property alias subtitleItem: subtitleLabel
+    property bool _ready: false
+
+    Component.onCompleted: {
+        _ready = true
+        row.relayout()
+    }
 
     Row {
         id: row
@@ -18,6 +24,11 @@ Item {
         //internals
         property int maxNumberOfLeadingSlots: 1
         property int maxNumberOfTrailingSlots: 2
+        property real layoutTopBottomMargin: units.gu(2)
+
+        //the maximum height of the components which are inside the slots (we use it to determine the
+        //height of the layout)
+        property real maxSlotsChildrenHeight: 0
 
         property list<Item> rowSlots
 
@@ -26,7 +37,10 @@ Item {
             id: labelContainer
             height: childrenRect.height
 
-            anchors.verticalCenter: parent ? parent.verticalCenter : undefined
+            //anchors.verticalCenter: parent ? parent.verticalCenter : undefined
+            //latest design rule is different
+            anchors.top: parent ? parent.top : undefined
+            anchors.topMargin: row.layoutTopBottomMargin
 
             //using this instead of RowLayout saves us a lot of creation time
             width: {
@@ -59,6 +73,7 @@ Item {
         }
 
         function relayout() {
+            if (!_ready) return
 
             //PERFORMANCE: This code adds about 150ms to the complex1 benchmark
             var currentNumberOfLeadingSlots = 0
@@ -68,6 +83,7 @@ Item {
             var leftMost = new Array(maxNumberOfLeadingSlots)
             var rightMost = new Array(maxNumberOfTrailingSlots)
 
+            var maxSlotsHeightTemp = 0
             //NOTE: assigning elements to these JS arrays will reset their "parent" property!
             //and assigning them to Row's children will set their parent back to row
 
@@ -84,6 +100,10 @@ Item {
                     } else {
                         console.log("SlotsLayout: we only currently allow", maxNumberOfLeadingSlots, "leading slots.")
                     }
+
+                    //we actually care about the height of whatever is *inside* the slot
+                    maxSlotsHeightTemp = Math.max(maxSlotsHeightTemp, row.rowSlots[i].children[0].height)
+
                     break
                 case "Slot.Trailing":
                     if (currentNumberOfTrailingSlots < maxNumberOfTrailingSlots) {
@@ -92,6 +112,8 @@ Item {
                     } else {
                         console.log("SlotsLayout: we only currently allow", maxNumberOfTrailingSlots, "trailing slots.")
                     }
+                    maxSlotsHeightTemp = Math.max(maxSlotsHeightTemp, row.rowSlots[i].children[0].height)
+
                     break
                 default:
                     console.log("SlotsLayout: Wrong Slot position or position not found.")
@@ -106,6 +128,7 @@ Item {
             //add the label
             leftMost[currentNumberOfLeadingSlots] = _label
 
+            maxSlotsChildrenHeight = maxSlotsHeightTemp
             //finally, assign the whole array
             row.children = leftMost.concat(rightMost)
             //}

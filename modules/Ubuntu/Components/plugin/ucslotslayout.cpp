@@ -217,18 +217,21 @@ void UCSlotsLayoutPrivate::_q_relayout() {
         currentX += leadingSlots.at(i)->width();
     }
 
-    m_title.setWidth(q->width() - totalWidth);
+    qreal labelBoxWidthIncludingMargins = q->width() - totalWidth;
+    m_title.setWidth(labelBoxWidthIncludingMargins - UCUnits::instance().gu(SLOTSLAYOUT_LABELS_RIGHTMARGIN));
     m_title.setX(currentX);
-    m_subtitle.setWidth(q->width() - totalWidth);
+    m_subtitle.setWidth(labelBoxWidthIncludingMargins - UCUnits::instance().gu(SLOTSLAYOUT_LABELS_RIGHTMARGIN));
     m_subtitle.setX(currentX);
-    m_subsubtitle.setWidth(q->width() - totalWidth);
+    m_subsubtitle.setWidth(labelBoxWidthIncludingMargins - UCUnits::instance().gu(SLOTSLAYOUT_LABELS_RIGHTMARGIN));
     m_subsubtitle.setX(currentX);
 
-    //center the labels vertically
     QQuickAnchors* titleAnchors = QQuickItemPrivate::get(&m_title)->anchors();
-    titleAnchors->setTopMargin((q->height() - labelsBoundingBoxHeight) / 2.0);
+    //center the labels vertically
+    //titleAnchors->setTopMargin((q->height() - labelsBoundingBoxHeight) / 2.0);
+    //new behaviour, latest visual design
+    titleAnchors->setTopMargin(UCUnits::instance().gu(IMPLICIT_SLOTSLAYOUT_MARGIN));
 
-    currentX += (q->width() - totalWidth);
+    currentX += labelBoxWidthIncludingMargins;
 
     for (int i=0; i<trailingSlots.length(); i++) {
         trailingSlots.at(i)->setX(currentX);

@@ -8,6 +8,7 @@
 #define IMPLICIT_SLOTSLAYOUT_HEIGHT_GU     7
 #define IMPLICIT_SLOTSLAYOUT_MARGIN        2
 #define SLOTSLAYOUT_LABELS_SPACING         1
+#define SLOTSLAYOUT_LABELS_RIGHTMARGIN     2
 
 class UCSlotsLayoutPrivate : QQuickItemPrivate
 {

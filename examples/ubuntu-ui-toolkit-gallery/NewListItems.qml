@@ -207,7 +207,7 @@ Template {
                 SlotQML {
                     position: "Slot.Leading"
                     //handleInnerItemPosition: false
-                    CheckBox { }
+                    CheckBox { /*y: layout.titleItem.y; anchors.horizontalCenter: parent.horizontalCenter*/ }
                 }
 
                 SlotQML {
@@ -227,6 +227,94 @@ Template {
         }
 
         ListItem {
+            id: listItem2
+
+            //FIXME: do we like this?
+            height: layout2.height
+
+            trailingActions: ListItemActions {
+                actions: [
+                    Action {}
+                ]
+            }
+            leadingActions: ListItemActions {
+                actions: [
+                    Action {},
+                    Action {},
+                    Action {}
+                ]
+            }
+
+            SlotsLayoutCpp {
+                id: layout2
+
+                SlotQML {
+                    position: "Slot.Leading"
+                    CheckBox { }
+                }
+
+                SlotQML {
+                    position: "Slot.Trailing"
+                    Rectangle { width: units.gu(10); height: units.gu(10) }
+                }
+
+                SlotQML {
+                    position: "Slot.Trailing"
+                    Icon { width: units.gu(2); name: "message" }
+                }
+
+                titleItem.text: "Hello designers!"
+                //subtitleItem.text:  "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
+                //subsubtitleItem.text: "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
+            }
+        }
+
+        ListItem {
+            id: listItem3
+
+            //FIXME: do we like this?
+            height: layout3.height
+
+            trailingActions: ListItemActions {
+                actions: [
+                    Action {}
+                ]
+            }
+            leadingActions: ListItemActions {
+                actions: [
+                    Action {},
+                    Action {},
+                    Action {}
+                ]
+            }
+
+            SlotsLayoutCpp {
+                id: layout3
+
+                SlotQML {
+                    position: "Slot.Leading"
+                    CheckBox { width: units.gu(10); height: units.gu(10) }
+                }
+
+                SlotQML {
+                    position: "Slot.Trailing"
+                    Rectangle { width: units.gu(5); height: units.gu(5) }
+                }
+
+                SlotQML {
+                    position: "Slot.Trailing"
+                    Icon { width: units.gu(5); height: units.gu(5); name: "message" }
+                }
+
+                titleItem.text: "Hello designers!"
+                subtitleItem.text:  "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
+                subsubtitleItem.text: "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
+            }
+        }
+
+        ListItem {
+            height: qmlLayout.height
+
             trailingActions: ListItemActions {
                 actions: [
                     Action {}
@@ -241,11 +329,12 @@ Template {
             }
 
             SlotsLayout {
-                anchors.fill: parent
+                id: qmlLayout
+
                 SlotQML {
                     position: "Slot.Leading"
                     //handleInnerItemPosition: false
-                    CheckBox { /*anchors.bottom: parent.bottom */}
+                    CheckBox { }
                 }
 
                 SlotQML {
