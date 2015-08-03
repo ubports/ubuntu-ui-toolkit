@@ -39,6 +39,10 @@ Item {
                     onVisibleChanged: {
                         visibleSwitch.checked = page.head.visible
                     }
+                    actions: Action {
+                        iconName: "like"
+                        text: "Like"
+                    }
                 }
                 Flickable {
                     id: flickable
