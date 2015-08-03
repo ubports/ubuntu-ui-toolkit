@@ -313,10 +313,11 @@ Item {
             var center = centerOf(backButton);
             mouseMove(backButton, center.x, center.y);
 
-            // Click the back button twice. The first is a 'proper' click, the
-            //  second click happens while the header is hiding. The second one
-            //  should not generate the onClicked event.
+            // Click the back button to pop the stack and go back to
+            //  noHeaderPage. This hides the header:
             mouseClick(backButton, center.x, center.y);
+            // Second click, which does not generate an event because animating
+            //  of the header must disable its buttons:
             mouseClick(backButton, center.x, center.y);
             waitForHeaderAnimation(mainView);
             // Compare the titles instead of the pages directly to avoid getting
