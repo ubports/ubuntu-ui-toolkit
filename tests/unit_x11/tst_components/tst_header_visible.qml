@@ -319,6 +319,9 @@ Item {
             //  a "Maximum call stack size exceeded." exception.
             compare(stack.currentPage.title, noHeaderPage.title,
                     "Back button in animating header was clicked.");
+
+            stack.pop(); // noHeaderPage
+            waitForHeaderAnimation(mainView);
         }
     }
 }
