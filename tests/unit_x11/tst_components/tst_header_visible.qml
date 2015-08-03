@@ -81,23 +81,38 @@ Item {
                             text: "header visible"
                         }
                     }
-                    Label {
-                        id: label
-                        anchors {
-                            horizontalCenter: parent.horizontalCenter
-                            top: switchGrid.bottom
-                            topMargin: units.gu(15)
-                        }
-                        text: "Flick me"
-                    }
                     Button {
                         anchors {
                             horizontalCenter: parent.horizontalCenter
-                            top: label.bottom
+                            top: switchGrid.bottom
                             topMargin: units.gu(5)
                         }
-                        text: "Click me"
-                        onTriggered: stack.push(otherPage)
+                        text: "Push page"
+                        onTriggered: stack.push(noHeaderPage)
+                    }
+                }
+            }
+            Page {
+                id: noHeaderPage
+                visible: false
+                title: "No header visible."
+                head {
+                    visible: false
+                    locked: true
+                }
+                Column {
+                    anchors.centerIn: parent
+                    spacing: units.gu(1)
+                    Label {
+                        text: "Page with no header."
+                    }
+                    Button {
+                        text: "Back"
+                        onClicked: stack.pop()
+                    }
+                    Button {
+                        text: "Next"
+                        onClicked: stack.push(otherPage)
                     }
                 }
             }
@@ -283,6 +298,27 @@ Item {
             waitForHeaderAnimation(mainView);
             compare(stack.depth, 1, "Clicking back button of page with no title does not "+
                     "pop the page from the PageStack.");
+        }
+
+        function test_disable_buttons_when_animating_header_bug1478147() {
+            stack.push(noHeaderPage);
+            stack.push(otherPage);
+            waitForHeaderAnimation(mainView);
+
+            var backButton = findChild(testCase.header, "backButton");
+            var center = centerOf(backButton);
+            mouseMove(backButton, center.x, center.y);
+
+            // Click the back button twice. The first is a 'proper' click, the
+            //  second click happens while the header is hiding. The second one
+            //  should not generate the onClicked event.
+            mouseClick(backButton, center.x, center.y);
+            mouseClick(backButton, center.x, center.y);
+            waitForHeaderAnimation(mainView);
+            // Compare the titles instead of the pages directly to avoid getting
+            //  a "Maximum call stack size exceeded." exception.
+            compare(stack.currentPage.title, noHeaderPage.title,
+                    "Back button in animating header was clicked.");
         }
     }
 }
