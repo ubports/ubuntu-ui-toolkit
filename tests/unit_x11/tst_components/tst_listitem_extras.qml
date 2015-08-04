@@ -84,7 +84,7 @@ Item {
         }
 
         function test_swipe_over_active_item() {
-            clickSpy.target = testWithActiveItem;
+            clickSpy.target = activeItem;
             swipe(activeItem, centerOf(activeItem).x, centerOf(activeItem).y, units.gu(10));
             compare(clickSpy.count, 0, "activeItem was clicked");
         }
