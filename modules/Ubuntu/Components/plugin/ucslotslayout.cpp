@@ -9,6 +9,7 @@
 UCSlotsLayoutPrivate::UCSlotsLayoutPrivate()
     : QQuickItemPrivate()
     , ready(false)
+    , maxChildrenRectHeight(0)
     , _q_cachedHeight(-1)
     , m_parentItem(0)
 
@@ -29,7 +30,8 @@ void UCSlotsLayoutPrivate::init()
     //                 q, SLOT(_q_themeChanged()), Qt::DirectConnection);
 
     // watch grid unit size change and set implicit size
-    QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_updateSize()));
+    QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_updateLabelsAnchorsAndBBoxHeight()));
+    QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_updateSlotsBBoxHeight()));
 
     //fixme: this will cause relayout to be called 4-5 times when the layout has "anchors.fill: parent"
     //defined on QML side
@@ -50,9 +52,9 @@ void UCSlotsLayoutPrivate::init()
     //so anchoring to text's bottom will result in the wrong outcome as a consequence.
     //TODO: updating anchors just because text changes is too much, we should probably just
     //have variables signal when a label becomes empty
-    QObject::connect(&m_title, SIGNAL(textChanged(QString)), q, SLOT(_q_updateLabelsAnchors()));
-    QObject::connect(&m_subtitle, SIGNAL(textChanged(QString)), q, SLOT(_q_updateLabelsAnchors()));
-    QObject::connect(&m_subsubtitle, SIGNAL(textChanged(QString)), q, SLOT(_q_updateLabelsAnchors()));
+    QObject::connect(&m_title, SIGNAL(textChanged(QString)), q, SLOT(_q_updateLabelsAnchorsAndBBoxHeight()));
+    QObject::connect(&m_subtitle, SIGNAL(textChanged(QString)), q, SLOT(_q_updateLabelsAnchorsAndBBoxHeight()));
+    QObject::connect(&m_subsubtitle, SIGNAL(textChanged(QString)), q, SLOT(_q_updateLabelsAnchorsAndBBoxHeight()));
 }
 
 void UCSlotsLayoutPrivate::_q_updateCachedHeight() {
@@ -109,10 +111,12 @@ void UCSlotsLayoutPrivate::setDefaultLabelsProperties() {
     //QObject::connect(subtitleAnchors, SIGNAL(topChanged()) , q, _q_disableLabelsPositioning());
 }
 
-void UCSlotsLayoutPrivate::_q_updateLabelsAnchors() {
+void UCSlotsLayoutPrivate::_q_updateLabelsAnchorsAndBBoxHeight() {
     //if the component is not ready the QML properties may not have been evaluated yet,
     //it's not worth doing anything if that's the case
     if (!ready) return;
+
+    Q_Q(UCSlotsLayout);
 
     //qDebug() << "updating anchors";
     QQuickAnchors* titleAnchors = QQuickItemPrivate::get(&m_title)->anchors();
@@ -136,24 +140,6 @@ void UCSlotsLayoutPrivate::_q_updateLabelsAnchors() {
     subsubtitleAnchors->setTopMargin(m_subtitle.text() == ""
                                      ? 0
                                      : UCUnits::instance().gridUnit());
-}
-
-void UCSlotsLayoutPrivate::_q_updateSize()
-{
-    if (!ready) {
-        //qDebug() << "Skipping updatesize, component is not ready";
-        return;
-    }
-
-    Q_Q(UCSlotsLayout);
-    QQuickItem *parent = qobject_cast<QQuickItem*>(q->parentItem());
-    q->setImplicitWidth(parent ? parent->width() : UCUnits::instance().gu(IMPLICIT_SLOTSLAYOUT_WIDTH_GU));
-
-    qreal maxSlotsChildrenHeight = 0;
-    for (int i=0; i<q->children().count(); i++) {
-        QQuickItem* child = qobject_cast<QQuickItem*>(q->children().at(i));
-        maxSlotsChildrenHeight = qMax<int>(maxSlotsChildrenHeight, child->childrenRect().height());
-    }
 
     //Update height of the labels box
     //NOTE (FIXME? it's stuff in Qt): contentHeight is not 0 when the string is empty, its default value is "fontHeight"!
@@ -185,17 +171,47 @@ void UCSlotsLayoutPrivate::_q_updateSize()
         }
     }
 
-    q->setImplicitHeight(qMax<qreal>(maxSlotsChildrenHeight, labelsBoundingBoxHeight)
+    _q_updateSize();
+}
+
+void UCSlotsLayoutPrivate::_q_updateSlotsBBoxHeight() {
+    if (!ready) return;
+
+    Q_Q(UCSlotsLayout);
+
+    qreal maxSlotsChildrenHeight = 0;
+    for (int i=0; i<q->children().count(); i++) {
+        QQuickItem* child = qobject_cast<QQuickItem*>(q->children().at(i));
+        maxSlotsChildrenHeight = qMax<int>(maxSlotsChildrenHeight, child->childrenRect().height());
+    }
+    maxChildrenRectHeight = maxSlotsChildrenHeight;
+
+    _q_updateSize();
+}
+
+void UCSlotsLayoutPrivate::_q_updateSize()
+{
+    if (!ready) {
+        //qDebug() << "Skipping updatesize, component is not ready";
+        return;
+    }
+
+    Q_Q(UCSlotsLayout);
+    QQuickItem *parent = qobject_cast<QQuickItem*>(q->parentItem());
+    q->setImplicitWidth(parent ? parent->width() : UCUnits::instance().gu(IMPLICIT_SLOTSLAYOUT_WIDTH_GU));
+    q->setImplicitHeight(qMax<qreal>(maxChildrenRectHeight, labelsBoundingBoxHeight)
                          + UCUnits::instance().gu(IMPLICIT_SLOTSLAYOUT_MARGIN)*2);
+
+    Q_EMIT q->relayoutNeeded();
 }
 
 void UCSlotsLayoutPrivate::_q_relayout() {
     //only relayout after the component has been initialized
     Q_Q(UCSlotsLayout);
     if (ready) {
-        //qDebug() << "RELAYOUT!";
+        qDebug() << "RELAYOUT!";
     } else {
-        //qDebug() << "RELAYOUT SKIPPED!";
+        qDebug() << "RELAYOUT SKIPPED!";
         return;
     }
 
@@ -273,9 +289,8 @@ void UCSlotsLayout::componentComplete() {
 
     //We want to call these functions for the first time after the
     //QML properties (such as titleItem.text) have been initialized!
-    d->_q_updateLabelsAnchors();
-    d->_q_updateSize();
-    d->_q_relayout();
+    d->_q_updateLabelsAnchorsAndBBoxHeight();
+    d->_q_updateSlotsBBoxHeight();
 }
 
 void UCSlotsLayout::itemChange(ItemChange change, const ItemChangeData &data)
@@ -297,7 +312,7 @@ void UCSlotsLayout::itemChange(ItemChange change, const ItemChangeData &data)
             //but the signal fired when childrenRect's WIDTH changes is a problem for us, because it calls relayout but
             //at that point data.item.width (which is what we use in the relayout) may not be updated using the new childrenrect yet
             QObject::connect(data.item, SIGNAL(widthChanged()), this, SLOT(_q_relayout()));
-            QObject::connect(data.item, SIGNAL(childrenRectChanged(QRectF)), this, SLOT(_q_relayout()));
+            QObject::connect(data.item, SIGNAL(childrenRectChanged(QRectF)), this, SLOT(_q_updateSlotsBBoxHeight()));
             d->_q_updateSize();
             d->_q_relayout();
         }
@@ -306,9 +321,8 @@ void UCSlotsLayout::itemChange(ItemChange change, const ItemChangeData &data)
         if (data.item) {
             QObject::disconnect(data.item, SIGNAL(visibleChanged()), this, SLOT(_q_relayout()));
             QObject::disconnect(data.item, SIGNAL(widthChanged()), this, SLOT(_q_relayout()));
-            QObject::disconnect(data.item, SIGNAL(childrenRectChanged(QRectF)), this, SLOT(_q_relayout()));
+            QObject::disconnect(data.item, SIGNAL(childrenRectChanged(QRectF)), this, SLOT(_q_updateSlotsBBoxHeight()));
             d->_q_updateSize();
-            d->_q_relayout();
         }
         break;
     default:

@@ -26,13 +26,17 @@ public:
 
     void _q_relayout();
     void _q_updateSize();
-    void _q_updateLabelsAnchors();
+    void _q_updateSlotsBBoxHeight();
+    void _q_updateLabelsAnchorsAndBBoxHeight();
     void _q_updateCachedHeight();
 
     bool ready;
 
     //used for position handling
     qreal labelsBoundingBoxHeight;
+    //maximum height of the components (no labels) which are inside the slots, used to compute the
+    //height of the layout
+    qreal maxChildrenRectHeight;
 
     //this is used so that we only call relayout if these values go from 0 to non-0,
     //not every time

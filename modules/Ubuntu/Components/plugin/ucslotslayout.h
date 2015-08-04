@@ -33,9 +33,11 @@ private:
     //this is only needed for Qt4/non-C++11, the macro expands to an empty string!
     //this is a request that moc will process and expand accordingly in moc phase
     Q_PRIVATE_SLOT(d_func(), void _q_updateSize())
-    Q_PRIVATE_SLOT(d_func(), void _q_updateLabelsAnchors())
+    Q_PRIVATE_SLOT(d_func(), void _q_updateLabelsAnchorsAndBBoxHeight())
     Q_PRIVATE_SLOT(d_func(), void _q_relayout())
     Q_PRIVATE_SLOT(d_func(), void _q_updateCachedHeight())
+    Q_PRIVATE_SLOT(d_func(), void _q_updateSlotsBBoxHeight())
+
 
 };
 
