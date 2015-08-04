@@ -27,11 +27,18 @@ public:
     void _q_relayout();
     void _q_updateSize();
     void _q_updateLabelsAnchors();
+    void _q_updateCachedHeight();
+    void _q_updateCachedImplicitHeight();
 
     bool ready;
 
     //used for position handling
     qreal labelsBoundingBoxHeight;
+
+    //this is used so that we only call relayout if these values go from 0 to non-0,
+    //not every time
+    qreal _q_cachedHeight;
+    qreal _q_cachedImplicitHeight;
 
     QQuickText m_title;
     QQuickText m_subtitle;

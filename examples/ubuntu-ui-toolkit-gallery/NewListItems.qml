@@ -186,7 +186,7 @@ Template {
             id: listItem
 
             //FIXME: do we like this?
-            height: layout.height
+            height: units.gu(8) //layout.height
 
             trailingActions: ListItemActions {
                 actions: [
@@ -204,6 +204,7 @@ Template {
             SlotsLayoutCpp {
                 id: layout
 
+                anchors.fill: parent
                 SlotQML {
                     position: "Slot.Leading"
                     //handleInnerItemPosition: false
@@ -309,6 +310,49 @@ Template {
                 titleItem.text: "Hello designers!"
                 subtitleItem.text:  "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
                 subsubtitleItem.text: "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
+            }
+        }
+
+        ListItem {
+            id: listItem4
+
+            //FIXME: do we like this?
+            height: layout4.height
+
+            trailingActions: ListItemActions {
+                actions: [
+                    Action {}
+                ]
+            }
+            leadingActions: ListItemActions {
+                actions: [
+                    Action {},
+                    Action {},
+                    Action {}
+                ]
+            }
+
+            SlotsLayoutCpp {
+                id: layout4
+
+                SlotQML {
+                    position: "Slot.Leading"
+                    CheckBox { width: units.gu(10); height: units.gu(10) }
+                }
+
+                SlotQML {
+                    position: "Slot.Trailing"
+                    Rectangle { width: units.gu(5); height: units.gu(5) }
+                }
+
+                SlotQML {
+                    position: "Slot.Trailing"
+                    Icon { width: units.gu(5); height: units.gu(5); name: "message" }
+                }
+
+                titleItem.text: "Hello designers!"
+                //subtitleItem.text:  "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
+                //subsubtitleItem.text: "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
             }
         }
 

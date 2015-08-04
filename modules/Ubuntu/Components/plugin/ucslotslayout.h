@@ -21,6 +21,9 @@ public:
     QQuickText* subtitleItem() const;
     QQuickText* subsubtitleItem() const;
 
+Q_SIGNALS:
+    void relayoutNeeded();
+
 protected:
     Q_DECLARE_PRIVATE(UCSlotsLayout)
     void componentComplete();
@@ -32,6 +35,9 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_updateSize())
     Q_PRIVATE_SLOT(d_func(), void _q_updateLabelsAnchors())
     Q_PRIVATE_SLOT(d_func(), void _q_relayout())
+    Q_PRIVATE_SLOT(d_func(), void _q_updateCachedHeight())
+    Q_PRIVATE_SLOT(d_func(), void _q_updateCachedImplicitHeight())
+
 };
 
 #endif // UCSLOTSLAYOUT_H

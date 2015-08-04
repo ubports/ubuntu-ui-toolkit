@@ -9,7 +9,10 @@
 UCSlotsLayoutPrivate::UCSlotsLayoutPrivate()
     : QQuickItemPrivate()
     , ready(false)
+    , _q_cachedHeight(-1)
+    , _q_cachedImplicitHeight(-1)
     , m_parentItem(0)
+
 {
 }
 
@@ -31,7 +34,18 @@ void UCSlotsLayoutPrivate::init()
 
     //fixme: this will cause relayout to be called 4-5 times when the layout has "anchors.fill: parent"
     //defined on QML side
+    //the ideal would be to only bind to width and implicitWidth changes, and for the rest only
+    //call relayout() if it makes sense (for instance if the height goes from 0 to non 0), but that
+    //requires caching all those variables
     QObject::connect(q, SIGNAL(widthChanged()), q, SLOT(_q_relayout()));
+    QObject::connect(q, SIGNAL(implicitWidthChanged()), q, SLOT(_q_relayout()));
+    //we redirect height changes to different functions, because height changes only cause a relayout
+    //in some cases (for instance when height goes from 0 to non 0)
+    QObject::connect(q, SIGNAL(heightChanged()), q, SLOT(_q_updateCachedHeight()));
+    QObject::connect(q, SIGNAL(implicitHeightChanged()), q, SLOT(_q_updateCachedImplicitHeight()));
+
+    QObject::connect(q, SIGNAL(visibleChanged()), q, SLOT(_q_relayout()));
+    QObject::connect(q, SIGNAL(relayoutNeeded()), q, SLOT(_q_relayout()));
 
     //we need this to know when any of the labels is empty. In that case, we'll have to change the
     //anchors because even if a QQuickText has empty text, its height will not be 0 but "fontHeight",
@@ -41,6 +55,26 @@ void UCSlotsLayoutPrivate::init()
     QObject::connect(&m_title, SIGNAL(textChanged(QString)), q, SLOT(_q_updateLabelsAnchors()));
     QObject::connect(&m_subtitle, SIGNAL(textChanged(QString)), q, SLOT(_q_updateLabelsAnchors()));
     QObject::connect(&m_subsubtitle, SIGNAL(textChanged(QString)), q, SLOT(_q_updateLabelsAnchors()));
+}
+
+void UCSlotsLayoutPrivate::_q_updateCachedHeight() {
+    Q_Q(UCSlotsLayout);
+    if (_q_cachedHeight != q->height()) {
+        if (_q_cachedHeight == 0) {
+            Q_EMIT q->relayoutNeeded();
+        }
+        _q_cachedHeight = q->height();
+    }
+}
+
+void UCSlotsLayoutPrivate::_q_updateCachedImplicitHeight() {
+    Q_Q(UCSlotsLayout);
+    if (_q_cachedImplicitHeight != q->implicitHeight()) {
+        if (_q_cachedImplicitHeight == 0) {
+            Q_EMIT q->relayoutNeeded();
+        }
+        _q_cachedImplicitHeight = q->implicitHeight();
+    }
 }
 
 void UCSlotsLayoutPrivate::setDefaultLabelsProperties() {
@@ -116,7 +150,6 @@ void UCSlotsLayoutPrivate::_q_updateLabelsAnchors() {
                                      : UCUnits::instance().gridUnit());
 }
 
-// called when units size changes
 void UCSlotsLayoutPrivate::_q_updateSize()
 {
     if (!ready) {
@@ -178,11 +211,9 @@ void UCSlotsLayoutPrivate::_q_relayout() {
         return;
     }
 
-    if (q->width() <= 0 || q->height() <= 0 || q->implicitWidth() <= 0 || q->implicitHeight() <= 0
+    //if either of the side lengths is non-positive, or the item is not visible, skip relayout
+    if ((q->width() <= 0 && q->implicitWidth() <= 0) || (q->height() <= 0 && q->implicitHeight() <= 0)
             || !q->isVisible() || !q->opacity()) {
-        //skip relayout if the item will be invisible anyway, this helps at initizialization time
-        //as well, when using "anchors.fill: parent" the size will vary a few times before stabilizing.
-        //with this check we skip a few of those instable relayouts
         return;
     }
 
