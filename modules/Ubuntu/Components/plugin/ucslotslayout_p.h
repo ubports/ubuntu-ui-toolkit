@@ -30,7 +30,7 @@ public:
 
     bool ready;
 
-    //used for vertical centering
+    //used for position handling
     qreal labelsBoundingBoxHeight;
 
     QQuickText m_title;

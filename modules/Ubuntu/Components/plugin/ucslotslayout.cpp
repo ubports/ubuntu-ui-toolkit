@@ -128,10 +128,10 @@ void UCSlotsLayoutPrivate::_q_updateSize()
     QQuickItem *parent = qobject_cast<QQuickItem*>(q->parentItem());
     q->setImplicitWidth(parent ? parent->width() : UCUnits::instance().gu(IMPLICIT_SLOTSLAYOUT_WIDTH_GU));
 
-    qreal height = 0;
+    qreal maxSlotsChildrenHeight = 0;
     for (int i=0; i<q->children().count(); i++) {
         QQuickItem* child = qobject_cast<QQuickItem*>(q->children().at(i));
-        height = qMax<int>(height, child->childrenRect().height());
+        maxSlotsChildrenHeight = qMax<int>(maxSlotsChildrenHeight, child->childrenRect().height());
     }
 
     //Update height of the labels box
@@ -164,7 +164,7 @@ void UCSlotsLayoutPrivate::_q_updateSize()
         }
     }
 
-    q->setImplicitHeight(qMax<qreal>(height, labelsBoundingBoxHeight)
+    q->setImplicitHeight(qMax<qreal>(maxSlotsChildrenHeight, labelsBoundingBoxHeight)
                          + UCUnits::instance().gu(IMPLICIT_SLOTSLAYOUT_MARGIN)*2);
 }
 
@@ -217,12 +217,12 @@ void UCSlotsLayoutPrivate::_q_relayout() {
         currentX += leadingSlots.at(i)->width();
     }
 
-    qreal labelBoxWidthIncludingMargins = q->width() - totalWidth;
-    m_title.setWidth(labelBoxWidthIncludingMargins - UCUnits::instance().gu(SLOTSLAYOUT_LABELS_RIGHTMARGIN));
+    qreal labelBoxWidth = q->width() - totalWidth - UCUnits::instance().gu(SLOTSLAYOUT_LABELS_RIGHTMARGIN);
+    m_title.setWidth(labelBoxWidth);
     m_title.setX(currentX);
-    m_subtitle.setWidth(labelBoxWidthIncludingMargins - UCUnits::instance().gu(SLOTSLAYOUT_LABELS_RIGHTMARGIN));
+    m_subtitle.setWidth(labelBoxWidth);
     m_subtitle.setX(currentX);
-    m_subsubtitle.setWidth(labelBoxWidthIncludingMargins - UCUnits::instance().gu(SLOTSLAYOUT_LABELS_RIGHTMARGIN));
+    m_subsubtitle.setWidth(labelBoxWidth);
     m_subsubtitle.setX(currentX);
 
     QQuickAnchors* titleAnchors = QQuickItemPrivate::get(&m_title)->anchors();
@@ -231,7 +231,7 @@ void UCSlotsLayoutPrivate::_q_relayout() {
     //new behaviour, latest visual design
     titleAnchors->setTopMargin(UCUnits::instance().gu(IMPLICIT_SLOTSLAYOUT_MARGIN));
 
-    currentX += labelBoxWidthIncludingMargins;
+    currentX += labelBoxWidth + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_RIGHTMARGIN);
 
     for (int i=0; i<trailingSlots.length(); i++) {
         trailingSlots.at(i)->setX(currentX);
@@ -253,7 +253,7 @@ void UCSlotsLayout::componentComplete() {
     Q_D(UCSlotsLayout);
     d->ready = true;
 
-    //We want to call this functions for the first time after the
+    //We want to call these functions for the first time after the
     //QML properties (such as titleItem.text) have been initialized!
     d->_q_updateLabelsAnchors();
     d->_q_updateSize();
@@ -288,7 +288,7 @@ void UCSlotsLayout::itemChange(ItemChange change, const ItemChangeData &data)
         if (data.item) {
             QObject::disconnect(data.item, SIGNAL(visibleChanged()), this, SLOT(_q_relayout()));
             QObject::disconnect(data.item, SIGNAL(widthChanged()), this, SLOT(_q_relayout()));
-            QObject::connect(data.item, SIGNAL(childrenRectChanged(QRectF)), this, SLOT(_q_relayout()));
+            QObject::disconnect(data.item, SIGNAL(childrenRectChanged(QRectF)), this, SLOT(_q_relayout()));
             d->_q_updateSize();
             d->_q_relayout();
         }
@@ -305,7 +305,7 @@ void UCSlotsLayout::itemChange(ItemChange change, const ItemChangeData &data)
                 QObject::disconnect(d->m_parentItem, SIGNAL(widthChanged()), this, SLOT(_q_updateSize()));
             }
 
-            d->m_parentItem = data.item;
+            d->m_parentItem = newParent;
             QObject::connect(newParent, SIGNAL(widthChanged()), this, SLOT(_q_updateSize()), Qt::DirectConnection);
             d->_q_updateSize();
         }
