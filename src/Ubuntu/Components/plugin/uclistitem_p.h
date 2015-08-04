@@ -75,6 +75,7 @@ public:
     bool suppressClick:1;
     bool ready:1;
     bool customColor:1;
+    Qt::MouseButton button;
     qreal xAxisMoveThresholdGU;
     QBasicTimer pressAndHoldTimer;
     QPointF lastPos;

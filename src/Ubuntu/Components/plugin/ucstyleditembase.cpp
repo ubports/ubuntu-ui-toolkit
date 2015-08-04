@@ -203,6 +203,7 @@ void UCStyledItemBase::setActiveFocusOnPress(bool value)
         return;
     d->activeFocusOnPress = value;
     d->setFocusable(d->activeFocusOnPress);
+    setActiveFocusOnTab(value);
     Q_EMIT activeFocusOnPressChanged();
 }
 

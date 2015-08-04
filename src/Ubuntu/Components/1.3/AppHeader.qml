@@ -70,6 +70,7 @@ Components.StyledItem {
     onVisibleChanged: {
         internal.checkFlickableMargins();
     }
+    enabled: header.y === 0
 
     /*!
       Show the header
@@ -78,6 +79,9 @@ Components.StyledItem {
         if (internal.newConfig) {
             header.config.visible = true;
         }
+        // Enable the header as soon as it finished animating
+        //  to the fully visible state:
+        header.enabled = Qt.binding(function() { return header.y === 0; });
         header.y = 0;
     }
 
@@ -88,6 +92,9 @@ Components.StyledItem {
         if (internal.newConfig) {
             header.config.visible = false;
         }
+        // Disable the header immediately (the update of the y-value
+        //  is delayed because of the Behavior defined on it):
+        header.enabled = false;
         header.y = -header.height;
     }
 

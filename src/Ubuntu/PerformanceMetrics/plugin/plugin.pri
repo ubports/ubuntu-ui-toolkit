@@ -1,8 +1,6 @@
 QT *= qml quick
 CONFIG += no_keywords
 
-QMAKE_CXXFLAGS += -Werror
-
 # Input
 SOURCES += \
     $$PWD/upmplugin.cpp \

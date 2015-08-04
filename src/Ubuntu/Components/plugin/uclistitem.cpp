@@ -1057,12 +1057,12 @@ void UCListItem::mousePressEvent(QMouseEvent *event)
 {
     UCStyledItemBase::mousePressEvent(event);
     Q_D(UCListItem);
+    d->button = event->button();
     if (d->parentAttached && d->parentAttached->isMoving()) {
         // while moving, we cannot select any items
         return;
     }
-    if (d->canHighlight(event)
-            && !d->highlighted && event->button() == Qt::LeftButton) {
+    if (d->canHighlight(event) && !d->highlighted && event->button() == Qt::LeftButton) {
         // create style instance
         d->loadStyleItem();
         d->setHighlighted(true);
@@ -1090,10 +1090,13 @@ void UCListItem13::mousePressEvent(QMouseEvent *event)
 {
     UCListItem::mousePressEvent(event);
     if (shouldShowContextMenu(event)) {
-        // Highlight the Item while the menu is showing
-        setHighlighted(true);
-
         Q_D(UCListItem);
+
+        // Highlight the Item while the menu is showing
+        d->setHighlighted(true);
+        // Reset the timer which otherwise is started with highlighting
+        d->pressAndHoldTimer.stop();
+
         quint16 version(d->getTheme()->version());
         QString versionString(QStringLiteral("%1.%2").arg(MAJOR_VERSION(version)).arg(MINOR_VERSION(version)));
         QUrl url(UbuntuComponentsPlugin::pluginUrl().resolved(versionString + "/ListItemPopover.qml"));
@@ -1118,19 +1121,15 @@ void UCListItem13::mousePressEvent(QMouseEvent *event)
 
 void UCListItem13::popoverClosed()
 {
-    setHighlighted(false);
-}
-
-void UCListItem::setHighlighted(bool highlighted)
-{
     Q_D(UCListItem);
-    d->setHighlighted(highlighted);
+    d->setHighlighted(false);
 }
 
 void UCListItem::mouseReleaseEvent(QMouseEvent *event)
 {
     UCStyledItemBase::mouseReleaseEvent(event);
     Q_D(UCListItem);
+    d->button = Qt::NoButton;
     // set released
     if (d->highlighted) {
         // unblock ascending Flickables
@@ -1152,8 +1151,8 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
             // inform style about mouse/touch release
             d->swipeEvent(event->localPos(), UCSwipeEvent::Finished);
             d->suppressClick = false;
+            d->setHighlighted(false);
         }
-        d->setHighlighted(false);
     }
 }
 
@@ -1174,7 +1173,8 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
     }
 
     // accept the tugging only if the move is within the threshold
-    if (d->highlighted && !d->swiped && (d->leadingActions || d->trailingActions)) {
+    // use saved button because MouseMove has no button() and buttons() isn't reliable
+    if (d->button == Qt::LeftButton && d->highlighted && !d->swiped && (d->leadingActions || d->trailingActions)) {
         // check if we can initiate the drag at all
         // only X direction matters, if Y-direction leaves the threshold, but X not, the tug is not valid
         qreal threshold = UCUnits::instance().gu(d->xAxisMoveThresholdGU);
