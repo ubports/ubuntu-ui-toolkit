@@ -36,7 +36,6 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_updateLabelsAnchors())
     Q_PRIVATE_SLOT(d_func(), void _q_relayout())
     Q_PRIVATE_SLOT(d_func(), void _q_updateCachedHeight())
-    Q_PRIVATE_SLOT(d_func(), void _q_updateCachedImplicitHeight())
 
 };
 

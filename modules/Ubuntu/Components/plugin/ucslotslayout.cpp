@@ -10,7 +10,6 @@ UCSlotsLayoutPrivate::UCSlotsLayoutPrivate()
     : QQuickItemPrivate()
     , ready(false)
     , _q_cachedHeight(-1)
-    , _q_cachedImplicitHeight(-1)
     , m_parentItem(0)
 
 {
@@ -38,11 +37,10 @@ void UCSlotsLayoutPrivate::init()
     //call relayout() if it makes sense (for instance if the height goes from 0 to non 0), but that
     //requires caching all those variables
     QObject::connect(q, SIGNAL(widthChanged()), q, SLOT(_q_relayout()));
-    QObject::connect(q, SIGNAL(implicitWidthChanged()), q, SLOT(_q_relayout()));
+
     //we redirect height changes to different functions, because height changes only cause a relayout
     //in some cases (for instance when height goes from 0 to non 0)
     QObject::connect(q, SIGNAL(heightChanged()), q, SLOT(_q_updateCachedHeight()));
-    QObject::connect(q, SIGNAL(implicitHeightChanged()), q, SLOT(_q_updateCachedImplicitHeight()));
 
     QObject::connect(q, SIGNAL(visibleChanged()), q, SLOT(_q_relayout()));
     QObject::connect(q, SIGNAL(relayoutNeeded()), q, SLOT(_q_relayout()));
@@ -64,16 +62,6 @@ void UCSlotsLayoutPrivate::_q_updateCachedHeight() {
             Q_EMIT q->relayoutNeeded();
         }
         _q_cachedHeight = q->height();
-    }
-}
-
-void UCSlotsLayoutPrivate::_q_updateCachedImplicitHeight() {
-    Q_Q(UCSlotsLayout);
-    if (_q_cachedImplicitHeight != q->implicitHeight()) {
-        if (_q_cachedImplicitHeight == 0) {
-            Q_EMIT q->relayoutNeeded();
-        }
-        _q_cachedImplicitHeight = q->implicitHeight();
     }
 }
 
@@ -212,8 +200,7 @@ void UCSlotsLayoutPrivate::_q_relayout() {
     }
 
     //if either of the side lengths is non-positive, or the item is not visible, skip relayout
-    if ((q->width() <= 0 && q->implicitWidth() <= 0) || (q->height() <= 0 && q->implicitHeight() <= 0)
-            || !q->isVisible() || !q->opacity()) {
+    if (q->width() <= 0 || q->height() <= 0 || !q->isVisible() || !q->opacity()) {
         return;
     }
 
