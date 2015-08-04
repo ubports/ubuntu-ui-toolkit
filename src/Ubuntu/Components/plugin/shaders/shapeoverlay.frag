@@ -37,8 +37,9 @@ varying lowp vec4 backgroundColor;
 varying mediump vec2 overlayCoord;
 varying lowp vec4 overlayColor;
 
-const mediump int FLAT  = 0x08;  // 1 << 3
-const mediump int INSET = 0x10;  // 1 << 4
+const mediump int FLAT  = 0x08;        // 1 << 3
+const mediump int INSET = 0x10;        // 1 << 4
+const mediump int DROP_SHADOW = 0x20;  // 1 << 5
 
 void main(void)
 {
@@ -96,6 +97,20 @@ void main(void)
         // Mask the current color then blend the bevel over the resulting color. We simply use
         // additive blending since the bevel has already been masked.
         color = (color * vec4(mask[int(shapeSide)])) + vec4(bevel);
+
+    } else if (aspect == DROP_SHADOW) {
+        // The vertex layout of the shape is made so that the derivative is negative from top to
+        // middle and positive from middle to bottom.
+        lowp int shapeSide = dfdt * dfdtFactor <= 0.0 ? 0 : 1;
+        // Get the anti-aliased and resolution independent shape mask using distance fields.
+        lowp float distanceMin = abs(dfdt) * -distanceAA + 0.5;
+        lowp float distanceMax = abs(dfdt) * distanceAA + 0.5;
+        lowp float mask = smoothstep(distanceMin, distanceMax, shapeData[shapeSide]);
+        // Get the shadow color outside of the shape mask.
+        lowp float shadow = (shapeData.b * -mask) + shapeData.b;  // -ab + a = a(1 - b)
+        // Mask the current color then blend the shadow over the resulting color. We simply use
+        // additive blending since the shadow has already been masked.
+        color = (color * vec4(mask)) + vec4(0.0, 0.0, 0.0, shadow);
     }
 
     gl_FragColor = color * opacityFactors.xxxy;
