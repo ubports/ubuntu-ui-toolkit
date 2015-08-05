@@ -17,7 +17,7 @@ override_dh_auto_configure:
 	qmake -r
 
 %:
-	dh $@ --parallel --fail-missing
+	dh $@ --parallel
 
 override_dh_auto_test:
 ifneq ($(DEB_HOST_ARCH),$(findstring $(DEB_HOST_ARCH), $(testskip_architectures)))
@@ -31,12 +31,11 @@ endif
 override_dh_build:
 	dh_auto_build --parallel
 	dh_auto_build --parallel -- docs
+
+override_dh_install:
 	mkdir -p debian/tmp/`qmake -query QT_INSTALL_DOCS`/qch
 	mkdir -p debian/tmp/usr/share/ubuntu-ui-toolkit/doc
 	cp -r $(CURDIR)/documentation/*qch debian/tmp/`qmake -query QT_INSTALL_DOCS`/qch
-
-override_dh_install:
-	dh_auto_build -- docs
 	# FIXME: Due to autopilot not being in the archive we ship docs for now
 	# sphinx-build -b singlehtml documentation/autopilot-helpers documentation/autopilot-helpers/_build/html
 	# sphinx-build -b json documentation/autopilot-helpers documentation/autopilot-helpers/_build/json
