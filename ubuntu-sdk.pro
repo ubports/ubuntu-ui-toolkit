@@ -8,7 +8,7 @@ write_file($$PWD/build_paths.inc,BUILD_PATH_CONTENTS)
 requires(qtHaveModule(quick))
 load(qt_parts)
 
-SUBDIRS += po documentation
+SUBDIRS += po documentation ubuntu-ui-toolkit-launcher
 
 #when standalone we always want tests to be built
 force_independent{
