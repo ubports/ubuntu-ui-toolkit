@@ -86,19 +86,23 @@ QML_FILES += 1.3/AbstractButton.qml \
              1.3/ActionItem.qml \
              1.3/ActionList.qml \
              1.3/ActivityIndicator.qml \
+	     1.3/AdaptivePageLayout.qml \
              1.3/AnimatedItem.qml \
              1.3/AppHeader.qml \
              1.3/Button.qml \
              1.3/Captions.qml \
              1.3/CheckBox.qml \
+	     1.3/ColumnMetrics.qml \
              1.3/ComboButton.qml \
              1.3/CrossFadeImage.qml \
+             1.3/dateUtils.js \
              1.3/DraggingArea.qml \
              1.3/Header.qml \
              1.3/InputHandler.qml \
              1.3/Label.qml \
              1.3/MainViewBase.qml \
              1.3/MainView.qml \
+             1.3/mathUtils.js \
              1.3/OptionSelectorDelegate.qml \
              1.3/OptionSelector.qml \
              1.3/OrientationHelper.qml \
@@ -127,6 +131,7 @@ QML_FILES += 1.3/AbstractButton.qml \
              1.3/ToolbarButton.qml \
              1.3/ToolbarItems.qml \
              1.3/Toolbar.qml \
+             1.3/tree.js \
              1.3/UbuntuColors.qml \
              1.3/UbuntuListView11.qml \
              1.3/UbuntuListView.qml \

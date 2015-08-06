@@ -30,8 +30,7 @@ function initPage(pageWrapper) {
     if (pageWrapper.reference.createObject) {
         // page reference is a component
         pageComponent = pageWrapper.reference;
-    }
-    else if (typeof pageWrapper.reference == "string") {
+    } else if (typeof pageWrapper.reference == "string") {
         // page reference is a string (url)
         pageComponent = Qt.createComponent(pageWrapper.reference);
     }

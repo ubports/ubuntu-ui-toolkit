@@ -3,7 +3,7 @@
 
 const int shapeTextureCount = 2;
 const int shapeTextureSize = 32;
-const int shapeTextureOffset = 0.0625;
+const float shapeTextureOffset = 0.0625;
 const int shapeTextureDistanceAA = 4;
 
 static const unsigned char shapeTextureData[2][4097] = {

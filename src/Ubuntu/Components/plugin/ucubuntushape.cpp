@@ -74,8 +74,8 @@ void ShapeShader::initialize()
 
     m_functions = QOpenGLContext::currentContext()->functions();
     m_matrixId = program()->uniformLocation("matrix");
-    m_dfdtFactorsId = program()->uniformLocation("dfdtFactors");
     m_opacityFactorsId = program()->uniformLocation("opacityFactors");
+    m_dfdtFactorId = program()->uniformLocation("dfdtFactor");
     m_sourceOpacityId = program()->uniformLocation("sourceOpacity");
     m_distanceAAId = program()->uniformLocation("distanceAA");
     m_texturedId = program()->uniformLocation("textured");
@@ -138,13 +138,9 @@ void ShapeShader::updateState(
     const float distanceAA = (shapeTextureDistanceAA * distanceAApx) / (2.0 * 255.0f);
     program()->setUniformValue(m_distanceAAId, data->distanceAAFactor * distanceAA);
 
-    // Send screen-space derivative factors. Note that when rendering is redirected to a
-    // ShaderEffectSource (FBO), dFdy() sign is flipped.
-    const float orientation = static_cast<float>(data->dfdtFactors & 0x4);
-    const float flip = static_cast<float>(data->dfdtFactors & 0x3) - 1.0f;
-    const bool flipped = orientation != 1.0f && state.projectionMatrix()(1, 3) < 0.0f;
-    const QVector2D dfdtFactors(orientation, flipped ? -flip : flip);
-    program()->setUniformValue(m_dfdtFactorsId, dfdtFactors);
+    // When rendering is redirected to a ShaderEffectSource (FBO), dFdy() sign is flipped.
+    const float dfdtFactor = (state.projectionMatrix()(1, 3) < 0.0f) ? -1.0f : 1.0f;
+    program()->setUniformValue(m_dfdtFactorId, dfdtFactor);
 
     // Update QtQuick engine uniforms.
     if (state.isMatrixDirty()) {
@@ -252,7 +248,6 @@ const int maxShapeTextures = 16;
 
 static struct { QOpenGLContext* openglContext; quint32 textureId[shapeTextureCount]; }
     shapeTextures[maxShapeTextures];
-static bool isPrimaryOrientationLandscape = false;
 
 static int getShapeTexturesIndex(const QOpenGLContext* openglContext);
 
@@ -310,17 +305,6 @@ UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
     , m_sourceOpacity(255)
     , m_flags(Stretched)
 {
-    static bool once = true;
-    if (once) {
-        // Stored statically as the primary orientation is fixed and we don't support multiple
-        // screens for now.
-        if (QGuiApplication::primaryScreen()->primaryOrientation() &
-            (Qt::LandscapeOrientation | Qt::InvertedLandscapeOrientation)) {
-            isPrimaryOrientationLandscape = true;
-        }
-        once = false;
-    }
-
     setFlag(ItemHasContents);
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this,
                      SLOT(_q_gridUnitChanged()));
@@ -1305,25 +1289,6 @@ void UCUbuntuShape::updateMaterial(
     const float end = 4.0f + radiusSizeOffset;
     materialData->distanceAAFactor =
         qMin((radius / (end - start)) - (start / (end - start)), 1.0f) * 255.0f;
-
-    // Screen-space derivatives factors for fragment shaders depend on the primary orientation and
-    // content orientation. A flag indicating a 90° rotation around the primary orientation is
-    // stored on the 3rd bit of dfdtFactors, the flip factor is stored on the first 2 bits as 0 for
-    // -1 and as 2 for 1 (efficiently converted using: float(x & 0x3) - 1.0f).
-    const Qt::ScreenOrientation contentOrientation = window()->contentOrientation();
-    if (isPrimaryOrientationLandscape) {
-        const quint8 portraitMask = Qt::PortraitOrientation | Qt::InvertedPortraitOrientation;
-        const quint8 flipMask = Qt::InvertedLandscapeOrientation | Qt::InvertedPortraitOrientation;
-        quint8 factors = contentOrientation & portraitMask ? 0x4 : 0x0;
-        factors |= contentOrientation & flipMask ? 0x0 : 0x2;
-        materialData->dfdtFactors = factors;
-    } else {
-        const quint8 landscapeMask = Qt::LandscapeOrientation | Qt::InvertedLandscapeOrientation;
-        const quint8 flipMask = Qt::InvertedPortraitOrientation | Qt::LandscapeOrientation;
-        quint8 factors = contentOrientation & landscapeMask ? 0x4 : 0x0;
-        factors |= contentOrientation & flipMask ? 0x0 : 0x2;
-        materialData->dfdtFactors = factors;
-    }
 
     // When the radius is equal to radiusSizeOffset (which means radius size is 0), no aspect is
     // flagged so that a dedicated (statically flow controlled) shaved off shader can be used for

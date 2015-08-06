@@ -309,7 +309,7 @@ int main(int argc, char* argv[])
            << "\n"
            << "const int shapeTextureCount = " << textureCount << ";\n"
            << "const int shapeTextureSize = " << textureSize << ";\n"
-           << "const int shapeTextureOffset = " << shapeOffset << ";\n"
+           << "const float shapeTextureOffset = " << shapeOffset << ";\n"
            << "const int shapeTextureDistanceAA = " << distanceScale << ";\n"
            << "\n"
            << "static const unsigned char shapeTextureData[" << textureCount

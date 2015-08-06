@@ -46,6 +46,43 @@ PageTreeNode {
     property bool canDestroy: false
 
     /*!
+      Column number in MultiColumnView.
+      */
+    property int column: 0
+
+    /*!
+      Parent page.
+      */
+    property Item parentPage
+
+    /*!
+      Parent PageWrapper or the parentPage.
+      */
+    property Item parentWrapper
+
+    /*!
+      Page holder in MultiColumnView
+      */
+    property Item pageHolder
+
+    /*!
+      Returns true if the current PageWrapper is a child of the given page
+      */
+    function childOf(page) {
+        if (parentPage == page) return true;
+        if (page && parentWrapper) {
+            var wrapper = parentWrapper;
+            while (wrapper) {
+                if (wrapper.object == page) {
+                    return true;
+                }
+                wrapper = wrapper.parentWrapper;
+            }
+        }
+        return false;
+    }
+
+    /*!
       This value is updated when a PageWrapper is pushed to/popped from a PageStack.
      */
     active: false

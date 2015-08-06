@@ -41,8 +41,8 @@ public:
 private:
     QOpenGLFunctions* m_functions;
     int m_matrixId;
-    int m_dfdtFactorsId;
     int m_opacityFactorsId;
+    int m_dfdtFactorId;
     int m_sourceOpacityId;
     int m_distanceAAId;
     int m_texturedId;
@@ -70,7 +70,6 @@ public:
         quint32 shapeTextureId;
         quint8 distanceAAFactor;
         quint8 sourceOpacity;
-        quint8 dfdtFactors;
         quint8 flags;
     };
 

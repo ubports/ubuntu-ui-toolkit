@@ -67,6 +67,9 @@ public:
     void update();
     void snapOut();
     void swipeEvent(const QPointF &localPos, UCSwipeEvent::Status status);
+    bool swipedOverThreshold(const QPointF &mousePos, const QPointF relativePos);
+    void grabLeftButtonEvents(QMouseEvent *event);
+    void ungrabLeftButtonEvents(QMouseEvent *event);
 
     quint16 defaultThemeVersion;
     bool highlighted:1;
@@ -75,6 +78,7 @@ public:
     bool suppressClick:1;
     bool ready:1;
     bool customColor:1;
+    Qt::MouseButton button;
     qreal xAxisMoveThresholdGU;
     QBasicTimer pressAndHoldTimer;
     QPointF lastPos;

@@ -21,8 +21,9 @@ excludedirs += ../src/Ubuntu/Components/Pickers/1.2
 excludedirs += ../src/Ubuntu/Components/Popups/1.2
 excludedirs += ../src/Ubuntu/Components/Themes/Ambiance
 excludedirs += ../src/Ubuntu/Components/Themes/SuruDark
+excludedirs += ../documentation/autopilot-helpers/_build/html/_static
 imagedirs = images
-sources.fileextensions = "*.qml *.qdoc *.cpp"
+sources.fileextensions = "*.qml *.qdoc *.cpp *.js"
 headers.fileextensions = "*.h"
 # exclude qml files that have the component documented in a separate qdoc file
 excludefiles = $BLD/../src/Ubuntu/Components/MainView.qml
