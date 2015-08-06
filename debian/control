@@ -118,6 +118,7 @@ Architecture: any
 Depends: qmlscene,
          qtdeclarative5-ubuntu-ui-toolkit-plugin (= ${binary:Version}) | qtdeclarative5-ubuntu-ui-toolkit-plugin-gles,
          ubuntu-ui-toolkit-theme (= ${binary:Version}),
+         ubuntu-ui-toolkit-tools (>= ${source:Version}),
          qml-module-qtquick-xmllistmodel | qtdeclarative5-xmllistmodel-plugin,
          qml-module-qt-labs-folderlistmodel,
          ${misc:Depends},

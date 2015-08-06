@@ -67,7 +67,7 @@ def get_toolkit_launcher_command():
     else:
         arch = ubuntuuitoolkit.base.get_host_multiarch()
         path_to_installed_launcher = os.path.join(
-            '/', 'usr', 'lib', arch, 'ubuntu-ui-toolkit', 'launcher')
+            '/', 'usr', 'bin', 'ubuntu-ui-toolkit-launcher')
     return path_to_installed_launcher
 
 
