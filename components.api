@@ -826,6 +826,7 @@ Ubuntu.Components.Popups.SheetBase 1.3: PopupBase
     property double contentsWidth
     property bool modal
     property string title
+Ubuntu.Components.ShellIcon 1.3: UbuntuShape
 Ubuntu.Components.ListItems.SingleControl 1.0 0.1: Empty
     property Item control
 Ubuntu.Components.ListItems.SingleControl 1.3: Empty
