@@ -115,10 +115,9 @@ Description: Qt Components for Ubuntu - documentation
 Package: ubuntu-ui-toolkit-examples
 Section: devel
 Architecture: any
-Depends: qmlscene,
+Depends: ubuntu-ui-toolkit-tools (>= ${source:Version}),
          qtdeclarative5-ubuntu-ui-toolkit-plugin (= ${binary:Version}) | qtdeclarative5-ubuntu-ui-toolkit-plugin-gles,
          ubuntu-ui-toolkit-theme (= ${binary:Version}),
-         ubuntu-ui-toolkit-tools (>= ${source:Version}),
          qml-module-qtquick-xmllistmodel | qtdeclarative5-xmllistmodel-plugin,
          qml-module-qt-labs-folderlistmodel,
          ${misc:Depends},
@@ -155,4 +154,17 @@ Depends: ${misc:Depends},
          qtdeclarative5-ubuntu-ui-toolkit-plugin (>= ${source:Version}) | qtdeclarative5-ubuntu-ui-toolkit-plugin-gles,
          qml-module-qttest | qtdeclarative5-test-plugin,
 Description: Test package for Ubuntu UI Toolkit
- Autopilot tests for the ubuntu-ui-toolkit package
+ Package: ubuntu-ui-toolkit-examples
+
+Package: ubuntu-ui-toolkit-tools
+Architecture: any
+Depends: ${misc:Depends},
+         ${shlibs:Depends}
+Description: Qt Components for Ubuntu - productive tools
+ Qt Components for Ubuntu offers a set of reusable user interface
+ components for Qt Quick 2 / QML.
+ .
+ This package contains the application launcher, which is a drop-in
+ replacement for qmlscene, oxideqmlscene, qml and derivatives.
+
+Autopilot tests for the ubuntu-ui-toolkit package
