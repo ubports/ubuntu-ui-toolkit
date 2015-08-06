@@ -1,3 +1,69 @@
+ubuntu-ui-toolkit (1.3.1584+15.10.20150730-0ubuntu1) wily; urgency=medium
+
+  [ Florian Boucault ]
+  * New BottomEdgeHint component to represent extra features available from the 
+    bottom edge of an application.
+
+  [ Loïc Molinari ]
+  * [UbuntuShape] Added a big radius.
+  * [UbuntuShape] Added relative radius support. Fixes LP: #1478124.
+  * Ensured components, styles, examples and tests use the new UbuntuShape 
+    properties (not deprecated). Fixes LP: #1437412.
+
+  [ Benjamin Zeller ]
+  * Make use of the official qt build macros to blend into the Qt buildprocess.
+  * Fix debug builds, optimization is always enabled by the system qt build.
+
+  [ Richard Huddie ]
+  * Fix for autopilot bug lp:1476715. Don't throw an exception if maliit-server
+    is not found. Fixes LP: #1476715.
+
+  [ Tim Peeters ]
+  * Clean up the MainView docs.
+  * Set theme version for Sections component.
+  * Implement AdaptivePageLayout.
+
+  [ Zsombor Egri ]
+  * Fix width for trailing and leading actions of a ListItem. Fixes LP: #1465582.
+  * Button and Haptics import wrong toolkit versions, thus they break style 
+    versioning. Moving Icon and ProgressBar to 1.0 and 1.1 version source folder.
+  * SuruDark theme for ListItem style. Fixes LP: #1451225.
+  * Swiping ListItem when no actions are defined for the gesture breaks 
+    selectMode. Fixes LP: #1468100.
+  * Fixing selected connection with the ListItem's select mode checkbox state. 
+    Fixes LP: #1461501, LP: #1469471.
+
+  [ Timo Jyrinki ]
+  * Fix ucstylehints.cpp compilation with Qt 5.5. Fixes LP: #1473873.
+  * Add PageHeadStyle 1.3 reference to fix install_plugins_qmltypes failure with 
+    Qt 5.5. Fixes LP: #1466484.
+
+  [ Christian Dywan ]
+  * Avoid hard-coded skipping of members by name "type" can be a property name 
+    regardless of also being a field in the JSON description of a property.
+  * Add apicheck unit test for QML and Javascript.
+  * Remove "do cleanup" comments. Fixes LP: #1369874.
+  * Initialize defaultTypes later to avoid bogus types.
+  * Implement Action.shortcut property. Fixes LP: #1202464.
+  * Update text handler to 3gu assert.
+  * Add a deprecated note to ListItems.ThinDivider. Fixes LP: #1470951.
+  * Don't include overridden properties in API.
+  * Clean-up API check wrapper scripts.
+  * Track version members were introduced.
+  * Implement ListItemPopover on right-click. Fixes LP: #1452676.
+  * Move delegate's chevron into the row and size it explicitly. 
+    Fixes LP: #1474418.
+  * Enable (Shift)Tab via activeFocusOnTab. Fixes LP: #1276797.
+  * Only swipe with left button and block timer otherwise. 
+    Fixes LP: #1476300, LP: #1476310.
+  * Include Javascript libraries in QML documentation. Fixes LP: #1466058.
+
+  [ Albert Astals Cid ]
+  * Fix warning if there's no __propagated
+  * TypeError: Cannot call method 'hasOwnProperty' of null.
+
+ -- CI Train Bot <ci-train-bot@canonical.com>  Thu, 30 Jul 2015 13:04:18 +0000
+
 ubuntu-ui-toolkit (1.3.1549+15.10.20150710.1-0ubuntu1) wily; urgency=medium
 
   [ Timo Jyrinki ]

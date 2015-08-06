@@ -1,4 +1,4 @@
-# Dutch translation for ubuntu-ui-toolkit
+# Brazilian Portuguese translation for ubuntu-ui-toolkit
 # Copyright (c) 2015 Rosetta Contributors and Canonical Ltd 2015
 # This file is distributed under the same license as the ubuntu-ui-toolkit package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2015.
@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: ubuntu-ui-toolkit\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2014-11-11 11:21+0100\n"
-"PO-Revision-Date: 2015-07-10 15:38+0000\n"
+"PO-Revision-Date: 2015-07-14 17:02+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: Dutch <nl@li.org>\n"
+"Language-Team: Brazilian Portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-07-11 05:31+0000\n"
-"X-Generator: Launchpad (build 17620)\n"
+"X-Launchpad-Export-Date: 2015-07-16 05:37+0000\n"
+"X-Generator: Launchpad (build 17628)\n"
 
 #: Animations.qml:24
 msgid "NumberAnimation"
