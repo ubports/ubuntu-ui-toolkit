@@ -154,7 +154,7 @@ Depends: ${misc:Depends},
          qtdeclarative5-ubuntu-ui-toolkit-plugin (>= ${source:Version}) | qtdeclarative5-ubuntu-ui-toolkit-plugin-gles,
          qml-module-qttest | qtdeclarative5-test-plugin,
 Description: Test package for Ubuntu UI Toolkit
- Package: ubuntu-ui-toolkit-examples
+ Autopilot tests for the ubuntu-ui-toolkit package
 
 Package: ubuntu-ui-toolkit-tools
 Architecture: any
@@ -167,4 +167,3 @@ Description: Qt Components for Ubuntu - productive tools
  This package contains the application launcher, which is a drop-in
  replacement for qmlscene, oxideqmlscene, qml and derivatives.
 
-Autopilot tests for the ubuntu-ui-toolkit package
