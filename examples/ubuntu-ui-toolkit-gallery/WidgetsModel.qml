@@ -87,6 +87,11 @@ ListModel {
         source: "Icons.qml"
     }
     ListElement {
+        objectName: "shellIconsElement"
+        label: "Shell Icons"
+        source: "ShellIcon.qml"
+    }
+    ListElement {
         objectName: "labelsElement"
         label: "Label"
         source: "Label.qml"
