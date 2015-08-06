@@ -133,7 +133,6 @@ Template {
                                             left: iconShape.right
                                             leftMargin: units.gu(1)
                                         }
-
                                         text: iconPopover.iconName
                                     }
                                 }
