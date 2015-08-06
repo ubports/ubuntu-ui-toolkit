@@ -33,7 +33,7 @@
 #include "quickutils.h"
 #include "ucubuntushape.h"
 #include "ucubuntushapeoverlay.h"
-#include "ucubuntushapeicon.h"
+#include "ucshellicon.h"
 #include "inversemouseareatype.h"
 #include "qquickclipboard.h"
 #include "qquickmimedata.h"
@@ -217,7 +217,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterCustomType<UCStyleHints>(uri, 1, 3, "StyleHints", new UCStyleHintsParser);
     qmlRegisterType<UCAction, 1>(uri, 1, 3, "Action");
     qmlRegisterType<UCUbuntuShape, 2>(uri, 1, 3, "UbuntuShape");
-    qmlRegisterType<UCUbuntuShapeIcon>(uri, 1, 3, "UbuntuShapeIcon");
+    qmlRegisterType<UCShellIcon>(uri, 1, 3, "ShellIcon");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)

@@ -49,7 +49,7 @@ Item {
             color: "white"
         }
 
-        UbuntuShapeIcon {
+        ShellIcon {
             id: shape
             anchors.centerIn: parent
             width: 300
