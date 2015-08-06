@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (1.3.1594.15.10.20150730-0ubuntu2) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.3.1593.15.10.20150730-0ubuntu2) UNRELEASED; urgency=medium
 
   [ Tim Peeters ]
   * Use grid units in Icons in the showcase gallery. Fixes LP: #1481489
