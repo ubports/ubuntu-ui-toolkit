@@ -17,16 +17,9 @@ import QtQuick 2.4
 import Ubuntu.Components 1.3
 
 Item {
-    // styling properties
     anchors.fill: parent
     z: -1
     id: mainViewStyle
-
-    /*!
-      The background texture of the main view. The image will be drawn over the background color,
-      so if it has (semi-)transparent pixels, in those pixels the background color will be visible.
-     */
-//    property url backgroundSource: Qt.resolvedUrl("../artwork/background_paper.png")
 
     /*!
       Color of the header's background.
@@ -65,15 +58,6 @@ Item {
         color: mainViewStyle.backgroundColor
         gradient: internals.isGradient ? backgroundGradient : null
     }
-
-//    Image {
-//        id: backgroundTexture
-//        anchors.fill: parent
-//        source: mainViewStyle.backgroundSource
-//        fillMode: Image.Tile
-//        asynchronous: true
-//        cache: false
-//    }
 
     QtObject {
         id: internals
