@@ -760,11 +760,10 @@ void UCUbuntuShape::setBackgroundMode(BackgroundMode backgroundMode)
 */
 void UCUbuntuShape::setBorderSource(const QString& borderSource)
 {
-    static bool deprecationNoteShown = false;
-    if (!deprecationNoteShown) {
-        deprecationNoteShown = true;
-        qmlInfo(this) << "'borderSource' is deprecated. Use 'aspect' instead.";
-    }
+    // FIXME(loicm) Commented for now since even if it's deprecated, buttons have to use it in order
+    //     to get a pressed aspect. This is a temporary solution before using a dedicated button
+    //     shape.'
+    // qmlInfo(this) << "'borderSource' is deprecated. Use 'aspect' instead.";
 
     if (!(m_flags & AspectSet)) {
         quint8 aspect;
