@@ -114,10 +114,12 @@ MainViewBase {
     default property alias contentsItem: contents.data
     Item {
         id: canvas
-        anchors.fill: parent
-        anchors.bottomMargin: mainView.anchorToKeyboard &&
-            UbuntuApplication.inputMethod.visible ?
-                UbuntuApplication.inputMethod.keyboardRectangle.height : 0
+        anchors {
+            fill: parent
+            bottomMargin: mainView.anchorToKeyboard &&
+                UbuntuApplication.inputMethod.visible ?
+                    UbuntuApplication.inputMethod.keyboardRectangle.height : 0
+        }
 
         // clip the contents so that it does not overlap the header
         Item {
