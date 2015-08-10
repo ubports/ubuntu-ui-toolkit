@@ -209,9 +209,9 @@ void UCSlotsLayoutPrivate::_q_relayout() {
     //only relayout after the component has been initialized
     Q_Q(UCSlotsLayout);
     if (ready) {
-        qDebug() << "RELAYOUT!";
+        //qDebug() << "RELAYOUT!";
     } else {
-        qDebug() << "RELAYOUT SKIPPED!";
+        //qDebug() << "RELAYOUT SKIPPED!";
         return;
     }
 
@@ -246,20 +246,33 @@ void UCSlotsLayoutPrivate::_q_relayout() {
         }
     }
 
+    QQuickItemPrivate* _q_private = QQuickItemPrivate::get(q);
+
     for (int i=0; i<leadingSlots.length(); i++) {
-        leadingSlots.at(i)->setX(currentX);
-        currentX += leadingSlots.at(i)->width();
+        QQuickItemPrivate* item = QQuickItemPrivate::get((QQuickItem*) leadingSlots.at(i));
+        if (i==0) {
+            item->anchors()->setLeft(_q_private->left());
+        } else {
+            item->anchors()->setLeft(QQuickItemPrivate::get((QQuickItem*) leadingSlots.at(i-1))->right());
+        }
+        currentX += item->x + item->width;
     }
 
-    qreal labelBoxWidth = q->width() - totalWidth - UCUnits::instance().gu(SLOTSLAYOUT_LABELS_RIGHTMARGIN);
-    m_title.setWidth(labelBoxWidth);
-    m_title.setX(currentX);
-    m_subtitle.setWidth(labelBoxWidth);
-    m_subtitle.setX(currentX);
-    m_subsubtitle.setWidth(labelBoxWidth);
-    m_subsubtitle.setX(currentX);
+    int numberOfLeadingSlots = leadingSlots.length();
+    QQuickAnchorLine labelsLeftAnchor = numberOfLeadingSlots ? QQuickItemPrivate::get((QQuickItem*) leadingSlots.at(numberOfLeadingSlots-1))->right()
+                                                              : _q_private->left();
 
     QQuickAnchors* titleAnchors = QQuickItemPrivate::get(&m_title)->anchors();
+    QQuickAnchors* subtitleAnchors = QQuickItemPrivate::get(&m_subtitle)->anchors();
+    QQuickAnchors* subsubtitleAnchors = QQuickItemPrivate::get(&m_subsubtitle)->anchors();
+    qreal labelBoxWidth = q->width() - totalWidth - UCUnits::instance().gu(SLOTSLAYOUT_LABELS_RIGHTMARGIN);
+    m_title.setWidth(labelBoxWidth);
+    titleAnchors->setLeft(labelsLeftAnchor);
+    m_subtitle.setWidth(labelBoxWidth);
+    subtitleAnchors->setLeft(labelsLeftAnchor);
+    m_subsubtitle.setWidth(labelBoxWidth);
+    subsubtitleAnchors->setLeft(labelsLeftAnchor);
+
     //center the labels vertically
     //titleAnchors->setTopMargin((q->height() - labelsBoundingBoxHeight) / 2.0);
     //new behaviour, latest visual design
@@ -268,8 +281,13 @@ void UCSlotsLayoutPrivate::_q_relayout() {
     currentX += labelBoxWidth + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_RIGHTMARGIN);
 
     for (int i=0; i<trailingSlots.length(); i++) {
-        trailingSlots.at(i)->setX(currentX);
-        currentX += trailingSlots.at(i)->width();
+        QQuickItemPrivate* item = QQuickItemPrivate::get((QQuickItem*) trailingSlots.at(i));
+        if (i==0) {
+            item->anchors()->setLeft(QQuickItemPrivate::get(&m_title)->right());
+        } else {
+            item->anchors()->setLeft(QQuickItemPrivate::get((QQuickItem*) trailingSlots.at(i-1))->right());
+        }
+        currentX += item->x + item->width;
     }
 }
 
