@@ -16,13 +16,14 @@
 
 import QtQuick 2.4
 import Ubuntu.Components 1.3
-/*!
-    \qmltype Label
-    \inqmlmodule Ubuntu.Components 1.1
-    \ingroup ubuntu
-    \brief Text with Ubuntu styling.
 
-*/
-LabelBase {
-    color: theme.palette.selected.backgroundText
+Grid {
+    width: 800
+    height: 600
+    rows: 16
+    columns: 16
+    Repeater {
+        model: 16*16
+        Label {}
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -23,7 +23,15 @@
 class UCFontUtils : public QObject
 {
     Q_OBJECT
+
 public:
+    static constexpr float fontUnits = 14.0f;
+    static constexpr float xxSmallScale = 0.677f;
+    static constexpr float xSmallScale = 0.804f;
+    static constexpr float smallScale = 0.931f;
+    static constexpr float mediumScale = 1.079f;
+    static constexpr float largeScale = 1.291f;
+    static constexpr float xLargeScale = 1.714f;
 
     static UCFontUtils& instance()
     {
