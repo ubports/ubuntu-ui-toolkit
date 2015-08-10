@@ -206,7 +206,9 @@ PageTreeNode {
         property bool completed: false
         property var tree: new Tree.Tree()
 
-        property int columns: layout.width >= units.gu(80) ? 2 : 1
+        property int columns: !layout.layouts.length ?
+                                  (layout.width >= units.gu(80) ? 2 : 1) :
+                                  (activeLayout ? activeLayout.data.length : 1)
         property PageColumnsLayout activeLayout: null
 
         /*! internal */
@@ -338,12 +340,6 @@ PageTreeNode {
                 }
             }
             d.activeLayout = newLayout;
-            if (d.activeLayout) {
-                d.columns = d.activeLayout.data.length
-            } else {
-                // no layout set, we have only one column
-                d.columns = 1;
-            }
         }
 
         // relayouts when column count changes
@@ -404,7 +400,6 @@ PageTreeNode {
         id: defaultMetrics
         PageColumn {
             fillWidth: column == d.columns
-            minimumWidth: d.defaultColumnWidth
         }
     }
 
@@ -593,7 +588,6 @@ PageTreeNode {
                 // search for the column metrics
                 var metrics = d.activeLayout ? d.activeLayout.data[i] : null;
                 if (!metrics) {
-                    print('default')
                     metrics = holder.setDefaultMetrics();
                 }
                 holder.metrics = metrics;

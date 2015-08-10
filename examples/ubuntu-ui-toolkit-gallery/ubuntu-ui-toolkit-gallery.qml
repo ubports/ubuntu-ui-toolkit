@@ -41,8 +41,8 @@ MainView {
             when: layout.width > units.gu(80)
             PageColumn {
                 maximumWidth: units.gu(60)
-                minimumWidth: units.gu(10)
-                preferredWidth: units.gu(10)
+                minimumWidth: units.gu(20)
+                preferredWidth: units.gu(40)
             }
             PageColumn {
                 fillWidth: true
