@@ -86,6 +86,67 @@ import "tree.js" as Tree
   AdaptivePageLayout supports adaptive column handling. When the number of columns changes at
   runtime the pages are automatically rearranged.
 
+  By default the component splits the layout in two columns when the width of the
+  layout exceeds 80 grid units. The first column is sized to 40 grid unit width and
+  the second one to fill the rest of the remaining space. When the 80 grid unit breakpoint
+  is reached, the component will switch from one column to two, and vice versa.
+  These defaults can be overridden throug the \l layouts property by defining the
+  possible layouts, their column sizing and the breakpoints when the layouts should
+  be activated. PageColumn configurations must appear in the same order as the
+  columns appear in the layout, and each column must have a configuration object
+  assigned.
+
+  \qml
+    import QtQuick 2.4
+    import Ubuntu.Components 1.3
+
+    MainView {
+        width: units.gu(100)
+        height: units.gu(60)
+
+        AdaptivePageLayout {
+            anchors.fill: parent
+            primaryPage: page1
+            layouts: PageColumnsLayout {
+                when: width > units.gu(80)
+                // column #0
+                PageColumn {
+                    minimumWidth: units.gu(30)
+                    maximumWidth: units.gu(60)
+                    preferredWidth: units.gu(40)
+                }
+                // column #1
+                PageColumn {
+                    fillWidth: true
+                }
+            }
+
+            Page {
+                id: page1
+                title: "Main page"
+                Column {
+                    Button {
+                        text: "Add Page2 above " + page1.title
+                        onClicked: page1.pageStack.addPageToCurrentColumn(page1, page2)
+                    }
+                    Button {
+                        text: "Add Page3 next to " + page1.title
+                        onClicked: page1.pageStack.addPageToNextColumn(page1, page3)
+                    }
+                }
+            }
+            Page {
+                id: page2
+                title: "Page #2"
+            }
+            Page {
+                id: page3
+                title: "Page #3"
+            }
+        }
+    }
+  \endqml
+
   \sa PageStack
 */
 
@@ -120,7 +181,9 @@ PageTreeNode {
     readonly property alias columns: d.columns
 
     /*!
-      The property holds the different layout configurations.
+      The property holds the different layout configurations overriding the default
+      configurations. Defaults to an empty list.
+      \sa PageColumnsLayout
       */
     property list<PageColumnsLayout> layouts
 
@@ -182,9 +245,10 @@ PageTreeNode {
     Component.onCompleted: {
         // check layout configuration
         if (layouts.length > 0) {
-            d.prepareLayouts()
+            d.prepareLayouts();
+        } else {
+            d.relayout();
         }
-        d.relayout();
         d.completed = true;
         if (primaryPage) {
             var wrapper = d.createWrapper(primaryPage);
@@ -199,6 +263,13 @@ PageTreeNode {
             return;
         }
     }
+    onLayoutsChanged: {
+        if (d.completed) {
+            // only deal with this if the layouts array changes after completion
+            // to avoid unnecessary rendering
+            d.prepareLayouts();
+        }
+    }
 
     QtObject {
         id: d
@@ -210,6 +281,7 @@ PageTreeNode {
                                   (layout.width >= units.gu(80) ? 2 : 1) :
                                   (activeLayout ? activeLayout.data.length : 1)
         property PageColumnsLayout activeLayout: null
+        property list<PageColumnsLayout> prevLayouts
 
         /*! internal */
         onColumnsChanged: {
@@ -322,6 +394,11 @@ PageTreeNode {
 
         // prepares layout management, listens on layout condition changes and performs re-layouting
         function prepareLayouts() {
+            // disconnect from the previous layouts
+            for (var i = 0; i < prevLayouts.length; i++) {
+                prevLayouts[i].whenChanged.disconnect(updateLayout);
+            }
+            prevLayouts = layouts;
             for (var i = 0; i < layouts.length; i++) {
                 layouts[i].whenChanged.connect(updateLayout);
             }
@@ -400,6 +477,7 @@ PageTreeNode {
         id: defaultMetrics
         PageColumn {
             fillWidth: column == d.columns
+            minimumWidth: d.defaultColumnWidth
         }
     }
 
@@ -582,7 +660,6 @@ PageTreeNode {
         }
 
         function applyMetrics() {
-            // there should be as many children as layout page columns we have
             for (var i = 0; i < children.length; i++) {
                 var holder = children[i];
                 // search for the column metrics

@@ -57,7 +57,6 @@ MainView {
                     fillWidth: true
                 }
             }
-
         ]
 
         Page {
