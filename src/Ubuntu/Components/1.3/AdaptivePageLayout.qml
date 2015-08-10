@@ -147,6 +147,9 @@ import "tree.js" as Tree
     }
   \endqml
 
+  A column is considered to be resizable if the \l PageColumn::minimumWidth and
+  \l PageColumn::maximumWidth configuration differs.
+
   \sa PageStack
 */
 
@@ -576,8 +579,29 @@ PageTreeNode {
                     bottom: parent.bottom
                     right: parent.right
                 }
-                width: (column == (d.columns - 1)) || !pageWrapper ? 0 : units.dp(1)
-                color: subHeader.dividerColor
+                width: (column == (d.columns - 1)) || !pageWrapper ? 0 : units.dp(2)
+//                color: subHeader.dividerColor
+                color: theme.palette.selected.background
+                MouseArea {
+                    enabled: verticalDivider.width > 0
+                    anchors {
+                        fill: parent
+                        leftMargin: enabled ? units.gu(0.25) : 0
+                        rightMargin: enabled ? units.gu(0.25) : 0
+                    }
+                    cursorShape: Qt.SizeHorCursor
+                    drag.axis: Drag.XAxis
+                    drag.target: resizer
+                    drag.smoothed: false
+                    drag.minimumX: metrics.minimumWidth
+                    drag.maximumX: metrics.maximumWidth
+                    onPressed: resizer.x = parent.x + parent.width / 2
+                }
+            }
+            Item {
+                id: resizer
+                height: parent.height
+                onXChanged: holder.Layout.preferredWidth = x
             }
 
             function attachPage(page) {

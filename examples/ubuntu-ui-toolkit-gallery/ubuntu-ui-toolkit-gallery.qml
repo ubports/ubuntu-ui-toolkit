@@ -39,6 +39,22 @@ MainView {
 
         layouts: [
             PageColumnsLayout {
+                when: layout.width > units.gu(100)
+                PageColumn {
+                    maximumWidth: units.gu(60)
+                    minimumWidth: units.gu(20)
+                    preferredWidth: units.gu(40)
+                }
+                PageColumn {
+                    maximumWidth: units.gu(60)
+                    minimumWidth: units.gu(20)
+                    preferredWidth: units.gu(40)
+                }
+                PageColumn {
+                    fillWidth: true
+                }
+            },
+            PageColumnsLayout {
                 when: layout.width > units.gu(80)
                 PageColumn {
                     maximumWidth: units.gu(60)
