@@ -37,6 +37,18 @@ MainView {
         anchors.fill: parent
         primaryPage: mainPage
 
+        layouts: PageColumnsLayout {
+            when: layout.width > units.gu(80)
+            PageColumn {
+                maximumWidth: units.gu(60)
+                minimumWidth: units.gu(10)
+                preferredWidth: units.gu(10)
+            }
+            PageColumn {
+                fillWidth: true
+            }
+        }
+
         Page {
             id: mainPage
             title: "Ubuntu UI Toolkit"

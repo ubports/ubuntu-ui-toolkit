@@ -17,12 +17,11 @@
 import QtQuick 2.4
 
 /*!
-  \qmltype ColumnMetrics
+  \qmltype PageColumn
   \inqmlmodule Ubuntu.Components 1.3
   \since Ubuntu.Components 1.3
   \ingroup ubuntu
-  \brief Component configuring the metrics of a column in MultiColumnView.
-  \internal
+  \brief Component configuring the metrics of a column in AdaptivePageLayout.
 
   */
 QtObject {
@@ -50,4 +49,9 @@ QtObject {
       the column. A maximum value of 0 will be ignored.
       */
     property real maximumWidth: Number.POSITIVE_INFINITY
+
+    /*!
+      Specifies the preferred width of the column when the layout is initialized.
+      */
+    property real preferredWidth
 }

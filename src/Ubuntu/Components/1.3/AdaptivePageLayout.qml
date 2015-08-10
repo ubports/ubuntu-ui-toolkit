@@ -113,6 +113,18 @@ PageTreeNode {
     property Page primaryPage
 
     /*!
+      \qmlproperty int columns
+      \readonly
+      The property holds the number of columns shown in the layout.
+      */
+    readonly property alias columns: d.columns
+
+    /*!
+      The property holds the different layout configurations.
+      */
+    property list<PageColumnsLayout> layouts
+
+    /*!
       \qmlmethod Item addPageToCurrentColumn(Item sourcePage, var page[, var properties])
       Adds a \c page to the column the \c sourcePage resides in and removes all pages
       from the higher columns. \c page can be a Component or a file.
@@ -168,6 +180,10 @@ PageTreeNode {
       */
 
     Component.onCompleted: {
+        // check layout configuration
+        if (layouts.length > 0) {
+            d.prepareLayouts()
+        }
         d.relayout();
         d.completed = true;
         if (primaryPage) {
@@ -191,6 +207,8 @@ PageTreeNode {
         property var tree: new Tree.Tree()
 
         property int columns: layout.width >= units.gu(80) ? 2 : 1
+        property PageColumnsLayout activeLayout: null
+
         /*! internal */
         onColumnsChanged: {
             if (columns <= 0) {
@@ -201,7 +219,6 @@ PageTreeNode {
         }
         property real defaultColumnWidth: units.gu(40)
         onDefaultColumnWidthChanged: body.applyMetrics()
-        property list<ColumnMetrics> columnMetrics
 
         function createWrapper(page, properties) {
             var wrapperComponent = Qt.createComponent("PageWrapper.qml");
@@ -301,6 +318,34 @@ PageTreeNode {
             }
         }
 
+        // prepares layout management, listens on layout condition changes and performs re-layouting
+        function prepareLayouts() {
+            for (var i = 0; i < layouts.length; i++) {
+                layouts[i].whenChanged.connect(updateLayout);
+            }
+            // first time evaluation
+            updateLayout();
+        }
+
+        // function called when one of the layout condition is satisfied
+        function updateLayout() {
+            var newLayout = null;
+            for (var i = 0; i < layouts.length; i++) {
+                // get the first affirmative condition
+                if (layouts[i].when) {
+                    newLayout = layouts[i];
+                    break;
+                }
+            }
+            d.activeLayout = newLayout;
+            if (d.activeLayout) {
+                d.columns = d.activeLayout.data.length
+            } else {
+                // no layout set, we have only one column
+                d.columns = 1;
+            }
+        }
+
         // relayouts when column count changes
         function relayout() {
             if (body.children.length == d.columns) return;
@@ -357,7 +402,7 @@ PageTreeNode {
     // default metrics
     Component {
         id: defaultMetrics
-        ColumnMetrics {
+        PageColumn {
             fillWidth: column == d.columns
             minimumWidth: d.defaultColumnWidth
         }
@@ -376,12 +421,12 @@ PageTreeNode {
             property PageWrapper pageWrapper
             property int column
             property alias config: subHeader.config
-            property ColumnMetrics metrics: setDefaultMetrics()
+            property PageColumn metrics: setDefaultMetrics()
 
             Layout.fillWidth: metrics.fillWidth
             Layout.fillHeight: true
             Layout.preferredWidth: metrics.maximumWidth > 0 ?
-                                       MathUtils.clamp(d.defaultColumnWidth, metrics.minimumWidth, metrics.maximumWidth) :
+                                       MathUtils.clamp(metrics.preferredWidth, metrics.minimumWidth, metrics.maximumWidth) :
                                        d.defaultColumnWidth
             Layout.minimumWidth: metrics.minimumWidth
             Layout.maximumWidth: metrics.maximumWidth
@@ -542,17 +587,13 @@ PageTreeNode {
         }
 
         function applyMetrics() {
+            // there should be as many children as layout page columns we have
             for (var i = 0; i < children.length; i++) {
                 var holder = children[i];
                 // search for the column metrics
-                var metrics = null;
-                for (var j = 0; j < d.columnMetrics.length; j++) {
-                    if (d.columnMetrics[j].column == (i + 1)) {
-                        metrics = d.columnMetrics[j];
-                        break;
-                    }
-                }
+                var metrics = d.activeLayout ? d.activeLayout.data[i] : null;
                 if (!metrics) {
+                    print('default')
                     metrics = holder.setDefaultMetrics();
                 }
                 holder.metrics = metrics;
