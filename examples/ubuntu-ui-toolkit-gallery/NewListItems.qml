@@ -357,6 +357,68 @@ Template {
         }
 
         ListItem {
+            id: listItem5
+
+            //FIXME: do we like this?
+            height: layout5.height
+
+            trailingActions: ListItemActions {
+                actions: [
+                    Action {}
+                ]
+            }
+            leadingActions: ListItemActions {
+                actions: [
+                    Action {},
+                    Action {},
+                    Action {}
+                ]
+            }
+
+            SlotsLayoutCpp {
+                id: layout5
+
+                SlotQML {
+                    position: "Slot.Leading"
+                    CheckBox { }
+                }
+
+                titleItem.text: "Hello designers!"
+            }
+        }
+
+        ListItem {
+            id: listItem6
+
+            //FIXME: do we like this?
+            height: layout6.height
+
+            trailingActions: ListItemActions {
+                actions: [
+                    Action {}
+                ]
+            }
+            leadingActions: ListItemActions {
+                actions: [
+                    Action {},
+                    Action {},
+                    Action {}
+                ]
+            }
+
+            SlotsLayoutCpp {
+                id: layout6
+
+                SlotQML {
+                    position: "Slot.Trailing"
+                    CheckBox { }
+                }
+
+                titleItem.text: "Hello designers!"
+            }
+        }
+
+        ListItem {
             height: qmlLayout.height
 
             trailingActions: ListItemActions {

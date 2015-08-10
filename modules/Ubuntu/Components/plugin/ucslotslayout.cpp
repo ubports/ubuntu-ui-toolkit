@@ -259,18 +259,17 @@ void UCSlotsLayoutPrivate::_q_relayout() {
     }
 
     int numberOfLeadingSlots = leadingSlots.length();
+    int numberOfTrailingSlots = trailingSlots.length();
+
     QQuickAnchorLine labelsLeftAnchor = numberOfLeadingSlots ? QQuickItemPrivate::get((QQuickItem*) leadingSlots.at(numberOfLeadingSlots-1))->right()
-                                                              : _q_private->left();
+                                                             : _q_private->left();
 
     QQuickAnchors* titleAnchors = QQuickItemPrivate::get(&m_title)->anchors();
     QQuickAnchors* subtitleAnchors = QQuickItemPrivate::get(&m_subtitle)->anchors();
     QQuickAnchors* subsubtitleAnchors = QQuickItemPrivate::get(&m_subsubtitle)->anchors();
     qreal labelBoxWidth = q->width() - totalWidth - UCUnits::instance().gu(SLOTSLAYOUT_LABELS_RIGHTMARGIN);
-    m_title.setWidth(labelBoxWidth);
     titleAnchors->setLeft(labelsLeftAnchor);
-    m_subtitle.setWidth(labelBoxWidth);
     subtitleAnchors->setLeft(labelsLeftAnchor);
-    m_subsubtitle.setWidth(labelBoxWidth);
     subsubtitleAnchors->setLeft(labelsLeftAnchor);
 
     //center the labels vertically
@@ -280,14 +279,40 @@ void UCSlotsLayoutPrivate::_q_relayout() {
 
     currentX += labelBoxWidth + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_RIGHTMARGIN);
 
-    for (int i=0; i<trailingSlots.length(); i++) {
-        QQuickItemPrivate* item = QQuickItemPrivate::get((QQuickItem*) trailingSlots.at(i));
-        if (i==0) {
-            item->anchors()->setLeft(QQuickItemPrivate::get(&m_title)->right());
-        } else {
-            item->anchors()->setLeft(QQuickItemPrivate::get((QQuickItem*) trailingSlots.at(i-1))->right());
+    if (numberOfTrailingSlots != 0) {
+        //it could be that in the previous relayout there were no trailing actions, and now there are.
+        //in that case, we have to reset the anchors of the labels as they won't anchors their right
+        //anymore, it's the first trailing slot that will anchors its left anchor to the labels
+        titleAnchors->resetRight();
+        titleAnchors->resetRightMargin();
+        subtitleAnchors->resetRight();
+        subtitleAnchors->resetRightMargin();
+        subsubtitleAnchors->resetRight();
+        subsubtitleAnchors->resetRightMargin();
+
+        m_title.setWidth(labelBoxWidth);
+        m_subtitle.setWidth(labelBoxWidth);
+        m_subsubtitle.setWidth(labelBoxWidth);
+
+        for (int i=0; i<trailingSlots.length(); i++) {
+            QQuickItemPrivate* item = QQuickItemPrivate::get((QQuickItem*) trailingSlots.at(i));
+            if (i==0) {
+                item->anchors()->setLeft(QQuickItemPrivate::get(&m_title)->right());
+                //the 2GU right margin of the labels is treated as left margin of the first trailing slot
+                //because labels don't have a right anchor set up here!
+                item->anchors()->setLeftMargin(UCUnits::instance().gu(SLOTSLAYOUT_LABELS_RIGHTMARGIN));
+            } else {
+                item->anchors()->setLeft(QQuickItemPrivate::get((QQuickItem*) trailingSlots.at(i-1))->right());
+            }
+            currentX += item->x + item->width;
         }
-        currentX += item->x + item->width;
+    } else {
+        titleAnchors->setRight(_q_private->right());
+        titleAnchors->setRightMargin(UCUnits::instance().gu(SLOTSLAYOUT_LABELS_RIGHTMARGIN));
+        subtitleAnchors->setRight(_q_private->right());
+        subtitleAnchors->setRightMargin(UCUnits::instance().gu(SLOTSLAYOUT_LABELS_RIGHTMARGIN));
+        subsubtitleAnchors->setRight(_q_private->right());
+        subsubtitleAnchors->setRightMargin(UCUnits::instance().gu(SLOTSLAYOUT_LABELS_RIGHTMARGIN));
     }
 }
 
