@@ -27,31 +27,30 @@ import QtQuick 2.4
 QtObject {
     /*!
       1-based value identifying the column the metrics to be applied to.
+      \internal
       */
-    property int column
+    property int __column
 
     /*!
       Specifies whether the width of the column should fill the available space
-      of the MultiColumnView column or not. Defaults to \a false.
+      of the AdaptivePageLayout column or not. Defaults to \a false.
       */
     property bool fillWidth: false
 
     /*!
-      Specifies the minimum width of the column. If the value is greater than
-      \b MultiColumnView::defaultColumnWidth, the value will be set as width for
-      the column.
+      Specifies the minimum width of the column. Defaults to 0.
       */
     property real minimumWidth: 0
 
     /*!
-      Specifies the maximum width of the column. If the value is smaller than
-      \b MultiColumnView::defaultColumnWidth, the value will be set as width for
-      the column. A maximum value of 0 will be ignored.
+      Specifies the maximum width of the column. A maximum value of 0 will be ignored.
+      Defaults to the maximum positive value.
       */
     property real maximumWidth: Number.POSITIVE_INFINITY
 
     /*!
       Specifies the preferred width of the column when the layout is initialized.
+      Defaults to 0. Unless \l fillWidth is set, the value must be set.
       */
-    property real preferredWidth
+    property real preferredWidth: 0
 }

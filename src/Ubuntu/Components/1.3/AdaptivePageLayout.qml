@@ -476,7 +476,7 @@ PageTreeNode {
     Component {
         id: defaultMetrics
         PageColumn {
-            fillWidth: column == d.columns
+            fillWidth: __column == d.columns
             minimumWidth: d.defaultColumnWidth
         }
     }
@@ -498,7 +498,7 @@ PageTreeNode {
 
             Layout.fillWidth: metrics.fillWidth
             Layout.fillHeight: true
-            Layout.preferredWidth: metrics.maximumWidth > 0 ?
+            Layout.preferredWidth: metrics.preferredWidth > 0 ?
                                        MathUtils.clamp(metrics.preferredWidth, metrics.minimumWidth, metrics.maximumWidth) :
                                        d.defaultColumnWidth
             Layout.minimumWidth: metrics.minimumWidth
@@ -608,7 +608,7 @@ PageTreeNode {
 
             function setDefaultMetrics() {
                 var result = defaultMetrics.createObject(holder);
-                result.column = Qt.binding(function() { return holder.column + 1; });
+                result.__column = Qt.binding(function() { return holder.column + 1; });
                 return result;
             }
         }
