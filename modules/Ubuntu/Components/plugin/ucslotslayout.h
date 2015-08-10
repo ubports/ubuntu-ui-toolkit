@@ -4,6 +4,26 @@
 #include <QtQuick/QQuickItem>
 #include "private/qquicktext_p.h"
 
+class UCSlotsAttached : public QObject
+{
+    Q_OBJECT
+    Q_ENUMS(Position)
+    Q_PROPERTY(Position position READ position WRITE setPosition NOTIFY positionChanged)
+
+public:
+    UCSlotsAttached(QObject *object);
+
+    enum Position { Leading, Trailing };
+    Position position() const;
+    void setPosition(Position pos);
+
+Q_SIGNALS:
+    void positionChanged();
+
+private:
+    Position m_position;
+};
+
 class UCSlotsLayoutPrivate;
 
 class UCSlotsLayout : public QQuickItem

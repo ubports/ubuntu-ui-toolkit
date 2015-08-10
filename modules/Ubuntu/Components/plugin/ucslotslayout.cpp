@@ -3,8 +3,25 @@
 #include "ucslotslayout_p.h"
 #include "ucfontutils.h"
 
+
+UCSlotsAttached::UCSlotsAttached(QObject *object)
+    : QObject(object)
+{
+}
+
+UCSlotsAttached::Position UCSlotsAttached::position() const {
+    return m_position;
+}
+
+void UCSlotsAttached::setPosition(Position pos) {
+    if (m_position != pos) {
+        m_position = pos;
+        Q_EMIT positionChanged();
+    }
+}
+
 /******************************************************************************
- * ListItemPrivate
+ * UCSlotsLayoutPrivate
  */
 UCSlotsLayoutPrivate::UCSlotsLayoutPrivate()
     : QQuickItemPrivate()
@@ -338,7 +355,6 @@ void UCSlotsLayout::componentComplete() {
 
 void UCSlotsLayout::itemChange(ItemChange change, const ItemChangeData &data)
 {    
-
     Q_D(UCSlotsLayout);
 
     switch (change) {
