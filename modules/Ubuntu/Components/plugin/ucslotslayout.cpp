@@ -6,18 +6,57 @@
 
 UCSlotsAttached::UCSlotsAttached(QObject *object)
     : QObject(object)
+    , m_position(UCSlotsLayout::Trailing)
+    , m_leftMargin(UCUnits::instance().gu(SLOTSLAYOUT_DEFAULTSLOTSIDEMARGINS_GU))
+    , m_rightMargin(UCUnits::instance().gu(SLOTSLAYOUT_DEFAULTSLOTSIDEMARGINS_GU))
 {
+    //FIXME: if the user defines SlotsLayout.leftMargin and then GU changes, we will overwrite it!
+    //But how to avoid that? We should check if the user has initizalized leftMargin, but how?
+    //Maybe we should cache the old GU value and check if the margins value were modified?
+    QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this, SLOT(updateGuValues()));
 }
 
-UCSlotsAttached::Position UCSlotsAttached::position() const {
+UCSlotsLayout::UCSlotPosition UCSlotsAttached::position() const {
     return m_position;
 }
 
-void UCSlotsAttached::setPosition(Position pos) {
+void UCSlotsAttached::setPosition(UCSlotsLayout::UCSlotPosition pos) {
     if (m_position != pos) {
         m_position = pos;
         Q_EMIT positionChanged();
     }
+}
+
+qreal UCSlotsAttached::leftMargin() const {
+    return m_leftMargin;
+}
+
+void UCSlotsAttached::setLeftMargin(qreal margin) {
+    if (m_leftMargin != margin) {
+        m_leftMargin = margin;
+        Q_EMIT leftMarginChanged();
+    }
+}
+
+qreal UCSlotsAttached::rightMargin() const {
+    return m_rightMargin;
+}
+
+void UCSlotsAttached::setRightMargin(qreal margin) {
+    if (m_rightMargin != margin) {
+        m_rightMargin = margin;
+        Q_EMIT rightMarginChanged();
+    }
+}
+
+void UCSlotsAttached::updateGuValues() {
+    setLeftMargin(UCUnits::instance().gu(SLOTSLAYOUT_DEFAULTSLOTSIDEMARGINS_GU));
+    setRightMargin(UCUnits::instance().gu(SLOTSLAYOUT_DEFAULTSLOTSIDEMARGINS_GU));
+}
+
+UCSlotsAttached* UCSlotsLayout::qmlAttachedProperties(QObject *object)
+{
+    return new UCSlotsAttached(object);
 }
 
 /******************************************************************************
@@ -26,6 +65,7 @@ void UCSlotsAttached::setPosition(Position pos) {
 UCSlotsLayoutPrivate::UCSlotsLayoutPrivate()
     : QQuickItemPrivate()
     , ready(false)
+    , pressedItem(0)
     , maxChildrenRectHeight(0)
     , _q_cachedHeight(-1)
     , m_parentItem(0)
@@ -241,38 +281,55 @@ void UCSlotsLayoutPrivate::_q_relayout() {
     QList<QQuickItem*> trailingSlots;
     int currentX = 0;
     int totalWidth = 0;
-    QVariant position;
+
     //reorder children and assign them to the sorted list
     for (int i=0; i<q->children().length(); i++) {
-        //only consider items having the "position" property, we don't want to enforce using SlotQML types
-        //but at the same time we want to avoid random items (such as the style)
-        position = q->children().at(i)->property("position");
-        if (!position.isValid()) continue;
+        //get the attached property, creating it if it wasn't defined already
+        UCSlotsAttached *attached =
+                qobject_cast<UCSlotsAttached*>(qmlAttachedPropertiesObject<UCSlotsLayout>(q->children().at(i)));
 
+        if (!attached) {
+            qDebug() << "SlotsLayout: Invalid attaching type!";
+            continue;
+        }
+
+        //if (!position.isValid()) continue;
         //TODO: IGNORE INVISIBLE CHILDREN?
 
-        if (!position.toString().compare("Slot.Leading")) {
+        if (attached->position() == UCSlotsLayout::Leading) {
             //FIXME: is this safe?
             leadingSlots.append(reinterpret_cast<QQuickItem*>(q->children().at(i)));
-            totalWidth += q->children().at(i)->property("width").toInt();
-        } else if (!q->children().at(i)->property("position").toString().compare("Slot.Trailing")) {
+            totalWidth += q->children().at(i)->property("width").toInt() + attached->leftMargin() + attached->rightMargin();
+        } else if (attached->position() == UCSlotsLayout::Trailing) {
             trailingSlots.append(reinterpret_cast<QQuickItem*>(q->children().at(i)));
-            totalWidth += q->children().at(i)->property("width").toInt();
+            totalWidth += q->children().at(i)->property("width").toInt() + attached->leftMargin() + attached->rightMargin();
         } else {
-            qDebug() << "SlotsLayout: unrecognized position value, please use Slot.Leading or Slot.Trailing";
+            qDebug() << "SlotsLayout: unrecognized position value, please use SlotsLayout.Leading or SlotsLayout.Trailing";
         }
     }
 
     QQuickItemPrivate* _q_private = QQuickItemPrivate::get(q);
 
     for (int i=0; i<leadingSlots.length(); i++) {
+        UCSlotsAttached *attached =
+                qobject_cast<UCSlotsAttached*>(qmlAttachedPropertiesObject<UCSlotsLayout>(leadingSlots.at(i)));
+
         QQuickItemPrivate* item = QQuickItemPrivate::get((QQuickItem*) leadingSlots.at(i));
+
+        item->anchors()->setTop(_q_private->top());
+        item->anchors()->setTopMargin(UCUnits::instance().gu(IMPLICIT_SLOTSLAYOUT_MARGIN));
+
         if (i==0) {
             item->anchors()->setLeft(_q_private->left());
+            item->anchors()->setLeftMargin(attached->leftMargin());
         } else {
+            UCSlotsAttached *attachedPreviousItem =
+                    qobject_cast<UCSlotsAttached*>(qmlAttachedPropertiesObject<UCSlotsLayout>(trailingSlots.at(i-1)));
+
             item->anchors()->setLeft(QQuickItemPrivate::get((QQuickItem*) leadingSlots.at(i-1))->right());
+            item->anchors()->setLeftMargin(attachedPreviousItem->rightMargin() + attached->leftMargin());
         }
-        currentX += item->x + item->width;
+        currentX += item->x + item->width + attached->leftMargin() + attached->rightMargin();
     }
 
     int numberOfLeadingSlots = leadingSlots.length();
@@ -285,9 +342,21 @@ void UCSlotsLayoutPrivate::_q_relayout() {
     QQuickAnchors* subtitleAnchors = QQuickItemPrivate::get(&m_subtitle)->anchors();
     QQuickAnchors* subsubtitleAnchors = QQuickItemPrivate::get(&m_subsubtitle)->anchors();
     qreal labelBoxWidth = q->width() - totalWidth - UCUnits::instance().gu(SLOTSLAYOUT_LABELS_RIGHTMARGIN);
+
     titleAnchors->setLeft(labelsLeftAnchor);
     subtitleAnchors->setLeft(labelsLeftAnchor);
     subsubtitleAnchors->setLeft(labelsLeftAnchor);
+
+    if (numberOfLeadingSlots != 0) {
+        UCSlotsAttached *attachedLastLeadingSlot =
+                qobject_cast<UCSlotsAttached*>(qmlAttachedPropertiesObject<UCSlotsLayout>(leadingSlots.last()));
+
+        titleAnchors->setLeftMargin(attachedLastLeadingSlot->rightMargin());
+        subtitleAnchors->setLeftMargin(attachedLastLeadingSlot->rightMargin());
+        subsubtitleAnchors->setLeftMargin(attachedLastLeadingSlot->rightMargin());
+    } else {
+        //DO WE WANT LEFT MARGIN FOR THE LABELS WHEN THERE ARE NO LEADING SLOTS?
+    }
 
     //center the labels vertically
     //titleAnchors->setTopMargin((q->height() - labelsBoundingBoxHeight) / 2.0);
@@ -298,8 +367,8 @@ void UCSlotsLayoutPrivate::_q_relayout() {
 
     if (numberOfTrailingSlots != 0) {
         //it could be that in the previous relayout there were no trailing actions, and now there are.
-        //in that case, we have to reset the anchors of the labels as they won't anchors their right
-        //anymore, it's the first trailing slot that will anchors its left anchor to the labels
+        //in that case, we have to reset the anchors of the labels as they won't anchor their right
+        //anymore, it's the first trailing slot that will anchor its left-anchor to the labels
         titleAnchors->resetRight();
         titleAnchors->resetRightMargin();
         subtitleAnchors->resetRight();
@@ -313,15 +382,26 @@ void UCSlotsLayoutPrivate::_q_relayout() {
 
         for (int i=0; i<trailingSlots.length(); i++) {
             QQuickItemPrivate* item = QQuickItemPrivate::get((QQuickItem*) trailingSlots.at(i));
+
+            UCSlotsAttached *attached =
+                    qobject_cast<UCSlotsAttached*>(qmlAttachedPropertiesObject<UCSlotsLayout>(trailingSlots.at(i)));
+
+            item->anchors()->setTop(_q_private->top());
+            item->anchors()->setTopMargin(UCUnits::instance().gu(IMPLICIT_SLOTSLAYOUT_MARGIN));
+
             if (i==0) {
                 item->anchors()->setLeft(QQuickItemPrivate::get(&m_title)->right());
                 //the 2GU right margin of the labels is treated as left margin of the first trailing slot
                 //because labels don't have a right anchor set up here!
-                item->anchors()->setLeftMargin(UCUnits::instance().gu(SLOTSLAYOUT_LABELS_RIGHTMARGIN));
+                item->anchors()->setLeftMargin(UCUnits::instance().gu(SLOTSLAYOUT_LABELS_RIGHTMARGIN) + attached->leftMargin());
             } else {
+                UCSlotsAttached *attachedPreviousItem =
+                        qobject_cast<UCSlotsAttached*>(qmlAttachedPropertiesObject<UCSlotsLayout>(trailingSlots.at(i-1)));
+
                 item->anchors()->setLeft(QQuickItemPrivate::get((QQuickItem*) trailingSlots.at(i-1))->right());
+                item->anchors()->setLeftMargin(attachedPreviousItem->rightMargin() + attached->leftMargin());
             }
-            currentX += item->x + item->width;
+            currentX += item->x + item->width + attached->leftMargin() + attached->rightMargin();
         }
     } else {
         titleAnchors->setRight(_q_private->right());
@@ -339,6 +419,8 @@ UCSlotsLayout::UCSlotsLayout(QQuickItem *parent) :
     setFlag(ItemHasContents);
     Q_D(UCSlotsLayout);
     d->init();
+
+    setAcceptedMouseButtons(Qt::LeftButton);
 }
 
 void UCSlotsLayout::componentComplete() {
@@ -421,4 +503,56 @@ QQuickText* UCSlotsLayout::subsubtitleItem() const {
     return (QQuickText* const) &(d->m_subsubtitle);
 }
 
+void UCSlotsLayout::mousePressEvent(QMouseEvent *event) {
+    QQuickItem::mousePressEvent(event);
+
+    //TODO: do we want something like UCStyledItemBase::requestFocus here?
+    //requestFocus(Qt::MouseFocusReason);
+
+    Q_D(UCSlotsLayout);
+
+    if (!contains(event->localPos())) {
+        qDebug() << "PRESS EVENT OUTSIDE OF SLOTSLAYOUT REGION, IGNORING.";
+        return;
+    }
+
+    //TODO: do something more efficient? Using a spatial data structure maybe?
+    //Just iterate through all the children and see if the press falls within the area of any of them
+    for (int i=0; i<children().length(); i++) {
+        QQuickItem* currChild = static_cast<QQuickItem*>(children().at(i));
+        UCSlotsAttached *attachedSlot =
+                qobject_cast<UCSlotsAttached*>(qmlAttachedPropertiesObject<UCSlotsLayout>(children().at(i)));
+
+        //we just check X, as according to the UX spec the touch region goes top-to-bottom
+        //so checking the y is not needed
+        if ((event->x() >= currChild->x() - attachedSlot->leftMargin())
+                && (event->x() <= currChild->x() + currChild->width() + attachedSlot->rightMargin())) {
+            //child found
+            event->setAccepted(true);
+            d->pressedItem = currChild;
+            return;
+        }
+    }
+
+    //the press event didn't fall inside the touch region of any slot
+    event->setAccepted(false);
+}
+
+void UCSlotsLayout::mouseReleaseEvent(QMouseEvent *event) {
+    QQuickItem::mousePressEvent(event);
+    Q_D(UCSlotsLayout);
+
+    if (d->pressedItem) {
+        UCSlotsAttached *attachedSlot =
+                qobject_cast<UCSlotsAttached*>(qmlAttachedPropertiesObject<UCSlotsLayout>(d->pressedItem));
+
+        //emit the signal if the release event falls inside the touch region of the pressedItem
+        if ((event->x() >= d->pressedItem->x() - attachedSlot->leftMargin())
+                && (event->x() <= d->pressedItem->x() + d->pressedItem->width() + attachedSlot->rightMargin())) {
+            Q_EMIT slotClicked(d->pressedItem);
+        }
+    }
+
+    d->pressedItem = 0;
+}
 #include "moc_ucslotslayout.cpp"

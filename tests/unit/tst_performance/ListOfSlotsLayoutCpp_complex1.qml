@@ -25,9 +25,9 @@ Column {
         model: 5000
         ListItem {
             SlotsLayoutCpp {
-                SlotQML { position: "Slot.Leading"; Item { width: units.gu(2) } }
-                SlotQML { Item { width: units.gu(2) } }
-                SlotQML { Item { width: units.gu(2) } }
+                Item { SlotsLayoutCpp.position: SlotsLayoutCpp.Leading; width: units.gu(2) }
+                Item { SlotsLayoutCpp.position: SlotsLayoutCpp.Trailing; width: units.gu(2) }
+                Item { SlotsLayoutCpp.position: SlotsLayoutCpp.Trailing; width: units.gu(2) }
                 titleItem.text: "test"
                 subtitleItem.text: "test"
             }

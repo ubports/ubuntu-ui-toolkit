@@ -182,7 +182,7 @@ Template {
             }
         }*/
 
-        ListItem {
+        /*ListItem {
             id: listItem
 
             //FIXME: do we like this?
@@ -208,7 +208,7 @@ Template {
                 SlotQML {
                     position: "Slot.Leading"
                     //handleInnerItemPosition: false
-                    CheckBox { /*y: layout.titleItem.y; anchors.horizontalCenter: parent.horizontalCenter*/ }
+                    CheckBox { }
                 }
 
                 SlotQML {
@@ -410,6 +410,8 @@ Template {
                 id: layout6
 
                 SlotQML {
+                    SlotsLayoutCpp.position: SlotsLayoutCpp.Trailing
+
                     position: "Slot.Trailing"
                     CheckBox { }
                 }
@@ -455,6 +457,41 @@ Template {
 
                 titleItem.text: "TestTitle"
                 subtitleItem.text: "TestSubtitle"
+            }
+        }*/
+
+        ListItem {
+            id: listItem7
+
+            //FIXME: do we like this?
+            height: layout7.height
+
+            trailingActions: ListItemActions {
+                actions: [
+                    Action {}
+                ]
+            }
+            leadingActions: ListItemActions {
+                actions: [
+                    Action {},
+                    Action {},
+                    Action {}
+                ]
+            }
+
+            SlotsLayoutCpp {
+                id: layout7
+
+                onSlotClicked: console.log(slot, slot === checkbox)
+                CheckBox { id: checkbox; SlotsLayoutCpp.position: SlotsLayoutCpp.Trailing; width: units.gu(10); height: units.gu(10) }
+                Rectangle { width: units.gu(5); height: units.gu(5) }
+
+
+                Icon { SlotsLayoutCpp.position: SlotsLayoutCpp.Leading; width: units.gu(5); height: units.gu(5); name: "message" }
+
+                titleItem.text: "Hello designers!"
+                //subtitleItem.text:  "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
+                //subsubtitleItem.text: "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
             }
         }
 

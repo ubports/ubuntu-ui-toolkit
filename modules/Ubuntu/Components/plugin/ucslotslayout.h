@@ -4,26 +4,7 @@
 #include <QtQuick/QQuickItem>
 #include "private/qquicktext_p.h"
 
-class UCSlotsAttached : public QObject
-{
-    Q_OBJECT
-    Q_ENUMS(Position)
-    Q_PROPERTY(Position position READ position WRITE setPosition NOTIFY positionChanged)
-
-public:
-    UCSlotsAttached(QObject *object);
-
-    enum Position { Leading, Trailing };
-    Position position() const;
-    void setPosition(Position pos);
-
-Q_SIGNALS:
-    void positionChanged();
-
-private:
-    Position m_position;
-};
-
+class UCSlotsAttached;
 class UCSlotsLayoutPrivate;
 
 class UCSlotsLayout : public QQuickItem
@@ -33,6 +14,7 @@ class UCSlotsLayout : public QQuickItem
     Q_PROPERTY(QQuickText* titleItem READ titleItem CONSTANT)
     Q_PROPERTY(QQuickText* subtitleItem READ subtitleItem CONSTANT)
     Q_PROPERTY(QQuickText* subsubtitleItem READ subsubtitleItem CONSTANT)
+    Q_ENUMS(UCSlotPosition)
 
 public:
     explicit UCSlotsLayout(QQuickItem *parent = 0);
@@ -41,13 +23,22 @@ public:
     QQuickText* subtitleItem() const;
     QQuickText* subsubtitleItem() const;
 
+    enum UCSlotPosition { Leading, Trailing };
+
+    static UCSlotsAttached *qmlAttachedProperties(QObject *object);
+
 Q_SIGNALS:
+    //TODO: should this be in the pimpl?
     void relayoutNeeded();
+
+    void slotClicked(QQuickItem* slot);
 
 protected:
     Q_DECLARE_PRIVATE(UCSlotsLayout)
     void componentComplete();
     void itemChange(ItemChange change, const ItemChangeData &data);
+    void mousePressEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
 
 private:
     //this is only needed for Qt4/non-C++11, the macro expands to an empty string!
@@ -60,5 +51,40 @@ private:
 
 
 };
+
+class UCSlotsAttached : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(UCSlotsLayout::UCSlotPosition position READ position WRITE setPosition NOTIFY positionChanged)
+    Q_PROPERTY(qreal leftMargin READ leftMargin WRITE setLeftMargin NOTIFY leftMarginChanged)
+    Q_PROPERTY(qreal rightMargin READ rightMargin WRITE setRightMargin NOTIFY rightMarginChanged)
+
+public:
+    UCSlotsAttached(QObject *object);
+
+    UCSlotsLayout::UCSlotPosition position() const;
+    void setPosition(UCSlotsLayout::UCSlotPosition pos);
+
+    qreal leftMargin() const;
+    void setLeftMargin(qreal margin);
+
+    qreal rightMargin() const;
+    void setRightMargin(qreal margin);
+
+public Q_SLOTS:
+    void updateGuValues();
+
+Q_SIGNALS:
+    void positionChanged();
+    void leftMarginChanged();
+    void rightMarginChanged();
+
+private:
+    UCSlotsLayout::UCSlotPosition m_position;
+    qreal m_leftMargin;
+    qreal m_rightMargin;
+};
+
+QML_DECLARE_TYPEINFO(UCSlotsLayout, QML_HAS_ATTACHED_PROPERTIES)
 
 #endif // UCSLOTSLAYOUT_H
