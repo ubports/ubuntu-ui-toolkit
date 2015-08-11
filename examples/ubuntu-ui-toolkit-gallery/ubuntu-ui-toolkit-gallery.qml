@@ -45,14 +45,14 @@ MainView {
                 Action {
                     text: i18n.tr('Use dark theme')
                     iconName: 'torch-on'
-                    visible: theme.name == 'Ubuntu.Components.Themes.Ambiance'
-                    onTriggered: theme.name = 'Ubuntu.Components.Themes.SuruDark'
+                    visible: gallery.theme.name == 'Ubuntu.Components.Themes.Ambiance'
+                    onTriggered: gallery.theme.name = 'Ubuntu.Components.Themes.SuruDark'
                 },
                 Action {
                     text: i18n.tr('Use light theme')
                     iconName: 'torch-off'
-                    visible: theme.name == 'Ubuntu.Components.Themes.SuruDark'
-                    onTriggered: theme.name = 'Ubuntu.Components.Themes.Ambiance'
+                    visible: gallery.theme.name == 'Ubuntu.Components.Themes.SuruDark'
+                    onTriggered: gallery.theme.name = 'Ubuntu.Components.Themes.Ambiance'
                 }
             ]
 
