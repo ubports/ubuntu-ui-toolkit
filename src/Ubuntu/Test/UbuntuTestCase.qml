@@ -102,10 +102,10 @@ TestCase {
     }
 
     /*!
-        Move Mouse from x,y to distance of dx, dy divided to steps with a stepdelay (ms).
+        Move Mouse from x,y to distance of dx, dy divided to steps with a stepdelay (ms) and buttons.
     */
-    function mouseMoveSlowly(item,x,y,dx,dy,steps,stepdelay) {
-        mouseMove(item, x, y);
+    function mouseMoveSlowly(item,x,y,dx,dy,steps,stepdelay,buttons) {
+        mouseMove(item, x, y, buttons);
         var abs_dx = Math.abs(dx)
         var abs_dy = Math.abs(dy)
         var step_dx = dx / steps;
@@ -121,7 +121,7 @@ TestCase {
             if (Math.abs(iy) < abs_dy) {
                 iy += step_dy;
             }
-            mouseMove(item, x + ix, y + iy, stepdelay);
+            mouseMove(item, x + ix, y + iy, stepdelay, buttons);
         }
     }
 
@@ -164,7 +164,7 @@ TestCase {
             wait(pressTimeout);
         }
         // mouse moves are all processed immediately, without delay in between events
-        mouseMoveSlowly(item, x, y, dx, dy, steps, delay);
+        mouseMoveSlowly(item, x, y, dx, dy, steps, delay, button);
         mouseRelease(item, x + dx, y + dy, button, modifiers);
         // empty event buffer
         wait(200);
