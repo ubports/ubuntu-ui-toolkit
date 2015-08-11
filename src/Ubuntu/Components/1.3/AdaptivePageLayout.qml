@@ -498,9 +498,7 @@ PageTreeNode {
 
             Layout.fillWidth: metrics.fillWidth
             Layout.fillHeight: true
-            Layout.preferredWidth: metrics.preferredWidth > 0 ?
-                                       MathUtils.clamp(metrics.preferredWidth, metrics.minimumWidth, metrics.maximumWidth) :
-                                       d.defaultColumnWidth
+            Layout.preferredWidth: MathUtils.clamp(metrics.preferredWidth, metrics.minimumWidth, metrics.maximumWidth)
             Layout.minimumWidth: metrics.minimumWidth
             Layout.maximumWidth: metrics.maximumWidth
 

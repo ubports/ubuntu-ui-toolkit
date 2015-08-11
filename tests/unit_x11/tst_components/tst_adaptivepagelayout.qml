@@ -88,6 +88,8 @@ MainView {
 
         function test_0_API() {
             compare(defaults.primaryPage, null, "primaryPage not null by default");
+            compare(defaults.layouts.length, 0, "no layouts by default");
+            compare(defaults.columns, 1, "1 column as default");
         }
 
         function test_zzz_change_primaryPage() {
