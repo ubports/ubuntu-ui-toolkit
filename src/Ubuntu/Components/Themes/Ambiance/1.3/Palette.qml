@@ -20,7 +20,7 @@ import Ubuntu.Components.Themes 1.3
 
 Palette {
     normal {
-        background: "#EDEDED"
+        background: "#FFFFFF"
         backgroundText: "#81888888"
         base: Qt.rgba(0, 0, 0, 0.1)
         baseText: UbuntuColors.lightGrey
