@@ -579,15 +579,14 @@ PageTreeNode {
                     bottom: parent.bottom
                     right: parent.right
                 }
-                width: (column == (d.columns - 1)) || !pageWrapper ? 0 : units.dp(2)
-//                color: subHeader.dividerColor
+                width: (column == (d.columns - 1)) || !pageWrapper ? 0 : units.dp(1)
                 color: theme.palette.selected.background
                 MouseArea {
                     enabled: verticalDivider.width > 0
                     anchors {
                         fill: parent
-                        leftMargin: enabled ? units.gu(0.25) : 0
-                        rightMargin: enabled ? units.gu(0.25) : 0
+                        leftMargin: enabled ? units.dp(2) : 0
+                        rightMargin: enabled ? units.dp(2) : 0
                     }
                     cursorShape: Qt.SizeHorCursor
                     drag.axis: Drag.XAxis
