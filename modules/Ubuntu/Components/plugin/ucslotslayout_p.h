@@ -38,7 +38,7 @@ public:
     qreal labelsBoundingBoxHeight;
     //maximum height of the components (no labels) which are inside the slots, used to compute the
     //height of the layout
-    qreal maxChildrenRectHeight;
+    qreal maxChildrenHeight;
 
     //this is used so that we only call relayout if these values go from 0 to non-0,
     //not every time

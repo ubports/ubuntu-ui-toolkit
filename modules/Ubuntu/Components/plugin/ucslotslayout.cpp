@@ -66,7 +66,7 @@ UCSlotsLayoutPrivate::UCSlotsLayoutPrivate()
     : QQuickItemPrivate()
     , ready(false)
     , pressedItem(0)
-    , maxChildrenRectHeight(0)
+    , maxChildrenHeight(0)
     , _q_cachedHeight(-1)
     , m_parentItem(0)
 
@@ -236,12 +236,12 @@ void UCSlotsLayoutPrivate::_q_updateSlotsBBoxHeight() {
 
     Q_Q(UCSlotsLayout);
 
-    qreal maxSlotsChildrenHeight = 0;
+    qreal maxSlotsHeight = 0;
     for (int i=0; i<q->children().count(); i++) {
         QQuickItem* child = qobject_cast<QQuickItem*>(q->children().at(i));
-        maxSlotsChildrenHeight = qMax<int>(maxSlotsChildrenHeight, child->childrenRect().height());
+        maxSlotsHeight = qMax<int>(maxSlotsHeight, child->height());
     }
-    maxChildrenRectHeight = maxSlotsChildrenHeight;
+    maxChildrenHeight = maxSlotsHeight;
 
     _q_updateSize();
 }
@@ -256,7 +256,7 @@ void UCSlotsLayoutPrivate::_q_updateSize()
     Q_Q(UCSlotsLayout);
     QQuickItem *parent = qobject_cast<QQuickItem*>(q->parentItem());
     q->setImplicitWidth(parent ? parent->width() : UCUnits::instance().gu(IMPLICIT_SLOTSLAYOUT_WIDTH_GU));
-    q->setImplicitHeight(qMax<qreal>(maxChildrenRectHeight, labelsBoundingBoxHeight)
+    q->setImplicitHeight(qMax<qreal>(maxChildrenHeight, labelsBoundingBoxHeight)
                          + UCUnits::instance().gu(IMPLICIT_SLOTSLAYOUT_MARGIN)*2);
 
     Q_EMIT q->relayoutNeeded();
@@ -316,8 +316,11 @@ void UCSlotsLayoutPrivate::_q_relayout() {
 
         QQuickItemPrivate* item = QQuickItemPrivate::get((QQuickItem*) leadingSlots.at(i));
 
-        item->anchors()->setTop(_q_private->top());
-        item->anchors()->setTopMargin(UCUnits::instance().gu(IMPLICIT_SLOTSLAYOUT_MARGIN));
+        //FIXME: just a temporary hack to allow vertical centering of the slots
+        if (!item->anchors()->verticalCenter().item) {
+            item->anchors()->setTop(_q_private->top());
+            item->anchors()->setTopMargin(UCUnits::instance().gu(IMPLICIT_SLOTSLAYOUT_MARGIN));
+        }
 
         if (i==0) {
             item->anchors()->setLeft(_q_private->left());
@@ -386,8 +389,10 @@ void UCSlotsLayoutPrivate::_q_relayout() {
             UCSlotsAttached *attached =
                     qobject_cast<UCSlotsAttached*>(qmlAttachedPropertiesObject<UCSlotsLayout>(trailingSlots.at(i)));
 
-            item->anchors()->setTop(_q_private->top());
-            item->anchors()->setTopMargin(UCUnits::instance().gu(IMPLICIT_SLOTSLAYOUT_MARGIN));
+            if (!item->anchors()->verticalCenter().item) {
+                item->anchors()->setTop(_q_private->top());
+                item->anchors()->setTopMargin(UCUnits::instance().gu(IMPLICIT_SLOTSLAYOUT_MARGIN));
+            }
 
             if (i==0) {
                 item->anchors()->setLeft(QQuickItemPrivate::get(&m_title)->right());
@@ -443,17 +448,10 @@ void UCSlotsLayout::itemChange(ItemChange change, const ItemChangeData &data)
     case ItemChildAddedChange:
         if (data.item) {
             QObject::connect(data.item, SIGNAL(visibleChanged()), this, SLOT(_q_relayout()));
-
-            //we connect to the width change of the Slot, but for the height we use its childrenRect.height,
-            //because:
-            //- Slot component binds to OUR height, so binding on that would cause a loop
-            //- we actually care about the height of the component which is inside the Slot, not Slot's height.
-            //  In the layout process we'll then use max(componentsHeight)+margin to compute OUR height
-            //FIXME: We have to connect to childrenRectChanged as there's no way to connect to childrenRect Height change only
-            //but the signal fired when childrenRect's WIDTH changes is a problem for us, because it calls relayout but
-            //at that point data.item.width (which is what we use in the relayout) may not be updated using the new childrenrect yet
+            QObject::connect(data.item, SIGNAL(heightChanged()), this, SLOT(_q_updateSlotsBBoxHeight()));
+            //we relayout because we have to update the width of the labels
+            //TODO: do this in a separate function? do were really have to do the whole relayout?
             QObject::connect(data.item, SIGNAL(widthChanged()), this, SLOT(_q_relayout()));
-            QObject::connect(data.item, SIGNAL(childrenRectChanged(QRectF)), this, SLOT(_q_updateSlotsBBoxHeight()));
             d->_q_updateSize();
             d->_q_relayout();
         }
@@ -461,8 +459,8 @@ void UCSlotsLayout::itemChange(ItemChange change, const ItemChangeData &data)
     case ItemChildRemovedChange:
         if (data.item) {
             QObject::disconnect(data.item, SIGNAL(visibleChanged()), this, SLOT(_q_relayout()));
+            QObject::disconnect(data.item, SIGNAL(heightChanged()), this, SLOT(_q_updateSlotsBBoxHeight()));
             QObject::disconnect(data.item, SIGNAL(widthChanged()), this, SLOT(_q_relayout()));
-            QObject::disconnect(data.item, SIGNAL(childrenRectChanged(QRectF)), this, SLOT(_q_updateSlotsBBoxHeight()));
             d->_q_updateSize();
         }
         break;

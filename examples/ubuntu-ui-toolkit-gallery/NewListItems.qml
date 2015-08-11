@@ -483,15 +483,14 @@ Template {
                 id: layout7
 
                 onSlotClicked: console.log(slot, slot === checkbox)
-                CheckBox { id: checkbox; SlotsLayoutCpp.position: SlotsLayoutCpp.Trailing; width: units.gu(10); height: units.gu(10) }
-                Rectangle { width: units.gu(5); height: units.gu(5) }
+                CheckBox { id: checkbox; anchors.verticalCenter: parent.verticalCenter; width: units.gu(10); height: units.gu(10) }
+                Rectangle { anchors.verticalCenter: parent.verticalCenter; width: units.gu(5); height: units.gu(5) }
 
-
-                Icon { SlotsLayoutCpp.position: SlotsLayoutCpp.Leading; width: units.gu(5); height: units.gu(5); name: "message" }
+                Icon { SlotsLayoutCpp.position: SlotsLayoutCpp.Leading; anchors.verticalCenter: parent.verticalCenter; width: units.gu(5); height: units.gu(5); name: "message" }
 
                 titleItem.text: "Hello designers!"
-                //subtitleItem.text:  "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
-                //subsubtitleItem.text: "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
+                subtitleItem.text:  "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
+                subsubtitleItem.text: "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
             }
         }
 
