@@ -112,6 +112,16 @@ void UCSlotsLayoutPrivate::init()
     QObject::connect(&m_title, SIGNAL(textChanged(QString)), q, SLOT(_q_updateLabelsAnchorsAndBBoxHeight()));
     QObject::connect(&m_subtitle, SIGNAL(textChanged(QString)), q, SLOT(_q_updateLabelsAnchorsAndBBoxHeight()));
     QObject::connect(&m_subsubtitle, SIGNAL(textChanged(QString)), q, SLOT(_q_updateLabelsAnchorsAndBBoxHeight()));
+
+    //the height may change for many reasons, for instance:
+    //- change of fontsize
+    //- or resizing the layout until text wrapping is triggered
+    //- etc etc...
+    //so we have to monitor height change as well
+    QObject::connect(&m_title, SIGNAL(heightChanged()), q, SLOT(_q_updateLabelsAnchorsAndBBoxHeight()));
+    QObject::connect(&m_subtitle, SIGNAL(heightChanged()), q, SLOT(_q_updateLabelsAnchorsAndBBoxHeight()));
+    QObject::connect(&m_subsubtitle, SIGNAL(heightChanged()), q, SLOT(_q_updateLabelsAnchorsAndBBoxHeight()));
+
 }
 
 void UCSlotsLayoutPrivate::_q_updateCachedHeight() {
@@ -199,7 +209,7 @@ void UCSlotsLayoutPrivate::_q_updateLabelsAnchorsAndBBoxHeight() {
                                      : UCUnits::instance().gridUnit());
 
     //Update height of the labels box
-    //NOTE (FIXME? it's stuff in Qt): contentHeight is not 0 when the string is empty, its default value is "fontHeight"!
+    //NOTE (FIXME? it's stuff in Qt): height is not 0 when the string is empty, its default value is "fontHeight"!
     labelsBoundingBoxHeight = 0;
 
     bool emptyTitle = m_title.text() == "";
@@ -216,15 +226,15 @@ void UCSlotsLayoutPrivate::_q_updateLabelsAnchorsAndBBoxHeight() {
 
     if (emptySubtitle) {
         if (!emptySubsubtitle) {
-            labelsBoundingBoxHeight += m_subsubtitle.contentHeight();
+            labelsBoundingBoxHeight += m_subsubtitle.height();
         }
     } else {
         if (emptySubsubtitle) {
-            labelsBoundingBoxHeight += m_subtitle.contentHeight();
+            labelsBoundingBoxHeight += m_subtitle.height();
         } else {
             labelsBoundingBoxHeight += m_subtitle.baselineOffset()
                     + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SPACING)
-                    + m_subsubtitle.contentHeight();
+                    + m_subsubtitle.height();
         }
     }
 

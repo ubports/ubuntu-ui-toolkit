@@ -483,7 +483,7 @@ Template {
                 id: layout7
 
                 onSlotClicked: console.log(slot, slot === checkbox)
-                CheckBox { id: checkbox; anchors.verticalCenter: parent.verticalCenter; width: units.gu(10); height: units.gu(10) }
+                CheckBox { id: checkbox; anchors.verticalCenter: parent.verticalCenter; width: units.gu(5); height: units.gu(5) }
                 Rectangle { anchors.verticalCenter: parent.verticalCenter; width: units.gu(5); height: units.gu(5) }
 
                 Icon { SlotsLayoutCpp.position: SlotsLayoutCpp.Leading; anchors.verticalCenter: parent.verticalCenter; width: units.gu(5); height: units.gu(5); name: "message" }
