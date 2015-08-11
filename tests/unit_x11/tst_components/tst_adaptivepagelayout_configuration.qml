@@ -206,5 +206,24 @@ MainView {
                 compare(holder.Layout.fillWidth, data.fillWidths[i], "fillWidth mismatch for column #" + i);
             }
         }
+
+        function test_z_resize_data() {
+            return [
+                {tag: "not resizable", layout: defaultLayout, width: units.gu(60), move: units.gu(40), preResizeWidth: units.gu(40), postResizeWidth: units.gu(40)},
+                {tag: "resizable to maximum", layout: dynamicLayout, width: units.gu(60), move: units.gu(40), preResizeWidth: units.gu(25), postResizeWidth: units.gu(30)},
+            ];
+        }
+        function test_z_resize(data) {
+            layout.layouts = data.layout;
+            layout.width = data.width;
+            waitForRendering(layout);
+            // drag divider
+            var holder = findChild(layout, "ColumnHolder0");
+            verify(holder);
+            var divider = findChild(holder, "Divider");
+            verify(divider);
+            mouseDrag(divider, centerOf(divider).x, centerOf(divider).y, data.move, 0);
+            fuzzyCompare(holder.Layout.preferredWidth, data.postResizeWidth, 0.5, "resizing error");
+        }
     }
 }

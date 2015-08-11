@@ -580,6 +580,7 @@ PageTreeNode {
                 width: (column == (d.columns - 1)) || !pageWrapper ? 0 : units.dp(1)
                 color: theme.palette.selected.background
                 MouseArea {
+                    objectName: "Divider"
                     enabled: verticalDivider.width > 0
                     anchors {
                         fill: parent
