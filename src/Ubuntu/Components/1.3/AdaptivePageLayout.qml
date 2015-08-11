@@ -148,9 +148,14 @@ import "tree.js" as Tree
   \endqml
 
   A column is considered to be resizable if the \l PageColumn::minimumWidth and
-  \l PageColumn::maximumWidth configuration differs.
+  \l PageColumn::maximumWidth configuration differs. This implies that if a column
+  is not meant to be resized, it should have \l PageColumn::minimumWidth and
+  \l PageColumn::maximumWidth set to the same value. In the example above, the
+  first column can be resized to a minimum of 30, and a maximum of 60 grid units,
+  and the preferred width is set to 40 grid units. This width is set every time
+  the layout is activated.
 
-  \sa PageStack
+  \sa PageStack, PageColumnsLayout, PageColumn
 */
 
 PageTreeNode {
