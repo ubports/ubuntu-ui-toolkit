@@ -30,7 +30,7 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/ucubuntushapetexture.h \
     $$PWD/ucubuntushape.h \
     $$PWD/ucubuntushapeoverlay.h \
-    $$PWD/ucshellicon.h \
+    $$PWD/ucproportionalshape.h \
     $$PWD/inversemouseareatype.h \
     $$PWD/qquickclipboard.h \
     $$PWD/qquickmimedata.h \
@@ -89,7 +89,7 @@ SOURCES += $$PWD/plugin.cpp \
     $$PWD/quickutils.cpp \
     $$PWD/ucubuntushape.cpp \
     $$PWD/ucubuntushapeoverlay.cpp \
-    $$PWD/ucshellicon.cpp \
+    $$PWD/ucproportionalshape.cpp \
     $$PWD/inversemouseareatype.cpp \
     $$PWD/qquickclipboard.cpp \
     $$PWD/qquickmimedata.cpp \

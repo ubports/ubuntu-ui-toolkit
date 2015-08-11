@@ -49,7 +49,7 @@ Item {
             color: "white"
         }
 
-        ShellIcon {
+        ProportionalShape {
             id: shape
             anchors.centerIn: parent
             width: 300
