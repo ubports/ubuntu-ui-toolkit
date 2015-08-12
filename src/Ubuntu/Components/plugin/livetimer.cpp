@@ -81,7 +81,7 @@ LiveTimer::~LiveTimer()
     trigger every minute. Otherwise, trigger every hour until the relative time is more than a week past current time, after which
     updates are disabled.
 
-    \note Setting the frequency to \l LiveTimer.Relative will disable the timer until a \l relativeTime is set.
+    \note Setting the frequency to LiveTimer.Relative will disable the timer until a \l relativeTime is set.
 
     \endlist
 */
@@ -104,7 +104,7 @@ void LiveTimer::setFrequency(LiveTimer::Frequency frequency)
 
     This properties defines the value used for proximity evaluation when using Relative mode.
 
-    \note This property has no impact unless the \l frequency is set to \l LiveTimer.Relative
+    \note This property has no impact unless the \l frequency is set to LiveTimer.Relative
 */
 void LiveTimer::setRelativeTime(const QDateTime &relativeTime)
 {
