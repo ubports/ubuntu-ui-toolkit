@@ -1,5 +1,5 @@
 TEMPLATE = app
-TARGET = createshapeimage
+TARGET = createshapetextures
 QT += gui svg
 QMAKE_CXXFLAGS += -Werror -Wno-unused-variable
-SOURCES += createshapeimage.cpp
+SOURCES += createshapetextures.cpp

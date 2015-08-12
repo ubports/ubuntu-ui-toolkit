@@ -24,6 +24,11 @@ ListModel {
         source: "Navigation.qml"
     }
     ListElement {
+        objectName: "actionBarElement"
+        label: "ActionBar"
+        source: "ActionBars.qml"
+    }
+    ListElement {
         objectName: "colorsElement"
         label: "Colors"
         source: "Colors.qml"
@@ -80,6 +85,11 @@ ListModel {
         objectName: "iconsElement"
         label: "Icons"
         source: "Icons.qml"
+    }
+    ListElement {
+        objectName: "proportionalShapesElement"
+        label: "Proportional shapes"
+        source: "ProportionalShape.qml"
     }
     ListElement {
         objectName: "labelsElement"

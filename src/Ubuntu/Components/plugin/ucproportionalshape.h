@@ -12,12 +12,30 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Author: Loïc Molinari <loic.molinari@canonical.com>
  */
-//![0]
-import QtQuick 2.4
-import Ubuntu.Components.Themes.Ambiance 1.3
 
-MainViewStyle {
-    backgroundSource: ""
-}
-//![0]
+#ifndef UCPROPORTIONALSHAPE_H
+#define UCPROPORTIONALSHAPE_H
+
+#include "ucubuntushape.h"
+
+class UCProportionalShape : public UCUbuntuShape
+{
+    Q_OBJECT
+
+public:
+    UCProportionalShape(QQuickItem* parent=0);
+
+private Q_SLOTS:
+    void _q_updateWidth();
+    void _q_updateHeight();
+
+private:
+    Q_DISABLE_COPY(UCProportionalShape)
+};
+
+QML_DECLARE_TYPE(UCProportionalShape)
+
+#endif  // UCPROPORTIONALSHAPE_H

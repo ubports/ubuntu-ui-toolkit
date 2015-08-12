@@ -829,6 +829,7 @@ ActionItem {
         preventStealing: false
         // forward mouse events to input so we can handle those uniformly
         Ubuntu.Mouse.forwardTo: [inputHandler]
+        cursorShape: Qt.IBeamCursor
     }
 
     Text { id: fontHolder }
