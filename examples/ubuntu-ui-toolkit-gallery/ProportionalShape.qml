@@ -18,29 +18,29 @@ import QtQuick 2.4
 import Ubuntu.Components 1.3
 
 Template {
-    objectName: "shellIconsTemplate"
+    objectName: "proportionalShapesTemplate"
 
     TemplateSection {
-        title: "Shell Icon"
-        className: "ShellIcon"
+        title: "ProportionalShape"
+        className: "ProportionalShape"
 
         TemplateRow {
             title: i18n.tr("Sizes")
             titleWidth: units.gu(8)
             height: units.gu(14)
 
-            ShellIcon {
-                objectName: "shellicon_size1"
+            ProportionalShape {
+                objectName: "proportionalshape_size1"
                 source: Image { source: "map_icon.png" }
                 width: units.gu(6)
             }
-            ShellIcon {
-                objectName: "shellicon_size2"
+            ProportionalShape {
+                objectName: "proportionalshape_size2"
                 source: Image { source: "map_icon.png" }
                 width: units.gu(10)
             }
-            ShellIcon {
-                objectName: "shellicon_size3"
+            ProportionalShape {
+                objectName: "proportionalshape_size3"
                 source: Image { source: "map_icon.png" }
                 width: units.gu(14)
             }

@@ -28,7 +28,7 @@ MainView {
         Button {
             id: button
             objectName: 'button'
-            anchors.centerIn: parent
+            anchors.horizontalCenter: parent.horizontalCenter
             text: i18n.tr('Count the kilometres')
             width: units.gu(15)
         }
@@ -59,6 +59,48 @@ MainView {
             anchors.top: all2.bottom
             anchors.horizontalCenter: all2.horizontalCenter
             text: i18n.tag('All Cats', 'All')
+        }
+        Label {
+            id: timeNow
+            objectName: 'timeNow'
+            anchors.top: all3.bottom
+            anchors.horizontalCenter: all3.horizontalCenter
+            text: i18n.relativeDateTime(new Date())
+        }
+        Label {
+            id: timeMinuteBefore
+            objectName: 'timeMinuteBefore'
+            anchors.top: timeNow.bottom
+            anchors.horizontalCenter: timeNow.horizontalCenter
+            text: i18n.relativeDateTime(new Date(new Date().getTime() - 60000))
+        }
+        Label {
+            id: timeMinuteAfter
+            objectName: 'timeMinuteAfter'
+            anchors.top: timeMinuteBefore.bottom
+            anchors.horizontalCenter: timeMinuteBefore.horizontalCenter
+            text: i18n.relativeDateTime(new Date(new Date().getTime() + 60000))
+        }
+        Label {
+            id: tenMinutesBefore
+            objectName: 'tenMinutesBefore'
+            anchors.top: timeMinuteAfter.bottom
+            anchors.horizontalCenter: timeMinuteAfter.horizontalCenter
+            text: i18n.relativeDateTime(new Date(new Date().getTime() - 600000))
+        }
+        Label {
+            id: tenMinutesAfter
+            objectName: 'tenMinutesAfter'
+            anchors.top: tenMinutesBefore.bottom
+            anchors.horizontalCenter: tenMinutesBefore.horizontalCenter
+            text: i18n.relativeDateTime(new Date(new Date().getTime() + 600000))
+        }
+        Label {
+            id: timeFarAway
+            objectName: 'timeFarAway'
+            anchors.top: tenMinutesAfter.bottom
+            anchors.horizontalCenter: tenMinutesAfter.horizontalCenter
+            text: i18n.relativeDateTime(new Date(2000, 0, 1, 0, 0, 0, 0))
         }
     }
 }

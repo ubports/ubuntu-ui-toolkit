@@ -175,6 +175,7 @@ Ubuntu.StyledItem {
             anchors.fill: parent
             acceptedButtons: Qt.LeftButton
             preventStealing: true
+            cursorShape: Qt.IBeamCursor
             enabled: parent.width && parent.height && parent.visible && !handler.doubleTapInProgress
             onPressedChanged: {
                 if (!pressed) {
@@ -223,6 +224,7 @@ Ubuntu.StyledItem {
     MouseArea {
         id: dragger
         objectName: cursorItem.positionProperty + "_dragger"
+        cursorShape: Qt.IBeamCursor
         // fill the entire component area
         parent: handler.main
         anchors.fill: parent

@@ -30,7 +30,7 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/ucubuntushapetexture.h \
     $$PWD/ucubuntushape.h \
     $$PWD/ucubuntushapeoverlay.h \
-    $$PWD/ucshellicon.h \
+    $$PWD/ucproportionalshape.h \
     $$PWD/inversemouseareatype.h \
     $$PWD/qquickclipboard.h \
     $$PWD/qquickmimedata.h \
@@ -77,7 +77,10 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/ucnamespace.h \
     $$PWD/ucdeprecatedtheme.h \
     $$PWD/ucdefaulttheme.h \
-    $$PWD/ucstylehints.h
+    $$PWD/ucstylehints.h \
+    $$PWD/livetimer.h \
+    $$PWD/livetimer_p.h \
+    $$PWD/timeutils_p.h
 
 SOURCES += $$PWD/plugin.cpp \
     $$PWD/uctheme.cpp \
@@ -89,7 +92,7 @@ SOURCES += $$PWD/plugin.cpp \
     $$PWD/quickutils.cpp \
     $$PWD/ucubuntushape.cpp \
     $$PWD/ucubuntushapeoverlay.cpp \
-    $$PWD/ucshellicon.cpp \
+    $$PWD/ucproportionalshape.cpp \
     $$PWD/inversemouseareatype.cpp \
     $$PWD/qquickclipboard.cpp \
     $$PWD/qquickmimedata.cpp \
@@ -127,7 +130,9 @@ SOURCES += $$PWD/plugin.cpp \
     $$PWD/ucnamespace.cpp \
     $$PWD/ucdeprecatedtheme.cpp \
     $$PWD/ucdefaulttheme.cpp \
-    $$PWD/ucstylehints.cpp
+    $$PWD/ucstylehints.cpp \
+    $$PWD/livetimer.cpp \
+    $$PWD/livetimer_p.cpp
 
 # adapters
 SOURCES += $$PWD/adapters/alarmsadapter_organizer.cpp

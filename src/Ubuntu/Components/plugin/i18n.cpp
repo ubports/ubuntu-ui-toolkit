@@ -17,6 +17,7 @@
  */
 
 #include "i18n.h"
+#include "timeutils_p.h"
 #include <QtCore/QDir>
 
 namespace C {
@@ -251,4 +252,77 @@ QString UbuntuI18n::tag(const QString& context, const QString& text)
 {
     Q_UNUSED(context);
     return text;
+}
+/*!
+ * \qmlmethod string i18n::relativeDateTime(datetime dateTime)
+ * Translate a datetime based on proximity to current time.
+ */
+QString UbuntuI18n::relativeDateTime(const QDateTime& datetime)
+{
+    QDateTime relativeTo(QDateTime::currentDateTime());
+    const date_proximity_t prox = getDateProximity(relativeTo, datetime);
+
+    switch (prox)  {
+        case DATE_PROXIMITY_NOW:
+            /* TRANSLATORS: Time based "this is happening/happened now" */
+            return dtr("ubuntu-ui-toolkit", "Now");
+
+        case DATE_PROXIMITY_HOUR:
+        {
+            qint64 diff = datetime.toMSecsSinceEpoch() - relativeTo.toMSecsSinceEpoch();
+            qint64 minutes = qRound(float(diff) / 60000);
+            if (minutes < 0) {
+                return dtr("ubuntu-ui-toolkit", "%1 minute ago", "%1 minutes ago", qAbs(minutes)).arg(qAbs(minutes));
+            }
+            return dtr("ubuntu-ui-toolkit", "%1 minute", "%1 minutes", minutes).arg(minutes);
+        }
+
+        case DATE_PROXIMITY_TODAY:
+            /* en_US example: "1:00 PM" */
+            /* TRANSLATORS: Please translated these to your locale datetime format using the format specified by
+               https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2 */
+            return datetime.toString(isLocale12h() ? dtr("ubuntu-ui-toolkit", "h:mm ap"):
+            /* TRANSLATORS: Please translated these to your locale datetime format using the format specified by
+               https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2 */
+                                                     dtr("ubuntu-ui-toolkit", "HH:mm"));
+
+        case DATE_PROXIMITY_YESTERDAY:
+            /* en_US example: "Yesterday  13:00" */
+            /* TRANSLATORS: Please translated these to your locale datetime format using the format specified by
+               https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2 */
+            return datetime.toString(isLocale12h() ? dtr("ubuntu-ui-toolkit", "'Yesterday\u2003'h:mm ap") :
+            /* TRANSLATORS: Please translated these to your locale datetime format using the format specified by
+               https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2 */
+                                                     dtr("ubuntu-ui-toolkit", "'Yesterday\u2003'HH:mm"));
+
+        case DATE_PROXIMITY_TOMORROW:
+            /* en_US example: "Tomorrow  1:00 PM" */
+            /* TRANSLATORS: Please translated these to your locale datetime format using the format specified by
+               https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2 */
+            return datetime.toString(isLocale12h() ? dtr("ubuntu-ui-toolkit", "'Tomorrow\u2003'h:mm ap") :
+            /* TRANSLATORS: Please translated these to your locale datetime format using the format specified by
+               https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2 */
+                                                     dtr("ubuntu-ui-toolkit", "'Tomorrow\u2003'HH:mm"));
+
+        case DATE_PROXIMITY_LAST_WEEK:
+        case DATE_PROXIMITY_NEXT_WEEK:
+            /* en_US example: "Fri  1:00 PM" */
+            /* TRANSLATORS: Please translated these to your locale datetime format using the format specified by
+               https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2 */
+            return datetime.toString(isLocale12h() ? dtr("ubuntu-ui-toolkit", "ddd'\u2003'h:mm ap") :
+            /* TRANSLATORS: Please translated these to your locale datetime format using the format specified by
+               https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2 */
+                                                     dtr("ubuntu-ui-toolkit", "ddd'\u2003'HH:mm"));
+
+        case DATE_PROXIMITY_FAR_BACK:
+        case DATE_PROXIMITY_FAR_FORWARD:
+        default:
+            /* TRANSLATORS: Please translated these to your locale datetime format using the format specified by
+               https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2 */
+            return datetime.toString(isLocale12h() ? dtr("ubuntu-ui-toolkit", "ddd d MMM'\u2003'h:mm ap") :
+            /* TRANSLATORS: Please translated these to your locale datetime format using the format specified by
+               https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2 */
+                                                     dtr("ubuntu-ui-toolkit", "ddd d MMM'\u2003'HH:mm"));
+    }
+    return datetime.toString(Qt::DefaultLocaleShortDate);
 }
