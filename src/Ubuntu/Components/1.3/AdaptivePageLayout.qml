@@ -92,9 +92,8 @@ import "tree.js" as Tree
   is reached, the component will switch from one column to two, and vice versa.
   These defaults can be overridden through the \l layouts property by defining the
   possible layouts, their column sizing and the breakpoints when the layouts should
-  be activated. PageColumn configurations must appear in the same order as the
-  columns appear in the layout, and each column must have a configuration object
-  assigned.
+  be activated. PageColumn configurations must appear in the same order (from left
+  to right) as the columns appear in the layout.
 
   \qml
     import QtQuick 2.4
