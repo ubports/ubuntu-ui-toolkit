@@ -30,3 +30,46 @@ msgstr "Todas"
 msgctxt "All Cats"
 msgid "All"
 msgstr "Cada"
+
+msgid "Now"
+msgstr "tr:Now"
+
+msgid "%1 minute ago"
+msgid_plural "%1 minutes ago"
+msgstr[0] "tr:%1 minute ago"
+msgstr[1] "tr:%1 minutes ago"
+
+msgid "%1 minute"
+msgid_plural "%1 minutes"
+msgstr[0] "tr:%1 minute"
+msgstr[1] "tr:%1 minutes"
+
+msgid "h:mm ap"
+msgstr "'tr:'h:mm ap"
+
+msgid "HH:mm"
+msgstr "'tr:'HH:mm"
+
+msgid "'Yesterday 'h:mm ap"
+msgstr "'tr:esterday 'h:mm ap"
+
+msgid "'Yesterday 'HH:mm"
+msgstr "'tr:Yesterday 'HH:mm"
+
+msgid "'Tomorrow 'h:mm ap"
+msgstr "'tr:Tomorrow 'h:mm ap"
+
+msgid "'Tomorrow 'HH:mm"
+msgstr "'tr:Tomorrow 'HH:mm"
+
+msgid "ddd' 'h:mm ap"
+msgstr "'tr:'ddd' 'h:mm ap"
+
+msgid "ddd' 'HH:mm"
+msgstr "'tr:'ddd' 'HH:mm"
+
+msgid "ddd d MMM' 'h:mm ap"
+msgstr "'tr:FarAway'"
+
+msgid "ddd d MMM' 'HH:mm"
+msgstr "'tr:FarAway'"

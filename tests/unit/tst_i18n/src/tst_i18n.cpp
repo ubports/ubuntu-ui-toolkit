@@ -131,12 +131,40 @@ private Q_SLOTS:
         QQuickItem* all2(testItem(page, "all2"));
         QVERIFY(all2);
         QCOMPARE(all2->property("text").toString(), QString("All"));
+        // RelativeDateTime
+        QQuickItem* timeFarAway(testItem(page, "timeFarAway"));
+        QVERIFY(timeFarAway);
+        QCOMPARE(timeFarAway->property("text").toString(),
+                 QDateTime(QDate(2000,1,1), QTime(0,0,0,0)).toString("ddd d MMM'\u2003'HH:mm"));
+        QQuickItem* timeNow(testItem(page, "timeNow"));
+        QVERIFY(timeNow);
+        QCOMPARE(timeNow->property("text").toString(), QString("Now"));
+        QQuickItem* timeMinuteBefore(testItem(page, "timeMinuteBefore"));
+        QVERIFY(timeMinuteBefore);
+        QCOMPARE(timeMinuteBefore->property("text").toString(), QString("1 minute ago"));
+        QQuickItem* timeMinuteAfter(testItem(page, "timeMinuteAfter"));
+        QVERIFY(timeMinuteAfter);
+        QCOMPARE(timeMinuteAfter->property("text").toString(), QString("1 minute"));
+        QQuickItem* tenMinutesBefore(testItem(page, "tenMinutesBefore"));
+        QVERIFY(tenMinutesBefore);
+        QCOMPARE(tenMinutesBefore->property("text").toString(), QString("10 minutes ago"));
+        QQuickItem* tenMinutesAfter(testItem(page, "tenMinutesAfter"));
+        QVERIFY(tenMinutesAfter);
+        QCOMPARE(tenMinutesAfter->property("text").toString(), QString("10 minutes"));
 
         // There no translation happens in C++ either
         QCOMPARE(i18n->dtr(i18n->domain(), QString("Welcome")), QString("Welcome"));
         QCOMPARE(i18n->tr(QString("Count the kilometres")), QString("Count the kilometres"));
         QCOMPARE(i18n->ctr(QString("All Contacts"), QString("All")), QString("All"));
         QCOMPARE(i18n->ctr(QString("All Calls"), QString("All")), QString("All"));
+        // RelativeDateTime
+        QCOMPARE(i18n->relativeDateTime(QDateTime::currentDateTime()), QString("Now"));
+        QCOMPARE(i18n->relativeDateTime(QDateTime(QDate(2000,1,1), QTime(0,0,0,0))),
+                 QDateTime(QDate(2000,1,1), QTime(0,0,0,0)).toString("ddd d MMM'\u2003'HH:mm"));
+        QCOMPARE(i18n->relativeDateTime(QDateTime::currentDateTime().addSecs(-60)), QString("1 minute ago"));
+        QCOMPARE(i18n->relativeDateTime(QDateTime::currentDateTime().addSecs(60)), QString("1 minute"));
+        QCOMPARE(i18n->relativeDateTime(QDateTime::currentDateTime().addSecs(-600)), QString("10 minutes ago"));
+        QCOMPARE(i18n->relativeDateTime(QDateTime::currentDateTime().addSecs(600)), QString("10 minutes"));
 
         // Was the locale folder detected and set?
         QString boundDomain(C::bindtextdomain(i18n->domain().toUtf8(), ((const char*)0)));
@@ -169,6 +197,12 @@ private Q_SLOTS:
         QCOMPARE(button->property("text").toString(), QString("Count the clicks"));
         QCOMPARE(all1->property("text").toString(), QString("Todos"));
         QCOMPARE(all2->property("text").toString(), QString("Todas"));
+        QCOMPARE(timeNow->property("text").toString(), QString("tr:Now"));
+        QCOMPARE(timeMinuteBefore->property("text").toString(), QString("tr:1 minute ago"));
+        QCOMPARE(timeMinuteAfter->property("text").toString(), QString("tr:1 minute"));
+        QCOMPARE(tenMinutesBefore->property("text").toString(), QString("tr:10 minutes ago"));
+        QCOMPARE(tenMinutesAfter->property("text").toString(), QString("tr:10 minutes"));
+        QCOMPARE(timeFarAway->property("text").toString(), QString("tr:FarAway"));
         // Only tagged, not actually translated
         QQuickItem* button2(testItem(page, "button2"));
         QVERIFY(button2);
@@ -182,6 +216,12 @@ private Q_SLOTS:
         QCOMPARE(i18n->tr(QString("Count the kilometres")), QString("Count the clicks"));
         QCOMPARE(i18n->ctr(QString("All Contacts"), QString("All")), QString("Todos"));
         QCOMPARE(i18n->ctr(QString("All Calls"), QString("All")), QString("Todas"));
+        QCOMPARE(i18n->relativeDateTime(QDateTime::currentDateTime()), QString("tr:Now"));
+        QCOMPARE(i18n->relativeDateTime(QDateTime(QDate(2000,1,1), QTime(0,0,0,0))),  QString("tr:FarAway"));
+        QCOMPARE(i18n->relativeDateTime(QDateTime::currentDateTime().addSecs(-60)), QString("tr:1 minute ago"));
+        QCOMPARE(i18n->relativeDateTime(QDateTime::currentDateTime().addSecs(60)), QString("tr:1 minute"));
+        QCOMPARE(i18n->relativeDateTime(QDateTime::currentDateTime().addSecs(-600)), QString("tr:10 minutes ago"));
+        QCOMPARE(i18n->relativeDateTime(QDateTime::currentDateTime().addSecs(600)), QString("tr:10 minutes"));
         // Only tagged, not actually translated
         QCOMPARE(i18n->tag(QString("All kittens")), QString("All kittens"));
         QCOMPARE(i18n->tag(QString("All Cats"), QString("All")), QString("All"));
