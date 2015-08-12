@@ -4,9 +4,11 @@ ubuntu-ui-toolkit (1.3.1593+15.10.20150730-0ubuntu2) UNRELEASED; urgency=medium
   * Use grid units in Icons in the showcase gallery. Fixes LP: #1481489
   * Disable header buttons when the header is animating. Fixes LP: #1478147
   * Add ActionBar examples to the gallery.
+  * Make the default MainView background plain white. Fixes LP: #1481834 
 
   [ Zsombor Egri ]
   * Fixing swiping over active components. Fixes LP: #1479688.
+  * Fixing broken BottomEdgeHint gallery page.
 
   [ Zoltán Balogh ]
   * Fix packaging question marks / issues. Fixes LP: #1481584
@@ -23,6 +25,23 @@ ubuntu-ui-toolkit (1.3.1593+15.10.20150730-0ubuntu2) UNRELEASED; urgency=medium
     correct rendering when rotated using the rotation property of the Item, 
     but that is a different issue. Fixes LP: #1466656.
   * UbuntuShape - Added a DropShadow aspect. Fixes LP: #1478129.
+  * Renamed ShellIcon to ProportionalShape.
+  * UbuntuShape - Added an ShellIcon item. Fixes LP: #1478130
+
+  [ Nick Dedekind ]
+  * Added LiveTimer.
+
+  [ Christian Dywan ]
+  * Grab focus when Dialog is shown.
+  * Set Qt.IBeamCursor on text component MouseArea's. Fixes LP: #1483823
+  * Make automaticOrientation on MainView a no-op. Fixes LP: #1470258
+  * Fix warnings on undefine theme.name in gallery
+    examples/ubuntu-ui-toolkit-gallery/ubuntu-ui-toolkit-gallery.qml:48:
+      TypeError: Cannot read property of null.
+
+  [ Ken VanDine ]
+  * Don't fail if MainView doesn't have a useDeprecatedToolbar property
+    Fixes LP: #1451243
 
  -- Zoltán Balogh <zoltan@bakter.hu>  Thu, 06 Aug 2015 19:58:03 +0300
 

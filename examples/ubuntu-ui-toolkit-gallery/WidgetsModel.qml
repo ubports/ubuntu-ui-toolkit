@@ -87,6 +87,11 @@ ListModel {
         source: "Icons.qml"
     }
     ListElement {
+        objectName: "proportionalShapesElement"
+        label: "Proportional shapes"
+        source: "ProportionalShape.qml"
+    }
+    ListElement {
         objectName: "labelsElement"
         label: "Label"
         source: "Label.qml"

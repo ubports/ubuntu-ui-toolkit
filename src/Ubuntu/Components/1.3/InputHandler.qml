@@ -400,6 +400,7 @@ MultiPointTouchArea {
         acceptedButtons: Qt.RightButton
         // trigger pressAndHold
         onReleased: openContextMenu(mouse, true, false)
+        cursorShape: Qt.IBeamCursor
     }
     Keys.onMenuPressed: inputHandler.pressAndHold(input.cursorPosition, false);
 
