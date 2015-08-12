@@ -18,7 +18,7 @@ import logging
 
 from autopilot import logging as autopilot_logging
 
-from ubuntuuitoolkit._custom_proxy_objects import _common
+from ubuntuuitoolkit._custom_proxy_objects import _common, _mainview
 
 logger = logging.getLogger(__name__)
 
@@ -78,6 +78,26 @@ class TextField(_common.UbuntuUIToolkitCustomProxyObjectBase):
             self._delete_one_character()
         if not self.is_empty():
             raise _common.ToolkitException('Failed to clear the text field.')
+
+    @autopilot_logging.log_action(logger.debug)
+    def _select_all(self):
+        if not self._is_all_text_selected():
+            if self._is_keyboard_osk():
+                cursor = self.select_single('TextCursor', visible=True)
+                self.pointing_device.click_object(
+                    cursor, time_between_events=0.5)
+                self.pointing_device.click_object(
+                    cursor, time_between_events=0.5)
+                root = self.get_root_instance()
+                main_view = root.select_single(_mainview.MainView)
+                popover = main_view.get_text_input_context_menu(
+                    'text_input_contextmenu')
+                popover.click_option_by_text('Select All')
+            else:
+                self._go_to_start()
+                self.keyboard.press('Shift')
+                self._go_to_end()
+                self.keyboard.release('Shift')
 
     def _is_all_text_selected(self):
         return self.text == self.selectedText
