@@ -16,7 +16,6 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 1.3
-import Ubuntu.Components.ListItems 1.3 as ListItem
 import Ubuntu.Components.Popups 1.3
 import Qt.labs.folderlistmodel 2.1
 
@@ -32,47 +31,47 @@ Template {
 
             Icon {
                 name: "call-start"
-                width: 16
-                height: 16
+                width: units.gu(2)
+                height: width
                 anchors.verticalCenter: parent.verticalCenter
             }
 
             Icon {
                 name: "call-start"
-                width: 48
-                height: 48
+                width: units.gu(6)
+                height: width
                 anchors.verticalCenter: parent.verticalCenter
             }
 
             Icon {
                 name: "call-start"
-                width: 96
-                height: 96
+                width: units.gu(12)
+                height: width
             }
         }
 
         TemplateRow {
-            title: i18n.tr("Colorization")
+            title: i18n.tr("Color")
             spacing: units.gu(2)
 
             Icon {
                 name: "stock_alarm-clock"
-                width: 24
-                height: 24
+                width: units.gu(3)
+                height: width
             }
 
             Icon {
                 name: "stock_alarm-clock"
                 color: UbuntuColors.orange
-                width: 24
-                height: 24
+                width: units.gu(3)
+                height: width
             }
 
             Icon {
                 name: "stock_alarm-clock"
                 color: UbuntuColors.lightAubergine
-                width: 24
-                height: 24
+                width: units.gu(3)
+                height: width
             }
         }
 
@@ -97,26 +96,44 @@ Template {
                     Icon {
                         id: themedIcon
                         name: fileBaseName || ""
-                        width: 24
-                        height: 24
+                        width: units.gu(3)
+                        height: width
                         MouseArea {
                             anchors.fill: parent
-                            onClicked: PopupUtils.open(iconPop, themedIcon, { 'icon': themedIcon.name })
+                            onClicked: PopupUtils.open(iconPop, themedIcon, { 'iconName': themedIcon.name })
                         }
                         Component {
                             id: iconPop
                             Popover {
                                 id: iconPopover
-                                property string icon: "N/A"
+                                property string iconName: "N/A"
+                                Item {
+                                    anchors {
+                                        left: parent.left
+                                        right: parent.right
+                                    }
+                                    height: units.gu(6)
+                                    UbuntuShape {
+                                        id: iconShape
+                                        anchors {
+                                            left: parent.left
+                                            top: parent.top
+                                            bottom: parent.bottom
+                                        }
+                                        width: units.gu(6)
+                                        Icon {
+                                            anchors.fill: parent
+                                            name: iconPopover.iconName
+                                        }
+                                    }
 
-                                Column {
-                                    anchors.top: parent.top
-                                    anchors.left: parent.left
-                                    anchors.right: parent.right
-
-                                    ListItem.Standard {
-                                        iconName: iconPopover.icon
-                                        text: iconPopover.icon
+                                    Label {
+                                        anchors {
+                                            verticalCenter: parent.verticalCenter
+                                            left: iconShape.right
+                                            leftMargin: units.gu(1)
+                                        }
+                                        text: iconPopover.iconName
                                     }
                                 }
                             }

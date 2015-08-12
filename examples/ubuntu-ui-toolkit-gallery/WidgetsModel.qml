@@ -29,6 +29,11 @@ ListModel {
         source: "Navigation.qml"
     }
     ListElement {
+        objectName: "actionBarElement"
+        label: "ActionBar"
+        source: "ActionBars.qml"
+    }
+    ListElement {
         objectName: "colorsElement"
         label: "Colors"
         source: "Colors.qml"
@@ -87,6 +92,11 @@ ListModel {
         source: "Icons.qml"
     }
     ListElement {
+        objectName: "proportionalShapesElement"
+        label: "Proportional shapes"
+        source: "ProportionalShape.qml"
+    }
+    ListElement {
         objectName: "labelsElement"
         label: "Label"
         source: "Label.qml"
@@ -95,6 +105,11 @@ ListModel {
         objectName: "crossFadeImageElement"
         label: "CrossFadeImage"
         source: "CrossFadeImage.qml"
+    }
+    ListElement {
+        objectName: "bottomEdgeHintElement"
+        label: "Bottom Edge Hint"
+        source: "BottomEdgeHint.qml"
     }
 
     // Already in design guidelines but should be reordered
