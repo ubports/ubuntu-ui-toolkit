@@ -90,7 +90,7 @@ import "tree.js" as Tree
   layout exceeds 80 grid units. The first column is sized to 40 grid unit width and
   the second one to fill the rest of the remaining space. When the 80 grid unit breakpoint
   is reached, the component will switch from one column to two, and vice versa.
-  These defaults can be overridden throug the \l layouts property by defining the
+  These defaults can be overridden through the \l layouts property by defining the
   possible layouts, their column sizing and the breakpoints when the layouts should
   be activated. PageColumn configurations must appear in the same order as the
   columns appear in the layout, and each column must have a configuration object
