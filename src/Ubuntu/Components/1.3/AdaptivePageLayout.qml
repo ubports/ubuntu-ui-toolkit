@@ -494,7 +494,7 @@ PageTreeNode {
             property PageWrapper pageWrapper
             property int column
             property alias config: subHeader.config
-            property PageColumn metrics: setDefaultMetrics()
+            property PageColumn metrics: getDefaultMetrics()
 
             Layout.fillWidth: metrics.fillWidth
             Layout.fillHeight: true
@@ -604,7 +604,7 @@ PageTreeNode {
                 return wrapper;
             }
 
-            function setDefaultMetrics() {
+            function getDefaultMetrics() {
                 var result = defaultMetrics.createObject(holder);
                 result.__column = Qt.binding(function() { return holder.column + 1; });
                 return result;
@@ -663,7 +663,7 @@ PageTreeNode {
                 // search for the column metrics
                 var metrics = d.activeLayout ? d.activeLayout.data[i] : null;
                 if (!metrics) {
-                    metrics = holder.setDefaultMetrics();
+                    metrics = holder.getDefaultMetrics();
                 }
                 holder.metrics = metrics;
                 updateHeaderHeight(0);
