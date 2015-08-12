@@ -27,6 +27,7 @@
 #include <QtQml/QQmlContext>
 #include "i18n.h"
 #include "listener.h"
+#include "livetimer.h"
 #include "ucunits.h"
 #include "ucscalingimageprovider.h"
 #include "ucqquickimageextension.h"
@@ -218,6 +219,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCAction, 1>(uri, 1, 3, "Action");
     qmlRegisterType<UCUbuntuShape, 2>(uri, 1, 3, "UbuntuShape");
     qmlRegisterType<UCProportionalShape>(uri, 1, 3, "ProportionalShape");
+    qmlRegisterType<LiveTimer>(uri, 1, 3, "LiveTimer");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
