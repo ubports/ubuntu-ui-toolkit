@@ -65,7 +65,7 @@ MainView {
             objectName: 'timeNow'
             anchors.top: all3.bottom
             anchors.horizontalCenter: all3.horizontalCenter
-            text: i18n.tr('Now')//.relativeDateTime(new Date())
+            text: i18n.relativeDateTime(new Date())
         }
         Label {
             id: timeMinuteBefore

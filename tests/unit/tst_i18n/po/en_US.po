@@ -51,7 +51,7 @@ msgid "HH:mm"
 msgstr "'tr:'HH:mm"
 
 msgid "'Yesterday 'h:mm ap"
-msgstr "'tr:esterday 'h:mm ap"
+msgstr "'tr:Yesterday 'h:mm ap"
 
 msgid "'Yesterday 'HH:mm"
 msgstr "'tr:Yesterday 'HH:mm"
