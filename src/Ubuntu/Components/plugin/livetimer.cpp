@@ -17,6 +17,37 @@
 #include "livetimer.h"
 #include "livetimer_p.h"
 
+/*! \qmltype LiveTimer
+    \instantiates LiveTimer
+    \inqmlmodule Ubuntu.Components 1.3
+    \ingroup ubuntu
+    \since Ubuntu.Components 1.3
+    \brief A live timing source providing peridioc updates.
+
+    The LiveTimer is a source for periodic signals triggered on second/minute/hour boundaries. The
+    timer can also be set up to provide signals with an increasing frequency the closer a given time
+    is to current time.
+
+    Examples:
+
+    \qml
+    import Ubuntu.Components 1.3
+
+    LiveTimer {
+        frequency: LiveTimer.Second
+        onTrigger: console.log("The time is now", new Date().toString());
+    }
+    \endqml
+
+    \qml
+    import Ubuntu.Components 1.3
+
+    LiveTimer {
+        frequency: LiveTimer.Relative
+        relativeTime: new Date()
+    }
+    \endqml
+*/
 LiveTimer::LiveTimer(QObject *parent)
     : QObject(parent)
     , m_frequency(Disabled)
@@ -30,11 +61,30 @@ LiveTimer::~LiveTimer()
     unregisterTimer();
 }
 
-LiveTimer::Frequency LiveTimer::frequency() const
-{
-    return m_frequency;
-}
+/*!
+ * \qmlsignal LiveTimer::trigger()
+ * Signal called when the timer is triggered
+ */
 
+/*! \qmlproperty enumeration LiveTimer::frequency
+    \since Ubuntu.Components 1.3
+
+    This properties defines the frequency at which the LiveTimer signals notifications.
+
+    \list
+    \li \b LiveTimer.Disabled - disable the LiveTimer \l trigger signal
+    \li \b LiveTimer.Second - emit the \l trigger signal on every change of second.
+    \li \b LiveTimer.Minute - emit the \l trigger signal on every change of minute.
+    \li \b LiveTimer.Hour - emit the \l trigger signal on every change of hour.
+    \li \b LiveTimer.Relative - emit the \l trigger signal periodically depending on how close current time is to to
+    \l relativeTime. If \l relativeTime is within 30 seconds of the current time, trigger every 30 seconds. Within an hour,
+    trigger every minute. Otherwise, trigger every hour until the relative time is more than a week past current time, after which
+    updates are disabled.
+
+    \note Setting the frequency to \l LiveTimer.Relative will disable the timer until a \l relativeTime is set.
+
+    \endlist
+*/
 void LiveTimer::setFrequency(LiveTimer::Frequency frequency)
 {
     if (m_frequency != frequency) {
@@ -49,11 +99,13 @@ void LiveTimer::setFrequency(LiveTimer::Frequency frequency)
     }
 }
 
-QDateTime LiveTimer::relativeTime() const
-{
-    return m_relativeTime;
-}
+/*! \qmlproperty datetime LiveTimer::relativeTime
+    \since Ubuntu.Components 1.3
 
+    This properties defines the value used for proximity evaluation when using Relative mode.
+
+    \note This property has no impact unless the \l frequency is set to \l LiveTimer.Relative
+*/
 void LiveTimer::setRelativeTime(const QDateTime &relativeTime)
 {
     if (m_relativeTime != relativeTime) {
@@ -68,11 +120,6 @@ void LiveTimer::setRelativeTime(const QDateTime &relativeTime)
             }
         }
     }
-}
-
-LiveTimer::Frequency LiveTimer::effectiveFrequency() const
-{
-    return m_effectiveFrequency;
 }
 
 void LiveTimer::registerTimer()

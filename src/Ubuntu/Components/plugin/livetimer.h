@@ -38,13 +38,13 @@ public:
         Relative = 4
     };
 
-    Frequency frequency() const;
+    Frequency frequency() const { return m_frequency; }
     void setFrequency(Frequency frequency);
 
-    QDateTime relativeTime() const;
+    QDateTime relativeTime() const { return m_relativeTime; }
     void setRelativeTime(const QDateTime& relativeTime);
 
-    Frequency effectiveFrequency() const;
+    Frequency effectiveFrequency() const { return m_effectiveFrequency; }
 
 Q_SIGNALS:
     void frequencyChanged();
