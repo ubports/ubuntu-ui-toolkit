@@ -308,11 +308,11 @@ void UCSlotsLayoutPrivate::_q_relayout() {
 
         if (attached->position() == UCSlotsLayout::Leading) {
             //FIXME: is this safe?
-            leadingSlots.append(reinterpret_cast<QQuickItem*>(q->children().at(i)));
-            totalWidth += q->children().at(i)->property("width").toInt() + attached->leftMargin() + attached->rightMargin();
+            leadingSlots.append(static_cast<QQuickItem*>(q->children().at(i)));
+            totalWidth += static_cast<QQuickItem*>(q->children().at(i))->width()+ attached->leftMargin() + attached->rightMargin();
         } else if (attached->position() == UCSlotsLayout::Trailing) {
-            trailingSlots.append(reinterpret_cast<QQuickItem*>(q->children().at(i)));
-            totalWidth += q->children().at(i)->property("width").toInt() + attached->leftMargin() + attached->rightMargin();
+            trailingSlots.append(static_cast<QQuickItem*>(q->children().at(i)));
+            totalWidth += static_cast<QQuickItem*>(q->children().at(i))->width() + attached->leftMargin() + attached->rightMargin();
         } else {
             qDebug() << "SlotsLayout: unrecognized position value, please use SlotsLayout.Leading or SlotsLayout.Trailing";
         }
@@ -339,7 +339,7 @@ void UCSlotsLayoutPrivate::_q_relayout() {
             UCSlotsAttached *attachedPreviousItem =
                     qobject_cast<UCSlotsAttached*>(qmlAttachedPropertiesObject<UCSlotsLayout>(trailingSlots.at(i-1)));
 
-            item->anchors()->setLeft(QQuickItemPrivate::get((QQuickItem*) leadingSlots.at(i-1))->right());
+            item->anchors()->setLeft(QQuickItemPrivate::get(static_cast<QQuickItem*>(leadingSlots.at(i-1)))->right());
             item->anchors()->setLeftMargin(attachedPreviousItem->rightMargin() + attached->leftMargin());
         }
         currentX += item->x + item->width + attached->leftMargin() + attached->rightMargin();
@@ -348,7 +348,7 @@ void UCSlotsLayoutPrivate::_q_relayout() {
     int numberOfLeadingSlots = leadingSlots.length();
     int numberOfTrailingSlots = trailingSlots.length();
 
-    QQuickAnchorLine labelsLeftAnchor = numberOfLeadingSlots ? QQuickItemPrivate::get((QQuickItem*) leadingSlots.at(numberOfLeadingSlots-1))->right()
+    QQuickAnchorLine labelsLeftAnchor = numberOfLeadingSlots ? QQuickItemPrivate::get(static_cast<QQuickItem*>(leadingSlots.at(numberOfLeadingSlots-1)))->right()
                                                              : _q_private->left();
 
     QQuickAnchors* titleAnchors = QQuickItemPrivate::get(&m_title)->anchors();
@@ -394,7 +394,7 @@ void UCSlotsLayoutPrivate::_q_relayout() {
         m_subsubtitle.setWidth(labelBoxWidth);
 
         for (int i=0; i<trailingSlots.length(); i++) {
-            QQuickItemPrivate* item = QQuickItemPrivate::get((QQuickItem*) trailingSlots.at(i));
+            QQuickItemPrivate* item = QQuickItemPrivate::get(static_cast<QQuickItem*>(trailingSlots.at(i)));
 
             UCSlotsAttached *attached =
                     qobject_cast<UCSlotsAttached*>(qmlAttachedPropertiesObject<UCSlotsLayout>(trailingSlots.at(i)));
@@ -413,7 +413,7 @@ void UCSlotsLayoutPrivate::_q_relayout() {
                 UCSlotsAttached *attachedPreviousItem =
                         qobject_cast<UCSlotsAttached*>(qmlAttachedPropertiesObject<UCSlotsLayout>(trailingSlots.at(i-1)));
 
-                item->anchors()->setLeft(QQuickItemPrivate::get((QQuickItem*) trailingSlots.at(i-1))->right());
+                item->anchors()->setLeft(QQuickItemPrivate::get(static_cast<QQuickItem*>(trailingSlots.at(i-1)))->right());
                 item->anchors()->setLeftMargin(attachedPreviousItem->rightMargin() + attached->leftMargin());
             }
             currentX += item->x + item->width + attached->leftMargin() + attached->rightMargin();
@@ -498,6 +498,7 @@ void UCSlotsLayout::itemChange(ItemChange change, const ItemChangeData &data)
 
 QQuickText* UCSlotsLayout::titleItem() const {
     Q_D(const UCSlotsLayout);
+    //FIXME: is this safe? We're throwing away the const qualifier of d->m_title
     return (QQuickText* const) &(d->m_title);
 }
 
