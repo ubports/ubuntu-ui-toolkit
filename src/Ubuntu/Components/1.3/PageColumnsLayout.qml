@@ -111,5 +111,5 @@ QtObject {
       Default property holding the PageColumn elements configuring each column.
       */
     default property alias data: layout.__data
-    property list<PageColumn> __data//: [PageColumn{}]
+    property list<PageColumn> __data
 }
