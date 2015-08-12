@@ -203,4 +203,4 @@ int main(int argc, char *argv[])
     return QTest::qExec(static_cast<QObject*>(testObject), argc, argv);
 }
 
-#include "tst_I18n_LocalizedApp.moc"
+#include "tst_i18n_LocalizedApp.moc"

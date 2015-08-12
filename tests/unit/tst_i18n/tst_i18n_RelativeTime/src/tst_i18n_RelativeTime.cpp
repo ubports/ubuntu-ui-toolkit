@@ -1,6 +1,6 @@
 
 /*
- * Copyright 2012-2013 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Author: Christian Dywan <christian.dywan@canonical.com>
+ * Author: Nick Dedekind <nick.dedekind@gmail.com>
  */
 
 #include <QtCore/QString>
@@ -77,11 +77,11 @@ private Q_SLOTS:
     {
         // Set test locale folder in the environment
         // Using setenv because QProcessEnvironment ignores changes
-        QString testAppDir(QDir::currentPath() + "/relativeTime");
+        QString testAppDir(QDir::currentPath() + "/ubuntu-ui-toolkit");
         setenv("APP_DIR", testAppDir.toUtf8(), 1);
 
         // Verify that we set it correctly
-        QVERIFY(QFileInfo(testAppDir + "/share/locale/en/LC_MESSAGES/relativeTime.mo").exists());
+        QVERIFY(QFileInfo(testAppDir + "/share/locale/en/LC_MESSAGES/ubuntu-ui-toolkit.mo").exists());
 
         QString modules(UBUNTU_QML_IMPORT_PATH);
         QVERIFY(QDir(modules).exists());
@@ -149,19 +149,15 @@ private Q_SLOTS:
 
         // Was the locale folder detected and set?
         QString boundDomain(C::bindtextdomain(i18n->domain().toUtf8(), ((const char*)0)));
-        QString testAppDir(QDir::currentPath() + "/relativeTime");
+        QString testAppDir(QDir::currentPath() + "/ubuntu-ui-toolkit");
         QString expectedLocalePath(QDir(testAppDir).filePath("share/locale"));
         QCOMPARE(boundDomain, expectedLocalePath);
         // Is the domain gettext uses correct?
         QString gettextDomain(C::textdomain(((const char*)0)));
         QCOMPARE(gettextDomain, i18n->domain());
         // Is the compiled en_US message catalog in the right location?
-        QString messageCatalog(boundDomain + "/en/LC_MESSAGES/relativeTime.mo");
+        QString messageCatalog(boundDomain + "/en/LC_MESSAGES/ubuntu-ui-toolkit.mo");
         QVERIFY(QFileInfo(messageCatalog).exists());
-
-        /* For manual testing one can do something like
-            env LANGUAGE=en_US TEXTDOMAINDIR=./tests/unit/tst_i18n/locale/ gettext relativeTime 'Welcome'
-        */
 
         // Check if system has en_US locale, otherwise gettext won't work
         QProcess localeA;
@@ -180,13 +176,6 @@ private Q_SLOTS:
         QCOMPARE(tenMinutesBefore->property("text").toString(), QString("tr:10 minutes ago"));
         QCOMPARE(tenMinutesAfter->property("text").toString(), QString("tr:10 minutes"));
         QCOMPARE(timeFarAway->property("text").toString(), QString("tr:FarAway"));
-        // Only tagged, not actually translated
-        QQuickItem* button2(testItem(page, "button2"));
-        QVERIFY(button2);
-        QCOMPARE(button2->property("text").toString(), QString("Count the kittens"));
-        QQuickItem* all3(testItem(page, "all3"));
-        QVERIFY(all3);
-        QCOMPARE(all3->property("text").toString(), QString("All"));
 
         // Translate in C++
         QCOMPARE(i18n->relativeDateTime(QDateTime::currentDateTime()), QString("tr:Now"));
@@ -210,4 +199,4 @@ int main(int argc, char *argv[])
     return QTest::qExec(static_cast<QObject*>(testObject), argc, argv);
 }
 
-#include "tst_I18n_RelativeTime.moc"
+#include "tst_i18n_RelativeTime.moc"

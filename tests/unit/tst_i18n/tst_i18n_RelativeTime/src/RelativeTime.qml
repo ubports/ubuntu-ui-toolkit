@@ -20,6 +20,7 @@ import Ubuntu.Components 1.3
 MainView {
     width: units.gu(48)
     height: units.gu(60)
+    applicationName: "ubuntu-ui-toolkit"
 
     Page {
         objectName: 'page'
@@ -27,8 +28,8 @@ MainView {
         Label {
             id: timeNow
             objectName: 'timeNow'
-            anchors.top: all3.bottom
-            anchors.horizontalCenter: all3.horizontalCenter
+            anchors.top: parent.top
+            anchors.horizontalCenter: parent.horizontalCenter
             text: i18n.relativeDateTime(new Date())
         }
         Label {

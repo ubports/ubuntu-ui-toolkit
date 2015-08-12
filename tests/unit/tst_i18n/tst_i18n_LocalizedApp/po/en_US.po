@@ -1,0 +1,32 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Christian Dywan <christian.dywan@canonical.com>\n"
+"Language-Team: \n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Welcome"
+msgstr "Greets"
+
+msgid "Count the kilometres"
+msgstr "Count the clicks"
+
+msgid "Count the kittens"
+msgstr "Contar los gatitos"
+
+msgctxt "All Contacts"
+msgid "All"
+msgstr "Todos"
+
+msgctxt "All Calls"
+msgid "All"
+msgstr "Todas"
+
+msgctxt "All Cats"
+msgid "All"
+msgstr "Cada"
