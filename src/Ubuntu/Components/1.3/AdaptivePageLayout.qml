@@ -93,7 +93,8 @@ import "tree.js" as Tree
   These defaults can be overridden through the \l layouts property by defining the
   possible layouts, their column sizing and the breakpoints when the layouts should
   be activated. PageColumn configurations must appear in the same order (from left
-  to right) as the columns appear in the layout.
+  to right) as the columns appear in the layout. If none of the layouts condition
+  is met, a one column layout will be used.
 
   \qml
     import QtQuick 2.4
