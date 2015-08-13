@@ -73,9 +73,8 @@ class TextField(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
     @autopilot_logging.log_action(logger.debug)
     def _clear_with_keys(self):
-        self._go_to_end()
-        while self.text != '':
-            self._delete_one_character()
+        self._select_all()
+        self.keyboard.press_and_release('\b')
         if not self.is_empty():
             raise _common.ToolkitException('Failed to clear the text field.')
 
@@ -121,13 +120,6 @@ class TextField(_common.UbuntuUIToolkitCustomProxyObjectBase):
             Keyboard().send_home_key()
         else:
             self.keyboard.press_and_release('Home')
-
-    @autopilot_logging.log_action(logger.debug)
-    def _delete_one_character(self):
-        original_text = self.text
-        self.keyboard.press_and_release('\b')
-        if len(self.text) != len(original_text) - 1:
-            raise _common.ToolkitException('Failed to delete one character.')
 
     @autopilot_logging.log_action(logger.debug)
     def _ensure_focused(self):
