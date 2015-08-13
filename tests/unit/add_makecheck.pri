@@ -5,4 +5,15 @@
 check.target = check
 check.commands += cd $$_PRO_FILE_PWD_;
 check.commands += env LD_LIBRARY_PATH=$${ROOT_BUILD_DIR}/qml/Ubuntu/Components:$${ROOT_BUILD_DIR}/qml/Ubuntu/Layouts:$${ROOT_BUILD_DIR}/qml/Ubuntu/PerformanceMetrics:$${ROOT_BUILD_DIR}/qml/Ubuntu/Test UITK_TEST_KEEP_RUNNING=1
-check.commands += '$${ROOT_SOURCE_DIR}/tests/unit/runtest.sh "$$shadowed($$_PRO_FILE_PWD_)/$${TARGET}" "$$shadowed($$_PRO_FILE_PWD_)/$${TARGET}" minimal';
+
+TEST_COMMAND = '$${ROOT_SOURCE_DIR}/tests/unit/runtest.sh "$$shadowed($$_PRO_FILE_PWD_)/$${TARGET}" "$$shadowed($$_PRO_FILE_PWD_)/$${TARGET}"'
+
+message($$TEST_COMMAND)
+
+# if "CONFIG += custom_qpa" is set, use our custom QPA plugin for the test
+custom_qpa {
+    check.commands += env QT_QPA_PLATFORM_PLUGIN_PATH=$${ROOT_BUILD_DIR}/tests/unit/custom_qpa
+    check.commands += '$$TEST_COMMAND custom';
+} else {
+    check.commands += '$$TEST_COMMAND minimal';
+}
