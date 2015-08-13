@@ -461,6 +461,14 @@ Template {
         }*/
 
         ListItem {
+            id: listItemTestMouse
+            MouseArea {
+                anchors.fill: parent
+                onPressed: mouse.accepted = false
+            }
+
+        }
+        ListItem {
             id: listItem7
 
             //FIXME: do we like this?
@@ -491,6 +499,124 @@ Template {
                 titleItem.text: "Hello designers!"
                 subtitleItem.text:  "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
                 subsubtitleItem.text: "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
+            }
+        }
+
+
+        ListItem {
+            id: addressbookListItem
+
+            height: addressbookLayout.height
+
+            SlotsLayoutCpp {
+                id: addressbookLayout
+
+                Rectangle {
+                    SlotsLayoutCpp.position: SlotsLayoutCpp.Leading
+                    color: "pink"
+                    height: units.gu(6)
+                    width: height
+                    visible: width > 0
+                }
+
+                titleItem.color: UbuntuColors.lightAubergine
+                titleItem.text: "Address book list item: Name goes here"
+            }
+        }
+
+
+        ListItem {
+            id: addressbookDetailsListItem
+
+            height: addressbookDetailsLayout.height
+
+            SlotsLayoutCpp {
+                id: addressbookDetailsLayout
+
+                titleItem.color: UbuntuColors.lightAubergine
+                titleItem.text: "+44 7349845928 (3)"
+
+                subtitleItem.text: "Mobile"
+
+                Rectangle {
+                    SlotsLayoutCpp.position: SlotsLayoutCpp.Leading
+                    color: "pink"
+                    height: units.gu(6)
+                    width: height
+                    visible: width > 0
+                }
+
+                Item {
+                    anchors.top: parent.titleItem.top
+                    anchors.bottom: parent.subtitleItem.bottom
+                    width: childrenRect.width
+
+                    Label {
+                        text: "19:17"
+                        fontSize: "small"
+                        y: addressbookDetailsLayout.titleItem
+                    }
+
+                    Label {
+                        text: "19:17"
+                        fontSize: "small"
+                        anchors.top: parent.sub
+                    }
+                }
+            }
+        }
+
+
+        ListItem {
+            id: dialerHistoryListItem
+
+            height: dialerHistoryLayout.height
+
+            SlotsLayoutCpp {
+                id: dialerHistoryLayout
+
+                titleItem.color: UbuntuColors.lightAubergine
+                titleItem.text: "+44 7552342512"
+
+                subtitleItem.text: "Mobile"
+
+                Icon {
+                    name: "message"
+                    height: units.gu(2)
+                }
+
+                Icon {
+                    name: "call-start"
+                    height: units.gu(2)
+                }
+            }
+        }
+        ListItem {
+            id: telegramContactsListItem
+
+            height: telegramContactsLayout.height
+
+            SlotsLayoutCpp {
+                id: telegramContactsLayout
+
+                titleItem.text: "Telegram Name goes here"
+                titleItem.font.pixelSize: FontUtils.sizeToPixels("large")
+                //color: TelegramColors.black
+                //verticalAlignment: TextInput.AlignVCenter
+
+                subtitleItem.text: "last seen 12:02"
+                subtitleItem.font.pixelSize: FontUtils.sizeToPixels("medium")
+                //subtitleItem.color: isOnline ? TelegramColors.dark_blue : TelegramColors.grey
+                //subtitleItem.elide: Text.ElideRight
+                //subtitleItem.verticalAlignment: TextInput.AlignVCenter
+
+                Rectangle {
+                    id: imageShape
+                    SlotsLayoutCpp.position: SlotsLayoutCpp.Leading
+                    height: units.gu(6)
+                    width: height
+                    color: "red"
+                }
             }
         }
 

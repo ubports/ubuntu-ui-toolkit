@@ -4,12 +4,14 @@
 #include <QtQuick/private/qquickitem_p.h>
 #include "ucslotslayout.h"
 
-#define IMPLICIT_SLOTSLAYOUT_WIDTH_GU          40
-#define IMPLICIT_SLOTSLAYOUT_HEIGHT_GU         7
-#define IMPLICIT_SLOTSLAYOUT_MARGIN            2
-#define SLOTSLAYOUT_LABELS_SPACING             1
-#define SLOTSLAYOUT_LABELS_RIGHTMARGIN         2
-#define SLOTSLAYOUT_DEFAULTSLOTSIDEMARGINS_GU  2
+#define IMPLICIT_SLOTSLAYOUT_WIDTH_GU             40
+#define IMPLICIT_SLOTSLAYOUT_HEIGHT_GU            7
+#define SLOTSLAYOUT_LABELS_SPACING                1
+#define SLOTSLAYOUT_LABELS_RIGHTMARGIN            2
+#define SLOTSLAYOUT_DEFAULTSLOTSIDEMARGINS_GU     2
+#define SLOTSLAYOUT_DEFAULTLAYOUTSIDEMARGINS_GU   2
+//we want a different top/bottom margin if any of the slot is taller than this
+#define SLOTSLAYOUT_TOPBOTTOMMARGIN_SIZETHRESHOLD 4
 
 class UCSlotsLayoutPrivate : QQuickItemPrivate
 {
@@ -18,6 +20,7 @@ public:
     UCSlotsLayoutPrivate();
     virtual ~UCSlotsLayoutPrivate();
     void init();
+    qreal topBottomMargin();
 
     static inline UCSlotsLayoutPrivate *get(UCSlotsLayout *that)
     {

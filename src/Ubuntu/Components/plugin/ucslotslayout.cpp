@@ -124,6 +124,12 @@ void UCSlotsLayoutPrivate::init()
 
 }
 
+qreal UCSlotsLayoutPrivate::topBottomMargin() {
+    return (maxChildrenHeight > labelsBoundingBoxHeight && maxChildrenHeight > UCUnits::instance().gu(SLOTSLAYOUT_TOPBOTTOMMARGIN_SIZETHRESHOLD))
+            ? UCUnits::instance().gu(1.0)
+            : UCUnits::instance().gu(2.0);
+}
+
 void UCSlotsLayoutPrivate::_q_updateCachedHeight() {
     Q_Q(UCSlotsLayout);
     if (_q_cachedHeight != q->height()) {
@@ -267,7 +273,7 @@ void UCSlotsLayoutPrivate::_q_updateSize()
     QQuickItem *parent = qobject_cast<QQuickItem*>(q->parentItem());
     q->setImplicitWidth(parent ? parent->width() : UCUnits::instance().gu(IMPLICIT_SLOTSLAYOUT_WIDTH_GU));
     q->setImplicitHeight(qMax<qreal>(maxChildrenHeight, labelsBoundingBoxHeight)
-                         + UCUnits::instance().gu(IMPLICIT_SLOTSLAYOUT_MARGIN)*2);
+                         + topBottomMargin()*2);
 
     Q_EMIT q->relayoutNeeded();
 }
@@ -289,7 +295,7 @@ void UCSlotsLayoutPrivate::_q_relayout() {
 
     QList<QQuickItem*> leadingSlots;
     QList<QQuickItem*> trailingSlots;
-    int currentX = 0;
+    //int currentX = 0;
     int totalWidth = 0;
 
     //reorder children and assign them to the sorted list
@@ -329,7 +335,7 @@ void UCSlotsLayoutPrivate::_q_relayout() {
         //FIXME: just a temporary hack to allow vertical centering of the slots
         if (!item->anchors()->verticalCenter().item) {
             item->anchors()->setTop(_q_private->top());
-            item->anchors()->setTopMargin(UCUnits::instance().gu(IMPLICIT_SLOTSLAYOUT_MARGIN));
+            item->anchors()->setTopMargin(topBottomMargin());
         }
 
         if (i==0) {
@@ -342,7 +348,7 @@ void UCSlotsLayoutPrivate::_q_relayout() {
             item->anchors()->setLeft(QQuickItemPrivate::get(static_cast<QQuickItem*>(leadingSlots.at(i-1)))->right());
             item->anchors()->setLeftMargin(attachedPreviousItem->rightMargin() + attached->leftMargin());
         }
-        currentX += item->x + item->width + attached->leftMargin() + attached->rightMargin();
+        //currentX += item->x + item->width + attached->leftMargin() + attached->rightMargin();
     }
 
     int numberOfLeadingSlots = leadingSlots.length();
@@ -354,7 +360,6 @@ void UCSlotsLayoutPrivate::_q_relayout() {
     QQuickAnchors* titleAnchors = QQuickItemPrivate::get(&m_title)->anchors();
     QQuickAnchors* subtitleAnchors = QQuickItemPrivate::get(&m_subtitle)->anchors();
     QQuickAnchors* subsubtitleAnchors = QQuickItemPrivate::get(&m_subsubtitle)->anchors();
-    qreal labelBoxWidth = q->width() - totalWidth - UCUnits::instance().gu(SLOTSLAYOUT_LABELS_RIGHTMARGIN);
 
     titleAnchors->setLeft(labelsLeftAnchor);
     subtitleAnchors->setLeft(labelsLeftAnchor);
@@ -368,15 +373,20 @@ void UCSlotsLayoutPrivate::_q_relayout() {
         subtitleAnchors->setLeftMargin(attachedLastLeadingSlot->rightMargin());
         subsubtitleAnchors->setLeftMargin(attachedLastLeadingSlot->rightMargin());
     } else {
-        //DO WE WANT LEFT MARGIN FOR THE LABELS WHEN THERE ARE NO LEADING SLOTS?
+        titleAnchors->setLeftMargin(UCUnits::instance().gu(SLOTSLAYOUT_DEFAULTLAYOUTSIDEMARGINS_GU));
+        subtitleAnchors->setLeftMargin(UCUnits::instance().gu(SLOTSLAYOUT_DEFAULTLAYOUTSIDEMARGINS_GU));
+        subsubtitleAnchors->setLeftMargin(UCUnits::instance().gu(SLOTSLAYOUT_DEFAULTLAYOUTSIDEMARGINS_GU));
     }
 
-    //center the labels vertically
-    //titleAnchors->setTopMargin((q->height() - labelsBoundingBoxHeight) / 2.0);
-    //new behaviour, latest visual design
-    titleAnchors->setTopMargin(UCUnits::instance().gu(IMPLICIT_SLOTSLAYOUT_MARGIN));
 
-    currentX += labelBoxWidth + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_RIGHTMARGIN);
+    //new visual design rules
+    if (maxChildrenHeight > labelsBoundingBoxHeight) {
+        titleAnchors->setTopMargin((q->height() - labelsBoundingBoxHeight) / 2.0);
+    } else {
+        titleAnchors->setTopMargin(topBottomMargin());
+    }
+
+    //currentX += labelBoxWidth + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_RIGHTMARGIN);
 
     if (numberOfTrailingSlots != 0) {
         //it could be that in the previous relayout there were no trailing actions, and now there are.
@@ -389,6 +399,8 @@ void UCSlotsLayoutPrivate::_q_relayout() {
         subsubtitleAnchors->resetRight();
         subsubtitleAnchors->resetRightMargin();
 
+        //labels have no right anchor in this case, so we can't use rightMargin()
+        qreal labelBoxWidth = q->width() - totalWidth - titleAnchors->leftMargin() - UCUnits::instance().gu(SLOTSLAYOUT_LABELS_RIGHTMARGIN);
         m_title.setWidth(labelBoxWidth);
         m_subtitle.setWidth(labelBoxWidth);
         m_subsubtitle.setWidth(labelBoxWidth);
@@ -401,7 +413,7 @@ void UCSlotsLayoutPrivate::_q_relayout() {
 
             if (!item->anchors()->verticalCenter().item) {
                 item->anchors()->setTop(_q_private->top());
-                item->anchors()->setTopMargin(UCUnits::instance().gu(IMPLICIT_SLOTSLAYOUT_MARGIN));
+                item->anchors()->setTopMargin(topBottomMargin());
             }
 
             if (i==0) {
@@ -416,7 +428,7 @@ void UCSlotsLayoutPrivate::_q_relayout() {
                 item->anchors()->setLeft(QQuickItemPrivate::get(static_cast<QQuickItem*>(trailingSlots.at(i-1)))->right());
                 item->anchors()->setLeftMargin(attachedPreviousItem->rightMargin() + attached->leftMargin());
             }
-            currentX += item->x + item->width + attached->leftMargin() + attached->rightMargin();
+            //currentX += item->x + item->width + attached->leftMargin() + attached->rightMargin();
         }
     } else {
         titleAnchors->setRight(_q_private->right());
@@ -525,8 +537,8 @@ void UCSlotsLayout::mousePressEvent(QMouseEvent *event) {
         return;
     }
 
-    //TODO: do something more efficient? Using a spatial data structure maybe?
     //Just iterate through all the children and see if the press falls within the area of any of them
+    //TODO: do something more efficient? Using a spatial data structure maybe?
     for (int i=0; i<children().length(); i++) {
         QQuickItem* currChild = static_cast<QQuickItem*>(children().at(i));
         UCSlotsAttached *attachedSlot =
