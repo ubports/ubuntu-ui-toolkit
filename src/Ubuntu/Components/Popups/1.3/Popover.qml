@@ -210,7 +210,7 @@ PopupBase {
         objectName: "popover_foreground"
 
         //styling properties
-        property real minimumWidth: units.gu(25)
+        property real minimumWidth: units.gu(40)
 
         property real maxWidth: dismissArea ? (internal.portrait ? dismissArea.width : dismissArea.width * 3/4) : 0.0
         property real maxHeight: dismissArea ? (internal.portrait ? dismissArea.height * 3/4 : dismissArea.height) : 0.0
