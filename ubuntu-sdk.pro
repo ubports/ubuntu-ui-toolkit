@@ -11,7 +11,7 @@ load(qt_parts)
 SUBDIRS += po documentation
 
 #when standalone we always want tests to be built
-force_independent{
+!build_with_qt{
     sub_tests.CONFIG -= no_default_target
     sub_tests.CONFIG -= no_default_install
 }
