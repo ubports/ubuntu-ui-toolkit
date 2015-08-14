@@ -592,8 +592,8 @@ PageTreeNode {
                     enabled: verticalDivider.width > 0
                     anchors {
                         fill: parent
-                        leftMargin: enabled ? units.gu(1) : 0
-                        rightMargin: enabled ? units.gu(1) : 0
+                        leftMargin: enabled ? -units.gu(1) : 0
+                        rightMargin: enabled ? -units.gu(1) : 0
                     }
                     cursorShape: Qt.SizeHorCursor
                     drag {
