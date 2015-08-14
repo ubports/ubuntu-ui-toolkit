@@ -86,6 +86,67 @@ import "tree.js" as Tree
   AdaptivePageLayout supports adaptive column handling. When the number of columns changes at
   runtime the pages are automatically rearranged.
 
+  By default the component splits the layout in two columns when the width of the
+  layout exceeds 80 grid units. The first column is sized to 40 grid unit width and
+  the second one to fill the rest of the remaining space. When the 80 grid unit breakpoint
+  is reached, the component will switch from one column to two, and vice versa.
+  These defaults can be overridden through the \l layouts property by defining the
+  possible layouts, their column sizing and the breakpoints when the layouts should
+  be activated. PageColumn configurations must appear in the same order (from left
+  to right) as the columns appear in the layout. If none of the layouts condition
+  is met, a one column layout will be used.
+
+  \qml
+    import QtQuick 2.4
+    import Ubuntu.Components 1.3
+
+    MainView {
+        width: units.gu(100)
+        height: units.gu(60)
+
+        AdaptivePageLayout {
+            anchors.fill: parent
+            primaryPage: page1
+            layouts: PageColumnsLayout {
+                when: width > units.gu(80)
+                // column #0
+                PageColumn {
+                    minimumWidth: units.gu(30)
+                    maximumWidth: units.gu(60)
+                    preferredWidth: units.gu(40)
+                }
+                // column #1
+                PageColumn {
+                    fillWidth: true
+                }
+            }
+
+            Page {
+                id: page1
+                title: "Main page"
+                Column {
+                    Button {
+                        text: "Add Page2 above " + page1.title
+                        onClicked: page1.pageStack.addPageToCurrentColumn(page1, page2)
+                    }
+                    Button {
+                        text: "Add Page3 next to " + page1.title
+                        onClicked: page1.pageStack.addPageToNextColumn(page1, page3)
+                    }
+                }
+            }
+            Page {
+                id: page2
+                title: "Page #2"
+            }
+            Page {
+                id: page3
+                title: "Page #3"
+            }
+        }
+    }
+  \endqml
+
   \sa PageStack
 */
 
@@ -111,6 +172,20 @@ PageTreeNode {
       component completion.
       */
     property Page primaryPage
+
+    /*!
+      \qmlproperty int columns
+      \readonly
+      The property holds the number of columns shown in the layout.
+      */
+    readonly property alias columns: d.columns
+
+    /*!
+      The property holds the different layout configurations overriding the default
+      configurations. Defaults to an empty list.
+      \sa PageColumnsLayout
+      */
+    property list<PageColumnsLayout> layouts
 
     /*!
       \qmlmethod Item addPageToCurrentColumn(Item sourcePage, var page[, var properties])
@@ -168,7 +243,12 @@ PageTreeNode {
       */
 
     Component.onCompleted: {
-        d.relayout();
+        // check layout configuration
+        if (layouts.length > 0) {
+            d.prepareLayouts();
+        } else {
+            d.relayout();
+        }
         d.completed = true;
         if (primaryPage) {
             var wrapper = d.createWrapper(primaryPage);
@@ -183,6 +263,13 @@ PageTreeNode {
             return;
         }
     }
+    onLayoutsChanged: {
+        if (d.completed) {
+            // only deal with this if the layouts array changes after completion
+            // to avoid unnecessary rendering
+            d.prepareLayouts();
+        }
+    }
 
     QtObject {
         id: d
@@ -190,7 +277,12 @@ PageTreeNode {
         property bool completed: false
         property var tree: new Tree.Tree()
 
-        property int columns: layout.width >= units.gu(80) ? 2 : 1
+        property int columns: !layout.layouts.length ?
+                                  (layout.width >= units.gu(80) ? 2 : 1) :
+                                  (activeLayout ? activeLayout.data.length : 1)
+        property PageColumnsLayout activeLayout: null
+        property list<PageColumnsLayout> prevLayouts
+
         /*! internal */
         onColumnsChanged: {
             if (columns <= 0) {
@@ -201,7 +293,6 @@ PageTreeNode {
         }
         property real defaultColumnWidth: units.gu(40)
         onDefaultColumnWidthChanged: body.applyMetrics()
-        property list<ColumnMetrics> columnMetrics
 
         function createWrapper(page, properties) {
             var wrapperComponent = Qt.createComponent("PageWrapper.qml");
@@ -301,6 +392,33 @@ PageTreeNode {
             }
         }
 
+        // prepares layout management, listens on layout condition changes and performs re-layouting
+        function prepareLayouts() {
+            // disconnect from the previous layouts
+            for (var i = 0; i < prevLayouts.length; i++) {
+                prevLayouts[i].whenChanged.disconnect(updateLayout);
+            }
+            prevLayouts = layouts;
+            for (var i = 0; i < layouts.length; i++) {
+                layouts[i].whenChanged.connect(updateLayout);
+            }
+            // first time evaluation
+            updateLayout();
+        }
+
+        // function called when one of the layout condition is satisfied
+        function updateLayout() {
+            var newLayout = null;
+            for (var i = 0; i < layouts.length; i++) {
+                // get the first affirmative condition
+                if (layouts[i].when) {
+                    newLayout = layouts[i];
+                    break;
+                }
+            }
+            d.activeLayout = newLayout;
+        }
+
         // relayouts when column count changes
         function relayout() {
             if (body.children.length == d.columns) return;
@@ -357,8 +475,8 @@ PageTreeNode {
     // default metrics
     Component {
         id: defaultMetrics
-        ColumnMetrics {
-            fillWidth: column == d.columns
+        PageColumn {
+            fillWidth: __column == d.columns
             minimumWidth: d.defaultColumnWidth
         }
     }
@@ -376,13 +494,11 @@ PageTreeNode {
             property PageWrapper pageWrapper
             property int column
             property alias config: subHeader.config
-            property ColumnMetrics metrics: setDefaultMetrics()
+            property PageColumn metrics: getDefaultMetrics()
 
             Layout.fillWidth: metrics.fillWidth
             Layout.fillHeight: true
-            Layout.preferredWidth: metrics.maximumWidth > 0 ?
-                                       MathUtils.clamp(d.defaultColumnWidth, metrics.minimumWidth, metrics.maximumWidth) :
-                                       d.defaultColumnWidth
+            Layout.preferredWidth: MathUtils.clamp(metrics.preferredWidth, metrics.minimumWidth, metrics.maximumWidth)
             Layout.minimumWidth: metrics.minimumWidth
             Layout.maximumWidth: metrics.maximumWidth
 
@@ -488,9 +604,9 @@ PageTreeNode {
                 return wrapper;
             }
 
-            function setDefaultMetrics() {
+            function getDefaultMetrics() {
                 var result = defaultMetrics.createObject(holder);
-                result.column = Qt.binding(function() { return holder.column + 1; });
+                result.__column = Qt.binding(function() { return holder.column + 1; });
                 return result;
             }
         }
@@ -545,15 +661,9 @@ PageTreeNode {
             for (var i = 0; i < children.length; i++) {
                 var holder = children[i];
                 // search for the column metrics
-                var metrics = null;
-                for (var j = 0; j < d.columnMetrics.length; j++) {
-                    if (d.columnMetrics[j].column == (i + 1)) {
-                        metrics = d.columnMetrics[j];
-                        break;
-                    }
-                }
+                var metrics = d.activeLayout ? d.activeLayout.data[i] : null;
                 if (!metrics) {
-                    metrics = holder.setDefaultMetrics();
+                    metrics = holder.getDefaultMetrics();
                 }
                 holder.metrics = metrics;
                 updateHeaderHeight(0);

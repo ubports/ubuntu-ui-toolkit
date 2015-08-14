@@ -92,7 +92,6 @@ QML_FILES += 1.3/AbstractButton.qml \
              1.3/Button.qml \
              1.3/Captions.qml \
              1.3/CheckBox.qml \
-	     1.3/ColumnMetrics.qml \
              1.3/ComboButton.qml \
              1.3/CrossFadeImage.qml \
              1.3/dateUtils.js \
@@ -137,7 +136,9 @@ QML_FILES += 1.3/AbstractButton.qml \
              1.3/UbuntuListView.qml \
              1.3/UbuntuNumberAnimation.qml \
              1.3/ListItemPopover.qml \
-             1.3/BottomEdgeHint.qml
+             1.3/BottomEdgeHint.qml \
+             1.3/PageColumn.qml \
+             1.3/PageColumnsLayout.qml
 
 OTHER_FILES+= 1.3/CrossFadeImage.qdoc \
              1.3/UbuntuListView11.qdoc \
