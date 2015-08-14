@@ -53,6 +53,7 @@ protected:
     float gridUnitSuffixFromFileName(const QString &fileName);
 
 private:
+    float m_devicePixelRatio;
     float m_gridUnit;
 };
 

@@ -93,6 +93,8 @@ import QtQuick 2.4
   layout's condition evaluates to true. The layout overrides the single column
   minimumWidth default value. Note that \l PageColumn::fillWidth must be also set.
 
+  \note When none of the conditions is met, a single column layout will be used.
+
   \sa PageColumn
   */
 QtObject {
@@ -109,5 +111,5 @@ QtObject {
       Default property holding the PageColumn elements configuring each column.
       */
     default property alias data: layout.__data
-    property list<PageColumn> __data//: [PageColumn{}]
+    property list<PageColumn> __data
 }

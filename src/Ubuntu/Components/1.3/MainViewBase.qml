@@ -99,6 +99,8 @@ PageTreeNode {
         // theme is inherited from PageTreeNode, no need to update versioning
         styleName: "MainViewStyle"
 
+        // FIXME: Define the colors in MainViewStyle and get rid of the properties
+        //  in MainViewBase.
         property color headerColor: backgroundColor
         property color backgroundColor: theme.palette.normal.background
         property color footerColor: backgroundColor

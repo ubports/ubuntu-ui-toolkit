@@ -16,26 +16,26 @@
  * Author: Loïc Molinari <loic.molinari@canonical.com>
  */
 
-#ifndef UCSHELLICON_H
-#define UCSHELLICON_H
+#ifndef UCPROPORTIONALSHAPE_H
+#define UCPROPORTIONALSHAPE_H
 
 #include "ucubuntushape.h"
 
-class UCShellIcon : public UCUbuntuShape
+class UCProportionalShape : public UCUbuntuShape
 {
     Q_OBJECT
 
 public:
-    UCShellIcon(QQuickItem* parent=0);
+    UCProportionalShape(QQuickItem* parent=0);
 
 private Q_SLOTS:
     void _q_updateWidth();
     void _q_updateHeight();
 
 private:
-    Q_DISABLE_COPY(UCShellIcon)
+    Q_DISABLE_COPY(UCProportionalShape)
 };
 
-QML_DECLARE_TYPE(UCShellIcon)
+QML_DECLARE_TYPE(UCProportionalShape)
 
-#endif  // UCSHELLICON_H
+#endif  // UCPROPORTIONALSHAPE_H

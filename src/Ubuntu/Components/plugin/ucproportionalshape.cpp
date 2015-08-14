@@ -16,34 +16,32 @@
  * Author: Loïc Molinari <loic.molinari@canonical.com>
  */
 
-#include "ucshellicon.h"
+#include "ucproportionalshape.h"
 
 const qreal aspectRatio = 16.0 / 15.0;
 const qreal invAspectRatio = 1.0 / aspectRatio;
 
-/*! \qmltype ShellIcon
-    \instantiates UCShellIcon
+/*! \qmltype ProportionalShape
+    \instantiates UCProportionalShape
     \inqmlmodule Ubuntu.Components 1.3
     \ingroup ubuntu
     \brief Extended UbuntuShape mostly used for icons and vignettes.
 
-    The ShellIcon is an extended \l UbuntuShape with a fixed aspect ratio (16:15), a relative
-    radius, a drop shadow aspect and a PreserveAspectCrop source fill mode. Changing the width
-    implies an update of height and radius, and changing the height implies an update of width and
-    radius. The goal being to keep the same proportion between width, height and radius whatever the
-    size.
+    The ProportionalShape is an extended \l UbuntuShape with a fixed aspect ratio (16:15), a
+    relative radius and a PreserveAspectCrop source fill mode. Changing the width implies an update
+    of height and radius, and changing the height implies an update of width and radius. The goal
+    being to keep the same proportion between width, height and radius whatever the size.
 */
-UCShellIcon::UCShellIcon(QQuickItem* parent)
+UCProportionalShape::UCProportionalShape(QQuickItem* parent)
     : UCUbuntuShape(parent)
 {
-    setAspect(UCUbuntuShape::DropShadow);
     setRelativeRadius(0.67);
     setSourceFillMode(UCUbuntuShape::PreserveAspectCrop);
     connect(this, SIGNAL(widthChanged()), this, SLOT(_q_updateHeight()));
     connect(this, SIGNAL(heightChanged()), this, SLOT(_q_updateWidth()));
 }
 
-void UCShellIcon::_q_updateWidth()
+void UCProportionalShape::_q_updateWidth()
 {
     const qreal newWidth = height() * aspectRatio;
     if (qAbs(newWidth - width()) > 0.5) {
@@ -51,7 +49,7 @@ void UCShellIcon::_q_updateWidth()
     }
 }
 
-void UCShellIcon::_q_updateHeight()
+void UCProportionalShape::_q_updateHeight()
 {
     const qreal newHeight = width() * invAspectRatio;
     if (qAbs(newHeight - height()) > 0.5) {

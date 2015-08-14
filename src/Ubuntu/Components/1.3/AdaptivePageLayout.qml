@@ -90,11 +90,11 @@ import "tree.js" as Tree
   layout exceeds 80 grid units. The first column is sized to 40 grid unit width and
   the second one to fill the rest of the remaining space. When the 80 grid unit breakpoint
   is reached, the component will switch from one column to two, and vice versa.
-  These defaults can be overridden throug the \l layouts property by defining the
+  These defaults can be overridden through the \l layouts property by defining the
   possible layouts, their column sizing and the breakpoints when the layouts should
-  be activated. PageColumn configurations must appear in the same order as the
-  columns appear in the layout, and each column must have a configuration object
-  assigned.
+  be activated. PageColumn configurations must appear in the same order (from left
+  to right) as the columns appear in the layout. If none of the layouts condition
+  is met, a one column layout will be used.
 
   \qml
     import QtQuick 2.4
@@ -502,7 +502,7 @@ PageTreeNode {
             property PageWrapper pageWrapper
             property int column
             property alias config: subHeader.config
-            property PageColumn metrics: setDefaultMetrics()
+            property PageColumn metrics: getDefaultMetrics()
 
             Layout.fillWidth: metrics.fillWidth
             Layout.fillHeight: true
@@ -633,7 +633,7 @@ PageTreeNode {
                 return wrapper;
             }
 
-            function setDefaultMetrics() {
+            function getDefaultMetrics() {
                 var result = defaultMetrics.createObject(holder);
                 result.__column = Qt.binding(function() { return holder.column + 1; });
                 return result;
@@ -692,7 +692,7 @@ PageTreeNode {
                 // search for the column metrics
                 var metrics = d.activeLayout ? d.activeLayout.data[i] : null;
                 if (!metrics) {
-                    metrics = holder.setDefaultMetrics();
+                    metrics = holder.getDefaultMetrics();
                 }
                 holder.metrics = metrics;
                 updateHeaderHeight(0);
