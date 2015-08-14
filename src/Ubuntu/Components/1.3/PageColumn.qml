@@ -51,7 +51,7 @@ QtObject {
     /*!
       Specifies the preferred width of the column when the layout is initialized.
       Defaults to 0. AdaptivePageLayout clamps the given value between \l minimumWidth
-      and \l maximumWidth. The value must be set if the \fillWidth and \l minimumWidth
+      and \l maximumWidth. The value must be set if the \l fillWidth and \l minimumWidth
       are not set.
       */
     property real preferredWidth: 0
