@@ -41,6 +41,8 @@ MainView {
             PageColumnsLayout {
                 when: layout.width > units.gu(80)
                 PageColumn {
+                    minimumWidth: units.gu(30)
+                    maximumWidth: units.gu(50)
                     preferredWidth: units.gu(40)
                 }
                 PageColumn {

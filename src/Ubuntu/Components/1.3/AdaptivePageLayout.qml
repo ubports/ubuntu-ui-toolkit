@@ -590,16 +590,18 @@ PageTreeNode {
                     enabled: verticalDivider.width > 0
                     anchors {
                         fill: parent
-                        leftMargin: enabled ? units.dp(2) : 0
-                        rightMargin: enabled ? units.dp(2) : 0
+                        leftMargin: enabled ? units.gu(1) : 0
+                        rightMargin: enabled ? units.gu(1) : 0
                     }
                     cursorShape: Qt.SizeHorCursor
-                    drag.axis: Drag.XAxis
-                    drag.target: resizer
-                    drag.smoothed: false
-                    drag.minimumX: metrics.minimumWidth
-                    drag.maximumX: metrics.maximumWidth
-                    onPressed: resizer.x = parent.x + parent.width / 2
+                    drag {
+                        axis: Drag.XAxis
+                        target: resizer
+                        smoothed: false
+                        minimumX: holder.Layout.minimumWidth
+                        maximumX: holder.Layout.maximumWidth
+                    }
+                    onPressed: resizer.x = holder.Layout.preferredWidth
                 }
                 Rectangle {
                     id: spot
