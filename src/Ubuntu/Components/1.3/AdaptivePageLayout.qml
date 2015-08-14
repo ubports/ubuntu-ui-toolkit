@@ -503,6 +503,7 @@ PageTreeNode {
             property int column
             property alias config: subHeader.config
             property PageColumn metrics: getDefaultMetrics()
+            readonly property real dividerThickness: units.dp(2)
 
             Layout.fillWidth: metrics.fillWidth
             Layout.fillHeight: true
@@ -520,7 +521,7 @@ PageTreeNode {
                     bottom: parent.bottom
                     left: parent.left
                     right: parent.right
-                    rightMargin: verticalDivider.width
+                    rightMargin: dividerThickness
                 }
                 // we need to clip because the header does not have a background
                 clip: true
@@ -581,6 +582,7 @@ PageTreeNode {
                     top: parent.top
                     bottom: parent.bottom
                     right: parent.right
+                    rightMargin: dividerThickness
                 }
                 width: (column == (d.columns - 1)) || !pageWrapper ? 0 : units.dp(1)
                 color: theme.palette.selected.background
@@ -603,30 +605,30 @@ PageTreeNode {
                     }
                     onPressed: resizer.x = holder.Layout.preferredWidth
                 }
-                Rectangle {
-                    id: spot
-                    y: resizerSensing.mouseY + x
-                    width: height
-                    height: 0
-                    radius: units.gu(2)
-                    color: verticalDivider.color
-                    states: State {
-                        name: "scaled"
-                        when: resizerSensing.pressed
-                        PropertyChanges {
-                            target: spot
-                            height: units.gu(4)
-                            x: -units.gu(2)
-                        }
+                states: State {
+                    name: "active"
+                    when: resizerSensing.pressed
+                    PropertyChanges {
+                        target: verticalDivider
+                        width: dividerThickness
+                        color: Qt.darker(theme.palette.normal.background, 1.5)
                     }
-                    transitions: Transition {
-                        from: ""
-                        to: "*"
-                        reversible: true
+                }
+                transitions: Transition {
+                    from: ""
+                    to: "*"
+                    reversible: true
+                    ParallelAnimation {
                         NumberAnimation {
-                            properties: "x,width,height"
-                            duration: UbuntuAnimation.SlowDuration
+                            target: verticalDivider
+                            property: "width"
                             easing.type: Easing.OutBack
+                            duration: UbuntuAnimation.SlowDuration
+                        }
+                        ColorAnimation {
+                            target: verticalDivider
+                            property: "color"
+                            duration: UbuntuAnimation.SlowDuration
                         }
                     }
                 }
