@@ -582,9 +582,10 @@ PageTreeNode {
                     bottom: parent.bottom
                     right: parent.right
                 }
-                width: (column == (d.columns - 1)) || !pageWrapper ? 0 : units.dp(1)
-                color: theme.palette.selected.background
+                width: (column == (d.columns - 1)) || !pageWrapper ? 0 : (units.dp(1) + resizerSensing.pressed * units.dp(1))
+                color: resizerSensing.pressed ? Qt.darker(theme.palette.normal.background, 1.5) : theme.palette.selected.background
                 MouseArea {
+                    id: resizerSensing
                     objectName: "Divider"
                     enabled: verticalDivider.width > 0
                     anchors {
