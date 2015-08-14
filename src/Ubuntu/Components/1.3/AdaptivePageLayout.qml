@@ -582,8 +582,8 @@ PageTreeNode {
                     bottom: parent.bottom
                     right: parent.right
                 }
-                width: (column == (d.columns - 1)) || !pageWrapper ? 0 : (units.dp(1) + resizerSensing.pressed * units.dp(1))
-                color: resizerSensing.pressed ? Qt.darker(theme.palette.normal.background, 1.5) : theme.palette.selected.background
+                width: (column == (d.columns - 1)) || !pageWrapper ? 0 : units.dp(1)
+                color: theme.palette.selected.background
                 MouseArea {
                     id: resizerSensing
                     objectName: "Divider"
@@ -600,6 +600,33 @@ PageTreeNode {
                     drag.minimumX: metrics.minimumWidth
                     drag.maximumX: metrics.maximumWidth
                     onPressed: resizer.x = parent.x + parent.width / 2
+                }
+                Rectangle {
+                    id: spot
+                    y: resizerSensing.mouseY + x
+                    width: height
+                    height: 0
+                    radius: units.gu(2)
+                    color: verticalDivider.color
+                    states: State {
+                        name: "scaled"
+                        when: resizerSensing.pressed
+                        PropertyChanges {
+                            target: spot
+                            height: units.gu(4)
+                            x: -units.gu(2)
+                        }
+                    }
+                    transitions: Transition {
+                        from: ""
+                        to: "*"
+                        reversible: true
+                        NumberAnimation {
+                            properties: "x,width,height"
+                            duration: UbuntuAnimation.SlowDuration
+                            easing.type: Easing.OutBack
+                        }
+                    }
                 }
             }
             Item {
