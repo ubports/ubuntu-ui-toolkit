@@ -491,10 +491,10 @@ Template {
                 id: layout7
 
                 onSlotClicked: console.log(slot, slot === checkbox)
-                CheckBox { id: checkbox; anchors.verticalCenter: parent.verticalCenter; width: units.gu(5); height: units.gu(5) }
-                Rectangle { anchors.verticalCenter: parent.verticalCenter; width: units.gu(5); height: units.gu(5) }
+                CheckBox { id: checkbox; SlotsLayoutCpp.overrideVerticalPositioning: true; anchors.verticalCenter: parent.verticalCenter; width: units.gu(5); height: units.gu(5) }
+                Rectangle { SlotsLayoutCpp.overrideVerticalPositioning: true; anchors.verticalCenter: parent.verticalCenter; width: units.gu(5); height: units.gu(5) }
 
-                Icon { SlotsLayoutCpp.position: SlotsLayoutCpp.Leading; anchors.verticalCenter: parent.verticalCenter; width: units.gu(5); height: units.gu(5); name: "message" }
+                Icon { SlotsLayoutCpp.overrideVerticalPositioning: true; SlotsLayoutCpp.position: SlotsLayoutCpp.Leading; anchors.verticalCenter: parent.verticalCenter; width: units.gu(5); height: units.gu(5); name: "message" }
 
                 titleItem.text: "Hello designers!"
                 subtitleItem.text:  "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
@@ -524,7 +524,6 @@ Template {
             }
         }
 
-
         ListItem {
             id: addressbookDetailsListItem
 
@@ -534,49 +533,8 @@ Template {
                 id: addressbookDetailsLayout
 
                 titleItem.color: UbuntuColors.lightAubergine
-                titleItem.text: "+44 7349845928 (3)"
-
-                subtitleItem.text: "Mobile"
-
-                Rectangle {
-                    SlotsLayoutCpp.position: SlotsLayoutCpp.Leading
-                    color: "pink"
-                    height: units.gu(6)
-                    width: height
-                    visible: width > 0
-                }
-
-                Item {
-                    anchors.top: parent.titleItem.top
-                    anchors.bottom: parent.subtitleItem.bottom
-                    width: childrenRect.width
-
-                    Label {
-                        text: "19:17"
-                        fontSize: "small"
-                        y: addressbookDetailsLayout.titleItem
-                    }
-
-                    Label {
-                        text: "19:17"
-                        fontSize: "small"
-                        anchors.top: parent.sub
-                    }
-                }
-            }
-        }
-
-
-        ListItem {
-            id: dialerHistoryListItem
-
-            height: dialerHistoryLayout.height
-
-            SlotsLayoutCpp {
-                id: dialerHistoryLayout
-
-                titleItem.color: UbuntuColors.lightAubergine
                 titleItem.text: "+44 7552342512"
+
 
                 subtitleItem.text: "Mobile"
 
@@ -590,7 +548,90 @@ Template {
                     height: units.gu(2)
                 }
             }
+
         }
+
+        ListItem {
+            id: dialerHistoryListItem2
+
+            height: dialerHistoryLayout2.height
+
+            SlotsLayoutCpp {
+                id: dialerHistoryLayout2
+
+                titleItem.color: UbuntuColors.lightAubergine
+                titleItem.text: "+44 7552342512"
+                subtitleItem.text: "Mobile"
+
+                Icon {
+                    SlotsLayoutCpp.position: SlotsLayoutCpp.Leading
+                    name: "message"
+                    height: units.gu(2)
+                }
+                Icon {
+                    name: "message"
+                    height: units.gu(2)
+                }
+
+                Icon {
+                    name: "call-start"
+                    height: units.gu(2)
+                }
+            }
+        }
+
+        ListItem {
+            id: dialerHistoryListItem
+
+            height: dialerHistoryLayout.height
+
+            SlotsLayoutCpp {
+                id: dialerHistoryLayout
+
+                titleItem.text: "+44 7349845928 (3)"
+                titleItem.color: UbuntuColors.lightAubergine
+
+                subtitleItem.text: "Mobile"
+
+                Rectangle {
+                    SlotsLayoutCpp.position: SlotsLayoutCpp.Leading
+                    color: "pink"
+                    height: units.gu(6)
+                    width: height
+                    visible: width > 0
+                }
+
+                Rectangle {
+                    id: slot
+                    width: label2.width
+                    //don't use childrenRect here because we're positioning the labels in a custom way, the item starts at the top
+                    height: label2.y + label2.height
+
+                    //as we want to position labels to align with title and subtitle
+                    SlotsLayoutCpp.overrideVerticalPositioning: true
+
+                    color: "pink"
+                    Label {
+                        id: lab
+                        anchors.right: label2.right
+                        text: "19:17"
+                        fontSize: "small"
+                        y: dialerHistoryLayout.titleItem.y + dialerHistoryLayout.titleItem.baselineOffset - baselineOffset
+                    }
+
+                    Label {
+                        id: label2
+                        text: "Outgoing"
+                        fontSize: "small"
+                        y: dialerHistoryLayout.subtitleItem.y + dialerHistoryLayout.subtitleItem.baselineOffset - baselineOffset
+                    }
+                }
+
+            }
+
+        }
+
+
         ListItem {
             id: telegramContactsListItem
 

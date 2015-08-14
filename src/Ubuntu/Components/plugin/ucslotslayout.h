@@ -58,6 +58,7 @@ class UCSlotsAttached : public QObject
     Q_PROPERTY(UCSlotsLayout::UCSlotPosition position READ position WRITE setPosition NOTIFY positionChanged)
     Q_PROPERTY(qreal leftMargin READ leftMargin WRITE setLeftMargin NOTIFY leftMarginChanged)
     Q_PROPERTY(qreal rightMargin READ rightMargin WRITE setRightMargin NOTIFY rightMarginChanged)
+    Q_PROPERTY(bool overrideVerticalPositioning READ overrideVerticalPositioning WRITE setOverrideVerticalPositioning NOTIFY overrideVerticalPositioningChanged)
 
 public:
     UCSlotsAttached(QObject *object);
@@ -71,6 +72,9 @@ public:
     qreal rightMargin() const;
     void setRightMargin(qreal margin);
 
+    bool overrideVerticalPositioning() const;
+    void setOverrideVerticalPositioning(bool val);
+
 public Q_SLOTS:
     void updateGuValues();
 
@@ -78,11 +82,13 @@ Q_SIGNALS:
     void positionChanged();
     void leftMarginChanged();
     void rightMarginChanged();
+    void overrideVerticalPositioningChanged();
 
 private:
     UCSlotsLayout::UCSlotPosition m_position;
     qreal m_leftMargin;
     qreal m_rightMargin;
+    bool m_overrideVerticalPositioning;
 };
 
 QML_DECLARE_TYPEINFO(UCSlotsLayout, QML_HAS_ATTACHED_PROPERTIES)

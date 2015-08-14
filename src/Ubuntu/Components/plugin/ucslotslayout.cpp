@@ -9,6 +9,7 @@ UCSlotsAttached::UCSlotsAttached(QObject *object)
     , m_position(UCSlotsLayout::Trailing)
     , m_leftMargin(UCUnits::instance().gu(SLOTSLAYOUT_DEFAULTSLOTSIDEMARGINS_GU))
     , m_rightMargin(UCUnits::instance().gu(SLOTSLAYOUT_DEFAULTSLOTSIDEMARGINS_GU))
+    , m_overrideVerticalPositioning(false)
 {
     //FIXME: if the user defines SlotsLayout.leftMargin and then GU changes, we will overwrite it!
     //But how to avoid that? We should check if the user has initizalized leftMargin, but how?
@@ -46,6 +47,17 @@ void UCSlotsAttached::setRightMargin(qreal margin) {
     if (m_rightMargin != margin) {
         m_rightMargin = margin;
         Q_EMIT rightMarginChanged();
+    }
+}
+
+bool UCSlotsAttached::overrideVerticalPositioning() const {
+    return m_overrideVerticalPositioning;
+}
+
+void UCSlotsAttached::setOverrideVerticalPositioning(bool val) {
+    if (m_overrideVerticalPositioning != val) {
+        m_overrideVerticalPositioning = val;
+        Q_EMIT overrideVerticalPositioningChanged();
     }
 }
 
@@ -254,8 +266,14 @@ void UCSlotsLayoutPrivate::_q_updateSlotsBBoxHeight() {
 
     qreal maxSlotsHeight = 0;
     for (int i=0; i<q->children().count(); i++) {
-        QQuickItem* child = qobject_cast<QQuickItem*>(q->children().at(i));
-        maxSlotsHeight = qMax<int>(maxSlotsHeight, child->height());
+
+        //ignore children which have custom vertical positioning
+        UCSlotsAttached *attachedProperty =
+                qobject_cast<UCSlotsAttached*>(qmlAttachedPropertiesObject<UCSlotsLayout>(q->children().at(i)));
+        if (!attachedProperty->overrideVerticalPositioning()) {
+            QQuickItem* child = qobject_cast<QQuickItem*>(q->children().at(i));
+            maxSlotsHeight = qMax<int>(maxSlotsHeight, child->height());
+        }
     }
     maxChildrenHeight = maxSlotsHeight;
 
@@ -315,7 +333,7 @@ void UCSlotsLayoutPrivate::_q_relayout() {
         if (attached->position() == UCSlotsLayout::Leading) {
             //FIXME: is this safe?
             leadingSlots.append(static_cast<QQuickItem*>(q->children().at(i)));
-            totalWidth += static_cast<QQuickItem*>(q->children().at(i))->width()+ attached->leftMargin() + attached->rightMargin();
+            totalWidth += static_cast<QQuickItem*>(q->children().at(i))->width() + attached->leftMargin() + attached->rightMargin();
         } else if (attached->position() == UCSlotsLayout::Trailing) {
             trailingSlots.append(static_cast<QQuickItem*>(q->children().at(i)));
             totalWidth += static_cast<QQuickItem*>(q->children().at(i))->width() + attached->leftMargin() + attached->rightMargin();
@@ -332,8 +350,7 @@ void UCSlotsLayoutPrivate::_q_relayout() {
 
         QQuickItemPrivate* item = QQuickItemPrivate::get((QQuickItem*) leadingSlots.at(i));
 
-        //FIXME: just a temporary hack to allow vertical centering of the slots
-        if (!item->anchors()->verticalCenter().item) {
+        if (!attached->overrideVerticalPositioning()) {
             item->anchors()->setTop(_q_private->top());
             item->anchors()->setTopMargin(topBottomMargin());
         }
@@ -343,7 +360,7 @@ void UCSlotsLayoutPrivate::_q_relayout() {
             item->anchors()->setLeftMargin(attached->leftMargin());
         } else {
             UCSlotsAttached *attachedPreviousItem =
-                    qobject_cast<UCSlotsAttached*>(qmlAttachedPropertiesObject<UCSlotsLayout>(trailingSlots.at(i-1)));
+                    qobject_cast<UCSlotsAttached*>(qmlAttachedPropertiesObject<UCSlotsLayout>(leadingSlots.at(i-1)));
 
             item->anchors()->setLeft(QQuickItemPrivate::get(static_cast<QQuickItem*>(leadingSlots.at(i-1)))->right());
             item->anchors()->setLeftMargin(attachedPreviousItem->rightMargin() + attached->leftMargin());
@@ -365,6 +382,10 @@ void UCSlotsLayoutPrivate::_q_relayout() {
     subtitleAnchors->setLeft(labelsLeftAnchor);
     subsubtitleAnchors->setLeft(labelsLeftAnchor);
 
+    //NOTE: totalWidth includes the right margin of the last leading slot, which in our layout algorithm
+    //is actually part of title's leftMargin (as we layout from left to right so we don't anchors right sides)
+    qreal labelBoxWidth = q->width() - totalWidth - UCUnits::instance().gu(SLOTSLAYOUT_LABELS_RIGHTMARGIN);
+
     if (numberOfLeadingSlots != 0) {
         UCSlotsAttached *attachedLastLeadingSlot =
                 qobject_cast<UCSlotsAttached*>(qmlAttachedPropertiesObject<UCSlotsLayout>(leadingSlots.last()));
@@ -372,12 +393,17 @@ void UCSlotsLayoutPrivate::_q_relayout() {
         titleAnchors->setLeftMargin(attachedLastLeadingSlot->rightMargin());
         subtitleAnchors->setLeftMargin(attachedLastLeadingSlot->rightMargin());
         subsubtitleAnchors->setLeftMargin(attachedLastLeadingSlot->rightMargin());
+
+        //last leading Slot "attachedProp->rightMargin" is already part of title's QML leftMargin
+        //due to the way we lay out the items (left to right)
+        labelBoxWidth -= (titleAnchors->leftMargin() - attachedLastLeadingSlot->rightMargin());
     } else {
         titleAnchors->setLeftMargin(UCUnits::instance().gu(SLOTSLAYOUT_DEFAULTLAYOUTSIDEMARGINS_GU));
         subtitleAnchors->setLeftMargin(UCUnits::instance().gu(SLOTSLAYOUT_DEFAULTLAYOUTSIDEMARGINS_GU));
         subsubtitleAnchors->setLeftMargin(UCUnits::instance().gu(SLOTSLAYOUT_DEFAULTLAYOUTSIDEMARGINS_GU));
-    }
 
+        labelBoxWidth -= titleAnchors->leftMargin();
+    }
 
     //new visual design rules
     if (maxChildrenHeight > labelsBoundingBoxHeight) {
@@ -399,8 +425,6 @@ void UCSlotsLayoutPrivate::_q_relayout() {
         subsubtitleAnchors->resetRight();
         subsubtitleAnchors->resetRightMargin();
 
-        //labels have no right anchor in this case, so we can't use rightMargin()
-        qreal labelBoxWidth = q->width() - totalWidth - titleAnchors->leftMargin() - UCUnits::instance().gu(SLOTSLAYOUT_LABELS_RIGHTMARGIN);
         m_title.setWidth(labelBoxWidth);
         m_subtitle.setWidth(labelBoxWidth);
         m_subsubtitle.setWidth(labelBoxWidth);
@@ -411,7 +435,7 @@ void UCSlotsLayoutPrivate::_q_relayout() {
             UCSlotsAttached *attached =
                     qobject_cast<UCSlotsAttached*>(qmlAttachedPropertiesObject<UCSlotsLayout>(trailingSlots.at(i)));
 
-            if (!item->anchors()->verticalCenter().item) {
+            if (!attached->overrideVerticalPositioning()) {
                 item->anchors()->setTop(_q_private->top());
                 item->anchors()->setTopMargin(topBottomMargin());
             }
