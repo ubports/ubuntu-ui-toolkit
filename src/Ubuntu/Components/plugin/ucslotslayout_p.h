@@ -22,6 +22,12 @@ public:
     void init();
     qreal topBottomMargin();
 
+    //We have two vertical positioning modes according to the visual design rules:
+    //- RETURN VALUE 0 --> All items have to be vertically centered
+    //- RETURN VALUE 1 --> All items have to anchor to the top of the listitem (using a top margin as well)
+    //This method is called whenever we want to relayout the items
+    int getVerticalPositioningMode();
+
     static inline UCSlotsLayoutPrivate *get(UCSlotsLayout *that)
     {
         Q_ASSERT(that);

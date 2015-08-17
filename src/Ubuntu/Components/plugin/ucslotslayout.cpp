@@ -136,8 +136,14 @@ void UCSlotsLayoutPrivate::init()
 
 }
 
+int UCSlotsLayoutPrivate::getVerticalPositioningMode() {
+    //we could just return the bool, I just want to stress that there could be other
+    //modes in the future
+    return (labelsBoundingBoxHeight > maxChildrenHeight) ? 1 : 0;
+}
+
 qreal UCSlotsLayoutPrivate::topBottomMargin() {
-    return (maxChildrenHeight > labelsBoundingBoxHeight && maxChildrenHeight > UCUnits::instance().gu(SLOTSLAYOUT_TOPBOTTOMMARGIN_SIZETHRESHOLD))
+    return (!getVerticalPositioningMode() && maxChildrenHeight > UCUnits::instance().gu(SLOTSLAYOUT_TOPBOTTOMMARGIN_SIZETHRESHOLD))
             ? UCUnits::instance().gu(1.0)
             : UCUnits::instance().gu(2.0);
 }
@@ -351,8 +357,18 @@ void UCSlotsLayoutPrivate::_q_relayout() {
         QQuickItemPrivate* item = QQuickItemPrivate::get((QQuickItem*) leadingSlots.at(i));
 
         if (!attached->overrideVerticalPositioning()) {
-            item->anchors()->setTop(_q_private->top());
-            item->anchors()->setTopMargin(topBottomMargin());
+            if (getVerticalPositioningMode()) {
+                //reset the vertical anchor as we might be transitioning from the configuration
+                //where all items are vertically centered to the one where they're anchored to top
+                item->anchors()->resetVerticalCenter();
+
+                item->anchors()->setTop(_q_private->top());
+                item->anchors()->setTopMargin(topBottomMargin());
+            } else {
+                item->anchors()->resetTop();
+
+                item->anchors()->setVerticalCenter(_q_private->verticalCenter());
+            }
         }
 
         if (i==0) {
@@ -406,10 +422,12 @@ void UCSlotsLayoutPrivate::_q_relayout() {
     }
 
     //new visual design rules
-    if (maxChildrenHeight > labelsBoundingBoxHeight) {
-        titleAnchors->setTopMargin((q->height() - labelsBoundingBoxHeight) / 2.0);
-    } else {
+    if (getVerticalPositioningMode()) {
         titleAnchors->setTopMargin(topBottomMargin());
+    } else {
+        //center the whole labels block vertically, we can't use verticalCenter as we don't
+        //have a QQuickItem which contains the labels
+        titleAnchors->setTopMargin((q->height() - labelsBoundingBoxHeight) / 2.0);
     }
 
     //currentX += labelBoxWidth + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_RIGHTMARGIN);
@@ -436,8 +454,19 @@ void UCSlotsLayoutPrivate::_q_relayout() {
                     qobject_cast<UCSlotsAttached*>(qmlAttachedPropertiesObject<UCSlotsLayout>(trailingSlots.at(i)));
 
             if (!attached->overrideVerticalPositioning()) {
-                item->anchors()->setTop(_q_private->top());
-                item->anchors()->setTopMargin(topBottomMargin());
+                if (getVerticalPositioningMode()) {
+                    //reset the vertical anchor as we might be transitioning from the configuration
+                    //where all items are vertically centered to the one where they're anchored to top
+                    item->anchors()->resetVerticalCenter();
+
+                    item->anchors()->setTop(_q_private->top());
+                    item->anchors()->setTopMargin(topBottomMargin());
+                } else {
+                    //reset the anchor as we may be switching to one vertical positioning mode to another
+                    item->anchors()->resetTop();
+
+                    item->anchors()->setVerticalCenter(_q_private->verticalCenter());
+                }
             }
 
             if (i==0) {

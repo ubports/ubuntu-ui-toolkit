@@ -21,7 +21,7 @@ Template {
     objectName: "listItemsTemplate"
 
     TemplateSection {
-        className: "ListItemLayoutTemplates"
+        className: "SlotsLayout (a few examples)"
         // no spacing between the list items in the Column
         spacing: 0
         /*GenericListItemLayout {
@@ -155,34 +155,7 @@ Template {
             }
         }*/
 
-        /*ListItem {
-            id: benchmarkListItem
-            height: layoutBenchmark.height
-
-            trailingActions: ListItemActions {
-                actions: [
-                    Action {}
-                ]
-            }
-            leadingActions: ListItemActions {
-                actions: [
-                    Action {},
-                    Action {},
-                    Action {}
-                ]
-            }
-
-            SlotsLayoutCpp {
-                id: layoutBenchmark
-                SlotQML { position: "Slot.Leading"; Item { width: units.gu(2) } }
-                SlotQML { Item { width: units.gu(2) } }
-                SlotQML { Item { width: units.gu(2) } }
-                titleItem.text: "test"
-                subtitleItem.text: "test"
-            }
-        }*/
-
-        /*ListItem {
+        ListItem {
             id: listItem
 
             //FIXME: do we like this?
@@ -203,23 +176,11 @@ Template {
 
             SlotsLayoutCpp {
                 id: layout
-
                 anchors.fill: parent
-                SlotQML {
-                    position: "Slot.Leading"
-                    //handleInnerItemPosition: false
-                    CheckBox { }
-                }
 
-                SlotQML {
-                    position: "Slot.Trailing"
-                    Icon { width: units.gu(2); name: "email" }
-                }
-
-                SlotQML {
-                    position: "Slot.Trailing"
-                    Icon { width: units.gu(2); name: "message" }
-                }
+                Icon { SlotsLayoutCpp.position: SlotsLayoutCpp.Leading; width: units.gu(2); name: "email" }
+                Icon { width: units.gu(2); name: "message" }
+                CheckBox { }
 
                 titleItem.text: "Hello designers!"
                 subtitleItem.text:  "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
@@ -249,20 +210,9 @@ Template {
             SlotsLayoutCpp {
                 id: layout2
 
-                SlotQML {
-                    position: "Slot.Leading"
-                    CheckBox { }
-                }
-
-                SlotQML {
-                    position: "Slot.Trailing"
-                    Rectangle { width: units.gu(10); height: units.gu(10) }
-                }
-
-                SlotQML {
-                    position: "Slot.Trailing"
-                    Icon { width: units.gu(2); name: "message" }
-                }
+                Rectangle { SlotsLayoutCpp.position: SlotsLayoutCpp.Leading; color: "yellow"; width: units.gu(10); height: units.gu(10) }
+                CheckBox { }
+                Icon { width: units.gu(2); name: "message" }
 
                 titleItem.text: "Hello designers!"
                 //subtitleItem.text:  "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
@@ -292,20 +242,9 @@ Template {
             SlotsLayoutCpp {
                 id: layout3
 
-                SlotQML {
-                    position: "Slot.Leading"
-                    CheckBox { width: units.gu(10); height: units.gu(10) }
-                }
-
-                SlotQML {
-                    position: "Slot.Trailing"
-                    Rectangle { width: units.gu(5); height: units.gu(5) }
-                }
-
-                SlotQML {
-                    position: "Slot.Trailing"
-                    Icon { width: units.gu(5); height: units.gu(5); name: "message" }
-                }
+                CheckBox { width: units.gu(8); height: units.gu(8) }
+                Rectangle { color: "purple"; width: units.gu(5); height: units.gu(5) }
+                Icon { SlotsLayoutCpp.position: SlotsLayoutCpp.Leading; width: units.gu(5); height: units.gu(5); name: "message" }
 
                 titleItem.text: "Hello designers!"
                 subtitleItem.text:  "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
@@ -335,20 +274,9 @@ Template {
             SlotsLayoutCpp {
                 id: layout4
 
-                SlotQML {
-                    position: "Slot.Leading"
-                    CheckBox { width: units.gu(10); height: units.gu(10) }
-                }
-
-                SlotQML {
-                    position: "Slot.Trailing"
-                    Rectangle { width: units.gu(5); height: units.gu(5) }
-                }
-
-                SlotQML {
-                    position: "Slot.Trailing"
-                    Icon { width: units.gu(5); height: units.gu(5); name: "message" }
-                }
+                CheckBox { width: units.gu(8); height: units.gu(8) }
+                Rectangle { color: "orange"; width: units.gu(5); height: units.gu(5) }
+                Icon { width: units.gu(5); height: units.gu(5); name: "message" }
 
                 titleItem.text: "Hello designers!"
                 //subtitleItem.text:  "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
@@ -378,11 +306,7 @@ Template {
             SlotsLayoutCpp {
                 id: layout5
 
-                SlotQML {
-                    position: "Slot.Leading"
-                    CheckBox { }
-                }
-
+                CheckBox { }
                 titleItem.text: "Hello designers!"
             }
         }
@@ -409,18 +333,49 @@ Template {
             SlotsLayoutCpp {
                 id: layout6
 
-                SlotQML {
-                    SlotsLayoutCpp.position: SlotsLayoutCpp.Trailing
-
-                    position: "Slot.Trailing"
-                    CheckBox { }
-                }
+                CheckBox { SlotsLayoutCpp.position: SlotsLayoutCpp.Leading }
 
                 titleItem.text: "Hello designers!"
             }
         }
 
         ListItem {
+            id: listItem7
+
+            //FIXME: do we like this?
+            height: layout7.height
+
+            trailingActions: ListItemActions {
+                actions: [
+                    Action {}
+                ]
+            }
+            leadingActions: ListItemActions {
+                actions: [
+                    Action {},
+                    Action {},
+                    Action {}
+                ]
+            }
+
+            SlotsLayoutCpp {
+                id: layout7
+
+                onSlotClicked: console.log(slot, slot === checkbox)
+
+                CheckBox { id: checkbox; width: units.gu(4); height: units.gu(4) }
+
+                Rectangle { width: units.gu(4); height: units.gu(4); color: "purple" }
+
+                Icon { SlotsLayoutCpp.position: SlotsLayoutCpp.Leading; width: units.gu(4); height: units.gu(4); name: "message" }
+
+                titleItem.text: "Hello designers!"
+                subtitleItem.text:  "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
+                subsubtitleItem.text: "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
+            }
+        }
+
+        /*ListItem {
             height: qmlLayout.height
 
             trailingActions: ListItemActions {
@@ -466,13 +421,20 @@ Template {
                 anchors.fill: parent
                 onPressed: mouse.accepted = false
             }
-
         }
+
+
+    }
+
+    TemplateSection {
+        className: "SlotsLayout (custom vertical positioning)"
+        // no spacing between the list items in the Column
+        spacing: 0
         ListItem {
-            id: listItem7
+            id: listItemCustom1
 
             //FIXME: do we like this?
-            height: layout7.height
+            height: listItemCustomLayout1.height
 
             trailingActions: ListItemActions {
                 actions: [
@@ -488,20 +450,25 @@ Template {
             }
 
             SlotsLayoutCpp {
-                id: layout7
+                id: listItemCustomLayout1
 
-                onSlotClicked: console.log(slot, slot === checkbox)
-                CheckBox { id: checkbox; SlotsLayoutCpp.overrideVerticalPositioning: true; anchors.verticalCenter: parent.verticalCenter; width: units.gu(5); height: units.gu(5) }
-                Rectangle { SlotsLayoutCpp.overrideVerticalPositioning: true; anchors.verticalCenter: parent.verticalCenter; width: units.gu(5); height: units.gu(5) }
+                CheckBox { SlotsLayoutCpp.overrideVerticalPositioning: true; anchors.top: parent.titleItem.top; width: units.gu(4); height: units.gu(4) }
 
-                Icon { SlotsLayoutCpp.overrideVerticalPositioning: true; SlotsLayoutCpp.position: SlotsLayoutCpp.Leading; anchors.verticalCenter: parent.verticalCenter; width: units.gu(5); height: units.gu(5); name: "message" }
+                Rectangle { SlotsLayoutCpp.overrideVerticalPositioning: true; anchors.bottom: parent.subsubtitleItem.bottom; width: units.gu(4); height: units.gu(4); color: "purple" }
+
+                Icon { SlotsLayoutCpp.overrideVerticalPositioning: true; SlotsLayoutCpp.position: SlotsLayoutCpp.Leading; anchors.verticalCenter: parent.verticalCenter; width: units.gu(4); height: units.gu(4); name: "message" }
 
                 titleItem.text: "Hello designers!"
                 subtitleItem.text:  "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
                 subsubtitleItem.text: "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
             }
         }
+    }
 
+    TemplateSection {
+        className: "SlotsLayout (core apps examples)"
+        // no spacing between the list items in the Column
+        spacing: 0
 
         ListItem {
             id: addressbookListItem
@@ -601,7 +568,7 @@ Template {
                     visible: width > 0
                 }
 
-                Rectangle {
+                Item {
                     id: slot
                     width: label2.width
                     //don't use childrenRect here because we're positioning the labels in a custom way, the item starts at the top
@@ -610,7 +577,6 @@ Template {
                     //as we want to position labels to align with title and subtitle
                     SlotsLayoutCpp.overrideVerticalPositioning: true
 
-                    color: "pink"
                     Label {
                         id: lab
                         anchors.right: label2.right
@@ -626,11 +592,8 @@ Template {
                         y: dialerHistoryLayout.subtitleItem.y + dialerHistoryLayout.subtitleItem.baselineOffset - baselineOffset
                     }
                 }
-
             }
-
         }
-
 
         ListItem {
             id: telegramContactsListItem
@@ -660,8 +623,8 @@ Template {
                 }
             }
         }
-
     }
+
     TemplateSection {
         className: "ListItem"
         // no spacing between the list items in the Column
