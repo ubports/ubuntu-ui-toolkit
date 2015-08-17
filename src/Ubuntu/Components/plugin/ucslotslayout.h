@@ -14,6 +14,11 @@ class UCSlotsLayout : public QQuickItem
     Q_PROPERTY(QQuickText* titleItem READ titleItem CONSTANT)
     Q_PROPERTY(QQuickText* subtitleItem READ subtitleItem CONSTANT)
     Q_PROPERTY(QQuickText* subsubtitleItem READ subsubtitleItem CONSTANT)
+    Q_PROPERTY(qreal leftOffset READ leftOffset WRITE setLeftOffsetQML NOTIFY leftOffsetChanged)
+    Q_PROPERTY(qreal rightOffset READ rightOffset WRITE setRightOffsetQML NOTIFY rightOffsetChanged)
+    Q_PROPERTY(qreal topOffset READ topOffset WRITE setTopOffsetQML NOTIFY topOffsetChanged)
+    Q_PROPERTY(qreal bottomOffset READ bottomOffset WRITE setBottomOffsetQML NOTIFY bottomOffsetChanged)
+
     Q_ENUMS(UCSlotPosition)
 
 public:
@@ -22,6 +27,23 @@ public:
     QQuickText* titleItem() const;
     QQuickText* subtitleItem() const;
     QQuickText* subsubtitleItem() const;
+
+    qreal leftOffset() const;
+    void setLeftOffset(qreal val);
+    void setLeftOffsetQML(qreal val);
+    bool leftOffsetWasSetFromQml;
+
+    qreal rightOffset() const;
+    void setRightOffset(qreal val);
+    void setRightOffsetQML(qreal val);
+
+    qreal topOffset() const;
+    void setTopOffset(qreal val);
+    void setTopOffsetQML(qreal val);
+
+    qreal bottomOffset() const;
+    void setBottomOffset(qreal val);
+    void setBottomOffsetQML(qreal val);
 
     enum UCSlotPosition { Leading, Trailing };
 
@@ -32,9 +54,14 @@ Q_SIGNALS:
     void relayoutNeeded();
 
     void slotClicked(QQuickItem* slot);
+    void leftOffsetChanged();
+    void rightOffsetChanged();
+    void topOffsetChanged();
+    void bottomOffsetChanged();
 
 protected:
     Q_DECLARE_PRIVATE(UCSlotsLayout)
+    void classBegin();
     void componentComplete();
     void itemChange(ItemChange change, const ItemChangeData &data);
     void mousePressEvent(QMouseEvent *event);
@@ -48,7 +75,6 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_relayout())
     Q_PRIVATE_SLOT(d_func(), void _q_updateCachedHeight())
     Q_PRIVATE_SLOT(d_func(), void _q_updateSlotsBBoxHeight())
-
 
 };
 

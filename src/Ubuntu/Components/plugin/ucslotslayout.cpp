@@ -80,8 +80,15 @@ UCSlotsLayoutPrivate::UCSlotsLayoutPrivate()
     , pressedItem(0)
     , maxChildrenHeight(0)
     , _q_cachedHeight(-1)
+    , leftOffset(UCUnits::instance().gu(SLOTSLAYOUT_DEFAULTLAYOUTSIDEMARGINS_GU))
+    , rightOffset(UCUnits::instance().gu(SLOTSLAYOUT_DEFAULTLAYOUTSIDEMARGINS_GU))
+    , topOffset(UCUnits::instance().gu(SLOTSLAYOUT_DEFAULTLAYOUTSIDEMARGINS_GU))
+    , bottomOffset(UCUnits::instance().gu(SLOTSLAYOUT_DEFAULTLAYOUTSIDEMARGINS_GU))
+    , leftOffsetWasSetFromQml(false)
+    , rightOffsetWasSetFromQml(false)
+    , topOffsetWasSetFromQml(false)
+    , bottomOffsetWasSetFromQml(false)
     , m_parentItem(0)
-
 {
 }
 
@@ -93,6 +100,11 @@ void UCSlotsLayoutPrivate::init()
 {
     Q_Q(UCSlotsLayout);
     setDefaultLabelsProperties();
+
+    QObject::connect(q, SIGNAL(leftOffsetChanged()), q, SLOT(_q_relayout()));
+    QObject::connect(q, SIGNAL(rightOffsetChanged()), q, SLOT(_q_relayout()));
+    QObject::connect(q, SIGNAL(topOffsetChanged()), q, SLOT(_q_updateSlotsBBoxHeight()));
+    QObject::connect(q, SIGNAL(bottomOffsetChanged()), q, SLOT(_q_updateSlotsBBoxHeight()));
 
     // connect theme changes
     //QObject::connect(q, SIGNAL(themeChanged()),
@@ -142,10 +154,19 @@ int UCSlotsLayoutPrivate::getVerticalPositioningMode() {
     return (labelsBoundingBoxHeight > maxChildrenHeight) ? 1 : 0;
 }
 
-qreal UCSlotsLayoutPrivate::topBottomMargin() {
-    return (!getVerticalPositioningMode() && maxChildrenHeight > UCUnits::instance().gu(SLOTSLAYOUT_TOPBOTTOMMARGIN_SIZETHRESHOLD))
-            ? UCUnits::instance().gu(1.0)
-            : UCUnits::instance().gu(2.0);
+void UCSlotsLayoutPrivate::updateTopBottomOffsetsIfNeeded() {
+    Q_Q(UCSlotsLayout);
+    if (!topOffsetWasSetFromQml) {
+        q->setTopOffset((!getVerticalPositioningMode() && maxChildrenHeight > UCUnits::instance().gu(SLOTSLAYOUT_TOPBOTTOMMARGIN_SIZETHRESHOLD))
+                         ? UCUnits::instance().gu(1.0)
+                         : UCUnits::instance().gu(2.0));
+    }
+
+    if (!bottomOffsetWasSetFromQml) {
+        q->setBottomOffset((!getVerticalPositioningMode() && maxChildrenHeight > UCUnits::instance().gu(SLOTSLAYOUT_TOPBOTTOMMARGIN_SIZETHRESHOLD))
+                         ? UCUnits::instance().gu(1.0)
+                         : UCUnits::instance().gu(2.0));
+    }
 }
 
 void UCSlotsLayoutPrivate::_q_updateCachedHeight() {
@@ -262,6 +283,7 @@ void UCSlotsLayoutPrivate::_q_updateLabelsAnchorsAndBBoxHeight() {
         }
     }
 
+    updateTopBottomOffsetsIfNeeded();
     _q_updateSize();
 }
 
@@ -283,6 +305,7 @@ void UCSlotsLayoutPrivate::_q_updateSlotsBBoxHeight() {
     }
     maxChildrenHeight = maxSlotsHeight;
 
+    updateTopBottomOffsetsIfNeeded();
     _q_updateSize();
 }
 
@@ -297,7 +320,7 @@ void UCSlotsLayoutPrivate::_q_updateSize()
     QQuickItem *parent = qobject_cast<QQuickItem*>(q->parentItem());
     q->setImplicitWidth(parent ? parent->width() : UCUnits::instance().gu(IMPLICIT_SLOTSLAYOUT_WIDTH_GU));
     q->setImplicitHeight(qMax<qreal>(maxChildrenHeight, labelsBoundingBoxHeight)
-                         + topBottomMargin()*2);
+                         + topOffset + bottomOffset);
 
     Q_EMIT q->relayoutNeeded();
 }
@@ -361,19 +384,22 @@ void UCSlotsLayoutPrivate::_q_relayout() {
                 //reset the vertical anchor as we might be transitioning from the configuration
                 //where all items are vertically centered to the one where they're anchored to top
                 item->anchors()->resetVerticalCenter();
+                item->anchors()->setVerticalCenterOffset(0);
 
                 item->anchors()->setTop(_q_private->top());
-                item->anchors()->setTopMargin(topBottomMargin());
+                item->anchors()->setTopMargin(topOffset);
             } else {
                 item->anchors()->resetTop();
 
                 item->anchors()->setVerticalCenter(_q_private->verticalCenter());
+                //bottom and top margin could be different, we have to take that into account
+                item->anchors()->setVerticalCenterOffset(topOffset - bottomOffset);
             }
         }
 
         if (i==0) {
             item->anchors()->setLeft(_q_private->left());
-            item->anchors()->setLeftMargin(attached->leftMargin());
+            item->anchors()->setLeftMargin(attached->leftMargin() + leftOffset);
         } else {
             UCSlotsAttached *attachedPreviousItem =
                     qobject_cast<UCSlotsAttached*>(qmlAttachedPropertiesObject<UCSlotsLayout>(leadingSlots.at(i-1)));
@@ -398,36 +424,29 @@ void UCSlotsLayoutPrivate::_q_relayout() {
     subtitleAnchors->setLeft(labelsLeftAnchor);
     subsubtitleAnchors->setLeft(labelsLeftAnchor);
 
-    //NOTE: totalWidth includes the right margin of the last leading slot, which in our layout algorithm
-    //is actually part of title's leftMargin (as we layout from left to right so we don't anchors right sides)
-    qreal labelBoxWidth = q->width() - totalWidth - UCUnits::instance().gu(SLOTSLAYOUT_LABELS_RIGHTMARGIN);
+    qreal labelBoxWidth = q->width() - totalWidth - UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS)*2
+            - leftOffset - rightOffset;
 
     if (numberOfLeadingSlots != 0) {
         UCSlotsAttached *attachedLastLeadingSlot =
                 qobject_cast<UCSlotsAttached*>(qmlAttachedPropertiesObject<UCSlotsLayout>(leadingSlots.last()));
 
-        titleAnchors->setLeftMargin(attachedLastLeadingSlot->rightMargin());
-        subtitleAnchors->setLeftMargin(attachedLastLeadingSlot->rightMargin());
-        subsubtitleAnchors->setLeftMargin(attachedLastLeadingSlot->rightMargin());
-
-        //last leading Slot "attachedProp->rightMargin" is already part of title's QML leftMargin
-        //due to the way we lay out the items (left to right)
-        labelBoxWidth -= (titleAnchors->leftMargin() - attachedLastLeadingSlot->rightMargin());
+        titleAnchors->setLeftMargin(attachedLastLeadingSlot->rightMargin() + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS));
+        subtitleAnchors->setLeftMargin(attachedLastLeadingSlot->rightMargin() + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS));
+        subsubtitleAnchors->setLeftMargin(attachedLastLeadingSlot->rightMargin() + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS));
     } else {
-        titleAnchors->setLeftMargin(UCUnits::instance().gu(SLOTSLAYOUT_DEFAULTLAYOUTSIDEMARGINS_GU));
-        subtitleAnchors->setLeftMargin(UCUnits::instance().gu(SLOTSLAYOUT_DEFAULTLAYOUTSIDEMARGINS_GU));
-        subsubtitleAnchors->setLeftMargin(UCUnits::instance().gu(SLOTSLAYOUT_DEFAULTLAYOUTSIDEMARGINS_GU));
-
-        labelBoxWidth -= titleAnchors->leftMargin();
+        titleAnchors->setLeftMargin(leftOffset + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS));
+        subtitleAnchors->setLeftMargin(leftOffset + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS));
+        subsubtitleAnchors->setLeftMargin(leftOffset + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS));
     }
 
     //new visual design rules
     if (getVerticalPositioningMode()) {
-        titleAnchors->setTopMargin(topBottomMargin());
+        titleAnchors->setTopMargin(topOffset);
     } else {
         //center the whole labels block vertically, we can't use verticalCenter as we don't
         //have a QQuickItem which contains the labels
-        titleAnchors->setTopMargin((q->height() - labelsBoundingBoxHeight) / 2.0);
+        titleAnchors->setTopMargin((q->height() - bottomOffset + topOffset - labelsBoundingBoxHeight) / 2.0) ;
     }
 
     //currentX += labelBoxWidth + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_RIGHTMARGIN);
@@ -458,9 +477,10 @@ void UCSlotsLayoutPrivate::_q_relayout() {
                     //reset the vertical anchor as we might be transitioning from the configuration
                     //where all items are vertically centered to the one where they're anchored to top
                     item->anchors()->resetVerticalCenter();
+                    item->anchors()->setVerticalCenterOffset(0);
 
                     item->anchors()->setTop(_q_private->top());
-                    item->anchors()->setTopMargin(topBottomMargin());
+                    item->anchors()->setTopMargin(topOffset);
                 } else {
                     //reset the anchor as we may be switching to one vertical positioning mode to another
                     item->anchors()->resetTop();
@@ -473,7 +493,7 @@ void UCSlotsLayoutPrivate::_q_relayout() {
                 item->anchors()->setLeft(QQuickItemPrivate::get(&m_title)->right());
                 //the 2GU right margin of the labels is treated as left margin of the first trailing slot
                 //because labels don't have a right anchor set up here!
-                item->anchors()->setLeftMargin(UCUnits::instance().gu(SLOTSLAYOUT_LABELS_RIGHTMARGIN) + attached->leftMargin());
+                item->anchors()->setLeftMargin(UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS) + attached->leftMargin());
             } else {
                 UCSlotsAttached *attachedPreviousItem =
                         qobject_cast<UCSlotsAttached*>(qmlAttachedPropertiesObject<UCSlotsLayout>(trailingSlots.at(i-1)));
@@ -485,11 +505,11 @@ void UCSlotsLayoutPrivate::_q_relayout() {
         }
     } else {
         titleAnchors->setRight(_q_private->right());
-        titleAnchors->setRightMargin(UCUnits::instance().gu(SLOTSLAYOUT_LABELS_RIGHTMARGIN));
+        titleAnchors->setRightMargin(rightOffset + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS));
         subtitleAnchors->setRight(_q_private->right());
-        subtitleAnchors->setRightMargin(UCUnits::instance().gu(SLOTSLAYOUT_LABELS_RIGHTMARGIN));
+        subtitleAnchors->setRightMargin(rightOffset + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS));
         subsubtitleAnchors->setRight(_q_private->right());
-        subsubtitleAnchors->setRightMargin(UCUnits::instance().gu(SLOTSLAYOUT_LABELS_RIGHTMARGIN));
+        subsubtitleAnchors->setRightMargin(rightOffset + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS));
     }
 }
 
@@ -503,6 +523,27 @@ UCSlotsLayout::UCSlotsLayout(QQuickItem *parent) :
     setAcceptedMouseButtons(Qt::LeftButton);
 }
 
+void UCSlotsLayout::classBegin() {
+    /*Q_D(UCSlotsLayout);
+
+    UCSlotsAttached *titleAttachedProperty =
+            qobject_cast<UCSlotsAttached*>(qmlAttachedPropertiesObject<UCSlotsLayout>(&d->m_title));
+    UCSlotsAttached *subtitleAttachedProperty =
+            qobject_cast<UCSlotsAttached*>(qmlAttachedPropertiesObject<UCSlotsLayout>(&d->m_subtitle));
+    UCSlotsAttached *subsubtitleAttachedProperty =
+            qobject_cast<UCSlotsAttached*>(qmlAttachedPropertiesObject<UCSlotsLayout>(&d->m_subsubtitle));
+
+    if (!titleAttachedProperty) qDebug() << "FAILING";
+    else {
+        qDebug() << titleAttachedProperty->leftMargin();
+
+    }
+    Q_UNUSED(titleAttachedProperty);
+    Q_UNUSED(subtitleAttachedProperty);
+    Q_UNUSED(subsubtitleAttachedProperty);*/
+
+}
+
 void UCSlotsLayout::componentComplete() {
     QQuickItem::componentComplete();
 
@@ -513,6 +554,7 @@ void UCSlotsLayout::componentComplete() {
     //QML properties (such as titleItem.text) have been initialized!
     d->_q_updateLabelsAnchorsAndBBoxHeight();
     d->_q_updateSlotsBBoxHeight();
+
 }
 
 void UCSlotsLayout::itemChange(ItemChange change, const ItemChangeData &data)
@@ -630,4 +672,81 @@ void UCSlotsLayout::mouseReleaseEvent(QMouseEvent *event) {
 
     d->pressedItem = 0;
 }
+
+qreal UCSlotsLayout::leftOffset() const {
+    Q_D(const UCSlotsLayout);
+    return d->leftOffset;
+}
+
+void UCSlotsLayout::setLeftOffset(qreal val) {
+    Q_D(UCSlotsLayout);
+    if (d->leftOffset != val) {
+        d->leftOffset = val;
+        Q_EMIT leftOffsetChanged();
+    }
+}
+
+void UCSlotsLayout::setLeftOffsetQML(qreal val) {
+    Q_D(UCSlotsLayout);
+    d->leftOffsetWasSetFromQml = true;
+    setLeftOffset(val);
+}
+
+qreal UCSlotsLayout::rightOffset() const {
+    Q_D(const UCSlotsLayout);
+    return d->rightOffset;
+}
+
+void UCSlotsLayout::setRightOffset(qreal val) {
+    Q_D(UCSlotsLayout);
+    if (d->rightOffset != val) {
+        d->rightOffset = val;
+        Q_EMIT rightOffsetChanged();
+    }
+}
+
+void UCSlotsLayout::setRightOffsetQML(qreal val) {
+    Q_D(UCSlotsLayout);
+    d->rightOffsetWasSetFromQml = true;
+    setRightOffset(val);
+}
+
+qreal UCSlotsLayout::topOffset() const {
+    Q_D(const UCSlotsLayout);
+    return d->topOffset;
+}
+
+void UCSlotsLayout::setTopOffset(qreal val) {
+    Q_D(UCSlotsLayout);
+    if (d->topOffset != val) {
+        d->topOffset = val;
+        Q_EMIT topOffsetChanged();
+    }
+}
+
+void UCSlotsLayout::setTopOffsetQML(qreal val) {
+    Q_D(UCSlotsLayout);
+    d->topOffsetWasSetFromQml = true;
+    setTopOffset(val);
+}
+
+qreal UCSlotsLayout::bottomOffset() const {
+    Q_D(const UCSlotsLayout);
+    return d->bottomOffset;
+}
+
+void UCSlotsLayout::setBottomOffset(qreal val) {
+    Q_D(UCSlotsLayout);
+    if (d->bottomOffset != val) {
+        d->bottomOffset = val;
+        Q_EMIT bottomOffsetChanged();
+    }
+}
+
+void UCSlotsLayout::setBottomOffsetQML(qreal val) {
+    Q_D(UCSlotsLayout);
+    d->bottomOffsetWasSetFromQml = true;
+    setBottomOffset(val);
+}
+
 #include "moc_ucslotslayout.cpp"

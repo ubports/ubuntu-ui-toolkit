@@ -159,7 +159,8 @@ Template {
             id: listItem
 
             //FIXME: do we like this?
-            height: units.gu(8) //layout.height
+            height: layout.height + divider.height
+            //contentItem.height: layout.height
 
             trailingActions: ListItemActions {
                 actions: [
@@ -176,11 +177,10 @@ Template {
 
             SlotsLayoutCpp {
                 id: layout
-                anchors.fill: parent
 
                 Icon { SlotsLayoutCpp.position: SlotsLayoutCpp.Leading; width: units.gu(2); name: "email" }
                 Icon { width: units.gu(2); name: "message" }
-                CheckBox { }
+                CheckBox {  }
 
                 titleItem.text: "Hello designers!"
                 subtitleItem.text:  "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
@@ -451,6 +451,11 @@ Template {
 
             SlotsLayoutCpp {
                 id: listItemCustomLayout1
+
+                //Component.onCompleted: console.log(titleItem.SlotsLayoutCpp.leftMargin)
+                //left/top/right/bottomOffset: units.gu(4)
+                //anchors.topMargin: units.gu(4)
+                //anchors.bottomMargin: units.gu(4)
 
                 CheckBox { SlotsLayoutCpp.overrideVerticalPositioning: true; anchors.top: parent.titleItem.top; width: units.gu(4); height: units.gu(4) }
 

@@ -7,9 +7,9 @@
 #define IMPLICIT_SLOTSLAYOUT_WIDTH_GU             40
 #define IMPLICIT_SLOTSLAYOUT_HEIGHT_GU            7
 #define SLOTSLAYOUT_LABELS_SPACING                1
-#define SLOTSLAYOUT_LABELS_RIGHTMARGIN            2
-#define SLOTSLAYOUT_DEFAULTSLOTSIDEMARGINS_GU     2
-#define SLOTSLAYOUT_DEFAULTLAYOUTSIDEMARGINS_GU   2
+#define SLOTSLAYOUT_LABELS_SIDEMARGINS            1
+#define SLOTSLAYOUT_DEFAULTSLOTSIDEMARGINS_GU     1
+#define SLOTSLAYOUT_DEFAULTLAYOUTSIDEMARGINS_GU   1
 //we want a different top/bottom margin if any of the slot is taller than this
 #define SLOTSLAYOUT_TOPBOTTOMMARGIN_SIZETHRESHOLD 4
 
@@ -20,7 +20,7 @@ public:
     UCSlotsLayoutPrivate();
     virtual ~UCSlotsLayoutPrivate();
     void init();
-    qreal topBottomMargin();
+    void updateTopBottomOffsetsIfNeeded();
 
     //We have two vertical positioning modes according to the visual design rules:
     //- RETURN VALUE 0 --> All items have to be vertically centered
@@ -56,6 +56,19 @@ public:
     QQuickText m_title;
     QQuickText m_subtitle;
     QQuickText m_subsubtitle;
+
+    qreal leftOffset;
+    qreal rightOffset;
+    qreal topOffset;
+    qreal bottomOffset;
+
+    //once the dev tries to change the offsets (and he does so via QML) we'll stop
+    //updating offset's value, for instance when gu value changes or when the visual
+    //rules would require a different offset than usual
+    bool leftOffsetWasSetFromQml;
+    bool rightOffsetWasSetFromQml;
+    bool topOffsetWasSetFromQml;
+    bool bottomOffsetWasSetFromQml;
 
     //in this variable we cache the current parent so that we can disconnect from the signals
     //when the parent changes. We need this because otherwise inside itemChange(..) we would
