@@ -147,7 +147,15 @@ import "tree.js" as Tree
     }
   \endqml
 
-  \sa PageStack
+  A column is considered to be resizable if the \l PageColumn::minimumWidth and
+  \l PageColumn::maximumWidth configuration differs. This implies that if a column
+  is not meant to be resized, it should have \l PageColumn::minimumWidth and
+  \l PageColumn::maximumWidth set to the same value. In the example above, the
+  first column can be resized to a minimum of 30, and a maximum of 60 grid units,
+  and the preferred width is set to 40 grid units. This width is set every time
+  the layout is activated.
+
+  \sa PageStack, PageColumnsLayout, PageColumn
 */
 
 PageTreeNode {
@@ -495,6 +503,7 @@ PageTreeNode {
             property int column
             property alias config: subHeader.config
             property PageColumn metrics: getDefaultMetrics()
+            readonly property real dividerThickness: units.dp(1)
 
             Layout.fillWidth: metrics.fillWidth
             Layout.fillHeight: true
@@ -512,7 +521,7 @@ PageTreeNode {
                     bottom: parent.bottom
                     left: parent.left
                     right: parent.right
-                    rightMargin: verticalDivider.width
+                    rightMargin: dividerThickness
                 }
                 // we need to clip because the header does not have a background
                 clip: true
@@ -573,9 +582,52 @@ PageTreeNode {
                     top: parent.top
                     bottom: parent.bottom
                     right: parent.right
+                    rightMargin: dividerThickness
                 }
                 width: (column == (d.columns - 1)) || !pageWrapper ? 0 : units.dp(1)
-                color: subHeader.dividerColor
+                color: theme.palette.selected.background
+                MouseArea {
+                    id: resizerSensing
+                    objectName: "Divider"
+                    enabled: verticalDivider.width > 0
+                    anchors {
+                        fill: parent
+                        leftMargin: enabled ? -units.gu(1) : 0
+                        rightMargin: enabled ? -units.gu(1) : 0
+                    }
+                    cursorShape: Qt.SizeHorCursor
+                    drag {
+                        axis: Drag.XAxis
+                        target: resizer
+                        smoothed: false
+                        minimumX: holder.Layout.minimumWidth
+                        maximumX: holder.Layout.maximumWidth
+                    }
+                    onPressed: resizer.x = holder.Layout.preferredWidth
+                }
+                states: State {
+                    name: "active"
+                    when: resizerSensing.pressed
+                    PropertyChanges {
+                        target: verticalDivider
+                        color: Qt.darker(theme.palette.normal.background, 1.5)
+                    }
+                }
+                transitions: Transition {
+                    from: ""
+                    to: "*"
+                    reversible: true
+                    ColorAnimation {
+                        target: verticalDivider
+                        property: "color"
+                        duration: UbuntuAnimation.SlowDuration
+                    }
+                }
+            }
+            Item {
+                id: resizer
+                height: parent.height
+                onXChanged: holder.Layout.preferredWidth = x
             }
 
             function attachPage(page) {
