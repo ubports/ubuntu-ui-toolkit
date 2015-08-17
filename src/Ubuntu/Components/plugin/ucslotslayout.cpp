@@ -393,7 +393,7 @@ void UCSlotsLayoutPrivate::_q_relayout() {
 
                 item->anchors()->setVerticalCenter(_q_private->verticalCenter());
                 //bottom and top margin could be different, we have to take that into account
-                item->anchors()->setVerticalCenterOffset(topOffset - bottomOffset);
+                item->anchors()->setVerticalCenterOffset((topOffset - bottomOffset) / 2.0);
             }
         }
 
@@ -486,6 +486,8 @@ void UCSlotsLayoutPrivate::_q_relayout() {
                     item->anchors()->resetTop();
 
                     item->anchors()->setVerticalCenter(_q_private->verticalCenter());
+                    //bottom and top margin could be different, we have to take that into account
+                    item->anchors()->setVerticalCenterOffset((topOffset - bottomOffset) / 2.0);
                 }
             }
 

@@ -242,6 +242,7 @@ Template {
             SlotsLayoutCpp {
                 id: layout3
 
+                bottomOffset: units.gu(10)
                 CheckBox { width: units.gu(8); height: units.gu(8) }
                 Rectangle { color: "purple"; width: units.gu(5); height: units.gu(5) }
                 Icon { SlotsLayoutCpp.position: SlotsLayoutCpp.Leading; width: units.gu(5); height: units.gu(5); name: "message" }
