@@ -527,8 +527,9 @@ void UCSlotsLayout::itemChange(ItemChange change, const ItemChangeData &data)
             //we relayout because we have to update the width of the labels
             //TODO: do this in a separate function? do were really have to do the whole relayout?
             QObject::connect(data.item, SIGNAL(widthChanged()), this, SLOT(_q_relayout()));
-            d->_q_updateSize();
-            d->_q_relayout();
+
+            //this will also trigger relayout
+            d->_q_updateSlotsBBoxHeight();
         }
         break;
     case ItemChildRemovedChange:
@@ -536,7 +537,7 @@ void UCSlotsLayout::itemChange(ItemChange change, const ItemChangeData &data)
             QObject::disconnect(data.item, SIGNAL(visibleChanged()), this, SLOT(_q_relayout()));
             QObject::disconnect(data.item, SIGNAL(heightChanged()), this, SLOT(_q_updateSlotsBBoxHeight()));
             QObject::disconnect(data.item, SIGNAL(widthChanged()), this, SLOT(_q_relayout()));
-            d->_q_updateSize();
+            d->_q_updateSlotsBBoxHeight();
         }
         break;
     default:

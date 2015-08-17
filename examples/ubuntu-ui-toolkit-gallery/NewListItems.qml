@@ -375,7 +375,7 @@ Template {
             }
         }
 
-        /*ListItem {
+        ListItem {
             height: qmlLayout.height
 
             trailingActions: ListItemActions {
@@ -413,7 +413,7 @@ Template {
                 titleItem.text: "TestTitle"
                 subtitleItem.text: "TestSubtitle"
             }
-        }*/
+        }
 
         ListItem {
             id: listItemTestMouse

@@ -137,7 +137,10 @@ QML_FILES += 1.3/AbstractButton.qml \
              1.3/UbuntuListView.qml \
              1.3/UbuntuNumberAnimation.qml \
              1.3/ListItemPopover.qml \
-             1.3/BottomEdgeHint.qml
+             1.3/BottomEdgeHint.qml \
+             1.3/HardcodedFourContainersLayout.qml \
+             1.3/SlotsLayout.qml \
+             1.3/SlotQML.qml
 
 OTHER_FILES+= 1.3/CrossFadeImage.qdoc \
              1.3/UbuntuListView11.qdoc \
