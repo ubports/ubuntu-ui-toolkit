@@ -503,7 +503,7 @@ PageTreeNode {
             property int column
             property alias config: subHeader.config
             property PageColumn metrics: getDefaultMetrics()
-            readonly property real dividerThickness: units.dp(2)
+            readonly property real dividerThickness: units.dp(1)
 
             Layout.fillWidth: metrics.fillWidth
             Layout.fillHeight: true
@@ -610,7 +610,6 @@ PageTreeNode {
                     when: resizerSensing.pressed
                     PropertyChanges {
                         target: verticalDivider
-                        width: dividerThickness
                         color: Qt.darker(theme.palette.normal.background, 1.5)
                     }
                 }
@@ -618,18 +617,10 @@ PageTreeNode {
                     from: ""
                     to: "*"
                     reversible: true
-                    ParallelAnimation {
-                        NumberAnimation {
-                            target: verticalDivider
-                            property: "width"
-                            easing.type: Easing.OutBack
-                            duration: UbuntuAnimation.SlowDuration
-                        }
-                        ColorAnimation {
-                            target: verticalDivider
-                            property: "color"
-                            duration: UbuntuAnimation.SlowDuration
-                        }
+                    ColorAnimation {
+                        target: verticalDivider
+                        property: "color"
+                        duration: UbuntuAnimation.SlowDuration
                     }
                 }
             }
