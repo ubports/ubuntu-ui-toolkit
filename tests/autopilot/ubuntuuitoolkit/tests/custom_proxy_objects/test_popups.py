@@ -51,6 +51,7 @@ MainView {
         actions: ActionList {
             Action {
                 text: "Action one"
+                objectName: "actionOne"
                 onTriggered: label.text = "Button clicked."
             }
         }
@@ -58,18 +59,27 @@ MainView {
 }
 """)
 
-    def test_action_selection_popover_custom_proxy_object(self):
+    def test_custom_proxy_object(self):
         popover = self.main_view.get_action_selection_popover(
             'test_actions_popover')
         self.assertIsInstance(popover, popups.ActionSelectionPopover)
 
-    def test_click_action_select_popover_button(self):
+    def test_click_button_by_label(self):
         label = self.app.select_single('Label', objectName='clicked_label')
         self.assertNotEqual(label.text, 'Button clicked.')
         self._open_popover()
         popover = self.main_view.get_action_selection_popover(
             'test_actions_popover')
         popover.click_button_by_text('Action one')
+        self.assertEqual(label.text, 'Button clicked.')
+
+    def test_click_action_by_object_name(self):
+        label = self.app.select_single('Label', objectName='clicked_label')
+        self.assertNotEqual(label.text, 'Button clicked.')
+        self._open_popover()
+        popover = self.main_view.get_action_selection_popover(
+            'test_actions_popover')
+        popover.click_action_button('actionOne')
         self.assertEqual(label.text, 'Button clicked.')
 
     def _open_popover(self):
