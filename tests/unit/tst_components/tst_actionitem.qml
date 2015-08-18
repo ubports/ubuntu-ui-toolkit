@@ -45,8 +45,6 @@ TestCase {
          compare(item1.action, action1, "Action can be set")
          compare(item1.text, action1.text, "text is automatically set to action text")
          compare(item1.iconSource, action1.iconSource, "iconSource is automatically set to action iconSource")
-         // FIXME: this is wrong!!! right now, if the action.tiggered() is emitted,
-         // the ActionItem.trigger won't happen!
          item1.triggered(null)
          triggerSpy.wait(400);
      }

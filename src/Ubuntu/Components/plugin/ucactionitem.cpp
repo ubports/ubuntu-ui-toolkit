@@ -104,16 +104,12 @@ void UCActionItem::setAction(UCAction *action)
         return;
     }
     if (m_action) {
-        // FIXME: this should be vice versa, action.triggered connected to ActionItem.triggered
-        // must be discussed!
         disconnect(this, &UCActionItem::triggered, m_action, &UCAction::triggered);
     }
     m_action = action;
     Q_EMIT actionChanged();
 
     if (m_action) {
-        // FIXME: this should be vice versa, action.triggered connected to ActionItem.triggered
-        // must be discussed!
         connect(this, &UCActionItem::triggered, m_action, &UCAction::triggered);
     }
     updateVisible();
@@ -219,8 +215,6 @@ void UCActionItem::resetIconName()
  */
 void UCActionItem::trigger(const QVariant &value)
 {
-    // FIXME: this should be vice versa, action.triggered connected to ActionItem.triggered
-    // must be discussed!
     if (isEnabled()) {
         Q_EMIT triggered(value);
     }
