@@ -55,6 +55,43 @@ void UCActionItem::_q_enabledChanged()
     disconnect(this, &UCActionItem::enabledChanged, this, &UCActionItem::_q_enabledChanged);
 }
 
+// update visible property
+void UCActionItem::updateVisible()
+{
+    bool visible = m_action ? m_action->m_visible : true;
+    setVisible(visible);
+    // reset flag and reconnect signal handler disconnected by the
+    m_flags &= ~CustomVisible;
+    if (m_action) {
+        connect(this, &UCActionItem::visibleChanged, this, &UCActionItem::_q_visibleChanged);
+    }
+}
+
+// update enabled property
+void UCActionItem::updateEnabled()
+{
+    bool enabled = m_action ? m_action->m_enabled : true;
+    setEnabled(enabled);
+    // reset flag and reconnect signal handler disconnected by the
+    m_flags &= ~CustomEnabled;
+    if (m_action) {
+        connect(this, &UCActionItem::enabledChanged, this, &UCActionItem::_q_enabledChanged);
+    }
+}
+
+void UCActionItem::updateProperties()
+{
+    if (!(m_flags & CustomText)) {
+        Q_EMIT textChanged();
+    }
+    if (!(m_flags & CustomIconSource)) {
+        Q_EMIT iconSourceChanged();
+    }
+    if (!(m_flags & CustomIconName)) {
+        Q_EMIT iconNameChanged();
+    }
+}
+
 /*!
  * \qmlproperty Action ActionItem::action
  * The \l Action associated with this ActionItem. If action is set, the values
@@ -67,36 +104,21 @@ void UCActionItem::setAction(UCAction *action)
         return;
     }
     if (m_action) {
-        disconnect(m_action, &UCAction::triggered, this, &UCActionItem::triggered);
+        // FIXME: this should be vice versa, action.triggered connected to ActionItem.triggered
+        // must be discussed!
+        disconnect(this, &UCActionItem::triggered, m_action, &UCAction::triggered);
     }
     m_action = action;
     Q_EMIT actionChanged();
-    // sync properties
-    if (!m_action) {
-        return;
+
+    if (m_action) {
+        // FIXME: this should be vice versa, action.triggered connected to ActionItem.triggered
+        // must be discussed!
+        connect(this, &UCActionItem::triggered, m_action, &UCAction::triggered);
     }
-    connect(m_action, &UCAction::triggered, this, &UCActionItem::triggered);
-    if (!(m_flags & CustomVisible)) {
-        setVisible(m_action->m_visible);
-        // reset flag and reconnect signal handler disconnected by the
-        m_flags &= ~CustomVisible;
-        connect(this, &UCActionItem::visibleChanged, this, &UCActionItem::_q_visibleChanged);
-    }
-    if (!(m_flags & CustomEnabled)) {
-        setEnabled(m_action->m_enabled);
-        // reset flag and reconnect signal handler disconnected by the
-        m_flags &= ~CustomEnabled;
-        connect(this, &UCActionItem::enabledChanged, this, &UCActionItem::_q_enabledChanged);
-    }
-    if (!(m_flags & CustomText)) {
-        Q_EMIT textChanged();
-    }
-    if (!(m_flags & CustomIconSource)) {
-        Q_EMIT iconSourceChanged();
-    }
-    if (!(m_flags & CustomIconName)) {
-        Q_EMIT iconNameChanged();
-    }
+    updateVisible();
+    updateEnabled();
+    updateProperties();
 }
 
 /*!
@@ -114,6 +136,12 @@ void UCActionItem::setText(const QString &text)
     }
     m_text = text;
     m_flags |= CustomText;
+    Q_EMIT textChanged();
+}
+void UCActionItem::resetText()
+{
+    m_text.clear();
+    m_flags &= ~CustomText;
     Q_EMIT textChanged();
 }
 
@@ -141,6 +169,12 @@ void UCActionItem::setIconSource(const QUrl &iconSource)
     }
     m_iconSource = iconSource;
     m_flags |= CustomIconSource;
+    Q_EMIT iconSourceChanged();
+}
+void UCActionItem::resetIconSource()
+{
+    m_iconSource.clear();
+    m_flags &= ~CustomIconSource;
     Q_EMIT iconSourceChanged();
 }
 
@@ -172,6 +206,12 @@ void UCActionItem::setIconName(const QString &iconName)
     m_flags |= CustomIconName;
     Q_EMIT iconNameChanged();
 }
+void UCActionItem::resetIconName()
+{
+    m_iconName.clear();
+    m_flags &= ~CustomIconName;
+    Q_EMIT iconNameChanged();
+}
 
 /*!
  * \qmlmethod void ActionItem::trigger(var value)
@@ -179,9 +219,9 @@ void UCActionItem::setIconName(const QString &iconName)
  */
 void UCActionItem::trigger(const QVariant &value)
 {
-    if (m_action) {
-        m_action->trigger(value);
-    } else {
+    // FIXME: this should be vice versa, action.triggered connected to ActionItem.triggered
+    // must be discussed!
+    if (isEnabled()) {
         Q_EMIT triggered(value);
     }
 }

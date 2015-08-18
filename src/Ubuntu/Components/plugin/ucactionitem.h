@@ -23,19 +23,22 @@ class UCActionItem : public UCStyledItemBase
 {
     Q_OBJECT
     Q_PROPERTY(UCAction *action MEMBER m_action WRITE setAction NOTIFY actionChanged FINAL)
-    Q_PROPERTY(QString text READ text WRITE setText NOTIFY textChanged)
-    Q_PROPERTY(QUrl iconSource READ iconSource WRITE setIconSource NOTIFY iconSourceChanged)
-    Q_PROPERTY(QString iconName READ iconName WRITE setIconName NOTIFY iconNameChanged)
+    Q_PROPERTY(QString text READ text WRITE setText RESET resetText NOTIFY textChanged)
+    Q_PROPERTY(QUrl iconSource READ iconSource WRITE setIconSource RESET resetIconSource NOTIFY iconSourceChanged)
+    Q_PROPERTY(QString iconName READ iconName WRITE setIconName RESET resetIconName NOTIFY iconNameChanged)
 public:
     explicit UCActionItem(QQuickItem *parent = 0);
 
     void setAction(UCAction *action);
     QString text();
     void setText(const QString &text);
+    void resetText();
     QUrl iconSource();
     void setIconSource(const QUrl &iconSource);
+    void resetIconSource();
     QString iconName();
     void setIconName(const QString &iconName);
+    void resetIconName();
 
 Q_SIGNALS:
     void actionChanged();
@@ -65,6 +68,9 @@ protected:
     UCAction *m_action;
     quint8 m_flags;
 
+    void updateVisible();
+    void updateEnabled();
+    void updateProperties();
 };
 
 #endif // UCACTIONITEM_H
