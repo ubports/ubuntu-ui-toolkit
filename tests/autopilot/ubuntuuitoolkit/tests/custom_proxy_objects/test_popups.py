@@ -73,7 +73,7 @@ MainView {
         popover.click_button_by_text('Action one')
         self.assertEqual(label.text, 'Button clicked.')
 
-    def test_click_action_by_object_name(self):
+    def test_click_button_by_object_name(self):
         label = self.app.select_single('Label', objectName='clicked_label')
         self.assertNotEqual(label.text, 'Button clicked.')
         self._open_popover()

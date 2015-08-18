@@ -81,7 +81,7 @@ class ActionSelectionPopover(_common.UbuntuUIToolkitCustomProxyObjectBase):
         """Click an action button on the popover.
 
         :parameter object_name: The QML objectName property of the action
-        :raise ToolkitException: If there is no action button that that object
+        :raise ToolkitException: If there is no visible button with that object
             name or the popover is not open.
 
         """
@@ -105,14 +105,9 @@ class ActionSelectionPopover(_common.UbuntuUIToolkitCustomProxyObjectBase):
     def click_button_by_text(self, text):
         """Click a button on the popover.
 
-        XXX We are receiving the text because there's no way to set the
-        objectName on the action. This is reported at
-        https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1205144
-        --elopio - 2013-07-25
-
         :parameter text: The text of the button.
-        :raise ToolkitException: If the popover is not open.
-            name or the popover is not open.
+        :raise ToolkitException: If there is no visible button with that label
+            or the popover is not open.
 
         """
         if not self.visible:

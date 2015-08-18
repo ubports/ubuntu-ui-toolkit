@@ -149,7 +149,7 @@ Popover {
                         // set model data
                         if (item.hasOwnProperty("action")) {
                             item.action = modelData;
-                            item.objectName = item.action.objectName;
+                            item.objectName = item.action.objectName + '_button';
                         }
                         if (item.hasOwnProperty("refModelData"))
                             item.refModelData = modelData;
