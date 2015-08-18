@@ -29,7 +29,7 @@ Column {
                 Item { SlotsLayoutCpp.position: SlotsLayoutCpp.Trailing; width: units.gu(2) }
                 Item { SlotsLayoutCpp.position: SlotsLayoutCpp.Trailing; width: units.gu(2) }
                 titleItem.text: "test"
-                subtitleItem.text: "test"
+                subtitleItem.text: "label"
             }
         }
     }

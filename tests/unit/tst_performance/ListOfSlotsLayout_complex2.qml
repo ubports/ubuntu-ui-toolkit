@@ -42,7 +42,7 @@ Column {
                 SlotQML { Item { width: units.gu(2) } }
                 SlotQML { Item { width: units.gu(2) } }
                 titleItem.text: "test"
-                subtitleItem.text: "test"
+                subtitleItem.text: "label"
             }
         }
     }

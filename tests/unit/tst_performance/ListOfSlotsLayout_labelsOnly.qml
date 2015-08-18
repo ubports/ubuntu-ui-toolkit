@@ -26,7 +26,7 @@ Column {
         ListItem {
             SlotsLayout {
                 titleItem.text: "test"
-                subtitleItem.text: "test"
+                subtitleItem.text: "label"
             }
         }
     }
