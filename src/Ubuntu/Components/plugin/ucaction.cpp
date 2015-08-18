@@ -150,13 +150,12 @@
 
 UCAction::UCAction(QObject *parent)
     : QObject(parent)
+    , m_itemHint(Q_NULLPTR)
+    , m_parameterType(None)
     , m_factoryIconSource(true)
     , m_enabled(true)
     , m_visible(true)
     , m_published(false)
-    , m_itemHint(0)
-    , m_parameterType(None)
-    , m_shortcut(0)
 {
     generateName();
 }

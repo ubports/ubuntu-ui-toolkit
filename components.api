@@ -43,14 +43,8 @@ Ubuntu.Components.ActionItem 1.0 0.1: StyledItem
     property string iconName
     property url iconSource
     signal triggered(var value)
-    function var trigger(var value)
-    property string text
-Ubuntu.Components.ActionItem 1.3: StyledItem
-    property Action action
-    property string iconName
-    property url iconSource
-    signal triggered(var value)
-    function var trigger(var value)
+    function trigger(var value)
+    function trigger()
     property string text
 Ubuntu.Components.ActionList 1.0 0.1: QtObject
     readonly property Action actions
@@ -1232,14 +1226,16 @@ Ubuntu.Components.ToolbarButton 1.0 0.1: StyledItem
     property string iconName
     property url iconSource
     signal triggered(var value)
-    function var trigger(var value)
+    function trigger(var value)
+    function trigger()
     property string text
 Ubuntu.Components.ToolbarButton 1.3: StyledItem
     property Action action
     property string iconName
     property url iconSource
     signal triggered(var value)
-    function var trigger(var value)
+    function trigger(var value)
+    function trigger()
     property string text
 Ubuntu.Components.ToolbarItems 1.0 0.1: Item
     property Item back

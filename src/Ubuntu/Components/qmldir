@@ -1,6 +1,5 @@
 module Ubuntu.Components
 plugin UbuntuComponents
-ActionItem 0.1 1.2/ActionItem.qml
 ActionList 0.1 1.2/ActionList.qml
 ToolbarItems 0.1 1.2/ToolbarItems.qml
 ToolbarButton 0.1 1.2/ToolbarButton.qml
@@ -44,7 +43,6 @@ ColorUtils 0.1 1.2/colorUtils.js
 DateUtils 0.1 1.2/dateUtils.js
 
 #version 1.0
-ActionItem 1.0 1.2/ActionItem.qml
 ActionList 1.0 1.2/ActionList.qml
 ToolbarItems 1.0 1.2/ToolbarItems.qml
 ToolbarButton 1.0 1.2/ToolbarButton.qml
@@ -105,7 +103,6 @@ Captions 1.2 1.2/Captions.qml
 #################################################
 #version 1.3
 ActionBar 1.3 1.3/ActionBar.qml
-ActionItem 1.3 1.3/ActionItem.qml
 ActionList 1.3 1.3/ActionList.qml
 AdaptivePageLayout 1.3 1.3/AdaptivePageLayout.qml
 PageColumnsLayout 1.3 1.3/PageColumnsLayout.qml
