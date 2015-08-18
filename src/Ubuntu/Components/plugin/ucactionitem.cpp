@@ -46,11 +46,13 @@ UCActionItem::UCActionItem(QQuickItem *parent)
 void UCActionItem::_q_visibleChanged()
 {
     m_flags |= CustomVisible;
+    disconnect(this, &UCActionItem::visibleChanged, this, &UCActionItem::_q_visibleChanged);
 }
 
 void UCActionItem::_q_enabledChanged()
 {
     m_flags |= CustomEnabled;
+    disconnect(this, &UCActionItem::enabledChanged, this, &UCActionItem::_q_enabledChanged);
 }
 
 /*!
@@ -76,9 +78,15 @@ void UCActionItem::setAction(UCAction *action)
     connect(m_action, &UCAction::triggered, this, &UCActionItem::triggered);
     if (!(m_flags & CustomVisible)) {
         setVisible(m_action->m_visible);
+        // reset flag and reconnect signal handler disconnected by the
+        m_flags &= ~CustomVisible;
+        connect(this, &UCActionItem::visibleChanged, this, &UCActionItem::_q_visibleChanged);
     }
     if (!(m_flags & CustomEnabled)) {
         setEnabled(m_action->m_enabled);
+        // reset flag and reconnect signal handler disconnected by the
+        m_flags &= ~CustomEnabled;
+        connect(this, &UCActionItem::enabledChanged, this, &UCActionItem::_q_enabledChanged);
     }
     if (!(m_flags & CustomText)) {
         Q_EMIT textChanged();
