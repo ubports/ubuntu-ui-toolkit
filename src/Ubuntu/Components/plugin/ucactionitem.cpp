@@ -179,7 +179,7 @@ void UCActionItem::resetIconSource()
 }
 
 /*!
- * \qmlproperty UCActionItem::iconName
+ * \qmlproperty string ActionItem::iconName
  * The icon associated with the actionItem in the suru icon theme. Defaults to
  * \c action.iconName.
  *
