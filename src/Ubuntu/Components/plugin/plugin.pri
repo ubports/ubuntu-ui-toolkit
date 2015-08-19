@@ -80,7 +80,8 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/ucstylehints.h \
     $$PWD/livetimer.h \
     $$PWD/livetimer_p.h \
-    $$PWD/timeutils_p.h
+    $$PWD/timeutils_p.h \
+    $$PWD/ucactionitem.h
 
 SOURCES += $$PWD/plugin.cpp \
     $$PWD/uctheme.cpp \
@@ -132,7 +133,8 @@ SOURCES += $$PWD/plugin.cpp \
     $$PWD/ucdefaulttheme.cpp \
     $$PWD/ucstylehints.cpp \
     $$PWD/livetimer.cpp \
-    $$PWD/livetimer_p.cpp
+    $$PWD/livetimer_p.cpp \
+    $$PWD/ucactionitem.cpp
 
 # adapters
 SOURCES += $$PWD/adapters/alarmsadapter_organizer.cpp

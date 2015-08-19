@@ -77,21 +77,22 @@ public Q_SLOTS:
     void trigger(const QVariant &value = QVariant());
 
 private:
-    bool m_factoryIconSource:1;
-    bool m_enabled:1;
-    bool m_visible:1;
-    bool m_published:1;
-    QQmlComponent *m_itemHint;
     QString m_name;
     QString m_text;
     QString m_iconName;
     QUrl m_iconSource;
     QString m_description;
     QString m_keywords;
-    Type m_parameterType;
     QVariant m_shortcut;
+    QQmlComponent *m_itemHint;
+    Type m_parameterType;
+    bool m_factoryIconSource:1;
+    bool m_enabled:1;
+    bool m_visible:1;
+    bool m_published:1;
 
     friend class UCActionContext;
+    friend class UCActionItem;
     friend class UCListItemPrivate;
     friend class UCListItemAttached;
     friend class UCListItemActionsPrivate;

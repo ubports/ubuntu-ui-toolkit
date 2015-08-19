@@ -88,6 +88,7 @@ Popover {
                   action.text so we can get the proper button by text, action being not
                   accessible. https://bugs.launchpad.net/autopilot/+bug/1334599
                   */
+                // FIXME: AbstractButton has text property, which is getting the action.text, so no need to override!
                 property string text: action.text
                 width: Math.max(units.gu(5), implicitWidth) + units.gu(2)
                 height: units.gu(6)
