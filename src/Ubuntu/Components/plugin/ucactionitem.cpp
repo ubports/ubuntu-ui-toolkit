@@ -38,6 +38,7 @@
 UCActionItem::UCActionItem(QQuickItem *parent)
     : UCStyledItemBase(parent)
     , m_action(Q_NULLPTR)
+    , m_flags(0)
 {
     connect(this, &UCActionItem::visibleChanged, this, &UCActionItem::_q_visibleChanged);
     connect(this, &UCActionItem::enabledChanged, this, &UCActionItem::_q_enabledChanged);
