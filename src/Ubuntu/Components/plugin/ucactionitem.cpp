@@ -123,7 +123,10 @@ void UCActionItem::setAction(UCAction *action)
  */
 QString UCActionItem::text()
 {
-    return (m_action  && !(m_flags & CustomText)) ? m_action->m_text : m_text;
+    if (m_flags & CustomText) {
+        return m_text;
+    }
+    return m_action ? m_action->m_text : QString();
 }
 void UCActionItem::setText(const QString &text)
 {
@@ -191,7 +194,10 @@ void UCActionItem::resetIconSource()
  */
 QString UCActionItem::iconName()
 {
-    return (m_action && !(m_flags & CustomIconName)) ? m_action->m_iconName : m_iconName;
+    if (m_flags & CustomIconName) {
+        return m_iconName;
+    }
+    return m_action ? m_action->m_iconName : QString();
 }
 void UCActionItem::setIconName(const QString &iconName)
 {
