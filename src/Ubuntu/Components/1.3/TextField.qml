@@ -99,7 +99,7 @@ import Ubuntu.Components.Popups 1.3
     \note During text selection all interactive parent Flickables are turned off.
 */
 
-ActionItem {
+Ubuntu.ActionItem {
     id: control
 
     implicitWidth: units.gu(25)
