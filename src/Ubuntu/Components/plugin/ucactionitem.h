@@ -53,6 +53,8 @@ public Q_SLOTS:
 protected Q_SLOTS:
     void _q_visibleChanged();
     void _q_enabledChanged();
+    void _q_updateVisible();
+    void _q_updateEnabled();
 
 protected:
     enum {
@@ -68,9 +70,8 @@ protected:
     UCAction *m_action;
     quint8 m_flags;
 
-    void updateVisible();
-    void updateEnabled();
     void updateProperties();
+    void attachAction(bool attach);
 };
 
 #endif // UCACTIONITEM_H

@@ -56,7 +56,7 @@ void UCActionItem::_q_enabledChanged()
 }
 
 // update visible property
-void UCActionItem::updateVisible()
+void UCActionItem::_q_updateVisible()
 {
     bool visible = m_action ? m_action->m_visible : true;
     setVisible(visible);
@@ -68,7 +68,7 @@ void UCActionItem::updateVisible()
 }
 
 // update enabled property
-void UCActionItem::updateEnabled()
+void UCActionItem::_q_updateEnabled()
 {
     bool enabled = m_action ? m_action->m_enabled : true;
     setEnabled(enabled);
@@ -92,6 +92,49 @@ void UCActionItem::updateProperties()
     }
 }
 
+void UCActionItem::attachAction(bool attach)
+{
+    if (attach) {
+        connect(this, &UCActionItem::triggered,
+                m_action, &UCAction::triggered, Qt::DirectConnection);
+        connect(m_action, &UCAction::visibleChanged,
+                this, &UCActionItem::_q_updateVisible, Qt::DirectConnection);
+        connect(m_action, &UCAction::enabledChanged,
+                this, &UCActionItem::_q_updateEnabled, Qt::DirectConnection);
+        if (!(m_flags & CustomText)) {
+            connect(m_action, &UCAction::textChanged,
+                    this, &UCActionItem::textChanged, Qt::DirectConnection);
+        }
+        if (!(m_flags & CustomIconSource)) {
+            connect(m_action, &UCAction::iconSourceChanged,
+                    this, &UCActionItem::iconSourceChanged, Qt::DirectConnection);
+        }
+        if (!(m_flags & CustomIconName)) {
+            connect(m_action, &UCAction::iconNameChanged,
+                    this, &UCActionItem::iconNameChanged, Qt::DirectConnection);
+        }
+    } else {
+        disconnect(this, &UCActionItem::triggered,
+                   m_action, &UCAction::triggered);
+        disconnect(m_action, &UCAction::visibleChanged,
+                   this, &UCActionItem::_q_updateVisible);
+        disconnect(m_action, &UCAction::enabledChanged,
+                   this, &UCActionItem::_q_updateEnabled);
+        if (!(m_flags & CustomText)) {
+            disconnect(m_action, &UCAction::textChanged,
+                       this, &UCActionItem::textChanged);
+        }
+        if (!(m_flags & CustomIconSource)) {
+            disconnect(m_action, &UCAction::iconSourceChanged,
+                       this, &UCActionItem::iconSourceChanged);
+        }
+        if (!(m_flags & CustomIconName)) {
+            disconnect(m_action, &UCAction::iconNameChanged,
+                       this, &UCActionItem::iconNameChanged);
+        }
+    }
+}
+
 /*!
  * \qmlproperty Action ActionItem::action
  * The \l Action associated with this ActionItem. If action is set, the values
@@ -104,16 +147,16 @@ void UCActionItem::setAction(UCAction *action)
         return;
     }
     if (m_action) {
-        disconnect(this, &UCActionItem::triggered, m_action, &UCAction::triggered);
+        attachAction(false);
     }
     m_action = action;
     Q_EMIT actionChanged();
 
     if (m_action) {
-        connect(this, &UCActionItem::triggered, m_action, &UCAction::triggered);
+        attachAction(true);
     }
-    updateVisible();
-    updateEnabled();
+    _q_updateVisible();
+    _q_updateEnabled();
     updateProperties();
 }
 
@@ -134,6 +177,11 @@ void UCActionItem::setText(const QString &text)
         return;
     }
     m_text = text;
+    if (m_action && !(m_flags & CustomText)) {
+        // disconnect change signal from Action
+        disconnect(m_action, &UCAction::textChanged,
+                   this, &UCActionItem::textChanged);
+    }
     m_flags |= CustomText;
     Q_EMIT textChanged();
 }
@@ -141,6 +189,11 @@ void UCActionItem::resetText()
 {
     m_text.clear();
     m_flags &= ~CustomText;
+    if (m_action) {
+        // re-connect change signal from Action
+        connect(m_action, &UCAction::textChanged,
+                this, &UCActionItem::textChanged, Qt::DirectConnection);
+    }
     Q_EMIT textChanged();
 }
 
@@ -167,6 +220,11 @@ void UCActionItem::setIconSource(const QUrl &iconSource)
         return;
     }
     m_iconSource = iconSource;
+    if (m_action && !(m_flags & CustomIconSource)) {
+        // disconnect change signal from Action
+        disconnect(m_action, &UCAction::iconSourceChanged,
+                   this, &UCActionItem::iconSourceChanged);
+    }
     m_flags |= CustomIconSource;
     Q_EMIT iconSourceChanged();
 }
@@ -174,6 +232,11 @@ void UCActionItem::resetIconSource()
 {
     m_iconSource.clear();
     m_flags &= ~CustomIconSource;
+    if (m_action) {
+        // re-connect change signal from Action
+        connect(m_action, &UCAction::iconSourceChanged,
+                this, &UCActionItem::iconSourceChanged, Qt::DirectConnection);
+    }
     Q_EMIT iconSourceChanged();
 }
 
@@ -205,13 +268,27 @@ void UCActionItem::setIconName(const QString &iconName)
         return;
     }
     m_iconName = iconName;
+    if (m_action && !(m_flags & CustomIconName)) {
+        // disconnect change signal from Action
+        disconnect(m_action, &UCAction::iconNameChanged,
+                   this, &UCActionItem::iconNameChanged);
+    }
     m_flags |= CustomIconName;
     Q_EMIT iconNameChanged();
+    // also sync iconSource if that is not a custom one or taken from action
+    if (!m_action || (m_flags & CustomIconSource)) {
+        Q_EMIT iconSourceChanged();
+    }
 }
 void UCActionItem::resetIconName()
 {
     m_iconName.clear();
     m_flags &= ~CustomIconName;
+    if (m_action) {
+        // re-connect change signal from Action
+        connect(m_action, &UCAction::iconNameChanged,
+                this, &UCActionItem::iconNameChanged, Qt::DirectConnection);
+    }
     Q_EMIT iconNameChanged();
 }
 
