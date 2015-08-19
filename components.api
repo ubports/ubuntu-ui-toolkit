@@ -357,10 +357,11 @@ Ubuntu.Components.ListItems.ExpandablesColumn 1.3: Flickable
 Ubuntu.Components.FilterBehavior 1.1: QtObject
     property QRegExp pattern
     property string property
-Ubuntu.Components.Haptics 1.0 0.1: Object singleton
-    readonly property HapticsEffect effect
+Ubuntu.Components.Haptics 1.0 0.1: QtObject singleton
+    readonly property QtObject effect
     readonly property bool enabled
-    function var play(var customEffect)
+    function play(var customEffect)
+    function play()
 Ubuntu.Components.ListItems.Header 1.0 0.1: Item
     property string text
 Ubuntu.Components.Header 1.0 0.1: AppHeader

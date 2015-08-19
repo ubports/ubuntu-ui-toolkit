@@ -93,8 +93,6 @@ PageHeadSections 1.1 1.2/PageHeadSections.qml
 PageHeadState 1.1 1.2/PageHeadState.qml
 Icon 1.1 1.1/Icon.qml
 singleton UbuntuColors 1.1 1.1/UbuntuColors.qml
-singleton Haptics 0.1 1.1/Haptics.qml
-singleton Haptics 1.0 1.1/Haptics.qml
 
 #version 1.2
 MainView 1.2 1.2/MainView12.qml
