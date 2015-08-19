@@ -52,8 +52,17 @@ const float pressedFactor = 0.85f;
 
 ShapeShader::ShapeShader()
 {
+    QOpenGLContext* context = QOpenGLContext::currentContext();
     setShaderSourceFile(QOpenGLShader::Vertex, QStringLiteral(":/uc/shaders/shape.vert"));
-    setShaderSourceFile(QOpenGLShader::Fragment, QStringLiteral(":/uc/shaders/shape.frag"));
+
+    if ( context->isOpenGLES() &&
+         !context->hasExtension(QByteArrayLiteral("GL_OES_standard_derivatives")) ) {
+        // dFdy function is not available in fragment shaders
+        qWarning() << "GL_OES_standard_derivatives not available. Using fallback shader for shape.";
+        setShaderSourceFile(QOpenGLShader::Fragment, QStringLiteral(":/uc/shaders/shape_no_dfdy.frag"));
+    } else {
+        setShaderSourceFile(QOpenGLShader::Fragment, QStringLiteral(":/uc/shaders/shape.frag"));
+    }
 }
 
 char const* const* ShapeShader::attributeNames() const
