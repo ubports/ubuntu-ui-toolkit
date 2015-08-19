@@ -187,7 +187,7 @@ void UbuntuComponentsPlugin::registerTypesToVersion(const char *uri, int major, 
     qmlRegisterType<UCInverseMouse>(uri, major, minor, "InverseMouse");
     qmlRegisterType<UCActionItem>(uri, major, minor, "ActionItem");
     qmlRegisterSingletonType<UCHaptics>(uri, major, minor, "Haptics", registerHaptics);
-    qmlRegisterType<UCAbstractButton>(uri, major, minor, "AbstractButtonCPP");
+    qmlRegisterType<UCAbstractButton>(uri, major, minor, "AbstractButton");
 }
 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)

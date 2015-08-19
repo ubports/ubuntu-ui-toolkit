@@ -25,7 +25,7 @@ Grid {
     columns: 16
     Repeater {
         model: 16*16
-        AbstractButtonCPP {
+        AbstractButton {
         }
     }
 }

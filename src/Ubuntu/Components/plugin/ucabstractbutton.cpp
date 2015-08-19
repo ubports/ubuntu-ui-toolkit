@@ -20,6 +20,34 @@
 #include <QtQuick/private/qquickmousearea_p.h>
 #include <QtQml/private/qqmlglobal_p.h>
 
+/*!
+    \qmltype AbstractButton
+    \instantiates UCAbstractButton
+    \inqmlmodule Ubuntu.Components 1.1
+    \ingroup ubuntu
+    \brief The AbstractButton class defines the behavior of the button.
+
+    This class defines the behavior of the button. All components deriving from
+    this class support haptic feedback out of the box.
+
+    If an action is specified, the button's clicked signal will trigger the action.
+    Subclasses of AbstractButton can use other properties of action (for example
+    the text and iconName).
+*/
+
+/*!
+ *
+ * \qmlsignal AbstractButton::clicked()
+ * This handler is called when there is a mouse click on the button and the button
+ * is not disabled. If \l {ActionItem::action}{action} is defined, the action will be triggered.
+ */
+
+/*!
+ *
+ * \qmlsignal AbstractButton::pressAndHold()
+ * This handler is called when there is a long press.
+ */
+
 UCAbstractButton::UCAbstractButton(QQuickItem *parent)
     : UCActionItem(parent)
     , m_mouseArea(new QQuickMouseArea)
@@ -58,6 +86,7 @@ void UCAbstractButton::classBegin()
     }
 }
 
+// handle mouseClicked with Haptics
 void UCAbstractButton::_q_mouseAreaClicked()
 {
     // required by the deprecated ListItem module
@@ -69,6 +98,7 @@ void UCAbstractButton::_q_mouseAreaClicked()
     Q_EMIT clicked();
 }
 
+// handle pressAndHold
 void UCAbstractButton::_q_mouseAreaPressAndHold()
 {
     // required by the deprecated ListItem module
@@ -78,6 +108,7 @@ void UCAbstractButton::_q_mouseAreaPressAndHold()
     Q_EMIT pressAndHold();
 }
 
+// emit clicked when Enter/Return is pressed
 void UCAbstractButton::keyPressEvent(QKeyEvent *event)
 {
     UCActionItem::keyPressEvent(event);
@@ -85,6 +116,8 @@ void UCAbstractButton::keyPressEvent(QKeyEvent *event)
     switch (event->key()) {
         case Qt::Key_Enter:
         case Qt::Key_Return:
+        // FIXME: space may also come here, however that depends on the button type
+        // (i.e default Dialog btn) so we may need to add that to Button
         {
             Q_EMIT clicked();
             break;
@@ -92,10 +125,19 @@ void UCAbstractButton::keyPressEvent(QKeyEvent *event)
     }
 }
 
+/*!
+ * \qmlproperty bool AbstractButton::pressed
+ * True if the user presses a mouse button in the button's mouse area.
+ */
 bool UCAbstractButton::pressed() const
 {
     return m_mouseArea ? m_mouseArea->pressed() : false;
 }
+
+/*!
+ * \qmlproperty bool AbstractButton::hovered
+ * True if the mouse cursor hovers over the button's mouse area.
+ */
 bool UCAbstractButton::hovered() const
 {
     return m_mouseArea ? m_mouseArea->hovered() : false;
