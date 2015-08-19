@@ -143,7 +143,8 @@ OTHER_FILES+= 1.3/CrossFadeImage.qdoc \
              1.3/Page.qdoc \
              1.3/PageHeadConfiguration.qdoc \
              1.3/MainView.qdoc \
-             1.3/Icon.qdoc
+             1.3/Icon.qdoc \
+             qmldir
 
 load(ubuntu_qml_plugin)
 
