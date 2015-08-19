@@ -65,13 +65,20 @@ void main(void)
     // FIXME: Workaround for systems that do not support dFdy()
     lowp float dfdt = -0.0285;
 
+#define NO_DFDY 1
+    // only FLAT aspect is supported when the dFdy function is not available because
+    // dFdy() is used to determine on which side (top or bottom) in the shape we are.
+
+#ifndef NO_DFDY
     if (aspect == FLAT) {
+#endif
         // Mask the current color with an anti-aliased and resolution independent shape mask built
         // from distance fields.
         lowp float distanceMin = abs(dfdt) * -distanceAA + 0.5;
         lowp float distanceMax = abs(dfdt) * distanceAA + 0.5;
         color *= smoothstep(distanceMin, distanceMax, shapeData.b);
 
+#ifndef NO_DFDY
     } else if (aspect == INSET) {
         // The vertex layout of the shape is made so that the derivative is negative from top to
         // middle and positive from middle to bottom.
@@ -108,6 +115,7 @@ void main(void)
         // additive blending since the shadow has already been masked.
         color = (color * vec4(mask)) + vec4(0.0, 0.0, 0.0, shadow);
     }
+#endif
 
     gl_FragColor = color * opacityFactors.xxxy;
 }
