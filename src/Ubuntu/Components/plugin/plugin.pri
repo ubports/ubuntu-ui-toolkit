@@ -84,7 +84,8 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/livetimer_p.h \
     $$PWD/timeutils_p.h \
     $$PWD/ucactionitem.h \
-    $$PWD/uchaptics.h
+    $$PWD/uchaptics.h \
+    $$PWD/ucabstractbutton.h
 
 SOURCES += $$PWD/plugin.cpp \
     $$PWD/uctheme.cpp \
@@ -138,7 +139,8 @@ SOURCES += $$PWD/plugin.cpp \
     $$PWD/livetimer.cpp \
     $$PWD/livetimer_p.cpp \
     $$PWD/ucactionitem.cpp \
-    $$PWD/uchaptics.cpp
+    $$PWD/uchaptics.cpp \
+    $$PWD/ucabstractbutton.cpp
 
 # adapters
 SOURCES += $$PWD/adapters/alarmsadapter_organizer.cpp

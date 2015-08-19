@@ -64,6 +64,7 @@
 #include "ucnamespace.h"
 #include "ucactionitem.h"
 #include "uchaptics.h"
+#include "ucabstractbutton.h"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -186,6 +187,7 @@ void UbuntuComponentsPlugin::registerTypesToVersion(const char *uri, int major, 
     qmlRegisterType<UCInverseMouse>(uri, major, minor, "InverseMouse");
     qmlRegisterType<UCActionItem>(uri, major, minor, "ActionItem");
     qmlRegisterSingletonType<UCHaptics>(uri, major, minor, "Haptics", registerHaptics);
+    qmlRegisterType<UCAbstractButton>(uri, major, minor, "AbstractButtonCPP");
 }
 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)

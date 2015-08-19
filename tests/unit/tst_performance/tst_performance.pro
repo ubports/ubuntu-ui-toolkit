@@ -30,4 +30,6 @@ OTHER_FILES += \
     Styling.qml \
     PaletteConfigurationOneColor.qml \
     PaletteConfigurationAllColors.qml \
-    StyledItemNewTheming.qml
+    StyledItemNewTheming.qml \
+    OldAbstractButtonGrid.qml \
+    AbstractButtonGrid.qml
