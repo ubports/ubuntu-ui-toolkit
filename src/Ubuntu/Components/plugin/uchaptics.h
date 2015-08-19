@@ -20,16 +20,17 @@
 #include <QtCore/QObject>
 #include <QtCore/QVariant>
 
+class QFeedbackHapticsEffect;
 class UCHaptics : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(bool enabled READ enabled NOTIFY enabledChanged)
-    Q_PROPERTY(QObject *effect READ effect CONSTANT)
+    Q_PROPERTY(QFeedbackHapticsEffect *effect READ effect CONSTANT)
 public:
     explicit UCHaptics(QObject *parent = 0);
 
     bool enabled() const;
-    QObject *effect() const;
+    QFeedbackHapticsEffect *effect() const;
 
 Q_SIGNALS:
     void enabledChanged();
@@ -64,7 +65,7 @@ public:
     void initialize();
 
     bool enabled();
-    QObject *effect();
+    QFeedbackHapticsEffect *effect();
     void play(const QVariant &customEffect);
 
 Q_SIGNALS:

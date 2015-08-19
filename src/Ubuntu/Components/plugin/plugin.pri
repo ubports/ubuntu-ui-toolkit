@@ -14,6 +14,8 @@ CONFIG += no_keywords
 # QOrganizer
 QT *= organizer
 
+QT *= feedback
+
 #comment in the following line to disable traces
 #DEFINES += QT_NO_DEBUG_OUTPUT
 
