@@ -62,6 +62,7 @@
 #include "uclistitemstyle.h"
 #include "ucserviceproperties.h"
 #include "ucnamespace.h"
+#include "ucactionitem.h"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -174,6 +175,7 @@ void UbuntuComponentsPlugin::registerTypesToVersion(const char *uri, int major, 
     qmlRegisterSingletonType<UCUriHandler>(uri, major, minor, "UriHandler", registerUriHandler);
     qmlRegisterType<UCMouse>(uri, major, minor, "Mouse");
     qmlRegisterType<UCInverseMouse>(uri, major, minor, "InverseMouse");
+    qmlRegisterType<UCActionItem>(uri, major, minor, "ActionItem");
 }
 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
