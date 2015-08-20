@@ -114,7 +114,7 @@ QFeedbackHapticsEffect *UCHaptics::effect() const
 }
 
 /*!
-  \qmlmethod void Haptics::play([var customEffect])
+  \qmlmethod void Haptics::play(var customEffect)
   The function plays the feedback with the configuration specified in \l effect
   if no parameter is given. Custom effect can be played by specifying the effect
   properties in a JSON object in \c customEffect.

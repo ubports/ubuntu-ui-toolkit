@@ -984,15 +984,6 @@ void UCUbuntuShape::_q_imagePropertiesChanged()
     updateFromImageProperties(qobject_cast<QQuickItem*>(sender()));
 }
 
-void UCUbuntuShape::_q_openglContextDestroyed()
-{
-    // Delete the shape textures that are stored per context and shared by all the shape items.
-    const int index = getShapeTexturesIndex(qobject_cast<QOpenGLContext*>(sender()));
-    Q_ASSERT(index >= 0);
-    shapeTextures[index].openglContext = NULL;
-    glDeleteTextures(shapeTextureCount, shapeTextures[index].textureId);
-}
-
 void UCUbuntuShape::_q_gridUnitChanged()
 {
     const float gridUnitInDevicePixels = UCUnits::instance().gridUnit() / qGuiApp->devicePixelRatio();
@@ -1145,8 +1136,10 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, shapeTextureSize, shapeTextureSize, 0, GL_RGBA,
                          GL_UNSIGNED_BYTE, shapeTextureData[i]);
         }
-        QObject::connect(openglContext, SIGNAL(aboutToBeDestroyed()), this,
-                         SLOT(_q_openglContextDestroyed()), Qt::DirectConnection);
+        connect(openglContext, &QOpenGLContext::aboutToBeDestroyed, [index] {
+            shapeTextures[index].openglContext = NULL;
+            glDeleteTextures(shapeTextureCount, shapeTextures[index].textureId);
+        } );
     }
     const quint32 shapeTextureId = shapeTextures[index].textureId[m_aspect != DropShadow ? 0 : 1];
 
