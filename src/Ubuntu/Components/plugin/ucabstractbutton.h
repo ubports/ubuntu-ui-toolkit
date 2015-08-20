@@ -41,6 +41,7 @@ public:
 
 protected:
     void classBegin();
+    void componentComplete();
     void keyPressEvent(QKeyEvent *key);
 
 Q_SIGNALS:

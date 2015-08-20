@@ -54,7 +54,6 @@ UCAbstractButton::UCAbstractButton(QQuickItem *parent)
     , m_acceptEvents(true)
 {
     setActiveFocusOnPress(true);
-    connect(this, SIGNAL(clicked()), this, SLOT(trigger()));
 }
 
 bool UCAbstractButton::isPressAndHoldConnected()
@@ -67,6 +66,7 @@ bool UCAbstractButton::isPressAndHoldConnected()
 void UCAbstractButton::classBegin()
 {
     UCActionItem::classBegin();
+
     // make sure we have the haptics set up!
     HapticsProxy::instance().initialize();
 
@@ -84,6 +84,15 @@ void UCAbstractButton::classBegin()
     if (isPressAndHoldConnected()) {
         connect(m_mouseArea, SIGNAL(pressAndHold(QQuickMouseEvent*)), this, SLOT(_q_mouseAreaPressAndHold()));
     }
+}
+
+void UCAbstractButton::componentComplete()
+{
+    UCActionItem::componentComplete();
+    // connect to the right slot!
+    const QMetaMethod slot = metaObject()->method(metaObject()->indexOfSlot("trigger()"));
+    const QMetaMethod signal = metaObject()->method(metaObject()->indexOfSignal("clicked()"));
+    connect(this, signal, this, slot);
 }
 
 // handle mouseClicked with Haptics
