@@ -116,7 +116,7 @@ private Q_SLOTS:
         QTest::newRow("list with new ListItem with actions") << "ListItemWithActionsList.qml" << QUrl();
         QTest::newRow("list with new ListItem with inline actions") << "ListItemWithInlineActionsList.qml" << QUrl();
         QTest::newRow("list with Captions, preset: caption") << "ListOfCaptions.qml" << QUrl();
-//        QTest::newRow("list with ListItems.Empty (equivalent to the new ListItem") << "ListItemsEmptyList.qml" << QUrl();
+        QTest::newRow("list with ListItems.Empty (equivalent to the new ListItem") << "ListItemsEmptyList.qml" << QUrl();
         // disable this test as it takes >20 seconds. Kept still for measurements to be done during development
 //        QTest::newRow("list with ListItems.Base (one icon, one label and one chevron)") << "ListItemsBaseList.qml" << QUrl();
         QTest::newRow("single MainView") << "MainView.qml" << QUrl();
