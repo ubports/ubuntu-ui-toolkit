@@ -16,7 +16,6 @@
 
 #include "uchaptics.h"
 #include "plugin.h"
-#include <QtFeedback/QFeedbackHapticsEffect>
 #include <QtQml/QQmlComponent>
 #include <QtCore/QUrl>
 #include <QDebug>
@@ -108,7 +107,7 @@ bool UCHaptics::enabled() const
   intensity 0.0, and attack time of 50 milliseconds and with an intensity of
   0.0.
   */
-QFeedbackHapticsEffect *UCHaptics::effect() const
+QObject *UCHaptics::effect() const
 {
     return HapticsProxy::instance().effect();
 }
@@ -143,10 +142,10 @@ bool HapticsProxy::enabled()
     return (m_proxyObject) ? m_proxyObject->property("enabled").toBool() : false;
 }
 
-QFeedbackHapticsEffect *HapticsProxy::effect()
+QObject *HapticsProxy::effect()
 {
     initialize();
-    return (m_proxyObject) ? m_proxyObject->property("effect").value<QFeedbackHapticsEffect*>() : Q_NULLPTR;
+    return (m_proxyObject) ? m_proxyObject->property("effect").value<QObject*>() : Q_NULLPTR;
 }
 
 void HapticsProxy::initialize()
