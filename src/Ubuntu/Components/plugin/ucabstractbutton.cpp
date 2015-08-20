@@ -76,14 +76,6 @@ void UCAbstractButton::classBegin()
     QQuickAnchors *anchors = QQuickItemPrivate::get(m_mouseArea)->anchors();
     anchors->setFill(this);
     m_mouseArea->setHoverEnabled(true);
-
-    // bind mouse area
-    connect(m_mouseArea, &QQuickMouseArea::pressedChanged, this, &UCAbstractButton::pressedChanged);
-    connect(m_mouseArea, &QQuickMouseArea::hoveredChanged, this, &UCAbstractButton::hoveredChanged);
-    connect(m_mouseArea, SIGNAL(clicked(QQuickMouseEvent*)), this, SLOT(_q_mouseAreaClicked()));
-    if (isPressAndHoldConnected()) {
-        connect(m_mouseArea, SIGNAL(pressAndHold(QQuickMouseEvent*)), this, SLOT(_q_mouseAreaPressAndHold()));
-    }
 }
 
 void UCAbstractButton::componentComplete()
@@ -93,6 +85,14 @@ void UCAbstractButton::componentComplete()
     const QMetaMethod slot = metaObject()->method(metaObject()->indexOfSlot("trigger()"));
     const QMetaMethod signal = metaObject()->method(metaObject()->indexOfSignal("clicked()"));
     connect(this, signal, this, slot);
+
+    // bind mouse area
+    connect(m_mouseArea, &QQuickMouseArea::pressedChanged, this, &UCAbstractButton::pressedChanged);
+    connect(m_mouseArea, &QQuickMouseArea::hoveredChanged, this, &UCAbstractButton::hoveredChanged);
+    connect(m_mouseArea, SIGNAL(clicked(QQuickMouseEvent*)), this, SLOT(_q_mouseAreaClicked()));
+    if (isPressAndHoldConnected()) {
+        connect(m_mouseArea, SIGNAL(pressAndHold(QQuickMouseEvent*)), this, SLOT(_q_mouseAreaPressAndHold()));
+    }
 }
 
 // handle mouseClicked with Haptics
