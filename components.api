@@ -358,7 +358,7 @@ Ubuntu.Components.FilterBehavior 1.1: QtObject
     property QRegExp pattern
     property string property
 Ubuntu.Components.Haptics 1.0 0.1: QtObject singleton
-    readonly property QFeedbackHapticsEffect effect
+    readonly property QtObject effect
     readonly property bool enabled
     function play(var customEffect)
     function play()
