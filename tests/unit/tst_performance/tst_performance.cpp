@@ -104,7 +104,6 @@ private Q_SLOTS:
 
         QTest::newRow("AbstractButton") << "AbstractButtonGrid.qml" << QUrl();
         QTest::newRow("grid with Rectangle") << "RectangleGrid.qml" << QUrl();
-        QTest::newRow("grid with Rectangle") << "RectangleGrid.qml" << QUrl();
         QTest::newRow("grid with Text") << "TextGrid.qml" << QUrl();
         QTest::newRow("grid with Label") << "LabelGrid.qml" << QUrl();
         QTest::newRow("grid with UbuntuShape") << "UbuntuShapeGrid.qml" << QUrl();
