@@ -35,7 +35,7 @@
   Example of using Haptics:
   \qml
   import QtQuick 2.4
-  import Ubuntu.Components 1.2
+  import Ubuntu.Components 1.3
 
   Item {
       implicitWidth: units.gu(20)
@@ -57,7 +57,7 @@
   Custom effects can be played as follows:
   \qml
   import QtQuick 2.4
-  import Ubuntu.Components 1.2
+  import Ubuntu.Components 1.3
 
   Item {
       implicitWidth: units.gu(20)
@@ -77,7 +77,7 @@
   \endqml
 
   \note Though the \l effect property exposes \c start, \c stop and \c pause
-  functions, use those only if you want to have feedback independent on what the
+  functions, use those only if you want to have feedback independent from what the
   system setting is.
  */
 
