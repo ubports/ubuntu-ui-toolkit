@@ -172,16 +172,6 @@ void HapticsProxy::play(const QVariant &customEffect)
         qWarning() << "Engine not specified, haptics won't play";
     }
     initialize();
-    if (!m_proxyObject) {
-        // load haptics proxy from file system/qrc
-        QUrl path = UbuntuComponentsPlugin::pluginUrl().resolved(QUrl("1.1/Haptics.qml"));
-        QQmlComponent component(m_engine, path, QQmlComponent::PreferSynchronous);
-        if (!component.isError()) {
-            m_proxyObject = component.create();
-        } else {
-            qWarning() << qPrintable(component.errorString());
-        }
-    }
     if (m_proxyObject) {
         // invoke play function
         m_proxyObject->metaObject()->invokeMethod(m_proxyObject, "play", Q_ARG(QVariant, customEffect));
