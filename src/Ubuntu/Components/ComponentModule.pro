@@ -138,7 +138,8 @@ QML_FILES += 1.3/AbstractButton.qml \
              1.3/PageColumn.qml \
              1.3/PageColumnsLayout.qml
 
-OTHER_FILES+= 1.3/CrossFadeImage.qdoc \
+OTHER_FILES+= qmldir \
+             1.3/CrossFadeImage.qdoc \
              1.3/UbuntuListView11.qdoc \
              1.3/Page.qdoc \
              1.3/PageHeadConfiguration.qdoc \

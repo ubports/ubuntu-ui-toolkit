@@ -63,6 +63,7 @@
 #include "ucserviceproperties.h"
 #include "ucnamespace.h"
 #include "ucactionitem.h"
+#include "uchaptics.h"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -115,6 +116,14 @@ static QObject *registerUbuntuNamespace13(QQmlEngine *engine, QJSEngine *scriptE
     Q_UNUSED(scriptEngine)
 
     return new UCNamespaceV13();
+}
+
+static QObject *registerHaptics(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+    Q_UNUSED(engine)
+    Q_UNUSED(scriptEngine)
+
+    return new UCHaptics();
 }
 
 void UbuntuComponentsPlugin::initializeBaseUrl()
@@ -176,6 +185,7 @@ void UbuntuComponentsPlugin::registerTypesToVersion(const char *uri, int major, 
     qmlRegisterType<UCMouse>(uri, major, minor, "Mouse");
     qmlRegisterType<UCInverseMouse>(uri, major, minor, "InverseMouse");
     qmlRegisterType<UCActionItem>(uri, major, minor, "ActionItem");
+    qmlRegisterSingletonType<UCHaptics>(uri, major, minor, "Haptics", registerHaptics);
 }
 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
@@ -245,6 +255,8 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     UCTheme::registerToContext(context);
 
     UCDeprecatedTheme::instance().registerToContext(context);
+
+    HapticsProxy::instance().setEngine(context->engine());
 
     context->setContextProperty("i18n", &UbuntuI18n::instance());
     ContextPropertyChangeListener *i18nChangeListener =
