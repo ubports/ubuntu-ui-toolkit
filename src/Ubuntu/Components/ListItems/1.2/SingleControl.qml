@@ -54,8 +54,8 @@ Empty {
 
     /*! \internal */
     onClicked: if (control && control.enabled && control.hasOwnProperty("clicked")) control.clicked()
-    /*! \internal - overriding readonly pressed property due to the buggy pressed property exposure in former AbstractButton */
-    property bool pressed: __mouseArea.pressed || (control && control.hasOwnProperty("pressed") && control.pressed)
+    pressed: __mouseArea.pressed || (control && control.hasOwnProperty("pressed") && control.pressed)
+    /*! \internal */
     onPressedChanged: if (control && control.enabled && control.hasOwnProperty("pressed")) control.pressed = singleControlListItem.pressed
 
     // Ensure that there is always enough vertical padding around the control
