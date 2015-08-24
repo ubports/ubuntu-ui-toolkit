@@ -113,9 +113,12 @@ int
 QSortFilterProxyModelQML::roleByName(const QString& roleName) const
 {
     const QHash<int, QByteArray> roles = roleNames();
-    for(int role = 0; role < roles.count(); role++)
-        if (roles[role] == roleName)
-            return role;
+    QHashIterator<int, QByteArray> i(roles);
+    while (i.hasNext()) {
+        i.next();
+        if (i.value() == roleName)
+            return i.key();
+    }
     return 0;
 }
 

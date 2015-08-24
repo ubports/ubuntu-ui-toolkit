@@ -790,8 +790,12 @@ void UCUbuntuShape::setBorderSource(const QString& borderSource)
 */
 void UCUbuntuShape::setColor(const QColor& color)
 {
-    qmlInfo(this) << "'color' is deprecated. Use 'backgroundColor', 'secondaryBackgroundColor' and "
-        "'backgroundMode' instead.";
+    static bool deprecationNoteShown = false;
+    if (!deprecationNoteShown) {
+        deprecationNoteShown = true;
+        qmlInfo(this) << "'color' is deprecated. Use 'backgroundColor', 'secondaryBackgroundColor' and "
+            "'backgroundMode' instead.";
+    }
 
     if (!(m_flags & BackgroundApiSet)) {
         const QRgb colorRgb = qRgba(color.red(), color.green(), color.blue(), color.alpha());
@@ -819,8 +823,12 @@ void UCUbuntuShape::setColor(const QColor& color)
 */
 void UCUbuntuShape::setGradientColor(const QColor& gradientColor)
 {
-    qmlInfo(this) << "'gradientColor' is deprecated. Use 'backgroundColor', "
-        "'secondaryBackgroundColor' and 'backgroundMode' instead.";
+    static bool deprecationNoteShown = false;
+    if (!deprecationNoteShown) {
+        deprecationNoteShown = true;
+        qmlInfo(this) << "'gradientColor' is deprecated. Use 'backgroundColor', "
+            "'secondaryBackgroundColor' and 'backgroundMode' instead.";
+    }
 
     if (!(m_flags & BackgroundApiSet)) {
         m_flags |= GradientColorSet;
@@ -846,7 +854,11 @@ void UCUbuntuShape::setGradientColor(const QColor& gradientColor)
 */
 void UCUbuntuShape::setImage(const QVariant& image)
 {
-    qmlInfo(this) << "'image' is deprecated. Use 'source' instead.";
+    static bool deprecationNoteShown = false;
+    if (!deprecationNoteShown) {
+        deprecationNoteShown = true;
+        qmlInfo(this) << "'image' is deprecated. Use 'source' instead.";
+    }
 
     if (!(m_flags & SourceApiSet)) {
         QQuickItem* newImage = qobject_cast<QQuickItem*>(qvariant_cast<QObject*>(image));
@@ -875,7 +887,11 @@ void UCUbuntuShape::setImage(const QVariant& image)
 // maintain it for a while for compatibility reasons.
 void UCUbuntuShape::setStretched(bool stretched)
 {
-    qmlInfo(this) << "'stretched' is deprecated. Use 'sourceFillMode' instead";
+    static bool deprecationNoteShown = false;
+    if (!deprecationNoteShown) {
+        deprecationNoteShown = true;
+        qmlInfo(this) << "'stretched' is deprecated. Use 'sourceFillMode' instead";
+    }
 
     if (!(m_flags & SourceApiSet)) {
         if (!!(m_flags & Stretched) != stretched) {
@@ -894,7 +910,11 @@ void UCUbuntuShape::setStretched(bool stretched)
 // Deprecation layer. Same comment as setStretched().
 void UCUbuntuShape::setHorizontalAlignment(HAlignment horizontalAlignment)
 {
-    qmlInfo(this) << "'horizontalAlignment' is deprecated. Use 'sourceHorizontalAlignment' instead";
+    static bool deprecationNoteShown = false;
+    if (!deprecationNoteShown) {
+        deprecationNoteShown = true;
+        qmlInfo(this) << "'horizontalAlignment' is deprecated. Use 'sourceHorizontalAlignment' instead";
+    }
 
     if (!(m_flags & SourceApiSet)) {
         if (m_imageHorizontalAlignment != horizontalAlignment) {
@@ -909,7 +929,11 @@ void UCUbuntuShape::setHorizontalAlignment(HAlignment horizontalAlignment)
 // Deprecation layer. Same comment as setStretched().
 void UCUbuntuShape::setVerticalAlignment(VAlignment verticalAlignment)
 {
-    qmlInfo(this) << "'horizontalAlignment' is deprecated. Use 'sourceVerticalAlignment' instead";
+    static bool deprecationNoteShown = false;
+    if (!deprecationNoteShown) {
+        deprecationNoteShown = true;
+        qmlInfo(this) << "'horizontalAlignment' is deprecated. Use 'sourceVerticalAlignment' instead";
+    }
 
     if (!(m_flags & SourceApiSet)) {
         if (m_imageVerticalAlignment != verticalAlignment) {
