@@ -1,4 +1,9 @@
 Ubuntu.Components.AbstractButton 1.0 0.1: ActionItem
+    property bool hovered
+    signal clicked()
+    signal pressAndHold()
+    property bool pressed
+Ubuntu.Components.AbstractButton 1.3: ActionItem
     readonly property bool hovered
     signal clicked()
     signal pressAndHold()

@@ -24,7 +24,8 @@ QML_FILES += 1.1/Button.qml \
              1.1/UbuntuColors.qml
 
 #1.2
-QML_FILES += 1.2/ActionList.qml \
+QML_FILES += 1.2/AbstractButton.qml \
+             1.2/ActionList.qml \
              1.2/ActivityIndicator.qml \
              1.2/AnimatedItem.qml \
              1.2/AppHeader.qml \

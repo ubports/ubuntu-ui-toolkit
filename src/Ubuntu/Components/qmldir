@@ -11,6 +11,7 @@ Tab 0.1 1.2/Tab.qml
 TabBar 0.1 1.2/TabBar.qml
 Tabs 0.1 1.2/Tabs.qml
 Label 0.1 1.2/Label.qml
+AbstractButton 0.1 1.2/AbstractButton.qml
 ActivityIndicator 0.1 1.2/ActivityIndicator.qml
 ProgressBar 0.1 1.0/ProgressBar.qml
 TextField 0.1 1.2/TextField.qml
@@ -52,6 +53,7 @@ Tab 1.0 1.2/Tab.qml
 TabBar 1.0 1.2/TabBar.qml
 Tabs 1.0 1.2/Tabs.qml
 Label 1.0 1.2/Label.qml
+AbstractButton 1.0 1.2/AbstractButton.qml
 ActivityIndicator 1.0 1.2/ActivityIndicator.qml
 ProgressBar 1.0 1.0/ProgressBar.qml
 TextField 1.0 1.2/TextField.qml
