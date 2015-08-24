@@ -91,14 +91,14 @@ Item {
         }
 
         // fixing bugs 1365471 and 1458028
-        function test_no_pressAndHold_connected_clicks() {
+        function test_no_pressAndHold_connected_clicks_bug1365471_bug1458028() {
             mouseLongPress(absButton, centerOf(absButton).x, centerOf(absButton).y);
             mouseRelease(absButton, centerOf(absButton).x, centerOf(absButton).y);
             signalSpy.wait();
         }
 
         // fixing bugs 1365471 and 1458028
-        function test_pressAndHold_connected_suppresses_clicks() {
+        function test_pressAndHold_connected_suppresses_clicks_bug1365471_bug1458028() {
             function testFunc() {}
             absLongTap.pressAndHold.connect(testFunc);
             mouseLongPress(absLongTap, centerOf(absLongTap).x, centerOf(absLongTap).y);
