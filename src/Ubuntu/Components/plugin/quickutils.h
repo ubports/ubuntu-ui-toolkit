@@ -46,6 +46,7 @@ public:
     Q_INVOKABLE static QString className(QObject *item);
     Q_REVISION(1) Q_INVOKABLE static bool inherits(QObject *object, const QString &fromClass);
     QObject* createQmlObject(const QUrl &url, QQmlEngine *engine);
+    static bool showDeprecationWarnings();
 
 Q_SIGNALS:
     void rootObjectChanged();
