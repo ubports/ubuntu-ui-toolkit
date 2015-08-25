@@ -902,7 +902,7 @@ Ubuntu.ActionItem {
         }
     }
 
-    Ubuntu.AbstractButton {
+    AbstractButton {
         id: clearButton
         objectName: "clear_button"
         activeFocusOnPress: false

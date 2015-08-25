@@ -268,7 +268,7 @@ Toolkit.Button {
     }
 
     // dropdown button
-    Toolkit.AbstractButton {
+    AbstractButton {
         id: dropDown
         objectName: "combobutton_dropdown"
         anchors {
