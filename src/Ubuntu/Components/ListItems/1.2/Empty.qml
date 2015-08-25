@@ -160,7 +160,7 @@ AbstractButton {
 
     // override pressed and hovered as those were declared writable
     property bool pressed: __mouseArea.pressed
-    property bool hovered: __mouseArea.hoverEnabled
+    property bool hovered: __acceptEvents && __mouseArea.containsMouse
 
     /*!
       Cancel item romoval
