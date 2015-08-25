@@ -81,10 +81,8 @@ void UCAbstractButton::classBegin()
 void UCAbstractButton::componentComplete()
 {
     UCActionItem::componentComplete();
-    // connect to the right slot!
-    const QMetaMethod slot = metaObject()->method(metaObject()->indexOfSlot("trigger()"));
-    const QMetaMethod signal = metaObject()->method(metaObject()->indexOfSignal("clicked()"));
-    connect(this, signal, this, slot);
+    // connect to the right slot, using macros so we get the proper slot
+    connect(this, SIGNAL(clicked()), this, SLOT(trigger()));
 
     // bind mouse area
     connect(m_mouseArea, &QQuickMouseArea::pressedChanged, this, &UCAbstractButton::pressedChanged);

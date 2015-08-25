@@ -31,10 +31,15 @@ Item {
         }
         AbstractButton {
             id: absLongTap
-            objectName: "LONG"
             width: units.gu(10)
             height: width
             onPressAndHold: {}
+        }
+        AbstractButton {
+            id: suppressTrigger
+            width: units.gu(10)
+            height: width
+            function trigger() {}
         }
     }
 
@@ -56,12 +61,18 @@ Item {
         signalName: "pressAndHold"
     }
 
+    SignalSpy {
+        id: triggeredSpy
+        signalName: "triggered"
+    }
+
     UbuntuTestCase {
         name: "AbstractButtonAPI"
         when: windowShown
 
         function cleanup() {
             signalSpy.clear();
+            triggeredSpy.clear();
         }
 
         function test_action() {
@@ -74,8 +85,16 @@ Item {
             absButton.action = null
         }
 
+        function test_custom_trigger_function() {
+            suppressTrigger.action = action1;
+            triggeredSpy.target = action1;
+            mouseClick(suppressTrigger, centerOf(suppressTrigger).x, centerOf(suppressTrigger).y);
+            compare(triggeredSpy.count, 0, "Trigger should be overridden");
+        }
+
         // fixing bugs 1365471 and 1458028
         function test_no_pressAndHold_connected_clicks_bug1365471_bug1458028() {
+            signalSpy.target = absButton;
             mouseLongPress(absButton, centerOf(absButton).x, centerOf(absButton).y);
             mouseRelease(absButton, centerOf(absButton).x, centerOf(absButton).y);
             signalSpy.wait();
@@ -84,6 +103,7 @@ Item {
         // fixing bugs 1365471 and 1458028
         function test_pressAndHold_connected_suppresses_clicks_bug1365471_bug1458028() {
             function testFunc() {}
+            signalSpy.target = absButton;
             absLongTap.pressAndHold.connect(testFunc);
             mouseLongPress(absLongTap, centerOf(absLongTap).x, centerOf(absLongTap).y);
             absLongTap.pressAndHold.disconnect(testFunc);
