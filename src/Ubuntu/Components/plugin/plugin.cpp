@@ -64,6 +64,7 @@
 #include "ucnamespace.h"
 #include "ucactionitem.h"
 #include "uchaptics.h"
+#include "ucabstractbutton.h"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -232,6 +233,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCUbuntuShape, 2>(uri, 1, 3, "UbuntuShape");
     qmlRegisterType<UCProportionalShape>(uri, 1, 3, "ProportionalShape");
     qmlRegisterType<LiveTimer>(uri, 1, 3, "LiveTimer");
+    qmlRegisterType<UCAbstractButton>(uri, 1, 3, "AbstractButton");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)

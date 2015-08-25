@@ -80,8 +80,7 @@ QML_FILES += 1.2/AbstractButton.qml \
              1.2/UbuntuNumberAnimation.qml
 
 #1.3
-QML_FILES += 1.3/AbstractButton.qml \
-             1.3/ActionBar.qml \
+QML_FILES += 1.3/ActionBar.qml \
              1.3/ActionList.qml \
              1.3/ActivityIndicator.qml \
 	     1.3/AdaptivePageLayout.qml \
