@@ -918,8 +918,11 @@ int main(int argc, char *argv[])
                 internalTypes.append(c.typeName);
                 continue;
             }
+            if (c.majorVersion == -1) {
+                std::cerr << "Public QML type " << qPrintable(c.typeName) << " in qmldir has no version!" << std::endl;
+                return EXIT_IMPORTERROR;
+            }
             exportedTypes.append(QFileInfo(c.fileName).fileName());
-            QString version(QString("%1.%2").arg(c.majorVersion).arg(c.minorVersion));
         }
 
         code += "}";
