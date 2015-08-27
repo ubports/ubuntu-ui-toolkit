@@ -537,7 +537,7 @@ PageTreeNode {
                 }
                 height: body.headerHeight
 
-                styleName: config ? "PageHeadStyle" : ""
+                styleName: "PageHeadStyle"
                 theme.version: Ubuntu.toolkitVersion
                 objectName: "Header" + column
 
