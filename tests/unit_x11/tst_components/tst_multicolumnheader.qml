@@ -359,8 +359,8 @@ MainView {
 
         function test_head_contents_visible_bug1488922() {
             layout.addPageToCurrentColumn(rootPage, headContentsPage);
-            // The bug occurred when the style for the subheader was
-            //  set after a short delay. So wait before testing Page.head.contents.parent.
+            // The bug occurred when the style for the subheader was unset
+            //  after a short delay, so wait before testing Page.head.contents.parent.
             wait(100);
             compare(headRectangle.visible, true, "Head contents not visible in current column.");
             compare(headRectangle.parent == null, false, "Head contents has no parent in current column.");
