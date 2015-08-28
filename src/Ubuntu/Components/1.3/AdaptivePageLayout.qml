@@ -376,7 +376,14 @@ PageTreeNode {
             // replace page holder's child
             var holder = body.children[targetColumn];
             holder.detachCurrentPage();
-            holder.attachPage(pageWrapper)
+            if (pageWrapper.synchronous || pageWrapper.object) {
+                holder.attachPage(pageWrapper);
+            } else {
+                // asynchronous, connect to page load completion and attach when page is available
+                pageWrapper.pageLoaded.connect(function () {
+                    holder.attachPage(pageWrapper);
+                });
+            }
         }
 
         function getWrapper(page) {
@@ -690,23 +697,7 @@ PageTreeNode {
                 pageWrapper = page;
                 pageWrapper.parent = holderBody;
                 pageWrapper.pageHolder = holder;
-                // TODO: make it nicer
-                if (pageWrapper.incubator) {
-                    pageWrapper.loadingCompleted.connect(function () {
-                        if (pageWrapper.object.hasOwnProperty("head")) {
-                            subHeader.config = pageWrapper.object.head;
-                        }
-                        if (pageWrapper.column === 0) {
-                            // set the application title
-                            appHeaderControlPage.title = pageWrapper.object.title;
-                        }
-                    })
-                }
-
                 pageWrapper.active = true;
-                if (pageWrapper.incubator) {
-                    return;
-                }
 
                 if (pageWrapper.object.hasOwnProperty("head")) {
                     subHeader.config = pageWrapper.object.head;

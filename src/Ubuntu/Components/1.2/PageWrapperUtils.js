@@ -22,63 +22,63 @@
 
 /*!
   \internal
-  Incubator wrapper object.
+  Incubator wrapper object. Used when page is loaded asynchronously.
   */
 
-// internal function
-
-// initialize
 function Incubator(pageWrapper, pageComponent) {
-    this.status =  Component.Ready;
+    // private variable for QmlIncubatorObject
+    var incubator = null;
+
+    // public API
+    this.status = Component.Ready;
     this.object = null;
     this.onStatusChanged = null;
     this.forceCompletion = function () {
-        this.__incubator.forceCompletion();
-        this.__pageWrapper.incubator = null;
-        this.__incubator = null;
-        this.destroy();
+        if (!incubator) {
+            return;
+        }
+        incubator.forceCompletion();
+        pageWrapper.incubator = null;
+        incubator = null;
     }
 
-    this.__incubator = null;
-    this.__pageWrapper = null
-    this.__activate = false;
-    this.__pageWrapper = pageWrapper;
+    // internal function to catch status changes
+    function incubatorStatusChanged(status) {
+        // update wrapper incubator fields
+        pageWrapper.incubator.status = status;
+        pageWrapper.incubator.object = pageWrapper.object = incubator.object;
 
-    this.__incubatorStatusChanged = function (status) {
-        this.status = status;
-        this.object = this.__incubator.object;
-        // set pageWrapper.object if we're ready
-        if (status == Component.Ready) {
-            this.__pageWrapper.object = this.object;
+        // emit pageWrapper's pageLoaded signal to complete page activation and loading
+        if (status === Component.Ready) {
+            pageWrapper.pageLoaded();
         }
-        // forward completion to the user
-        if (this.onStatusChanged !== null) {
+
+        // forward state change to the user
+        if (pageWrapper.incubator.onStatusChanged) {
             // call onStatusChanged
-            this.onStatusChanged(status);
-            // activate if needed
-            if (this.__activate && this.__pageWrapper.active && this.__pageWrapper.reference) {
-                activate(this.__pageWrapper);
-            }
+            pageWrapper.incubator.onStatusChanged(status);
         }
-        // cleanup
+
+        // cleanup of ready or error
         if (status !== Component.Loading) {
-            this.__incubator = null;
-            this.__pageWrapper.incubator = null;
+            pageWrapper.incubator = null;
+            incubator = null;
         }
     }
 
     if (pageWrapper.properties) {
-        this.__incubator = pageComponent.incubateObject(pageWrapper, pageWrapper.properties);
+        incubator = pageComponent.incubateObject(pageWrapper, pageWrapper.properties);
     } else {
-        this.__incubator = pageComponent.incubateObject(pageWrapper);
+        incubator = pageComponent.incubateObject(pageWrapper);
     }
 
-    this.status = this.__incubator.status;
-    if (this.__incubator.status != Component.Ready) {
-        this.__incubator.onStatusChanged = this.__incubatorStatusChanged;
+    this.status = incubator.status;
+    if (incubator.status != Component.Ready) {
+        incubator.onStatusChanged = incubatorStatusChanged;
     } else {
-        this.__incubatorStatusChanged(this.__incubator.status);
+        incubatorStatusChanged(incubator.status);
     }
+//    pageWrapper.incubator = this;
 }
 
 /*******************************************************
@@ -116,10 +116,7 @@ function initPage(pageWrapper) {
                     pageObject = pageComponent.createObject(pageWrapper);
                 }
             } else {
-                print("PRE INCUBATOR")
                 pageWrapper.incubator = new Incubator(pageWrapper, pageComponent);
-
-                print("INCUBATOR", pageWrapper.incubator, pageWrapper.incubator.status)
             }
             pageWrapper.canDestroy = true;
         }

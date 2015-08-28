@@ -77,6 +77,11 @@ PageTreeNode {
     property var incubator: null
 
     /*!
+      Signal emitted when incubator completes page loading.
+      */
+    signal pageLoaded()
+
+    /*!
       Returns true if the current PageWrapper is a child of the given page
       */
     function childOf(page) {
@@ -125,10 +130,13 @@ PageTreeNode {
         if (pageWrapper.object) pageWrapper.object = null;
         Utils.initPage(pageWrapper);
         if (pageWrapper.active && reference) {
-            if (pageWrapper.synchronous) {
+            if (pageWrapper.synchronous || pageWrapper.object) {
                 Utils.activate(pageWrapper);
             } else {
-                pageWrapper.incubator.__activate = true;
+                // asynchronous, connect page activation
+                pageLoaded.connect(function () {
+                    Utils.activate(pageWrapper);
+                });
             }
         }
     }
