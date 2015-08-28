@@ -22,30 +22,104 @@
 
 /*!
   \internal
+  Incubator wrapper object.
+  */
+
+// internal function
+
+// initialize
+function Incubator(pageWrapper, pageComponent) {
+    this.status =  Component.Ready;
+    this.object = null;
+    this.onStatusChanged = null;
+    this.forceCompletion = function () {
+        this.__incubator.forceCompletion();
+        this.__pageWrapper.incubator = null;
+        this.__incubator = null;
+        this.destroy();
+    }
+
+    this.__incubator = null;
+    this.__pageWrapper = null
+    this.__activate = false;
+    this.__pageWrapper = pageWrapper;
+
+    this.__incubatorStatusChanged = function (status) {
+        this.status = status;
+        this.object = this.__incubator.object;
+        // set pageWrapper.object if we're ready
+        if (status == Component.Ready) {
+            this.__pageWrapper.object = this.object;
+        }
+        // forward completion to the user
+        if (this.onStatusChanged !== null) {
+            // call onStatusChanged
+            this.onStatusChanged(status);
+            // activate if needed
+            if (this.__activate && this.__pageWrapper.active && this.__pageWrapper.reference) {
+                activate(this.__pageWrapper);
+            }
+        }
+        // cleanup
+        if (status !== Component.Loading) {
+            this.__incubator = null;
+            this.__pageWrapper.incubator = null;
+        }
+    }
+
+    if (pageWrapper.properties) {
+        this.__incubator = pageComponent.incubateObject(pageWrapper, pageWrapper.properties);
+    } else {
+        this.__incubator = pageComponent.incubateObject(pageWrapper);
+    }
+
+    this.status = this.__incubator.status;
+    if (this.__incubator.status != Component.Ready) {
+        this.__incubator.onStatusChanged = this.__incubatorStatusChanged;
+    } else {
+        this.__incubatorStatusChanged(this.__incubator.status);
+    }
+}
+
+/*******************************************************
+ *
+ */
+/*!
+  \internal
   Initialize pageWrapper.object.
  */
 function initPage(pageWrapper) {
     var pageComponent;
 
+    // asynchronous cases
     if (pageWrapper.reference.createObject) {
         // page reference is a component
         pageComponent = pageWrapper.reference;
+        pageWrapper.synchronous = false;
     } else if (typeof pageWrapper.reference == "string") {
         // page reference is a string (url)
         pageComponent = Qt.createComponent(pageWrapper.reference);
+        pageWrapper.synchronous = false;
     }
 
-    var pageObject;
+    var pageObject = null;
     if (pageComponent) {
         if (pageComponent.status === Component.Error) {
             throw new Error("Error while loading page: " + pageComponent.errorString());
         } else {
             // create the object
-            if (pageWrapper.properties) {
-                // initialize the object with the given properties
-                pageObject = pageComponent.createObject(pageWrapper, pageWrapper.properties);
+            if (pageWrapper.synchronous) {
+                if (pageWrapper.properties) {
+                    // initialize the object with the given properties
+                    pageObject = pageComponent.createObject(pageWrapper, pageWrapper.properties);
+                } else {
+                    pageObject = pageComponent.createObject(pageWrapper);
+                }
             } else {
-                pageObject = pageComponent.createObject(pageWrapper);
+                print("PRE INCUBATOR")
+                pageWrapper.incubator = new Incubator(pageWrapper, pageComponent);
+
+                print("INCUBATOR", pageWrapper.incubator, pageWrapper.incubator.status)
             }
             pageWrapper.canDestroy = true;
         }
@@ -75,6 +149,7 @@ function activate(pageWrapper) {
     if (!pageWrapper.object) {
         initPage(pageWrapper);
     }
+
     // Having the same page pushed multiple times on a stack changes
     // the parent of the page object. Change it back here.
     pageWrapper.object.parent = pageWrapper;

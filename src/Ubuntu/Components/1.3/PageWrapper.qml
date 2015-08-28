@@ -66,6 +66,17 @@ PageTreeNode {
     property Item pageHolder
 
     /*!
+      Instructs to load the page synchronously or not. Used by AdaptivePageLayout.
+      True by default to keep PageStack integrity.
+      */
+    property bool synchronous: true
+
+    /*!
+      Incubator for the asynchronous page creation
+      */
+    property var incubator: null
+
+    /*!
       Returns true if the current PageWrapper is a child of the given page
       */
     function childOf(page) {
@@ -114,7 +125,11 @@ PageTreeNode {
         if (pageWrapper.object) pageWrapper.object = null;
         Utils.initPage(pageWrapper);
         if (pageWrapper.active && reference) {
-            Utils.activate(pageWrapper);
+            if (pageWrapper.synchronous) {
+                Utils.activate(pageWrapper);
+            } else {
+                pageWrapper.incubator.__activate = true;
+            }
         }
     }
 
