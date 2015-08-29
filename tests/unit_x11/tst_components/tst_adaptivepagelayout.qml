@@ -98,6 +98,10 @@ MainView {
         }
 
         function cleanup() {
+            page1.title = "Page1";
+            page2.title = "Page2";
+            page3.title = "Page3";
+            page4.title = "Page4";
             loadedSpy.clear();
             resize_multiple_columns();
             layout.removePages(page1);
@@ -205,14 +209,18 @@ MainView {
 
         function test_add_page_to_current_data() {
             return [
-                {tag: "Synchronously", page: page2, params: {}, sync: true},
-                {tag: "Synchronously, with params", page: page2, params: {title: "Altered title"}, sync: true},
-                {tag: "Asynchronously", page: pageComponent, params: {}, sync: false},
-                {tag: "Asynchronously, with params", page: pageComponent, params: {title: "Altered title"}, sync: false},
+                {tag: "Synchronously to current column", func: "addPageToCurrentColumn", page: page2, params: {}, sync: true},
+                {tag: "Synchronously to current column, with params", func: "addPageToCurrentColumn", page: page2, params: {title: "Altered title"}, sync: true},
+                {tag: "Synchronously to next column", func: "addPageToNextColumn", page: page2, params: {}, sync: true},
+                {tag: "Synchronously to next column, with params", func: "addPageToNextColumn", page: page2, params: {title: "Altered title"}, sync: true},
+                {tag: "Asynchronously to current column", func: "addPageToCurrentColumn", page: pageComponent, params: {}, sync: false},
+                {tag: "Asynchronously to current column, with params", func: "addPageToCurrentColumn", page: pageComponent, params: {title: "Altered title"}, sync: false},
+                {tag: "Asynchronously to next column", func: "addPageToNextColumn", page: pageComponent, params: {}, sync: false},
+                {tag: "Asynchronously to next column, with params", func: "addPageToNextColumn", page: pageComponent, params: {title: "Altered title"}, sync: false},
             ]
         }
         function test_add_page_to_current(data) {
-            var incubator = layout.addPageToCurrentColumn(layout.primaryPage, data.page, data.params);
+            var incubator = layout[data.func](layout.primaryPage, data.page, data.params);
             compare((incubator == null), data.sync);
             if (incubator) {
                 compare(incubator.status, Component.Loading, "The incubator status is not Component.Loading, but " + incubator.status);
