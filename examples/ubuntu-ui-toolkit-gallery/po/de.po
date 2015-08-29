@@ -14,8 +14,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-08-14 06:03+0000\n"
-"X-Generator: Launchpad (build 17686)\n"
+"X-Launchpad-Export-Date: 2015-08-29 05:36+0000\n"
+"X-Generator: Launchpad (build 17690)\n"
 
 #: Animations.qml:24
 msgid "NumberAnimation"
@@ -82,7 +82,7 @@ msgstr "Ausgeklappt"
 
 #: Colors.qml:30
 msgid "Orange"
-msgstr "orange"
+msgstr "Orange"
 
 #: Colors.qml:36
 msgid "Light grey"
@@ -94,19 +94,19 @@ msgstr "Dunkelgrau"
 
 #: Colors.qml:48
 msgid "Red"
-msgstr "rot"
+msgstr "Rot"
 
 #: Colors.qml:54
 msgid "Green"
-msgstr "grün"
+msgstr "Grün"
 
 #: Colors.qml:60
 msgid "Blue"
-msgstr "blau"
+msgstr "Blau"
 
 #: Colors.qml:66
 msgid "Purple"
-msgstr "lila"
+msgstr "Lila"
 
 #: Dialog.qml:32 Popover.qml:45 Sheet.qml:43 Sheet.qml:76
 msgid "Open"
@@ -156,7 +156,7 @@ msgstr "Wert"
 
 #: ListItems.qml:91
 msgid "Multi value"
-msgstr "Mehrwert"
+msgstr "Mehrere Werte"
 
 #: ListItems.qml:95 ListItems.qml:113 ListItems.qml:122 ListItems.qml:132
 #: ListItems.qml:161 ListItems.qml:176 OptionSelectors.qml:35
@@ -339,7 +339,7 @@ msgstr "Aktueller Wert: %1"
 
 #: Sliders.qml:42
 msgid "Live Update"
-msgstr ""
+msgstr "Echtzeitaktualisierung"
 
 #: Sliders.qml:57
 msgid "Range"
@@ -347,7 +347,7 @@ msgstr "Bereich"
 
 #: Styles.qml:27
 msgid "Switch between old and new style header"
-msgstr ""
+msgstr "Zwischen alter und neuer Kopfzeile umschalten"
 
 #: Styles.qml:40
 msgid "Switch between themes"
