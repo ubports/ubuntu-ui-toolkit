@@ -83,6 +83,12 @@ import "tree.js" as Tree
     }
   \endqml
 
+  \note Observe the use of the \c Page::pageStack property in the example above.
+  The same property is used to share the AdaptivePageLayout instance the Page is
+  used in, therefore the same page can be used in a PageStack or in an AdaptivePageLayout.
+  However implementations must make sure the desired PageStack or AdaptivePageLayout
+  function exists in the instance before using it.
+
   AdaptivePageLayout supports adaptive column handling. When the number of columns changes at
   runtime the pages are automatically rearranged.
 
@@ -196,15 +202,18 @@ PageTreeNode {
     property list<PageColumnsLayout> layouts
 
     /*!
-      \qmlmethod incubator addPageToCurrentColumn(Item sourcePage, var page[, var properties])
+      \qmlmethod object addPageToCurrentColumn(Item sourcePage, var page[, var properties])
       Adds a \c page to the column the \c sourcePage resides in and removes all pages
       from the higher columns. \c page can be a Component or a file.
-      \c properties is a JSON object containing properties
-      to be set when page is created. \c sourcePage must be active.
+      \c properties is a JSON object containing properties to be set when page
+      is created. \c sourcePage must be active.
 
       The function creates the new page asynchronously if the new \c page to be
       added is a Component or a QML document. In this case the function returns
-      an incubator which can be used to track the page creation.
+      an incubator which can be used to track the page creation.For more about
+      incubation in QML and creating component sasynchronously, see
+      \l {http://doc.qt.io/qt-5/qml-qtqml-component.html#incubateObject-method}
+      {Component.incubateObject()}.
       The following example removes an element from the list model whenever the
       page opened in the second column is closed. Note, the example must be run
       on desktop or on a device with at least 90 grid units screen width.
@@ -257,6 +266,8 @@ PageTreeNode {
           }
       }
       \endqml
+
+      \sa {http://doc.qt.io/qt-5/qml-qtqml-component.html#incubateObject-method}{Component.incubateObject}
       */
     function addPageToCurrentColumn(sourcePage, page, properties) {
         var nextColumn = d.columnForPage(sourcePage) + 1;
