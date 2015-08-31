@@ -110,6 +110,7 @@ QML_FILES += 1.3/ActionBar.qml \
              1.3/PageTreeNode.qml \
              1.3/pageUtils.js \
              1.3/PageWrapper.qml \
+             1.3/PageWrapperUtils.js \
              1.3/Panel.qml \
              1.3/ProgressBar.qml \
              1.3/PullToRefresh.qml \

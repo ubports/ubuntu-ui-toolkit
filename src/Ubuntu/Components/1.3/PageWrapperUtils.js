@@ -22,6 +22,66 @@
 
 /*!
   \internal
+  Incubator wrapper object. Used when page is loaded asynchronously.
+  */
+
+function Incubator(pageWrapper, pageComponent) {
+    // private variable for QmlIncubatorObject
+    var incubator = null;
+
+    // public API
+    this.status = Component.Ready;
+    this.object = null;
+    this.onStatusChanged = null;
+    this.forceCompletion = function () {
+        if (incubator) {
+            incubator.forceCompletion();
+        }
+    }
+
+    // internal function to catch status changes
+    function incubatorStatusChanged(status) {
+        // update wrapper incubator fields
+        pageWrapper.incubator.status = status;
+        pageWrapper.incubator.object = pageWrapper.object = incubator.object;
+
+        // emit pageWrapper's pageLoaded signal to complete page activation and loading
+        if (status === Component.Ready) {
+            pageWrapper.pageLoaded();
+        }
+
+        // forward state change to the user
+        if (pageWrapper.incubator.onStatusChanged) {
+            // call onStatusChanged
+            pageWrapper.incubator.onStatusChanged(status);
+        }
+
+        // cleanup of ready or error
+        if (status !== Component.Loading) {
+            pageWrapper.incubator = null;
+            incubator = null;
+        }
+    }
+
+    if (pageWrapper.properties) {
+        incubator = pageComponent.incubateObject(pageWrapper, pageWrapper.properties);
+    } else {
+        incubator = pageComponent.incubateObject(pageWrapper);
+    }
+
+    this.status = incubator.status;
+    if (incubator.status != Component.Ready) {
+        incubator.onStatusChanged = incubatorStatusChanged;
+    } else {
+        incubatorStatusChanged(incubator.status);
+    }
+}
+
+/*******************************************************
+ *
+ */
+/*!
+  \internal
   Initialize pageWrapper.object.
  */
 function initPage(pageWrapper) {
@@ -35,36 +95,35 @@ function initPage(pageWrapper) {
         pageComponent = Qt.createComponent(pageWrapper.reference);
     }
 
-    var pageObject;
+    // PageWrapper can override the synchronous loading
+    var synchronous = pageWrapper.hasOwnProperty("synchronous") ? pageWrapper.synchronous : true;
+
     if (pageComponent) {
         if (pageComponent.status === Component.Error) {
             throw new Error("Error while loading page: " + pageComponent.errorString());
         } else {
             // create the object
-            if (pageWrapper.properties) {
-                // initialize the object with the given properties
-                pageObject = pageComponent.createObject(pageWrapper, pageWrapper.properties);
-            } else {
-                pageObject = pageComponent.createObject(pageWrapper);
+            pageWrapper.incubator = new Incubator(pageWrapper, pageComponent);
+            if (synchronous) {
+                pageWrapper.incubator.forceCompletion();
             }
             pageWrapper.canDestroy = true;
         }
     } else {
         // page reference is an object
-        pageObject = pageWrapper.reference;
-        pageObject.parent = pageWrapper;
+        pageWrapper.object = pageWrapper.reference;
+        pageWrapper.object.parent = pageWrapper;
         pageWrapper.canDestroy = false;
 
         // copy the properties to the page object
         for (var prop in pageWrapper.properties) {
             if (pageWrapper.properties.hasOwnProperty(prop)) {
-                pageObject[prop] = pageWrapper.properties[prop];
+                pageWrapper.object[prop] = pageWrapper.properties[prop];
             }
         }
     }
 
-    pageWrapper.object = pageObject;
-    return pageObject;
+    return pageWrapper.object;
 }
 
 /*!
@@ -75,6 +134,7 @@ function activate(pageWrapper) {
     if (!pageWrapper.object) {
         initPage(pageWrapper);
     }
+
     // Having the same page pushed multiple times on a stack changes
     // the parent of the page object. Change it back here.
     pageWrapper.object.parent = pageWrapper;
