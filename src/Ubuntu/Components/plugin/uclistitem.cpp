@@ -905,6 +905,11 @@ UCListItem::~UCListItem()
 {
 }
 
+QObject *UCListItem::attachedViewItems(QObject *object, bool create)
+{
+    return qmlAttachedPropertiesObject<UCViewItemsAttached>(object, create);
+}
+
 void UCListItem::classBegin()
 {
     UCStyledItemBase::classBegin();
@@ -987,10 +992,10 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
         QQuickItem *parentAttachee = data.item;
         if (d->flickable && d->flickable->inherits("QQuickListView")) {
             // attach to ListView
-            d->parentAttached = static_cast<UCViewItemsAttached*>(qmlAttachedPropertiesObject<UCViewItemsAttached>(d->flickable));
+            d->parentAttached = static_cast<UCViewItemsAttached*>(attachedViewItems(d->flickable, true));
             parentAttachee = d->flickable;
         } else if (data.item) {
-            d->parentAttached = static_cast<UCViewItemsAttached*>(qmlAttachedPropertiesObject<UCViewItemsAttached>(data.item));
+            d->parentAttached = static_cast<UCViewItemsAttached*>(attachedViewItems(data.item, true));
         } else {
             // mark as not ready, so no action should be performed which depends on readyness
             d->ready = false;
@@ -1662,6 +1667,12 @@ UCListItem13::UCListItem13(QQuickItem *parent)
     Q_D(UCListItem);
     d->defaultThemeVersion = BUILD_VERSION(1, 3);
 }
+
+QObject *UCListItem13::attachedViewItems(QObject *object, bool create)
+{
+    return qmlAttachedPropertiesObject<UCViewItemsAttached13>(object, create);
+}
+
 
 /*!
  * \qmlpropertygroup ::ListItem::expansion

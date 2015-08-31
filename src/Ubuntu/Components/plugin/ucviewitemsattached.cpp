@@ -557,7 +557,7 @@ void UCViewItemsAttachedPrivate::enterDragMode()
         return;
     }
     dragArea = new ListItemDragArea(listView);
-    dragArea->init();
+    dragArea->init(q_func());
 }
 
 void UCViewItemsAttachedPrivate::leaveDragMode()
@@ -613,17 +613,29 @@ void UCViewItemsAttachedPrivate::updateSelectedIndices(int fromIndex, int toInde
     }
 }
 
+
+UCViewItemsAttached13::UCViewItemsAttached13(QObject *owner)
+    : UCViewItemsAttached(owner)
+{
+    d_ptr = UCViewItemsAttachedPrivate::get(this);
+}
+
+UCViewItemsAttached13 *UCViewItemsAttached13::qmlAttachedProperties(QObject *owner)
+{
+    return new UCViewItemsAttached13(owner);
+}
+
 /*!
  * \qmlatachedproperty list<int> ViewItems::expandedIndices
  * \since Ubuntu.Components 1.3
  * The property holds the indexes of the expanded ListItems within a flickable.
  */
-QList<int> UCViewItemsAttached::expandedIndices() const
+QList<int> UCViewItemsAttached13::expandedIndices() const
 {
     Q_D(const UCViewItemsAttached);
     return d->expansionList.toList();
 }
-void UCViewItemsAttached::setExpandedIndices(QList<int> indices)
+void UCViewItemsAttached13::setExpandedIndices(QList<int> indices)
 {
     Q_UNUSED(indices);
 }
@@ -653,12 +665,12 @@ void UCViewItemsAttached::setExpandedIndices(QList<int> indices)
  *      will block the expansion of more than one element.
  * \endtable
  */
-int UCViewItemsAttached::expansionFlags() const
+int UCViewItemsAttached13::expansionFlags() const
 {
     Q_D(const UCViewItemsAttached);
     return d->expansionFlags;
 }
-void UCViewItemsAttached::setExpansionFlags(int flags)
+void UCViewItemsAttached13::setExpansionFlags(int flags)
 {
     Q_D(UCViewItemsAttached);
     if (d->expansionFlags == (ExpansionFlags)flags) {

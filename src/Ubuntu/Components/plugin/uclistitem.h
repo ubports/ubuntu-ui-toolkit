@@ -62,6 +62,7 @@ public:
     void resetHighlightColor();
 
 protected:
+    virtual QObject *attachedViewItems(QObject *object, bool create);
     void classBegin();
     void componentComplete();
     QSGNode *updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data);
@@ -115,6 +116,7 @@ class UCListItem13 : public UCListItem
     Q_OBJECT
     Q_PROPERTY(UCListItemExpansion* expansion READ expansion CONSTANT)
 protected:
+    virtual QObject *attachedViewItems(QObject *object, bool create);
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
 private:
@@ -179,10 +181,6 @@ class UCViewItemsAttached : public QObject
     Q_PROPERTY(bool selectMode READ selectMode WRITE setSelectMode NOTIFY selectModeChanged)
     Q_PROPERTY(QList<int> selectedIndices READ selectedIndices WRITE setSelectedIndices NOTIFY selectedIndicesChanged)
     Q_PROPERTY(bool dragMode READ dragMode WRITE setDragMode NOTIFY dragModeChanged)
-    // FIXME add indices to revision 1 once we get this upstream bug fixed:
-    // https://bugs.launchpad.net/ubuntu/+source/qtdeclarative-opensource-src/+bug/1389721
-    Q_PROPERTY(QList<int> expandedIndices READ expandedIndices WRITE setExpandedIndices NOTIFY expandedIndicesChanged)
-    Q_PROPERTY(int expansionFlags READ expansionFlags WRITE setExpansionFlags NOTIFY expansionFlagsChanged)
     Q_ENUMS(ExpansionFlag)
 public:
     enum ExpansionFlag {
@@ -209,11 +207,6 @@ public:
     bool dragMode() const;
     void setDragMode(bool value);
 
-    QList<int> expandedIndices() const;
-    void setExpandedIndices(QList<int> indices);
-    int expansionFlags() const;
-    void setExpansionFlags(int flags);
-
 private Q_SLOTS:
     void unbindItem();
     void completed();
@@ -222,10 +215,6 @@ Q_SIGNALS:
     void selectModeChanged();
     void selectedIndicesChanged();
     void dragModeChanged();
-    // FIXME add indices to revision 1 once we get this upstream bug fixed:
-    // https://bugs.launchpad.net/ubuntu/+source/qtdeclarative-opensource-src/+bug/1389721
-    void expandedIndicesChanged();
-    void expansionFlagsChanged();
 
     void dragUpdated(UCDragEvent *event);
 
@@ -234,6 +223,33 @@ private:
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS(UCViewItemsAttached::ExpansionFlags)
 QML_DECLARE_TYPEINFO(UCViewItemsAttached, QML_HAS_ATTACHED_PROPERTIES)
+
+// FIXME keep the 1.3 properties in a separate class, workaround for bug
+// https://bugs.launchpad.net/ubuntu/+source/qtdeclarative-opensource-src/+bug/1389721
+// enums and flag are added to UCViewItemsAttached like normal
+class UCViewItemsAttached13 : public UCViewItemsAttached
+{
+    Q_OBJECT
+    Q_PROPERTY(QList<int> expandedIndices READ expandedIndices WRITE setExpandedIndices NOTIFY expandedIndicesChanged)
+    Q_PROPERTY(int expansionFlags READ expansionFlags WRITE setExpansionFlags NOTIFY expansionFlagsChanged)
+public:
+    explicit UCViewItemsAttached13(QObject *owner = 0);
+    static UCViewItemsAttached13 *qmlAttachedProperties(QObject *owner);
+
+    QList<int> expandedIndices() const;
+    void setExpandedIndices(QList<int> indices);
+    int expansionFlags() const;
+    void setExpansionFlags(int flags);
+
+Q_SIGNALS:
+    void expandedIndicesChanged();
+    void expansionFlagsChanged();
+
+private:
+    UCViewItemsAttachedPrivate *d_ptr;
+    Q_DECLARE_PRIVATE_D(d_ptr, UCViewItemsAttached)
+};
+QML_DECLARE_TYPEINFO(UCViewItemsAttached13, QML_HAS_ATTACHED_PROPERTIES)
 
 class UCDragEvent : public QObject
 {

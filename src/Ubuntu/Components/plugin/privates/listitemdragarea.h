@@ -27,7 +27,7 @@ class ListItemDragArea : public QQuickItem
     Q_OBJECT
 public:
     explicit ListItemDragArea(QQuickItem *parent = 0);
-    void init();
+    void init(UCViewItemsAttached *viewItems);
     void reset();
 
 protected:
