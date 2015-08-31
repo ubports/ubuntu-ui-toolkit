@@ -15,9 +15,9 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.3
+import Ubuntu.Components 1.2
 import QtQuick.Layouts 1.1
-import Ubuntu.Components.ListItems 1.3
+import Ubuntu.Components.ListItems 1.0
 import QtQml.Models 2.1
 
 MainView {
@@ -53,7 +53,6 @@ MainView {
                     anchors.fill: parent
                     ViewItems.selectMode: ViewItems.dragMode
                     ViewItems.onSelectedIndicesChanged: print(ViewItems.selectedIndices)
-                    ViewItems.onExpandedIndicesChanged: print("expandedIndices", ViewItems.expandedIndices)
 
                     function handleDragStarted(event) {
                         if (!restrictDragging) {
