@@ -371,7 +371,7 @@ PageTreeNode {
 
         function createWrapper(page, properties) {
             var wrapperComponent = Qt.createComponent("PageWrapper.qml");
-            var wrapperObject = wrapperComponent.createObject(hiddenPages);
+            var wrapperObject = wrapperComponent.createObject(hiddenPages, {synchronous: false});
             wrapperObject.pageStack = layout;
             wrapperObject.properties = properties;
             // set reference last because it will trigger creation of the object
@@ -387,7 +387,7 @@ PageTreeNode {
             // replace page holder's child
             var holder = body.children[targetColumn];
             holder.detachCurrentPage();
-            if (pageWrapper.synchronous || pageWrapper.object) {
+            if ((pageWrapper.incubator && pageWrapper.incubator.status == Component.Ready) || pageWrapper.object) {
                 holder.attachPage(pageWrapper);
             } else {
                 // asynchronous, connect to page load completion and attach when page is available

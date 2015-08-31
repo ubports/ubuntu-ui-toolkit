@@ -34,12 +34,9 @@ function Incubator(pageWrapper, pageComponent) {
     this.object = null;
     this.onStatusChanged = null;
     this.forceCompletion = function () {
-        if (!incubator) {
-            return;
+        if (incubator) {
+            incubator.forceCompletion();
         }
-        incubator.forceCompletion();
-        pageWrapper.incubator = null;
-        incubator = null;
     }
 
     // internal function to catch status changes
@@ -78,7 +75,6 @@ function Incubator(pageWrapper, pageComponent) {
     } else {
         incubatorStatusChanged(incubator.status);
     }
-//    pageWrapper.incubator = this;
 }
 
 /*******************************************************
@@ -91,51 +87,43 @@ function Incubator(pageWrapper, pageComponent) {
 function initPage(pageWrapper) {
     var pageComponent;
 
-    // asynchronous cases
     if (pageWrapper.reference.createObject) {
         // page reference is a component
         pageComponent = pageWrapper.reference;
-        pageWrapper.synchronous = false;
     } else if (typeof pageWrapper.reference == "string") {
         // page reference is a string (url)
         pageComponent = Qt.createComponent(pageWrapper.reference);
-        pageWrapper.synchronous = false;
     }
 
-    var pageObject = null;
+    // PageWrapper can override the synchronous loading
+    var synchronous = pageWrapper.hasOwnProperty("synchronous") ? pageWrapper.synchronous : true;
+
     if (pageComponent) {
         if (pageComponent.status === Component.Error) {
             throw new Error("Error while loading page: " + pageComponent.errorString());
         } else {
             // create the object
-            if (pageWrapper.synchronous) {
-                if (pageWrapper.properties) {
-                    // initialize the object with the given properties
-                    pageObject = pageComponent.createObject(pageWrapper, pageWrapper.properties);
-                } else {
-                    pageObject = pageComponent.createObject(pageWrapper);
-                }
-            } else {
-                pageWrapper.incubator = new Incubator(pageWrapper, pageComponent);
+            pageWrapper.incubator = new Incubator(pageWrapper, pageComponent);
+            if (synchronous) {
+                pageWrapper.incubator.forceCompletion();
             }
             pageWrapper.canDestroy = true;
         }
     } else {
         // page reference is an object
-        pageObject = pageWrapper.reference;
-        pageObject.parent = pageWrapper;
+        pageWrapper.object = pageWrapper.reference;
+        pageWrapper.object.parent = pageWrapper;
         pageWrapper.canDestroy = false;
 
         // copy the properties to the page object
         for (var prop in pageWrapper.properties) {
             if (pageWrapper.properties.hasOwnProperty(prop)) {
-                pageObject[prop] = pageWrapper.properties[prop];
+                pageWrapper.object[prop] = pageWrapper.properties[prop];
             }
         }
     }
 
-    pageWrapper.object = pageObject;
-    return pageObject;
+    return pageWrapper.object;
 }
 
 /*!

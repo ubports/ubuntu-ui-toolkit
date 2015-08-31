@@ -130,7 +130,7 @@ PageTreeNode {
         if (pageWrapper.object) pageWrapper.object = null;
         Utils.initPage(pageWrapper);
         if (pageWrapper.active && reference) {
-            if (pageWrapper.synchronous || pageWrapper.object) {
+            if ((pageWrapper.incubator && pageWrapper.incubator.status == Component.Ready) || pageWrapper.object) {
                 Utils.activate(pageWrapper);
             } else {
                 // asynchronous, connect page activation

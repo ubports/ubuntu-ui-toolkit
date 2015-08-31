@@ -96,9 +96,8 @@ MainView {
                         selected: index === widgetList.currentIndex
                         onClicked: {
                             var source = Qt.resolvedUrl(model.source);
-                            var newPage = layout.addPageToNextColumn(mainPage, source);
+                            layout.addPageToNextColumn(mainPage, source, {title: model.label});
 
-                            newPage.title = model.label;
                             widgetList.currentIndex = index;
                         }
                     }

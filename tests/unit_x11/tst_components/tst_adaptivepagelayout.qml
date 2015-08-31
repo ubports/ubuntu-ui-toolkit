@@ -244,6 +244,7 @@ MainView {
             compare(incubator.status, Component.Loading, "Incubator in different state");
             incubator.forceCompletion();
             compare(incubator.status, Component.Ready, "Incubator not completed");
+            verify(incubator.object, "Page object not set");
         }
     }
 }
