@@ -109,9 +109,11 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_syncDragMode())
 };
 
+class UCListItemExpansion;
 class UCListItem13 : public UCListItem
 {
     Q_OBJECT
+    Q_PROPERTY(UCListItemExpansion* expansion READ expansion CONSTANT)
 protected:
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
@@ -120,6 +122,8 @@ private:
     void popoverClosed();
 public:
     explicit UCListItem13(QQuickItem *parent = 0);
+
+    UCListItemExpansion *expansion();
 };
 
 class UCListItemDividerPrivate;
@@ -150,6 +154,23 @@ private:
     Q_DECLARE_PRIVATE(UCListItemDivider)
 };
 
+class UCListItemExpansion : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(bool expanded MEMBER m_expanded NOTIFY expandedChanged)
+    Q_PROPERTY(qreal height MEMBER m_height NOTIFY heightChanged)
+public:
+    explicit UCListItemExpansion(QObject *parent = 0);
+
+Q_SIGNALS:
+    void expandedChanged();
+    void heightChanged();
+
+private:
+    qreal m_height;
+    bool m_expanded:1;
+};
+
 class UCDragEvent;
 class UCViewItemsAttachedPrivate;
 class UCViewItemsAttached : public QObject
@@ -158,8 +179,19 @@ class UCViewItemsAttached : public QObject
     Q_PROPERTY(bool selectMode READ selectMode WRITE setSelectMode NOTIFY selectModeChanged)
     Q_PROPERTY(QList<int> selectedIndices READ selectedIndices WRITE setSelectedIndices NOTIFY selectedIndicesChanged)
     Q_PROPERTY(bool dragMode READ dragMode WRITE setDragMode NOTIFY dragModeChanged)
+    // FIXME add indices to revision 1 once we get this upstream bug fixed:
+    // https://bugs.launchpad.net/ubuntu/+source/qtdeclarative-opensource-src/+bug/1389721
+    Q_PROPERTY(QList<int> expandedIndices READ expandedIndices WRITE setExpandedIndices NOTIFY expandedIndicesChanged)
+    Q_PROPERTY(int expansionFlags READ expansionFlags WRITE setExpansionFlags NOTIFY expansionFlagsChanged)
+    Q_ENUMS(ExpansionFlag)
 public:
-    explicit UCViewItemsAttached(QObject *owner);
+    enum ExpansionFlag {
+        Exclusive = 0x01,
+        LockExpanded = 0x02,
+        CollapseOnOutsidePress = 0x04
+    };
+    Q_DECLARE_FLAGS(ExpansionFlags, ExpansionFlag)
+    explicit UCViewItemsAttached(QObject *owner = 0);
     ~UCViewItemsAttached();
 
     static UCViewItemsAttached *qmlAttachedProperties(QObject *owner);
@@ -177,6 +209,11 @@ public:
     bool dragMode() const;
     void setDragMode(bool value);
 
+    QList<int> expandedIndices() const;
+    void setExpandedIndices(QList<int> indices);
+    int expansionFlags() const;
+    void setExpansionFlags(int flags);
+
 private Q_SLOTS:
     void unbindItem();
     void completed();
@@ -185,12 +222,17 @@ Q_SIGNALS:
     void selectModeChanged();
     void selectedIndicesChanged();
     void dragModeChanged();
+    // FIXME add indices to revision 1 once we get this upstream bug fixed:
+    // https://bugs.launchpad.net/ubuntu/+source/qtdeclarative-opensource-src/+bug/1389721
+    void expandedIndicesChanged();
+    void expansionFlagsChanged();
 
     void dragUpdated(UCDragEvent *event);
 
 private:
     Q_DECLARE_PRIVATE(UCViewItemsAttached)
 };
+Q_DECLARE_OPERATORS_FOR_FLAGS(UCViewItemsAttached::ExpansionFlags)
 QML_DECLARE_TYPEINFO(UCViewItemsAttached, QML_HAS_ATTACHED_PROPERTIES)
 
 class UCDragEvent : public QObject

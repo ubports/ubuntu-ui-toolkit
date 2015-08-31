@@ -53,7 +53,7 @@ void ListItemDragArea::init()
     QQuickAnchors *anchors = QQuickItemPrivate::get(this)->anchors();
     anchors->setFill(parentItem());
     viewAttached = static_cast<UCViewItemsAttached*>(
-                qmlAttachedPropertiesObject<UCViewItemsAttached>(listView));
+                qmlAttachedPropertiesObject<UCViewItemsAttached>(listView, false));
     reset();
 }
 

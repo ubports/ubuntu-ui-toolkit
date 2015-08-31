@@ -200,6 +200,7 @@ UCListItemPrivate::UCListItemPrivate()
     , leadingActions(0)
     , trailingActions(0)
     , mainAction(0)
+    , expansion(Q_NULLPTR)
 {
 }
 UCListItemPrivate::~UCListItemPrivate()
@@ -1660,6 +1661,22 @@ UCListItem13::UCListItem13(QQuickItem *parent)
 {
     Q_D(UCListItem);
     d->defaultThemeVersion = BUILD_VERSION(1, 3);
+}
+
+/*!
+ * \qmlpropertygroup ::ListItem::expansion
+ * \qmlproperty bool ListItem::expansion::expanded
+ * \qmlproperty real ListItem::expansion::height
+ * \since Ubuntu.Components 1.3
+ * The group drefines the expansion state of the ListItem.
+ */
+UCListItemExpansion *UCListItem13::expansion()
+{
+    Q_D(UCListItem);
+    if (!d->expansion) {
+        d->expansion = new UCListItemExpansion(this);
+    }
+    return d->expansion;
 }
 
 #include "moc_uclistitem.cpp"

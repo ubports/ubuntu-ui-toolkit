@@ -95,6 +95,7 @@ public:
     UCListItemActions *leadingActions;
     UCListItemActions *trailingActions;
     UCAction *mainAction;
+    UCListItemExpansion *expansion;
 
     // getters/setters
     QQmlListProperty<QObject> data();
@@ -147,17 +148,19 @@ public:
     bool isDragUpdatedConnected();
     void updateSelectedIndices(int fromIndex, int toIndex);
 
-    QQuickFlickable *listView;
-    ListItemDragArea *dragArea;
-    bool globalDisabled:1;
-    bool selectable:1;
-    bool draggable:1;
-    bool ready:1;
     QSet<int> selectedList;
+    QSet<int> expansionList;
     QList< QPointer<QQuickFlickable> > flickables;
     QList< PropertyChange* > changes;
     QPointer<UCListItem> boundItem;
     QPointer<UCListItem> disablerItem;
+    QQuickFlickable *listView;
+    ListItemDragArea *dragArea;
+    UCViewItemsAttached::ExpansionFlags expansionFlags;
+    bool globalDisabled:1;
+    bool selectable:1;
+    bool draggable:1;
+    bool ready:1;
 };
 
 #endif // UCVIEWITEM_P_H

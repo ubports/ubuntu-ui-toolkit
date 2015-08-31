@@ -104,6 +104,7 @@ UCViewItemsAttachedPrivate::UCViewItemsAttachedPrivate()
     : QObjectPrivate()
     , listView(0)
     , dragArea(0)
+    , expansionFlags(UCViewItemsAttached::Exclusive | UCViewItemsAttached::LockExpanded)
     , globalDisabled(false)
     , selectable(false)
     , draggable(false)
@@ -610,4 +611,60 @@ void UCViewItemsAttachedPrivate::updateSelectedIndices(int fromIndex, int toInde
         selectedList.insert(toIndex);
         Q_EMIT q->selectedIndicesChanged();
     }
+}
+
+/*!
+ * \qmlatachedproperty list<int> ViewItems::expandedIndices
+ * \since Ubuntu.Components 1.3
+ * The property holds the indexes of the expanded ListItems within a flickable.
+ */
+QList<int> UCViewItemsAttached::expandedIndices() const
+{
+    Q_D(const UCViewItemsAttached);
+    return d->expansionList.toList();
+}
+void UCViewItemsAttached::setExpandedIndices(QList<int> indices)
+{
+    Q_UNUSED(indices);
+}
+
+/*!
+ * \qmlattachedproperty ExpansionFlags ViewItems::expansionFlags
+ * \since Ubuntu.Components 1.3
+ * Flags driving the expansion behavior.
+ * \table
+ * \header
+ *  \li Flag
+ *  \li description
+ * \row
+ *  \li ViewItems.Exclusive
+ *  \li When set, only one ListItem can be expanded at a time. \b {Set by default}.
+ * \row
+ *  \li ViewItems.LockExpanded
+ *  \li When set, the ListItem's leading/trailing actions cannot be revealed. The
+ *      ListItem reacts on \l ListItem::clicked and \l ListItem::pressAndHold
+ *      signals. \b {Set by default}.
+ * \row
+ *  \li ViewItems.CollapseOnOutsidePress
+ *  \li When set, the active expaned ListItem collapses automatically when clicked
+ *      outside of its area. The flag makes sens to be set when \c ViewItems.Exclusive
+ *      flag is also set. On multiple expansion, if the expansion is driven either by
+ *      \l ListItem::clicked or \l ListItem::pressAndHold signals, setting this flag
+ *      will block the expansion of more than one element.
+ * \endtable
+ */
+int UCViewItemsAttached::expansionFlags() const
+{
+    Q_D(const UCViewItemsAttached);
+    return d->expansionFlags;
+}
+void UCViewItemsAttached::setExpansionFlags(int flags)
+{
+    Q_D(UCViewItemsAttached);
+    if (d->expansionFlags == (ExpansionFlags)flags) {
+        return;
+    }
+
+    d->expansionFlags = (ExpansionFlags)flags;
+    Q_EMIT expansionFlagsChanged();
 }
