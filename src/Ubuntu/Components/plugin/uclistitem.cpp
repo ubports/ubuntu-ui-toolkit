@@ -326,7 +326,7 @@ void UCListItemPrivate::preStyleChanged()
 bool UCListItemPrivate::loadStyleItem(bool animated)
 {
     // the style should be loaded only if one of the condition is satisfied
-    if (!swiped && !selectMode() && !dragMode()) {
+    if (!swiped && !selectMode() && !dragMode() && !(expansion && expansion->m_expanded)) {
         return false;
     }
 
@@ -340,6 +340,7 @@ bool UCListItemPrivate::loadStyleItem(bool animated)
         preStyleChanged();
         return false;
     }
+    myStyle->updateFlickable(flickable);
     // bring the panels foreground
     styleItem->setZ(0);
     listItemStyle()->setAnimatePanels(true);
@@ -962,7 +963,7 @@ void UCListItem::componentComplete()
                 this, SLOT(_q_syncDragMode()));
 
         // if selection or drag mode is on, initialize style, with animations turned off
-        if (d->parentAttached->selectMode() || d->parentAttached->dragMode()) {
+        if (d->parentAttached->selectMode() || d->parentAttached->dragMode() || (d->expansion && d->expansion->m_expanded)) {
             d->loadStyleItem(false);
         }
         // set the object name for testing purposes
@@ -1001,6 +1002,17 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
             d->ready = false;
             // about to be deleted or reparented, disable attached
             d->parentAttached = 0;
+        }
+
+        if (d->styleItem) {
+            UCListItemStyle * myStyle = static_cast<UCListItemStyle*>(d->styleItem);
+            myStyle->updateFlickable(d->flickable);
+        }
+
+        // ViewItems drives expansion
+        if (d->parentAttached && d->expansion) {
+            qDebug() << "do now";
+            d->expansion->connectExpansion(d->parentAttached);
         }
 
         if (parentAttachee) {

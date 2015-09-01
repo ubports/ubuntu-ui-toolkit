@@ -21,6 +21,7 @@
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlInfo>
 #include <QtQuick/private/qquickanimation_p.h>
+#include <QtQuick/private/qquickflickable_p.h>
 
 /*!
  * \qmltype ListItemStyle
@@ -41,6 +42,7 @@ UCListItemStyle::UCListItemStyle(QQuickItem *parent)
     , m_snapAnimation(0)
     , m_dropAnimation(0)
     , m_dragPanel(0)
+    , m_flickable(Q_NULLPTR)
     , m_animatePanels(true)
 {
 }
@@ -54,6 +56,10 @@ void UCListItemStyle::classBegin()
         setAnimatePanels(context->contextProperty("animated").toBool());
     }
     m_listItem = qmlContext(this)->contextProperty("styledItem").value<UCListItem*>();
+    // get the flickable value
+    if (m_listItem) {
+        m_flickable = UCListItemPrivate::get(m_listItem)->flickable.data();
+    }
 }
 
 void UCListItemStyle::componentComplete()
@@ -75,6 +81,8 @@ void UCListItemStyle::componentComplete()
         connect(m_snapAnimation, SIGNAL(runningChanged(bool)),
                 m_listItem, SLOT(_q_contentMoving()));
     }
+
+    Q_EMIT completedChanged();
 }
 
 /*!
@@ -89,6 +97,36 @@ void UCListItemStyle::componentComplete()
 int UCListItemStyle::index()
 {
     return UCListItemPrivate::get(m_listItem)->index();
+}
+
+/*!
+ * \qmlproperty Flickable ListItemStyle::flickable
+ * \readonly
+ * \since Ubuntu.Components.Styles 1.3
+ * The property holds the Flickable (or ListView) holding the ListItem styled.
+ */
+QQuickFlickable *UCListItemStyle::flickable()
+{
+    return m_flickable;
+}
+void UCListItemStyle::updateFlickable(QQuickFlickable *flickable)
+{
+    if (m_flickable == flickable) {
+        return;
+    }
+    m_flickable = flickable;
+    Q_EMIT flickableChanged();
+}
+
+/*!
+ * \qmlproperty bool ListItemStyle::completed
+ * \readonly
+ * \since Ubuntu.Components.Styles 1.3
+ * The property specifies the style component completion.
+ */
+bool UCListItemStyle::completed()
+{
+    return QQuickItemPrivate::get(this)->componentComplete;
 }
 
 /*!

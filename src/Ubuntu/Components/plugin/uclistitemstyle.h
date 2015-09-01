@@ -62,6 +62,7 @@ class QQuickAbstractAnimation;
 class QQuickPropertyAnimation;
 class QQuickBehavior;
 class UCListItem;
+class QQuickFlickable;
 class UCListItemStyle : public QQuickItem
 {
     Q_OBJECT
@@ -70,6 +71,8 @@ class UCListItemStyle : public QQuickItem
     Q_PROPERTY(bool animatePanels READ animatePanels NOTIFY animatePanelsChanged)
     Q_PROPERTY(QQuickItem *dragPanel MEMBER m_dragPanel NOTIFY dragPanelChanged)
     Q_PROPERTY(int listItemIndex READ index NOTIFY listItemIndexChanged FINAL REVISION 1)
+    Q_PROPERTY(QQuickFlickable *flickable READ flickable NOTIFY flickableChanged REVISION 1)
+    Q_PROPERTY(bool completed READ completed NOTIFY completedChanged REVISION 1)
 public:
     explicit UCListItemStyle(QQuickItem *parent = 0);
 
@@ -78,6 +81,9 @@ public:
     bool animatePanels() const;
     void setAnimatePanels(bool animate);
     int index();
+    QQuickFlickable *flickable();
+    void updateFlickable(QQuickFlickable *flickable);
+    bool completed();
 
 Q_SIGNALS:
     void snapAnimationChanged();
@@ -85,6 +91,8 @@ Q_SIGNALS:
     void animatePanelsChanged();
     void dragPanelChanged();
     Q_REVISION(1) void listItemIndexChanged();
+    Q_REVISION(1) void flickableChanged();
+    Q_REVISION(1) void completedChanged();
 
 public Q_SLOTS:
     void swipeEvent(UCSwipeEvent *event);
@@ -102,6 +110,7 @@ private:
     QQuickAbstractAnimation *m_snapAnimation;
     QQuickPropertyAnimation *m_dropAnimation;
     QQuickItem *m_dragPanel;
+    QQuickFlickable *m_flickable;
     bool m_animatePanels:1;
 
     friend class UCListItemPrivate;

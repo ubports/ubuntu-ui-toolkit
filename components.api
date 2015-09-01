@@ -481,8 +481,10 @@ Ubuntu.Components.ListItemDrag.Status: Enum
     Started
 Ubuntu.Components.Styles.ListItemStyle 1.3 1.2: Item
     readonly property bool animatePanels
+    readonly property bool completed 1.3
     property Item dragPanel
     property PropertyAnimation dropAnimation
+    readonly property Flickable flickable 1.3
     readonly property int listItemIndex 1.3
     function swipeEvent(SwipeEvent event)
     function rebound()

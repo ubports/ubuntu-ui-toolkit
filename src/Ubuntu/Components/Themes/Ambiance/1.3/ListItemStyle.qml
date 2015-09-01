@@ -419,4 +419,67 @@ Styles.ListItemStyle {
     function rebound() {
         snapAnimation.snapTo(0);
     }
+
+    // expansion
+    state: (listItemStyle.completed && styledItem.expansion.expanded) ? (listItemStyle.flickable ? "expandedWithFlickable" : "expandedNoFlickable") : ""
+    states: [
+        State {
+            name: "expandedNoFlickable"
+            PropertyChanges {
+                target: styledItem
+                height: styledItem.expansion.height
+            }
+        },
+        State {
+            name: "expandedWithFlickable"
+            PropertyChanges {
+                target: styledItem
+                height: styledItem.expansion.height
+            }
+            PropertyChanges {
+                target: listItemStyle.flickable
+                // we do not need to restore the original values
+                restoreEntryValues: false
+                // and we should not get any binding updates even
+                explicit: true
+                contentY: {
+                    var bottom = styledItem.y + styledItem.expansion.height - listItemStyle.flickable.contentY + listItemStyle.flickable.originY;
+                    var dy = bottom - listItemStyle.flickable.height;
+                    if (dy > 0) {
+                        return listItemStyle.flickable.contentY + dy - listItemStyle.flickable.originY;
+                    } else {
+                        return listItemStyle.flickable.contentY;
+                    }
+                }
+            }
+        }
+    ]
+    transitions: [
+        Transition {
+            from: ""
+            to: "expandedWithFlickable"
+            reversible: true
+            enabled: listItemStyle.animatePanels
+            ParallelAnimation {
+                UbuntuNumberAnimation {
+                    target: listItemStyle.flickable
+                    property: "contentY"
+                }
+                UbuntuNumberAnimation {
+                    target: styledItem
+                    property: "height"
+                }
+            }
+        },
+        Transition {
+            from: ""
+            to: "expandedNoFlickable"
+            reversible: true
+            enabled: listItemStyle.animatePanels
+            UbuntuNumberAnimation {
+                target: styledItem
+                property: "height"
+            }
+        }
+    ]
 }
