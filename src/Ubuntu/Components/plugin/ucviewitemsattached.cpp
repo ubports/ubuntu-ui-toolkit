@@ -626,9 +626,15 @@ UCViewItemsAttached13 *UCViewItemsAttached13::qmlAttachedProperties(QObject *own
 }
 
 /*!
- * \qmlatachedproperty list<int> ViewItems::expandedIndices
+ * \qmlattachedproperty list<int> ViewItems::expandedIndices
  * \since Ubuntu.Components 1.3
- * The property holds the indexes of the expanded ListItems within a flickable.
+ * The property contains the indexes of the ListItems marked as expanded. The
+ * indexes are model indexes when used in ListView, and child indexes in other
+ * components. The property being writable, initial expansion configuration
+ * can be provided for a view, and provides ability to save the expansion state.
+ * \note If the \l ViewItems::expansionFlags is having \c ViewItems.Exclusive
+ * flags set, only the last item from the list will be considered and set as
+ * expanded.
  */
 QList<int> UCViewItemsAttached13::expandedIndices() const
 {
@@ -657,7 +663,7 @@ void UCViewItemsAttached13::setExpandedIndices(QList<int> indices)
 void UCViewItemsAttachedPrivate::expand(int index, UCListItem13 *listItem, bool emitChangeSignal)
 {
     expansionList.insert(index, QPointer<UCListItem13>(listItem));
-    if (listItem && (expansionFlags & UCViewItemsAttached::CollapseOnOutsidePress)) {
+    if (listItem && ((expansionFlags & UCViewItemsAttached::CollapseOnOutsidePress) == UCViewItemsAttached::CollapseOnOutsidePress)) {
         listItem->expansion()->enableClickFiltering(true);
     }
     if (emitChangeSignal) {
@@ -670,10 +676,8 @@ void UCViewItemsAttachedPrivate::collapse(int index, bool emitChangeSignal)
 {
     UCListItem13 *item = expansionList.take(index).data();
     bool wasExpanded = item && item->expansion()->expanded();
-    if (item) {
-        if (expansionFlags & UCViewItemsAttached::CollapseOnOutsidePress) {
-            item->expansion()->enableClickFiltering(false);
-        }
+    if (item && ((expansionFlags & UCViewItemsAttached::CollapseOnOutsidePress) == UCViewItemsAttached::CollapseOnOutsidePress)) {
+        item->expansion()->enableClickFiltering(false);
     }
     if (emitChangeSignal && wasExpanded) {
         Q_EMIT static_cast<UCViewItemsAttached13*>(q_func())->expandedIndicesChanged(expansionList.keys());
@@ -734,7 +738,7 @@ void UCViewItemsAttached13::setExpansionFlags(int flags)
 
 void UCViewItemsAttachedPrivate::toggleExpansionFlags(bool enable)
 {
-    bool hasClickOutsideFlag = (expansionFlags & UCViewItemsAttached::CollapseOnOutsidePress);
+    bool hasClickOutsideFlag = (expansionFlags & UCViewItemsAttached::CollapseOnOutsidePress) == UCViewItemsAttached::CollapseOnOutsidePress;
     if (!hasClickOutsideFlag) {
         return;
     }

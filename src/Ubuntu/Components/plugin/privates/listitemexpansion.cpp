@@ -29,7 +29,7 @@ bool UCListItemExpansion::expandedWithFlag(UCViewItemsAttached::ExpansionFlag fl
 {
     UCListItemPrivate *listItem = UCListItemPrivate::get(m_listItem);
     UCViewItemsAttachedPrivate *viewItems = UCViewItemsAttachedPrivate::get(listItem->parentAttached);
-    return expanded() && (viewItems->expansionFlags & flag);
+    return expanded() && ((viewItems->expansionFlags & flag) == flag);
 }
 
 void UCListItemExpansion::enableClickFiltering(bool enable)
@@ -38,8 +38,6 @@ void UCListItemExpansion::enableClickFiltering(bool enable)
         return;
     }
     m_filtering = enable;
-    qDebug() << "Filter" << m_filtering << m_listItem;
-    qDebug() << "Window" << m_listItem->window();
     if (m_filtering) {
         m_listItem->window()->installEventFilter(this);
     } else {

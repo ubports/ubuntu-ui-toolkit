@@ -868,8 +868,73 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  *
  * \sa ViewItems::dragMode, ViewItems::dragUpdated
  *
+ * \section2 Expansion
+ * Since Ubuntu.Components 1.3, ListItem supports expansion. ListItems declared
+ * in a view can expand exclusively, having leading and trailing panes locked
+ * when expanded and to be collapsed when tapping outside of the expanded area.
+ * The expansion is driven by the \l expansion group property, and the behavior
+ * by the \l ViewItems::expansionFlags and \l ViewItems::expandedIndices
+ * attached properties. Each ListItem which is required to expand should set a
+ * proper height in the \l expansion.height property, which should be bigger
+ * than the collapsed height of the ListItem is. The expansion itself is driven
+ * by the \l expansion.expanded property, which can be set freely depending on
+ * the use case, on click, on long press, etc.
+ *
+ * The default expansion behavior is set to be exclusive and locked, meaning
+ * there can be only one ListItem expanded within a view and neither leading
+ * nor trailing action panels cannot be swiped in. Expanding an other ListItem
+ * will collapse the previosuly expanded one. There can be cases when tapping
+ * outside of the expanded area of a ListItem we woudl need the expanded one
+ * to collapse automatically. This can be achieved by setting \c ViewItems.CollapseOnOutsidePress
+ * flag to \l ViewItems::expansionFlags. This flag will also turn on \c ViewItems.Exclusive
+ * flag, as tapping outside practicly forbids more than one item to be expanded
+ * at a time.
+ * \qml
+ * import QtQuick 2.4
+ * import Ubuntu.Components 1.3
+ *
+ * ListView {
+ *     width: units.gu(40)
+ *     height: units.gu(71)
+ *     model: ListModel {
+ *         Component.onCompleted: {
+ *             for (var i = 0; i < 50; i++) {
+ *                 append({data: i});
+ *             }
+ *         }
+ *     }
+ *     ViewItems.expansionFlags: ViewItems.CollapseOnOutsidePress
+ *     delegate: ListItem {
+ *         Label {
+ *             text: "Model item #" + modelData
+ *         }
+ *         trailingActions: ListItemActions {
+ *             actions: [
+ *                 Action {
+ *                     icon: "search"
+ *                 },
+ *                 Action {
+ *                     icon: "edit"
+ *                 },
+ *                 Action {
+ *                     icon: "copy"
+ *                 }
+ *             ]
+ *         }
+ *         expansion.height: units.gu(15)
+ *         onClicked: expansion.expanded = true
+ *     }
+ * }
+ * \endqml
+ * The example above collapses the expanded item whenever it is tapped or mouse
+ * pressed outside of the expanded list item. It also allows to swipe in the trailing
+ * actions of the ListItem when expanded. To avoid that, set \c ViewItems.LockExpanded
+ * flag.
+ * \note Do not bind \l expansion.height to the ListItem's height as is will cause
+ * binding loops.
+ *
  * \section2 Note on styling
- * ListItem's styling differs from the other component sstyling, as ListItem loads
+ * ListItem's styling differs from the other components styling, as ListItem loads
  * the style only when either of the leadin/trailing panels are swiped, or when the
  * item enters in select- or drag mode. The component does not assume any visuals
  * to be present in the style.
@@ -1693,8 +1758,8 @@ void UCListItem13::itemChange(ItemChange change, const ItemChangeData &data)
 
 /*!
  * \qmlpropertygroup ::ListItem::expansion
- * \qmlproperty bool ListItem::expansion::expanded
- * \qmlproperty real ListItem::expansion::height
+ * \qmlproperty bool ListItem::expansion.expanded
+ * \qmlproperty real ListItem::expansion.height
  * \since Ubuntu.Components 1.3
  * The group drefines the expansion state of the ListItem.
  */
