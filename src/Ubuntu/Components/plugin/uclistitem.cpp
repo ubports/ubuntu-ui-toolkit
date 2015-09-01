@@ -930,6 +930,9 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  * pressed outside of the expanded list item. It also allows to swipe in the trailing
  * actions of the ListItem when expanded. To avoid that, set \c ViewItems.LockExpanded
  * flag.
+ * \note Set 0 to \l ViewItems::expansionFlags if no restrictions on expanded items
+ * is required (i.e multiple expanded items are allowed, swiping leading/trailing
+ * actions when expanded).
  * \note Do not bind \l expansion.height to the ListItem's height as is will cause
  * binding loops.
  *

@@ -135,4 +135,9 @@ UbuntuTestCase {
         mouseRelease(dragArea, dragPos.x, dragPos.y + dy);
         spyWait();
     }
+
+    function expand(item, expand) {
+        item.expansion.expanded = expand;
+        wait(400);
+    }
 }
