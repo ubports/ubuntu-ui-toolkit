@@ -50,6 +50,7 @@ MainView {
                 height: parent.height / 2
                 clip: true
                 ViewItems.onExpandedIndicesChanged: print(ViewItems.expandedIndices)
+                ViewItems.expandedIndices: [3]
 
                 model: ListModel {
                     Component.onCompleted: {
@@ -74,6 +75,7 @@ MainView {
                     trailingActions: ListItemActions {
                         actions: contextualActions
                     }
+                    expansion.height: units.gu(15)
 
                     RowLayout {
                         anchors {
@@ -96,7 +98,6 @@ MainView {
 
                     onPressAndHold: {
                         print("expand/collapse")
-                        expansion.height = units.gu(15)
                         expansion.expanded = !expansion.expanded
                     }
                 }
