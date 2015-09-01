@@ -19,9 +19,8 @@
 
 UCListItemExpansion::UCListItemExpansion(QObject *parent)
     : QObject(parent)
-    , m_listItem(static_cast<UCListItem*>(parent))
+    , m_listItem(static_cast<UCListItem13*>(parent))
     , m_height(0)
-    , m_expanded(false)
     , m_viewItemsConnected(false)
 {
     UCViewItemsAttached *viewItems = UCListItemPrivate::get(m_listItem)->parentAttached;
@@ -40,14 +39,50 @@ void UCListItemExpansion::connectExpansion(UCViewItemsAttached *viewItems)
     m_viewItemsConnected = true;
 }
 
+bool UCListItemExpansion::expandedWithFlag(UCViewItemsAttached::ExpansionFlag flag)
+{
+    UCListItemPrivate *listItem = UCListItemPrivate::get(m_listItem);
+    UCViewItemsAttachedPrivate *viewItems = UCViewItemsAttachedPrivate::get(listItem->parentAttached);
+    return expanded() && (viewItems->expansionFlags & flag);
+}
+
+void UCListItemExpansion::enableClickFiltering(bool enable)
+{
+    UCListItemPrivate *listItem = UCListItemPrivate::get(m_listItem);
+    if (enable) {
+        listItem->parentAttached->parent()->installEventFilter(this);
+    } else {
+        listItem->parentAttached->parent()->removeEventFilter(this);
+    }
+}
+
+bool UCListItemExpansion::expanded()
+{
+    UCListItemPrivate *listItem = UCListItemPrivate::get(m_listItem);
+    UCViewItemsAttachedPrivate *viewItems = UCViewItemsAttachedPrivate::get(listItem->parentAttached);
+    return (viewItems && viewItems->expansionList.contains(listItem->index()));
+}
+
 void UCListItemExpansion::setExpanded(bool expanded)
 {
-    if (m_expanded == expanded) {
+    if (this->expanded() == expanded) {
         return;
     }
-    m_expanded = expanded;
     UCListItemPrivate::get(m_listItem)->loadStyleItem();
-    Q_EMIT expandedChanged();
+    UCListItemPrivate *listItem = UCListItemPrivate::get(m_listItem);
+    UCViewItemsAttachedPrivate *viewItems = UCViewItemsAttachedPrivate::get(listItem->parentAttached);
+    if (viewItems) {
+        if (viewItems->expansionFlags & UCViewItemsAttached::Exclusive) {
+            // collapse all the expanded ones
+            viewItems->collapseAll();
+        }
+        if (expanded) {
+            viewItems->expand(listItem->index(), m_listItem);
+        } else {
+            viewItems->collapse(listItem->index());
+        }
+    }
+    // no need to emit changed signal, as ViewItems.expandedIndicesChanged is connected to the change signal
 }
 
 void UCListItemExpansion::setHeight(qreal height)

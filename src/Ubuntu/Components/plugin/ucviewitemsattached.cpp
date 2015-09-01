@@ -633,11 +633,57 @@ UCViewItemsAttached13 *UCViewItemsAttached13::qmlAttachedProperties(QObject *own
 QList<int> UCViewItemsAttached13::expandedIndices() const
 {
     Q_D(const UCViewItemsAttached);
-    return d->expansionList.toList();
+    return d->expansionList.keys();
 }
 void UCViewItemsAttached13::setExpandedIndices(QList<int> indices)
 {
     Q_UNUSED(indices);
+    Q_D(UCViewItemsAttached);
+    d->collapseAll();
+    if (indices.size() > 0) {
+        if (d->expansionFlags & UCViewItemsAttached::Exclusive) {
+            // take only the last one from the list
+            d->expand(indices.last(), QPointer<UCListItem13>(), false);
+        } else {
+            for (int i = 0; i < indices.size(); i++) {
+                d->expand(indices[i], QPointer<UCListItem13>(), false);
+            }
+        }
+    }
+    Q_EMIT expandedIndicesChanged();
+}
+
+// insert listItem into the expanded indices map
+void UCViewItemsAttachedPrivate::expand(int index, UCListItem13 *listItem, bool emitChangeSignal)
+{
+    expansionList.insert(index, QPointer<UCListItem13>(listItem));
+    if (listItem && (expansionFlags & UCViewItemsAttached::CollapseOnOutsidePress)) {
+        listItem->expansion()->enableClickFiltering(true);
+    }
+    if (emitChangeSignal) {
+        Q_EMIT static_cast<UCViewItemsAttached13*>(q_func())->expandedIndicesChanged();
+    }
+}
+
+// collapse the item at index
+void UCViewItemsAttachedPrivate::collapse(int index, bool emitChangeSignal)
+{
+    UCListItem13 *item = expansionList.take(index).data();
+    if (item) {
+        if (expansionFlags & UCViewItemsAttached::CollapseOnOutsidePress)
+        item->expansion()->enableClickFiltering(false);
+    }
+    if (emitChangeSignal) {
+        Q_EMIT static_cast<UCViewItemsAttached13*>(q_func())->expandedIndicesChanged();
+    }
+}
+
+void UCViewItemsAttachedPrivate::collapseAll()
+{
+    while (expansionList.keys().size() > 0) {
+        collapse(expansionList.keys().last(), false);
+    }
+    Q_EMIT static_cast<UCViewItemsAttached13*>(q_func())->expandedIndicesChanged();
 }
 
 /*!
@@ -677,6 +723,27 @@ void UCViewItemsAttached13::setExpansionFlags(int flags)
         return;
     }
 
+    // disable current flag based restrictions
+    d->toggleExpansionFlags(false);
     d->expansionFlags = (ExpansionFlags)flags;
+    // enable flag based restrictions
+    d->toggleExpansionFlags(true);
     Q_EMIT expansionFlagsChanged();
+}
+
+void UCViewItemsAttachedPrivate::toggleExpansionFlags(bool enable)
+{
+    bool hasClickOutsideFlag = (expansionFlags & UCViewItemsAttached::CollapseOnOutsidePress);
+    if (!hasClickOutsideFlag) {
+        return;
+    }
+    QMapIterator<int, QPointer<UCListItem13> > i(expansionList);
+    while (i.hasNext()) {
+        UCListItem13 *item = i.next().value().data();
+        // using expansion getter we will get the group created
+        if (item && item->expansion()) {
+            UCListItemPrivate *listItem = UCListItemPrivate::get(item);
+            listItem->expansion->enableClickFiltering(enable);
+        }
+    }
 }

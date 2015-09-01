@@ -326,7 +326,7 @@ void UCListItemPrivate::preStyleChanged()
 bool UCListItemPrivate::loadStyleItem(bool animated)
 {
     // the style should be loaded only if one of the condition is satisfied
-    if (!swiped && !selectMode() && !dragMode() && !(expansion && expansion->m_expanded)) {
+    if (!swiped && !selectMode() && !dragMode() && !(expansion && expansion->expanded())) {
         return false;
     }
 
@@ -963,7 +963,7 @@ void UCListItem::componentComplete()
                 this, SLOT(_q_syncDragMode()));
 
         // if selection or drag mode is on, initialize style, with animations turned off
-        if (d->parentAttached->selectMode() || d->parentAttached->dragMode() || (d->expansion && d->expansion->m_expanded)) {
+        if (d->parentAttached->selectMode() || d->parentAttached->dragMode() || (d->expansion && d->expansion->expanded())) {
             d->loadStyleItem(false);
         }
         // set the object name for testing purposes
@@ -1202,7 +1202,7 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
     Q_D(UCListItem);
     UCStyledItemBase::mouseMoveEvent(event);
 
-    if (d->selectMode() || d->dragMode()) {
+    if (d->selectMode() || d->dragMode() || (d->expansion && d->expansion->expandedWithFlag(UCViewItemsAttached::LockExpanded))) {
         // no move is allowed while selectable mode is on
         return;
     }

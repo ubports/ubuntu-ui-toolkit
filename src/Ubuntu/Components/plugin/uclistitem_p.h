@@ -148,8 +148,14 @@ public:
     bool isDragUpdatedConnected();
     void updateSelectedIndices(int fromIndex, int toIndex);
 
+    // expansion
+    void expand(int index, UCListItem13 *listItem, bool emitChangeSignal = true);
+    void collapse(int index, bool emitChangeSignal = true);
+    void collapseAll();
+    void toggleExpansionFlags(bool enable);
+
     QSet<int> selectedList;
-    QSet<int> expansionList;
+    QMap<int, QPointer<UCListItem13> > expansionList;
     QList< QPointer<QQuickFlickable> > flickables;
     QList< PropertyChange* > changes;
     QPointer<UCListItem> boundItem;

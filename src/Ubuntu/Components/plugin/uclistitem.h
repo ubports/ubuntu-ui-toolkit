@@ -156,35 +156,6 @@ private:
     Q_DECLARE_PRIVATE(UCListItemDivider)
 };
 
-class UCViewItemsAttached;
-class UCListItemExpansion : public QObject
-{
-    Q_OBJECT
-    Q_PROPERTY(bool expanded MEMBER m_expanded WRITE setExpanded NOTIFY expandedChanged)
-    Q_PROPERTY(qreal height MEMBER m_height WRITE setHeight NOTIFY heightChanged)
-public:
-    explicit UCListItemExpansion(QObject *parent = 0);
-
-    void connectExpansion(UCViewItemsAttached *viewItems);
-
-    void setExpanded(bool expanded);
-    void setHeight(qreal height);
-
-Q_SIGNALS:
-    void expandedChanged();
-    void heightChanged();
-
-private:
-    UCListItem *m_listItem;
-    qreal m_height;
-    bool m_expanded:1;
-    bool m_viewItemsConnected:1;
-
-    friend class UCListItem;
-    friend class UCListItem13;
-    friend class UCListItemPrivate;
-};
-
 class UCDragEvent;
 class UCViewItemsAttachedPrivate;
 class UCViewItemsAttached : public QObject
@@ -262,6 +233,36 @@ private:
     Q_DECLARE_PRIVATE_D(d_ptr, UCViewItemsAttached)
 };
 QML_DECLARE_TYPEINFO(UCViewItemsAttached13, QML_HAS_ATTACHED_PROPERTIES)
+
+class UCListItemExpansion : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(bool expanded READ expanded WRITE setExpanded NOTIFY expandedChanged)
+    Q_PROPERTY(qreal height MEMBER m_height WRITE setHeight NOTIFY heightChanged)
+public:
+    explicit UCListItemExpansion(QObject *parent = 0);
+
+    void connectExpansion(UCViewItemsAttached *viewItems);
+    bool expandedWithFlag(UCViewItemsAttached::ExpansionFlag flag);
+    void enableClickFiltering(bool enable);
+
+    bool expanded();
+    void setExpanded(bool expanded);
+    void setHeight(qreal height);
+
+Q_SIGNALS:
+    void expandedChanged();
+    void heightChanged();
+
+private:
+    UCListItem13 *m_listItem;
+    qreal m_height;
+    bool m_viewItemsConnected:1;
+
+    friend class UCListItem;
+    friend class UCListItem13;
+    friend class UCListItemPrivate;
+};
 
 class UCDragEvent : public QObject
 {
