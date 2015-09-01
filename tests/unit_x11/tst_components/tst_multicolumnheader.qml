@@ -61,6 +61,14 @@ MainView {
                     onClicked: layout.addPageToNextColumn(
                                    rootPage, Qt.resolvedUrl("MyExternalPage.qml"))
                 }
+                ListItemWithLabel {
+                    text: "Add page with head contents left"
+                    onClicked: layout.addPageToCurrentColumn(rootPage, headContentsPage)
+                }
+                ListItemWithLabel {
+                    text: "Add page with head contents right"
+                    onClicked: layout.addPageToNextColumn(rootPage, headContentsPage)
+                }
             }
         }
         Page {
@@ -106,6 +114,14 @@ MainView {
                     margins: units.gu(2)
                 }
                 color: "blue"
+            }
+        }
+        Page {
+            id: headContentsPage
+            head.contents: Rectangle {
+                id: headRectangle
+                color: UbuntuColors.orange
+                anchors.fill: parent
             }
         }
     }
@@ -339,6 +355,21 @@ MainView {
             layout.removePages(rightPage);
             compare(get_back_button_visible(0), false,
                     "Back button remains visible after removing page from following column.");
+        }
+
+        function test_head_contents_visible_bug1488922() {
+            layout.addPageToCurrentColumn(rootPage, headContentsPage);
+            // The bug occurred when the style for the subheader was unset
+            //  after a short delay, so wait before testing Page.head.contents.parent.
+            wait(100);
+            compare(headRectangle.visible, true, "Head contents not visible in current column.");
+            compare(headRectangle.parent == null, false, "Head contents has no parent in current column.");
+            layout.removePages(headContentsPage);
+            layout.addPageToNextColumn(rootPage, headContentsPage);
+            wait(100);
+            compare(headRectangle.visible, true, "Head contents not visible in next column.");
+            compare(headRectangle.parent == null, false, "Head contents has no parent in next column.");
+            layout.removePages(headContentsPage);
         }
     }
 }
