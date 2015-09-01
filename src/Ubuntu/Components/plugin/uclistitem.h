@@ -117,9 +117,11 @@ class UCListItem13 : public UCListItem
     Q_PROPERTY(UCListItemExpansion* expansion READ expansion CONSTANT)
 protected:
     virtual QObject *attachedViewItems(QObject *object, bool create);
+    void itemChange(ItemChange change, const ItemChangeData &data);
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
 private:
+    Q_SLOT void _q_updateExpansion(const QList<int> &indices);
     bool shouldShowContextMenu(QMouseEvent *event);
     void popoverClosed();
 public:
@@ -225,7 +227,7 @@ public:
     void setExpansionFlags(int flags);
 
 Q_SIGNALS:
-    void expandedIndicesChanged();
+    void expandedIndicesChanged(const QList<int> &indices);
     void expansionFlagsChanged();
 
 private:
@@ -242,7 +244,6 @@ class UCListItemExpansion : public QObject
 public:
     explicit UCListItemExpansion(QObject *parent = 0);
 
-    void connectExpansion(UCViewItemsAttached *viewItems);
     bool expandedWithFlag(UCViewItemsAttached::ExpansionFlag flag);
     void enableClickFiltering(bool enable);
 
@@ -257,7 +258,6 @@ Q_SIGNALS:
 private:
     UCListItem13 *m_listItem;
     qreal m_height;
-    bool m_viewItemsConnected:1;
 
     friend class UCListItem;
     friend class UCListItem13;

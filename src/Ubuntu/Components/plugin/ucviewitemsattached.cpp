@@ -650,7 +650,7 @@ void UCViewItemsAttached13::setExpandedIndices(QList<int> indices)
             }
         }
     }
-    Q_EMIT expandedIndicesChanged();
+    Q_EMIT expandedIndicesChanged(d->expansionList.keys());
 }
 
 // insert listItem into the expanded indices map
@@ -661,7 +661,7 @@ void UCViewItemsAttachedPrivate::expand(int index, UCListItem13 *listItem, bool 
         listItem->expansion()->enableClickFiltering(true);
     }
     if (emitChangeSignal) {
-        Q_EMIT static_cast<UCViewItemsAttached13*>(q_func())->expandedIndicesChanged();
+        Q_EMIT static_cast<UCViewItemsAttached13*>(q_func())->expandedIndicesChanged(expansionList.keys());
     }
 }
 
@@ -669,21 +669,26 @@ void UCViewItemsAttachedPrivate::expand(int index, UCListItem13 *listItem, bool 
 void UCViewItemsAttachedPrivate::collapse(int index, bool emitChangeSignal)
 {
     UCListItem13 *item = expansionList.take(index).data();
+    bool wasExpanded = item && item->expansion()->expanded();
     if (item) {
-        if (expansionFlags & UCViewItemsAttached::CollapseOnOutsidePress)
-        item->expansion()->enableClickFiltering(false);
+        if (expansionFlags & UCViewItemsAttached::CollapseOnOutsidePress) {
+            item->expansion()->enableClickFiltering(false);
+        }
     }
-    if (emitChangeSignal) {
-        Q_EMIT static_cast<UCViewItemsAttached13*>(q_func())->expandedIndicesChanged();
+    if (emitChangeSignal && wasExpanded) {
+        Q_EMIT static_cast<UCViewItemsAttached13*>(q_func())->expandedIndicesChanged(expansionList.keys());
     }
 }
 
 void UCViewItemsAttachedPrivate::collapseAll()
 {
+    bool emitChangedSignal = (expansionList.keys().size() > 0);
     while (expansionList.keys().size() > 0) {
         collapse(expansionList.keys().last(), false);
     }
-    Q_EMIT static_cast<UCViewItemsAttached13*>(q_func())->expandedIndicesChanged();
+    if (emitChangedSignal) {
+        Q_EMIT static_cast<UCViewItemsAttached13*>(q_func())->expandedIndicesChanged(expansionList.keys());
+    }
 }
 
 /*!

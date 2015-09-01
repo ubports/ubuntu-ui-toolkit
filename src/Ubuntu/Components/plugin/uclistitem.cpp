@@ -1009,12 +1009,6 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
             myStyle->updateFlickable(d->flickable);
         }
 
-        // ViewItems drives expansion
-        if (d->parentAttached && d->expansion) {
-            qDebug() << "do now";
-            d->expansion->connectExpansion(d->parentAttached);
-        }
-
         if (parentAttachee) {
             QObject::connect(parentAttachee, SIGNAL(widthChanged()), this, SLOT(_q_updateSize()), Qt::DirectConnection);
             // update size
@@ -1685,6 +1679,17 @@ QObject *UCListItem13::attachedViewItems(QObject *object, bool create)
     return qmlAttachedPropertiesObject<UCViewItemsAttached13>(object, create);
 }
 
+void UCListItem13::itemChange(ItemChange change, const ItemChangeData &data)
+{
+    UCListItem::itemChange(change, data);
+
+    Q_D(UCListItem);
+    // ViewItems drives expansion
+    if (d->parentAttached) {
+        connect(d->parentAttached.data(), SIGNAL(expandedIndicesChanged(QList<int>)),
+                this, SLOT(_q_updateExpansion(QList<int>)), Qt::UniqueConnection);
+    }
+}
 
 /*!
  * \qmlpropertygroup ::ListItem::expansion
@@ -1700,6 +1705,17 @@ UCListItemExpansion *UCListItem13::expansion()
         d->expansion = new UCListItemExpansion(this);
     }
     return d->expansion;
+}
+
+void UCListItem13::_q_updateExpansion(const QList<int> &indices)
+{
+    Q_UNUSED(indices);
+    Q_D(UCListItem);
+    Q_EMIT expansion()->expandedChanged();
+    // make sure the style is loaded
+    if (indices.contains(d->index())) {
+        d->loadStyleItem();
+    }
 }
 
 #include "moc_uclistitem.cpp"

@@ -20,23 +20,8 @@
 UCListItemExpansion::UCListItemExpansion(QObject *parent)
     : QObject(parent)
     , m_listItem(static_cast<UCListItem13*>(parent))
-    , m_height(0)
-    , m_viewItemsConnected(false)
+    , m_height(0.0)
 {
-    UCViewItemsAttached *viewItems = UCListItemPrivate::get(m_listItem)->parentAttached;
-    if (viewItems) {
-        connectExpansion(viewItems);
-    }
-}
-
-void UCListItemExpansion::connectExpansion(UCViewItemsAttached *viewItems)
-{
-    if (m_viewItemsConnected) {
-        return;
-    }
-    connect(viewItems, SIGNAL(expandedIndicesChanged()),
-            this, SIGNAL(expandedChanged()), Qt::UniqueConnection);
-    m_viewItemsConnected = true;
 }
 
 bool UCListItemExpansion::expandedWithFlag(UCViewItemsAttached::ExpansionFlag flag)
@@ -68,7 +53,6 @@ void UCListItemExpansion::setExpanded(bool expanded)
     if (this->expanded() == expanded) {
         return;
     }
-    UCListItemPrivate::get(m_listItem)->loadStyleItem();
     UCListItemPrivate *listItem = UCListItemPrivate::get(m_listItem);
     UCViewItemsAttachedPrivate *viewItems = UCViewItemsAttachedPrivate::get(listItem->parentAttached);
     if (viewItems) {
@@ -82,6 +66,7 @@ void UCListItemExpansion::setExpanded(bool expanded)
             viewItems->collapse(listItem->index());
         }
     }
+    UCListItemPrivate::get(m_listItem)->loadStyleItem();
     // no need to emit changed signal, as ViewItems.expandedIndicesChanged is connected to the change signal
 }
 

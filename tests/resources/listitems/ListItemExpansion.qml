@@ -44,6 +44,7 @@ MainView {
             anchors.fill: parent
             spacing: units.dp(4)
             UbuntuListView {
+                id: listView
                 onEnabledChanged: print("enabled", enabled)
                 width: parent.width
                 height: parent.height / 2
@@ -104,6 +105,16 @@ MainView {
                 Label { text: "Standalone ListItem" }
                 expansion.height: units.gu(15)
                 onPressAndHold: expansion.expanded = !expansion.expanded;
+            }
+            ListItem {
+                Label { text: "Other Standalone ListItem" }
+                expansion.height: units.gu(15)
+                onPressAndHold: expansion.expanded = !expansion.expanded;
+            }
+
+            Button {
+                text: "Set ListView.ViewItems.expandedIndices"
+                onClicked: listView.ViewItems.expandedIndices = [0, 1, 2]
             }
         }
     }
