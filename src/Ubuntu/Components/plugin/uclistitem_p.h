@@ -60,7 +60,7 @@ public:
     void _q_syncSelectMode();
     void _q_syncDragMode();
     int index();
-    bool canHighlight(QMouseEvent *event);
+    bool canHighlight();
     void setHighlighted(bool pressed);
     void listenToRebind(bool listen);
     void lockContentItem(bool lock);

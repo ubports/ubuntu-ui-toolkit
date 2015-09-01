@@ -34,6 +34,7 @@ UbuntuTestCase {
         if (item.hasOwnProperty("leadingActions")) {
             signalSpy.target = item;
             signalSpy.signalName = signalName;
+            signalSpy.clear();
         }
     }
     // wait on the previosuly set up spy

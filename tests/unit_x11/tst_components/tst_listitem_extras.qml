@@ -68,10 +68,22 @@ Item {
                 anchors.centerIn: parent
             }
         }
+
+        ListItem {
+            id: overlaidMouseArea
+            leadingActions: leading
+            trailingActions: trailing
+            property bool acceptEvent
+            MouseArea {
+                id: overlayArea
+                anchors.fill: parent
+                onPressed: mouse.accepted = overlaidMouseArea.acceptEvent
+            }
+        }
     }
 
     ListItemTestCase {
-
+        name: "ListItemExtras"
         SignalSpy {
             id: clickSpy
             signalName: "clicked"
@@ -79,6 +91,7 @@ Item {
 
         function cleanup() {
             rebound(testWithActiveItem);
+            rebound(overlaidMouseArea);
             clickSpy.target = null;
             clickSpy.clear();
         }
@@ -87,6 +100,19 @@ Item {
             clickSpy.target = activeItem;
             swipe(activeItem, centerOf(activeItem).x, centerOf(activeItem).y, units.gu(10));
             compare(clickSpy.count, 0, "activeItem was clicked");
+        }
+
+        function test_swipe_over_mousearea_not_accepting_press_data() {
+            return [
+                {tag: "Accept events", accept: true},
+                {tag: "Do not accept events", accept: false},
+            ];
+        }
+        function test_swipe_over_mousearea_not_accepting_press(data) {
+            overlaidMouseArea.acceptEvent = data.accept;
+            setupSpy(overlaidMouseArea, "contentMovementEnded");
+            swipeNoWait(overlayArea, centerOf(overlayArea).x, centerOf(overlayArea).y, units.gu(10));
+            spyWait();
         }
     }
 }
