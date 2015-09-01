@@ -21,6 +21,7 @@ UCListItemExpansion::UCListItemExpansion(QObject *parent)
     : QObject(parent)
     , m_listItem(static_cast<UCListItem13*>(parent))
     , m_height(0.0)
+    , m_filtering(false)
 {
 }
 
@@ -33,13 +34,40 @@ bool UCListItemExpansion::expandedWithFlag(UCViewItemsAttached::ExpansionFlag fl
 
 void UCListItemExpansion::enableClickFiltering(bool enable)
 {
-    UCListItemPrivate *listItem = UCListItemPrivate::get(m_listItem);
-    if (enable) {
-        listItem->parentAttached->parent()->installEventFilter(this);
+    if (m_filtering == enable) {
+        return;
+    }
+    m_filtering = enable;
+    qDebug() << "Filter" << m_filtering << m_listItem;
+    qDebug() << "Window" << m_listItem->window();
+    if (m_filtering) {
+        m_listItem->window()->installEventFilter(this);
     } else {
-        listItem->parentAttached->parent()->removeEventFilter(this);
+        m_listItem->window()->removeEventFilter(this);
     }
 }
+
+// event filter for external mouse presses to collapse when pressed outside
+bool UCListItemExpansion::eventFilter(QObject *target, QEvent *event)
+{
+    if (event->type() == QEvent::MouseButtonPress) {
+        QMouseEvent *mouse = static_cast<QMouseEvent*>(event);
+        QQuickWindow *window = qobject_cast<QQuickWindow*>(target);
+        if (window) {
+            QPointF myPos(window->contentItem()->mapToItem(m_listItem, mouse->localPos()));
+            if (!m_listItem->contains(myPos)) {
+                UCListItemPrivate *listItem = UCListItemPrivate::get(m_listItem);
+                UCViewItemsAttachedPrivate *viewItems = UCViewItemsAttachedPrivate::get(listItem->parentAttached);
+                if (viewItems) {
+                    // collapse all as there can be only one expanded when the flag is set
+                    viewItems->collapseAll();
+                }
+            }
+        }
+    }
+    return false;
+}
+
 
 bool UCListItemExpansion::expanded()
 {

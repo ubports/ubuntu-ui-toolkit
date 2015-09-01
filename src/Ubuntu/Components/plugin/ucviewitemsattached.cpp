@@ -704,16 +704,12 @@ void UCViewItemsAttachedPrivate::collapseAll()
  *  \li When set, only one ListItem can be expanded at a time. \b {Set by default}.
  * \row
  *  \li ViewItems.LockExpanded
- *  \li When set, the ListItem's leading/trailing actions cannot be revealed. The
- *      ListItem reacts on \l ListItem::clicked and \l ListItem::pressAndHold
- *      signals. \b {Set by default}.
+ *  \li When set, the ListItem's leading/trailing actions cannot be revealed.
+ *      \b {Set by default}.
  * \row
  *  \li ViewItems.CollapseOnOutsidePress
  *  \li When set, the active expaned ListItem collapses automatically when clicked
- *      outside of its area. The flag makes sens to be set when \c ViewItems.Exclusive
- *      flag is also set. On multiple expansion, if the expansion is driven either by
- *      \l ListItem::clicked or \l ListItem::pressAndHold signals, setting this flag
- *      will block the expansion of more than one element.
+ *      outside of its area. The flag also turns \c ViewItems.Exclusive flag on.
  * \endtable
  */
 int UCViewItemsAttached13::expansionFlags() const

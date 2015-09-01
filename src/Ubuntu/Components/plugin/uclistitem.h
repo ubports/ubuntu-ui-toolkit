@@ -171,7 +171,7 @@ public:
     enum ExpansionFlag {
         Exclusive = 0x01,
         LockExpanded = 0x02,
-        CollapseOnOutsidePress = 0x04
+        CollapseOnOutsidePress = Exclusive | 0x04
     };
     Q_DECLARE_FLAGS(ExpansionFlags, ExpansionFlag)
     explicit UCViewItemsAttached(QObject *owner = 0);
@@ -255,9 +255,13 @@ Q_SIGNALS:
     void expandedChanged();
     void heightChanged();
 
+protected:
+    bool eventFilter(QObject *, QEvent *);
+
 private:
     UCListItem13 *m_listItem;
     qreal m_height;
+    bool m_filtering:1;
 
     friend class UCListItem;
     friend class UCListItem13;

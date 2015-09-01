@@ -50,7 +50,7 @@ MainView {
                 height: parent.height / 2
                 clip: true
                 ViewItems.onExpandedIndicesChanged: print(ViewItems.expandedIndices)
-                ViewItems.expandedIndices: [3]
+                ViewItems.expansionFlags: ViewItems.CollapseOnOutsidePress | ViewItems.Exclusive
 
                 model: ListModel {
                     Component.onCompleted: {
