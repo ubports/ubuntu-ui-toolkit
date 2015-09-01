@@ -70,7 +70,7 @@ Q_SIGNALS:
     void parameterTypeChanged();
     void iconSourceChanged();
     void visibleChanged();
-    void shortcutChanged(const QVariant& shortcut);
+    void shortcutChanged();
     void triggered(const QVariant &value);
 
 public Q_SLOTS:
