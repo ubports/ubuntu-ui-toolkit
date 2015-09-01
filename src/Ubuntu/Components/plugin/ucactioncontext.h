@@ -44,7 +44,7 @@ public:
     void setActive(bool active);
 
 Q_SIGNALS:
-    void activeChanged(bool);
+    void activeChanged();
 
 public Q_SLOTS:
     void addAction(UCAction *action);

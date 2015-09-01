@@ -410,9 +410,10 @@ public:
             }
         } else {
             for (int index = meta->methodOffset(); index < meta->methodCount(); ++index) {
-                // Omit "Changed" methods of properties
-                QByteArray methName(meta->method(index).name());
-                if (!methName.isEmpty() && methName.endsWith("Changed"))
+                // Omit "Changed" methods of properties with no arguments
+                QMetaMethod meth(meta->method(index));
+                QByteArray methName(meth.name());
+                if (!methName.isEmpty() && methName.endsWith("Changed") && !meth.parameterCount())
                     continue;
                 dump(object, &methods, meta->method(index), implicitSignals, knownAttributes);
             }

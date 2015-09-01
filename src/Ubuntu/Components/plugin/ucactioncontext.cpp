@@ -114,7 +114,7 @@ void UCActionContext::setActive(bool active)
         return;
     }
     m_active = active;
-    Q_EMIT activeChanged(active);
+    Q_EMIT activeChanged();
 }
 
 /*!

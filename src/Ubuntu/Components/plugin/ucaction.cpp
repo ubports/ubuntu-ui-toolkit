@@ -287,7 +287,7 @@ void UCAction::setShortcut(const QVariant& shortcut)
         qmlInfo(this) << "Invalid shortcut: " << shortcut.toString();
 
     m_shortcut = shortcut;
-    Q_EMIT shortcutChanged(shortcut);
+    Q_EMIT shortcutChanged();
 }
 
 bool UCAction::event(QEvent *event)
