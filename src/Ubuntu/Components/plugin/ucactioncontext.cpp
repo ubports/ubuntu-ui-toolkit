@@ -104,6 +104,11 @@ int UCActionContext::count(QQmlListProperty<UCAction> *list)
  * sufficient to manage the active local context of the manager and no additional
  * calls are necessary to manually inactivate the other contexts.
  */
+bool UCActionContext::active()
+{
+    return m_active;
+}
+
 void UCActionContext::setActive(bool active)
 {
     if (m_active == active) {

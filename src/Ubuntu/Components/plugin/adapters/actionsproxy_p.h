@@ -48,7 +48,7 @@ protected:
 
 protected Q_SLOTS:
     void watchContextActivation(UCActionContext *context, bool watch);
-    void handleContextActivation(bool active);
+    void handleContextActivation();
     virtual void clearContextActions(UCActionContext *context);
     virtual void publishContextActions(UCActionContext *context);
 
