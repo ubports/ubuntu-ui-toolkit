@@ -69,8 +69,24 @@ MainView {
         id: defaults
     }
 
+    Component {
+        id: pageComponent
+        Page {
+            title: "DynamicPage"
+        }
+    }
+
     UbuntuTestCase {
+        id: testCase
         when: windowShown
+
+        signal pageLoaded()
+
+        SignalSpy {
+            id: loadedSpy
+            target: testCase
+            signalName: "pageLoaded"
+        }
 
         function resize_single_column() {
             layout.width = units.gu(40);
@@ -82,6 +98,11 @@ MainView {
         }
 
         function cleanup() {
+            page1.title = "Page1";
+            page2.title = "Page2";
+            page3.title = "Page3";
+            page4.title = "Page4";
+            loadedSpy.clear();
             resize_multiple_columns();
             layout.removePages(page1);
         }
@@ -184,6 +205,46 @@ MainView {
             layout.addPageToCurrentColumn(page2, page3);
             layout.removePages(page3);
             compare(page2.visible, true, "Adding page to current column pruned that column.");
+        }
+
+        function test_add_page_to_current_data() {
+            return [
+                {tag: "Synchronously to current column", func: "addPageToCurrentColumn", page: page2, params: {}, sync: true},
+                {tag: "Synchronously to current column, with params", func: "addPageToCurrentColumn", page: page2, params: {title: "Altered title"}, sync: true},
+                {tag: "Synchronously to next column", func: "addPageToNextColumn", page: page2, params: {}, sync: true},
+                {tag: "Synchronously to next column, with params", func: "addPageToNextColumn", page: page2, params: {title: "Altered title"}, sync: true},
+                {tag: "Asynchronously to current column", func: "addPageToCurrentColumn", page: pageComponent, params: {}, sync: false},
+                {tag: "Asynchronously to current column, with params", func: "addPageToCurrentColumn", page: pageComponent, params: {title: "Altered title"}, sync: false},
+                {tag: "Asynchronously to next column", func: "addPageToNextColumn", page: pageComponent, params: {}, sync: false},
+                {tag: "Asynchronously to next column, with params", func: "addPageToNextColumn", page: pageComponent, params: {title: "Altered title"}, sync: false},
+            ]
+        }
+        function test_add_page_to_current(data) {
+            var incubator = layout[data.func](layout.primaryPage, data.page, data.params);
+            compare((incubator == null), data.sync);
+            if (incubator) {
+                compare(incubator.status, Component.Loading, "The incubator status is not Component.Loading, but " + incubator.status);
+                // for cleanup, we must wait till the page is added, so we can do proper cleanup
+                incubator.onStatusChanged = function (status) {
+                    // test params
+                    for (var param in data.params) {
+                        compare(incubator.object[param], data.params[param], "parameter '" + param + "' values do not match");
+                    }
+                    testCase.pageLoaded();
+                    layout.removePages(layout.primaryPage);
+                }
+                // make sure we wait enough to let additional tests to complete
+                loadedSpy.wait(1500);
+            }
+        }
+
+        function test_asynchronous_page_loading_incubator_forcecompletion() {
+            var incubator = layout.addPageToCurrentColumn(layout.primaryPage, pageComponent);
+            verify(incubator, "Page added synchronously!");
+            compare(incubator.status, Component.Loading, "Incubator in different state");
+            incubator.forceCompletion();
+            compare(incubator.status, Component.Ready, "Incubator not completed");
+            verify(incubator.object, "Page object not set");
         }
     }
 }

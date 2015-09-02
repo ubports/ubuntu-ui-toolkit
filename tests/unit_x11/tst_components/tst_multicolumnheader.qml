@@ -240,7 +240,12 @@ MainView {
         }
 
         function test_header_title_for_external_page() {
-            layout.addPageToNextColumn(rootPage, Qt.resolvedUrl("MyExternalPage.qml"));
+            var incubator = layout.addPageToNextColumn(rootPage, Qt.resolvedUrl("MyExternalPage.qml"));
+            var pageLoaded = false;
+            incubator.onStatusChanged = function (status) {
+                pageLoaded = (incubator.object != null);
+            }
+            tryCompareFunction(function() {return pageLoaded}, true, 1000);
             var n = root.columns === 2 ? 1 : 0
             compare(get_header(n).config.title, "Page from QML file",
                     "Adding external Page does not update the header title.");

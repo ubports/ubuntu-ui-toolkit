@@ -83,6 +83,12 @@ import "tree.js" as Tree
     }
   \endqml
 
+  \note Observe the use of the \c Page::pageStack property in the example above.
+  The same property is used to share the AdaptivePageLayout instance the Page is
+  used in, therefore the same page can be used in a PageStack or in an AdaptivePageLayout.
+  However implementations must make sure the desired PageStack or AdaptivePageLayout
+  function exists in the instance before using it.
+
   AdaptivePageLayout supports adaptive column handling. When the number of columns changes at
   runtime the pages are automatically rearranged.
 
@@ -196,12 +202,72 @@ PageTreeNode {
     property list<PageColumnsLayout> layouts
 
     /*!
-      \qmlmethod Item addPageToCurrentColumn(Item sourcePage, var page[, var properties])
+      \qmlmethod object addPageToCurrentColumn(Item sourcePage, var page[, var properties])
       Adds a \c page to the column the \c sourcePage resides in and removes all pages
       from the higher columns. \c page can be a Component or a file.
-      \c properties is a JSON object containing properties
-      to be set when page is created. \c sourcePage must be active. Returns the
-      instance of the page created.
+      \c properties is a JSON object containing properties to be set when page
+      is created. \c sourcePage must be active.
+
+      The function creates the new page asynchronously if the new \c page to be
+      added is a Component or a QML document. In this case the function returns
+      an incubator which can be used to track the page creation.For more about
+      incubation in QML and creating components asynchronously, see
+      \l {http://doc.qt.io/qt-5/qml-qtqml-component.html#incubateObject-method}
+      {Component.incubateObject()}.
+      The following example removes an element from the list model whenever the
+      page opened in the second column is closed. Note, the example must be run
+      on desktop or on a device with at least 90 grid units screen width.
+      \qml
+      import QtQuick 2.4
+      import Ubuntu.Components 1.3
+
+      MainView {
+          width: units.gu(90)
+          height: units.gu(70)
+
+          Component {
+              id: page2Component
+              Page {
+                  title: "Second Page"
+                  Button {
+                      text: "Close me"
+                      onClicked: pageStack.removePages(pageStack.primaryPage);
+                  }
+              }
+          }
+
+          AdaptivePageLayout {
+              id: pageLayout
+              anchors.fill: parent
+              primaryPage: Page {
+                  title: "Primary Page"
+                  ListView {
+                      id: listView
+                      anchors.fill: parent
+                      model: 10
+                      delegate: ListItem {
+                          Label { text: modelData }
+                          onClicked: {
+                              var incubator = pageLayout.addPageToNextColumn(pageLayout.primaryPage, page2Component);
+                              if (incubator && incubator.status == Component.Loading) {
+                                  incubator.onStatusChanged = function(status) {
+                                      if (status == Component.Ready) {
+                                          // connect page's destruction to decrement model
+                                          incubator.object.Component.destruction.connect(function() {
+                                              listView.model--;
+                                          });
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+      }
+      \endqml
+
+      \sa {http://doc.qt.io/qt-5/qml-qtqml-component.html#incubateObject-method}{Component.incubateObject}
       */
     function addPageToCurrentColumn(sourcePage, page, properties) {
         var nextColumn = d.columnForPage(sourcePage) + 1;
@@ -221,6 +287,7 @@ PageTreeNode {
       holds \c sourcePage) and all following columns, and then add \c page to the next column.
       If \c sourcePage is located in the
       rightmost column, the new page will be pushed to the same column as \c sourcePage.
+      The return value is the same as in \l addPageToCurrentColumn case.
       */
     function addPageToNextColumn(sourcePage, page, properties) {
         var nextColumn = d.columnForPage(sourcePage) + 1;
@@ -304,7 +371,7 @@ PageTreeNode {
 
         function createWrapper(page, properties) {
             var wrapperComponent = Qt.createComponent("PageWrapper.qml");
-            var wrapperObject = wrapperComponent.createObject(hiddenPages);
+            var wrapperObject = wrapperComponent.createObject(hiddenPages, {synchronous: false});
             wrapperObject.pageStack = layout;
             wrapperObject.properties = properties;
             // set reference last because it will trigger creation of the object
@@ -320,7 +387,14 @@ PageTreeNode {
             // replace page holder's child
             var holder = body.children[targetColumn];
             holder.detachCurrentPage();
-            holder.attachPage(pageWrapper)
+            if ((pageWrapper.incubator && pageWrapper.incubator.status == Component.Ready) || pageWrapper.object) {
+                holder.attachPage(pageWrapper);
+            } else {
+                // asynchronous, connect to page load completion and attach when page is available
+                pageWrapper.pageLoaded.connect(function () {
+                    holder.attachPage(pageWrapper);
+                });
+            }
         }
 
         function getWrapper(page) {
@@ -378,7 +452,7 @@ PageTreeNode {
             newWrapper.parentPage = sourcePage;
             newWrapper.column = column;
             d.addWrappedPage(newWrapper);
-            return newWrapper.object;
+            return newWrapper.incubator;
         }
 
         // update the page for the specified column
