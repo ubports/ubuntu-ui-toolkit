@@ -89,10 +89,9 @@ MainView {
                             title.text: label
                             subtitle.text: "from index #" + index
                         }
-                        Captions {
-                            captionStyle: Ubuntu.SummaryCaptionStyle
-                            title.text: "LTR"
-                            subtitle.text: "RTL"
+                        Button {
+                            text: "Enable drag mode"
+                            onClicked: listView.ViewItems.dragMode = true
                         }
                     }
 
