@@ -163,7 +163,9 @@ void UbuntuComponentsPlugin::registerTypesToVersion(const char *uri, int major, 
 {
     qmlRegisterType<UCAction>(uri, major, minor, "Action");
     qmlRegisterType<UCActionContext>(uri, major, minor, "ActionContext");
+    qmlRegisterUncreatableType<UCApplication>(uri, major, minor, "UCApplication", "Not instantiable");
     qmlRegisterType<UCActionManager>(uri, major, minor, "ActionManager");
+    qmlRegisterUncreatableType<UCFontUtils>(uri, major, minor, "UCFontUtils", "Not instantiable");
     qmlRegisterType<UCStyledItemBase>(uri, major, minor, "StyledItem");
     qmlRegisterUncreatableType<UbuntuI18n>(uri, major, minor, "i18n", "Singleton object");
     qmlRegisterExtendedType<QQuickImageBase, UCQQuickImageExtension>(uri, major, minor, "QQuickImageBase");
