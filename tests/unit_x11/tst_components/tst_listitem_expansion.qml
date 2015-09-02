@@ -88,7 +88,7 @@ Item {
         }
     }
 
-    ListItemTestCase {
+    ListItemTestCase13 {
         name: "ListItemExpansion"
         when: windowShown
 

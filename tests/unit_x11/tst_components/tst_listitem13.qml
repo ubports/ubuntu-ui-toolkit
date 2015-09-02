@@ -17,8 +17,8 @@
 import QtQuick 2.4
 import QtTest 1.0
 import Ubuntu.Test 1.0
-import Ubuntu.Components 1.2
-import Ubuntu.Components.Styles 1.2
+import Ubuntu.Components 1.3
+import Ubuntu.Components.Styles 1.3
 import QtQml.Models 2.1
 
 Item {
@@ -172,9 +172,9 @@ Item {
         }
     }
 
-    ListItemTestCase {
+    ListItemTestCase13 {
         id: testCase
-        name: "ListItemAPI"
+        name: "ListItem13API"
         when: windowShown
 
         SignalSpy {
