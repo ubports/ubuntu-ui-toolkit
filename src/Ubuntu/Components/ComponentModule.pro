@@ -93,7 +93,6 @@ QML_FILES += 1.3/ActionBar.qml \
              1.3/CrossFadeImage.qml \
              1.3/dateUtils.js \
              1.3/DraggingArea.qml \
-             1.3/Header.qml \
              1.3/InputHandler.qml \
              1.3/Label.qml \
              1.3/MainViewBase.qml \
