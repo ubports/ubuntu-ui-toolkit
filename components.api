@@ -389,22 +389,6 @@ Ubuntu.Components.Header 1.0 0.1: AppHeader
     property bool useDeprecatedToolbar
 Ubuntu.Components.ListItems.Header 1.3: Item
     property string text
-Ubuntu.Components.Header 1.3: AppHeader
-    property string _for_autopilot
-    property var actions
-    property bool animate
-    property QtObject config
-    property Item contents
-    property color dividerColor
-    property Flickable flickable
-    function var show()
-    function var hide()
-    readonly property bool moving
-    property var pageStack
-    property color panelColor
-    property var tabsModel
-    property string title
-    property bool useDeprecatedToolbar
 Ubuntu.Components.Icon 1.0 0.1: Item
     property color color
     property color keyColor
