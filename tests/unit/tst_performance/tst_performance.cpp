@@ -109,6 +109,8 @@ private Q_SLOTS:
         //QTest::newRow("grid with UbuntuShapePair") << "PairOfUbuntuShapeGrid.qml" << QUrl();
         //QTest::newRow("grid with Button") << "ButtonGrid.qml" << QUrl();
         //QTest::newRow("grid with Slider") << "SliderGrid.qml" << QUrl();
+        QTest::newRow("AbstractButton 1.2") << "AbstractButtonGrid.qml" << QUrl();
+        QTest::newRow("AbstractButton 1.3") << "AbstractButton13Grid.qml" << QUrl();
         QTest::newRow("list with new ListItem (inline actions!) with a Row of 4 Items") << "ListItemWithInlineActionsAndFourContainersList.qml" << QUrl();
         QTest::newRow("list with new ListItem (inline actions!) with a Row of 4 MouseAreas") << "ListItemWithInlineActionsAndFourMouseAreas.qml" << QUrl();
         QTest::newRow("list with new ListItem (no actions) with HardcodedFourContainersLayout (QML), 4 empty containers") << "ListOfHardcodedFourContainersLayout.qml" << QUrl();

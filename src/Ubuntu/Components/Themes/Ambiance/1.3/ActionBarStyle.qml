@@ -87,8 +87,6 @@ Item {
                     id: actionsOverflowPopover
                     objectName: "actions_overflow_panel"
 
-                    backgroundColor: "white"
-
                     // Ensure the popover closes when actions change and
                     // the list item below may be destroyed before its
                     // onClicked is executed. See bug

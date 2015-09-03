@@ -25,7 +25,6 @@ QML_FILES += 1.1/Button.qml \
 
 #1.2
 QML_FILES += 1.2/AbstractButton.qml \
-             1.2/ActionItem.qml \
              1.2/ActionList.qml \
              1.2/ActivityIndicator.qml \
              1.2/AnimatedItem.qml \
@@ -81,9 +80,7 @@ QML_FILES += 1.2/AbstractButton.qml \
              1.2/UbuntuNumberAnimation.qml
 
 #1.3
-QML_FILES += 1.3/AbstractButton.qml \
-             1.3/ActionBar.qml \
-             1.3/ActionItem.qml \
+QML_FILES += 1.3/ActionBar.qml \
              1.3/ActionList.qml \
              1.3/ActivityIndicator.qml \
 	     1.3/AdaptivePageLayout.qml \
@@ -92,7 +89,6 @@ QML_FILES += 1.3/AbstractButton.qml \
              1.3/Button.qml \
              1.3/Captions.qml \
              1.3/CheckBox.qml \
-	     1.3/ColumnMetrics.qml \
              1.3/ComboButton.qml \
              1.3/CrossFadeImage.qml \
              1.3/dateUtils.js \
@@ -114,6 +110,7 @@ QML_FILES += 1.3/AbstractButton.qml \
              1.3/PageTreeNode.qml \
              1.3/pageUtils.js \
              1.3/PageWrapper.qml \
+             1.3/PageWrapperUtils.js \
              1.3/Panel.qml \
              1.3/ProgressBar.qml \
              1.3/PullToRefresh.qml \
@@ -140,9 +137,12 @@ QML_FILES += 1.3/AbstractButton.qml \
              1.3/BottomEdgeHint.qml \
              1.3/HardcodedFourContainersLayout.qml \
              1.3/SlotsLayout.qml \
-             1.3/SlotQML.qml
+             1.3/SlotQML.qml \
+             1.3/PageColumn.qml \
+             1.3/PageColumnsLayout.qml
 
-OTHER_FILES+= 1.3/CrossFadeImage.qdoc \
+OTHER_FILES+= qmldir \
+             1.3/CrossFadeImage.qdoc \
              1.3/UbuntuListView11.qdoc \
              1.3/Page.qdoc \
              1.3/PageHeadConfiguration.qdoc \

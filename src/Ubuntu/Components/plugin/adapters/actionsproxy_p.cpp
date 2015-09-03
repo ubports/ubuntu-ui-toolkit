@@ -90,18 +90,18 @@ void ActionProxy::watchContextActivation(UCActionContext *context, bool watch)
     }
     if (watch) {
         // connect to action proxy
-        QObject::connect(context, SIGNAL(activeChanged(bool)),
-                         this, SLOT(handleContextActivation(bool)),
+        QObject::connect(context, SIGNAL(activeChanged()),
+                         this, SLOT(handleContextActivation()),
                          Qt::DirectConnection);
     } else {
         // disconnect
-        QObject::disconnect(context, SIGNAL(activeChanged(bool)),
-                         this, SLOT(handleContextActivation(bool)));
+        QObject::disconnect(context, SIGNAL(activeChanged()),
+                         this, SLOT(handleContextActivation()));
     }
 }
 
 // handles the local context activation
-void ActionProxy::handleContextActivation(bool active)
+void ActionProxy::handleContextActivation()
 {
     // sender is the context changing activation
     UCActionContext *context = qobject_cast<UCActionContext*>(sender());
@@ -110,7 +110,7 @@ void ActionProxy::handleContextActivation(bool active)
     }
     // deactivate the previous context if any
     if (!m_activeContext.isNull()) {
-        if (!active) {
+        if (!context->active()) {
             // the slot has been called due to the previous active deactivation,
             // so perform system cleanup
             clearContextActions(m_activeContext);
@@ -124,7 +124,7 @@ void ActionProxy::handleContextActivation(bool active)
             m_activeContext->setActive(false);
         }
     }
-    if (active) {
+    if (context->active()) {
         // publish the context's actions to the system
         publishContextActions(context);
         context->markActionsPublished(true);

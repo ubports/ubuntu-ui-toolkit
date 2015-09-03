@@ -372,23 +372,13 @@ int UCListItemPrivate::index()
                 (parentItem ? QQuickItemPrivate::get(parentItem)->childItems.indexOf(q) : -1);
 }
 
-// returns true if the highlight is possible
-bool UCListItemPrivate::canHighlight(QMouseEvent *event)
+// returns true if the highlight is possible; the highlight is possible if the
+// list item has at least one action, leading/trailing actions set, onClicked
+// or onPressAndHold signal handlers set
+bool UCListItemPrivate::canHighlight()
 {
-    // if automatic, the highlight should not happen if we clicked on an active component;
-    // localPos is a position relative to ListItem which will give us a child from
-    // from the original coordinates; therefore we must map the position to the contentItem
    Q_Q(UCListItem);
-   QPointF myPos = q->mapToItem(contentItem, event->localPos());
-   QQuickItem *child = contentItem->childAt(myPos.x(), myPos.y());
-   bool activeComponent = child && (child->acceptedMouseButtons() & event->button()) &&
-           child->isEnabled() && !qobject_cast<QQuickText*>(child);
-   // do highlight if not pressed above the active component, and the component has either
-   // action, leading or trailing actions list or at least an active child component declared
-   QQuickMouseArea *ma = q->findChild<QQuickMouseArea*>();
-   bool activeMouseArea = ma && ma->isEnabled();
-   return !activeComponent && (isClickedConnected() || isPressAndHoldConnected() ||
-                               mainAction || leadingActions || trailingActions || activeMouseArea);
+   return (isClickedConnected() || isPressAndHoldConnected() || mainAction || leadingActions || trailingActions);
 }
 
 // set highlighted flag and update contentItem
@@ -1081,7 +1071,7 @@ void UCListItem::mousePressEvent(QMouseEvent *event)
         // while moving, we cannot select any items
         return;
     }
-    if (d->canHighlight(event) && !d->highlighted && event->button() == Qt::LeftButton) {
+    if (d->canHighlight() && !d->highlighted && event->button() == Qt::LeftButton) {
         d->grabLeftButtonEvents(event);
     }
     // accept the event so we get the rest of the events as well

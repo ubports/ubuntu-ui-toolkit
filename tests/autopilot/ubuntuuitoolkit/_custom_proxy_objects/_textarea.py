@@ -27,30 +27,26 @@ class TextArea(_textfield.TextField):
             self._clear_with_keys()
             self.text.wait_for('')
 
-    def _go_to_end(self, select_text=False):
+    def _go_to_end(self):
         # We override this because the text areas can have more than one line.
-        key = 'Ctrl+End'
-        if select_text:
-            key = 'Shift+' + key
         if self._is_keyboard_osk():
-            # XXX Here we are cheating because the on-screen keyboard doesn't
-            # have an END key.
-            from autopilot.input import Keyboard
-            keyboard = Keyboard.create()
+            from ubuntu_keyboard.emulators.keyboard import Keyboard
+            osk = Keyboard()
+            while self.cursorPosition != len(self.text):
+                # Move to the end of the line below
+                osk.send_down_key()
+                osk.send_end_key()
         else:
-            keyboard = self.keyboard
-        keyboard.press_and_release(key)
+            self.keyboard.press_and_release('Ctrl+End')
 
-    def _go_to_start(self, select_text=False):
+    def _go_to_start(self):
         # We override this because the text areas can have more than one line.
-        key = 'Ctrl+Home'
-        if select_text:
-            key = 'Shift+' + key
         if self._is_keyboard_osk():
-            # XXX Here we are cheating because the on-screen keyboard doesn't
-            # have a HOME key.
-            from autopilot.input import Keyboard
-            keyboard = Keyboard.create()
+            from ubuntu_keyboard.emulators.keyboard import Keyboard
+            osk = Keyboard()
+            while self.cursorPosition != 0:
+                # Move to the start of the line above
+                osk.send_up_key()
+                osk.send_home_key()
         else:
-            keyboard = self.keyboard
-        keyboard.press_and_release(key)
+            self.keyboard.press_and_release('Ctrl+Home')
