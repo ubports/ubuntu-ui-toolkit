@@ -196,3 +196,12 @@ QObject* QuickUtils::createQmlObject(const QUrl &url, QQmlEngine *engine)
     delete component;
     return result;
 }
+
+bool QuickUtils::showDeprecationWarnings() {
+    static int showWarnings = 0;
+    if (showWarnings == 0) {
+        QByteArray warningsFlag = qgetenv("SUPPRESS_DEPRECATED_NOTE");
+        showWarnings = (warningsFlag.isEmpty() || warningsFlag == "yes") ? 1 : 2;
+    }
+    return showWarnings == 2;
+}

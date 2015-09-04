@@ -1,16 +1,16 @@
-# Brazilian Portuguese translation for ubuntu-ui-toolkit
-# Copyright (c) 2014 Rosetta Contributors and Canonical Ltd 2014
+# Esperanto translation for ubuntu-ui-toolkit
+# Copyright (c) 2015 Rosetta Contributors and Canonical Ltd 2015
 # This file is distributed under the same license as the ubuntu-ui-toolkit package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2014.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2015.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: ubuntu-ui-toolkit\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2014-11-05 14:29+0100\n"
-"PO-Revision-Date: 2014-01-10 16:05+0000\n"
+"PO-Revision-Date: 2015-08-22 09:07+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: Brazilian Portuguese <pt_BR@li.org>\n"
+"Language-Team: Esperanto <eo@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #: Ubuntu/Components/ListItems/Empty.qml:413
 msgid "Delete"
-msgstr "Deletar"
+msgstr ""
 
 #: Ubuntu/Components/plugin/statesaverbackend_p.cpp:176
 #, qt-format
@@ -27,50 +27,48 @@ msgid ""
 "property \"%1\" of object %2 has type %3 and cannot be set to value \"%4\" "
 "of type %5"
 msgstr ""
-"propriedade \"%1\" do objeto %2 tem o tipo %3 e não pode ser ajustado para o "
-"valor \"%4\" do tipo %5"
 
 #: Ubuntu/Components/plugin/statesaverbackend_p.cpp:185
 #, qt-format
 msgid "property \"%1\" does not exist or is not writable for object %2"
-msgstr "propriedade \"%1\" não existe ou não é gravável para o objeto %2"
+msgstr ""
 
 #: Ubuntu/Components/plugin/ucalarm.cpp:42
 #: Ubuntu/Components/plugin/ucalarm.cpp:136
 msgid "Alarm"
-msgstr "Alarme"
+msgstr ""
 
 #: Ubuntu/Components/plugin/ucalarm.cpp:684
 #: Ubuntu/Components/plugin/ucalarm.cpp:716
 msgid "Alarm has a pending operation."
-msgstr "Alarme tem uma operação pendente."
+msgstr ""
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:188
 msgid "Usage: "
-msgstr "Uso: "
+msgstr "Uzado: "
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:209
 msgid "Options:"
-msgstr "Opções:"
+msgstr "Opcioj:"
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:498
 #, qt-format
 msgid "%1 is expecting an additional argument: %2"
-msgstr "%1 está esperando um argumento adicional: %2"
+msgstr ""
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:503
 #, qt-format
 msgid "%1 is expecting a value for argument: %2"
-msgstr "%1 está esperando um valor para o argumento: %2"
+msgstr ""
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:520
 #, qt-format
 msgid "%1 is expecting additional arguments: %2"
-msgstr "%1  está esperando argumentos adicionais: %2"
+msgstr ""
 
 #: Ubuntu/Components/plugin/ucmousefilters.cpp:1064
 msgid "Ignoring AfterItem priority for InverseMouse filters."
-msgstr "Ignorando a prioridade AfterItem para filtros InverseMouse."
+msgstr ""
 
 #: Ubuntu/Components/plugin/ucstatesaver.cpp:46
 msgid "Warning: attachee must have an ID. State will not be saved."
@@ -91,52 +89,52 @@ msgstr ""
 
 #: Ubuntu/Components/plugin/uctheme.cpp:233
 msgid "Theme not found: "
-msgstr "Tema não encontrado: "
+msgstr ""
 
 #: Ubuntu/Components/Popups/ComposerSheet.qml:80
 msgid "Cancel"
-msgstr "Cancelar"
+msgstr ""
 
 #: Ubuntu/Components/Popups/ComposerSheet.qml:90
 msgid "Confirm"
-msgstr "Confirmar"
+msgstr ""
 
 #: Ubuntu/Components/Popups/DefaultSheet.qml:89
 msgid "Close"
-msgstr "Fechar"
+msgstr ""
 
 #: Ubuntu/Components/Popups/DefaultSheet.qml:99
 msgid "Done"
-msgstr "Feito"
+msgstr ""
 
 #: Ubuntu/Components/TextInputPopover.qml:27
 msgid "Select All"
-msgstr "Selecionar tudo"
+msgstr ""
 
 #: Ubuntu/Components/TextInputPopover.qml:33
 msgid "Cut"
-msgstr "Recortar"
+msgstr ""
 
 #: Ubuntu/Components/TextInputPopover.qml:42
 msgid "Copy"
-msgstr "Copiar"
+msgstr ""
 
 #: Ubuntu/Components/TextInputPopover.qml:49
 msgid "Paste"
-msgstr "Colar"
+msgstr ""
 
 #: Ubuntu/Components/Themes/Ambiance/ProgressBarStyle.qml:57
 msgid "In Progress"
-msgstr "Em andamento"
+msgstr ""
 
 #: Ubuntu/Components/Themes/Ambiance/PullToRefreshStyle.qml:28
 msgid "Release to refresh..."
-msgstr "Solte para atualizar..."
+msgstr ""
 
 #: Ubuntu/Components/Themes/Ambiance/PullToRefreshStyle.qml:28
 msgid "Pull to refresh..."
-msgstr "Puxe para atualizar..."
+msgstr ""
 
 #: Ubuntu/Components/ToolbarItems.qml:142
 msgid "Back"
-msgstr "Voltar"
+msgstr ""

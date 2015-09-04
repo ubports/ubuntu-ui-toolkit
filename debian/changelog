@@ -1,3 +1,74 @@
+ubuntu-ui-toolkit (1.3.1603+15.10.20150824.1-0ubuntu1) wily; urgency=medium
+
+  [ CI Train Bot ]
+  * Resync trunk. added: po/eo.po
+
+  [ Christian Dywan ]
+  * Make deprecation warnings from C++ opt-in (LP: #1467851)
+
+ -- CI Train Bot <ci-train-bot@canonical.com>  Mon, 24 Aug 2015 20:49:45 +0000
+
+ubuntu-ui-toolkit (1.3.1603+15.10.20150819.2-0ubuntu1) wily; urgency=medium
+
+  [ CI Train Bot ]
+  * Resync trunk.
+
+  [ Tim Peeters ]
+  * Do not use the GL_OES_standard_derivatives extension in the emulator
+    (and other possible unsupported platforms). (LP: #1458694)
+
+ -- CI Train Bot <ci-train-bot@canonical.com>  Wed, 19 Aug 2015 19:49:50 +0000
+
+ubuntu-ui-toolkit (1.3.1603+15.10.20150812-0ubuntu1) wily; urgency=medium
+
+  [ Tim Peeters ]
+  * Use grid units in Icons in the showcase gallery. Fixes LP: #1481489
+  * Disable header buttons when the header is animating. Fixes LP: #1478147
+  * Add ActionBar examples to the gallery.
+  * Make the default MainView background plain white. Fixes LP: #1481834 
+
+  [ Zsombor Egri ]
+  * Fixing swiping over active components. Fixes LP: #1479688.
+  * Fixing broken BottomEdgeHint gallery page.
+
+  [ Zoltán Balogh ]
+  * Fix packaging question marks / issues. Fixes LP: #1481584
+
+  [ Loïc Molinari ]
+  * UbuntuShape - Added support drop shadow aspect support to UbuntuShapeOverlay
+    Fixes LP: #1480197.
+  * UbuntuShape - Removed content orientation work around.
+    The shape was using a workaround to make it render correctly when the 
+    content orientation was not the native one. This was perfect for the 
+    OrientationHelper shipped with the toolkit but now that the Shell 
+    implements the rotation, this is not needed anymore and causes some 
+    rendering issues. Note that the shape will still needs to support 
+    correct rendering when rotated using the rotation property of the Item, 
+    but that is a different issue. Fixes LP: #1466656.
+  * UbuntuShape - Added a DropShadow aspect. Fixes LP: #1478129.
+  * Renamed ShellIcon to ProportionalShape.
+  * UbuntuShape - Added an ShellIcon item. Fixes LP: #1478130
+
+  [ Nick Dedekind ]
+  * Added LiveTimer.
+
+  [ Christian Dywan ]
+  * Grab focus when Dialog is shown.
+  * Set Qt.IBeamCursor on text component MouseArea's. Fixes LP: #1483823
+  * Make automaticOrientation on MainView a no-op. Fixes LP: #1470258
+  * Fix warnings on undefine theme.name in gallery
+    examples/ubuntu-ui-toolkit-gallery/ubuntu-ui-toolkit-gallery.qml:48:
+      TypeError: Cannot read property of null.
+
+  [ Ken VanDine ]
+  * Don't fail if MainView doesn't have a useDeprecatedToolbar property
+    Fixes LP: #1451243
+
+  [ CI Train Bot ]
+  * Resync trunk. added: examples/ubuntu-ui-toolkit-gallery/po/uk.po
+
+ -- CI Train Bot <ci-train-bot@canonical.com>  Wed, 12 Aug 2015 17:31:20 +0000
+
 ubuntu-ui-toolkit (1.3.1584+15.10.20150730-0ubuntu1) wily; urgency=medium
 
   [ Florian Boucault ]

@@ -19,6 +19,7 @@
 #include "ucnamespace.h"
 #include "ucdeprecatedtheme.h"
 #include "uctheme.h"
+#include "quickutils.h"
 #include "listener.h"
 #include <QtQml/QQmlComponent>
 #include <QtQml/QQmlContext>
@@ -75,6 +76,9 @@ UCDeprecatedTheme::UCDeprecatedTheme(QObject *parent)
 
 void UCDeprecatedTheme::showDeprecatedNote(QObject *onItem, const char *note)
 {
+    if (!QuickUtils::showDeprecationWarnings())
+        return;
+
     QQmlContext ctx(QQmlEngine::contextForObject(onItem));
     // No warnings due to deprecated code used in the components themselves
     if (ctx.baseUrl().toString().contains("/Ubuntu/Components/"))
@@ -87,10 +91,8 @@ void UCDeprecatedTheme::showDeprecatedNote(QObject *onItem, const char *note)
     if (m_notes.contains(noteId))
         return;
     QByteArray suppressNote = qgetenv("SUPPRESS_DEPRECATED_NOTE");
-    if (suppressNote.isEmpty() || suppressNote != "yes") {
-        qmlInfo(onItem) << note;
-        m_notes.insert(noteId, true);
-    }
+    qmlInfo(onItem) << note;
+    m_notes.insert(noteId, true);
 }
 
 /*!
