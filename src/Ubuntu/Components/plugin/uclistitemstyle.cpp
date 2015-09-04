@@ -21,6 +21,7 @@
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlInfo>
 #include <QtQuick/private/qquickanimation_p.h>
+#include <QtQuick/private/qquickflickable_p.h>
 
 /*!
  * \qmltype ListItemStyle
@@ -41,6 +42,7 @@ UCListItemStyle::UCListItemStyle(QQuickItem *parent)
     , m_snapAnimation(0)
     , m_dropAnimation(0)
     , m_dragPanel(0)
+    , m_flickable(Q_NULLPTR)
     , m_animatePanels(true)
 {
 }
@@ -54,21 +56,29 @@ void UCListItemStyle::classBegin()
         setAnimatePanels(context->contextProperty("animated").toBool());
     }
     m_listItem = qmlContext(this)->contextProperty("styledItem").value<UCListItem*>();
+    // get the flickable value
+    if (m_listItem) {
+        m_flickable = UCListItemPrivate::get(m_listItem)->flickable.data();
+    }
 }
 
 void UCListItemStyle::componentComplete()
 {
     QQuickItem::componentComplete();
 
-    // look for overridden slots
-    for (int i = metaObject()->methodOffset(); i < metaObject()->methodCount(); i++) {
-        const QMetaMethod method = metaObject()->method(i);
-        if (method.name() == QByteArrayLiteral("swipeEvent")) {
-            m_swipeEvent = method;
-        } else if (method.name() == QByteArrayLiteral("rebound")) {
-            m_rebound = method;
-        }
-    }
+    // look for overridden slots, indexOfMethod returns th elast index of the overridden method
+    m_rebound = metaObject()->method(metaObject()->indexOfMethod("rebound()"));
+    m_swipeEvent = metaObject()->method(metaObject()->indexOfMethod("swipeEvent(QVariant)"));
+//    qDebug() << m_rebound.isValid() << m_swipeEvent.isValid();
+//    for (int i = metaObject()->methodOffset(); i < metaObject()->methodCount(); i++) {
+//        const QMetaMethod method = metaObject()->method(i);
+//        if (method.name() == QByteArrayLiteral("swipeEvent")) {
+//            qDebug() << method.methodSignature();
+//            m_swipeEvent = method;
+//        } else if (method.name() == QByteArrayLiteral("rebound")) {
+//            m_rebound = method;
+//        }
+//    }
 
     // connect snapAnimation's stopped() and the owning ListItem's contentMovementeEnded() signals
     if (m_listItem && m_snapAnimation) {
@@ -89,6 +99,25 @@ void UCListItemStyle::componentComplete()
 int UCListItemStyle::index()
 {
     return UCListItemPrivate::get(m_listItem)->index();
+}
+
+/*!
+ * \qmlproperty Flickable ListItemStyle::flickable
+ * \readonly
+ * \since Ubuntu.Components.Styles 1.3
+ * The property holds the Flickable (or ListView) holding the ListItem styled.
+ */
+QQuickFlickable *UCListItemStyle::flickable()
+{
+    return m_flickable;
+}
+void UCListItemStyle::updateFlickable(QQuickFlickable *flickable)
+{
+    if (m_flickable == flickable) {
+        return;
+    }
+    m_flickable = flickable;
+    Q_EMIT flickableChanged();
 }
 
 /*!
