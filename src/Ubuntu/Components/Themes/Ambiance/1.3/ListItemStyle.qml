@@ -337,6 +337,7 @@ Styles.ListItemStyle {
         property real snapChangerLimit: 0.0
         readonly property real threshold: units.gu(1.5)
         property bool snapIn: false
+        property bool completed: false
 
         // update snap direction
         function updateSnapDirection() {
@@ -421,7 +422,8 @@ Styles.ListItemStyle {
     }
 
     // expansion
-    state: (listItemStyle.completed && styledItem.expansion.expanded) ? (listItemStyle.flickable ? "expandedWithFlickable" : "expandedNoFlickable") : ""
+    Component.onCompleted: internals.completed = true
+    state: (internals.completed && styledItem.expansion.expanded) ? (listItemStyle.flickable ? "expandedWithFlickable" : "expandedNoFlickable") : ""
     states: [
         State {
             name: "expandedNoFlickable"

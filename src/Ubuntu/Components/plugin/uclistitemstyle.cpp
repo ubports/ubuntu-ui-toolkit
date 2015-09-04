@@ -66,23 +66,25 @@ void UCListItemStyle::componentComplete()
 {
     QQuickItem::componentComplete();
 
-    // look for overridden slots
-    for (int i = metaObject()->methodOffset(); i < metaObject()->methodCount(); i++) {
-        const QMetaMethod method = metaObject()->method(i);
-        if (method.name() == QByteArrayLiteral("swipeEvent")) {
-            m_swipeEvent = method;
-        } else if (method.name() == QByteArrayLiteral("rebound")) {
-            m_rebound = method;
-        }
-    }
+    // look for overridden slots, indexOfMethod returns th elast index of the overridden method
+    m_rebound = metaObject()->method(metaObject()->indexOfMethod("rebound()"));
+    m_swipeEvent = metaObject()->method(metaObject()->indexOfMethod("swipeEvent(QVariant)"));
+//    qDebug() << m_rebound.isValid() << m_swipeEvent.isValid();
+//    for (int i = metaObject()->methodOffset(); i < metaObject()->methodCount(); i++) {
+//        const QMetaMethod method = metaObject()->method(i);
+//        if (method.name() == QByteArrayLiteral("swipeEvent")) {
+//            qDebug() << method.methodSignature();
+//            m_swipeEvent = method;
+//        } else if (method.name() == QByteArrayLiteral("rebound")) {
+//            m_rebound = method;
+//        }
+//    }
 
     // connect snapAnimation's stopped() and the owning ListItem's contentMovementeEnded() signals
     if (m_listItem && m_snapAnimation) {
         connect(m_snapAnimation, SIGNAL(runningChanged(bool)),
                 m_listItem, SLOT(_q_contentMoving()));
     }
-
-    Q_EMIT completedChanged();
 }
 
 /*!
@@ -116,17 +118,6 @@ void UCListItemStyle::updateFlickable(QQuickFlickable *flickable)
     }
     m_flickable = flickable;
     Q_EMIT flickableChanged();
-}
-
-/*!
- * \qmlproperty bool ListItemStyle::completed
- * \readonly
- * \since Ubuntu.Components.Styles 1.3
- * The property specifies the style component completion.
- */
-bool UCListItemStyle::completed()
-{
-    return QQuickItemPrivate::get(this)->componentComplete;
 }
 
 /*!

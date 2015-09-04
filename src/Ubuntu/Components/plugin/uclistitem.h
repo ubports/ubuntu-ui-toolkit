@@ -244,7 +244,7 @@ class UCListItemExpansion : public QObject
 public:
     explicit UCListItemExpansion(QObject *parent = 0);
 
-    bool expandedWithFlag(UCViewItemsAttached::ExpansionFlag flag);
+    bool expandedLocked();
     void enableClickFiltering(bool enable);
 
     bool expanded();

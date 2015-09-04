@@ -1262,7 +1262,7 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
     Q_D(UCListItem);
     UCStyledItemBase::mouseMoveEvent(event);
 
-    if (d->selectMode() || d->dragMode() || (d->expansion && !d->expansion->expandedWithFlag(UCViewItemsAttached::UnlockExpanded))) {
+    if (d->selectMode() || d->dragMode() || (d->expansion && d->expansion->expandedLocked())) {
         // no move is allowed while selectable mode is on
         return;
     }
