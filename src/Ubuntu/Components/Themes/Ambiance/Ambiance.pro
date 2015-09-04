@@ -84,8 +84,6 @@ QML_FILES += 1.2/ActivityIndicatorStyle.qml \
              1.3/DialerHandStyle.qml \
              1.3/DialerStyle.qml \
              1.3/DialogForegroundStyle.qml \
-             1.3/HeadDividerStyle.qml \
-             1.3/HeaderStyle.qml \
              1.3/HighlightMagnifier.qml \
              1.3/ListItemOptionSelectorStyle.qml \
              1.3/ListItemStyle.qml \

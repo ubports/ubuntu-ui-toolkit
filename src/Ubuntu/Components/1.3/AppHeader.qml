@@ -184,11 +184,6 @@ Components.StyledItem {
     }
 
     /*!
-      Set by \l MainView
-     */
-    property bool useDeprecatedToolbar: true
-
-    /*!
       Configuration of the header.
       FIXME: Must be of type PageHeadConfiguration. Setting that as the property type
       however will use the latest version (1.3) and a Page that uses an older
@@ -355,5 +350,5 @@ Components.StyledItem {
     }
 
     theme.version: Components.Ubuntu.toolkitVersion
-    styleName: header.useDeprecatedToolbar ? "HeaderStyle" : "PageHeadStyle"
+    styleName: "PageHeadStyle"
 }
