@@ -488,7 +488,6 @@ Ubuntu.Components.ListItemDrag.Status: Enum
     Started
 Ubuntu.Components.Styles.ListItemStyle 1.3 1.2: Item
     readonly property bool animatePanels
-    readonly property bool completed 1.3
     property Item dragPanel
     property PropertyAnimation dropAnimation
     readonly property Flickable flickable 1.3
@@ -1421,7 +1420,7 @@ Ubuntu.Components.ViewItems 1.3: ViewItems
 Ubuntu.Components.ViewItems.ExpansionFlag: Enum
     CollapseOnOutsidePress
     Exclusive
-    LockExpanded
+    UnlockExpanded
 Ubuntu.Components.i18n 1.0 0.1: QtObject
     property string domain
     property string language
