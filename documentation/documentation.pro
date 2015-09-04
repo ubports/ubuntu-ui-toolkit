@@ -17,7 +17,7 @@ DOC_PATH=$$shadowed($$ROOT_SOURCE_DIR)/documentation
 generate_docs.commands = cd $$ROOT_SOURCE_DIR; SRC=$$ROOT_SOURCE_DIR/documentation BLD=$$ROOT_BUILD_DIR/documentation $$ROOT_SOURCE_DIR/documentation/docs.sh \'$$QDOC\' \'$$QHELPGENERATOR\' $$DOC_PATH
 
 #install the online docs only when building outside of Qt
-force_independent: {
+!build_with_qt{
     install_docs.files = $$shadowed($$ROOT_SOURCE_DIR)/documentation/html
     install_docs.path = /usr/share/ubuntu-ui-toolkit/doc
     install_docs.CONFIG += no_check_exist directory no_build
