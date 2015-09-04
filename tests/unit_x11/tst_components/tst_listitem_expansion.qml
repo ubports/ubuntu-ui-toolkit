@@ -42,7 +42,7 @@ Item {
         }
     }
 
-    property real expandedHeight//: units.gu(12)
+    property real expandedHeight
 
     Column {
         id: defColumn
