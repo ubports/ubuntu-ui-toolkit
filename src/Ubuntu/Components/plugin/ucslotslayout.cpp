@@ -158,14 +158,14 @@ void UCSlotsLayoutPrivate::updateTopBottomOffsetsIfNeeded() {
     Q_Q(UCSlotsLayout);
     if (!topOffsetWasSetFromQml) {
         q->setTopOffset((!getVerticalPositioningMode() && maxChildrenHeight > UCUnits::instance().gu(SLOTSLAYOUT_TOPBOTTOMMARGIN_SIZETHRESHOLD))
-                         ? UCUnits::instance().gu(1.0)
-                         : UCUnits::instance().gu(2.0));
+                        ? UCUnits::instance().gu(1.0)
+                        : UCUnits::instance().gu(2.0));
     }
 
     if (!bottomOffsetWasSetFromQml) {
         q->setBottomOffset((!getVerticalPositioningMode() && maxChildrenHeight > UCUnits::instance().gu(SLOTSLAYOUT_TOPBOTTOMMARGIN_SIZETHRESHOLD))
-                         ? UCUnits::instance().gu(1.0)
-                         : UCUnits::instance().gu(2.0));
+                           ? UCUnits::instance().gu(1.0)
+                           : UCUnits::instance().gu(2.0));
     }
 }
 
@@ -293,13 +293,24 @@ void UCSlotsLayoutPrivate::_q_updateSlotsBBoxHeight() {
     Q_Q(UCSlotsLayout);
 
     qreal maxSlotsHeight = 0;
-    for (int i=0; i<q->children().count(); i++) {
+    for (int i=0; i<q->childItems().count(); i++) {
+        QQuickItem* child = qobject_cast<QQuickItem*>(q->childItems().at(i));
+
+        //skip labels
+        if (child == &m_title || child == &m_subtitle || child == &m_subsubtitle) {
+            continue;
+        }
 
         //ignore children which have custom vertical positioning
         UCSlotsAttached *attachedProperty =
-                qobject_cast<UCSlotsAttached*>(qmlAttachedPropertiesObject<UCSlotsLayout>(q->children().at(i)));
+                qobject_cast<UCSlotsAttached*>(qmlAttachedPropertiesObject<UCSlotsLayout>(child));
+
+        if (!attachedProperty) {
+            qDebug() << "SLOTSLAYOUT: invalid attached property!";
+            continue;
+        }
+
         if (!attachedProperty->overrideVerticalPositioning()) {
-            QQuickItem* child = qobject_cast<QQuickItem*>(q->children().at(i));
             maxSlotsHeight = qMax<int>(maxSlotsHeight, child->height());
         }
     }
@@ -346,13 +357,21 @@ void UCSlotsLayoutPrivate::_q_relayout() {
     int totalWidth = 0;
 
     //reorder children and assign them to the sorted list
-    for (int i=0; i<q->children().length(); i++) {
+    for (int i=0; i<q->childItems().length(); i++) {
+        QQuickItem* child = qobject_cast<QQuickItem*>(q->childItems().at(i));
+
+        //NOTE: skip C++ labels, qmlAttachedProperties will fail on them if none of their properties is initialized
+        //via QML
+        if (child == &m_title || child == &m_subtitle || child == &m_subsubtitle) {
+            continue;
+        }
+
         //get the attached property, creating it if it wasn't defined already
         UCSlotsAttached *attached =
-                qobject_cast<UCSlotsAttached*>(qmlAttachedPropertiesObject<UCSlotsLayout>(q->children().at(i)));
+                qobject_cast<UCSlotsAttached*>(qmlAttachedPropertiesObject<UCSlotsLayout>(child));
 
         if (!attached) {
-            qDebug() << "SlotsLayout: Invalid attaching type!";
+            qDebug() << "SLOTSLAYOUT: invalid attached property!";
             continue;
         }
 
@@ -361,11 +380,11 @@ void UCSlotsLayoutPrivate::_q_relayout() {
 
         if (attached->position() == UCSlotsLayout::Leading) {
             //FIXME: is this safe?
-            leadingSlots.append(static_cast<QQuickItem*>(q->children().at(i)));
-            totalWidth += static_cast<QQuickItem*>(q->children().at(i))->width() + attached->leftMargin() + attached->rightMargin();
+            leadingSlots.append(static_cast<QQuickItem*>(child));
+            totalWidth += static_cast<QQuickItem*>(child)->width() + attached->leftMargin() + attached->rightMargin();
         } else if (attached->position() == UCSlotsLayout::Trailing) {
-            trailingSlots.append(static_cast<QQuickItem*>(q->children().at(i)));
-            totalWidth += static_cast<QQuickItem*>(q->children().at(i))->width() + attached->leftMargin() + attached->rightMargin();
+            trailingSlots.append(static_cast<QQuickItem*>(child));
+            totalWidth += static_cast<QQuickItem*>(child)->width() + attached->leftMargin() + attached->rightMargin();
         } else {
             qDebug() << "SlotsLayout: unrecognized position value, please use SlotsLayout.Leading or SlotsLayout.Trailing";
         }
@@ -376,6 +395,11 @@ void UCSlotsLayoutPrivate::_q_relayout() {
     for (int i=0; i<leadingSlots.length(); i++) {
         UCSlotsAttached *attached =
                 qobject_cast<UCSlotsAttached*>(qmlAttachedPropertiesObject<UCSlotsLayout>(leadingSlots.at(i)));
+
+        if (!attached) {
+            qDebug() << "SLOTSLAYOUT: invalid attached property!";
+            continue;
+        }
 
         QQuickItemPrivate* item = QQuickItemPrivate::get((QQuickItem*) leadingSlots.at(i));
 
@@ -404,8 +428,12 @@ void UCSlotsLayoutPrivate::_q_relayout() {
             UCSlotsAttached *attachedPreviousItem =
                     qobject_cast<UCSlotsAttached*>(qmlAttachedPropertiesObject<UCSlotsLayout>(leadingSlots.at(i-1)));
 
-            item->anchors()->setLeft(QQuickItemPrivate::get(static_cast<QQuickItem*>(leadingSlots.at(i-1)))->right());
-            item->anchors()->setLeftMargin(attachedPreviousItem->rightMargin() + attached->leftMargin());
+            if (!attachedPreviousItem) {
+                qDebug() << "SLOTSLAYOUT: invalid attached property!";
+            } else {
+                item->anchors()->setLeft(QQuickItemPrivate::get(static_cast<QQuickItem*>(leadingSlots.at(i-1)))->right());
+                item->anchors()->setLeftMargin(attachedPreviousItem->rightMargin() + attached->leftMargin());
+            }
         }
         //currentX += item->x + item->width + attached->leftMargin() + attached->rightMargin();
     }
@@ -431,9 +459,13 @@ void UCSlotsLayoutPrivate::_q_relayout() {
         UCSlotsAttached *attachedLastLeadingSlot =
                 qobject_cast<UCSlotsAttached*>(qmlAttachedPropertiesObject<UCSlotsLayout>(leadingSlots.last()));
 
-        titleAnchors->setLeftMargin(attachedLastLeadingSlot->rightMargin() + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS));
-        subtitleAnchors->setLeftMargin(attachedLastLeadingSlot->rightMargin() + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS));
-        subsubtitleAnchors->setLeftMargin(attachedLastLeadingSlot->rightMargin() + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS));
+        if (!attachedLastLeadingSlot) {
+            qDebug() << "SLOTSLAYOUT: invalid attached property!";
+        } else {
+            titleAnchors->setLeftMargin(attachedLastLeadingSlot->rightMargin() + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS));
+            subtitleAnchors->setLeftMargin(attachedLastLeadingSlot->rightMargin() + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS));
+            subsubtitleAnchors->setLeftMargin(attachedLastLeadingSlot->rightMargin() + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS));
+        }
     } else {
         titleAnchors->setLeftMargin(leftOffset + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS));
         subtitleAnchors->setLeftMargin(leftOffset + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS));
@@ -472,6 +504,11 @@ void UCSlotsLayoutPrivate::_q_relayout() {
             UCSlotsAttached *attached =
                     qobject_cast<UCSlotsAttached*>(qmlAttachedPropertiesObject<UCSlotsLayout>(trailingSlots.at(i)));
 
+            if (!attached) {
+                qDebug() << "SLOTSLAYOUT: invalid attached property!";
+                continue;
+            }
+
             if (!attached->overrideVerticalPositioning()) {
                 if (getVerticalPositioningMode()) {
                     //reset the vertical anchor as we might be transitioning from the configuration
@@ -500,8 +537,12 @@ void UCSlotsLayoutPrivate::_q_relayout() {
                 UCSlotsAttached *attachedPreviousItem =
                         qobject_cast<UCSlotsAttached*>(qmlAttachedPropertiesObject<UCSlotsLayout>(trailingSlots.at(i-1)));
 
-                item->anchors()->setLeft(QQuickItemPrivate::get(static_cast<QQuickItem*>(trailingSlots.at(i-1)))->right());
-                item->anchors()->setLeftMargin(attachedPreviousItem->rightMargin() + attached->leftMargin());
+                if (!attachedPreviousItem) {
+                    qDebug() << "SLOTSLAYOUT: invalid attached property!";
+                } else {
+                    item->anchors()->setLeft(QQuickItemPrivate::get(static_cast<QQuickItem*>(trailingSlots.at(i-1)))->right());
+                    item->anchors()->setLeftMargin(attachedPreviousItem->rightMargin() + attached->leftMargin());
+                }
             }
             //currentX += item->x + item->width + attached->leftMargin() + attached->rightMargin();
         }
@@ -637,10 +678,22 @@ void UCSlotsLayout::mousePressEvent(QMouseEvent *event) {
 
     //Just iterate through all the children and see if the press falls within the area of any of them
     //TODO: do something more efficient? Using a spatial data structure maybe?
-    for (int i=0; i<children().length(); i++) {
-        QQuickItem* currChild = static_cast<QQuickItem*>(children().at(i));
+    for (int i=0; i<childItems().length(); i++) {
+        QQuickItem* currChild = static_cast<QQuickItem*>(childItems().at(i));
+
+        //skip c++ labels
+        if (currChild == &d->m_title || currChild == &d->m_subtitle
+                || currChild == &d->m_subsubtitle) {
+            continue;
+        }
+
         UCSlotsAttached *attachedSlot =
-                qobject_cast<UCSlotsAttached*>(qmlAttachedPropertiesObject<UCSlotsLayout>(children().at(i)));
+                qobject_cast<UCSlotsAttached*>(qmlAttachedPropertiesObject<UCSlotsLayout>(currChild));
+
+        if (!attachedSlot) {
+            qDebug() << "SLOTSLAYOUT: invalid attached property!";
+            continue;
+        }
 
         //we just check X, as according to the UX spec the touch region goes top-to-bottom
         //so checking the y is not needed
@@ -665,9 +718,12 @@ void UCSlotsLayout::mouseReleaseEvent(QMouseEvent *event) {
         UCSlotsAttached *attachedSlot =
                 qobject_cast<UCSlotsAttached*>(qmlAttachedPropertiesObject<UCSlotsLayout>(d->pressedItem));
 
+        if (!attachedSlot) {
+            qDebug() << "SLOTSLAYOUT: invalid attached property!";
+        }
         //emit the signal if the release event falls inside the touch region of the pressedItem
-        if ((event->x() >= d->pressedItem->x() - attachedSlot->leftMargin())
-                && (event->x() <= d->pressedItem->x() + d->pressedItem->width() + attachedSlot->rightMargin())) {
+        else if ((event->x() >= d->pressedItem->x() - attachedSlot->leftMargin())
+                 && (event->x() <= d->pressedItem->x() + d->pressedItem->width() + attachedSlot->rightMargin())) {
             Q_EMIT slotClicked(d->pressedItem);
         }
     }
