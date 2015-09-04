@@ -927,9 +927,7 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  * }
  * \endqml
  * The example above collapses the expanded item whenever it is tapped or mouse
- * pressed outside of the expanded list item. It also allows to swipe in the trailing
- * actions of the ListItem when expanded. To avoid that, set \c ViewItems.LockExpanded
- * flag.
+ * pressed outside of the expanded list item.
  * \note Set 0 to \l ViewItems::expansionFlags if no restrictions on expanded items
  * is required (i.e multiple expanded items are allowed, swiping leading/trailing
  * actions when expanded).
@@ -1264,7 +1262,7 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
     Q_D(UCListItem);
     UCStyledItemBase::mouseMoveEvent(event);
 
-    if (d->selectMode() || d->dragMode() || (d->expansion && d->expansion->expandedWithFlag(UCViewItemsAttached::LockExpanded))) {
+    if (d->selectMode() || d->dragMode() || (d->expansion && !d->expansion->expandedWithFlag(UCViewItemsAttached::UnlockExpanded))) {
         // no move is allowed while selectable mode is on
         return;
     }

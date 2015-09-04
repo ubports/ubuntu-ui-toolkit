@@ -104,8 +104,8 @@ Item {
 
             listView.ViewItems.expandedIndices = [];
             flickableColumn.ViewItems.expandedIndices = [];
-            listView.ViewItems.expansionFlags = ViewItems.Exclusive | ViewItems.LockExpanded;
-            flickableColumn.ViewItems.expansionFlags = ViewItems.Exclusive | ViewItems.LockExpanded;
+            listView.ViewItems.expansionFlags = ViewItems.Exclusive;
+            flickableColumn.ViewItems.expansionFlags = ViewItems.Exclusive;
             wait(200);
         }
 
@@ -113,7 +113,7 @@ Item {
             compare(defaults.expansion.expanded, false, "Not expanded by default");
             compare(defaults.expansion.height, 0, "No expansion height by default");
             verify(defColumn.ViewItems.expandedIndices, "ViewItems.expandedIndices not defined");
-            verify(defColumn.ViewItems.expansionFlags, ViewItems.Exclusive | ViewItems.LockExpanded);
+            verify(defColumn.ViewItems.expansionFlags, ViewItems.Exclusive);
         }
 
         function test_exclusive_expansion_data() {
@@ -157,19 +157,23 @@ Item {
 
         function test_locked_while_expanded_data() {
             return [
-                {tag: "ListView", test: listView, expand1: 0},
-                {tag: "Flickable", test: flickableColumn, expand1: 0},
+                {tag: "ListView, locked", test: listView, expand: 0, flags: 0, xfail: true},
+                {tag: "Flickable, locked", test: flickableColumn, expand: 0, flags: 0, xfail: true},
+                {tag: "ListView, unlocked", test: listView, expand: 0, flags: ViewItems.UnlockExpanded, xfail: false},
+                {tag: "Flickable, unlocked", test: flickableColumn, expand: 0, flags: ViewItems.UnlockExpanded, xfail: false},
             ];
         }
         function test_locked_while_expanded(data) {
-            var item = findChild(data.test, "listItem" + data.expand1);
+            var item = findChild(data.test, "listItem" + data.expand);
             verify(item);
 
-            data.test.ViewItems.expansionFlags = ViewItems.LockExpanded;
+            data.test.ViewItems.expansionFlags = data.flags;
             expand(item, true);
             setupSpy(item, "contentMovementEnded");
             swipeNoWait(item, centerOf(item).x, centerOf(item).y, units.gu(10), 0);
-            expectFailContinue(data.tag, "No panel swipe is allowed")
+            if (data.xfail) {
+                expectFailContinue(data.tag, "No panel swipe is allowed");
+            }
             spyWait();
         }
 

@@ -104,7 +104,7 @@ UCViewItemsAttachedPrivate::UCViewItemsAttachedPrivate()
     : QObjectPrivate()
     , listView(0)
     , dragArea(0)
-    , expansionFlags(UCViewItemsAttached::Exclusive | UCViewItemsAttached::LockExpanded)
+    , expansionFlags(UCViewItemsAttached::Exclusive)
     , globalDisabled(false)
     , selectable(false)
     , draggable(false)
@@ -707,9 +707,8 @@ void UCViewItemsAttachedPrivate::collapseAll()
  *  \li ViewItems.Exclusive
  *  \li When set, only one ListItem can be expanded at a time. \b {Set by default}.
  * \row
- *  \li ViewItems.LockExpanded
- *  \li When set, the ListItem's leading/trailing actions cannot be revealed.
- *      \b {Set by default}.
+ *  \li ViewItems.UnlockExpanded
+ *  \li When set, the ListItem's leading/trailing actions can be swiped in.
  * \row
  *  \li ViewItems.CollapseOnOutsidePress
  *  \li When set, the active expaned ListItem collapses automatically when clicked
