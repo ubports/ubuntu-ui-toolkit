@@ -130,6 +130,7 @@ SOURCES += $$PWD/plugin.cpp \
     $$PWD/ucserviceproperties.cpp \
     $$PWD/privates/listitemdragarea.cpp \
     $$PWD/privates/listitemdraghandler.cpp \
+    $$PWD/privates/listitemexpansion.cpp \
     $$PWD/ucnamespace.cpp \
     $$PWD/ucdeprecatedtheme.cpp \
     $$PWD/ucdefaulttheme.cpp \

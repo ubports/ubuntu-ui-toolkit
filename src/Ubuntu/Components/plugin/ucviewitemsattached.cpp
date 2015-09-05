@@ -104,6 +104,7 @@ UCViewItemsAttachedPrivate::UCViewItemsAttachedPrivate()
     : QObjectPrivate()
     , listView(0)
     , dragArea(0)
+    , expansionFlags(UCViewItemsAttached::Exclusive)
     , globalDisabled(false)
     , selectable(false)
     , draggable(false)
@@ -556,7 +557,7 @@ void UCViewItemsAttachedPrivate::enterDragMode()
         return;
     }
     dragArea = new ListItemDragArea(listView);
-    dragArea->init();
+    dragArea->init(q_func());
 }
 
 void UCViewItemsAttachedPrivate::leaveDragMode()
@@ -609,5 +610,144 @@ void UCViewItemsAttachedPrivate::updateSelectedIndices(int fromIndex, int toInde
     if (isFromSelected) {
         selectedList.insert(toIndex);
         Q_EMIT q->selectedIndicesChanged();
+    }
+}
+
+
+UCViewItemsAttached13::UCViewItemsAttached13(QObject *owner)
+    : UCViewItemsAttached(owner)
+{
+    d_ptr = UCViewItemsAttachedPrivate::get(this);
+}
+
+UCViewItemsAttached13 *UCViewItemsAttached13::qmlAttachedProperties(QObject *owner)
+{
+    return new UCViewItemsAttached13(owner);
+}
+
+/*!
+ * \qmlattachedproperty list<int> ViewItems::expandedIndices
+ * \since Ubuntu.Components 1.3
+ * The property contains the indexes of the ListItems marked as expanded. The
+ * indexes are model indexes when used in ListView, and child indexes in other
+ * components. The property being writable, initial expansion configuration
+ * can be provided for a view, and provides ability to save the expansion state.
+ * \note If the \l ViewItems::expansionFlags is having \c ViewItems.Exclusive
+ * flags set, only the last item from the list will be considered and set as
+ * expanded.
+ */
+QList<int> UCViewItemsAttached13::expandedIndices() const
+{
+    Q_D(const UCViewItemsAttached);
+    return d->expansionList.keys();
+}
+void UCViewItemsAttached13::setExpandedIndices(QList<int> indices)
+{
+    Q_UNUSED(indices);
+    Q_D(UCViewItemsAttached);
+    d->collapseAll();
+    if (indices.size() > 0) {
+        if (d->expansionFlags & UCViewItemsAttached::Exclusive) {
+            // take only the last one from the list
+            d->expand(indices.last(), QPointer<UCListItem13>(), false);
+        } else {
+            for (int i = 0; i < indices.size(); i++) {
+                d->expand(indices[i], QPointer<UCListItem13>(), false);
+            }
+        }
+    }
+    Q_EMIT expandedIndicesChanged(d->expansionList.keys());
+}
+
+// insert listItem into the expanded indices map
+void UCViewItemsAttachedPrivate::expand(int index, UCListItem13 *listItem, bool emitChangeSignal)
+{
+    expansionList.insert(index, QPointer<UCListItem13>(listItem));
+    if (listItem && ((expansionFlags & UCViewItemsAttached::CollapseOnOutsidePress) == UCViewItemsAttached::CollapseOnOutsidePress)) {
+        listItem->expansion()->enableClickFiltering(true);
+    }
+    if (emitChangeSignal) {
+        Q_EMIT static_cast<UCViewItemsAttached13*>(q_func())->expandedIndicesChanged(expansionList.keys());
+    }
+}
+
+// collapse the item at index
+void UCViewItemsAttachedPrivate::collapse(int index, bool emitChangeSignal)
+{
+    UCListItem13 *item = expansionList.take(index).data();
+    bool wasExpanded = item && item->expansion()->expanded();
+    if (item && ((expansionFlags & UCViewItemsAttached::CollapseOnOutsidePress) == UCViewItemsAttached::CollapseOnOutsidePress)) {
+        item->expansion()->enableClickFiltering(false);
+    }
+    if (emitChangeSignal && wasExpanded) {
+        Q_EMIT static_cast<UCViewItemsAttached13*>(q_func())->expandedIndicesChanged(expansionList.keys());
+    }
+}
+
+void UCViewItemsAttachedPrivate::collapseAll()
+{
+    bool emitChangedSignal = (expansionList.keys().size() > 0);
+    while (expansionList.keys().size() > 0) {
+        collapse(expansionList.keys().last(), false);
+    }
+    if (emitChangedSignal) {
+        Q_EMIT static_cast<UCViewItemsAttached13*>(q_func())->expandedIndicesChanged(expansionList.keys());
+    }
+}
+
+/*!
+ * \qmlattachedproperty ExpansionFlags ViewItems::expansionFlags
+ * \since Ubuntu.Components 1.3
+ * Flags driving the expansion behavior.
+ * \table
+ * \header
+ *  \li Flag
+ *  \li description
+ * \row
+ *  \li ViewItems.Exclusive
+ *  \li When set, only one ListItem can be expanded at a time. \b {Set by default}.
+ * \row
+ *  \li ViewItems.UnlockExpanded
+ *  \li When set, the ListItem's leading/trailing actions can be swiped in.
+ * \row
+ *  \li ViewItems.CollapseOnOutsidePress
+ *  \li When set, the active expaned ListItem collapses automatically when clicked
+ *      outside of its area. The flag also turns \c ViewItems.Exclusive flag on.
+ * \endtable
+ */
+int UCViewItemsAttached13::expansionFlags() const
+{
+    Q_D(const UCViewItemsAttached);
+    return d->expansionFlags;
+}
+void UCViewItemsAttached13::setExpansionFlags(int flags)
+{
+    Q_D(UCViewItemsAttached);
+    if (d->expansionFlags == (ExpansionFlags)flags) {
+        return;
+    }
+
+    // disable current flag based restrictions
+    d->toggleExpansionFlags(false);
+    d->expansionFlags = (ExpansionFlags)flags;
+    // enable flag based restrictions
+    d->toggleExpansionFlags(true);
+    Q_EMIT expansionFlagsChanged();
+}
+
+void UCViewItemsAttachedPrivate::toggleExpansionFlags(bool enable)
+{
+    bool hasClickOutsideFlag = (expansionFlags & UCViewItemsAttached::CollapseOnOutsidePress) == UCViewItemsAttached::CollapseOnOutsidePress;
+    if (!hasClickOutsideFlag) {
+        return;
+    }
+    QMapIterator<int, QPointer<UCListItem13> > i(expansionList);
+    while (i.hasNext()) {
+        UCListItem13 *item = i.next().value().data();
+        // using expansion getter we will get the group created
+        if (item && item->expansion()) {
+            UCListItemPrivate *listItem = UCListItemPrivate::get(item);
+            listItem->expansion->enableClickFiltering(enable);
+        }
     }
 }

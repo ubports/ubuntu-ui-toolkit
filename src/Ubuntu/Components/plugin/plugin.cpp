@@ -224,6 +224,8 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
 
     // register 1.3 API
     qmlRegisterType<UCListItem13>(uri, 1, 3, "ListItem");
+    qmlRegisterType<UCListItemExpansion>();
+    qmlRegisterUncreatableType<UCViewItemsAttached13>(uri, 1, 3, "ViewItems", "No create");
     qmlRegisterType<UCTheme>(uri, 1, 3, "ThemeSettings");
     qmlRegisterType<UCStyledItemBase, 2>(uri, 1, 3, "StyledItem");
     qmlRegisterSingletonType<UCNamespaceV13>(uri, 1, 3, "Ubuntu", registerUbuntuNamespace13);
