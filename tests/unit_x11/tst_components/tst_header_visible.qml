@@ -23,10 +23,26 @@ Item {
     height: units.gu(70)
 
     Header {
+        anchors {
+            left: parent.left
+            right: parent.right
+            top: parent.top
+        }
+        height: units.gu(8)
+
         id: header
-        title: "Visibility testing"
-        flickable: flickable
-        locked: lockedSwitch.checked
+//        title: "Visibility testing"
+//        flickable: flickable
+//        locked: lockedSwitch.checked
+        Rectangle {
+            anchors.fill: parent
+            color: "red"
+            opacity: 0.5
+            border {
+                color: "black"
+                width: 10
+            }
+        }
     }
 
     Flickable {
