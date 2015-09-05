@@ -16,6 +16,7 @@
 
 #include "ucheader.h"
 #include <QDebug>
+//#include <QtQuick/private/qquickbehavior_p.h>
 
 /*!
     \qmltype Header
@@ -27,9 +28,15 @@
 
 UCHeader::UCHeader(QQuickItem *parent)
     : UCStyledItemBase(parent)
+//    , m_behavior_on_y(new QQuickBehavior)
 {
     // TODO
     qDebug() << "Header created!";
+    // TODO TIM: Don't use Behavior here. Use an Animation directly
+    //  when show/hide is called.
+//    m_behavior_on_y = new QQuickBehavior(this);
+//    m_behavior_on_y->setParent(this);
+//    m_behavior_on_y->setTarget(this->y());
 }
 
 //void UCHeader::classBegin()

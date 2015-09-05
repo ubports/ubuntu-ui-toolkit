@@ -18,18 +18,24 @@
 #define UCHEADER_H
 
 #include "ucstyleditembase.h"
+//class QQuickBehavior;
 
 class UCHeader : public UCStyledItemBase
 {
     Q_OBJECT
+//    Q_PROPERTY(bool visible READ visible WRITE setVisible)
 
 public:
+    // TODO TIM: why is this explicit??
     explicit UCHeader(QQuickItem *parent = 0);
 
 //protected:
 ////    void classBegin();
 ////    void componentComplete();
 
+private:
+    bool m_visible;
+//    QQuickBehavior *m_behavior_on_y;
 };
 
 #endif // UCHEADER_H

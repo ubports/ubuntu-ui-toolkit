@@ -42,12 +42,20 @@ Item {
                 color: "black"
                 width: 10
             }
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    print("click!")
+                    header.anchors.topMargin = -units.gu(6)
+                }
+            }
         }
     }
 
     Flickable {
         id: flickable
         anchors.fill: parent
+        anchors.topMargin: units.gu(10)
         contentHeight: height * 2
 
         Grid {
