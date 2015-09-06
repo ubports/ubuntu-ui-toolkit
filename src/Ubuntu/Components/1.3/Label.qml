@@ -20,8 +20,6 @@ import Ubuntu.Components 1.3
     \qmltype Label
     \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
-    \brief Text with Ubuntu styling.
-
 */
 LabelBase {
     color: theme.palette.selected.backgroundText

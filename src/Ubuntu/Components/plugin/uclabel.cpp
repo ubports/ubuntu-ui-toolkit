@@ -20,6 +20,9 @@
 
 void UCLabel::updatePixelSize()
 {
+    if (m_flags & PixelSizeSet) {
+        return;
+    }
     const float sizes[] = {
         UCFontUtils::xxSmallScale, UCFontUtils::xSmallScale, UCFontUtils::smallScale,
         UCFontUtils::mediumScale, UCFontUtils::largeScale, UCFontUtils::xLargeScale
@@ -28,6 +31,16 @@ void UCLabel::updatePixelSize()
     textFont.setPixelSize(
         qRound(sizes[m_adaptiveSize] * UCUnits::instance().dp(UCFontUtils::fontUnits)));
     setFont(textFont);
+    // remove PixelSizeSet flag
+    m_flags &= ~PixelSizeSet;
+}
+
+void UCLabel::_q_updateFontFlag(const QFont &font)
+{
+    Q_UNUSED(font);
+    if (m_defaultFont.pixelSize() != font.pixelSize()) {
+        m_flags |= PixelSizeSet;
+    }
 }
 
 /*!
@@ -62,6 +75,11 @@ UCLabel::UCLabel(QQuickItem* parent)
     , m_flags(0)
 {
     updatePixelSize();
+    m_defaultFont = font();
+    m_defaultFont.setFamily("Ubuntu");
+    m_defaultFont.setWeight(QFont::Light);
+    setFont(m_defaultFont);
+    connect(this, &UCLabel::fontChanged, this, &UCLabel::_q_updateFontFlag, Qt::DirectConnection);
 }
 
 /*!

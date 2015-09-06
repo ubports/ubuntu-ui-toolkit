@@ -63,11 +63,14 @@ Q_SIGNALS:
 
 private:
     void updatePixelSize();
+    Q_SLOT void _q_updateFontFlag(const QFont &font);
 
     enum {
-        AdaptiveSizeSet = 1
+        AdaptiveSizeSet = 1,
+        PixelSizeSet = 2
     };
 
+    QFont m_defaultFont;
     AdaptiveSize m_adaptiveSize;
     quint8 m_flags;
 
