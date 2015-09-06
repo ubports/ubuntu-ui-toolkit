@@ -150,13 +150,12 @@
 
 UCAction::UCAction(QObject *parent)
     : QObject(parent)
+    , m_itemHint(Q_NULLPTR)
+    , m_parameterType(None)
     , m_factoryIconSource(true)
     , m_enabled(true)
     , m_visible(true)
     , m_published(false)
-    , m_itemHint(0)
-    , m_parameterType(None)
-    , m_shortcut(0)
 {
     generateName();
 }
@@ -288,7 +287,7 @@ void UCAction::setShortcut(const QVariant& shortcut)
         qmlInfo(this) << "Invalid shortcut: " << shortcut.toString();
 
     m_shortcut = shortcut;
-    Q_EMIT shortcutChanged(shortcut);
+    Q_EMIT shortcutChanged();
 }
 
 bool UCAction::event(QEvent *event)
@@ -302,7 +301,8 @@ bool UCAction::event(QEvent *event)
         return false;
     }
 
-    trigger();
+    // do not call trigger() directly but invoke, as it may get overridden in QML
+    metaObject()->invokeMethod(this, "trigger");
     return true;
 }
 

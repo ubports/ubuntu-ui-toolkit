@@ -105,7 +105,7 @@ AbstractButton {
     /*!
       The font used for the button's text.
     */
-    property font font: __styleInstance ? __styleInstance.defaultFont : Qt.font({family: "Ubuntu", pixelSize: FontUtils.sizeToPixels("medium")})
+    property font font: __styleInstance.defaultFont
 
     /*!
        The position of the icon relative to the text. Options

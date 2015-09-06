@@ -12,30 +12,19 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * Author: Loïc Molinari <loic.molinari@canonical.com>
  */
 
-#ifndef UCSHELLICON_H
-#define UCSHELLICON_H
+import QtQuick 2.0
+import Ubuntu.Components 1.1
 
-#include "ucubuntushape.h"
-
-class UCShellIcon : public UCUbuntuShape
-{
-    Q_OBJECT
-
-public:
-    UCShellIcon(QQuickItem* parent=0);
-
-private Q_SLOTS:
-    void _q_updateWidth();
-    void _q_updateHeight();
-
-private:
-    Q_DISABLE_COPY(UCShellIcon)
-};
-
-QML_DECLARE_TYPE(UCShellIcon)
-
-#endif  // UCSHELLICON_H
+Grid {
+    width: 800
+    height: 600
+    rows: 16
+    columns: 16
+    Repeater {
+        model: 16*16
+        AbstractButton {
+        }
+    }
+}

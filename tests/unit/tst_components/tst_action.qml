@@ -34,6 +34,11 @@ TestCase {
          return false;
      }
 
+     function cleanup() {
+         triggeredSignalSpy.target = action;
+         triggeredSignalSpy.clear();
+     }
+
      function initTestCase() {
          compare(action.text, "", "text is empty string set by default")
          compare(action.iconSource, "", "iconSource is empty string by default")
@@ -132,6 +137,12 @@ TestCase {
          verify(!data.inactive.active, "Context deactivation error");
      }
 
+     function test_overloaded_action_trigger() {
+         triggeredSignalSpy.target = suppressTrigger;
+         suppressTrigger.trigger();
+         compare(triggeredSignalSpy.count, 0, "Overloaded trigger should not trigger action");
+     }
+
      Action {
          id: action
      }
@@ -183,6 +194,11 @@ TestCase {
      }
      ActionContext {
          id: context2
+     }
+
+     Action {
+         id: suppressTrigger
+         function trigger() {}
      }
 
 }

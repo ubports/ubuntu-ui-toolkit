@@ -745,6 +745,7 @@ Ubuntu.StyledItem {
         // activate input when pressed on the frame
         preventStealing: false
         Ubuntu.Mouse.forwardTo: [inputHandler]
+        cursorShape: Qt.IBeamCursor
     }
 
     //internals

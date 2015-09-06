@@ -37,6 +37,28 @@ MainView {
         anchors.fill: parent
         primaryPage: mainPage
 
+        layouts: [
+            PageColumnsLayout {
+                when: layout.width > units.gu(80)
+                PageColumn {
+                    minimumWidth: units.gu(30)
+                    maximumWidth: units.gu(50)
+                    preferredWidth: units.gu(40)
+                }
+                PageColumn {
+                    fillWidth: true
+                }
+            },
+            // configure single column mode so we can only size it to minimum 20 GU
+            PageColumnsLayout {
+                when: true
+                PageColumn {
+                    minimumWidth: units.gu(20)
+                    fillWidth: true
+                }
+            }
+        ]
+
         Page {
             id: mainPage
             title: "Ubuntu UI Toolkit"
@@ -45,14 +67,14 @@ MainView {
                 Action {
                     text: i18n.tr('Use dark theme')
                     iconName: 'torch-on'
-                    visible: theme.name == 'Ubuntu.Components.Themes.Ambiance'
-                    onTriggered: theme.name = 'Ubuntu.Components.Themes.SuruDark'
+                    visible: gallery.theme.name == 'Ubuntu.Components.Themes.Ambiance'
+                    onTriggered: gallery.theme.name = 'Ubuntu.Components.Themes.SuruDark'
                 },
                 Action {
                     text: i18n.tr('Use light theme')
                     iconName: 'torch-off'
-                    visible: theme.name == 'Ubuntu.Components.Themes.SuruDark'
-                    onTriggered: theme.name = 'Ubuntu.Components.Themes.Ambiance'
+                    visible: gallery.theme.name == 'Ubuntu.Components.Themes.SuruDark'
+                    onTriggered: gallery.theme.name = 'Ubuntu.Components.Themes.Ambiance'
                 }
             ]
 
@@ -74,9 +96,8 @@ MainView {
                         selected: index === widgetList.currentIndex
                         onClicked: {
                             var source = Qt.resolvedUrl(model.source);
-                            var newPage = layout.addPageToNextColumn(mainPage, source);
+                            layout.addPageToNextColumn(mainPage, source, {title: model.label});
 
-                            newPage.title = model.label;
                             widgetList.currentIndex = index;
                         }
                     }

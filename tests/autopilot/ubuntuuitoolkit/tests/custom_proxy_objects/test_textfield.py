@@ -16,8 +16,6 @@
 
 from unittest import mock
 
-from autopilot import platform
-
 import ubuntuuitoolkit
 from ubuntuuitoolkit import tests
 
@@ -98,8 +96,6 @@ MainView {
         self.assertFalse(self.simple_text_field.is_empty())
 
     def test_select_all_selects_all_text(self):
-        if platform.model() != 'Desktop':
-            self.skipTest('Select all is not yet implemented on the phone.')
         self.simple_text_field.write('Text to select.')
         self.simple_text_field._select_all()
 
@@ -107,8 +103,6 @@ MainView {
 
     def test_select_all_when_already_selected_must_do_nothing(self):
         """Test for select all the text when it's already selected."""
-        if platform.model() != 'Desktop':
-            self.skipTest('Select all is not yet implemented on the phone.')
         self.simple_text_field.write('Text to select.')
         self.simple_text_field._select_all()
         with mock.patch.object(

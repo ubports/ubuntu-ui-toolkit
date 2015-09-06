@@ -28,6 +28,8 @@ import QtQuick.Window 2.0
 */
 PageTreeNode {
     id: mainView
+    styleName: "MainViewStyle"
+
     /*!
       The property holds the application's name, which must be the same as the
       desktop file's name.
@@ -53,7 +55,7 @@ PageTreeNode {
 
       \sa backgroundColor, footerColor
     */
-    property alias headerColor: background.headerColor
+    property color headerColor: backgroundColor
 
     /*!
       \qmlproperty color MainView::backgroundColor
@@ -80,7 +82,7 @@ PageTreeNode {
 
       \sa footerColor, headerColor
     */
-    property alias backgroundColor: background.backgroundColor
+    property color backgroundColor: theme.palette.normal.background
 
     /*!
       \qmlproperty color MainView::footerColor
@@ -88,20 +90,12 @@ PageTreeNode {
 
       \sa backgroundColor, headerColor
     */
-    property alias footerColor: background.footerColor
+    property color footerColor: backgroundColor
 
-    // FIXME: Make sure that the theming is only in the background, and the style
-    //  should not occlude contents of the MainView. When making changes here, make
-    //  sure that bug https://bugs.launchpad.net/manhattan/+bug/1124076 does not come back.
-    Toolkit.StyledItem {
-        id: background
-        anchors.fill: parent
-        // theme is inherited from PageTreeNode, no need to update versioning
-        styleName: "MainViewStyle"
-
-        property color headerColor: backgroundColor
-        property color backgroundColor: theme.palette.normal.background
-        property color footerColor: backgroundColor
+    Toolkit.Object {
+        id: autoTheme
+        // FIXME: Define the background colors in MainViewStyle and get rid of the properties
+        //  in MainViewBase. That removes the need for auto-theming.
 
         /*
           As we don't know the order the property bindings and onXXXChanged signals are evaluated
@@ -111,18 +105,23 @@ PageTreeNode {
           Qt bug: https://bugreports.qt-project.org/browse/QTBUG-11712
          */
 
-        onBackgroundColorChanged: {
-            if (backgroundColor != theme.palette.normal.background) {
-                // custom color, proceed with auto-theming
-                autoThemeName = (ColorUtils.luminance(backgroundColor) >= 0.85) ?
-                                                   "Ambiance" : "SuruDark";
+        Connections {
+            target: mainView
+
+            onBackgroundColorChanged: {
+                if (mainView.backgroundColor != theme.palette.normal.background) {
+                    // custom color, proceed with auto-theming
+                    autoTheme.themeName = (ColorUtils.luminance(backgroundColor) >= 0.85) ?
+                                "Ambiance" : "SuruDark";
+                }
             }
         }
-        property string autoThemeName
-        onAutoThemeNameChanged: {
+
+        property string themeName
+        onThemeNameChanged: {
             // only change the theme if the current one is a system one.
-            if (autoThemeName !== "" && (theme.name.search("Ubuntu.Components.Themes") == 0)) {
-                mainView.theme.name = "Ubuntu.Components.Themes.%1".arg(autoThemeName);
+            if (themeName !== "" && (theme.name.search("Ubuntu.Components.Themes") == 0)) {
+                mainView.theme.name = "Ubuntu.Components.Themes.%1".arg(themeName);
             }
         }
     }

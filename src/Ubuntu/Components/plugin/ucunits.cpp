@@ -24,6 +24,8 @@
 #include <QtCore/QDir>
 #include <QtCore/QRegularExpression>
 #include <QtCore/qmath.h>
+#include <QtGui/QGuiApplication>
+#include <QtGui/QScreen>
 
 #define ENV_GRID_UNIT_PX "GRID_UNIT_PX"
 #define DEFAULT_GRID_UNIT_PX 8
@@ -62,10 +64,46 @@ static float getenvFloat(const char* name, float defaultValue)
 
     \sa {Resolution Independence}
 */
+
+/*
+ * Note on the interaction between GRID_UNIT_PX and QT_DEVICE_PIXEL_RATIO
+ *
+ * In Qt5.4 there is a single means to scale the UI: the QT_DEVICE_PIXEL_RATIO environment
+ * variable. This accepts only integer values, thus allowing a x2 or x3 scaling of any
+ * Qt-based UI, that includes QWidget as well as any QML UI.
+ *
+ * Setting QT_DEVICE_PIXEL_RATIO=2 implies one density-independent pixel corresponds to 2
+ * physical pixels. Developers describe their UI in terms of density-independent pixels.
+ * Qt scales accordingly.
+ *
+ * The Ubuntu UI Toolkit has solved the scaling problem with the GRID_UNIT_PX variable.
+ * It offers more flexibility, but only scales QML applications written to use the UITK
+ * (since it uses this Units class) as it is built on top of QML.
+ *
+ * There are additional areas in Qt where QT_DEVICE_PIXEL_RATIO causes correct scaling which
+ * GRID_UNIT_PX cannot, for example:
+ *   1. cacheBuffer for ListView/GridViews - specified in density-independent pixels
+ *   2. gesture recognition  matches what is on screen better, as it is density-independent
+ *      pixel aware
+ *
+ * In order to get the best of both worlds, Ubuntu will set both GRID_UNIT_PX and
+ * QT_DEVICE_PIXEL_RATIO. Thus all Qt apps will scale reasonably well, with UITK-based apps
+ * scaling perfectly for any desired scale (i.e. non-integer scales).
+ *
+ * However UITK developers can just use this Units class as usual, and will be almost totally
+ * isolated from Qt's own scaling concept.
+ */
+
 UCUnits::UCUnits(QObject *parent) :
-    QObject(parent)
+    QObject(parent),
+    m_devicePixelRatio(qGuiApp->devicePixelRatio())
 {
-    m_gridUnit = getenvFloat(ENV_GRID_UNIT_PX, DEFAULT_GRID_UNIT_PX);
+    // If GRID_UNIT_PX set, always use it. If not, 1GU := DEFAULT_GRID_UNIT_PX * m_devicePixelRatio
+    if (qEnvironmentVariableIsSet(ENV_GRID_UNIT_PX)) {
+        m_gridUnit = getenvFloat(ENV_GRID_UNIT_PX, DEFAULT_GRID_UNIT_PX);
+    } else {
+        m_gridUnit = DEFAULT_GRID_UNIT_PX * m_devicePixelRatio;
+    }
 }
 
 /*!
@@ -89,14 +127,15 @@ void UCUnits::setGridUnit(float gridUnit)
 
     Returns the number of pixels \a value density independent pixels correspond to.
 */
+// Density-independent pixels (and not physical pixels) because Qt sizes in terms of density-independent pixels.
 float UCUnits::dp(float value)
 {
     const float ratio = m_gridUnit / DEFAULT_GRID_UNIT_PX;
     if (value <= 2.0) {
         // for values under 2dp, return only multiples of the value
-        return qRound(value * qFloor(ratio));
+        return qRound(value * qFloor(ratio)) / m_devicePixelRatio;
     } else {
-        return qRound(value * ratio);
+        return qRound(value * ratio) / m_devicePixelRatio;
     }
 }
 
@@ -105,9 +144,11 @@ float UCUnits::dp(float value)
 
     Returns the number of pixels \a value grid units correspond to.
 */
+// Density-independent pixels (and not physical pixels) because Qt sizes in terms of density-independent pixels.
+
 float UCUnits::gu(float value)
 {
-    return qRound(value * m_gridUnit);
+    return qRound(value * m_gridUnit) / m_devicePixelRatio;
 }
 
 QString UCUnits::resolveResource(const QUrl& url)

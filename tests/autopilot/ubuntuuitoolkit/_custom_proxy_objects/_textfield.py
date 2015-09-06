@@ -18,7 +18,7 @@ import logging
 
 from autopilot import logging as autopilot_logging
 
-from ubuntuuitoolkit._custom_proxy_objects import _common
+from ubuntuuitoolkit._custom_proxy_objects import _common, _mainview
 
 logger = logging.getLogger(__name__)
 
@@ -73,24 +73,30 @@ class TextField(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
     @autopilot_logging.log_action(logger.debug)
     def _clear_with_keys(self):
-        if self._is_keyboard_osk():
-            # Touch tap currently doesn't have a press_duration parameter, so
-            # we can't select all the text.
-            # Reported as bug http://pad.lv/1268782 --elopio - 2014-01-13
-            self._go_to_end()
-            while self.text != '':
-                self._delete_one_character_using_osk()
-        else:
-            self._select_all()
-            self.keyboard.press_and_release('BackSpace')
+        self._select_all()
+        self.keyboard.press_and_release('\b')
         if not self.is_empty():
             raise _common.ToolkitException('Failed to clear the text field.')
 
     @autopilot_logging.log_action(logger.debug)
     def _select_all(self):
         if not self._is_all_text_selected():
-            self._go_to_start()
-            self._go_to_end(select_text=True)
+            if self._is_keyboard_osk():
+                cursor = self.select_single('TextCursor', visible=True)
+                self.pointing_device.click_object(
+                    cursor, time_between_events=0.5)
+                self.pointing_device.click_object(
+                    cursor, time_between_events=0.5)
+                root = self.get_root_instance()
+                main_view = root.select_single(_mainview.MainView)
+                popover = main_view.get_text_input_context_menu(
+                    'text_input_contextmenu')
+                popover.click_option_by_text('Select All')
+            else:
+                self._go_to_start()
+                self.keyboard.press('Shift')
+                self._go_to_end()
+                self.keyboard.release('Shift')
 
     def _is_all_text_selected(self):
         return self.text == self.selectedText
@@ -100,39 +106,20 @@ class TextField(_common.UbuntuUIToolkitCustomProxyObjectBase):
         return _common.is_maliit_process_running()
 
     @autopilot_logging.log_action(logger.debug)
-    def _go_to_end(self, select_text=False):
-        key = 'End'
-        if select_text:
-            key = 'Shift+' + key
+    def _go_to_end(self):
         if self._is_keyboard_osk():
-            # XXX Here we are cheating because the on-screen keyboard doesn't
-            # have an END key. --elopio - 2014-08-20
-            from autopilot.input import Keyboard
-            keyboard = Keyboard.create()
+            from ubuntu_keyboard.emulators.keyboard import Keyboard
+            Keyboard().send_end_key()
         else:
-            keyboard = self.keyboard
-        keyboard.press_and_release(key)
+            self.keyboard.press_and_release('End')
 
     @autopilot_logging.log_action(logger.debug)
-    def _go_to_start(self, select_text=False):
-        key = 'Home'
-        if select_text:
-            key = 'Shift+' + key
+    def _go_to_start(self):
         if self._is_keyboard_osk():
-            from autopilot.input import Keyboard
-            keyboard = Keyboard.create()
+            from ubuntu_keyboard.emulators.keyboard import Keyboard
+            Keyboard().send_home_key()
         else:
-            keyboard = self.keyboard
-        keyboard.press_and_release(key)
-
-    @autopilot_logging.log_action(logger.debug)
-    def _delete_one_character_using_osk(self):
-        original_text = self.text
-        # We delete with backspace because the on-screen keyboard has
-        # that key.
-        self.keyboard.press_and_release('backspace')
-        if len(self.text) != len(original_text) - 1:
-            raise _common.ToolkitException('Failed to delete one character.')
+            self.keyboard.press_and_release('Home')
 
     @autopilot_logging.log_action(logger.debug)
     def _ensure_focused(self):

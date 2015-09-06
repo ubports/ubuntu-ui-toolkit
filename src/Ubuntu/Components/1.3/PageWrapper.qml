@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.4
-import "../1.2/PageWrapperUtils.js" as Utils
+import "PageWrapperUtils.js" as Utils
 
 /*!
     \internal
@@ -66,6 +66,22 @@ PageTreeNode {
     property Item pageHolder
 
     /*!
+      Instructs to load the page synchronously or not. Used by AdaptivePageLayout.
+      True by default to keep PageStack integrity.
+      */
+    property bool synchronous: true
+
+    /*!
+      Incubator for the asynchronous page creation
+      */
+    property var incubator: null
+
+    /*!
+      Signal emitted when incubator completes page loading.
+      */
+    signal pageLoaded()
+
+    /*!
       Returns true if the current PageWrapper is a child of the given page
       */
     function childOf(page) {
@@ -114,7 +130,14 @@ PageTreeNode {
         if (pageWrapper.object) pageWrapper.object = null;
         Utils.initPage(pageWrapper);
         if (pageWrapper.active && reference) {
-            Utils.activate(pageWrapper);
+            if ((pageWrapper.incubator && pageWrapper.incubator.status == Component.Ready) || pageWrapper.object) {
+                Utils.activate(pageWrapper);
+            } else {
+                // asynchronous, connect page activation
+                pageLoaded.connect(function () {
+                    Utils.activate(pageWrapper);
+                });
+            }
         }
     }
 

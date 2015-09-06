@@ -296,7 +296,6 @@ protected:
 
 private Q_SLOTS:
     void _q_imagePropertiesChanged();
-    void _q_openglContextDestroyed();
     void _q_gridUnitChanged();
     void _q_providerDestroyed(QObject* object=0);
     void _q_textureChanged();

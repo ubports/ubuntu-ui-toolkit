@@ -32,7 +32,7 @@ ActionSelectionPopover {
     /*!
       The background color of the tabs panel and the actions overflow panel.
      */
-    property color backgroundColor: styledItem.panelColor
+    property color backgroundColor: theme.palette.normal.background
 
     /*!
       The background color of the tapped item in the panel.

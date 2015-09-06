@@ -21,10 +21,22 @@ import Ubuntu.Components 1.1
 TestCase {
      name: "ActionItemAPI"
 
+     SignalSpy {
+         id: triggerSpy
+         target: action1
+         signalName: "triggered"
+     }
+
      function initTestCase() {
          compare(item1.action, null, "action is null by default")
          compare(item1.text, "", "text is empty string set by default")
          compare(item1.iconSource, "", "iconSource is empty string by default")
+         compare(item1.iconName, "", "iconSource is empty string by default")
+     }
+
+     function cleanup() {
+         item1.action = null;
+         triggerSpy.clear();
      }
 
      function test_action() {
@@ -33,10 +45,8 @@ TestCase {
          compare(item1.action, action1, "Action can be set")
          compare(item1.text, action1.text, "text is automatically set to action text")
          compare(item1.iconSource, action1.iconSource, "iconSource is automatically set to action iconSource")
-         var numTriggers = action1.triggerCount
          item1.triggered(null)
-         compare(action1.triggerCount, numTriggers+1, "ActionItem triggered() triggers action")
-         item1.action = null
+         triggerSpy.wait(400);
      }
 
      // NOTE: This test must be run AFTER test_action(), otherwise setting the action will
@@ -89,7 +99,5 @@ TestCase {
          id: action1
          text: "actionText"
          iconSource: "imageURL"
-         property int triggerCount: 0
-         onTriggered: triggerCount++
      }
 }

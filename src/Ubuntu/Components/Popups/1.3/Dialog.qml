@@ -153,7 +153,8 @@ PopupBase {
 
     StyledItem {
         id: foreground
-        activeFocusOnPress: true
+        // Grab focus when Dialog is shown
+        focus: visible
         width: Math.min(minimumWidth, dialog.width)
         anchors.centerIn: parent
 

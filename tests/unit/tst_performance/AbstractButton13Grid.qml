@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,26 +14,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.4
+import QtQuick 2.0
+import Ubuntu.Components 1.3
 
-/*!
-    \qmltype Header
-    \internal
-    \deprecated
-*/
-AppHeader {
-
-    /*!
-      \internal
-      We need this property so QML exposes this class as Header instead of
-      AppHeader. This way autopilot can select the deprecated header.
-    */
-    property string _for_autopilot
-
-    Component.onCompleted: {
-        print("WARNING: Header is an internal component of Ubuntu.Components and" +
-              "its API may change or be removed at any moment." +
-              "Please use MainView and Page instead."
-              );
+Grid {
+    width: 800
+    height: 600
+    rows: 16
+    columns: 16
+    Repeater {
+        model: 16*16
+        AbstractButton {
+        }
     }
 }

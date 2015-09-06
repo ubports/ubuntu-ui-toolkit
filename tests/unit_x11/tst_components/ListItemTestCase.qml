@@ -34,6 +34,7 @@ UbuntuTestCase {
         if (item.hasOwnProperty("leadingActions")) {
             signalSpy.target = item;
             signalSpy.signalName = signalName;
+            signalSpy.clear();
         }
     }
     // wait on the previosuly set up spy
@@ -133,5 +134,10 @@ UbuntuTestCase {
         // needs one more mouse release
         mouseRelease(dragArea, dragPos.x, dragPos.y + dy);
         spyWait();
+    }
+
+    function expand(item, expand) {
+        item.expansion.expanded = expand;
+        wait(400);
     }
 }

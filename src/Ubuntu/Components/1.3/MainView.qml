@@ -98,24 +98,28 @@ MainViewBase {
 
     /*!
       \qmlproperty bool MainView::automaticOrientation
+      \deprecated
 
       Sets whether the application will be automatically rotating when the
       device is.
 
-      The default value is false.
+      This property has no significance anymore as the shell rotates.
     */
-    property alias automaticOrientation: canvas.automaticOrientation
+    property bool automaticOrientation: false
 
     /*!
       \internal
       Use default property to ensure children added do not draw over the header.
      */
     default property alias contentsItem: contents.data
-    OrientationHelper {
+    Item {
         id: canvas
-
-        automaticOrientation: false
-        anchorToKeyboard: mainView.anchorToKeyboard
+        anchors {
+            fill: parent
+            bottomMargin: mainView.anchorToKeyboard &&
+                UbuntuApplication.inputMethod.visible ?
+                    UbuntuApplication.inputMethod.keyboardRectangle.height : 0
+        }
 
         // clip the contents so that it does not overlap the header
         Item {
@@ -187,9 +191,6 @@ MainViewBase {
                         window.title = headerItem.title
                 }
             }
-
-            // Use of the deprecated toolbar is no longer supported in MainView 1.2.
-            useDeprecatedToolbar: false
         }
 
         Connections {

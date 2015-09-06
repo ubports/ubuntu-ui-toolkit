@@ -99,7 +99,7 @@ import Ubuntu.Components.Popups 1.3
     \note During text selection all interactive parent Flickables are turned off.
 */
 
-ActionItem {
+Ubuntu.ActionItem {
     id: control
 
     implicitWidth: units.gu(25)
@@ -829,6 +829,7 @@ ActionItem {
         preventStealing: false
         // forward mouse events to input so we can handle those uniformly
         Ubuntu.Mouse.forwardTo: [inputHandler]
+        cursorShape: Qt.IBeamCursor
     }
 
     Text { id: fontHolder }
@@ -895,7 +896,7 @@ ActionItem {
         }
     }
 
-    AbstractButton {
+    Ubuntu.AbstractButton {
         id: clearButton
         objectName: "clear_button"
         activeFocusOnPress: false

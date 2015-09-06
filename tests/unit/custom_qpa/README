@@ -1,0 +1,15 @@
+In order to correctly test Qt's Device Pixel Ratio system in a 
+unit test, one needs to have the QPA plugin for the platform
+support reading the DEVICE_PIXEL_RATIO environment variable.
+
+These unit tests use the "minimal" QPA plugin, which 
+unfortunately does not support that variable.
+
+The contents of this directory is a near-complete duplicate of 
+"minimal" QPA plugin source from Qt, with added support for the
+DEVICE_PIXEL_RATIO environment variable.
+
+One can use this plugin as follows:
+
+DEVICE_PIXEL_RATIO=2 QT_QPA_PLATFORM_PLUGIN_PATH=$PWD \
+    QT_QPA_PLATFORM=custom qmlscene ~/tmp.qml

@@ -1,5 +1,6 @@
+
 /*
- * Copyright 2012-2013 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -13,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Author: Christian Dywan <christian.dywan@canonical.com>
+ * Author: Nick Dedekind <nick.dedekind@gmail.com>
  */
 
 #include <QtCore/QString>
@@ -39,7 +40,7 @@ namespace C {
 #include "ucunits.h"
 #include "i18n.h"
 
-class tst_I18n : public QObject
+class tst_I18n_RelativeTime : public QObject
 {
     Q_OBJECT
 
@@ -47,7 +48,7 @@ private:
     QQuickView *view;
 
 public:
-    tst_I18n() :
+    tst_I18n_RelativeTime() :
         view(0)
     {
     }
@@ -76,11 +77,11 @@ private Q_SLOTS:
     {
         // Set test locale folder in the environment
         // Using setenv because QProcessEnvironment ignores changes
-        QString testAppDir(QDir::currentPath() + "/localizedApp");
+        QString testAppDir(QDir::currentPath() + "/ubuntu-ui-toolkit");
         setenv("APP_DIR", testAppDir.toUtf8(), 1);
 
         // Verify that we set it correctly
-        QVERIFY(QFileInfo(testAppDir + "/share/locale/en/LC_MESSAGES/localizedApp.mo").exists());
+        QVERIFY(QFileInfo(testAppDir + "/share/locale/en/LC_MESSAGES/ubuntu-ui-toolkit.mo").exists());
 
         QString modules(UBUNTU_QML_IMPORT_PATH);
         QVERIFY(QDir(modules).exists());
@@ -100,7 +101,7 @@ private Q_SLOTS:
         delete view;
     }
 
-    void testCase_LocalizedApp()
+    void testCase_RelativeTime()
     {
         UbuntuI18n* i18n = &UbuntuI18n::instance();
         // By default no domain is set
@@ -109,50 +110,54 @@ private Q_SLOTS:
         // Start out with no localization
         i18n->setLanguage("C");
         // Load the app which should pick up the locale we prepared
-        QQuickItem *root = loadTest("src/LocalizedApp.qml");
+        QQuickItem *root = loadTest("src/RelativeTime.qml");
         QVERIFY(root);
         QQuickItem *mainView = root;
-        // Sanity checks to avoid confusion
-        QString applicationName(mainView->property("applicationName").toString());
-        QCOMPARE(applicationName, QString("localizedApp"));
-        QCOMPARE(applicationName, QCoreApplication::applicationName());
-        QCOMPARE(applicationName, i18n->domain());
 
         // There no translation happens
         QQuickItem* page(testItem(mainView, "page"));
         QVERIFY(page);
-        QCOMPARE(page->property("title").toString(), QString("Welcome"));
-        QQuickItem* button(testItem(page, "button"));
-        QVERIFY(button);
-        QCOMPARE(button->property("text").toString(), QString("Count the kilometres"));
-        QQuickItem* all1(testItem(page, "all1"));
-        QVERIFY(all1);
-        QCOMPARE(all1->property("text").toString(), QString("All"));
-        QQuickItem* all2(testItem(page, "all2"));
-        QVERIFY(all2);
-        QCOMPARE(all2->property("text").toString(), QString("All"));
+
+        QQuickItem* timeFarAway(testItem(page, "timeFarAway"));
+        QVERIFY(timeFarAway);
+        QCOMPARE(timeFarAway->property("text").toString(),
+                 QDateTime(QDate(2000,1,1), QTime(0,0,0,0)).toString("ddd d MMM'\u2003'HH:mm"));
+        QQuickItem* timeNow(testItem(page, "timeNow"));
+        QVERIFY(timeNow);
+        QCOMPARE(timeNow->property("text").toString(), QString("Now"));
+        QQuickItem* timeMinuteBefore(testItem(page, "timeMinuteBefore"));
+        QVERIFY(timeMinuteBefore);
+        QCOMPARE(timeMinuteBefore->property("text").toString(), QString("1 minute ago"));
+        QQuickItem* timeMinuteAfter(testItem(page, "timeMinuteAfter"));
+        QVERIFY(timeMinuteAfter);
+        QCOMPARE(timeMinuteAfter->property("text").toString(), QString("1 minute"));
+        QQuickItem* tenMinutesBefore(testItem(page, "tenMinutesBefore"));
+        QVERIFY(tenMinutesBefore);
+        QCOMPARE(tenMinutesBefore->property("text").toString(), QString("10 minutes ago"));
+        QQuickItem* tenMinutesAfter(testItem(page, "tenMinutesAfter"));
+        QVERIFY(tenMinutesAfter);
+        QCOMPARE(tenMinutesAfter->property("text").toString(), QString("10 minutes"));
 
         // There no translation happens in C++ either
-        QCOMPARE(i18n->dtr(i18n->domain(), QString("Welcome")), QString("Welcome"));
-        QCOMPARE(i18n->tr(QString("Count the kilometres")), QString("Count the kilometres"));
-        QCOMPARE(i18n->ctr(QString("All Contacts"), QString("All")), QString("All"));
-        QCOMPARE(i18n->ctr(QString("All Calls"), QString("All")), QString("All"));
+        QCOMPARE(i18n->relativeDateTime(QDateTime::currentDateTime()), QString("Now"));
+        QCOMPARE(i18n->relativeDateTime(QDateTime(QDate(2000,1,1), QTime(0,0,0,0))),
+                 QDateTime(QDate(2000,1,1), QTime(0,0,0,0)).toString("ddd d MMM'\u2003'HH:mm"));
+        QCOMPARE(i18n->relativeDateTime(QDateTime::currentDateTime().addSecs(-60)), QString("1 minute ago"));
+        QCOMPARE(i18n->relativeDateTime(QDateTime::currentDateTime().addSecs(60)), QString("1 minute"));
+        QCOMPARE(i18n->relativeDateTime(QDateTime::currentDateTime().addSecs(-600)), QString("10 minutes ago"));
+        QCOMPARE(i18n->relativeDateTime(QDateTime::currentDateTime().addSecs(600)), QString("10 minutes"));
 
         // Was the locale folder detected and set?
         QString boundDomain(C::bindtextdomain(i18n->domain().toUtf8(), ((const char*)0)));
-        QString testAppDir(QDir::currentPath() + "/localizedApp");
+        QString testAppDir(QDir::currentPath() + "/ubuntu-ui-toolkit");
         QString expectedLocalePath(QDir(testAppDir).filePath("share/locale"));
         QCOMPARE(boundDomain, expectedLocalePath);
         // Is the domain gettext uses correct?
         QString gettextDomain(C::textdomain(((const char*)0)));
         QCOMPARE(gettextDomain, i18n->domain());
         // Is the compiled en_US message catalog in the right location?
-        QString messageCatalog(boundDomain + "/en/LC_MESSAGES/localizedApp.mo");
+        QString messageCatalog(boundDomain + "/en/LC_MESSAGES/ubuntu-ui-toolkit.mo");
         QVERIFY(QFileInfo(messageCatalog).exists());
-
-        /* For manual testing one can do something like
-            env LANGUAGE=en_US TEXTDOMAINDIR=./tests/unit/tst_i18n/locale/ gettext localizedApp 'Welcome'
-        */
 
         // Check if system has en_US locale, otherwise gettext won't work
         QProcess localeA;
@@ -165,33 +170,24 @@ private Q_SLOTS:
         spy.wait();
 
         // Inspect translated strings in QML
-        QCOMPARE(page->property("title").toString(), QString("Greets"));
-        QCOMPARE(button->property("text").toString(), QString("Count the clicks"));
-        QCOMPARE(all1->property("text").toString(), QString("Todos"));
-        QCOMPARE(all2->property("text").toString(), QString("Todas"));
-        // Only tagged, not actually translated
-        QQuickItem* button2(testItem(page, "button2"));
-        QVERIFY(button2);
-        QCOMPARE(button2->property("text").toString(), QString("Count the kittens"));
-        QQuickItem* all3(testItem(page, "all3"));
-        QVERIFY(all3);
-        QCOMPARE(all3->property("text").toString(), QString("All"));
+        QCOMPARE(timeNow->property("text").toString(), QString("tr:Now"));
+        QCOMPARE(timeMinuteBefore->property("text").toString(), QString("tr:1 minute ago"));
+        QCOMPARE(timeMinuteAfter->property("text").toString(), QString("tr:1 minute"));
+        QCOMPARE(tenMinutesBefore->property("text").toString(), QString("tr:10 minutes ago"));
+        QCOMPARE(tenMinutesAfter->property("text").toString(), QString("tr:10 minutes"));
+        QCOMPARE(timeFarAway->property("text").toString(), QString("tr:FarAway"));
 
         // Translate in C++
-        QCOMPARE(i18n->dtr(i18n->domain(), QString("Welcome")), QString("Greets"));
-        QCOMPARE(i18n->tr(QString("Count the kilometres")), QString("Count the clicks"));
-        QCOMPARE(i18n->ctr(QString("All Contacts"), QString("All")), QString("Todos"));
-        QCOMPARE(i18n->ctr(QString("All Calls"), QString("All")), QString("Todas"));
-        // Only tagged, not actually translated
-        QCOMPARE(i18n->tag(QString("All kittens")), QString("All kittens"));
-        QCOMPARE(i18n->tag(QString("All Cats"), QString("All")), QString("All"));
-        // Sanity-check that the test strings would otherwise work and not no-op by accident
-        QCOMPARE(i18n->tr(QString("Count the kittens")), QString("Contar los gatitos"));
-        QCOMPARE(i18n->ctr(QString("All Cats"), QString("All")), QString("Cada"));
+        QCOMPARE(i18n->relativeDateTime(QDateTime::currentDateTime()), QString("tr:Now"));
+        QCOMPARE(i18n->relativeDateTime(QDateTime(QDate(2000,1,1), QTime(0,0,0,0))),  QString("tr:FarAway"));
+        QCOMPARE(i18n->relativeDateTime(QDateTime::currentDateTime().addSecs(-60)), QString("tr:1 minute ago"));
+        QCOMPARE(i18n->relativeDateTime(QDateTime::currentDateTime().addSecs(60)), QString("tr:1 minute"));
+        QCOMPARE(i18n->relativeDateTime(QDateTime::currentDateTime().addSecs(-600)), QString("tr:10 minutes ago"));
+        QCOMPARE(i18n->relativeDateTime(QDateTime::currentDateTime().addSecs(600)), QString("tr:10 minutes"));
     }
 };
 
-// The C++ equivalent of QTEST_MAIN(tst_I18n) with added initialization
+// The C++ equivalent of QTEST_MAIN(tst_I18n_RelativeTime) with added initialization
 int main(int argc, char *argv[])
 {
     // LC_ALL would fail the test case; it must be unset before execution
@@ -199,8 +195,8 @@ int main(int argc, char *argv[])
 
     QGuiApplication app(argc, argv);
     app.setAttribute(Qt::AA_Use96Dpi, true);
-    tst_I18n* testObject = new tst_I18n();
+    tst_I18n_RelativeTime* testObject = new tst_I18n_RelativeTime();
     return QTest::qExec(static_cast<QObject*>(testObject), argc, argv);
 }
 
-#include "tst_i18n.moc"
+#include "tst_i18n_RelativeTime.moc"

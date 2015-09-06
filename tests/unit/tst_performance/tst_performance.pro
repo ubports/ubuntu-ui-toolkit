@@ -31,4 +31,6 @@ OTHER_FILES += \
     PaletteConfigurationOneColor.qml \
     PaletteConfigurationAllColors.qml \
     StyledItemNewTheming.qml \
+    AbstractButtonGrid.qml \
+    AbstractButton13Grid.qml \
     LabelGrid13.qml
