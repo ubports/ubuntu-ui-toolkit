@@ -17,7 +17,7 @@
 #ifndef UCLABEL_H
 #define UCLABEL_H
 
-#include <private/qquicktext_p.h>
+#include <QtQuick/private/qquicktext_p.h>
 
 class UCLabel : public QQuickText
 {
