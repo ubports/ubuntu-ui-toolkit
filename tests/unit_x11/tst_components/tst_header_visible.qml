@@ -30,6 +30,8 @@ Item {
         }
         height: units.gu(8)
 
+        flickable: flickable
+
         id: header
 //        title: "Visibility testing"
 //        flickable: flickable

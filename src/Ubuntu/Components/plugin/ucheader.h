@@ -18,24 +18,27 @@
 #define UCHEADER_H
 
 #include "ucstyleditembase.h"
-//class QQuickBehavior;
+#include <QtCore/QPointer>
+class QQuickFlickable;
 
 class UCHeader : public UCStyledItemBase
 {
     Q_OBJECT
-//    Q_PROPERTY(bool visible READ visible WRITE setVisible)
+    Q_PROPERTY(QQuickFlickable* flickable READ flickable WRITE setFlickable NOTIFY flickableChanged)
+    //    Q_PROPERTY(bool visible READ visible WRITE setVisible)
 
 public:
-    // TODO TIM: why is this explicit??
     explicit UCHeader(QQuickItem *parent = 0);
 
-//protected:
-////    void classBegin();
-////    void componentComplete();
+    QQuickFlickable* flickable();
+    void setFlickable(QQuickFlickable* newFlickable);
+
+Q_SIGNALS:
+    void flickableChanged();
 
 private:
     bool m_visible;
-//    QQuickBehavior *m_behavior_on_y;
+    QPointer<QQuickFlickable> m_flickable;
 };
 
 #endif // UCHEADER_H

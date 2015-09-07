@@ -16,7 +16,7 @@
 
 #include "ucheader.h"
 #include <QDebug>
-//#include <QtQuick/private/qquickbehavior_p.h>
+#include <QtQuick/private/qquickflickable_p.h>
 
 /*!
     \qmltype Header
@@ -28,23 +28,20 @@
 
 UCHeader::UCHeader(QQuickItem *parent)
     : UCStyledItemBase(parent)
-//    , m_behavior_on_y(new QQuickBehavior)
+    , m_flickable(NULL)
 {
-    // TODO
     qDebug() << "Header created!";
-    // TODO TIM: Don't use Behavior here. Use an Animation directly
-    //  when show/hide is called.
-//    m_behavior_on_y = new QQuickBehavior(this);
-//    m_behavior_on_y->setParent(this);
-//    m_behavior_on_y->setTarget(this->y());
 }
 
-//void UCHeader::classBegin()
-//{
-//    UCStyledItemBase::classBegin();
-//}
+QQuickFlickable* UCHeader::flickable() {
+    return m_flickable.data();
+}
 
-//void UCHeader::componentComplete()
-//{
-//    UCStyledItemBase::componentComplete();
-//}
+void UCHeader::setFlickable(QQuickFlickable *newFlickable) {
+    qDebug() << "Setting flickable.";
+
+    Q_UNUSED(newFlickable);
+    //TODO
+}
+
+
