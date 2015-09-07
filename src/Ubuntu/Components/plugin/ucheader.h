@@ -21,7 +21,7 @@
 #include <QtCore/QPointer>
 class QQuickFlickable;
 
-class UCHeader : public UCStyledItemBase
+class UCHeader : public QQuickItem //UCStyledItemBase
 {
     Q_OBJECT
     Q_PROPERTY(QQuickFlickable* flickable READ flickable WRITE setFlickable NOTIFY flickableChanged)
@@ -31,14 +31,19 @@ public:
     explicit UCHeader(QQuickItem *parent = 0);
 
     QQuickFlickable* flickable();
-    void setFlickable(QQuickFlickable* newFlickable);
+    void setFlickable(QQuickFlickable* flickable);
 
 Q_SIGNALS:
     void flickableChanged();
 
+private Q_SLOTS:
+    void _q_scrolledContents();
+
 private:
     QPointer<QQuickFlickable> m_flickable;
+//    QQuickFlickable* m_flickable;
     //    bool m_visible;
+    qreal m_flickable_contentY;
 };
 
 #endif // UCHEADER_H
