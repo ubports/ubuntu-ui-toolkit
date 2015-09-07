@@ -389,22 +389,6 @@ Ubuntu.Components.Header 1.0 0.1: AppHeader
     property bool useDeprecatedToolbar
 Ubuntu.Components.ListItems.Header 1.3: Item
     property string text
-Ubuntu.Components.Header 1.3: AppHeader
-    property string _for_autopilot
-    property var actions
-    property bool animate
-    property QtObject config
-    property Item contents
-    property color dividerColor
-    property Flickable flickable
-    function var show()
-    function var hide()
-    readonly property bool moving
-    property var pageStack
-    property color panelColor
-    property var tabsModel
-    property string title
-    property bool useDeprecatedToolbar
 Ubuntu.Components.Icon 1.0 0.1: Item
     property color color
     property color keyColor
@@ -470,6 +454,7 @@ Ubuntu.Components.ListItem 1.2: StyledItem
     property bool selected
     property ListItemActions trailingActions
 Ubuntu.Components.ListItem 1.3: ListItem
+    readonly property UCListItemExpansion expansion
 Ubuntu.Components.ListItemActions 1.2: QtObject
     readonly property Action actions
     default readonly property QtObject data
@@ -489,6 +474,7 @@ Ubuntu.Components.Styles.ListItemStyle 1.3 1.2: Item
     readonly property bool animatePanels
     property Item dragPanel
     property PropertyAnimation dropAnimation
+    readonly property Flickable flickable 1.3
     readonly property int listItemIndex 1.3
     function swipeEvent(SwipeEvent event)
     function rebound()
@@ -1261,6 +1247,9 @@ Ubuntu.Components.ToolbarItems 1.3: Item
 UCListItemDivider: Item
     property color colorFrom
     property color colorTo
+UCListItemExpansion: QtObject
+    property bool expanded
+    property double height
 UCStateSaverAttached: QtObject
     property bool enabled
     property string properties
@@ -1408,6 +1397,14 @@ Ubuntu.Components.ViewItems 1.2: QtObject
     signal dragUpdated(ListItemDrag event)
     property bool selectMode
     property QList<int> selectedIndices
+Ubuntu.Components.ViewItems 1.3: ViewItems
+    property QList<int> expandedIndices
+    property int expansionFlags
+    signal expandedIndicesChanged(QList<int> indices)
+Ubuntu.Components.ViewItems.ExpansionFlag: Enum
+    CollapseOnOutsidePress
+    Exclusive
+    UnlockExpanded
 Ubuntu.Components.i18n 1.0 0.1: QtObject
     property string domain
     property string language

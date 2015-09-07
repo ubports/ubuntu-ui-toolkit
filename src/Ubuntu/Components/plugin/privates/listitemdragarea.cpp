@@ -47,13 +47,12 @@ ListItemDragArea::ListItemDragArea(QQuickItem *parent)
     setObjectName("drag_area");
 }
 
-void ListItemDragArea::init()
+void ListItemDragArea::init(UCViewItemsAttached *viewItems)
 {
     setParentItem(static_cast<QQuickItem*>(parent()));
     QQuickAnchors *anchors = QQuickItemPrivate::get(this)->anchors();
     anchors->setFill(parentItem());
-    viewAttached = static_cast<UCViewItemsAttached*>(
-                qmlAttachedPropertiesObject<UCViewItemsAttached>(listView));
+    viewAttached = viewItems;
     reset();
 }
 

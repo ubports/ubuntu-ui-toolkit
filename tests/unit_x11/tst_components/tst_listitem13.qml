@@ -17,8 +17,8 @@
 import QtQuick 2.4
 import QtTest 1.0
 import Ubuntu.Test 1.0
-import Ubuntu.Components 1.2
-import Ubuntu.Components.Styles 1.2
+import Ubuntu.Components 1.3
+import Ubuntu.Components.Styles 1.3
 import QtQml.Models 2.1
 
 Item {
@@ -172,9 +172,9 @@ Item {
         }
     }
 
-    ListItemTestCase {
+    ListItemTestCase13 {
         id: testCase
-        name: "ListItemAPI"
+        name: "ListItem13API"
         when: windowShown
 
         SignalSpy {
@@ -302,6 +302,26 @@ Item {
             clickSpy.target = testItem;
             TestExtras.touchClick(0, testItem, centerOf(testItem));
             clickSpy.wait();
+        }
+
+        SignalSpy {
+            id: visibleSpy
+            signalName: "visibleChanged"
+        }
+
+        function test_context_menu() {
+            mouseClick(testItem, testItem.width / 2, testItem.height / 2, Qt.RightButton);
+            wait(1000);
+            compare(testItem.highlighted, true, "List item didn't highlight on right-click");
+            var context_menu = findChild(main, "listItemContextMenu");
+            verify(context_menu, "Context menu didn't open on right-click");
+            waitForRendering(context_menu);
+            var edit = findChildWithProperty(context_menu, "text", "Edit");
+            verify(edit, "Context menu has no 'Edit' item");
+            visibleSpy.target = context_menu;
+            mouseClick(edit, edit.width / 2, edit.height / 2);
+            compare(edit.text, 'Edit Again', "Item wasn't triggered'");
+            visibleSpy.wait()
         }
 
         function test_no_click_when_swiped() {
