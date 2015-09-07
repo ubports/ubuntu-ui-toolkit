@@ -45,6 +45,9 @@ public:
     void _q_updateCachedHeight();
     void _q_updateProgressionStatus();
 
+    //connect item's UCSlotsAttached properties changes to the right slot
+    void connectAttachedPropertySignals(QQuickItem* item);
+
     bool ready;
     QQuickItem* pressedItem;
 

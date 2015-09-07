@@ -202,6 +202,7 @@ void UCSlotsLayoutPrivate::_q_updateProgressionStatus() {
         chevron->setParentItem(q);
         QQmlEngine::setObjectOwnership(chevron, QQmlEngine::CppOwnership);
 
+        connectAttachedPropertySignals(chevron);
     } else {
         chevron->setVisible(false);
         delete chevron;
@@ -605,6 +606,21 @@ void UCSlotsLayoutPrivate::_q_relayout() {
     }
 }
 
+void UCSlotsLayoutPrivate::connectAttachedPropertySignals(QQuickItem* item) {
+    Q_Q(UCSlotsLayout);
+    UCSlotsAttached *attachedSlot =
+            qobject_cast<UCSlotsAttached*>(qmlAttachedPropertiesObject<UCSlotsLayout>(item));
+
+    if (!attachedSlot) {
+        qDebug() << "SLOTSLAYOUT: invalid attached property!";
+    } else {
+        QObject::connect(attachedSlot, SIGNAL(positionChanged()), q, SLOT(_q_relayout()));
+        QObject::connect(attachedSlot, SIGNAL(leftMarginChanged()), q, SLOT(_q_relayout()));
+        QObject::connect(attachedSlot, SIGNAL(rightMarginChanged()), q, SLOT(_q_relayout()));
+        QObject::connect(attachedSlot, SIGNAL(overrideVerticalPositioningChanged()), q, SLOT(_q_relayout()));
+    }
+}
+
 UCSlotsLayout::UCSlotsLayout(QQuickItem *parent) :
     QQuickItem(*(new UCSlotsLayoutPrivate), parent)
 {
@@ -661,6 +677,13 @@ void UCSlotsLayout::itemChange(ItemChange change, const ItemChangeData &data)
             //we relayout because we have to update the width of the labels
             //TODO: do this in a separate function? do were really have to do the whole relayout?
             QObject::connect(data.item, SIGNAL(widthChanged()), this, SLOT(_q_relayout()));
+
+            //single labels are can't be considered a slot, and we handle the chevron separately
+            //when it's instantiated
+            if (data.item != &d->m_title && data.item != &d->m_subtitle
+                    && data.item != &d->m_subsubtitle && data.item != d->chevron) {
+                d->connectAttachedPropertySignals(data.item);
+            }
 
             //this will also trigger relayout
             d->_q_updateSlotsBBoxHeight();

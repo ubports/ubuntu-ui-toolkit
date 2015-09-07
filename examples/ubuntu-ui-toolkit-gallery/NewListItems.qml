@@ -425,8 +425,6 @@ Template {
                 onPressed: mouse.accepted = false
             }
         }
-
-
     }
 
     TemplateSection {
