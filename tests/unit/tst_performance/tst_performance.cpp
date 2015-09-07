@@ -120,6 +120,7 @@ private Q_SLOTS:
         QTest::newRow("list with new ListItem (no actions) and SlotsLayout with 2 defined labels and 3 slots") << "ListOfSlotsLayout_complex1.qml" << QUrl();
         QTest::newRow("list with new ListItem (inline actions!) and SlotsLayout with 2 defined labels and 3 slots") << "ListOfSlotsLayout_complex2.qml" << QUrl();
         QTest::newRow("list with new ListItem (no actions) and empty SlotsLayoutCpp") << "ListOfEmptySlotsLayoutCpp.qml" << QUrl();
+        QTest::newRow("list with new ListItem (no actions) and empty SlotsLayoutCpp with progression symbol") << "ListOfEmptySlotsLayoutCpp_withProgression.qml" << QUrl();
         QTest::newRow("list with new ListItem (no actions) and SlotsLayoutCpp with 2 defined labels") << "ListOfSlotsLayoutCpp_labelsOnly.qml" << QUrl();
         QTest::newRow("list with new ListItem (no actions) and SlotsLayoutCpp with 2 defined labels and 3 slots") << "ListOfSlotsLayoutCpp_complex1.qml" << QUrl();
         QTest::newRow("list with new ListItem (inline actions!) and SlotsLayoutCpp with 3 labels and 3 slots") << "ListOfSlotsLayoutCpp_complex2.qml" << QUrl();

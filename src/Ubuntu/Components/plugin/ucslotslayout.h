@@ -3,6 +3,7 @@
 
 #include <QtQuick/QQuickItem>
 #include "private/qquicktext_p.h"
+#include "QPixmap"
 
 class UCSlotsAttached;
 class UCSlotsLayoutPrivate;
@@ -18,6 +19,8 @@ class UCSlotsLayout : public QQuickItem
     Q_PROPERTY(qreal rightOffset READ rightOffset WRITE setRightOffsetQML NOTIFY rightOffsetChanged)
     Q_PROPERTY(qreal topOffset READ topOffset WRITE setTopOffsetQML NOTIFY topOffsetChanged)
     Q_PROPERTY(qreal bottomOffset READ bottomOffset WRITE setBottomOffsetQML NOTIFY bottomOffsetChanged)
+    Q_PROPERTY(bool progression READ progression WRITE setProgression NOTIFY progressionChanged)
+    Q_PROPERTY(UCSlotsAttached* progressionSlot READ progressionSlot CONSTANT)
 
     Q_ENUMS(UCSlotPosition)
 
@@ -45,6 +48,11 @@ public:
     void setBottomOffset(qreal val);
     void setBottomOffsetQML(qreal val);
 
+    bool progression() const;
+    void setProgression(bool val);
+
+    UCSlotsAttached* progressionSlot() const;
+
     enum UCSlotPosition { Leading, Trailing };
 
     static UCSlotsAttached *qmlAttachedProperties(QObject *object);
@@ -58,6 +66,7 @@ Q_SIGNALS:
     void rightOffsetChanged();
     void topOffsetChanged();
     void bottomOffsetChanged();
+    void progressionChanged();
 
 protected:
     Q_DECLARE_PRIVATE(UCSlotsLayout)
@@ -75,6 +84,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_relayout())
     Q_PRIVATE_SLOT(d_func(), void _q_updateCachedHeight())
     Q_PRIVATE_SLOT(d_func(), void _q_updateSlotsBBoxHeight())
+    Q_PRIVATE_SLOT(d_func(), void _q_updateProgressionStatus())
 
 };
 
@@ -115,6 +125,27 @@ private:
     qreal m_leftMargin;
     qreal m_rightMargin;
     bool m_overrideVerticalPositioning;
+};
+
+class UCSlotsLayoutChevronPrivate;
+class UCSlotsLayoutChevron : public QQuickPaintedItem
+{
+    Q_OBJECT
+
+public:
+    explicit UCSlotsLayoutChevron(QQuickItem *parent = 0);
+    void paint(QPainter *painter);
+
+public Q_SLOTS:
+    void updateGuValues();
+
+protected:
+    Q_DECLARE_PRIVATE(UCSlotsLayoutChevron)
+
+private:
+    void reloadIcon();
+    QPixmap progressionPixmap;
+
 };
 
 QML_DECLARE_TYPEINFO(UCSlotsLayout, QML_HAS_ATTACHED_PROPERTIES)

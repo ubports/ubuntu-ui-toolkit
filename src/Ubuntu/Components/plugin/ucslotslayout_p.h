@@ -13,6 +13,10 @@
 //we want a different top/bottom margin if any of the slot is taller than this
 #define SLOTSLAYOUT_TOPBOTTOMMARGIN_SIZETHRESHOLD 4
 
+//TODO: Update this when the values are final
+#define CHEVRON_DEFAULT_HEIGHT_GU                 2.5
+#define CHEVRON_DEFAULT_WIDTH_GU                  2
+
 class UCSlotsLayoutPrivate : QQuickItemPrivate
 {
     Q_DECLARE_PUBLIC(UCSlotsLayout)
@@ -39,6 +43,7 @@ public:
     void _q_updateSlotsBBoxHeight();
     void _q_updateLabelsAnchorsAndBBoxHeight();
     void _q_updateCachedHeight();
+    void _q_updateProgressionStatus();
 
     bool ready;
     QQuickItem* pressedItem;
@@ -61,6 +66,10 @@ public:
     qreal rightOffset;
     qreal topOffset;
     qreal bottomOffset;
+
+    //Show the chevron, name taken from old ListItem API to minimize changes
+    bool progression;
+    UCSlotsLayoutChevron* chevron;
 
     //once the dev tries to change the offsets (and he does so via QML) we'll stop
     //updating offset's value, for instance when gu value changes or when the visual

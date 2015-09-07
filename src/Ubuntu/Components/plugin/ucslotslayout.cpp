@@ -2,7 +2,8 @@
 #include "ucslotslayout.h"
 #include "ucslotslayout_p.h"
 #include "ucfontutils.h"
-
+#include "QQmlEngine"
+#include "unitythemeiconprovider.h"
 
 UCSlotsAttached::UCSlotsAttached(QObject *object)
     : QObject(object)
@@ -84,6 +85,8 @@ UCSlotsLayoutPrivate::UCSlotsLayoutPrivate()
     , rightOffset(UCUnits::instance().gu(SLOTSLAYOUT_DEFAULTLAYOUTSIDEMARGINS_GU))
     , topOffset(UCUnits::instance().gu(SLOTSLAYOUT_DEFAULTLAYOUTSIDEMARGINS_GU))
     , bottomOffset(UCUnits::instance().gu(SLOTSLAYOUT_DEFAULTLAYOUTSIDEMARGINS_GU))
+    , progression(false)
+    , chevron(0)
     , leftOffsetWasSetFromQml(false)
     , rightOffsetWasSetFromQml(false)
     , topOffsetWasSetFromQml(false)
@@ -105,6 +108,7 @@ void UCSlotsLayoutPrivate::init()
     QObject::connect(q, SIGNAL(rightOffsetChanged()), q, SLOT(_q_relayout()));
     QObject::connect(q, SIGNAL(topOffsetChanged()), q, SLOT(_q_updateSlotsBBoxHeight()));
     QObject::connect(q, SIGNAL(bottomOffsetChanged()), q, SLOT(_q_updateSlotsBBoxHeight()));
+    QObject::connect(q, SIGNAL(progressionChanged()), q, SLOT(_q_updateProgressionStatus()));
 
     // connect theme changes
     //QObject::connect(q, SIGNAL(themeChanged()),
@@ -177,6 +181,34 @@ void UCSlotsLayoutPrivate::_q_updateCachedHeight() {
         }
         _q_cachedHeight = q->height();
     }
+}
+
+void UCSlotsLayoutPrivate::_q_updateProgressionStatus() {
+    Q_Q(UCSlotsLayout);
+    if (progression) {
+        //No parents on purpose! We'll set the parent after we force the creation of QQmlData,
+        //otherwise qmlAttachedPropertiesObject in the relayout function (triggered by parent's ChildrenAdded signal)
+        //will fail
+        chevron = new UCSlotsLayoutChevron;
+
+        //NOTE: this may change in the future as it's an implementation detail
+        //of the current Qt (5.4.2)
+        //This line will force the creation of QQmlData for the chevron.
+        //without this, qmlAttachedPropertiesObject on the chevron will fail,
+        //as it was created on c++ side!
+        QQmlData::get(chevron, true);
+
+        chevron->setParent(q);
+        chevron->setParentItem(q);
+        QQmlEngine::setObjectOwnership(chevron, QQmlEngine::CppOwnership);
+
+    } else {
+        chevron->setVisible(false);
+        delete chevron;
+        chevron = 0;
+    }
+
+    Q_EMIT q->relayoutNeeded();
 }
 
 void UCSlotsLayoutPrivate::setDefaultLabelsProperties() {
@@ -360,9 +392,11 @@ void UCSlotsLayoutPrivate::_q_relayout() {
     for (int i=0; i<q->childItems().length(); i++) {
         QQuickItem* child = qobject_cast<QQuickItem*>(q->childItems().at(i));
 
-        //NOTE: skip C++ labels, qmlAttachedProperties will fail on them if none of their properties is initialized
-        //via QML
-        if (child == &m_title || child == &m_subtitle || child == &m_subsubtitle) {
+        //NOTE: skip C++ labels, because we do custom layout for them (and also because
+        //qmlAttachedProperties will fail on them if none of their properties is initialized via QML)
+        //We also skip the chevron as we handle it separately later
+        if (child == &m_title || child == &m_subtitle
+                || child == &m_subsubtitle || child == chevron) {
             continue;
         }
 
@@ -387,6 +421,21 @@ void UCSlotsLayoutPrivate::_q_relayout() {
             totalWidth += static_cast<QQuickItem*>(child)->width() + attached->leftMargin() + attached->rightMargin();
         } else {
             qDebug() << "SlotsLayout: unrecognized position value, please use SlotsLayout.Leading or SlotsLayout.Trailing";
+        }
+    }
+
+    //put the chevron at the end, no matter what its position in childItems() is
+    //DOC NOTE: this means its "position" property will be ignored!
+    if (progression && chevron) {
+        //get the attached property, creating it if it wasn't defined already
+        UCSlotsAttached *attached =
+                qobject_cast<UCSlotsAttached*>(qmlAttachedPropertiesObject<UCSlotsLayout>(chevron));
+
+        if (!attached) {
+            qDebug() << "SLOTSLAYOUT: invalid attached property!";
+        } else {
+            trailingSlots.append(static_cast<QQuickItem*>(chevron));
+            totalWidth += static_cast<QQuickItem*>(chevron)->width() + attached->leftMargin() + attached->rightMargin();
         }
     }
 
@@ -805,6 +854,69 @@ void UCSlotsLayout::setBottomOffsetQML(qreal val) {
     Q_D(UCSlotsLayout);
     d->bottomOffsetWasSetFromQml = true;
     setBottomOffset(val);
+}
+
+bool UCSlotsLayout::progression() const {
+    Q_D(const UCSlotsLayout);
+    return d->progression;
+}
+
+void UCSlotsLayout::setProgression(bool val) {
+    Q_D(UCSlotsLayout);
+    if (d->progression != val) {
+        d->progression = val;
+        Q_EMIT progressionChanged();
+    }
+}
+
+UCSlotsAttached* UCSlotsLayout::progressionSlot() const {
+    Q_D(const UCSlotsLayout);
+
+    if (d->chevron == 0) {
+        qDebug() << "SlotsLayout: please enable the progression symbol before trying to set its properties";
+        return 0;
+    } else {
+        UCSlotsAttached* attached = qobject_cast<UCSlotsAttached*>(qmlAttachedPropertiesObject<UCSlotsLayout>(d->chevron));
+        //make sure QQmlEngine doesn't delete our object when doing GC
+        QQmlEngine::setObjectOwnership(attached, QQmlEngine::CppOwnership);
+
+        return (UCSlotsAttached* const) attached;
+    }
+}
+
+UCSlotsLayoutChevron::UCSlotsLayoutChevron(QQuickItem* parent)
+    : QQuickPaintedItem(parent)
+{
+    updateGuValues();
+    QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this, SLOT(updateGuValues()));
+}
+
+void UCSlotsLayoutChevron::paint(QPainter *painter) {
+    painter->drawPixmap(0,0, width(), height(), progressionPixmap);
+}
+
+void UCSlotsLayoutChevron::updateGuValues() {
+    setImplicitWidth(UCUnits::instance().gu(CHEVRON_DEFAULT_WIDTH_GU));
+    setImplicitHeight(UCUnits::instance().gu(CHEVRON_DEFAULT_HEIGHT_GU));
+
+    reloadIcon();
+}
+
+void UCSlotsLayoutChevron::reloadIcon()
+{
+    UnityThemeIconProvider* provider = new UnityThemeIconProvider;
+
+    //load a new image with the correct size
+    QSize loadedSize;
+
+    //scale is so that the height is the one we want, and the width is the one which keeps the aspect ratio
+    progressionPixmap = provider->requestPixmap("chevron", &loadedSize, QSize(-1, height()));
+
+    delete provider;
+    provider = 0;
+
+    setWidth(loadedSize.width());
+    setHeight(loadedSize.height());
 }
 
 #include "moc_ucslotslayout.cpp"
