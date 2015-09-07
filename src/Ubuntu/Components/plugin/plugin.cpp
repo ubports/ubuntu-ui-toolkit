@@ -223,6 +223,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCUbuntuShapeOverlay>(uri, 1, 2, "UbuntuShapeOverlay");
 
     // register 1.3 API
+    qmlRegisterExtendedType<QQuickItem, UCItemExtension>(uri, 1, 3, "QQuickItem");
     qmlRegisterType<UCListItem13>(uri, 1, 3, "ListItem");
     qmlRegisterType<UCListItemExpansion>();
     qmlRegisterUncreatableType<UCViewItemsAttached13>(uri, 1, 3, "ViewItems", "No create");

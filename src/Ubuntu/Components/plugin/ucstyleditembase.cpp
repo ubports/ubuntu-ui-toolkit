@@ -683,4 +683,24 @@ void UCStyledItemBase::itemChange(ItemChange change, const ItemChangeData &data)
     }
 }
 
+/****************************************************************
+ *
+ */
+UCItemExtension::UCItemExtension(QObject *parent)
+    : QObject(parent)
+    , m_item(static_cast<QQuickItem*>(parent))
+{
+    connect(m_item, &QQuickItem::parentChanged, this, &UCItemExtension::extendedParentChanged);
+    qDebug() << "EXTENSION for " << m_item;
+}
+
+QQuickItem *UCItemExtension::parentItem() const
+{
+    return m_item->parentItem();
+}
+void UCItemExtension::setParentItem(QQuickItem *parentItem)
+{
+    m_item->setParentItem(parentItem);
+}
+
 #include "moc_ucstyleditembase.cpp"
