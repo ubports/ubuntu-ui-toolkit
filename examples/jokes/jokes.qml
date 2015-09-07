@@ -105,7 +105,7 @@ MainView {
             id: jokeHolder
             anchors.fill: parent
             text: "Tap here!"
-            fontSize: "large"
+            adaptiveSize: Label.Large
             color: Theme.palette.normal.baseText
             textFormat: Text.RichText
             horizontalAlignment: Text.AlignHCenter

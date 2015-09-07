@@ -106,7 +106,7 @@ ActionSelectionPopover {
             }
             // In the tabs overflow panel there are no icons, and the font-size
             //  is medium as opposed to the small font-size in the actions overflow panel.
-            fontSize: actionIcon.visible ? "small" : "medium"
+            adaptiveSize: actionIcon.visible ? Label.Small : Label.Medium
             elide: Text.ElideRight
             text: action.text
             color: overflow.foregroundColor

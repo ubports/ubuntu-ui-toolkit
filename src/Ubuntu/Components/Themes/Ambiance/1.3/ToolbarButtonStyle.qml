@@ -52,7 +52,7 @@ Item {
             }
             width: paintedWidth
             text: styledItem.text
-            fontSize: "x-small"
+            adaptiveSize: Label.XSmall
         }
     }
 

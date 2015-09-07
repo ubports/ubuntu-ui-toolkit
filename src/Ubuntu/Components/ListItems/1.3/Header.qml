@@ -57,7 +57,6 @@ Item {
 
     LabelVisual {
         id: label
-        fontSize: "medium"
         font.weight: Text.Normal
         anchors {
             verticalCenter: parent.verticalCenter

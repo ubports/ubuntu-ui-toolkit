@@ -116,7 +116,7 @@ Item {
             id: label
             anchors.centerIn: parent
             text: styledItem.formatValue(SliderUtils.liveValue(styledItem))
-            fontSize: "large"
+            adaptiveSize: Label.Large
             color: theme.palette.normal.overlayText
         }
     }
