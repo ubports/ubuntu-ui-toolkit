@@ -78,7 +78,7 @@ UCSlotsAttached* UCSlotsLayout::qmlAttachedProperties(QObject *object)
 UCSlotsLayoutPrivate::UCSlotsLayoutPrivate()
     : QQuickItemPrivate()
     , ready(false)
-    , pressedItem(0)
+    , pressedItem(Q_NULLPTR)
     , maxChildrenHeight(0)
     , _q_cachedHeight(-1)
     , leftOffset(UCUnits::instance().gu(SLOTSLAYOUT_DEFAULTLAYOUTSIDEMARGINS_GU))
@@ -86,12 +86,12 @@ UCSlotsLayoutPrivate::UCSlotsLayoutPrivate()
     , topOffset(UCUnits::instance().gu(SLOTSLAYOUT_DEFAULTLAYOUTSIDEMARGINS_GU))
     , bottomOffset(UCUnits::instance().gu(SLOTSLAYOUT_DEFAULTLAYOUTSIDEMARGINS_GU))
     , progression(false)
-    , chevron(0)
+    , chevron(Q_NULLPTR)
     , leftOffsetWasSetFromQml(false)
     , rightOffsetWasSetFromQml(false)
     , topOffsetWasSetFromQml(false)
     , bottomOffsetWasSetFromQml(false)
-    , m_parentItem(0)
+    , m_parentItem(Q_NULLPTR)
 {
 }
 
@@ -205,7 +205,7 @@ void UCSlotsLayoutPrivate::_q_updateProgressionStatus() {
     } else {
         chevron->setVisible(false);
         delete chevron;
-        chevron = 0;
+        chevron = Q_NULLPTR;
     }
 
     Q_EMIT q->relayoutNeeded();
@@ -777,7 +777,7 @@ void UCSlotsLayout::mouseReleaseEvent(QMouseEvent *event) {
         }
     }
 
-    d->pressedItem = 0;
+    d->pressedItem = Q_NULLPTR;
 }
 
 qreal UCSlotsLayout::leftOffset() const {
@@ -872,9 +872,9 @@ void UCSlotsLayout::setProgression(bool val) {
 UCSlotsAttached* UCSlotsLayout::progressionSlot() const {
     Q_D(const UCSlotsLayout);
 
-    if (d->chevron == 0) {
+    if (d->chevron == Q_NULLPTR) {
         qDebug() << "SlotsLayout: please enable the progression symbol before trying to set its properties";
-        return 0;
+        return Q_NULLPTR;
     } else {
         UCSlotsAttached* attached = qobject_cast<UCSlotsAttached*>(qmlAttachedPropertiesObject<UCSlotsLayout>(d->chevron));
         //make sure QQmlEngine doesn't delete our object when doing GC
@@ -892,7 +892,7 @@ UCSlotsLayoutChevron::UCSlotsLayoutChevron(QQuickItem* parent)
 }
 
 void UCSlotsLayoutChevron::paint(QPainter *painter) {
-    painter->drawPixmap(0,0, width(), height(), progressionPixmap);
+    painter->drawPixmap(0, 0, width(), height(), progressionPixmap);
 }
 
 void UCSlotsLayoutChevron::updateGuValues() {
@@ -913,7 +913,7 @@ void UCSlotsLayoutChevron::reloadIcon()
     progressionPixmap = provider->requestPixmap("chevron", &loadedSize, QSize(-1, height()));
 
     delete provider;
-    provider = 0;
+    provider = Q_NULLPTR;
 
     setWidth(loadedSize.width());
     setHeight(loadedSize.height());
