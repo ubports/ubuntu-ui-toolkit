@@ -59,7 +59,11 @@ class TextInputPopover(_common.UbuntuUIToolkitCustomProxyObjectBase):
                 pass
 
     def _get_button(self, text):
-        buttons = self.select_many('AbstractButton')
+        # Try the C++ class name in case this is a 1.3 AbstractButton
+        try:
+            buttons = self.select_many('UCAbstractButton')
+        except dbus.StateNotFoundError:
+            buttons = self.select_many('AbstractButton')
         texts = []
         for button in buttons:
             # workaround used in the text input's context menu to access
