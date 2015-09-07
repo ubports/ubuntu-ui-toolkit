@@ -28,7 +28,7 @@
 
 UCHeader::UCHeader(QQuickItem *parent)
     : UCStyledItemBase(parent)
-    , m_flickable(NULL)
+    , m_flickable(Q_NULLPTR)
 {
     qDebug() << "Header created!";
 }

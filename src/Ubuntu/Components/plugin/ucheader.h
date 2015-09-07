@@ -37,8 +37,8 @@ Q_SIGNALS:
     void flickableChanged();
 
 private:
-    bool m_visible;
     QPointer<QQuickFlickable> m_flickable;
+    //    bool m_visible;
 };
 
 #endif // UCHEADER_H
