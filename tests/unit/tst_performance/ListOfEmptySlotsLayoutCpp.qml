@@ -22,7 +22,7 @@ Column {
     height: 600
 
     Repeater {
-        model: 500
+        model: 5000
         ListItem {
             SlotsLayoutCpp {
                 
