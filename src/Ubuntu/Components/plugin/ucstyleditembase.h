@@ -66,21 +66,4 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_reloadStyle())
 };
 
-class UCItemExtension : public QObject
-{
-    Q_OBJECT
-    Q_PROPERTY(QQuickItem *parent READ parentItem WRITE setParentItem NOTIFY extendedParentChanged)
-public:
-    explicit UCItemExtension(QObject *parent = 0);
-
-    QQuickItem *parentItem() const;
-    void setParentItem(QQuickItem *parentItem);
-
-Q_SIGNALS:
-    void extendedParentChanged();
-
-private:
-    QQuickItem *m_item;
-};
-
 #endif // UCSTYLEDITEMBASE_H

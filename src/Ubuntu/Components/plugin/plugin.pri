@@ -83,7 +83,8 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/timeutils_p.h \
     $$PWD/ucactionitem.h \
     $$PWD/uchaptics.h \
-    $$PWD/ucabstractbutton.h
+    $$PWD/ucabstractbutton.h \
+    $$PWD/ucitemextension.h
 
 SOURCES += $$PWD/plugin.cpp \
     $$PWD/uctheme.cpp \
@@ -139,7 +140,8 @@ SOURCES += $$PWD/plugin.cpp \
     $$PWD/livetimer_p.cpp \
     $$PWD/ucactionitem.cpp \
     $$PWD/uchaptics.cpp \
-    $$PWD/ucabstractbutton.cpp
+    $$PWD/ucabstractbutton.cpp \
+    $$PWD/ucitemextension.cpp
 
 # adapters
 SOURCES += $$PWD/adapters/alarmsadapter_organizer.cpp

@@ -23,6 +23,7 @@
 #include "plugin.h"
 #include "uctheme.h"
 #include "ucdeprecatedtheme.h"
+#include "ucitemextension.h"
 
 #include <QtQml/QQmlContext>
 #include "i18n.h"
@@ -241,6 +242,9 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 {
+    // register custom event types
+    UCItemExtension::ascendantChangedEvent = QEvent::registerEventType();
+
     // initialize baseURL
     initializeBaseUrl();
 
