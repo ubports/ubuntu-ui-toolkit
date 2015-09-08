@@ -629,6 +629,64 @@ Template {
                 }
             }
         }
+
+        ListItem {
+            id: systemSettings1
+            height: systemSettings1_layout.height
+
+            SlotsLayoutCpp {
+                id: systemSettings1_layout
+
+                progression: true
+                titleItem.text: "Call forwarding"
+
+                Text {
+                    font.pixelSize: FontUtils.sizeToPixels("medium")
+                    text: "Off"
+                    color: "#525252"
+                }
+            }
+        }
+
+        ListItem {
+            id: systemSettings2
+            height: systemSettings2_layout.height
+
+            SlotsLayoutCpp {
+                id: systemSettings2_layout
+                titleItem.text: "Flight mode"
+
+                //see http://bazaar.launchpad.net/~ubuntu-branches/ubuntu/wily/ubuntu-system-settings/wily-proposed/view/head:/src/qml/EntryComponent.qml
+                Icon {
+                    SlotsLayoutCpp.position: SlotsLayoutCpp.Leading
+                    width: units.gu(6);
+                    height: units.gu(6);
+                    name: "airplane-mode"
+                }
+                Switch { }
+            }
+        }
+
+        ListItem {
+            id: systemSettings3
+            height: systemSettings3_layout.height
+
+            SlotsLayoutCpp {
+                id: systemSettings3_layout
+                titleItem.text: "Facebook"
+                subtitleItem.text: "Name Surname"
+                progression: true
+
+                //see http://bazaar.launchpad.net/~ubuntu-branches/ubuntu/wily/ubuntu-system-settings/wily-proposed/view/head:/src/qml/EntryComponent.qml
+                Icon {
+                    SlotsLayoutCpp.position: SlotsLayoutCpp.Leading
+                    width: units.gu(6);
+                    height: units.gu(6);
+                    name: "facebook"
+                }
+            }
+        }
+
     }
 
     TemplateSection {
