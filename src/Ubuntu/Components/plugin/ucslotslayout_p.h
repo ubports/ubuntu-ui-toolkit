@@ -1,7 +1,8 @@
 #ifndef UCSLOTSLAYOUTPRIVATE_H
 #define UCSLOTSLAYOUTPRIVATE_H
 
-#include <QtQuick/private/qquickitem_p.h>
+#include <private/qquickitem_p.h>
+
 #include "ucslotslayout.h"
 
 #define IMPLICIT_SLOTSLAYOUT_WIDTH_GU             40
@@ -46,10 +47,10 @@ public:
     void _q_updateProgressionStatus();
 
     //connect item's UCSlotsAttached properties changes to the right slot
-    void connectAttachedPropertySignals(QQuickItem* item);
+    void connectAttachedPropertySignals(QQuickItem *item);
 
     bool ready;
-    QQuickItem* pressedItem;
+    QQuickItem *pressedItem;
 
     //used for position handling
     qreal labelsBoundingBoxHeight;
@@ -72,7 +73,7 @@ public:
 
     //Show the chevron, name taken from old ListItem API to minimize changes
     bool progression;
-    UCSlotsLayoutChevron* chevron;
+    UCSlotsLayoutChevron *chevron;
 
     //currently fixed, but we may allow changing this in the future
     qint32 maxNumberOfLeadingSlots;
@@ -89,7 +90,7 @@ public:
     //in this variable we cache the current parent so that we can disconnect from the signals
     //when the parent changes. We need this because otherwise inside itemChange(..) we would
     //only have access to the new parent
-    QQuickItem* m_parentItem;
+    QQuickItem *m_parentItem;
 
 private:
     void setDefaultLabelsProperties();

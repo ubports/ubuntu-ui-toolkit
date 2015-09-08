@@ -2,8 +2,8 @@
 #define UCSLOTSLAYOUT_H
 
 #include <QtQuick/QQuickItem>
-#include "private/qquicktext_p.h"
-#include "QPixmap"
+#include <QtGui/QPixmap>
+#include <private/qquicktext_p.h>
 
 class UCSlotsAttached;
 class UCSlotsLayoutPrivate;
@@ -12,46 +12,46 @@ class UCSlotsLayout : public QQuickItem
 {
     Q_OBJECT
 
-    Q_PROPERTY(QQuickText* titleItem READ titleItem CONSTANT)
-    Q_PROPERTY(QQuickText* subtitleItem READ subtitleItem CONSTANT)
-    Q_PROPERTY(QQuickText* subsubtitleItem READ subsubtitleItem CONSTANT)
-    Q_PROPERTY(qreal leftOffset READ leftOffset WRITE setLeftOffsetQML NOTIFY leftOffsetChanged)
-    Q_PROPERTY(qreal rightOffset READ rightOffset WRITE setRightOffsetQML NOTIFY rightOffsetChanged)
-    Q_PROPERTY(qreal topOffset READ topOffset WRITE setTopOffsetQML NOTIFY topOffsetChanged)
-    Q_PROPERTY(qreal bottomOffset READ bottomOffset WRITE setBottomOffsetQML NOTIFY bottomOffsetChanged)
+    Q_PROPERTY(QQuickText *titleItem READ titleItem CONSTANT)
+    Q_PROPERTY(QQuickText *subtitleItem READ subtitleItem CONSTANT)
+    Q_PROPERTY(QQuickText *subsubtitleItem READ subsubtitleItem CONSTANT)
+    Q_PROPERTY(qreal leftOffset READ leftOffset WRITE setLeftOffsetQml NOTIFY leftOffsetChanged)
+    Q_PROPERTY(qreal rightOffset READ rightOffset WRITE setRightOffsetQml NOTIFY rightOffsetChanged)
+    Q_PROPERTY(qreal topOffset READ topOffset WRITE setTopOffsetQml NOTIFY topOffsetChanged)
+    Q_PROPERTY(qreal bottomOffset READ bottomOffset WRITE setBottomOffsetQml NOTIFY bottomOffsetChanged)
     Q_PROPERTY(bool progression READ progression WRITE setProgression NOTIFY progressionChanged)
-    Q_PROPERTY(UCSlotsAttached* progressionSlot READ progressionSlot CONSTANT)
+    Q_PROPERTY(UCSlotsAttached *progressionSlot READ progressionSlot CONSTANT)
 
     Q_ENUMS(UCSlotPosition)
 
 public:
     explicit UCSlotsLayout(QQuickItem *parent = 0);
 
-    QQuickText* titleItem() const;
-    QQuickText* subtitleItem() const;
-    QQuickText* subsubtitleItem() const;
+    QQuickText *titleItem() const;
+    QQuickText *subtitleItem() const;
+    QQuickText *subsubtitleItem() const;
 
     qreal leftOffset() const;
     void setLeftOffset(qreal val);
-    void setLeftOffsetQML(qreal val);
+    void setLeftOffsetQml(qreal val);
     bool leftOffsetWasSetFromQml;
 
     qreal rightOffset() const;
     void setRightOffset(qreal val);
-    void setRightOffsetQML(qreal val);
+    void setRightOffsetQml(qreal val);
 
     qreal topOffset() const;
     void setTopOffset(qreal val);
-    void setTopOffsetQML(qreal val);
+    void setTopOffsetQml(qreal val);
 
     qreal bottomOffset() const;
     void setBottomOffset(qreal val);
-    void setBottomOffsetQML(qreal val);
+    void setBottomOffsetQml(qreal val);
 
     bool progression() const;
     void setProgression(bool val);
 
-    UCSlotsAttached* progressionSlot() const;
+    UCSlotsAttached *progressionSlot() const;
 
     enum UCSlotPosition { Leading, Trailing };
 
@@ -61,7 +61,7 @@ Q_SIGNALS:
     //TODO: should this be in the pimpl?
     void relayoutNeeded();
 
-    void slotClicked(QQuickItem* slot);
+    void slotClicked(QQuickItem *slot);
     void leftOffsetChanged();
     void rightOffsetChanged();
     void topOffsetChanged();
@@ -70,7 +70,6 @@ Q_SIGNALS:
 
 protected:
     Q_DECLARE_PRIVATE(UCSlotsLayout)
-    void classBegin();
     void componentComplete();
     void itemChange(ItemChange change, const ItemChangeData &data);
     void mousePressEvent(QMouseEvent *event);
@@ -92,8 +91,8 @@ class UCSlotsAttached : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(UCSlotsLayout::UCSlotPosition position READ position WRITE setPosition NOTIFY positionChanged)
-    Q_PROPERTY(qreal leftMargin READ leftMargin WRITE setLeftMarginQML NOTIFY leftMarginChanged)
-    Q_PROPERTY(qreal rightMargin READ rightMargin WRITE setRightMarginQML NOTIFY rightMarginChanged)
+    Q_PROPERTY(qreal leftMargin READ leftMargin WRITE setLeftMarginQml NOTIFY leftMarginChanged)
+    Q_PROPERTY(qreal rightMargin READ rightMargin WRITE setRightMarginQml NOTIFY rightMarginChanged)
     Q_PROPERTY(bool overrideVerticalPositioning READ overrideVerticalPositioning WRITE setOverrideVerticalPositioning NOTIFY overrideVerticalPositioningChanged)
 
 public:
@@ -104,11 +103,11 @@ public:
 
     qreal leftMargin() const;
     void setLeftMargin(qreal margin);
-    void setLeftMarginQML(qreal margin);
+    void setLeftMarginQml(qreal margin);
 
     qreal rightMargin() const;
     void setRightMargin(qreal margin);
-    void setRightMarginQML(qreal margin);
+    void setRightMarginQml(qreal margin);
 
     bool overrideVerticalPositioning() const;
     void setOverrideVerticalPositioning(bool val);
