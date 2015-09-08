@@ -11,10 +11,9 @@ UCSlotsAttached::UCSlotsAttached(QObject *object)
     , m_leftMargin(UCUnits::instance().gu(SLOTSLAYOUT_DEFAULTSLOTSIDEMARGINS_GU))
     , m_rightMargin(UCUnits::instance().gu(SLOTSLAYOUT_DEFAULTSLOTSIDEMARGINS_GU))
     , m_overrideVerticalPositioning(false)
+    , leftMarginWasSetFromQml(false)
+    , rightMarginWasSetFromQml(false)
 {
-    //FIXME: if the user defines SlotsLayout.leftMargin and then GU changes, we will overwrite it!
-    //But how to avoid that? We should check if the user has initizalized leftMargin, but how?
-    //Maybe we should cache the old GU value and check if the margins value were modified?
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this, SLOT(updateGuValues()));
 }
 
@@ -40,6 +39,18 @@ void UCSlotsAttached::setLeftMargin(qreal margin) {
     }
 }
 
+void UCSlotsAttached::setLeftMarginQML(qreal margin) {
+    leftMarginWasSetFromQml = true;
+
+    //if both have been set from QML, then disconnect the signal from the slot, to avoid overwriting dev's values
+    //when GU changes
+    if (rightMarginWasSetFromQml) {
+        QObject::disconnect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this, SLOT(updateGuValues()));
+    }
+
+    setLeftMargin(margin);
+}
+
 qreal UCSlotsAttached::rightMargin() const {
     return m_rightMargin;
 }
@@ -49,6 +60,18 @@ void UCSlotsAttached::setRightMargin(qreal margin) {
         m_rightMargin = margin;
         Q_EMIT rightMarginChanged();
     }
+}
+
+void UCSlotsAttached::setRightMarginQML(qreal margin) {
+    rightMarginWasSetFromQml = true;
+
+    //if both have been set from QML, then disconnect the signal from the slot, to avoid overwriting dev's values
+    //when GU changes
+    if (leftMarginWasSetFromQml) {
+        QObject::disconnect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this, SLOT(updateGuValues()));
+    }
+
+    setRightMargin(margin);
 }
 
 bool UCSlotsAttached::overrideVerticalPositioning() const {
@@ -63,8 +86,13 @@ void UCSlotsAttached::setOverrideVerticalPositioning(bool val) {
 }
 
 void UCSlotsAttached::updateGuValues() {
-    setLeftMargin(UCUnits::instance().gu(SLOTSLAYOUT_DEFAULTSLOTSIDEMARGINS_GU));
-    setRightMargin(UCUnits::instance().gu(SLOTSLAYOUT_DEFAULTSLOTSIDEMARGINS_GU));
+    if (!leftMarginWasSetFromQml) {
+        setLeftMargin(UCUnits::instance().gu(SLOTSLAYOUT_DEFAULTSLOTSIDEMARGINS_GU));
+    }
+
+    if (!rightMarginWasSetFromQml) {
+        setRightMargin(UCUnits::instance().gu(SLOTSLAYOUT_DEFAULTSLOTSIDEMARGINS_GU));
+    }
 }
 
 UCSlotsAttached* UCSlotsLayout::qmlAttachedProperties(QObject *object)

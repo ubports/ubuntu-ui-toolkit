@@ -92,8 +92,8 @@ class UCSlotsAttached : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(UCSlotsLayout::UCSlotPosition position READ position WRITE setPosition NOTIFY positionChanged)
-    Q_PROPERTY(qreal leftMargin READ leftMargin WRITE setLeftMargin NOTIFY leftMarginChanged)
-    Q_PROPERTY(qreal rightMargin READ rightMargin WRITE setRightMargin NOTIFY rightMarginChanged)
+    Q_PROPERTY(qreal leftMargin READ leftMargin WRITE setLeftMarginQML NOTIFY leftMarginChanged)
+    Q_PROPERTY(qreal rightMargin READ rightMargin WRITE setRightMarginQML NOTIFY rightMarginChanged)
     Q_PROPERTY(bool overrideVerticalPositioning READ overrideVerticalPositioning WRITE setOverrideVerticalPositioning NOTIFY overrideVerticalPositioningChanged)
 
 public:
@@ -104,9 +104,11 @@ public:
 
     qreal leftMargin() const;
     void setLeftMargin(qreal margin);
+    void setLeftMarginQML(qreal margin);
 
     qreal rightMargin() const;
     void setRightMargin(qreal margin);
+    void setRightMarginQML(qreal margin);
 
     bool overrideVerticalPositioning() const;
     void setOverrideVerticalPositioning(bool val);
@@ -125,6 +127,9 @@ private:
     qreal m_leftMargin;
     qreal m_rightMargin;
     bool m_overrideVerticalPositioning;
+
+    bool leftMarginWasSetFromQml;
+    bool rightMarginWasSetFromQml;
 };
 
 class UCSlotsLayoutChevronPrivate;
