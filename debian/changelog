@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (1.3.1627+15.10.20150904-0ubuntu1) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.3.1627+15.10.20150908-0ubuntu1) wily; urgency=medium
 
   [ Zsombor Egri ]
   * Implement list item expansion.
@@ -54,7 +54,10 @@ ubuntu-ui-toolkit (1.3.1627+15.10.20150904-0ubuntu1) UNRELEASED; urgency=medium
   [ Nick Dedekind ]
   * Added relative date time i18n.
 
- -- Zoltán Balogh <zoltan@bakter.hu>  Fri, 04 Sep 2015 19:25:03 +0300
+  [ CI Train Bot ]
+  * Resync trunk.
+
+ -- Zoltan Balogh <zoltan.balogh@canonical.com>  Tue, 08 Sep 2015 04:10:50 +0000
 
 ubuntu-ui-toolkit (1.3.1603+15.10.20150824.1-0ubuntu1) wily; urgency=medium
 
