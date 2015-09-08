@@ -1,6 +1,6 @@
 instbase = $$ROOT_BUILD_DIR/qml
 
-force_independent: {
+!build_with_qt {
     # These bizarre rules copy the files to the build directory
 
     defineReplace(qmlModStripSrcDir) {

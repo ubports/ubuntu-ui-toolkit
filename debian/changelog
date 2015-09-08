@@ -1,3 +1,61 @@
+ubuntu-ui-toolkit (1.3.1627+15.10.20150904-0ubuntu1) UNRELEASED; urgency=medium
+
+  [ Zsombor Egri ]
+  * Implement list item expansion.
+  * Turn AdaptivePageLayout page creation to be asynchronous.
+  * Fix ListItem swipe handling when gesture is initiated over an overlay 
+    MouseArea which does not accept pressed event. Fixes LP: #1484545
+  * AbstractButton to C++. Fixes LP: #1365471, LP: #1458028
+  * Haptics singleton moved to C++.
+  * ActionItem moved to C++.
+  * Making columns resizable in an AdaptivePageLayout.
+  * Introducing column configuration into AdaptivePageLayout.
+
+  [ Benjamin Zeller ]
+  * Fix build inside qt and shadowbuild.
+
+  [ Tim Peeters ]
+  * Remove old and unused header-related files, and update unit test filenames. 
+  * Don't unset the subheader style when Page.head changes because that unsets 
+    the parent of Page.head.contents. Fixes LP: #1488922
+  * Fix the theming of the MainView.
+  * Fix the background color of the overflow panel.
+
+  [ Christian Dywan ]
+  * Include change signals with arguments in .api.
+  * A public QML type with no version is an error. Rather than silently breaking
+    as QML does normally at least apicheck can make this fatal.
+  * UbuntuShape shouldn't emit redundant deprecation warnings. Fixes LP: #1481791
+  * Update .bzrignore to new upstream style layout. Fixes LP: #1433308
+  * Revert unnecessary change of Popover minimumWidth. Fixes LP: #1483708
+
+  [ Ken VanDine ]
+  * Fixed a few typos in the api docs for StateSaver.
+
+  [ Olivier Tilloy ]
+  * Take custom key indexes into account to allow sorting on custom roles. 
+    Fixes LP: #1485674
+
+  [ Albert Astals Cid ]
+  * Properly free shapeTextures[index] The old code assumes that the UbuntuShape 
+    will still be around when the opengl context is destroyed, but that seldom 
+    happens so connect the signal to a lambda that will be there and does the 
+    cleanup properly. Without this patch testDirectionalDragArea from unity8 was 
+    hitting the qFatal because it ran out of space in shapeTextures.
+
+  [ Richard Huddie ]
+  * Remove all usage of the autopilot simulated keyboard when the OSK is being 
+    used. Fixes LP: 31483668
+
+  [ Gerry Boland ]
+  * Compensate for Qt's device pixel ratio multiplier. 
+    Fixes: LP: #1207270, LP: #1275748, LP: #1468402
+
+  [ Nick Dedekind ]
+  * Added relative date time i18n.
+
+ -- Zoltán Balogh <zoltan@bakter.hu>  Fri, 04 Sep 2015 19:25:03 +0300
+
 ubuntu-ui-toolkit (1.3.1603+15.10.20150824.1-0ubuntu1) wily; urgency=medium
 
   [ CI Train Bot ]

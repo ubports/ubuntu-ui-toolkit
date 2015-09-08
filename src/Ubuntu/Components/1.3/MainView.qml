@@ -191,9 +191,6 @@ MainViewBase {
                         window.title = headerItem.title
                 }
             }
-
-            // Use of the deprecated toolbar is no longer supported in MainView 1.2.
-            useDeprecatedToolbar: false
         }
 
         Connections {

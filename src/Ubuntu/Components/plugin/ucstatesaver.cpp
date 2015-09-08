@@ -147,7 +147,7 @@ void UCStateSaverAttachedPrivate::watchComponent(bool watch)
  * \instantiates UCStateSaverAttached
  * \inqmlmodule Ubuntu.Components 1.1
  * \ingroup ubuntu-services
- * \brief Attached propertyes to save component property states.
+ * \brief Attached properties to save component property states.
  *
  * StateSaver attached object provides the ability to save component property values
  * that can be restored after an inproper application close. The properties subject
@@ -297,7 +297,7 @@ void UCStateSaverAttached::setEnabled(bool v)
  * List of properties to be serialized, separated with commas. Properties must be
  * writable and can only be \l{http://qt-project.org/doc/qt-5.0/qtqml/qtqml-typesystem-basictypes.html}{QML base types}.
  *
- * A custom singl eline input which saves the text, polaceholderText, font and color would look as follows:
+ * A custom single line input which saves the text, placeholderText, font and color would look as follows:
  * \qml
  * TextField {
  *     id: input

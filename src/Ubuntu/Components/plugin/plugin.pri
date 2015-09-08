@@ -80,7 +80,10 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/ucstylehints.h \
     $$PWD/livetimer.h \
     $$PWD/livetimer_p.h \
-    $$PWD/timeutils_p.h
+    $$PWD/timeutils_p.h \
+    $$PWD/ucactionitem.h \
+    $$PWD/uchaptics.h \
+    $$PWD/ucabstractbutton.h
 
 SOURCES += $$PWD/plugin.cpp \
     $$PWD/uctheme.cpp \
@@ -127,12 +130,16 @@ SOURCES += $$PWD/plugin.cpp \
     $$PWD/ucserviceproperties.cpp \
     $$PWD/privates/listitemdragarea.cpp \
     $$PWD/privates/listitemdraghandler.cpp \
+    $$PWD/privates/listitemexpansion.cpp \
     $$PWD/ucnamespace.cpp \
     $$PWD/ucdeprecatedtheme.cpp \
     $$PWD/ucdefaulttheme.cpp \
     $$PWD/ucstylehints.cpp \
     $$PWD/livetimer.cpp \
-    $$PWD/livetimer_p.cpp
+    $$PWD/livetimer_p.cpp \
+    $$PWD/ucactionitem.cpp \
+    $$PWD/uchaptics.cpp \
+    $$PWD/ucabstractbutton.cpp
 
 # adapters
 SOURCES += $$PWD/adapters/alarmsadapter_organizer.cpp

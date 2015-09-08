@@ -25,7 +25,7 @@ Styles.ListItemStyle {
      * Take over the ListItem's index context property as repeater used in panel
      * overrides the property.
      */
-    readonly property int listItemIndex: index
+    readonly property int listItemIndex: (typeof index !== "undefined") ? index : internals.childIndex()
 
     /*
      * Coloring properties
@@ -342,6 +342,19 @@ Styles.ListItemStyle {
         property real snapChangerLimit: 0.0
         readonly property real threshold: units.gu(1.5)
         property bool snapIn: false
+
+        // returns the child index of the ListItem when not used in model driven view
+        function childIndex() {
+            if (styledItem.parent) {
+                for (var i = 0; i < styledItem.parent.children.length; i++) {
+                    if (styledItem.parent.children[i] == styledItem) {
+                        return i;
+                    }
+                }
+            } else {
+                return -1;
+            }
+        }
 
         // update snap direction
         function updateSnapDirection() {

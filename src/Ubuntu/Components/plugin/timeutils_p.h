@@ -20,8 +20,32 @@
 #include "livetimer.h"
 
 #include <QDateTime>
+#include <QLocale>
 #include <QObject>
 #include <QTimer>
+
+/* Check the system locale setting to see if the format is 24-hour
+  time or 12-hour time */
+inline bool isLocale12h(void)
+{
+   QString strTimeFormat = QLocale::system().timeFormat();
+   QStringList includes; includes << "AP"; includes << "ap";
+   QStringList excludes; excludes << "H"; excludes << "HH";
+
+   Q_FOREACH(const QString& exclude, excludes) {
+       if (strTimeFormat.contains(exclude)) {
+           return false;
+       }
+   }
+
+   Q_FOREACH(const QString& include, includes) {
+       if (strTimeFormat.contains(include)) {
+           return true;
+       }
+   }
+
+   return false;
+}
 
 typedef enum
 {

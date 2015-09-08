@@ -19,6 +19,7 @@
 #include <QtCore/QFile>
 #include <QtCore/QFileInfo>
 #include <QtCore/QDir>
+#include <QtGui/QGuiApplication>
 #include <QtQuick/private/qquickimagebase_p.h>
 
 #include "ucqquickimageextension.h"
@@ -78,8 +79,18 @@ void UCQQuickImageExtension::reloadSource()
     QString selectedFilePath = resolved.mid(separatorPosition+1);
 
     if (scaleFactor == "1") {
-        // No scaling. Just pass the file as is.
-        m_image->setSource(QUrl::fromLocalFile(selectedFilePath));
+        if (qFuzzyCompare(qGuiApp->devicePixelRatio(), (qreal)1.0)
+                || selectedFilePath.endsWith(".svg") || selectedFilePath.endsWith(".svgz")) {
+            // No scaling necessary. Just pass the file as is.
+            m_image->setSource(QUrl::fromLocalFile(selectedFilePath));
+        } else {
+            // Need to scale the pixel-based image to suit the devicePixelRatio setting ourselves.
+            // If we let Qt do it, Qt will not choose the UITK-supported "@gu" scaled images.
+            m_image->setSource(QUrl("image://scaling/1/" + selectedFilePath));
+            // explicitly set the source size in the QQuickImageBase, this persuades it that the
+            // supplied image is suitable for the current devicePixelRatio.
+            m_image->setSourceSize(m_image->sourceSize());
+        }
     } else {
         // Prepend "image://scaling" for the image to be loaded by UCScalingImageProvider.
         if (!m_source.path().endsWith(".sci")) {
@@ -100,7 +111,13 @@ void UCQQuickImageExtension::reloadSource()
                 rewrittenSciFile->setFileTemplate(QDir::tempPath() + QDir::separator() + "XXXXXX.sci");
                 rewrittenSciFile->open();
                 QTextStream output(rewrittenSciFile);
-                rewritten = rewriteSciFile(selectedFilePath, scaleFactor, output);
+
+                if (qFuzzyCompare(qGuiApp->devicePixelRatio(), (qreal)1.0)) {
+                    rewritten = rewriteSciFile(selectedFilePath, scaleFactor, output);
+                } else {
+                    QString scaleFactorInDevicePixels = QString::number(scaleFactor.toFloat() / qGuiApp->devicePixelRatio());
+                    rewritten = rewriteSciFile(selectedFilePath, scaleFactorInDevicePixels, output);
+                }
                 rewrittenSciFile->close();
 
                 s_rewrittenSciFiles.insert(m_source, QSharedPointer<QTemporaryFile>(rewrittenSciFile));
@@ -112,6 +129,9 @@ void UCQQuickImageExtension::reloadSource()
                 m_image->setSource(m_source);
             }
         }
+        // explicitly set the source size in the QQuickImageBase, this persuades it that the
+        // supplied image is suitable for the current devicePixelRatio.
+        m_image->setSourceSize(m_image->sourceSize());
     }
 }
 

@@ -410,9 +410,10 @@ public:
             }
         } else {
             for (int index = meta->methodOffset(); index < meta->methodCount(); ++index) {
-                // Omit "Changed" methods of properties
-                QByteArray methName(meta->method(index).name());
-                if (!methName.isEmpty() && methName.endsWith("Changed"))
+                // Omit "Changed" methods of properties with no arguments
+                QMetaMethod meth(meta->method(index));
+                QByteArray methName(meth.name());
+                if (!methName.isEmpty() && methName.endsWith("Changed") && !meth.parameterCount())
                     continue;
                 dump(object, &methods, meta->method(index), implicitSignals, knownAttributes);
             }
@@ -918,8 +919,11 @@ int main(int argc, char *argv[])
                 internalTypes.append(c.typeName);
                 continue;
             }
+            if (c.majorVersion == -1) {
+                std::cerr << "Public QML type " << qPrintable(c.typeName) << " in qmldir has no version!" << std::endl;
+                return EXIT_IMPORTERROR;
+            }
             exportedTypes.append(QFileInfo(c.fileName).fileName());
-            QString version(QString("%1.%2").arg(c.majorVersion).arg(c.minorVersion));
         }
 
         code += "}";
