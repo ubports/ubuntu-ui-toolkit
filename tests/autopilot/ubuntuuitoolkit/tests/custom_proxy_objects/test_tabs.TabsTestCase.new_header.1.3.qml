@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2014-2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,24 +14,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 1.0
+import QtQuick 2.2
+import Ubuntu.Components 1.3
 
 MainView {
-    width: units.gu(48)
+    width: units.gu(70)
     height: units.gu(60)
     objectName: "mainView"
 
-    Item {
-        TextField {
-            id: simpleTextField
-            objectName: "simple_text_field"
+    Tabs {
+        id: tabs
+        Tab {
+            objectName: "tab1"
+            title: "Tab1"
+            page: Page { }
         }
-        TextField {
-            id: textFieldWithoutClearButton
-            objectName: "text_field_without_clear_button"
-            hasClearButton: false
-            anchors.top: simpleTextField.bottom
+        Tab {
+            objectName: "tab2"
+            title: "Tab2"
+            page: Page { }
+        }
+        Tab {
+            objectName: "tab3"
+            title: "Tab3"
+            page: Page { }
         }
     }
 }
