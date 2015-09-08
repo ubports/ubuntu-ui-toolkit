@@ -28,10 +28,12 @@ class TabsTestCase(tests.QMLFileAppTestCase):
     dir_path = os.path.dirname(path)
     deprecated_tabbar_test_qml_file_path = os.path.join(
         dir_path, 'test_tabs.TabsTestCase.deprecated_TabBar.qml')
-    deprecated_tabbar_test_qml_file_path = os.path.join(
+    deprecated_tabbar_1_3_test_qml_file_path = os.path.join(
         dir_path, 'test_tabs.TabsTestCase.deprecated_TabBar.1.3.qml')
     new_header_test_qml_file_path = os.path.join(
         dir_path, 'test_tabs.TabsTestCase.new_header.qml')
+    new_header_1_3_test_qml_file_path = os.path.join(
+        dir_path, 'test_tabs.TabsTestCase.new_header.1.3.qml')
 
     scenarios = [
         ('deprecated TabBar',
@@ -39,7 +41,7 @@ class TabsTestCase(tests.QMLFileAppTestCase):
         ('deprecated TabBar 1.3',
          dict(test_qml_file_path=deprecated_tabbar_1_3_test_qml_file_path)),
         ('new header',
-         dict(test_qml_file_path=new_header_test_qml_file_path))
+         dict(test_qml_file_path=new_header_test_qml_file_path)),
         ('new header 1.3',
          dict(test_qml_file_path=new_header_1_3_test_qml_file_path))
     ]

@@ -20,7 +20,6 @@ import Ubuntu.Components 1.3
 MainView {
     width: units.gu(70)
     height: units.gu(60)
-    useDeprecatedToolbar: true
     objectName: "mainView"
 
     Tabs {
@@ -29,33 +28,33 @@ MainView {
             objectName: "tab1"
             title: "Tab1"
             Page {
-                tools: ToolbarItems {
-                    ToolbarButton {
+                head.actions: [
+                    Action {
                         text: "Test1"
                     }
-                }
+                ]
             }
         }
         Tab {
             objectName: "tab2"
             title: "Tab2"
             Page {
-                tools: ToolbarItems {
-                    ToolbarButton {
+                head.actions: [
+                    Action {
                         text: "Test2"
                     }
-                }
+                ]
             }
         }
         Tab {
             objectName: "tab3"
             title: "Tab3"
             Page {
-                tools: ToolbarItems {
-                    ToolbarButton {
+                head.actions: [
+                    Action {
                         text: "Test3"
                     }
-                }
+                ]
             }
         }
     }
