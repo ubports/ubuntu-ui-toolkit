@@ -87,6 +87,8 @@ UCSlotsLayoutPrivate::UCSlotsLayoutPrivate()
     , bottomOffset(UCUnits::instance().gu(SLOTSLAYOUT_DEFAULTLAYOUTSIDEMARGINS_GU))
     , progression(false)
     , chevron(Q_NULLPTR)
+    , maxNumberOfLeadingSlots(1)
+    , maxNumberOfTrailingSlots(2)
     , leftOffsetWasSetFromQml(false)
     , rightOffsetWasSetFromQml(false)
     , topOffsetWasSetFromQml(false)
@@ -410,18 +412,30 @@ void UCSlotsLayoutPrivate::_q_relayout() {
             continue;
         }
 
-        //if (!position.isValid()) continue;
         //TODO: IGNORE INVISIBLE CHILDREN?
 
         if (attached->position() == UCSlotsLayout::Leading) {
-            //FIXME: is this safe?
-            leadingSlots.append(static_cast<QQuickItem*>(child));
-            totalWidth += static_cast<QQuickItem*>(child)->width() + attached->leftMargin() + attached->rightMargin();
+            if (leadingSlots.length() < maxNumberOfLeadingSlots) {
+                //FIXME: is this safe?
+                leadingSlots.append(static_cast<QQuickItem*>(child));
+                totalWidth += static_cast<QQuickItem*>(child)->width() + attached->leftMargin() + attached->rightMargin();
+            } else {
+                qWarning() << "SlotsLayout: the current implementation only allows up to" << maxNumberOfLeadingSlots
+                           << "leading slots. Please remove any additional leading slot.";
+                continue;
+            }
         } else if (attached->position() == UCSlotsLayout::Trailing) {
-            trailingSlots.append(static_cast<QQuickItem*>(child));
-            totalWidth += static_cast<QQuickItem*>(child)->width() + attached->leftMargin() + attached->rightMargin();
+            if (trailingSlots.length() < maxNumberOfTrailingSlots) {
+                trailingSlots.append(static_cast<QQuickItem*>(child));
+                totalWidth += static_cast<QQuickItem*>(child)->width() + attached->leftMargin() + attached->rightMargin();
+            } else {
+                qWarning() << "SlotsLayout: the current implementation only allows up to" << maxNumberOfTrailingSlots
+                           << "trailing slots. Please remove any additional trailing slot.";
+                continue;
+            }
         } else {
-            qDebug() << "SlotsLayout: unrecognized position value, please use SlotsLayout.Leading or SlotsLayout.Trailing";
+            qWarning() << "SlotsLayout: unrecognized position value or too many slots added, please use SlotsLayout.Leading or SlotsLayout.Trailing";
+            continue;
         }
     }
 
@@ -896,7 +910,7 @@ UCSlotsAttached* UCSlotsLayout::progressionSlot() const {
     Q_D(const UCSlotsLayout);
 
     if (d->chevron == Q_NULLPTR) {
-        qDebug() << "SlotsLayout: please enable the progression symbol before trying to set its properties";
+        qWarning() << "SlotsLayout: please enable the progression symbol before trying to set its properties";
         return Q_NULLPTR;
     } else {
         UCSlotsAttached* attached = qobject_cast<UCSlotsAttached*>(qmlAttachedPropertiesObject<UCSlotsLayout>(d->chevron));

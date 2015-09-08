@@ -74,6 +74,10 @@ public:
     bool progression;
     UCSlotsLayoutChevron* chevron;
 
+    //currently fixed, but we may allow changing this in the future
+    qint32 maxNumberOfLeadingSlots;
+    qint32 maxNumberOfTrailingSlots;
+
     //once the dev tries to change the offsets (and he does so via QML) we'll stop
     //updating offset's value, for instance when gu value changes or when the visual
     //rules would require a different offset than usual
