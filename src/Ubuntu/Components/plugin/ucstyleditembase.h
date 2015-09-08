@@ -56,13 +56,11 @@ protected:
     void componentComplete();
     void mousePressEvent(QMouseEvent *event);
     bool childMouseEventFilter(QQuickItem *child, QEvent *event);
-    void itemChange(ItemChange, const ItemChangeData &);
+    void customEvent(QEvent *event);
 
 private:
     Q_DECLARE_PRIVATE(UCStyledItemBase)
     Q_PRIVATE_SLOT(d_func(), void _q_styleResized())
-    Q_PRIVATE_SLOT(d_func(), void _q_ascendantChanged(QQuickItem*))
-    Q_PRIVATE_SLOT(d_func(), void _q_parentStyleChanged())
     Q_PRIVATE_SLOT(d_func(), void _q_reloadStyle())
 };
 

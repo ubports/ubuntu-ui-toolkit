@@ -30,7 +30,6 @@ class UCItemExtension : public QObject
     Q_OBJECT
     Q_PROPERTY(QQuickItem *parent READ parentItem WRITE setParentItem NOTIFY extendedParentChanged)
 public:
-    static int ascendantChangedEvent;
     explicit UCItemExtension(QObject *parent = 0);
 
     QQuickItem *parentItem() const;
@@ -40,16 +39,17 @@ Q_SIGNALS:
     void extendedParentChanged();
 
 private:
-    Q_SLOT void completed();
     Q_SLOT void handleParentChanged(QQuickItem *newParent);
 
-    void broadcastParentChange(QQuickItem *item, UCStyledItemBase *ascendantStyled, UCTheme *newTheme);
+    void broadcastThemeUpdate(QQuickItem *item, UCStyledItemBase *ascendantStyled, UCTheme *newTheme);
     QQuickItem *m_item;
-    bool m_completed:1;
 };
 
 class UCThemeUpdateEvent : public QEvent
 {
+public:
+    // event ID
+    static int eventId;
 public:
     explicit UCThemeUpdateEvent(UCStyledItemBase *newStyled, UCTheme *newTheme);
 

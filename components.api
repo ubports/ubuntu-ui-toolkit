@@ -1,13 +1,8 @@
-Ubuntu.Components.AbstractButton 1.0 0.1: ActionItem
+Ubuntu.Components.AbstractButton 1.0 0.1: UCActionItem
     property bool hovered
     signal clicked()
     signal pressAndHold()
     property bool pressed
-Ubuntu.Components.AbstractButton 1.3: ActionItem
-    readonly property bool hovered
-    signal clicked()
-    signal pressAndHold()
-    readonly property bool pressed
 Ubuntu.Components.Action 1.3 1.0 0.1: QtObject
     property string description
     property bool enabled
@@ -30,7 +25,7 @@ Ubuntu.Components.Action.Type: Enum
     Object
     Real
     String
-Ubuntu.Components.ActionBar 1.3: StyledItem
+Ubuntu.Components.ActionBar 1.3: UCStyledItemBase
     readonly property Action actions
     property int numberOfSlots
 Ubuntu.Components.ActionContext 1.0 0.1: QtObject
@@ -38,14 +33,6 @@ Ubuntu.Components.ActionContext 1.0 0.1: QtObject
     property bool active
     function addAction(Action action)
     function removeAction(Action action)
-Ubuntu.Components.ActionItem 1.0 0.1: StyledItem
-    property Action action
-    property string iconName
-    property url iconSource
-    signal triggered(var value)
-    function trigger(var value)
-    function trigger()
-    property string text
 Ubuntu.Components.ActionList 1.0 0.1: QtObject
     readonly property Action actions
     default readonly property Action children
@@ -183,7 +170,7 @@ Ubuntu.Components.Button 1.1: AbstractButton
     property Gradient gradient
     property string iconPosition
     property color strokeColor
-Ubuntu.Components.Button 1.3: AbstractButton
+Ubuntu.Components.Button 1.3: UCAbstractButton
     property color color
     property QFont font
     property Gradient gradient
@@ -193,17 +180,17 @@ Ubuntu.Components.ListItems.Caption 1.0 0.1: Item
     property string text
 Ubuntu.Components.ListItems.Caption 1.3: Item
     property string text
-Ubuntu.Components.Captions 1.2: ColumnLayout
+Ubuntu.Components.Captions 1.2: QQuickColumnLayout
     property int captionStyle
     readonly property Label subtitle
     readonly property Label title
-Ubuntu.Components.Captions 1.3: ColumnLayout
+Ubuntu.Components.Captions 1.3: QQuickColumnLayout
     property int captionStyle
     readonly property Label subtitle
     readonly property Label title
 Ubuntu.Components.CheckBox 1.0 0.1: AbstractButton
     property bool checked
-Ubuntu.Components.CheckBox 1.3: AbstractButton
+Ubuntu.Components.CheckBox 1.3: UCAbstractButton
     property bool checked
 Ubuntu.Components.Clipboard 1.0 0.1: QtObject singleton
     readonly property MimeData data
@@ -245,10 +232,6 @@ Ubuntu.Layouts.ConditionalLayout 1.0 0.1: QtObject
     default property Component layout
     property string name
     property QQmlBinding when
-Ubuntu.PerformanceMetrics.CpuUsage 1.0 0.1: Item
-    readonly property UPMGraphModel graphModel
-    property int period
-    property int samplingInterval
 Ubuntu.Components.CrossFadeImage 1.0 0.1: Item
     property int fadeDuration
     property int fillMode
@@ -331,7 +314,7 @@ Ubuntu.Components.ListItems.Empty 1.0 0.1: AbstractButton
     property bool showDivider
     readonly property string swipingState
     readonly property bool waitingConfirmationForRemoval
-Ubuntu.Components.ListItems.Empty 1.3: AbstractButton
+Ubuntu.Components.ListItems.Empty 1.3: UCAbstractButton
     readonly property Item backgroundIndicator
     property bool confirmRemoval
     readonly property ThinDivider divider
@@ -396,12 +379,7 @@ Ubuntu.Components.Icon 1.0 0.1: Item
 Ubuntu.Components.Icon 1.1: Icon
     property url source
 Ubuntu.Components.InverseMouse 1.0 0.1: Mouse
-Ubuntu.Components.InverseMouseArea 1.0 0.1: MouseArea
-    function bool contains(QPointF point)
-    property Item sensingArea
-    property bool topmostItem
-Ubuntu.Layouts.ItemLayout 1.0 0.1: Item
-    property string item
+InverseMouseAreaType: InverseMouseAreaType
 Ubuntu.Components.ListItems.ItemSelector 1.0 0.1: Empty
     property bool colourImage
     property double containerHeight
@@ -430,31 +408,6 @@ Ubuntu.Components.Label 1.0 0.1: Text
     property string fontSize
 Ubuntu.Components.Label 1.3: Text
     property string fontSize
-Ubuntu.Layouts.Layouts 1.0 0.1: Item
-    readonly property string currentLayout
-    readonly property ConditionalLayout layouts
-Ubuntu.Components.ListItem 1.2: StyledItem
-    property Action action
-    property color color
-    readonly property Item contentItem
-    readonly property bool contentMoving
-    readonly property UCListItemDivider divider
-    property bool dragMode
-    readonly property bool dragging
-    property color highlightColor
-    readonly property bool highlighted
-    property ListItemActions leadingActions
-    readonly property Item listItemChildren
-    default readonly property QtObject listItemData
-    signal clicked()
-    signal pressAndHold()
-    signal contentMovementStarted()
-    signal contentMovementEnded()
-    property bool selectMode
-    property bool selected
-    property ListItemActions trailingActions
-Ubuntu.Components.ListItem 1.3: ListItem
-    readonly property UCListItemExpansion expansion
 Ubuntu.Components.ListItemActions 1.2: QtObject
     readonly property Action actions
     default readonly property QtObject data
@@ -470,15 +423,6 @@ Ubuntu.Components.ListItemDrag.Status: Enum
     Dropped
     Moving
     Started
-Ubuntu.Components.Styles.ListItemStyle 1.3 1.2: Item
-    readonly property bool animatePanels
-    property Item dragPanel
-    property PropertyAnimation dropAnimation
-    readonly property Flickable flickable 1.3
-    readonly property int listItemIndex 1.3
-    function swipeEvent(SwipeEvent event)
-    function rebound()
-    property Animation snapAnimation
 Ubuntu.Components.LiveTimer 1.3: QtObject
     property Frequency frequency
     signal trigger()
@@ -771,15 +715,14 @@ Ubuntu.Components.ProgressBar 1.3: AnimatedItem
     property bool onScreen
     property bool showProgressPercentage
     property double value
-Ubuntu.Components.ProportionalShape 1.3: UbuntuShape
-Ubuntu.Components.PullToRefresh 1.1: StyledItem
+Ubuntu.Components.PullToRefresh 1.1: UCStyledItemBase
     property Component content
     signal refresh()
     readonly property double offset
     property bool refreshing
     readonly property bool releaseToRefresh
     property Flickable target
-Ubuntu.Components.PullToRefresh 1.3: StyledItem
+Ubuntu.Components.PullToRefresh 1.3: UCStyledItemBase
     property Component content
     signal refresh()
     readonly property double offset
@@ -790,20 +733,14 @@ Ubuntu.Components.Styles.PullToRefreshStyle 1.1: Item
     property double activationThreshold
     property Component defaultContent
     property bool releaseToRefresh
-Ubuntu.PerformanceMetrics.RenderingTimes 1.0 0.1: Item
-    readonly property UPMGraphModel graphModel
-    signal frameRendered(qlonglong renderTime)
-    property int period
-    property int samples
-    property RenderTimer.TimerType timerType
-Ubuntu.Components.Scrollbar 1.0 0.1: StyledItem
+Ubuntu.Components.Scrollbar 1.0 0.1: UCStyledItemBase
     property int align
     property Flickable flickableItem
-Ubuntu.Components.Scrollbar 1.3: StyledItem
+Ubuntu.Components.Scrollbar 1.3: UCStyledItemBase
     property int align
     property Flickable flickableItem
 Ubuntu.Components.ScrollbarUtils 0.1 1.0
-Ubuntu.Components.Sections 1.3: StyledItem
+Ubuntu.Components.Sections 1.3: UCStyledItemBase
     readonly property Action actions
     property var model
     property int selectedIndex
@@ -844,7 +781,7 @@ Ubuntu.Components.ListItems.SingleValue 1.0 0.1: Base
     property string value
 Ubuntu.Components.ListItems.SingleValue 1.3: Base
     property string value
-Ubuntu.Components.Slider 1.0 0.1: StyledItem
+Ubuntu.Components.Slider 1.0 0.1: UCStyledItemBase
     property bool live
     property double maximumValue
     signal touched(bool onThumb)
@@ -852,7 +789,7 @@ Ubuntu.Components.Slider 1.0 0.1: StyledItem
     property double minimumValue
     readonly property bool pressed
     property double value
-Ubuntu.Components.Slider 1.3: StyledItem
+Ubuntu.Components.Slider 1.3: UCStyledItemBase
     property bool live
     property double maximumValue
     signal touched(bool onThumb)
@@ -888,13 +825,6 @@ Ubuntu.Components.ListItems.Standard 1.3: Empty
 Ubuntu.Components.StateSaver 1.0 0.1: QtObject
 Ubuntu.Components.StyleHints 1.3: QtObject
     property bool ignoreUnknownProperties
-Ubuntu.Components.StyledItem 1.3 1.3 1.1 1.0 0.1: Item
-    property bool activeFocusOnPress 1.3
-    function bool requestFocus(Qt.FocusReason reason) 1.3
-    function bool requestFocus() 1.3
-    property Component style
-    property string styleName 1.3
-    property ThemeSettings theme 1.3
 Ubuntu.Components.ListItems.Subtitled 1.0 0.1: Base
     property string subText
 Ubuntu.Components.ListItems.Subtitled 1.3: Base
@@ -910,7 +840,7 @@ Ubuntu.Components.SwipeEvent.Status: Enum
     Updated
 Ubuntu.Components.Switch 1.0 0.1: AbstractButton
     property bool checked
-Ubuntu.Components.Switch 1.3: AbstractButton
+Ubuntu.Components.Switch 1.3: UCAbstractButton
     property bool checked
 Ubuntu.Components.Tab 1.0 0.1: PageTreeNode
     property url iconSource
@@ -922,7 +852,7 @@ Ubuntu.Components.Tab 1.3: PageTreeNode
     readonly property int index
     property Item page
     property string title
-Ubuntu.Components.TabBar 1.0 0.1: StyledItem
+Ubuntu.Components.TabBar 1.0 0.1: UCStyledItemBase
     property bool alwaysSelectionMode
     property bool animate
     property var model
@@ -930,7 +860,7 @@ Ubuntu.Components.TabBar 1.0 0.1: StyledItem
     property int selectedIndex
     property bool selectionMode
     property Item tabsItem
-Ubuntu.Components.TabBar 1.3: StyledItem
+Ubuntu.Components.TabBar 1.3: UCStyledItemBase
     property bool alwaysSelectionMode
     property bool animate
     property var model
@@ -966,7 +896,7 @@ Ubuntu.Test.TestExtras 1.0: QtObject singleton
     function touchDrag(int touchId, Item item, Qt.point from, Qt.point delta, int steps)
     function touchDrag(int touchId, Item item, Qt.point from, Qt.point delta)
     readonly property bool touchPresent
-Ubuntu.Components.TextArea 1.0 0.1: StyledItem
+Ubuntu.Components.TextArea 1.0 0.1: UCStyledItemBase
     property bool autoExpand
     property bool autoSize
     property url baseUrl
@@ -1024,7 +954,7 @@ Ubuntu.Components.TextArea 1.0 0.1: StyledItem
     property int textFormat
     property int verticalAlignment
     property int wrapMode
-Ubuntu.Components.TextArea 1.3: StyledItem
+Ubuntu.Components.TextArea 1.3: UCStyledItemBase
     property bool autoExpand
     property bool autoSize
     property url baseUrl
@@ -1085,7 +1015,7 @@ Ubuntu.Components.TextArea 1.3: StyledItem
     property int textFormat
     property int verticalAlignment
     property int wrapMode
-Ubuntu.Components.TextField 1.0 0.1: ActionItem
+Ubuntu.Components.TextField 1.0 0.1: UCActionItem
     readonly property bool acceptableInput
     property bool autoScroll
     readonly property bool canPaste
@@ -1146,7 +1076,7 @@ Ubuntu.Components.TextField 1.0 0.1: ActionItem
     readonly property int selectionStart
     property QValidator validator
     property int verticalAlignment
-Ubuntu.Components.TextField 1.3: ActionItem
+Ubuntu.Components.TextField 1.3: UCActionItem
     readonly property bool acceptableInput
     property bool autoScroll
     readonly property bool canPaste
@@ -1207,8 +1137,6 @@ Ubuntu.Components.TextField 1.3: ActionItem
     readonly property int selectionStart
     property QValidator validator
     property int verticalAlignment
-Ubuntu.PerformanceMetrics.TextureFromImage 1.0 0.1: Item
-    property QImage image
 Ubuntu.Components.ThemeSettings 1.3: QtObject
     property string name
     property QtObject palette
@@ -1216,22 +1144,8 @@ Ubuntu.Components.ThemeSettings 1.3: QtObject
     property ushort version
 Ubuntu.Components.ListItems.ThinDivider 1.0 0.1: Rectangle
 Ubuntu.Components.ListItems.ThinDivider 1.3: Rectangle
-Ubuntu.Components.ToolbarButton 1.0 0.1: StyledItem
-    property Action action
-    property string iconName
-    property url iconSource
-    signal triggered(var value)
-    function trigger(var value)
-    function trigger()
-    property string text
-Ubuntu.Components.ToolbarButton 1.3: StyledItem
-    property Action action
-    property string iconName
-    property url iconSource
-    signal triggered(var value)
-    function trigger(var value)
-    function trigger()
-    property string text
+Ubuntu.Components.ToolbarButton 1.0 0.1: UCActionItem
+Ubuntu.Components.ToolbarButton 1.3: UCActionItem
 Ubuntu.Components.ToolbarItems 1.0 0.1: Item
     property Item back
     default readonly property QtObject contents
@@ -1244,26 +1158,63 @@ Ubuntu.Components.ToolbarItems 1.3: Item
     property bool locked
     property bool opened
     property Item pageStack
-UCListItemDivider: Item
-    property color colorFrom
-    property color colorTo
+UCAbstractButton: UCAbstractButton
+UCActionItem: UCActionItem
+UCListItem: UCListItem
+UCListItem13: UCListItem13
+UCListItemDivider: UCListItemDivider
 UCListItemExpansion: QtObject
     property bool expanded
     property double height
+UCListItemStyle: UCListItemStyle
+UCProportionalShape: UCUbuntuShape
 UCStateSaverAttached: QtObject
     property bool enabled
     property string properties
+UCStyledItemBase: UCStyledItemBase
+UCUbuntuShape: UCUbuntuShape
+Ubuntu.Test.UCUbuntuShape.Aspect: Enum
+    DropShadow
+    Flat
+    Inset
+Ubuntu.Test.UCUbuntuShape.BackgroundMode: Enum
+    SolidColor
+    VerticalGradient
+Ubuntu.Test.UCUbuntuShape.FillMode: Enum
+    Pad
+    PreserveAspectCrop
+    PreserveAspectFit
+    Stretch
+Ubuntu.Test.UCUbuntuShape.HAlignment: Enum
+    AlignHCenter
+    AlignLeft
+    AlignRight
+Ubuntu.Test.UCUbuntuShape.VAlignment: Enum
+    AlignBottom
+    AlignTop
+    AlignVCenter
+Ubuntu.Test.UCUbuntuShape.WrapMode: Enum
+    Repeat
+    Transparent
+UCUbuntuShapeOverlay: UCUbuntuShape
+    property color overlayColor
+    property QRectF overlayRect
 Ubuntu.Components.UCUnits 1.0 0.1: QtObject
     property float gridUnit
     function float dp(float value)
     function float gu(float value)
+ULItemLayout: ULItemLayout
+ULLayouts: ULLayouts
 ULLayoutsAttached: QtObject
     property string item
+UPMCpuUsage: UPMCpuUsage
 UPMGraphModel: QtObject
     readonly property int currentValue
     readonly property QImage image
     property int samples
     readonly property int shift
+UPMRenderingTimes: UPMRenderingTimes
+UPMTextureFromImage: UPMTextureFromImage
 Ubuntu.Components.Ubuntu 1.2: QtObject singleton
 Ubuntu.Components.Ubuntu 1.3: Ubuntu singleton
     function ushort version(uchar major, uchar minor)
@@ -1313,55 +1264,6 @@ Ubuntu.Components.UbuntuListView 1.3: UbuntuListView
     readonly property PullToRefresh pullToRefresh
 Ubuntu.Components.UbuntuNumberAnimation 1.0 0.1: PropertyAnimation
 Ubuntu.Components.UbuntuNumberAnimation 1.3: PropertyAnimation
-Ubuntu.Components.UbuntuShape 1.3 1.2 1.0 0.1 Shape 1.0 0.1: Item
-    property Aspect aspect 1.3
-    property color backgroundColor 1.3
-    property BackgroundMode backgroundMode 1.3
-    property string borderSource
-    property color color
-    property color gradientColor
-    property HAlignment horizontalAlignment
-    property var image
-    property string radius
-    property double relativeRadius 1.3
-    property color secondaryBackgroundColor 1.3
-    property var source 1.3
-    property FillMode sourceFillMode 1.3
-    property HAlignment sourceHorizontalAlignment 1.3
-    property WrapMode sourceHorizontalWrapMode 1.3
-    property double sourceOpacity 1.3
-    property vector2d sourceScale 1.3
-    property vector2d sourceTranslation 1.3
-    property VAlignment sourceVerticalAlignment 1.3
-    property WrapMode sourceVerticalWrapMode 1.3
-    property bool stretched
-    property VAlignment verticalAlignment
-Ubuntu.Components.UbuntuShape.Aspect: Enum
-    DropShadow
-    Flat
-    Inset
-Ubuntu.Components.UbuntuShape.BackgroundMode: Enum
-    SolidColor
-    VerticalGradient
-Ubuntu.Components.UbuntuShape.FillMode: Enum
-    Pad
-    PreserveAspectCrop
-    PreserveAspectFit
-    Stretch
-Ubuntu.Components.UbuntuShape.HAlignment: Enum
-    AlignHCenter
-    AlignLeft
-    AlignRight
-Ubuntu.Components.UbuntuShape.VAlignment: Enum
-    AlignBottom
-    AlignTop
-    AlignVCenter
-Ubuntu.Components.UbuntuShape.WrapMode: Enum
-    Repeat
-    Transparent
-Ubuntu.Components.UbuntuShapeOverlay 1.2: UbuntuShape
-    property color overlayColor
-    property QRectF overlayRect
 Ubuntu.Test.UbuntuTestCase 1.0 0.1: TestCase
     function var findChild(var obj, var objectName)
     function var findInvisibleChild(var obj, var objectName)

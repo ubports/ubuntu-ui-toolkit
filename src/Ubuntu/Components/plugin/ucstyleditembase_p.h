@@ -35,8 +35,6 @@ public:
 
     void _q_reloadStyle();
     void _q_styleResized();
-    void _q_ascendantChanged(QQuickItem *ascendant);
-    void _q_parentStyleChanged();
 
     UCStyledItemBasePrivate();
     virtual ~UCStyledItemBasePrivate();
@@ -65,21 +63,18 @@ public:
     virtual void postThemeChanged(){}
 
 public:
-    bool activeFocusOnPress:1;
+    QPointer<QQmlContext> styleItemContext;
+    QPointer<UCStyledItemBase> parentStyledItem;
     QString styleDocument;
     QQmlComponent *styleComponent;
-    QPointer<QQmlContext> styleItemContext;
     QQuickItem *styleItem;
     UCTheme *theme;
-    QPointer<UCStyledItemBase> parentStyledItem;
+    bool activeFocusOnPress:1;
 
 protected:
-    QStack< QPointer<QQuickItem> > parentStack;
 
     void connectStyleSizeChanges(bool attach);
-    bool connectParents(QQuickItem *fromItem);
     bool setParentStyled(UCStyledItemBase *styledItem);
-    void disconnectTillItem(QQuickItem *item);
 };
 
 #endif // UCSTYLEDITEMBASE_P_H

@@ -28,13 +28,13 @@
  * (see plugin.cpp registration) therefore it extends any QtQuick element.
  * Whenever the extended Item's parentItem is changed, there will be an UCThemeUpdateEvent
  * event broadcasted to all item's children and their children. Components which need to
- * handle the theme change can therefore catch this event by extending the QObject::event()
+ * handle the theme change can therefore catch this event by extending the QObject::customEvent()
  * method and handle the event there.
  */
 
-int UCItemExtension::ascendantChangedEvent = 0;
+int UCThemeUpdateEvent::eventId = QEvent::registerEventType();
 UCThemeUpdateEvent::UCThemeUpdateEvent(UCStyledItemBase *newStyled, UCTheme *newTheme)
-    : QEvent((QEvent::Type)UCItemExtension::ascendantChangedEvent)
+    : QEvent((QEvent::Type)UCThemeUpdateEvent::eventId)
     , m_ascendantStyled(newStyled)
     , m_theme(newTheme)
 {
@@ -43,20 +43,10 @@ UCThemeUpdateEvent::UCThemeUpdateEvent(UCStyledItemBase *newStyled, UCTheme *new
 UCItemExtension::UCItemExtension(QObject *parent)
     : QObject(parent)
     , m_item(static_cast<QQuickItem*>(parent))
-    , m_completed(false)
 {
     connect(m_item, &QQuickItem::parentChanged, this, &UCItemExtension::extendedParentChanged);
-    // listen for completion
-    QQmlComponentAttached *attached = QQmlComponent::qmlAttachedProperties(m_item);
-    connect(attached, &QQmlComponentAttached::completed, this, &UCItemExtension::completed);
     // get parent item changes
     connect(m_item, &QQuickItem::parentChanged, this, &UCItemExtension::handleParentChanged);
-}
-
-// get completion
-void UCItemExtension::completed()
-{
-    m_completed = true;
 }
 
 // handle parent changes
@@ -72,20 +62,21 @@ void UCItemExtension::handleParentChanged(QQuickItem *newParent)
     UCTheme *theme = styledItem ?
                 UCStyledItemBasePrivate::get(styledItem)->getTheme() :
                 &UCTheme::defaultTheme();
-    broadcastParentChange(m_item, styledItem, theme);
+    broadcastThemeUpdate(m_item, styledItem, theme);
 }
 
 // boadcast parent change to the children recoursively
-void UCItemExtension::broadcastParentChange(QQuickItem *item, UCStyledItemBase *ascendantStyled, UCTheme *newTheme)
+void UCItemExtension::broadcastThemeUpdate(QQuickItem *item, UCStyledItemBase *ascendantStyled, UCTheme *newTheme)
 {
     Q_FOREACH(QQuickItem *child, item->childItems()) {
         QGuiApplication::postEvent(child, new UCThemeUpdateEvent(ascendantStyled, newTheme));
         if (child->childItems().size() > 0) {
-            broadcastParentChange(child, ascendantStyled, newTheme);
+            broadcastThemeUpdate(child, ascendantStyled, newTheme);
         }
     }
 }
 
+// property overrides forward to the original the getter/setter
 QQuickItem *UCItemExtension::parentItem() const
 {
     return m_item->parentItem();
