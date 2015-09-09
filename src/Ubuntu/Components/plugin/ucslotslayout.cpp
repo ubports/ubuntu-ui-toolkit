@@ -7,112 +7,6 @@
 #include "unitythemeiconprovider.h"
 
 /******************************************************************************
- * UCSlotsAttached
- */
-UCSlotsAttached::UCSlotsAttached(QObject *object)
-    : QObject(object)
-    , m_position(UCSlotsLayout::Trailing)
-    , m_leftMargin(0)
-    , m_rightMargin(0)
-    , m_overrideVerticalPositioning(false)
-    , leftMarginWasSetFromQml(false)
-    , rightMarginWasSetFromQml(false)
-{
-    updateGuValues();
-    QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this, SLOT(updateGuValues()));
-}
-
-UCSlotsLayout::UCSlotPosition UCSlotsAttached::position() const
-{
-    return m_position;
-}
-
-void UCSlotsAttached::setPosition(UCSlotsLayout::UCSlotPosition pos)
-{
-    if (m_position != pos) {
-        m_position = pos;
-        Q_EMIT positionChanged();
-    }
-}
-
-qreal UCSlotsAttached::leftMargin() const
-{
-    return m_leftMargin;
-}
-
-void UCSlotsAttached::setLeftMargin(qreal margin)
-{
-    if (m_leftMargin != margin) {
-        m_leftMargin = margin;
-        Q_EMIT leftMarginChanged();
-    }
-}
-
-void UCSlotsAttached::setLeftMarginQml(qreal margin)
-{
-    leftMarginWasSetFromQml = true;
-
-    //if both have been set from QML, then disconnect the signal from the slot, to avoid overwriting dev's values
-    //when GU changes
-    if (rightMarginWasSetFromQml)
-        QObject::disconnect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this, SLOT(updateGuValues()));
-
-    setLeftMargin(margin);
-}
-
-qreal UCSlotsAttached::rightMargin() const
-{
-    return m_rightMargin;
-}
-
-void UCSlotsAttached::setRightMargin(qreal margin)
-{
-    if (m_rightMargin != margin) {
-        m_rightMargin = margin;
-        Q_EMIT rightMarginChanged();
-    }
-}
-
-void UCSlotsAttached::setRightMarginQml(qreal margin)
-{
-    rightMarginWasSetFromQml = true;
-
-    //if both have been set from QML, then disconnect the signal from the slot, to avoid overwriting dev's values
-    //when GU changes
-    if (leftMarginWasSetFromQml)
-        QObject::disconnect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this, SLOT(updateGuValues()));
-
-    setRightMargin(margin);
-}
-
-bool UCSlotsAttached::overrideVerticalPositioning() const
-{
-    return m_overrideVerticalPositioning;
-}
-
-void UCSlotsAttached::setOverrideVerticalPositioning(bool val)
-{
-    if (m_overrideVerticalPositioning != val) {
-        m_overrideVerticalPositioning = val;
-        Q_EMIT overrideVerticalPositioningChanged();
-    }
-}
-
-void UCSlotsAttached::updateGuValues()
-{
-    if (!leftMarginWasSetFromQml)
-        setLeftMargin(UCUnits::instance().gu(SLOTSLAYOUT_SLOTS_SIDEMARGINS_GU));
-
-    if (!rightMarginWasSetFromQml)
-        setRightMargin(UCUnits::instance().gu(SLOTSLAYOUT_SLOTS_SIDEMARGINS_GU));
-}
-
-UCSlotsAttached *UCSlotsLayout::qmlAttachedProperties(QObject *object)
-{
-    return new UCSlotsAttached(object);
-}
-
-/******************************************************************************
  * UCSlotsLayoutPrivate
  */
 UCSlotsLayoutPrivate::UCSlotsLayoutPrivate()
@@ -191,13 +85,15 @@ void UCSlotsLayoutPrivate::init()
     QObject::connect(&m_subsubtitle, SIGNAL(heightChanged()), q, SLOT(_q_updateLabelsAnchorsAndBBoxHeight()));
 }
 
-int UCSlotsLayoutPrivate::getVerticalPositioningMode() {
+int UCSlotsLayoutPrivate::getVerticalPositioningMode()
+{
     //we could just return the bool, I just want to stress that there could be other
     //modes in the future
     return (labelsBoundingBoxHeight > maxSlotsHeight) ? 1 : 0;
 }
 
-void UCSlotsLayoutPrivate::updateTopBottomOffsetsIfNeeded() {
+void UCSlotsLayoutPrivate::updateTopBottomOffsetsIfNeeded()
+{
     Q_Q(UCSlotsLayout);
     if (!topOffsetWasSetFromQml) {
         q->setTopOffset((!getVerticalPositioningMode()
@@ -214,7 +110,8 @@ void UCSlotsLayoutPrivate::updateTopBottomOffsetsIfNeeded() {
     }
 }
 
-void UCSlotsLayoutPrivate::setDefaultLabelsProperties() {
+void UCSlotsLayoutPrivate::setDefaultLabelsProperties()
+{
     Q_Q(UCSlotsLayout);
     m_title.setParentItem(q);
     m_subtitle.setParentItem(q);
@@ -254,7 +151,8 @@ void UCSlotsLayoutPrivate::setDefaultLabelsProperties() {
     m_subsubtitle.setColor(QColor("#525252"));
 }
 
-void UCSlotsLayoutPrivate::_q_updateCachedHeight() {
+void UCSlotsLayoutPrivate::_q_updateCachedHeight()
+{
     Q_Q(UCSlotsLayout);
     if (_q_cachedHeight != q->height()) {
         if (qIsNull(_q_cachedHeight)) {
@@ -264,7 +162,8 @@ void UCSlotsLayoutPrivate::_q_updateCachedHeight() {
     }
 }
 
-void UCSlotsLayoutPrivate::_q_updateProgressionStatus() {
+void UCSlotsLayoutPrivate::_q_updateProgressionStatus()
+{
     Q_Q(UCSlotsLayout);
     if (progression) {
         //No parents on purpose! We'll set the parent after we force the creation of QQmlData,
@@ -295,7 +194,8 @@ void UCSlotsLayoutPrivate::_q_updateProgressionStatus() {
     _q_updateSlotsBBoxHeight();
 }
 
-void UCSlotsLayoutPrivate::_q_updateGuValues() {
+void UCSlotsLayoutPrivate::_q_updateGuValues()
+{
     Q_Q(UCSlotsLayout);
 
     if (!leftOffsetWasSetFromQml) {
@@ -311,7 +211,8 @@ void UCSlotsLayoutPrivate::_q_updateGuValues() {
     _q_updateSize();
 }
 
-void UCSlotsLayoutPrivate::_q_updateLabelsAnchorsAndBBoxHeight() {
+void UCSlotsLayoutPrivate::_q_updateLabelsAnchorsAndBBoxHeight()
+{
     //if the component is not ready the QML properties may not have been evaluated yet,
     //it's not worth doing anything if that's the case
     if (!ready)
@@ -375,7 +276,8 @@ void UCSlotsLayoutPrivate::_q_updateLabelsAnchorsAndBBoxHeight() {
     _q_updateSize();
 }
 
-void UCSlotsLayoutPrivate::_q_updateSlotsBBoxHeight() {
+void UCSlotsLayoutPrivate::_q_updateSlotsBBoxHeight()
+{
     if (!ready)
         return;
 
@@ -421,7 +323,8 @@ void UCSlotsLayoutPrivate::_q_updateSize()
     Q_EMIT q->relayoutNeeded();
 }
 
-void UCSlotsLayoutPrivate::_q_relayout() {
+void UCSlotsLayoutPrivate::_q_relayout()
+{
     Q_Q(UCSlotsLayout);
 
     //only relayout after the component has been initialized
@@ -660,7 +563,8 @@ void UCSlotsLayoutPrivate::_q_relayout() {
     }
 }
 
-void UCSlotsLayoutPrivate::handleAttachedPropertySignals(QQuickItem *item, bool connect) {
+void UCSlotsLayoutPrivate::handleAttachedPropertySignals(QQuickItem *item, bool connect)
+{
     Q_Q(UCSlotsLayout);
     UCSlotsAttached *attachedSlot =
             qobject_cast<UCSlotsAttached *>(qmlAttachedPropertiesObject<UCSlotsLayout>(item));
@@ -693,7 +597,8 @@ UCSlotsLayout::UCSlotsLayout(QQuickItem *parent) :
     setAcceptedMouseButtons(Qt::LeftButton);
 }
 
-void UCSlotsLayout::componentComplete() {
+void UCSlotsLayout::componentComplete()
+{
     QQuickItem::componentComplete();
 
     Q_D(UCSlotsLayout);
@@ -767,38 +672,45 @@ void UCSlotsLayout::itemChange(ItemChange change, const ItemChangeData &data)
     QQuickItem::itemChange(change, data);
 }
 
-QQuickText *UCSlotsLayout::titleItem() {
+QQuickText *UCSlotsLayout::titleItem()
+{
     Q_D(UCSlotsLayout);
     return &(d->m_title);
 }
 
-QQuickText *UCSlotsLayout::subtitleItem() {
+QQuickText *UCSlotsLayout::subtitleItem()
+{
     Q_D(UCSlotsLayout);
     return &(d->m_subtitle);
 }
 
-QQuickText *UCSlotsLayout::subsubtitleItem() {
+QQuickText *UCSlotsLayout::subsubtitleItem()
+{
     Q_D(UCSlotsLayout);
     return &(d->m_subsubtitle);
 }
 
-void UCSlotsLayout::mousePressEvent(QMouseEvent *event) {
+void UCSlotsLayout::mousePressEvent(QMouseEvent *event)
+{
     event->setAccepted(false);
 
     //let's keep this to avoid having to break the API if we decide to add
     //input handling
 }
 
-void UCSlotsLayout::mouseReleaseEvent(QMouseEvent *event) {
+void UCSlotsLayout::mouseReleaseEvent(QMouseEvent *event)
+{
     Q_UNUSED(event);
 }
 
-qreal UCSlotsLayout::leftOffset() const {
+qreal UCSlotsLayout::leftOffset() const
+{
     Q_D(const UCSlotsLayout);
     return d->leftOffset;
 }
 
-void UCSlotsLayout::setLeftOffset(qreal val) {
+void UCSlotsLayout::setLeftOffset(qreal val)
+{
     Q_D(UCSlotsLayout);
     if (d->leftOffset != val) {
         d->leftOffset = val;
@@ -806,18 +718,21 @@ void UCSlotsLayout::setLeftOffset(qreal val) {
     }
 }
 
-void UCSlotsLayout::setLeftOffsetQml(qreal val) {
+void UCSlotsLayout::setLeftOffsetQml(qreal val)
+{
     Q_D(UCSlotsLayout);
     d->leftOffsetWasSetFromQml = true;
     setLeftOffset(val);
 }
 
-qreal UCSlotsLayout::rightOffset() const {
+qreal UCSlotsLayout::rightOffset() const
+{
     Q_D(const UCSlotsLayout);
     return d->rightOffset;
 }
 
-void UCSlotsLayout::setRightOffset(qreal val) {
+void UCSlotsLayout::setRightOffset(qreal val)
+{
     Q_D(UCSlotsLayout);
     if (d->rightOffset != val) {
         d->rightOffset = val;
@@ -825,18 +740,21 @@ void UCSlotsLayout::setRightOffset(qreal val) {
     }
 }
 
-void UCSlotsLayout::setRightOffsetQml(qreal val) {
+void UCSlotsLayout::setRightOffsetQml(qreal val)
+{
     Q_D(UCSlotsLayout);
     d->rightOffsetWasSetFromQml = true;
     setRightOffset(val);
 }
 
-qreal UCSlotsLayout::topOffset() const {
+qreal UCSlotsLayout::topOffset() const
+{
     Q_D(const UCSlotsLayout);
     return d->topOffset;
 }
 
-void UCSlotsLayout::setTopOffset(qreal val) {
+void UCSlotsLayout::setTopOffset(qreal val)
+{
     Q_D(UCSlotsLayout);
     if (d->topOffset != val) {
         d->topOffset = val;
@@ -844,18 +762,21 @@ void UCSlotsLayout::setTopOffset(qreal val) {
     }
 }
 
-void UCSlotsLayout::setTopOffsetQml(qreal val) {
+void UCSlotsLayout::setTopOffsetQml(qreal val)
+{
     Q_D(UCSlotsLayout);
     d->topOffsetWasSetFromQml = true;
     setTopOffset(val);
 }
 
-qreal UCSlotsLayout::bottomOffset() const {
+qreal UCSlotsLayout::bottomOffset() const
+{
     Q_D(const UCSlotsLayout);
     return d->bottomOffset;
 }
 
-void UCSlotsLayout::setBottomOffset(qreal val) {
+void UCSlotsLayout::setBottomOffset(qreal val)
+{
     Q_D(UCSlotsLayout);
     if (d->bottomOffset != val) {
         d->bottomOffset = val;
@@ -863,18 +784,21 @@ void UCSlotsLayout::setBottomOffset(qreal val) {
     }
 }
 
-void UCSlotsLayout::setBottomOffsetQml(qreal val) {
+void UCSlotsLayout::setBottomOffsetQml(qreal val)
+{
     Q_D(UCSlotsLayout);
     d->bottomOffsetWasSetFromQml = true;
     setBottomOffset(val);
 }
 
-bool UCSlotsLayout::progression() const {
+bool UCSlotsLayout::progression() const
+{
     Q_D(const UCSlotsLayout);
     return d->progression;
 }
 
-void UCSlotsLayout::setProgression(bool val) {
+void UCSlotsLayout::setProgression(bool val)
+{
     Q_D(UCSlotsLayout);
     if (d->progression != val) {
         d->progression = val;
@@ -882,7 +806,8 @@ void UCSlotsLayout::setProgression(bool val) {
     }
 }
 
-UCSlotsAttached *UCSlotsLayout::progressionSlot() const {
+UCSlotsAttached *UCSlotsLayout::progressionSlot() const
+{
     Q_D(const UCSlotsLayout);
 
     if (d->chevron == Q_NULLPTR) {
@@ -897,6 +822,112 @@ UCSlotsAttached *UCSlotsLayout::progressionSlot() const {
     return (UCSlotsAttached * const) attached;
 }
 
+/******************************************************************************
+ * UCSlotsAttached
+ */
+UCSlotsAttached::UCSlotsAttached(QObject *object)
+    : QObject(object)
+    , m_position(UCSlotsLayout::Trailing)
+    , m_leftMargin(0)
+    , m_rightMargin(0)
+    , m_overrideVerticalPositioning(false)
+    , leftMarginWasSetFromQml(false)
+    , rightMarginWasSetFromQml(false)
+{
+    updateGuValues();
+    QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this, SLOT(updateGuValues()));
+}
+
+UCSlotsLayout::UCSlotPosition UCSlotsAttached::position() const
+{
+    return m_position;
+}
+
+void UCSlotsAttached::setPosition(UCSlotsLayout::UCSlotPosition pos)
+{
+    if (m_position != pos) {
+        m_position = pos;
+        Q_EMIT positionChanged();
+    }
+}
+
+qreal UCSlotsAttached::leftMargin() const
+{
+    return m_leftMargin;
+}
+
+void UCSlotsAttached::setLeftMargin(qreal margin)
+{
+    if (m_leftMargin != margin) {
+        m_leftMargin = margin;
+        Q_EMIT leftMarginChanged();
+    }
+}
+
+void UCSlotsAttached::setLeftMarginQml(qreal margin)
+{
+    leftMarginWasSetFromQml = true;
+
+    //if both have been set from QML, then disconnect the signal from the slot, to avoid overwriting dev's values
+    //when GU changes
+    if (rightMarginWasSetFromQml)
+        QObject::disconnect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this, SLOT(updateGuValues()));
+
+    setLeftMargin(margin);
+}
+
+qreal UCSlotsAttached::rightMargin() const
+{
+    return m_rightMargin;
+}
+
+void UCSlotsAttached::setRightMargin(qreal margin)
+{
+    if (m_rightMargin != margin) {
+        m_rightMargin = margin;
+        Q_EMIT rightMarginChanged();
+    }
+}
+
+void UCSlotsAttached::setRightMarginQml(qreal margin)
+{
+    rightMarginWasSetFromQml = true;
+
+    //if both have been set from QML, then disconnect the signal from the slot, to avoid overwriting dev's values
+    //when GU changes
+    if (leftMarginWasSetFromQml)
+        QObject::disconnect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this, SLOT(updateGuValues()));
+
+    setRightMargin(margin);
+}
+
+bool UCSlotsAttached::overrideVerticalPositioning() const
+{
+    return m_overrideVerticalPositioning;
+}
+
+void UCSlotsAttached::setOverrideVerticalPositioning(bool val)
+{
+    if (m_overrideVerticalPositioning != val) {
+        m_overrideVerticalPositioning = val;
+        Q_EMIT overrideVerticalPositioningChanged();
+    }
+}
+
+void UCSlotsAttached::updateGuValues()
+{
+    if (!leftMarginWasSetFromQml)
+        setLeftMargin(UCUnits::instance().gu(SLOTSLAYOUT_SLOTS_SIDEMARGINS_GU));
+
+    if (!rightMarginWasSetFromQml)
+        setRightMargin(UCUnits::instance().gu(SLOTSLAYOUT_SLOTS_SIDEMARGINS_GU));
+}
+
+UCSlotsAttached *UCSlotsLayout::qmlAttachedProperties(QObject *object)
+{
+    return new UCSlotsAttached(object);
+}
+
 UCSlotsLayoutChevron::UCSlotsLayoutChevron(QQuickItem *parent)
     : QQuickPaintedItem(parent)
 {
@@ -904,11 +935,13 @@ UCSlotsLayoutChevron::UCSlotsLayoutChevron(QQuickItem *parent)
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this, SLOT(updateGuValues()));
 }
 
-void UCSlotsLayoutChevron::paint(QPainter *painter) {
+void UCSlotsLayoutChevron::paint(QPainter *painter)
+{
     painter->drawPixmap(0, 0, width(), height(), progressionPixmap);
 }
 
-void UCSlotsLayoutChevron::updateGuValues() {
+void UCSlotsLayoutChevron::updateGuValues()
+{
     setImplicitWidth(UCUnits::instance().gu(CHEVRON_DEFAULT_WIDTH_GU));
     setImplicitHeight(UCUnits::instance().gu(CHEVRON_DEFAULT_HEIGHT_GU));
 

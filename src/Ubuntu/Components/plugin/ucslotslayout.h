@@ -7,7 +7,6 @@
 
 class UCSlotsAttached;
 class UCSlotsLayoutPrivate;
-
 class UCSlotsLayout : public QQuickItem
 {
     Q_OBJECT
