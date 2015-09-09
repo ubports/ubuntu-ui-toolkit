@@ -27,9 +27,12 @@ class UCSlotsLayout : public QQuickItem
 public:
     explicit UCSlotsLayout(QQuickItem *parent = 0);
 
-    QQuickText *titleItem() const;
-    QQuickText *subtitleItem() const;
-    QQuickText *subsubtitleItem() const;
+    //this methods can't be const because otherwise they'd have to return
+    //unmodifiable labels, since they're allocated on the stack, and that would
+    //fail compilation (unless const_cast is used)
+    QQuickText *titleItem();
+    QQuickText *subtitleItem();
+    QQuickText *subsubtitleItem();
 
     qreal leftOffset() const;
     void setLeftOffset(qreal val);

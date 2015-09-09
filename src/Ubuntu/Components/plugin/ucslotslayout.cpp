@@ -148,7 +148,7 @@ void UCSlotsLayoutPrivate::init()
 
     _q_updateGuValues();
 
-    // connect theme changes
+    // FIXME: This is not yet possible from C++ since we're not a StyledItem
     //QObject::connect(q, SIGNAL(themeChanged()),
     //                 q, SLOT(_q_themeChanged()), Qt::DirectConnection);
 
@@ -189,7 +189,6 @@ void UCSlotsLayoutPrivate::init()
     QObject::connect(&m_title, SIGNAL(heightChanged()), q, SLOT(_q_updateLabelsAnchorsAndBBoxHeight()));
     QObject::connect(&m_subtitle, SIGNAL(heightChanged()), q, SLOT(_q_updateLabelsAnchorsAndBBoxHeight()));
     QObject::connect(&m_subsubtitle, SIGNAL(heightChanged()), q, SLOT(_q_updateLabelsAnchorsAndBBoxHeight()));
-
 }
 
 int UCSlotsLayoutPrivate::getVerticalPositioningMode() {
@@ -768,20 +767,19 @@ void UCSlotsLayout::itemChange(ItemChange change, const ItemChangeData &data)
     QQuickItem::itemChange(change, data);
 }
 
-QQuickText *UCSlotsLayout::titleItem() const {
-    Q_D(const UCSlotsLayout);
-    //FIXME: is this safe? We're throwing away the const qualifier of d->m_title
-    return (QQuickText * const) &(d->m_title);
+QQuickText *UCSlotsLayout::titleItem() {
+    Q_D(UCSlotsLayout);
+    return &(d->m_title);
 }
 
-QQuickText *UCSlotsLayout::subtitleItem() const {
-    Q_D(const UCSlotsLayout);
-    return (QQuickText * const) &(d->m_subtitle);
+QQuickText *UCSlotsLayout::subtitleItem() {
+    Q_D(UCSlotsLayout);
+    return &(d->m_subtitle);
 }
 
-QQuickText *UCSlotsLayout::subsubtitleItem() const {
-    Q_D(const UCSlotsLayout);
-    return (QQuickText * const) &(d->m_subsubtitle);
+QQuickText *UCSlotsLayout::subsubtitleItem() {
+    Q_D(UCSlotsLayout);
+    return &(d->m_subsubtitle);
 }
 
 void UCSlotsLayout::mousePressEvent(QMouseEvent *event) {
