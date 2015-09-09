@@ -359,11 +359,12 @@ UCTheme::UCTheme(bool defaultStyle, QObject *parent)
 {
     init();
     // set the default font
-    QFont defaultFont;
+    QFont defaultFont = QGuiApplication::font();
     defaultFont.setFamily("Ubuntu");
     defaultFont.setPixelSize(UCFontUtils::instance().sizeToPixels("medium"));
     defaultFont.setWeight(QFont::Light);
     QGuiApplication::setFont(defaultFont);
+    setObjectName("default");
 }
 
 void UCTheme::init()

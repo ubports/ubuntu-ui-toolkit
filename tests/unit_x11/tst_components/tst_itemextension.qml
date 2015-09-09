@@ -43,6 +43,18 @@ Item {
         Loader {
             id: loader
         }
+        StyledItem {
+            id: firstLevelStyled
+            width: parent.width
+            height: units.gu(20)
+            Column {
+                id: innerItem
+                StyledItem {
+                    id: secondLevelStyled
+                    anchors.fill: parent
+                }
+            }
+        }
     }
 
     UbuntuTestCase {
@@ -60,11 +72,6 @@ Item {
         }
 
         function initTestCase() {
-            extendedParentChangedSpy.target = column;
-            verify(extendedParentChangedSpy.valid, "Column not extended");
-            extendedParentChangedSpy.target = loader;
-            extendedParentChangedSpy.clear();
-            verify(extendedParentChangedSpy.valid, "Loader not extended");
         }
 
         function cleanup() {
@@ -73,6 +80,21 @@ Item {
             extendedParentChangedSpy.clear();
             parentChangedSpy.clear();
             loader.sourceComponent = null;
+        }
+
+        function test_extension_data() {
+            return [
+                        {tag: "main", item: main},
+                        {tag: "Column", item: column},
+                        {tag: "Loader", item: loader},
+                        {tag: "firstLevelStyled", item: firstLevelStyled},
+                        {tag: "innerItem", item: innerItem},
+                        {tag: "secondLevelStyled", item: secondLevelStyled},
+                    ]
+        }
+        function test_extension(data) {
+            extendedParentChangedSpy.target = data.item;
+            verify(extendedParentChangedSpy.valid, data.tag + " not extended");
         }
 
         function test_parentChanged_emitted() {

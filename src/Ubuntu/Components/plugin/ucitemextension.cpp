@@ -32,14 +32,61 @@
  * method and handle the event there.
  */
 
-int UCThemeUpdateEvent::eventId = QEvent::registerEventType();
-UCThemeUpdateEvent::UCThemeUpdateEvent(UCStyledItemBase *newStyled, UCTheme *newTheme)
-    : QEvent((QEvent::Type)UCThemeUpdateEvent::eventId)
+//#define ASYNC_BROADCAST
+int UCThemeUpdateEvent::styledItemEventId = QEvent::registerEventType();
+int UCThemeUpdateEvent::themeEventId = QEvent::registerEventType();
+UCThemeUpdateEvent::UCThemeUpdateEvent(UCStyledItemBase *newStyled)
+    : QEvent((QEvent::Type)UCThemeUpdateEvent::styledItemEventId)
     , m_ascendantStyled(newStyled)
-    , m_theme(newTheme)
+    , m_theme(Q_NULLPTR)
 {
 }
 
+UCThemeUpdateEvent::UCThemeUpdateEvent(UCTheme *theme)
+    : QEvent((QEvent::Type)UCThemeUpdateEvent::themeEventId)
+    , m_ascendantStyled(Q_NULLPTR)
+    , m_theme(theme)
+{
+}
+
+// boadcast parent change to the children recoursively
+void UCThemeUpdateEvent::broadcastAscendantUpdate(QQuickItem *item, UCStyledItemBase *ascendantStyled)
+{
+    Q_FOREACH(QQuickItem *child, QQuickItemPrivate::get(item)->childItems) {
+#ifdef ASYNC_BROADCAST
+        QGuiApplication::postEvent(child, new UCThemeUpdateEvent(ascendantStyled));
+#else
+        UCThemeUpdateEvent event(ascendantStyled);
+        QGuiApplication::sendEvent(child, &event);
+#endif
+        // StyledItem will handle the broadcast itself depending on whether the theme change was appropriate or not
+        // and will complete the ascendantStyled/theme itself
+        if (QQuickItemPrivate::get(child)->childItems.size() > 0) {// && !qobject_cast<UCStyledItemBase*>(child)) {
+            broadcastAscendantUpdate(child, ascendantStyled);
+        }
+    }
+}
+
+void UCThemeUpdateEvent::broadcastThemeUpdate(QQuickItem *item, UCTheme *theme)
+{
+    Q_FOREACH(QQuickItem *child, item->childItems()) {
+#ifdef ASYNC_BROADCAST
+        QGuiApplication::postEvent(child, new UCThemeUpdateEvent(theme));
+#else
+        UCThemeUpdateEvent event(theme);
+        QGuiApplication::sendEvent(child, &event);
+#endif
+        // StyledItem will handle the broadcast itself depending on whether the theme change was appropriate or not
+        // and will complete the ascendantStyled/theme itself
+        if (child->childItems().size() > 0 && !qobject_cast<UCStyledItemBase*>(child)) {
+            broadcastThemeUpdate(child, theme);
+        }
+    }
+}
+
+/*************************************************************************
+ *
+ */
 UCItemExtension::UCItemExtension(QObject *parent)
     : QObject(parent)
     , m_item(static_cast<QQuickItem*>(parent))
@@ -52,28 +99,10 @@ UCItemExtension::UCItemExtension(QObject *parent)
 // handle parent changes
 void UCItemExtension::handleParentChanged(QQuickItem *newParent)
 {
-    // traverse new parent ascendants till we reach a styled item and get the theme of that one
-    QQuickItem *pl = newParent;
-    UCStyledItemBase *styledItem = qobject_cast<UCStyledItemBase*>(pl);
-    while (pl && !styledItem) {
-        pl = pl->parentItem();
-        styledItem = qobject_cast<UCStyledItemBase*>(pl);
-    }
-    UCTheme *theme = styledItem ?
-                UCStyledItemBasePrivate::get(styledItem)->getTheme() :
-                &UCTheme::defaultTheme();
-    broadcastThemeUpdate(m_item, styledItem, theme);
-}
-
-// boadcast parent change to the children recoursively
-void UCItemExtension::broadcastThemeUpdate(QQuickItem *item, UCStyledItemBase *ascendantStyled, UCTheme *newTheme)
-{
-    Q_FOREACH(QQuickItem *child, item->childItems()) {
-        QGuiApplication::postEvent(child, new UCThemeUpdateEvent(ascendantStyled, newTheme));
-        if (child->childItems().size() > 0) {
-            broadcastThemeUpdate(child, ascendantStyled, newTheme);
-        }
-    }
+    Q_UNUSED(newParent);
+    // do not care about the closest StyledItem and theme as while teh event reaches the children
+    // those will be completed.
+    UCThemeUpdateEvent::broadcastAscendantUpdate(m_item, Q_NULLPTR);
 }
 
 // property overrides forward to the original the getter/setter

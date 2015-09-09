@@ -9,3 +9,4 @@ HEADERS += tabsmodel.h
 
 OTHER_FILES += $$system(ls *.qml)
 OTHER_FILES += $$system(ls AppTheme/*)
+OTHER_FILES += $$system(ls subtheming/*)

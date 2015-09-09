@@ -21,6 +21,7 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QEvent>
+#include <QtCore/QPointer>
 
 class QQuickItem;
 class UCStyledItemBase;
@@ -39,19 +40,23 @@ Q_SIGNALS:
     void extendedParentChanged();
 
 private:
-    Q_SLOT void handleParentChanged(QQuickItem *newParent);
-
-    void broadcastThemeUpdate(QQuickItem *item, UCStyledItemBase *ascendantStyled, UCTheme *newTheme);
     QQuickItem *m_item;
+
+    Q_SLOT void handleParentChanged(QQuickItem *newParent);
 };
 
 class UCThemeUpdateEvent : public QEvent
 {
-public:
+public: // statics
     // event ID
-    static int eventId;
+    static int styledItemEventId;
+    static int themeEventId;
+    static void broadcastAscendantUpdate(QQuickItem *item, UCStyledItemBase *ascendantStyled);
+    static void broadcastThemeUpdate(QQuickItem *item, UCTheme *theme);
+
 public:
-    explicit UCThemeUpdateEvent(UCStyledItemBase *newStyled, UCTheme *newTheme);
+    explicit UCThemeUpdateEvent(UCStyledItemBase *newStyled);
+    UCThemeUpdateEvent(UCTheme *theme);
 
     UCStyledItemBase *styledItem() const
     {

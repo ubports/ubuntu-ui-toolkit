@@ -122,6 +122,16 @@ UCStyledItemBase::UCStyledItemBase(UCStyledItemBasePrivate &dd, QQuickItem *pare
     d->init();
 }
 
+UCStyledItemBase *UCStyledItemBase::ascendantStyled(QQuickItem *item)
+{
+    QQuickItem *pl = item->parentItem();
+    while (pl && !qobject_cast<UCStyledItemBase*>(pl)) {
+        pl = pl->parentItem();
+    }
+    return qobject_cast<UCStyledItemBase*>(pl);
+}
+
+
 /*!
  * \qmlmethod void StyledItemBase::requestFocus(Qt::FocusReason reason)
  * \since Ubuntu.Components 1.1
@@ -418,6 +428,8 @@ void UCStyledItemBasePrivate::_q_reloadStyle()
     postStyleChanged();
     loadStyleItem();
     Q_EMIT q->themeChanged();
+
+    UCThemeUpdateEvent::broadcastThemeUpdate(q, getTheme());
 }
 
 // handle implicit size changes implied by the style components
@@ -511,6 +523,9 @@ void UCStyledItemBasePrivate::setTheme(UCTheme *newTheme)
 
     Q_EMIT q->themeChanged();
 
+    // broadcast theme changed event
+    UCThemeUpdateEvent::broadcastThemeUpdate(q, getTheme());
+
     // perform style reload
     if (!styleComponent) {
         preStyleChanged();
@@ -523,7 +538,7 @@ void UCStyledItemBasePrivate::resetTheme()
     setTheme(NULL);
 }
 
-// set the used parent styled item's style; returns true if the parent styled got changed
+// set the closest parent styled ascendant and emit parentThemeChanged if we have a custom theme
 bool UCStyledItemBasePrivate::setParentStyled(UCStyledItemBase *styledItem)
 {
     if (parentStyledItem == styledItem) {
@@ -533,7 +548,7 @@ bool UCStyledItemBasePrivate::setParentStyled(UCStyledItemBase *styledItem)
     if (theme) {
         Q_EMIT theme->parentThemeChanged();
     }
-    return (theme == NULL);
+    return true;
 }
 
 void UCStyledItemBase::componentComplete()
@@ -542,6 +557,11 @@ void UCStyledItemBase::componentComplete()
     Q_D(UCStyledItemBase);
     // no animation at this time
     // prepare style context if not been done yet
+    if (d->parentStyledItem.isNull()) {
+        // try to get the proper one
+        UCThemeUpdateEvent event((UCStyledItemBase*)Q_NULLPTR);
+        customEvent(&event);
+    }
     d->postStyleChanged();
     d->loadStyleItem(false);
 }
@@ -572,15 +592,48 @@ bool UCStyledItemBase::childMouseEventFilter(QQuickItem *child, QEvent *event)
     return QQuickItem::childMouseEventFilter(child, event);
 }
 
+void UCStyledItemBase::itemChange(ItemChange change, const ItemChangeData &data)
+{
+    if (change == ItemParentHasChanged) {
+        // perform parent update using the customEvent
+        UCThemeUpdateEvent event((UCStyledItemBase*)Q_NULLPTR);
+        customEvent(&event);
+    }
+    QQuickItem::itemChange(change, data);
+}
+
 // catch UCThemeUpdateEvent
 void UCStyledItemBase::customEvent(QEvent *event)
 {
-    if (event->type() == (QEvent::Type)UCThemeUpdateEvent::eventId) {
+    Q_D(UCStyledItemBase);
+    if (event->type() == (QEvent::Type)UCThemeUpdateEvent::styledItemEventId) {
         Q_D(UCStyledItemBase);
         UCThemeUpdateEvent *themeEvent = static_cast<UCThemeUpdateEvent*>(event);
-        d->setParentStyled(themeEvent->styledItem());
-        d->setTheme(themeEvent->theme());
+
+        // if the StyledItem and theme is not set, check it
+        UCStyledItemBase *ascendantStyled = themeEvent->styledItem();
+        if (!ascendantStyled) {
+            ascendantStyled = UCStyledItemBase::ascendantStyled(this);
+        }
+
+        UCTheme *prevTheme = d->getTheme();
+        if (d->setParentStyled(ascendantStyled)) {
+            // check if we've a different theme, excluding custom theme
+            if (prevTheme != d->getTheme() && !d->theme) {
+                Q_EMIT themeChanged();
+                UCThemeUpdateEvent::broadcastThemeUpdate(this, d->getTheme());
+            }
+        }
+
         event->accept();
+    } else if (event->type() == (QEvent::Type)UCThemeUpdateEvent::themeEventId) {
+        // simply emit the signal
+        if (d->theme) {
+            Q_EMIT d->theme->parentThemeChanged();
+        } else {
+            Q_EMIT themeChanged();
+            UCThemeUpdateEvent::broadcastThemeUpdate(this, d->getTheme());
+        }
     }
 }
 

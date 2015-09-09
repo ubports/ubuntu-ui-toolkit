@@ -37,6 +37,8 @@ class UCStyledItemBase : public QQuickItem
 public:
     explicit UCStyledItemBase(QQuickItem *parent = 0);
 
+    static UCStyledItemBase *ascendantStyled(QQuickItem *item);
+
     bool activefocusOnPress() const;
     void setActiveFocusOnPress(bool value);
 
@@ -57,6 +59,7 @@ protected:
     void mousePressEvent(QMouseEvent *event);
     bool childMouseEventFilter(QQuickItem *child, QEvent *event);
     void customEvent(QEvent *event);
+    void itemChange(ItemChange change, const ItemChangeData &data);
 
 private:
     Q_DECLARE_PRIVATE(UCStyledItemBase)
