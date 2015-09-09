@@ -27,7 +27,7 @@
 UCStyledItemBasePrivate::UCStyledItemBasePrivate()
     : styleComponent(Q_NULLPTR)
     , styleItem(Q_NULLPTR)
-    , theme(Q_NULLPTR)
+    , theme(&UCTheme::defaultTheme())
     , activeFocusOnPress(false)
 {
 }
@@ -428,8 +428,6 @@ void UCStyledItemBasePrivate::_q_reloadStyle()
     postStyleChanged();
     loadStyleItem();
     Q_EMIT q->themeChanged();
-
-    UCThemeUpdateEvent::broadcastThemeUpdate(q, getTheme());
 }
 
 // handle implicit size changes implied by the style components
@@ -466,17 +464,12 @@ void UCStyledItemBasePrivate::_q_styleResized()
  */
 UCTheme *UCStyledItemBasePrivate::getTheme() const
 {
-    if (theme) {
-        return theme;
-    } else if (!parentStyledItem.isNull()) {
-        return UCStyledItemBasePrivate::get(parentStyledItem)->getTheme();
-    }
-    return &UCTheme::defaultTheme();
+    return theme;
 }
 void UCStyledItemBasePrivate::setTheme(UCTheme *newTheme)
 {
     Q_Q(UCStyledItemBase);
-    if (getTheme() == newTheme) {
+    if (theme == newTheme) {
         return;
     }
 
@@ -484,37 +477,30 @@ void UCStyledItemBasePrivate::setTheme(UCTheme *newTheme)
     preThemeChanged();
 
     // disconnect from the previous set
-    UCTheme *connectedSet = theme ?
-                                theme :
-                                (!parentStyledItem ? &UCTheme::defaultTheme() : NULL);
-    if (connectedSet) {
-        QObject::disconnect(connectedSet, SIGNAL(nameChanged()),
+    if (theme) {
+        QObject::disconnect(theme, SIGNAL(nameChanged()),
                             q, SLOT(_q_reloadStyle()));
-        QObject::disconnect(connectedSet, SIGNAL(versionChanged()),
+        QObject::disconnect(theme, SIGNAL(versionChanged()),
                             q, SLOT(_q_reloadStyle()));
+        // TODO: set the parent of the theme
+        Q_EMIT theme->parentThemeChanged();
     }
 
-    UCTheme *prevSet = theme;
     theme = newTheme;
 
     // connect to the new set
-    connectedSet = theme ?
-                    theme :
-                    (!parentStyledItem ? &UCTheme::defaultTheme() : NULL);
-    if (connectedSet) {
-        QObject::connect(connectedSet, SIGNAL(nameChanged()),
+    if (theme) {
+        QObject::connect(theme, SIGNAL(nameChanged()),
                          q, SLOT(_q_reloadStyle()));
-        QObject::connect(connectedSet, SIGNAL(versionChanged()),
+        QObject::connect(theme, SIGNAL(versionChanged()),
                          q, SLOT(_q_reloadStyle()));
     }
     // detach previous set and attach the new one
-    if (prevSet) {
-        Q_EMIT prevSet->parentThemeChanged();
-    }
     if (theme) {
         // re-parent theme to make sure we have it
         // for the entire lifetime of the styled item
-        theme->setParent(q);
+
+        // TODO: set the parent of the theme
         Q_EMIT theme->parentThemeChanged();
     }
 
@@ -522,9 +508,6 @@ void UCStyledItemBasePrivate::setTheme(UCTheme *newTheme)
     postThemeChanged();
 
     Q_EMIT q->themeChanged();
-
-    // broadcast theme changed event
-    UCThemeUpdateEvent::broadcastThemeUpdate(q, getTheme());
 
     // perform style reload
     if (!styleComponent) {
@@ -535,7 +518,7 @@ void UCStyledItemBasePrivate::setTheme(UCTheme *newTheme)
 }
 void UCStyledItemBasePrivate::resetTheme()
 {
-    setTheme(NULL);
+    setTheme(&UCTheme::defaultTheme());
 }
 
 // set the closest parent styled ascendant and emit parentThemeChanged if we have a custom theme
@@ -621,7 +604,6 @@ void UCStyledItemBase::customEvent(QEvent *event)
             // check if we've a different theme, excluding custom theme
             if (prevTheme != d->getTheme() && !d->theme) {
                 Q_EMIT themeChanged();
-                UCThemeUpdateEvent::broadcastThemeUpdate(this, d->getTheme());
             }
         }
 
@@ -632,7 +614,6 @@ void UCStyledItemBase::customEvent(QEvent *event)
             Q_EMIT d->theme->parentThemeChanged();
         } else {
             Q_EMIT themeChanged();
-            UCThemeUpdateEvent::broadcastThemeUpdate(this, d->getTheme());
         }
     }
 }

@@ -38,14 +38,16 @@ int UCThemeUpdateEvent::themeEventId = QEvent::registerEventType();
 UCThemeUpdateEvent::UCThemeUpdateEvent(UCStyledItemBase *newStyled)
     : QEvent((QEvent::Type)UCThemeUpdateEvent::styledItemEventId)
     , m_ascendantStyled(newStyled)
-    , m_theme(Q_NULLPTR)
+    , m_oldTheme(Q_NULLPTR)
+    , m_newTheme(Q_NULLPTR)
 {
 }
 
-UCThemeUpdateEvent::UCThemeUpdateEvent(UCTheme *theme)
+UCThemeUpdateEvent::UCThemeUpdateEvent(UCTheme *oldTheme, UCTheme *newTheme)
     : QEvent((QEvent::Type)UCThemeUpdateEvent::themeEventId)
     , m_ascendantStyled(Q_NULLPTR)
-    , m_theme(theme)
+    , m_oldTheme(oldTheme)
+    , m_newTheme(newTheme)
 {
 }
 
@@ -61,25 +63,25 @@ void UCThemeUpdateEvent::broadcastAscendantUpdate(QQuickItem *item, UCStyledItem
 #endif
         // StyledItem will handle the broadcast itself depending on whether the theme change was appropriate or not
         // and will complete the ascendantStyled/theme itself
-        if (QQuickItemPrivate::get(child)->childItems.size() > 0) {// && !qobject_cast<UCStyledItemBase*>(child)) {
+        if (QQuickItemPrivate::get(child)->childItems.size() > 0) {
             broadcastAscendantUpdate(child, ascendantStyled);
         }
     }
 }
 
-void UCThemeUpdateEvent::broadcastThemeUpdate(QQuickItem *item, UCTheme *theme)
+void UCThemeUpdateEvent::broadcastThemeUpdate(QQuickItem *item, UCTheme *oldTheme, UCTheme *newTheme)
 {
     Q_FOREACH(QQuickItem *child, item->childItems()) {
 #ifdef ASYNC_BROADCAST
-        QGuiApplication::postEvent(child, new UCThemeUpdateEvent(theme));
+        QGuiApplication::postEvent(child, new UCThemeUpdateEvent(oldTheme, newTheme));
 #else
-        UCThemeUpdateEvent event(theme);
+        UCThemeUpdateEvent event(oldTheme, newTheme);
         QGuiApplication::sendEvent(child, &event);
 #endif
         // StyledItem will handle the broadcast itself depending on whether the theme change was appropriate or not
         // and will complete the ascendantStyled/theme itself
-        if (child->childItems().size() > 0 && !qobject_cast<UCStyledItemBase*>(child)) {
-            broadcastThemeUpdate(child, theme);
+        if (child->childItems().size() > 0) {
+            broadcastThemeUpdate(child, oldTheme, newTheme);
         }
     }
 }
@@ -90,8 +92,12 @@ void UCThemeUpdateEvent::broadcastThemeUpdate(QQuickItem *item, UCTheme *theme)
 UCItemExtension::UCItemExtension(QObject *parent)
     : QObject(parent)
     , m_item(static_cast<QQuickItem*>(parent))
+    , m_theme(&UCTheme::defaultTheme())
 {
     connect(m_item, &QQuickItem::parentChanged, this, &UCItemExtension::extendedParentChanged);
+    if (m_item->metaObject()->indexOfSignal("themeChanged()") >= 0) {
+        connect(m_item, SIGNAL(themeChanged()), this, SIGNAL(extendedThemeChanged()));
+    }
     // get parent item changes
     connect(m_item, &QQuickItem::parentChanged, this, &UCItemExtension::handleParentChanged);
 }
@@ -100,7 +106,7 @@ UCItemExtension::UCItemExtension(QObject *parent)
 void UCItemExtension::handleParentChanged(QQuickItem *newParent)
 {
     Q_UNUSED(newParent);
-    // do not care about the closest StyledItem and theme as while teh event reaches the children
+    // do not care about the closest StyledItem and theme as while the event reaches the children
     // those will be completed.
     UCThemeUpdateEvent::broadcastAscendantUpdate(m_item, Q_NULLPTR);
 }
@@ -113,4 +119,26 @@ QQuickItem *UCItemExtension::parentItem() const
 void UCItemExtension::setParentItem(QQuickItem *parentItem)
 {
     m_item->setParentItem(parentItem);
+}
+UCTheme *UCItemExtension::theme()
+{
+    UCStyledItemBase *styledItem = qobject_cast<UCStyledItemBase*>(m_item);
+    if (styledItem) {
+        m_theme = UCStyledItemBasePrivate::get(styledItem)->getTheme();
+    }
+    return m_theme;
+}
+void UCItemExtension::setTheme(UCTheme *theme)
+{
+    qDebug() << "OVERLOAD";
+    UCTheme *oldTheme = m_theme;
+    UCStyledItemBase *styledItem = qobject_cast<UCStyledItemBase*>(m_item);
+    if (styledItem) {
+        m_theme = theme;
+        UCStyledItemBasePrivate::get(styledItem)->setTheme(theme);
+    } else if (m_theme != theme) {
+        m_theme = theme;
+        Q_EMIT extendedThemeChanged();
+    }
+    UCThemeUpdateEvent::broadcastThemeUpdate(m_item, oldTheme, m_theme);
 }
