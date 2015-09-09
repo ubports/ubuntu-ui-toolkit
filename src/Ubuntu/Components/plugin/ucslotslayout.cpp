@@ -241,8 +241,9 @@ void UCSlotsLayoutPrivate::_q_updateProgressionStatus() {
         chevron->setParentItem(q);
         QQmlEngine::setObjectOwnership(chevron, QQmlEngine::CppOwnership);
 
-        connectAttachedPropertySignals(chevron);
+        handleAttachedPropertySignals(chevron, true);
     } else {
+        handleAttachedPropertySignals(chevron, false);
         chevron->setVisible(false);
         delete chevron;
         chevron = Q_NULLPTR;
@@ -641,18 +642,27 @@ void UCSlotsLayoutPrivate::_q_relayout() {
     }
 }
 
-void UCSlotsLayoutPrivate::connectAttachedPropertySignals(QQuickItem *item) {
+void UCSlotsLayoutPrivate::handleAttachedPropertySignals(QQuickItem *item, bool connect) {
     Q_Q(UCSlotsLayout);
     UCSlotsAttached *attachedSlot =
             qobject_cast<UCSlotsAttached *>(qmlAttachedPropertiesObject<UCSlotsLayout>(item));
 
     if (!attachedSlot) {
         qDebug() << "SLOTSLAYOUT: invalid attached property!";
-    } else {
+        return;
+
+    }
+
+    if (connect) {
         QObject::connect(attachedSlot, SIGNAL(positionChanged()), q, SLOT(_q_relayout()));
         QObject::connect(attachedSlot, SIGNAL(leftMarginChanged()), q, SLOT(_q_relayout()));
         QObject::connect(attachedSlot, SIGNAL(rightMarginChanged()), q, SLOT(_q_relayout()));
         QObject::connect(attachedSlot, SIGNAL(overrideVerticalPositioningChanged()), q, SLOT(_q_relayout()));
+    } else {
+        QObject::disconnect(attachedSlot, SIGNAL(positionChanged()), q, SLOT(_q_relayout()));
+        QObject::disconnect(attachedSlot, SIGNAL(leftMarginChanged()), q, SLOT(_q_relayout()));
+        QObject::disconnect(attachedSlot, SIGNAL(rightMarginChanged()), q, SLOT(_q_relayout()));
+        QObject::disconnect(attachedSlot, SIGNAL(overrideVerticalPositioningChanged()), q, SLOT(_q_relayout()));
     }
 }
 
@@ -676,7 +686,6 @@ void UCSlotsLayout::componentComplete() {
     //QML properties (such as titleItem.text) have been initialized!
     d->_q_updateLabelsAnchorsAndBBoxHeight();
     d->_q_updateSlotsBBoxHeight();
-
 }
 
 void UCSlotsLayout::itemChange(ItemChange change, const ItemChangeData &data)
@@ -696,7 +705,7 @@ void UCSlotsLayout::itemChange(ItemChange change, const ItemChangeData &data)
             //when it's instantiated
             if (data.item != &d->m_title && data.item != &d->m_subtitle
                     && data.item != &d->m_subsubtitle && data.item != d->chevron) {
-                d->connectAttachedPropertySignals(data.item);
+                d->handleAttachedPropertySignals(data.item, true);
 
                 //this will also trigger relayout
                 d->_q_updateSlotsBBoxHeight();
@@ -705,10 +714,19 @@ void UCSlotsLayout::itemChange(ItemChange change, const ItemChangeData &data)
         break;
     case ItemChildRemovedChange:
         if (data.item) {
+            //This wouldn't be needed if the child is destroyed, but we can't know what, we just know
+            //that it's changing parent, so we still disconnect from all the signals manually
             QObject::disconnect(data.item, SIGNAL(visibleChanged()), this, SLOT(_q_relayout()));
             QObject::disconnect(data.item, SIGNAL(heightChanged()), this, SLOT(_q_updateSlotsBBoxHeight()));
             QObject::disconnect(data.item, SIGNAL(widthChanged()), this, SLOT(_q_relayout()));
-            d->_q_updateSlotsBBoxHeight();
+
+            if (data.item != &d->m_title && data.item != &d->m_subtitle
+                    && data.item != &d->m_subsubtitle && data.item != d->chevron) {
+                d->handleAttachedPropertySignals(data.item, false);
+
+                //this will also trigger relayout
+                d->_q_updateSlotsBBoxHeight();
+            }
         }
         break;
     default:
