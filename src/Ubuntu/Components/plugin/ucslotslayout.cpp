@@ -783,69 +783,14 @@ QQuickText *UCSlotsLayout::subsubtitleItem() {
 }
 
 void UCSlotsLayout::mousePressEvent(QMouseEvent *event) {
-    QQuickItem::mousePressEvent(event);
-
-    //TODO: do we want something like UCStyledItemBase::requestFocus here?
-    //requestFocus(Qt::MouseFocusReason);
-
-    Q_D(UCSlotsLayout);
-
-    if (!contains(event->localPos()))
-        return;
-
-    //Just iterate through all the children and see if the press falls within the area of any of them
-    //TODO: do something more efficient? Using a spatial data structure maybe?
-    for (int i=0; i<childItems().length(); i++) {
-        QQuickItem *currChild = childItems().at(i);
-
-        //skip c++ labels
-        if (currChild == &d->m_title || currChild == &d->m_subtitle
-                || currChild == &d->m_subsubtitle) {
-            continue;
-        }
-
-        UCSlotsAttached *attachedSlot =
-                qobject_cast<UCSlotsAttached *>(qmlAttachedPropertiesObject<UCSlotsLayout>(currChild));
-
-        if (!attachedSlot) {
-            qDebug() << "SLOTSLAYOUT: invalid attached property!";
-            continue;
-        }
-
-        //we just check X, as according to the UX spec the touch region goes top-to-bottom
-        //so checking the y is not needed
-        if ((event->x() >= currChild->x() - attachedSlot->leftMargin())
-                && (event->x() <= currChild->x() + currChild->width() + attachedSlot->rightMargin())) {
-            //child found
-            event->setAccepted(true);
-            d->pressedItem = currChild;
-            return;
-        }
-    }
-
-    //the press event didn't fall inside the touch region of any slot
     event->setAccepted(false);
+
+    //let's keep this to avoid having to break the API if we decide to add
+    //input handling
 }
 
 void UCSlotsLayout::mouseReleaseEvent(QMouseEvent *event) {
-    QQuickItem::mousePressEvent(event);
-    Q_D(UCSlotsLayout);
-
-    if (d->pressedItem) {
-        UCSlotsAttached *attachedSlot =
-                qobject_cast<UCSlotsAttached *>(qmlAttachedPropertiesObject<UCSlotsLayout>(d->pressedItem));
-
-        if (!attachedSlot) {
-            qDebug() << "SLOTSLAYOUT: invalid attached property!";
-        }
-        //emit the signal if the release event falls inside the touch region of the pressedItem
-        else if ((event->x() >= d->pressedItem->x() - attachedSlot->leftMargin())
-                 && (event->x() <= d->pressedItem->x() + d->pressedItem->width() + attachedSlot->rightMargin())) {
-            Q_EMIT slotClicked(d->pressedItem);
-        }
-    }
-
-    d->pressedItem = Q_NULLPTR;
+    Q_UNUSED(event);
 }
 
 qreal UCSlotsLayout::leftOffset() const {
