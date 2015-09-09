@@ -23,15 +23,22 @@ Item {
     height: units.gu(70)
 
     Header {
-        anchors {
-            left: parent.left
-            right: parent.right
-            top: parent.top
-        }
+//        anchors {
+//            left: parent.left
+//            right: parent.right
+//            top: parent.top
+//        }
+        width: parent.width
         height: units.gu(8)
 
         flickable: flickable
 
+        onYChanged: print("header.y = "+y)
+        Component.onCompleted: print(" init v = "+exposed)
+        onExposedChanged: {
+            print("header.visible changed to "+exposed)
+//            hiddenSwitch.checked = !header.visible;
+        }
         id: header
 //        title: "Visibility testing"
 //        flickable: flickable
@@ -77,11 +84,20 @@ Item {
                 text: "header locked"
             }
             Switch {
-                id: visibleSwitch
-                checked: !header.visible
+                id: hiddenSwitch
+                checked: !header.exposed
+                onCheckedChanged: {
+                    print("checked changed. visible = "+header.visible)
+                    print("hidden checked changed to "+checked)
+                }
+
                 onClicked: {
-                    if (checked) header.hide();
-                    else header.show();
+//                    if (checked) header.hide();
+//                    else header.show();
+//                    print(" header hidden = "+checked)
+                    header.exposed = checked;
+//                    if (checked) header.exposed = true;
+//                    else header.exposed = false;
                 }
             }
             Label {

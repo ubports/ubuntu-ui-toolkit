@@ -25,25 +25,32 @@ class UCHeader : public QQuickItem //UCStyledItemBase
 {
     Q_OBJECT
     Q_PROPERTY(QQuickFlickable* flickable READ flickable WRITE setFlickable NOTIFY flickableChanged)
-    //    Q_PROPERTY(bool visible READ visible WRITE setVisible)
+    Q_PROPERTY(bool exposed READ exposed WRITE setExposed NOTIFY exposedChanged)
 
 public:
     explicit UCHeader(QQuickItem *parent = 0);
 
     QQuickFlickable* flickable();
     void setFlickable(QQuickFlickable* flickable);
+    bool exposed();
+    void setExposed(bool exposed);
 
 Q_SIGNALS:
     void flickableChanged();
+    void exposedChanged();
+
+protected:
+    void show();
+    void hide();
 
 private Q_SLOTS:
     void _q_scrolledContents();
 
 private:
+    bool m_exposed;
+    qreal m_previous_contentY;
+
     QPointer<QQuickFlickable> m_flickable;
-//    QQuickFlickable* m_flickable;
-    //    bool m_visible;
-    qreal m_flickable_contentY;
 };
 
 #endif // UCHEADER_H

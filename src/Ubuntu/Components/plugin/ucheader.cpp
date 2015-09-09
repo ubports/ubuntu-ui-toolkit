@@ -35,10 +35,12 @@
 UCHeader::UCHeader(QQuickItem *parent)
 //    : UCStyledItemBase(parent)
     : QQuickItem(parent)
-//    , m_flickable(Q_NULLPTR)
-    , m_flickable_contentY(0)
+    , m_exposed(true)
+    , m_previous_contentY(0)
+    , m_flickable(Q_NULLPTR)
 {
     qDebug() << "Header created!";
+//    m_visible = true;
 }
 
 QQuickFlickable* UCHeader::flickable() {
@@ -62,22 +64,53 @@ void UCHeader::setFlickable(QQuickFlickable *flickable) {
             QObject::connect(m_flickable, SIGNAL(contentYChanged()),
                              this, SLOT(_q_scrolledContents()));
 
-            m_flickable_contentY = m_flickable->contentY();
+            m_previous_contentY = m_flickable->contentY();
         }
-
         Q_EMIT flickableChanged();
     }
 }
 
+void UCHeader::show() {
+    // TODO: animate
+    qDebug() << "Showing";
+    this->setY(0.0);
+//    if (!m_visible) {
+        qDebug() << "Setting visible to true";
+        m_exposed = true;
+//        Q_EMIT openedChanged();
+//    }
+}
+
+void UCHeader::hide() {
+//     TODO: animate
+    qDebug() << "Hiding";
+    this->setY(-1.0*this->height());
+//    if (m_visible) {
+        qDebug() << "Setting visible to false";
+        m_exposed = false;
+//        Q_EMIT openedChanged();
+//    }
+}
+
+void UCHeader::setExposed(bool exposed) {
+    if (exposed) {
+        this->show();
+    } else {
+        this->hide();
+    }
+}
+
+bool UCHeader::exposed() {
+    return m_exposed;
+}
+
 void UCHeader::_q_scrolledContents() {
-    qDebug() << "Scrolled flickable contents";
     // Avoid moving the header when rebounding or being dragged over the bounds.
     if (!m_flickable->isAtYBeginning() && !m_flickable->isAtYEnd()) {
-        qreal delta_contentY = m_flickable->contentY() - m_flickable_contentY;
-        qDebug() << "D = " << delta_contentY;
-        QQuickAnchors* anchors = QQuickItemPrivate::get(this)->anchors();
-        anchors->setTopMargin(anchors->topMargin() - delta_contentY);
+        qreal dy = m_flickable->contentY() - m_previous_contentY;
+        // Restrict the header y between -height and 0:
+        qreal clampedY = qMin(qMax(-this->height(), this->y() - dy), 0.0);
+        this->setY(clampedY);
     }
-    m_flickable_contentY = m_flickable->contentY();
-
+    m_previous_contentY = m_flickable->contentY();
 }
