@@ -6,6 +6,9 @@
 #include "ucfontutils.h"
 #include "unitythemeiconprovider.h"
 
+/******************************************************************************
+ * UCSlotsAttached
+ */
 UCSlotsAttached::UCSlotsAttached(QObject *object)
     : QObject(object)
     , m_position(UCSlotsLayout::Trailing)
@@ -18,29 +21,34 @@ UCSlotsAttached::UCSlotsAttached(QObject *object)
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this, SLOT(updateGuValues()));
 }
 
-UCSlotsLayout::UCSlotPosition UCSlotsAttached::position() const {
+UCSlotsLayout::UCSlotPosition UCSlotsAttached::position() const
+{
     return m_position;
 }
 
-void UCSlotsAttached::setPosition(UCSlotsLayout::UCSlotPosition pos) {
+void UCSlotsAttached::setPosition(UCSlotsLayout::UCSlotPosition pos)
+{
     if (m_position != pos) {
         m_position = pos;
         Q_EMIT positionChanged();
     }
 }
 
-qreal UCSlotsAttached::leftMargin() const {
+qreal UCSlotsAttached::leftMargin() const
+{
     return m_leftMargin;
 }
 
-void UCSlotsAttached::setLeftMargin(qreal margin) {
+void UCSlotsAttached::setLeftMargin(qreal margin)
+{
     if (m_leftMargin != margin) {
         m_leftMargin = margin;
         Q_EMIT leftMarginChanged();
     }
 }
 
-void UCSlotsAttached::setLeftMarginQml(qreal margin) {
+void UCSlotsAttached::setLeftMarginQml(qreal margin)
+{
     leftMarginWasSetFromQml = true;
 
     //if both have been set from QML, then disconnect the signal from the slot, to avoid overwriting dev's values
@@ -51,18 +59,21 @@ void UCSlotsAttached::setLeftMarginQml(qreal margin) {
     setLeftMargin(margin);
 }
 
-qreal UCSlotsAttached::rightMargin() const {
+qreal UCSlotsAttached::rightMargin() const
+{
     return m_rightMargin;
 }
 
-void UCSlotsAttached::setRightMargin(qreal margin) {
+void UCSlotsAttached::setRightMargin(qreal margin)
+{
     if (m_rightMargin != margin) {
         m_rightMargin = margin;
         Q_EMIT rightMarginChanged();
     }
 }
 
-void UCSlotsAttached::setRightMarginQml(qreal margin) {
+void UCSlotsAttached::setRightMarginQml(qreal margin)
+{
     rightMarginWasSetFromQml = true;
 
     //if both have been set from QML, then disconnect the signal from the slot, to avoid overwriting dev's values
@@ -73,18 +84,21 @@ void UCSlotsAttached::setRightMarginQml(qreal margin) {
     setRightMargin(margin);
 }
 
-bool UCSlotsAttached::overrideVerticalPositioning() const {
+bool UCSlotsAttached::overrideVerticalPositioning() const
+{
     return m_overrideVerticalPositioning;
 }
 
-void UCSlotsAttached::setOverrideVerticalPositioning(bool val) {
+void UCSlotsAttached::setOverrideVerticalPositioning(bool val)
+{
     if (m_overrideVerticalPositioning != val) {
         m_overrideVerticalPositioning = val;
         Q_EMIT overrideVerticalPositioningChanged();
     }
 }
 
-void UCSlotsAttached::updateGuValues() {
+void UCSlotsAttached::updateGuValues()
+{
     if (!leftMarginWasSetFromQml)
         setLeftMargin(UCUnits::instance().gu(SLOTSLAYOUT_DEFAULTSLOTSIDEMARGINS_GU));
 
@@ -104,7 +118,7 @@ UCSlotsLayoutPrivate::UCSlotsLayoutPrivate()
     : QQuickItemPrivate()
     , ready(false)
     , pressedItem(Q_NULLPTR)
-    , maxChildrenHeight(0)
+    , maxSlotsHeight(0)
     , _q_cachedHeight(-1)
     , leftOffset(UCUnits::instance().gu(SLOTSLAYOUT_DEFAULTLAYOUTSIDEMARGINS_GU))
     , rightOffset(UCUnits::instance().gu(SLOTSLAYOUT_DEFAULTLAYOUTSIDEMARGINS_GU))
@@ -145,14 +159,11 @@ void UCSlotsLayoutPrivate::init()
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_updateLabelsAnchorsAndBBoxHeight()));
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_updateSlotsBBoxHeight()));
 
-    //fixme: this will cause relayout to be called 4-5 times when the layout has "anchors.fill: parent"
+    //FIXME (if possible): this will cause relayout to be called 4-5 times when the layout has "anchors.fill: parent"
     //defined on QML side
-    //the ideal would be to only bind to width and implicitWidth changes, and for the rest only
-    //call relayout() if it makes sense (for instance if the height goes from 0 to non 0), but that
-    //requires caching all those variables
     QObject::connect(q, SIGNAL(widthChanged()), q, SLOT(_q_relayout()));
 
-    //we redirect height changes to different functions, because height changes only cause a relayout
+    //we connect height changes to a different function, because height changes only cause a relayout
     //in some cases (for instance when height goes from 0 to non 0)
     QObject::connect(q, SIGNAL(heightChanged()), q, SLOT(_q_updateCachedHeight()));
 
@@ -171,7 +182,6 @@ void UCSlotsLayoutPrivate::init()
     //the height may change for many reasons, for instance:
     //- change of fontsize
     //- or resizing the layout until text wrapping is triggered
-    //- etc etc...
     //so we have to monitor height change as well
     QObject::connect(&m_title, SIGNAL(heightChanged()), q, SLOT(_q_updateLabelsAnchorsAndBBoxHeight()));
     QObject::connect(&m_subtitle, SIGNAL(heightChanged()), q, SLOT(_q_updateLabelsAnchorsAndBBoxHeight()));
@@ -182,21 +192,21 @@ void UCSlotsLayoutPrivate::init()
 int UCSlotsLayoutPrivate::getVerticalPositioningMode() {
     //we could just return the bool, I just want to stress that there could be other
     //modes in the future
-    return (labelsBoundingBoxHeight > maxChildrenHeight) ? 1 : 0;
+    return (labelsBoundingBoxHeight > maxSlotsHeight) ? 1 : 0;
 }
 
 void UCSlotsLayoutPrivate::updateTopBottomOffsetsIfNeeded() {
     Q_Q(UCSlotsLayout);
     if (!topOffsetWasSetFromQml) {
         q->setTopOffset((!getVerticalPositioningMode()
-                         && maxChildrenHeight > UCUnits::instance().gu(SLOTSLAYOUT_TOPBOTTOMMARGIN_SIZETHRESHOLD))
+                         && maxSlotsHeight > UCUnits::instance().gu(SLOTSLAYOUT_TOPBOTTOMMARGIN_SIZETHRESHOLD))
                         ? UCUnits::instance().gu(1.0)
                         : UCUnits::instance().gu(2.0));
     }
 
     if (!bottomOffsetWasSetFromQml) {
         q->setBottomOffset((!getVerticalPositioningMode()
-                            && maxChildrenHeight > UCUnits::instance().gu(SLOTSLAYOUT_TOPBOTTOMMARGIN_SIZETHRESHOLD))
+                            && maxSlotsHeight > UCUnits::instance().gu(SLOTSLAYOUT_TOPBOTTOMMARGIN_SIZETHRESHOLD))
                            ? UCUnits::instance().gu(1.0)
                            : UCUnits::instance().gu(2.0));
     }
@@ -238,7 +248,8 @@ void UCSlotsLayoutPrivate::_q_updateProgressionStatus() {
         chevron = Q_NULLPTR;
     }
 
-    Q_EMIT q->relayoutNeeded();
+    _q_updateSlotsBBoxHeight();
+    //Q_EMIT q->relayoutNeeded();
 }
 
 void UCSlotsLayoutPrivate::setDefaultLabelsProperties() {
@@ -296,7 +307,7 @@ void UCSlotsLayoutPrivate::_q_updateLabelsAnchorsAndBBoxHeight() {
     //on just anchoring to bottom of the text above us (title in this case) because that will lead
     //to wrong positioning when title is empty
     QQuickAnchors *subtitleAnchors = QQuickItemPrivate::get(&m_subtitle)->anchors();
-    subtitleAnchors->setTop(m_title.text() == ""
+    subtitleAnchors->setTop(m_title.text().isEmpty()
                             ? QQuickItemPrivate::get(&m_title)->top()
                             : QQuickItemPrivate::get(&m_title)->baseline());
     subtitleAnchors->setTopMargin(m_title.text() == ""
@@ -304,10 +315,10 @@ void UCSlotsLayoutPrivate::_q_updateLabelsAnchorsAndBBoxHeight() {
                                   : UCUnits::instance().gridUnit());
 
     QQuickAnchors *subsubtitleAnchors = QQuickItemPrivate::get(&m_subsubtitle)->anchors();
-    subsubtitleAnchors->setTop(m_subtitle.text() == ""
+    subsubtitleAnchors->setTop(m_subtitle.text().isEmpty()
                                ? QQuickItemPrivate::get(&m_subtitle)->top()
                                : QQuickItemPrivate::get(&m_subtitle)->baseline());
-    subsubtitleAnchors->setTopMargin(m_subtitle.text() == ""
+    subsubtitleAnchors->setTopMargin(m_subtitle.text().isEmpty()
                                      ? 0
                                      : UCUnits::instance().gridUnit());
 
@@ -315,9 +326,9 @@ void UCSlotsLayoutPrivate::_q_updateLabelsAnchorsAndBBoxHeight() {
     //NOTE (FIXME? it's stuff in Qt): height is not 0 when the string is empty, its default value is "fontHeight"!
     labelsBoundingBoxHeight = 0;
 
-    bool emptyTitle = m_title.text() == "";
-    bool emptySubtitle = m_subtitle.text() == "";
-    bool emptySubsubtitle = m_subsubtitle.text() == "";
+    bool emptyTitle = m_title.text().isEmpty();
+    bool emptySubtitle = m_subtitle.text().isEmpty();
+    bool emptySubsubtitle = m_subsubtitle.text().isEmpty();
 
     if (!emptyTitle) {
         if (emptySubtitle && emptySubsubtitle) {
@@ -351,9 +362,9 @@ void UCSlotsLayoutPrivate::_q_updateSlotsBBoxHeight() {
 
     Q_Q(UCSlotsLayout);
 
-    qreal maxSlotsHeight = 0;
+    qreal maxSlotsHeightTmp = 0;
     for (int i=0; i<q->childItems().count(); i++) {
-        QQuickItem *child = qobject_cast<QQuickItem *>(q->childItems().at(i));
+        QQuickItem *child = q->childItems().at(i);
 
         //skip labels
         if (child == &m_title || child == &m_subtitle || child == &m_subsubtitle)
@@ -369,9 +380,9 @@ void UCSlotsLayoutPrivate::_q_updateSlotsBBoxHeight() {
         }
 
         if (!attachedProperty->overrideVerticalPositioning())
-            maxSlotsHeight = qMax<int>(maxSlotsHeight, child->height());
+            maxSlotsHeightTmp = qMax<int>(maxSlotsHeightTmp, child->height());
     }
-    maxChildrenHeight = maxSlotsHeight;
+    maxSlotsHeight = maxSlotsHeightTmp;
 
     updateTopBottomOffsetsIfNeeded();
     _q_updateSize();
@@ -383,9 +394,9 @@ void UCSlotsLayoutPrivate::_q_updateSize()
         return;
 
     Q_Q(UCSlotsLayout);
-    QQuickItem *parent = qobject_cast<QQuickItem *>(q->parentItem());
+    QQuickItem *parent = q->parentItem();
     q->setImplicitWidth(parent ? parent->width() : UCUnits::instance().gu(IMPLICIT_SLOTSLAYOUT_WIDTH_GU));
-    q->setImplicitHeight(qMax<qreal>(maxChildrenHeight, labelsBoundingBoxHeight)
+    q->setImplicitHeight(qMax<qreal>(maxSlotsHeight, labelsBoundingBoxHeight)
                          + topOffset + bottomOffset);
 
     Q_EMIT q->relayoutNeeded();
@@ -398,7 +409,6 @@ void UCSlotsLayoutPrivate::_q_relayout() {
     if (!ready)
         return;
 
-    //if either of the side lengths is non-positive, or the item is not visible, skip relayout
     if (q->width() <= 0 || q->height() <= 0
             || !q->isVisible() || !q->opacity()) {
         return;
@@ -408,9 +418,8 @@ void UCSlotsLayoutPrivate::_q_relayout() {
     QList<QQuickItem *> trailingSlots;
     int totalWidth = 0;
 
-    //reorder children and assign them to the sorted list
     for (int i=0; i<q->childItems().length(); i++) {
-        QQuickItem *child = qobject_cast<QQuickItem *>(q->childItems().at(i));
+        QQuickItem *child = q->childItems().at(i);
 
         //NOTE: skip C++ labels, because we do custom layout for them (and also because
         //qmlAttachedProperties will fail on them if none of their properties is initialized via QML)
@@ -420,7 +429,6 @@ void UCSlotsLayoutPrivate::_q_relayout() {
             continue;
         }
 
-        //get the attached property, creating it if it wasn't defined already
         UCSlotsAttached *attached =
                 qobject_cast<UCSlotsAttached *>(qmlAttachedPropertiesObject<UCSlotsLayout>(child));
 
@@ -433,9 +441,8 @@ void UCSlotsLayoutPrivate::_q_relayout() {
 
         if (attached->position() == UCSlotsLayout::Leading) {
             if (leadingSlots.length() < maxNumberOfLeadingSlots) {
-                //FIXME: is this safe?
-                leadingSlots.append(qobject_cast<QQuickItem *>(child));
-                totalWidth += qobject_cast<QQuickItem *>(child)->width() + attached->leftMargin() + attached->rightMargin();
+                leadingSlots.append(child);
+                totalWidth += child->width() + attached->leftMargin() + attached->rightMargin();
             } else {
                 qWarning() << "SlotsLayout: the current implementation only allows up to" << maxNumberOfLeadingSlots
                            << "leading slots. Please remove any additional leading slot.";
@@ -443,8 +450,8 @@ void UCSlotsLayoutPrivate::_q_relayout() {
             }
         } else if (attached->position() == UCSlotsLayout::Trailing) {
             if (trailingSlots.length() < maxNumberOfTrailingSlots) {
-                trailingSlots.append(qobject_cast<QQuickItem *>(child));
-                totalWidth += qobject_cast<QQuickItem *>(child)->width() + attached->leftMargin() + attached->rightMargin();
+                trailingSlots.append(child);
+                totalWidth += child->width() + attached->leftMargin() + attached->rightMargin();
             } else {
                 qWarning() << "SlotsLayout: the current implementation only allows up to" << maxNumberOfTrailingSlots
                            << "trailing slots. Please remove any additional trailing slot.";
@@ -466,8 +473,8 @@ void UCSlotsLayoutPrivate::_q_relayout() {
         if (!attached) {
             qDebug() << "SLOTSLAYOUT: invalid attached property!";
         } else {
-            trailingSlots.append(qobject_cast<QQuickItem *>(chevron));
-            totalWidth += qobject_cast<QQuickItem *>(chevron)->width() + attached->leftMargin() + attached->rightMargin();
+            trailingSlots.append(chevron);
+            totalWidth += chevron->width() + attached->leftMargin() + attached->rightMargin();
         }
     }
 
@@ -497,7 +504,7 @@ void UCSlotsLayoutPrivate::_q_relayout() {
                 item->anchors()->resetTop();
 
                 item->anchors()->setVerticalCenter(_q_private->verticalCenter());
-                //bottom and top margin could be different, we have to take that into account
+                //bottom and top offsets could have different values
                 item->anchors()->setVerticalCenterOffset((topOffset - bottomOffset) / 2.0);
             }
         }
@@ -512,18 +519,18 @@ void UCSlotsLayoutPrivate::_q_relayout() {
             if (!attachedPreviousItem) {
                 qDebug() << "SLOTSLAYOUT: invalid attached property!";
             } else {
-                item->anchors()->setLeft(QQuickItemPrivate::get(qobject_cast<QQuickItem *>(leadingSlots.at(i-1)))->right());
+                item->anchors()->setLeft(QQuickItemPrivate::get(leadingSlots.at(i-1))->right());
                 item->anchors()->setLeftMargin(attachedPreviousItem->rightMargin() + attached->leftMargin());
             }
         }
-        //currentX += item->x + item->width + attached->leftMargin() + attached->rightMargin();
     }
 
     int numberOfLeadingSlots = leadingSlots.length();
     int numberOfTrailingSlots = trailingSlots.length();
 
-    QQuickAnchorLine labelsLeftAnchor = numberOfLeadingSlots ? QQuickItemPrivate::get(qobject_cast<QQuickItem *>(leadingSlots.at(numberOfLeadingSlots-1)))->right()
-                                                             : _q_private->left();
+    QQuickAnchorLine labelsLeftAnchor = numberOfLeadingSlots > 0
+            ? QQuickItemPrivate::get(leadingSlots.at(numberOfLeadingSlots-1))->right()
+            : _q_private->left();
 
     QQuickAnchors *titleAnchors = QQuickItemPrivate::get(&m_title)->anchors();
     QQuickAnchors *subtitleAnchors = QQuickItemPrivate::get(&m_subtitle)->anchors();
@@ -533,6 +540,7 @@ void UCSlotsLayoutPrivate::_q_relayout() {
     subtitleAnchors->setLeft(labelsLeftAnchor);
     subsubtitleAnchors->setLeft(labelsLeftAnchor);
 
+    //width of the labels excluding the margins, this is pretty much like a "fillWidth" behaviour
     qreal labelBoxWidth = q->width() - totalWidth - (UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS) * 2)
             - leftOffset - rightOffset;
 
@@ -553,16 +561,13 @@ void UCSlotsLayoutPrivate::_q_relayout() {
         subsubtitleAnchors->setLeftMargin(leftOffset + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS));
     }
 
-    //new visual design rules
     if (getVerticalPositioningMode()) {
         titleAnchors->setTopMargin(topOffset);
     } else {
-        //center the whole labels block vertically, we can't use verticalCenter as we don't
-        //have a QQuickItem which contains the labels
+        //center the whole labels block vertically, we can't use verticalCenter as we're not using
+        //a container for the labels
         titleAnchors->setTopMargin((q->height() - bottomOffset + topOffset - labelsBoundingBoxHeight) / 2.0) ;
     }
-
-    //currentX += labelBoxWidth + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_RIGHTMARGIN);
 
     if (numberOfTrailingSlots != 0) {
         //it could be that in the previous relayout there were no trailing actions, and now there are.
@@ -580,7 +585,7 @@ void UCSlotsLayoutPrivate::_q_relayout() {
         m_subsubtitle.setWidth(labelBoxWidth);
 
         for (int i=0; i<trailingSlots.length(); i++) {
-            QQuickItemPrivate *item = QQuickItemPrivate::get(qobject_cast<QQuickItem *>(trailingSlots.at(i)));
+            QQuickItemPrivate *item = QQuickItemPrivate::get(trailingSlots.at(i));
 
             UCSlotsAttached *attached =
                     qobject_cast<UCSlotsAttached *>(qmlAttachedPropertiesObject<UCSlotsLayout>(trailingSlots.at(i)));
@@ -600,7 +605,7 @@ void UCSlotsLayoutPrivate::_q_relayout() {
                     item->anchors()->setTop(_q_private->top());
                     item->anchors()->setTopMargin(topOffset);
                 } else {
-                    //reset the anchor as we may be switching to one vertical positioning mode to another
+                    //reset the anchor as we may be switching from one vertical positioning mode to another
                     item->anchors()->resetTop();
 
                     item->anchors()->setVerticalCenter(_q_private->verticalCenter());
@@ -611,7 +616,7 @@ void UCSlotsLayoutPrivate::_q_relayout() {
 
             if (i==0) {
                 item->anchors()->setLeft(QQuickItemPrivate::get(&m_title)->right());
-                //the 2GU right margin of the labels is treated as left margin of the first trailing slot
+                //the right margin of the labels is treated as left margin of the first trailing slot
                 //because labels don't have a right anchor set up here!
                 item->anchors()->setLeftMargin(UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS) + attached->leftMargin());
             } else {
@@ -621,11 +626,10 @@ void UCSlotsLayoutPrivate::_q_relayout() {
                 if (!attachedPreviousItem) {
                     qDebug() << "SLOTSLAYOUT: invalid attached property!";
                 } else {
-                    item->anchors()->setLeft(QQuickItemPrivate::get(qobject_cast<QQuickItem *>(trailingSlots.at(i-1)))->right());
+                    item->anchors()->setLeft(QQuickItemPrivate::get(trailingSlots.at(i-1))->right());
                     item->anchors()->setLeftMargin(attachedPreviousItem->rightMargin() + attached->leftMargin());
                 }
             }
-            //currentX += item->x + item->width + attached->leftMargin() + attached->rightMargin();
         }
     } else {
         titleAnchors->setRight(_q_private->right());
@@ -688,15 +692,15 @@ void UCSlotsLayout::itemChange(ItemChange change, const ItemChangeData &data)
             //TODO: do this in a separate function? do were really have to do the whole relayout?
             QObject::connect(data.item, SIGNAL(widthChanged()), this, SLOT(_q_relayout()));
 
-            //single labels are can't be considered a slot, and we handle the chevron separately
+            //single labels can't be considered a slot, and we handle the chevron separately
             //when it's instantiated
             if (data.item != &d->m_title && data.item != &d->m_subtitle
                     && data.item != &d->m_subsubtitle && data.item != d->chevron) {
                 d->connectAttachedPropertySignals(data.item);
-            }
 
-            //this will also trigger relayout
-            d->_q_updateSlotsBBoxHeight();
+                //this will also trigger relayout
+                d->_q_updateSlotsBBoxHeight();
+            }
         }
         break;
     case ItemChildRemovedChange:
@@ -726,7 +730,6 @@ void UCSlotsLayout::itemChange(ItemChange change, const ItemChangeData &data)
     }
 
     QQuickItem::itemChange(change, data);
-
 }
 
 QQuickText *UCSlotsLayout::titleItem() const {
@@ -759,7 +762,7 @@ void UCSlotsLayout::mousePressEvent(QMouseEvent *event) {
     //Just iterate through all the children and see if the press falls within the area of any of them
     //TODO: do something more efficient? Using a spatial data structure maybe?
     for (int i=0; i<childItems().length(); i++) {
-        QQuickItem *currChild = qobject_cast<QQuickItem *>(childItems().at(i));
+        QQuickItem *currChild = childItems().at(i);
 
         //skip c++ labels
         if (currChild == &d->m_title || currChild == &d->m_subtitle
@@ -913,7 +916,6 @@ UCSlotsAttached *UCSlotsLayout::progressionSlot() const {
     QQmlEngine::setObjectOwnership(attached, QQmlEngine::CppOwnership);
 
     return (UCSlotsAttached * const) attached;
-
 }
 
 UCSlotsLayoutChevron::UCSlotsLayoutChevron(QQuickItem *parent)

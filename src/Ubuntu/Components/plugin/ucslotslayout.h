@@ -34,7 +34,6 @@ public:
     qreal leftOffset() const;
     void setLeftOffset(qreal val);
     void setLeftOffsetQml(qreal val);
-    bool leftOffsetWasSetFromQml;
 
     qreal rightOffset() const;
     void setRightOffset(qreal val);

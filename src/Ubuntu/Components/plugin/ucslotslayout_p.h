@@ -30,7 +30,7 @@ public:
     //We have two vertical positioning modes according to the visual design rules:
     //- RETURN VALUE 0 --> All items have to be vertically centered
     //- RETURN VALUE 1 --> All items have to anchor to the top of the listitem (using a top margin as well)
-    //This method is called whenever we want to relayout the items
+    //This is mainly used by the layout method
     int getVerticalPositioningMode();
 
     static inline UCSlotsLayoutPrivate *get(UCSlotsLayout *that)
@@ -52,20 +52,19 @@ public:
     bool ready;
     QQuickItem *pressedItem;
 
-    //used for position handling
     qreal labelsBoundingBoxHeight;
-    //maximum height of the components (no labels) which are inside the slots, used to compute the
-    //height of the layout
-    qreal maxChildrenHeight;
+    //max slots height ignoring labels
+    qreal maxSlotsHeight;
 
-    //this is used so that we only call relayout if these values go from 0 to non-0,
-    //not every time
+    //we cache the height so that we only relayout when it goes
+    //from 0 to non-0 and not viceversa
     qreal _q_cachedHeight;
 
     QQuickText m_title;
     QQuickText m_subtitle;
     QQuickText m_subsubtitle;
 
+    //similar to anchors.margins, but we don't use a contentItem so we handle this ourselves
     qreal leftOffset;
     qreal rightOffset;
     qreal topOffset;
@@ -80,16 +79,15 @@ public:
     qint32 maxNumberOfTrailingSlots;
 
     //once the dev tries to change the offsets (and he does so via QML) we'll stop
-    //updating offset's value, for instance when gu value changes or when the visual
-    //rules would require a different offset than usual
+    //updating offset's value, for instance when gu value changes or when the
+    //positioning mode changes
     bool leftOffsetWasSetFromQml;
     bool rightOffsetWasSetFromQml;
     bool topOffsetWasSetFromQml;
     bool bottomOffsetWasSetFromQml;
 
-    //in this variable we cache the current parent so that we can disconnect from the signals
-    //when the parent changes. We need this because otherwise inside itemChange(..) we would
-    //only have access to the new parent
+    //We cache the current parent so that we can disconnect from the signals when the
+    //parent changes. We need this because itemChange(..) only provides the new parent
     QQuickItem *m_parentItem;
 
 private:
