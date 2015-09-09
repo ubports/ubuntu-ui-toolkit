@@ -12,12 +12,13 @@
 UCSlotsAttached::UCSlotsAttached(QObject *object)
     : QObject(object)
     , m_position(UCSlotsLayout::Trailing)
-    , m_leftMargin(UCUnits::instance().gu(SLOTSLAYOUT_DEFAULTSLOTSIDEMARGINS_GU))
-    , m_rightMargin(UCUnits::instance().gu(SLOTSLAYOUT_DEFAULTSLOTSIDEMARGINS_GU))
+    , m_leftMargin(0)
+    , m_rightMargin(0)
     , m_overrideVerticalPositioning(false)
     , leftMarginWasSetFromQml(false)
     , rightMarginWasSetFromQml(false)
 {
+    updateGuValues();
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this, SLOT(updateGuValues()));
 }
 
@@ -100,10 +101,10 @@ void UCSlotsAttached::setOverrideVerticalPositioning(bool val)
 void UCSlotsAttached::updateGuValues()
 {
     if (!leftMarginWasSetFromQml)
-        setLeftMargin(UCUnits::instance().gu(SLOTSLAYOUT_DEFAULTSLOTSIDEMARGINS_GU));
+        setLeftMargin(UCUnits::instance().gu(SLOTSLAYOUT_SLOTS_SIDEMARGINS_GU));
 
     if (!rightMarginWasSetFromQml)
-        setRightMargin(UCUnits::instance().gu(SLOTSLAYOUT_DEFAULTSLOTSIDEMARGINS_GU));
+        setRightMargin(UCUnits::instance().gu(SLOTSLAYOUT_SLOTS_SIDEMARGINS_GU));
 }
 
 UCSlotsAttached *UCSlotsLayout::qmlAttachedProperties(QObject *object)
@@ -117,13 +118,12 @@ UCSlotsAttached *UCSlotsLayout::qmlAttachedProperties(QObject *object)
 UCSlotsLayoutPrivate::UCSlotsLayoutPrivate()
     : QQuickItemPrivate()
     , ready(false)
-    , pressedItem(Q_NULLPTR)
     , maxSlotsHeight(0)
     , _q_cachedHeight(-1)
-    , leftOffset(UCUnits::instance().gu(SLOTSLAYOUT_DEFAULTLAYOUTSIDEMARGINS_GU))
-    , rightOffset(UCUnits::instance().gu(SLOTSLAYOUT_DEFAULTLAYOUTSIDEMARGINS_GU))
-    , topOffset(UCUnits::instance().gu(SLOTSLAYOUT_DEFAULTLAYOUTSIDEMARGINS_GU))
-    , bottomOffset(UCUnits::instance().gu(SLOTSLAYOUT_DEFAULTLAYOUTSIDEMARGINS_GU))
+    , leftOffset(0)
+    , rightOffset(0)
+    , topOffset(0)
+    , bottomOffset(0)
     , progression(false)
     , chevron(Q_NULLPTR)
     , maxNumberOfLeadingSlots(1)
@@ -133,6 +133,7 @@ UCSlotsLayoutPrivate::UCSlotsLayoutPrivate()
     , topOffsetWasSetFromQml(false)
     , bottomOffsetWasSetFromQml(false)
     , m_parentItem(Q_NULLPTR)
+    , pressedItem(Q_NULLPTR)
 {
 }
 
@@ -145,19 +146,21 @@ void UCSlotsLayoutPrivate::init()
     Q_Q(UCSlotsLayout);
     setDefaultLabelsProperties();
 
+    _q_updateGuValues();
+
+    // connect theme changes
+    //QObject::connect(q, SIGNAL(themeChanged()),
+    //                 q, SLOT(_q_themeChanged()), Qt::DirectConnection);
+
     QObject::connect(q, SIGNAL(leftOffsetChanged()), q, SLOT(_q_relayout()));
     QObject::connect(q, SIGNAL(rightOffsetChanged()), q, SLOT(_q_relayout()));
     QObject::connect(q, SIGNAL(topOffsetChanged()), q, SLOT(_q_updateSlotsBBoxHeight()));
     QObject::connect(q, SIGNAL(bottomOffsetChanged()), q, SLOT(_q_updateSlotsBBoxHeight()));
     QObject::connect(q, SIGNAL(progressionChanged()), q, SLOT(_q_updateProgressionStatus()));
 
-    // connect theme changes
-    //QObject::connect(q, SIGNAL(themeChanged()),
-    //                 q, SLOT(_q_themeChanged()), Qt::DirectConnection);
-
-    // watch grid unit size change and set implicit size
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_updateLabelsAnchorsAndBBoxHeight()));
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_updateSlotsBBoxHeight()));
+    QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_updateGuValues()));
 
     //FIXME (if possible): this will cause relayout to be called 4-5 times when the layout has "anchors.fill: parent"
     //defined on QML side
@@ -199,58 +202,17 @@ void UCSlotsLayoutPrivate::updateTopBottomOffsetsIfNeeded() {
     Q_Q(UCSlotsLayout);
     if (!topOffsetWasSetFromQml) {
         q->setTopOffset((!getVerticalPositioningMode()
-                         && maxSlotsHeight > UCUnits::instance().gu(SLOTSLAYOUT_TOPBOTTOMMARGIN_SIZETHRESHOLD))
-                        ? UCUnits::instance().gu(1.0)
-                        : UCUnits::instance().gu(2.0));
+                         && maxSlotsHeight > UCUnits::instance().gu(SLOTSLAYOUT_TOPBOTTOMMARGIN_SIZETHRESHOLD_GU))
+                        ? UCUnits::instance().gu(SLOTSLAYOUT_TOPMARGIN1_GU)
+                        : UCUnits::instance().gu(SLOTSLAYOUT_TOPMARGIN2_GU));
     }
 
     if (!bottomOffsetWasSetFromQml) {
         q->setBottomOffset((!getVerticalPositioningMode()
-                            && maxSlotsHeight > UCUnits::instance().gu(SLOTSLAYOUT_TOPBOTTOMMARGIN_SIZETHRESHOLD))
-                           ? UCUnits::instance().gu(1.0)
-                           : UCUnits::instance().gu(2.0));
+                            && maxSlotsHeight > UCUnits::instance().gu(SLOTSLAYOUT_TOPBOTTOMMARGIN_SIZETHRESHOLD_GU))
+                           ? UCUnits::instance().gu(SLOTSLAYOUT_BOTTOMMARGIN1_GU)
+                           : UCUnits::instance().gu(SLOTSLAYOUT_BOTTOMMARGIN2_GU));
     }
-}
-
-void UCSlotsLayoutPrivate::_q_updateCachedHeight() {
-    Q_Q(UCSlotsLayout);
-    if (_q_cachedHeight != q->height()) {
-        if (qIsNull(_q_cachedHeight)) {
-            Q_EMIT q->relayoutNeeded();
-        }
-        _q_cachedHeight = q->height();
-    }
-}
-
-void UCSlotsLayoutPrivate::_q_updateProgressionStatus() {
-    Q_Q(UCSlotsLayout);
-    if (progression) {
-        //No parents on purpose! We'll set the parent after we force the creation of QQmlData,
-        //otherwise qmlAttachedPropertiesObject in the relayout function (triggered by parent's ChildrenAdded signal)
-        //will fail
-        chevron = new UCSlotsLayoutChevron;
-
-        //NOTE: this may change in the future as it's an implementation detail
-        //of the current Qt (5.4.2)
-        //This line will force the creation of QQmlData for the chevron.
-        //without this, qmlAttachedPropertiesObject on the chevron will fail,
-        //as the object was created on c++ side!
-        QQmlData::get(chevron, true);
-
-        chevron->setParent(q);
-        chevron->setParentItem(q);
-        QQmlEngine::setObjectOwnership(chevron, QQmlEngine::CppOwnership);
-
-        handleAttachedPropertySignals(chevron, true);
-    } else {
-        handleAttachedPropertySignals(chevron, false);
-        chevron->setVisible(false);
-        delete chevron;
-        chevron = Q_NULLPTR;
-    }
-
-    _q_updateSlotsBBoxHeight();
-    //Q_EMIT q->relayoutNeeded();
 }
 
 void UCSlotsLayoutPrivate::setDefaultLabelsProperties() {
@@ -291,6 +253,63 @@ void UCSlotsLayoutPrivate::setDefaultLabelsProperties() {
     m_title.setColor(QColor("#525252"));
     m_subtitle.setColor(QColor("#525252"));
     m_subsubtitle.setColor(QColor("#525252"));
+}
+
+void UCSlotsLayoutPrivate::_q_updateCachedHeight() {
+    Q_Q(UCSlotsLayout);
+    if (_q_cachedHeight != q->height()) {
+        if (qIsNull(_q_cachedHeight)) {
+            Q_EMIT q->relayoutNeeded();
+        }
+        _q_cachedHeight = q->height();
+    }
+}
+
+void UCSlotsLayoutPrivate::_q_updateProgressionStatus() {
+    Q_Q(UCSlotsLayout);
+    if (progression) {
+        //No parents on purpose! We'll set the parent after we force the creation of QQmlData,
+        //otherwise qmlAttachedPropertiesObject in the relayout function (triggered by parent's ChildrenAdded signal)
+        //will fail
+        chevron = new UCSlotsLayoutChevron;
+
+        //NOTE: this may change in the future as it's an implementation detail
+        //of the current Qt (5.4.2)
+        //This line will force the creation of QQmlData for the chevron.
+        //without this, qmlAttachedPropertiesObject on the chevron will fail,
+        //as the object was created on c++ side!
+        QQmlData::get(chevron, true);
+
+        chevron->setParent(q);
+        chevron->setParentItem(q);
+        QQmlEngine::setObjectOwnership(chevron, QQmlEngine::CppOwnership);
+
+        handleAttachedPropertySignals(chevron, true);
+    } else {
+        handleAttachedPropertySignals(chevron, false);
+        chevron->setVisible(false);
+        delete chevron;
+        chevron = Q_NULLPTR;
+    }
+
+    //update max slots height and trigger relayout
+    _q_updateSlotsBBoxHeight();
+}
+
+void UCSlotsLayoutPrivate::_q_updateGuValues() {
+    Q_Q(UCSlotsLayout);
+
+    if (!leftOffsetWasSetFromQml) {
+        q->setLeftOffset(UCUnits::instance().gu(SLOTSLAYOUT_LEFTOFFSET_GU));
+    }
+
+    if (!rightOffsetWasSetFromQml) {
+        q->setRightOffset(UCUnits::instance().gu(SLOTSLAYOUT_RIGHTOFFSET_GU));
+    }
+
+    updateTopBottomOffsetsIfNeeded();
+
+    _q_updateSize();
 }
 
 void UCSlotsLayoutPrivate::_q_updateLabelsAnchorsAndBBoxHeight() {
@@ -335,7 +354,7 @@ void UCSlotsLayoutPrivate::_q_updateLabelsAnchorsAndBBoxHeight() {
         if (emptySubtitle && emptySubsubtitle) {
             labelsBoundingBoxHeight += m_title.height();
         } else {
-            labelsBoundingBoxHeight += m_title.baselineOffset() + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SPACING);
+            labelsBoundingBoxHeight += m_title.baselineOffset() + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SPACING_GU);
         }
     }
 
@@ -348,7 +367,7 @@ void UCSlotsLayoutPrivate::_q_updateLabelsAnchorsAndBBoxHeight() {
             labelsBoundingBoxHeight += m_subtitle.height();
         } else {
             labelsBoundingBoxHeight += m_subtitle.baselineOffset()
-                    + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SPACING)
+                    + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SPACING_GU)
                     + m_subsubtitle.height();
         }
     }
@@ -542,7 +561,7 @@ void UCSlotsLayoutPrivate::_q_relayout() {
     subsubtitleAnchors->setLeft(labelsLeftAnchor);
 
     //width of the labels excluding the margins, this is pretty much like a "fillWidth" behaviour
-    qreal labelBoxWidth = q->width() - totalWidth - (UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS) * 2)
+    qreal labelBoxWidth = q->width() - totalWidth - (UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS_GU) * 2)
             - leftOffset - rightOffset;
 
     if (numberOfLeadingSlots != 0) {
@@ -552,14 +571,14 @@ void UCSlotsLayoutPrivate::_q_relayout() {
         if (!attachedLastLeadingSlot) {
             qDebug() << "SLOTSLAYOUT: invalid attached property!";
         } else {
-            titleAnchors->setLeftMargin(attachedLastLeadingSlot->rightMargin() + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS));
-            subtitleAnchors->setLeftMargin(attachedLastLeadingSlot->rightMargin() + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS));
-            subsubtitleAnchors->setLeftMargin(attachedLastLeadingSlot->rightMargin() + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS));
+            titleAnchors->setLeftMargin(attachedLastLeadingSlot->rightMargin() + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS_GU));
+            subtitleAnchors->setLeftMargin(attachedLastLeadingSlot->rightMargin() + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS_GU));
+            subsubtitleAnchors->setLeftMargin(attachedLastLeadingSlot->rightMargin() + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS_GU));
         }
     } else {
-        titleAnchors->setLeftMargin(leftOffset + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS));
-        subtitleAnchors->setLeftMargin(leftOffset + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS));
-        subsubtitleAnchors->setLeftMargin(leftOffset + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS));
+        titleAnchors->setLeftMargin(leftOffset + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS_GU));
+        subtitleAnchors->setLeftMargin(leftOffset + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS_GU));
+        subsubtitleAnchors->setLeftMargin(leftOffset + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS_GU));
     }
 
     if (getVerticalPositioningMode()) {
@@ -619,7 +638,7 @@ void UCSlotsLayoutPrivate::_q_relayout() {
                 item->anchors()->setLeft(QQuickItemPrivate::get(&m_title)->right());
                 //the right margin of the labels is treated as left margin of the first trailing slot
                 //because labels don't have a right anchor set up here!
-                item->anchors()->setLeftMargin(UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS) + attached->leftMargin());
+                item->anchors()->setLeftMargin(UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS_GU) + attached->leftMargin());
             } else {
                 UCSlotsAttached *attachedPreviousItem =
                         qobject_cast<UCSlotsAttached *>(qmlAttachedPropertiesObject<UCSlotsLayout>(trailingSlots.at(i-1)));
@@ -634,11 +653,11 @@ void UCSlotsLayoutPrivate::_q_relayout() {
         }
     } else {
         titleAnchors->setRight(_q_private->right());
-        titleAnchors->setRightMargin(rightOffset + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS));
+        titleAnchors->setRightMargin(rightOffset + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS_GU));
         subtitleAnchors->setRight(_q_private->right());
-        subtitleAnchors->setRightMargin(rightOffset + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS));
+        subtitleAnchors->setRightMargin(rightOffset + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS_GU));
         subsubtitleAnchors->setRight(_q_private->right());
-        subsubtitleAnchors->setRightMargin(rightOffset + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS));
+        subsubtitleAnchors->setRightMargin(rightOffset + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS_GU));
     }
 }
 
@@ -650,7 +669,6 @@ void UCSlotsLayoutPrivate::handleAttachedPropertySignals(QQuickItem *item, bool 
     if (!attachedSlot) {
         qDebug() << "SLOTSLAYOUT: invalid attached property!";
         return;
-
     }
 
     if (connect) {
