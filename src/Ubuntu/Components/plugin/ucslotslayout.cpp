@@ -52,9 +52,7 @@ void UCSlotsLayoutPrivate::init()
     QObject::connect(q, SIGNAL(bottomOffsetChanged()), q, SLOT(_q_updateSlotsBBoxHeight()));
     QObject::connect(q, SIGNAL(progressionChanged()), q, SLOT(_q_updateProgressionStatus()));
 
-    QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_updateLabelsAnchorsAndBBoxHeight()));
-    QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_updateSlotsBBoxHeight()));
-    QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_updateGuValues()));
+    QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_onGuValueChanged()));
 
     //FIXME (if possible): this will cause relayout to be called 4-5 times when the layout has "anchors.fill: parent"
     //defined on QML side
@@ -85,25 +83,25 @@ void UCSlotsLayoutPrivate::init()
     QObject::connect(&m_subsubtitle, SIGNAL(heightChanged()), q, SLOT(_q_updateLabelsAnchorsAndBBoxHeight()));
 }
 
-int UCSlotsLayoutPrivate::getVerticalPositioningMode()
+UCSlotsLayoutPrivate::UCSlotPositioningMode UCSlotsLayoutPrivate::getVerticalPositioningMode() const
 {
-    //we could just return the bool, I just want to stress that there could be other
-    //modes in the future
-    return (labelsBoundingBoxHeight > maxSlotsHeight) ? 1 : 0;
+    return (labelsBoundingBoxHeight > maxSlotsHeight)
+            ? UCSlotPositioningMode::AlignToTop
+            : UCSlotPositioningMode::CenterVertically;
 }
 
 void UCSlotsLayoutPrivate::updateTopBottomOffsetsIfNeeded()
 {
     Q_Q(UCSlotsLayout);
     if (!topOffsetWasSetFromQml) {
-        q->setTopOffset((!getVerticalPositioningMode()
+        q->setTopOffset((getVerticalPositioningMode() == UCSlotPositioningMode::CenterVertically
                          && maxSlotsHeight > UCUnits::instance().gu(SLOTSLAYOUT_TOPBOTTOMMARGIN_SIZETHRESHOLD_GU))
                         ? UCUnits::instance().gu(SLOTSLAYOUT_TOPMARGIN1_GU)
                         : UCUnits::instance().gu(SLOTSLAYOUT_TOPMARGIN2_GU));
     }
 
     if (!bottomOffsetWasSetFromQml) {
-        q->setBottomOffset((!getVerticalPositioningMode()
+        q->setBottomOffset((getVerticalPositioningMode() == UCSlotPositioningMode::CenterVertically
                             && maxSlotsHeight > UCUnits::instance().gu(SLOTSLAYOUT_TOPBOTTOMMARGIN_SIZETHRESHOLD_GU))
                            ? UCUnits::instance().gu(SLOTSLAYOUT_BOTTOMMARGIN1_GU)
                            : UCUnits::instance().gu(SLOTSLAYOUT_BOTTOMMARGIN2_GU));
@@ -149,6 +147,13 @@ void UCSlotsLayoutPrivate::setDefaultLabelsProperties()
     m_title.setColor(QColor("#525252"));
     m_subtitle.setColor(QColor("#525252"));
     m_subsubtitle.setColor(QColor("#525252"));
+}
+
+void UCSlotsLayoutPrivate::_q_onGuValueChanged()
+{
+    _q_updateLabelsAnchorsAndBBoxHeight();
+    _q_updateSlotsBBoxHeight();
+    _q_updateGuValues();
 }
 
 void UCSlotsLayoutPrivate::_q_updateCachedHeight()
@@ -414,7 +419,7 @@ void UCSlotsLayoutPrivate::_q_relayout()
         QQuickItemPrivate *item = QQuickItemPrivate::get(leadingSlots.at(i));
 
         if (!attached->overrideVerticalPositioning()) {
-            if (getVerticalPositioningMode()) {
+            if (getVerticalPositioningMode() == UCSlotPositioningMode::AlignToTop) {
                 //reset the vertical anchor as we might be transitioning from the configuration
                 //where all items are vertically centered to the one where they're anchored to top
                 item->anchors()->resetVerticalCenter();
@@ -483,7 +488,7 @@ void UCSlotsLayoutPrivate::_q_relayout()
         subsubtitleAnchors->setLeftMargin(leftOffset + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS_GU));
     }
 
-    if (getVerticalPositioningMode()) {
+    if (getVerticalPositioningMode() == UCSlotPositioningMode::AlignToTop) {
         titleAnchors->setTopMargin(topOffset);
     } else {
         //center the whole labels block vertically, we can't use verticalCenter as we're not using
@@ -518,7 +523,7 @@ void UCSlotsLayoutPrivate::_q_relayout()
             }
 
             if (!attached->overrideVerticalPositioning()) {
-                if (getVerticalPositioningMode()) {
+                if (getVerticalPositioningMode() == UCSlotPositioningMode::AlignToTop) {
                     //reset the vertical anchor as we might be transitioning from the configuration
                     //where all items are vertically centered to the one where they're anchored to top
                     item->anchors()->resetVerticalCenter();

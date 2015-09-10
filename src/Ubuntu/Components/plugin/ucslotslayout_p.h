@@ -34,10 +34,11 @@ public:
     void updateTopBottomOffsetsIfNeeded();
 
     //We have two vertical positioning modes according to the visual design rules:
-    //- RETURN VALUE 0 --> All items have to be vertically centered
-    //- RETURN VALUE 1 --> All items have to anchor to the top of the listitem (using a top margin as well)
+    //- RETURN VALUE CenterVertically --> All items have to be vertically centered
+    //- RETURN VALUE AlignToTop --> All items have to anchor to the top of the listitem (using a top margin as well)
     //This is mainly used by the layout method
-    int getVerticalPositioningMode();
+    enum UCSlotPositioningMode { AlignToTop, CenterVertically };
+    UCSlotsLayoutPrivate::UCSlotPositioningMode getVerticalPositioningMode() const;
 
     //connect/disconnect item's UCSlotsAttached properties changes to/from the right slot
     void handleAttachedPropertySignals(QQuickItem *item, bool connect);
@@ -48,6 +49,8 @@ public:
         return that->d_func();
     }
 
+
+    void _q_onGuValueChanged();
     void _q_updateCachedHeight();
     void _q_updateProgressionStatus();
     void _q_updateGuValues();
