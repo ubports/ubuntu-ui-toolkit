@@ -4,6 +4,7 @@
 #include "ucslotslayout.h"
 #include "ucslotslayout_p.h"
 #include "ucfontutils.h"
+#include "uctheme.h"
 #include "unitythemeiconprovider.h"
 
 /******************************************************************************
@@ -44,7 +45,7 @@ void UCSlotsLayoutPrivate::init()
 
     // FIXME: This is not yet possible from C++ since we're not a StyledItem
     //QObject::connect(q, SIGNAL(themeChanged()),
-    //                 q, SLOT(_q_themeChanged()), Qt::DirectConnection);
+    //                 q, SLOT(_q_onThemeChanged()), Qt::DirectConnection);
 
     QObject::connect(q, SIGNAL(leftOffsetChanged()), q, SLOT(_q_relayout()));
     QObject::connect(q, SIGNAL(rightOffsetChanged()), q, SLOT(_q_relayout()));
@@ -143,10 +144,19 @@ void UCSlotsLayoutPrivate::setDefaultLabelsProperties()
     m_subtitle.setFont(subtitleFont);
     m_subsubtitle.setFont(subsubtitleFont);
 
-    //FIXME: hardcoded colours!! Because we currently don't have access to the color palette from C++
-    m_title.setColor(QColor("#525252"));
-    m_subtitle.setColor(QColor("#525252"));
-    m_subsubtitle.setColor(QColor("#525252"));
+    //We set the theme-dependent properties (such as the colour) later
+    //as it requires qmlContext(q), which has not been initialized yet, at this point.
+}
+
+void UCSlotsLayoutPrivate::_q_onThemeChanged()
+{
+    Q_Q(UCSlotsLayout);
+    UCTheme *theme = qmlContext(q)->contextProperty("theme").value<UCTheme*>();
+    if (theme) {
+        m_title.setColor(theme->getPaletteColor("selected", "backgroundText"));
+        m_subtitle.setColor(theme->getPaletteColor("selected", "backgroundText"));
+        m_subsubtitle.setColor(theme->getPaletteColor("selected", "backgroundText"));
+    }
 }
 
 void UCSlotsLayoutPrivate::_q_onGuValueChanged()
@@ -607,6 +617,8 @@ void UCSlotsLayout::componentComplete()
     QQuickItem::componentComplete();
 
     Q_D(UCSlotsLayout);
+    d->_q_onThemeChanged();
+
     d->ready = true;
 
     //We want to call these functions for the first time after the

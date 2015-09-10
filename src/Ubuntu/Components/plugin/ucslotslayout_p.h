@@ -49,7 +49,7 @@ public:
         return that->d_func();
     }
 
-
+    void _q_onThemeChanged();
     void _q_onGuValueChanged();
     void _q_updateCachedHeight();
     void _q_updateProgressionStatus();
