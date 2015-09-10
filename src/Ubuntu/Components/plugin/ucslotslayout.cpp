@@ -604,6 +604,7 @@ UCSlotsLayout::UCSlotsLayout(QQuickItem *parent) :
     QQuickItem(*(new UCSlotsLayoutPrivate), parent)
 {
     setFlag(ItemHasContents);
+    setFlag(ItemIsFocusScope);
     Q_D(UCSlotsLayout);
     d->init();
 }
