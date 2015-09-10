@@ -181,9 +181,10 @@ void UCSlotsLayoutPrivate::_q_updateProgressionStatus()
 {
     Q_Q(UCSlotsLayout);
     if (progression) {
-        //No parents on purpose! We'll set the parent after we force the creation of QQmlData,
-        //otherwise qmlAttachedPropertiesObject in the relayout function (triggered by parent's ChildrenAdded signal)
-        //will fail
+        //Postponing parent initialization makes it so that inside itemChange method we have
+        //data.item == chevron
+        //Using new UCSlotsLayoutChevron(q) would call itemChange with the temporary object as parameter
+        //and we wouldn't be able to recognize that it was this chevron
         chevron = new UCSlotsLayoutChevron;
 
         //NOTE: this may change in the future as it's an implementation detail
@@ -193,20 +194,16 @@ void UCSlotsLayoutPrivate::_q_updateProgressionStatus()
         //as the object was created on c++ side!
         QQmlData::get(chevron, true);
 
-        chevron->setParent(q);
+        QQml_setParent_noEvent(chevron, q);
         chevron->setParentItem(q);
-        QQmlEngine::setObjectOwnership(chevron, QQmlEngine::CppOwnership);
-
-        handleAttachedPropertySignals(chevron, true);
     } else {
-        handleAttachedPropertySignals(chevron, false);
         chevron->setVisible(false);
         delete chevron;
         chevron = Q_NULLPTR;
     }
 
-    //update max slots height and trigger relayout
-    _q_updateSlotsBBoxHeight();
+    //In either case, ChildAdded or ChildRemoved will be called, and that will
+    //trigger relayout
 }
 
 void UCSlotsLayoutPrivate::_q_updateGuValues()
@@ -643,7 +640,7 @@ void UCSlotsLayout::itemChange(ItemChange change, const ItemChangeData &data)
             //single labels can't be considered a slot, and we handle the chevron separately
             //when it's instantiated
             if (data.item != &d->m_title && data.item != &d->m_subtitle
-                    && data.item != &d->m_subsubtitle && data.item != d->chevron) {
+                    && data.item != &d->m_subsubtitle) {
                 d->handleAttachedPropertySignals(data.item, true);
 
                 //this will also trigger relayout
@@ -660,7 +657,7 @@ void UCSlotsLayout::itemChange(ItemChange change, const ItemChangeData &data)
             QObject::disconnect(data.item, SIGNAL(widthChanged()), this, SLOT(_q_relayout()));
 
             if (data.item != &d->m_title && data.item != &d->m_subtitle
-                    && data.item != &d->m_subsubtitle && data.item != d->chevron) {
+                    && data.item != &d->m_subsubtitle) {
                 d->handleAttachedPropertySignals(data.item, false);
 
                 //this will also trigger relayout
