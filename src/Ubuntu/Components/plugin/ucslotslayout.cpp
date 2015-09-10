@@ -1,4 +1,5 @@
-#include "QQmlEngine"
+#include <QtQml/QQmlEngine>
+#include <QtQml/QQmlInfo>
 
 #include "ucunits.h"
 #include "ucslotslayout.h"
@@ -308,7 +309,7 @@ void UCSlotsLayoutPrivate::_q_updateSlotsBBoxHeight()
                 qobject_cast<UCSlotsAttached *>(qmlAttachedPropertiesObject<UCSlotsLayout>(child));
 
         if (!attachedProperty) {
-            qDebug() << "SLOTSLAYOUT: invalid attached property!";
+            qmlInfo(q) << "Invalid attached property!";
             continue;
         }
 
@@ -367,7 +368,7 @@ void UCSlotsLayoutPrivate::_q_relayout()
                 qobject_cast<UCSlotsAttached *>(qmlAttachedPropertiesObject<UCSlotsLayout>(child));
 
         if (!attached) {
-            qDebug() << "SLOTSLAYOUT: invalid attached property!";
+            qmlInfo(q) << "Invalid attached property!";
             continue;
         }
 
@@ -378,8 +379,8 @@ void UCSlotsLayoutPrivate::_q_relayout()
                 leadingSlots.append(child);
                 totalWidth += child->width() + attached->leftMargin() + attached->rightMargin();
             } else {
-                qWarning() << "SlotsLayout: the current implementation only allows up to" << maxNumberOfLeadingSlots
-                           << "leading slots. Please remove any additional leading slot.";
+                qmlInfo(q) << "The current implementation only allows up to " << maxNumberOfLeadingSlots
+                           << " eading slots. Please remove any additional leading slot.";
                 continue;
             }
         } else if (attached->position() == UCSlotsLayout::Trailing) {
@@ -387,12 +388,12 @@ void UCSlotsLayoutPrivate::_q_relayout()
                 trailingSlots.append(child);
                 totalWidth += child->width() + attached->leftMargin() + attached->rightMargin();
             } else {
-                qWarning() << "SlotsLayout: the current implementation only allows up to" << maxNumberOfTrailingSlots
-                           << "trailing slots. Please remove any additional trailing slot.";
+                qmlInfo(q) << "The current implementation only allows up to " << maxNumberOfTrailingSlots
+                           << " trailing slots. Please remove any additional trailing slot.";
                 continue;
             }
         } else {
-            qWarning() << "SlotsLayout: unrecognized position value or too many slots added, please use SlotsLayout.Leading or SlotsLayout.Trailing";
+            qmlInfo(q) << "Unrecognized position value or too many slots added, please use SlotsLayout.Leading or SlotsLayout.Trailing";
             continue;
         }
     }
@@ -405,7 +406,7 @@ void UCSlotsLayoutPrivate::_q_relayout()
                 qobject_cast<UCSlotsAttached *>(qmlAttachedPropertiesObject<UCSlotsLayout>(chevron));
 
         if (!attached) {
-            qDebug() << "SLOTSLAYOUT: invalid attached property!";
+            qmlInfo(q) << "Invalid attached property!";
         } else {
             trailingSlots.append(chevron);
             totalWidth += chevron->width() + attached->leftMargin() + attached->rightMargin();
@@ -419,7 +420,7 @@ void UCSlotsLayoutPrivate::_q_relayout()
                 qobject_cast<UCSlotsAttached *>(qmlAttachedPropertiesObject<UCSlotsLayout>(leadingSlots.at(i)));
 
         if (!attached) {
-            qDebug() << "SLOTSLAYOUT: invalid attached property!";
+            qmlInfo(q) << "Invalid attached property!";
             continue;
         }
 
@@ -451,7 +452,7 @@ void UCSlotsLayoutPrivate::_q_relayout()
                     qobject_cast<UCSlotsAttached *>(qmlAttachedPropertiesObject<UCSlotsLayout>(leadingSlots.at(i-1)));
 
             if (!attachedPreviousItem) {
-                qDebug() << "SLOTSLAYOUT: invalid attached property!";
+                qmlInfo(q) << "Invalid attached property!";
             } else {
                 item->anchors()->setLeft(QQuickItemPrivate::get(leadingSlots.at(i-1))->right());
                 item->anchors()->setLeftMargin(attachedPreviousItem->rightMargin() + attached->leftMargin());
@@ -483,7 +484,7 @@ void UCSlotsLayoutPrivate::_q_relayout()
                 qobject_cast<UCSlotsAttached *>(qmlAttachedPropertiesObject<UCSlotsLayout>(leadingSlots.last()));
 
         if (!attachedLastLeadingSlot) {
-            qDebug() << "SLOTSLAYOUT: invalid attached property!";
+            qmlInfo(q) << "Invalid attached property!";
         } else {
             titleAnchors->setLeftMargin(attachedLastLeadingSlot->rightMargin() + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS_GU));
             subtitleAnchors->setLeftMargin(attachedLastLeadingSlot->rightMargin() + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS_GU));
@@ -525,7 +526,7 @@ void UCSlotsLayoutPrivate::_q_relayout()
                     qobject_cast<UCSlotsAttached *>(qmlAttachedPropertiesObject<UCSlotsLayout>(trailingSlots.at(i)));
 
             if (!attached) {
-                qDebug() << "SLOTSLAYOUT: invalid attached property!";
+                qmlInfo(q) << "Invalid attached property!";
                 continue;
             }
 
@@ -558,7 +559,7 @@ void UCSlotsLayoutPrivate::_q_relayout()
                         qobject_cast<UCSlotsAttached *>(qmlAttachedPropertiesObject<UCSlotsLayout>(trailingSlots.at(i-1)));
 
                 if (!attachedPreviousItem) {
-                    qDebug() << "SLOTSLAYOUT: invalid attached property!";
+                    qmlInfo(q) << "Invalid attached property!";
                 } else {
                     item->anchors()->setLeft(QQuickItemPrivate::get(trailingSlots.at(i-1))->right());
                     item->anchors()->setLeftMargin(attachedPreviousItem->rightMargin() + attached->leftMargin());
@@ -582,7 +583,7 @@ void UCSlotsLayoutPrivate::handleAttachedPropertySignals(QQuickItem *item, bool 
             qobject_cast<UCSlotsAttached *>(qmlAttachedPropertiesObject<UCSlotsLayout>(item));
 
     if (!attachedSlot) {
-        qDebug() << "SLOTSLAYOUT: invalid attached property!";
+        qmlInfo(q) << "Invalid attached property!";
         return;
     }
 
@@ -825,7 +826,7 @@ UCSlotsAttached *UCSlotsLayout::progressionSlot() const
     Q_D(const UCSlotsLayout);
 
     if (d->chevron == Q_NULLPTR) {
-        qWarning() << "SlotsLayout: please enable the progression symbol before trying to set its properties";
+        qmlInfo(this) << "Please enable the progression symbol before trying to set its properties";
         return Q_NULLPTR;
     }
 
