@@ -147,8 +147,10 @@ Popover {
                 onStatusChanged: {
                     if (item && status == Loader.Ready) {
                         // set model data
-                        if (item.hasOwnProperty("action"))
+                        if (item.hasOwnProperty("action")) {
                             item.action = modelData;
+                            item.objectName = item.action.objectName + '_button';
+                        }
                         if (item.hasOwnProperty("refModelData"))
                             item.refModelData = modelData;
                         if (item.hasOwnProperty("modelData"))
