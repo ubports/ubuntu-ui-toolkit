@@ -36,12 +36,10 @@ Item {
         onYChanged: print("header.y = "+y)
         Component.onCompleted: print(" init v = "+exposed)
         onExposedChanged: {
-            print("header.visible changed to "+exposed)
-//            hiddenSwitch.checked = !header.visible;
+            print("header.exposed changed to "+exposed)
         }
         id: header
 //        title: "Visibility testing"
-//        flickable: flickable
 //        locked: lockedSwitch.checked
         Rectangle {
             anchors.fill: parent
@@ -86,18 +84,8 @@ Item {
             Switch {
                 id: hiddenSwitch
                 checked: !header.exposed
-                onCheckedChanged: {
-                    print("checked changed. visible = "+header.visible)
-                    print("hidden checked changed to "+checked)
-                }
-
                 onClicked: {
-//                    if (checked) header.hide();
-//                    else header.show();
-//                    print(" header hidden = "+checked)
-                    header.exposed = checked;
-//                    if (checked) header.exposed = true;
-//                    else header.exposed = false;
+                    header.exposed = !header.exposed;
                 }
             }
             Label {

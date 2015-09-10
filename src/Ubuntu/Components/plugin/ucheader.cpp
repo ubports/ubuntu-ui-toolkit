@@ -19,6 +19,9 @@
 #include <QtQuick/private/qquickflickable_p.h>
 #include <QtQuick/private/qquickanchors_p.h>
 #include <QtQuick/private/qquickitem_p.h>
+#include <QtQuick/private/qquickanimation_p.h>
+#include "ucubuntuanimation.h"
+
 
 /*!
     \qmltype Header
@@ -32,15 +35,22 @@
     TODO: NOPE. But topMargin will change.
 */
 
+UCUbuntuAnimation *UCHeader::s_ubuntuAnimation = new UCUbuntuAnimation();
+
 UCHeader::UCHeader(QQuickItem *parent)
 //    : UCStyledItemBase(parent)
     : QQuickItem(parent)
     , m_exposed(true)
     , m_previous_contentY(0)
+    , m_showHideAnimation(new QQuickNumberAnimation)
     , m_flickable(Q_NULLPTR)
 {
     qDebug() << "Header created!";
-//    m_visible = true;
+//    this->setFocus();
+    m_showHideAnimation->setTargetObject(this);
+    m_showHideAnimation->setProperty("y");
+    m_showHideAnimation->setEasing(s_ubuntuAnimation->StandardEasing());
+    m_showHideAnimation->setDuration(s_ubuntuAnimation->BriskDuration());
 }
 
 QQuickFlickable* UCHeader::flickable() {
@@ -71,24 +81,37 @@ void UCHeader::setFlickable(QQuickFlickable *flickable) {
 }
 
 void UCHeader::show() {
-    // TODO: animate
-    qDebug() << "Showing";
-    this->setY(0.0);
-//    if (!m_visible) {
-        qDebug() << "Setting visible to true";
-        m_exposed = true;
-//        Q_EMIT openedChanged();
+    qreal y = this->y();
+
+//    if (y < 0) {
+        qDebug() << "Showing";
+        m_showHideAnimation->setFrom(y);
+        m_showHideAnimation->setTo(0.0);
+        m_showHideAnimation->start();
+        if (!m_exposed) {
+            // TODO: Do this when the animation finishes.
+            qDebug() << "Setting exposed to true";
+            m_exposed = true;
+            Q_EMIT exposedChanged();
+        }
 //    }
 }
 
 void UCHeader::hide() {
-//     TODO: animate
-    qDebug() << "Hiding";
-    this->setY(-1.0*this->height());
-//    if (m_visible) {
-        qDebug() << "Setting visible to false";
-        m_exposed = false;
-//        Q_EMIT openedChanged();
+    qreal y = this->y();
+    qreal h = -1.0*this->height();
+
+//    if (y > h) {
+        qDebug() << "Hiding";
+        m_showHideAnimation->setFrom(y);
+        m_showHideAnimation->setTo(h);
+        m_showHideAnimation->start();
+        if (m_exposed) {
+            // TODO: Do this when the animation finishes.
+            qDebug() << "Setting exposed to false";
+            m_exposed = false;
+            Q_EMIT exposedChanged();
+        }
 //    }
 }
 

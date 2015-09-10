@@ -17,9 +17,13 @@
 #ifndef UCHEADER_H
 #define UCHEADER_H
 
-#include "ucstyleditembase.h"
+#include "ucstyleditembase.h" // FIXMME TIM: remove
 #include <QtCore/QPointer>
+
 class QQuickFlickable;
+class QQuickNumberAnimation;
+
+class UCUbuntuAnimation;
 
 class UCHeader : public QQuickItem //UCStyledItemBase
 {
@@ -50,7 +54,11 @@ private:
     bool m_exposed;
     qreal m_previous_contentY;
 
+    QQuickNumberAnimation* m_showHideAnimation;
     QPointer<QQuickFlickable> m_flickable;
+
+    // used to set the easing and duration of m_showHideAnimation
+    static UCUbuntuAnimation *s_ubuntuAnimation;
 };
 
 #endif // UCHEADER_H
