@@ -30,7 +30,6 @@ Template {
             height: units.gu(8)
 
             UbuntuShape {
-	        rotation: 90
                 objectName: "ubuntushape_aspect_inset"
                 backgroundColor: UbuntuColors.orange
                 radius: "medium"
