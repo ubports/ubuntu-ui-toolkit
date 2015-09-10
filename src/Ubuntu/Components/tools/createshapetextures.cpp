@@ -36,35 +36,51 @@
 
 // Input data.
 const int textureCount = 2;
-const int textureSize = 32;  // Must be a power-of-2.
 const double distanceScale = 4.0;
 const double shapeOffset = 0.0625;
 
-// Sizes.
-const int width = textureSize;
-const int height = textureSize;
+// Sizes (must be power-of-2).
+const int width = 32;
+const int height = 32;
 const int size = width * height;
-const double imageScale = 255.0 / width;
+const int widthMipmap = 256;
+const int heightMipmap = 256;
+const int sizeMipmap = widthMipmap * heightMipmap;
+const int mipmapCount = 5; // Minimum size is 16.
+const int biggestSize = size > sizeMipmap ? size : sizeMipmap;
 
 // Shape buffers.
-static uint shapeData[size];
-static double shapeNormalized[size];
-
+static uint renderBuffer[biggestSize];
+static double renderBufferNormalized[biggestSize];
 // Distance field buffers.
-static double distanceIn[size];
-static double distanceOut[size];
-
+static double distanceIn[biggestSize];
+static double distanceOut[biggestSize];
 // Temporary buffers used by the computegradient() and edtaa3() functions exposed by edtaa3func.c.
-static short distanceX[size];
-static short distanceY[size];
-static double gradientX[size];
-static double gradientY[size];
+static short distanceX[biggestSize];
+static short distanceY[biggestSize];
+static double gradientX[biggestSize];
+static double gradientY[biggestSize];
 
 // Final texture buffers.
-static uint textureData[2][size];
+static uint textureData[size];
+static uint textureDataMipmap[sizeMipmap];
+
+// Clear rendering buffer.
+static void clearRenderBuffer()
+{
+    memset(renderBuffer, 0, biggestSize * sizeof(uint));
+}
+
+// Clear gradient buffers.
+static void clearGradientBuffers()
+{
+    memset(gradientX, 0, biggestSize * sizeof(double));
+    memset(gradientY, 0, biggestSize * sizeof(double));
+}
 
 // Creates the inset and flat aspect texture.
-static void createTexture1(QSvgRenderer* svg, QPainter* painter)
+static void createTexture1(
+    QSvgRenderer* svg, QPainter* painter, uint* data, int width, int height, bool useEdtaa3)
 {
     // Input data.
     const double shadowScale = 7.5;
@@ -75,96 +91,124 @@ static void createTexture1(QSvgRenderer* svg, QPainter* painter)
     const double shadowBottomTX = -0.01171875;  // From shapeOffset.
     const double shadowBottomTY = -0.00390625;  // From shapeOffset.
 
-    // Render and store the distance field used for masking the top of the shape, for masking the
-    // bevel and for masking the unstyled shape.
-    painter->translate(shapeOffset * width, shapeOffset * width);
-    svg->render(painter);
-    for (int i = 0; i < size; i++) {
-        shapeNormalized[i] = static_cast<double>(shapeData[i] >> 24) / 255.0;
-    }
-    computegradient(shapeNormalized, width, height, gradientX, gradientY);
-    edtaa3(shapeNormalized, gradientX, gradientY, width, height, distanceX, distanceY,
-           distanceOut);
-    for (int i = 0; i < size; i++) {
-        shapeNormalized[i] = 1.0 - shapeNormalized[i];
-    }
-    memset(gradientX, 0, size * sizeof(double));
-    memset(gradientY, 0, size * sizeof(double));
-    computegradient(shapeNormalized, width, height, gradientX, gradientY);
-    edtaa3(shapeNormalized, gradientX, gradientY, width, height, distanceX, distanceY,
-           distanceIn);
-    for (int i = 0; i < size; i++) {
-        const double distance = qMax(0.0, distanceIn[i]) - qMax(0.0, distanceOut[i]);
-        const uint value = qBound(0, qRound(distance * distanceScale * imageScale + 127.5), 255);
-        textureData[0][i] = value << 16;  // Stored in channel R (exposed as B in the shaders).
-    }
+    const int size = width * height;
+    const double imageScale = 255.0 / width;
 
-    // Render and store the distance field used for masking the bottom of the shape and for masking
-    // the bevel.
-    memset(shapeData, 0, size * sizeof(uint));
-    painter->resetTransform();
-    painter->translate(shapeOffset * width, (shapeOffset + distanceBottomTY) * width);
-    svg->render(painter);
-    for (int i = 0; i < size; i++) {
-        shapeNormalized[i] = static_cast<double>(shapeData[i] >> 24) / 255.0;
-    }
-    computegradient(shapeNormalized, width, height, gradientX, gradientY);
-    edtaa3(shapeNormalized, gradientX, gradientY, width, height, distanceX, distanceY,
-           distanceOut);
-    for (int i = 0; i < size; i++) {
-        shapeNormalized[i] = 1.0 - shapeNormalized[i];
-    }
-    memset(gradientX, 0, size * sizeof(double));
-    memset(gradientY, 0, size * sizeof(double));
-    computegradient(shapeNormalized, width, height, gradientX, gradientY);
-    edtaa3(shapeNormalized, gradientX, gradientY, width, height, distanceX, distanceY,
-           distanceIn);
-    for (int i = 0; i < size; i++) {
-        const double distance = qMax(0.0, distanceIn[i]) - qMax(0.0, distanceOut[i]);
-        const uint value = qBound(0, qRound(distance * distanceScale * imageScale + 127.5), 255);
-        textureData[0][i] |= value << 24;  // Stored in channel A.
+    if (useEdtaa3) {
+        // Render and store the distance field used for masking the top of the shape, for masking
+        // the bevel and for masking the unstyled shape.
+        clearRenderBuffer();
+        painter->resetTransform();
+        painter->translate(shapeOffset * width, shapeOffset * height);
+        svg->render(painter);
+        for (int i = 0; i < size; i++) {
+            renderBufferNormalized[i] = static_cast<double>(renderBuffer[i] >> 24) / 255.0;
+        }
+        computegradient(renderBufferNormalized, width, height, gradientX, gradientY);
+        edtaa3(renderBufferNormalized, gradientX, gradientY, width, height, distanceX, distanceY,
+               distanceOut);
+        for (int i = 0; i < size; i++) {
+            renderBufferNormalized[i] = 1.0 - renderBufferNormalized[i];
+        }
+        clearGradientBuffers();
+        computegradient(renderBufferNormalized, width, height, gradientX, gradientY);
+        edtaa3(renderBufferNormalized, gradientX, gradientY, width, height, distanceX, distanceY,
+               distanceIn);
+        for (int i = 0; i < size; i++) {
+            const double distance = qMax(0.0, distanceIn[i]) - qMax(0.0, distanceOut[i]);
+            const uint value =
+                qBound(0, qRound(distance * distanceScale * imageScale + 127.5), 255);
+            data[i] = value << 16;  // Stored in channel R (B in shaders).
+        }
+
+        // Render and store the distance field used for masking the bottom of the shape and for
+        // masking the bevel.
+        clearRenderBuffer();
+        painter->resetTransform();
+        painter->translate(shapeOffset * width, (shapeOffset + distanceBottomTY) * height);
+        svg->render(painter);
+        for (int i = 0; i < size; i++) {
+            renderBufferNormalized[i] = static_cast<double>(renderBuffer[i] >> 24) / 255.0;
+        }
+        computegradient(renderBufferNormalized, width, height, gradientX, gradientY);
+        edtaa3(renderBufferNormalized, gradientX, gradientY, width, height, distanceX, distanceY,
+               distanceOut);
+        for (int i = 0; i < size; i++) {
+            renderBufferNormalized[i] = 1.0 - renderBufferNormalized[i];
+        }
+        clearGradientBuffers();
+        computegradient(renderBufferNormalized, width, height, gradientX, gradientY);
+        edtaa3(renderBufferNormalized, gradientX, gradientY, width, height, distanceX, distanceY,
+               distanceIn);
+        for (int i = 0; i < size; i++) {
+            const double distance = qMax(0.0, distanceIn[i]) - qMax(0.0, distanceOut[i]);
+            const uint value =
+                qBound(0, qRound(distance * distanceScale * imageScale + 127.5), 255);
+            data[i] |= value << 24;  // Stored in channel A.
+        }
+    } else {
+        // Render and store the mask for the top of the shape, the bevel and the unstyled shape.
+        clearRenderBuffer();
+        painter->resetTransform();
+        painter->translate(shapeOffset * width, shapeOffset * height);
+        svg->render(painter);
+        for (int i = 0; i < size; i++) {
+            const uint value = renderBuffer[i] >> 24;
+            data[i] = value << 16;  // Stored in channel R (B in shaders).
+        }
+
+        // Render and store the mask for the bottom of the shape and for the bevel.
+        clearRenderBuffer();
+        painter->resetTransform();
+        painter->translate(shapeOffset * width, (shapeOffset + distanceBottomTY) * height);
+        svg->render(painter);
+        for (int i = 0; i < size; i++) {
+            const uint value = renderBuffer[i] >> 24;
+            data[i] |= value << 24;  // Stored in channel A.
+        }
     }
 
     // Render and store the top inner shadow.
-    memset(shapeData, 0, size * sizeof(uint));
+    clearRenderBuffer();
     painter->resetTransform();
-    painter->translate((shapeOffset + shadowTopTX) * width, (shapeOffset + shadowTopTY) * width);
+    painter->translate((shapeOffset + shadowTopTX) * width, (shapeOffset + shadowTopTY) * height);
     svg->render(painter);
     for (int i = 0; i < size; i++) {
-        shapeNormalized[i] = 1.0 - (static_cast<double>(shapeData[i] >> 24) / 255.0);
+        renderBufferNormalized[i] = 1.0 - (static_cast<double>(renderBuffer[i] >> 24) / 255.0);
     }
-    computegradient(shapeNormalized, width, height, gradientX, gradientY);
-    edtaa3(shapeNormalized, gradientX, gradientY, width, height, distanceX, distanceY,
+    computegradient(renderBufferNormalized, width, height, gradientX, gradientY);
+    edtaa3(renderBufferNormalized, gradientX, gradientY, width, height, distanceX, distanceY,
            distanceIn);
     for (int i = 0; i < size; i++) {
         double shadow = qBound(0.0, (distanceIn[i] * shadowScale * imageScale) / 255.0, 1.0);
         shadow = (1.0 - (2.0 * shadow - shadow * shadow)) * 255.0;
         const uint value = qBound(0, qRound(shadow * shadowTranslucency), 255);
-        textureData[0][i] |= value << 0;  // Stored in channel B (exposed as R in the shaders).
+        data[i] |= value << 0;  // Stored in channel B (R in shaders).
     }
 
     // Render and store the bottom inner shadow.
-    memset(shapeData, 0, size * sizeof(uint));
+    clearRenderBuffer();
     painter->resetTransform();
     painter->translate(
-        (shapeOffset + shadowBottomTX) * width, (shapeOffset + shadowBottomTY) * width);
+        (shapeOffset + shadowBottomTX) * width, (shapeOffset + shadowBottomTY) * height);
     svg->render(painter);
     for (int i = 0; i < size; i++) {
-        shapeNormalized[i] = 1.0 - (static_cast<double>(shapeData[i] >> 24) / 255.0);
+        renderBufferNormalized[i] = 1.0 - (static_cast<double>(renderBuffer[i] >> 24) / 255.0);
     }
-    computegradient(shapeNormalized, width, height, gradientX, gradientY);
-    edtaa3(shapeNormalized, gradientX, gradientY, width, height, distanceX, distanceY,
+    computegradient(renderBufferNormalized, width, height, gradientX, gradientY);
+    edtaa3(renderBufferNormalized, gradientX, gradientY, width, height, distanceX, distanceY,
            distanceIn);
     for (int i = 0; i < size; i++) {
         double shadow = qBound(0.0, (distanceIn[i] * shadowScale * imageScale) / 255.0, 1.0);
         shadow = (1.0 - (2.0 * shadow - shadow * shadow)) * 255.0;
         const uint value = qBound(0, qRound(shadow * shadowTranslucency), 255);
-        textureData[0][i] |= value << 8;  // Stored in channel G.
+        data[i] |= value << 8;  // Stored in channel G.
     }
 }
 
 // Creates the drop shadow aspect texture.
-static void createTexture2(QSvgRenderer* svg, QPainter* painter)
+static void createTexture2(
+    QSvgRenderer* svg, QPainter* painter, uint* data, int width, int height, bool useEdtaa3)
 {
     // Input data.
     const double shadowScale = 4.5;
@@ -172,99 +216,125 @@ static void createTexture2(QSvgRenderer* svg, QPainter* painter)
     const double distanceBottomTY = 0.0546875;         // From shapeOffset.
     const double distanceTx = distanceBottomTY * 0.5;  // From shapeOffset.
 
-    // Render and store the distance field used for masking the top of the shape.
-    memset(shapeData, 0, size * sizeof(uint));
-    painter->resetTransform();
-    painter->translate((shapeOffset + distanceTx) * width, shapeOffset * width);
-    svg->render(painter);
-    for (int i = 0; i < size; i++) {
-        shapeNormalized[i] = static_cast<double>(shapeData[i] >> 24) / 255.0;
-    }
-    computegradient(shapeNormalized, width, height, gradientX, gradientY);
-    edtaa3(shapeNormalized, gradientX, gradientY, width, height, distanceX, distanceY,
-           distanceOut);
-    for (int i = 0; i < size; i++) {
-        shapeNormalized[i] = 1.0 - shapeNormalized[i];
-    }
-    memset(gradientX, 0, size * sizeof(double));
-    memset(gradientY, 0, size * sizeof(double));
-    computegradient(shapeNormalized, width, height, gradientX, gradientY);
-    edtaa3(shapeNormalized, gradientX, gradientY, width, height, distanceX, distanceY,
-           distanceIn);
-    for (int i = 0; i < size; i++) {
-        const double distance = qMax(0.0, distanceIn[i]) - qMax(0.0, distanceOut[i]);
-        const uint value = qBound(0, qRound(distance * distanceScale * imageScale + 127.5), 255);
-        textureData[1][i] = value << 0;  // Stored in channel B (exposed as R in the shaders).
+    const int size = width * height;
+    const double imageScale = 255.0 / width;
+
+    if (useEdtaa3) {
+        // Render and store the distance field used for masking the top of the shape.
+        clearRenderBuffer();
+        painter->resetTransform();
+        painter->translate((shapeOffset + distanceTx) * width, shapeOffset * height);
+        svg->render(painter);
+        for (int i = 0; i < size; i++) {
+            renderBufferNormalized[i] = static_cast<double>(renderBuffer[i] >> 24) / 255.0;
+        }
+        computegradient(renderBufferNormalized, width, height, gradientX, gradientY);
+        edtaa3(renderBufferNormalized, gradientX, gradientY, width, height, distanceX, distanceY,
+               distanceOut);
+        for (int i = 0; i < size; i++) {
+            renderBufferNormalized[i] = 1.0 - renderBufferNormalized[i];
+        }
+        clearGradientBuffers();
+        computegradient(renderBufferNormalized, width, height, gradientX, gradientY);
+        edtaa3(renderBufferNormalized, gradientX, gradientY, width, height, distanceX, distanceY,
+               distanceIn);
+        for (int i = 0; i < size; i++) {
+            const double distance = qMax(0.0, distanceIn[i]) - qMax(0.0, distanceOut[i]);
+            const uint value =
+                qBound(0, qRound(distance * distanceScale * imageScale + 127.5), 255);
+            data[i] = value << 0;  // Stored in channel B (R in shaders).
+        }
+
+        // Render and store the distance field used for masking the bottom of the shape.
+        clearRenderBuffer();
+        painter->resetTransform();
+        painter->translate(
+            (shapeOffset + distanceTx) * width, (shapeOffset + distanceBottomTY) * height);
+        svg->render(painter);
+        for (int i = 0; i < size; i++) {
+            renderBufferNormalized[i] = static_cast<double>(renderBuffer[i] >> 24) / 255.0;
+        }
+        computegradient(renderBufferNormalized, width, height, gradientX, gradientY);
+        edtaa3(renderBufferNormalized, gradientX, gradientY, width, height, distanceX, distanceY,
+               distanceOut);
+        for (int i = 0; i < size; i++) {
+            renderBufferNormalized[i] = 1.0 - renderBufferNormalized[i];
+        }
+        clearGradientBuffers();
+        computegradient(renderBufferNormalized, width, height, gradientX, gradientY);
+        edtaa3(renderBufferNormalized, gradientX, gradientY, width, height, distanceX, distanceY,
+               distanceIn);
+        for (int i = 0; i < size; i++) {
+            const double distance = qMax(0.0, distanceIn[i]) - qMax(0.0, distanceOut[i]);
+            const uint value =
+                qBound(0, qRound(distance * distanceScale * imageScale + 127.5), 255);
+            data[i] |= value << 8;  // Stored in channel G.
+        }
+    } else {
+        // Render and store the mask for the top of the shape.
+        clearRenderBuffer();
+        painter->resetTransform();
+        painter->translate((shapeOffset + distanceTx) * width, shapeOffset * height);
+        svg->render(painter);
+        for (int i = 0; i < size; i++) {
+            const uint value = renderBuffer[i] >> 24;
+            data[i] = value << 0;  // Stored in channel B (R in shaders).
+        }
+
+        // Render and store the mask for the bottom of the shape.
+        clearRenderBuffer();
+        painter->resetTransform();
+        painter->translate(
+            (shapeOffset + distanceTx) * width, (shapeOffset + distanceBottomTY) * height);
+        svg->render(painter);
+        for (int i = 0; i < size; i++) {
+            const uint value = renderBuffer[i] >> 24;
+            data[i] |= value << 8;  // Stored in channel G.
+        }
     }
 
-    // Render and store the distance field used for masking the bottom of the shape.
-    memset(shapeData, 0, size * sizeof(uint));
+    // Render and store the bottom drop shadow.
+    clearRenderBuffer();
     painter->resetTransform();
-    painter->translate((shapeOffset + distanceTx) * width,
-                       (shapeOffset + distanceBottomTY) * width);
+    painter->translate(shapeOffset * width, shapeOffset * height);
     svg->render(painter);
     for (int i = 0; i < size; i++) {
-        shapeNormalized[i] = static_cast<double>(shapeData[i] >> 24) / 255.0;
+        renderBufferNormalized[i] = 1.0 - (static_cast<double>(renderBuffer[i] >> 24) / 255.0);
     }
-    computegradient(shapeNormalized, width, height, gradientX, gradientY);
-    edtaa3(shapeNormalized, gradientX, gradientY, width, height, distanceX, distanceY,
-           distanceOut);
-    for (int i = 0; i < size; i++) {
-        shapeNormalized[i] = 1.0 - shapeNormalized[i];
-    }
-    memset(gradientX, 0, size * sizeof(double));
-    memset(gradientY, 0, size * sizeof(double));
-    computegradient(shapeNormalized, width, height, gradientX, gradientY);
-    edtaa3(shapeNormalized, gradientX, gradientY, width, height, distanceX, distanceY,
-           distanceIn);
-    for (int i = 0; i < size; i++) {
-        const double distance = qMax(0.0, distanceIn[i]) - qMax(0.0, distanceOut[i]);
-        const uint value = qBound(0, qRound(distance * distanceScale * imageScale + 127.5), 255);
-        textureData[1][i] |= value << 8;  // Stored in channel G.
-    }
-
-    // Render and store the top inner shadow.
-    memset(shapeData, 0, size * sizeof(uint));
-    painter->resetTransform();
-    painter->translate(shapeOffset * width, shapeOffset * width);
-    svg->render(painter);
-    for (int i = 0; i < size; i++) {
-        shapeNormalized[i] = 1.0 - (static_cast<double>(shapeData[i] >> 24) / 255.0);
-    }
-    computegradient(shapeNormalized, width, height, gradientX, gradientY);
-    edtaa3(shapeNormalized, gradientX, gradientY, width, height, distanceX, distanceY,
+    computegradient(renderBufferNormalized, width, height, gradientX, gradientY);
+    edtaa3(renderBufferNormalized, gradientX, gradientY, width, height, distanceX, distanceY,
            distanceIn);
     for (int i = 0; i < size; i++) {
         double shadow = qBound(0.0, (distanceIn[i] * shadowScale * imageScale) / 255.0, 1.0);
         shadow = (2.0 * shadow - shadow * shadow) * 255.0;
         const uint value = qBound(0, qRound(shadow * shadowTranslucency), 255);
-        textureData[1][i] |= value << 16;  // Stored in channel R (exposed as B in the shaders).
+        data[i] |= value << 16;  // Stored in channel R (B in shaders).
     }
 }
 
-static void dumpTexture(QTextStream& cppOut, const uint* textureData)
+static void dumpTexture(QTextStream& cppOut, const uint* data, int size)
 {
     cppOut.setIntegerBase(16);
     cppOut.setFieldWidth(2);
     cppOut.setPadChar('0');
     for (int i = 0; i < size; i += 4) {
         cppOut << "    \""
-                << "\\x" << (textureData[i] & 0xff)
-                << "\\x" << ((textureData[i] >> 8) & 0xff)
-                << "\\x" << ((textureData[i] >> 16) & 0xff)
-                << "\\x" << ((textureData[i] >> 24) & 0xff)
-                << "\\x" << (textureData[i+1] & 0xff)
-                << "\\x" << ((textureData[i+1] >> 8) & 0xff)
-                << "\\x" << ((textureData[i+1] >> 16) & 0xff)
-                << "\\x" << ((textureData[i+1] >> 24) & 0xff)
-                << "\\x" << (textureData[i+2] & 0xff)
-                << "\\x" << ((textureData[i+2] >> 8) & 0xff)
-                << "\\x" << ((textureData[i+2] >> 16) & 0xff)
-                << "\\x" << ((textureData[i+2] >> 24) & 0xff)
-                << "\\x" << (textureData[i+3] & 0xff)
-                << "\\x" << ((textureData[i+3] >> 8) & 0xff)
-                << "\\x" << ((textureData[i+3] >> 16) & 0xff)
-                << "\\x" << ((textureData[i+3] >> 24) & 0xff);
+                << "\\x" << (data[i] & 0xff)
+                << "\\x" << ((data[i] >> 8) & 0xff)
+                << "\\x" << ((data[i] >> 16) & 0xff)
+                << "\\x" << ((data[i] >> 24) & 0xff)
+                << "\\x" << (data[i+1] & 0xff)
+                << "\\x" << ((data[i+1] >> 8) & 0xff)
+                << "\\x" << ((data[i+1] >> 16) & 0xff)
+                << "\\x" << ((data[i+1] >> 24) & 0xff)
+                << "\\x" << (data[i+2] & 0xff)
+                << "\\x" << ((data[i+2] >> 8) & 0xff)
+                << "\\x" << ((data[i+2] >> 16) & 0xff)
+                << "\\x" << ((data[i+2] >> 24) & 0xff)
+                << "\\x" << (data[i+3] & 0xff)
+                << "\\x" << ((data[i+3] >> 8) & 0xff)
+                << "\\x" << ((data[i+3] >> 16) & 0xff)
+                << "\\x" << ((data[i+3] >> 24) & 0xff);
         cppOut.setFieldWidth(1);
         cppOut << "\"\n";
         cppOut.setFieldWidth(2);
@@ -295,34 +365,67 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    // Create the textures.
-    QImage shape(reinterpret_cast<uchar*>(shapeData), width, height, width * 4,
-                 QImage::Format_ARGB32_Premultiplied);
-    QPainter painter(&shape);
-    createTexture1(&svg, &painter);
-    createTexture2(&svg, &painter);
-
-    // Write the C++ file.
     QTextStream cppOut(&cppFile);
     cppOut << "// Copyright 2015 Canonical Ltd.\n"
-           << "// Automatically generated by the createshapetextures tool.\n"
-           << "\n"
-           << "const int shapeTextureCount = " << textureCount << ";\n"
-           << "const int shapeTextureSize = " << textureSize << ";\n"
+           << "// Automatically generated by the createshapetextures tool.\n\n";
+
+    // Create the distance field textures and write them to the C++ file.
+    QImage shape(reinterpret_cast<uchar*>(renderBuffer), width, height,
+                 width * 4, QImage::Format_ARGB32_Premultiplied);
+    QPainter painter(&shape);
+    cppOut << "const int shapeTextureCount = " << textureCount << ";\n"
+           << "const int shapeTextureWidth = " << width << ";\n"
+           << "const int shapeTextureHeight = " << height << ";\n"
            << "const float shapeTextureOffset = " << shapeOffset << ";\n"
            << "const int shapeTextureDistanceAA = " << distanceScale << ";\n"
-           << "\n"
            << "static const unsigned char shapeTextureData[" << textureCount
-           <<   "][" << size * 4 + 1 << "] = {\n";  // + 1 for the string terminator.
-    dumpTexture(cppOut, textureData[0]);
+           <<   "][" << width * height * 4 + 1 << "] = {\n";
+    createTexture1(&svg, &painter, textureData, width, height, true);
+    dumpTexture(cppOut, textureData, width * height);
     cppOut << "    ,\n";
-    dumpTexture(cppOut, textureData[1]);
-    cppOut << "};\n";
+    createTexture2(&svg, &painter, textureData, width, height, true);
+    dumpTexture(cppOut, textureData, width * height);
+    cppOut << "};\n\n";
+    painter.end();
 
-    // Save the file as a PNG for debugging purpose.
-    // QImage image(reinterpret_cast<uchar*>(textureData[0]), width, height, width * 4,
-    //              QImage::Format_ARGB32);
-    // image.save("texture1.png");
+    // Create the mipmap textures and write them to the C++ file.
+    cppOut << "const int shapeTextureMipmapWidth = " << widthMipmap << ";\n"
+           << "const int shapeTextureMipmapHeight = " << heightMipmap << ";\n"
+           << "const int shapeTextureMipmapCount = " << mipmapCount << ";\n"
+           << "static const int shapeTextureMipmapOffset[" << mipmapCount << "] = { 0";
+    int size = 0, i = 0;
+    for (int i = 0; i < mipmapCount-1; i++) {
+        size += (widthMipmap >> i) * (heightMipmap >> i) * 4;
+        cppOut << ", " << size;
+    }
+    size += (widthMipmap >> (mipmapCount-1)) * (heightMipmap >> (mipmapCount-1)) * 4;
+    cppOut << " };\n";
+    cppOut << "static const unsigned char shapeTextureMipmapData[" << textureCount
+           <<   "][" << size + 1 << "] = {\n";
+    for (int i = 0; i < mipmapCount; i++) {
+        const int width = widthMipmap >> i;
+        const int height = heightMipmap >> i;
+        QImage shapeMipmap(reinterpret_cast<uchar*>(renderBuffer), width, height,
+                           width * 4, QImage::Format_ARGB32_Premultiplied);
+        painter.begin(&shapeMipmap);
+        createTexture1(&svg, &painter, textureDataMipmap, width, height, false);
+        cppOut << "    // Mipmap level " << i << ".\n";
+        dumpTexture(cppOut, textureDataMipmap, width * height);
+        painter.end();
+    }
+    cppOut << "    ,\n";
+    for (int i = 0; i < mipmapCount; i++) {
+        const int width = widthMipmap >> i;
+        const int height = heightMipmap >> i;
+        QImage shapeMipmap(reinterpret_cast<uchar*>(renderBuffer), width, height,
+                           width * 4, QImage::Format_ARGB32_Premultiplied);
+        painter.begin(&shapeMipmap);
+        createTexture2(&svg, &painter, textureDataMipmap, width, height, false);
+        cppOut << "    // Mipmap level " << i << ".\n";
+        dumpTexture(cppOut, textureDataMipmap, width * height);
+        painter.end();
+    }
+    cppOut << "};\n";
 
     return 0;
 }

@@ -27,14 +27,16 @@
 ShapeOverlayShader::ShapeOverlayShader()
 {
     setShaderSourceFile(QOpenGLShader::Vertex, QStringLiteral(":/uc/shaders/shapeoverlay.vert"));
-    setShaderSourceFile(QOpenGLShader::Fragment, QStringLiteral(":/uc/shaders/shapeoverlay.frag"));
+    setShaderSourceFile(QOpenGLShader::Fragment, useDistanceFields() ?
+                        QStringLiteral(":/uc/shaders/shapeoverlay.frag") :
+                        QStringLiteral(":/uc/shaders/shapeoverlay_mipmap.frag"));
 }
 
 char const* const* ShapeOverlayShader::attributeNames() const
 {
     static char const* const attributes[] = {
-        "positionAttrib", "shapeCoordAttrib", "sourceCoordAttrib", "backgroundColorAttrib",
-        "overlayCoordAttrib", "overlayColorAttrib", 0
+        "positionAttrib", "shapeCoordAttrib", "sourceCoordAttrib", "yCoordAttrib",
+        "backgroundColorAttrib", "overlayCoordAttrib", "overlayColorAttrib", 0
     };
     return attributes;
 }
@@ -80,12 +82,13 @@ const QSGGeometry::AttributeSet& ShapeOverlayNode::attributeSet()
         QSGGeometry::Attribute::create(0, 2, GL_FLOAT, true),
         QSGGeometry::Attribute::create(1, 2, GL_FLOAT),
         QSGGeometry::Attribute::create(2, 4, GL_FLOAT),
-        QSGGeometry::Attribute::create(3, 4, GL_UNSIGNED_BYTE),
-        QSGGeometry::Attribute::create(4, 2, GL_FLOAT),
-        QSGGeometry::Attribute::create(5, 4, GL_UNSIGNED_BYTE)
+        QSGGeometry::Attribute::create(3, 1, GL_FLOAT),
+        QSGGeometry::Attribute::create(4, 4, GL_UNSIGNED_BYTE),
+        QSGGeometry::Attribute::create(5, 2, GL_FLOAT),
+        QSGGeometry::Attribute::create(6, 4, GL_UNSIGNED_BYTE)
     };
     static const QSGGeometry::AttributeSet attributeSet = {
-        6, sizeof(Vertex), attributes
+        7, sizeof(Vertex), attributes
     };
     return attributeSet;
 }
@@ -249,6 +252,7 @@ void UCUbuntuShapeOverlay::updateGeometry(
     v[0].sourceCoordinate[1] = sourceCoordTransform.w();
     v[0].sourceCoordinate[2] = sourceMaskTransform.z();
     v[0].sourceCoordinate[3] = sourceMaskTransform.w();
+    v[0].yCoordinate = -1.0f;
     v[0].backgroundColor = backgroundColor[0];
     v[0].overlayCoordinate[0] = overlayTx;
     v[0].overlayCoordinate[1] = overlayTy;
@@ -261,6 +265,7 @@ void UCUbuntuShapeOverlay::updateGeometry(
     v[1].sourceCoordinate[1] = sourceCoordTransform.w();
     v[1].sourceCoordinate[2] = 0.5f * sourceMaskTransform.x() + sourceMaskTransform.z();
     v[1].sourceCoordinate[3] = sourceMaskTransform.w();
+    v[1].yCoordinate = -1.0f;
     v[1].backgroundColor = backgroundColor[0];
     v[1].overlayCoordinate[0] = 0.5f * overlaySx + overlayTx;
     v[1].overlayCoordinate[1] = overlayTy;
@@ -273,6 +278,7 @@ void UCUbuntuShapeOverlay::updateGeometry(
     v[2].sourceCoordinate[1] = sourceCoordTransform.w();
     v[2].sourceCoordinate[2] = sourceMaskTransform.x() + sourceMaskTransform.z();
     v[2].sourceCoordinate[3] = sourceMaskTransform.w();
+    v[2].yCoordinate = -1.0f;
     v[2].backgroundColor = backgroundColor[0];
     v[2].overlayCoordinate[0] = overlaySx + overlayTx;
     v[2].overlayCoordinate[1] = overlayTy;
@@ -287,6 +293,7 @@ void UCUbuntuShapeOverlay::updateGeometry(
     v[3].sourceCoordinate[1] = 0.5f * sourceCoordTransform.y() + sourceCoordTransform.w();
     v[3].sourceCoordinate[2] = sourceMaskTransform.z();
     v[3].sourceCoordinate[3] = 0.5f * sourceMaskTransform.y() + sourceMaskTransform.w();
+    v[3].yCoordinate = 0.0f;
     v[3].backgroundColor = backgroundColor[1];
     v[3].overlayCoordinate[0] = overlayTx;
     v[3].overlayCoordinate[1] = 0.5f * overlaySy + overlayTy;
@@ -299,6 +306,7 @@ void UCUbuntuShapeOverlay::updateGeometry(
     v[4].sourceCoordinate[1] = 0.5f * sourceCoordTransform.y() + sourceCoordTransform.w();
     v[4].sourceCoordinate[2] = 0.5f * sourceMaskTransform.x() + sourceMaskTransform.z();
     v[4].sourceCoordinate[3] = 0.5f * sourceMaskTransform.y() + sourceMaskTransform.w();
+    v[4].yCoordinate = 0.0f;
     v[4].backgroundColor = backgroundColor[1];
     v[4].overlayCoordinate[0] = 0.5f * overlaySx + overlayTx;
     v[4].overlayCoordinate[1] = 0.5f * overlaySy + overlayTy;
@@ -311,6 +319,7 @@ void UCUbuntuShapeOverlay::updateGeometry(
     v[5].sourceCoordinate[1] = 0.5f * sourceCoordTransform.y() + sourceCoordTransform.w();
     v[5].sourceCoordinate[2] = sourceMaskTransform.x() + sourceMaskTransform.z();
     v[5].sourceCoordinate[3] = 0.5f * sourceMaskTransform.y() + sourceMaskTransform.w();
+    v[5].yCoordinate = 0.0f;
     v[5].backgroundColor = backgroundColor[1];
     v[5].overlayCoordinate[0] = overlaySx + overlayTx;
     v[5].overlayCoordinate[1] = 0.5f * overlaySy + overlayTy;
@@ -325,6 +334,7 @@ void UCUbuntuShapeOverlay::updateGeometry(
     v[6].sourceCoordinate[1] = sourceCoordTransform.y() + sourceCoordTransform.w();
     v[6].sourceCoordinate[2] = sourceMaskTransform.z();
     v[6].sourceCoordinate[3] = sourceMaskTransform.y() + sourceMaskTransform.w();
+    v[6].yCoordinate = 1.0f;
     v[6].backgroundColor = backgroundColor[2];
     v[6].overlayCoordinate[0] = overlayTx;
     v[6].overlayCoordinate[1] = overlaySy + overlayTy;
@@ -337,6 +347,7 @@ void UCUbuntuShapeOverlay::updateGeometry(
     v[7].sourceCoordinate[1] = sourceCoordTransform.y() + sourceCoordTransform.w();
     v[7].sourceCoordinate[2] = 0.5f * sourceMaskTransform.x() + sourceMaskTransform.z();
     v[7].sourceCoordinate[3] = sourceMaskTransform.y() + sourceMaskTransform.w();
+    v[7].yCoordinate = 1.0f;
     v[7].backgroundColor = backgroundColor[2];
     v[7].overlayCoordinate[0] = 0.5f * overlaySx + overlayTx;
     v[7].overlayCoordinate[1] = overlaySy + overlayTy;
@@ -349,6 +360,7 @@ void UCUbuntuShapeOverlay::updateGeometry(
     v[8].sourceCoordinate[1] = sourceCoordTransform.y() + sourceCoordTransform.w();
     v[8].sourceCoordinate[2] = sourceMaskTransform.x() + sourceMaskTransform.z();
     v[8].sourceCoordinate[3] = sourceMaskTransform.y() + sourceMaskTransform.w();
+    v[8].yCoordinate = 1.0f;
     v[8].backgroundColor = backgroundColor[2];
     v[8].overlayCoordinate[0] = overlaySx + overlayTx;
     v[8].overlayCoordinate[1] = overlaySy + overlayTy;

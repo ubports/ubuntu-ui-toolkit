@@ -1,5 +1,3 @@
-#extension GL_OES_standard_derivatives : enable  // Enable dFdy() on OpenGL ES 2.
-
 // Copyright © 2015 Canonical Ltd.
 //
 // This program is free software; you can redistribute it and/or modify
@@ -25,6 +23,7 @@
 uniform sampler2D shapeTexture;
 uniform sampler2D sourceTexture;
 uniform lowp vec2 opacityFactors;
+uniform lowp float dfdtFactor;
 uniform lowp float sourceOpacity;
 uniform lowp float distanceAA;
 uniform bool textured;
@@ -34,6 +33,8 @@ varying mediump vec2 shapeCoord;
 varying mediump vec4 sourceCoord;
 varying lowp float yCoord;
 varying lowp vec4 backgroundColor;
+varying mediump vec2 overlayCoord;
+varying lowp vec4 overlayColor;
 
 const mediump int FLAT        = 0x08;  // 1 << 3
 const mediump int INSET       = 0x10;  // 1 << 4
@@ -53,17 +54,16 @@ void main(void)
         color = vec4(1.0 - source.a) * color + source;
     }
 
-    // Get the normalized distance between two pixels using screen-space derivatives of shape
-    // texture coordinate. dFd*() functions have to be called outside of branches in order to work
-    // correctly with VMware's "Gallium 0.4 on SVGA3D".
-    lowp float dist = length(vec2(dFdx(shapeCoord.s), dFdy(shapeCoord.s)));
+    // Blend the overlay over the current color.
+    // FIXME(loicm) sign() is far from optimal.
+    lowp vec2 overlayAxisMask = -sign((overlayCoord * overlayCoord) - vec2(1.0));
+    lowp float overlayMask = clamp(overlayAxisMask.x + overlayAxisMask.y, 0.0, 1.0);
+    lowp vec4 overlay = overlayColor * vec4(overlayMask);
+    color = vec4(1.0 - overlay.a) * color + overlay;
 
     if (aspect == FLAT) {
-        // Mask the current color with an anti-aliased and resolution independent shape mask built
-        // from distance fields.
-        lowp float distanceMin = abs(dist) * -distanceAA + 0.5;
-        lowp float distanceMax = abs(dist) * distanceAA + 0.5;
-        color *= smoothstep(distanceMin, distanceMax, shapeData.b);
+        // Mask the current color.
+        color *= shapeData.b;
 
     } else if (aspect == INSET) {
         // The vertex layout of the shape is made so that the derivative is negative from top to
@@ -73,10 +73,8 @@ void main(void)
         // translucency is stored in the texture.
         lowp float shadow = shapeData[int(shapeSide)];
         color = vec4(1.0 - shadow) * color + vec4(0.0, 0.0, 0.0, shadow);
-        // Get the anti-aliased and resolution independent shape mask using distance fields.
-        lowp float distanceMin = abs(dist) * -distanceAA + 0.5;
-        lowp float distanceMax = abs(dist) * distanceAA + 0.5;
-        lowp vec2 mask = smoothstep(distanceMin, distanceMax, shapeData.ba);
+        // Get the shape mask.
+        lowp vec2 mask = shapeData.ba;
         // Get the bevel color. The bevel is made of the top mask masked with the bottom mask. A
         // gradient from the bottom (1) to the middle (0) of the shape is used to factor out values
         // resulting from the mask anti-aliasing. The bevel color is white with 60% opacity.
@@ -88,10 +86,8 @@ void main(void)
         color = (color * vec4(mask[int(shapeSide)])) + vec4(bevel);
 
     } else if (aspect == DROP_SHADOW) {
-        // Get the anti-aliased and resolution independent shape mask using distance fields.
-        lowp float distanceMin = abs(dist) * -distanceAA + 0.5;
-        lowp float distanceMax = abs(dist) * distanceAA + 0.5;
-        lowp float mask = smoothstep(distanceMin, distanceMax, shapeData[yCoord <= 0.0 ? 0 : 1]);
+        // Get the shape mask.
+        lowp float mask = shapeData[yCoord <= 0.0 ? 0 : 1];
         // Get the shadow color outside of the shape mask.
         lowp float shadow = (shapeData.b * -mask) + shapeData.b;  // -ab + a = a(1 - b)
         // Mask the current color then blend the shadow over the resulting color. We simply use
