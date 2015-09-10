@@ -59,7 +59,16 @@ public:
     void _q_updateSize();
     void _q_relayout();
 
-    bool ready;
+    QQuickText m_title;
+    QQuickText m_subtitle;
+    QQuickText m_subsubtitle;
+
+    //We cache the current parent so that we can disconnect from the signals when the
+    //parent changes. We need this because itemChange(..) only provides the new parent
+    QQuickItem *m_parentItem;
+
+    QQuickItem *pressedItem;
+    UCSlotsLayoutChevron *chevron;
 
     qreal labelsBoundingBoxHeight;
     //max slots height ignoring labels
@@ -68,19 +77,11 @@ public:
     //from 0 to non-0 and not viceversa
     qreal _q_cachedHeight;
 
-    QQuickText m_title;
-    QQuickText m_subtitle;
-    QQuickText m_subsubtitle;
-
     //similar to anchors.margins, but we don't use a contentItem so we handle this ourselves
     qreal leftOffset;
     qreal rightOffset;
     qreal topOffset;
     qreal bottomOffset;
-
-    //Show the chevron, name taken from old ListItem API to minimize changes
-    bool progression;
-    UCSlotsLayoutChevron *chevron;
 
     //currently fixed, but we may allow changing this in the future
     qint32 maxNumberOfLeadingSlots;
@@ -94,11 +95,9 @@ public:
     bool topOffsetWasSetFromQml;
     bool bottomOffsetWasSetFromQml;
 
-    //We cache the current parent so that we can disconnect from the signals when the
-    //parent changes. We need this because itemChange(..) only provides the new parent
-    QQuickItem *m_parentItem;
-
-    QQuickItem *pressedItem;
+    //Show the chevron, name taken from old ListItem API to minimize changes
+    bool progression;
+    bool ready;
 
 private:
     void setDefaultLabelsProperties();

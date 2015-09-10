@@ -13,23 +13,24 @@
  */
 UCSlotsLayoutPrivate::UCSlotsLayoutPrivate()
     : QQuickItemPrivate()
-    , ready(false)
+    , m_parentItem(Q_NULLPTR)
+    , pressedItem(Q_NULLPTR)
+    , chevron(Q_NULLPTR)
     , maxSlotsHeight(0)
     , _q_cachedHeight(-1)
     , leftOffset(0)
     , rightOffset(0)
     , topOffset(0)
     , bottomOffset(0)
-    , progression(false)
-    , chevron(Q_NULLPTR)
     , maxNumberOfLeadingSlots(1)
     , maxNumberOfTrailingSlots(2)
     , leftOffsetWasSetFromQml(false)
     , rightOffsetWasSetFromQml(false)
     , topOffsetWasSetFromQml(false)
     , bottomOffsetWasSetFromQml(false)
-    , m_parentItem(Q_NULLPTR)
-    , pressedItem(Q_NULLPTR)
+    , progression(false)
+    , ready(false)
+
 {
 }
 
@@ -297,7 +298,7 @@ void UCSlotsLayoutPrivate::_q_updateSlotsBBoxHeight()
     Q_Q(UCSlotsLayout);
 
     qreal maxSlotsHeightTmp = 0;
-    for (int i=0; i<q->childItems().count(); i++) {
+    for (int i = 0; i < q->childItems().count(); i++) {
         QQuickItem *child = q->childItems().at(i);
 
         //skip labels
@@ -328,8 +329,7 @@ void UCSlotsLayoutPrivate::_q_updateSize()
         return;
 
     Q_Q(UCSlotsLayout);
-    QQuickItem *parent = q->parentItem();
-    q->setImplicitWidth(parent ? parent->width() : UCUnits::instance().gu(IMPLICIT_SLOTSLAYOUT_WIDTH_GU));
+    q->setImplicitWidth(parentItem ? parentItem->width() : UCUnits::instance().gu(IMPLICIT_SLOTSLAYOUT_WIDTH_GU));
     q->setImplicitHeight(qMax<qreal>(maxSlotsHeight, labelsBoundingBoxHeight)
                          + topOffset + bottomOffset);
 
@@ -352,8 +352,8 @@ void UCSlotsLayoutPrivate::_q_relayout()
     QList<QQuickItem *> leadingSlots;
     QList<QQuickItem *> trailingSlots;
     int totalWidth = 0;
-
-    for (int i=0; i<q->childItems().length(); i++) {
+    int i = 0;
+    for (i = 0; i < q->childItems().length(); i++) {
         QQuickItem *child = q->childItems().at(i);
 
         //NOTE: skip C++ labels, because we do custom layout for them (and also because
@@ -379,8 +379,8 @@ void UCSlotsLayoutPrivate::_q_relayout()
                 leadingSlots.append(child);
                 totalWidth += child->width() + attached->leftMargin() + attached->rightMargin();
             } else {
-                qmlInfo(q) << "The current implementation only allows up to " << maxNumberOfLeadingSlots
-                           << " eading slots. Please remove any additional leading slot.";
+                qmlInfo(q) << "This layout only allows up to " << maxNumberOfLeadingSlots
+                           << " leading slots. Please remove any additional leading slot.";
                 continue;
             }
         } else if (attached->position() == UCSlotsLayout::Trailing) {
@@ -388,12 +388,12 @@ void UCSlotsLayoutPrivate::_q_relayout()
                 trailingSlots.append(child);
                 totalWidth += child->width() + attached->leftMargin() + attached->rightMargin();
             } else {
-                qmlInfo(q) << "The current implementation only allows up to " << maxNumberOfTrailingSlots
+                qmlInfo(q) << "This layout only allows up to " << maxNumberOfTrailingSlots
                            << " trailing slots. Please remove any additional trailing slot.";
                 continue;
             }
         } else {
-            qmlInfo(q) << "Unrecognized position value or too many slots added, please use SlotsLayout.Leading or SlotsLayout.Trailing";
+            qmlInfo(q) << "Unrecognized position value!";
             continue;
         }
     }
@@ -415,7 +415,7 @@ void UCSlotsLayoutPrivate::_q_relayout()
 
     QQuickItemPrivate *_q_private = QQuickItemPrivate::get(q);
 
-    for (int i=0; i<leadingSlots.length(); i++) {
+    for (i = 0; i < leadingSlots.length(); i++) {
         UCSlotsAttached *attached =
                 qobject_cast<UCSlotsAttached *>(qmlAttachedPropertiesObject<UCSlotsLayout>(leadingSlots.at(i)));
 
@@ -519,7 +519,7 @@ void UCSlotsLayoutPrivate::_q_relayout()
         m_subtitle.setWidth(labelBoxWidth);
         m_subsubtitle.setWidth(labelBoxWidth);
 
-        for (int i=0; i<trailingSlots.length(); i++) {
+        for (i = 0; i < trailingSlots.length(); i++) {
             QQuickItemPrivate *item = QQuickItemPrivate::get(trailingSlots.at(i));
 
             UCSlotsAttached *attached =
@@ -549,7 +549,7 @@ void UCSlotsLayoutPrivate::_q_relayout()
                 }
             }
 
-            if (i==0) {
+            if (i == 0) {
                 item->anchors()->setLeft(QQuickItemPrivate::get(&m_title)->right());
                 //the right margin of the labels is treated as left margin of the first trailing slot
                 //because labels don't have a right anchor set up here!
@@ -606,8 +606,6 @@ UCSlotsLayout::UCSlotsLayout(QQuickItem *parent) :
     setFlag(ItemHasContents);
     Q_D(UCSlotsLayout);
     d->init();
-
-    setAcceptedMouseButtons(Qt::LeftButton);
 }
 
 void UCSlotsLayout::componentComplete()
@@ -629,6 +627,8 @@ void UCSlotsLayout::itemChange(ItemChange change, const ItemChangeData &data)
 {    
     Q_D(UCSlotsLayout);
 
+    //declare vars outside switch to prevent "crosses initialization of" compile error
+    QQuickItem *newParent = Q_NULLPTR;
     switch (change) {
     case ItemChildAddedChange:
         if (data.item) {
@@ -666,13 +666,8 @@ void UCSlotsLayout::itemChange(ItemChange change, const ItemChangeData &data)
             }
         }
         break;
-    default:
-        break;
-    }
-
-    if (change == ItemParentHasChanged) {
-        Q_D(UCSlotsLayout);
-        QQuickItem *newParent = data.item;
+    case ItemParentHasChanged:
+        newParent = data.item;
         if (newParent) {
             if (d->m_parentItem) {
                 QObject::disconnect(d->m_parentItem, SIGNAL(widthChanged()), this, SLOT(_q_updateSize()));
@@ -682,6 +677,9 @@ void UCSlotsLayout::itemChange(ItemChange change, const ItemChangeData &data)
             QObject::connect(newParent, SIGNAL(widthChanged()), this, SLOT(_q_updateSize()), Qt::DirectConnection);
             d->_q_updateSize();
         }
+        break;
+    default:
+        break;
     }
 
     QQuickItem::itemChange(change, data);
@@ -703,19 +701,6 @@ QQuickText *UCSlotsLayout::subsubtitleItem()
 {
     Q_D(UCSlotsLayout);
     return &(d->m_subsubtitle);
-}
-
-void UCSlotsLayout::mousePressEvent(QMouseEvent *event)
-{
-    event->setAccepted(false);
-
-    //let's keep this to avoid having to break the API if we decide to add
-    //input handling
-}
-
-void UCSlotsLayout::mouseReleaseEvent(QMouseEvent *event)
-{
-    Q_UNUSED(event);
 }
 
 qreal UCSlotsLayout::leftOffset() const

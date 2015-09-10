@@ -175,7 +175,7 @@ Template {
                 ]
             }
 
-            onClicked: layout.progression = !layout.progression
+            onClicked: layout.visible = !layout.visible
 
             SlotsLayoutCpp {
                 id: layout

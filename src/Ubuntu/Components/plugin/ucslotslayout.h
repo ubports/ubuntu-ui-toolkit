@@ -73,12 +73,8 @@ protected:
     Q_DECLARE_PRIVATE(UCSlotsLayout)
     void componentComplete();
     void itemChange(ItemChange change, const ItemChangeData &data);
-    void mousePressEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
 
 private:
-    //this is only needed for Qt4/non-C++11, the macro expands to an empty string!
-    //this is a request that moc will process and expand accordingly in moc phase
     Q_PRIVATE_SLOT(d_func(), void _q_onThemeChanged())
     Q_PRIVATE_SLOT(d_func(), void _q_onGuValueChanged())
     Q_PRIVATE_SLOT(d_func(), void _q_updateCachedHeight())
