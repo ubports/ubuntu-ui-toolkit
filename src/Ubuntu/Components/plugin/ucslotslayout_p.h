@@ -90,14 +90,14 @@ public:
     //once the dev tries to change the offsets (and he does so via QML) we'll stop
     //updating offset's value, for instance when gu value changes or when the
     //positioning mode changes
-    bool leftOffsetWasSetFromQml;
-    bool rightOffsetWasSetFromQml;
-    bool topOffsetWasSetFromQml;
-    bool bottomOffsetWasSetFromQml;
+    bool leftOffsetWasSetFromQml : 1;
+    bool rightOffsetWasSetFromQml : 1;
+    bool topOffsetWasSetFromQml : 1;
+    bool bottomOffsetWasSetFromQml : 1;
 
     //Show the chevron, name taken from old ListItem API to minimize changes
-    bool progression;
-    bool ready;
+    bool progression : 1;
+    bool ready : 1;
 
 private:
     void setDefaultLabelsProperties();

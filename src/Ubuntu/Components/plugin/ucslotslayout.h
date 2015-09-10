@@ -124,10 +124,10 @@ private:
     UCSlotsLayout::UCSlotPosition m_position;
     qreal m_leftMargin;
     qreal m_rightMargin;
-    bool m_overrideVerticalPositioning;
+    bool m_overrideVerticalPositioning : 1;
 
-    bool leftMarginWasSetFromQml;
-    bool rightMarginWasSetFromQml;
+    bool leftMarginWasSetFromQml : 1;
+    bool rightMarginWasSetFromQml : 1;
 };
 
 class UCSlotsLayoutChevronPrivate;
