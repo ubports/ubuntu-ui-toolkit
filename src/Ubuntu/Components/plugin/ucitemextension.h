@@ -30,22 +30,18 @@ class UCItemExtension : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QQuickItem *parent READ parentItem WRITE setParentItem NOTIFY extendedParentChanged)
-    Q_PROPERTY(UCTheme *theme READ theme WRITE setTheme NOTIFY extendedThemeChanged)
 public:
     explicit UCItemExtension(QObject *parent = 0);
 
     QQuickItem *parentItem() const;
     void setParentItem(QQuickItem *parentItem);
-    UCTheme *theme();
-    void setTheme(UCTheme *theme);
 
 Q_SIGNALS:
     void extendedParentChanged();
-    void extendedThemeChanged();
 
 private:
     QQuickItem *m_item;
-    UCTheme *m_theme;
+    QQuickItem *m_prevParent;
 
     Q_SLOT void handleParentChanged(QQuickItem *newParent);
 };
@@ -54,25 +50,23 @@ class UCThemeUpdateEvent : public QEvent
 {
 public: // statics
     // event ID
-    static int styledItemEventId;
     static int themeEventId;
-    static void broadcastAscendantUpdate(QQuickItem *item, UCStyledItemBase *ascendantStyled);
-    static void broadcastThemeUpdate(QQuickItem *item, UCTheme *oldTheme, UCTheme *newTheme);
+    static void handleEvent(QQuickItem *item, UCTheme *oldTheme, UCTheme *newTheme);
+    static void broadcastToChildren(QQuickItem *item, UCTheme *oldTheme, UCTheme *newTheme);
+    static void forwardEvent(QQuickItem *item, UCThemeUpdateEvent *event);
 
 public:
-    explicit UCThemeUpdateEvent(UCStyledItemBase *newStyled);
-    UCThemeUpdateEvent(UCTheme *oldTheme, UCTheme *newTheme);
+    explicit UCThemeUpdateEvent(UCTheme *oldTheme, UCTheme *newTheme);
 
-    UCStyledItemBase *styledItem() const
-    {
-        return m_ascendantStyled;
-    }
     UCTheme *oldTheme() const
     {
         return m_oldTheme;
     }
+    UCTheme *newTheme() const
+    {
+        return m_newTheme;
+    }
 private:
-    UCStyledItemBase *m_ascendantStyled;
     UCTheme *m_oldTheme;
     UCTheme *m_newTheme;
 };

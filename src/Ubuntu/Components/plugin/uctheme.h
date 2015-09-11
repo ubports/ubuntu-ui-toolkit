@@ -68,6 +68,7 @@ public:
 
     // getter/setters
     UCTheme *parentTheme();
+    void setParentTheme(UCTheme *parentTheme); // not used as setter
     QString name() const;
     void setName(const QString& name);
     void resetName();
@@ -152,12 +153,13 @@ private:
         QList<Data> configList;
     };
 
-    QString m_name;
-    QPointer<QObject> m_palette; // the palette might be from the default style if the theme doesn't define palette
-    QQmlEngine *m_engine;
     PaletteConfig m_config;
+    QString m_name;
+    QPointer<UCTheme> m_parentTheme;
+    QPointer<QObject> m_palette; // the palette might be from the default style if the theme doesn't define palette
     QList<ThemeRecord> m_themePaths;
     UCDefaultTheme m_defaultTheme;
+    QQmlEngine *m_engine;
     quint16 m_version;
     bool m_defaultStyle:1;
     bool m_completed:1;

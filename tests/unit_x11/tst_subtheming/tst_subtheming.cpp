@@ -73,6 +73,11 @@ public:
     {
         return rootContext()->contextProperty("theme").value<UCTheme*>();
     }
+
+    void invokeTest(const char *test)
+    {
+        rootObject()->metaObject()->invokeMethod(rootObject(), test);
+    }
 };
 
 class tst_Subtheming : public QObject
@@ -316,8 +321,8 @@ private Q_SLOTS:
         UCStyledItemBase *main = qobject_cast<UCStyledItemBase*>(view->rootObject());
         QVERIFY(main);
         UCStyledItemBase *test = view->findItem<UCStyledItemBase*>("firstLevelStyled");
-        QCOMPARE(UCStyledItemBasePrivate::get(main)->getTheme()->name(),
-                 UCStyledItemBasePrivate::get(test)->getTheme()->name());
+        QCOMPARE(UCStyledItemBasePrivate::get(test)->getTheme()->name(),
+                 QStringLiteral("Ubuntu.Components.Themes.SuruGradient"));
     }
 
     void test_no_change_in_other_suru_dark()
@@ -434,7 +439,7 @@ private Q_SLOTS:
 
         // set the parent item of the test item to 0
         QSignalSpy spy(movableItem, SIGNAL(themeChanged()));
-        movableItem->setParentItem(Q_NULLPTR);
+        view->invokeTest("test_reparent");
         spy.wait(500);
         QCOMPARE(spy.count(), 1);
         QCOMPARE(UCStyledItemBasePrivate::get(movableItem)->getTheme(), &UCTheme::defaultTheme());
@@ -456,7 +461,8 @@ private Q_SLOTS:
         QCOMPARE(UCStyledItemBasePrivate::get(movableItem)->getTheme()->name(), QString("Ubuntu.Components.Themes.Ambiance"));
 
         // move the movableItem under customThemedItem
-        movableItem->setParentItem(customThemedItem);
+        view->invokeTest("test_reparent_custom");
+//        movableItem->setParentItem(customThemedItem);
         QCOMPARE(UCStyledItemBasePrivate::get(movableItem)->getTheme()->name(), QString("CustomTheme"));
 
         // set a new theme for the root, and make sure our theme stays the same

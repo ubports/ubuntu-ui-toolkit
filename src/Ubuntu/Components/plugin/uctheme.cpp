@@ -423,12 +423,17 @@ void UCTheme::updateThemePaths()
  */
 UCTheme *UCTheme::parentTheme()
 {
-    UCStyledItemBase *owner = qobject_cast<UCStyledItemBase*>(parent());
-    UCStyledItemBasePrivate *pOwner = owner ? UCStyledItemBasePrivate::get(owner) : NULL;
-    if (pOwner && pOwner->theme == this && pOwner->parentStyledItem) {
-        return UCStyledItemBasePrivate::get(pOwner->parentStyledItem)->getTheme();
+    return  m_parentTheme.data();
+}
+
+void UCTheme::setParentTheme(UCTheme *parentTheme)
+{
+    if (m_parentTheme == parentTheme) {
+        return;
     }
-    return NULL;
+    Q_ASSERT(parentTheme);
+    m_parentTheme = parentTheme;
+    Q_EMIT parentThemeChanged();
 }
 
 /*!

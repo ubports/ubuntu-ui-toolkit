@@ -28,6 +28,7 @@ UCStyledItemBasePrivate::UCStyledItemBasePrivate()
     : styleComponent(Q_NULLPTR)
     , styleItem(Q_NULLPTR)
     , theme(&UCTheme::defaultTheme())
+    , themeType(Inherited)
     , activeFocusOnPress(false)
 {
 }
@@ -124,7 +125,7 @@ UCStyledItemBase::UCStyledItemBase(UCStyledItemBasePrivate &dd, QQuickItem *pare
 
 UCStyledItemBase *UCStyledItemBase::ascendantStyled(QQuickItem *item)
 {
-    QQuickItem *pl = item->parentItem();
+    QQuickItem *pl = item;
     while (pl && !qobject_cast<UCStyledItemBase*>(pl)) {
         pl = pl->parentItem();
     }
@@ -466,15 +467,21 @@ UCTheme *UCStyledItemBasePrivate::getTheme() const
 {
     return theme;
 }
-void UCStyledItemBasePrivate::setTheme(UCTheme *newTheme)
+void UCStyledItemBasePrivate::setTheme(UCTheme *newTheme, ThemeType type)
 {
     Q_Q(UCStyledItemBase);
     if (theme == newTheme) {
         return;
     }
 
+//    qDebug() << "setTheme" << newTheme->objectName() << type;
+
     // preform pre-theme change tasks
+    bool wasStyleLoaded = (styleItem != Q_NULLPTR);
     preThemeChanged();
+
+    themeType = type;
+    UCTheme *oldTheme = theme;
 
     // disconnect from the previous set
     if (theme) {
@@ -482,8 +489,6 @@ void UCStyledItemBasePrivate::setTheme(UCTheme *newTheme)
                             q, SLOT(_q_reloadStyle()));
         QObject::disconnect(theme, SIGNAL(versionChanged()),
                             q, SLOT(_q_reloadStyle()));
-        // TODO: set the parent of the theme
-        Q_EMIT theme->parentThemeChanged();
     }
 
     theme = newTheme;
@@ -494,44 +499,41 @@ void UCStyledItemBasePrivate::setTheme(UCTheme *newTheme)
                          q, SLOT(_q_reloadStyle()));
         QObject::connect(theme, SIGNAL(versionChanged()),
                          q, SLOT(_q_reloadStyle()));
-    }
-    // detach previous set and attach the new one
-    if (theme) {
-        // re-parent theme to make sure we have it
-        // for the entire lifetime of the styled item
-
-        // TODO: set the parent of the theme
-        Q_EMIT theme->parentThemeChanged();
+        setParentTheme();
     }
 
     // perform post-theme changes, update internal styling
     postThemeChanged();
 
     Q_EMIT q->themeChanged();
+    // broadcast to the children
+    UCThemeUpdateEvent::broadcastToChildren(q, oldTheme, theme);
 
     // perform style reload
-    if (!styleComponent) {
-        preStyleChanged();
+    if (wasStyleLoaded) {
         postStyleChanged();
         loadStyleItem();
     }
 }
 void UCStyledItemBasePrivate::resetTheme()
 {
-    setTheme(&UCTheme::defaultTheme());
+    UCStyledItemBase *upperStyled = UCStyledItemBase::ascendantStyled(parentItem);
+    UCTheme *theme = upperStyled ? UCStyledItemBasePrivate::get(upperStyled)->getTheme() : &UCTheme::defaultTheme();
+    setTheme(theme, UCStyledItemBasePrivate::Inherited);
 }
 
-// set the closest parent styled ascendant and emit parentThemeChanged if we have a custom theme
-bool UCStyledItemBasePrivate::setParentStyled(UCStyledItemBase *styledItem)
+// set the parent of the theme if the themeType is Custom
+void UCStyledItemBasePrivate::setParentTheme()
 {
-    if (parentStyledItem == styledItem) {
-        return false;
+    if (themeType != UCStyledItemBasePrivate::Custom) {
+        return;
     }
-    parentStyledItem = styledItem;
-    if (theme) {
-        Q_EMIT theme->parentThemeChanged();
+    UCStyledItemBase *upperStyled = UCStyledItemBase::ascendantStyled(parentItem);
+    UCTheme *parentTheme = upperStyled ? UCStyledItemBasePrivate::get(upperStyled)->getTheme() : &UCTheme::defaultTheme();
+    if (parentTheme != theme) {
+//        qDebug() << "parentTheme for" << theme->objectName() << "::" << parentTheme->objectName();
+        theme->setParentTheme(parentTheme);
     }
-    return true;
 }
 
 void UCStyledItemBase::componentComplete()
@@ -540,11 +542,6 @@ void UCStyledItemBase::componentComplete()
     Q_D(UCStyledItemBase);
     // no animation at this time
     // prepare style context if not been done yet
-    if (d->parentStyledItem.isNull()) {
-        // try to get the proper one
-        UCThemeUpdateEvent event((UCStyledItemBase*)Q_NULLPTR);
-        customEvent(&event);
-    }
     d->postStyleChanged();
     d->loadStyleItem(false);
 }
@@ -577,10 +574,16 @@ bool UCStyledItemBase::childMouseEventFilter(QQuickItem *child, QEvent *event)
 
 void UCStyledItemBase::itemChange(ItemChange change, const ItemChangeData &data)
 {
+    Q_D(UCStyledItemBase);
     if (change == ItemParentHasChanged) {
-        // perform parent update using the customEvent
-        UCThemeUpdateEvent event((UCStyledItemBase*)Q_NULLPTR);
-        customEvent(&event);
+        if (!d->componentComplete && d->themeType == UCStyledItemBasePrivate::Inherited) {
+            UCStyledItemBase *upperStyled = ascendantStyled(data.item);
+            if (upperStyled) {
+                d->setTheme(UCStyledItemBasePrivate::get(upperStyled)->getTheme(), UCStyledItemBasePrivate::Inherited);
+            }
+        } else if (d->componentComplete && d->themeType == UCStyledItemBasePrivate::Custom) {
+            d->setParentTheme();
+        }
     }
     QQuickItem::itemChange(change, data);
 }
@@ -589,31 +592,23 @@ void UCStyledItemBase::itemChange(ItemChange change, const ItemChangeData &data)
 void UCStyledItemBase::customEvent(QEvent *event)
 {
     Q_D(UCStyledItemBase);
-    if (event->type() == (QEvent::Type)UCThemeUpdateEvent::styledItemEventId) {
+
+    if (event->type() == (QEvent::Type)UCThemeUpdateEvent::themeEventId) {
         Q_D(UCStyledItemBase);
         UCThemeUpdateEvent *themeEvent = static_cast<UCThemeUpdateEvent*>(event);
-
-        // if the StyledItem and theme is not set, check it
-        UCStyledItemBase *ascendantStyled = themeEvent->styledItem();
-        if (!ascendantStyled) {
-            ascendantStyled = UCStyledItemBase::ascendantStyled(this);
+        // we have the following cases:
+        // 1. the current item's theme is Inherited
+        if (d->themeType == UCStyledItemBasePrivate::Inherited) {
+//            qDebug() << "USECASE1" << objectName() << themeEvent->newTheme()->objectName();
+            d->setTheme(themeEvent->newTheme(), UCStyledItemBasePrivate::Inherited);
+            return;
         }
-
-        UCTheme *prevTheme = d->getTheme();
-        if (d->setParentStyled(ascendantStyled)) {
-            // check if we've a different theme, excluding custom theme
-            if (prevTheme != d->getTheme() && !d->theme) {
-                Q_EMIT themeChanged();
-            }
-        }
-
-        event->accept();
-    } else if (event->type() == (QEvent::Type)UCThemeUpdateEvent::themeEventId) {
-        // simply emit the signal
-        if (d->theme) {
-            Q_EMIT d->theme->parentThemeChanged();
-        } else {
-            Q_EMIT themeChanged();
+        // 2. the current theme is Custom
+        if (d->themeType == UCStyledItemBasePrivate::Custom) {
+//            qDebug() << "USECASE2" << objectName() << "^" << themeEvent->newTheme();
+            // set the theme's parent
+            d->theme->setParentTheme(themeEvent->newTheme());
+            return;
         }
     }
 }

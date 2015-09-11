@@ -29,6 +29,11 @@ class UCStyledItemBasePrivate : public QQuickItemPrivate
     Q_DECLARE_PUBLIC(UCStyledItemBase)
 public:
 
+    enum ThemeType {
+        Inherited,
+        Custom
+    };
+
     static UCStyledItemBasePrivate *get(UCStyledItemBase *item) {
         return item->d_func();
     }
@@ -56,25 +61,26 @@ public:
     virtual bool loadStyleItem(bool animated = true);
 
     UCTheme *getTheme() const;
-    void setTheme(UCTheme *theme);
+    void setTheme(UCTheme *theme, ThemeType type = Custom);
     void resetTheme();
 
-    virtual void preThemeChanged(){}
+    virtual void preThemeChanged(){ preStyleChanged(); }
     virtual void postThemeChanged(){}
 
 public:
+
     QPointer<QQmlContext> styleItemContext;
-    QPointer<UCStyledItemBase> parentStyledItem;
     QString styleDocument;
     QQmlComponent *styleComponent;
     QQuickItem *styleItem;
     UCTheme *theme;
+    ThemeType themeType;
     bool activeFocusOnPress:1;
 
 protected:
 
     void connectStyleSizeChanges(bool attach);
-    bool setParentStyled(UCStyledItemBase *styledItem);
+    void setParentTheme();
 };
 
 #endif // UCSTYLEDITEMBASE_P_H
