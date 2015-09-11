@@ -21,6 +21,7 @@
 #include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickanimation_p.h>
 #include "ucubuntuanimation.h"
+#include "ucunits.h"
 
 
 /*!
@@ -36,6 +37,8 @@
 */
 
 UCUbuntuAnimation *UCHeader::s_ubuntuAnimation = new UCUbuntuAnimation();
+
+#define IMPLICIT_HEADER_HEIGHT_GU 6
 
 UCHeader::UCHeader(QQuickItem *parent)
 //    : UCStyledItemBase(parent)
@@ -55,6 +58,24 @@ UCHeader::UCHeader(QQuickItem *parent)
 
     connect(m_showHideAnimation, SIGNAL(runningChanged(bool)),
             this, SLOT(q_showHideAnimationRunningChanged()));
+
+    // watch grid unit size change and set implicit size
+    connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this, SLOT(q_updateSize()));
+    // TODO: connect to parent changes too
+    q_updateSize();
+}
+
+//// called when units size changes
+void UCHeader::q_updateSize()
+{
+    // update divider thickness
+//    divider->setImplicitHeight(UCUnits::instance().dp(DIVIDER_THICKNESS_DP));
+//    QQuickItem *owner = qobject_cast<QQuickItem*>(q->sender());
+//    if (!owner && parentAttached) {
+//        owner = static_cast<QQuickItem*>(parentAttached->parent());
+//    }
+//    q->setImplicitWidth(owner ? owner->width() : UCUnits::instance().gu(IMPLICIT_LISTITEM_WIDTH_GU));
+    this->setImplicitHeight(UCUnits::instance().gu(IMPLICIT_HEADER_HEIGHT_GU));
 }
 
 QQuickFlickable* UCHeader::flickable() {
@@ -99,12 +120,20 @@ void UCHeader::updateFlickableMargins() {
 }
 
 void UCHeader::show() {
+    if (!m_exposed) {
+        m_exposed = true;
+        Q_EMIT exposedChanged();
+    }
     m_showHideAnimation->setFrom(this->y());
     m_showHideAnimation->setTo(0.0);
     m_showHideAnimation->start();
 }
 
 void UCHeader::hide() {
+    if (m_exposed) {
+        m_exposed = false;
+        Q_EMIT exposedChanged();
+    }
     m_showHideAnimation->setFrom(this->y());
     m_showHideAnimation->setTo(-1.0*this->height());
     m_showHideAnimation->start();
@@ -114,19 +143,6 @@ void UCHeader::q_showHideAnimationRunningChanged() {
     if (!m_showHideAnimation->isRunning()) {
         // Animation finished
         Q_ASSERT(m_moving);
-
-        qreal y = this->y();
-        qreal h = this->height();
-        // header must now be completely exposed or hidden
-        Q_ASSERT( qFuzzyCompare(y, 0.0) || qFuzzyCompare(y, -h) );
-
-        if (qFuzzyCompare(y, 0.0) && !m_exposed) {
-            m_exposed = true;
-            Q_EMIT exposedChanged();
-        } else if (qFuzzyCompare(y, -h) && m_exposed) {
-            m_exposed = false;
-            Q_EMIT exposedChanged();
-        }
         m_moving = false;
         Q_EMIT movingChanged();
     } else if (!m_moving) {

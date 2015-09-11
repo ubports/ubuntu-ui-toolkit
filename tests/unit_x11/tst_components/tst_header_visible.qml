@@ -23,25 +23,10 @@ Item {
     height: units.gu(70)
 
     Header {
-//        anchors {
-//            left: parent.left
-//            right: parent.right
-//            top: parent.top
-//        }
         width: parent.width
-        height: units.gu(8)
+        height: units.gu(6)
 
         flickable: flickable
-
-//        onYChanged: print("header.y = "+y)
-        Component.onCompleted: print(" init v = "+exposed)
-        onExposedChanged: {
-            print("header.exposed changed to "+exposed)
-            hiddenSwitch.checked = !exposed;
-        }
-        onMovingChanged: {
-            print("header.moving changed to "+moving)
-        }
 
         id: header
 //        title: "Visibility testing"
@@ -52,16 +37,11 @@ Item {
             opacity: 0.5
             border {
                 color: "black"
-                width: 10
-            }
-            MouseArea {
-                anchors.fill: parent
-                onClicked: {
-                    print("click!")
-                    header.anchors.topMargin = -units.gu(6)
-                }
+                width: 2
             }
         }
+        onExposedChanged: print("exposed changed to "+exposed)
+        onMovingChanged: print("moving changed to "+moving)
     }
 
     Flickable {
@@ -90,7 +70,10 @@ Item {
                 id: hiddenSwitch
                 checked: !header.exposed
                 onTriggered: print("switch triggered")
-                onClicked: {
+//                onClicked: {
+//                    header.exposed = !header.exposed;
+//                }
+                function trigger() {
                     header.exposed = !header.exposed;
                 }
             }

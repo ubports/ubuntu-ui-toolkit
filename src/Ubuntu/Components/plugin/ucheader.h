@@ -50,6 +50,9 @@ protected:
     void show();
     void hide();
 
+protected Q_SLOTS:
+    void q_updateSize();
+
 private Q_SLOTS:
     // TODO TIM: make names more consistent
     void q_scrolledContents();
