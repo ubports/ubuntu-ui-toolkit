@@ -1244,6 +1244,12 @@ Ubuntu.Components.ToolbarItems 1.3: Item
     property bool locked
     property bool opened
     property Item pageStack
+Ubuntu.Components.UCApplication 1.0 0.1: QtObject
+    property string applicationName
+    property QtObject inputMethod
+Ubuntu.Components.UCFontUtils 1.0 0.1: QtObject
+    function double sizeToPixels(string size)
+    function double modularScale(string size)
 UCListItemDivider: Item
     property color colorFrom
     property color colorTo
