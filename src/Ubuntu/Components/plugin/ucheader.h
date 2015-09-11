@@ -30,6 +30,7 @@ class UCHeader : public QQuickItem //UCStyledItemBase
     Q_OBJECT
     Q_PROPERTY(QQuickFlickable* flickable READ flickable WRITE setFlickable NOTIFY flickableChanged)
     Q_PROPERTY(bool exposed READ exposed WRITE setExposed NOTIFY exposedChanged)
+    Q_PROPERTY(bool moving READ moving NOTIFY movingChanged)
 
 public:
     explicit UCHeader(QQuickItem *parent = 0);
@@ -38,20 +39,26 @@ public:
     void setFlickable(QQuickFlickable* flickable);
     bool exposed();
     void setExposed(bool exposed);
+    bool moving();
 
 Q_SIGNALS:
     void flickableChanged();
     void exposedChanged();
+    void movingChanged();
 
 protected:
     void show();
     void hide();
 
 private Q_SLOTS:
-    void _q_scrolledContents();
+    // TODO TIM: make names more consistent
+    void q_scrolledContents();
+    void q_showHideAnimationRunningChanged();
+    void q_flickableMovementEnded();
 
 private:
     bool m_exposed;
+    bool m_moving;
     qreal m_previous_contentY;
 
     QQuickNumberAnimation* m_showHideAnimation;
@@ -59,6 +66,8 @@ private:
 
     // used to set the easing and duration of m_showHideAnimation
     static UCUbuntuAnimation *s_ubuntuAnimation;
+
+    void updateFlickableMargins();
 };
 
 #endif // UCHEADER_H

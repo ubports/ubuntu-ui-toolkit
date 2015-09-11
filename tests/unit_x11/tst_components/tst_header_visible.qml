@@ -33,11 +33,16 @@ Item {
 
         flickable: flickable
 
-        onYChanged: print("header.y = "+y)
+//        onYChanged: print("header.y = "+y)
         Component.onCompleted: print(" init v = "+exposed)
         onExposedChanged: {
             print("header.exposed changed to "+exposed)
+            hiddenSwitch.checked = !exposed;
         }
+        onMovingChanged: {
+            print("header.moving changed to "+moving)
+        }
+
         id: header
 //        title: "Visibility testing"
 //        locked: lockedSwitch.checked
@@ -84,6 +89,7 @@ Item {
             Switch {
                 id: hiddenSwitch
                 checked: !header.exposed
+                onTriggered: print("switch triggered")
                 onClicked: {
                     header.exposed = !header.exposed;
                 }

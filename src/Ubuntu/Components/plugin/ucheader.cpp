@@ -41,16 +41,20 @@ UCHeader::UCHeader(QQuickItem *parent)
 //    : UCStyledItemBase(parent)
     : QQuickItem(parent)
     , m_exposed(true)
+    , m_moving(false)
     , m_previous_contentY(0)
     , m_showHideAnimation(new QQuickNumberAnimation)
     , m_flickable(Q_NULLPTR)
 {
-    qDebug() << "Header created!";
 //    this->setFocus();
     m_showHideAnimation->setTargetObject(this);
     m_showHideAnimation->setProperty("y");
     m_showHideAnimation->setEasing(s_ubuntuAnimation->StandardEasing());
+    m_showHideAnimation->setEasing(s_ubuntuAnimation->StandardEasing());
     m_showHideAnimation->setDuration(s_ubuntuAnimation->BriskDuration());
+
+    connect(m_showHideAnimation, SIGNAL(runningChanged(bool)),
+            this, SLOT(q_showHideAnimationRunningChanged()));
 }
 
 QQuickFlickable* UCHeader::flickable() {
@@ -58,61 +62,78 @@ QQuickFlickable* UCHeader::flickable() {
 }
 
 void UCHeader::setFlickable(QQuickFlickable *flickable) {
-    qDebug() << "Setting flickable.";
     if (m_flickable != flickable) {
-        // Finish the current header movement in case the current
-        //  flickable is disconnected while moving the header:
-        // TODO: internal.movementEndeded()
-
-        qDebug() << "Updating flickable from "<<m_flickable<<" to "<<flickable;
         if (!m_flickable.isNull()) {
+            // Finish the current header movement in case the current
+            //  flickable is disconnected while scrolling:
+            this->q_flickableMovementEnded();
             flickable->disconnect(this);
         }
+
         m_flickable = flickable;
+        Q_EMIT flickableChanged();
 
         if (!m_flickable.isNull()) {
-            QObject::connect(m_flickable, SIGNAL(contentYChanged()),
-                             this, SLOT(_q_scrolledContents()));
-
+            this->updateFlickableMargins();
+            connect(m_flickable, SIGNAL(contentYChanged()),
+                    this, SLOT(q_scrolledContents()));
+            connect(m_flickable, SIGNAL(movementEnded()),
+                    this, SLOT(q_flickableMovementEnded()));
             m_previous_contentY = m_flickable->contentY();
         }
-        Q_EMIT flickableChanged();
+    }
+}
+
+void UCHeader::updateFlickableMargins() {
+    if (!m_flickable.isNull()) {
+        qreal headerHeight = this->height();
+        qreal previousHeaderHeight = m_flickable->topMargin();
+        if (headerHeight != previousHeaderHeight) {
+            qreal previousContentY = m_flickable->contentY();
+            m_flickable->setTopMargin(headerHeight);
+            // Push down contents when header grows,
+            //  pull up contents when header shrinks
+            m_flickable->setContentY(previousContentY - headerHeight + previousHeaderHeight);
+        }
     }
 }
 
 void UCHeader::show() {
-    qreal y = this->y();
-
-//    if (y < 0) {
-        qDebug() << "Showing";
-        m_showHideAnimation->setFrom(y);
-        m_showHideAnimation->setTo(0.0);
-        m_showHideAnimation->start();
-        if (!m_exposed) {
-            // TODO: Do this when the animation finishes.
-            qDebug() << "Setting exposed to true";
-            m_exposed = true;
-            Q_EMIT exposedChanged();
-        }
-//    }
+    m_showHideAnimation->setFrom(this->y());
+    m_showHideAnimation->setTo(0.0);
+    m_showHideAnimation->start();
 }
 
 void UCHeader::hide() {
-    qreal y = this->y();
-    qreal h = -1.0*this->height();
+    m_showHideAnimation->setFrom(this->y());
+    m_showHideAnimation->setTo(-1.0*this->height());
+    m_showHideAnimation->start();
+}
 
-//    if (y > h) {
-        qDebug() << "Hiding";
-        m_showHideAnimation->setFrom(y);
-        m_showHideAnimation->setTo(h);
-        m_showHideAnimation->start();
-        if (m_exposed) {
-            // TODO: Do this when the animation finishes.
-            qDebug() << "Setting exposed to false";
+void UCHeader::q_showHideAnimationRunningChanged() {
+    if (!m_showHideAnimation->isRunning()) {
+        // Animation finished
+        Q_ASSERT(m_moving);
+
+        qreal y = this->y();
+        qreal h = this->height();
+        // header must now be completely exposed or hidden
+        Q_ASSERT( qFuzzyCompare(y, 0.0) || qFuzzyCompare(y, -h) );
+
+        if (qFuzzyCompare(y, 0.0) && !m_exposed) {
+            m_exposed = true;
+            Q_EMIT exposedChanged();
+        } else if (qFuzzyCompare(y, -h) && m_exposed) {
             m_exposed = false;
             Q_EMIT exposedChanged();
         }
-//    }
+        m_moving = false;
+        Q_EMIT movingChanged();
+    } else if (!m_moving) {
+        // Animation started
+        m_moving = true;
+        Q_EMIT movingChanged();
+    } // else: Transition from flickable movement to showHideAnimation running.
 }
 
 void UCHeader::setExposed(bool exposed) {
@@ -127,7 +148,11 @@ bool UCHeader::exposed() {
     return m_exposed;
 }
 
-void UCHeader::_q_scrolledContents() {
+bool UCHeader::moving() {
+    return m_moving;
+}
+
+void UCHeader::q_scrolledContents() {
     // Avoid moving the header when rebounding or being dragged over the bounds.
     if (!m_flickable->isAtYBeginning() && !m_flickable->isAtYEnd()) {
         qreal dy = m_flickable->contentY() - m_previous_contentY;
@@ -136,4 +161,17 @@ void UCHeader::_q_scrolledContents() {
         this->setY(clampedY);
     }
     m_previous_contentY = m_flickable->contentY();
+    if (!m_moving) {
+        m_moving = true;
+        Q_EMIT movingChanged();
+    }
+}
+
+void UCHeader::q_flickableMovementEnded() {
+    if ((!m_flickable.isNull() && m_flickable->contentY() < 0)
+            || (this->y() > -this->height()/2.0)) {
+        this->show();
+    } else {
+        this->hide();
+    }
 }
