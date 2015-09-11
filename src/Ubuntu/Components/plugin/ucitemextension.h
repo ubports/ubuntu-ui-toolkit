@@ -22,29 +22,26 @@
 #include <QtCore/QObject>
 #include <QtCore/QEvent>
 #include <QtCore/QPointer>
+#include <QtQml>
 
 class QQuickItem;
 class UCStyledItemBase;
 class UCTheme;
-class UCItemExtension : public QObject
+class UCItemAttached : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QQuickItem *parent READ parentItem WRITE setParentItem NOTIFY extendedParentChanged)
 public:
-    explicit UCItemExtension(QObject *parent = 0);
+    explicit UCItemAttached(QObject *owner = 0);
+    ~UCItemAttached();
+    static UCItemAttached *qmlAttachedProperties(QObject *owner);
 
-    QQuickItem *parentItem() const;
-    void setParentItem(QQuickItem *parentItem);
-
-Q_SIGNALS:
-    void extendedParentChanged();
-
-private:
     QQuickItem *m_item;
     QQuickItem *m_prevParent;
 
-    Q_SLOT void handleParentChanged(QQuickItem *newParent);
+private Q_SLOTS:
+    void handleParentChanged(QQuickItem *newParent);
 };
+QML_DECLARE_TYPEINFO(UCItemAttached, QML_HAS_ATTACHED_PROPERTIES)
 
 class UCThemeUpdateEvent : public QEvent
 {
@@ -69,6 +66,18 @@ public:
 private:
     UCTheme *m_oldTheme;
     UCTheme *m_newTheme;
+};
+
+class UCItemExtension
+{
+public:
+    explicit UCItemExtension();
+
+    virtual void classBegin(QQuickItem *item);
+    virtual void componentCompleted();
+
+protected:
+    UCItemAttached *attachedThemer;
 };
 
 #endif // UCITEMEXTENSION_H

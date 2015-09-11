@@ -69,23 +69,30 @@ void UCThemeUpdateEvent::forwardEvent(QQuickItem *item, UCThemeUpdateEvent *even
 }
 
 /*************************************************************************
- *
+ * Attached to every Item in the system
  */
-UCItemExtension::UCItemExtension(QObject *parent)
-    : QObject(parent)
-    , m_item(static_cast<QQuickItem*>(parent))
+UCItemAttached::UCItemAttached(QObject *owner)
+    : QObject(owner)
+    , m_item(static_cast<QQuickItem*>(owner))
     , m_prevParent(Q_NULLPTR)
 {
-    // we have the parent ready when we get in here, the extension is created first time the parent property is invoked
-    connect(m_item, &QQuickItem::parentChanged, this, &UCItemExtension::extendedParentChanged);
     // get parent item changes
-    connect(m_item, &QQuickItem::parentChanged, this, &UCItemExtension::handleParentChanged);
-    // handle parent changes right away
-    handleParentChanged(m_item->parentItem());
+    connect(m_item, &QQuickItem::parentChanged, this, &UCItemAttached::handleParentChanged);
+//    // handle parent changes right away
+//    handleParentChanged(m_item->parentItem());
+}
+
+UCItemAttached::~UCItemAttached()
+{
+}
+
+UCItemAttached *UCItemAttached::qmlAttachedProperties(QObject *owner)
+{
+    return new UCItemAttached(owner);
 }
 
 // handle parent changes
-void UCItemExtension::handleParentChanged(QQuickItem *newParent)
+void UCItemAttached::handleParentChanged(QQuickItem *newParent)
 {
     if (newParent == m_prevParent) {
         // shouldn't be ever encountered, but for safety...
@@ -107,12 +114,29 @@ void UCItemExtension::handleParentChanged(QQuickItem *newParent)
     m_prevParent = newParent;
 }
 
-// property overrides forward to the original the getter/setter
-QQuickItem *UCItemExtension::parentItem() const
+/*************************************************************************
+ *
+ */
+UCItemExtension::UCItemExtension()
+    : attachedThemer(Q_NULLPTR)
 {
-    return m_item->parentItem();
 }
-void UCItemExtension::setParentItem(QQuickItem *parentItem)
+
+void UCItemExtension::classBegin(QQuickItem *item)
 {
-    m_item->setParentItem(parentItem);
+    attachedThemer = static_cast<UCItemAttached*>(qmlAttachedPropertiesObject<UCItemAttached>(item));
+    Q_ASSERT(attachedThemer);
 }
+
+void UCItemExtension::componentCompleted()
+{
+    // make sure we have items attached to all intermediate Items between two themed items
+    QQuickItem *pl = attachedThemer->m_item->parentItem();
+    while (pl && pl->metaObject()->indexOfProperty("theme") < 0) {
+        // attach the themer
+        qmlAttachedPropertiesObject<UCItemAttached>(pl);
+        pl = pl->parentItem();
+    }
+}
+
+#include "moc_ucitemextension.cpp"

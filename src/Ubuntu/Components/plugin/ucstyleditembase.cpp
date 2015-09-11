@@ -536,10 +536,17 @@ void UCStyledItemBasePrivate::setParentTheme()
     }
 }
 
+void UCStyledItemBase::classBegin()
+{
+    QQuickItem::classBegin();
+    d_func()->classBegin(this);
+}
+
 void UCStyledItemBase::componentComplete()
 {
     QQuickItem::componentComplete();
     Q_D(UCStyledItemBase);
+    d->componentCompleted();
     // no animation at this time
     // prepare style context if not been done yet
     d->postStyleChanged();
