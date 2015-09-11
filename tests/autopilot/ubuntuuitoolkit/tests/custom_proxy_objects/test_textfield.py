@@ -14,37 +14,27 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+import os
 from unittest import mock
 
 import ubuntuuitoolkit
 from ubuntuuitoolkit import tests
 
 
-class TextFieldTestCase(tests.QMLStringAppTestCase):
+class TextFieldTestCase(tests.QMLFileAppTestCase):
 
-    test_qml = ("""
-import QtQuick 2.0
-import Ubuntu.Components 1.0
-
-MainView {
-    width: units.gu(48)
-    height: units.gu(60)
-    objectName: "mainView"
-
-    Item {
-        TextField {
-            id: simpleTextField
-            objectName: "simple_text_field"
-        }
-        TextField {
-            id: textFieldWithoutClearButton
-            objectName: "text_field_without_clear_button"
-            hasClearButton: false
-            anchors.top: simpleTextField.bottom
-        }
-    }
-}
-""")
+    path = os.path.abspath(__file__)
+    dir_path = os.path.dirname(path)
+    qml_file_path_1_0 = os.path.join(
+        dir_path, 'test_textfield.1.0.qml')
+    qml_file_path_1_3 = os.path.join(
+        dir_path, 'test_textfield.1.3.qml')
+    scenarios = [
+        ('1.0',
+            dict(test_qml_file_path=qml_file_path_1_0)),
+        ('1.3',
+            dict(test_qml_file_path=qml_file_path_1_3)),
+    ]
 
     def setUp(self):
         super().setUp()
