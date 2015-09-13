@@ -349,6 +349,9 @@ void UCSlotsLayoutPrivate::_q_relayout()
         return;
     }
 
+    qint32 trailingSlotsAvailable = maxNumberOfTrailingSlots - (progression && chevron);
+    qint32 leadingSlotsAvailable = maxNumberOfLeadingSlots;
+
     QList<QQuickItem *> leadingSlots;
     QList<QQuickItem *> trailingSlots;
     int totalWidth = 0;
@@ -358,9 +361,8 @@ void UCSlotsLayoutPrivate::_q_relayout()
 
         //NOTE: skip C++ labels, because we do custom layout for them (and also because
         //qmlAttachedProperties will fail on them if none of their properties is initialized via QML)
-        //We also skip the chevron as we handle it separately later
         if (child == &m_title || child == &m_subtitle
-                || child == &m_subsubtitle || child == chevron) {
+                || child == &m_subsubtitle) {
             continue;
         }
 
@@ -374,8 +376,9 @@ void UCSlotsLayoutPrivate::_q_relayout()
 
         //TODO: IGNORE INVISIBLE CHILDREN?
 
-        if (attached->position() == UCSlotsLayout::Leading) {
-            if (leadingSlots.length() < maxNumberOfLeadingSlots) {
+        //ignore if it's a chevron because we only position chevron as trailing slot
+        if (attached->position() == UCSlotsLayout::Leading && child != chevron) {
+            if (leadingSlots.length() < leadingSlotsAvailable) {
                 leadingSlots.append(child);
                 totalWidth += child->width() + attached->leftMargin() + attached->rightMargin();
             } else {
@@ -383,8 +386,9 @@ void UCSlotsLayoutPrivate::_q_relayout()
                            << " leading slots. Please remove any additional leading slot.";
                 continue;
             }
-        } else if (attached->position() == UCSlotsLayout::Trailing) {
-            if (trailingSlots.length() < maxNumberOfTrailingSlots) {
+        } else if (attached->position() == UCSlotsLayout::Trailing || child == chevron) {
+            //ignore positiong property and max slots available when considering the chevron
+            if (trailingSlots.length() < trailingSlotsAvailable || child == chevron) {
                 trailingSlots.append(child);
                 totalWidth += child->width() + attached->leftMargin() + attached->rightMargin();
             } else {
@@ -395,21 +399,6 @@ void UCSlotsLayoutPrivate::_q_relayout()
         } else {
             qmlInfo(q) << "Unrecognized position value!";
             continue;
-        }
-    }
-
-    //put the chevron at the end, no matter what its position in childItems() is
-    //DOC NOTE: this means its "position" property will be ignored!
-    if (progression && chevron) {
-        //get the attached property, creating it if it wasn't defined already
-        UCSlotsAttached *attached =
-                qobject_cast<UCSlotsAttached *>(qmlAttachedPropertiesObject<UCSlotsLayout>(chevron));
-
-        if (!attached) {
-            qmlInfo(q) << "Invalid attached property!";
-        } else {
-            trailingSlots.append(chevron);
-            totalWidth += chevron->width() + attached->leftMargin() + attached->rightMargin();
         }
     }
 
@@ -647,6 +636,15 @@ void UCSlotsLayout::itemChange(ItemChange change, const ItemChangeData &data)
 
                 //this will also trigger relayout
                 d->_q_updateSlotsBBoxHeight();
+            }
+
+            //keep chevron at the end of the children so that the relayout process
+            //positions it as the last trailing slot
+            QList<QQuickItem *> visualChildren = childItems();
+            if (progression() && d->chevron
+                    && data.item != d->chevron && visualChildren.length() != 0) {
+                //we have to query last() because data.item may not be the last one
+                d->chevron->stackAfter(visualChildren.last());
             }
         }
         break;
