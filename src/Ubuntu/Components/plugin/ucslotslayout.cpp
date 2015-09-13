@@ -29,8 +29,6 @@ UCSlotsLayoutPrivate::UCSlotsLayoutPrivate()
     , topOffsetWasSetFromQml(false)
     , bottomOffsetWasSetFromQml(false)
     , progression(false)
-    , ready(false)
-
 {
 }
 
@@ -229,7 +227,7 @@ void UCSlotsLayoutPrivate::_q_updateLabelsAnchorsAndBBoxHeight()
 {
     //if the component is not ready the QML properties may not have been evaluated yet,
     //it's not worth doing anything if that's the case
-    if (!ready)
+    if (!componentComplete)
         return;
 
     Q_Q(UCSlotsLayout);
@@ -292,7 +290,7 @@ void UCSlotsLayoutPrivate::_q_updateLabelsAnchorsAndBBoxHeight()
 
 void UCSlotsLayoutPrivate::_q_updateSlotsBBoxHeight()
 {
-    if (!ready)
+    if (!componentComplete)
         return;
 
     Q_Q(UCSlotsLayout);
@@ -326,7 +324,7 @@ void UCSlotsLayoutPrivate::_q_updateSlotsBBoxHeight()
 
 void UCSlotsLayoutPrivate::_q_updateSize()
 {
-    if (!ready)
+    if (!componentComplete)
         return;
 
     Q_Q(UCSlotsLayout);
@@ -563,7 +561,7 @@ void UCSlotsLayoutPrivate::_q_relayout()
     Q_Q(UCSlotsLayout);
 
     //only relayout after the component has been initialized
-    if (!ready)
+    if (!componentComplete)
         return;
 
     if (q->width() <= 0 || q->height() <= 0
@@ -617,12 +615,10 @@ UCSlotsLayout::UCSlotsLayout(QQuickItem *parent) :
 
 void UCSlotsLayout::componentComplete()
 {
+    Q_D(UCSlotsLayout);
     QQuickItem::componentComplete();
 
-    Q_D(UCSlotsLayout);
     d->_q_onThemeChanged();
-
-    d->ready = true;
 
     //We want to call these functions for the first time after the
     //QML properties (such as titleItem.text) have been initialized!

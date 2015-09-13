@@ -111,7 +111,6 @@ public:
 
     //Show the chevron, name taken from old ListItem API to minimize changes
     bool progression : 1;
-    bool ready : 1;
 
 private:
     void setDefaultLabelsProperties();
