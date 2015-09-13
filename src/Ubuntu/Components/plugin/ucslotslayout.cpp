@@ -359,6 +359,10 @@ qreal UCSlotsLayoutPrivate::populateSlotsListsAndComputeWidth()
             continue;
         }
 
+        if (!child->isVisible()) {
+            continue;
+        }
+
         UCSlotsAttached *attached =
                 qobject_cast<UCSlotsAttached *>(qmlAttachedPropertiesObject<UCSlotsLayout>(child));
 
@@ -366,8 +370,6 @@ qreal UCSlotsLayoutPrivate::populateSlotsListsAndComputeWidth()
             qmlInfo(q) << "Invalid attached property!";
             continue;
         }
-
-        //TODO: IGNORE INVISIBLE CHILDREN?
 
         //ignore if it's a chevron because we only position chevron as trailing slot
         if (attached->position() == UCSlotsLayout::Leading && child != chevron) {
