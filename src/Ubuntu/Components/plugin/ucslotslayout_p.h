@@ -33,6 +33,17 @@ public:
     void init();
     void updateTopBottomOffsetsIfNeeded();
 
+    qreal populateSlotsListsAndComputeWidth();
+
+    //layout "items" in a row, optionally anchoring the row to a sibling with margin siblingAnchorMargin
+    //The optional anchoring behaviour can be disable by passing QQuickAnchorLine()
+    void layoutInRow(qreal siblingAnchorMargin, QQuickAnchorLine siblingAnchor, QList<QQuickItem *> &items);
+    void setupSlotsVerticalPositioning(QQuickItem *item);
+    void setupLabelsLeftAnchors();
+    void setupLabelsVerticalPositioning();
+    void setupLabelsRightAnchors();
+    void layoutLabels(qreal totalSlotsWidth);
+
     //We have two vertical positioning modes according to the visual design rules:
     //- RETURN VALUE CenterVertically --> All items have to be vertically centered
     //- RETURN VALUE AlignToTop --> All items have to anchor to the top of the listitem (using a top margin as well)
