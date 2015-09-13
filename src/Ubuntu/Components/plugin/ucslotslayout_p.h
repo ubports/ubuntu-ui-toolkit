@@ -63,6 +63,9 @@ public:
     QQuickText m_subtitle;
     QQuickText m_subsubtitle;
 
+    QList<QQuickItem *> leadingSlots;
+    QList<QQuickItem *> trailingSlots;
+
     //We cache the current parent so that we can disconnect from the signals when the
     //parent changes. We need this because itemChange(..) only provides the new parent
     QQuickItem *m_parentItem;

@@ -352,8 +352,9 @@ void UCSlotsLayoutPrivate::_q_relayout()
     qint32 trailingSlotsAvailable = maxNumberOfTrailingSlots - (progression && chevron);
     qint32 leadingSlotsAvailable = maxNumberOfLeadingSlots;
 
-    QList<QQuickItem *> leadingSlots;
-    QList<QQuickItem *> trailingSlots;
+    leadingSlots.clear();
+    trailingSlots.clear();
+
     int totalWidth = 0;
     int i = 0;
     for (i = 0; i < q->childItems().length(); i++) {
