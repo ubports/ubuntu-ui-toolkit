@@ -65,7 +65,7 @@ private:
 };
 QML_DECLARE_TYPEINFO(UCSlotsLayout, QML_HAS_ATTACHED_PROPERTIES)
 
-
+class UCSlotsAttachedPrivate;
 class UCSlotsAttached : public QObject
 {
     Q_OBJECT
@@ -75,7 +75,7 @@ class UCSlotsAttached : public QObject
     Q_PROPERTY(bool overrideVerticalPositioning READ overrideVerticalPositioning WRITE setOverrideVerticalPositioning NOTIFY overrideVerticalPositioningChanged)
 
 public:
-    UCSlotsAttached(QObject *object);
+    UCSlotsAttached(QObject *object = 0);
 
     UCSlotsLayout::UCSlotPosition position() const;
     void setPosition(UCSlotsLayout::UCSlotPosition pos);
@@ -91,23 +91,17 @@ public:
     bool overrideVerticalPositioning() const;
     void setOverrideVerticalPositioning(bool val);
 
-public Q_SLOTS:
-    void updateGuValues();
-
 Q_SIGNALS:
     void positionChanged();
     void leftMarginChanged();
     void rightMarginChanged();
     void overrideVerticalPositioningChanged();
 
-private:
-    UCSlotsLayout::UCSlotPosition m_position;
-    qreal m_leftMargin;
-    qreal m_rightMargin;
-    bool m_overrideVerticalPositioning : 1;
+protected:
+    Q_DECLARE_PRIVATE(UCSlotsAttached)
 
-    bool leftMarginWasSetFromQml : 1;
-    bool rightMarginWasSetFromQml : 1;
+private:
+    Q_PRIVATE_SLOT(d_func(), void _q_onGuValueChanged())
 };
 
 class UCSlotsLayoutChevron : public QQuickPaintedItem

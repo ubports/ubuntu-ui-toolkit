@@ -24,7 +24,7 @@
 #define CHEVRON_DEFAULT_HEIGHT_GU                    2.5
 #define CHEVRON_DEFAULT_WIDTH_GU                     2
 
-class UCSlotsLayoutPrivate : QQuickItemPrivate
+class UCSlotsLayoutPrivate : public QQuickItemPrivate
 {
     Q_DECLARE_PUBLIC(UCSlotsLayout)
 public:
@@ -101,6 +101,29 @@ public:
 
 private:
     void setDefaultLabelsProperties();
+};
+
+class UCSlotsAttachedPrivate : public QObjectPrivate
+{
+    Q_DECLARE_PUBLIC(UCSlotsAttached)
+public:
+    UCSlotsAttachedPrivate();
+
+    static inline UCSlotsAttachedPrivate *get(UCSlotsAttached *that)
+    {
+        Q_ASSERT(that);
+        return that->d_func();
+    }
+
+    void _q_onGuValueChanged();
+
+    UCSlotsLayout::UCSlotPosition position;
+    qreal leftMargin;
+    qreal rightMargin;
+    bool overrideVerticalPositioning : 1;
+
+    bool leftMarginWasSetFromQml : 1;
+    bool rightMarginWasSetFromQml : 1;
 };
 
 #endif // UCSLOTSLAYOUTPRIVATE_H

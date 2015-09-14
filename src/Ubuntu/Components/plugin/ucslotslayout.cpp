@@ -26,6 +26,7 @@ UCSlotsLayoutPrivate::UCSlotsLayoutPrivate()
 
 UCSlotsLayoutPrivate::~UCSlotsLayoutPrivate()
 {
+    delete chevron;
 }
 
 void UCSlotsLayoutPrivate::init()
@@ -746,104 +747,124 @@ UCSlotsAttached *UCSlotsLayout::progressionSlot() const
 }
 
 /******************************************************************************
- * UCSlotsAttached
+ * UCSlotsAttachedPrivate
  */
-UCSlotsAttached::UCSlotsAttached(QObject *object)
-    : QObject(object)
-    , m_position(UCSlotsLayout::Trailing)
-    , m_leftMargin(0)
-    , m_rightMargin(0)
-    , m_overrideVerticalPositioning(false)
+UCSlotsAttachedPrivate::UCSlotsAttachedPrivate()
+    : QObjectPrivate()
+    , position(UCSlotsLayout::Trailing)
+    , leftMargin(0)
+    , rightMargin(0)
+    , overrideVerticalPositioning(false)
     , leftMarginWasSetFromQml(false)
     , rightMarginWasSetFromQml(false)
 {
-    updateGuValues();
-    QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this, SLOT(updateGuValues()));
+}
+
+void UCSlotsAttachedPrivate::_q_onGuValueChanged()
+{
+    Q_Q(UCSlotsAttached);
+    if (!leftMarginWasSetFromQml)
+        q->setLeftMargin(UCUnits::instance().gu(SLOTSLAYOUT_SLOTS_SIDEMARGINS_GU));
+
+    if (!rightMarginWasSetFromQml)
+        q->setRightMargin(UCUnits::instance().gu(SLOTSLAYOUT_SLOTS_SIDEMARGINS_GU));
+}
+
+/******************************************************************************
+ * UCSlotsAttached
+ */
+UCSlotsAttached::UCSlotsAttached(QObject *object)
+    : QObject(*(new UCSlotsAttachedPrivate), object)
+{
+    Q_D(UCSlotsAttached);
+    d->_q_onGuValueChanged();
+    QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this, SLOT(_q_onGuValueChanged()));
 }
 
 UCSlotsLayout::UCSlotPosition UCSlotsAttached::position() const
 {
-    return m_position;
+    Q_D(const UCSlotsAttached);
+    return d->position;
 }
 
 void UCSlotsAttached::setPosition(UCSlotsLayout::UCSlotPosition pos)
 {
-    if (m_position != pos) {
-        m_position = pos;
+    Q_D(UCSlotsAttached);
+    if (d->position != pos) {
+        d->position = pos;
         Q_EMIT positionChanged();
     }
 }
 
 qreal UCSlotsAttached::leftMargin() const
 {
-    return m_leftMargin;
+    Q_D(const UCSlotsAttached);
+    return d->leftMargin;
 }
 
 void UCSlotsAttached::setLeftMargin(qreal margin)
 {
-    if (m_leftMargin != margin) {
-        m_leftMargin = margin;
+    Q_D(UCSlotsAttached);
+    if (d->leftMargin != margin) {
+        d->leftMargin = margin;
         Q_EMIT leftMarginChanged();
     }
 }
 
 void UCSlotsAttached::setLeftMarginQml(qreal margin)
 {
-    leftMarginWasSetFromQml = true;
+    Q_D(UCSlotsAttached);
+    d->leftMarginWasSetFromQml = true;
 
     //if both have been set from QML, then disconnect the signal from the slot, to avoid overwriting dev's values
     //when GU changes
-    if (rightMarginWasSetFromQml)
-        QObject::disconnect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this, SLOT(updateGuValues()));
+    if (d->rightMarginWasSetFromQml)
+        QObject::disconnect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this, SLOT(_q_onGuValueChanged()));
 
     setLeftMargin(margin);
 }
 
 qreal UCSlotsAttached::rightMargin() const
 {
-    return m_rightMargin;
+    Q_D(const UCSlotsAttached);
+    return d->rightMargin;
 }
 
 void UCSlotsAttached::setRightMargin(qreal margin)
 {
-    if (m_rightMargin != margin) {
-        m_rightMargin = margin;
+    Q_D(UCSlotsAttached);
+    if (d->rightMargin != margin) {
+        d->rightMargin = margin;
         Q_EMIT rightMarginChanged();
     }
 }
 
 void UCSlotsAttached::setRightMarginQml(qreal margin)
 {
-    rightMarginWasSetFromQml = true;
+    Q_D(UCSlotsAttached);
+    d->rightMarginWasSetFromQml = true;
 
     //if both have been set from QML, then disconnect the signal from the slot, to avoid overwriting dev's values
     //when GU changes
-    if (leftMarginWasSetFromQml)
-        QObject::disconnect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this, SLOT(updateGuValues()));
+    if (d->leftMarginWasSetFromQml)
+        QObject::disconnect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this, SLOT(_q_onGuValueChanged()));
 
     setRightMargin(margin);
 }
 
 bool UCSlotsAttached::overrideVerticalPositioning() const
 {
-    return m_overrideVerticalPositioning;
+    Q_D(const UCSlotsAttached);
+    return d->overrideVerticalPositioning;
 }
 
 void UCSlotsAttached::setOverrideVerticalPositioning(bool val)
 {
-    if (m_overrideVerticalPositioning != val) {
-        m_overrideVerticalPositioning = val;
+    Q_D(UCSlotsAttached);
+    if (d->overrideVerticalPositioning != val) {
+        d->overrideVerticalPositioning = val;
         Q_EMIT overrideVerticalPositioningChanged();
     }
-}
-
-void UCSlotsAttached::updateGuValues()
-{
-    if (!leftMarginWasSetFromQml)
-        setLeftMargin(UCUnits::instance().gu(SLOTSLAYOUT_SLOTS_SIDEMARGINS_GU));
-
-    if (!rightMarginWasSetFromQml)
-        setRightMargin(UCUnits::instance().gu(SLOTSLAYOUT_SLOTS_SIDEMARGINS_GU));
 }
 
 UCSlotsAttached *UCSlotsLayout::qmlAttachedProperties(QObject *object)
