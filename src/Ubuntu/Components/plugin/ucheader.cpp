@@ -56,6 +56,8 @@ UCHeader::UCHeader(QQuickItem *parent)
     m_showHideAnimation->setEasing(s_ubuntuAnimation->StandardEasing());
     m_showHideAnimation->setEasing(s_ubuntuAnimation->StandardEasing());
     m_showHideAnimation->setDuration(s_ubuntuAnimation->BriskDuration());
+    // FIXME TIM: this duration is for testing only:
+    m_showHideAnimation->setDuration(s_ubuntuAnimation->SleepyDuration());
 
     connect(m_showHideAnimation, SIGNAL(runningChanged(bool)),
             this, SLOT(q_showHideAnimationRunningChanged()));
@@ -136,6 +138,9 @@ void UCHeader::show() {
     if (!m_exposed) {
         m_exposed = true;
         Q_EMIT exposedChanged();
+        if (m_showHideAnimation->isRunning()) {
+            m_showHideAnimation->stop();
+        }
     }
     m_showHideAnimation->setFrom(this->y());
     m_showHideAnimation->setTo(0.0);
@@ -146,6 +151,9 @@ void UCHeader::hide() {
     if (m_exposed) {
         m_exposed = false;
         Q_EMIT exposedChanged();
+        if (m_showHideAnimation->isRunning()) {
+            m_showHideAnimation->stop();
+        }
     }
     m_showHideAnimation->setFrom(this->y());
     m_showHideAnimation->setTo(-1.0*this->height());

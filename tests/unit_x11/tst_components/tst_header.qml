@@ -71,6 +71,7 @@ Item {
                 id: hiddenSwitch
                 checked: !header.exposed
                 function trigger() {
+                    print("setting exposed to "+!header.exposed)
                     header.exposed = !header.exposed;
                 }
             }
@@ -189,9 +190,24 @@ Item {
 
         function test_set_exposed_to_hide_and_show() {
             header.exposed = false;
-            wait_for_exposed(false, "Cannot hide unlocked header by setting visible to false.");
+            wait_for_exposed(false, "Cannot hide header by setting visible to false.");
             header.exposed = true;
-            wait_for_exposed(true, "Cannot show unlocked header by setting visible to true.");
+            wait_for_exposed(true, "Cannot show header by setting visible to true.");
+
+            // change the value of exposed twice quickly:
+            header.exposed = false;
+            header.exposed = true;
+            wait_for_exposed(true, "Quickly hiding and showing header does not result in exposed header.");
+
+            // and the other way around:
+            header.exposed = false;
+            wait_for_exposed(false);
+            header.exposed = true;
+            header.exposed = false;
+            wait_for_exposed(false, "Quickly showing and hiding header does not result in hidden header.");
+
+            header.exposed = true;
+            wait_for_exposed(true);
 
 //            page.head.locked = true;
 //            page.head.visible = false;
