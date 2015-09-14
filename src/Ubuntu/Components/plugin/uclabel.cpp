@@ -173,6 +173,12 @@ void UCLabel::setFontSize(const QString& fontSize)
         return;
     }
 
+    static bool logOnce = false;
+    if (!logOnce) {
+        logOnce = true;
+        qmlInfo(this) << "'fontSize' is deprecated, use 'adaptiveSize' property instead.";
+    }
+
     AdaptiveSize adaptiveSize;
     switch (reinterpret_cast<int*>(fontSize.toLatin1().data())[0]) {
         case /*"medi"*/0x6964656d: { adaptiveSize = Medium; break; }
