@@ -429,6 +429,9 @@ void UCStyledItemBasePrivate::_q_reloadStyle()
     postStyleChanged();
     loadStyleItem();
     Q_EMIT q->themeChanged();
+
+    // broadcast theme update
+    UCThemeEvent::broadcastThemeUpdate(q, theme);
 }
 
 // handle implicit size changes implied by the style components
@@ -507,7 +510,7 @@ void UCStyledItemBasePrivate::setTheme(UCTheme *newTheme, ThemeType type)
 
     Q_EMIT q->themeChanged();
     // broadcast to the children
-    UCThemeUpdateEvent::broadcastToChildren(q, oldTheme, theme);
+    UCThemeEvent::broadcastThemeChange(q, oldTheme, theme);
 
     // perform style reload
     if (wasStyleLoaded) {
@@ -582,27 +585,27 @@ bool UCStyledItemBase::childMouseEventFilter(QQuickItem *child, QEvent *event)
 void UCStyledItemBase::itemChange(ItemChange change, const ItemChangeData &data)
 {
     Q_D(UCStyledItemBase);
-    if (change == ItemParentHasChanged) {
-        if (!d->componentComplete && d->themeType == UCStyledItemBasePrivate::Inherited) {
+    if (change == ItemParentHasChanged && data.item) {
+        if (d->themeType == UCStyledItemBasePrivate::Inherited) {
             UCStyledItemBase *upperStyled = ascendantStyled(data.item);
             if (upperStyled) {
                 d->setTheme(UCStyledItemBasePrivate::get(upperStyled)->getTheme(), UCStyledItemBasePrivate::Inherited);
             }
-        } else if (d->componentComplete && d->themeType == UCStyledItemBasePrivate::Custom) {
+        } else if (d->themeType == UCStyledItemBasePrivate::Custom) {
             d->setParentTheme();
         }
     }
     QQuickItem::itemChange(change, data);
 }
 
-// catch UCThemeUpdateEvent
+// catch UCThemeEvent
 void UCStyledItemBase::customEvent(QEvent *event)
 {
     Q_D(UCStyledItemBase);
 
-    if (event->type() == (QEvent::Type)UCThemeUpdateEvent::themeEventId) {
+    if (event->type() == (QEvent::Type)UCThemeEvent::themeUpdatedId) {
         Q_D(UCStyledItemBase);
-        UCThemeUpdateEvent *themeEvent = static_cast<UCThemeUpdateEvent*>(event);
+        UCThemeEvent *themeEvent = static_cast<UCThemeEvent*>(event);
         // we have the following cases:
         // 1. the current item's theme is Inherited
         if (d->themeType == UCStyledItemBasePrivate::Inherited) {
@@ -616,6 +619,15 @@ void UCStyledItemBase::customEvent(QEvent *event)
             // set the theme's parent
             d->theme->setParentTheme(themeEvent->newTheme());
             return;
+        }
+    } else if (event->type() == (QEvent::Type)UCThemeEvent::themeReloadedId) {
+        Q_D(UCStyledItemBase);
+        if (d->themeType == UCStyledItemBasePrivate::Inherited) {
+            // simply emit theme changed
+            Q_EMIT themeChanged();
+        } else if (d->themeType == UCStyledItemBasePrivate::Custom) {
+            // emit theme's parentThemeChanged()
+            Q_EMIT d->theme->parentThemeChanged();
         }
     }
 }

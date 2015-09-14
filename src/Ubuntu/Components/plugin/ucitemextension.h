@@ -27,6 +27,7 @@
 class QQuickItem;
 class UCStyledItemBase;
 class UCTheme;
+class UCItemExtension;
 class UCItemAttached : public QObject
 {
     Q_OBJECT
@@ -38,22 +39,29 @@ public:
     QQuickItem *m_item;
     QQuickItem *m_prevParent;
 
-private Q_SLOTS:
-    void handleParentChanged(QQuickItem *newParent);
+private:
+    void attachMe(QQuickItem *parentItem);
+    Q_SLOT void handleParentChanged(QQuickItem *newParent);
+
+    friend class UCItemExtension;
 };
 QML_DECLARE_TYPEINFO(UCItemAttached, QML_HAS_ATTACHED_PROPERTIES)
 
-class UCThemeUpdateEvent : public QEvent
+class UCThemeEvent : public QEvent
 {
 public: // statics
     // event ID
-    static int themeEventId;
-    static void handleEvent(QQuickItem *item, UCTheme *oldTheme, UCTheme *newTheme);
-    static void broadcastToChildren(QQuickItem *item, UCTheme *oldTheme, UCTheme *newTheme);
-    static void forwardEvent(QQuickItem *item, UCThemeUpdateEvent *event);
+    static int themeUpdatedId;
+    static int themeReloadedId;
+    static void handleEvent(QQuickItem *item, UCThemeEvent *event);
+    static void forwardEvent(QQuickItem *item, UCThemeEvent *event);
+    static void broadcastThemeChange(QQuickItem *item, UCTheme *oldTheme, UCTheme *newTheme);
+    static void broadcastThemeUpdate(QQuickItem *item, UCTheme *theme);
 
 public:
-    explicit UCThemeUpdateEvent(UCTheme *oldTheme, UCTheme *newTheme);
+    explicit UCThemeEvent(UCTheme *reloadedTheme);
+    UCThemeEvent(UCTheme *oldTheme, UCTheme *newTheme);
+    UCThemeEvent(const UCThemeEvent &other);
 
     UCTheme *oldTheme() const
     {

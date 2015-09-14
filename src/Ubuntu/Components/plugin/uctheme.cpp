@@ -428,7 +428,7 @@ UCTheme *UCTheme::parentTheme()
 
 void UCTheme::setParentTheme(UCTheme *parentTheme)
 {
-    if (m_parentTheme == parentTheme) {
+    if (m_parentTheme == parentTheme || parentTheme == this) {
         return;
     }
     Q_ASSERT(parentTheme);

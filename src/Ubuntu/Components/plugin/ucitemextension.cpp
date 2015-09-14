@@ -26,46 +26,68 @@
  * The UCItemExtension class provides faster theme change broadcast and saves us from
  * the need to connect to ascendant instances all around. It is meant to extend QQuickItem
  * (see plugin.cpp registration) therefore it extends any QtQuick element.
- * Whenever the extended Item's parentItem is changed, there will be an UCThemeUpdateEvent
+ * Whenever the extended Item's parentItem is changed, there will be an UCThemeEvent
  * event broadcasted to all item's children and their children. Components which need to
  * handle the theme change can therefore catch this event by extending the QObject::customEvent()
  * method and handle the event there.
  */
 
 //#define ASYNC_BROADCAST
-int UCThemeUpdateEvent::themeEventId = QEvent::registerEventType();
-UCThemeUpdateEvent::UCThemeUpdateEvent(UCTheme *oldTheme, UCTheme *newTheme)
-    : QEvent((QEvent::Type)UCThemeUpdateEvent::themeEventId)
+int UCThemeEvent::themeUpdatedId = QEvent::registerEventType();
+int UCThemeEvent::themeReloadedId = QEvent::registerEventType();
+
+UCThemeEvent::UCThemeEvent(UCTheme *reloadedTheme)
+    : QEvent((QEvent::Type)UCThemeEvent::themeReloadedId)
+    , m_oldTheme(Q_NULLPTR)
+    , m_newTheme(reloadedTheme)
+{
+}
+
+UCThemeEvent::UCThemeEvent(UCTheme *oldTheme, UCTheme *newTheme)
+    : QEvent((QEvent::Type)UCThemeEvent::themeUpdatedId)
     , m_oldTheme(oldTheme)
     , m_newTheme(newTheme)
 {
 }
 
-void UCThemeUpdateEvent::handleEvent(QQuickItem *item, UCTheme *oldTheme, UCTheme *newTheme)
+UCThemeEvent::UCThemeEvent(const UCThemeEvent &other)
+    : QEvent(other.type())
+    , m_oldTheme(other.m_oldTheme)
+    , m_newTheme(other.m_newTheme)
+{
+}
+
+void UCThemeEvent::handleEvent(QQuickItem *item, UCThemeEvent *event)
 {
 #ifdef ASYNC_BROADCAST
-        QGuiApplication::postEvent(item, new UCThemeUpdateEvent(oldTheme, newTheme));
+    QGuiApplication::postEvent(item, new UCThemeEvent(*event));
 #else
-        UCThemeUpdateEvent event(oldTheme, newTheme);
-        QGuiApplication::sendEvent(item, &event);
+    QGuiApplication::sendEvent(item, event);
 #endif
 }
 
-void UCThemeUpdateEvent::broadcastToChildren(QQuickItem *item, UCTheme *oldTheme, UCTheme *newTheme)
+void UCThemeEvent::forwardEvent(QQuickItem *item, UCThemeEvent *event)
 {
     Q_FOREACH(QQuickItem *child, item->childItems()) {
-        handleEvent(child, oldTheme, newTheme);
+        handleEvent(child, event);
         // StyledItem will handle the broadcast itself depending on whether the theme change was appropriate or not
         // and will complete the ascendantStyled/theme itself
         if (child->childItems().size() > 0 && !qobject_cast<UCStyledItemBase*>(child)) {
-            broadcastToChildren(child, oldTheme, newTheme);
+            forwardEvent(child, event);
         }
     }
 }
 
-void UCThemeUpdateEvent::forwardEvent(QQuickItem *item, UCThemeUpdateEvent *event)
+void UCThemeEvent::broadcastThemeChange(QQuickItem *item, UCTheme *oldTheme, UCTheme *newTheme)
 {
-    broadcastToChildren(item, event->oldTheme(), event->newTheme());
+    UCThemeEvent event(oldTheme, newTheme);
+    forwardEvent(item, &event);
+}
+
+void UCThemeEvent::broadcastThemeUpdate(QQuickItem *item, UCTheme *theme)
+{
+    UCThemeEvent event(theme);
+    forwardEvent(item, &event);
 }
 
 /*************************************************************************
@@ -78,8 +100,8 @@ UCItemAttached::UCItemAttached(QObject *owner)
 {
     // get parent item changes
     connect(m_item, &QQuickItem::parentChanged, this, &UCItemAttached::handleParentChanged);
-//    // handle parent changes right away
-//    handleParentChanged(m_item->parentItem());
+    // handle parent changes right away
+    handleParentChanged(m_item->parentItem());
 }
 
 UCItemAttached::~UCItemAttached()
@@ -91,13 +113,26 @@ UCItemAttached *UCItemAttached::qmlAttachedProperties(QObject *owner)
     return new UCItemAttached(owner);
 }
 
+// make sure we have items attached to all intermediate Items between two themed items
+void UCItemAttached::attachMe(QQuickItem *parentItem)
+{
+    QQuickItem *pl = parentItem;
+    while (pl && pl->metaObject()->indexOfProperty("theme") < 0) {
+        // attach the themer
+        qmlAttachedPropertiesObject<UCItemAttached>(pl);
+        pl = pl->parentItem();
+    }
+}
+
 // handle parent changes
 void UCItemAttached::handleParentChanged(QQuickItem *newParent)
 {
     if (newParent == m_prevParent) {
-        // shouldn't be ever encountered, but for safety...
         return;
     }
+
+    attachMe(newParent);
+    // make sure we have these handlers atached to each intermediate item
     UCStyledItemBase *oldStyledAscendant = UCStyledItemBase::ascendantStyled(m_prevParent);
     UCStyledItemBase *newStyledAscendant = UCStyledItemBase::ascendantStyled(newParent);
     UCTheme *oldTheme = oldStyledAscendant ? UCStyledItemBasePrivate::get(oldStyledAscendant)->getTheme() : &UCTheme::defaultTheme();
@@ -105,10 +140,11 @@ void UCItemAttached::handleParentChanged(QQuickItem *newParent)
 
     if (oldTheme != newTheme) {
         // send the event to m_item first
-        UCThemeUpdateEvent::handleEvent(m_item, oldTheme, newTheme);
+        UCThemeEvent event(oldTheme, newTheme);
+        UCThemeEvent::handleEvent(m_item, &event);
         // then broadcast to children, but only if the item is not a styled one
         if (!qobject_cast<UCStyledItemBase*>(m_item)) {
-            UCThemeUpdateEvent::broadcastToChildren(m_item, oldTheme, newTheme);
+            UCThemeEvent::forwardEvent(m_item, &event);
         }
     }
     m_prevParent = newParent;
@@ -130,13 +166,7 @@ void UCItemExtension::classBegin(QQuickItem *item)
 
 void UCItemExtension::componentCompleted()
 {
-    // make sure we have items attached to all intermediate Items between two themed items
-    QQuickItem *pl = attachedThemer->m_item->parentItem();
-    while (pl && pl->metaObject()->indexOfProperty("theme") < 0) {
-        // attach the themer
-        qmlAttachedPropertiesObject<UCItemAttached>(pl);
-        pl = pl->parentItem();
-    }
+    attachedThemer->attachMe(attachedThemer->m_item->parentItem());
 }
 
 #include "moc_ucitemextension.cpp"
