@@ -62,21 +62,25 @@ Item {
             }
             Switch {
                 id: lockedSwitch
-                checked: false
+                checked: header.locked
+                function trigger() {
+                    print("setting locked to "+header.locked);
+                    header.locked = !header.locked;
+                }
             }
             Label {
                 text: "header locked"
             }
             Switch {
                 id: hiddenSwitch
-                checked: !header.exposed
+                checked: header.exposed
                 function trigger() {
                     print("setting exposed to "+!header.exposed)
                     header.exposed = !header.exposed;
                 }
             }
             Label {
-                text: "header hidden"
+                text: "header exposed"
             }
         }
         Label {

@@ -65,8 +65,9 @@ UCHeader::UCHeader(QQuickItem *parent)
 
     // watch grid unit size change and set implicit size
     connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this, SLOT(q_updateSize()));
-    // TODO: connect to parent changes too
-    q_updateSize();
+
+    // Size will be updated when itemChange() is called because the parent is set.
+ //    q_updateSize();
 }
 
 // catch parent change event so we can update the size of the header
@@ -85,7 +86,6 @@ void UCHeader::itemChange(ItemChange change, const ItemChangeData &data)
     }
 }
 
-//// called when units size changes
 void UCHeader::q_updateSize()
 {
     this->setImplicitHeight(UCUnits::instance().gu(IMPLICIT_HEADER_HEIGHT_GU));
@@ -110,6 +110,7 @@ void UCHeader::setFlickable(QQuickFlickable *flickable) {
         m_flickable = flickable;
         Q_EMIT flickableChanged();
 
+        // TODO: move to connectFlickable() and call when lockedChanged.
         if (!m_flickable.isNull()) {
             connect(m_flickable, SIGNAL(contentYChanged()),
                     this, SLOT(q_scrolledContents()));
@@ -198,7 +199,10 @@ bool UCHeader::moving() {
 }
 
 void UCHeader::setLocked(bool locked) {
-    m_locked = locked;
+    if (locked != m_locked) {
+        m_locked = locked;
+        Q_EMIT lockedChanged();
+    }
 }
 
 bool UCHeader::locked() {
