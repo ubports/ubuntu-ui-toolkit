@@ -34,6 +34,7 @@ public:
     ThemeTestCase(const QString& file, bool assertOnFailure = true, QWindow* parent = 0)
         : UbuntuTestCase(file, assertOnFailure, parent)
     {
+        waitForEvents();
     }
 
     ~ThemeTestCase()
@@ -45,6 +46,7 @@ public:
         UCTheme *theme = globalTheme();
         if (theme) {
             theme->resetName();
+            waitForEvents();
         } else {
             qWarning() << "No theme instance found!";
         }
@@ -322,6 +324,7 @@ private Q_SLOTS:
         // change mainItem.theme.name should trigger parentChanged on testSet
         QSignalSpy parentChangeSpy(testSet, SIGNAL(parentThemeChanged()));
         UCStyledItemBasePrivate::get(mainItem)->getTheme()->setName("Ubuntu.Components.Themes.SuruDark");
+        ThemeTestCase::waitForEvents();
         parentChangeSpy.wait(200);
         QCOMPARE(parentChangeSpy.count(), 1);
         QCOMPARE(testSet->parentTheme(), UCStyledItemBasePrivate::get(mainItem)->getTheme());
@@ -746,8 +749,6 @@ private Q_SLOTS:
     void test_stylename_extension_failure()
     {
         ThemeTestCase::ignoreWarning("DeprecatedTheme.qml", 19, 1, "QML StyledItem: Warning: Style OptionSelectorStyle.qml.qml not found in theme Ubuntu.Components.Themes.SuruGradient");
-        // add also for Ambiance, as ThemeTestCase destructor resets the theme, which will cause style warning for the default theme
-        ThemeTestCase::ignoreWarning("DeprecatedTheme.qml", 19, 1, "QML StyledItem: Warning: Style OptionSelectorStyle.qml.qml not found in theme Ubuntu.Components.Themes.Ambiance");
         QScopedPointer<ThemeTestCase> view(new ThemeTestCase("DeprecatedTheme.qml"));
         view->rootObject()->setProperty("styleName", "OptionSelectorStyle.qml");
     }

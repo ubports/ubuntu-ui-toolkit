@@ -101,7 +101,6 @@ public:
 
     static QQuickItem *ascendantThemed(QQuickItem *item);
 
-protected:
     QQuickItem *themedItem;
     UCItemAttached *attachedThemer;
     UCTheme *theme;

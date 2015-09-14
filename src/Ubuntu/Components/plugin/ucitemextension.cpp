@@ -120,7 +120,7 @@ UCItemAttached *UCItemAttached::qmlAttachedProperties(QObject *owner)
 // handle parent changes
 void UCItemAttached::handleParentChanged(QQuickItem *newParent)
 {
-    if (newParent == m_prevParent) {
+    if (newParent == m_prevParent || QQuickItemPrivate::get(m_item)->wasDeleted) {
         return;
     }
 
@@ -147,10 +147,11 @@ void UCItemAttached::handleParentChanged(QQuickItem *newParent)
 
 void UCItemAttached::reloadTheme()
 {
-    m_extension->preThemeChanged();
-    m_extension->postThemeChanged();
-    // broadcast theme update
-    UCThemeEvent::broadcastThemeUpdate(m_item, m_extension->getTheme());
+    UCThemeEvent event(m_extension->getTheme());
+    if (m_extension->themeType == UCItemExtension::Inherited) {
+        UCThemeEvent::handleEvent(m_item, &event, false);
+    }
+    UCThemeEvent::forwardEvent(m_item, &event);
 }
 
 /*************************************************************************
