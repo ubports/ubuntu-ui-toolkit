@@ -22,7 +22,7 @@ Item {
     id: root
     width: units.gu(50)
     height: units.gu(70)
-    onWidthChanged: print("root.width = "+width)
+//    onWidthChanged: print("root.width = "+width)
 
     Header {
 //        width: parent.width
@@ -41,14 +41,14 @@ Item {
                 width: 2
             }
         }
-        onExposedChanged: print("exposed changed to "+exposed)
-        onMovingChanged: print("moving changed to "+moving)
+//        onExposedChanged: print("exposed changed to "+exposed)
+//        onMovingChanged: print("moving changed to "+moving)
     }
 
     Flickable {
         id: flickable
         anchors.fill: parent
-        anchors.topMargin: units.gu(10)
+//        anchors.topMargin: units.gu(10)
         contentHeight: height * 2
 
         Grid {
@@ -131,9 +131,16 @@ Item {
 //            testCase.header = findChild(mainView, "MainView_Header");
 //        }
 
-        function init() {
+        function initTestCase() {
             compare(header.exposed, true, "Header not exposed initially");
 //            compare(page.head.locked, false, "Header is not locked initially.");
+        }
+
+        function init() {
+            flickable.contentHeight = 2*flickable.height;
+            flickable.interactive = true;
+            header.exposed = true;
+            wait_for_exposed(true);
         }
 
         function scroll(dy) {
@@ -177,6 +184,7 @@ Item {
             compare(header.y, 0);
 
             // test width update when changing width of parent:
+            var old_width = reparentTestItem.width;
             reparentTestItem.width = units.gu(5);
             compare(header.width, reparentTestItem.width);
             compare(header.y, 0);
@@ -186,6 +194,7 @@ Item {
             compare(header.parent, root);
             compare(header.width, root.width);
             compare(header.y, 0);
+            reparentTestItem.width = old_width;
         }
 
         function test_set_exposed_to_hide_and_show() {
@@ -221,6 +230,33 @@ Item {
             wait_for_exposed(false, "Scrolling down does not hide header.");
             scroll_up();
             wait_for_exposed(true, "Scrolling up does not show header.");
+        }
+
+//        function test_flickable_margins() {
+//            // TODO TIM
+//        }
+
+        function test_flickable_contentHeight_bug1156573() {
+            var old_height = flickable.contentHeight;
+            header.exposed = false;
+            wait_for_exposed(false);
+            flickable.contentHeight = flickable.height / 2;
+            wait_for_exposed(true, "Small content height does not expose the header.");
+
+            // revert:
+            flickable.contentHeight = old_height;
+            compare(header.exposed, true, "Reverting flickable content height hides the header.");
+        }
+
+        function test_flickable_interactive() {
+            header.exposed = false;
+            wait_for_exposed(false);
+            flickable.interactive = false;
+            wait_for_exposed(true, "Making flickable not interactive does not expose the header.");
+
+            // revert:
+            flickable.interactive = true;
+            compare(header.exposed, true, "Reverting flickable exposed hides the header.");
         }
 
 //        function test_scroll_when_locked_does_not_update_visible() {

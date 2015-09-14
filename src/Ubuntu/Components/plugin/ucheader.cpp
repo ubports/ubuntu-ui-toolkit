@@ -45,6 +45,7 @@ UCHeader::UCHeader(QQuickItem *parent)
     : QQuickItem(parent)
     , m_exposed(true)
     , m_moving(false)
+    , m_locked(false)
     , m_previous_contentY(0)
     , m_showHideAnimation(new QQuickNumberAnimation)
     , m_flickable(Q_NULLPTR)
@@ -57,7 +58,7 @@ UCHeader::UCHeader(QQuickItem *parent)
     m_showHideAnimation->setEasing(s_ubuntuAnimation->StandardEasing());
     m_showHideAnimation->setDuration(s_ubuntuAnimation->BriskDuration());
     // FIXME TIM: this duration is for testing only:
-    m_showHideAnimation->setDuration(s_ubuntuAnimation->SleepyDuration());
+//    m_showHideAnimation->setDuration(s_ubuntuAnimation->SleepyDuration());
 
     connect(m_showHideAnimation, SIGNAL(runningChanged(bool)),
             this, SLOT(q_showHideAnimationRunningChanged()));
@@ -110,12 +111,17 @@ void UCHeader::setFlickable(QQuickFlickable *flickable) {
         Q_EMIT flickableChanged();
 
         if (!m_flickable.isNull()) {
-            this->updateFlickableMargins();
             connect(m_flickable, SIGNAL(contentYChanged()),
                     this, SLOT(q_scrolledContents()));
             connect(m_flickable, SIGNAL(movementEnded()),
                     this, SLOT(q_flickableMovementEnded()));
+            // TODO TIM: connect contentHeightChanged and interactiveChanged?
+            connect(m_flickable, SIGNAL(contentHeightChanged()),
+                    this, SLOT(q_contentHeightChanged()));
+            connect(m_flickable, SIGNAL(interactiveChanged()),
+                    this, SLOT(q_flickableInteractiveChanged()));
             m_previous_contentY = m_flickable->contentY();
+            this->updateFlickableMargins();
         }
     }
 }
@@ -142,6 +148,7 @@ void UCHeader::show() {
             m_showHideAnimation->stop();
         }
     }
+    // TODO TIM: disable contents when moving?
     m_showHideAnimation->setFrom(this->y());
     m_showHideAnimation->setTo(0.0);
     m_showHideAnimation->start();
@@ -155,6 +162,7 @@ void UCHeader::hide() {
             m_showHideAnimation->stop();
         }
     }
+    // TODO TIM: disable contents when moving?
     m_showHideAnimation->setFrom(this->y());
     m_showHideAnimation->setTo(-1.0*this->height());
     m_showHideAnimation->start();
@@ -189,7 +197,16 @@ bool UCHeader::moving() {
     return m_moving;
 }
 
+void UCHeader::setLocked(bool locked) {
+    m_locked = locked;
+}
+
+bool UCHeader::locked() {
+    return m_locked;
+}
+
 void UCHeader::q_scrolledContents() {
+    Q_ASSERT(!m_flickable.isNull());
     // Avoid moving the header when rebounding or being dragged over the bounds.
     if (!m_flickable->isAtYBeginning() && !m_flickable->isAtYEnd()) {
         qreal dy = m_flickable->contentY() - m_previous_contentY;
@@ -205,10 +222,29 @@ void UCHeader::q_scrolledContents() {
 }
 
 void UCHeader::q_flickableMovementEnded() {
-    if ((!m_flickable.isNull() && m_flickable->contentY() < 0)
+    Q_ASSERT(!m_flickable.isNull());
+    if ((m_flickable->contentY() < 0)
             || (this->y() > -this->height()/2.0)) {
         this->show();
     } else {
         this->hide();
+    }
+}
+
+void UCHeader::q_contentHeightChanged() {
+    Q_ASSERT(!m_flickable.isNull());
+    if (m_flickable->height() >= m_flickable->contentHeight()) {
+        // The user cannot scroll down to expose the header, so ensure
+        //  that it is visible
+        this->show();
+    }
+}
+
+void UCHeader::q_flickableInteractiveChanged() {
+    Q_ASSERT(!m_flickable.isNull());
+    if (!m_flickable->isInteractive()) {
+        // The user cannot scroll down to expose the header, so ensure
+        //  that it is visible
+        this->show();
     }
 }

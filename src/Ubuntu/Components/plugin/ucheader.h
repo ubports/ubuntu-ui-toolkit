@@ -17,7 +17,8 @@
 #ifndef UCHEADER_H
 #define UCHEADER_H
 
-#include "ucstyleditembase.h" // FIXMME TIM: remove
+#include <QtQuick/QQuickItem>
+//#include "ucstyleditembase.h" // FIXMME TIM: remove
 #include <QtCore/QPointer>
 
 class QQuickFlickable;
@@ -31,6 +32,7 @@ class UCHeader : public QQuickItem //UCStyledItemBase
     Q_PROPERTY(QQuickFlickable* flickable READ flickable WRITE setFlickable NOTIFY flickableChanged)
     Q_PROPERTY(bool exposed READ exposed WRITE setExposed NOTIFY exposedChanged)
     Q_PROPERTY(bool moving READ moving NOTIFY movingChanged)
+    Q_PROPERTY(bool locked READ locked WRITE setLocked NOTIFY lockedChanged)
 
 public:
     explicit UCHeader(QQuickItem *parent = 0);
@@ -40,11 +42,14 @@ public:
     bool exposed();
     void setExposed(bool exposed);
     bool moving();
+    bool locked();
+    void setLocked(bool locked);
 
 Q_SIGNALS:
     void flickableChanged();
     void exposedChanged();
     void movingChanged();
+    void lockedChanged();
 
 protected:
     void show();
@@ -52,6 +57,7 @@ protected:
     void itemChange(ItemChange change, const ItemChangeData &data);
 
 protected Q_SLOTS:
+    // TODO: make private?
     void q_updateSize();
 
 private Q_SLOTS:
@@ -59,10 +65,13 @@ private Q_SLOTS:
     void q_scrolledContents();
     void q_showHideAnimationRunningChanged();
     void q_flickableMovementEnded();
+    void q_contentHeightChanged();
+    void q_flickableInteractiveChanged();
 
 private:
     bool m_exposed;
     bool m_moving;
+    bool m_locked;
     qreal m_previous_contentY;
 
     QQuickNumberAnimation* m_showHideAnimation;
