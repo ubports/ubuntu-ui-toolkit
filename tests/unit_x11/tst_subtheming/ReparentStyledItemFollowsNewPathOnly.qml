@@ -27,7 +27,6 @@ StyledItem {
     }
 
     StyledItem {
-        id: customThemed
         objectName: "customThemed"
         theme: ThemeSettings {
             name: "CustomTheme"
@@ -35,14 +34,6 @@ StyledItem {
     }
 
     StyledItem {
-        id: movable
         objectName: "movable"
-    }
-
-    function test_reparent() {
-        movable.parent = null;
-    }
-    function test_reparent_custom() {
-        movable.parent = customThemed;
     }
 }

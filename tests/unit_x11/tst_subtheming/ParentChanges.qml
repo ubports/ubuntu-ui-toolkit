@@ -25,7 +25,6 @@ StyledItem {
     theme: ThemeSettings{ objectName: "top" }
 
     Item {
-        objectName: "Unstyled"
         anchors.fill: parent
         StyledItem {
             objectName: "testItem"
