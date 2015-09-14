@@ -62,7 +62,6 @@ protected:
 private:
     Q_DECLARE_PRIVATE(UCStyledItemBase)
     Q_PRIVATE_SLOT(d_func(), void _q_styleResized())
-//    Q_PRIVATE_SLOT(d_func(), void _q_reloadStyle())
 };
 
 #endif // UCSTYLEDITEMBASE_H

@@ -23,13 +23,13 @@
 #include <QtGui/QGuiApplication>
 
 /*
- * The UCItemExtension class provides faster theme change broadcast and saves us from
- * the need to connect to ascendant instances all around. It is meant to extend QQuickItem
- * (see plugin.cpp registration) therefore it extends any QtQuick element.
- * Whenever the extended Item's parentItem is changed, there will be an UCThemeEvent
- * event broadcasted to all item's children and their children. Components which need to
- * handle the theme change can therefore catch this event by extending the QObject::customEvent()
- * method and handle the event there.
+ * The UCItemExtension class provides theme handling on Items extending an existing
+ * QQuickItem derivate class. Items subject fo theming should derive from this class
+ * and implement the virtual methods, as well as add the following two methods:
+ * 1) classBegin(item) should be called from the QQuickItem::classBegin() method
+ * 2) handleThemeEvent() should be called from QQuickItem::customEvent() method
+ * The item can expose the theme property and use the getters defined by the
+ * class.
  */
 
 int UCThemeEvent::themeUpdatedId = QEvent::registerEventType();

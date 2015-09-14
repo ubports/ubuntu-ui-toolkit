@@ -40,10 +40,6 @@ void UCStyledItemBasePrivate::init()
 {
     Q_Q(UCStyledItemBase);
     q->setFlag(QQuickItem::ItemIsFocusScope);
-//    QObject::connect(&UCTheme::defaultTheme(), SIGNAL(nameChanged()),
-//                     q, SLOT(_q_reloadStyle()));
-//    QObject::connect(&UCTheme::defaultTheme(), SIGNAL(versionChanged()),
-//                     q, SLOT(_q_reloadStyle()));
 }
 
 
@@ -121,7 +117,6 @@ UCStyledItemBase::UCStyledItemBase(UCStyledItemBasePrivate &dd, QQuickItem *pare
     Q_D(UCStyledItemBase);
     d->init();
 }
-
 
 /*!
  * \qmlmethod void StyledItemBase::requestFocus(Qt::FocusReason reason)
@@ -407,22 +402,6 @@ void UCStyledItemBasePrivate::connectStyleSizeChanges(bool attach)
         }
     }
 }
-
-//// reloads style component due to theme, theme.name or theme.version change
-//void UCStyledItemBasePrivate::_q_reloadStyle()
-//{
-//    if (styleComponent) {
-//        return;
-//    }
-//    Q_Q(UCStyledItemBase);
-//    preStyleChanged();
-//    postStyleChanged();
-//    loadStyleItem();
-//    Q_EMIT q->themeChanged();
-
-//    // broadcast theme update
-//    UCThemeEvent::broadcastThemeUpdate(q, theme);
-//}
 
 // handle implicit size changes implied by the style components
 void UCStyledItemBasePrivate::_q_styleResized()
