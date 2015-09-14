@@ -40,7 +40,6 @@ public:
     QQuickItem *m_prevParent;
 
 private:
-    void attachMe(QQuickItem *parentItem);
     Q_SLOT void handleParentChanged(QQuickItem *newParent);
 
     friend class UCItemExtension;
@@ -53,7 +52,8 @@ public: // statics
     // event ID
     static int themeUpdatedId;
     static int themeReloadedId;
-    static void handleEvent(QQuickItem *item, UCThemeEvent *event);
+    static bool isThemeEvent(const QEvent *event);
+    static void handleEvent(QQuickItem *item, UCThemeEvent *event, bool synchronous);
     static void forwardEvent(QQuickItem *item, UCThemeEvent *event);
     static void broadcastThemeChange(QQuickItem *item, UCTheme *oldTheme, UCTheme *newTheme);
     static void broadcastThemeUpdate(QQuickItem *item, UCTheme *theme);
@@ -79,13 +79,32 @@ private:
 class UCItemExtension
 {
 public:
+    enum ThemeType {
+        Inherited,
+        Custom
+    };
+
     explicit UCItemExtension();
 
+    virtual void preThemeChanged() = 0;
+    virtual void postThemeChanged() = 0;
+
     virtual void classBegin(QQuickItem *item);
-    virtual void componentCompleted();
+    virtual void handleThemeEvent(UCThemeEvent *event);
+
+    UCTheme *getTheme() const;
+    void setTheme(UCTheme *newTheme, ThemeType type = Custom);
+    void resetTheme();
+
+    static QQuickItem *ascendantThemed(QQuickItem *item);
 
 protected:
+    QQuickItem *themedItem;
     UCItemAttached *attachedThemer;
+    UCTheme *theme;
+    ThemeType themeType;
+
+    void setParentTheme();
 };
 
 #endif // UCITEMEXTENSION_H

@@ -27,9 +27,8 @@
 UCStyledItemBasePrivate::UCStyledItemBasePrivate()
     : styleComponent(Q_NULLPTR)
     , styleItem(Q_NULLPTR)
-    , theme(&UCTheme::defaultTheme())
-    , themeType(Inherited)
     , activeFocusOnPress(false)
+    , wasStyleLoaded(false)
 {
 }
 
@@ -121,15 +120,6 @@ UCStyledItemBase::UCStyledItemBase(UCStyledItemBasePrivate &dd, QQuickItem *pare
 {
     Q_D(UCStyledItemBase);
     d->init();
-}
-
-UCStyledItemBase *UCStyledItemBase::ascendantStyled(QQuickItem *item)
-{
-    QQuickItem *pl = item;
-    while (pl && !qobject_cast<UCStyledItemBase*>(pl)) {
-        pl = pl->parentItem();
-    }
-    return qobject_cast<UCStyledItemBase*>(pl);
 }
 
 
@@ -466,77 +456,17 @@ void UCStyledItemBasePrivate::_q_styleResized()
  * will use. By default it is set to the closest ancestor StyledItem's theme
  * if any, or to the system default theme.
  */
-UCTheme *UCStyledItemBasePrivate::getTheme() const
+
+void UCStyledItemBasePrivate::preThemeChanged()
 {
-    return theme;
+    wasStyleLoaded = (styleItem != Q_NULLPTR);
+    preStyleChanged();
 }
-void UCStyledItemBasePrivate::setTheme(UCTheme *newTheme, ThemeType type)
+void UCStyledItemBasePrivate::postThemeChanged()
 {
-    Q_Q(UCStyledItemBase);
-    if (theme == newTheme) {
-        return;
-    }
-
-//    qDebug() << "setTheme" << newTheme->objectName() << type;
-
-    // preform pre-theme change tasks
-    bool wasStyleLoaded = (styleItem != Q_NULLPTR);
-    preThemeChanged();
-
-    themeType = type;
-    UCTheme *oldTheme = theme;
-
-    // disconnect from the previous set
-    if (theme) {
-        QObject::disconnect(theme, SIGNAL(nameChanged()),
-                            q, SLOT(_q_reloadStyle()));
-        QObject::disconnect(theme, SIGNAL(versionChanged()),
-                            q, SLOT(_q_reloadStyle()));
-    }
-
-    theme = newTheme;
-
-    // connect to the new set
-    if (theme) {
-        QObject::connect(theme, SIGNAL(nameChanged()),
-                         q, SLOT(_q_reloadStyle()));
-        QObject::connect(theme, SIGNAL(versionChanged()),
-                         q, SLOT(_q_reloadStyle()));
-        setParentTheme();
-    }
-
-    // perform post-theme changes, update internal styling
-    postThemeChanged();
-
-    Q_EMIT q->themeChanged();
-    // broadcast to the children
-    UCThemeEvent::broadcastThemeChange(q, oldTheme, theme);
-
-    // perform style reload
-    if (wasStyleLoaded) {
-        postStyleChanged();
-        loadStyleItem();
-    }
-}
-void UCStyledItemBasePrivate::resetTheme()
-{
-    UCStyledItemBase *upperStyled = UCStyledItemBase::ascendantStyled(parentItem);
-    UCTheme *theme = upperStyled ? UCStyledItemBasePrivate::get(upperStyled)->getTheme() : &UCTheme::defaultTheme();
-    setTheme(theme, UCStyledItemBasePrivate::Inherited);
-}
-
-// set the parent of the theme if the themeType is Custom
-void UCStyledItemBasePrivate::setParentTheme()
-{
-    if (themeType != UCStyledItemBasePrivate::Custom) {
-        return;
-    }
-    UCStyledItemBase *upperStyled = UCStyledItemBase::ascendantStyled(parentItem);
-    UCTheme *parentTheme = upperStyled ? UCStyledItemBasePrivate::get(upperStyled)->getTheme() : &UCTheme::defaultTheme();
-    if (parentTheme != theme) {
-//        qDebug() << "parentTheme for" << theme->objectName() << "::" << parentTheme->objectName();
-        theme->setParentTheme(parentTheme);
-    }
+    Q_EMIT q_func()->themeChanged();
+    postStyleChanged();
+    loadStyleItem();
 }
 
 void UCStyledItemBase::classBegin()
@@ -549,7 +479,6 @@ void UCStyledItemBase::componentComplete()
 {
     QQuickItem::componentComplete();
     Q_D(UCStyledItemBase);
-    d->componentCompleted();
     // no animation at this time
     // prepare style context if not been done yet
     d->postStyleChanged();
@@ -582,53 +511,12 @@ bool UCStyledItemBase::childMouseEventFilter(QQuickItem *child, QEvent *event)
     return QQuickItem::childMouseEventFilter(child, event);
 }
 
-void UCStyledItemBase::itemChange(ItemChange change, const ItemChangeData &data)
-{
-    Q_D(UCStyledItemBase);
-    if (change == ItemParentHasChanged && data.item) {
-        if (d->themeType == UCStyledItemBasePrivate::Inherited) {
-            UCStyledItemBase *upperStyled = ascendantStyled(data.item);
-            if (upperStyled) {
-                d->setTheme(UCStyledItemBasePrivate::get(upperStyled)->getTheme(), UCStyledItemBasePrivate::Inherited);
-            }
-        } else if (d->themeType == UCStyledItemBasePrivate::Custom) {
-            d->setParentTheme();
-        }
-    }
-    QQuickItem::itemChange(change, data);
-}
-
 // catch UCThemeEvent
 void UCStyledItemBase::customEvent(QEvent *event)
 {
     Q_D(UCStyledItemBase);
-
-    if (event->type() == (QEvent::Type)UCThemeEvent::themeUpdatedId) {
-        Q_D(UCStyledItemBase);
-        UCThemeEvent *themeEvent = static_cast<UCThemeEvent*>(event);
-        // we have the following cases:
-        // 1. the current item's theme is Inherited
-        if (d->themeType == UCStyledItemBasePrivate::Inherited) {
-//            qDebug() << "USECASE1" << objectName() << themeEvent->newTheme()->objectName();
-            d->setTheme(themeEvent->newTheme(), UCStyledItemBasePrivate::Inherited);
-            return;
-        }
-        // 2. the current theme is Custom
-        if (d->themeType == UCStyledItemBasePrivate::Custom) {
-//            qDebug() << "USECASE2" << objectName() << "^" << themeEvent->newTheme();
-            // set the theme's parent
-            d->theme->setParentTheme(themeEvent->newTheme());
-            return;
-        }
-    } else if (event->type() == (QEvent::Type)UCThemeEvent::themeReloadedId) {
-        Q_D(UCStyledItemBase);
-        if (d->themeType == UCStyledItemBasePrivate::Inherited) {
-            // simply emit theme changed
-            Q_EMIT themeChanged();
-        } else if (d->themeType == UCStyledItemBasePrivate::Custom) {
-            // emit theme's parentThemeChanged()
-            Q_EMIT d->theme->parentThemeChanged();
-        }
+    if (UCThemeEvent::isThemeEvent(event)) {
+        d->handleThemeEvent(static_cast<UCThemeEvent*>(event));
     }
 }
 
