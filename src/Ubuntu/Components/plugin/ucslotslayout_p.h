@@ -10,8 +10,8 @@
 #define SLOTSLAYOUT_LABELS_SPACING_GU                1
 #define SLOTSLAYOUT_LABELS_SIDEMARGINS_GU            1
 #define SLOTSLAYOUT_SLOTS_SIDEMARGINS_GU             1
-#define SLOTSLAYOUT_LEFTOFFSET_GU                    1
-#define SLOTSLAYOUT_RIGHTOFFSET_GU                   1
+#define SLOTSLAYOUT_LEFTMARGIN_GU                    1
+#define SLOTSLAYOUT_RIGHTMARGIN_GU                   1
 
 //we want a different top/bottom margin if any of the slot is taller than this
 #define SLOTSLAYOUT_TOPBOTTOMMARGIN_SIZETHRESHOLD_GU 4
@@ -31,7 +31,7 @@ public:
     UCSlotsLayoutPrivate();
     virtual ~UCSlotsLayoutPrivate();
     void init();
-    void updateTopBottomOffsetsIfNeeded();
+    void updateTopBottomMarginsIfNeeded();
 
     qreal populateSlotsListsAndComputeWidth();
 
@@ -74,6 +74,7 @@ public:
     QQuickText m_subtitle;
     QQuickText m_subsubtitle;
 
+    UCSlotsLayoutMargins contentMargins;
     QList<QQuickItem *> leadingSlots;
     QList<QQuickItem *> trailingSlots;
 
@@ -91,23 +92,9 @@ public:
     //from 0 to non-0 and not viceversa
     qreal _q_cachedHeight;
 
-    //similar to anchors.margins, but we don't use a contentItem so we handle this ourselves
-    qreal leftOffset;
-    qreal rightOffset;
-    qreal topOffset;
-    qreal bottomOffset;
-
     //currently fixed, but we may allow changing this in the future
     qint32 maxNumberOfLeadingSlots;
     qint32 maxNumberOfTrailingSlots;
-
-    //once the dev tries to change the offsets (and he does so via QML) we'll stop
-    //updating offset's value, for instance when gu value changes or when the
-    //positioning mode changes
-    bool leftOffsetWasSetFromQml : 1;
-    bool rightOffsetWasSetFromQml : 1;
-    bool topOffsetWasSetFromQml : 1;
-    bool bottomOffsetWasSetFromQml : 1;
 
     //Show the chevron, name taken from old ListItem API to minimize changes
     bool progression : 1;

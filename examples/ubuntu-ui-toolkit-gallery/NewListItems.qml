@@ -244,7 +244,7 @@ Template {
             SlotsLayoutCpp {
                 id: layout3
 
-                bottomOffset: units.gu(10)
+                contentMargins.bottomMargin: units.gu(10)
                 CheckBox { width: units.gu(8); height: units.gu(8) }
                 Rectangle { color: "purple"; width: units.gu(5); height: units.gu(5) }
                 Icon { SlotsLayoutCpp.position: SlotsLayoutCpp.Leading; width: units.gu(5); height: units.gu(5); name: "message" }
@@ -363,8 +363,6 @@ Template {
 
             SlotsLayoutCpp {
                 id: layout7
-
-                onSlotClicked: console.log(slot, slot === checkbox)
 
                 CheckBox { id: checkbox; width: units.gu(4); height: units.gu(4) }
 

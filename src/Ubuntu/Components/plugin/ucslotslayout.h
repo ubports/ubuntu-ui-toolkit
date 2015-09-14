@@ -6,20 +6,18 @@
 #include <private/qquicktext_p.h>
 
 class UCSlotsAttached;
+class UCSlotsLayoutMargins;
 class UCSlotsLayoutPrivate;
 class UCSlotsLayout : public QQuickItem
 {
     Q_OBJECT
 
-    Q_PROPERTY(QQuickText *titleItem READ titleItem CONSTANT)
-    Q_PROPERTY(QQuickText *subtitleItem READ subtitleItem CONSTANT)
-    Q_PROPERTY(QQuickText *subsubtitleItem READ subsubtitleItem CONSTANT)
-    Q_PROPERTY(qreal leftOffset READ leftOffset WRITE setLeftOffsetQml NOTIFY leftOffsetChanged)
-    Q_PROPERTY(qreal rightOffset READ rightOffset WRITE setRightOffsetQml NOTIFY rightOffsetChanged)
-    Q_PROPERTY(qreal topOffset READ topOffset WRITE setTopOffsetQml NOTIFY topOffsetChanged)
-    Q_PROPERTY(qreal bottomOffset READ bottomOffset WRITE setBottomOffsetQml NOTIFY bottomOffsetChanged)
-    Q_PROPERTY(bool progression READ progression WRITE setProgression NOTIFY progressionChanged)
-    Q_PROPERTY(UCSlotsAttached *progressionSlot READ progressionSlot CONSTANT)
+    Q_PROPERTY(QQuickText *titleItem READ titleItem CONSTANT FINAL)
+    Q_PROPERTY(QQuickText *subtitleItem READ subtitleItem CONSTANT FINAL)
+    Q_PROPERTY(QQuickText *subsubtitleItem READ subsubtitleItem CONSTANT FINAL)
+    Q_PROPERTY(UCSlotsLayoutMargins *contentMargins READ contentMargins CONSTANT FINAL)
+    Q_PROPERTY(UCSlotsAttached *progressionSlot READ progressionSlot CONSTANT FINAL)
+    Q_PROPERTY(bool progression READ progression WRITE setProgression NOTIFY progressionChanged FINAL)
 
     Q_ENUMS(UCSlotPosition)
 
@@ -33,21 +31,7 @@ public:
     QQuickText *subtitleItem();
     QQuickText *subsubtitleItem();
 
-    qreal leftOffset() const;
-    void setLeftOffset(qreal val);
-    void setLeftOffsetQml(qreal val);
-
-    qreal rightOffset() const;
-    void setRightOffset(qreal val);
-    void setRightOffsetQml(qreal val);
-
-    qreal topOffset() const;
-    void setTopOffset(qreal val);
-    void setTopOffsetQml(qreal val);
-
-    qreal bottomOffset() const;
-    void setBottomOffset(qreal val);
-    void setBottomOffsetQml(qreal val);
+    UCSlotsLayoutMargins *contentMargins();
 
     bool progression() const;
     void setProgression(bool val);
@@ -61,12 +45,6 @@ public:
 Q_SIGNALS:
     //TODO: should this be in the pimpl?
     void relayoutNeeded();
-
-    void slotClicked(QQuickItem *slot);
-    void leftOffsetChanged();
-    void rightOffsetChanged();
-    void topOffsetChanged();
-    void bottomOffsetChanged();
     void progressionChanged();
 
 protected:
@@ -85,6 +63,8 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_updateSize())
     Q_PRIVATE_SLOT(d_func(), void _q_relayout())
 };
+QML_DECLARE_TYPEINFO(UCSlotsLayout, QML_HAS_ATTACHED_PROPERTIES)
+
 
 class UCSlotsAttached : public QObject
 {
@@ -130,7 +110,6 @@ private:
     bool rightMarginWasSetFromQml : 1;
 };
 
-class UCSlotsLayoutChevronPrivate;
 class UCSlotsLayoutChevron : public QQuickPaintedItem
 {
     Q_OBJECT
@@ -142,15 +121,59 @@ public:
 public Q_SLOTS:
     void updateGuValues();
 
-protected:
-    Q_DECLARE_PRIVATE(UCSlotsLayoutChevron)
-
 private:
     void reloadIcon();
     QPixmap progressionPixmap;
 
 };
 
-QML_DECLARE_TYPEINFO(UCSlotsLayout, QML_HAS_ATTACHED_PROPERTIES)
+class UCSlotsLayoutMargins : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(qreal leftMargin READ leftMargin WRITE setLeftMarginQml NOTIFY leftMarginChanged FINAL)
+    Q_PROPERTY(qreal rightMargin READ rightMargin WRITE setRightMarginQml NOTIFY rightMarginChanged FINAL)
+    Q_PROPERTY(qreal topMargin READ topMargin WRITE setTopMarginQml NOTIFY topMarginChanged FINAL)
+    Q_PROPERTY(qreal bottomMargin READ bottomMargin WRITE setBottomMarginQml NOTIFY bottomMarginChanged FINAL)
+
+public:
+    explicit UCSlotsLayoutMargins(QObject *parent = 0);
+
+    qreal leftMargin() const;
+    void setLeftMargin(qreal val);
+    void setLeftMarginQml(qreal val);
+
+    qreal rightMargin() const;
+    void setRightMargin(qreal val);
+    void setRightMarginQml(qreal val);
+
+    qreal topMargin() const;
+    void setTopMargin(qreal val);
+    void setTopMarginQml(qreal val);
+
+    qreal bottomMargin() const;
+    void setBottomMargin(qreal val);
+    void setBottomMarginQml(qreal val);
+
+    //once the dev tries to change the offsets (and he does so via QML) we'll stop
+    //updating offset's value, for instance when gu value changes or when the
+    //positioning mode changes
+    bool leftMarginWasSetFromQml : 1;
+    bool rightMarginWasSetFromQml : 1;
+    bool topMarginWasSetFromQml : 1;
+    bool bottomMarginWasSetFromQml : 1;
+
+Q_SIGNALS:
+    void leftMarginChanged();
+    void rightMarginChanged();
+    void topMarginChanged();
+    void bottomMarginChanged();
+
+private:
+    //similar to anchors.margins, but we don't use a contentItem so we handle this ourselves
+    qreal m_leftMargin;
+    qreal m_rightMargin;
+    qreal m_topMargin;
+    qreal m_bottomMargin;
+};
 
 #endif // UCSLOTSLAYOUT_H
