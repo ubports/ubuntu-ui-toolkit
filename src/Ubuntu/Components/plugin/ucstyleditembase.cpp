@@ -444,6 +444,9 @@ void UCStyledItemBasePrivate::preThemeChanged()
 void UCStyledItemBasePrivate::postThemeChanged()
 {
     Q_EMIT q_func()->themeChanged();
+    if (!wasStyleLoaded) {
+        return;
+    }
     postStyleChanged();
     loadStyleItem();
 }

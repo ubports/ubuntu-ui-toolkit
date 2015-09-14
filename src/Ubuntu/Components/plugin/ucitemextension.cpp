@@ -120,7 +120,7 @@ UCItemAttached *UCItemAttached::qmlAttachedProperties(QObject *owner)
 // handle parent changes
 void UCItemAttached::handleParentChanged(QQuickItem *newParent)
 {
-    if (newParent == m_prevParent) {
+    if (newParent == m_prevParent || QQuickItemPrivate::get(m_item)->wasDeleted) {
         return;
     }
 
@@ -147,10 +147,11 @@ void UCItemAttached::handleParentChanged(QQuickItem *newParent)
 
 void UCItemAttached::reloadTheme()
 {
-    m_extension->preThemeChanged();
-    m_extension->postThemeChanged();
-    // broadcast theme update
-    UCThemeEvent::broadcastThemeUpdate(m_item, m_extension->getTheme());
+    UCThemeEvent event(m_extension->getTheme());
+    if (m_extension->themeType == UCItemExtension::Inherited) {
+        UCThemeEvent::handleEvent(m_item, &event, false);
+    }
+    UCThemeEvent::forwardEvent(m_item, &event);
 }
 
 /*************************************************************************
@@ -184,8 +185,8 @@ void UCItemExtension::initTheming(QQuickItem *item)
     attachedThemer = static_cast<UCItemAttached*>(qmlAttachedPropertiesObject<UCItemAttached>(themedItem));
     Q_ASSERT(attachedThemer);
     attachedThemer->m_extension = this;
-    QObject::connect(theme, SIGNAL(nameChanged()), attachedThemer, SLOT(reloadTheme()));
-    QObject::connect(theme, SIGNAL(versionChanged()), attachedThemer, SLOT(reloadTheme()));
+    QObject::connect(theme, SIGNAL(nameChanged()), attachedThemer, SLOT(reloadTheme()), Qt::QueuedConnection);
+    QObject::connect(theme, SIGNAL(versionChanged()), attachedThemer, SLOT(reloadTheme()), Qt::QueuedConnection);
 }
 
 void UCItemExtension::handleThemeEvent(UCThemeEvent *event)
@@ -249,8 +250,8 @@ void UCItemExtension::setTheme(UCTheme *newTheme, ThemeType type)
 
     // connect to the new set
     if (theme) {
-        QObject::connect(theme, SIGNAL(nameChanged()), attachedThemer, SLOT(reloadTheme()));
-        QObject::connect(theme, SIGNAL(versionChanged()), attachedThemer, SLOT(reloadTheme()));
+        QObject::connect(theme, SIGNAL(nameChanged()), attachedThemer, SLOT(reloadTheme()), Qt::QueuedConnection);
+        QObject::connect(theme, SIGNAL(versionChanged()), attachedThemer, SLOT(reloadTheme()), Qt::QueuedConnection);
         // set the parent of the theme if custom
         setParentTheme();
     }
@@ -280,6 +281,5 @@ QQuickItem *UCItemExtension::ascendantThemed(QQuickItem *item)
     }
     return item;
 }
-
 
 #include "moc_ucitemextension.cpp"
