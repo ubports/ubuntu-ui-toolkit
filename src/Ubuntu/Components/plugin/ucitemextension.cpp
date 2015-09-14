@@ -32,7 +32,6 @@
  * method and handle the event there.
  */
 
-//#define ASYNC_BROADCAST
 int UCThemeEvent::themeUpdatedId = QEvent::registerEventType();
 int UCThemeEvent::themeReloadedId = QEvent::registerEventType();
 
@@ -59,11 +58,7 @@ UCThemeEvent::UCThemeEvent(const UCThemeEvent &other)
 
 void UCThemeEvent::handleEvent(QQuickItem *item, UCThemeEvent *event)
 {
-#ifdef ASYNC_BROADCAST
     QGuiApplication::postEvent(item, new UCThemeEvent(*event));
-#else
-    QGuiApplication::sendEvent(item, event);
-#endif
 }
 
 void UCThemeEvent::forwardEvent(QQuickItem *item, UCThemeEvent *event)
