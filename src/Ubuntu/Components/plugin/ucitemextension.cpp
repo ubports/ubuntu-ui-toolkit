@@ -101,6 +101,8 @@ UCItemAttached::UCItemAttached(QObject *owner)
     : QObject(owner)
     , m_item(static_cast<QQuickItem*>(owner))
     , m_prevParent(Q_NULLPTR)
+    , m_extension(Q_NULLPTR)
+    , m_isItemThemed(m_item->metaObject()->indexOfProperty("theme") < 0)
 {
     // get parent item changes
     connect(m_item, &QQuickItem::parentChanged, this, &UCItemAttached::handleParentChanged);
@@ -131,13 +133,24 @@ void UCItemAttached::handleParentChanged(QQuickItem *newParent)
     if (oldTheme != newTheme) {
         // send the event to m_item first
         UCThemeEvent event(oldTheme, newTheme);
-        UCThemeEvent::handleEvent(m_item, &event, true);
+        if (m_extension) {
+            // only items with extensions should get this event
+            m_extension->handleThemeEvent(&event);
+        }
         // then broadcast to children, but only if the item is not a styled one
-        if (m_item->metaObject()->indexOfProperty("theme") < 0) {
+        if (m_isItemThemed) {
             UCThemeEvent::forwardEvent(m_item, &event);
         }
     }
     m_prevParent = newParent;
+}
+
+void UCItemAttached::reloadTheme()
+{
+    m_extension->preThemeChanged();
+    m_extension->postThemeChanged();
+    // broadcast theme update
+    UCThemeEvent::broadcastThemeUpdate(m_item, m_extension->getTheme());
 }
 
 /*************************************************************************
@@ -158,7 +171,8 @@ void UCItemExtension::setParentTheme()
         return;
     }
     QQuickItem *upperThemed = ascendantThemed(QQuickItemPrivate::get(themedItem)->parentItem);
-    UCTheme *parentTheme = upperThemed ? upperThemed->property("theme").value<UCTheme*>() : &UCTheme::defaultTheme();
+    UCItemAttached *attached = static_cast<UCItemAttached*>(qmlAttachedPropertiesObject<UCItemAttached>(upperThemed));
+    UCTheme *parentTheme = (attached && attached->m_extension) ? attached->m_extension->getTheme() : &UCTheme::defaultTheme();
     if (parentTheme != theme) {
         theme->setParentTheme(parentTheme);
     }
@@ -169,6 +183,9 @@ void UCItemExtension::classBegin(QQuickItem *item)
     themedItem = item;
     attachedThemer = static_cast<UCItemAttached*>(qmlAttachedPropertiesObject<UCItemAttached>(themedItem));
     Q_ASSERT(attachedThemer);
+    attachedThemer->m_extension = this;
+    QObject::connect(theme, SIGNAL(nameChanged()), attachedThemer, SLOT(reloadTheme()));
+    QObject::connect(theme, SIGNAL(versionChanged()), attachedThemer, SLOT(reloadTheme()));
 }
 
 void UCItemExtension::handleThemeEvent(UCThemeEvent *event)
@@ -224,20 +241,16 @@ void UCItemExtension::setTheme(UCTheme *newTheme, ThemeType type)
 
     // disconnect from the previous set
     if (theme) {
-        QObject::disconnect(theme, SIGNAL(nameChanged()),
-                            themedItem, SLOT(_q_reloadStyle()));
-        QObject::disconnect(theme, SIGNAL(versionChanged()),
-                            themedItem, SLOT(_q_reloadStyle()));
+        QObject::disconnect(theme, SIGNAL(nameChanged()), attachedThemer, SLOT(reloadTheme()));
+        QObject::disconnect(theme, SIGNAL(versionChanged()), attachedThemer, SLOT(reloadTheme()));
     }
 
     theme = newTheme;
 
     // connect to the new set
     if (theme) {
-        QObject::connect(theme, SIGNAL(nameChanged()),
-                         themedItem, SLOT(_q_reloadStyle()));
-        QObject::connect(theme, SIGNAL(versionChanged()),
-                         themedItem, SLOT(_q_reloadStyle()));
+        QObject::connect(theme, SIGNAL(nameChanged()), attachedThemer, SLOT(reloadTheme()));
+        QObject::connect(theme, SIGNAL(versionChanged()), attachedThemer, SLOT(reloadTheme()));
         // set the parent of the theme if custom
         setParentTheme();
     }
@@ -252,7 +265,8 @@ void UCItemExtension::setTheme(UCTheme *newTheme, ThemeType type)
 void UCItemExtension::resetTheme()
 {
     QQuickItem *upperThemed = ascendantThemed(QQuickItemPrivate::get(themedItem)->parentItem);
-    UCTheme *theme = upperThemed ? upperThemed->property("theme").value<UCTheme*>() : &UCTheme::defaultTheme();
+    UCItemAttached *attached = static_cast<UCItemAttached*>(qmlAttachedPropertiesObject<UCItemAttached>(upperThemed));
+    UCTheme *theme = (attached && attached->m_extension) ? attached->m_extension->getTheme() : &UCTheme::defaultTheme();
     setTheme(theme, Inherited);
 }
 

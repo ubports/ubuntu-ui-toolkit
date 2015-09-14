@@ -1244,6 +1244,7 @@ Ubuntu.Components.ToolbarItems 1.3: Item
     property bool locked
     property bool opened
     property Item pageStack
+UCItemAttached: QtObject
 UCListItemDivider: Item
     property color colorFrom
     property color colorTo

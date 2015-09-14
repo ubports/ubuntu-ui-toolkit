@@ -38,9 +38,12 @@ public:
 
     QQuickItem *m_item;
     QQuickItem *m_prevParent;
+    UCItemExtension *m_extension;
+    bool m_isItemThemed:1;
 
 private:
     Q_SLOT void handleParentChanged(QQuickItem *newParent);
+    Q_SLOT void reloadTheme();
 
     friend class UCItemExtension;
 };
