@@ -317,7 +317,7 @@ bool UCStyledItemBasePrivate::loadStyleItem(bool animated)
     if (!creationContext) {
         creationContext = qmlContext(q);
     }
-    styleItemContext = new QQmlContext(creationContext);
+    styleItemContext = new QQmlContext(qmlContext(q));
     styleItemContext->setContextObject(q);
     styleItemContext->setContextProperty("styledItem", q);
     styleItemContext->setContextProperty("animated", animated);
@@ -444,14 +444,16 @@ void UCStyledItemBasePrivate::preThemeChanged()
 void UCStyledItemBasePrivate::postThemeChanged()
 {
     Q_EMIT q_func()->themeChanged();
-    postStyleChanged();
-    loadStyleItem();
+    if (wasStyleLoaded) {
+        postStyleChanged();
+        loadStyleItem();
+    }
 }
 
 void UCStyledItemBase::classBegin()
 {
     QQuickItem::classBegin();
-    d_func()->classBegin(this);
+    d_func()->initTheming(this);
 }
 
 void UCStyledItemBase::componentComplete()

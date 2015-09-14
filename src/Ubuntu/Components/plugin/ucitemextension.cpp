@@ -178,14 +178,14 @@ void UCItemExtension::setParentTheme()
     }
 }
 
-void UCItemExtension::classBegin(QQuickItem *item)
+void UCItemExtension::initTheming(QQuickItem *item)
 {
     themedItem = item;
     attachedThemer = static_cast<UCItemAttached*>(qmlAttachedPropertiesObject<UCItemAttached>(themedItem));
     Q_ASSERT(attachedThemer);
     attachedThemer->m_extension = this;
-    QObject::connect(theme, SIGNAL(nameChanged()), attachedThemer, SLOT(reloadTheme()));
-    QObject::connect(theme, SIGNAL(versionChanged()), attachedThemer, SLOT(reloadTheme()));
+    QObject::connect(theme, SIGNAL(nameChanged()), attachedThemer, SLOT(reloadTheme()), Qt::QueuedConnection);
+    QObject::connect(theme, SIGNAL(versionChanged()), attachedThemer, SLOT(reloadTheme()), Qt::QueuedConnection);
 }
 
 void UCItemExtension::handleThemeEvent(UCThemeEvent *event)
@@ -249,8 +249,8 @@ void UCItemExtension::setTheme(UCTheme *newTheme, ThemeType type)
 
     // connect to the new set
     if (theme) {
-        QObject::connect(theme, SIGNAL(nameChanged()), attachedThemer, SLOT(reloadTheme()));
-        QObject::connect(theme, SIGNAL(versionChanged()), attachedThemer, SLOT(reloadTheme()));
+        QObject::connect(theme, SIGNAL(nameChanged()), attachedThemer, SLOT(reloadTheme()), Qt::QueuedConnection);
+        QObject::connect(theme, SIGNAL(versionChanged()), attachedThemer, SLOT(reloadTheme()), Qt::QueuedConnection);
         // set the parent of the theme if custom
         setParentTheme();
     }
@@ -280,6 +280,5 @@ QQuickItem *UCItemExtension::ascendantThemed(QQuickItem *item)
     }
     return item;
 }
-
 
 #include "moc_ucitemextension.cpp"
