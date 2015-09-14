@@ -18,8 +18,9 @@
 #define UCLABEL_H
 
 #include <QtQuick/private/qquicktext_p.h>
+#include "ucitemextension.h"
 
-class UCLabel : public QQuickText
+class UCLabel : public QQuickText, public UCItemExtension
 {
     Q_OBJECT
 
@@ -55,6 +56,15 @@ public:
     }
     void setFontSize(const QString& fontSize);
 
+protected:
+    // from QQuickItem
+    void classBegin();
+    void customEvent(QEvent *event);
+
+    // from UCItemExtension
+    void preThemeChanged(){}
+    void postThemeChanged();
+
 Q_SIGNALS:
     Q_REVISION(1) void adaptiveSizeChanged();
 
@@ -64,10 +74,12 @@ Q_SIGNALS:
 private:
     void updatePixelSize();
     Q_SLOT void _q_updateFontFlag(const QFont &font);
+    Q_SLOT void _q_customColor();
 
     enum {
         AdaptiveSizeSet = 1,
-        PixelSizeSet = 2
+        PixelSizeSet = 2,
+        ColorSet = 4
     };
 
     QFont m_defaultFont;

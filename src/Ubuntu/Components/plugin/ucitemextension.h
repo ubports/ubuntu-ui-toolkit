@@ -92,7 +92,7 @@ public:
     virtual void preThemeChanged() = 0;
     virtual void postThemeChanged() = 0;
 
-    virtual void classBegin(QQuickItem *item);
+    virtual void initTheming(QQuickItem *item);
     virtual void handleThemeEvent(UCThemeEvent *event);
 
     UCTheme *getTheme() const;

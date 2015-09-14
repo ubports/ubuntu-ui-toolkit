@@ -17,6 +17,7 @@
 #include "uclabel.h"
 #include "ucfontutils.h"
 #include "ucunits.h"
+#include "uctheme.h"
 
 void UCLabel::updatePixelSize()
 {
@@ -41,6 +42,11 @@ void UCLabel::_q_updateFontFlag(const QFont &font)
     if (m_defaultFont.pixelSize() != font.pixelSize()) {
         m_flags |= PixelSizeSet;
     }
+}
+
+void UCLabel::_q_customColor()
+{
+    m_flags |= ColorSet;
 }
 
 /*!
@@ -74,12 +80,37 @@ UCLabel::UCLabel(QQuickItem* parent)
     , m_adaptiveSize(Medium)
     , m_flags(0)
 {
+}
+
+void UCLabel::classBegin()
+{
+    QQuickText::classBegin();
+    initTheming(this);
+    postThemeChanged();
     updatePixelSize();
     m_defaultFont = font();
     m_defaultFont.setFamily("Ubuntu");
     m_defaultFont.setWeight(QFont::Light);
     setFont(m_defaultFont);
+
     connect(this, &UCLabel::fontChanged, this, &UCLabel::_q_updateFontFlag, Qt::DirectConnection);
+    connect(this, &UCLabel::colorChanged, this, &UCLabel::_q_customColor, Qt::DirectConnection);
+}
+
+void UCLabel::customEvent(QEvent *event)
+{
+    if (UCThemeEvent::isThemeEvent(event)) {
+        handleThemeEvent(static_cast<UCThemeEvent*>(event));
+    }
+}
+
+void UCLabel::postThemeChanged()
+{
+    if (m_flags & ColorSet) {
+        return;
+    }
+    setColor(theme->getPaletteColor("selected", "backgroundText"));
+    m_flags &= ~ColorSet;
 }
 
 /*!

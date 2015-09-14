@@ -451,7 +451,7 @@ void UCStyledItemBasePrivate::postThemeChanged()
 void UCStyledItemBase::classBegin()
 {
     QQuickItem::classBegin();
-    d_func()->classBegin(this);
+    d_func()->initTheming(this);
 }
 
 void UCStyledItemBase::componentComplete()

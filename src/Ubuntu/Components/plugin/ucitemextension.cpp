@@ -178,7 +178,7 @@ void UCItemExtension::setParentTheme()
     }
 }
 
-void UCItemExtension::classBegin(QQuickItem *item)
+void UCItemExtension::initTheming(QQuickItem *item)
 {
     themedItem = item;
     attachedThemer = static_cast<UCItemAttached*>(qmlAttachedPropertiesObject<UCItemAttached>(themedItem));
