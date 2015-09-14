@@ -51,19 +51,30 @@ MainView {
         actions: ActionList {
             Action {
                 text: "Action one"
+                objectName: "actionOne"
                 onTriggered: label.text = "Button clicked."
+            },
+            Action {
+                text: "Action two"
+                objectName: "actionDisabled"
+                onTriggered: label.text = "Disabled button clicked."
+            },
+            Action {
+                text: "Action three"
+                objectName: "actionHidden"
+                onTriggered: label.text = "Hidden button clicked."
             }
         }
     }
 }
 """)
 
-    def test_action_selection_popover_custom_proxy_object(self):
+    def test_custom_proxy_object(self):
         popover = self.main_view.get_action_selection_popover(
             'test_actions_popover')
         self.assertIsInstance(popover, popups.ActionSelectionPopover)
 
-    def test_click_action_select_popover_button(self):
+    def test_click_button_by_label(self):
         label = self.app.select_single('Label', objectName='clicked_label')
         self.assertNotEqual(label.text, 'Button clicked.')
         self._open_popover()
@@ -71,6 +82,49 @@ MainView {
             'test_actions_popover')
         popover.click_button_by_text('Action one')
         self.assertEqual(label.text, 'Button clicked.')
+
+    def test_click_button_by_object_name(self):
+        label = self.app.select_single('Label', objectName='clicked_label')
+        self.assertNotEqual(label.text, 'Button clicked.')
+        self._open_popover()
+        popover = self.main_view.get_action_selection_popover(
+            'test_actions_popover')
+        popover.click_action_button('actionOne')
+        self.assertEqual(label.text, 'Button clicked.')
+
+    def test_click_unexisting_button_by_object_name(self):
+        self._open_popover()
+        popover = self.main_view.get_action_selection_popover(
+            'test_actions_popover')
+        error = self.assertRaises(
+            ubuntuuitoolkit.ToolkitException,
+            popover.click_action_button, 'actionTwo')
+        self.assertEqual(
+            str(error),
+            'Action with objectName "actionTwo" not found.')
+
+    def test_click_disabled_button_by_object_name(self):
+        self._open_popover()
+        popover = self.main_view.get_action_selection_popover(
+            'test_actions_popover')
+        # Disabled actions are not shown in ActionSelectionPopover
+        error = self.assertRaises(
+            ubuntuuitoolkit.ToolkitException,
+            popover.click_action_button, 'actionDisabled')
+        self.assertEqual(
+            str(error),
+            'Action with objectName "actionDisabled" not found.')
+
+    def test_click_hidden_button_by_object_name(self):
+        self._open_popover()
+        popover = self.main_view.get_action_selection_popover(
+            'test_actions_popover')
+        error = self.assertRaises(
+            ubuntuuitoolkit.ToolkitException,
+            popover.click_action_button, 'actionHidden')
+        self.assertEqual(
+            str(error),
+            'Action with objectName "actionHidden" not found.')
 
     def _open_popover(self):
         open_button = self.main_view.select_single(

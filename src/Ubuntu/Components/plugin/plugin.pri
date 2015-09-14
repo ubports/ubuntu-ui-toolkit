@@ -153,5 +153,7 @@ RESOURCES += \
 OTHER_FILES += \
     $$PWD/shaders/shape.vert \
     $$PWD/shaders/shape.frag \
+    $$PWD/shaders/shape_no_dfdy.frag \
     $$PWD/shaders/shapeoverlay.vert \
-    $$PWD/shaders/shapeoverlay.frag
+    $$PWD/shaders/shapeoverlay.frag \
+    $$PWD/shaders/shapeoverlay_no_dfdy.frag

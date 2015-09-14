@@ -26,8 +26,17 @@
 
 ShapeOverlayShader::ShapeOverlayShader()
 {
+    QOpenGLContext* context = QOpenGLContext::currentContext();
     setShaderSourceFile(QOpenGLShader::Vertex, QStringLiteral(":/uc/shaders/shapeoverlay.vert"));
-    setShaderSourceFile(QOpenGLShader::Fragment, QStringLiteral(":/uc/shaders/shapeoverlay.frag"));
+
+    if ( context->isOpenGLES() &&
+         !context->hasExtension(QByteArrayLiteral("GL_OES_standard_derivatives")) ) {
+        // dFdy function is not available in fragment shaders
+        qWarning() << "GL_OES_standard_derivatives not available. Using fallback shader for shape overlay.";
+        setShaderSourceFile(QOpenGLShader::Fragment, QStringLiteral(":/uc/shaders/shapeoverlay_no_dfdy.frag"));
+    } else {
+        setShaderSourceFile(QOpenGLShader::Fragment, QStringLiteral(":/uc/shaders/shapeoverlay.frag"));
+    }
 }
 
 char const* const* ShapeOverlayShader::attributeNames() const
