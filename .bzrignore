@@ -21,5 +21,5 @@ tests/unit/tst_i18n/tst_*/*/share/locale/en/LC_MESSAGES/*.mo
 tests/unit/tst_i18n/*/share/locale/en/LC_MESSAGES/*.mo
 tests/unit/tst_units/dpr*/dpr*
 tests/apicheck/apicheck
-tests/launcher/launcher
+ubuntu-ui-toolkit-launcher/ubuntu-ui-toolkit-launcher
 build_paths.inc

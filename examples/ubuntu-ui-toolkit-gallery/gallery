@@ -3,4 +3,4 @@
 . `dirname $0`/../../build_paths.inc
 
 SCRIPT_DIRECTORY=`dirname $0`
-$BUILD_DIR/tests/launcher/launcher $@ $SCRIPT_DIRECTORY/ubuntu-ui-toolkit-gallery.qml
+$BUILD_DIR/ubuntu-ui-toolkit-launcher/ubuntu-ui-toolkit-launcher $@ $SCRIPT_DIRECTORY/ubuntu-ui-toolkit-gallery.qml
