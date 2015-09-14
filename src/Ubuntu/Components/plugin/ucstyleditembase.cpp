@@ -20,16 +20,15 @@
 #include "ucstyleditembase_p.h"
 #include "uctheme.h"
 #include "ucstylehints.h"
+#include "ucitemextension.h"
 #include <QtQml/QQmlEngine>
 #include <QtQuick/private/qquickanchors_p.h>
 
 UCStyledItemBasePrivate::UCStyledItemBasePrivate()
-    : activeFocusOnPress(false)
-    , styleComponent(0)
-    , styleItemContext(0)
-    , styleItem(0)
-    , theme(0)
-    , parentStyledItem(0)
+    : styleComponent(Q_NULLPTR)
+    , styleItem(Q_NULLPTR)
+    , activeFocusOnPress(false)
+    , wasStyleLoaded(false)
 {
 }
 
@@ -41,10 +40,6 @@ void UCStyledItemBasePrivate::init()
 {
     Q_Q(UCStyledItemBase);
     q->setFlag(QQuickItem::ItemIsFocusScope);
-    QObject::connect(&UCTheme::defaultTheme(), SIGNAL(nameChanged()),
-                     q, SLOT(_q_reloadStyle()));
-    QObject::connect(&UCTheme::defaultTheme(), SIGNAL(versionChanged()),
-                     q, SLOT(_q_reloadStyle()));
 }
 
 
@@ -408,19 +403,6 @@ void UCStyledItemBasePrivate::connectStyleSizeChanges(bool attach)
     }
 }
 
-// reloads style component due to theme, theme.name or theme.version change
-void UCStyledItemBasePrivate::_q_reloadStyle()
-{
-    if (styleComponent) {
-        return;
-    }
-    Q_Q(UCStyledItemBase);
-    preStyleChanged();
-    postStyleChanged();
-    loadStyleItem();
-    Q_EMIT q->themeChanged();
-}
-
 // handle implicit size changes implied by the style components
 void UCStyledItemBasePrivate::_q_styleResized()
 {
@@ -453,182 +435,23 @@ void UCStyledItemBasePrivate::_q_styleResized()
  * will use. By default it is set to the closest ancestor StyledItem's theme
  * if any, or to the system default theme.
  */
-UCTheme *UCStyledItemBasePrivate::getTheme() const
+
+void UCStyledItemBasePrivate::preThemeChanged()
 {
-    if (theme) {
-        return theme;
-    } else if (!parentStyledItem.isNull()) {
-        return UCStyledItemBasePrivate::get(parentStyledItem)->getTheme();
-    }
-    return &UCTheme::defaultTheme();
+    wasStyleLoaded = (styleItem != Q_NULLPTR);
+    preStyleChanged();
 }
-void UCStyledItemBasePrivate::setTheme(UCTheme *newTheme)
+void UCStyledItemBasePrivate::postThemeChanged()
 {
-    Q_Q(UCStyledItemBase);
-    if (theme == newTheme) {
-        return;
-    }
-
-    // preform pre-theme change tasks
-    preThemeChanged();
-
-    // disconnect from the previous set
-    UCTheme *connectedSet = theme ?
-                                theme :
-                                (!parentStyledItem ? &UCTheme::defaultTheme() : NULL);
-    if (connectedSet) {
-        QObject::disconnect(connectedSet, SIGNAL(nameChanged()),
-                            q, SLOT(_q_reloadStyle()));
-        QObject::disconnect(connectedSet, SIGNAL(versionChanged()),
-                            q, SLOT(_q_reloadStyle()));
-    }
-
-    UCTheme *prevSet = theme;
-
-    // resolve new theme
-    if (theme && newTheme) {
-        // no need to redo the parentStack, simply set the theme and leave
-        theme = newTheme;
-    } else {
-        theme = newTheme;
-        if (!newTheme) {
-            // redo the parent chanin
-            disconnectTillItem(0);
-            connectParents(0);
-        }
-    }
-
-    // connect to the new set
-    connectedSet = theme ?
-                    theme :
-                    (!parentStyledItem ? &UCTheme::defaultTheme() : NULL);
-    if (connectedSet) {
-        QObject::connect(connectedSet, SIGNAL(nameChanged()),
-                         q, SLOT(_q_reloadStyle()));
-        QObject::connect(connectedSet, SIGNAL(versionChanged()),
-                         q, SLOT(_q_reloadStyle()));
-    }
-    // detach previous set and attach the new one
-    if (prevSet) {
-        Q_EMIT prevSet->parentThemeChanged();
-    }
-    if (theme) {
-        // re-parent theme to make sure we have it
-        // for the entire lifetime of the styled item
-        theme->setParent(q);
-        Q_EMIT theme->parentThemeChanged();
-    }
-
-    // perform post-theme changes, update internal styling
-    postThemeChanged();
-
-    Q_EMIT q->themeChanged();
-
-    // perform style reload
-    if (!styleComponent) {
-        preStyleChanged();
-        postStyleChanged();
-        loadStyleItem();
-    }
-}
-void UCStyledItemBasePrivate::resetTheme()
-{
-    setTheme(NULL);
+    Q_EMIT q_func()->themeChanged();
+    postStyleChanged();
+    loadStyleItem();
 }
 
-// link/unlink all ascendant items until we reach a StyledItem, returns true if the
-// theme change signal emission is justified
-bool UCStyledItemBasePrivate::connectParents(QQuickItem *fromItem)
+void UCStyledItemBase::classBegin()
 {
-    Q_Q(UCStyledItemBase);
-    QQuickItem *item = fromItem ? fromItem : parentItem;
-    while (item) {
-        // push the item onto the stack
-        parentStack.push(QPointer<QQuickItem>(item));
-        UCStyledItemBase *styledItem = qobject_cast<UCStyledItemBase*>(item);
-        if (styledItem) {
-            // this is the closest StyledItem, connect its themeChanged() signal
-            QObject::connect(styledItem, SIGNAL(themeChanged()),
-                             q, SLOT(_q_parentStyleChanged()), Qt::DirectConnection);
-            // set the current style set to the one in the parent's one if differs
-            return setParentStyled(styledItem);
-        } else {
-            // connect to the item's parentChanged() signal so we can detect when the parent changes
-            QObject::connect(item, SIGNAL(parentChanged(QQuickItem*)),
-                             q, SLOT(_q_ascendantChanged(QQuickItem*)), Qt::DirectConnection);
-        }
-        item = item->parentItem();
-    }
-    return false;
-}
-
-// set the used parent styled item's style; returns true if the parent styled got changed
-bool UCStyledItemBasePrivate::setParentStyled(UCStyledItemBase *styledItem)
-{
-    if (parentStyledItem == styledItem) {
-        return false;
-    }
-    parentStyledItem = styledItem;
-    if (theme) {
-        Q_EMIT theme->parentThemeChanged();
-    }
-    return (theme == NULL);
-}
-
-// disconnect parent stack till item is reached; all the stack if item == 0
-void UCStyledItemBasePrivate::disconnectTillItem(QQuickItem *item)
-{
-    Q_Q(UCStyledItemBase);
-    while (!parentStack.isEmpty() && item != parentStack.top()) {
-        QPointer<QQuickItem> stackItem = parentStack.pop();
-        // the topmost item can be the only one which is a StyledItem
-        UCStyledItemBase *styledItem = qobject_cast<UCStyledItemBase*>(stackItem.data());
-        if (styledItem) {
-            QObject::disconnect(styledItem, SIGNAL(themeChanged()),
-                                q, SLOT(_q_parentStyleChanged()));
-        } else if (!stackItem.isNull()) {
-            QObject::disconnect(stackItem.data(), SIGNAL(parentChanged(QQuickItem*)),
-                                q, SLOT(_q_ascendantChanged(QQuickItem*)));
-        }
-    }
-}
-
-// captures ascendant change signal, the sender is the one which counts!
-void UCStyledItemBasePrivate::_q_ascendantChanged(QQuickItem *ascendant)
-{
-    Q_Q(UCStyledItemBase);
-    QQuickItem *sender = static_cast<QQuickItem*>(q->sender());
-    if (!sender) {
-        // cannot detect the sender, leave!
-        return;
-    }
-    if (ascendant) {
-        // disconnect from the previous ones
-        disconnectTillItem(sender);
-        parentStyledItem.clear();
-        // traverse ascendants till we reach a StyledItem or root and push them into the stack
-        if (connectParents(ascendant)) {
-            Q_EMIT q->themeChanged();
-        }
-    }
-}
-
-// syncs the ascendant StyledItem's style
-void UCStyledItemBasePrivate::_q_parentStyleChanged()
-{
-    // do not trigger themeChanged() on this item if we have a
-    // custom one, but resolve its eventual parent change!
-    if (theme) {
-        Q_EMIT theme->parentThemeChanged();
-        return;
-    }
-    Q_Q(UCStyledItemBase);
-    UCStyledItemBase *styledItem = static_cast<UCStyledItemBase*>(q->sender());
-    if (!styledItem) {
-        return;
-    }
-    setParentStyled(styledItem);
-    Q_EMIT q->themeChanged();
+    QQuickItem::classBegin();
+    d_func()->classBegin(this);
 }
 
 void UCStyledItemBase::componentComplete()
@@ -667,19 +490,12 @@ bool UCStyledItemBase::childMouseEventFilter(QQuickItem *child, QEvent *event)
     return QQuickItem::childMouseEventFilter(child, event);
 }
 
-// catch parent change event so we can lookup for the parent chain theme
-void UCStyledItemBase::itemChange(ItemChange change, const ItemChangeData &data)
+// catch UCThemeEvent
+void UCStyledItemBase::customEvent(QEvent *event)
 {
-    QQuickItem::itemChange(change, data);
-    if (change == ItemParentHasChanged) {
-        Q_D(UCStyledItemBase);
-        // clean stack
-        d->disconnectTillItem(0);
-        // make sure we reset parent StyledItem
-        d->parentStyledItem.clear();
-        // build the stack - if possible
-        d->connectParents(0);
-        Q_EMIT themeChanged();
+    Q_D(UCStyledItemBase);
+    if (UCThemeEvent::isThemeEvent(event)) {
+        d->handleThemeEvent(static_cast<UCThemeEvent*>(event));
     }
 }
 

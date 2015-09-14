@@ -23,6 +23,7 @@
 #include "plugin.h"
 #include "uctheme.h"
 #include "ucdeprecatedtheme.h"
+#include "ucitemextension.h"
 
 #include <QtQml/QQmlContext>
 #include "i18n.h"
@@ -164,7 +165,9 @@ void UbuntuComponentsPlugin::registerTypesToVersion(const char *uri, int major, 
 {
     qmlRegisterType<UCAction>(uri, major, minor, "Action");
     qmlRegisterType<UCActionContext>(uri, major, minor, "ActionContext");
+    qmlRegisterUncreatableType<UCApplication>(uri, major, minor, "UCApplication", "Not instantiable");
     qmlRegisterType<UCActionManager>(uri, major, minor, "ActionManager");
+    qmlRegisterUncreatableType<UCFontUtils>(uri, major, minor, "UCFontUtils", "Not instantiable");
     qmlRegisterType<UCStyledItemBase>(uri, major, minor, "StyledItem");
     qmlRegisterUncreatableType<UbuntuI18n>(uri, major, minor, "i18n", "Singleton object");
     qmlRegisterExtendedType<QQuickImageBase, UCQQuickImageExtension>(uri, major, minor, "QQuickImageBase");
@@ -224,6 +227,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCUbuntuShapeOverlay>(uri, 1, 2, "UbuntuShapeOverlay");
 
     // register 1.3 API
+    qmlRegisterType<UCItemAttached>();
     qmlRegisterType<UCListItem13>(uri, 1, 3, "ListItem");
     qmlRegisterType<UCListItemExpansion>();
     qmlRegisterUncreatableType<UCViewItemsAttached13>(uri, 1, 3, "ViewItems", "No create");

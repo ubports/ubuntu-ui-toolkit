@@ -84,6 +84,7 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/ucactionitem.h \
     $$PWD/uchaptics.h \
     $$PWD/ucabstractbutton.h \
+    $$PWD/ucitemextension.h \
     $$PWD/uclabel.h
 
 SOURCES += $$PWD/plugin.cpp \
@@ -141,6 +142,7 @@ SOURCES += $$PWD/plugin.cpp \
     $$PWD/ucactionitem.cpp \
     $$PWD/uchaptics.cpp \
     $$PWD/ucabstractbutton.cpp \
+    $$PWD/ucitemextension.cpp \
     $$PWD/uclabel.cpp
 
 # adapters
@@ -152,5 +154,7 @@ RESOURCES += \
 OTHER_FILES += \
     $$PWD/shaders/shape.vert \
     $$PWD/shaders/shape.frag \
+    $$PWD/shaders/shape_no_dfdy.frag \
     $$PWD/shaders/shapeoverlay.vert \
-    $$PWD/shaders/shapeoverlay.frag
+    $$PWD/shaders/shapeoverlay.frag \
+    $$PWD/shaders/shapeoverlay_no_dfdy.frag

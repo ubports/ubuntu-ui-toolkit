@@ -50,18 +50,25 @@ public:
         }
     }
 
+    static void waitForEvents()
+    {
+        // make sure we empty event queue
+        QTest::waitForEvents();
+        qApp->sendPostedEvents();
+    }
+
     void setGlobalTheme(const QString &theme)
     {
         UCTheme *rootTheme = globalTheme();
         QVERIFY(rootTheme);
         rootTheme->setName(theme);
-        QTest::waitForEvents();
+        waitForEvents();
     }
 
     void setTheme(const QString &theme)
     {
         rootObject()->setProperty("themeName", theme);
-        QTest::waitForEvents();
+        waitForEvents();
     }
 
     UCTheme *theme()
@@ -293,7 +300,9 @@ private Q_SLOTS:
     {
         QScopedPointer<ThemeTestCase> view(new ThemeTestCase("ParentChanges.qml"));
         UCTheme *testSet = view->findItem<UCTheme*>("testSet");
+        UCTheme *topTheme = view->findItem<UCTheme*>("top");
         UCStyledItemBase *mainItem = qobject_cast<UCStyledItemBase*>(view->rootObject());
+        QCOMPARE(testSet->parentTheme(), topTheme);
 
         // reset mainItem's theme should trigger parentChanged on testSet
         QSignalSpy parentChangeSpy(testSet, SIGNAL(parentThemeChanged()));
@@ -349,7 +358,7 @@ private Q_SLOTS:
         // change theme name (theme)
         UCStyledItemBase *styled = view->findItem<UCStyledItemBase*>(itemName);
         UCStyledItemBasePrivate::get(styled)->getTheme()->setName("Ubuntu.Components.Themes.SuruDark");
-        QTest::waitForEvents();
+        ThemeTestCase::waitForEvents();
         UCTheme *theme = view->globalTheme();
         QCOMPARE(theme->name(), QString("Ubuntu.Components.Themes.SuruDark"));
     }
@@ -398,7 +407,7 @@ private Q_SLOTS:
         theme->setName(themeName);
         // set the style on the item
         UCStyledItemBasePrivate::get(styledItem)->setTheme(theme);
-        QTest::waitForEvents();
+        ThemeTestCase::waitForEvents();
         // test on the items
         for (int i = 0; i < testItems.count(); i++) {
             QString itemName = testItems[i];
@@ -449,7 +458,7 @@ private Q_SLOTS:
         theme->setName("Ubuntu.Components.Themes.SuruDark");
         UCStyledItemBase *suruItem = view->findItem<UCStyledItemBase*>(suruStyledItem);
         UCStyledItemBasePrivate::get(suruItem)->setTheme(theme);
-        QTest::waitForEvents();
+        ThemeTestCase::waitForEvents();
         QCOMPARE(UCStyledItemBasePrivate::get(testItem)->getTheme()->name(), testStyledItemThemes[1]);
 
         // get items and reparent
@@ -491,7 +500,7 @@ private Q_SLOTS:
         QCOMPARE(firstTheme->getPaletteColor("normal", "background"), QColor("blue"));
         // change the theme
         view->setGlobalTheme("Ubuntu.Components.Themes.SuruDark");
-        QTest::waitForEvents();
+        ThemeTestCase::waitForEvents();
         QCOMPARE(firstTheme->getPaletteColor("normal", "background"), QColor("blue"));
     }
 
@@ -584,7 +593,7 @@ private Q_SLOTS:
 
         // set the theme for root
         UCStyledItemBasePrivate::get(root)->setTheme(suruTheme);
-        QTest::waitForEvents();
+        ThemeTestCase::waitForEvents();
         QCOMPARE(UCStyledItemBasePrivate::get(root)->getTheme(), UCStyledItemBasePrivate::get(movableItem)->getTheme());
 
         // set the parent item of the test item to 0
@@ -616,7 +625,7 @@ private Q_SLOTS:
 
         // set a new theme for the root, and make sure our theme stays the same
         UCStyledItemBasePrivate::get(root)->setTheme(suruTheme);
-        QTest::waitForEvents();
+        ThemeTestCase::waitForEvents();
         QCOMPARE(UCStyledItemBasePrivate::get(movableItem)->getTheme()->name(), QString("CustomTheme"));
     }
 
