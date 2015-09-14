@@ -19,6 +19,7 @@ import Ubuntu.Components 1.3
 import Ubuntu.Test 1.0
 
 Item {
+    id: root
     width: units.gu(50)
     height: units.gu(70)
 
@@ -29,7 +30,6 @@ Item {
         flickable: flickable
 
         id: header
-//        title: "Visibility testing"
 //        locked: lockedSwitch.checked
         Rectangle {
             anchors.fill: parent
@@ -69,10 +69,6 @@ Item {
             Switch {
                 id: hiddenSwitch
                 checked: !header.exposed
-                onTriggered: print("switch triggered")
-//                onClicked: {
-//                    header.exposed = !header.exposed;
-//                }
                 function trigger() {
                     header.exposed = !header.exposed;
                 }
@@ -92,71 +88,61 @@ Item {
     }
 
 
-//    UbuntuTestCase {
-//        name: "HeaderLockedVisible"
-//        when: windowShown
-//        id: testCase
+    UbuntuTestCase {
+        name: "Header"
+        when: windowShown
+        id: testCase
 
 //        property var header
 //        function initTestCase() {
 //            testCase.header = findChild(mainView, "MainView_Header");
 //        }
 
-//        function init() {
-//            page.head.visible = true;
-//            page.head.locked = false;
-//            otherPage.head.visible = true;
-//            otherPage.head.locked = false;
-//            wait_for_visible(true, "Header is not visible initially.");
-//            compare(stack.currentPage, page, "Wrong Page on PageStack initially.");
+        function init() {
+            compare(header.exposed, true, "Header not exposed initially");
 //            compare(page.head.locked, false, "Header is not locked initially.");
-//        }
+        }
 
-//        function scroll(dy) {
-//            var p = centerOf(mainView);
-//            // Use mouseWheel to scroll because mouseDrag is very unreliable
-//            // and does not properly handle negative values for dy.
-//            mouseWheel(mainView, p.x, p.y, 0, 2*dy);
-//        }
+        function scroll(dy) {
+            var p = centerOf(root);
+            // Use mouseWheel to scroll because mouseDrag is very unreliable
+            // and does not properly handle negative values for dy.
+            mouseWheel(root, p.x, p.y, 0,dy);
+        }
 
-//        function scroll_down() {
-//            scroll(-header.height);
-//        }
+        function scroll_down() {
+            scroll(-2.0*header.height);
+        }
 
-//        function scroll_up() {
-//            scroll(header.height);
-//        }
+        function scroll_up() {
+            scroll(header.height);
+        }
 
-//        function wait_for_visible(visible, errorMessage) {
-//            waitForHeaderAnimation(mainView);
-//            compare(stack.currentPage.head.visible, visible, errorMessage);
-//            var mismatchMessage = " Page.head.visible does not match header visibility.";
-//            if (visible) {
-//                compare(header.y, 0, errorMessage + mismatchMessage);
-//            } else {
-//                compare(header.y, -header.height, errorMessage + mismatchMessage);
-//            }
-//        }
+        function wait_for_exposed(exposed, errorMessage) {
+            tryCompare(header, "exposed", exposed, 5000, errorMessage);
+            // wait for the animation to finish:
+            tryCompare(header, "moving", false);
+        }
 
-//        function test_set_visible_to_hide_and_show() {
-//            page.head.visible = false;
-//            wait_for_visible(false, "Cannot hide unlocked header by setting visible to false.");
-//            page.head.visible = true;
-//            wait_for_visible(true, "Cannot show unlocked header by setting visible to true.");
+        function test_set_exposed_to_hide_and_show() {
+            header.exposed = false;
+            wait_for_exposed(false, "Cannot hide unlocked header by setting visible to false.");
+            header.exposed = true;
+            wait_for_exposed(true, "Cannot show unlocked header by setting visible to true.");
 
 //            page.head.locked = true;
 //            page.head.visible = false;
 //            wait_for_visible(false, "Cannot hide locked header by setting visible to false.");
 //            page.head.visible = true;
 //            wait_for_visible(true, "Cannot show locked header by setting visible to true.");
-//        }
+        }
 
-//        function test_scroll_when_unlocked_updates_visible() {
-//            scroll_down();
-//            wait_for_visible(false, "Scrolling down does not hide header.");
-//            scroll_up();
-//            wait_for_visible(true, "Scrolling up does not show header.");
-//        }
+        function test_scroll_when_unlocked_updates_visible() {
+            scroll_down();
+            wait_for_exposed(false, "Scrolling down does not hide header.");
+            scroll_up();
+            wait_for_exposed(true, "Scrolling up does not show header.");
+        }
 
 //        function test_scroll_when_locked_does_not_update_visible() {
 //            // Note that with a locked header, scrolling up and down does not
@@ -283,5 +269,5 @@ Item {
 //            stack.pop(); // noHeaderPage
 //            waitForHeaderAnimation(mainView);
 //        }
-//    }
+    }
 }
