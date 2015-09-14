@@ -48,6 +48,7 @@ UCHeader::UCHeader(QQuickItem *parent)
     , m_previous_contentY(0)
     , m_showHideAnimation(new QQuickNumberAnimation)
     , m_flickable(Q_NULLPTR)
+    , m_previous_parent(Q_NULLPTR)
 {
 //    this->setFocus();
     m_showHideAnimation->setTargetObject(this);
@@ -65,17 +66,29 @@ UCHeader::UCHeader(QQuickItem *parent)
     q_updateSize();
 }
 
+// catch parent change event so we can update the size of the header
+void UCHeader::itemChange(ItemChange change, const ItemChangeData &data)
+{
+    QQuickItem::itemChange(change, data);
+    if (change == QQuickItem::ItemParentHasChanged) {
+        if (!m_previous_parent.isNull()) {
+            disconnect(m_previous_parent, SIGNAL(widthChanged()), this, SLOT(q_updateSize()));
+        }
+        m_previous_parent = data.item;
+        if (!m_previous_parent.isNull()) {
+            connect(m_previous_parent, SIGNAL(widthChanged()), this, SLOT(q_updateSize()));
+        }
+        this->q_updateSize();
+    }
+}
+
 //// called when units size changes
 void UCHeader::q_updateSize()
 {
-    // update divider thickness
-//    divider->setImplicitHeight(UCUnits::instance().dp(DIVIDER_THICKNESS_DP));
-//    QQuickItem *owner = qobject_cast<QQuickItem*>(q->sender());
-//    if (!owner && parentAttached) {
-//        owner = static_cast<QQuickItem*>(parentAttached->parent());
-//    }
-//    q->setImplicitWidth(owner ? owner->width() : UCUnits::instance().gu(IMPLICIT_LISTITEM_WIDTH_GU));
     this->setImplicitHeight(UCUnits::instance().gu(IMPLICIT_HEADER_HEIGHT_GU));
+    if (Q_NULLPTR != this->parentItem()) {
+        this->setImplicitWidth(this->parentItem()->width());
+    }
 }
 
 QQuickFlickable* UCHeader::flickable() {

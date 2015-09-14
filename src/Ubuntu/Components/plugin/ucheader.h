@@ -49,6 +49,7 @@ Q_SIGNALS:
 protected:
     void show();
     void hide();
+    void itemChange(ItemChange change, const ItemChangeData &data);
 
 protected Q_SLOTS:
     void q_updateSize();
@@ -66,6 +67,7 @@ private:
 
     QQuickNumberAnimation* m_showHideAnimation;
     QPointer<QQuickFlickable> m_flickable;
+    QPointer<QQuickItem> m_previous_parent;
 
     // used to set the easing and duration of m_showHideAnimation
     static UCUbuntuAnimation *s_ubuntuAnimation;

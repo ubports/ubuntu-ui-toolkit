@@ -22,10 +22,11 @@ Item {
     id: root
     width: units.gu(50)
     height: units.gu(70)
+    onWidthChanged: print("root.width = "+width)
 
     Header {
-        width: parent.width
-        height: units.gu(6)
+//        width: parent.width
+//        height: units.gu(6)
 
         flickable: flickable
 
@@ -87,6 +88,37 @@ Item {
         }
     }
 
+    Rectangle {
+        id: reparentTestItem
+        anchors {
+            right: parent.right
+            bottom: parent.bottom
+        }
+        height: units.gu(15)
+        width: parent.width / 2
+        color: "blue"
+
+        Label {
+            anchors {
+                horizontalCenter: parent.horizontalCenter
+                bottom: parent.bottom
+            }
+            text: "Click to reparent"
+            color: "white"
+        }
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: {
+                if (header.parent === root) {
+                    header.parent = reparentTestItem;
+                } else {
+                    header.parent = root;
+                }
+            }
+        }
+    }
+
 
     UbuntuTestCase {
         name: "Header"
@@ -104,10 +136,10 @@ Item {
         }
 
         function scroll(dy) {
-            var p = centerOf(root);
+            var p = centerOf(flickable);
             // Use mouseWheel to scroll because mouseDrag is very unreliable
             // and does not properly handle negative values for dy.
-            mouseWheel(root, p.x, p.y, 0,dy);
+            mouseWheel(flickable, p.x, p.y, 0,dy);
         }
 
         function scroll_down() {
@@ -122,6 +154,37 @@ Item {
             tryCompare(header, "exposed", exposed, 5000, errorMessage);
             // wait for the animation to finish:
             tryCompare(header, "moving", false);
+            if (exposed) {
+                compare(header.y, 0, errorMessage +
+                        " y-value/exposed mismatch for exposed header!");
+            } else {
+                compare(header.y, -header.height, errorMessage +
+                        " y-value/exposed mismatch for hidden header!");
+            }
+        }
+
+        function test_reparent_width() {
+            // test initial header width:
+            compare(header.parent, root);
+            compare(header.width, root.width);
+            compare(header.y, 0);
+
+            // test width update when changing parent:
+            header.parent = reparentTestItem;
+            compare(header.parent, reparentTestItem);
+            compare(header.width, reparentTestItem.width);
+            compare(header.y, 0);
+
+            // test width update when changing width of parent:
+            reparentTestItem.width = units.gu(5);
+            compare(header.width, reparentTestItem.width);
+            compare(header.y, 0);
+
+            // revert to original parent:
+            header.parent = root;
+            compare(header.parent, root);
+            compare(header.width, root.width);
+            compare(header.y, 0);
         }
 
         function test_set_exposed_to_hide_and_show() {
