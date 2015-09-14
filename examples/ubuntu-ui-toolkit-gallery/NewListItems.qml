@@ -24,143 +24,10 @@ Template {
         className: "SlotsLayout (a few examples)"
         // no spacing between the list items in the Column
         spacing: 0
-        /*GenericListItemLayout {
-            firstItem: CheckBox { id: box; }
-            thirdItem: Icon { width: units.gu(2); name: "email" }
-            fourthItem: Icon { width: units.gu(2); name: "edit" }
-            firstSlot.onClicked: box.checked = !box.checked
-            mainInputArea.onClicked: console.log("PRIMARY ACTION")
-
-        }
-
-        ListItem {
-            trailingActions: ListItemActions {
-                actions: [
-                    Action {}
-                ]
-            }
-            leadingActions: ListItemActions {
-                actions: [
-                    Action {},
-                    Action {},
-                    Action {}
-                ]
-            }
-
-            onClicked: console.log("LISTITEM CLICKED")
-
-            GenericListItemLayout {
-                firstItem: CheckBox { id: box1  }
-                thirdItem: Icon { id: icon1; width: units.gu(2); name: "email" }
-                fourthItem: Icon { width: units.gu(2); name: "edit" }
-                firstSlot.onClicked: box1.checked = !box1.checked
-                thirdSlot.onClicked: console.log("THIRDSLOT TRIGGERED")
-                mainInputArea.onClicked: console.log("PRIMARY ACTION")
-            }
-        }*/
-
-        /*ListItem {
-            trailingActions: ListItemActions {
-                actions: [
-                    Action {}
-                ]
-            }
-            leadingActions: ListItemActions {
-                actions: [
-                    Action {},
-                    Action {},
-                    Action {}
-                ]
-            }
-
-            HardcodedFourContainersLayout {
-                anchors.fill: parent
-                //the dev has to specify the width because the container will use that to
-                //resize itself
-                firstSlot: CheckBox { }
-                firstSlotArea.onClicked: doSomething()
-
-                secondSlot: Icon { width: units.gu(2); name: "email" }
-                secondSlotArea.onClicked: doSomethingElse()
-
-                thirdSlot: Icon { width: units.gu(2); name: "message" }
-                thirdSlotArea.onClicked: doSomethingAwesome()
-
-                mainArea.onClicked: console.log("PRIMARY ACTION")
-
-                //set this if your slots don't have actions associated
-                firstSlotArea.enabled: false
-                secondSlotArea.enabled: false
-                thirdSlotArea.enabled: false
-            }
-        }*/
-
-        /*ListItem {
-
-            height: row.height
-
-            trailingActions: ListItemActions {
-                actions: [
-                    Action {}
-                ]
-            }
-            leadingActions: ListItemActions {
-                actions: [
-                    Action {},
-                    Action {},
-                    Action {}
-                ]
-            }
-
-            Row {
-                id: row
-                width: parent.width
-                //use the max height of the components + 2gu margin per side
-                height: Math.max(labelsContainer.height, Math.max(Math.max(item1.height, item2.height), item3.height)) + units.gu(4)
-                MouseArea {
-                    id: slot1
-                    height: parent.height
-                    width: item1.width + units.gu(3)
-                    Item { id: item1; anchors.centerIn: parent; width: units.gu(2) }
-                }
-                Item {
-                    id: labelsContainer
-                    height: title.height + subtitle.height + units.gu(1)
-                    width: parent.width - slot1.width - slot2.width - slot3.width
-                    anchors.verticalCenter: parent.verticalCenter
-                    Text { id: title; width: parent.width; text: "test"; font.weight: Font.Light; color: "#525252"; font.pixelSize: FontUtils.sizeToPixels("medium") }
-                    Text { id: subtitle
-                        anchors.top: title.baseline;
-                        anchors.topMargin: units.gu(1);
-                        width: parent.width;
-                        text: "test";
-                        font.weight: Font.Light;
-                        color: "#525252";
-                        font.pixelSize: FontUtils.sizeToPixels("small")
-                    }
-                }
-                MouseArea {
-                    id: slot2
-                    height: parent.height
-                    width: item2.width + units.gu(3)
-                    Item { id: item2; anchors.centerIn: parent; width: units.gu(2) }
-                }
-
-                MouseArea {
-                    id: slot3
-                    height: parent.height
-                    width: item3.width + units.gu(3)
-                    Item { id: item3; anchors.centerIn: parent; width: units.gu(2) }
-                }
-            }
-        }*/
 
         ListItem {
             id: listItem
-
-            //FIXME: do we like this?
             height: layout.height + divider.height
-            //contentItem.height: layout.height
 
             trailingActions: ListItemActions {
                 actions: [
@@ -180,20 +47,18 @@ Template {
             SlotsLayoutCpp {
                 id: layout
 
-                Icon { SlotsLayoutCpp.position: SlotsLayoutCpp.Leading; width: units.gu(2); name: "email" }
-                Icon { width: units.gu(2); name: "message" }
-                CheckBox {  }
-
                 titleItem.text: "Hello designers!"
                 subtitleItem.text:  "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
                 subsubtitleItem.text: "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
+
+                Icon { SlotsLayoutCpp.position: SlotsLayoutCpp.Leading; width: units.gu(2); name: "email" }
+                Icon { width: units.gu(2); name: "message" }
+                CheckBox {  }
             }
         }
 
         ListItem {
             id: listItem2
-
-            //FIXME: do we like this?
             height: layout2.height
 
             trailingActions: ListItemActions {
@@ -211,21 +76,16 @@ Template {
 
             SlotsLayoutCpp {
                 id: layout2
+                titleItem.text: "Hello designers!"
 
                 Rectangle { SlotsLayoutCpp.position: SlotsLayoutCpp.Leading; color: "yellow"; width: units.gu(10); height: units.gu(10) }
                 CheckBox { }
                 Icon { width: units.gu(2); name: "message" }
-
-                titleItem.text: "Hello designers!"
-                //subtitleItem.text:  "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
-                //subsubtitleItem.text: "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
             }
         }
 
         ListItem {
             id: listItem3
-
-            //FIXME: do we like this?
             height: layout3.height
 
             trailingActions: ListItemActions {
@@ -245,20 +105,19 @@ Template {
                 id: layout3
 
                 contentMargins.bottomMargin: units.gu(10)
-                CheckBox { width: units.gu(8); height: units.gu(8) }
-                Rectangle { color: "purple"; width: units.gu(5); height: units.gu(5) }
-                Icon { SlotsLayoutCpp.position: SlotsLayoutCpp.Leading; width: units.gu(5); height: units.gu(5); name: "message" }
 
                 titleItem.text: "Hello designers!"
                 subtitleItem.text:  "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
                 subsubtitleItem.text: "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
+
+                CheckBox { width: units.gu(8); height: units.gu(8) }
+                Rectangle { color: "purple"; width: units.gu(5); height: units.gu(5) }
+                Icon { SlotsLayoutCpp.position: SlotsLayoutCpp.Leading; width: units.gu(5); height: units.gu(5); name: "message" }
             }
         }
 
         ListItem {
             id: listItem4
-
-            //FIXME: do we like this?
             height: layout4.height
 
             trailingActions: ListItemActions {
@@ -276,21 +135,17 @@ Template {
 
             SlotsLayoutCpp {
                 id: layout4
+                titleItem.text: "Hello designers!"
 
                 CheckBox { width: units.gu(8); height: units.gu(8) }
                 Rectangle { color: "orange"; width: units.gu(5); height: units.gu(5) }
                 Icon { width: units.gu(5); height: units.gu(5); name: "message" }
 
-                titleItem.text: "Hello designers!"
-                //subtitleItem.text:  "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
-                //subsubtitleItem.text: "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
             }
         }
 
         ListItem {
             id: listItem5
-
-            //FIXME: do we like this?
             height: layout5.height
 
             trailingActions: ListItemActions {
@@ -308,16 +163,14 @@ Template {
 
             SlotsLayoutCpp {
                 id: layout5
+                titleItem.text: "Hello designers!"
 
                 CheckBox { }
-                titleItem.text: "Hello designers!"
             }
         }
 
         ListItem {
             id: listItem6
-
-            //FIXME: do we like this?
             height: layout6.height
 
             trailingActions: ListItemActions {
@@ -335,17 +188,14 @@ Template {
 
             SlotsLayoutCpp {
                 id: layout6
+                titleItem.text: "Hello designers!"
 
                 CheckBox { SlotsLayoutCpp.position: SlotsLayoutCpp.Leading }
-
-                titleItem.text: "Hello designers!"
             }
         }
 
         ListItem {
             id: listItem7
-
-            //FIXME: do we like this?
             height: layout7.height
 
             trailingActions: ListItemActions {
@@ -363,6 +213,9 @@ Template {
 
             SlotsLayoutCpp {
                 id: layout7
+                titleItem.text: "Hello designers!"
+                subtitleItem.text:  "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
+                subsubtitleItem.text: "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
 
                 CheckBox { id: checkbox; width: units.gu(4); height: units.gu(4) }
 
@@ -370,57 +223,6 @@ Template {
 
                 Icon { SlotsLayoutCpp.position: SlotsLayoutCpp.Leading; width: units.gu(4); height: units.gu(4); name: "message" }
 
-                titleItem.text: "Hello designers!"
-                subtitleItem.text:  "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
-                subsubtitleItem.text: "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
-            }
-        }
-
-        ListItem {
-            height: qmlLayout.height
-
-            trailingActions: ListItemActions {
-                actions: [
-                    Action {}
-                ]
-            }
-            leadingActions: ListItemActions {
-                actions: [
-                    Action {},
-                    Action {},
-                    Action {}
-                ]
-            }
-
-            SlotsLayout {
-                id: qmlLayout
-
-                SlotQML {
-                    position: "Slot.Leading"
-                    //handleInnerItemPosition: false
-                    CheckBox { }
-                }
-
-                SlotQML {
-                    position: "Slot.Trailing"
-                    Icon { width: units.gu(2); name: "email" }
-                }
-
-                SlotQML {
-                    position: "Slot.Trailing"
-                    Icon { width: units.gu(2); name: "message" }
-                }
-
-                titleItem.text: "TestTitle"
-                subtitleItem.text: "TestSubtitle"
-            }
-        }
-
-        ListItem {
-            id: listItemTestMouse
-            MouseArea {
-                anchors.fill: parent
-                onPressed: mouse.accepted = false
             }
         }
     }
@@ -431,8 +233,6 @@ Template {
         spacing: 0
         ListItem {
             id: listItemCustom1
-
-            //FIXME: do we like this?
             height: listItemCustomLayout1.height
 
             trailingActions: ListItemActions {
@@ -450,21 +250,15 @@ Template {
 
             SlotsLayoutCpp {
                 id: listItemCustomLayout1
-
-                //Component.onCompleted: console.log(titleItem.SlotsLayoutCpp.leftMargin)
-                //left/top/right/bottomOffset: units.gu(4)
-                //anchors.topMargin: units.gu(4)
-                //anchors.bottomMargin: units.gu(4)
+                titleItem.text: "Hello designers!"
+                subtitleItem.text:  "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
+                subsubtitleItem.text: "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
 
                 CheckBox { SlotsLayoutCpp.overrideVerticalPositioning: true; anchors.top: parent.titleItem.top; width: units.gu(4); height: units.gu(4) }
 
                 Rectangle { SlotsLayoutCpp.overrideVerticalPositioning: true; anchors.bottom: parent.subsubtitleItem.bottom; width: units.gu(4); height: units.gu(4); color: "purple" }
 
                 Icon { SlotsLayoutCpp.overrideVerticalPositioning: true; SlotsLayoutCpp.position: SlotsLayoutCpp.Leading; anchors.verticalCenter: parent.verticalCenter; width: units.gu(4); height: units.gu(4); name: "message" }
-
-                titleItem.text: "Hello designers!"
-                subtitleItem.text:  "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
-                subsubtitleItem.text: "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
             }
         }
     }
@@ -476,11 +270,13 @@ Template {
 
         ListItem {
             id: addressbookListItem
-
             height: addressbookLayout.height
 
             SlotsLayoutCpp {
                 id: addressbookLayout
+
+                titleItem.color: UbuntuColors.lightAubergine
+                titleItem.text: "Address book list item: Name goes here"
 
                 Rectangle {
                     SlotsLayoutCpp.position: SlotsLayoutCpp.Leading
@@ -489,15 +285,11 @@ Template {
                     width: height
                     visible: width > 0
                 }
-
-                titleItem.color: UbuntuColors.lightAubergine
-                titleItem.text: "Address book list item: Name goes here"
             }
         }
 
         ListItem {
             id: addressbookDetailsListItem
-
             height: addressbookDetailsLayout.height
 
             SlotsLayoutCpp {
@@ -505,8 +297,6 @@ Template {
 
                 titleItem.color: UbuntuColors.lightAubergine
                 titleItem.text: "+44 7552342512"
-
-
                 subtitleItem.text: "Mobile"
 
                 Icon {
@@ -524,7 +314,6 @@ Template {
 
         ListItem {
             id: dialerHistoryListItem2
-
             height: dialerHistoryLayout2.height
 
             SlotsLayoutCpp {
@@ -553,7 +342,6 @@ Template {
 
         ListItem {
             id: dialerHistoryListItem
-
             height: dialerHistoryLayout.height
 
             SlotsLayoutCpp {
@@ -561,7 +349,6 @@ Template {
 
                 titleItem.text: "+44 7349845928 (3)"
                 titleItem.color: UbuntuColors.lightAubergine
-
                 subtitleItem.text: "Mobile"
 
                 Rectangle {

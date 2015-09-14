@@ -113,12 +113,6 @@ private Q_SLOTS:
         QTest::newRow("AbstractButton 1.3") << "AbstractButton13Grid.qml" << QUrl();
         QTest::newRow("list with new ListItem (inline actions!) with a Row of 4 Items") << "ListItemWithInlineActionsAndFourContainersList.qml" << QUrl();
         QTest::newRow("list with new ListItem (inline actions!) with a Row of 4 MouseAreas") << "ListItemWithInlineActionsAndFourMouseAreas.qml" << QUrl();
-        QTest::newRow("list with new ListItem (no actions) with HardcodedFourContainersLayout (QML), 4 empty containers") << "ListOfHardcodedFourContainersLayout.qml" << QUrl();
-        QTest::newRow("list with new ListItem (no actions) with HardcodedFourContainersLayout (QML) and Item inside each container") << "ListOfHardcodedFourContainersLayout_withItems.qml" << QUrl();
-        QTest::newRow("list with new ListItem (no actions) and empty SlotsLayout") << "ListOfEmptySlotsLayout.qml" << QUrl();
-        QTest::newRow("list with new ListItem (no actions) and SlotsLayout with 2 defined labels") << "ListOfSlotsLayout_labelsOnly.qml" << QUrl();
-        QTest::newRow("list with new ListItem (no actions) and SlotsLayout with 2 defined labels and 3 slots") << "ListOfSlotsLayout_complex1.qml" << QUrl();
-        QTest::newRow("list with new ListItem (inline actions!) and SlotsLayout with 2 defined labels and 3 slots") << "ListOfSlotsLayout_complex2.qml" << QUrl();
         QTest::newRow("list with new ListItem (no actions) and empty SlotsLayoutCpp") << "ListOfEmptySlotsLayoutCpp.qml" << QUrl();
         QTest::newRow("list with new ListItem (no actions) and empty SlotsLayoutCpp with progression symbol") << "ListOfEmptySlotsLayoutCpp_withProgression.qml" << QUrl();
         QTest::newRow("list with new ListItem (no actions) and SlotsLayoutCpp with 2 defined labels") << "ListOfSlotsLayoutCpp_labelsOnly.qml" << QUrl();
