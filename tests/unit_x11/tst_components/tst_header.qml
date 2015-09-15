@@ -120,6 +120,11 @@ Item {
         }
     }
 
+    Flickable {
+        id: otherFlickable
+        height: units.gu(10)
+        contentHeight: units.gu(20);
+    }
 
     UbuntuTestCase {
         name: "Header"
@@ -256,12 +261,6 @@ Item {
 
             header.exposed = true;
             wait_for_exposed(true);
-
-//            page.head.locked = true;
-//            page.head.visible = false;
-//            wait_for_visible(false, "Cannot hide locked header by setting visible to false.");
-//            page.head.visible = true;
-//            wait_for_visible(true, "Cannot show locked header by setting visible to true.");
         }
 
         function test_scroll_when_unlocked_updates_visible() {
@@ -271,9 +270,23 @@ Item {
             wait_for_exposed(true, "Scrolling up does not show header.");
         }
 
-//        function test_flickable_margins() {
-//            // TODO TIM
-//        }
+        function test_flickable_margins() {
+            compare(flickable.topMargin, header.height, "Flickable top margin does not match header height.");
+            header.height = units.gu(15);
+            wait_for_exposed(true, "Increasing header height at top hides header.");
+            compare(flickable.topMargin, header.height, "Updating header height does not update flickable top margin.");
+
+            header.height = undefined; // height becomes implicitHeight now.
+            wait_for_exposed(true, "Reverting header height at top hides header.");
+            compare(flickable.topMargin, header.height, "Reverting header height does not revert flickable top margin.");
+
+            compare(otherFlickable.topMargin, 0, "Flickable top margin is not 0 by default.");
+            header.flickable = otherFlickable;
+            compare(otherFlickable.topMargin, header.height, "Setting header flickable does not update flickable top margin.");
+
+            header.flickable = flickable;
+            compare(flickable.topMargin, header.height, "Reverting header flickable breaks flickable top margin.");
+        }
 
         function test_flickable_contentHeight_bug1156573() {
             var old_height = flickable.contentHeight;
