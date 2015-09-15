@@ -165,7 +165,7 @@ Item {
         function wait_for_exposed(exposed, errorMessage) {
             tryCompare(header, "exposed", exposed, 5000, errorMessage);
             // wait for the animation to finish:
-            tryCompare(header, "moving", false);
+            tryCompare(header, "moving", false, 5000, "Header still moving?");
             if (exposed) {
                 compare(header.y, 0, errorMessage +
                         " y-value/exposed mismatch for exposed header!");
@@ -201,67 +201,102 @@ Item {
             reparentTestItem.width = old_width;
         }
 
-        function test_set_exposed_to_hide_and_show() {
-            header.exposed = false;
-            wait_for_exposed(false, "Cannot hide header by setting visible to false.");
-            header.exposed = true;
-            wait_for_exposed(true, "Cannot show header by setting visible to true.");
-
-            // change the value of exposed twice quickly:
-            header.exposed = false;
-            header.exposed = true;
-            wait_for_exposed(true, "Quickly hiding and showing header does not result in exposed header.");
-
-            // and the other way around:
-            header.exposed = false;
-            wait_for_exposed(false);
-            header.exposed = true;
-            header.exposed = false;
-            wait_for_exposed(false, "Quickly showing and hiding header does not result in hidden header.");
-
-            header.exposed = true;
-            wait_for_exposed(true);
-
-//            page.head.locked = true;
-//            page.head.visible = false;
-//            wait_for_visible(false, "Cannot hide locked header by setting visible to false.");
-//            page.head.visible = true;
-//            wait_for_visible(true, "Cannot show locked header by setting visible to true.");
-        }
-
-        function test_scroll_when_unlocked_updates_visible() {
+        function test_height_change() {
+            // first scroll down for this test, because near the top,
+            //  the header some times needs to show to avoid it becoming
+            //  inaccessible through scrolling.
             scroll_down();
-            wait_for_exposed(false, "Scrolling down does not hide header.");
-            scroll_up();
-            wait_for_exposed(true, "Scrolling up does not show header.");
+            header.height = units.gu(15);
+            wait_for_exposed(true, "Increasing header height hides header.");
+            scroll_down();
+            header.exposed = false;
+            wait_for_exposed(false, "Header with height set does not hide.");
+            header.height = units.gu(2);
+            wait_for_exposed(false, "Decreasing header height exposes it.");
+            header.exposed = true;
+            wait_for_exposed(true, "Header with decreased height does not expose.");
+            flickable.contentY = 0;
+            wait_for_exposed(true, "Setting flickable.contentY hides the header.");
+
+            // similar test, near the top of the flickable should expose the header
+//            wait_for_exposed(true);
+//            header.height = units.gu(15);
+//            wait_for_exposed(true, "Increasing header height near top hides header.");
+//            header.exposed = false;
+//            wait_for_exposed(false, "Header with height set near top does not hide.");
+//            header.height = units.gu(2);
+//            wait_for_exposed(true, "Decreasing header height near top does not expose it.");
+
+//            // revert to original height
+//            header.height = undefined;
+//            wait_for_exposed(true, "Resetting header height shows header.");
+//            scroll_up();
+//            wait_for_exposed(true);
         }
 
-//        function test_flickable_margins() {
-//            // TODO TIM
+//        function test_set_exposed_to_hide_and_show() {
+//            header.exposed = false;
+//            wait_for_exposed(false, "Cannot hide header by setting visible to false.");
+//            header.exposed = true;
+//            wait_for_exposed(true, "Cannot show header by setting visible to true.");
+
+//            // change the value of exposed twice quickly:
+//            header.exposed = false;
+//            header.exposed = true;
+//            wait_for_exposed(true, "Quickly hiding and showing header does not result in exposed header.");
+
+//            // and the other way around:
+//            header.exposed = false;
+//            wait_for_exposed(false);
+//            header.exposed = true;
+//            header.exposed = false;
+//            wait_for_exposed(false, "Quickly showing and hiding header does not result in hidden header.");
+
+//            header.exposed = true;
+//            wait_for_exposed(true);
+
+////            page.head.locked = true;
+////            page.head.visible = false;
+////            wait_for_visible(false, "Cannot hide locked header by setting visible to false.");
+////            page.head.visible = true;
+////            wait_for_visible(true, "Cannot show locked header by setting visible to true.");
 //        }
 
-        function test_flickable_contentHeight_bug1156573() {
-            var old_height = flickable.contentHeight;
-            header.exposed = false;
-            wait_for_exposed(false);
-            flickable.contentHeight = flickable.height / 2;
-            wait_for_exposed(true, "Small content height does not expose the header.");
+//        function test_scroll_when_unlocked_updates_visible() {
+//            scroll_down();
+//            wait_for_exposed(false, "Scrolling down does not hide header.");
+//            scroll_up();
+//            wait_for_exposed(true, "Scrolling up does not show header.");
+//        }
 
-            // revert:
-            flickable.contentHeight = old_height;
-            compare(header.exposed, true, "Reverting flickable content height hides the header.");
-        }
+////        function test_flickable_margins() {
+////            // TODO TIM
+////        }
 
-        function test_flickable_interactive() {
-            header.exposed = false;
-            wait_for_exposed(false);
-            flickable.interactive = false;
-            wait_for_exposed(true, "Making flickable not interactive does not expose the header.");
+//        function test_flickable_contentHeight_bug1156573() {
+//            var old_height = flickable.contentHeight;
+//            header.exposed = false;
+//            wait_for_exposed(false);
+//            flickable.contentHeight = flickable.height / 2;
+//            wait_for_exposed(true, "Small content height does not expose the header.");
 
-            // revert:
-            flickable.interactive = true;
-            compare(header.exposed, true, "Reverting flickable exposed hides the header.");
-        }
+//            // revert:
+//            flickable.contentHeight = old_height;
+//            compare(header.exposed, true, "Reverting flickable content height hides the header.");
+//        }
+
+//        function test_flickable_interactive() {
+//            header.exposed = false;
+//            wait_for_exposed(false);
+//            flickable.interactive = false;
+//            wait_for_exposed(true, "Making flickable not interactive does not expose the header.");
+
+//            // revert:
+//            flickable.interactive = true;
+//            compare(header.exposed, true, "Reverting flickable exposed hides the header.");
+//        }
+
+        // TOT HIER WEER UNCOMMENTEN
 
 //        function test_scroll_when_locked_does_not_update_visible() {
 //            // Note that with a locked header, scrolling up and down does not

@@ -67,6 +67,7 @@ private Q_SLOTS:
     void q_flickableMovementEnded();
     void q_contentHeightChanged();
     void q_flickableInteractiveChanged();
+    void q_heightChanged();
 
 private:
     bool m_exposed;
