@@ -72,7 +72,7 @@ Item {
         property color keyColorIn: "#808080"
         property real threshold: 0.1
 
-        fragmentShader: visible ? "
+        fragmentShader: "
             varying highp vec2 qt_TexCoord0;
             uniform sampler2D source;
             uniform highp vec4 keyColorOut;
@@ -82,6 +82,6 @@ Item {
             void main() {
                 lowp vec4 sourceColor = texture2D(source, qt_TexCoord0);
                 gl_FragColor = mix(vec4(keyColorOut.rgb, 1.0) * sourceColor.a, sourceColor, step(threshold, distance(sourceColor.rgb / sourceColor.a, keyColorIn.rgb))) * qt_Opacity;
-            }" : ""
+            }"
     }
 }

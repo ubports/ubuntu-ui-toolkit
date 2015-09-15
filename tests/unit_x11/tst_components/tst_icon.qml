@@ -118,19 +118,14 @@ Item {
             compare(shader.keyColorIn, icon.keyColor);
             // Unsetting the icon name should disable the shader
             icon.name = '';
-            shaderSpy.wait();
-            compare(shader.status, ShaderEffect.Uncompiled)
             compare(icon.source, '');
+            compare(shader.visible, false);
             // Let's get back to a valid source
             icon.name = 'search';
-            shaderSpy.wait();
-            compare(shader.status, ShaderEffect.Compiled)
             compare(shader.visible, true);
             compare(shader.source, image);
             // Unsetting the keyColor should also disable the shader
             icon.color = Qt.rgba(0.0, 0.0, 0.0, 0.0);
-            shaderSpy.wait();
-            compare(shader.status, ShaderEffect.Uncompiled)
             compare(shader.visible, false);
         }
     }
