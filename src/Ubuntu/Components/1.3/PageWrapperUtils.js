@@ -73,6 +73,7 @@ function Incubator(pageWrapper, pageComponent) {
     if (incubator.status != Component.Ready) {
         incubator.onStatusChanged = incubatorStatusChanged;
     } else {
+        pageWrapper.incubator = this;
         incubatorStatusChanged(incubator.status);
     }
 }
