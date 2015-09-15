@@ -43,8 +43,6 @@ public:
     static UCSlotsAttached *qmlAttachedProperties(QObject *object);
 
 Q_SIGNALS:
-    //TODO: should this be in the pimpl?
-    void relayoutNeeded();
     void progressionChanged();
 
 protected:

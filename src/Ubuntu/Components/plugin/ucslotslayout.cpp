@@ -57,7 +57,6 @@ void UCSlotsLayoutPrivate::init()
     QObject::connect(q, SIGNAL(heightChanged()), q, SLOT(_q_updateCachedHeight()));
 
     QObject::connect(q, SIGNAL(visibleChanged()), q, SLOT(_q_relayout()));
-    QObject::connect(q, SIGNAL(relayoutNeeded()), q, SLOT(_q_relayout()));
 
     //we need this to know when any of the labels is empty. In that case, we'll have to change the
     //anchors because even if a QQuickText has empty text, its height will not be 0 but "fontHeight",
@@ -165,7 +164,7 @@ void UCSlotsLayoutPrivate::_q_updateCachedHeight()
     Q_Q(UCSlotsLayout);
     if (_q_cachedHeight != q->height()) {
         if (qIsNull(_q_cachedHeight)) {
-            Q_EMIT q->relayoutNeeded();
+            _q_relayout();
         }
         _q_cachedHeight = q->height();
     }
@@ -326,7 +325,7 @@ void UCSlotsLayoutPrivate::_q_updateSize()
     q->setImplicitHeight(qMax<qreal>(maxSlotsHeight, labelsBoundingBoxHeight)
                          + contentMargins.topMargin() + contentMargins.bottomMargin());
 
-    Q_EMIT q->relayoutNeeded();
+    _q_relayout();
 }
 
 qreal UCSlotsLayoutPrivate::populateSlotsListsAndComputeWidth()
