@@ -60,6 +60,7 @@ Item {
 
     ShaderEffect {
         id: colorizedImage
+        objectName: "shader"
 
         anchors.fill: parent
         visible: active
