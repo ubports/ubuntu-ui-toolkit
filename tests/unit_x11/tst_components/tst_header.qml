@@ -22,17 +22,13 @@ Item {
     id: root
     width: units.gu(50)
     height: units.gu(70)
-//    onWidthChanged: print("root.width = "+width)
 
     Header {
-//        width: parent.width
-//        height: units.gu(6)
-
+        id: header
         flickable: flickable
 
-        id: header
-//        locked: lockedSwitch.checked
         Rectangle {
+            // to visualize the header
             anchors.fill: parent
             color: "red"
             opacity: 0.5
@@ -46,7 +42,6 @@ Item {
     Flickable {
         id: flickable
         anchors.fill: parent
-//        anchors.topMargin: units.gu(10)
         contentHeight: height * 2
 
         Grid {
@@ -131,19 +126,14 @@ Item {
         when: windowShown
         id: testCase
 
-//        property var header
-//        function initTestCase() {
-//            testCase.header = findChild(mainView, "MainView_Header");
-//        }
-
         function initTestCase() {
-            compare(header.exposed, true, "Header not exposed initially");
-//            compare(page.head.locked, false, "Header is not locked initially.");
+            compare(header.exposed, true, "Header not exposed initially.");
         }
 
         function init() {
             flickable.contentHeight = 2*flickable.height;
             flickable.interactive = true;
+            flickable.contentY = -header.height;
             header.exposed = true;
             wait_for_exposed(true);
         }
@@ -263,7 +253,7 @@ Item {
             wait_for_exposed(true);
         }
 
-        function test_scroll_when_unlocked_updates_visible() {
+        function test_scroll_updates_visible() {
             scroll_down();
             wait_for_exposed(false, "Scrolling down does not hide header.");
             scroll_up();

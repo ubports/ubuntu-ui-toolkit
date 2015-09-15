@@ -41,42 +41,35 @@ UCUbuntuAnimation *UCHeader::s_ubuntuAnimation = new UCUbuntuAnimation();
 #define IMPLICIT_HEADER_HEIGHT_GU 6
 
 UCHeader::UCHeader(QQuickItem *parent)
-//    : UCStyledItemBase(parent)
     : QQuickItem(parent)
     , m_exposed(true)
     , m_moving(false)
-    , m_locked(false)
     , m_previous_contentY(0)
     , m_showHideAnimation(new QQuickNumberAnimation)
     , m_flickable(Q_NULLPTR)
     , m_previous_parent(Q_NULLPTR)
 {
-//    this->setFocus();
     m_showHideAnimation->setTargetObject(this);
     m_showHideAnimation->setProperty("y");
     m_showHideAnimation->setEasing(s_ubuntuAnimation->StandardEasing());
     m_showHideAnimation->setEasing(s_ubuntuAnimation->StandardEasing());
     m_showHideAnimation->setDuration(s_ubuntuAnimation->BriskDuration());
-    // FIXME TIM: this duration is for testing only:
-//    m_showHideAnimation->setDuration(s_ubuntuAnimation->SleepyDuration());
 
     connect(m_showHideAnimation, SIGNAL(runningChanged(bool)),
             this, SLOT(q_showHideAnimationRunningChanged()));
 
     // watch grid unit size change and set implicit size
     connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this, SLOT(q_updateSize()));
-
-    // Size will be updated when itemChange() is called because the parent is set.
- //    q_updateSize();
-
     connect(this, SIGNAL(heightChanged()), this, SLOT(q_heightChanged()));
+
+    // Width and height will be updated when itemChange() is called because the parent is set.
 }
 
-// catch parent change event so we can update the size of the header
 void UCHeader::itemChange(ItemChange change, const ItemChangeData &data)
 {
     QQuickItem::itemChange(change, data);
     if (change == QQuickItem::ItemParentHasChanged) {
+        // connect to the new parent to update header.implicitWidth when parent.width changes.
         if (!m_previous_parent.isNull()) {
             disconnect(m_previous_parent, SIGNAL(widthChanged()), this, SLOT(q_updateSize()));
         }
@@ -88,6 +81,7 @@ void UCHeader::itemChange(ItemChange change, const ItemChangeData &data)
     }
 }
 
+// called when GU size changes or parent or parent.width changes.
 void UCHeader::q_updateSize()
 {
     this->setImplicitHeight(UCUnits::instance().gu(IMPLICIT_HEADER_HEIGHT_GU));
@@ -98,19 +92,6 @@ void UCHeader::q_updateSize()
 
 void UCHeader::q_heightChanged() {
     this->updateFlickableMargins();
-    // locked, exposed --> show
-    // locked, !exposed --> hide
-    // unlocked, exposed --> show
-//    if (m_exposed || (this->y() > -this->height()/2.0)))
-
-    // todo: update margins.
-    if (!m_flickable.isNull()) {
-    }
-//    qDebug()<<"flickable is "<<m_flickable;
-//    if (!m_flickable.isNull()) {
-//        qDebug()<<"header height = "<<this->height();
-//        qDebug() << "contentY of flickable is "<<m_flickable->contentY();
-//    }
     if (m_exposed || (!m_flickable.isNull() && m_flickable->contentY() <= 0.0)) {
         // header was exposed before, or the flickable is scrolled up close to
         //  the top so that the header should be visible
@@ -136,7 +117,6 @@ void UCHeader::setFlickable(QQuickFlickable *flickable) {
         m_flickable = flickable;
         Q_EMIT flickableChanged();
 
-        // TODO: move to connectFlickable() and call when lockedChanged.
         if (!m_flickable.isNull()) {
             connect(m_flickable, SIGNAL(contentYChanged()),
                     this, SLOT(q_scrolledContents()));
@@ -225,17 +205,6 @@ bool UCHeader::exposed() {
 
 bool UCHeader::moving() {
     return m_moving;
-}
-
-void UCHeader::setLocked(bool locked) {
-    if (locked != m_locked) {
-        m_locked = locked;
-        Q_EMIT lockedChanged();
-    }
-}
-
-bool UCHeader::locked() {
-    return m_locked;
 }
 
 void UCHeader::q_scrolledContents() {
