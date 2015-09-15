@@ -18,7 +18,44 @@ import QtQuick 2.0
 import QtTest 1.0
 import Ubuntu.Components 1.1
 
-TestCase {
+Item {
+    width: units.gu(20)
+    height: units.gu(20)
+
+    ActionItem {
+        id: item1
+        SignalSpy {
+            id: signalSpy
+            target: parent
+        }
+    }
+
+    Component {
+        id: dynamicItem
+        ActionItem {
+            action: action1
+        }
+    }
+
+    Action {
+        id: action1
+        objectName: "action1"
+        text: "actionText"
+        iconSource: "imageURL"
+    }
+    Action {
+        id: action2
+        objectName: "action2"
+    }
+
+    Loader {
+        id: loader
+        asynchronous: false
+    }
+
+    TestCase {
+    id: testCase;
+    when: windowShown
      name: "ActionItemAPI"
 
      SignalSpy {
@@ -35,7 +72,12 @@ TestCase {
      }
 
      function cleanup() {
+         loader.sourceComponent = null;
          item1.action = null;
+         action1.visible = true;
+         action1.enabled = true;
+         action2.visible = true;
+         action2.enabled = true;
          triggerSpy.clear();
      }
 
@@ -87,17 +129,33 @@ TestCase {
          compare(signalSpy.valid,true,"triggered signal exists")
      }
 
-     ActionItem {
-         id: item1
-         SignalSpy {
-             id: signalSpy
-             target: parent
-         }
+     function test_default_bindings_visible_enabled_data() {
+         return [
+             {tag: "visible", property: "visible"},
+             {tag: "enabled", property: "enabled"},
+         ];
+     }
+     function test_default_bindings_visible_enabled(data) {
+         item1.action = action1;
+         action1[data.property] = false;
+         compare(item1[data.property], action1[data.property], "The item1 and action1 '" + data.property + "' value differs");
      }
 
-     Action {
-         id: action1
-         text: "actionText"
-         iconSource: "imageURL"
+     function test_custom_bindings_visible_enabled_bug1495408_data() {
+         return [
+             {tag: "visible", property: "visible"},
+             {tag: "enabled", property: "enabled"},
+         ];
      }
+     function test_custom_bindings_visible_enabled_bug1495408(data) {
+         loader.sourceComponent = dynamicItem;
+         var item = loader.item;
+         compare(item[data.property], action1[data.property], "The item and action1 '" + data.property + "' value differs");
+         item[data.property] = false;
+         // change the action
+         item.action = action2;
+         expectFail(data.tag, "default binding must be broken");
+         compare(item[data.property], action2[data.property], "The item and action2 '" + data.property + "' value is the same");
+     }
+}
 }
