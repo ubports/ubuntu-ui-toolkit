@@ -105,20 +105,17 @@ void UCHeader::q_heightChanged() {
 
     // todo: update margins.
     if (!m_flickable.isNull()) {
-        qDebug()<<"HEIGHT CHANGED. new height = "<<this->height()<<", cY = "<<m_flickable->contentY();
     }
 //    qDebug()<<"flickable is "<<m_flickable;
 //    if (!m_flickable.isNull()) {
 //        qDebug()<<"header height = "<<this->height();
 //        qDebug() << "contentY of flickable is "<<m_flickable->contentY();
 //    }
-    if (m_exposed || (!m_flickable.isNull() && m_flickable->contentY() < 0.0)) {
-        qDebug() << "h:EXPOSING";
+    if (m_exposed || (!m_flickable.isNull() && m_flickable->contentY() <= 0.0)) {
         // header was exposed before, or the flickable is scrolled up close to
         //  the top so that the header should be visible
         this->show();
     } else {
-        qDebug() << "h:HIDING";
         this->hide();
     }
 }
@@ -172,7 +169,6 @@ void UCHeader::updateFlickableMargins() {
 }
 
 void UCHeader::show() {
-    qDebug()<<"SHOWING";
     if (!m_exposed) {
         m_exposed = true;
         Q_EMIT exposedChanged();
@@ -188,7 +184,6 @@ void UCHeader::show() {
 }
 
 void UCHeader::hide() {
-    qDebug() <<"HIDING";
     if (m_exposed) {
         m_exposed = false;
         Q_EMIT exposedChanged();
@@ -217,7 +212,6 @@ void UCHeader::q_showHideAnimationRunningChanged() {
 }
 
 void UCHeader::setExposed(bool exposed) {
-    qDebug() << "setting exposed to "<<exposed;
     if (exposed) {
         this->show();
     } else {
@@ -248,7 +242,6 @@ void UCHeader::q_scrolledContents() {
     Q_ASSERT(!m_flickable.isNull());
     // Avoid moving the header when rebounding or being dragged over the bounds.
     if (!m_flickable->isAtYBeginning() && !m_flickable->isAtYEnd()) {
-//        qDebug() << "contentY = "<<m_flickable->contentY();
         qreal dy = m_flickable->contentY() - m_previous_contentY;
         // Restrict the header y between -height and 0:
         qreal clampedY = qMin(qMax(-this->height(), this->y() - dy), 0.0);
