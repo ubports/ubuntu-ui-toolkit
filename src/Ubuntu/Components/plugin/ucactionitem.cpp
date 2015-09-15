@@ -70,6 +70,9 @@ void UCActionItem::_q_enabledChanged()
 // update visible property
 void UCActionItem::_q_updateVisible()
 {
+    if (m_flags & CustomVisible) {
+        return;
+    }
     bool visible = m_action ? m_action->m_visible : true;
     setVisible(visible);
     // reset flag and reconnect signal handler disconnected by the
@@ -82,6 +85,9 @@ void UCActionItem::_q_updateVisible()
 // update enabled property
 void UCActionItem::_q_updateEnabled()
 {
+    if (m_flags & CustomEnabled) {
+        return;
+    }
     bool enabled = m_action ? m_action->m_enabled : true;
     setEnabled(enabled);
     // reset flag and reconnect signal handler disconnected by the
@@ -109,10 +115,14 @@ void UCActionItem::attachAction(bool attach)
     if (attach) {
         connect(this, SIGNAL(triggered(QVariant)),
                 m_action, SLOT(trigger(QVariant)), Qt::DirectConnection);
-        connect(m_action, &UCAction::visibleChanged,
-                this, &UCActionItem::_q_updateVisible, Qt::DirectConnection);
-        connect(m_action, &UCAction::enabledChanged,
-                this, &UCActionItem::_q_updateEnabled, Qt::DirectConnection);
+        if (!(m_flags & CustomVisible)) {
+            connect(m_action, &UCAction::visibleChanged,
+                    this, &UCActionItem::_q_updateVisible, Qt::DirectConnection);
+        }
+        if (!(m_flags & CustomEnabled)) {
+            connect(m_action, &UCAction::enabledChanged,
+                    this, &UCActionItem::_q_updateEnabled, Qt::DirectConnection);
+        }
         if (!(m_flags & CustomText)) {
             connect(m_action, &UCAction::textChanged,
                     this, &UCActionItem::textChanged, Qt::DirectConnection);
@@ -128,10 +138,14 @@ void UCActionItem::attachAction(bool attach)
     } else {
         disconnect(this, SIGNAL(triggered(QVariant)),
                    m_action, SLOT(trigger(QVariant)));
-        disconnect(m_action, &UCAction::visibleChanged,
-                   this, &UCActionItem::_q_updateVisible);
-        disconnect(m_action, &UCAction::enabledChanged,
-                   this, &UCActionItem::_q_updateEnabled);
+        if (!(m_flags & CustomVisible)) {
+            disconnect(m_action, &UCAction::visibleChanged,
+                       this, &UCActionItem::_q_updateVisible);
+        }
+        if (!(m_flags & CustomEnabled)) {
+            disconnect(m_action, &UCAction::enabledChanged,
+                       this, &UCActionItem::_q_updateEnabled);
+        }
         if (!(m_flags & CustomText)) {
             disconnect(m_action, &UCAction::textChanged,
                        this, &UCActionItem::textChanged);
