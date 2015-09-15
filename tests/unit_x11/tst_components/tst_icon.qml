@@ -106,13 +106,13 @@ Item {
             shaderSpy.target = shader;
 
             compare(icon.name, 'search');
-            compare(shader.active, false);
+            compare(shader.visible, false);
             compare(shader.status, ShaderEffect.Uncompiled)
             icon.color = UbuntuColors.orange;
             shaderSpy.wait();
             compare(shader.status, ShaderEffect.Compiled)
             compare(shader.keyColorOut, icon.color);
-            compare(shader.active, true);
+            compare(shader.visible, true);
             compare(shader.source, image);
             icon.keyColor = UbuntuColors.purple;
             compare(shader.keyColorIn, icon.keyColor);
@@ -121,19 +121,17 @@ Item {
             shaderSpy.wait();
             compare(shader.status, ShaderEffect.Uncompiled)
             compare(icon.source, '');
-            compare(shader.source, null);
-            // Let's flip back to active
+            // Let's get back to a valid source
             icon.name = 'search';
             shaderSpy.wait();
             compare(shader.status, ShaderEffect.Compiled)
-            compare(shader.active, true);
+            compare(shader.visible, true);
             compare(shader.source, image);
             // Unsetting the keyColor should also disable the shader
             icon.color = Qt.rgba(0.0, 0.0, 0.0, 0.0);
             shaderSpy.wait();
             compare(shader.status, ShaderEffect.Uncompiled)
-            compare(shader.active, false);
-            compare(shader.source, null);
+            compare(shader.visible, false);
         }
     }
 }

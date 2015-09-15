@@ -55,7 +55,7 @@ Item {
         }
 
         cache: true
-        visible: !colorizedImage.active
+        visible: !colorizedImage.visible
     }
 
     ShaderEffect {
@@ -63,17 +63,16 @@ Item {
         objectName: "shader"
 
         anchors.fill: parent
-        visible: active
 
         // Whether or not a color has been set.
-        property bool active: keyColorOut != Qt.rgba(0.0, 0.0, 0.0, 0.0)
+        visible: image.status == Image.Ready && keyColorOut != Qt.rgba(0.0, 0.0, 0.0, 0.0)
 
-        property Image source: active && image.status == Image.Ready ? image : null
+        property Image source: image
         property color keyColorOut: Qt.rgba(0.0, 0.0, 0.0, 0.0)
         property color keyColorIn: "#808080"
         property real threshold: 0.1
 
-        fragmentShader: source != null ? "
+        fragmentShader: visible ? "
             varying highp vec2 qt_TexCoord0;
             uniform sampler2D source;
             uniform highp vec4 keyColorOut;
