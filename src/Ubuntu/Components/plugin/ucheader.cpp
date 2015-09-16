@@ -111,7 +111,7 @@ void UCHeader::setFlickable(QQuickFlickable *flickable) {
             // Finish the current header movement in case the current
             //  flickable is disconnected while scrolling:
             this->q_flickableMovementEnded();
-            flickable->disconnect(this);
+            m_flickable->disconnect(this);
         }
 
         m_flickable = flickable;
