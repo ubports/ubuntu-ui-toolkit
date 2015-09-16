@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (1.3.1638+15.10.20150916-0ubuntu1) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.3.1639+15.10.20150916-0ubuntu1) UNRELEASED; urgency=medium
 
   [ Zsombor Egri ]
   * ActionItem visible and enabled internal bindings not broken when the 
