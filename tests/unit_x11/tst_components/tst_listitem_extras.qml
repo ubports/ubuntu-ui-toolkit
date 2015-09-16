@@ -133,8 +133,9 @@ Item {
             } else {
                 swipe(testWithActiveItem, centerOf(testWithActiveItem).x, centerOf(testWithActiveItem).y, data.dx, 0);
             }
-            var panel = panelItem(testWithActiveItem, data.panel);
+            var panel = panelItem(testWithActiveItem, data.leadingPanel);
             var actionItem = findChild(panel, data.action);
+            verify(actionItem, data.action + " action not found.");
             // swipe over the action
             setupSpy(testWithActiveItem, "contentMovementStarted");
             if (data.touch) {

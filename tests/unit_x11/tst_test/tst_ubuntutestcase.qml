@@ -306,5 +306,18 @@ Rectangle {
         compare(touchReleaseSpy.count, 1, "Not released?");
         compare(touchUpdateSpy.count, 10, "Not moved?");
     }
+
+    function test_touchFlick_data() {
+        return [
+            {tag: "Downwards", x: centerOf(flicker).x, y: centerOf(flicker).y, dx: 0, dy: 100},
+            {tag: "Upwards", x: centerOf(flicker).x, y: centerOf(flicker).y, dx: 0, dy: -100},
+            {tag: "Lefwards", x: centerOf(flicker).x, y: centerOf(flicker).y, dx: -100, dy: 0},
+            {tag: "Rightwards", x: centerOf(flicker).x, y: centerOf(flicker).y, dx: 100, dy: 0},
+        ]
+    }
+    function test_touchFlick(data) {
+        flickTouch(0, flicker, data.x, data.y, data.dx, data.dy);
+        movementSpy.wait();
+    }
  }
 }

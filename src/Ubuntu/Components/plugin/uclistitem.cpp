@@ -1322,10 +1322,13 @@ bool UCListItem::childMouseEventFilter(QQuickItem *child, QEvent *event)
         d->suppressClick = false;
     } else if (type == QEvent::MouseMove) {
         QMouseEvent *mouse = static_cast<QMouseEvent*>(event);
-        const QPointF localPos = mapFromItem(child, mouse->localPos());
-        if ((mouse->buttons() & Qt::LeftButton) && d->swipedOverThreshold(localPos, d->pressedPos) && !d->highlighted) {
+
+        // should grab only if the mouse press happens inside the contentItem
+        const QPointF contentPos = d->contentItem->mapFromItem(child, mouse->localPos());
+        bool inContentItem = d->contentItem->contains(contentPos);
+        if (inContentItem && (mouse->buttons() & Qt::LeftButton) && d->swipedOverThreshold(contentPos, d->pressedPos) && !d->highlighted) {
             // grab the event from the child, so the click doesn't happen anymore, and initiate swiping
-            QMouseEvent pressed(QEvent::MouseButtonPress, localPos, mouse->windowPos(), mouse->screenPos(),
+            QMouseEvent pressed(QEvent::MouseButtonPress, mapFromItem(child, mouse->localPos()), mouse->windowPos(), mouse->screenPos(),
                                     Qt::LeftButton, mouse->buttons(), mouse->modifiers());
             d->grabLeftButtonEvents(&pressed);
             // stop click and pressAndHold, then grab the mouse so children do not get the mouse events anymore

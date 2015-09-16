@@ -629,7 +629,7 @@ Item {
             wait(2000);
             verify(data.item.contentItem.x != data.item.contentItem.anchors.leftMargin, "Not snapped in");
 
-            var panel = panelItem(data.item, "Leading");
+            var panel = panelItem(data.item, true);
             var action = findChild(panel, "leading_2");
             verify(action, "actions panel cannot be reached");
             // we test the action closest to the list item's contentItem
