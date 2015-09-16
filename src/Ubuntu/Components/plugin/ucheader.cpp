@@ -32,9 +32,10 @@
     \since Ubuntu.Components 1.3
     \brief Header bar that can contain the title and controls for the current view.
 
-    The Header component will by default appear at the top
-    of its parent, and can be exposed and hidden by setting the
-    \l exposed property. When a \l flickable is set, the header will
+    The Header component will by default be positioned at the top
+    of its parent spanning the full width of the parent.
+    It can be exposed and hidden by setting the
+    \l exposed property, and when a \l flickable is set, the header will
     scroll together with the flickable and expose or hide when the
     Flickable movement ends.
 
@@ -49,7 +50,7 @@
         Header {
             id: header
             z: 1 // ensure the header goes on top of the flickable contents
-            flickable: flickable
+            flickable: scrollableContent
 
             Rectangle {
                 // to visualize the header
@@ -59,7 +60,7 @@
         }
 
         Flickable {
-            id: flickable
+            id: scrollableContent
             anchors.fill: parent
             contentHeight: height * 2
             Label {
@@ -71,7 +72,9 @@
 
     The default implicitWidth of the Header it its parent's width. The default
     z-value is 0, so declare the Header after any Items that it should overlay, or
-    set its z-value to be larger than that of the other Items.
+    set its z-value to be larger than that of the other Items. The initial y-value
+    is 0, but scrolling the flickable or setting \l exposed to false will change
+    the y-value in the range of -height and 0.
 */
 
 UCUbuntuAnimation *UCHeader::s_ubuntuAnimation = new UCUbuntuAnimation();
@@ -90,13 +93,12 @@ UCHeader::UCHeader(QQuickItem *parent)
     m_showHideAnimation->setTargetObject(this);
     m_showHideAnimation->setProperty("y");
     m_showHideAnimation->setEasing(s_ubuntuAnimation->StandardEasing());
-    m_showHideAnimation->setEasing(s_ubuntuAnimation->StandardEasing());
     m_showHideAnimation->setDuration(s_ubuntuAnimation->BriskDuration());
 
     connect(m_showHideAnimation, SIGNAL(runningChanged(bool)),
             this, SLOT(q_showHideAnimationRunningChanged()));
 
-    // watch grid unit size change and set implicit size
+    // Watch grid unit size change and set implicit size
     connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this, SLOT(q_updateSize()));
     connect(this, SIGNAL(heightChanged()), this, SLOT(q_heightChanged()));
 
@@ -107,7 +109,7 @@ void UCHeader::itemChange(ItemChange change, const ItemChangeData &data)
 {
     QQuickItem::itemChange(change, data);
     if (change == QQuickItem::ItemParentHasChanged) {
-        // connect to the new parent to update header.implicitWidth when parent.width changes.
+        // Connect to the new parent to update header.implicitWidth when parent.width changes.
         if (!m_previous_parent.isNull()) {
             disconnect(m_previous_parent, SIGNAL(widthChanged()), this, SLOT(q_updateSize()));
         }
@@ -119,7 +121,7 @@ void UCHeader::itemChange(ItemChange change, const ItemChangeData &data)
     }
 }
 
-// called when GU size changes or parent or parent.width changes.
+// Called when GU size changes or parent or parent.width changes.
 void UCHeader::q_updateSize()
 {
     this->setImplicitHeight(UCUnits::instance().gu(IMPLICIT_HEADER_HEIGHT_GU));
@@ -131,8 +133,8 @@ void UCHeader::q_updateSize()
 void UCHeader::q_heightChanged() {
     this->updateFlickableMargins();
     if (m_exposed || (!m_flickable.isNull() && m_flickable->contentY() <= 0.0)) {
-        // header was exposed before, or the flickable is scrolled up close to
-        //  the top so that the header should be visible
+        // Header was exposed before, or the flickable is scrolled up close to
+        //  the top so that the header should be visible.
         this->show();
     } else {
         this->hide();
@@ -159,7 +161,7 @@ void UCHeader::setFlickable(QQuickFlickable *flickable) {
     if (m_flickable != flickable) {
         if (!m_flickable.isNull()) {
             // Finish the current header movement in case the current
-            //  flickable is disconnected while scrolling:
+            //  flickable is disconnected while scrolling.
             this->q_flickableMovementEnded();
             m_flickable->disconnect(this);
         }
@@ -191,7 +193,7 @@ void UCHeader::updateFlickableMargins() {
             qreal previousContentY = m_flickable->contentY();
             m_flickable->setTopMargin(headerHeight);
             // Push down contents when header grows,
-            //  pull up contents when header shrinks
+            //  pull up contents when header shrinks.
             m_flickable->setContentY(previousContentY - headerHeight + previousHeaderHeight);
         }
     }
@@ -202,7 +204,7 @@ void UCHeader::show() {
         m_exposed = true;
         Q_EMIT exposedChanged();
         if (m_showHideAnimation->isRunning()) {
-            // the header was in the process of hiding
+            // The header was in the process of hiding.
             m_showHideAnimation->stop();
         }
     }
@@ -216,7 +218,7 @@ void UCHeader::hide() {
         m_exposed = false;
         Q_EMIT exposedChanged();
         if (m_showHideAnimation->isRunning()) {
-            // the header was in the process of showing
+            // The header was in the process of showing.
             m_showHideAnimation->stop();
         }
     }
@@ -227,12 +229,12 @@ void UCHeader::hide() {
 
 void UCHeader::q_showHideAnimationRunningChanged() {
     if (!m_showHideAnimation->isRunning()) {
-        // Animation finished
+        // Animation finished.
         Q_ASSERT(m_moving);
         m_moving = false;
         Q_EMIT movingChanged();
     } else if (!m_moving) {
-        // Animation started
+        // Animation started.
         m_moving = true;
         Q_EMIT movingChanged();
     } // else: Transition from flickable movement to showHideAnimation running.
@@ -240,9 +242,10 @@ void UCHeader::q_showHideAnimationRunningChanged() {
 
 /*!
  * \qmlproperty bool Header::exposed
- * Exposes and hides the header by animating its y-value to move it in or out of its
- * parent Item. The value can be set directly, or it will be automatically updated
- * when the user exposes or hides the Header by scrolling the Header's \l flickable.
+ * Exposes and hides the header by animating its y-value between -height and 0
+ * to move it in or out of its parent Item. The value of exposed can be set directly,
+ * or it will be automatically updated when the user exposes or hides the Header
+ * by scrolling the Header's \l flickable.
  */
 void UCHeader::setExposed(bool exposed) {
     if (exposed) {
@@ -259,9 +262,10 @@ bool UCHeader::exposed() {
 /*!
  * \qmlproperty bool Header::moving
  * \readonly
- * Indicate whether the header is currently moving, either because the user
- * is scrolling the \l flickable in y-direction, or because the header is
- * animating in or out because the value of \l exposed was updated.
+ * Indicates whether the header is currently moving, either because contentY of
+ * the \l flickable changes (due to user interaction or by setting it directly),
+ * or because the header is animating in or out because the value of \l exposed
+ * was updated.
  */
 bool UCHeader::moving() {
     return m_moving;
@@ -274,7 +278,7 @@ void UCHeader::q_scrolledContents() {
     // Avoid moving the header when rebounding or being dragged over the bounds.
     if (!m_flickable->isAtYBeginning() && !m_flickable->isAtYEnd()) {
         qreal dy = m_flickable->contentY() - m_previous_contentY;
-        // Restrict the header y between -height and 0:
+        // Restrict the header y between -height and 0.
         qreal clampedY = qMin(qMax(-this->height(), this->y() - dy), 0.0);
         this->setY(clampedY);
     }
@@ -303,7 +307,7 @@ void UCHeader::q_contentHeightChanged() {
     Q_ASSERT(!m_flickable.isNull());
     if (m_flickable->height() >= m_flickable->contentHeight()) {
         // The user cannot scroll down to expose the header, so ensure
-        //  that it is visible
+        //  that it is visible.
         this->show();
     }
 }
@@ -312,7 +316,7 @@ void UCHeader::q_flickableInteractiveChanged() {
     Q_ASSERT(!m_flickable.isNull());
     if (!m_flickable->isInteractive()) {
         // The user cannot scroll down to expose the header, so ensure
-        //  that it is visible
+        //  that it is visible.
         this->show();
     }
 }
