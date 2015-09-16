@@ -18,6 +18,7 @@ import QtQuick 2.4
 
 /*!
     \qmltype Header
+    \deprecated
     \inqmlmodule Ubuntu.Components.ListItems 1.0
     \ingroup ubuntu-listitems
     \brief Header for grouping list items together

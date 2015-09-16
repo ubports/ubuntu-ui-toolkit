@@ -30,13 +30,13 @@
     \inqmlmodule Ubuntu.Components 1.3
     \ingroup ubuntu
     \since Ubuntu.Components 1.3
-    \brief The Header component will by default appear at the top
+    \brief Header bar that can contain the title and controls for the current view.
+
+    The Header component will by default appear at the top
     of its parent, and can be exposed and hidden by setting the
     \l exposed property. When a \l flickable is set, the header will
     scroll together with the flickable and expose or hide when the
     Flickable movement ends.
-
-    TODO TIM: Set z-value to FLT_MAX
 
     \qml
     import QtQuick 2.4
@@ -48,25 +48,30 @@
 
         Header {
             id: header
+            z: 1 // ensure the header goes on top of the flickable contents
             flickable: flickable
 
             Rectangle {
-            // to visualize the header
+                // to visualize the header
+                anchors.fill: parent
+                color: UbuntuColors.blue
+            }
+        }
+
+        Flickable {
+            id: flickable
             anchors.fill: parent
-            color: "red"
-            opacity: 0.5
-            border {
-                color: "black"
-                width: 2
+            contentHeight: height * 2
+            Label {
+                text: "Flick me"
             }
         }
     }
-
-    Flickable {
-        id: flickable
-        anchors.fill: parent
-        contentHeight: height * 2
     \endqml
+
+    The default implicitWidth of the Header it its parent's width. The default
+    z-value is 0, so declare the Header after any Items that it should overlay, or
+    set its z-value to be larger than that of the other Items.
 */
 
 UCUbuntuAnimation *UCHeader::s_ubuntuAnimation = new UCUbuntuAnimation();
@@ -134,6 +139,18 @@ void UCHeader::q_heightChanged() {
     }
 }
 
+/*!
+ * \qmlproperty Flickable Header::flickable
+ *
+ * When flickable is set, scrolling vertically in the flickable, or setting the
+ * Flickable's y-value will move the header y-position by the same amount as the
+ * flickable content movement. When scrolling the flickable, upon release, the header
+ * will animate to fully exposed or fully hidden state, depending on whether it was
+ * more or less than half exposed when the user stopped moving the flickable.
+ *
+ * When flickable is null, the header can be exposed or
+ * hidden by setting the \l exposed property.
+ */
 QQuickFlickable* UCHeader::flickable() {
     return m_flickable.data();
 }
@@ -224,6 +241,12 @@ void UCHeader::q_showHideAnimationRunningChanged() {
     } // else: Transition from flickable movement to showHideAnimation running.
 }
 
+/*!
+ * \qmlproperty bool Header::exposed
+ * Exposes and hides the header by animating its y-value to move it in or out of its
+ * parent Item. The value can be set directly, or it will be automatically updated
+ * when the user exposes or hides the Header by scrolling the Header's \l flickable.
+ */
 void UCHeader::setExposed(bool exposed) {
     if (exposed) {
         this->show();
@@ -236,6 +259,13 @@ bool UCHeader::exposed() {
     return m_exposed;
 }
 
+/*!
+ * \qmlproperty bool Header::moving
+ * \readonly
+ * Indicate whether the header is currently moving, either because the user
+ * is scrolling the \l flickable in y-direction, or because the header is
+ * animating in or out because the value of \l exposed was updated.
+ */
 bool UCHeader::moving() {
     return m_moving;
 }
