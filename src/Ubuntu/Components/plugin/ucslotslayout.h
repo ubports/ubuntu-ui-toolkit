@@ -38,7 +38,8 @@ public:
 
     UCSlotsAttached *progressionSlot() const;
 
-    enum UCSlotPosition { Leading, Trailing };
+    enum UCSlotPosition { LeadingBeginning, Leading, LeadingEnd,
+                          TrailingBeginning, Trailing, TrailingEnd };
 
     static UCSlotsAttached *qmlAttachedProperties(QObject *object);
 
@@ -108,6 +109,7 @@ class UCSlotsLayoutChevron : public QQuickPaintedItem
 
 public:
     explicit UCSlotsLayoutChevron(QQuickItem *parent = 0);
+
     void paint(QPainter *painter);
 
 public Q_SLOTS:

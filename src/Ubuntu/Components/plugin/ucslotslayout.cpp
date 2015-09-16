@@ -26,7 +26,7 @@ UCSlotsLayoutPrivate::UCSlotsLayoutPrivate()
 
 UCSlotsLayoutPrivate::~UCSlotsLayoutPrivate()
 {
-    delete chevron;
+    //delete chevron;
 }
 
 void UCSlotsLayoutPrivate::init()
@@ -332,16 +332,21 @@ qreal UCSlotsLayoutPrivate::populateSlotsListsAndComputeWidth()
 {
     Q_Q(UCSlotsLayout);
 
-    qint32 trailingSlotsAvailable = maxNumberOfTrailingSlots - (progression && chevron);
-    qint32 leadingSlotsAvailable = maxNumberOfLeadingSlots;
-
     leadingSlots.clear();
     trailingSlots.clear();
+    int numberOfLeadingBeginningSlots = 0;
+    int numberOfLeadingEndSlots = 0;
+    int numberOfTrailingBeginningSlots = 0;
+    int numberOfTrailingEndSlots = 0;
+    int indexToInsertAt = -1;
 
+    //the total width of the visible slots, paddings included
     qint32 totalWidth = 0;
+
     const int size = q->childItems().count();
     for (int i = 0; i < size; i++) {
         QQuickItem *child = q->childItems().at(i);
+        indexToInsertAt = -1;
 
         //NOTE: skip C++ labels, because we do custom layout for them (and also because
         //qmlAttachedProperties will fail on them if none of their properties is initialized via QML)
@@ -362,20 +367,59 @@ qreal UCSlotsLayoutPrivate::populateSlotsListsAndComputeWidth()
             continue;
         }
 
-        //ignore if it's a chevron because we only position chevron as trailing slot
-        if (attached->position() == UCSlotsLayout::Leading && child != chevron) {
-            if (leadingSlots.length() < leadingSlotsAvailable) {
-                leadingSlots.append(child);
+        if (attached->position() == UCSlotsLayout::Leading
+                || attached->position() == UCSlotsLayout::LeadingBeginning
+                || attached->position() == UCSlotsLayout::LeadingEnd) {
+
+            int totalLeadingSlots = leadingSlots.length();
+            if (leadingSlots.length() < maxNumberOfLeadingSlots) {
+                switch (attached->position()) {
+                case UCSlotsLayout::LeadingBeginning:
+                    indexToInsertAt = numberOfLeadingBeginningSlots;
+                    ++numberOfLeadingBeginningSlots;
+                    break;
+                case UCSlotsLayout::Leading:
+                    indexToInsertAt = totalLeadingSlots - numberOfLeadingEndSlots;
+                    break;
+                case UCSlotsLayout::LeadingEnd:
+                    indexToInsertAt = totalLeadingSlots;
+                    ++numberOfLeadingEndSlots;
+                    break;
+                default:
+                    break;
+                }
+
+                leadingSlots.insert(indexToInsertAt, child);
                 totalWidth += child->width() + attached->leftMargin() + attached->rightMargin();
             } else {
                 qmlInfo(q) << "This layout only allows up to " << maxNumberOfLeadingSlots
                            << " leading slots. Please remove any additional leading slot.";
                 continue;
             }
-        } else if (attached->position() == UCSlotsLayout::Trailing || child == chevron) {
-            //ignore positiong property and max slots available when considering the chevron
-            if (trailingSlots.length() < trailingSlotsAvailable || child == chevron) {
-                trailingSlots.append(child);
+
+        } else if (attached->position() == UCSlotsLayout::Trailing
+                   || attached->position() == UCSlotsLayout::TrailingBeginning
+                   || attached->position() == UCSlotsLayout::TrailingEnd) {
+
+            int totalTrailingSlots = trailingSlots.length();
+            if (trailingSlots.length() < maxNumberOfTrailingSlots) {
+                switch (attached->position()) {
+                case UCSlotsLayout::TrailingBeginning:
+                    indexToInsertAt = numberOfTrailingBeginningSlots;
+                    ++numberOfTrailingBeginningSlots;
+                    break;
+                case UCSlotsLayout::Trailing:
+                    indexToInsertAt = totalTrailingSlots - numberOfTrailingEndSlots;
+                    break;
+                case UCSlotsLayout::TrailingEnd:
+                    indexToInsertAt = totalTrailingSlots;
+                    ++numberOfTrailingEndSlots;
+                    break;
+                default:
+                    break;
+                }
+
+                trailingSlots.insert(indexToInsertAt, child);
                 totalWidth += child->width() + attached->leftMargin() + attached->rightMargin();
             } else {
                 qmlInfo(q) << "This layout only allows up to " << maxNumberOfTrailingSlots
