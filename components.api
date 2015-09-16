@@ -771,6 +771,8 @@ Ubuntu.Components.ProgressBar 1.3: AnimatedItem
     property bool onScreen
     property bool showProgressPercentage
     property double value
+Ubuntu.Components.ProgressionSlot 1.3: Icon
+    property url source
 Ubuntu.Components.ProportionalShape 1.3: UbuntuShape
 Ubuntu.Components.PullToRefresh 1.1: StyledItem
     property Component content
@@ -861,6 +863,28 @@ Ubuntu.Components.Slider 1.3: StyledItem
     readonly property bool pressed
     property double value
 Ubuntu.Components.SliderUtils 0.1 1.0
+Ubuntu.Components.SlotsAttached 1.3: QtObject
+    property double leftMargin
+    property bool overrideVerticalPositioning
+    property SlotsLayoutCpp.UCSlotPosition position
+    property double rightMargin
+Ubuntu.Components.SlotsLayoutCpp 1.3: Item
+    readonly property SlotsLayoutMargins contentMargins
+    readonly property Text subsubtitleItem
+    readonly property Text subtitleItem
+    readonly property Text titleItem
+Ubuntu.Components.SlotsLayoutCpp.UCSlotPosition: Enum
+    Leading
+    LeadingBeginning
+    LeadingEnd
+    Trailing
+    TrailingBeginning
+    TrailingEnd
+Ubuntu.Components.SlotsLayoutMargins 1.3: QtObject
+    property double bottomMargin
+    property double leftMargin
+    property double rightMargin
+    property double topMargin
 Ubuntu.Components.SortBehavior 1.1: QtObject
     property Qt.SortOrder order
     property string property
