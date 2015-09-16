@@ -1302,18 +1302,20 @@ bool UCListItem::childMouseEventFilter(QQuickItem *child, QEvent *event)
 {
     QEvent::Type type = event->type();
     Q_D(UCListItem);
+    // handle only mouse events occuring in the contentItem area
     if (type == QEvent::MouseButtonPress) {
         // suppress click event if pressed over an active area, except Text, which can also handle
         // mouse clicks when content is an URL
         QMouseEvent *mouse = static_cast<QMouseEvent*>(event);
-        if (child->isEnabled() && (child->acceptedMouseButtons() & mouse->button()) && !qobject_cast<QQuickText*>(child)) {
+        const QPointF mappedPos = d->contentItem->mapFromItem(child, mouse->localPos());
+        if (d->contentItem->contains(mappedPos) && child->isEnabled() && (child->acceptedMouseButtons() & mouse->button()) && !qobject_cast<QQuickText*>(child)) {
             // suppress click
             d->suppressClick = true;
             // listen for flickable to be able to rebind if movement started there!
             d->listenToRebind(true);
             // if left button pressed, remember the position
             if (mouse->button() == Qt::LeftButton) {
-                d->pressedPos = mapFromItem(child, mouse->localPos());
+                d->pressedPos = mappedPos;
                 d->button = mouse->button();
             }
         }
@@ -1324,9 +1326,9 @@ bool UCListItem::childMouseEventFilter(QQuickItem *child, QEvent *event)
         QMouseEvent *mouse = static_cast<QMouseEvent*>(event);
 
         // should grab only if the mouse press happens inside the contentItem
-        const QPointF contentPos = d->contentItem->mapFromItem(child, mouse->localPos());
-        bool inContentItem = d->contentItem->contains(contentPos);
-        if (inContentItem && (mouse->buttons() & Qt::LeftButton) && d->swipedOverThreshold(contentPos, d->pressedPos) && !d->highlighted) {
+        const QPointF mappedPos = d->contentItem->mapFromItem(child, mouse->localPos());
+        bool inContentItem = d->contentItem->contains(mappedPos);
+        if (inContentItem && (d->button == Qt::LeftButton) && d->swipedOverThreshold(mappedPos, d->pressedPos) && !d->highlighted) {
             // grab the event from the child, so the click doesn't happen anymore, and initiate swiping
             QMouseEvent pressed(QEvent::MouseButtonPress, mapFromItem(child, mouse->localPos()), mouse->windowPos(), mouse->screenPos(),
                                     Qt::LeftButton, mouse->buttons(), mouse->modifiers());
