@@ -29,11 +29,44 @@
     \instantiates UCHeader
     \inqmlmodule Ubuntu.Components 1.3
     \ingroup ubuntu
-    \brief TODO
+    \since Ubuntu.Components 1.3
+    \brief The Header component will by default appear at the top
+    of its parent, and can be exposed and hidden by setting the
+    \l exposed property. When a \l flickable is set, the header will
+    scroll together with the flickable and expose or hide when the
+    Flickable movement ends.
 
-    By default, Header will anchor to the left, right and top of its
-    parent, and it hides by changing its top-margin to be -height.
-    TODO: NOPE. But topMargin will change.
+    TODO TIM: Set z-value to FLT_MAX
+
+    \qml
+    import QtQuick 2.4
+    import Ubuntu.Components 1.3
+
+    Item {
+        width: units.gu(50)
+        height: units.gu(70)
+
+        Header {
+            id: header
+            flickable: flickable
+
+            Rectangle {
+            // to visualize the header
+            anchors.fill: parent
+            color: "red"
+            opacity: 0.5
+            border {
+                color: "black"
+                width: 2
+            }
+        }
+    }
+
+    Flickable {
+        id: flickable
+        anchors.fill: parent
+        contentHeight: height * 2
+    \endqml
 */
 
 UCUbuntuAnimation *UCHeader::s_ubuntuAnimation = new UCUbuntuAnimation();
@@ -207,6 +240,8 @@ bool UCHeader::moving() {
     return m_moving;
 }
 
+// Called when moving due to user interaction with the flickable, or by
+// setting m_flickable.contentY programatically.
 void UCHeader::q_scrolledContents() {
     Q_ASSERT(!m_flickable.isNull());
     // Avoid moving the header when rebounding or being dragged over the bounds.
@@ -221,8 +256,8 @@ void UCHeader::q_scrolledContents() {
         m_moving = true;
         Q_EMIT movingChanged();
     }
-    if (!m_flickable->isFlicking()) {
-        // m_flickable.contentY was set directly, so no user flicking
+    if (!m_flickable->isMoving()) {
+        // m_flickable.contentY was set directly, so no user flicking.
         this->q_flickableMovementEnded();
     }
 }

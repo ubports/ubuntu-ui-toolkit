@@ -26,11 +26,12 @@ Item {
     Header {
         id: header
         flickable: flickable
+        z:1
 
         Rectangle {
             // to visualize the header
             anchors.fill: parent
-            color: "red"
+            color: UbuntuColors.red
             opacity: 0.5
             border {
                 color: "black"
@@ -77,12 +78,27 @@ Item {
             Label {
                 text: "header exposed"
             }
+            Item {
+                width: 1
+                height: 1
+            }
+        }
+        Button {
+            id: contentYButton
+            anchors {
+                top: switchGrid.bottom
+                topMargin: units.gu(4)
+                horizontalCenter: parent.horizontalCenter
+            }
+            property real newY: flickable.contentY == 0 ? -header.height : 0
+            onClicked: flickable.contentY = newY;
+            text: "Set contentY to " + newY
         }
         Label {
             anchors {
-                top : switchGrid.bottom
+                top : contentYButton.bottom
                 horizontalCenter: parent.horizontalCenter
-                topMargin: units.gu(6)
+                topMargin: units.gu(8)
             }
             text: "Flick me"
         }
