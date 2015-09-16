@@ -64,6 +64,11 @@ Item {
         name: "Icon"
         when: windowShown
 
+        SignalSpy {
+            id: shaderSpy
+            signalName: 'onStatusChanged'
+        }
+
         function cleanup() {
             icon2.name = "";
         }
@@ -92,6 +97,36 @@ Item {
             compare(image.source,
                     "file:///usr/share/icons/suru/actions/scalable/search.svg",
                     "Source of the image should equal icon2.source.");
+        }
+
+        function test_keyColor() {
+            icon.visible = true;
+            var image = findChild(icon, "image");
+            var shader = findChild(icon, "shader");
+            shaderSpy.target = shader;
+
+            compare(icon.name, 'search');
+            compare(shader.visible, false);
+            compare(shader.status, ShaderEffect.Uncompiled)
+            icon.color = UbuntuColors.orange;
+            shaderSpy.wait();
+            compare(shader.status, ShaderEffect.Compiled)
+            compare(shader.keyColorOut, icon.color);
+            compare(shader.visible, true);
+            compare(shader.source, image);
+            icon.keyColor = UbuntuColors.purple;
+            compare(shader.keyColorIn, icon.keyColor);
+            // Unsetting the icon name should disable the shader
+            icon.name = '';
+            compare(icon.source, '');
+            compare(shader.visible, false);
+            // Let's get back to a valid source
+            icon.name = 'search';
+            compare(shader.visible, true);
+            compare(shader.source, image);
+            // Unsetting the keyColor should also disable the shader
+            icon.color = Qt.rgba(0.0, 0.0, 0.0, 0.0);
+            compare(shader.visible, false);
         }
     }
 }
