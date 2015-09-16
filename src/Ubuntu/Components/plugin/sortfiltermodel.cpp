@@ -220,8 +220,11 @@ QSortFilterProxyModelQML::get(int row)
 {
     QVariantMap res;
     const QHash<int, QByteArray> roles = roleNames();
-    for(int role = 0; role < roles.count(); role++)
-        res.insert (roles[role], data(row, role));
+    QHashIterator<int, QByteArray> i(roles);
+    while (i.hasNext()) {
+        i.next();
+        res.insert(i.value(), data(row, i.key()));
+    }
     return res;
 }
 
