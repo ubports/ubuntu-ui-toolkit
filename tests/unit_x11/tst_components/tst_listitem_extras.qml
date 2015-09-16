@@ -30,18 +30,18 @@ Item {
             Action {
                 iconName: "starred"
                 text: 'Bookmark'
-                objectName: "leading_1"
+                objectName: "trailing1"
             },
             Action {
                 iconName: "edit"
                 text: 'Edit'
-                objectName: "leading_2"
+                objectName: "trailing2"
                 onTriggered: text = 'Edit Again'
             },
             Action {
                 iconName: "camcorder"
                 text: 'Record'
-                objectName: "leading_3"
+                objectName: "trailing3"
             }
         ]
     }
@@ -50,7 +50,7 @@ Item {
         actions: Action {
             id: stockAction
             iconName: "torch-on"
-            objectName: "stockAction"
+            objectName: "leading1"
             text: 'Switch lights on'
         }
     }
@@ -89,6 +89,10 @@ Item {
             signalName: "clicked"
         }
 
+        function initTestCase() {
+            TestExtras.registerTouchDevice();
+        }
+
         function cleanup() {
             rebound(testWithActiveItem);
             rebound(overlaidMouseArea);
@@ -112,6 +116,33 @@ Item {
             overlaidMouseArea.acceptEvent = data.accept;
             setupSpy(overlaidMouseArea, "contentMovementEnded");
             swipeNoWait(overlayArea, centerOf(overlayArea).x, centerOf(overlayArea).y, units.gu(10));
+            spyWait();
+        }
+
+        function test_swipe_over_contextual_actions_bug1486008_data() {
+            return [
+                {tag: "leading action with mouse", touch: false, dx: units.gu(20), leadingPanel: true, action: "leading1"},
+                {tag: "trailing action with mouse", touch: false, dx: -units.gu(20), leadingPanel: false, action: "trailing1"},
+                {tag: "leading action with touch", touch: true, dx: units.gu(20), leadingPanel: true, action: "leading1"},
+                {tag: "trailing action with touch", touch: true, dx: -units.gu(20), leadingPanel: false, action: "trailing1"},
+            ];
+        }
+        function test_swipe_over_contextual_actions_bug1486008(data) {
+            if (data.touch) {
+                swipeTouch(0, testWithActiveItem, centerOf(testWithActiveItem).x, centerOf(testWithActiveItem).y, data.dx, 0);
+            } else {
+                swipe(testWithActiveItem, centerOf(testWithActiveItem).x, centerOf(testWithActiveItem).y, data.dx, 0);
+            }
+            var panel = panelItem(testWithActiveItem, data.panel);
+            var actionItem = findChild(panel, data.action);
+            // swipe over the action
+            setupSpy(testWithActiveItem, "contentMovementStarted");
+            if (data.touch) {
+                swipeTouchNoWait(actionItem, centerOf(actionItem).x, centerOf(actionItem).y, -data.dx, 0);
+            } else {
+                swipeNoWait(actionItem, centerOf(actionItem).x, centerOf(actionItem).y, -data.dx, 0);
+            }
+            expectFail(data.tag, "should not swipe");
             spyWait();
         }
     }

@@ -16,6 +16,7 @@
 
 import QtQuick 2.4
 import QtTest 1.0
+import Ubuntu.Test 1.0
 import Ubuntu.Components 1.2
 
 /*!
@@ -126,6 +127,31 @@ TestCase {
     }
 
     /*!
+      Same as \l mouseMoveSlowly on touch.
+      */
+    function touchMoveSlowly(touchId, item,x,y,dx,dy,steps,stepdelay) {
+        TestExtras.touchMove(touchId, item, Qt.point(x, y));
+        var abs_dx = Math.abs(dx)
+        var abs_dy = Math.abs(dy)
+        var step_dx = dx / steps;
+        var step_dy = dy /steps;
+
+        var ix = 0;
+        var iy = 0;
+
+        for (var step=0; step < steps; step++) {
+            if (Math.abs(ix) < abs_dx) {
+                ix += step_dx;
+            }
+            if (Math.abs(iy) < abs_dy) {
+                iy += step_dy;
+            }
+            wait(stepdelay);
+            TestExtras.touchMove(touchId, item, Qt.point(x + ix, y + iy));
+        }
+    }
+
+    /*!
       \qmlmethod UbuntuTestCase::flick(item, x, y, dx, dy, pressTimeout = -1, steps = -1, button = Qt.LeftButton, modifiers = Qt.NoModifiers, delay = -1)
 
       The function produces a flick event when executed on Flickables. When used
@@ -166,6 +192,36 @@ TestCase {
         // mouse moves are all processed immediately, without delay in between events
         mouseMoveSlowly(item, x, y, dx, dy, steps, delay, button);
         mouseRelease(item, x + dx, y + dy, button, modifiers);
+        // empty event buffer
+        wait(200);
+    }
+
+    /*!
+      \qmlmethod UbuntuTestCase::flickTouch(touchId, item, x, y, dx, dy, pressTimeout = -1, steps = -1)
+
+      Same as \flick but for touch.
+      */
+    function flickTouch(touchId, item, x, y, dx, dy, pressTimeout, steps, button, modifiers, delay) {
+        if (item === undefined || item.x === undefined || item.y === undefined)
+            return
+        if (modifiers === undefined)
+            modifiers = Qt.NoModifier
+        if (steps === undefined || steps <= 0)
+            steps = 4;
+        // make sure we have at least two move steps so the flick will be sensed
+        steps += 1;
+        if (delay === undefined)
+            delay = -1;
+
+        var ddx = dx / steps;
+        var ddy = dy / steps;
+
+        TestExtras.touchPress(touchId, item, Qt.point(x, y));
+        if (pressTimeout !== undefined && pressTimeout > 0) {
+            wait(pressTimeout);
+        }
+        touchMoveSlowly(touchId, item, x, y, dx, dy, steps, delay);
+        TestExtras.touchRelease(touchId, item, Qt.point(x + dx, y + dy));
         // empty event buffer
         wait(200);
     }
