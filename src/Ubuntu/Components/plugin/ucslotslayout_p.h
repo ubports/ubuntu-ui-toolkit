@@ -82,9 +82,6 @@ public:
     //parent changes. We need this because itemChange(..) only provides the new parent
     QQuickItem *m_parentItem;
 
-    QQuickItem *pressedItem;
-    UCSlotsLayoutChevron *chevron;
-
     qreal labelsBoundingBoxHeight;
     //max slots height ignoring labels
     qreal maxSlotsHeight;

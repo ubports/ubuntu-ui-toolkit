@@ -25,7 +25,7 @@ Column {
         model: 5000
         ListItem {
             SlotsLayoutCpp {
-                progression: true
+                ProgressionSlot {}
             }
         }
     }

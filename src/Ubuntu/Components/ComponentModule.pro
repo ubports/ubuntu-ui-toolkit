@@ -135,7 +135,8 @@ QML_FILES += 1.3/ActionBar.qml \
              1.3/ListItemPopover.qml \
              1.3/BottomEdgeHint.qml \
              1.3/PageColumn.qml \
-             1.3/PageColumnsLayout.qml
+             1.3/PageColumnsLayout.qml \
+             1.3/ProgressionSlot.qml
 
 OTHER_FILES+= qmldir \
              1.3/CrossFadeImage.qdoc \

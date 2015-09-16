@@ -421,9 +421,9 @@ Template {
 
             SlotsLayoutCpp {
                 id: systemSettings1_layout
-
-                progression: true
                 titleItem.text: "Call forwarding"
+
+                ProgressionSlot {}
 
                 Text {
                     font.pixelSize: FontUtils.sizeToPixels("medium")
@@ -460,7 +460,8 @@ Template {
                 id: systemSettings3_layout
                 titleItem.text: "Facebook"
                 subtitleItem.text: "Name Surname"
-                progression: true
+
+                ProgressionSlot {}
 
                 //see http://bazaar.launchpad.net/~ubuntu-branches/ubuntu/wily/ubuntu-system-settings/wily-proposed/view/head:/src/qml/EntryComponent.qml
                 Icon {

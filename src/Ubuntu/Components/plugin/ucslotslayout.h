@@ -16,8 +16,6 @@ class UCSlotsLayout : public QQuickItem
     Q_PROPERTY(QQuickText *subtitleItem READ subtitleItem CONSTANT FINAL)
     Q_PROPERTY(QQuickText *subsubtitleItem READ subsubtitleItem CONSTANT FINAL)
     Q_PROPERTY(UCSlotsLayoutMargins *contentMargins READ contentMargins CONSTANT FINAL)
-    Q_PROPERTY(UCSlotsAttached *progressionSlot READ progressionSlot CONSTANT FINAL)
-    Q_PROPERTY(bool progression READ progression WRITE setProgression NOTIFY progressionChanged FINAL)
 
     Q_ENUMS(UCSlotPosition)
 
@@ -33,18 +31,10 @@ public:
 
     UCSlotsLayoutMargins *contentMargins();
 
-    bool progression() const;
-    void setProgression(bool val);
-
-    UCSlotsAttached *progressionSlot() const;
-
     enum UCSlotPosition { LeadingBeginning, Leading, LeadingEnd,
                           TrailingBeginning, Trailing, TrailingEnd };
 
     static UCSlotsAttached *qmlAttachedProperties(QObject *object);
-
-Q_SIGNALS:
-    void progressionChanged();
 
 protected:
     Q_DECLARE_PRIVATE(UCSlotsLayout)
@@ -55,7 +45,6 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_onThemeChanged())
     Q_PRIVATE_SLOT(d_func(), void _q_onGuValueChanged())
     Q_PRIVATE_SLOT(d_func(), void _q_updateCachedHeight())
-    Q_PRIVATE_SLOT(d_func(), void _q_updateProgressionStatus())
     Q_PRIVATE_SLOT(d_func(), void _q_updateGuValues())
     Q_PRIVATE_SLOT(d_func(), void _q_updateLabelsAnchorsAndBBoxHeight())
     Q_PRIVATE_SLOT(d_func(), void _q_updateSlotsBBoxHeight())
@@ -101,24 +90,6 @@ protected:
 
 private:
     Q_PRIVATE_SLOT(d_func(), void _q_onGuValueChanged())
-};
-
-class UCSlotsLayoutChevron : public QQuickPaintedItem
-{
-    Q_OBJECT
-
-public:
-    explicit UCSlotsLayoutChevron(QQuickItem *parent = 0);
-
-    void paint(QPainter *painter);
-
-public Q_SLOTS:
-    void updateGuValues();
-
-private:
-    void reloadIcon();
-    QPixmap progressionPixmap;
-
 };
 
 class UCSlotsLayoutMargins : public QObject
