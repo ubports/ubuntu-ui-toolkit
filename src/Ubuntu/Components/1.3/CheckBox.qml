@@ -47,10 +47,7 @@ AbstractButton {
     /*!
       \internal
      */
-    onTriggered: {
-        print("breaking binding!")
-        checked = !checked
-    }
+    onTriggered: checked = !checked
 
     theme.version: Ubuntu.toolkitVersion
     styleName: "CheckBoxStyle"

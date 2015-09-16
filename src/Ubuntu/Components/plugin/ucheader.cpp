@@ -172,7 +172,6 @@ void UCHeader::setFlickable(QQuickFlickable *flickable) {
                     this, SLOT(q_scrolledContents()));
             connect(m_flickable, SIGNAL(movementEnded()),
                     this, SLOT(q_flickableMovementEnded()));
-            // TODO TIM: connect contentHeightChanged and interactiveChanged?
             connect(m_flickable, SIGNAL(contentHeightChanged()),
                     this, SLOT(q_contentHeightChanged()));
             connect(m_flickable, SIGNAL(interactiveChanged()),
@@ -207,7 +206,6 @@ void UCHeader::show() {
             m_showHideAnimation->stop();
         }
     }
-    // TODO TIM: disable contents when moving?
     m_showHideAnimation->setFrom(this->y());
     m_showHideAnimation->setTo(0.0);
     m_showHideAnimation->start();
@@ -222,7 +220,6 @@ void UCHeader::hide() {
             m_showHideAnimation->stop();
         }
     }
-    // TODO TIM: disable contents when moving?
     m_showHideAnimation->setFrom(this->y());
     m_showHideAnimation->setTo(-1.0*this->height());
     m_showHideAnimation->start();
