@@ -21,11 +21,13 @@
 #include <QtQuick/private/qquickanimation_p.h>
 #include "ucubuntuanimation.h"
 #include "ucunits.h"
+#include "ucstyleditembase_p.h"
 
 
 /*!
     \qmltype Header
     \instantiates UCHeader
+    \inherits StyledItem
     \inqmlmodule Ubuntu.Components 1.3
     \ingroup ubuntu
     \since Ubuntu.Components 1.3
@@ -101,6 +103,7 @@ UCHeader::UCHeader(QQuickItem *parent)
     connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this, SLOT(q_updateSize()));
     connect(this, SIGNAL(heightChanged()), this, SLOT(q_heightChanged()));
 
+    UCStyledItemBase
     // Width and height will be updated when itemChange() is called because the parent is set.
 }
 
