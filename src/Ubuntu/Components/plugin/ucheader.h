@@ -17,14 +17,14 @@
 #ifndef UCHEADER_H
 #define UCHEADER_H
 
-#include <QtQuick/QQuickItem>
+#include "ucstyleditembase.h"
 #include <QtCore/QPointer>
 
 class QQuickFlickable;
 class QQuickNumberAnimation;
 class UCUbuntuAnimation;
 
-class UCHeader : public QQuickItem
+class UCHeader : public UCStyledItemBase
 {
     Q_OBJECT
     Q_PROPERTY(QQuickFlickable* flickable READ flickable WRITE setFlickable NOTIFY flickableChanged)

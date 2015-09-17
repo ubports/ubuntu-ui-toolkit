@@ -18,7 +18,6 @@
 #include <QDebug>
 #include <QtQuick/private/qquickflickable_p.h>
 #include <QtQuick/private/qquickanchors_p.h>
-#include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickanimation_p.h>
 #include "ucubuntuanimation.h"
 #include "ucunits.h"
@@ -82,7 +81,7 @@ UCUbuntuAnimation *UCHeader::s_ubuntuAnimation = new UCUbuntuAnimation();
 #define IMPLICIT_HEADER_HEIGHT_GU 6
 
 UCHeader::UCHeader(QQuickItem *parent)
-    : QQuickItem(parent)
+    : UCStyledItemBase(parent)
     , m_exposed(true)
     , m_moving(false)
     , m_previous_contentY(0)
@@ -107,7 +106,7 @@ UCHeader::UCHeader(QQuickItem *parent)
 
 void UCHeader::itemChange(ItemChange change, const ItemChangeData &data)
 {
-    QQuickItem::itemChange(change, data);
+    UCStyledItemBase::itemChange(change, data);
     if (change == QQuickItem::ItemParentHasChanged) {
         // Connect to the new parent to update header.implicitWidth when parent.width changes.
         if (!m_previous_parent.isNull()) {
