@@ -389,7 +389,7 @@ Ubuntu.Components.Header 1.0 0.1: AppHeader
     property bool useDeprecatedToolbar
 Ubuntu.Components.ListItems.Header 1.3: Item
     property string text
-Ubuntu.Components.Header 1.3: Item
+Ubuntu.Components.Header 1.3: StyledItem
     property bool exposed
     property Flickable flickable
     readonly property bool moving
