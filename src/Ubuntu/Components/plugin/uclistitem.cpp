@@ -1331,12 +1331,12 @@ bool UCListItemPrivate::sendMouseEvent(QQuickItem *item, QMouseEvent *event)
         }
         case QEvent::MouseMove: {
             // button may not be set after the mouse grab, so detect if the left button was pressed
-            if (button == Qt::NoButton && (event->buttons() & Qt::LeftButton)) {
-                suppressClick = true;
-                listenToRebind(true);
-                button = Qt::LeftButton;
-                pressedPos = localPos;
-            }
+//            if (button == Qt::NoButton && (event->buttons() & Qt::LeftButton)) {
+//                suppressClick = true;
+//                listenToRebind(true);
+//                button = Qt::LeftButton;
+//                pressedPos = localPos;
+//            }
             if ((button == Qt::LeftButton) && swipedOverThreshold(localPos, pressedPos) && !highlighted) {
                 // grab the event from the child, so the click doesn't happen anymore, and initiate swiping
                 QMouseEvent pressed(QEvent::MouseButtonPress, localPos, event->windowPos(), event->screenPos(),
