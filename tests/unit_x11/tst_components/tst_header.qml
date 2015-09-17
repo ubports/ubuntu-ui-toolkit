@@ -292,10 +292,12 @@ Item {
 
             compare(otherFlickable.topMargin, 0, "Flickable top margin is not 0 by default.");
             header.flickable = otherFlickable;
-            compare(otherFlickable.topMargin, header.height, "Setting header flickable does not update flickable top margin.");
+            compare(otherFlickable.topMargin, header.height, "Setting flickable does not update flickable top margin.");
+            compare(flickable.topMargin, 0, "Changing the flickable does not reset the previous flickable top margin to 0.");
 
             header.flickable = flickable;
-            compare(flickable.topMargin, header.height, "Reverting header flickable breaks flickable top margin.");
+            compare(otherFlickable.topMargin, 0, "Reverting flickable does not reset the other flickable top margin to 0.");
+            compare(flickable.topMargin, header.height, "Reverting flickable breaks flickable top margin.");
         }
 
         function test_flickable_contentHeight_bug1156573() {

@@ -152,6 +152,10 @@ void UCHeader::q_heightChanged() {
  *
  * When flickable is null, the header can be exposed or
  * hidden by setting the \l exposed property.
+ *
+ * The topMargin of the flickable will automatically be updated to always match
+ * the height of the header. When changing the flickable, the topMargin of the previous
+ * flickable is set to 0.
  */
 QQuickFlickable* UCHeader::flickable() {
     return m_flickable.data();
@@ -164,6 +168,7 @@ void UCHeader::setFlickable(QQuickFlickable *flickable) {
             //  flickable is disconnected while scrolling.
             this->q_flickableMovementEnded();
             m_flickable->disconnect(this);
+            m_flickable->setTopMargin(0.0);
         }
 
         m_flickable = flickable;
