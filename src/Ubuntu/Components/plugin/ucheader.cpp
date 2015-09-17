@@ -21,7 +21,6 @@
 #include <QtQuick/private/qquickanimation_p.h>
 #include "ucubuntuanimation.h"
 #include "ucunits.h"
-#include "ucstyleditembase_p.h"
 
 
 /*!
@@ -103,7 +102,6 @@ UCHeader::UCHeader(QQuickItem *parent)
     connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this, SLOT(q_updateSize()));
     connect(this, SIGNAL(heightChanged()), this, SLOT(q_heightChanged()));
 
-    UCStyledItemBase
     // Width and height will be updated when itemChange() is called because the parent is set.
 }
 
