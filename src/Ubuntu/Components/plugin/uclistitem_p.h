@@ -138,8 +138,6 @@ public:
 
     void clearFlickablesList();
     void buildFlickablesList();
-    void clearChangesList();
-    void buildChangesList(const QVariant &newValue);
     bool addSelectedItem(UCListItem *item);
     bool removeSelectedItem(UCListItem *item);
     bool isItemSelected(UCListItem *item);
@@ -157,13 +155,10 @@ public:
     QSet<int> selectedList;
     QMap<int, QPointer<UCListItem13> > expansionList;
     QList< QPointer<QQuickFlickable> > flickables;
-    QList< PropertyChange* > changes;
     QPointer<UCListItem> boundItem;
-    QPointer<UCListItem> disablerItem;
     QQuickFlickable *listView;
     ListItemDragArea *dragArea;
     UCViewItemsAttached::ExpansionFlags expansionFlags;
-    bool globalDisabled:1;
     bool selectable:1;
     bool draggable:1;
     bool ready:1;

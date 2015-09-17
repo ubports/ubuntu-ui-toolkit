@@ -474,7 +474,7 @@ void UCListItemPrivate::snapOut()
     if (parentAttached) {
         Q_Q(UCListItem);
         // restore flickable's interactive and cleanup
-        parentAttached->disableInteractive(q, false);
+        q->setKeepMouseGrab(false);
         // no need to listen flickables any longer
         listenToRebind(false);
     }
@@ -1133,8 +1133,8 @@ void UCListItemPrivate::grabLeftButtonEvents(QMouseEvent *event)
     lastPos = pressedPos = event->localPos();
     // connect the Flickable to know when to rebound
     listenToRebind(true);
-    if (swiped && parentAttached) {
-        parentAttached->disableInteractive(q, true);
+    if (swiped) {
+        q->setKeepMouseGrab(true);
     }
     // stop any ongoing animation!
     swipeEvent(event->localPos(), UCSwipeEvent::Started);
@@ -1210,9 +1210,7 @@ void UCListItemPrivate::ungrabLeftButtonEvents(QMouseEvent *event)
     if (highlighted) {
         // unblock ascending Flickables
         listenToRebind(false);
-        if (parentAttached) {
-            parentAttached->disableInteractive(q, false);
-        }
+        q->setKeepMouseGrab(false);
 
         if (!suppressClick) {
             // emit clicked only if not swiped
@@ -1275,9 +1273,7 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
         if (d->swipedOverThreshold(event->localPos(), d->pressedPos)) {
             // the press went out of the threshold area, enable move, if the direction allows it
             d->lastPos = event->localPos();
-            if (d->parentAttached) {
-                d->parentAttached->disableInteractive(this, true);
-            }
+            setKeepMouseGrab(true);
             qreal mouseX = event->localPos().x();
             qreal pressedX = d->pressedPos.x();
             bool doSwipe = (d->leadingActions && (mouseX > pressedX)) ||
