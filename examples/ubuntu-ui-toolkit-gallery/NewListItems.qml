@@ -458,8 +458,11 @@ Template {
 
             SlotsLayoutCpp {
                 id: systemSettings3_layout
-                titleItem.text: "Facebook"
-                subtitleItem.text: "Name Surname"
+                titleItem.text: "الفيسبوك"
+                subtitleItem.text: "الفيسبوك"
+
+                LayoutMirroring.enabled: true
+                LayoutMirroring.childrenInherit: true
 
                 ProgressionSlot {}
 
@@ -472,7 +475,6 @@ Template {
                 }
             }
         }
-
     }
 
     TemplateSection {
