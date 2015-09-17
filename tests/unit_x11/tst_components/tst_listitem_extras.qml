@@ -147,5 +147,24 @@ Item {
             expectFail(data.tag, "should not swipe");
             spyWait();
         }
+
+        function test_button_inactive_while_swiped_data() {
+            return [
+                {tag: "mouse", touch: false, dx: units.gu(20)},
+                {tag: "touch", touch: true, dx: units.gu(20)},
+            ];
+        }
+        function test_button_inactive_while_swiped(data) {
+            clickSpy.target = activeItem;
+            if (data.touch) {
+                tug(testWithActiveItem, centerOf(testWithActiveItem).x, centerOf(testWithActiveItem).y, data.dx, 0);
+                TestExtras.touchClick(0, activeItem, centerOf(activeItem));
+            } else {
+                swipe(testWithActiveItem, centerOf(testWithActiveItem).x, centerOf(testWithActiveItem).y, data.dx, 0);
+                mouseClick(activeItem, centerOf(activeItem).x, centerOf(activeItem).y);
+            }
+            expectFail(data.tag, "Button is inactive while swiped");
+            clickSpy.wait(200);
+        }
     }
 }
