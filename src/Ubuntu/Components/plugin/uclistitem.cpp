@@ -1310,13 +1310,18 @@ bool UCListItemPrivate::sendMouseEvent(QQuickItem *item, QMouseEvent *event)
         case QEvent::MouseButtonPress: {
             // suppress click event if pressed over an active area, except Text, which can also handle
             // mouse clicks when content is an URL
-            if ((item->acceptedMouseButtons() & event->button()) && !qobject_cast<QQuickText*>(item)) {
-                // suppress click
-                suppressClick = true;
-                // listen for flickable to be able to rebind if movement started there!
-                listenToRebind(true);
-                // if left button pressed, remember the position
-                if (event->button() == Qt::LeftButton) {
+            if ((event->button() == Qt::LeftButton) && !qobject_cast<QQuickText*>(item)) {
+                if (swiped) {
+                    // handle as full press
+                    QScopedPointer<QMouseEvent> mouseEvent(QQuickWindowPrivate::cloneMouseEvent(event, &localPos));
+                    handleLeftButtonPress(mouseEvent.data());
+                    result = true;
+                } else {
+                    // suppress click
+                    suppressClick = true;
+                    // listen for flickable to be able to rebind if movement started there!
+                    listenToRebind(true);
+                    // remember the position
                     pressedPos = localPos;
                     button = event->button();
                 }
@@ -1330,13 +1335,6 @@ bool UCListItemPrivate::sendMouseEvent(QQuickItem *item, QMouseEvent *event)
             break;
         }
         case QEvent::MouseMove: {
-            // button may not be set after the mouse grab, so detect if the left button was pressed
-//            if (button == Qt::NoButton && (event->buttons() & Qt::LeftButton)) {
-//                suppressClick = true;
-//                listenToRebind(true);
-//                button = Qt::LeftButton;
-//                pressedPos = localPos;
-//            }
             if ((button == Qt::LeftButton) && swipedOverThreshold(localPos, pressedPos) && !highlighted) {
                 // grab the event from the child, so the click doesn't happen anymore, and initiate swiping
                 QMouseEvent pressed(QEvent::MouseButtonPress, localPos, event->windowPos(), event->screenPos(),

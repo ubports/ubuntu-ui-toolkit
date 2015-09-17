@@ -98,6 +98,7 @@ Item {
             rebound(overlaidMouseArea);
             clickSpy.target = null;
             clickSpy.clear();
+            wait(200);
         }
 
         function test_swipe_over_active_item() {
