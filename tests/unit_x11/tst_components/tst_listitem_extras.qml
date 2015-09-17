@@ -129,7 +129,7 @@ Item {
         }
         function test_swipe_over_contextual_actions_bug1486008(data) {
             if (data.touch) {
-                swipeTouch(0, testWithActiveItem, centerOf(testWithActiveItem).x, centerOf(testWithActiveItem).y, data.dx, 0);
+                tug(testWithActiveItem, centerOf(testWithActiveItem).x, centerOf(testWithActiveItem).y, data.dx, 0);
             } else {
                 swipe(testWithActiveItem, centerOf(testWithActiveItem).x, centerOf(testWithActiveItem).y, data.dx, 0);
             }
@@ -139,7 +139,7 @@ Item {
             // swipe over the action
             setupSpy(testWithActiveItem, "contentMovementStarted");
             if (data.touch) {
-                swipeTouchNoWait(actionItem, centerOf(actionItem).x, centerOf(actionItem).y, -data.dx, 0);
+                tugNoWait(actionItem, centerOf(actionItem).x, centerOf(actionItem).y, -data.dx, 0);
             } else {
                 swipeNoWait(actionItem, centerOf(actionItem).x, centerOf(actionItem).y, -data.dx, 0);
             }
