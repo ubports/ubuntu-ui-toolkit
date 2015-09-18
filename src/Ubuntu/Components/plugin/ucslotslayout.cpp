@@ -31,6 +31,7 @@
  */
 UCSlotsLayoutPrivate::UCSlotsLayoutPrivate()
     : QQuickItemPrivate()
+    , mainSlot(Q_NULLPTR)
     , m_parentItem(Q_NULLPTR)
     , maxSlotsHeight(0)
     , _q_cachedHeight(-1)
@@ -46,7 +47,6 @@ UCSlotsLayoutPrivate::~UCSlotsLayoutPrivate()
 void UCSlotsLayoutPrivate::init()
 {
     Q_Q(UCSlotsLayout);
-    setDefaultLabelsProperties();
 
     _q_updateGuValues();
 
@@ -70,28 +70,11 @@ void UCSlotsLayoutPrivate::init()
     QObject::connect(q, SIGNAL(heightChanged()), q, SLOT(_q_updateCachedHeight()));
 
     QObject::connect(q, SIGNAL(visibleChanged()), q, SLOT(_q_relayout()));
-
-    //we need this to know when any of the labels is empty. In that case, we'll have to change the
-    //anchors because even if a QQuickText has empty text, its height will not be 0 but "fontHeight",
-    //so anchoring to text's bottom will result in the wrong outcome as a consequence.
-    //TODO: updating anchors just because text changes is too much, we should probably just
-    //have variables signal when a label becomes empty
-    QObject::connect(&m_title, SIGNAL(textChanged(QString)), q, SLOT(_q_updateLabelsAnchorsAndBBoxHeight()));
-    QObject::connect(&m_subtitle, SIGNAL(textChanged(QString)), q, SLOT(_q_updateLabelsAnchorsAndBBoxHeight()));
-    QObject::connect(&m_subsubtitle, SIGNAL(textChanged(QString)), q, SLOT(_q_updateLabelsAnchorsAndBBoxHeight()));
-
-    //the height may change for many reasons, for instance:
-    //- change of fontsize
-    //- or resizing the layout until text wrapping is triggered
-    //so we have to monitor height change as well
-    QObject::connect(&m_title, SIGNAL(heightChanged()), q, SLOT(_q_updateLabelsAnchorsAndBBoxHeight()));
-    QObject::connect(&m_subtitle, SIGNAL(heightChanged()), q, SLOT(_q_updateLabelsAnchorsAndBBoxHeight()));
-    QObject::connect(&m_subsubtitle, SIGNAL(heightChanged()), q, SLOT(_q_updateLabelsAnchorsAndBBoxHeight()));
 }
 
 UCSlotsLayoutPrivate::UCSlotPositioningMode UCSlotsLayoutPrivate::getVerticalPositioningMode() const
 {
-    return (labelsBoundingBoxHeight > maxSlotsHeight)
+    return (mainSlotHeight > maxSlotsHeight)
             ? UCSlotPositioningMode::AlignToTop
             : UCSlotPositioningMode::CenterVertically;
 }
@@ -115,59 +98,9 @@ void UCSlotsLayoutPrivate::updateTopBottomMarginsIfNeeded()
     return;
 }
 
-void UCSlotsLayoutPrivate::setDefaultLabelsProperties()
-{
-    Q_Q(UCSlotsLayout);
-    m_title.setParentItem(q);
-    m_subtitle.setParentItem(q);
-    m_subsubtitle.setParentItem(q);
-
-    m_title.setWrapMode(QQuickText::WordWrap);
-    m_subtitle.setWrapMode(QQuickText::WordWrap);
-    m_subsubtitle.setWrapMode(QQuickText::WordWrap);
-
-    m_title.setElideMode(QQuickText::ElideRight);
-    m_subtitle.setElideMode(QQuickText::ElideRight);
-    m_subsubtitle.setElideMode(QQuickText::ElideRight);
-
-    m_title.setMaximumLineCount(1);
-    m_subtitle.setMaximumLineCount(1);
-    m_subsubtitle.setMaximumLineCount(2);
-
-    QFont titleFont = m_title.font();
-    QFont subtitleFont = m_subtitle.font();
-    QFont subsubtitleFont = m_subsubtitle.font();
-
-    titleFont.setPixelSize(UCFontUtils::instance().sizeToPixels("medium"));
-    subtitleFont.setPixelSize(UCFontUtils::instance().sizeToPixels("small"));
-    subsubtitleFont.setPixelSize(UCFontUtils::instance().sizeToPixels("small"));
-
-    titleFont.setWeight(QFont::Light);
-    subtitleFont.setWeight(QFont::Light);
-    subsubtitleFont.setWeight(QFont::Light);
-
-    m_title.setFont(titleFont);
-    m_subtitle.setFont(subtitleFont);
-    m_subsubtitle.setFont(subsubtitleFont);
-
-    //We set the theme-dependent properties (such as the colour) later
-    //as it requires qmlContext(q), which has not been initialized yet, at this point.
-}
-
-void UCSlotsLayoutPrivate::_q_onThemeChanged()
-{
-    Q_Q(UCSlotsLayout);
-    UCTheme *theme = qmlContext(q)->contextProperty("theme").value<UCTheme*>();
-    if (theme) {
-        m_title.setColor(theme->getPaletteColor("selected", "backgroundText"));
-        m_subtitle.setColor(theme->getPaletteColor("selected", "backgroundText"));
-        m_subsubtitle.setColor(theme->getPaletteColor("selected", "backgroundText"));
-    }
-}
-
 void UCSlotsLayoutPrivate::_q_onGuValueChanged()
 {
-    _q_updateLabelsAnchorsAndBBoxHeight();
+    _q_onMainSlotHeightChanged();
     _q_updateSlotsBBoxHeight();
     _q_updateGuValues();
 }
@@ -200,7 +133,7 @@ void UCSlotsLayoutPrivate::_q_updateGuValues()
     _q_updateSize();
 }
 
-void UCSlotsLayoutPrivate::_q_updateLabelsAnchorsAndBBoxHeight()
+void UCSlotsLayoutPrivate::_q_onMainSlotHeightChanged()
 {
     //if the component is not ready the QML properties may not have been evaluated yet,
     //it's not worth doing anything if that's the case
@@ -209,56 +142,10 @@ void UCSlotsLayoutPrivate::_q_updateLabelsAnchorsAndBBoxHeight()
 
     Q_Q(UCSlotsLayout);
 
-    QQuickAnchors *titleAnchors = QQuickItemPrivate::get(&m_title)->anchors();
-    titleAnchors->setTop(top());
-
-    //even if a QQuickText is empty it will have height as if it had one character, so we can't rely
-    //on just anchoring to bottom of the text above us (title in this case) because that will lead
-    //to wrong positioning when title is empty
-    QQuickAnchors *subtitleAnchors = QQuickItemPrivate::get(&m_subtitle)->anchors();
-    subtitleAnchors->setTop(m_title.text().isEmpty()
-                            ? QQuickItemPrivate::get(&m_title)->top()
-                            : QQuickItemPrivate::get(&m_title)->baseline());
-    subtitleAnchors->setTopMargin(m_title.text().isEmpty()
-                                  ? 0
-                                  : UCUnits::instance().gridUnit());
-
-    QQuickAnchors *subsubtitleAnchors = QQuickItemPrivate::get(&m_subsubtitle)->anchors();
-    subsubtitleAnchors->setTop(m_subtitle.text().isEmpty()
-                               ? QQuickItemPrivate::get(&m_subtitle)->top()
-                               : QQuickItemPrivate::get(&m_subtitle)->baseline());
-    subsubtitleAnchors->setTopMargin(m_subtitle.text().isEmpty()
-                                     ? 0
-                                     : UCUnits::instance().gridUnit());
-
-    //Update height of the labels box
-    //NOTE (FIXME? it's stuff in Qt): height is not 0 when the string is empty, its default value is "fontHeight"!
-    labelsBoundingBoxHeight = 0;
-
-    bool emptyTitle = m_title.text().isEmpty();
-    bool emptySubtitle = m_subtitle.text().isEmpty();
-    bool emptySubsubtitle = m_subsubtitle.text().isEmpty();
-
-    if (!emptyTitle) {
-        if (emptySubtitle && emptySubsubtitle) {
-            labelsBoundingBoxHeight += m_title.height();
-        } else {
-            labelsBoundingBoxHeight += m_title.baselineOffset() + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SPACING_GU);
-        }
-    }
-
-    if (emptySubtitle) {
-        if (!emptySubsubtitle) {
-            labelsBoundingBoxHeight += m_subsubtitle.height();
-        }
+    if (mainSlot) {
+        mainSlotHeight = mainSlot->height();
     } else {
-        if (emptySubsubtitle) {
-            labelsBoundingBoxHeight += m_subtitle.height();
-        } else {
-            labelsBoundingBoxHeight += m_subtitle.baselineOffset()
-                    + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SPACING_GU)
-                    + m_subsubtitle.height();
-        }
+        mainSlotHeight = 0;
     }
 
     updateTopBottomMarginsIfNeeded();
@@ -277,8 +164,8 @@ void UCSlotsLayoutPrivate::_q_updateSlotsBBoxHeight()
     for (int i = 0; i < size; i++) {
         QQuickItem *child = q->childItems().at(i);
 
-        //skip labels
-        if (child == &m_title || child == &m_subtitle || child == &m_subsubtitle)
+        //skip mainSlot, we want to know the max height of the slots, mainSlot excluded
+        if (child == mainSlot)
             continue;
 
         //ignore children which have custom vertical positioning
@@ -306,7 +193,7 @@ void UCSlotsLayoutPrivate::_q_updateSize()
 
     Q_Q(UCSlotsLayout);
     q->setImplicitWidth(parentItem ? parentItem->width() : UCUnits::instance().gu(IMPLICIT_SLOTSLAYOUT_WIDTH_GU));
-    q->setImplicitHeight(qMax<qreal>(maxSlotsHeight, labelsBoundingBoxHeight)
+    q->setImplicitHeight(qMax<qreal>(maxSlotsHeight, mainSlotHeight)
                          + contentMargins.topMargin() + contentMargins.bottomMargin());
 
     _q_relayout();
@@ -332,10 +219,8 @@ qreal UCSlotsLayoutPrivate::populateSlotsListsAndComputeWidth()
         QQuickItem *child = q->childItems().at(i);
         indexToInsertAt = -1;
 
-        //NOTE: skip C++ labels, because we do custom layout for them (and also because
-        //qmlAttachedProperties will fail on them if none of their properties is initialized via QML)
-        if (child == &m_title || child == &m_subtitle
-                || child == &m_subsubtitle) {
+        //NOTE: skip mainSlot, as we handle is separately
+        if (child == mainSlot) {
             continue;
         }
 
@@ -485,100 +370,6 @@ void UCSlotsLayoutPrivate::layoutInRow(qreal siblingAnchorMargin, QQuickAnchorLi
     }
 }
 
-void UCSlotsLayoutPrivate::setupLabelsLeftAnchors() {
-    Q_Q(UCSlotsLayout);
-
-    int numberOfLeadingSlots = leadingSlots.length();
-
-    //use a list to avoid copy paste errors when setting the same anchors for all the labels
-    QList<QQuickAnchors *> anchors;
-    anchors.append(QQuickItemPrivate::get(&m_title)->anchors());
-    anchors.append(QQuickItemPrivate::get(&m_subtitle)->anchors());
-    anchors.append(QQuickItemPrivate::get(&m_subsubtitle)->anchors());
-
-    const int size = anchors.length();
-    for (int i = 0; i < size; ++i) {
-        QQuickAnchors* curr = anchors.at(i);
-        if (numberOfLeadingSlots > 0) {
-            curr->setLeft(QQuickItemPrivate::get(leadingSlots.at(numberOfLeadingSlots-1))->right());
-
-            UCSlotsAttached *attachedLastLeadingSlot =
-                    qobject_cast<UCSlotsAttached *>(qmlAttachedPropertiesObject<UCSlotsLayout>(leadingSlots.last()));
-            if (!attachedLastLeadingSlot) {
-                qmlInfo(q) << "Invalid attached property!";
-            } else {
-                curr->setLeftMargin(attachedLastLeadingSlot->rightMargin()
-                                    + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS_GU));
-            }
-        } else {
-            curr->setLeft(left());
-            curr->setLeftMargin(contentMargins.leftMargin() + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS_GU));
-        }
-    }
-}
-
-void UCSlotsLayoutPrivate::setupLabelsRightAnchors()
-{
-    Q_Q(UCSlotsLayout);
-
-    //use a list to avoid copy paste errors when setting the same anchors for all the labels
-    QList<QQuickAnchors *> anchors;
-    anchors.append(QQuickItemPrivate::get(&m_title)->anchors());
-    anchors.append(QQuickItemPrivate::get(&m_subtitle)->anchors());
-    anchors.append(QQuickItemPrivate::get(&m_subsubtitle)->anchors());
-
-    const int size = anchors.length();
-    if (trailingSlots.length() != 0) {
-        for (int i = 0; i < size; ++i) {
-            //it could be that in the previous relayout there were no trailing actions, and now there are.
-            //in that case, we have to reset the anchors of the labels as they won't anchor their right
-            //anymore, it's the first trailing slot that will anchor its left-anchor to the labels
-            QQuickAnchors* curr = anchors.at(i);
-            curr->resetRight();
-            curr->resetRightMargin();
-        }
-    } else {
-        for (int i = 0; i < size; ++i) {
-            QQuickAnchors* curr = anchors.at(i);
-            curr->setRight(right());
-            curr->setRightMargin(contentMargins.rightMargin() + UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS_GU));
-        }
-    }
-}
-
-void UCSlotsLayoutPrivate::setupLabelsVerticalPositioning() {
-    Q_Q(UCSlotsLayout);
-    QQuickAnchors *titleAnchors = QQuickItemPrivate::get(&m_title)->anchors();
-
-    if (getVerticalPositioningMode() == UCSlotPositioningMode::AlignToTop) {
-        titleAnchors->setTopMargin(contentMargins.topMargin());
-    } else {
-        //center the whole labels block vertically, we can't use verticalCenter as we're not using
-        //a container for the labels
-        titleAnchors->setTopMargin((q->height() - contentMargins.bottomMargin()
-                                    + contentMargins.topMargin() - labelsBoundingBoxHeight) / 2.0) ;
-    }
-}
-
-void UCSlotsLayoutPrivate::layoutLabels(qreal totalSlotsWidth)
-{
-    Q_Q(UCSlotsLayout);
-
-    //width of the labels excluding the margins, this is pretty much like a "fillWidth" behaviour
-    qreal labelsBoxWidth = q->width() - totalSlotsWidth - (UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS_GU) * 2)
-            - contentMargins.leftMargin() - contentMargins.rightMargin();
-
-    setupLabelsLeftAnchors();
-    setupLabelsVerticalPositioning();
-    setupLabelsRightAnchors();
-
-    if (trailingSlots.length() != 0) {
-        m_title.setWidth(labelsBoxWidth);
-        m_subtitle.setWidth(labelsBoxWidth);
-        m_subsubtitle.setWidth(labelsBoxWidth);
-    }
-}
-
 void UCSlotsLayoutPrivate::_q_relayout()
 {
     Q_Q(UCSlotsLayout);
@@ -592,15 +383,30 @@ void UCSlotsLayoutPrivate::_q_relayout()
         return;
     }
 
-    qreal idealLabelsWidth = populateSlotsListsAndComputeWidth();
+    qreal totalSlotsWidth = populateSlotsListsAndComputeWidth();
 
-    layoutInRow(contentMargins.leftMargin(), left(), leadingSlots);
+    QList<QQuickItem *> itemsToLayout(leadingSlots);
 
-    layoutLabels(idealLabelsWidth);
+    if (mainSlot) {
+        itemsToLayout.append(mainSlot);
 
-    layoutInRow(UCUnits::instance().gu(SLOTSLAYOUT_LABELS_SIDEMARGINS_GU),
-                QQuickItemPrivate::get(&m_title)->right(),
-                trailingSlots);
+        UCSlotsAttached *attachedSlot =
+                qobject_cast<UCSlotsAttached *>(qmlAttachedPropertiesObject<UCSlotsLayout>(mainSlot));
+
+        if (!attachedSlot) {
+            qmlInfo(q) << "Invalid attached property!";
+            return;
+        }
+        mainSlot->setWidth(q->width() - totalSlotsWidth
+                           - attachedSlot->leftMargin() - attachedSlot->rightMargin()
+                           - contentMargins.leftMargin() - contentMargins.rightMargin());
+    } else {
+        Q_UNUSED(totalSlotsWidth);
+    }
+
+    itemsToLayout.append(trailingSlots);
+
+    layoutInRow(contentMargins.leftMargin(), left(), itemsToLayout);
 }
 
 void UCSlotsLayoutPrivate::handleAttachedPropertySignals(QQuickItem *item, bool connect)
@@ -641,11 +447,7 @@ void UCSlotsLayout::componentComplete()
     Q_D(UCSlotsLayout);
     QQuickItem::componentComplete();
 
-    d->_q_onThemeChanged();
-
-    //We want to call these functions for the first time after the
-    //QML properties (such as titleItem.text) have been initialized!
-    d->_q_updateLabelsAnchorsAndBBoxHeight();
+    d->_q_onMainSlotHeightChanged();
     d->_q_updateSlotsBBoxHeight();
 }
 
@@ -658,38 +460,40 @@ void UCSlotsLayout::itemChange(ItemChange change, const ItemChangeData &data)
     switch (change) {
     case ItemChildAddedChange:
         if (data.item) {
+            d->handleAttachedPropertySignals(data.item, true);
+
             QObject::connect(data.item, SIGNAL(visibleChanged()), this, SLOT(_q_relayout()));
-            QObject::connect(data.item, SIGNAL(heightChanged()), this, SLOT(_q_updateSlotsBBoxHeight()));
-            //we relayout because we have to update the width of the labels
+
+            //we relayout because we have to update the width of the main slot
             //TODO: do this in a separate function? do were really have to do the whole relayout?
-            QObject::connect(data.item, SIGNAL(widthChanged()), this, SLOT(_q_relayout()));
-
-            //single labels can't be considered a slot
-            if (data.item != &d->m_title && data.item != &d->m_subtitle
-                    && data.item != &d->m_subsubtitle) {
-                d->handleAttachedPropertySignals(data.item, true);
-
-                //this will also trigger relayout
+            if (data.item != d->mainSlot) {
+                QObject::connect(data.item, SIGNAL(widthChanged()), this, SLOT(_q_relayout()));
+                QObject::connect(data.item, SIGNAL(heightChanged()), this, SLOT(_q_updateSlotsBBoxHeight()));
                 d->_q_updateSlotsBBoxHeight();
+            } else {
+                QObject::connect(data.item, SIGNAL(heightChanged()), this, SLOT(_q_onMainSlotHeightChanged()));
+                d->_q_onMainSlotHeightChanged();
             }
         }
         break;
     case ItemChildRemovedChange:
         if (data.item) {
+            d->handleAttachedPropertySignals(data.item, false);
+
             //This wouldn't be needed if the child is destroyed, but we can't know what, we just know
             //that it's changing parent, so we still disconnect from all the signals manually
             QObject::disconnect(data.item, SIGNAL(visibleChanged()), this, SLOT(_q_relayout()));
-            QObject::disconnect(data.item, SIGNAL(heightChanged()), this, SLOT(_q_updateSlotsBBoxHeight()));
-            QObject::disconnect(data.item, SIGNAL(widthChanged()), this, SLOT(_q_relayout()));
 
-            if (data.item != &d->m_title && data.item != &d->m_subtitle
-                    && data.item != &d->m_subsubtitle) {
-                d->handleAttachedPropertySignals(data.item, false);
-
-                //this will also trigger relayout
+            if (data.item != d->mainSlot) {
+                QObject::disconnect(data.item, SIGNAL(widthChanged()), this, SLOT(_q_relayout()));
+                QObject::disconnect(data.item, SIGNAL(heightChanged()), this, SLOT(_q_updateSlotsBBoxHeight()));
                 d->_q_updateSlotsBBoxHeight();
+            } else {
+                QObject::disconnect(data.item, SIGNAL(heightChanged()), this, SLOT(_q_onMainSlotHeightChanged()));
+                d->_q_onMainSlotHeightChanged();
             }
         }
+
         break;
     case ItemParentHasChanged:
         newParent = data.item;
@@ -710,22 +514,21 @@ void UCSlotsLayout::itemChange(ItemChange change, const ItemChangeData &data)
     QQuickItem::itemChange(change, data);
 }
 
-QQuickText *UCSlotsLayout::titleItem()
+QQuickItem *UCSlotsLayout::mainSlot() const
 {
-    Q_D(UCSlotsLayout);
-    return &(d->m_title);
+    Q_D(const UCSlotsLayout);
+    return d->mainSlot;
 }
 
-QQuickText *UCSlotsLayout::subtitleItem()
+void UCSlotsLayout::setMainSlot(QQuickItem *item)
 {
     Q_D(UCSlotsLayout);
-    return &(d->m_subtitle);
-}
-
-QQuickText *UCSlotsLayout::subsubtitleItem()
-{
-    Q_D(UCSlotsLayout);
-    return &(d->m_subsubtitle);
+    if (d->mainSlot != item) {
+        d->mainSlot = item;
+        d->mainSlot->setParent(this);
+        d->mainSlot->setParentItem(this);
+        Q_EMIT mainSlotChanged();
+    }
 }
 
 UCSlotsLayoutMargins* UCSlotsLayout::contentMargins() {

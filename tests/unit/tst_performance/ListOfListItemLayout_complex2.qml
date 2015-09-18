@@ -24,9 +24,26 @@ Column {
     Repeater {
         model: 5000
         ListItem {
-            SlotsLayoutCpp {
-                titleItem.text: "test"
-                subtitleItem.text: "label"
+            trailingActions: ListItemActions {
+                actions: [
+                    Action {}
+                ]
+            }
+            leadingActions: ListItemActions {
+                actions: [
+                    Action {},
+                    Action {},
+                    Action {}
+                ]
+            }
+            
+            ListItemLayout {
+                Item { SlotsLayoutCpp.position: SlotsLayoutCpp.Leading; width: units.gu(2) }
+                Item { SlotsLayoutCpp.position: SlotsLayoutCpp.Trailing; width: units.gu(2) }
+                Item { SlotsLayoutCpp.position: SlotsLayoutCpp.Trailing; width: units.gu(2) }
+                title.text: "test"
+                subtitle.text: "label"
+                summary.text: "new"
             }
         }
     }

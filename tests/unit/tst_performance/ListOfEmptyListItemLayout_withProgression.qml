@@ -24,8 +24,8 @@ Column {
     Repeater {
         model: 5000
         ListItem {
-            SlotsLayoutCpp {
-                
+            ListItemLayout {
+                ProgressionSlot {}
             }
         }
     }

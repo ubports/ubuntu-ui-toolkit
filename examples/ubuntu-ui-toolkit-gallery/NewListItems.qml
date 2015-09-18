@@ -44,12 +44,11 @@ Template {
 
             onClicked: layout.visible = !layout.visible
 
-            SlotsLayoutCpp {
+            ListItemLayout {
                 id: layout
 
-                titleItem.text: "Hello designers!"
-                subtitleItem.text:  "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
-                subsubtitleItem.text: "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
+                title.text: "Hello designers!"
+                subtitle.text:  "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
 
                 Icon { SlotsLayoutCpp.position: SlotsLayoutCpp.Leading; width: units.gu(2); name: "email" }
                 Icon { width: units.gu(2); name: "message" }
@@ -74,9 +73,9 @@ Template {
                 ]
             }
 
-            SlotsLayoutCpp {
+            ListItemLayout {
                 id: layout2
-                titleItem.text: "Hello designers!"
+                title.text: "Hello designers!"
 
                 Rectangle { SlotsLayoutCpp.position: SlotsLayoutCpp.Leading; color: "yellow"; width: units.gu(10); height: units.gu(10) }
                 CheckBox { }
@@ -101,14 +100,13 @@ Template {
                 ]
             }
 
-            SlotsLayoutCpp {
+            ListItemLayout {
                 id: layout3
 
                 contentMargins.bottomMargin: units.gu(10)
 
-                titleItem.text: "Hello designers!"
-                subtitleItem.text:  "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
-                subsubtitleItem.text: "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
+                title.text: "Hello designers!"
+                subtitle.text:  "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
 
                 CheckBox { width: units.gu(8); height: units.gu(8) }
                 Rectangle { color: "purple"; width: units.gu(5); height: units.gu(5) }
@@ -133,9 +131,9 @@ Template {
                 ]
             }
 
-            SlotsLayoutCpp {
+            ListItemLayout {
                 id: layout4
-                titleItem.text: "Hello designers!"
+                title.text: "Hello designers!"
 
                 CheckBox { width: units.gu(8); height: units.gu(8) }
                 Rectangle { color: "orange"; width: units.gu(5); height: units.gu(5) }
@@ -161,9 +159,9 @@ Template {
                 ]
             }
 
-            SlotsLayoutCpp {
+            ListItemLayout {
                 id: layout5
-                titleItem.text: "Hello designers!"
+                title.text: "Hello designers!"
 
                 CheckBox { }
             }
@@ -186,9 +184,9 @@ Template {
                 ]
             }
 
-            SlotsLayoutCpp {
+            ListItemLayout {
                 id: layout6
-                titleItem.text: "Hello designers!"
+                title.text: "Hello designers!"
 
                 CheckBox { SlotsLayoutCpp.position: SlotsLayoutCpp.Leading }
             }
@@ -211,11 +209,10 @@ Template {
                 ]
             }
 
-            SlotsLayoutCpp {
+            ListItemLayout {
                 id: layout7
-                titleItem.text: "Hello designers!"
-                subtitleItem.text:  "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
-                subsubtitleItem.text: "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
+                title.text: "Hello designers!"
+                subtitle.text:  "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
 
                 CheckBox { id: checkbox; width: units.gu(4); height: units.gu(4) }
 
@@ -248,15 +245,77 @@ Template {
                 ]
             }
 
-            SlotsLayoutCpp {
+            ListItemLayout {
                 id: listItemCustomLayout1
-                titleItem.text: "Hello designers!"
-                subtitleItem.text:  "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
-                subsubtitleItem.text: "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
+                title.text: "Hello designers!"
+                subtitle.text:  "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
 
-                CheckBox { SlotsLayoutCpp.overrideVerticalPositioning: true; anchors.top: parent.titleItem.top; width: units.gu(4); height: units.gu(4) }
+                CheckBox { SlotsLayoutCpp.overrideVerticalPositioning: true; y: parent.title.y + parent.title.baselineOffset; width: units.gu(4); height: units.gu(4) }
 
-                Rectangle { SlotsLayoutCpp.overrideVerticalPositioning: true; anchors.bottom: parent.subsubtitleItem.bottom; width: units.gu(4); height: units.gu(4); color: "purple" }
+                Rectangle { SlotsLayoutCpp.overrideVerticalPositioning: true; y: parent.subtitle.y + parent.subtitle.baselineOffset; width: units.gu(4); height: units.gu(4); color: "purple" }
+
+                Icon { SlotsLayoutCpp.overrideVerticalPositioning: true; SlotsLayoutCpp.position: SlotsLayoutCpp.Leading; anchors.verticalCenter: parent.verticalCenter; width: units.gu(4); height: units.gu(4); name: "message" }
+            }
+        }
+    }
+
+
+    TemplateSection {
+        className: "SlotsLayout (custom vertical positioning)"
+        // no spacing between the list items in the Column
+        spacing: 0
+        ListItem {
+            id: listItemCustom2
+            height: listItemCustomLayout2.height
+
+            trailingActions: ListItemActions {
+                actions: [
+                    Action {}
+                ]
+            }
+            leadingActions: ListItemActions {
+                actions: [
+                    Action {},
+                    Action {},
+                    Action {}
+                ]
+            }
+
+            SlotsLayoutCpp {
+                id: listItemCustomLayout2
+
+
+                mainSlot: Item {
+                    //even if a Label is empty, its height will still be "lineHeight" value,
+                    //and that ruins the layout
+                    height: childrenRect.height
+
+                    Label {
+                        id: titleLabel
+                        width: parent.width
+                        height: text != "" ? contentHeight : 0
+                        font.weight: Font.Light
+                        elide: Text.ElideRight
+                        wrapMode: Text.WordWrap
+                        maximumLineCount: 1
+                        text: "Hello designers!"
+                    }
+                    Label {
+                        id: subtitleLabel
+                        width: parent.width
+                        height: text != "" ? contentHeight : 0
+                        anchors {
+                            top: titleLabel.text != "" ? titleLabel.baseline : titleLabel.top;
+                            topMargin: (text != "" && titleLabel.text != "") ? units.gu(1) : 0
+                        }
+                        fontSize: "small"
+                        font.weight: Font.Light
+                        elide: Text.ElideRight
+                        wrapMode: Text.WordWrap
+                        maximumLineCount: 2
+                        text:  "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
+                    }
+                }
 
                 Icon { SlotsLayoutCpp.overrideVerticalPositioning: true; SlotsLayoutCpp.position: SlotsLayoutCpp.Leading; anchors.verticalCenter: parent.verticalCenter; width: units.gu(4); height: units.gu(4); name: "message" }
             }
@@ -272,11 +331,11 @@ Template {
             id: addressbookListItem
             height: addressbookLayout.height
 
-            SlotsLayoutCpp {
+            ListItemLayout {
                 id: addressbookLayout
 
-                titleItem.color: UbuntuColors.lightAubergine
-                titleItem.text: "Address book list item: Name goes here"
+                title.color: UbuntuColors.lightAubergine
+                title.text: "Address book list item: Name goes here"
 
                 Rectangle {
                     SlotsLayoutCpp.position: SlotsLayoutCpp.Leading
@@ -292,12 +351,12 @@ Template {
             id: addressbookDetailsListItem
             height: addressbookDetailsLayout.height
 
-            SlotsLayoutCpp {
+            ListItemLayout {
                 id: addressbookDetailsLayout
 
-                titleItem.color: UbuntuColors.lightAubergine
-                titleItem.text: "+44 7552342512"
-                subtitleItem.text: "Mobile"
+                title.color: UbuntuColors.lightAubergine
+                title.text: "+44 7552342512"
+                subtitle.text: "Mobile"
 
                 Icon {
                     name: "message"
@@ -316,12 +375,12 @@ Template {
             id: dialerHistoryListItem2
             height: dialerHistoryLayout2.height
 
-            SlotsLayoutCpp {
+            ListItemLayout {
                 id: dialerHistoryLayout2
 
-                titleItem.color: UbuntuColors.lightAubergine
-                titleItem.text: "+44 7552342512"
-                subtitleItem.text: "Mobile"
+                title.color: UbuntuColors.lightAubergine
+                title.text: "+44 7552342512"
+                subtitle.text: "Mobile"
 
                 Icon {
                     SlotsLayoutCpp.position: SlotsLayoutCpp.Leading
@@ -344,12 +403,12 @@ Template {
             id: dialerHistoryListItem
             height: dialerHistoryLayout.height
 
-            SlotsLayoutCpp {
+            ListItemLayout {
                 id: dialerHistoryLayout
 
-                titleItem.text: "+44 7349845928 (3)"
-                titleItem.color: UbuntuColors.lightAubergine
-                subtitleItem.text: "Mobile"
+                title.text: "+44 7349845928 (3)"
+                title.color: UbuntuColors.lightAubergine
+                subtitle.text: "Mobile"
 
                 Rectangle {
                     SlotsLayoutCpp.position: SlotsLayoutCpp.Leading
@@ -373,14 +432,16 @@ Template {
                         anchors.right: label2.right
                         text: "19:17"
                         fontSize: "small"
-                        y: dialerHistoryLayout.titleItem.y + dialerHistoryLayout.titleItem.baselineOffset - baselineOffset
+                        y: dialerHistoryLayout.mainSlot.y + dialerHistoryLayout.title.y
+                           + dialerHistoryLayout.title.baselineOffset - baselineOffset
                     }
 
                     Label {
                         id: label2
                         text: "Outgoing"
                         fontSize: "small"
-                        y: dialerHistoryLayout.subtitleItem.y + dialerHistoryLayout.subtitleItem.baselineOffset - baselineOffset
+                        y: dialerHistoryLayout.mainSlot.y + dialerHistoryLayout.subtitle.y
+                           + dialerHistoryLayout.subtitle.baselineOffset - baselineOffset
                     }
                 }
             }
@@ -391,19 +452,19 @@ Template {
 
             height: telegramContactsLayout.height
 
-            SlotsLayoutCpp {
+            ListItemLayout {
                 id: telegramContactsLayout
 
-                titleItem.text: "Telegram Name goes here"
-                titleItem.font.pixelSize: FontUtils.sizeToPixels("large")
+                title.text: "Telegram Name goes here"
+                title.font.pixelSize: FontUtils.sizeToPixels("large")
                 //color: TelegramColors.black
                 //verticalAlignment: TextInput.AlignVCenter
 
-                subtitleItem.text: "last seen 12:02"
-                subtitleItem.font.pixelSize: FontUtils.sizeToPixels("medium")
-                //subtitleItem.color: isOnline ? TelegramColors.dark_blue : TelegramColors.grey
-                //subtitleItem.elide: Text.ElideRight
-                //subtitleItem.verticalAlignment: TextInput.AlignVCenter
+                subtitle.text: "last seen 12:02"
+                subtitle.font.pixelSize: FontUtils.sizeToPixels("medium")
+                //subtitle.color: isOnline ? TelegramColors.dark_blue : TelegramColors.grey
+                //subtitle.elide: Text.ElideRight
+                //subtitle.verticalAlignment: TextInput.AlignVCenter
 
                 Rectangle {
                     id: imageShape
@@ -419,9 +480,9 @@ Template {
             id: systemSettings1
             height: systemSettings1_layout.height
 
-            SlotsLayoutCpp {
+            ListItemLayout {
                 id: systemSettings1_layout
-                titleItem.text: "Call forwarding"
+                title.text: "Call forwarding"
 
                 ProgressionSlot {}
 
@@ -437,9 +498,9 @@ Template {
             id: systemSettings2
             height: systemSettings2_layout.height
 
-            SlotsLayoutCpp {
+            ListItemLayout {
                 id: systemSettings2_layout
-                titleItem.text: "Flight mode"
+                title.text: "Flight mode"
 
                 //see http://bazaar.launchpad.net/~ubuntu-branches/ubuntu/wily/ubuntu-system-settings/wily-proposed/view/head:/src/qml/EntryComponent.qml
                 Icon {
@@ -456,15 +517,15 @@ Template {
             id: systemSettings3
             height: systemSettings3_layout.height
 
-            SlotsLayoutCpp {
+            ListItemLayout {
                 id: systemSettings3_layout
-                titleItem.text: "الفيسبوك"
-                subtitleItem.text: "الفيسبوك"
+                title.text: "الفيسبوك"
+                subtitle.text: "الفيسبوك"
 
                 LayoutMirroring.enabled: true
                 LayoutMirroring.childrenInherit: true
 
-                ProgressionSlot {}
+                /*ProgressionSlot {}
 
                 //see http://bazaar.launchpad.net/~ubuntu-branches/ubuntu/wily/ubuntu-system-settings/wily-proposed/view/head:/src/qml/EntryComponent.qml
                 Icon {
@@ -472,7 +533,7 @@ Template {
                     width: units.gu(6);
                     height: units.gu(6);
                     name: "facebook"
-                }
+                }*/
             }
         }
     }

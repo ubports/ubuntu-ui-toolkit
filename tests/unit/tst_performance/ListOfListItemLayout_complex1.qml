@@ -24,12 +24,12 @@ Column {
     Repeater {
         model: 5000
         ListItem {
-            SlotsLayoutCpp {
+            ListItemLayout {
                 Item { SlotsLayoutCpp.position: SlotsLayoutCpp.Leading; width: units.gu(2) }
                 Item { SlotsLayoutCpp.position: SlotsLayoutCpp.Trailing; width: units.gu(2) }
                 Item { SlotsLayoutCpp.position: SlotsLayoutCpp.Trailing; width: units.gu(2) }
-                titleItem.text: "test"
-                subtitleItem.text: "label"
+                title.text: "test"
+                subtitle.text: "label"
             }
         }
     }

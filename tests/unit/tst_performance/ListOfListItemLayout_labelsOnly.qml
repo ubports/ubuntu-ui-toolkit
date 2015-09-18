@@ -24,8 +24,9 @@ Column {
     Repeater {
         model: 5000
         ListItem {
-            SlotsLayoutCpp {
-                ProgressionSlot {}
+            ListItemLayout {
+                title.text: "test"
+                subtitle.text: "label"
             }
         }
     }

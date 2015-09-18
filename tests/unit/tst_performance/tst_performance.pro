@@ -33,11 +33,11 @@ OTHER_FILES += \
     StyledItemNewTheming.qml \
     AbstractButtonGrid.qml \
     AbstractButton13Grid.qml \
-    ListOfEmptySlotsLayoutCpp_withProgression.qml \
-    ListOfEmptySlotsLayoutCpp.qml \
-    ListOfSlotsLayoutCpp_complex1.qml \
-    ListOfSlotsLayoutCpp_complex2.qml \
-    ListOfSlotsLayoutCpp_labelsOnly.qml \
     ListItemWithInlineActionsAndFourContainersList.qml \
     ListItemWithInlineActionsAndFourMouseAreas.qml \
-    ListOfCustomListItemLayouts.qml
+    ListOfCustomListItemLayouts.qml \
+    ListOfEmptyListItemLayout.qml \
+    ListOfEmptyListItemLayout_withProgression.qml \
+    ListOfListItemLayout_complex1.qml \
+    ListOfListItemLayout_complex2.qml \
+    ListOfListItemLayout_labelsOnly.qml

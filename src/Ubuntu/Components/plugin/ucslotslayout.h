@@ -30,9 +30,7 @@ class UCSlotsLayout : public QQuickItem
 {
     Q_OBJECT
 
-    Q_PROPERTY(QQuickText *titleItem READ titleItem CONSTANT FINAL)
-    Q_PROPERTY(QQuickText *subtitleItem READ subtitleItem CONSTANT FINAL)
-    Q_PROPERTY(QQuickText *subsubtitleItem READ subsubtitleItem CONSTANT FINAL)
+    Q_PROPERTY(QQuickItem *mainSlot READ mainSlot WRITE setMainSlot NOTIFY mainSlotChanged)
     Q_PROPERTY(UCSlotsLayoutMargins *contentMargins READ contentMargins CONSTANT FINAL)
 
     Q_ENUMS(UCSlotPosition)
@@ -40,12 +38,8 @@ class UCSlotsLayout : public QQuickItem
 public:
     explicit UCSlotsLayout(QQuickItem *parent = 0);
 
-    //this methods can't be const because otherwise they'd have to return
-    //unmodifiable labels, since they're allocated on the stack, and that would
-    //fail compilation (unless const_cast is used)
-    QQuickText *titleItem();
-    QQuickText *subtitleItem();
-    QQuickText *subsubtitleItem();
+    QQuickItem *mainSlot() const;
+    void setMainSlot(QQuickItem *item);
 
     UCSlotsLayoutMargins *contentMargins();
 
@@ -54,17 +48,19 @@ public:
 
     static UCSlotsAttached *qmlAttachedProperties(QObject *object);
 
+Q_SIGNALS:
+    void mainSlotChanged();
+
 protected:
     Q_DECLARE_PRIVATE(UCSlotsLayout)
     void componentComplete();
     void itemChange(ItemChange change, const ItemChangeData &data);
 
 private:
-    Q_PRIVATE_SLOT(d_func(), void _q_onThemeChanged())
     Q_PRIVATE_SLOT(d_func(), void _q_onGuValueChanged())
     Q_PRIVATE_SLOT(d_func(), void _q_updateCachedHeight())
     Q_PRIVATE_SLOT(d_func(), void _q_updateGuValues())
-    Q_PRIVATE_SLOT(d_func(), void _q_updateLabelsAnchorsAndBBoxHeight())
+    Q_PRIVATE_SLOT(d_func(), void _q_onMainSlotHeightChanged())
     Q_PRIVATE_SLOT(d_func(), void _q_updateSlotsBBoxHeight())
     Q_PRIVATE_SLOT(d_func(), void _q_updateSize())
     Q_PRIVATE_SLOT(d_func(), void _q_relayout())

@@ -25,8 +25,6 @@
 
 #define IMPLICIT_SLOTSLAYOUT_WIDTH_GU                40
 #define IMPLICIT_SLOTSLAYOUT_HEIGHT_GU               7
-#define SLOTSLAYOUT_LABELS_SPACING_GU                1
-#define SLOTSLAYOUT_LABELS_SIDEMARGINS_GU            1
 #define SLOTSLAYOUT_SLOTS_SIDEMARGINS_GU             1
 #define SLOTSLAYOUT_LEFTMARGIN_GU                    1
 #define SLOTSLAYOUT_RIGHTMARGIN_GU                   1
@@ -57,10 +55,6 @@ public:
     //The optional anchoring behaviour can be disable by passing QQuickAnchorLine()
     void layoutInRow(qreal siblingAnchorMargin, QQuickAnchorLine siblingAnchor, QList<QQuickItem *> &items);
     void setupSlotsVerticalPositioning(QQuickItem *item);
-    void setupLabelsLeftAnchors();
-    void setupLabelsVerticalPositioning();
-    void setupLabelsRightAnchors();
-    void layoutLabels(qreal totalSlotsWidth);
 
     //We have two vertical positioning modes according to the visual design rules:
     //- RETURN VALUE CenterVertically --> All items have to be vertically centered
@@ -78,30 +72,27 @@ public:
         return that->d_func();
     }
 
-    void _q_onThemeChanged();
     void _q_onGuValueChanged();
     void _q_updateCachedHeight();
     void _q_updateProgressionStatus();
     void _q_updateGuValues();
-    void _q_updateLabelsAnchorsAndBBoxHeight();
+    void _q_onMainSlotHeightChanged();
     void _q_updateSlotsBBoxHeight();
     void _q_updateSize();
     void _q_relayout();
-
-    QQuickText m_title;
-    QQuickText m_subtitle;
-    QQuickText m_subsubtitle;
 
     UCSlotsLayoutMargins contentMargins;
     QList<QQuickItem *> leadingSlots;
     QList<QQuickItem *> trailingSlots;
 
+    QQuickItem* mainSlot;
+
     //We cache the current parent so that we can disconnect from the signals when the
     //parent changes. We need this because itemChange(..) only provides the new parent
     QQuickItem *m_parentItem;
 
-    qreal labelsBoundingBoxHeight;
-    //max slots height ignoring labels
+    qreal mainSlotHeight;
+    //max slots height ignoring the main slot
     qreal maxSlotsHeight;
     //we cache the height so that we only relayout when it goes
     //from 0 to non-0 and not viceversa
@@ -113,9 +104,6 @@ public:
 
     //Show the chevron, name taken from old ListItem API to minimize changes
     bool progression : 1;
-
-private:
-    void setDefaultLabelsProperties();
 };
 
 class UCSlotsAttachedPrivate : public QObjectPrivate
