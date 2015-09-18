@@ -754,6 +754,7 @@ void UCSlotsLayoutMargins::setBottomMarginQml(qreal val)
 
 UCThreeLabelsSlotPrivate::UCThreeLabelsSlotPrivate()
     : QQuickItemPrivate()
+    , cachedTheme(Q_NULLPTR)
     , m_title(Q_NULLPTR)
     , m_subtitle(Q_NULLPTR)
     , m_summary(Q_NULLPTR)
@@ -803,6 +804,24 @@ void UCThreeLabelsSlotPrivate::setSubtitleProperties()
     //as it requires qmlContext(q) to be initialized
 }
 
+void UCThreeLabelsSlotPrivate::updateLabelsColors()
+{
+    if (!componentComplete)
+        return;
+
+    if (cachedTheme) {
+        if (m_title != Q_NULLPTR) {
+            m_title->setColor(labelsColor);
+        }
+        if (m_subtitle != Q_NULLPTR) {
+            m_subtitle->setColor(labelsColor);
+        }
+        if (m_summary != Q_NULLPTR) {
+            m_summary->setColor(labelsColor);
+        }
+    }
+}
+
 void UCThreeLabelsSlotPrivate::setSummaryProperties()
 {
     Q_Q(UCThreeLabelsSlot);
@@ -822,19 +841,14 @@ void UCThreeLabelsSlotPrivate::setSummaryProperties()
 
 void UCThreeLabelsSlotPrivate::_q_onThemeChanged()
 {
+    if (!componentComplete)
+        return;
+
     Q_Q(UCThreeLabelsSlot);
-    UCTheme *theme = qmlContext(q)->contextProperty("theme").value<UCTheme*>();
-    if (theme) {
-        if (m_title != Q_NULLPTR) {
-            m_title->setColor(theme->getPaletteColor("selected", "backgroundText"));
-        }
-        if (m_subtitle != Q_NULLPTR) {
-            m_subtitle->setColor(theme->getPaletteColor("selected", "backgroundText"));
-        }
-        if (m_summary != Q_NULLPTR) {
-            m_summary->setColor(theme->getPaletteColor("selected", "backgroundText"));
-        }
-    }
+    cachedTheme = qmlContext(q)->contextProperty("theme").value<UCTheme*>();
+    labelsColor = cachedTheme->getPaletteColor("selected", "backgroundText");
+
+    updateLabelsColors();
 }
 
 void UCThreeLabelsSlotPrivate::_q_onGuValueChanged()
@@ -978,7 +992,7 @@ QQuickText *UCThreeLabelsSlot::title()
         QObject::connect(d->m_title, SIGNAL(visibleChanged()), this, SLOT(_q_updateLabelsAnchorsAndBBoxHeight()));
 
         d->setTitleProperties();
-        d->_q_onThemeChanged();
+        d->updateLabelsColors();
         d->_q_updateLabelsAnchorsAndBBoxHeight();
     }
     return d->m_title;
@@ -999,7 +1013,7 @@ QQuickText *UCThreeLabelsSlot::subtitle()
         QObject::connect(d->m_subtitle, SIGNAL(visibleChanged()), this, SLOT(_q_updateLabelsAnchorsAndBBoxHeight()));
 
         d->setSubtitleProperties();
-        d->_q_onThemeChanged();
+        d->updateLabelsColors();
         d->_q_updateLabelsAnchorsAndBBoxHeight();
     }
     return d->m_subtitle;
@@ -1020,7 +1034,7 @@ QQuickText *UCThreeLabelsSlot::summary()
         QObject::connect(d->m_summary, SIGNAL(visibleChanged()), this, SLOT(_q_updateLabelsAnchorsAndBBoxHeight()));
 
         d->setSummaryProperties();
-        d->_q_onThemeChanged();
+        d->updateLabelsColors();
         d->_q_updateLabelsAnchorsAndBBoxHeight();
     }
     return d->m_summary;

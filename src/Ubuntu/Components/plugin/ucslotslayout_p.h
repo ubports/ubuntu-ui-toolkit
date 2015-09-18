@@ -127,6 +127,7 @@ public:
     bool rightMarginWasSetFromQml : 1;
 };
 
+class UCTheme;
 class UCThreeLabelsSlotPrivate : public QQuickItemPrivate
 {
     Q_DECLARE_PUBLIC(UCThreeLabelsSlot)
@@ -144,11 +145,16 @@ public:
     void setTitleProperties();
     void setSubtitleProperties();
     void setSummaryProperties();
+    void updateLabelsColors();
 
     void _q_onGuValueChanged();
     void _q_onThemeChanged();
     void _q_updateLabelsAnchorsAndBBoxHeight();
 
+    //Getting the theme and the palette colours is very expensive,
+    //so we cache them to avoid querying it every time it is needed
+    QColor labelsColor;
+    UCTheme* cachedTheme;
     QQuickText *m_title;
     QQuickText *m_subtitle;
     QQuickText *m_summary;
