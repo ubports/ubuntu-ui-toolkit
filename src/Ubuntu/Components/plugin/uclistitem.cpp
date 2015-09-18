@@ -1300,6 +1300,7 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
 
 bool UCListItemPrivate::sendMouseEvent(QQuickItem *item, QMouseEvent *event)
 {
+    Q_UNUSED(item);
     Q_Q(UCListItem);
     QQuickItem *grabber = window ? window->mouseGrabberItem() : Q_NULLPTR;
     if (grabber == q) {
@@ -1307,25 +1308,20 @@ bool UCListItemPrivate::sendMouseEvent(QQuickItem *item, QMouseEvent *event)
         return true;
     }
 
-    bool result = false;
+    bool consumed = false;
     if (contentItem->contains(contentItem->mapFromScene(event->windowPos()))) {
         QPointF localPos = q->mapFromScene(event->windowPos());
 
         switch (event->type()) {
         case QEvent::MouseButtonPress: {
-            // suppress click event if pressed over an active area, except Text, which can also handle
-            // mouse clicks when content is an URL
-            if ((event->button() == Qt::LeftButton) && !qobject_cast<QQuickText*>(item)) {
+            // remember pressed point over active areas
+            if (event->button() == Qt::LeftButton) {
                 if (swiped) {
-                    // handle as full press
+                    // handle as full press and grab the event from the children
                     QScopedPointer<QMouseEvent> mouseEvent(QQuickWindowPrivate::cloneMouseEvent(event, &localPos));
                     handleLeftButtonPress(mouseEvent.data());
-                    result = true;
+                    consumed = true;
                 } else {
-                    // suppress click
-                    suppressClick = true;
-                    // listen for flickable to be able to rebind if movement started there!
-                    listenToRebind(true);
                     // remember the position
                     pressedPos = localPos;
                     button = event->button();
@@ -1345,13 +1341,10 @@ bool UCListItemPrivate::sendMouseEvent(QQuickItem *item, QMouseEvent *event)
                 QMouseEvent pressed(QEvent::MouseButtonPress, localPos, event->windowPos(), event->screenPos(),
                                         Qt::LeftButton, event->buttons(), event->modifiers());
                 handleLeftButtonPress(&pressed);
-                // stop click and pressAndHold, then grab the mouse so children do not get the mouse events anymore
-                suppressClick = true;
-                pressAndHoldTimer.stop();
-                // also grab any further events so all land in the item
+                // grab any further events so all land in the list item
                 q->setKeepMouseGrab(true);
                 q->grabMouse();
-                result = true;
+                consumed = true;
             }
             break;
         }
@@ -1359,7 +1352,7 @@ bool UCListItemPrivate::sendMouseEvent(QQuickItem *item, QMouseEvent *event)
         }
     }
 
-    return result;
+    return consumed;
 }
 
 bool UCListItem::childMouseEventFilter(QQuickItem *child, QEvent *event)

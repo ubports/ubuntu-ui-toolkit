@@ -80,6 +80,22 @@ Item {
                 onPressed: mouse.accepted = overlaidMouseArea.acceptEvent
             }
         }
+        ListView {
+            id: listView
+            width: parent.width
+            height: 4 * units.gu(7) // 4 items
+            clip: true
+            model: 5
+            delegate: ListItem {
+                objectName: "listItem" + index
+                Label {
+                    anchors.centerIn: parent
+                    text: index
+                }
+
+                leadingActions: leading
+            }
+        }
     }
 
     ListItemTestCase13 {
@@ -191,6 +207,43 @@ Item {
                 mouseClick(activeItem, centerOf(activeItem).x, centerOf(activeItem).y);
             }
             expectFail(data.tag, "Button is inactive while swiped");
+            clickSpy.wait(200);
+        }
+
+        function test_click_before_and_after_snapout_bug1496468_data() {
+            var item0 = findChild(listView, "listItem0");
+            var item1 = findChild(listView, "listItem1");
+            return [
+                {tag: "mouse", touch: false, clickedItem: item0, swipedItem: item1, dx: units.gu(20), reboundDx: -units.gu(5)},
+                {tag: "touch", touch: true, clickedItem: item0, swipedItem: item1, dx: units.gu(20), reboundDx: -units.gu(5)},
+            ];
+        }
+        function test_click_before_and_after_snapout_bug1496468(data) {
+            clickSpy.target = data.clickedItem;
+            if (data.touch) {
+                TestExtras.touchClick(0, data.clickedItem, centerOf(data.clickedItem));
+            } else {
+                mouseClick(data.clickedItem, centerOf(data.clickedItem).x, centerOf(data.clickedItem).y);
+            }
+            clickSpy.wait(200);
+            // swipe in then rebound
+            if (data.touch) {
+                tug(data.swipedItem, centerOf(data.swipedItem).x, centerOf(data.swipedItem).y, data.dx, 0);
+                wait(200);
+                tug(data.swipedItem, centerOf(data.swipedItem).x, centerOf(data.swipedItem).y, data.reboundDx, 0);
+            } else {
+                swipe(data.swipedItem, centerOf(data.swipedItem).x, centerOf(data.swipedItem).y, data.dx, 0);
+                wait(200);
+                swipe(data.swipedItem, centerOf(data.swipedItem).x, centerOf(data.swipedItem).y, data.reboundDx, 0);
+            }
+            // then test click
+            clickSpy.target = data.swipedItem;
+            clickSpy.clear();
+            if (data.touch) {
+                TestExtras.touchClick(0, data.swipedItem, centerOf(data.swipedItem));
+            } else {
+                mouseClick(data.swipedItem, centerOf(data.swipedItem).x, centerOf(data.swipedItem).y);
+            }
             clickSpy.wait(200);
         }
     }
