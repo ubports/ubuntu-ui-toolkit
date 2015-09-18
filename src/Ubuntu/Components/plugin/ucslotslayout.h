@@ -166,9 +166,6 @@ class UCThreeLabelsSlot : public QQuickItem
 public:
     explicit UCThreeLabelsSlot(QQuickItem *parent = 0);
 
-    //this methods can't be const because otherwise they'd have to return
-    //unmodifiable labels, since they're allocated on the stack, and that would
-    //fail compilation (unless const_cast is used)
     QQuickText *title();
     QQuickText *subtitle();
     QQuickText *summary();

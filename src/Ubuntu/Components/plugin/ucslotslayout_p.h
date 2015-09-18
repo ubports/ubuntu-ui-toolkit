@@ -141,14 +141,17 @@ public:
     }
 
     void init();
-    void setDefaultLabelsProperties();
+    void setTitleProperties();
+    void setSubtitleProperties();
+    void setSummaryProperties();
+
     void _q_onGuValueChanged();
     void _q_onThemeChanged();
     void _q_updateLabelsAnchorsAndBBoxHeight();
 
-    QQuickText m_title;
-    QQuickText m_subtitle;
-    QQuickText m_summary;
+    QQuickText *m_title;
+    QQuickText *m_subtitle;
+    QQuickText *m_summary;
 };
 
 #endif // UCSLOTSLAYOUTPRIVATE_H
