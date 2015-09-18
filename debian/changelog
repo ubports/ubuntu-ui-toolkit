@@ -1,9 +1,11 @@
-ubuntu-ui-toolkit (1.3.1639+15.10.20150916-0ubuntu1) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.3.1641+15.10.20150916-0ubuntu1) UNRELEASED; urgency=medium
 
   [ Zsombor Egri ]
   * ActionItem visible and enabled internal bindings not broken when the 
     property values are having new bindings or value assignments. 
     Fixes LP: #1495408
+  * ListItem swipe over leading/trailing actions blocked.
+    Fixes LP: #1486008, LP: #1496468, LP: #1497156
 
   [ Christian Dywan ]
   * Use new launcher path in gallery script and .bzrignore.
@@ -18,13 +20,17 @@ ubuntu-ui-toolkit (1.3.1639+15.10.20150916-0ubuntu1) UNRELEASED; urgency=medium
   [ Albert Astals Cid ]
   * Make sure pageWrapper.incubator is set before manually calling 
     incubatorStatusChanged
+  * Bring back pageComponent.createObject for sync pages Fixes regression in 
+    unity8's unity8.settings_wizard.tests.test_settings_wizard.
+    SkipThroughSettingsWizardTestCase.test_skipping_through_wizard autopilot
 
   [ Olivier Tilloy ]
   * Take custom key indexes into account in QSortFilterProxyModelQML::get(). 
     Fixes LP: #1495641
 
   [ Zoltan Balogh ]
-  *  Customize the UITK test plan and add silo pinning.
+  * Customize the UITK test plan and add silo pinning.
+  * Disable crahsing gallery.test_gallery.OpenPagesTestCase.test_open_page
 
  -- Zoltán Balogh <zoltan@bakter.hu>  Wed, 16 Sep 2015 13:17:52 +0300
 
