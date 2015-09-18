@@ -475,6 +475,9 @@ void UCListItemPrivate::snapOut()
         Q_Q(UCListItem);
         // restore flickable's interactive and cleanup
         q->setKeepMouseGrab(false);
+        if (window && window->mouseGrabberItem() == q) {
+            q->ungrabMouse();
+        }
         // no need to listen flickables any longer
         listenToRebind(false);
     }
@@ -1134,7 +1137,9 @@ void UCListItemPrivate::handleLeftButtonPress(QMouseEvent *event)
     // connect the Flickable to know when to rebound
     listenToRebind(true);
     if (swiped) {
+        // grab now, and ungrab in snapOut
         q->setKeepMouseGrab(true);
+        q->grabMouse();
     }
     // stop any ongoing animation!
     swipeEvent(event->localPos(), UCSwipeEvent::Started);
@@ -1371,13 +1376,6 @@ bool UCListItem::childMouseEventFilter(QQuickItem *child, QEvent *event)
         if (d->sendMouseEvent(child, static_cast<QMouseEvent*>(event))) {
             return true;
         }
-    }
-    case QEvent::UngrabMouse: {
-        if (d->window && d->window->mouseGrabberItem() && d->window->mouseGrabberItem() != this) {
-            // the mouse has been taken away from the child
-            mouseUngrabEvent();
-        }
-        break;
     }
     default: break;
     }

@@ -120,6 +120,33 @@ Item {
             spyWait();
         }
 
+        function test_swipe_out_from_overlay_button_bug1497156_data() {
+            return [
+                {tag: "leading with mouse", touch: false, swipeInDx: units.gu(20), swipeOutDx: -units.gu(5)},
+                {tag: "trailing with mouse", touch: false, swipeInDx: -units.gu(20), swipeOutDx: units.gu(5)},
+                {tag: "leading with touch", touch: true, swipeInDx: units.gu(20), swipeOutDx: -units.gu(5)},
+                {tag: "trailing with touch", touch: true, swipeInDx: -units.gu(20), swipeOutDx: units.gu(5)},
+            ]
+        }
+        function test_swipe_out_from_overlay_button_bug1497156(data) {
+            // swipe in and out from teh same point
+            if (data.touch) {
+                tug(testWithActiveItem, centerOf(testWithActiveItem).x, centerOf(testWithActiveItem).y, data.swipeInDx, 0);
+            } else {
+                swipe(testWithActiveItem, centerOf(testWithActiveItem).x, centerOf(testWithActiveItem).y, data.swipeInDx, 0);
+            }
+            verify(testWithActiveItem.contentItem.x != 0, "Not swiped in");
+            // swipe out
+            if (data.touch) {
+                tug(testWithActiveItem, centerOf(testWithActiveItem).x, centerOf(testWithActiveItem).y, data.swipeOutDx, 0);
+            } else {
+                swipe(testWithActiveItem, centerOf(testWithActiveItem).x, centerOf(testWithActiveItem).y, data.swipeOutDx, 0);
+            }
+            tryCompareFunction(function() {
+                return testWithActiveItem.contentItem.x == testWithActiveItem.contentItem.anchors.leftMargin;
+            }, true, 500);
+        }
+
         function test_swipe_over_contextual_actions_bug1486008_data() {
             return [
                 {tag: "leading action with mouse", touch: false, dx: units.gu(20), leadingPanel: true, action: "leading1"},
