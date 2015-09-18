@@ -155,4 +155,32 @@ private:
     qreal m_bottomMargin;
 };
 
+class UCThreeLabelsSlotPrivate;
+class UCThreeLabelsSlot : public QQuickItem
+{
+    Q_OBJECT
+    Q_PROPERTY(QQuickText *title READ title CONSTANT FINAL)
+    Q_PROPERTY(QQuickText *subtitle READ subtitle CONSTANT FINAL)
+    Q_PROPERTY(QQuickText *summary READ summary CONSTANT FINAL)
+
+public:
+    explicit UCThreeLabelsSlot(QQuickItem *parent = 0);
+
+    //this methods can't be const because otherwise they'd have to return
+    //unmodifiable labels, since they're allocated on the stack, and that would
+    //fail compilation (unless const_cast is used)
+    QQuickText *title();
+    QQuickText *subtitle();
+    QQuickText *summary();
+
+protected:
+    Q_DECLARE_PRIVATE(UCThreeLabelsSlot)
+    void componentComplete();
+
+private:
+    Q_PRIVATE_SLOT(d_func(), void _q_onThemeChanged())
+    Q_PRIVATE_SLOT(d_func(), void _q_onGuValueChanged())
+    Q_PRIVATE_SLOT(d_func(), void _q_updateLabelsAnchorsAndBBoxHeight())
+};
+
 #endif // UCSLOTSLAYOUT_H

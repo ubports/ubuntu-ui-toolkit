@@ -36,9 +36,7 @@
 #define SLOTSLAYOUT_BOTTOMMARGIN1_GU                 1
 #define SLOTSLAYOUT_BOTTOMMARGIN2_GU                 2
 
-//TODO: Update this when the values are final
-#define CHEVRON_DEFAULT_HEIGHT_GU                    2.5
-#define CHEVRON_DEFAULT_WIDTH_GU                     2
+#define LABELSBLOCK_SPACING_GU                       1
 
 class UCSlotsLayoutPrivate : public QQuickItemPrivate
 {
@@ -127,6 +125,30 @@ public:
 
     bool leftMarginWasSetFromQml : 1;
     bool rightMarginWasSetFromQml : 1;
+};
+
+class UCThreeLabelsSlotPrivate : public QQuickItemPrivate
+{
+    Q_DECLARE_PUBLIC(UCThreeLabelsSlot)
+
+public:
+    UCThreeLabelsSlotPrivate();
+
+    static inline UCThreeLabelsSlotPrivate *get(UCThreeLabelsSlot *that)
+    {
+        Q_ASSERT(that);
+        return that->d_func();
+    }
+
+    void init();
+    void setDefaultLabelsProperties();
+    void _q_onGuValueChanged();
+    void _q_onThemeChanged();
+    void _q_updateLabelsAnchorsAndBBoxHeight();
+
+    QQuickText m_title;
+    QQuickText m_subtitle;
+    QQuickText m_summary;
 };
 
 #endif // UCSLOTSLAYOUTPRIVATE_H
