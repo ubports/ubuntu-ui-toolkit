@@ -123,7 +123,8 @@ void ListItemDragArea::mousePressEvent(QMouseEvent *event)
                                      "No dragging will be possible.");
     }
     if (start) {
-        pViewAttached->buildChangesList(false);
+        // keep the mouse event in house
+        setKeepMouseGrab(true);
         fromIndex = toIndex = index;
         lastPos = pos;
         // create temp drag item
@@ -152,7 +153,7 @@ void ListItemDragArea::mouseReleaseEvent(QMouseEvent *event)
         }
     }
     // unlock flickables
-    pViewAttached->clearChangesList();
+    setKeepMouseGrab(false);
     // perform drop
     UCListItemPrivate::get(item.data())->dragHandler->drop();
     item = 0;
