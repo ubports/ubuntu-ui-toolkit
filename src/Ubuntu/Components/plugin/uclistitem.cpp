@@ -475,9 +475,6 @@ void UCListItemPrivate::snapOut()
         Q_Q(UCListItem);
         // restore flickable's interactive and cleanup
         q->setKeepMouseGrab(false);
-        if (window && window->mouseGrabberItem() == q) {
-            q->ungrabMouse();
-        }
         // no need to listen flickables any longer
         listenToRebind(false);
     }
@@ -1216,6 +1213,9 @@ void UCListItemPrivate::handleLeftButtonRelease(QMouseEvent *event)
         // unblock ascending Flickables
         listenToRebind(false);
         q->setKeepMouseGrab(false);
+        if (window && window->mouseGrabberItem() == q) {
+            q->ungrabMouse();
+        }
 
         if (!suppressClick) {
             // emit clicked only if not swiped
