@@ -24,14 +24,14 @@
 #include <private/qquicktext_p.h>
 
 class UCSlotsAttached;
-class UCSlotsLayoutMargins;
+class UCSlotsLayoutPadding;
 class UCSlotsLayoutPrivate;
 class UCSlotsLayout : public QQuickItem
 {
     Q_OBJECT
 
     Q_PROPERTY(QQuickItem *mainSlot READ mainSlot WRITE setMainSlot NOTIFY mainSlotChanged)
-    Q_PROPERTY(UCSlotsLayoutMargins *contentMargins READ contentMargins CONSTANT FINAL)
+    Q_PROPERTY(UCSlotsLayoutPadding *padding READ padding CONSTANT FINAL)
 
     Q_ENUMS(UCSlotPosition)
 
@@ -41,7 +41,7 @@ public:
     QQuickItem *mainSlot() const;
     void setMainSlot(QQuickItem *item);
 
-    UCSlotsLayoutMargins *contentMargins();
+    UCSlotsLayoutPadding *padding();
 
     enum UCSlotPosition { LeadingBeginning, Leading, LeadingEnd,
                           TrailingBeginning, Trailing, TrailingEnd };
@@ -72,8 +72,8 @@ class UCSlotsAttached : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(UCSlotsLayout::UCSlotPosition position READ position WRITE setPosition NOTIFY positionChanged)
-    Q_PROPERTY(qreal leftMargin READ leftMargin WRITE setLeftMarginQml NOTIFY leftMarginChanged)
-    Q_PROPERTY(qreal rightMargin READ rightMargin WRITE setRightMarginQml NOTIFY rightMarginChanged)
+    Q_PROPERTY(qreal leadingPadding READ leadingPadding WRITE setLeadingPaddingQml NOTIFY leadingPaddingChanged)
+    Q_PROPERTY(qreal trailingPadding READ trailingPadding WRITE setTrailingPaddingQml NOTIFY trailingPaddingChanged)
     Q_PROPERTY(bool overrideVerticalPositioning READ overrideVerticalPositioning WRITE setOverrideVerticalPositioning NOTIFY overrideVerticalPositioningChanged)
 
 public:
@@ -82,21 +82,21 @@ public:
     UCSlotsLayout::UCSlotPosition position() const;
     void setPosition(UCSlotsLayout::UCSlotPosition pos);
 
-    qreal leftMargin() const;
-    void setLeftMargin(qreal margin);
-    void setLeftMarginQml(qreal margin);
+    qreal leadingPadding() const;
+    void setLeadingPadding(qreal padding);
+    void setLeadingPaddingQml(qreal padding);
 
-    qreal rightMargin() const;
-    void setRightMargin(qreal margin);
-    void setRightMarginQml(qreal margin);
+    qreal trailingPadding() const;
+    void setTrailingPadding(qreal padding);
+    void setTrailingPaddingQml(qreal padding);
 
     bool overrideVerticalPositioning() const;
     void setOverrideVerticalPositioning(bool val);
 
 Q_SIGNALS:
     void positionChanged();
-    void leftMarginChanged();
-    void rightMarginChanged();
+    void leadingPaddingChanged();
+    void trailingPaddingChanged();
     void overrideVerticalPositioningChanged();
 
 protected:
@@ -106,53 +106,53 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_onGuValueChanged())
 };
 
-class UCSlotsLayoutMargins : public QObject
+class UCSlotsLayoutPadding : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(qreal leftMargin READ leftMargin WRITE setLeftMarginQml NOTIFY leftMarginChanged FINAL)
-    Q_PROPERTY(qreal rightMargin READ rightMargin WRITE setRightMarginQml NOTIFY rightMarginChanged FINAL)
-    Q_PROPERTY(qreal topMargin READ topMargin WRITE setTopMarginQml NOTIFY topMarginChanged FINAL)
-    Q_PROPERTY(qreal bottomMargin READ bottomMargin WRITE setBottomMarginQml NOTIFY bottomMarginChanged FINAL)
+    Q_PROPERTY(qreal leading READ leading WRITE setLeadingQml NOTIFY leadingChanged FINAL)
+    Q_PROPERTY(qreal trailing READ trailing WRITE setTrailingQml NOTIFY trailingChanged FINAL)
+    Q_PROPERTY(qreal top READ top WRITE setTopQml NOTIFY topChanged FINAL)
+    Q_PROPERTY(qreal bottom READ bottom WRITE setBottomQml NOTIFY bottomChanged FINAL)
 
 public:
-    explicit UCSlotsLayoutMargins(QObject *parent = 0);
+    explicit UCSlotsLayoutPadding(QObject *parent = 0);
 
-    qreal leftMargin() const;
-    void setLeftMargin(qreal val);
-    void setLeftMarginQml(qreal val);
+    qreal leading() const;
+    void setLeading(qreal val);
+    void setLeadingQml(qreal val);
 
-    qreal rightMargin() const;
-    void setRightMargin(qreal val);
-    void setRightMarginQml(qreal val);
+    qreal trailing() const;
+    void setTrailing(qreal val);
+    void setTrailingQml(qreal val);
 
-    qreal topMargin() const;
-    void setTopMargin(qreal val);
-    void setTopMarginQml(qreal val);
+    qreal top() const;
+    void setTop(qreal val);
+    void setTopQml(qreal val);
 
-    qreal bottomMargin() const;
-    void setBottomMargin(qreal val);
-    void setBottomMarginQml(qreal val);
+    qreal bottom() const;
+    void setBottom(qreal val);
+    void setBottomQml(qreal val);
 
     //once the dev tries to change the offsets (and he does so via QML) we'll stop
     //updating offset's value, for instance when gu value changes or when the
     //positioning mode changes
-    bool leftMarginWasSetFromQml : 1;
-    bool rightMarginWasSetFromQml : 1;
-    bool topMarginWasSetFromQml : 1;
-    bool bottomMarginWasSetFromQml : 1;
+    bool leadingWasSetFromQml : 1;
+    bool trailingWasSetFromQml : 1;
+    bool topWasSetFromQml : 1;
+    bool bottomWasSetFromQml : 1;
 
 Q_SIGNALS:
-    void leftMarginChanged();
-    void rightMarginChanged();
-    void topMarginChanged();
-    void bottomMarginChanged();
+    void leadingChanged();
+    void trailingChanged();
+    void topChanged();
+    void bottomChanged();
 
 private:
     //similar to anchors.margins, but we don't use a contentItem so we handle this ourselves
-    qreal m_leftMargin;
-    qreal m_rightMargin;
-    qreal m_topMargin;
-    qreal m_bottomMargin;
+    qreal m_leading;
+    qreal m_trailing;
+    qreal m_top;
+    qreal m_bottom;
 };
 
 class UCThreeLabelsSlotPrivate;

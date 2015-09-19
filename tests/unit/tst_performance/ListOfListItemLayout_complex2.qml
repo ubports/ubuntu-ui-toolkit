@@ -38,9 +38,9 @@ Column {
             }
             
             ListItemLayout {
-                Item { SlotsLayoutCpp.position: SlotsLayoutCpp.Leading; width: units.gu(2) }
-                Item { SlotsLayoutCpp.position: SlotsLayoutCpp.Trailing; width: units.gu(2) }
-                Item { SlotsLayoutCpp.position: SlotsLayoutCpp.Trailing; width: units.gu(2) }
+                Item { SlotsLayout.position: SlotsLayout.Leading; width: units.gu(2) }
+                Item { SlotsLayout.position: SlotsLayout.Trailing; width: units.gu(2) }
+                Item { SlotsLayout.position: SlotsLayout.Trailing; width: units.gu(2) }
                 title.text: "test"
                 subtitle.text: "label"
                 summary.text: "new"

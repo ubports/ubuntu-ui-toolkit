@@ -235,13 +235,13 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCStyledItemBase, 2>(uri, 1, 3, "StyledItem");
     qmlRegisterCustomType<UCStyleHints>(uri, 1, 3, "StyleHints", new UCStyleHintsParser);
     qmlRegisterType<UCAction, 1>(uri, 1, 3, "Action");
-    qmlRegisterType<UCSlotsLayout>(uri, 1, 3, "SlotsLayoutCpp");
+    qmlRegisterType<UCSlotsLayout>(uri, 1, 3, "SlotsLayout");
     qmlRegisterType<UCUbuntuShape, 2>(uri, 1, 3, "UbuntuShape");
     qmlRegisterType<UCProportionalShape>(uri, 1, 3, "ProportionalShape");
     qmlRegisterType<LiveTimer>(uri, 1, 3, "LiveTimer");
     qmlRegisterType<UCAbstractButton>(uri, 1, 3, "AbstractButton");
     qmlRegisterUncreatableType<UCSlotsAttached>(uri, 1, 3, "SlotsAttached", "Not instantiable");
-    qmlRegisterUncreatableType<UCSlotsLayoutMargins>(uri, 1, 3, "SlotsLayoutMargins", "Not instantiable");
+    qmlRegisterUncreatableType<UCSlotsLayoutPadding>(uri, 1, 3, "SlotsLayoutPadding", "Not instantiable");
     qmlRegisterType<UCThreeLabelsSlot>(uri, 1, 3, "ThreeLabelsSlot");
 
 }

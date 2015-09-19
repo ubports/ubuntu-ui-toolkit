@@ -20,5 +20,5 @@ import Ubuntu.Components 1.3
 Icon {
     height: units.gu(2.5)
     name: "chevron"
-    SlotsLayoutCpp.position: SlotsLayoutCpp.TrailingEnd
+    SlotsLayout.position: SlotsLayout.TrailingEnd
 }

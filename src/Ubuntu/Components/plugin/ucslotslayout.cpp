@@ -54,10 +54,10 @@ void UCSlotsLayoutPrivate::init()
     //QObject::connect(q, SIGNAL(themeChanged()),
     //                 q, SLOT(_q_onThemeChanged()), Qt::DirectConnection);
 
-    QObject::connect(&contentMargins, SIGNAL(leftMarginChanged()), q, SLOT(_q_relayout()));
-    QObject::connect(&contentMargins, SIGNAL(rightMarginChanged()), q, SLOT(_q_relayout()));
-    QObject::connect(&contentMargins, SIGNAL(topMarginChanged()), q, SLOT(_q_updateSlotsBBoxHeight()));
-    QObject::connect(&contentMargins, SIGNAL(bottomMarginChanged()), q, SLOT(_q_updateSlotsBBoxHeight()));
+    QObject::connect(&padding, SIGNAL(leadingChanged()), q, SLOT(_q_relayout()));
+    QObject::connect(&padding, SIGNAL(trailingChanged()), q, SLOT(_q_relayout()));
+    QObject::connect(&padding, SIGNAL(topChanged()), q, SLOT(_q_updateSlotsBBoxHeight()));
+    QObject::connect(&padding, SIGNAL(bottomChanged()), q, SLOT(_q_updateSlotsBBoxHeight()));
 
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_onGuValueChanged()));
 
@@ -79,17 +79,17 @@ UCSlotsLayoutPrivate::UCSlotPositioningMode UCSlotsLayoutPrivate::getVerticalPos
             : UCSlotPositioningMode::CenterVertically;
 }
 
-void UCSlotsLayoutPrivate::updateTopBottomMarginsIfNeeded()
+void UCSlotsLayoutPrivate::updateTopBottomPaddingIfNeeded()
 {
-    if (!contentMargins.topMarginWasSetFromQml) {
-        contentMargins.setTopMargin((getVerticalPositioningMode() == UCSlotPositioningMode::CenterVertically
+    if (!padding.topWasSetFromQml) {
+        padding.setTop((getVerticalPositioningMode() == UCSlotPositioningMode::CenterVertically
                                      && maxSlotsHeight > UCUnits::instance().gu(SLOTSLAYOUT_TOPBOTTOMMARGIN_SIZETHRESHOLD_GU))
                                     ? UCUnits::instance().gu(SLOTSLAYOUT_TOPMARGIN1_GU)
                                     : UCUnits::instance().gu(SLOTSLAYOUT_TOPMARGIN2_GU));
     }
 
-    if (!contentMargins.bottomMarginWasSetFromQml) {
-        contentMargins.setBottomMargin((getVerticalPositioningMode() == UCSlotPositioningMode::CenterVertically
+    if (!padding.bottomWasSetFromQml) {
+        padding.setBottom((getVerticalPositioningMode() == UCSlotPositioningMode::CenterVertically
                                         && maxSlotsHeight > UCUnits::instance().gu(SLOTSLAYOUT_TOPBOTTOMMARGIN_SIZETHRESHOLD_GU))
                                        ? UCUnits::instance().gu(SLOTSLAYOUT_BOTTOMMARGIN1_GU)
                                        : UCUnits::instance().gu(SLOTSLAYOUT_BOTTOMMARGIN2_GU));
@@ -120,15 +120,15 @@ void UCSlotsLayoutPrivate::_q_updateGuValues()
 {
     Q_Q(UCSlotsLayout);
 
-    if (!contentMargins.leftMarginWasSetFromQml) {
-        contentMargins.setLeftMargin(UCUnits::instance().gu(SLOTSLAYOUT_LEFTMARGIN_GU));
+    if (!padding.leadingWasSetFromQml) {
+        padding.setLeading(UCUnits::instance().gu(SLOTSLAYOUT_LEFTMARGIN_GU));
     }
 
-    if (!contentMargins.rightMarginWasSetFromQml) {
-        contentMargins.setRightMargin(UCUnits::instance().gu(SLOTSLAYOUT_RIGHTMARGIN_GU));
+    if (!padding.trailingWasSetFromQml) {
+        padding.setTrailing(UCUnits::instance().gu(SLOTSLAYOUT_RIGHTMARGIN_GU));
     }
 
-    updateTopBottomMarginsIfNeeded();
+    updateTopBottomPaddingIfNeeded();
 
     _q_updateSize();
 }
@@ -148,7 +148,7 @@ void UCSlotsLayoutPrivate::_q_onMainSlotHeightChanged()
         mainSlotHeight = 0;
     }
 
-    updateTopBottomMarginsIfNeeded();
+    updateTopBottomPaddingIfNeeded();
     _q_updateSize();
 }
 
@@ -182,7 +182,7 @@ void UCSlotsLayoutPrivate::_q_updateSlotsBBoxHeight()
     }
     maxSlotsHeight = maxSlotsHeightTmp;
 
-    updateTopBottomMarginsIfNeeded();
+    updateTopBottomPaddingIfNeeded();
     _q_updateSize();
 }
 
@@ -194,7 +194,7 @@ void UCSlotsLayoutPrivate::_q_updateSize()
     Q_Q(UCSlotsLayout);
     q->setImplicitWidth(parentItem ? parentItem->width() : UCUnits::instance().gu(IMPLICIT_SLOTSLAYOUT_WIDTH_GU));
     q->setImplicitHeight(qMax<qreal>(maxSlotsHeight, mainSlotHeight)
-                         + contentMargins.topMargin() + contentMargins.bottomMargin());
+                         + padding.top() + padding.bottom());
 
     _q_relayout();
 }
@@ -259,7 +259,7 @@ qreal UCSlotsLayoutPrivate::populateSlotsListsAndComputeWidth()
                 }
 
                 leadingSlots.insert(indexToInsertAt, child);
-                totalWidth += child->width() + attached->leftMargin() + attached->rightMargin();
+                totalWidth += child->width() + attached->leadingPadding() + attached->trailingPadding();
             } else {
                 qmlInfo(q) << "This layout only allows up to " << maxNumberOfLeadingSlots
                            << " leading slots. Please remove any additional leading slot.";
@@ -289,7 +289,7 @@ qreal UCSlotsLayoutPrivate::populateSlotsListsAndComputeWidth()
                 }
 
                 trailingSlots.insert(indexToInsertAt, child);
-                totalWidth += child->width() + attached->leftMargin() + attached->rightMargin();
+                totalWidth += child->width() + attached->leadingPadding() + attached->trailingPadding();
             } else {
                 qmlInfo(q) << "This layout only allows up to " << maxNumberOfTrailingSlots
                            << " trailing slots. Please remove any additional trailing slot.";
@@ -318,13 +318,13 @@ void UCSlotsLayoutPrivate::setupSlotsVerticalPositioning(QQuickItem *slot)
         slotAnchors->setVerticalCenterOffset(0);
 
         slotAnchors->setTop(top());
-        slotAnchors->setTopMargin(contentMargins.topMargin());
+        slotAnchors->setTopMargin(padding.top());
     } else {
         slotAnchors->resetTop();
 
         slotAnchors->setVerticalCenter(verticalCenter());
         //bottom and top offsets could have different values
-        slotAnchors->setVerticalCenterOffset((contentMargins.topMargin() - contentMargins.bottomMargin()) / 2.0);
+        slotAnchors->setVerticalCenterOffset((padding.top() - padding.bottom()) / 2.0);
     }
 }
 
@@ -355,7 +355,7 @@ void UCSlotsLayoutPrivate::layoutInRow(qreal siblingAnchorMargin, QQuickAnchorLi
                 continue;
 
             itemAnchors->setLeft(siblingAnchor);
-            itemAnchors->setLeftMargin(attached->leftMargin() + siblingAnchorMargin);
+            itemAnchors->setLeftMargin(attached->leadingPadding() + siblingAnchorMargin);
         } else {
             UCSlotsAttached *attachedPreviousItem =
                     qobject_cast<UCSlotsAttached *>(qmlAttachedPropertiesObject<UCSlotsLayout>(items.at(i - 1)));
@@ -364,7 +364,7 @@ void UCSlotsLayoutPrivate::layoutInRow(qreal siblingAnchorMargin, QQuickAnchorLi
                 qmlInfo(q) << "Invalid attached property!";
             } else {
                 itemAnchors->setLeft(QQuickItemPrivate::get(items.at(i - 1))->right());
-                itemAnchors->setLeftMargin(attachedPreviousItem->rightMargin() + attached->leftMargin());
+                itemAnchors->setLeftMargin(attachedPreviousItem->trailingPadding() + attached->leadingPadding());
             }
         }
     }
@@ -398,15 +398,15 @@ void UCSlotsLayoutPrivate::_q_relayout()
             return;
         }
         mainSlot->setWidth(q->width() - totalSlotsWidth
-                           - attachedSlot->leftMargin() - attachedSlot->rightMargin()
-                           - contentMargins.leftMargin() - contentMargins.rightMargin());
+                           - attachedSlot->leadingPadding() - attachedSlot->trailingPadding()
+                           - padding.leading() - padding.trailing());
     } else {
         Q_UNUSED(totalSlotsWidth);
     }
 
     itemsToLayout.append(trailingSlots);
 
-    layoutInRow(contentMargins.leftMargin(), left(), itemsToLayout);
+    layoutInRow(padding.leading(), left(), itemsToLayout);
 }
 
 void UCSlotsLayoutPrivate::handleAttachedPropertySignals(QQuickItem *item, bool connect)
@@ -422,13 +422,13 @@ void UCSlotsLayoutPrivate::handleAttachedPropertySignals(QQuickItem *item, bool 
 
     if (connect) {
         QObject::connect(attachedSlot, SIGNAL(positionChanged()), q, SLOT(_q_relayout()));
-        QObject::connect(attachedSlot, SIGNAL(leftMarginChanged()), q, SLOT(_q_relayout()));
-        QObject::connect(attachedSlot, SIGNAL(rightMarginChanged()), q, SLOT(_q_relayout()));
+        QObject::connect(attachedSlot, SIGNAL(leadingPaddingChanged()), q, SLOT(_q_relayout()));
+        QObject::connect(attachedSlot, SIGNAL(trailingPaddingChanged()), q, SLOT(_q_relayout()));
         QObject::connect(attachedSlot, SIGNAL(overrideVerticalPositioningChanged()), q, SLOT(_q_relayout()));
     } else {
         QObject::disconnect(attachedSlot, SIGNAL(positionChanged()), q, SLOT(_q_relayout()));
-        QObject::disconnect(attachedSlot, SIGNAL(leftMarginChanged()), q, SLOT(_q_relayout()));
-        QObject::disconnect(attachedSlot, SIGNAL(rightMarginChanged()), q, SLOT(_q_relayout()));
+        QObject::disconnect(attachedSlot, SIGNAL(leadingPaddingChanged()), q, SLOT(_q_relayout()));
+        QObject::disconnect(attachedSlot, SIGNAL(trailingPaddingChanged()), q, SLOT(_q_relayout()));
         QObject::disconnect(attachedSlot, SIGNAL(overrideVerticalPositioningChanged()), q, SLOT(_q_relayout()));
     }
 }
@@ -531,9 +531,9 @@ void UCSlotsLayout::setMainSlot(QQuickItem *item)
     }
 }
 
-UCSlotsLayoutMargins* UCSlotsLayout::contentMargins() {
+UCSlotsLayoutPadding* UCSlotsLayout::padding() {
     Q_D(UCSlotsLayout);
-    return &(d->contentMargins);
+    return &(d->padding);
 }
 
 /******************************************************************************
@@ -542,22 +542,22 @@ UCSlotsLayoutMargins* UCSlotsLayout::contentMargins() {
 UCSlotsAttachedPrivate::UCSlotsAttachedPrivate()
     : QObjectPrivate()
     , position(UCSlotsLayout::Trailing)
-    , leftMargin(0)
-    , rightMargin(0)
+    , leadingPadding(0)
+    , trailingPadding(0)
     , overrideVerticalPositioning(false)
-    , leftMarginWasSetFromQml(false)
-    , rightMarginWasSetFromQml(false)
+    , leadingPaddingWasSetFromQml(false)
+    , trailingPaddingWasSetFromQml(false)
 {
 }
 
 void UCSlotsAttachedPrivate::_q_onGuValueChanged()
 {
     Q_Q(UCSlotsAttached);
-    if (!leftMarginWasSetFromQml)
-        q->setLeftMargin(UCUnits::instance().gu(SLOTSLAYOUT_SLOTS_SIDEMARGINS_GU));
+    if (!leadingPaddingWasSetFromQml)
+        q->setLeadingPadding(UCUnits::instance().gu(SLOTSLAYOUT_SLOTS_SIDEMARGINS_GU));
 
-    if (!rightMarginWasSetFromQml)
-        q->setRightMargin(UCUnits::instance().gu(SLOTSLAYOUT_SLOTS_SIDEMARGINS_GU));
+    if (!trailingPaddingWasSetFromQml)
+        q->setTrailingPadding(UCUnits::instance().gu(SLOTSLAYOUT_SLOTS_SIDEMARGINS_GU));
 }
 
 /******************************************************************************
@@ -586,60 +586,60 @@ void UCSlotsAttached::setPosition(UCSlotsLayout::UCSlotPosition pos)
     }
 }
 
-qreal UCSlotsAttached::leftMargin() const
+qreal UCSlotsAttached::leadingPadding() const
 {
     Q_D(const UCSlotsAttached);
-    return d->leftMargin;
+    return d->leadingPadding;
 }
 
-void UCSlotsAttached::setLeftMargin(qreal margin)
+void UCSlotsAttached::setLeadingPadding(qreal padding)
 {
     Q_D(UCSlotsAttached);
-    if (d->leftMargin != margin) {
-        d->leftMargin = margin;
-        Q_EMIT leftMarginChanged();
+    if (d->leadingPadding != padding) {
+        d->leadingPadding = padding;
+        Q_EMIT leadingPaddingChanged();
     }
 }
 
-void UCSlotsAttached::setLeftMarginQml(qreal margin)
+void UCSlotsAttached::setLeadingPaddingQml(qreal padding)
 {
     Q_D(UCSlotsAttached);
-    d->leftMarginWasSetFromQml = true;
+    d->leadingPaddingWasSetFromQml = true;
 
     //if both have been set from QML, then disconnect the signal from the slot, to avoid overwriting dev's values
     //when GU changes
-    if (d->rightMarginWasSetFromQml)
+    if (d->trailingPaddingWasSetFromQml)
         QObject::disconnect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this, SLOT(_q_onGuValueChanged()));
 
-    setLeftMargin(margin);
+    setLeadingPadding(padding);
 }
 
-qreal UCSlotsAttached::rightMargin() const
+qreal UCSlotsAttached::trailingPadding() const
 {
     Q_D(const UCSlotsAttached);
-    return d->rightMargin;
+    return d->trailingPadding;
 }
 
-void UCSlotsAttached::setRightMargin(qreal margin)
+void UCSlotsAttached::setTrailingPadding(qreal padding)
 {
     Q_D(UCSlotsAttached);
-    if (d->rightMargin != margin) {
-        d->rightMargin = margin;
-        Q_EMIT rightMarginChanged();
+    if (d->trailingPadding != padding) {
+        d->trailingPadding = padding;
+        Q_EMIT trailingPaddingChanged();
     }
 }
 
-void UCSlotsAttached::setRightMarginQml(qreal margin)
+void UCSlotsAttached::setTrailingPaddingQml(qreal padding)
 {
     Q_D(UCSlotsAttached);
-    d->rightMarginWasSetFromQml = true;
+    d->trailingPaddingWasSetFromQml = true;
 
     //if both have been set from QML, then disconnect the signal from the slot, to avoid overwriting dev's values
     //when GU changes
-    if (d->leftMarginWasSetFromQml)
+    if (d->leadingPaddingWasSetFromQml)
         QObject::disconnect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this, SLOT(_q_onGuValueChanged()));
 
-    setRightMargin(margin);
+    setTrailingPadding(padding);
 }
 
 bool UCSlotsAttached::overrideVerticalPositioning() const
@@ -662,93 +662,93 @@ UCSlotsAttached *UCSlotsLayout::qmlAttachedProperties(QObject *object)
     return new UCSlotsAttached(object);
 }
 
-UCSlotsLayoutMargins::UCSlotsLayoutMargins(QObject *parent)
+UCSlotsLayoutPadding::UCSlotsLayoutPadding(QObject *parent)
     : QObject(parent)
-    , leftMarginWasSetFromQml(false)
-    , rightMarginWasSetFromQml(false)
-    , topMarginWasSetFromQml(false)
-    , bottomMarginWasSetFromQml(false)
-    , m_leftMargin(0)
-    , m_rightMargin(0)
-    , m_topMargin(0)
-    , m_bottomMargin(0)
+    , leadingWasSetFromQml(false)
+    , trailingWasSetFromQml(false)
+    , topWasSetFromQml(false)
+    , bottomWasSetFromQml(false)
+    , m_leading(0)
+    , m_trailing(0)
+    , m_top(0)
+    , m_bottom(0)
 {
 }
 
-qreal UCSlotsLayoutMargins::leftMargin() const
+qreal UCSlotsLayoutPadding::leading() const
 {
-    return m_leftMargin;
+    return m_leading;
 }
 
-void UCSlotsLayoutMargins::setLeftMargin(qreal val)
+void UCSlotsLayoutPadding::setLeading(qreal val)
 {
-    if (m_leftMargin != val) {
-        m_leftMargin = val;
-        Q_EMIT leftMarginChanged();
+    if (m_leading != val) {
+        m_leading = val;
+        Q_EMIT leadingChanged();
     }
 }
 
-void UCSlotsLayoutMargins::setLeftMarginQml(qreal val)
+void UCSlotsLayoutPadding::setLeadingQml(qreal val)
 {
-    leftMarginWasSetFromQml = true;
-    setLeftMargin(val);
+    leadingWasSetFromQml = true;
+    setLeading(val);
 }
 
-qreal UCSlotsLayoutMargins::rightMargin() const
+qreal UCSlotsLayoutPadding::trailing() const
 {
-    return m_rightMargin;
+    return m_trailing;
 }
 
-void UCSlotsLayoutMargins::setRightMargin(qreal val)
+void UCSlotsLayoutPadding::setTrailing(qreal val)
 {
-    if (m_rightMargin != val) {
-        m_rightMargin = val;
-        Q_EMIT rightMarginChanged();
+    if (m_trailing != val) {
+        m_trailing = val;
+        Q_EMIT trailingChanged();
     }
 }
 
-void UCSlotsLayoutMargins::setRightMarginQml(qreal val)
+void UCSlotsLayoutPadding::setTrailingQml(qreal val)
 {
-    rightMarginWasSetFromQml = true;
-    setRightMargin(val);
+    trailingWasSetFromQml = true;
+    setTrailing(val);
 }
 
-qreal UCSlotsLayoutMargins::topMargin() const
+qreal UCSlotsLayoutPadding::top() const
 {
-    return m_topMargin;
+    return m_top;
 }
 
-void UCSlotsLayoutMargins::setTopMargin(qreal val)
+void UCSlotsLayoutPadding::setTop(qreal val)
 {
-    if (m_topMargin != val) {
-        m_topMargin = val;
-        Q_EMIT topMarginChanged();
+    if (m_top != val) {
+        m_top = val;
+        Q_EMIT topChanged();
     }
 }
 
-void UCSlotsLayoutMargins::setTopMarginQml(qreal val)
+void UCSlotsLayoutPadding::setTopQml(qreal val)
 {
-    topMarginWasSetFromQml = true;
-    setTopMargin(val);
+    topWasSetFromQml = true;
+    setTop(val);
 }
 
-qreal UCSlotsLayoutMargins::bottomMargin() const
+qreal UCSlotsLayoutPadding::bottom() const
 {
-    return m_bottomMargin;
+    return m_bottom;
 }
 
-void UCSlotsLayoutMargins::setBottomMargin(qreal val)
+void UCSlotsLayoutPadding::setBottom(qreal val)
 {
-    if (m_bottomMargin != val) {
-        m_bottomMargin = val;
-        Q_EMIT bottomMarginChanged();
+    if (m_bottom != val) {
+        m_bottom = val;
+        Q_EMIT bottomChanged();
     }
 }
 
-void UCSlotsLayoutMargins::setBottomMarginQml(qreal val)
+void UCSlotsLayoutPadding::setBottomQml(qreal val)
 {
-    bottomMarginWasSetFromQml = true;
-    setBottomMargin(val);
+    bottomWasSetFromQml = true;
+    setBottom(val);
 }
 
 

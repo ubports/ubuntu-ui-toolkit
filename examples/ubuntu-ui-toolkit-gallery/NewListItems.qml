@@ -50,7 +50,7 @@ Template {
                 title.text: "Hello designers!"
                 subtitle.text:  "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
 
-                Icon { SlotsLayoutCpp.position: SlotsLayoutCpp.Leading; width: units.gu(2); name: "email" }
+                Icon { SlotsLayout.position: SlotsLayout.Leading; width: units.gu(2); name: "email" }
                 Icon { width: units.gu(2); name: "message" }
                 CheckBox {  }
             }
@@ -77,7 +77,7 @@ Template {
                 id: layout2
                 title.text: "Hello designers!"
 
-                Rectangle { SlotsLayoutCpp.position: SlotsLayoutCpp.Leading; color: "yellow"; width: units.gu(10); height: units.gu(10) }
+                Rectangle { SlotsLayout.position: SlotsLayout.Leading; color: "yellow"; width: units.gu(10); height: units.gu(10) }
                 CheckBox { }
                 Icon { width: units.gu(2); name: "message" }
             }
@@ -103,14 +103,14 @@ Template {
             ListItemLayout {
                 id: layout3
 
-                contentMargins.bottomMargin: units.gu(10)
+                padding.bottom: units.gu(10)
 
                 title.text: "Hello designers!"
                 subtitle.text:  "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
 
                 CheckBox { width: units.gu(8); height: units.gu(8) }
                 Rectangle { color: "purple"; width: units.gu(5); height: units.gu(5) }
-                Icon { SlotsLayoutCpp.position: SlotsLayoutCpp.Leading; width: units.gu(5); height: units.gu(5); name: "message" }
+                Icon { SlotsLayout.position: SlotsLayout.Leading; width: units.gu(5); height: units.gu(5); name: "message" }
             }
         }
 
@@ -188,7 +188,7 @@ Template {
                 id: layout6
                 title.text: "Hello designers!"
 
-                CheckBox { SlotsLayoutCpp.position: SlotsLayoutCpp.Leading }
+                CheckBox { SlotsLayout.position: SlotsLayout.Leading }
             }
         }
 
@@ -218,7 +218,7 @@ Template {
 
                 Rectangle { width: units.gu(4); height: units.gu(4); color: "purple" }
 
-                Icon { SlotsLayoutCpp.position: SlotsLayoutCpp.Leading; width: units.gu(4); height: units.gu(4); name: "message" }
+                Icon { SlotsLayout.position: SlotsLayout.Leading; width: units.gu(4); height: units.gu(4); name: "message" }
 
             }
         }
@@ -250,11 +250,11 @@ Template {
                 title.text: "Hello designers!"
                 subtitle.text:  "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
 
-                CheckBox { SlotsLayoutCpp.overrideVerticalPositioning: true; y: parent.title.y + parent.title.baselineOffset; width: units.gu(4); height: units.gu(4) }
+                CheckBox { SlotsLayout.overrideVerticalPositioning: true; y: parent.title.y + parent.title.baselineOffset; width: units.gu(4); height: units.gu(4) }
 
-                Rectangle { SlotsLayoutCpp.overrideVerticalPositioning: true; y: parent.subtitle.y + parent.subtitle.baselineOffset; width: units.gu(4); height: units.gu(4); color: "purple" }
+                Rectangle { SlotsLayout.overrideVerticalPositioning: true; y: parent.subtitle.y + parent.subtitle.baselineOffset; width: units.gu(4); height: units.gu(4); color: "purple" }
 
-                Icon { SlotsLayoutCpp.overrideVerticalPositioning: true; SlotsLayoutCpp.position: SlotsLayoutCpp.Leading; anchors.verticalCenter: parent.verticalCenter; width: units.gu(4); height: units.gu(4); name: "message" }
+                Icon { SlotsLayout.overrideVerticalPositioning: true; SlotsLayout.position: SlotsLayout.Leading; anchors.verticalCenter: parent.verticalCenter; width: units.gu(4); height: units.gu(4); name: "message" }
             }
         }
     }
@@ -281,7 +281,7 @@ Template {
                 ]
             }
 
-            SlotsLayoutCpp {
+            SlotsLayout {
                 id: listItemCustomLayout2
 
 
@@ -317,7 +317,7 @@ Template {
                     }
                 }
 
-                Icon { SlotsLayoutCpp.overrideVerticalPositioning: true; SlotsLayoutCpp.position: SlotsLayoutCpp.Leading; anchors.verticalCenter: parent.verticalCenter; width: units.gu(4); height: units.gu(4); name: "message" }
+                Icon { SlotsLayout.overrideVerticalPositioning: true; SlotsLayout.position: SlotsLayout.Leading; anchors.verticalCenter: parent.verticalCenter; width: units.gu(4); height: units.gu(4); name: "message" }
             }
         }
     }
@@ -338,7 +338,7 @@ Template {
                 title.text: "Address book list item: Name goes here"
 
                 Rectangle {
-                    SlotsLayoutCpp.position: SlotsLayoutCpp.Leading
+                    SlotsLayout.position: SlotsLayout.Leading
                     color: "pink"
                     height: units.gu(6)
                     width: height
@@ -383,7 +383,7 @@ Template {
                 subtitle.text: "Mobile"
 
                 Icon {
-                    SlotsLayoutCpp.position: SlotsLayoutCpp.Leading
+                    SlotsLayout.position: SlotsLayout.Leading
                     name: "message"
                     height: units.gu(2)
                 }
@@ -411,7 +411,7 @@ Template {
                 subtitle.text: "Mobile"
 
                 Rectangle {
-                    SlotsLayoutCpp.position: SlotsLayoutCpp.Leading
+                    SlotsLayout.position: SlotsLayout.Leading
                     color: "pink"
                     height: units.gu(6)
                     width: height
@@ -425,7 +425,7 @@ Template {
                     height: label2.y + label2.height
 
                     //as we want to position labels to align with title and subtitle
-                    SlotsLayoutCpp.overrideVerticalPositioning: true
+                    SlotsLayout.overrideVerticalPositioning: true
 
                     Label {
                         id: lab
@@ -468,7 +468,7 @@ Template {
 
                 Rectangle {
                     id: imageShape
-                    SlotsLayoutCpp.position: SlotsLayoutCpp.Leading
+                    SlotsLayout.position: SlotsLayout.Leading
                     height: units.gu(6)
                     width: height
                     color: "red"
@@ -504,7 +504,7 @@ Template {
 
                 //see http://bazaar.launchpad.net/~ubuntu-branches/ubuntu/wily/ubuntu-system-settings/wily-proposed/view/head:/src/qml/EntryComponent.qml
                 Icon {
-                    SlotsLayoutCpp.position: SlotsLayoutCpp.Leading
+                    SlotsLayout.position: SlotsLayout.Leading
                     width: units.gu(6);
                     height: units.gu(6);
                     name: "airplane-mode"
@@ -529,7 +529,7 @@ Template {
 
                 //see http://bazaar.launchpad.net/~ubuntu-branches/ubuntu/wily/ubuntu-system-settings/wily-proposed/view/head:/src/qml/EntryComponent.qml
                 Icon {
-                    SlotsLayoutCpp.position: SlotsLayoutCpp.Leading
+                    SlotsLayout.position: SlotsLayout.Leading
                     width: units.gu(6);
                     height: units.gu(6);
                     name: "facebook"

@@ -45,7 +45,7 @@ public:
     UCSlotsLayoutPrivate();
     virtual ~UCSlotsLayoutPrivate();
     void init();
-    void updateTopBottomMarginsIfNeeded();
+    void updateTopBottomPaddingIfNeeded();
 
     qreal populateSlotsListsAndComputeWidth();
 
@@ -79,7 +79,7 @@ public:
     void _q_updateSize();
     void _q_relayout();
 
-    UCSlotsLayoutMargins contentMargins;
+    UCSlotsLayoutPadding padding;
     QList<QQuickItem *> leadingSlots;
     QList<QQuickItem *> trailingSlots;
 
@@ -119,12 +119,12 @@ public:
     void _q_onGuValueChanged();
 
     UCSlotsLayout::UCSlotPosition position;
-    qreal leftMargin;
-    qreal rightMargin;
+    qreal leadingPadding;
+    qreal trailingPadding;
     bool overrideVerticalPositioning : 1;
 
-    bool leftMarginWasSetFromQml : 1;
-    bool rightMarginWasSetFromQml : 1;
+    bool leadingPaddingWasSetFromQml : 1;
+    bool trailingPaddingWasSetFromQml : 1;
 };
 
 class UCTheme;
