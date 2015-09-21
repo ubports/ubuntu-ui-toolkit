@@ -83,12 +83,6 @@ Popover {
             model: actions.length
             AbstractButton {
                 id: button
-                /*
-                  Workaround for autopilot used in the text input's context menu to access
-                  action.text so we can get the proper button by text, action being not
-                  accessible. https://bugs.launchpad.net/autopilot/+bug/1334599
-                  */
-                property string text: action.text
                 width: Math.max(units.gu(5), implicitWidth) + units.gu(2)
                 height: units.gu(6)
                 action: actions[modelData]

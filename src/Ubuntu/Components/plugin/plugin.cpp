@@ -23,7 +23,7 @@
 #include "plugin.h"
 #include "uctheme.h"
 #include "ucdeprecatedtheme.h"
-#include "ucitemextension.h"
+#include "ucthemingextension.h"
 
 #include <QtQml/QQmlContext>
 #include "i18n.h"

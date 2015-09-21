@@ -20,7 +20,7 @@
 #include "ucstyleditembase_p.h"
 #include "uctheme.h"
 #include "ucstylehints.h"
-#include "ucitemextension.h"
+#include "ucthemingextension.h"
 #include <QtQml/QQmlEngine>
 #include <QtQuick/private/qquickanchors_p.h>
 
@@ -317,10 +317,11 @@ bool UCStyledItemBasePrivate::loadStyleItem(bool animated)
     if (!creationContext) {
         creationContext = qmlContext(q);
     }
-    styleItemContext = new QQmlContext(creationContext);
-    if (!styleItemContext->isValid()) {
-        qDebug() << "Invalid context for" << q->objectName();
+    if (creationContext && !creationContext->isValid()) {
+        // we are having the changes in the component being under deletion
+        return false;
     }
+    styleItemContext = new QQmlContext(creationContext);
     styleItemContext->setContextObject(q);
     styleItemContext->setContextProperty("styledItem", q);
     styleItemContext->setContextProperty("animated", animated);

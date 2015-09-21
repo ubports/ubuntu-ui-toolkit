@@ -27,39 +27,32 @@
 class QQuickItem;
 class UCStyledItemBase;
 class UCTheme;
-class UCItemExtension;
+class UCThemingExtension;
 class UCItemAttached : public QObject
 {
     Q_OBJECT
 public:
     explicit UCItemAttached(QObject *owner = 0);
     ~UCItemAttached();
+    static bool isThemed(QQuickItem *item);
     static UCItemAttached *qmlAttachedProperties(QObject *owner);
 
     QQuickItem *m_item;
     QQuickItem *m_prevParent;
-    UCItemExtension *m_extension;
-    bool m_isItemThemed:1;
+    UCThemingExtension *m_extension;
 
 private:
     Q_SLOT void handleParentChanged(QQuickItem *newParent);
     Q_SLOT void reloadTheme();
 
-    friend class UCItemExtension;
+    friend class UCThemingExtension;
 };
 QML_DECLARE_TYPEINFO(UCItemAttached, QML_HAS_ATTACHED_PROPERTIES)
 
 class UCThemeEvent : public QEvent
 {
 public: // statics
-    // event ID
-    static int themeUpdatedId;
-    static int themeReloadedId;
     static bool isThemeEvent(const QEvent *event);
-    static void handleEvent(QQuickItem *item, UCThemeEvent *event, bool synchronous);
-    static void forwardEvent(QQuickItem *item, UCThemeEvent *event);
-    static void broadcastThemeChange(QQuickItem *item, UCTheme *oldTheme, UCTheme *newTheme);
-    static void broadcastThemeUpdate(QQuickItem *item, UCTheme *theme);
 
 public:
     explicit UCThemeEvent(UCTheme *reloadedTheme);
@@ -79,7 +72,7 @@ private:
     UCTheme *m_newTheme;
 };
 
-class UCItemExtension
+class UCThemingExtension
 {
 public:
     enum ThemeType {
@@ -87,7 +80,7 @@ public:
         Custom
     };
 
-    explicit UCItemExtension();
+    explicit UCThemingExtension();
 
     virtual void preThemeChanged() = 0;
     virtual void postThemeChanged() = 0;
@@ -101,9 +94,14 @@ public:
 
     static QQuickItem *ascendantThemed(QQuickItem *item);
 
+    static void forwardEvent(QQuickItem *item, UCThemeEvent *event);
+    static void broadcastThemeChange(QQuickItem *item, UCTheme *oldTheme, UCTheme *newTheme);
+    static void broadcastThemeReloaded(QQuickItem *item, UCTheme *theme);
+
+protected:
     QQuickItem *themedItem;
     UCItemAttached *attachedThemer;
-    UCTheme *theme;
+    QPointer<UCTheme> theme;
     ThemeType themeType;
 
     void setParentTheme();

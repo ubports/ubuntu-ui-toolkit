@@ -84,7 +84,7 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/ucactionitem.h \
     $$PWD/uchaptics.h \
     $$PWD/ucabstractbutton.h \
-    $$PWD/ucitemextension.h \
+    $$PWD/ucthemingextension.h \
     $$PWD/uclabel.h
 
 SOURCES += $$PWD/plugin.cpp \
@@ -142,7 +142,7 @@ SOURCES += $$PWD/plugin.cpp \
     $$PWD/ucactionitem.cpp \
     $$PWD/uchaptics.cpp \
     $$PWD/ucabstractbutton.cpp \
-    $$PWD/ucitemextension.cpp \
+    $$PWD/ucthemingextension.cpp \
     $$PWD/uclabel.cpp
 
 # adapters

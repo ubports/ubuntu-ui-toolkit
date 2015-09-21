@@ -24,7 +24,7 @@
 #include "i18n.h"
 #include "ucfontutils.h"
 #include "ucstyleditembase_p.h"
-#include "ucitemextension.h"
+#include "ucthemingextension.h"
 
 #include <QtQml/qqml.h>
 #include <QtQml/qqmlinfo.h>
@@ -630,8 +630,8 @@ void UCTheme::attachItem(QQuickItem *item, bool attach)
         return;
     }
     if (attach) {
-        connect(this, SIGNAL(nameChanged()), theming, SLOT(reloadTheme()), Qt::QueuedConnection);
-        connect(this, SIGNAL(versionChanged()), theming, SLOT(reloadTheme()), Qt::QueuedConnection);
+        connect(this, SIGNAL(nameChanged()), theming, SLOT(reloadTheme()), Qt::DirectConnection);
+        connect(this, SIGNAL(versionChanged()), theming, SLOT(reloadTheme()), Qt::DirectConnection);
     } else {
         disconnect(this, SIGNAL(nameChanged()), theming, SLOT(reloadTheme()));
         disconnect(this, SIGNAL(versionChanged()), theming, SLOT(reloadTheme()));

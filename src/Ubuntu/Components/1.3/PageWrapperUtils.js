@@ -73,6 +73,7 @@ function Incubator(pageWrapper, pageComponent) {
     if (incubator.status != Component.Ready) {
         incubator.onStatusChanged = incubatorStatusChanged;
     } else {
+        pageWrapper.incubator = this;
         incubatorStatusChanged(incubator.status);
     }
 }
@@ -103,9 +104,15 @@ function initPage(pageWrapper) {
             throw new Error("Error while loading page: " + pageComponent.errorString());
         } else {
             // create the object
-            pageWrapper.incubator = new Incubator(pageWrapper, pageComponent);
             if (synchronous) {
-                pageWrapper.incubator.forceCompletion();
+                if (pageWrapper.properties) {
+                    // initialize the object with the given properties
+                    pageWrapper.object = pageComponent.createObject(pageWrapper, pageWrapper.properties);
+                } else {
+                    pageWrapper.object = pageComponent.createObject(pageWrapper);
+                }
+            } else {
+                pageWrapper.incubator = new Incubator(pageWrapper, pageComponent);
             }
             pageWrapper.canDestroy = true;
         }
