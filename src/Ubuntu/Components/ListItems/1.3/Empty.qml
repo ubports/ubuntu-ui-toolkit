@@ -401,7 +401,7 @@ AbstractButton {
                             verticalCenter: parent.verticalCenter
                         }
                         width: units.gu(7)
-                        adaptiveSize: Label.Medium
+                        textSize: Label.Medium
                     }
                 }
 

@@ -77,7 +77,7 @@ MainView {
                         width: units.gu(3)
                         height: parent.height
                         text: "M"
-                        adaptiveSize: Label.Large
+                        textSize: Label.Large
                         font.bold: true
                     }
                 }

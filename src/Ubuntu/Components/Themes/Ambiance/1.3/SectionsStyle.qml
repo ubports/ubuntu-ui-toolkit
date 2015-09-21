@@ -94,7 +94,7 @@ Item {
                     objectName: "section_button_label_" + index
                     // modelData may be either a string, or an Action
                     text: modelData.hasOwnProperty("text") ? modelData.text : modelData
-                    adaptiveSize: sectionsStyle.adaptiveLabelSize
+                    textSize: sectionsStyle.adaptiveLabelSize
                     anchors.centerIn: parent
                     color: sectionButton.selected ?
                                sectionsStyle.selectedSectionColor :

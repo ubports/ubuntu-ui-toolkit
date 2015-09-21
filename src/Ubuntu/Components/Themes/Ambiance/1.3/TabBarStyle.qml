@@ -202,7 +202,7 @@ Item {
                             baselineOffset: -headerTextBottomMargin
                         }
                         text: (model.hasOwnProperty("tab") && tab.hasOwnProperty("title")) ? tab.title : title
-                        adaptiveSize: headerAdaptiveLabelSize
+                        textSize: headerAdaptiveLabelSize
                         font.weight: headerFontWeight
                         style: headerTextStyle
                         styleColor: headerTextStyleColor

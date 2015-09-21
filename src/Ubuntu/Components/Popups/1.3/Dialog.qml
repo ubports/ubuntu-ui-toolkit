@@ -190,7 +190,7 @@ PopupBase {
                     wrapMode: Text.Wrap
                     maximumLineCount: 2
                     elide: Text.ElideRight
-                    adaptiveSize: Label.Large
+                    textSize: Label.Large
                     color: UbuntuColors.darkGrey
                     visible: (text !== "")
                 }

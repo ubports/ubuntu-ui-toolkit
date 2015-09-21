@@ -134,7 +134,7 @@ Item {
             horizontalCenter: parent.horizontalCenter
         }
         text: icon.name ? "" : bottomEdgeHint.text
-        adaptiveSize: Label.Medium
+        textSize: Label.Medium
         height: bottomEdgeHint.height
         verticalAlignment: Text.AlignVCenter
         horizontalAlignment: Text.AlignHCenter

@@ -18,14 +18,14 @@
 #define UCLABEL_H
 
 #include <QtQuick/private/qquicktext_p.h>
-#include "ucitemextension.h"
+#include "ucthemingextension.h"
 
-class UCLabel : public QQuickText, public UCItemExtension
+class UCLabel : public QQuickText, public UCThemingExtension
 {
     Q_OBJECT
 
-    Q_ENUMS(AdaptiveSize)
-    Q_PROPERTY(AdaptiveSize adaptiveSize MEMBER m_adaptiveSize WRITE setAdaptiveSize NOTIFY adaptiveSizeChanged FINAL REVISION 1)
+    Q_ENUMS(TextSize)
+    Q_PROPERTY(TextSize textSize MEMBER m_textSize WRITE setTextSize NOTIFY textSizeChanged FINAL REVISION 1)
 
     // Deprecated.
     Q_PROPERTY(QString fontSize READ fontSize WRITE setFontSize NOTIFY fontSizeChanged)
@@ -33,7 +33,7 @@ class UCLabel : public QQuickText, public UCItemExtension
 public:
     UCLabel(QQuickItem* parent=0);
 
-    enum AdaptiveSize {
+    enum TextSize {
         XxSmall = 0,
         XSmall = 1,
         Small = 2,
@@ -42,17 +42,17 @@ public:
         XLarge = 5
     };
 
-    void setAdaptiveSize(AdaptiveSize adaptiveSize);
+    void setTextSize(TextSize size);
 
     // Deprecated.
     QString fontSize() const
     {
-        if (m_flags & AdaptiveSizeSet) {
+        if (m_flags & TextSizeSet) {
             return "";
         }
         const char* const sizes[] =
             { "xx-small", "x-small", "small", "medium", "large", "x-large" };
-        return QString(sizes[m_adaptiveSize]);
+        return QString(sizes[m_textSize]);
     }
     void setFontSize(const QString& fontSize);
 
@@ -66,7 +66,7 @@ protected:
     void postThemeChanged();
 
 Q_SIGNALS:
-    Q_REVISION(1) void adaptiveSizeChanged();
+    Q_REVISION(1) void textSizeChanged();
 
     // Deprecated.
     void fontSizeChanged();
@@ -77,13 +77,13 @@ private:
     Q_SLOT void _q_customColor();
 
     enum {
-        AdaptiveSizeSet = 1,
+        TextSizeSet = 1,
         PixelSizeSet = 2,
         ColorSet = 4
     };
 
     QFont m_defaultFont;
-    AdaptiveSize m_adaptiveSize;
+    TextSize m_textSize;
     quint8 m_flags;
 
     Q_DISABLE_COPY(UCLabel)

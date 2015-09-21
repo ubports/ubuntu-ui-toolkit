@@ -30,7 +30,7 @@ void UCLabel::updatePixelSize()
     };
     QFont textFont = font();
     textFont.setPixelSize(
-        qRound(sizes[m_adaptiveSize] * UCUnits::instance().dp(UCFontUtils::fontUnits)));
+        qRound(sizes[m_textSize] * UCUnits::instance().dp(UCFontUtils::fontUnits)));
     setFont(textFont);
     // remove PixelSizeSet flag
     m_flags &= ~PixelSizeSet;
@@ -70,14 +70,14 @@ void UCLabel::_q_customColor()
  *     Label {
  *         anchors.centerIn: parent
  *         text: "Hello world!"
- *         adaptiveSize: Label.Large
+ *         textSize: Label.Large
  *     }
  * }
  * \endqml
  */
 UCLabel::UCLabel(QQuickItem* parent)
     : QQuickText(parent)
-    , m_adaptiveSize(Medium)
+    , m_textSize(Medium)
     , m_flags(0)
 {
 }
@@ -114,7 +114,7 @@ void UCLabel::postThemeChanged()
 }
 
 /*!
- * \qmlproperty enumeration LabelBase::adaptiveSize
+ * \qmlproperty enumeration LabelBase::textSize
  * \since Ubuntu.Components 1.3
  *
  * This property holds an abstract size that allows adaptive resizing based on the measurement unit
@@ -131,17 +131,17 @@ void UCLabel::postThemeChanged()
  *  \li \b Label.XLarge - very large font size
  *  \endlist
  */
-void UCLabel::setAdaptiveSize(AdaptiveSize adaptiveSize)
+void UCLabel::setTextSize(TextSize size)
 {
-    if (!(m_flags & AdaptiveSizeSet)) {
+    if (!(m_flags & TextSizeSet)) {
         Q_EMIT fontSizeChanged();
-        m_flags |= AdaptiveSizeSet;
+        m_flags |= TextSizeSet;
     }
 
-    if (m_adaptiveSize != adaptiveSize) {
-        m_adaptiveSize = adaptiveSize;
+    if (m_textSize != size) {
+        m_textSize = size;
         updatePixelSize();
-        Q_EMIT adaptiveSizeChanged();
+        Q_EMIT textSizeChanged();
     }
 }
 
@@ -166,7 +166,7 @@ void UCLabel::setAdaptiveSize(AdaptiveSize adaptiveSize)
  */
 void UCLabel::setFontSize(const QString& fontSize)
 {
-    if (m_flags & AdaptiveSizeSet) {
+    if (m_flags & TextSizeSet) {
         return;
     }
     if (fontSize.size() < 4) {
@@ -176,22 +176,22 @@ void UCLabel::setFontSize(const QString& fontSize)
     static bool logOnce = false;
     if (!logOnce) {
         logOnce = true;
-        qmlInfo(this) << "'fontSize' is deprecated, use 'adaptiveSize' property instead.";
+        qmlInfo(this) << "'fontSize' is deprecated, use 'textSize' property instead.";
     }
 
-    AdaptiveSize adaptiveSize;
+    TextSize textSize;
     switch (reinterpret_cast<int*>(fontSize.toLatin1().data())[0]) {
-        case /*"medi"*/0x6964656d: { adaptiveSize = Medium; break; }
-        case /*"larg"*/0x6772616c: { adaptiveSize = Large; break; }
-        case /*"smal"*/0x6c616d73: { adaptiveSize = Small; break; }
-        case /*"x-la"*/0x616c2d78: { adaptiveSize = XLarge; break; }
-        case /*"x-sm"*/0x6d732d78: { adaptiveSize = XSmall; break; }
-        case /*"xx-s"*/0x732d7878: { adaptiveSize = XxSmall; break; }
+        case /*"medi"*/0x6964656d: { textSize = Medium; break; }
+        case /*"larg"*/0x6772616c: { textSize = Large; break; }
+        case /*"smal"*/0x6c616d73: { textSize = Small; break; }
+        case /*"x-la"*/0x616c2d78: { textSize = XLarge; break; }
+        case /*"x-sm"*/0x6d732d78: { textSize = XSmall; break; }
+        case /*"xx-s"*/0x732d7878: { textSize = XxSmall; break; }
         default: { return; }
     }
 
-    if (m_adaptiveSize != adaptiveSize) {
-        m_adaptiveSize = adaptiveSize;
+    if (m_textSize != textSize) {
+        m_textSize = textSize;
         updatePixelSize();
         Q_EMIT fontSizeChanged();
     }

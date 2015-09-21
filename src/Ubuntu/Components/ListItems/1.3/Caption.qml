@@ -60,6 +60,6 @@ Item {
         wrapMode: Text.Wrap
         color: theme.palette.normal.backgroundText
         horizontalAlignment: Text.AlignLeft
-        adaptiveSize: Label.Small
+        textSize: Label.Small
     }
 }

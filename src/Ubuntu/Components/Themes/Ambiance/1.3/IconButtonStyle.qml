@@ -66,7 +66,7 @@ Item {
             color: iconButtonStyle.foregroundColor
             opacity: styledItem.enabled ? 1.0 : 0.3
             text: styledItem.text
-            adaptiveSize: Label.XxSmall
+            textSize: Label.XxSmall
         }
     }
     Loader {

@@ -332,7 +332,7 @@ ListItem.Empty {
                 width: parent.width
                 elide: Text.ElideRight
                 visible: option.subText !== "" ? true : false
-                adaptiveSize: Toolkit.Label.Small
+                textSize: Toolkit.Label.Small
             }
         }
 

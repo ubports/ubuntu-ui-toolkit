@@ -358,7 +358,7 @@ Style.PageHeadStyle {
                 }
                 text: headerStyle.config.title
                 font.weight: headerStyle.fontWeight
-                adaptiveSize: headerStyle.adaptiveLabelSize
+                textSize: headerStyle.adaptiveLabelSize
                 color: headerStyle.titleColor
                 elide: Text.ElideRight
             }

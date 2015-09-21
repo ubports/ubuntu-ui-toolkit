@@ -77,7 +77,7 @@ Base {
                 left: parent.left
                 right: parent.right
             }
-            adaptiveSize: Label.Small
+            textSize: Label.Small
             text: concatenatedValues(multiValueListItem.values)
 
             function concatenatedValues(values) {

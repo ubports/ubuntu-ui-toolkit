@@ -104,7 +104,7 @@ Base {
                 right: parent.right
                 top: label.bottom
             }
-            adaptiveSize: Label.Small
+            textSize: Label.Small
             wrapMode: Text.Wrap
             maximumLineCount: 5
         }

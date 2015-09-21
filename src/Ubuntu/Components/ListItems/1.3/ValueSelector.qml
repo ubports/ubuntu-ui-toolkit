@@ -185,7 +185,7 @@ Empty {
                     leftMargin: selector.__contentsMargins
                     left: label.right
                 }
-                adaptiveSize: Label.Small
+                textSize: Label.Small
                 text: selector.values[selector.selectedIndex]
                 font.bold: selector.expanded
                 horizontalAlignment: Text.AlignRight
