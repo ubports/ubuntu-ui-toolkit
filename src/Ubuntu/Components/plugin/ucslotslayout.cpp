@@ -178,7 +178,7 @@ void UCSlotsLayoutPrivate::_q_updateSlotsBBoxHeight()
         }
 
         if (!attachedProperty->overrideVerticalPositioning())
-            maxSlotsHeightTmp = qMax<int>(maxSlotsHeightTmp, child->height());
+            maxSlotsHeightTmp = qMax<qreal>(maxSlotsHeightTmp, child->height());
     }
     maxSlotsHeight = maxSlotsHeightTmp;
 
@@ -397,7 +397,7 @@ void UCSlotsLayoutPrivate::_q_relayout()
             qmlInfo(q) << "Invalid attached property!";
             return;
         }
-        mainSlot->setWidth(q->width() - totalSlotsWidth
+        mainSlot->setImplicitWidth(q->width() - totalSlotsWidth
                            - attachedSlot->leadingPadding() - attachedSlot->trailingPadding()
                            - padding.leading() - padding.trailing());
     } else {
