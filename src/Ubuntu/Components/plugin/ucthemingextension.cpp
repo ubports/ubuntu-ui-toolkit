@@ -42,6 +42,7 @@ UCThemeEvent::UCThemeEvent(UCTheme *reloadedTheme)
     , m_oldTheme(Q_NULLPTR)
     , m_newTheme(reloadedTheme)
 {
+    setAccepted(false);
 }
 
 UCThemeEvent::UCThemeEvent(UCTheme *oldTheme, UCTheme *newTheme)
@@ -49,6 +50,7 @@ UCThemeEvent::UCThemeEvent(UCTheme *oldTheme, UCTheme *newTheme)
     , m_oldTheme(oldTheme)
     , m_newTheme(newTheme)
 {
+    setAccepted(false);
 }
 
 UCThemeEvent::UCThemeEvent(const UCThemeEvent &other)
@@ -56,6 +58,7 @@ UCThemeEvent::UCThemeEvent(const UCThemeEvent &other)
     , m_oldTheme(other.m_oldTheme)
     , m_newTheme(other.m_newTheme)
 {
+    setAccepted(false);
 }
 
 bool UCThemeEvent::isThemeEvent(const QEvent *event)
@@ -65,6 +68,7 @@ bool UCThemeEvent::isThemeEvent(const QEvent *event)
 
 void UCThemeEvent::handleEvent(QQuickItem *item, UCThemeEvent *event, bool synchronous)
 {
+    synchronous = true;
     if (synchronous) {
         QGuiApplication::sendEvent(item, event);
     } else {
@@ -76,9 +80,8 @@ void UCThemeEvent::forwardEvent(QQuickItem *item, UCThemeEvent *event)
 {
     Q_FOREACH(QQuickItem *child, item->childItems()) {
         handleEvent(child, event, false);
-        // StyledItem will handle the broadcast itself depending on whether the theme change was appropriate or not
-        // and will complete the ascendantStyled/theme itself
-        if (child->childItems().size() > 0 && !UCItemAttached::isThemed(child)) {
+        // broadcast in between children
+        if (child->childItems().size() > 0) {
             forwardEvent(child, event);
         }
     }
@@ -118,9 +121,14 @@ UCItemAttached *UCItemAttached::qmlAttachedProperties(QObject *owner)
     return new UCItemAttached(owner);
 }
 
+UCItemAttached* UCItemAttached::attached(QQuickItem *item)
+{
+    return static_cast<UCItemAttached*>(qmlAttachedPropertiesObject<UCItemAttached>(item, false));
+}
+
 bool UCItemAttached::isThemed(QQuickItem *item)
 {
-    UCItemAttached *attached = static_cast<UCItemAttached*>(qmlAttachedPropertiesObject<UCItemAttached>(item, false));
+    UCItemAttached *attached = UCItemAttached::attached(item);
     return attached && (attached->m_extension != Q_NULLPTR);
 }
 

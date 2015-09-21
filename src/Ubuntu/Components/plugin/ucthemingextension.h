@@ -34,6 +34,7 @@ class UCItemAttached : public QObject
 public:
     explicit UCItemAttached(QObject *owner = 0);
     ~UCItemAttached();
+    static UCItemAttached* attached(QQuickItem *item);
     static bool isThemed(QQuickItem *item);
     static UCItemAttached *qmlAttachedProperties(QObject *owner);
 
