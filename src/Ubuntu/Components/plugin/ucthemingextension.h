@@ -102,7 +102,7 @@ public:
 
     QQuickItem *themedItem;
     UCItemAttached *attachedThemer;
-    UCTheme *theme;
+    QPointer<UCTheme> theme;
     ThemeType themeType;
 
     void setParentTheme();

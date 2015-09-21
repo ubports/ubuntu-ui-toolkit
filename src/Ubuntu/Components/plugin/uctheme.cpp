@@ -630,8 +630,8 @@ void UCTheme::attachItem(QQuickItem *item, bool attach)
         return;
     }
     if (attach) {
-        connect(this, SIGNAL(nameChanged()), theming, SLOT(reloadTheme()), Qt::QueuedConnection);
-        connect(this, SIGNAL(versionChanged()), theming, SLOT(reloadTheme()), Qt::QueuedConnection);
+        connect(this, SIGNAL(nameChanged()), theming, SLOT(reloadTheme()), Qt::DirectConnection);
+        connect(this, SIGNAL(versionChanged()), theming, SLOT(reloadTheme()), Qt::DirectConnection);
     } else {
         disconnect(this, SIGNAL(nameChanged()), theming, SLOT(reloadTheme()));
         disconnect(this, SIGNAL(versionChanged()), theming, SLOT(reloadTheme()));

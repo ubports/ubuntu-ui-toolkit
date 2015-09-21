@@ -69,7 +69,7 @@ bool UCThemeEvent::isThemeEvent(const QEvent *event)
 void UCThemeEvent::forwardEvent(QQuickItem *item, UCThemeEvent *event)
 {
     Q_FOREACH(QQuickItem *child, item->childItems()) {
-         QGuiApplication::postEvent(child, new UCThemeEvent(*event), Qt::HighEventPriority);
+        QGuiApplication::sendEvent(child, event);
         // StyledItem will handle the broadcast itself depending on whether the theme change was appropriate or not
         // and will complete the ascendantStyled/theme itself
         if (child->childItems().size() > 0 && !UCItemAttached::isThemed(child)) {
