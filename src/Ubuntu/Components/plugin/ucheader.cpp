@@ -96,12 +96,7 @@ UCHeader::UCHeader(QQuickItem *parent)
 
     connect(m_showHideAnimation, SIGNAL(runningChanged(bool)),
             this, SLOT(q_showHideAnimationRunningChanged()));
-
-    // Watch grid unit size change and set implicit size
-//    connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this, SLOT(q_updateSize()));
     connect(this, SIGNAL(heightChanged()), this, SLOT(q_heightChanged()));
-
-    // Width and height will be updated when itemChange() is called because the parent is set.
 }
 
 void UCHeader::q_heightChanged() {
