@@ -90,7 +90,7 @@ void UCThemeEvent::broadcastThemeChange(QQuickItem *item, UCTheme *oldTheme, UCT
     forwardEvent(item, &event);
 }
 
-void UCThemeEvent::broadcastThemeUpdate(QQuickItem *item, UCTheme *theme)
+void UCThemeEvent::broadcastThemeReloaded(QQuickItem *item, UCTheme *theme)
 {
     UCThemeEvent event(theme);
     forwardEvent(item, &event);
@@ -154,10 +154,10 @@ void UCItemAttached::handleParentChanged(QQuickItem *newParent)
 
 void UCItemAttached::reloadTheme()
 {
-    if (m_extension) {
-        m_extension->preThemeChanged();
-        m_extension->postThemeChanged();
-    }
+    Q_ASSERT(m_extension);
+    m_extension->preThemeChanged();
+    m_extension->postThemeChanged();
+    UCThemeEvent::broadcastThemeReloaded(m_item, static_cast<UCTheme*>(sender()));
 }
 
 /*************************************************************************
@@ -213,9 +213,6 @@ void UCThemingExtension::handleThemeEvent(UCThemeEvent *event)
         switch (themeType) {
         case Inherited: {
             // simply emit theme changed
-            // reload theme
-            preThemeChanged();
-            postThemeChanged();
             UCThemeEvent::forwardEvent(themedItem, event);
             return;
         }

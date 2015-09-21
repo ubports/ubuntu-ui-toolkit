@@ -59,7 +59,7 @@ public: // statics
     static void handleEvent(QQuickItem *item, UCThemeEvent *event, bool synchronous);
     static void forwardEvent(QQuickItem *item, UCThemeEvent *event);
     static void broadcastThemeChange(QQuickItem *item, UCTheme *oldTheme, UCTheme *newTheme);
-    static void broadcastThemeUpdate(QQuickItem *item, UCTheme *theme);
+    static void broadcastThemeReloaded(QQuickItem *item, UCTheme *theme);
 
 public:
     explicit UCThemeEvent(UCTheme *reloadedTheme);
