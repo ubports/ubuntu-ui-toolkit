@@ -22,7 +22,12 @@ from testtools.matchers import Contains
 from autopilot import introspection
 
 import ubuntuuitoolkit
-from ubuntuuitoolkit import tests
+from ubuntuuitoolkit import (
+    CheckBox,
+    MainView,
+    UbuntuUIToolkitCustomProxyObjectBase as ProxyBase,
+    tests
+)
 
 
 class HideShowTestCase(tests.QMLFileAppTestCase):
@@ -72,8 +77,12 @@ class ActionsTestCase(tests.QMLFileAppTestCase):
     def setUp(self):
         super().setUp()
         self.header = self.main_view.get_header()
-        self.label = self.app.select_single(
-            'Label', objectName='clicked_label')
+        self.label = ProxyBase.from_proxy_object(
+            self.app.select_single(
+                'Label',
+                objectName='clicked_label'
+            )
+        )
         self.assertEqual(self.label.text, 'No button clicked.')
 
     def test_header_custom_proxy_object(self):
@@ -105,7 +114,9 @@ class ActionsTestCase(tests.QMLFileAppTestCase):
         self.assertEqual(self.label.text, 'Cancel button clicked.')
 
     def test_click_header_action_button_with_hidden_header(self):
-        bottom_label = self.main_view.select_single(objectName='end_label')
+        bottom_label = ProxyBase.from_proxy_object(
+            self.main_view.select_single(objectName='end_label')
+        )
         bottom_label.swipe_into_view()
         self.assertFalse(self.header._is_visible())
         self.header.click_action_button('action0')
@@ -146,7 +157,7 @@ class SectionsTestCase(tests.QMLFileAppTestCase):
 
     def test_select_sections_with_sections_disabled(self):
         sectionsEnabledSwitch = self.app.select_single(
-            'CheckBox', objectName='sections_enabled_switch')
+            CheckBox, objectName='sections_enabled_switch')
         sectionsEnabledSwitch.uncheck()
         for index in [1, 0, 2]:
             self.header.switch_to_section_by_index(index)
@@ -183,7 +194,7 @@ class DeprecatedHeaderSectionsTestCase(tests.QMLFileAppTestCase):
 
     def test_select_sections_with_sections_disabled(self):
         sectionsEnabledSwitch = self.app.select_single(
-            'CheckBox', objectName='sections_enabled_switch')
+            CheckBox, objectName='sections_enabled_switch')
         sectionsEnabledSwitch.uncheck()
         error = self.assertRaises(
             ubuntuuitoolkit.ToolkitException,
@@ -212,7 +223,12 @@ class HeaderInCustomMainViewTestCase(tests.QMLFileAppTestCase):
 
     @property
     def main_view(self):
-        return self.app.select_single(objectName='customMainView')
+        # This change will allow the test to pass, but I don't feel this test
+        # is really relevant as it is really testing the from_proxy_method to
+        # create a MainView object.
+        return MainView.from_proxy_object(
+            self.app.select_single(objectName='customMainView')
+        )
 
     def test_get_header_from_custom_main_view(self):
         """Test that we can get the header from a custom main view.

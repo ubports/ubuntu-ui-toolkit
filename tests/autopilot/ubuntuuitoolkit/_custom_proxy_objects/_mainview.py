@@ -23,6 +23,7 @@ from autopilot.introspection import dbus
 from autopilot import introspection
 
 from ubuntuuitoolkit._custom_proxy_objects import (
+    AppHeader,
     _common,
     popups,
     _tabs,
@@ -64,7 +65,7 @@ class MainView(_common.UbuntuUIToolkitCustomProxyObjectBase):
     def get_header(self):
         """Return the AppHeader custom proxy object of the MainView."""
         try:
-            return self.select_single(objectName='MainView_Header')
+            return self.select_single(AppHeader, objectName='MainView_Header')
         except dbus.StateNotFoundError:
             raise _common.ToolkitException('The main view has no header.')
 

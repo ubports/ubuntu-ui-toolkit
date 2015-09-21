@@ -20,8 +20,10 @@ from autopilot import logging as autopilot_logging
 from autopilot.introspection import dbus
 
 from ubuntuuitoolkit._custom_proxy_objects import (
+    _actionbar,
     _common,
-    _tabbar
+    _sections,
+    _tabbar,
 )
 
 
@@ -33,6 +35,11 @@ logger = logging.getLogger(__name__)
 
 class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
     """AppHeader Autopilot custom proxy object."""
+
+    def __init__(self, *args):
+        super().__init__(*args)
+        if not hasattr(self, 'useDeprecatedToolbar'):
+            self.useDeprecatedToolbar = None
 
     def ensure_visible(self):
         if not self._is_visible():
@@ -85,7 +92,7 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
         try:
             # Ubuntu.Components >=1.3
             sections = self.select_single(
-                'Sections', objectName='headerSectionsItem')
+                _sections.Sections, objectName='headerSectionsItem')
             sections.click_section_button(index)
         except dbus.StateNotFoundError:
             # Ubuntu.Components < 1.3, has no headerSectionsItem.
@@ -245,7 +252,7 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
         try:
             # for Ubuntu.Components 1.3
             actionbar = self.select_single(
-                'ActionBar', objectName='headerActionBar')
+                _actionbar.ActionBar, objectName='headerActionBar')
             actionbar.click_action_button(action_object_name)
         except dbus.StateNotFoundError:
             # for Ubuntu.Components < 1.3

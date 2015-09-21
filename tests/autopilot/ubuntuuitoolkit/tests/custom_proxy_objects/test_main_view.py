@@ -76,6 +76,8 @@ MainView {
 
 
 class MainView12TestCase(tests.QMLStringAppTestCase):
+    # veebers: Note some of these tests might be unneeded due to how the CPOs
+    # work now.
 
     test_qml = ("""
 import QtQuick 2.3
