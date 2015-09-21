@@ -24,7 +24,7 @@
 #include "i18n.h"
 #include "ucfontutils.h"
 #include "ucstyleditembase_p.h"
-#include "ucitemextension.h"
+#include "ucthemingextension.h"
 
 #include <QtQml/qqml.h>
 #include <QtQml/qqmlinfo.h>

@@ -21,11 +21,11 @@
 
 #include <QtQuick/private/qquickitem_p.h>
 #include "ucstyleditembase.h"
-#include "ucitemextension.h"
+#include "ucthemingextension.h"
 
 class QQuickMouseArea;
 class UCStyledItemBase;
-class UCStyledItemBasePrivate : public QQuickItemPrivate, public UCItemExtension
+class UCStyledItemBasePrivate : public QQuickItemPrivate, public UCThemingExtension
 {
     Q_DECLARE_PUBLIC(UCStyledItemBase)
 public:
