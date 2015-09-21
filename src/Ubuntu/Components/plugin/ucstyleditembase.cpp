@@ -318,6 +318,9 @@ bool UCStyledItemBasePrivate::loadStyleItem(bool animated)
         creationContext = qmlContext(q);
     }
     styleItemContext = new QQmlContext(creationContext);
+    if (!styleItemContext->isValid()) {
+        qDebug() << "Invalid context for" << q->objectName();
+    }
     styleItemContext->setContextObject(q);
     styleItemContext->setContextProperty("styledItem", q);
     styleItemContext->setContextProperty("animated", animated);
