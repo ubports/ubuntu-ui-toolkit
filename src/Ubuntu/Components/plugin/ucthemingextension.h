@@ -52,13 +52,7 @@ QML_DECLARE_TYPEINFO(UCItemAttached, QML_HAS_ATTACHED_PROPERTIES)
 class UCThemeEvent : public QEvent
 {
 public: // statics
-    // event ID
-    static int themeUpdatedId;
-    static int themeReloadedId;
     static bool isThemeEvent(const QEvent *event);
-    static void forwardEvent(QQuickItem *item, UCThemeEvent *event);
-    static void broadcastThemeChange(QQuickItem *item, UCTheme *oldTheme, UCTheme *newTheme);
-    static void broadcastThemeReloaded(QQuickItem *item, UCTheme *theme);
 
 public:
     explicit UCThemeEvent(UCTheme *reloadedTheme);
@@ -100,6 +94,11 @@ public:
 
     static QQuickItem *ascendantThemed(QQuickItem *item);
 
+    static void forwardEvent(QQuickItem *item, UCThemeEvent *event);
+    static void broadcastThemeChange(QQuickItem *item, UCTheme *oldTheme, UCTheme *newTheme);
+    static void broadcastThemeReloaded(QQuickItem *item, UCTheme *theme);
+
+protected:
     QQuickItem *themedItem;
     UCItemAttached *attachedThemer;
     QPointer<UCTheme> theme;

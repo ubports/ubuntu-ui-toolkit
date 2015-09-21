@@ -34,11 +34,11 @@
  * extension and declare the themeChanged signal.
  */
 
-int UCThemeEvent::themeUpdatedId = QEvent::registerEventType();
-int UCThemeEvent::themeReloadedId = QEvent::registerEventType();
+static int themeUpdatedId = QEvent::registerEventType();
+static int themeReloadedId = QEvent::registerEventType();
 
 UCThemeEvent::UCThemeEvent(UCTheme *reloadedTheme)
-    : QEvent((QEvent::Type)UCThemeEvent::themeReloadedId)
+    : QEvent((QEvent::Type)themeReloadedId)
     , m_oldTheme(Q_NULLPTR)
     , m_newTheme(reloadedTheme)
 {
@@ -46,7 +46,7 @@ UCThemeEvent::UCThemeEvent(UCTheme *reloadedTheme)
 }
 
 UCThemeEvent::UCThemeEvent(UCTheme *oldTheme, UCTheme *newTheme)
-    : QEvent((QEvent::Type)UCThemeEvent::themeUpdatedId)
+    : QEvent((QEvent::Type)themeUpdatedId)
     , m_oldTheme(oldTheme)
     , m_newTheme(newTheme)
 {
@@ -66,7 +66,7 @@ bool UCThemeEvent::isThemeEvent(const QEvent *event)
     return ((int)event->type() == themeUpdatedId) || ((int)event->type() == themeReloadedId);
 }
 
-void UCThemeEvent::forwardEvent(QQuickItem *item, UCThemeEvent *event)
+void UCThemingExtension::forwardEvent(QQuickItem *item, UCThemeEvent *event)
 {
     Q_FOREACH(QQuickItem *child, item->childItems()) {
         QGuiApplication::sendEvent(child, event);
@@ -78,13 +78,13 @@ void UCThemeEvent::forwardEvent(QQuickItem *item, UCThemeEvent *event)
     }
 }
 
-void UCThemeEvent::broadcastThemeChange(QQuickItem *item, UCTheme *oldTheme, UCTheme *newTheme)
+void UCThemingExtension::broadcastThemeChange(QQuickItem *item, UCTheme *oldTheme, UCTheme *newTheme)
 {
     UCThemeEvent event(oldTheme, newTheme);
     forwardEvent(item, &event);
 }
 
-void UCThemeEvent::broadcastThemeReloaded(QQuickItem *item, UCTheme *theme)
+void UCThemingExtension::broadcastThemeReloaded(QQuickItem *item, UCTheme *theme)
 {
     UCThemeEvent event(theme);
     forwardEvent(item, &event);
@@ -140,7 +140,7 @@ void UCItemAttached::handleParentChanged(QQuickItem *newParent)
         }
         // then broadcast to children, but only if the item is not a styled one
         if (!m_extension) {
-            UCThemeEvent::forwardEvent(m_item, &event);
+            UCThemingExtension::forwardEvent(m_item, &event);
         }
     }
     m_prevParent = newParent;
@@ -151,7 +151,7 @@ void UCItemAttached::reloadTheme()
     Q_ASSERT(m_extension);
     m_extension->preThemeChanged();
     m_extension->postThemeChanged();
-    UCThemeEvent::broadcastThemeReloaded(m_item, static_cast<UCTheme*>(sender()));
+    UCThemingExtension::broadcastThemeReloaded(m_item, static_cast<UCTheme*>(sender()));
 }
 
 /*************************************************************************
@@ -190,7 +190,7 @@ void UCThemingExtension::initTheming(QQuickItem *item)
 
 void UCThemingExtension::handleThemeEvent(UCThemeEvent *event)
 {
-    if ((int)event->type() == UCThemeEvent::themeUpdatedId) {
+    if ((int)event->type() == themeUpdatedId) {
         switch (themeType) {
         case Inherited: {
             setTheme(event->newTheme(), Inherited);
@@ -203,7 +203,7 @@ void UCThemingExtension::handleThemeEvent(UCThemeEvent *event)
         }
         default: break;
         }
-    } else if ((int)event->type() == UCThemeEvent::themeReloadedId) {
+    } else if ((int)event->type() == themeReloadedId) {
         // no need to handle Inherited case, those items are all attached to the theme changes
         switch (themeType) {
         case Custom: {
@@ -250,7 +250,7 @@ void UCThemingExtension::setTheme(UCTheme *newTheme, ThemeType type)
     postThemeChanged();
 
     // broadcast to the children
-    UCThemeEvent::broadcastThemeChange(themedItem, oldTheme, theme);
+    broadcastThemeChange(themedItem, oldTheme, theme);
 }
 
 void UCThemingExtension::resetTheme()
