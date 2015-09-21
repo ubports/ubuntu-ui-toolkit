@@ -24,6 +24,7 @@
 #include "i18n.h"
 #include "ucfontutils.h"
 #include "ucstyleditembase_p.h"
+#include "ucitemextension.h"
 
 #include <QtQml/qqml.h>
 #include <QtQml/qqmlinfo.h>
@@ -620,6 +621,21 @@ void UCTheme::registerToContext(QQmlContext* context)
         new ContextPropertyChangeListener(context, "theme");
     QObject::connect(defaultTheme, &UCTheme::nameChanged,
                      listener, &ContextPropertyChangeListener::updateContextProperty);
+}
+
+void UCTheme::attachItem(QQuickItem *item, bool attach)
+{
+    UCItemAttached *theming = static_cast<UCItemAttached*>(qmlAttachedPropertiesObject<UCItemAttached>(item, false));
+    if (!theming) {
+        return;
+    }
+    if (attach) {
+        connect(this, SIGNAL(nameChanged()), theming, SLOT(reloadTheme()), Qt::QueuedConnection);
+        connect(this, SIGNAL(versionChanged()), theming, SLOT(reloadTheme()), Qt::QueuedConnection);
+    } else {
+        disconnect(this, SIGNAL(nameChanged()), theming, SLOT(reloadTheme()));
+        disconnect(this, SIGNAL(versionChanged()), theming, SLOT(reloadTheme()));
+    }
 }
 
 /*!

@@ -32,6 +32,7 @@
 
 class UCStyledItemBase;
 class QQmlAbstractBinding;
+class QQuickItem;
 class UCTheme : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
@@ -80,6 +81,7 @@ public:
     // internal, used by the deprecated Theme.createStyledComponent()
     QQmlComponent* createStyleComponent(const QString& styleName, QObject* parent, quint16 version = 0);
     static void registerToContext(QQmlContext* context);
+    void attachItem(QQuickItem *item, bool attach);
 
     // helper functions
     QColor getPaletteColor(const char *profile, const char *color);
