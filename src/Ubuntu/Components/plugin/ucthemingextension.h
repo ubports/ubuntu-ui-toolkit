@@ -34,7 +34,6 @@ class UCItemAttached : public QObject
 public:
     explicit UCItemAttached(QObject *owner = 0);
     ~UCItemAttached();
-    static UCItemAttached* attached(QQuickItem *item);
     static bool isThemed(QQuickItem *item);
     static UCItemAttached *qmlAttachedProperties(QObject *owner);
 
@@ -57,7 +56,6 @@ public: // statics
     static int themeUpdatedId;
     static int themeReloadedId;
     static bool isThemeEvent(const QEvent *event);
-    static void handleEvent(QQuickItem *item, UCThemeEvent *event, bool synchronous);
     static void forwardEvent(QQuickItem *item, UCThemeEvent *event);
     static void broadcastThemeChange(QQuickItem *item, UCTheme *oldTheme, UCTheme *newTheme);
     static void broadcastThemeReloaded(QQuickItem *item, UCTheme *theme);

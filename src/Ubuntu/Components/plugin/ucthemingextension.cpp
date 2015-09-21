@@ -66,22 +66,13 @@ bool UCThemeEvent::isThemeEvent(const QEvent *event)
     return ((int)event->type() == themeUpdatedId) || ((int)event->type() == themeReloadedId);
 }
 
-void UCThemeEvent::handleEvent(QQuickItem *item, UCThemeEvent *event, bool synchronous)
-{
-    synchronous = true;
-    if (synchronous) {
-        QGuiApplication::sendEvent(item, event);
-    } else {
-        QGuiApplication::postEvent(item, new UCThemeEvent(*event), Qt::HighEventPriority);
-    }
-}
-
 void UCThemeEvent::forwardEvent(QQuickItem *item, UCThemeEvent *event)
 {
     Q_FOREACH(QQuickItem *child, item->childItems()) {
-        handleEvent(child, event, false);
-        // broadcast in between children
-        if (child->childItems().size() > 0) {
+         QGuiApplication::postEvent(child, new UCThemeEvent(*event), Qt::HighEventPriority);
+        // StyledItem will handle the broadcast itself depending on whether the theme change was appropriate or not
+        // and will complete the ascendantStyled/theme itself
+        if (child->childItems().size() > 0 && !UCItemAttached::isThemed(child)) {
             forwardEvent(child, event);
         }
     }
@@ -121,14 +112,9 @@ UCItemAttached *UCItemAttached::qmlAttachedProperties(QObject *owner)
     return new UCItemAttached(owner);
 }
 
-UCItemAttached* UCItemAttached::attached(QQuickItem *item)
-{
-    return static_cast<UCItemAttached*>(qmlAttachedPropertiesObject<UCItemAttached>(item, false));
-}
-
 bool UCItemAttached::isThemed(QQuickItem *item)
 {
-    UCItemAttached *attached = UCItemAttached::attached(item);
+    UCItemAttached *attached = static_cast<UCItemAttached*>(qmlAttachedPropertiesObject<UCItemAttached>(item, false));
     return attached && (attached->m_extension != Q_NULLPTR);
 }
 
@@ -218,12 +204,8 @@ void UCThemingExtension::handleThemeEvent(UCThemeEvent *event)
         default: break;
         }
     } else if ((int)event->type() == UCThemeEvent::themeReloadedId) {
+        // no need to handle Inherited case, those items are all attached to the theme changes
         switch (themeType) {
-        case Inherited: {
-            // simply emit theme changed
-            UCThemeEvent::forwardEvent(themedItem, event);
-            return;
-        }
         case Custom: {
             // emit theme's parentThemeChanged()
             Q_EMIT theme->parentThemeChanged();
