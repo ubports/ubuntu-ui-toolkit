@@ -23,7 +23,9 @@ from autopilot import platform
 from autopilot.introspection import dbus
 
 import ubuntuuitoolkit
-from ubuntuuitoolkit import tests
+from ubuntuuitoolkit import (
+    tests
+)
 
 
 class QQuickListViewTestCase(tests.QMLStringAppTestCase):
@@ -204,6 +206,7 @@ MainView {
 
     def setUp(self):
         super().setUp()
+
         self.list_view = self.main_view.select_single(
             ubuntuuitoolkit.QQuickListView, objectName='testListView')
         self.label = self.main_view.select_single(

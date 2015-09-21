@@ -29,6 +29,7 @@ from autopilot import (
     platform
 )
 from autopilot.introspection import dbus
+import ubuntuuitoolkit
 
 logger = logging.getLogger(__name__)
 
@@ -242,6 +243,7 @@ class UbuntuUIToolkitCustomProxyObjectBase(dbus.CustomEmulatorBase):
         parent = self.get_parent()
         root = self.get_root_instance()
         while parent.id != root.id:
+            parent = ubuntuuitoolkit.QQuickFlickable.from_proxy_object(parent)
             if parent.is_flickable():
                 return parent
             parent = parent.get_parent()
@@ -263,4 +265,7 @@ class UbuntuUIToolkitCustomProxyObjectBase(dbus.CustomEmulatorBase):
         if top_container is None:
             raise ToolkitException('Could not find the top-most container.')
         else:
-            return top_container
+            from ubuntuuitoolkit._custom_proxy_objects._mainview import (
+                MainView
+            )
+            return MainView.from_proxy_object(top_container)

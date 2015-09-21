@@ -17,7 +17,9 @@
 import os
 
 import ubuntuuitoolkit
-from ubuntuuitoolkit import tests
+from ubuntuuitoolkit import (
+    tests
+)
 
 
 class ListItemTestCase(tests.QMLFileAppTestCase):
@@ -27,11 +29,12 @@ class ListItemTestCase(tests.QMLFileAppTestCase):
         dir_path, 'test_listitem.ListItemTestCase.qml')
 
     def setUp(self):
+
         super().setUp()
         self.list_view = self.main_view.select_single(
             ubuntuuitoolkit.QQuickListView, objectName='test_view')
         self.test_listitem = self.main_view.select_single(
-            'UCListItem', objectName='listitem0')
+            ubuntuuitoolkit.UCListItem, objectName='listitem0')
         self.test_page = self.main_view.select_single(
             objectName='test_page')
         self.assertEqual(self.test_page.title, 'No action triggered')
@@ -93,6 +96,6 @@ class ListItemTestCase(tests.QMLFileAppTestCase):
         self.assertTrue(self.test_listitem.selected)
         # select an other one
         listItem3 = self.main_view.select_single(
-            'UCListItem', objectName='listitem3')
+            ubuntuuitoolkit.UCListItem, objectName='listitem3')
         listItem3.toggle_selected()
         self.assertTrue(listItem3.selected)
