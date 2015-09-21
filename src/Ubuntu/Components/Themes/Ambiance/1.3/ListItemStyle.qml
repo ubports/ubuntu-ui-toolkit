@@ -70,7 +70,7 @@ Styles.ListItemStyle {
                 }
 
                 readonly property real maxItemWidth: parent.width / itemActions.actions.length
-                readonly property real minItemWidth: units.gu(5) // 2GU icon + 2* 1.5GU margin
+                readonly property real minItemWidth: units.gu(6) // 2GU icon + 2* 2GU margin
 
                 Repeater {
                     model: itemActions.actions

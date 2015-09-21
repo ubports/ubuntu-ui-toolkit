@@ -32,7 +32,7 @@ DISTRO="ubuntu"
 SERIES="vivid"
 CHANNEL="ubuntu-touch/rc-proposed/${DISTRO}"
 PASSWORD="0000"
-BOOTTIME=500
+BOOTTIME=250
 ONLYCOMPARE=false
 DISTUPGRADE=false
 BOOTSTRAP=false
@@ -56,7 +56,7 @@ declare -a TEST_SUITE=(
 # comment out if filemanager AP:s broken
 #   " filemanager"
 #    " ubuntu_terminal_app"
-    " -n unity8"
+#    " -n unity8"
     " ubuntu_clock_app"
 #    " -p dialer-app-autopilot dialer_app"
 #    " -p reminders-app-autopilot reminders"
@@ -78,7 +78,7 @@ AP_PACKAGES="address-book-service-dummy \
              reminders-app-autopilot \
              address-book-app-autopilot \
 #             messaging-app-autopilot \
-             unity8-autopilot \
+#             unity8-autopilot \
              dialer-app-autopilot \
              camera-app-autopilot \
              webbrowser-app-autopilot \
@@ -88,6 +88,12 @@ AP_PACKAGES="address-book-service-dummy \
              ubuntu-html5-ui-toolkit-autopilot \
              ubuntu-system-settings-online-accounts-autopilot"
 #             messaging-app-autopilot \
+
+declare -a UNREGISTERED_APPS=(
+	"com.ubuntu.terminal"
+	"com.ubuntu.calculator"
+	"com.ubuntu.shorts"
+)
 
 fatal_failure () {
     echo -e "\e[31mFailed operation:\e[0m $1"
@@ -178,10 +184,13 @@ function device_comission {
     network
     adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S reboot 2>&1|grep -v password"
     sleep_indicator 120
-    # Required for at least rtm-14.09/mako, phablet-click-test-setup fails otherwise and we don't need terminal
-    adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S click unregister com.ubuntu.terminal 2>&1|grep -v password"
-    # Enable if calculator AP:s broken, to prevent phablet-click-test-setup trying to check out its tests.
-    #adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S click unregister com.ubuntu.calculator 2>&1|grep -v password"
+    # Unregister few apps as they break phablet-click-test-setup or something else
+    echo -e "Unregister few apps"
+    for APP_TO_UNREGISTER in "${UNREGISTERED_APPS[@]}"
+    do
+	echo -e "\e[31m${APP_TO_UNREGISTER}\e[0m"
+	adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S click unregister ${APP_TO_UNREGISTER} 2>&1|grep -v password"
+    done
     echo -e "phablet-click-test-setup  \e[31m${DISTRO} ${SERIES}\e[0m"
     phablet-click-test-setup -s ${SERIALNUMBER} --distribution=${DISTRO} --series=${SERIES} 2>&1 || fatal_failure "phablet-click-test-setup has failed" 
     echo "Sleep after phablet-click-test-setup";
@@ -200,6 +209,9 @@ function device_comission {
             network
             # TODO: hide the sudo output
             adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S  bash -c 'echo \"deb http://ppa.launchpad.net/ci-train-ppa-service/landing-${PPA}/${DISTRO} ${SERIES} main\" > /etc/apt/sources.list.d/silo-${PPA}.list'  2>&1|grep -v password > /dev/null "
+            # pin up the silo
+            adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S  bash -c 'echo -e \"Package: *\nPin: release o=LP-PPA-ci-train-ppa-service-landing-${PPA}\nPin-Priority: 1100\" > /etc/apt/preferences.d/silo.pref' 2>&1|grep -v password > /dev/null "
+            # Resynchronize the package index files from their sources.
             adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S apt-get update 2>&1|grep -v password > /dev/null"
         else
             echo  -e "Set up with the PPA \e[31m${PPA}\e[0m"
@@ -208,7 +220,6 @@ function device_comission {
             network
             adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S  bash -c 'echo \"deb http://ppa.launchpad.net/${PPA}/${DISTRO} ${SERIES} main\" > /etc/apt/sources.list.d/testing-ppa.list' 2>&1|grep -v password > /dev/null"
             adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S apt-get update 2>&1|grep -v password > /dev/null"
-
         fi
     fi
     adb -s ${SERIALNUMBER} shell rm -rf /home/phablet/autopilot/ubuntuuitoolkit
