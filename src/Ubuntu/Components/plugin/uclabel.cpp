@@ -152,7 +152,7 @@ void UCLabel::setTextSize(TextSize size)
  * This property holds an abstract size represented as a string that allows adaptive resizing based
  * on the measurement unit (see Units). The default value is \c "medium".
  *
- * \note Use \l adaptiveSize instead.
+ * \note Use \l textSize instead.
  *
  * Here is the list of allowed strings from the smallest to the largest:
  * \list
