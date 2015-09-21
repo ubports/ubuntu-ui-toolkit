@@ -88,7 +88,6 @@ UCHeader::UCHeader(QQuickItem *parent)
     , m_previous_contentY(0)
     , m_showHideAnimation(new QQuickNumberAnimation)
     , m_flickable(Q_NULLPTR)
-    , m_previous_parent(Q_NULLPTR)
 {
     m_showHideAnimation->setTargetObject(this);
     m_showHideAnimation->setProperty("y");
@@ -99,35 +98,10 @@ UCHeader::UCHeader(QQuickItem *parent)
             this, SLOT(q_showHideAnimationRunningChanged()));
 
     // Watch grid unit size change and set implicit size
-    connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this, SLOT(q_updateSize()));
+//    connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this, SLOT(q_updateSize()));
     connect(this, SIGNAL(heightChanged()), this, SLOT(q_heightChanged()));
 
     // Width and height will be updated when itemChange() is called because the parent is set.
-}
-
-void UCHeader::itemChange(ItemChange change, const ItemChangeData &data)
-{
-    UCStyledItemBase::itemChange(change, data);
-    if (change == QQuickItem::ItemParentHasChanged) {
-        // Connect to the new parent to update header.implicitWidth when parent.width changes.
-        if (!m_previous_parent.isNull()) {
-            disconnect(m_previous_parent, SIGNAL(widthChanged()), this, SLOT(q_updateSize()));
-        }
-        m_previous_parent = data.item;
-        if (!m_previous_parent.isNull()) {
-            connect(m_previous_parent, SIGNAL(widthChanged()), this, SLOT(q_updateSize()));
-        }
-        this->q_updateSize();
-    }
-}
-
-// Called when GU size changes or parent or parent.width changes.
-void UCHeader::q_updateSize()
-{
-    this->setImplicitHeight(UCUnits::instance().gu(IMPLICIT_HEADER_HEIGHT_GU));
-    if (Q_NULLPTR != this->parentItem()) {
-        this->setImplicitWidth(this->parentItem()->width());
-    }
 }
 
 void UCHeader::q_heightChanged() {

@@ -23,10 +23,14 @@ Item {
     width: units.gu(50)
     height: units.gu(70)
 
+    property real initialHeaderHeight: units.gu(6)
+
     Header {
         id: header
         flickable: flickable
         z:1
+        width: parent.width
+        height: root.initialHeaderHeight
 
         Rectangle {
             // to visualize the header
@@ -227,7 +231,7 @@ Item {
             wait_for_exposed(true, "Header with decreased height does not expose.");
 
             // revert to initial state
-            header.height = undefined;
+            header.height = root.initialHeaderHeight;
             flickable.contentY = -header.height;
             wait_for_exposed(true, "Setting flickable.contentY hides the header.");
         }
@@ -245,7 +249,7 @@ Item {
             //  enough space to pull it down.
 
             // revert to original state.
-            header.height = undefined;
+            header.height = root.initialHeaderHeight;
             flickable.contentY = -header.height;
             header.exposed = true;
             wait_for_exposed(true);
@@ -286,7 +290,7 @@ Item {
             wait_for_exposed(true, "Increasing header height at top hides header.");
             compare(flickable.topMargin, header.height, "Updating header height does not update flickable top margin.");
 
-            header.height = undefined; // height becomes implicitHeight now.
+            header.height = root.initialHeaderHeight; // revert
             wait_for_exposed(true, "Reverting header height at top hides header.");
             compare(flickable.topMargin, header.height, "Reverting header height does not revert flickable top margin.");
 
