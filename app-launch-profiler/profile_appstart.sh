@@ -16,16 +16,20 @@
 # Author: Benjamin Zeller <benjamin.zeller@canonical.com>
 #         Zoltán Balogh <zoltan.balogh@canonical.com 
 
-URL=127.0.0.1
+
+
+URL=192.168.1.125
 APP_NAME=dialer-app
 COUNT=100
 SLEEP_TIME=10
+PASSWORD="0000"
 
-while getopts ":u:a:c:s:h" opt; do
+while getopts ":u:p:a:c:s:h" opt; do
     case $opt in
         h)
-            echo "Usage: profile_appstart.sh -u [IP address|local if left empty] -c [count] -a [app] -s [sleep timme]"
+            echo "Usage: profile_appstart.sh -u [IP address|local if left empty] -p [phabelt password] -c [count] -a [app] -s [sleep timme]"
             echo -e "\t-u : The IP address of the profiler:. Default: ${URL}"
+            echo -e "\t-p : Password of the phablet user. Default: ${PASSWORD}"
             echo -e "\t-a : The name of the application. Default: ${APP_NAME}"
             echo -e "\t-c : Number of times the app is started. Default: ${COUNT}"
             echo -e "\t-s : Length of slep between app starts. Default: ${SLEEP_TIME}"
@@ -49,27 +53,34 @@ while getopts ":u:a:c:s:h" opt; do
     esac
 done
 
-echo -e "URL=\t${URL}"
-echo -e "APP_NAME=\t${APP_NAME}"
-echo -e "COUNT=\t${COUNT}"
-echo -e "SLEEP_TIME\t${SLEEP_TIME}"
 if [ ${URL} == local ]; then
-	lttng create
+	echo ${PASSWORD}|sudo -S lttng create
 else
-	lttng create --set-url net://${URL}
+    	nc -z ${URL} 5343
+    	if [ $? -eq 0 ]; then
+        	echo "The lttng server ${URL} is listening on 5343"
+		echo ${PASSWORD}|sudo -S bash -c "lttng create --set-url net://${URL}"	
+    	else
+       		echo "The lttng server is not accesible. Check lttng-relayd or firewall policies."
+		echo "Falling back to local"
+		URL="local"
+	        echo ${PASSWORD}|sudo -S lttng create
+	
+    	fi
 fi
 
-lttng enable-event --userspace qtmir:firstFrameDrawn
-lttng enable-event --userspace app:*
-lttng start
+echo ${PASSWORD}|sudo -S bash -c 'lttng enable-event --userspace qtmir:firstFrameDrawn'
+echo ${PASSWORD}|sudo -S bash -c 'lttng enable-event --userspace app:*'
+echo ${PASSWORD}|sudo -S bash -c 'lttng start'
 
 for x in $(seq 1 ${COUNT}); do
-    echo 1 > /proc/sys/vm/drop_caches
+    echo ${PASSWORD}|sudo -S bash -c 'echo 1 > /proc/sys/vm/drop_caches'
     sleep 1
-    su - phablet -c "/usr/bin/app-launch-tracepoints"
-    su - phablet -c "ubuntu-app-launch ${APP_NAME}"
+    echo "x - $x"
+    echo ${PASSWORD}|sudo -S /usr/bin/app-launch-tracepoints
+    ubuntu-app-launch ${APP_NAME}
     sleep ${SLEEP_TIME}
-    su - phablet -c "ubuntu-app-stop ${APP_NAME}"
+    ubuntu-app-stop ${APP_NAME}
 done
 
-lttng stop
+echo ${PASSWORD}|sudo -S bash -c 'lttng stop'
