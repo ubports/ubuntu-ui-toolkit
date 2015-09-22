@@ -53,7 +53,6 @@ echo -e "URL=\t${URL}"
 echo -e "APP_NAME=\t${APP_NAME}"
 echo -e "COUNT=\t${COUNT}"
 echo -e "SLEEP_TIME\t${SLEEP_TIME}"
-exit
 if [ ${URL} == local ]; then
 	lttng create
 else
