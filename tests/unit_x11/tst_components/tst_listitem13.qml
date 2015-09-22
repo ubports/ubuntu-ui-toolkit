@@ -198,8 +198,8 @@ Item {
             signalName: "onTriggered"
         }
         SignalSpy {
-            id: interactiveSpy
-            signalName: "interactiveChanged"
+            id: flickableSpy
+            signalName: "movementStarted"
         }
 
         SignalSpy {
@@ -227,7 +227,7 @@ Item {
             actionSpy.clear();
             pressAndHoldSpy.clear();
             buttonSpy.clear();
-            interactiveSpy.clear();
+            flickableSpy.clear();
             listView.interactive = true;
             listView.ViewItems.selectMode = false;
             listView.ViewItems.dragMode = false;
@@ -235,8 +235,8 @@ Item {
             mouseClick(defaults, 0, 0)
             movingSpy.target = null;
             movingSpy.clear();
-            interactiveSpy.target = null;
-            interactiveSpy.clear();
+            flickableSpy.target = null;
+            flickableSpy.clear();
             trailing.delegate = null;
             listView.positionViewAtBeginning();
             // keep additional timeout for proper cleanup
@@ -466,17 +466,15 @@ Item {
         }
         function test_listview_not_interactive_while_tugged(data) {
             listView.positionViewAtBeginning();
-            interactiveSpy.target = listView;
+            flickableSpy.target = listView;
             compare(listView.interactive, true, "ListView is not interactive");
-            interactiveSpy.target = listView;
             if (data.mouse) {
-                swipe(data.item, data.pos.x, data.pos.y, data.dx, data.dy);
+                swipe(data.item, data.pos.x, data.pos.y, data.dx, units.gu(5));
             } else {
-                tug(data.item, data.pos.x, data.pos.y, data.dx, data.dy);
+                tug(data.item, data.pos.x, data.pos.y, data.dx, units.gu(5));
             }
             // animation should no longer be running!
-            compare(listView.interactive, true, "The ListView is still non-interactive!");
-            compare(interactiveSpy.count, 2, "Less/more times changed!");
+            compare(flickableSpy.count, 0, "Flickable moved!");
             // check if it snapped in
             verify(data.item.contentItem.x != 0.0, "Not snapped in!!");
             // dismiss
@@ -744,11 +742,12 @@ Item {
         function test_listitem_blocks_ascendant_flickables() {
             var listItem = findChild(nestedListView, "listItem0");
             verify(listItem, "Cannot find test item");
-            interactiveSpy.target = testFlickable;
+            flickableSpy.target = testFlickable;
             // tug leading
             swipe(listItem, centerOf(listItem).x, centerOf(listItem).y, listItem.width / 2, 0);
             // check if interactive got changed
-            interactiveSpy.wait();
+            expectFailContinue("", "Flickable should not move.");
+            flickableSpy.wait(200);
 
             // cleanup!!!
             rebound(listItem);
@@ -1200,7 +1199,7 @@ Item {
 
             var icon = findChild(testItem, data.action);
             verify(icon);
-            compare(icon.width, units.gu(5), "icon width should be the same no matter of the height set");
+            compare(icon.width, units.gu(6), "icon width should be the same no matter of the height set");
 
             rebound(testItem);
 

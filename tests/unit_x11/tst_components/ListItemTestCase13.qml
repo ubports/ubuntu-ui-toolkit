@@ -76,10 +76,24 @@ UbuntuTestCase {
         flick(item, x, y, dx, dy, 0, 0, undefined, undefined, 100);
     }
 
+    // touch swipes
+    function swipeTouch(touchId, item, x, y, dx, dy) {
+        setupSpy(item, "contentMovementEnded");
+        flickTouch(touchId, item, x, y, dx, dy, 0, 100);
+        spyWait();
+    }
+    function swipeTouchNoWait(touchId, item, x, y, dx, dy) {
+        flickTouch(touchId, item, x, y, dx, dy, 0, 100);
+    }
+
     function tug(item, x, y, dx, dy) {
         setupSpy(item, "contentMovementEnded");
         TestExtras.touchDrag(0, item, Qt.point(x, y), Qt.point(dx, dy));
         spyWait();
+    }
+
+    function tugNoWait(item, x, y, dx, dy) {
+        TestExtras.touchDrag(0, item, Qt.point(x, y), Qt.point(dx, dy));
     }
 
     // returns the leading or trailing panel item

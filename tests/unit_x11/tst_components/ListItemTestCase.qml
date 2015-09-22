@@ -82,6 +82,10 @@ UbuntuTestCase {
         spyWait();
     }
 
+    function tugNoWait(item, x, y, dx, dy) {
+        TestExtras.touchDrag(0, item, Qt.point(x, y), Qt.point(dx, dy));
+    }
+
     // returns the leading or trailing panel item
     function panelItem(item, leading) {
         return findInvisibleChild(item, (leading ? "ListItemPanelLeading" : "ListItemPanelTrailing"));
