@@ -236,10 +236,6 @@ void UCHeader::_q_showHideAnimationRunningChanged() {
  * or it will be automatically updated when the user exposes or hides the Header
  * by scrolling the Header's \l flickable.
  */
-bool UCHeader::exposed() {
-    return m_exposed;
-}
-
 void UCHeader::setExposed(bool exposed) {
     if (exposed) {
         show();

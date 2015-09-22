@@ -28,9 +28,9 @@ class PropertyChange;
 class UCHeader : public UCStyledItemBase
 {
     Q_OBJECT
-    Q_PROPERTY(QQuickFlickable* flickable READ flickable WRITE setFlickable NOTIFY flickableChanged)
-    Q_PROPERTY(bool exposed READ exposed WRITE setExposed NOTIFY exposedChanged)
-    Q_PROPERTY(bool moving READ moving NOTIFY movingChanged)
+    Q_PROPERTY(QQuickFlickable* flickable READ flickable WRITE setFlickable NOTIFY flickableChanged FINAL)
+    Q_PROPERTY(bool exposed MEMBER m_exposed WRITE setExposed NOTIFY exposedChanged FINAL)
+    Q_PROPERTY(bool moving READ moving NOTIFY movingChanged FINAL)
 
 public:
     explicit UCHeader(QQuickItem *parent = 0);
@@ -38,7 +38,6 @@ public:
 
     QQuickFlickable* flickable();
     void setFlickable(QQuickFlickable* flickable);
-    bool exposed();
     void setExposed(bool exposed);
     bool moving();
 
