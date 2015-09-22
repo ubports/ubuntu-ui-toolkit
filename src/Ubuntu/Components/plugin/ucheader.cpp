@@ -129,45 +129,47 @@ QQuickFlickable* UCHeader::flickable() {
 }
 
 void UCHeader::setFlickable(QQuickFlickable *flickable) {
-    if (m_flickable != flickable) {
-        if (!m_flickable.isNull()) {
-            // Finish the current header movement in case the current
-            //  flickable is disconnected while scrolling.
-            this->_q_flickableMovementEnded();
-            m_flickable->disconnect(this);
-            m_flickable->setTopMargin(0.0);
-        }
+    if (m_flickable == flickable) {
+        return;
+    }
+    if (!m_flickable.isNull()) {
+        // Finish the current header movement in case the current
+        //  flickable is disconnected while scrolling.
+        this->_q_flickableMovementEnded();
+        m_flickable->disconnect(this);
+        m_flickable->setTopMargin(0.0);
+    }
 
-        m_flickable = flickable;
-        Q_EMIT flickableChanged();
+    m_flickable = flickable;
+    Q_EMIT flickableChanged();
 
-        if (!m_flickable.isNull()) {
-            connect(m_flickable, SIGNAL(contentYChanged()),
-                    this, SLOT(_q_scrolledContents()));
-            connect(m_flickable, SIGNAL(movementEnded()),
-                    this, SLOT(_q_flickableMovementEnded()));
-            connect(m_flickable, SIGNAL(contentHeightChanged()),
-                    this, SLOT(_q_contentHeightChanged()));
-            connect(m_flickable, SIGNAL(interactiveChanged()),
-                    this, SLOT(_q_flickableInteractiveChanged()));
-            m_previous_contentY = m_flickable->contentY();
-            this->updateFlickableMargins();
-            this->show();
-        }
+    if (!m_flickable.isNull()) {
+        connect(m_flickable, SIGNAL(contentYChanged()),
+                this, SLOT(_q_scrolledContents()));
+        connect(m_flickable, SIGNAL(movementEnded()),
+                this, SLOT(_q_flickableMovementEnded()));
+        connect(m_flickable, SIGNAL(contentHeightChanged()),
+                this, SLOT(_q_contentHeightChanged()));
+        connect(m_flickable, SIGNAL(interactiveChanged()),
+                this, SLOT(_q_flickableInteractiveChanged()));
+        m_previous_contentY = m_flickable->contentY();
+        this->updateFlickableMargins();
+        this->show();
     }
 }
 
 void UCHeader::updateFlickableMargins() {
-    if (!m_flickable.isNull()) {
-        qreal headerHeight = this->height();
-        qreal previousHeaderHeight = m_flickable->topMargin();
-        if (headerHeight != previousHeaderHeight) {
-            qreal previousContentY = m_flickable->contentY();
-            m_flickable->setTopMargin(headerHeight);
-            // Push down contents when header grows,
-            //  pull up contents when header shrinks.
-            m_flickable->setContentY(previousContentY - headerHeight + previousHeaderHeight);
-        }
+    if (m_flickable.isNull()) {
+        return;
+    }
+    qreal headerHeight = this->height();
+    qreal previousHeaderHeight = m_flickable->topMargin();
+    if (headerHeight != previousHeaderHeight) {
+        qreal previousContentY = m_flickable->contentY();
+        m_flickable->setTopMargin(headerHeight);
+        // Push down contents when header grows,
+        //  pull up contents when header shrinks.
+        m_flickable->setContentY(previousContentY - headerHeight + previousHeaderHeight);
     }
 }
 
