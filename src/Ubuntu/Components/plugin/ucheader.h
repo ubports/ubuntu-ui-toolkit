@@ -23,6 +23,7 @@
 class QQuickFlickable;
 class QQuickNumberAnimation;
 class UCUbuntuAnimation;
+class PropertyChange;
 
 class UCHeader : public UCStyledItemBase
 {
@@ -60,6 +61,7 @@ private Q_SLOTS:
 private:
     QPointer<QQuickFlickable> m_flickable;
     QQuickNumberAnimation* m_showHideAnimation;
+    PropertyChange* m_flickableTopMarginBackup;
 
     qreal m_previous_contentY;
     bool m_exposed:1;

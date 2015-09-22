@@ -31,7 +31,6 @@ Item {
         z:1
         width: parent.width
         height: root.initialHeaderHeight
-        onMovingChanged: print("moving = "+moving)
 
         Rectangle {
             // to visualize the header
@@ -142,6 +141,8 @@ Item {
 
     Flickable {
         id: otherFlickable
+        property real initialTopMargin: 123
+        topMargin: initialTopMargin
         height: units.gu(10)
         contentHeight: units.gu(20);
     }
@@ -304,13 +305,13 @@ Item {
             wait_for_exposed(true, "Reverting header height at top hides header.");
             compare(flickable.topMargin, header.height, "Reverting header height does not revert flickable top margin.");
 
-            compare(otherFlickable.topMargin, 0, "Flickable top margin is not 0 by default.");
+            compare(otherFlickable.topMargin, otherFlickable.initialTopMargin, "Flickable top margin is not initialized properly.");
             header.flickable = otherFlickable;
             compare(otherFlickable.topMargin, header.height, "Setting flickable does not update flickable top margin.");
             compare(flickable.topMargin, 0, "Changing the flickable does not reset the previous flickable top margin to 0.");
 
             header.flickable = flickable;
-            compare(otherFlickable.topMargin, 0, "Reverting flickable does not reset the other flickable top margin to 0.");
+            compare(otherFlickable.topMargin, otherFlickable.initialTopMargin, "Reverting flickable does not restore the other flickable top margin.");
             compare(flickable.topMargin, header.height, "Reverting flickable breaks flickable top margin.");
         }
 

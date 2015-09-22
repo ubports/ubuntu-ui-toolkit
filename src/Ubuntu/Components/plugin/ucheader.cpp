@@ -21,6 +21,7 @@
 #include <QtQuick/private/qquickanimation_p.h>
 #include "ucubuntuanimation.h"
 #include "ucunits.h"
+#include "propertychange_p.h"
 
 
 /*!
@@ -82,6 +83,7 @@ UCHeader::UCHeader(QQuickItem *parent)
     : UCStyledItemBase(parent)
     , m_flickable(Q_NULLPTR)
     , m_showHideAnimation(new QQuickNumberAnimation)
+    , m_flickableTopMarginBackup(Q_NULLPTR)
     , m_previous_contentY(0)
     , m_exposed(true)
     , m_moving(false)
@@ -133,17 +135,23 @@ void UCHeader::setFlickable(QQuickFlickable *flickable) {
         return;
     }
     if (!m_flickable.isNull()) {
+        Q_ASSERT(m_flickableTopMarginBackup != Q_NULLPTR);
+
         // Finish the current header movement in case the current
         //  flickable is disconnected while scrolling.
         _q_flickableMovementEnded();
         m_flickable->disconnect(this);
-        m_flickable->setTopMargin(0.0);
+
+        delete m_flickableTopMarginBackup; // Restores previous value/binding for topMargin.
+        m_flickableTopMarginBackup = Q_NULLPTR;
     }
 
     m_flickable = flickable;
     Q_EMIT flickableChanged();
 
+    Q_ASSERT(m_flickableTopMarginBackup == Q_NULLPTR);
     if (!m_flickable.isNull()) {
+        m_flickableTopMarginBackup = new PropertyChange(m_flickable, "topMargin");
         connect(m_flickable, SIGNAL(contentYChanged()),
                 this, SLOT(_q_scrolledContents()));
         connect(m_flickable, SIGNAL(movementEnded()),
@@ -166,7 +174,7 @@ void UCHeader::updateFlickableMargins() {
     qreal previousHeaderHeight = m_flickable->topMargin();
     if (headerHeight != previousHeaderHeight) {
         qreal previousContentY = m_flickable->contentY();
-        m_flickable->setTopMargin(headerHeight);
+        PropertyChange::setValue(m_flickableTopMarginBackup, headerHeight);
         // Push down contents when header grows,
         //  pull up contents when header shrinks.
         m_flickable->setContentY(previousContentY - headerHeight + previousHeaderHeight);
