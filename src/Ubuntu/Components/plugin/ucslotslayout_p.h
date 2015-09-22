@@ -48,7 +48,15 @@ public:
     void init();
     void updateTopBottomPaddingIfNeeded();
 
-    qreal populateSlotsListsAndComputeWidth();
+    //utility method that scans a list and adds the slot after all the slots which
+    //have same position
+    void insertSlotIntoSortedList(QQuickItem *slot,
+                                  UCSlotsLayout::UCSlotPosition desiredSlotPosition,
+                                  QList<QQuickItem *> &slotsList);
+
+    //add or remove a slot from the internal data structures
+    void addSlot(QQuickItem *slot);
+    void removeSlot(QQuickItem *slot);
 
     //layout "items" in a row, optionally anchoring the row to a sibling with margin siblingAnchorMargin
     //The optional anchoring behaviour can be disable by passing QQuickAnchorLine()
@@ -82,6 +90,7 @@ public:
     void _q_onMainSlotHeightChanged();
     void _q_updateSlotsBBoxHeight();
     void _q_updateSize();
+    void _q_onSlotPositionChanged();
     void _q_relayout();
 
     UCSlotsLayoutPadding padding;

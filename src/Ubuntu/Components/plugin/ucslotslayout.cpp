@@ -98,6 +98,80 @@ void UCSlotsLayoutPrivate::updateTopBottomPaddingIfNeeded()
     return;
 }
 
+void UCSlotsLayoutPrivate::insertSlotIntoSortedList(QQuickItem *slot,
+                                                    UCSlotsLayout::UCSlotPosition desiredSlotPosition,
+                                                    QList<QQuickItem *> &slotsList)
+{
+    if (slot == Q_NULLPTR) {
+        qDebug() << "insertSlotIntoSortedList: INVALID POINTER!";
+        return;
+    }
+
+    //linear search, as these lists will be very short
+    int i = 0;
+    const int size = slotsList.length();
+    for (i = 0; i < size; ++i) {
+        UCSlotsAttached *attachedProperty =
+                qobject_cast<UCSlotsAttached *>(qmlAttachedPropertiesObject<UCSlotsLayout>(slotsList.at(i)));
+
+        if (!attachedProperty) {
+            Q_Q(UCSlotsLayout);
+            qmlInfo(q) << "Invalid attached property!";
+            return;
+        }
+
+        if (attachedProperty->position() > desiredSlotPosition) {
+            break;
+        }
+    }
+
+    slotsList.insert(i, slot);
+}
+
+void UCSlotsLayoutPrivate::addSlot(QQuickItem *slot)
+{
+    if (slot == Q_NULLPTR) {
+        qDebug() << "addSlot: INVALID POINTER!";
+        return;
+    }
+
+    Q_Q(UCSlotsLayout);
+    UCSlotsAttached *attachedProperty =
+            qobject_cast<UCSlotsAttached *>(qmlAttachedPropertiesObject<UCSlotsLayout>(slot));
+    if (!attachedProperty) {
+        qmlInfo(q) << "Invalid attached property!";
+        return;
+    }
+
+    if (attachedProperty->position() <= 0) {
+        insertSlotIntoSortedList(slot, attachedProperty->position(), leadingSlots);
+    } else {
+        insertSlotIntoSortedList(slot, attachedProperty->position(), trailingSlots);
+    }
+}
+
+void UCSlotsLayoutPrivate::removeSlot(QQuickItem *slot)
+{
+    if (slot == Q_NULLPTR) {
+        qDebug() << "addSlot: INVALID POINTER!";
+        return;
+    }
+
+    Q_Q(UCSlotsLayout);
+    UCSlotsAttached *attachedProperty =
+            qobject_cast<UCSlotsAttached *>(qmlAttachedPropertiesObject<UCSlotsLayout>(slot));
+    if (!attachedProperty) {
+        qmlInfo(q) << "Invalid attached property!";
+        return;
+    }
+
+    if (attachedProperty->position() <= 0) {
+        leadingSlots.removeAll(slot);
+    } else {
+        trailingSlots.removeAll(slot);
+    }
+}
+
 void UCSlotsLayoutPrivate::_q_onGuValueChanged()
 {
     _q_onMainSlotHeightChanged();
@@ -160,15 +234,14 @@ void UCSlotsLayoutPrivate::_q_updateSlotsBBoxHeight()
     Q_Q(UCSlotsLayout);
 
     qreal maxSlotsHeightTmp = 0;
-    const int size = q->childItems().count();
-    for (int i = 0; i < size; i++) {
-        QQuickItem *child = q->childItems().at(i);
+    const int numOfLeading = leadingSlots.count();
+    const int numOfTrailing = trailingSlots.count();
+    //instead of having 2 cycles we only make one which iterates over both lists
+    for (int i = 0; i < numOfLeading + numOfTrailing; i++) {
+        QQuickItem *child = i < numOfLeading
+                ? leadingSlots.at(i)
+                : trailingSlots.at(i - numOfLeading);
 
-        //skip mainSlot, we want to know the max height of the slots, mainSlot excluded
-        if (child == mainSlot)
-            continue;
-
-        //ignore children which have custom vertical positioning
         UCSlotsAttached *attachedProperty =
                 qobject_cast<UCSlotsAttached *>(qmlAttachedPropertiesObject<UCSlotsLayout>(child));
 
@@ -177,6 +250,7 @@ void UCSlotsLayoutPrivate::_q_updateSlotsBBoxHeight()
             continue;
         }
 
+        //ignore children which have custom vertical positioning
         if (!attachedProperty->overrideVerticalPositioning())
             maxSlotsHeightTmp = qMax<qreal>(maxSlotsHeightTmp, child->height()
                                             + attachedProperty->padding()->top()
@@ -201,109 +275,32 @@ void UCSlotsLayoutPrivate::_q_updateSize()
     _q_relayout();
 }
 
-qreal UCSlotsLayoutPrivate::populateSlotsListsAndComputeWidth()
+void UCSlotsLayoutPrivate::_q_onSlotPositionChanged()
 {
     Q_Q(UCSlotsLayout);
-
-    leadingSlots.clear();
-    trailingSlots.clear();
-    int numberOfLeadingBeginningSlots = 0;
-    int numberOfLeadingEndSlots = 0;
-    int numberOfTrailingBeginningSlots = 0;
-    int numberOfTrailingEndSlots = 0;
-    int indexToInsertAt = -1;
-
-    //the total width of the visible slots, paddings included
-    qint32 totalWidth = 0;
-
-    const int size = q->childItems().count();
-    for (int i = 0; i < size; i++) {
-        QQuickItem *child = q->childItems().at(i);
-        indexToInsertAt = -1;
-
-        //NOTE: skip mainSlot, as we handle is separately
-        if (child == mainSlot) {
-            continue;
-        }
-
-        if (!child->isVisible()) {
-            continue;
-        }
-
-        UCSlotsAttached *attached =
-                qobject_cast<UCSlotsAttached *>(qmlAttachedPropertiesObject<UCSlotsLayout>(child));
-
-        if (!attached) {
-            qmlInfo(q) << "Invalid attached property!";
-            continue;
-        }
-
-        if (attached->position() == UCSlotsLayout::Leading
-                || attached->position() == UCSlotsLayout::LeadingBeginning
-                || attached->position() == UCSlotsLayout::LeadingEnd) {
-
-            int totalLeadingSlots = leadingSlots.length();
-            if (leadingSlots.length() < maxNumberOfLeadingSlots) {
-                switch (attached->position()) {
-                case UCSlotsLayout::LeadingBeginning:
-                    indexToInsertAt = numberOfLeadingBeginningSlots;
-                    ++numberOfLeadingBeginningSlots;
-                    break;
-                case UCSlotsLayout::Leading:
-                    indexToInsertAt = totalLeadingSlots - numberOfLeadingEndSlots;
-                    break;
-                case UCSlotsLayout::LeadingEnd:
-                    indexToInsertAt = totalLeadingSlots;
-                    ++numberOfLeadingEndSlots;
-                    break;
-                default:
-                    break;
-                }
-
-                leadingSlots.insert(indexToInsertAt, child);
-                totalWidth += child->width() + attached->padding()->leading() + attached->padding()->trailing();
-            } else {
-                qmlInfo(q) << "This layout only allows up to " << maxNumberOfLeadingSlots
-                           << " leading slots. Please remove any additional leading slot.";
-                continue;
-            }
-
-        } else if (attached->position() == UCSlotsLayout::Trailing
-                   || attached->position() == UCSlotsLayout::TrailingBeginning
-                   || attached->position() == UCSlotsLayout::TrailingEnd) {
-
-            int totalTrailingSlots = trailingSlots.length();
-            if (trailingSlots.length() < maxNumberOfTrailingSlots) {
-                switch (attached->position()) {
-                case UCSlotsLayout::TrailingBeginning:
-                    indexToInsertAt = numberOfTrailingBeginningSlots;
-                    ++numberOfTrailingBeginningSlots;
-                    break;
-                case UCSlotsLayout::Trailing:
-                    indexToInsertAt = totalTrailingSlots - numberOfTrailingEndSlots;
-                    break;
-                case UCSlotsLayout::TrailingEnd:
-                    indexToInsertAt = totalTrailingSlots;
-                    ++numberOfTrailingEndSlots;
-                    break;
-                default:
-                    break;
-                }
-
-                trailingSlots.insert(indexToInsertAt, child);
-                totalWidth += child->width() + attached->padding()->leading() + attached->padding()->trailing();
-            } else {
-                qmlInfo(q) << "This layout only allows up to " << maxNumberOfTrailingSlots
-                           << " trailing slots. Please remove any additional trailing slot.";
-                continue;
-            }
-        } else {
-            qmlInfo(q) << "Unrecognized position value!";
-            continue;
-        }
+    UCSlotsAttached *sender = qobject_cast<UCSlotsAttached *>(q->sender());
+    if (sender == Q_NULLPTR) {
+        qDebug() << "onSlotPositionChanged: NULL SENDER";
+        return;
     }
 
-    return totalWidth;
+    QQuickItem *slot = qobject_cast<QQuickItem*>(sender->parent());
+    if (slot == Q_NULLPTR) {
+        qDebug() << "onSlotPositionChanged: NULL SLOT";
+        return;
+    }
+
+    //The slot may have changed position within the same group of slots
+    //(i.e. it is still a leading or still a trailing slot) or it may
+    //have switched from one group to the other. In any case,
+    //remove the slot and add it back in the correct place.
+    //We remove it from both the arrays as we don't know what its old
+    //position was
+    leadingSlots.removeAll(slot);
+    trailingSlots.removeAll(slot);
+    addSlot(slot);
+
+    _q_relayout();
 }
 
 void UCSlotsLayoutPrivate::setupSlotsVerticalPositioning(QQuickItem *slot, UCSlotsAttached* attached)
@@ -398,28 +395,77 @@ void UCSlotsLayoutPrivate::_q_relayout()
         return;
     }
 
-    qreal totalSlotsWidth = populateSlotsListsAndComputeWidth();
+    //total width of the slots that we're going to do the layout of.
+    //this excludes mainSlot and the slots which have been skipped because
+    //they're !visible or similar conditions
+    qreal totalSlotsWidth = 0;
 
-    QList<QQuickItem *> itemsToLayout(leadingSlots);
+    //let's check the current visibility of our children and skip the
+    //invisible slots
+    QList<QQuickItem *> itemsToLayout;
+    const int numOfLeading = leadingSlots.count();
+    const int numOfTrailing = trailingSlots.count();
+    int numOfLeadingToLayout = 0;
+    int numOfTrailingToLayout = 0;
+    //instead of having 2 cycles we only make one which iterates over both lists
+    for (int i = 0; i < numOfLeading + numOfTrailing; i++) {
+        QQuickItem *child = i < numOfLeading
+                ? leadingSlots.at(i)
+                : trailingSlots.at(i - numOfLeading);
+
+        bool skipSlot = !child->isVisible();
+        if (i < numOfLeading) {
+            if (numOfLeadingToLayout >= maxNumberOfLeadingSlots) {
+                skipSlot = true;
+                qmlInfo(q) << "This layout only allows up to " << maxNumberOfLeadingSlots
+                           << " leading slots. Please remove any additional leading slot.";
+            } else {
+                if (!skipSlot)
+                    numOfLeadingToLayout++;
+            }
+        } else {
+            if (numOfTrailingToLayout >= maxNumberOfTrailingSlots) {
+                skipSlot = true;
+                qmlInfo(q) << "This layout only allows up to " << maxNumberOfTrailingSlots
+                           << " trailing slots. Please remove any additional trailing slot.";
+
+            } else {
+                if (!skipSlot)
+                    numOfTrailingToLayout++;
+            }
+        }
+        if (!skipSlot) {
+            itemsToLayout.append(child);
+            UCSlotsAttached *attached =
+                    qobject_cast<UCSlotsAttached *>(qmlAttachedPropertiesObject<UCSlotsLayout>(child));
+
+            if (!attached) {
+                qmlInfo(q) << "Invalid attached property!";
+                continue;
+            }
+            totalSlotsWidth += child->width() + attached->padding()->leading()
+                    + attached->padding()->trailing();
+        }
+    }
 
     if (mainSlot) {
-        itemsToLayout.append(mainSlot);
+        //insert between leading and trailing
+        itemsToLayout.insert(numOfLeadingToLayout, mainSlot);
 
-        UCSlotsAttached *attachedSlot =
+        UCSlotsAttached *attachedProps =
                 qobject_cast<UCSlotsAttached *>(qmlAttachedPropertiesObject<UCSlotsLayout>(mainSlot));
 
-        if (!attachedSlot) {
+        if (!attachedProps) {
             qmlInfo(q) << "Invalid attached property!";
             return;
         }
         mainSlot->setImplicitWidth(q->width() - totalSlotsWidth
-                                   - attachedSlot->padding()->leading() - attachedSlot->padding()->trailing()
+                                   - attachedProps->padding()->leading()
+                                   - attachedProps->padding()->trailing()
                                    - padding.leading() - padding.trailing());
     } else {
         Q_UNUSED(totalSlotsWidth);
     }
-
-    itemsToLayout.append(trailingSlots);
 
     layoutInRow(padding.leading(), left(), itemsToLayout);
 }
@@ -436,14 +482,14 @@ void UCSlotsLayoutPrivate::handleAttachedPropertySignals(QQuickItem *item, bool 
     }
 
     if (connect) {
-        QObject::connect(attachedSlot, SIGNAL(positionChanged()), q, SLOT(_q_relayout()));
+        QObject::connect(attachedSlot, SIGNAL(positionChanged()), q, SLOT(_q_onSlotPositionChanged()));
         QObject::connect(attachedSlot->padding(), SIGNAL(leadingChanged()), q, SLOT(_q_relayout()));
         QObject::connect(attachedSlot->padding(), SIGNAL(trailingChanged()), q, SLOT(_q_relayout()));
         QObject::connect(attachedSlot->padding(), SIGNAL(topChanged()), q, SLOT(_q_updateSlotsBBoxHeight()));
         QObject::connect(attachedSlot->padding(), SIGNAL(bottomChanged()), q, SLOT(_q_updateSlotsBBoxHeight()));
         QObject::connect(attachedSlot, SIGNAL(overrideVerticalPositioningChanged()), q, SLOT(_q_relayout()));
     } else {
-        QObject::disconnect(attachedSlot, SIGNAL(positionChanged()), q, SLOT(_q_relayout()));
+        QObject::disconnect(attachedSlot, SIGNAL(positionChanged()), q, SLOT(_q_onSlotPositionChanged()));
         QObject::disconnect(attachedSlot->padding(), SIGNAL(leadingChanged()), q, SLOT(_q_relayout()));
         QObject::disconnect(attachedSlot->padding(), SIGNAL(trailingChanged()), q, SLOT(_q_relayout()));
         QObject::disconnect(attachedSlot->padding(), SIGNAL(topChanged()), q, SLOT(_q_updateSlotsBBoxHeight()));
@@ -603,6 +649,7 @@ void UCSlotsLayout::itemChange(ItemChange change, const ItemChangeData &data)
             //we relayout because we have to update the width of the main slot
             //TODO: do this in a separate function? do were really have to do the whole relayout?
             if (data.item != d->mainSlot) {
+                d->addSlot(data.item);
                 QObject::connect(data.item, SIGNAL(widthChanged()), this, SLOT(_q_relayout()));
                 QObject::connect(data.item, SIGNAL(heightChanged()), this, SLOT(_q_updateSlotsBBoxHeight()));
                 d->_q_updateSlotsBBoxHeight();
@@ -621,6 +668,7 @@ void UCSlotsLayout::itemChange(ItemChange change, const ItemChangeData &data)
             QObject::disconnect(data.item, SIGNAL(visibleChanged()), this, SLOT(_q_relayout()));
 
             if (data.item != d->mainSlot) {
+                d->removeSlot(data.item);
                 QObject::disconnect(data.item, SIGNAL(widthChanged()), this, SLOT(_q_relayout()));
                 QObject::disconnect(data.item, SIGNAL(heightChanged()), this, SLOT(_q_updateSlotsBBoxHeight()));
                 d->_q_updateSlotsBBoxHeight();

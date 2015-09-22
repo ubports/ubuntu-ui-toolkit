@@ -43,8 +43,12 @@ public:
 
     UCSlotsLayoutPadding *padding();
 
-    enum UCSlotPosition { LeadingBeginning, Leading, LeadingEnd,
-                          TrailingBeginning, Trailing, TrailingEnd };
+    enum UCSlotPosition {
+        First = INT_MIN,
+        Leading = INT_MIN/2,
+        Trailing = INT_MAX/2,
+        Last = INT_MAX
+    };
 
     static UCSlotsAttached *qmlAttachedProperties(QObject *object);
 
@@ -63,6 +67,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_onMainSlotHeightChanged())
     Q_PRIVATE_SLOT(d_func(), void _q_updateSlotsBBoxHeight())
     Q_PRIVATE_SLOT(d_func(), void _q_updateSize())
+    Q_PRIVATE_SLOT(d_func(), void _q_onSlotPositionChanged())
     Q_PRIVATE_SLOT(d_func(), void _q_relayout())
 };
 QML_DECLARE_TYPEINFO(UCSlotsLayout, QML_HAS_ATTACHED_PROPERTIES)

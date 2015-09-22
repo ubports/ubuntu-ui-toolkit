@@ -424,7 +424,7 @@ Item {
         function test_changeSlotPosition() {
             checkSlotsPosition(layoutTestChangeSlotPosition)
             layoutTestChangeSlotPosition.leadingSlots[0].SlotsLayout.position = SlotsLayout.Trailing
-            compare(layoutTestChangeSlotPosition.leadingSlots[0].SlotsLayout.position, SlotsLayout.Trailing, "Slot's positiong change")
+            compare(layoutTestChangeSlotPosition.leadingSlots[0].SlotsLayout.position, SlotsLayout.Trailing, "Slot's position change")
 
             layoutTestChangeSlotPosition.trailingSlots = [layoutTestChangeSlotPosition.leadingSlots[0]]
             layoutTestChangeSlotPosition.leadingSlots = []

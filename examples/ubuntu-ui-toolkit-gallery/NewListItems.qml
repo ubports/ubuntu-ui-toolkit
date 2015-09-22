@@ -42,15 +42,16 @@ Template {
                 ]
             }
 
-            onClicked: layout.visible = !layout.visible
-
+            onClicked: icon.SlotsLayout.position = (icon.SlotsLayout.position == SlotsLayout.Leading
+                                                    ? SlotsLayout.Trailing
+                                                    : SlotsLayout.Leading)
             ListItemLayout {
                 id: layout
 
                 title.text: "Hello designers!"
                 subtitle.text:  "Once upon a time there was a chicken running on something that fell over something else to create an explosion"
 
-                Icon { SlotsLayout.position: SlotsLayout.Leading; width: units.gu(2); name: "email" }
+                Icon { id: icon; SlotsLayout.position: SlotsLayout.Leading; width: units.gu(2); name: "email" }
                 Icon { width: units.gu(2); name: "message" }
                 CheckBox {  }
             }
@@ -525,7 +526,7 @@ Template {
                 LayoutMirroring.enabled: true
                 LayoutMirroring.childrenInherit: true
 
-                /*ProgressionSlot {}
+                //ProgressionSlot {}
 
                 //see http://bazaar.launchpad.net/~ubuntu-branches/ubuntu/wily/ubuntu-system-settings/wily-proposed/view/head:/src/qml/EntryComponent.qml
                 Icon {
@@ -533,7 +534,7 @@ Template {
                     width: units.gu(6);
                     height: units.gu(6);
                     name: "facebook"
-                }*/
+                }
             }
         }
     }
