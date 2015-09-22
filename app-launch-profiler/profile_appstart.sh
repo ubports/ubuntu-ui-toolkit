@@ -17,12 +17,11 @@
 #         Zoltán Balogh <zoltan.balogh@canonical.com 
 
 URL=127.0.0.1
-LOCAL=false
 APP_NAME=dialer-app
 COUNT=100
 SLEEP_TIME=10
 
-while getopts ":h:u:a:c:s:" opt; do
+while getopts ":u:a:c:s:h" opt; do
     case $opt in
         h)
             echo "Usage: profile_appstart.sh -u [IP address|local if left empty] -c [count] -a [app] -s [sleep timme]"
@@ -33,12 +32,7 @@ while getopts ":h:u:a:c:s:" opt; do
             exit
             ;;
         u)
-            if [ -d "$OPTARG" ]; then
-                URL=$OPTARG
-            else
-                echo "$OPTARG does not exist. Creating local output"
-		LOCAL=true
-            fi
+            URL=$OPTARG
             ;;
         a)
             APP_NAME=$OPTARG
@@ -55,7 +49,12 @@ while getopts ":h:u:a:c:s:" opt; do
     esac
 done
 
-if [ ${LOCAL} == true ]; then
+echo -e "URL=\t${URL}"
+echo -e "APP_NAME=\t${APP_NAME}"
+echo -e "COUNT=\t${COUNT}"
+echo -e "SLEEP_TIME\t${SLEEP_TIME}"
+exit
+if [ ${URL} == local ]; then
 	lttng create
 else
 	lttng create --set-url net://${URL}
