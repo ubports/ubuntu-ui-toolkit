@@ -18,6 +18,7 @@
 #include "ucfontutils.h"
 #include "ucunits.h"
 #include "uctheme.h"
+#include "quickutils.h"
 
 void UCLabel::updatePixelSize()
 {
@@ -176,17 +177,19 @@ void UCLabel::setFontSize(const QString& fontSize)
     static bool logOnce = false;
     if (!logOnce) {
         logOnce = true;
-        qmlInfo(this) << "'fontSize' is deprecated, use 'textSize' property instead.";
+        if (QuickUtils::showDeprecationWarnings()) {
+            qmlInfo(this) << "'fontSize' is deprecated, use 'textSize' property instead.";
+        }
     }
 
     TextSize textSize;
-    switch (reinterpret_cast<int*>(fontSize.toLatin1().data())[0]) {
-        case /*"medi"*/0x6964656d: { textSize = Medium; break; }
-        case /*"larg"*/0x6772616c: { textSize = Large; break; }
-        case /*"smal"*/0x6c616d73: { textSize = Small; break; }
-        case /*"x-la"*/0x616c2d78: { textSize = XLarge; break; }
-        case /*"x-sm"*/0x6d732d78: { textSize = XSmall; break; }
-        case /*"xx-s"*/0x732d7878: { textSize = XxSmall; break; }
+    switch (SCALE_CODE(fontSize)) {
+        case SCALE_MEDIUM: { textSize = Medium; break; }
+        case SCALE_LARGE: { textSize = Large; break; }
+        case SCALE_SMALL: { textSize = Small; break; }
+        case SCALE_XLARGE: { textSize = XLarge; break; }
+        case SCALE_XSMALL: { textSize = XSmall; break; }
+        case SCALE_XXSMALL: { textSize = XxSmall; break; }
         default: { return; }
     }
 

@@ -55,7 +55,7 @@ Item {
     /*!
       The size of the title Label.
       */
-    property int adaptiveLabelSize
+    property int textSize
 
     /*!
       The weight of the title font.

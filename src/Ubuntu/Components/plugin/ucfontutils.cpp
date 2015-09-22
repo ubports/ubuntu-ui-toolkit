@@ -86,13 +86,13 @@ qreal UCFontUtils::modularScale(const QString &size)
         return 0.0;
     }
 
-    switch (reinterpret_cast<int*>(size.toLatin1().data())[0]) {
-        case /*"medi"*/0x6964656d: { return mediumScale; }
-        case /*"larg"*/0x6772616c: { return largeScale; }
-        case /*"smal"*/0x6c616d73: { return smallScale; }
-        case /*"x-la"*/0x616c2d78: { return xLargeScale; }
-        case /*"x-sm"*/0x6d732d78: { return xSmallScale; }
-        case /*"xx-s"*/0x732d7878: { return xxSmallScale; }
+    switch (SCALE_CODE(size)) {
+        case SCALE_MEDIUM: { return mediumScale; }
+        case SCALE_LARGE: { return largeScale; }
+        case SCALE_SMALL: { return smallScale; }
+        case SCALE_XLARGE: { return xLargeScale; }
+        case SCALE_XSMALL: { return xSmallScale; }
+        case SCALE_XXSMALL: { return xxSmallScale; }
         default: { return 0.0; }
     }
 }

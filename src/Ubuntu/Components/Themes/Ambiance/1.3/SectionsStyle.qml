@@ -43,7 +43,7 @@ Item {
     /*!
       The font size for the text in the buttons.
      */
-    property int adaptiveLabelSize: Label.Small
+    property int textSize: Label.Small
 
     /*!
       The spacing on the left and right sides of the label
@@ -94,7 +94,7 @@ Item {
                     objectName: "section_button_label_" + index
                     // modelData may be either a string, or an Action
                     text: modelData.hasOwnProperty("text") ? modelData.text : modelData
-                    textSize: sectionsStyle.adaptiveLabelSize
+                    textSize: sectionsStyle.textSize
                     anchors.centerIn: parent
                     color: sectionButton.selected ?
                                sectionsStyle.selectedSectionColor :
