@@ -34,6 +34,7 @@ class UCHeader : public UCStyledItemBase
 
 public:
     explicit UCHeader(QQuickItem *parent = 0);
+    ~UCHeader();
 
     QQuickFlickable* flickable();
     void setFlickable(QQuickFlickable* flickable);

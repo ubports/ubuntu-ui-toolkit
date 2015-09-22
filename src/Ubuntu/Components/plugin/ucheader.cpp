@@ -99,6 +99,13 @@ UCHeader::UCHeader(QQuickItem *parent)
     connect(this, SIGNAL(heightChanged()), this, SLOT(_q_heightChanged()));
 }
 
+UCHeader::~UCHeader() {
+    if (m_flickable != Q_NULLPTR) {
+        Q_ASSERT(m_flickableTopMarginBackup != Q_NULLPTR);
+        delete m_flickableTopMarginBackup;
+    }
+}
+
 void UCHeader::_q_heightChanged() {
     updateFlickableMargins();
     if (m_exposed || (!m_flickable.isNull() && m_flickable->contentY() <= 0.0)) {
