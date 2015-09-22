@@ -86,6 +86,7 @@ UCHeader::UCHeader(QQuickItem *parent)
     , m_showHideAnimation(new QQuickNumberAnimation)
     , m_flickable(Q_NULLPTR)
 {
+    m_showHideAnimation->setParent(this);
     m_showHideAnimation->setTargetObject(this);
     m_showHideAnimation->setProperty("y");
     m_showHideAnimation->setEasing(s_ubuntuAnimation->StandardEasing());
