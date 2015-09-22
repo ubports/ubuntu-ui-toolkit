@@ -167,7 +167,8 @@ Package: ubuntu-app-launch-profiler
 Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends},
-         lttng-tools
+         lttng-tools,
+         python3-babeltrace
 Description: Qt Components for Ubuntu - startup time profiling tool
  Qt Components for Ubuntu offers a set of reusable user interface
  components for Qt Quick 2 / QML.

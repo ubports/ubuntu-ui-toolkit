@@ -17,20 +17,17 @@
  *         Zoltán Balogh <zoltan.balogh@canonical.com 
  */
 
-#undef TRACEPOINT_PROVIDER
-#define TRACEPOINT_PROVIDER app
+#define TRACEPOINT_CREATE_PROBES
+/*
+ * The header containing our TRACEPOINT_EVENTs.
+ */
+#define TRACEPOINT_DEFINE
+#include "app-launch-tracepoints.h"
 
-#undef TRACEPOINT_INCLUDE
-#define TRACEPOINT_INCLUDE "./app-launch-tracepoints.h"
+//compile with gcc -o app-launch-tracepoints app-launch-tracepoints.cpp -llttng-ust -ldl -I.
 
-#if !defined(TRACEPOINTS_H) || defined(TRACEPOINT_HEADER_MULTI_READ)
-#define TRACEPOINTS_H
-
-#include <lttng/tracepoint.h>
-
-TRACEPOINT_EVENT(app, invokeApplauncher, TP_ARGS(0), TP_FIELDS())
-
-
-#endif /* TRACEPOINTS_H */
-
-#include <lttng/tracepoint-event.h>
+int main (int argc, char* argv[])
+{
+    tracepoint(app,invokeApplauncher);
+    return 0;
+}
