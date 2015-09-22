@@ -31,6 +31,7 @@ Item {
         z:1
         width: parent.width
         height: root.initialHeaderHeight
+        onMovingChanged: print("moving = "+moving)
 
         Rectangle {
             // to visualize the header
@@ -145,13 +146,22 @@ Item {
         contentHeight: units.gu(20);
     }
 
+    Header {
+        id: otherHeader
+    }
+
     UbuntuTestCase {
         name: "Header"
         when: windowShown
         id: testCase
 
         function initTestCase() {
-            compare(header.exposed, true, "Header not exposed initially.");
+            wait_for_exposed(true, "Header is not exposed initially.");
+            compare(otherHeader.flickable, null, "Flickable not null by default.");
+            compare(header.flickable, flickable, "Flickable not properly intialized.");
+            // note: moving may be true briefly due to header height changes, but
+            //  it does not change in the initialization after wait_for_exposed() above.
+            compare(header.moving, false, "Header moving initially.");
         }
 
         function init() {
