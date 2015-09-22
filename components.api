@@ -1250,6 +1250,7 @@ Ubuntu.Components.UCApplication 1.0 0.1: QtObject
 Ubuntu.Components.UCFontUtils 1.0 0.1: QtObject
     function double sizeToPixels(string size)
     function double modularScale(string size)
+UCItemAttached: QtObject
 UCListItemDivider: Item
     property color colorFrom
     property color colorTo
