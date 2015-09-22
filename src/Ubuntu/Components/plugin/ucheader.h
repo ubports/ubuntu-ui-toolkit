@@ -39,8 +39,6 @@ public:
     bool exposed();
     void setExposed(bool exposed);
     bool moving();
-    bool locked();
-    void setLocked(bool locked);
 
 Q_SIGNALS:
     void flickableChanged();
@@ -60,13 +58,12 @@ private Q_SLOTS:
     void _q_heightChanged();
 
 private:
-    bool m_exposed;
-    bool m_moving;
-    bool m_locked;
-    qreal m_previous_contentY;
-
-    QQuickNumberAnimation* m_showHideAnimation;
     QPointer<QQuickFlickable> m_flickable;
+    QQuickNumberAnimation* m_showHideAnimation;
+
+    qreal m_previous_contentY;
+    bool m_exposed:1;
+    bool m_moving:1;
 
     // used to set the easing and duration of m_showHideAnimation
     static UCUbuntuAnimation *s_ubuntuAnimation;

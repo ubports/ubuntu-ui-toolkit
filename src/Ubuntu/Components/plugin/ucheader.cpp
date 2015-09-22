@@ -80,11 +80,11 @@ UCUbuntuAnimation *UCHeader::s_ubuntuAnimation = new UCUbuntuAnimation();
 
 UCHeader::UCHeader(QQuickItem *parent)
     : UCStyledItemBase(parent)
+    , m_flickable(Q_NULLPTR)
+    , m_showHideAnimation(new QQuickNumberAnimation)
+    , m_previous_contentY(0)
     , m_exposed(true)
     , m_moving(false)
-    , m_previous_contentY(0)
-    , m_showHideAnimation(new QQuickNumberAnimation)
-    , m_flickable(Q_NULLPTR)
 {
     m_showHideAnimation->setParent(this);
     m_showHideAnimation->setTargetObject(this);
