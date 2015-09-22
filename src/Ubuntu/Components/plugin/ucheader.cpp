@@ -98,13 +98,13 @@ UCHeader::UCHeader(QQuickItem *parent)
 }
 
 void UCHeader::_q_heightChanged() {
-    this->updateFlickableMargins();
+    updateFlickableMargins();
     if (m_exposed || (!m_flickable.isNull() && m_flickable->contentY() <= 0.0)) {
         // Header was exposed before, or the flickable is scrolled up close to
         //  the top so that the header should be visible.
-        this->show();
+        show();
     } else {
-        this->hide();
+        hide();
     }
 }
 
@@ -135,7 +135,7 @@ void UCHeader::setFlickable(QQuickFlickable *flickable) {
     if (!m_flickable.isNull()) {
         // Finish the current header movement in case the current
         //  flickable is disconnected while scrolling.
-        this->_q_flickableMovementEnded();
+        _q_flickableMovementEnded();
         m_flickable->disconnect(this);
         m_flickable->setTopMargin(0.0);
     }
@@ -153,8 +153,8 @@ void UCHeader::setFlickable(QQuickFlickable *flickable) {
         connect(m_flickable, SIGNAL(interactiveChanged()),
                 this, SLOT(_q_flickableInteractiveChanged()));
         m_previous_contentY = m_flickable->contentY();
-        this->updateFlickableMargins();
-        this->show();
+        updateFlickableMargins();
+        show();
     }
 }
 
@@ -162,7 +162,7 @@ void UCHeader::updateFlickableMargins() {
     if (m_flickable.isNull()) {
         return;
     }
-    qreal headerHeight = this->height();
+    qreal headerHeight = height();
     qreal previousHeaderHeight = m_flickable->topMargin();
     if (headerHeight != previousHeaderHeight) {
         qreal previousContentY = m_flickable->contentY();
@@ -182,7 +182,7 @@ void UCHeader::show() {
             m_showHideAnimation->stop();
         }
     }
-    m_showHideAnimation->setFrom(this->y());
+    m_showHideAnimation->setFrom(y());
     m_showHideAnimation->setTo(0.0);
     m_showHideAnimation->start();
 }
@@ -196,8 +196,8 @@ void UCHeader::hide() {
             m_showHideAnimation->stop();
         }
     }
-    m_showHideAnimation->setFrom(this->y());
-    m_showHideAnimation->setTo(-1.0*this->height());
+    m_showHideAnimation->setFrom(y());
+    m_showHideAnimation->setTo(-1.0*height());
     m_showHideAnimation->start();
 }
 
@@ -223,9 +223,9 @@ void UCHeader::_q_showHideAnimationRunningChanged() {
  */
 void UCHeader::setExposed(bool exposed) {
     if (exposed) {
-        this->show();
+        show();
     } else {
-        this->hide();
+        hide();
     }
 }
 
@@ -253,8 +253,8 @@ void UCHeader::_q_scrolledContents() {
     if (!m_flickable->isAtYBeginning() && !m_flickable->isAtYEnd()) {
         qreal dy = m_flickable->contentY() - m_previous_contentY;
         // Restrict the header y between -height and 0.
-        qreal clampedY = qMin(qMax(-this->height(), this->y() - dy), 0.0);
-        this->setY(clampedY);
+        qreal clampedY = qMin(qMax(-height(), y() - dy), 0.0);
+        setY(clampedY);
     }
     m_previous_contentY = m_flickable->contentY();
     if (!m_moving) {
@@ -263,17 +263,17 @@ void UCHeader::_q_scrolledContents() {
     }
     if (!m_flickable->isMoving()) {
         // m_flickable.contentY was set directly, so no user flicking.
-        this->_q_flickableMovementEnded();
+        _q_flickableMovementEnded();
     }
 }
 
 void UCHeader::_q_flickableMovementEnded() {
     Q_ASSERT(!m_flickable.isNull());
     if ((m_flickable->contentY() < 0)
-            || (this->y() > -this->height()/2.0)) {
-        this->show();
+            || (y() > -height()/2.0)) {
+        show();
     } else {
-        this->hide();
+        hide();
     }
 }
 
@@ -282,7 +282,7 @@ void UCHeader::_q_contentHeightChanged() {
     if (m_flickable->height() >= m_flickable->contentHeight()) {
         // The user cannot scroll down to expose the header, so ensure
         //  that it is visible.
-        this->show();
+        show();
     }
 }
 
@@ -291,6 +291,6 @@ void UCHeader::_q_flickableInteractiveChanged() {
     if (!m_flickable->isInteractive()) {
         // The user cannot scroll down to expose the header, so ensure
         //  that it is visible.
-        this->show();
+        show();
     }
 }
