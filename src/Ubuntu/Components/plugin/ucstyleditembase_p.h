@@ -21,10 +21,11 @@
 
 #include <QtQuick/private/qquickitem_p.h>
 #include "ucstyleditembase.h"
+#include "ucthemingextension.h"
 
 class QQuickMouseArea;
 class UCStyledItemBase;
-class UCStyledItemBasePrivate : public QQuickItemPrivate
+class UCStyledItemBasePrivate : public QQuickItemPrivate, public UCThemingExtension
 {
     Q_DECLARE_PUBLIC(UCStyledItemBase)
 public:
@@ -33,10 +34,7 @@ public:
         return item->d_func();
     }
 
-    void _q_reloadStyle();
     void _q_styleResized();
-    void _q_ascendantChanged(QQuickItem *ascendant);
-    void _q_parentStyleChanged();
 
     UCStyledItemBasePrivate();
     virtual ~UCStyledItemBasePrivate();
@@ -57,29 +55,21 @@ public:
     virtual void postStyleChanged() {}
     virtual bool loadStyleItem(bool animated = true);
 
-    UCTheme *getTheme() const;
-    void setTheme(UCTheme *theme);
-    void resetTheme();
-
-    virtual void preThemeChanged(){}
-    virtual void postThemeChanged(){}
+    virtual void preThemeChanged();
+    virtual void postThemeChanged();
 
 public:
-    bool activeFocusOnPress:1;
+
+    QPointer<QQmlContext> styleItemContext;
     QString styleDocument;
     QQmlComponent *styleComponent;
-    QPointer<QQmlContext> styleItemContext;
     QQuickItem *styleItem;
-    UCTheme *theme;
-    QPointer<UCStyledItemBase> parentStyledItem;
+    bool activeFocusOnPress:1;
+    bool wasStyleLoaded:1;
 
 protected:
-    QStack< QPointer<QQuickItem> > parentStack;
 
     void connectStyleSizeChanges(bool attach);
-    bool connectParents(QQuickItem *fromItem);
-    bool setParentStyled(UCStyledItemBase *styledItem);
-    void disconnectTillItem(QQuickItem *item);
 };
 
 #endif // UCSTYLEDITEMBASE_P_H
