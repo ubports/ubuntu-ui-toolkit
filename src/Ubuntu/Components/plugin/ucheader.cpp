@@ -93,11 +93,11 @@ UCHeader::UCHeader(QQuickItem *parent)
     m_showHideAnimation->setDuration(s_ubuntuAnimation->BriskDuration());
 
     connect(m_showHideAnimation, SIGNAL(runningChanged(bool)),
-            this, SLOT(q_showHideAnimationRunningChanged()));
-    connect(this, SIGNAL(heightChanged()), this, SLOT(q_heightChanged()));
+            this, SLOT(_q_showHideAnimationRunningChanged()));
+    connect(this, SIGNAL(heightChanged()), this, SLOT(_q_heightChanged()));
 }
 
-void UCHeader::q_heightChanged() {
+void UCHeader::_q_heightChanged() {
     this->updateFlickableMargins();
     if (m_exposed || (!m_flickable.isNull() && m_flickable->contentY() <= 0.0)) {
         // Header was exposed before, or the flickable is scrolled up close to
@@ -133,7 +133,7 @@ void UCHeader::setFlickable(QQuickFlickable *flickable) {
         if (!m_flickable.isNull()) {
             // Finish the current header movement in case the current
             //  flickable is disconnected while scrolling.
-            this->q_flickableMovementEnded();
+            this->_q_flickableMovementEnded();
             m_flickable->disconnect(this);
             m_flickable->setTopMargin(0.0);
         }
@@ -143,13 +143,13 @@ void UCHeader::setFlickable(QQuickFlickable *flickable) {
 
         if (!m_flickable.isNull()) {
             connect(m_flickable, SIGNAL(contentYChanged()),
-                    this, SLOT(q_scrolledContents()));
+                    this, SLOT(_q_scrolledContents()));
             connect(m_flickable, SIGNAL(movementEnded()),
-                    this, SLOT(q_flickableMovementEnded()));
+                    this, SLOT(_q_flickableMovementEnded()));
             connect(m_flickable, SIGNAL(contentHeightChanged()),
-                    this, SLOT(q_contentHeightChanged()));
+                    this, SLOT(_q_contentHeightChanged()));
             connect(m_flickable, SIGNAL(interactiveChanged()),
-                    this, SLOT(q_flickableInteractiveChanged()));
+                    this, SLOT(_q_flickableInteractiveChanged()));
             m_previous_contentY = m_flickable->contentY();
             this->updateFlickableMargins();
             this->show();
@@ -199,7 +199,7 @@ void UCHeader::hide() {
     m_showHideAnimation->start();
 }
 
-void UCHeader::q_showHideAnimationRunningChanged() {
+void UCHeader::_q_showHideAnimationRunningChanged() {
     if (!m_showHideAnimation->isRunning()) {
         // Animation finished.
         Q_ASSERT(m_moving);
@@ -245,7 +245,7 @@ bool UCHeader::moving() {
 
 // Called when moving due to user interaction with the flickable, or by
 // setting m_flickable.contentY programatically.
-void UCHeader::q_scrolledContents() {
+void UCHeader::_q_scrolledContents() {
     Q_ASSERT(!m_flickable.isNull());
     // Avoid moving the header when rebounding or being dragged over the bounds.
     if (!m_flickable->isAtYBeginning() && !m_flickable->isAtYEnd()) {
@@ -261,11 +261,11 @@ void UCHeader::q_scrolledContents() {
     }
     if (!m_flickable->isMoving()) {
         // m_flickable.contentY was set directly, so no user flicking.
-        this->q_flickableMovementEnded();
+        this->_q_flickableMovementEnded();
     }
 }
 
-void UCHeader::q_flickableMovementEnded() {
+void UCHeader::_q_flickableMovementEnded() {
     Q_ASSERT(!m_flickable.isNull());
     if ((m_flickable->contentY() < 0)
             || (this->y() > -this->height()/2.0)) {
@@ -275,7 +275,7 @@ void UCHeader::q_flickableMovementEnded() {
     }
 }
 
-void UCHeader::q_contentHeightChanged() {
+void UCHeader::_q_contentHeightChanged() {
     Q_ASSERT(!m_flickable.isNull());
     if (m_flickable->height() >= m_flickable->contentHeight()) {
         // The user cannot scroll down to expose the header, so ensure
@@ -284,7 +284,7 @@ void UCHeader::q_contentHeightChanged() {
     }
 }
 
-void UCHeader::q_flickableInteractiveChanged() {
+void UCHeader::_q_flickableInteractiveChanged() {
     Q_ASSERT(!m_flickable.isNull());
     if (!m_flickable->isInteractive()) {
         // The user cannot scroll down to expose the header, so ensure

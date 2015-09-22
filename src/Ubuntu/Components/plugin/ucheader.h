@@ -52,12 +52,12 @@ protected:
     void hide();
 
 private Q_SLOTS:
-    void q_scrolledContents();
-    void q_showHideAnimationRunningChanged();
-    void q_flickableMovementEnded();
-    void q_contentHeightChanged();
-    void q_flickableInteractiveChanged();
-    void q_heightChanged();
+    void _q_scrolledContents();
+    void _q_showHideAnimationRunningChanged();
+    void _q_flickableMovementEnded();
+    void _q_contentHeightChanged();
+    void _q_flickableInteractiveChanged();
+    void _q_heightChanged();
 
 private:
     bool m_exposed;
