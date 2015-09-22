@@ -83,16 +83,16 @@ void UCSlotsLayoutPrivate::updateTopBottomPaddingIfNeeded()
 {
     if (!padding.topWasSetFromQml) {
         padding.setTop((getVerticalPositioningMode() == UCSlotPositioningMode::CenterVertically
-                                     && maxSlotsHeight > UCUnits::instance().gu(SLOTSLAYOUT_TOPBOTTOMMARGIN_SIZETHRESHOLD_GU))
-                                    ? UCUnits::instance().gu(SLOTSLAYOUT_TOPMARGIN1_GU)
-                                    : UCUnits::instance().gu(SLOTSLAYOUT_TOPMARGIN2_GU));
+                        && maxSlotsHeight > UCUnits::instance().gu(SLOTSLAYOUT_TOPBOTTOMMARGIN_SIZETHRESHOLD_GU))
+                       ? UCUnits::instance().gu(SLOTSLAYOUT_TOPMARGIN1_GU)
+                       : UCUnits::instance().gu(SLOTSLAYOUT_TOPMARGIN2_GU));
     }
 
     if (!padding.bottomWasSetFromQml) {
         padding.setBottom((getVerticalPositioningMode() == UCSlotPositioningMode::CenterVertically
-                                        && maxSlotsHeight > UCUnits::instance().gu(SLOTSLAYOUT_TOPBOTTOMMARGIN_SIZETHRESHOLD_GU))
-                                       ? UCUnits::instance().gu(SLOTSLAYOUT_BOTTOMMARGIN1_GU)
-                                       : UCUnits::instance().gu(SLOTSLAYOUT_BOTTOMMARGIN2_GU));
+                           && maxSlotsHeight > UCUnits::instance().gu(SLOTSLAYOUT_TOPBOTTOMMARGIN_SIZETHRESHOLD_GU))
+                          ? UCUnits::instance().gu(SLOTSLAYOUT_BOTTOMMARGIN1_GU)
+                          : UCUnits::instance().gu(SLOTSLAYOUT_BOTTOMMARGIN2_GU));
     }
 
     return;
@@ -398,8 +398,8 @@ void UCSlotsLayoutPrivate::_q_relayout()
             return;
         }
         mainSlot->setImplicitWidth(q->width() - totalSlotsWidth
-                           - attachedSlot->leadingPadding() - attachedSlot->trailingPadding()
-                           - padding.leading() - padding.trailing());
+                                   - attachedSlot->leadingPadding() - attachedSlot->trailingPadding()
+                                   - padding.leading() - padding.trailing());
     } else {
         Q_UNUSED(totalSlotsWidth);
     }
@@ -432,6 +432,122 @@ void UCSlotsLayoutPrivate::handleAttachedPropertySignals(QQuickItem *item, bool 
         QObject::disconnect(attachedSlot, SIGNAL(overrideVerticalPositioningChanged()), q, SLOT(_q_relayout()));
     }
 }
+
+
+/*!
+   \qmltype SlotsLayout
+   \instantiates UCSlotsLayout
+   \inqmlmodule Ubuntu.Components 1.3
+   \ingroup ubuntu-slotslayout
+   \inherits Item
+   \since Ubuntu.Components 1.3
+   \brief The SlotsLayout component provides an easy way to layout a list
+   of user-interface elements horizontally following Ubuntu design standards.
+   We call the elements which we want to layout "slots". Slot is just another
+   name for SlotsLayout's visual children.
+
+   SlotsLayout will layout its visual children according to Ubuntu's visual design
+   rules, providing automatic spacing and positioning (both horizontal and
+   vertical, unless \l overrideVerticalPositioning is set) for each of them.
+
+   There are three conceptual types of slots:
+   \list
+   \li * The \b {leading slots}, which are the ones positioned at the
+            beginning of the layout (i.e. they are the leftmost elements
+            in left-to-right locales).
+   \li * The \b {trailing slots}, which are positioned after \l mainSlot,
+            if any, or after the leading slots otherwise.
+   \li * The \b {main slot}, which drives the positioning of
+            the vertical dimension of each slot as described in section
+            \l {Automatic vertical positioning of slots}. This slot sits
+            between leading and trailing slots, and can be set using the
+            property \l {mainSlot}.
+   \endlist
+
+   In order to comply with Ubuntu design standards, this component hosts
+   a maximum of 1 leading and 2 trailing slots. The layout algorithm will
+   ignore any additional item.
+
+   SlotsLayout also provides a series of properties which are attached to
+   each slot. However not all properties are valid in all the circumstances.
+   These properties allow an easy tweaking of slot's positioning within
+   the layout.
+   \l {SlotsLayout::position} can be used to set whether a slot should a
+   leading or trailing one.
+   \l {SlotsLayout::padding} can be used to tweak the padding around a
+   slot.
+   \l {SlotsLayout::overrideVerticalPositioning} allows to disable the
+   automatic positioning of the vertical coordinate of a slot described
+   in \l {Automatic vertical positioning of slots}, in case
+   a custom behaviour is needed.
+
+   For list items, the recommendation is to use \l {ListItemLayout},
+   which is a SlotsLayout featuring a predefined \l mainSlot which
+   has been optimized to provide maximum performance and covers
+   most of the usecases.
+   \sa ListItemLayout
+
+   The positioning of each
+   slot should only be tweaked using its attached properties. Just like
+   when using QtQuick's Row, a child item within the layout (i.e. a slot) should
+   not set its \b x or \b anchors affecting the horizontal positioning
+   (left, right, horizontalCenter, centerIn, fill). If you need to perform
+   these actions, consider positioning the items without the use of a
+   SlotsLayout.
+
+   The vertical \b anchors of a slot can be modified, \b {provided
+   that} \l {SlotsLayout::overrideVerticalPositioning} for that slot is set.
+   More about this in the \l {Advanced layout tweaks} section.
+
+   \section1 Resizing the layout
+
+   SlotsLayout's implicit width is by default set to the width of the parent
+   (usually a \l {ListItem}).
+   Changing the width of the layout is possible but should not be needed in
+   most of the usecases: keeping the width in sync with the width of its parent
+   allows the user interface to be scalable across devices with varying resolution
+   and form factors.
+
+   The implicit height is not fixed either. In order not to clip any of the slots,
+   SlotsLayout watches its children for height and padding changes  and makes sure to
+   grow its implicit height to accomodate the tallest slot plus the padding around
+   the slot and the one around the layout.
+
+   \section1 Automatic vertical positioning of slots
+   In order to provide a nice looking and consistent layout across the whole
+   platform, SlotsLayout automatically handles the vertical positioning of its
+   slots so that they comply with the following rules:
+   \list
+    \li * if there's any slot which is taller or as tall as \l {mainSlot} or if
+        no \l {mainSlot} is defined, all slots will be vertically centered within the
+        layout (still taking \l {SlotsLayout::padding.top} and \l {SlotsLayout::padding.bottom}
+        into account).
+    \li * Otherwise, all the slots (including \l {mainSlot}) will be aligned to
+        the top of the layout with a padding of \l {SlotsLayout::padding.top}.
+   \endlist
+
+   Even though it is \b {not recommended}, it is still possible to override
+   this behaviour on a slot-by-slot basis by setting
+   \l {SlotsLayout::overrideVerticalPositioning} to true. This is described in
+   \l {Advanced layout tweaks}.
+
+   \section1 Advanced layout tweaks
+   The automatic layout provided by SlotsLayout is designed to cover most
+   of the usecases. There could be times, however, where we might want to
+   tweak the positioning of one particular slot.
+
+   A slot can set its attached properties \l SlotsLayout::padding and
+   \l {SlotsLayout::overrideVerticalPositioning} to reach the desired
+   position
+
+   When a slot enables \l {SlotsLayout::overrideVerticalPositioning}, it
+   gains control over its vertical anchors (top, bottom, verticalCenter).
+
+   Moreover, SlotsLayout will not consider the height of that slot when
+   computing its implicitHeight anymore (see \l {Resizing the layout}).
+   Care must be to avoid pushing the slot outside of the layout perimeter,
+   to avoid getting it clipped.
+*/
 
 UCSlotsLayout::UCSlotsLayout(QQuickItem *parent) :
     QQuickItem(*(new UCSlotsLayoutPrivate), parent)
@@ -514,6 +630,12 @@ void UCSlotsLayout::itemChange(ItemChange change, const ItemChangeData &data)
     QQuickItem::itemChange(change, data);
 }
 
+/*!
+ * \qmlproperty Item SlotsLayout::mainSlot
+ * This property represents the main slot of the layout. The main slot is the
+ * one that defines the vertical positioning of the other slots. More details
+ * can be found in the section \l {Automatic vertical positioning of slots}.
+ */
 QQuickItem *UCSlotsLayout::mainSlot() const
 {
     Q_D(const UCSlotsLayout);
@@ -531,6 +653,16 @@ void UCSlotsLayout::setMainSlot(QQuickItem *item)
     }
 }
 
+/*!
+    \qmlpropertygroup ::SlotsLayout::padding
+    \qmlproperty real SlotsLayout::padding.top
+    \qmlproperty real SlotsLayout::padding.bottom
+    \qmlproperty real SlotsLayout::padding.leading
+    \qmlproperty real SlotsLayout::padding.trailing
+
+    This property defines the padding around the bounding box which
+    holds all the slots.
+*/
 UCSlotsLayoutPadding* UCSlotsLayout::padding() {
     Q_D(UCSlotsLayout);
     return &(d->padding);
@@ -571,6 +703,33 @@ UCSlotsAttached::UCSlotsAttached(QObject *object)
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this, SLOT(_q_onGuValueChanged()));
 }
 
+/*!
+    \qmlattachedproperty enumeration SlotsLayout::position
+    This attached property defines the relative position of
+    the slot inside the layout. It is attached to each slot.
+    The default value is SlotsLayout.Trailing.
+
+    Valid values for \l position are:
+    \list
+    \li * SlotsLayout.First: the slot will be positioned at the
+        beginning of the layout
+    \li * SlotsLayout.Leading: the slot will be positioned in
+        the leading slots
+    \li * SlotsLayout.Trailing: the slot will be positioned in
+        the trailing slots, i.e. the one towards the end of the
+        layout.
+    \li * SlotsLayout.End: the slot will be positioned at
+        the end of the layout.
+    \endlist
+
+    Whenever there are more slots with the same \l {SlotsLayout::position},
+    they will be positioned following their stacking order.
+
+    TODO: INSERT CODE EXAMPLE
+
+    TODO: INSERT RELATIVE POSITIONING EXPLANATION
+    (SlotsLayout.Leading+1, etc)
+*/
 UCSlotsLayout::UCSlotPosition UCSlotsAttached::position() const
 {
     Q_D(const UCSlotsAttached);
@@ -586,6 +745,17 @@ void UCSlotsAttached::setPosition(UCSlotsLayout::UCSlotPosition pos)
     }
 }
 
+/*!
+    \qmlattachedproperty QtObject ::SlotsLayout::padding
+
+    While \l {padding} defines the padding around the whole layout, this attached
+    property defines the padding around the slot it is attached to.
+
+    Please note that \b top and \b bottom paddings are only used when
+    \l {SlotsLayout::overrideVerticalPositioning} is set to false. More about this
+    in \l {Automatic vertical positioning of slots}.
+
+*/
 qreal UCSlotsAttached::leadingPadding() const
 {
     Q_D(const UCSlotsAttached);
@@ -641,6 +811,25 @@ void UCSlotsAttached::setTrailingPaddingQml(qreal padding)
 
     setTrailingPadding(padding);
 }
+
+/*!
+ * \qmlattachedproperty bool SlotsLayout::overrideVerticalPositioning
+ *
+ * This attached property holds whether the layout should take care of
+ * the vertical positioning of a slot. It is attached to every slot.
+ * The default value is false.
+ *
+ * If this property is set to true, the layout will ignore the
+ * corresponding slot during the computation of the \b implicitHeight of
+ * the whole layout (see \l {Resizing the layout}) and it will not touch
+ * its vertical position during the layout process. As a consequence, it
+ * is possible, in that case, to set the vertical anchors of that slot
+ * (verticalCenter, top, bottom) or even its \b y property.
+ *
+ * Care must be taken to avoid getting the slot clipped by positioning it
+ * partly or completely outside of the SlotsLayout that holds it.
+ *
+ */
 
 bool UCSlotsAttached::overrideVerticalPositioning() const
 {
