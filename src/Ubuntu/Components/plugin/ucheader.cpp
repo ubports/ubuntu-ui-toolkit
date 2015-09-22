@@ -32,9 +32,7 @@
     \since Ubuntu.Components 1.3
     \brief Header bar that can contain the title and controls for the current view.
 
-    The Header component will by default be positioned at the top
-    of its parent spanning the full width of the parent.
-    It can be exposed and hidden by setting the
+    The Header can be exposed and hidden by setting the
     \l exposed property, and when a \l flickable is set, the header will
     scroll together with the flickable and expose or hide when the
     Flickable movement ends.
@@ -49,6 +47,8 @@
 
         Header {
             id: header
+            width: parent.width
+            height: units.gu(6)
             z: 1 // ensure the header goes on top of the flickable contents
             flickable: scrollableContent
 
@@ -70,16 +70,13 @@
     }
     \endqml
 
-    The default implicitWidth of the Header it its parent's width. The default
-    z-value is 0, so declare the Header after any Items that it should overlay, or
-    set its z-value to be larger than that of the other Items. The initial y-value
-    is 0, but scrolling the flickable or setting \l exposed to false will change
-    the y-value in the range of -height and 0.
+    The default z-value is 0, so declare the Header after any Items that it should
+    overlay, or set its z-value to be larger than that of the other Items.
+    The initial y-value is 0, but scrolling the flickable or setting \l exposed to
+    false will change the y-value in the range of -height and 0.
 */
 
 UCUbuntuAnimation *UCHeader::s_ubuntuAnimation = new UCUbuntuAnimation();
-
-#define IMPLICIT_HEADER_HEIGHT_GU 6
 
 UCHeader::UCHeader(QQuickItem *parent)
     : UCStyledItemBase(parent)
