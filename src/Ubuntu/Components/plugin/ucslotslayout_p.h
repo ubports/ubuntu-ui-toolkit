@@ -26,6 +26,7 @@
 #define IMPLICIT_SLOTSLAYOUT_WIDTH_GU                40
 #define IMPLICIT_SLOTSLAYOUT_HEIGHT_GU               7
 #define SLOTSLAYOUT_SLOTS_SIDEMARGINS_GU             1
+#define SLOTSLAYOUT_SLOTS_TOPBOTTOMMARGINS_GU        0
 #define SLOTSLAYOUT_LEFTMARGIN_GU                    1
 #define SLOTSLAYOUT_RIGHTMARGIN_GU                   1
 
@@ -52,7 +53,11 @@ public:
     //layout "items" in a row, optionally anchoring the row to a sibling with margin siblingAnchorMargin
     //The optional anchoring behaviour can be disable by passing QQuickAnchorLine()
     void layoutInRow(qreal siblingAnchorMargin, QQuickAnchorLine siblingAnchor, QList<QQuickItem *> &items);
-    void setupSlotsVerticalPositioning(QQuickItem *item);
+
+    //this method sets up vertical anchors and paddings for a slot ("item").
+    //Attached properties are taken from "attached", if not null, otherwise
+    //qml engine is queried.
+    void setupSlotsVerticalPositioning(QQuickItem *item, UCSlotsAttached* attached = Q_NULLPTR);
 
     //We have two vertical positioning modes according to the visual design rules:
     //- RETURN VALUE CenterVertically --> All items have to be vertically centered
@@ -118,13 +123,9 @@ public:
 
     void _q_onGuValueChanged();
 
+    UCSlotsLayoutPadding padding;
     UCSlotsLayout::UCSlotPosition position;
-    qreal leadingPadding;
-    qreal trailingPadding;
     bool overrideVerticalPositioning : 1;
-
-    bool leadingPaddingWasSetFromQml : 1;
-    bool trailingPaddingWasSetFromQml : 1;
 };
 
 class UCTheme;

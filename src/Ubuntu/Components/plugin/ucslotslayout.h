@@ -72,8 +72,7 @@ class UCSlotsAttached : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(UCSlotsLayout::UCSlotPosition position READ position WRITE setPosition NOTIFY positionChanged)
-    Q_PROPERTY(qreal leadingPadding READ leadingPadding WRITE setLeadingPaddingQml NOTIFY leadingPaddingChanged)
-    Q_PROPERTY(qreal trailingPadding READ trailingPadding WRITE setTrailingPaddingQml NOTIFY trailingPaddingChanged)
+    Q_PROPERTY(UCSlotsLayoutPadding *padding READ padding CONSTANT FINAL)
     Q_PROPERTY(bool overrideVerticalPositioning READ overrideVerticalPositioning WRITE setOverrideVerticalPositioning NOTIFY overrideVerticalPositioningChanged)
 
 public:
@@ -82,21 +81,13 @@ public:
     UCSlotsLayout::UCSlotPosition position() const;
     void setPosition(UCSlotsLayout::UCSlotPosition pos);
 
-    qreal leadingPadding() const;
-    void setLeadingPadding(qreal padding);
-    void setLeadingPaddingQml(qreal padding);
-
-    qreal trailingPadding() const;
-    void setTrailingPadding(qreal padding);
-    void setTrailingPaddingQml(qreal padding);
+    UCSlotsLayoutPadding *padding();
 
     bool overrideVerticalPositioning() const;
     void setOverrideVerticalPositioning(bool val);
 
 Q_SIGNALS:
     void positionChanged();
-    void leadingPaddingChanged();
-    void trailingPaddingChanged();
     void overrideVerticalPositioningChanged();
 
 protected:

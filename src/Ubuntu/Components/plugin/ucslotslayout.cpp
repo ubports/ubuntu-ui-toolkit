@@ -178,7 +178,9 @@ void UCSlotsLayoutPrivate::_q_updateSlotsBBoxHeight()
         }
 
         if (!attachedProperty->overrideVerticalPositioning())
-            maxSlotsHeightTmp = qMax<qreal>(maxSlotsHeightTmp, child->height());
+            maxSlotsHeightTmp = qMax<qreal>(maxSlotsHeightTmp, child->height()
+                                            + attachedProperty->padding()->top()
+                                            + attachedProperty->padding()->bottom());
     }
     maxSlotsHeight = maxSlotsHeightTmp;
 
@@ -259,7 +261,7 @@ qreal UCSlotsLayoutPrivate::populateSlotsListsAndComputeWidth()
                 }
 
                 leadingSlots.insert(indexToInsertAt, child);
-                totalWidth += child->width() + attached->leadingPadding() + attached->trailingPadding();
+                totalWidth += child->width() + attached->padding()->leading() + attached->padding()->trailing();
             } else {
                 qmlInfo(q) << "This layout only allows up to " << maxNumberOfLeadingSlots
                            << " leading slots. Please remove any additional leading slot.";
@@ -289,7 +291,7 @@ qreal UCSlotsLayoutPrivate::populateSlotsListsAndComputeWidth()
                 }
 
                 trailingSlots.insert(indexToInsertAt, child);
-                totalWidth += child->width() + attached->leadingPadding() + attached->trailingPadding();
+                totalWidth += child->width() + attached->padding()->leading() + attached->padding()->trailing();
             } else {
                 qmlInfo(q) << "This layout only allows up to " << maxNumberOfTrailingSlots
                            << " trailing slots. Please remove any additional trailing slot.";
@@ -304,13 +306,23 @@ qreal UCSlotsLayoutPrivate::populateSlotsListsAndComputeWidth()
     return totalWidth;
 }
 
-void UCSlotsLayoutPrivate::setupSlotsVerticalPositioning(QQuickItem *slot)
+void UCSlotsLayoutPrivate::setupSlotsVerticalPositioning(QQuickItem *slot, UCSlotsAttached* attached)
 {
     if (slot == Q_NULLPTR)
         return;
 
-    QQuickAnchors *slotAnchors = QQuickItemPrivate::get(slot)->anchors();
+    UCSlotsAttached* attachedProps = attached;
+    if (attached == Q_NULLPTR) {
+        attachedProps = qobject_cast<UCSlotsAttached *>(qmlAttachedPropertiesObject<UCSlotsLayout>(slot));
 
+        if (attachedProps == Q_NULLPTR) {
+            Q_Q(UCSlotsLayout);
+            qmlInfo(q) << "Invalid attached property!";
+            return;
+        }
+    }
+
+    QQuickAnchors *slotAnchors = QQuickItemPrivate::get(slot)->anchors();
     if (getVerticalPositioningMode() == UCSlotPositioningMode::AlignToTop) {
         //reset the vertical anchor as we might be transitioning from the configuration
         //where all items are vertically centered to the one where they're anchored to top
@@ -318,13 +330,16 @@ void UCSlotsLayoutPrivate::setupSlotsVerticalPositioning(QQuickItem *slot)
         slotAnchors->setVerticalCenterOffset(0);
 
         slotAnchors->setTop(top());
-        slotAnchors->setTopMargin(padding.top());
+        slotAnchors->setTopMargin(padding.top() + attachedProps->padding()->top());
     } else {
         slotAnchors->resetTop();
 
         slotAnchors->setVerticalCenter(verticalCenter());
         //bottom and top offsets could have different values
-        slotAnchors->setVerticalCenterOffset((padding.top() - padding.bottom()) / 2.0);
+        qreal offset = (padding.top() - padding.bottom()
+                        + attachedProps->padding()->top()
+                        - attachedProps->padding()->bottom()) / 2.0;
+        slotAnchors->setVerticalCenterOffset(offset);
     }
 }
 
@@ -346,7 +361,7 @@ void UCSlotsLayoutPrivate::layoutInRow(qreal siblingAnchorMargin, QQuickAnchorLi
         }
 
         if (!attached->overrideVerticalPositioning()) {
-            setupSlotsVerticalPositioning(item);
+            setupSlotsVerticalPositioning(item, attached);
         }
 
         if (i == 0) {
@@ -355,7 +370,7 @@ void UCSlotsLayoutPrivate::layoutInRow(qreal siblingAnchorMargin, QQuickAnchorLi
                 continue;
 
             itemAnchors->setLeft(siblingAnchor);
-            itemAnchors->setLeftMargin(attached->leadingPadding() + siblingAnchorMargin);
+            itemAnchors->setLeftMargin(attached->padding()->leading() + siblingAnchorMargin);
         } else {
             UCSlotsAttached *attachedPreviousItem =
                     qobject_cast<UCSlotsAttached *>(qmlAttachedPropertiesObject<UCSlotsLayout>(items.at(i - 1)));
@@ -364,7 +379,7 @@ void UCSlotsLayoutPrivate::layoutInRow(qreal siblingAnchorMargin, QQuickAnchorLi
                 qmlInfo(q) << "Invalid attached property!";
             } else {
                 itemAnchors->setLeft(QQuickItemPrivate::get(items.at(i - 1))->right());
-                itemAnchors->setLeftMargin(attachedPreviousItem->trailingPadding() + attached->leadingPadding());
+                itemAnchors->setLeftMargin(attachedPreviousItem->padding()->trailing() + attached->padding()->leading());
             }
         }
     }
@@ -398,7 +413,7 @@ void UCSlotsLayoutPrivate::_q_relayout()
             return;
         }
         mainSlot->setImplicitWidth(q->width() - totalSlotsWidth
-                                   - attachedSlot->leadingPadding() - attachedSlot->trailingPadding()
+                                   - attachedSlot->padding()->leading() - attachedSlot->padding()->trailing()
                                    - padding.leading() - padding.trailing());
     } else {
         Q_UNUSED(totalSlotsWidth);
@@ -422,13 +437,17 @@ void UCSlotsLayoutPrivate::handleAttachedPropertySignals(QQuickItem *item, bool 
 
     if (connect) {
         QObject::connect(attachedSlot, SIGNAL(positionChanged()), q, SLOT(_q_relayout()));
-        QObject::connect(attachedSlot, SIGNAL(leadingPaddingChanged()), q, SLOT(_q_relayout()));
-        QObject::connect(attachedSlot, SIGNAL(trailingPaddingChanged()), q, SLOT(_q_relayout()));
+        QObject::connect(attachedSlot->padding(), SIGNAL(leadingChanged()), q, SLOT(_q_relayout()));
+        QObject::connect(attachedSlot->padding(), SIGNAL(trailingChanged()), q, SLOT(_q_relayout()));
+        QObject::connect(attachedSlot->padding(), SIGNAL(topChanged()), q, SLOT(_q_updateSlotsBBoxHeight()));
+        QObject::connect(attachedSlot->padding(), SIGNAL(bottomChanged()), q, SLOT(_q_updateSlotsBBoxHeight()));
         QObject::connect(attachedSlot, SIGNAL(overrideVerticalPositioningChanged()), q, SLOT(_q_relayout()));
     } else {
         QObject::disconnect(attachedSlot, SIGNAL(positionChanged()), q, SLOT(_q_relayout()));
-        QObject::disconnect(attachedSlot, SIGNAL(leadingPaddingChanged()), q, SLOT(_q_relayout()));
-        QObject::disconnect(attachedSlot, SIGNAL(trailingPaddingChanged()), q, SLOT(_q_relayout()));
+        QObject::disconnect(attachedSlot->padding(), SIGNAL(leadingChanged()), q, SLOT(_q_relayout()));
+        QObject::disconnect(attachedSlot->padding(), SIGNAL(trailingChanged()), q, SLOT(_q_relayout()));
+        QObject::disconnect(attachedSlot->padding(), SIGNAL(topChanged()), q, SLOT(_q_updateSlotsBBoxHeight()));
+        QObject::disconnect(attachedSlot->padding(), SIGNAL(bottomChanged()), q, SLOT(_q_updateSlotsBBoxHeight()));
         QObject::disconnect(attachedSlot, SIGNAL(overrideVerticalPositioningChanged()), q, SLOT(_q_relayout()));
     }
 }
@@ -477,13 +496,13 @@ void UCSlotsLayoutPrivate::handleAttachedPropertySignals(QQuickItem *item, bool 
    \l {SlotsLayout::padding} can be used to tweak the padding around a
    slot.
    \l {SlotsLayout::overrideVerticalPositioning} allows to disable the
-   automatic positioning of the vertical coordinate of a slot described
+   automatic positioning of the vertical coordinate of a slot as described
    in \l {Automatic vertical positioning of slots}, in case
    a custom behaviour is needed.
 
    For list items, the recommendation is to use \l {ListItemLayout},
    which is a SlotsLayout featuring a predefined \l mainSlot which
-   has been optimized to provide maximum performance and covers
+   has been optimized to provide maximum performance while still covering
    most of the usecases.
    \sa ListItemLayout
 
@@ -523,7 +542,8 @@ void UCSlotsLayoutPrivate::handleAttachedPropertySignals(QQuickItem *item, bool 
         layout (still taking \l {SlotsLayout::padding.top} and \l {SlotsLayout::padding.bottom}
         into account).
     \li * Otherwise, all the slots (including \l {mainSlot}) will be aligned to
-        the top of the layout with a padding of \l {SlotsLayout::padding.top}.
+        the top of the layout with a padding of \l {SlotsLayout::padding.top} plus
+        the top padding of the slot, defined in its attached properties.
    \endlist
 
    Even though it is \b {not recommended}, it is still possible to override
@@ -674,22 +694,24 @@ UCSlotsLayoutPadding* UCSlotsLayout::padding() {
 UCSlotsAttachedPrivate::UCSlotsAttachedPrivate()
     : QObjectPrivate()
     , position(UCSlotsLayout::Trailing)
-    , leadingPadding(0)
-    , trailingPadding(0)
     , overrideVerticalPositioning(false)
-    , leadingPaddingWasSetFromQml(false)
-    , trailingPaddingWasSetFromQml(false)
 {
 }
 
 void UCSlotsAttachedPrivate::_q_onGuValueChanged()
 {
     Q_Q(UCSlotsAttached);
-    if (!leadingPaddingWasSetFromQml)
-        q->setLeadingPadding(UCUnits::instance().gu(SLOTSLAYOUT_SLOTS_SIDEMARGINS_GU));
+    if (!padding.leadingWasSetFromQml)
+        padding.setLeading(UCUnits::instance().gu(SLOTSLAYOUT_SLOTS_SIDEMARGINS_GU));
 
-    if (!trailingPaddingWasSetFromQml)
-        q->setTrailingPadding(UCUnits::instance().gu(SLOTSLAYOUT_SLOTS_SIDEMARGINS_GU));
+    if (!padding.trailingWasSetFromQml)
+        padding.setTrailing(UCUnits::instance().gu(SLOTSLAYOUT_SLOTS_SIDEMARGINS_GU));
+
+    if (!padding.topWasSetFromQml)
+        padding.setTop(UCUnits::instance().gu(SLOTSLAYOUT_SLOTS_TOPBOTTOMMARGINS_GU));
+
+    if (!padding.bottomWasSetFromQml)
+        padding.setBottom(UCUnits::instance().gu(SLOTSLAYOUT_SLOTS_TOPBOTTOMMARGINS_GU));
 }
 
 /******************************************************************************
@@ -748,68 +770,22 @@ void UCSlotsAttached::setPosition(UCSlotsLayout::UCSlotPosition pos)
 /*!
     \qmlattachedproperty QtObject ::SlotsLayout::padding
 
-    While \l {padding} defines the padding around the whole layout, this attached
-    property defines the padding around the slot it is attached to.
+    While SlotsLayout's padding property defines the padding around the whole
+    layout, this attached property defines the padding around the slot it is
+    attached to.
+
+    It is a grouped property that exposes the properties padding.top,
+    padding.bottom, padding.leading, padding.trailing.
 
     Please note that \b top and \b bottom paddings are only used when
-    \l {SlotsLayout::overrideVerticalPositioning} is set to false. More about this
-    in \l {Automatic vertical positioning of slots}.
+    \l {SlotsLayout::overrideVerticalPositioning} is set to false. More about
+    this in \l {Automatic vertical positioning of slots}.
 
 */
-qreal UCSlotsAttached::leadingPadding() const
-{
-    Q_D(const UCSlotsAttached);
-    return d->leadingPadding;
-}
-
-void UCSlotsAttached::setLeadingPadding(qreal padding)
+UCSlotsLayoutPadding *UCSlotsAttached::padding()
 {
     Q_D(UCSlotsAttached);
-    if (d->leadingPadding != padding) {
-        d->leadingPadding = padding;
-        Q_EMIT leadingPaddingChanged();
-    }
-}
-
-void UCSlotsAttached::setLeadingPaddingQml(qreal padding)
-{
-    Q_D(UCSlotsAttached);
-    d->leadingPaddingWasSetFromQml = true;
-
-    //if both have been set from QML, then disconnect the signal from the slot, to avoid overwriting dev's values
-    //when GU changes
-    if (d->trailingPaddingWasSetFromQml)
-        QObject::disconnect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this, SLOT(_q_onGuValueChanged()));
-
-    setLeadingPadding(padding);
-}
-
-qreal UCSlotsAttached::trailingPadding() const
-{
-    Q_D(const UCSlotsAttached);
-    return d->trailingPadding;
-}
-
-void UCSlotsAttached::setTrailingPadding(qreal padding)
-{
-    Q_D(UCSlotsAttached);
-    if (d->trailingPadding != padding) {
-        d->trailingPadding = padding;
-        Q_EMIT trailingPaddingChanged();
-    }
-}
-
-void UCSlotsAttached::setTrailingPaddingQml(qreal padding)
-{
-    Q_D(UCSlotsAttached);
-    d->trailingPaddingWasSetFromQml = true;
-
-    //if both have been set from QML, then disconnect the signal from the slot, to avoid overwriting dev's values
-    //when GU changes
-    if (d->leadingPaddingWasSetFromQml)
-        QObject::disconnect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this, SLOT(_q_onGuValueChanged()));
-
-    setTrailingPadding(padding);
+    return &d->padding;
 }
 
 /*!

@@ -1,3 +1,21 @@
+/*
+ * Copyright 2015 Canonical Ltd.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Author: Andrea Bernabei <andrea.bernabei@canonical.com>
+ */
+
 import QtQuick 2.4
 import QtTest 1.0
 import Ubuntu.Test 1.0
@@ -84,7 +102,39 @@ Item {
             Item { id: layoutOneLeadingTwoTrailing_trailing1; SlotsLayout.position: SlotsLayout.Trailing; width: units.gu(4); height: units.gu(9) }
             Item { id: layoutOneLeadingTwoTrailing_trailing2; SlotsLayout.position: SlotsLayout.Trailing; width: units.gu(1); height: units.gu(6) }
         }
-
+        ListItemLayout {
+            id: layoutCustomSlotsPadding
+            readonly property var leadingSlots: [layoutCustomSlotsPadding_leading1]
+            readonly property var trailingSlots: [layoutCustomSlotsPadding_trailing1, layoutCustomSlotsPadding_trailing2]
+            Item {
+                id: layoutCustomSlotsPadding_leading1;
+                SlotsLayout.position: SlotsLayout.Leading;
+                SlotsLayout.padding.top: units.gu(30)
+                SlotsLayout.padding.bottom: units.gu(2)
+                width: units.gu(6);
+                height: units.gu(3)
+            }
+            Item {
+                id: layoutCustomSlotsPadding_trailing1;
+                SlotsLayout.position: SlotsLayout.Trailing;
+                SlotsLayout.padding.top: units.gu(30)
+                SlotsLayout.padding.bottom: units.gu(2)
+                width: units.gu(1);
+                height: units.gu(7)
+            }
+            Item {
+                id: layoutCustomSlotsPadding_trailing2;
+                SlotsLayout.position: SlotsLayout.Trailing;
+                SlotsLayout.padding {
+                    leading: units.gu(4)
+                    trailing: units.gu(5)
+                    top: units.gu(5)
+                    bottom: units.gu(2)
+                }
+                width: units.gu(3);
+                height: units.gu(9)
+            }
+        }
         ListItemLayout {
             id: layoutCustomPadding
             readonly property var leadingSlots: [layoutCustomPadding_leading1]
@@ -170,6 +220,7 @@ Item {
                         { tag: "One leading, one trailing slots", item: layoutOneLeadingOneTrailing },
                         { tag: "Two trailing", item: layoutTwoTrailing },
                         { tag: "One leading, two trailing slots", item: layoutOneLeadingTwoTrailing },
+                        { tag: "One leading, two trailing slots with custom paddings", item: layoutCustomSlotsPadding },
                     ]
         }
 
@@ -178,15 +229,19 @@ Item {
             var maxHeight = 0
             var i = 0
             for (i = 0; i < item.leadingSlots.length; ++i) {
-                if (!item.leadingSlots[i].SlotsLayout.overrideVerticalPositioning
-                        && item.leadingSlots[i].visible)  {
-                    maxHeight = Math.max(item.leadingSlots[i].height, maxHeight)
+                var slot = item.leadingSlots[i]
+                if (!slot.SlotsLayout.overrideVerticalPositioning
+                        && slot.visible)  {
+                    maxHeight = Math.max(slot.height + slot.SlotsLayout.padding.top
+                                         + slot.SlotsLayout.padding.bottom, maxHeight)
                 }
             }
             for (i = 0; i < item.trailingSlots.length; ++i) {
-                if (!item.trailingSlots[i].SlotsLayout.overrideVerticalPositioning
-                        && item.trailingSlots[i].visible)  {
-                    maxHeight = Math.max(item.trailingSlots[i].height, maxHeight)
+                var currSlot = item.trailingSlots[i]
+                if (!currSlot.SlotsLayout.overrideVerticalPositioning
+                        && currSlot.visible)  {
+                    maxHeight = Math.max(currSlot.height + currSlot.SlotsLayout.padding.top
+                                         + currSlot.SlotsLayout.padding.bottom, maxHeight)
                 }
             }
             return maxHeight
@@ -245,18 +300,20 @@ Item {
                     continue;
                 }
 
-                expectedX += slot.SlotsLayout.leadingPadding
+                expectedX += slot.SlotsLayout.padding.leading
                 compare(slot.x, expectedX, "Slot's horizontal position")
                 expectedX += slot.width
-                expectedX += slot.SlotsLayout.trailingPadding
+                expectedX += slot.SlotsLayout.padding.trailing
 
                 if (slot.SlotsLayout.overrideVerticalPositioning) {
                     compare(slot.y, 0, "Override vertical positioning: vertical position")
                 } else {
                     if (mustAlignSlotsToTop(item)) {
-                        compare(slot.y, item.padding.top, "Automatic vertical positioning: vertical position, aligned to the top")
+                        compare(slot.y, item.padding.top + slot.SlotsLayout.padding.top, "Automatic vertical positioning: vertical position, aligned to the top")
                     } else {
-                        compare(slot.y, (item.height - slot.height + item.padding.top - item.padding.bottom) / 2.0 ,
+                        compare(slot.y, (item.height - slot.height
+                                         + item.padding.top - item.padding.bottom
+                                         + slot.SlotsLayout.padding.top - slot.SlotsLayout.padding.bottom) / 2.0 ,
                                 "Automatic vertical positioning: vertical position, vertically centered" )
                     }
                 }
@@ -341,10 +398,10 @@ Item {
                     layoutTestMainSlotSize.width
                     - layoutTestMainSlotSize.padding.leading - layoutTestMainSlotSize.padding.trailing
                     - layoutTestMainSlotSize.leadingSlots[0].width
-                    - layoutTestMainSlotSize.leadingSlots[0].SlotsLayout.leadingPadding
-                    - layoutTestMainSlotSize.leadingSlots[0].SlotsLayout.trailingPadding
-                    - layoutTestMainSlotSize.mainSlot.SlotsLayout.leadingPadding
-                    - layoutTestMainSlotSize.mainSlot.SlotsLayout.trailingPadding,
+                    - layoutTestMainSlotSize.leadingSlots[0].SlotsLayout.padding.leading
+                    - layoutTestMainSlotSize.leadingSlots[0].SlotsLayout.padding.trailing
+                    - layoutTestMainSlotSize.mainSlot.SlotsLayout.padding.leading
+                    - layoutTestMainSlotSize.mainSlot.SlotsLayout.padding.trailing,
                     "Main slot's width")
 
             compare(layoutTestMainSlotSize.mainSlot.height,
