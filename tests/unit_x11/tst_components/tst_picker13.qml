@@ -154,6 +154,7 @@ Item {
 
     SignalSpy {
         id: spy
+        signalName: "onSelectedIndexChanged"
     }
 
     UbuntuTestCase {
@@ -169,17 +170,19 @@ Item {
             return pickerLoader.item;
         }
 
-        function waitPickerScrolling() {
-            wait(600);
+        function waitPickerScrolling(picker) {
+            tryCompareFunction(function(){return picker.moving}, false);
         }
 
-        function getPickerList(item, linear) {
-            return findChild(item, (linear) ? "Picker_Linear" : "Picker_WrapAround");
+        function getPickerList(picker) {
+            return findChild(picker, picker.circular ? "Picker_WrapAround" : "Picker_Linear");
         }
 
         function cleanup() {
             pickerLoader.sourceComponent = null;
-            tryCompareFunction(function(){return pickerLoader.status}, Loader.Ready);
+            dynamicModel.reset();
+            spy.clear();
+            spy.target = null;
         }
 
         function initTestCase() {
@@ -190,80 +193,55 @@ Item {
             compare(picker.selectedIndex, 0, "default selectedIndex");
         }
 
-        function test_1_runtimeModel() {
-            var picker = testPicker(defaultPicker);
-            picker.model = emptyModel;
-            compare(picker.selectedIndex, 0, "selectedIndex gets 0");
+        function test_selectedIndex_data() {
+            return [
+                        {tag: "Runtime model", picker: defaultPicker, model: emptyModel, expectedIndex: 0},
+                        {tag: "Empty modelled", picker: simpleModelled, expectedIndex: 0},
+                        {tag: "Object modelled", picker: objectModelled, expectedIndex: 2},
+                    ];
+        }
+        function test_selectedIndex(data) {
+            var picker = testPicker(data.picker);
+            if (data.nmodel) {
+                picker.model = data.model;
+            }
+            compare(picker.selectedIndex, data.expectedIndex, "unexpected selectedIndex");
         }
 
-        function test_1_selectedIndexForEmptyModel() {
-            var picker = testPicker(simpleModelled);
-            compare(picker.selectedIndex, 0, "empty modelled picker selectedIndex is 0");
+        function test_updateModel_data() {
+            return [
+                {tag: "Empty picker", picker: defaultPicker},
+                {tag: "Object modelled picker", picker: objectModelled},
+            ];
         }
-
-        function test_1_selectedIndexForObjectModel() {
-            var picker = testPicker(objectModelled);
-            compare(picker.selectedIndex, 2, "model containing data, picker.selectedIndex");
-        }
-
-        function test_2_updateModel() {
-            var picker = testPicker(defaultPicker);
+        function test_updateModel(data) {
+            var picker = testPicker(data.picker);
             picker.selectedIndex = 1;
-            spy.clear();
-            spy.signalName = "onSelectedIndexChanged";
             spy.target = picker;
             picker.model = [];
-            tryCompare(spy, "count", 1);
+            spy.wait();
         }
 
-        function test_2_updateModel2() {
-            var picker = testPicker(objectModelled);
-            picker.selectedIndex = 1;
-            spy.clear();
-            spy.signalName = "onSelectedIndexChanged";
-            spy.target = picker;
-            picker.model = [];
-            tryCompare(spy, "count", 1);
+        function test_clickMovesSelection_data() {
+            return [
+                        {tag: "Linear long", component: linearLong, circular: false, firstClick: 0, secondClick: 1},
+                        {tag: "Circular long", component: linearLong, circular: true, firstClick: 1, secondClick: 2},
+                        {tag: "Linear short", component: linearShort, circular: false, firstClick: 0, secondClick: 1},
+                        {tag: "Circular short", component: linearShort, circular: true, firstClick: 0, secondClick: 1},
+                    ];
         }
-
-        function test_4_clickMovesSelection_Long() {
-            var picker = testPicker(linearLong);
-            spy.clear();
-            spy.signalName = "onSelectedIndexChanged";
+        function test_clickMovesSelection(data) {
+            var picker = testPicker(data.component);
             spy.target = picker;
+            picker.circular = data.circular;
+
             mouseClick(picker, units.gu(1), units.gu(1));
-            tryCompare(spy, "count", 0);
+            tryCompare(spy, "count", data.firstClick);
             mouseClick(picker, units.gu(1), units.gu(18));
-            tryCompare(spy, "count", 1);
+            tryCompare(spy, "count", data.secondClick);
         }
 
-        function test_3_clickMovesSelection_Short() {
-            var picker = testPicker(linearShort);
-            spy.clear();
-            spy.signalName = "onSelectedIndexChanged";
-            spy.target = picker;
-            mouseClick(picker, units.gu(1), units.gu(1));
-            tryCompare(spy, "count", 0);
-            mouseClick(picker, units.gu(1), units.gu(18));
-            tryCompare(spy, "count", 1);
-        }
-
-        function test_5_clickMovesSelection_Long() {
-            var picker = testPicker(linearLong);
-            spy.clear();
-            spy.signalName = "onSelectedIndexChanged";
-            picker.circular = true;
-
-            spy.target = picker;
-            mouseClick(picker, units.gu(1), units.gu(1));
-            waitPickerScrolling();
-            tryCompare(spy, "count", 1);
-            mouseClick(picker, units.gu(1), units.gu(18));
-            waitPickerScrolling();
-            tryCompare(spy, "count", 2);
-        }
-
-        function test_6_pickerCircularChange() {
+        function test_pickerCircularChange() {
             var picker = testPicker(defaultPicker);
             var expectedList = picker.circular ? "Picker_WrapAround" : "Picker_Linear";
             verify(findChild(picker, expectedList) !== undefined, "Picker must use " + expectedList);
@@ -273,84 +251,70 @@ Item {
             verify(findChild(picker, expectedList) !== undefined, "circular changed, Picker must use " + expectedList);
         }
 
-//        function test_7_modelCropping() {
-//            var selected = 50;
-//            linearDynPicker.selectedIndex = selected;
-//            circularDynPicker.selectedIndex = selected;
-//            waitPickerScrolling();
-//            var linearList = getPickerList(linearDynPicker, true);
-//            var circularList = getPickerList(circularDynPicker, false);
+        function test_modelCropping_data() {
+            return [
+                        {tag: "Linear, selected @50, remove from 40", component: linearDynPicker, selected: 50, remove: 40, removeCount: dynamicModel.count - 40, count: 40, expected: 39 },
+                        {tag: "Linear, selected @50, remove 50", component: linearDynPicker, selected: 50, remove: 50, removeCount: 1, count: dynamicModel.count - 1, expected: 49 },
+                        {tag: "Linear, selected @50, remove 10 from 45", component: linearDynPicker, selected: 50, remove: 45, removeCount: 10, count: dynamicModel.count - 10, expected: 44 },
+                        {tag: "Linear, selected @50, remove 10 from 51", component: linearDynPicker, selected: 50, remove: 51, removeCount: 10, count: dynamicModel.count - 10, expected: 50 },
 
-//            selected = 40;
-//            dynamicModel.remove(selected, dynamicModel.count - selected);
-//            waitPickerScrolling();
+                        {tag: "Circular, selected @50, remove from 40", component: circularDynPicker, selected: 50, remove: 40, removeCount: dynamicModel.count - 40, count: 40, expected: 39 },
+                        {tag: "Circular, selected @50, remove 50", component: circularDynPicker, selected: 50, remove: 50, removeCount: 1, count: dynamicModel.count - 1, expected: 49 },
+                        {tag: "Circular, selected @50, remove 10 from 45", component: circularDynPicker, selected: 50, remove: 45, removeCount: 10, count: dynamicModel.count - 10, expected: 44 },
+                        {tag: "Circular, selected @50, remove 10 from 51", component: circularDynPicker, selected: 50, remove: 51, removeCount: 10, count: dynamicModel.count - 10, expected: 50 },
+                    ]
+        }
 
-//            compare(linearList.count, selected, "bad removal from linearList")
-//            compare(linearDynPicker.selectedIndex, selected - 1, "bad index of linearList");
+        function test_modelCropping(data) {
+            var picker = testPicker(data.component);
+            picker.selectedIndex = data.selected;
+            waitPickerScrolling(picker);
+            var list = getPickerList(picker);
 
-//            compare(circularList.count, selected , "bad removal from circularList")
-//            compare(circularDynPicker.selectedIndex, selected - 1, "bad index of circularList");
+            picker.model.remove(data.remove, data.removeCount);
+            waitPickerScrolling(picker);
+            compare(list.count, data.count, "bad removal from list");
+            compare(picker.selectedIndex, data.expected, "bad index of " + data.tag);
+        }
 
-//            // remove from the middle
-//            selected = 10;
-//            dynamicModel.remove(selected, 10);
-//            waitPickerScrolling();
+        function test_modelReset_data() {
+            return [
+                {tag: "Linear", picker: linearDynPicker},
+                {tag: "Circular", picker: circularDynPicker},
+            ];
+        }
+        function test_modelReset(data) {
+            var picker = testPicker(data.picker);
+            var list = getPickerList(picker);
+            picker.model.reset();
+            waitPickerScrolling(picker);
+            compare(list.currentIndex, 0, "picker's itemList selection not reset");
+            compare(picker.selectedIndex, 0, "picker's selection not reset");
+        }
 
-//            compare(linearList.count, 30, "bad removal from linearList")
-//            compare(linearDynPicker.selectedIndex, 29, "bad index of linearList");
-
-//            compare(circularList.count, 30, "bad removal from circularList")
-//            compare(circularDynPicker.selectedIndex, 29, "bad index of circularList");
-
-//            // move selection in front and remove from after
-//            linearDynPicker.selectedIndex = 10;
-//            circularDynPicker.selectedIndex = 10;
-//            dynamicModel.remove(20, 10);
-//            waitPickerScrolling();
-
-//            compare(linearList.count, 20, "bad removal from linearList")
-//            compare(linearDynPicker.selectedIndex, 10, "bad index of linearList");
-
-//            compare(circularList.count, 20, "bad removal from circularList")
-//            compare(circularDynPicker.selectedIndex, 10, "bad index of circularList");
-
-//            // remove 6 items around selectedIndex
-//            dynamicModel.remove(5, 6);
-//            waitPickerScrolling();
-
-//            compare(linearList.count, 14, "bad removal from linearList")
-//            compare(linearDynPicker.selectedIndex, 4, "bad index of linearList");
-
-//            compare(circularList.count, 14, "bad removal from circularList")
-//            compare(circularDynPicker.selectedIndex, 4, "bad index of circularList");
-//        }
-
-//        function test_8_modelReset() {
-//            var linearList = getPickerList(linearDynPicker, true);
-//            var circularList = getPickerList(circularDynPicker, false);
-//            dynamicModel.reset();
-//            waitPickerScrolling();
-
-//            compare(linearList.currentIndex, 0, "linear picker's itemList selection not reset");
-//            compare(circularList.currentIndex, 0, "circular picker's itemList selection not reset");
-
-//            compare(linearDynPicker.selectedIndex, 0, "linear picker's selection not reset");
-//            compare(circularDynPicker.selectedIndex, 0, "circular picker's selection not reset");
-//        }
-
-//        function test_9_modelClear() {
-//            var linearList = getPickerList(linearDynPicker, true);
-//            var circularList = getPickerList(circularDynPicker, false);
-//            dynamicModel.clear();
-//            waitPickerScrolling();
-
-//            compare(linearList.currentIndex, -1, "linear picker's itemList selection not reset");
-//            expectFailContinue("", "PathView issue: https://bugreports.qt-project.org/browse/QTBUG-35400");
-//            compare(circularList.currentIndex, -1, "circular picker's itemList selection not reset");
-
-//            compare(linearDynPicker.selectedIndex, -1, "linear picker's selection not reset");
-//            expectFailContinue("", "PathView issue: https://bugreports.qt-project.org/browse/QTBUG-35400");
-//            compare(circularDynPicker.selectedIndex, -1, "circular picker's selection not reset");
-//        }
+        function test_modelClear_data() {
+            return [
+                {tag: "Linear", picker: linearDynPicker},
+                {tag: "Circular", picker: circularDynPicker},
+            ];
+        }
+        function test_modelClear(data) {
+            var picker = testPicker(data.picker);
+            var list = getPickerList(picker);
+            picker.model.clear();
+            if (data.tag == "Linear") {
+                // picker's ListView needs some events to be processed before it gets the final value for currentIndex
+                waitForRendering(list, 500);
+            }
+            waitPickerScrolling(picker);
+            if (data.tag == "Circular") {
+                expectFailContinue(data.tag, "PathView issue: https://bugreports.qt-project.org/browse/QTBUG-35400");
+            }
+            compare(list.currentIndex, -1, "picker's itemList selection not reset");
+            if (data.tag == "Circular") {
+                expectFailContinue(data.tag, "PathView issue: https://bugreports.qt-project.org/browse/QTBUG-35400");
+            }
+            compare(picker.selectedIndex, -1, "picker's selection not reset");
+        }
     }
 }
