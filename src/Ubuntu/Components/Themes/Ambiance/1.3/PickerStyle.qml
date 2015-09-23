@@ -54,6 +54,8 @@ Item {
     property Item view: Item{}
 
     anchors.fill: parent
+    implicitWidth: units.gu(8)
+    implicitHeight: units.gu(20)
 
     // frame
     UbuntuShape {

@@ -27,6 +27,9 @@ Item {
     property Item picker: styledItem.picker
     property Item highlightItem: itemList.highlightItem
 
+    implicitHeight: picker.itemHeight
+    implicitWidth: itemList.width
+
     Binding {
         target: styledItem
         when: fadingEnabled

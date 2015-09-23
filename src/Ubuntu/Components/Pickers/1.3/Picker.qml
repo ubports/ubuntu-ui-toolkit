@@ -80,7 +80,6 @@ import Ubuntu.Components 1.3
     \list
         \li [1] Circular picker does not react on touch generated flicks (on touch
             enabled devices) when nested into a Flickable -
-            \l {https://bugreports.qt-project.org/browse/QTBUG-13690} and
             \l {https://bugreports.qt-project.org/browse/QTBUG-30840}
         \li [2] Circular picker sets \l selectedIndex to 0 when the model is cleared,
             contrary to linear one, which sets it to -1 -
@@ -129,6 +128,14 @@ StyledItem {
     readonly property bool moving: (loader.item ? loader.item.moving : false) || movingPoll.indexChanging
 
     /*!
+      \since Ubuntu.Components.Pickers 1.3
+      The property specifies the defautl height of the PickerDelegates. It is
+      recommended to change the delegate height through this property rather than
+      changing it from the delegate itself.
+      */
+    property real itemHeight: units.gu(4)
+
+    /*!
       The function positions the picker's view to the given index without animating
       the view. The component must be ready when calling the function, e.g. to make
       sure the Picker shows up at the given index, do the following:
@@ -155,8 +162,6 @@ StyledItem {
         selectedIndex = loader.item.currentIndex;
     }
 
-    implicitWidth: units.gu(8)
-    implicitHeight: units.gu(20)
     activeFocusOnPress: true
 
     theme.version: Ubuntu.toolkitVersion
@@ -287,6 +292,7 @@ StyledItem {
             property bool viewCompleted: false
             // declared to ease moving detection
             property real contentY: offset
+
             anchors {
                 top: parent ? parent.top : undefined
                 bottom: parent ? parent.bottom : undefined
@@ -303,11 +309,11 @@ StyledItem {
             preferredHighlightBegin: 0.5
             preferredHighlightEnd: 0.5
 
-            pathItemCount: pView.height / (pView.currentItem ? pView.currentItem.height : 1) + 1
+            pathItemCount: pView.height / picker.itemHeight
             snapMode: PathView.SnapToItem
             flickDeceleration: 100
 
-            property int contentHeight: pathItemCount * (pView.currentItem ? pView.currentItem.height : 1)
+            property int contentHeight: pathItemCount * picker.itemHeight
             path: Path {
                 startX: pView.width / 2
                 startY: -(pView.contentHeight - pView.height) / 2
@@ -347,6 +353,7 @@ StyledItem {
             property Item pickerItem: picker
             // property holding view completion
             property bool viewCompleted: false
+
             anchors {
                 top: parent ? parent.top : undefined
                 bottom: parent ? parent.bottom : undefined
