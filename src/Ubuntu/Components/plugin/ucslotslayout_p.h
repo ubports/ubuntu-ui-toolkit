@@ -93,6 +93,7 @@ public:
     void _q_onMainSlotHeightChanged();
     void _q_updateSlotsBBoxHeight();
     void _q_updateSize();
+    void _q_onSlotWidthChanged();
     void _q_onSlotPositionChanged();
     void _q_relayout();
 

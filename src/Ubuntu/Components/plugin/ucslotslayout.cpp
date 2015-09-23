@@ -310,6 +310,24 @@ void UCSlotsLayoutPrivate::_q_updateSize()
     _q_relayout();
 }
 
+void UCSlotsLayoutPrivate::_q_onSlotWidthChanged()
+{
+    Q_Q(UCSlotsLayout);
+    QQuickItem *slot = qobject_cast<QQuickItem*>(q->sender());
+    if (slot == Q_NULLPTR) {
+        qDebug() << "onSlotWidthChanged: NULL SLOT";
+        return;
+    }
+
+    //if the width is 0, we should also update the max slots height
+    //as this item is now considered as if it were !visible
+    if (!slot->width()) {
+        _q_updateSlotsBBoxHeight();
+    } else {
+        _q_relayout();
+    }
+}
+
 void UCSlotsLayoutPrivate::_q_onSlotPositionChanged()
 {
     Q_Q(UCSlotsLayout);
@@ -687,7 +705,7 @@ void UCSlotsLayout::itemChange(ItemChange change, const ItemChangeData &data)
             //TODO: do this in a separate function? do were really have to do the whole relayout?
             if (data.item != d->mainSlot) {
                 d->addSlot(data.item);
-                QObject::connect(data.item, SIGNAL(widthChanged()), this, SLOT(_q_relayout()));
+                QObject::connect(data.item, SIGNAL(widthChanged()), this, SLOT(_q_onSlotWidthChanged()));
                 QObject::connect(data.item, SIGNAL(heightChanged()), this, SLOT(_q_updateSlotsBBoxHeight()));
                 d->_q_updateSlotsBBoxHeight();
             } else {
@@ -706,7 +724,7 @@ void UCSlotsLayout::itemChange(ItemChange change, const ItemChangeData &data)
 
             if (data.item != d->mainSlot) {
                 d->removeSlot(data.item);
-                QObject::disconnect(data.item, SIGNAL(widthChanged()), this, SLOT(_q_relayout()));
+                QObject::disconnect(data.item, SIGNAL(widthChanged()), this, SLOT(_q_onSlotWidthChanged()));
                 QObject::disconnect(data.item, SIGNAL(heightChanged()), this, SLOT(_q_updateSlotsBBoxHeight()));
                 d->_q_updateSlotsBBoxHeight();
             } else {

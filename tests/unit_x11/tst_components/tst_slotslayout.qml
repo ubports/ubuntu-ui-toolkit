@@ -50,7 +50,7 @@ Item {
     }
 
     VisualItemModel {
-        id: layoutsModel        
+        id: layoutsModel
         SlotsLayout {
             id: layout
             //these lists define the slots that we expect to be part of the layout
@@ -220,12 +220,20 @@ Item {
         }
         ListItemLayout {
             id: layoutTestRelativePositioning2
-            //these lists hold the slots in the order we want them to be positioned
             readonly property var leadingSlots: [layoutTestRelativePositioning2_leading1]
             readonly property var trailingSlots: [layoutTestRelativePositioning2_trailing2, layoutTestRelativePositioning2_trailing1]
             Item { id: layoutTestRelativePositioning2_leading1; SlotsLayout.position: SlotsLayout.Leading-3; width: units.gu(6); height: units.gu(3) }
             Item { id: layoutTestRelativePositioning2_trailing1; SlotsLayout.position: SlotsLayout.Trailing+1; width: units.gu(1); height: units.gu(7) }
             Item { id: layoutTestRelativePositioning2_trailing2; SlotsLayout.position: SlotsLayout.Trailing; width: units.gu(3); height: units.gu(9) }
+        }
+        ListItemLayout {
+            id: layoutTestNullSizeSlots
+            readonly property var leadingSlots: []
+            property var trailingSlots: [layoutNullSizeSlots_trailing1, layoutNullSizeSlots_trailing2]
+            title.text: "Hello"
+            //we will reset the slot which is taller than mainSlot and test height and positions
+            Item { id: layoutNullSizeSlots_trailing1; SlotsLayout.position: SlotsLayout.Trailing; width: units.gu(5); height: parent.mainSlot.height+20 }
+            Item { id: layoutNullSizeSlots_trailing2; SlotsLayout.position: SlotsLayout.Trailing; width: units.gu(3); height: units.gu(4) }
         }
     }
 
@@ -338,12 +346,17 @@ Item {
                     compare(slot.y, 0, "Override vertical positioning: vertical position")
                 } else {
                     if (mustAlignSlotsToTop(item)) {
-                        compare(slot.y, item.padding.top + slot.SlotsLayout.padding.top, "Automatic vertical positioning: vertical position, aligned to the top")
+                        compare(slot.anchors.top, item.top,
+                                "Automatic vertical positioning: top anchor, \"aligned to the top\" positioning mode")
+                        compare(slot.anchors.topMargin, item.padding.top + slot.SlotsLayout.padding.top,
+                                "Automatic vertical positioning: topMargin, \"aligned to the top\" positioning mode")
                     } else {
-                        compare(slot.y, (item.height - slot.height
-                                         + item.padding.top - item.padding.bottom
-                                         + slot.SlotsLayout.padding.top - slot.SlotsLayout.padding.bottom) / 2.0 ,
-                                "Automatic vertical positioning: vertical position, vertically centered" )
+                        compare(slot.anchors.verticalCenter, item.verticalCenter,
+                                "Automatic vertical positioning: verticalCenter anchor, \"vertically centered\" positioning mode ")
+                        compare(slot.anchors.verticalCenterOffset,
+                                (item.padding.top - item.padding.bottom
+                                 + slot.SlotsLayout.padding.top - slot.SlotsLayout.padding.bottom) / 2.0,
+                                "Automatic vertical positioning: verticalCenter anchor, \"vertically centered\" positioning mode ")
                     }
                 }
             }
@@ -402,8 +415,8 @@ Item {
             checkSlotsPosition(data.item)
         }
 
-        /* FIXME: currently disabled while I investigate why setting anchors.verticalCenter some times
-                  sets the wrong Y (usually +/- 0.5 from the correct value)
+        // FIXME: currently disabled while I investigate why setting anchors.verticalCenter some times
+        //          sets the wrong Y (usually +/- 0.5 from the correct value)
         function test_relayoutAfterChangingSlotsSize() {
             checkSlotsPosition(layoutTestChangeSlotsSize)
 
@@ -420,7 +433,8 @@ Item {
                     + layoutTestChangeSlotsSize.padding.bottom,
                     "Layout's implicit height check after slot's height change")
             checkSlotsPosition(layoutTestChangeSlotsSize)
-        }*/
+            checkImplicitSize(layoutTestChangeSlotsSize)
+        }
 
         function test_mainSlotSize() {
             compare(layoutTestMainSlotSize.mainSlot.width,
@@ -499,6 +513,45 @@ Item {
         }
         function test_relativePositioning(data) {
             checkSlotsPosition(data.item)
+        }
+
+        function test_nullSizeSlots() {
+            compare(layoutTestNullSizeSlots.trailingSlots.length, 2, "Null size slot test, fake trailing slots list")
+            checkSlotsPosition(layoutTestNullSizeSlots)
+            checkImplicitSize(layoutTestNullSizeSlots)
+
+            layoutTestNullSizeSlots.trailingSlots[0].height = 0
+            compare(layoutTestNullSizeSlots.trailingSlots[0].height, 0, "Null size slot test, slot's height")
+            //remove that slot from the list of slots we expect to be laid out
+            var tmpSlot = layoutTestNullSizeSlots.trailingSlots[0]
+            layoutTestNullSizeSlots.trailingSlots = [layoutTestNullSizeSlots.trailingSlots[1]]
+            compare(layoutTestNullSizeSlots.trailingSlots.length, 1, "Null size slot test, fake trailing slots list")
+            checkSlotsPosition(layoutTestNullSizeSlots)
+            checkImplicitSize(layoutTestNullSizeSlots)
+
+            layoutTestNullSizeSlots.trailingSlots[0].width = 0
+            compare(layoutTestNullSizeSlots.trailingSlots[0].width, 0, "Null size slot test, slot's width")
+            var tmpSlot2 = layoutTestNullSizeSlots.trailingSlots[0]
+            layoutTestNullSizeSlots.trailingSlots = []
+            compare(layoutTestNullSizeSlots.trailingSlots.length, 0, "Null size slot test, fake trailing slots list")
+            checkSlotsPosition(layoutTestNullSizeSlots)
+            checkImplicitSize(layoutTestNullSizeSlots)
+
+            //bring the first slot back
+            tmpSlot.height = 300
+            compare(tmpSlot.height, 300, "Null size slot test, slot's height")
+            layoutTestNullSizeSlots.trailingSlots = [tmpSlot]
+            compare(layoutTestNullSizeSlots.trailingSlots.length, 1, "Null size slot test, fake trailing slots list")
+            checkSlotsPosition(layoutTestNullSizeSlots)
+            checkImplicitSize(layoutTestNullSizeSlots)
+
+            //bring the second slot back
+            tmpSlot2.width = 22
+            compare(tmpSlot2.width, 22, "Null size slot test, slot's width")
+            layoutTestNullSizeSlots.trailingSlots = [tmpSlot, tmpSlot2]
+            compare(layoutTestNullSizeSlots.trailingSlots.length, 2, "Null size slot test, fake trailing slots list")
+            checkSlotsPosition(layoutTestNullSizeSlots)
+            checkImplicitSize(layoutTestNullSizeSlots)
         }
     }
 }
