@@ -135,6 +135,8 @@ QObject* UCDeprecatedTheme::palette()
 QQmlComponent* UCDeprecatedTheme::createStyleComponent(const QString& styleName, QObject* parent)
 {
     showDeprecatedNote(parent, "Theme.createStyleComponent() is deprecated. Use ThemeSettings instead.");
+    // force version to be 1.2
+    UCTheme::defaultTheme().setVersion(BUILD_VERSION(1, 2));
     return UCTheme::defaultTheme().createStyleComponent(styleName, parent, BUILD_VERSION(1, 2));
 }
 

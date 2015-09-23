@@ -32,4 +32,6 @@ OTHER_FILES += \
     PaletteConfigurationAllColors.qml \
     StyledItemNewTheming.qml \
     AbstractButtonGrid.qml \
-    AbstractButton13Grid.qml
+    AbstractButton13Grid.qml \
+    ListOfCaptions13.qml \
+    ListItemList13.qml
