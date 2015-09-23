@@ -74,7 +74,7 @@
     The default z-value is 0, so declare the Header after any Items that it should
     overlay, or set its z-value to be larger than that of the other Items.
     The initial y-value is 0, but scrolling the flickable or setting \l exposed to
-    false will change the y-value in the range of -height and 0.
+    false will change the y-value in the range from -height to 0.
 */
 
 UCUbuntuAnimation *UCHeader::s_ubuntuAnimation = new UCUbuntuAnimation();
