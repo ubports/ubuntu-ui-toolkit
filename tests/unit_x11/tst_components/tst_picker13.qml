@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -144,7 +144,7 @@ Item {
 
     UbuntuTestCase {
         id: testCase
-        name: "PickerAPI"
+        name: "Picker13API"
         when: windowShown
 
         function waitPickerScrolling() {
