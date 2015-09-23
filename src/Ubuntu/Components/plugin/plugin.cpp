@@ -23,6 +23,7 @@
 #include "plugin.h"
 #include "uctheme.h"
 #include "ucdeprecatedtheme.h"
+#include "ucthemingextension.h"
 
 #include <QtQml/QQmlContext>
 #include "i18n.h"
@@ -225,6 +226,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCUbuntuShapeOverlay>(uri, 1, 2, "UbuntuShapeOverlay");
 
     // register 1.3 API
+    qmlRegisterType<UCItemAttached>();
     qmlRegisterType<UCListItem13>(uri, 1, 3, "ListItem");
     qmlRegisterType<UCListItemExpansion>();
     qmlRegisterUncreatableType<UCViewItemsAttached13>(uri, 1, 3, "ViewItems", "No create");

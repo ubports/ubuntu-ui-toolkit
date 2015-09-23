@@ -79,33 +79,16 @@ MainView {
 }
 """)
 
-    class Label(ubuntuuitoolkit.UbuntuUIToolkitCustomProxyObjectBase):
-        pass
-
     scenarios = [
-        ('main view', dict(
-            cpo_class=ubuntuuitoolkit.MainView,
-            object_name='mainView',
-            is_flickable=False)),
-        ('flickable', dict(
-            cpo_class=ubuntuuitoolkit.QQuickFlickable,
-            object_name='flickable',
-            is_flickable=True)),
-        ('list view', dict(
-            cpo_class=ubuntuuitoolkit.QQuickListView,
-            object_name='listView',
-            is_flickable=True)),
-        ('label', dict(
-            cpo_class=Label,
-            object_name='label',
-            is_flickable=False))
+        ('main view', dict(object_name='mainView', is_flickable=False)),
+        ('flickable', dict(object_name='flickable', is_flickable=True)),
+        ('list view', dict(object_name='listView', is_flickable=True)),
+        ('label', dict(object_name='label', is_flickable=False))
     ]
 
     def test_is_flickable(self):
         """Test that is_flickable identifies the elements correctly."""
-        element = self.app.select_single(
-            self.cpo_class,
-            objectName=self.object_name)
+        element = self.app.select_single(objectName=self.object_name)
         self.assertEqual(element.is_flickable(), self.is_flickable)
 
 
@@ -160,9 +143,6 @@ MainView {
 }
 """)
 
-    class Button(ubuntuuitoolkit.UbuntuUIToolkitCustomProxyObjectBase):
-        pass
-
     def setUp(self):
         super().setUp()
         self.flickable = self.main_view.select_single(
@@ -174,9 +154,7 @@ MainView {
     def test_swipe_into_view_bottom_element(self):
         self.main_view.close_toolbar()
 
-        button = self.main_view.select_single(
-            self.Button,
-            objectName='bottomButton')
+        button = self.main_view.select_single(objectName='bottomButton')
         button.swipe_into_view()
 
         self.pointing_device.click_object(button)
@@ -184,14 +162,10 @@ MainView {
 
     def test_swipe_into_view_top_element(self):
         self.main_view.close_toolbar()
-        bottomButton = self.main_view.select_single(
-            self.Button,
-            objectName='bottomButton')
+        bottomButton = self.main_view.select_single(objectName='bottomButton')
         bottomButton.swipe_into_view()
 
-        topButton = self.main_view.select_single(
-            self.Button,
-            objectName='topButton')
+        topButton = self.main_view.select_single(objectName='topButton')
         topButton.swipe_into_view()
 
         self.pointing_device.click_object(topButton)

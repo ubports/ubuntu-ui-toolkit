@@ -25,7 +25,6 @@ from testtools.matchers import Is, Not, Equals
 
 import ubuntuuitoolkit
 from ubuntuuitoolkit import base, fixture_setup
-from ubuntuuitoolkit._custom_proxy_objects._mainview import MainView
 
 
 _DESKTOP_FILE_CONTENTS = ("""[Desktop Entry]
@@ -109,8 +108,7 @@ MainView {
         application_name, _ = os.path.splitext(desktop_file_name)
         self.app = self.launch_upstart_application(
             application_name,
-            proxy_class=ubuntuuitoolkit.UbuntuUIToolkitCustomProxyObjectBase
-        )
+            emulator_base=ubuntuuitoolkit.UbuntuUIToolkitCustomProxyObjectBase)
 
     def use_local_modules(self, local_modules_path):
         env_vars = [
@@ -127,9 +125,8 @@ MainView {
 class QMLStringAppTestCase(UbuntuUIToolkitWithFakeAppRunningTestCase):
     """Base test case for self tests that define the QML on an string."""
 
-    def setUp(self, mainview_class=MainView):
+    def setUp(self):
         super().setUp()
-        self.mainview_class = mainview_class
         self.assertThat(
             self.main_view.visible, Eventually(Equals(True)))
 
@@ -143,9 +140,7 @@ class QMLStringAppTestCase(UbuntuUIToolkitWithFakeAppRunningTestCase):
         QML code used for testing must define the objectName
         of the MainView to be 'mainView'.
         """
-        return self.mainview_class.from_proxy_object(
-            self.app.select_single(objectName='mainView')
-        )
+        return self.app.select_single(objectName='mainView')
 
 
 class FlickDirection:
@@ -160,10 +155,8 @@ class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
     test_qml_file_path = '/path/to/file.qml'
     desktop_file_path = None
 
-    def setUp(self, mainview_class=MainView):
+    def setUp(self):
         super().setUp()
-        # Allow a test case to use a different CPO
-        self.mainview_class = mainview_class
         self.pointing_device = Pointer(self.input_device_class.create())
         self.launch_application()
 
@@ -180,6 +173,7 @@ class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
             ]
         self.app = self.launch_test_application(
             *self.get_command_line(command_line),
+            emulator_base=ubuntuuitoolkit.UbuntuUIToolkitCustomProxyObjectBase,
             app_type='qt')
 
         self.assertThat(
@@ -201,9 +195,7 @@ class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
         QML code used for testing must define the objectName
         of the MainView to be 'mainView'.
         """
-        return self.mainview_class.from_proxy_object(
-            self.app.select_single(objectName='mainView')
-        )
+        return self.app.select_single(objectName='mainView')
 
     def getOrientationHelper(self):
         orientationHelper = self.main_view.select_many(
@@ -212,8 +204,7 @@ class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
         return orientationHelper
 
     def checkPageHeader(self, pageTitle):
-        orientationHelper = self.getOrientationHelper()
-        header_label = orientationHelper.select_single(
+        header_label = self.main_view.select_single(
             objectName="header_title_label", text=pageTitle)
         self.assertThat(header_label, Not(Is(None)))
         self.assertThat(header_label.visible, Eventually(Equals(True)))
