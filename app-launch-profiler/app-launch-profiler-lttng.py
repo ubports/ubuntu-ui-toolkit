@@ -19,6 +19,7 @@ import babeltrace
 import sys
 from pprint import pprint
 
+
 class MyCounter(dict):
     def __missing__(self, key):
         return 0
@@ -29,21 +30,22 @@ if __name__ == '__main__':
         raise RuntimeError('Cannot add trace')
 
     first_event = -1
-    iterations  = 0
-    events_in_iteration = 4
-    numbers     = MyCounter()
-    minNumbers  = MyCounter()
-    maxNumbers  = MyCounter()
+    iterations = 0
+    events_in_iteration = 2
+    numbers = MyCounter()
+    minNumbers = MyCounter()
+    maxNumbers = MyCounter()
 
     for event in col.events:
         if (event.name == "app:invokeApplauncher"):
-            if (events_in_iteration != 4):
-                raise RuntimeError("Wrong Nr of events: "+str(events_in_iteration))
+            if (events_in_iteration != 2):
+                raise RuntimeError("Wrong Nr of events: " +
+                                   str(events_in_iteration))
 
             events_in_iteration = 1
             first_event = event.timestamp
             print("Event "+event.name+" occurs after: "+str(0))
-            iterations+=1
+            iterations += 1
         else:
             events_in_iteration += 1
             duration = event.timestamp-first_event
@@ -55,12 +57,13 @@ if __name__ == '__main__':
                 minNumbers[event.name] = duration
 
             if maxNumbers[event.name] < duration:
-               maxNumbers[event.name] = duration
+                maxNumbers[event.name] = duration
 
-            print("Event "+event.name+" occurs after: "+str((event.timestamp-first_event)/1000/1000/1000))
+            print("Event "+event.name+" occurs after: " +
+                  str((event.timestamp-first_event) / 1000 / 1000 / 1000))
 
     for event in numbers:
         print("---------- Event "+event+" ----------")
-        print("Min: "+str(minNumbers[event] /1000/1000/1000))
-        print("Max: "+str(maxNumbers[event] /1000/1000/1000))
-        print("Avg: "+str(numbers[event] / iterations /1000/1000/1000))
+        print("Min: " + str(minNumbers[event] / 1000 / 1000 / 1000))
+        print("Max: " + str(maxNumbers[event] / 1000 / 1000 / 1000))
+        print("Avg: " + str(numbers[event] / iterations / 1000 / 1000 / 1000))
