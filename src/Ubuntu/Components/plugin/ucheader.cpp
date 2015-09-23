@@ -208,6 +208,10 @@ void UCHeader::show() {
         m_showHideAnimation->start();
     } else {
         this->setY(0.0);
+        if (m_moving) {
+            m_moving = false;
+            Q_EMIT movingChanged();
+        }
     }
 }
 
@@ -226,6 +230,10 @@ void UCHeader::hide() {
         m_showHideAnimation->start();
     } else {
         this->setY(-1.0*height());
+        if (m_moving) {
+            m_moving = false;
+            Q_EMIT movingChanged();
+        }
     }
 }
 
