@@ -191,6 +191,8 @@ Item {
             compare(picker.model, undefined, "default model");
             compare(picker.delegate, null, "default delegate");
             compare(picker.selectedIndex, 0, "default selectedIndex");
+            compare(picker.itemHeight, units.gu(4), "default itemHeight");
+            compare(picker.__styleInstance.highlightThickness, units.gu(5), "default highlight thickness");
         }
 
         function test_selectedIndex_data() {
@@ -315,6 +317,18 @@ Item {
                 expectFailContinue(data.tag, "PathView issue: https://bugreports.qt-project.org/browse/QTBUG-35400");
             }
             compare(picker.selectedIndex, -1, "picker's selection not reset");
+        }
+
+        function test_itemHeight_data() {
+            return [
+                {tag: "Linear", picker: linearDynPicker, itemHeight: units.gu(6)},
+                {tag: "Circular", picker: circularDynPicker, itemHeight: units.gu(6)},
+            ];
+        }
+        function test_itemHeight(data) {
+            var picker = testPicker(data.picker);
+            picker.itemHeight = data.itemHeight;
+            compare(picker.__styleInstance.highlightThickness, picker.itemHeight + units.gu(1));
         }
     }
 }

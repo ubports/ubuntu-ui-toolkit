@@ -94,6 +94,7 @@ MainView {
                 model: pickerModel
                 circular: false
                 live: true
+                itemHeight: units.gu(10)
                 delegate: PickerDelegate {
                     Label {
                         anchors.fill: parent
