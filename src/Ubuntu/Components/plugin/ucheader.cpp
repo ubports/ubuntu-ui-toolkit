@@ -132,6 +132,11 @@ void UCHeader::_q_heightChanged() {
  * The topMargin of the flickable will automatically be updated to always match
  * the height of the header. When changing the flickable, the topMargin of the previous
  * flickable is set to 0.
+ *
+ * It is permitted to use a ListView as the value of flickable, but this works
+ * well only if the ListView.header property is not set. Alternatively,
+ * a Header component may be used for ListView.header, but in that case the flickable
+ * of the Header must be null.
  */
 QQuickFlickable* UCHeader::flickable() {
     return m_flickable.data();
