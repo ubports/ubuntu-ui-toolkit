@@ -158,7 +158,7 @@ Depends: ${misc:Depends},
          upstart,
          url-dispatcher-tools,
          qtdeclarative5-ubuntu-ui-toolkit-plugin (>= ${source:Version}) | qtdeclarative5-ubuntu-ui-toolkit-plugin-gles,
-         ubuntu-app-launch-profiler (>= ${source:Version})
+         ubuntu-app-launch-profiler (>= ${source:Version}),
          qml-module-qttest | qtdeclarative5-test-plugin,
 Description: Test package for Ubuntu UI Toolkit
  Autopilot tests for the ubuntu-ui-toolkit package
