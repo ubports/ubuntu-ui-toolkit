@@ -94,6 +94,12 @@ public:
     void _q_relayout();
 
     UCSlotsLayoutPadding padding;
+
+    //These lists are just to split the children() between leading
+    //and trailing slots. Some of the slots in this lists may be
+    //ignored during relayout, for example if they're not visible or
+    //similar conditions. (see relayout implementation to make sure
+    //what conditions we check before ignoring a slot)
     QList<QQuickItem *> leadingSlots;
     QList<QQuickItem *> trailingSlots;
 

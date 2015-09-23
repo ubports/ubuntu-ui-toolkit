@@ -53,6 +53,13 @@ Item {
         id: layoutsModel        
         SlotsLayout {
             id: layout
+            //these lists define the slots that we expect to be part of the layout
+            //process, and the order in which we expect them to be positioned in the
+            //layout. This is to avoid complicating the layout logic by adding conditions
+            //to the method which tests the position of the slots. If we want to
+            //test that a !visible slot is ignored during the relayout, for instance,
+            //we have to remove it from these lists before we call checkSlotsPosition(layout).
+            //The same applies to changes in the position of a slot.
             readonly property var leadingSlots: []
             readonly property var trailingSlots: []
         }
@@ -190,13 +197,33 @@ Item {
         }
         ListItemLayout {
             id: layoutTestSlotVisibilityChange
-            readonly property var leadingSlots: [layoutTestSlotVisibilityChange_leading]
+            property var leadingSlots: [layoutTestSlotVisibilityChange_leading]
             readonly property var trailingSlots: []
             title.text: "Test"
             subtitle.text: "test2"
             summary.text: "test3"
             Item { id: layoutTestSlotVisibilityChange_leading; SlotsLayout.position: SlotsLayout.Leading;
                 width: units.gu(4); height: units.gu(4) }
+        }
+        ListItemLayout {
+            //let's test if the layout respects SlotsLayout.position even if that doesn't follow
+            //the stacking order
+            id: layoutTestRelativePositioning
+            //these lists hold the slots in the order we want them to be positioned
+            readonly property var leadingSlots: [layoutTestRelativePositioning_leading1]
+            readonly property var trailingSlots: [layoutTestRelativePositioning_trailing2, layoutTestRelativePositioning_trailing1]
+            Item { id: layoutTestRelativePositioning_leading1; SlotsLayout.position: SlotsLayout.Leading-3; width: units.gu(6); height: units.gu(3) }
+            Item { id: layoutTestRelativePositioning_trailing1; SlotsLayout.position: SlotsLayout.Last; width: units.gu(1); height: units.gu(7) }
+            Item { id: layoutTestRelativePositioning_trailing2; SlotsLayout.position: SlotsLayout.Last-2; width: units.gu(3); height: units.gu(9) }
+        }
+        ListItemLayout {
+            id: layoutTestRelativePositioning2
+            //these lists hold the slots in the order we want them to be positioned
+            readonly property var leadingSlots: [layoutTestRelativePositioning2_leading1]
+            readonly property var trailingSlots: [layoutTestRelativePositioning2_trailing2, layoutTestRelativePositioning2_trailing1]
+            Item { id: layoutTestRelativePositioning2_leading1; SlotsLayout.position: SlotsLayout.Leading-3; width: units.gu(6); height: units.gu(3) }
+            Item { id: layoutTestRelativePositioning2_trailing1; SlotsLayout.position: SlotsLayout.Trailing+1; width: units.gu(1); height: units.gu(7) }
+            Item { id: layoutTestRelativePositioning2_trailing2; SlotsLayout.position: SlotsLayout.Trailing; width: units.gu(3); height: units.gu(9) }
         }
     }
 
@@ -230,16 +257,14 @@ Item {
             var i = 0
             for (i = 0; i < item.leadingSlots.length; ++i) {
                 var slot = item.leadingSlots[i]
-                if (!slot.SlotsLayout.overrideVerticalPositioning
-                        && slot.visible)  {
+                if (!slot.SlotsLayout.overrideVerticalPositioning)  {
                     maxHeight = Math.max(slot.height + slot.SlotsLayout.padding.top
                                          + slot.SlotsLayout.padding.bottom, maxHeight)
                 }
             }
             for (i = 0; i < item.trailingSlots.length; ++i) {
                 var currSlot = item.trailingSlots[i]
-                if (!currSlot.SlotsLayout.overrideVerticalPositioning
-                        && currSlot.visible)  {
+                if (!currSlot.SlotsLayout.overrideVerticalPositioning)  {
                     maxHeight = Math.max(currSlot.height + currSlot.SlotsLayout.padding.top
                                          + currSlot.SlotsLayout.padding.bottom, maxHeight)
                 }
@@ -284,6 +309,11 @@ Item {
             compare(item.implicitWidth, column.width, "Fill parent's width")
         }
 
+        //this functions takes a layouts and checks that the slots in the lists
+        //"leadingSlots" and "trailingSlots" are following the visual rules
+        //NOTE: THIS METHOD DOESN'T IGNORE ANY SLOT (because of visibility or similar).
+        //slots which are expected to be ignored by the cpp implementation should be
+        //removed from "leadingSlots" and "trailingSlots" before calling this method
         function checkSlotsPosition(item) {
             var slots = []
             slots = slots.concat(item.leadingSlots)
@@ -296,9 +326,6 @@ Item {
             var i = 0
             for (i = 0; i < slots.length; ++i) {
                 var slot = slots[i]
-                if (!slot.visible) {
-                    continue;
-                }
 
                 expectedX += slot.SlotsLayout.padding.leading
                 compare(slot.x, expectedX, "Slot's horizontal position")
@@ -424,23 +451,46 @@ Item {
         function test_changeSlotPosition() {
             checkSlotsPosition(layoutTestChangeSlotPosition)
             layoutTestChangeSlotPosition.leadingSlots[0].SlotsLayout.position = SlotsLayout.Trailing
-            compare(layoutTestChangeSlotPosition.leadingSlots[0].SlotsLayout.position, SlotsLayout.Trailing, "Slot's position change")
+            compare(layoutTestChangeSlotPosition.leadingSlots[0].SlotsLayout.position, SlotsLayout.Trailing, "Slot's position change to Trailing")
 
             layoutTestChangeSlotPosition.trailingSlots = [layoutTestChangeSlotPosition.leadingSlots[0]]
             layoutTestChangeSlotPosition.leadingSlots = []
             compare(layoutTestChangeSlotPosition.leadingSlots.length, 0, "Change slot's position, leading slots array")
             compare(layoutTestChangeSlotPosition.trailingSlots.length, 1, "Change slot's position, trailing slots array")
             checkSlotsPosition(layoutTestChangeSlotPosition)
+
+            layoutTestChangeSlotPosition.trailingSlots[0].SlotsLayout.position = SlotsLayout.First
+            compare(layoutTestChangeSlotPosition.trailingSlots[0].SlotsLayout.position, SlotsLayout.First, "Slot's position change to First")
+            layoutTestChangeSlotPosition.leadingSlots = [layoutTestChangeSlotPosition.trailingSlots[0]]
+            layoutTestChangeSlotPosition.trailingSlots = []
+            compare(layoutTestChangeSlotPosition.leadingSlots.length, 1, "Change slot's position, leading slots array")
+            compare(layoutTestChangeSlotPosition.trailingSlots.length, 0, "Change slot's position, trailing slots array")
+            checkSlotsPosition(layoutTestChangeSlotPosition)
         }
 
         function test_slotVisibilityChange() {
             layoutTestSlotVisibilityChange.leadingSlots[0].visible = false
             compare(layoutTestSlotVisibilityChange.leadingSlots[0].visible, false, "Slot's visibility, false")
+            var tmpSlot = layoutTestSlotVisibilityChange.leadingSlots[0]
+            layoutTestSlotVisibilityChange.leadingSlots = []
+            compare(layoutTestSlotVisibilityChange.leadingSlots.length, 0, "Slot's visibility, fake leading slots count")
             checkSlotsPosition(layoutTestSlotVisibilityChange)
 
+            layoutTestSlotVisibilityChange.leadingSlots = [tmpSlot]
             layoutTestSlotVisibilityChange.leadingSlots[0].visible = true
             compare(layoutTestSlotVisibilityChange.leadingSlots[0].visible, true, "Slot's visibility, true")
             checkSlotsPosition(layoutTestSlotVisibilityChange)
+        }
+
+
+        function test_relativePositioning_data(){
+            return [
+                        { tag: "Relative positioning 1", item: layoutTestRelativePositioning },
+                        { tag: "Relative positioning 2", item: layoutTestRelativePositioning2 }
+                    ]
+        }
+        function test_relativePositioning(data) {
+            checkSlotsPosition(data.item)
         }
     }
 }
