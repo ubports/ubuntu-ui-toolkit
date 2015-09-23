@@ -64,10 +64,11 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_onGuValueChanged())
     Q_PRIVATE_SLOT(d_func(), void _q_updateCachedHeight())
     Q_PRIVATE_SLOT(d_func(), void _q_updateGuValues())
-    Q_PRIVATE_SLOT(d_func(), void _q_onMainSlotHeightChanged())
+    Q_PRIVATE_SLOT(d_func(), void _q_updateCachedMainSlotHeight())
     Q_PRIVATE_SLOT(d_func(), void _q_updateSlotsBBoxHeight())
     Q_PRIVATE_SLOT(d_func(), void _q_updateSize())
     Q_PRIVATE_SLOT(d_func(), void _q_onSlotWidthChanged())
+    Q_PRIVATE_SLOT(d_func(), void _q_onSlotOverrideVerticalPositioningChanged())
     Q_PRIVATE_SLOT(d_func(), void _q_onSlotPositionChanged())
     Q_PRIVATE_SLOT(d_func(), void _q_relayout())
 };

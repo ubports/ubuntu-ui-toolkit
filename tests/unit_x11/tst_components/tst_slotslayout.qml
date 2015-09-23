@@ -32,17 +32,6 @@ Item {
         anchors.fill: parent
         Column {
             id: column
-            Rectangle {
-                //Y here should be 21.5 but it gets rounded to 21...bug in QtQuick's anchors?
-                id: verticalCenterBuggyTestCase
-                height: 54.5
-                Item {
-                    height: 11.5
-                    anchors.verticalCenter: parent.verticalCenter
-                    onYChanged: console.log("Buggy Anchors? Y should be 21.5, but it is", y)
-                }
-            }
-
             Repeater {
                 model: layoutsModel
             }
@@ -170,10 +159,10 @@ Item {
         ListItemLayout {
             id: layoutTestMainSlotSize
             width: units.gu(40)
-            readonly property var leadingSlots: [layoutTestMainSlotSize_leading1]
-            readonly property var trailingSlots: []
+            readonly property var leadingSlots: []
+            readonly property var trailingSlots: [layoutTestMainSlotSize_trailing1]
             title.text: "Test"
-            Item { id: layoutTestMainSlotSize_leading1; SlotsLayout.position: SlotsLayout.Leading; width: units.gu(1); height: units.gu(3) }
+            Item { id: layoutTestMainSlotSize_trailing1; SlotsLayout.position: SlotsLayout.Trailing; width: units.gu(1); height: units.gu(3) }
         }
         ListItemLayout {
             id: layoutTestSmallerTopBottomPadding
@@ -235,6 +224,60 @@ Item {
             Item { id: layoutNullSizeSlots_trailing1; SlotsLayout.position: SlotsLayout.Trailing; width: units.gu(5); height: parent.mainSlot.height+20 }
             Item { id: layoutNullSizeSlots_trailing2; SlotsLayout.position: SlotsLayout.Trailing; width: units.gu(3); height: units.gu(4) }
         }
+        ListItemLayout {
+            id: layoutTestOverrideVerticalPositioning
+            readonly property var leadingSlots: []
+            readonly property var trailingSlots: [layoutTestOverrideVerticalPositioning_trailing1,
+                layoutTestOverrideVerticalPositioning_trailing2]
+            title.text: "Hello"
+            //we will reset the slot which is taller than mainSlot and test height and positions
+            Item {
+                id: layoutTestOverrideVerticalPositioning_trailing1;
+                SlotsLayout.position: SlotsLayout.Trailing;
+                width: units.gu(5);
+                height: units.gu(2)
+            }
+            Item {
+                id: layoutTestOverrideVerticalPositioning_trailing2;
+                SlotsLayout.overrideVerticalPositioning: true
+                SlotsLayout.position: SlotsLayout.Trailing;
+                anchors.bottom: parent.bottom
+                width: units.gu(3);
+                height: parent.mainSlot.height+10
+            }
+        }
+        ListItemLayout {
+            id: layoutTestIgnoreSomeChangesOnMainSlot
+            readonly property var leadingSlots: [layoutTestIgnoreSomeChangesOnMainSlot_leading1]
+            readonly property var trailingSlots: []
+            title.text: "Hello"
+            //we will reset the slot which is taller than mainSlot and test height and positions
+            Item {
+                id: layoutTestIgnoreSomeChangesOnMainSlot_leading1;
+                SlotsLayout.position: SlotsLayout.Leading;
+                width: units.gu(4)
+                height: parent.mainSlot.height + 50
+            }
+        }
+        ListItemLayout {
+            id: layoutTestMainSlotAttachedProps
+            readonly property var leadingSlots: [layoutTestMainSlotAttachedProps_leading1]
+            readonly property var trailingSlots: []
+            title.text: "Hello"
+            //we will reset the slot which is taller than mainSlot and test height and positions
+            Item {
+                id: layoutTestMainSlotAttachedProps_leading1;
+                SlotsLayout.position: SlotsLayout.Leading;
+                width: units.gu(4)
+                height: parent.mainSlot.height + 50
+            }
+        }
+        ListItemLayout {
+            id: layoutTestDefaultSlotsAttachedProps
+            readonly property var leadingSlots: []
+            property var trailingSlots: [layoutTestDefaultSlotsAttachedProps_trailing1]
+            Item { id: layoutTestDefaultSlotsAttachedProps_trailing1 }
+        }
     }
 
     TestCase {
@@ -285,7 +328,9 @@ Item {
         function expectedImplicitHeight(item) {
             var height = maxSlotsHeight(item)
             if (item.mainSlot !== null) {
-                height = Math.max(height, item.mainSlot.height)
+                height = Math.max(height, item.mainSlot.height
+                                  + item.mainSlot.SlotsLayout.padding.top
+                                  + item.mainSlot.SlotsLayout.padding.bottom)
             }
             return height + item.padding.top + item.padding.bottom
         }
@@ -295,7 +340,9 @@ Item {
             if (item.mainSlot === null) {
                 return false
             }
-            return maxSlotsHeight(item) < item.mainSlot.height
+            return maxSlotsHeight(item) < (item.mainSlot.height
+                                           + item.mainSlot.SlotsLayout.padding.top
+                                           + item.mainSlot.SlotsLayout.padding.bottom)
         }
         function useSmallerTopBottomPadding(item) {
             return !mustAlignSlotsToTop(item)
@@ -342,7 +389,9 @@ Item {
                 expectedX += slot.width
                 expectedX += slot.SlotsLayout.padding.trailing
 
-                if (slot.SlotsLayout.overrideVerticalPositioning) {
+                //mainSlot ignores the value of its overrideVerticalPositioning
+                if (slot.SlotsLayout.overrideVerticalPositioning && slot !== item.mainSlot) {
+                    //NOTE: we're assuming the test item doesn't set any custom anchor!!
                     compare(slot.y, 0, "Override vertical positioning: vertical position")
                 } else {
                     if (mustAlignSlotsToTop(item)) {
@@ -356,7 +405,7 @@ Item {
                         compare(slot.anchors.verticalCenterOffset,
                                 (item.padding.top - item.padding.bottom
                                  + slot.SlotsLayout.padding.top - slot.SlotsLayout.padding.bottom) / 2.0,
-                                "Automatic vertical positioning: verticalCenter anchor, \"vertically centered\" positioning mode ")
+                                "Automatic vertical positioning: verticalCenterOffset, \"vertically centered\" positioning mode ")
                     }
                 }
             }
@@ -415,8 +464,6 @@ Item {
             checkSlotsPosition(data.item)
         }
 
-        // FIXME: currently disabled while I investigate why setting anchors.verticalCenter some times
-        //          sets the wrong Y (usually +/- 0.5 from the correct value)
         function test_relayoutAfterChangingSlotsSize() {
             checkSlotsPosition(layoutTestChangeSlotsSize)
 
@@ -440,9 +487,9 @@ Item {
             compare(layoutTestMainSlotSize.mainSlot.width,
                     layoutTestMainSlotSize.width
                     - layoutTestMainSlotSize.padding.leading - layoutTestMainSlotSize.padding.trailing
-                    - layoutTestMainSlotSize.leadingSlots[0].width
-                    - layoutTestMainSlotSize.leadingSlots[0].SlotsLayout.padding.leading
-                    - layoutTestMainSlotSize.leadingSlots[0].SlotsLayout.padding.trailing
+                    - layoutTestMainSlotSize.trailingSlots[0].width
+                    - layoutTestMainSlotSize.trailingSlots[0].SlotsLayout.padding.leading
+                    - layoutTestMainSlotSize.trailingSlots[0].SlotsLayout.padding.trailing
                     - layoutTestMainSlotSize.mainSlot.SlotsLayout.padding.leading
                     - layoutTestMainSlotSize.mainSlot.SlotsLayout.padding.trailing,
                     "Main slot's width")
@@ -552,6 +599,89 @@ Item {
             compare(layoutTestNullSizeSlots.trailingSlots.length, 2, "Null size slot test, fake trailing slots list")
             checkSlotsPosition(layoutTestNullSizeSlots)
             checkImplicitSize(layoutTestNullSizeSlots)
+        }
+
+        function test_overrideVerticalPositioning() {
+            //we expect the component to reset the vertical anchors when overrideVerticalPositioning changes value
+            compare(layoutTestOverrideVerticalPositioning.trailingSlots[1].anchors.bottom,
+                    layoutTestOverrideVerticalPositioning.bottom,
+                    "Override vertical positioning test, initial slot's bottom anchor")
+            compare(layoutTestOverrideVerticalPositioning.trailingSlots[1].SlotsLayout.overrideVerticalPositioning,
+                    true, "Override vertical positioning test, attached-property's initial value")
+            compare(layoutTestOverrideVerticalPositioning.trailingSlots.length, 2,
+                    "Override vertical positioning test, fake trailing slots list")
+            layoutTestOverrideVerticalPositioning.trailingSlots[1].SlotsLayout.overrideVerticalPositioning = false
+            compare(layoutTestOverrideVerticalPositioning.trailingSlots[1].SlotsLayout.overrideVerticalPositioning,
+                    false, "Override vertical positioning test, attached-property's new value")
+            checkSlotsPosition(layoutTestOverrideVerticalPositioning)
+            checkImplicitSize(layoutTestOverrideVerticalPositioning)
+        }
+
+        function test_ignoreSomeChangesOnMainSlot() {
+            compare(layoutTestIgnoreSomeChangesOnMainSlot.leadingSlots.length, 1,
+                    "Ignore some changes on main slot test, fake trailing slots list")
+            compare(layoutTestIgnoreSomeChangesOnMainSlot.mainSlot.SlotsLayout.overrideVerticalPositioning,
+                    false, "Ignore some changes on main slot test, default override value")
+            //we want main slot to be vertically centered, to check if disabling overrideVerticalPositioning
+            //will cause a change in its position
+            compare(layoutTestIgnoreSomeChangesOnMainSlot.mainSlot.height
+                    < maxSlotsHeight(layoutTestIgnoreSomeChangesOnMainSlot), true,
+                    "Ignore some changes on main slot test, slot's height")
+            checkSlotsPosition(layoutTestIgnoreSomeChangesOnMainSlot)
+            checkImplicitSize(layoutTestIgnoreSomeChangesOnMainSlot)
+
+            //this shouldn't trigger a relayout
+            layoutTestIgnoreSomeChangesOnMainSlot.mainSlot.SlotsLayout.overrideVerticalPositioning = true
+            compare(layoutTestIgnoreSomeChangesOnMainSlot.mainSlot.SlotsLayout.overrideVerticalPositioning,
+                    true, "Ignore some changes on main slot test, new override value")
+            //let's force a relayout, just to make sure changing overrideVerticalPositioning
+            //didn't have any effect on mainSlot
+            layoutTestIgnoreSomeChangesOnMainSlot.leadingSlots[0].height += 100
+            checkSlotsPosition(layoutTestIgnoreSomeChangesOnMainSlot)
+            checkImplicitSize(layoutTestIgnoreSomeChangesOnMainSlot)
+
+            //let's try to force positioning mainSlot *before* a leading slot. This must fail
+            layoutTestIgnoreSomeChangesOnMainSlot.mainSlot.SlotsLayout.position =
+                    layoutTestIgnoreSomeChangesOnMainSlot.leadingSlots[0].SlotsLayout.position - 5
+            compare(layoutTestIgnoreSomeChangesOnMainSlot.mainSlot.SlotsLayout.position,
+                    layoutTestIgnoreSomeChangesOnMainSlot.leadingSlots[0].SlotsLayout.position - 5,
+                    "Ignore some changes on main slot test, change mainSlot's position")
+            checkSlotsPosition(layoutTestIgnoreSomeChangesOnMainSlot)
+            checkImplicitSize(layoutTestIgnoreSomeChangesOnMainSlot)
+        }
+
+        function test_changeAttachedPropertiesInMainSlot() {
+            checkSlotsPosition(layoutTestMainSlotAttachedProps)
+            checkImplicitSize(layoutTestMainSlotAttachedProps)
+            var mainSlot = layoutTestMainSlotAttachedProps.mainSlot
+
+            mainSlot.SlotsLayout.padding.top = 300
+            compare(layoutTestMainSlotAttachedProps.mainSlot.SlotsLayout.padding.top, 300,
+                    "Change mainSlot's attached props test, padding.top")
+            checkSlotsPosition(layoutTestMainSlotAttachedProps)
+            checkImplicitSize(layoutTestMainSlotAttachedProps)
+
+            mainSlot.SlotsLayout.padding.bottom = 180
+            compare(mainSlot.SlotsLayout.padding.bottom, 180,
+                    "Change mainSlot's attached props test, padding.bottom")
+            checkSlotsPosition(layoutTestMainSlotAttachedProps)
+            checkImplicitSize(layoutTestMainSlotAttachedProps)
+        }
+
+        function test_defaultSlotsAttachedProps() {
+            var slot = layoutTestDefaultSlotsAttachedProps.trailingSlots[0]
+            compare(slot.SlotsLayout.position, SlotsLayout.Trailing,
+                    "Default slots attached props, position")
+            compare(slot.SlotsLayout.overrideVerticalPositioning, false,
+                    "Default slots attached props, overrideVerticalPositioning")
+            compare(slot.SlotsLayout.padding.top, 0,
+                    "Default slots attached props, padding.top")
+            compare(slot.SlotsLayout.padding.bottom, 0,
+                    "Default slots attached props, padding.bottom")
+            compare(slot.SlotsLayout.padding.leading, units.gu(1),
+                    "Default slots attached props, padding.leading")
+            compare(slot.SlotsLayout.padding.trailing, units.gu(1),
+                    "Default slots attached props, padding.trailing")
         }
     }
 }

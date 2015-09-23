@@ -189,7 +189,7 @@ void UCSlotsLayoutPrivate::removeSlot(QQuickItem *slot)
 
 void UCSlotsLayoutPrivate::_q_onGuValueChanged()
 {
-    _q_onMainSlotHeightChanged();
+    _q_updateCachedMainSlotHeight();
     _q_updateSlotsBBoxHeight();
     _q_updateGuValues();
 }
@@ -222,7 +222,7 @@ void UCSlotsLayoutPrivate::_q_updateGuValues()
     _q_updateSize();
 }
 
-void UCSlotsLayoutPrivate::_q_onMainSlotHeightChanged()
+void UCSlotsLayoutPrivate::_q_updateCachedMainSlotHeight()
 {
     //if the component is not ready the QML properties may not have been evaluated yet,
     //it's not worth doing anything if that's the case
@@ -232,7 +232,16 @@ void UCSlotsLayoutPrivate::_q_onMainSlotHeightChanged()
     Q_Q(UCSlotsLayout);
 
     if (mainSlot) {
-        mainSlotHeight = mainSlot->height();
+        UCSlotsAttached *attachedProperty =
+                qobject_cast<UCSlotsAttached *>(qmlAttachedPropertiesObject<UCSlotsLayout>(mainSlot));
+
+        if (!attachedProperty) {
+            qmlInfo(q) << "Invalid attached property!";
+            mainSlotHeight = 0;
+            return;
+        }
+        mainSlotHeight = mainSlot->height() + attachedProperty->padding()->top()
+                + attachedProperty->padding()->bottom();
     } else {
         mainSlotHeight = 0;
     }
@@ -326,6 +335,34 @@ void UCSlotsLayoutPrivate::_q_onSlotWidthChanged()
     } else {
         _q_relayout();
     }
+}
+
+void UCSlotsLayoutPrivate::_q_onSlotOverrideVerticalPositioningChanged()
+{
+    Q_Q(UCSlotsLayout);
+    UCSlotsAttached *sender = qobject_cast<UCSlotsAttached *>(q->sender());
+    if (sender == Q_NULLPTR) {
+        qDebug() << "onSlotOverrideVerticalPositioningChanged: NULL SENDER";
+        return;
+    }
+
+    QQuickItem *slot = qobject_cast<QQuickItem*>(sender->parent());
+    if (slot == Q_NULLPTR) {
+        qDebug() << "onSlotOverrideVerticalPositioningChanged: NULL SLOT";
+        return;
+    }
+
+    QQuickAnchors *slotAnchors = QQuickItemPrivate::get(slot)->anchors();
+    slotAnchors->resetTop();
+    slotAnchors->resetTopMargin();
+    slotAnchors->resetBottom();
+    slotAnchors->resetBottomMargin();
+    slotAnchors->resetVerticalCenter();
+    slotAnchors->setVerticalCenterOffset(0);
+    slotAnchors->resetFill();
+    slotAnchors->resetCenterIn();
+
+    _q_updateSlotsBBoxHeight();
 }
 
 void UCSlotsLayoutPrivate::_q_onSlotPositionChanged()
@@ -525,29 +562,49 @@ void UCSlotsLayoutPrivate::_q_relayout()
 
 void UCSlotsLayoutPrivate::handleAttachedPropertySignals(QQuickItem *item, bool connect)
 {
+    if (item == Q_NULLPTR) {
+        qDebug() << "handleAttachedPropertySignals: INVALID POINTER!";
+        return;
+    }
+
     Q_Q(UCSlotsLayout);
     UCSlotsAttached *attachedSlot =
             qobject_cast<UCSlotsAttached *>(qmlAttachedPropertiesObject<UCSlotsLayout>(item));
-
     if (!attachedSlot) {
         qmlInfo(q) << "Invalid attached property!";
         return;
     }
 
     if (connect) {
-        QObject::connect(attachedSlot, SIGNAL(positionChanged()), q, SLOT(_q_onSlotPositionChanged()));
         QObject::connect(attachedSlot->padding(), SIGNAL(leadingChanged()), q, SLOT(_q_relayout()));
         QObject::connect(attachedSlot->padding(), SIGNAL(trailingChanged()), q, SLOT(_q_relayout()));
-        QObject::connect(attachedSlot->padding(), SIGNAL(topChanged()), q, SLOT(_q_updateSlotsBBoxHeight()));
-        QObject::connect(attachedSlot->padding(), SIGNAL(bottomChanged()), q, SLOT(_q_updateSlotsBBoxHeight()));
-        QObject::connect(attachedSlot, SIGNAL(overrideVerticalPositioningChanged()), q, SLOT(_q_relayout()));
+        if (item != mainSlot) {
+            QObject::connect(attachedSlot, SIGNAL(positionChanged()), q, SLOT(_q_onSlotPositionChanged()));
+            QObject::connect(attachedSlot->padding(), SIGNAL(topChanged()), q, SLOT(_q_updateSlotsBBoxHeight()));
+            QObject::connect(attachedSlot->padding(), SIGNAL(bottomChanged()), q, SLOT(_q_updateSlotsBBoxHeight()));
+            QObject::connect(attachedSlot, SIGNAL(overrideVerticalPositioningChanged()), q, SLOT(_q_onSlotOverrideVerticalPositioningChanged()));
+        } else {
+            QObject::connect(attachedSlot->padding(), SIGNAL(topChanged()), q, SLOT(_q_updateCachedMainSlotHeight()));
+            QObject::connect(attachedSlot->padding(), SIGNAL(bottomChanged()), q, SLOT(_q_updateCachedMainSlotHeight()));
+            //we ignore changes in overrideVerticalPositioning and position for the main slot
+            //QObject::connect(attachedSlot, SIGNAL(overrideVerticalPositioningChanged()), q, SLOT(_q_updateCachedMainSlotHeight()));
+            //QObject::disconnect(attachedSlot, SIGNAL(positionChanged()), q, SLOT(_q_onSlotPositionChanged()));
+        }
     } else {
-        QObject::disconnect(attachedSlot, SIGNAL(positionChanged()), q, SLOT(_q_onSlotPositionChanged()));
         QObject::disconnect(attachedSlot->padding(), SIGNAL(leadingChanged()), q, SLOT(_q_relayout()));
         QObject::disconnect(attachedSlot->padding(), SIGNAL(trailingChanged()), q, SLOT(_q_relayout()));
-        QObject::disconnect(attachedSlot->padding(), SIGNAL(topChanged()), q, SLOT(_q_updateSlotsBBoxHeight()));
-        QObject::disconnect(attachedSlot->padding(), SIGNAL(bottomChanged()), q, SLOT(_q_updateSlotsBBoxHeight()));
-        QObject::disconnect(attachedSlot, SIGNAL(overrideVerticalPositioningChanged()), q, SLOT(_q_relayout()));
+        if (item != mainSlot) {
+            QObject::disconnect(attachedSlot, SIGNAL(positionChanged()), q, SLOT(_q_onSlotPositionChanged()));
+            QObject::disconnect(attachedSlot->padding(), SIGNAL(topChanged()), q, SLOT(_q_updateSlotsBBoxHeight()));
+            QObject::disconnect(attachedSlot->padding(), SIGNAL(bottomChanged()), q, SLOT(_q_updateSlotsBBoxHeight()));
+            QObject::disconnect(attachedSlot, SIGNAL(overrideVerticalPositioningChanged()), q, SLOT(_q_updateSlotsBBoxHeight()));
+        } else {
+            QObject::disconnect(attachedSlot->padding(), SIGNAL(topChanged()), q, SLOT(_q_updateCachedMainSlotHeight()));
+            QObject::disconnect(attachedSlot->padding(), SIGNAL(bottomChanged()), q, SLOT(_q_updateCachedMainSlotHeight()));
+            //we ignore changes in overrideVerticalPositioning and positiong for the main slot
+            //QObject::disconnect(attachedSlot, SIGNAL(overrideVerticalPositioningChanged()), q, SLOT(_q_updateCachedMainSlotHeight()));
+            //QObject::disconnect(attachedSlot, SIGNAL(positionChanged()), q, SLOT(_q_onSlotPositionChanged()));
+        }
     }
 }
 
@@ -682,7 +739,7 @@ void UCSlotsLayout::componentComplete()
     Q_D(UCSlotsLayout);
     QQuickItem::componentComplete();
 
-    d->_q_onMainSlotHeightChanged();
+    d->_q_updateCachedMainSlotHeight();
     d->_q_updateSlotsBBoxHeight();
 }
 
@@ -709,8 +766,8 @@ void UCSlotsLayout::itemChange(ItemChange change, const ItemChangeData &data)
                 QObject::connect(data.item, SIGNAL(heightChanged()), this, SLOT(_q_updateSlotsBBoxHeight()));
                 d->_q_updateSlotsBBoxHeight();
             } else {
-                QObject::connect(data.item, SIGNAL(heightChanged()), this, SLOT(_q_onMainSlotHeightChanged()));
-                d->_q_onMainSlotHeightChanged();
+                QObject::connect(data.item, SIGNAL(heightChanged()), this, SLOT(_q_updateCachedMainSlotHeight()));
+                d->_q_updateCachedMainSlotHeight();
             }
         }
         break;
@@ -728,8 +785,8 @@ void UCSlotsLayout::itemChange(ItemChange change, const ItemChangeData &data)
                 QObject::disconnect(data.item, SIGNAL(heightChanged()), this, SLOT(_q_updateSlotsBBoxHeight()));
                 d->_q_updateSlotsBBoxHeight();
             } else {
-                QObject::disconnect(data.item, SIGNAL(heightChanged()), this, SLOT(_q_onMainSlotHeightChanged()));
-                d->_q_onMainSlotHeightChanged();
+                QObject::disconnect(data.item, SIGNAL(heightChanged()), this, SLOT(_q_updateCachedMainSlotHeight()));
+                d->_q_updateCachedMainSlotHeight();
             }
         }
 

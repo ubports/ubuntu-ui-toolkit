@@ -90,10 +90,11 @@ public:
     void _q_updateCachedHeight();
     void _q_updateProgressionStatus();
     void _q_updateGuValues();
-    void _q_onMainSlotHeightChanged();
+    void _q_updateCachedMainSlotHeight();
     void _q_updateSlotsBBoxHeight();
     void _q_updateSize();
     void _q_onSlotWidthChanged();
+    void _q_onSlotOverrideVerticalPositioningChanged();
     void _q_onSlotPositionChanged();
     void _q_relayout();
 
