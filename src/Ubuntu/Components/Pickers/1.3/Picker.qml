@@ -292,7 +292,6 @@ StyledItem {
             property bool viewCompleted: false
             // declared to ease moving detection
             property real contentY: offset
-
             anchors {
                 top: parent ? parent.top : undefined
                 bottom: parent ? parent.bottom : undefined
@@ -353,7 +352,6 @@ StyledItem {
             property Item pickerItem: picker
             // property holding view completion
             property bool viewCompleted: false
-
             anchors {
                 top: parent ? parent.top : undefined
                 bottom: parent ? parent.bottom : undefined

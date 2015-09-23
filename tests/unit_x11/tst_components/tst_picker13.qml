@@ -195,10 +195,10 @@ Item {
 
         function test_selectedIndex_data() {
             return [
-                        {tag: "Runtime model", picker: defaultPicker, model: emptyModel, expectedIndex: 0},
-                        {tag: "Empty modelled", picker: simpleModelled, expectedIndex: 0},
-                        {tag: "Object modelled", picker: objectModelled, expectedIndex: 2},
-                    ];
+                {tag: "Runtime model", picker: defaultPicker, model: emptyModel, expectedIndex: 0},
+                {tag: "Empty modelled", picker: simpleModelled, expectedIndex: 0},
+                {tag: "Object modelled", picker: objectModelled, expectedIndex: 2},
+            ];
         }
         function test_selectedIndex(data) {
             var picker = testPicker(data.picker);
@@ -224,11 +224,11 @@ Item {
 
         function test_clickMovesSelection_data() {
             return [
-                        {tag: "Linear long", component: linearLong, circular: false, firstClick: 0, secondClick: 1},
-                        {tag: "Circular long", component: linearLong, circular: true, firstClick: 1, secondClick: 2},
-                        {tag: "Linear short", component: linearShort, circular: false, firstClick: 0, secondClick: 1},
-                        {tag: "Circular short", component: linearShort, circular: true, firstClick: 0, secondClick: 1},
-                    ];
+                {tag: "Linear long", component: linearLong, circular: false, firstClick: 0, secondClick: 1},
+                {tag: "Circular long", component: linearLong, circular: true, firstClick: 1, secondClick: 2},
+                {tag: "Linear short", component: linearShort, circular: false, firstClick: 0, secondClick: 1},
+                {tag: "Circular short", component: linearShort, circular: true, firstClick: 0, secondClick: 1},
+            ];
         }
         function test_clickMovesSelection(data) {
             var picker = testPicker(data.component);
@@ -253,16 +253,16 @@ Item {
 
         function test_modelCropping_data() {
             return [
-                        {tag: "Linear, selected @50, remove from 40", component: linearDynPicker, selected: 50, remove: 40, removeCount: dynamicModel.count - 40, count: 40, expected: 39 },
-                        {tag: "Linear, selected @50, remove 50", component: linearDynPicker, selected: 50, remove: 50, removeCount: 1, count: dynamicModel.count - 1, expected: 49 },
-                        {tag: "Linear, selected @50, remove 10 from 45", component: linearDynPicker, selected: 50, remove: 45, removeCount: 10, count: dynamicModel.count - 10, expected: 44 },
-                        {tag: "Linear, selected @50, remove 10 from 51", component: linearDynPicker, selected: 50, remove: 51, removeCount: 10, count: dynamicModel.count - 10, expected: 50 },
+                {tag: "Linear, selected @50, remove from 40", component: linearDynPicker, selected: 50, remove: 40, removeCount: dynamicModel.count - 40, count: 40, expected: 39 },
+                {tag: "Linear, selected @50, remove 50", component: linearDynPicker, selected: 50, remove: 50, removeCount: 1, count: dynamicModel.count - 1, expected: 49 },
+                {tag: "Linear, selected @50, remove 10 from 45", component: linearDynPicker, selected: 50, remove: 45, removeCount: 10, count: dynamicModel.count - 10, expected: 44 },
+                {tag: "Linear, selected @50, remove 10 from 51", component: linearDynPicker, selected: 50, remove: 51, removeCount: 10, count: dynamicModel.count - 10, expected: 50 },
 
-                        {tag: "Circular, selected @50, remove from 40", component: circularDynPicker, selected: 50, remove: 40, removeCount: dynamicModel.count - 40, count: 40, expected: 39 },
-                        {tag: "Circular, selected @50, remove 50", component: circularDynPicker, selected: 50, remove: 50, removeCount: 1, count: dynamicModel.count - 1, expected: 49 },
-                        {tag: "Circular, selected @50, remove 10 from 45", component: circularDynPicker, selected: 50, remove: 45, removeCount: 10, count: dynamicModel.count - 10, expected: 44 },
-                        {tag: "Circular, selected @50, remove 10 from 51", component: circularDynPicker, selected: 50, remove: 51, removeCount: 10, count: dynamicModel.count - 10, expected: 50 },
-                    ]
+                {tag: "Circular, selected @50, remove from 40", component: circularDynPicker, selected: 50, remove: 40, removeCount: dynamicModel.count - 40, count: 40, expected: 39 },
+                {tag: "Circular, selected @50, remove 50", component: circularDynPicker, selected: 50, remove: 50, removeCount: 1, count: dynamicModel.count - 1, expected: 49 },
+                {tag: "Circular, selected @50, remove 10 from 45", component: circularDynPicker, selected: 50, remove: 45, removeCount: 10, count: dynamicModel.count - 10, expected: 44 },
+                {tag: "Circular, selected @50, remove 10 from 51", component: circularDynPicker, selected: 50, remove: 51, removeCount: 10, count: dynamicModel.count - 10, expected: 50 },
+            ]
         }
 
         function test_modelCropping(data) {
