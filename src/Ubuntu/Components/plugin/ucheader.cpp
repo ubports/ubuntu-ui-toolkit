@@ -197,9 +197,13 @@ void UCHeader::show() {
             m_showHideAnimation->stop();
         }
     }
-    m_showHideAnimation->setFrom(y());
-    m_showHideAnimation->setTo(0.0);
-    m_showHideAnimation->start();
+    if (isComponentComplete()) {
+        m_showHideAnimation->setFrom(y());
+        m_showHideAnimation->setTo(0.0);
+        m_showHideAnimation->start();
+    } else {
+        this->setY(0.0);
+    }
 }
 
 void UCHeader::hide() {
@@ -211,9 +215,13 @@ void UCHeader::hide() {
             m_showHideAnimation->stop();
         }
     }
-    m_showHideAnimation->setFrom(y());
-    m_showHideAnimation->setTo(-1.0*height());
-    m_showHideAnimation->start();
+    if (isComponentComplete()) {
+        m_showHideAnimation->setFrom(y());
+        m_showHideAnimation->setTo(-1.0*height());
+        m_showHideAnimation->start();
+    } else {
+        this->setY(-1.0*height());
+    }
 }
 
 void UCHeader::_q_showHideAnimationRunningChanged() {
