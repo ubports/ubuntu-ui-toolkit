@@ -98,6 +98,21 @@ void UCSlotsLayoutPrivate::updateTopBottomPaddingIfNeeded()
     return;
 }
 
+bool UCSlotsLayoutPrivate::skipSlot(QQuickItem *slot)
+{
+    if (slot == Q_NULLPTR) {
+        qDebug() << "skipSlot: NULL POINTER!";
+        return true;
+    }
+
+    //this are the same conditions Row uses, we don't want
+    //to check opacity because that may be used for animations,
+    //We don't want to relayout if the opacity reaches 0 during an
+    //animation, for instance.
+    return slot->height() <= 0 || slot->width() <= 0
+            || !slot->isVisible();
+}
+
 void UCSlotsLayoutPrivate::insertSlotIntoSortedList(QQuickItem *slot,
                                                     UCSlotsLayout::UCSlotPosition desiredSlotPosition,
                                                     QList<QQuickItem *> &slotsList)
@@ -236,25 +251,45 @@ void UCSlotsLayoutPrivate::_q_updateSlotsBBoxHeight()
     qreal maxSlotsHeightTmp = 0;
     const int numOfLeading = leadingSlots.count();
     const int numOfTrailing = trailingSlots.count();
+    int numOfLeadingToLayout = 0;
+    int numOfTrailingToLayout = 0;
     //instead of having 2 cycles we only make one which iterates over both lists
     for (int i = 0; i < numOfLeading + numOfTrailing; i++) {
         QQuickItem *child = i < numOfLeading
                 ? leadingSlots.at(i)
                 : trailingSlots.at(i - numOfLeading);
 
-        UCSlotsAttached *attachedProperty =
-                qobject_cast<UCSlotsAttached *>(qmlAttachedPropertiesObject<UCSlotsLayout>(child));
-
-        if (!attachedProperty) {
-            qmlInfo(q) << "Invalid attached property!";
-            continue;
+        bool skipSlotFlag = skipSlot(child);
+        if (i < numOfLeading) {
+            if (numOfLeadingToLayout >= maxNumberOfLeadingSlots) {
+                skipSlotFlag = true;
+            } else {
+                if (!skipSlotFlag)
+                    numOfLeadingToLayout++;
+            }
+        } else {
+            if (numOfTrailingToLayout >= maxNumberOfTrailingSlots) {
+                skipSlotFlag = true;
+            } else {
+                if (!skipSlotFlag)
+                    numOfTrailingToLayout++;
+            }
         }
+        if (!skipSlotFlag) {
+            UCSlotsAttached *attachedProperty =
+                    qobject_cast<UCSlotsAttached *>(qmlAttachedPropertiesObject<UCSlotsLayout>(child));
 
-        //ignore children which have custom vertical positioning
-        if (!attachedProperty->overrideVerticalPositioning())
-            maxSlotsHeightTmp = qMax<qreal>(maxSlotsHeightTmp, child->height()
-                                            + attachedProperty->padding()->top()
-                                            + attachedProperty->padding()->bottom());
+            if (!attachedProperty) {
+                qmlInfo(q) << "Invalid attached property!";
+                continue;
+            }
+
+            //ignore children which have custom vertical positioning
+            if (!attachedProperty->overrideVerticalPositioning())
+                maxSlotsHeightTmp = qMax<qreal>(maxSlotsHeightTmp, child->height()
+                                                + attachedProperty->padding()->top()
+                                                + attachedProperty->padding()->bottom());
+        }
     }
     maxSlotsHeight = maxSlotsHeightTmp;
 
@@ -413,28 +448,28 @@ void UCSlotsLayoutPrivate::_q_relayout()
                 ? leadingSlots.at(i)
                 : trailingSlots.at(i - numOfLeading);
 
-        bool skipSlot = !child->isVisible();
+        bool skipSlotFlag = skipSlot(child);
         if (i < numOfLeading) {
             if (numOfLeadingToLayout >= maxNumberOfLeadingSlots) {
-                skipSlot = true;
+                skipSlotFlag = true;
                 qmlInfo(q) << "This layout only allows up to " << maxNumberOfLeadingSlots
                            << " leading slots. Please remove any additional leading slot.";
             } else {
-                if (!skipSlot)
+                if (!skipSlotFlag)
                     numOfLeadingToLayout++;
             }
         } else {
             if (numOfTrailingToLayout >= maxNumberOfTrailingSlots) {
-                skipSlot = true;
+                skipSlotFlag = true;
                 qmlInfo(q) << "This layout only allows up to " << maxNumberOfTrailingSlots
                            << " trailing slots. Please remove any additional trailing slot.";
 
             } else {
-                if (!skipSlot)
+                if (!skipSlotFlag)
                     numOfTrailingToLayout++;
             }
         }
-        if (!skipSlot) {
+        if (!skipSlotFlag) {
             itemsToLayout.append(child);
             UCSlotsAttached *attached =
                     qobject_cast<UCSlotsAttached *>(qmlAttachedPropertiesObject<UCSlotsLayout>(child));
@@ -644,7 +679,9 @@ void UCSlotsLayout::itemChange(ItemChange change, const ItemChangeData &data)
         if (data.item) {
             d->handleAttachedPropertySignals(data.item, true);
 
-            QObject::connect(data.item, SIGNAL(visibleChanged()), this, SLOT(_q_relayout()));
+            //An item disappearing/reappearing could change the maximum height of the slots
+            //_q_updateSlotsBBoxHeight will trigger relayout
+            QObject::connect(data.item, SIGNAL(visibleChanged()), this, SLOT(_q_updateSlotsBBoxHeight()));
 
             //we relayout because we have to update the width of the main slot
             //TODO: do this in a separate function? do were really have to do the whole relayout?

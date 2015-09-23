@@ -92,7 +92,7 @@ Item {
             readonly property var leadingSlots: [layoutOneLeadingOneTrailing_leading1]
             readonly property var trailingSlots: [layoutOneLeadingOneTrailing_trailing1]
             Item { id: layoutOneLeadingOneTrailing_leading1; SlotsLayout.position: SlotsLayout.Leading; width: units.gu(10); height: units.gu(20) }
-            Item { id: layoutOneLeadingOneTrailing_trailing1; SlotsLayout.position: SlotsLayout.Trailing; width: units.gu(0); height: units.gu(5) }
+            Item { id: layoutOneLeadingOneTrailing_trailing1; SlotsLayout.position: SlotsLayout.Trailing; width: units.gu(1); height: units.gu(5) }
         }
         ListItemLayout {
             id: layoutTwoTrailing
@@ -105,7 +105,7 @@ Item {
             id: layoutOneLeadingTwoTrailing
             readonly property var leadingSlots: [layoutOneLeadingTwoTrailing_leading1]
             readonly property var trailingSlots: [layoutOneLeadingTwoTrailing_trailing1, layoutOneLeadingTwoTrailing_trailing2]
-            Item { id: layoutOneLeadingTwoTrailing_leading1; SlotsLayout.position: SlotsLayout.Leading; width: units.gu(3); height: units.gu(0) }
+            Item { id: layoutOneLeadingTwoTrailing_leading1; SlotsLayout.position: SlotsLayout.Leading; width: units.gu(3); height: units.gu(1) }
             Item { id: layoutOneLeadingTwoTrailing_trailing1; SlotsLayout.position: SlotsLayout.Trailing; width: units.gu(4); height: units.gu(9) }
             Item { id: layoutOneLeadingTwoTrailing_trailing2; SlotsLayout.position: SlotsLayout.Trailing; width: units.gu(1); height: units.gu(6) }
         }
@@ -202,8 +202,10 @@ Item {
             title.text: "Test"
             subtitle.text: "test2"
             summary.text: "test3"
+            //it has to be taller than mainSlot, so that when we make the slot invisible we can test
+            //implicitHeight changes
             Item { id: layoutTestSlotVisibilityChange_leading; SlotsLayout.position: SlotsLayout.Leading;
-                width: units.gu(4); height: units.gu(4) }
+                width: units.gu(4); height: parent.mainSlot.height+10 }
         }
         ListItemLayout {
             //let's test if the layout respects SlotsLayout.position even if that doesn't follow
@@ -474,12 +476,18 @@ Item {
             var tmpSlot = layoutTestSlotVisibilityChange.leadingSlots[0]
             layoutTestSlotVisibilityChange.leadingSlots = []
             compare(layoutTestSlotVisibilityChange.leadingSlots.length, 0, "Slot's visibility, fake leading slots count")
+            compare(layoutTestSlotVisibilityChange.trailingSlots.length, 0, "Slot's visibility, fake trailing slots count")
+
             checkSlotsPosition(layoutTestSlotVisibilityChange)
+            checkImplicitSize(layoutTestSlotVisibilityChange)
 
             layoutTestSlotVisibilityChange.leadingSlots = [tmpSlot]
             layoutTestSlotVisibilityChange.leadingSlots[0].visible = true
             compare(layoutTestSlotVisibilityChange.leadingSlots[0].visible, true, "Slot's visibility, true")
+            compare(layoutTestSlotVisibilityChange.mainSlot.height
+                    < layoutTestSlotVisibilityChange.leadingSlots[0].height, true, "Visibility test, slot's height")
             checkSlotsPosition(layoutTestSlotVisibilityChange)
+            checkImplicitSize(layoutTestSlotVisibilityChange)
         }
 
 

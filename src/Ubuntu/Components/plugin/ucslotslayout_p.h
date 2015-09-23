@@ -48,6 +48,9 @@ public:
     void init();
     void updateTopBottomPaddingIfNeeded();
 
+    //returns true if we want to ignore "slot" during the layout process
+    bool skipSlot(QQuickItem *slot);
+
     //utility method that scans a list and adds the slot after all the slots which
     //have same position
     void insertSlotIntoSortedList(QQuickItem *slot,
