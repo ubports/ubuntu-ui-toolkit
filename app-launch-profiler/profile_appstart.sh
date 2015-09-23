@@ -75,7 +75,7 @@ echo ${PASSWORD}|sudo -S bash -c 'lttng start'
 
 for x in $(seq 1 ${COUNT}); do
     echo ${PASSWORD}|sudo -S bash -c 'echo 1 > /proc/sys/vm/drop_caches'
-    sleep 1
+    sleep 5
     echo "x - $x"
     echo ${PASSWORD}|sudo -S /usr/bin/app-launch-tracepoints
     ubuntu-app-launch ${APP_NAME}

@@ -17,7 +17,6 @@
 
 import babeltrace
 import sys
-from pprint import pprint
 
 
 class MyCounter(dict):
