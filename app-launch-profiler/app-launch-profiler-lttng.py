@@ -43,7 +43,7 @@ if __name__ == '__main__':
 
             events_in_iteration = 1
             first_event = event.timestamp
-            print("Event "+event.name+" occurs after: "+str(0))
+            #print("Event "+event.name+" occurs after: "+str(0))
             iterations += 1
         else:
             events_in_iteration += 1
@@ -58,8 +58,8 @@ if __name__ == '__main__':
             if maxNumbers[event.name] < duration:
                 maxNumbers[event.name] = duration
 
-            print("Event "+event.name+" occurs after: " +
-                  str((event.timestamp-first_event) / 1000 / 1000 / 1000))
+            #print("Event "+event.name+" occurs after: " +
+            #      str((event.timestamp-first_event) / 1000 / 1000 / 1000))
 
     for event in numbers:
         print("---------- Event "+event+" ----------")
