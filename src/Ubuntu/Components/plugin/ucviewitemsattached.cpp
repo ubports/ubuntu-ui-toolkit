@@ -105,7 +105,6 @@ UCViewItemsAttachedPrivate::UCViewItemsAttachedPrivate()
     , listView(0)
     , dragArea(0)
     , expansionFlags(UCViewItemsAttached::Exclusive)
-    , globalDisabled(false)
     , selectable(false)
     , draggable(false)
     , ready(false)
@@ -114,7 +113,6 @@ UCViewItemsAttachedPrivate::UCViewItemsAttachedPrivate()
 
 UCViewItemsAttachedPrivate::~UCViewItemsAttachedPrivate()
 {
-    clearChangesList();
     clearFlickablesList();
 }
 
@@ -150,33 +148,6 @@ void UCViewItemsAttachedPrivate::buildFlickablesList()
             QObject::connect(flickable, &QQuickFlickable::flickStarted,
                              q, &UCViewItemsAttached::unbindItem);
             flickables << flickable;
-        }
-        item = item->parentItem();
-    }
-}
-
-void UCViewItemsAttachedPrivate::clearChangesList()
-{
-    // clear property change objects
-    qDeleteAll(changes);
-    changes.clear();
-}
-
-void UCViewItemsAttachedPrivate::buildChangesList(const QVariant &newValue)
-{
-    // collect all ascendant flickables
-    Q_Q(UCViewItemsAttached);
-    QQuickItem *item = qobject_cast<QQuickItem*>(q->parent());
-    if (!item) {
-        return;
-    }
-    clearChangesList();
-    while (item) {
-        QQuickFlickable *flickable = qobject_cast<QQuickFlickable*>(item);
-        if (flickable) {
-            PropertyChange *change = new PropertyChange(item, "interactive");
-            PropertyChange::setValue(change, newValue);
-            changes << change;
         }
         item = item->parentItem();
     }
@@ -250,41 +221,6 @@ bool UCViewItemsAttached::isBoundTo(UCListItem *item)
 {
     Q_D(UCViewItemsAttached);
     return d->boundItem == item;
-}
-
-/*
- * Disable/enable interactive flag for the ascendant flickables. The item is used
- * to detect whether the same item is trying to enable the flickables which disabled
- * it before. The enabled/disabled states are not equivalent to the enabled/disabled
- * state of the interactive flag.
- * When disabled, always the last item disabling will be kept as active disabler,
- * and only the active disabler can enable (restore) the interactive flag state.
- */
-void UCViewItemsAttached::disableInteractive(UCListItem *item, bool disable)
-{
-    Q_D(UCViewItemsAttached);
-    if (disable) {
-        // disabling or re-disabling
-        d->disablerItem = item;
-        if (d->globalDisabled == disable) {
-            // was already disabled, leave
-            return;
-        }
-        d->globalDisabled = true;
-    } else if (d->globalDisabled && d->disablerItem == item) {
-        // the one disabled it will enable
-        d->globalDisabled = false;
-        d->disablerItem.clear();
-    } else {
-        // !disabled && (!globalDisabled || item != d->disablerItem)
-        return;
-    }
-    if (disable) {
-        // (re)build changes list with disabling the interactive value
-        d->buildChangesList(false);
-    } else {
-        d->clearChangesList();
-    }
 }
 
 void UCViewItemsAttached::unbindItem()

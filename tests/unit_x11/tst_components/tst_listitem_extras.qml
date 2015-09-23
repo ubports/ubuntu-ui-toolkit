@@ -30,18 +30,18 @@ Item {
             Action {
                 iconName: "starred"
                 text: 'Bookmark'
-                objectName: "leading_1"
+                objectName: "trailing1"
             },
             Action {
                 iconName: "edit"
                 text: 'Edit'
-                objectName: "leading_2"
+                objectName: "trailing2"
                 onTriggered: text = 'Edit Again'
             },
             Action {
                 iconName: "camcorder"
                 text: 'Record'
-                objectName: "leading_3"
+                objectName: "trailing3"
             }
         ]
     }
@@ -50,7 +50,7 @@ Item {
         actions: Action {
             id: stockAction
             iconName: "torch-on"
-            objectName: "stockAction"
+            objectName: "leading1"
             text: 'Switch lights on'
         }
     }
@@ -80,6 +80,22 @@ Item {
                 onPressed: mouse.accepted = overlaidMouseArea.acceptEvent
             }
         }
+        ListView {
+            id: listView
+            width: parent.width
+            height: 4 * units.gu(7) // 4 items
+            clip: true
+            model: 5
+            delegate: ListItem {
+                objectName: "listItem" + index
+                Label {
+                    anchors.centerIn: parent
+                    text: index
+                }
+
+                leadingActions: leading
+            }
+        }
     }
 
     ListItemTestCase13 {
@@ -89,11 +105,16 @@ Item {
             signalName: "clicked"
         }
 
+        function initTestCase() {
+            TestExtras.registerTouchDevice();
+        }
+
         function cleanup() {
             rebound(testWithActiveItem);
             rebound(overlaidMouseArea);
             clickSpy.target = null;
             clickSpy.clear();
+            wait(200);
         }
 
         function test_swipe_over_active_item() {
@@ -113,6 +134,117 @@ Item {
             setupSpy(overlaidMouseArea, "contentMovementEnded");
             swipeNoWait(overlayArea, centerOf(overlayArea).x, centerOf(overlayArea).y, units.gu(10));
             spyWait();
+        }
+
+        function test_swipe_out_from_overlay_button_bug1497156_data() {
+            return [
+                {tag: "leading with mouse", touch: false, swipeInDx: units.gu(20), swipeOutDx: -units.gu(5)},
+                {tag: "trailing with mouse", touch: false, swipeInDx: -units.gu(20), swipeOutDx: units.gu(5)},
+                {tag: "leading with touch", touch: true, swipeInDx: units.gu(20), swipeOutDx: -units.gu(5)},
+                {tag: "trailing with touch", touch: true, swipeInDx: -units.gu(20), swipeOutDx: units.gu(5)},
+            ]
+        }
+        function test_swipe_out_from_overlay_button_bug1497156(data) {
+            // swipe in and out from teh same point
+            if (data.touch) {
+                tug(testWithActiveItem, centerOf(testWithActiveItem).x, centerOf(testWithActiveItem).y, data.swipeInDx, 0);
+            } else {
+                swipe(testWithActiveItem, centerOf(testWithActiveItem).x, centerOf(testWithActiveItem).y, data.swipeInDx, 0);
+            }
+            verify(testWithActiveItem.contentItem.x != 0, "Not swiped in");
+            // swipe out
+            if (data.touch) {
+                tug(testWithActiveItem, centerOf(testWithActiveItem).x, centerOf(testWithActiveItem).y, data.swipeOutDx, 0);
+            } else {
+                swipe(testWithActiveItem, centerOf(testWithActiveItem).x, centerOf(testWithActiveItem).y, data.swipeOutDx, 0);
+            }
+            tryCompareFunction(function() {
+                return testWithActiveItem.contentItem.x == testWithActiveItem.contentItem.anchors.leftMargin;
+            }, true, 500);
+        }
+
+        function test_swipe_over_contextual_actions_bug1486008_data() {
+            return [
+                {tag: "leading action with mouse", touch: false, dx: units.gu(20), leadingPanel: true, action: "leading1"},
+                {tag: "trailing action with mouse", touch: false, dx: -units.gu(20), leadingPanel: false, action: "trailing1"},
+                {tag: "leading action with touch", touch: true, dx: units.gu(20), leadingPanel: true, action: "leading1"},
+                {tag: "trailing action with touch", touch: true, dx: -units.gu(20), leadingPanel: false, action: "trailing1"},
+            ];
+        }
+        function test_swipe_over_contextual_actions_bug1486008(data) {
+            if (data.touch) {
+                tug(testWithActiveItem, centerOf(testWithActiveItem).x, centerOf(testWithActiveItem).y, data.dx, 0);
+            } else {
+                swipe(testWithActiveItem, centerOf(testWithActiveItem).x, centerOf(testWithActiveItem).y, data.dx, 0);
+            }
+            var panel = panelItem(testWithActiveItem, data.leadingPanel);
+            var actionItem = findChild(panel, data.action);
+            verify(actionItem, data.action + " action not found.");
+            // swipe over the action
+            setupSpy(testWithActiveItem, "contentMovementStarted");
+            if (data.touch) {
+                tugNoWait(actionItem, centerOf(actionItem).x, centerOf(actionItem).y, -data.dx, 0);
+            } else {
+                swipeNoWait(actionItem, centerOf(actionItem).x, centerOf(actionItem).y, -data.dx, 0);
+            }
+            expectFail(data.tag, "should not swipe");
+            spyWait();
+        }
+
+        function test_button_inactive_while_swiped_data() {
+            return [
+                {tag: "mouse", touch: false, dx: units.gu(20)},
+                {tag: "touch", touch: true, dx: units.gu(20)},
+            ];
+        }
+        function test_button_inactive_while_swiped(data) {
+            clickSpy.target = activeItem;
+            if (data.touch) {
+                tug(testWithActiveItem, centerOf(testWithActiveItem).x, centerOf(testWithActiveItem).y, data.dx, 0);
+                TestExtras.touchClick(0, activeItem, centerOf(activeItem));
+            } else {
+                swipe(testWithActiveItem, centerOf(testWithActiveItem).x, centerOf(testWithActiveItem).y, data.dx, 0);
+                mouseClick(activeItem, centerOf(activeItem).x, centerOf(activeItem).y);
+            }
+            expectFail(data.tag, "Button is inactive while swiped");
+            clickSpy.wait(200);
+        }
+
+        function test_click_before_and_after_snapout_bug1496468_data() {
+            var item0 = findChild(listView, "listItem0");
+            var item1 = findChild(listView, "listItem1");
+            return [
+                {tag: "mouse", touch: false, clickedItem: item0, swipedItem: item1, dx: units.gu(20), reboundDx: -units.gu(5)},
+                {tag: "touch", touch: true, clickedItem: item0, swipedItem: item1, dx: units.gu(20), reboundDx: -units.gu(5)},
+            ];
+        }
+        function test_click_before_and_after_snapout_bug1496468(data) {
+            clickSpy.target = data.clickedItem;
+            if (data.touch) {
+                TestExtras.touchClick(0, data.clickedItem, centerOf(data.clickedItem));
+            } else {
+                mouseClick(data.clickedItem, centerOf(data.clickedItem).x, centerOf(data.clickedItem).y);
+            }
+            clickSpy.wait(200);
+            // swipe in then rebound
+            if (data.touch) {
+                tug(data.swipedItem, centerOf(data.swipedItem).x, centerOf(data.swipedItem).y, data.dx, 0);
+                wait(200);
+                tug(data.swipedItem, centerOf(data.swipedItem).x, centerOf(data.swipedItem).y, data.reboundDx, 0);
+            } else {
+                swipe(data.swipedItem, centerOf(data.swipedItem).x, centerOf(data.swipedItem).y, data.dx, 0);
+                wait(200);
+                swipe(data.swipedItem, centerOf(data.swipedItem).x, centerOf(data.swipedItem).y, data.reboundDx, 0);
+            }
+            // then test click
+            clickSpy.target = data.swipedItem;
+            clickSpy.clear();
+            if (data.touch) {
+                TestExtras.touchClick(0, data.swipedItem, centerOf(data.swipedItem));
+            } else {
+                mouseClick(data.swipedItem, centerOf(data.swipedItem).x, centerOf(data.swipedItem).y);
+            }
+            clickSpy.wait(200);
         }
     }
 }

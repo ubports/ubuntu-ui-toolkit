@@ -24,6 +24,7 @@
 #include "i18n.h"
 #include "ucfontutils.h"
 #include "ucstyleditembase_p.h"
+#include "ucthemingextension.h"
 
 #include <QtQml/qqml.h>
 #include <QtQml/qqmlinfo.h>
@@ -359,11 +360,12 @@ UCTheme::UCTheme(bool defaultStyle, QObject *parent)
 {
     init();
     // set the default font
-    QFont defaultFont;
+    QFont defaultFont = QGuiApplication::font();
     defaultFont.setFamily("Ubuntu");
     defaultFont.setPixelSize(UCFontUtils::instance().sizeToPixels("medium"));
     defaultFont.setWeight(QFont::Light);
     QGuiApplication::setFont(defaultFont);
+    setObjectName("default");
 }
 
 void UCTheme::init()
@@ -422,12 +424,17 @@ void UCTheme::updateThemePaths()
  */
 UCTheme *UCTheme::parentTheme()
 {
-    UCStyledItemBase *owner = qobject_cast<UCStyledItemBase*>(parent());
-    UCStyledItemBasePrivate *pOwner = owner ? UCStyledItemBasePrivate::get(owner) : NULL;
-    if (pOwner && pOwner->theme == this && pOwner->parentStyledItem) {
-        return UCStyledItemBasePrivate::get(pOwner->parentStyledItem)->getTheme();
+    return  m_parentTheme.data();
+}
+
+void UCTheme::setParentTheme(UCTheme *parentTheme)
+{
+    if (m_parentTheme == parentTheme || parentTheme == this) {
+        return;
     }
-    return NULL;
+    Q_ASSERT(parentTheme);
+    m_parentTheme = parentTheme;
+    Q_EMIT parentThemeChanged();
 }
 
 /*!
@@ -614,6 +621,21 @@ void UCTheme::registerToContext(QQmlContext* context)
         new ContextPropertyChangeListener(context, "theme");
     QObject::connect(defaultTheme, &UCTheme::nameChanged,
                      listener, &ContextPropertyChangeListener::updateContextProperty);
+}
+
+void UCTheme::attachItem(QQuickItem *item, bool attach)
+{
+    UCItemAttached *theming = static_cast<UCItemAttached*>(qmlAttachedPropertiesObject<UCItemAttached>(item, false));
+    if (!theming) {
+        return;
+    }
+    if (attach) {
+        connect(this, SIGNAL(nameChanged()), theming, SLOT(reloadTheme()), Qt::DirectConnection);
+        connect(this, SIGNAL(versionChanged()), theming, SLOT(reloadTheme()), Qt::DirectConnection);
+    } else {
+        disconnect(this, SIGNAL(nameChanged()), theming, SLOT(reloadTheme()));
+        disconnect(this, SIGNAL(versionChanged()), theming, SLOT(reloadTheme()));
+    }
 }
 
 /*!
