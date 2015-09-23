@@ -67,6 +67,7 @@
 #include "ucactionitem.h"
 #include "uchaptics.h"
 #include "ucabstractbutton.h"
+#include "ucheader.h"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -245,6 +246,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterUncreatableType<UCSlotsAttached>(uri, 1, 3, "SlotsAttached", "Not instantiable");
     qmlRegisterUncreatableType<UCSlotsLayoutPadding>(uri, 1, 3, "SlotsLayoutPadding", "Not instantiable");
     qmlRegisterType<UCThreeLabelsSlot>(uri, 1, 3, "ThreeLabelsSlot");
+    qmlRegisterType<UCHeader>(uri, 1, 3, "Header");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
