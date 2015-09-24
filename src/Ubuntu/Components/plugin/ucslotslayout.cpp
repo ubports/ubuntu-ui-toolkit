@@ -56,8 +56,8 @@ void UCSlotsLayoutPrivate::init()
 
     QObject::connect(&padding, SIGNAL(leadingChanged()), q, SLOT(_q_relayout()));
     QObject::connect(&padding, SIGNAL(trailingChanged()), q, SLOT(_q_relayout()));
-    QObject::connect(&padding, SIGNAL(topChanged()), q, SLOT(_q_updateSlotsBBoxHeight()));
-    QObject::connect(&padding, SIGNAL(bottomChanged()), q, SLOT(_q_updateSlotsBBoxHeight()));
+    QObject::connect(&padding, SIGNAL(topChanged()), q, SLOT(_q_relayout()));
+    QObject::connect(&padding, SIGNAL(bottomChanged()), q, SLOT(_q_relayout()));
 
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_onGuValueChanged()));
 
