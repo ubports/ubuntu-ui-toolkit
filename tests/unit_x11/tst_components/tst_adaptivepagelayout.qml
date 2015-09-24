@@ -97,6 +97,16 @@ MainView {
             layout.width = root.width;
         }
 
+        function getColumnHolder(apl, column) {
+            verify(apl.columns > column);
+            return findChild(apl, "ColumnHolder" + column);
+        }
+
+        function getPageWrapper(apl, page) {
+            verify(apl.__d);
+            return apl.__d.getWrapper(page);
+        }
+
         function cleanup() {
             page1.title = "Page1";
             page2.title = "Page2";
@@ -245,6 +255,67 @@ MainView {
             incubator.forceCompletion();
             compare(incubator.status, Component.Ready, "Incubator not completed");
             verify(incubator.object, "Page object not set");
+        }
+
+        SignalSpy {
+            id: widthSpy
+            signalName: "widthChanged"
+        }
+        SignalSpy {
+            id: heightSpy
+            signalName: "heightChanged"
+        }
+        function test_hidden_page_keeps_geometry_bug1492343() {
+            widthSpy.target = heightSpy.target = layout.primaryPage;
+            layout.addPageToCurrentColumn(layout.primaryPage, page2);
+            expectFailContinue("", "no width change expected");
+            widthSpy.wait(400);
+            expectFailContinue("", "no height change expected");
+            heightSpy.wait(400);
+        }
+
+        SignalSpy {
+            id: pageLoadedSpy
+            signalName: "pageLoaded"
+        }
+        function test_old_page_disappears_when_new_one_ready_data() {
+            return [
+                {tag: "CurrentColumn, wide",
+                            width: units.gu(120), nextColumn: false, page: pageComponent, sourcePage: layout.primaryPage},
+                {tag: "CurrentColumn, narrow",
+                            width: units.gu(40), nextColumn: false, page: pageComponent, sourcePage: layout.primaryPage},
+                {tag: "NextColumn, wide", intermediatePage: page2,
+                            width: units.gu(120), nextColumn: true, page: pageComponent, sourcePage: layout.primaryPage},
+                {tag: "NextColumn, narrow", intermediatePage: page2,
+                            width: units.gu(40), nextColumn: true, page: pageComponent, sourcePage: layout.primaryPage},
+            ];
+        }
+        function test_old_page_disappears_when_new_one_ready(data) {
+            layout.width = data.width;
+            var wrapper = getPageWrapper(layout, data.sourcePage);
+            verify(wrapper);
+            var testHolder = getColumnHolder(layout, wrapper.column + (data.nextColumn ? 1 : 0));
+            verify(testHolder);
+
+            if (data.intermediatePage) {
+                layout.addPageToNextColumn(data.sourcePage, data.intermediatePage);
+            }
+
+            var testPage = testHolder.pageWrapper.object;
+            var prevPageActive = false
+            var incubator = data.nextColumn
+                        ? layout.addPageToNextColumn(data.sourcePage, data.page)
+                        : layout.addPageToCurrentColumn(data.sourcePage, data.page);;
+            verify(incubator);
+            compare(testHolder.pageWrapper.object, testPage);
+            incubator.onStatusChanged = function (status) {
+                if (status == Component.Ready) {
+                    prevPageActive = testHolder.pageWrapper.object == testPage;
+                    testCase.pageLoaded();
+                }
+            }
+            loadedSpy.wait(2500);
+            verify(prevPageActive);
         }
     }
 }
