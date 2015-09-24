@@ -264,6 +264,8 @@ if [[ ${TEST_PPA} == true ]]; then
         	sleep_indicator 120
 	fi
         unlock_screen	
+	network
+        sleep_indicator 10
 	# Measure the application startup times with the PPA
 	measure_app_startups
 fi
