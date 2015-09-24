@@ -85,7 +85,8 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/uchaptics.h \
     $$PWD/ucabstractbutton.h \
     $$PWD/ucthemingextension.h \
-    $$PWD/ucheader.h
+    $$PWD/ucheader.h \
+    $$PWD/uclabel.h
 
 SOURCES += $$PWD/plugin.cpp \
     $$PWD/uctheme.cpp \
@@ -143,7 +144,8 @@ SOURCES += $$PWD/plugin.cpp \
     $$PWD/uchaptics.cpp \
     $$PWD/ucabstractbutton.cpp \
     $$PWD/ucthemingextension.cpp \
-    $$PWD/ucheader.cpp
+    $$PWD/ucheader.cpp \
+    $$PWD/uclabel.cpp
 
 # adapters
 SOURCES += $$PWD/adapters/alarmsadapter_organizer.cpp

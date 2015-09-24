@@ -50,7 +50,6 @@ Item {
             verticalCenter: parent.verticalCenter
             verticalCenterOffset: units.dp(-1)
         }
-        fontSize: "medium"
         elide: Text.ElideRight
     }
 

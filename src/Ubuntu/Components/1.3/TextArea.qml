@@ -805,10 +805,10 @@ Ubuntu.StyledItem {
     Keys.onReleased: event.accepted = (event.key === Qt.Key_Enter) || (event.key === Qt.Key_Return)
 
     // holding default values
-    Label { id: fontHolder }
+    Ubuntu.Label { id: fontHolder }
 
     //hint
-    Label {
+    Ubuntu.Label {
         id: hint
         anchors {
             fill: parent
