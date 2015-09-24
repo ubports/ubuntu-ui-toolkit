@@ -65,4 +65,4 @@ if __name__ == '__main__':
         print("---------- Event "+event+" ----------")
         print("Min: " + str(round(minNumbers[event] / 1000 / 1000 / 1000, 4)))
         print("Max: " + str(round(maxNumbers[event] / 1000 / 1000 / 1000, 4)))
-        print("Avg: " + str(round(numbers[event] / iterations / 1000 / 1000 / 1000, 4)))
+        print("Avg: " + str(round(numbers[event]/iterations/1000000/1000, 4)))
