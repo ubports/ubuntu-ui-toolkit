@@ -45,7 +45,7 @@ Page {
                     text: "Copyright 2012-2015 Canonical Ltd.\n\n"
                 }
                 ListElement {
-                    text: "Authors\n"
+                    text: "Contributors\n"
                 }
                 ListElement {
                     text: "Tim Peeters (#t1mp) <tim.peeters@canonical.com>"
