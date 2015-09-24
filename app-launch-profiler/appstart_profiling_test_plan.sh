@@ -114,8 +114,11 @@ function device_provisioning {
 	sleep_indicator 10
 	echo -e "Clone the network "
 	network
+        sleep_indicator 10
         adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S reboot 2>&1|grep -v password"
         sleep_indicator 120
+	network
+        sleep_indicator 10
 	echo "Set up with the archive image"
 	phablet-config -s ${SERIALNUMBER} writable-image -r ${PASSWORD} 2>&1 > /dev/null
 	echo "Sleep after phablet-config";
