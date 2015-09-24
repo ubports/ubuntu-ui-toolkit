@@ -47,6 +47,7 @@ declare -a APPLICATIONS=(
 	"ubuntu-system-settings"
 )
 
+
 sleep_indicator () {
     if [ -z "$1" ]; then
         i=1
@@ -101,11 +102,6 @@ function network {
 
 
 function device_provisioning {
-	# Use the first available device for testing
-        echo -e "Waiting for a device"
-        adb wait-for-device
-        SERIALNUMBER=`adb devices -l | grep -Ev "List of devices attached" | grep -Ev "emulator-" | sed "/^$/d"|sed "s/ .*//g"`
-	adb -s ${SERIALNUMBER} wait-for-device
         # Avoid https://bugs.launchpad.net/gallery-app/+bug/1363190
         adb -s ${SERIALNUMBER} shell "echo ${PASSWORD} |sudo -S rm -rf /userdata/user-data/phablet/.cache/com.ubuntu.gallery 2>&1|grep -v password"
         # flash the latest image
@@ -131,7 +127,22 @@ function device_provisioning {
 	sleep_indicator 120
 }
 
-while getopts ":hco:" opt; do
+function measure_app_startups {
+	for APPLICATION in "${APPLICATIONS[@]}"
+	do
+       		echo -e "\e[31m${APPLICATION}\e[0m"
+		LTTNG_SESSION_NAME=""
+	        while read -r LINE
+        	do
+                	if [[ $LINE =~ $LTTNG_SESSION_NAME_REGEXP ]]; then
+                        	LTTNG_SESSION_NAME=${BASH_REMATCH[1]}
+                	fi
+		done < <(adb -s ${SERIALNUMBER} shell "/usr/bin/profile_appstart.sh -a ${APPLICATION} -u ${IP_ADDRESS} -c ${COUNT} -s ${SLEEP_TIME}")
+		[ -z "$|${LTTNG_SESSION_NAME}" ] && echo "The lttng session is not available" || app-launch-profiler-lttng.py ~/lttng-traces/ubuntu-phablet/${LTTNG_SESSION_NAME}
+	done
+} 
+
+while getopts ":hc:o:" opt; do
     case $opt in
         p)
             COMISSION=true
@@ -164,12 +175,33 @@ while getopts ":hco:" opt; do
 done
 
 
+# Use the first available device for testing
+echo -e "Waiting for a device"
+adb wait-for-device
+SERIALNUMBER=`adb devices -l | grep -Ev "List of devices attached" | grep -Ev "emulator-" | sed "/^$/d"|sed "s/ .*//g"`
+adb -s ${SERIALNUMBER} wait-for-device
+
+echo "*** Settings ***"
+echo ""
+echo "Serial number: ${SERIALNUMBER}"
+echo "Number of app start: ${COUNT}"
+echo "Length of sleep between restarts: ${SLEEP_TIME}"
+echo "Output directory: ${OUTPUTDIR}"
+#echo "PPA: $PPA"
+echo ""
+echo "Commission: ${COMISSION}"
+echo "*** Starting ***"
+echo ""
 
 
 # Flash the device with rc-proposed
 if [ ${COMISSION} == true ]; then
 	device_provisioning
 fi
+
+# Check if the device is in writable mode
+
+# Install the ubuntu-app-launch-profiler on the device
 
 # Unlock the screan
 echo -e "Unlocking the screan"
@@ -183,7 +215,6 @@ else
 	echo -e "Starting lttng-relayd"
 	lttng-relayd &
 	sleep_indicator 5
-
 fi
 
 nc -z ${IP_ADDRESS} 5343
@@ -193,19 +224,8 @@ else
         echo "The lttng server is not accesible. Check lttng-relayd or firewall policies."
 fi
 
-
 # Measure the application startup times
-for APPLICATION in "${APPLICATIONS[@]}"
-do
-	echo -e "\e[31m${APPLICATION}\e[0m"
-	while read -r LINE
-	do
-		if [[ $LINE =~ $LTTNG_SESSION_NAME_REGEXP ]]; then
-			LTTNG_SESSION_NAME=${BASH_REMATCH[1]}	
-		fi
-	done < <(adb -s ${SERIALNUMBER} shell "/usr/bin/profile_appstart.sh -a ${APPLICATION} -u ${IP_ADDRESS} -c ${COUNT} -s ${SLEEP_TIME}")
-	app-launch-profiler-lttng.py ~/lttng-traces/ubuntu-phablet/${LTTNG_SESSION_NAME}
-done
+measure_app_startups
 
 # Configure the PPA on the devoce
 
