@@ -120,9 +120,11 @@ function device_provisioning {
 	network
         sleep_indicator 10
 	echo "Set up with the archive image"
-	phablet-config -s ${SERIALNUMBER} writable-image -r ${PASSWORD} 2>&1 > /dev/null
+        adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S touch /userdata/.writable_image 2>&1|grep -v password > /dev/null"
+        adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S touch /userdata/.adb_onlock 2>&1|grep -v password > /dev/null"
+	#phablet-config -s ${SERIALNUMBER} writable-image -r ${PASSWORD} 2>&1 > /dev/null
 	echo "Sleep after phablet-config";
-	sleep_indicator 120
+	sleep_indicator 10
 	echo -e "Clone the network "
 	network
 	adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S reboot 2>&1|grep -v password"
@@ -202,6 +204,7 @@ echo ""
 # Flash the device with rc-proposed
 if [ ${COMISSION} == true ]; then
 	device_provisioning
+	unlock_screen
 else
 	# Check if the device is in writable mode
 	if adb shell "echo ${PASSWORD}|sudo -S bash -c '[[ -f /userdata/.writable_image ]] &&echo && echo writable'" 2>&1 |grep -v password | grep -q writable ; then
