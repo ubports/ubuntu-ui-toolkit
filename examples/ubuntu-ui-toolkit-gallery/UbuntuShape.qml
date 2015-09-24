@@ -37,7 +37,7 @@ Template {
                 Label {
                     anchors.centerIn: parent
                     text: "Inset"
-                    fontSize: "x-small"
+                    textSize: Label.XSmall
                     color: theme.palette.normal.foregroundText
                 }
             }
@@ -50,7 +50,7 @@ Template {
                 Label {
                     anchors.centerIn: parent
                     text: "DropShadow"
-                    fontSize: "xx-small"
+                    textSize: Label.XxSmall
                     color: theme.palette.normal.foregroundText
                 }
             }
@@ -63,7 +63,7 @@ Template {
                 Label {
                     anchors.centerIn: parent
                     text: "Flat"
-                    fontSize: "xx-small"
+                    textSize: Label.XxSmall
                     color: theme.palette.normal.foregroundText
                 }
             }
@@ -81,7 +81,7 @@ Template {
                 Label {
                     anchors.centerIn: parent
                     text: "small"
-                    fontSize: "xx-small"
+                    textSize: Label.XxSmall
                     color: theme.palette.normal.foregroundText
                 }
             }
@@ -93,7 +93,7 @@ Template {
                 Label {
                     anchors.centerIn: parent
                     text: "medium"
-                    fontSize: "xx-small"
+                    textSize: Label.XxSmall
                     color: theme.palette.normal.foregroundText
                 }
             }
@@ -105,7 +105,7 @@ Template {
                 Label {
                     anchors.centerIn: parent
                     text: "large"
-                    fontSize: "xx-small"
+                    textSize: Label.XxSmall
                     color: theme.palette.normal.foregroundText
                 }
             }

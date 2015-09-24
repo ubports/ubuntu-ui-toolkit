@@ -30,7 +30,6 @@ Label {
         return item.parent.hasOwnProperty("pointerTarget") || label.isInsideOverlay(item.parent)
     }
 
-    fontSize: "medium"
     elide: Text.ElideRight
     color: selected ? UbuntuColors.orange : secondary ? overlay ? theme.palette.normal.overlayText : theme.palette.normal.backgroundText
                                                       : overlay ? theme.palette.selected.overlayText : theme.palette.selected.backgroundText

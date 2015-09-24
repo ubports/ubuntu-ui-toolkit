@@ -202,7 +202,7 @@ ListItem.Empty {
             right: parent.right
         }
 
-        Label {
+        Toolkit.Label {
             id : label
 
             text: optionSelector.text
