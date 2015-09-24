@@ -154,6 +154,8 @@ PageTreeNode {
       Destroy \l object. Only call this function if \l canDestroy
      */
     function destroyObject() {
+        print("DYING1");
         Utils.destroyObject(pageWrapper);
+        print("DYING2");
     }
 }

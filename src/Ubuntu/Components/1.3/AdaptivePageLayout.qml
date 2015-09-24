@@ -293,7 +293,8 @@ PageTreeNode {
         var nextColumn = d.columnForPage(sourcePage) + 1;
         d.tree.prune(nextColumn);
         for (var i = nextColumn; i < d.columns; i++) {
-            d.updatePageForColumn(i);
+            print("UPDATE", i);
+//            d.updatePageForColumn(i);
         }
         return d.addPageToColumn(nextColumn, sourcePage, page, properties);
     }
@@ -387,14 +388,7 @@ PageTreeNode {
             // replace page holder's child
             var holder = body.children[targetColumn];
             holder.detachCurrentPage();
-            if ((pageWrapper.incubator && pageWrapper.incubator.status == Component.Ready) || pageWrapper.object) {
-                holder.attachPage(pageWrapper);
-            } else {
-                // asynchronous, connect to page load completion and attach when page is available
-                pageWrapper.pageLoaded.connect(function () {
-                    holder.attachPage(pageWrapper);
-                });
-            }
+            holder.attachPage(pageWrapper);
         }
 
         function getWrapper(page) {
@@ -420,6 +414,12 @@ PageTreeNode {
         function columnForPage(page) {
             var wrapper = d.getWrapper(page);
             return wrapper ? wrapper.column : 0;
+        }
+
+        function finalizeAddingPage(newWrapper) {
+            if (newWrapper === undefined) newWrapper = this;
+            d.addWrappedPage(newWrapper);
+            print("done", newWrapper.incubator.object);
         }
 
         function addPageToColumn(column, sourcePage, page, properties) {
@@ -451,7 +451,12 @@ PageTreeNode {
             var newWrapper = d.createWrapper(page, properties);
             newWrapper.parentPage = sourcePage;
             newWrapper.column = column;
-            d.addWrappedPage(newWrapper);
+            if (newWrapper.incubator) {
+                newWrapper.pageLoaded.connect(finalizeAddingPage.bind(newWrapper));
+            } else {
+                finalizeAddingPage(neweWrapper);
+            }
+
             return newWrapper.incubator;
         }
 
@@ -469,6 +474,7 @@ PageTreeNode {
                     columnHolder.attachPage(newWrapper);
                 }
                 if (oldWrapper.canDestroy) {
+                    print("DIE!")
                     oldWrapper.destroyObject();
                 }
             }
@@ -727,6 +733,7 @@ PageTreeNode {
                 pageWrapper = null;
                 wrapper.parent = hiddenPages;
                 wrapper.pageHolder = null;
+                print("detached")
                 return wrapper;
             }
 
@@ -747,6 +754,7 @@ PageTreeNode {
         visible: false
         // make sure nothing is shown eventually
         clip: true
+        anchors.fill: parent
     }
 
     // Holds the columns holding the pages visible. Each column has only one page

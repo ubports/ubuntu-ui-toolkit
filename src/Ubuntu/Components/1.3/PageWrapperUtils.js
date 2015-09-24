@@ -59,7 +59,6 @@ function Incubator(pageWrapper, pageComponent) {
         // cleanup of ready or error
         if (status !== Component.Loading) {
             pageWrapper.incubator = null;
-            incubator = null;
         }
     }
 

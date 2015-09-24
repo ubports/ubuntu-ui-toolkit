@@ -77,6 +77,13 @@ MainView {
                     onTriggered: gallery.theme.name = 'Ubuntu.Components.Themes.Ambiance'
                 }
             ]
+            head.backAction:  Action {
+                text: i18n.tr('About')
+                iconName: "navigation-menu"
+                onTriggered: layout.addPageToCurrentColumn(mainPage, Qt.resolvedUrl("About.qml"))
+            }
+
+
 
             Rectangle {
                 color: Qt.rgba(0.0, 0.0, 0.0, 0.01)
