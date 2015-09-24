@@ -200,6 +200,8 @@ else
 	# Check if the device is in writable mode
 	if adb shell "echo ${PASSWORD}|sudo -S bash -c '[[ -f /userdata/.writable_image ]] &&echo && echo writable'" 2>&1 |grep -v password | grep -q writable ; then
 		echo "The device is already writable"
+		unlock_screen
+		network
 	else
 		phablet-config -s ${SERIALNUMBER} writable-image -r ${PASSWORD} 2>&1 > /dev/null
 		echo "Sleep after phablet-config";
@@ -258,9 +260,10 @@ if [[ ${TEST_PPA} == true ]]; then
 		adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S apt-get dist-upgrade --yes --force-yes 2>&1 |grep -v password > /dev/null"
 		adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S dpkg --configure -a 2>&1 |grep -v password > /dev/null"
 		adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S apt-get --force-yes -f install  2>&1 |grep -v password > /dev/null"
-	        adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S reboot 2>&1|grep -v password"
+	        adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S reboot 2>&1|grep -v password > /dev/null"
         	sleep_indicator 120
 	fi
+        unlock_screen	
 	# Measure the application startup times with the PPA
 	measure_app_startups
 fi
