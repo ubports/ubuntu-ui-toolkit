@@ -30,10 +30,10 @@ CHANNEL="ubuntu-touch/rc-proposed/${DISTRO}"
 PASSWORD="0000"
 BOOTTIME=250
 COMISSION=false
-APPLICATION="dialer-app"
-COUNT=10
+COUNT=3
 SLEEP_TIME=5
-
+LTTNG_SESSION_NAME_REGEXP='(auto-.*-.*) created.'
+LTTNG_SESSION_NAME=""
 
 WIRELESS_ADAPTER="$(nmcli -t -f device,type dev | egrep "wireless|wifi" | cut -d: -f1)"
 
@@ -42,6 +42,9 @@ IP_ADDRESS="$(ifconfig | grep -A 1 ${WIRELESS_ADAPTER} | tail -1 | cut -d ':' -f
 
 declare -a APPLICATIONS=(
         "dialer-app"
+	"messaging-ap"
+	"address-book-app"
+	"system-setings-app"
 )
 
 sleep_indicator () {
@@ -130,7 +133,7 @@ function device_provisioning {
 
 while getopts ":hco:" opt; do
     case $opt in
-        c)
+        p)
             COMISSION=true
             ;;
         o)
@@ -140,11 +143,18 @@ while getopts ":hco:" opt; do
                 echo "$OPTARG does not exist. Using default $OUTPUTDIR"
             fi
             ;;
-
+	c)
+	    COUNT=$OPTARG
+	    ;;
+	s)
+	    SLEEP_TIME=$OPTARG
+	    ;;
         h)
-            echo "Usage: appstart_profiling_test_plan.sh -c -o [ PATH ]"
-            echo -e "\t-c : Comission the device with the ${PPA} enabled"
+            echo "Usage: appstart_profiling_test_plan.sh -p -o [ PATH ]"
+            echo -e "\t-p : Provision the device with the ${PPA} enabled"
             echo -e "\t-o : Output directory. Default $OUTPUTDIR"
+            echo -e "\t-c : Number of times the applications are started during the test. Default $COUNT"
+            echo -e "\t-s : Sleep time between application starts. Default $SLEEP_TIME"
             exit
 	    ;;
         :)
@@ -183,17 +193,21 @@ else
         echo "The lttng server is not accesible. Check lttng-relayd or firewall policies."
 fi
 
-for APPLICATION in "${APPLICATIONS[@]}"
-    do
-        echo -e "\e[31m${APPLICATION}\e[0m"
-	adb -s ${SERIALNUMBER} shell "/usr/bin/profile_appstart.sh -a ${APPLICATION} -u ${IP_ADDRESS} -c ${COUNT} -s ${SLEEP_TIME}"
-    done
 
 # Measure the application startup times
+for APPLICATION in "${APPLICATIONS[@]}"
+do
+	echo -e "\e[31m${APPLICATION}\e[0m"
+	while read -r LINE
+	do
+		if [[ $LINE =~ $LTTNG_SESSION_NAME_REGEXP ]]; then
+			LTTNG_SESSION_NAME=${BASH_REMATCH[1]}	
+		fi
+	done < <(adb -s ${SERIALNUMBER} shell "/usr/bin/profile_appstart.sh -a ${APPLICATION} -u ${IP_ADDRESS} -c ${COUNT} -s ${SLEEP_TIME}")
+	app-launch-profiler-lttng.py ~/lttng-traces/ubuntu-phablet/${LTTNG_SESSION_NAME}
+done
 
 # Configure the PPA on the devoce
 
 # Measure the application startup times
-
-echo ${IP_ADDRESS}
 
