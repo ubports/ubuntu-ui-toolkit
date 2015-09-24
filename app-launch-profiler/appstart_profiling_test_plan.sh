@@ -107,7 +107,7 @@ function device_provisioning {
 	ubuntu-device-flash touch --serial=${SERIALNUMBER} --channel=${CHANNEL} --wipe --developer-mode --password=${PASSWORD}
 	sleep_indicator ${BOOTTIME}
 	echo -e "Disable the intro wizard"
-	phablet-config -s ${SERIALNUMBER}welcome-wizard --disable
+	phablet-config -s ${SERIALNUMBER} welcome-wizard --disable
 	sleep_indicator 10
 	echo -e "Disable the edge swiping lecture "
 	phablet-config -s ${SERIALNUMBER} edges-intro --disable	
@@ -140,7 +140,7 @@ function measure_app_startups {
 	done
 } 
 
-while getopts ":htc:o:" opt; do
+while getopts ":hptc:o:" opt; do
 	case $opt in
 	p)
 		COMISSION=true
