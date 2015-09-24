@@ -362,6 +362,9 @@ void UCSlotsLayoutPrivate::_q_onSlotOverrideVerticalPositioningChanged()
     slotAnchors->resetFill();
     slotAnchors->resetCenterIn();
 
+    //resetting anchors doesn't also reset the position
+    slot->setY(0);
+
     _q_updateSlotsBBoxHeight();
 }
 
@@ -647,7 +650,7 @@ void UCSlotsLayoutPrivate::handleAttachedPropertySignals(QQuickItem *item, bool 
    each slot. However not all properties are valid in all the circumstances.
    These properties allow an easy tweaking of slot's positioning within
    the layout.
-   \l {SlotsLayout::position} can be used to set whether a slot should a
+   \l {SlotsLayout::position} can be used to set whether a slot should be a
    leading or trailing one.
    \l {SlotsLayout::padding} can be used to tweak the padding around a
    slot.
@@ -662,19 +665,19 @@ void UCSlotsLayoutPrivate::handleAttachedPropertySignals(QQuickItem *item, bool 
    component.
 
    \qml
-        SlotsLayout {
-            mainSlot: Label {
-                text: "Hello developers!"
-            }
-
-            CheckBox { SlotsLayout.position: SlotsLayout.Trailing }
-
-            Icon {
-                name: "message"
-                SlotsLayout.position: SlotsLayout.Leading;
-                width: units.gu(2)
-            }
+    SlotsLayout {
+        mainSlot: Label {
+            text: "Hello developers!"
         }
+
+        CheckBox { SlotsLayout.position: SlotsLayout.Trailing }
+
+        Icon {
+            name: "message"
+            SlotsLayout.position: SlotsLayout.Leading;
+            width: units.gu(2)
+        }
+    }
    \endqml
 
    \b {For list items, the recommendation is to use} \l {ListItemLayout},
@@ -698,31 +701,56 @@ void UCSlotsLayoutPrivate::handleAttachedPropertySignals(QQuickItem *item, bool 
 
    \section1 Resizing the layout
 
-   SlotsLayout's implicit width is by default set to the width of the parent
+   SlotsLayout's \b {implicit width} is by default set to the width of the parent
    (usually a \l {ListItem}).
    Changing the width of the layout is possible but should not be needed in
    most of the usecases: keeping the width in sync with the width of its parent
    allows the user interface to be scalable across devices with varying resolution
    and form factors.
 
-   The implicit height is not fixed either. In order not to clip any of the slots,
+   The \b {implicit height} is not fixed either. In order not to clip any of the slots,
    SlotsLayout watches its children for height and padding changes  and makes sure to
    grow its implicit height to accomodate the tallest slot plus the padding around
    the slot and the one around the layout.
+
+   Because of the above, it is recommended to have items wrapping the layout
+   bind to SlotsLayout's \b {height}, not the opposite. It is not recommended,
+   for instance, to use anchors.fill to force SlotsLayout to fill another Item,
+   as that may bring to not having enough space to display the whole slots,
+   which would at that point get clipped.
+
+   \qml
+    ListItem {
+        //CORRECT
+        height: layout.height
+
+        SlotsLayout {
+            id: layout
+
+            //WRONG
+            //anchors.fill: parent
+
+            mainSlot: Label {
+                text: "Hello developers!"
+            }
+            CheckBox { SlotsLayout.position: SlotsLayout.Trailing }
+        }
+    }
+   \endqml
 
    Manually resizing SlotsLayout (or \l ListItemLayout) is usually not needed and
    we recommend to avoid it, as the component will already take care of doing the
    job for you. The following example shows what a standard SlotsLayout should
    look like:
 
-    \qml
-        SlotsLayout {
-            mainSlot: Label {
-                text: "Hello developers!"
-            }
-            //just an example of something inside SlotsLayout
-            CheckBox { SlotsLayout.position: SlotsLayout.Trailing }
+   \qml
+    SlotsLayout {
+        mainSlot: Label {
+            text: "Hello developers!"
         }
+        //just an example of something inside SlotsLayout
+        CheckBox { SlotsLayout.position: SlotsLayout.Trailing }
+    }
    \endqml
 
    \section1 Automatic vertical positioning of slots
@@ -744,9 +772,58 @@ void UCSlotsLayoutPrivate::handleAttachedPropertySignals(QQuickItem *item, bool 
    \l {SlotsLayout::overrideVerticalPositioning} to true. This is described in
    \l {Advanced layout tweaks}.
 
+   \section1 Input handling
+   The purpose of SlotsLayout is to position its children (slots) following
+   the rules defined in \l {Automatic vertical positioning of slots}.
+   There are two recommended ways to implement input handling: the first one,
+   in case the target is to create a list item, is to put the \l SlotsLayout
+   (or any derived component, like \l {ListItemLayout}) inside a \l {ListItem},
+   and use ListItem's onClicked handler to handle clicks and taps.
+
+   \qml
+    ListItem {
+        height: layout.height
+        onClicked: console.log("clicked!")
+
+        SlotsLayout {
+            id: layout
+            mainSlot: Label {
+                text: "Hello developers!"
+            }
+            //just an example of something inside SlotsLayout
+            CheckBox { SlotsLayout.position: SlotsLayout.Trailing }
+        }
+    }
+   \endqml
+
+   The second option is to use a MouseArea as a wrapper around
+   SlotsLayout, as the following code demonstrates:
+   \qml
+    MouseArea {
+        anchors.left: parent.left
+        anchors.right: parent.right
+        height: layout.height
+        onClicked: console.log("clicked!")
+
+        SlotsLayout {
+            id: layout
+            mainSlot: Label {
+                text: "Hello developers!"
+            }
+            //just an example of something inside SlotsLayout
+            CheckBox { SlotsLayout.position: SlotsLayout.Trailing }
+        }
+    }
+   \endqml
+
+   \b {Note}: as recommended in \l {Resizing the layout}, since SlotsLayout
+   has a dynamic height, it is important to have the parent item's height (in this case
+   MouseArea) follow SlotsLayout's \b {height}, and not the opposite, to
+   avoid getting the slots clipped out of the layout.
+
    \section1 Advanced layout tweaks
    The automatic layout provided by SlotsLayout is designed to cover most
-   of the usecases. There could be times, however, where we might want to
+   of the usecases. There could be times, however, where you might want to
    tweak the positioning of one particular slot.
 
    A slot can set its attached properties \l SlotsLayout::padding and
@@ -755,29 +832,63 @@ void UCSlotsLayoutPrivate::handleAttachedPropertySignals(QQuickItem *item, bool 
 
    When a slot enables \l {SlotsLayout::overrideVerticalPositioning}, it
    gains control over its vertical anchors (top, bottom, verticalCenter).
+   Moreover, SlotsLayout will ignore the height of that slot in the
+   following computations of its implicitHeight (see \l {Resizing the layout}).
 
-   Moreover, SlotsLayout will not consider the height of that slot when
-   computing its implicitHeight anymore (see \l {Resizing the layout}).
-   Care must be to avoid pushing the slot outside of the layout perimeter,
-   to avoid getting it clipped.
+   When manually positioning a slot, care must be taken to avoid
+   pushing the slot outside of the layout perimeter, to avoid getting
+   it clipped.
 
    The following example shows a SlotsLayout which has both custom padding
    and a slot which uses custom vertical positioning:
 
    \qml
-        SlotsLayout {
-            id: layout
-            mainSlot: Label { id: label; text: "Hello developers!" }
-            padding {
-                top: units.gu(3)
-                bottom: units.gu(3)
-            }
-            CheckBox {
-                anchors.top: label.top
-                SlotsLayout.position: SlotsLayout.Trailing
-                SlotsLayout.overrideVerticalPositioning: true
-            }
+    SlotsLayout {
+        id: layout
+        mainSlot: Label { id: label; text: "Hello developers!" }
+        padding {
+            top: units.gu(3)
+            bottom: units.gu(3)
         }
+        CheckBox {
+            anchors.top: label.top
+            SlotsLayout.position: SlotsLayout.Trailing
+            SlotsLayout.overrideVerticalPositioning: true
+        }
+    }
+   \endqml
+
+   It is also possible to sort the slots in a relative fashion, by
+   using positions such as SlotsLayout.Leading+1, for instance, if
+   we want that slot to always be positioned after items with position
+   SlotsLayout.Leading. This is particularly useful, for example, when
+   subclassing SlotsLayout-based components which already have
+   predefined slots inside them. If, for instance, the component we're
+   subclassing has a slot with position SlotsLayout.Trailing, we can
+   add a slot to our subclass with position SlotsLayout.Trailing-1 if
+   we want to make sure our slot is always positioned before the one
+   in the component we are deriving from. This scenario is shown in the
+   following example code:
+   \qml
+    //ExampleLayout.qml
+    SlotsLayout {
+        id: layout
+        mainSlot: Label { id: label; text: "Hello developers!" }
+        CheckBox { SlotsLayout.position: SlotsLayout.Trailing }
+    }
+    \endqml
+
+    \qml
+    //DerivedLayout.qml
+    ExampleLayout {
+        id: derivedLayout
+        Icon {
+            id: newSlot
+            width: units.gu(2)
+            name: "message"
+            SlotsLayout.position: SlotsLayout.Trailing - 1
+        }
+    }
    \endqml
 */
 
@@ -867,10 +978,32 @@ void UCSlotsLayout::itemChange(ItemChange change, const ItemChangeData &data)
 }
 
 /*!
- * \qmlproperty Item SlotsLayout::mainSlot
- * This property represents the main slot of the layout. The main slot is the
- * one that defines the vertical positioning of the other slots. More details
- * can be found in the section \l {Automatic vertical positioning of slots}.
+   \qmlproperty Item SlotsLayout::mainSlot
+   This property represents the main slot of the layout. The main slot is the
+   one that defines the vertical positioning of the other slots. Because of this,
+   changing its position and overrideVerticalPositioning attached properties has
+   no effect. More details can be found in the section \l {Automatic vertical positioning of slots}.
+
+   \b {Note}: because of limitations in QtQuick/QML, it is not possible to initialize
+   \l mainSlot's the attached properties. Setting \l mainSlot's attached properties has
+   to be done via JS, for example inside Component.onCompleted, as shown in the following example:
+
+   \qml
+    SlotsLayout {
+        id: layout
+        Component.onCompleted: {
+            mainSlot.SlotsLayout.padding.leading =
+                Qt.binding(function() { return units.gu(5) })
+        }
+        mainSlot: Label { id: label; text: "Hello developers!" }
+
+        CheckBox {
+            anchors.top: label.top
+            SlotsLayout.position: SlotsLayout.Trailing
+            SlotsLayout.overrideVerticalPositioning: true
+        }
+    }
+   \endqml
  */
 QQuickItem *UCSlotsLayout::mainSlot() const
 {
@@ -961,12 +1094,15 @@ UCSlotsAttached::UCSlotsAttached(QObject *object)
     \endlist
 
     Whenever there are more slots with the same \l {SlotsLayout::position},
-    they will be positioned following their stacking order.
+    they will be positioned following the order in which they were added to
+    the layout.
 
-    TODO: INSERT CODE EXAMPLE
+    It is also possible to define relative positioning between the slots,
+    by using values such as SlotsLayout.Leading+1, or SlotsLayout.Trailing-3.
+    More about this in \l {Advanced layout tweaks}.
 
-    TODO: INSERT RELATIVE POSITIONING EXPLANATION
-    (SlotsLayout.Leading+1, etc)
+    \b Note: you can only change the position of standard slots. Changing
+    the position of \l mainSlot has no effect.
 */
 UCSlotsLayout::UCSlotPosition UCSlotsAttached::position() const
 {
@@ -1005,23 +1141,31 @@ UCSlotsLayoutPadding *UCSlotsAttached::padding()
 }
 
 /*!
- * \qmlattachedproperty bool SlotsLayout::overrideVerticalPositioning
- *
- * This attached property holds whether the layout should take care of
- * the vertical positioning of a slot. It is attached to every slot.
- * The default value is false.
- *
- * If this property is set to true, the layout will ignore the
- * corresponding slot during the computation of the \b implicitHeight of
- * the whole layout (see \l {Resizing the layout}) and it will not touch
- * its vertical position during the layout process. As a consequence, it
- * is possible, in that case, to set the vertical anchors of that slot
- * (verticalCenter, top, bottom) or even its \b y property.
- *
- * Care must be taken to avoid getting the slot clipped by positioning it
- * partly or completely outside of the SlotsLayout that holds it.
- *
- */
+  \qmlattachedproperty bool SlotsLayout::overrideVerticalPositioning
+
+   This attached property holds whether the layout should automatically
+   handle the vertical positioning of a slot. It is attached to every slot.
+   The default value is \b {false}.
+
+   If this property is set to true, the layout will ignore the
+   corresponding slot during the computation of the \b implicitHeight of
+   the whole layout (see \l {Resizing the layout}) and will not modify
+   its vertical position during the layout process. As a consequence, it
+   is possible, in that case, to manually set the vertical anchors of that slot
+   (verticalCenter, top, bottom) or even its \b y property.
+
+   Care must be taken to avoid getting the slot clipped by positioning it
+   partly or completely outside of the SlotsLayout that holds it.
+
+   \b {Note}: changing the value of overrideVerticalPositioning of one slot
+   after the layout has already been initialized will reset its top, bottom,
+   verticalCenter, fill, centerIn anchors for that slot, and the
+   corresponding margins. Care must be taken to set the anchors to the
+   desired values only after setting overrideVerticalPositioning.
+
+   \b {Note}: this property is only valid for standard slots. Changing
+   the value of \l mainSlot's overrideVerticalPositioning has no effect.
+*/
 
 bool UCSlotsAttached::overrideVerticalPositioning() const
 {

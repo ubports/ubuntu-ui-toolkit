@@ -612,7 +612,13 @@ Item {
                     "Override vertical positioning test, fake trailing slots list")
             layoutTestOverrideVerticalPositioning.trailingSlots[1].SlotsLayout.overrideVerticalPositioning = false
             compare(layoutTestOverrideVerticalPositioning.trailingSlots[1].SlotsLayout.overrideVerticalPositioning,
-                    false, "Override vertical positioning test, attached-property's new value")
+                    false, "Override vertical positioning test, attached-property's new value, false")
+            checkSlotsPosition(layoutTestOverrideVerticalPositioning)
+            checkImplicitSize(layoutTestOverrideVerticalPositioning)
+
+            layoutTestOverrideVerticalPositioning.trailingSlots[1].SlotsLayout.overrideVerticalPositioning = true
+            compare(layoutTestOverrideVerticalPositioning.trailingSlots[1].SlotsLayout.overrideVerticalPositioning,
+                    true, "Override vertical positioning test, attached-property's new value, true")
             checkSlotsPosition(layoutTestOverrideVerticalPositioning)
             checkImplicitSize(layoutTestOverrideVerticalPositioning)
         }

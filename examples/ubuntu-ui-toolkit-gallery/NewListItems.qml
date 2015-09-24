@@ -422,9 +422,12 @@ Template {
                 Item {
                     id: slot
                     width: label2.width
-                    //don't use childrenRect here because we're positioning the labels in a custom way, the item starts at the top
-                    height: label2.y + label2.height
-
+                    //binding on (label2.y + label2.height) would cause a binding loop,
+                    //because label2.y depends on mainSlot.y, and mainSlot.y depends on
+                    //this slot's height (because based on that heigh mainSlot will be
+                    //aligned to top or vertically centered).
+                    //But slot's height depends on label2.y, and that completes the circle.
+                    height: parent.height
                     //as we want to position labels to align with title and subtitle
                     SlotsLayout.overrideVerticalPositioning: true
 

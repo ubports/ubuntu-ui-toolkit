@@ -48,13 +48,22 @@ import Ubuntu.Components 1.3
     Creating a layout is as easy as putting a few Items inside
     the ListItemLayout. We will call these items "slots".
     All slots will automatically be positioned using the correct
-    margins spacing, following the visual rules specified by the
+    spacing, following the visual rules specified by the
     Ubuntu Design team.
     It is possible to tweak the position of each slot by modifying
     its attached properties.
 
     The progression symbol to be used in list items which handle
     navigation in a page stack is provided by \l ProgressionSlot.
+
+    To read more about advanced slots positioning or how to handle
+    input (mouse or touch) in ListItemLayout, see \l SlotsLayout
+    documentation.
+
+    If you don't need the swiping actions provided by \l {ListItem},
+    you can also use \l ListItemLayout directly inside a MouseArea
+    as delegate for your list view, as explained in \l SlotsLayout
+    documentation.
 
     The following code example shows how easy it is to create
     even non trivial list items list items using
@@ -79,6 +88,61 @@ import Ubuntu.Components 1.3
     }
     \endqml
 
+    Although ListItemLayout covers most of the usecases, there might be
+    times where manually tweaking the positioning is needed in order to
+    implement list item which need a special layout for one or more of
+    its slots. The following example shows one way to implement a list
+    item with a trailing slot holding two labels. What is special about
+    this example is that we want the baseline of one label inside the
+    trailing slot to align to \l {title}'s baseline and the baseline of
+    the other label to align to \l {subtitle}'s baseline.
+
+    \qml
+        ListItem {
+            id: listItem
+            height: layout.height
+
+            ListItemLayout {
+                id: layout
+                title.text: "Hello..."
+                title.color: UbuntuColors.Orange
+                subtitle.text: "...world!"
+
+                Rectangle {
+                    SlotsLayout.position: SlotsLayout.Leading
+                    color: "pink"
+                    height: units.gu(6)
+                    width: height
+                }
+
+                Item {
+                    id: slot
+                    width: secondLabel.width
+                    height: parent.height
+
+                    //as we want to position labels to align with title and subtitle
+                    SlotsLayout.overrideVerticalPositioning: true
+
+                    Label {
+                        id: firstLabel
+                        anchors.right: secondLabel.right
+                        text: "19:17"
+                        fontSize: "small"
+                        y: layout.mainSlot.y + layout.title.y
+                           + layout.title.baselineOffset - baselineOffset
+                    }
+
+                    Label {
+                        id: secondLabel
+                        text: "Outgoing"
+                        fontSize: "small"
+                        y: layout.mainSlot.y + layout.subtitle.y
+                           + layout.subtitle.baselineOffset - baselineOffset
+                    }
+                }
+            }
+        }
+    \endqml
     \sa SlotsLayout
     \sa ProgressionSlot
 */
