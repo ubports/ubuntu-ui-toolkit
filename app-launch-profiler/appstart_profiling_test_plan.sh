@@ -31,7 +31,7 @@ PASSWORD="0000"
 BOOTTIME=250
 COMISSION=false
 COUNT=3
-SLEEP_TIME=5
+SLEEP_TIME=10
 LTTNG_SESSION_NAME_REGEXP='(auto-.*-.*) created.'
 LTTNG_SESSION_NAME=""
 
@@ -42,9 +42,9 @@ IP_ADDRESS="$(ifconfig | grep -A 1 ${WIRELESS_ADAPTER} | tail -1 | cut -d ':' -f
 
 declare -a APPLICATIONS=(
         "dialer-app"
-	"messaging-ap"
+	"messaging-app"
 	"address-book-app"
-	"system-setings-app"
+	"ubuntu-system-settings"
 )
 
 sleep_indicator () {
