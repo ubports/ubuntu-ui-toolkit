@@ -37,9 +37,6 @@ AbstractButton {
       */
     readonly property alias picker: internal.picker
 
-    implicitHeight: units.gu(4)
-    implicitWidth: picker ? internal.itemList.width : 0
-
     /*! \internal */
     onClicked: {
         if (internal.itemList.currentIndex === index) return;
