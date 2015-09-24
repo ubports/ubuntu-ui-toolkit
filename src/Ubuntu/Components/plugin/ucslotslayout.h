@@ -44,10 +44,10 @@ public:
     UCSlotsLayoutPadding *padding();
 
     enum UCSlotPosition {
-        First = INT_MIN,
-        Leading = INT_MIN/2,
-        Trailing = INT_MAX/2,
-        Last = INT_MAX
+        First = INT_MIN/2,
+        Leading = INT_MIN/4,
+        Trailing = INT_MAX/4,
+        Last = INT_MAX/2
     };
 
     static UCSlotsAttached *qmlAttachedProperties(QObject *object);
