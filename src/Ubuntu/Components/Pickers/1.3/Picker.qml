@@ -21,6 +21,7 @@ import Ubuntu.Components 1.3
     \qmltype Picker
     \inqmlmodule Ubuntu.Components.Pickers 1.0
     \ingroup ubuntu-pickers
+    \inherits StyledItem
     \brief Picker is a slot-machine style value selection component.
 
     The Picker lists the elements specified by the \l model using the \l delegate

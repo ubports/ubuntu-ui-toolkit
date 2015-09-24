@@ -21,6 +21,7 @@ import Ubuntu.Components 1.3
     \qmltype PickerDelegate
     \inqmlmodule Ubuntu.Components.Pickers 1.0
     \ingroup ubuntu-pickers
+    \inherits AbstractButton
     \brief PickerDelegate component serves as base for Picker delegates.
 
     PickerDelegate is a holder component for delegates used in a Picker element.
