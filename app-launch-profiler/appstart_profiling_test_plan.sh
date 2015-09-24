@@ -225,8 +225,14 @@ fi
 # Install the ubuntu-app-launch-profiler on the device if needed
 if adb shell "dpkg -l ubuntu-app-launch-profiler" 2>&1 | grep -q "no packages found" ; then
 	echo "Installing ubuntu-app-launch-profiler on the device"
-	adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S apt-get update 2>&1|grep -v password > /dev/null"
-	adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S apt-get install --yes --force-yes ubuntu-app-launch-profiler 2>&1 |grep -v password > /dev/null"
+	if adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S apt-cache search ubuntu-app-launch-profiler  2>/dev/null"|grep -q ubuntu-app-launch-profiler; then
+		adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S apt-get update 2>&1|grep -v password > /dev/null"
+		adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S apt-get install --yes --force-yes ubuntu-app-launch-profiler 2>&1 |grep -v password > /dev/null"
+	else
+		echo "ubuntu-app-launch-profiler is not available from the archives."
+		echo "Please install it manually and press enter."
+		read
+	fi
 else
 	echo "The ubuntu-app-launch-profiler is installed on the device"
 fi
