@@ -127,6 +127,8 @@ function device_provisioning {
 	network
 	adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S reboot 2>&1|grep -v password"
 	sleep_indicator 120
+	network
+        sleep_indicator 10
 }
 
 function measure_app_startups {
