@@ -271,14 +271,15 @@ PageTreeNode {
       */
     function addPageToCurrentColumn(sourcePage, page, properties) {
         var nextColumn = d.columnForPage(sourcePage) + 1;
-        // Clear all following columns. If we do not do this, we have no way to
-        //  determine which page needs to be on top when the view is resized
-        //  to have a single column.
         d.tree.prune(nextColumn);
-        for (var i = nextColumn; i < d.columns; i++) {
-            d.updatePageForColumn(i);
-        }
-        return d.addPageToColumn(nextColumn - 1, sourcePage, page, properties);
+        return d.addPageToColumn(nextColumn - 1, sourcePage, page, properties, function() {
+            // Clear all following columns. If we do not do this, we have no way to
+            //  determine which page needs to be on top when the view is resized
+            //  to have a single column.
+            for (var i = nextColumn; i < d.columns; i++) {
+                d.updatePageForColumn(i);
+            }
+        });
     }
 
     /*!
@@ -292,11 +293,11 @@ PageTreeNode {
     function addPageToNextColumn(sourcePage, page, properties) {
         var nextColumn = d.columnForPage(sourcePage) + 1;
         d.tree.prune(nextColumn);
-        for (var i = nextColumn; i < d.columns; i++) {
-            // TODO: in case of async loading, move this to page completion
-            d.updatePageForColumn(i);
-        }
-        return d.addPageToColumn(nextColumn, sourcePage, page, properties);
+        return d.addPageToColumn(nextColumn, sourcePage, page, properties, function() {
+            for (var i = nextColumn; i < d.columns; i++) {
+                d.updatePageForColumn(i);
+            }
+        });
     }
 
     /*!
@@ -423,7 +424,7 @@ PageTreeNode {
             d.addWrappedPage(newWrapper);
         }
 
-        function addPageToColumn(column, sourcePage, page, properties) {
+        function addPageToColumn(column, sourcePage, page, properties, cleanupFunc) {
             if (column < 0) {
                 console.warn("Column must be >= 0.");
                 return;
@@ -453,8 +454,10 @@ PageTreeNode {
             newWrapper.parentPage = sourcePage;
             newWrapper.column = column;
             if (newWrapper.incubator) {
+                newWrapper.pageLoaded.connect(cleanupFunc);
                 newWrapper.pageLoaded.connect(finalizeAddingPage.bind(newWrapper));
             } else {
+                cleanupFunc();
                 finalizeAddingPage(newWrapper);
             }
 

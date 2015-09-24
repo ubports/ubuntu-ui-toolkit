@@ -278,7 +278,7 @@ MainView {
             id: pageLoadedSpy
             signalName: "pageLoaded"
         }
-        function test_old_page_disappears_when_new_one_ready_data() {
+        function test_old_page_disappears_when_new_one_ready_bug1499178_data() {
             return [
                 {tag: "CurrentColumn, wide",
                             width: units.gu(120), nextColumn: false, page: pageComponent, sourcePage: layout.primaryPage},
@@ -290,11 +290,12 @@ MainView {
                             width: units.gu(40), nextColumn: true, page: pageComponent, sourcePage: layout.primaryPage},
             ];
         }
-        function test_old_page_disappears_when_new_one_ready(data) {
+        function test_old_page_disappears_when_new_one_ready_bug1499178(data) {
             layout.width = data.width;
             var wrapper = getPageWrapper(layout, data.sourcePage);
             verify(wrapper);
-            var testHolder = getColumnHolder(layout, wrapper.column + (data.nextColumn ? 1 : 0));
+            var testColumn = MathUtils.clamp(wrapper.column + (data.nextColumn ? 1 : 0), 0, layout.columns - 1);
+            var testHolder = getColumnHolder(layout, testColumn);
             verify(testHolder);
 
             if (data.intermediatePage) {
