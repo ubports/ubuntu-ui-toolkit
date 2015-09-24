@@ -656,7 +656,28 @@ void UCSlotsLayoutPrivate::handleAttachedPropertySignals(QQuickItem *item, bool 
    in \l {Automatic vertical positioning of slots}, in case
    a custom behaviour is needed.
 
-   For list items, the recommendation is to use \l {ListItemLayout},
+   The following example shows a very simple SlotsLayout with an \l Icon as
+   leading slot, and a \l CheckBox as trailing slot. There is no need to specify
+   any size or margin, everything is handled automatically by the layout
+   component.
+
+   \qml
+        SlotsLayout {
+            mainSlot: Label {
+                text: "Hello developers!"
+            }
+
+            CheckBox { SlotsLayout.position: SlotsLayout.Trailing }
+
+            Icon {
+                name: "message"
+                SlotsLayout.position: SlotsLayout.Leading;
+                width: units.gu(2)
+            }
+        }
+   \endqml
+
+   \b {For list items, the recommendation is to use} \l {ListItemLayout},
    which is a SlotsLayout featuring a predefined \l mainSlot which
    has been optimized to provide maximum performance while still covering
    most of the usecases.
@@ -674,6 +695,7 @@ void UCSlotsLayoutPrivate::handleAttachedPropertySignals(QQuickItem *item, bool 
    that} \l {SlotsLayout::overrideVerticalPositioning} for that slot is set.
    More about this in the \l {Advanced layout tweaks} section.
 
+
    \section1 Resizing the layout
 
    SlotsLayout's implicit width is by default set to the width of the parent
@@ -687,6 +709,21 @@ void UCSlotsLayoutPrivate::handleAttachedPropertySignals(QQuickItem *item, bool 
    SlotsLayout watches its children for height and padding changes  and makes sure to
    grow its implicit height to accomodate the tallest slot plus the padding around
    the slot and the one around the layout.
+
+   Manually resizing SlotsLayout (or \l ListItemLayout) is usually not needed and
+   we recommend to avoid it, as the component will already take care of doing the
+   job for you. The following example shows what a standard SlotsLayout should
+   look like:
+
+    \qml
+        SlotsLayout {
+            mainSlot: Label {
+                text: "Hello developers!"
+            }
+            //just an example of something inside SlotsLayout
+            CheckBox { SlotsLayout.position: SlotsLayout.Trailing }
+        }
+   \endqml
 
    \section1 Automatic vertical positioning of slots
    In order to provide a nice looking and consistent layout across the whole
@@ -714,7 +751,7 @@ void UCSlotsLayoutPrivate::handleAttachedPropertySignals(QQuickItem *item, bool 
 
    A slot can set its attached properties \l SlotsLayout::padding and
    \l {SlotsLayout::overrideVerticalPositioning} to reach the desired
-   position
+   position.
 
    When a slot enables \l {SlotsLayout::overrideVerticalPositioning}, it
    gains control over its vertical anchors (top, bottom, verticalCenter).
@@ -723,6 +760,25 @@ void UCSlotsLayoutPrivate::handleAttachedPropertySignals(QQuickItem *item, bool 
    computing its implicitHeight anymore (see \l {Resizing the layout}).
    Care must be to avoid pushing the slot outside of the layout perimeter,
    to avoid getting it clipped.
+
+   The following example shows a SlotsLayout which has both custom padding
+   and a slot which uses custom vertical positioning:
+
+   \qml
+        SlotsLayout {
+            id: layout
+            mainSlot: Label { id: label; text: "Hello developers!" }
+            padding {
+                top: units.gu(3)
+                bottom: units.gu(3)
+            }
+            CheckBox {
+                anchors.top: label.top
+                SlotsLayout.position: SlotsLayout.Trailing
+                SlotsLayout.overrideVerticalPositioning: true
+            }
+        }
+   \endqml
 */
 
 UCSlotsLayout::UCSlotsLayout(QQuickItem *parent) :

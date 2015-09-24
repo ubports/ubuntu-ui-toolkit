@@ -52,6 +52,35 @@ import Ubuntu.Components 1.3
     Ubuntu Design team.
     It is possible to tweak the position of each slot by modifying
     its attached properties.
+
+    The progression symbol to be used in list items which handle
+    navigation in a page stack is provided by \l ProgressionSlot.
+
+    The following code example shows how easy it is to create
+    even non trivial list items list items using
+    \l ListItem and ListItemLayout:
+    \qml
+    ListItem {
+        height: layout.height
+        ListItemLayout {
+            id: layout
+            title.text: "Hello developers!"
+            subtitle.text: "I'm a subtitle, I'm tiny!"
+            summary.text: "Ubuntu!"
+
+            CheckBox { SlotsLayout.position: SlotsLayout.Leading }
+
+            Icon {
+                name: "message"
+                SlotsLayout.position: SlotsLayout.Trailing;
+                width: units.gu(2)
+            }
+        }
+    }
+    \endqml
+
+    \sa SlotsLayout
+    \sa ProgressionSlot
 */
 SlotsLayout {
     /*!
