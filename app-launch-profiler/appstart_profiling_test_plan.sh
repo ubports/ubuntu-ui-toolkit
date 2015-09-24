@@ -251,12 +251,13 @@ if [[ ${TEST_PPA} == true ]]; then
 		echo "Already set up"
 	else
 		echo -e "Set up with the PPA \e[31m${PPA}\e[0m"
-i		adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S bash -c 'echo \"deb http://ppa.launchpad.net/${PPA}/${DISTRO} ${SERIES} main\" > /etc/apt/sources.list.d/testing-ppa.list' 2>&1|grep -v password > /dev/null"
+		adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S bash -c 'echo \"deb http://ppa.launchpad.net/${PPA}/${DISTRO} ${SERIES} main\" > /etc/apt/sources.list.d/testing-ppa.list' 2>&1|grep -v password > /dev/null"
 		PPA=${PPA/\//-}
 		adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S bash -c 'echo -e \"Package: *\nPin: release o=LP-PPA-${PPA}\nPin-Priority: 1100\" > /etc/apt/preferences.d/silo.pref' 2>&1|grep -v password > /dev/null "
 		adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S apt-get update 2>&1|grep -v password > /dev/null"
 		adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S apt-get dist-upgrade --yes --force-yes 2>&1 |grep -v password > /dev/null"
 		adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S dpkg --configure -a 2>&1 |grep -v password > /dev/null"
+		adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S apt-get --force-yes -f install  2>&1 |grep -v password > /dev/null"
 	        adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S reboot 2>&1|grep -v password"
         	sleep_indicator 120
 	fi
