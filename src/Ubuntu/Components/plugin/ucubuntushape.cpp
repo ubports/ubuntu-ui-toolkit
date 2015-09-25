@@ -51,25 +51,20 @@ const float pressedFactor = 0.85f;
 
 // --- Scene graph shader ---
 
-ShapeShader::ShapeShader()
+ShapeShader::ShapeShader() :
+    m_useDistanceFields(UCUbuntuShape::useDistanceFields(QOpenGLContext::currentContext()))
 {
-    QOpenGLContext* context = QOpenGLContext::currentContext();
     setShaderSourceFile(QOpenGLShader::Vertex, QStringLiteral(":/uc/shaders/shape.vert"));
-
-    if ( context->isOpenGLES() &&
-         !context->hasExtension(QByteArrayLiteral("GL_OES_standard_derivatives")) ) {
-        // dFdy function is not available in fragment shaders
-        qWarning() << "GL_OES_standard_derivatives not available. Using fallback shader for shape.";
-        setShaderSourceFile(QOpenGLShader::Fragment, QStringLiteral(":/uc/shaders/shape_no_dfdy.frag"));
-    } else {
-        setShaderSourceFile(QOpenGLShader::Fragment, QStringLiteral(":/uc/shaders/shape.frag"));
-    }
+    setShaderSourceFile(QOpenGLShader::Fragment, useDistanceFields() ?
+                        QStringLiteral(":/uc/shaders/shape.frag") :
+                        QStringLiteral(":/uc/shaders/shape_mipmap.frag"));
 }
 
 char const* const* ShapeShader::attributeNames() const
 {
     static char const* const attributes[] = {
-        "positionAttrib", "shapeCoordAttrib", "sourceCoordAttrib", "backgroundColorAttrib", 0
+        "positionAttrib", "shapeCoordAttrib", "sourceCoordAttrib", "yCoordAttrib",
+        "backgroundColorAttrib", 0
     };
     return attributes;
 }
@@ -85,7 +80,6 @@ void ShapeShader::initialize()
     m_functions = QOpenGLContext::currentContext()->functions();
     m_matrixId = program()->uniformLocation("matrix");
     m_opacityFactorsId = program()->uniformLocation("opacityFactors");
-    m_dfdtFactorId = program()->uniformLocation("dfdtFactor");
     m_sourceOpacityId = program()->uniformLocation("sourceOpacity");
     m_distanceAAId = program()->uniformLocation("distanceAA");
     m_texturedId = program()->uniformLocation("textured");
@@ -141,16 +135,14 @@ void ShapeShader::updateState(
         data->flags & ShapeMaterial::Data::Pressed ? pressedFactor * opacity : opacity, opacity);
     program()->setUniformValue(m_opacityFactorsId, opacityFactorsVector);
 
-    // Send anti-aliasing distance in distance field space, needs to be divided by 2 for the shader
-    // and by 255 for distanceAAFactor dequantization. The factor is 1 most of the time apart when
-    // the radius size is low, it linearly goes from 1 to 0 to make the corners prettier and to
-    // prevent the opacity of the whole shape to slightly lower.
-    const float distanceAA = (shapeTextureDistanceAA * distanceAApx) / (2.0 * 255.0f);
-    program()->setUniformValue(m_distanceAAId, data->distanceAAFactor * distanceAA);
-
-    // When rendering is redirected to a ShaderEffectSource (FBO), dFdy() sign is flipped.
-    const float dfdtFactor = (state.projectionMatrix()(1, 3) < 0.0f) ? -1.0f : 1.0f;
-    program()->setUniformValue(m_dfdtFactorId, dfdtFactor);
+    if (useDistanceFields()) {
+        // Send anti-aliasing distance in distance field space, needs to be divided by 2 for the
+        // shader and by 255 for distanceAAFactor dequantization. The factor is 1 most of the time
+        // apart when the radius size is low, it linearly goes from 1 to 0 to make the corners
+        // prettier and to prevent the opacity of the whole shape to slightly lower.
+        const float distanceAA = (shapeTextureDistanceAA * distanceAApx) / (2.0 * 255.0f);
+        program()->setUniformValue(m_distanceAAId, data->distanceAAFactor * distanceAA);
+    }
 
     // Update QtQuick engine uniforms.
     if (state.isMatrixDirty()) {
@@ -241,10 +233,11 @@ const QSGGeometry::AttributeSet& ShapeNode::attributeSet()
         QSGGeometry::Attribute::create(0, 2, GL_FLOAT, true),
         QSGGeometry::Attribute::create(1, 2, GL_FLOAT),
         QSGGeometry::Attribute::create(2, 4, GL_FLOAT),
-        QSGGeometry::Attribute::create(3, 4, GL_UNSIGNED_BYTE)
+        QSGGeometry::Attribute::create(3, 1, GL_FLOAT),
+        QSGGeometry::Attribute::create(4, 4, GL_UNSIGNED_BYTE)
     };
     static const QSGGeometry::AttributeSet attributeSet = {
-        4, sizeof(Vertex), attributes
+        5, sizeof(Vertex), attributes
     };
     return attributeSet;
 }
@@ -319,6 +312,18 @@ UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this,
                      SLOT(_q_gridUnitChanged()));
     _q_gridUnitChanged();
+}
+
+// static
+bool UCUbuntuShape::useDistanceFields(const QOpenGLContext* openglContext)
+{
+    static bool mipmaps = !qgetenv("UC_SHAPE_MIPMAPS").isEmpty();
+    return !mipmaps &&
+        // OpenGL 2.0 supports standard derivatives by default and the implementations ignore the
+        // extension activation at the beginning of fragment shaders, so we use the same shaders for
+        // OpenGL and OpenGL ES with standard derivatives.
+        (!openglContext->isOpenGLES()
+         || openglContext->hasExtension(QByteArrayLiteral("GL_OES_standard_derivatives")));
 }
 
 /*! \qmlproperty string UbuntuShape::radius
@@ -1074,6 +1079,40 @@ static int getEmptyShapeTexturesIndex()
     return index;
 }
 
+// Create and setup shape textures.
+static void createShapeTextures(QOpenGLContext* openglContext, int index)
+{
+    glGenTextures(shapeTextureCount, shapeTextures[index].textureId);
+
+    if (UCUbuntuShape::useDistanceFields(openglContext)) {
+        // Create distance field textures.
+        for (int i = 0; i < shapeTextureCount; i++) {
+            glBindTexture(GL_TEXTURE_2D, shapeTextures[index].textureId[i]);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, shapeTextureWidth, shapeTextureHeight, 0,
+                         GL_RGBA, GL_UNSIGNED_BYTE, shapeTextureData[i]);
+        }
+    } else {
+        // Create mipmap textures.
+        for (int i = 0; i < shapeTextureCount; i++) {
+            glBindTexture(GL_TEXTURE_2D, shapeTextures[index].textureId[i]);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, shapeTextureMipmapCount - 1);
+            for (int j = 0; j < shapeTextureMipmapCount; j++) {
+                glTexImage2D(GL_TEXTURE_2D, j, GL_RGBA, shapeTextureMipmapWidth >> j,
+                             shapeTextureMipmapHeight >> j, 0, GL_RGBA, GL_UNSIGNED_BYTE,
+                             &shapeTextureMipmapData[i][shapeTextureMipmapOffset[j]]);
+            }
+        }
+    }
+}
+
 // Gets the nearest boundary to coord in the texel grid of the given size.
 static Q_DECL_CONSTEXPR float roundTextureCoord(float coord, float size)
 {
@@ -1162,16 +1201,7 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
     if (index < 0) {
         index = getEmptyShapeTexturesIndex();
         shapeTextures[index].openglContext = openglContext;
-        glGenTextures(shapeTextureCount, shapeTextures[index].textureId);
-        for (int i = 0; i < shapeTextureCount; i++) {
-            glBindTexture(GL_TEXTURE_2D, shapeTextures[index].textureId[i]);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, shapeTextureSize, shapeTextureSize, 0, GL_RGBA,
-                         GL_UNSIGNED_BYTE, shapeTextureData[i]);
-        }
+        createShapeTextures(openglContext, index);
         connect(openglContext, &QOpenGLContext::aboutToBeDestroyed, [index] {
             shapeTextures[index].openglContext = NULL;
             glDeleteTextures(shapeTextureCount, shapeTextures[index].textureId);
@@ -1361,6 +1391,7 @@ void UCUbuntuShape::updateGeometry(
     v[0].sourceCoordinate[1] = sourceCoordTransform.w();
     v[0].sourceCoordinate[2] = sourceMaskTransform.z();
     v[0].sourceCoordinate[3] = sourceMaskTransform.w();
+    v[0].yCoordinate = -1.0f;
     v[0].backgroundColor = backgroundColor[0];
     v[1].position[0] = 0.5f * itemSize.width();
     v[1].position[1] = 0.0f;
@@ -1370,6 +1401,7 @@ void UCUbuntuShape::updateGeometry(
     v[1].sourceCoordinate[1] = sourceCoordTransform.w();
     v[1].sourceCoordinate[2] = 0.5f * sourceMaskTransform.x() + sourceMaskTransform.z();
     v[1].sourceCoordinate[3] = sourceMaskTransform.w();
+    v[1].yCoordinate = -1.0f;
     v[1].backgroundColor = backgroundColor[0];
     v[2].position[0] = itemSize.width();
     v[2].position[1] = 0.0f;
@@ -1379,6 +1411,7 @@ void UCUbuntuShape::updateGeometry(
     v[2].sourceCoordinate[1] = sourceCoordTransform.w();
     v[2].sourceCoordinate[2] = sourceMaskTransform.x() + sourceMaskTransform.z();
     v[2].sourceCoordinate[3] = sourceMaskTransform.w();
+    v[2].yCoordinate = -1.0f;
     v[2].backgroundColor = backgroundColor[0];
 
     // Set middle row of 3 vertices.
@@ -1390,6 +1423,7 @@ void UCUbuntuShape::updateGeometry(
     v[3].sourceCoordinate[1] = 0.5f * sourceCoordTransform.y() + sourceCoordTransform.w();
     v[3].sourceCoordinate[2] = sourceMaskTransform.z();
     v[3].sourceCoordinate[3] = 0.5f * sourceMaskTransform.y() + sourceMaskTransform.w();
+    v[3].yCoordinate = 0.0f;
     v[3].backgroundColor = backgroundColor[1];
     v[4].position[0] = 0.5f * itemSize.width();
     v[4].position[1] = 0.5f * itemSize.height();
@@ -1399,6 +1433,7 @@ void UCUbuntuShape::updateGeometry(
     v[4].sourceCoordinate[1] = 0.5f * sourceCoordTransform.y() + sourceCoordTransform.w();
     v[4].sourceCoordinate[2] = 0.5f * sourceMaskTransform.x() + sourceMaskTransform.z();
     v[4].sourceCoordinate[3] = 0.5f * sourceMaskTransform.y() + sourceMaskTransform.w();
+    v[4].yCoordinate = 0.0f;
     v[4].backgroundColor = backgroundColor[1];
     v[5].position[0] = itemSize.width();
     v[5].position[1] = 0.5f * itemSize.height();
@@ -1408,6 +1443,7 @@ void UCUbuntuShape::updateGeometry(
     v[5].sourceCoordinate[1] = 0.5f * sourceCoordTransform.y() + sourceCoordTransform.w();
     v[5].sourceCoordinate[2] = sourceMaskTransform.x() + sourceMaskTransform.z();
     v[5].sourceCoordinate[3] = 0.5f * sourceMaskTransform.y() + sourceMaskTransform.w();
+    v[5].yCoordinate = 0.0f;
     v[5].backgroundColor = backgroundColor[1];
 
     // Set bottom row of 3 vertices.
@@ -1419,6 +1455,7 @@ void UCUbuntuShape::updateGeometry(
     v[6].sourceCoordinate[1] = sourceCoordTransform.y() + sourceCoordTransform.w();
     v[6].sourceCoordinate[2] = sourceMaskTransform.z();
     v[6].sourceCoordinate[3] = sourceMaskTransform.y() + sourceMaskTransform.w();
+    v[6].yCoordinate = 1.0f;
     v[6].backgroundColor = backgroundColor[2];
     v[7].position[0] = 0.5f * itemSize.width();
     v[7].position[1] = itemSize.height();
@@ -1428,6 +1465,7 @@ void UCUbuntuShape::updateGeometry(
     v[7].sourceCoordinate[1] = sourceCoordTransform.y() + sourceCoordTransform.w();
     v[7].sourceCoordinate[2] = 0.5f * sourceMaskTransform.x() + sourceMaskTransform.z();
     v[7].sourceCoordinate[3] = sourceMaskTransform.y() + sourceMaskTransform.w();
+    v[7].yCoordinate = 1.0f;
     v[7].backgroundColor = backgroundColor[2];
     v[8].position[0] = itemSize.width();
     v[8].position[1] = itemSize.height();
@@ -1437,6 +1475,7 @@ void UCUbuntuShape::updateGeometry(
     v[8].sourceCoordinate[1] = sourceCoordTransform.y() + sourceCoordTransform.w();
     v[8].sourceCoordinate[2] = sourceMaskTransform.x() + sourceMaskTransform.z();
     v[8].sourceCoordinate[3] = sourceMaskTransform.y() + sourceMaskTransform.w();
+    v[8].yCoordinate = 1.0f;
     v[8].backgroundColor = backgroundColor[2];
 
     node->markDirty(QSGNode::DirtyGeometry);
