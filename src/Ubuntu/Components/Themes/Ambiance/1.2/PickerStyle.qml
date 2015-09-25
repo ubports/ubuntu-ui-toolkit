@@ -40,7 +40,7 @@ Item {
     /*!
       Thickness of the highlight component
       */
-    property real highlightThickness: units.gu(5)
+    property real highlightThickness: styledItem.__itemHeight + units.gu(1)
 
     /*!
       The content holder exposed to the Picker so tumbler list can be reparented to it.
@@ -54,6 +54,8 @@ Item {
     property Item view: Item{}
 
     anchors.fill: parent
+    implicitWidth: units.gu(8)
+    implicitHeight: units.gu(20)
 
     // frame
     UbuntuShape {

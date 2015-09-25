@@ -23,7 +23,7 @@ Style.PageHeadStyle {
     objectName: "PageHeadStyle" // used in unit tests
     contentHeight: units.gu(6)
     fontWeight: Font.Light
-    fontSize: "large"
+    textSize: Label.Large
     textLeftMargin: units.gu(2)
     maximumNumberOfActions: 3
 
@@ -358,7 +358,7 @@ Style.PageHeadStyle {
                 }
                 text: headerStyle.config.title
                 font.weight: headerStyle.fontWeight
-                fontSize: headerStyle.fontSize
+                textSize: headerStyle.textSize
                 color: headerStyle.titleColor
                 elide: Text.ElideRight
             }

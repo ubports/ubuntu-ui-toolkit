@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=Ubuntu UI Toolkit Gallery
-Exec=/usr/bin/qmlscene $@ /usr/lib/ubuntu-ui-toolkit/examples/ubuntu-ui-toolkit-gallery/ubuntu-ui-toolkit-gallery.qml
+Exec=/usr/bin/ubuntu-ui-toolkit-launcher $@ /usr/lib/ubuntu-ui-toolkit/examples/ubuntu-ui-toolkit-gallery/ubuntu-ui-toolkit-gallery.qml
 Terminal=false
 Type=Application
 X-Ubuntu-Touch=true

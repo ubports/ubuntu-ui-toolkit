@@ -161,6 +161,7 @@ OrientationHelper {
     }
 
     MouseArea {
+        acceptedButtons: Qt.LeftButton | Qt.MiddleButton | Qt.RightButton
         anchors.fill: __foreground
         onWheel: wheel.accepted = true
     }

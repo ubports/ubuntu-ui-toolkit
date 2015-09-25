@@ -83,7 +83,10 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/timeutils_p.h \
     $$PWD/ucactionitem.h \
     $$PWD/uchaptics.h \
-    $$PWD/ucabstractbutton.h
+    $$PWD/ucabstractbutton.h \
+    $$PWD/ucthemingextension.h \
+    $$PWD/ucheader.h \
+    $$PWD/uclabel.h
 
 SOURCES += $$PWD/plugin.cpp \
     $$PWD/uctheme.cpp \
@@ -139,7 +142,10 @@ SOURCES += $$PWD/plugin.cpp \
     $$PWD/livetimer_p.cpp \
     $$PWD/ucactionitem.cpp \
     $$PWD/uchaptics.cpp \
-    $$PWD/ucabstractbutton.cpp
+    $$PWD/ucabstractbutton.cpp \
+    $$PWD/ucthemingextension.cpp \
+    $$PWD/ucheader.cpp \
+    $$PWD/uclabel.cpp
 
 # adapters
 SOURCES += $$PWD/adapters/alarmsadapter_organizer.cpp
@@ -150,5 +156,7 @@ RESOURCES += \
 OTHER_FILES += \
     $$PWD/shaders/shape.vert \
     $$PWD/shaders/shape.frag \
+    $$PWD/shaders/shape_no_dfdy.frag \
     $$PWD/shaders/shapeoverlay.vert \
-    $$PWD/shaders/shapeoverlay.frag
+    $$PWD/shaders/shapeoverlay.frag \
+    $$PWD/shaders/shapeoverlay_no_dfdy.frag

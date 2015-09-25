@@ -155,14 +155,15 @@ StyledItem {
         selectedIndex = loader.item.currentIndex;
     }
 
-    implicitWidth: units.gu(8)
-    implicitHeight: units.gu(20)
     activeFocusOnPress: true
 
     style: Theme.createStyleComponent("PickerStyle.qml", picker)
 
     /*! \internal */
     property int __clickedIndex: -1
+
+    /*! \internal - required by bug1419667 */
+    property real __itemHeight: units.gu(4)
 
     // bind style instance's view property to the Loader's item
     Binding {
@@ -302,11 +303,11 @@ StyledItem {
             preferredHighlightBegin: 0.5
             preferredHighlightEnd: 0.5
 
-            pathItemCount: pView.height / (pView.currentItem ? pView.currentItem.height : 1) + 1
+            pathItemCount: pView.height / picker.__itemHeight
             snapMode: PathView.SnapToItem
             flickDeceleration: 100
 
-            property int contentHeight: pathItemCount * (pView.currentItem ? pView.currentItem.height : 1)
+            property int contentHeight: pathItemCount * picker.__itemHeight
             path: Path {
                 startX: pView.width / 2
                 startY: -(pView.contentHeight - pView.height) / 2

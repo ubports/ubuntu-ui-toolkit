@@ -14,12 +14,12 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-07-11 05:31+0000\n"
-"X-Generator: Launchpad (build 17620)\n"
+"X-Launchpad-Export-Date: 2015-09-15 05:42+0000\n"
+"X-Generator: Launchpad (build 17737)\n"
 
 #: Animations.qml:24
 msgid "NumberAnimation"
-msgstr ""
+msgstr "NummerAnimatie"
 
 #: Animations.qml:28 Buttons.qml:28 Dialog.qml:29 ListItems.qml:25
 #: ProgressBars.qml:28 ProgressBars.qml:84 Sheet.qml:40 Sheet.qml:73
@@ -29,7 +29,7 @@ msgstr ""
 
 #: Animations.qml:58
 msgid "Standard Durations"
-msgstr ""
+msgstr "Standaard duur"
 
 #: Animations.qml:62
 msgid "Snap"
@@ -37,15 +37,15 @@ msgstr ""
 
 #: Animations.qml:98
 msgid "Fast"
-msgstr ""
+msgstr "Snel"
 
 #: Animations.qml:134
 msgid "Slow"
-msgstr ""
+msgstr "Langzaam"
 
 #: Animations.qml:159
 msgid "Sleepy"
-msgstr ""
+msgstr "Slaap"
 
 #: Buttons.qml:32 Buttons.qml:41 Buttons.qml:51 Buttons.qml:71 Buttons.qml:79
 #: Buttons.qml:89
@@ -54,19 +54,19 @@ msgstr ""
 
 #: Buttons.qml:37
 msgid "Stroke"
-msgstr ""
+msgstr "Streep"
 
 #: Buttons.qml:47 UbuntuShape.qml:28
 msgid "Color"
-msgstr ""
+msgstr "Kleur"
 
 #: Buttons.qml:57 Buttons.qml:114 ListItems.qml:43
 msgid "Icon"
-msgstr ""
+msgstr "Pictogram"
 
 #: Buttons.qml:66 Buttons.qml:128
 msgid "Icon+Text"
-msgstr ""
+msgstr "Pictogram+Tekst"
 
 #: Buttons.qml:85 TextInputs.qml:88 Toggles.qml:45 Toggles.qml:83
 msgid "Disabled"
@@ -74,55 +74,55 @@ msgstr ""
 
 #: Buttons.qml:99 OptionSelectors.qml:34
 msgid "Collapsed"
-msgstr ""
+msgstr "Ingeklapt"
 
 #: Buttons.qml:142 ListItems.qml:120 OptionSelectors.qml:43
 msgid "Expanded"
-msgstr ""
+msgstr "Uitgeklapt"
 
 #: Colors.qml:30
 msgid "Orange"
-msgstr ""
+msgstr "Oranje"
 
 #: Colors.qml:36
 msgid "Light grey"
-msgstr ""
+msgstr "Lichtgrijs"
 
 #: Colors.qml:42
 msgid "Dark grey"
-msgstr ""
+msgstr "Donkergrijs"
 
 #: Colors.qml:48
 msgid "Red"
-msgstr ""
+msgstr "Rood"
 
 #: Colors.qml:54
 msgid "Green"
-msgstr ""
+msgstr "Groen"
 
 #: Colors.qml:60
 msgid "Blue"
-msgstr ""
+msgstr "Blauw"
 
 #: Colors.qml:66
 msgid "Purple"
-msgstr ""
+msgstr "Paars"
 
 #: Dialog.qml:32 Popover.qml:45 Sheet.qml:43 Sheet.qml:76
 msgid "Open"
-msgstr ""
+msgstr "Openen"
 
 #: Icons.qml:30
 msgid "Scaling"
-msgstr ""
+msgstr "Schalen"
 
 #: Icons.qml:55
 msgid "Colorization"
-msgstr ""
+msgstr "Inkleuring"
 
 #: Icons.qml:80
 msgid "Theme"
-msgstr ""
+msgstr "Thema"
 
 #: ListItems.qml:28 ListItems.qml:36 ListItems.qml:46 ListItems.qml:60
 #: ListItems.qml:66 ListItems.qml:76 ListItems.qml:85 ListItems.qml:94

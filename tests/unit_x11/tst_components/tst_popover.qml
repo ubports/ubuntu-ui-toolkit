@@ -29,6 +29,11 @@ MainView {
         y: main.height / 2
         height: units.gu(10)
         width: height
+        MouseArea {
+            id: whiteSpace
+            anchors.fill: parent
+            acceptedButtons: Qt.LeftButton | Qt.MiddleButton | Qt.RightButton
+        }
 
         Button {
             id: pressMe
@@ -67,6 +72,11 @@ MainView {
     SignalSpy {
         id: popoverSpy
         signalName: "hideCompleted"
+    }
+    SignalSpy {
+        id: whiteSpy
+        signalName: "clicked"
+        target: whiteSpace
     }
 
     Component {
@@ -114,6 +124,29 @@ MainView {
             // dismiss
             mouseClick(main, 10, 10, data.button);
             popoverSpy.wait();
+        }
+
+        function test_popover_consumes_clicks_bug1488540_data() {
+            return [
+                { tag: 'Left-click', button: Qt.LeftButton },
+                { tag: 'Right-click', button: Qt.RightButton },
+                { tag: 'Middle-click', button: Qt.MiddleButton },
+            ]
+        }
+        function test_popover_consumes_clicks_bug1488540(data) {
+            mouseClick(pressMe, pressMe.width / 2, pressMe.height / 2);
+            waitForRendering(pressMe);
+            verify(popoverSpy.target !== null, "The popover did not open");
+            var popover = popoverSpy.target;
+            // Click in the popover, the rectangle doesn't handle clicks
+            whiteSpy.clear();
+            mouseClick(popover, popover.width / 2, popover.height / 2, data.button);
+            // dismiss
+            mouseClick(main, 10, 10, Qt.LeftButton);
+            popoverSpy.wait();
+            // Did the click reach through the popover foreground?
+            compare(whiteSpy.count, 0, 'Click passed through popover foreground!');
+
         }
 
         function test_popover_follows_pointerTarget_bug1199502_data() {

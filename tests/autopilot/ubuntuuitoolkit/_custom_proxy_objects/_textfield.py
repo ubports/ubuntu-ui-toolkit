@@ -65,8 +65,7 @@ class TextField(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
     @autopilot_logging.log_action(logger.debug)
     def _click_clear_button(self):
-        clear_button = self.select_single(
-            'AbstractButton', objectName='clear_button')
+        clear_button = self.select_single(objectName='clear_button')
         if not clear_button.visible:
             self.pointing_device.click_object(self)
         self.pointing_device.click_object(clear_button)

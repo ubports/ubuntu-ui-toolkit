@@ -16,6 +16,10 @@
 
 #include "ucactionitem.h"
 #include "ucaction.h"
+#include "ucstyleditembase_p.h"
+#define foreach Q_FOREACH
+#include <QtQml/private/qqmlbinding_p.h>
+#undef foreach
 
 /*!
  * \qmltype ActionItem
@@ -40,8 +44,14 @@ UCActionItem::UCActionItem(QQuickItem *parent)
     , m_action(Q_NULLPTR)
     , m_flags(0)
 {
-    connect(this, &UCActionItem::visibleChanged, this, &UCActionItem::_q_visibleChanged);
-    connect(this, &UCActionItem::enabledChanged, this, &UCActionItem::_q_enabledChanged);
+    connect(this, &UCActionItem::enabledChanged, this, &UCActionItem::enabledChanged2);
+    connect(this, &UCActionItem::visibleChanged, this, &UCActionItem::visibleChanged2);
+}
+
+bool UCActionItem::hasBindingOnProperty(const QString &name)
+{
+    QQmlProperty property(this, name, qmlContext(this));
+    return QQmlPropertyPrivate::binding(property) != Q_NULLPTR;
 }
 
 void UCActionItem::componentComplete()
@@ -55,40 +65,47 @@ void UCActionItem::componentComplete()
     }
 }
 
-void UCActionItem::_q_visibleChanged()
-{
-    m_flags |= CustomVisible;
-    disconnect(this, &UCActionItem::visibleChanged, this, &UCActionItem::_q_visibleChanged);
-}
-
-void UCActionItem::_q_enabledChanged()
-{
-    m_flags |= CustomEnabled;
-    disconnect(this, &UCActionItem::enabledChanged, this, &UCActionItem::_q_enabledChanged);
-}
-
 // update visible property
-void UCActionItem::_q_updateVisible()
+void UCActionItem::_q_visibleBinding()
 {
+    if (m_flags & CustomVisible) {
+        return;
+    }
+    if (hasBindingOnProperty(QStringLiteral("visible"))) {
+        m_flags |= CustomEnabled;
+        return;
+    }
     bool visible = m_action ? m_action->m_visible : true;
     setVisible(visible);
-    // reset flag and reconnect signal handler disconnected by the
-    m_flags &= ~CustomVisible;
-    if (m_action) {
-        connect(this, &UCActionItem::visibleChanged, this, &UCActionItem::_q_visibleChanged);
-    }
 }
 
 // update enabled property
-void UCActionItem::_q_updateEnabled()
+void UCActionItem::_q_enabledBinding()
 {
+    if (m_flags & CustomEnabled) {
+        return;
+    }
+    if (hasBindingOnProperty(QStringLiteral("enabled"))) {
+        m_flags |= CustomEnabled;
+        return;
+    }
     bool enabled = m_action ? m_action->m_enabled : true;
     setEnabled(enabled);
-    // reset flag and reconnect signal handler disconnected by the
-    m_flags &= ~CustomEnabled;
-    if (m_action) {
-        connect(this, &UCActionItem::enabledChanged, this, &UCActionItem::_q_enabledChanged);
-    }
+}
+
+// setter called when bindings from QML set the value. Internal functions will
+// all use the setVisible setter, so initialization and (re)parenting related
+// visible alteration won't set the custom flag
+void UCActionItem::setVisible2(bool visible)
+{
+    // set the custom flag and forward the value to the original proepry setter
+    m_flags |= CustomVisible;
+    setVisible(visible);
+}
+void UCActionItem::setEnabled2(bool enabled)
+{
+    m_flags |= CustomEnabled;
+    setEnabled(enabled);
 }
 
 void UCActionItem::updateProperties()
@@ -109,10 +126,14 @@ void UCActionItem::attachAction(bool attach)
     if (attach) {
         connect(this, SIGNAL(triggered(QVariant)),
                 m_action, SLOT(trigger(QVariant)), Qt::DirectConnection);
-        connect(m_action, &UCAction::visibleChanged,
-                this, &UCActionItem::_q_updateVisible, Qt::DirectConnection);
-        connect(m_action, &UCAction::enabledChanged,
-                this, &UCActionItem::_q_updateEnabled, Qt::DirectConnection);
+        if (!(m_flags & CustomVisible)) {
+            connect(m_action, &UCAction::visibleChanged,
+                    this, &UCActionItem::_q_visibleBinding, Qt::DirectConnection);
+        }
+        if (!(m_flags & CustomEnabled)) {
+            connect(m_action, &UCAction::enabledChanged,
+                    this, &UCActionItem::_q_enabledBinding, Qt::DirectConnection);
+        }
         if (!(m_flags & CustomText)) {
             connect(m_action, &UCAction::textChanged,
                     this, &UCActionItem::textChanged, Qt::DirectConnection);
@@ -128,10 +149,14 @@ void UCActionItem::attachAction(bool attach)
     } else {
         disconnect(this, SIGNAL(triggered(QVariant)),
                    m_action, SLOT(trigger(QVariant)));
-        disconnect(m_action, &UCAction::visibleChanged,
-                   this, &UCActionItem::_q_updateVisible);
-        disconnect(m_action, &UCAction::enabledChanged,
-                   this, &UCActionItem::_q_updateEnabled);
+        if (!(m_flags & CustomVisible)) {
+            disconnect(m_action, &UCAction::visibleChanged,
+                       this, &UCActionItem::_q_visibleBinding);
+        }
+        if (!(m_flags & CustomEnabled)) {
+            disconnect(m_action, &UCAction::enabledChanged,
+                       this, &UCActionItem::_q_enabledBinding);
+        }
         if (!(m_flags & CustomText)) {
             disconnect(m_action, &UCAction::textChanged,
                        this, &UCActionItem::textChanged);
@@ -167,8 +192,8 @@ void UCActionItem::setAction(UCAction *action)
     if (m_action) {
         attachAction(true);
     }
-    _q_updateVisible();
-    _q_updateEnabled();
+    _q_visibleBinding();
+    _q_enabledBinding();
     updateProperties();
 }
 

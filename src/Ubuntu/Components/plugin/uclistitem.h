@@ -180,7 +180,6 @@ public:
     static UCViewItemsAttached *qmlAttachedProperties(QObject *owner);
 
     bool listenToRebind(UCListItem *item, bool listen);
-    void disableInteractive(UCListItem *item, bool disable);
     bool isMoving();
     bool isBoundTo(UCListItem *item);
 
