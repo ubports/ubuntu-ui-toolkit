@@ -1019,7 +1019,7 @@ QQuickItem *UCSlotsLayout::mainSlot() const
 void UCSlotsLayout::setMainSlot(QQuickItem *item)
 {
     Q_D(UCSlotsLayout);
-    if (d->mainSlot != item) {
+    if (d->mainSlot != item && item != Q_NULLPTR) {
         d->mainSlot = item;
         d->mainSlot->setParent(this);
         d->mainSlot->setParentItem(this);
@@ -1512,7 +1512,6 @@ void UCThreeLabelsSlot::componentComplete()
 {
     Q_D(UCThreeLabelsSlot);
     QQuickItem::componentComplete();
-
     d->_q_onGuValueChanged();
 
     //only at this point the context property is available

@@ -52,7 +52,8 @@ import Ubuntu.Components 1.3
 */
 
 Icon {
-    height: units.gu(2.5)
-    name: "chevron"
+    height: units.gu(2)
+    width: height
+    name: LayoutMirroring.enabled ? "go-previous" : "go-next"
     SlotsLayout.position: SlotsLayout.Last
 }

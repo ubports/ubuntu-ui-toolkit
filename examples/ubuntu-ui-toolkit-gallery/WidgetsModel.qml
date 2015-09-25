@@ -17,11 +17,6 @@
 import QtQuick 2.0
 
 ListModel {
-    ListElement {
-        objectName: "newListItemsElement"
-        label: "New list items (preview)"
-        source: "NewListItems.qml"
-    }
     // Already in design guidelines
     ListElement {
         objectName: "navigationElement"
@@ -112,6 +107,16 @@ ListModel {
         source: "BottomEdgeHint.qml"
     }
 
+    ListElement {
+        objectName: "newListItemsElement"
+        label: "New list items (preview)"
+        source: "NewListItems.qml"
+    }
+    ListElement {
+        objectName: "listItemLayoutElement"
+        label: "ListItemLayouts"
+        source: "ListItemLayouts.qml"
+    }
     // Already in design guidelines but should be reordered
     ListElement {
         objectName: "listItemsElement"

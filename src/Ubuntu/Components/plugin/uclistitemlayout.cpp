@@ -16,8 +16,9 @@
  * Author: Andrea Bernabei <andrea.bernabei@canonical.com>
  */
 
-import QtQuick 2.4
-import Ubuntu.Components 1.3
+#include "uclistitemlayout.h"
+#include "private/qqmldata_p.h"
+#include <QtQml/QQmlEngine>
 
 /*!
     \qmltype ListItemLayout
@@ -146,46 +147,61 @@ import Ubuntu.Components 1.3
     \sa SlotsLayout
     \sa ProgressionSlot
 */
-SlotsLayout {
-    /*!
-      \qmlproperty Text title
+UCListItemLayout::UCListItemLayout(QQuickItem *parent)
+    : UCSlotsLayout(parent)
+{
+    //don't set the parent, we have to create qqmldata first
+    UCThreeLabelsSlot *main = new UCThreeLabelsSlot();
 
-      This property defines the title label and its properties.
-      Styling and font properties can be set just like on any other
-      Text component, as shown in the following example:
+    //create QML data for mainSlot otherwise qmlAttachedProperties
+    //calls in SlotsLayout will fail
+    QQmlData::get(main, true);
 
-      \qml
-      Item {
-        ListItemLayout {
-            title.text: "Hello"
-            title.color: "yellow"
-        }
-      }
-      \endqml
-      */
-    property alias title: captions.title
+    //this will also set the parent
+    setMainSlot(main);
+}
 
-    /*!
-      \qmlproperty Text subtitle
+/*!
+  \qmlproperty Text title
 
-      This property defines the subtitle label and its properties.
-      Styling and font properties can be set by using the prefix
-      \c {subtitle.} in a similar way as shown in \l {title}.
+  This property defines the title label and its properties.
+  Styling and font properties can be set just like on any other
+  Text component, as shown in the following example:
 
-      The subtitle aligns
-    */
-    property alias subtitle: captions.subtitle
-
-    /*!
-      \qmlproperty Text summary
-
-      This property defines the subtitle label and its properties.
-      Styling and font properties can be set by using the prefix
-      \c {summary.} in a similar way as shown in \l {title}.
-    */
-    property alias summary: captions.summary
-
-    mainSlot: ThreeLabelsSlot {
-        id: captions
+  \qml
+  Item {
+    ListItemLayout {
+        title.text: "Hello"
+        title.color: "yellow"
     }
+  }
+  \endqml
+  */
+QQuickText *UCListItemLayout::title()
+{
+    return qobject_cast<UCThreeLabelsSlot *>(mainSlot())->title();
+}
+
+/*!
+  \qmlproperty Text subtitle
+
+  This property defines the subtitle label and its properties.
+  Styling and font properties can be set by using the prefix
+  \c {subtitle.} in a similar way as shown in \l {title}.
+*/
+QQuickText *UCListItemLayout::subtitle()
+{
+    return qobject_cast<UCThreeLabelsSlot *>(mainSlot())->subtitle();
+}
+
+/*!
+  \qmlproperty Text summary
+
+  This property defines the subtitle label and its properties.
+  Styling and font properties can be set by using the prefix
+  \c {summary.} in a similar way as shown in \l {title}.
+*/
+QQuickText *UCListItemLayout::summary()
+{
+    return qobject_cast<UCThreeLabelsSlot *>(mainSlot())->summary();
 }

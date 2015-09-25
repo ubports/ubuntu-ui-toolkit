@@ -69,6 +69,7 @@
 #include "ucabstractbutton.h"
 #include "ucheader.h"
 #include "uclabel.h"
+#include "uclistitemlayout.h"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -246,7 +247,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCAbstractButton>(uri, 1, 3, "AbstractButton");
     qmlRegisterUncreatableType<UCSlotsAttached>(uri, 1, 3, "SlotsAttached", "Not instantiable");
     qmlRegisterUncreatableType<UCSlotsLayoutPadding>(uri, 1, 3, "SlotsLayoutPadding", "Not instantiable");
-    qmlRegisterType<UCThreeLabelsSlot>(uri, 1, 3, "ThreeLabelsSlot");
+    qmlRegisterType<UCListItemLayout>(uri, 1, 3, "ListItemLayout");
     qmlRegisterType<UCHeader>(uri, 1, 3, "Header");
     qmlRegisterType<UCLabel, 1>(uri, 1, 3, "Label");
 }
