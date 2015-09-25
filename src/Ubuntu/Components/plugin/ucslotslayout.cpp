@@ -759,12 +759,14 @@ void UCSlotsLayoutPrivate::handleAttachedPropertySignals(QQuickItem *item, bool 
    slots so that they comply with the following rules:
    \list
     \li * if there's any slot which is taller or as tall as \l {mainSlot} or if
-        no \l {mainSlot} is defined, all slots will be vertically centered within the
+        no \l {mainSlot} is defined, all slots will be \b {vertically centered} within the
         layout (still taking \l {SlotsLayout::padding.top} and \l {SlotsLayout::padding.bottom}
         into account).
-    \li * Otherwise, all the slots (including \l {mainSlot}) will be aligned to
-        the top of the layout with a padding of \l {SlotsLayout::padding.top} plus
+        \image SlotsLayout_centerVertically.png
+    \li * \b{Otherwise}, all the slots (including \l {mainSlot}) will be \b {aligned to
+        the top} of the layout with a padding of \l {SlotsLayout::padding.top} plus
         the top padding of the slot, defined in its attached properties.
+        \image SlotsLayout_alignToTop.png
    \endlist
 
    Even though it is \b {not recommended}, it is still possible to override
@@ -979,13 +981,16 @@ void UCSlotsLayout::itemChange(ItemChange change, const ItemChangeData &data)
 
 /*!
    \qmlproperty Item SlotsLayout::mainSlot
-   This property represents the main slot of the layout. The main slot is the
+   This property represents the main slot of the layout. By default, SlotsLayout has
+   no mainSlot set.
+
+   The main slot is the
    one that defines the vertical positioning of the other slots. Because of this,
    changing its position and overrideVerticalPositioning attached properties has
    no effect. More details can be found in the section \l {Automatic vertical positioning of slots}.
 
    \b {Note}: because of limitations in QtQuick/QML, it is not possible to initialize
-   \l mainSlot's the attached properties. Setting \l mainSlot's attached properties has
+   \l mainSlot's attached properties. Setting \l mainSlot's attached properties has
    to be done via JS, for example inside Component.onCompleted, as shown in the following example:
 
    \qml
@@ -1031,6 +1036,23 @@ void UCSlotsLayout::setMainSlot(QQuickItem *item)
 
     This property defines the padding around the bounding box which
     holds all the slots.
+    The default value for padding.leading is 1 Grid Unit.
+    The default value for padding.trailing is 1 Grid Unit.
+
+    The value of padding.top and padding.bottom depends on the size
+    of the slots which are in the layout:
+    \list
+    \li * if, according to the rules defined in \l {Automatic vertical positioning of slots},
+        the slots are supposed to align to the top of the layout, padding.top
+        and padding.bottom will have a value of \b{2} Grid Units.
+    \li * otherwise, if according to the rules defined in \l {Automatic vertical positioning of slots}
+        the slots are supposed to be vertically centered in the layout, \b {and}
+        the tallest slot (\l {mainSlot} excluded) has a height of at least 4 Grid Units,
+        padding.top and padding.bottom will be set to \b{1} Grid Unit.
+    \endlist
+
+    \b {Note}: the automatic handling of padding.top and padding.bottom is disabled once either
+    padding.top or padding.bottom is set to a custom value.
 */
 UCSlotsLayoutPadding* UCSlotsLayout::padding() {
     Q_D(UCSlotsLayout);
@@ -1128,6 +1150,11 @@ void UCSlotsAttached::setPosition(UCSlotsLayout::UCSlotPosition pos)
 
     It is a grouped property that exposes the properties padding.top,
     padding.bottom, padding.leading, padding.trailing.
+
+    The default value for SlotsLayout.padding.top is 0.
+    The default value for SlotsLayout.padding.bottom is 0.
+    The default value for SlotsLayout.padding.leading is 1 Grid Unit.
+    The default value for SlotsLayout.padding.trailing is 1 Grid Unit.
 
     Please note that \b top and \b bottom paddings are only used when
     \l {SlotsLayout::overrideVerticalPositioning} is set to false. More about
