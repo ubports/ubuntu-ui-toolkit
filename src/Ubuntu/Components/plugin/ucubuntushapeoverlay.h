@@ -48,6 +48,7 @@ public:
         float position[2];
         float shapeCoordinate[2];
         float sourceCoordinate[4];
+        float yCoordinate;
         quint32 backgroundColor;
         float overlayCoordinate[2];
         quint32 overlayColor;

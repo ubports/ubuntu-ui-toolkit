@@ -40,4 +40,5 @@ OTHER_FILES += \
     ListOfEmptyListItemLayout_withProgression.qml \
     ListOfListItemLayout_complex1.qml \
     ListOfListItemLayout_complex2.qml \
-    ListOfListItemLayout_labelsOnly.qml
+    ListOfListItemLayout_labelsOnly.qml \
+    LabelGrid13.qml

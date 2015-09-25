@@ -60,7 +60,7 @@ Rectangle {
         Label {
             anchors.left: parent.left
             text: "actions in-line:"
-            fontSize: small
+            textSize: Label.Small
         }
         Sections {
             // Not used in the tests below, but added here to
@@ -74,7 +74,7 @@ Rectangle {
         Label {
             anchors.left: parent.left
             text: "enabled:"
-            fontSize: "small"
+            textSize: Label.Small
         }
         Sections {
             id: enabledSections
@@ -82,7 +82,7 @@ Rectangle {
         }
         Label {
             text: "disabled:"
-            fontSize: "small"
+            textSize: Label.Small
         }
         Sections {
             id: disabledSections
@@ -111,7 +111,7 @@ Rectangle {
         Label {
             anchors.left: parent.left
             text: "enabled:"
-            fontSize: "small"
+            textSize: Label.Small
         }
         Sections {
             id: enabledStringSections
@@ -120,7 +120,7 @@ Rectangle {
         Label {
             anchors.left: parent.left
             text: "disabled:"
-            fontSize: "small"
+            textSize: Label.Small
         }
         Sections {
             id: disabledStringSections

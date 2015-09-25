@@ -37,12 +37,13 @@ public:
     virtual void initialize();
     virtual void updateState(
         const RenderState& state, QSGMaterial* newEffect, QSGMaterial* oldEffect);
+    bool useDistanceFields() const { return m_useDistanceFields; }
 
 private:
     QOpenGLFunctions* m_functions;
+    bool m_useDistanceFields;
     int m_matrixId;
     int m_opacityFactorsId;
-    int m_dfdtFactorId;
     int m_sourceOpacityId;
     int m_distanceAAId;
     int m_texturedId;
@@ -94,6 +95,7 @@ public:
         float position[2];
         float shapeCoordinate[2];
         float sourceCoordinate[4];
+        float yCoordinate;
         quint32 backgroundColor;
     };
 
@@ -178,6 +180,8 @@ class UCUbuntuShape : public QQuickItem
 
 public:
     UCUbuntuShape(QQuickItem* parent=0);
+
+    static bool useDistanceFields(const QOpenGLContext* openglContext);
 
     enum Aspect { Flat = 0, Inset = 1, DropShadow = 2 };  // Don't forget to update private enum.
     enum BackgroundMode { SolidColor = 0, VerticalGradient = 1 };

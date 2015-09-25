@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -64,7 +64,7 @@
  */
 qreal UCFontUtils::sizeToPixels(const QString &size)
 {
-    return modularScale(size) * UCUnits::instance().dp(14);
+    return modularScale(size) * UCUnits::instance().dp(fontUnits);
 }
 
 /*!
@@ -82,18 +82,17 @@ qreal UCFontUtils::sizeToPixels(const QString &size)
  */
 qreal UCFontUtils::modularScale(const QString &size)
 {
-    if (size == "xx-small") {
-        return 0.677;
-    } else if (size == "x-small") {
-        return 0.804;
-    } else if (size == "small") {
-        return 0.931;
-    } else if (size == "medium") {
-        return 1.079;
-    } else if (size == "large") {
-        return 1.291;
-    } else if (size == "x-large") {
-        return 1.714;
+    if (size.size() < 4) {
+        return 0.0;
     }
-    return 0.0;
+
+    switch (SCALE_CODE(size)) {
+        case SCALE_MEDIUM: { return mediumScale; }
+        case SCALE_LARGE: { return largeScale; }
+        case SCALE_SMALL: { return smallScale; }
+        case SCALE_XLARGE: { return xLargeScale; }
+        case SCALE_XSMALL: { return xSmallScale; }
+        case SCALE_XXSMALL: { return xxSmallScale; }
+        default: { return 0.0; }
+    }
 }

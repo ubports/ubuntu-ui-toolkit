@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -23,7 +23,15 @@
 class UCFontUtils : public QObject
 {
     Q_OBJECT
+
 public:
+    static constexpr float fontUnits = 14.0f;
+    static constexpr float xxSmallScale = 0.677f;
+    static constexpr float xSmallScale = 0.804f;
+    static constexpr float smallScale = 0.931f;
+    static constexpr float mediumScale = 1.079f;
+    static constexpr float largeScale = 1.291f;
+    static constexpr float xLargeScale = 1.714f;
 
     static UCFontUtils& instance()
     {
@@ -36,5 +44,13 @@ public:
     Q_INVOKABLE qreal sizeToPixels(const QString &size);
     Q_INVOKABLE qreal modularScale(const QString &size);
 };
+
+#define SCALE_CODE(size)    reinterpret_cast<int*>(size.toLatin1().data())[0]
+#define SCALE_MEDIUM        0x6964656d // "medi"
+#define SCALE_LARGE         0x6772616c // "larg"
+#define SCALE_SMALL         0x6c616d73 // "smal"
+#define SCALE_XLARGE        0x616c2d78 // "x-la"
+#define SCALE_XSMALL        0x6d732d78 // "x-sm"
+#define SCALE_XXSMALL       0x732d7878 // "xx-s"
 
 #endif // UCFONTUTILS_H

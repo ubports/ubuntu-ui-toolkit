@@ -29,8 +29,9 @@ MainView {
     width: units.gu(120)
     height: units.gu(75)
 
-    LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
+    LayoutMirroring.enabled: rtl
     LayoutMirroring.childrenInherit: true
+    property bool rtl: Qt.application.layoutDirection == Qt.RightToLeft
 
     AdaptivePageLayout {
         id: layout
@@ -64,6 +65,18 @@ MainView {
             title: "Ubuntu UI Toolkit"
 
             head.actions: [
+                Action {
+                    text: i18n.tr('Right to Left')
+                    iconName: 'flash-on'
+                    visible: !gallery.rtl
+                    onTriggered: gallery.rtl = !gallery.rtl
+                },
+                Action {
+                    text: i18n.tr('Left to Right')
+                    iconName: 'flash-off'
+                    visible: gallery.rtl
+                    onTriggered: gallery.rtl = !gallery.rtl
+                },
                 Action {
                     text: i18n.tr('Use dark theme')
                     iconName: 'torch-on'

@@ -64,7 +64,7 @@ import Ubuntu.Components 1.3
       subtitle.text: "Subtitle"
       Label {
           text: "third line"
-          fontSize: "xx-small"
+          textSize: Label.XxSmall
       }
   }
   \endqml
@@ -129,7 +129,7 @@ ColumnLayout {
             left: parent.left
             right: parent.right
         }
-        fontSize: (captionStyle == Ubuntu.SummaryCaptionStyle) ? "small" : "medium"
+        textSize: (captionStyle == Ubuntu.SummaryCaptionStyle) ? Label.Small : Label.Medium
         horizontalAlignment: (captionStyle == Ubuntu.SummaryCaptionStyle) ? Text.AlignRight : Text.AlignLeft
         visible: text !== ""
         elide: (captionStyle == Ubuntu.TitleCaptionStyle) ? Text.ElideRight : Text.ElideNone
@@ -140,7 +140,7 @@ ColumnLayout {
             left: parent.left
             right: parent.right
         }
-        fontSize: "small"
+        textSize: Label.Small
         horizontalAlignment: (captionStyle == Ubuntu.SummaryCaptionStyle) ? Text.AlignRight : Text.AlignLeft
         visible: text !== ""
         maximumLineCount: (captionStyle == Ubuntu.TitleCaptionStyle) ? 2 : 1
