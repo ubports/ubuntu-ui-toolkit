@@ -503,7 +503,7 @@ Ubuntu.Components.Label.TextSize: Enum
 Ubuntu.Layouts.Layouts 1.0 0.1: Item
     readonly property string currentLayout
     readonly property ConditionalLayout layouts
-Ubuntu.Components.ListItem 1.2: StyledItem
+Ubuntu.Components.ListItem 1.3 1.2: StyledItem
     property Action action
     property color color
     readonly property Item contentItem
@@ -511,6 +511,7 @@ Ubuntu.Components.ListItem 1.2: StyledItem
     readonly property UCListItemDivider divider
     property bool dragMode
     readonly property bool dragging
+    readonly property UCListItemExpansion expansion 1.3
     property color highlightColor
     readonly property bool highlighted
     property ListItemActions leadingActions
@@ -523,8 +524,6 @@ Ubuntu.Components.ListItem 1.2: StyledItem
     property bool selectMode
     property bool selected
     property ListItemActions trailingActions
-Ubuntu.Components.ListItem 1.3: ListItem
-    readonly property UCListItemExpansion expansion
 Ubuntu.Components.ListItemActions 1.2: QtObject
     readonly property Action actions
     default readonly property QtObject data
@@ -1506,13 +1505,12 @@ Ubuntu.Components.ListItems.ValueSelector 1.3: Empty
     property var values
 Ubuntu.Components.ViewItems 1.2: QtObject
     property bool dragMode
-    signal dragUpdated(ListItemDrag event)
-    property bool selectMode
-    property QList<int> selectedIndices
-Ubuntu.Components.ViewItems 1.3: ViewItems
     property QList<int> expandedIndices
     property int expansionFlags
+    signal dragUpdated(ListItemDrag event)
     signal expandedIndicesChanged(QList<int> indices)
+    property bool selectMode
+    property QList<int> selectedIndices
 Ubuntu.Components.ViewItems.ExpansionFlag: Enum
     CollapseOnOutsidePress
     Exclusive

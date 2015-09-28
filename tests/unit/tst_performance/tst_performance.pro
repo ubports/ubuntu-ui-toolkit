@@ -33,4 +33,6 @@ OTHER_FILES += \
     StyledItemNewTheming.qml \
     AbstractButtonGrid.qml \
     AbstractButton13Grid.qml \
-    LabelGrid13.qml
+    LabelGrid13.qml \
+    ListOfCaptions13.qml \
+    ListItemList13.qml
