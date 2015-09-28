@@ -21,9 +21,11 @@
 
 #include "uclistitemlayout.h"
 #include "threelabelsslot_p.h"
+#include "uclabel.h"
 
 /*!
     \qmltype ListItemLayout
+    \instantiates UCListItemLayout
     \inqmlmodule Ubuntu.Components 1.3
     \inherits SlotsLayout
     \ingroup ubuntu
@@ -160,7 +162,7 @@ UCListItemLayout::UCListItemLayout(QQuickItem *parent)
 }
 
 /*!
-  \qmlproperty Text title
+  \qmlproperty Label ListItemLayout::title
 
   This property defines the title label and its properties.
   Styling and font properties can be set just like on any other
@@ -181,7 +183,7 @@ UCLabel *UCListItemLayout::title()
 }
 
 /*!
-  \qmlproperty Text subtitle
+  \qmlproperty Label ListItemLayout::subtitle
 
   This property defines the subtitle label and its properties.
   Styling and font properties can be set by using the prefix
@@ -193,7 +195,7 @@ UCLabel *UCListItemLayout::subtitle()
 }
 
 /*!
-  \qmlproperty Text summary
+  \qmlproperty Label ListItemLayout::summary
 
   This property defines the subtitle label and its properties.
   Styling and font properties can be set by using the prefix
