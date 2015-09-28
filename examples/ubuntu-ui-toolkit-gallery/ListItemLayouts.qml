@@ -13,65 +13,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 import QtQuick 2.4
 import Ubuntu.Components 1.3
 
 Template {
     objectName: "listItemLayoutTemplate"
-
-    TemplateSection {
-        className: "ListItemLayout"
-        title: "Custom vertical positioning of slots"
-        // no spacing between the list items in the Column
-        spacing: 0
-        
-        ListItem {
-            id: dialerHistoryListItem
-            height: dialerHistoryLayout.height
-
-            ListItemLayout {
-                id: dialerHistoryLayout
-
-                title.text: "+12 3456789012 (3)"
-                title.color: UbuntuColors.lightAubergine
-                subtitle.text: "Mobile"
-
-                Rectangle {
-                    SlotsLayout.position: SlotsLayout.Leading
-                    color: "pink"
-                    height: units.gu(6)
-                    width: height
-                    visible: width > 0
-                }
-
-                Item {
-                    id: slot
-                    width: label2.width
-                    height: parent.height
-                    //as we want to position labels to align with title and subtitle
-                    SlotsLayout.overrideVerticalPositioning: true
-
-                    Label {
-                        id: lab
-                        anchors.right: label2.right
-                        text: "19:17"
-                        fontSize: "small"
-                        y: dialerHistoryLayout.mainSlot.y + dialerHistoryLayout.title.y
-                           + dialerHistoryLayout.title.baselineOffset - baselineOffset
-                    }
-
-                    Label {
-                        id: label2
-                        text: "Outgoing"
-                        fontSize: "small"
-                        y: dialerHistoryLayout.mainSlot.y + dialerHistoryLayout.subtitle.y
-                           + dialerHistoryLayout.subtitle.baselineOffset - baselineOffset
-                    }
-                }
-            }
-        }
-    }
 
     TemplateSection {
         className: "ListItemLayout"
@@ -131,17 +78,8 @@ Template {
 
             ListItemLayout {
                 id: telegramContactsLayout
-
                 title.text: "Telegram Name goes here"
-                title.font.pixelSize: FontUtils.sizeToPixels("large")
-                //color: TelegramColors.black
-                //verticalAlignment: TextInput.AlignVCenter
-
                 subtitle.text: "last seen 12:02"
-                subtitle.font.pixelSize: FontUtils.sizeToPixels("medium")
-                //subtitle.color: isOnline ? TelegramColors.dark_blue : TelegramColors.grey
-                //subtitle.elide: Text.ElideRight
-                //subtitle.verticalAlignment: TextInput.AlignVCenter
 
                 Rectangle {
                     id: imageShape
@@ -209,6 +147,120 @@ Template {
                     width: units.gu(6);
                     height: units.gu(6);
                     name: "facebook"
+                }
+            }
+        }
+    }
+
+    TemplateSection {
+        className: "ListItemLayout"
+        title: "Custom labels properties"
+        spacing: 0
+
+        ListItem {
+            height: customLabelsLayout.height
+
+            ListItemLayout {
+                id: customLabelsLayout
+                title.text: "Lorem ipsum..."
+                title.color: "blue"
+                title.horizontalAlignment: Text.AlignHCenter
+
+                subtitle.text: "..dolor sit amet, consectetur adipiscing elit..."
+                subtitle.color: "red"
+                subtitle.horizontalAlignment: Text.AlignHCenter
+
+                summary.text: "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." +
+                    "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi" +
+                    "ut aliquip ex ea commodo consequat."
+                summary.color: "green"
+                summary.horizontalAlignment: Text.AlignHCenter
+            }
+        }
+    }
+
+    TemplateSection {
+        className: "ListItemLayout"
+        title: "With swiping actions"
+        // no spacing between the list items in the Column
+        spacing: 0
+
+        ListItemActions {
+            id: exampleLeadingActions
+            actions: [
+                Action {
+                    iconName: "delete"
+                }
+            ]
+        }
+        ListItemActions {
+            id: exampleTrailingActions
+            actions: [
+                Action {
+                    iconName: "edit"
+                },
+                Action {
+                    iconName: "save-to"
+                }
+            ]
+        }
+
+        ListItemWithLabel {
+            title.text: i18n.tr("Leading and trailing actions")
+            leadingActions: exampleLeadingActions
+            trailingActions: exampleTrailingActions
+        }
+
+    }
+
+    TemplateSection {
+        className: "ListItemLayout"
+        title: "Custom vertical positioning of slots"
+        // no spacing between the list items in the Column
+        spacing: 0
+
+        ListItem {
+            id: dialerHistoryListItem
+            height: dialerHistoryLayout.height
+
+            ListItemLayout {
+                id: dialerHistoryLayout
+
+                title.text: "+12 3456789012 (3)"
+                title.color: UbuntuColors.lightAubergine
+                subtitle.text: "Mobile"
+
+                Rectangle {
+                    SlotsLayout.position: SlotsLayout.Leading
+                    color: "pink"
+                    height: units.gu(6)
+                    width: height
+                    visible: width > 0
+                }
+
+                Item {
+                    id: slot
+                    width: label2.width
+                    height: parent.height
+                    //as we want to position labels to align with title and subtitle
+                    SlotsLayout.overrideVerticalPositioning: true
+
+                    Label {
+                        id: lab
+                        anchors.right: label2.right
+                        text: "19:17"
+                        fontSize: "small"
+                        y: dialerHistoryLayout.mainSlot.y + dialerHistoryLayout.title.y
+                           + dialerHistoryLayout.title.baselineOffset - baselineOffset
+                    }
+
+                    Label {
+                        id: label2
+                        text: "Outgoing"
+                        fontSize: "small"
+                        y: dialerHistoryLayout.mainSlot.y + dialerHistoryLayout.subtitle.y
+                           + dialerHistoryLayout.subtitle.baselineOffset - baselineOffset
+                    }
                 }
             }
         }

@@ -153,27 +153,26 @@ private:
     qreal m_bottom;
 };
 
+class UCLabel;
 class UCThreeLabelsSlotPrivate;
 class UCThreeLabelsSlot : public QQuickItem
 {
     Q_OBJECT
-    Q_PROPERTY(QQuickText *title READ title CONSTANT FINAL)
-    Q_PROPERTY(QQuickText *subtitle READ subtitle CONSTANT FINAL)
-    Q_PROPERTY(QQuickText *summary READ summary CONSTANT FINAL)
+    Q_PROPERTY(UCLabel *title READ title CONSTANT FINAL)
+    Q_PROPERTY(UCLabel *subtitle READ subtitle CONSTANT FINAL)
+    Q_PROPERTY(UCLabel *summary READ summary CONSTANT FINAL)
 
 public:
     explicit UCThreeLabelsSlot(QQuickItem *parent = 0);
 
-    QQuickText *title();
-    QQuickText *subtitle();
-    QQuickText *summary();
+    UCLabel *title();
+    UCLabel *subtitle();
+    UCLabel *summary();
 
 protected:
     Q_DECLARE_PRIVATE(UCThreeLabelsSlot)
-    void componentComplete();
 
 private:
-    Q_PRIVATE_SLOT(d_func(), void _q_onThemeChanged())
     Q_PRIVATE_SLOT(d_func(), void _q_onGuValueChanged())
     Q_PRIVATE_SLOT(d_func(), void _q_updateLabelsAnchorsAndBBoxHeight())
 };

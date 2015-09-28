@@ -177,7 +177,7 @@ UCListItemLayout::UCListItemLayout(QQuickItem *parent)
   }
   \endqml
   */
-QQuickText *UCListItemLayout::title()
+UCLabel *UCListItemLayout::title()
 {
     return qobject_cast<UCThreeLabelsSlot *>(mainSlot())->title();
 }
@@ -189,7 +189,7 @@ QQuickText *UCListItemLayout::title()
   Styling and font properties can be set by using the prefix
   \c {subtitle.} in a similar way as shown in \l {title}.
 */
-QQuickText *UCListItemLayout::subtitle()
+UCLabel *UCListItemLayout::subtitle()
 {
     return qobject_cast<UCThreeLabelsSlot *>(mainSlot())->subtitle();
 }
@@ -201,7 +201,7 @@ QQuickText *UCListItemLayout::subtitle()
   Styling and font properties can be set by using the prefix
   \c {summary.} in a similar way as shown in \l {title}.
 */
-QQuickText *UCListItemLayout::summary()
+UCLabel *UCListItemLayout::summary()
 {
     return qobject_cast<UCThreeLabelsSlot *>(mainSlot())->summary();
 }
