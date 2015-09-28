@@ -118,7 +118,7 @@ MainView {
                             spacing: units.gu(1)
                             Label {
                                 text: i18n.tr(modelData.unit)
-                                fontSize: "large"
+                                textSize: Label.Large
                                 width: root.labelWidth
                                 height: input.height
                                 verticalAlignment: Text.AlignVCenter

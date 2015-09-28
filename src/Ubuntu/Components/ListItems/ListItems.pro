@@ -6,7 +6,7 @@ QML_FILES += 1.2/Base.qml \
              1.2/Empty.qml \
              1.2/Expandable.qml \
              1.2/ExpandablesColumn.qml \
-             1.2/Header.qml \
+             1.2/ListItemHeader.qml \
              1.2/IconVisual.qml \
              1.2/ImageWithFallback.qml \
              1.2/ItemSelector.qml \
@@ -25,7 +25,7 @@ QML_FILES += 1.2/Base.qml \
              1.3/Empty.qml \
              1.3/Expandable.qml \
              1.3/ExpandablesColumn.qml \
-             1.3/Header.qml \
+             1.3/ListItemHeader.qml \
              1.3/IconVisual.qml \
              1.3/ImageWithFallback.qml \
              1.3/ItemSelector.qml \

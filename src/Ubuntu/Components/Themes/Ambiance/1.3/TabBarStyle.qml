@@ -40,7 +40,7 @@ Item {
     property int headerTextFadeDuration: animate ? 350 : 0
     property url indicatorImageSource: Qt.resolvedUrl("../artwork/chevron.png")
 
-    property string headerFontSize: "x-large"
+    property string headerAdaptiveLabelSize: Label.XLarge
     property int headerTextStyle: Text.Normal
     property color headerTextStyleColor: theme.palette.normal.backgroundText
     property int headerFontWeight: Font.Light
@@ -202,7 +202,7 @@ Item {
                             baselineOffset: -headerTextBottomMargin
                         }
                         text: (model.hasOwnProperty("tab") && tab.hasOwnProperty("title")) ? tab.title : title
-                        fontSize: headerFontSize
+                        textSize: headerAdaptiveLabelSize
                         font.weight: headerFontWeight
                         style: headerTextStyle
                         styleColor: headerTextStyleColor

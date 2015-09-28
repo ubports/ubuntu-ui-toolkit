@@ -76,6 +76,5 @@ Base {
             leftMargin: listItem.__contentsMargins
         }
         horizontalAlignment: Text.AlignRight
-        fontSize: "medium"
     }
 }
