@@ -16,9 +16,11 @@
  * Author: Andrea Bernabei <andrea.bernabei@canonical.com>
  */
 
-#include "uclistitemlayout.h"
 #include "private/qqmldata_p.h"
 #include <QtQml/QQmlEngine>
+
+#include "uclistitemlayout.h"
+#include "threelabelsslot_p.h"
 
 /*!
     \qmltype ListItemLayout

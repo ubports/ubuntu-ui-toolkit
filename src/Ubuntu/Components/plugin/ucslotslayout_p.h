@@ -37,8 +37,6 @@
 #define SLOTSLAYOUT_BOTTOMMARGIN1_GU                 1
 #define SLOTSLAYOUT_BOTTOMMARGIN2_GU                 2
 
-#define LABELSBLOCK_SPACING_GU                       1
-
 class UCSlotsLayoutPrivate : public QQuickItemPrivate
 {
     Q_DECLARE_PUBLIC(UCSlotsLayout)
@@ -146,36 +144,6 @@ public:
     UCSlotsLayoutPadding padding;
     UCSlotsLayout::UCSlotPosition position;
     bool overrideVerticalPositioning : 1;
-};
-
-class UCLabel;
-class UCThreeLabelsSlotPrivate : public QQuickItemPrivate
-{
-    Q_DECLARE_PUBLIC(UCThreeLabelsSlot)
-
-public:
-    UCThreeLabelsSlotPrivate();
-
-    static inline UCThreeLabelsSlotPrivate *get(UCThreeLabelsSlot *that)
-    {
-        Q_ASSERT(that);
-        return that->d_func();
-    }
-
-    void init();
-    void setTitleProperties();
-    void setSubtitleProperties();
-    void setSummaryProperties();
-
-    void _q_onGuValueChanged();
-    void _q_updateLabelsAnchorsAndBBoxHeight();
-
-    //Getting the theme and the palette colours is very expensive,
-    //so we cache them to avoid querying it every time it is needed
-    QColor labelsColor;
-    UCLabel *m_title;
-    UCLabel *m_subtitle;
-    UCLabel *m_summary;
 };
 
 #endif // UCSLOTSLAYOUTPRIVATE_H

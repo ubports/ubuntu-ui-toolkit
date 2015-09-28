@@ -20,8 +20,6 @@
 #define UCSLOTSLAYOUT_H
 
 #include <QtQuick/QQuickItem>
-#include <QtGui/QPixmap>
-#include <private/qquicktext_p.h>
 
 class UCSlotsAttached;
 class UCSlotsLayoutPadding;
@@ -151,30 +149,6 @@ private:
     qreal m_trailing;
     qreal m_top;
     qreal m_bottom;
-};
-
-class UCLabel;
-class UCThreeLabelsSlotPrivate;
-class UCThreeLabelsSlot : public QQuickItem
-{
-    Q_OBJECT
-    Q_PROPERTY(UCLabel *title READ title CONSTANT FINAL)
-    Q_PROPERTY(UCLabel *subtitle READ subtitle CONSTANT FINAL)
-    Q_PROPERTY(UCLabel *summary READ summary CONSTANT FINAL)
-
-public:
-    explicit UCThreeLabelsSlot(QQuickItem *parent = 0);
-
-    UCLabel *title();
-    UCLabel *subtitle();
-    UCLabel *summary();
-
-protected:
-    Q_DECLARE_PRIVATE(UCThreeLabelsSlot)
-
-private:
-    Q_PRIVATE_SLOT(d_func(), void _q_onGuValueChanged())
-    Q_PRIVATE_SLOT(d_func(), void _q_updateLabelsAnchorsAndBBoxHeight())
 };
 
 #endif // UCSLOTSLAYOUT_H

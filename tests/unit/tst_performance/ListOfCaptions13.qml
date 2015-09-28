@@ -14,25 +14,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UCLISTITEMLAYOUT_H
-#define UCLISTITEMLAYOUT_H
+import QtQuick 2.3
+import Ubuntu.Components 1.3
+import QtQuick.Layouts 1.1
 
-#include "ucslotslayout.h"
-
-class UCLabel;
-class UCListItemLayout : public UCSlotsLayout
-{
-    Q_OBJECT
-    Q_PROPERTY(UCLabel *title READ title CONSTANT FINAL)
-    Q_PROPERTY(UCLabel *subtitle READ subtitle CONSTANT FINAL)
-    Q_PROPERTY(UCLabel *summary READ summary CONSTANT FINAL)
-
-public:
-    explicit UCListItemLayout(QQuickItem *parent = 0);
-
-    UCLabel *title();
-    UCLabel *subtitle();
-    UCLabel *summary();
-};
-
-#endif // UCLISTITEMLAYOUT_H
+Column {
+    width: 800
+    height: 600
+    Repeater {
+        id: repeater
+        model: 5000
+        ListItem {
+            RowLayout {
+                anchors.fill: parent
+                Captions {
+                }
+            }
+        }
+    }
+}

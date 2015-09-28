@@ -25,6 +25,7 @@ class UCListItemDivider;
 class UCListItemActions;
 class UCAction;
 class UCListItemPrivate;
+class UCListItemExpansion;
 class UCListItem : public UCStyledItemBase
 {
     Q_OBJECT
@@ -44,6 +45,8 @@ class UCListItem : public UCStyledItemBase
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), QQmlListProperty<QObject> listItemData READ data DESIGNABLE false)
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), QQmlListProperty<QQuickItem> listItemChildren READ children NOTIFY listItemChildrenChanged DESIGNABLE false)
     Q_CLASSINFO("DefaultProperty", "listItemData")
+    // 1.3
+    Q_PROPERTY(UCListItemExpansion* expansion READ expansion CONSTANT REVISION 1)
 public:
     explicit UCListItem(QQuickItem *parent = 0);
     ~UCListItem();
@@ -60,6 +63,8 @@ public:
     QColor highlightColor() const;
     void setHighlightColor(const QColor &color);
     void resetHighlightColor();
+    // 1.3
+    UCListItemExpansion *expansion();
 
 protected:
     virtual QObject *attachedViewItems(QObject *object, bool create);
@@ -108,26 +113,8 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_contentMoving())
     Q_PRIVATE_SLOT(d_func(), void _q_syncSelectMode())
     Q_PRIVATE_SLOT(d_func(), void _q_syncDragMode())
-};
-
-class UCListItemExpansion;
-class UCListItem13 : public UCListItem
-{
-    Q_OBJECT
-    Q_PROPERTY(UCListItemExpansion* expansion READ expansion CONSTANT)
-protected:
-    virtual QObject *attachedViewItems(QObject *object, bool create);
-    void itemChange(ItemChange change, const ItemChangeData &data);
-    void mousePressEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
-private:
-    Q_SLOT void _q_updateExpansion(const QList<int> &indices);
-    bool shouldShowContextMenu(QMouseEvent *event);
-    void popoverClosed();
-public:
-    explicit UCListItem13(QQuickItem *parent = 0);
-
-    UCListItemExpansion *expansion();
+    Q_PRIVATE_SLOT(d_func(), void _q_updateExpansion(const QList<int> &indices))
+    Q_PRIVATE_SLOT(d_func(), void _q_popoverClosed())
 };
 
 class UCListItemDividerPrivate;
@@ -167,6 +154,10 @@ class UCViewItemsAttached : public QObject
     Q_PROPERTY(QList<int> selectedIndices READ selectedIndices WRITE setSelectedIndices NOTIFY selectedIndicesChanged)
     Q_PROPERTY(bool dragMode READ dragMode WRITE setDragMode NOTIFY dragModeChanged)
     Q_ENUMS(ExpansionFlag)
+    // FIXME these should be revisioned, however bug doesn't allow us to do that
+    // https://bugs.launchpad.net/ubuntu/+source/qtdeclarative-opensource-src/+bug/1389721
+    Q_PROPERTY(QList<int> expandedIndices READ expandedIndices WRITE setExpandedIndices NOTIFY expandedIndicesChanged)
+    Q_PROPERTY(int expansionFlags READ expansionFlags WRITE setExpansionFlags NOTIFY expansionFlagsChanged)
 public:
     enum ExpansionFlag {
         Exclusive = 0x01,
@@ -191,6 +182,12 @@ public:
     bool dragMode() const;
     void setDragMode(bool value);
 
+    // 1.3
+    QList<int> expandedIndices() const;
+    void setExpandedIndices(QList<int> indices);
+    int expansionFlags() const;
+    void setExpansionFlags(int flags);
+
 private Q_SLOTS:
     void unbindItem();
     void completed();
@@ -202,38 +199,14 @@ Q_SIGNALS:
 
     void dragUpdated(UCDragEvent *event);
 
+    // 1.3
+    void expandedIndicesChanged(const QList<int> &indices);
+    void expansionFlagsChanged();
 private:
     Q_DECLARE_PRIVATE(UCViewItemsAttached)
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS(UCViewItemsAttached::ExpansionFlags)
 QML_DECLARE_TYPEINFO(UCViewItemsAttached, QML_HAS_ATTACHED_PROPERTIES)
-
-// FIXME keep the 1.3 properties in a separate class, workaround for bug
-// https://bugs.launchpad.net/ubuntu/+source/qtdeclarative-opensource-src/+bug/1389721
-// enums and flag are added to UCViewItemsAttached like normal
-class UCViewItemsAttached13 : public UCViewItemsAttached
-{
-    Q_OBJECT
-    Q_PROPERTY(QList<int> expandedIndices READ expandedIndices WRITE setExpandedIndices NOTIFY expandedIndicesChanged)
-    Q_PROPERTY(int expansionFlags READ expansionFlags WRITE setExpansionFlags NOTIFY expansionFlagsChanged)
-public:
-    explicit UCViewItemsAttached13(QObject *owner = 0);
-    static UCViewItemsAttached13 *qmlAttachedProperties(QObject *owner);
-
-    QList<int> expandedIndices() const;
-    void setExpandedIndices(QList<int> indices);
-    int expansionFlags() const;
-    void setExpansionFlags(int flags);
-
-Q_SIGNALS:
-    void expandedIndicesChanged(const QList<int> &indices);
-    void expansionFlagsChanged();
-
-private:
-    UCViewItemsAttachedPrivate *d_ptr;
-    Q_DECLARE_PRIVATE_D(d_ptr, UCViewItemsAttached)
-};
-QML_DECLARE_TYPEINFO(UCViewItemsAttached13, QML_HAS_ATTACHED_PROPERTIES)
 
 class UCListItemExpansion : public QObject
 {
@@ -258,12 +231,11 @@ protected:
     bool eventFilter(QObject *, QEvent *);
 
 private:
-    UCListItem13 *m_listItem;
+    UCListItem *m_listItem;
     qreal m_height;
     bool m_filtering:1;
 
     friend class UCListItem;
-    friend class UCListItem13;
     friend class UCListItemPrivate;
 };
 

@@ -33,6 +33,9 @@ OTHER_FILES += \
     StyledItemNewTheming.qml \
     AbstractButtonGrid.qml \
     AbstractButton13Grid.qml \
+    LabelGrid13.qml \
+    ListOfCaptions13.qml \
+    ListItemList13.qml \
     ListItemWithInlineActionsAndFourContainersList.qml \
     ListItemWithInlineActionsAndFourMouseAreas.qml \
     ListOfCustomListItemLayouts.qml \
@@ -40,5 +43,4 @@ OTHER_FILES += \
     ListOfEmptyListItemLayout_withProgression.qml \
     ListOfListItemLayout_complex1.qml \
     ListOfListItemLayout_complex2.qml \
-    ListOfListItemLayout_labelsOnly.qml \
-    LabelGrid13.qml
+    ListOfListItemLayout_labelsOnly.qml

@@ -121,9 +121,11 @@ private Q_SLOTS:
         QTest::newRow("grid with Slider") << "SliderGrid.qml" << QUrl();
         QTest::newRow("list with QtQuick Item") << "ItemList.qml" << QUrl();
         QTest::newRow("list with new ListItem") << "ListItemList.qml" << QUrl();
+        QTest::newRow("list with new ListItem 1.3") << "ListItemList13.qml" << QUrl();
         QTest::newRow("list with new ListItem with actions") << "ListItemWithActionsList.qml" << QUrl();
         QTest::newRow("list with new ListItem with inline actions") << "ListItemWithInlineActionsList.qml" << QUrl();
         QTest::newRow("list with Captions, preset: caption") << "ListOfCaptions.qml" << QUrl();
+        QTest::newRow("list with Captions 1.3, preset: caption") << "ListOfCaptions13.qml" << QUrl();
         QTest::newRow("list with ListItems.Empty (equivalent to the new ListItem") << "ListItemsEmptyList.qml" << QUrl();
         QTest::newRow("list with new ListItem (inline actions!) with a Row of 4 Items") << "ListItemWithInlineActionsAndFourContainersList.qml" << QUrl();
         QTest::newRow("list with new ListItem (inline actions!) with a Row of 4 MouseAreas") << "ListItemWithInlineActionsAndFourMouseAreas.qml" << QUrl();
