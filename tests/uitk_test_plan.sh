@@ -258,6 +258,7 @@ function compare_results {
         fi
         egrep -v "NO TAGS DATABASE" $RESULT_FILE |egrep "^ERROR:|^FAIL:" | while read -r FAILED ; 
         do
+            FAILED=${FAILED/ERROR:/FAIL:}
             echo -e "\tFailed with ${PPA} - $FAILED"  >> ${MAINFILE}
             if grep --quiet "$FAILED" *archive.tests; then
                 echo -e "\tSame on archive"  >> ${MAINFILE}
