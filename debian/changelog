@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (1.3.1656+15.10.20150928-0ubuntu1) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.3.1657+15.10.20150928-0ubuntu1) UNRELEASED; urgency=medium
 
   [ Zsombor Egri ]
   * Boosting ListItem performance by removing the workaround brought in for 1.3
@@ -8,6 +8,8 @@ ubuntu-ui-toolkit (1.3.1656+15.10.20150928-0ubuntu1) UNRELEASED; urgency=medium
   * Moving Label to cpp.
   * Separate theming from StyledItem to ease subtheming. 
     Prerequisite for Label optimisations.
+  * Add pages to columns in AdaptivePageLayout only when the page loading 
+    completes. Fixes LP: #1492343, LP: #1499178.
 
   [ Andrea Bernabei ]
   * Add init() to UCLabel so that C++ class can create *and* initialize UCLabel.
