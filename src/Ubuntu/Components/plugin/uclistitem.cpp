@@ -184,23 +184,22 @@ void UCListItemDivider::setColorTo(const QColor &color)
  */
 UCListItemPrivate::UCListItemPrivate()
     : UCStyledItemBasePrivate()
-    , defaultThemeVersion(0)
+    , color(Qt::transparent)
+    , highlightColor(Qt::transparent)
+    , contentItem(new QQuickItem)
+    , divider(new UCListItemDivider)
+    , leadingActions(Q_NULLPTR)
+    , trailingActions(Q_NULLPTR)
+    , mainAction(Q_NULLPTR)
+    , expansion(Q_NULLPTR)
+    , xAxisMoveThresholdGU(DEFAULT_SWIPE_THRESHOLD_GU)
+    , button(Qt::NoButton)
     , highlighted(false)
     , contentMoved(false)
     , swiped(false)
     , suppressClick(false)
     , ready(false)
     , customColor(false)
-    , xAxisMoveThresholdGU(DEFAULT_SWIPE_THRESHOLD_GU)
-    , color(Qt::transparent)
-    , highlightColor(Qt::transparent)
-    , parentAttached(0)
-    , contentItem(new QQuickItem)
-    , divider(new UCListItemDivider)
-    , leadingActions(0)
-    , trailingActions(0)
-    , mainAction(0)
-    , expansion(Q_NULLPTR)
 {
 }
 UCListItemPrivate::~UCListItemPrivate()
@@ -965,7 +964,6 @@ UCListItem::UCListItem(QQuickItem *parent)
 {
     Q_D(UCListItem);
     d->init();
-    d->defaultThemeVersion = BUILD_VERSION(1, 2);
 }
 
 UCListItem::~UCListItem()
@@ -981,11 +979,6 @@ void UCListItem::classBegin()
 {
     UCStyledItemBase::classBegin();
     Q_D(UCListItem);
-    // initialize theme
-    UCTheme *theme = d->getTheme();
-    if (theme == &UCTheme::defaultTheme()) {
-        theme->setVersion(d->defaultThemeVersion);
-    }
     d->_q_themeChanged();
     d->divider->paletteChanged();
 }
@@ -1075,6 +1068,11 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
             myStyle->updateFlickable(d->flickable);
         }
 
+        if (d->parentAttached) {
+            connect(d->parentAttached.data(), SIGNAL(expandedIndicesChanged(QList<int>)),
+                    this, SLOT(_q_updateExpansion(QList<int>)), Qt::DirectConnection);
+        }
+
         if (parentAttachee) {
             QObject::connect(parentAttachee, SIGNAL(widthChanged()), this, SLOT(_q_updateSize()), Qt::DirectConnection);
             // update size
@@ -1156,52 +1154,55 @@ void UCListItem::mousePressEvent(QMouseEvent *event)
     if (d->canHighlight() && !d->highlighted && event->button() == Qt::LeftButton) {
         d->handleLeftButtonPress(event);
     }
-}
-
-bool UCListItem13::shouldShowContextMenu(QMouseEvent *event)
-{
-    if (event->button() != Qt::RightButton)
-        return false;
-    return leadingActions() || trailingActions();
-}
-
-void UCListItem13::mousePressEvent(QMouseEvent *event)
-{
-    UCListItem::mousePressEvent(event);
-    if (shouldShowContextMenu(event)) {
-        Q_D(UCListItem);
-
-        // Highlight the Item while the menu is showing
-        d->setHighlighted(true);
-        // Reset the timer which otherwise is started with highlighting
-        d->pressAndHoldTimer.stop();
-
-        quint16 version(d->getTheme()->version());
-        QString versionString(QStringLiteral("%1.%2").arg(MAJOR_VERSION(version)).arg(MINOR_VERSION(version)));
-        QUrl url(UbuntuComponentsPlugin::pluginUrl().resolved(versionString + "/ListItemPopover.qml"));
-
-        // Open Popover
-        QQmlEngine* engine = qmlEngine(this);
-        QQmlComponent* component = new QQmlComponent(engine, url, QQmlComponent::PreferSynchronous, this);
-        if (component->isError()) {
-            qmlInfo(this) << component->errorString();
-        } else {
-            QQmlEngine::setContextForObject(component, qmlContext(this));
-            QQuickItem* item = static_cast<QQuickItem*>(component->create(qmlContext(this)));
-            item->setProperty("caller", QVariant::fromValue(this));
-            item->setParentItem(QuickUtils::instance().rootItem(this));
-            QMetaObject::invokeMethod(item, "show");
-            connect(item, &QQuickItem::visibleChanged, this,
-                &UCListItem13::popoverClosed, Qt::DirectConnection);
-        }
-        delete component;
+    if (d->shouldShowContextMenu(event)) {
+        d->showContextMenu();
     }
 }
 
-void UCListItem13::popoverClosed()
+bool UCListItemPrivate::shouldShowContextMenu(QMouseEvent *event)
 {
-    Q_D(UCListItem);
-    d->setHighlighted(false);
+    if (event->button() != Qt::RightButton)
+        return false;
+    return leadingActions || trailingActions;
+}
+
+void UCListItemPrivate::_q_popoverClosed()
+{
+    setHighlighted(false);
+}
+
+void UCListItemPrivate::showContextMenu()
+{
+    Q_Q(UCListItem);
+    // themes 1.2 and below should not have context menu support, so leave
+    quint16 version(getTheme()->version());
+    if (version <= BUILD_VERSION(1, 2)) {
+        return;
+    }
+
+    // Highlight the Item while the menu is showing
+    setHighlighted(true);
+    // Reset the timer which otherwise is started with highlighting
+    pressAndHoldTimer.stop();
+
+    QString versionString(QStringLiteral("%1.%2").arg(MAJOR_VERSION(version)).arg(MINOR_VERSION(version)));
+    QUrl url(UbuntuComponentsPlugin::pluginUrl().resolved(versionString + "/ListItemPopover.qml"));
+
+    // Open Popover
+    QQmlEngine* engine = qmlEngine(q);
+    QQmlComponent* component = new QQmlComponent(engine, url, QQmlComponent::PreferSynchronous, q);
+    if (component->isError()) {
+        qmlInfo(q) << component->errorString();
+    } else {
+        QQmlEngine::setContextForObject(component, qmlContext(q));
+        QQuickItem* item = static_cast<QQuickItem*>(component->create(qmlContext(q)));
+        item->setProperty("caller", QVariant::fromValue(q));
+        item->setParentItem(QuickUtils::instance().rootItem(q));
+        QMetaObject::invokeMethod(item, "show");
+        QObject::connect(item, SIGNAL(visibleChanged()), q,
+            SLOT(_q_popoverClosed()), Qt::DirectConnection);
+    }
+    delete component;
 }
 
 // ungrabs any previously grabbed left mouse button event
@@ -1239,15 +1240,13 @@ void UCListItemPrivate::handleLeftButtonRelease(QMouseEvent *event)
 
 void UCListItem::mouseReleaseEvent(QMouseEvent *event)
 {
-    UCStyledItemBase::mouseReleaseEvent(event);
     Q_D(UCListItem);
-    d->handleLeftButtonRelease(event);
-}
+    if (d->shouldShowContextMenu(event)) {
+        return;
+    }
 
-void UCListItem13::mouseReleaseEvent(QMouseEvent *event)
-{
-    if (!shouldShowContextMenu(event))
-        UCListItem::mouseReleaseEvent(event);
+    UCStyledItemBase::mouseReleaseEvent(event);
+    d->handleLeftButtonRelease(event);
 }
 
 // returns true if the mouse is swiped over the threshold value
@@ -1769,33 +1768,6 @@ QQmlListProperty<QQuickItem> UCListItemPrivate::children()
     return QQuickItemPrivate::get(contentItem)->children();
 }
 
-/******************************************************************************
- * Versioning
- */
-UCListItem13::UCListItem13(QQuickItem *parent)
-    : UCListItem(parent)
-{
-    Q_D(UCListItem);
-    d->defaultThemeVersion = BUILD_VERSION(1, 3);
-}
-
-QObject *UCListItem13::attachedViewItems(QObject *object, bool create)
-{
-    return qmlAttachedPropertiesObject<UCViewItemsAttached13>(object, create);
-}
-
-void UCListItem13::itemChange(ItemChange change, const ItemChangeData &data)
-{
-    UCListItem::itemChange(change, data);
-
-    Q_D(UCListItem);
-    // ViewItems drives expansion
-    if (d->parentAttached) {
-        connect(d->parentAttached.data(), SIGNAL(expandedIndicesChanged(QList<int>)),
-                this, SLOT(_q_updateExpansion(QList<int>)), Qt::UniqueConnection);
-    }
-}
-
 /*!
  * \qmlpropertygroup ::ListItem::expansion
  * \qmlproperty bool ListItem::expansion.expanded
@@ -1803,7 +1775,7 @@ void UCListItem13::itemChange(ItemChange change, const ItemChangeData &data)
  * \since Ubuntu.Components 1.3
  * The group drefines the expansion state of the ListItem.
  */
-UCListItemExpansion *UCListItem13::expansion()
+UCListItemExpansion *UCListItem::expansion()
 {
     Q_D(UCListItem);
     if (!d->expansion) {
@@ -1812,14 +1784,13 @@ UCListItemExpansion *UCListItem13::expansion()
     return d->expansion;
 }
 
-void UCListItem13::_q_updateExpansion(const QList<int> &indices)
+void UCListItemPrivate::_q_updateExpansion(const QList<int> &indices)
 {
-    Q_UNUSED(indices);
-    Q_D(UCListItem);
-    Q_EMIT expansion()->expandedChanged();
+    Q_Q(UCListItem);
+    Q_EMIT q->expansion()->expandedChanged();
     // make sure the style is loaded
-    if (indices.contains(d->index())) {
-        d->loadStyleItem();
+    if (indices.contains(index())) {
+        loadStyleItem();
     }
 }
 
