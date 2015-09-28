@@ -612,7 +612,6 @@ PageTreeNode {
                 height: body.headerHeight
 
                 styleName: "PageHeadStyle"
-                theme.version: Ubuntu.toolkitVersion
                 objectName: "Header" + column
 
                 property real preferredHeight: subHeader.__styleInstance ?

@@ -31,7 +31,6 @@ class UCStyledItemBasePrivate : public QQuickItemPrivate, public UCThemingExtens
     Q_DECLARE_PUBLIC(UCStyledItemBase)
 public:
 
-    static quint16 defaultThemeVersion;
     static UCStyledItemBasePrivate *get(UCStyledItemBase *item) {
         return item->d_func();
     }

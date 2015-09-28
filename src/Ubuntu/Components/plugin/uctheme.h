@@ -40,8 +40,9 @@ class UCTheme : public QObject, public QQmlParserStatus
     Q_PROPERTY(UCTheme *parentTheme READ parentTheme NOTIFY parentThemeChanged FINAL)
     Q_PROPERTY(QString name READ name WRITE setName RESET resetName NOTIFY nameChanged FINAL)
     Q_PROPERTY(QObject* palette READ palette WRITE setPalette RESET resetPalette NOTIFY paletteChanged FINAL)
-    Q_PROPERTY(quint16 version READ version WRITE setVersion NOTIFY versionChanged FINAL)
 public:
+
+    static quint16 defaultVersion;
     struct ThemeRecord {
         ThemeRecord() :
             shared(false), deprecated(false)
@@ -162,7 +163,6 @@ private:
     QList<ThemeRecord> m_themePaths;
     UCDefaultTheme m_defaultTheme;
     QQmlEngine *m_engine;
-    quint16 m_version;
     bool m_defaultStyle:1;
     bool m_completed:1;
 

@@ -213,7 +213,6 @@ PopupBase {
             }
         }
 
-        theme.version: Ubuntu.toolkitVersion
         styleName: "DialogForegroundStyle"
     }
 }

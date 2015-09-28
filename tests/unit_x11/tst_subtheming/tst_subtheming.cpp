@@ -636,44 +636,21 @@ private Q_SLOTS:
     {
         QTest::addColumn<QString>("document");
         QTest::addColumn<QString>("testValue");
-        QTest::addColumn<int>("row");
-        QTest::addColumn<int>("column");
-        QTest::addColumn<QString>("warning");
 
-        QTest::newRow("Theming version 1.2")
-                << "StyledItemV12.qml"
-                << ""
-                << 0 << 0 << "";
         QTest::newRow("Theming version 1.3")
                 << "StyledItemV13.qml"
-                << "version1.3"
-                << 0 << 0 << "";
-        QTest::newRow("Fall back to 1.3")
-                << "StyledItemFallback.qml"
-                << "version1.3"
-                << 19 << 1 << "QML StyledItem: Theme 'TestModule.TestTheme' has no 'TestStyle.qml' style for version 1.0, fall back to version 1.3.";
+                << "version1.3";
         QTest::newRow("App theme versioned")
                 << "StyledItemAppThemeVersioned.qml"
-                << "version1.3"
-                << 0 << 0 << "";
-        QTest::newRow("App theme fallback to non-versioned")
-                << "StyledItemAppThemeFallback.qml"
-                << ""
-                << 0 << 0 << "";
+                << "version1.3";
     }
     void test_theme_versions()
     {
         QFETCH(QString, document);
         QFETCH(QString, testValue);
-        QFETCH(int, row);
-        QFETCH(int, column);
-        QFETCH(QString, warning);
 
         qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "");
         qputenv("XDG_DATA_DIRS", "./themes:./themes/TestModule");
-        if (!warning.isEmpty()) {
-            ThemeTestCase::ignoreWarning(document, row, column, warning);
-        }
         QScopedPointer<ThemeTestCase> view(new ThemeTestCase(document));
         UCStyledItemBase *styledItem = qobject_cast<UCStyledItemBase*>(view->rootObject());
         QVERIFY(UCStyledItemBasePrivate::get(styledItem)->styleItem);
@@ -682,6 +659,12 @@ private Q_SLOTS:
         // NOTE TestTheme resets the theme therefore the theming will look for the tested style under Ambiance theme
         // which will cause a warning; therefore we mark the warning to be ignored
         ThemeTestCase::ignoreWarning(document, 19, 1, "QML StyledItem: Warning: Style TestStyle.qml not found in theme Ubuntu.Components.Themes.Ambiance");
+    }
+
+    void test_mixed_versions() {
+        qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "");
+        qputenv("XDG_DATA_DIRS", "./themes:./themes/TestModule");
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase("StyledItemV12.qml"));
     }
 
     void test_deprecated_theme()

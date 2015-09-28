@@ -25,8 +25,6 @@
 #include <QtQml/QQmlEngine>
 #include <QtQuick/private/qquickanchors_p.h>
 
-quint16 UCStyledItemBasePrivate::defaultThemeVersion = LATEST_UITK_VERSION;
-
 UCStyledItemBasePrivate::UCStyledItemBasePrivate()
     : styleComponent(Q_NULLPTR)
     , styleItem(Q_NULLPTR)
@@ -474,28 +472,10 @@ void UCStyledItemBase::classBegin()
 
 void UCStyledItemBase::componentComplete()
 {
-    static int versionChangeCount = 0;
     QQuickItem::componentComplete();
     Q_D(UCStyledItemBase);
-
-    quint16 version = d->importVersion(this);
-    if (version != d->defaultThemeVersion) {
-        // the first change is due to the first import detection, any further changes would mean there are
-        // multiple version imports
-        if (versionChangeCount++) {
-            QString msg = QStringLiteral("Mixing Ubuntu.Components module version %1.%2 with %3.%4 detected!")
-                    .arg(MAJOR_VERSION(version))
-                    .arg(MINOR_VERSION(version))
-                    .arg(MAJOR_VERSION(d->defaultThemeVersion))
-                    .arg(MINOR_VERSION(d->defaultThemeVersion));
-            qmlInfo(this) << msg;
-        }
-        d->defaultThemeVersion = version;
-        // load 1.2 theme
-        UCTheme *theme = d->getTheme();
-        // FIXME: override the global theme version to be used when creating new themes!
-        theme->setVersion(BUILD_VERSION(1, 2));
-    }
+    // make sure the theme version is up to date
+    d->getTheme()->setVersion(d->importVersion(this));
     // no animation at this time
     // prepare style context if not been done yet
     d->postStyleChanged();

@@ -349,6 +349,5 @@ Components.StyledItem {
         }
     }
 
-    theme.version: Components.Ubuntu.toolkitVersion
     styleName: "PageHeadStyle"
 }
