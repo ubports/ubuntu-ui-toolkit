@@ -1070,7 +1070,7 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
 
         if (d->parentAttached) {
             connect(d->parentAttached.data(), SIGNAL(expandedIndicesChanged(QList<int>)),
-                    this, SLOT(_q_updateExpansion(QList<int>)), Qt::UniqueConnection);
+                    this, SLOT(_q_updateExpansion(QList<int>)), Qt::DirectConnection);
         }
 
         if (parentAttachee) {
