@@ -45,21 +45,20 @@ function Incubator(pageWrapper, pageComponent) {
         pageWrapper.incubator.status = status;
         pageWrapper.incubator.object = pageWrapper.object = incubator.object;
 
-        // emit pageWrapper's pageLoaded signal to complete page activation and loading
-        if (status === Component.Ready) {
-            pageWrapper.pageLoaded();
-        }
-
         // forward state change to the user
         if (pageWrapper.incubator.onStatusChanged) {
             // call onStatusChanged
             pageWrapper.incubator.onStatusChanged(status);
         }
 
+        // emit pageWrapper's pageLoaded signal to complete page activation
+        if (status === Component.Ready) {
+            pageWrapper.pageLoaded();
+        }
+
         // cleanup of ready or error
         if (status !== Component.Loading) {
             pageWrapper.incubator = null;
-            incubator = null;
         }
     }
 
