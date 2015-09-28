@@ -86,6 +86,11 @@ UCLabel::UCLabel(QQuickItem* parent)
 void UCLabel::classBegin()
 {
     QQuickText::classBegin();
+    init();
+}
+
+void UCLabel::init()
+{
     initTheming(this);
     postThemeChanged();
     updatePixelSize();
