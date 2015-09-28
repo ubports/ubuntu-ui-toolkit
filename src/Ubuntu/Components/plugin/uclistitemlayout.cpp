@@ -28,20 +28,17 @@
     \inherits SlotsLayout
     \ingroup ubuntu
 
-    \brief ListItemLayout is a layout component built to be used within
-    a \l {ListItem} in a \c ListView.
+    \brief ListItemLayout provides an easy way to create list items which follow
+    Ubuntu design standards, thus making them visually appealing and
+    consistent with the rest of the platform without effort.
 
     ListItemLayout is essentially a \l {SlotsLayout} with a predefined
     \l {SlotsLayout::mainSlot}. This \c mainSlot has been optimized
     to cover most of the usecases without compromising performance.
     The height of this main slot is the minimum height required to
     accomodate the visible and non empty labels it holds.
-    If only \l {title} is visible and/or has a text set, for instance,
+    If only \l {title} is visible and has a text set, for instance,
     the height of the main slot will be \c {title.height}.
-
-    ListItemLayout provides an easy way to create list items which follow
-    Ubuntu design standards, thus making them visually appealing and
-    consistent with the rest of the platform without effort.
 
     This layout component works similarly to QtQuick's Row, but while
     Row just positions its children in a horizontal formation,
@@ -69,7 +66,7 @@
     documentation.
 
     The following code example shows how easy it is to create
-    even non trivial list items list items using
+    even non trivial list items using
     \l ListItem and ListItemLayout:
     \qml
     ListItem {
@@ -92,9 +89,8 @@
     \endqml
 
     Although ListItemLayout covers most of the usecases, there might be
-    times where manually tweaking the positioning is needed in order to
-    implement list item which need a special layout for one or more of
-    its slots. The following example shows one way to implement a list
+    times where you might want to tweak the position of one or more slots.
+    The following example shows one way to implement a list
     item with a trailing slot holding two labels. What is special about
     this example is that we want the baseline of one label inside the
     trailing slot to align to \l {title}'s baseline and the baseline of

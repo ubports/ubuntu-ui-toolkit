@@ -618,12 +618,17 @@ void UCSlotsLayoutPrivate::handleAttachedPropertySignals(QQuickItem *item, bool 
    \since Ubuntu.Components 1.3
    \brief The SlotsLayout component provides an easy way to layout a list
    of user-interface elements horizontally following Ubuntu design standards.
-   We call the elements which we want to layout "slots". Slot is just another
-   name for SlotsLayout's visual children.
+   We call the elements which we want to layout "slots". \b {Slots} is just another
+   name for SlotsLayout's \b {visual children}.
 
-   SlotsLayout will layout its visual children according to Ubuntu's visual design
+   SlotsLayout will layout its children according to Ubuntu's visual design
    rules, providing automatic spacing and positioning (both horizontal and
    vertical, unless \l overrideVerticalPositioning is set) for each of them.
+
+   \b {If you're building list items,} we recommend to use \l {ListItemLayout}, as
+   it is designed to accomodate up to 3 labels that follow our UI standards.
+
+   \sa ListItemLayout
 
    There are three conceptual types of slots:
    \list
@@ -677,15 +682,9 @@ void UCSlotsLayoutPrivate::handleAttachedPropertySignals(QQuickItem *item, bool 
     }
    \endqml
 
-   \b {For list items, the recommendation is to use} \l {ListItemLayout},
-   which is a SlotsLayout featuring a predefined \l mainSlot which
-   has been optimized to provide maximum performance while still covering
-   most of the usecases.
-   \sa ListItemLayout
-
    The positioning of each
    slot should only be tweaked using its attached properties. Just like
-   when using QtQuick's Row, a child item within the layout (i.e. a slot) should
+   when using QtQuick's Row, a child item within the layout should
    not set its \b x or \b anchors affecting the horizontal positioning
    (left, right, horizontalCenter, centerIn, fill). If you need to perform
    these actions, consider positioning the items without the use of a
@@ -705,16 +704,14 @@ void UCSlotsLayoutPrivate::handleAttachedPropertySignals(QQuickItem *item, bool 
    allows the user interface to be scalable across devices with varying resolution
    and form factors.
 
-   The \b {implicit height} is not fixed either. In order not to clip any of the slots,
-   SlotsLayout watches its children for height and padding changes  and makes sure to
-   grow its implicit height to accomodate the tallest slot plus the padding around
-   the slot and the one around the layout.
+   The \b {implicit height} is not fixed either. In order not to clip any of the slots, the
+   SlotsLayout adapts to accomodate its highest slot with padding and the padding around the layout.
 
    Because of the above, it is recommended to have items wrapping the layout
    bind to SlotsLayout's \b {height}, not the opposite. It is not recommended,
    for instance, to use anchors.fill to force SlotsLayout to fill another Item,
-   as that may bring to not having enough space to display the whole slots,
-   which would at that point get clipped.
+   because that item might not have enough space to accomdate all the slots,
+   and therefore the slots will be clipped.
 
    \qml
     ListItem {
@@ -751,7 +748,7 @@ void UCSlotsLayoutPrivate::handleAttachedPropertySignals(QQuickItem *item, bool 
    \endqml
 
    \section1 Automatic vertical positioning of slots
-   In order to provide a nice looking and consistent layout across the whole
+   In order to provide a visually pleasing and consistent layout across the whole
    platform, SlotsLayout automatically handles the vertical positioning of its
    slots so that they comply with the following rules:
    \list
@@ -772,7 +769,7 @@ void UCSlotsLayoutPrivate::handleAttachedPropertySignals(QQuickItem *item, bool 
    \l {Advanced layout tweaks}.
 
    \section1 Input handling
-   The purpose of SlotsLayout is to position its children (slots) following
+   The purpose of SlotsLayout is to position its slots following
    the rules defined in \l {Automatic vertical positioning of slots}.
    There are two recommended ways to implement input handling: the first one,
    in case the target is to create a list item, is to put the \l SlotsLayout
@@ -1111,6 +1108,9 @@ UCSlotsAttached::UCSlotsAttached(QObject *object)
     \li * SlotsLayout.End: the slot will be positioned at
         the end of the layout.
     \endlist
+
+    \l {ProgressionSlot}, for instance, has its position set to SlotsLayout.End,
+    in order to make sure the chevron is always displayed as the last trailing slot.
 
     Whenever there are more slots with the same \l {SlotsLayout::position},
     they will be positioned following the order in which they were added to

@@ -27,11 +27,11 @@ import Ubuntu.Components 1.3
     the progression symbol.
 
     ProgressionSlot is designed to provide an easy way for developers to
-    add a progression symbol to the list item created using \l ListItemLayout.
+    add a progression symbol to the list item created using \l ListItemLayout
+    or \l SlotsLayout.
 
-    There is no need to specify any margin or position, \l ListItemLayout will
-    take care of that and it will also make sure that the progression symbol
-    is always displayed as the last trailing slot inside the layout. For more
+    \l ListItemLayout will automatically accomodate the progression symbol
+    as the last trailing slot inside the layout. For more
     details, see \l ListItemLayout documentation.
 
     The following is an example of how easy it is to implement list items using
