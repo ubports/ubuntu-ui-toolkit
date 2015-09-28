@@ -32,6 +32,8 @@ class UCLabel : public QQuickText, public UCThemingExtension
 
 public:
     UCLabel(QQuickItem* parent=0);
+    //QQuickTextPrivate is not exported as of 5.4.1 so we need the init here
+    void init();
 
     enum TextSize {
         XxSmall = 0,
