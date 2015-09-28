@@ -21,6 +21,7 @@
 #include "uctheme.h"
 #include "ucstylehints.h"
 #include "ucthemingextension.h"
+#include "ucnamespace.h"
 #include <QtQml/QQmlEngine>
 #include <QtQuick/private/qquickanchors_p.h>
 
@@ -465,6 +466,20 @@ void UCStyledItemBase::componentComplete()
 {
     QQuickItem::componentComplete();
     Q_D(UCStyledItemBase);
+
+    QQmlData *data = QQmlData::get(this);
+    QQmlContextData *cdata = QQmlContextData::get(qmlContext(this));
+    QQmlPropertyData l;
+    QQmlPropertyData *pdata = QQmlPropertyCache::property(qmlEngine(this), this, QStringLiteral("theme"), cdata, l);
+    // FIXME MainView internal styler uses theme property, meaning imports13 will be true,
+    // therefore we must check the type of the property as well in case anyone else overrides it
+    bool imports13 = data->propertyCache->isAllowedInRevision(pdata) && (property("theme").type() != QVariant::String);
+    if (!imports13) {
+        // load 1.2 theme
+        UCTheme *theme = d->getTheme();
+        // FIXME: override the global theme version to be used when creating new themes!
+        theme->setVersion(BUILD_VERSION(1, 2));
+    }
     // no animation at this time
     // prepare style context if not been done yet
     d->postStyleChanged();

@@ -1174,13 +1174,17 @@ void UCListItemPrivate::_q_popoverClosed()
 void UCListItemPrivate::showContextMenu()
 {
     Q_Q(UCListItem);
+    // themes 1.2 and below should not have context menu support, so leave
+    quint16 version(getTheme()->version());
+    if (version <= BUILD_VERSION(1, 2)) {
+        return;
+    }
 
     // Highlight the Item while the menu is showing
     setHighlighted(true);
     // Reset the timer which otherwise is started with highlighting
     pressAndHoldTimer.stop();
 
-    quint16 version(getTheme()->version());
     QString versionString(QStringLiteral("%1.%2").arg(MAJOR_VERSION(version)).arg(MINOR_VERSION(version)));
     QUrl url(UbuntuComponentsPlugin::pluginUrl().resolved(versionString + "/ListItemPopover.qml"));
 
