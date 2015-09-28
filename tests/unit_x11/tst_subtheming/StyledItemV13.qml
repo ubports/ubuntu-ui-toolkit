@@ -18,6 +18,6 @@ import Ubuntu.Components 1.3
 
 StyledItem {
     id: item
-    theme: ThemeSettings { name: "themes.CustomTheme" }
+    theme.name: "themes.CustomTheme"
     styleName: "TestStyle"
 }

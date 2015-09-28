@@ -641,7 +641,7 @@ void UCTheme::attachItem(QQuickItem *item, bool attach)
  */
 void UCTheme::setVersion(quint16 version)
 {
-    static int versionChangeCount = 0;
+    static int versionChangeCount = 1;
     if (version != defaultVersion) {
         // the first change is due to the first import detection, any further changes would mean there are
         // multiple version imports

@@ -88,6 +88,7 @@ private Q_SLOTS:
         m_xdgDataPath = QLatin1String(getenv("XDG_DATA_DIRS"));
         m_themesPath = QLatin1String(getenv("UBUNTU_UI_TOOLKIT_THEMES_PATH"));
         qputenv("SUPPRESS_DEPRECATED_NOTE", "yes");
+        qputenv("QT_MESSAGE_PATTERN", "");
     }
 
     void cleanup()
@@ -664,7 +665,8 @@ private Q_SLOTS:
     void test_mixed_versions() {
         qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "");
         qputenv("XDG_DATA_DIRS", "./themes:./themes/TestModule");
-        QScopedPointer<ThemeTestCase> view(new ThemeTestCase("StyledItemV12.qml"));
+        QTest::ignoreMessage(QtWarningMsg, "\"Mixing of Ubuntu.Components module version 1.3 and 1.2 detected!\"");
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase("OtherVersion.qml"));
     }
 
     void test_deprecated_theme()
@@ -672,9 +674,6 @@ private Q_SLOTS:
         qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "");
         qputenv("XDG_DATA_DIRS", "./themes:./themes/TestModule:" + m_themesPath.toLatin1());
         QScopedPointer<ThemeTestCase> view(new ThemeTestCase("DeprecatedTheme.qml"));
-        // NOTE TestTheme resets the theme therefore the theming will look for the tested style version under Ambiance theme
-        // which will cause a warning; therefore we mark the warning to be ignored
-        ThemeTestCase::ignoreWarning("DeprecatedTheme.qml", 19, 1, "QML StyledItem: Theme 'Ubuntu.Components.Themes.Ambiance' has no 'OptionSelectorStyle.qml' style for version 1.0, fall back to version 1.3.");
     }
 
     void test_style_change_has_precedence()
