@@ -62,19 +62,32 @@ function Incubator(pageWrapper, pageComponent) {
         }
     }
 
-    if (pageWrapper.properties) {
-        incubator = pageComponent.incubateObject(pageWrapper, pageWrapper.properties);
-    } else {
-        incubator = pageComponent.incubateObject(pageWrapper);
+    function incubatePage() {
+        if (pageComponent.status == Component.Loading) {
+            return;
+        }
+
+        if (pageWrapper.properties) {
+            incubator = pageComponent.incubateObject(pageWrapper, pageWrapper.properties);
+        } else {
+            incubator = pageComponent.incubateObject(pageWrapper);
+        }
+
+        pageWrapper.incubator.status = incubator.status;
+        if (incubator.status != Component.Ready) {
+            incubator.onStatusChanged = incubatorStatusChanged;
+        } else {
+            incubatorStatusChanged(incubator.status);
+        }
     }
 
-    this.status = incubator.status;
-    if (incubator.status != Component.Ready) {
-        incubator.onStatusChanged = incubatorStatusChanged;
-    } else {
-        pageWrapper.incubator = this;
-        incubatorStatusChanged(incubator.status);
+    // main
+    pageWrapper.incubator = this;
+    if (pageComponent.status == Component.Loading) {
+        pageComponent.statusChanged.connect(incubatePage);
+        this.status = Component.Loading;
     }
+    incubatePage();
 }
 
 /*******************************************************
@@ -92,7 +105,11 @@ function initPage(pageWrapper) {
         pageComponent = pageWrapper.reference;
     } else if (typeof pageWrapper.reference == "string") {
         // page reference is a string (url)
-        pageComponent = Qt.createComponent(pageWrapper.reference);
+        if (pageWrapper.synchronous) {
+            pageComponent = Qt.createComponent(pageWrapper.reference);
+        } else {
+            pageComponent = Qt.createComponent(pageWrapper.reference, Component.Asynchronous);
+        }
     }
 
     if (pageComponent) {
