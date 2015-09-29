@@ -199,7 +199,8 @@ MainViewBase {
                     if (!(headerItem.config &&
                           headerItem.config.hasOwnProperty("locked") &&
                           headerItem.config.locked)) {
-                        headerItem.show();
+//                        headerItem.show();
+                        headerItem.exposed = true;
                     }
                 }
             }
