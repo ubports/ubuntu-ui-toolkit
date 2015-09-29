@@ -94,6 +94,16 @@ MainView {
         }
     }
 
+    Component {
+        id: aplPrecedence
+        AdaptivePageLayout {
+            width: units.gu(40)
+            height: units.gu(50)
+            primaryPage: page1
+            primaryPageSource: Qt.resolvedUrl("MyExternalPage.qml")
+        }
+    }
+
     UbuntuTestCase {
         id: testCase
         when: windowShown
@@ -349,7 +359,6 @@ MainView {
             var apl = data.test.createObject(root);
             verify(apl);
             tryCompareFunction(function () { return apl.primaryPage != null }, true, 1500);
-            // do not delete, only hide and deref so GC will do the cleanup
             apl.visible = false;
             apl = null;
         }
@@ -367,7 +376,21 @@ MainView {
             ignoreWarning("Cannot change primaryPageSource after completion.");
             apl.primaryPageSource = data.nextValue;
             verify(apl.primaryPageSource != data.nextValue, "property value changed!");
-            // do not delete, only hide and deref so GC will do the cleanup
+            apl.visible = false;
+            apl = null;
+        }
+
+        SignalSpy {
+            id: primaryPageSpy
+            signalName: "primaryPageChanged"
+        }
+
+        function test_primaryPageSource_precedence_over_primaryPage() {
+            var apl = aplPrecedence.createObject(root);
+            primaryPageSpy.target = apl;
+            verify(apl);
+            primaryPageSpy.wait();
+            verify(apl.primaryPage.title != page1.title, "primaryPage has not been overloaded by primaryPageSource");
             apl.visible = false;
             apl = null;
         }
