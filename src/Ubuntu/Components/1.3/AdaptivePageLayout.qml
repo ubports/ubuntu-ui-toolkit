@@ -338,23 +338,27 @@ PageTreeNode {
         } else {
             d.relayout();
         }
-        d.completed = true;
-        if (primaryPage) {
-            var wrapper = d.createWrapper(primaryPage);
-            d.addWrappedPage(wrapper);
+        if (primaryPageSource) {
+            d.createPrimaryPage(primaryPageSource);
+        } else if (primaryPage) {
+            d.createPrimaryPage(primaryPage);
         } else {
             console.warn("No primary page set. No pages can be added without a primary page.");
         }
+        d.completed = true;
     }
     onPrimaryPageChanged: {
-        if (d.completed) {
+        if (d.completed && !d.internalUpdate) {
             console.warn("Cannot change primaryPage after completion.");
+            d.internalPropertyUpdate("primaryPage", d.lastPrimaryPage);
             return;
         }
+        d.lastPrimaryPage = primaryPage;
     }
     onPrimaryPageSourceChanged: {
-        if (d.completed) {
+        if (d.completed && !d.internalUpdate) {
             console.warn("Cannot change primaryPageSource after completion.");
+            d.internalPropertyUpdate("primaryPageSource", d.lastPrimaryPageSource);
             return;
         }
         d.lastPrimaryPageSource = primaryPageSource;
@@ -373,6 +377,7 @@ PageTreeNode {
     QtObject {
         id: d
 
+        property bool internalUpdate: false
         property bool completed: false
         property var tree: new Tree.Tree()
 
@@ -381,6 +386,8 @@ PageTreeNode {
                                   (activeLayout ? activeLayout.data.length : 1)
         property PageColumnsLayout activeLayout: null
         property list<PageColumnsLayout> prevLayouts
+        property Page lastPrimaryPage
+        property var lastPrimaryPageSource
 
         /*! internal */
         onColumnsChanged: {
@@ -392,6 +399,26 @@ PageTreeNode {
         }
         property real defaultColumnWidth: units.gu(40)
         onDefaultColumnWidthChanged: body.applyMetrics()
+
+        function internalPropertyUpdate(propertyName, value) {
+            internalUpdate = true;
+            layout[propertyName] = value;
+            internalUpdate = false;
+        }
+
+        function createPrimaryPage(source) {
+            var wrapper = d.createWrapper(source);
+            if (wrapper.incubator) {
+                wrapper.pageLoaded.connect(finalizeAddingPage.bind(wrapper));
+                wrapper.incubator.onStatusChanged = function (status) {
+                    if (status == Component.Ready) {
+                        internalPropertyUpdate("primaryPage", wrapper.incubator.object);
+                    }
+                }
+            } else {
+                finalizeAddingPage(wrapper);
+            }
+        }
 
         function createWrapper(page, properties) {
             var wrapperComponent = Qt.createComponent("PageWrapper.qml");
