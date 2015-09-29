@@ -76,6 +76,12 @@ MainView {
         }
     }
 
+    Component {
+        id: aplComponent
+        AdaptivePageLayout {
+        }
+    }
+
     UbuntuTestCase {
         id: testCase
         when: windowShown
@@ -317,6 +323,34 @@ MainView {
             }
             loadedSpy.wait(2500);
             verify(prevPageActive);
+        }
+
+        function test_primaryPageSource_bug1499179_data() {
+            return [
+                {tag: "Component", pageSource: pageComponent},
+                {tag: "Document", pageSource: Qt.resolvedUrl("MyExternalPage.qml")},
+            ];
+        }
+        function test_primaryPageSource_bug1499179(data) {
+            var apl = aplComponent.createObject(root, {primaryPageSource: data.pageSource});
+            verify(apl);
+            tryCompareFunction(function () { return apl.primaryPage != null }, true, 1500);
+            apl.destroy();
+        }
+
+        function test_primaryPageSource_not_set_twice_data() {
+            return [
+                {tag: "Component", pageSource: pageComponent, nextValue: null},
+                {tag: "Document", pageSource: Qt.resolvedUrl("MyExternalPage.qml"), nextValue: null},
+            ];
+        }
+        function test_primaryPageSource_not_set_twice(data) {
+            var apl = aplComponent.createObject(root, {primaryPageSource: data.pageSource});
+            verify(apl);
+            tryCompareFunction(function () { return apl.primaryPage != null }, true, 1500);
+            apl.primaryPageSource = data.nextValue;
+            verify(apl.primaryPageSource != data.nextValue, "property value changed!");
+            apl.destroy();
         }
     }
 }
