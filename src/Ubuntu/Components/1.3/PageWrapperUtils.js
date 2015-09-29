@@ -95,15 +95,12 @@ function initPage(pageWrapper) {
         pageComponent = Qt.createComponent(pageWrapper.reference);
     }
 
-    // PageWrapper can override the synchronous loading
-    var synchronous = pageWrapper.hasOwnProperty("synchronous") ? pageWrapper.synchronous : true;
-
     if (pageComponent) {
         if (pageComponent.status === Component.Error) {
             throw new Error("Error while loading page: " + pageComponent.errorString());
         } else {
             // create the object
-            if (synchronous) {
+            if (pageWrapper.synchronous) {
                 if (pageWrapper.properties) {
                     // initialize the object with the given properties
                     pageWrapper.object = pageComponent.createObject(pageWrapper, pageWrapper.properties);
