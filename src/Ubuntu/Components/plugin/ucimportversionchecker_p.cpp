@@ -27,9 +27,6 @@
 
 /*!
  * \internal
- * \brief UCImportVersionChecker::importVersion
- * \param object
- * \return import version the object is used in.
  *
  * The function returns the version the module is imported with based on a QML
  * component instance. It only checks till reaches 1.2 version. Implementations
