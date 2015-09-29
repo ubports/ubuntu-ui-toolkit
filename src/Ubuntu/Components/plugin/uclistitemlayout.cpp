@@ -99,50 +99,50 @@
     the other label to align to \l {subtitle}'s baseline.
 
     \qml
-        ListItem {
-            id: listItem
-            height: layout.height
+    ListItem {
+        id: listItem
+        height: layout.height
 
-            ListItemLayout {
-                id: layout
-                title.text: "Hello..."
-                title.color: UbuntuColors.Orange
-                subtitle.text: "...world!"
+        ListItemLayout {
+            id: layout
+            title.text: "Hello..."
+            title.color: UbuntuColors.Orange
+            subtitle.text: "...world!"
 
-                Rectangle {
-                    SlotsLayout.position: SlotsLayout.Leading
-                    color: "pink"
-                    height: units.gu(6)
-                    width: height
+            Rectangle {
+                SlotsLayout.position: SlotsLayout.Leading
+                color: "pink"
+                height: units.gu(6)
+                width: height
+            }
+
+            Item {
+                id: slot
+                width: secondLabel.width
+                height: parent.height
+
+                //as we want to position labels to align with title and subtitle
+                SlotsLayout.overrideVerticalPositioning: true
+
+                Label {
+                    id: firstLabel
+                    anchors.right: secondLabel.right
+                    text: "19:17"
+                    fontSize: "small"
+                    y: layout.mainSlot.y + layout.title.y
+                       + layout.title.baselineOffset - baselineOffset
                 }
 
-                Item {
-                    id: slot
-                    width: secondLabel.width
-                    height: parent.height
-
-                    //as we want to position labels to align with title and subtitle
-                    SlotsLayout.overrideVerticalPositioning: true
-
-                    Label {
-                        id: firstLabel
-                        anchors.right: secondLabel.right
-                        text: "19:17"
-                        fontSize: "small"
-                        y: layout.mainSlot.y + layout.title.y
-                           + layout.title.baselineOffset - baselineOffset
-                    }
-
-                    Label {
-                        id: secondLabel
-                        text: "Outgoing"
-                        fontSize: "small"
-                        y: layout.mainSlot.y + layout.subtitle.y
-                           + layout.subtitle.baselineOffset - baselineOffset
-                    }
+                Label {
+                    id: secondLabel
+                    text: "Outgoing"
+                    fontSize: "small"
+                    y: layout.mainSlot.y + layout.subtitle.y
+                       + layout.subtitle.baselineOffset - baselineOffset
                 }
             }
         }
+    }
     \endqml
     \sa SlotsLayout
     \sa ProgressionSlot
@@ -162,32 +162,32 @@ UCListItemLayout::UCListItemLayout(QQuickItem *parent)
 }
 
 /*!
-  \qmlproperty Label ListItemLayout::title
+    \qmlproperty Label ListItemLayout::title
 
-  This property defines the title label and its properties.
-  Styling and font properties can be set just like on any other
-  Text component, as shown in the following example:
+    This property defines the title label and its properties.
+    Styling and font properties can be set just like on any other
+    Text component, as shown in the following example:
 
-  \qml
-  Item {
-    ListItemLayout {
-        title.text: "Hello"
-        title.color: "yellow"
+    \qml
+    Item {
+        ListItemLayout {
+            title.text: "Hello"
+            title.color: "yellow"
+        }
     }
-  }
-  \endqml
-  */
+    \endqml
+*/
 UCLabel *UCListItemLayout::title()
 {
     return qobject_cast<UCThreeLabelsSlot *>(mainSlot())->title();
 }
 
 /*!
-  \qmlproperty Label ListItemLayout::subtitle
+    \qmlproperty Label ListItemLayout::subtitle
 
-  This property defines the subtitle label and its properties.
-  Styling and font properties can be set by using the prefix
-  \c {subtitle.} in a similar way as shown in \l {title}.
+    This property defines the subtitle label and its properties.
+    Styling and font properties can be set by using the prefix
+    \c {subtitle.} in a similar way as shown in \l title.
 */
 UCLabel *UCListItemLayout::subtitle()
 {
@@ -195,11 +195,11 @@ UCLabel *UCListItemLayout::subtitle()
 }
 
 /*!
-  \qmlproperty Label ListItemLayout::summary
+    \qmlproperty Label ListItemLayout::summary
 
-  This property defines the subtitle label and its properties.
-  Styling and font properties can be set by using the prefix
-  \c {summary.} in a similar way as shown in \l {title}.
+    This property defines the subtitle label and its properties.
+    Styling and font properties can be set by using the prefix
+    \c {summary.} in a similar way as shown in \l title.
 */
 UCLabel *UCListItemLayout::summary()
 {

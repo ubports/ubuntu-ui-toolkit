@@ -1,3 +1,19 @@
+/*
+ * Copyright 2015 Canonical Ltd.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "threelabelsslot_p.h"
 #include "uclabel.h"
 #include "ucunits.h"
@@ -26,14 +42,8 @@ void UCThreeLabelsSlotPrivate::setTitleProperties()
         m_title->setWrapMode(UCLabel::WordWrap);
         m_title->setElideMode(UCLabel::ElideRight);
         m_title->setMaximumLineCount(1);
-        QFont titleFont = m_title->font();
-        titleFont.setPixelSize(UCFontUtils::instance().sizeToPixels("medium"));
-        titleFont.setWeight(QFont::Light);
-        m_title->setFont(titleFont);
+        m_title->setTextSize(UCLabel::Medium);
     }
-
-    //We set the theme-dependent properties (such as the colour) later
-    //as it requires qmlContext(q) to be initialized
 }
 
 void UCThreeLabelsSlotPrivate::setSubtitleProperties()
@@ -43,10 +53,7 @@ void UCThreeLabelsSlotPrivate::setSubtitleProperties()
         m_subtitle->setWrapMode(UCLabel::WordWrap);
         m_subtitle->setElideMode(UCLabel::ElideRight);
         m_subtitle->setMaximumLineCount(1);
-        QFont subtitleFont = m_subtitle->font();
-        subtitleFont.setPixelSize(UCFontUtils::instance().sizeToPixels("small"));
-        subtitleFont.setWeight(QFont::Light);
-        m_subtitle->setFont(subtitleFont);
+        m_subtitle->setTextSize(UCLabel::Small);
     }
 }
 
@@ -57,33 +64,12 @@ void UCThreeLabelsSlotPrivate::setSummaryProperties()
         m_summary->setWrapMode(UCLabel::WordWrap);
         m_summary->setElideMode(UCLabel::ElideRight);
         m_summary->setMaximumLineCount(2);
-        QFont summaryFont = m_summary->font();
-        summaryFont.setPixelSize(UCFontUtils::instance().sizeToPixels("small"));
-        summaryFont.setWeight(QFont::Light);
-        m_summary->setFont(summaryFont);
+        m_summary->setTextSize(UCLabel::Small);
     }
 }
 
 void UCThreeLabelsSlotPrivate::_q_onGuValueChanged()
 {
-    if (m_title != Q_NULLPTR) {
-        QFont titleFont = m_title->font();
-        titleFont.setPixelSize(UCFontUtils::instance().sizeToPixels("medium"));
-        m_title->setFont(titleFont);
-    }
-
-    if (m_subtitle != Q_NULLPTR) {
-        QFont subtitleFont = m_subtitle->font();
-        subtitleFont.setPixelSize(UCFontUtils::instance().sizeToPixels("small"));
-        m_subtitle->setFont(subtitleFont);
-    }
-
-    if (m_summary != Q_NULLPTR) {
-        QFont summaryFont = m_summary->font();
-        summaryFont.setPixelSize(UCFontUtils::instance().sizeToPixels("small"));
-        m_summary->setFont(summaryFont);
-    }
-
     if (m_title != Q_NULLPTR
             || m_subtitle != Q_NULLPTR
             || m_summary != Q_NULLPTR) {
@@ -119,43 +105,27 @@ void UCThreeLabelsSlotPrivate::_q_updateLabelsAnchorsAndBBoxHeight()
                                 : QQuickItemPrivate::get(m_title)->baseline());
         subtitleAnchors->setTopMargin(skipTitle
                                       ? 0
-                                      : UCUnits::instance().gu(LABELSBLOCK_SPACING_GU));
+                                      : UCUnits::instance().dp(LABELSBLOCK_SPACING_DP));
     }
 
     if (!skipSummary) {
         QQuickAnchors *summaryAnchors = QQuickItemPrivate::get(m_summary)->anchors();
         summaryAnchors->setTop(skipSubtitle
-                               ? (skipTitle ? top() : QQuickItemPrivate::get(m_title)->baseline())
-                               : QQuickItemPrivate::get(m_subtitle)->baseline());
-        summaryAnchors->setTopMargin(skipSubtitle && skipTitle
-                                     ? 0
-                                     : UCUnits::instance().gu(LABELSBLOCK_SPACING_GU));
-
+                               ? (skipTitle ? top() : QQuickItemPrivate::get(m_title)->bottom())
+                               : QQuickItemPrivate::get(m_subtitle)->bottom());
+        summaryAnchors->setTopMargin(0);
     }
     //Update height of the labels box
     //NOTE (FIXME? it's stuff in Qt): height is not 0 when the string is empty, its default value is "fontHeight"!
     qreal labelsBoundingBoxHeight = 0;
 
-    if (!skipTitle) {
-        if (skipSubtitle && skipSummary) {
-            labelsBoundingBoxHeight += m_title->height();
-        } else {
-            labelsBoundingBoxHeight += m_title->baselineOffset() + UCUnits::instance().gu(LABELSBLOCK_SPACING_GU);
-        }
-    }
-
-    if (skipSubtitle) {
-        if (!skipSummary) {
-            labelsBoundingBoxHeight += m_summary->height();
-        }
-    } else {
-        if (skipSummary) {
-            labelsBoundingBoxHeight += m_subtitle->height();
-        } else {
-            labelsBoundingBoxHeight += m_subtitle->baselineOffset()
-                    + UCUnits::instance().gu(LABELSBLOCK_SPACING_GU)
-                    + m_summary->height();
-        }
+    //We're assuming they're positioned in a column, title->subtitle->summary
+    if (!skipSummary) {
+        labelsBoundingBoxHeight = m_summary->y() + m_summary->height();
+    } else if (!skipSubtitle) {
+        labelsBoundingBoxHeight = m_subtitle->y() + m_subtitle->height();
+    } else if (!skipTitle) {
+        labelsBoundingBoxHeight = m_title->y() + m_title->height();
     }
 
     q->setImplicitHeight(labelsBoundingBoxHeight);
@@ -184,7 +154,7 @@ UCLabel *UCThreeLabelsSlot::title()
         //we need this to know when any of the labels is empty. In that case, we'll have to change the
         //anchors because even if a UCLabel has empty text, its height will not be 0 but "fontHeight",
         //so anchoring to text's bottom will result in the wrong outcome as a consequence.
-        //TODO: updating anchors just because text changes is too much, we should probably just
+        //FIXME: updating anchors just because text changes is too much, we should probably just
         //have variables signal when a label becomes empty
         QObject::connect(d->m_title, SIGNAL(textChanged(QString)), this, SLOT(_q_updateLabelsAnchorsAndBBoxHeight()));
 
