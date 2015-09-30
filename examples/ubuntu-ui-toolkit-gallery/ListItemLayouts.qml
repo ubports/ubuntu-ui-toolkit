@@ -48,8 +48,7 @@ Template {
 
         ListItem {
             id: addressbookDetailsListItem
-            height: addressbookDetailsLayout.height
-
+            height: addressbookDetailsLayout.height + divider.height
             ListItemLayout {
                 id: addressbookDetailsLayout
 

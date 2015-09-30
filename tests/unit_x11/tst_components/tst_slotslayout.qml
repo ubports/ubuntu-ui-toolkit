@@ -801,5 +801,33 @@ Item {
                     "Default labels positioning, mainSlot's height")
             checkLabelsY(layoutLabels)
         }
+
+        function test_fontsizeChange() {
+            var initialHeight = layoutLabels.mainSlot.height
+            compare(layoutLabels.title.textSize, Label.Medium, "Labels textSize change, default title textsize")
+            compare(layoutLabels.subtitle.textSize, Label.Small, "Labels textSize change, default subtitle textsize")
+            compare(layoutLabels.summary.textSize, Label.Small, "Labels textSize change, default summary textsize")
+
+            compare(layoutLabels.title.text.length > 0, true, "Default labels positioning, title length")
+            compare(layoutLabels.subtitle.text.length > 0, true, "Default labels positioning, subtitle length")
+            compare(layoutLabels.summary.text.length > 0, true, "Default labels positioning, summary length")
+            compare(layoutLabels.mainSlot.height, layoutLabels.summary.y + layoutLabels.summary.height,
+                    "Default labels positioning, main slot height")
+
+            layoutLabels.title.textSize = Label.XLarge
+            compare(layoutLabels.title.textSize, Label.XLarge, "Labels textSize change, new title textsize")
+            compare(layoutLabels.mainSlot.height, layoutLabels.summary.y + layoutLabels.summary.height,
+                    "Default labels positioning, main slot height")
+
+            layoutLabels.subtitle.textSize = Label.XLarge
+            compare(layoutLabels.subtitle.textSize, Label.XLarge, "Labels textSize change, new subtitle textsize")
+            compare(layoutLabels.mainSlot.height, layoutLabels.summary.y + layoutLabels.summary.height,
+                    "Default labels positioning, main slot height")
+
+            layoutLabels.summary.textSize = Label.XLarge
+            compare(layoutLabels.summary.textSize, Label.XLarge, "Labels textSize change, new summary textsize")
+            compare(layoutLabels.mainSlot.height, layoutLabels.summary.y + layoutLabels.summary.height,
+                    "Default labels positioning, main slot height")
+        }
     }
 }

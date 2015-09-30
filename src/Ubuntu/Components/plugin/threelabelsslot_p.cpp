@@ -114,8 +114,8 @@ void UCThreeLabelsSlotPrivate::_q_updateLabelsAnchorsAndBBoxHeight()
                                ? (skipTitle ? top() : QQuickItemPrivate::get(m_title)->baseline())
                                : QQuickItemPrivate::get(m_subtitle)->bottom());
         summaryAnchors->setTopMargin(skipSubtitle
-                                      ? (skipTitle ? 0 : UCUnits::instance().dp(LABELSBLOCK_SPACING_DP))
-                                      : 0);
+                                     ? (skipTitle ? 0 : UCUnits::instance().dp(LABELSBLOCK_SPACING_DP))
+                                     : 0);
     }
     //Update height of the labels box
     //NOTE (FIXME? it's stuff in Qt): height is not 0 when the string is empty, its default value is "fontHeight"!
@@ -166,6 +166,11 @@ UCLabel *UCThreeLabelsSlot::title()
         //so we have to monitor height change as well
         QObject::connect(d->m_title, SIGNAL(heightChanged()), this, SLOT(_q_updateLabelsAnchorsAndBBoxHeight()));
         QObject::connect(d->m_title, SIGNAL(visibleChanged()), this, SLOT(_q_updateLabelsAnchorsAndBBoxHeight()));
+
+        //When changing fontsize of the title, heightChanged triggers an update of the height of "this", but at that point
+        //baseline anchor and baselineOffset are not updated yet, so the height computed is not correct.
+        //For that reason, we have to update the height of the item also when baselineOffset changes
+        QObject::connect(d->m_title, SIGNAL(baselineOffsetChanged(qreal)), this, SLOT(_q_updateLabelsAnchorsAndBBoxHeight()));
 
         d->setTitleProperties();
         d->_q_updateLabelsAnchorsAndBBoxHeight();
