@@ -187,7 +187,7 @@ PageTreeNode {
       The property holds the first Page which will be added to the view. If the
       view has more than one column, the page will be added to the leftmost column.
       The property can only hold a Page instance. When changed runtime (not by the
-      AdaptivePageLayout component itself), the \l primaryPageComponent property
+      AdaptivePageLayout component itself), the \l primaryPageSource property
       will be reset.
       */
     property Page primaryPage
