@@ -111,9 +111,11 @@ void UCThreeLabelsSlotPrivate::_q_updateLabelsAnchorsAndBBoxHeight()
     if (!skipSummary) {
         QQuickAnchors *summaryAnchors = QQuickItemPrivate::get(m_summary)->anchors();
         summaryAnchors->setTop(skipSubtitle
-                               ? (skipTitle ? top() : QQuickItemPrivate::get(m_title)->bottom())
+                               ? (skipTitle ? top() : QQuickItemPrivate::get(m_title)->baseline())
                                : QQuickItemPrivate::get(m_subtitle)->bottom());
-        summaryAnchors->setTopMargin(0);
+        summaryAnchors->setTopMargin(skipSubtitle
+                                      ? (skipTitle ? 0 : UCUnits::instance().dp(LABELSBLOCK_SPACING_DP))
+                                      : 0);
     }
     //Update height of the labels box
     //NOTE (FIXME? it's stuff in Qt): height is not 0 when the string is empty, its default value is "fontHeight"!

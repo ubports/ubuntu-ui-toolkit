@@ -694,11 +694,41 @@ Item {
         function checkLabelsY(listitemlayout) {
             compare(listitemlayout.title.y, 0,
                     "Default labels positioning, title's y")
-            compare(listitemlayout.subtitle.y,
-                    listitemlayout.title.baselineOffset + units.dp(4),
-                    "Default labels positioning, subtitle's y")
-            compare(listitemlayout.summary.y, listitemlayout.subtitle.y + listitemlayout.subtitle.height,
-                    "Default labels positioning, summary's y")
+
+            //we don't care about having the correct Y if the label
+            //is empty or not visible anyway
+            if (listitemlayout.subtitle.text !== ""
+                    && listitemlayout.subtitle.visible) {
+                if (listitemlayout.title.text === "" ||
+                        !listitemlayout.title.visible) {
+                    compare(listitemlayout.subtitle.y, 0,
+                            "Default labels positioning, subtitle's y")
+                } else {
+                    compare(listitemlayout.subtitle.y,
+                            listitemlayout.title.baselineOffset + units.dp(4),
+                            "Default labels positioning, subtitle's y")
+                }
+            }
+
+            //we don't care about having the correct Y if the label
+            //is empty or not visible anyway
+            if (listitemlayout.summary.text !== ""
+                    && listitemlayout.summary.visible) {
+                if (listitemlayout.subtitle.text === "" ||
+                        !listitemlayout.subtitle.visible) {
+                    if (listitemlayout.title.text === "" ||
+                            !listitemlayout.title.visible) {
+                        compare(listitemlayout.summary.y, 0,
+                                "Default labels positioning, summary's y")
+                    } else {
+                        compare(listitemlayout.summary.y, listitemlayout.title.baselineOffset + units.dp(4),
+                                "Default labels positioning, summary's y")
+                    }
+                } else  {
+                    compare(listitemlayout.summary.y, listitemlayout.subtitle.y + listitemlayout.subtitle.height,
+                            "Default labels positioning, summary's y")
+                }
+            }
         }
 
         function test_defaultMainSlotHeight() {
@@ -722,7 +752,6 @@ Item {
                     "Default labels positioning, mainSlot's height")
             checkLabelsY(layoutLabels)
 
-
             //empty text -> we ignore summary in the height computation
             layoutLabels.summary.text = ""
             compare(layoutLabels.summary.text, "", "Default labels positioning, empty summary text")
@@ -739,10 +768,32 @@ Item {
             //all labels are empty now
             layoutLabels.title.text = ""
             compare(layoutLabels.title.text, "", "Default labels positioning, empty title text")
+            compare(layoutLabels.subtitle.text, "", "Default labels positioning, empty subtitle text")
+            compare(layoutLabels.summary.text, "", "Default labels positioning, empty summary text")
             compare(layoutLabels.mainSlot.height, 0,
                     "Default labels positioning, mainSlot's height")
             checkLabelsY(layoutLabels)
 
+            //try title and summary, skipping subtitle
+            layoutLabels.title.text = "test"
+            layoutLabels.summary.text = "test"
+            compare(layoutLabels.title.text, "test", "Default labels positioning, empty title text")
+            compare(layoutLabels.subtitle.text, "", "Default labels positioning, empty subtitle text")
+            compare(layoutLabels.summary.text, "test", "Default labels positioning, empty summary text")
+            compare(layoutLabels.mainSlot.height, layoutLabels.summary.y + layoutLabels.summary.height,
+                    "Default labels positioning, mainSlot's height")
+            checkLabelsY(layoutLabels)
+
+            //let's try with summary only
+            layoutLabels.title.text = ""
+            compare(layoutLabels.title.text, "", "Default labels positioning, empty title text")
+            compare(layoutLabels.subtitle.text, "", "Default labels positioning, empty subtitle text")
+            compare(layoutLabels.summary.text, "test", "Default labels positioning, empty summary text")
+            compare(layoutLabels.mainSlot.height, layoutLabels.summary.y + layoutLabels.summary.height,
+                    "Default labels positioning, mainSlot's height")
+            checkLabelsY(layoutLabels)
+
+            //try to set all texts and test positions again
             layoutLabels.title.text = titleText
             layoutLabels.subtitle.text = subtitleText
             layoutLabels.summary.text = summaryText
