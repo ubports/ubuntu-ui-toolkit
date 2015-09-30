@@ -30,8 +30,7 @@ class ActionBarTestCase(tests.QMLFileAppTestCase):
         super().setUp()
         self.actionbar = self.app.select_single(
             'ActionBar', objectName='ActionBar')
-        self.label = self.app.select_single(
-            'Label', objectName='Label')
+        self.label = self.app.select_single(objectName='Label')
         self.assertEqual(self.label.text, 'No action triggered.')
 
     def test_custom_proxy_object(self):
