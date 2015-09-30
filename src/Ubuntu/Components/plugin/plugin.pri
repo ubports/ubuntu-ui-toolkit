@@ -16,6 +16,7 @@ QT *= organizer
 
 #comment in the following line to disable traces
 #DEFINES += QT_NO_DEBUG_OUTPUT
+DEFINES += QT_USE_QSTRINGBUILDER
 
 INCLUDEPATH+=$$PWD
 
