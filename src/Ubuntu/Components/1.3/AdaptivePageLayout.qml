@@ -45,7 +45,7 @@ import "tree.js" as Tree
   \l primaryPage or \l primaryPageSource properties. \l primaryPage can only
   hold a Page instance, \l primaryPageSource can either be a Component or a
   url to a document defining a Page. \l primaryPageSource has precedence over
-  \l primaryPage, and when set it will reprt the loaded Page through \l primaryPage
+  \l primaryPage, and when set it will report the loaded Page through \l primaryPage
   property, and will replace any value set into that property.
 
   \qml
@@ -186,8 +186,7 @@ PageTreeNode {
     /*!
       The property holds the first Page which will be added to the view. If the
       view has more than one column, the page will be added to the leftmost column.
-      The property can only hold a Page instance. The property cannot be changed after
-      component completion.
+      The property can only hold a Page instance.
       */
     property Page primaryPage
 
@@ -195,8 +194,8 @@ PageTreeNode {
       The property specifies the source of the primaryPage in case the primary
       page is created from a Component or loaded from an external document. It
       has precedence over \l primaryPage and cannot be changed after component
-      completion. The page loaded will be reported through the \l primaryPage
-      property.
+      completion. The page specified in this way will be cerated asynchronously
+      and the instance will be reported through \l primaryPage property.
       */
     property var primaryPageSource
 
