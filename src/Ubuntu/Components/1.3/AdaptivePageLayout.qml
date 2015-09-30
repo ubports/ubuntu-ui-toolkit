@@ -41,10 +41,11 @@ import "tree.js" as Tree
   the column next to the source page. Giving a null value to the source page will
   add the page to the leftmost column of the view.
 
-  The primary page, the very first page must be specified through the \l primaryPage
-  property. The property cannot be changed after component completion and can hold
-  a Page instance, a Component or a url to a document defining a Page. The page
-  cannot be removed from the view.
+  The primary page, the very first page must be specified either through the
+  \l primaryPage or \l primaryPageSource properties. The properties cannot be
+  changed after component completion. \l primaryPage can only hold a Page instance,
+  \l primaryPageSource can either be a Component or a url to a document defining
+  a Page. This page cannot be removed from the view.
 
   \qml
     import QtQuick 2.4
@@ -112,7 +113,7 @@ import "tree.js" as Tree
 
         AdaptivePageLayout {
             anchors.fill: parent
-            primaryPage: page1
+            primaryPageSource: page1
             layouts: PageColumnsLayout {
                 when: width > units.gu(80)
                 // column #0
@@ -127,17 +128,20 @@ import "tree.js" as Tree
                 }
             }
 
-            Page {
-                id: page1
-                title: "Main page"
-                Column {
-                    Button {
-                        text: "Add Page2 above " + page1.title
-                        onClicked: page1.pageStack.addPageToCurrentColumn(page1, page2)
-                    }
-                    Button {
-                        text: "Add Page3 next to " + page1.title
-                        onClicked: page1.pageStack.addPageToNextColumn(page1, page3)
+            Component {
+                id: page1Component
+                Page {
+                    id: page1
+                    title: "Main page"
+                    Column {
+                        Button {
+                            text: "Add Page2 above " + page1.title
+                            onClicked: page1.pageStack.addPageToCurrentColumn(page1, page2)
+                        }
+                        Button {
+                            text: "Add Page3 next to " + page1.title
+                            onClicked: page1.pageStack.addPageToNextColumn(page1, page3)
+                        }
                     }
                 }
             }
@@ -186,6 +190,14 @@ PageTreeNode {
       component completion.
       */
     property Page primaryPage
+
+    /*!
+      The property specifies the source of the primaryPage in case the primary
+      page is created from a Component or loaded from an external document. It
+      has precedence over \l primaryPage and cannot be changed after component
+      completion.
+      */
+    property var primaryPageSource
 
     /*!
       \qmlproperty int columns
@@ -326,20 +338,32 @@ PageTreeNode {
         } else {
             d.relayout();
         }
-        d.completed = true;
-        if (primaryPage) {
-            var wrapper = d.createWrapper(primaryPage);
-            d.addWrappedPage(wrapper);
+        if (primaryPageSource) {
+            d.createPrimaryPage(primaryPageSource);
+        } else if (primaryPage) {
+            d.createPrimaryPage(primaryPage);
         } else {
             console.warn("No primary page set. No pages can be added without a primary page.");
         }
+        d.completed = true;
     }
     onPrimaryPageChanged: {
-        if (d.completed) {
+        if (d.completed && !d.internalUpdate) {
             console.warn("Cannot change primaryPage after completion.");
+            d.internalPropertyUpdate("primaryPage", d.lastPrimaryPage);
             return;
         }
+        d.lastPrimaryPage = primaryPage;
     }
+    onPrimaryPageSourceChanged: {
+        if (d.completed && !d.internalUpdate) {
+            console.warn("Cannot change primaryPageSource after completion.");
+            d.internalPropertyUpdate("primaryPageSource", d.lastPrimaryPageSource);
+            return;
+        }
+        d.lastPrimaryPageSource = primaryPageSource;
+    }
+
     onLayoutsChanged: {
         if (d.completed) {
             // only deal with this if the layouts array changes after completion
@@ -353,6 +377,7 @@ PageTreeNode {
     QtObject {
         id: d
 
+        property bool internalUpdate: false
         property bool completed: false
         property var tree: new Tree.Tree()
 
@@ -361,6 +386,8 @@ PageTreeNode {
                                   (activeLayout ? activeLayout.data.length : 1)
         property PageColumnsLayout activeLayout: null
         property list<PageColumnsLayout> prevLayouts
+        property Page lastPrimaryPage
+        property var lastPrimaryPageSource
 
         /*! internal */
         onColumnsChanged: {
@@ -372,6 +399,26 @@ PageTreeNode {
         }
         property real defaultColumnWidth: units.gu(40)
         onDefaultColumnWidthChanged: body.applyMetrics()
+
+        function internalPropertyUpdate(propertyName, value) {
+            internalUpdate = true;
+            layout[propertyName] = value;
+            internalUpdate = false;
+        }
+
+        function createPrimaryPage(source) {
+            var wrapper = d.createWrapper(source);
+            if (wrapper.incubator) {
+                wrapper.pageLoaded.connect(finalizeAddingPage.bind(wrapper));
+                wrapper.incubator.onStatusChanged = function (status) {
+                    if (status == Component.Ready) {
+                        internalPropertyUpdate("primaryPage", wrapper.incubator.object);
+                    }
+                }
+            } else {
+                finalizeAddingPage(wrapper);
+            }
+        }
 
         function createWrapper(page, properties) {
             var wrapperComponent = Qt.createComponent("PageWrapper.qml");
