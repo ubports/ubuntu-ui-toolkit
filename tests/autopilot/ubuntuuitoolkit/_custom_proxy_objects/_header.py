@@ -227,13 +227,8 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
             objectName='tabsPopover')
 
         try:
-#            tab_button = self.get_root_instance().select_single(
-#                objectName='select_tab_' + str(index)
-#                + '_header_overflow_button')
             action_name = 'select_tab_' + str(index)
             popover.click_action_button(action_name)
-
-#        except dbus.StateNotFoundError:
         except _common.ToolkitException:
             try:
                 tab_button = self.get_root_instance().select_single(
