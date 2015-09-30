@@ -45,17 +45,17 @@ Item {
             id: loader
             width: units.gu(10)
             height: units.gu(10)
-            sourceComponent: AbstractButton {}
-            property bool clicked: false
-            property bool pressAndHold: false
+            sourceComponent: AbstractButton { objectName: "dynamic"}
+            property bool click: false
+            property bool longPress: false
         }
     }
 
     Connections {
         id: test
         target: loader.item
-        onClicked: loader.clicked = true
-        onPressAndHold: loader.pressAndHold = true
+        onClicked: loader.click = true
+        onPressAndHold: loader.longPress = true
     }
 
     Action {
@@ -88,6 +88,8 @@ Item {
         function cleanup() {
             signalSpy.clear();
             triggeredSpy.clear();
+            loader.click = false;
+            loader.longPress = false;
         }
 
         function test_action() {
@@ -129,13 +131,13 @@ Item {
 
         function test_pressAndHold_emitted_on_connections_bug1495554() {
             mouseLongPress(loader.item, centerOf(loader.item).x, centerOf(loader.item).y);
-            compare(loader.pressAndHold, true, "pressAndHold not captured by Connection");
             mouseRelease(loader.item, centerOf(loader.item).x, centerOf(loader.item).y);
-            compare(loader.clicked, false, "clicked should not be emitted");
+            compare(loader.click, false, "clicked should not be emitted");
+            compare(loader.longPress, true, "pressAndHold not captured by Connection");
         }
         function test_clicked_emitted_on_connections_bug1495554() {
             mouseClick(loader.item, centerOf(loader.item).x, centerOf(loader.item).y);
-            compare(loader.clicked, true, "clicked not captured by Connection");
+            compare(loader.click, true, "clicked not captured by Connection");
         }
     }
 }
