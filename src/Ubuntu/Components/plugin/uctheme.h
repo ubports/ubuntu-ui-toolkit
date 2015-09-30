@@ -76,7 +76,6 @@ public:
     void resetName();
     QObject* palette();
     void setPalette(QObject *config);
-    quint16 version();
     void setVersion(quint16 version);
 
     // internal, used by the deprecated Theme.createStyledComponent()

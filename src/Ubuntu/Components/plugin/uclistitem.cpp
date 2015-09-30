@@ -1175,7 +1175,7 @@ void UCListItemPrivate::showContextMenu()
 {
     Q_Q(UCListItem);
     // themes 1.2 and below should not have context menu support, so leave
-    quint16 version(getTheme()->version());
+    quint16 version(importVersion(q));
     if (version <= BUILD_VERSION(1, 2)) {
         return;
     }
