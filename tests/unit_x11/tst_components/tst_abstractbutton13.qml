@@ -41,6 +41,21 @@ Item {
             height: width
             function trigger() {}
         }
+        Loader {
+            id: loader
+            width: units.gu(10)
+            height: units.gu(10)
+            sourceComponent: AbstractButton {}
+            property bool clicked: false
+            property bool pressAndHold: false
+        }
+    }
+
+    Connections {
+        id: test
+        target: loader.item
+        onClicked: loader.clicked = true
+        onPressAndHold: loader.pressAndHold = true
     }
 
     Action {
@@ -110,6 +125,17 @@ Item {
             pressAndHoldSpy.wait();
             mouseRelease(absLongTap, centerOf(absLongTap).x, centerOf(absLongTap).y);
             compare(signalSpy.count, 0, "click() must be suppressed when pressAndHold handler is implemented");
+        }
+
+        function test_pressAndHold_emitted_on_connections_bug1495554() {
+            mouseLongPress(loader.item, centerOf(loader.item).x, centerOf(loader.item).y);
+            compare(loader.pressAndHold, true, "pressAndHold not captured by Connection");
+            mouseRelease(loader.item, centerOf(loader.item).x, centerOf(loader.item).y);
+            compare(loader.clicked, false, "clicked should not be emitted");
+        }
+        function test_clicked_emitted_on_connections_bug1495554() {
+            mouseClick(loader.item, centerOf(loader.item).x, centerOf(loader.item).y);
+            compare(loader.clicked, true, "clicked not captured by Connection");
         }
     }
 }
