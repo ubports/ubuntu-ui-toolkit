@@ -45,7 +45,10 @@ import "tree.js" as Tree
   \l primaryPage or \l primaryPageSource properties. The properties cannot be
   changed after component completion. \l primaryPage can only hold a Page instance,
   \l primaryPageSource can either be a Component or a url to a document defining
-  a Page. This page cannot be removed from the view.
+  a Page. This page cannot be removed from the view. \l primaryPageSource has
+  precedence over \l primaryPage and will create the Page asynchronously. The
+  page instance will be reported through \l primaryPage property and will replace
+  any previous value set to that property.
 
   \qml
     import QtQuick 2.4
@@ -185,8 +188,7 @@ PageTreeNode {
     /*!
       The property holds the first Page which will be added to the view. If the
       view has more than one column, the page will be added to the leftmost column.
-      The property can hold either a Page instance, a component holding a Page
-      or a QML document defining the Page. The property cannot be changed after
+      The property can hold only a Page instance. The property cannot be changed after
       component completion.
       */
     property Page primaryPage
@@ -195,7 +197,8 @@ PageTreeNode {
       The property specifies the source of the primaryPage in case the primary
       page is created from a Component or loaded from an external document. It
       has precedence over \l primaryPage and cannot be changed after component
-      completion.
+      completion. The page specified in this way will be cerated asynchronously
+      and the instance will be reported through \l primaryPage property.
       */
     property var primaryPageSource
 
