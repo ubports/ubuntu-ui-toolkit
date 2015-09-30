@@ -695,7 +695,8 @@ void UCSlotsLayoutPrivate::handleAttachedPropertySignals(QQuickItem *item, bool 
     SlotsLayout adapts to accomodate its highest slot with padding and the padding around the layout.
 
     Because of the above, it is recommended to have items wrapping the layout
-    bind to SlotsLayout's \b {height}, not the opposite. It is not recommended,
+    bind to SlotsLayout's \b {height} (adding ListItem \b divider's height if needed),
+    not the opposite. It is not recommended,
     for instance, to use anchors.fill to force SlotsLayout to fill another Item,
     because that item might not have enough space to accomdate all the slots,
     and therefore the slots will be clipped.
@@ -703,7 +704,7 @@ void UCSlotsLayoutPrivate::handleAttachedPropertySignals(QQuickItem *item, bool 
     \qml
     ListItem {
         //CORRECT
-        height: layout.height
+        height: layout.height + divider.height
 
         SlotsLayout {
             id: layout
@@ -765,7 +766,7 @@ void UCSlotsLayoutPrivate::handleAttachedPropertySignals(QQuickItem *item, bool 
 
     \qml
     ListItem {
-        height: layout.height
+        height: layout.height + divider.height
         onClicked: console.log("clicked!")
 
         SlotsLayout {
@@ -908,10 +909,10 @@ void UCSlotsLayout::itemChange(ItemChange change, const ItemChangeData &data)
             //_q_updateSlotsBBoxHeight will trigger relayout
             QObject::connect(data.item, SIGNAL(visibleChanged()), this, SLOT(_q_updateSlotsBBoxHeight()));
 
-            //we relayout because we have to update the width of the main slot
-            //FIXME: do this in a separate function? do were really have to do the whole relayout?
             if (data.item != d->mainSlot) {
                 d->addSlot(data.item);
+                //we relayout because we have to update the width of the main slot
+                //FIXME: do this in a separate function? do were really have to do the whole relayout?
                 QObject::connect(data.item, SIGNAL(widthChanged()), this, SLOT(_q_onSlotWidthChanged()));
                 QObject::connect(data.item, SIGNAL(heightChanged()), this, SLOT(_q_updateSlotsBBoxHeight()));
                 d->_q_updateSlotsBBoxHeight();
@@ -1001,8 +1002,13 @@ void UCSlotsLayout::setMainSlot(QQuickItem *item)
 {
     Q_D(UCSlotsLayout);
     if (d->mainSlot != item && item != Q_NULLPTR) {
+        //if it is not handled by GC, delete the old main slot
+        if (d->mainSlot != Q_NULLPTR &&
+                QQmlEngine::objectOwnership(d->mainSlot) == QQmlEngine::CppOwnership) {
+            delete d->mainSlot;
+            d->mainSlot = Q_NULLPTR;
+        }
         d->mainSlot = item;
-        d->mainSlot->setParent(this);
         d->mainSlot->setParentItem(this);
         Q_EMIT mainSlotChanged();
     }

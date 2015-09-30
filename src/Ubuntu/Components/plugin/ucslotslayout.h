@@ -37,7 +37,7 @@ public:
     explicit UCSlotsLayout(QQuickItem *parent = 0);
 
     QQuickItem *mainSlot() const;
-    void setMainSlot(QQuickItem *item);
+    virtual void setMainSlot(QQuickItem *item);
 
     UCSlotsLayoutPadding *padding();
 

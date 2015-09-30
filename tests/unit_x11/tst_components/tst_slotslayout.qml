@@ -61,6 +61,7 @@ Item {
             id: layoutLabels
             title.text: "test"
             subtitle.text: "test2"
+            summary.text: "test3"
             readonly property var leadingSlots: []
             readonly property var trailingSlots: []
         }
@@ -688,6 +689,66 @@ Item {
                     "Default slots attached props, padding.leading")
             compare(slot.SlotsLayout.padding.trailing, units.gu(1),
                     "Default slots attached props, padding.trailing")
+        }
+
+        function checkLabelsY(listitemlayout) {
+            compare(listitemlayout.title.y, 0,
+                    "Default labels positioning, title's y")
+            compare(listitemlayout.subtitle.y,
+                    listitemlayout.title.baselineOffset + units.dp(4),
+                    "Default labels positioning, subtitle's y")
+            compare(listitemlayout.summary.y, listitemlayout.subtitle.y + listitemlayout.subtitle.height,
+                    "Default labels positioning, summary's y")
+        }
+
+        function test_defaultMainSlotHeight() {
+            var titleText = layoutLabels.title.text
+            var subtitleText = layoutLabels.subtitle.text
+            var summaryText = layoutLabels.summary.text
+
+            compare(titleText.length > 0, true, "Default labels positioning, title length")
+            compare(subtitleText.length > 0, true, "Default labels positioning, subtitle length")
+            compare(summaryText.length > 0, true, "Default labels positioning, summary length")
+            checkLabelsY(layoutLabels)
+
+            var initialHeight = layoutLabels.mainSlot.height
+            compare(initialHeight, layoutLabels.summary.y + layoutLabels.summary.height,
+                    "Default labels positioning, mainSlot's height")
+
+            //setting text to " " (note, it's NOT empty) should have the same effect as setting it to "blabla"
+            layoutLabels.summary.text = " "
+            compare(layoutLabels.summary.text, " ", "Default labels positioning, summary 1 whitespace text")
+            compare(layoutLabels.mainSlot.height, initialHeight,
+                    "Default labels positioning, mainSlot's height")
+            checkLabelsY(layoutLabels)
+
+
+            //empty text -> we ignore summary in the height computation
+            layoutLabels.summary.text = ""
+            compare(layoutLabels.summary.text, "", "Default labels positioning, empty summary text")
+            compare(layoutLabels.mainSlot.height, layoutLabels.subtitle.y + layoutLabels.subtitle.height,
+                    "Default labels positioning, mainSlot's height")
+            checkLabelsY(layoutLabels)
+
+            layoutLabels.subtitle.text = ""
+            compare(layoutLabels.subtitle.text, "", "Default labels positioning, empty subtitle text")
+            compare(layoutLabels.mainSlot.height, layoutLabels.title.y + layoutLabels.title.height,
+                    "Default labels positioning, mainSlot's height")
+            checkLabelsY(layoutLabels)
+
+            //all labels are empty now
+            layoutLabels.title.text = ""
+            compare(layoutLabels.title.text, "", "Default labels positioning, empty title text")
+            compare(layoutLabels.mainSlot.height, 0,
+                    "Default labels positioning, mainSlot's height")
+            checkLabelsY(layoutLabels)
+
+            layoutLabels.title.text = titleText
+            layoutLabels.subtitle.text = subtitleText
+            layoutLabels.summary.text = summaryText
+            compare(layoutLabels.mainSlot.height, initialHeight,
+                    "Default labels positioning, mainSlot's height")
+            checkLabelsY(layoutLabels)
         }
     }
 }

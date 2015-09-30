@@ -35,44 +35,46 @@
     consistent with the rest of the platform without effort.
 
     ListItemLayout is essentially a \l {SlotsLayout} with a predefined
-    \l {SlotsLayout::mainSlot}. This \c mainSlot has been optimized
-    to cover most of the usecases without compromising performance.
-    The height of this main slot is the minimum height required to
-    accomodate the visible and non empty labels it holds.
-    If only \l {title} is visible and has a text set, for instance,
-    the height of the main slot will be \c {title.height}.
+    \l {SlotsLayout::mainSlot} that provides (up to) 3 Labels automatically laid out
+    according to our UI guidelines.
+    This main slot has been optimized to cover most of the usecases
+    without compromising performance (read more in \l {Optimizing memory consumption}).
 
-    This layout component works similarly to QtQuick's Row, but while
+    We're aware there could be usecases which the \l SlotsLayout::mainSlot provided by
+    ListItemLayout doesn't cover. If that is the case, please use \l SlotsLayout
+    instead of \l ListItemLayout and provide your own \l SlotsLayout::mainSlot.
+
+    ListItemLayout works similarly to QtQuick's Row, but while
     Row just positions its children in a horizontal formation,
     ListItemLayout also tweaks their vertical position to ensure
     a clean layout.
 
-    Creating a layout is as easy as putting a few Items inside
-    the ListItemLayout. We will call these items "slots".
-    All slots will automatically be positioned using the correct
-    spacing, following the visual rules specified by the
-    Ubuntu Design team.
-    It is possible to tweak the position of each slot by modifying
-    its attached properties.
+    We will call ListItemLayout's visual children "slots".
+    ListItemLayout positions its slots automatically, following the visual rules
+    specified by the Ubuntu Design team.
+    Because we think flexibility is an important value of our UI components,
+    we made it possible to tweak the position of each slot by modifying
+    its attached properties (see \l {Advanced layout tweaks}).
 
-    The progression symbol to be used in list items which handle
-    navigation in a page stack is provided by \l ProgressionSlot.
+    If you need a progression symbol in your list item,
+    just add \l ProgressionSlot as a child of your ListItemLayout.
+    No manual positioning is needed, the layout will handle it for you.
 
     To read more about advanced slots positioning or how to handle
     input (mouse or touch) in ListItemLayout, see \l SlotsLayout
     documentation.
 
-    If you don't need the swiping actions provided by \l {ListItem},
-    you can also use \l ListItemLayout directly inside a MouseArea
-    as delegate for your list view, as explained in \l SlotsLayout
-    documentation.
+    If you don't need the features provided by \l {ListItem} (such as
+    the swiping actions),
+    you can also use \l ListItemLayout directly as root of your list view delegate
+    or inside a MouseArea, as explained in \l {Input handling}.
 
     The following code example shows how easy it is to create
     even non trivial list items using
     \l ListItem and ListItemLayout:
     \qml
     ListItem {
-        height: layout.height
+        height: layout.height + divider.height
         ListItemLayout {
             id: layout
             title.text: "Hello developers!"
@@ -101,7 +103,7 @@
     \qml
     ListItem {
         id: listItem
-        height: layout.height
+        height: layout.height + divider.height
 
         ListItemLayout {
             id: layout
@@ -146,6 +148,66 @@
     \endqml
     \sa SlotsLayout
     \sa ProgressionSlot
+
+    \section1 Labels layout
+
+    The labels in ListItemLayout's default \l SlotsLayout::mainSlot are laid out in a column.
+    The \l title is positioned at the top, followed by \l subtitle and \l summary,
+    respectively.
+
+    The \l subtitle has its top anchored to \l {title}'s baseline, with a margin of
+    4 DPs.
+
+    The \l summary has its top tightly anchored to \l {subtitle}'s bottom.
+
+    The height of the default \l SlotsLayout::mainSlot provided with ListItemLayout
+    is the minimum height required to accomodate the \b visible and \b {non-empty}
+    labels it holds. If only \l {title} is visible and has a non-empty text set, for instance,
+    the height of the main slot will be \c {title.height}.
+
+    If you wish to have the layout process accomodate a label which doesn't have a
+    defined text yet, you should set its text property to " ", as shown in the
+    following example:
+    \qml
+    ListItemLayout {
+        title.text: "Hello developers!"
+        //NOTE: the whitespace
+        subtitle.text: " "
+    }
+    \endqml
+
+    That will make sure \l SlotsLayout::mainSlot is resized to accomodate the (currently empty)
+    subtitle.
+
+    This is useful, for instance, if you want all list items in a list view
+    to have the same height even without having to fill \l subtitle's (or summary's)
+    text with dummy content.
+
+    \section1 Optimizing memory consumption
+
+    In order to minimize memory consumption, the Labels in the \l SlotsLayout::mainSlot
+    are only allocated in memory on demand, i.e. the first time one of their
+    properties is queried.
+    \qml
+    ListItemLayout {
+        //NOTE: querying subtitle.text triggers allocation of subtitle Label
+        Component.onCompleted: console.log(subtitle.text)
+
+        title.text: "Hello developers!"
+    }
+    \endqml
+    In the example above, querying subtitle.text will trigger the
+    allocation in memory of the subtitle Label, which we don't actually use.
+    We \b recommend avoiding querying properties of labels that we
+    don't plan to use in the layout, in order to minimize memory consumption
+    and maximize the scrolling performance of our list views.
+    \qml
+    ListItemLayout {
+        //no extra labels created
+        title.text: "Hello developers!"
+    }
+    \endqml
+
 */
 UCListItemLayout::UCListItemLayout(QQuickItem *parent)
     : UCSlotsLayout(parent)
@@ -156,9 +218,10 @@ UCListItemLayout::UCListItemLayout(QQuickItem *parent)
     //create QML data for mainSlot otherwise qmlAttachedProperties
     //calls in SlotsLayout will fail
     QQmlData::get(main, true);
+    main->setParent(this);
 
-    //this will also set the parent
-    setMainSlot(main);
+    //this will also set the parentItem
+    UCSlotsLayout::setMainSlot(main);
 }
 
 /*!
@@ -204,4 +267,9 @@ UCLabel *UCListItemLayout::subtitle()
 UCLabel *UCListItemLayout::summary()
 {
     return qobject_cast<UCThreeLabelsSlot *>(mainSlot())->summary();
+}
+
+void UCListItemLayout::setMainSlot(QQuickItem *slot) {
+    Q_UNUSED(slot);
+    qmlInfo(this) << "Setting a different mainSlot on ListItemLayout is not supported. Please use SlotsLayout instead.";
 }
