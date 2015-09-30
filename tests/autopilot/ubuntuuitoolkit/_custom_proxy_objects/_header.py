@@ -227,10 +227,12 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
             objectName='tabsPopover')
 
         try:
+            # 1.3, using ActionSelectionPopover
             action_name = 'select_tab_' + str(index)
             popover.click_action_button(action_name)
         except _common.ToolkitException:
             try:
+                # < 1.3 using custom popover
                 tab_button = self.get_root_instance().select_single(
                     objectName='tabButton' + str(index))
                 self.pointing_device.click_object(tab_button)
