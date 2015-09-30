@@ -28,12 +28,12 @@ MainView {
                 text: "Action one"
                 objectName: "actionOne"
                 onTriggered: label.text = "Button clicked."
-            },
+            }
             Action {
                 text: "Action two"
                 objectName: "actionDisabled"
                 onTriggered: label.text = "Disabled button clicked."
-            },
+            }
             Action {
                 text: "Action three"
                 objectName: "actionHidden"
