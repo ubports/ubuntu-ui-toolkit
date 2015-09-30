@@ -142,10 +142,9 @@ MainView {
             primaryPageSpy.clear();
             primaryPageSpy.target = null;
             resize_multiple_columns();
-            layout.removePages(page1);
-            defaults.removePages(defaults.primaryPage);
+            layout.removePages(layout.primaryPage);
             defaults.primaryPage = null;
-            defaults.primaryPageSource = undefined;
+            wait(200);
         }
 
         function initTestCase() {
@@ -156,9 +155,10 @@ MainView {
         }
 
         function test_change_primaryPage() {
-            layout.addPageToCurrebtColumn(layout.primaryPage, page2);
-            layout.primaryPage = page3;
-            verify(!findPageFromLayoutWithProperty(layout, "title", "Page2"), "Page2 still in the view!");
+            defaults.primaryPage = otherPage1;
+            defaults.addPageToCurrentColumn(defaults.primaryPage, otherPage2);
+            defaults.primaryPage = otherPage3;
+            verify(!findPageFromLayoutWithProperty(defaults, "title", "Page2"), "Page2 still in the view!");
         }
 
         function test_add_page_when_source_page_not_in_stack() {
@@ -334,10 +334,10 @@ MainView {
             }
 
             var testPage = testHolder.pageWrapper.object;
-            var prevPageActive = false
+            var prevPageActive = false;
             var incubator = data.nextColumn
                         ? layout.addPageToNextColumn(data.sourcePage, data.page)
-                        : layout.addPageToCurrentColumn(data.sourcePage, data.page);;
+                        : layout.addPageToCurrentColumn(data.sourcePage, data.page);
             verify(incubator);
             compare(testHolder.pageWrapper.object, testPage);
             incubator.onStatusChanged = function (status) {
@@ -370,14 +370,16 @@ MainView {
         }
         function test_change_primaryPageSource(data) {
             primaryPageSpy.target = defaults;
+            verify(defaults.primaryPage == null);
+            verify(defaults.primaryPageSource == undefined);
             defaults.primaryPageSource = data.test;
-            primaryPageSpy.wait();
+            primaryPageSpy.wait(400);
             // add some pages
             defaults.addPageToCurrentColumn(defaults.primaryPage, otherPage2);
             // then replace the primaryPageSource
             primaryPageSpy.clear();
             defaults.primaryPageSource = data.nextValue;
-            primaryPageSpy.wait();
+            primaryPageSpy.wait(400);
             // look after page2
             verify(!findPageFromLayoutWithProperty(defaults, "title", "Page2"), "Page2 still in the view!");
         }
@@ -385,22 +387,22 @@ MainView {
         function test_primaryPageSource_precedence_over_primaryPage() {
             primaryPageSpy.target = defaults;
             defaults.primaryPage = otherPage1;
-            primaryPageSpy.wait();
+            primaryPageSpy.wait(400);
             // now set a value to primaryPageSource
             primaryPageSpy.clear();
             defaults.primaryPageSource = pageComponent;
-            primaryPageSpy.wait();
+            primaryPageSpy.wait(400);
         }
 
         function test_primaryPage_change_clears_primaryPageSource() {
             primaryPageSpy.target = defaults;
             defaults.primaryPageSource = pageComponent;
-            primaryPageSpy.wait();
+            primaryPageSpy.wait(400);
             compare(defaults.primaryPage.title, "DynamicPage", "DynamicPage not set as primaryPage");
             // now set a value to primaryPage
             primaryPageSpy.clear();
             defaults.primaryPage = otherPage1;
-            primaryPageSpy.wait();
+            primaryPageSpy.wait(400);
             compare(defaults.primaryPageSource, undefined, "primaryPageSource must be cleared");
         }
     }

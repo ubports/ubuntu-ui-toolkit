@@ -42,10 +42,11 @@ import "tree.js" as Tree
   add the page to the leftmost column of the view.
 
   The primary page, the very first page must be specified either through the
-  \l primaryPage or \l primaryPageSource properties. The properties cannot be
-  changed after component completion. \l primaryPage can only hold a Page instance,
-  \l primaryPageSource can either be a Component or a url to a document defining
-  a Page. This page cannot be removed from the view.
+  \l primaryPage or \l primaryPageSource properties. \l primaryPage can only
+  hold a Page instance, \l primaryPageSource can either be a Component or a
+  url to a document defining a Page. \l primaryPageSource has precedence over
+  \l primaryPage, and when set it will reprt the loaded Page through \l primaryPage
+  property, and will replace any value set into that property.
 
   \qml
     import QtQuick 2.4
@@ -185,8 +186,7 @@ PageTreeNode {
     /*!
       The property holds the first Page which will be added to the view. If the
       view has more than one column, the page will be added to the leftmost column.
-      The property can hold either a Page instance, a component holding a Page
-      or a QML document defining the Page. The property cannot be changed after
+      The property can only hold a Page instance. The property cannot be changed after
       component completion.
       */
     property Page primaryPage
@@ -195,7 +195,8 @@ PageTreeNode {
       The property specifies the source of the primaryPage in case the primary
       page is created from a Component or loaded from an external document. It
       has precedence over \l primaryPage and cannot be changed after component
-      completion.
+      completion. The page loaded will be reported through the \l primaryPage
+      property.
       */
     property var primaryPageSource
 
@@ -319,12 +320,7 @@ PageTreeNode {
       pages will be removed.
       */
     function removePages(page) {
-        var nodeToRemove = d.getWrapper(page);
-        var removedNodes = d.tree.chop(nodeToRemove, page != layout.primaryPage);
-        for (var i = removedNodes.length-1; i >= 0; i--) {
-            var node = removedNodes[i];
-            d.updatePageForColumn(node.column);
-        }
+        d.removeAllPages(page, page != layout.primaryPage);
     }
 
     /*
@@ -342,26 +338,27 @@ PageTreeNode {
             d.createPrimaryPage(primaryPageSource);
         } else if (primaryPage) {
             d.createPrimaryPage(primaryPage);
-        } else {
-            console.warn("No primary page set. No pages can be added without a primary page.");
         }
         d.completed = true;
     }
     onPrimaryPageChanged: {
-        if (d.completed && !d.internalUpdate) {
-            console.warn("Cannot change primaryPage after completion.");
-            d.internalPropertyUpdate("primaryPage", d.lastPrimaryPage);
+        if (!d.completed || d.internalUpdate) {
             return;
         }
-        d.lastPrimaryPage = primaryPage;
+        // reset the primaryPageSource
+        d.internalPropertyUpdate("primaryPageSource", undefined);
+        // replace primary page as well and re-create it
+        d.replacePrimaryPage(primaryPage);
     }
     onPrimaryPageSourceChanged: {
-        if (d.completed && !d.internalUpdate) {
-            console.warn("Cannot change primaryPageSource after completion.");
-            d.internalPropertyUpdate("primaryPageSource", d.lastPrimaryPageSource);
+        if (!d.completed || d.internalUpdate) {
             return;
         }
-        d.lastPrimaryPageSource = primaryPageSource;
+        if (primaryPageSource == undefined) {
+            d.replacePrimaryPage(null);
+        } else {
+            d.replacePrimaryPage(primaryPageSource);
+        }
     }
 
     onLayoutsChanged: {
@@ -386,8 +383,7 @@ PageTreeNode {
                                   (activeLayout ? activeLayout.data.length : 1)
         property PageColumnsLayout activeLayout: null
         property list<PageColumnsLayout> prevLayouts
-        property Page lastPrimaryPage
-        property var lastPrimaryPageSource
+        property Page prevPrimaryPage
 
         /*! internal */
         onColumnsChanged: {
@@ -413,11 +409,30 @@ PageTreeNode {
                 wrapper.incubator.onStatusChanged = function (status) {
                     if (status == Component.Ready) {
                         internalPropertyUpdate("primaryPage", wrapper.incubator.object);
+                        prevPrimaryPage = wrapper.incubator.object;
                     }
                 }
             } else {
                 finalizeAddingPage(wrapper);
+                prevPrimaryPage = wrapper.object;
             }
+        }
+
+        function replacePrimaryPage(source) {
+            // remove all pages, including primaryPage
+            if (prevPrimaryPage) {
+                removeAllPages(prevPrimaryPage, true);
+            }
+
+            if (source === null) {
+                internalPropertyUpdate("primaryPageSource", undefined);
+                return;
+            }
+            if (source === undefined) {
+                internalPropertyUpdate("primaryPage", null);
+                return;
+            }
+            createPrimaryPage(source);
         }
 
         function createWrapper(page, properties) {
@@ -509,6 +524,17 @@ PageTreeNode {
             }
 
             return newWrapper.incubator;
+        }
+
+        // removes all pages from the layout, and may include the page itself
+        function removeAllPages(page, inclusive) {
+            inclusive = typeof inclusive !== 'undefined' ? inclusive : true;
+            var nodeToRemove = d.getWrapper(page);
+            var removedNodes = d.tree.chop(nodeToRemove, inclusive);
+            for (var i = removedNodes.length-1; i >= 0; i--) {
+                var node = removedNodes[i];
+                updatePageForColumn(node.column);
+            }
         }
 
         // update the page for the specified column
