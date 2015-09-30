@@ -58,11 +58,8 @@ class TabBar(_common.UbuntuUIToolkitCustomProxyObjectBase):
         return len(self._get_tab_buttons())
 
     def _get_tab_buttons(self):
-        # Try the C++ class name in case this is a 1.3 AbstractButton
-        try:
-            return self.select_many('UCAbstractButton')
-        except dbus.StateNotFoundError:
-            return self.select_many('AbstractButton')
+        # TabBar is only used before 1.3, when there was no UCAbstractButton
+        return self.select_many('AbstractButton')
 
     def _get_tab_button(self, index):
         buttons = self._get_tab_buttons()
