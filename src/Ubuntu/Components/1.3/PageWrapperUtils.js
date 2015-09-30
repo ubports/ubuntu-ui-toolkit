@@ -45,37 +45,49 @@ function Incubator(pageWrapper, pageComponent) {
         pageWrapper.incubator.status = status;
         pageWrapper.incubator.object = pageWrapper.object = incubator.object;
 
-        // emit pageWrapper's pageLoaded signal to complete page activation and loading
-        if (status === Component.Ready) {
-            pageWrapper.pageLoaded();
-        }
-
         // forward state change to the user
         if (pageWrapper.incubator.onStatusChanged) {
             // call onStatusChanged
             pageWrapper.incubator.onStatusChanged(status);
         }
 
+        // emit pageWrapper's pageLoaded signal to complete page activation
+        if (status === Component.Ready) {
+            pageWrapper.pageLoaded();
+        }
+
         // cleanup of ready or error
         if (status !== Component.Loading) {
             pageWrapper.incubator = null;
-            incubator = null;
         }
     }
 
-    if (pageWrapper.properties) {
-        incubator = pageComponent.incubateObject(pageWrapper, pageWrapper.properties);
-    } else {
-        incubator = pageComponent.incubateObject(pageWrapper);
+    function incubatePage() {
+        if (pageComponent.status == Component.Loading) {
+            return;
+        }
+
+        if (pageWrapper.properties) {
+            incubator = pageComponent.incubateObject(pageWrapper, pageWrapper.properties);
+        } else {
+            incubator = pageComponent.incubateObject(pageWrapper);
+        }
+
+        pageWrapper.incubator.status = incubator.status;
+        if (incubator.status != Component.Ready) {
+            incubator.onStatusChanged = incubatorStatusChanged;
+        } else {
+            incubatorStatusChanged(incubator.status);
+        }
     }
 
-    this.status = incubator.status;
-    if (incubator.status != Component.Ready) {
-        incubator.onStatusChanged = incubatorStatusChanged;
-    } else {
-        pageWrapper.incubator = this;
-        incubatorStatusChanged(incubator.status);
+    // main
+    pageWrapper.incubator = this;
+    if (pageComponent.status == Component.Loading) {
+        pageComponent.statusChanged.connect(incubatePage);
+        this.status = Component.Loading;
     }
+    incubatePage();
 }
 
 /*******************************************************
@@ -93,18 +105,19 @@ function initPage(pageWrapper) {
         pageComponent = pageWrapper.reference;
     } else if (typeof pageWrapper.reference == "string") {
         // page reference is a string (url)
-        pageComponent = Qt.createComponent(pageWrapper.reference);
+        if (pageWrapper.synchronous) {
+            pageComponent = Qt.createComponent(pageWrapper.reference);
+        } else {
+            pageComponent = Qt.createComponent(pageWrapper.reference, Component.Asynchronous);
+        }
     }
-
-    // PageWrapper can override the synchronous loading
-    var synchronous = pageWrapper.hasOwnProperty("synchronous") ? pageWrapper.synchronous : true;
 
     if (pageComponent) {
         if (pageComponent.status === Component.Error) {
             throw new Error("Error while loading page: " + pageComponent.errorString());
         } else {
             // create the object
-            if (synchronous) {
+            if (pageWrapper.synchronous) {
                 if (pageWrapper.properties) {
                     // initialize the object with the given properties
                     pageWrapper.object = pageComponent.createObject(pageWrapper, pageWrapper.properties);

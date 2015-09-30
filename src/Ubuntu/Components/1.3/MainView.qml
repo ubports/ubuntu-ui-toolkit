@@ -157,7 +157,6 @@ MainViewBase {
             objectName: "MainView_Header"
             id: headerItem
             property real bottomY: headerItem.y + headerItem.height
-            animate: true
             dividerColor: Qt.darker(mainView.headerColor, 1.1)
             panelColor: Qt.lighter(mainView.headerColor, 1.1)
 
@@ -200,9 +199,7 @@ MainViewBase {
                     if (!(headerItem.config &&
                           headerItem.config.hasOwnProperty("locked") &&
                           headerItem.config.locked)) {
-                        headerItem.animate = false;
                         headerItem.show();
-                        headerItem.animate = true;
                     }
                 }
             }
