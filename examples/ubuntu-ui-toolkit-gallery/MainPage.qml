@@ -89,6 +89,8 @@ Page {
                     anchors.rightMargin: units.gu(2)
                 }
                 enabled: source != ""
+                // Used by Autopilot
+                property string text: label
                 onClicked: widgetList.currentIndex = index
                 Label {
                     id: labelItem
