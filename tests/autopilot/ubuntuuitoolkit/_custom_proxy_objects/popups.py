@@ -20,7 +20,6 @@ from autopilot import logging as autopilot_logging
 from autopilot.introspection import dbus
 from autopilot import introspection
 
-
 from ubuntuuitoolkit._custom_proxy_objects import _common
 
 
