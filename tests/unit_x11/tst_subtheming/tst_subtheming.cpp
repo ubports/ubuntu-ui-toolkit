@@ -95,6 +95,7 @@ private Q_SLOTS:
     {
         qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", m_themesPath.toLatin1());
         qputenv("XDG_DATA_DIRS", m_xdgDataPath.toLocal8Bit());
+        UCTheme::previousVersion = 0;
     }
 
     void test_default_theme()
@@ -663,10 +664,13 @@ private Q_SLOTS:
     }
 
     void test_mixed_versions() {
-        qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "");
-        qputenv("XDG_DATA_DIRS", "./themes:./themes/TestModule");
-        QTest::ignoreMessage(QtWarningMsg, "\"Mixing of Ubuntu.Components module version 1.3 and 1.2 detected!\"");
+        QTest::ignoreMessage(QtWarningMsg, "\"Mixing of Ubuntu.Components module versions 1.3 and 1.2 detected!\"");
         QScopedPointer<ThemeTestCase> view(new ThemeTestCase("OtherVersion.qml"));
+        QTest::waitForEvents();
+        UCStyledItemBase *newStyled = static_cast<UCStyledItemBase*>(view->rootObject());
+        UCStyledItemBase *otherStyled = view->findItem<UCStyledItemBase*>("otherStyled");
+        QCOMPARE(UCStyledItemBasePrivate::get(newStyled)->styleInstance()->objectName(), QString("OptionSelector13"));
+        QCOMPARE(UCStyledItemBasePrivate::get(otherStyled)->styleInstance()->objectName(), QString("OptionSelector12"));
     }
 
     void test_deprecated_theme()

@@ -17,5 +17,9 @@ import QtQuick 2.4
 import Ubuntu.Components 1.3
 
 StyledItem {
-    StyledItemV12{}
+    width: units.gu(40)
+    height: units.gu(40)
+    theme.name: "Ubuntu.Components.Themes.Ambiance"
+    styleName: "OptionSelectorStyle"
+    StyledItemV12 { objectName: "otherStyled" }
 }

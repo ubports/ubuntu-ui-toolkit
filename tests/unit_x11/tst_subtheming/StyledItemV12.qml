@@ -17,4 +17,8 @@ import QtQuick 2.4
 import Ubuntu.Components 1.2
 
 StyledItem {
+    id: item
+    width: units.gu(20)
+    height: units.gu(20)
+    style: Theme.createStyleComponent("OptionSelectorStyle.qml", item)
 }

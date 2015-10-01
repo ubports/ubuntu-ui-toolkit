@@ -28,6 +28,7 @@
 UCStyledItemBasePrivate::UCStyledItemBasePrivate()
     : styleComponent(Q_NULLPTR)
     , styleItem(Q_NULLPTR)
+    , styleVersion(0)
     , activeFocusOnPress(false)
     , wasStyleLoaded(false)
 {
@@ -307,7 +308,7 @@ bool UCStyledItemBasePrivate::loadStyleItem(bool animated)
     // either styleComponent or styleName is valid
     QQmlComponent *component = styleComponent;
     if (!component) {
-        component = getTheme()->createStyleComponent(styleDocument + ".qml", q);
+        component = getTheme()->createStyleComponent(styleDocument + ".qml", q, styleVersion);
     }
     if (!component) {
         return false;
@@ -475,7 +476,8 @@ void UCStyledItemBase::componentComplete()
     QQuickItem::componentComplete();
     Q_D(UCStyledItemBase);
     // make sure the theme version is up to date
-    d->getTheme()->setVersion(d->importVersion(this));
+    d->styleVersion = d->importVersion(this);
+    UCTheme::checkMixedVersionImports(d->styleVersion);
     // no animation at this time
     // prepare style context if not been done yet
     d->postStyleChanged();

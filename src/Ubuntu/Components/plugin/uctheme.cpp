@@ -45,7 +45,7 @@
 #undef foreach
 
 
-quint16 UCTheme::defaultVersion = LATEST_UITK_VERSION;
+quint16 UCTheme::previousVersion = 0;
 /*!
  * \qmltype ThemeSettings
  * \instantiates UCTheme
@@ -639,22 +639,19 @@ void UCTheme::attachItem(QQuickItem *item, bool attach)
 /*
  * Updates the version used by the toolkit/application
  */
-void UCTheme::setVersion(quint16 version)
+void UCTheme::checkMixedVersionImports(quint16 version)
 {
-    static int versionChangeCount = 1;
-    if (version != defaultVersion) {
+    if (version != previousVersion && previousVersion) {
         // the first change is due to the first import detection, any further changes would mean there are
         // multiple version imports
-        if (versionChangeCount++) {
-            QString msg = QStringLiteral("Mixing of Ubuntu.Components module version %1.%2 and %3.%4 detected!")
-                    .arg(MAJOR_VERSION(version))
-                    .arg(MINOR_VERSION(version))
-                    .arg(MAJOR_VERSION(defaultVersion))
-                    .arg(MINOR_VERSION(defaultVersion));
-            qWarning() << msg;
-        }
-        defaultVersion = version;
+        QString msg = QStringLiteral("Mixing of Ubuntu.Components module versions %1.%2 and %3.%4 detected!")
+                .arg(MAJOR_VERSION(version))
+                .arg(MINOR_VERSION(version))
+                .arg(MAJOR_VERSION(previousVersion))
+                .arg(MINOR_VERSION(previousVersion));
+        qWarning() << msg;
     }
+    previousVersion = version;
 }
 
 /*
@@ -664,9 +661,7 @@ void UCTheme::setVersion(quint16 version)
 QQmlComponent* UCTheme::createStyleComponent(const QString& styleName, QObject* parent, quint16 version)
 {
     QQmlComponent *component = NULL;
-    if (!version) {
-        version = defaultVersion;
-    }
+    Q_ASSERT(version);
 
     if (parent != NULL) {
         QQmlEngine* engine = qmlEngine(parent);
@@ -715,7 +710,7 @@ void UCTheme::loadPalette(bool notify)
         m_palette = 0;
     }
     // theme may not have palette defined
-    QUrl paletteUrl = styleUrl("Palette.qml", defaultVersion);
+    QUrl paletteUrl = styleUrl("Palette.qml", previousVersion ? previousVersion : LATEST_UITK_VERSION);
     if (paletteUrl.isValid()) {
         m_palette = QuickUtils::instance().createQmlObject(paletteUrl, m_engine);
         if (m_palette) {

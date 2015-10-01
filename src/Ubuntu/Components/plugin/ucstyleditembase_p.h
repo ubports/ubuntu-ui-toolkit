@@ -68,6 +68,7 @@ public:
     QString styleDocument;
     QQmlComponent *styleComponent;
     QQuickItem *styleItem;
+    quint16 styleVersion;
     bool activeFocusOnPress:1;
     bool wasStyleLoaded:1;
 
