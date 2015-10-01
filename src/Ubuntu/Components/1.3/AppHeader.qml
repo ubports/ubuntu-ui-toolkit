@@ -144,6 +144,11 @@ Components.Header {
                 header.flickable = header.config.flickable;
             }
         }
+        onFlickableChanged: {
+            if (!header.config.locked) {
+                header.flickable = header.config.flickable;
+            }
+        }
     }
 
     theme.version: Components.Ubuntu.toolkitVersion
