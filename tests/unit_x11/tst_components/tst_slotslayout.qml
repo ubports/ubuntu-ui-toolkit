@@ -279,6 +279,15 @@ Item {
             property var trailingSlots: [layoutTestDefaultSlotsAttachedProps_trailing1]
             Item { id: layoutTestDefaultSlotsAttachedProps_trailing1 }
         }
+        //UCLabel initially had REVISION 1 around textSize Q_PROPERTY
+        //That breaks initialization of textSize from QML when done on
+        //the UCLabels we created from C++! (changing textSize works from JS, fyi)
+        //This component makes sure we don't break this usecase again in the future
+        ListItemLayout {
+            id: layoutTestCustomTextSizeInitializationFromQml
+            title.text: "Hello"
+            title.textSize: Label.XLarge
+        }
     }
 
     UbuntuTestCase {
