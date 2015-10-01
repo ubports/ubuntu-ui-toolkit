@@ -204,8 +204,7 @@ class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
         return orientationHelper
 
     def checkPageHeader(self, pageTitle):
-        orientationHelper = self.getOrientationHelper()
-        header_label = orientationHelper.select_single(
+        header_label = self.main_view.wait_select_single(
             objectName="header_title_label", text=pageTitle)
         self.assertThat(header_label, Not(Is(None)))
         self.assertThat(header_label.visible, Eventually(Equals(True)))

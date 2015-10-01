@@ -20,6 +20,7 @@ uniform bool textured;
 attribute highp vec4 positionAttrib;  // highp because of matrix precision qualifier.
 attribute mediump vec2 shapeCoordAttrib;
 attribute mediump vec4 sourceCoordAttrib;
+attribute lowp float yCoordAttrib;
 attribute lowp vec4 backgroundColorAttrib;
 attribute mediump vec2 overlayCoordAttrib;
 attribute lowp vec4 overlayColorAttrib;
@@ -27,6 +28,7 @@ attribute lowp vec4 overlayColorAttrib;
 // FIXME(loicm) Optimize by reducing/packing varyings.
 varying mediump vec2 shapeCoord;
 varying mediump vec4 sourceCoord;
+varying lowp float yCoord;
 varying lowp vec4 backgroundColor;
 varying mediump vec2 overlayCoord;
 varying lowp vec4 overlayColor;
@@ -34,13 +36,10 @@ varying lowp vec4 overlayColor;
 void main()
 {
     shapeCoord = shapeCoordAttrib;
-
-    // FIXME(loicm) Would be better to use a bitfield but bitwise ops have only been integrated in
-    //     GLSL 1.3 (OpenGL 3) and GLSL ES 3 (OpenGL ES 3).
     if (textured) {
         sourceCoord = sourceCoordAttrib;
     }
-
+    yCoord = yCoordAttrib;
     backgroundColor = backgroundColorAttrib;
     overlayCoord = overlayCoordAttrib;
     overlayColor = overlayColorAttrib;

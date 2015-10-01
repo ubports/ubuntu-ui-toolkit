@@ -322,17 +322,17 @@ ListItem.Empty {
             width: option.width - leftIcon.width - image.width
                 - parent.spacing * 2 - parent.anchors.leftMargin
 
-            Label {
+            Toolkit.Label {
                 text: option.text === "" ? modelData : option.text
                 width: parent.width
                 elide: Text.ElideRight
             }
-            Label {
+            Toolkit.Label {
                 text: option.subText
                 width: parent.width
                 elide: Text.ElideRight
                 visible: option.subText !== "" ? true : false
-                fontSize: "small"
+                textSize: Toolkit.Label.Small
             }
         }
 

@@ -57,7 +57,7 @@ AbstractButton {
             color: button.color
             opacity: button.enabled ? 1.0 : 0.3
             text: button.text
-            fontSize: "xx-small"
+            textSize: Label.XxSmall
         }
     }
     Loader {

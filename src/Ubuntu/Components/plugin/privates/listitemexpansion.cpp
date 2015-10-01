@@ -19,7 +19,7 @@
 
 UCListItemExpansion::UCListItemExpansion(QObject *parent)
     : QObject(parent)
-    , m_listItem(static_cast<UCListItem13*>(parent))
+    , m_listItem(static_cast<UCListItem*>(parent))
     , m_height(0.0)
     , m_filtering(false)
 {

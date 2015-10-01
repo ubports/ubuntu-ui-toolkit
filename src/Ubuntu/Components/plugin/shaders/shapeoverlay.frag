@@ -25,7 +25,6 @@
 uniform sampler2D shapeTexture;
 uniform sampler2D sourceTexture;
 uniform lowp vec2 opacityFactors;
-uniform lowp float dfdtFactor;
 uniform lowp float sourceOpacity;
 uniform lowp float distanceAA;
 uniform bool textured;
@@ -33,12 +32,13 @@ uniform mediump int aspect;
 
 varying mediump vec2 shapeCoord;
 varying mediump vec4 sourceCoord;
+varying lowp float yCoord;
 varying lowp vec4 backgroundColor;
 varying mediump vec2 overlayCoord;
 varying lowp vec4 overlayColor;
 
-const mediump int FLAT  = 0x08;        // 1 << 3
-const mediump int INSET = 0x10;        // 1 << 4
+const mediump int FLAT        = 0x08;  // 1 << 3
+const mediump int INSET       = 0x10;  // 1 << 4
 const mediump int DROP_SHADOW = 0x20;  // 1 << 5
 
 void main(void)
@@ -46,8 +46,6 @@ void main(void)
     lowp vec4 shapeData = texture2D(shapeTexture, shapeCoord);
     lowp vec4 color = backgroundColor;
 
-    // FIXME(loicm) Would be better to use a bitfield but bitwise ops have only been integrated in
-    //     GLSL 1.3 (OpenGL 3) and GLSL ES 3 (OpenGL ES 3).
     if (textured) {
         // Blend the source over the current color.
         // FIXME(loicm) sign() is far from optimal. Call texture2D() at beginning of scope.
@@ -64,29 +62,29 @@ void main(void)
     lowp vec4 overlay = overlayColor * vec4(overlayMask);
     color = vec4(1.0 - overlay.a) * color + overlay;
 
-    // Get screen-space derivative of texture coordinate t representing the normalized distance
-    // between 2 pixels. dFd*() functions have to be called outside of branches in order to work
+    // Get the normalized distance between two pixels using screen-space derivatives of shape
+    // texture coordinate. dFd*() functions have to be called outside of branches in order to work
     // correctly with VMware's "Gallium 0.4 on SVGA3D".
-    lowp float dfdt = dFdy(shapeCoord.t);
+    lowp float dist = length(vec2(dFdx(shapeCoord.s), dFdy(shapeCoord.s)));
 
     if (aspect == FLAT) {
         // Mask the current color with an anti-aliased and resolution independent shape mask built
         // from distance fields.
-        lowp float distanceMin = abs(dfdt) * -distanceAA + 0.5;
-        lowp float distanceMax = abs(dfdt) * distanceAA + 0.5;
+        lowp float distanceMin = abs(dist) * -distanceAA + 0.5;
+        lowp float distanceMax = abs(dist) * distanceAA + 0.5;
         color *= smoothstep(distanceMin, distanceMax, shapeData.b);
 
     } else if (aspect == INSET) {
         // The vertex layout of the shape is made so that the derivative is negative from top to
         // middle and positive from middle to bottom.
-        lowp float shapeSide = dfdt * dfdtFactor <= 0.0 ? 0.0 : 1.0;
+        lowp float shapeSide = yCoord <= 0.0 ? 0.0 : 1.0;
         // Blend the shape inner shadow over the current color. The shadow color is black, its
         // translucency is stored in the texture.
         lowp float shadow = shapeData[int(shapeSide)];
         color = vec4(1.0 - shadow) * color + vec4(0.0, 0.0, 0.0, shadow);
         // Get the anti-aliased and resolution independent shape mask using distance fields.
-        lowp float distanceMin = abs(dfdt) * -distanceAA + 0.5;
-        lowp float distanceMax = abs(dfdt) * distanceAA + 0.5;
+        lowp float distanceMin = abs(dist) * -distanceAA + 0.5;
+        lowp float distanceMax = abs(dist) * distanceAA + 0.5;
         lowp vec2 mask = smoothstep(distanceMin, distanceMax, shapeData.ba);
         // Get the bevel color. The bevel is made of the top mask masked with the bottom mask. A
         // gradient from the bottom (1) to the middle (0) of the shape is used to factor out values
@@ -99,13 +97,10 @@ void main(void)
         color = (color * vec4(mask[int(shapeSide)])) + vec4(bevel);
 
     } else if (aspect == DROP_SHADOW) {
-        // The vertex layout of the shape is made so that the derivative is negative from top to
-        // middle and positive from middle to bottom.
-        lowp int shapeSide = dfdt * dfdtFactor <= 0.0 ? 0 : 1;
         // Get the anti-aliased and resolution independent shape mask using distance fields.
-        lowp float distanceMin = abs(dfdt) * -distanceAA + 0.5;
-        lowp float distanceMax = abs(dfdt) * distanceAA + 0.5;
-        lowp float mask = smoothstep(distanceMin, distanceMax, shapeData[shapeSide]);
+        lowp float distanceMin = abs(dist) * -distanceAA + 0.5;
+        lowp float distanceMax = abs(dist) * distanceAA + 0.5;
+        lowp float mask = smoothstep(distanceMin, distanceMax, shapeData[yCoord <= 0.0 ? 0 : 1]);
         // Get the shadow color outside of the shape mask.
         lowp float shadow = (shapeData.b * -mask) + shapeData.b;  // -ab + a = a(1 - b)
         // Mask the current color then blend the shadow over the resulting color. We simply use

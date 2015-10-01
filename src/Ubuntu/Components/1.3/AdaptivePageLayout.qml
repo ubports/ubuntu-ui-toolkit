@@ -271,14 +271,15 @@ PageTreeNode {
       */
     function addPageToCurrentColumn(sourcePage, page, properties) {
         var nextColumn = d.columnForPage(sourcePage) + 1;
-        // Clear all following columns. If we do not do this, we have no way to
-        //  determine which page needs to be on top when the view is resized
-        //  to have a single column.
         d.tree.prune(nextColumn);
-        for (var i = nextColumn; i < d.columns; i++) {
-            d.updatePageForColumn(i);
-        }
-        return d.addPageToColumn(nextColumn - 1, sourcePage, page, properties);
+        return d.addPageToColumn(nextColumn - 1, sourcePage, page, properties, function() {
+            // Clear all following columns. If we do not do this, we have no way to
+            //  determine which page needs to be on top when the view is resized
+            //  to have a single column.
+            for (var i = nextColumn; i < d.columns; i++) {
+                d.updatePageForColumn(i);
+            }
+        });
     }
 
     /*!
@@ -292,10 +293,11 @@ PageTreeNode {
     function addPageToNextColumn(sourcePage, page, properties) {
         var nextColumn = d.columnForPage(sourcePage) + 1;
         d.tree.prune(nextColumn);
-        for (var i = nextColumn; i < d.columns; i++) {
-            d.updatePageForColumn(i);
-        }
-        return d.addPageToColumn(nextColumn, sourcePage, page, properties);
+        return d.addPageToColumn(nextColumn, sourcePage, page, properties, function() {
+            for (var i = nextColumn; i < d.columns; i++) {
+                d.updatePageForColumn(i);
+            }
+        });
     }
 
     /*!
@@ -346,6 +348,8 @@ PageTreeNode {
         }
     }
 
+    /*! \internal - for testing purposes */
+    readonly property alias __d:d
     QtObject {
         id: d
 
@@ -387,14 +391,7 @@ PageTreeNode {
             // replace page holder's child
             var holder = body.children[targetColumn];
             holder.detachCurrentPage();
-            if ((pageWrapper.incubator && pageWrapper.incubator.status == Component.Ready) || pageWrapper.object) {
-                holder.attachPage(pageWrapper);
-            } else {
-                // asynchronous, connect to page load completion and attach when page is available
-                pageWrapper.pageLoaded.connect(function () {
-                    holder.attachPage(pageWrapper);
-                });
-            }
+            holder.attachPage(pageWrapper);
         }
 
         function getWrapper(page) {
@@ -404,7 +401,7 @@ PageTreeNode {
                     if (w.object == page) {
                         return w;
                     } else {
-                        print("Page is not wrapped by its parentNode. This should not happen!");
+                        console.error("Page is not wrapped by its parentNode. This should not happen!");
                         return null;
                     }
                 } else {
@@ -422,7 +419,12 @@ PageTreeNode {
             return wrapper ? wrapper.column : 0;
         }
 
-        function addPageToColumn(column, sourcePage, page, properties) {
+        function finalizeAddingPage(newWrapper) {
+            if (newWrapper === undefined) newWrapper = this;
+            d.addWrappedPage(newWrapper);
+        }
+
+        function addPageToColumn(column, sourcePage, page, properties, cleanupFunc) {
             if (column < 0) {
                 console.warn("Column must be >= 0.");
                 return;
@@ -451,7 +453,14 @@ PageTreeNode {
             var newWrapper = d.createWrapper(page, properties);
             newWrapper.parentPage = sourcePage;
             newWrapper.column = column;
-            d.addWrappedPage(newWrapper);
+            if (newWrapper.incubator) {
+                newWrapper.pageLoaded.connect(cleanupFunc);
+                newWrapper.pageLoaded.connect(finalizeAddingPage.bind(newWrapper));
+            } else {
+                cleanupFunc();
+                finalizeAddingPage(newWrapper);
+            }
+
             return newWrapper.incubator;
         }
 
@@ -539,7 +548,7 @@ PageTreeNode {
                 if (holder.pageWrapper != pageWrapper) {
                     holder.detachCurrentPage();
                 }
-                if (pageWrapper.parent == hiddenPages) {
+                if (pageWrapper.parent == holder.hiddenPool || pageWrapper.parent == hiddenPages) {
                     // add the page to the column
                     holder.attachPage(pageWrapper);
                 } else if (pageWrapper.pageHolder != holder) {
@@ -564,7 +573,7 @@ PageTreeNode {
     }
 
     // Page holder component, can have only one Page as child at a time, all stacked pages
-    // will be parented into hiddenPages
+    // will be parented into hiddenPool
     Component {
         id: pageHolderComponent
         // Page uses the height of the parentNode for its height, so make
@@ -578,6 +587,7 @@ PageTreeNode {
             property alias config: subHeader.config
             property PageColumn metrics: getDefaultMetrics()
             readonly property real dividerThickness: units.dp(1)
+            readonly property alias hiddenPool: hiddenItem
 
             Layout.fillWidth: metrics.fillWidth
             Layout.fillHeight: true
@@ -599,6 +609,11 @@ PageTreeNode {
                 }
                 // we need to clip because the header does not have a background
                 clip: true
+                Item {
+                    id: hiddenItem
+                    anchors.fill: parent
+                    visible: false
+                }
             }
 
             property alias head: subHeader
@@ -725,7 +740,7 @@ PageTreeNode {
                 wrapper.active = false;
                 subHeader.config = null;
                 pageWrapper = null;
-                wrapper.parent = hiddenPages;
+                wrapper.parent = hiddenPool;
                 wrapper.pageHolder = null;
                 return wrapper;
             }
@@ -747,12 +762,13 @@ PageTreeNode {
         visible: false
         // make sure nothing is shown eventually
         clip: true
+        anchors.fill: parent
     }
 
     // Holds the columns holding the pages visible. Each column has only one page
-    // as child, the invisible stacked ones are all stored in the hiddenPages
-    // component. The stack keeps the column index onto which those should be moved
-    // once they become visible.
+    // as child, the invisible stacked ones are all stored in the hiddenPool
+    // component within each column. The stack keeps the column index onto which
+    // those should be moved once they become visible.
     RowLayout {
         id: body
         objectName: "body"

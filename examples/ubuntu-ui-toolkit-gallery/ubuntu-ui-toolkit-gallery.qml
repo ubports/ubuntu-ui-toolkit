@@ -16,7 +16,7 @@
 
 import QtQuick 2.4
 import Ubuntu.Components 1.3
-import Ubuntu.Components.ListItems 1.3 as ListItem
+//import Ubuntu.Components.ListItems 1.3 as ListItem
 
 MainView {
     id: gallery
@@ -29,8 +29,9 @@ MainView {
     width: units.gu(120)
     height: units.gu(75)
 
-    LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
+    LayoutMirroring.enabled: rtl
     LayoutMirroring.childrenInherit: true
+    property bool rtl: Qt.application.layoutDirection == Qt.RightToLeft
 
     AdaptivePageLayout {
         id: layout
@@ -65,6 +66,18 @@ MainView {
 
             head.actions: [
                 Action {
+                    text: i18n.tr('Right to Left')
+                    iconName: 'flash-on'
+                    visible: !gallery.rtl
+                    onTriggered: gallery.rtl = !gallery.rtl
+                },
+                Action {
+                    text: i18n.tr('Left to Right')
+                    iconName: 'flash-off'
+                    visible: gallery.rtl
+                    onTriggered: gallery.rtl = !gallery.rtl
+                },
+                Action {
                     text: i18n.tr('Use dark theme')
                     iconName: 'torch-on'
                     visible: gallery.theme.name == 'Ubuntu.Components.Themes.Ambiance'
@@ -75,32 +88,74 @@ MainView {
                     iconName: 'torch-off'
                     visible: gallery.theme.name == 'Ubuntu.Components.Themes.SuruDark'
                     onTriggered: gallery.theme.name = 'Ubuntu.Components.Themes.Ambiance'
+                },
+                Action {
+                    text: i18n.tr('About')
+                    iconName: "info"
+                    onTriggered: layout.addPageToCurrentColumn(mainPage, Qt.resolvedUrl("About.qml"))
                 }
             ]
+
+            onActiveChanged: {
+                if (layout.columns < 2) {
+                    widgetList.currentIndex = -1;
+                }
+                if (active) {
+                    widgetList.openPage();
+                }
+            }
 
             Rectangle {
                 color: Qt.rgba(0.0, 0.0, 0.0, 0.01)
                 anchors.fill: parent
 
-                ListView {
+                UbuntuListView {
                     id: widgetList
                     objectName: "widgetList"
                     anchors.fill: parent
                     model: widgetsModel
                     currentIndex: -1
-                    delegate: ListItem.Standard {
-                        text: model.label
-                        objectName: model.objectName
-                        enabled: model.source != ""
-                        progression: true
-                        selected: index === widgetList.currentIndex
-                        onClicked: {
-                            var source = Qt.resolvedUrl(model.source);
-                            layout.addPageToNextColumn(mainPage, source, {title: model.label});
 
-                            widgetList.currentIndex = index;
+                    onCurrentIndexChanged: openPage()
+
+                    function openPage() {
+                        if (!mainPage.active || currentIndex < 0) return;
+                        var modelData = model.get(currentIndex);
+                        var source = Qt.resolvedUrl(modelData.source);
+                        layout.addPageToNextColumn(mainPage, source, {title: modelData.label});
+                    }
+
+                    delegate: ListItem {
+                        objectName: model.objectName
+                        contentItem {
+                            anchors.leftMargin: units.gu(2)
+                            anchors.rightMargin: units.gu(2)
+                        }
+                        enabled: source != ""
+                        onClicked: widgetList.currentIndex = index
+                        Label {
+                            id: labelItem
+                            anchors {
+                                fill: parent
+                                rightMargin: units.gu(4)
+                            }
+                            text: label
+                            verticalAlignment: Text.AlignVCenter
+                        }
+                        Icon {
+                            name: "next"
+                            width: units.gu(2)
+                            height: units.gu(2)
+                            anchors {
+                                verticalCenter: parent.verticalCenter
+                                right: parent.right
+                            }
                         }
                     }
+                    highlight: Rectangle {
+                        color: theme.palette.selected.background
+                    }
+                    highlightMoveDuration: 0
                 }
             }
         }

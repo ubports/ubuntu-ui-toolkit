@@ -23,6 +23,7 @@
 #include "plugin.h"
 #include "uctheme.h"
 #include "ucdeprecatedtheme.h"
+#include "ucthemingextension.h"
 
 #include <QtQml/QQmlContext>
 #include "i18n.h"
@@ -65,6 +66,8 @@
 #include "ucactionitem.h"
 #include "uchaptics.h"
 #include "ucabstractbutton.h"
+#include "ucheader.h"
+#include "uclabel.h"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -225,9 +228,9 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCUbuntuShapeOverlay>(uri, 1, 2, "UbuntuShapeOverlay");
 
     // register 1.3 API
-    qmlRegisterType<UCListItem13>(uri, 1, 3, "ListItem");
+    qmlRegisterType<UCItemAttached>();
+    qmlRegisterType<UCListItem, 1>(uri, 1, 3, "ListItem");
     qmlRegisterType<UCListItemExpansion>();
-    qmlRegisterUncreatableType<UCViewItemsAttached13>(uri, 1, 3, "ViewItems", "No create");
     qmlRegisterType<UCTheme>(uri, 1, 3, "ThemeSettings");
     qmlRegisterType<UCStyledItemBase, 2>(uri, 1, 3, "StyledItem");
     qmlRegisterSingletonType<UCNamespaceV13>(uri, 1, 3, "Ubuntu", registerUbuntuNamespace13);
@@ -238,6 +241,8 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCProportionalShape>(uri, 1, 3, "ProportionalShape");
     qmlRegisterType<LiveTimer>(uri, 1, 3, "LiveTimer");
     qmlRegisterType<UCAbstractButton>(uri, 1, 3, "AbstractButton");
+    qmlRegisterType<UCHeader>(uri, 1, 3, "Header");
+    qmlRegisterType<UCLabel, 1>(uri, 1, 3, "Label");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)

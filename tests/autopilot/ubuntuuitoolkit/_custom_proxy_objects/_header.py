@@ -34,6 +34,11 @@ logger = logging.getLogger(__name__)
 class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
     """AppHeader Autopilot custom proxy object."""
 
+    def __init__(self, *args):
+        super().__init__(*args)
+        if not hasattr(self, 'useDeprecatedToolbar'):
+            self.useDeprecatedToolbar = None
+
     def ensure_visible(self):
         if not self._is_visible():
             self._show()

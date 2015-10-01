@@ -1,3 +1,48 @@
+ubuntu-ui-toolkit (1.3.1658+15.10.20150928-0ubuntu1) UNRELEASED; urgency=medium
+
+  [ Zsombor Egri ]
+  * Boosting ListItem performance by removing the workaround brought in for 1.3
+    specific API.
+  * Fix Picker's pathItemCount binding loops in 1.3. 
+    Fixes LP: #1419667
+  * Moving Label to cpp.
+  * Separate theming from StyledItem to ease subtheming. 
+    Prerequisite for Label optimisations.
+  * Add pages to columns in AdaptivePageLayout only when the page loading 
+    completes. Fixes LP: #1492343, LP: #1499178.
+  * AdaptivePageLayout loads URL based Page Components asynchronously. 
+    Fixes: LP: #1499174.
+
+  [ Andrea Bernabei ]
+  * Add init() to UCLabel so that C++ class can create *and* initialize UCLabel.
+
+  [  Zoltan Balogh ]
+  * Integrated application startup time profiling tool.
+
+  [ Christian Dywan ]
+  * Implement RTL switch in toolkit gallery. Fixes LP: #1496913.
+  * wait_select_single in checkPageHeader. The page is being loading 
+    asynchronously in an AdaptivePageLayout so it may not be instantly 
+    available. Fixes LP: #1498863.
+  * checkPageHeader mustn't assume OrientationHelper in MainView. 
+    Fixes LP: #1498412.
+
+  [ Ken VanDine]
+  * Don't fail if AppHeader doesn't have a useDeprecatedToolbar property
+
+  [ Loïc Molinari  ]
+  * [UbuntuShape] Added mipmap based anti-aliasing fallback
+    Some OpenGL implementations not supporting standard derivatives (like the 
+    Ubuntu Touch emulator) need a fallback solution. This change implements 
+    that using mipmaps. It also implied a change in the way y coordinates are 
+    computed allowing to make the distance fields version perfectly anti-aliased
+    under any rotation. Fixes LP: #1480199, LP: #1494272.
+
+  [  Tim Peeters ]
+  * New Header C++ component.
+
+ -- Zoltán Balogh <zoltan@bakter.hu>  Mon, 28 Sep 2015 17:19:02 +0200
+
 ubuntu-ui-toolkit (1.3.1641+15.10.20150922-0ubuntu1) wily; urgency=medium
 
   [ Zsombor Egri ]
