@@ -72,8 +72,7 @@ class ActionsTestCase(tests.QMLFileAppTestCase):
     def setUp(self):
         super().setUp()
         self.header = self.main_view.get_header()
-        self.label = self.app.select_single(
-            'Label', objectName='clicked_label')
+        self.label = self.app.select_single(objectName='clicked_label')
         self.assertEqual(self.label.text, 'No button clicked.')
 
     def test_header_custom_proxy_object(self):
