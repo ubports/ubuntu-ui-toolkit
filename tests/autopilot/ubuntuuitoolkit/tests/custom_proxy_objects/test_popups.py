@@ -16,58 +16,17 @@
 
 from autopilot.introspection import dbus
 
+import os
 import ubuntuuitoolkit
 from ubuntuuitoolkit import popups, tests
 
 
-class ActionSelectionPopoverTestCase(tests.QMLStringAppTestCase):
+class ActionSelectionPopoverTestCase(tests.QMLFileAppTestCase):
 
-    test_qml = ("""
-import QtQuick 2.0
-import Ubuntu.Components 1.0
-import Ubuntu.Components.Popups 1.0
-
-MainView {
-    width: units.gu(48)
-    height: units.gu(60)
-    objectName: "mainView"
-
-    Button {
-        objectName: "open_popover"
-        text: "Open Popover"
-        onClicked: testActionsPopover.show();
-    }
-
-    Label {
-        id: "label"
-        objectName: "clicked_label"
-        anchors.centerIn: parent
-        text: "Button not clicked."
-    }
-
-    ActionSelectionPopover {
-        objectName: "test_actions_popover"
-        id: testActionsPopover
-        actions: ActionList {
-            Action {
-                text: "Action one"
-                objectName: "actionOne"
-                onTriggered: label.text = "Button clicked."
-            },
-            Action {
-                text: "Action two"
-                objectName: "actionDisabled"
-                onTriggered: label.text = "Disabled button clicked."
-            },
-            Action {
-                text: "Action three"
-                objectName: "actionHidden"
-                onTriggered: label.text = "Hidden button clicked."
-            }
-        }
-    }
-}
-""")
+    path = os.path.abspath(__file__)
+    dir_path = os.path.dirname(path)
+    test_qml_file_path = os.path.join(
+        dir_path, 'test_popups.ActionSelectionPopoverTestCase.qml')
 
     def test_custom_proxy_object(self):
         popover = self.main_view.get_action_selection_popover(
