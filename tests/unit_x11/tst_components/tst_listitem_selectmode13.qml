@@ -41,7 +41,11 @@ MainView {
                 ListElement { text: "Also notice how when pressing on the listitem in step 3, the selected indice still changes!" }
             }
 
-            anchors.fill: parent
+            anchors {
+                fill: parent
+                bottomMargin: parent.height / 2
+            }
+            clip: true
             model: instructionModel
 
             delegate: ListItem {
@@ -74,10 +78,40 @@ MainView {
                 text: "Selected Indices: " + listView.ViewItems.selectedIndices
             }
         }
+
+        UbuntuListView {
+            id: testView
+            anchors {
+                fill: parent
+                topMargin: parent.height / 2
+            }
+            clip: true
+        }
     }
 
-    UbuntuTestCase {
+    Component {
+        id: selectModePreset
+        ListItem {
+            id: litem
+            objectName: "listItem" + index
+            selectMode: true
+            property SignalSpy selectedChangedSpy: SignalSpy {
+                target: litem
+                signalName: "selectedChanged"
+            }
+        }
+    }
+
+    ListItemTestCase13 {
+        name: "ListItem13.selectMode"
         when: windowShown
+
+        function cleanup() {
+            listView.ViewItems.selectMode = false;
+            testView.model = null;
+            testView.delegate = null;
+            wait(200);
+        }
 
         function test_select_toggle_breaks_property_binding_bug1469471() {
             listView.ViewItems.selectMode = true;
@@ -98,6 +132,30 @@ MainView {
             // now toggle selected
             listItem.selected = !listItem.selected;
             compare(checkBox.checked, false);
+        }
+
+        function test_select_mode_turned_on_delegate_on_creation_bug1493882() {
+            testView.delegate = selectModePreset;
+            testView.model = 10;
+            waitForRendering(testView, 500);
+            var item = findChild(testView, "listItem0");
+            verify(item);
+            var selectPanel = findChild(item, "selection_panel0");
+            verify(selectPanel, "selection panel not found");
+        }
+
+        function test_togle_selded_triggers_one_selectedChanged_bug1493880() {
+            testView.delegate = selectModePreset;
+            testView.model = 10;
+            waitForRendering(testView, 500);
+            var item0 = findChild(testView, "listItem0");
+            var item1 = findChild(testView, "listItem1");
+            verify(item0 && item1);
+
+            // select #0
+            item0.selected = true;
+            item0.selectedChangedSpy.wait();
+            compare(item1.selectedChangedSpy.count, 0, "Only the selected item should emit the change signal!");
         }
     }
 }
