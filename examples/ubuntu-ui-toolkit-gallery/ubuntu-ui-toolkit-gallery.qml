@@ -36,7 +36,7 @@ MainView {
     AdaptivePageLayout {
         id: layout
         anchors.fill: parent
-        primaryPage: mainPage
+        primaryPageSource: Qt.resolvedUrl("MainPage.qml")
 
         layouts: [
             PageColumnsLayout {
@@ -59,111 +59,5 @@ MainView {
                 }
             }
         ]
-
-        Page {
-            id: mainPage
-            title: "Ubuntu UI Toolkit"
-
-            head.actions: [
-                Action {
-                    text: i18n.tr('Right to Left')
-                    iconName: 'flash-on'
-                    visible: !gallery.rtl
-                    onTriggered: gallery.rtl = !gallery.rtl
-                },
-                Action {
-                    text: i18n.tr('Left to Right')
-                    iconName: 'flash-off'
-                    visible: gallery.rtl
-                    onTriggered: gallery.rtl = !gallery.rtl
-                },
-                Action {
-                    text: i18n.tr('Use dark theme')
-                    iconName: 'torch-on'
-                    visible: gallery.theme.name == 'Ubuntu.Components.Themes.Ambiance'
-                    onTriggered: gallery.theme.name = 'Ubuntu.Components.Themes.SuruDark'
-                },
-                Action {
-                    text: i18n.tr('Use light theme')
-                    iconName: 'torch-off'
-                    visible: gallery.theme.name == 'Ubuntu.Components.Themes.SuruDark'
-                    onTriggered: gallery.theme.name = 'Ubuntu.Components.Themes.Ambiance'
-                },
-                Action {
-                    text: i18n.tr('About')
-                    iconName: "info"
-                    onTriggered: layout.addPageToCurrentColumn(mainPage, Qt.resolvedUrl("About.qml"))
-                }
-            ]
-
-            onActiveChanged: {
-                if (layout.columns < 2) {
-                    widgetList.currentIndex = -1;
-                }
-                if (active) {
-                    widgetList.openPage();
-                }
-            }
-
-            Rectangle {
-                color: Qt.rgba(0.0, 0.0, 0.0, 0.01)
-                anchors.fill: parent
-
-                UbuntuListView {
-                    id: widgetList
-                    objectName: "widgetList"
-                    anchors.fill: parent
-                    model: widgetsModel
-                    currentIndex: -1
-
-                    onCurrentIndexChanged: openPage()
-
-                    function openPage() {
-                        if (!mainPage.active || currentIndex < 0) return;
-                        var modelData = model.get(currentIndex);
-                        var source = Qt.resolvedUrl(modelData.source);
-                        layout.addPageToNextColumn(mainPage, source, {title: modelData.label});
-                    }
-
-                    delegate: ListItem {
-                        objectName: model.objectName
-                        contentItem {
-                            anchors.leftMargin: units.gu(2)
-                            anchors.rightMargin: units.gu(2)
-                        }
-                        enabled: source != ""
-                        // Used by Autopilot
-                        property string text: label
-                        onClicked: widgetList.currentIndex = index
-                        Label {
-                            id: labelItem
-                            anchors {
-                                fill: parent
-                                rightMargin: units.gu(4)
-                            }
-                            text: label
-                            verticalAlignment: Text.AlignVCenter
-                        }
-                        Icon {
-                            name: "next"
-                            width: units.gu(2)
-                            height: units.gu(2)
-                            anchors {
-                                verticalCenter: parent.verticalCenter
-                                right: parent.right
-                            }
-                        }
-                    }
-                    highlight: Rectangle {
-                        color: theme.palette.selected.background
-                    }
-                    highlightMoveDuration: 0
-                }
-            }
-        }
-    }
-
-    WidgetsModel {
-        id: widgetsModel
     }
 }
