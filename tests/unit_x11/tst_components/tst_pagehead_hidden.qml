@@ -43,11 +43,10 @@ Item {
 
     UbuntuTestCase {
         id: testCase
-        name: "PageHeadHidden"
+        name: "PageNoHeader"
         when: windowShown
 
         function get_header_visible() {
-            waitForHeaderAnimation(mainView)
             var header = findChild(mainView, "MainView_Header");
             return (header.y !== -header.height)
         }

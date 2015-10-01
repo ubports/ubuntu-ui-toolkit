@@ -111,9 +111,9 @@ void UCHeader::_q_heightChanged() {
     if (m_exposed || (!m_flickable.isNull() && m_flickable->contentY() <= 0.0)) {
         // Header was exposed before, or the flickable is scrolled up close to
         //  the top so that the header should be visible.
-        // Do not animate because when a Header is initialized with exposed: false
-        //  and it gets its height from the style after Header is completed, you
-        //  do not want to show the hide animation.
+        // After Header completed, the theming engine updates its implicitHeight
+        //  to that of the style and we do not want to animate then. Other height
+        //  changes also do not need animations.
         show(false);
     } else {
         hide(false);
@@ -159,7 +159,6 @@ void UCHeader::setFlickable(QQuickFlickable *flickable) {
         } else {
             hide(false);
         }
-//        _q_flickableMovementEnded();
         m_flickable->disconnect(this);
 
         delete m_flickableTopMarginBackup; // Restores previous value/binding for topMargin.
@@ -182,9 +181,7 @@ void UCHeader::setFlickable(QQuickFlickable *flickable) {
         connect(m_flickable, SIGNAL(interactiveChanged()),
                 this, SLOT(_q_flickableInteractiveChanged()));
         m_previous_contentY = m_flickable->contentY();
-//        updateFlickableMargins();
-//                show();
-        _q_flickableMovementEnded();
+        _q_flickableMovementEnded(); // show or hide depending on y
     }
 }
 
@@ -213,7 +210,6 @@ void UCHeader::show(bool animate) {
         }
     }
 
-    Q_ASSERT(!m_moving);
     if (animate && isComponentComplete()) {
         m_showHideAnimation->setFrom(y());
         m_showHideAnimation->setTo(0.0);

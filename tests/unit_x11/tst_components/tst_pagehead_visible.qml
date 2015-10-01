@@ -35,10 +35,6 @@ Item {
                 id: page
                 title: "Auto-hide"
                 head {
-//                    locked: lockedSwitch.checked
-//                    onVisibleChanged: {
-//                        visibleSwitch.checked = page.head.visible
-//                    }
                     actions: Action {
                         iconName: "like"
                         text: "Like"
@@ -180,11 +176,7 @@ Item {
         }
 
         function wait_for_visible(visible, errorMessage) {
-//            print("wait_for_visible("+visible+")")
             waitForHeaderAnimation(mainView);
-//            print("moving = "+header.moving)
-//            print("exposed = "+header.exposed)
-//            print("waited for header animation. v = "+visible+", h.visible = "+stack.currentPage.head.visible+", h.e = "+header.exposed + ", h.y = "+header.y)
             compare(stack.currentPage.head.visible, visible, errorMessage);
             var mismatchMessage = " Page.head.visible does not match header visibility.";
             if (visible) {
@@ -292,10 +284,8 @@ Item {
             page.head.locked = true;
             page.head.visible = false;
             waitForHeaderAnimation(mainView);
-//            print("----- pushing")
             stack.push(otherPage);
             waitForHeaderAnimation(mainView);
-//            print("----- popping")
             stack.pop();
             wait_for_visible(false, "Popping to a Page with locked hidden header shows header.");
         }

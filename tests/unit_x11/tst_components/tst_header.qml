@@ -31,8 +31,6 @@ Item {
         z:1
         width: parent.width
         height: root.initialHeaderHeight
-//        onMovingChanged: print("moving = "+moving)
-//        onExposedChanged: print("exposed = "+exposed)
 
         Rectangle {
             // to visualize the header
@@ -58,7 +56,6 @@ Item {
             anchors {
                 top: parent.top
                 left: parent.left
-//                margins: units.gu(5)
                 leftMargin: units.gu(5)
                 topMargin: 2*root.initialHeaderHeight
             }
@@ -212,7 +209,7 @@ Item {
         }
 
         function test_0_initially_hidden() {
-            // don't show an animation if the header is hidden initially
+            // Don't show an animation if the header is hidden initially.
             compare(hiddenHeader.y, -header.height,
                     "Hidden header has wrong initial y-value.");
         }
