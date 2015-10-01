@@ -110,10 +110,10 @@ Item {
 
             compare(page.flickable.topMargin, 0,
                     "topMargin is not 0 when header is locked hidden.");
-//            compare(page.flickable.contentY, flickableY + headerHeight,
-//                    "contentY was not updated properly when header was hidden.");
+            compare(page.flickable.contentY, flickableY + headerHeight,
+                    "contentY was not updated properly when header was hidden.");
 
-            page.head.locked.locked = false;
+            page.head.locked = false;
             page.head.visible = true;
             waitForHeaderAnimation(mainView);
 

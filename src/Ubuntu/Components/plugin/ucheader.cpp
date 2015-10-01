@@ -161,8 +161,12 @@ void UCHeader::setFlickable(QQuickFlickable *flickable) {
         }
         m_flickable->disconnect(this);
 
+        qreal oldMargin = m_flickable->topMargin();
         delete m_flickableTopMarginBackup; // Restores previous value/binding for topMargin.
         m_flickableTopMarginBackup = Q_NULLPTR;
+
+        // revert the flickable content Y.
+        m_flickable->setContentY(m_flickable->contentY() - m_flickable->topMargin() + oldMargin);
     }
 
     m_flickable = flickable;
@@ -196,7 +200,9 @@ void UCHeader::updateFlickableMargins() {
         PropertyChange::setValue(m_flickableTopMarginBackup, headerHeight);
         // Push down contents when header grows,
         //  pull up contents when header shrinks.
+        qDebug()<<"OLD CONTENTY = "<<m_flickable->contentY()<<" old height = "<<previousHeaderHeight;
         m_flickable->setContentY(previousContentY - headerHeight + previousHeaderHeight);
+        qDebug()<<"NEW CONTENTY = "<<m_flickable->contentY()<<" new height = "<<headerHeight;
     }
 }
 
