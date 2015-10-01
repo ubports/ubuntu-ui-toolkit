@@ -242,7 +242,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<LiveTimer>(uri, 1, 3, "LiveTimer");
     qmlRegisterType<UCAbstractButton>(uri, 1, 3, "AbstractButton");
     qmlRegisterType<UCHeader>(uri, 1, 3, "Header");
-    qmlRegisterType<UCLabel, 1>(uri, 1, 3, "Label");
+    qmlRegisterType<UCLabel>(uri, 1, 3, "Label");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
