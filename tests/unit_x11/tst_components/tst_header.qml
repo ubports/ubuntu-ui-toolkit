@@ -31,6 +31,8 @@ Item {
         z:1
         width: parent.width
         height: root.initialHeaderHeight
+//        onMovingChanged: print("moving = "+moving)
+//        onExposedChanged: print("exposed = "+exposed)
 
         Rectangle {
             // to visualize the header
@@ -56,7 +58,9 @@ Item {
             anchors {
                 top: parent.top
                 left: parent.left
-                margins: units.gu(5)
+//                margins: units.gu(5)
+                leftMargin: units.gu(5)
+                topMargin: 2*root.initialHeaderHeight
             }
             Switch {
                 id: lockedSwitch
@@ -151,6 +155,12 @@ Item {
         id: otherHeader
     }
 
+    Header {
+        id: hiddenHeader
+        exposed: false
+        height: root.initialHeaderHeight
+    }
+
     UbuntuTestCase {
         name: "Header"
         when: windowShown
@@ -199,6 +209,12 @@ Item {
                 compare(header.y, -header.height, errorMessage +
                         " y-value/exposed mismatch for hidden header!");
             }
+        }
+
+        function test_0_initially_hidden() {
+            // don't show an animation if the header is hidden initially
+            compare(hiddenHeader.y, -header.height,
+                    "Hidden header has wrong initial y-value.");
         }
 
         function test_reparent_width() {
@@ -288,7 +304,7 @@ Item {
             wait_for_exposed(true);
         }
 
-        function test_scroll_updates_visible() {
+        function test_scroll_updates_exposed() {
             scroll_down();
             wait_for_exposed(false, "Scrolling down does not hide header.");
             scroll_up();

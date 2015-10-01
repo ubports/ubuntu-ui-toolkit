@@ -111,9 +111,12 @@ void UCHeader::_q_heightChanged() {
     if (m_exposed || (!m_flickable.isNull() && m_flickable->contentY() <= 0.0)) {
         // Header was exposed before, or the flickable is scrolled up close to
         //  the top so that the header should be visible.
-        show();
+        // Do not animate because when a Header is initialized with exposed: false
+        //  and it gets its height from the style after Header is completed, you
+        //  do not want to show the hide animation.
+        show(false);
     } else {
-        hide();
+        hide(false);
     }
 }
 
@@ -151,7 +154,12 @@ void UCHeader::setFlickable(QQuickFlickable *flickable) {
 
         // Finish the current header movement in case the current
         //  flickable is disconnected while scrolling.
-        _q_flickableMovementEnded();
+        if (m_exposed) {
+            show(false);
+        } else {
+            hide(false);
+        }
+//        _q_flickableMovementEnded();
         m_flickable->disconnect(this);
 
         delete m_flickableTopMarginBackup; // Restores previous value/binding for topMargin.
@@ -164,6 +172,7 @@ void UCHeader::setFlickable(QQuickFlickable *flickable) {
     Q_ASSERT(m_flickableTopMarginBackup == Q_NULLPTR);
     if (!m_flickable.isNull()) {
         m_flickableTopMarginBackup = new PropertyChange(m_flickable, "topMargin");
+        updateFlickableMargins();
         connect(m_flickable, SIGNAL(contentYChanged()),
                 this, SLOT(_q_scrolledContents()));
         connect(m_flickable, SIGNAL(movementEnded()),
@@ -173,8 +182,9 @@ void UCHeader::setFlickable(QQuickFlickable *flickable) {
         connect(m_flickable, SIGNAL(interactiveChanged()),
                 this, SLOT(_q_flickableInteractiveChanged()));
         m_previous_contentY = m_flickable->contentY();
-        updateFlickableMargins();
-        show();
+//        updateFlickableMargins();
+//                show();
+        _q_flickableMovementEnded();
     }
 }
 
@@ -193,7 +203,7 @@ void UCHeader::updateFlickableMargins() {
     }
 }
 
-void UCHeader::show() {
+void UCHeader::show(bool animate) {
     if (!m_exposed) {
         m_exposed = true;
         Q_EMIT exposedChanged();
@@ -202,11 +212,15 @@ void UCHeader::show() {
             m_showHideAnimation->stop();
         }
     }
-    if (isComponentComplete()) {
+
+    Q_ASSERT(!m_moving);
+    if (animate && isComponentComplete()) {
         m_showHideAnimation->setFrom(y());
         m_showHideAnimation->setTo(0.0);
         m_showHideAnimation->start();
     } else {
+        // If a previous animation was showing the header, stop it.
+        m_showHideAnimation->stop();
         this->setY(0.0);
         if (m_moving) {
             m_moving = false;
@@ -215,7 +229,7 @@ void UCHeader::show() {
     }
 }
 
-void UCHeader::hide() {
+void UCHeader::hide(bool animate) {
     if (m_exposed) {
         m_exposed = false;
         Q_EMIT exposedChanged();
@@ -224,11 +238,14 @@ void UCHeader::hide() {
             m_showHideAnimation->stop();
         }
     }
-    if (isComponentComplete()) {
+
+    if (animate && isComponentComplete()) {
         m_showHideAnimation->setFrom(y());
         m_showHideAnimation->setTo(-1.0*height());
         m_showHideAnimation->start();
     } else {
+        // If a previous animation was hiding the header, stop it.
+        m_showHideAnimation->stop();
         this->setY(-1.0*height());
         if (m_moving) {
             m_moving = false;

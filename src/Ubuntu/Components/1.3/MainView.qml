@@ -161,7 +161,8 @@ MainViewBase {
             panelColor: Qt.lighter(mainView.headerColor, 1.1)
 
             title: internal.activePage ? internal.activePage.title : ""
-            flickable: internal.activePage ? internal.activePage.flickable : null
+//            flickable: internal.activePage && !config.locked ?
+//                           internal.activePage.flickable : null
             pageStack: internal.activePage ? internal.activePage.pageStack : null
 
             contents: internal.activePage &&
@@ -172,10 +173,11 @@ MainViewBase {
                 id: defaultConfig
                 // Used when there is no active Page, or a Page 1.0 is used which
                 // does not have a PageHeadConfiguration.
+                objectName: "default config"
             }
             config: internal.activePage && internal.activePage.hasOwnProperty("head") ?
                         internal.activePage.head : defaultConfig
-
+Component.onCompleted: print("YO. header.y = "+headerItem.y)
             // 'window' is defined by QML between startup and showing on the screen.
             // There is no signal for when it becomes available and re-declaring it is not safe.
             property bool windowActive: typeof window != 'undefined'

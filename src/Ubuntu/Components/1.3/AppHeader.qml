@@ -30,6 +30,12 @@ Components.Header {
         left: parent.left
         right: parent.right
     }
+//    y: exposed ? 0 : -height
+
+    // Workaround for when the header must be hidden initially.
+    // If the height changes later, the y-value will be animated.
+//    height: __styleInstance ? __styleInstance.implicitHeight : units.gu(6) + units.dp(1)
+//onHeightChanged: print("AppHeader.height = "+height)
 
     /*!
       The background color of the divider. Value set by MainView.
@@ -43,15 +49,18 @@ Components.Header {
 
     enabled: header.exposed && !header.moving
 
-    flickable: header.config.locked ? null : header.config.flickable
-//    locked: header.config && header.config.locked
-    exposed: !header.config || header.config.visible
+//    exposed: !header.config || header.config.visible
+    exposed: false
+//    flickable: header.config && !header.config.locked ? header.config.flickable : null
+//    onFlickableChanged: print("new flickable = "+flickable)
     onExposedChanged: {
-        print("EXPOSED = "+exposed);
-        if (internal.newConfig) {
+//        print("exposedChanged! to "+exposed+", flickable = "+flickable)
+        if(header.config) {
             header.config.visible = exposed;
         }
     }
+//    Component.onCompleted: print("WTF.exposed = "+header.exposed+", y = "+header.y)
+//onYChanged: print("header.y = "+header.y)
 //    /*!
 //      Show the header
 //     */
@@ -146,18 +155,26 @@ Components.Header {
      */
     property QtObject config: null
     onConfigChanged: {
+//        print("Config changed! locked = "+config.locked+", visible = "+config.visible)
+//        print("objectName = "+config.objectName)
         // set internal.newConfig because when we rely on the binding,
         //  the value of newConfig may be updated after executing the code below.
         internal.newConfig = config && config.hasOwnProperty("visible") &&
                 config.hasOwnProperty("locked");
 
-        print("header.config = "+header.config)
-//        internal.connectFlickable();
+        if (header.config.locked) {
+            header.flickable = null;
+        } else {
+            header.flickable = header.config.flickable;
+        }
 
-
-        if (internal.newConfig && header.config.locked &&!header.config.visible) {
+//        if (internal.newConfig && header.config.locked && !header.config.visible) {
+        if (!header.flickable && !header.config.visible) {
+            // locked.
+//            print("locked hidden. setting exposed to false.");
             header.exposed = false;
         } else {
+//            print("not locked. exposing header.")
             header.config.visible = true;
             header.exposed = true;
         }
@@ -166,21 +183,20 @@ Components.Header {
         target: header.config
         ignoreUnknownSignals: true // PageHeadConfiguration <1.2 lacks the signals below
         onVisibleChanged: {
+//            print("head.visible changed to "+header.config.visible)
             if (header.config.visible) {
-//                header.show();
                 header.exposed = true; //header.config.visible;
             } else {
-//                header.hide();
                 header.exposed = false;
             }
-//            internal.checkFlickableMargins();
         }
-//        onLockedChanged: {
-//            internal.connectFlickable();
-//            if (!header.config.locked) {
-//                internal.movementEnded();
-//            }
-//        }
+        onLockedChanged: {
+            if (header.config.locked) {
+                header.flickable = null;
+            } else {
+                header.flickable = header.config.flickable;
+            }
+        }
     }
 
 
@@ -221,5 +237,4 @@ Components.Header {
 
     theme.version: Components.Ubuntu.toolkitVersion
     styleName: "PageHeadStyle"
-    Component.onCompleted: print("YEEEEEEEEEEEEEEEEAH")
 }
