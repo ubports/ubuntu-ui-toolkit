@@ -1,6 +1,8 @@
 QT *= qml quick
 CONFIG += no_keywords
 
+DEFINES += QT_USE_QSTRINGBUILDER
+
 # Input
 SOURCES += \
     $$PWD/upmplugin.cpp \

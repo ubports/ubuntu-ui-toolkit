@@ -18,6 +18,7 @@ import logging
 
 from autopilot import logging as autopilot_logging
 from autopilot.introspection import dbus
+from autopilot import introspection
 
 from ubuntuuitoolkit._custom_proxy_objects import _common
 
@@ -80,6 +81,17 @@ class TextInputPopover(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
 class ActionSelectionPopover(_common.UbuntuUIToolkitCustomProxyObjectBase):
     """ActionSelectionPopover Autopilot custom proxy object."""
+
+    @classmethod
+    def validate_dbus_object(cls, path, state):
+        if super().validate_dbus_object(path, state):
+            return True
+
+        name = introspection.get_classname_from_path(path)
+        if name == b'OverflowPanel':
+            return True
+
+        return False
 
     def click_action_button(self, action_object_name):
         """Click an action button on the popover.

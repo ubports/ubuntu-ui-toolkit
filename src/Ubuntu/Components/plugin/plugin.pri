@@ -16,6 +16,7 @@ QT *= organizer
 
 #comment in the following line to disable traces
 #DEFINES += QT_NO_DEBUG_OUTPUT
+DEFINES += QT_USE_QSTRINGBUILDER
 
 INCLUDEPATH+=$$PWD
 
@@ -78,6 +79,8 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/ucdeprecatedtheme.h \
     $$PWD/ucdefaulttheme.h \
     $$PWD/ucstylehints.h \
+    $$PWD/ucslotslayout.h \
+    $$PWD/ucslotslayout_p.h \
     $$PWD/livetimer.h \
     $$PWD/livetimer_p.h \
     $$PWD/timeutils_p.h \
@@ -87,6 +90,8 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/ucthemingextension.h \
     $$PWD/ucheader.h \
     $$PWD/uclabel.h \
+    $$PWD/uclistitemlayout.h \
+    $$PWD/privates/threelabelsslot_p.h \
     $$PWD/ucimportversionchecker_p.h
 
 SOURCES += $$PWD/plugin.cpp \
@@ -139,6 +144,7 @@ SOURCES += $$PWD/plugin.cpp \
     $$PWD/ucdeprecatedtheme.cpp \
     $$PWD/ucdefaulttheme.cpp \
     $$PWD/ucstylehints.cpp \
+    $$PWD/ucslotslayout.cpp \
     $$PWD/livetimer.cpp \
     $$PWD/livetimer_p.cpp \
     $$PWD/ucactionitem.cpp \
@@ -147,6 +153,8 @@ SOURCES += $$PWD/plugin.cpp \
     $$PWD/ucthemingextension.cpp \
     $$PWD/ucheader.cpp \
     $$PWD/uclabel.cpp \
+    $$PWD/uclistitemlayout.cpp \
+    $$PWD/privates/threelabelsslot_p.cpp \
     $$PWD/ucimportversionchecker_p.cpp
 
 # adapters
