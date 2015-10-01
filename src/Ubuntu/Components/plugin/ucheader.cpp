@@ -200,9 +200,7 @@ void UCHeader::updateFlickableMargins() {
         PropertyChange::setValue(m_flickableTopMarginBackup, headerHeight);
         // Push down contents when header grows,
         //  pull up contents when header shrinks.
-        qDebug()<<"OLD CONTENTY = "<<m_flickable->contentY()<<" old height = "<<previousHeaderHeight;
         m_flickable->setContentY(previousContentY - headerHeight + previousHeaderHeight);
-        qDebug()<<"NEW CONTENTY = "<<m_flickable->contentY()<<" new height = "<<headerHeight;
     }
 }
 
