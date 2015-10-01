@@ -162,11 +162,14 @@ void UCHeader::setFlickable(QQuickFlickable *flickable) {
         m_flickable->disconnect(this);
 
         qreal oldMargin = m_flickable->topMargin();
+        // store contentY to compensate for Flickable updating the position due to margin change.
+        qreal oldContentY = m_flickable->contentY();
         delete m_flickableTopMarginBackup; // Restores previous value/binding for topMargin.
         m_flickableTopMarginBackup = Q_NULLPTR;
 
+        qreal delta = m_flickable->topMargin() - oldMargin + m_flickable->contentY() - oldContentY;
         // revert the flickable content Y.
-        m_flickable->setContentY(m_flickable->contentY() - m_flickable->topMargin() + oldMargin);
+        m_flickable->setContentY(m_flickable->contentY() - delta);
     }
 
     m_flickable = flickable;

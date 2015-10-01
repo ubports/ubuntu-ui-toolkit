@@ -135,7 +135,7 @@ Components.Header {
         target: header.config
         ignoreUnknownSignals: true
         onVisibleChanged: {
-            header.exposed = header.config.visible
+            header.exposed = header.config.visible;
         }
         onLockedChanged: {
             if (header.config.locked) {

@@ -46,8 +46,13 @@ Item {
 
     Flickable {
         id: flickable
-        anchors.fill: parent
-        contentHeight: height * 2
+        anchors {
+            top: header.flickable ? parent.top : header.bottom
+            left: parent.left
+            right: parent.right
+            bottom: parent.bottom
+        }
+        contentHeight: root.height * 2
 
         Grid {
             id: switchGrid
