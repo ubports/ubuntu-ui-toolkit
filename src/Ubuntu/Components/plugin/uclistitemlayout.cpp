@@ -19,8 +19,8 @@
 #include "private/qqmldata_p.h"
 #include <QtQml/QQmlEngine>
 
+#include "privates/threelabelsslot_p.h"
 #include "uclistitemlayout.h"
-#include "threelabelsslot_p.h"
 #include "uclabel.h"
 
 /*!

@@ -91,7 +91,7 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/ucheader.h \
     $$PWD/uclabel.h \
     $$PWD/uclistitemlayout.h \
-    $$PWD/threelabelsslot_p.h
+    $$PWD/privates/threelabelsslot_p.h
 
 SOURCES += $$PWD/plugin.cpp \
     $$PWD/uctheme.cpp \
@@ -153,7 +153,7 @@ SOURCES += $$PWD/plugin.cpp \
     $$PWD/ucheader.cpp \
     $$PWD/uclabel.cpp \
     $$PWD/uclistitemlayout.cpp \
-    $$PWD/threelabelsslot_p.cpp
+    $$PWD/privates/threelabelsslot_p.cpp
 
 # adapters
 SOURCES += $$PWD/adapters/alarmsadapter_organizer.cpp

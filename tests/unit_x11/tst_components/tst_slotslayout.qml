@@ -281,7 +281,7 @@ Item {
         }
     }
 
-    TestCase {
+    UbuntuTestCase {
         name: "SlotsLayout"
         when: windowShown
 
@@ -828,6 +828,12 @@ Item {
             compare(layoutLabels.summary.textSize, Label.XLarge, "Labels textSize change, new summary textsize")
             compare(layoutLabels.mainSlot.height, layoutLabels.summary.y + layoutLabels.summary.height,
                     "Default labels positioning, main slot height")
+        }
+
+        Label {id: customMainSlot }
+        function test_warningOnAttemptToChangeListItemLayoutMainSlot() {
+            layoutLabels.mainSlot = customMainSlot
+            console.log(warningFormat(60, 9, "QML ListItemLayout: Setting a different mainSlot on ListItemLayout is not supported. Please use SlotsLayout instead."))
         }
     }
 }
