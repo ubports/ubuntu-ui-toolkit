@@ -52,15 +52,14 @@ UCAbstractButton::UCAbstractButton(QQuickItem *parent)
     : UCActionItem(parent)
     , m_mouseArea(new QQuickMouseArea)
     , m_acceptEvents(true)
+    , m_pressAndHoldConnected(false)
 {
     setActiveFocusOnPress(true);
 }
 
 bool UCAbstractButton::isPressAndHoldConnected()
 {
-    static QMetaMethod method = QMetaMethod::fromSignal(&UCAbstractButton::pressAndHold);
-    static int signalIdx = QMetaObjectPrivate::signalIndex(method);
-    return QObjectPrivate::get(this)->isSignalConnected(signalIdx);
+    IS_SIGNAL_CONNECTED(this, UCAbstractButton, pressAndHold, ());
 }
 
 void UCAbstractButton::classBegin()
@@ -88,8 +87,23 @@ void UCAbstractButton::componentComplete()
     connect(m_mouseArea, &QQuickMouseArea::pressedChanged, this, &UCAbstractButton::pressedChanged);
     connect(m_mouseArea, &QQuickMouseArea::hoveredChanged, this, &UCAbstractButton::hoveredChanged);
     connect(m_mouseArea, SIGNAL(clicked(QQuickMouseEvent*)), this, SLOT(_q_mouseAreaClicked()));
-    if (isPressAndHoldConnected()) {
-        connect(m_mouseArea, SIGNAL(pressAndHold(QQuickMouseEvent*)), this, SLOT(_q_mouseAreaPressAndHold()));
+    connect(m_mouseArea, SIGNAL(pressed(QQuickMouseEvent*)), this, SLOT(_q_mouseAreaPressed()));
+}
+
+// check the pressAndHold connection on runtime, as Connections
+// may not be available on compoennt completion
+void UCAbstractButton::_q_mouseAreaPressed()
+{
+    bool longPressConnected = isPressAndHoldConnected();
+    if (longPressConnected && !m_pressAndHoldConnected) {
+        // do not use UniqueConnection as that has huge impact on performance
+        connect(m_mouseArea, SIGNAL(pressAndHold(QQuickMouseEvent*)),
+                this, SLOT(_q_mouseAreaPressAndHold()));
+        m_pressAndHoldConnected = true;
+    } else if (!longPressConnected && m_pressAndHoldConnected) {
+        disconnect(m_mouseArea, SIGNAL(pressAndHold(QQuickMouseEvent*)),
+                   this, SLOT(_q_mouseAreaPressAndHold()));
+        m_pressAndHoldConnected = false;
     }
 }
 
