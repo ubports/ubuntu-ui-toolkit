@@ -128,8 +128,7 @@ class GalleryTestCase(ubuntuuitoolkit.tests.QMLFileAppTestCase):
             the page.
 
         """
-        list_view = self.main_view.select_single(
-            ubuntuuitoolkit.QQuickListView, objectName="widgetList")
+        list_view = self.main_view.select_single(objectName="widgetList")
         list_view.click_element(page)
         element = self.main_view.select_single('Standard', objectName=page)
         element.selected.wait_for(True)

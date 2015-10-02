@@ -44,6 +44,7 @@ PageTreeNode {
     Toolkit13.PageHeadConfiguration {
         id: headerConfig
         title: page.title
+        flickable: page.flickable
     }
 
     Toolkit13.Object {

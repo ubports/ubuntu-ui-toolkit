@@ -76,6 +76,34 @@ MainView {
         }
     }
 
+    Component {
+        id: aplComponent
+        AdaptivePageLayout {
+            width: units.gu(40)
+            height: units.gu(50)
+            primaryPageSource: pageComponent
+        }
+    }
+
+    Component {
+        id: aplDocument
+        AdaptivePageLayout {
+            width: units.gu(40)
+            height: units.gu(50)
+            primaryPageSource: Qt.resolvedUrl("MyExternalPage.qml")
+        }
+    }
+
+    Component {
+        id: aplPrecedence
+        AdaptivePageLayout {
+            width: units.gu(40)
+            height: units.gu(50)
+            primaryPage: page1
+            primaryPageSource: Qt.resolvedUrl("MyExternalPage.qml")
+        }
+    }
+
     UbuntuTestCase {
         id: testCase
         when: windowShown
@@ -117,17 +145,19 @@ MainView {
             layout.removePages(page1);
         }
 
-        function test_0_API() {
+        function initTestCase() {
             compare(defaults.primaryPage, null, "primaryPage not null by default");
+            compare(defaults.primaryPageSource, undefined, "primaryPageSource not set by default");
             compare(defaults.layouts.length, 0, "no layouts by default");
             compare(defaults.columns, 1, "1 column as default");
         }
 
-        function test_zzz_change_primaryPage() {
+        function test_change_primaryPage() {
             // this prints the warning but still changes the primary page,
             //  so the test must be executed last not to mess up the other tests.
             ignoreWarning("Cannot change primaryPage after completion.");
             layout.primaryPage = page3;
+            verify(layout.primaryPage != page3, "primaryPage value was changed");
         }
 
         function test_add_page_when_source_page_not_in_stack() {
@@ -317,6 +347,52 @@ MainView {
             }
             loadedSpy.wait(2500);
             verify(prevPageActive);
+        }
+
+        function test_primaryPageSource_bug1499179_data() {
+            return [
+                {tag: "Component", test: aplComponent},
+                {tag: "Document", test: aplDocument},
+            ];
+        }
+        function test_primaryPageSource_bug1499179(data) {
+            var apl = data.test.createObject(root);
+            verify(apl);
+            tryCompareFunction(function () { return apl.primaryPage != null }, true, 1500);
+            apl.visible = false;
+            apl = null;
+        }
+
+        function test_primaryPageSource_not_set_twice_data() {
+            return [
+                {tag: "Component", test: aplComponent, nextValue: null},
+                {tag: "Document", test: aplDocument, nextValue: null},
+            ];
+        }
+        function test_primaryPageSource_not_set_twice(data) {
+            var apl = data.test.createObject(root);
+            verify(apl);
+            tryCompareFunction(function () { return apl.primaryPage != null }, true, 1500);
+            ignoreWarning("Cannot change primaryPageSource after completion.");
+            apl.primaryPageSource = data.nextValue;
+            verify(apl.primaryPageSource != data.nextValue, "property value changed!");
+            apl.visible = false;
+            apl = null;
+        }
+
+        SignalSpy {
+            id: primaryPageSpy
+            signalName: "primaryPageChanged"
+        }
+
+        function test_primaryPageSource_precedence_over_primaryPage() {
+            var apl = aplPrecedence.createObject(root);
+            primaryPageSpy.target = apl;
+            verify(apl);
+            primaryPageSpy.wait();
+            verify(apl.primaryPage.title != page1.title, "primaryPage has not been overloaded by primaryPageSource");
+            apl.visible = false;
+            apl = null;
         }
     }
 }

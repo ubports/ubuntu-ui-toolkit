@@ -20,6 +20,7 @@
 #include "ucactionitem.h"
 
 class QQuickMouseArea;
+class QQuickMouseEvent;
 class UCAbstractButton : public UCActionItem
 {
     Q_OBJECT
@@ -51,12 +52,14 @@ Q_SIGNALS:
     void pressAndHold();
 
 protected Q_SLOTS:
+    void _q_mouseAreaPressed();
     void _q_mouseAreaClicked();
     void _q_mouseAreaPressAndHold();
 
 protected:
     QQuickMouseArea *m_mouseArea;
     bool m_acceptEvents:1;
+    bool m_pressAndHoldConnected:1;
 
     bool isPressAndHoldConnected();
 };
