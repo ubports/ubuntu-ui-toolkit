@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (1.3.1671+15.10.20151002-0ubuntu1) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.3.1672+15.10.20151002-0ubuntu1) UNRELEASED; urgency=medium
 
   [ Tim Peeters ]
   * Use the new cpp Header in the internal AppHeader.
@@ -27,6 +27,8 @@ ubuntu-ui-toolkit (1.3.1671+15.10.20151002-0ubuntu1) UNRELEASED; urgency=medium
   * Enable Efficient String Construction by default See 
     http://blog.qt.io/blog/2011/06/13/string-concatenation-with-qstringbuilder/
 
+  [ Loïc Molinari ]
+  * [UbuntuShape] Workaround Adreno 320's shader compiler bug.
 
  -- Zoltán Balogh <zoltan@bakter.hu>  Fri, 02 Oct 2015 12:33:19 +0200
 
