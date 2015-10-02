@@ -161,7 +161,6 @@ MainViewBase {
             panelColor: Qt.lighter(mainView.headerColor, 1.1)
 
             title: internal.activePage ? internal.activePage.title : ""
-            flickable: internal.activePage ? internal.activePage.flickable : null
             pageStack: internal.activePage ? internal.activePage.pageStack : null
 
             contents: internal.activePage &&
@@ -199,7 +198,7 @@ MainViewBase {
                     if (!(headerItem.config &&
                           headerItem.config.hasOwnProperty("locked") &&
                           headerItem.config.locked)) {
-                        headerItem.show();
+                        headerItem.exposed = true;
                     }
                 }
             }

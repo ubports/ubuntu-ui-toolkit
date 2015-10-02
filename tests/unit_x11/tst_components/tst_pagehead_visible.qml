@@ -35,10 +35,6 @@ Item {
                 id: page
                 title: "Auto-hide"
                 head {
-                    locked: lockedSwitch.checked
-                    onVisibleChanged: {
-                        visibleSwitch.checked = page.head.visible
-                    }
                     actions: Action {
                         iconName: "like"
                         text: "Like"
@@ -71,7 +67,11 @@ Item {
                         }
                         Switch {
                             id: lockedSwitch
-                            checked: false
+                            checked: page.head.locked
+                            function trigger() {
+                                page.head.locked = !page.head.locked;
+                                print("set page.head.locked to "+page.head.locked)
+                            }
                         }
                         Label {
                             text: "header locked"
@@ -79,7 +79,10 @@ Item {
                         Switch {
                             id: visibleSwitch
                             checked: page.head.visible
-                            onClicked: page.head.visible = checked
+                            function trigger() {
+                                page.head.visible = !page.head.visible;
+                                print("set page.head.visible to "+page.head.visible)
+                            }
                         }
                         Label {
                             text: "header visible"

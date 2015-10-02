@@ -687,6 +687,7 @@ Ubuntu.Components.PageHeadConfiguration 1.3: Object
     readonly property Action actions
     property Action backAction
     property Item contents
+    property Flickable flickable
     property color foregroundColor
     property bool locked
     property string preset
