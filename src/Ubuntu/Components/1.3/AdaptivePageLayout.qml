@@ -348,17 +348,24 @@ PageTreeNode {
         }
         // reset the primaryPageSource
         d.internalPropertyUpdate("primaryPageSource", undefined);
-        // replace primary page as well and re-create it
-        d.replacePrimaryPage(primaryPage);
+        // clear the layout
+        d.purgeLayout();
+        // add the new page if valid
+        if (primaryPage !== null) {
+            d.createPrimaryPage(primaryPage);
+        }
     }
     onPrimaryPageSourceChanged: {
         if (!d.completed || d.internalUpdate) {
             return;
         }
-        if (primaryPageSource == undefined) {
-            d.replacePrimaryPage(null);
+        // remove all pages first
+        d.purgeLayout();
+        // create the new primary page if a valid component is specified
+        if (primaryPageSource) {
+            d.createPrimaryPage(primaryPageSource);
         } else {
-            d.replacePrimaryPage(primaryPageSource);
+            d.internalPropertyUpdate("primaryPage", null);
         }
     }
 
@@ -419,21 +426,12 @@ PageTreeNode {
             }
         }
 
-        function replacePrimaryPage(source) {
-            // remove all pages, including primaryPage
+        // remove all pages, including primaryPage
+        function purgeLayout() {
             if (prevPrimaryPage) {
                 removeAllPages(prevPrimaryPage, true);
+                prevPrimaryPage = null;
             }
-
-            if (source === null) {
-                internalPropertyUpdate("primaryPageSource", undefined);
-                return;
-            }
-            if (source === undefined) {
-                internalPropertyUpdate("primaryPage", null);
-                return;
-            }
-            createPrimaryPage(source);
         }
 
         function createWrapper(page, properties) {
