@@ -86,6 +86,7 @@ void main(void)
         // Mask the current color then blend the bevel over the resulting color. We simply use
         // additive blending since the bevel has already been masked.
         color = (color * vec4(mask[int(shapeSide)])) + vec4(bevel);
+
     } else if (aspect == DROP_SHADOW) {
         // Get the anti-aliased and resolution independent shape mask using distance fields.
         lowp float distanceMin = abs(dist) * -distanceAA + 0.5;
