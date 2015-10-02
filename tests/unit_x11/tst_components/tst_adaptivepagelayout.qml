@@ -38,6 +38,7 @@ MainView {
 
             Page {
                 id: page1
+                objectName: title
                 title: "Page1"
 
                 Column {
@@ -55,14 +56,17 @@ MainView {
             }
             Page {
                 id: page2
+                objectName: title
                 title: "Page2"
             }
             Page {
                 id: page3
+                objectName: title
                 title: "Page3"
             }
             Page {
                 id: page4
+                objectName: title
                 title: "Page4"
             }
         }
@@ -72,14 +76,17 @@ MainView {
             height: parent.height / 2
             Page {
                 id: otherPage1
+                objectName: title
                 title: "Page1"
             }
             Page {
                 id: otherPage2
+                objectName: title
                 title: "Page2"
             }
             Page {
                 id: otherPage3
+                objectName: title
                 title: "Page3"
             }
         }
@@ -88,6 +95,7 @@ MainView {
     Component {
         id: pageComponent
         Page {
+            objectName: title
             title: "DynamicPage"
         }
     }
@@ -127,10 +135,10 @@ MainView {
             return apl.__d.getWrapper(page);
         }
 
-        function findPageFromLayoutWithProperty(apl, property, value) {
+        function findPageFromLayout(apl, objectName) {
             var body = findChild(apl, "body");
             verify(body);
-            return findChildWithProperty(body, property, value);
+            return findChild(body, objectName);
         }
 
         function cleanup() {
@@ -158,7 +166,7 @@ MainView {
             defaults.primaryPage = otherPage1;
             defaults.addPageToCurrentColumn(defaults.primaryPage, otherPage2);
             defaults.primaryPage = otherPage3;
-            verify(!findPageFromLayoutWithProperty(defaults, "title", "Page2"), "Page2 still in the view!");
+            verify(!findPageFromLayout(defaults, "Page2"), "Page2 still in the view!");
         }
 
         function test_add_page_when_source_page_not_in_stack() {
@@ -381,7 +389,7 @@ MainView {
             defaults.primaryPageSource = data.nextValue;
             primaryPageSpy.wait(400);
             // look after page2
-            verify(!findPageFromLayoutWithProperty(defaults, "title", "Page2"), "Page2 still in the view!");
+            verify(!findPageFromLayout(defaults, "Page2"), "Page2 still in the view!");
         }
 
         function test_primaryPageSource_precedence_over_primaryPage() {
