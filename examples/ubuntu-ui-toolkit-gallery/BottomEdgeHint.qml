@@ -18,6 +18,7 @@ import QtQuick 2.4
 import Ubuntu.Components 1.3
 
 Page {
+    id: page
     TemplateSection {
         title: "Bottom Edge Hint"
         className: "BottomEdgeHint"
@@ -30,9 +31,30 @@ Page {
         }
     }
 
-    BottomEdgeHint {
+
+    Component {
+        id: fake
+        Rectangle {
+            width: units.gu(40)
+            height: page.height
+            color: "blue"
+        }
+    }
+    Component {
+        id: bottomEdge
+        Rectangle {
+            width: units.gu(40)
+            height: page.height
+            color: UbuntuColors.green
+        }
+    }
+
+    BottomEdge {
         iconName: "stock_message"
         text: "Compose a new message"
-        onClicked: state = "Hidden"
+//        onClicked: open()
+        contentComponent: state == "expanded" ? bottomEdge : fake
+        onOpenStarted: print("open starts")
+        onOpenEnded: print("open ends")
     }
 }
