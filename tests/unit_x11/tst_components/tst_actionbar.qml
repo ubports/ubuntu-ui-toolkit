@@ -121,6 +121,30 @@ Item {
             value: 3
             live: true
         }
+
+        Item {
+            width: parent.width
+            height: childrenRect.height
+
+            Label {
+                anchors {
+                    left: parent.left
+                    verticalCenter: customDelegateBar.verticalCenter
+                }
+                text: "Custom delegate"
+            }
+            ActionBar {
+                id: customDelegateBar
+                anchors.right: parent.right
+                actions: root.shortActionList
+                delegate: Button {
+                    action: modelData
+                    width: units.gu(14)
+                    strokeColor: UbuntuColors.purple
+                    objectName: "custom_delegate_button_" + index
+                }
+            }
+        }
     }
 
     UbuntuTestCase {
@@ -221,6 +245,16 @@ Item {
             bar.numberOfSlots = 0;
             compare(actionList.length, get_number_of_actions_in_overflow(bar),
                     "Incorrect number of actions in overflow when num slots = 0.");
+        }
+
+        function test_custom_delegate() {
+            var i = 0; var button; var n = shortActionList.length;
+            for (i = 0; i < n; i++) {
+                button = findChild(customDelegateBar, "custom_delegate_button_"+i);
+                compare(button.text, shortActionList[i].text, "Incorrect custom button " + i);
+            }
+            button = findChild(customDelegateBar, "custom_delegate_button_" + n);
+            compare(button, null, "Too many buttons.");
         }
     }
 }

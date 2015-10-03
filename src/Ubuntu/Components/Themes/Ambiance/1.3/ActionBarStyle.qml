@@ -28,10 +28,9 @@ Item {
      */
     property Component defaultDelegate: AbstractButton {
         style: IconButtonStyle { }
-        id: actionButton
         objectName: action.objectName + "_action_button"
         height: actionsContainer.height
-        action: modelData //actionsContainer.visibleActions[index]
+        action: modelData
     }
 
     Row {
@@ -69,16 +68,7 @@ Item {
 
         Repeater {
             objectName: "actions_repeater"
-            // FIXME TIM: model only to include the ones that go in the bar directly.
             model: actionsContainer.barActions
-//            model: numberOfSlots.used
-//            AbstractButton {
-//                style: IconButtonStyle { }
-//                id: actionButton
-//                objectName: action.objectName + "_action_button"
-//                height: actionsContainer.height
-//                action: actionsContainer.visibleActions[index]
-//            }
             delegate: styledItem.delegate ? styledItem.delegate : actionBarStyle.defaultDelegate
         }
 
@@ -112,9 +102,6 @@ Item {
                             actionsOverflowPopover.hide();
                         }
                     }
-
-//                    actions: actionsContainer.visibleActions.slice(numberOfSlots.used,
-//                                                                   numberOfSlots.requested)
                     actions: actionsContainer.overflowActions
                 }
             }

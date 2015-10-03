@@ -71,16 +71,27 @@ StyledItem {
     property int numberOfSlots: 3
 
     /*!
-      TODO TIM
+      Set this to override the default delegate button that shows
+      the actions in the ActionBar. When no delegate is set (which is
+      the default), the defaultDelegate of the ActionBarStyle is used.
+
+      Example:
+      \qml
+            ActionBar {
+                id: customDelegateBar
+                anchors.right: parent.right
+                actions: [
+                    Action { text: "action 1" },
+                    Action { text: "action 2" }
+                ]
+                delegate: Button {
+                    action: modelData
+                    width: units.gu(14)
+                    strokeColor: UbuntuColors.purple
+                    objectName: "custom_delegate_button_" + index
+                }
+            }
+      \endqml
      */
-    property Component delegate //: AbstractButton {
-//        style: IconButtonStyle { }
-//        id: actionButton
-//        objectName: action.objectName + "_action_button"
-//        height: bar.height //actionsContainer.height
-//        action: actionsContainer.visibleActions[index]
-//        theme.version: Components.Ubuntu.toolkitVersion
-//        styleName: "IconButtonStyle"
-//        action: modelData
-//    }
+    property Component delegate
 }
