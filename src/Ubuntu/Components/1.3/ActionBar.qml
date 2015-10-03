@@ -69,4 +69,18 @@ StyledItem {
       and no other action buttons. Default value is 3.
      */
     property int numberOfSlots: 3
+
+    /*!
+      TODO TIM
+     */
+    property Component delegate //: AbstractButton {
+//        style: IconButtonStyle { }
+//        id: actionButton
+//        objectName: action.objectName + "_action_button"
+//        height: bar.height //actionsContainer.height
+//        action: actionsContainer.visibleActions[index]
+//        theme.version: Components.Ubuntu.toolkitVersion
+//        styleName: "IconButtonStyle"
+//        action: modelData
+//    }
 }

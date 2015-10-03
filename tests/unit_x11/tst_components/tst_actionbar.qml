@@ -147,7 +147,7 @@ Item {
 
         function get_number_of_visible_buttons(actionBar) {
             var repeater = findChild(actionBar, "actions_repeater");
-            var n = repeater.model;
+            var n = repeater.count;
             if (get_overflow_button_visible(actionBar)) {
                 n++;
             }
