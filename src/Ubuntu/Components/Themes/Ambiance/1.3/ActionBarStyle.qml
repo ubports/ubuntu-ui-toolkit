@@ -22,8 +22,16 @@ Item {
     implicitWidth: actionsContainer.implicitWidth
     implicitHeight: units.gu(5)
 
-    // FIXME: Add color and label configuration properties or make
-    //  the action delegates configurable.
+    /*!
+      The fallback action delegate if the styled item does
+      not provide a delegate.
+     */
+    property Component defaultDelegate: AbstractButton {
+        style: IconButtonStyle { }
+        objectName: action.objectName + "_action_button"
+        height: parent.height
+        action: modelData
+    }
 
     Row {
         id: actionsContainer
@@ -39,6 +47,9 @@ Item {
             }
             return visibleActionList;
         }
+        property var barActions: visibleActions.slice(0, numberOfSlots.used)
+        property var overflowActions: visibleActions.slice(numberOfSlots.used,
+                                                           numberOfSlots.requested)
 
         QtObject {
             id: numberOfSlots
@@ -57,14 +68,8 @@ Item {
 
         Repeater {
             objectName: "actions_repeater"
-            model: numberOfSlots.used
-            AbstractButton {
-                style: IconButtonStyle { }
-                id: actionButton
-                objectName: action.objectName + "_action_button"
-                height: actionsContainer.height
-                action: actionsContainer.visibleActions[index]
-            }
+            model: actionsContainer.barActions
+            delegate: styledItem.delegate ? styledItem.delegate : actionBarStyle.defaultDelegate
         }
 
         AbstractButton {
@@ -97,9 +102,7 @@ Item {
                             actionsOverflowPopover.hide();
                         }
                     }
-
-                    actions: actionsContainer.visibleActions.slice(numberOfSlots.used,
-                                                                   numberOfSlots.requested)
+                    actions: actionsContainer.overflowActions
                 }
             }
         }
