@@ -30,9 +30,32 @@ Item {
         flickable: flickable
         z:1
 
-        Label {
-            anchors.centerIn: parent
-            text: "kiwi"
+        title.text: "kiwi"
+
+        trailingActionBar {
+            numberOfSlots: 4
+            actions: [
+                Action {
+                    iconName: "settings"
+                    text: "first"
+                    onTriggered: print("Trigger first action")
+                },
+                Action {
+                    iconName: "info"
+                    text: "second"
+                    onTriggered: print("Trigger second action")
+                },
+                Action {
+                    iconName: "search"
+                    text: "third"
+                    onTriggered: print("Trigger third action")
+                },
+                Action {
+                    iconName: "appointment"
+                    text: "fourth"
+                    onTriggered: print("Trigger fourth action")
+                }
+            ]
         }
     }
 
@@ -107,45 +130,45 @@ Item {
     }
 
 
-//    UbuntuTestCase {
-//        name: "PageHeader"
-//        when: windowShown
-//        id: testCase
+    //    UbuntuTestCase {
+    //        name: "PageHeader"
+    //        when: windowShown
+    //        id: testCase
 
-//        function initTestCase() {
-//            // TODO
-//        }
+    //        function initTestCase() {
+    //            // TODO
+    //        }
 
-//        function init() {
-//            // TODO
-//        }
+    //        function init() {
+    //            // TODO
+    //        }
 
-//        function scroll(dy) {
-//            var p = centerOf(flickable);
-//            // Use mouseWheel to scroll because mouseDrag is very unreliable
-//            // and does not properly handle negative values for dy.
-//            mouseWheel(flickable, p.x, p.y, 0,dy);
-//        }
+    //        function scroll(dy) {
+    //            var p = centerOf(flickable);
+    //            // Use mouseWheel to scroll because mouseDrag is very unreliable
+    //            // and does not properly handle negative values for dy.
+    //            mouseWheel(flickable, p.x, p.y, 0,dy);
+    //        }
 
-//        function scroll_down() {
-//            scroll(-2.0*header.height);
-//        }
+    //        function scroll_down() {
+    //            scroll(-2.0*header.height);
+    //        }
 
-//        function scroll_up() {
-//            scroll(header.height);
-//        }
+    //        function scroll_up() {
+    //            scroll(header.height);
+    //        }
 
-//        function wait_for_exposed(exposed, errorMessage) {
-//            tryCompare(header, "exposed", exposed, 5000, errorMessage);
-//            // wait for the animation to finish:
-//            tryCompare(header, "moving", false, 5000, "Header still moving?");
-//            if (exposed) {
-//                compare(header.y, 0, errorMessage +
-//                        " y-value/exposed mismatch for exposed header!");
-//            } else {
-//                compare(header.y, -header.height, errorMessage +
-//                        " y-value/exposed mismatch for hidden header!");
-//            }
-//        }
-//    }
+    //        function wait_for_exposed(exposed, errorMessage) {
+    //            tryCompare(header, "exposed", exposed, 5000, errorMessage);
+    //            // wait for the animation to finish:
+    //            tryCompare(header, "moving", false, 5000, "Header still moving?");
+    //            if (exposed) {
+    //                compare(header.y, 0, errorMessage +
+    //                        " y-value/exposed mismatch for exposed header!");
+    //            } else {
+    //                compare(header.y, -header.height, errorMessage +
+    //                        " y-value/exposed mismatch for hidden header!");
+    //            }
+    //        }
+    //    }
 }

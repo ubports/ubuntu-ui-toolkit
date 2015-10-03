@@ -37,7 +37,7 @@ Item {
 //    property color titleColor: headerStyle.config.foregroundColor
 
 //    implicitHeight: headerStyle.contentHeight + divider.height + sectionsItem.height
-    implicitHeight: units.gu(6)
+    implicitHeight: units.gu(6) + divider.height
 
 
     Rectangle {
@@ -50,16 +50,17 @@ Item {
     //  have a separator.
 //    property alias __separator_visible: divider.visible
 
-//    Rectangle {
-//        id: divider
-//        anchors {
-//            left: parent.left
-//            right: parent.right
-//            bottom: parent.bottom
-//        }
-//        height: units.dp(1)
+    Rectangle {
+        id: divider
+        anchors {
+            left: parent.left
+            right: parent.right
+            bottom: parent.bottom
+        }
+        height: units.dp(1)
 //        color: styledItem.dividerColor
-//    }
+        color: "black"
+    }
 
 
 //        ActionBar {

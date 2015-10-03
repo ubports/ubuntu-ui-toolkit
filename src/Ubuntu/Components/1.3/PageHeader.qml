@@ -15,14 +15,14 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.3 as Components
+import Ubuntu.Components 1.3
 
 /*!
     \qmltype PageHeader
     \inqmlmodule Ubuntu.Components 1.3
     \ingroup ubuntu
 */
-Components.Header {
+Header {
     id: header
 
     anchors {
@@ -32,6 +32,40 @@ Components.Header {
 
     height: units.gu(6) // TODO TIM: move to style
 
+    property alias title: titleLabel
+    Label {
+        id: titleLabel
+        anchors {
+            left: leading.right
+            verticalCenter: parent.verticalCenter
+            leftMargin: units.gu(2)
+        }
+        color: "white" // TODO: from Style
+    }
+
+    property alias leadingActionBar: leading
+    ActionBar {
+        // TODO: ActionBar must have configurable delegate.
+        //      and take foreground color from style.
+        id: leading
+        anchors {
+            left: parent.left
+            leftMargin: units.gu(1)
+            verticalCenter: parent.verticalCenter
+        }
+        numberOfSlots: 1
+    }
+
+    property alias trailingActionBar: trailing
+    ActionBar {
+        id: trailing
+        anchors {
+            right: parent.right
+            rightMargin: units.gu(1)
+            verticalCenter: parent.verticalCenter
+        }
+        numberOfSlots: 3
+    }
 
     theme.version: Components.Ubuntu.toolkitVersion
     styleName: "PageHeaderStyle"
