@@ -33,7 +33,7 @@ Item {
         title.text: "kiwi"
 
         trailingActionBar {
-            numberOfSlots: 4
+//            numberOfSlots: 4
             actions: [
                 Action {
                     iconName: "settings"
