@@ -109,8 +109,7 @@ class OpenPagesTestCase(gallery.GalleryTestCase):
 
     def test_open_page(self):
         self.open_page(self.element_name)
-        element = self.main_view.select_single(
-            'Standard', objectName=self.element_name)
+        element = self.main_view.select_single(objectName=self.element_name)
         self.checkPageHeader(element.text)
         if self.template_name == 'textinputsTemplate':
             page_type = 'TextInputs'
