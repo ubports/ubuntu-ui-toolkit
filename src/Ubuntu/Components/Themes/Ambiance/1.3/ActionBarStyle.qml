@@ -29,7 +29,7 @@ Item {
     property Component defaultDelegate: AbstractButton {
         style: IconButtonStyle { }
         objectName: action.objectName + "_action_button"
-        height: parent.height
+        height: parent ? parent.height : undefined
         action: modelData
     }
 
