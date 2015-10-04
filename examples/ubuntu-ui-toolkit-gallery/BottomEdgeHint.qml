@@ -49,7 +49,7 @@ Page {
         }
     }
 
-    BottomEdge {
+    BottomEdgeSample {
         iconName: "stock_message"
         text: "Compose a new message"
 //        onClicked: open()
