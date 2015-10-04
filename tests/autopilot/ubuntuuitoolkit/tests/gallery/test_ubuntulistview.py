@@ -16,7 +16,6 @@
 
 """Tests for the Ubuntu UI Toolkit Gallery - UbuntuListView component."""
 
-import ubuntuuitoolkit
 from ubuntuuitoolkit.tests.gallery import GalleryTestCase
 
 

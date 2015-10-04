@@ -108,5 +108,5 @@ class OpenPagesTestCase(gallery.GalleryTestCase):
         pages_scenarios)
 
     def test_open_page(self):
-        element = self.open_page(self.element_name)
+        self.open_page(self.element_name)
         self.main_view.wait_select_single(objectName=self.template_name)
