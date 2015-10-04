@@ -25,7 +25,7 @@ class UbuntuListViewTestCase(GalleryTestCase):
     def _open_page(self):
         super().open_page('ubuntuListViewElement')
         self.listView = self.main_view.select_single(
-            ubuntuuitoolkit.UbuntuListView11, objectName="ubuntuListView")
+            objectName="ubuntuListView")
 
     def test_pull_to_refresh_enabled(self):
         self._open_page()
