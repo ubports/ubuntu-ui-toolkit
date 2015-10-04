@@ -163,7 +163,9 @@ Item {
                 delegate: AbstractButton {
                     styleName: "IconButtonStyle"
                     action: modelData
-                    Component.onCompleted: __styleInstance.foregroundColor = UbuntuColors.green
+                    StyleHints {
+                        foregroundColor: UbuntuColors.green
+                    }
                 }
             }
         }
