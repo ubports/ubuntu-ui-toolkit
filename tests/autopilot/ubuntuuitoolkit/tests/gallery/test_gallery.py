@@ -108,8 +108,5 @@ class OpenPagesTestCase(gallery.GalleryTestCase):
         pages_scenarios)
 
     def test_open_page(self):
-        self.open_page(self.element_name)
-        element = self.main_view.wait_select_single(objectName=self.element_name)
-        self.checkPageHeader(element.text)
+        element = self.open_page(self.element_name)
         self.main_view.wait_select_single(objectName=self.template_name)
-        # TODO check that the template is visible. --elopio - 2013-11-28
