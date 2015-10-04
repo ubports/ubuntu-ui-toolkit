@@ -72,6 +72,7 @@ Item {
             delegate: styledItem.delegate ? styledItem.delegate : actionBarStyle.defaultDelegate
         }
 
+        // TODO TIM: Use the same delegate for this ones
         AbstractButton {
             style: IconButtonStyle { }
             id: actionsOverflowButton
@@ -84,26 +85,25 @@ Item {
             onVisibleChanged: if (!visible) x = 0
             iconName: "contextual-menu"
             onTriggered: PopupUtils.open(actionsOverflowPopoverComponent, actionsOverflowButton)
+        }
+        Component {
+            id: actionsOverflowPopoverComponent
 
-            Component {
-                id: actionsOverflowPopoverComponent
+            OverflowPanel {
+                id: actionsOverflowPopover
+                objectName: "actions_overflow_panel"
 
-                OverflowPanel {
-                    id: actionsOverflowPopover
-                    objectName: "actions_overflow_panel"
-
-                    // Ensure the popover closes when actions change and
-                    // the list item below may be destroyed before its
-                    // onClicked is executed. See bug
-                    // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1326963
-                    Connections {
-                        target: styledItem
-                        onActionsChanged: {
-                            actionsOverflowPopover.hide();
-                        }
+                // Ensure the popover closes when actions change and
+                // the list item below may be destroyed before its
+                // onClicked is executed. See bug
+                // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1326963
+                Connections {
+                    target: styledItem
+                    onActionsChanged: {
+                        actionsOverflowPopover.hide();
                     }
-                    actions: actionsContainer.overflowActions
                 }
+                actions: actionsContainer.overflowActions
             }
         }
     }

@@ -145,6 +145,28 @@ Item {
                 }
             }
         }
+
+        Item {
+            width: parent.width
+            height: childrenRect.height
+            Label {
+                anchors {
+                    left: parent.left
+                    verticalCenter: greenButtonsBar.verticalCenter
+                }
+                text: "Custom delegate 2"
+            }
+            ActionBar {
+                id: greenButtonsBar
+                anchors.right: parent.right
+                actions: root.actionList
+                delegate: AbstractButton {
+                    styleName: "IconButtonStyle"
+                    action: modelData
+                    Component.onCompleted: __styleInstance.foregroundColor = UbuntuColors.green
+                }
+            }
+        }
     }
 
     UbuntuTestCase {
