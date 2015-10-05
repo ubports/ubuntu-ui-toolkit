@@ -70,6 +70,7 @@
 #include "ucheader.h"
 #include "uclabel.h"
 #include "uclistitemlayout.h"
+#include "ucbottomedgeproxy.h"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -249,6 +250,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCListItemLayout>(uri, 1, 3, "ListItemLayout");
     qmlRegisterType<UCHeader>(uri, 1, 3, "Header");
     qmlRegisterType<UCLabel>(uri, 1, 3, "Label");
+    qmlRegisterType<UCBottomEdgeProxy>(uri, 1, 3, "BottomEdgeProxy");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)

@@ -117,4 +117,9 @@ Page {
             highlightMoveDuration: 0
         }
     }
+    BottomEdgeProxy {
+        visible: active
+        iconName: "settings"
+        text: "test"
+    }
 }

@@ -138,6 +138,7 @@ QML_FILES += 1.3/ActionBar.qml \
              1.3/ProgressionSlot.qml \
              1.3/BottomEdge.qml \
              1.3/BottomEdgeShadow.qml \
+             1.3/BottomEdgePanel.qml \
 
 OTHER_FILES+= qmldir \
              1.3/CrossFadeImage.qdoc \

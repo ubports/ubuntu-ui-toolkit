@@ -49,12 +49,17 @@ Page {
         }
     }
 
-    BottomEdgeSample {
+//    BottomEdgeSample {
+//        iconName: "stock_message"
+//        text: "Compose a new message"
+////        onClicked: open()
+//        contentComponent: state == "expanded" ? bottomEdge : fake
+//        onOpenStarted: print("open starts")
+//        onOpenEnded: print("open ends")
+//    }
+    BottomEdgeProxy {
+        visible: active
+        text: "Message"
         iconName: "stock_message"
-        text: "Compose a new message"
-//        onClicked: open()
-        contentComponent: state == "expanded" ? bottomEdge : fake
-        onOpenStarted: print("open starts")
-        onOpenEnded: print("open ends")
     }
 }
