@@ -23,7 +23,7 @@ Item {
     implicitHeight: units.gu(5)
 
     /*!
-      The fallback action delegate if the styled item does
+      The default action delegate if the styled item does
       not provide a delegate.
      */
     property Component defaultDelegate: AbstractButton {
@@ -86,23 +86,8 @@ Item {
             }
         }
 
-//        // TODO TIM: Use the same delegate for this ones
-//        AbstractButton {
-//            style: IconButtonStyle { }
-//            id: actionsOverflowButton
-//            objectName: "actions_overflow_button"
-//            height: actionsContainer.height
-//            visible: numberOfSlots.requested > numberOfSlots.available
-
-//            // Ensure resetting of X when this button is not visible to avoid
-//            // miscalculation of actionsContainer.width. Fixes bug #1408481.
-//            onVisibleChanged: if (!visible) x = 0
-//            iconName: "contextual-menu"
-//            onTriggered: PopupUtils.open(actionsOverflowPopoverComponent, actionsOverflowButton)
-//        }
         Component {
             id: actionsOverflowPopoverComponent
-
             OverflowPanel {
                 id: actionsOverflowPopover
                 objectName: "actions_overflow_panel"
