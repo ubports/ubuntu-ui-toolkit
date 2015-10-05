@@ -189,18 +189,13 @@ Item {
         }
 
         function get_overflow_button_visible(actionBar) {
-//            var overflowButton = findChild(actionBar, "actions_overflow_button")
             var overflowButton = findChild(actionBar, "overflow_action_button")
             return overflowButton !== null && overflowButton.visible
         }
 
         function get_number_of_visible_buttons(actionBar) {
             var repeater = findChild(actionBar, "actions_repeater");
-            var n = repeater.count;
-//            if (get_overflow_button_visible(actionBar)) {
-//                n++;
-//            }
-            return n;
+            return repeater.count;
         }
 
         function get_number_of_actions_in_overflow(actionBar) {
