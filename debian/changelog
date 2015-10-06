@@ -1,3 +1,40 @@
+ubuntu-ui-toolkit (1.3.1672+15.10.20151002.1-0ubuntu1) wily; urgency=medium
+
+  [ Tim Peeters ]
+  * Use the new cpp Header in the internal AppHeader.
+  * Don't use old Label type in AP tests for header.
+  * Fix failing AP tests for actions and tabs overflow panels by using the 
+    ActionSelectionPopover CPO.
+  * Don't assume Label in ActionBarTestCase is of type Label.
+  * Animate hidden header on app focus. Fixes LP: #1500483
+
+  [ Zsombor Egri ]
+  * AbstractButton.pressAndHold captured in Connection. Fixes LP: #1495554.
+  * Introduce AdaptivePageLayout.primaryPageSource to load primary pages 
+    asynchronously. Fixes LP: #1499179.
+ 
+  [ Andrea Bernabei ]
+
+  * Remove REVISION 1 from textSize property of UCLabel and add test in 
+    ListItemLayout tests to avoid breaking textSize initialization again. 
+    Fixes LP: #1501673
+
+  [ Christian Dywan ]
+  * Remove ' from ActionList - no separator here.
+  * Accomodate gallery for moving to UbuntuListView and ListItem.
+
+  [ Albert Astals Cid ]
+  * Enable Efficient String Construction by default See 
+    http://blog.qt.io/blog/2011/06/13/string-concatenation-with-qstringbuilder/
+
+  [ Loïc Molinari ]
+  * [UbuntuShape] Workaround Adreno 320's shader compiler bug.
+
+  [ CI Train Bot ]
+  * No-change rebuild.
+
+ -- Zoltan Balogh <zoltan.balogh@canonical.com>  Fri, 02 Oct 2015 16:32:27 +0000
+
 ubuntu-ui-toolkit (1.3.1658+15.10.20151001-0ubuntu1) wily; urgency=medium
 
   [ Zsombor Egri ]
