@@ -88,7 +88,6 @@ StyledItem {
                     action: modelData
                     width: units.gu(14)
                     strokeColor: UbuntuColors.purple
-                    objectName: "custom_delegate_button_" + index
                 }
             }
       \endqml
