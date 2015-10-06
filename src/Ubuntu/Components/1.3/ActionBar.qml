@@ -66,14 +66,15 @@ StyledItem {
       will be shown which opens a popover with the remaining actions.
 
       Setting numberOfSlots to 0 will always show the overflow button
-      and no other action buttons. Default value is 3.
+      and no other action buttons. Default value from the Ambience
+      theme is 3.
      */
-    property int numberOfSlots: 3
+    property int numberOfSlots: __styleInstance.defaultNumberOfSlots
 
     /*!
       Set this to override the default delegate button that shows
-      the actions in the ActionBar. When no delegate is set (which is
-      the default), the defaultDelegate of the ActionBarStyle is used.
+      the actions in the ActionBar. Uses the defaultDelegate of
+      ActionBarStyle by default.
 
       Example:
       \qml
@@ -88,10 +89,9 @@ StyledItem {
                     action: modelData
                     width: units.gu(14)
                     strokeColor: UbuntuColors.purple
-                    objectName: "custom_delegate_button_" + index
                 }
             }
       \endqml
      */
-    property Component delegate
+    property Component delegate: __styleInstance.defaultDelegate
 }
