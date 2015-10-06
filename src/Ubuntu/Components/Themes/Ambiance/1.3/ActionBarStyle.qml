@@ -16,8 +16,9 @@
 import QtQuick 2.4
 import Ubuntu.Components 1.3
 import Ubuntu.Components.Popups 1.3
+import Ubuntu.Components.Styles 1.3 as Style
 
-Item {
+Style.ActionBarStyle {
     id: actionBarStyle
     implicitWidth: actionsContainer.implicitWidth
     implicitHeight: units.gu(5)
@@ -26,12 +27,14 @@ Item {
       The default action delegate if the styled item does
       not provide a delegate.
      */
-    property Component defaultDelegate: AbstractButton {
+    defaultDelegate: AbstractButton {
         style: IconButtonStyle { }
         objectName: action.objectName + "_action_button"
         height: parent ? parent.height : undefined
         action: modelData
     }
+
+    defaultNumberOfSlots: 3
 
     Row {
         id: actionsContainer
@@ -72,7 +75,7 @@ Item {
             id: actionsRepeater
             objectName: "actions_repeater"
             model: actionsContainer.barActions
-            delegate: styledItem.delegate ? styledItem.delegate : actionBarStyle.defaultDelegate
+            delegate: styledItem.delegate
         }
 
         Action {
