@@ -23,13 +23,13 @@ Item {
     implicitHeight: units.gu(5)
 
     /*!
-      The fallback action delegate if the styled item does
+      The default action delegate if the styled item does
       not provide a delegate.
      */
     property Component defaultDelegate: AbstractButton {
         style: IconButtonStyle { }
         objectName: action.objectName + "_action_button"
-        height: parent.height
+        height: parent ? parent.height : undefined
         action: modelData
     }
 
@@ -47,7 +47,9 @@ Item {
             }
             return visibleActionList;
         }
-        property var barActions: visibleActions.slice(0, numberOfSlots.used)
+        property var barActions: overflowAction.visible
+                                 ? visibleActions.slice(0, numberOfSlots.used).concat(overflowAction)
+                                 : visibleActions.slice(0, numberOfSlots.used)
         property var overflowActions: visibleActions.slice(numberOfSlots.used,
                                                            numberOfSlots.requested)
 
@@ -55,7 +57,7 @@ Item {
             id: numberOfSlots
             property int requested: actionsContainer.visibleActions.length
             property int available: styledItem.numberOfSlots
-            property int overflow: actionsOverflowButton.visible ? 1 : 0
+            property int overflow: overflowAction.visible ? 1 : 0
             // when numberOfSlots < 1, show the overflow button, but set used
             // to 0 so that all actions will appear in the overflow panel.
             property int used: Math.min(Math.max(0, available - overflow), requested)
@@ -67,43 +69,40 @@ Item {
         }
 
         Repeater {
+            id: actionsRepeater
             objectName: "actions_repeater"
             model: actionsContainer.barActions
             delegate: styledItem.delegate ? styledItem.delegate : actionBarStyle.defaultDelegate
         }
 
-        AbstractButton {
-            style: IconButtonStyle { }
-            id: actionsOverflowButton
-            objectName: "actions_overflow_button"
-            height: actionsContainer.height
-            visible: numberOfSlots.requested > numberOfSlots.available
-
-            // Ensure resetting of X when this button is not visible to avoid
-            // miscalculation of actionsContainer.width. Fixes bug #1408481.
-            onVisibleChanged: if (!visible) x = 0
+        Action {
+            id: overflowAction
             iconName: "contextual-menu"
-            onTriggered: PopupUtils.open(actionsOverflowPopoverComponent, actionsOverflowButton)
+            objectName: "overflow"
+            visible: numberOfSlots.requested > numberOfSlots.available
+            onTriggered: {
+                var overflowButton = actionsRepeater.itemAt(actionsRepeater.count - 1);
+                PopupUtils.open(actionsOverflowPopoverComponent, overflowButton);
+            }
+        }
 
-            Component {
-                id: actionsOverflowPopoverComponent
+        Component {
+            id: actionsOverflowPopoverComponent
+            OverflowPanel {
+                id: actionsOverflowPopover
+                objectName: "actions_overflow_panel"
 
-                OverflowPanel {
-                    id: actionsOverflowPopover
-                    objectName: "actions_overflow_panel"
-
-                    // Ensure the popover closes when actions change and
-                    // the list item below may be destroyed before its
-                    // onClicked is executed. See bug
-                    // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1326963
-                    Connections {
-                        target: styledItem
-                        onActionsChanged: {
-                            actionsOverflowPopover.hide();
-                        }
+                // Ensure the popover closes when actions change and
+                // the list item below may be destroyed before its
+                // onClicked is executed. See bug
+                // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1326963
+                Connections {
+                    target: styledItem
+                    onActionsChanged: {
+                        actionsOverflowPopover.hide();
                     }
-                    actions: actionsContainer.overflowActions
                 }
+                actions: actionsContainer.overflowActions
             }
         }
     }

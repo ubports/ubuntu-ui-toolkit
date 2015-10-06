@@ -30,7 +30,7 @@ class ActionBar(_common.UbuntuUIToolkitCustomProxyObjectBase):
     def _open_overflow(self):
         """Click the overflow button and return the overflow panel"""
         actions_overflow_button = self.select_single(
-            objectName='actions_overflow_button')
+            objectName='overflow_action_button')
 
         if not actions_overflow_button.visible:
             raise _common.ToolkitException('No actions in overflow')
