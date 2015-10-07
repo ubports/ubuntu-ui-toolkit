@@ -17,10 +17,7 @@
 import logging
 
 import autopilot.exceptions
-from autopilot import (
-    input,
-    logging as autopilot_logging
-)
+from autopilot import logging as autopilot_logging
 
 from ubuntuuitoolkit import units
 from ubuntuuitoolkit._custom_proxy_objects import _common
