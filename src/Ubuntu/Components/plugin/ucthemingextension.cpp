@@ -159,12 +159,17 @@ void UCItemAttached::reloadTheme()
 /*************************************************************************
  *
  */
-UCThemingExtension::UCThemingExtension()
-    : themedItem(Q_NULLPTR)
+UCThemingExtension::UCThemingExtension(QQuickItem *extendedItem)
+    : themedItem(extendedItem)
     , attachedThemer(Q_NULLPTR)
     , theme(&UCTheme::defaultTheme())
     , themeType(Inherited)
 {
+}
+
+UCThemingExtension::~UCThemingExtension()
+{
+
 }
 
 // set the parent of the theme if the themeType is Custom

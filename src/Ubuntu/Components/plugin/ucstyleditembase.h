@@ -28,6 +28,7 @@ class UCStyleHints;
 class UCStyledItemBase : public QQuickItem, public UCThemingExtension
 {
     Q_OBJECT
+    Q_INTERFACES(UCThemingExtension)
     Q_PROPERTY(bool activeFocusOnPress
                READ activefocusOnPress WRITE setActiveFocusOnPress
                NOTIFY activeFocusOnPressChanged REVISION 1)

@@ -83,7 +83,8 @@ public:
         Custom
     };
 
-    explicit UCThemingExtension();
+    explicit UCThemingExtension(QQuickItem *extendedItem);
+    virtual ~UCThemingExtension();
 
     virtual void preThemeChanged() = 0;
     virtual void postThemeChanged() = 0;

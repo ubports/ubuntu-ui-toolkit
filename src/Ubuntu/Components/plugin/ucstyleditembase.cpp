@@ -108,6 +108,7 @@ bool UCStyledItemBasePrivate::isParentFocusable()
  */
 UCStyledItemBase::UCStyledItemBase(QQuickItem *parent)
     : QQuickItem(*(new UCStyledItemBasePrivate), parent)
+    , UCThemingExtension(this)
 {
     Q_D(UCStyledItemBase);
     d->init();
@@ -115,6 +116,7 @@ UCStyledItemBase::UCStyledItemBase(QQuickItem *parent)
 
 UCStyledItemBase::UCStyledItemBase(UCStyledItemBasePrivate &dd, QQuickItem *parent)
     : QQuickItem(dd, parent)
+    , UCThemingExtension(this)
 {
     Q_D(UCStyledItemBase);
     d->init();

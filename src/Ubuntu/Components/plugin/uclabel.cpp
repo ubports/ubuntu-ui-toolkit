@@ -78,6 +78,7 @@ void UCLabel::_q_customColor()
  */
 UCLabel::UCLabel(QQuickItem* parent)
     : QQuickText(parent)
+    , UCThemingExtension(this)
     , m_textSize(Medium)
     , m_flags(0)
 {
