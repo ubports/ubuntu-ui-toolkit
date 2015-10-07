@@ -41,7 +41,6 @@ public:
 
     QQuickItem *m_item;
     QQuickItem *m_prevParent;
-    UCThemingExtension *m_extension;
 
     void itemParentChanged(QQuickItem *item, QQuickItem *newParent);
 

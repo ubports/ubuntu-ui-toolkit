@@ -97,7 +97,6 @@ UCItemAttached::UCItemAttached(QObject *owner)
     : QObject(owner)
     , m_item(static_cast<QQuickItem*>(owner))
     , m_prevParent(Q_NULLPTR)
-    , m_extension(Q_NULLPTR)
 {
     QQuickItemPrivate::get(m_item)->addItemChangeListener(this, QQuickItemPrivate::Parent);
 }
@@ -114,10 +113,8 @@ UCItemAttached *UCItemAttached::qmlAttachedProperties(QObject *owner)
 
 bool UCItemAttached::isThemed(QQuickItem *item)
 {
-    UCItemAttached *attached = static_cast<UCItemAttached*>(qmlAttachedPropertiesObject<UCItemAttached>(item, false));
-    UCThemingExtension *extension = qobject_cast<UCThemingExtension*>(item);;
-    qDebug() << extension;
-    return attached && (attached->m_extension != Q_NULLPTR);
+    UCThemingExtension *extension = qobject_cast<UCThemingExtension*>(item);
+    return extension != Q_NULLPTR;
 }
 
 // handle parent changes
@@ -134,14 +131,15 @@ void UCItemAttached::itemParentChanged(QQuickItem *, QQuickItem *newParent)
     UCTheme *newTheme = newThemedAscendant ? newThemedAscendant->property("theme").value<UCTheme*>() : &UCTheme::defaultTheme();
 
     if (oldTheme != newTheme) {
+        UCThemingExtension *extension = qobject_cast<UCThemingExtension*>(m_item);
         // send the event to m_item first
         UCThemeEvent event(oldTheme, newTheme);
-        if (m_extension) {
+        if (extension) {
             // only items with extensions should get this event
-            m_extension->handleThemeEvent(&event);
+            extension->handleThemeEvent(&event);
         }
         // then broadcast to children, but only if the item is not a styled one
-        if (!m_extension) {
+        if (!extension) {
             UCThemingExtension::forwardEvent(m_item, &event);
         }
     }
@@ -150,9 +148,10 @@ void UCItemAttached::itemParentChanged(QQuickItem *, QQuickItem *newParent)
 
 void UCItemAttached::reloadTheme()
 {
-    Q_ASSERT(m_extension);
-    m_extension->preThemeChanged();
-    m_extension->postThemeChanged();
+    UCThemingExtension *extension = qobject_cast<UCThemingExtension*>(m_item);
+    Q_ASSERT(extension);
+    extension->preThemeChanged();
+    extension->postThemeChanged();
     UCThemingExtension::broadcastThemeReloaded(m_item, static_cast<UCTheme*>(sender()));
 }
 
@@ -179,8 +178,8 @@ void UCThemingExtension::setParentTheme()
         return;
     }
     QQuickItem *upperThemed = ascendantThemed(QQuickItemPrivate::get(themedItem)->parentItem);
-    UCItemAttached *attached = static_cast<UCItemAttached*>(qmlAttachedPropertiesObject<UCItemAttached>(upperThemed));
-    UCTheme *parentTheme = (attached && attached->m_extension) ? attached->m_extension->getTheme() : &UCTheme::defaultTheme();
+    UCThemingExtension *extension = qobject_cast<UCThemingExtension*>(upperThemed);
+    UCTheme *parentTheme = extension ? extension->getTheme() : &UCTheme::defaultTheme();
     if (parentTheme != theme) {
         theme->setParentTheme(parentTheme);
     }
@@ -188,12 +187,10 @@ void UCThemingExtension::setParentTheme()
 
 void UCThemingExtension::initTheming(QQuickItem *item)
 {
-    themedItem = item;
+    Q_ASSERT(themedItem == item);
     attachedThemer = static_cast<UCItemAttached*>(qmlAttachedPropertiesObject<UCItemAttached>(themedItem));
     Q_ASSERT(attachedThemer);
-    attachedThemer->m_extension = this;
     theme->attachItem(item, true);
-    qDebug() << "CAST TO IFace" << qobject_cast<UCThemingExtension*>(item) << item;
 }
 
 void UCThemingExtension::handleThemeEvent(UCThemeEvent *event)
@@ -264,8 +261,8 @@ void UCThemingExtension::setTheme(UCTheme *newTheme, ThemeType type)
 void UCThemingExtension::resetTheme()
 {
     QQuickItem *upperThemed = ascendantThemed(QQuickItemPrivate::get(themedItem)->parentItem);
-    UCItemAttached *attached = static_cast<UCItemAttached*>(qmlAttachedPropertiesObject<UCItemAttached>(upperThemed));
-    UCTheme *theme = (attached && attached->m_extension) ? attached->m_extension->getTheme() : &UCTheme::defaultTheme();
+    UCThemingExtension *extension = qobject_cast<UCThemingExtension*>(upperThemed);
+    UCTheme *theme = extension ? extension->getTheme() : &UCTheme::defaultTheme();
     setTheme(theme, Inherited);
 }
 
