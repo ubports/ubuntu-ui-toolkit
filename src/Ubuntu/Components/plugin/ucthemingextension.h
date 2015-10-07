@@ -24,11 +24,13 @@
 #include <QtCore/QPointer>
 #include <QtQml>
 
+#include <QtQuick/private/qquickitem_p.h>
+
 class QQuickItem;
 class UCStyledItemBase;
 class UCTheme;
 class UCThemingExtension;
-class UCItemAttached : public QObject
+class UCItemAttached : public QObject, public QQuickItemChangeListener
 {
     Q_OBJECT
 public:
@@ -41,8 +43,9 @@ public:
     QQuickItem *m_prevParent;
     UCThemingExtension *m_extension;
 
+    void itemParentChanged(QQuickItem *item, QQuickItem *newParent);
+
 private:
-    Q_SLOT void handleParentChanged(QQuickItem *newParent);
     Q_SLOT void reloadTheme();
 
     friend class UCThemingExtension;

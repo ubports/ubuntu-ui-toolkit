@@ -99,12 +99,12 @@ UCItemAttached::UCItemAttached(QObject *owner)
     , m_prevParent(Q_NULLPTR)
     , m_extension(Q_NULLPTR)
 {
-    // get parent item changes
-    connect(m_item, &QQuickItem::parentChanged, this, &UCItemAttached::handleParentChanged);
+    QQuickItemPrivate::get(m_item)->addItemChangeListener(this, QQuickItemPrivate::Parent);
 }
 
 UCItemAttached::~UCItemAttached()
 {
+    QQuickItemPrivate::get(m_item)->removeItemChangeListener(this, QQuickItemPrivate::Parent);
 }
 
 UCItemAttached *UCItemAttached::qmlAttachedProperties(QObject *owner)
@@ -119,7 +119,7 @@ bool UCItemAttached::isThemed(QQuickItem *item)
 }
 
 // handle parent changes
-void UCItemAttached::handleParentChanged(QQuickItem *newParent)
+void UCItemAttached::itemParentChanged(QQuickItem *, QQuickItem *newParent)
 {
     if (newParent == m_prevParent || QQuickItemPrivate::get(m_item)->wasDeleted) {
         return;
