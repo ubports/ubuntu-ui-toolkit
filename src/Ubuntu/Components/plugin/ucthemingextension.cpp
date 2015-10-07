@@ -115,6 +115,8 @@ UCItemAttached *UCItemAttached::qmlAttachedProperties(QObject *owner)
 bool UCItemAttached::isThemed(QQuickItem *item)
 {
     UCItemAttached *attached = static_cast<UCItemAttached*>(qmlAttachedPropertiesObject<UCItemAttached>(item, false));
+    UCThemingExtension *extension = qobject_cast<UCThemingExtension*>(item);;
+    qDebug() << extension;
     return attached && (attached->m_extension != Q_NULLPTR);
 }
 
@@ -186,6 +188,7 @@ void UCThemingExtension::initTheming(QQuickItem *item)
     Q_ASSERT(attachedThemer);
     attachedThemer->m_extension = this;
     theme->attachItem(item, true);
+    qDebug() << "CAST TO IFace" << qobject_cast<UCThemingExtension*>(item) << item;
 }
 
 void UCThemingExtension::handleThemeEvent(UCThemeEvent *event)

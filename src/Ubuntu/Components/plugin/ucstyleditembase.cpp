@@ -308,7 +308,7 @@ bool UCStyledItemBasePrivate::loadStyleItem(bool animated)
     // either styleComponent or styleName is valid
     QQmlComponent *component = styleComponent;
     if (!component) {
-        component = getTheme()->createStyleComponent(styleDocument + ".qml", q, styleVersion);
+        component = q->getTheme()->createStyleComponent(styleDocument + ".qml", q, styleVersion);
     }
     if (!component) {
         return false;
@@ -442,25 +442,28 @@ void UCStyledItemBasePrivate::_q_styleResized()
  * if any, or to the system default theme.
  */
 
-void UCStyledItemBasePrivate::preThemeChanged()
+void UCStyledItemBase::preThemeChanged()
 {
-    wasStyleLoaded = (styleItem != Q_NULLPTR);
-    preStyleChanged();
+    Q_D(UCStyledItemBase);
+    d->wasStyleLoaded = (d->styleItem != Q_NULLPTR);
+    d->preStyleChanged();
 }
-void UCStyledItemBasePrivate::postThemeChanged()
+void UCStyledItemBase::postThemeChanged()
 {
-    Q_EMIT q_func()->themeChanged();
-    if (!wasStyleLoaded) {
+    Q_EMIT themeChanged();
+    Q_D(UCStyledItemBase);
+    if (!d->wasStyleLoaded) {
         return;
     }
-    postStyleChanged();
-    loadStyleItem();
+    d->postStyleChanged();
+    d->loadStyleItem();
 }
 
 void UCStyledItemBase::classBegin()
 {
     QQuickItem::classBegin();
-    d_func()->initTheming(this);
+    // TODO move this in constructor
+    initTheming(this);
 }
 
 void UCStyledItemBase::componentComplete()
@@ -514,7 +517,7 @@ void UCStyledItemBase::customEvent(QEvent *event)
 {
     Q_D(UCStyledItemBase);
     if (UCThemeEvent::isThemeEvent(event)) {
-        d->handleThemeEvent(static_cast<UCThemeEvent*>(event));
+        handleThemeEvent(static_cast<UCThemeEvent*>(event));
     }
 }
 
