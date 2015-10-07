@@ -6,3 +6,4 @@ PageHeadStyle 1.1 1.2/PageHeadStyle.qml
 #version 1.2 introduced by ListItemStyle
 #version 1.3
 PageHeadStyle 1.3 1.3/PageHeadStyle.qml
+ActionBarStyle 1.3 1.3/ActionBarStyle.qml
