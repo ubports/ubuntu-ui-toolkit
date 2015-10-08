@@ -41,18 +41,31 @@ Item {
 //            opacity: 0.5
 //        }
 
+        Rectangle {
+            id: pinkRectangle
+            color: "pink"
+            anchors.fill: parent
+            opacity: 0.5
+        }
+
         trailingActionBar {
 
             actions: [
                 Action {
                     iconName: "settings"
                     text: "first"
-                    onTriggered: print("Trigger first action")
+                    onTriggered: {
+                        print("Trigger first action");
+                        header.contents = pinkRectangle;
+                    }
                 },
                 Action {
                     iconName: "info"
                     text: "second"
-                    onTriggered: print("Trigger second action")
+                    onTriggered: {
+                        print("Trigger second action");
+                        header.contents = null;
+                    }
                 },
                 Action {
                     iconName: "search"

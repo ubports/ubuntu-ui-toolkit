@@ -43,16 +43,21 @@ Style.PageHeaderStyle {
         }
     }
 
-    defaultContentsDelegate: Label {
-        id: titleLabel
-        text: styledItem.title
+    defaultContentsDelegate: Item {
+        // FIXME: The wrapping inside the extra Item is needed to
+        //  be able to position the Label vertically. Without it,
+        //  the Loader resizes the Label to span the full height.
+        Label {
+            id: titleLabel
+            text: styledItem.title
 
-        anchors {
-            left: parent.left
-            verticalCenter: parent.verticalCenter
-            leftMargin: units.gu(2)
+            anchors {
+                left: parent.left
+                verticalCenter: parent.verticalCenter
+                leftMargin: units.gu(1)
+            }
+            color: header.__styleInstance.foregroundColor
         }
-        color: header.__styleInstance.foregroundColor
     }
 
 //    defaultContents: Label {

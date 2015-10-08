@@ -81,21 +81,45 @@ Header {
 //        }
 //        sourceComponent: __styleInstance.defaultContentsDelegate
 //    }
-    default property alias contentsHolder: contentsHolderItem
+//    default property alias contentsHolder: contentsHolderItem
+    property Item contents
+
+    Component.onCompleted: holder.updateContents()
+    onContentsChanged: holder.updateContents()
+
     Item {
-        id: contentsHolderItem
+        id: holder
         anchors {
             left: leading.right
             right: trailing.left
             top: parent.top
             bottom: parent.bottom
         }
+        Loader {
+            id: titleLoader
+            anchors.fill: parent
+        }
+        property Item previousContents: null
+        property Item previousContentsParent: null
+
+        function updateContents() {
+            if (holder.previousContents) {
+                holder.previousContents.parent = holder.previousContentsParent;
+            }
+            if (contents) {
+                titleLoader.sourceComponent = null;
+                holder.previousContents = header.contents;
+                holder.previousContentsParent = header.contents.parent;
+                header.contents.parent = holder;
+            } else {
+                holder.previousContents = null;
+                holder.previousContentsParent = null;
+                titleLoader.sourceComponent = __styleInstance.defaultContentsDelegate;
+            }
+        }
     }
 
-    Loader {
-        sourceComponent: contentsHolderItem.children.count > 0
-                         ? null : __styleInstance.defaultContentsDelegate
-    }
+
 
     readonly property alias leadingActionBar: leading
     ActionBar {
