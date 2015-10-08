@@ -30,8 +30,6 @@ Header {
         right: parent.right
     }
 
-    height: units.gu(6) // TODO TIM: move to style
-
     property alias title: titleLabel
     Label {
         id: titleLabel
@@ -43,7 +41,7 @@ Header {
         color: "white" // TODO: from Style
     }
 
-    property alias leadingActionBar: leading
+    readonly property alias leadingActionBar: leading
     ActionBar {
         // TODO: ActionBar must have configurable delegate.
         //      and take foreground color from style.
@@ -56,7 +54,7 @@ Header {
         numberOfSlots: 1
     }
 
-    property alias trailingActionBar: trailing
+    readonly property alias trailingActionBar: trailing
     ActionBar {
         id: trailing
         anchors {

@@ -32,8 +32,12 @@ Item {
 
         title.text: "kiwi"
 
+        StyleHints {
+            backgroundColor: "yellow"
+        }
+
         trailingActionBar {
-//            numberOfSlots: 4
+
             actions: [
                 Action {
                     iconName: "settings"
@@ -56,6 +60,16 @@ Item {
                     onTriggered: print("Trigger fourth action")
                 }
             ]
+            delegate: Rectangle {
+                width: units.gu(5)
+                height: units.gu(5)
+                color: "pink"
+//                opacity: 0.5
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: modelData.trigger()
+                }
+            }
         }
     }
 

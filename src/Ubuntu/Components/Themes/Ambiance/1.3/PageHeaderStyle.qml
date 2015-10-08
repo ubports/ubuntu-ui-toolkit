@@ -19,6 +19,10 @@ import Ubuntu.Components 1.3
 
 Item {
     id: pageHeaderStyle
+
+    property color foregroundColor: UbuntuColors.orange
+    property color backgroundColor: "white"
+    property color dividerColor: Qt.rgba(0, 0, 0, 0.1)
 //    objectName: "PageHeadStyle" // used in unit tests
 //    contentHeight: units.gu(6)
 //    fontWeight: Font.Light
@@ -37,12 +41,13 @@ Item {
 //    property color titleColor: headerStyle.config.foregroundColor
 
 //    implicitHeight: headerStyle.contentHeight + divider.height + sectionsItem.height
-    implicitHeight: units.gu(6) + divider.height
+    property real contentHeight: units.gu(6)
+    implicitHeight: contentHeight + divider.height
 
 
     Rectangle {
         anchors.fill: parent
-        color: UbuntuColors.blue
+        color: pageHeaderStyle.backgroundColor
     }
 
     // for Unity8
@@ -59,7 +64,7 @@ Item {
         }
         height: units.dp(1)
 //        color: styledItem.dividerColor
-        color: "black"
+        color: pageHeaderStyle.dividerColor
     }
 
 
