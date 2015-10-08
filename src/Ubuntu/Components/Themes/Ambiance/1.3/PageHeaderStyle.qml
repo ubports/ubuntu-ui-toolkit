@@ -15,14 +15,14 @@
  */
 import QtQuick 2.4
 import Ubuntu.Components 1.3
-//import Ubuntu.Components.Styles 1.3 as Style
+import Ubuntu.Components.Styles 1.3 as Style
 
-Item {
+Style.PageHeaderStyle {
     id: pageHeaderStyle
 
-    property color foregroundColor: UbuntuColors.orange
-    property color backgroundColor: "white"
-    property color dividerColor: Qt.rgba(0, 0, 0, 0.1)
+    foregroundColor: UbuntuColors.orange
+    backgroundColor: "white"
+    dividerColor: Qt.rgba(0, 0, 0, 0.1)
 //    objectName: "PageHeadStyle" // used in unit tests
 //    contentHeight: units.gu(6)
 //    fontWeight: Font.Light
@@ -30,20 +30,40 @@ Item {
 //    textLeftMargin: units.gu(2)
 //    maximumNumberOfActions: 3
 
-    /*!
-      The color of the buttons in the header.
-     */
-//    property color buttonColor: headerStyle.config.foregroundColor
-
-    /*!
-      The color of the title text.
-     */
-//    property color titleColor: headerStyle.config.foregroundColor
-
-//    implicitHeight: headerStyle.contentHeight + divider.height + sectionsItem.height
     property real contentHeight: units.gu(6)
-    implicitHeight: contentHeight + divider.height
+    implicitHeight: contentHeight + divider.height // + sectionsItem.height
 
+    defaultActionDelegate: AbstractButton {
+        style: IconButtonStyle { }
+        objectName: action.objectName + "_action_button"
+        height: parent ? parent.height : undefined
+        action: modelData
+        StyleHints {
+            foregroundColor: pageHeaderStyle.foregroundColor
+        }
+    }
+
+    defaultContentsDelegate: Label {
+        id: titleLabel
+        text: styledItem.title
+
+        anchors {
+            left: parent.left
+            verticalCenter: parent.verticalCenter
+            leftMargin: units.gu(2)
+        }
+        color: header.__styleInstance.foregroundColor
+    }
+
+//    defaultContents: Label {
+//        text: styledItem.title
+//        anchors {
+//            left: parent ? parent.left : undefined
+//            right: parent ? parent.right : undefined
+//            verticalCenter: parent ? parent.verticalCenter : undefined
+//        }
+//        color: header.__styleInstance.foregroundColor
+//    }
 
     Rectangle {
         anchors.fill: parent
@@ -63,22 +83,6 @@ Item {
             bottom: parent.bottom
         }
         height: units.dp(1)
-//        color: styledItem.dividerColor
         color: pageHeaderStyle.dividerColor
     }
-
-
-//        ActionBar {
-//            id: actionsContainer
-//            objectName: "headerActionBar"
-//            anchors {
-//                top: parent.top
-//                right: rightAnchor.left
-//                rightMargin: actionsContainer.width > 0 ? units.gu(1) : 0
-//            }
-//            height: headerStyle.contentHeight
-
-//            actions: headerStyle.config.actions
-//            numberOfSlots: 3
-//        }
 }

@@ -30,21 +30,75 @@ Header {
         right: parent.right
     }
 
-    property alias title: titleLabel
-    Label {
-        id: titleLabel
+    property string title
+//    property alias title: titleLabel
+//    Label {
+//        id: titleLabel
+//        anchors {
+//            left: leading.right
+//            verticalCenter: parent.verticalCenter
+//            leftMargin: units.gu(2)
+//        }
+//        color: header.__styleInstance.foregroundColor
+//    }
+
+//    Loader {
+//        anchors {
+//            left: leadingActionBar.right
+//            right: trailingActionBar.left
+//            leftMargin: 0
+//        }
+//        sourceComponent: __styleInstance.defaultContentsDelegate
+//    }
+
+//    property Item contents: __styleInstance.defaultContents
+//    property Item contents: Rectangle { color: "pink"; anchors.fill: parent }
+
+
+
+//    Item {
+//        id: contentsHolder
+//        anchors {
+//            left: leading.right
+//            right: trailing.left
+//            top: parent.top
+//            bottom: parent.bottom
+//        }
+
+//        Binding {
+//            target: contents
+//            property: "parent"
+//            value: contentsHolder
+//        }
+//    }
+
+//    Loader {
+//        anchors {
+//            left: leading.right
+//            right: trailing.left
+//            top: parent.top
+//            bottom: parent.bottom
+//        }
+//        sourceComponent: __styleInstance.defaultContentsDelegate
+//    }
+    default property alias contentsHolder: contentsHolderItem
+    Item {
+        id: contentsHolderItem
         anchors {
             left: leading.right
-            verticalCenter: parent.verticalCenter
-            leftMargin: units.gu(2)
+            right: trailing.left
+            top: parent.top
+            bottom: parent.bottom
         }
-        color: "white" // TODO: from Style
+    }
+
+    Loader {
+        sourceComponent: contentsHolderItem.children.count > 0
+                         ? null : __styleInstance.defaultContentsDelegate
     }
 
     readonly property alias leadingActionBar: leading
     ActionBar {
-        // TODO: ActionBar must have configurable delegate.
-        //      and take foreground color from style.
         id: leading
         anchors {
             left: parent.left
@@ -52,6 +106,7 @@ Header {
             verticalCenter: parent.verticalCenter
         }
         numberOfSlots: 1
+        delegate: header.__styleInstance.defaultActionDelegate
     }
 
     readonly property alias trailingActionBar: trailing
@@ -63,6 +118,7 @@ Header {
             verticalCenter: parent.verticalCenter
         }
         numberOfSlots: 3
+        delegate: header.__styleInstance.defaultActionDelegate
     }
 
     theme.version: Components.Ubuntu.toolkitVersion
