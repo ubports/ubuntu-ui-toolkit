@@ -128,8 +128,12 @@ void UCItemAttached::handleParentChanged(QQuickItem *newParent)
     // make sure we have these handlers attached to each intermediate item
     QQuickItem *oldThemedAscendant = UCThemingExtension::ascendantThemed(m_prevParent);
     QQuickItem *newThemedAscendant = UCThemingExtension::ascendantThemed(newParent);
-    UCTheme *oldTheme = oldThemedAscendant ? oldThemedAscendant->property("theme").value<UCTheme*>() : &UCTheme::defaultTheme();
-    UCTheme *newTheme = newThemedAscendant ? newThemedAscendant->property("theme").value<UCTheme*>() : &UCTheme::defaultTheme();
+    UCItemAttached *oldAscendantAttached = static_cast<UCItemAttached*>(qmlAttachedPropertiesObject<UCItemAttached>(oldThemedAscendant, false));
+    UCItemAttached *newAscendantAttached = static_cast<UCItemAttached*>(qmlAttachedPropertiesObject<UCItemAttached>(newThemedAscendant, false));
+    UCThemingExtension *oldAscendantExtension = oldAscendantAttached ? oldAscendantAttached->m_extension : Q_NULLPTR;
+    UCThemingExtension *newAscendantExtension = newAscendantAttached ? newAscendantAttached->m_extension : Q_NULLPTR;
+    UCTheme *oldTheme = oldAscendantExtension ? oldAscendantExtension->getTheme() : &UCTheme::defaultTheme();
+    UCTheme *newTheme = newAscendantExtension ? newAscendantExtension->getTheme() : &UCTheme::defaultTheme();
 
     if (oldTheme != newTheme) {
         // send the event to m_item first
