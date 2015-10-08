@@ -95,7 +95,7 @@ declare -a UNREGISTERED_APPS=(
 	"com.ubuntu.shorts"
 )
 
-# some apps needs special permission to access sysetm service.
+# some apps needs special permission to access system service.
 fix_permissions () {
 	APP_ID=$1
 	SERVICE=$2
