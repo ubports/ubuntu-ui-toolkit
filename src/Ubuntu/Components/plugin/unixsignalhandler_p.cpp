@@ -49,7 +49,7 @@ UnixSignalHandler::HandlerType UnixSignalHandler::createHandler(int signal)
     }
     HandlerType handler;
     handler.first.resize(2);
-    if (::socketpair(AF_UNIX, SOCK_STREAM, 0, &handler.first[0]())) {
+    if (::socketpair(AF_UNIX, SOCK_STREAM, 0, &handler.first[0])) {
         qFatal("Cannot create signal socketpair");
     }
     handler.second = new QSocketNotifier(handler.first[1], QSocketNotifier::Read, this);
