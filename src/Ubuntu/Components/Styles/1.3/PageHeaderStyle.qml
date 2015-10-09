@@ -46,12 +46,17 @@ Item {
     property Component defaultActionDelegate
 
     /*!
-      The default contents of the header.
+      The default contents that will be loaded when no contents Item was set.
      */
-    property Component defaultContentsDelegate
+    property Component titleComponent
 
     /*!
       The default contents of the header.
      */
-    property Item defaultContents
+//    property Item defaultContents
+
+    /*!
+      The height of the header excluding the divider and sections.
+     */
+    property real contentHeight
 }

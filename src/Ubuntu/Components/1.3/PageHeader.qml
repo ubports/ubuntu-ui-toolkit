@@ -93,8 +93,9 @@ Header {
             left: leading.right
             right: trailing.left
             top: parent.top
-            bottom: parent.bottom
+//            bottom: parent.bottom
         }
+        height: __styleInstance.contentHeight
         Loader {
             id: titleLoader
             anchors.fill: parent
@@ -114,12 +115,10 @@ Header {
             } else {
                 holder.previousContents = null;
                 holder.previousContentsParent = null;
-                titleLoader.sourceComponent = __styleInstance.defaultContentsDelegate;
+                titleLoader.sourceComponent = __styleInstance.titleComponent;
             }
         }
     }
-
-
 
     readonly property alias leadingActionBar: leading
     ActionBar {
@@ -139,10 +138,31 @@ Header {
         anchors {
             right: parent.right
             rightMargin: units.gu(1)
-            verticalCenter: parent.verticalCenter
+//            verticalCenter: parent.verticalCenter
+            top: parent.top
         }
+        height: header.__styleInstance.contentHeight
         numberOfSlots: 3
         delegate: header.__styleInstance.defaultActionDelegate
+    }
+
+    /*!
+      \qmlproperty Sections sections
+      Sections shown at the bottom of the header. By default,
+      the sections will only be visible if its actions or model
+      is set.
+     */
+    readonly property alias sections: sectionsItem
+    Sections {
+        id: sectionsItem
+        objectName: "headerSectionsItem"
+        anchors {
+            left: parent.left
+            leftMargin: units.gu(2)
+            top: holder.bottom
+        }
+        visible: model && model.length > 0
+        height: visible ? implicitHeight : 0
     }
 
     theme.version: Components.Ubuntu.toolkitVersion

@@ -20,18 +20,16 @@ import Ubuntu.Components.Styles 1.3 as Style
 Style.PageHeaderStyle {
     id: pageHeaderStyle
 
-    foregroundColor: UbuntuColors.orange
+    foregroundColor: theme.palette.selected.backgroundText
     backgroundColor: "white"
     dividerColor: Qt.rgba(0, 0, 0, 0.1)
-//    objectName: "PageHeadStyle" // used in unit tests
-//    contentHeight: units.gu(6)
-//    fontWeight: Font.Light
-//    textSize: Label.Large
+    property int fontWeight: Font.Light
+    property int textSize: Label.Large
 //    textLeftMargin: units.gu(2)
 //    maximumNumberOfActions: 3
 
-    property real contentHeight: units.gu(6)
-    implicitHeight: contentHeight + divider.height // + sectionsItem.height
+    contentHeight: units.gu(6)
+    implicitHeight: contentHeight + divider.height + styledItem.sections.height
 
     defaultActionDelegate: AbstractButton {
         style: IconButtonStyle { }
@@ -43,7 +41,7 @@ Style.PageHeaderStyle {
         }
     }
 
-    defaultContentsDelegate: Item {
+    titleComponent: Item {
         // FIXME: The wrapping inside the extra Item is needed to
         //  be able to position the Label vertically. Without it,
         //  the Loader resizes the Label to span the full height.
@@ -57,18 +55,11 @@ Style.PageHeaderStyle {
                 leftMargin: units.gu(1)
             }
             color: header.__styleInstance.foregroundColor
+            font.weight: pageHeaderStyle.fontWeight
+            textSize: pageHeaderStyle.textSize
+
         }
     }
-
-//    defaultContents: Label {
-//        text: styledItem.title
-//        anchors {
-//            left: parent ? parent.left : undefined
-//            right: parent ? parent.right : undefined
-//            verticalCenter: parent ? parent.verticalCenter : undefined
-//        }
-//        color: header.__styleInstance.foregroundColor
-//    }
 
     Rectangle {
         anchors.fill: parent

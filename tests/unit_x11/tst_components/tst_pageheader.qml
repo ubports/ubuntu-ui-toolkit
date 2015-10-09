@@ -32,25 +32,13 @@ Item {
 
         title: "kiwi"
 
-//        StyleHints {
-//            backgroundColor: "yellow"
-//        }
-//        contents: Rectangle {
-//            color: "pink"
-//            anchors.fill: parent
-//            opacity: 0.5
-//        }
+        sections.actions: [
+            Action { text: "yeah" },
+            Action { text: "second" }
+        ]
 
-        Rectangle {
-            id: pinkRectangle
-            color: "pink"
-            anchors.fill: parent
-            opacity: 0.5
-        }
-
-        trailingActionBar {
-
-            actions: [
+        trailingActionBar.actions: [
+//            actions: [
                 Action {
                     iconName: "settings"
                     text: "first"
@@ -78,18 +66,8 @@ Item {
                     onTriggered: print("Trigger fourth action")
                 }
             ]
-//            delegate: Rectangle {
-//                width: units.gu(5)
-//                height: units.gu(5)
-//                color: "pink"
-////                opacity: 0.5
-//                MouseArea {
-//                    anchors.fill: parent
-//                    onClicked: modelData.trigger()
-//                }
-//            }
         }
-    }
+//    }
 
     Flickable {
         id: flickable
