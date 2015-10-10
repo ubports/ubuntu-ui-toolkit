@@ -32,6 +32,19 @@ Item {
 
         property real initialHeaderHeight: units.gu(6)
 
+        Item {
+            id: alternativeContents
+            visible: header.contents === alternativeContents
+            anchors.fill: parent
+            Rectangle {
+                anchors {
+                    fill: parent
+                    margins: units.gu(1)
+                }
+                color: UbuntuColors.red
+            }
+        }
+
         PageHeader {
             id: header
             flickable: flickable

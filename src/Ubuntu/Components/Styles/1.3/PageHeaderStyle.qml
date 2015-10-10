@@ -51,11 +51,6 @@ Item {
     property Component titleComponent
 
     /*!
-      The default contents of the header.
-     */
-//    property Item defaultContents
-
-    /*!
       The height of the header excluding the divider and sections.
      */
     property real contentHeight
