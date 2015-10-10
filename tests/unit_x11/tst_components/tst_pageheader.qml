@@ -19,7 +19,9 @@ import Ubuntu.Components 1.3
 //import Ubuntu.Test 1.0
 
 Item {
-    // Wrap the root Item to work around bug #1504755.
+    // Wrap the root Item to work around bug #1504755 which
+    //  causes the OverflowPanel to open behind the PageHeader
+    //  without this wrapper Item.
     id: wrapper
     width: units.gu(50)
     height: units.gu(70)
