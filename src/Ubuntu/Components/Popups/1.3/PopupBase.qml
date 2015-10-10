@@ -158,9 +158,6 @@ OrientationHelper {
         propagateComposedEvents: !grabDismissAreaEvents
         onPressed: if (__closeOnDismissAreaPress) popupBase.hide()
         onWheel: wheel.accepted = true
-        // Make the IMA the topmost Item. If it is not, the PageHeader goes on
-        //  top of the IMA for the PageHeader's actions OverflowPanel.
-        topmostItem: true
     }
 
     MouseArea {
