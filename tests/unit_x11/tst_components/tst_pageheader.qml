@@ -16,7 +16,7 @@
 
 import QtQuick 2.4
 import Ubuntu.Components 1.3
-//import Ubuntu.Test 1.0
+import Ubuntu.Test 1.0
 
 Item {
     // Wrap the root Item to work around bug #1504755 which
@@ -32,19 +32,6 @@ Item {
 
         property real initialHeaderHeight: units.gu(6)
 
-        Item {
-            id: alternativeContents
-            visible: header.contents === alternativeContents
-            anchors.fill: parent
-            Rectangle {
-                anchors {
-                    fill: parent
-                    margins: units.gu(1)
-                }
-                color: UbuntuColors.red
-            }
-        }
-
         PageHeader {
             id: header
             flickable: flickable
@@ -52,28 +39,44 @@ Item {
 
             title: "kiwi"
 
-            sections.actions: [
-                Action { text: "yeah" },
-                Action { text: "second" }
+            property list<Action> sectionActions: [
+                Action { text: "first" },
+                Action { text: "second" },
+                Action { text: "third" }
             ]
 
-            trailingActionBar.actions: [
-                //            actions: [
+            Item {
+                id: alternativeContents
+                visible: header.contents === alternativeContents
+                anchors.fill: parent
+                Rectangle {
+                    anchors {
+                        fill: parent
+                        margins: units.gu(1)
+                    }
+                    color: UbuntuColors.red
+
+                    Label {
+                        anchors.centerIn: parent
+                        text: "Header contents"
+                        color: "white"
+                    }
+                }
+            }
+
+            contents: contentsSwitch.checked ? alternativeContents : null
+            sections.actions: sectionsSwitch.checked ? sectionActions : []
+
+            property list<Action> actionList: [
                 Action {
                     iconName: "settings"
                     text: "first"
-                    onTriggered: {
-                        print("Trigger first action");
-                        header.contents = pinkRectangle;
-                    }
+                    onTriggered: print("Trigger first action")
                 },
                 Action {
                     iconName: "info"
                     text: "second"
-                    onTriggered: {
-                        print("Trigger second action");
-                        header.contents = null;
-                    }
+                    onTriggered: print("Trigger second action")
                 },
                 Action {
                     iconName: "search"
@@ -86,8 +89,12 @@ Item {
                     onTriggered: print("Trigger fourth action")
                 }
             ]
+
+            trailingActionBar.actions: trailingActionsSwitch.checked ?
+                                           actionList : []
+            leadingActionBar.actions: leadingActionsSwitch.checked ?
+                                          actionList : []
         }
-        //    }
 
         Flickable {
             id: flickable
@@ -107,7 +114,7 @@ Item {
                     top: parent.top
                     left: parent.left
                     leftMargin: units.gu(5)
-                    topMargin: 2*root.initialHeaderHeight
+                    topMargin: root.initialHeaderHeight
                 }
                 Switch {
                     id: lockedSwitch
@@ -133,73 +140,78 @@ Item {
                 Label {
                     text: "header exposed"
                 }
-                Item {
-                    width: 1
-                    height: 1
+                Switch {
+                    id: leadingActionsSwitch
+                    checked: false
                 }
-            }
-            Button {
-                id: contentYButton
-                anchors {
-                    top: switchGrid.bottom
-                    topMargin: units.gu(4)
-                    horizontalCenter: parent.horizontalCenter
+                Label {
+                    text: "leading actions"
                 }
-                property real newY: flickable.contentY == 0 ? -header.height : 0
-                onClicked: flickable.contentY = newY;
-                text: "Set contentY to " + newY
-            }
-            Label {
-                anchors {
-                    top : contentYButton.bottom
-                    horizontalCenter: parent.horizontalCenter
-                    topMargin: units.gu(8)
+                Switch {
+                    id: trailingActionsSwitch
+                    checked: true
                 }
-                text: "Flick me"
+                Label {
+                    text: "trailing actions"
+                }
+                Switch {
+                    id: contentsSwitch
+                    checked: false
+                }
+                Label {
+                    text: "replace title by contents"
+                }
+                Switch {
+                    id: sectionsSwitch
+                    checked: false
+                }
+                Label {
+                    text: "show sections"
+                }
             }
         }
 
 
-        //    UbuntuTestCase {
-        //        name: "PageHeader"
-        //        when: windowShown
-        //        id: testCase
+        UbuntuTestCase {
+            name: "PageHeader"
+            when: windowShown
+            id: testCase
 
-        //        function initTestCase() {
-        //            // TODO
-        //        }
+            function initTestCase() {
+                // TODO
+            }
 
-        //        function init() {
-        //            // TODO
-        //        }
+            function init() {
+                // TODO
+            }
 
-        //        function scroll(dy) {
-        //            var p = centerOf(flickable);
-        //            // Use mouseWheel to scroll because mouseDrag is very unreliable
-        //            // and does not properly handle negative values for dy.
-        //            mouseWheel(flickable, p.x, p.y, 0,dy);
-        //        }
+            function scroll(dy) {
+                var p = centerOf(flickable);
+                // Use mouseWheel to scroll because mouseDrag is very unreliable
+                // and does not properly handle negative values for dy.
+                mouseWheel(flickable, p.x, p.y, 0,dy);
+            }
 
-        //        function scroll_down() {
-        //            scroll(-2.0*header.height);
-        //        }
+            function scroll_down() {
+                scroll(-2.0*header.height);
+            }
 
-        //        function scroll_up() {
-        //            scroll(header.height);
-        //        }
+            function scroll_up() {
+                scroll(header.height);
+            }
 
-        //        function wait_for_exposed(exposed, errorMessage) {
-        //            tryCompare(header, "exposed", exposed, 5000, errorMessage);
-        //            // wait for the animation to finish:
-        //            tryCompare(header, "moving", false, 5000, "Header still moving?");
-        //            if (exposed) {
-        //                compare(header.y, 0, errorMessage +
-        //                        " y-value/exposed mismatch for exposed header!");
-        //            } else {
-        //                compare(header.y, -header.height, errorMessage +
-        //                        " y-value/exposed mismatch for hidden header!");
-        //            }
-        //        }
-        //    }
+            function wait_for_exposed(exposed, errorMessage) {
+                tryCompare(header, "exposed", exposed, 5000, errorMessage);
+                // wait for the animation to finish:
+                tryCompare(header, "moving", false, 5000, "Header still moving?");
+                if (exposed) {
+                    compare(header.y, 0, errorMessage +
+                            " y-value/exposed mismatch for exposed header!");
+                } else {
+                    compare(header.y, -header.height, errorMessage +
+                            " y-value/exposed mismatch for hidden header!");
+                }
+            }
+        }
     }
 }
