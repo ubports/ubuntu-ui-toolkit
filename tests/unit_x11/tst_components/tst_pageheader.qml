@@ -37,7 +37,7 @@ Item {
             flickable: flickable
             z:1
 
-            title: "kiwi"
+            title: "Default title"
 
             property list<Action> sectionActions: [
                 Action { text: "first" },
@@ -58,7 +58,7 @@ Item {
 
                     Label {
                         anchors.centerIn: parent
-                        text: "Header contents"
+                        text: "Custom header contents"
                         color: "white"
                     }
                 }
@@ -177,8 +177,9 @@ Item {
             when: windowShown
             id: testCase
 
+            property var style;
             function initTestCase() {
-                // TODO
+                style = header.__styleInstance;
             }
 
             function init() {
@@ -211,6 +212,52 @@ Item {
                     compare(header.y, -header.height, errorMessage +
                             " y-value/exposed mismatch for hidden header!");
                 }
+            }
+
+            function test_height() {
+                var divider = findChild(style, "header_divider");
+                compare(header.height, style.contentHeight + divider.height,
+                        "Incorrect initial header height.");
+                var initialHeight = header.height;
+
+                var sections = header.sections;
+                compare(header.sections.height, 0,
+                        "Empty sections has non-0 height.");
+
+                sections.actions = header.sectionActions;
+                compare(sections.height > 0, true,
+                        "Sections with actions has non-positive height.");
+                compare(header.height, style.contentHeight + divider.height + sections.height,
+                        "Header with sections has incorrect total height.");
+
+                sections.actions = [];
+                compare(header.height, initialHeight,
+                        "Unsetting sections does not revert the header height.");
+            }
+
+            function test_sections() {
+
+            }
+
+            function test_actions() {
+                // set leading actions
+                // set trailing actions
+            }
+
+            function test_foreground_color() {
+
+            }
+
+            function test_background_color() {
+
+            }
+
+            function test_title() {
+
+            }
+
+            function test_contents() {
+
             }
         }
     }

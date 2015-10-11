@@ -73,6 +73,7 @@ Style.PageHeaderStyle {
 
     Rectangle {
         id: divider
+        objectName: "header_divider"
         anchors {
             left: parent.left
             right: parent.right

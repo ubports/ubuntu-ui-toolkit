@@ -21,67 +21,26 @@ import Ubuntu.Components 1.3
     \qmltype PageHeader
     \inqmlmodule Ubuntu.Components 1.3
     \ingroup ubuntu
+    \brief The PageHeader shows a title with a leading and a trailing
+        \l ActionBar that add action buttons to the header.
 */
 Header {
     id: header
-
     anchors {
         left: parent.left
         right: parent.right
     }
 
+    /*!
+      The title to display in the header.
+     */
     property string title
-//    property alias title: titleLabel
-//    Label {
-//        id: titleLabel
-//        anchors {
-//            left: leading.right
-//            verticalCenter: parent.verticalCenter
-//            leftMargin: units.gu(2)
-//        }
-//        color: header.__styleInstance.foregroundColor
-//    }
 
-//    Loader {
-//        anchors {
-//            left: leadingActionBar.right
-//            right: trailingActionBar.left
-//            leftMargin: 0
-//        }
-//        sourceComponent: __styleInstance.defaultContentsDelegate
-//    }
-
-//    property Item contents: __styleInstance.defaultContents
-//    property Item contents: Rectangle { color: "pink"; anchors.fill: parent }
-
-
-
-//    Item {
-//        id: contentsHolder
-//        anchors {
-//            left: leading.right
-//            right: trailing.left
-//            top: parent.top
-//            bottom: parent.bottom
-//        }
-
-//        Binding {
-//            target: contents
-//            property: "parent"
-//            value: contentsHolder
-//        }
-//    }
-
-//    Loader {
-//        anchors {
-//            left: leading.right
-//            right: trailing.left
-//            top: parent.top
-//            bottom: parent.bottom
-//        }
-//        sourceComponent: __styleInstance.defaultContentsDelegate
-//    }
-//    default property alias contentsHolder: contentsHolderItem
+    /*!
+      The contents item to display in the header. By default the contents
+      is undefined, and setting it will disable showing of the title in
+      the header.
+     */
     property Item contents
 
     Component.onCompleted: holder.updateContents()
@@ -93,7 +52,6 @@ Header {
             left: leading.right
             right: trailing.left
             top: parent.top
-//            bottom: parent.bottom
         }
         height: __styleInstance.contentHeight
         Loader {
@@ -126,8 +84,9 @@ Header {
         anchors {
             left: parent.left
             leftMargin: units.gu(1)
-            verticalCenter: parent.verticalCenter
+            top: parent.top
         }
+        height: header.__styleInstance.contentHeight
         numberOfSlots: 1
         delegate: header.__styleInstance.defaultActionDelegate
     }
@@ -138,7 +97,6 @@ Header {
         anchors {
             right: parent.right
             rightMargin: units.gu(1)
-//            verticalCenter: parent.verticalCenter
             top: parent.top
         }
         height: header.__styleInstance.contentHeight
@@ -155,7 +113,6 @@ Header {
     readonly property alias sections: sectionsItem
     Sections {
         id: sectionsItem
-        objectName: "headerSectionsItem"
         anchors {
             left: parent.left
             leftMargin: units.gu(2)
