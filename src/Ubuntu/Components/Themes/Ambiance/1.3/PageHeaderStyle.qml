@@ -62,6 +62,7 @@ Style.PageHeaderStyle {
     }
 
     Rectangle {
+        objectName: "header_background"
         anchors.fill: parent
         color: pageHeaderStyle.backgroundColor
     }

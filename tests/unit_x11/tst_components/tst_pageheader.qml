@@ -72,6 +72,7 @@ Item {
                     iconName: "settings"
                     text: "first"
                     onTriggered: print("Trigger first action")
+                    objectName: "first_action"
                 },
                 Action {
                     iconName: "info"
@@ -235,20 +236,32 @@ Item {
                         "Unsetting sections does not revert the header height.");
             }
 
-            function test_sections() {
+            function test_background_color() {
+                var background = findChild(style, "header_background");
+                compare(background.color, style.backgroundColor,
+                        "Incorrect initial background color.");
 
-            }
+                var initialColor = style.backgroundColor;
+                var otherColor = "#CCFDAA"; // a random color.
+                style.backgroundColor = otherColor;
+                compare(Qt.colorEqual(background.color, otherColor), true,
+                        "Updating style background color does not change the background color.");
 
-            function test_actions() {
-                // set leading actions
-                // set trailing actions
+                style.backgroundColor = initialColor;
+                compare(Qt.colorEqual(background.color, initialColor), true,
+                        "Reverting the background color failed.");
             }
 
             function test_foreground_color() {
-
+                var bar = header.trailingActionBar;
+                //CONTINUE HERE
+//                var iconButton = findChild(trailingActionsSwitchngActionBar, )
+//                compare(header.trailingActionBar.slots < header.trailingActionBar.actions.length, true,
+//                        "Foreground color test needs action overflow button.");
+//                var iconButton =
             }
 
-            function test_background_color() {
+            function test_divider_color() {
 
             }
 
@@ -259,6 +272,9 @@ Item {
             function test_contents() {
 
             }
+
+            // The properties of header.sections, header.leadingActionBar and
+            //  header.trailingActionBar are tested in tst_sections.qml and tst_actionbar.qml.
         }
     }
 }
