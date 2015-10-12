@@ -47,6 +47,7 @@ Style.PageHeaderStyle {
         //  the Loader resizes the Label to span the full height.
         Label {
             id: titleLabel
+            objectName: "header_title_label"
             text: styledItem.title
 
             anchors {
@@ -57,7 +58,6 @@ Style.PageHeaderStyle {
             color: header.__styleInstance.foregroundColor
             font.weight: pageHeaderStyle.fontWeight
             textSize: pageHeaderStyle.textSize
-
         }
     }
 

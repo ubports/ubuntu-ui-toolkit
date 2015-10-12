@@ -72,7 +72,7 @@ Item {
                     iconName: "settings"
                     text: "first"
                     onTriggered: print("Trigger first action")
-                    objectName: "first_action"
+                    objectName: "action1"
                 },
                 Action {
                     iconName: "info"
@@ -215,6 +215,11 @@ Item {
                 }
             }
 
+            // Use this function to prevent copying the color by reference.
+            function color_by_value(color) {
+                return Qt.rgba(color.r, color.g, color.b, color.a);
+            }
+
             function test_height() {
                 var divider = findChild(style, "header_divider");
                 compare(header.height, style.contentHeight + divider.height,
@@ -241,7 +246,7 @@ Item {
                 compare(background.color, style.backgroundColor,
                         "Incorrect initial background color.");
 
-                var initialColor = style.backgroundColor;
+                var initialColor = color_by_value(style.backgroundColor);
                 var otherColor = "#CCFDAA"; // a random color.
                 style.backgroundColor = otherColor;
                 compare(Qt.colorEqual(background.color, otherColor), true,
@@ -253,16 +258,37 @@ Item {
             }
 
             function test_foreground_color() {
+                var color1 = color_by_value(style.foregroundColor);
                 var bar = header.trailingActionBar;
-                //CONTINUE HERE
-//                var iconButton = findChild(trailingActionsSwitchngActionBar, )
-//                compare(header.trailingActionBar.slots < header.trailingActionBar.actions.length, true,
-//                        "Foreground color test needs action overflow button.");
-//                var iconButton =
+                var iconButton = findChild(bar, "action1_action_button");
+                var buttonStyle = iconButton.__styleInstance;
+                compare(Qt.colorEqual(buttonStyle.foregroundColor, color1), true,
+                        "Button foreground color does not match header foreground color.");
+
+                var label = findChild(header, "header_title_label");
+                compare(Qt.colorEqual(label.color, color1), true,
+                        "Title color does not match header foreground color.");
+
+                var color2 = "#FF1ABC"; // a random color.
+                style.foregroundColor = color2;
+                print("color2 = "+color2)
+                compare(Qt.colorEqual(buttonStyle.foregroundColor, color2), true,
+                        "Button foreground color does not match updated header foreground color.");
+                compare(Qt.colorEqual(label.color, color2), true,
+                        "Title color does not match updated header foreground color.");
+
+                style.foregroundColor = color1;
+                print("button fg = "+buttonStyle.foregroundColor);
+                print("color1 = "+color1)
+                // revert to the original color.
+                compare(Qt.colorEqual(buttonStyle.foregroundColor, color1), true,
+                        "Button foreground color does not match reverted header foreground color.");
+                compare(Qt.colorEqual(label.color, color1), true,
+                        "Title color does not match reverted header foreground color.");
             }
 
-            function test_divider_color() {
-
+            function test_xdivider_color() {
+                wait(1000)
             }
 
             function test_title() {
