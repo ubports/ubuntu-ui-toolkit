@@ -116,6 +116,7 @@ Item {
                     leftMargin: units.gu(5)
                     topMargin: root.initialHeaderHeight
                 }
+
                 Switch {
                     id: lockedSwitch
                     checked: null === header.flickable
@@ -130,6 +131,7 @@ Item {
                 Label {
                     text: "header locked"
                 }
+
                 Switch {
                     id: hiddenSwitch
                     checked: header.exposed
@@ -140,6 +142,7 @@ Item {
                 Label {
                     text: "header exposed"
                 }
+
                 Switch {
                     id: leadingActionsSwitch
                     checked: false
@@ -147,6 +150,7 @@ Item {
                 Label {
                     text: "leading actions"
                 }
+
                 Switch {
                     id: trailingActionsSwitch
                     checked: true
@@ -154,6 +158,7 @@ Item {
                 Label {
                     text: "trailing actions"
                 }
+
                 Switch {
                     id: contentsSwitch
                     checked: false
@@ -161,6 +166,7 @@ Item {
                 Label {
                     text: "replace title by contents"
                 }
+
                 Switch {
                     id: sectionsSwitch
                     checked: false
@@ -175,7 +181,6 @@ Item {
             }
         }
 
-
         UbuntuTestCase {
             name: "PageHeader"
             when: windowShown
@@ -184,10 +189,6 @@ Item {
             property var style;
             function initTestCase() {
                 style = header.__styleInstance;
-            }
-
-            function init() {
-                // TODO
             }
 
             function scroll(dy) {

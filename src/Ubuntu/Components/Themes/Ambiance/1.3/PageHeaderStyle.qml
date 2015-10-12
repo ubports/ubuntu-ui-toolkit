@@ -26,7 +26,7 @@ Style.PageHeaderStyle {
     property int fontWeight: Font.Light
     property int textSize: Label.Large
 //    textLeftMargin: units.gu(2)
-//    maximumNumberOfActions: 3
+    //TODO TIM: get the right margins (expose them?)
 
     contentHeight: units.gu(6)
     implicitHeight: contentHeight + divider.height + styledItem.sections.height
@@ -42,7 +42,7 @@ Style.PageHeaderStyle {
     }
 
     titleComponent: Item {
-        // FIXME: The wrapping inside the extra Item is needed to
+        // The wrapping inside the extra Item is needed to
         //  be able to position the Label vertically. Without it,
         //  the Loader resizes the Label to span the full height.
         Label {
@@ -66,11 +66,6 @@ Style.PageHeaderStyle {
         anchors.fill: parent
         color: pageHeaderStyle.backgroundColor
     }
-
-    // for Unity8
-    // FIXME: Remove this property when we introduce a header preset that does not
-    //  have a separator.
-//    property alias __separator_visible: divider.visible
 
     Rectangle {
         id: divider
