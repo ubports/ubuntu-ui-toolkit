@@ -52,6 +52,7 @@ Header {
             left: leading.right
             right: trailing.left
             top: parent.top
+            leftMargin: leading.width > 0 ? 0 : units.gu(1)
         }
         height: __styleInstance.contentHeight
         Loader {
@@ -83,7 +84,6 @@ Header {
         id: leading
         anchors {
             left: parent.left
-            leftMargin: units.gu(1)
             top: parent.top
         }
         height: header.__styleInstance.contentHeight
@@ -96,7 +96,6 @@ Header {
         id: trailing
         anchors {
             right: parent.right
-            rightMargin: units.gu(1)
             top: parent.top
         }
         height: header.__styleInstance.contentHeight
@@ -122,6 +121,6 @@ Header {
         height: visible ? implicitHeight : 0
     }
 
-    theme.version: Components.Ubuntu.toolkitVersion
+    theme.version: Ubuntu.toolkitVersion
     styleName: "PageHeaderStyle"
 }

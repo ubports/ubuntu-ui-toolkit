@@ -25,8 +25,6 @@ Style.PageHeaderStyle {
     dividerColor: Qt.rgba(0, 0, 0, 0.1)
     property int fontWeight: Font.Light
     property int textSize: Label.Large
-//    textLeftMargin: units.gu(2)
-    //TODO TIM: get the right margins (expose them?)
 
     contentHeight: units.gu(6)
     implicitHeight: contentHeight + divider.height + styledItem.sections.height
@@ -53,7 +51,6 @@ Style.PageHeaderStyle {
             anchors {
                 left: parent.left
                 verticalCenter: parent.verticalCenter
-                leftMargin: units.gu(1)
             }
             color: header.__styleInstance.foregroundColor
             font.weight: pageHeaderStyle.fontWeight

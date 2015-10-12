@@ -46,7 +46,6 @@ Item {
             Rectangle {
                 anchors {
                     fill: parent
-                    margins: units.gu(1)
                 }
                 color: UbuntuColors.red
 
@@ -88,7 +87,7 @@ Item {
             z:1
 
             title: "Default title"
-            contents: contentsSwitch.checked ? root.alternativeContents : null
+            contents: contentsSwitch.checked ? alternativeContents : null
             sections.actions: sectionsSwitch.checked ? root.sectionActions : []
             trailingActionBar.actions: trailingActionsSwitch.checked ?
                                            root.actionList : []
@@ -178,6 +177,7 @@ Item {
 
             PageHeader {
                 id: defaultHeader
+                visible: false
             }
         }
 
