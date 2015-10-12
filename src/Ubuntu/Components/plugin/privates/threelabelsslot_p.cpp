@@ -37,7 +37,6 @@ void UCThreeLabelsSlotPrivate::init()
 
 void UCThreeLabelsSlotPrivate::setTitleProperties()
 {
-    Q_Q(UCThreeLabelsSlot);
     if (m_title != Q_NULLPTR) {
         m_title->setWrapMode(UCLabel::WordWrap);
         m_title->setElideMode(UCLabel::ElideRight);
@@ -48,7 +47,6 @@ void UCThreeLabelsSlotPrivate::setTitleProperties()
 
 void UCThreeLabelsSlotPrivate::setSubtitleProperties()
 {
-    Q_Q(UCThreeLabelsSlot);
     if (m_subtitle != Q_NULLPTR) {
         m_subtitle->setWrapMode(UCLabel::WordWrap);
         m_subtitle->setElideMode(UCLabel::ElideRight);
@@ -59,7 +57,6 @@ void UCThreeLabelsSlotPrivate::setSubtitleProperties()
 
 void UCThreeLabelsSlotPrivate::setSummaryProperties()
 {
-    Q_Q(UCThreeLabelsSlot);
     if (m_summary != Q_NULLPTR) {
         m_summary->setWrapMode(UCLabel::WordWrap);
         m_summary->setElideMode(UCLabel::ElideRight);
