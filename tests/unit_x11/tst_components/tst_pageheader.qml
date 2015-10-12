@@ -32,69 +32,68 @@ Item {
 
         property real initialHeaderHeight: units.gu(6)
 
+        property list<Action> sectionActions: [
+            Action { text: "first" },
+            Action { text: "second" },
+            Action { text: "third" }
+        ]
+
+        Item {
+            id: alternativeContents
+            visible: header.contents === alternativeContents
+            anchors.fill: parent
+            objectName: "alternative_contents"
+            Rectangle {
+                anchors {
+                    fill: parent
+                    margins: units.gu(1)
+                }
+                color: UbuntuColors.red
+
+                Label {
+                    anchors.centerIn: parent
+                    text: "Custom header contents"
+                    color: "white"
+                }
+            }
+        }
+
+        property list<Action> actionList: [
+            Action {
+                iconName: "settings"
+                text: "first"
+                onTriggered: print("Trigger first action")
+                objectName: "action1"
+            },
+            Action {
+                iconName: "info"
+                text: "second"
+                onTriggered: print("Trigger second action")
+            },
+            Action {
+                iconName: "search"
+                text: "third"
+                onTriggered: print("Trigger third action")
+            },
+            Action {
+                iconName: "appointment"
+                text: "fourth"
+                onTriggered: print("Trigger fourth action")
+            }
+        ]
+
         PageHeader {
             id: header
             flickable: flickable
             z:1
 
             title: "Default title"
-
-            property list<Action> sectionActions: [
-                Action { text: "first" },
-                Action { text: "second" },
-                Action { text: "third" }
-            ]
-
-            Item {
-                id: alternativeContents
-                visible: header.contents === alternativeContents
-                anchors.fill: parent
-                Rectangle {
-                    anchors {
-                        fill: parent
-                        margins: units.gu(1)
-                    }
-                    color: UbuntuColors.red
-
-                    Label {
-                        anchors.centerIn: parent
-                        text: "Custom header contents"
-                        color: "white"
-                    }
-                }
-            }
-
-            contents: contentsSwitch.checked ? alternativeContents : null
-            sections.actions: sectionsSwitch.checked ? sectionActions : []
-
-            property list<Action> actionList: [
-                Action {
-                    iconName: "settings"
-                    text: "first"
-                    onTriggered: print("Trigger first action")
-                    objectName: "action1"
-                },
-                Action {
-                    iconName: "info"
-                    text: "second"
-                    onTriggered: print("Trigger second action")
-                },
-                Action {
-                    iconName: "search"
-                    text: "third"
-                    onTriggered: print("Trigger third action")
-                },
-                Action {
-                    iconName: "appointment"
-                    text: "fourth"
-                    onTriggered: print("Trigger fourth action")
-                }
-            ]
-
+            contents: contentsSwitch.checked ? root.alternativeContents : null
+            sections.actions: sectionsSwitch.checked ? root.sectionActions : []
             trailingActionBar.actions: trailingActionsSwitch.checked ?
-                                           actionList : []
+                                           root.actionList : []
             leadingActionBar.actions: leadingActionsSwitch.checked ?
-                                          actionList : []
+                                          root.actionList : []
         }
 
         Flickable {
@@ -170,6 +169,10 @@ Item {
                     text: "show sections"
                 }
             }
+
+            PageHeader {
+                id: defaultHeader
+            }
         }
 
 
@@ -230,7 +233,7 @@ Item {
                 compare(header.sections.height, 0,
                         "Empty sections has non-0 height.");
 
-                sections.actions = header.sectionActions;
+                sections.actions = root.sectionActions;
                 compare(sections.height > 0, true,
                         "Sections with actions has non-positive height.");
                 compare(header.height, style.contentHeight + divider.height + sections.height,
@@ -271,15 +274,13 @@ Item {
 
                 var color2 = "#FF1ABC"; // a random color.
                 style.foregroundColor = color2;
-                print("color2 = "+color2)
                 compare(Qt.colorEqual(buttonStyle.foregroundColor, color2), true,
                         "Button foreground color does not match updated header foreground color.");
                 compare(Qt.colorEqual(label.color, color2), true,
                         "Title color does not match updated header foreground color.");
 
                 style.foregroundColor = color1;
-                print("button fg = "+buttonStyle.foregroundColor);
-                print("color1 = "+color1)
+
                 // revert to the original color.
                 compare(Qt.colorEqual(buttonStyle.foregroundColor, color1), true,
                         "Button foreground color does not match reverted header foreground color.");
@@ -287,16 +288,63 @@ Item {
                         "Title color does not match reverted header foreground color.");
             }
 
-            function test_xdivider_color() {
-                wait(1000)
+            function test_divider_color() {
+                var color1 = color_by_value(style.dividerColor);
+                var divider = findChild(style, "header_divider");
+                compare(Qt.colorEqual(divider.color, color1), true,
+                        "Incorrect divider color.");
+
+                var color2 = "#ACDC12"; // a random color.
+                style.dividerColor = color2;
+                compare(Qt.colorEqual(divider.color, color2), true,
+                        "Incorrect updated divider color.");
+
+                style.dividerColor = color1;
+                compare(Qt.colorEqual(divider.color, color1), true,
+                        "Incorrect reverted divider color.");
             }
 
             function test_title() {
+                compare(defaultHeader.title, "", "Header has a title by default.");
+                var oldTitle = header.title;
+                var titleLabel = findChild(header, "header_title_label");
+                compare(titleLabel.text, oldTitle, "Incorrect title text.");
 
+                var newTitle = "Updated title text";
+                header.title = newTitle;
+                compare(titleLabel.text, newTitle, "Incorrect updated title text.");
+
+                header.title = oldTitle;
+                compare(titleLabel.text, oldTitle, "Incorrect reverted title text.");
             }
 
             function test_contents() {
+                compare(defaultHeader.contents, null, "Default header contents is not null.");
+                compare(header.contents, null, "Header has contents initially.");
 
+                var titleLabel = findChild(header, "header_title_label");
+                compare(titleLabel !== null, true, "No title component loaded.");
+                compare(titleLabel.visible, true, "Title is not visible.");
+
+                var altParent = alternativeContents.parent;
+                header.contents = alternativeContents;
+                titleLabel = findChild(header, "header_title_label");
+                compare(titleLabel, null, "Setting contents does not unload title.");
+                var headerContents = findChild(header, "alternative_contents");
+                compare(headerContents, alternativeContents,
+                        "New contents was not re-parented to the header.");
+                compare(altParent !== headerContents.parent, true,
+                        "Contents parent was not changed.");
+
+                header.contents = null;
+                titleLabel = findChild(header, "header_title_label");
+                compare(titleLabel !== null, true, "No title component loaded after unsetting contents.");
+                compare(titleLabel.visible, true, "Title label invisible after unsetting contents.");
+                headerContents = findChild(header, "alternative_contents");
+                compare(headerContents, null,
+                        "Previous header contents is not removed as a child of header.");
+                compare(alternativeContents.parent, altParent,
+                        "Contents parent was not reverted.");
             }
 
             // The properties of header.sections, header.leadingActionBar and
