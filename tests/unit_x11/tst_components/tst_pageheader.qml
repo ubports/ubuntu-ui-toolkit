@@ -38,22 +38,18 @@ Item {
             Action { text: "third" }
         ]
 
-        Item {
+        Rectangle {
             id: alternativeContents
             visible: header.contents === alternativeContents
-            anchors.fill: parent
             objectName: "alternative_contents"
-            Rectangle {
-                anchors {
-                    fill: parent
-                }
-                color: UbuntuColors.red
 
-                Label {
-                    anchors.centerIn: parent
-                    text: "Custom header contents"
-                    color: "white"
-                }
+            anchors.fill: parent
+            color: UbuntuColors.red
+
+            Label {
+                anchors.centerIn: parent
+                text: "Custom header contents"
+                color: "white"
             }
         }
 

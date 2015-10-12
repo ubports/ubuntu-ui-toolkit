@@ -33,6 +33,7 @@ Header {
 
     /*!
       The title to display in the header.
+      Note that the title will be hidden if the \l contents Item is set.
      */
     property string title
 
@@ -40,6 +41,23 @@ Header {
       The contents item to display in the header. By default the contents
       is undefined, and setting it will disable showing of the title in
       the header.
+
+      Example:
+      \qml
+      PageHeader {
+          id: header
+          title: "Welcome"
+          contents: Rectangle {
+              anchors.fill: parent
+              color: UbuntuColors.red
+              Label {
+                  anchors.centerIn: parent
+                  text: header.title
+                  color: "white"
+              }
+          }
+      }
+      \endqml
      */
     property Item contents
 
@@ -79,6 +97,22 @@ Header {
         }
     }
 
+    /*!
+      \qmlproperty ActionBar leadingActionBar
+      The \l ActionBar for the leading navigation actions.
+      Example:
+      \qml
+      PageHeader {
+          leadingActionBar.actions: [
+              Action {
+                  iconName: "back"
+                  text: "Back"
+              }
+          ]
+      }
+      \endqml
+      See \l ActionBar.
+     */
     readonly property alias leadingActionBar: leading
     ActionBar {
         id: leading
@@ -91,6 +125,33 @@ Header {
         delegate: header.__styleInstance.defaultActionDelegate
     }
 
+    /*!
+      \qmlproperty ActionBar trailingActionBar
+      The \l ActionBar with trailing actions.
+      Example:
+      \qml
+      PageHeader {
+          trailingActionBar {
+              actions: [
+                  Action {
+                      iconName: "settings"
+                      text: "first"
+                  },
+                  Action {
+                      iconName: "info"
+                      text: "second"
+                  },
+                  Action {
+                      iconName: "search"
+                      text: "third"
+                  }
+             ]
+             numberOfSlots: 2
+          }
+      }
+      \endqml
+      See \l ActionBar.
+      */
     readonly property alias trailingActionBar: trailing
     ActionBar {
         id: trailing
@@ -107,7 +168,7 @@ Header {
       \qmlproperty Sections sections
       Sections shown at the bottom of the header. By default,
       the sections will only be visible if its actions or model
-      is set.
+      is set. See \l Sections.
      */
     readonly property alias sections: sectionsItem
     Sections {
