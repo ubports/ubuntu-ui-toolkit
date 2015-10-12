@@ -73,8 +73,10 @@ function Incubator(pageWrapper, pageComponent) {
             incubator = pageComponent.incubateObject(pageWrapper);
         }
 
-        pageWrapper.incubator.status = incubator.status;
-        if (incubator.status != Component.Ready) {
+        if (!incubator) {
+            throw new Error("Error while loading page: " + pageComponent.errorString());
+        } else if (incubator.status != Component.Ready) {
+            pageWrapper.incubator.status = incubator.status;
             incubator.onStatusChanged = incubatorStatusChanged;
         } else {
             incubatorStatusChanged(incubator.status);
