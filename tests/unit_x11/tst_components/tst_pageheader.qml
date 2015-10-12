@@ -89,6 +89,12 @@ Item {
                                            root.actionList : []
             leadingActionBar.actions: leadingActionsSwitch.checked ?
                                           root.actionList : []
+
+            StyleHints {
+                foregroundColor: UbuntuColors.orange
+                backgroundColor: "black"
+                dividerColor: UbuntuColors.darkGrey
+            }
         }
 
         Flickable {

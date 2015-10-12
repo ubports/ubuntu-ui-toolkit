@@ -23,6 +23,19 @@ import Ubuntu.Components 1.3
     \ingroup ubuntu
     \brief The PageHeader shows a title with a leading and a trailing
         \l ActionBar that add action buttons to the header.
+
+    The colors for foreground, background and the divider are configured
+    in the style, so they may be set using \l StyleHints:
+    \qml
+        PageHeader {
+            title: "Colors"
+            StyleHints {
+                foregroundColor: UbuntuColors.orange
+                backgroundColor: "black"
+                dividerColor: UbuntuColors.darkGrey
+            }
+        }
+    \endqml
 */
 Header {
     id: header
