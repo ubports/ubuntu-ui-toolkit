@@ -33,6 +33,11 @@ PageTreeNode {
     width: parentNode ? parentNode.width - page.x : undefined
     height: parentNode ? page.flickable ? parentNode.height : parentNode.height - internal.headerHeight : undefined
 
+    /*!
+      TODO TIM: document this.
+     */
+    property Item header
+
     isLeaf: true
     property string title: parentNode && parentNode.hasOwnProperty("title") ? parentNode.title : ""
     property Flickable flickable: Utils.getFlickableChild(page)
