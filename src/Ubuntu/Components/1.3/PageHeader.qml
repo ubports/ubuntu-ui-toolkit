@@ -83,7 +83,8 @@ Header {
             left: leading.right
             right: trailing.left
             top: parent.top
-            leftMargin: leading.width > 0 ? 0 : units.gu(1)
+            leftMargin: leading.visible ? 0 : units.gu(1)
+            rightMargin: trailing.visible ? 0 : units.gu(1)
         }
         height: __styleInstance.contentHeight
         Loader {
@@ -132,10 +133,12 @@ Header {
         anchors {
             left: parent.left
             top: parent.top
+            leftMargin: units.gu(1)
         }
         height: header.__styleInstance.contentHeight
         numberOfSlots: 1
         delegate: header.__styleInstance.defaultActionDelegate
+        visible: actions.length > 0
     }
 
     /*!
@@ -171,10 +174,12 @@ Header {
         anchors {
             right: parent.right
             top: parent.top
+            rightMargin: units.gu(1)
         }
         height: header.__styleInstance.contentHeight
         numberOfSlots: 3
         delegate: header.__styleInstance.defaultActionDelegate
+        visible: actions.length > 0
     }
 
     /*!
