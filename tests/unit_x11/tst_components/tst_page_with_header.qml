@@ -29,7 +29,7 @@ MainView {
 
         Rectangle {
             objectName: "my_rectangle"
-            id: rect
+            id: myRectangle
             anchors {
                 left: parent.left
                 right: parent.right
@@ -39,7 +39,7 @@ MainView {
         }
 
         PageHeader {
-            id: pageHeader
+            id: myPageHeader
             objectName: "my_page_header"
             title: "Page header"
             trailingActionBar.actions: [
@@ -58,7 +58,7 @@ MainView {
     Page {
         id: page
         title: "Page with header"
-        header: pageHeader
+        header: myPageHeader
 
         Column {
             anchors {
@@ -77,7 +77,7 @@ MainView {
                     right: parent.right
                 }
                 text: "Page header"
-                onClicked: page.header = pageHeader
+                onClicked: page.header = myPageHeader
             }
             Button {
                 anchors {
@@ -85,7 +85,7 @@ MainView {
                     right: parent.right
                 }
                 text: "Rectangle"
-                onClicked: page.header = rect
+                onClicked: page.header = myRectangle
             }
             Button {
                 anchors {
@@ -103,13 +103,50 @@ MainView {
         when: windowShown
         id: testCase
 
+        property var appHeader;
         function initTestCase() {
-
+            var pageHeader = findChild(page, "my_page_header");
+            compare(pageHeader, myPageHeader,
+                    "My PageHeader not initialized with Page as its parent.");
+            appHeader = findChild(root, "MainView_Header");
+            compare(appHeader.visible, false,
+                    "AppHeader is not hidden initially when Page.header is set.");
         }
 
-        function test_header() {
-
+        function cleanup() {
+            page.header = myPageHeader;
+            var pageHeader = findChild(page, "my_page_header");
+            compare(pageHeader, myPageHeader,
+                    "PageHeader is not correctly re-parented to the Page when setting Page.header.");
+            compare(myPageHeader.visible, true,
+                    "PageHeader is not visible after being re-parented to the Page.");
+            compare(appHeader.visible, false,
+                    "AppHeader is not hidden when Page.header is set.");
         }
 
+        function test_page_with_no_header() {
+            page.header = null;
+            compare(myPageHeader.parent, invisible,
+                    "Header parent is not correctly reverted when unsetting Page.header.");
+            compare(myPageHeader.visible, false,
+                    "My PageHeader is still visible after re-parenting it to an invisible Item.");
+            compare(appHeader.visible, true,
+                    "AppHeader does not become visible when Page.header is null.");
+        }
+
+        function test_page_with_alternative_header() {
+            page.header = myRectangle;
+            compare(myPageHeader.parent, invisible,
+                    "Header parent not correctly reverted when setting a different Page.header.");
+            compare(myRectangle.parent, page,
+                    "Rectangle parent is not correctly set to page after setting it as Page.header.");
+            compare(appHeader.visible, false,
+                    "Setting a different Page.header Item shows the AppHeader.");
+
+            page.header = myPageHeader;
+            compare(myRectangle.parent, invisible,
+                    "Rectangle parent is not correctly reverted after unsetting it as Page.header.");
+            // myPageHeader parent is checked in cleanup().
+        }
     }
 }
