@@ -418,5 +418,7 @@ MainView {
             compare(headRectangle.parent == null, false, "Head contents has no parent in next column.");
             layout.removePages(headContentsPage);
         }
+
+        // TODO TIM: test that the subHeader disabled when a PageHeader is present.
     }
 }
