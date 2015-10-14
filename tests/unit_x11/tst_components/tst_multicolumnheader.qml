@@ -69,6 +69,14 @@ MainView {
                     text: "Add page with head contents right"
                     onClicked: layout.addPageToNextColumn(rootPage, headContentsPage)
                 }
+                ListItemWithLabel {
+                    text: "Add page with header left"
+                    onClicked: layout.addPageToCurrentColumn(rootPage, pageWithHeader)
+                }
+                ListItemWithLabel {
+                    text: "Add page with header right"
+                    onClicked: layout.addPageToNextColumn(rootPage, pageWithHeader)
+                }
             }
         }
         Page {
@@ -122,6 +130,40 @@ MainView {
                 id: headRectangle
                 color: UbuntuColors.orange
                 anchors.fill: parent
+            }
+        }
+        Page {
+            id: pageWithHeader
+            header: PageHeader {
+                title: "Page with header"
+                // FIXME (timp): Automatic back buttons for the PageHeader
+                //  will be added in a later MR.
+                leadingActionBar.actions: Action {
+                    text: "Back"
+                    iconName: "close"
+                    onTriggered: layout.removePages(pageWithHeader)
+                }
+                // Distinguish this header clearly from the AppHeader
+                //  visually for manual tests.
+                StyleHints {
+                    backgroundColor: UbuntuColors.blue
+                    foregroundColor: "white"
+                }
+            }
+            Rectangle {
+                anchors {
+                    top: pageWithHeader.header.bottom
+                    left: parent.left
+                    right: parent.right
+                    bottom: parent.bottom
+                    margins: units.gu(2)
+                }
+                color: UbuntuColors.warmGrey
+                Button {
+                    anchors.centerIn: parent
+                    text: "Add sections to next column."
+                    onTriggered: layout.addPageToNextColumn(pageWithHeader, sectionsPage)
+                }
             }
         }
     }
