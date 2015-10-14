@@ -419,6 +419,31 @@ MainView {
             layout.removePages(headContentsPage);
         }
 
-        // TODO TIM: test that the subHeader disabled when a PageHeader is present.
+        function test_page_header_disables_apl_subheader() {
+            layout.addPageToCurrentColumn(rootPage, pageWithHeader);
+            var subHeader = get_header(0);
+            compare(subHeader.visible, false,
+                    "Adding a Page with header does not hide the column's subHeader.");
+
+            layout.addPageToCurrentColumn(pageWithHeader, sectionsPage);
+            subHeader = get_header(0);
+            compare(subHeader.visible, true,
+                    "Adding a Page without header does not reveal the column's subHeader.");
+
+            layout.removePages(sectionsPage);
+            subHeader = get_header(0);
+            compare(subHeader.visible, false,
+                    "Going back to Page with header does not hide the column's subHeader.");
+
+            if (root.columns > 1) {
+                layout.addPageToNextColumn(pageWithHeader, sectionsPage);
+                subHeader = get_header(0);
+                compare(subHeader.visible, false,
+                        "Adding Page without header to next column shows subHeader in first column.");
+                subHeader = get_header(1);
+                compare(subHeader.visible, true,
+                        "Adding Page without header to next column does not show subHeader in next column");
+            }
+        }
     }
 }
