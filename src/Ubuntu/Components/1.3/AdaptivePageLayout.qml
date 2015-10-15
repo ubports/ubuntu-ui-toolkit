@@ -671,6 +671,11 @@ PageTreeNode {
             property bool customHeader: page && page.hasOwnProperty("header") &&
                                         page.header
 
+            Connections {
+                target: page ? page.header : null
+                onImplicitHeightChanged: body.updateHeaderHeight(page.header.implicitHeight)
+            }
+
             // prevent the pages from taking the app header height into account.
             __propagated: null
             Item {
@@ -859,11 +864,26 @@ PageTreeNode {
             } else {
                 var h = 0;
                 var subHeight = 0;
+                var page;
                 for (var i = 0; i < children.length; i++) {
-                    subHeight = children[i].head.preferredHeight;
+                    page = children[i].page;
+                    if (page && page.hasOwnProperty("header") && page.header) {
+                        subHeight = page.header.implicitHeight;
+                    } else {
+                        subHeight = children[i].head.preferredHeight;
+                    }
                     if (subHeight > h) h = subHeight;
                 }
                 body.headerHeight = h;
+            }
+        }
+        onHeaderHeightChanged: {
+            var page;
+            for (var i = 0; i < children.length; i++) {
+                page = children[i].page;
+                if (page && page.hasOwnProperty("header") && page.header) {
+                    page.header.height = headerHeight;
+                }
             }
         }
 
