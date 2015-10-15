@@ -36,6 +36,19 @@ PageTreeNode {
     /*!
       The header property for this page. Setting this property will reparent the
       header to the page and disable the \l Mainview's application header.
+      \qml
+        Page {
+            id: page
+            title: "Page with header"
+            header: PageHeader {
+                title: page.header
+                trailingActionBar.actions: [
+                    Action { iconName: "settings" },
+                    Action { iconName: "info" }
+                ]
+            }
+        }
+      \endqml
      */
     property Item header
     onHeaderChanged: internal.updateHeader()
