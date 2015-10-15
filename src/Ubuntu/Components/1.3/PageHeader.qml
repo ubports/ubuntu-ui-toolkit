@@ -139,6 +139,9 @@ Header {
         numberOfSlots: 1
         delegate: header.__styleInstance.defaultActionDelegate
         visible: actions.length > 0
+        StyleHints {
+            overflowIconName: "navigation-menu"
+        }
     }
 
     /*!
