@@ -313,7 +313,7 @@ MainView {
                     "Adding external Page does not update the header title.");
         }
 
-        function test_header_height() {
+        function test_subheader_height() {
             // contentHeight + divider height
             var baseHeight = units.gu(6) + units.dp(1);
             var withSectionsHeight = baseHeight + units.gu(4);
@@ -340,6 +340,33 @@ MainView {
                         "Header " + i +
                         " height is not correctly reverted after removing Page with sections.");
             }
+        }
+
+        function test_pageheader_height() {
+            if (root.columns !== 2) {
+                skip("Only for wide view.");
+            }
+
+            // baseHeight was checked in test_subheader_height().
+            var baseHeight = get_header(0).height;
+
+            layout.addPageToCurrentColumn(rootPage, pageWithHeader);
+            compare(pageWithHeader.header.height, baseHeight,
+                    "Page header height does not match the base header height.");
+
+            layout.addPageToNextColumn(pageWithHeader, sectionsPage);
+
+            // withSectionsHeight was checked in test_subheader_height().
+            var withSectionsHeight = get_header(1).height;
+            compare(withSectionsHeight > baseHeight, true,
+                    "Header with sections is not higher than header without sections.");
+            compare(pageWithHeader.header.height, withSectionsHeight,
+                    "Page header does not adapt its height to header with sections in other column.");
+
+            layout.removePages(sectionsPage);
+            compare(pageWithHeader.header.height, baseHeight,
+                    "Page header height is not reverted when header with sections is removed from next column.");
+
         }
 
         function test_back_button_wide() {
