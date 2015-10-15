@@ -667,13 +667,17 @@ PageTreeNode {
             Layout.minimumWidth: metrics.minimumWidth
             Layout.maximumWidth: metrics.maximumWidth
 
+            property var page: pageWrapper ? pageWrapper.object : null
+            property bool customHeader: page && page.hasOwnProperty("header") &&
+                                        page.header
+
             // prevent the pages from taking the app header height into account.
             __propagated: null
             Item {
                 id: holderBody
                 objectName: parent.objectName + "Body"
                 anchors {
-                    top: subHeader.bottom
+                    top: customHeader ? parent.top : subHeader.bottom
                     bottom: parent.bottom
                     left: parent.left
                     right: parent.right
@@ -715,12 +719,12 @@ PageTreeNode {
                 property color dividerColor: layout.__propagated.header.dividerColor
                 property color panelColor: layout.__propagated.header.panelColor
 
-                visible: holder.pageWrapper && holder.pageWrapper.active
+                visible: !customHeader && holder.pageWrapper && holder.pageWrapper.active
 
                 // The multiColumn, page and showBackButton properties are used in
                 //  PageHeadStyle to show/hide the back button.
                 property var multiColumn: layout
-                property var page: holder.pageWrapper ? holder.pageWrapper.object : null
+                property alias page: holder.page // used in PageHeadStyle for the back button.
                 property bool showBackButton: {
                     if (!page) {
                         return false;

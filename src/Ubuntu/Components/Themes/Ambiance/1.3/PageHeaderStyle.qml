@@ -53,7 +53,7 @@ Style.PageHeaderStyle {
                 right: parent.right
                 verticalCenter: parent.verticalCenter
             }
-            color: header.__styleInstance.foregroundColor
+            color: pageHeaderStyle.foregroundColor
             font.weight: pageHeaderStyle.fontWeight
             textSize: pageHeaderStyle.textSize
             elide: Text.ElideRight
