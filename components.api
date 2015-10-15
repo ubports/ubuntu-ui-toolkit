@@ -37,6 +37,9 @@ Ubuntu.Components.ActionBar 1.3: StyledItem
 Ubuntu.Components.Styles.ActionBarStyle 1.3: Item
     property Component defaultDelegate
     property int defaultNumberOfSlots
+    property string overflowIconName
+    property url overflowIconSource
+    property string overflowText
 Ubuntu.Components.ActionContext 1.0 0.1: QtObject
     default readonly property Action actions
     property bool active
