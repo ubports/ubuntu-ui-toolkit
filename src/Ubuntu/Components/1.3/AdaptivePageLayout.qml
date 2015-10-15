@@ -670,7 +670,11 @@ PageTreeNode {
             property var page: pageWrapper ? pageWrapper.object : null
             property bool customHeader: page && page.hasOwnProperty("header") &&
                                         page.header
-
+            onPageChanged: body.updateHeaderHeight(0)
+            Connections {
+                target: page
+                onHeaderChanged: body.updateHeaderHeight(0)
+            }
             Connections {
                 target: page ? page.header : null
                 onImplicitHeightChanged: body.updateHeaderHeight(page.header.implicitHeight)
@@ -800,8 +804,8 @@ PageTreeNode {
                 onXChanged: holder.Layout.preferredWidth = x
             }
 
-            function attachPage(page) {
-                pageWrapper = page;
+            function attachPage(wrapper) {
+                pageWrapper = wrapper;
                 pageWrapper.parent = holderBody;
                 pageWrapper.pageHolder = holder;
                 pageWrapper.active = true;
@@ -859,13 +863,14 @@ PageTreeNode {
         property real headerHeight: 0
 
         function updateHeaderHeight(newHeight) {
+            var page;
+            var i;
             if (newHeight > body.headerHeight) {
                 body.headerHeight = newHeight;
             } else {
                 var h = 0;
                 var subHeight = 0;
-                var page;
-                for (var i = 0; i < children.length; i++) {
+                for (i = 0; i < children.length; i++) {
                     page = children[i].page;
                     if (page && page.hasOwnProperty("header") && page.header) {
                         subHeight = page.header.implicitHeight;
@@ -876,15 +881,15 @@ PageTreeNode {
                 }
                 body.headerHeight = h;
             }
-        }
-        onHeaderHeightChanged: {
-            var page;
-            for (var i = 0; i < children.length; i++) {
-                page = children[i].page;
+
+            // Update all the Page.header heights.
+            for (i = 0; i < body.children.length; i++) {
+                page = body.children[i].page;
                 if (page && page.hasOwnProperty("header") && page.header) {
                     page.header.height = headerHeight;
                 }
             }
+
         }
 
         onChildrenChanged: {
