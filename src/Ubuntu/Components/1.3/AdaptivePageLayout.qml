@@ -889,7 +889,6 @@ PageTreeNode {
                     page.header.height = headerHeight;
                 }
             }
-
         }
 
         onChildrenChanged: {

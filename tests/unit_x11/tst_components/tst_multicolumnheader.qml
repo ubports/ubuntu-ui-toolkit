@@ -366,7 +366,6 @@ MainView {
             layout.removePages(sectionsPage);
             compare(pageWithHeader.header.height, baseHeight,
                     "Page header height is not reverted when header with sections is removed from next column.");
-
         }
 
         function test_back_button_wide() {
