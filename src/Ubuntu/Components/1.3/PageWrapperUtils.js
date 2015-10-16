@@ -14,6 +14,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/*!
+  \qmltype PageWrapperUtils
+  \inqmlmodule Ubuntu.Components 1.3
+  \ingroup ubuntu
+  \internal
+  \brief Internal book-keeping used by AdaptivePageLayout.
+ */
+
 //.pragma library // FIXME: cannot refer to Component.Error if I use this.
 // FIXME: ideally we would make this a stateless library, but that breaks applications
 //  that rely on accessing context variables in pages that were pushed on a PageStack
