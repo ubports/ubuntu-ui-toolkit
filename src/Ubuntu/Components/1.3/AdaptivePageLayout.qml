@@ -166,6 +166,11 @@ import "tree.js" as Tree
   and the preferred width is set to 40 grid units. This width is set every time
   the layout is activated.
 
+  When a \l Page with the \l Page::header property set is added to an
+  AdaptivePageLayout, the AdaptivePageLayout will synchronize the height of that
+  header with the height of the headers in other columns, i.e., the height of
+  each of the headers will be set to the maximum implicitHeight of all the headers.
+
   \sa PageStack, PageColumnsLayout, PageColumn
 */
 
