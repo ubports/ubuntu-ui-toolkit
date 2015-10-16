@@ -105,6 +105,7 @@ function Incubator(pageWrapper, pageComponent) {
  */
 /*!
   \internal
+  \qmlmethod PageWrapperUtils::initPage(pageWrapper)
   Initialize pageWrapper.object.
  */
 function initPage(pageWrapper) {
@@ -158,6 +159,7 @@ function initPage(pageWrapper) {
 
 /*!
   \internal
+  \qmlmethod PageWrapperUtils::activate(pageWrapper)
   Create the page object if needed, and make the page object visible.
  */
 function activate(pageWrapper) {
@@ -177,6 +179,7 @@ function activate(pageWrapper) {
 
 /*!
   \internal
+  \qmlmethod PageWrapperUtils::deactivate(pageWrapper)
   Hide page object.
  */
 function deactivate(pageWrapper) {
