@@ -30,6 +30,7 @@
 
 /*!
   \internal
+  \qmlmethod PageWrapperUtils::Incubator(pageWrapper, pageComponent)
   Incubator wrapper object. Used when page is loaded asynchronously.
   */
 
@@ -188,6 +189,7 @@ function deactivate(pageWrapper) {
 
 /*!
   \internal
+  \qmlmethod PageWrapperUtils::destroyObject(pageWrapper)
   Destroy the page object if pageWrapper.canDestroy is true.
   Do nothing if pageWrapper.canDestroy is false.
  */
