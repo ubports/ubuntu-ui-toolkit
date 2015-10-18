@@ -69,6 +69,14 @@ MainView {
                     text: "Add page with head contents right"
                     onClicked: layout.addPageToNextColumn(rootPage, headContentsPage)
                 }
+                ListItemWithLabel {
+                    text: "Add page with header left"
+                    onClicked: layout.addPageToCurrentColumn(rootPage, pageWithHeader)
+                }
+                ListItemWithLabel {
+                    text: "Add page with header right"
+                    onClicked: layout.addPageToNextColumn(rootPage, pageWithHeader)
+                }
             }
         }
         Page {
@@ -122,6 +130,40 @@ MainView {
                 id: headRectangle
                 color: UbuntuColors.orange
                 anchors.fill: parent
+            }
+        }
+        Page {
+            id: pageWithHeader
+            header: PageHeader {
+                title: "Page with header"
+                // FIXME (timp): Automatic back buttons for the PageHeader
+                //  will be added in a later MR.
+                leadingActionBar.actions: Action {
+                    text: "Back"
+                    iconName: "close"
+                    onTriggered: layout.removePages(pageWithHeader)
+                }
+                // Distinguish this header clearly from the AppHeader
+                //  visually for manual tests.
+                StyleHints {
+                    backgroundColor: UbuntuColors.blue
+                    foregroundColor: "white"
+                }
+            }
+            Rectangle {
+                anchors {
+                    top: pageWithHeader.header.bottom
+                    left: parent.left
+                    right: parent.right
+                    bottom: parent.bottom
+                    margins: units.gu(2)
+                }
+                color: UbuntuColors.warmGrey
+                Button {
+                    anchors.centerIn: parent
+                    text: "Add sections to next column."
+                    onTriggered: layout.addPageToNextColumn(pageWithHeader, sectionsPage)
+                }
             }
         }
     }
@@ -375,6 +417,33 @@ MainView {
             compare(headRectangle.visible, true, "Head contents not visible in next column.");
             compare(headRectangle.parent == null, false, "Head contents has no parent in next column.");
             layout.removePages(headContentsPage);
+        }
+
+        function test_page_header_disables_apl_subheader() {
+            layout.addPageToCurrentColumn(rootPage, pageWithHeader);
+            var subHeader = get_header(0);
+            compare(subHeader.visible, false,
+                    "Adding a Page with header does not hide the column's subHeader.");
+
+            layout.addPageToCurrentColumn(pageWithHeader, sectionsPage);
+            subHeader = get_header(0);
+            compare(subHeader.visible, true,
+                    "Adding a Page without header does not reveal the column's subHeader.");
+
+            layout.removePages(sectionsPage);
+            subHeader = get_header(0);
+            compare(subHeader.visible, false,
+                    "Going back to Page with header does not hide the column's subHeader.");
+
+            if (root.columns > 1) {
+                layout.addPageToNextColumn(pageWithHeader, sectionsPage);
+                subHeader = get_header(0);
+                compare(subHeader.visible, false,
+                        "Adding Page without header to next column shows subHeader in first column.");
+                subHeader = get_header(1);
+                compare(subHeader.visible, true,
+                        "Adding Page without header to next column does not show subHeader in next column");
+            }
         }
     }
 }

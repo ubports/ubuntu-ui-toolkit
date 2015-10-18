@@ -196,8 +196,6 @@ void UCSlotsLayoutPrivate::_q_updateCachedHeight()
 
 void UCSlotsLayoutPrivate::_q_updateGuValues()
 {
-    Q_Q(UCSlotsLayout);
-
     if (!padding.leadingWasSetFromQml) {
         padding.setLeading(UCUnits::instance().gu(SLOTSLAYOUT_LEFTMARGIN_GU));
     }
@@ -1058,7 +1056,6 @@ UCSlotsAttachedPrivate::UCSlotsAttachedPrivate()
 
 void UCSlotsAttachedPrivate::_q_onGuValueChanged()
 {
-    Q_Q(UCSlotsAttached);
     if (!padding.leadingWasSetFromQml)
         padding.setLeading(UCUnits::instance().gu(SLOTSLAYOUT_SLOTS_SIDEMARGINS_GU));
 

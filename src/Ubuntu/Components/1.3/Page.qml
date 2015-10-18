@@ -33,6 +33,27 @@ PageTreeNode {
     width: parentNode ? parentNode.width - page.x : undefined
     height: parentNode ? page.flickable ? parentNode.height : parentNode.height - internal.headerHeight : undefined
 
+    /*!
+      The header property for this page. Setting this property will reparent the
+      header to the page and disable the \l Mainview's application header.
+      \qml
+        Page {
+            id: page
+            title: "Page with header"
+            header: PageHeader {
+                title: page.header
+                trailingActionBar.actions: [
+                    Action { iconName: "settings" },
+                    Action { iconName: "info" }
+                ]
+            }
+        }
+      \endqml
+     */
+    property Item header
+    onHeaderChanged: internal.updateHeader()
+    Component.onCompleted: internal.updateHeader()
+
     isLeaf: true
     property string title: parentNode && parentNode.hasOwnProperty("title") ? parentNode.title : ""
     property Flickable flickable: Utils.getFlickableChild(page)
@@ -50,6 +71,25 @@ PageTreeNode {
     Toolkit13.Object {
         id: internal
 
+        property Item previousHeader: null
+        property Item previousHeaderParent: null
+        function updateHeader() {
+            if (internal.previousHeader) {
+                internal.previousHeader.parent = internal.previousHeaderParent;
+            }
+            if (page.header) {
+                internal.previousHeaderParent = page.header.parent;
+                internal.previousHeader = page.header;
+                page.header.parent = page;
+            } else {
+                internal.previousHeader = null;
+                internal.previousHeaderParent = null;
+            }
+        }
+
+        ///////////////////////////////
+        // old header handling below //
+        ///////////////////////////////
         property AppHeader header: page.__propagated && page.__propagated.header ? page.__propagated.header : null
         // Used to position the Page when there is no flickable.
         // When there is a flickable, the header will automatically position it.
