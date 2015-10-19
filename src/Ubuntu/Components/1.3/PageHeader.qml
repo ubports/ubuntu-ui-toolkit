@@ -115,7 +115,7 @@ Header {
       The actions to be shown in the leading action bar.
       This property will automatically be set by the
       \l AdaptivePageLayout and other navigation components to configure the
-      back action for the \l Page. Setting \l leadingActionBar.actions
+      back action for the \l Page. Setting \l leadingActionBar's actions
       directly in the app will override the default actions that
       were set by navigation components
      */
