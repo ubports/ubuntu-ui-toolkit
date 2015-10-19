@@ -344,6 +344,8 @@ Item {
                         "Contents parent was not reverted.");
             }
 
+            // TODO TIM: Add test for navigationActions property.
+
             // The properties of header.sections, header.leadingActionBar and
             //  header.trailingActionBar are tested in tst_sections.qml and tst_actionbar.qml.
         }

@@ -112,6 +112,16 @@ Header {
     }
 
     /*!
+      The actions to be shown in the leading action bar.
+      This property will automatically be set by the
+      \l AdaptivePageLayout and other navigation components to configure the
+      back action for the \l Page. Setting \l leadingActionBar.actions
+      directly in the app will override the default actions that
+      were set by navigation components
+     */
+    property list<Action> navigationActions
+
+    /*!
       \qmlproperty ActionBar leadingActionBar
       The \l ActionBar for the leading navigation actions.
       Example:
@@ -138,6 +148,7 @@ Header {
         height: header.__styleInstance.contentHeight
         numberOfSlots: 1
         delegate: header.__styleInstance.defaultActionDelegate
+        actions: header.navigationActions
         visible: actions.length > 0
         StyleHints {
             overflowIconName: "navigation-menu"
