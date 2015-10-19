@@ -33,6 +33,12 @@ Item {
             Page {
                 id: pageInStack
             }
+            // TODO TIM: remove this and add a test for PageWithHeader back button.
+            Component.onCompleted: {
+                pageStack.push(page1);
+                pageStack.push(page2);
+                pageStack.push(pageWithHeader);
+            }
         }
     }
     Page {
@@ -57,6 +63,13 @@ Item {
         }
         Tab {
             id: tab2
+        }
+    }
+    Page {
+        id: pageWithHeader
+        title: "Page with PageHeader"
+        header: PageHeader {
+            title: pageWithHeader.title
         }
     }
 
