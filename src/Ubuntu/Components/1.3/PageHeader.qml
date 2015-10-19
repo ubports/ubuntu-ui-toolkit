@@ -149,7 +149,7 @@ Header {
         numberOfSlots: 1
         delegate: header.__styleInstance.defaultActionDelegate
         actions: header.navigationActions
-        visible: actions.length > 0
+        visible: leading.width > 0 // actions.length may be >0 with invisible actions
         StyleHints {
             overflowIconName: "navigation-menu"
         }
@@ -193,7 +193,7 @@ Header {
         height: header.__styleInstance.contentHeight
         numberOfSlots: 3
         delegate: header.__styleInstance.defaultActionDelegate
-        visible: actions.length > 0
+        visible: trailing.width > 0 // actions.length may be >0 with invisible actions
     }
 
     /*!
