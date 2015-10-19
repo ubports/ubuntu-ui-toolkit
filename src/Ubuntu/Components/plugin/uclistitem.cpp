@@ -381,7 +381,6 @@ int UCListItemPrivate::index()
 // or onPressAndHold signal handlers set
 bool UCListItemPrivate::canHighlight()
 {
-   Q_Q(UCListItem);
    return (isClickedConnected() || isPressAndHoldConnected() || mainAction || leadingActions || trailingActions);
 }
 

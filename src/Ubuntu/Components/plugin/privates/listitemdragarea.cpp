@@ -144,7 +144,7 @@ void ListItemDragArea::mouseReleaseEvent(QMouseEvent *event)
     // stop scroll timer
     scrollTimer.stop();
     UCViewItemsAttachedPrivate *pViewAttached = UCViewItemsAttachedPrivate::get(viewAttached);
-    if (pViewAttached->isDragUpdatedConnected() && (fromIndex != toIndex)) {
+    if (pViewAttached->isDragUpdatedConnected()) {
         UCDragEvent drag(UCDragEvent::Dropped, fromIndex, toIndex, min, max);
         Q_EMIT viewAttached->dragUpdated(&drag);
         updateDraggedItem();
