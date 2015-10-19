@@ -457,7 +457,15 @@ PageTreeNode {
             // replace page holder's child
             var holder = body.children[targetColumn];
             holder.detachCurrentPage();
-            holder.attachPage(pageWrapper);
+            holder.attachPage(pageWrapper); // sets pageWrapper.pageHolder
+
+            // set the back action for Page.header:
+            var page = pageWrapper.object;
+            if (page && page.hasOwnProperty("header") && page.header &&
+                    page.header.hasOwnProperty("navigationActions")) {
+                // Page.header is an instance of PageHeader.
+                page.header.navigationActions = [ pageWrapper.pageHolder.headerBackAction ];
+            }
         }
 
         function getWrapper(page) {
@@ -706,6 +714,18 @@ PageTreeNode {
                 }
             }
 
+            property alias headerBackAction: backAction
+            Action {
+                // used when the Page has a Page.header property set.
+                id: backAction
+                visible: subHeader.showBackButton
+                iconName: "swap" // "back"
+                text: "Back" // visible when using a custom delegate for the leading ActionBar.
+                onTriggered: layout.removePages(page)
+            }
+
+            // subHeader is to be deprecated in UITK 1.4 and will be replaced
+            //  by the Page.header property (introduced in 1.3).
             property alias head: subHeader
             StyledItem {
                 id: subHeader
