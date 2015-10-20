@@ -136,15 +136,8 @@ MainView {
             id: pageWithHeader
             header: PageHeader {
                 title: "Page with header"
-                // FIXME (timp): Automatic back buttons for the PageHeader
-                //  will be added in a later MR.
-//                leadingActionBar.actions: Action {
-//                    text: "Back"
-//                    iconName: "close"
-//                    onTriggered: layout.removePages(pageWithHeader)
-//                }
-                // Distinguish this header clearly from the AppHeader
-                //  visually for manual tests.
+
+                // Distinguish this header clearly from the AppHeader for manual tests.
                 StyleHints {
                     backgroundColor: UbuntuColors.blue
                     foregroundColor: "white"

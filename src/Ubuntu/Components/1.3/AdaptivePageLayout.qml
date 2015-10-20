@@ -719,8 +719,8 @@ PageTreeNode {
                 // used when the Page has a Page.header property set.
                 id: backAction
                 visible: subHeader.showBackButton
-                iconName: "swap" // "back"
-                text: "Back" // visible when using a custom delegate for the leading ActionBar.
+                iconName: "back"
+                text: "Back"
                 onTriggered: layout.removePages(page)
             }
 

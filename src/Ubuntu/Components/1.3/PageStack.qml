@@ -218,8 +218,8 @@ PageTreeNode {
         // used when the Page has a Page.header property set.
         id: backAction
         visible: pageStack.depth > 0
-        iconName: "swap" // "back"
-        text: "Back" // visible when using a custom delegate for the leading ActionBar.
+        iconName: "back"
+        text: "Back"
         onTriggered: pageStack.pop()
     }
 
