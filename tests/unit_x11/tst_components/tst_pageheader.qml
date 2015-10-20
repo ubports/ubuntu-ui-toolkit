@@ -87,7 +87,7 @@ Item {
             sections.actions: sectionsSwitch.checked ? root.sectionActions : []
             trailingActionBar.actions: trailingActionsSwitch.checked ?
                                            root.actionList : []
-            leadingActionBar.actions: leadingActionsSwitch.checked ?
+            navigationActions: leadingActionsSwitch.checked ?
                                           root.actionList : []
         }
 
@@ -191,7 +191,7 @@ Item {
                 var p = centerOf(flickable);
                 // Use mouseWheel to scroll because mouseDrag is very unreliable
                 // and does not properly handle negative values for dy.
-                mouseWheel(flickable, p.x, p.y, 0,dy);
+                mouseWheel(flickable, p.x, p.y, 0, dy);
             }
 
             function scroll_down() {
@@ -342,6 +342,24 @@ Item {
                         "Previous header contents is not removed as a child of header.");
                 compare(alternativeContents.parent, altParent,
                         "Contents parent was not reverted.");
+            }
+
+            function test_navigationActions() {
+                header.navigationActions = [];
+                compare(header.leadingActionBar.actions, header.navigationActions,
+                        "Leading action bar actions does not equal navigationActions initially.");
+                header.navigationActions = root.actionList;
+                compare(header.leadingActionBar.actions, header.navigationActions,
+                        "Updating navigationActions does not update leading actions.");
+                header.navigationActions = [];
+                compare(header.leadingActionBar.actions, header.navigationActions,
+                        "Reverting navigationActions does not revert leading actions.");
+                header.leadingActionBar.actions = root.actionList;
+                compare(header.navigationActions.length, 0,
+                        "Setting leading actions changes navigationActions.");
+                header.leadingActionBar.actions = [];
+                compare(header.navigationActions.length, 0,
+                        "Reverting leading actions changes navigationActions.");
             }
 
             // The properties of header.sections, header.leadingActionBar and
