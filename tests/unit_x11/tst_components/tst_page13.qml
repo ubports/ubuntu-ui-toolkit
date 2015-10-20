@@ -86,7 +86,7 @@ Item {
             page.flickable = testFlickable;
             compare(page.flickable, testFlickable, "Flickable could not be set.");
             compare(header.flickable, testFlickable,
-                    "Header flickable was not update correctly.");
+                    "Header flickable was not updated correctly.");
 
             page.flickable = null;
             compare(page.flickable, null, "Flickable cannot be unset.");
@@ -113,7 +113,7 @@ Item {
             compare(page.flickable.contentY, flickableY + headerHeight,
                     "contentY was not updated properly when header was hidden.");
 
-            page.head.locked.locked = false;
+            page.head.locked = false;
             page.head.visible = true;
             waitForHeaderAnimation(mainView);
 

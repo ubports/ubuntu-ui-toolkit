@@ -14,6 +14,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/*!
+  \qmltype PageWrapperUtils
+  \inqmlmodule Ubuntu.Components 1.3
+  \ingroup ubuntu
+  \internal
+  \brief Internal book-keeping used by AdaptivePageLayout.
+ */
+
 //.pragma library // FIXME: cannot refer to Component.Error if I use this.
 // FIXME: ideally we would make this a stateless library, but that breaks applications
 //  that rely on accessing context variables in pages that were pushed on a PageStack
@@ -22,6 +30,7 @@
 
 /*!
   \internal
+  \qmlmethod PageWrapperUtils::Incubator(pageWrapper, pageComponent)
   Incubator wrapper object. Used when page is loaded asynchronously.
   */
 
@@ -73,8 +82,10 @@ function Incubator(pageWrapper, pageComponent) {
             incubator = pageComponent.incubateObject(pageWrapper);
         }
 
-        pageWrapper.incubator.status = incubator.status;
-        if (incubator.status != Component.Ready) {
+        if (!incubator) {
+            throw new Error("Error while loading page: " + pageComponent.errorString());
+        } else if (incubator.status != Component.Ready) {
+            pageWrapper.incubator.status = incubator.status;
             incubator.onStatusChanged = incubatorStatusChanged;
         } else {
             incubatorStatusChanged(incubator.status);
@@ -95,6 +106,7 @@ function Incubator(pageWrapper, pageComponent) {
  */
 /*!
   \internal
+  \qmlmethod PageWrapperUtils::initPage(pageWrapper)
   Initialize pageWrapper.object.
  */
 function initPage(pageWrapper) {
@@ -148,6 +160,7 @@ function initPage(pageWrapper) {
 
 /*!
   \internal
+  \qmlmethod PageWrapperUtils::activate(pageWrapper)
   Create the page object if needed, and make the page object visible.
  */
 function activate(pageWrapper) {
@@ -167,6 +180,7 @@ function activate(pageWrapper) {
 
 /*!
   \internal
+  \qmlmethod PageWrapperUtils::deactivate(pageWrapper)
   Hide page object.
  */
 function deactivate(pageWrapper) {
@@ -175,6 +189,7 @@ function deactivate(pageWrapper) {
 
 /*!
   \internal
+  \qmlmethod PageWrapperUtils::destroyObject(pageWrapper)
   Destroy the page object if pageWrapper.canDestroy is true.
   Do nothing if pageWrapper.canDestroy is false.
  */
