@@ -108,6 +108,7 @@ bool UCStyledItemBasePrivate::isParentFocusable()
  */
 UCStyledItemBase::UCStyledItemBase(QQuickItem *parent)
     : QQuickItem(*(new UCStyledItemBasePrivate), parent)
+    , UCThemingExtension(this)
 {
     Q_D(UCStyledItemBase);
     d->init();
@@ -115,6 +116,7 @@ UCStyledItemBase::UCStyledItemBase(QQuickItem *parent)
 
 UCStyledItemBase::UCStyledItemBase(UCStyledItemBasePrivate &dd, QQuickItem *parent)
     : QQuickItem(dd, parent)
+    , UCThemingExtension(this)
 {
     Q_D(UCStyledItemBase);
     d->init();
@@ -308,7 +310,7 @@ bool UCStyledItemBasePrivate::loadStyleItem(bool animated)
     // either styleComponent or styleName is valid
     QQmlComponent *component = styleComponent;
     if (!component) {
-        component = getTheme()->createStyleComponent(styleDocument + ".qml", q, styleVersion);
+        component = q->getTheme()->createStyleComponent(styleDocument + ".qml", q, styleVersion);
     }
     if (!component) {
         return false;
@@ -442,25 +444,21 @@ void UCStyledItemBasePrivate::_q_styleResized()
  * if any, or to the system default theme.
  */
 
-void UCStyledItemBasePrivate::preThemeChanged()
+void UCStyledItemBase::preThemeChanged()
 {
-    wasStyleLoaded = (styleItem != Q_NULLPTR);
-    preStyleChanged();
+    Q_D(UCStyledItemBase);
+    d->wasStyleLoaded = (d->styleItem != Q_NULLPTR);
+    d->preStyleChanged();
 }
-void UCStyledItemBasePrivate::postThemeChanged()
+void UCStyledItemBase::postThemeChanged()
 {
-    Q_EMIT q_func()->themeChanged();
-    if (!wasStyleLoaded) {
+    Q_EMIT themeChanged();
+    Q_D(UCStyledItemBase);
+    if (!d->wasStyleLoaded) {
         return;
     }
-    postStyleChanged();
-    loadStyleItem();
-}
-
-void UCStyledItemBase::classBegin()
-{
-    QQuickItem::classBegin();
-    d_func()->initTheming(this);
+    d->postStyleChanged();
+    d->loadStyleItem();
 }
 
 void UCStyledItemBase::componentComplete()
@@ -507,15 +505,6 @@ bool UCStyledItemBase::childMouseEventFilter(QQuickItem *child, QEvent *event)
     }
     // let the event be passed to children
     return QQuickItem::childMouseEventFilter(child, event);
-}
-
-// catch UCThemeEvent
-void UCStyledItemBase::customEvent(QEvent *event)
-{
-    Q_D(UCStyledItemBase);
-    if (UCThemeEvent::isThemeEvent(event)) {
-        d->handleThemeEvent(static_cast<UCThemeEvent*>(event));
-    }
 }
 
 #include "moc_ucstyleditembase.cpp"

@@ -28,6 +28,8 @@
 #include <QtQml/QQmlParserStatus>
 #include <QtQml/QQmlProperty>
 
+#include <QtQml/private/qpodvector_p.h>
+
 #include "ucdefaulttheme.h"
 
 class UCStyledItemBase;
@@ -110,6 +112,7 @@ private:
     void updateThemePaths();
     QUrl styleUrl(const QString& styleName, quint16 version, bool *isFallback = NULL);
     void loadPalette(bool notify = true);
+    void updateThemedItems();
 
     class PaletteConfig
     {
@@ -161,6 +164,7 @@ private:
     QPointer<QObject> m_palette; // the palette might be from the default style if the theme doesn't define palette
     QList<ThemeRecord> m_themePaths;
     UCDefaultTheme m_defaultTheme;
+    QPODVector<QQuickItem*, 4> m_attachedItems;
     QQmlEngine *m_engine;
     quint16 m_version;
     bool m_defaultStyle:1;
