@@ -72,7 +72,7 @@ void UCThemingExtension::forwardEvent(QQuickItem *item, UCThemeEvent *event)
         QGuiApplication::sendEvent(child, event);
         // StyledItem will handle the broadcast itself depending on whether the theme change was appropriate or not
         // and will complete the ascendantStyled/theme itself
-        if (child->childItems().size() > 0 && !UCItemAttached::isThemed(child)) {
+        if (child->childItems().size() > 0 && !isThemed(child)) {
             forwardEvent(child, event);
         }
     }
@@ -93,9 +93,9 @@ void UCThemingExtension::broadcastThemeReloaded(QQuickItem *item, UCTheme *theme
 /*************************************************************************
  * Attached to every Item in the system
  */
-UCItemAttached::UCItemAttached(QObject *owner)
-    : QObject(owner)
-    , m_item(static_cast<QQuickItem*>(owner))
+static uint xdata = QObject::registerUserData();
+UCItemAttached::UCItemAttached(QQuickItem *owner)
+    : m_item(owner)
     , m_prevParent(Q_NULLPTR)
 {
     QQuickItemPrivate::get(m_item)->addItemChangeListener(this, QQuickItemPrivate::Parent);
@@ -106,12 +106,7 @@ UCItemAttached::~UCItemAttached()
     QQuickItemPrivate::get(m_item)->removeItemChangeListener(this, QQuickItemPrivate::Parent);
 }
 
-UCItemAttached *UCItemAttached::qmlAttachedProperties(QObject *owner)
-{
-    return new UCItemAttached(owner);
-}
-
-bool UCItemAttached::isThemed(QQuickItem *item)
+bool UCThemingExtension::isThemed(QQuickItem *item)
 {
     UCThemingExtension *extension = qobject_cast<UCThemingExtension*>(item);
     return extension != Q_NULLPTR;
@@ -150,11 +145,12 @@ void UCItemAttached::itemParentChanged(QQuickItem *, QQuickItem *newParent)
  *
  */
 UCThemingExtension::UCThemingExtension(QQuickItem *extendedItem)
-    : themedItem(extendedItem)
-    , attachedThemer(Q_NULLPTR)
-    , theme(&UCTheme::defaultTheme())
+    : theme(&UCTheme::defaultTheme())
+    , themedItem(extendedItem)
     , themeType(Inherited)
 {
+    theme->attachItem(themedItem, true);
+    themedItem->setUserData(xdata, new UCItemAttached(themedItem));
 }
 
 UCThemingExtension::~UCThemingExtension()
@@ -176,14 +172,6 @@ void UCThemingExtension::setParentTheme()
     if (parentTheme != theme) {
         theme->setParentTheme(parentTheme);
     }
-}
-
-void UCThemingExtension::initTheming(QQuickItem *item)
-{
-    Q_ASSERT(themedItem == item);
-    attachedThemer = static_cast<UCItemAttached*>(qmlAttachedPropertiesObject<UCItemAttached>(themedItem));
-    Q_ASSERT(attachedThemer);
-    theme->attachItem(item, true);
 }
 
 void UCThemingExtension::handleThemeEvent(UCThemeEvent *event)
@@ -274,12 +262,12 @@ void UCThemingExtension::resetTheme()
 // returns the closest themed ascendant
 QQuickItem *UCThemingExtension::ascendantThemed(QQuickItem *item)
 {
-    while (item && !UCItemAttached::isThemed(item)) {
-        // make sure it also has the theming attached
-        qmlAttachedPropertiesObject<UCItemAttached>(item);
+    while (item && !isThemed(item)) {
+        // if the item has no xdata set, means we haven't been here yet
+        if (!item->userData(xdata)) {
+            item->setUserData(xdata, new UCItemAttached(item));
+        }
         item = item->parentItem();
     }
     return item;
 }
-
-#include "moc_ucthemingextension.cpp"

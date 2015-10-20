@@ -55,6 +55,7 @@ public:
         UCTheme *rootTheme = globalTheme();
         QVERIFY(rootTheme);
         rootTheme->setName(theme);
+
     }
 
     void setTheme(const QString &theme, QQuickItem *watchedItem)

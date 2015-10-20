@@ -92,7 +92,6 @@ void UCLabel::classBegin()
 
 void UCLabel::init()
 {
-    initTheming(this);
     postThemeChanged();
     updatePixelSize();
     m_defaultFont = font();

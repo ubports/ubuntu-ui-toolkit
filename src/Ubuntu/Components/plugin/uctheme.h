@@ -35,7 +35,6 @@
 class UCStyledItemBase;
 class QQmlAbstractBinding;
 class QQuickItem;
-class UCThemingExtension;
 class UCTheme : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
@@ -165,7 +164,7 @@ private:
     QPointer<QObject> m_palette; // the palette might be from the default style if the theme doesn't define palette
     QList<ThemeRecord> m_themePaths;
     UCDefaultTheme m_defaultTheme;
-    QPODVector<UCThemingExtension*, 4> m_attachedItems;
+    QPODVector<QQuickItem*, 4> m_attachedItems;
     QQmlEngine *m_engine;
     quint16 m_version;
     bool m_defaultStyle:1;

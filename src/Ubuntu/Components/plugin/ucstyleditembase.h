@@ -59,7 +59,6 @@ protected:
     virtual void preThemeChanged();
     virtual void postThemeChanged();
 
-    void classBegin();
     void componentComplete();
     void mousePressEvent(QMouseEvent *event);
     bool childMouseEventFilter(QQuickItem *child, QEvent *event);

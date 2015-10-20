@@ -626,14 +626,10 @@ void UCTheme::registerToContext(QQmlContext* context)
 
 void UCTheme::attachItem(QQuickItem *item, bool attach)
 {
-    UCThemingExtension *extension = qobject_cast<UCThemingExtension*>(item);
-    if (!extension) {
-        return;
-    }
     if (attach) {
-        m_attachedItems.append(extension);
+        m_attachedItems.append(item);
     } else {
-        m_attachedItems.removeOne(extension);
+        m_attachedItems.removeOne(item);
     }
 }
 
@@ -641,8 +637,10 @@ void UCTheme::updateThemedItems()
 {
     UCThemeEvent event(this);
     for (int i = 0; i < m_attachedItems.count(); i++) {
-        UCThemingExtension *extension = m_attachedItems[i];
-        extension->handleThemeEvent(&event);
+        UCThemingExtension *extension = qobject_cast<UCThemingExtension*>(m_attachedItems[i]);
+        if (extension) {
+            extension->handleThemeEvent(&event);
+        }
     }
 }
 

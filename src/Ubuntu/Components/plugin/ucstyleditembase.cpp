@@ -461,13 +461,6 @@ void UCStyledItemBase::postThemeChanged()
     d->loadStyleItem();
 }
 
-void UCStyledItemBase::classBegin()
-{
-    QQuickItem::classBegin();
-    // TODO move this in constructor
-    initTheming(this);
-}
-
 void UCStyledItemBase::componentComplete()
 {
     QQuickItem::componentComplete();
