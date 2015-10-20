@@ -191,7 +191,7 @@ Item {
                 var p = centerOf(flickable);
                 // Use mouseWheel to scroll because mouseDrag is very unreliable
                 // and does not properly handle negative values for dy.
-                mouseWheel(flickable, p.x, p.y, 0,dy);
+                mouseWheel(flickable, p.x, p.y, 0, dy);
             }
 
             function scroll_down() {
