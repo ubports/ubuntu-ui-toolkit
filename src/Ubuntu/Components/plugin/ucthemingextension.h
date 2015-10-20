@@ -27,48 +27,7 @@
 #include <QtQuick/private/qquickitem_p.h>
 
 class QQuickItem;
-class UCStyledItemBase;
 class UCTheme;
-class UCThemingExtension;
-class UCItemAttached : public QObjectUserData, public QQuickItemChangeListener
-{
-public:
-    explicit UCItemAttached(QQuickItem *owner = 0);
-    ~UCItemAttached();
-
-    QQuickItem *m_item;
-    QQuickItem *m_prevParent;
-
-    void itemParentChanged(QQuickItem *item, QQuickItem *newParent);
-
-private:
-
-    friend class UCThemingExtension;
-};
-
-class UCThemeEvent : public QEvent
-{
-public: // statics
-    static bool isThemeEvent(const QEvent *event);
-
-public:
-    explicit UCThemeEvent(UCTheme *reloadedTheme);
-    UCThemeEvent(UCTheme *oldTheme, UCTheme *newTheme);
-    UCThemeEvent(const UCThemeEvent &other);
-
-    UCTheme *oldTheme() const
-    {
-        return m_oldTheme;
-    }
-    UCTheme *newTheme() const
-    {
-        return m_newTheme;
-    }
-private:
-    UCTheme *m_oldTheme;
-    UCTheme *m_newTheme;
-};
-
 class UCThemingExtension
 {
 public:
@@ -82,8 +41,8 @@ public:
 
     virtual void preThemeChanged() = 0;
     virtual void postThemeChanged() = 0;
-
-    virtual void handleThemeEvent(UCThemeEvent *event);
+    virtual void itemThemeChanged(UCTheme *, UCTheme*);
+    virtual void itemThemeReloaded(UCTheme *);
 
     UCTheme *getTheme() const;
     void setTheme(UCTheme *newTheme, ThemeType type = Custom);
@@ -91,10 +50,6 @@ public:
 
     static bool isThemed(QQuickItem *item);
     static QQuickItem *ascendantThemed(QQuickItem *item);
-
-    static void forwardEvent(QQuickItem *item, UCThemeEvent *event);
-    static void broadcastThemeChange(QQuickItem *item, UCTheme *oldTheme, UCTheme *newTheme);
-    static void broadcastThemeReloaded(QQuickItem *item, UCTheme *theme);
 
 protected:
     QPointer<UCTheme> theme;
@@ -106,6 +61,5 @@ protected:
 
 #define UCThemingExtension_iid "org.qt-project.Qt.UCThemingExtension"
 Q_DECLARE_INTERFACE(UCThemingExtension, UCThemingExtension_iid)
-
 
 #endif // UCITEMEXTENSION_H

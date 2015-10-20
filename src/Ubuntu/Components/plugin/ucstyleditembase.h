@@ -62,7 +62,6 @@ protected:
     void componentComplete();
     void mousePressEvent(QMouseEvent *event);
     bool childMouseEventFilter(QQuickItem *child, QEvent *event);
-    void customEvent(QEvent *event);
 
 private:
     Q_DECLARE_PRIVATE(UCStyledItemBase)

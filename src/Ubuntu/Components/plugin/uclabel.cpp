@@ -103,13 +103,6 @@ void UCLabel::init()
     connect(this, &UCLabel::colorChanged, this, &UCLabel::_q_customColor, Qt::DirectConnection);
 }
 
-void UCLabel::customEvent(QEvent *event)
-{
-    if (UCThemeEvent::isThemeEvent(event)) {
-        handleThemeEvent(static_cast<UCThemeEvent*>(event));
-    }
-}
-
 void UCLabel::postThemeChanged()
 {
     if (m_flags & ColorSet) {

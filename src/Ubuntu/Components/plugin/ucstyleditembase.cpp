@@ -507,13 +507,4 @@ bool UCStyledItemBase::childMouseEventFilter(QQuickItem *child, QEvent *event)
     return QQuickItem::childMouseEventFilter(child, event);
 }
 
-// catch UCThemeEvent
-void UCStyledItemBase::customEvent(QEvent *event)
-{
-    Q_D(UCStyledItemBase);
-    if (UCThemeEvent::isThemeEvent(event)) {
-        handleThemeEvent(static_cast<UCThemeEvent*>(event));
-    }
-}
-
 #include "moc_ucstyleditembase.cpp"

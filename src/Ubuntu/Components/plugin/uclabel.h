@@ -61,7 +61,6 @@ public:
 protected:
     // from QQuickItem
     void classBegin();
-    void customEvent(QEvent *event);
 
     // from UCItemExtension
     void preThemeChanged(){}

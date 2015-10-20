@@ -23,77 +23,65 @@
 #include <QtGui/QGuiApplication>
 
 /*
- * The UCThemingExtension class provides theme handling on Items extending an existing
+ * The UCThemingExtension interface provides theme handling on Items extending an existing
  * QQuickItem derivate class. Items subject fo theming should derive from this class
- * and implement the virtual methods, as well as add the following two methods:
- * 1) classBegin(item) should be called from the QQuickItem::classBegin() method
- * 2) handleThemeEvent() should be called from QQuickItem::customEvent() method
+ * and implement the pure virtual methods.
  * The item can expose the theme property and use the getters defined by the
  * class.
- * Iin case the item exposes the theme property, it can use the getters from the
+ * In case the item exposes the theme property, it can use the getters from the
  * extension and declare the themeChanged signal.
  */
 
-static int themeUpdatedId = QEvent::registerEventType();
-static int themeReloadedId = QEvent::registerEventType();
-
-UCThemeEvent::UCThemeEvent(UCTheme *reloadedTheme)
-    : QEvent((QEvent::Type)themeReloadedId)
-    , m_oldTheme(Q_NULLPTR)
-    , m_newTheme(reloadedTheme)
-{
-    setAccepted(false);
-}
-
-UCThemeEvent::UCThemeEvent(UCTheme *oldTheme, UCTheme *newTheme)
-    : QEvent((QEvent::Type)themeUpdatedId)
-    , m_oldTheme(oldTheme)
-    , m_newTheme(newTheme)
-{
-    setAccepted(false);
-}
-
-UCThemeEvent::UCThemeEvent(const UCThemeEvent &other)
-    : QEvent(other.type())
-    , m_oldTheme(other.m_oldTheme)
-    , m_newTheme(other.m_newTheme)
-{
-    setAccepted(false);
-}
-
-bool UCThemeEvent::isThemeEvent(const QEvent *event)
-{
-    return ((int)event->type() == themeUpdatedId) || ((int)event->type() == themeReloadedId);
-}
-
-void UCThemingExtension::forwardEvent(QQuickItem *item, UCThemeEvent *event)
+void notifyThemeChange(QQuickItem *item, UCTheme *oldTheme, UCTheme *newTheme)
 {
     Q_FOREACH(QQuickItem *child, item->childItems()) {
-        QGuiApplication::sendEvent(child, event);
+        UCThemingExtension *extension = qobject_cast<UCThemingExtension*>(child);
+        if (extension) {
+            extension->itemThemeChanged(oldTheme, newTheme);
+        }
         // StyledItem will handle the broadcast itself depending on whether the theme change was appropriate or not
         // and will complete the ascendantStyled/theme itself
-        if (child->childItems().size() > 0 && !isThemed(child)) {
-            forwardEvent(child, event);
+        if (!extension) {
+            notifyThemeChange(child, oldTheme, newTheme);
         }
     }
 }
 
-void UCThemingExtension::broadcastThemeChange(QQuickItem *item, UCTheme *oldTheme, UCTheme *newTheme)
+void notifyThemeReloaded(QQuickItem *item, UCTheme *theme)
 {
-    UCThemeEvent event(oldTheme, newTheme);
-    forwardEvent(item, &event);
-}
-
-void UCThemingExtension::broadcastThemeReloaded(QQuickItem *item, UCTheme *theme)
-{
-    UCThemeEvent event(theme);
-    forwardEvent(item, &event);
+    Q_FOREACH(QQuickItem *child, item->childItems()) {
+        UCThemingExtension *extension = qobject_cast<UCThemingExtension*>(child);
+        if (extension) {
+            extension->itemThemeReloaded(theme);
+        }
+        // StyledItem will handle the broadcast itself depending on whether the theme change was appropriate or not
+        // and will complete the ascendantStyled/theme itself
+        if (!extension) {
+            notifyThemeReloaded(child, theme);
+        }
+    }
 }
 
 /*************************************************************************
  * Attached to every Item in the system
  */
 static uint xdata = QObject::registerUserData();
+class UCItemAttached : public QObjectUserData, public QQuickItemChangeListener
+{
+public:
+    explicit UCItemAttached(QQuickItem *owner = 0);
+    ~UCItemAttached();
+
+    QQuickItem *m_item;
+    QQuickItem *m_prevParent;
+
+    void itemParentChanged(QQuickItem *item, QQuickItem *newParent);
+
+private:
+
+    friend class UCThemingExtension;
+};
+
 UCItemAttached::UCItemAttached(QQuickItem *owner)
     : m_item(owner)
     , m_prevParent(Q_NULLPTR)
@@ -122,20 +110,21 @@ void UCItemAttached::itemParentChanged(QQuickItem *, QQuickItem *newParent)
     // make sure we have these handlers attached to each intermediate item
     QQuickItem *oldThemedAscendant = UCThemingExtension::ascendantThemed(m_prevParent);
     QQuickItem *newThemedAscendant = UCThemingExtension::ascendantThemed(newParent);
-    UCTheme *oldTheme = oldThemedAscendant ? oldThemedAscendant->property("theme").value<UCTheme*>() : &UCTheme::defaultTheme();
-    UCTheme *newTheme = newThemedAscendant ? newThemedAscendant->property("theme").value<UCTheme*>() : &UCTheme::defaultTheme();
+    UCThemingExtension *oldExtension = qobject_cast<UCThemingExtension*>(oldThemedAscendant);
+    UCThemingExtension *newExtension = qobject_cast<UCThemingExtension*>(newThemedAscendant);
+    UCTheme *oldTheme = oldExtension ? oldExtension->getTheme() : &UCTheme::defaultTheme();
+    UCTheme *newTheme = newExtension ? newExtension->getTheme() : &UCTheme::defaultTheme();
 
     if (oldTheme != newTheme) {
         UCThemingExtension *extension = qobject_cast<UCThemingExtension*>(m_item);
         // send the event to m_item first
-        UCThemeEvent event(oldTheme, newTheme);
         if (extension) {
             // only items with extensions should get this event
-            extension->handleThemeEvent(&event);
+            extension->itemThemeChanged(oldTheme, newTheme);
         }
         // then broadcast to children, but only if the item is not a styled one
         if (!extension) {
-            UCThemingExtension::forwardEvent(m_item, &event);
+            notifyThemeChange(m_item, oldTheme, newTheme);
         }
     }
     m_prevParent = newParent;
@@ -174,43 +163,43 @@ void UCThemingExtension::setParentTheme()
     }
 }
 
-void UCThemingExtension::handleThemeEvent(UCThemeEvent *event)
+void UCThemingExtension::itemThemeChanged(UCTheme*, UCTheme *newTheme)
 {
-    if ((int)event->type() == themeUpdatedId) {
-        switch (themeType) {
-        case Inherited: {
-            setTheme(event->newTheme(), Inherited);
-            return;
-        }
-        case Custom: {
-            // set the theme's parent
-            theme->setParentTheme(event->newTheme());
-            return;
-        }
-        default: break;
-        }
-    } else if ((int)event->type() == themeReloadedId) {
-        // no need to handle Inherited case, those items are all attached to the theme changes
-        switch (themeType) {
-        case Inherited: {
+    switch (themeType) {
+    case Inherited: {
+        setTheme(newTheme, Inherited);
+        return;
+    }
+    case Custom: {
+        // set the theme's parent
+        theme->setParentTheme(newTheme);
+        return;
+    }
+    default: break;
+    }
+}
+
+void UCThemingExtension::itemThemeReloaded(UCTheme *theme)
+{
+    switch (themeType) {
+    case Inherited: {
+        preThemeChanged();
+        postThemeChanged();
+        return;
+    }
+    case Custom: {
+        if (theme == this->theme) {
             preThemeChanged();
             postThemeChanged();
-            return;
+            // forward to children
+            notifyThemeReloaded(themedItem, theme);
+        } else {
+            // emit theme's parentThemeChanged()
+            Q_EMIT this->theme->parentThemeChanged();
         }
-        case Custom: {
-            if (event->newTheme() == theme) {
-                preThemeChanged();
-                postThemeChanged();
-                // forward to children
-                forwardEvent(themedItem, event);
-            } else {
-                // emit theme's parentThemeChanged()
-                Q_EMIT theme->parentThemeChanged();
-            }
-            return;
-        }
-        default: break;
-        }
+        return;
+    }
+    default: break;
     }
 }
 
@@ -248,7 +237,7 @@ void UCThemingExtension::setTheme(UCTheme *newTheme, ThemeType type)
     postThemeChanged();
 
     // broadcast to the children
-    broadcastThemeChange(themedItem, oldTheme, theme);
+    notifyThemeChange(themedItem, oldTheme, theme);
 }
 
 void UCThemingExtension::resetTheme()

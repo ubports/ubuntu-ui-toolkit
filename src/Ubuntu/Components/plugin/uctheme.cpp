@@ -635,11 +635,10 @@ void UCTheme::attachItem(QQuickItem *item, bool attach)
 
 void UCTheme::updateThemedItems()
 {
-    UCThemeEvent event(this);
     for (int i = 0; i < m_attachedItems.count(); i++) {
         UCThemingExtension *extension = qobject_cast<UCThemingExtension*>(m_attachedItems[i]);
         if (extension) {
-            extension->handleThemeEvent(&event);
+            extension->itemThemeReloaded(this);
         }
     }
 }
