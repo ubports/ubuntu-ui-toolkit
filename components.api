@@ -743,6 +743,7 @@ Ubuntu.Components.Styles.PageHeadStyle 1.3: Item
 Ubuntu.Components.PageHeader 1.3: Header
     property Item contents
     readonly property ActionBar leadingActionBar
+    readonly property Action navigationActions
     readonly property Sections sections
     property string title
     readonly property ActionBar trailingActionBar
