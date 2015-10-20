@@ -45,7 +45,6 @@ public:
     void itemParentChanged(QQuickItem *item, QQuickItem *newParent);
 
 private:
-    Q_SLOT void reloadTheme();
 
     friend class UCThemingExtension;
 };

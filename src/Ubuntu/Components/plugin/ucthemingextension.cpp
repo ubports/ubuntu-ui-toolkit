@@ -146,15 +146,6 @@ void UCItemAttached::itemParentChanged(QQuickItem *, QQuickItem *newParent)
     m_prevParent = newParent;
 }
 
-void UCItemAttached::reloadTheme()
-{
-    UCThemingExtension *extension = qobject_cast<UCThemingExtension*>(m_item);
-    Q_ASSERT(extension);
-    extension->preThemeChanged();
-    extension->postThemeChanged();
-    UCThemingExtension::broadcastThemeReloaded(m_item, static_cast<UCTheme*>(sender()));
-}
-
 /*************************************************************************
  *
  */
@@ -168,7 +159,9 @@ UCThemingExtension::UCThemingExtension(QQuickItem *extendedItem)
 
 UCThemingExtension::~UCThemingExtension()
 {
-
+    if (theme) {
+        theme->attachItem(themedItem, false);
+    }
 }
 
 // set the parent of the theme if the themeType is Custom
@@ -211,9 +204,21 @@ void UCThemingExtension::handleThemeEvent(UCThemeEvent *event)
     } else if ((int)event->type() == themeReloadedId) {
         // no need to handle Inherited case, those items are all attached to the theme changes
         switch (themeType) {
+        case Inherited: {
+            preThemeChanged();
+            postThemeChanged();
+            return;
+        }
         case Custom: {
-            // emit theme's parentThemeChanged()
-            Q_EMIT theme->parentThemeChanged();
+            if (event->newTheme() == theme) {
+                preThemeChanged();
+                postThemeChanged();
+                // forward to children
+                forwardEvent(themedItem, event);
+            } else {
+                // emit theme's parentThemeChanged()
+                Q_EMIT theme->parentThemeChanged();
+            }
             return;
         }
         default: break;

@@ -460,6 +460,7 @@ void UCTheme::setName(const QString& name)
     }
     loadPalette();
     Q_EMIT nameChanged();
+    updateThemedItems();
 }
 void UCTheme::resetName()
 {
@@ -625,16 +626,23 @@ void UCTheme::registerToContext(QQmlContext* context)
 
 void UCTheme::attachItem(QQuickItem *item, bool attach)
 {
-    UCItemAttached *theming = static_cast<UCItemAttached*>(qmlAttachedPropertiesObject<UCItemAttached>(item, false));
-    if (!theming) {
+    UCThemingExtension *extension = qobject_cast<UCThemingExtension*>(item);
+    if (!extension) {
         return;
     }
     if (attach) {
-        connect(this, SIGNAL(nameChanged()), theming, SLOT(reloadTheme()), Qt::DirectConnection);
-        connect(this, SIGNAL(versionChanged()), theming, SLOT(reloadTheme()), Qt::DirectConnection);
+        m_attachedItems.append(extension);
     } else {
-        disconnect(this, SIGNAL(nameChanged()), theming, SLOT(reloadTheme()));
-        disconnect(this, SIGNAL(versionChanged()), theming, SLOT(reloadTheme()));
+        m_attachedItems.removeOne(extension);
+    }
+}
+
+void UCTheme::updateThemedItems()
+{
+    UCThemeEvent event(this);
+    for (int i = 0; i < m_attachedItems.count(); i++) {
+        UCThemingExtension *extension = m_attachedItems[i];
+        extension->handleThemeEvent(&event);
     }
 }
 
@@ -671,6 +679,7 @@ void UCTheme::setVersion(quint16 version)
     }
     m_version = version;
     Q_EMIT versionChanged();
+    updateThemedItems();
 }
 
 /*
