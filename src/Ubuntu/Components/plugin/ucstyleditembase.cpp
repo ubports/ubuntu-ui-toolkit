@@ -475,7 +475,7 @@ void UCStyledItemBase::componentComplete()
     Q_D(UCStyledItemBase);
     // make sure the theme version is up to date
     d->styleVersion = d->importVersion(this);
-    UCTheme::checkMixedVersionImports(d->styleVersion);
+    UCTheme::checkMixedVersionImports(this, d->styleVersion);
     // no animation at this time
     // prepare style context if not been done yet
     d->postStyleChanged();

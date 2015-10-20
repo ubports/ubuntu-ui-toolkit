@@ -89,7 +89,6 @@ private Q_SLOTS:
         m_xdgDataPath = QLatin1String(getenv("XDG_DATA_DIRS"));
         m_themesPath = QLatin1String(getenv("UBUNTU_UI_TOOLKIT_THEMES_PATH"));
         qputenv("SUPPRESS_DEPRECATED_NOTE", "yes");
-        qputenv("QT_MESSAGE_PATTERN", "");
     }
 
     void cleanup()
@@ -665,7 +664,7 @@ private Q_SLOTS:
     }
 
     void test_mixed_versions() {
-        QTest::ignoreMessage(QtWarningMsg, "\"Mixing of Ubuntu.Components module versions 1.3 and 1.2 detected!\"");
+        ThemeTestCase::ignoreWarning("OtherVersion.qml", 19, 1, "QML StyledItem: Mixing of Ubuntu.Components module versions 1.3 and 1.2 detected!");
         QScopedPointer<ThemeTestCase> view(new ThemeTestCase("OtherVersion.qml"));
         QTest::waitForEvents();
         UCStyledItemBase *newStyled = static_cast<UCStyledItemBase*>(view->rootObject());

@@ -78,7 +78,7 @@ public:
     void resetName();
     QObject* palette();
     void setPalette(QObject *config);
-    static void checkMixedVersionImports(quint16 version);
+    static void checkMixedVersionImports(QQuickItem *item, quint16 version);
 
     // internal, used by the deprecated Theme.createStyledComponent()
     QQmlComponent* createStyleComponent(const QString& styleName, QObject* parent, quint16 version = 0);

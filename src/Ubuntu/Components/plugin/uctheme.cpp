@@ -646,9 +646,10 @@ void UCTheme::updateThemedItems()
 /*
  * Updates the version used by the toolkit/application
  */
-void UCTheme::checkMixedVersionImports(quint16 version)
+void UCTheme::checkMixedVersionImports(QQuickItem *item, quint16 version)
 {
-    if (version != previousVersion && previousVersion) {
+    static bool wasShown = false;
+    if (version != previousVersion && previousVersion && !wasShown) {
         // the first change is due to the first import detection, any further changes would mean there are
         // multiple version imports
         QString msg = QStringLiteral("Mixing of Ubuntu.Components module versions %1.%2 and %3.%4 detected!")
@@ -656,7 +657,8 @@ void UCTheme::checkMixedVersionImports(quint16 version)
                 .arg(MINOR_VERSION(version))
                 .arg(MAJOR_VERSION(previousVersion))
                 .arg(MINOR_VERSION(previousVersion));
-        qWarning() << msg;
+        qmlInfo(item) << msg;
+        wasShown = true;
     }
     previousVersion = version;
 }
