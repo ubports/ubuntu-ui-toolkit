@@ -31,7 +31,7 @@ Style.PageHeaderStyle {
 
     defaultActionDelegate: AbstractButton {
         style: IconButtonStyle { }
-        objectName: action.objectName + "_action_button"
+        objectName: action.objectName + "_button"
         height: parent ? parent.height : undefined
         action: modelData
         StyleHints {

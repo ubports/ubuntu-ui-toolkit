@@ -234,7 +234,7 @@ Item {
 
         function test_page_header_back_button() {
             pageStack.push(pageWithHeader);
-            var backButton = findChild(pageWithHeader.header, "pagestack_back_action_action_button");
+            var backButton = findChild(pageWithHeader.header, "pagestack_back_action_button");
             // FIXME TIM: when visibleActions is fixed, only check for backButton, null.
             compare(backButton == null || !backButton.visible, true,
                     "Page header shows back button with only one page on the stack.");
@@ -243,7 +243,7 @@ Item {
             pageStack.push(page1);
             pageStack.push(pageWithHeader);
             waitForHeaderAnimation(mainView);
-            backButton = findChild(pageWithHeader.header, "pagestack_back_action_action_button");
+            backButton = findChild(pageWithHeader.header, "pagestack_back_action_button");
             compare(backButton.visible, true,
                     "Page header has no back button with two pages on the stack.");
         }
