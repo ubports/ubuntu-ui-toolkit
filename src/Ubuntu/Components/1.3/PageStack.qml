@@ -221,6 +221,7 @@ PageTreeNode {
         iconName: "back"
         text: "Back"
         onTriggered: pageStack.pop()
+        objectName: "pagestack_back_action"
     }
 
     QtObject {

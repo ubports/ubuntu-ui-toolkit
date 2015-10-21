@@ -33,12 +33,6 @@ Item {
             Page {
                 id: pageInStack
             }
-            // TODO TIM: remove this and add a test for PageWithHeader back button.
-//            Component.onCompleted: {
-//                pageStack.push(page1);
-//                pageStack.push(page2);
-//                pageStack.push(pageWithHeader);
-//            }
         }
     }
     Page {
@@ -236,6 +230,22 @@ Item {
             pushedPage = pageStack.push(Qt.resolvedUrl("MyExternalPage.qml"));
             compare(pushedPage.title, "Page from QML file",
                     "PageStack.push() returns Page created from QML file");
+        }
+
+        function test_page_header_back_button() {
+            pageStack.push(pageWithHeader);
+            var backButton = findChild(pageWithHeader.header, "pagestack_back_action_action_button");
+            // FIXME TIM: when visibleActions is fixed, only check for backButton, null.
+            compare(backButton == null || !backButton.visible, true,
+                    "Page header shows back button with only one page on the stack.");
+
+            pageStack.pop();
+            pageStack.push(page1);
+            pageStack.push(pageWithHeader);
+            waitForHeaderAnimation(mainView);
+            backButton = findChild(pageWithHeader.header, "pagestack_back_action_action_button");
+            compare(backButton.visible, true,
+                    "Page header has no back button with two pages on the stack.");
         }
     }
 }

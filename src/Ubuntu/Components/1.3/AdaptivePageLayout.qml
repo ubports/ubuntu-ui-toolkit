@@ -666,7 +666,7 @@ PageTreeNode {
         Action {
             // used when the Page has a Page.header property set.
             id: backAction
-            objectName: "pageheader_back_action"
+            objectName: "apl_back_action"
             iconName: "back"
             text: "Back"
 
