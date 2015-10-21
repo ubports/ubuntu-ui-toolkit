@@ -691,8 +691,6 @@ PageTreeNode {
                 var nextInColumn = d.tree.top(column, column < d.columns - 1, 1);
                 return parentWrapper === nextInColumn;
             }
-
-            Component.onDestruction: print("DESTROY THE ACTION")
         }
     }
 

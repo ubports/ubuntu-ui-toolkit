@@ -203,8 +203,6 @@ MainView {
         }
 
         function get_number_of_headers() {
-            // FIXME: With only one column, revert to using the AppHeader
-            //  so layout will not include any headers.
             var numHeaders = 0;
             var header = get_header(0);
             verify(header !== null, "No header found!");
@@ -215,10 +213,24 @@ MainView {
             return numHeaders;
         }
 
-        function get_back_button_visible(column) {
-            var header = get_subheader(column);
-            var back_button = findChild(header, "backButton");
-            return back_button.visible;
+        function get_back_button_visible(column) {            
+            var header = get_pageheader(column);
+            var back_button;
+            if (header) {
+                // new PageHeader
+                back_button = findChild(header, "apl_back_action_button");
+                if (back_button) {
+                    // Wait for back_button.visible to match back_button.action.visible
+                    waitForRendering(header, 100);
+                }
+                // FIXME TIM: when visibleActions is fixed, only check for back_button
+                return back_button != null && back_button.visible;
+            } else {
+                // old APL subHeader
+                header = get_subheader(column);
+                back_button = findChild(header, "backButton");
+                return back_button.visible;
+            }
         }
 
         function cleanup() {
@@ -362,6 +374,9 @@ MainView {
         }
 
         function test_back_button_wide() {
+            // FIXME: When we remove support for the old subHeader and all
+            //  pages use a PageHeader, the repeated tests for PageHeader below
+            //  can be removed.
             if (root.columns !== 2) {
                 skip("Only for wide view.");
             }
@@ -381,6 +396,31 @@ MainView {
             // A:1, B:0
             compare(get_back_button_visible(0), false,
                     "Removing page 2 from column A does not hide back button.");
+
+            //// repeat the test for PageHeader ////
+            layout.addPageToCurrentColumn(rootPage, pageWithHeader);
+            compare(get_back_button_visible(0), true,
+                    "Adding page with header to column A does not show back button.");
+            layout.removePages(pageWithHeader);
+            compare(get_back_button_visible(0), false,
+                    "Removing page with header from column A does not hide back button.");
+            //// done ////
+
+            //// first test right column for PageHeader ////
+            layout.addPageToNextColumn(rootPage, pageWithHeader);
+            compare(get_back_button_visible(0), false,
+                    "XXXAdding page with header to column B shows back button in column A.");
+            compare(get_back_button_visible(1), false,
+                    "XXXAdding page with header to column B shows back button in column B.");
+            layout.removePages(pageWithHeader);
+            layout.addPageToNextColumn(rootPage, rightPage);
+            layout.addPageToNextColumn(rightPage, pageWithHeader);
+            compare(get_back_button_visible(0), false,
+                    "Adding second page (with header) to column B shows back button in column A.");
+            compare(get_back_button_visible(1), true,
+                    "Adding second page (with header) to column B hides back button in column B.");
+            layout.removePages(pageWithHeader);
+            //// done ////
 
             layout.addPageToNextColumn(rootPage, rightPage);
             // A:1, B:1
