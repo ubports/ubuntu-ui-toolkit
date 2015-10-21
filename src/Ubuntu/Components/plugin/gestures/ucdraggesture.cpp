@@ -39,18 +39,68 @@ using namespace UbuntuGestures;
 
 #if DIRECTIONALDRAGAREA_DEBUG
 #define ddaDebug(params) qDebug().nospace() << "[DDA(" << qPrintable(objectName()) << ")] " << params
-#include "DebugHelpers.h"
+//#include "DebugHelpers.h"
 
 namespace {
-const char *statusToString(DirectionalDragAreaPrivate::Status status)
+const char *statusToString(UCDragGesturePrivate::Status status)
 {
-    if (status == DirectionalDragAreaPrivate::WaitingForTouch) {
+    if (status == UCDragGesturePrivate::WaitingForTouch) {
         return "WaitingForTouch";
-    } else if (status == DirectionalDragAreaPrivate::Undecided) {
+    } else if (status == UCDragGesturePrivate::Undecided) {
         return "Undecided";
     } else {
         return "Recognized";
     }
+}
+
+QString touchPointStateToString(Qt::TouchPointState state)
+{
+    switch (state) {
+    case Qt::TouchPointPressed:
+        return QStringLiteral("pressed");
+    case Qt::TouchPointMoved:
+        return QStringLiteral("moved");
+    case Qt::TouchPointStationary:
+        return QStringLiteral("stationary");
+    case Qt::TouchPointReleased:
+        return QStringLiteral("released");
+    default:
+        return QStringLiteral("INVALID_STATE");
+    }
+}
+
+QString touchEventToString(const QTouchEvent *ev)
+{
+    QString message;
+
+    switch (ev->type()) {
+    case QEvent::TouchBegin:
+        message.append("TouchBegin ");
+        break;
+    case QEvent::TouchUpdate:
+        message.append("TouchUpdate ");
+        break;
+    case QEvent::TouchEnd:
+        message.append("TouchEnd ");
+        break;
+    case QEvent::TouchCancel:
+        message.append("TouchCancel ");
+        break;
+    default:
+        message.append("INVALID_TOUCH_EVENT_TYPE ");
+    }
+
+    Q_FOREACH(const QTouchEvent::TouchPoint& touchPoint, ev->touchPoints()) {
+        message.append(
+            QStringLiteral("(id:%1, state:%2, scenePos:(%3,%4)) ")
+                .arg(touchPoint.id())
+                .arg(touchPointStateToString(touchPoint.state()))
+                .arg(touchPoint.scenePos().x())
+                .arg(touchPoint.scenePos().y())
+            );
+    }
+
+    return message;
 }
 
 } // namespace {
