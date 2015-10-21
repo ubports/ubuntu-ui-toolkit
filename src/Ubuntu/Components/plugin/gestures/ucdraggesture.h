@@ -44,7 +44,7 @@ class UBUNTUGESTURESQML_EXPORT UCDragGesture : public QQuickItem
     Q_OBJECT
 
     // The direction in which the gesture should move in order to be recognized.
-    Q_PROPERTY(Type direction READ direction WRITE setDirection NOTIFY directionChanged)
+    Q_PROPERTY(Direction direction READ direction WRITE setDirection NOTIFY directionChanged)
 
     // The distance travelled by the finger along the axis specified by
     // UCDragGesture's direction.
@@ -55,12 +55,10 @@ class UBUNTUGESTURESQML_EXPORT UCDragGesture : public QQuickItem
     Q_PROPERTY(qreal sceneDistance READ sceneDistance NOTIFY sceneDistanceChanged)
 
     // Position of the touch point performing the drag relative to this item.
-    Q_PROPERTY(qreal touchX READ touchX NOTIFY touchXChanged)
-    Q_PROPERTY(qreal touchY READ touchY NOTIFY touchYChanged)
+    Q_PROPERTY(QPointF touchPos READ touchPos NOTIFY touchPosChanged)
 
     // Position of the touch point performing the drag, in scene's coordinate system
-    Q_PROPERTY(qreal touchSceneX READ touchSceneX NOTIFY touchSceneXChanged)
-    Q_PROPERTY(qreal touchSceneY READ touchSceneY NOTIFY touchSceneYChanged)
+    Q_PROPERTY(QPointF touchScenePos READ touchScenePos NOTIFY touchScenePosChanged)
 
     // Whether a drag gesture is taking place
     Q_PROPERTY(bool dragging READ dragging NOTIFY draggingChanged)
@@ -78,9 +76,9 @@ class UBUNTUGESTURESQML_EXPORT UCDragGesture : public QQuickItem
             WRITE setImmediateRecognition
             NOTIFY immediateRecognitionChanged)
 
-    Q_ENUMS(Type)
+    Q_ENUMS(Direction)
 public:
-    enum Type {
+    enum Direction {
         Rightwards, // Along the positive direction of the X axis
         Leftwards, // Along the negative direction of the X axis
         Downwards, // Along the positive direction of the Y axis
@@ -91,17 +89,15 @@ public:
 
     UCDragGesture(QQuickItem *parent = 0);
 
-    Type direction() const;
-    void setDirection(Type);
+    Direction direction() const;
+    void setDirection(Direction);
 
     qreal distance() const;
     qreal sceneDistance() const;
 
-    qreal touchX() const;
-    qreal touchY() const;
+    QPointF touchPos() const;
 
-    qreal touchSceneX() const;
-    qreal touchSceneY() const;
+    QPointF touchScenePos() const;
 
     bool dragging() const;
 
@@ -123,15 +119,13 @@ public:
     Q_INVOKABLE void removeTimeConstraints();
 
 Q_SIGNALS:
-    void directionChanged(Type direction);
+    void directionChanged(Direction direction);
     void draggingChanged(bool value);
     void pressedChanged(bool value);
     void distanceChanged(qreal value);
     void sceneDistanceChanged(qreal value);
-    void touchXChanged(qreal value);
-    void touchYChanged(qreal value);
-    void touchSceneXChanged(qreal value);
-    void touchSceneYChanged(qreal value);
+    void touchPosChanged(const QPointF &pos);
+    void touchScenePosChanged(const QPointF &pos);
     void immediateRecognitionChanged(bool value);
 
 protected:

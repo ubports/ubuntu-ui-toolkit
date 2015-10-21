@@ -111,21 +111,21 @@ QString touchEventToString(const QTouchEvent *ev)
 class Direction
 {
 public:
-    static bool isHorizontal(UCDragGesture::Type type)
+    static bool isHorizontal(UCDragGesture::Direction type)
     {
         return type == UCDragGesture::Leftwards
             || type == UCDragGesture::Rightwards
             || type == UCDragGesture::Horizontal;
     }
 
-    static bool isVertical(UCDragGesture::Type type)
+    static bool isVertical(UCDragGesture::Direction type)
     {
         return type == UCDragGesture::Upwards
             || type == UCDragGesture::Downwards
             || type == UCDragGesture::Vertical;
     }
 
-    static bool isPositive(UCDragGesture::Type type)
+    static bool isPositive(UCDragGesture::Direction type)
     {
         return type == UCDragGesture::Rightwards
             || type == UCDragGesture::Downwards
@@ -133,7 +133,33 @@ public:
             || type == UCDragGesture::Vertical;
     }
 };
-
+/*!
+ * \qmltype DragGesture
+ * \instantiates UCDragGesture
+ * \inherits Item
+ * \inqmlmodule Ubuntu.Components 1.3
+ * \since Ubuntu.Components 1.3
+ * \ingroup ubuntu-gestures
+ * \brief An area that detects axis-aligned single-finger drag gestures.
+ *
+ * The component can be used to detect gestures of a certain direction, and can
+ * grab gestures started on a component placed behind of the DragGesture area.
+ * The gesture is detected on the DragGesture area, therefore the size must be
+ * chosen carefully so it can properly detect the gesture.
+ *
+ * The gesture direction is specified by the \l direction property. The recognized
+ * and captured gesture is reported through the \l dragging property, which becomes
+ * \c true when the gesture is detected. If there was a component under the DragGesture,
+ * the gesture will be cancelled on that component.
+ *
+ * The following image depicts the way the gesture is recognized.
+ * \image DragGesture.svg
+ * The drag recognision is performed in a distanceThreshold, which is the size
+ * of the DragGesture component (either width or height, depending on the direction
+ * chosen). If the drag deviates too much from the component's direction, recognition
+ * will fail, as well as if the drag or the flick is too short.
+ *
+ */
 UCDragGesture::UCDragGesture(QQuickItem *parent)
     : QQuickItem(parent)
     , d(new UCDragGesturePrivate(this))
@@ -146,12 +172,39 @@ UCDragGesture::UCDragGesture(QQuickItem *parent)
     connect(this, &QQuickItem::visibleChanged, d, &UCDragGesturePrivate::giveUpIfDisabledOrInvisible);
 }
 
-UCDragGesture::Type UCDragGesture::direction() const
+/*!
+ * \qmlproperty enum DragGesture::direction
+ * The direction in which the gesture should move in order to be recognized.
+ * \table
+ * \header
+ *  \li Direction
+ *  \li Description
+ * \row
+ *  \li Rightwards
+ *  \li Along the positive direction of the X axis
+ * \row
+ *  \li Leftwards
+ *  \li Along the negative direction of the X axis
+ * \row
+ *  \li Downwards
+ *  \li Along the positive direction of the Y axis
+ * \row
+ *  \li Upwards
+ *  \li Along the negative direction of the Y axis
+ * \row
+ *  \li Horizontal
+ *  \li Along the X axis, in any direction
+ * \row
+ *  \li Vertical
+ *  \li Along the Y axis, in any direction
+ * \endtable
+ */
+UCDragGesture::Direction UCDragGesture::direction() const
 {
     return d->direction;
 }
 
-void UCDragGesture::setDirection(Type direction)
+void UCDragGesture::setDirection(Direction direction)
 {
     if (direction != d->direction) {
         d->direction = direction;
@@ -206,9 +259,14 @@ void UCDragGesturePrivate::setTimeSource(const SharedTimeSource &timeSource)
     activeTouches.m_timeSource = timeSource;
 }
 
+/*!
+ * \qmlproperty real DragGesture::distance
+ * \readonly
+ * The distance travelled by the finger along the axis specified by \l direction.
+ */
 qreal UCDragGesture::distance() const
 {
-    if (Direction::isHorizontal(d->direction)) {
+    if (::Direction::isHorizontal(d->direction)) {
         return d->publicPos.x() - d->startPos.x();
     } else {
         return d->publicPos.y() - d->startPos.y();
@@ -221,41 +279,65 @@ void UCDragGesturePrivate::updateSceneDistance()
     sceneDistance = projectOntoDirectionVector(totalMovement);
 }
 
+/*!
+ * \qmlproperty real DragGesture::sceneDistance
+ * \readonly
+ * The distance travelled by the finger along the axis specified by \l direction
+ * in scene coordinates
+ */
 qreal UCDragGesture::sceneDistance() const
 {
     return d->sceneDistance;
 }
 
-qreal UCDragGesture::touchX() const
+/*!
+ * \qmlproperty point DragGesture::touchPos
+ * \readonly
+ * Position of the touch point performing the drag relative to this item.
+ */
+QPointF UCDragGesture::touchPos() const
 {
-    return d->publicPos.x();
+    return d->publicPos;
 }
 
-qreal UCDragGesture::touchY() const
+/*!
+ * \qmlproperty point DragGesture::touchScenePos
+ * \readonly
+ * Position of the touch point performing the drag, in scene's coordinates.
+ */
+QPointF UCDragGesture::touchScenePos() const
 {
-    return d->publicPos.y();
+    return d->publicScenePos;
 }
 
-qreal UCDragGesture::touchSceneX() const
-{
-    return d->publicScenePos.x();
-}
-
-qreal UCDragGesture::touchSceneY() const
-{
-    return d->publicScenePos.y();
-}
-
+/*!
+ * \qmlproperty bool DragGesture::dragging
+ * \readonly
+ * Reports whether a drag gesture is taking place.
+ */
 bool UCDragGesture::dragging() const
 {
     return d->status == UCDragGesturePrivate::Recognized;
 }
 
+/*!
+ * \qmlproperty bool DragGesture::pressed
+ * \readonly
+ * Reports whether the drag area is pressed.
+ */
 bool UCDragGesture::pressed() const
 {
     return d->status != UCDragGesturePrivate::WaitingForTouch;
 }
 
+/*!
+ * \qmlproperty bool DragGesture::immediateRecognition
+ * \readonly
+ * Drives whether the gesture should be recognized as soon as the touch lands on
+ * the area. With this property set it will work the same way as a MultiPointTouchArea,
+ *
+ * Defaults to false. In most cases this should not be set.
+ */
 bool UCDragGesture::immediateRecognition() const
 {
     return d->immediateRecognition;
@@ -716,13 +798,13 @@ void UCDragGesturePrivate::setPublicPos(const QPointF &point)
     }
 
     if (xChanged) {
-        Q_EMIT q->touchXChanged(publicPos.x());
+        Q_EMIT q->touchPosChanged(publicPos);
         if (Direction::isHorizontal(direction))
             Q_EMIT q->distanceChanged(q->distance());
     }
 
     if (yChanged) {
-        Q_EMIT q->touchYChanged(publicPos.y());
+        Q_EMIT q->touchPosChanged(publicPos);
         if (Direction::isVertical(direction))
             Q_EMIT q->distanceChanged(q->distance());
     }
@@ -765,12 +847,8 @@ void UCDragGesturePrivate::setPublicScenePos(const QPointF &point)
         Q_EMIT q->sceneDistanceChanged(sceneDistance);
     }
 
-    if (xChanged) {
-        Q_EMIT q->touchSceneXChanged(publicScenePos.x());
-    }
-
-    if (yChanged) {
-        Q_EMIT q->touchSceneYChanged(publicScenePos.y());
+    if (xChanged || yChanged) {
+        Q_EMIT q->touchScenePosChanged(publicScenePos);
     }
 }
 

@@ -138,7 +138,7 @@ public:
     // Unit vector in scene coordinates describing the direction of the gesture recognition
     QPointF sceneDirectionVector;
 
-    UCDragGesture::Type direction;
+    UCDragGesture::Direction direction;
 
     // How far a touch point has to move from its initial position along the gesture axis in order
     // for it to be recognized as a directional drag.
