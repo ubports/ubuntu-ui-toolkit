@@ -1,3 +1,51 @@
+ubuntu-ui-toolkit (1.3.1688+15.10.20151018.1-0ubuntu1) wily; urgency=medium
+
+  [ Tim Peeters ] 
+  * Add delegate property to ActionBar.
+  * Introduce PageHeader component.
+  * Add header property to Page. 
+    Fixes LP: #1248898, LP: #1350893, LP: #1445016, LP: #1492328
+  * Use the correct navigation overflow icon in PageHeader.
+  
+  [ Loïc Molinari ]
+  * Fixed OpenGL ES 2 mipmap fallback. OpenGL ES 2 doesn't support 
+    GL_TEXTURE_MAX_LEVEL by default, it is only available via an extension. It 
+    was working on the devices where this extension is available but not on 
+    the emulator. Fixes LP: #1505221.
+
+  [ Christian Dywan ]
+  * Handle incubateObject returning null in PageWrapperUtils. 
+    Fixes LP: #1505197
+  * Add module header to PageWrapperUtils.
+
+  [ Zoltan Balogh ]
+  * Improve test plan
+    - Ad -q parameter to provision the device for normal use with a PPA
+    - Fix up the camera and clock app on the device to acces services
+    - Replace phablet tools with manual enabling writable image
+    - Fix PPA pin up for staging and other regular PPAs.
+
+  [ Zsombor Egri ]
+  * Emit Dropped event for live ListItem drag'n'drop. Fixes LP: #1500118.
+
+  [ Timo Jyrinki ]
+  * Build dep on libinput-dev and libxkbcommon-dev (LP: #1437192). 
+
+  [ Benjamon Zeller ]
+  * Remove unused variables.
+  
+  [ CI Train Bot ]
+  * No-change rebuild.
+
+ -- Zoltan Balogh <zoltan.balogh@canonical.com>  Sun, 18 Oct 2015 03:47:27 +0000
+
+ubuntu-ui-toolkit (1.3.1676+15.10.20151008-0ubuntu1) wily; urgency=medium
+
+  [ Zsombor Egri ]
+  * Fix corner case on Label having styled item. (LP: #1503901)
+
+ -- Zoltan Balogh <zoltan.balogh@canonical.com>  Thu, 08 Oct 2015 10:57:10 +0000
+
 ubuntu-ui-toolkit (1.3.1676+15.10.20151006.2-0ubuntu1) wily; urgency=medium
 
   [ Zsombor Egri ] 

@@ -25,8 +25,9 @@
 
 class QQuickMouseArea;
 class UCStyledItemBase;
-class UCStyledItemBasePrivate : public QQuickItemPrivate, public UCThemingExtension
+class UCStyledItemBasePrivate : public QQuickItemPrivate
 {
+    Q_INTERFACES(UCThemingExtension)
     Q_DECLARE_PUBLIC(UCStyledItemBase)
 public:
 
@@ -54,9 +55,6 @@ public:
     virtual void preStyleChanged();
     virtual void postStyleChanged() {}
     virtual bool loadStyleItem(bool animated = true);
-
-    virtual void preThemeChanged();
-    virtual void postThemeChanged();
 
 public:
 
