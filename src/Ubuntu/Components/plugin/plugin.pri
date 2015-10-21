@@ -9,7 +9,7 @@ equals(QT_MAJOR_VERSION, 5):lessThan(QT_MINOR_VERSION, 2) {
     QT += v8-private
 }
 
-CONFIG += no_keywords
+CONFIG += no_keywords c++11
 
 # QOrganizer
 QT *= organizer
@@ -93,6 +93,7 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/uclistitemlayout.h \
     $$PWD/privates/threelabelsslot_p.h \
     $$PWD/gestures/ucdraggesture.h \
+    $$PWD/gestures/ucdraggesture_p.h \
     $$PWD/gestures/axisvelocitycalculator.h \
     $$PWD/gestures/damper.h \
     $$PWD/gestures/ubuntugesturesqmlglobal.h \

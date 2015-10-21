@@ -385,6 +385,35 @@ Ubuntu.Components.ListItems.Divider 1.3: QQuickImageBase
     readonly property double paintedHeight
     readonly property double paintedWidth
     property VAlignment verticalAlignment
+Ubuntu.Components.DragGesture 1.3: Item
+    property Type direction
+    readonly property double distance
+    readonly property bool dragging
+    property bool immediateRecognition
+    signal directionChanged(Type direction)
+    signal draggingChanged(bool value)
+    signal pressedChanged(bool value)
+    signal distanceChanged(double value)
+    signal sceneDistanceChanged(double value)
+    signal touchXChanged(double value)
+    signal touchYChanged(double value)
+    signal touchSceneXChanged(double value)
+    signal touchSceneYChanged(double value)
+    signal immediateRecognitionChanged(bool value)
+    function removeTimeConstraints()
+    readonly property bool pressed
+    readonly property double sceneDistance
+    readonly property double touchSceneX
+    readonly property double touchSceneY
+    readonly property double touchX
+    readonly property double touchY
+Ubuntu.Components.DragGesture.Type: Enum
+    Downwards
+    Horizontal
+    Leftwards
+    Rightwards
+    Upwards
+    Vertical
 Ubuntu.Components.ListItems.Empty 1.0 0.1: AbstractButton
     readonly property Item backgroundIndicator
     property bool confirmRemoval
@@ -606,6 +635,9 @@ Ubuntu.Components.Mouse 1.0 0.1: QtObject
 Ubuntu.Components.Mouse.Priority: Enum
     AfterItem
     BeforeItem
+Ubuntu.Test.MouseTouchAdaptor 1.0: QtObject singleton
+    property bool enabled
+    signal enabledChanged(bool value)
 Ubuntu.Components.ListItems.MultiValue 1.0 0.1: Base
     property var values
 Ubuntu.Components.ListItems.MultiValue 1.3: Base
