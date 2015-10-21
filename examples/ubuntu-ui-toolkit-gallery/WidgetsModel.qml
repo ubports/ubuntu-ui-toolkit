@@ -102,6 +102,11 @@ ListModel {
         source: "CrossFadeImage.qml"
     }
     ListElement {
+        objectName: "dragGestureElement"
+        label: "DragGesture"
+        source: "DragGesturePage.qml"
+    }
+    ListElement {
         objectName: "bottomEdgeHintElement"
         label: "Bottom Edge Hint"
         source: "BottomEdgeHint.qml"

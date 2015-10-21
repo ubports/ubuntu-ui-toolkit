@@ -157,8 +157,38 @@ public:
  * The drag recognision is performed in a distanceThreshold, which is the size
  * of the DragGesture component (either width or height, depending on the direction
  * chosen). If the drag deviates too much from the component's direction, recognition
- * will fail, as well as if the drag or the flick is too short.
+ * will fail, as well as if the drag or the flick is too short. Once the drag is
+ * intercepted, the gesture will be followed even after it leaves the detection area.
  *
+ * Example:
+ * \qml
+ * import QtQuick 2.4
+ * import Ubuntu.Components 1.3
+ *
+ * MainView {
+ *     width: units.gu(40)
+ *     height: units.gu(70)
+ *
+ *     Page {
+ *         title: "DragGesture sample"
+ *         DragGesture {
+ *             anchors {
+ *                 left: parent.left
+ *                 top: parent.top
+ *                 bottom: parent.bottom
+ *             }
+ *             height: units.gu(5)
+ *             Label {
+ *                 text: "Drag upwards"
+ *                 anchors {
+ *                     centerIn: parent
+ *                     verticalOffset: parent.dragging ? parent.distance : 0
+ *                 }
+ *             }
+ *         }
+ *     }
+ * }
+ * \endqml
  */
 UCDragGesture::UCDragGesture(QQuickItem *parent)
     : QQuickItem(parent)
