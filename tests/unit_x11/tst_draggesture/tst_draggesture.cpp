@@ -44,8 +44,6 @@ public:
         m_recognized = false;
         connect(edgeDragArea->d, &UCDragGesturePrivate::statusChanged,
                 this, &StatusSpy::onStatusChanged);
-//        connect(edgeDragArea->d, SIGNAL(statusChanged(Status)),
-//                this, SLOT(onStatusChanged(UCDragGesturePrivate::Status)));
     }
     bool recognized() {
         return m_recognized;
