@@ -34,11 +34,11 @@ Item {
                 id: pageInStack
             }
             // TODO TIM: remove this and add a test for PageWithHeader back button.
-            Component.onCompleted: {
-                pageStack.push(page1);
-                pageStack.push(page2);
-                pageStack.push(pageWithHeader);
-            }
+//            Component.onCompleted: {
+//                pageStack.push(page1);
+//                pageStack.push(page2);
+//                pageStack.push(pageWithHeader);
+//            }
         }
     }
     Page {
@@ -92,6 +92,13 @@ Item {
             compare(mainView.__propagated.header.title, "", "empty title by default");
         }
 
+        function cleanup() {
+            pageStack.clear();
+            waitForHeaderAnimation(mainView);
+            compare(pageStack.depth, 0, "depth is not 0 after clearing.");
+            compare(pageStack.currentPage, null, "currentPage is not null after clearing.");
+        }
+
         function test_depth() {
             compare(pageStack.depth, 0, "depth is 0 by default");
             pageStack.push(page1);
@@ -103,9 +110,6 @@ Item {
             pageStack.pop();
             waitForHeaderAnimation(mainView);
             compare(pageStack.depth, 1, "depth is correctly decreased when popping a page");
-            pageStack.clear();
-            waitForHeaderAnimation(mainView);
-            compare(pageStack.depth, 0, "depth is after clearing");
         }
 
         function test_currentPage() {
@@ -113,9 +117,6 @@ Item {
             pageStack.push(page1);
             waitForHeaderAnimation(mainView);
             compare(pageStack.currentPage, page1, "currentPage properly updated");
-            pageStack.clear();
-            waitForHeaderAnimation(mainView);
-            compare(pageStack.currentPage, null, "currentPage properly reset");
         }
 
         function test_page_order() {
@@ -127,8 +128,6 @@ Item {
             pageStack.pop();
             waitForHeaderAnimation(mainView);
             compare(pageStack.currentPage, page1, "popping puts previously pushed page on top");
-            pageStack.clear();
-            waitForHeaderAnimation(mainView);
         }
 
         function test_multipop_bug1461729() {
@@ -145,9 +144,6 @@ Item {
             waitForHeaderAnimation(mainView);
             compare(pageStack.depth, 1, "popping until one page is left failed. " +
                         pageStack.depth + " pages left on stack");
-
-            pageStack.clear();
-            waitForHeaderAnimation(mainView);
         }
 
         function test_active_bug1260116() {
@@ -174,8 +170,6 @@ Item {
             pageStack.pop();
             waitForHeaderAnimation(mainView);
             compare(pageInStack.active, false, "Popping a page from PageStack makes it inactive");
-            pageStack.clear();
-            waitForHeaderAnimation(mainView);
         }
 
         function test_title_bug1143345_bug1317902() {
@@ -193,8 +187,6 @@ Item {
             pageStack.push(pageWithPage);
             waitForHeaderAnimation(mainView);
             compare(mainView.__propagated.header.title, pageWithPage.title, "Embedded page sets title of outer page");
-            pageStack.clear();
-            waitForHeaderAnimation(mainView);
         }
 
         function get_tabs_button() {
@@ -219,8 +211,6 @@ Item {
             waitForHeaderAnimation(mainView);
             compare(tabs.active, true, "Tabs on top of PageStack is active");
             compare(get_tabs_button().visible, true, "Active Tabs controls header contents");
-            pageStack.clear();
-            waitForHeaderAnimation(mainView);
         }
 
         function test_pop_to_tabs_bug1316736() {
@@ -234,8 +224,6 @@ Item {
             waitForHeaderAnimation(mainView);
             compare(tabs.active, true, "Tabs on top of PageStack is active");
             compare(tabs.selectedTabIndex, 1, "Pushing and popping another page on top of Tabs does not change selectedTabsIndex");
-            pageStack.clear();
-            waitForHeaderAnimation(mainView);
         }
 
         function test_push_return_values() {
@@ -248,8 +236,6 @@ Item {
             pushedPage = pageStack.push(Qt.resolvedUrl("MyExternalPage.qml"));
             compare(pushedPage.title, "Page from QML file",
                     "PageStack.push() returns Page created from QML file");
-            pageStack.clear();
-            waitForHeaderAnimation(mainView);
         }
     }
 }
