@@ -91,7 +91,18 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/ucheader.h \
     $$PWD/uclabel.h \
     $$PWD/uclistitemlayout.h \
-    $$PWD/privates/threelabelsslot_p.h
+    $$PWD/privates/threelabelsslot_p.h \
+    $$PWD/gestures/ucdraggesture.h \
+    $$PWD/gestures/axisvelocitycalculator.h \
+    $$PWD/gestures/damper.h \
+    $$PWD/gestures/ubuntugesturesqmlglobal.h \
+    $$PWD/gestures/TouchOwnershipEvent.h \
+    $$PWD/gestures/TouchRegistry.h \
+    $$PWD/gestures/UnownedTouchEvent.h \
+    $$PWD/gestures/Pool.h \
+    $$PWD/gestures/Timer.h \
+    $$PWD/gestures/TimeSource.h \
+    $$PWD/gestures/CandidateInactivityTimer.h \
 
 SOURCES += $$PWD/plugin.cpp \
     $$PWD/uctheme.cpp \
@@ -153,7 +164,15 @@ SOURCES += $$PWD/plugin.cpp \
     $$PWD/ucheader.cpp \
     $$PWD/uclabel.cpp \
     $$PWD/uclistitemlayout.cpp \
-    $$PWD/privates/threelabelsslot_p.cpp
+    $$PWD/privates/threelabelsslot_p.cpp \
+    $$PWD/gestures/ucdraggesture.cpp \
+    $$PWD/gestures/axisvelocitycalculator.cpp \
+    $$PWD/gestures/TouchOwnershipEvent.cpp \
+    $$PWD/gestures/TouchRegistry.cpp \
+    $$PWD/gestures/UnownedTouchEvent.cpp \
+    $$PWD/gestures/Timer.cpp \
+    $$PWD/gestures/TimeSource.cpp \
+    $$PWD/gestures/CandidateInactivityTimer.cpp \
 
 # adapters
 SOURCES += $$PWD/adapters/alarmsadapter_organizer.cpp
