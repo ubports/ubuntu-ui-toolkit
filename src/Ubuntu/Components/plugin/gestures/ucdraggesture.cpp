@@ -189,6 +189,8 @@ public:
  *     }
  * }
  * \endqml
+ * \note When used with a Flickable (or ListView, GridView) always put the DragGesture
+ * next to the Flickable as sibling.
  */
 UCDragGesture::UCDragGesture(QQuickItem *parent)
     : QQuickItem(parent)
