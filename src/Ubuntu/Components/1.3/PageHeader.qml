@@ -115,9 +115,10 @@ Header {
       The actions to be shown in the leading action bar.
       This property is automatically set by the
       \l AdaptivePageLayout and other navigation components to configure the
-      back action for the \l Page. Setting \l leadingActionBar's actions
-      directly in the app will override the default actions that
-      were set by navigation components.
+      back action for the \l Page.
+      Application developers should not set this property, because the
+      value may be overridden by Ubuntu components that have navigation.
+      Instead, set \l leadingActionBar's actions property.
      */
     property list<Action> navigationActions
 
@@ -135,6 +136,9 @@ Header {
           ]
       }
       \endqml
+      The default value of \l leadingActionBar actions is
+      \l navigationActions, but that value can be changed to show
+      different actions in front of the title.
       See \l ActionBar.
      */
     readonly property alias leadingActionBar: leading

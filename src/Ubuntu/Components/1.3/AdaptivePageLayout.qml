@@ -464,7 +464,8 @@ PageTreeNode {
             if (page && page.hasOwnProperty("header") && page.header &&
                     page.header.hasOwnProperty("navigationActions")) {
                 // Page.header is an instance of PageHeader.
-                var backAction = backActionComponent.createObject(null, { 'wrapper': pageWrapper });
+                var backAction = backActionComponent.createObject(
+                            pageWrapper, { 'wrapper': pageWrapper } );
                 page.header.navigationActions = [ backAction ] ;
             }
         }
