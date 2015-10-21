@@ -464,7 +464,8 @@ PageTreeNode {
             if (page && page.hasOwnProperty("header") && page.header &&
                     page.header.hasOwnProperty("navigationActions")) {
                 // Page.header is an instance of PageHeader.
-                page.header.navigationActions = [ pageWrapper.pageHolder.headerBackAction ];
+                var backAction = backActionComponent.createObject(null, { 'wrapper': pageWrapper });
+                page.header.navigationActions = [ backAction ] ;
             }
         }
 
@@ -657,6 +658,44 @@ PageTreeNode {
         }
     }
 
+    // An instance will be added to each Page with
+    Component {
+        id: backActionComponent
+
+        Action {
+            // used when the Page has a Page.header property set.
+            id: backAction
+            objectName: "pageheader_back_action"
+            iconName: "back"
+            text: "Back"
+
+            // set when backAction is created.
+            property PageWrapper wrapper
+            onTriggered: layout.removePages(wrapper.object)
+
+            visible: {
+                var parentWrapper;
+                try {
+                    parentWrapper = d.tree.parent(wrapper);
+                } catch(err) {
+                    // Root node has no parent node.
+                    return false;
+                }
+                if (!wrapper.pageHolder) {
+                    // columns are being re-arranged.
+                    return false;
+                }
+                // wrapper.column is the virtual column, pageHolder.column the actual column.
+                var column = wrapper.pageHolder.column;
+                var nextInColumn = d.tree.top(column, column < d.columns - 1, 1);
+                return parentWrapper === nextInColumn;
+            }
+
+            Component.onDestruction: print("DESTROY THE ACTION")
+        }
+    }
+
+
     // Page holder component, can have only one Page as child at a time, all stacked pages
     // will be parented into hiddenPool
     Component {
@@ -712,16 +751,6 @@ PageTreeNode {
                     anchors.fill: parent
                     visible: false
                 }
-            }
-
-            property alias headerBackAction: backAction
-            Action {
-                // used when the Page has a Page.header property set.
-                id: backAction
-                visible: subHeader.showBackButton
-                iconName: "back"
-                text: "Back"
-                onTriggered: layout.removePages(page)
             }
 
             // subHeader is to be deprecated in UITK 1.4 and will be replaced
