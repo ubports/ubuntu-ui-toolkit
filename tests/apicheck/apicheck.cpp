@@ -359,11 +359,17 @@ public:
 
     void writeMetaContent(QJsonObject* object, const QMetaObject *meta, KnownAttributes *knownAttributes = 0)
     {
+        QSet<QString> internalSignals;
         QSet<QString> implicitSignals;
         for (int index = meta->propertyOffset(); index < meta->propertyCount(); ++index) {
             const QMetaProperty &property = meta->property(index);
             const QMetaObject* superClass(meta->superClass());
-            if (!(superClass && superClass->indexOfProperty(property.name()) > -1))
+            // FIXME: Work-around to omit properties from Qt superclasses
+            bool isQtAPI(QString(superClass->className()) == "QQuickImageBase"
+             && QString("autoTransform,fillMode,horizontalAlignment,mipmap,paintedWidth,paintedHeight,verticalAlignment").contains(property.name()));
+            if (isQtAPI)
+                internalSignals.insert(property.notifySignal().name());
+            else if (!(superClass && superClass->indexOfProperty(property.name()) > -1))
                 dump(object, property, knownAttributes);
             if (knownAttributes)
                 knownAttributes->knownMethod(property.notifySignal().name(),
@@ -414,6 +420,8 @@ public:
                 QMetaMethod meth(meta->method(index));
                 QByteArray methName(meth.name());
                 if (!methName.isEmpty() && methName.endsWith("Changed") && !meth.parameterCount())
+                    continue;
+                if (internalSignals.contains(methName))
                     continue;
                 dump(object, &methods, meta->method(index), implicitSignals, knownAttributes);
             }
@@ -904,7 +912,8 @@ int main(int argc, char *argv[])
         // Create a component with all QML types to add them to the type system
         QByteArray code = importCode;
         Q_FOREACH(const QString& version, importVersions) {
-            QString pluginAlias(QString("%1.%2").arg(pluginImportUri).arg(version).replace(".", "_"));
+            // First letter must be uppercase
+            QString pluginAlias(QString("A%1.%2").arg(pluginImportUri).arg(version).replace(".", "_"));
             code += QString("import %1 %2 as %3\n").arg(pluginImportUri).arg(version).arg(pluginAlias);
         }
         code += "Item {\n";
@@ -923,6 +932,8 @@ int main(int argc, char *argv[])
                 std::cerr << "Public QML type " << qPrintable(c.typeName) << " in qmldir has no version!" << std::endl;
                 return EXIT_IMPORTERROR;
             }
+            if (exportedTypes.contains(QFileInfo(c.fileName).fileName()))
+                continue;
             exportedTypes.append(QFileInfo(c.fileName).fileName());
         }
 
