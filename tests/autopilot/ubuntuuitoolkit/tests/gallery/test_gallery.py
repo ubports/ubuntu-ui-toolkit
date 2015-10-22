@@ -109,13 +109,4 @@ class OpenPagesTestCase(gallery.GalleryTestCase):
 
     def test_open_page(self):
         self.open_page(self.element_name)
-        element = self.main_view.select_single(
-            'Standard', objectName=self.element_name)
-        self.checkPageHeader(element.text)
-        if self.template_name == 'textinputsTemplate':
-            page_type = 'TextInputs'
-        else:
-            page_type = 'Template'
-        self.main_view.wait_select_single(
-            page_type, objectName=self.template_name)
-        # TODO check that the template is visible. --elopio - 2013-11-28
+        self.main_view.wait_select_single(objectName=self.template_name)

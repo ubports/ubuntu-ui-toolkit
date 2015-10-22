@@ -61,7 +61,7 @@ public:
     QColor colorFrom;
     QColor colorTo;
     QGradientStops gradient;
-    UCListItemPrivate *listItem;
+    UCListItem *listItem;
 };
 
 UCListItemDivider::UCListItemDivider(UCListItem *parent)
@@ -77,14 +77,16 @@ void UCListItemDivider::init(UCListItem *listItem)
 {
     Q_D(UCListItemDivider);
     QQml_setParent_noEvent(this, listItem);
-    d->listItem = UCListItemPrivate::get(listItem);
+    d->listItem = listItem;
     setParentItem(listItem);
     // anchor to left/right/bottom of the ListItem
     QQuickAnchors *anchors = d->anchors();
-    anchors->setLeft(d->listItem->left());
-    anchors->setRight(d->listItem->right());
-    anchors->setBottom(d->listItem->bottom());
+    UCListItemPrivate *pListItem = UCListItemPrivate::get(listItem);
+    anchors->setLeft(pListItem->left());
+    anchors->setRight(pListItem->right());
+    anchors->setBottom(pListItem->bottom());
     // connect visible change so we relayout contentItem
+    // FIXME: do this with itemChange!!!
     connect(this, SIGNAL(visibleChanged()), listItem, SLOT(_q_relayout()));
 }
 
@@ -132,7 +134,8 @@ QSGNode *UCListItemDivider::updatePaintNode(QSGNode *node, UpdatePaintNodeData *
         dividerNode = d->sceneGraphContext()->createRectangleNode();
     }
 
-    bool lastItem = d->listItem->countOwner ? (d->listItem->index() == (d->listItem->countOwner->property("count").toInt() - 1)): false;
+    UCListItemPrivate *pListItem = UCListItemPrivate::get(d->listItem);
+    bool lastItem = pListItem->countOwner ? (pListItem->index() == (pListItem->countOwner->property("count").toInt() - 1)): false;
     if (!lastItem && (d->gradient.size() > 0) && ((d->colorFrom.alphaF() >= (1.0f / 255.0f)) || (d->colorTo.alphaF() >= (1.0f / 255.0f)))) {
         dividerNode->setRect(boundingRect());
         dividerNode->setGradientStops(d->gradient);
@@ -378,7 +381,6 @@ int UCListItemPrivate::index()
 // or onPressAndHold signal handlers set
 bool UCListItemPrivate::canHighlight()
 {
-   Q_Q(UCListItem);
    return (isClickedConnected() || isPressAndHoldConnected() || mainAction || leadingActions || trailingActions);
 }
 
@@ -1175,7 +1177,7 @@ void UCListItemPrivate::showContextMenu()
 {
     Q_Q(UCListItem);
     // themes 1.2 and below should not have context menu support, so leave
-    quint16 version(getTheme()->version());
+    quint16 version(q->getTheme()->version());
     if (version <= BUILD_VERSION(1, 2)) {
         return;
     }
@@ -1644,7 +1646,7 @@ void UCListItem::resetHighlightColor()
 {
     Q_D(UCListItem);
     d->customColor = false;
-    d->highlightColor = d->getTheme()->getPaletteColor("selected", "background");
+    d->highlightColor = getTheme()->getPaletteColor("selected", "background");
     update();
     Q_EMIT highlightColorChanged();
 }

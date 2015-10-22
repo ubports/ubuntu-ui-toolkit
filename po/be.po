@@ -14,12 +14,12 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-09-15 05:42+0000\n"
-"X-Generator: Launchpad (build 17737)\n"
+"X-Launchpad-Export-Date: 2015-10-16 05:53+0000\n"
+"X-Generator: Launchpad (build 17812)\n"
 
 #: Ubuntu/Components/ListItems/Empty.qml:413
 msgid "Delete"
-msgstr ""
+msgstr "Выдаліць"
 
 #: Ubuntu/Components/plugin/statesaverbackend_p.cpp:176
 #, qt-format
@@ -27,23 +27,25 @@ msgid ""
 "property \"%1\" of object %2 has type %3 and cannot be set to value \"%4\" "
 "of type %5"
 msgstr ""
-"уласцівасць \"%1\" аб'екта %2 мае Тып %3 і не можа быць прысвоена значэнне "
-"\"%4\" тыпу %5"
+"уласцівасць \"%1\" аб'екта %2 мае тып %3 і да яго не можа быць прысвоена "
+"значэнне \"%4\" тыпу %5"
 
 #: Ubuntu/Components/plugin/statesaverbackend_p.cpp:185
 #, qt-format
 msgid "property \"%1\" does not exist or is not writable for object %2"
-msgstr "уласцівасць \"%1\" не існуе ці не даступны для запісу для аб'екта %2"
+msgstr ""
+"уласцівасці \"%1\" аб'екта %2 не існуе ці яна з'яўляецца непрыдатнай да "
+"запісу"
 
 #: Ubuntu/Components/plugin/ucalarm.cpp:42
 #: Ubuntu/Components/plugin/ucalarm.cpp:136
 msgid "Alarm"
-msgstr "Паведамленне"
+msgstr "Нагадванне"
 
 #: Ubuntu/Components/plugin/ucalarm.cpp:684
 #: Ubuntu/Components/plugin/ucalarm.cpp:716
 msgid "Alarm has a pending operation."
-msgstr "Паведамленне мае адкладзеную аперацыю."
+msgstr "У чарзе напамінкаў ёсць дзеянне."
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:188
 msgid "Usage: "
@@ -56,31 +58,33 @@ msgstr "Опцыі:"
 #: Ubuntu/Components/plugin/ucarguments.cpp:498
 #, qt-format
 msgid "%1 is expecting an additional argument: %2"
-msgstr "%1 чакае дадатковы аргумент: %2"
+msgstr "%1 патрэбны дадатковы аргумент: %2"
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:503
 #, qt-format
 msgid "%1 is expecting a value for argument: %2"
-msgstr "%1 чакае значэнне для аргументу: %2"
+msgstr "%1 патрэбнае значэнне длч аргументу: %2"
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:520
 #, qt-format
 msgid "%1 is expecting additional arguments: %2"
-msgstr "%1 чакае дадатковыя аргумэнты: %2"
+msgstr "%1 патрэбныя дадатковыя аргументы: %2"
 
 #: Ubuntu/Components/plugin/ucmousefilters.cpp:1064
 msgid "Ignoring AfterItem priority for InverseMouse filters."
-msgstr "Ігнараванне прыярытэтаў для інверсіі мышы."
+msgstr "Ігнаруем прыярытэтнасць AfterItem для фільтраў InverseMouse."
 
 #: Ubuntu/Components/plugin/ucstatesaver.cpp:46
 msgid "Warning: attachee must have an ID. State will not be saved."
 msgstr ""
+"Папярэджанне: аўтар дадання павінен мець ідэнтыфікатар. Стан не захоўваецца."
 
 #: Ubuntu/Components/plugin/ucstatesaver.cpp:56
 #, qt-format
 msgid ""
 "Warning: attachee's UUID is already registered, state won't be saved: %1"
 msgstr ""
+"Папярэджанне: UUID аўтара дадання ўжо зарэгістраваны, стан не захоўваецца: %1"
 
 #: Ubuntu/Components/plugin/ucstatesaver.cpp:102
 #, qt-format
@@ -88,55 +92,57 @@ msgid ""
 "All the parents must have an id.\n"
 "State saving disabled for %1, class %2"
 msgstr ""
+"Усе бацькоўскія аб'екты павінны мець ідэнтыфікатары.\n"
+"Захаванне стану для %1, клас %2 выключаны"
 
 #: Ubuntu/Components/plugin/uctheme.cpp:233
 msgid "Theme not found: "
-msgstr ""
+msgstr "Тэма не знойдзеная: "
 
 #: Ubuntu/Components/Popups/ComposerSheet.qml:80
 msgid "Cancel"
-msgstr ""
+msgstr "Скасаваць"
 
 #: Ubuntu/Components/Popups/ComposerSheet.qml:90
 msgid "Confirm"
-msgstr ""
+msgstr "Пацвердзіць"
 
 #: Ubuntu/Components/Popups/DefaultSheet.qml:89
 msgid "Close"
-msgstr ""
+msgstr "Закрыць"
 
 #: Ubuntu/Components/Popups/DefaultSheet.qml:99
 msgid "Done"
-msgstr ""
+msgstr "Выканана"
 
 #: Ubuntu/Components/TextInputPopover.qml:27
 msgid "Select All"
-msgstr ""
+msgstr "Абраць усё"
 
 #: Ubuntu/Components/TextInputPopover.qml:33
 msgid "Cut"
-msgstr ""
+msgstr "Выразаць"
 
 #: Ubuntu/Components/TextInputPopover.qml:42
 msgid "Copy"
-msgstr ""
+msgstr "Капіяваць"
 
 #: Ubuntu/Components/TextInputPopover.qml:49
 msgid "Paste"
-msgstr ""
+msgstr "Уставіць"
 
 #: Ubuntu/Components/Themes/Ambiance/ProgressBarStyle.qml:57
 msgid "In Progress"
-msgstr ""
+msgstr "У працэсе"
 
 #: Ubuntu/Components/Themes/Ambiance/PullToRefreshStyle.qml:28
 msgid "Release to refresh..."
-msgstr ""
+msgstr "Адпусціце для абнаўлення..."
 
 #: Ubuntu/Components/Themes/Ambiance/PullToRefreshStyle.qml:28
 msgid "Pull to refresh..."
-msgstr ""
+msgstr "Пацягніце для абнаўлення..."
 
 #: Ubuntu/Components/ToolbarItems.qml:142
 msgid "Back"
-msgstr ""
+msgstr "Назад"

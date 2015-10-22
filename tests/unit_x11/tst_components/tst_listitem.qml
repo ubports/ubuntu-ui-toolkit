@@ -902,43 +902,52 @@ Item {
 
         function test_drag_data() {
             return [
-                {tag: "Live 0->1 OK", live: true, from: 0, to: 1, count: 1, accept: true, indices:[1,0,2,3,4]},
-                {tag: "Live 0->2 OK", live: true, from: 0, to: 2, count: 2, accept: true, indices:[1,2,0,3,4]},
-                {tag: "Live 0->3 OK", live: true, from: 0, to: 3, count: 3, accept: true, indices:[1,2,3,0,4]},
-                {tag: "Live 3->0 OK", live: true, from: 3, to: 0, count: 3, accept: true, indices:[3,0,1,2,4]},
+                // note: Live mode adds an extra drop event when the mouse/touch is released
+                {tag: "Live 0->1 OK", live: true, from: 0, to: 1, count: 1, dropCount: 1, accept: true, indices:[1,0,2,3,4]},
+                {tag: "Live 0->2 OK", live: true, from: 0, to: 2, count: 2, dropCount: 1, accept: true, indices:[1,2,0,3,4]},
+                {tag: "Live 0->3 OK", live: true, from: 0, to: 3, count: 3, dropCount: 1, accept: true, indices:[1,2,3,0,4]},
+                {tag: "Live 3->0 OK", live: true, from: 3, to: 0, count: 3, dropCount: 1, accept: true, indices:[3,0,1,2,4]},
                         // do not accept moves
-                {tag: "Live 0->1 NOK", live: true, from: 0, to: 1, count: 0, accept: false, indices:[0,1,2,3,4]},
-                {tag: "Live 0->2 NOK", live: true, from: 0, to: 2, count: 0, accept: false, indices:[0,1,2,3,4]},
-                {tag: "Live 0->3 NOK", live: true, from: 0, to: 3, count: 0, accept: false, indices:[0,1,2,3,4]},
-                {tag: "Live 3->0 NOK", live: true, from: 3, to: 0, count: 0, accept: false, indices:[0,1,2,3,4]},
+                {tag: "Live 0->1 NOK", live: true, from: 0, to: 1, count: 0, dropCount: 1, accept: false, indices:[0,1,2,3,4]},
+                {tag: "Live 0->2 NOK", live: true, from: 0, to: 2, count: 0, dropCount: 1, accept: false, indices:[0,1,2,3,4]},
+                {tag: "Live 0->3 NOK", live: true, from: 0, to: 3, count: 0, dropCount: 1, accept: false, indices:[0,1,2,3,4]},
+                {tag: "Live 3->0 NOK", live: true, from: 3, to: 0, count: 0, dropCount: 1, accept: false, indices:[0,1,2,3,4]},
 
                         // non-live updates
-                {tag: "Drop 0->1 OK", live: false, from: 0, to: 1, count: 1, accept: true, indices:[1,0,2,3,4]},
-                {tag: "Drop 0->2 OK", live: false, from: 0, to: 2, count: 1, accept: true, indices:[1,2,0,3,4]},
-                {tag: "Drop 0->3 OK", live: false, from: 0, to: 3, count: 1, accept: true, indices:[1,2,3,0,4]},
-                {tag: "Drop 3->0 OK", live: false, from: 3, to: 0, count: 1, accept: true, indices:[3,0,1,2,4]},
+                {tag: "Drop 0->1 OK", live: false, from: 0, to: 1, count: 1, dropCount: 1, accept: true, indices:[1,0,2,3,4]},
+                {tag: "Drop 0->2 OK", live: false, from: 0, to: 2, count: 1, dropCount: 1, accept: true, indices:[1,2,0,3,4]},
+                {tag: "Drop 0->3 OK", live: false, from: 0, to: 3, count: 1, dropCount: 1, accept: true, indices:[1,2,3,0,4]},
+                {tag: "Drop 3->0 OK", live: false, from: 3, to: 0, count: 1, dropCount: 1, accept: true, indices:[3,0,1,2,4]},
                         // do not accept moves
-                {tag: "Drop 0->1 NOK", live: false, from: 0, to: 1, count: 0, accept: false, indices:[0,1,2,3,4]},
-                {tag: "Drop 0->2 NOK", live: false, from: 0, to: 2, count: 0, accept: false, indices:[0,1,2,3,4]},
-                {tag: "Drop 0->3 NOK", live: false, from: 0, to: 3, count: 0, accept: false, indices:[0,1,2,3,4]},
-                {tag: "Drop 3->0 NOK", live: false, from: 3, to: 0, count: 0, accept: false, indices:[0,1,2,3,4]},
+                {tag: "Drop 0->1 NOK", live: false, from: 0, to: 1, count: 0, dropCount: 1, accept: false, indices:[0,1,2,3,4]},
+                {tag: "Drop 0->2 NOK", live: false, from: 0, to: 2, count: 0, dropCount: 1, accept: false, indices:[0,1,2,3,4]},
+                {tag: "Drop 0->3 NOK", live: false, from: 0, to: 3, count: 0, dropCount: 1, accept: false, indices:[0,1,2,3,4]},
+                {tag: "Drop 3->0 NOK", live: false, from: 3, to: 0, count: 0, dropCount: 1, accept: false, indices:[0,1,2,3,4]},
             ];
         }
 
         function test_drag(data) {
             var moveCount = 0;
+            var dropCount = 0;
             function liveUpdate(event) {
                 if (event.status == ListItemDrag.Started) {
                     return;
                 }
-                if (data.accept) {
-                    moveCount++;
-                    listView.model.move(event.from, event.to, 1);
+                if (event.status == ListItemDrag.Moving) {
+                    if (data.accept) {
+                        moveCount++;
+                        listView.model.move(event.from, event.to, 1);
+                    }
+                    event.accept = data.accept;
                 }
-                event.accept = data.accept;
+                if (event.status == ListItemDrag.Dropped) {
+                    dropCount++;
+                    event.accept = data.accept;
+                }
             }
             function singleDrop(event) {
                 if (event.status == ListItemDrag.Dropped) {
+                    dropCount++;
                     if (data.accept) {
                         moveCount++;
                         listView.model.move(event.from, event.to, 1);
@@ -959,6 +968,7 @@ Item {
             toggleDragMode(listView, true);
             drag(listView, data.from, data.to);
             compare(moveCount, data.count, "Move did not happen or more than one item was moved");
+            compare(dropCount, data.dropCount, "Dropped amount differs");
             // compare array indices
             for (var i in data.indices) {
                 compare(listView.model.get(i).data, data.indices[i], "data at index " + i + " is not the expected one");

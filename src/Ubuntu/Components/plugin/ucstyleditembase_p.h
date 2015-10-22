@@ -25,8 +25,9 @@
 
 class QQuickMouseArea;
 class UCStyledItemBase;
-class UCStyledItemBasePrivate : public QQuickItemPrivate, public UCThemingExtension
+class UCStyledItemBasePrivate : public QQuickItemPrivate
 {
+    Q_INTERFACES(UCThemingExtension)
     Q_DECLARE_PUBLIC(UCStyledItemBase)
 public:
 
@@ -55,15 +56,13 @@ public:
     virtual void postStyleChanged() {}
     virtual bool loadStyleItem(bool animated = true);
 
-    virtual void preThemeChanged();
-    virtual void postThemeChanged();
-
 public:
 
     QPointer<QQmlContext> styleItemContext;
     QString styleDocument;
     QQmlComponent *styleComponent;
     QQuickItem *styleItem;
+    quint16 styleVersion;
     bool activeFocusOnPress:1;
     bool wasStyleLoaded:1;
 

@@ -53,6 +53,7 @@ class QQuickListView(_flickable.QQuickFlickable):
             element = self._find_element(object_name, direction)
         self.swipe_child_into_view(element)
         self.pointing_device.click_object(element)
+        return element
 
     @autopilot_logging.log_action(logger.info)
     def _find_element(self, object_name, direction=None):

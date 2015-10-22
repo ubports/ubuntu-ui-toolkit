@@ -20,20 +20,22 @@
 #define UCSTYLEDITEMBASE_H
 
 #include <QtQuick/QQuickItem>
+#include "ucthemingextension.h"
 
 class UCStyledItemBasePrivate;
 class UCTheme;
 class UCStyleHints;
-class UCStyledItemBase : public QQuickItem
+class UCStyledItemBase : public QQuickItem, public UCThemingExtension
 {
     Q_OBJECT
+    Q_INTERFACES(UCThemingExtension)
     Q_PROPERTY(bool activeFocusOnPress
                READ activefocusOnPress WRITE setActiveFocusOnPress
                NOTIFY activeFocusOnPressChanged REVISION 1)
     Q_PRIVATE_PROPERTY(UCStyledItemBase::d_func(), QQmlComponent *style READ style WRITE setStyle RESET resetStyle NOTIFY styleChanged FINAL DESIGNABLE false)
     Q_PRIVATE_PROPERTY(UCStyledItemBase::d_func(), QQuickItem *__styleInstance READ styleInstance NOTIFY styleInstanceChanged FINAL DESIGNABLE false)
     Q_PRIVATE_PROPERTY(UCStyledItemBase::d_func(), QString styleName READ styleName WRITE setStyleName NOTIFY styleNameChanged FINAL REVISION 2)
-    Q_PRIVATE_PROPERTY(d_func(), UCTheme *theme READ getTheme WRITE setTheme RESET resetTheme NOTIFY themeChanged FINAL REVISION 2)
+    Q_PROPERTY(UCTheme *theme READ getTheme WRITE setTheme RESET resetTheme NOTIFY themeChanged FINAL REVISION 2)
 public:
     explicit UCStyledItemBase(QQuickItem *parent = 0);
 
@@ -53,11 +55,13 @@ Q_SIGNALS:
 protected:
     UCStyledItemBase(UCStyledItemBasePrivate &, QQuickItem *parent);
 
-    void classBegin();
+    // from UCThemingExtension interface
+    virtual void preThemeChanged();
+    virtual void postThemeChanged();
+
     void componentComplete();
     void mousePressEvent(QMouseEvent *event);
     bool childMouseEventFilter(QQuickItem *child, QEvent *event);
-    void customEvent(QEvent *event);
 
 private:
     Q_DECLARE_PRIVATE(UCStyledItemBase)
