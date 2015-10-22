@@ -19,7 +19,6 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QHash>
-#include <QtCore/QVector>
 #include <signal.h>
 
 class QSocketNotifier;
@@ -33,7 +32,7 @@ public:
         Terminate = SIGTERM
     };
 
-    typedef QPair<QVector<int>, QSocketNotifier*> HandlerType;
+    typedef QPair<std::array<int, 2>, QSocketNotifier*> HandlerType;
 
     static UnixSignalHandler &instance()
     {
