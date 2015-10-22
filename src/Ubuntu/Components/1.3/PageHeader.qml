@@ -214,6 +214,5 @@ Header {
         height: visible ? implicitHeight : 0
     }
 
-    theme.version: Ubuntu.toolkitVersion
     styleName: "PageHeaderStyle"
 }

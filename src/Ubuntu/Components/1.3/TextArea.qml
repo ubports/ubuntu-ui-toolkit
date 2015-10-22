@@ -886,6 +886,5 @@ Ubuntu.StyledItem {
         }
     }
 
-    theme.version: Ubuntu.Ubuntu.toolkitVersion
     styleName: "TextAreaStyle"
 }

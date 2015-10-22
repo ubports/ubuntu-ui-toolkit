@@ -22,10 +22,11 @@
 #include <QtQuick/private/qquickitem_p.h>
 #include "ucstyleditembase.h"
 #include "ucthemingextension.h"
+#include "ucimportversionchecker_p.h"
 
 class QQuickMouseArea;
 class UCStyledItemBase;
-class UCStyledItemBasePrivate : public QQuickItemPrivate
+class UCStyledItemBasePrivate : public QQuickItemPrivate, public UCImportVersionChecker
 {
     Q_INTERFACES(UCThemingExtension)
     Q_DECLARE_PUBLIC(UCStyledItemBase)
@@ -55,6 +56,9 @@ public:
     virtual void preStyleChanged();
     virtual void postStyleChanged() {}
     virtual bool loadStyleItem(bool animated = true);
+
+    // from UCImportVersionChecker
+    virtual QString propertyForVersion(quint16 version) const;
 
 public:
 

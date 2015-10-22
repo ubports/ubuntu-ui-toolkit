@@ -28,7 +28,7 @@
 UCStyledItemBasePrivate::UCStyledItemBasePrivate()
     : styleComponent(Q_NULLPTR)
     , styleItem(Q_NULLPTR)
-    , styleVersion(LATEST_UITK_VERSION)
+    , styleVersion(0)
     , activeFocusOnPress(false)
     , wasStyleLoaded(false)
 {
@@ -461,20 +461,21 @@ void UCStyledItemBase::postThemeChanged()
     d->loadStyleItem();
 }
 
+QString UCStyledItemBasePrivate::propertyForVersion(quint16 version) const
+{
+    switch (MINOR_VERSION(version)) {
+    case 3: return QStringLiteral("theme");
+    default: return QString();
+    }
+}
+
 void UCStyledItemBase::componentComplete()
 {
     QQuickItem::componentComplete();
     Q_D(UCStyledItemBase);
-
-    QQmlData *data = QQmlData::get(this);
-    QQmlContextData *cdata = QQmlContextData::get(qmlContext(this));
-    QQmlPropertyData l;
-    QQmlPropertyData *pdata = QQmlPropertyCache::property(qmlEngine(this), this, QStringLiteral("theme"), cdata, l);
-    // FIXME MainView internal styler uses theme property, meaning imports13 will be true,
-    // therefore we must check the type of the property as well in case anyone else overrides it
-    d->styleVersion = data->propertyCache->isAllowedInRevision(pdata) && (property("theme").type() != QVariant::String)
-            ? BUILD_VERSION(1, 3)
-            : BUILD_VERSION(1, 2);
+    // make sure the theme version is up to date
+    d->styleVersion = d->importVersion(this);
+    UCTheme::checkMixedVersionImports(this, d->styleVersion);
     // no animation at this time
     // prepare style context if not been done yet
     d->postStyleChanged();

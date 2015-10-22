@@ -25,14 +25,13 @@
 */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.3 as Toolkit
+import Ubuntu.Components 1.3
 
-Toolkit.StyledItem {
+StyledItem {
     id: root
     /*!
       \deprecated
       Specifies whether the component is on the visible area of the Flickable or not.
     */
-    theme.version: Toolkit.Ubuntu.toolkitVersion
     property bool onScreen: true
 }

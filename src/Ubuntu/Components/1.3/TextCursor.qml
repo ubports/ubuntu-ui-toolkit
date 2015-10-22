@@ -41,7 +41,6 @@ Ubuntu.StyledItem {
                                            handler.main.cursorDelegate :
                                            __styleInstance.cursorDelegate
 
-    theme.version: Ubuntu.Ubuntu.toolkitVersion
     styleName: "TextCursorStyle"
 
     objectName: "textCursor"

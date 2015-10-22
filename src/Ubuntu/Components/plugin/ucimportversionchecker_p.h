@@ -12,13 +12,23 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
-import QtQuick 2.4
-import Ubuntu.Components 1.3
 
-StyledItem {
-    id: item
-    theme.name: "TestModule.TestTheme"
-    theme.version: Ubuntu.version(1, 0)
-    styleName: "TestStyle"
-}
+#ifndef UCIMPORTVERSIONCHECKER_P_H
+#define UCIMPORTVERSIONCHECKER_P_H
+
+#include <QtCore>
+
+class UCImportVersionChecker
+{
+public:
+    UCImportVersionChecker() {}
+
+    virtual QString propertyForVersion(quint16 version) const = 0;
+
+    virtual quint16 importVersion(QObject *object);
+};
+
+#endif // UCIMPORTVERSIONCHECKER_P_H

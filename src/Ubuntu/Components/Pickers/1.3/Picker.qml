@@ -165,7 +165,6 @@ StyledItem {
 
     activeFocusOnPress: true
 
-    theme.version: Ubuntu.toolkitVersion
     styleName: "PickerStyle"
 
     /*! \internal */
