@@ -46,13 +46,13 @@ Item {
         anchors.fill: dragArea
     }
 
-    DragGesture {
+    DirectionalDragArea {
         id: dragArea
         objectName: "hnDragArea"
 
         width: units.gu(5)
 
-        direction: DragGesture.Leftwards
+        direction: DirectionalDragArea.Leftwards
 
         onDraggingChanged: {
             if (dragging) {

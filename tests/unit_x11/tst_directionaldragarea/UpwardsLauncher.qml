@@ -19,20 +19,23 @@ import QtQuick 2.4
 import Ubuntu.Components 1.3
 
 Item {
-    objectName: "rightwardsLauncher"
+    id: root
 
-    function reset() { launcher.x = -launcher.width }
+    function reset() { launcher.y = Qt.binding(function(){return root.height;}); }
 
     Rectangle {
         id: launcher
         color: "blue"
-        width: units.gu(15)
-        height: parent.height
-        x: followDragArea()
-        y: 0
+        width: parent.width
+        height: units.gu(15)
+        x: 0
+        y: root.height
 
         function followDragArea() {
-            return dragArea.distance < width ? -width + dragArea.distance : 0
+            return dragArea.distance > -height ?
+                        root.height + dragArea.distance
+                    :
+                        root.height - height
         }
     }
 
@@ -43,34 +46,31 @@ Item {
         anchors.fill: dragArea
     }
 
-    DragGesture {
+    DirectionalDragArea {
         id: dragArea
-        objectName: "hpDragArea"
+        objectName: "vnDragArea"
 
-        // give some room for items to be dynamically stacked right behind him
-        z: 10.0
+        height: units.gu(5)
 
-        width: units.gu(5)
-
-        direction: DragGesture.Rightwards
+        direction: DirectionalDragArea.Upwards
 
         onDraggingChanged: {
             if (dragging) {
-                launcher.x = Qt.binding(launcher.followDragArea)
+                launcher.y = Qt.binding(launcher.followDragArea)
             }
         }
 
         anchors {
             left: parent.left
-            top: parent.top
+            right: parent.right
             bottom: parent.bottom
         }
     }
 
     Label {
-        text: "Rightwards"
-        anchors.left: parent.left
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.leftMargin: units.gu(1)
+        text: "Upwards"
+        anchors.bottom: parent.bottom
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottomMargin: units.gu(1)
     }
 }

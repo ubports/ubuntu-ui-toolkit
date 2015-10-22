@@ -18,10 +18,12 @@ import QtQuick 2.4
 import Ubuntu.Components 1.3
 
 Template {
-    objectName: "dragGestureTemplate"
+    objectName: "directionalDragAreaTemplate"
+    scrollable: !(upwards.dragging | downwards.dragging |
+                rightwards.dragging | leftwards.dragging)
 
     TemplateSection {
-        className: "DragGesture"
+        className: "DirectionalDragArea"
 
         TemplateRow {
             title: i18n.tr("Upwards")
@@ -30,8 +32,9 @@ Template {
                 height: units.gu(20)
                 color: theme.palette.normal.foreground
 
-                DragGesture {
-                    direction: DragGesture.Upwards
+                DirectionalDragArea {
+                    id: upwards
+                    direction: DirectionalDragArea.Upwards
                     anchors {
                         left: parent.left
                         right: parent.right
@@ -57,8 +60,9 @@ Template {
                 height: units.gu(20)
                 color: theme.palette.normal.foreground
 
-                DragGesture {
-                    direction: DragGesture.Downwards
+                DirectionalDragArea {
+                    id: downwards
+                    direction: DirectionalDragArea.Downwards
                     anchors {
                         left: parent.left
                         right: parent.right
@@ -84,8 +88,9 @@ Template {
                 height: units.gu(20)
                 color: theme.palette.normal.foreground
 
-                DragGesture {
-                    direction: DragGesture.Rightwards
+                DirectionalDragArea {
+                    id: rightwards
+                    direction: DirectionalDragArea.Rightwards
                     anchors {
                         left: parent.left
                         top: parent.top
@@ -113,8 +118,9 @@ Template {
                 height: units.gu(20)
                 color: theme.palette.normal.foreground
 
-                DragGesture {
-                    direction: DragGesture.Leftwards
+                DirectionalDragArea {
+                    id: leftwards
+                    direction: DirectionalDragArea.Leftwards
                     anchors {
                         right: parent.right
                         top: parent.top

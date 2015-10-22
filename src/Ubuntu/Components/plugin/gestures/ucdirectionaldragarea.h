@@ -28,7 +28,7 @@
 
 class TouchOwnershipEvent;
 class UnownedTouchEvent;
-class UCDragGesturePrivate;
+class UCDirectionalDragAreaPrivate;
 
 /*
  An area that detects axis-aligned single-finger drag gestures
@@ -39,7 +39,7 @@ class UCDragGesturePrivate;
 
  See doc/DirectionalDragArea.svg
  */
-class UBUNTUGESTURESQML_EXPORT UCDragGesture : public QQuickItem
+class UBUNTUGESTURESQML_EXPORT UCDirectionalDragArea : public QQuickItem
 {
     Q_OBJECT
 
@@ -47,11 +47,11 @@ class UBUNTUGESTURESQML_EXPORT UCDragGesture : public QQuickItem
     Q_PROPERTY(Direction direction READ direction WRITE setDirection NOTIFY directionChanged)
 
     // The distance travelled by the finger along the axis specified by
-    // UCDragGesture's direction.
+    // UCDirectionalDragArea's direction.
     Q_PROPERTY(qreal distance READ distance NOTIFY distanceChanged)
 
     // The distance travelled by the finger along the axis specified by
-    // UCDragGesture's direction in scene coordinates
+    // UCDirectionalDragArea's direction in scene coordinates
     Q_PROPERTY(qreal sceneDistance READ sceneDistance NOTIFY sceneDistanceChanged)
 
     // Position of the touch point performing the drag relative to this item.
@@ -87,7 +87,7 @@ public:
         Vertical // Along the Y axis, in any direction
     };
 
-    UCDragGesture(QQuickItem *parent = 0);
+    UCDirectionalDragArea(QQuickItem *parent = 0);
 
     Direction direction() const;
     void setDirection(Direction);
@@ -114,7 +114,7 @@ public:
       Thus to remove a variable that qmltests cannot really control, namely time, this
       function removes all constraints that are sensible to elapsed time.
 
-      This effectively makes the UCDragGesture easier to fool.
+      This effectively makes the UCDirectionalDragArea easier to fool.
      */
     Q_INVOKABLE void removeTimeConstraints();
 
@@ -133,7 +133,7 @@ protected:
     void itemChange(ItemChange change, const ItemChangeData &value) override;
 
 public: // so tests can access it
-    UCDragGesturePrivate *d;
+    UCDirectionalDragAreaPrivate *d;
 };
 
 #endif // DIRECTIONAL_DRAG_AREA_H

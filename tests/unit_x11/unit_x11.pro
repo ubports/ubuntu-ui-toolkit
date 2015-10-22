@@ -15,4 +15,4 @@ SUBDIRS += tst_components \
     tst_animator \
     tst_serviceproperties \
     tst_subtheming \
-    tst_draggesture
+    tst_directionaldragarea

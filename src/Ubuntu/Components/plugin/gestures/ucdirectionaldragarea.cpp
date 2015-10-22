@@ -18,7 +18,7 @@
 #define ACTIVETOUCHESINFO_DEBUG 0
 #define DIRECTIONALDRAGAREA_DEBUG 0
 
-#include "ucdraggesture_p.h"
+#include "ucdirectionaldragarea_p.h"
 
 #include <QQuickWindow>
 #include <QtCore/qmath.h>
@@ -42,11 +42,11 @@ using namespace UbuntuGestures;
 //#include "DebugHelpers.h"
 
 namespace {
-const char *statusToString(UCDragGesturePrivate::Status status)
+const char *statusToString(UCDirectionalDragAreaPrivate::Status status)
 {
-    if (status == UCDragGesturePrivate::WaitingForTouch) {
+    if (status == UCDirectionalDragAreaPrivate::WaitingForTouch) {
         return "WaitingForTouch";
-    } else if (status == UCDragGesturePrivate::Undecided) {
+    } else if (status == UCDirectionalDragAreaPrivate::Undecided) {
         return "Undecided";
     } else {
         return "Recognized";
@@ -111,31 +111,31 @@ QString touchEventToString(const QTouchEvent *ev)
 class Direction
 {
 public:
-    static bool isHorizontal(UCDragGesture::Direction type)
+    static bool isHorizontal(UCDirectionalDragArea::Direction type)
     {
-        return type == UCDragGesture::Leftwards
-            || type == UCDragGesture::Rightwards
-            || type == UCDragGesture::Horizontal;
+        return type == UCDirectionalDragArea::Leftwards
+            || type == UCDirectionalDragArea::Rightwards
+            || type == UCDirectionalDragArea::Horizontal;
     }
 
-    static bool isVertical(UCDragGesture::Direction type)
+    static bool isVertical(UCDirectionalDragArea::Direction type)
     {
-        return type == UCDragGesture::Upwards
-            || type == UCDragGesture::Downwards
-            || type == UCDragGesture::Vertical;
+        return type == UCDirectionalDragArea::Upwards
+            || type == UCDirectionalDragArea::Downwards
+            || type == UCDirectionalDragArea::Vertical;
     }
 
-    static bool isPositive(UCDragGesture::Direction type)
+    static bool isPositive(UCDirectionalDragArea::Direction type)
     {
-        return type == UCDragGesture::Rightwards
-            || type == UCDragGesture::Downwards
-            || type == UCDragGesture::Horizontal
-            || type == UCDragGesture::Vertical;
+        return type == UCDirectionalDragArea::Rightwards
+            || type == UCDirectionalDragArea::Downwards
+            || type == UCDirectionalDragArea::Horizontal
+            || type == UCDirectionalDragArea::Vertical;
     }
 };
 /*!
- * \qmltype DragGesture
- * \instantiates UCDragGesture
+ * \qmltype DirectionalDragArea
+ * \instantiates UCDirectionalDragArea
  * \inherits Item
  * \inqmlmodule Ubuntu.Components 1.3
  * \since Ubuntu.Components 1.3
@@ -143,21 +143,18 @@ public:
  * \brief An area that detects axis-aligned single-finger drag gestures.
  *
  * The component can be used to detect gestures of a certain direction, and can
- * grab gestures started on a component placed behind of the DragGesture area.
- * The gesture is detected on the DragGesture area, therefore the size must be
+ * grab gestures started on a component placed behind of the DirectionalDragArea.
+ * The gesture is detected on the DirectionalDragArea, therefore the size must be
  * chosen carefully so it can properly detect the gesture.
  *
  * The gesture direction is specified by the \l direction property. The recognized
  * and captured gesture is reported through the \l dragging property, which becomes
- * \c true when the gesture is detected. If there was a component under the DragGesture,
- * the gesture will be cancelled on that component.
+ * \c true when the gesture is detected. If there was a component under the
+ * DirectionalDragArea, the gesture will be cancelled on that component.
  *
- * The following image depicts the way the gesture is recognized.
- * \image DragGesture.svg
- * The drag recognision is performed in a distanceThreshold, which is the size
- * of the DragGesture component (either width or height, depending on the direction
- * chosen). If the drag deviates too much from the component's direction, recognition
- * will fail, as well as if the drag or the flick is too short. Once the drag is
+ * The drag recognition is performed within the component area in the specified
+ * direction. If the drag deviates too much from this, recognition will fail,
+ * as well as if the drag or the flick is too short. Once the drag is
  * intercepted, the gesture will be followed even after it leaves the detection area.
  *
  * Example:
@@ -170,14 +167,15 @@ public:
  *     height: units.gu(70)
  *
  *     Page {
- *         title: "DragGesture sample"
- *         DragGesture {
+ *         title: "DirectionalDragArea sample"
+ *         DirectionalDragArea {
  *             anchors {
  *                 left: parent.left
- *                 top: parent.top
+ *                 right: parent.right
  *                 bottom: parent.bottom
  *             }
  *             height: units.gu(5)
+ *             direction: DirectionalDragArea.Upwards
  *             Label {
  *                 text: "Drag upwards"
  *                 anchors {
@@ -189,23 +187,23 @@ public:
  *     }
  * }
  * \endqml
- * \note When used with a Flickable (or ListView, GridView) always put the DragGesture
- * next to the Flickable as sibling.
+ * \note When used with a Flickable (or ListView, GridView) always put the
+ * DirectionalDragArea next to the Flickable as sibling.
  */
-UCDragGesture::UCDragGesture(QQuickItem *parent)
+UCDirectionalDragArea::UCDirectionalDragArea(QQuickItem *parent)
     : QQuickItem(parent)
-    , d(new UCDragGesturePrivate(this))
+    , d(new UCDirectionalDragAreaPrivate(this))
 {
     d->setRecognitionTimer(new Timer(this));
     d->recognitionTimer->setInterval(d->maxTime);
     d->recognitionTimer->setSingleShot(true);
 
-    connect(this, &QQuickItem::enabledChanged, d, &UCDragGesturePrivate::giveUpIfDisabledOrInvisible);
-    connect(this, &QQuickItem::visibleChanged, d, &UCDragGesturePrivate::giveUpIfDisabledOrInvisible);
+    connect(this, &QQuickItem::enabledChanged, d, &UCDirectionalDragAreaPrivate::giveUpIfDisabledOrInvisible);
+    connect(this, &QQuickItem::visibleChanged, d, &UCDirectionalDragAreaPrivate::giveUpIfDisabledOrInvisible);
 }
 
 /*!
- * \qmlproperty enum DragGesture::direction
+ * \qmlproperty enum DirectionalDragArea::direction
  * The direction in which the gesture should move in order to be recognized.
  * \table
  * \header
@@ -231,12 +229,12 @@ UCDragGesture::UCDragGesture(QQuickItem *parent)
  *  \li Along the Y axis, in any direction
  * \endtable
  */
-UCDragGesture::Direction UCDragGesture::direction() const
+UCDirectionalDragArea::Direction UCDirectionalDragArea::direction() const
 {
     return d->direction;
 }
 
-void UCDragGesture::setDirection(Direction direction)
+void UCDirectionalDragArea::setDirection(Direction direction)
 {
     if (direction != d->direction) {
         d->direction = direction;
@@ -244,7 +242,7 @@ void UCDragGesture::setDirection(Direction direction)
     }
 }
 
-void UCDragGesturePrivate::setDistanceThreshold(qreal value)
+void UCDirectionalDragAreaPrivate::setDistanceThreshold(qreal value)
 {
     if (distanceThreshold != value) {
         distanceThreshold = value;
@@ -252,7 +250,7 @@ void UCDragGesturePrivate::setDistanceThreshold(qreal value)
     }
 }
 
-void UCDragGesturePrivate::setMaxTime(int value)
+void UCDirectionalDragAreaPrivate::setMaxTime(int value)
 {
     if (maxTime != value) {
         maxTime = value;
@@ -260,7 +258,7 @@ void UCDragGesturePrivate::setMaxTime(int value)
     }
 }
 
-void UCDragGesturePrivate::setRecognitionTimer(UbuntuGestures::AbstractTimer *timer)
+void UCDirectionalDragAreaPrivate::setRecognitionTimer(UbuntuGestures::AbstractTimer *timer)
 {
     int interval = 0;
     bool timerWasRunning = false;
@@ -279,24 +277,24 @@ void UCDragGesturePrivate::setRecognitionTimer(UbuntuGestures::AbstractTimer *ti
     timer->setInterval(interval);
     timer->setSingleShot(wasSingleShot);
     connect(timer, &UbuntuGestures::AbstractTimer::timeout,
-            this, &UCDragGesturePrivate::rejectGesture);
+            this, &UCDirectionalDragAreaPrivate::rejectGesture);
     if (timerWasRunning) {
         recognitionTimer->start();
     }
 }
 
-void UCDragGesturePrivate::setTimeSource(const SharedTimeSource &timeSource)
+void UCDirectionalDragAreaPrivate::setTimeSource(const SharedTimeSource &timeSource)
 {
     this->timeSource = timeSource;
     activeTouches.m_timeSource = timeSource;
 }
 
 /*!
- * \qmlproperty real DragGesture::distance
+ * \qmlproperty real DirectionalDragArea::distance
  * \readonly
  * The distance travelled by the finger along the axis specified by \l direction.
  */
-qreal UCDragGesture::distance() const
+qreal UCDirectionalDragArea::distance() const
 {
     if (::Direction::isHorizontal(d->direction)) {
         return d->publicPos.x() - d->startPos.x();
@@ -305,77 +303,77 @@ qreal UCDragGesture::distance() const
     }
 }
 
-void UCDragGesturePrivate::updateSceneDistance()
+void UCDirectionalDragAreaPrivate::updateSceneDistance()
 {
     QPointF totalMovement = publicScenePos - startScenePos;
     sceneDistance = projectOntoDirectionVector(totalMovement);
 }
 
 /*!
- * \qmlproperty real DragGesture::sceneDistance
+ * \qmlproperty real DirectionalDragArea::sceneDistance
  * \readonly
  * The distance travelled by the finger along the axis specified by \l direction
  * in scene coordinates
  */
-qreal UCDragGesture::sceneDistance() const
+qreal UCDirectionalDragArea::sceneDistance() const
 {
     return d->sceneDistance;
 }
 
 /*!
- * \qmlproperty point DragGesture::touchPos
+ * \qmlproperty point DirectionalDragArea::touchPos
  * \readonly
  * Position of the touch point performing the drag relative to this item.
  */
-QPointF UCDragGesture::touchPos() const
+QPointF UCDirectionalDragArea::touchPos() const
 {
     return d->publicPos;
 }
 
 /*!
- * \qmlproperty point DragGesture::touchScenePos
+ * \qmlproperty point DirectionalDragArea::touchScenePos
  * \readonly
  * Position of the touch point performing the drag, in scene's coordinates.
  */
-QPointF UCDragGesture::touchScenePos() const
+QPointF UCDirectionalDragArea::touchScenePos() const
 {
     return d->publicScenePos;
 }
 
 /*!
- * \qmlproperty bool DragGesture::dragging
+ * \qmlproperty bool DirectionalDragArea::dragging
  * \readonly
  * Reports whether a drag gesture is taking place.
  */
-bool UCDragGesture::dragging() const
+bool UCDirectionalDragArea::dragging() const
 {
-    return d->status == UCDragGesturePrivate::Recognized;
+    return d->status == UCDirectionalDragAreaPrivate::Recognized;
 }
 
 /*!
- * \qmlproperty bool DragGesture::pressed
+ * \qmlproperty bool DirectionalDragArea::pressed
  * \readonly
  * Reports whether the drag area is pressed.
  */
-bool UCDragGesture::pressed() const
+bool UCDirectionalDragArea::pressed() const
 {
-    return d->status != UCDragGesturePrivate::WaitingForTouch;
+    return d->status != UCDirectionalDragAreaPrivate::WaitingForTouch;
 }
 
 /*!
- * \qmlproperty bool DragGesture::immediateRecognition
+ * \qmlproperty bool DirectionalDragArea::immediateRecognition
  * \readonly
  * Drives whether the gesture should be recognized as soon as the touch lands on
  * the area. With this property set it will work the same way as a MultiPointTouchArea,
  *
  * Defaults to false. In most cases this should not be set.
  */
-bool UCDragGesture::immediateRecognition() const
+bool UCDirectionalDragArea::immediateRecognition() const
 {
     return d->immediateRecognition;
 }
 
-void UCDragGesture::setImmediateRecognition(bool enabled)
+void UCDirectionalDragArea::setImmediateRecognition(bool enabled)
 {
     if (d->immediateRecognition != enabled) {
         d->immediateRecognition = enabled;
@@ -383,14 +381,14 @@ void UCDragGesture::setImmediateRecognition(bool enabled)
     }
 }
 
-void UCDragGesture::removeTimeConstraints()
+void UCDirectionalDragArea::removeTimeConstraints()
 {
     d->setMaxTime(60 * 60 * 1000);
     d->compositionTime = 0;
     ddaDebug("removed time constraints");
 }
 
-bool UCDragGesture::event(QEvent *event)
+bool UCDirectionalDragArea::event(QEvent *event)
 {
     if (event->type() == TouchOwnershipEvent::touchOwnershipEventType()) {
         d->touchOwnershipEvent(static_cast<TouchOwnershipEvent *>(event));
@@ -403,7 +401,7 @@ bool UCDragGesture::event(QEvent *event)
     }
 }
 
-void UCDragGesturePrivate::touchOwnershipEvent(TouchOwnershipEvent *event)
+void UCDirectionalDragAreaPrivate::touchOwnershipEvent(TouchOwnershipEvent *event)
 {
     if (event->gained()) {
         QVector<int> ids;
@@ -432,7 +430,7 @@ void UCDragGesturePrivate::touchOwnershipEvent(TouchOwnershipEvent *event)
     }
 }
 
-void UCDragGesturePrivate::unownedTouchEvent(UnownedTouchEvent *unownedTouchEvent)
+void UCDirectionalDragAreaPrivate::unownedTouchEvent(UnownedTouchEvent *unownedTouchEvent)
 {
     QTouchEvent *event = unownedTouchEvent->touchEvent();
 
@@ -456,11 +454,11 @@ void UCDragGesturePrivate::unownedTouchEvent(UnownedTouchEvent *unownedTouchEven
     activeTouches.update(event);
 }
 
-void UCDragGesturePrivate::unownedTouchEvent_undecided(UnownedTouchEvent *unownedTouchEvent)
+void UCDirectionalDragAreaPrivate::unownedTouchEvent_undecided(UnownedTouchEvent *unownedTouchEvent)
 {
     const QTouchEvent::TouchPoint *touchPoint = fetchTargetTouchPoint(unownedTouchEvent->touchEvent());
     if (!touchPoint) {
-        qCritical() << "UCDragGesture[status=Undecided]: touch " << touchId
+        qCritical() << "UCDirectionalDragArea[status=Undecided]: touch " << touchId
             << "missing from UnownedTouchEvent without first reaching state Qt::TouchPointReleased. "
                "Considering it as released.";
 
@@ -515,7 +513,7 @@ void UCDragGesturePrivate::unownedTouchEvent_undecided(UnownedTouchEvent *unowne
     }
 }
 
-void UCDragGesture::touchEvent(QTouchEvent *event)
+void UCDirectionalDragArea::touchEvent(QTouchEvent *event)
 {
     // TODO: Consider when more than one touch starts in the same event (although it's not possible
     //       with Mir's android-input). Have to track them all. Consider it a plus/bonus.
@@ -528,10 +526,10 @@ void UCDragGesture::touchEvent(QTouchEvent *event)
     }
 
     switch (d->status) {
-        case UCDragGesturePrivate::WaitingForTouch:
+        case UCDirectionalDragAreaPrivate::WaitingForTouch:
             d->touchEvent_absent(event);
             break;
-        case UCDragGesturePrivate::Undecided:
+        case UCDirectionalDragAreaPrivate::Undecided:
             d->touchEvent_undecided(event);
             break;
         default: // Recognized:
@@ -542,7 +540,7 @@ void UCDragGesture::touchEvent(QTouchEvent *event)
     d->activeTouches.update(event);
 }
 
-void UCDragGesturePrivate::touchEvent_absent(QTouchEvent *event)
+void UCDirectionalDragAreaPrivate::touchEvent_absent(QTouchEvent *event)
 {
     // TODO: accept/reject is for the whole event, not per touch id. See how that affects us.
 
@@ -580,7 +578,7 @@ void UCDragGesturePrivate::touchEvent_absent(QTouchEvent *event)
     if (allGood) {
         allGood = sanityCheckRecognitionProperties();
         if (!allGood) {
-            qWarning("UCDragGesture: recognition properties are wrongly set. Gesture recognition"
+            qWarning("UCDirectionalDragArea: recognition properties are wrongly set. Gesture recognition"
                 " is impossible");
         }
     }
@@ -618,7 +616,7 @@ void UCDragGesturePrivate::touchEvent_absent(QTouchEvent *event)
     }
 }
 
-void UCDragGesturePrivate::touchEvent_undecided(QTouchEvent *event)
+void UCDirectionalDragAreaPrivate::touchEvent_undecided(QTouchEvent *event)
 {
     Q_ASSERT(fetchTargetTouchPoint(event) == nullptr);
 
@@ -640,12 +638,12 @@ void UCDragGesturePrivate::touchEvent_undecided(QTouchEvent *event)
     }
 }
 
-void UCDragGesturePrivate::touchEvent_recognized(QTouchEvent *event)
+void UCDirectionalDragAreaPrivate::touchEvent_recognized(QTouchEvent *event)
 {
     const QTouchEvent::TouchPoint *touchPoint = fetchTargetTouchPoint(event);
 
     if (!touchPoint) {
-        qCritical() << "UCDragGesture[status=Recognized]: touch " << touchId
+        qCritical() << "UCDirectionalDragArea[status=Recognized]: touch " << touchId
             << "missing from QTouchEvent without first reaching state Qt::TouchPointReleased. "
                "Considering it as released.";
         setStatus(WaitingForTouch);
@@ -659,7 +657,7 @@ void UCDragGesturePrivate::touchEvent_recognized(QTouchEvent *event)
     }
 }
 
-void UCDragGesturePrivate::watchPressedTouchPoints(const QList<QTouchEvent::TouchPoint> &touchPoints)
+void UCDirectionalDragAreaPrivate::watchPressedTouchPoints(const QList<QTouchEvent::TouchPoint> &touchPoints)
 {
     for (int i = 0; i < touchPoints.count(); ++i) {
         const QTouchEvent::TouchPoint &touchPoint = touchPoints.at(i);
@@ -669,18 +667,18 @@ void UCDragGesturePrivate::watchPressedTouchPoints(const QList<QTouchEvent::Touc
     }
 }
 
-bool UCDragGesturePrivate::recognitionIsDisabled() const
+bool UCDirectionalDragAreaPrivate::recognitionIsDisabled() const
 {
     return immediateRecognition || (distanceThreshold <= 0 && compositionTime <= 0);
 }
 
-bool UCDragGesturePrivate::sanityCheckRecognitionProperties()
+bool UCDirectionalDragAreaPrivate::sanityCheckRecognitionProperties()
 {
     return recognitionIsDisabled()
         || (distanceThreshold < maxDistance && compositionTime < maxTime);
 }
 
-const QTouchEvent::TouchPoint *UCDragGesturePrivate::fetchTargetTouchPoint(QTouchEvent *event)
+const QTouchEvent::TouchPoint *UCDirectionalDragAreaPrivate::fetchTargetTouchPoint(QTouchEvent *event)
 {
     const QList<QTouchEvent::TouchPoint> &touchPoints = event->touchPoints();
     const QTouchEvent::TouchPoint *touchPoint = 0;
@@ -693,9 +691,9 @@ const QTouchEvent::TouchPoint *UCDragGesturePrivate::fetchTargetTouchPoint(QTouc
     return touchPoint;
 }
 
-bool UCDragGesturePrivate::movingInRightDirection() const
+bool UCDirectionalDragAreaPrivate::movingInRightDirection() const
 {
-    if (direction == UCDragGesture::Horizontal || direction == UCDragGesture::Vertical) {
+    if (direction == UCDirectionalDragArea::Horizontal || direction == UCDirectionalDragArea::Vertical) {
         return true;
     } else {
         QPointF movementVector(dampedScenePos.x() - previousDampedScenePos.x(),
@@ -707,7 +705,7 @@ bool UCDragGesturePrivate::movingInRightDirection() const
     }
 }
 
-bool UCDragGesturePrivate::movedFarEnoughAlongGestureAxis() const
+bool UCDirectionalDragAreaPrivate::movedFarEnoughAlongGestureAxis() const
 {
     if (distanceThreshold <= 0.) {
         // distance threshold check is disabled
@@ -721,7 +719,7 @@ bool UCDragGesturePrivate::movedFarEnoughAlongGestureAxis() const
         ddaDebug(" movedFarEnoughAlongGestureAxis: scalarProjection=" << scalarProjection
             << ", distanceThreshold=" << distanceThreshold);
 
-        if (direction == UCDragGesture::Horizontal || direction == UCDragGesture::Vertical) {
+        if (direction == UCDirectionalDragArea::Horizontal || direction == UCDirectionalDragArea::Vertical) {
             return qAbs(scalarProjection) > distanceThreshold;
         } else {
             return scalarProjection > distanceThreshold;
@@ -729,7 +727,7 @@ bool UCDragGesturePrivate::movedFarEnoughAlongGestureAxis() const
     }
 }
 
-bool UCDragGesturePrivate::isPastMaxDistance() const
+bool UCDirectionalDragAreaPrivate::isPastMaxDistance() const
 {
     QPointF totalMovement(dampedScenePos.x() - startScenePos.x(),
                           dampedScenePos.y() - startScenePos.y());
@@ -738,7 +736,7 @@ bool UCDragGesturePrivate::isPastMaxDistance() const
     return squaredDistance > maxDistance*maxDistance;
 }
 
-void UCDragGesturePrivate::giveUpIfDisabledOrInvisible()
+void UCDirectionalDragAreaPrivate::giveUpIfDisabledOrInvisible()
 {
     if (!q->isEnabled() || !q->isVisible()) {
         if (status == Undecided) {
@@ -754,7 +752,7 @@ void UCDragGesturePrivate::giveUpIfDisabledOrInvisible()
     }
 }
 
-void UCDragGesturePrivate::rejectGesture()
+void UCDirectionalDragAreaPrivate::rejectGesture()
 {
     if (status == Undecided) {
         ddaDebug("Rejecting gesture because it's taking too long to drag beyond the threshold.");
@@ -767,7 +765,7 @@ void UCDragGesturePrivate::rejectGesture()
     }
 }
 
-void UCDragGesturePrivate::setStatus(Status newStatus)
+void UCDirectionalDragAreaPrivate::setStatus(Status newStatus)
 {
     if (newStatus == status)
         return;
@@ -803,7 +801,7 @@ void UCDragGesturePrivate::setStatus(Status newStatus)
     }
 }
 
-void UCDragGesturePrivate::setPublicPos(const QPointF &point)
+void UCDirectionalDragAreaPrivate::setPublicPos(const QPointF &point)
 {
     bool xChanged = publicPos.x() != point.x();
     bool yChanged = publicPos.y() != point.y();
@@ -842,7 +840,7 @@ void UCDragGesturePrivate::setPublicPos(const QPointF &point)
     }
 }
 
-void UCDragGesturePrivate::setPublicScenePos(const QPointF &point)
+void UCDirectionalDragAreaPrivate::setPublicScenePos(const QPointF &point)
 {
     bool xChanged = publicScenePos.x() != point.x();
     bool yChanged = publicScenePos.y() != point.y();
@@ -884,7 +882,7 @@ void UCDragGesturePrivate::setPublicScenePos(const QPointF &point)
     }
 }
 
-bool UCDragGesturePrivate::isWithinTouchCompositionWindow()
+bool UCDirectionalDragAreaPrivate::isWithinTouchCompositionWindow()
 {
     return
         compositionTime > 0 &&
@@ -893,7 +891,7 @@ bool UCDragGesturePrivate::isWithinTouchCompositionWindow()
             activeTouches.mostRecentStartTime() + (qint64)compositionTime;
 }
 
-void UCDragGesture::itemChange(ItemChange change, const ItemChangeData &value)
+void UCDirectionalDragArea::itemChange(ItemChange change, const ItemChangeData &value)
 {
     if (change == QQuickItem::ItemSceneChange) {
         if (value.window != nullptr) {
@@ -906,7 +904,7 @@ void UCDragGesture::itemChange(ItemChange change, const ItemChangeData &value)
     }
 }
 
-void UCDragGesturePrivate::setPixelsPerMm(qreal pixelsPerMm)
+void UCDirectionalDragAreaPrivate::setPixelsPerMm(qreal pixelsPerMm)
 {
     dampedScenePos.setMaxDelta(1. * pixelsPerMm);
     setDistanceThreshold(4. * pixelsPerMm);
@@ -1020,25 +1018,25 @@ qint64 ActiveTouchesInfo::mostRecentStartTime()
     return highestStartTime;
 }
 
-void UCDragGesturePrivate::updateSceneDirectionVector()
+void UCDirectionalDragAreaPrivate::updateSceneDirectionVector()
 {
     QPointF localOrigin(0., 0.);
     QPointF localDirection;
     switch (direction) {
-        case UCDragGesture::Upwards:
+        case UCDirectionalDragArea::Upwards:
             localDirection.rx() = 0.;
             localDirection.ry() = -1.;
             break;
-        case UCDragGesture::Downwards:
-        case UCDragGesture::Vertical:
+        case UCDirectionalDragArea::Downwards:
+        case UCDirectionalDragArea::Vertical:
             localDirection.rx() = 0.;
             localDirection.ry() = 1;
             break;
-        case UCDragGesture::Leftwards:
+        case UCDirectionalDragArea::Leftwards:
             localDirection.rx() = -1.;
             localDirection.ry() = 0.;
             break;
-        default: // UCDragGesture::Rightwards || Direction.Horizontal
+        default: // UCDirectionalDragArea::Rightwards || Direction.Horizontal
             localDirection.rx() = 1.;
             localDirection.ry() = 0.;
             break;
@@ -1048,19 +1046,19 @@ void UCDragGesturePrivate::updateSceneDirectionVector()
     sceneDirectionVector = sceneDirection - sceneOrigin;
 }
 
-qreal UCDragGesturePrivate::projectOntoDirectionVector(const QPointF &sceneVector) const
+qreal UCDirectionalDragAreaPrivate::projectOntoDirectionVector(const QPointF &sceneVector) const
 {
     // same as dot product as sceneDirectionVector is a unit vector
     return  sceneVector.x() * sceneDirectionVector.x() +
             sceneVector.y() * sceneDirectionVector.y();
 }
 
-UCDragGesturePrivate::UCDragGesturePrivate(UCDragGesture *q)
+UCDirectionalDragAreaPrivate::UCDirectionalDragAreaPrivate(UCDirectionalDragArea *q)
     : q(q)
     , status(WaitingForTouch)
     , sceneDistance(0)
     , touchId(-1)
-    , direction(UCDragGesture::Rightwards)
+    , direction(UCDirectionalDragArea::Rightwards)
     , distanceThreshold(0)
     , distanceThresholdSquared(0.)
     , maxTime(400)

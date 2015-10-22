@@ -18,7 +18,7 @@
 #ifndef DIRECTIONAL_DRAG_AREA_PRIV_H
 #define DIRECTIONAL_DRAG_AREA_PRIV_H
 
-#include "ucdraggesture.h"
+#include "ucdirectionaldragarea.h"
 
 // Information about an active touch point
 struct UBUNTUGESTURESQML_EXPORT ActiveTouchInfo {
@@ -46,13 +46,13 @@ private:
     Pool<ActiveTouchInfo> m_touchInfoPool;
 };
 
-class UBUNTUGESTURESQML_EXPORT UCDragGesturePrivate : public QObject
+class UBUNTUGESTURESQML_EXPORT UCDirectionalDragAreaPrivate : public QObject
 {
     Q_OBJECT
 
     Q_ENUMS(Status)
 public:
-    UCDragGesturePrivate(UCDragGesture *q);
+    UCDirectionalDragAreaPrivate(UCDirectionalDragArea *q);
 
 public Q_SLOTS:
     void giveUpIfDisabledOrInvisible();
@@ -115,7 +115,7 @@ public:
     // Useful for testing, where a fake time source can be supplied
     void setTimeSource(const UbuntuGestures::SharedTimeSource &timeSource);
 
-    UCDragGesture *q;
+    UCDirectionalDragArea *q;
 
     // The current status of the directional drag gesture area.
     Status status;
@@ -138,7 +138,7 @@ public:
     // Unit vector in scene coordinates describing the direction of the gesture recognition
     QPointF sceneDirectionVector;
 
-    UCDragGesture::Direction direction;
+    UCDirectionalDragArea::Direction direction;
 
     // How far a touch point has to move from its initial position along the gesture axis in order
     // for it to be recognized as a directional drag.

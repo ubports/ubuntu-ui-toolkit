@@ -365,6 +365,31 @@ Ubuntu.Components.Popups.Dialog 1.3: PopupBase
     property Item pointerTarget
     property string text
     property string title
+Ubuntu.Components.DirectionalDragArea 1.3: Item
+    property Direction direction
+    readonly property double distance
+    readonly property bool dragging
+    property bool immediateRecognition
+    signal directionChanged(Direction direction)
+    signal draggingChanged(bool value)
+    signal pressedChanged(bool value)
+    signal distanceChanged(double value)
+    signal sceneDistanceChanged(double value)
+    signal touchPosChanged(QPointF pos)
+    signal touchScenePosChanged(QPointF pos)
+    signal immediateRecognitionChanged(bool value)
+    function removeTimeConstraints()
+    readonly property bool pressed
+    readonly property double sceneDistance
+    readonly property QPointF touchPos
+    readonly property QPointF touchScenePos
+Ubuntu.Components.DirectionalDragArea.Direction: Enum
+    Downwards
+    Horizontal
+    Leftwards
+    Rightwards
+    Upwards
+    Vertical
 Ubuntu.Components.ListItems.Divider 1.0 0.1: QQuickImageBase
     property FillMode fillMode
     property HAlignment horizontalAlignment
@@ -385,31 +410,6 @@ Ubuntu.Components.ListItems.Divider 1.3: QQuickImageBase
     readonly property double paintedHeight
     readonly property double paintedWidth
     property VAlignment verticalAlignment
-Ubuntu.Components.DragGesture 1.3: Item
-    property Direction direction
-    readonly property double distance
-    readonly property bool dragging
-    property bool immediateRecognition
-    signal directionChanged(Direction direction)
-    signal draggingChanged(bool value)
-    signal pressedChanged(bool value)
-    signal distanceChanged(double value)
-    signal sceneDistanceChanged(double value)
-    signal touchPosChanged(QPointF pos)
-    signal touchScenePosChanged(QPointF pos)
-    signal immediateRecognitionChanged(bool value)
-    function removeTimeConstraints()
-    readonly property bool pressed
-    readonly property double sceneDistance
-    readonly property QPointF touchPos
-    readonly property QPointF touchScenePos
-Ubuntu.Components.DragGesture.Direction: Enum
-    Downwards
-    Horizontal
-    Leftwards
-    Rightwards
-    Upwards
-    Vertical
 Ubuntu.Components.ListItems.Empty 1.0 0.1: AbstractButton
     readonly property Item backgroundIndicator
     property bool confirmRemoval

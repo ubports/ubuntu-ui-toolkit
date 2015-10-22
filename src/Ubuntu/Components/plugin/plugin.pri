@@ -92,8 +92,8 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/uclabel.h \
     $$PWD/uclistitemlayout.h \
     $$PWD/privates/threelabelsslot_p.h \
-    $$PWD/gestures/ucdraggesture.h \
-    $$PWD/gestures/ucdraggesture_p.h \
+    $$PWD/gestures/ucdirectionaldragarea.h \
+    $$PWD/gestures/ucdirectionaldragarea_p.h \
     $$PWD/gestures/axisvelocitycalculator.h \
     $$PWD/gestures/damper.h \
     $$PWD/gestures/ubuntugesturesqmlglobal.h \
@@ -166,7 +166,7 @@ SOURCES += $$PWD/plugin.cpp \
     $$PWD/uclabel.cpp \
     $$PWD/uclistitemlayout.cpp \
     $$PWD/privates/threelabelsslot_p.cpp \
-    $$PWD/gestures/ucdraggesture.cpp \
+    $$PWD/gestures/ucdirectionaldragarea.cpp \
     $$PWD/gestures/axisvelocitycalculator.cpp \
     $$PWD/gestures/TouchOwnershipEvent.cpp \
     $$PWD/gestures/TouchRegistry.cpp \

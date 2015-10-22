@@ -19,19 +19,20 @@ import QtQuick 2.4
 import Ubuntu.Components 1.3
 
 Item {
+    objectName: "rightwardsLauncher"
 
-    function reset() { launcher.y = -launcher.height }
+    function reset() { launcher.x = -launcher.width }
 
     Rectangle {
         id: launcher
         color: "blue"
-        width: parent.width
-        height: units.gu(15)
-        x: 0
-        y: followDragArea()
+        width: units.gu(15)
+        height: parent.height
+        x: followDragArea()
+        y: 0
 
         function followDragArea() {
-            return dragArea.distance < height ? -height + dragArea.distance : 0
+            return dragArea.distance < width ? -width + dragArea.distance : 0
         }
     }
 
@@ -42,31 +43,34 @@ Item {
         anchors.fill: dragArea
     }
 
-    DragGesture {
+    DirectionalDragArea {
         id: dragArea
-        objectName: "vpDragArea"
+        objectName: "hpDragArea"
 
-        height: units.gu(5)
+        // give some room for items to be dynamically stacked right behind him
+        z: 10.0
 
-        direction: DragGesture.Downwards
+        width: units.gu(5)
+
+        direction: DirectionalDragArea.Rightwards
 
         onDraggingChanged: {
             if (dragging) {
-                launcher.y = Qt.binding(launcher.followDragArea)
+                launcher.x = Qt.binding(launcher.followDragArea)
             }
         }
 
         anchors {
             left: parent.left
-            right: parent.right
             top: parent.top
+            bottom: parent.bottom
         }
     }
 
     Label {
-        text: "Downwards"
-        anchors.top: parent.top
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.topMargin: units.gu(1)
+        text: "Rightwards"
+        anchors.left: parent.left
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.leftMargin: units.gu(1)
     }
 }

@@ -19,9 +19,8 @@ import QtQuick 2.4
 import Ubuntu.Components 1.3
 
 Item {
-    id: root
 
-    function reset() { launcher.y = Qt.binding(function(){return root.height;}); }
+    function reset() { launcher.y = -launcher.height }
 
     Rectangle {
         id: launcher
@@ -29,13 +28,10 @@ Item {
         width: parent.width
         height: units.gu(15)
         x: 0
-        y: root.height
+        y: followDragArea()
 
         function followDragArea() {
-            return dragArea.distance > -height ?
-                        root.height + dragArea.distance
-                    :
-                        root.height - height
+            return dragArea.distance < height ? -height + dragArea.distance : 0
         }
     }
 
@@ -46,13 +42,13 @@ Item {
         anchors.fill: dragArea
     }
 
-    DragGesture {
+    DirectionalDragArea {
         id: dragArea
-        objectName: "vnDragArea"
+        objectName: "vpDragArea"
 
         height: units.gu(5)
 
-        direction: DragGesture.Upwards
+        direction: DirectionalDragArea.Downwards
 
         onDraggingChanged: {
             if (dragging) {
@@ -63,14 +59,14 @@ Item {
         anchors {
             left: parent.left
             right: parent.right
-            bottom: parent.bottom
+            top: parent.top
         }
     }
 
     Label {
-        text: "Upwards"
-        anchors.bottom: parent.bottom
+        text: "Downwards"
+        anchors.top: parent.top
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.bottomMargin: units.gu(1)
+        anchors.topMargin: units.gu(1)
     }
 }

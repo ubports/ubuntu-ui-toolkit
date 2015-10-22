@@ -22,6 +22,7 @@ Page {
 
     default property alias content: layout.children
     property alias spacing: layout.spacing
+    property bool scrollable: true
 
     Flickable {
         id: flickable
@@ -30,7 +31,7 @@ Page {
         anchors.topMargin: units.gu(2)
         anchors.bottomMargin: units.gu(2)
         contentHeight: layout.height
-        interactive: contentHeight > height
+        interactive: contentHeight > height && scrollable
 
         Column {
             id: layout
