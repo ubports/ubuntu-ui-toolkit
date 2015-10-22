@@ -136,8 +136,6 @@ MainView {
             id: pageWithHeader
             header: PageHeader {
                 title: "Page with header"
-
-                // Distinguish this header clearly from the AppHeader for manual tests.
                 StyleHints {
                     backgroundColor: UbuntuColors.blue
                     foregroundColor: "white"
@@ -409,9 +407,9 @@ MainView {
             //// first test right column for PageHeader ////
             layout.addPageToNextColumn(rootPage, pageWithHeader);
             compare(get_back_button_visible(0), false,
-                    "XXXAdding page with header to column B shows back button in column A.");
+                    "Adding page with header to column B shows back button in column A.");
             compare(get_back_button_visible(1), false,
-                    "XXXAdding page with header to column B shows back button in column B.");
+                    "Adding page with header to column B shows back button in column B.");
             layout.removePages(pageWithHeader);
             layout.addPageToNextColumn(rootPage, rightPage);
             layout.addPageToNextColumn(rightPage, pageWithHeader);
