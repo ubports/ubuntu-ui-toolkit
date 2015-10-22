@@ -141,5 +141,3 @@ internal ColorUtils 1.3/colorUtils.js
 DateUtils 1.3 1.3/dateUtils.js
 BottomEdgeHint 1.3 1.3/BottomEdgeHint.qml
 ProgressionSlot 1.3 1.3/ProgressionSlot.qml
-
-BottomEdgeSample 1.3 1.3/BottomEdge.qml

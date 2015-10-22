@@ -117,9 +117,12 @@ Page {
             highlightMoveDuration: 0
         }
     }
-    BottomEdgeProxy {
+    BottomEdge {
+        hint: BottomEdgeHint {
+            iconName: "settings"
+            text: "test"
+        }
         visible: active
-        iconName: "settings"
-        text: "test"
+        anchors.fill: parent
     }
 }

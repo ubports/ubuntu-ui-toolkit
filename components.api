@@ -168,6 +168,34 @@ Ubuntu.Components.ListItems.Base 1.3: Empty
     property var icon
     property bool iconFrame
     property bool progression
+Ubuntu.Components.BottomEdge 1.3: Item
+    property url content
+    property Component contentComponent
+    readonly property Item contentItem
+    property int currentStageIndex
+    property double dragProgress
+    property Flickable flickable
+    property Item hint
+    signal dragProggressChanged(double progress)
+    signal currentStageIndexChanged(int index)
+    signal contentChanged(url url)
+    signal contentComponentChanged(Component component)
+    signal contentItemChanged(Item item)
+    signal commitStarted()
+    signal commitFinished()
+    signal collapseStarted()
+    signal collapseFinished()
+    function commit()
+    function collapse()
+    property QList<qreal> stages
+    readonly property Status status
+Ubuntu.Components.BottomEdge.Status: Enum
+    CanCommit
+    Committed
+    Faded
+    Hinted
+    Idle
+    Revealed
 Ubuntu.Components.BottomEdgeHint 1.3: Item
     property string iconName
     property url iconSource

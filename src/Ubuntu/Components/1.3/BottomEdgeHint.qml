@@ -16,6 +16,7 @@
 
 import QtQuick 2.4
 import Ubuntu.Components 1.3
+import "../ListItems/1.3"
 
 /*!
     \qmlabstract BottomEdgeHint
@@ -47,10 +48,9 @@ Item {
     id: bottomEdgeHint
 
     anchors {
+        left: parent.left
+        right: parent.right
         bottom: parent.bottom
-        bottomMargin: bottomEdgeHint.state == "Hidden" ? -bottomEdgeHint.height + units.gu(1.5) : 0
-        horizontalCenter: parent.horizontalCenter
-        Behavior on bottomMargin { UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration } }
     }
 
     width: label.paintedWidth + units.gu(7)
@@ -66,90 +66,134 @@ Item {
     Keys.onReturnPressed: clicked()
 
     /*!
+      \qmlproperty string text
       The label displayed by the BottomEdgeHint.
      */
-    property string text
+    property alias text: label.text
 
     /*!
+      \qmlproperty url iconSource
       The icon displayed by the BottomEdgeHint.
 
       This is the URL of any image file.
       If both iconSource and iconName are defined, iconName will be ignored.
      */
-    property url iconSource: iconName ? "image://theme/" + iconName : ""
+    property alias iconSource: icon.source
 
     /*!
+      \qmlproperty string iconName
       The icon associated with the BottomEdgeHint in the icon theme.
 
       If both iconSource and iconName are defined, iconName will be ignored.
      */
-    property string iconName
+    property alias iconName: icon.name
 
     /*!
+      \qmlproperty string state
       BottomEdgeHint can take 2 states of visibility: "Hidden" and "Visible".
 
       When "Visible", the full hint with its content is shown.
 
       When "Hidden", only part of the hint is visible leaving more space for application content.
      */
-    property string state: "Visible"
+    state: "Hidden"
+
+    states: [
+        State {
+            name: "Visible"
+            PropertyChanges {
+                target: h1
+                anchors.verticalCenterOffset: bottomEdgeHint.height / 2
+            }
+            PropertyChanges {
+                target: h2
+                anchors.topMargin: 0
+            }
+        }
+    ]
+    transitions: Transition {
+        from: "Hidden"
+        to: "Visible"
+        reversible: true
+        UbuntuNumberAnimation {
+            targets: [h1, h2]
+            properties: "anchors.verticalCenterOffset, anchors.topMargin"
+        }
+    }
 
     MouseArea {
-        id: mouseArea
         anchors.fill: parent
         hoverEnabled: true
+        acceptedButtons: Qt.NoButton
         onEntered: bottomEdgeHint.state = "Visible"
-        onClicked: {
-            Haptics.play();
-            bottomEdgeHint.clicked();
-            mouse.accepted = false;
-        }
+        onExited: hidingTimer.start()
+    }
+
+    Timer {
+        id: hidingTimer
+        interval: 800
+        repeat: false
+        onTriggered: bottomEdgeHint.state = "Hidden"
     }
 
     clip: true
 
-    UbuntuShape {
-        id: background
-
+    Icon {
+        id: h1
+        width: units.gu(2)
+        height: width
         anchors {
-            bottom: parent.bottom
-            horizontalCenter: bottomEdgeHint.horizontalCenter
-            bottomMargin: -units.gu(1)
+            centerIn: parent
+            topMargin: bottomEdgeHint.height
         }
-
-        width: bottomEdgeHint.width - 2 * hoverExpansion
-        height: bottomEdgeHint.height + units.gu(1) - hoverExpansion
-
-        property real hoverExpansion: mouseArea.containsMouse ? 0 : units.gu(0.5)
-        Behavior on hoverExpansion { UbuntuNumberAnimation { duration: UbuntuAnimation.FastDuration } }
-
-        backgroundColor: theme.palette.normal.overlay
+        name: "up"
     }
 
-    Label {
-        id: label
-
+    Rectangle {
+        id: h2
         anchors {
             top: parent.top
-            horizontalCenter: parent.horizontalCenter
+            left: parent.left
+            right: parent.right
+            topMargin: bottomEdgeHint.height
         }
-        text: icon.name ? "" : bottomEdgeHint.text
-        textSize: Label.Medium
         height: bottomEdgeHint.height
-        verticalAlignment: Text.AlignVCenter
-        horizontalAlignment: Text.AlignHCenter
-    }
-
-    Icon {
-        id: icon
-
-        name: bottomEdgeHint.iconName
-        anchors {
-            bottom: parent.bottom
-            bottomMargin: units.gu(0.5)
-            horizontalCenter: parent.horizontalCenter
+        color: theme.palette.normal.overlay
+        ThinDivider {
+            anchors.top: parent.top
         }
-        width: height
-        height: units.gu(2)
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: {
+                Haptics.play();
+                bottomEdgeHint.clicked();
+                mouse.accepted = false;
+            }
+        }
+
+        Row {
+            anchors {
+                top: parent.top
+                bottom: parent.bottom
+                horizontalCenter: parent.horizontalCenter
+            }
+            spacing: units.gu(1)
+            Icon {
+                id: icon
+                width: height
+                height: units.gu(2)
+                anchors.verticalCenter: parent.verticalCenter
+                color: theme.palette.normal.overlayText
+            }
+            Label {
+                id: label
+                textSize: Label.Medium
+                color: theme.palette.normal.overlayText
+                height: bottomEdgeHint.height
+                anchors.verticalCenter: parent.verticalCenter
+                verticalAlignment: Text.AlignVCenter
+            }
+        }
     }
 }

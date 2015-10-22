@@ -16,34 +16,35 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#include "ucbottomedgeproxy.h"
-#include "ucbottomedgepanel.h"
+#include "ucbottomedge.h"
+#include <QtQml/QQmlEngine>
 #include <QtQuick/private/qquickitem_p.h>
+#include <QtQuick/private/qquickflickable_p.h>
 
-UCBottomEdgeProxy::UCBottomEdgeProxy(QQuickItem *parent)
+UCBottomEdge::UCBottomEdge(QQuickItem *parent)
     : QQuickItem(parent)
+    , m_hint(Q_NULLPTR)
+    , m_flickable(Q_NULLPTR)
+    , m_contentComponent(Q_NULLPTR)
+    , m_contentItem(Q_NULLPTR)
+    , m_panel(Q_NULLPTR)
+    , m_dragProgress(0.)
+    , m_currentStageIndex(-1)
     , m_status(Idle)
 {
 }
-UCBottomEdgeProxy::~UCBottomEdgeProxy()
+UCBottomEdge::~UCBottomEdge()
 {
-    UCBottomEdgePanel::instance().removeBottomEdge(this);
 }
 
-void UCBottomEdgeProxy::classBegin()
+void UCBottomEdge::classBegin()
 {
     QQuickItem::classBegin();
-    UCBottomEdgePanel::instance().initialize(qmlEngine(this));
 }
 
-void UCBottomEdgeProxy::itemChange(ItemChange change, const ItemChangeData &data)
+void UCBottomEdge::itemChange(ItemChange change, const ItemChangeData &data)
 {
     if (change == ItemVisibleHasChanged) {
-        if (data.boolValue) {
-            UCBottomEdgePanel::instance().addBottomEdge(this);
-        } else {
-            UCBottomEdgePanel::instance().removeBottomEdge(this);
-        }
     }
     if (change == ItemParentHasChanged) {
         QQuickAnchors *anchors = QQuickItemPrivate::get(this)->anchors();
@@ -58,4 +59,38 @@ void UCBottomEdgeProxy::itemChange(ItemChange change, const ItemChangeData &data
         }
     }
     QQuickItem::itemChange(change, data);
+}
+
+void UCBottomEdge::setHint(QQuickItem *hint)
+{
+    if (hint == m_hint) {
+        return;
+    }
+    if (m_hint) {
+        m_hint->setParentItem(Q_NULLPTR);
+        delete m_hint;
+        m_hint = Q_NULLPTR;
+    }
+    m_hint = hint;
+    // take ownership
+    if (m_hint) {
+        QQmlEngine::setObjectOwnership(m_hint, QQmlEngine::CppOwnership);
+        m_hint->setParentItem(this);
+    }
+    Q_EMIT hintChanged();
+}
+
+QList<qreal> UCBottomEdge::stages()
+{
+    return m_stages;
+}
+
+void UCBottomEdge::commit()
+{
+
+}
+
+void UCBottomEdge::collapse()
+{
+
 }
