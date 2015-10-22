@@ -61,7 +61,7 @@ PageTreeNode {
     property Item parentWrapper
 
     /*!
-      Page holder in AdaptivePageLayout
+      Page holder in AdaptivePageLayout.
       */
     property Item pageHolder
 
