@@ -24,6 +24,7 @@ Item {
     implicitHeight: units.gu(4)
 
     state: styledItem.state
+    onStateChanged: print("state=", state)
 
     states: [
         State {
@@ -51,6 +52,10 @@ Item {
                 target: bottomEdgeHintStyle
                 opacity: 0.0
             }
+            PropertyChanges {
+                target: mouseHover
+                enabled: false
+            }
         }
     ]
     transitions: [
@@ -77,10 +82,11 @@ Item {
 
     // FIXME ZSOMBI: temporary functionality till SwipeGesture integration
     MouseArea {
+        id: mouseHover
         anchors.fill: parent
         hoverEnabled: true
         acceptedButtons: Qt.NoButton
-        onEntered: styledItem.state = "Hinted"
+        onEntered: if (styledItem.state == "Idle" || styledItem.state == "") styledItem.state = "Hinted"
         onExited: if (styledItem.state == "Hinted") turnToIdleTimer.restart()
     }
 
