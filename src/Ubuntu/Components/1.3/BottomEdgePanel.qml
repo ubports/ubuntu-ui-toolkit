@@ -17,160 +17,98 @@ import QtQuick 2.4
 import Ubuntu.Components 1.3
 
 Rectangle {
-    id: panel
+    // properties BottomEdge expects
+    property alias panelItem: panel
+
+    id: background
     anchors.fill: parent
     color: "transparent"
+    z: Number.MAX_VALUE
 
-//    Connections {
-//        target: styledItem
-//        onContentChanged: {
-//        }
-//    }
-
-    Component {
-        id: hintComponent
-        Item {
-            id: hint
-            property BottomEdgeProxy bottomEdge: modelData
-            property bool hintedAbove: false
-            height: units.gu(4)
-            width: bottomEdge ? bottomEdge.width : 0
-            x: {
-                var scenePos = hints.mapFromItem(bottomEdge, bottomEdge.x, bottomEdge.y);
-                return scenePos.x + (bottomEdge.width / 2 - width / 2)
+    state: ""
+    states: [
+        State {
+            name: "Committing"
+            PropertyChanges {
+                target: panel
+                restoreEntryValues: false
+                y: 0
             }
-            MouseArea {
-                anchors {
-                    fill: parent
-                    leftMargin: units.gu(2)
-                    rightMargin: units.gu(2)
-                }
-                hoverEnabled: true
-                onEntered: {
-                    backToIdle.stop();
-                    hint.state = "hinted";
-                    hintedAbove = true;
-                }
-                onExited: {
-                    if (hint.state == "hinted") {
-                        backToIdle.start();
-                    }
-                }
-                onClicked: {
-                    backToIdle.stop();
-                    hint.state = "committed";
-                }
+        },
+        State {
+            name: "Collapsing"
+            PropertyChanges {
+                target: panel
+                restoreEntryValues: false
+                y: bottomEdge.height
             }
-            Timer {
-                id: backToIdle
-                interval: 800
-                repeat: false
-                onTriggered: hint.state = "idle"
+        }
+    ]
+    transitions: Transition {
+        from: ""
+        to: "*"
+        reversible: true
+        SequentialAnimation {
+            UbuntuNumberAnimation {
+                target: panel
+                property: "y"
             }
-
-            state: "idle"
-            states: [
-                State {
-                    name: "idle"
-                    extend: ""
-                    StateChangeScript {
-                        script: {
-                            bottomEdge.status = BottomEdgeProxy.Idle;
-                            hint.hintedAbove = false;
-                        }
+            ScriptAction {
+                script: {
+                    if (background.state == "Committing") {
+                        bottomEdge.commitFinished();
+                    } else if (background.state == "Collapsing") {
+                        bottomEdge.collapseFinished();
                     }
-                },
-                State {
-                    name: "hinted"
-                    AnchorChanges {
-                        target: h1
-                        anchors.top: parent.bottom
-                        anchors.bottom: undefined
-                    }
-                    AnchorChanges {
-                        target: h2
-                        anchors.top: parent.top
-                    }
-                }
-            ]
-            transitions: [
-                Transition {
-                    from: "*"
-                    to: "hinted"
-                    reversible: true
-                    AnchorAnimation {
-                        targets: [h1, h2]
-                        duration: UbuntuAnimation.BriskDuration
-                        easing: UbuntuAnimation.StandardEasing
-                    }
-                }
-            ]
-
-            // content
-            Icon {
-                id: h1
-                name: "up"
-                width: units.gu(2)
-                height: width
-                anchors {
-                    horizontalCenter: parent.horizontalCenter
-                    bottom: parent.bottom
-                }
-            }
-            Rectangle {
-                id: h2
-                // FIXME: use some themed color here once we get the design
-                color: Qt.lighter(UbuntuColors.lightGrey, 1.6)
-                anchors {
-                    left: parent.left
-                    right: parent.right
-                    top: parent.bottom
-                }
-                height: parent.height
-                Row {
-                   anchors.centerIn: parent
-                   spacing: units.dp(4)
-                   Icon {
-                       id: icon
-                       width: units.gu(2)
-                       height: width
-                       source: (bottomEdge.iconSource != "") ? bottomEdge.iconSource : "image://theme/" + bottomEdge.iconName
-                   }
-                   Label {
-                       text: bottomEdge.text
-                       anchors.verticalCenter: icon.verticalCenter
-                   }
+                    background.state = "";
                 }
             }
         }
     }
 
-    Item {
-        id: hints
+    Rectangle {
+        id: panel
         anchors {
             left: parent.left
             right: parent.right
-            bottom: content.top
         }
-        height: childrenRect.height
+        height: bottomEdge.height
+        y: bottomEdge.height
 
-        Repeater {
-            model: styledItem.content
-            delegate: hintComponent
+        Loader {
+            anchors.horizontalCenter: parent.horizontalCenter
+            source: bottomEdge.content
+            sourceComponent: bottomEdge.contentComponent
         }
     }
-    Item {
-        id: content
-        anchors {
-            fill: parent
-            topMargin: parent.height
-        }
-//        states: [
-//            State {
-//                name: ""
-//            }
 
-//        ]
+    // FIXME: use SwipeArea when ready
+    MouseArea {
+        id: hintArea
+        anchors {
+            left: parent.left
+            right: parent.right
+            bottom: parent.bottom
+        }
+        height: bottomEdge.height + bottomEdge.hint.height
+
+        enabled: bottomEdge.status >= BottomEdge.Hinted
+        drag {
+            axis: Drag.YAxis
+            target: panel
+            minimumY: 0
+            maximumY: bottomEdge.height
+        }
+        onReleased: {
+            switch (bottomEdge.status) {
+            case BottomEdge.CanCommit:
+                bottomEdge.commit();
+                break;
+            case BottomEdge.Revealed:
+                bottomEdge.collapse();
+                break;
+            }
+        }
     }
 
 }

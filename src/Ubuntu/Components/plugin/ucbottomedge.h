@@ -20,6 +20,7 @@
 #define UCBOTTOMEDGE_H
 
 #include <QtQuick/QQuickItem>
+#include <QtCore/QPointer>
 
 class QQuickFlickable;
 class UCBottomEdge : public QQuickItem
@@ -28,12 +29,12 @@ class UCBottomEdge : public QQuickItem
     Q_ENUMS(Status)
 
     Q_PROPERTY(QQuickItem* hint MEMBER m_hint WRITE setHint NOTIFY hintChanged FINAL)
-    Q_PROPERTY(qreal dragProgress MEMBER m_dragProgress NOTIFY dragProggressChanged FINAL)
+    Q_PROPERTY(qreal dragProgress READ dragProgress NOTIFY dragProggressChanged FINAL)
     Q_PROPERTY(QList<qreal> stages MEMBER m_stages NOTIFY stagesChanged FINAL)
     Q_PROPERTY(int currentStageIndex MEMBER m_currentStageIndex NOTIFY currentStageIndexChanged FINAL)
     Q_PROPERTY(Status status READ status NOTIFY statusChanged FINAL)
-    Q_PROPERTY(QUrl content MEMBER m_contentUrl NOTIFY contentChanged FINAL)
-    Q_PROPERTY(QQmlComponent *contentComponent MEMBER m_contentComponent NOTIFY contentComponentChanged FINAL)
+    Q_PROPERTY(QUrl content MEMBER m_contentUrl WRITE setContent NOTIFY contentChanged FINAL)
+    Q_PROPERTY(QQmlComponent *contentComponent MEMBER m_contentComponent WRITE setContentComponent NOTIFY contentComponentChanged FINAL)
     Q_PROPERTY(QQuickItem* contentItem READ contentItem NOTIFY contentItemChanged FINAL)
 public:
     enum Status {
@@ -48,11 +49,14 @@ public:
     virtual ~UCBottomEdge();
 
     void setHint(QQuickItem *hint);
+    qreal dragProgress();
     QList<qreal> stages();
     Status status() const
     {
         return m_status;
     }
+    void setContent(const QUrl &url);
+    void setContentComponent(QQmlComponent *component);
     QQuickItem *contentItem() const
     {
         return m_contentItem;
@@ -60,7 +64,7 @@ public:
 
 Q_SIGNALS:
     void hintChanged();
-    void dragProggressChanged(qreal progress);
+    void dragProggressChanged();
     void stagesChanged();
     void currentStageIndexChanged(int index);
     void statusChanged(Status status);
@@ -78,18 +82,24 @@ public Q_SLOTS:
     void collapse();
 
 protected:
-    void setStatus(UCBottomEdge::Status status);
     void classBegin();
     void componentComplete();
     void itemChange(ItemChange change, const ItemChangeData &data);
 
+    void setStatus(UCBottomEdge::Status status);
+    void loadPanel();
+    void createPanel(QQmlComponent *component);
+    void anchorHintToPanel();
+
     QList<qreal> m_stages;
+    QPointer<QQuickItem> m_panelItem;
     QUrl m_contentUrl;
     QQuickItem *m_hint;
     QQmlComponent *m_contentComponent;
     QQuickItem *m_contentItem;
-    QQuickItem *m_panel;
-    qreal m_dragProgress;
+    QQuickItem *m_bottomPanel;
+    qreal m_defaultCommitStage;
+
     int m_currentStageIndex;
     Status m_status;
 };

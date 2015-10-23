@@ -17,9 +17,13 @@
  */
 
 #include "ucbottomedge.h"
+#include "quickutils.h"
 #include <QtQml/QQmlEngine>
+#include <QtGui/QScreen>
 #include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickflickable_p.h>
+
+#include "plugin.h"
 
 /*!
  * \qmltype BottomEdge
@@ -61,8 +65,8 @@ UCBottomEdge::UCBottomEdge(QQuickItem *parent)
     , m_hint(Q_NULLPTR)
     , m_contentComponent(Q_NULLPTR)
     , m_contentItem(Q_NULLPTR)
-    , m_panel(Q_NULLPTR)
-    , m_dragProgress(0.)
+    , m_bottomPanel(Q_NULLPTR)
+    , m_defaultCommitStage(0.33) // 30% of the swipable area
     , m_currentStageIndex(-1)
     , m_status(Idle)
 {
@@ -74,11 +78,14 @@ UCBottomEdge::~UCBottomEdge()
 void UCBottomEdge::classBegin()
 {
     QQuickItem::classBegin();
+    loadPanel();
 }
 
 void UCBottomEdge::componentComplete()
 {
     QQuickItem::componentComplete();
+    // if we have content, we load the panel
+    loadPanel();
 }
 
 void UCBottomEdge::itemChange(ItemChange change, const ItemChangeData &data)
@@ -90,15 +97,94 @@ void UCBottomEdge::itemChange(ItemChange change, const ItemChangeData &data)
         if (data.item) {
             const QQuickAnchorLine left = QQuickItemPrivate::get(data.item)->left();
             const QQuickAnchorLine right = QQuickItemPrivate::get(data.item)->right();
+            const QQuickAnchorLine bottom = QQuickItemPrivate::get(data.item)->bottom();
             anchors->setLeft(left);
             anchors->setRight(right);
+            anchors->setBottom(bottom);
         } else {
             anchors->resetLeft();
             anchors->resetRight();
+            anchors->resetBottom();
         }
     }
     QQuickItem::itemChange(change, data);
 }
+
+void UCBottomEdge::loadPanel()
+{
+    if (!m_bottomPanel && (m_contentComponent || m_contentUrl.isValid())) {
+        QUrl url(UbuntuComponentsPlugin::pluginUrl().resolved(QUrl("1.3/BottomEdgePanel.qml")));
+        QQmlComponent *component = new QQmlComponent(qmlEngine(this), url, QQmlComponent::Asynchronous);
+        if (component->isLoading()) {
+            connect(component, &QQmlComponent::statusChanged, [=](QQmlComponent::Status status) {
+                switch (status) {
+                case QQmlComponent::Ready: {
+                    this->createPanel(component);
+                    break;
+                }
+                case QQmlComponent::Error: {
+                    QString msg = component->errorString();
+                    delete component;
+                    qCritical() << qPrintable(msg);
+                    break;
+                }
+                default: break;
+                }
+            });
+        } else if (component->isError()) {
+            QString msg = component->errorString();
+            delete component;
+            qCritical() << qPrintable(msg);
+        } else {
+            createPanel(component);
+        }
+    }
+}
+
+void UCBottomEdge::createPanel(QQmlComponent *component)
+{
+    QQmlContext *context = new QQmlContext(qmlContext(this));
+    context->setContextProperty("bottomEdge", this);
+    m_bottomPanel = static_cast<QQuickItem*>(component->beginCreate(context));
+    Q_ASSERT(m_bottomPanel);
+    QQml_setParent_noEvent(m_bottomPanel, this);
+//    m_bottomPanel->setParentItem(QuickUtils::instance().rootObject());
+    m_bottomPanel->setParentItem(this);
+    m_panelItem = m_bottomPanel->property("panelItem").value<QQuickItem*>();
+    component->completeCreate();
+    component->deleteLater();
+    // anchor hint to panel
+    anchorHintToPanel();
+
+    connect(m_panelItem, &QQuickItem::yChanged, this, &UCBottomEdge::dragProggressChanged);
+    // follow drag progress to detect when can we set to CanCommit status
+    connect(this, &UCBottomEdge::dragProggressChanged, [=]() {
+        qreal finalStage = (this->m_stages.size() > 0) ? this->m_stages.last() : m_defaultCommitStage;
+        qreal progress = this->dragProgress();
+        if (progress >= finalStage) {
+            if (progress >= 1.0) {
+                this->setStatus(UCBottomEdge::Committed);
+            } else {
+                this->setStatus(UCBottomEdge::CanCommit);
+            }
+        } else if (this->dragProgress() < finalStage){
+            this->setStatus(UCBottomEdge::Revealed);
+        }
+    });
+
+}
+
+void UCBottomEdge::anchorHintToPanel()
+{
+    if (m_panelItem && m_hint) {
+        m_hint->setParentItem(m_panelItem.data());
+        QQuickAnchors *anchors = QQuickItemPrivate::get(m_hint)->anchors();
+        anchors->setBottom(QQuickItemPrivate::get(m_panelItem)->top());
+    } else if (m_hint) {
+        m_hint->setParentItem(this);
+    }
+}
+
 /*!
  * \qmlproperty Item BottomEdge::hint
  * The property holds the component to display the hint for the bottom edge element.
@@ -107,11 +193,12 @@ void UCBottomEdge::itemChange(ItemChange change, const ItemChangeData &data)
  * BottomEdgeHint component, as that drives the first three \l status flags. BottomEdge
  * automatically takes ownership over the hint set, and will delete the previously set
  * component upon change.
- * \note It is not recommended to change the hint in an ongoing bottom edge swipe.
+ * \note Changing the hint during an ongoing bottom edge swipe (status set to \e Hinted
+ * and onwards) is omitted.
  */
 void UCBottomEdge::setHint(QQuickItem *hint)
 {
-    if (hint == m_hint) {
+    if (hint == m_hint || m_status >= Hinted) {
         return;
     }
     if (m_hint) {
@@ -123,7 +210,8 @@ void UCBottomEdge::setHint(QQuickItem *hint)
     // take ownership
     if (m_hint) {
         QQmlEngine::setObjectOwnership(m_hint, QQmlEngine::CppOwnership);
-        m_hint->setParentItem(this);
+        // anchor hint to the panel
+        anchorHintToPanel();
         // connect state change from the hint to keep it in sync
         // we can use lambda as the changed hint component will be deleted
         // so the connection will be removed as well
@@ -144,7 +232,13 @@ void UCBottomEdge::setHint(QQuickItem *hint)
 
 /*!
  * \qmlproperty real BottomEdge::dragProgress
+ * \readonly
  */
+qreal UCBottomEdge::dragProgress()
+{
+    Q_ASSERT(m_panelItem);
+    return 1.0 - (m_panelItem->y() / height());
+}
 
 /*!
  * \qmlproperty list<real> BottomEdge::stages
@@ -175,18 +269,51 @@ void UCBottomEdge::setStatus(UCBottomEdge::Status status)
     if (status == m_status) {
         return;
     }
+    // the first 3 statuses can be interchanged, after which the statuses are linearly
+    // changerable, therefore cannot go back from CanCommit to Hinted and below straight
+    // must go through Revealed and then Hinted and/or Idle.
+    if (m_status > Revealed && status <= Hinted) {
+        return;
+    }
     m_status = status;
-    qDebug() << "STATUS" << m_status;
+    QString statusStr;
+    switch (status) {
+        case Faded: statusStr = "Faded"; break;
+        case Idle: statusStr = "Idle"; break;
+        case Hinted: statusStr = "Hinted"; break;
+        case Revealed: statusStr = "Revealed"; break;
+        case CanCommit: statusStr = "CanCommit"; break;
+        case Committed: statusStr = "Committed"; break;
+    }
+
+    qDebug() << "STATUS" << statusStr;
     Q_EMIT statusChanged(m_status);
 }
 
 /*!
  * \qmlproperty url BottomEdge::content
  */
+void UCBottomEdge::setContent(const QUrl &url)
+{
+    if (m_contentUrl == url) {
+        return;
+    }
+
+    m_contentUrl = url;
+    Q_EMIT contentChanged(m_contentUrl);
+}
 
 /*!
  * \qmlproperty Component BottomEdge::contentComponent
  */
+void UCBottomEdge::setContentComponent(QQmlComponent *component)
+{
+    if (m_contentComponent == component) {
+        return;
+    }
+    m_contentComponent = component;
+    Q_EMIT contentComponentChanged(m_contentComponent);
+}
 
 /*!
  * \qmlproperty Item BottomEdge::contentItem
@@ -198,7 +325,8 @@ void UCBottomEdge::setStatus(UCBottomEdge::Status status)
  */
 void UCBottomEdge::commit()
 {
-
+    Q_EMIT commitStarted();
+    m_bottomPanel->setState("Committing");
 }
 
 /*!
@@ -206,5 +334,6 @@ void UCBottomEdge::commit()
  */
 void UCBottomEdge::collapse()
 {
-
+    Q_EMIT collapseStarted();
+    m_bottomPanel->setState("Collapsing");
 }

@@ -124,6 +124,6 @@ Page {
             flickable: widgetList
         }
         visible: active
-        anchors.fill: parent
+        height: parent.height
     }
 }

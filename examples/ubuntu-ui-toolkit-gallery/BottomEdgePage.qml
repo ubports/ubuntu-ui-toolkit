@@ -32,29 +32,44 @@ Page {
     }
 
     Component {
-        id: fake
-        Rectangle {
-            width: units.gu(40)
-            height: page.height
-            color: "blue"
-        }
-    }
-    Component {
-        id: bottomEdge
+        id: bottomEdgeContent
         Rectangle {
             width: units.gu(40)
             height: page.height
             color: UbuntuColors.green
+            Label {
+                text: {
+                    switch (bottomEdge.status) {
+                    case BottomEdge.Fading: return "Status: Fading"
+                    case BottomEdge.Idle: return "Status: Idle"
+                    case BottomEdge.Hinting: return "Status: Hinting"
+                    case BottomEdge.Revealed: return "Status: Revealed"
+                    case BottomEdge.CanCommit: return "Status: CanCommit"
+                    case BottomEdge.Committed: return "Status: Committed"
+                    default: return ""
+                    }
+                }
+                color: "white"
+                font.bold: true
+                textSize: Label.Large
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+            MouseArea {
+                anchors.fill: parent
+            }
         }
     }
 
     BottomEdge {
+        id: bottomEdge
         visible: active
         hint: BottomEdgeHint {
             text: "Compose a new message"
             iconName: "stock_message"
+            width: units.gu(30)
+            anchors.horizontalCenter: parent.horizontalCenter
         }
-        anchors.fill: parent
-        contentComponent: bottomEdge
+        height: parent.height - units.gu(7)
+        contentComponent: bottomEdgeContent
     }
 }
