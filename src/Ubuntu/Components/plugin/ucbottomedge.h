@@ -32,7 +32,6 @@ class UCBottomEdge : public QQuickItem
     Q_PROPERTY(QList<qreal> stages MEMBER m_stages NOTIFY stagesChanged FINAL)
     Q_PROPERTY(int currentStageIndex MEMBER m_currentStageIndex NOTIFY currentStageIndexChanged FINAL)
     Q_PROPERTY(Status status READ status NOTIFY statusChanged FINAL)
-    Q_PROPERTY(QQuickFlickable* flickable MEMBER m_flickable NOTIFY flickableChanged FINAL)
     Q_PROPERTY(QUrl content MEMBER m_contentUrl NOTIFY contentChanged FINAL)
     Q_PROPERTY(QQmlComponent *contentComponent MEMBER m_contentComponent NOTIFY contentComponentChanged FINAL)
     Q_PROPERTY(QQuickItem* contentItem READ contentItem NOTIFY contentItemChanged FINAL)
@@ -64,8 +63,7 @@ Q_SIGNALS:
     void dragProggressChanged(qreal progress);
     void stagesChanged();
     void currentStageIndexChanged(int index);
-    void statusChanged();
-    void flickableChanged();
+    void statusChanged(Status status);
     void contentChanged(const QUrl url);
     void contentComponentChanged(QQmlComponent *component);
     void contentItemChanged(QQuickItem *item);
@@ -80,13 +78,14 @@ public Q_SLOTS:
     void collapse();
 
 protected:
+    void setStatus(UCBottomEdge::Status status);
     void classBegin();
+    void componentComplete();
     void itemChange(ItemChange change, const ItemChangeData &data);
 
     QList<qreal> m_stages;
     QUrl m_contentUrl;
     QQuickItem *m_hint;
-    QQuickFlickable *m_flickable;
     QQmlComponent *m_contentComponent;
     QQuickItem *m_contentItem;
     QQuickItem *m_panel;

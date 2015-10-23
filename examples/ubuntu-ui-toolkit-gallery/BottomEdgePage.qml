@@ -56,5 +56,6 @@ Page {
             iconName: "stock_message"
         }
         anchors.fill: parent
+        contentComponent: bottomEdge
     }
 }

@@ -121,6 +121,7 @@ Page {
         hint: BottomEdgeHint {
             iconName: "settings"
             text: "test"
+            flickable: widgetList
         }
         visible: active
         anchors.fill: parent
