@@ -69,6 +69,15 @@ Toolkit.StyledItem {
     property Flickable flickableItem: null
 
     /*!
+        This property holds the other scrollbar that is attached to the same flickable,
+        if any. For instance, if this scrollbar is horizontal, buddyScrollbar must be set
+        to the vertical scrollbar, if any. This is to allow a correct layout of both
+        horizontal and vertical scrollbars.
+    */
+    //can't use property Scrollbar here as it would complain "Scrollbar instantiated recursively"
+    property var buddyScrollbar: null
+
+    /*!
       The property defines the alignment of the scrollbar to the flickableItem.
       The implementation handles the alignment as follows:
         \list
@@ -88,14 +97,85 @@ Toolkit.StyledItem {
     */
     property bool __interactive: __styleInstance !== null && __styleInstance.interactive
 
+
+    /*!
+      \internal
+      This trough of the scrollbar, it is used to define the position of the slider.
+    */
+    property Item __trough: __styleInstance !== null && __styleInstance.trough
+
+
+    /*!
+      \internal
+      simulate the system setting (which will be implemented in unity8, I guess)
+      True --> Steppers style, non-overlay scrollbars
+      False --> Indicator and Trough styles
+    */
+    property bool __alwaysOnScrollbars: false
+
+    focus: true
+    Keys.enabled: true
+    Keys.onLeftPressed: {
+        console.log("Left pressed")
+        if (__styleInstance !== null && !internals.vertical) {
+            __styleInstance.scroll(-flickableItem.width*0.05)
+        }
+    }
+    Keys.onRightPressed: {
+        console.log("Right pressed")
+        if (__styleInstance !== null && !internals.vertical) {
+            __styleInstance.scroll(flickableItem.width*0.05)
+        }
+    }
+    Keys.onDownPressed: {
+        console.log("Down pressed")
+        if (__styleInstance !== null && internals.vertical) {
+            __styleInstance.scroll(flickableItem.height*0.05)
+        }
+    }
+    Keys.onUpPressed: {
+        console.log("Up pressed")
+        if (__styleInstance !== null && internals.vertical) {
+            __styleInstance.scroll(-flickableItem.height*0.05)
+        }
+    }
+    Keys.onPressed:  {
+        console.log("Pressed")
+        if (__styleInstance !== null) {
+            if (internals.vertical) {
+                if (event.key == Qt.Key_PageDown) {
+                    __styleInstance.scroll(flickableItem.height*0.9)
+                } else if (event.key == Qt.Key_PageUp) {
+                    __styleInstance.scroll(-flickableItem.height*0.9)
+                }
+            } else {
+                if (event.key == Qt.Key_PageDown) {
+                    __styleInstance.scroll(flickableItem.width*0.9)
+                } else if (event.key == Qt.Key_PageUp) {
+                    __styleInstance.scroll(-flickableItem.width*0.9)
+                }
+            }
+
+            if (event.key == Qt.Key_Home) {
+                __styleInstance.scrollToBeginning()
+            } else if (event.key == Qt.Key_End) {
+                __styleInstance.scrollToEnd()
+            }
+        }
+    }
+
     implicitWidth: internals.vertical ? units.gu(4) : flickableItem.width
     implicitHeight: !internals.vertical ? units.gu(4) : flickableItem.height
 
     anchors {
         left: internals.leftAnchor(flickableItem)
+        leftMargin: internals.leftAnchorMargin()
         right: internals.rightAnchor(flickableItem)
+        rightMargin: internals.rightAnchorMargin()
         top: internals.topAnchor(flickableItem)
+        topMargin: internals.topAnchorMargin()
         bottom: internals.bottomAnchor(flickableItem)
+        bottomMargin: internals.bottomAnchorMargin()
     }
 
     /*!
@@ -122,15 +202,60 @@ Toolkit.StyledItem {
         // LTR and RTL are provided by LayoutMirroring, so no need to check that
         function leftAnchor(object)
         {
-            if (!internals.vertical || (align == Qt.AlignLeading))
+            if (!internals.vertical || (align == Qt.AlignLeading)) {
                 return object.left;
+            }
             return undefined;
+        }
+        function leftAnchorMargin()
+        {
+            if (__styleInstance === null) return 0
+
+            switch (align) {
+            case Qt.AlignLeading:
+                return __alwaysOnScrollbars ? 0 : __styleInstance.marginFromEdge
+            case Qt.AlignBottom:
+            case Qt.AlignTop:
+                if (!__alwaysOnScrollbars) {
+                    if (buddyScrollbar !== null
+                            && buddyScrollbar.__styleInstance !== null
+                            && buddyScrollbar.align === Qt.AlignLeading)
+                        return buddyScrollbar.__styleInstance.troughThicknessThumbStyle
+                                + buddyScrollbar.__styleInstance.marginFromEdge
+                    else
+                        return __styleInstance.marginFromEdge
+                }
+            default:
+                return 0
+            }
         }
         function rightAnchor(object)
         {
-            if (!internals.vertical || (align == Qt.AlignTrailing))
+            if (!internals.vertical || (align == Qt.AlignTrailing)) {
                 return object.right;
+            }
             return undefined;
+        }
+        function rightAnchorMargin()
+        {
+            if (__styleInstance === null) return 0
+
+            switch (align) {
+            case Qt.AlignTrailing:
+                return __alwaysOnScrollbars ? 0 : __styleInstance.marginFromEdge
+            case Qt.AlignBottom:
+            case Qt.AlignTop:
+                if (!__alwaysOnScrollbars) {
+                    if (buddyScrollbar !== null
+                            && buddyScrollbar.align === Qt.AlignTrailing)
+                        return buddyScrollbar.__styleInstance.troughThicknessThumbStyle
+                                + buddyScrollbar.__styleInstance.marginFromEdge
+                    else
+                        return __styleInstance.marginFromEdge
+                }
+            default:
+                return 0
+            }
         }
         function topAnchor(object)
         {
@@ -138,12 +263,88 @@ Toolkit.StyledItem {
                 return object.top;
             return undefined;
         }
+        function topAnchorMargin()
+        {
+            if (__styleInstance === null) return 0
+
+            switch (align) {
+            case Qt.AlignTop:
+                return __alwaysOnScrollbars ? 0 : __styleInstance.marginFromEdge
+            case Qt.AlignLeading:
+            case Qt.AlignTrailing:
+                if (!__alwaysOnScrollbars) {
+                    if (buddyScrollbar !== null
+                            && buddyScrollbar.align === Qt.AlignTop)
+                        return buddyScrollbar.__styleInstance.troughThicknessThumbStyle
+                                + buddyScrollbar.__styleInstance.marginFromEdge
+                    else
+                        return __styleInstance.marginFromEdge
+                }
+            default:
+                return 0
+            }
+        }
         function bottomAnchor(object)
         {
             if (internals.vertical || (align == Qt.AlignBottom))
                 return object.bottom;
             return undefined;
         }
+        function bottomAnchorMargin()
+        {
+            if (__styleInstance === null) return 0
+
+            switch (align) {
+            case Qt.AlignBottom:
+                return __alwaysOnScrollbars ? 0 : __styleInstance.marginFromEdge
+            case Qt.AlignLeading:
+            case Qt.AlignTrailing:
+                if (!__alwaysOnScrollbars) {
+                    if (buddyScrollbar !== null
+                            && buddyScrollbar.align === Qt.AlignBottom)
+                        return buddyScrollbar.__styleInstance.troughThicknessThumbStyle
+                                + buddyScrollbar.__styleInstance.marginFromEdge
+                    else
+                        return __styleInstance.marginFromEdge
+                }
+            default:
+                return 0
+            }
+        }
+    }
+
+    //NEEDED FOR NON-OVERLAY SCROLLBARS
+    Binding {
+        when: flickableItem && __alwaysOnScrollbars
+              && __styleInstance && align === Qt.AlignTrailing
+              && flickableItem.rightMargin < __styleInstance.troughThicknessSteppersStyle
+        target: flickableItem
+        property: LayoutMirroring.enabled ? "leftMargin" : "rightMargin"
+        value: __styleInstance.troughThicknessSteppersStyle
+    }
+    Binding {
+        when: flickableItem && __alwaysOnScrollbars
+              && __styleInstance && align === Qt.AlignLeading
+              && flickableItem.leftMargin < __styleInstance.troughThicknessSteppersStyle
+        target: flickableItem
+        property: LayoutMirroring.enabled ? "rightMargin" : "leftMargin"
+        value: __styleInstance.troughThicknessSteppersStyle
+    }
+    Binding {
+        when: flickableItem && __alwaysOnScrollbars
+              && __styleInstance && align === Qt.AlignTop
+              && flickableItem.topMargin < __styleInstance.troughThicknessSteppersStyle
+        target: flickableItem
+        property: "topMargin"
+        value:__styleInstance.troughThicknessSteppersStyle
+    }
+    Binding {
+        when: flickableItem && __alwaysOnScrollbars
+              && __styleInstance && align === Qt.AlignBottom
+              && flickableItem.bottomMargin < __styleInstance.troughThicknessSteppersStyle
+        target: flickableItem
+        property: "bottomMargin"
+        value: __styleInstance.troughThicknessSteppersStyle
     }
 
     theme.version: Toolkit.Ubuntu.toolkitVersion

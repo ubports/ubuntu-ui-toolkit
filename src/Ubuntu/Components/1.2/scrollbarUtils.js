@@ -31,6 +31,8 @@ var _obj = {
     propSizeRatio: "",
     propCoordinate: "",
     propSize: "",
+    propContentLeadingMargin: "",
+    propContentTrailingMargin: "",
     refresh: function () {
         _obj.vertical = (_obj.scrollbar.align === Qt.AlignLeading) || (_obj.scrollbar.align === Qt.AlignTrailing)
         _obj.propOrigin = (_obj.vertical) ? "originY" : "originX";
@@ -71,7 +73,8 @@ function isVertical(scrollbar) {
   */
 function sliderPos(scrollbar, min, max) {
     if (!__check(scrollbar)) return 0;
-    return clamp(scrollbar.flickableItem.visibleArea[_obj.propPosRatio] * scrollbar.flickableItem[_obj.propSize], min, max);
+    console.log("SLIDER POS", scrollbar.flickableItem.visibleArea[_obj.propPosRatio],"*", scrollbar.height, min, max)
+    return clamp(scrollbar.flickableItem.visibleArea[_obj.propPosRatio] * scrollbar.__trough[_obj.propSize] /*flickableItem[_obj.propSize]*/, min, max);
 }
 
 /*!
@@ -125,5 +128,17 @@ function scrollAndClamp(scrollbar, amount, min, max) {
 function dragAndClamp(scrollbar, cursor, contentSize, pageSize) {
     if (!__check(scrollbar)) return 0;
     scrollbar.flickableItem[_obj.propContent] =
-            scrollbar.flickableItem[_obj.propOrigin] + cursor[_obj.propCoordinate] * contentSize / pageSize;
+            scrollbar.flickableItem[_obj.propOrigin] + cursor[_obj.propCoordinate]
+            * (contentSize) / scrollbar.__trough[_obj.propSize]; //don't use pageSize, we don't know if the scrollbar is edge to edge!;
+}
+
+function scrollToBeginning(scrollbar) {
+    if (!__check(scrollbar)) return 0;
+    scrollbar.flickableItem[_obj.propContent] = 0
+}
+
+//FIXME: THIS DOESN'T TAKE THE CONTENT MARGINS (FLICKABLE.LEFTMARGIN ETC) INTO ACCOUNT!!
+function scrollToEnd(scrollbar) {
+    if (!__check(scrollbar)) return 0;
+    scrollbar.flickableItem[_obj.propContent] = scrollbar.flickableItem.contentHeight - scrollbar.flickableItem[_obj.propSize]
 }

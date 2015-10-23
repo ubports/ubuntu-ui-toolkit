@@ -27,17 +27,18 @@ Page {
         id: flickable
         objectName: "TemplateFlickable"
         anchors.fill: parent
-        anchors.topMargin: units.gu(2)
-        anchors.bottomMargin: units.gu(2)
+        //anchors.topMargin: units.gu(2)
+        //anchors.bottomMargin: units.gu(2)
         contentHeight: layout.height
         interactive: contentHeight > height
 
+        onBottomMarginChanged: console.log("CHANGED", bottomMargin)
         Column {
             id: layout
             spacing: units.gu(6)
             anchors.left: parent.left
             anchors.right: parent.right
-            anchors.margins: units.gu(2)
+            //anchors.margins: units.gu(2)
         }
     }
 
