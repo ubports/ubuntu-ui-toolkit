@@ -55,7 +55,7 @@ MainView {
         }
 
         function test_hiding() {
-            bottomEdgeHint.state = "Faded";
+            bottomEdgeHint.state = "Hidden";
             tryCompare(bottomEdgeHint, "opacity", 0.0);
         }
 

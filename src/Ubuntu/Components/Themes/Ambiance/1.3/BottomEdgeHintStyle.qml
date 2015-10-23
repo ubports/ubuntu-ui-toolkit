@@ -34,7 +34,7 @@ Item {
             }
         },
         State {
-            name: "Hinted"
+            name: "Active"
             PropertyChanges {
                 target: h1
                 anchors.verticalCenterOffset: styledItem.height / 2
@@ -45,7 +45,7 @@ Item {
             }
         },
         State {
-            name: "Faded"
+            name: "Hidden"
             when: styledItem.flickable && (styledItem.flickable.flicking || styledItem.flickable.moving)
             PropertyChanges {
                 target: styledItem
@@ -78,7 +78,7 @@ Item {
     transitions: [
         Transition {
             from: "*"
-            to: "Hinted"
+            to: "Active"
             reversible: true
             UbuntuNumberAnimation {
                 targets: [h1, h2]
@@ -87,7 +87,7 @@ Item {
         },
         Transition {
             from: "*"
-            to: "Faded"
+            to: "Hidden"
             reversible: true
             UbuntuNumberAnimation {
                 target: styledItem
@@ -105,10 +105,10 @@ Item {
         acceptedButtons: Qt.NoButton
         enabled: styledItem.state != "Locked"
         onEntered: {
-            styledItem.state = "Hinted";
+            styledItem.state = "Active";
             turnToIdleTimer.stop();
         }
-        onExited: if (styledItem.state == "Hinted") turnToIdleTimer.restart()
+        onExited: if (styledItem.state == "Active") turnToIdleTimer.restart()
     }
 
     Timer {

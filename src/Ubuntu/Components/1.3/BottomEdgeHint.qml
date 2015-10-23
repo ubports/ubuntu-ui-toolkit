@@ -27,7 +27,7 @@ import Ubuntu.Components 1.3
 
     It displays either a label or an icon at the bottom of the application.
 
-    It has 4 states: Faded, Idle, Hinted and Locked. When Idle, part of it is
+    It has 4 states: Hidden, Idle, Active and Locked. When Idle, part of it is
     still visible hinting the existence of the bottom edge.
 
     When used with a mouse it acts like a button. The typical action associated
@@ -85,7 +85,7 @@ StyledItem {
 
     /*!
       The property holds the flickable, which when flicked hides the hint.
-      \e Faded state is reached when this property is set to a Flickable
+      \e Hidden state is reached when this property is set to a Flickable
       which is flicking or moving. It is recommended to set the property
       when the hint is placed above a flickable content. Defaults to null.
       */
@@ -93,13 +93,13 @@ StyledItem {
 
     /*!
       \qmlproperty string state
-      BottomEdgeHint can take 4 states of visibility: "Faded", "Idle", "Hinted"
+      BottomEdgeHint can take 4 states of visibility: "Hidden", "Idle", "Active"
       and "Locked".
 
-      When \e Faded, the hint is not shown at all. When \e Hinted, the full hint
+      When \e Hidden, the hint is not shown at all. When \e Active, the full hint
       with its content is shown. When \e Idle, only part of the hint is visible
       leaving more space for application content. \e Idle extends the empty state.
-      \e Locked is similar to Hinted, except that it is a final state, meaning the
+      \e Locked is similar to Active, except that it is a final state, meaning the
       hint will be shown no matter of the flickable's status.
 
       Defaults to \e Idle.
