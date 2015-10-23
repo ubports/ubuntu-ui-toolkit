@@ -32,7 +32,8 @@ import Ubuntu.Components 1.3
 
     When used with a mouse it acts like a button. The typical action associated
     with clicking on it should be revealing the extra features provided by the
-    bottom edge.
+    bottom edge. However, the click can only happen if the hint is in \e Locked
+    state.
 
     Example:
     \qml

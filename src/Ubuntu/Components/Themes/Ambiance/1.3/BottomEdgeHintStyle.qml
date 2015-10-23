@@ -48,7 +48,7 @@ Item {
             name: "Faded"
             when: styledItem.flickable && (styledItem.flickable.flicking || styledItem.flickable.moving)
             PropertyChanges {
-                target: bottomEdgeHintStyle
+                target: styledItem
                 opacity: 0.0
             }
             PropertyChanges {
@@ -90,7 +90,7 @@ Item {
             to: "Faded"
             reversible: true
             UbuntuNumberAnimation {
-                target: bottomEdgeHintStyle
+                target: styledItem
                 property: "opacity"
                 duration: UbuntuAnimation.SlowDuration
             }
