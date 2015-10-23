@@ -21,7 +21,7 @@ import Ubuntu.Components 1.3
     \qmltype BottomEdgeHint
     \inqmlmodule Ubuntu.Components 1.3
     \ingroup ubuntu
-    \inherits Item
+    \inherits StyledItem
     \brief The BottomEdgeHint shows the availability of extra features
     available from the bottom edge of the application.
 
