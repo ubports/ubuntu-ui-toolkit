@@ -24,7 +24,6 @@ Item {
     implicitHeight: units.gu(4)
 
     state: styledItem.state
-    onStateChanged: print("state=", state)
 
     states: [
         State {
