@@ -40,8 +40,8 @@ import Ubuntu.Components 1.3
 Header {
     id: header
     anchors {
-        left: parent.left
-        right: parent.right
+        left: parent ? parent.left : undefined
+        right: parent ? parent.right : undefined
     }
 
     /*!
