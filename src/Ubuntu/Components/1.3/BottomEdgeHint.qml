@@ -18,20 +18,22 @@ import QtQuick 2.4
 import Ubuntu.Components 1.3
 
 /*!
-    \qmlabstract BottomEdgeHint
+    \qmltype BottomEdgeHint
     \inqmlmodule Ubuntu.Components 1.3
     \ingroup ubuntu
+    \inherits StyledItem
     \brief The BottomEdgeHint shows the availability of extra features
     available from the bottom edge of the application.
 
     It displays either a label or an icon at the bottom of the application.
 
-    It has 2 states: hidden or visible. When hidden, part of it is still visible
-    to hint at the existence of the bottom edge.
+    It has 4 states: Hidden, Idle, Active and Locked. When Idle, part of it is
+    still visible hinting the existence of the bottom edge.
 
     When used with a mouse it acts like a button. The typical action associated
     with clicking on it should be revealing the extra features provided by the
-    bottom edge.
+    bottom edge. However, the click can only happen if the hint is in \e Locked
+    state.
 
     Example:
     \qml
@@ -42,19 +44,12 @@ import Ubuntu.Components 1.3
     }
     \endqml
 
+    The component is styled through \b BottomEdgeHintStyle.
 */
-Item {
+StyledItem {
     id: bottomEdgeHint
 
-    anchors {
-        bottom: parent.bottom
-        bottomMargin: bottomEdgeHint.state == "Hidden" ? -bottomEdgeHint.height + units.gu(1.5) : 0
-        horizontalCenter: parent.horizontalCenter
-        Behavior on bottomMargin { UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration } }
-    }
-
-    width: label.paintedWidth + units.gu(7)
-    height: units.gu(4)
+    anchors.bottom: parent.bottom
 
     /*!
        This handler is called when there is a mouse click on the BottomEdgeHint
@@ -66,19 +61,22 @@ Item {
     Keys.onReturnPressed: clicked()
 
     /*!
+      \qmlproperty string text
       The label displayed by the BottomEdgeHint.
      */
     property string text
 
     /*!
+      \qmlproperty url iconSource
       The icon displayed by the BottomEdgeHint.
 
       This is the URL of any image file.
       If both iconSource and iconName are defined, iconName will be ignored.
      */
-    property url iconSource: iconName ? "image://theme/" + iconName : ""
+    property url iconSource
 
     /*!
+      \qmlproperty string iconName
       The icon associated with the BottomEdgeHint in the icon theme.
 
       If both iconSource and iconName are defined, iconName will be ignored.
@@ -86,70 +84,27 @@ Item {
     property string iconName
 
     /*!
-      BottomEdgeHint can take 2 states of visibility: "Hidden" and "Visible".
+      The property holds the flickable, which when flicked hides the hint.
+      \e Hidden state is reached when this property is set to a Flickable
+      which is flicking or moving. It is recommended to set the property
+      when the hint is placed above a flickable content. Defaults to null.
+      */
+    property Flickable flickable: null
 
-      When "Visible", the full hint with its content is shown.
+    /*!
+      \qmlproperty string state
+      BottomEdgeHint can take 4 states of visibility: "Hidden", "Idle", "Active"
+      and "Locked".
 
-      When "Hidden", only part of the hint is visible leaving more space for application content.
+      When \e Hidden, the hint is not shown at all. When \e Active, the full hint
+      with its content is shown. When \e Idle, only part of the hint is visible
+      leaving more space for application content. \e Idle extends the empty state.
+      \e Locked is similar to Active, except that it is a final state, meaning the
+      hint will be shown no matter of the flickable's status.
+
+      Defaults to \e Idle.
      */
-    property string state: "Visible"
+    state: "Idle"
 
-    MouseArea {
-        id: mouseArea
-        anchors.fill: parent
-        hoverEnabled: true
-        onEntered: bottomEdgeHint.state = "Visible"
-        onClicked: {
-            Haptics.play();
-            bottomEdgeHint.clicked();
-            mouse.accepted = false;
-        }
-    }
-
-    clip: true
-
-    UbuntuShape {
-        id: background
-
-        anchors {
-            bottom: parent.bottom
-            horizontalCenter: bottomEdgeHint.horizontalCenter
-            bottomMargin: -units.gu(1)
-        }
-
-        width: bottomEdgeHint.width - 2 * hoverExpansion
-        height: bottomEdgeHint.height + units.gu(1) - hoverExpansion
-
-        property real hoverExpansion: mouseArea.containsMouse ? 0 : units.gu(0.5)
-        Behavior on hoverExpansion { UbuntuNumberAnimation { duration: UbuntuAnimation.FastDuration } }
-
-        backgroundColor: theme.palette.normal.overlay
-    }
-
-    Label {
-        id: label
-
-        anchors {
-            top: parent.top
-            horizontalCenter: parent.horizontalCenter
-        }
-        text: icon.name ? "" : bottomEdgeHint.text
-        textSize: Label.Medium
-        height: bottomEdgeHint.height
-        verticalAlignment: Text.AlignVCenter
-        horizontalAlignment: Text.AlignHCenter
-    }
-
-    Icon {
-        id: icon
-
-        name: bottomEdgeHint.iconName
-        anchors {
-            bottom: parent.bottom
-            bottomMargin: units.gu(0.5)
-            horizontalCenter: parent.horizontalCenter
-        }
-        width: height
-        height: units.gu(2)
-    }
+    styleName: "BottomEdgeHintStyle"
 }
