@@ -19,7 +19,13 @@ import Ubuntu.Components 1.3
 
 Template {
     objectName: "sectionsTemplate"
-    head.sections.model: ["first", "second", "third"]
+    id: sectionsTemplate
+
+    header: PageHeader {
+        title: sectionsTemplate.title
+        sections.model: ["first", "second", "third"]
+    }
+
     TemplateSection {
         title: "Sections"
         className: "Sections"
