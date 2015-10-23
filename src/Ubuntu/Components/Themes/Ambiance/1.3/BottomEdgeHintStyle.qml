@@ -55,6 +55,24 @@ Item {
                 target: mouseHover
                 enabled: false
             }
+        },
+        // FIXME: locked should be set and be final if mouse is attached
+        // requires QSystemInfo support, which is ongoing work upstream
+        State {
+            name: "Locked"
+            PropertyChanges {
+                target: h1
+                anchors.verticalCenterOffset: styledItem.height / 2
+            }
+            PropertyChanges {
+                target: h2
+                anchors.topMargin: 0
+            }
+            PropertyChanges {
+                target: turnToIdleTimer
+                running: false
+
+            }
         }
     ]
     transitions: [
@@ -85,6 +103,7 @@ Item {
         anchors.fill: parent
         hoverEnabled: true
         acceptedButtons: Qt.NoButton
+        enabled: styledItem.state != "Locked"
         onEntered: {
             styledItem.state = "Hinted";
             turnToIdleTimer.stop();

@@ -66,10 +66,14 @@ Page {
         hint: BottomEdgeHint {
             text: "Compose a new message"
             iconName: "stock_message"
-            width: units.gu(30)
-            anchors.horizontalCenter: parent.horizontalCenter
+//            width: units.gu(30)
+//            anchors.horizontalCenter: parent.horizontalCenter
         }
         height: parent.height - units.gu(7)
         contentComponent: bottomEdgeContent
+        onCommitStarted: print("START COMMIT")
+        onCommitFinished: print("END COMMIT")
+        onCollapseStarted: print("START COLLAPSE")
+        onCollapseFinished: print("END COLLAPSE")
     }
 }

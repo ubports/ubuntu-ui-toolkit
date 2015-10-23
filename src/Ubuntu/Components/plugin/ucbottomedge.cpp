@@ -161,14 +161,20 @@ void UCBottomEdge::createPanel(QQmlComponent *component)
     connect(this, &UCBottomEdge::dragProggressChanged, [=]() {
         qreal finalStage = (this->m_stages.size() > 0) ? this->m_stages.last() : m_defaultCommitStage;
         qreal progress = this->dragProgress();
-        if (progress >= finalStage) {
-            if (progress >= 1.0) {
-                this->setStatus(UCBottomEdge::Committed);
-            } else {
-                this->setStatus(UCBottomEdge::CanCommit);
-            }
-        } else if (this->dragProgress() < finalStage){
+        if (progress <= 0.0) {
+            this->setStatus(UCBottomEdge::Hinted);
+        } else if (progress < finalStage) {
             this->setStatus(UCBottomEdge::Revealed);
+        } else if (progress < 1.0) {
+            this->setStatus(UCBottomEdge::CanCommit);
+            if (m_hint) {
+                m_hint->setState("Hinted");
+            }
+        } else {
+            this->setStatus(UCBottomEdge::Committed);
+            if (m_hint) {
+                m_hint->setState("Locked");
+            }
         }
     });
 

@@ -27,8 +27,8 @@ import Ubuntu.Components 1.3
 
     It displays either a label or an icon at the bottom of the application.
 
-    It has 3 states: Faded, Idle or Hinted. When Idle, part of it is still visible
-    hinting the existence of the bottom edge.
+    It has 4 states: Faded, Idle, Hinted and Locked. When Idle, part of it is
+    still visible hinting the existence of the bottom edge.
 
     When used with a mouse it acts like a button. The typical action associated
     with clicking on it should be revealing the extra features provided by the
@@ -92,11 +92,14 @@ StyledItem {
 
     /*!
       \qmlproperty string state
-      BottomEdgeHint can take 3 states of visibility: "Faded", "Idle" and "Hinted".
+      BottomEdgeHint can take 4 states of visibility: "Faded", "Idle", "Hinted"
+      and "Locked".
 
       When \e Faded, the hint is not shown at all. When \e Hinted, the full hint
       with its content is shown. When \e Idle, only part of the hint is visible
       leaving more space for application content. \e Idle extends the empty state.
+      \e Locked is similar to Hinted, except that it is a final state, meaning the
+      hint will be shown no matter of the flickable's status.
 
       Defaults to \e Idle.
      */
