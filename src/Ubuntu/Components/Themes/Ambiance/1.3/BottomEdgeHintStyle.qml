@@ -85,7 +85,10 @@ Item {
         anchors.fill: parent
         hoverEnabled: true
         acceptedButtons: Qt.NoButton
-        onEntered: if (styledItem.state == "Idle" || styledItem.state == "") styledItem.state = "Hinted"
+        onEntered: {
+            styledItem.state = "Hinted";
+            turnToIdleTimer.stop();
+        }
         onExited: if (styledItem.state == "Hinted") turnToIdleTimer.restart()
     }
 
