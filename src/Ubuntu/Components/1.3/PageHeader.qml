@@ -110,7 +110,7 @@ Header {
             }
         }
 
-        // when the style changes, make sure that the titleLoader loads
+        // When the style changes, make sure that the titleLoader loads
         //  the new titleComponent.
         property Item styleInstance: __styleInstance
         onStyleInstanceChanged: updateContents()
