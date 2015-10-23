@@ -29,6 +29,9 @@ Item {
         State {
             name: "Idle"
             extend: ""
+            StateChangeScript {
+                script: turnToIdleTimer.stop()
+            }
         },
         State {
             name: "Hinted"
@@ -72,16 +75,17 @@ Item {
         }
     ]
 
+    // FIXME ZSOMBI: temporary functionality till SwipeGesture integration
     MouseArea {
         anchors.fill: parent
         hoverEnabled: true
         acceptedButtons: Qt.NoButton
         onEntered: styledItem.state = "Hinted"
-        onExited: hidingTimer.start()
+        onExited: if (styledItem.state == "Hinted") turnToIdleTimer.restart()
     }
 
     Timer {
-        id: hidingTimer
+        id: turnToIdleTimer
         interval: 800
         repeat: false
         onTriggered: styledItem.state = "Idle"

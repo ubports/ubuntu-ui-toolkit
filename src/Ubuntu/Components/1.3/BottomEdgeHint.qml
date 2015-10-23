@@ -101,7 +101,7 @@ StyledItem {
 
       Defaults to \e Idle.
      */
-    property string state: "Idle"
+    state: "Idle"
 
     styleName: "BottomEdgeHintStyle"
 }
