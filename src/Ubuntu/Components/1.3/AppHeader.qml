@@ -151,6 +151,5 @@ Components.Header {
         }
     }
 
-    theme.version: Components.Ubuntu.toolkitVersion
     styleName: "PageHeadStyle"
 }

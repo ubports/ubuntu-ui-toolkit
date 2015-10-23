@@ -260,7 +260,7 @@ Item {
             function test_foreground_color() {
                 var color1 = color_by_value(style.foregroundColor);
                 var bar = header.trailingActionBar;
-                var iconButton = findChild(bar, "action1_action_button");
+                var iconButton = findChild(bar, "action1_button");
                 var buttonStyle = iconButton.__styleInstance;
                 compare(Qt.colorEqual(buttonStyle.foregroundColor, color1), true,
                         "Button foreground color does not match header foreground color.");

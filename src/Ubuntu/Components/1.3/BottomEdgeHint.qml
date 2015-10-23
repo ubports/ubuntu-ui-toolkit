@@ -16,19 +16,19 @@
 
 import QtQuick 2.4
 import Ubuntu.Components 1.3
-import "../ListItems/1.3"
 
 /*!
-    \qmlabstract BottomEdgeHint
+    \qmltype BottomEdgeHint
     \inqmlmodule Ubuntu.Components 1.3
     \ingroup ubuntu
+    \inherits Item
     \brief The BottomEdgeHint shows the availability of extra features
     available from the bottom edge of the application.
 
     It displays either a label or an icon at the bottom of the application.
 
-    It has 2 states: hidden or visible. When hidden, part of it is still visible
-    to hint at the existence of the bottom edge.
+    It has 3 states: Faded, Idle or Hinted. When Idle, part of it is still visible
+    hinting the existence of the bottom edge.
 
     When used with a mouse it acts like a button. The typical action associated
     with clicking on it should be revealing the extra features provided by the
@@ -43,18 +43,12 @@ import "../ListItems/1.3"
     }
     \endqml
 
+    The component is styled through \b BottomEdgeHintStyle.
 */
-Item {
+StyledItem {
     id: bottomEdgeHint
 
-    anchors {
-        left: parent.left
-        right: parent.right
-        bottom: parent.bottom
-    }
-
-    width: label.paintedWidth + units.gu(7)
-    height: units.gu(4)
+    anchors.bottom: parent.bottom
 
     /*!
        This handler is called when there is a mouse click on the BottomEdgeHint
@@ -69,7 +63,7 @@ Item {
       \qmlproperty string text
       The label displayed by the BottomEdgeHint.
      */
-    property alias text: label.text
+    property string text
 
     /*!
       \qmlproperty url iconSource
@@ -78,7 +72,7 @@ Item {
       This is the URL of any image file.
       If both iconSource and iconName are defined, iconName will be ignored.
      */
-    property alias iconSource: icon.source
+    property url iconSource
 
     /*!
       \qmlproperty string iconName
@@ -86,114 +80,27 @@ Item {
 
       If both iconSource and iconName are defined, iconName will be ignored.
      */
-    property alias iconName: icon.name
+    property string iconName
+
+    /*!
+      The property holds the flickable, which when flicked hides the hint.
+      \e Faded state is reached when this property is set to a Flickable
+      which is flicking or moving. It is recommended to set the property
+      when the hint is placed above a flickable content. Defaults to null.
+      */
+    property Flickable flickable: null
 
     /*!
       \qmlproperty string state
-      BottomEdgeHint can take 2 states of visibility: "Hidden" and "Visible".
+      BottomEdgeHint can take 3 states of visibility: "Faded", "Idle" and "Hinted".
 
-      When "Visible", the full hint with its content is shown.
+      When \e Faded, the hint is not shown at all. When \e Hinted, the full hint
+      with its content is shown. When \e Idle, only part of the hint is visible
+      leaving more space for application content. \e Idle extends the empty state.
 
-      When "Hidden", only part of the hint is visible leaving more space for application content.
+      Defaults to \e Idle.
      */
-    state: "Hidden"
+    state: "Idle"
 
-    states: [
-        State {
-            name: "Visible"
-            PropertyChanges {
-                target: h1
-                anchors.verticalCenterOffset: bottomEdgeHint.height / 2
-            }
-            PropertyChanges {
-                target: h2
-                anchors.topMargin: 0
-            }
-        }
-    ]
-    transitions: Transition {
-        from: "Hidden"
-        to: "Visible"
-        reversible: true
-        UbuntuNumberAnimation {
-            targets: [h1, h2]
-            properties: "anchors.verticalCenterOffset, anchors.topMargin"
-        }
-    }
-
-    MouseArea {
-        anchors.fill: parent
-        hoverEnabled: true
-        acceptedButtons: Qt.NoButton
-        onEntered: bottomEdgeHint.state = "Visible"
-        onExited: hidingTimer.start()
-    }
-
-    Timer {
-        id: hidingTimer
-        interval: 800
-        repeat: false
-        onTriggered: bottomEdgeHint.state = "Hidden"
-    }
-
-    clip: true
-
-    Icon {
-        id: h1
-        width: units.gu(2)
-        height: width
-        anchors {
-            centerIn: parent
-            topMargin: bottomEdgeHint.height
-        }
-        name: "up"
-    }
-
-    Rectangle {
-        id: h2
-        anchors {
-            top: parent.top
-            left: parent.left
-            right: parent.right
-            topMargin: bottomEdgeHint.height
-        }
-        height: bottomEdgeHint.height
-        color: theme.palette.normal.overlay
-        ThinDivider {
-            anchors.top: parent.top
-        }
-
-        MouseArea {
-            anchors.fill: parent
-            onClicked: {
-                Haptics.play();
-                bottomEdgeHint.clicked();
-                mouse.accepted = false;
-            }
-        }
-
-        Row {
-            anchors {
-                top: parent.top
-                bottom: parent.bottom
-                horizontalCenter: parent.horizontalCenter
-            }
-            spacing: units.gu(1)
-            Icon {
-                id: icon
-                width: height
-                height: units.gu(2)
-                anchors.verticalCenter: parent.verticalCenter
-                color: theme.palette.normal.overlayText
-            }
-            Label {
-                id: label
-                textSize: Label.Medium
-                color: theme.palette.normal.overlayText
-                height: bottomEdgeHint.height
-                anchors.verticalCenter: parent.verticalCenter
-                verticalAlignment: Text.AlignVCenter
-            }
-        }
-    }
+    styleName: "BottomEdgeHintStyle"
 }

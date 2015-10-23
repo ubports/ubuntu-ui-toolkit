@@ -92,6 +92,7 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/uclabel.h \
     $$PWD/uclistitemlayout.h \
     $$PWD/privates/threelabelsslot_p.h \
+    $$PWD/ucimportversionchecker_p.h \
     $$PWD/ucbottomedge.h
 
 SOURCES += $$PWD/plugin.cpp \
@@ -155,6 +156,7 @@ SOURCES += $$PWD/plugin.cpp \
     $$PWD/uclabel.cpp \
     $$PWD/uclistitemlayout.cpp \
     $$PWD/privates/threelabelsslot_p.cpp \
+    $$PWD/ucimportversionchecker_p.cpp \
     $$PWD/ucbottomedge.cpp
 
 # adapters

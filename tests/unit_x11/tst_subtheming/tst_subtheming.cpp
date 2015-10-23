@@ -95,6 +95,7 @@ private Q_SLOTS:
     {
         qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", m_themesPath.toLatin1());
         qputenv("XDG_DATA_DIRS", m_xdgDataPath.toLocal8Bit());
+        UCTheme::previousVersion = 0;
     }
 
     void test_default_theme()
@@ -660,6 +661,16 @@ private Q_SLOTS:
         // NOTE TestTheme resets the theme therefore the theming will look for the tested style under Ambiance theme
         // which will cause a warning; therefore we mark the warning to be ignored
         ThemeTestCase::ignoreWarning(document, 19, 1, "QML StyledItem: Warning: Style TestStyle.qml not found in theme Ubuntu.Components.Themes.Ambiance");
+    }
+
+    void test_mixed_versions() {
+        ThemeTestCase::ignoreWarning("OtherVersion.qml", 19, 1, "QML StyledItem: Mixing of Ubuntu.Components module versions 1.3 and 1.2 detected!");
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase("OtherVersion.qml"));
+        QTest::waitForEvents();
+        UCStyledItemBase *newStyled = static_cast<UCStyledItemBase*>(view->rootObject());
+        UCStyledItemBase *otherStyled = view->findItem<UCStyledItemBase*>("otherStyled");
+        QCOMPARE(UCStyledItemBasePrivate::get(newStyled)->styleInstance()->objectName(), QString("OptionSelector13"));
+        QCOMPARE(UCStyledItemBasePrivate::get(otherStyled)->styleInstance()->objectName(), QString("OptionSelector12"));
     }
 
     void test_deprecated_theme()

@@ -31,7 +31,6 @@ Page {
         }
     }
 
-
     Component {
         id: fake
         Rectangle {
@@ -52,7 +51,7 @@ Page {
     BottomEdge {
         visible: active
         hint: BottomEdgeHint {
-            text: "Message"
+            text: "Compose a new message"
             iconName: "stock_message"
         }
         anchors.fill: parent

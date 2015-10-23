@@ -109,7 +109,6 @@ PopupBase {
             }
         }
 
-        theme.version: Ubuntu.toolkitVersion
         styleName: "SheetForegroundStyle"
     }
 }

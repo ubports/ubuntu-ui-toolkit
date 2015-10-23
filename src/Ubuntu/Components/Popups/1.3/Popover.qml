@@ -241,7 +241,6 @@ PopupBase {
         signal showCompleted()
         signal hideCompleted()
 
-        theme.version: Ubuntu.toolkitVersion
         styleName: "PopoverForegroundStyle"
     }
 

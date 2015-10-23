@@ -44,6 +44,8 @@
 #include <QtQml/private/qqmlbinding_p.h>
 #undef foreach
 
+
+quint16 UCTheme::previousVersion = 0;
 /*!
  * \qmltype ThemeSettings
  * \instantiates UCTheme
@@ -345,7 +347,6 @@ UCTheme::UCTheme(QObject *parent)
     : QObject(parent)
     , m_palette(UCTheme::defaultTheme().m_palette)
     , m_engine(UCTheme::defaultTheme().m_engine)
-    , m_version(UCTheme::defaultTheme().m_version)
     , m_defaultStyle(false)
 {
     init();
@@ -355,7 +356,6 @@ UCTheme::UCTheme(bool defaultStyle, QObject *parent)
     : QObject(parent)
     , m_palette(NULL)
     , m_engine(NULL)
-    , m_version(LATEST_UITK_VERSION)
     , m_defaultStyle(defaultStyle)
 {
     init();
@@ -643,40 +643,24 @@ void UCTheme::updateThemedItems()
     }
 }
 
-/*!
- * \qmlproperty uint16 ThemeSettings::version
- * \since Ubuntu.Components 1.3
- * The property specifies the version of the toolkit the component is declared.
- * This equivalent with the toolkit version the component document imports. Themes,
- * starting of version 1.3, should follow the same versioning as the toolkit does.
- * If a component's style is not found under the given version, styling will try
- * to locate the style with a lower minor version until it finds a match.
- *
- * The current version of an imported toolkit module is reported by the
- * \l Ubuntu::toolkitVersion property. If a document imports Ubuntu.Components 1.2,
- * the components will load the system or application themes associated to that
- * version, and \l Ubuntu::toolkitVersion will report that version. If the document
- * imports 1.3 version, the components will load 1.3 themes. Setting this property
- * will initiate a full theme reload.
- *
- * Usually developers do not need to set this property on toolkit components as
- * those already set the version. However themes provided by applications should
- * take care of versioning the styles and on how to do theming.
- *
- * \sa Ubuntu::toolkitVersion, Ubuntu::version, {Themes}
+/*
+ * Updates the version used by the toolkit/application
  */
-quint16 UCTheme::version()
+void UCTheme::checkMixedVersionImports(QQuickItem *item, quint16 version)
 {
-    return m_version;
-}
-void UCTheme::setVersion(quint16 version)
-{
-    if (m_version == version) {
-        return;
+    static bool wasShown = false;
+    if (version != previousVersion && previousVersion && !wasShown) {
+        // the first change is due to the first import detection, any further changes would mean there are
+        // multiple version imports
+        QString msg = QStringLiteral("Mixing of Ubuntu.Components module versions %1.%2 and %3.%4 detected!")
+                .arg(MAJOR_VERSION(version))
+                .arg(MINOR_VERSION(version))
+                .arg(MAJOR_VERSION(previousVersion))
+                .arg(MINOR_VERSION(previousVersion));
+        qmlInfo(item) << msg;
+        wasShown = true;
     }
-    m_version = version;
-    Q_EMIT versionChanged();
-    updateThemedItems();
+    previousVersion = version;
 }
 
 /*
@@ -686,10 +670,7 @@ void UCTheme::setVersion(quint16 version)
 QQmlComponent* UCTheme::createStyleComponent(const QString& styleName, QObject* parent, quint16 version)
 {
     QQmlComponent *component = NULL;
-
-    if (!version) {
-        version = m_version;
-    }
+    Q_ASSERT(version);
 
     if (parent != NULL) {
         QQmlEngine* engine = qmlEngine(parent);
@@ -738,7 +719,7 @@ void UCTheme::loadPalette(bool notify)
         m_palette = 0;
     }
     // theme may not have palette defined
-    QUrl paletteUrl = styleUrl("Palette.qml", m_version);
+    QUrl paletteUrl = styleUrl("Palette.qml", previousVersion ? previousVersion : LATEST_UITK_VERSION);
     if (paletteUrl.isValid()) {
         m_palette = QuickUtils::instance().createQmlObject(paletteUrl, m_engine);
         if (m_palette) {

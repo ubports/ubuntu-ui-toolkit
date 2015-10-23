@@ -13,7 +13,3 @@ QML_FILES += 1.2/ComboButtonStyle.qml \
 load(ubuntu_qml_module)
 
 OTHER_FILES+=qmldir
-
-
-
-
