@@ -20,20 +20,29 @@ import Ubuntu.Components 1.3
 Page {
     id: template
 
-    default property alias content: layout.children
-    property alias spacing: layout.spacing
+    default property alias content: column.children
+    property alias spacing: column.spacing
+
+    header: PageHeader {
+        title: template.title
+        flickable: layout.columns === 1 ? flickable : null
+        onFlickableChanged: exposed = true;
+    }
 
     Flickable {
         id: flickable
         objectName: "TemplateFlickable"
-        anchors.fill: parent
-        anchors.topMargin: units.gu(2)
-        anchors.bottomMargin: units.gu(2)
-        contentHeight: layout.height
+        anchors {
+            fill: parent
+            topMargin: template.header.flickable ? units.gu(2) :
+                                                   units.gu(2) + template.header.height
+            bottomMargin: units.gu(2)
+        }
+        contentHeight: column.height
         interactive: contentHeight > height
 
         Column {
-            id: layout
+            id: column
             spacing: units.gu(6)
             anchors.left: parent.left
             anchors.right: parent.right

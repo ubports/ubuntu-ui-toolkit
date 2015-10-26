@@ -21,7 +21,7 @@ Style.PageHeaderStyle {
     id: pageHeaderStyle
 
     foregroundColor: theme.palette.selected.backgroundText
-    backgroundColor: "white"
+    backgroundColor: theme.palette.normal.background
     dividerColor: Qt.rgba(0, 0, 0, 0.1)
     property int fontWeight: Font.Light
     property int textSize: Label.Large

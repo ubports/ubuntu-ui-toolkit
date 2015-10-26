@@ -40,8 +40,8 @@ import Ubuntu.Components 1.3
 Header {
     id: header
     anchors {
-        left: parent.left
-        right: parent.right
+        left: parent ? parent.left : undefined
+        right: parent ? parent.right : undefined
     }
 
     /*!
@@ -109,6 +109,11 @@ Header {
                 titleLoader.sourceComponent = __styleInstance.titleComponent;
             }
         }
+
+        // When the style changes, make sure that the titleLoader loads
+        //  the new titleComponent.
+        property Item styleInstance: __styleInstance
+        onStyleInstanceChanged: updateContents()
     }
 
     /*!
