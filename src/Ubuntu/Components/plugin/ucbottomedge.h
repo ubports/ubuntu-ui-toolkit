@@ -87,9 +87,11 @@ protected:
     void itemChange(ItemChange change, const ItemChangeData &data);
 
     void setStatus(UCBottomEdge::Status status);
+    void setCurrentStageIndex(int index);
     void loadPanel();
     void createPanel(QQmlComponent *component);
     void anchorHintToPanel();
+    void updateProgressionStates();
 
     QList<qreal> m_stages;
     QPointer<QQuickItem> m_panelItem;

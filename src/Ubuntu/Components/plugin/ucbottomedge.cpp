@@ -159,23 +159,7 @@ void UCBottomEdge::createPanel(QQmlComponent *component)
     connect(m_panelItem, &QQuickItem::yChanged, this, &UCBottomEdge::dragProggressChanged);
     // follow drag progress to detect when can we set to CanCommit status
     connect(this, &UCBottomEdge::dragProggressChanged, [=]() {
-        qreal finalStage = (this->m_stages.size() > 0) ? this->m_stages.last() : m_defaultCommitStage;
-        qreal progress = this->dragProgress();
-        if (progress <= 0.0) {
-            this->setStatus(UCBottomEdge::Hinted);
-        } else if (progress < finalStage) {
-            this->setStatus(UCBottomEdge::Revealed);
-        } else if (progress < 1.0) {
-            this->setStatus(UCBottomEdge::CanCommit);
-            if (m_hint) {
-                m_hint->setState("Hinted");
-            }
-        } else {
-            this->setStatus(UCBottomEdge::Committed);
-            if (m_hint) {
-                m_hint->setState("Locked");
-            }
-        }
+        this->updateProgressionStates();
     });
 
 }
@@ -188,6 +172,36 @@ void UCBottomEdge::anchorHintToPanel()
         anchors->setBottom(QQuickItemPrivate::get(m_panelItem)->top());
     } else if (m_hint) {
         m_hint->setParentItem(this);
+    }
+}
+
+void UCBottomEdge::updateProgressionStates()
+{
+    qreal finalStage = (m_stages.size() > 0) ? m_stages.last() : m_defaultCommitStage;
+    qreal progress = dragProgress();
+
+    if (progress <= 0.0) {
+        setStatus(UCBottomEdge::Hinted);
+        setCurrentStageIndex(-1);
+    } else if (progress < finalStage) {
+        setStatus(UCBottomEdge::Revealed);
+        // check stages and trigger index changes
+        for (int i = m_stages.size() - 1; i >= 0; i--) {
+            if (progress >= m_stages[i]) {
+                setCurrentStageIndex(i);
+                break;
+            }
+        }
+    } else if (progress < 1.0) {
+        setStatus(UCBottomEdge::CanCommit);
+        if (m_hint) {
+            m_hint->setState("Hinted");
+        }
+    } else {
+        setStatus(UCBottomEdge::Committed);
+        if (m_hint) {
+            m_hint->setState("Locked");
+        }
     }
 }
 
@@ -256,6 +270,14 @@ QList<qreal> UCBottomEdge::stages()
 /*!
  * \qmlproperty int BottomEdge::currentStageIndex
  */
+void UCBottomEdge::setCurrentStageIndex(int index)
+{
+    if (m_currentStageIndex == index) {
+        return;
+    }
+    m_currentStageIndex = index;
+    Q_EMIT currentStageIndexChanged(index);
+}
 
 /*!
  * \qmlproperty enum BottomEdge::status
