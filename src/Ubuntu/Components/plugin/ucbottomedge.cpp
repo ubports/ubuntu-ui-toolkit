@@ -64,7 +64,6 @@ UCBottomEdge::UCBottomEdge(QQuickItem *parent)
     : QQuickItem(parent)
     , m_hint(Q_NULLPTR)
     , m_contentComponent(Q_NULLPTR)
-    , m_contentItem(Q_NULLPTR)
     , m_bottomPanel(Q_NULLPTR)
     , m_defaultCommitStage(0.33) // 30% of the swipable area
     , m_currentStageIndex(-1)
@@ -149,13 +148,15 @@ void UCBottomEdge::createPanel(QQmlComponent *component)
     Q_ASSERT(m_bottomPanel);
     QQml_setParent_noEvent(m_bottomPanel, this);
 //    m_bottomPanel->setParentItem(QuickUtils::instance().rootObject());
-    m_bottomPanel->setParentItem(this);
+    m_bottomPanel->setParentItem(parentItem());
     m_panelItem = m_bottomPanel->property("panelItem").value<QQuickItem*>();
+    m_loader = m_bottomPanel->property("contentLoader").value<QQuickItem*>();
     component->completeCreate();
     component->deleteLater();
     // anchor hint to panel
     anchorHintToPanel();
 
+    connect(m_loader, SIGNAL(itemChanged()), this, SIGNAL(contentItemChanged()), Qt::DirectConnection);
     connect(m_panelItem, &QQuickItem::yChanged, this, &UCBottomEdge::dragProggressChanged);
     // follow drag progress to detect when can we set to CanCommit status
     connect(this, &UCBottomEdge::dragProggressChanged, [=]() {
@@ -347,6 +348,10 @@ void UCBottomEdge::setContentComponent(QQmlComponent *component)
  * \qmlproperty Item BottomEdge::contentItem
  * \readonly
  */
+QQuickItem *UCBottomEdge::contentItem() const
+{
+    return m_loader ? m_loader->property("item").value<QQuickItem*>() : Q_NULLPTR;
+}
 
 /*!
  * \qmlmethod void BottomEdge::commit()

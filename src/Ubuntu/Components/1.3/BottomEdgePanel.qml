@@ -19,11 +19,19 @@ import Ubuntu.Components 1.3
 Rectangle {
     // properties BottomEdge expects
     property alias panelItem: panel
+    property alias contentLoader: loader
 
     id: background
     anchors.fill: parent
-    color: "transparent"
+    color: Qt.rgba(0, 0, 0, bottomEdge.dragProgress)
     z: Number.MAX_VALUE
+
+    Label {
+        anchors.horizontalCenter: parent.horizontalCenter
+        textSize: Label.XLarge
+        font.bold: true
+        text: "state=" + state
+    }
 
     state: ""
     states: [
@@ -76,7 +84,9 @@ Rectangle {
         y: bottomEdge.height
 
         Loader {
+            id: loader
             anchors.horizontalCenter: parent.horizontalCenter
+            asynchronous: true
             source: bottomEdge.content
             sourceComponent: bottomEdge.contentComponent
         }
@@ -90,7 +100,8 @@ Rectangle {
             right: parent.right
             bottom: parent.bottom
         }
-        height: bottomEdge.height + bottomEdge.hint.height
+        y: bottomEdge.hint.y
+        height: bottomEdge.hint.height
 
         enabled: bottomEdge.status >= BottomEdge.Active
         drag {

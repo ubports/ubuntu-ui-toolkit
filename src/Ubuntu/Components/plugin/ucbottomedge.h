@@ -57,10 +57,7 @@ public:
     }
     void setContent(const QUrl &url);
     void setContentComponent(QQmlComponent *component);
-    QQuickItem *contentItem() const
-    {
-        return m_contentItem;
-    }
+    QQuickItem *contentItem() const;
 
 Q_SIGNALS:
     void hintChanged();
@@ -70,7 +67,7 @@ Q_SIGNALS:
     void statusChanged(Status status);
     void contentChanged(const QUrl url);
     void contentComponentChanged(QQmlComponent *component);
-    void contentItemChanged(QQuickItem *item);
+    void contentItemChanged();
 
     void commitStarted();
     void commitFinished();
@@ -95,10 +92,10 @@ protected:
 
     QList<qreal> m_stages;
     QPointer<QQuickItem> m_panelItem;
+    QPointer<QQuickItem> m_loader;
     QUrl m_contentUrl;
     QQuickItem *m_hint;
     QQmlComponent *m_contentComponent;
-    QQuickItem *m_contentItem;
     QQuickItem *m_bottomPanel;
     qreal m_defaultCommitStage;
 

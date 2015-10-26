@@ -33,29 +33,35 @@ Page {
 
     Component {
         id: bottomEdgeContent
-        Rectangle {
+        Page {
+            header: PageHeader {
+                title: "Bottom edge content"
+            }
             width: units.gu(40)
             height: page.height
-            color: UbuntuColors.green
-            Label {
-                text: {
-                    switch (bottomEdge.status) {
-                    case BottomEdge.Fading: return "Status: Fading"
-                    case BottomEdge.Idle: return "Status: Idle"
-                    case BottomEdge.Hinting: return "Status: Hinting"
-                    case BottomEdge.Revealed: return "Status: Revealed"
-                    case BottomEdge.CanCommit: return "Status: CanCommit"
-                    case BottomEdge.Committed: return "Status: Committed"
-                    default: return ""
-                    }
-                }
-                color: "white"
-                font.bold: true
-                textSize: Label.Large
-                anchors.horizontalCenter: parent.horizontalCenter
-            }
-            MouseArea {
+            Rectangle {
                 anchors.fill: parent
+                color: UbuntuColors.green
+                Label {
+                    text: {
+                        switch (bottomEdge.status) {
+                        case BottomEdge.Fading: return "Status: Fading"
+                        case BottomEdge.Idle: return "Status: Idle"
+                        case BottomEdge.Hinting: return "Status: Hinting"
+                        case BottomEdge.Revealed: return "Status: Revealed"
+                        case BottomEdge.CanCommit: return "Status: CanCommit"
+                        case BottomEdge.Committed: return "Status: Committed"
+                        default: return ""
+                        }
+                    }
+                    color: "white"
+                    font.bold: true
+                    textSize: Label.Large
+                    anchors.horizontalCenter: parent.horizontalCenter
+                }
+                MouseArea {
+                    anchors.fill: parent
+                }
             }
         }
     }
@@ -69,7 +75,7 @@ Page {
 //            width: units.gu(30)
 //            anchors.horizontalCenter: parent.horizontalCenter
         }
-        height: parent.height - units.gu(7)
+        height: page.height
         contentComponent: bottomEdgeContent
         onCommitStarted: print("START COMMIT")
         onCommitFinished: print("END COMMIT")
