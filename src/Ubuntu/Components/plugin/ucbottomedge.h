@@ -38,9 +38,9 @@ class UCBottomEdge : public QQuickItem
     Q_PROPERTY(QQuickItem* contentItem READ contentItem NOTIFY contentItemChanged FINAL)
 public:
     enum Status {
-        Faded,
+        Hidden,
         Idle,
-        Hinted,
+        Active,
         Revealed,
         CanCommit,
         Committed

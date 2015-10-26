@@ -181,7 +181,7 @@ void UCBottomEdge::updateProgressionStates()
     qreal progress = dragProgress();
 
     if (progress <= 0.0) {
-        setStatus(UCBottomEdge::Hinted);
+        setStatus(UCBottomEdge::Active);
         setCurrentStageIndex(-1);
     } else if (progress < finalStage) {
         setStatus(UCBottomEdge::Revealed);
@@ -195,7 +195,7 @@ void UCBottomEdge::updateProgressionStates()
     } else if (progress < 1.0) {
         setStatus(UCBottomEdge::CanCommit);
         if (m_hint) {
-            m_hint->setState("Hinted");
+            m_hint->setState("Active");
         }
     } else {
         setStatus(UCBottomEdge::Committed);
@@ -218,7 +218,7 @@ void UCBottomEdge::updateProgressionStates()
  */
 void UCBottomEdge::setHint(QQuickItem *hint)
 {
-    if (hint == m_hint || m_status >= Hinted) {
+    if (hint == m_hint || m_status >= Active) {
         return;
     }
     if (m_hint) {
@@ -239,11 +239,11 @@ void UCBottomEdge::setHint(QQuickItem *hint)
             if (state == QStringLiteral("Idle") || state.isEmpty()) {
                 setStatus(UCBottomEdge::Idle);
             }
-            if (state == QStringLiteral("Hinted")) {
-                setStatus(UCBottomEdge::Hinted);
+            if (state == QStringLiteral("Active")) {
+                setStatus(UCBottomEdge::Active);
             }
-            if (state == QStringLiteral("Faded")) {
-                setStatus(UCBottomEdge::Faded);
+            if (state == QStringLiteral("Hidden")) {
+                setStatus(UCBottomEdge::Hidden);
             }
         });
     }
@@ -288,8 +288,8 @@ void UCBottomEdge::setCurrentStageIndex(int index)
  *  \li Status
  *  \li Description
  * \row
- *  \li Faded
- *  \li The bottom edge hint is faded out. \l flickable
+ *  \li Hidden
+ *  \li The bottom edge hint is hidden.
  * \endtable
  */
 void UCBottomEdge::setStatus(UCBottomEdge::Status status)
@@ -300,15 +300,15 @@ void UCBottomEdge::setStatus(UCBottomEdge::Status status)
     // the first 3 statuses can be interchanged, after which the statuses are linearly
     // changerable, therefore cannot go back from CanCommit to Hinted and below straight
     // must go through Revealed and then Hinted and/or Idle.
-    if (m_status > Revealed && status <= Hinted) {
+    if (m_status > Revealed && status <= Active) {
         return;
     }
     m_status = status;
     QString statusStr;
     switch (status) {
-        case Faded: statusStr = "Faded"; break;
+        case Hidden: statusStr = "Hidden"; break;
         case Idle: statusStr = "Idle"; break;
-        case Hinted: statusStr = "Hinted"; break;
+        case Active: statusStr = "Active"; break;
         case Revealed: statusStr = "Revealed"; break;
         case CanCommit: statusStr = "CanCommit"; break;
         case Committed: statusStr = "Committed"; break;

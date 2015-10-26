@@ -92,7 +92,7 @@ Rectangle {
         }
         height: bottomEdge.height + bottomEdge.hint.height
 
-        enabled: bottomEdge.status >= BottomEdge.Hinted
+        enabled: bottomEdge.status >= BottomEdge.Active
         drag {
             axis: Drag.YAxis
             target: panel
