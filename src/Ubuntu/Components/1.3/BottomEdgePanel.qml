@@ -17,14 +17,25 @@ import QtQuick 2.4
 import Ubuntu.Components 1.3
 
 Rectangle {
+    id: background
     // properties BottomEdge expects
     property alias panelItem: panel
     property alias contentLoader: loader
 
-    id: background
-    anchors.fill: parent
+    anchors.bottom: parent.bottom
+    width: bottomEdge.width
+    height: bottomEdge.height
+    Component.onCompleted: {
+        x = updatePosition();
+//        x = Qt.binding(updatePosition);
+    }
     color: Qt.rgba(0, 0, 0, bottomEdge.dragProgress)
-    z: Number.MAX_VALUE
+
+    function updatePosition() {
+        var x = background.mapFromItem(bottomEdge, bottomEdge.x, bottomEdge.y).x;
+        print(bottomEdge.x, x);
+        return x;
+    }
 
     Label {
         anchors.horizontalCenter: parent.horizontalCenter
@@ -95,6 +106,7 @@ Rectangle {
     // FIXME: use SwipeArea when ready
     MouseArea {
         id: hintArea
+        anchors.fill: parent
         anchors {
             left: parent.left
             right: parent.right
@@ -103,7 +115,7 @@ Rectangle {
         y: bottomEdge.hint.y
         height: bottomEdge.hint.height
 
-        enabled: bottomEdge.status >= BottomEdge.Active
+        enabled: bottomEdge.hint && (bottomEdge.status >= BottomEdge.Active)
         drag {
             axis: Drag.YAxis
             target: panel

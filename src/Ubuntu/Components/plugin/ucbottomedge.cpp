@@ -113,7 +113,7 @@ void UCBottomEdge::loadPanel()
 {
     if (!m_bottomPanel && (m_contentComponent || m_contentUrl.isValid())) {
         QUrl url(UbuntuComponentsPlugin::pluginUrl().resolved(QUrl("1.3/BottomEdgePanel.qml")));
-        QQmlComponent *component = new QQmlComponent(qmlEngine(this), url, QQmlComponent::Asynchronous);
+        QQmlComponent *component = new QQmlComponent(qmlEngine(this), url, QQmlComponent::Asynchronous, this);
         if (component->isLoading()) {
             connect(component, &QQmlComponent::statusChanged, [=](QQmlComponent::Status status) {
                 switch (status) {
@@ -149,6 +149,7 @@ void UCBottomEdge::createPanel(QQmlComponent *component)
     QQml_setParent_noEvent(m_bottomPanel, this);
 //    m_bottomPanel->setParentItem(QuickUtils::instance().rootObject());
     m_bottomPanel->setParentItem(parentItem());
+    m_bottomPanel->setZ(1000);
     m_panelItem = m_bottomPanel->property("panelItem").value<QQuickItem*>();
     m_loader = m_bottomPanel->property("contentLoader").value<QQuickItem*>();
     component->completeCreate();
@@ -161,8 +162,7 @@ void UCBottomEdge::createPanel(QQmlComponent *component)
     // follow drag progress to detect when can we set to CanCommit status
     connect(this, &UCBottomEdge::dragProggressChanged, [=]() {
         this->updateProgressionStates();
-    });
-
+    });    
 }
 
 void UCBottomEdge::anchorHintToPanel()
@@ -231,6 +231,7 @@ void UCBottomEdge::setHint(QQuickItem *hint)
     // take ownership
     if (m_hint) {
         QQmlEngine::setObjectOwnership(m_hint, QQmlEngine::CppOwnership);
+        QQml_setParent_noEvent(m_hint, this);
         // anchor hint to the panel
         anchorHintToPanel();
         // connect state change from the hint to keep it in sync

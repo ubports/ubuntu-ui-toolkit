@@ -33,35 +33,29 @@ Page {
 
     Component {
         id: bottomEdgeContent
-        Page {
-            header: PageHeader {
-                title: "Bottom edge content"
-            }
+        Rectangle {
             width: units.gu(40)
             height: page.height
-            Rectangle {
-                anchors.fill: parent
-                color: UbuntuColors.green
-                Label {
-                    text: {
-                        switch (bottomEdge.status) {
-                        case BottomEdge.Fading: return "Status: Fading"
-                        case BottomEdge.Idle: return "Status: Idle"
-                        case BottomEdge.Hinting: return "Status: Hinting"
-                        case BottomEdge.Revealed: return "Status: Revealed"
-                        case BottomEdge.CanCommit: return "Status: CanCommit"
-                        case BottomEdge.Committed: return "Status: Committed"
-                        default: return ""
-                        }
+            color: UbuntuColors.green
+            Label {
+                text: {
+                    switch (bottomEdge.status) {
+                    case BottomEdge.Fading: return "Status: Fading"
+                    case BottomEdge.Idle: return "Status: Idle"
+                    case BottomEdge.Hinting: return "Status: Hinting"
+                    case BottomEdge.Revealed: return "Status: Revealed"
+                    case BottomEdge.CanCommit: return "Status: CanCommit"
+                    case BottomEdge.Committed: return "Status: Committed"
+                    default: return ""
                     }
-                    color: "white"
-                    font.bold: true
-                    textSize: Label.Large
-                    anchors.horizontalCenter: parent.horizontalCenter
                 }
-                MouseArea {
-                    anchors.fill: parent
-                }
+                color: "white"
+                font.bold: true
+                textSize: Label.Large
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+            MouseArea {
+                anchors.fill: parent
             }
         }
     }
@@ -72,10 +66,8 @@ Page {
         hint: BottomEdgeHint {
             text: "Compose a new message"
             iconName: "stock_message"
-//            width: units.gu(30)
-//            anchors.horizontalCenter: parent.horizontalCenter
         }
-        height: page.height
+        height: page.height - units.gu(6)
         contentComponent: bottomEdgeContent
         onCommitStarted: print("START COMMIT")
         onCommitFinished: print("END COMMIT")

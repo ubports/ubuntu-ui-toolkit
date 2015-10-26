@@ -123,7 +123,7 @@ Page {
     BottomEdge {
         hint: BottomEdgeHint {
             iconName: "settings"
-            text: "test"
+            text: "No content"
             flickable: widgetList
         }
         visible: active
