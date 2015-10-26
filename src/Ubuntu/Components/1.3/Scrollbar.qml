@@ -314,20 +314,23 @@ Toolkit.StyledItem {
     }
 
     //NEEDED FOR NON-OVERLAY SCROLLBARS
+    //FIXME: THE PROBLEM IS IF THE DEV ASSIGNS A CONSTANT VALUE TO FLICKABLEITEM.RIGHTMARGIN
+    //AND THEN WE ENABLE THIS BINDING, WHEN WE DISABLE IT THE CONSTANT VALUE IS NOT RESTORED!
+    //( https://bugreports.qt.io/browse/QTBUG-33444 )
     Binding {
         when: flickableItem && __alwaysOnScrollbars
-              && __styleInstance && align === Qt.AlignTrailing
-              && flickableItem.rightMargin < __styleInstance.troughThicknessSteppersStyle
+              && __styleInstance && (align === Qt.AlignTrailing
+                || (align === Qt.AlignLeading && scrollbar.LayoutMirroring.enabled) )
         target: flickableItem
-        property: LayoutMirroring.enabled ? "leftMargin" : "rightMargin"
+        property: "rightMargin"
         value: __styleInstance.troughThicknessSteppersStyle
     }
     Binding {
         when: flickableItem && __alwaysOnScrollbars
-              && __styleInstance && align === Qt.AlignLeading
-              && flickableItem.leftMargin < __styleInstance.troughThicknessSteppersStyle
+              && __styleInstance && (align === Qt.AlignLeading
+                || (align === Qt.AlignTrailing && scrollbar.LayoutMirroring.enabled) )
         target: flickableItem
-        property: LayoutMirroring.enabled ? "rightMargin" : "leftMargin"
+        property: "leftMargin"
         value: __styleInstance.troughThicknessSteppersStyle
     }
     Binding {

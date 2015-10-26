@@ -315,7 +315,7 @@ Item {
             // The presence of a mouse enables the interactive thumb
             // FIXME: Should use form factor hints
             InverseMouse.onEntered: {
-                console.log("INVERSE AREA ENTERED, setting interactive to true. THIS IS SHAKY!")
+                console.log("FIXME: INVERSE AREA ENTERED, setting interactive to true. THIS IS NOT RELIABLE!")
                 interactive = true
             }
 
