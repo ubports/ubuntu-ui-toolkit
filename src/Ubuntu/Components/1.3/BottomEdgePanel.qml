@@ -85,6 +85,7 @@ Rectangle {
 
     Rectangle {
         id: panel
+        objectName: "bottomedge_panel"
         anchors {
             left: parent.left
             right: parent.right
@@ -98,6 +99,12 @@ Rectangle {
             asynchronous: true
             source: bottomEdge.content
             sourceComponent: bottomEdge.contentComponent
+            onItemChanged: {
+                if (item) {
+                    item.parent = panel;
+                    item.anchors.horizontalCenter = panel.horizontalCenter;
+                }
+            }
         }
     }
 

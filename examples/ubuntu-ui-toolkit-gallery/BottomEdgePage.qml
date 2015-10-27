@@ -34,9 +34,11 @@ Page {
     Component {
         id: bottomEdgeContent
         Rectangle {
+            onParentChanged: print(parent)
+//            anchors.fill: parent
             width: units.gu(40)
-            height: page.height
-            color: UbuntuColors.green
+            height: parent.height
+            color: Qt.rgba(0.5, 1, bottomEdge.dragProgress, 1)
             Label {
                 text: {
                     switch (bottomEdge.status) {

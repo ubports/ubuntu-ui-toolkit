@@ -30,8 +30,6 @@ class UCBottomEdge : public QQuickItem
 
     Q_PROPERTY(QQuickItem* hint MEMBER m_hint WRITE setHint NOTIFY hintChanged FINAL)
     Q_PROPERTY(qreal dragProgress READ dragProgress NOTIFY dragProggressChanged FINAL)
-    Q_PROPERTY(QList<qreal> stages MEMBER m_stages NOTIFY stagesChanged FINAL)
-    Q_PROPERTY(int currentStageIndex MEMBER m_currentStageIndex NOTIFY currentStageIndexChanged FINAL)
     Q_PROPERTY(State state READ state NOTIFY stateChanged FINAL)
     Q_PROPERTY(QUrl content MEMBER m_contentUrl WRITE setContent NOTIFY contentChanged FINAL)
     Q_PROPERTY(QQmlComponent *contentComponent MEMBER m_contentComponent WRITE setContentComponent NOTIFY contentComponentChanged FINAL)
@@ -49,7 +47,6 @@ public:
 
     void setHint(QQuickItem *hint);
     qreal dragProgress();
-    QList<qreal> stages();
     State state() const
     {
         return m_state;
@@ -62,8 +59,6 @@ public:
 Q_SIGNALS:
     void hintChanged();
     void dragProggressChanged();
-    void stagesChanged();
-    void currentStageIndexChanged(int index);
     void stateChanged(State state);
     void contentChanged(const QUrl url);
     void contentComponentChanged(QQmlComponent *component);
@@ -85,13 +80,11 @@ protected:
     void itemChange(ItemChange change, const ItemChangeData &data);
 
     void setState(UCBottomEdge::State state);
-    void setCurrentStageIndex(int index);
     void loadPanel();
     void createPanel(QQmlComponent *component);
     void anchorHintToPanel();
     void updateProgressionStates();
 
-    QList<qreal> m_stages;
     QPointer<QQuickItem> m_panelItem;
     QPointer<QQuickItem> m_loader;
     QUrl m_contentUrl;
@@ -100,7 +93,6 @@ protected:
     QQuickItem *m_bottomPanel;
     qreal m_defaultCommitStage;
 
-    int m_currentStageIndex;
     State m_state;
     bool m_fillWindow;
 };
