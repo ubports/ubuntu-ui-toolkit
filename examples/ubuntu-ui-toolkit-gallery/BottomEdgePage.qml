@@ -70,8 +70,8 @@ Page {
         height: page.height - units.gu(6)
         contentComponent: bottomEdgeContent
         onCommitStarted: print("START COMMIT")
-        onCommitFinished: print("END COMMIT")
+        onCommitCompleted: print("END COMMIT")
         onCollapseStarted: print("START COLLAPSE")
-        onCollapseFinished: print("END COLLAPSE")
+        onCollapseCompleted: print("END COLLAPSE")
     }
 }

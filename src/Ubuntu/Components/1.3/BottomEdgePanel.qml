@@ -25,10 +25,8 @@ Rectangle {
     anchors.bottom: parent.bottom
     width: bottomEdge.width
     height: bottomEdge.height
-    Component.onCompleted: {
-        x = updatePosition();
-//        x = Qt.binding(updatePosition);
-    }
+    x: updatePosition()
+    z: Number.MAX_VALUE
     color: Qt.rgba(0, 0, 0, bottomEdge.dragProgress)
 
     function updatePosition() {
@@ -75,9 +73,9 @@ Rectangle {
             ScriptAction {
                 script: {
                     if (background.state == "Committing") {
-                        bottomEdge.commitFinished();
+                        bottomEdge.commitCompleted();
                     } else if (background.state == "Collapsing") {
-                        bottomEdge.collapseFinished();
+                        bottomEdge.collapseCompleted();
                     }
                     background.state = "";
                 }
@@ -103,27 +101,22 @@ Rectangle {
         }
     }
 
-    // FIXME: use SwipeArea when ready
+    // FIXME: use SwipeArea when ready, however keep this as it has to work with mouse drag as well
     MouseArea {
         id: hintArea
+        parent: bottomEdge.hint
         anchors.fill: parent
-        anchors {
-            left: parent.left
-            right: parent.right
-            bottom: parent.bottom
-        }
-        y: bottomEdge.hint.y
-        height: bottomEdge.hint.height
+        enabled: bottomEdge.hint && (bottomEdge.hint.state == "Active" || bottomEdge.hint.state == "Locked")
 
-        enabled: bottomEdge.hint && (bottomEdge.status >= BottomEdge.Active)
         drag {
             axis: Drag.YAxis
             target: panel
             minimumY: 0
             maximumY: bottomEdge.height
         }
+
         onReleased: {
-            switch (bottomEdge.status) {
+            switch (bottomEdge.state) {
             case BottomEdge.CanCommit:
                 bottomEdge.commit();
                 break;

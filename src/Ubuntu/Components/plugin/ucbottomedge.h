@@ -26,21 +26,20 @@ class QQuickFlickable;
 class UCBottomEdge : public QQuickItem
 {
     Q_OBJECT
-    Q_ENUMS(Status)
+    Q_ENUMS(State)
 
     Q_PROPERTY(QQuickItem* hint MEMBER m_hint WRITE setHint NOTIFY hintChanged FINAL)
     Q_PROPERTY(qreal dragProgress READ dragProgress NOTIFY dragProggressChanged FINAL)
     Q_PROPERTY(QList<qreal> stages MEMBER m_stages NOTIFY stagesChanged FINAL)
     Q_PROPERTY(int currentStageIndex MEMBER m_currentStageIndex NOTIFY currentStageIndexChanged FINAL)
-    Q_PROPERTY(Status status READ status NOTIFY statusChanged FINAL)
+    Q_PROPERTY(State state READ state NOTIFY stateChanged FINAL)
     Q_PROPERTY(QUrl content MEMBER m_contentUrl WRITE setContent NOTIFY contentChanged FINAL)
     Q_PROPERTY(QQmlComponent *contentComponent MEMBER m_contentComponent WRITE setContentComponent NOTIFY contentComponentChanged FINAL)
     Q_PROPERTY(QQuickItem* contentItem READ contentItem NOTIFY contentItemChanged FINAL)
+    Q_PROPERTY(bool fillWindow MEMBER m_fillWindow WRITE setFillWindow NOTIFY fillWindowChanged FINAL)
 public:
-    enum Status {
+    enum State {
         Hidden,
-        Idle,
-        Active,
         Revealed,
         CanCommit,
         Committed
@@ -51,28 +50,30 @@ public:
     void setHint(QQuickItem *hint);
     qreal dragProgress();
     QList<qreal> stages();
-    Status status() const
+    State state() const
     {
-        return m_status;
+        return m_state;
     }
     void setContent(const QUrl &url);
     void setContentComponent(QQmlComponent *component);
     QQuickItem *contentItem() const;
+    void setFillWindow(bool fill);
 
 Q_SIGNALS:
     void hintChanged();
     void dragProggressChanged();
     void stagesChanged();
     void currentStageIndexChanged(int index);
-    void statusChanged(Status status);
+    void stateChanged(State state);
     void contentChanged(const QUrl url);
     void contentComponentChanged(QQmlComponent *component);
     void contentItemChanged();
+    void fillWindowChanged();
 
     void commitStarted();
-    void commitFinished();
+    void commitCompleted();
     void collapseStarted();
-    void collapseFinished();
+    void collapseCompleted();
 
 public Q_SLOTS:
     void commit();
@@ -83,7 +84,7 @@ protected:
     void componentComplete();
     void itemChange(ItemChange change, const ItemChangeData &data);
 
-    void setStatus(UCBottomEdge::Status status);
+    void setState(UCBottomEdge::State state);
     void setCurrentStageIndex(int index);
     void loadPanel();
     void createPanel(QQmlComponent *component);
@@ -100,7 +101,8 @@ protected:
     qreal m_defaultCommitStage;
 
     int m_currentStageIndex;
-    Status m_status;
+    State m_state;
+    bool m_fillWindow;
 };
 
 #endif // UCBOTTOMEDGE_H

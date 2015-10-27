@@ -67,7 +67,8 @@ UCBottomEdge::UCBottomEdge(QQuickItem *parent)
     , m_bottomPanel(Q_NULLPTR)
     , m_defaultCommitStage(0.33) // 30% of the swipable area
     , m_currentStageIndex(-1)
-    , m_status(Idle)
+    , m_state(Hidden)
+    , m_fillWindow(false)
 {
 }
 UCBottomEdge::~UCBottomEdge()
@@ -147,9 +148,11 @@ void UCBottomEdge::createPanel(QQmlComponent *component)
     m_bottomPanel = static_cast<QQuickItem*>(component->beginCreate(context));
     Q_ASSERT(m_bottomPanel);
     QQml_setParent_noEvent(m_bottomPanel, this);
-//    m_bottomPanel->setParentItem(QuickUtils::instance().rootObject());
-    m_bottomPanel->setParentItem(parentItem());
-    m_bottomPanel->setZ(1000);
+    if (m_fillWindow) {
+        m_bottomPanel->setParentItem(QuickUtils::instance().rootObject());
+    } else {
+        m_bottomPanel->setParentItem(parentItem());
+    }
     m_panelItem = m_bottomPanel->property("panelItem").value<QQuickItem*>();
     m_loader = m_bottomPanel->property("contentLoader").value<QQuickItem*>();
     component->completeCreate();
@@ -182,10 +185,10 @@ void UCBottomEdge::updateProgressionStates()
     qreal progress = dragProgress();
 
     if (progress <= 0.0) {
-        setStatus(UCBottomEdge::Active);
+        setState(UCBottomEdge::Hidden);
         setCurrentStageIndex(-1);
     } else if (progress < finalStage) {
-        setStatus(UCBottomEdge::Revealed);
+        setState(UCBottomEdge::Revealed);
         // check stages and trigger index changes
         for (int i = m_stages.size() - 1; i >= 0; i--) {
             if (progress >= m_stages[i]) {
@@ -194,12 +197,12 @@ void UCBottomEdge::updateProgressionStates()
             }
         }
     } else if (progress < 1.0) {
-        setStatus(UCBottomEdge::CanCommit);
+        setState(UCBottomEdge::CanCommit);
         if (m_hint) {
             m_hint->setState("Active");
         }
     } else {
-        setStatus(UCBottomEdge::Committed);
+        setState(UCBottomEdge::Committed);
         if (m_hint) {
             m_hint->setState("Locked");
         }
@@ -219,7 +222,7 @@ void UCBottomEdge::updateProgressionStates()
  */
 void UCBottomEdge::setHint(QQuickItem *hint)
 {
-    if (hint == m_hint || m_status >= Active) {
+    if (hint == m_hint || m_state >= Revealed) {
         return;
     }
     if (m_hint) {
@@ -238,14 +241,8 @@ void UCBottomEdge::setHint(QQuickItem *hint)
         // we can use lambda as the changed hint component will be deleted
         // so the connection will be removed as well
         connect(m_hint, &QQuickItem::stateChanged, [=](const QString &state) {
-            if (state == QStringLiteral("Idle") || state.isEmpty()) {
-                setStatus(UCBottomEdge::Idle);
-            }
             if (state == QStringLiteral("Active")) {
-                setStatus(UCBottomEdge::Active);
-            }
-            if (state == QStringLiteral("Hidden")) {
-                setStatus(UCBottomEdge::Hidden);
+//                setState(UCBottomEdge::Active);
             }
         });
     }
@@ -282,8 +279,8 @@ void UCBottomEdge::setCurrentStageIndex(int index)
 }
 
 /*!
- * \qmlproperty enum BottomEdge::status
- * The property reports the actual status of the bottom edge. It can have the
+ * \qmlproperty enum BottomEdge::state
+ * The property reports the actual state of the bottom edge. It can have the
  * following values:
  * \table
  * \header
@@ -294,30 +291,22 @@ void UCBottomEdge::setCurrentStageIndex(int index)
  *  \li The bottom edge hint is hidden.
  * \endtable
  */
-void UCBottomEdge::setStatus(UCBottomEdge::Status status)
+void UCBottomEdge::setState(UCBottomEdge::State state)
 {
-    if (status == m_status) {
+    if (state == m_state) {
         return;
     }
-    // the first 3 statuses can be interchanged, after which the statuses are linearly
-    // changerable, therefore cannot go back from CanCommit to Hinted and below straight
-    // must go through Revealed and then Hinted and/or Idle.
-    if (m_status > Revealed && status <= Active) {
-        return;
-    }
-    m_status = status;
-    QString statusStr;
-    switch (status) {
-        case Hidden: statusStr = "Hidden"; break;
-        case Idle: statusStr = "Idle"; break;
-        case Active: statusStr = "Active"; break;
-        case Revealed: statusStr = "Revealed"; break;
-        case CanCommit: statusStr = "CanCommit"; break;
-        case Committed: statusStr = "Committed"; break;
+    m_state = state;
+    QString stateStr;
+    switch (state) {
+        case Hidden: stateStr = "Hidden"; break;
+        case Revealed: stateStr = "Revealed"; break;
+        case CanCommit: stateStr = "CanCommit"; break;
+        case Committed: stateStr = "Committed"; break;
     }
 
-    qDebug() << "STATUS" << statusStr;
-    Q_EMIT statusChanged(m_status);
+    qDebug() << "STATE" << stateStr;
+    Q_EMIT stateChanged(m_state);
 }
 
 /*!
@@ -352,6 +341,27 @@ void UCBottomEdge::setContentComponent(QQmlComponent *component)
 QQuickItem *UCBottomEdge::contentItem() const
 {
     return m_loader ? m_loader->property("item").value<QQuickItem*>() : Q_NULLPTR;
+}
+
+/*!
+ * \qmlproperty bool BottomEdge::fillWindow
+ * The property specifies whether the bottom edge content should be rendered
+ * within the whole window or only the parent area. Defaults to \e false.
+ */
+void UCBottomEdge::setFillWindow(bool fill)
+{
+    if (m_fillWindow == fill) {
+        return;
+    }
+    m_fillWindow = fill;
+    if (m_bottomPanel && m_state == Hidden) {
+        if (m_fillWindow) {
+            m_bottomPanel->setParentItem(QuickUtils::instance().rootObject());
+        } else {
+            m_bottomPanel->setParentItem(this);
+        }
+    }
+    Q_EMIT fillWindowChanged();
 }
 
 /*!

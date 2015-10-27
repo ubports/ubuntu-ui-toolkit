@@ -180,28 +180,24 @@ Ubuntu.Components.BottomEdge 1.3: Item
     property Component contentComponent
     readonly property Item contentItem
     property int currentStageIndex
-    property double dragProgress
+    readonly property double dragProgress
+    property bool fillWindow
     property Item hint
-    signal dragProggressChanged(double progress)
     signal currentStageIndexChanged(int index)
-    signal statusChanged(Status status)
+    signal stateChanged(State state)
     signal contentChanged(url url)
     signal contentComponentChanged(Component component)
-    signal contentItemChanged(Item item)
     signal commitStarted()
-    signal commitFinished()
+    signal commitCompleted()
     signal collapseStarted()
-    signal collapseFinished()
+    signal collapseCompleted()
     function commit()
     function collapse()
     property QList<qreal> stages
-    readonly property Status status
-Ubuntu.Components.BottomEdge.Status: Enum
+Ubuntu.Components.BottomEdge.State: Enum
     CanCommit
     Committed
-    Faded
-    Hinted
-    Idle
+    Hidden
     Revealed
 Ubuntu.Components.BottomEdgeHint 1.3: StyledItem
     property Flickable flickable
