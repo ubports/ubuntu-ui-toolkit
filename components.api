@@ -176,9 +176,11 @@ Ubuntu.Components.ListItems.Base 1.3: Empty
     property bool iconFrame
     property bool progression
 Ubuntu.Components.BottomEdge 1.3: Item
+    property double commitPoint
     property url content
     property Component contentComponent
     readonly property Item contentItem
+    readonly property BottomEdgeSection currentSection
     readonly property double dragProgress
     property bool fillWindow
     property Item hint
@@ -191,6 +193,7 @@ Ubuntu.Components.BottomEdge 1.3: Item
     signal collapseCompleted()
     function commit()
     function collapse()
+    default readonly property BottomEdgeSection sections
 Ubuntu.Components.BottomEdge.State: Enum
     CanCommit
     Committed
@@ -202,6 +205,15 @@ Ubuntu.Components.BottomEdgeHint 1.3: StyledItem
     property url iconSource
     signal clicked()
     property string text
+Ubuntu.Components.BottomEdgeSection 1.3: QtObject
+    property url content
+    property Component contentComponent
+    property bool enabled
+    property double endsAt
+    signal entered()
+    signal exited()
+    signal dragEnded()
+    property double startsAt
 Ubuntu.Components.Button 1.0 0.1: AbstractButton
     property color color
     property QFont font

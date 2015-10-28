@@ -21,13 +21,14 @@ Rectangle {
     // properties BottomEdge expects
     property alias panelItem: panel
     property alias contentLoader: loader
+    property PropertyAnimation panelAnimation: UbuntuNumberAnimation { duration: 1000 }
 
     anchors.bottom: parent.bottom
     width: bottomEdge.width
     height: bottomEdge.height
     x: updatePosition()
     z: Number.MAX_VALUE
-    color: Qt.rgba(0, 0, 0, bottomEdge.dragProgress)
+    color: Qt.rgba(1, 1, 1, bottomEdge.dragProgress)
 
     function updatePosition() {
         var x = background.mapFromItem(bottomEdge, bottomEdge.x, bottomEdge.y).x;
@@ -35,52 +36,11 @@ Rectangle {
         return x;
     }
 
-    Label {
-        anchors.horizontalCenter: parent.horizontalCenter
-        textSize: Label.XLarge
-        font.bold: true
-        text: "state=" + state
-    }
-
-    state: ""
-    states: [
-        State {
-            name: "Committing"
-            PropertyChanges {
-                target: panel
-                restoreEntryValues: false
-                y: 0
-            }
-        },
-        State {
-            name: "Collapsing"
-            PropertyChanges {
-                target: panel
-                restoreEntryValues: false
-                y: bottomEdge.height
-            }
-        }
-    ]
-    transitions: Transition {
-        from: ""
-        to: "*"
-        reversible: true
-        SequentialAnimation {
-            UbuntuNumberAnimation {
-                target: panel
-                property: "y"
-            }
-            ScriptAction {
-                script: {
-                    if (background.state == "Committing") {
-                        bottomEdge.commitCompleted();
-                    } else if (background.state == "Collapsing") {
-                        bottomEdge.collapseCompleted();
-                    }
-                    background.state = "";
-                }
-            }
-        }
+    Binding {
+        target: bottomEdge.hint
+        when: bottomEdge.hint && bottomEdge.state > BottomEdge.Hidden
+        property: "state"
+        value: "Locked"
     }
 
     Rectangle {
@@ -92,6 +52,10 @@ Rectangle {
         }
         height: bottomEdge.height
         y: bottomEdge.height
+
+        Behavior on y {
+            animation: panelAnimation
+        }
 
         Loader {
             id: loader
@@ -123,13 +87,10 @@ Rectangle {
         }
 
         onReleased: {
-            switch (bottomEdge.state) {
-            case BottomEdge.CanCommit:
-                bottomEdge.commit();
-                break;
-            case BottomEdge.Revealed:
+            if (bottomEdge.currentSection) {
+                bottomEdge.currentSection.dragEnded();
+            } else {
                 bottomEdge.collapse();
-                break;
             }
         }
     }

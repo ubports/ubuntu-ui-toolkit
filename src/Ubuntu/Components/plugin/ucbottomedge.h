@@ -21,9 +21,11 @@
 
 #include <QtQuick/QQuickItem>
 #include <QtCore/QPointer>
+#include <QtQuick/private/qquickitemchangelistener_p.h>
 
-class QQuickFlickable;
-class UCBottomEdge : public QQuickItem
+class UCBottomEdgeSection;
+class QQuickAbstractAnimation;
+class UCBottomEdge : public QQuickItem, protected QQuickItemChangeListener
 {
     Q_OBJECT
     Q_ENUMS(State)
@@ -35,6 +37,11 @@ class UCBottomEdge : public QQuickItem
     Q_PROPERTY(QQmlComponent *contentComponent MEMBER m_contentComponent WRITE setContentComponent NOTIFY contentComponentChanged FINAL)
     Q_PROPERTY(QQuickItem* contentItem READ contentItem NOTIFY contentItemChanged FINAL)
     Q_PROPERTY(bool fillWindow MEMBER m_fillWindow WRITE setFillWindow NOTIFY fillWindowChanged FINAL)
+    Q_PROPERTY(QQmlListProperty<UCBottomEdgeSection> sections READ sections FINAL)
+    Q_PROPERTY(UCBottomEdgeSection* currentSection READ currentSection NOTIFY currentSectionChanged FINAL)
+    Q_PROPERTY(qreal commitPoint MEMBER m_commitPoint WRITE setCommitPoint NOTIFY commitPointChanged FINAL)
+    Q_CLASSINFO("DefaultProperty", "sections")
+
 public:
     enum State {
         Hidden,
@@ -51,10 +58,14 @@ public:
     {
         return m_state;
     }
+    void setState(UCBottomEdge::State state);
     void setContent(const QUrl &url);
     void setContentComponent(QQmlComponent *component);
     QQuickItem *contentItem() const;
     void setFillWindow(bool fill);
+    QQmlListProperty<UCBottomEdgeSection> sections();
+    UCBottomEdgeSection *currentSection();
+    void setCommitPoint(qreal point);
 
 Q_SIGNALS:
     void hintChanged();
@@ -64,6 +75,8 @@ Q_SIGNALS:
     void contentComponentChanged(QQmlComponent *component);
     void contentItemChanged();
     void fillWindowChanged();
+    void currentSectionChanged();
+    void commitPointChanged();
 
     void commitStarted();
     void commitCompleted();
@@ -78,23 +91,39 @@ protected:
     void classBegin();
     void componentComplete();
     void itemChange(ItemChange change, const ItemChangeData &data);
+    void itemChildAdded(QQuickItem *item, QQuickItem *child);
+    void itemChildRemoved(QQuickItem *item, QQuickItem *child);
 
-    void setState(UCBottomEdge::State state);
     void loadPanel();
     void createPanel(QQmlComponent *component);
+    void onPanelParentChildrenChanged();
     void anchorHintToPanel();
     void updateProgressionStates();
+    void createDefaultSections();
 
+    // panel positioning
+    void positionPanel(qreal position);
+    void emitCommitCompleted(bool running);
+    void emitCollapseCompleted(bool running);
+
+    static void sections_append(QQmlListProperty<UCBottomEdgeSection> *sections, UCBottomEdgeSection *section);
+    static void sections_clear(QQmlListProperty<UCBottomEdgeSection> *sections);
+
+    QList<UCBottomEdgeSection*> m_sections;
     QPointer<QQuickItem> m_panelItem;
     QPointer<QQuickItem> m_loader;
+    QPointer<QQuickAbstractAnimation> m_panelAnimation;
+    QPointer<UCBottomEdgeSection> m_lastSection;
     QUrl m_contentUrl;
     QQuickItem *m_hint;
     QQmlComponent *m_contentComponent;
     QQuickItem *m_bottomPanel;
-    qreal m_defaultCommitStage;
-
+    qreal m_commitPoint;
     State m_state;
-    bool m_fillWindow;
+    bool m_fillWindow:1;
+    bool m_defaultSectionsReset:1;
+
+    friend class UCBottomEdgeSection;
 };
 
 #endif // UCBOTTOMEDGE_H

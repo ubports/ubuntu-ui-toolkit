@@ -17,6 +17,7 @@
  */
 
 #include "ucbottomedge.h"
+#include "ucbottomedgesection.h"
 #include "quickutils.h"
 #include <QtQml/QQmlEngine>
 #include <QtGui/QScreen>
@@ -24,6 +25,7 @@
 #include <QtQuick/private/qquickflickable_p.h>
 
 #include "plugin.h"
+#include <QtQuick/private/qquickanimation_p.h>
 
 /*!
  * \qmltype BottomEdge
@@ -114,7 +116,7 @@
 
 /*!
  * \qmlsignal BottomEdge::collapseCompleted()
- * Signal emitted when teh content collapse is completed.
+ * Signal emitted when the content collapse is completed.
  */
 
 UCBottomEdge::UCBottomEdge(QQuickItem *parent)
@@ -122,10 +124,13 @@ UCBottomEdge::UCBottomEdge(QQuickItem *parent)
     , m_hint(Q_NULLPTR)
     , m_contentComponent(Q_NULLPTR)
     , m_bottomPanel(Q_NULLPTR)
-    , m_defaultCommitStage(0.33) // 30% of the swipable area
+    , m_commitPoint(1.0)
     , m_state(Hidden)
     , m_fillWindow(false)
+    , m_defaultSectionsReset(false)
 {
+    // create default stages
+    createDefaultSections();
 }
 UCBottomEdge::~UCBottomEdge()
 {
@@ -157,6 +162,7 @@ void UCBottomEdge::itemChange(ItemChange change, const ItemChangeData &data)
             anchors->setLeft(left);
             anchors->setRight(right);
             anchors->setBottom(bottom);
+            QQuickItemPrivate::get(data.item)->addItemChangeListener(this, QQuickItemPrivate::Children);
         } else {
             anchors->resetLeft();
             anchors->resetRight();
@@ -164,6 +170,22 @@ void UCBottomEdge::itemChange(ItemChange change, const ItemChangeData &data)
         }
     }
     QQuickItem::itemChange(change, data);
+}
+
+void UCBottomEdge::itemChildAdded(QQuickItem *item, QQuickItem *)
+{
+    // make sure the BottomEdge is the last one
+    QQuickItem *last = item->childItems().last();
+    if (last != this) {
+        stackAfter(last);
+    }
+}
+
+void UCBottomEdge::itemChildRemoved(QQuickItem *item, QQuickItem *child)
+{
+    if (child == this) {
+        QQuickItemPrivate::get(item)->removeItemChangeListener(this, QQuickItemPrivate::Children);
+    }
 }
 
 void UCBottomEdge::loadPanel()
@@ -219,9 +241,13 @@ void UCBottomEdge::createPanel(QQmlComponent *component)
     connect(m_loader, SIGNAL(itemChanged()), this, SIGNAL(contentItemChanged()), Qt::DirectConnection);
     connect(m_panelItem, &QQuickItem::yChanged, this, &UCBottomEdge::dragProggressChanged);
     // follow drag progress to detect when can we set to CanCommit status
-    connect(this, &UCBottomEdge::dragProggressChanged, [=]() {
-        this->updateProgressionStates();
-    });    
+    connect(this, &UCBottomEdge::dragProggressChanged, &UCBottomEdge::updateProgressionStates);
+    m_panelAnimation = m_bottomPanel->property("panelAnimation").value<QQuickAbstractAnimation*>();
+}
+
+void UCBottomEdge::onPanelParentChildrenChanged()
+{
+
 }
 
 void UCBottomEdge::anchorHintToPanel()
@@ -238,31 +264,56 @@ void UCBottomEdge::anchorHintToPanel()
 void UCBottomEdge::updateProgressionStates()
 {
     qreal progress = dragProgress();
+    if (progress > 0.0 && !m_lastSection) {
+        setState(Revealed);
+    }
 
-    if (progress <= 0.0) {
-        setState(UCBottomEdge::Hidden);
-    } else if (progress < m_defaultCommitStage) {
-        setState(UCBottomEdge::Revealed);
-    } else if (progress < 1.0) {
-        setState(UCBottomEdge::CanCommit);
-        if (m_hint) {
-            m_hint->setState("Active");
-        }
-    } else {
-        setState(UCBottomEdge::Committed);
-        if (m_hint) {
-            m_hint->setState("Locked");
+    // go through the stages
+    Q_FOREACH(UCBottomEdgeSection *section, m_sections) {
+        if (section->dragInSection(progress)) {
+            if (!m_lastSection) {
+                section->enterSection();
+                m_lastSection = section;
+                Q_EMIT currentSectionChanged();
+                break;
+            }
+        } else if (m_lastSection == section) {
+            section->exitSection();
+            m_lastSection.clear();
+            Q_EMIT currentSectionChanged();
         }
     }
+}
+
+// creates the default section(s)
+void UCBottomEdge::createDefaultSections()
+{
+    // add the default stages
+    UCBottomEdgeSection *commitStage = new UCBottomEdgeSection(this);
+    // for testing purposes
+    commitStage->setObjectName("default_bottomedge_stage");
+    // enters in this stage when drag ratio reaches 30% of the area
+    commitStage->m_startsAt = 0.33;
+    commitStage->m_endsAt = 1.0;
+
+    m_sections.append(commitStage);
+}
+
+// positions the bottom edge panel holding the content to the given position
+// position is a percentage of the height
+void UCBottomEdge::positionPanel(qreal position)
+{
+    // use property setter so Behavior can react as well
+    m_panelItem->setProperty("y", height() - height() * position);
 }
 
 /*!
  * \qmlproperty Item BottomEdge::hint
  * The property holds the component to display the hint for the bottom edge element.
  * The component can be a BottomEdgeHint or any custom component. In case of custom
- * component is used, the component must make sure it implements the "Active" state.
- * BottomEdge automatically takes ownership over the hint set, and will delete the
- * previously set component upon change.
+ * component is used, the component must make sure it implements the "Active" and
+ * "Locked" states. BottomEdge automatically takes ownership over the hint set, and
+ * will delete the previously set component upon change.
  * \note Changing the hint during an ongoing bottom edge swipe is omitted.
  */
 void UCBottomEdge::setHint(QQuickItem *hint)
@@ -282,14 +333,6 @@ void UCBottomEdge::setHint(QQuickItem *hint)
         QQml_setParent_noEvent(m_hint, this);
         // anchor hint to the panel
         anchorHintToPanel();
-        // connect state change from the hint to keep it in sync
-        // we can use lambda as the changed hint component will be deleted
-        // so the connection will be removed as well
-        connect(m_hint, &QQuickItem::stateChanged, [=](const QString &state) {
-            if (state == QStringLiteral("Active")) {
-//                setState(UCBottomEdge::Active);
-            }
-        });
     }
     Q_EMIT hintChanged();
 }
@@ -322,7 +365,9 @@ qreal UCBottomEdge::dragProgress()
  *      \l hint is in "Active" state.
  * \row
  *  \li CanCommit
- *  \li The bottom edge reached the stage from where it can commit.
+ *  \li The bottom edge reached the stage from where it can commit. If there are
+ *      sections specified, the section having \l BottomEdgeSection::endsAt set
+ *      to the \l commitPoint will turn the state on.
  * \row
  *  \li Committed
  *  \li The bottom edge content is fully exposed.
@@ -416,7 +461,22 @@ void UCBottomEdge::setFillWindow(bool fill)
 void UCBottomEdge::commit()
 {
     Q_EMIT commitStarted();
-    m_bottomPanel->setState("Committing");
+    if (m_panelAnimation) {
+        connect(m_panelAnimation, &QQuickAbstractAnimation::runningChanged,
+                this, &UCBottomEdge::emitCommitCompleted);
+    }
+    positionPanel(m_commitPoint);
+}
+
+void UCBottomEdge::emitCommitCompleted(bool running)
+{
+    if (running) {
+        return;
+    }
+    disconnect(m_panelAnimation, &QQuickAbstractAnimation::runningChanged,
+               this, &UCBottomEdge::emitCommitCompleted);
+    setState(Committed);
+    Q_EMIT commitCompleted();
 }
 
 /*!
@@ -428,5 +488,92 @@ void UCBottomEdge::commit()
 void UCBottomEdge::collapse()
 {
     Q_EMIT collapseStarted();
-    m_bottomPanel->setState("Collapsing");
+    if (m_panelAnimation) {
+        connect(m_panelAnimation, &QQuickAbstractAnimation::runningChanged,
+                this, &UCBottomEdge::emitCollapseCompleted);
+    }
+    positionPanel(0.0);
+}
+
+void UCBottomEdge::emitCollapseCompleted(bool running)
+{
+    if (running) {
+        return;
+    }
+    disconnect(m_panelAnimation, &QQuickAbstractAnimation::runningChanged,
+               this, &UCBottomEdge::emitCollapseCompleted);
+    setState(Hidden);
+    Q_EMIT collapseCompleted();
+}
+
+/*!
+ * \qmlproperty list<BottomEdgeSection> BottomEdge::sections
+ * \default
+ * The property holds the custom sections configured for the BottomEdge. The
+ * defaults can be restored by setting an empty list to the property or by
+ * calling sections.clear().
+ * See \l BottomEdgeSection.
+ */
+QQmlListProperty<UCBottomEdgeSection> UCBottomEdge::sections()
+{
+    return QQmlListProperty<UCBottomEdgeSection>(this, &m_sections,
+                                                 sections_append,
+                                                 Q_NULLPTR,
+                                                 Q_NULLPTR,
+                                                 sections_clear);
+}
+
+void UCBottomEdge::sections_append(QQmlListProperty<UCBottomEdgeSection> *sections, UCBottomEdgeSection *section)
+{
+    UCBottomEdge *bottomEdge = static_cast<UCBottomEdge*>(sections->object);
+    if (!bottomEdge->m_defaultSectionsReset) {
+        bottomEdge->m_defaultSectionsReset = true;
+        qDeleteAll(bottomEdge->m_sections);
+        bottomEdge->m_sections.clear();
+    }
+    bottomEdge->m_sections.append(section);
+    // take ownership!
+    QQmlEngine::setObjectOwnership(section, QQmlEngine::CppOwnership);
+    QQml_setParent_noEvent(section, bottomEdge);
+    section->m_bottomEdge = bottomEdge;
+    // adjust endsAt property value if not set yet
+    if (section->m_endsAt <= 0.0) {
+        section->m_endsAt = bottomEdge->m_commitPoint;
+        Q_EMIT section->endsAtChanged();
+    }
+}
+
+void UCBottomEdge::sections_clear(QQmlListProperty<UCBottomEdgeSection> *sections)
+{
+    UCBottomEdge *bottomEdge = static_cast<UCBottomEdge*>(sections->object);
+    if (!bottomEdge->m_defaultSectionsReset) {
+        return;
+    }
+    qDeleteAll(bottomEdge->m_sections);
+    bottomEdge->m_sections.clear();
+    bottomEdge->m_defaultSectionsReset = false;
+    bottomEdge->createDefaultSections();
+}
+
+/*!
+ * \qmlproperty BottomEdgeSection BottomEdge::currentSection
+ * \readonly
+ * Specifies the current active section.
+ */
+UCBottomEdgeSection *UCBottomEdge::currentSection()
+{
+    return m_lastSection.data();
+}
+
+/*!
+ * \qmlproperty real BottomEdge::commitPoint
+ * Commit point defined by a ratio.
+ */
+void UCBottomEdge::setCommitPoint(qreal point)
+{
+    if (point == m_commitPoint || (point < 0.0 || point > 1.0)) {
+        return;
+    }
+    m_commitPoint = point;
+    Q_EMIT commitPointChanged();
 }

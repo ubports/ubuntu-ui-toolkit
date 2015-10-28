@@ -31,20 +31,25 @@ Page {
         }
     }
 
+    ListView {
+        anchors.fill: parent
+        model: 50
+        delegate: ListItemLayout {
+            title.text: "Item #" + index
+        }
+    }
+
     Component {
         id: bottomEdgeContent
         Rectangle {
             onParentChanged: print(parent)
-//            anchors.fill: parent
             width: units.gu(40)
             height: parent.height
             color: Qt.rgba(0.5, 1, bottomEdge.dragProgress, 1)
             Label {
                 text: {
-                    switch (bottomEdge.status) {
-                    case BottomEdge.Fading: return "Status: Fading"
-                    case BottomEdge.Idle: return "Status: Idle"
-                    case BottomEdge.Hinting: return "Status: Hinting"
+                    switch (bottomEdge.state) {
+                    case BottomEdge.Hidden: return "Status: Hidden"
                     case BottomEdge.Revealed: return "Status: Revealed"
                     case BottomEdge.CanCommit: return "Status: CanCommit"
                     case BottomEdge.Committed: return "Status: Committed"
@@ -69,7 +74,7 @@ Page {
             text: "Compose a new message"
             iconName: "stock_message"
         }
-        height: page.height - units.gu(6)
+        height: page.height// - units.gu(6)
         contentComponent: bottomEdgeContent
         onCommitStarted: print("START COMMIT")
         onCommitCompleted: print("END COMMIT")

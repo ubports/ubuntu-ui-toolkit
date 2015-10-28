@@ -93,7 +93,8 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/uclistitemlayout.h \
     $$PWD/privates/threelabelsslot_p.h \
     $$PWD/ucimportversionchecker_p.h \
-    $$PWD/ucbottomedge.h
+    $$PWD/ucbottomedge.h \
+    $$PWD/ucbottomedgesection.h
 
 SOURCES += $$PWD/plugin.cpp \
     $$PWD/uctheme.cpp \
@@ -157,7 +158,8 @@ SOURCES += $$PWD/plugin.cpp \
     $$PWD/uclistitemlayout.cpp \
     $$PWD/privates/threelabelsslot_p.cpp \
     $$PWD/ucimportversionchecker_p.cpp \
-    $$PWD/ucbottomedge.cpp
+    $$PWD/ucbottomedge.cpp \
+    $$PWD/ucbottomedgesection.cpp
 
 # adapters
 SOURCES += $$PWD/adapters/alarmsadapter_organizer.cpp
