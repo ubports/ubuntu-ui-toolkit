@@ -61,7 +61,7 @@ MainView {
             ];
         }
         function test_checked_in_sync_with_clicked(data) {
-            var checked = data.item;
+            var checked = data.item.checked;
             clickSpy.target = data.item;
             if (data.touch) {
                 TestExtras.touchClick(0, data.item, centerOf(data.item));
