@@ -26,6 +26,7 @@
 
 class UCBottomEdge;
 class QQmlComponent;
+class PropertyChange;
 class UCBottomEdgeSection : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
@@ -64,6 +65,8 @@ protected:
     QUrl m_url;
     QPointer<UCBottomEdge> m_bottomEdge;
     QQmlComponent *m_component;
+    PropertyChange *m_urlBackup;
+    PropertyChange *m_componentBackup;
     qreal m_startsAt;
     qreal m_endsAt;
     bool m_enabled:1;

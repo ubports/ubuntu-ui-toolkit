@@ -94,9 +94,9 @@
  *     }
  * }
  * \endqml
- * There can be situations when different content is required in different sections
- * of the area. These sections can be defined through BottomEdgeSection components
- * listed in the \l sections property.
+ * There can be situations when the content may need to be sligtly different on
+ * certain sections of the area. These sections can be defined through BottomEdgeSection
+ * elements listed in the \l sections property.
  * \qml
  * import QtQuick 2.4
  * import Ubuntu.Components 1.3
@@ -133,6 +133,8 @@
  *     }
  * }
  * \endqml
+ * BottomEdgeSection can also replace the complete bottom edge content if needed.
+ * \sa BottomEdgeSection
  */
 
 /*!
@@ -410,6 +412,8 @@ qreal UCBottomEdge::dragProgress()
  *  \li Committed
  *  \li The bottom edge content is fully exposed.
  * \endtable
+ * \note Once \e SectionCommitted and \e Commited states are set, no further draging
+ * is possible on the content.
  */
 void UCBottomEdge::setState(UCBottomEdge::State state)
 {
@@ -478,7 +482,6 @@ QQuickItem *UCBottomEdge::contentItem() const
  */
 void UCBottomEdge::commit()
 {
-    qDebug() << "COMMITING";
     Q_EMIT commitStarted();
     if (m_panelAnimation) {
         connect(m_panelAnimation, &QQuickAbstractAnimation::runningChanged,
