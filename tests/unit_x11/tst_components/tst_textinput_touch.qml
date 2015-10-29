@@ -162,7 +162,7 @@ Item {
         }
         function test_select_text_on_doubletap(data) {
             data.input.focus = true;
-            TestExtras.touchDoubleClick(0, data.input, guPoint(1, 1));
+            TestExtras.touchDoubleClick(0, data.input, guPoint(1, 4));
             waitForRendering(data.input);
             verify(data.input.selectedText !== "", "No text selected!");
         }
@@ -195,7 +195,7 @@ Item {
             data.input.focus = true;
             popupSpy.target = findChild(data.input, "input_handler");
 
-            TestExtras.touchLongPress(0, data.input, guPoint(1, 1));
+            TestExtras.touchLongPress(0, data.input, guPoint(1, 4));
             waitForRendering(data.input, 500);
             popupSpy.wait();
             verify(data.input.selectedText !== "", "There should be text selected!");
@@ -283,6 +283,7 @@ Item {
             data.input.focus = true;
             data.input.cursorPosition = data.initialCursorPosition;
             data.input.selectWord();
+            verify(data.input.selectedText !== "", "No word selected initially!");
             var selectedText = data.input.selectedText;
 
             var caret = findChild(data.input, "input_handler")[data.cursorName + "Cursor"];
@@ -290,7 +291,7 @@ Item {
 
             // The caret may not receive events right away
             sleep(500)
-            TestExtras.touchDrag(0, caret, centerOf(caret), data.delta);
+            TestExtras.touchDrag(0, caret, Qt.point(centerOf(caret).x, units.gu(4)), data.delta);
             verify(data.input.selectedText !== "", "Selection cleared!");
             verify(data.input.selectedText != selectedText, "Selection did not change");
         }
