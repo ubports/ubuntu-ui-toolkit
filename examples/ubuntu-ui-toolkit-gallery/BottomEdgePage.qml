@@ -36,6 +36,7 @@ Page {
     }
 
     ListView {
+        id: listView
         anchors.fill: parent
         model: 50
         delegate: ListItemLayout {
@@ -46,7 +47,6 @@ Page {
     Component {
         id: bottomEdgeContent
         Page {
-            onParentChanged: print(parent)
             width: units.gu(40)
             height: parent.height
             // FIXME: this is crap!!!
@@ -59,6 +59,7 @@ Page {
                     case BottomEdge.Hidden: return prefix + "Status: Hidden"
                     case BottomEdge.Revealed: return prefix + "Status: Revealed"
                     case BottomEdge.CanCommit: return prefix + "Status: CanCommit"
+                    case BottomEdge.SectionCommitted: return prefix + "Status: SectionCommitted"
                     case BottomEdge.Committed: return prefix + "Status: Committed"
                     default: return prefix + "UNKNOWN";
                     }
@@ -67,7 +68,8 @@ Page {
             Rectangle {
                 anchors.fill: parent
                 anchors.margins: units.gu(1)
-                color: Qt.rgba(0.5, 1, bottomEdge.dragProgress, 1)
+                color: bottomEdge.currentSection ?
+                           bottomEdge.currentSection.baseColor : Qt.rgba(0.5, 1, bottomEdge.dragProgress, 1)
             }
         }
     }
@@ -78,6 +80,7 @@ Page {
         hint: BottomEdgeHint {
             text: "Compose a new message"
             iconName: "stock_message"
+            flickable: listView
         }
         height: page.height// - units.gu(6)
         contentComponent: bottomEdgeContent
@@ -85,5 +88,24 @@ Page {
         onCommitCompleted: print("END COMMIT")
         onCollapseStarted: print("START COLLAPSE")
         onCollapseCompleted: print("END COLLAPSE")
+
+        BottomEdgeSection {
+            objectName: "FirstSection"
+            startsAt: 0.2
+            endsAt: 0.4
+            property color baseColor: Qt.rgba(0.5, 0.4, bottomEdge.dragProgress, 1)
+        }
+        BottomEdgeSection {
+            objectName: "SecondSection"
+            startsAt: 0.4
+            endsAt: 0.8
+            property color baseColor: Qt.rgba(1, 0.4, bottomEdge.dragProgress, 1)
+        }
+        BottomEdgeSection {
+            objectName: "ThirdSection"
+            startsAt: 0.8
+            endsAt: bottomEdge.commitPoint
+            property color baseColor: Qt.rgba(1, 1, bottomEdge.dragProgress, 1)
+        }
     }
 }

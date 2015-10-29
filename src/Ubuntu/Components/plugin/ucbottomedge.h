@@ -36,7 +36,6 @@ class UCBottomEdge : public QQuickItem, protected QQuickItemChangeListener
     Q_PROPERTY(QUrl content MEMBER m_contentUrl WRITE setContent NOTIFY contentChanged FINAL)
     Q_PROPERTY(QQmlComponent *contentComponent MEMBER m_contentComponent WRITE setContentComponent NOTIFY contentComponentChanged FINAL)
     Q_PROPERTY(QQuickItem* contentItem READ contentItem NOTIFY contentItemChanged FINAL)
-    Q_PROPERTY(bool fillWindow MEMBER m_fillWindow WRITE setFillWindow NOTIFY fillWindowChanged FINAL)
     Q_PROPERTY(QQmlListProperty<UCBottomEdgeSection> sections READ sections FINAL)
     Q_PROPERTY(UCBottomEdgeSection* currentSection READ currentSection NOTIFY currentSectionChanged FINAL)
     Q_PROPERTY(qreal commitPoint MEMBER m_commitPoint WRITE setCommitPoint NOTIFY commitPointChanged FINAL)
@@ -47,6 +46,7 @@ public:
         Hidden,
         Revealed,
         CanCommit,
+        SectionCommitted,
         Committed
     };
     explicit UCBottomEdge(QQuickItem *parent = 0);
@@ -118,7 +118,6 @@ protected:
     QQuickItem *m_bottomPanel;
     qreal m_commitPoint;
     State m_state;
-    bool m_fillWindow:1;
     bool m_defaultSectionsReset:1;
 
     friend class UCBottomEdgeSection;

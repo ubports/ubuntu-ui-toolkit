@@ -21,19 +21,20 @@ Rectangle {
     // properties BottomEdge expects
     property alias panelItem: panel
     property alias contentLoader: loader
-    property PropertyAnimation panelAnimation: UbuntuNumberAnimation { duration: 1000 }
+    property PropertyAnimation panelAnimation: panelAnimation
 
     anchors.bottom: parent.bottom
     width: bottomEdge.width
     height: bottomEdge.height
-    x: updatePosition()
-    z: Number.MAX_VALUE
-    color: Qt.rgba(1, 1, 1, bottomEdge.dragProgress)
+    color: Qt.rgba(theme.palette.normal.background.r,
+                   theme.palette.normal.background.g,
+                   theme.palette.normal.background.b,
+                   bottomEdge.dragProgress)
 
-    function updatePosition() {
-        var x = background.mapFromItem(bottomEdge, bottomEdge.x, bottomEdge.y).x;
-        print(bottomEdge.x, x);
-        return x;
+    MouseArea {
+        id: mouseGrabber
+        anchors.fill: parent
+        enabled: bottomEdge.state >= BottomEdge.SectionCommitted
     }
 
     Binding {
@@ -52,9 +53,24 @@ Rectangle {
         }
         height: bottomEdge.height
         y: bottomEdge.height
+        color: theme.palette.normal.background
+        opacity: y < bottomEdge.height ? 1.0 : 0.0
 
-        Behavior on y {
-            animation: panelAnimation
+        Behavior on y { UbuntuNumberAnimation { id: panelAnimation } }
+
+        // shadow
+        Rectangle {
+            anchors {
+                bottom: parent.top
+                left: parent.left
+                right: parent.right
+            }
+            height: units.gu(1)
+            property color color: theme.palette.selected.background
+            gradient: Gradient {
+                GradientStop { position: 0.0; color: Qt.rgba(color.r, color.g, color.b, 0.0) }
+                GradientStop { position: 1.0; color: Qt.rgba(color.r, color.g, color.b, 0.3) }
+            }
         }
 
         Loader {

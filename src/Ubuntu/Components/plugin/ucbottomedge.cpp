@@ -18,7 +18,6 @@
 
 #include "ucbottomedge.h"
 #include "ucbottomedgesection.h"
-#include "quickutils.h"
 #include <QtQml/QQmlEngine>
 #include <QtGui/QScreen>
 #include <QtQuick/private/qquickitem_p.h>
@@ -37,19 +36,18 @@
  * \brief A component to handle bottom edge gesture and content.
  *
  * The component provides bottom edge content handling. The bottom egde feature
- * is typically composed of a hint and some content. The content is typically
- * committed (i.e. fully shown) when the drag is completed after it has been
- * dragged for a certain amount. The content can be anything, defined by
- * \l content or \l contentComponent.
+ * is typically composed of a hint and some content. The content is committed
+ * (i.e. fully shown) when the drag is completed after it has been dragged for
+ * a certain amount. The content can be anything, defined by \l content or
+ * \l contentComponent.
  *
  * As the name suggests, the component automatically anchors to the bottom of its
  * parent and takes the width of the parent. The drag is detected within the parent
- * area, but the content can be shown either full window or within the parent area -
- * see \l fillWindow property.
- * The height of the BottomEdge specifies how much of the window or parent area
- * should the exposed content ocupy. The content is centered into a panel which
- * is dragged from the bottom of the parent component.
+ * area.
  *
+ * The height of the BottomEdge drives till what extent the bottom edge content
+ * should be exposed. The content is centered into a panel which is dragged from
+ * the bottom of the BottomEdge.
  * \qml
  * import QtQuick 2.4
  * import Ubuntu.Components 1.3
@@ -75,13 +73,13 @@
  * }
  * \endqml
  *
- * \note \l content, \l contentComponent and \l contentItem is equovalent to
+ * \note \l content, \l contentComponent and \l contentItem is equivalent to
  * Loader's \e source, \e sourceComponent and \e item properties. See Loader
  * documentation for further details.
  *
- * There can be situations when the there should be different contents shown
- * depending on the progress of the drag or when different stages of the drag
- * is reacted. This can be achieved by tracking the \l dragProgress.
+ * There can be situations when the there should be different content shown
+ * depending on the progress of the drag or when the drag is in different
+ * sections of the area. The first can be achieved by tracking the \l dragProgress.
  * \qml
  * BottomEdge {
  *     id: bottomEdge
@@ -95,8 +93,45 @@
  *     }
  * }
  * \endqml
+ * There can be situations when different content is required in different sections
+ * of the area. These sections can be defined through BottomEdgeSection components
+ * listed in the \l sections property.
+ * \qml
+ * import QtQuick 2.4
+ * import Ubuntu.Components 1.3
  *
+ * MainView {
+ *     width: units.gu(40)
+ *     height: units.gu(70)
  *
+ *     Page {
+ *         title: "BottomEdge"
+ *
+ *         BottomEdge {
+ *             id: bottomEdge
+ *             height: parent.height - units.gu(20)
+ *             hint: BottomEdgeHint {
+ *                 text: "My bottom edge"
+ *             }
+ *             contentComponent: Rectangle {
+ *                 anchors.fill: parent
+ *                 color: bottomEdge.currentSection ?
+ *                          bottomEdge.currentSection.color : UbuntuColors.green
+ *             }
+ *             BottomEdgeSection {
+ *                 startsAt: 0.4
+ *                 endsAt: 0.6
+ *                 property color color: UbuntuColors.red
+ *             }
+ *             BottomEdgeSection {
+ *                 startsAt: 0.6
+ *                 endsAt: commitPoint
+ *                 property color color: UbuntuColors.lightGrey
+ *             }
+ *         }
+ *     }
+ * }
+ * \endqml
  */
 
 /*!
@@ -126,7 +161,6 @@ UCBottomEdge::UCBottomEdge(QQuickItem *parent)
     , m_bottomPanel(Q_NULLPTR)
     , m_commitPoint(1.0)
     , m_state(Hidden)
-    , m_fillWindow(false)
     , m_defaultSectionsReset(false)
 {
     // create default stages
@@ -177,8 +211,7 @@ void UCBottomEdge::itemChildAdded(QQuickItem *item, QQuickItem *)
 {
     // make sure the BottomEdge's panel is the last one
     QQuickItem *last = item->childItems().last();
-    if (!m_fillWindow && m_bottomPanel && last != m_bottomPanel) {
-        qDebug() << "STACKAFTER" << last;
+    if (m_bottomPanel && last != m_bottomPanel) {
         m_bottomPanel->stackAfter(last);
     }
 }
@@ -228,15 +261,12 @@ void UCBottomEdge::createPanel(QQmlComponent *component)
 {
     QQmlContext *context = new QQmlContext(qmlContext(this));
     context->setContextProperty("bottomEdge", this);
+    context->setContextObject(this);
     m_bottomPanel = static_cast<QQuickItem*>(component->beginCreate(context));
     Q_ASSERT(m_bottomPanel);
     QQml_setParent_noEvent(m_bottomPanel, this);
-    if (m_fillWindow) {
-        m_bottomPanel->setParentItem(QuickUtils::instance().rootObject());
-    } else {
-        // at this point this will be the last child, so no need to re-stack
-        m_bottomPanel->setParentItem(parentItem());
-    }
+    // at this point this will be the last child, so no need to re-stack
+    m_bottomPanel->setParentItem(parentItem());
     m_panelItem = m_bottomPanel->property("panelItem").value<QQuickItem*>();
     m_loader = m_bottomPanel->property("contentLoader").value<QQuickItem*>();
     component->completeCreate();
@@ -257,6 +287,9 @@ void UCBottomEdge::createPanel(QQmlComponent *component)
 // update state and sections during drag
 void UCBottomEdge::updateProgressionStates()
 {
+    if (m_state >= SectionCommitted) {
+        return;
+    }
     qreal progress = dragProgress();
     if (progress > 0.0 && !m_lastSection) {
         setState(Revealed);
@@ -299,6 +332,9 @@ void UCBottomEdge::positionPanel(qreal position)
 {
     // use property setter so Behavior can react as well
     m_panelItem->setProperty("y", height() - height() * position);
+    if (position < 1.0) {
+        setState(SectionCommitted);
+    }
 }
 
 /*!
@@ -326,7 +362,7 @@ void UCBottomEdge::setHint(QQuickItem *hint)
         QQmlEngine::setObjectOwnership(m_hint, QQmlEngine::CppOwnership);
         QQml_setParent_noEvent(m_hint, this);
         m_hint->setParentItem(this);
-        if (m_hint->metaObject()->indexOfSignal(SIGNAL(clicked())) >= 0) {
+        if (m_hint->metaObject()->indexOfSignal("clicked()") >= 0) {
             connect(m_hint, SIGNAL(clicked()), this, SLOT(commit()), Qt::DirectConnection);
         }
     }
@@ -340,8 +376,7 @@ void UCBottomEdge::setHint(QQuickItem *hint)
  */
 qreal UCBottomEdge::dragProgress()
 {
-    Q_ASSERT(m_panelItem);
-    return 1.0 - (m_panelItem->y() / height());
+    return !m_panelItem ? 0.0 : 1.0 - (m_panelItem->y() / height());
 }
 
 /*!
@@ -365,6 +400,9 @@ qreal UCBottomEdge::dragProgress()
  *      sections specified, the section having \l BottomEdgeSection::endsAt set
  *      to the \l commitPoint will turn the state on.
  * \row
+ *  \li SectionCommitted
+ *  \li The bottom edge content is exposed till the top of the current section.
+ * \row
  *  \li Committed
  *  \li The bottom edge content is fully exposed.
  * \endtable
@@ -380,6 +418,7 @@ void UCBottomEdge::setState(UCBottomEdge::State state)
         case Hidden: stateStr = "Hidden"; break;
         case Revealed: stateStr = "Revealed"; break;
         case CanCommit: stateStr = "CanCommit"; break;
+        case SectionCommitted: stateStr = "SectionCommitted"; break;
         case Committed: stateStr = "Committed"; break;
     }
 
@@ -428,27 +467,6 @@ QQuickItem *UCBottomEdge::contentItem() const
 }
 
 /*!
- * \qmlproperty bool BottomEdge::fillWindow
- * The property specifies whether the bottom edge content should be rendered
- * within the whole window or only the parent area. Defaults to \e false.
- */
-void UCBottomEdge::setFillWindow(bool fill)
-{
-    if (m_fillWindow == fill) {
-        return;
-    }
-    m_fillWindow = fill;
-    if (m_bottomPanel && m_state == Hidden) {
-        if (m_fillWindow) {
-            m_bottomPanel->setParentItem(QuickUtils::instance().rootObject());
-        } else {
-            m_bottomPanel->setParentItem(this);
-        }
-    }
-    Q_EMIT fillWindowChanged();
-}
-
-/*!
  * \qmlmethod void BottomEdge::commit()
  * The function forces the bottom edge content to be fully exposed. Emits
  * \l commitStarted and \l commitCompleted signals to notify the start and the
@@ -456,6 +474,7 @@ void UCBottomEdge::setFillWindow(bool fill)
  */
 void UCBottomEdge::commit()
 {
+    qDebug() << "COMMITING";
     Q_EMIT commitStarted();
     if (m_panelAnimation) {
         connect(m_panelAnimation, &QQuickAbstractAnimation::runningChanged,

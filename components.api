@@ -182,7 +182,6 @@ Ubuntu.Components.BottomEdge 1.3: Item
     readonly property Item contentItem
     readonly property BottomEdgeSection currentSection
     readonly property double dragProgress
-    property bool fillWindow
     property Item hint
     signal stateChanged(State state)
     signal contentChanged(url url)
@@ -199,6 +198,7 @@ Ubuntu.Components.BottomEdge.State: Enum
     Committed
     Hidden
     Revealed
+    SectionCommitted
 Ubuntu.Components.BottomEdgeHint 1.3: StyledItem
     property Flickable flickable
     property string iconName
