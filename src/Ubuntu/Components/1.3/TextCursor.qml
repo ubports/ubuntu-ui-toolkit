@@ -205,7 +205,8 @@ Ubuntu.StyledItem {
             if (!caret) {
                 return;
             }
-            var flip = cursorItem.positionProperty === "selectionEnd";
+            // The style may render handlers either on top or bottom
+            var flip = caret.rotation == 180;
             draggedItem.x = fakeCursor.x + (flip ? -units.gu(1) : -draggedItem.width + units.gu(1));
             draggedItem.y = fakeCursor.y - caret.height - units.gu(0.5);
         }

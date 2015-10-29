@@ -82,7 +82,7 @@ Item {
         id: caretItem
         source: Qt.resolvedUrl("../artwork/caret_noshadow.png")
         objectName: "text_cursor_style_caret_" + styledItem.positionProperty
-        property bool flip: styledItem.positionProperty === "selectionEnd"
+        property bool flip: styledItem.positionProperty !== "selectionStart"
         rotation: flip ? 180 : 0
         anchors {
             top: flip ? parent.bottom : undefined
