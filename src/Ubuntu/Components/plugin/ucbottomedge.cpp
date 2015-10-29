@@ -20,6 +20,7 @@
 #include "ucbottomedgesection.h"
 #include <QtQml/QQmlEngine>
 #include <QtGui/QScreen>
+#include <QtQml/QQmlProperty>
 #include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickflickable_p.h>
 
@@ -330,9 +331,12 @@ void UCBottomEdge::createDefaultSections()
 // position is a percentage of the height
 void UCBottomEdge::positionPanel(qreal position)
 {
-    // use property setter so Behavior can react as well
-    m_panelItem->setProperty("y", height() - height() * position);
-    if (position < 1.0) {
+    // use QQmlProperty so the bindings on y are broken,
+    // otherwise AdaptivePageLayout relayouting makes bottom
+    // edge to collapse
+    // also makes Behavior to run on the property
+    QQmlProperty::write(m_panelItem, "y", height() - height() * position, qmlContext(m_panelItem));
+    if (position < 1.0 && m_state >= Revealed) {
         setState(SectionCommitted);
     }
 }
