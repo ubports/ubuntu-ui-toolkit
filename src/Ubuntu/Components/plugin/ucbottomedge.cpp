@@ -172,15 +172,18 @@ void UCBottomEdge::itemChange(ItemChange change, const ItemChangeData &data)
     QQuickItem::itemChange(change, data);
 }
 
+// make sure the bottom edge panel is always the last one
 void UCBottomEdge::itemChildAdded(QQuickItem *item, QQuickItem *)
 {
-    // make sure the BottomEdge is the last one
+    // make sure the BottomEdge's panel is the last one
     QQuickItem *last = item->childItems().last();
-    if (last != this) {
-        stackAfter(last);
+    if (!m_fillWindow && m_bottomPanel && last != m_bottomPanel) {
+        qDebug() << "STACKAFTER" << last;
+        m_bottomPanel->stackAfter(last);
     }
 }
 
+// remove this to be change listener from the previous parent
 void UCBottomEdge::itemChildRemoved(QQuickItem *item, QQuickItem *child)
 {
     if (child == this) {
@@ -188,6 +191,7 @@ void UCBottomEdge::itemChildRemoved(QQuickItem *item, QQuickItem *child)
     }
 }
 
+// loads the panel asynchronously
 void UCBottomEdge::loadPanel()
 {
     if (!m_bottomPanel && (m_contentComponent || m_contentUrl.isValid())) {
@@ -219,6 +223,7 @@ void UCBottomEdge::loadPanel()
     }
 }
 
+// creates the panel component
 void UCBottomEdge::createPanel(QQmlComponent *component)
 {
     QQmlContext *context = new QQmlContext(qmlContext(this));
@@ -229,6 +234,7 @@ void UCBottomEdge::createPanel(QQmlComponent *component)
     if (m_fillWindow) {
         m_bottomPanel->setParentItem(QuickUtils::instance().rootObject());
     } else {
+        // at this point this will be the last child, so no need to re-stack
         m_bottomPanel->setParentItem(parentItem());
     }
     m_panelItem = m_bottomPanel->property("panelItem").value<QQuickItem*>();
@@ -236,7 +242,9 @@ void UCBottomEdge::createPanel(QQmlComponent *component)
     component->completeCreate();
     component->deleteLater();
     // anchor hint to panel
-    anchorHintToPanel();
+    if (m_hint) {
+        m_hint->setParentItem(this);
+    }
 
     connect(m_loader, SIGNAL(itemChanged()), this, SIGNAL(contentItemChanged()), Qt::DirectConnection);
     connect(m_panelItem, &QQuickItem::yChanged, this, &UCBottomEdge::dragProggressChanged);
@@ -245,22 +253,8 @@ void UCBottomEdge::createPanel(QQmlComponent *component)
     m_panelAnimation = m_bottomPanel->property("panelAnimation").value<QQuickAbstractAnimation*>();
 }
 
-void UCBottomEdge::onPanelParentChildrenChanged()
-{
-
-}
-
-void UCBottomEdge::anchorHintToPanel()
-{
-    if (m_panelItem && m_hint) {
-        m_hint->setParentItem(m_panelItem.data());
-        QQuickAnchors *anchors = QQuickItemPrivate::get(m_hint)->anchors();
-        anchors->setBottom(QQuickItemPrivate::get(m_panelItem)->top());
-    } else if (m_hint) {
-        m_hint->setParentItem(this);
-    }
-}
-
+// attach hint instance to the bottom edge panel holding the content
+// update state and sections during drag
 void UCBottomEdge::updateProgressionStates()
 {
     qreal progress = dragProgress();
@@ -331,8 +325,10 @@ void UCBottomEdge::setHint(QQuickItem *hint)
     if (m_hint) {
         QQmlEngine::setObjectOwnership(m_hint, QQmlEngine::CppOwnership);
         QQml_setParent_noEvent(m_hint, this);
-        // anchor hint to the panel
-        anchorHintToPanel();
+        m_hint->setParentItem(this);
+        if (m_hint->metaObject()->indexOfSignal(SIGNAL(clicked())) >= 0) {
+            connect(m_hint, SIGNAL(clicked()), this, SLOT(commit()), Qt::DirectConnection);
+        }
     }
     Q_EMIT hintChanged();
 }
@@ -567,7 +563,8 @@ UCBottomEdgeSection *UCBottomEdge::currentSection()
 
 /*!
  * \qmlproperty real BottomEdge::commitPoint
- * Commit point defined by a ratio.
+ * Specifies the ratio the bottom edge content should be committed to. Same as
+ * \l dragProgress, the value can be set between 0 and 1. Defaults to 1.
  */
 void UCBottomEdge::setCommitPoint(qreal point)
 {

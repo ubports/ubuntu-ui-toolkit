@@ -96,8 +96,6 @@ protected:
 
     void loadPanel();
     void createPanel(QQmlComponent *component);
-    void onPanelParentChildrenChanged();
-    void anchorHintToPanel();
     void updateProgressionStates();
     void createDefaultSections();
 
