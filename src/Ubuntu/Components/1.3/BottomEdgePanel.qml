@@ -60,6 +60,7 @@ Rectangle {
 
         // shadow
         Rectangle {
+            id: shadow
             anchors {
                 bottom: parent.top
                 left: parent.left
@@ -68,8 +69,8 @@ Rectangle {
             height: units.gu(1)
             property color color: theme.palette.selected.background
             gradient: Gradient {
-                GradientStop { position: 0.0; color: Qt.rgba(color.r, color.g, color.b, 0.0) }
-                GradientStop { position: 1.0; color: Qt.rgba(color.r, color.g, color.b, 0.3) }
+                GradientStop { position: 0.0; color: Qt.rgba(shadow.color.r, shadow.color.g, shadow.color.b, 0.0) }
+                GradientStop { position: 1.0; color: Qt.rgba(shadow.color.r, shadow.color.g, shadow.color.b, 0.3) }
             }
         }
 
