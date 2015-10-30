@@ -157,9 +157,9 @@ Ubuntu.StyledItem {
     //dragged item
     property Item draggedItem: Item {
         objectName: cursorItem.positionProperty + "_draggeditem"
-        width: caret.width + units.gu(4)
+        width: caret.width + units.gu(2)
         onWidthChanged: draggedItem.moveToCaret()
-        height: caret.height + units.gu(4)
+        height: cursorItem.height + caret.height + units.gu(2)
         parent: fakeCursor.parent
         visible: caret.visible
 
@@ -204,8 +204,10 @@ Ubuntu.StyledItem {
             if (!caret) {
                 return;
             }
-            draggedItem.x = fakeCursor.x - draggedItem.width / 2;
-            draggedItem.y = fakeCursor.y + caret.y - caret.height / 2;
+            // The style may render handlers either on top or bottom
+            var flip = caret.rotation == 180;
+            draggedItem.x = fakeCursor.x + (flip ? -units.gu(1) : -draggedItem.width + units.gu(1));
+            draggedItem.y = fakeCursor.y - caret.height - units.gu(0.5);
         }
         // positions caret to the dragged position
         function positionCaret() {
@@ -214,7 +216,6 @@ Ubuntu.StyledItem {
                 var dy = dragger.dragStartY + dragger.dragAmountY + handler.flickable.contentY;
                 dx -= handler.frameDistance.x;
                 dy -= handler.frameDistance.y;
-                dy -= draggedItem.height / 2;
                 handler.positionCaret(positionProperty, dx, dy);
             }
         }
