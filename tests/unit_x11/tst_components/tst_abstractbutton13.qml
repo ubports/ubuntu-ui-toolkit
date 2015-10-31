@@ -97,7 +97,9 @@ Item {
             absButton.action = action1
             compare(absButton.action, action1, "Action can be set")
             var numTriggers = action1.triggerCount
-            absButton.clicked()
+            triggeredSpy.target = absButton.action;
+            mouseClick(absButton, centerOf(absButton).x, centerOf(absButton).y);
+            triggeredSpy.wait(500);
             compare(action1.triggerCount, numTriggers+1, "Button clicked triggers action")
             absButton.action = null
         }
