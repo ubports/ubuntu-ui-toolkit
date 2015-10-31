@@ -57,7 +57,7 @@ Item {
             width: cursorWidth
             // FIXME: Extend the palette and use palette values here
             color: UbuntuColors.blue
-            visible: styledItem.positionProperty === "cursorPosition" && (blinkTimer.timerShowCursor || !blinkTimer.running)
+            visible: blinkTimer.timerShowCursor || !blinkTimer.running
             Timer {
                 id: blinkTimer
                 interval: cursorStyle.cursorVisibleTimeout
@@ -66,7 +66,7 @@ Item {
                          styledItem.visible &&
                          shouldBlink
                 repeat: true
-                property bool shouldBlink: !styledItem.readOnly && !styledItem.contextMenuVisible
+                property bool shouldBlink: styledItem.positionProperty === "cursorPosition" && !styledItem.readOnly && !styledItem.contextMenuVisible
                 property bool timerShowCursor: true
                 onTriggered: {
                     interval = (interval == cursorStyle.cursorVisibleTimeout) ?
@@ -82,8 +82,11 @@ Item {
         id: caretItem
         source: Qt.resolvedUrl("../artwork/caret_noshadow.png")
         objectName: "text_cursor_style_caret_" + styledItem.positionProperty
+        property bool flip: styledItem.positionProperty !== "selectionStart"
+        rotation: flip ? 180 : 0
         anchors {
-            top: parent.bottom
+            top: flip ? parent.bottom : undefined
+            bottom: flip ? undefined : parent.top
             horizontalCenter: parent.horizontalCenter
             horizontalCenterOffset: cursorWidth / 2
         }
