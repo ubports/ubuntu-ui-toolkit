@@ -31,7 +31,7 @@ Style.PageHeadStyle {
         id: defaultConfig
     }
 
-    readonly property PageHeadConfiguration config: styledItem.config ?
+    property PageHeadConfiguration config: styledItem.config ?
                                                styledItem.config :
                                                defaultConfig
     /*!
