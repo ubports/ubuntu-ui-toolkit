@@ -106,10 +106,11 @@ BottomEdgeStyle {
                 maximumY: bottomEdge.height
             }
 
+            onClicked: bottomEdge.hint ? bottomEdge.hint.clicked() : bottomEdge.commit()
             onReleased: {
                 if (bottomEdge.currentSection) {
                     bottomEdge.currentSection.dragEnded();
-                } else {
+                } else if (bottomEdge.state > BottomEdge.Hidden) {
                     bottomEdge.collapse();
                 }
             }

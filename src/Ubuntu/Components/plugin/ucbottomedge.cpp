@@ -121,10 +121,9 @@ bool UCBottomEdgePrivate::loadStyleItem(bool animated)
     bottomPanel = qobject_cast<UCBottomEdgeStyle*>(styleItem);
     if (bottomPanel) {
         // reparent style item to the BottomEdge's parent
-        QQuickItem *newParent = parentItem ? parentItem->parentItem() : q;
-        bottomPanel->setParentItem(newParent);
+        bottomPanel->setParentItem(parentItem);
         // bring style item in front
-        bottomPanel->setZ(0);
+        bottomPanel->setZ(std::numeric_limits<qreal>::max());
 
         // connect style stuff
         QObject::connect(bottomPanel, &UCBottomEdgeStyle::contentItemChanged,
@@ -354,6 +353,7 @@ void UCBottomEdge::setHint(QQuickItem *hint)
         QQml_setParent_noEvent(d->hint, this);
         d->hint->setParentItem(this);
         if (d->hint->metaObject()->indexOfSignal("clicked()") >= 0) {
+
             connect(d->hint, SIGNAL(clicked()), this, SLOT(commit()), Qt::DirectConnection);
         }
     }
