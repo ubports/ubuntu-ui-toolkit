@@ -68,7 +68,6 @@ public:
     QQuickItem *styleItem;
     quint16 styleVersion;
     bool activeFocusOnPress:1;
-    bool synchronousStyle:1;
     bool wasStyleLoaded:1;
 
 protected:
