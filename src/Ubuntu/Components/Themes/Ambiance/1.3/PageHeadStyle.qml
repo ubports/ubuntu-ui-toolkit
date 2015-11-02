@@ -31,7 +31,7 @@ Style.PageHeadStyle {
         id: defaultConfig
     }
 
-    property PageHeadConfiguration config: styledItem.config ?
+    readonly property PageHeadConfiguration config: styledItem.config ?
                                                styledItem.config :
                                                defaultConfig
     /*!
@@ -123,9 +123,11 @@ Style.PageHeadStyle {
             }
         }
 
-        Connections {
-            target: sectionsItem.sections
-            onSelectedIndexChanged: sectionsItem.selectedIndex = sectionsItem.sections.selectedIndex
+        Binding {
+            target: sectionsItem
+            when: sectionsItem.sections
+            property: "selectedIndex"
+            value: sectionsItem.sections.selectedIndex
         }
     }
 
