@@ -72,6 +72,7 @@
 #include "uclistitemlayout.h"
 #include "ucbottomedge.h"
 #include "ucbottomedgesection.h"
+#include "ucbottomedgestyle.h"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -263,6 +264,7 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     const char *styleUri = "Ubuntu.Components.Styles";
     qmlRegisterType<UCListItemStyle>(styleUri, 1, 2, "ListItemStyle");
     qmlRegisterType<UCListItemStyle, 1>(styleUri, 1, 3, "ListItemStyle");
+    qmlRegisterType<UCBottomEdgeStyle>(styleUri, 1, 3, "BottomEdgeStyle");
 
     QQmlExtensionPlugin::initializeEngine(engine, uri);
     QQmlContext* context = engine->rootContext();

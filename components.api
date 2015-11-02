@@ -175,7 +175,7 @@ Ubuntu.Components.ListItems.Base 1.3: Empty
     property var icon
     property bool iconFrame
     property bool progression
-Ubuntu.Components.BottomEdge 1.3: Item
+Ubuntu.Components.BottomEdge 1.3: StyledItem
     property double commitPoint
     property url content
     property Component contentComponent
@@ -214,6 +214,10 @@ Ubuntu.Components.BottomEdgeSection 1.3: QtObject
     signal exited()
     signal dragEnded()
     property double startsAt
+Ubuntu.Components.Styles.BottomEdgeStyle 1.3: Item
+    property Item contentItem
+    property Item panel
+    property Animation panelAnimation
 Ubuntu.Components.Button 1.0 0.1: AbstractButton
     property color color
     property QFont font

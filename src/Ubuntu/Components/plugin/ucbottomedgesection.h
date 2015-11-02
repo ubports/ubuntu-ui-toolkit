@@ -71,7 +71,7 @@ protected:
     qreal m_endsAt;
     bool m_enabled:1;
 
-    friend class UCBottomEdge;
+    friend class UCBottomEdgePrivate;
 };
 
 #endif // UCBOTTOMEDGESECTION_H

@@ -114,6 +114,7 @@ QML_FILES += 1.2/ActivityIndicatorStyle.qml \
              1.3/IconButtonStyle.qml \
 	     1.3/PageHeaderStyle.qml \
              1.3/BottomEdgeHintStyle.qml \
+             1.3/BottomEdgeStyle.qml
     $$ARTWORK_FILES
 
 load(ubuntu_qml_module)

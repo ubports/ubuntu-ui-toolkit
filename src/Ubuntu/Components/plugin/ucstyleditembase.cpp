@@ -40,6 +40,11 @@ UCStyledItemBasePrivate::~UCStyledItemBasePrivate()
 
 void UCStyledItemBasePrivate::init()
 {
+    // make sure we have the componentCompleted set to false
+    // QtQuickItem defaults it to true, and sets it to false
+    // in classBegin, which causes problems in initialization codes
+    // done in private init() implementations
+    componentComplete = false;
     Q_Q(UCStyledItemBase);
     q->setFlag(QQuickItem::ItemIsFocusScope);
 }

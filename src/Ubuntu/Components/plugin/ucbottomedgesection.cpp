@@ -17,6 +17,7 @@
  */
 
 #include "ucbottomedge.h"
+#include "ucbottomedge_p.h"
 #include "ucbottomedgesection.h"
 #include "propertychange_p.h"
 #include <QtQml/private/qqmlproperty_p.h>
@@ -96,7 +97,8 @@ UCBottomEdgeSection::UCBottomEdgeSection(QObject *parent)
     , m_endsAt(-1.0)
     , m_enabled(true)
 {
-    connect(this, &UCBottomEdgeSection::dragEnded, this, &UCBottomEdgeSection::onDragEnded, Qt::DirectConnection);
+    connect(this, &UCBottomEdgeSection::dragEnded,
+            this, &UCBottomEdgeSection::onDragEnded, Qt::DirectConnection);
 }
 
 void UCBottomEdgeSection::onDragEnded()
@@ -104,11 +106,11 @@ void UCBottomEdgeSection::onDragEnded()
     if (!m_bottomEdge) {
         return;
     }
-    if (m_endsAt == m_bottomEdge->m_commitPoint) {
+    if (m_endsAt == m_bottomEdge->commitPoint()) {
         m_bottomEdge->commit();
     } else {
         // move the bottom edge panel to the endsAt
-        m_bottomEdge->positionPanel(m_endsAt);
+        UCBottomEdgePrivate::get(m_bottomEdge)->positionPanel(m_endsAt);
     }
 }
 
@@ -120,8 +122,8 @@ bool UCBottomEdgeSection::dragInSection(qreal dragRatio)
 void UCBottomEdgeSection::enterSection()
 {
     Q_EMIT entered();
-    if (m_endsAt == m_bottomEdge->m_commitPoint) {
-        m_bottomEdge->setState(UCBottomEdge::CanCommit);
+    if (m_endsAt == m_bottomEdge->commitPoint()) {
+        UCBottomEdgePrivate::get(m_bottomEdge)->setState(UCBottomEdge::CanCommit);
     }
     // backup url
     if (m_url.isValid()) {
