@@ -62,8 +62,9 @@ public:
 
     qreal commitPoint;
     UCBottomEdge::State state;
-    bool defaultSectionsReset:1;
 
+    bool defaultSectionsReset:1;
+    bool blockSectionProgressCheck:1;
 
 };
 

@@ -96,6 +96,7 @@ UCBottomEdgeSection::UCBottomEdgeSection(QObject *parent)
     , m_startsAt(0.0)
     , m_endsAt(-1.0)
     , m_enabled(true)
+    , m_commitToTop(false)
 {
     connect(this, &UCBottomEdgeSection::dragEnded,
             this, &UCBottomEdgeSection::onDragEnded, Qt::DirectConnection);
@@ -106,7 +107,7 @@ void UCBottomEdgeSection::onDragEnded()
     if (!m_bottomEdge) {
         return;
     }
-    if (m_endsAt == m_bottomEdge->commitPoint()) {
+    if (m_endsAt == m_bottomEdge->commitPoint() || m_commitToTop) {
         m_bottomEdge->commit();
     } else {
         // move the bottom edge panel to the endsAt
@@ -167,6 +168,13 @@ void UCBottomEdgeSection::exitSection()
  * \qmlproperty bool BottomEdgeSection::enabled
  * Enables the section. Disabled sections do not trigger nor change the BottomEdge
  * content. Defaults to false.
+ */
+
+/*!
+ * \qmlproperty bool BottomEdgeSection::commitToTop
+ * When set, the content specified by the section will be committed to the
+ * \l BottomEdge::commitPoint, otherwise it will top at the section's \l endsAt
+ * top point. Defaults to false.
  */
 
 /*!

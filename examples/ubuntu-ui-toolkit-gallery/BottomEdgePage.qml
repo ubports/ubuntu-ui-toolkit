@@ -93,6 +93,7 @@ Page {
             objectName: "FirstSection"
             startsAt: 0.2
             endsAt: 0.4
+            commitToTop: true
             property color baseColor: Qt.rgba(0.5, 0.4, bottomEdge.dragProgress, 1)
             contentComponent: Rectangle { anchors.fill: parent; border.width: units.gu(1)}
         }

@@ -33,6 +33,7 @@ class UCBottomEdgeSection : public QObject, public QQmlParserStatus
     Q_INTERFACES(QQmlParserStatus)
 
     Q_PROPERTY(bool enabled MEMBER m_enabled NOTIFY enabledChanged FINAL)
+    Q_PROPERTY(bool commitToTop MEMBER m_commitToTop NOTIFY commitToTopChanged FINAL)
     Q_PROPERTY(qreal startsAt MEMBER m_startsAt NOTIFY startsAtChanged FINAL)
     Q_PROPERTY(qreal endsAt MEMBER m_endsAt NOTIFY endsAtChanged FINAL)
     Q_PROPERTY(QUrl content MEMBER m_url NOTIFY contentChanged FINAL)
@@ -47,7 +48,7 @@ public:
 
 Q_SIGNALS:
     void enabledChanged();
-    void commitWhenDragEndsChanged();
+    void commitToTopChanged();
     void startsAtChanged();
     void endsAtChanged();
     void contentChanged();
@@ -70,6 +71,7 @@ protected:
     qreal m_startsAt;
     qreal m_endsAt;
     bool m_enabled:1;
+    bool m_commitToTop:1;
 
     friend class UCBottomEdgePrivate;
 };
