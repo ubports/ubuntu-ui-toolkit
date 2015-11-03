@@ -35,8 +35,6 @@ public:
         return item->d_func();
     }
     void init();
-    static void sections_append(QQmlListProperty<UCBottomEdgeSection> *sections, UCBottomEdgeSection *section);
-    static void sections_clear(QQmlListProperty<UCBottomEdgeSection> *sections);
 
     void createDefaultSections();
     void updateProgressionStates();

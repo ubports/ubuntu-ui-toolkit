@@ -89,6 +89,11 @@ public Q_SLOTS:
     void collapse();
 
 protected:
+    static void sections_append(QQmlListProperty<UCBottomEdgeSection> *sections, UCBottomEdgeSection *section);
+    static int sections_count(QQmlListProperty<UCBottomEdgeSection> *sections);
+    static UCBottomEdgeSection *sections_at(QQmlListProperty<UCBottomEdgeSection> *sections, int index);
+    static void sections_clear(QQmlListProperty<UCBottomEdgeSection> *sections);
+
     void itemChange(ItemChange change, const ItemChangeData &data);
 
     void emitCommitCompleted(bool running);

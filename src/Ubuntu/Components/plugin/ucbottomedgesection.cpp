@@ -102,6 +102,17 @@ UCBottomEdgeSection::UCBottomEdgeSection(QObject *parent)
             this, &UCBottomEdgeSection::onDragEnded, Qt::DirectConnection);
 }
 
+void UCBottomEdgeSection::attachToBottomEdge(UCBottomEdge *bottomEdge)
+{
+    QQml_setParent_noEvent(this, bottomEdge);
+    m_bottomEdge = bottomEdge;
+    // adjust endsAt property value if not set yet
+    if (m_endsAt <= 0.0) {
+        m_endsAt = UCBottomEdgePrivate::get(m_bottomEdge)->commitPoint;
+        Q_EMIT endsAtChanged();
+    }
+}
+
 void UCBottomEdgeSection::onDragEnded()
 {
     if (!m_bottomEdge) {

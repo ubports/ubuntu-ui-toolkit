@@ -558,13 +558,13 @@ QQmlListProperty<UCBottomEdgeSection> UCBottomEdge::sections()
 {
     Q_D(UCBottomEdge);
     return QQmlListProperty<UCBottomEdgeSection>(this, &d->sections,
-                                                 UCBottomEdgePrivate::sections_append,
-                                                 Q_NULLPTR,
-                                                 Q_NULLPTR,
-                                                 UCBottomEdgePrivate::sections_clear);
+                                                 sections_append,
+                                                 sections_count,
+                                                 sections_at,
+                                                 sections_clear);
 }
 
-void UCBottomEdgePrivate::sections_append(QQmlListProperty<UCBottomEdgeSection> *sections, UCBottomEdgeSection *section)
+void UCBottomEdge::sections_append(QQmlListProperty<UCBottomEdgeSection> *sections, UCBottomEdgeSection *section)
 {
     UCBottomEdgePrivate *bottomEdge = UCBottomEdgePrivate::get(static_cast<UCBottomEdge*>(sections->object));
     if (!bottomEdge->defaultSectionsReset) {
@@ -575,16 +575,23 @@ void UCBottomEdgePrivate::sections_append(QQmlListProperty<UCBottomEdgeSection> 
     bottomEdge->sections.append(section);
     // take ownership!
     QQmlEngine::setObjectOwnership(section, QQmlEngine::CppOwnership);
-    QQml_setParent_noEvent(section, sections->object);
-    section->m_bottomEdge = static_cast<UCBottomEdge*>(sections->object);
-    // adjust endsAt property value if not set yet
-    if (section->m_endsAt <= 0.0) {
-        section->m_endsAt = bottomEdge->commitPoint;
-        Q_EMIT section->endsAtChanged();
-    }
+    section->attachToBottomEdge(static_cast<UCBottomEdge*>(sections->object));
 }
 
-void UCBottomEdgePrivate::sections_clear(QQmlListProperty<UCBottomEdgeSection> *sections)
+int UCBottomEdge::sections_count(QQmlListProperty<UCBottomEdgeSection> *sections)
+{
+    UCBottomEdgePrivate *bottomEdge = UCBottomEdgePrivate::get(static_cast<UCBottomEdge*>(sections->object));
+    return bottomEdge->sections.size();
+}
+
+UCBottomEdgeSection *UCBottomEdge::sections_at(QQmlListProperty<UCBottomEdgeSection> *sections, int index)
+{
+    UCBottomEdgePrivate *bottomEdge = UCBottomEdgePrivate::get(static_cast<UCBottomEdge*>(sections->object));
+    Q_ASSERT((index >= 0) && (index < bottomEdge->sections.size()));
+    return bottomEdge->sections.at(index);
+}
+
+void UCBottomEdge::sections_clear(QQmlListProperty<UCBottomEdgeSection> *sections)
 {
     UCBottomEdgePrivate *bottomEdge = UCBottomEdgePrivate::get(static_cast<UCBottomEdge*>(sections->object));
     if (!bottomEdge->defaultSectionsReset) {

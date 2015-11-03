@@ -40,6 +40,7 @@ class UCBottomEdgeSection : public QObject, public QQmlParserStatus
     Q_PROPERTY(QQmlComponent* contentComponent MEMBER m_component NOTIFY contentComponentChanged FINAL)
 public:
     explicit UCBottomEdgeSection(QObject *parent = 0);
+    void attachToBottomEdge(UCBottomEdge *bottomEdge);
 
     // used internally
     bool dragInSection(qreal dragRatio);
