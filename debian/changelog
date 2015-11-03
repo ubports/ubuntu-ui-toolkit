@@ -1,3 +1,11 @@
+ubuntu-ui-toolkit (1.3.1705+16.04.20151103-0ubuntu1) xenial; urgency=medium
+
+  [ Zsombor Egri ]
+  * Fix Sections sync with PageHeadSections selectedIndex changes. (LP:
+    #1511839)
+
+ -- Zoltan Balogh <zoltan.balogh@canonical.com>  Tue, 03 Nov 2015 11:16:12 +0000
+
 ubuntu-ui-toolkit (1.3.1705+16.04.20151031-0ubuntu1) xenial; urgency=medium
 
   [ CI Train Bot ]
