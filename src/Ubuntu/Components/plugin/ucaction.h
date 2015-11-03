@@ -60,6 +60,12 @@ public:
         return m_published;
     }
 
+    void setName(const QString &name);
+    void setIconName(const QString &name);
+    void setIconSource(const QUrl &url);
+    void setItemHint(QQmlComponent *);
+    void setShortcut(const QVariant&);
+
 Q_SIGNALS:
     void nameChanged();
     void textChanged();
@@ -99,11 +105,6 @@ private:
 
     bool isValidType(QVariant::Type valueType);
     void generateName();
-    void setName(const QString &name);
-    void setIconName(const QString &name);
-    void setIconSource(const QUrl &url);
-    void setItemHint(QQmlComponent *);
-    void setShortcut(const QVariant&);
     bool event(QEvent *event);
 };
 

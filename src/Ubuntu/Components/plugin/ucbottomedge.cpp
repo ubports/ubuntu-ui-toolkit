@@ -28,6 +28,8 @@
 
 #include "plugin.h"
 #include "ucnamespace.h"
+#include "ucheader.h"
+#include "ucaction.h"
 #include <QtQuick/private/qquickanimation_p.h>
 
 UCBottomEdgePrivate::UCBottomEdgePrivate()
@@ -353,7 +355,6 @@ void UCBottomEdge::setHint(QQuickItem *hint)
         QQml_setParent_noEvent(d->hint, this);
         d->hint->setParentItem(this);
         if (d->hint->metaObject()->indexOfSignal("clicked()") >= 0) {
-
             connect(d->hint, SIGNAL(clicked()), this, SLOT(commit()), Qt::DirectConnection);
         }
     }
