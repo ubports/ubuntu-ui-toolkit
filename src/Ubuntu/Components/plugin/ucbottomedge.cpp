@@ -457,14 +457,6 @@ qreal UCBottomEdge::dragProgress()
  *  \li The Bottom edge content is revealed. The state can be reached only if the
  *      \l hint is in "Active" state.
  * \row
- *  \li CanCommit
- *  \li The bottom edge reached the stage from where it can commit. If there are
- *      sections specified, the section having \l BottomEdgeRange::to set
- *      to the \l commitPoint will turn the state on.
- * \row
- *  \li RangeCommitted
- *  \li The bottom edge content is exposed till the top of the current section.
- * \row
  *  \li Committed
  *  \li The bottom edge content is fully exposed.
  * \endtable
