@@ -40,8 +40,8 @@ UCBottomEdgePrivate::UCBottomEdgePrivate()
     , bottomPanel(Q_NULLPTR)
     , commitPoint(1.0)
     , state(UCBottomEdge::Hidden)
+    , status(Idle)
     , defaultRangesReset(false)
-    , blockRangeChangeByProgress(false)
 {
 }
 
@@ -136,7 +136,7 @@ void UCBottomEdgePrivate::createDefaultRanges()
 // update state and sections during drag
 void UCBottomEdgePrivate::updateProgressionStates()
 {
-    if (blockRangeChangeByProgress) {
+    if (isLocked()) {
         return;
     }
     Q_Q(UCBottomEdge);
@@ -551,7 +551,7 @@ QQuickItem *UCBottomEdge::contentItem() const
 void UCBottomEdge::commit()
 {
     Q_D(UCBottomEdge);
-    d->blockRangeChangeByProgress = true;
+    d->setStatus(UCBottomEdgePrivate::Committing);
     Q_EMIT commitStarted();
     if (d->bottomPanel && d->bottomPanel->m_panelAnimation) {
         connect(d->bottomPanel->m_panelAnimation, &QQuickAbstractAnimation::runningChanged,
@@ -570,7 +570,7 @@ void UCBottomEdge::emitCommitCompleted(bool running)
                this, &UCBottomEdge::emitCommitCompleted);
     d->setState(Committed);
     Q_EMIT commitCompleted();
-    d->blockRangeChangeByProgress = false;
+    d->setStatus(UCBottomEdgePrivate::Idle);
 }
 
 /*!
@@ -582,7 +582,7 @@ void UCBottomEdge::emitCommitCompleted(bool running)
 void UCBottomEdge::collapse()
 {
     Q_D(UCBottomEdge);
-    d->blockRangeChangeByProgress = true;
+    d->setStatus(UCBottomEdgePrivate::Collapsing);
     Q_EMIT collapseStarted();
     if (d->bottomPanel && d->bottomPanel->m_panelAnimation) {
         connect(d->bottomPanel->m_panelAnimation, &QQuickAbstractAnimation::runningChanged,
@@ -601,7 +601,7 @@ void UCBottomEdge::emitCollapseCompleted(bool running)
                this, &UCBottomEdge::emitCollapseCompleted);
     d->setState(Hidden);
     Q_EMIT collapseCompleted();
-    d->blockRangeChangeByProgress = false;
+    d->setStatus(UCBottomEdgePrivate::Idle);
 }
 
 /*!

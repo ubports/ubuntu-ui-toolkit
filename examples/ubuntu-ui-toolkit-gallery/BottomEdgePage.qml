@@ -93,9 +93,8 @@ Page {
             objectName: "FirstSection"
             from: 0.2
             to: 0.4
-            commitToTop: true
             property color baseColor: Qt.rgba(0.5, 0.4, bottomEdge.dragProgress, 1)
-            contentComponent: Rectangle { anchors.fill: parent; border.width: units.gu(1)}
+            contentComponent: Rectangle { anchors.fill: parent; border.width: units.gu(1) }
         }
         BottomEdgeRange {
             objectName: "SecondSection"
@@ -107,7 +106,7 @@ Page {
             objectName: "ThirdSection"
             from: 0.8
             to: bottomEdge.commitPoint
-            property color baseColor: Qt.rgba(1, 1, bottomEdge.dragProgress, 1)
+            property color baseColor: Qt.rgba(0, 1, bottomEdge.dragProgress, 1)
         }
     }
 }

@@ -58,7 +58,6 @@ public:
     void itemChildAdded(QQuickItem *item, QQuickItem *child);
     void itemChildRemoved(QQuickItem *item, QQuickItem *child);
 
-
     // members
     QUrl contentUrl;
     QList<UCBottomEdgeRange*> ranges;
@@ -70,9 +69,25 @@ public:
     qreal commitPoint;
     UCBottomEdge::State state;
 
-    bool defaultRangesReset:1;
-    bool blockRangeChangeByProgress:1;
+    enum Status {
+        Idle,
+        Committing,
+        Collapsing
+    };
+    Status status;
 
+    bool defaultRangesReset:1;
+
+
+    // status management
+    void setStatus(Status s)
+    {
+        status = s;
+    }
+    bool isLocked()
+    {
+        return status > Idle;
+    }
 };
 
 #endif // UCBOTTOMEDGE_P_H
