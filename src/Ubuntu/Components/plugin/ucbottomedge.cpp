@@ -18,7 +18,7 @@
 
 #include "ucbottomedge_p.h"
 #include "ucbottomedgestyle.h"
-#include "ucbottomedgesection.h"
+#include "ucbottomedgerange.h"
 #include "ucstyleditembase_p.h"
 #include <QtQml/QQmlEngine>
 #include <QtGui/QScreen>
@@ -34,64 +34,130 @@
 
 UCBottomEdgePrivate::UCBottomEdgePrivate()
     : UCStyledItemBasePrivate()
+    , activeRange(Q_NULLPTR)
     , hint(Q_NULLPTR)
     , contentComponent(Q_NULLPTR)
     , bottomPanel(Q_NULLPTR)
     , commitPoint(1.0)
     , state(UCBottomEdge::Hidden)
-    , defaultSectionsReset(false)
-    , blockSectionProgressCheck(false)
+    , defaultRangesReset(false)
+    , blockRangeChangeByProgress(false)
 {
 }
 
 void UCBottomEdgePrivate::init()
 {
+    // overload data property functors
+    QQmlListProperty<QObject> dataProp = data();
+    dataProp.append = &overload_data_append;
+    dataProp.clear = &overload_data_clear;
+    Q_UNUSED(dataProp);
+
     setStyleName("BottomEdgeStyle");
     // create default stages
-    createDefaultSections();
+    createDefaultRanges();
+}
+QQmlListProperty<QObject> UCBottomEdgePrivate::data()
+{
+    return QQmlListProperty<QObject>(q_func(), 0, UCBottomEdgePrivate::overload_data_append,
+                                             QQuickItemPrivate::data_count,
+                                             QQuickItemPrivate::data_at,
+                                             UCBottomEdgePrivate::overload_data_clear);
 }
 
+void UCBottomEdgePrivate::overload_data_append(QQmlListProperty<QObject> *data, QObject *object)
+{
+    QQuickItemPrivate::data_append(data, object);
+    // if the object is a range, add to the ranges as well
+    UCBottomEdgeRange *range = qobject_cast<UCBottomEdgeRange*>(object);
+    if (range) {
+        UCBottomEdgePrivate *bottomEdge = UCBottomEdgePrivate::get(static_cast<UCBottomEdge*>(data->object));
+        bottomEdge->appendRange(range);
+    }
+}
+
+void UCBottomEdgePrivate::overload_data_clear(QQmlListProperty<QObject> *data)
+{
+    // clear ranges as well
+    UCBottomEdgePrivate *bottomEdge = UCBottomEdgePrivate::get(static_cast<UCBottomEdge*>(data->object));
+    bottomEdge->clearRanges(false);
+    QQuickItemPrivate::data_clear(data);
+}
+
+void UCBottomEdgePrivate::appendRange(UCBottomEdgeRange *range)
+{
+    if (!defaultRangesReset) {
+        defaultRangesReset = true;
+        qDeleteAll(ranges);
+        ranges.clear();
+    }
+    ranges.append(range);
+    // take ownership!
+    QQmlEngine::setObjectOwnership(range, QQmlEngine::CppOwnership);
+    range->attachToBottomEdge(q_func());
+}
+
+void UCBottomEdgePrivate::clearRanges(bool destroy)
+{
+    if (!defaultRangesReset) {
+        return;
+    }
+    if (destroy) {
+        qDeleteAll(ranges);
+    }
+    ranges.clear();
+    defaultRangesReset = false;
+    createDefaultRanges();
+}
+
+
 // creates the default section(s)
-void UCBottomEdgePrivate::createDefaultSections()
+void UCBottomEdgePrivate::createDefaultRanges()
 {
     Q_Q(UCBottomEdge);
     // add the default stages
-    UCBottomEdgeSection *commitStage = new UCBottomEdgeSection(q);
+    UCBottomEdgeRange *commitRange = new UCBottomEdgeRange(q);
     // for testing purposes
-    commitStage->setObjectName("default_bottomedge_stage");
+    commitRange->setObjectName("default_bottomedge_stage");
     // enters in this stage when drag ratio reaches 30% of the area
-    commitStage->m_startsAt = 0.33;
-    commitStage->m_endsAt = 1.0;
+    commitRange->m_from = 0.33;
+    commitRange->m_to = 1.0;
+    // connect to commitPointChange so we get the top
+    // of the default range in sync with commitPoint
+    QObject::connect(q, &UCBottomEdge::commitPointChanged, [=]() {
+        commitRange->m_to = commitPoint;
+        Q_EMIT commitRange->toChanged();
+    });
 
-    sections.append(commitStage);
+    ranges.append(commitRange);
 }
 
 // attach hint instance to the bottom edge panel holding the content
 // update state and sections during drag
 void UCBottomEdgePrivate::updateProgressionStates()
 {
-    if (blockSectionProgressCheck || (state >= UCBottomEdge::SectionCommitted)) {
+    if (blockRangeChangeByProgress || (state >= UCBottomEdge::RangeCommitted)) {
         return;
     }
     Q_Q(UCBottomEdge);
     qreal progress = q->dragProgress();
-    if (progress > 0.0 && !lastSection) {
+    if (progress > 0.0 && !activeRange) {
         setState(UCBottomEdge::Revealed);
     }
 
     // go through the stages
-    Q_FOREACH(UCBottomEdgeSection *section, sections) {
-        if (section->dragInSection(progress)) {
-            if (!lastSection) {
-                section->enterSection();
-                lastSection = section;
-                Q_EMIT q->currentSectionChanged();
+    Q_FOREACH(UCBottomEdgeRange *range, ranges) {
+        if (range->dragInSection(progress)) {
+            if (!activeRange) {
+                range->enterSection();
+                activeRange = range;
+                Q_EMIT q->activeRangeChanged();
                 break;
             }
-        } else if (lastSection == section) {
-            section->exitSection();
-            lastSection.clear();
-            Q_EMIT q->currentSectionChanged();
+        } else if (activeRange == range) {
+            range->exitSection();
+            activeRange = Q_NULLPTR;
+            Q_EMIT q->activeRangeChanged();
         }
     }
 }
@@ -108,7 +174,7 @@ void UCBottomEdgePrivate::positionPanel(qreal position)
     qreal height = q->height();
     QQmlProperty::write(bottomPanel->m_panel, "y", height - height * position, qmlContext(bottomPanel->m_panel));
     if (position < 1.0 && state >= UCBottomEdge::Revealed) {
-        setState(UCBottomEdge::SectionCommitted);
+        setState(UCBottomEdge::RangeCommitted);
     }
 }
 
@@ -226,9 +292,9 @@ void UCBottomEdgePrivate::itemChildRemoved(QQuickItem *item, QQuickItem *child)
  *     }
  * }
  * \endqml
- * There can be situations when the content may need to be sligtly different on
- * certain sections of the area. These sections can be defined through BottomEdgeSection
- * elements listed in the \l sections property.
+ * In other cases the content may need to be sligtly different on certain sections
+ * of the area. These sections can be defined through BottomEdgeRange elements
+ * listed in the \l ranges property.
  * \qml
  * import QtQuick 2.4
  * import Ubuntu.Components 1.3
@@ -248,25 +314,30 @@ void UCBottomEdgePrivate::itemChildRemoved(QQuickItem *item, QQuickItem *child)
  *             }
  *             contentComponent: Rectangle {
  *                 anchors.fill: parent
- *                 color: bottomEdge.currentSection ?
- *                          bottomEdge.currentSection.color : UbuntuColors.green
+ *                 color: bottomEdge.activeRange ?
+ *                          bottomEdge.activeRange.color : UbuntuColors.green
  *             }
- *             BottomEdgeSection {
- *                 startsAt: 0.4
- *                 endsAt: 0.6
- *                 property color color: UbuntuColors.red
- *             }
- *             BottomEdgeSection {
- *                 startsAt: 0.6
- *                 endsAt: commitPoint
- *                 property color color: UbuntuColors.lightGrey
- *             }
+ *             ranges: [
+ *                 BottomEdgeRange {
+ *                     from: 0.4
+ *                     to: 0.6
+ *                     property color color: UbuntuColors.red
+ *                 },
+ *                 BottomEdgeRange {
+ *                     from: 0.6
+ *                     to: bottomEdge.commitPoint
+ *                     property color color: UbuntuColors.lightGrey
+ *                 }
+ *             ]
  *         }
  *     }
  * }
  * \endqml
- * BottomEdgeSection can also replace the complete bottom edge content if needed.
- * \sa BottomEdgeSection
+ * \note Ranges can also be declared as child elements, in which case the data property
+ * will forward each declared range into the \l ranges array the same way as the resources
+ * are forwarded.
+ * \note BottomEdgeRange can also replace the complete bottom edge content if needed.
+ * \sa BottomEdgeRange
  */
 
 /*!
@@ -391,16 +462,16 @@ qreal UCBottomEdge::dragProgress()
  * \row
  *  \li CanCommit
  *  \li The bottom edge reached the stage from where it can commit. If there are
- *      sections specified, the section having \l BottomEdgeSection::endsAt set
+ *      sections specified, the section having \l BottomEdgeRange::to set
  *      to the \l commitPoint will turn the state on.
  * \row
- *  \li SectionCommitted
+ *  \li RangeCommitted
  *  \li The bottom edge content is exposed till the top of the current section.
  * \row
  *  \li Committed
  *  \li The bottom edge content is fully exposed.
  * \endtable
- * \note Once \e SectionCommitted and \e Commited states are set, no further draging
+ * \note Once \e RangeCommitted and \e Commited states are set, no further draging
  * is possible on the content.
  */
 UCBottomEdge::State UCBottomEdge::state() const
@@ -419,7 +490,7 @@ void UCBottomEdgePrivate::setState(UCBottomEdge::State state)
         case UCBottomEdge::Hidden: stateStr = "Hidden"; break;
         case UCBottomEdge::Revealed: stateStr = "Revealed"; break;
         case UCBottomEdge::CanCommit: stateStr = "CanCommit"; break;
-        case UCBottomEdge::SectionCommitted: stateStr = "SectionCommitted"; break;
+        case UCBottomEdge::RangeCommitted: stateStr = "RangeCommitted"; break;
         case UCBottomEdge::Committed: stateStr = "Committed"; break;
     }
 
@@ -493,7 +564,7 @@ QQuickItem *UCBottomEdge::contentItem() const
 void UCBottomEdge::commit()
 {
     Q_D(UCBottomEdge);
-    d->blockSectionProgressCheck = true;
+    d->blockRangeChangeByProgress = true;
     Q_EMIT commitStarted();
     if (d->bottomPanel && d->bottomPanel->m_panelAnimation) {
         connect(d->bottomPanel->m_panelAnimation, &QQuickAbstractAnimation::runningChanged,
@@ -512,7 +583,7 @@ void UCBottomEdge::emitCommitCompleted(bool running)
                this, &UCBottomEdge::emitCommitCompleted);
     d->setState(Committed);
     Q_EMIT commitCompleted();
-    d->blockSectionProgressCheck = false;
+    d->blockRangeChangeByProgress = false;
 }
 
 /*!
@@ -524,7 +595,7 @@ void UCBottomEdge::emitCommitCompleted(bool running)
 void UCBottomEdge::collapse()
 {
     Q_D(UCBottomEdge);
-    d->blockSectionProgressCheck = true;
+    d->blockRangeChangeByProgress = true;
     Q_EMIT collapseStarted();
     if (d->bottomPanel && d->bottomPanel->m_panelAnimation) {
         connect(d->bottomPanel->m_panelAnimation, &QQuickAbstractAnimation::runningChanged,
@@ -543,75 +614,61 @@ void UCBottomEdge::emitCollapseCompleted(bool running)
                this, &UCBottomEdge::emitCollapseCompleted);
     d->setState(Hidden);
     Q_EMIT collapseCompleted();
-    d->blockSectionProgressCheck = false;
+    d->blockRangeChangeByProgress = false;
 }
 
 /*!
- * \qmlproperty list<BottomEdgeSection> BottomEdge::sections
- * \default
- * The property holds the custom sections configured for the BottomEdge. The
+ * \qmlproperty list<BottomEdgeRange> BottomEdge::ranges
+ * The property holds the custom ranges configured for the BottomEdge. The default
+ * configuration contains one range, which commits the content when reached. The
  * defaults can be restored by setting an empty list to the property or by
- * calling sections.clear().
- * See \l BottomEdgeSection.
+ * calling ranges.clear().
+ * See \l BottomEdgeRange.
  */
-QQmlListProperty<UCBottomEdgeSection> UCBottomEdge::sections()
+QQmlListProperty<UCBottomEdgeRange> UCBottomEdge::ranges()
 {
     Q_D(UCBottomEdge);
-    return QQmlListProperty<UCBottomEdgeSection>(this, &d->sections,
-                                                 sections_append,
-                                                 sections_count,
-                                                 sections_at,
-                                                 sections_clear);
+    return QQmlListProperty<UCBottomEdgeRange>(this, &d->ranges,
+                                                 ranges_append,
+                                                 ranges_count,
+                                                 ranges_at,
+                                                 ranges_clear);
 }
 
-void UCBottomEdge::sections_append(QQmlListProperty<UCBottomEdgeSection> *sections, UCBottomEdgeSection *section)
+void UCBottomEdge::ranges_append(QQmlListProperty<UCBottomEdgeRange> *ranges, UCBottomEdgeRange *range)
 {
-    UCBottomEdgePrivate *bottomEdge = UCBottomEdgePrivate::get(static_cast<UCBottomEdge*>(sections->object));
-    if (!bottomEdge->defaultSectionsReset) {
-        bottomEdge->defaultSectionsReset = true;
-        qDeleteAll(bottomEdge->sections);
-        bottomEdge->sections.clear();
-    }
-    bottomEdge->sections.append(section);
-    // take ownership!
-    QQmlEngine::setObjectOwnership(section, QQmlEngine::CppOwnership);
-    section->attachToBottomEdge(static_cast<UCBottomEdge*>(sections->object));
+    UCBottomEdgePrivate *bottomEdge = UCBottomEdgePrivate::get(static_cast<UCBottomEdge*>(ranges->object));
+    bottomEdge->appendRange(range);
 }
 
-int UCBottomEdge::sections_count(QQmlListProperty<UCBottomEdgeSection> *sections)
+int UCBottomEdge::ranges_count(QQmlListProperty<UCBottomEdgeRange> *ranges)
 {
-    UCBottomEdgePrivate *bottomEdge = UCBottomEdgePrivate::get(static_cast<UCBottomEdge*>(sections->object));
-    return bottomEdge->sections.size();
+    UCBottomEdgePrivate *bottomEdge = UCBottomEdgePrivate::get(static_cast<UCBottomEdge*>(ranges->object));
+    return bottomEdge->ranges.size();
 }
 
-UCBottomEdgeSection *UCBottomEdge::sections_at(QQmlListProperty<UCBottomEdgeSection> *sections, int index)
+UCBottomEdgeRange *UCBottomEdge::ranges_at(QQmlListProperty<UCBottomEdgeRange> *ranges, int index)
 {
-    UCBottomEdgePrivate *bottomEdge = UCBottomEdgePrivate::get(static_cast<UCBottomEdge*>(sections->object));
-    Q_ASSERT((index >= 0) && (index < bottomEdge->sections.size()));
-    return bottomEdge->sections.at(index);
+    UCBottomEdgePrivate *bottomEdge = UCBottomEdgePrivate::get(static_cast<UCBottomEdge*>(ranges->object));
+    Q_ASSERT((index >= 0) && (index < bottomEdge->ranges.size()));
+    return bottomEdge->ranges.at(index);
 }
 
-void UCBottomEdge::sections_clear(QQmlListProperty<UCBottomEdgeSection> *sections)
+void UCBottomEdge::ranges_clear(QQmlListProperty<UCBottomEdgeRange> *ranges)
 {
-    UCBottomEdgePrivate *bottomEdge = UCBottomEdgePrivate::get(static_cast<UCBottomEdge*>(sections->object));
-    if (!bottomEdge->defaultSectionsReset) {
-        return;
-    }
-    qDeleteAll(bottomEdge->sections);
-    bottomEdge->sections.clear();
-    bottomEdge->defaultSectionsReset = false;
-    bottomEdge->createDefaultSections();
+    UCBottomEdgePrivate *bottomEdge = UCBottomEdgePrivate::get(static_cast<UCBottomEdge*>(ranges->object));
+    bottomEdge->clearRanges(true);
 }
 
 /*!
- * \qmlproperty BottomEdgeSection BottomEdge::currentSection
+ * \qmlproperty BottomEdgeRange BottomEdge::activeRange
  * \readonly
- * Specifies the current active section.
+ * Specifies the current active range.
  */
-UCBottomEdgeSection *UCBottomEdge::currentSection()
+UCBottomEdgeRange *UCBottomEdge::activeRange()
 {
     Q_D(UCBottomEdge);
-    return d->lastSection.data();
+    return d->activeRange;
 }
 
 /*!

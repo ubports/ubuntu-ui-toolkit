@@ -71,7 +71,7 @@
 #include "uclabel.h"
 #include "uclistitemlayout.h"
 #include "ucbottomedge.h"
-#include "ucbottomedgesection.h"
+#include "ucbottomedgerange.h"
 #include "ucbottomedgestyle.h"
 
 #include <sys/types.h>
@@ -252,7 +252,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCHeader>(uri, 1, 3, "Header");
     qmlRegisterType<UCLabel>(uri, 1, 3, "Label");
     qmlRegisterType<UCBottomEdge>(uri, 1, 3, "BottomEdge");
-    qmlRegisterType<UCBottomEdgeSection>(uri, 1, 3, "BottomEdgeSection");
+    qmlRegisterType<UCBottomEdgeRange>(uri, 1, 3, "BottomEdgeRange");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)

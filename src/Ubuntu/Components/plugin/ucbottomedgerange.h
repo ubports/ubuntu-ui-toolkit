@@ -16,8 +16,8 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef UCBOTTOMEDGESECTION_H
-#define UCBOTTOMEDGESECTION_H
+#ifndef UCBOTTOMEDGERANGE_H
+#define UCBOTTOMEDGERANGE_H
 
 #include <QtCore/QObject>
 #include <QtQml/QQmlParserStatus>
@@ -27,19 +27,19 @@
 class UCBottomEdge;
 class QQmlComponent;
 class PropertyChange;
-class UCBottomEdgeSection : public QObject, public QQmlParserStatus
+class UCBottomEdgeRange : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
     Q_INTERFACES(QQmlParserStatus)
 
     Q_PROPERTY(bool enabled MEMBER m_enabled NOTIFY enabledChanged FINAL)
     Q_PROPERTY(bool commitToTop MEMBER m_commitToTop NOTIFY commitToTopChanged FINAL)
-    Q_PROPERTY(qreal startsAt MEMBER m_startsAt NOTIFY startsAtChanged FINAL)
-    Q_PROPERTY(qreal endsAt MEMBER m_endsAt NOTIFY endsAtChanged FINAL)
+    Q_PROPERTY(qreal from MEMBER m_from NOTIFY fromChanged FINAL)
+    Q_PROPERTY(qreal to MEMBER m_to NOTIFY toChanged FINAL)
     Q_PROPERTY(QUrl content MEMBER m_url NOTIFY contentChanged FINAL)
     Q_PROPERTY(QQmlComponent* contentComponent MEMBER m_component NOTIFY contentComponentChanged FINAL)
 public:
-    explicit UCBottomEdgeSection(QObject *parent = 0);
+    explicit UCBottomEdgeRange(QObject *parent = 0);
     void attachToBottomEdge(UCBottomEdge *bottomEdge);
 
     // used internally
@@ -50,8 +50,8 @@ public:
 Q_SIGNALS:
     void enabledChanged();
     void commitToTopChanged();
-    void startsAtChanged();
-    void endsAtChanged();
+    void fromChanged();
+    void toChanged();
     void contentChanged();
     void contentComponentChanged();
 
@@ -69,12 +69,12 @@ protected:
     QQmlComponent *m_component;
     PropertyChange *m_urlBackup;
     PropertyChange *m_componentBackup;
-    qreal m_startsAt;
-    qreal m_endsAt;
+    qreal m_from;
+    qreal m_to;
     bool m_enabled:1;
     bool m_commitToTop:1;
 
     friend class UCBottomEdgePrivate;
 };
 
-#endif // UCBOTTOMEDGESECTION_H
+#endif // UCBOTTOMEDGERANGE_H

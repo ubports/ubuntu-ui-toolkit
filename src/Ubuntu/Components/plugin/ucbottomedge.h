@@ -23,7 +23,7 @@
 #include <QtCore/QPointer>
 #include <QtQuick/private/qquickitemchangelistener_p.h>
 
-class UCBottomEdgeSection;
+class UCBottomEdgeRange;
 class QQuickAbstractAnimation;
 class UCBottomEdgePrivate;
 class UCBottomEdge : public UCStyledItemBase
@@ -37,17 +37,19 @@ class UCBottomEdge : public UCStyledItemBase
     Q_PROPERTY(QUrl content READ content WRITE setContent NOTIFY contentChanged FINAL)
     Q_PROPERTY(QQmlComponent *contentComponent READ contentComponent WRITE setContentComponent NOTIFY contentComponentChanged FINAL)
     Q_PROPERTY(QQuickItem* contentItem READ contentItem NOTIFY contentItemChanged FINAL)
-    Q_PROPERTY(QQmlListProperty<UCBottomEdgeSection> sections READ sections FINAL)
-    Q_PROPERTY(UCBottomEdgeSection* currentSection READ currentSection NOTIFY currentSectionChanged FINAL)
+    Q_PROPERTY(QQmlListProperty<UCBottomEdgeRange> ranges READ ranges NOTIFY rangesChanged FINAL)
+    Q_PROPERTY(UCBottomEdgeRange* activeRange READ activeRange NOTIFY activeRangeChanged FINAL)
     Q_PROPERTY(qreal commitPoint READ commitPoint WRITE setCommitPoint NOTIFY commitPointChanged FINAL)
-    Q_CLASSINFO("DefaultProperty", "sections")
 
+    // overloaded data property to catch ranges
+    Q_PRIVATE_PROPERTY(UCBottomEdge::d_func(), QQmlListProperty<QObject> data READ data DESIGNABLE false)
+    Q_CLASSINFO("DefaultProperty", "data")
 public:
     enum State {
         Hidden,
         Revealed,
-        CanCommit,
-        SectionCommitted,
+        CanCommit, // TODO: maybe obsolete
+        RangeCommitted, // TODO: maybe obsolete
         Committed
     };
     explicit UCBottomEdge(QQuickItem *parent = 0);
@@ -63,8 +65,8 @@ public:
     void setContentComponent(QQmlComponent *component);
     QQuickItem *contentItem() const;
     void setFillWindow(bool fill);
-    QQmlListProperty<UCBottomEdgeSection> sections();
-    UCBottomEdgeSection *currentSection();
+    QQmlListProperty<UCBottomEdgeRange> ranges();
+    UCBottomEdgeRange *activeRange();
     qreal commitPoint() const;
     void setCommitPoint(qreal point);
 
@@ -76,7 +78,8 @@ Q_SIGNALS:
     void contentComponentChanged(QQmlComponent *component);
     void contentItemChanged();
     void fillWindowChanged();
-    void currentSectionChanged();
+    void rangesChanged();
+    void activeRangeChanged();
     void commitPointChanged();
 
     void commitStarted();
@@ -89,10 +92,10 @@ public Q_SLOTS:
     void collapse();
 
 protected:
-    static void sections_append(QQmlListProperty<UCBottomEdgeSection> *sections, UCBottomEdgeSection *section);
-    static int sections_count(QQmlListProperty<UCBottomEdgeSection> *sections);
-    static UCBottomEdgeSection *sections_at(QQmlListProperty<UCBottomEdgeSection> *sections, int index);
-    static void sections_clear(QQmlListProperty<UCBottomEdgeSection> *sections);
+    static void ranges_append(QQmlListProperty<UCBottomEdgeRange> *sections, UCBottomEdgeRange *section);
+    static int ranges_count(QQmlListProperty<UCBottomEdgeRange> *sections);
+    static UCBottomEdgeRange *ranges_at(QQmlListProperty<UCBottomEdgeRange> *sections, int index);
+    static void ranges_clear(QQmlListProperty<UCBottomEdgeRange> *sections);
 
     void itemChange(ItemChange change, const ItemChangeData &data);
 

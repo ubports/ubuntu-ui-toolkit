@@ -18,13 +18,13 @@
 
 #include "ucbottomedge.h"
 #include "ucbottomedge_p.h"
-#include "ucbottomedgesection.h"
+#include "ucbottomedgerange.h"
 #include "propertychange_p.h"
 #include <QtQml/private/qqmlproperty_p.h>
 
 /*!
- * \qmltype BottomEdgeSection
- * \instantiates UCBottomEdgeSection
+ * \qmltype BottomEdgeRange
+ * \instantiates UCBottomEdgeRange
  * \inherits QtObject
  * \inmodule Ubuntu.Components 1.3
  * \since Ubuntu.Components 1.3
@@ -33,7 +33,7 @@
  *
  * Bottom edge sections are portions within the bottom edge area which can define
  * different content or action whenever the drag enters in the area. The area is
- * defined by \l startsAt and \l endsAt properties, and horizontally is stretched
+ * defined by \l from and \l to properties, and horizontally is stretched
  * across bottom edge width. Custom content can be defined through \l content or
  * \l contentComponent properties, which will override the \l BottomEdge::content
  * and \l BottomEdge::contentComponent properties for the time the gesture is in
@@ -48,7 +48,7 @@
  *
  *     Page {
  *         header: PageHeader {
- *             title: "BottomEdge sections"
+ *             title: "BottomEdge ranges"
  *         }
  *
  *         BottomEdge {
@@ -62,8 +62,8 @@
  *                 color: UbuntuColors.green
  *             }
  *             // override bottom edge sections to switch to real content
- *             BottomEdgeSection {
- *                 startsAt: 0.33
+ *             BottomEdgeRange {
+ *                 from: 0.33
  *                 contentComponent: Page {
  *                     header: PageHeader {
  *                         title: "BottomEdge Content"
@@ -78,7 +78,7 @@
  * Entering into the section area is signalled by the \l entered signal and when
  * drag leaves the area the \l exited signal is emitted. If the drag ends within
  * the section area, the \l dragEnded signal is emitted. In case the section's
- * \l endsAt property differs from 1.0, the bottom edge content will only be exposed
+ * \l to property differs from 1.0, the bottom edge content will only be exposed
  * to that value, and the \l BottomEdge::state will get the \e SectionCommitted
  * value.
  *
@@ -87,54 +87,54 @@
  * properties will cause unpredictable results.
  */
 
-UCBottomEdgeSection::UCBottomEdgeSection(QObject *parent)
+UCBottomEdgeRange::UCBottomEdgeRange(QObject *parent)
     : QObject(parent)
     , m_bottomEdge(qobject_cast<UCBottomEdge*>(parent))
     , m_component(Q_NULLPTR)
     , m_urlBackup(Q_NULLPTR)
     , m_componentBackup(Q_NULLPTR)
-    , m_startsAt(0.0)
-    , m_endsAt(-1.0)
+    , m_from(0.0)
+    , m_to(-1.0)
     , m_enabled(true)
     , m_commitToTop(false)
 {
-    connect(this, &UCBottomEdgeSection::dragEnded,
-            this, &UCBottomEdgeSection::onDragEnded, Qt::DirectConnection);
+    connect(this, &UCBottomEdgeRange::dragEnded,
+            this, &UCBottomEdgeRange::onDragEnded, Qt::DirectConnection);
 }
 
-void UCBottomEdgeSection::attachToBottomEdge(UCBottomEdge *bottomEdge)
+void UCBottomEdgeRange::attachToBottomEdge(UCBottomEdge *bottomEdge)
 {
     QQml_setParent_noEvent(this, bottomEdge);
     m_bottomEdge = bottomEdge;
-    // adjust endsAt property value if not set yet
-    if (m_endsAt <= 0.0) {
-        m_endsAt = UCBottomEdgePrivate::get(m_bottomEdge)->commitPoint;
-        Q_EMIT endsAtChanged();
+    // adjust to property value if not set yet
+    if (m_to <= 0.0) {
+        m_to = UCBottomEdgePrivate::get(m_bottomEdge)->commitPoint;
+        Q_EMIT toChanged();
     }
 }
 
-void UCBottomEdgeSection::onDragEnded()
+void UCBottomEdgeRange::onDragEnded()
 {
     if (!m_bottomEdge) {
         return;
     }
-    if (m_endsAt == m_bottomEdge->commitPoint() || m_commitToTop) {
+    if (m_to == m_bottomEdge->commitPoint() || m_commitToTop) {
         m_bottomEdge->commit();
     } else {
-        // move the bottom edge panel to the endsAt
-        UCBottomEdgePrivate::get(m_bottomEdge)->positionPanel(m_endsAt);
+        // move the bottom edge panel to the to
+        UCBottomEdgePrivate::get(m_bottomEdge)->positionPanel(m_to);
     }
 }
 
-bool UCBottomEdgeSection::dragInSection(qreal dragRatio)
+bool UCBottomEdgeRange::dragInSection(qreal dragRatio)
 {
-    return (m_enabled && dragRatio >= m_startsAt && dragRatio <= m_endsAt);
+    return (m_enabled && dragRatio >= m_from && dragRatio <= m_to);
 }
 
-void UCBottomEdgeSection::enterSection()
+void UCBottomEdgeRange::enterSection()
 {
     Q_EMIT entered();
-    if (m_endsAt == m_bottomEdge->commitPoint()) {
+    if (m_to == m_bottomEdge->commitPoint()) {
         UCBottomEdgePrivate::get(m_bottomEdge)->setState(UCBottomEdge::CanCommit);
     }
     // backup url
@@ -161,7 +161,7 @@ void UCBottomEdgeSection::enterSection()
     qDebug() << "SECTION ENTERED" << objectName();
 }
 
-void UCBottomEdgeSection::exitSection()
+void UCBottomEdgeRange::exitSection()
 {
     if (m_componentBackup) {
         delete m_componentBackup;
@@ -176,35 +176,35 @@ void UCBottomEdgeSection::exitSection()
 }
 
 /*!
- * \qmlproperty bool BottomEdgeSection::enabled
+ * \qmlproperty bool BottomEdgeRange::enabled
  * Enables the section. Disabled sections do not trigger nor change the BottomEdge
  * content. Defaults to false.
  */
 
 /*!
- * \qmlproperty bool BottomEdgeSection::commitToTop
+ * \qmlproperty bool BottomEdgeRange::commitToTop
  * When set, the content specified by the section will be committed to the
- * \l BottomEdge::commitPoint, otherwise it will top at the section's \l endsAt
+ * \l BottomEdge::commitPoint, otherwise it will top at the section's \l to
  * top point. Defaults to false.
  */
 
 /*!
- * \qmlproperty real BottomEdgeSection::startsAt
+ * \qmlproperty real BottomEdgeRange::from
  * Specifies the starting ratio of the bottom erge area. The value must be bigger
- * or equal to 0 but strictly smaller than \l endsAt. Defaults to 0.0.
+ * or equal to 0 but strictly smaller than \l to. Defaults to 0.0.
  */
 
 /*!
- * \qmlproperty real BottomEdgeSection::endsAt
+ * \qmlproperty real BottomEdgeRange::to
  * Specifies the ending ratio of the bottom edge area. The value must be bigger
- * than \l startsAt and smaller or equal to \l BottomEdge::commitPoint.
+ * than \l from and smaller or equal to \l BottomEdge::commitPoint.
  * \note If the end point is less than the \l BottomEdge::commitPoint, ending the
  * drag within the section will result in exposing the bottom edge content only
  * till the section's end point.
  */
 
 /*!
- * \qmlproperty url BottomEdgeSection::content
+ * \qmlproperty url BottomEdgeRange::content
  * Specifies the url to the document defining the section specific content. This
  * propery will temporarily override the \l BottomEdge::content property value
  * when the drag gesture enters the section area. The orginal value will be restored
@@ -212,7 +212,7 @@ void UCBottomEdgeSection::exitSection()
  */
 
 /*!
- * \qmlproperty Component BottomEdgeSection::contentComponent
+ * \qmlproperty Component BottomEdgeRange::contentComponent
  * Specifies the component defining the section specific content. This propery
  * will temporarily override the \l BottomEdge::contentComponent property value
  * when the drag gesture enters the section area. The orginal value will be restored
@@ -220,17 +220,17 @@ void UCBottomEdgeSection::exitSection()
  */
 
 /*!
- * \qmlsignal void BottomEdgeSection::entered()
+ * \qmlsignal void BottomEdgeRange::entered()
  * Signal triggered when the drag enters into the area defined by the bottom edge
  * section.
  */
 
 /*!
- * \qmlsignal void BottomEdgeSection::exited()
+ * \qmlsignal void BottomEdgeRange::exited()
  * Signal triggered when the drag leaves the area defined by the bottom edge section.
  */
 
 /*!
- * \qmlsignal void BottomEdgeSection::dragEnded()
+ * \qmlsignal void BottomEdgeRange::dragEnded()
  * Signal triggered when the drag ends within the active bottom edge section area.
  */

@@ -68,8 +68,8 @@ Page {
             Rectangle {
                 anchors.fill: parent
                 anchors.margins: units.gu(1)
-                color: bottomEdge.currentSection ?
-                           bottomEdge.currentSection.baseColor : Qt.rgba(0.5, 1, bottomEdge.dragProgress, 1)
+                color: bottomEdge.activeRange ?
+                           bottomEdge.activeRange.baseColor : Qt.rgba(0.5, 1, bottomEdge.dragProgress, 1)
             }
         }
     }
@@ -89,24 +89,24 @@ Page {
         onCollapseStarted: print("START COLLAPSE")
         onCollapseCompleted: print("END COLLAPSE")
 
-        BottomEdgeSection {
+        BottomEdgeRange {
             objectName: "FirstSection"
-            startsAt: 0.2
-            endsAt: 0.4
+            from: 0.2
+            to: 0.4
             commitToTop: true
             property color baseColor: Qt.rgba(0.5, 0.4, bottomEdge.dragProgress, 1)
             contentComponent: Rectangle { anchors.fill: parent; border.width: units.gu(1)}
         }
-        BottomEdgeSection {
+        BottomEdgeRange {
             objectName: "SecondSection"
-            startsAt: 0.4
-            endsAt: 0.8
+            from: 0.4
+            to: 0.8
             property color baseColor: Qt.rgba(1, 0.4, bottomEdge.dragProgress, 1)
         }
-        BottomEdgeSection {
+        BottomEdgeRange {
             objectName: "ThirdSection"
-            startsAt: 0.8
-            endsAt: bottomEdge.commitPoint
+            from: 0.8
+            to: bottomEdge.commitPoint
             property color baseColor: Qt.rgba(1, 1, bottomEdge.dragProgress, 1)
         }
     }

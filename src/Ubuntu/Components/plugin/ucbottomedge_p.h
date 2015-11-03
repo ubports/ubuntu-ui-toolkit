@@ -36,7 +36,16 @@ public:
     }
     void init();
 
-    void createDefaultSections();
+    // data property
+    QQmlListProperty<QObject> data();
+    static void overload_data_append(QQmlListProperty<QObject> *, QObject *);
+    static void overload_data_clear(QQmlListProperty<QObject> *);
+
+    // range funcs
+    void appendRange(UCBottomEdgeRange *range);
+    void clearRanges(bool destroy);
+
+    void createDefaultRanges();
     void updateProgressionStates();
     // panel positioning
     void positionPanel(qreal position);
@@ -51,9 +60,9 @@ public:
 
 
     // members
-    QList<UCBottomEdgeSection*> sections;
-    QPointer<UCBottomEdgeSection> lastSection;
     QUrl contentUrl;
+    QList<UCBottomEdgeRange*> ranges;
+    UCBottomEdgeRange *activeRange;
     QQuickItem *hint;
     QQmlComponent *contentComponent;
     UCBottomEdgeStyle *bottomPanel;
@@ -61,8 +70,8 @@ public:
     qreal commitPoint;
     UCBottomEdge::State state;
 
-    bool defaultSectionsReset:1;
-    bool blockSectionProgressCheck:1;
+    bool defaultRangesReset:1;
+    bool blockRangeChangeByProgress:1;
 
 };
 

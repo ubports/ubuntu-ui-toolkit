@@ -127,8 +127,8 @@ BottomEdgeStyle {
 
             onClicked: bottomEdge.hint ? bottomEdge.hint.clicked() : bottomEdge.commit()
             onReleased: {
-                if (bottomEdge.currentSection) {
-                    bottomEdge.currentSection.dragEnded();
+                if (bottomEdge.activeRange) {
+                    bottomEdge.activeRange.dragEnded();
                 } else if (bottomEdge.state > BottomEdge.Hidden) {
                     bottomEdge.collapse();
                 }
