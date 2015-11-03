@@ -93,24 +93,6 @@ BottomEdgeStyle {
             }
         }
 
-        // FIXME: this should be in cpp code, but as PageHeader is QML code, we cannot alter the
-        // navigationActons list property of it from cpp. PageHeader should also be a cpp component
-        property list<Action> collapseActions: [
-            Action {
-                objectName: "bottomedge_action_collapse"
-                iconName: "down"
-                onTriggered: bottomEdge.collapse()
-            }
-        ]
-        Connections {
-            target: loader
-            onItemChanged: {
-                if (loader.item && loader.item.hasOwnProperty("header") && QuickUtils.inherits(loader.item.header, "PageHeader")) {
-                    loader.item.header.navigationActions = panelItem.collapseActions;
-                }
-            }
-        }
-
         // FIXME: use SwipeArea when ready, however keep this as it has to work with mouse drag as well
         MouseArea {
             id: hintArea

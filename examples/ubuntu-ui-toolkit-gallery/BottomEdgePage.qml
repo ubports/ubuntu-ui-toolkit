@@ -94,7 +94,13 @@ Page {
             from: 0.2
             to: 0.4
             property color baseColor: Qt.rgba(0.5, 0.4, bottomEdge.dragProgress, 1)
-            contentComponent: Rectangle { anchors.fill: parent; border.width: units.gu(1) }
+            contentComponent: Rectangle {
+                anchors.fill: parent
+                border.width: units.gu(1)
+                PageHeader {
+                    title: "Not a page"
+                }
+            }
         }
         BottomEdgeRange {
             objectName: "SecondSection"

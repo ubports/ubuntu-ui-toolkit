@@ -18,6 +18,7 @@
 
 #include "ucbottomedgestyle.h"
 #include "ucbottomedge_p.h"
+
 /*!
  * \qmltype BottomEdgeStyle
  * \instantiates UCBottomEdgeStyle

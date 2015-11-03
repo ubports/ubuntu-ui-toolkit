@@ -45,6 +45,8 @@ public:
     void appendRange(UCBottomEdgeRange *range);
     void clearRanges(bool destroy);
 
+    // page header manipulation
+    void patchContentItemHeader();
     void createDefaultRanges();
     void updateProgressionStates();
     // panel positioning

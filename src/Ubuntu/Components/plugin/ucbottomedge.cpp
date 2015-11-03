@@ -30,6 +30,7 @@
 #include "ucnamespace.h"
 #include "ucheader.h"
 #include "ucaction.h"
+#include "quickutils.h"
 #include <QtQuick/private/qquickanimation_p.h>
 
 UCBottomEdgePrivate::UCBottomEdgePrivate()
@@ -110,7 +111,6 @@ void UCBottomEdgePrivate::clearRanges(bool destroy)
     createDefaultRanges();
 }
 
-
 // creates the default section(s)
 void UCBottomEdgePrivate::createDefaultRanges()
 {
@@ -175,6 +175,36 @@ void UCBottomEdgePrivate::positionPanel(qreal position)
     QQmlProperty::write(bottomPanel->m_panel, "y", height - height * position, qmlContext(bottomPanel->m_panel));
 }
 
+Q_DECLARE_METATYPE(QQmlListProperty<UCAction>)
+void UCBottomEdgePrivate::patchContentItemHeader()
+{
+    UCHeader *header = bottomPanel->m_contentItem ? bottomPanel->m_contentItem->findChild<UCHeader*>() : Q_NULLPTR;
+    if (!header || !QuickUtils::inherits(header, "PageHeader")) {
+        return;
+    }
+
+    // get the navigationActions and inject an action there
+    QVariant list(header->property("navigationActions"));
+    QQmlListProperty<UCAction> actions = list.value< QQmlListProperty<UCAction> >();
+    QList<UCAction*> *navigationActions = reinterpret_cast<QList<UCAction*>*>(actions.data);
+
+    // clear the actions first
+    navigationActions->clear();
+
+    // inject the action
+    UCAction *collapse = new UCAction(header);
+    QQmlEngine::setObjectOwnership(collapse, QQmlEngine::objectOwnership(header));
+    collapse->setIconName("down");
+    QObject::connect(collapse, &UCAction::triggered, q_func(), &UCBottomEdge::collapse, Qt::DirectConnection);
+    navigationActions->append(collapse);
+
+    // invoke PageHeader.navigationActionsChanged signal
+    int signal = header->metaObject()->indexOfSignal("navigationActionsChanged()");
+    if (signal >= 0) {
+        header->metaObject()->invokeMethod(header, "navigationActionsChanged");
+    }
+}
+
 bool UCBottomEdgePrivate::loadStyleItem(bool animated)
 {
     // fix styleVersion
@@ -191,6 +221,9 @@ bool UCBottomEdgePrivate::loadStyleItem(bool animated)
         bottomPanel->setZ(std::numeric_limits<qreal>::max());
 
         // connect style stuff
+        QObject::connect(bottomPanel, &UCBottomEdgeStyle::contentItemChanged, [=]() {
+            patchContentItemHeader();
+        });
         QObject::connect(bottomPanel, &UCBottomEdgeStyle::contentItemChanged,
                          q, &UCBottomEdge::contentItemChanged, Qt::DirectConnection);
         QObject::connect(bottomPanel->m_panel, &QQuickItem::yChanged,
@@ -330,11 +363,54 @@ void UCBottomEdgePrivate::itemChildRemoved(QQuickItem *item, QQuickItem *child)
  *     }
  * }
  * \endqml
- * \note Ranges can also be declared as child elements, in which case the data property
- * will forward each declared range into the \l ranges array the same way as the resources
- * are forwarded.
- * \note BottomEdgeRange can also replace the complete bottom edge content if needed.
+ * \note Ranges can also be declared as child elements, in which case the data
+ * property will forward each declared range into the \l ranges array the same
+ * way as the resources are forwarded.
+ * \note BottomEdgeRange can also replace the complete bottom edge content if
+ * needed.
  * \sa BottomEdgeRange
+ *
+ * \section2 Page As Content
+ * BottomEdge accepts any component to be set as content. Also it can detect
+ * whether the content has a PageHeader component declared, and will inject a
+ * collapse navigation action automatically. In case the content has no header,
+ * the collapse must be provided by the content itself by calling the \l collapse
+ * function.
+ * \qml
+ * BottomEdge {
+ *     id: bottomEdge
+ *     height: parent.height
+ *     hint: BottomEdgeHint {
+ *         text: "Sample collapse"
+ *     }
+ *     contentComponent: Rectangle {
+ *         anchors.fill: parent
+ *         color: Qt.rgba(0.5, 1, bottomEdge.dragProgress, 1);
+ *         Button {
+ *             text: "Collapse"
+ *             onClicked: bottomEdge.collapse()
+ *         }
+ *     }
+ * }
+ * \endqml
+ * Alternatively you can put a PageHeader component in your custom content
+ * as follows:
+ * \qml
+ * BottomEdge {
+ *     id: bottomEdge
+ *     height: parent.height
+ *     hint: BottomEdgeHint {
+ *         text: "Injected collapse"
+ *     }
+ *     contentComponent: Rectangle {
+ *         anchors.fill: parent
+ *         color: Qt.rgba(0.5, 1, bottomEdge.dragProgress, 1);
+ *         PageHeader {
+ *             text: "Fancy content"
+ *         }
+ *     }
+ * }
+ * \endqml
  */
 
 /*!
