@@ -136,7 +136,7 @@ void UCBottomEdgePrivate::createDefaultRanges()
 // update state and sections during drag
 void UCBottomEdgePrivate::updateProgressionStates()
 {
-    if (blockRangeChangeByProgress || (state >= UCBottomEdge::RangeCommitted)) {
+    if (blockRangeChangeByProgress) {
         return;
     }
     Q_Q(UCBottomEdge);
@@ -173,9 +173,6 @@ void UCBottomEdgePrivate::positionPanel(qreal position)
     Q_Q(UCBottomEdge);
     qreal height = q->height();
     QQmlProperty::write(bottomPanel->m_panel, "y", height - height * position, qmlContext(bottomPanel->m_panel));
-    if (position < 1.0 && state >= UCBottomEdge::Revealed) {
-        setState(UCBottomEdge::RangeCommitted);
-    }
 }
 
 bool UCBottomEdgePrivate::loadStyleItem(bool animated)
@@ -489,8 +486,6 @@ void UCBottomEdgePrivate::setState(UCBottomEdge::State state)
     switch (state) {
         case UCBottomEdge::Hidden: stateStr = "Hidden"; break;
         case UCBottomEdge::Revealed: stateStr = "Revealed"; break;
-        case UCBottomEdge::CanCommit: stateStr = "CanCommit"; break;
-        case UCBottomEdge::RangeCommitted: stateStr = "RangeCommitted"; break;
         case UCBottomEdge::Committed: stateStr = "Committed"; break;
     }
 

@@ -48,8 +48,6 @@ public:
     enum State {
         Hidden,
         Revealed,
-        CanCommit, // TODO: maybe obsolete
-        RangeCommitted, // TODO: maybe obsolete
         Committed
     };
     explicit UCBottomEdge(QQuickItem *parent = 0);

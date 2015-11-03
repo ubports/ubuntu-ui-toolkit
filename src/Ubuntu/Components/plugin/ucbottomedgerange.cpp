@@ -134,9 +134,6 @@ bool UCBottomEdgeRange::dragInSection(qreal dragRatio)
 void UCBottomEdgeRange::enterSection()
 {
     Q_EMIT entered();
-    if (m_to == m_bottomEdge->commitPoint()) {
-        UCBottomEdgePrivate::get(m_bottomEdge)->setState(UCBottomEdge::CanCommit);
-    }
     // backup url
     if (m_url.isValid()) {
         m_urlBackup = new PropertyChange(m_bottomEdge, "content");
