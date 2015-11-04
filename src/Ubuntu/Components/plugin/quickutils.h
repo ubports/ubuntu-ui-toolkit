@@ -52,7 +52,7 @@ Q_SIGNALS:
     void rootObjectChanged();
     void activated();
     void deactivated();
-    void touchScreenAvailableChanged(bool available);
+    void touchScreenAvailableChanged();
 
 protected:
     bool eventFilter(QObject *, QEvent *);
