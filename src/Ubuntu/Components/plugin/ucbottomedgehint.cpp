@@ -18,6 +18,7 @@
 
 #include "ucbottomedgehint.h"
 #include "ucstyleditembase_p.h"
+#include "quickutils.h"
 #include <QtQml/private/qqmlproperty_p.h>
 
 /*!
@@ -28,15 +29,12 @@
     \brief The BottomEdgeHint shows the availability of extra features
     available from the bottom edge of the application.
 
-    It displays either a label or an icon at the bottom of the application.
-
-    It has 4 states: Hidden, Idle, Active and Locked. When Idle, part of it is
-    still visible hinting the existence of the bottom edge.
+    It displays a label and/or an icon at the bottom of the component it is
+    attached to.
 
     When used with a mouse it acts like a button. The typical action associated
     with clicking on it should be revealing the extra features provided by the
-    bottom edge. However, the click can only happen if the hint is in \e Locked
-    state.
+    bottom edge.
 
     Example:
     \qml
@@ -52,7 +50,8 @@
 UCBottomEdgeHint::UCBottomEdgeHint(QQuickItem *parent)
     : UCStyledItemBase(parent)
     , m_flickable(Q_NULLPTR)
-    , m_state(Idle)
+    // FIXME: we need QSystemInfo to be complete with the locked!!
+    , m_locked(!QuickUtils::instance().touchScreenAvailable())
 {
     /*
      * we cannot use setStyleName as that will trigger style loading
@@ -61,6 +60,9 @@ UCBottomEdgeHint::UCBottomEdgeHint(QQuickItem *parent)
      * happen during component completion.
      */
     UCStyledItemBasePrivate::get(this)->styleDocument = "BottomEdgeHintStyle";
+
+    // connect old stateChanged
+    connect(this, &QQuickItem::stateChanged, this, &UCBottomEdgeHint::stateChanged);
 }
 
 void UCBottomEdgeHint::itemChange(ItemChange change, const ItemChangeData &data)
@@ -110,7 +112,8 @@ void UCBottomEdgeHint::itemChange(ItemChange change, const ItemChangeData &data)
   */
 
 /*!
-  \qmlproperty enum BottomEdgeHint::state
+  \qmlproperty string BottomEdgeHint::state
+  \deprecated
   BottomEdgeHint can take 4 states of visibility: \e Hidden, \e Idle, \e Active
   and \e Locked.
   \table
@@ -141,3 +144,30 @@ void UCBottomEdgeHint::itemChange(ItemChange change, const ItemChangeData &data)
     \li \e Locked when mouse is attached
   \endlist
  */
+QString UCBottomEdgeHint::state() const
+{
+    return QQuickItem::state();
+}
+void UCBottomEdgeHint::setState(const QString &state)
+{
+    qmlInfo(this) << "'state' property deprecated, will be removed from 1.3 release. Use 'locked' "\
+                     "property to lock the visuals";
+    QQuickItem::setState(state);
+}
+
+/*!
+  \qmlproperty bool BottomEdgeHint::locked
+  When set, the visuals are locked to a state where mouse clicks are handled.
+  Visuals should not transition to any other state. The property will automatically
+  be set and will not be changeable while a mouse is attached.
+  */
+void UCBottomEdgeHint::setLocked(bool locked)
+{
+    // FIXME: we need QSystemInfo to complete this!
+    // cannot unlock if mouse is attached or we don't have touch screen available
+    if (locked == m_locked || (!locked && !QuickUtils::instance().touchScreenAvailable())) {
+        return;
+    }
+    m_locked = locked;
+    Q_EMIT lockedChanged();
+}

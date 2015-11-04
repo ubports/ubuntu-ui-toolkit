@@ -25,33 +25,34 @@ class QQuickFlickable;
 class UCBottomEdgeHint : public UCStyledItemBase
 {
     Q_OBJECT
-    Q_ENUMS(State)
     Q_PROPERTY(QString text MEMBER m_text NOTIFY textChanged FINAL)
     Q_PROPERTY(QUrl iconSource MEMBER m_iconSource NOTIFY iconSourceChanged FINAL)
     Q_PROPERTY(QString iconName MEMBER m_iconName NOTIFY iconNameChanged FINAL)
     Q_PROPERTY(QQuickFlickable *flickable MEMBER m_flickable NOTIFY flickableChanged FINAL)
-    Q_PROPERTY(State state MEMBER m_state NOTIFY stateChanged FINAL)
+    Q_PROPERTY(bool locked MEMBER m_locked WRITE setLocked NOTIFY lockedChanged FINAL)
+    // deprecated
+    Q_PROPERTY(QString state READ state WRITE setState NOTIFY stateChanged)
 public:
-    enum State {
-        Hidden,
-        Idle,
-        Active,
-        Locked,
-        // backward compatibility, should be removed from the final
-        Visible = Active, // backward compatibility
-    };
 
-    UCBottomEdgeHint(QQuickItem *parent = 0);
+    explicit UCBottomEdgeHint(QQuickItem *parent = 0);
+
+    void setLocked(bool locked);
+
+    // deprecated
+    QString state() const;
+    void setState(const QString &state);
 
 Q_SIGNALS:
     void textChanged();
     void iconSourceChanged();
     void iconNameChanged();
     void flickableChanged();
-    void stateChanged();
+    void lockedChanged();
 
     void clicked();
 
+    // deprecated
+    void stateChanged();
 protected:
     void itemChange(ItemChange change, const ItemChangeData &data);
 
@@ -60,7 +61,7 @@ private:
     QUrl m_iconSource;
     QString m_iconName;
     QQuickFlickable *m_flickable;
-    State m_state;
+    bool m_locked:1;
 };
 
 #endif // UCBOTTOMEDGEHINT_H

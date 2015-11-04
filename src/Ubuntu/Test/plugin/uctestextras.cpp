@@ -37,6 +37,7 @@ const char *DEVICE_MISSING_MSG = "No touch device registered. Register one using
     }
 
 QTouchDevice *UCTestExtras::m_touchDevice = 0;
+UCTestExtras *UCTestExtras::m_testExtras = 0;
 
 /*!
  * \qmltype TestExtras
@@ -52,6 +53,7 @@ QTouchDevice *UCTestExtras::m_touchDevice = 0;
 UCTestExtras::UCTestExtras(QObject *parent) :
     QObject(parent)
 {
+    m_testExtras = this;
 }
 
 /*!
@@ -127,6 +129,7 @@ void UCTestExtras::registerTouchDevice()
         m_touchDevice = new QTouchDevice;
         m_touchDevice->setType(QTouchDevice::TouchScreen);
         QWindowSystemInterface::registerTouchDevice(m_touchDevice);
+        Q_EMIT m_testExtras->touchDevicePresentChanged();
     }
 }
 

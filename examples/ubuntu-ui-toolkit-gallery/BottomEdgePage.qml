@@ -34,6 +34,5 @@ Page {
         iconName: "stock_message"
         text: "Compose a new message"
         onClicked: state = "Idle"
-        state: "Active"
     }
 }
