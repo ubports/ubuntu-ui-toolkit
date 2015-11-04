@@ -101,7 +101,7 @@ MainView {
                 bottomEdgeHint.locked = false;
             }
             clickSpy.clear();
-            wait(500);
+            wait(400);
         }
 
         function test_hiding() {
@@ -128,7 +128,19 @@ MainView {
 
         function test_deprecated_state() {
             ignoreWarning(warningFormat(37, 5, "QML BottomEdgeHint: 'state' property deprecated, will be removed from 1.3 release. Use 'locked' property to lock the visuals"));
-            bottomEdgeHint.state = "Hidden";
+            bottomEdgeHint.state = "Whatever";
+        }
+
+        function test_alter_deprecated_state_data() {
+            return [
+                {tag: "Hidden", styleState: "Hidden"},
+                {tag: "Visible", styleState: "Idle"},
+            ];
+        }
+        function test_alter_deprecated_state(data) {
+            ignoreWarning(warningFormat(37, 5, "QML BottomEdgeHint: 'state' property deprecated, will be removed from 1.3 release. Use 'locked' property to lock the visuals"));
+            bottomEdgeHint.state = data.tag;
+            compare(bottomEdgeHint.__styleInstance.state, data.styleState, "Wrong component visual state: " + data.tag);
         }
 
         function test_anchoring() {

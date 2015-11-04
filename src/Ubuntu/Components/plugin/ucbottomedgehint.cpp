@@ -123,8 +123,7 @@ void UCBottomEdgeHint::keyPressEvent(QKeyEvent *event)
 /*!
   \qmlproperty string BottomEdgeHint::state
   \deprecated
-  BottomEdgeHint can take 4 states of visibility: \e Hidden, \e Idle, \e Active
-  and \e Locked.
+  BottomEdgeHint can take 2 states of visibility: \e Hidden, \e Visible.
   \table
   \header
     \li State
@@ -133,25 +132,12 @@ void UCBottomEdgeHint::keyPressEvent(QKeyEvent *event)
     \li Hidden
     \li The hint is not shown at all and cannot be activated.
   \row
-    \li Idle
+    \li Visible
     \li The hint is in a state where it is visible but not active. \l clicked
         signal is not emitted.
-  \row
-    \li Active
-    \li The hint is visible and active, clicking on it with the mouse
-        triggers the \l clicked signal. When set, visuals should be able to
-        transition into \e Idle state.
-  \row
-    \li Locked
-    \li The hint is locked into the \e Active state and it is expected that
-        visuals cannot transition back to any other state.
   \endtable
 
-  Defaults to:
-  \list
-    \li \e Idle when no mouse is attached
-    \li \e Locked when mouse is attached
-  \endlist
+  Defaults to \e Visible.
  */
 QString UCBottomEdgeHint::state() const
 {
@@ -162,6 +148,16 @@ void UCBottomEdgeHint::setState(const QString &state)
     qmlInfo(this) << "'state' property deprecated, will be removed from 1.3 release. Use 'locked' "\
                      "property to lock the visuals";
     QQuickItem::setState(state);
+    QQuickItem *style = UCStyledItemBasePrivate::get(this)->styleItem;
+    if (!style) {
+        return;
+    }
+    if (state == "Hidden") {
+        style->setState("Hidden");
+    }
+    if (state == "Visible") {
+        style->setState("Idle");
+    }
 }
 
 /*!
