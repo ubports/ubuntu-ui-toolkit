@@ -23,7 +23,13 @@ Item {
     implicitWidth: styledItem.parent.width
     implicitHeight: units.gu(4)
 
-    state: styledItem.state
+    // initial state
+    state: styledItem.locked ? "Locked" : "Idle"
+
+    Connections {
+        target: styledItem
+        onLockedChanged: bottomEdgeHintStyle.state = styledItem.locked ? "Locked" : "Idle"
+    }
 
     states: [
         State {
@@ -50,10 +56,6 @@ Item {
             PropertyChanges {
                 target: styledItem
                 opacity: 0.0
-            }
-            PropertyChanges {
-                target: mouseHover
-                enabled: false
             }
         },
         // FIXME: locked should be set and be final if mouse is attached
@@ -97,25 +99,30 @@ Item {
         }
     ]
 
-    // FIXME ZSOMBI: temporary functionality till SwipeGesture integration
-    MouseArea {
-        id: mouseHover
+    // FIXME: maybe use SwipeGesture once available
+    MultiPointTouchArea {
+        id: touchDetector
         anchors.fill: parent
-        hoverEnabled: true
-        acceptedButtons: Qt.NoButton
-        enabled: styledItem.state != "Locked"
-        onEntered: {
-            styledItem.state = "Active";
+        mouseEnabled: false
+        minimumTouchPoints: 1
+        maximumTouchPoints: 1
+
+        onGestureStarted: {
+            var point = gesture.touchPoints[0];
+            if (!styledItem.contains(Qt.point(point.x, point.y))) {
+                return;
+            }
+            bottomEdgeHintStyle.state = "Active";
             turnToIdleTimer.stop();
         }
-        onExited: if (styledItem.state == "Active") turnToIdleTimer.restart()
+        onReleased: if (bottomEdgeHintStyle.state == "Active") turnToIdleTimer.restart()
     }
 
     Timer {
         id: turnToIdleTimer
         interval: 800
         repeat: false
-        onTriggered: styledItem.state = "Idle"
+        onTriggered: bottomEdgeHintStyle.state = "Idle"
     }
 
     clip: true

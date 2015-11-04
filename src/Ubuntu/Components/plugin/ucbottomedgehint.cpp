@@ -1,0 +1,187 @@
+/*
+ * Copyright 2015 Canonical Ltd.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Authors: Zsombor Egri <zsombor.egri@canonical.com>
+ */
+
+#include "ucbottomedgehint.h"
+#include "ucstyleditembase_p.h"
+#include "quickutils.h"
+#include <QtQml/private/qqmlproperty_p.h>
+
+/*!
+    \qmltype BottomEdgeHint
+    \inqmlmodule Ubuntu.Components 1.3
+    \ingroup ubuntu
+    \inherits StyledItem
+    \brief The BottomEdgeHint shows the availability of extra features
+    available from the bottom edge of the application.
+
+    It displays a label and/or an icon at the bottom of the component it is
+    attached to.
+
+    When used with a mouse it acts like a button. The typical action associated
+    with clicking on it should be revealing the extra features provided by the
+    bottom edge.
+
+    Example:
+    \qml
+    BottomEdgeHint {
+        id: bottomEdgeHint
+        text: i18n.tr("Favorites")
+        onClicked: revealBottomEdge()
+    }
+    \endqml
+
+    The component is styled through \b BottomEdgeHintStyle.
+*/
+UCBottomEdgeHint::UCBottomEdgeHint(QQuickItem *parent)
+    : UCStyledItemBase(parent)
+    , m_flickable(Q_NULLPTR)
+    // FIXME: we need QSystemInfo to be complete with the locked!!
+    , m_locked(!QuickUtils::instance().touchScreenAvailable())
+{
+    /*
+     * we cannot use setStyleName as that will trigger style loading
+     * and the qmlEngine is not known at this phase of the of the initialization
+     * Therefore we simply set the style name default. Style loading will
+     * happen during component completion.
+     */
+    UCStyledItemBasePrivate::get(this)->styleDocument = "BottomEdgeHintStyle";
+
+    // connect old stateChanged
+    connect(this, &QQuickItem::stateChanged, this, &UCBottomEdgeHint::stateChanged);
+}
+
+void UCBottomEdgeHint::itemChange(ItemChange change, const ItemChangeData &data)
+{
+    UCStyledItemBase::itemChange(change, data);
+    if (change == ItemParentHasChanged) {
+        QQmlProperty bottomAnchors(this, "anchors.bottom", qmlContext(this));
+        if (data.item && !QQmlPropertyPrivate::binding(bottomAnchors)) {
+            QQuickAnchors *anchors = QQuickItemPrivate::get(this)->anchors();
+            anchors->setBottom(QQuickItemPrivate::get(data.item)->bottom());
+        }
+    }
+}
+
+// handle clicked event when locked and enter or return is pressed
+void UCBottomEdgeHint::keyPressEvent(QKeyEvent *event)
+{
+    UCStyledItemBase::keyPressEvent(event);
+    if (locked() && (event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)) {
+        Q_EMIT clicked();
+    }
+}
+
+/*!
+  \qmlsignal void BottomEdgeHint::clicked()
+   This handler is called when there is a mouse click on the BottomEdgeHint
+   and the BottomEdgeHint is not disabled.
+*/
+
+/*!
+  \qmlproperty string BottomEdgeHint::text
+  The label displayed by the BottomEdgeHint.
+ */
+
+/*!
+  \qmlproperty url BottomEdgeHint::iconSource
+  The icon displayed by the BottomEdgeHint.
+
+  This is the URL of any image file.
+  If both iconSource and \l iconName are defined, \l iconName will be ignored.
+ */
+
+/*!
+  \qmlproperty string BottomEdgeHint::iconName
+  The icon associated with the BottomEdgeHint in the icon theme.
+
+  If both \l iconSource and iconName are defined, iconName will be ignored.
+ */
+
+/*!
+  \qmlproperty Flickable BottomEdgeHint::flickable
+  The property holds the flickable, which when flicked hides the hint.
+  \e Hidden state is reached when this property is set to a Flickable
+  which is flicking or moving. It is recommended to set the property
+  when the hint is placed above a flickable content. Defaults to null.
+  */
+
+/*!
+  \qmlproperty string BottomEdgeHint::state
+  \deprecated
+  BottomEdgeHint can take 2 states of visibility: \e Hidden, \e Visible.
+  \table
+  \header
+    \li State
+    \li Description
+  \row
+    \li Hidden
+    \li The hint is not shown at all and cannot be activated.
+  \row
+    \li Visible
+    \li The hint is in a state where it is visible but not active. \l clicked
+        signal is not emitted.
+  \endtable
+
+  Defaults to \e Visible.
+ */
+QString UCBottomEdgeHint::state() const
+{
+    return QQuickItem::state();
+}
+void UCBottomEdgeHint::setState(const QString &state)
+{
+    qmlInfo(this) << "'state' property deprecated, will be removed from 1.3 release. Use 'locked' "\
+                     "property to lock the visuals";
+    QQuickItem::setState(state);
+    QQuickItem *style = UCStyledItemBasePrivate::get(this)->styleItem;
+    if (!style) {
+        return;
+    }
+    if (state == "Hidden") {
+        style->setState("Hidden");
+    }
+    if (state == "Visible") {
+        style->setState("Idle");
+    }
+}
+
+/*!
+  \qmlproperty bool BottomEdgeHint::locked
+  When set, the visuals are locked to a state where mouse clicks are handled.
+  Visuals should not transition to any other state. The property will automatically
+  be set and will not be changeable while a mouse is attached.
+  */
+bool UCBottomEdgeHint::locked()
+{
+    // FIXME: we won't need this once we get the QSystemInfo reporting mouse attach/detach
+    if (!QuickUtils::instance().touchScreenAvailable()) {
+        m_locked = true;
+    }
+    return m_locked;
+}
+
+void UCBottomEdgeHint::setLocked(bool locked)
+{
+    // FIXME: we need QSystemInfo to complete this!
+    // cannot unlock if mouse is attached or we don't have touch screen available
+    if (locked == m_locked || (!locked && !QuickUtils::instance().touchScreenAvailable())) {
+        return;
+    }
+    m_locked = locked;
+    Q_EMIT lockedChanged();
+}

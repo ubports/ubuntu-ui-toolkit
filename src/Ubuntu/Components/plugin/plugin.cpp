@@ -70,6 +70,7 @@
 #include "ucheader.h"
 #include "uclabel.h"
 #include "uclistitemlayout.h"
+#include "ucbottomedgehint.h"
 #include "ucbottomedge.h"
 #include "ucbottomedgerange.h"
 #include "ucbottomedgestyle.h"
@@ -251,6 +252,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCListItemLayout>(uri, 1, 3, "ListItemLayout");
     qmlRegisterType<UCHeader>(uri, 1, 3, "Header");
     qmlRegisterType<UCLabel>(uri, 1, 3, "Label");
+    qmlRegisterType<UCBottomEdgeHint>(uri, 1, 3, "BottomEdgeHint");
     qmlRegisterType<UCBottomEdge>(uri, 1, 3, "BottomEdge");
     qmlRegisterType<UCBottomEdgeRange>(uri, 1, 3, "BottomEdgeRange");
 }

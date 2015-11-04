@@ -201,6 +201,7 @@ Ubuntu.Components.BottomEdgeHint 1.3: StyledItem
     property Flickable flickable
     property string iconName
     property url iconSource
+    property bool locked
     signal clicked()
     property string text
 Ubuntu.Components.BottomEdgeRange 1.3: QtObject
