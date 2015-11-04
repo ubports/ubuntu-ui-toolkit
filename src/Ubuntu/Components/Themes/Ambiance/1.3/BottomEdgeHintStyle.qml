@@ -23,7 +23,15 @@ Item {
     implicitWidth: styledItem.parent.width
     implicitHeight: units.gu(4)
 
-    state: styledItem.state
+    state: {
+        switch (styledItem.state) {
+        case BottomEdgeHint.Hidden: return "Hidden";
+        case BottomEdgeHint.Active:
+        case BottomEdgeHint.Visible: return "Active";
+        case BottomEdgeHint.Idle: return "Idle";
+        case BottomEdgeHint.Locked: return "Locked";
+        }
+    }
 
     states: [
         State {
@@ -103,19 +111,19 @@ Item {
         anchors.fill: parent
         hoverEnabled: true
         acceptedButtons: Qt.NoButton
-        enabled: styledItem.state != "Locked"
+        enabled: styledItem.state != BottomEdgeHint.Locked
         onEntered: {
-            styledItem.state = "Active";
+            styledItem.state = BottomEdgeHint.Active;
             turnToIdleTimer.stop();
         }
-        onExited: if (styledItem.state == "Active") turnToIdleTimer.restart()
+        onExited: if (styledItem.state == BottomEdgeHint.Active) turnToIdleTimer.restart()
     }
 
     Timer {
         id: turnToIdleTimer
         interval: 800
         repeat: false
-        onTriggered: styledItem.state = "Idle"
+        onTriggered: styledItem.state = BottomEdgeHint.Idle
     }
 
     clip: true
