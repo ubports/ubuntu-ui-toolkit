@@ -101,16 +101,18 @@ MainView {
                 bottomEdgeHint.locked = false;
             }
             clickSpy.clear();
+            wait(500);
         }
 
         function test_hiding() {
             var flickDy = listView.height - units.gu(5);
-            flick(listView, centerOf(listView).x, flickDy, centerOf(listView).x, -flickDy);
+            flick(listView, centerOf(listView).x, flickDy, centerOf(listView).x, -flickDy, 0, 6);
             tryCompare(bottomEdgeHint, "opacity", 0.0);
         }
 
         function test_clicking() {
             bottomEdgeHint.locked = true;
+            compare(bottomEdgeHint.locked, true);
             mouseClick(bottomEdgeHint, centerOf(bottomEdgeHint).x, centerOf(bottomEdgeHint).y);
             clickSpy.wait();
         }
@@ -169,6 +171,19 @@ MainView {
             }
             clickSpy.wait(400);
             keyRelease(data.key);
+        }
+
+        // FIXME: must be executed before the test_hiding as flick with mouse affects the touch drag for some unknown reason
+        function test_0_touch_gesture() {
+            if (hasMouseAttached) {
+                skip("", "The test requires touch environment");
+            }
+            bottomEdgeHint.text = "Touch Activated";
+            var gestureStartPoint = Qt.point(centerOf(listView).x, listView.height - 10);
+            TestExtras.touchDrag(0, listView, gestureStartPoint, Qt.point(0, -units.gu(3)), 6);
+            tryCompare(bottomEdgeHint.__styleInstance, "state", "Active", 400);
+            // then wait till we get back to Idle
+            tryCompare(bottomEdgeHint.__styleInstance, "state", "Idle", 1000);
         }
     }
 }
