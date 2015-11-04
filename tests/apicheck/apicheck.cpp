@@ -137,14 +137,21 @@ QByteArray convertToId(const QString &cppName)
 
     QList<const QQmlType*>types(qmlTypesByCppName[qPrintable(cppName)].toList());
     std::sort(types.begin(), types.end(), typeNameSort);
-    // Strip internal _QMLTYPE_xy suffix
-    qmlType = qmlType.split("_")[0];
     if (!types.isEmpty())
         qmlType = QString(types[0]->qmlTypeName()).split("/")[1].toUtf8();
     else
         qmlType = cppToId.value(qPrintable(qmlType), qPrintable(cppName));
     // Strip internal _QMLTYPE_xy suffix
     qmlType = qmlType.split("_")[0];
+    // List type
+    if (qmlType.startsWith("QQmlListProperty<")) {
+        QString subType(qmlType.mid(17, qmlType.size() - 18));
+        qmlType = "list<" + convertToId(subType) + ">";
+    }
+    else if (qmlType.startsWith("QList<")) {
+        QString subType(qmlType.mid(6, qmlType.size() - 7));
+        qmlType = "list<" + convertToId(subType) + ">";
+    }
     return qPrintable(qmlType.replace("QTestRootObject", "QtObject"));
 }
 
@@ -543,38 +550,18 @@ public:
     }
 
 private:
-    /* Removes pointer and list annotations from a type name, returning
-       what was removed in isList and isPointer
-    */
-    static void removePointerAndList(QByteArray *typeName, bool *isList, bool *isPointer)
-    {
-        static QByteArray declListPrefix = "QQmlListProperty<";
-
-        if (typeName->endsWith('*')) {
-            *isPointer = true;
-            typeName->truncate(typeName->length() - 1);
-            removePointerAndList(typeName, isList, isPointer);
-        } else if (typeName->startsWith(declListPrefix)) {
-            *isList = true;
-            typeName->truncate(typeName->length() - 1); // get rid of the suffix '>'
-            *typeName = typeName->mid(declListPrefix.size());
-            removePointerAndList(typeName, isList, isPointer);
-        }
-    }
-
     void writeTypeProperties(QJsonObject* object, QByteArray typeName, bool isWritable)
     {
-        bool isList = false, isPointer = false;
-        removePointerAndList(&typeName, &isList, &isPointer);
-
+        if (typeName.endsWith("*")) {
+            typeName.truncate(typeName.size() - 1);
+            object->insert("isPointer", true);
+        }
+        if (typeName.startsWith("QQmlListProperty<"))
+            object->insert("isList", true);
         object->insert("type", QString(typeName));
 
-        if (isList)
-            object->insert("isList", true);
         if (!isWritable)
             object->insert("isReadonly", true);
-        if (isPointer)
-            object->insert("isPointer", true);
     }
 
     void dump(QJsonObject* object, const QMetaProperty &prop, KnownAttributes *knownAttributes = 0)
@@ -824,6 +811,7 @@ int main(int argc, char *argv[])
 
     // setup static rewrites of type names
     cppToId.insert("QString", "string");
+    cppToId.insert("QQuickItem", "Item");
     cppToId.insert("QUrl", "url");
     cppToId.insert("QVariant", "var");
     cppToId.insert("QVector2D", "vector2d");
@@ -1105,7 +1093,8 @@ int main(int argc, char *argv[])
                     signature += "    ";
                     if (object["defaultProperty"] == fieldName)
                         signature += "default ";
-                    if (field.contains("isReadonly"))
+                    // in QML semantics lists are not read-only
+                    if (field.contains("isReadonly") && !field.contains("isList"))
                         signature += "readonly ";
                     if (field.contains("type"))
                         signature += "property " + QString(convertToId(field["type"].toString())) + " ";
