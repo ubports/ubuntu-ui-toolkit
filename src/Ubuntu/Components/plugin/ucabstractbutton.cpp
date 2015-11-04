@@ -81,7 +81,7 @@ void UCAbstractButton::componentComplete()
 {
     UCActionItem::componentComplete();
     // connect to the right slot, using macros so we get the proper slot
-    connect(this, SIGNAL(clicked()), this, SLOT(trigger()));
+    connect(m_mouseArea, SIGNAL(clicked(QQuickMouseEvent*)), this, SLOT(trigger()));
 
     // bind mouse area
     connect(m_mouseArea, &QQuickMouseArea::pressedChanged, this, &UCAbstractButton::pressedChanged);
