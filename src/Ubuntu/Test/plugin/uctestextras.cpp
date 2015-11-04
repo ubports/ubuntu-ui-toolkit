@@ -129,7 +129,9 @@ void UCTestExtras::registerTouchDevice()
         m_touchDevice = new QTouchDevice;
         m_touchDevice->setType(QTouchDevice::TouchScreen);
         QWindowSystemInterface::registerTouchDevice(m_touchDevice);
-        Q_EMIT m_testExtras->touchDevicePresentChanged();
+        if (m_testExtras) {
+            Q_EMIT m_testExtras->touchDevicePresentChanged();
+        }
     }
 }
 
