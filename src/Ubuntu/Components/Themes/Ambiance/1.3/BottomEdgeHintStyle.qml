@@ -23,8 +23,11 @@ Item {
     implicitWidth: styledItem.parent.width
     implicitHeight: units.gu(4)
 
+    property alias touchArea: touchDetector
+
     // initial state
     state: styledItem.locked ? "Locked" : "Idle"
+    onStateChanged: print(state)
 
     Connections {
         target: styledItem

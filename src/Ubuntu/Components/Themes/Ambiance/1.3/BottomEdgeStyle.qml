@@ -46,8 +46,8 @@ BottomEdgeStyle {
     Binding {
         target: bottomEdge.hint
         when: bottomEdge.hint && bottomEdge.state > BottomEdge.Hidden
-        property: "state"
-        value: "Locked"
+        property: "locked"
+        value: true
     }
 
     Rectangle {
@@ -94,11 +94,46 @@ BottomEdgeStyle {
         }
 
         // FIXME: use SwipeArea when ready, however keep this as it has to work with mouse drag as well
+        property bool inArea: false
+        property bool firstOut: true
+        property point prevTouchPoint
+        Connections {
+            target: bottomEdge.hint.__styleInstance.touchArea
+            onGestureStarted: {
+                var point = gesture.touchPoints[0];
+                point = Qt.point(point.x, point.y);
+                // TODO: fix this
+                if (bottomEdge.hint.contains(point)) {
+                    panelItem.inArea = true;
+                    panelItem.firstOut = true;
+                } else if (panelItem.inArea) {
+                    if (panelItem.firstOut) {
+                        panelItem.firstOut = false;
+                        panelItem.y = Qt.point(0, panelItem.height - bottomEdge.hint.height).y;
+                    } else {
+                        panelItem.y += point.y - panelItem.prevTouchPoint.y;
+                    }
+                }
+                panelItem.prevTouchPoint = point;
+            }
+            onReleased: {
+                panelItem.inArea = false;
+                panelItem.firstOut = true;
+                if (bottomEdge.activeRange) {
+                    bottomEdge.activeRange.dragEnded();
+                } else if (bottomEdge.state > BottomEdge.Hidden) {
+                    bottomEdge.collapse();
+                }
+            }
+        }
+
         MouseArea {
             id: hintArea
             parent: bottomEdge.hint
             anchors.fill: parent
-            enabled: bottomEdge.hint && (bottomEdge.hint.state == "Active" || bottomEdge.hint.state == "Locked")
+            enabled: bottomEdge.hint &&
+                     (bottomEdge.hint.__styleInstance.state == "Active"
+                      || bottomEdge.hint.locked)
 
             drag {
                 axis: Drag.YAxis
@@ -108,6 +143,7 @@ BottomEdgeStyle {
             }
 
             onClicked: bottomEdge.hint ? bottomEdge.hint.clicked() : bottomEdge.commit()
+            onPressed: print("pressed")
             onReleased: {
                 if (bottomEdge.activeRange) {
                     bottomEdge.activeRange.dragEnded();
