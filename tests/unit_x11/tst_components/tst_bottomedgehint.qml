@@ -134,5 +134,19 @@ MainView {
             floatingHint.parent = floatingItem;
             compare(floatingHint.anchors.bottom, floatingItem.top, "Anhors are broken after reparenting");
         }
+
+        function test_no_clicking_data() {
+            return [
+                {tag: "when hidden", property: "visible"},
+                {tag: "when disabled", property: "enabled"},
+            ];
+        }
+        function test_no_clicking(data) {
+            bottomEdgeHint.locked = true;
+            bottomEdgeHint[data.property] = false;
+            mouseClick(bottomEdgeHint, centerOf(bottomEdgeHint).x, centerOf(bottomEdgeHint).y);
+            expectFailContinue("", "No click " + data.tag);
+            clickSpy.wait(400);
+        }
     }
 }
