@@ -37,6 +37,13 @@ MainView {
     BottomEdgeHint {
         id: bottomEdgeHint
     }
+    BottomEdgeHint {
+        id: floatingHint
+        anchors.bottom: parent.top
+    }
+    Item {
+        id: floatingItem
+    }
 
     UbuntuTestCase {
         name: "BottomEdgeHint"
@@ -120,6 +127,12 @@ MainView {
         function test_deprecated_state() {
             ignoreWarning(warningFormat(37, 5, "QML BottomEdgeHint: 'state' property deprecated, will be removed from 1.3 release. Use 'locked' property to lock the visuals"));
             bottomEdgeHint.state = "Hidden";
+        }
+
+        function test_anchoring() {
+            compare(floatingHint.anchors.bottom, mainView.top, "Anhors are broken");
+            floatingHint.parent = floatingItem;
+            compare(floatingHint.anchors.bottom, floatingItem.top, "Anhors are broken after reparenting");
         }
     }
 }
