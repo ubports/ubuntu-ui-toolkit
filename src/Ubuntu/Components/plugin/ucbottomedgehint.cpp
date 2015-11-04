@@ -77,6 +77,15 @@ void UCBottomEdgeHint::itemChange(ItemChange change, const ItemChangeData &data)
     }
 }
 
+// handle clicked event when locked and enter or return is pressed
+void UCBottomEdgeHint::keyPressEvent(QKeyEvent *event)
+{
+    UCStyledItemBase::keyPressEvent(event);
+    if (locked() && (event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)) {
+        Q_EMIT clicked();
+    }
+}
+
 /*!
   \qmlsignal void BottomEdgeHint::clicked()
    This handler is called when there is a mouse click on the BottomEdgeHint
@@ -161,6 +170,15 @@ void UCBottomEdgeHint::setState(const QString &state)
   Visuals should not transition to any other state. The property will automatically
   be set and will not be changeable while a mouse is attached.
   */
+bool UCBottomEdgeHint::locked()
+{
+    // FIXME: we won't need this once we get the QSystemInfo reporting mouse attach/detach
+    if (!QuickUtils::instance().touchScreenAvailable()) {
+        m_locked = true;
+    }
+    return m_locked;
+}
+
 void UCBottomEdgeHint::setLocked(bool locked)
 {
     // FIXME: we need QSystemInfo to complete this!

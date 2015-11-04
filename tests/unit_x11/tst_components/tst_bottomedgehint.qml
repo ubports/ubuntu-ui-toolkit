@@ -148,5 +148,27 @@ MainView {
             expectFailContinue("", "No click " + data.tag);
             clickSpy.wait(400);
         }
+
+        function test_activate_by_key_data() {
+            return [
+                {tag: "enter and unlocked", key: Qt.Key_Return, locked: false},
+                {tag: "return and unlocked", key: Qt.Key_Enter, locked: false},
+                {tag: "enter and locked", key: Qt.Key_Return, locked: true},
+                {tag: "return and locked", key: Qt.Key_Enter, locked: true},
+            ];
+        }
+        function test_activate_by_key(data) {
+            if (hasMouseAttached && !data.locked) {
+                skip(data.tag, "Test requires ability to unlock");
+            }
+            bottomEdgeHint.locked = data.locked;
+            bottomEdgeHint.forceActiveFocus();
+            keyPress(data.key);
+            if (!bottomEdgeHint.locked) {
+                expectFailContinue(data.tag, "should fail");
+            }
+            clickSpy.wait(400);
+            keyRelease(data.key);
+        }
     }
 }

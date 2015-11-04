@@ -29,13 +29,14 @@ class UCBottomEdgeHint : public UCStyledItemBase
     Q_PROPERTY(QUrl iconSource MEMBER m_iconSource NOTIFY iconSourceChanged FINAL)
     Q_PROPERTY(QString iconName MEMBER m_iconName NOTIFY iconNameChanged FINAL)
     Q_PROPERTY(QQuickFlickable *flickable MEMBER m_flickable NOTIFY flickableChanged FINAL)
-    Q_PROPERTY(bool locked MEMBER m_locked WRITE setLocked NOTIFY lockedChanged FINAL)
+    Q_PROPERTY(bool locked READ locked WRITE setLocked NOTIFY lockedChanged FINAL)
     // deprecated
     Q_PROPERTY(QString state READ state WRITE setState NOTIFY stateChanged)
 public:
 
     explicit UCBottomEdgeHint(QQuickItem *parent = 0);
 
+    bool locked();
     void setLocked(bool locked);
 
     // deprecated
@@ -55,6 +56,7 @@ Q_SIGNALS:
     void stateChanged();
 protected:
     void itemChange(ItemChange change, const ItemChangeData &data);
+    void keyPressEvent(QKeyEvent *event);
 
 private:
     QString m_text;
