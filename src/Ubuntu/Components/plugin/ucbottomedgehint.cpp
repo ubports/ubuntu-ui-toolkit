@@ -121,14 +121,10 @@ void UCBottomEdgeHint::keyPressEvent(QKeyEvent *event)
 void UCBottomEdgeHint::touchEvent(QTouchEvent *event)
 {
     UCStyledItemBase::touchEvent(event);
-    bool accept = m_gestureDetector.handleTouchEvent(event);
-    // eat the event if no flickable attached
-    if (event->type() == QEvent::TouchBegin && !m_flickable) {
-        accept = true;
-    }
-    event->setAccepted(accept);
+    m_gestureDetector.handleTouchEvent(this, event);
 }
 
+// handle click event
 void UCBottomEdgeHint::mousePressEvent(QMouseEvent *event)
 {
     if (contains(event->localPos()) && (m_status >= Active)) {
@@ -137,7 +133,6 @@ void UCBottomEdgeHint::mousePressEvent(QMouseEvent *event)
         UCStyledItemBase::mousePressEvent(event);
     }
 }
-
 void UCBottomEdgeHint::mouseReleaseEvent(QMouseEvent *event)
 {
     UCStyledItemBase::mouseReleaseEvent(event);
@@ -146,6 +141,7 @@ void UCBottomEdgeHint::mouseReleaseEvent(QMouseEvent *event)
     }
 }
 
+// watch gesture detection status changes
 void UCBottomEdgeHint::onBottomUpSwipeDetected()
 {
     m_deactivationTimer.stop();

@@ -118,7 +118,7 @@ MainView {
         }
 
         function test_no_hiding_when_locked() {
-            var flickDy = listView.height - units.gu(5);
+            var flickDy = listView.height - units.gu(10);
             bottomEdgeHint.status = BottomEdgeHint.Locked;
             flick(listView, centerOf(listView).x, flickDy, centerOf(listView).x, -flickDy, 0, 6);
             expectFailContinue("", "No hiding when Locked");

@@ -48,7 +48,7 @@ public:
     void setItemFilter(QObject *item);
     void removeItemFilter(QObject *item);
 
-    bool handleTouchEvent(QTouchEvent *event);
+    bool handleTouchEvent(QObject *target, QTouchEvent *event);
 
 Q_SIGNALS:
     void statusChanged(Status status);

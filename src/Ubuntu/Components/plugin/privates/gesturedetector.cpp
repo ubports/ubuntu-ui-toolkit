@@ -25,6 +25,8 @@
 #include <QtGui/QGuiApplication>
 #include <QtGui/QStyleHints>
 
+#define DETECTION_AREA_THICKNESS_GU 1.2
+
 GestureDetector::GestureDetector(QObject *parent)
     : QObject(parent)
     , m_owner(qobject_cast<QQuickItem*>(parent))
@@ -67,16 +69,21 @@ void GestureDetector::removeItemFilter(QObject *item)
     item->removeEventFilter(this);
 }
 
-bool GestureDetector::handleTouchEvent(QTouchEvent *event)
+bool GestureDetector::handleTouchEvent(QObject *target, QTouchEvent *event)
 {
     switch (event->type()) {
     case QEvent::TouchBegin: {
         setStatus(Ready);
         QPointF itemPoint = m_owner->mapFromScene(event->touchPoints()[0].scenePos());
-        QRectF detectionArea(0.0, m_owner->height() - UCUnits::instance().gu(1), m_owner->width(), UCUnits::instance().gu(1));
+        qreal thickness = UCUnits::instance().gu(DETECTION_AREA_THICKNESS_GU);
+        QRectF detectionArea(0.0, m_owner->height() - thickness, m_owner->width(), thickness);
         if (detectionArea.contains(itemPoint)) {
             m_startPoint = itemPoint;
             setStatus(Started);
+            if (target == parent()) {
+                event->accept();
+                return true;
+            }
         }
         return false;
     }
@@ -114,7 +121,7 @@ bool GestureDetector::eventFilter(QObject *target, QEvent *event)
                 || type == QEvent::TouchEnd
                 || type == QEvent::TouchCancel) {
             QTouchEvent *touch = static_cast<QTouchEvent*>(event);
-            return handleTouchEvent(touch);
+            return handleTouchEvent(target, touch);
         } else {
             // pass it on
             return false;
