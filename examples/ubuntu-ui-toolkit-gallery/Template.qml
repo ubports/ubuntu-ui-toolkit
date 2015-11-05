@@ -20,22 +20,28 @@ import Ubuntu.Components 1.3
 Page {
     id: template
 
-    default property alias content: layout.children
-    property alias spacing: layout.spacing
+    default property alias content: column.children
+    property alias spacing: column.spacing
+
+    header: PageHeader {
+        title: template.title
+        flickable: layout.columns === 1 ? flickable : null
+        onFlickableChanged: exposed = true;
+    }
 
     ScrollView {
         anchors.fill: parent
+        anchors.topMargin: template.header.flickable ? 0 : template.header.height
         alwaysOnScrollbars: true
-
         Flickable {
             id: flickable
             objectName: "TemplateFlickable"
             anchors.fill: parent
-            contentHeight: layout.height
-            contentWidth: layout.width
+            contentHeight: column.height
+            contentWidth: column.width
             interactive: contentHeight > height
             Column {
-                id: layout
+                id: column
                 spacing: units.gu(6)
                 width: flickable.width
                 height: childrenRect.height

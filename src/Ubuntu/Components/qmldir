@@ -143,3 +143,4 @@ BottomEdgeHint 1.3 1.3/BottomEdgeHint.qml
 ProgressionSlot 1.3 1.3/ProgressionSlot.qml
 ScrollView 1.3 1.3/ScrollView.qml
 ScrollbarUtils 1.3 1.3/scrollbarUtils.js
+PageHeader 1.3 1.3/PageHeader.qml

@@ -40,34 +40,35 @@ MainView {
 
         function cleanup() {
             bottomEdgeHint.iconName = "";
-            bottomEdgeHint.state = "Visible";
+            bottomEdgeHint.state = "Idle";
             clickSpy.clear();
         }
 
         function test_0_default_state() {
             compare(bottomEdgeHint.iconName, "");
             compare(bottomEdgeHint.text, "");
-            compare(bottomEdgeHint.state, "Visible");
-            compare(bottomEdgeHint.width, units.gu(7));
+            compare(bottomEdgeHint.state, "Idle");
+            compare(bottomEdgeHint.width, mainView.width);
             compare(bottomEdgeHint.height, units.gu(4));
             compare(bottomEdgeHint.y, mainView.height - bottomEdgeHint.height);
             compare(clickSpy.count, 0, "The BottomEdgeHint should not have received a click.");
         }
 
-        function test_with_text() {
-            bottomEdgeHint.text = "A Label";
-            compare(bottomEdgeHint.text, "A Label");
-            verify(bottomEdgeHint.width > units.gu(7));
-        }
-
         function test_hiding() {
             bottomEdgeHint.state = "Hidden";
-            tryCompare(bottomEdgeHint, "y", mainView.height - bottomEdgeHint.height + units.gu(2.5));
+            tryCompare(bottomEdgeHint, "opacity", 0.0);
         }
 
         function test_clicking() {
-            mouseClick(bottomEdgeHint, 0, 0);
-            compare(clickSpy.count, 1, "The BottomEdgeHint should have received a click.");
+            bottomEdgeHint.state = "Locked";
+            mouseClick(bottomEdgeHint, centerOf(bottomEdgeHint).x, centerOf(bottomEdgeHint).y);
+            clickSpy.wait();
+        }
+
+        function test_no_clicking_while_unlocked() {
+            mouseClick(bottomEdgeHint, centerOf(bottomEdgeHint).x, centerOf(bottomEdgeHint).y);
+            expectFail("", "No click if not Locked");
+            clickSpy.wait(200);
         }
     }
 }

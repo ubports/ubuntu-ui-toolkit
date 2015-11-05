@@ -14,11 +14,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import QtQuick 2.4
-import Ubuntu.Components 1.3
+import Ubuntu.Components 1.2
 
 StyledItem {
     id: item
-    theme.name: "themes.CustomTheme"
-    theme.version: Ubuntu.version(1, 2)
-    styleName: "TestStyle"
+    width: units.gu(20)
+    height: units.gu(20)
+    style: Theme.createStyleComponent("OptionSelectorStyle.qml", item)
 }

@@ -23,13 +23,18 @@ Style.ActionBarStyle {
     implicitWidth: actionsContainer.implicitWidth
     implicitHeight: units.gu(5)
 
+    overflowIconName: "contextual-menu"
+
+    // Unused with the standard action icon buttons, but may be used with a custom delegate.
+    overflowText: "More"
+
     /*!
       The default action delegate if the styled item does
       not provide a delegate.
      */
     defaultDelegate: AbstractButton {
         style: IconButtonStyle { }
-        objectName: action.objectName + "_action_button"
+        objectName: action.objectName + "_button"
         height: parent ? parent.height : undefined
         action: modelData
     }
@@ -80,8 +85,10 @@ Style.ActionBarStyle {
 
         Action {
             id: overflowAction
-            iconName: "contextual-menu"
-            objectName: "overflow"
+            iconSource: actionBarStyle.overflowIconSource
+            iconName: actionBarStyle.overflowIconName
+            text: actionBarStyle.overflowText
+            objectName: "overflow_action"
             visible: numberOfSlots.requested > numberOfSlots.available
             onTriggered: {
                 var overflowButton = actionsRepeater.itemAt(actionsRepeater.count - 1);

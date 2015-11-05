@@ -14,8 +14,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-09-15 05:42+0000\n"
-"X-Generator: Launchpad (build 17737)\n"
+"X-Launchpad-Export-Date: 2015-10-16 05:53+0000\n"
+"X-Generator: Launchpad (build 17812)\n"
 
 #: Ubuntu/Components/ListItems/Empty.qml:413
 msgid "Delete"
@@ -76,12 +76,16 @@ msgstr "Αγνόηση προτεραιότητας για φίλτρα InverseM
 #: Ubuntu/Components/plugin/ucstatesaver.cpp:46
 msgid "Warning: attachee must have an ID. State will not be saved."
 msgstr ""
+"Προειδοποίηση: το attachee πρέπει να έχει ένα ID. Η τρέχουσα κατάσταση δεν "
+"θα αποθηκευτεί."
 
 #: Ubuntu/Components/plugin/ucstatesaver.cpp:56
 #, qt-format
 msgid ""
 "Warning: attachee's UUID is already registered, state won't be saved: %1"
 msgstr ""
+"Προειδοποίηση: Το UUID του attachee έχει ήδη καταχωρηθεί, η τρέχουσα "
+"κατάσταση δεν θα αποθηκευτεί: %1"
 
 #: Ubuntu/Components/plugin/ucstatesaver.cpp:102
 #, qt-format

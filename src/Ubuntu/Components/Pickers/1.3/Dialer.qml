@@ -145,7 +145,6 @@ StyledItem {
     implicitHeight: size
     activeFocusOnPress: true
 
-    theme.version: Ubuntu.toolkitVersion
     styleName: "DialerStyle"
 
     Item {

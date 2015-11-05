@@ -112,6 +112,10 @@ QML_FILES += 1.2/ActivityIndicatorStyle.qml \
              1.3/ToolbarButtonStyle.qml \
              1.3/ToolbarStyle.qml \
              1.3/IconButtonStyle.qml \
+	     1.3/PageHeaderStyle.qml \
+             1.3/BottomEdgeHintStyle.qml \
     $$ARTWORK_FILES
 
 load(ubuntu_qml_module)
+
+OTHER_FILES+=qmldir

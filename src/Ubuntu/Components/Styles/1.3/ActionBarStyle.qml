@@ -34,4 +34,21 @@ Item {
       The default number of slots for the action bar.
      */
     property int defaultNumberOfSlots
+
+    /*!
+      The icon name for action of the overflow button.
+     */
+    property string overflowIconName
+
+    /*!
+      The icon source for the action of the overflow button. Setting the icon source
+      will override the icon name.
+     */
+    property url overflowIconSource
+
+    /*!
+      The text for the action of the overflow button, which may be used
+      in the action delegate.
+     */
+    property string overflowText
 }

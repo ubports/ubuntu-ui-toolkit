@@ -137,13 +137,12 @@ QML_FILES += 1.3/ActionBar.qml \
              1.3/PageColumnsLayout.qml \
              1.3/ProgressionSlot.qml \
              1.3/ScrollView.qml \
-             1.3/scrollbarUtils.js
-
+             1.3/scrollbarUtils.js \
+	     1.3/PageHeader.qml
 
 OTHER_FILES+= qmldir \
              1.3/CrossFadeImage.qdoc \
              1.3/UbuntuListView11.qdoc \
-             1.3/Page.qdoc \
              1.3/PageHeadConfiguration.qdoc \
              1.3/MainView.qdoc \
              1.3/Icon.qdoc

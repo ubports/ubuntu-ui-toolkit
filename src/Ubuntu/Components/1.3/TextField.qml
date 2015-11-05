@@ -1013,6 +1013,5 @@ Ubuntu.ActionItem {
         cursorPosition = 0;
     }
 
-    theme.version: Ubuntu.Ubuntu.toolkitVersion
     styleName: "TextFieldStyle"
 }
