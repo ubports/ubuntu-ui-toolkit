@@ -14,18 +14,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UBUNTUGESTURES_DEBUG_HELPER_H
-#define UBUNTUGESTURES_DEBUG_HELPER_H
+#include "touchownershipevent.h"
 
-#include <QString>
+QEvent::Type TouchOwnershipEvent::m_touchOwnershipType = (QEvent::Type)-1;
 
-#include "UbuntuGesturesGlobal.h"
+TouchOwnershipEvent::TouchOwnershipEvent(int touchId, bool gained)
+    : QEvent(touchOwnershipEventType())
+    , m_touchId(touchId)
+    , m_gained(gained)
+{
+}
 
-class QMouseEvent;
-class QTouchEvent;
+QEvent::Type TouchOwnershipEvent::touchOwnershipEventType()
+{
+    if (m_touchOwnershipType == (QEvent::Type)-1) {
+        m_touchOwnershipType = (QEvent::Type)registerEventType();
+    }
 
-UBUNTUGESTURES_EXPORT QString touchPointStateToString(Qt::TouchPointState state);
-UBUNTUGESTURES_EXPORT QString touchEventToString(const QTouchEvent *ev);
-UBUNTUGESTURES_EXPORT QString mouseEventToString(const QMouseEvent *ev);
-
-#endif // UBUNTUGESTURES_DEBUG_HELPER_H
+    return m_touchOwnershipType;
+}

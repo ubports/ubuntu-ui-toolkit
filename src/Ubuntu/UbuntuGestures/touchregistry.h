@@ -23,10 +23,10 @@
 #include <QTouchEvent>
 #include <QVector>
 
-#include "UbuntuGesturesGlobal.h"
-#include "CandidateInactivityTimer.h"
-#include "Timer.h"
-#include "Pool.h"
+#include "ubuntugesturesglobal.h"
+#include "candidateinactivitytimer.h"
+#include "timer.h"
+#include "pool.h"
 
 namespace UbuntuGestures {
     class AbstractTimerFactory;

@@ -19,7 +19,7 @@
 
 #include <QVector>
 
-#include "UbuntuGesturesGlobal.h"
+#include "ubuntugesturesglobal.h"
 
 /*
   An object pool.

@@ -19,7 +19,7 @@
 
 #include <QTouchEvent>
 #include <QScopedPointer>
-#include "UbuntuGesturesGlobal.h"
+#include "ubuntugesturesglobal.h"
 
 /*
  A touch event with touch points that do not belong the item receiving it.

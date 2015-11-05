@@ -1,5 +1,5 @@
 include(../test-include.pri)
-QT += core-private qml-private quick-private gui-private
+QT += core-private qml-private quick-private gui-private UbuntuGestures
 SOURCES += \
     GestureTest.cpp \
     tst_directionaldragarea.cpp

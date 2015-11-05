@@ -17,8 +17,8 @@
 #ifndef UBUNTUGESTURES_TIMER_H
 #define UBUNTUGESTURES_TIMER_H
 
-#include "UbuntuGesturesGlobal.h"
-#include "TimeSource.h"
+#include "ubuntugesturesglobal.h"
+#include "timesource.h"
 
 #include <QObject>
 #include <QPointer>

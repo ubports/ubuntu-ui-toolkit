@@ -18,7 +18,7 @@
 #define UBUNTU_TOUCHOWNERSHIPEVENT_H
 
 #include <QEvent>
-#include "UbuntuGesturesGlobal.h"
+#include "ubuntugesturesglobal.h"
 
 /*
    When an item get an ownership event for a touch it can grab/steal that touch

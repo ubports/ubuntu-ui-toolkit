@@ -18,7 +18,7 @@
  * Authored by: Daniel d'Andrada <daniel.dandrada@canonical.com>
  */
 
-#include "TimeSource.h"
+#include "timesource.h"
 
 #include <QElapsedTimer>
 

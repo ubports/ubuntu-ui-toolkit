@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "TouchRegistry.h"
+#include "touchregistry.h"
 
 #include <QCoreApplication>
 #include <QDebug>
@@ -24,10 +24,10 @@
 #include <private/qquickitem_p.h>
 #pragma GCC diagnostic pop
 
-#include "CandidateInactivityTimer.h"
-#include "Timer.h"
-#include "TouchOwnershipEvent.h"
-#include "UnownedTouchEvent.h"
+#include "candidateinactivitytimer.h"
+#include "timer.h"
+#include "touchownershipevent.h"
+#include "unownedtouchevent.h"
 
 #define TOUCHREGISTRY_DEBUG 0
 

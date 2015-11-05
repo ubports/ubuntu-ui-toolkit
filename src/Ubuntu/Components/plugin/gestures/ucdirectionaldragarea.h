@@ -23,8 +23,8 @@
 #include "damper.h"
 
 // lib UbuntuGestures
-#include <Pool.h>
-#include <Timer.h>
+#include <UbuntuGestures/Pool>
+#include <UbuntuGestures/Timer>
 
 class TouchOwnershipEvent;
 class UnownedTouchEvent;

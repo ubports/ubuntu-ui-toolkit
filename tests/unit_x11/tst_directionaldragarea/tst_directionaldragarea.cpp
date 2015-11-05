@@ -27,7 +27,7 @@
 #include "gestures/ucdirectionaldragarea_p.h"
 #define protected public
 #define private public
-#include "gestures/TouchRegistry.h"
+#include <UbuntuGestures/TouchRegistry>
 #undef protected
 #undef private
 

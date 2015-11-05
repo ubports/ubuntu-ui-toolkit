@@ -14,22 +14,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "TouchOwnershipEvent.h"
+#include "unownedtouchevent.h"
 
-QEvent::Type TouchOwnershipEvent::m_touchOwnershipType = (QEvent::Type)-1;
+QEvent::Type UnownedTouchEvent::m_unownedTouchEventType = (QEvent::Type)-1;
 
-TouchOwnershipEvent::TouchOwnershipEvent(int touchId, bool gained)
-    : QEvent(touchOwnershipEventType())
-    , m_touchId(touchId)
-    , m_gained(gained)
+UnownedTouchEvent::UnownedTouchEvent(QTouchEvent *touchEvent)
+    : QEvent(unownedTouchEventType())
+    , m_touchEvent(touchEvent)
 {
 }
 
-QEvent::Type TouchOwnershipEvent::touchOwnershipEventType()
+QEvent::Type UnownedTouchEvent::unownedTouchEventType()
 {
-    if (m_touchOwnershipType == (QEvent::Type)-1) {
-        m_touchOwnershipType = (QEvent::Type)registerEventType();
+    if (m_unownedTouchEventType == (QEvent::Type)-1) {
+        m_unownedTouchEventType = (QEvent::Type)registerEventType();
     }
 
-    return m_touchOwnershipType;
+    return m_unownedTouchEventType;
+}
+
+QTouchEvent *UnownedTouchEvent::touchEvent()
+{
+    return m_touchEvent.data();
 }
