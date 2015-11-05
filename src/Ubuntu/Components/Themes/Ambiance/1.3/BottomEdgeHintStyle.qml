@@ -23,12 +23,16 @@ Item {
     implicitWidth: styledItem.parent.width
     implicitHeight: units.gu(4)
 
-    // initial state
-    state: styledItem.status == BottomEdgeHint.Locked ? "Locked" : "Inactive"
+    readonly property BottomEdgeHint hint: styledItem
 
-    Connections {
-        target: styledItem
-        onLockedChanged: bottomEdgeHintStyle.state = styledItem.status == BottomEdgeHint.Locked ? "Locked" : "Inactive"
+    // translate hint status into state
+    state: {
+        switch (hint.status) {
+        case BottomEdgeHint.Hidden: return "Hidden";
+        case BottomEdgeHint.Inactive: return "Inactive"
+        case BottomEdgeHint.Active: return "Active"
+        case BottomEdgeHint.Locked: return "Locked"
+        }
     }
 
     states: [
@@ -52,16 +56,11 @@ Item {
         },
         State {
             name: "Hidden"
-            when: styledItem.flickable
-                  && (styledItem.flickable.flicking || styledItem.flickable.moving)
-                  && (styledItem.status != BottomEdgeHint.Locked)
             PropertyChanges {
                 target: styledItem
                 opacity: 0.0
             }
         },
-        // FIXME: locked should be set and be final if mouse is attached
-        // requires QSystemInfo support, which is ongoing work upstream
         State {
             name: "Locked"
             PropertyChanges {
@@ -114,17 +113,17 @@ Item {
             if (!styledItem.contains(Qt.point(point.x, point.y))) {
                 return;
             }
-            bottomEdgeHintStyle.state = "Active";
+            hint.status = "Active";
             turnToIdleTimer.stop();
         }
-        onReleased: if (bottomEdgeHintStyle.state == "Active") turnToIdleTimer.restart()
+        onReleased: if (hint.status == BottomEdgeHint.Active) turnToIdleTimer.restart()
     }
 
     Timer {
         id: turnToIdleTimer
         interval: 800
         repeat: false
-        onTriggered: bottomEdgeHintStyle.state = "Inactive"
+        onTriggered: hint.status = "Inactive"
     }
 
     clip: true

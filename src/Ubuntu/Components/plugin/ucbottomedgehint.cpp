@@ -20,6 +20,7 @@
 #include "ucstyleditembase_p.h"
 #include "quickutils.h"
 #include <QtQml/private/qqmlproperty_p.h>
+#include <QtQuick/private/qquickflickable_p.h>
 
 /*!
     \qmltype BottomEdgeHint
@@ -119,6 +120,35 @@ void UCBottomEdgeHint::keyPressEvent(QKeyEvent *event)
   which is flicking or moving. It is recommended to set the property
   when the hint is placed above a flickable content. Defaults to null.
   */
+void UCBottomEdgeHint::setFlickable(QQuickFlickable *flickable)
+{
+    if (flickable == m_flickable) {
+        return;
+    }
+    if (m_flickable) {
+        disconnect(m_flickable, &QQuickFlickable::flickingChanged,
+                   this, &UCBottomEdgeHint::handleFlickableActivation);
+        disconnect(m_flickable, &QQuickFlickable::movingChanged,
+                   this, &UCBottomEdgeHint::handleFlickableActivation);
+    }
+    m_flickable = flickable;
+    if (m_flickable) {
+        connect(m_flickable, &QQuickFlickable::flickingChanged,
+                this, &UCBottomEdgeHint::handleFlickableActivation, Qt::DirectConnection);
+        connect(m_flickable, &QQuickFlickable::movingChanged,
+                this, &UCBottomEdgeHint::handleFlickableActivation, Qt::DirectConnection);
+    }
+    Q_EMIT flickableChanged();
+}
+
+// flickable moves hide the hint only if the current status is not Locked
+void UCBottomEdgeHint::handleFlickableActivation()
+{
+    bool moving = m_flickable->isFlicking() || m_flickable->isMoving();
+    if (m_status != Locked) {
+        setStatus(moving ? Hidden : Inactive);
+    }
+}
 
 /*!
   \qmlproperty string BottomEdgeHint::state

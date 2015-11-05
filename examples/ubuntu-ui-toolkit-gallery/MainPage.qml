@@ -120,4 +120,12 @@ Page {
         }
         highlightMoveDuration: 0
     }
+
+    BottomEdgeHint {
+        text: "No content"
+        iconName: "edit"
+        flickable: widgetList
+//        status: BottomEdgeHint.Locked
+        onStatusChanged: print("Status=", status)
+    }
 }
