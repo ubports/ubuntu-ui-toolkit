@@ -840,9 +840,7 @@ int main(int argc, char *argv[])
     QJsonObject json;
 
     Q_FOREACH (const QString& pluginImportUri, modules) {
-        // FIXME: Bacon2D.1.0 → Bacon2D 1.0
         QString pluginImportVersion;
-
         QStringList pathList((QString(getenv("QML2_IMPORT_PATH"))
                               + ":" + QLibraryInfo::location(QLibraryInfo::Qml2ImportsPath))
                              .split(':', QString::SkipEmptyParts));
@@ -850,6 +848,14 @@ int main(int argc, char *argv[])
         QFile qmlDirFile;
         QString pluginModulePath;
         Q_FOREACH(const QString& path, pathList) {
+            // Bacon2D.1.0 → Bacon2D 1.0
+            pluginModulePath = path + "/" + QString(pluginImportUri) + ".1.0";
+            qmlDirFile.setFileName(pluginModulePath + "/qmldir");
+            if (qmlDirFile.exists() && qmlDirFile.open(QIODevice::ReadOnly)) {
+                engine.addImportPath(pluginModulePath);
+                break;
+            }
+            // com.Canonical.Oxide → com/Canonical/Oxide
             pluginModulePath = path + "/" + QString(pluginImportUri).replace(".", "/");
             qmlDirFile.setFileName(pluginModulePath + "/qmldir");
             if (qmlDirFile.exists() && qmlDirFile.open(QIODevice::ReadOnly)) {
@@ -904,28 +910,7 @@ int main(int argc, char *argv[])
             QString pluginAlias(QString("A%1.%2").arg(pluginImportUri).arg(version).replace(".", "_"));
             code += QString("import %1 %2 as %3\n").arg(pluginImportUri).arg(version).arg(pluginAlias);
         }
-        code += "Item {\n";
-
-        QStringList exportedTypes;
-        Q_FOREACH(QQmlDirParser::Component c, p.components()) {
-            // Map filename-based PageHeadConfiguration11 to PageHeadConfiguration
-            QString filename(QFileInfo(c.fileName).baseName());
-            cppToId.insert(qPrintable(filename), qPrintable(c.typeName));
-
-            if (c.internal) {
-                internalTypes.append(c.typeName);
-                continue;
-            }
-            if (c.majorVersion == -1) {
-                std::cerr << "Public QML type " << qPrintable(c.typeName) << " in qmldir has no version!" << std::endl;
-                return EXIT_IMPORTERROR;
-            }
-            if (exportedTypes.contains(QFileInfo(c.fileName).fileName()))
-                continue;
-            exportedTypes.append(QFileInfo(c.fileName).fileName());
-        }
-
-        code += "}";
+        code += "QtObject { }\n";
         if (verbose)
             std::cerr << "Importing QML components:" << std::endl << qPrintable(code) << std::endl;
 
@@ -937,10 +922,40 @@ int main(int argc, char *argv[])
             Q_FOREACH (const QQmlError &error, c.errors()) {
                 // Despite the error we get all type information we need from singletons
                 if (error.description().contains(QRegExp("(Composite Singleton Type .+|Element) is not creatable")))
+                std::cerr << qPrintable( error.toString() ) << std::endl;
+                if (error.description().contains(QRegExp("(Composite Singleton Type .+|Element) is not creatable")))
                     continue;
+                // If we guessed the version, we may have been wrong
+                if (error.description().contains(QRegExp("version .+ is not installed"))) {
+                    // First letter must be uppercase
+                    QString pluginAlias(QString("A%1.%2").arg(pluginImportUri).replace(".", "_"));
+                    // 1.0 should work if 0.1 didn't and qmldir didn't specify
+                    code += QString("import %1 1.0 as %3\n").arg(pluginImportUri).arg(pluginAlias);
+                    c.setData(code, QUrl::fromLocalFile(qmlDirFile.fileName()));
+                    std::cerr << "Re-creating QML component for " << qPrintable(pluginImportUri) << std::endl;
+                    c.create();
+                    // This time around it worked
+                    if (!c.errors().isEmpty())
+                        continue;
+                }
                 std::cerr << "Failed to load " << qPrintable(pluginImportUri) << std::endl;
                 std::cerr << qPrintable(code) << std::endl;
                 std::cerr << qPrintable( error.toString() ) << std::endl;
+                return EXIT_IMPORTERROR;
+            }
+        }
+
+        Q_FOREACH(QQmlDirParser::Component c, p.components()) {
+            // Map filename-based PageHeadConfiguration11 to PageHeadConfiguration
+            QString filename(QFileInfo(c.fileName).baseName());
+            cppToId.insert(qPrintable(filename), qPrintable(c.typeName));
+
+            if (c.internal) {
+                internalTypes.append(c.typeName);
+                continue;
+            }
+            if (c.majorVersion == -1) {
+                std::cerr << "Public QML type " << qPrintable(c.typeName) << " in qmldir has no version!" << std::endl;
                 return EXIT_IMPORTERROR;
             }
         }
