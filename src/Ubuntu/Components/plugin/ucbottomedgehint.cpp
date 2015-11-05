@@ -51,7 +51,7 @@ UCBottomEdgeHint::UCBottomEdgeHint(QQuickItem *parent)
     : UCStyledItemBase(parent)
     , m_flickable(Q_NULLPTR)
     // FIXME: we need QSystemInfo to be complete with the locked!!
-    , m_locked(!QuickUtils::instance().touchScreenAvailable())
+    , m_status(QuickUtils::instance().touchScreenAvailable() ? Inactive : Locked)
 {
     /*
      * we cannot use setStyleName as that will trigger style loading
@@ -81,7 +81,7 @@ void UCBottomEdgeHint::itemChange(ItemChange change, const ItemChangeData &data)
 void UCBottomEdgeHint::keyPressEvent(QKeyEvent *event)
 {
     UCStyledItemBase::keyPressEvent(event);
-    if (locked() && (event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)) {
+    if ((status() >= Active) && (event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)) {
         Q_EMIT clicked();
     }
 }
@@ -145,43 +145,72 @@ QString UCBottomEdgeHint::state() const
 }
 void UCBottomEdgeHint::setState(const QString &state)
 {
-    qmlInfo(this) << "'state' property deprecated, will be removed from 1.3 release. Use 'locked' "\
-                     "property to lock the visuals";
     QQuickItem::setState(state);
+
+    qmlInfo(this) << "Overloaded 'state' property deprecated, will be removed from 1.3 release. Use 'status' instead.";
     QQuickItem *style = UCStyledItemBasePrivate::get(this)->styleItem;
     if (!style) {
         return;
     }
     if (state == "Hidden") {
-        style->setState("Hidden");
+        setStatus(Hidden);
     }
     if (state == "Visible") {
-        style->setState("Idle");
+        setStatus(Inactive);
     }
 }
 
 /*!
-  \qmlproperty bool BottomEdgeHint::locked
-  When set, the visuals are locked to a state where mouse clicks are handled.
-  Visuals should not transition to any other state. The property will automatically
-  be set and will not be changeable while a mouse is attached.
+  \qmlproperty Status BottomEdgeHint::status
+  The property represents the status of the hint. The property is writable so it
+  can be set to any of the following values programatically:
+  \table
+  \header
+    \li Status
+    \li Description
+  \row
+    \li Hidden
+    \li The hint is not shown. Equivalent with setting \e visible to \c false,
+        however visuals may do animations when altering this property. It can
+        only be set if the current status is not \e Locked.
+  \row
+    \li Inactive
+    \li The hint is shown and inactive. Styles can represent this state with
+        different visuals. When inactive, \l clicked signal cannot be emitted.
+  \row
+    \li Active
+    \li The hint is shown and active, meaning \l clicked signal is emitted when
+        clicked with mouse.
+  \row
+    \li Locked
+    \li Similar to \e Active the hint is shown and active, but no automatic transition
+        to any other state is allowed. This is relevant for style implementations.
+  \endtable
+  \note \e Locked status value is set automatically when the system detects a
+  mouse attached. In this case any change into other state value than \e Locked
+  is rejected.
+  Defaults to
+  \list
+    \li Inactive if no mouse is attached or
+    \li Locked if there is a mouse detected.
+  \endlist
   */
-bool UCBottomEdgeHint::locked()
+UCBottomEdgeHint::Status UCBottomEdgeHint::status()
 {
     // FIXME: we won't need this once we get the QSystemInfo reporting mouse attach/detach
     if (!QuickUtils::instance().touchScreenAvailable()) {
-        m_locked = true;
+        m_status = Locked;
     }
-    return m_locked;
+    return m_status;
 }
 
-void UCBottomEdgeHint::setLocked(bool locked)
+void UCBottomEdgeHint::setStatus(Status status)
 {
     // FIXME: we need QSystemInfo to complete this!
     // cannot unlock if mouse is attached or we don't have touch screen available
-    if (locked == m_locked || (!locked && !QuickUtils::instance().touchScreenAvailable())) {
+    if (status == m_status || (status != Locked && !QuickUtils::instance().touchScreenAvailable())) {
         return;
     }
-    m_locked = locked;
-    Q_EMIT lockedChanged();
+    m_status = status;
+    Q_EMIT statusChanged();
 }

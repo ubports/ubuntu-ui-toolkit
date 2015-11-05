@@ -25,19 +25,25 @@ class QQuickFlickable;
 class UCBottomEdgeHint : public UCStyledItemBase
 {
     Q_OBJECT
+    Q_ENUMS(Status)
     Q_PROPERTY(QString text MEMBER m_text NOTIFY textChanged FINAL)
     Q_PROPERTY(QUrl iconSource MEMBER m_iconSource NOTIFY iconSourceChanged FINAL)
     Q_PROPERTY(QString iconName MEMBER m_iconName NOTIFY iconNameChanged FINAL)
     Q_PROPERTY(QQuickFlickable *flickable MEMBER m_flickable NOTIFY flickableChanged FINAL)
-    Q_PROPERTY(bool locked READ locked WRITE setLocked NOTIFY lockedChanged FINAL)
+    Q_PROPERTY(Status status MEMBER m_status WRITE setStatus NOTIFY statusChanged FINAL)
     // deprecated
     Q_PROPERTY(QString state READ state WRITE setState NOTIFY stateChanged)
 public:
-
+    enum Status {
+        Hidden,
+        Inactive,
+        Active,
+        Locked
+    };
     explicit UCBottomEdgeHint(QQuickItem *parent = 0);
 
-    bool locked();
-    void setLocked(bool locked);
+    Status status();
+    void setStatus(Status status);
 
     // deprecated
     QString state() const;
@@ -48,7 +54,7 @@ Q_SIGNALS:
     void iconSourceChanged();
     void iconNameChanged();
     void flickableChanged();
-    void lockedChanged();
+    void statusChanged();
 
     void clicked();
 
@@ -63,7 +69,7 @@ private:
     QUrl m_iconSource;
     QString m_iconName;
     QQuickFlickable *m_flickable;
-    bool m_locked:1;
+    Status m_status;
 };
 
 #endif // UCBOTTOMEDGEHINT_H

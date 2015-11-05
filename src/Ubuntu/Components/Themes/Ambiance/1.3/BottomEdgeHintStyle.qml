@@ -24,16 +24,16 @@ Item {
     implicitHeight: units.gu(4)
 
     // initial state
-    state: styledItem.locked ? "Locked" : "Idle"
+    state: styledItem.status == BottomEdgeHint.Locked ? "Locked" : "Inactive"
 
     Connections {
         target: styledItem
-        onLockedChanged: bottomEdgeHintStyle.state = styledItem.locked ? "Locked" : "Idle"
+        onLockedChanged: bottomEdgeHintStyle.state = styledItem.status == BottomEdgeHint.Locked ? "Locked" : "Inactive"
     }
 
     states: [
         State {
-            name: "Idle"
+            name: "Inactive"
             extend: ""
             StateChangeScript {
                 script: turnToIdleTimer.stop()
@@ -52,7 +52,9 @@ Item {
         },
         State {
             name: "Hidden"
-            when: styledItem.flickable && (styledItem.flickable.flicking || styledItem.flickable.moving)
+            when: styledItem.flickable
+                  && (styledItem.flickable.flicking || styledItem.flickable.moving)
+                  && (styledItem.status != BottomEdgeHint.Locked)
             PropertyChanges {
                 target: styledItem
                 opacity: 0.0
@@ -122,7 +124,7 @@ Item {
         id: turnToIdleTimer
         interval: 800
         repeat: false
-        onTriggered: bottomEdgeHintStyle.state = "Idle"
+        onTriggered: bottomEdgeHintStyle.state = "Inactive"
     }
 
     clip: true
