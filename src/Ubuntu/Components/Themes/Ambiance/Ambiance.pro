@@ -32,8 +32,8 @@ ARTWORK_FILES += artwork/background_paper@27.png \
              artwork/spinner@8.png \
              artwork/stroke_button@27.png \
              artwork/tick@30.png \
-             artwork/toolbar_dropshadow@20.png
-
+             artwork/toolbar_dropshadow@20.png \
+             artwork/scrollbar_arrow@27.png
 
 QML_FILES += 1.2/ActivityIndicatorStyle.qml \
              1.2/BubbleShape.qml \

@@ -23,29 +23,33 @@ Page {
     default property alias content: layout.children
     property alias spacing: layout.spacing
 
-    Flickable {
-        id: flickable
-        objectName: "TemplateFlickable"
+    ScrollView {
         anchors.fill: parent
-        //anchors.topMargin: units.gu(2)
-        //anchors.bottomMargin: units.gu(2)
-        contentHeight: layout.height
-        interactive: contentHeight > height
+        alwaysOnScrollbars: true
 
-        onBottomMarginChanged: console.log("CHANGED", bottomMargin)
-        Column {
-            id: layout
-            spacing: units.gu(6)
-            anchors.left: parent.left
-            anchors.right: parent.right
-            //anchors.margins: units.gu(2)
+        Flickable {
+            id: flickable
+            objectName: "TemplateFlickable"
+            anchors.fill: parent
+            contentHeight: layout.height
+            contentWidth: layout.width
+            interactive: contentHeight > height
+            Column {
+                id: layout
+                spacing: units.gu(6)
+                width: flickable.width
+                height: childrenRect.height
+                //anchors.margins: units.gu(2)
+            }
         }
     }
 
-    Scrollbar {
-        id: sb
-        objectName: "TemplateScrollbar"
-        flickableItem: flickable
-        property alias interactive: sb.__interactive
-    }
+    //FIXME: gallery AP test expects a Scrollbar with TemplateScrollbar objectName, but we don't have that anymore!
+    //    Scrollbar {
+    //        id: sb
+    //        objectName: "TemplateScrollbar"
+    //        flickableItem: flickable
+    //        property alias interactive: sb.__interactive
+    //        __alwaysOnScrollbars: true
+    //    }
 }

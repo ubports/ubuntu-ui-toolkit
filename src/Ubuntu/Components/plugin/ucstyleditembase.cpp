@@ -132,6 +132,7 @@ bool UCStyledItemBase::requestFocus(Qt::FocusReason reason)
     Q_D(UCStyledItemBase);
     bool focusable = d->isParentFocusable();
     if (focusable && isEnabled()) {
+        qDebug() << "FORCING FOCUS ON" << this;
         QQuickItem::forceActiveFocus(reason);
     }
     return focusable;
@@ -500,8 +501,10 @@ bool UCStyledItemBase::childMouseEventFilter(QQuickItem *child, QEvent *event)
         QMouseEvent *mouse = static_cast<QMouseEvent*>(event);
         // the event may occur outside of the parent's boundaries if not clipped
         // therefore must check containment
+        qDebug() << "FILTERING" << this << child;
         QPointF point = mapFromItem(child, mouse->localPos());
         if (contains(point)) {
+            qDebug() << "Requesting focus for" << this;
             requestFocus(Qt::MouseFocusReason);
         }
     }

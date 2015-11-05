@@ -113,68 +113,23 @@ Toolkit.StyledItem {
     */
     property bool __alwaysOnScrollbars: false
 
-    focus: true
-    Keys.enabled: true
-    Keys.onLeftPressed: {
-        console.log("Left pressed")
-        if (__styleInstance !== null && !internals.vertical) {
-            __styleInstance.scroll(-flickableItem.width*0.05)
-        }
-    }
-    Keys.onRightPressed: {
-        console.log("Right pressed")
-        if (__styleInstance !== null && !internals.vertical) {
-            __styleInstance.scroll(flickableItem.width*0.05)
-        }
-    }
-    Keys.onDownPressed: {
-        console.log("Down pressed")
-        if (__styleInstance !== null && internals.vertical) {
-            __styleInstance.scroll(flickableItem.height*0.05)
-        }
-    }
-    Keys.onUpPressed: {
-        console.log("Up pressed")
-        if (__styleInstance !== null && internals.vertical) {
-            __styleInstance.scroll(-flickableItem.height*0.05)
-        }
-    }
-    Keys.onPressed:  {
-        console.log("Pressed")
-        if (__styleInstance !== null) {
-            if (internals.vertical) {
-                if (event.key == Qt.Key_PageDown) {
-                    __styleInstance.scroll(flickableItem.height*0.9)
-                } else if (event.key == Qt.Key_PageUp) {
-                    __styleInstance.scroll(-flickableItem.height*0.9)
-                }
-            } else {
-                if (event.key == Qt.Key_PageDown) {
-                    __styleInstance.scroll(flickableItem.width*0.9)
-                } else if (event.key == Qt.Key_PageUp) {
-                    __styleInstance.scroll(-flickableItem.width*0.9)
-                }
-            }
+    property Item viewport: null
 
-            if (event.key == Qt.Key_Home) {
-                __styleInstance.scrollToBeginning()
-            } else if (event.key == Qt.Key_End) {
-                __styleInstance.scrollToEnd()
-            }
-        }
-    }
+    //Disable the input handling to let the events pass through in case we have an
+    //interactive scrollbar right below us (can happen with nested views)
+    enabled: __alwaysOnScrollbars && __interactive
 
-    implicitWidth: internals.vertical ? units.gu(4) : flickableItem.width
-    implicitHeight: !internals.vertical ? units.gu(4) : flickableItem.height
+    implicitWidth: internals.vertical ? units.gu(3) : flickableItem.width
+    implicitHeight: !internals.vertical ? units.gu(3) : flickableItem.height
 
     anchors {
-        left: internals.leftAnchor(flickableItem)
+        left: internals.leftAnchor(viewport ? viewport : flickableItem)
         leftMargin: internals.leftAnchorMargin()
-        right: internals.rightAnchor(flickableItem)
+        right: internals.rightAnchor(viewport ? viewport : flickableItem)
         rightMargin: internals.rightAnchorMargin()
-        top: internals.topAnchor(flickableItem)
+        top: internals.topAnchor(viewport ? viewport : flickableItem)
         topMargin: internals.topAnchorMargin()
-        bottom: internals.bottomAnchor(flickableItem)
+        bottom: internals.bottomAnchor(viewport ? viewport : flickableItem)
         bottomMargin: internals.bottomAnchorMargin()
     }
 
@@ -213,18 +168,13 @@ Toolkit.StyledItem {
 
             switch (align) {
             case Qt.AlignLeading:
-                return __alwaysOnScrollbars ? 0 : __styleInstance.marginFromEdge
+                return __alwaysOnScrollbars ? -__styleInstance.indicatorThickness : 0
             case Qt.AlignBottom:
             case Qt.AlignTop:
-                if (!__alwaysOnScrollbars) {
-                    if (buddyScrollbar !== null
-                            && buddyScrollbar.__styleInstance !== null
-                            && buddyScrollbar.align === Qt.AlignLeading)
-                        return buddyScrollbar.__styleInstance.troughThicknessThumbStyle
-                                + buddyScrollbar.__styleInstance.marginFromEdge
-                    else
-                        return __styleInstance.marginFromEdge
-                }
+                if (!__alwaysOnScrollbars && buddyScrollbar !== null
+                        && buddyScrollbar.align === Qt.AlignLeading)
+                    return buddyScrollbar.__styleInstance.indicatorThickness
+                // *ELSE FALLTHROUGH*
             default:
                 return 0
             }
@@ -242,17 +192,13 @@ Toolkit.StyledItem {
 
             switch (align) {
             case Qt.AlignTrailing:
-                return __alwaysOnScrollbars ? 0 : __styleInstance.marginFromEdge
+                return __alwaysOnScrollbars ? -__styleInstance.indicatorThickness : 0
             case Qt.AlignBottom:
             case Qt.AlignTop:
-                if (!__alwaysOnScrollbars) {
-                    if (buddyScrollbar !== null
-                            && buddyScrollbar.align === Qt.AlignTrailing)
-                        return buddyScrollbar.__styleInstance.troughThicknessThumbStyle
-                                + buddyScrollbar.__styleInstance.marginFromEdge
-                    else
-                        return __styleInstance.marginFromEdge
-                }
+                if (!__alwaysOnScrollbars && buddyScrollbar !== null
+                        && buddyScrollbar.align === Qt.AlignTrailing)
+                    return buddyScrollbar.__styleInstance.indicatorThickness
+                // *ELSE FALLTHROUGH*
             default:
                 return 0
             }
@@ -269,17 +215,14 @@ Toolkit.StyledItem {
 
             switch (align) {
             case Qt.AlignTop:
-                return __alwaysOnScrollbars ? 0 : __styleInstance.marginFromEdge
+                return __alwaysOnScrollbars ? -__styleInstance.indicatorThickness : 0
             case Qt.AlignLeading:
             case Qt.AlignTrailing:
-                if (!__alwaysOnScrollbars) {
-                    if (buddyScrollbar !== null
-                            && buddyScrollbar.align === Qt.AlignTop)
-                        return buddyScrollbar.__styleInstance.troughThicknessThumbStyle
-                                + buddyScrollbar.__styleInstance.marginFromEdge
-                    else
-                        return __styleInstance.marginFromEdge
-                }
+                if (!__alwaysOnScrollbars && buddyScrollbar !== null
+                        && buddyScrollbar.align === Qt.AlignTop)
+                    return buddyScrollbar.__styleInstance.indicatorThickness
+                // *ELSE FALLTHROUGH*
+
             default:
                 return 0
             }
@@ -296,58 +239,17 @@ Toolkit.StyledItem {
 
             switch (align) {
             case Qt.AlignBottom:
-                return __alwaysOnScrollbars ? 0 : __styleInstance.marginFromEdge
+                return __alwaysOnScrollbars ? -__styleInstance.indicatorThickness : 0
             case Qt.AlignLeading:
             case Qt.AlignTrailing:
-                if (!__alwaysOnScrollbars) {
-                    if (buddyScrollbar !== null
-                            && buddyScrollbar.align === Qt.AlignBottom)
-                        return buddyScrollbar.__styleInstance.troughThicknessThumbStyle
-                                + buddyScrollbar.__styleInstance.marginFromEdge
-                    else
-                        return __styleInstance.marginFromEdge
-                }
+                if (!__alwaysOnScrollbars && buddyScrollbar !== null
+                        && buddyScrollbar.align === Qt.AlignBottom)
+                    return buddyScrollbar.__styleInstance.indicatorThickness
+                // *ELSE FALLTHROUGH*
             default:
                 return 0
             }
         }
-    }
-
-    //NEEDED FOR NON-OVERLAY SCROLLBARS
-    //FIXME: THE PROBLEM IS IF THE DEV ASSIGNS A CONSTANT VALUE TO FLICKABLEITEM.RIGHTMARGIN
-    //AND THEN WE ENABLE THIS BINDING, WHEN WE DISABLE IT THE CONSTANT VALUE IS NOT RESTORED!
-    //( https://bugreports.qt.io/browse/QTBUG-33444 )
-    Binding {
-        when: flickableItem && __alwaysOnScrollbars
-              && __styleInstance && (align === Qt.AlignTrailing
-                || (align === Qt.AlignLeading && scrollbar.LayoutMirroring.enabled) )
-        target: flickableItem
-        property: "rightMargin"
-        value: __styleInstance.troughThicknessSteppersStyle
-    }
-    Binding {
-        when: flickableItem && __alwaysOnScrollbars
-              && __styleInstance && (align === Qt.AlignLeading
-                || (align === Qt.AlignTrailing && scrollbar.LayoutMirroring.enabled) )
-        target: flickableItem
-        property: "leftMargin"
-        value: __styleInstance.troughThicknessSteppersStyle
-    }
-    Binding {
-        when: flickableItem && __alwaysOnScrollbars
-              && __styleInstance && align === Qt.AlignTop
-              && flickableItem.topMargin < __styleInstance.troughThicknessSteppersStyle
-        target: flickableItem
-        property: "topMargin"
-        value:__styleInstance.troughThicknessSteppersStyle
-    }
-    Binding {
-        when: flickableItem && __alwaysOnScrollbars
-              && __styleInstance && align === Qt.AlignBottom
-              && flickableItem.bottomMargin < __styleInstance.troughThicknessSteppersStyle
-        target: flickableItem
-        property: "bottomMargin"
-        value: __styleInstance.troughThicknessSteppersStyle
     }
 
     theme.version: Toolkit.Ubuntu.toolkitVersion

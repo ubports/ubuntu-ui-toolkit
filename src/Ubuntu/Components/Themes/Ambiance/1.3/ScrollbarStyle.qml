@@ -19,7 +19,7 @@ import Ubuntu.Components 1.3
 
 /*
   The visuals handle both active and passive modes. This behavior is driven yet by
-  the styledItem's __inactive property, however should be detected upon runtime based on
+  the styledItem's __interactive property, however should be detected upon runtime based on
   the device type.
   On active scrollbars, positioning is handled so that the logic updates the flickable's
   X/Y content positions, which is then synched with the contentPosition by the main
@@ -39,19 +39,10 @@ import Ubuntu.Components 1.3
     * behaviors - animations are used as declared
         - sliderAnimation: PropertyAnimation - animation for the slider size
         - thumbConnectorFading: PropertyAnimation - animation for the thumb connector
-        - thumbFading: PropertyAnimation - animation for the thumb fading
     * other styling properties
         - color sliderColor: color for the slider
-        - color thumbConnectorColor: thumb connector color
-        - url forwardThumbReleased: forward thumb image when released
-        - url forwardThumbPressed: forward thumb image when pressed
-        - url backwardThumbReleased: backward thumb image when released
-        - url backwardThumbPressed: backward thumb image when pressed
-        //TODO: DELETE OLD STUFF!
         - real scrollAreaThickness: scrollbar area thickness, the area where the
                                     slider, thumb and thumb-connector appear
-        - real thumbConnectorMargin: margin of the thumb connector aligned to the
-                                    thumb visuals
   */
 
 Item {
@@ -72,28 +63,27 @@ Item {
     //this is the condition that triggers "Thumb Style"
     //This property is also queried by the "buddyScrollbar" to make sure both scrollbars
     //are in thumb style even when only one of them has a true thumbStyleFlag
-    property bool thumbStyleFlag: proximityArea.containsMouse || thumbArea.drag.active
+    property bool thumbStyleFlag: proximityArea.containsMouse || draggingThumb
+                                  || (isVertical ? (flickableItem && flickableItem.contentHeight > flickableItem.height * 10)
+                                                 : (flickableItem && flickableItem.contentWidth > flickableItem.width * 10))
 
+    property bool draggingThumb: thumbArea.drag.active
     property PropertyAnimation scrollbarThicknessAnimation: UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration }
     property PropertyAnimation scrollbarFadeInAnimation: UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration }
     property PropertyAnimation scrollbarFadeOutAnimation: UbuntuNumberAnimation { duration: UbuntuAnimation.SlowDuration }
     property int scrollbarFadeOutPause: 300
+    //the time before a thumb style scrollbar goes back to indicator style after the mouse has left
+    //the proximity area
+    property int scrollbarCollapsePause: 1000
     property PropertyAnimation sliderAnimation: UbuntuNumberAnimation {}
     //property PropertyAnimation thumbConnectorFading: UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration }
     property PropertyAnimation thumbFading: UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration }
 
-    property color newOverlayColor: "#5d5d5d"
     property color troughColorThumbStyle: "#CDCDCD"
     property color troughColorSteppersStyle: "#f7f7f7"
-    property color sliderColor: newOverlayColor
+    property color sliderColor: "#5d5d5d"
     property string sliderRadius: units.dp(2)
-    property color thumbConnectorColor: "white"
-    property url forwardThumbReleased: (styledItem.align === Qt.AlignLeading || styledItem.align === Qt.AlignTrailing) ? Qt.resolvedUrl("../artwork/ScrollbarBottomIdle.png") : Qt.resolvedUrl("../artwork/ScrollbarRightIdle.png")
-    property url forwardThumbPressed: (styledItem.align === Qt.AlignLeading || styledItem.align === Qt.AlignTrailing) ? Qt.resolvedUrl("../artwork/ScrollbarBottomPressed.png") : Qt.resolvedUrl("../artwork/ScrollbarRightPressed.png")
-    property url backwardThumbReleased: (styledItem.align === Qt.AlignLeading || styledItem.align === Qt.AlignTrailing) ? Qt.resolvedUrl("../artwork/ScrollbarTopIdle.png") : Qt.resolvedUrl("../artwork/ScrollbarLeftIdle.png")
-    property url backwardThumbPressed: (styledItem.align === Qt.AlignLeading || styledItem.align === Qt.AlignTrailing) ? Qt.resolvedUrl("../artwork/ScrollbarTopPressed.png") : Qt.resolvedUrl("../artwork/ScrollbarLeftPressed.png")
 
-    //property real thumbConnectorMargin: units.dp(3)
     property real marginFromEdge: units.gu(1)
 
     // helper properties to ease code readability
@@ -121,7 +111,9 @@ Item {
     //False --> Indicator and Trough styles
     property bool alwaysOnScrollbars: styledItem.__alwaysOnScrollbars
 
+    //internals
     property bool __recursionGuard: false
+    property bool __disableStateBinding: false
 
     function scroll(amount) {
         slider.scroll(amount)
@@ -134,30 +126,42 @@ Item {
         scrollAnimation.to = contentSize - pageSize
         scrollAnimation.restart()
     }
+    function resetScrollingToPreDrag() {
+        thumbArea.resetFlickableToPreDragState()
+    }
 
     /*****************************************
       Visuals
      *****************************************/
     anchors.fill: parent
-
     opacity: overlayOpacityWhenHidden
-    state: {
-        if (!isScrollable)
-            return '';
-        else if (overlay) {
-            if (thumbStyleFlag || (styledItem.buddyScrollbar
-                        && styledItem.buddyScrollbar.__styleInstance
-                        && styledItem.buddyScrollbar.__styleInstance.thumbStyleFlag)) {
-                return 'trough';
-            } else if (flickableItem.moving) {
-                return 'indicator';
-            } else
-                return 'hidden';
-        } else {
-            return 'steppers';
+
+    Binding {
+        when: !__disableStateBinding
+        target: visuals
+        property: 'state'
+        value: {
+            console.log("EVALUATING")
+            if (!isScrollable && !alwaysOnScrollbars)
+                return '';
+            else if (overlay) {
+                if (thumbStyleFlag || growingTransition.running) {
+                    return 'thumb'
+                } else if (flickableItem.moving || scrollAnimation.running || transitionToIndicator.running) {
+                    return 'indicator';
+                } else return 'hidden';
+            } else {
+                if (proximityArea.containsMouse || growingTransition.running/*|| (styledItem.buddyScrollbar //NEW UX DIRECTIONS: only one scrollbar at a time can be in thumb style
+                            && styledItem.buddyScrollbar.__styleInstance
+                            && styledItem.buddyScrollbar.__styleInstance.thumbStyleFlag)*/) {
+                    return 'steppers';
+                } else
+                    return 'indicator';
+            }
         }
     }
-    onStateChanged: console.log("HELLO STATE", state === "hidden")
+
+    onStateChanged: console.log("STATE", state)
 
     states: [
         State {
@@ -186,7 +190,7 @@ Item {
             }
         },
         State {
-            name: 'trough'
+            name: 'thumb'
             extend: 'shown'
             PropertyChanges {
                 target: flowContainer
@@ -218,30 +222,76 @@ Item {
             }
         },
         Transition {
+            from: 'thumb,steppers'
+            to: 'indicator'
+            id: collapsingTransition
+            SequentialAnimation {
+                PauseAnimation { id: scrollbarCollapseAnim; duration: scrollbarCollapsePause }
+                ParallelAnimation {
+                    NumberAnimation {
+                        target: flowContainer
+                        properties: "thickness,thumbThickness"
+                        duration: scrollbarThicknessAnimation.duration
+                        easing: scrollbarThicknessAnimation.easing
+                    }
+                    NumberAnimation {
+                        target: steppersMouseArea
+                        properties: "height,width"
+                        duration: scrollbarThicknessAnimation.duration
+                        easing: scrollbarThicknessAnimation.easing
+                    }
+                }
+                PropertyAction {
+                    target: flowContainer
+                    properties: "showSteppers"
+                }
+            }
+        },
+        Transition {
+            id: transitionToIndicator
             from: '*'
             to: 'indicator'
+            //we use __disableStateBinding as the proof that the indicator style we are in was just
+            //for brief hinting purposes (in that case, in fact, the binding to the "state" var is disabled)
+            onRunningChanged: if (!running && __disableStateBinding) {
+                                  //this handles the case when we're briefly showing the scrollbar
+                                  //as a hint, as a consequence of the resizing of the flickable item or
+                                  //its content item
+                                  console.log("END FLASHING INDICATOR STYLE")
+                                  __disableStateBinding = false
+                              }
+
             NumberAnimation {
                 target: flowContainer
-                property: "thickness"
+                properties: "thickness,thumbThickness"
                 duration: scrollbarThicknessAnimation.duration
                 easing: scrollbarThicknessAnimation.easing
             }
         },
         Transition {
+            id: growingTransition
             from: '*'
-            to: 'trough'
-            NumberAnimation {
-                target: flowContainer
-                property: "thickness"
-                duration: scrollbarThicknessAnimation.duration
-                easing: scrollbarThicknessAnimation.easing
+            to: 'thumb,steppers'
+            ParallelAnimation {
+                NumberAnimation {
+                    target: flowContainer
+                    properties: "thickness,thumbThickness"
+                    duration: scrollbarThicknessAnimation.duration
+                    easing: scrollbarThicknessAnimation.easing
+                }
+                NumberAnimation {
+                    target: steppersMouseArea
+                    properties: "height,width"
+                    duration: scrollbarThicknessAnimation.duration
+                    easing: scrollbarThicknessAnimation.easing
+                }
             }
         },
         Transition {
             from: '*'
             to: 'hidden'
             SequentialAnimation {
-                PauseAnimation { duration: scrollbarFadeOutPause }
+                PauseAnimation { id: fadeOutPauseAnim; duration: scrollbarFadeOutPause }
                 NumberAnimation {
                     target: visuals
                     property: "opacity"
@@ -250,7 +300,7 @@ Item {
                 }
                 PropertyAction {
                     target: flowContainer
-                    properties: "thickness,thumbThickness"
+                    properties: "thickness,thumbThickness,showSteppers"
                 }
             }
         }
@@ -261,9 +311,28 @@ Item {
         return Qt.point(map.x, map.y)
     }
 
+    //As per spec, we show a hint of the scrollbars in indicator style whenever the
+    //flickable item changes its size
+    //THIS IS ASSUMING THAT the transition to hidden state has a PauseAnimation, otherwise
+    //the hinting would be too quick!
+    function flashIndicator() {
+        if (isScrollable && (state == '' || state === 'hidden')) {
+            __disableStateBinding = true
+            state = 'indicator'
+        }
+    }
+    //each scrollbar connects to both width and height because we want to show both the scrollbar in
+    //both cases
+    Connections {
+        target: flickableItem ? flickableItem : null
+        onContentHeightChanged: flashIndicator()
+        onHeightChanged: flashIndicator()
+        onContentWidthChanged: flashIndicator()
+        onWidthChanged: flashIndicator()
+    }
+
     SmoothedAnimation {
         id: scrollAnimation
-
         duration: 200
         easing.type: Easing.InOutQuad
         target: styledItem.flickableItem
@@ -304,12 +373,19 @@ Item {
             Rectangle {
                 id: trough
                 anchors.fill: parent
-                color: alwaysOnScrollbars ? troughColorSteppersStyle
-                                          : Qt.rgba(troughColorThumbStyle.r,
-                                                    troughColorThumbStyle.g,
-                                                    troughColorThumbStyle.b,
-                                                    troughColorThumbStyle.a * 0.3)
-                radius: alwaysOnScrollbars ? 0 : sliderRadius
+                //transition.running is needed because we don't want the color to change while
+                //the transition to another style is still ongoing
+                color: //Qt.rgba(troughColorThumbStyle.r,
+                       //        troughColorThumbStyle.g,
+                       //        troughColorThumbStyle.b,
+                       //        troughColorThumbStyle.a * 0.2)
+                       (visuals.state === 'steppers' || collapsingTransition.running) ? Qt.rgba(troughColorSteppersStyle.r,troughColorSteppersStyle.g,troughColorSteppersStyle.b,troughColorSteppersStyle.a * 0.9)
+                                                                                      : Qt.rgba(troughColorThumbStyle.r,
+                                                                                                troughColorThumbStyle.g,
+                                                                                                troughColorThumbStyle.b,
+                                                                                                troughColorThumbStyle.a * 0.2/*(overlay ? 0.3 : 1.0)*/)
+                radius: (visuals.state === 'steppers' || collapsingTransition.running) ? 0 : sliderRadius
+                visible: alwaysOnScrollbars
             }
 
             // The presence of a mouse enables the interactive thumb
@@ -324,10 +400,10 @@ Item {
             // total size of the flickable.
             Item {
 
-                //                Rectangle {
-                //                    anchors.fill: parent
-                //                    color: "green"
-                //                }
+                //Rectangle {
+                //    anchors.fill: parent
+                //    color: "green"
+                //}
 
                 id: scrollCursor
                 x: (isVertical) ? 0 : ScrollbarUtils.sliderPos(styledItem, 0.0, styledItem.width - scrollCursor.width)
@@ -342,8 +418,7 @@ Item {
 
             Rectangle {
                 id: slider
-
-                color: Qt.rgba(sliderColor.r, sliderColor.g, sliderColor.b, sliderColor.a * 0.8)
+                color: styledItem.focus ? "red" : Qt.rgba(sliderColor.r, sliderColor.g, sliderColor.b, sliderColor.a * 0.7/*(overlay ? 0.8 : 1.0)*/)
                 anchors {
                     verticalCenter: (isVertical) ? undefined : trough.verticalCenter
                     horizontalCenter: (isVertical) ? trough.horizontalCenter : undefined
@@ -355,68 +430,22 @@ Item {
                 height: (!isVertical) ? flowContainer.thumbThickness : ScrollbarUtils.sliderSize(styledItem, flowContainer.thumbThickness, trough.height)
                 radius: visuals.sliderRadius
 
-                /*Behavior on width {
-                    enabled: (!isVertical)
-                    NumberAnimation {
-                        duration: visuals.sliderAnimation.duration
-                        easing: visuals.sliderAnimation.easing
-                    }
-                }
-                Behavior on height {
-                    enabled: (isVertical)
-                    NumberAnimation {
-                        duration: visuals.sliderAnimation.duration
-                        easing: visuals.sliderAnimation.easing
-                    }
-                }*/
-
                 function scroll(amount) {
                     scrollAnimation.to = ScrollbarUtils.scrollAndClamp(styledItem, amount, 0.0,
                                                                        totalContentSize - pageSize);
+                    console.log(scrollAnimation.to)
                     scrollAnimation.restart();
                 }
             }
 
-            // The sliderThumbConnector ensures a visual connection between the slider and the thumb
-            //    Rectangle {
-            //        id: sliderThumbConnector
-
-            //        property real thumbConnectorMargin: visuals.thumbConnectorMargin
-            //        property bool isThumbAboveSlider: (isVertical) ? thumb.y < slider.y : thumb.x < slider.x
-            //        anchors {
-            //            left: (isVertical) ? trough.left : (isThumbAboveSlider ? thumb.left : slider.right)
-            //            right: (isVertical) ? trough.right : (isThumbAboveSlider ? slider.left : thumb.right)
-            //            top: (!isVertical) ? trough.top : (isThumbAboveSlider ? thumb.top : slider.bottom)
-            //            bottom: (!isVertical) ? trough.bottom : (isThumbAboveSlider ? slider.top : thumb.bottom)
-
-            //            leftMargin : (isVertical) ? 0 : (isThumbAboveSlider ? thumbConnectorMargin : 0)
-            //            rightMargin : (isVertical) ? 0 : (isThumbAboveSlider ? 0 : thumbConnectorMargin)
-            //            topMargin : (!isVertical) ? 0 : (isThumbAboveSlider ? thumbConnectorMargin : 0)
-            //            bottomMargin : (!isVertical) ? 0 : (isThumbAboveSlider ? 0 : thumbConnectorMargin)
-            //        }
-            //        color: visuals.thumbConnectorColor
-            //        opacity: thumb.shown ? 1.0 : 0.0
-            //        Behavior on opacity {
-            //            NumberAnimation {
-            //                duration: visuals.thumbConnectorFading.duration
-            //                easing: visuals.thumbConnectorFading.easing
-            //            }
-            //        }
-            //    }
-
             MouseArea {
                 id: thumbArea
 
-                //        property point thumbPoint: mapToPoint(thumb.mapFromItem(thumbArea, mouseX, mouseY))
-                //        property point thumbTopPoint: mapToPoint(thumbTop.mapFromItem(thumb, thumbPoint.x, thumbPoint.y))
-                //        property point thumbBottomPoint: mapToPoint(thumbBottom.mapFromItem(thumb, thumbPoint.x, thumbPoint.y))
-                //        property bool inThumbTop: thumbTop.contains(thumbTopPoint)
-                //        property bool inThumbBottom: thumbBottom.contains(thumbBottomPoint)
+                //Rectangle {
+                //    anchors.fill: parent
+                //    color: "pink"
+                //}
 
-                /*Rectangle {
-            anchors.fill: parent
-            color: "pink"
-        }*/
                 anchors {
                     fill: trough
                     // set margins adding 2 dp for error area
@@ -425,30 +454,7 @@ Item {
                     topMargin: (isVertical || topAligned) ?  0 : units.dp(-2)
                     bottomMargin: (isVertical || bottomAligned) ?  0 : units.dp(-2)
                 }
-                enabled: isScrollable && interactive
-                hoverEnabled: true
-                //onEntered: thumb.show()
-                //        onPressed: {
-                //            if (isVertical) {
-                //                if (mouseY < thumb.y) {
-                //                    thumb.placeThumbForeUnderMouse(mouse)
-                //                } else if (mouseY > (thumb.y + thumb.height)) {
-                //                    thumb.placeThumbRearUnderMouse(mouse)
-                //                }
-                //            } else {
-                //                if (mouseX < thumb.x) {
-                //                    thumb.placeThumbForeUnderMouse(mouse)
-                //                } else if (mouseX > (thumb.x + thumb.width)) {
-                //                    thumb.placeThumbRearUnderMouse(mouse)
-                //                }
-                //            }
-                //        }
-                //        onClicked: {
-                //            if (inThumbBottom)
-                //                slider.scroll(pageSize)
-                //            else if (inThumbTop)
-                //                slider.scroll(-pageSize)
-                //        }
+                enabled: isScrollable && interactive && alwaysOnScrollbars
                 onPressed: {
                     handlePress(mouse.x, mouse.y)
                     //don't start the press and hold timer to avoid conflicts with the drag
@@ -474,20 +480,22 @@ Item {
                     }
                 }
 
-                // Dragging behaviour
-                //        function resetDrag() {
-                //            thumbYStart = slider.y + marginFromEdge //thumb.y
-                //            thumbXStart = slider.x + marginFromEdge//thumb.x
-                //            dragYStart = drag.target.y
-                //            dragXStart = drag.target.x
-                //        }
+                function saveFlickableScrollingState() {
+                    originXAtDragStart = flickableItem.originX
+                    originYAtDragStart = flickableItem.originY
+                    contentXAtDragStart = flickableItem.contentX
+                    contentYAtDragStart = flickableItem.contentY
+                }
+                function resetFlickableToPreDragState() {
+                    flickableItem.contentX = originXAtDragStart + contentXAtDragStart
+                    flickableItem.contentY = originYAtDragStart + contentYAtDragStart
+                }
 
-                //property int thumbYStart
-                //property int dragYStart
-                //property int dragYAmount: thumbArea.drag.target.y - thumbArea.dragYStart
-                //property int thumbXStart
-                //property int dragXStart
-                //property int dragXAmount: thumbArea.drag.target.x - thumbArea.dragXStart
+                property int originXAtDragStart
+                property int originYAtDragStart
+                property int contentXAtDragStart
+                property int contentYAtDragStart
+
                 drag {
                     //don't start a drag while we're scrolling using press and hold
                     target: pressHoldTimer.running ? undefined : scrollCursor
@@ -498,28 +506,26 @@ Item {
                     maximumX: trough.width - slider.width
                     onActiveChanged: {
                         if (drag.active) {
-                            //resetDrag()
+                            thumbArea.saveFlickableScrollingState()
                             scrollCursor.drag()
                         }
                     }
+
+                    //NOTE: we need threshold to be 0, otherwise it will be impossible to drag
+                    //contentItems which have a size so that "flickableItem.height - contentItem.height < threshold"!!!
+                    threshold: 0
                 }
-                // update thumb position
-                //        onDragYAmountChanged: {
-                //            if (drag.active) {
-                //                thumb.y = MathUtils.clamp(thumbArea.thumbYStart + thumbArea.dragYAmount, 0, thumb.maximumPos);
-                //            }
-                //        }
-                //        onDragXAmountChanged: {
-                //            if (drag.active) {
-                //                thumb.x = MathUtils.clamp(thumbArea.thumbXStart + thumbArea.dragXAmount, 0, thumb.maximumPos);
-                //            }
-                //        }
 
                 // drag slider and content to the proper position
                 onPositionChanged: {
                     if (pressedButtons == Qt.LeftButton && drag.active) {
                         console.log("DRAGGING")
-                        scrollCursor.drag()
+                        if ((isVertical && Math.abs(mouse.x - thumbArea.x) >= flowContainer.thickness * 10)
+                                || (!isVertical && Math.abs(mouse.y - thumbArea.y) >= flowContainer.thickness * 10)) {
+                            resetFlickableToPreDragState()
+                        } else {
+                            scrollCursor.drag()
+                        }
                     }
                 }
 
@@ -530,7 +536,7 @@ Item {
                 Timer {
                     id: pressHoldTimer
 
-                    //This is needed to reuse the same timer to handle
+                    //This var is needed to reuse the same timer to handle
                     //both thumb and steppers press-and-hold
                     //NOTE: the item MUST provide a handlePress method
                     property MouseArea startedBy
@@ -570,11 +576,7 @@ Item {
                                  + (secondStepper.visible ? secondStepper.height : 0)
                                : trough.height
 
-            Rectangle {
-                anchors.fill: parent
-                color: "pink"
-            }
-
+            enabled: isScrollable && interactive
             visible: flowContainer.showSteppers
 
             function handlePress() {
@@ -595,40 +597,75 @@ Item {
             onReleased: pressHoldTimer.stop()
             onCanceled: pressHoldTimer.stop()
 
-            Rectangle {
+            Rectangle  {
                 id: firstStepper
+
+                color: trough.color
                 anchors {
                     left: parent.left //it's left in both cases, otherwise using RTL would break the layout of the arrow
                     right: isVertical ? parent.right : undefined
                     top: parent.top
                     bottom: !isVertical ? parent.bottom : undefined
                 }
-                //setting them to -1 is okay, as anchors will take care of the size
-                //in those cases
-                width: isVertical ? -1 : flowContainer.thickness
-                height: isVertical ? flowContainer.thickness : -1
-                color: "blue"
+                Binding {
+                    target: firstStepper
+                    property: "height"
+                    when: isVertical
+                    value: units.gu(3)
+                }
+                Binding {
+                    target: firstStepper
+                    property: "width"
+                    when: !isVertical
+                    value: units.gu(3)
+                }
+                Image {
+                    anchors.centerIn: parent
+                    fillMode: Image.PreserveAspectFit
+                    rotation: isVertical ? 180 : 90
+                    source: Qt.resolvedUrl("../artwork/scrollbar_arrow.png")
+                }
             }
             Rectangle {
                 id: secondStepper
+                color: trough.color
+
                 anchors {
                     left: isVertical ? parent.left : firstStepper.right
                     right: isVertical ? parent.right : undefined
                     top: !isVertical ? parent.top : firstStepper.bottom
                     bottom: !isVertical ? parent.bottom : undefined
                 }
-                width: isVertical ? -1 : flowContainer.thickness
-                height: isVertical ? flowContainer.thickness : -1
-                color: "red"
+
+                Binding {
+                    target: secondStepper
+                    property: "height"
+                    when: isVertical
+                    value: units.gu(3)
+                }
+                Binding {
+                    target: secondStepper
+                    property: "width"
+                    when: !isVertical
+                    value: units.gu(3)
+                }
+
+                Image {
+                    anchors.centerIn: parent
+                    fillMode: Image.PreserveAspectFit
+
+                    rotation: isVertical ? 0 : -90
+                    source: Qt.resolvedUrl("../artwork/scrollbar_arrow.png") //Qt.resolvedUrl("../artwork/scrollbar_arrow.png")
+                }
             }
         }
-        //just a rectangle which covers the corner where scrollbars meet, when they're in steppers style
+        //just a hack: a rectangle which covers the corner where scrollbars meet, when they're in steppers style
         Rectangle {
             id: cornerRect
             width: flowContainer.thickness
             height: width
             color: visuals.troughColorSteppersStyle
-            visible: flowContainer.showSteppers
+            visible: false //flowContainer.showSteppers
         }
     }
 
@@ -641,119 +678,21 @@ Item {
         //        Rectangle {
         //            anchors.fill: parent
         //            color:"red"
+        //            opacity:0.2
+        //            visible: parent.enabled
         //        }
 
-        anchors {
-            fill: parent
-            //            leftMargin: (!isVertical)  ? 0 : (frontAligned ? flowContainer.thickness : 0)
-            //            rightMargin: (!isVertical) ? 0 : (rearAligned ? flowContainer.thickness : 0)
-            //            topMargin: (isVertical) ? 0 : (topAligned ? flowContainer.thickness : 0)
-            //            bottomMargin: (isVertical) ? 0 : (bottomAligned ? flowContainer.thickness : 0)
-        }
+        anchors.fill: parent
         propagateComposedEvents: true
-        enabled: isScrollable && interactive
-        hoverEnabled: true
+        enabled: isScrollable && alwaysOnScrollbars && interactive
+        hoverEnabled: isScrollable && alwaysOnScrollbars && interactive
         onEntered: {
             console.log("PROXIMITY ENTERED")
-            //thumb.show();
         }
 
+        onPositionChanged: mouse.accepted = false
         onPressed: mouse.accepted = false
         onClicked: mouse.accepted = false
         onReleased: mouse.accepted = false
     }
-
-    Timer {
-        id: autohideTimer
-
-        interval: 1000
-        repeat: true
-        //onTriggered: if (!proximityArea.containsMouse && !thumbArea.containsMouse && !thumbArea.pressed) thumb.hide()
-    }
-
-    //    Item {
-    //        id: thumb
-    //        objectName: "interactiveScrollbarThumb"
-
-    //        enabled: interactive
-
-    //        anchors {
-    //            left: frontAligned ? slider.left : undefined
-    //            right: rearAligned ? slider.right : undefined
-    //            top: topAligned ? slider.top : undefined
-    //            bottom: bottomAligned ? slider.bottom : undefined
-    //        }
-
-    //        width: childrenRect.width
-    //        height: childrenRect.height
-
-    //        property bool shown
-    //        property int maximumPos: (isVertical) ? styledItem.height - thumb.height : styledItem.width - thumb.width
-
-    //        /* Show the thumb as close as possible to the mouse pointer */
-    //        onShownChanged: {
-    //            if (shown) {
-    //                if (isVertical) {
-    //                    var mouseY = proximityArea.containsMouse ? proximityArea.mouseY : thumbArea.mouseY;
-    //                    y = MathUtils.clamp(mouseY - thumb.height / 2, 0, thumb.maximumPos);
-    //                } else {
-    //                    var mouseX = proximityArea.containsMouse ? proximityArea.mouseX : thumbArea.mouseX;
-    //                    x = MathUtils.clamp(mouseX - thumb.width / 2, 0, thumb.maximumPos);
-    //                }
-    //            }
-    //        }
-
-    //        function show() {
-    //            autohideTimer.restart();
-    //            shown = true;
-    //        }
-
-    //        function hide() {
-    //            autohideTimer.stop();
-    //            shown = false;
-    //        }
-
-    //        function placeThumbForeUnderMouse(mouse) {
-    //            var diff = (isVertical) ? mouse.y - height / 4 : mouse.x - width / 4;
-    //            positionAnimation.to = MathUtils.clamp(diff, 0, maximumPos);
-    //            positionAnimation.restart();
-    //        }
-
-    //        function placeThumbRearUnderMouse(mouse) {
-    //            var diff = (isVertical) ? mouse.y - height * 3 / 4 : mouse.x - width * 3 / 4;
-    //            positionAnimation.to = MathUtils.clamp(diff, 0, maximumPos);
-    //            positionAnimation.restart();
-    //        }
-
-    //        NumberAnimation {
-    //            id: positionAnimation
-
-    //            duration: 100
-    //            easing.type: Easing.InOutQuad
-    //            target: thumb
-    //            property: (isVertical) ? "y" : "x"
-    //        }
-
-    //        opacity: shown ? (thumbArea.containsMouse || thumbArea.drag.active ? 1.0 : 0.5) : 0.0
-    //        Behavior on opacity {
-    //            NumberAnimation {
-    //                duration: visuals.thumbFading.duration
-    //                easing: visuals.thumbFading.easing
-    //            }
-    //        }
-
-    //        Flow {
-    //            // disable mirroring as thumbs are placed in the same way no matter of RTL or LTR
-    //            LayoutMirroring.enabled: false
-    //            flow: (isVertical) ? Flow.TopToBottom : Flow.LeftToRight
-    //            Image {
-    //                id: thumbTop
-    //                source: thumbArea.inThumbTop && thumbArea.pressed ? visuals.backwardThumbPressed : visuals.backwardThumbReleased
-    //            }
-    //            Image {
-    //                id: thumbBottom
-    //                source: thumbArea.inThumbBottom && thumbArea.pressed ? visuals.forwardThumbPressed : visuals.forwardThumbReleased
-    //            }
-    //        }
-    //    }
 }

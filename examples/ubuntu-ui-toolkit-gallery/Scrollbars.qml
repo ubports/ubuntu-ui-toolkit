@@ -125,5 +125,65 @@ Template {
             height: units.gu(2)
             color: "black"
         }
+
+
+        Item {
+            id: container4
+            width: units.gu(30)
+            height: units.gu(40)
+            ScrollView {
+                anchors.fill: parent
+
+                Flickable {
+                    id: flickable4
+                    anchors.fill: parent
+                    contentHeight: rect4.height
+                    contentWidth: rect4.width
+                    clip: true
+
+                    Rectangle {
+                        id: rect4
+                        color: "pink"
+                        width: units.gu(60)
+                        height: units.gu(50)
+                    }
+                }
+            }
+        }
+
+        Item {
+            id: container5
+
+            width: units.gu(60)
+            height: units.gu(40)
+
+            ScrollView {
+                anchors.fill: parent
+                alwaysOnScrollbars: true
+
+                Flickable {
+                    id: flickable5
+                    anchors.fill: parent
+                    contentHeight: rect5.height
+                    contentWidth: rect5.width
+                    Rectangle {
+                        id: rect5
+                        width: units.gu(60)
+                        height: units.gu(50)
+                        color: "blue"
+
+                        Button {
+                            id: rect5Btn
+                            color: "purple"
+                            text: "focus " + focus + " activeFocus " + activeFocus + "\n"
+                                    + "RECT focus " + parent.focus + " activeFocus " + parent.activeFocus
+                            anchors.fill: parent
+                            anchors.margins: units.gu(10)
+                            onClicked: rect4.width += units.gu(5)
+                        }
+                    }
+                }
+            }
+        }
     }
 }
