@@ -55,7 +55,7 @@ QString touchEventToString(const QTouchEvent *ev)
         message.append("INVALID_TOUCH_EVENT_TYPE ");
     }
 
-    foreach(const QTouchEvent::TouchPoint& touchPoint, ev->touchPoints()) {
+    Q_FOREACH(const QTouchEvent::TouchPoint& touchPoint, ev->touchPoints()) {
         message.append(
             QStringLiteral("(id:%1, state:%2, scenePos:(%3,%4)) ")
                 .arg(touchPoint.id())

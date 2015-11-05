@@ -31,9 +31,9 @@
 #pragma GCC diagnostic pop
 
 // local
-#include "TouchOwnershipEvent.h"
-#include "TouchRegistry.h"
-#include "UnownedTouchEvent.h"
+#include <TouchOwnershipEvent.h>
+#include <TouchRegistry.h>
+#include <UnownedTouchEvent.h>
 
 using namespace UbuntuGestures;
 

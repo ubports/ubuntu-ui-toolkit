@@ -17,7 +17,7 @@
 #ifndef UNITY_TOUCHREGISTRY_H
 #define UNITY_TOUCHREGISTRY_H
 
-#include <QQuickItem>
+#include <QtQuick/QQuickItem>
 #include <QObject>
 #include <QPointer>
 #include <QTouchEvent>
@@ -55,7 +55,7 @@ namespace UbuntuGestures {
         TouchRegistry::instance()->requestTouchOwnership(touchId, this);
      If he wants the touch point or:
         TouchRegistry::instance()->removeCandidateOwnerForTouch(touchId, this);
-     if he does not want it.
+     if he does not want it.
 
   Candidates are put in a priority queue. The first one to call addCandidateOwnerForTouch() will
   take precedence over the others for receiving ownership over the touch point (from now on called
