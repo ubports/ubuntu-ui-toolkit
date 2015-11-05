@@ -1,3 +1,8 @@
+!build_with_qt: {
+    #enable autocreation of include directory
+    CONFIG += git_build
+}
+
 load(qt_module)
 
 CONFIG -= create_cmake
