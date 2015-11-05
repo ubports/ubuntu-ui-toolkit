@@ -39,9 +39,6 @@ Item {
         State {
             name: "Inactive"
             extend: ""
-            StateChangeScript {
-                script: turnToIdleTimer.stop()
-            }
         },
         State {
             name: "Active"
@@ -71,11 +68,6 @@ Item {
                 target: h2
                 anchors.topMargin: 0
             }
-            PropertyChanges {
-                target: turnToIdleTimer
-                running: false
-
-            }
         }
     ]
     transitions: [
@@ -99,32 +91,6 @@ Item {
             }
         }
     ]
-
-    // FIXME: maybe use SwipeGesture once available
-    MultiPointTouchArea {
-        id: touchDetector
-        anchors.fill: parent
-        mouseEnabled: false
-        minimumTouchPoints: 1
-        maximumTouchPoints: 1
-
-        onGestureStarted: {
-            var point = gesture.touchPoints[0];
-            if (!styledItem.contains(Qt.point(point.x, point.y))) {
-                return;
-            }
-            hint.status = "Active";
-            turnToIdleTimer.stop();
-        }
-        onReleased: if (hint.status == BottomEdgeHint.Active) turnToIdleTimer.restart()
-    }
-
-    Timer {
-        id: turnToIdleTimer
-        interval: 800
-        repeat: false
-        onTriggered: hint.status = "Inactive"
-    }
 
     clip: true
 

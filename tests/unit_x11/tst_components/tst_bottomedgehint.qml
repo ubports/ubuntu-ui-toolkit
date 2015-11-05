@@ -92,6 +92,8 @@ MainView {
             compare(bottomEdgeHint.y, mainView.height - bottomEdgeHint.height);
             compare(bottomEdgeHint.flickable, null, "No flickable");
             compare(clickSpy.count, 0, "The BottomEdgeHint should not have received a click.");
+            compare(bottomEdgeHint.activateByGesture, true, "Set Active status by gesture");
+            compare(bottomEdgeHint.deactivateTimeout, 800, "default deactivationTimeout");
 
             // set the flickable
             bottomEdgeHint.flickable = listView;
@@ -195,13 +197,13 @@ MainView {
 
         // FIXME: must be executed before the test_hiding as flick with mouse affects
         // the touch drag on ListView for some unknown reason
-        function test_0_touch_gesture() {
+        function test_touch_gesture() {
             if (hasMouseAttached) {
                 skip("", "The test requires touch environment");
             }
             bottomEdgeHint.text = "Touch Activated";
-            var gestureStartPoint = Qt.point(centerOf(listView).x, listView.height - 10);
-            TestExtras.touchDrag(0, listView, gestureStartPoint, Qt.point(0, -units.gu(3)), 6);
+            var gestureStartPoint = Qt.point(centerOf(bottomEdgeHint).x, bottomEdgeHint.height - 1);
+            TestExtras.touchDrag(0, bottomEdgeHint, gestureStartPoint, Qt.point(0, -units.gu(8)), 6);
             tryCompare(bottomEdgeHint, "status", BottomEdgeHint.Active, 400);
             // then wait till we get back to Idle
             tryCompare(bottomEdgeHint, "status", BottomEdgeHint.Inactive, 1000);

@@ -176,6 +176,8 @@ Ubuntu.Components.ListItems.Base 1.3: Empty
     property bool iconFrame
     property bool progression
 Ubuntu.Components.BottomEdgeHint 1.3: StyledItem
+    property bool activateByGesture
+    property int deactivateTimeout
     property Flickable flickable
     property string iconName
     property url iconSource

@@ -31,6 +31,8 @@ class UCBottomEdgeHint : public UCStyledItemBase
     Q_PROPERTY(QString iconName MEMBER m_iconName NOTIFY iconNameChanged FINAL)
     Q_PROPERTY(QQuickFlickable *flickable MEMBER m_flickable WRITE setFlickable NOTIFY flickableChanged FINAL)
     Q_PROPERTY(Status status MEMBER m_status WRITE setStatus NOTIFY statusChanged FINAL)
+    Q_PROPERTY(bool activateByGesture MEMBER m_activateByGesture NOTIFY activateByGestureChanged FINAL)
+    Q_PROPERTY(int deactivateTimeout MEMBER m_deactivateTimeout WRITE setDeactivateTimeout NOTIFY deactivateTimeoutChanged FINAL)
     // deprecated
     Q_PROPERTY(QString state READ state WRITE setState NOTIFY stateChanged)
 public:
@@ -49,6 +51,8 @@ public:
     // deprecated
     QString state() const;
     void setState(const QString &state);
+    void setActivateByGesture(bool activate);
+    void setDeactivateTimeout(int timeout);
 
 Q_SIGNALS:
     void textChanged();
@@ -56,6 +60,8 @@ Q_SIGNALS:
     void iconNameChanged();
     void flickableChanged();
     void statusChanged();
+    void activateByGestureChanged();
+    void deactivateTimeoutChanged();
 
     void clicked();
 
@@ -63,16 +69,23 @@ Q_SIGNALS:
     void stateChanged();
 protected:
     void itemChange(ItemChange change, const ItemChangeData &data);
+    void timerEvent(QTimerEvent *event);
     void keyPressEvent(QKeyEvent *event);
+    void touchEvent(QTouchEvent *event);
+    bool eventFilter(QObject *, QEvent *);
 
     void handleFlickableActivation();
+    bool handleTouchEvent(QEvent::Type type, const QPointF &pos);
 
 private:
+    QBasicTimer m_deactivationTimer;
     QString m_text;
     QUrl m_iconSource;
     QString m_iconName;
     QQuickFlickable *m_flickable;
+    int m_deactivateTimeout;
     Status m_status;
+    bool m_activateByGesture;
 };
 
 #endif // UCBOTTOMEDGEHINT_H

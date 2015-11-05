@@ -19,8 +19,11 @@
 #include "ucbottomedgehint.h"
 #include "ucstyleditembase_p.h"
 #include "quickutils.h"
+#include "ucunits.h"
 #include <QtQml/private/qqmlproperty_p.h>
 #include <QtQuick/private/qquickflickable_p.h>
+#include <QtGui/QGuiApplication>
+#include <QtGui/QStyleHints>
 
 /*!
     \qmltype BottomEdgeHint
@@ -51,8 +54,10 @@
 UCBottomEdgeHint::UCBottomEdgeHint(QQuickItem *parent)
     : UCStyledItemBase(parent)
     , m_flickable(Q_NULLPTR)
+    , m_deactivateTimeout(800)
     // FIXME: we need QSystemInfo to be complete with the locked!!
     , m_status(QuickUtils::instance().touchScreenAvailable() ? Inactive : Locked)
+    , m_activateByGesture(true)
 {
     /*
      * we cannot use setStyleName as that will trigger style loading
@@ -78,6 +83,15 @@ void UCBottomEdgeHint::itemChange(ItemChange change, const ItemChangeData &data)
     }
 }
 
+void UCBottomEdgeHint::timerEvent(QTimerEvent *event)
+{
+    UCStyledItemBase::timerEvent(event);
+    if (event->timerId() == m_deactivationTimer.timerId()) {
+        setStatus(Inactive);
+        m_deactivationTimer.stop();
+    }
+}
+
 // handle clicked event when locked and enter or return is pressed
 void UCBottomEdgeHint::keyPressEvent(QKeyEvent *event)
 {
@@ -85,6 +99,83 @@ void UCBottomEdgeHint::keyPressEvent(QKeyEvent *event)
     if ((status() >= Active) && (event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)) {
         Q_EMIT clicked();
     }
+}
+
+// handle gesture detection
+void UCBottomEdgeHint::touchEvent(QTouchEvent *event)
+{
+    UCStyledItemBase::touchEvent(event);
+    bool accept = handleTouchEvent(event->type(), mapFromScene(event->touchPoints()[0].scenePos()));
+    event->setAccepted(accept);
+}
+
+bool UCBottomEdgeHint::eventFilter(QObject *target, QEvent *event)
+{
+    if (target == m_flickable) {
+        if (event->type() == QEvent::TouchBegin
+                || event->type() == QEvent::TouchUpdate
+                || event->type() == QEvent::TouchEnd
+                || event->type() == QEvent::TouchCancel) {
+            QTouchEvent *touch = static_cast<QTouchEvent*>(event);
+            return handleTouchEvent(event->type(), mapFromScene(touch->touchPoints()[0].scenePos()));
+        } else {
+            // pass it on
+            return false;
+        }
+    } else {
+        return UCStyledItemBase::eventFilter(target, event);
+    }
+}
+
+// return true if the event needs to be eaten, so no gesture is handled on the flickables!
+bool UCBottomEdgeHint::handleTouchEvent(QEvent::Type type, const QPointF &pos)
+{
+    if (!m_activateByGesture) {
+        return false;
+    }
+    static QPointF gestureStartPoint;
+    static bool recognitionStarted = false;
+    const qreal threshold = qApp->styleHints()->startDragDistance();
+    bool result = false;
+
+    switch (type) {
+    case QEvent::TouchBegin: {
+        // do not eat the event from flickable yet
+        // and only check the bottom 1GU size
+        QRectF area = QRectF(0, height() - UCUnits::instance().gu(1), width(), UCUnits::instance().gu(1));
+        if (area.contains(pos)) {
+            gestureStartPoint = pos;
+            recognitionStarted = true;
+            if (!m_flickable) {
+                // eat the event if there's no flickable attached
+                result = true;
+            }
+        }
+        break;
+    }
+    case QEvent::TouchUpdate: {
+        if (m_status < Active && recognitionStarted) {
+            // check the y coordinates only
+            if (abs(gestureStartPoint.y() - pos.y()) >= threshold) {
+                setStatus(Active);
+                m_deactivationTimer.stop();
+                // do not steal event from flickable, we only detect drags
+            }
+        }
+        break;
+    }
+    case QEvent::TouchEnd:
+    case QEvent::TouchCancel: {
+        gestureStartPoint = QPointF();
+        recognitionStarted = false;
+        if (m_status == Active) {
+            m_deactivationTimer.start(m_deactivateTimeout, this);
+        }
+        break;
+    }
+    default: break;
+    }
+    return result;
 }
 
 /*!
@@ -130,6 +221,9 @@ void UCBottomEdgeHint::setFlickable(QQuickFlickable *flickable)
                    this, &UCBottomEdgeHint::handleFlickableActivation);
         disconnect(m_flickable, &QQuickFlickable::movingChanged,
                    this, &UCBottomEdgeHint::handleFlickableActivation);
+        if (m_activateByGesture) {
+            m_flickable->removeEventFilter(this);
+        }
     }
     m_flickable = flickable;
     if (m_flickable) {
@@ -137,6 +231,9 @@ void UCBottomEdgeHint::setFlickable(QQuickFlickable *flickable)
                 this, &UCBottomEdgeHint::handleFlickableActivation, Qt::DirectConnection);
         connect(m_flickable, &QQuickFlickable::movingChanged,
                 this, &UCBottomEdgeHint::handleFlickableActivation, Qt::DirectConnection);
+        if (m_activateByGesture) {
+            m_flickable->installEventFilter(this);
+        }
     }
     Q_EMIT flickableChanged();
 }
@@ -144,9 +241,13 @@ void UCBottomEdgeHint::setFlickable(QQuickFlickable *flickable)
 // flickable moves hide the hint only if the current status is not Locked
 void UCBottomEdgeHint::handleFlickableActivation()
 {
-    bool moving = m_flickable->isFlicking() || m_flickable->isMoving();
-    if (m_status != Locked) {
-        setStatus(moving ? Hidden : Inactive);
+    if (m_status < Locked) {
+        bool moving = m_flickable->isFlicking() || m_flickable->isMoving();
+        if (moving) {
+            setStatus(Hidden);
+        } else if (m_status == Hidden) {
+            setStatus(Inactive);
+        }
     }
 }
 
@@ -242,5 +343,55 @@ void UCBottomEdgeHint::setStatus(Status status)
         return;
     }
     m_status = status;
+    // make sure we stop the deactivation timer if Inactive or Locked
+    if (status != Active && m_deactivationTimer.isActive()) {
+        m_deactivationTimer.stop();
+    }
     Q_EMIT statusChanged();
+}
+
+/*!
+ * \qmlproperty bool BottomEdgeHint::activateByGesture
+ * The property specifies whether the hint should be activated through a swipe
+ * gesture or not. When set, the hint \l status will be set to \e Active when a
+ * swipe gesture is performed from the bottom of the component. The \l status
+ * will stay \e Active as long as the \l deactivateTimeout value is reached, in
+ * which case the \l status will be set back to \e Inactive. When not set, the
+ * hint status will not be altered by any gesture, except when the attached \l
+ * flickable reports movements. Defaults to \b true.
+ */
+void UCBottomEdgeHint::setActivateByGesture(bool activate)
+{
+    if (m_activateByGesture == activate) {
+        return;
+    }
+    if (m_activateByGesture && m_flickable) {
+        m_flickable->removeEventFilter(this);
+    }
+    m_activateByGesture = activate;
+    if (m_activateByGesture && m_flickable) {
+        m_flickable->installEventFilter(this);
+    }
+    Q_EMIT activateByGestureChanged();
+}
+
+/*!
+ * \qmlproperty int BottomEdgeHint::deactivateTimeout
+ * The property specifies the timeout interval in milliseconds the \l status
+ * is set to \e Inactive after a gesture based activation. If \l activateByGesture
+ * is turned off, the timeout will not be taken into account. Defaults to 800
+ * milliseconds.
+ */
+
+void UCBottomEdgeHint::setDeactivateTimeout(int timeout)
+{
+    if (timeout == m_deactivateTimeout || timeout < 0) {
+        return;
+    }
+    m_deactivateTimeout = timeout;
+    if (m_deactivationTimer.isActive()) {
+        m_deactivationTimer.stop();
+        m_deactivationTimer.start(m_deactivateTimeout, this);
+    }
+    Q_EMIT deactivateTimeoutChanged();
 }
