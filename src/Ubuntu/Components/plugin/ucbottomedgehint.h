@@ -32,7 +32,6 @@ class UCBottomEdgeHint : public UCStyledItemBase
     Q_PROPERTY(QString iconName MEMBER m_iconName NOTIFY iconNameChanged FINAL)
     Q_PROPERTY(QQuickFlickable *flickable MEMBER m_flickable WRITE setFlickable NOTIFY flickableChanged FINAL)
     Q_PROPERTY(Status status MEMBER m_status WRITE setStatus NOTIFY statusChanged FINAL)
-    Q_PROPERTY(bool activateByGesture MEMBER m_activateByGesture NOTIFY activateByGestureChanged FINAL)
     Q_PROPERTY(int deactivateTimeout MEMBER m_deactivateTimeout WRITE setDeactivateTimeout NOTIFY deactivateTimeoutChanged FINAL)
     // deprecated
     Q_PROPERTY(QString state READ state WRITE setState NOTIFY stateChanged)
@@ -52,7 +51,6 @@ public:
     // deprecated
     QString state() const;
     void setState(const QString &state);
-    void setActivateByGesture(bool activate);
     void setDeactivateTimeout(int timeout);
 
 Q_SIGNALS:
@@ -61,7 +59,6 @@ Q_SIGNALS:
     void iconNameChanged();
     void flickableChanged();
     void statusChanged();
-    void activateByGestureChanged();
     void deactivateTimeoutChanged();
 
     void clicked();
@@ -87,7 +84,6 @@ private:
     QQuickFlickable *m_flickable;
     int m_deactivateTimeout;
     Status m_status;
-    bool m_activateByGesture;
 };
 
 #endif // UCBOTTOMEDGEHINT_H

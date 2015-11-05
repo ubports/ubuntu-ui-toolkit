@@ -92,7 +92,6 @@ MainView {
             compare(bottomEdgeHint.y, mainView.height - bottomEdgeHint.height);
             compare(bottomEdgeHint.flickable, null, "No flickable");
             compare(clickSpy.count, 0, "The BottomEdgeHint should not have received a click.");
-            compare(bottomEdgeHint.activateByGesture, true, "Set Active status by gesture");
             compare(bottomEdgeHint.deactivateTimeout, 800, "default deactivationTimeout");
 
             // set the flickable

@@ -56,7 +56,6 @@ UCBottomEdgeHint::UCBottomEdgeHint(QQuickItem *parent)
     , m_deactivateTimeout(800)
     // FIXME: we need QSystemInfo to be complete with the locked!!
     , m_status(QuickUtils::instance().touchScreenAvailable() ? Inactive : Locked)
-    , m_activateByGesture(true)
 {
     /*
      * we cannot use setStyleName as that will trigger style loading
@@ -176,9 +175,7 @@ void UCBottomEdgeHint::setFlickable(QQuickFlickable *flickable)
                    this, &UCBottomEdgeHint::handleFlickableActivation);
         disconnect(m_flickable, &QQuickFlickable::movingChanged,
                    this, &UCBottomEdgeHint::handleFlickableActivation);
-        if (m_activateByGesture) {
-            m_gestureDetector.removeItemFilter(m_flickable);
-        }
+        m_gestureDetector.removeItemFilter(m_flickable);
     }
     m_flickable = flickable;
     if (m_flickable) {
@@ -186,9 +183,7 @@ void UCBottomEdgeHint::setFlickable(QQuickFlickable *flickable)
                 this, &UCBottomEdgeHint::handleFlickableActivation, Qt::DirectConnection);
         connect(m_flickable, &QQuickFlickable::movingChanged,
                 this, &UCBottomEdgeHint::handleFlickableActivation, Qt::DirectConnection);
-        if (m_activateByGesture) {
-            m_gestureDetector.setItemFilter(m_flickable);
-        }
+        m_gestureDetector.setItemFilter(m_flickable);
     }
     Q_EMIT flickableChanged();
 }
@@ -306,35 +301,10 @@ void UCBottomEdgeHint::setStatus(Status status)
 }
 
 /*!
- * \qmlproperty bool BottomEdgeHint::activateByGesture
- * The property specifies whether the hint should be activated through a swipe
- * gesture or not. When set, the hint \l status will be set to \e Active when a
- * swipe gesture is performed from the bottom of the component. The \l status
- * will stay \e Active as long as the \l deactivateTimeout value is reached, in
- * which case the \l status will be set back to \e Inactive. When not set, the
- * hint status will not be altered by any gesture, except when the attached \l
- * flickable reports movements. Defaults to \b true.
- */
-void UCBottomEdgeHint::setActivateByGesture(bool activate)
-{
-    if (m_activateByGesture == activate) {
-        return;
-    }
-    if (m_activateByGesture && m_flickable) {
-        m_gestureDetector.removeItemFilter(m_flickable);
-    }
-    m_activateByGesture = activate;
-    if (m_activateByGesture && m_flickable) {
-        m_gestureDetector.setItemFilter(m_flickable);
-    }
-    Q_EMIT activateByGestureChanged();
-}
-
-/*!
  * \qmlproperty int BottomEdgeHint::deactivateTimeout
  * The property specifies the timeout interval in milliseconds the \l status
- * is set to \e Inactive after a gesture based activation. If \l activateByGesture
- * is turned off, the timeout will not be taken into account. Defaults to 800
+ * is set to \e Inactive after a gesture based activation. Gesture based activation
+ * is only possible when mouse is not attached to the device. Defaults to 800
  * milliseconds.
  */
 
