@@ -119,15 +119,6 @@ Item {
             anchors.top: parent.top
         }
 
-        MouseArea {
-            anchors.fill: parent
-            onClicked: {
-                Haptics.play();
-                styledItem.clicked();
-                mouse.accepted = false;
-            }
-        }
-
         Row {
             anchors {
                 top: parent.top

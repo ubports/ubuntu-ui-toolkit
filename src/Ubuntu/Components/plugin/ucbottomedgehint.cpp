@@ -56,6 +56,7 @@ UCBottomEdgeHint::UCBottomEdgeHint(QQuickItem *parent)
     , m_deactivateTimeout(800)
     // FIXME: we need QInputDeviceInfo to be complete with the locked!!
     , m_status(QuickUtils::instance().mouseAttached() ? Locked : Inactive)
+    , m_pressed(false)
 {
     /*
      * we cannot use setStyleName as that will trigger style loading
@@ -81,6 +82,9 @@ UCBottomEdgeHint::UCBottomEdgeHint(QQuickItem *parent)
             m_deactivationTimer.start(m_deactivateTimeout, this);
         }
     });
+
+    // accept mouse events
+    setAcceptedMouseButtons(Qt::LeftButton);
 }
 
 void UCBottomEdgeHint::itemChange(ItemChange change, const ItemChangeData &data)
@@ -123,6 +127,23 @@ void UCBottomEdgeHint::touchEvent(QTouchEvent *event)
         accept = true;
     }
     event->setAccepted(accept);
+}
+
+void UCBottomEdgeHint::mousePressEvent(QMouseEvent *event)
+{
+    if (contains(event->localPos()) && (m_status >= Active)) {
+        m_pressed = true;
+    } else {
+        UCStyledItemBase::mousePressEvent(event);
+    }
+}
+
+void UCBottomEdgeHint::mouseReleaseEvent(QMouseEvent *event)
+{
+    UCStyledItemBase::mouseReleaseEvent(event);
+    if (m_pressed && (m_status >= Active)) {
+        Q_EMIT clicked();
+    }
 }
 
 void UCBottomEdgeHint::onBottomUpSwipeDetected()

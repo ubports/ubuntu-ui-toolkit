@@ -125,20 +125,22 @@ MainView {
             tryCompare(bottomEdgeHint, "status", BottomEdgeHint.Hidden, 500);
         }
 
-        function test_clicking() {
-            bottomEdgeHint.status = BottomEdgeHint.Locked;
-            compare(bottomEdgeHint.status, BottomEdgeHint.Locked);
-            mouseClick(bottomEdgeHint, centerOf(bottomEdgeHint).x, centerOf(bottomEdgeHint).y);
-            clickSpy.wait(500);
+        function test_clicking_data() {
+            return [
+                {tag: "when Locked", status: BottomEdgeHint.Locked, xfail: false},
+                {tag: "when Active", status: BottomEdgeHint.Active, xfail: hasMouseAttached},
+                {tag: "when Inactive", status: BottomEdgeHint.Inactive, xfail: true},
+                {tag: "when Hidden", status: BottomEdgeHint.Hidden, xfail: true},
+            ];
         }
-
-        function test_no_clicking_while_unlocked() {
-            if (hasMouseAttached) {
-                skip("the test needs mouse not to be attached");
-            }
+        function test_clicking(data) {
+            bottomEdgeHint.status = data.status;
+            compare(bottomEdgeHint.status, data.status);
             mouseClick(bottomEdgeHint, centerOf(bottomEdgeHint).x, centerOf(bottomEdgeHint).y);
-            expectFail("", "No click if not Locked");
-            clickSpy.wait(200);
+            if (data.xfail) {
+                expectFailContinue(data.tag, "No click is expected");
+            }
+            clickSpy.wait(500);
         }
 
         function test_alter_deprecated_state_data() {

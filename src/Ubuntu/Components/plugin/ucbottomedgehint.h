@@ -70,6 +70,8 @@ protected:
     void timerEvent(QTimerEvent *event);
     void keyPressEvent(QKeyEvent *event);
     void touchEvent(QTouchEvent *event);
+    void mousePressEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
 
     void handleFlickableActivation();
     void onBottomUpSwipeDetected();
@@ -84,6 +86,7 @@ private:
     QQuickFlickable *m_flickable;
     int m_deactivateTimeout;
     Status m_status;
+    bool m_pressed:1;
 };
 
 #endif // UCBOTTOMEDGEHINT_H
