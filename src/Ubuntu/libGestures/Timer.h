@@ -1,24 +1,23 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright (C) 2014 Canonical, Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
+ * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; version 3.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
+ * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
+ * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 #ifndef UBUNTUGESTURES_TIMER_H
 #define UBUNTUGESTURES_TIMER_H
 
-#include "ubuntugesturesqmlglobal.h"
+#include "UbuntuGesturesGlobal.h"
 #include "TimeSource.h"
 
 #include <QObject>
@@ -28,7 +27,7 @@
 namespace UbuntuGestures {
 
 /* Defines an interface for a Timer. Useful for tests. */
-class UBUNTUGESTURESQML_EXPORT AbstractTimer : public QObject
+class UBUNTUGESTURES_EXPORT AbstractTimer : public QObject
 {
     Q_OBJECT
 public:
@@ -47,11 +46,11 @@ private:
 };
 
 /* Essentially a QTimer wrapper */
-class UBUNTUGESTURESQML_EXPORT Timer : public AbstractTimer
+class UBUNTUGESTURES_EXPORT Timer : public AbstractTimer
 {
     Q_OBJECT
 public:
-    Timer(QObject *parent = Q_NULLPTR);
+    Timer(QObject *parent = nullptr);
 
     int interval() const override;
     void setInterval(int msecs) override;
@@ -64,11 +63,11 @@ private:
 };
 
 /* For tests */
-class UBUNTUGESTURESQML_EXPORT FakeTimer : public AbstractTimer
+class UBUNTUGESTURES_EXPORT FakeTimer : public AbstractTimer
 {
     Q_OBJECT
 public:
-    FakeTimer(const SharedTimeSource &timeSource, QObject *parent = Q_NULLPTR);
+    FakeTimer(const SharedTimeSource &timeSource, QObject *parent = nullptr);
 
     void update();
     qint64 nextTimeoutTime() const { return m_nextTimeoutTime; }
@@ -85,20 +84,20 @@ private:
     qint64 m_nextTimeoutTime;
 };
 
-class UBUNTUGESTURESQML_EXPORT AbstractTimerFactory
+class UBUNTUGESTURES_EXPORT AbstractTimerFactory
 {
 public:
     virtual ~AbstractTimerFactory() {}
-    virtual AbstractTimer *createTimer(QObject *parent = Q_NULLPTR) = 0;
+    virtual AbstractTimer *createTimer(QObject *parent = nullptr) = 0;
 };
 
-class UBUNTUGESTURESQML_EXPORT TimerFactory : public AbstractTimerFactory
+class UBUNTUGESTURES_EXPORT TimerFactory : public AbstractTimerFactory
 {
 public:
-    AbstractTimer *createTimer(QObject *parent = Q_NULLPTR) override { return new Timer(parent); }
+    AbstractTimer *createTimer(QObject *parent = nullptr) override { return new Timer(parent); }
 };
 
-class UBUNTUGESTURESQML_EXPORT FakeTimerFactory : public AbstractTimerFactory
+class UBUNTUGESTURES_EXPORT FakeTimerFactory : public AbstractTimerFactory
 {
 public:
     FakeTimerFactory();
@@ -107,7 +106,7 @@ public:
     void updateTime(qint64 msecsSinceReference);
     QSharedPointer<TimeSource> timeSource() { return m_timeSource; }
 
-    AbstractTimer *createTimer(QObject *parent = Q_NULLPTR) override;
+    AbstractTimer *createTimer(QObject *parent = nullptr) override;
     QList<QPointer<FakeTimer>> timers;
 private:
     QSharedPointer<FakeTimeSource> m_timeSource;

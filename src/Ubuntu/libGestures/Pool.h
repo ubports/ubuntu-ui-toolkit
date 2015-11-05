@@ -1,24 +1,25 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright (C) 2014 Canonical, Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
+ * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; version 3.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
+ * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
+ * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 #ifndef UBUNTUGESTURES_POOL_H
 #define UBUNTUGESTURES_POOL_H
 
-#include <QtCore/QVector>
+#include <QVector>
+
+#include "UbuntuGesturesGlobal.h"
 
 /*
   An object pool.
@@ -51,7 +52,7 @@ public:
 
     class Iterator {
     public:
-        Iterator() : index(-1), item(Q_NULLPTR) {}
+        Iterator() : index(-1), item(nullptr) {}
         Iterator(int index, ItemType *item)
             : index(index), item(item) {}
 
@@ -67,7 +68,7 @@ public:
             return *this;
         }
 
-        operator bool() const { return item != Q_NULLPTR; }
+        operator bool() const { return item != nullptr; }
 
         int index;
         ItemType *item;

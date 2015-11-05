@@ -1,18 +1,17 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright (C) 2014 Canonical, Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
+ * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; version 3.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
+ * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
+ * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 #ifndef UNITY_TOUCHREGISTRY_H
@@ -24,7 +23,7 @@
 #include <QTouchEvent>
 #include <QVector>
 
-#include "ubuntugesturesqmlglobal.h"
+#include "UbuntuGesturesGlobal.h"
 #include "CandidateInactivityTimer.h"
 #include "Timer.h"
 #include "Pool.h"
@@ -56,7 +55,7 @@ namespace UbuntuGestures {
         TouchRegistry::instance()->requestTouchOwnership(touchId, this);
      If he wants the touch point or:
         TouchRegistry::instance()->removeCandidateOwnerForTouch(touchId, this);
-     if he does not want it.
+     if he does not want it.
 
   Candidates are put in a priority queue. The first one to call addCandidateOwnerForTouch() will
   take precedence over the others for receiving ownership over the touch point (from now on called
@@ -91,7 +90,7 @@ namespace UbuntuGestures {
 
   [1] - http://www.x.org/releases/X11R7.7/doc/inputproto/XI2proto.txt (see multitouch-ownership)
  */
-class UBUNTUGESTURESQML_EXPORT TouchRegistry : public QObject
+class UBUNTUGESTURES_EXPORT TouchRegistry : public QObject
 {
     Q_OBJECT
 public:
