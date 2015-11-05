@@ -20,6 +20,7 @@
 #define UCBOTTOMEDGEHINT_H
 
 #include "ucstyleditembase.h"
+#include "privates/gesturedetector.h"
 
 class QQuickFlickable;
 class UCBottomEdgeHint : public UCStyledItemBase
@@ -72,12 +73,13 @@ protected:
     void timerEvent(QTimerEvent *event);
     void keyPressEvent(QKeyEvent *event);
     void touchEvent(QTouchEvent *event);
-    bool eventFilter(QObject *, QEvent *);
 
     void handleFlickableActivation();
-    bool handleTouchEvent(QEvent::Type type, const QPointF &pos);
+    void onBottomUpSwipeDetected();
+    void onGestureStatusChanged(GestureDetector::Status status);
 
 private:
+    GestureDetector m_gestureDetector;
     QBasicTimer m_deactivationTimer;
     QString m_text;
     QUrl m_iconSource;
