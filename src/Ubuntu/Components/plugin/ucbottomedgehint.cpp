@@ -54,8 +54,8 @@ UCBottomEdgeHint::UCBottomEdgeHint(QQuickItem *parent)
     , m_gestureDetector(this)
     , m_flickable(Q_NULLPTR)
     , m_deactivateTimeout(800)
-    // FIXME: we need QSystemInfo to be complete with the locked!!
-    , m_status(QuickUtils::instance().touchScreenAvailable() ? Inactive : Locked)
+    // FIXME: we need QInputDeviceInfo to be complete with the locked!!
+    , m_status(QuickUtils::instance().mouseAttached() ? Locked : Inactive)
 {
     /*
      * we cannot use setStyleName as that will trigger style loading
@@ -73,6 +73,14 @@ UCBottomEdgeHint::UCBottomEdgeHint(QQuickItem *parent)
             this, &UCBottomEdgeHint::onBottomUpSwipeDetected);
     connect(&m_gestureDetector, &GestureDetector::statusChanged,
             this, &UCBottomEdgeHint::onGestureStatusChanged);
+
+    // FIXME: use QInputDeviceInfo once available
+    connect(&QuickUtils::instance(), &QuickUtils::mouseAttachedChanged, [this]() {
+        setStatus(QuickUtils::instance().mouseAttached() ? Locked : Active);
+        if (m_status == Active) {
+            m_deactivationTimer.start(m_deactivateTimeout, this);
+        }
+    });
 }
 
 void UCBottomEdgeHint::itemChange(ItemChange change, const ItemChangeData &data)
@@ -278,8 +286,8 @@ void UCBottomEdgeHint::setState(const QString &state)
   */
 UCBottomEdgeHint::Status UCBottomEdgeHint::status()
 {
-    // FIXME: we won't need this once we get the QSystemInfo reporting mouse attach/detach
-    if (!QuickUtils::instance().touchScreenAvailable()) {
+    // FIXME: we won't need this once we get the QInputDeviceInfo reporting mouse attach/detach
+    if (QuickUtils::instance().mouseAttached()) {
         m_status = Locked;
     }
     return m_status;
@@ -287,9 +295,9 @@ UCBottomEdgeHint::Status UCBottomEdgeHint::status()
 
 void UCBottomEdgeHint::setStatus(Status status)
 {
-    // FIXME: we need QSystemInfo to complete this!
+    // FIXME: we need QInputDeviceInfo to complete this!
     // cannot unlock if mouse is attached or we don't have touch screen available
-    if (status == m_status || (status != Locked && !QuickUtils::instance().touchScreenAvailable())) {
+    if (status == m_status || (status != Locked && QuickUtils::instance().mouseAttached())) {
         return;
     }
     m_status = status;

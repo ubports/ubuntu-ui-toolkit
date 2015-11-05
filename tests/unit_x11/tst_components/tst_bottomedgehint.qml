@@ -51,7 +51,7 @@ MainView {
 
         // FIXME: the criteria must be adjusted when QSystemInfo will report
         // attached mouses, till then we stick to the touch presence
-        property bool hasMouseAttached: !TestExtras.touchPresent
+        property bool hasMouseAttached: QuickUtils.mouseAttached
 
         SignalSpy {
             id: clickSpy
@@ -60,10 +60,12 @@ MainView {
         }
 
         function initTestCase() {
-            // FIXME: this test case must be adjusted after we get the QSystemInfo
+            // register test touch device
+            TestExtras.registerTouchDevice();
+
+            // FIXME: this test case must be adjusted after we get the QInputDeviceInfo
             // available to detect attached mouse
             // the test must be executed before we register touch device
-            var prevValue = bottomEdgeHint.status;
             if (!hasMouseAttached) {
                 // we don't have mouse attached, so we should be able to lock/unlock
                 compare(bottomEdgeHint.status, BottomEdgeHint.Inactive, "Wrong initial status when no mouse attached");
@@ -75,9 +77,8 @@ MainView {
                 bottomEdgeHint.status = BottomEdgeHint.Inactive;
                 compare(bottomEdgeHint.status, BottomEdgeHint.Locked, "The bottom edge must not be unlockable as long as mouse is attached!");
             }
+            QuickUtils.mouseAttached = !QuickUtils.mouseAttached;
 
-            // register test touch device
-            TestExtras.registerTouchDevice();
             // and then turn locked off if possible
             bottomEdgeHint.status = BottomEdgeHint.Inactive;
             if (!hasMouseAttached) {
