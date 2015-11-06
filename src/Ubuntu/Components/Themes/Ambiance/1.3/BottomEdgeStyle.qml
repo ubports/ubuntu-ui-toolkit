@@ -42,14 +42,6 @@ BottomEdgeStyle {
         color: backgroundColor
     }
 
-    // lock the hint while dragging
-    Binding {
-        target: bottomEdge.hint
-        when: bottomEdge.hint && bottomEdge.state > BottomEdge.Hidden
-        property: "locked"
-        value: true
-    }
-
     Rectangle {
         id: panelItem
         objectName: "bottomedge_panel"
@@ -63,6 +55,31 @@ BottomEdgeStyle {
         opacity: y < bottomEdge.height ? 1.0 : 0.0
 
         Behavior on y { UbuntuNumberAnimation { id: panelBehavior } }
+
+        state: {
+            switch (bottomEdge.state) {
+            case BottomEdge.Revealed: return "Revealed"
+            case BottomEdge.Committed: return "Committed"
+            default: return ""
+            }
+        }
+
+        states: [
+            State {
+                name: "Revealed"
+                PropertyChanges {
+                    target: bottomEdge.hint
+                    status: BottomEdgeHint.Locked
+                }
+            },
+            State {
+                name: "Committed"
+                PropertyChanges {
+                    target: bottomEdge.hint
+                    status: BottomEdgeHint.Locked
+                }
+            }
+        ]
 
         // shadow
         Rectangle {
@@ -97,8 +114,14 @@ BottomEdgeStyle {
         property bool inArea: false
         property bool firstOut: true
         property point prevTouchPoint
-        Connections {
-            target: bottomEdge.hint.__styleInstance.touchArea
+        MultiPointTouchArea {
+            parent: bottomEdge.hint
+            anchors.fill: parent
+            minimumTouchPoints: 1
+            maximumTouchPoints: 1
+            mouseEnabled: false
+//            enabled: bottomEdge.hint.status >= BottomEdgeHint.Active
+
             onGestureStarted: {
                 var point = gesture.touchPoints[0];
                 point = Qt.point(point.x, point.y);
@@ -132,8 +155,7 @@ BottomEdgeStyle {
             parent: bottomEdge.hint
             anchors.fill: parent
             enabled: bottomEdge.hint &&
-                     (bottomEdge.hint.__styleInstance.state == "Active"
-                      || bottomEdge.hint.locked)
+                     bottomEdge.hint.status >= BottomEdgeHint.Active
 
             drag {
                 axis: Drag.YAxis

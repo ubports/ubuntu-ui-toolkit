@@ -317,11 +317,14 @@ void UCBottomEdgeHint::setStatus(Status status)
     if (status == m_status || (status != Locked && QuickUtils::instance().mouseAttached())) {
         return;
     }
-    m_status = status;
-    // make sure we stop the deactivation timer if Inactive or Locked
-    if (status != Active && m_deactivationTimer.isActive()) {
+    // if the previous state was Locked and the new one is Active, start deactivation timer
+    if (m_status == Locked && status == Active && !m_deactivationTimer.isActive()) {
+        m_deactivationTimer.start(m_deactivateTimeout, this);
+    } else if (status != Active && m_deactivationTimer.isActive()) {
+        // make sure we stop the deactivation timer if Inactive or Locked
         m_deactivationTimer.stop();
     }
+    m_status = status;
     Q_EMIT statusChanged();
 }
 

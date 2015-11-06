@@ -81,6 +81,7 @@ Page {
             text: "Compose a new message"
             iconName: "stock_message"
             flickable: listView
+            deactivateTimeout: 1000
         }
         height: page.height// - units.gu(6)
         contentComponent: bottomEdgeContent
