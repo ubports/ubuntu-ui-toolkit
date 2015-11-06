@@ -93,8 +93,8 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/uclistitemlayout.h \
     $$PWD/privates/threelabelsslot_p.h \
     $$PWD/ucimportversionchecker_p.h \
-    $$PWD/gestures/ucdirectionaldragarea.h \
-    $$PWD/gestures/ucdirectionaldragarea_p.h \
+    $$PWD/gestures/ucswipearea.h \
+    $$PWD/gestures/ucswipearea_p.h \
     $$PWD/gestures/axisvelocitycalculator.h \
     $$PWD/gestures/damper.h \
     $$PWD/gestures/ubuntugesturesqmlglobal.h \
@@ -161,7 +161,7 @@ SOURCES += $$PWD/plugin.cpp \
     $$PWD/uclistitemlayout.cpp \
     $$PWD/privates/threelabelsslot_p.cpp \
     $$PWD/ucimportversionchecker_p.cpp \
-    $$PWD/gestures/ucdirectionaldragarea.cpp \
+    $$PWD/gestures/ucswipearea.cpp \
     $$PWD/gestures/axisvelocitycalculator.cpp \
 
 # adapters

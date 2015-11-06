@@ -15,10 +15,10 @@
  *
  */
 
-#ifndef DIRECTIONAL_DRAG_AREA_PRIV_H
-#define DIRECTIONAL_DRAG_AREA_PRIV_H
+#ifndef UCSWIPEAREAPRIVATE_H
+#define UCSWIPEAREAPRIVATE_H
 
-#include "ucdirectionaldragarea.h"
+#include "ucswipearea.h"
 
 // Information about an active touch point
 struct UBUNTUGESTURESQML_EXPORT ActiveTouchInfo {
@@ -46,13 +46,13 @@ private:
     Pool<ActiveTouchInfo> m_touchInfoPool;
 };
 
-class UBUNTUGESTURESQML_EXPORT UCDirectionalDragAreaPrivate : public QObject
+class UBUNTUGESTURESQML_EXPORT UCSwipeAreaPrivate : public QObject
 {
     Q_OBJECT
 
     Q_ENUMS(Status)
 public:
-    UCDirectionalDragAreaPrivate(UCDirectionalDragArea *q);
+    UCSwipeAreaPrivate(UCSwipeArea *q);
 
 public Q_SLOTS:
     void giveUpIfDisabledOrInvisible();
@@ -115,7 +115,7 @@ public:
     // Useful for testing, where a fake time source can be supplied
     void setTimeSource(const UbuntuGestures::SharedTimeSource &timeSource);
 
-    UCDirectionalDragArea *q;
+    UCSwipeArea *q;
 
     // The current status of the directional drag gesture area.
     Status status;
@@ -138,7 +138,7 @@ public:
     // Unit vector in scene coordinates describing the direction of the gesture recognition
     QPointF sceneDirectionVector;
 
-    UCDirectionalDragArea::Direction direction;
+    UCSwipeArea::Direction direction;
 
     // How far a touch point has to move from its initial position along the gesture axis in order
     // for it to be recognized as a directional drag.
@@ -168,4 +168,4 @@ Q_SIGNALS:
     void statusChanged(Status value);
 };
 
-#endif // DIRECTIONAL_DRAG_AREA_PRIV_H
+#endif // UCSWIPEAREAPRIVATE_H

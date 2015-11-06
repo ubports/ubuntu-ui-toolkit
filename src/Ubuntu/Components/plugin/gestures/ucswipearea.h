@@ -15,8 +15,8 @@
  *
  */
 
-#ifndef DIRECTIONAL_DRAG_AREA_H
-#define DIRECTIONAL_DRAG_AREA_H
+#ifndef UCSWIPEAREA_H
+#define UCSWIPEAREA_H
 
 #include <QtQuick/QQuickItem>
 #include "ubuntugesturesqmlglobal.h"
@@ -28,7 +28,7 @@
 
 class TouchOwnershipEvent;
 class UnownedTouchEvent;
-class UCDirectionalDragAreaPrivate;
+class UCSwipeAreaPrivate;
 
 /*
  An area that detects axis-aligned single-finger drag gestures
@@ -39,7 +39,7 @@ class UCDirectionalDragAreaPrivate;
 
  See doc/DirectionalDragArea.svg
  */
-class UBUNTUGESTURESQML_EXPORT UCDirectionalDragArea : public QQuickItem
+class UBUNTUGESTURESQML_EXPORT UCSwipeArea : public QQuickItem
 {
     Q_OBJECT
 
@@ -47,11 +47,11 @@ class UBUNTUGESTURESQML_EXPORT UCDirectionalDragArea : public QQuickItem
     Q_PROPERTY(Direction direction READ direction WRITE setDirection NOTIFY directionChanged)
 
     // The distance travelled by the finger along the axis specified by
-    // UCDirectionalDragArea's direction.
+    // UCSwipeArea's direction.
     Q_PROPERTY(qreal distance READ distance NOTIFY distanceChanged)
 
     // The distance travelled by the finger along the axis specified by
-    // UCDirectionalDragArea's direction in scene coordinates
+    // UCSwipeArea's direction in scene coordinates
     Q_PROPERTY(qreal sceneDistance READ sceneDistance NOTIFY sceneDistanceChanged)
 
     // Position of the touch point performing the drag relative to this item.
@@ -87,7 +87,7 @@ public:
         Vertical // Along the Y axis, in any direction
     };
 
-    UCDirectionalDragArea(QQuickItem *parent = 0);
+    UCSwipeArea(QQuickItem *parent = 0);
 
     Direction direction() const;
     void setDirection(Direction);
@@ -114,7 +114,7 @@ public:
       Thus to remove a variable that qmltests cannot really control, namely time, this
       function removes all constraints that are sensible to elapsed time.
 
-      This effectively makes the UCDirectionalDragArea easier to fool.
+      This effectively makes the UCSwipeArea easier to fool.
      */
     Q_INVOKABLE void removeTimeConstraints();
 
@@ -133,7 +133,7 @@ protected:
     void itemChange(ItemChange change, const ItemChangeData &value) override;
 
 public: // so tests can access it
-    UCDirectionalDragAreaPrivate *d;
+    UCSwipeAreaPrivate *d;
 };
 
-#endif // DIRECTIONAL_DRAG_AREA_H
+#endif // UCSWIPEAREA_H
