@@ -94,6 +94,7 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/privates/threelabelsslot_p.h \
     $$PWD/ucimportversionchecker_p.h \
     $$PWD/ucbottomedgehint.h \
+    $$PWD/privates/gesturedetector.h \
     $$PWD/ucbottomedge.h \
     $$PWD/ucbottomedge_p.h \
     $$PWD/ucbottomedgerange.h \
@@ -162,6 +163,7 @@ SOURCES += $$PWD/plugin.cpp \
     $$PWD/privates/threelabelsslot_p.cpp \
     $$PWD/ucimportversionchecker_p.cpp \
     $$PWD/ucbottomedgehint.cpp \
+    $$PWD/privates/gesturedetector.cpp \
     $$PWD/ucbottomedge.cpp \
     $$PWD/ucbottomedgerange.cpp \
     $$PWD/ucbottomedgestyle.cpp \

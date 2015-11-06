@@ -51,7 +51,7 @@ MainView {
 
         // FIXME: the criteria must be adjusted when QSystemInfo will report
         // attached mouses, till then we stick to the touch presence
-        property bool hasMouseAttached: !TestExtras.touchPresent
+        property bool hasMouseAttached: QuickUtils.mouseAttached
 
         SignalSpy {
             id: clickSpy
@@ -60,25 +60,30 @@ MainView {
         }
 
         function initTestCase() {
-            // FIXME: this test case must be adjusted after we get the QSystemInfo
-            // available to detect attached mouse
-            // the test must be executed before we register touch device
-            var prevValue = bottomEdgeHint.locked;
-            if (!hasMouseAttached) {
-                // we don't have mouse attached, so we should be able to lock/unlock
-                bottomEdgeHint.locked = !bottomEdgeHint.locked;
-                compare(bottomEdgeHint.locked, !prevValue, "Could not toggle locked");
-            } else {
-                // we have the mouse attached, should not be able to unlock it
-                compare(bottomEdgeHint.locked, true, "The bottom edge is not locked!");
-                bottomEdgeHint.locked = false;
-                compare(bottomEdgeHint.locked, true, "The bottom edge must not be unlockable as long as mouse is attached!");
-            }
-
             // register test touch device
             TestExtras.registerTouchDevice();
+
+            // FIXME: this test case must be adjusted after we get the QInputDeviceInfo
+            // available to detect attached mouse
+            // the test must be executed before we register touch device
+            if (!hasMouseAttached) {
+                // we don't have mouse attached, so we should be able to lock/unlock
+                compare(bottomEdgeHint.status, BottomEdgeHint.Inactive, "Wrong initial status when no mouse attached");
+                bottomEdgeHint.status = BottomEdgeHint.Locked;
+                compare(bottomEdgeHint.status, BottomEdgeHint.Locked, "Could not toggle status");
+            } else {
+                // we have the mouse attached, should not be able to unlock it
+                compare(bottomEdgeHint.status, BottomEdgeHint.Locked, "Wrong initial status when mouse attached");
+                bottomEdgeHint.status = BottomEdgeHint.Inactive;
+                compare(bottomEdgeHint.status, BottomEdgeHint.Locked, "The bottom edge must not be unlockable as long as mouse is attached!");
+            }
+            QuickUtils.mouseAttached = !QuickUtils.mouseAttached;
+
             // and then turn locked off if possible
-            bottomEdgeHint.locked = false;
+            bottomEdgeHint.status = BottomEdgeHint.Inactive;
+            if (!hasMouseAttached) {
+                compare(bottomEdgeHint.status, BottomEdgeHint.Inactive, "Cannot unlock hint!");
+            }
 
             // defaults
             compare(bottomEdgeHint.iconName, "");
@@ -88,6 +93,7 @@ MainView {
             compare(bottomEdgeHint.y, mainView.height - bottomEdgeHint.height);
             compare(bottomEdgeHint.flickable, null, "No flickable");
             compare(clickSpy.count, 0, "The BottomEdgeHint should not have received a click.");
+            compare(bottomEdgeHint.deactivateTimeout, 800, "default deactivationTimeout");
 
             // set the flickable
             bottomEdgeHint.flickable = listView;
@@ -97,9 +103,7 @@ MainView {
             listView.positionViewAtBeginning();
             bottomEdgeHint.visible = true;
             bottomEdgeHint.iconName = "";
-            if (!hasMouseAttached) {
-                bottomEdgeHint.locked = false;
-            }
+            bottomEdgeHint.status = BottomEdgeHint.Inactive;
             clickSpy.clear();
             wait(400);
         }
@@ -107,40 +111,48 @@ MainView {
         function test_hiding() {
             var flickDy = listView.height - units.gu(5);
             flick(listView, centerOf(listView).x, flickDy, centerOf(listView).x, -flickDy, 0, 6);
-            tryCompare(bottomEdgeHint, "opacity", 0.0);
-        }
-
-        function test_clicking() {
-            bottomEdgeHint.locked = true;
-            compare(bottomEdgeHint.locked, true);
-            mouseClick(bottomEdgeHint, centerOf(bottomEdgeHint).x, centerOf(bottomEdgeHint).y);
-            clickSpy.wait();
-        }
-
-        function test_no_clicking_while_unlocked() {
             if (hasMouseAttached) {
-                skip("the test needs mouse not to be attached");
+                expectFailContinue("", "No hiding when mouse attached");
             }
-            mouseClick(bottomEdgeHint, centerOf(bottomEdgeHint).x, centerOf(bottomEdgeHint).y);
-            expectFail("", "No click if not Locked");
-            clickSpy.wait(200);
+            tryCompare(bottomEdgeHint, "status", BottomEdgeHint.Hidden);
         }
 
-        function test_deprecated_state() {
-            ignoreWarning(warningFormat(37, 5, "QML BottomEdgeHint: 'state' property deprecated, will be removed from 1.3 release. Use 'locked' property to lock the visuals"));
-            bottomEdgeHint.state = "Whatever";
+        function test_no_hiding_when_locked() {
+            var flickDy = listView.height - units.gu(10);
+            bottomEdgeHint.status = BottomEdgeHint.Locked;
+            flick(listView, centerOf(listView).x, flickDy, centerOf(listView).x, -flickDy, 0, 6);
+            expectFailContinue("", "No hiding when Locked");
+            tryCompare(bottomEdgeHint, "status", BottomEdgeHint.Hidden, 500);
+        }
+
+        function test_clicking_data() {
+            return [
+                {tag: "when Locked", status: BottomEdgeHint.Locked, xfail: false},
+                {tag: "when Active", status: BottomEdgeHint.Active, xfail: hasMouseAttached},
+                {tag: "when Inactive", status: BottomEdgeHint.Inactive, xfail: true},
+                {tag: "when Hidden", status: BottomEdgeHint.Hidden, xfail: true},
+            ];
+        }
+        function test_clicking(data) {
+            bottomEdgeHint.status = data.status;
+            compare(bottomEdgeHint.status, data.status);
+            mouseClick(bottomEdgeHint, centerOf(bottomEdgeHint).x, centerOf(bottomEdgeHint).y);
+            if (data.xfail) {
+                expectFailContinue(data.tag, "No click is expected");
+            }
+            clickSpy.wait(500);
         }
 
         function test_alter_deprecated_state_data() {
             return [
-                {tag: "Hidden", styleState: "Hidden"},
-                {tag: "Visible", styleState: "Idle"},
+                {tag: "Hidden", status: BottomEdgeHint.Hidden},
+                {tag: "Visible", status: BottomEdgeHint.Inactive},
             ];
         }
         function test_alter_deprecated_state(data) {
-            ignoreWarning(warningFormat(37, 5, "QML BottomEdgeHint: 'state' property deprecated, will be removed from 1.3 release. Use 'locked' property to lock the visuals"));
+            ignoreWarning(warningFormat(37, 5, "QML BottomEdgeHint: Overloaded 'state' property deprecated, will be removed from 1.3 release. Use 'status' instead."));
             bottomEdgeHint.state = data.tag;
-            compare(bottomEdgeHint.__styleInstance.state, data.styleState, "Wrong component visual state: " + data.tag);
+            compare(bottomEdgeHint.status, data.status, "Wrong component status: " + data.status);
         }
 
         function test_anchoring() {
@@ -156,7 +168,7 @@ MainView {
             ];
         }
         function test_no_clicking(data) {
-            bottomEdgeHint.locked = true;
+            bottomEdgeHint.status = BottomEdgeHint.Locked;
             bottomEdgeHint[data.property] = false;
             mouseClick(bottomEdgeHint, centerOf(bottomEdgeHint).x, centerOf(bottomEdgeHint).y);
             expectFailContinue("", "No click " + data.tag);
@@ -165,37 +177,38 @@ MainView {
 
         function test_activate_by_key_data() {
             return [
-                {tag: "enter and unlocked", key: Qt.Key_Return, locked: false},
-                {tag: "return and unlocked", key: Qt.Key_Enter, locked: false},
-                {tag: "enter and locked", key: Qt.Key_Return, locked: true},
-                {tag: "return and locked", key: Qt.Key_Enter, locked: true},
+                {tag: "enter and unlocked", key: Qt.Key_Return, status: BottomEdgeHint.Inactive},
+                {tag: "return and unlocked", key: Qt.Key_Enter, status: BottomEdgeHint.Inactive},
+                {tag: "enter and locked", key: Qt.Key_Return, status: BottomEdgeHint.Locked},
+                {tag: "return and locked", key: Qt.Key_Enter, status: BottomEdgeHint.Locked},
             ];
         }
         function test_activate_by_key(data) {
             if (hasMouseAttached && !data.locked) {
                 skip(data.tag, "Test requires ability to unlock");
             }
-            bottomEdgeHint.locked = data.locked;
+            bottomEdgeHint.status = data.status;
             bottomEdgeHint.forceActiveFocus();
             keyPress(data.key);
-            if (!bottomEdgeHint.locked) {
+            if (bottomEdgeHint.status != BottomEdgeHint.Locked) {
                 expectFailContinue(data.tag, "should fail");
             }
             clickSpy.wait(400);
             keyRelease(data.key);
         }
 
-        // FIXME: must be executed before the test_hiding as flick with mouse affects the touch drag for some unknown reason
-        function test_0_touch_gesture() {
+        // FIXME: must be executed before the test_hiding as flick with mouse affects
+        // the touch drag on ListView for some unknown reason
+        function test_touch_gesture() {
             if (hasMouseAttached) {
                 skip("", "The test requires touch environment");
             }
             bottomEdgeHint.text = "Touch Activated";
-            var gestureStartPoint = Qt.point(centerOf(listView).x, listView.height - 10);
-            TestExtras.touchDrag(0, listView, gestureStartPoint, Qt.point(0, -units.gu(3)), 6);
-            tryCompare(bottomEdgeHint.__styleInstance, "state", "Active", 400);
+            var gestureStartPoint = Qt.point(centerOf(bottomEdgeHint).x, bottomEdgeHint.height - 1);
+            TestExtras.touchDrag(0, bottomEdgeHint, gestureStartPoint, Qt.point(0, -units.gu(8)), 6);
+            tryCompare(bottomEdgeHint, "status", BottomEdgeHint.Active, 400);
             // then wait till we get back to Idle
-            tryCompare(bottomEdgeHint.__styleInstance, "state", "Idle", 1000);
+            tryCompare(bottomEdgeHint, "status", BottomEdgeHint.Inactive, 1000);
         }
     }
 }

@@ -20,35 +20,46 @@
 #define UCBOTTOMEDGEHINT_H
 
 #include "ucstyleditembase.h"
+#include "privates/gesturedetector.h"
 
 class QQuickFlickable;
 class UCBottomEdgeHint : public UCStyledItemBase
 {
     Q_OBJECT
+    Q_ENUMS(Status)
     Q_PROPERTY(QString text MEMBER m_text NOTIFY textChanged FINAL)
     Q_PROPERTY(QUrl iconSource MEMBER m_iconSource NOTIFY iconSourceChanged FINAL)
     Q_PROPERTY(QString iconName MEMBER m_iconName NOTIFY iconNameChanged FINAL)
-    Q_PROPERTY(QQuickFlickable *flickable MEMBER m_flickable NOTIFY flickableChanged FINAL)
-    Q_PROPERTY(bool locked READ locked WRITE setLocked NOTIFY lockedChanged FINAL)
+    Q_PROPERTY(QQuickFlickable *flickable MEMBER m_flickable WRITE setFlickable NOTIFY flickableChanged FINAL)
+    Q_PROPERTY(Status status MEMBER m_status WRITE setStatus NOTIFY statusChanged FINAL)
+    Q_PROPERTY(int deactivateTimeout MEMBER m_deactivateTimeout WRITE setDeactivateTimeout NOTIFY deactivateTimeoutChanged FINAL)
     // deprecated
     Q_PROPERTY(QString state READ state WRITE setState NOTIFY stateChanged)
 public:
-
+    enum Status {
+        Hidden,
+        Inactive,
+        Active,
+        Locked
+    };
     explicit UCBottomEdgeHint(QQuickItem *parent = 0);
 
-    bool locked();
-    void setLocked(bool locked);
+    void setFlickable(QQuickFlickable *flickable);
+    Status status();
+    void setStatus(Status status);
 
     // deprecated
     QString state() const;
     void setState(const QString &state);
+    void setDeactivateTimeout(int timeout);
 
 Q_SIGNALS:
     void textChanged();
     void iconSourceChanged();
     void iconNameChanged();
     void flickableChanged();
-    void lockedChanged();
+    void statusChanged();
+    void deactivateTimeoutChanged();
 
     void clicked();
 
@@ -56,14 +67,26 @@ Q_SIGNALS:
     void stateChanged();
 protected:
     void itemChange(ItemChange change, const ItemChangeData &data);
+    void timerEvent(QTimerEvent *event);
     void keyPressEvent(QKeyEvent *event);
+    void touchEvent(QTouchEvent *event);
+    void mousePressEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
+
+    void handleFlickableActivation();
+    void onBottomUpSwipeDetected();
+    void onGestureStatusChanged(GestureDetector::Status status);
 
 private:
+    GestureDetector m_gestureDetector;
+    QBasicTimer m_deactivationTimer;
     QString m_text;
     QUrl m_iconSource;
     QString m_iconName;
     QQuickFlickable *m_flickable;
-    bool m_locked:1;
+    int m_deactivateTimeout;
+    Status m_status;
+    bool m_pressed:1;
 };
 
 #endif // UCBOTTOMEDGEHINT_H

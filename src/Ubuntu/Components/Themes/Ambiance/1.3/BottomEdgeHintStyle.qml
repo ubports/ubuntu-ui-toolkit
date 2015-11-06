@@ -23,24 +23,22 @@ Item {
     implicitWidth: styledItem.parent.width
     implicitHeight: units.gu(4)
 
-    property alias touchArea: touchDetector
+    readonly property BottomEdgeHint hint: styledItem
 
-    // initial state
-    state: styledItem.locked ? "Locked" : "Idle"
-    onStateChanged: print(state)
-
-    Connections {
-        target: styledItem
-        onLockedChanged: bottomEdgeHintStyle.state = styledItem.locked ? "Locked" : "Idle"
+    // translate hint status into state
+    state: {
+        switch (hint.status) {
+        case BottomEdgeHint.Hidden: return "Hidden";
+        case BottomEdgeHint.Inactive: return "Inactive"
+        case BottomEdgeHint.Active: return "Active"
+        case BottomEdgeHint.Locked: return "Locked"
+        }
     }
 
     states: [
         State {
-            name: "Idle"
+            name: "Inactive"
             extend: ""
-            StateChangeScript {
-                script: turnToIdleTimer.stop()
-            }
         },
         State {
             name: "Active"
@@ -55,14 +53,11 @@ Item {
         },
         State {
             name: "Hidden"
-            when: styledItem.flickable && (styledItem.flickable.flicking || styledItem.flickable.moving)
             PropertyChanges {
                 target: styledItem
                 opacity: 0.0
             }
         },
-        // FIXME: locked should be set and be final if mouse is attached
-        // requires QSystemInfo support, which is ongoing work upstream
         State {
             name: "Locked"
             PropertyChanges {
@@ -72,11 +67,6 @@ Item {
             PropertyChanges {
                 target: h2
                 anchors.topMargin: 0
-            }
-            PropertyChanges {
-                target: turnToIdleTimer
-                running: false
-
             }
         }
     ]
@@ -101,32 +91,6 @@ Item {
             }
         }
     ]
-
-    // FIXME: maybe use SwipeGesture once available
-    MultiPointTouchArea {
-        id: touchDetector
-        anchors.fill: parent
-        mouseEnabled: false
-        minimumTouchPoints: 1
-        maximumTouchPoints: 1
-
-        onGestureStarted: {
-            var point = gesture.touchPoints[0];
-            if (!styledItem.contains(Qt.point(point.x, point.y))) {
-                return;
-            }
-            bottomEdgeHintStyle.state = "Active";
-            turnToIdleTimer.stop();
-        }
-        onReleased: if (bottomEdgeHintStyle.state == "Active") turnToIdleTimer.restart()
-    }
-
-    Timer {
-        id: turnToIdleTimer
-        interval: 800
-        repeat: false
-        onTriggered: bottomEdgeHintStyle.state = "Idle"
-    }
 
     clip: true
 
@@ -153,15 +117,6 @@ Item {
         color: theme.palette.normal.overlay
         ThinDivider {
             anchors.top: parent.top
-        }
-
-        MouseArea {
-            anchors.fill: parent
-            onClicked: {
-                Haptics.play();
-                styledItem.clicked();
-                mouse.accepted = false;
-            }
         }
 
         Row {
