@@ -33,6 +33,6 @@ Page {
     BottomEdgeHint {
         iconName: "stock_message"
         text: "Compose a new message"
-        onClicked: state = "Hidden"
+        onClicked: state = "Idle"
     }
 }

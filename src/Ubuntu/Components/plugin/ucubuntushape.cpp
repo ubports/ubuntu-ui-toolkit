@@ -34,7 +34,9 @@
 #include <QtGui/QScreen>
 #include <QtQuick/QQuickWindow>
 #include <QtQuick/QSGTextureProvider>
+#define emit Q_EMIT
 #include <QtQuick/private/qquickimage_p.h>
+#undef emit
 #include <QtQuick/private/qsgadaptationlayer_p.h>
 #include <QtQml/qqmlinfo.h>
 #include <math.h>

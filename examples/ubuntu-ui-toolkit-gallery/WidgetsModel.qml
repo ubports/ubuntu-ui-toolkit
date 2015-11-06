@@ -108,8 +108,8 @@ ListModel {
     }
     ListElement {
         objectName: "bottomEdgeHintElement"
-        label: "Bottom Edge Hint"
-        source: "BottomEdgeHint.qml"
+        label: "Bottom Edge"
+        source: "BottomEdgePage.qml"
     }
 
     ListElement {

@@ -457,7 +457,17 @@ PageTreeNode {
             // replace page holder's child
             var holder = body.children[targetColumn];
             holder.detachCurrentPage();
-            holder.attachPage(pageWrapper);
+            holder.attachPage(pageWrapper); // sets pageWrapper.pageHolder
+
+            // set the back action for Page.header:
+            var page = pageWrapper.object;
+            if (page && page.hasOwnProperty("header") && page.header &&
+                    page.header.hasOwnProperty("navigationActions")) {
+                // Page.header is an instance of PageHeader.
+                var backAction = backActionComponent.createObject(
+                            pageWrapper, { 'wrapper': pageWrapper } );
+                page.header.navigationActions = [ backAction ] ;
+            }
         }
 
         function getWrapper(page) {
@@ -649,6 +659,42 @@ PageTreeNode {
         }
     }
 
+    // An instance will be added to each Page with
+    Component {
+        id: backActionComponent
+
+        Action {
+            // used when the Page has a Page.header property set.
+            id: backAction
+            objectName: "apl_back_action"
+            iconName: "back"
+            text: "Back"
+
+            // set when backAction is created.
+            property PageWrapper wrapper
+            onTriggered: layout.removePages(wrapper.object)
+
+            visible: {
+                var parentWrapper;
+                try {
+                    parentWrapper = d.tree.parent(wrapper);
+                } catch(err) {
+                    // Root node has no parent node.
+                    return false;
+                }
+                if (!wrapper.pageHolder) {
+                    // columns are being re-arranged.
+                    return false;
+                }
+                // wrapper.column is the virtual column, pageHolder.column the actual column.
+                var column = wrapper.pageHolder.column;
+                var nextInColumn = d.tree.top(column, column < d.columns - 1, 1);
+                return parentWrapper === nextInColumn;
+            }
+        }
+    }
+
+
     // Page holder component, can have only one Page as child at a time, all stacked pages
     // will be parented into hiddenPool
     Component {
@@ -706,6 +752,8 @@ PageTreeNode {
                 }
             }
 
+            // subHeader is to be deprecated in UITK 1.4 and will be replaced
+            //  by the Page.header property (introduced in 1.3).
             property alias head: subHeader
             StyledItem {
                 id: subHeader
@@ -717,7 +765,6 @@ PageTreeNode {
                 height: body.headerHeight
 
                 styleName: "PageHeadStyle"
-                theme.version: Ubuntu.toolkitVersion
                 objectName: "Header" + column
 
                 property real preferredHeight: subHeader.__styleInstance ?

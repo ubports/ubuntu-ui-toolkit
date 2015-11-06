@@ -84,6 +84,5 @@ ActionItem {
     height: parent ? parent.height : undefined
     width: units.gu(5)
 
-    theme.version: Ubuntu.toolkitVersion
     styleName: "ToolbarButtonStyle"
 }

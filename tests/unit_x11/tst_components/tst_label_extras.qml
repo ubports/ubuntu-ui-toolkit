@@ -15,15 +15,35 @@
  */
 
 import QtQuick 2.4
+import QtTest 1.0
+import Ubuntu.Test 1.0
 import Ubuntu.Components 1.3
 
-// Internal helper class for the visuals of
-// the progression symbol.
-StyledItem {
-    id: progressionVisual
+Item {
+    id: main
+    width: units.gu(40)
+    height: units.gu(70)
 
-    property bool showSplit: false
-    property real splitMargin
+    Component {
+        id: labelWithButton
+        Label {
+            text: "Something"
+            Button {
+                objectName: "childButton"
+                text: "Something else"
+                onClicked: visible = false
+            }
+        }
+    }
 
-    styleName: "ProgressionVisualStyle"
+    UbuntuTestCase {
+        name: "Label13Extras"
+        when: windowShown
+
+        function test_label_with_button_bug1503901() {
+            // this should SEGFAULT on error!
+            var test = labelWithButton.createObject(main);
+            test.destroy();
+        }
+    }
 }

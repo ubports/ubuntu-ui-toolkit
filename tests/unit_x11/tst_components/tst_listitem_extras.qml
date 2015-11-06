@@ -96,6 +96,28 @@ Item {
                 leadingActions: leading
             }
         }
+        ListItem {
+            id: emptyActionList
+            leadingActions: ListItemActions {}
+            trailingActions: ListItemActions {
+                actions: []
+            }
+        }
+        ListItem {
+            id: contentDragging
+            swipeEnabled: ma.drag.active
+            Rectangle {
+                id: draggedItem
+                width: units.gu(2)
+                height: width
+                color: "red"
+                MouseArea {
+                    id: ma
+                    anchors.fill: parent
+                    drag.target: parent
+                }
+            }
+        }
     }
 
     ListItemTestCase13 {
@@ -245,6 +267,65 @@ Item {
                 mouseClick(data.swipedItem, centerOf(data.swipedItem).x, centerOf(data.swipedItem).y);
             }
             clickSpy.wait(200);
+        }
+
+        function test_swipe_on_empty_actions_bug1500416_data() {
+            return [
+                {tag: "swipe leading, touch", item: emptyActionList, dx: units.gu(5), touch: true},
+                {tag: "swipe trailing, touch", item: emptyActionList, dx: -units.gu(5), touch: true},
+                {tag: "swipe leading, mouse", item: emptyActionList, dx: units.gu(5), touch: false},
+                {tag: "swipe trailing, mouse", item: emptyActionList, dx: -units.gu(5), touch: false}
+            ];
+        }
+        function test_swipe_on_empty_actions_bug1500416(data) {
+            setupSpy(data.item, "contentMovementEnded");
+            if (data.touch) {
+                tugNoWait(data.item, centerOf(data.item).x, centerOf(data.item).y, data.dx, 0);
+            } else {
+                swipeNoWait(data.item, centerOf(data.item).x, centerOf(data.item).y, data.dx, 0);
+            }
+            expectFailContinue(data.tag, "No swipe should happen");
+            spyWait(200);
+        }
+
+        function test_swipe_not_possible_when_swipe_disabled_data() {
+            listView.positionViewAtBeginning();
+            return [
+                {tag: "leading, touch", item: findChild(listView, "listItem0"), dx: units.gu(10), touch: true},
+                {tag: "trailing, touch", item: findChild(listView, "listItem0"), dx: -units.gu(10), touch: true},
+                {tag: "leading, mouse", item: findChild(listView, "listItem0"), dx: units.gu(10), touch: false},
+                {tag: "trailing, mouse", item: findChild(listView, "listItem0"), dx: -units.gu(10), touch: false},
+            ];
+        }
+        function test_swipe_not_possible_when_swipe_disabled(data) {
+            verify(data.item, "test item not found");
+            data.item.swipeEnabled = false;
+            setupSpy(data.item, "contentMovementEnded");
+            if (data.touch) {
+                tugNoWait(data.item, centerOf(data.item).x, centerOf(data.item).y, data.dx, 0);
+            } else {
+                swipeNoWait(data.item, centerOf(data.item).x, centerOf(data.item).y, data.dx, 0);
+            }
+            expectFailContinue(data.tag, "No swipe should happen");
+            spyWait(200);
+            data.item.swipeEnabled = true;
+        }
+
+        function test_drag_listitem_content_bug1500409_data() {
+            return [
+                {tag: "touch", touch: true},
+                {tag: "mouse", touch: false}
+            ];
+        }
+        function test_drag_listitem_content_bug1500409(data) {
+            setupSpy(contentDragging, "contentMovementStarted");
+            if (data.touch) {
+                TestExtras.touchDrag(0, draggedItem, centerOf(draggedItem), Qt.point(units.gu(10), units.gu(3)));
+            } else {
+                mouseDrag(draggedItem, centerOf(draggedItem).x, centerOf(draggedItem).y, units.gu(10), units.gu(3));
+            }
+            expectFailContinue("", "drag disables swipe");
+            spyWait(200);
         }
     }
 }

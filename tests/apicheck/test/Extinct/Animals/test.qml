@@ -32,9 +32,10 @@ Item {
        \internal
     */
     property var basket: ['brown', 'white']
+    property list<Item> buckets
 
     states: [
-        State {
+State {
         name: ""
         }
     ]

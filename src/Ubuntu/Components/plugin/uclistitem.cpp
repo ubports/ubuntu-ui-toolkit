@@ -198,6 +198,7 @@ UCListItemPrivate::UCListItemPrivate()
     , xAxisMoveThresholdGU(DEFAULT_SWIPE_THRESHOLD_GU)
     , button(Qt::NoButton)
     , highlighted(false)
+    , swipeEnabled(true)
     , contentMoved(false)
     , swiped(false)
     , suppressClick(false)
@@ -1177,7 +1178,7 @@ void UCListItemPrivate::showContextMenu()
 {
     Q_Q(UCListItem);
     // themes 1.2 and below should not have context menu support, so leave
-    quint16 version(q->getTheme()->version());
+    quint16 version(importVersion(q));
     if (version <= BUILD_VERSION(1, 2)) {
         return;
     }
@@ -1255,10 +1256,15 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
 // returns true if the mouse is swiped over the threshold value
 bool UCListItemPrivate::swipedOverThreshold(const QPointF &mousePos, const QPointF relativePos)
 {
+    if ((!leadingActions || UCListItemActionsPrivate::get(leadingActions)->actions.size() <= 0) &&
+        (!trailingActions || UCListItemActionsPrivate::get(trailingActions)->actions.size() <= 0))
+    {
+        return false;
+    }
     qreal threshold = UCUnits::instance().gu(xAxisMoveThresholdGU);
     qreal mouseX = mousePos.x();
     qreal pressedX = relativePos.x();
-    return ((mouseX < (pressedX - threshold)) || (mouseX > (pressedX + threshold)));
+    return swipeEnabled && ((mouseX < (pressedX - threshold)) || (mouseX > (pressedX + threshold)));
 }
 
 void UCListItem::mouseMoveEvent(QMouseEvent *event)
@@ -1273,7 +1279,7 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
 
     // accept the tugging only if the move is within the threshold
     // use saved button because MouseMove has no button() and buttons() isn't reliable
-    if (d->button == Qt::LeftButton && d->highlighted && !d->swiped && (d->leadingActions || d->trailingActions)) {
+    if (d->button == Qt::LeftButton && d->highlighted && !d->swiped) {
         // check if we can initiate the drag at all
         // only X direction matters, if Y-direction leaves the threshold, but X not, the tug is not valid
         if (d->swipedOverThreshold(event->localPos(), d->pressedPos)) {
@@ -1795,6 +1801,51 @@ void UCListItemPrivate::_q_updateExpansion(const QList<int> &indices)
     if (indices.contains(index())) {
         loadStyleItem();
     }
+}
+
+/*!
+ * \qmlproperty bool ListItem::swipeEnabled
+ * \since Ubuntu.Components 1.3
+ * The property enables the swiping of the leading- or trailing actions. This
+ * is useful when an overlay component needs to handle mouse moves or drag events
+ * without the ListItem to steal the events. Defaults to true.
+ * \qml
+ * import QtQuick 2.4
+ * import Ubuntu.Components 1.3
+ *
+ * ListView {
+ *     width: units.gu(40)
+ *     height: units.gu(70)
+ *     model: 25
+ *     delegate: ListItem {
+ *         swipeEnabled: !mouseArea.drag.active
+ *         Rectangle {
+ *             color: "red"
+ *             width: units.gu(2)
+ *             height: width
+ *             MouseArea {
+ *                 id: mouseArea
+ *                 anchors.fill: parent
+ *                 drag.target: parent
+ *             }
+ *         }
+ *     }
+ * }
+ * \endqml
+ */
+bool UCListItem::isSwipeEnabled() const
+{
+    Q_D(const UCListItem);
+    return d->swipeEnabled;
+}
+void UCListItem::setSwipeEnabled(bool swipeEnabled)
+{
+    Q_D(UCListItem);
+    if (d->swipeEnabled == swipeEnabled) {
+        return;
+    }
+    d->swipeEnabled = swipeEnabled;
+    Q_EMIT swipeEnabledChanged();
 }
 
 #include "moc_uclistitem.cpp"
