@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "DebugHelpers.h"
+#include "debughelpers.h"
 #include <QTouchEvent>
 #include <QMouseEvent>
 
@@ -40,19 +40,19 @@ QString touchEventToString(const QTouchEvent *ev)
 
     switch (ev->type()) {
     case QEvent::TouchBegin:
-        message.append("TouchBegin ");
+        message.append(QStringLiteral("TouchBegin "));
         break;
     case QEvent::TouchUpdate:
-        message.append("TouchUpdate ");
+        message.append(QStringLiteral("TouchUpdate "));
         break;
     case QEvent::TouchEnd:
-        message.append("TouchEnd ");
+        message.append(QStringLiteral("TouchEnd "));
         break;
     case QEvent::TouchCancel:
-        message.append("TouchCancel ");
+        message.append(QStringLiteral("TouchCancel "));
         break;
     default:
-        message.append("INVALID_TOUCH_EVENT_TYPE ");
+        message.append(QStringLiteral("INVALID_TOUCH_EVENT_TYPE "));
     }
 
     Q_FOREACH(const QTouchEvent::TouchPoint& touchPoint, ev->touchPoints()) {
@@ -74,19 +74,19 @@ QString mouseEventToString(const QMouseEvent *ev)
 
     switch (ev->type()) {
     case QEvent::MouseButtonPress:
-        message.append("MouseButtonPress ");
+        message.append(QStringLiteral("MouseButtonPress "));
         break;
     case QEvent::MouseButtonRelease:
-        message.append("MouseButtonRelease ");
+        message.append(QStringLiteral("MouseButtonRelease "));
         break;
     case QEvent::MouseButtonDblClick:
-        message.append("MouseButtonDblClick ");
+        message.append(QStringLiteral("MouseButtonDblClick "));
         break;
     case QEvent::MouseMove:
-        message.append("MouseMove ");
+        message.append(QStringLiteral("MouseMove "));
         break;
     default:
-        message.append("INVALID_MOUSE_EVENT_TYPE ");
+        message.append(QStringLiteral("INVALID_MOUSE_EVENT_TYPE "));
     }
 
     message.append(QStringLiteral("pos(%1, %2)").arg(ev->x()).arg(ev->y()));

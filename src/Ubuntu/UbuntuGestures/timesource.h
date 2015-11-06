@@ -21,7 +21,7 @@
 #ifndef UBUNTUGESTURES_TIMESOURCE_H
 #define UBUNTUGESTURES_TIMESOURCE_H
 
-#include "UbuntuGesturesGlobal.h"
+#include "ubuntugesturesglobal.h"
 #include <QSharedPointer>
 
 namespace UbuntuGestures {

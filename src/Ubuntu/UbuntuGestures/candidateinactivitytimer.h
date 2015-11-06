@@ -21,7 +21,7 @@
 
 class QQuickItem;
 
-#include "Timer.h"
+#include "timer.h"
 
 namespace UbuntuGestures {
 

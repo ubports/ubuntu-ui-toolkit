@@ -14,26 +14,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "UnownedTouchEvent.h"
+#ifndef UBUNTUGESTURES_DEBUG_HELPER_H
+#define UBUNTUGESTURES_DEBUG_HELPER_H
 
-QEvent::Type UnownedTouchEvent::m_unownedTouchEventType = (QEvent::Type)-1;
+#include <QString>
 
-UnownedTouchEvent::UnownedTouchEvent(QTouchEvent *touchEvent)
-    : QEvent(unownedTouchEventType())
-    , m_touchEvent(touchEvent)
-{
-}
+#include "ubuntugesturesglobal.h"
 
-QEvent::Type UnownedTouchEvent::unownedTouchEventType()
-{
-    if (m_unownedTouchEventType == (QEvent::Type)-1) {
-        m_unownedTouchEventType = (QEvent::Type)registerEventType();
-    }
+class QMouseEvent;
+class QTouchEvent;
 
-    return m_unownedTouchEventType;
-}
+UBUNTUGESTURES_EXPORT QString touchPointStateToString(Qt::TouchPointState state);
+UBUNTUGESTURES_EXPORT QString touchEventToString(const QTouchEvent *ev);
+UBUNTUGESTURES_EXPORT QString mouseEventToString(const QMouseEvent *ev);
 
-QTouchEvent *UnownedTouchEvent::touchEvent()
-{
-    return m_touchEvent.data();
-}
+#endif // UBUNTUGESTURES_DEBUG_HELPER_H
