@@ -19,6 +19,7 @@
 #include "ucbottomedge_p.h"
 #include "ucbottomedgestyle.h"
 #include "ucbottomedgerange.h"
+#include "ucbottomedgehint.h"
 #include "ucstyleditembase_p.h"
 #include <QtQml/QQmlEngine>
 #include <QtGui/QScreen>
@@ -31,32 +32,56 @@
 #include "ucheader.h"
 #include "ucaction.h"
 #include "quickutils.h"
+#include "privates/gesturedetector.h"
 #include <QtQuick/private/qquickanimation_p.h>
 
 UCBottomEdgePrivate::UCBottomEdgePrivate()
     : UCStyledItemBasePrivate()
     , activeRange(Q_NULLPTR)
-    , hint(Q_NULLPTR)
+    , hint(new UCBottomEdgeHint)
     , contentComponent(Q_NULLPTR)
     , bottomPanel(Q_NULLPTR)
     , commitPoint(1.0)
     , state(UCBottomEdge::Hidden)
-    , status(Idle)
+    , operationStatus(Idle)
     , defaultRangesReset(false)
 {
 }
 
 void UCBottomEdgePrivate::init()
 {
-    // overload data property functors
-    QQmlListProperty<QObject> dataProp = data();
-    dataProp.append = &overload_data_append;
-    dataProp.clear = &overload_data_clear;
-    Q_UNUSED(dataProp);
+    Q_Q(UCBottomEdge);
+    // initialize hint
+    QQml_setParent_noEvent(hint, q);
+    hint->setParentItem(q);
+    QObject::connect(hint, SIGNAL(clicked()), q, SLOT(commit()), Qt::DirectConnection);
 
-    setStyleName("BottomEdgeStyle");
+    // follow hint gesture distance to know when to reveale the content
+    QObject::connect(&hint->gesture(), &GestureDetector::distanceChanged, [=]() {
+        if ((hint->status() == UCBottomEdgeHint::Active)
+            && (hint->gesture().distanceFromBottom() >= hint->height())
+            && (state == UCBottomEdge::Hidden)) {
+            setState(UCBottomEdge::Revealed);
+        }
+        if (state == UCBottomEdge::Revealed) {
+            bottomPanel->m_panel->setY(q->height() - hint->gesture().distanceFromBottom());
+        }
+    });
+
+    // follow gesture completion
+    QObject::connect(&hint->gesture(), &GestureDetector::gestureEnded, [=]() {
+        if (activeRange) {
+            Q_EMIT activeRange->dragEnded();
+        } else if (state > UCBottomEdge::Hidden) {
+            q->collapse();
+        }
+    });
+
     // create default stages
     createDefaultRanges();
+
+    // set the style name
+    styleDocument = QStringLiteral("BottomEdgeStyle");
 }
 QQmlListProperty<QObject> UCBottomEdgePrivate::data()
 {
@@ -132,7 +157,6 @@ void UCBottomEdgePrivate::createDefaultRanges()
     ranges.append(commitRange);
 }
 
-// attach hint instance to the bottom edge panel holding the content
 // update state and sections during drag
 void UCBottomEdgePrivate::updateProgressionStates()
 {
@@ -141,9 +165,6 @@ void UCBottomEdgePrivate::updateProgressionStates()
     }
     Q_Q(UCBottomEdge);
     qreal progress = q->dragProgress();
-    if (progress > 0.0 && !activeRange) {
-        setState(UCBottomEdge::Revealed);
-    }
 
     // go through the stages
     Q_FOREACH(UCBottomEdgeRange *range, ranges) {
@@ -228,8 +249,7 @@ bool UCBottomEdgePrivate::loadStyleItem(bool animated)
                          q, &UCBottomEdge::contentItemChanged, Qt::DirectConnection);
         QObject::connect(bottomPanel->m_panel, &QQuickItem::yChanged,
                          q, &UCBottomEdge::dragProggressChanged, Qt::DirectConnection);
-        // follow drag progress to detect when can we set to CanCommit status
-        QObject::connect(q, &UCBottomEdge::dragProggressChanged, [this]() {
+        QObject::connect(bottomPanel->m_panel, &QQuickItem::yChanged, [=]() {
             updateProgressionStates();
         });
     }
@@ -290,9 +310,7 @@ void UCBottomEdgePrivate::itemChildRemoved(QQuickItem *item, QQuickItem *child)
  *
  *         BottomEdge {
  *             height: parent.height - units.gu(20)
- *             hint: BottomEdgeHint {
- *                 text: "My bottom edge"
- *             }
+ *             hint.text: "My bottom edge"
  *             contentComponent: Rectangle {
  *                 anchors.fill: parent
  *                 color: UbuntuColors.green
@@ -313,9 +331,7 @@ void UCBottomEdgePrivate::itemChildRemoved(QQuickItem *item, QQuickItem *child)
  * BottomEdge {
  *     id: bottomEdge
  *     height: parent.height
- *     hint: BottomEdgeHint {
- *         text: "progression"
- *     }
+ *     hint.text: "progression"
  *     contentComponent: Rectangle {
  *         anchors.fill: parent
  *         color: Qt.rgba(0.5, 1, bottomEdge.dragProgress, 1);
@@ -339,9 +355,7 @@ void UCBottomEdgePrivate::itemChildRemoved(QQuickItem *item, QQuickItem *child)
  *         BottomEdge {
  *             id: bottomEdge
  *             height: parent.height - units.gu(20)
- *             hint: BottomEdgeHint {
- *                 text: "My bottom edge"
- *             }
+ *             hint.text: "My bottom edge"
  *             contentComponent: Rectangle {
  *                 anchors.fill: parent
  *                 color: bottomEdge.activeRange ?
@@ -380,9 +394,7 @@ void UCBottomEdgePrivate::itemChildRemoved(QQuickItem *item, QQuickItem *child)
  * BottomEdge {
  *     id: bottomEdge
  *     height: parent.height
- *     hint: BottomEdgeHint {
- *         text: "Sample collapse"
- *     }
+ *     hint.text: "Sample collapse"
  *     contentComponent: Rectangle {
  *         anchors.fill: parent
  *         color: Qt.rgba(0.5, 1, bottomEdge.dragProgress, 1);
@@ -399,9 +411,7 @@ void UCBottomEdgePrivate::itemChildRemoved(QQuickItem *item, QQuickItem *child)
  * BottomEdge {
  *     id: bottomEdge
  *     height: parent.height
- *     hint: BottomEdgeHint {
- *         text: "Injected collapse"
- *     }
+ *     hint.text: "Injected collapse"
  *     contentComponent: Rectangle {
  *         anchors.fill: parent
  *         color: Qt.rgba(0.5, 1, bottomEdge.dragProgress, 1);
@@ -443,6 +453,23 @@ UCBottomEdge::~UCBottomEdge()
 {
 }
 
+void UCBottomEdge::componentComplete()
+{
+    UCStyledItemBase::componentComplete();
+    Q_D(UCBottomEdge);
+    // fix the hint's style version as that has no qmlContext of its own
+    // and thus import version check will fail; setting the context for
+    // the hint using this component's hint won't work either as this
+    // component's context does not contain the properties from the hint.
+    UCStyledItemBasePrivate *hintPrivate = UCStyledItemBasePrivate::get(d->hint);
+    hintPrivate->styleVersion = d->styleVersion;
+    // also set the qml data as hitn does not have that either
+    QQmlData::get(d->hint, true);
+    QQmlEngine::setContextForObject(d->hint, new QQmlContext(qmlContext(this), d->hint));
+    // finally complete hint creation
+    hintPrivate->completeStyledItem();
+}
+
 void UCBottomEdge::itemChange(ItemChange change, const ItemChangeData &data)
 {
     if (change == ItemVisibleHasChanged) {
@@ -468,41 +495,13 @@ void UCBottomEdge::itemChange(ItemChange change, const ItemChangeData &data)
 }
 
 /*!
- * \qmlproperty Item BottomEdge::hint
+ * \qmlproperty BottomEdgeHint BottomEdge::hint
  * The property holds the component to display the hint for the bottom edge element.
- * The component can be a BottomEdgeHint or any custom component. In case of custom
- * component is used, the component must make sure it implements the "Active" and
- * "Locked" states. BottomEdge automatically takes ownership over the hint set, and
- * will delete the previously set component upon change.
- * \note Changing the hint during an ongoing bottom edge swipe is omitted.
  */
-QQuickItem *UCBottomEdge::hint() const
+UCBottomEdgeHint *UCBottomEdge::hint() const
 {
     Q_D(const UCBottomEdge);
     return d->hint;
-}
-void UCBottomEdge::setHint(QQuickItem *hint)
-{
-    Q_D(UCBottomEdge);
-    if (hint == d->hint || d->state >= Revealed) {
-        return;
-    }
-    if (d->hint) {
-        d->hint->setParentItem(Q_NULLPTR);
-        delete d->hint;
-        d->hint = Q_NULLPTR;
-    }
-    d->hint = hint;
-    // take ownership
-    if (d->hint) {
-        QQmlEngine::setObjectOwnership(d->hint, QQmlEngine::CppOwnership);
-        QQml_setParent_noEvent(d->hint, this);
-        d->hint->setParentItem(this);
-        if (d->hint->metaObject()->indexOfSignal("clicked()") >= 0) {
-            connect(d->hint, SIGNAL(clicked()), this, SLOT(commit()), Qt::DirectConnection);
-        }
-    }
-    Q_EMIT hintChanged();
 }
 
 /*!
@@ -627,7 +626,7 @@ QQuickItem *UCBottomEdge::contentItem() const
 void UCBottomEdge::commit()
 {
     Q_D(UCBottomEdge);
-    d->setStatus(UCBottomEdgePrivate::Committing);
+    d->setOperationStatus(UCBottomEdgePrivate::Committing);
     Q_EMIT commitStarted();
     if (d->bottomPanel && d->bottomPanel->m_panelAnimation) {
         connect(d->bottomPanel->m_panelAnimation, &QQuickAbstractAnimation::runningChanged,
@@ -646,7 +645,7 @@ void UCBottomEdge::emitCommitCompleted(bool running)
                this, &UCBottomEdge::emitCommitCompleted);
     d->setState(Committed);
     Q_EMIT commitCompleted();
-    d->setStatus(UCBottomEdgePrivate::Idle);
+    d->setOperationStatus(UCBottomEdgePrivate::Idle);
 }
 
 /*!
@@ -658,7 +657,7 @@ void UCBottomEdge::emitCommitCompleted(bool running)
 void UCBottomEdge::collapse()
 {
     Q_D(UCBottomEdge);
-    d->setStatus(UCBottomEdgePrivate::Collapsing);
+    d->setOperationStatus(UCBottomEdgePrivate::Collapsing);
     Q_EMIT collapseStarted();
     if (d->bottomPanel && d->bottomPanel->m_panelAnimation) {
         connect(d->bottomPanel->m_panelAnimation, &QQuickAbstractAnimation::runningChanged,
@@ -677,7 +676,7 @@ void UCBottomEdge::emitCollapseCompleted(bool running)
                this, &UCBottomEdge::emitCollapseCompleted);
     d->setState(Hidden);
     Q_EMIT collapseCompleted();
-    d->setStatus(UCBottomEdgePrivate::Idle);
+    d->setOperationStatus(UCBottomEdgePrivate::Idle);
 }
 
 /*!

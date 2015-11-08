@@ -64,31 +64,31 @@ public:
     QUrl contentUrl;
     QList<UCBottomEdgeRange*> ranges;
     UCBottomEdgeRange *activeRange;
-    QQuickItem *hint;
+    UCBottomEdgeHint *hint;
     QQmlComponent *contentComponent;
     UCBottomEdgeStyle *bottomPanel;
 
     qreal commitPoint;
     UCBottomEdge::State state;
 
-    enum Status {
+    enum OperationStatus {
         Idle,
         Committing,
         Collapsing
     };
-    Status status;
+    OperationStatus operationStatus;
 
     bool defaultRangesReset:1;
 
 
     // status management
-    void setStatus(Status s)
+    void setOperationStatus(OperationStatus s)
     {
-        status = s;
+        operationStatus = s;
     }
     bool isLocked()
     {
-        return status > Idle;
+        return operationStatus > Idle;
     }
 };
 

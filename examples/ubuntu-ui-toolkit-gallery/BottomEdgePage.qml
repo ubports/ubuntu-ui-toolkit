@@ -29,20 +29,23 @@ Page {
 
         anchors {
             top: parent.top
+            topMargin: page.header.height
             left: parent.left
             right: parent.right
             margins: units.gu(2)
         }
-    }
-
-    ListView {
-        id: listView
-        anchors.fill: parent
-        model: 50
-        delegate: ListItemLayout {
-            title.text: "Item #" + index
+        height: parent.height - page.header.height
+        ListView {
+            id: listView
+            height: parent.height
+            width: units.gu(40)
+            model: 50
+            delegate: ListItemLayout {
+                title.text: "Item #" + index
+            }
         }
     }
+
 
     Component {
         id: bottomEdgeContent
@@ -77,7 +80,7 @@ Page {
     BottomEdge {
         id: bottomEdge
         visible: active
-        hint: BottomEdgeHint {
+        hint {
             text: "Compose a new message"
             iconName: "stock_message"
             flickable: listView
@@ -94,6 +97,7 @@ Page {
             objectName: "FirstSection"
             from: 0.2
             to: 0.4
+            onDragEnded: bottomEdge.commit()
             property color baseColor: Qt.rgba(0.5, 0.4, bottomEdge.dragProgress, 1)
             contentComponent: Rectangle {
                 anchors.fill: parent

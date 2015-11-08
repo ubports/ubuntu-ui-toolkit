@@ -182,7 +182,7 @@ Ubuntu.Components.BottomEdge 1.3: StyledItem
     property Component contentComponent
     readonly property Item contentItem
     readonly property double dragProgress
-    property Item hint
+    readonly property BottomEdgeHint hint
     signal stateChanged(State state)
     signal contentChanged(url url)
     signal contentComponentChanged(Component component)

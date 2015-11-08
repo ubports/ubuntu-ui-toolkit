@@ -53,6 +53,12 @@ public:
     void setState(const QString &state);
     void setDeactivateTimeout(int timeout);
 
+    // internal cpp API
+    GestureDetector &gesture()
+    {
+        return m_gestureDetector;
+    }
+
 Q_SIGNALS:
     void textChanged();
     void iconSourceChanged();

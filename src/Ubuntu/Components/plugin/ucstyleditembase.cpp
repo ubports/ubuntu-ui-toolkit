@@ -40,11 +40,6 @@ UCStyledItemBasePrivate::~UCStyledItemBasePrivate()
 
 void UCStyledItemBasePrivate::init()
 {
-    // make sure we have the componentCompleted set to false
-    // QtQuickItem defaults it to true, and sets it to false
-    // in classBegin, which causes problems in initialization codes
-    // done in private init() implementations
-    componentComplete = false;
     Q_Q(UCStyledItemBase);
     q->setFlag(QQuickItem::ItemIsFocusScope);
 }
@@ -474,6 +469,15 @@ QString UCStyledItemBasePrivate::propertyForVersion(quint16 version) const
     }
 }
 
+void UCStyledItemBasePrivate::completeStyledItem()
+{
+    Q_Q(UCStyledItemBase);
+    // no animation at this time
+    // prepare style context if not been done yet
+    postStyleChanged();
+    loadStyleItem(false);
+}
+
 void UCStyledItemBase::componentComplete()
 {
     QQuickItem::componentComplete();
@@ -481,10 +485,7 @@ void UCStyledItemBase::componentComplete()
     // make sure the theme version is up to date
     d->styleVersion = d->importVersion(this);
     UCTheme::checkMixedVersionImports(this, d->styleVersion);
-    // no animation at this time
-    // prepare style context if not been done yet
-    d->postStyleChanged();
-    d->loadStyleItem(false);
+    d->completeStyledItem();
 }
 
 // grab pressed state and focus if it can be

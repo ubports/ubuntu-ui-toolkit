@@ -110,52 +110,14 @@ BottomEdgeStyle {
             }
         }
 
-        // FIXME: use SwipeArea when ready, however keep this as it has to work with mouse drag as well
-        property bool inArea: false
-        property bool firstOut: true
-        property point prevTouchPoint
-        MultiPointTouchArea {
-            parent: bottomEdge.hint
-            anchors.fill: parent
-            minimumTouchPoints: 1
-            maximumTouchPoints: 1
-            mouseEnabled: false
-//            enabled: bottomEdge.hint.status >= BottomEdgeHint.Active
-
-            onGestureStarted: {
-                var point = gesture.touchPoints[0];
-                point = Qt.point(point.x, point.y);
-                // TODO: fix this
-                if (bottomEdge.hint.contains(point)) {
-                    panelItem.inArea = true;
-                    panelItem.firstOut = true;
-                } else if (panelItem.inArea) {
-                    if (panelItem.firstOut) {
-                        panelItem.firstOut = false;
-                        panelItem.y = Qt.point(0, panelItem.height - bottomEdge.hint.height).y;
-                    } else {
-                        panelItem.y += point.y - panelItem.prevTouchPoint.y;
-                    }
-                }
-                panelItem.prevTouchPoint = point;
-            }
-            onReleased: {
-                panelItem.inArea = false;
-                panelItem.firstOut = true;
-                if (bottomEdge.activeRange) {
-                    bottomEdge.activeRange.dragEnded();
-                } else if (bottomEdge.state > BottomEdge.Hidden) {
-                    bottomEdge.collapse();
-                }
-            }
-        }
-
+        // grab mouse events over the hint to proceed with drag
+        // touch events will be consumed by the hint, so only
+        // real mouse events will land here
         MouseArea {
             id: hintArea
             parent: bottomEdge.hint
             anchors.fill: parent
-            enabled: bottomEdge.hint &&
-                     bottomEdge.hint.status >= BottomEdgeHint.Active
+            enabled: bottomEdge.hint.status >= BottomEdgeHint.Active
 
             drag {
                 axis: Drag.YAxis
@@ -164,8 +126,7 @@ BottomEdgeStyle {
                 maximumY: bottomEdge.height
             }
 
-            onClicked: bottomEdge.hint ? bottomEdge.hint.clicked() : bottomEdge.commit()
-            onPressed: print("pressed")
+            onClicked: bottomEdge.hint.clicked()
             onReleased: {
                 if (bottomEdge.activeRange) {
                     bottomEdge.activeRange.dragEnded();

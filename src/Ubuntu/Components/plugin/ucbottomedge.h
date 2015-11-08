@@ -23,6 +23,7 @@
 #include <QtCore/QPointer>
 #include <QtQuick/private/qquickitemchangelistener_p.h>
 
+class UCBottomEdgeHint;
 class UCBottomEdgeRange;
 class QQuickAbstractAnimation;
 class UCBottomEdgePrivate;
@@ -31,7 +32,7 @@ class UCBottomEdge : public UCStyledItemBase
     Q_OBJECT
     Q_ENUMS(State)
 
-    Q_PROPERTY(QQuickItem* hint READ hint WRITE setHint NOTIFY hintChanged FINAL)
+    Q_PROPERTY(UCBottomEdgeHint* hint READ hint CONSTANT FINAL)
     Q_PROPERTY(qreal dragProgress READ dragProgress NOTIFY dragProggressChanged FINAL)
     Q_PROPERTY(State state READ state NOTIFY stateChanged FINAL)
     Q_PROPERTY(QUrl content READ content WRITE setContent NOTIFY contentChanged FINAL)
@@ -53,8 +54,7 @@ public:
     explicit UCBottomEdge(QQuickItem *parent = 0);
     virtual ~UCBottomEdge();
 
-    QQuickItem *hint() const;
-    void setHint(QQuickItem *hint);
+    UCBottomEdgeHint *hint() const;
     qreal dragProgress();
     State state() const;
     QUrl content() const;
@@ -95,6 +95,7 @@ protected:
     static UCBottomEdgeRange *ranges_at(QQmlListProperty<UCBottomEdgeRange> *sections, int index);
     static void ranges_clear(QQmlListProperty<UCBottomEdgeRange> *sections);
 
+    void componentComplete();
     void itemChange(ItemChange change, const ItemChangeData &data);
 
     void emitCommitCompleted(bool running);

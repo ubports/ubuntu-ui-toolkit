@@ -30,6 +30,8 @@
 GestureDetector::GestureDetector(QObject *parent)
     : QObject(parent)
     , m_owner(qobject_cast<QQuickItem*>(parent))
+    , m_bottom(0.0)
+    , m_distance(0.0)
     , m_status(Ready)
     , m_bottomUpSwipeDetected(false)
 {
@@ -50,11 +52,28 @@ void GestureDetector::setStatus(Status status)
     }
     m_status = status;
     Q_EMIT statusChanged(m_status);
+    if (m_status == Completed) {
+        Q_EMIT gestureEnded();
+    }
 }
 
 bool GestureDetector::isDetecting()
 {
     return (m_status > Ready && m_status < Completed);
+}
+
+qreal GestureDetector::distanceFromBottom() const
+{
+    return m_distance;
+}
+void GestureDetector::setDistance(const QPointF &lastPoint)
+{
+    qreal delta = m_bottom - lastPoint.y() - m_owner->y();
+    if (delta == m_distance) {
+        return;
+    }
+    m_distance = delta;
+    Q_EMIT distanceChanged();
 }
 
 void GestureDetector::setItemFilter(QObject *item)
@@ -79,7 +98,9 @@ bool GestureDetector::handleTouchEvent(QObject *target, QTouchEvent *event)
         QRectF detectionArea(0.0, m_owner->height() - thickness, m_owner->width(), thickness);
         if (detectionArea.contains(itemPoint)) {
             m_startPoint = itemPoint;
+            m_bottom = m_owner->y() + m_owner->height();
             setStatus(Started);
+            setDistance(m_startPoint);
             if (target == parent()) {
                 event->accept();
                 return true;
@@ -99,13 +120,14 @@ bool GestureDetector::handleTouchEvent(QObject *target, QTouchEvent *event)
         return false;
     }
     case QEvent::TouchUpdate: {
+        QPointF itemPoint = m_owner->mapFromScene(event->touchPoints()[0].scenePos());
         if (m_status == Started) {
-            QPointF itemPoint = m_owner->mapFromScene(event->touchPoints()[0].scenePos());
             if (abs(m_startPoint.y() - itemPoint.y()) >= qApp->styleHints()->startDragDistance()) {
                 setStatus(Detected);
                 Q_EMIT bottomUpSwipeDetected();
             }
         }
+        setDistance(itemPoint);
         return false;
     }
     default: return false;

@@ -44,6 +44,7 @@ public:
     ~GestureDetector();
 
     bool isDetecting();
+    qreal distanceFromBottom() const;
 
     void setItemFilter(QObject *item);
     void removeItemFilter(QObject *item);
@@ -52,6 +53,8 @@ public:
 
 Q_SIGNALS:
     void statusChanged(Status status);
+    void distanceChanged();
+    void gestureEnded();
 
     void bottomUpSwipeDetected();
 
@@ -61,11 +64,14 @@ protected:
     bool eventFilter(QObject *target, QEvent *event);
 
     void setStatus(Status status);
+    void setDistance(const QPointF &lastPoint);
 
 private:
     QList<QObject*> m_filteredItems;
     QPointF m_startPoint;
     QQuickItem *m_owner;
+    qreal m_bottom;
+    qreal m_distance;
     Status m_status;
     bool m_bottomUpSwipeDetected:1;
 };
