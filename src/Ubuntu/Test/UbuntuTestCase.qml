@@ -33,6 +33,8 @@ TestCase {
         id:util
     }
 
+    property alias testUtil: util
+
     /*!
         Find a child from the item based on the objectName.
     */

@@ -37,6 +37,9 @@ public:
     UCLabel *title();
     UCLabel *subtitle();
     UCLabel *summary();
+
+protected:
+    void classBegin();
 };
 
 #endif // UCLISTITEMLAYOUT_H

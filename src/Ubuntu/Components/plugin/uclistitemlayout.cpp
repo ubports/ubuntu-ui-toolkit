@@ -212,12 +212,16 @@
 UCListItemLayout::UCListItemLayout(QQuickItem *parent)
     : UCSlotsLayout(parent)
 {
+}
+
+void UCListItemLayout::classBegin()
+{
     //don't set the parent, we have to create qqmldata first
     UCThreeLabelsSlot *main = new UCThreeLabelsSlot();
 
     //create QML data for mainSlot otherwise qmlAttachedProperties
-    //calls in SlotsLayout will fail
-    QQmlData::get(main, true);
+    //calls in SlotsLayout will fail (setContextForObject will create the QQmlData)
+    QQmlEngine::setContextForObject(main, qmlContext(this));
     main->setParent(this);
 
     //this will also set the parentItem
