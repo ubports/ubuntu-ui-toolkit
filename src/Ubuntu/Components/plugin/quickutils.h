@@ -31,6 +31,7 @@ class QuickUtils : public QObject
     Q_PROPERTY(QQuickItem *rootObject READ rootObject NOTIFY rootObjectChanged)
     Q_PROPERTY(QString inputMethodProvider READ inputMethodProvider)
     Q_PROPERTY(bool touchScreenAvailable READ touchScreenAvailable NOTIFY touchScreenAvailableChanged)
+    Q_PROPERTY(bool mouseAttached MEMBER m_mouseAttached NOTIFY mouseAttachedChanged)
 public:
     static QuickUtils& instance()
     {
@@ -48,11 +49,17 @@ public:
     QObject* createQmlObject(const QUrl &url, QQmlEngine *engine);
     static bool showDeprecationWarnings();
 
+    bool mouseAttached()
+    {
+        return m_mouseAttached;
+    }
+
 Q_SIGNALS:
     void rootObjectChanged();
     void activated();
     void deactivated();
     void touchScreenAvailableChanged();
+    void mouseAttachedChanged();
 
 protected:
     bool eventFilter(QObject *, QEvent *);
@@ -61,6 +68,7 @@ private:
     explicit QuickUtils(QObject *parent = 0);
     QPointer<QQuickView> m_rootView;
     QStringList m_omitIM;
+    bool m_mouseAttached;
 
     void lookupQuickView();
 };
