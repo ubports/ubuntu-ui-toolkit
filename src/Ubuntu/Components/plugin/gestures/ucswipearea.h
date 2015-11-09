@@ -55,10 +55,10 @@ class UBUNTUGESTURESQML_EXPORT UCSwipeArea : public QQuickItem
     Q_PROPERTY(qreal sceneDistance READ sceneDistance NOTIFY sceneDistanceChanged)
 
     // Position of the touch point performing the drag relative to this item.
-    Q_PROPERTY(QPointF touchPos READ touchPos NOTIFY touchPosChanged)
+    Q_PROPERTY(QPointF touchPosition READ touchPosition NOTIFY touchPositionChanged)
 
     // Position of the touch point performing the drag, in scene's coordinate system
-    Q_PROPERTY(QPointF touchScenePos READ touchScenePos NOTIFY touchScenePosChanged)
+    Q_PROPERTY(QPointF touchScenePosition READ touchScenePosition NOTIFY touchScenePositionChanged)
 
     // Whether a drag gesture is taking place
     Q_PROPERTY(bool dragging READ dragging NOTIFY draggingChanged)
@@ -95,9 +95,9 @@ public:
     qreal distance() const;
     qreal sceneDistance() const;
 
-    QPointF touchPos() const;
+    QPointF touchPosition() const;
 
-    QPointF touchScenePos() const;
+    QPointF touchScenePosition() const;
 
     bool dragging() const;
 
@@ -124,8 +124,8 @@ Q_SIGNALS:
     void pressedChanged(bool value);
     void distanceChanged(qreal value);
     void sceneDistanceChanged(qreal value);
-    void touchPosChanged(const QPointF &pos);
-    void touchScenePosChanged(const QPointF &pos);
+    void touchPositionChanged(const QPointF &pos);
+    void touchScenePositionChanged(const QPointF &pos);
     void immediateRecognitionChanged(bool value);
 
 protected:

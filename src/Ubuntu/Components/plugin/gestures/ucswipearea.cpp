@@ -321,21 +321,21 @@ qreal UCSwipeArea::sceneDistance() const
 }
 
 /*!
- * \qmlproperty point SwipeArea::touchPos
+ * \qmlproperty point SwipeArea::touchPosition
  * \readonly
  * Position of the touch point performing the drag relative to this item.
  */
-QPointF UCSwipeArea::touchPos() const
+QPointF UCSwipeArea::touchPosition() const
 {
     return d->publicPos;
 }
 
 /*!
- * \qmlproperty point SwipeArea::touchScenePos
+ * \qmlproperty point SwipeArea::touchScenePosition
  * \readonly
  * Position of the touch point performing the drag, in scene's coordinates.
  */
-QPointF UCSwipeArea::touchScenePos() const
+QPointF UCSwipeArea::touchScenePosition() const
 {
     return d->publicScenePos;
 }
@@ -467,7 +467,7 @@ void UCSwipeAreaPrivate::unownedTouchEvent_undecided(UnownedTouchEvent *unownedT
         return;
     }
 
-    const QPointF &touchScenePos = touchPoint->scenePos();
+    const QPointF &touchScenePosition = touchPoint->scenePos();
 
     if (touchPoint->state() == Qt::TouchPointReleased) {
         // touch has ended before recognition concluded
@@ -479,7 +479,7 @@ void UCSwipeAreaPrivate::unownedTouchEvent_undecided(UnownedTouchEvent *unownedT
 
     previousDampedScenePos.setX(dampedScenePos.x());
     previousDampedScenePos.setY(dampedScenePos.y());
-    dampedScenePos.update(touchScenePos);
+    dampedScenePos.update(touchScenePosition);
 
     if (!movingInRightDirection()) {
         ddaDebug("Rejecting gesture because touch point is moving in the wrong direction.");
@@ -501,7 +501,7 @@ void UCSwipeAreaPrivate::unownedTouchEvent_undecided(UnownedTouchEvent *unownedT
         TouchRegistry::instance()->requestTouchOwnership(touchId, q);
         setStatus(Recognized);
         setPublicPos(touchPoint->pos());
-        setPublicScenePos(touchScenePos);
+        setPublicScenePos(touchScenePosition);
     } else if (isPastMaxDistance()) {
         ddaDebug("Rejecting gesture because it went farther than maxDistance without getting recognized.");
         TouchRegistry::instance()->removeCandidateOwnerForTouch(touchId, q);
@@ -827,15 +827,9 @@ void UCSwipeAreaPrivate::setPublicPos(const QPointF &point)
         publicPos = point;
     }
 
-    if (xChanged) {
-        Q_EMIT q->touchPosChanged(publicPos);
-        if (Direction::isHorizontal(direction))
-            Q_EMIT q->distanceChanged(q->distance());
-    }
-
-    if (yChanged) {
-        Q_EMIT q->touchPosChanged(publicPos);
-        if (Direction::isVertical(direction))
+    if (xChanged || yChanged) {
+        Q_EMIT q->touchPositionChanged(publicPos);
+        if (Direction::isHorizontal(direction) || Direction::isVertical(direction))
             Q_EMIT q->distanceChanged(q->distance());
     }
 }
@@ -878,7 +872,7 @@ void UCSwipeAreaPrivate::setPublicScenePos(const QPointF &point)
     }
 
     if (xChanged || yChanged) {
-        Q_EMIT q->touchScenePosChanged(publicScenePos);
+        Q_EMIT q->touchScenePositionChanged(publicScenePos);
     }
 }
 
