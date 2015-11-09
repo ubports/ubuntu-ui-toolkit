@@ -93,6 +93,8 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/uclistitemlayout.h \
     $$PWD/privates/threelabelsslot_p.h \
     $$PWD/ucimportversionchecker_p.h \
+    $$PWD/ucbottomedgehint.h \
+    $$PWD/privates/gesturedetector.h \
     $$PWD/gestures/ucswipearea.h \
     $$PWD/gestures/ucswipearea_p.h \
     $$PWD/gestures/damper.h \
@@ -160,6 +162,8 @@ SOURCES += $$PWD/plugin.cpp \
     $$PWD/uclistitemlayout.cpp \
     $$PWD/privates/threelabelsslot_p.cpp \
     $$PWD/ucimportversionchecker_p.cpp \
+    $$PWD/ucbottomedgehint.cpp \
+    $$PWD/privates/gesturedetector.cpp \
     $$PWD/gestures/ucswipearea.cpp \
 
 # adapters
