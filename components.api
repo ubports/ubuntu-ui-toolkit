@@ -1046,11 +1046,9 @@ Ubuntu.Components.SwipeArea 1.3: Item
     signal draggingChanged(bool value)
     signal pressedChanged(bool value)
     signal distanceChanged(double value)
-    signal sceneDistanceChanged(double value)
     signal touchPositionChanged(QPointF pos)
     signal immediateRecognitionChanged(bool value)
     readonly property bool pressed
-    readonly property double sceneDistance
     readonly property QPointF touchPosition
 Ubuntu.Components.SwipeArea.Direction: Enum
     Downwards

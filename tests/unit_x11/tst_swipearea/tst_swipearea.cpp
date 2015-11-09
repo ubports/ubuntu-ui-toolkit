@@ -99,8 +99,8 @@ private Q_SLOTS:
     void movingDDA();
     void ignoreOldFinger();
     void rotated();
-    void sceneDistance();
-    void sceneDistance_data();
+    void distance();
+    void distance_data();
     void disabledWhileDragging();
     void oneFingerDownFollowedByLateSecondFingerDown();
     void givesUpWhenLosesTouch();
@@ -568,7 +568,7 @@ void tst_UCSwipeArea::rotated()
     QTest::touchEvent(m_view, m_device).release(0, touchPoint.toPoint());
 }
 
-void tst_UCSwipeArea::sceneDistance()
+void tst_UCSwipeArea::distance()
 {
     QQuickItem *baseItem =  m_view->rootObject()->findChild<QQuickItem*>("baseItem");
     QFETCH(qreal, rotation);
@@ -584,7 +584,7 @@ void tst_UCSwipeArea::sceneDistance()
     edgeDragArea->d->setRecognitionTimer(m_fakeTimerFactory->createTimer(edgeDragArea));
     edgeDragArea->d->setTimeSource(m_fakeTimerFactory->timeSource());
 
-    // to disable the position smoothing so that we can more easily check sceneDistance values
+    // to disable the position smoothing so that we can more easily check distance values
     edgeDragArea->setImmediateRecognition(true);
 
     QPointF initialtouchPosition = calculateInitialtouchPosition(edgeDragArea);
@@ -609,16 +609,16 @@ void tst_UCSwipeArea::sceneDistance()
 
     qreal actualDragDistance = ((qreal)totalMovementSteps) * movementStepDistance;
 
-    // UCSwipeArea::sceneDistance() must match the actual drag distance as the
+    // UCSwipeArea::distance() must match the actual drag distance as the
     // drag was aligned with the gesture direction
     // NB: qFuzzyCompare(), used internally by QCOMPARE(), is broken.
-    QVERIFY(qAbs(edgeDragArea->sceneDistance() - actualDragDistance) < 0.001);
+    QVERIFY(qAbs(edgeDragArea->distance() - actualDragDistance) < 0.001);
 
     timestamp += movementTimeStepMs;
     sendTouchRelease(timestamp, 0, touchPoint);
 }
 
-void tst_UCSwipeArea::sceneDistance_data()
+void tst_UCSwipeArea::distance_data()
 {
     QTest::addColumn<qreal>("rotation");
     QTest::addColumn<QPointF>("dragDirectionVector");

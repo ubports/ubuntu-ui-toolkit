@@ -101,7 +101,6 @@ public:
     void watchPressedTouchPoints(const QList<QTouchEvent::TouchPoint> &touchPoints);
     bool recognitionIsDisabled() const;
     bool sanityCheckRecognitionProperties();
-    void updateSceneDistance();
     void setMaxTime(int value);
     void setDistanceThreshold(qreal value);
     void setPixelsPerMm(qreal pixelsPerMm);

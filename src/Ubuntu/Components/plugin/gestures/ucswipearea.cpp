@@ -297,26 +297,6 @@ void UCSwipeAreaPrivate::setTimeSource(const SharedTimeSource &timeSource)
  */
 qreal UCSwipeArea::distance() const
 {
-    if (::Direction::isHorizontal(d->direction)) {
-        return d->publicPos.x() - d->startPos.x();
-    } else {
-        return d->publicPos.y() - d->startPos.y();
-    }
-}
-
-void UCSwipeAreaPrivate::updateSceneDistance()
-{
-    QPointF totalMovement = publicScenePos - startScenePos;
-    sceneDistance = projectOntoDirectionVector(totalMovement);
-}
-
-/*!
- * \qmlproperty real SwipeArea::sceneDistance
- * \readonly
- * Same as \l distance but in scene metrics.
- */
-qreal UCSwipeArea::sceneDistance() const
-{
     return d->sceneDistance;
 }
 
@@ -798,8 +778,6 @@ void UCSwipeAreaPrivate::setPublicPos(const QPointF &point)
 
     if (xChanged || yChanged) {
         Q_EMIT q->touchPositionChanged(publicPos);
-        if (Direction::isHorizontal(direction) || Direction::isVertical(direction))
-            Q_EMIT q->distanceChanged(q->distance());
     }
 }
 
@@ -834,10 +812,11 @@ void UCSwipeAreaPrivate::setPublicScenePos(const QPointF &point)
         publicScenePos = point;
     }
 
-    updateSceneDistance();
+    QPointF totalMovement = publicScenePos - startScenePos;
+    sceneDistance = projectOntoDirectionVector(totalMovement);
 
     if (oldSceneDistance != sceneDistance) {
-        Q_EMIT q->sceneDistanceChanged(sceneDistance);
+        Q_EMIT q->distanceChanged(sceneDistance);
     }
 }
 

@@ -46,7 +46,7 @@ Template {
                         color: theme.palette.normal.foregroundText
                         anchors {
                             centerIn: parent
-                            verticalCenterOffset: parent.dragging ? parent.distance : 0
+                            verticalCenterOffset: parent.dragging ? -parent.distance : 0
                         }
                     }
                 }
@@ -134,7 +134,7 @@ Template {
                         color: theme.palette.normal.foregroundText
                         anchors {
                             centerIn: parent
-                            horizontalCenterOffset: parent.dragging ? parent.distance : 0
+                            horizontalCenterOffset: parent.dragging ? -parent.distance : 0
                         }
                     }
                 }
