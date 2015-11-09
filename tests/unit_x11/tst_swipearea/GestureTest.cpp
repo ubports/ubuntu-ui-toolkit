@@ -16,6 +16,8 @@
  */
 
 #include "GestureTest.h"
+#include "uctestcase.h"
+#include "uctestextras.h"
 
 #include <qpa/qwindowsysteminterface.h>
 #include <QQmlEngine>
@@ -43,12 +45,7 @@ void GestureTest::initTestCase()
 
 void GestureTest::init()
 {
-    m_view = new QQuickView;
-    m_view->setResizeMode(QQuickView::SizeRootObjectToView);
-    m_view->setSource(QUrl::fromLocalFile(m_qmlFilename));
-    m_view->show();
-    QVERIFY(QTest::qWaitForWindowExposed(m_view));
-    QVERIFY(m_view->rootObject() != 0);
+    m_view = new UbuntuTestCase(m_qmlFilename, QQuickView::SizeRootObjectToView, true);
 
     m_fakeTimerFactory = new FakeTimerFactory;
 
@@ -71,6 +68,9 @@ void GestureTest::cleanup()
 
     delete m_view;
     m_view = nullptr;
+
+    // add a small timeout after each run to have a proper cleanup
+    QTest::qWait(400);
 }
 
 ////////////////////////// TouchMemento /////////////////////////////

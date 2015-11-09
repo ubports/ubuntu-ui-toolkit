@@ -21,7 +21,7 @@
 #include <QtQuick/QQuickItem>
 #include <QtGui/QTouchEvent>
 
-class QQuickView;
+class UbuntuTestCase;
 class QTouchDevice;
 
 namespace UbuntuGestures {
@@ -83,7 +83,7 @@ protected Q_SLOTS:
 
 protected:
     QTouchDevice *m_device;
-    QQuickView *m_view;
+    UbuntuTestCase *m_view;
     TouchRegistry *m_touchRegistry;
     UbuntuGestures::FakeTimerFactory *m_fakeTimerFactory;
     QString m_qmlFilename;

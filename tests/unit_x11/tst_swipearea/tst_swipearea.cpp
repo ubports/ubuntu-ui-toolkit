@@ -32,6 +32,7 @@
 #undef private
 
 #include "GestureTest.h"
+#include "uctestcase.h"
 
 using namespace UbuntuGestures;
 
