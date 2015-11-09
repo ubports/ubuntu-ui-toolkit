@@ -18,12 +18,12 @@ import QtQuick 2.4
 import Ubuntu.Components 1.3
 
 Template {
-    objectName: "directionalDragAreaTemplate"
+    objectName: "SwipeAreaTemplate"
     scrollable: !(upwards.dragging | downwards.dragging |
                 rightwards.dragging | leftwards.dragging)
 
     TemplateSection {
-        className: "DirectionalDragArea"
+        className: "SwipeArea"
 
         TemplateRow {
             title: i18n.tr("Upwards")
@@ -32,15 +32,15 @@ Template {
                 height: units.gu(20)
                 color: theme.palette.normal.foreground
 
-                DirectionalDragArea {
+                SwipeArea {
                     id: upwards
-                    direction: DirectionalDragArea.Upwards
+                    direction: SwipeArea.Upwards
                     anchors {
                         left: parent.left
                         right: parent.right
                         bottom: parent.bottom
                     }
-                    height: units.gu(5)
+                    height: units.gu(4)
                     Label {
                         text: i18n.tr("Upwards")
                         color: theme.palette.normal.foregroundText
@@ -60,9 +60,9 @@ Template {
                 height: units.gu(20)
                 color: theme.palette.normal.foreground
 
-                DirectionalDragArea {
+                SwipeArea {
                     id: downwards
-                    direction: DirectionalDragArea.Downwards
+                    direction: SwipeArea.Downwards
                     anchors {
                         left: parent.left
                         right: parent.right
@@ -88,9 +88,9 @@ Template {
                 height: units.gu(20)
                 color: theme.palette.normal.foreground
 
-                DirectionalDragArea {
+                SwipeArea {
                     id: rightwards
-                    direction: DirectionalDragArea.Rightwards
+                    direction: SwipeArea.Rightwards
                     anchors {
                         left: parent.left
                         top: parent.top
@@ -118,9 +118,9 @@ Template {
                 height: units.gu(20)
                 color: theme.palette.normal.foreground
 
-                DirectionalDragArea {
+                SwipeArea {
                     id: leftwards
-                    direction: DirectionalDragArea.Leftwards
+                    direction: SwipeArea.Leftwards
                     anchors {
                         right: parent.right
                         top: parent.top
