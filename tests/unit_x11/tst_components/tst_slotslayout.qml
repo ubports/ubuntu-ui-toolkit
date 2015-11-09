@@ -864,9 +864,11 @@ Item {
         //lp#1514173
         //this will make the test segfault if there is a regression
         function test_defaultLabelsQmlContext() {
-            //The message is correct but the warning is not ignored
-            //ignoreWarning(warningMsg("QML Label: Cannot open: file:///test.png"))
+            ignoreWarning(warningMsg("QML Label: Cannot open: file:///test.png"))
             var obj = layoutTestQmlContextComponent.createObject(main)
+            //wait for rendering otherwise we will not get the "cannot find file" warning
+            //because the img is loaded async
+            waitForRendering(obj)
             compare(obj !== null, true, "QML ListItemLayout: testing labels' QML context.")
             obj.destroy()
         }
