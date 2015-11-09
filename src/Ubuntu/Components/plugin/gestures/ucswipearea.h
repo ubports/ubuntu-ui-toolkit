@@ -47,7 +47,6 @@ class UBUNTUGESTURESQML_EXPORT UCSwipeArea : public QQuickItem
     Q_PROPERTY(qreal distance READ distance NOTIFY distanceChanged)
     Q_PROPERTY(qreal sceneDistance READ sceneDistance NOTIFY sceneDistanceChanged)
     Q_PROPERTY(QPointF touchPosition READ touchPosition NOTIFY touchPositionChanged)
-    Q_PROPERTY(QPointF touchScenePosition READ touchScenePosition NOTIFY touchScenePositionChanged)
     Q_PROPERTY(bool dragging READ dragging NOTIFY draggingChanged)
     Q_PROPERTY(bool pressed READ pressed NOTIFY pressedChanged)
     Q_PROPERTY(bool immediateRecognition
@@ -76,8 +75,6 @@ public:
 
     QPointF touchPosition() const;
 
-    QPointF touchScenePosition() const;
-
     bool dragging() const;
 
     bool pressed() const;
@@ -92,7 +89,6 @@ Q_SIGNALS:
     void distanceChanged(qreal value);
     void sceneDistanceChanged(qreal value);
     void touchPositionChanged(const QPointF &pos);
-    void touchScenePositionChanged(const QPointF &pos);
     void immediateRecognitionChanged(bool value);
 
 protected:

@@ -311,15 +311,12 @@ void tst_UCSwipeArea::sceneXAndX()
     sendTouchPress(0 /* timestamp */, 0 /* id */, touchScenePosition);
 
     QSignalSpy touchSpy(edgeDragArea, &UCSwipeArea::touchPositionChanged);
-    QSignalSpy touchSceneSpy(edgeDragArea, &UCSwipeArea::touchScenePositionChanged);
 
     touchScenePosition.rx() = m_view->width() / 2;
     sendTouchUpdate(50 /* timestamp */, 0 /* id */, touchScenePosition);
 
     QCOMPARE(touchSpy.count(), 1);
-    QCOMPARE(touchSceneSpy.count(), 1);
     QCOMPARE(edgeDragArea->touchPosition().x(), touchScenePosition.x() - edgeDragArea->x());
-    QCOMPARE(edgeDragArea->touchScenePosition().x(), touchScenePosition.x());
 }
 
 /*
@@ -340,15 +337,12 @@ void tst_UCSwipeArea::sceneYAndY()
     sendTouchPress(0 /* timestamp */, 0 /* id */, touchScenePosition);
 
     QSignalSpy touchSpy(edgeDragArea, &UCSwipeArea::touchPositionChanged);
-    QSignalSpy touchSceneSpy(edgeDragArea, &UCSwipeArea::touchScenePositionChanged);
 
     touchScenePosition.ry() = m_view->height() / 2;
     sendTouchUpdate(50 /* timestamp */, 0 /* id */, touchScenePosition);
 
     QCOMPARE(touchSpy.count(), 1);
-    QCOMPARE(touchSceneSpy.count(), 1);
     QCOMPARE(edgeDragArea->touchPosition().y(), touchScenePosition.y() - edgeDragArea->y());
-    QCOMPARE(edgeDragArea->touchScenePosition().y(), touchScenePosition.y());
 }
 
 /*

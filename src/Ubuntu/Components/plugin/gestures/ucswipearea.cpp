@@ -331,16 +331,6 @@ QPointF UCSwipeArea::touchPosition() const
 }
 
 /*!
- * \qmlproperty point SwipeArea::touchScenePosition
- * \readonly
- * Position of the touch point performing the drag, in scene's coordinates.
- */
-QPointF UCSwipeArea::touchScenePosition() const
-{
-    return d->publicScenePos;
-}
-
-/*!
  * \qmlproperty bool SwipeArea::dragging
  * \readonly
  * Reports whether a drag gesture is taking place.
@@ -848,10 +838,6 @@ void UCSwipeAreaPrivate::setPublicScenePos(const QPointF &point)
 
     if (oldSceneDistance != sceneDistance) {
         Q_EMIT q->sceneDistanceChanged(sceneDistance);
-    }
-
-    if (xChanged || yChanged) {
-        Q_EMIT q->touchScenePositionChanged(publicScenePos);
     }
 }
 
