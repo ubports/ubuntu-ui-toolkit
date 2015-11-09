@@ -43,34 +43,13 @@ class UBUNTUGESTURESQML_EXPORT UCSwipeArea : public QQuickItem
 {
     Q_OBJECT
 
-    // The direction in which the gesture should move in order to be recognized.
     Q_PROPERTY(Direction direction READ direction WRITE setDirection NOTIFY directionChanged)
-
-    // The distance travelled by the finger along the axis specified by
-    // UCSwipeArea's direction.
     Q_PROPERTY(qreal distance READ distance NOTIFY distanceChanged)
-
-    // The distance travelled by the finger along the axis specified by
-    // UCSwipeArea's direction in scene coordinates
     Q_PROPERTY(qreal sceneDistance READ sceneDistance NOTIFY sceneDistanceChanged)
-
-    // Position of the touch point performing the drag relative to this item.
     Q_PROPERTY(QPointF touchPosition READ touchPosition NOTIFY touchPositionChanged)
-
-    // Position of the touch point performing the drag, in scene's coordinate system
     Q_PROPERTY(QPointF touchScenePosition READ touchScenePosition NOTIFY touchScenePositionChanged)
-
-    // Whether a drag gesture is taking place
     Q_PROPERTY(bool dragging READ dragging NOTIFY draggingChanged)
-
-    // Whether the drag area is pressed.
     Q_PROPERTY(bool pressed READ pressed NOTIFY pressedChanged)
-
-    // Whether a gesture should be Recognized as soon a touch lands on the area.
-    // With this property enabled it will work pretty much like a MultiPointTouchArea,
-    // just with a different API.
-    //
-    // It's false by default. In most cases you will not want that enabled.
     Q_PROPERTY(bool immediateRecognition
             READ immediateRecognition
             WRITE setImmediateRecognition
@@ -79,12 +58,12 @@ class UBUNTUGESTURESQML_EXPORT UCSwipeArea : public QQuickItem
     Q_ENUMS(Direction)
 public:
     enum Direction {
-        Rightwards, // Along the positive direction of the X axis
-        Leftwards, // Along the negative direction of the X axis
-        Downwards, // Along the positive direction of the Y axis
-        Upwards, // Along the negative direction of the Y axis
-        Horizontal, // Along the X axis, in any direction
-        Vertical // Along the Y axis, in any direction
+        Rightwards,
+        Leftwards,
+        Downwards,
+        Upwards,
+        Horizontal,
+        Vertical
     };
 
     UCSwipeArea(QQuickItem *parent = 0);
@@ -106,18 +85,6 @@ public:
     bool immediateRecognition() const;
     void setImmediateRecognition(bool enabled);
 
-    bool event(QEvent *e) override;
-
-    /*
-      In qmltests, sequences of touch events are sent all at once, unlike in "real life".
-      Also qmltests might run really slowly, e.g. when run from inside virtual machines.
-      Thus to remove a variable that qmltests cannot really control, namely time, this
-      function removes all constraints that are sensible to elapsed time.
-
-      This effectively makes the UCSwipeArea easier to fool.
-     */
-    Q_INVOKABLE void removeTimeConstraints();
-
 Q_SIGNALS:
     void directionChanged(Direction direction);
     void draggingChanged(bool value);
@@ -129,6 +96,8 @@ Q_SIGNALS:
     void immediateRecognitionChanged(bool value);
 
 protected:
+    bool event(QEvent *e) override;
+
     void touchEvent(QTouchEvent *event) override;
     void itemChange(ItemChange change, const ItemChangeData &value) override;
 

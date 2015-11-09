@@ -292,7 +292,8 @@ void UCSwipeAreaPrivate::setTimeSource(const SharedTimeSource &timeSource)
 /*!
  * \qmlproperty real SwipeArea::distance
  * \readonly
- * The distance travelled by the finger along the axis specified by \l direction.
+ * The property holds the distance of the swipe from the beginning of the gesture
+ * recognition to the current touch position.
  */
 qreal UCSwipeArea::distance() const
 {
@@ -312,8 +313,7 @@ void UCSwipeAreaPrivate::updateSceneDistance()
 /*!
  * \qmlproperty real SwipeArea::sceneDistance
  * \readonly
- * The distance travelled by the finger along the axis specified by \l direction
- * in scene coordinates
+ * Same as \l distance but in scene metrics.
  */
 qreal UCSwipeArea::sceneDistance() const
 {
@@ -379,13 +379,6 @@ void UCSwipeArea::setImmediateRecognition(bool enabled)
         d->immediateRecognition = enabled;
         Q_EMIT immediateRecognitionChanged(enabled);
     }
-}
-
-void UCSwipeArea::removeTimeConstraints()
-{
-    d->setMaxTime(60 * 60 * 1000);
-    d->compositionTime = 0;
-    ddaDebug("removed time constraints");
 }
 
 bool UCSwipeArea::event(QEvent *event)
