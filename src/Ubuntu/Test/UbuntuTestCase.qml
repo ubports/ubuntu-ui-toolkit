@@ -33,6 +33,9 @@ TestCase {
         id:util
     }
 
+    /*!
+        This property holds the inner TestUtil instance.
+    */
     property alias testUtil: util
 
     /*!
