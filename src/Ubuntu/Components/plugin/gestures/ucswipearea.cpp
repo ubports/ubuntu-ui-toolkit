@@ -401,20 +401,6 @@ void UCSwipeAreaPrivate::touchOwnershipEvent(TouchOwnershipEvent *event)
         ids.append(event->touchId());
         ddaDebug("grabbing touch");
         q->grabTouchPoints(ids);
-
-        // Work around for Qt bug. If we grab a touch that is being used for mouse pointer
-        // emulation it will cause the emulation logic to go nuts.
-        // Thus we have to also grab the mouse in this case.
-        //
-        // The fix for this bug has landed in Qt 5.4 (https://codereview.qt-project.org/96887)
-        // TODO: Remove this workaround once we start using Qt 5.4
-        if (q->window()) {
-            QQuickWindowPrivate *windowPrivate = QQuickWindowPrivate::get(q->window());
-            if (windowPrivate->touchMouseId == event->touchId() && q->window()->mouseGrabberItem()) {
-                ddaDebug("removing mouse grabber");
-                q->window()->mouseGrabberItem()->ungrabMouse();
-            }
-        }
     } else {
         // We still wanna know when it ends for keeping the composition time window up-to-date
         TouchRegistry::instance()->addTouchWatcher(touchId, q);
@@ -508,7 +494,7 @@ void UCSwipeAreaPrivate::unownedTouchEvent_undecided(UnownedTouchEvent *unownedT
 
 void UCSwipeArea::touchEvent(QTouchEvent *event)
 {
-    // TODO: Consider when more than one touch starts in the same event (although it's not possible
+    // FIXME: Consider when more than one touch starts in the same event (although it's not possible
     //       with Mir's android-input). Have to track them all. Consider it a plus/bonus.
 
     ddaDebug(d->timeSource->msecsSinceReference() << " " << qPrintable(touchEventToString(event)));
@@ -535,7 +521,7 @@ void UCSwipeArea::touchEvent(QTouchEvent *event)
 
 void UCSwipeAreaPrivate::touchEvent_absent(QTouchEvent *event)
 {
-    // TODO: accept/reject is for the whole event, not per touch id. See how that affects us.
+    // FIXME: accept/reject is for the whole event, not per touch id. See how that affects us.
 
     if (!event->touchPointStates().testFlag(Qt::TouchPointPressed)) {
         // Nothing to see here. No touch starting in this event.
@@ -884,7 +870,7 @@ void UCSwipeArea::itemChange(ItemChange change, const ItemChangeData &value)
         if (value.window != nullptr) {
             value.window->installEventFilter(TouchRegistry::instance());
 
-            // TODO: Handle window->screen() changes (ie window changing screens)
+            // FIXME: Handle window->screen() changes (ie window changing screens)
             qreal pixelsPerMm = value.window->screen()->physicalDotsPerInch() / 25.4;
             d->setPixelsPerMm(pixelsPerMm);
         }
