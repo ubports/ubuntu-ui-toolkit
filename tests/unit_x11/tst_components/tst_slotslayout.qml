@@ -288,18 +288,6 @@ Item {
             title.text: "Hello"
             title.textSize: Label.XLarge
         }
-        Component {
-            id: layoutTestQmlContextComponent
-            ListItemLayout {
-                id: layoutTestQmlContext
-                title.text: "<html><body><p dir='ltr'>TEST <img align=absmiddle height=\"10\" width=\"10\" src=\"file:///test.png\" /> </p></body></html>"
-                title.textFormat: Text.RichText
-                subtitle.text: "<html><body><p dir='ltr'>TEST <img align=absmiddle height=\"10\" width=\"10\" src=\"file:///test.png\" /> </p></body></html>"
-                subtitle.textFormat: Text.RichText
-                summary.text: "<html><body><p dir='ltr'>TEST <img align=absmiddle height=\"10\" width=\"10\" src=\"file:///test.png\" /> </p></body></html>"
-                summary.textFormat: Text.RichText
-            }
-        }
     }
 
     UbuntuTestCase {
@@ -861,6 +849,19 @@ Item {
             layoutLabels.mainSlot = customMainSlot
         }
 
+
+        Component {
+            id: layoutTestQmlContextComponent
+            ListItemLayout {
+                id: layoutTestQmlContext
+                title.text: "<html><body><p dir='ltr'>TEST <img align=absmiddle height=\"10\" width=\"10\" src=\"file:///test.png\" /> </p></body></html>"
+                title.textFormat: Text.RichText
+                subtitle.text: "<html><body><p dir='ltr'>TEST <img align=absmiddle height=\"10\" width=\"10\" src=\"file:///test.png\" /> </p></body></html>"
+                subtitle.textFormat: Text.RichText
+                summary.text: "<html><body><p dir='ltr'>TEST <img align=absmiddle height=\"10\" width=\"10\" src=\"file:///test.png\" /> </p></body></html>"
+                summary.textFormat: Text.RichText
+            }
+        }
         //lp#1514173
         //this will make the test segfault if there is a regression
         function test_defaultLabelsQmlContext() {

@@ -990,6 +990,11 @@ void UCSlotsLayout::itemChange(ItemChange change, const ItemChangeData &data)
     }
    \endqml
  */
+QQuickItem *UCSlotsLayout::mainSlot()
+{
+    Q_D(const UCSlotsLayout);
+    return d->mainSlot;
+}
 QQuickItem *UCSlotsLayout::mainSlot() const
 {
     Q_D(const UCSlotsLayout);

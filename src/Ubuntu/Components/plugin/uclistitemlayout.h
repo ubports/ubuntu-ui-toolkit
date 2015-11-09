@@ -30,6 +30,7 @@ class UCListItemLayout : public UCSlotsLayout
 public:
     explicit UCListItemLayout(QQuickItem *parent = 0);
 
+    QQuickItem *mainSlot() override;
     //we don't allow changing the main slot on ListItemLayout because otherwise
     //accessing title/subtitle/summary would lead to a crash
     void setMainSlot(QQuickItem *slot) override;
@@ -37,9 +38,6 @@ public:
     UCLabel *title();
     UCLabel *subtitle();
     UCLabel *summary();
-
-protected:
-    void classBegin();
 };
 
 #endif // UCLISTITEMLAYOUT_H
