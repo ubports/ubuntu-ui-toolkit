@@ -114,52 +114,43 @@ public:
     // Useful for testing, where a fake time source can be supplied
     void setTimeSource(const UbuntuGestures::SharedTimeSource &timeSource);
 
-    UCSwipeArea *q;
-
-    // The current status of the directional drag gesture area.
-    Status status;
-
     QPointF startScenePos;
-    qreal sceneDistance;
-    int touchId;
-
     // The touch position exposed in the public API.
     // It only starts to move once the gesture gets recognized.
     QPointF publicScenePos;
-
     // A movement damper is used in some of the gesture recognition calculations
     // to get rid of noise or small oscillations in the touch position.
     DampedPointF dampedScenePos;
     QPointF previousDampedScenePos;
-
     // Unit vector in scene coordinates describing the direction of the gesture recognition
     QPointF sceneDirectionVector;
+    UbuntuGestures::SharedTimeSource timeSource;
+    ActiveTouchesInfo activeTouches;
 
-    UCSwipeArea::Direction direction;
+    UCSwipeArea *q;
+    UbuntuGestures::AbstractTimer *recognitionTimer;
 
     // How far a touch point has to move from its initial position along the gesture axis in order
     // for it to be recognized as a directional drag.
     qreal distanceThreshold;
     qreal distanceThresholdSquared; // it's pow(distanceThreshold, 2)
-
-    // Maximum time (in milliseconds) the gesture can take to go beyond the distance threshold
-    int maxTime;
-
     // Maximum distance the gesture can go without crossing the axis-aligned distance threshold
     qreal maxDistance;
+    qreal sceneDistance;
 
+    int touchId;
+    // Maximum time (in milliseconds) the gesture can take to go beyond the distance threshold
+    int maxTime;
     // Maximum time (in milliseconds) after the start of a given touch point where
     // subsequent touch starts are grouped with the first one into an N-touches gesture
     // (e.g. a two-fingers tap or drag).
     int compositionTime;
 
+    // The current status of the directional drag gesture area.
+    Status status;
+    UCSwipeArea::Direction direction;
+
     bool immediateRecognition;
-
-    UbuntuGestures::AbstractTimer *recognitionTimer;
-
-    UbuntuGestures::SharedTimeSource timeSource;
-
-    ActiveTouchesInfo activeTouches;
 
 Q_SIGNALS:
     void statusChanged(Status value);
