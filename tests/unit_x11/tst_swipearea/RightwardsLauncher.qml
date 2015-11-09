@@ -43,7 +43,7 @@ Item {
         anchors.fill: dragArea
     }
 
-    DirectionalDragArea {
+    SwipeArea {
         id: dragArea
         objectName: "hpDragArea"
 
@@ -52,7 +52,7 @@ Item {
 
         width: units.gu(5)
 
-        direction: DirectionalDragArea.Rightwards
+        direction: SwipeArea.Rightwards
 
         onDraggingChanged: {
             if (dragging) {

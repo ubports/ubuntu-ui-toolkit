@@ -128,7 +128,7 @@ private:
 };
 
 tst_UCSwipeArea::tst_UCSwipeArea()
-    : GestureTest(QStringLiteral("tst_ucswipearea.qml"))
+    : GestureTest(QStringLiteral("tst_swipearea.qml"))
 {
 }
 

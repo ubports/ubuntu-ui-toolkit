@@ -46,13 +46,13 @@ Item {
         anchors.fill: dragArea
     }
 
-    DirectionalDragArea {
+    SwipeArea {
         id: dragArea
         objectName: "vnDragArea"
 
         height: units.gu(5)
 
-        direction: DirectionalDragArea.Upwards
+        direction: SwipeArea.Upwards
 
         onDraggingChanged: {
             if (dragging) {
