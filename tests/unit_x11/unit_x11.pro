@@ -15,4 +15,5 @@ SUBDIRS += tst_components \
     tst_animator \
     tst_serviceproperties \
     tst_subtheming \
-    tst_swipearea
+    tst_swipearea \
+    tst_touchregistry
