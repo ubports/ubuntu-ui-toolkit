@@ -88,7 +88,7 @@ public:
     bool isPastMaxDistance() const;
     const QTouchEvent::TouchPoint *fetchTargetTouchPoint(QTouchEvent *event);
     void setStatus(Status newStatus);
-    void setPublicPos(const QPointF &point);
+    void updatePosition(const QPointF &point);
     void setPublicScenePos(const QPointF &point);
     bool isWithinTouchCompositionWindow();
     void updateSceneDirectionVector();
@@ -119,14 +119,12 @@ public:
     // The current status of the directional drag gesture area.
     Status status;
 
-    QPointF startPos;
     QPointF startScenePos;
     qreal sceneDistance;
     int touchId;
 
     // The touch position exposed in the public API.
     // It only starts to move once the gesture gets recognized.
-    QPointF publicPos;
     QPointF publicScenePos;
 
     // A movement damper is used in some of the gesture recognition calculations

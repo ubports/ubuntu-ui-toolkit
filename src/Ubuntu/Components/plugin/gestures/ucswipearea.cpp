@@ -307,7 +307,7 @@ qreal UCSwipeArea::distance() const
  */
 QPointF UCSwipeArea::touchPosition() const
 {
-    return d->publicPos;
+    return mapFromScene(d->publicScenePos);
 }
 
 /*!
@@ -449,8 +449,7 @@ void UCSwipeAreaPrivate::unownedTouchEvent_undecided(UnownedTouchEvent *unownedT
     if (movedFarEnoughAlongGestureAxis()) {
         TouchRegistry::instance()->requestTouchOwnership(touchId, q);
         setStatus(Recognized);
-        setPublicPos(touchPoint->pos());
-        setPublicScenePos(touchScenePosition);
+        updatePosition(touchScenePosition);
     } else if (isPastMaxDistance()) {
         ddaDebug("Rejecting gesture because it went farther than maxDistance without getting recognized.");
         TouchRegistry::instance()->removeCandidateOwnerForTouch(touchId, q);
@@ -535,13 +534,11 @@ void UCSwipeAreaPrivate::touchEvent_absent(QTouchEvent *event)
     if (allGood) {
         Q_ASSERT(newTouchPoint);
 
-        startPos = newTouchPoint->pos();
         startScenePos = newTouchPoint->scenePos();
         touchId = newTouchPoint->id();
         dampedScenePos.reset(startScenePos);
-        setPublicPos(startPos);
+        updatePosition(startScenePos);
 
-        setPublicScenePos(startScenePos);
         updateSceneDirectionVector();
 
         if (recognitionIsDisabled()) {
@@ -597,8 +594,7 @@ void UCSwipeAreaPrivate::touchEvent_recognized(QTouchEvent *event)
                "Considering it as released.";
         setStatus(WaitingForTouch);
     } else {
-        setPublicPos(touchPoint->pos());
-        setPublicScenePos(touchPoint->scenePos());
+        updatePosition(touchPoint->scenePos());
 
         if (touchPoint->state() == Qt::TouchPointReleased) {
             setStatus(WaitingForTouch);
@@ -750,50 +746,14 @@ void UCSwipeAreaPrivate::setStatus(Status newStatus)
     }
 }
 
-void UCSwipeAreaPrivate::setPublicPos(const QPointF &point)
-{
-    bool xChanged = publicPos.x() != point.x();
-    bool yChanged = publicPos.y() != point.y();
-
-    // Public position should not get updated while the gesture is still being recognized
-    // (ie, Undecided status).
-    Q_ASSERT(status == WaitingForTouch || status == Recognized);
-
-    if (status == Recognized && !recognitionIsDisabled()) {
-        // When the gesture finally gets recognized, the finger will likely be
-        // reasonably far from the edge. If we made the contentX immediately
-        // follow the finger position it would be visually unpleasant as it
-        // would appear right next to the user's finger out of nowhere (ie,
-        // it would jump). Instead, we make contentX go towards the user's
-        // finger in several steps. ie., in an animated way.
-        QPointF delta = point - publicPos;
-        // the trick is not to go all the way (1.0) as it would cause a sudden jump
-        publicPos.rx() += 0.4 * delta.x();
-        publicPos.ry() += 0.4 * delta.y();
-    } else {
-        // no smoothing when initializing or if gesture recognition was immediate as there will
-        // be no jump.
-        publicPos = point;
-    }
-
-    if (xChanged || yChanged) {
-        Q_EMIT q->touchPositionChanged(publicPos);
-    }
-}
-
-void UCSwipeAreaPrivate::setPublicScenePos(const QPointF &point)
+void UCSwipeAreaPrivate::updatePosition(const QPointF &point)
 {
     bool xChanged = publicScenePos.x() != point.x();
     bool yChanged = publicScenePos.y() != point.y();
 
-    if (!xChanged && !yChanged)
-        return;
-
     // Public position should not get updated while the gesture is still being recognized
     // (ie, Undecided status).
     Q_ASSERT(status == WaitingForTouch || status == Recognized);
-
-    qreal oldSceneDistance = sceneDistance;
 
     if (status == Recognized && !recognitionIsDisabled()) {
         // When the gesture finally gets recognized, the finger will likely be
@@ -812,10 +772,13 @@ void UCSwipeAreaPrivate::setPublicScenePos(const QPointF &point)
         publicScenePos = point;
     }
 
-    QPointF totalMovement = publicScenePos - startScenePos;
-    sceneDistance = projectOntoDirectionVector(totalMovement);
+    if (xChanged || yChanged) {
+        Q_EMIT q->touchPositionChanged(q->touchPosition());
 
-    if (oldSceneDistance != sceneDistance) {
+        // handle distance change
+        QPointF totalMovement = publicScenePos - startScenePos;
+        sceneDistance = projectOntoDirectionVector(totalMovement);
+
         Q_EMIT q->distanceChanged(sceneDistance);
     }
 }
