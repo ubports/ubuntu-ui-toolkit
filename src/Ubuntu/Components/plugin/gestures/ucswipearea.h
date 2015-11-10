@@ -33,15 +33,6 @@ class TouchOwnershipEvent;
 class UnownedTouchEvent;
 class UCSwipeAreaPrivate;
 
-/*
- An area that detects axis-aligned single-finger drag gestures
-
- If a drag deviates too much from the components' direction recognition will
- fail. It will also fail if the drag or flick is too short. E.g. a noisy or
- fidgety click
-
- See doc/DirectionalDragArea.svg
- */
 class UBUNTUGESTURESQML_EXPORT UCSwipeArea : public QQuickItem
 {
     Q_OBJECT

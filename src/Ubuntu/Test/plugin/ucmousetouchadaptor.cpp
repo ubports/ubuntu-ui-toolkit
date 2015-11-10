@@ -17,6 +17,7 @@
  */
 
 #include "ucmousetouchadaptor.h"
+#include "uctestextras.h"
 
 #include <qpa/qwindowsysteminterface.h>
 
@@ -66,9 +67,8 @@ UCMouseTouchAdaptor::UCMouseTouchAdaptor()
 {
     QCoreApplication::instance()->installNativeEventFilter(this);
 
-    m_touchDevice = new QTouchDevice;
-    m_touchDevice->setType(QTouchDevice::TouchScreen);
-    QWindowSystemInterface::registerTouchDevice(m_touchDevice);
+    UCTestExtras::registerTouchDevice();
+    m_touchDevice = UCTestExtras::m_touchDevice;
 }
 
 bool UCMouseTouchAdaptor::nativeEventFilter(const QByteArray & eventType,
