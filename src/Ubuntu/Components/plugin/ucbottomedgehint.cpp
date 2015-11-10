@@ -23,6 +23,8 @@
 #include <QtQml/private/qqmlproperty_p.h>
 #include <QtQuick/private/qquickflickable_p.h>
 
+#define SWIPE_AREA_HEIGHT_GU    3
+
 /*!
     \qmltype BottomEdgeHint
     \inqmlmodule Ubuntu.Components 1.3
@@ -51,7 +53,7 @@
 */
 UCBottomEdgeHint::UCBottomEdgeHint(QQuickItem *parent)
     : UCStyledItemBase(parent)
-    , m_gestureDetector(this)
+    , m_swipeArea(new UCSwipeArea)
     , m_flickable(Q_NULLPTR)
     , m_deactivateTimeout(800)
     // FIXME: we need QInputDeviceInfo to be complete with the locked!!
@@ -69,12 +71,6 @@ UCBottomEdgeHint::UCBottomEdgeHint(QQuickItem *parent)
     // connect old stateChanged
     connect(this, &QQuickItem::stateChanged, this, &UCBottomEdgeHint::stateChanged);
 
-    // connect to gesture detection
-    connect(&m_gestureDetector, &GestureDetector::bottomUpSwipeDetected,
-            this, &UCBottomEdgeHint::onBottomUpSwipeDetected);
-    connect(&m_gestureDetector, &GestureDetector::statusChanged,
-            this, &UCBottomEdgeHint::onGestureStatusChanged);
-
     // FIXME: use QInputDeviceInfo once available
     connect(&QuickUtils::instance(), &QuickUtils::mouseAttachedChanged, [this]() {
         setStatus(QuickUtils::instance().mouseAttached() ? Locked : Active);
@@ -85,6 +81,41 @@ UCBottomEdgeHint::UCBottomEdgeHint(QQuickItem *parent)
 
     // accept mouse events
     setAcceptedMouseButtons(Qt::LeftButton);
+}
+
+void UCBottomEdgeHint::classBegin()
+{
+    UCStyledItemBase::classBegin();
+    init();
+}
+
+void UCBottomEdgeHint::init()
+{
+    QQml_setParent_noEvent(m_swipeArea, this);
+    m_swipeArea->setParentItem(this);
+
+    // set context
+    QQmlEngine::setContextForObject(m_swipeArea, qmlContext(this));
+
+    // initialize swipe area size
+    QQuickAnchors *anchors = QQuickItemPrivate::get(m_swipeArea)->anchors();
+    QQuickItemPrivate *thisPrivate = QQuickItemPrivate::get(this);
+    anchors->setLeft(thisPrivate->left());
+    anchors->setBottom(thisPrivate->bottom());
+    anchors->setRight(thisPrivate->right());
+    m_swipeArea->setHeight(UCUnits::instance().gu(SWIPE_AREA_HEIGHT_GU));
+
+    // direction
+    m_swipeArea->setDirection(UCSwipeArea::Upwards);
+
+    // grid unit sync
+    connect(&UCUnits::instance(), &UCUnits::gridUnitChanged, [this] {
+        m_swipeArea->setHeight(UCUnits::instance().gu(SWIPE_AREA_HEIGHT_GU));
+    });
+
+    // connect to gesture detection
+    connect(m_swipeArea, &UCSwipeArea::draggingChanged,
+            this, &UCBottomEdgeHint::onDraggingChanged, Qt::DirectConnection);
 }
 
 void UCBottomEdgeHint::itemChange(ItemChange change, const ItemChangeData &data)
@@ -117,13 +148,6 @@ void UCBottomEdgeHint::keyPressEvent(QKeyEvent *event)
     }
 }
 
-// handle gesture detection
-void UCBottomEdgeHint::touchEvent(QTouchEvent *event)
-{
-    UCStyledItemBase::touchEvent(event);
-    m_gestureDetector.handleTouchEvent(this, event);
-}
-
 // handle click event
 void UCBottomEdgeHint::mousePressEvent(QMouseEvent *event)
 {
@@ -142,18 +166,13 @@ void UCBottomEdgeHint::mouseReleaseEvent(QMouseEvent *event)
 }
 
 // watch gesture detection status changes
-void UCBottomEdgeHint::onBottomUpSwipeDetected()
+void UCBottomEdgeHint::onDraggingChanged(bool dragging)
 {
-    m_deactivationTimer.stop();
-    setStatus(Active);
-}
-
-void UCBottomEdgeHint::onGestureStatusChanged(GestureDetector::Status status)
-{
-    if (status == GestureDetector::Completed) {
-        if (m_status == Active) {
-            m_deactivationTimer.start(m_deactivateTimeout, this);
-        }
+    if (dragging) {
+        m_deactivationTimer.stop();
+        setStatus(Active);
+    } else if (m_status == Active) {
+        m_deactivationTimer.start(m_deactivateTimeout, this);
     }
 }
 
@@ -200,7 +219,6 @@ void UCBottomEdgeHint::setFlickable(QQuickFlickable *flickable)
                    this, &UCBottomEdgeHint::handleFlickableActivation);
         disconnect(m_flickable, &QQuickFlickable::movingChanged,
                    this, &UCBottomEdgeHint::handleFlickableActivation);
-        m_gestureDetector.removeItemFilter(m_flickable);
     }
     m_flickable = flickable;
     if (m_flickable) {
@@ -208,7 +226,6 @@ void UCBottomEdgeHint::setFlickable(QQuickFlickable *flickable)
                 this, &UCBottomEdgeHint::handleFlickableActivation, Qt::DirectConnection);
         connect(m_flickable, &QQuickFlickable::movingChanged,
                 this, &UCBottomEdgeHint::handleFlickableActivation, Qt::DirectConnection);
-        m_gestureDetector.setItemFilter(m_flickable);
     }
     Q_EMIT flickableChanged();
 }
@@ -216,7 +233,7 @@ void UCBottomEdgeHint::setFlickable(QQuickFlickable *flickable)
 // flickable moves hide the hint only if the current status is not Locked
 void UCBottomEdgeHint::handleFlickableActivation()
 {
-    if (m_status < Locked && !m_gestureDetector.isDetecting() && !m_deactivationTimer.isActive()) {
+    if (m_status < Locked && !m_swipeArea->dragging() && !m_deactivationTimer.isActive()) {
         bool moving = m_flickable->isFlicking() || m_flickable->isMoving();
         if (moving) {
             setStatus(Hidden);
@@ -317,11 +334,14 @@ void UCBottomEdgeHint::setStatus(Status status)
     if (status == m_status || (status != Locked && QuickUtils::instance().mouseAttached())) {
         return;
     }
-    m_status = status;
-    // make sure we stop the deactivation timer if Inactive or Locked
-    if (status != Active && m_deactivationTimer.isActive()) {
+    // if the previous state was Locked and the new one is Active, start deactivation timer
+    if (m_status == Locked && status == Active && !m_deactivationTimer.isActive()) {
+        m_deactivationTimer.start(m_deactivateTimeout, this);
+    } else if (status != Active && m_deactivationTimer.isActive()) {
+        // make sure we stop the deactivation timer if Inactive or Locked
         m_deactivationTimer.stop();
     }
+    m_status = status;
     Q_EMIT statusChanged();
 }
 
