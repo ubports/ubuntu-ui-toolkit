@@ -39,9 +39,7 @@ public:
 private:
     void addTouchPoint(int touchId);
     void removeTouchPoint(int touchId);
-    #if ACTIVETOUCHESINFO_DEBUG
     QString toString();
-    #endif
 
     Pool<ActiveTouchInfo> m_touchInfoPool;
 };

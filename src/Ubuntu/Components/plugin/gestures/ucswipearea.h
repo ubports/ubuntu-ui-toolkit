@@ -26,6 +26,9 @@
 #include <UbuntuGestures/Pool>
 #include <UbuntuGestures/Timer>
 
+// logging
+#include <QtCore/QLoggingCategory>
+
 class TouchOwnershipEvent;
 class UnownedTouchEvent;
 class UCSwipeAreaPrivate;
@@ -97,5 +100,8 @@ protected:
 public: // so tests can access it
     UCSwipeAreaPrivate *d;
 };
+
+Q_DECLARE_LOGGING_CATEGORY(ucSwipeArea)
+Q_DECLARE_LOGGING_CATEGORY(ucActiveTouchInfo)
 
 #endif // UCSWIPEAREA_H

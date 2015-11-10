@@ -15,9 +15,6 @@
  *
  */
 
-#define ACTIVETOUCHESINFO_DEBUG 0
-#define DIRECTIONALDRAGAREA_DEBUG 0
-
 #include "ucswipearea_p.h"
 
 #include <QQuickWindow>
@@ -37,9 +34,11 @@
 
 using namespace UbuntuGestures;
 
-#if DIRECTIONALDRAGAREA_DEBUG
-#define ddaDebug(params) qDebug().nospace() << "[DDA(" << qPrintable(objectName()) << ")] " << params
-//#include "DebugHelpers.h"
+Q_LOGGING_CATEGORY(ucSwipeArea, "ubuntu.components.SwipeArea.log")
+Q_LOGGING_CATEGORY(ucActiveTouchInfo, "ubuntu.components.SwipeArea.ActiveTouchInfo.log")
+
+#define SA_TRACE(params) qCDebug(ucSwipeArea).nospace() << "[SwipeArea(" << qPrintable(objectName()) << ")] " << params
+#define TI_TRACE(params) qCDebug(ucActiveTouchInfo).nospace() << "[ActiveTouchInfo] " << params
 
 namespace {
 const char *statusToString(UCSwipeAreaPrivate::Status status)
@@ -104,9 +103,6 @@ QString touchEventToString(const QTouchEvent *ev)
 }
 
 } // namespace {
-#else // DIRECTIONALDRAGAREA_DEBUG
-#define ddaDebug(params) ((void)0)
-#endif // DIRECTIONALDRAGAREA_DEBUG
 
 class Direction
 {
@@ -140,7 +136,7 @@ public:
  * \inqmlmodule Ubuntu.Components 1.3
  * \since Ubuntu.Components 1.3
  * \ingroup ubuntu-gestures
- * \brief An area that detects axis-aligned single-finger drag gestures.
+ * \brief An area which detects axis-aligned single-finger drag gestures.
  *
  * The component can be used to detect gestures of a certain direction, and can
  * grab gestures started on a component placed behind of the SwipeArea.
@@ -332,7 +328,6 @@ bool UCSwipeArea::pressed() const
 
 /*!
  * \qmlproperty bool SwipeArea::immediateRecognition
- * \readonly
  * Drives whether the gesture should be recognized as soon as the touch lands on
  * the area. With this property set it will work the same way as a MultiPointTouchArea,
  *
@@ -369,7 +364,7 @@ void UCSwipeAreaPrivate::touchOwnershipEvent(TouchOwnershipEvent *event)
     if (event->gained()) {
         QVector<int> ids;
         ids.append(event->touchId());
-        ddaDebug("grabbing touch");
+        SA_TRACE("grabbing touch");
         q->grabTouchPoints(ids);
     } else {
         // We still wanna know when it ends for keeping the composition time window up-to-date
@@ -385,7 +380,7 @@ void UCSwipeAreaPrivate::unownedTouchEvent(UnownedTouchEvent *unownedTouchEvent)
 
     Q_ASSERT(!event->touchPointStates().testFlag(Qt::TouchPointPressed));
 
-    ddaDebug("Unowned " << timeSource->msecsSinceReference() << " " << qPrintable(touchEventToString(event)));
+    SA_TRACE("Unowned " << timeSource->msecsSinceReference() << " " << qPrintable(touchEventToString(event)));
 
     switch (status) {
         case WaitingForTouch:
@@ -420,7 +415,7 @@ void UCSwipeAreaPrivate::unownedTouchEvent_undecided(UnownedTouchEvent *unownedT
 
     if (touchPoint->state() == Qt::TouchPointReleased) {
         // touch has ended before recognition concluded
-        ddaDebug("Touch has ended before recognition concluded");
+        SA_TRACE("Touch has ended before recognition concluded");
         TouchRegistry::instance()->removeCandidateOwnerForTouch(touchId, q);
         setStatus(WaitingForTouch);
         return;
@@ -431,7 +426,7 @@ void UCSwipeAreaPrivate::unownedTouchEvent_undecided(UnownedTouchEvent *unownedT
     dampedScenePos.update(touchScenePosition);
 
     if (!movingInRightDirection()) {
-        ddaDebug("Rejecting gesture because touch point is moving in the wrong direction.");
+        SA_TRACE("Rejecting gesture because touch point is moving in the wrong direction.");
         TouchRegistry::instance()->removeCandidateOwnerForTouch(touchId, q);
         // We still wanna know when it ends for keeping the composition time window up-to-date
         TouchRegistry::instance()->addTouchWatcher(touchId, q);
@@ -442,7 +437,7 @@ void UCSwipeAreaPrivate::unownedTouchEvent_undecided(UnownedTouchEvent *unownedT
     if (isWithinTouchCompositionWindow()) {
         // There's still time for some new touch to appear and ruin our party as it would be combined
         // with our touchId one and therefore deny the possibility of a single-finger gesture.
-        ddaDebug("Sill within composition window. Let's wait more.");
+        SA_TRACE("Sill within composition window. Let's wait more.");
         return;
     }
 
@@ -451,13 +446,13 @@ void UCSwipeAreaPrivate::unownedTouchEvent_undecided(UnownedTouchEvent *unownedT
         setStatus(Recognized);
         updatePosition(touchScenePosition);
     } else if (isPastMaxDistance()) {
-        ddaDebug("Rejecting gesture because it went farther than maxDistance without getting recognized.");
+        SA_TRACE("Rejecting gesture because it went farther than maxDistance without getting recognized.");
         TouchRegistry::instance()->removeCandidateOwnerForTouch(touchId, q);
         // We still wanna know when it ends for keeping the composition time window up-to-date
         TouchRegistry::instance()->addTouchWatcher(touchId, q);
         setStatus(WaitingForTouch);
     } else {
-        ddaDebug("Didn't move far enough yet. Let's wait more.");
+        SA_TRACE("Didn't move far enough yet. Let's wait more.");
     }
 }
 
@@ -466,7 +461,7 @@ void UCSwipeArea::touchEvent(QTouchEvent *event)
     // FIXME: Consider when more than one touch starts in the same event (although it's not possible
     //       with Mir's android-input). Have to track them all. Consider it a plus/bonus.
 
-    ddaDebug(d->timeSource->msecsSinceReference() << " " << qPrintable(touchEventToString(event)));
+    SA_TRACE(d->timeSource->msecsSinceReference() << " " << qPrintable(touchEventToString(event)));
 
     if (!isEnabled() || !isVisible()) {
         QQuickItem::touchEvent(event);
@@ -503,7 +498,7 @@ void UCSwipeAreaPrivate::touchEvent_absent(QTouchEvent *event)
     if (isWithinTouchCompositionWindow()) {
         // too close to the last touch start. So we consider them as starting roughly at the same time.
         // Can't be a single-touch gesture.
-        ddaDebug("A new touch point came in but we're still within time composition window. Ignoring it.");
+        SA_TRACE("A new touch point came in but we're still within time composition window. Ignoring it.");
         allGood = false;
     }
 
@@ -543,7 +538,7 @@ void UCSwipeAreaPrivate::touchEvent_absent(QTouchEvent *event)
 
         if (recognitionIsDisabled()) {
             // Behave like a dumb TouchArea
-            ddaDebug("Gesture recognition is disabled. Requesting touch ownership immediately.");
+            SA_TRACE("Gesture recognition is disabled. Requesting touch ownership immediately.");
             TouchRegistry::instance()->requestTouchOwnership(touchId, q);
             setStatus(Recognized);
             event->accept();
@@ -574,7 +569,7 @@ void UCSwipeAreaPrivate::touchEvent_undecided(QTouchEvent *event)
 
     if (event->touchPointStates().testFlag(Qt::TouchPointPressed) && isWithinTouchCompositionWindow()) {
         // multi-finger drags are not accepted
-        ddaDebug("Multi-finger drags are not accepted");
+        SA_TRACE("Multi-finger drags are not accepted");
 
         TouchRegistry::instance()->removeCandidateOwnerForTouch(touchId, q);
         // We still wanna know when it ends for keeping the composition time window up-to-date
@@ -661,7 +656,7 @@ bool UCSwipeAreaPrivate::movedFarEnoughAlongGestureAxis() const
 
         qreal scalarProjection = projectOntoDirectionVector(totalMovement);
 
-        ddaDebug(" movedFarEnoughAlongGestureAxis: scalarProjection=" << scalarProjection
+        SA_TRACE(" movedFarEnoughAlongGestureAxis: scalarProjection=" << scalarProjection
             << ", distanceThreshold=" << distanceThreshold);
 
         if (direction == UCSwipeArea::Horizontal || direction == UCSwipeArea::Vertical) {
@@ -691,7 +686,7 @@ void UCSwipeAreaPrivate::giveUpIfDisabledOrInvisible()
         }
 
         if (status != WaitingForTouch) {
-            ddaDebug("Resetting status because got disabled or made invisible");
+            SA_TRACE("Resetting status because got disabled or made invisible");
             setStatus(WaitingForTouch);
         }
     }
@@ -700,7 +695,7 @@ void UCSwipeAreaPrivate::giveUpIfDisabledOrInvisible()
 void UCSwipeAreaPrivate::rejectGesture()
 {
     if (status == Undecided) {
-        ddaDebug("Rejecting gesture because it's taking too long to drag beyond the threshold.");
+        SA_TRACE("Rejecting gesture because it's taking too long to drag beyond the threshold.");
 
         TouchRegistry::instance()->removeCandidateOwnerForTouch(touchId, q);
         // We still wanna know when it ends for keeping the composition time window up-to-date
@@ -724,7 +719,7 @@ void UCSwipeAreaPrivate::setStatus(Status newStatus)
     status = newStatus;
     Q_EMIT statusChanged(status);
 
-    ddaDebug(statusToString(oldStatus) << " -> " << statusToString(newStatus));
+    SA_TRACE(statusToString(oldStatus) << " -> " << statusToString(newStatus));
 
     switch (newStatus) {
         case WaitingForTouch:
@@ -823,9 +818,7 @@ void ActiveTouchesInfo::update(QTouchEvent *event)
 {
     if (!(event->touchPointStates() & (Qt::TouchPointPressed | Qt::TouchPointReleased))) {
         // nothing to update
-        #if ACTIVETOUCHESINFO_DEBUG
-        qDebug("[DDA::ActiveTouchesInfo] Nothing to Update");
-        #endif
+        TI_TRACE("Nothing to update");
         return;
     }
 
@@ -840,7 +833,6 @@ void ActiveTouchesInfo::update(QTouchEvent *event)
     }
 }
 
-#if ACTIVETOUCHESINFO_DEBUG
 QString ActiveTouchesInfo::toString()
 {
     QString string = "(";
@@ -857,7 +849,6 @@ QString ActiveTouchesInfo::toString()
 
     return string;
 }
-#endif // ACTIVETOUCHESINFO_DEBUG
 
 void ActiveTouchesInfo::addTouchPoint(int touchId)
 {
@@ -865,9 +856,7 @@ void ActiveTouchesInfo::addTouchPoint(int touchId)
     activeTouchInfo.id = touchId;
     activeTouchInfo.startTime = m_timeSource->msecsSinceReference();
 
-    #if ACTIVETOUCHESINFO_DEBUG
-    qDebug() << "[DDA::ActiveTouchesInfo]" << qPrintable(toString());
-    #endif
+    TI_TRACE(qPrintable(toString()));
 }
 
 qint64 ActiveTouchesInfo::touchStartTime(int touchId)
@@ -898,9 +887,7 @@ void ActiveTouchesInfo::removeTouchPoint(int touchId)
         }
     });
 
-    #if ACTIVETOUCHESINFO_DEBUG
-    qDebug() << "[DDA::ActiveTouchesInfo]" << qPrintable(toString());
-    #endif
+    TI_TRACE(qPrintable(toString()));
 }
 
 qint64 ActiveTouchesInfo::mostRecentStartTime()
