@@ -1001,7 +1001,7 @@ QQuickItem *UCSlotsLayout::mainSlot() const
     return d->mainSlot;
 }
 
-void UCSlotsLayout::setMainSlot(QQuickItem *item)
+void UCSlotsLayout::setMainSlot(QQuickItem *item, bool fireSignal)
 {
     Q_D(UCSlotsLayout);
     if (d->mainSlot != item && item != Q_NULLPTR) {
@@ -1013,7 +1013,10 @@ void UCSlotsLayout::setMainSlot(QQuickItem *item)
         }
         d->mainSlot = item;
         d->mainSlot->setParentItem(this);
-        Q_EMIT mainSlotChanged();
+
+        if (fireSignal) {
+            Q_EMIT mainSlotChanged();
+        }
     }
 }
 

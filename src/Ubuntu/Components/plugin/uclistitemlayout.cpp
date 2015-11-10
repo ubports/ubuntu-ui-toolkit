@@ -271,13 +271,14 @@ QQuickItem *UCListItemLayout::mainSlot() {
         main->setParent(this);
 
         //this will also set the parentItem
-        UCSlotsLayout::setMainSlot(main);
+        UCSlotsLayout::setMainSlot(main, false);
     }
 
     return UCSlotsLayout::mainSlot();
 }
 
-void UCListItemLayout::setMainSlot(QQuickItem *slot) {
+void UCListItemLayout::setMainSlot(QQuickItem *slot, bool fireSignal) {
     Q_UNUSED(slot);
+    Q_UNUSED(fireSignal);
     qmlInfo(this) << "Setting a different mainSlot on ListItemLayout is not supported. Please use SlotsLayout instead.";
 }
