@@ -4,7 +4,7 @@
 
 check.target = check
 check.commands += cd $$_PRO_FILE_PWD_;
-check.commands += env LD_LIBRARY_PATH=$${ROOT_BUILD_DIR}/qml/Ubuntu/Components:$${ROOT_BUILD_DIR}/qml/Ubuntu/Layouts:$${ROOT_BUILD_DIR}/qml/Ubuntu/PerformanceMetrics:$${ROOT_BUILD_DIR}/qml/Ubuntu/Test UITK_TEST_KEEP_RUNNING=1
+check.commands += env LD_LIBRARY_PATH=$${ROOT_BUILD_DIR}/lib:$${ROOT_BUILD_DIR}/qml/Ubuntu/Components:$${ROOT_BUILD_DIR}/qml/Ubuntu/Layouts:$${ROOT_BUILD_DIR}/qml/Ubuntu/PerformanceMetrics:$${ROOT_BUILD_DIR}/qml/Ubuntu/Test UITK_TEST_KEEP_RUNNING=1
 
 TEST_COMMAND = '$${ROOT_SOURCE_DIR}/tests/unit/runtest.sh "$$shadowed($$_PRO_FILE_PWD_)/$${TARGET}" "$$shadowed($$_PRO_FILE_PWD_)/$${TARGET}"'
 

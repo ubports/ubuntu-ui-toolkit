@@ -32,7 +32,7 @@ class ThemeTestCase : public UbuntuTestCase
     Q_OBJECT
 public:
     ThemeTestCase(const QString& file, bool assertOnFailure = true, QWindow* parent = 0)
-        : UbuntuTestCase(file, assertOnFailure, parent)
+        : UbuntuTestCase(file, QQuickView::SizeViewToRootObject, assertOnFailure, parent)
     {
     }
 

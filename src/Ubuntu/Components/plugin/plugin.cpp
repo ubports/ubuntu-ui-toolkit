@@ -71,6 +71,7 @@
 #include "uclabel.h"
 #include "uclistitemlayout.h"
 #include "ucbottomedgehint.h"
+#include "gestures/ucswipearea.h"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -250,6 +251,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCHeader>(uri, 1, 3, "Header");
     qmlRegisterType<UCLabel>(uri, 1, 3, "Label");
     qmlRegisterType<UCBottomEdgeHint>(uri, 1, 3, "BottomEdgeHint");
+    qmlRegisterType<UCSwipeArea>(uri, 1, 3, "SwipeArea");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
@@ -319,4 +321,8 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
             Qt::InvertedLandscapeOrientation);
 
     registerWindowContextProperty();
+
+    // disable logging filters
+    QLoggingCategory::setFilterRules(QStringLiteral("ubuntu.components.SwipeArea.log.debug=false"));
+    QLoggingCategory::setFilterRules(QStringLiteral("ubuntu.components.SwipeArea.ActiveTouchInfo.log.debug=false"));
 }
