@@ -16,6 +16,7 @@
 
 import QtQuick 2.4
 import "../1.2/stack.js" as Stack
+import Ubuntu.Components 1.3
 
 /*!
     \qmltype PageStack
@@ -171,6 +172,13 @@ PageTreeNode {
         } else {
             internal.pushWrapperObject();
         }
+        // set the back action for Page.header:
+        if (pageObject && pageObject.hasOwnProperty("header") && pageObject.header &&
+                pageObject.header.hasOwnProperty("navigationActions")) {
+            // Page.header is an instance of PageHeader.
+            pageObject.header.navigationActions = [ backAction ];
+        }
+
         return pageObject;
     }
 
@@ -204,6 +212,16 @@ PageTreeNode {
             internal.stack.pop();
         }
         internal.stackUpdated();
+    }
+
+    Action {
+        // used when the Page has a Page.header property set.
+        id: backAction
+        visible: pageStack.depth > 0
+        iconName: "back"
+        text: "Back"
+        onTriggered: pageStack.pop()
+        objectName: "pagestack_back_action"
     }
 
     QtObject {

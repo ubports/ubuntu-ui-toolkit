@@ -20,6 +20,7 @@
 __all__ = [
     'AppHeader',
     'ActionBar',
+    'ActionSelectionPopover',
     'check_autopilot_version',
     'CheckBox',
     'get_keyboard',
@@ -63,7 +64,8 @@ from ubuntuuitoolkit._custom_proxy_objects._header import (
 )
 
 from ubuntuuitoolkit._custom_proxy_objects.popups import (
-    Dialog
+    Dialog,
+    ActionSelectionPopover,
 )
 
 from ubuntuuitoolkit._custom_proxy_objects import listitems

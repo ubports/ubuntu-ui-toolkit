@@ -23,9 +23,9 @@
 class UCLabel : public QQuickText, public UCThemingExtension
 {
     Q_OBJECT
-
+    Q_INTERFACES(UCThemingExtension)
     Q_ENUMS(TextSize)
-    Q_PROPERTY(TextSize textSize MEMBER m_textSize WRITE setTextSize NOTIFY textSizeChanged FINAL REVISION 1)
+    Q_PROPERTY(TextSize textSize MEMBER m_textSize WRITE setTextSize NOTIFY textSizeChanged FINAL)
 
     // Deprecated.
     Q_PROPERTY(QString fontSize READ fontSize WRITE setFontSize NOTIFY fontSizeChanged)
@@ -61,14 +61,13 @@ public:
 protected:
     // from QQuickItem
     void classBegin();
-    void customEvent(QEvent *event);
 
     // from UCItemExtension
     void preThemeChanged(){}
     void postThemeChanged();
 
 Q_SIGNALS:
-    Q_REVISION(1) void textSizeChanged();
+    void textSizeChanged();
 
     // Deprecated.
     void fontSizeChanged();

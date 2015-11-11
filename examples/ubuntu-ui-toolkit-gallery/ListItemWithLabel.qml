@@ -18,14 +18,10 @@ import QtQuick 2.4
 import Ubuntu.Components 1.3
 
 ListItem {
-    property alias text: label.text
-    Label {
-        id: label
-        anchors {
-            left: parent.left
-            leftMargin: units.gu(2)
-            verticalCenter: parent.verticalCenter
-        }
-    }
+    property alias title: layout.title
+
+    height: layout.height + (divider.visible ? divider.height : 0)
     onPressAndHold: selectMode = !selectMode
+
+    ListItemLayout { id: layout }
 }

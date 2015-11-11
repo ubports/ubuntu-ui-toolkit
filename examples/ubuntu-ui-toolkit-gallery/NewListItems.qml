@@ -34,12 +34,12 @@ Template {
         // clip the action delegates while swiping left/right
         clip: true
 
-       ListItemWithLabel {
+        ListItemWithLabel {
             color: UbuntuColors.blue
-            text: i18n.tr("Colored")
+            title.text: i18n.tr("Colored")
         }
         ListItemWithLabel {
-            text: i18n.tr("Highlight color")
+            title.text: i18n.tr("Highlight color")
             highlightColor: UbuntuColors.orange
             // no highlight without clicked() or leading/trailing actions
         }
@@ -68,20 +68,20 @@ Template {
         }
 
         ListItemWithLabel {
-            text: i18n.tr("Leading actions")
+            title.text: i18n.tr("Leading actions")
             leadingActions: exampleLeadingActions
         }
         ListItemWithLabel {
-            text: i18n.tr("Trailing actions")
+            title.text: i18n.tr("Trailing actions")
             trailingActions: exampleTrailingActions
         }
         ListItemWithLabel {
-            text: i18n.tr("Leading and trailing actions")
+            title.text: i18n.tr("Leading and trailing actions")
             leadingActions: exampleLeadingActions
             trailingActions: exampleTrailingActions
         }
         ListItemWithLabel {
-            text: i18n.tr("Custom action delegates")
+            title.text: i18n.tr("Custom action delegates")
             leadingActions: ListItemActions {
                 actions: [
                     Action {
@@ -162,7 +162,7 @@ Template {
 
             model: [ i18n.tr("Basic"), i18n.tr("Colored divider"), i18n.tr("Immutable"), i18n.tr("No divider") ]
             delegate: ListItemWithLabel {
-                text: modelData
+                title.text: modelData
                 color: dragging ? "lightblue" : "transparent"
                 divider {
                     colorFrom: modelData == i18n.tr("Colored divider") ? UbuntuColors.red : Qt.rgba(0.0, 0.0, 0.0, 0.0)
@@ -207,7 +207,7 @@ Template {
             }
 
             delegate: ListItemWithLabel {
-                text: modelData
+                title.text: modelData
                 color: dragMode ? "lightblue" : "lightgray"
                 divider {
                     colorFrom: modelData == i18n.tr("Colored divider") ? UbuntuColors.red : Qt.rgba(0.0, 0.0, 0.0, 0.0)

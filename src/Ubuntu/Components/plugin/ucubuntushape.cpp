@@ -34,7 +34,9 @@
 #include <QtGui/QScreen>
 #include <QtQuick/QQuickWindow>
 #include <QtQuick/QSGTextureProvider>
+#define emit Q_EMIT
 #include <QtQuick/private/qquickimage_p.h>
+#undef emit
 #include <QtQuick/private/qsgadaptationlayer_p.h>
 #include <QtQml/qqmlinfo.h>
 #include <math.h>
@@ -1103,7 +1105,6 @@ static void createShapeTextures(QOpenGLContext* openglContext, int index)
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, shapeTextureMipmapCount - 1);
             for (int j = 0; j < shapeTextureMipmapCount; j++) {
                 glTexImage2D(GL_TEXTURE_2D, j, GL_RGBA, shapeTextureMipmapWidth >> j,
                              shapeTextureMipmapHeight >> j, 0, GL_RGBA, GL_UNSIGNED_BYTE,

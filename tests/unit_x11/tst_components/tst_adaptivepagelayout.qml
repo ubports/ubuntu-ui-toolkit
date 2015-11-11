@@ -27,51 +27,75 @@ MainView {
     // 2 on desktop, 1 on phone.
     property int columns: width >= units.gu(80) ? 2 : 1
 
-    AdaptivePageLayout {
-        id: layout
-        width: parent.width
-        height: parent.height
+    Column {
+        anchors.fill: parent
+        AdaptivePageLayout {
+            id: layout
+            width: parent.width
+            height: parent.height / 2
 
-        primaryPage: page1
+            primaryPage: page1
 
-        Page {
-            id: page1
-            title: "Page1"
+            Page {
+                id: page1
+                objectName: title
+                title: "Page1"
 
-            Column {
-                anchors.centerIn: parent
-                width: childrenRect.width
-                Button {
-                    text: "Page 2 left"
-                    onTriggered: layout.addPageToCurrentColumn(page1, page2)
-                }
-                Button {
-                    text: "Page 3 right"
-                    onTriggered: layout.addPageToNextColumn(page1, page3);
+                Column {
+                    anchors.centerIn: parent
+                    width: childrenRect.width
+                    Button {
+                        text: "Page 2 left"
+                        onTriggered: layout.addPageToCurrentColumn(page1, page2)
+                    }
+                    Button {
+                        text: "Page 3 right"
+                        onTriggered: layout.addPageToNextColumn(page1, page3);
+                    }
                 }
             }
+            Page {
+                id: page2
+                objectName: title
+                title: "Page2"
+            }
+            Page {
+                id: page3
+                objectName: title
+                title: "Page3"
+            }
+            Page {
+                id: page4
+                objectName: title
+                title: "Page4"
+            }
         }
-        Page {
-            id: page2
-            title: "Page2"
+        AdaptivePageLayout {
+            id: defaults
+            width: parent.width
+            height: parent.height / 2
+            Page {
+                id: otherPage1
+                objectName: title
+                title: "Page1"
+            }
+            Page {
+                id: otherPage2
+                objectName: title
+                title: "Page2"
+            }
+            Page {
+                id: otherPage3
+                objectName: title
+                title: "Page3"
+            }
         }
-        Page {
-            id: page3
-            title: "Page3"
-        }
-        Page {
-            id: page4
-            title: "Page4"
-        }
-    }
-
-    AdaptivePageLayout {
-        id: defaults
     }
 
     Component {
         id: pageComponent
         Page {
+            objectName: title
             title: "DynamicPage"
         }
     }
@@ -86,6 +110,10 @@ MainView {
             id: loadedSpy
             target: testCase
             signalName: "pageLoaded"
+        }
+        SignalSpy {
+            id: primaryPageSpy
+            signalName: "primaryPageChanged"
         }
 
         function resize_single_column() {
@@ -107,27 +135,38 @@ MainView {
             return apl.__d.getWrapper(page);
         }
 
+        function findPageFromLayout(apl, objectName) {
+            var body = findChild(apl, "body");
+            verify(body);
+            return findChild(body, objectName);
+        }
+
         function cleanup() {
             page1.title = "Page1";
             page2.title = "Page2";
             page3.title = "Page3";
             page4.title = "Page4";
             loadedSpy.clear();
+            primaryPageSpy.clear();
+            primaryPageSpy.target = null;
             resize_multiple_columns();
-            layout.removePages(page1);
+            layout.removePages(layout.primaryPage);
+            defaults.primaryPage = null;
+            wait(200);
         }
 
-        function test_0_API() {
+        function initTestCase() {
             compare(defaults.primaryPage, null, "primaryPage not null by default");
+            compare(defaults.primaryPageSource, undefined, "primaryPageSource not set by default");
             compare(defaults.layouts.length, 0, "no layouts by default");
-            compare(defaults.columns, 1, "1 column as default");
+            compare(defaults.columns, columns, columns + " column(s) as default");
         }
 
-        function test_zzz_change_primaryPage() {
-            // this prints the warning but still changes the primary page,
-            //  so the test must be executed last not to mess up the other tests.
-            ignoreWarning("Cannot change primaryPage after completion.");
-            layout.primaryPage = page3;
+        function test_change_primaryPage() {
+            defaults.primaryPage = otherPage1;
+            defaults.addPageToCurrentColumn(defaults.primaryPage, otherPage2);
+            defaults.primaryPage = otherPage3;
+            verify(!findPageFromLayout(defaults, "Page2"), "Page2 still in the view!");
         }
 
         function test_add_page_when_source_page_not_in_stack() {
@@ -303,10 +342,10 @@ MainView {
             }
 
             var testPage = testHolder.pageWrapper.object;
-            var prevPageActive = false
+            var prevPageActive = false;
             var incubator = data.nextColumn
                         ? layout.addPageToNextColumn(data.sourcePage, data.page)
-                        : layout.addPageToCurrentColumn(data.sourcePage, data.page);;
+                        : layout.addPageToCurrentColumn(data.sourcePage, data.page);
             verify(incubator);
             compare(testHolder.pageWrapper.object, testPage);
             incubator.onStatusChanged = function (status) {
@@ -317,6 +356,62 @@ MainView {
             }
             loadedSpy.wait(2500);
             verify(prevPageActive);
+        }
+
+        function test_primaryPageSource_bug1499179_data() {
+            return [
+                {tag: "Component", test: pageComponent},
+                {tag: "Document", test: Qt.resolvedUrl("MyExternalPage.qml")},
+            ];
+        }
+        function test_primaryPageSource_bug1499179(data) {
+            primaryPageSpy.target = defaults;
+            defaults.primaryPageSource = data.test;
+            primaryPageSpy.wait();
+        }
+
+        function test_change_primaryPageSource_data() {
+            return [
+                {tag: "Component", test: pageComponent, nextValue: Qt.resolvedUrl("MyExternalPage.qml")},
+                {tag: "Document", test: Qt.resolvedUrl("MyExternalPage.qml"), nextValue: pageComponent},
+            ];
+        }
+        function test_change_primaryPageSource(data) {
+            primaryPageSpy.target = defaults;
+            verify(defaults.primaryPage == null);
+            verify(defaults.primaryPageSource == undefined);
+            defaults.primaryPageSource = data.test;
+            primaryPageSpy.wait(400);
+            // add some pages
+            defaults.addPageToCurrentColumn(defaults.primaryPage, otherPage2);
+            // then replace the primaryPageSource
+            primaryPageSpy.clear();
+            defaults.primaryPageSource = data.nextValue;
+            primaryPageSpy.wait(400);
+            // look after page2
+            verify(!findPageFromLayout(defaults, "Page2"), "Page2 still in the view!");
+        }
+
+        function test_primaryPageSource_precedence_over_primaryPage() {
+            primaryPageSpy.target = defaults;
+            defaults.primaryPage = otherPage1;
+            primaryPageSpy.wait(400);
+            // now set a value to primaryPageSource
+            primaryPageSpy.clear();
+            defaults.primaryPageSource = pageComponent;
+            primaryPageSpy.wait(400);
+        }
+
+        function test_primaryPage_change_clears_primaryPageSource() {
+            primaryPageSpy.target = defaults;
+            defaults.primaryPageSource = pageComponent;
+            primaryPageSpy.wait(400);
+            compare(defaults.primaryPage.title, "DynamicPage", "DynamicPage not set as primaryPage");
+            // now set a value to primaryPage
+            primaryPageSpy.clear();
+            defaults.primaryPage = otherPage1;
+            primaryPageSpy.wait(400);
+            compare(defaults.primaryPageSource, undefined, "primaryPageSource must be cleared");
         }
     }
 }
