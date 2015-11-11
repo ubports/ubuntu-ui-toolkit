@@ -1521,6 +1521,7 @@ Ubuntu.Test.UbuntuTestCase 1.0 0.1: TestCase
     function var typeString(var string)
     function var warningFormat(var line, var column, var message)
     function var waitForHeaderAnimation(var mainView)
+    readonly property QuickTestUtil testUtil
 Ubuntu.Components.UriHandler 1.0 0.1: QtObject singleton
     signal opened(QStringList uris)
 Ubuntu.Components.ListItems.ValueSelector 1.0 0.1: Empty
