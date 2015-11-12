@@ -32,7 +32,6 @@ Page {
     ScrollView {
         anchors.fill: parent
         anchors.topMargin: template.header.flickable ? 0 : template.header.height
-        alwaysOnScrollbars: true
         Flickable {
             id: flickable
             objectName: "TemplateFlickable"

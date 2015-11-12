@@ -110,14 +110,14 @@ Template {
                 align: Qt.AlignTrailing
                 flickableItem: flickable3
                 buddyScrollbar: scrollbar6
-                __alwaysOnScrollbars: true
+                //__alwaysOnScrollbars: true
             }
             Scrollbar {
                 id: scrollbar6
                 align: Qt.AlignBottom
                 flickableItem: flickable3
                 buddyScrollbar: scrollbar5
-                __alwaysOnScrollbars: true
+                //__alwaysOnScrollbars: true
             }
         }
         Rectangle {
@@ -178,7 +178,7 @@ Template {
                             text: "focus " + focus + " activeFocus " + activeFocus + "\n"
                                     + "RECT focus " + parent.focus + " activeFocus " + parent.activeFocus
                             anchors.fill: parent
-                            anchors.margins: units.gu(10)
+                            anchors.margins: units.gu(5)
                             onClicked: rect4.width += units.gu(5)
                         }
                     }

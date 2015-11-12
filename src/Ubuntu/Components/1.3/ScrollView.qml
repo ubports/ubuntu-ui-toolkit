@@ -76,13 +76,13 @@ StyledItem {
         id: internal
 
         property Flickable flickableItem
-        property real nonOverlayScrollbarMargin: verticalScrollbar.__styleInstance ? verticalScrollbar.__styleInstance.indicatorThickness : 0
+        property real nonOverlayScrollbarMargin: verticalScrollbar.__styleInstance ? verticalScrollbar.__styleInstance.nonOverlayScrollbarMargin : 0
 
         //if the flickable is not coming from the user but from our internal Component...
         Binding {
             target: flickableItem
-            property: "contentHeight"
             when: contentItem !== flickableItem
+            property: "contentHeight"
             value: contentItem ? contentItem.height : 0
         }
         Binding {
@@ -181,7 +181,7 @@ StyledItem {
             anchors.fill: parent
             enabled: true
             onPressed: {
-                console.log("HELLO")
+                console.log("REQUESTING FOCUS ON VIEWPORT OF", root)
                 viewportItem.focus = true
                 mouse.accepted = false
             }

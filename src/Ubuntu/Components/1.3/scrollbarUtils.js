@@ -73,7 +73,7 @@ function isVertical(scrollbar) {
   */
 function sliderPos(scrollbar, min, max) {
     if (!__check(scrollbar)) return 0;
-    console.log("SLIDER POS", scrollbar.flickableItem.visibleArea[_obj.propPosRatio],"*", scrollbar.height, min, max)
+    //console.log("SLIDER POS", scrollbar.flickableItem.visibleArea[_obj.propPosRatio],"*", scrollbar.height, min, max)
     return clamp(scrollbar.flickableItem.visibleArea[_obj.propPosRatio] * scrollbar.__trough[_obj.propSize] /*flickableItem[_obj.propSize]*/, min, max);
 }
 
