@@ -111,7 +111,6 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_updateSize())
     Q_PRIVATE_SLOT(d_func(), void _q_updateIndex())
     Q_PRIVATE_SLOT(d_func(), void _q_contentMoving())
-    Q_PRIVATE_SLOT(d_func(), void _q_syncSelectMode())
     Q_PRIVATE_SLOT(d_func(), void _q_syncDragMode())
     Q_PRIVATE_SLOT(d_func(), void _q_updateExpansion(const QList<int> &indices))
     Q_PRIVATE_SLOT(d_func(), void _q_popoverClosed())
@@ -194,7 +193,7 @@ private Q_SLOTS:
 
 Q_SIGNALS:
     void selectModeChanged();
-    void selectedIndicesChanged();
+    void selectedIndicesChanged(const QList<int> &indices);
     void dragModeChanged();
 
     void dragUpdated(UCDragEvent *event);

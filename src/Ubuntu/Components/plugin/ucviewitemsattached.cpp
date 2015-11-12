@@ -291,7 +291,7 @@ void UCViewItemsAttached::setSelectedIndices(const QList<int> &list)
         return;
     }
     d->selectedList = QSet<int>::fromList(list);
-    Q_EMIT selectedIndicesChanged();
+    Q_EMIT selectedIndicesChanged(list);
 }
 
 bool UCViewItemsAttachedPrivate::addSelectedItem(UCListItem *item)
@@ -299,7 +299,7 @@ bool UCViewItemsAttachedPrivate::addSelectedItem(UCListItem *item)
     int index = UCListItemPrivate::get(item)->index();
     if (!selectedList.contains(index)) {
         selectedList.insert(index);
-        Q_EMIT q_func()->selectedIndicesChanged();
+        Q_EMIT q_func()->selectedIndicesChanged(selectedList.toList());
         return true;
     }
     return false;
@@ -307,7 +307,7 @@ bool UCViewItemsAttachedPrivate::addSelectedItem(UCListItem *item)
 bool UCViewItemsAttachedPrivate::removeSelectedItem(UCListItem *item)
 {
     if (selectedList.remove(UCListItemPrivate::get(item)->index()) > 0) {
-        Q_EMIT q_func()->selectedIndicesChanged();
+        Q_EMIT q_func()->selectedIndicesChanged(selectedList.toList());
         return true;
     }
     return false;
@@ -524,7 +524,7 @@ void UCViewItemsAttachedPrivate::updateSelectedIndices(int fromIndex, int toInde
     bool isFromSelected = selectedList.contains(fromIndex);
     if (isFromSelected) {
         selectedList.remove(fromIndex);
-        Q_EMIT q->selectedIndicesChanged();
+        Q_EMIT q->selectedIndicesChanged(selectedList.toList());
     }
     // direction is -1 (forwards) or 1 (backwards)
     int direction = (fromIndex < toIndex) ? -1 : 1;
@@ -539,13 +539,13 @@ void UCViewItemsAttachedPrivate::updateSelectedIndices(int fromIndex, int toInde
         if (selectedList.contains(i)) {
             selectedList.remove(i);
             selectedList.insert(i + direction);
-            Q_EMIT q->selectedIndicesChanged();
+            Q_EMIT q->selectedIndicesChanged(selectedList.toList());
         }
         i -= direction;
     }
     if (isFromSelected) {
         selectedList.insert(toIndex);
-        Q_EMIT q->selectedIndicesChanged();
+        Q_EMIT q->selectedIndicesChanged(selectedList.toList());
     }
 }
 

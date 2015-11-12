@@ -133,6 +133,7 @@ MainView {
                         trailingActions: ListItemActions {
                             actions: contextualActions
                         }
+                        selectMode: true
 
                         RowLayout {
                             anchors {
@@ -150,6 +151,10 @@ MainView {
                                 captionStyle: Ubuntu.SummaryCaptionStyle
                                 title.text: "LTR"
                                 subtitle.text: "RTL"
+                                MouseArea {
+                                    anchors.fill: parent
+                                    onClicked: item.selected = !item.selected
+                                }
                             }
                         }
 

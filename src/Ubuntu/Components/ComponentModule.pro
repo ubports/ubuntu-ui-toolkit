@@ -145,5 +145,3 @@ OTHER_FILES+= qmldir \
              1.3/Icon.qdoc
 
 load(ubuntu_qml_plugin)
-
-

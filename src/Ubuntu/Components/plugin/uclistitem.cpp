@@ -21,6 +21,7 @@
 #include "uclistitem_p.h"
 #include "uclistitemactions.h"
 #include "uclistitemactions_p.h"
+#include "privates/listitemselection.h"
 #include "ucubuntuanimation.h"
 #include "propertychange_p.h"
 #include "i18n.h"
@@ -192,6 +193,7 @@ UCListItemPrivate::UCListItemPrivate()
     , trailingActions(Q_NULLPTR)
     , mainAction(Q_NULLPTR)
     , expansion(Q_NULLPTR)
+    , selection(Q_NULLPTR)
     , xAxisMoveThresholdGU(DEFAULT_SWIPE_THRESHOLD_GU)
     , button(Qt::NoButton)
     , highlighted(false)
@@ -299,13 +301,6 @@ void UCListItemPrivate::_q_contentMoving()
 
 // synchronizes selection mode, initializes the style if has not been done yet,
 // which in turn reveals the selection panels
-void UCListItemPrivate::_q_syncSelectMode()
-{
-    loadStyleItem();
-    Q_Q(UCListItem);
-    Q_EMIT q->selectModeChanged();
-}
-
 // same for the dragMode
 void UCListItemPrivate::_q_syncDragMode()
 {
@@ -325,7 +320,9 @@ void UCListItemPrivate::preStyleChanged()
 bool UCListItemPrivate::loadStyleItem(bool animated)
 {
     // the style should be loaded only if one of the condition is satisfied
-    if (!swiped && !selectMode() && !dragMode() && !(expansion && expansion->expanded())) {
+    // do not use selectMode() as that will create the selection handler, which may not even be needed at this phase.
+    bool inSelectMode = (selection && selection->inSelectMode()) || (parentAttached && parentAttached->selectMode());
+    if (!swiped && !inSelectMode && !dragMode() && !(expansion && expansion->expanded())) {
         return false;
     }
 
@@ -1011,13 +1008,12 @@ void UCListItem::componentComplete()
     }
 
     if (d->parentAttached) {
-        // connect selectedIndicesChanged
-        connect(d->parentAttached.data(), &UCViewItemsAttached::selectedIndicesChanged,
-                this, &UCListItem::selectedChanged);
-        // sync selectModeChanged()
-        connect(d->parentAttached, SIGNAL(selectModeChanged()),
-                this, SLOT(_q_syncSelectMode()));
-        // also draggable
+        if (d->parentAttached->selectMode() && !d->selection) {
+            if (!d->selection) {
+                d->selection = new ListItemSelection(this);
+            }
+        }
+        // update draggable
         connect(d->parentAttached, SIGNAL(dragModeChanged()),
                 this, SLOT(_q_syncDragMode()));
 
@@ -1054,8 +1050,17 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
             // attach to ListView
             d->parentAttached = static_cast<UCViewItemsAttached*>(attachedViewItems(d->flickable, true));
             parentAttachee = d->flickable;
+            if (d->selection) {
+                d->selection->init(d->parentAttached.data());
+                // sync selection data to parentAttached
+                d->selection->syncToViewItems();
+            }
         } else if (data.item) {
             d->parentAttached = static_cast<UCViewItemsAttached*>(attachedViewItems(data.item, true));
+            if (d->selection) {
+                d->selection->init(d->parentAttached.data());
+                d->selection->syncToViewItems();
+            }
         } else {
             // mark as not ready, so no action should be performed which depends on readyness
             d->ready = false;
@@ -1685,16 +1690,18 @@ void UCListItemPrivate::setDragMode(bool draggable)
 bool UCListItemPrivate::isSelected()
 {
     Q_Q(UCListItem);
-    return UCViewItemsAttachedPrivate::get(parentAttached)->isItemSelected(q);
+    if (!selection) {
+        selection = new ListItemSelection(q);
+    }
+    return selection->isSelected();
 }
 void UCListItemPrivate::setSelected(bool value)
 {
     Q_Q(UCListItem);
-    if (value) {
-        UCViewItemsAttachedPrivate::get(parentAttached)->addSelectedItem(q);
-    } else {
-        UCViewItemsAttachedPrivate::get(parentAttached)->removeSelectedItem(q);
+    if (!selection) {
+        selection = new ListItemSelection(q);
     }
+    selection->setSelected(value);
 }
 
 /*!
@@ -1707,14 +1714,19 @@ void UCListItemPrivate::setSelected(bool value)
  */
 bool UCListItemPrivate::selectMode()
 {
-    UCViewItemsAttachedPrivate *attached = UCViewItemsAttachedPrivate::get(parentAttached);
-    return attached ? attached->selectable : false;
+    Q_Q(UCListItem);
+    if (!selection) {
+        selection = new ListItemSelection(q);
+    }
+    return selection->inSelectMode();
 }
 void UCListItemPrivate::setSelectMode(bool selectable)
 {
-    if (parentAttached) {
-        parentAttached->setSelectMode(selectable);
+    Q_Q(UCListItem);
+    if (!selection) {
+        selection = new ListItemSelection(q);
     }
+    selection->setSelectMode(selectable);
 }
 
 /*!
