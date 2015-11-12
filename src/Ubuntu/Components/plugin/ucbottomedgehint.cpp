@@ -58,6 +58,7 @@ UCBottomEdgeHint::UCBottomEdgeHint(QQuickItem *parent)
     , m_flickable(Q_NULLPTR)
     , m_deactivateTimeout(800)
     // FIXME: we need QInputDeviceInfo to be complete with the locked!!
+    // https://bugs.launchpad.net/ubuntu/+source/ubuntu-ui-toolkit/+bug/1276808
     , m_status(QuickUtils::instance().mouseAttached() ? Locked : Inactive)
     , m_pressed(false)
 {
@@ -73,6 +74,7 @@ UCBottomEdgeHint::UCBottomEdgeHint(QQuickItem *parent)
     connect(this, &QQuickItem::stateChanged, this, &UCBottomEdgeHint::stateChanged);
 
     // FIXME: use QInputDeviceInfo once available
+    // https://bugs.launchpad.net/ubuntu/+source/ubuntu-ui-toolkit/+bug/1276808
     connect(&QuickUtils::instance(), &QuickUtils::mouseAttachedChanged, [this]() {
         setStatus(QuickUtils::instance().mouseAttached() ? Locked : Active);
         if (m_status == Active) {
@@ -322,6 +324,7 @@ void UCBottomEdgeHint::setState(const QString &state)
 UCBottomEdgeHint::Status UCBottomEdgeHint::status()
 {
     // FIXME: we won't need this once we get the QInputDeviceInfo reporting mouse attach/detach
+    // https://bugs.launchpad.net/ubuntu/+source/ubuntu-ui-toolkit/+bug/1276808
     if (QuickUtils::instance().mouseAttached()) {
         m_status = Locked;
     }
@@ -331,6 +334,7 @@ UCBottomEdgeHint::Status UCBottomEdgeHint::status()
 void UCBottomEdgeHint::setStatus(Status status)
 {
     // FIXME: we need QInputDeviceInfo to complete this!
+    // https://bugs.launchpad.net/ubuntu/+source/ubuntu-ui-toolkit/+bug/1276808
     // cannot unlock if mouse is attached or we don't have touch screen available
     if (status == m_status || (status != Locked && QuickUtils::instance().mouseAttached())) {
         return;
