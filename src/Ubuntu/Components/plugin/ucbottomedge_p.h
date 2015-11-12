@@ -51,6 +51,7 @@ public:
     void onSwipeAreaDistanceChanged(qreal distance);
     void onSwipeAreaDraggingChanged(bool dragging);
     void updateProgressionStates();
+    void detectDirection(qreal currentPanelY);
     // panel positioning
     void positionPanel(qreal position);
     // internal setters
@@ -71,6 +72,7 @@ public:
     UCBottomEdgeStyle *bottomPanel;
 
     qreal commitPoint;
+    qreal previousPanelY;
     UCBottomEdge::State state;
 
     enum OperationStatus {
@@ -79,6 +81,7 @@ public:
         Collapsing
     };
     OperationStatus operationStatus;
+    UCBottomEdge::DragDirection dragDirection;
 
     bool defaultRangesReset:1;
 

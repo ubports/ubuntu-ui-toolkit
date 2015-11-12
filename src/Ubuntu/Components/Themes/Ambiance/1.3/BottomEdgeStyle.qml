@@ -128,10 +128,10 @@ BottomEdgeStyle {
 
             onClicked: bottomEdge.hint.clicked()
             onReleased: {
-                if (bottomEdge.activeRange) {
-                    bottomEdge.activeRange.dragEnded();
-                } else if (bottomEdge.state > BottomEdge.Hidden) {
+                if (!bottomEdge.activeRange || bottomEdge.dragDirection == BottomEdge.Downwards) {
                     bottomEdge.collapse();
+                } else {
+                    bottomEdge.activeRange.dragEnded();
                 }
             }
         }

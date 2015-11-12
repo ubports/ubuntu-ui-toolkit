@@ -30,10 +30,11 @@ class UCBottomEdgePrivate;
 class UCBottomEdge : public UCStyledItemBase
 {
     Q_OBJECT
-    Q_ENUMS(State)
+    Q_ENUMS(State DragDirection)
 
     Q_PROPERTY(UCBottomEdgeHint* hint READ hint CONSTANT FINAL)
     Q_PROPERTY(qreal dragProgress READ dragProgress NOTIFY dragProggressChanged FINAL)
+    Q_PROPERTY(DragDirection dragDirection READ dragDirection NOTIFY dragDirectionChanged FINAL)
     Q_PROPERTY(State state READ state NOTIFY stateChanged FINAL)
     Q_PROPERTY(QUrl content READ content WRITE setContent NOTIFY contentChanged FINAL)
     Q_PROPERTY(QQmlComponent *contentComponent READ contentComponent WRITE setContentComponent NOTIFY contentComponentChanged FINAL)
@@ -51,11 +52,18 @@ public:
         Revealed,
         Committed
     };
+    enum DragDirection {
+        Undefined,
+        Upwards,
+        Downwards
+    };
+
     explicit UCBottomEdge(QQuickItem *parent = 0);
     virtual ~UCBottomEdge();
 
     UCBottomEdgeHint *hint() const;
     qreal dragProgress();
+    DragDirection dragDirection() const;
     State state() const;
     QUrl content() const;
     void setContent(const QUrl &url);
@@ -71,6 +79,7 @@ public:
 Q_SIGNALS:
     void hintChanged();
     void dragProggressChanged();
+    void dragDirectionChanged();
     void stateChanged(State state);
     void contentChanged(const QUrl url);
     void contentComponentChanged(QQmlComponent *component);

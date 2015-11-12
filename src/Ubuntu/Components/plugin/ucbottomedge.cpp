@@ -24,6 +24,8 @@
 #include <QtQml/QQmlEngine>
 #include <QtGui/QScreen>
 #include <QtQml/QQmlProperty>
+#include <QtGui/QGuiApplication>
+#include <QtGui/QStyleHints>
 #include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickflickable_p.h>
 
@@ -42,8 +44,10 @@ UCBottomEdgePrivate::UCBottomEdgePrivate()
     , contentComponent(Q_NULLPTR)
     , bottomPanel(Q_NULLPTR)
     , commitPoint(1.0)
+    , previousPanelY(0.0)
     , state(UCBottomEdge::Hidden)
     , operationStatus(Idle)
+    , dragDirection(UCBottomEdge::Undefined)
     , defaultRangesReset(false)
 {
 }
@@ -168,17 +172,18 @@ void UCBottomEdgePrivate::onSwipeAreaDraggingChanged(bool dragging)
     if (dragging) {
         return;
     }
-    if (activeRange) {
-        Q_EMIT activeRange->dragEnded();
-    } else if (state > UCBottomEdge::Hidden) {
+    if (!activeRange || dragDirection == UCBottomEdge::Downwards) {
         Q_Q(UCBottomEdge);
         q->collapse();
+    } else {
+        Q_EMIT activeRange->dragEnded();
     }
 }
 
 // update state and sections during drag
 void UCBottomEdgePrivate::updateProgressionStates()
 {
+    detectDirection(bottomPanel->m_panel->y());
     if (isLocked()) {
         return;
     }
@@ -199,6 +204,28 @@ void UCBottomEdgePrivate::updateProgressionStates()
             activeRange = Q_NULLPTR;
             Q_EMIT q->activeRangeChanged();
         }
+    }
+}
+
+// updates the dragDirection property
+void UCBottomEdgePrivate::detectDirection(qreal currentPanelY)
+{
+    if (!previousPanelY) {
+        previousPanelY = currentPanelY;
+    }
+
+    UCBottomEdge::DragDirection newDirection = dragDirection;
+    bool deltaPassed = abs(currentPanelY - previousPanelY) >= qApp->styleHints()->startDragDistance();
+    if (!deltaPassed || currentPanelY == previousPanelY) {
+        return;
+    }
+
+    previousPanelY = currentPanelY;
+    newDirection = (currentPanelY < previousPanelY) ? UCBottomEdge::Upwards : UCBottomEdge::Downwards;
+
+    if (dragDirection != newDirection) {
+        dragDirection = newDirection;
+        Q_EMIT q_func()->dragDirectionChanged();
     }
 }
 
@@ -540,6 +567,36 @@ qreal UCBottomEdge::dragProgress()
 {
     Q_D(UCBottomEdge);
     return (d->bottomPanel && d->bottomPanel->m_panel) ? 1.0 - (d->bottomPanel->m_panel->y() / height()) : 0.0;
+}
+
+/*!
+ * \qmlproperty DragDirection BottomEdge::dragDirection
+ * \readonly
+ * The property reports the current direction of the drag. The direction is flipped
+ * when the drag passes the drag threshold.
+ * \table
+ * \header
+ *  \li DragDirection
+ *  \li Description
+ * \row
+ *  \li Undefined
+ *  \li Default. The drag is not performed or the direction is not detected.
+ * \row
+ *  \li Upwards
+ *  \li The drag is performed from bottom up or it passed the drag threshold from
+ *      from the last point the drag was going downwards.
+ * \row
+ *  \li Downwards
+ *  \li The drag is performed from up to bottom or it passed the drag threshold from
+ *      from the last point the drag was going upwards.
+ * \endtable
+ *
+ * Defaults to \e Undefined
+ */
+UCBottomEdge::DragDirection UCBottomEdge::dragDirection() const
+{
+    Q_D(const UCBottomEdge);
+    return d->dragDirection;
 }
 
 /*!

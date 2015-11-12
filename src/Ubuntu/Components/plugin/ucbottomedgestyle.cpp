@@ -60,7 +60,7 @@ void UCBottomEdgeStyle::mousePressEvent(QMouseEvent *event)
  */
 
 /*!
- * \qmlproperty Animation BottoMEdge::panelAnimation
+ * \qmlproperty Animation BottomEdgeStyle::panelAnimation
  * Holds the animation of the panel. BottomEdge requires this property to know
  * when the bottom edge is fully committed or collapsed.
  */

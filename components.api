@@ -181,6 +181,7 @@ Ubuntu.Components.BottomEdge 1.3: StyledItem
     property url content
     property Component contentComponent
     readonly property Item contentItem
+    readonly property DragDirection dragDirection
     readonly property double dragProgress
     readonly property BottomEdgeHint hint
     signal stateChanged(State state)
@@ -192,7 +193,11 @@ Ubuntu.Components.BottomEdge 1.3: StyledItem
     signal collapseCompleted()
     function commit()
     function collapse()
-    readonly property BottomEdgeRange ranges
+    property list<BottomEdgeRange> ranges
+Ubuntu.Components.BottomEdge.DragDirection: Enum
+    Downwards
+    Undefined
+    Upwards
 Ubuntu.Components.BottomEdge.State: Enum
     Committed
     Hidden
