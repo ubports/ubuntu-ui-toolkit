@@ -172,6 +172,7 @@ void UCBottomEdgePrivate::onSwipeAreaDraggingChanged(bool dragging)
     if (dragging) {
         return;
     }
+    qDebug() << activeRange << dragDirection;
     if (!activeRange || dragDirection == UCBottomEdge::Downwards) {
         Q_Q(UCBottomEdge);
         q->collapse();
@@ -215,19 +216,25 @@ void UCBottomEdgePrivate::detectDirection(qreal currentPanelY)
     }
 
     UCBottomEdge::DragDirection newDirection = dragDirection;
-    bool deltaPassed = abs(currentPanelY - previousPanelY) >= qApp->styleHints()->startDragDistance();
-    if (!deltaPassed || currentPanelY == previousPanelY) {
+    qreal delta = previousPanelY - currentPanelY;
+    bool deltaPassed = abs(delta) >= qApp->styleHints()->startDragDistance();
+    if (!deltaPassed) {
         return;
     }
 
     previousPanelY = currentPanelY;
-    newDirection = (currentPanelY < previousPanelY) ? UCBottomEdge::Upwards : UCBottomEdge::Downwards;
+    newDirection = (delta > 0) ? UCBottomEdge::Upwards : UCBottomEdge::Downwards;
+    setDragDirection(newDirection);
+}
 
-    if (dragDirection != newDirection) {
-        dragDirection = newDirection;
+void UCBottomEdgePrivate::setDragDirection(UCBottomEdge::DragDirection direction)
+{
+    if (dragDirection != direction) {
+        dragDirection = direction;
         Q_EMIT q_func()->dragDirectionChanged();
     }
 }
+
 
 // positions the bottom edge panel holding the content to the given position
 // position is a percentage of the height
@@ -710,26 +717,17 @@ QQuickItem *UCBottomEdge::contentItem() const
 void UCBottomEdge::commit()
 {
     Q_D(UCBottomEdge);
-    d->setOperationStatus(UCBottomEdgePrivate::Committing);
+    d->setOperationStatus(UCBottomEdgePrivate::CommitToTop);
     Q_EMIT commitStarted();
-    if (d->bottomPanel && d->bottomPanel->m_panelAnimation) {
+    bool animated = d->bottomPanel && d->bottomPanel->m_panelAnimation;
+    if (animated) {
         connect(d->bottomPanel->m_panelAnimation, &QQuickAbstractAnimation::runningChanged,
-                this, &UCBottomEdge::emitCommitCompleted);
+                this, &UCBottomEdge::unlockOperation);
     }
     d->positionPanel(d->commitPoint);
-}
-
-void UCBottomEdge::emitCommitCompleted(bool running)
-{
-    if (running) {
-        return;
+    if (!animated) {
+        unlockOperation(false);
     }
-    Q_D(UCBottomEdge);
-    disconnect(d->bottomPanel->m_panelAnimation, &QQuickAbstractAnimation::runningChanged,
-               this, &UCBottomEdge::emitCommitCompleted);
-    d->setState(Committed);
-    Q_EMIT commitCompleted();
-    d->setOperationStatus(UCBottomEdgePrivate::Idle);
 }
 
 /*!
@@ -743,23 +741,62 @@ void UCBottomEdge::collapse()
     Q_D(UCBottomEdge);
     d->setOperationStatus(UCBottomEdgePrivate::Collapsing);
     Q_EMIT collapseStarted();
-    if (d->bottomPanel && d->bottomPanel->m_panelAnimation) {
+    bool animated = d->bottomPanel && d->bottomPanel->m_panelAnimation;
+    if (animated) {
         connect(d->bottomPanel->m_panelAnimation, &QQuickAbstractAnimation::runningChanged,
-                this, &UCBottomEdge::emitCollapseCompleted);
+                this, &UCBottomEdge::unlockOperation);
     }
     d->positionPanel(0.0);
+    if (!animated) {
+        unlockOperation(false);
+    }
 }
 
-void UCBottomEdge::emitCollapseCompleted(bool running)
+// yet internal, commits to the top of the range
+void UCBottomEdge::commitToRange(UCBottomEdgeRange *range)
+{
+    Q_D(UCBottomEdge);
+    if (!range || d->isLocked()) {
+        return;
+    }
+
+    bool animated = d->bottomPanel && d->bottomPanel->m_panelAnimation;
+    if (animated) {
+        QObject::connect(d->bottomPanel->m_panelAnimation, &QQuickAbstractAnimation::runningChanged,
+                         this, &UCBottomEdge::unlockOperation);
+    }
+    d->setOperationStatus(UCBottomEdgePrivate::CommitToTop);
+    d->positionPanel(range->m_to);
+    if (!animated) {
+        unlockOperation(false);
+    }
+}
+
+// common handler to complete the operations
+void UCBottomEdge::unlockOperation(bool running)
 {
     if (running) {
         return;
     }
     Q_D(UCBottomEdge);
-    disconnect(d->bottomPanel->m_panelAnimation, &QQuickAbstractAnimation::runningChanged,
-               this, &UCBottomEdge::emitCollapseCompleted);
-    d->setState(Hidden);
-    Q_EMIT collapseCompleted();
+    if (d->bottomPanel && d->bottomPanel->m_panelAnimation) {
+        disconnect(d->bottomPanel->m_panelAnimation, &QQuickAbstractAnimation::runningChanged,
+                   0, 0);
+    }
+
+    switch (d->operationStatus) {
+    case UCBottomEdgePrivate::CommitToTop:
+        d->setState(UCBottomEdge::Committed);
+        Q_EMIT commitCompleted();
+        break;
+    case UCBottomEdgePrivate::Collapsing:
+        d->setState(UCBottomEdge::Hidden);
+        Q_EMIT collapseCompleted();
+        break;
+    default: break;
+    }
+
+    d->setDragDirection(Undefined);
     d->setOperationStatus(UCBottomEdgePrivate::Idle);
 }
 

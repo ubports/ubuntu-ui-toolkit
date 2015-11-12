@@ -116,12 +116,11 @@ void UCBottomEdgeRange::onDragEnded()
     if (!m_bottomEdge) {
         return;
     }
-    UCBottomEdgePrivate *privateBottomEdge = UCBottomEdgePrivate::get(m_bottomEdge);
     if (m_to == m_bottomEdge->commitPoint()) {
         m_bottomEdge->commit();
-    } else if (!privateBottomEdge->isLocked()) {
+    } else {
         // move the bottom edge panel to the m_to
-        privateBottomEdge->positionPanel(m_to);
+        m_bottomEdge->commitToRange(this);
     }
 }
 
@@ -154,7 +153,6 @@ void UCBottomEdgeRange::enterSection()
             PropertyChange::setValue(m_componentBackup, QVariant::fromValue<QQmlComponent*>(m_component));
         }
     }
-    qDebug() << "SECTION ENTERED" << objectName();
 }
 
 void UCBottomEdgeRange::exitSection()
@@ -168,7 +166,6 @@ void UCBottomEdgeRange::exitSection()
         m_urlBackup = Q_NULLPTR;
     }
     Q_EMIT exited();
-    qDebug() << "SECTION EXITED" << objectName();
 }
 
 /*!

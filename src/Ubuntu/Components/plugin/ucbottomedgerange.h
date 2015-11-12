@@ -71,6 +71,7 @@ protected:
     qreal m_to;
     bool m_enabled:1;
 
+    friend class UCBottomEdge;
     friend class UCBottomEdgePrivate;
 };
 

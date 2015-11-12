@@ -98,6 +98,9 @@ public Q_SLOTS:
     void commit();
     void collapse();
 
+public: // non-public to QML
+    void commitToRange(UCBottomEdgeRange *range);
+
 protected:
     static void ranges_append(QQmlListProperty<UCBottomEdgeRange> *sections, UCBottomEdgeRange *section);
     static int ranges_count(QQmlListProperty<UCBottomEdgeRange> *sections);
@@ -108,8 +111,7 @@ protected:
     void componentComplete();
     void itemChange(ItemChange change, const ItemChangeData &data);
 
-    void emitCommitCompleted(bool running);
-    void emitCollapseCompleted(bool running);
+    void unlockOperation(bool running);
 
     Q_DECLARE_PRIVATE(UCBottomEdge)
 };
