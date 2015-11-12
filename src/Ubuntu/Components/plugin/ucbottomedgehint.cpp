@@ -372,7 +372,7 @@ void UCBottomEdgeHint::setDeactivateTimeout(int timeout)
 }
 
 /*!
- * \qmlproperty SwipeArea BottoMEdgeHint::swipeArea
+ * \qmlproperty SwipeArea BottomEdgeHint::swipeArea
  * \readonly
  * The property specifies the SwipeArea attached to the component driving its
  * behavior.
