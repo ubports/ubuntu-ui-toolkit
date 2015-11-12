@@ -28,7 +28,7 @@ Template {
 
         ListItem {
             id: addressbookListItem
-            height: addressbookLayout.height
+            height: addressbookLayout.height + (divider.visible ? divider.height : 0)
 
             ListItemLayout {
                 id: addressbookLayout
@@ -48,7 +48,7 @@ Template {
 
         ListItem {
             id: addressbookDetailsListItem
-            height: addressbookDetailsLayout.height + divider.height
+            height: addressbookDetailsLayout.height + (divider.visible ? divider.height : 0)
             ListItemLayout {
                 id: addressbookDetailsLayout
 
@@ -73,7 +73,7 @@ Template {
         ListItem {
             id: telegramContactsListItem
 
-            height: telegramContactsLayout.height
+            height: telegramContactsLayout.height + (divider.visible ? divider.height : 0)
 
             ListItemLayout {
                 id: telegramContactsLayout
@@ -92,7 +92,7 @@ Template {
 
         ListItem {
             id: systemSettings1
-            height: systemSettings1_layout.height
+            height: systemSettings1_layout.height + (divider.visible ? divider.height : 0)
 
             ListItemLayout {
                 id: systemSettings1_layout
@@ -110,7 +110,7 @@ Template {
 
         ListItem {
             id: systemSettings2
-            height: systemSettings2_layout.height
+            height: systemSettings2_layout.height + (divider.visible ? divider.height : 0)
 
             ListItemLayout {
                 id: systemSettings2_layout
@@ -129,7 +129,7 @@ Template {
 
         ListItem {
             id: systemSettings3
-            height: systemSettings3_layout.height
+            height: systemSettings3_layout.height + (divider.visible ? divider.height : 0)
 
             ListItemLayout {
                 id: systemSettings3_layout
@@ -157,7 +157,7 @@ Template {
         spacing: 0
 
         ListItem {
-            height: customLabelsLayout.height
+            height: customLabelsLayout.height + (divider.visible ? divider.height : 0)
 
             ListItemLayout {
                 id: customLabelsLayout
@@ -220,7 +220,7 @@ Template {
 
         ListItem {
             id: dialerHistoryListItem
-            height: dialerHistoryLayout.height
+            height: dialerHistoryLayout.height + (divider.visible ? divider.height : 0)
 
             ListItemLayout {
                 id: dialerHistoryLayout

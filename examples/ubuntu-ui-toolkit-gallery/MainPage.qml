@@ -53,6 +53,18 @@ Page {
                 text: i18n.tr('About')
                 iconName: "info"
                 onTriggered: mainPage.pageStack.addPageToCurrentColumn(mainPage, Qt.resolvedUrl("About.qml"))
+            },
+            Action {
+                text: i18n.tr("Deactivate mouse")
+                iconName: "non-starred"
+                visible: QuickUtils.mouseAttached
+                onTriggered: QuickUtils.mouseAttached = false
+            },
+            Action {
+                text: i18n.tr("Activate mouse")
+                iconName: "starred"
+                visible: !QuickUtils.mouseAttached
+                onTriggered: QuickUtils.mouseAttached = true
             }
         ]
     }
@@ -119,5 +131,12 @@ Page {
             color: theme.palette.selected.background
         }
         highlightMoveDuration: 0
+    }
+
+    BottomEdgeHint {
+        flickable: widgetList
+        text: i18n.tr('About')
+        iconName: "info"
+        onClicked: mainPage.pageStack.addPageToCurrentColumn(mainPage, Qt.resolvedUrl("About.qml"))
     }
 }

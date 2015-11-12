@@ -23,15 +23,22 @@ Item {
     implicitWidth: styledItem.parent.width
     implicitHeight: units.gu(4)
 
-    state: styledItem.state
+    readonly property BottomEdgeHint hint: styledItem
+
+    // translate hint status into state
+    state: {
+        switch (hint.status) {
+        case BottomEdgeHint.Hidden: return "Hidden";
+        case BottomEdgeHint.Inactive: return "Inactive"
+        case BottomEdgeHint.Active: return "Active"
+        case BottomEdgeHint.Locked: return "Locked"
+        }
+    }
 
     states: [
         State {
-            name: "Idle"
+            name: "Inactive"
             extend: ""
-            StateChangeScript {
-                script: turnToIdleTimer.stop()
-            }
         },
         State {
             name: "Active"
@@ -46,18 +53,11 @@ Item {
         },
         State {
             name: "Hidden"
-            when: styledItem.flickable && (styledItem.flickable.flicking || styledItem.flickable.moving)
             PropertyChanges {
                 target: styledItem
                 opacity: 0.0
             }
-            PropertyChanges {
-                target: mouseHover
-                enabled: false
-            }
         },
-        // FIXME: locked should be set and be final if mouse is attached
-        // requires QSystemInfo support, which is ongoing work upstream
         State {
             name: "Locked"
             PropertyChanges {
@@ -67,11 +67,6 @@ Item {
             PropertyChanges {
                 target: h2
                 anchors.topMargin: 0
-            }
-            PropertyChanges {
-                target: turnToIdleTimer
-                running: false
-
             }
         }
     ]
@@ -96,27 +91,6 @@ Item {
             }
         }
     ]
-
-    // FIXME ZSOMBI: temporary functionality till SwipeGesture integration
-    MouseArea {
-        id: mouseHover
-        anchors.fill: parent
-        hoverEnabled: true
-        acceptedButtons: Qt.NoButton
-        enabled: styledItem.state != "Locked"
-        onEntered: {
-            styledItem.state = "Active";
-            turnToIdleTimer.stop();
-        }
-        onExited: if (styledItem.state == "Active") turnToIdleTimer.restart()
-    }
-
-    Timer {
-        id: turnToIdleTimer
-        interval: 800
-        repeat: false
-        onTriggered: styledItem.state = "Idle"
-    }
 
     clip: true
 
@@ -143,15 +117,6 @@ Item {
         color: theme.palette.normal.overlay
         ThinDivider {
             anchors.top: parent.top
-        }
-
-        MouseArea {
-            anchors.fill: parent
-            onClicked: {
-                Haptics.play();
-                styledItem.clicked();
-                mouse.accepted = false;
-            }
         }
 
         Row {

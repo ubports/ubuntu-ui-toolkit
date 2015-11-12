@@ -143,7 +143,7 @@ UCLabel *UCThreeLabelsSlot::title()
     Q_D(UCThreeLabelsSlot);
     if (d->m_title == Q_NULLPTR) {
         d->m_title = new UCLabel(this);
-        QQmlData::get(d->m_title, true);
+        QQmlEngine::setContextForObject(d->m_title, qmlContext(this));
         d->m_title->init();
 
         QQuickAnchors *titleAnchors = QQuickItemPrivate::get(d->m_title)->anchors();
@@ -180,7 +180,7 @@ UCLabel *UCThreeLabelsSlot::subtitle()
     Q_D(UCThreeLabelsSlot);
     if (d->m_subtitle == Q_NULLPTR) {
         d->m_subtitle = new UCLabel(this);
-        QQmlData::get(d->m_subtitle, true);
+        QQmlEngine::setContextForObject(d->m_subtitle, qmlContext(this));
         d->m_subtitle->init();
 
         QQuickAnchors *subtitleAnchors = QQuickItemPrivate::get(d->m_subtitle)->anchors();
@@ -202,7 +202,7 @@ UCLabel *UCThreeLabelsSlot::summary()
     Q_D(UCThreeLabelsSlot);
     if (d->m_summary == Q_NULLPTR) {
         d->m_summary = new UCLabel(this);
-        QQmlData::get(d->m_summary, true);
+        QQmlEngine::setContextForObject(d->m_summary, qmlContext(this));
         d->m_summary->init();
 
         QQuickAnchors *summaryAnchors = QQuickItemPrivate::get(d->m_summary)->anchors();

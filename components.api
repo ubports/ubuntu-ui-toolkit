@@ -176,11 +176,18 @@ Ubuntu.Components.ListItems.Base 1.3: Empty
     property bool iconFrame
     property bool progression
 Ubuntu.Components.BottomEdgeHint 1.3: StyledItem
+    property int deactivateTimeout
     property Flickable flickable
     property string iconName
     property url iconSource
     signal clicked()
+    property Status status
     property string text
+Ubuntu.Components.BottomEdgeHint.Status: Enum
+    Active
+    Hidden
+    Inactive
+    Locked
 Ubuntu.Components.Button 1.0 0.1: AbstractButton
     property color color
     property QFont font
@@ -1514,6 +1521,7 @@ Ubuntu.Test.UbuntuTestCase 1.0 0.1: TestCase
     function var typeString(var string)
     function var warningFormat(var line, var column, var message)
     function var waitForHeaderAnimation(var mainView)
+    readonly property QuickTestUtil testUtil
 Ubuntu.Components.UriHandler 1.0 0.1: QtObject singleton
     signal opened(QStringList uris)
 Ubuntu.Components.ListItems.ValueSelector 1.0 0.1: Empty
