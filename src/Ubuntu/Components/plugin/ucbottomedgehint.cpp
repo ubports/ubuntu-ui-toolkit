@@ -20,6 +20,7 @@
 #include "ucstyleditembase_p.h"
 #include "quickutils.h"
 #include "ucunits.h"
+#include "gestures/ucswipearea.h"
 #include <QtQml/private/qqmlproperty_p.h>
 #include <QtQuick/private/qquickflickable_p.h>
 
@@ -365,3 +366,10 @@ void UCBottomEdgeHint::setDeactivateTimeout(int timeout)
     }
     Q_EMIT deactivateTimeoutChanged();
 }
+
+/*!
+ * \qmlproperty SwipeArea BottoMEdgeHint::swipeArea
+ * \readonly
+ * The property specifies the SwipeArea attached to the component driving its
+ * behavior.
+ */

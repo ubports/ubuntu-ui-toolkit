@@ -20,9 +20,9 @@
 #define UCBOTTOMEDGEHINT_H
 
 #include "ucstyleditembase.h"
-#include "gestures/ucswipearea.h"
 
 class QQuickFlickable;
+class UCSwipeArea;
 class UCBottomEdgeHint : public UCStyledItemBase
 {
     Q_OBJECT
@@ -33,6 +33,7 @@ class UCBottomEdgeHint : public UCStyledItemBase
     Q_PROPERTY(QQuickFlickable *flickable MEMBER m_flickable WRITE setFlickable NOTIFY flickableChanged FINAL)
     Q_PROPERTY(Status status MEMBER m_status WRITE setStatus NOTIFY statusChanged FINAL)
     Q_PROPERTY(int deactivateTimeout MEMBER m_deactivateTimeout WRITE setDeactivateTimeout NOTIFY deactivateTimeoutChanged FINAL)
+    Q_PROPERTY(UCSwipeArea* swipeArea READ swipeArea CONSTANT FINAL)
     // deprecated
     Q_PROPERTY(QString state READ state WRITE setState NOTIFY stateChanged)
 public:
@@ -47,11 +48,15 @@ public:
     void setFlickable(QQuickFlickable *flickable);
     Status status();
     void setStatus(Status status);
+    void setDeactivateTimeout(int timeout);
+    UCSwipeArea *swipeArea() const
+    {
+        return m_swipeArea;
+    }
 
     // deprecated
     QString state() const;
     void setState(const QString &state);
-    void setDeactivateTimeout(int timeout);
 
 Q_SIGNALS:
     void textChanged();

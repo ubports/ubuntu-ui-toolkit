@@ -182,6 +182,7 @@ Ubuntu.Components.BottomEdgeHint 1.3: StyledItem
     property url iconSource
     signal clicked()
     property Status status
+    readonly property SwipeArea swipeArea
     property string text
 Ubuntu.Components.BottomEdgeHint.Status: Enum
     Active
