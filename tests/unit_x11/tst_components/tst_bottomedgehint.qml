@@ -199,7 +199,7 @@ MainView {
 
         // FIXME: must be executed before the test_hiding as flick with mouse affects
         // the touch drag on ListView for some unknown reason
-        function test_touch_gesture() {
+        function test_0_touch_gesture() {
             if (hasMouseAttached) {
                 skip("", "The test requires touch environment");
             }
