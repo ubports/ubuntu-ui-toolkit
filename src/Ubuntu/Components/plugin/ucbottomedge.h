@@ -95,6 +95,7 @@ protected:
     static UCBottomEdgeRange *ranges_at(QQmlListProperty<UCBottomEdgeRange> *sections, int index);
     static void ranges_clear(QQmlListProperty<UCBottomEdgeRange> *sections);
 
+    void classBegin();
     void componentComplete();
     void itemChange(ItemChange change, const ItemChangeData &data);
 

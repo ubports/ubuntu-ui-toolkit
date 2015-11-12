@@ -58,12 +58,6 @@ public:
     QString state() const;
     void setState(const QString &state);
 
-    // internal cpp API
-    GestureDetector &gesture()
-    {
-        return m_gestureDetector;
-    }
-
 Q_SIGNALS:
     void textChanged();
     void iconSourceChanged();
@@ -99,6 +93,8 @@ private:
     int m_deactivateTimeout;
     Status m_status;
     bool m_pressed:1;
+
+    friend class UCBottomEdge;
 };
 
 #endif // UCBOTTOMEDGEHINT_H

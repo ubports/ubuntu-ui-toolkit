@@ -32,7 +32,7 @@
 #include "ucheader.h"
 #include "ucaction.h"
 #include "quickutils.h"
-#include "privates/gesturedetector.h"
+#include "gestures/ucswipearea.h"
 #include <QtQuick/private/qquickanimation_p.h>
 
 UCBottomEdgePrivate::UCBottomEdgePrivate()
@@ -56,25 +56,14 @@ void UCBottomEdgePrivate::init()
     hint->setParentItem(q);
     QObject::connect(hint, SIGNAL(clicked()), q, SLOT(commit()), Qt::DirectConnection);
 
-    // follow hint gesture distance to know when to reveale the content
-    QObject::connect(&hint->gesture(), &GestureDetector::distanceChanged, [=]() {
-        if ((hint->status() == UCBottomEdgeHint::Active)
-            && (hint->gesture().distanceFromBottom() >= hint->height())
-            && (state == UCBottomEdge::Hidden)) {
-            setState(UCBottomEdge::Revealed);
-        }
-        if (state == UCBottomEdge::Revealed) {
-            bottomPanel->m_panel->setY(q->height() - hint->gesture().distanceFromBottom());
-        }
+    // follow hint swipe distance to know when to reveale the content
+    QObject::connect(hint->swipeArea(), &UCSwipeArea::distanceChanged, [this](qreal distance) {
+        onSwipeAreaDistanceChanged(distance);
     });
 
     // follow gesture completion
-    QObject::connect(&hint->gesture(), &GestureDetector::gestureEnded, [=]() {
-        if (activeRange) {
-            Q_EMIT activeRange->dragEnded();
-        } else if (state > UCBottomEdge::Hidden) {
-            q->collapse();
-        }
+    QObject::connect(hint->swipeArea(), &UCSwipeArea::draggingChanged, [=](bool dragging) {
+        onSwipeAreaDraggingChanged(dragging);
     });
 
     // create default stages
@@ -155,6 +144,36 @@ void UCBottomEdgePrivate::createDefaultRanges()
     });
 
     ranges.append(commitRange);
+}
+
+// handler connected to hint SwipeArea's distanceChanged() signal
+// to handle state changes as well as eventual swipe/drag direction changes
+void UCBottomEdgePrivate::onSwipeAreaDistanceChanged(qreal distance)
+{
+    if ((hint->status() == UCBottomEdgeHint::Active)
+        && (distance >= hint->height())
+        && (state == UCBottomEdge::Hidden)) {
+        setState(UCBottomEdge::Revealed);
+    }
+    if (state == UCBottomEdge::Revealed) {
+        Q_Q(UCBottomEdge);
+        bottomPanel->m_panel->setY(q->height() - distance);
+    }
+}
+
+// handler connected to the hint SwipeArea's draggingChanged() signal
+// to handle the action to be triggered when dragging is over
+void UCBottomEdgePrivate::onSwipeAreaDraggingChanged(bool dragging)
+{
+    if (dragging) {
+        return;
+    }
+    if (activeRange) {
+        Q_EMIT activeRange->dragEnded();
+    } else if (state > UCBottomEdge::Hidden) {
+        Q_Q(UCBottomEdge);
+        q->collapse();
+    }
 }
 
 // update state and sections during drag
@@ -451,6 +470,14 @@ UCBottomEdge::UCBottomEdge(QQuickItem *parent)
 }
 UCBottomEdge::~UCBottomEdge()
 {
+}
+
+void UCBottomEdge::classBegin()
+{
+    UCStyledItemBase::classBegin();
+    Q_D(UCBottomEdge);
+    // initialize hint
+    d->hint->init();
 }
 
 void UCBottomEdge::componentComplete()
