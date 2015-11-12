@@ -321,8 +321,4 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
             Qt::InvertedLandscapeOrientation);
 
     registerWindowContextProperty();
-
-    // disable logging filters
-    QLoggingCategory::setFilterRules(QStringLiteral("ubuntu.components.SwipeArea.log.debug=false"));
-    QLoggingCategory::setFilterRules(QStringLiteral("ubuntu.components.SwipeArea.ActiveTouchInfo.log.debug=false"));
 }

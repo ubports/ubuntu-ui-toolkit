@@ -34,8 +34,8 @@
 
 using namespace UbuntuGestures;
 
-Q_LOGGING_CATEGORY(ucSwipeArea, "ubuntu.components.SwipeArea.log")
-Q_LOGGING_CATEGORY(ucActiveTouchInfo, "ubuntu.components.SwipeArea.ActiveTouchInfo.log")
+Q_LOGGING_CATEGORY(ucSwipeArea, "ubuntu.components.SwipeArea", QtMsgType::QtWarningMsg)
+Q_LOGGING_CATEGORY(ucActiveTouchInfo, "ubuntu.components.SwipeArea.ActiveTouchInfo", QtMsgType::QtWarningMsg)
 
 #define SA_TRACE(params) qCDebug(ucSwipeArea).nospace() << "[SwipeArea(" << qPrintable(objectName()) << ")] " << params
 #define TI_TRACE(params) qCDebug(ucActiveTouchInfo).nospace() << "[ActiveTouchInfo] " << params
