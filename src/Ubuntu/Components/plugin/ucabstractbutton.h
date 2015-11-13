@@ -18,6 +18,7 @@
 #define UCABSTRACTBUTTON_H
 
 #include "ucactionitem.h"
+#include "QtQuick/private/qquickevents_p_p.h"
 
 class UCMargins : public QObject
 {
@@ -27,7 +28,7 @@ class UCMargins : public QObject
     Q_PROPERTY(qreal right MEMBER m_right NOTIFY rightChanged FINAL)
     Q_PROPERTY(qreal bottom MEMBER m_bottom NOTIFY bottomChanged FINAL)
 public:
-    UCMargins(QObject *parent = 0)
+    explicit UCMargins(QObject *parent = 0)
         : QObject(parent)
     {
     }
@@ -53,7 +54,7 @@ class UCAbstractButton : public UCActionItem
     Q_OBJECT
     Q_PROPERTY(bool pressed READ pressed NOTIFY pressedChanged)
     Q_PROPERTY(bool hovered READ hovered NOTIFY hoveredChanged)
-    Q_PROPERTY(UCMargins sensingMargins READ sensingMargins CONSTANT FINAL)
+    Q_PROPERTY(UCMargins *sensingMargins READ sensingMargins CONSTANT FINAL)
 
     // internal, declared to support the deprecated ListItem module
     Q_PROPERTY(bool __acceptEvents MEMBER m_acceptEvents)
@@ -86,10 +87,10 @@ Q_SIGNALS:
     void clicked();
     void pressAndHold();
 
-protected Q_SLOTS:
-    void _q_mouseAreaPressed();
-    void _q_mouseAreaClicked();
-    void _q_mouseAreaPressAndHold();
+protected:
+    void onMouseAreaPressedChanged();
+    void onMouseAreaClicked(QQuickMouseEvent*);
+    void onMouseAreaPressAndHold(QQuickMouseEvent*);
 
 protected:
     UCMargins m_sensingMargins;
@@ -99,5 +100,7 @@ protected:
 
     bool isPressAndHoldConnected();
 };
+
+QML_DECLARE_TYPE(UCMargins)
 
 #endif // UCABSTRACTBUTTON_H

@@ -41,6 +41,20 @@ Item {
             height: width
             function trigger() {}
         }
+        Rectangle { color: "green"
+            // have enough space for the test subject
+            width: units.gu(10)
+            height: units.gu(10)
+            AbstractButton {
+                id: buttonWithSensing
+                anchors.centerIn: parent
+                Rectangle {
+                    anchors.fill: buttonWithSensing.__mouseArea
+                    color: "red"
+                }
+            }
+        }
+
         Loader {
             id: loader
             width: units.gu(10)
@@ -86,10 +100,24 @@ Item {
         when: windowShown
 
         function cleanup() {
+            buttonWithSensing.sensingMargins.left =
+            buttonWithSensing.sensingMargins.top =
+            buttonWithSensing.sensingMargins.right =
+            buttonWithSensing.sensingMargins.bottom = 0;
+            buttonWithSensing.width = 0;
+            buttonWithSensing.height = 0;
+            signalSpy.target = absButton;
             signalSpy.clear();
             triggeredSpy.clear();
             loader.click = false;
             loader.longPress = false;
+        }
+
+        function initTestCase() {
+            compare(buttonWithSensing.sensingMargins.left, 0);
+            compare(buttonWithSensing.sensingMargins.right, 0);
+            compare(buttonWithSensing.sensingMargins.top, 0);
+            compare(buttonWithSensing.sensingMargins.bottom, 0);
         }
 
         function test_action() {
@@ -140,6 +168,51 @@ Item {
         function test_clicked_emitted_on_connections_bug1495554() {
             mouseClick(loader.item, centerOf(loader.item).x, centerOf(loader.item).y);
             compare(loader.click, true, "clicked not captured by Connection");
+        }
+
+        function test_sensing_area_data() {
+            return [
+                // margins is [left, top, right, bottom]
+                {tag: "zero size, no margins, click in visual", sizeGU: [0, 0], clickGU: [0, 0], sensingGU: [4, 4]},
+                {tag: "zero size, no margins, click in sensing", sizeGU: [0, 0], clickGU: [4, 4], sensingGU: [4, 4]},
+                {tag: "zero size, 1GU margins, click in visual", sizeGU: [0, 0], marginsGU: [1, 1, 1, 1], clickGU: [0, 0], sensingGU: [4, 4]},
+                {tag: "zero size, 1GU margins, click in sensing", sizeGU: [0, 0], marginsGU: [1, 1, 1, 1], clickGU: [4, 4], sensingGU: [4, 4]},
+                {tag: "zero size, 3GU margins horizontal, click in sensing", sizeGU: [0, 0], marginsGU: [3, 0, 3, 0], clickGU: [4, 4], sensingGU: [6, 4]},
+                {tag: "zero size, 3GU margins vertical, click in sensing", sizeGU: [0, 0], marginsGU: [0, 3, 0, 3], clickGU: [4, 4], sensingGU: [4, 6]},
+                {tag: "zero size, 3GU margins around, click in sensing", sizeGU: [0, 0], marginsGU: [3, 3, 3, 3], clickGU: [4, 4], sensingGU: [6, 6]},
+
+                {tag: "3x3GU size, no margins, click in visual", sizeGU: [3, 3], clickGU: [0, 0], sensingGU: [4, 4]},
+                {tag: "3x3GU size, no margins, click in sensing", sizeGU: [3, 3], clickGU: [4, 4], sensingGU: [4, 4]},
+                {tag: "3x3GU size, 1GU margins, click in visual", sizeGU: [3, 3], marginsGU: [1, 1, 1, 1], clickGU: [0, 0], sensingGU: [5, 5]},
+                {tag: "3x3GU size, 1GU margins, click in sensing", sizeGU: [3, 3], marginsGU: [1, 1, 1, 1], clickGU: [4, 4], sensingGU: [5, 5]},
+                {tag: "3x3GU size, 3GU margins horizontal, click in sensing", sizeGU: [3, 3], marginsGU: [3, 0, 3, 0], clickGU: [4, 4], sensingGU: [9, 4]},
+                {tag: "3x3GU size, 3GU margins vertical, click in sensing", sizeGU: [3, 3], marginsGU: [0, 3, 0, 3], clickGU: [4, 4], sensingGU: [4, 9]},
+                {tag: "3x3GU size, 3GU margins around, click in sensing", sizeGU: [3, 3], marginsGU: [3, 3, 3, 3], clickGU: [4, 4], sensingGU: [9, 9]},
+
+                {tag: "5x5GU size, no margins, click in visual", sizeGU: [5, 5], clickGU: [0, 0], sensingGU: [5, 5]},
+                {tag: "5x5GU size, no margins, click in sensing", sizeGU: [5, 5], clickGU: [4, 4], sensingGU: [5, 5]},
+                {tag: "5x5GU size, 1GU margins, click in visual", sizeGU: [5, 5], marginsGU: [1, 1, 1, 1], clickGU: [0, 0], sensingGU: [7, 7]},
+                {tag: "5x5GU size, 1GU margins, click in sensing", sizeGU: [5, 5], marginsGU: [1, 1, 1, 1], clickGU: [4, 4], sensingGU: [7, 7]},
+                {tag: "5x5GU size, 3GU margins horizontal, click in sensing", sizeGU: [5, 5], marginsGU: [3, 0, 3, 0], clickGU: [4, 4], sensingGU: [11, 5]},
+                {tag: "5x5GU size, 3GU margins vertical, click in sensing", sizeGU: [5, 5], marginsGU: [0, 3, 0, 3], clickGU: [4, 4], sensingGU: [5, 11]},
+                {tag: "5x5GU size, 3GU margins around, click in sensing", sizeGU: [5, 5], marginsGU: [3, 3, 3, 3], clickGU: [4, 4], sensingGU: [11, 11]},
+            ];
+        }
+        function test_sensing_area(data) {
+            signalSpy.target = buttonWithSensing;
+            buttonWithSensing.objectName = data.tag;
+            buttonWithSensing.width = units.gu(data.sizeGU[0]);
+            buttonWithSensing.height = units.gu(data.sizeGU[1]);
+            if (data.marginsGU) {
+                buttonWithSensing.sensingMargins.left = units.gu(data.marginsGU[0]);
+                buttonWithSensing.sensingMargins.top = units.gu(data.marginsGU[1]);
+                buttonWithSensing.sensingMargins.right = units.gu(data.marginsGU[2]);
+                buttonWithSensing.sensingMargins.bottom = units.gu(data.marginsGU[3]);
+            }
+            compare(buttonWithSensing.__mouseArea.width, units.gu(data.sensingGU[0]), "unexpected horizontal sensing size");
+            compare(buttonWithSensing.__mouseArea.height, units.gu(data.sensingGU[1]), "unexpected vertical sensing size");
+            mouseClick(buttonWithSensing.__mouseArea, units.gu(data.clickGU[0]), units.gu(data.clickGU[1]));
+            signalSpy.wait();
         }
     }
 }

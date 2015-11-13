@@ -8,7 +8,7 @@ Ubuntu.Components.AbstractButton 1.3: ActionItem
     signal clicked()
     signal pressAndHold()
     readonly property bool pressed
-    readonly property Margins sensingMargins
+    readonly property UCMargins sensingMargins
 Ubuntu.Components.Action 1.3 1.0 0.1: QtObject
     property string description
     property bool enabled
@@ -572,11 +572,6 @@ Ubuntu.Components.MainView 1.2: MainViewBase
 Ubuntu.Components.MainView 1.3: MainViewBase
     property bool automaticOrientation
     default property list<QtObject> contentsItem
-Ubuntu.Components.Margins 1.3: QtObject
-    property double bottom
-    property double left
-    property double right
-    property double top
 Ubuntu.Components.MathUtils 0.1 1.0 1.3
 Ubuntu.Components.MimeData 1.0 0.1: QtObject
     property color color
@@ -1403,6 +1398,11 @@ UCListItemDivider: Item
 UCListItemExpansion: QtObject
     property bool expanded
     property double height
+UCMargins: QtObject
+    property double bottom
+    property double left
+    property double right
+    property double top
 UCStateSaverAttached: QtObject
     property bool enabled
     property string properties

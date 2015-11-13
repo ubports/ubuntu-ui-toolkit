@@ -131,29 +131,32 @@ void UCAbstractButton::componentComplete()
     // bind mouse area
     connect(m_mouseArea, &QQuickMouseArea::pressedChanged, this, &UCAbstractButton::pressedChanged);
     connect(m_mouseArea, &QQuickMouseArea::hoveredChanged, this, &UCAbstractButton::hoveredChanged);
-    connect(m_mouseArea, SIGNAL(clicked(QQuickMouseEvent*)), this, SLOT(_q_mouseAreaClicked()));
-    connect(m_mouseArea, SIGNAL(pressed(QQuickMouseEvent*)), this, SLOT(_q_mouseAreaPressed()));
+    connect(m_mouseArea, &QQuickMouseArea::clicked, this, &UCAbstractButton::onMouseAreaClicked);
+    connect(m_mouseArea, &QQuickMouseArea::pressedChanged, this, &UCAbstractButton::onMouseAreaPressedChanged);
 }
 
 // check the pressAndHold connection on runtime, as Connections
 // may not be available on compoennt completion
-void UCAbstractButton::_q_mouseAreaPressed()
+void UCAbstractButton::onMouseAreaPressedChanged()
 {
+    if (!m_mouseArea->pressed()) {
+        return;
+    }
     bool longPressConnected = isPressAndHoldConnected();
     if (longPressConnected && !m_pressAndHoldConnected) {
         // do not use UniqueConnection as that has huge impact on performance
-        connect(m_mouseArea, SIGNAL(pressAndHold(QQuickMouseEvent*)),
-                this, SLOT(_q_mouseAreaPressAndHold()));
+        connect(m_mouseArea, &QQuickMouseArea::pressAndHold,
+                this, &UCAbstractButton::onMouseAreaPressAndHold);
         m_pressAndHoldConnected = true;
     } else if (!longPressConnected && m_pressAndHoldConnected) {
-        disconnect(m_mouseArea, SIGNAL(pressAndHold(QQuickMouseEvent*)),
-                   this, SLOT(_q_mouseAreaPressAndHold()));
+        disconnect(m_mouseArea, &QQuickMouseArea::pressAndHold,
+                   this, &UCAbstractButton::onMouseAreaPressAndHold);
         m_pressAndHoldConnected = false;
     }
 }
 
 // handle mouseClicked with Haptics
-void UCAbstractButton::_q_mouseAreaClicked()
+void UCAbstractButton::onMouseAreaClicked(QQuickMouseEvent*)
 {
     // required by the deprecated ListItem module
     if (!m_acceptEvents) {
@@ -165,7 +168,7 @@ void UCAbstractButton::_q_mouseAreaClicked()
 }
 
 // handle pressAndHold
-void UCAbstractButton::_q_mouseAreaPressAndHold()
+void UCAbstractButton::onMouseAreaPressAndHold(QQuickMouseEvent*)
 {
     // required by the deprecated ListItem module
     if (!m_acceptEvents) {
@@ -198,28 +201,29 @@ void UCAbstractButton::adjustSensingArea()
         return;
     }
     // use the sensingMargins in the minimum calculation
-    qreal hDelta = UCUnits::instance().gu(MIN_SENSING_WIDTH_GU)
+    qreal minimumWidth = UCUnits::instance().gu(MIN_SENSING_WIDTH_GU);
+    qreal minimumHeight = UCUnits::instance().gu(MIN_SENSING_HEIGHT_GU);
+    qreal hDelta = minimumWidth
             - (width() + m_sensingMargins.m_left + m_sensingMargins.m_right);
-    qreal vDelta = UCUnits::instance().gu(MIN_SENSING_HEIGHT_GU)
+    qreal vDelta = minimumHeight
             - (height() + m_sensingMargins.m_top + m_sensingMargins.m_bottom);
-
     // adjust the sensing area
     QQuickAnchors *mouseAreaAnchors = QQuickItemPrivate::get(m_mouseArea)->anchors();
     if (hDelta > 0) {
         // the horizontal size is still smaller than the minimum
-        mouseAreaAnchors->setLeftMargin(hDelta / 2);
-        mouseAreaAnchors->setRightMargin(hDelta / 2);
+        mouseAreaAnchors->setLeftMargin(-(hDelta / 2 + m_sensingMargins.m_left));
+        mouseAreaAnchors->setRightMargin(-(hDelta / 2 + m_sensingMargins.m_right));
     } else {
-        mouseAreaAnchors->setLeftMargin(m_sensingMargins.m_left);
-        mouseAreaAnchors->setRightMargin(m_sensingMargins.m_right);
+        mouseAreaAnchors->setLeftMargin(-m_sensingMargins.m_left);
+        mouseAreaAnchors->setRightMargin(-m_sensingMargins.m_right);
     }
-    if (vDelta) {
+    if (vDelta > 0) {
         // the vertical size is still smaller than the minimum
-        mouseAreaAnchors->setTopMargin(vDelta / 2);
-        mouseAreaAnchors->setBottomMargin(vDelta / 2);
+        mouseAreaAnchors->setTopMargin(-(vDelta / 2 + m_sensingMargins.m_top));
+        mouseAreaAnchors->setBottomMargin(-(vDelta / 2 + m_sensingMargins.m_bottom));
     } else {
-        mouseAreaAnchors->setTopMargin(m_sensingMargins.m_left);
-        mouseAreaAnchors->setBottomMargin(m_sensingMargins.m_right);
+        mouseAreaAnchors->setTopMargin(-m_sensingMargins.m_top);
+        mouseAreaAnchors->setBottomMargin(-m_sensingMargins.m_bottom);
     }
 }
 
