@@ -128,14 +128,14 @@ int main(int argc, const char *argv[])
 
     QQmlEngine* engine;
     // The default constructor affects the components tree (autopilot vis)
-    QQuickView* view;
+    QScopedPointer<QQuickView> view;
     if (args.isSet(_engine)) {
-        view = new QQuickView();
+        view.reset(new QQuickView());
         engine = view->engine();
     } else {
         engine = new QQmlEngine();
-        view = new QQuickView(engine, NULL);
-        engine->setParent(view);
+        view.reset(new QQuickView(engine, NULL));
+        engine->setParent(view.data());
     }
 
     if (args.isSet(_import)) {
@@ -163,8 +163,6 @@ int main(int argc, const char *argv[])
     }
     view->show();
 
-    int result = application.exec();
-    delete view;
-    return result;
+    return application.exec();
 }
 
