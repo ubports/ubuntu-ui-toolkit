@@ -87,8 +87,15 @@ UCAbstractButton::UCAbstractButton(QQuickItem *parent)
     , m_acceptEvents(true)
     , m_pressAndHoldConnected(false)
 {
-    QQml_setParent_noEvent(m_mouseArea, this);
     setActiveFocusOnPress(true);
+
+    // connect to grid unit change to keep sensing area size in sync
+    connect(&UCUnits::instance(), &UCUnits::gridUnitChanged, this, &UCAbstractButton::adjustSensingArea);
+    // also connect to the margin changes
+    connect(&m_sensingMargins, &UCMargins::leftChanged, this, &UCAbstractButton::adjustSensingArea);
+    connect(&m_sensingMargins, &UCMargins::rightChanged, this, &UCAbstractButton::adjustSensingArea);
+    connect(&m_sensingMargins, &UCMargins::topChanged, this, &UCAbstractButton::adjustSensingArea);
+    connect(&m_sensingMargins, &UCMargins::bottomChanged, this, &UCAbstractButton::adjustSensingArea);
 }
 
 bool UCAbstractButton::isPressAndHoldConnected()
@@ -104,6 +111,7 @@ void UCAbstractButton::classBegin()
     HapticsProxy::instance().initialize();
 
     // set up mouse area
+    QQml_setParent_noEvent(m_mouseArea, this);
     m_mouseArea->setParentItem(this);
     QQuickAnchors *anchors = QQuickItemPrivate::get(m_mouseArea)->anchors();
     anchors->setFill(this);
@@ -113,6 +121,10 @@ void UCAbstractButton::classBegin()
 void UCAbstractButton::componentComplete()
 {
     UCActionItem::componentComplete();
+
+    // adjust sensing area
+    adjustSensingArea();
+
     // connect to the right slot, using macros so we get the proper slot
     connect(m_mouseArea, SIGNAL(clicked(QQuickMouseEvent*)), this, SLOT(trigger()));
 
@@ -179,13 +191,17 @@ void UCAbstractButton::keyPressEvent(QKeyEvent *event)
     }
 }
 
-void UCAbstractButton::adjustSensingArea(const QSizeF &size)
+void UCAbstractButton::adjustSensingArea()
 {
+    if (!isComponentComplete()) {
+        // we do not hammer the component until completion
+        return;
+    }
     // use the sensingMargins in the minimum calculation
     qreal hDelta = UCUnits::instance().gu(MIN_SENSING_WIDTH_GU)
-            - (size.width() + m_sensingMargins.m_left + m_sensingMargins.m_right);
+            - (width() + m_sensingMargins.m_left + m_sensingMargins.m_right);
     qreal vDelta = UCUnits::instance().gu(MIN_SENSING_HEIGHT_GU)
-            - (size.height() + m_sensingMargins.m_top + m_sensingMargins.m_bottom);
+            - (height() + m_sensingMargins.m_top + m_sensingMargins.m_bottom);
 
     // adjust the sensing area
     QQuickAnchors *mouseAreaAnchors = QQuickItemPrivate::get(m_mouseArea)->anchors();
@@ -212,7 +228,7 @@ void UCAbstractButton::geometryChanged(const QRectF &newGeometry, const QRectF &
     UCActionItem::geometryChanged(newGeometry, oldGeometry);
 
     // adjust internal mouse area's size
-    adjustSensingArea(newGeometry.size());
+    adjustSensingArea();
 }
 
 /*!

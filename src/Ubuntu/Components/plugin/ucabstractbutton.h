@@ -78,7 +78,7 @@ protected:
     void keyPressEvent(QKeyEvent *key);
     virtual void geometryChanged(const QRectF &newGeometry,
                                  const QRectF &oldGeometry);
-    void adjustSensingArea(const QSizeF &size);
+    void adjustSensingArea();
 
 Q_SIGNALS:
     void pressedChanged();
