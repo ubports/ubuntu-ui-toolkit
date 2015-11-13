@@ -22,10 +22,7 @@
 #include <QScreen>
 #include <QDebug>
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-pedantic"
 #include <private/qquickwindow_p.h>
-#pragma GCC diagnostic pop
 
 // local
 #include <UbuntuGestures/TouchOwnershipEvent>
@@ -262,6 +259,7 @@ void UCSwipeAreaPrivate::setRecognitionTimer(UbuntuGestures::AbstractTimer *time
 
     // can be null when called from the constructor
     if (recognitionTimer) {
+        wasSingleShot = recognitionTimer->isSingleShot();
         interval = recognitionTimer->interval();
         timerWasRunning = recognitionTimer->isRunning();
         if (recognitionTimer->parent() == this) {
