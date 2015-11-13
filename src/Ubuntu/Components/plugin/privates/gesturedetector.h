@@ -68,6 +68,8 @@ private:
     QQuickItem *m_owner;
     Status m_status;
     bool m_bottomUpSwipeDetected:1;
+
+    void onFilteredItemDeleted(QObject *object);
 };
 
 #endif // GESTUREDETECTOR_H
