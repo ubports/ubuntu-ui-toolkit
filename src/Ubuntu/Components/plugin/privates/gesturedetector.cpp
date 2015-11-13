@@ -43,6 +43,14 @@ GestureDetector::~GestureDetector()
     m_filteredItems.clear();
 }
 
+void GestureDetector::onFilteredItemDeleted(QObject *object)
+{
+    if (object) {
+        object->removeEventFilter(this);
+        m_filteredItems.removeAll(object);
+    }
+}
+
 void GestureDetector::setStatus(Status status)
 {
     if (status == m_status) {
@@ -61,12 +69,14 @@ void GestureDetector::setItemFilter(QObject *item)
 {
     m_filteredItems.append(item);
     item->installEventFilter(this);
+    connect(item, &QObject::destroyed, this, &GestureDetector::onFilteredItemDeleted);
 }
 
 void GestureDetector::removeItemFilter(QObject *item)
 {
     m_filteredItems.removeAll(item);
     item->removeEventFilter(this);
+    disconnect(item, &QObject::destroyed, this, &GestureDetector::onFilteredItemDeleted);
 }
 
 bool GestureDetector::handleTouchEvent(QObject *target, QTouchEvent *event)

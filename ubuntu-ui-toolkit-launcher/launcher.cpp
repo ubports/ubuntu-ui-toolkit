@@ -135,6 +135,7 @@ int main(int argc, const char *argv[])
     } else {
         engine = new QQmlEngine();
         view = new QQuickView(engine, NULL);
+        engine->setParent(view);
     }
 
     if (args.isSet(_import)) {
@@ -162,6 +163,8 @@ int main(int argc, const char *argv[])
     }
     view->show();
 
-    return application.exec();
+    int result = application.exec();
+    delete view;
+    return result;
 }
 
