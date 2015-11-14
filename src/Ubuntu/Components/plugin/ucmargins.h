@@ -23,56 +23,17 @@
 class UCMargins : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(qreal left READ left WRITE setLeft NOTIFY leftChanged FINAL)
-    Q_PROPERTY(qreal top READ top WRITE setTop NOTIFY topChanged FINAL)
-    Q_PROPERTY(qreal right READ right WRITE setRight NOTIFY rightChanged FINAL)
-    Q_PROPERTY(qreal bottom READ bottom WRITE setBottom NOTIFY bottomChanged FINAL)
+    Q_PROPERTY(qreal left MEMBER m_left NOTIFY leftChanged FINAL)
+    Q_PROPERTY(qreal top MEMBER m_top NOTIFY topChanged FINAL)
+    Q_PROPERTY(qreal right MEMBER m_right NOTIFY rightChanged FINAL)
+    Q_PROPERTY(qreal bottom MEMBER m_bottom NOTIFY bottomChanged FINAL)
 public:
-    explicit UCMargins(QObject *parent = 0)
-        : QObject(parent)
-    {
-    }
+    UCMargins(QObject *parent = 0);
 
-    qreal left() const
-    {
-        return m_left;
-    }
-    void setLeft(qreal offset) {
-        if (m_left != offset) {
-            m_left = offset;
-            Q_EMIT leftChanged();
-        }
-    }
-    qreal top() const
-    {
-        return m_top;
-    }
-    void setTop(qreal offset) {
-        if (m_top != offset) {
-            m_top = offset;
-            Q_EMIT topChanged();
-        }
-    }
-    qreal right() const
-    {
-        return m_right;
-    }
-    void setRight(qreal offset) {
-        if (m_right != offset) {
-            m_right = offset;
-            Q_EMIT rightChanged();
-        }
-    }
-    qreal bottom() const
-    {
-        return m_bottom;
-    }
-    void setBottom(qreal offset) {
-        if (m_bottom != offset) {
-            m_bottom = offset;
-            Q_EMIT bottomChanged();
-        }
-    }
+    qreal left() const;
+    qreal top() const;
+    qreal right() const;
+    qreal bottom() const;
 
 Q_SIGNALS:
     void leftChanged();
@@ -87,5 +48,26 @@ private:
     qreal m_bottom = 0.0;
 };
 
+inline UCMargins::UCMargins(QObject *parent) : QObject(parent) {}
+
+inline qreal UCMargins::left() const
+{
+    return m_left;
+}
+
+inline qreal UCMargins::top() const
+{
+    return m_top;
+}
+
+inline qreal UCMargins::right() const
+{
+    return m_right;
+}
+
+inline qreal UCMargins::bottom() const
+{
+    return m_bottom;
+}
 
 #endif // UCMARGINS_H
