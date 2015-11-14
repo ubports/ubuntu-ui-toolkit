@@ -88,14 +88,6 @@ UCAbstractButton::UCAbstractButton(QQuickItem *parent)
     , m_pressAndHoldConnected(false)
 {
     setActiveFocusOnPress(true);
-
-    // connect to grid unit change to keep sensing area size in sync
-    connect(&UCUnits::instance(), &UCUnits::gridUnitChanged, this, &UCAbstractButton::adjustSensingArea);
-    // also connect to the margin changes
-    connect(&m_sensingMargins, &UCMargins::leftChanged, this, &UCAbstractButton::adjustSensingArea);
-    connect(&m_sensingMargins, &UCMargins::rightChanged, this, &UCAbstractButton::adjustSensingArea);
-    connect(&m_sensingMargins, &UCMargins::topChanged, this, &UCAbstractButton::adjustSensingArea);
-    connect(&m_sensingMargins, &UCMargins::bottomChanged, this, &UCAbstractButton::adjustSensingArea);
 }
 
 bool UCAbstractButton::isPressAndHoldConnected()
@@ -204,26 +196,26 @@ void UCAbstractButton::adjustSensingArea()
     qreal minimumWidth = UCUnits::instance().gu(MIN_SENSING_WIDTH_GU);
     qreal minimumHeight = UCUnits::instance().gu(MIN_SENSING_HEIGHT_GU);
     qreal hDelta = minimumWidth
-            - (width() + m_sensingMargins.left() + m_sensingMargins.right());
+            - (width() + (m_sensingMargins ? (m_sensingMargins->left() + m_sensingMargins->right()) : 0.0));
     qreal vDelta = minimumHeight
-            - (height() + m_sensingMargins.top() + m_sensingMargins.bottom());
+            - (height() + (m_sensingMargins ? (m_sensingMargins->top() + m_sensingMargins->bottom()) : 0.0));
     // adjust the sensing area
     QQuickAnchors *mouseAreaAnchors = QQuickItemPrivate::get(m_mouseArea)->anchors();
     if (hDelta > 0) {
         // the horizontal size is still smaller than the minimum
-        mouseAreaAnchors->setLeftMargin(-(hDelta / 2 + m_sensingMargins.left()));
-        mouseAreaAnchors->setRightMargin(-(hDelta / 2 + m_sensingMargins.right()));
-    } else {
-        mouseAreaAnchors->setLeftMargin(-m_sensingMargins.left());
-        mouseAreaAnchors->setRightMargin(-m_sensingMargins.right());
+        mouseAreaAnchors->setLeftMargin(-(hDelta / 2 + (m_sensingMargins ? m_sensingMargins->left() : 0.0)));
+        mouseAreaAnchors->setRightMargin(-(hDelta / 2 + (m_sensingMargins ? m_sensingMargins->right() : 0.0)));
+    } else if (m_sensingMargins) {
+        mouseAreaAnchors->setLeftMargin(-m_sensingMargins->left());
+        mouseAreaAnchors->setRightMargin(-m_sensingMargins->right());
     }
     if (vDelta > 0) {
         // the vertical size is still smaller than the minimum
-        mouseAreaAnchors->setTopMargin(-(vDelta / 2 + m_sensingMargins.top()));
-        mouseAreaAnchors->setBottomMargin(-(vDelta / 2 + m_sensingMargins.bottom()));
-    } else {
-        mouseAreaAnchors->setTopMargin(-m_sensingMargins.top());
-        mouseAreaAnchors->setBottomMargin(-m_sensingMargins.bottom());
+        mouseAreaAnchors->setTopMargin(-(vDelta / 2 + (m_sensingMargins ? m_sensingMargins->top() : 0.0)));
+        mouseAreaAnchors->setBottomMargin(-(vDelta / 2 + (m_sensingMargins ? m_sensingMargins->bottom() : 0.0)));
+    } else if (m_sensingMargins) {
+        mouseAreaAnchors->setTopMargin(-m_sensingMargins->top());
+        mouseAreaAnchors->setBottomMargin(-m_sensingMargins->bottom());
     }
 }
 
@@ -292,3 +284,19 @@ QQuickMouseArea *UCAbstractButton::privateMouseArea() const
  * }
  * \endqml
  */
+UCMargins *UCAbstractButton::sensingMargins()
+{
+    if (!m_sensingMargins) {
+        m_sensingMargins = new UCMargins(this);
+
+        // as this is the first time we create the sensing margins we only
+        // connect now to grid unit changes to keep sensing area size in sync
+        connect(&UCUnits::instance(), &UCUnits::gridUnitChanged, this, &UCAbstractButton::adjustSensingArea);
+        // also connect to the margin changes
+        connect(m_sensingMargins, &UCMargins::leftChanged, this, &UCAbstractButton::adjustSensingArea);
+        connect(m_sensingMargins, &UCMargins::rightChanged, this, &UCAbstractButton::adjustSensingArea);
+        connect(m_sensingMargins, &UCMargins::topChanged, this, &UCAbstractButton::adjustSensingArea);
+        connect(m_sensingMargins, &UCMargins::bottomChanged, this, &UCAbstractButton::adjustSensingArea);
+    }
+    return m_sensingMargins;
+}

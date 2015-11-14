@@ -38,10 +38,7 @@ public:
 
     bool pressed() const;
     bool hovered() const;
-    UCMargins *sensingMargins() const
-    {
-        return const_cast<UCMargins*>(&m_sensingMargins);
-    }
+    UCMargins *sensingMargins();
 
     bool privateAcceptEvents() const;
     void setPrivateAcceptEvents(bool accept);
@@ -67,7 +64,7 @@ protected:
     void onMouseAreaPressAndHold(QQuickMouseEvent*);
 
 protected:
-    UCMargins m_sensingMargins;
+    UCMargins *m_sensingMargins = nullptr;
     QQuickMouseArea *m_mouseArea;
     bool m_acceptEvents:1;
     bool m_pressAndHoldConnected:1;
