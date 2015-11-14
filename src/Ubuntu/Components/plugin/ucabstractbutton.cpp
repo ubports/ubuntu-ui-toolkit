@@ -204,26 +204,26 @@ void UCAbstractButton::adjustSensingArea()
     qreal minimumWidth = UCUnits::instance().gu(MIN_SENSING_WIDTH_GU);
     qreal minimumHeight = UCUnits::instance().gu(MIN_SENSING_HEIGHT_GU);
     qreal hDelta = minimumWidth
-            - (width() + m_sensingMargins.m_left + m_sensingMargins.m_right);
+            - (width() + m_sensingMargins.left() + m_sensingMargins.right());
     qreal vDelta = minimumHeight
-            - (height() + m_sensingMargins.m_top + m_sensingMargins.m_bottom);
+            - (height() + m_sensingMargins.top() + m_sensingMargins.bottom());
     // adjust the sensing area
     QQuickAnchors *mouseAreaAnchors = QQuickItemPrivate::get(m_mouseArea)->anchors();
     if (hDelta > 0) {
         // the horizontal size is still smaller than the minimum
-        mouseAreaAnchors->setLeftMargin(-(hDelta / 2 + m_sensingMargins.m_left));
-        mouseAreaAnchors->setRightMargin(-(hDelta / 2 + m_sensingMargins.m_right));
+        mouseAreaAnchors->setLeftMargin(-(hDelta / 2 + m_sensingMargins.left()));
+        mouseAreaAnchors->setRightMargin(-(hDelta / 2 + m_sensingMargins.right()));
     } else {
-        mouseAreaAnchors->setLeftMargin(-m_sensingMargins.m_left);
-        mouseAreaAnchors->setRightMargin(-m_sensingMargins.m_right);
+        mouseAreaAnchors->setLeftMargin(-m_sensingMargins.left());
+        mouseAreaAnchors->setRightMargin(-m_sensingMargins.right());
     }
     if (vDelta > 0) {
         // the vertical size is still smaller than the minimum
-        mouseAreaAnchors->setTopMargin(-(vDelta / 2 + m_sensingMargins.m_top));
-        mouseAreaAnchors->setBottomMargin(-(vDelta / 2 + m_sensingMargins.m_bottom));
+        mouseAreaAnchors->setTopMargin(-(vDelta / 2 + m_sensingMargins.top()));
+        mouseAreaAnchors->setBottomMargin(-(vDelta / 2 + m_sensingMargins.bottom()));
     } else {
-        mouseAreaAnchors->setTopMargin(-m_sensingMargins.m_top);
-        mouseAreaAnchors->setBottomMargin(-m_sensingMargins.m_bottom);
+        mouseAreaAnchors->setTopMargin(-m_sensingMargins.top());
+        mouseAreaAnchors->setBottomMargin(-m_sensingMargins.bottom());
     }
 }
 

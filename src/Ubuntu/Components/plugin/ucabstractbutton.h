@@ -18,34 +18,8 @@
 #define UCABSTRACTBUTTON_H
 
 #include "ucactionitem.h"
+#include "ucmargins.h"
 #include "QtQuick/private/qquickevents_p_p.h"
-
-class UCMargins : public QObject
-{
-    Q_OBJECT
-    Q_PROPERTY(qreal left MEMBER m_left NOTIFY leftChanged FINAL)
-    Q_PROPERTY(qreal top MEMBER m_top NOTIFY topChanged FINAL)
-    Q_PROPERTY(qreal right MEMBER m_right NOTIFY rightChanged FINAL)
-    Q_PROPERTY(qreal bottom MEMBER m_bottom NOTIFY bottomChanged FINAL)
-public:
-    explicit UCMargins(QObject *parent = 0)
-        : QObject(parent)
-    {
-    }
-
-Q_SIGNALS:
-    void leftChanged();
-    void topChanged();
-    void rightChanged();
-    void bottomChanged();
-
-private:
-    qreal m_left = 0.0;
-    qreal m_top = 0.0;
-    qreal m_right = 0.0;
-    qreal m_bottom = 0.0;
-    friend class UCAbstractButton;
-};
 
 class QQuickMouseArea;
 class QQuickMouseEvent;
