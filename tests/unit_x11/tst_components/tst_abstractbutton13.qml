@@ -196,6 +196,12 @@ Item {
                 {tag: "5x5GU size, 3GU margins horizontal, click in sensing", sizeGU: [5, 5], marginsGU: [3, 0, 3, 0], clickGU: [4, 4], sensingGU: [11, 5]},
                 {tag: "5x5GU size, 3GU margins vertical, click in sensing", sizeGU: [5, 5], marginsGU: [0, 3, 0, 3], clickGU: [4, 4], sensingGU: [5, 11]},
                 {tag: "5x5GU size, 3GU margins around, click in sensing", sizeGU: [5, 5], marginsGU: [3, 3, 3, 3], clickGU: [4, 4], sensingGU: [11, 11]},
+
+                {tag: "zero size, no margins, click out of sensing area", sizeGU: [0, 0], clickGU: [5, 5], sensingGU: [4, 4], fail: true},
+                {tag: "2x2GU size, no margins, click out of sensing area", sizeGU: [2, 2], clickGU: [5, 5], sensingGU: [4, 4], fail: true},
+                {tag: "4x4GU size, no margins, click out of sensing area", sizeGU: [4, 4], clickGU: [5, 5], sensingGU: [4, 4], fail: true},
+                {tag: "2x2GU size, 1GU margins around, click out of sensing area", sizeGU: [2, 2], marginsGU: [1, 1, 1, 1], clickGU: [5, 5], sensingGU: [4, 4], fail: true},
+                {tag: "4x4GU size, 1GU margins around, click out of sensing area", sizeGU: [4, 4], marginsGU: [1, 1, 1, 1], clickGU: [6.1, 6.1], sensingGU: [6, 6], fail: true},
             ];
         }
         function test_sensing_area(data) {
@@ -209,10 +215,15 @@ Item {
                 buttonWithSensing.sensingMargins.right = units.gu(data.marginsGU[2]);
                 buttonWithSensing.sensingMargins.bottom = units.gu(data.marginsGU[3]);
             }
-            compare(buttonWithSensing.__mouseArea.width, units.gu(data.sensingGU[0]), "unexpected horizontal sensing size");
-            compare(buttonWithSensing.__mouseArea.height, units.gu(data.sensingGU[1]), "unexpected vertical sensing size");
+            if (data.sensingGU) {
+                compare(buttonWithSensing.__mouseArea.width, units.gu(data.sensingGU[0]), "unexpected horizontal sensing size");
+                compare(buttonWithSensing.__mouseArea.height, units.gu(data.sensingGU[1]), "unexpected vertical sensing size");
+            }
+            if (data.fail) {
+                expectFailContinue(data.tag, "no signal");
+            }
             mouseClick(buttonWithSensing.__mouseArea, units.gu(data.clickGU[0]), units.gu(data.clickGU[1]));
-            signalSpy.wait();
+            signalSpy.wait(500);
         }
     }
 }
