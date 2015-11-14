@@ -1399,6 +1399,7 @@ UCListItemExpansion: QtObject
     property bool expanded
     property double height
 UCMargins: QtObject
+    property double all
     property double bottom
     property double left
     property double right

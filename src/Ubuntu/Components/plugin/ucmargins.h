@@ -27,6 +27,7 @@ class UCMargins : public QObject
     Q_PROPERTY(qreal top MEMBER m_top NOTIFY topChanged FINAL)
     Q_PROPERTY(qreal right MEMBER m_right NOTIFY rightChanged FINAL)
     Q_PROPERTY(qreal bottom MEMBER m_bottom NOTIFY bottomChanged FINAL)
+    Q_PROPERTY(qreal all MEMBER m_all NOTIFY allChanged FINAL)
 public:
     UCMargins(QObject *parent = 0);
 
@@ -40,34 +41,36 @@ Q_SIGNALS:
     void topChanged();
     void rightChanged();
     void bottomChanged();
+    void allChanged();
 
 private:
     qreal m_left = 0.0;
     qreal m_top = 0.0;
     qreal m_right = 0.0;
     qreal m_bottom = 0.0;
+    qreal m_all = 0.0;
 };
 
 inline UCMargins::UCMargins(QObject *parent) : QObject(parent) {}
 
 inline qreal UCMargins::left() const
 {
-    return m_left;
+    return qFuzzyIsNull(m_left) ? m_all : m_left;
 }
 
 inline qreal UCMargins::top() const
 {
-    return m_top;
+    return qFuzzyIsNull(m_top) ? m_all : m_top;
 }
 
 inline qreal UCMargins::right() const
 {
-    return m_right;
+    return qFuzzyIsNull(m_right) ? m_all : m_right;
 }
 
 inline qreal UCMargins::bottom() const
 {
-    return m_bottom;
+    return qFuzzyIsNull(m_bottom) ? m_all : m_bottom;
 }
 
 #endif // UCMARGINS_H

@@ -256,6 +256,7 @@ QQuickMouseArea *UCAbstractButton::privateMouseArea() const
  * \qmlproperty real AbstractButton::sensingMargins.right
  * \qmlproperty real AbstractButton::sensingMargins.top
  * \qmlproperty real AbstractButton::sensingMargins.bottom
+ * \qmlproperty real AbstractButton::sensingMargins.all
  * The property group specifies the margins extending the visual area where the
  * touch and mouse events are sensed. Positive values mean the area will be extended
  * on the specified direction outside of the visual area, negative values mean
@@ -297,6 +298,7 @@ UCMargins *UCAbstractButton::sensingMargins()
         connect(m_sensingMargins, &UCMargins::rightChanged, this, &UCAbstractButton::adjustSensingArea);
         connect(m_sensingMargins, &UCMargins::topChanged, this, &UCAbstractButton::adjustSensingArea);
         connect(m_sensingMargins, &UCMargins::bottomChanged, this, &UCAbstractButton::adjustSensingArea);
+        connect(m_sensingMargins, &UCMargins::allChanged, this, &UCAbstractButton::adjustSensingArea);
     }
     return m_sensingMargins;
 }

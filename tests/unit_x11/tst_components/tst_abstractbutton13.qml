@@ -41,17 +41,13 @@ Item {
             height: width
             function trigger() {}
         }
-        Rectangle { color: "green"
+        Item {
             // have enough space for the test subject
             width: units.gu(10)
             height: units.gu(10)
             AbstractButton {
                 id: buttonWithSensing
                 anchors.centerIn: parent
-                Rectangle {
-                    anchors.fill: buttonWithSensing.__mouseArea
-                    color: "red"
-                }
             }
         }
 
@@ -103,7 +99,8 @@ Item {
             buttonWithSensing.sensingMargins.left =
             buttonWithSensing.sensingMargins.top =
             buttonWithSensing.sensingMargins.right =
-            buttonWithSensing.sensingMargins.bottom = 0;
+            buttonWithSensing.sensingMargins.bottom =
+            buttonWithSensing.sensingMargins.all = 0;
             buttonWithSensing.width = 0;
             buttonWithSensing.height = 0;
             signalSpy.target = absButton;
@@ -118,6 +115,7 @@ Item {
             compare(buttonWithSensing.sensingMargins.right, 0);
             compare(buttonWithSensing.sensingMargins.top, 0);
             compare(buttonWithSensing.sensingMargins.bottom, 0);
+            compare(buttonWithSensing.sensingMargins.all, 0);
         }
 
         function test_action() {
@@ -202,6 +200,12 @@ Item {
                 {tag: "4x4GU size, no margins, click out of sensing area", sizeGU: [4, 4], clickGU: [5, 5], sensingGU: [4, 4], fail: true},
                 {tag: "2x2GU size, 1GU margins around, click out of sensing area", sizeGU: [2, 2], marginsGU: [1, 1, 1, 1], clickGU: [5, 5], sensingGU: [4, 4], fail: true},
                 {tag: "4x4GU size, 1GU margins around, click out of sensing area", sizeGU: [4, 4], marginsGU: [1, 1, 1, 1], clickGU: [6.1, 6.1], sensingGU: [6, 6], fail: true},
+
+                // test margins.all
+                {tag: "zero size, 5GU margins.all, click in sensing area", sizeGU: [0, 0], marginsAll: units.gu(5), clickGU: [5, 5], sensingGU: [10, 10]},
+                {tag: "2x2 size, 2GU margins.all, click in sensing area", sizeGU: [2, 2], marginsAll: units.gu(2), clickGU: [6, 6], sensingGU: [6, 6]},
+                {tag: "zero size, 5GU margins.all, click out of sensing area", sizeGU: [0, 0], marginsAll: units.gu(5), clickGU: [10.1, 10.1], sensingGU: [10, 10], fail: true},
+                {tag: "2x2 size, 2GU margins.all, click out of sensing area", sizeGU: [2, 2], marginsAll: units.gu(2), clickGU: [6.1, 6.1], sensingGU: [6, 6], fail: true},
             ];
         }
         function test_sensing_area(data) {
@@ -214,7 +218,10 @@ Item {
                 buttonWithSensing.sensingMargins.top = units.gu(data.marginsGU[1]);
                 buttonWithSensing.sensingMargins.right = units.gu(data.marginsGU[2]);
                 buttonWithSensing.sensingMargins.bottom = units.gu(data.marginsGU[3]);
+            } else if (data.marginsAll) {
+                buttonWithSensing.sensingMargins.all = data.marginsAll;
             }
+
             if (data.sensingGU) {
                 compare(buttonWithSensing.__mouseArea.width, units.gu(data.sensingGU[0]), "unexpected horizontal sensing size");
                 compare(buttonWithSensing.__mouseArea.height, units.gu(data.sensingGU[1]), "unexpected vertical sensing size");
