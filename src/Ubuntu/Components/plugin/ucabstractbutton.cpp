@@ -46,8 +46,8 @@
     are defaulted to be 2x2 grid units, but a component containing a single Icon
     still has to be able to capture the press events. Therefore AbstractButton
     makes sure this rule of 4x4 grid units for the sensing area is provided. In
-    addition exposes the \l sensingMargins property which extends the component's
-    sensing area in al the directions, so other use cases when the sensing area
+    addition it exposes the \l sensingMargins property which extends the component's
+    sensing area in all the directions, so other use cases when the sensing area
     needs to be extended outside of the component's area, or restricted on a
     given area of the component can be implemented. The following example extends
     the sensing area on the left, top and bottom with 1 grid units, and on the
@@ -263,10 +263,10 @@ QQuickMouseArea *UCAbstractButton::privateMouseArea() const
  * the sensing will fall under the component's visual border.
  * All values default to 0.
  *
- * \note If the visual area and th esensing margins are not reaching the 4x4 grid
+ * \note If the visual area and the sensing margins are not reaching the 4x4 grid
  * units limit, the component will fall back to these minimum limits.
  * For example, extending a 2x2 grid unit visual component into 4x10 grid units
- * would look as follows:
+ * sensing area would look as follows:
  * \qml
  * AbstractButton {
  *     width: units.gu(2)
