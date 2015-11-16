@@ -146,6 +146,5 @@ Toolkit.StyledItem {
         }
     }
 
-    theme.version: Toolkit.Ubuntu.toolkitVersion
     styleName: "ScrollbarStyle"
 }

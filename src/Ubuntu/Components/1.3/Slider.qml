@@ -206,6 +206,5 @@ Toolkit.StyledItem {
         onLiveValueChanged: if (isPressed) slider.requestFocus(Qt.MouseFocusReason)
     }
 
-    theme.version: Toolkit.Ubuntu.toolkitVersion
     styleName: "SliderStyle"
 }

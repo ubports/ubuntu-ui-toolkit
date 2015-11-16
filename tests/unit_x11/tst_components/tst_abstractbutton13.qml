@@ -41,6 +41,21 @@ Item {
             height: width
             function trigger() {}
         }
+        Loader {
+            id: loader
+            width: units.gu(10)
+            height: units.gu(10)
+            sourceComponent: AbstractButton { objectName: "dynamic"}
+            property bool click: false
+            property bool longPress: false
+        }
+    }
+
+    Connections {
+        id: test
+        target: loader.item
+        onClicked: loader.click = true
+        onPressAndHold: loader.longPress = true
     }
 
     Action {
@@ -73,6 +88,8 @@ Item {
         function cleanup() {
             signalSpy.clear();
             triggeredSpy.clear();
+            loader.click = false;
+            loader.longPress = false;
         }
 
         function test_action() {
@@ -80,7 +97,9 @@ Item {
             absButton.action = action1
             compare(absButton.action, action1, "Action can be set")
             var numTriggers = action1.triggerCount
-            absButton.clicked()
+            triggeredSpy.target = absButton.action;
+            mouseClick(absButton, centerOf(absButton).x, centerOf(absButton).y);
+            triggeredSpy.wait(500);
             compare(action1.triggerCount, numTriggers+1, "Button clicked triggers action")
             absButton.action = null
         }
@@ -110,6 +129,17 @@ Item {
             pressAndHoldSpy.wait();
             mouseRelease(absLongTap, centerOf(absLongTap).x, centerOf(absLongTap).y);
             compare(signalSpy.count, 0, "click() must be suppressed when pressAndHold handler is implemented");
+        }
+
+        function test_pressAndHold_emitted_on_connections_bug1495554() {
+            mouseLongPress(loader.item, centerOf(loader.item).x, centerOf(loader.item).y);
+            mouseRelease(loader.item, centerOf(loader.item).x, centerOf(loader.item).y);
+            compare(loader.click, false, "clicked should not be emitted");
+            compare(loader.longPress, true, "pressAndHold not captured by Connection");
+        }
+        function test_clicked_emitted_on_connections_bug1495554() {
+            mouseClick(loader.item, centerOf(loader.item).x, centerOf(loader.item).y);
+            compare(loader.click, true, "clicked not captured by Connection");
         }
     }
 }

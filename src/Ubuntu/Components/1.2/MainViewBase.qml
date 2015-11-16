@@ -48,12 +48,12 @@ PageTreeNode {
 
           Qt bug: https://bugreports.qt-project.org/browse/QTBUG-11712
          */
-        property string theme: (ColorUtils.luminance(backgroundColor) >= 0.85) ?
+        property string themeName: (ColorUtils.luminance(backgroundColor) >= 0.85) ?
                                    "Ambiance" : "SuruDark"
-        onThemeChanged: {
+        onThemeNameChanged: {
             // only change the theme if the current one is a system one.
-            if (theme !== "" && (Theme.name.search("Ubuntu.Components.Themes") >= 0)) {
-                Theme.name = "Ubuntu.Components.Themes.%1".arg(theme);
+            if (themeName !== "" && (Theme.name.search("Ubuntu.Components.Themes") >= 0)) {
+                Theme.name = "Ubuntu.Components.Themes.%1".arg(themeName);
             }
         }
     }

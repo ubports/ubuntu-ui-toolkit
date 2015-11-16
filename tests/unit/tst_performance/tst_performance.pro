@@ -35,4 +35,12 @@ OTHER_FILES += \
     AbstractButton13Grid.qml \
     LabelGrid13.qml \
     ListOfCaptions13.qml \
-    ListItemList13.qml
+    ListItemList13.qml \
+    ListItemWithInlineActionsAndFourContainersList.qml \
+    ListItemWithInlineActionsAndFourMouseAreas.qml \
+    ListOfCustomListItemLayouts.qml \
+    ListOfEmptyListItemLayout.qml \
+    ListOfEmptyListItemLayout_withProgression.qml \
+    ListOfListItemLayout_complex1.qml \
+    ListOfListItemLayout_complex2.qml \
+    ListOfListItemLayout_labelsOnly.qml

@@ -103,20 +103,25 @@ ListModel {
     }
     ListElement {
         objectName: "bottomEdgeHintElement"
-        label: "Bottom Edge Hint"
-        source: "BottomEdgeHint.qml"
+        label: "Bottom Edge"
+        source: "BottomEdgePage.qml"
     }
 
+    ListElement {
+        objectName: "newListItemsElement"
+        label: "New list items (preview)"
+        source: "NewListItems.qml"
+    }
+    ListElement {
+        objectName: "listItemLayoutElement"
+        label: "ListItemLayouts"
+        source: "ListItemLayouts.qml"
+    }
     // Already in design guidelines but should be reordered
     ListElement {
         objectName: "listItemsElement"
         label: "List Items"
         source: "ListItems.qml"
-    }
-    ListElement {
-        objectName: "newListItemsElement"
-        label: "New list items (preview)"
-        source: "NewListItems.qml"
     }
     ListElement {
         objectName: "ubuntuListViewElement"

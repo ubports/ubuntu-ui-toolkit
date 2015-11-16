@@ -27,31 +27,16 @@ logger = logging.getLogger(__name__)
 class ActionBar(_common.UbuntuUIToolkitCustomProxyObjectBase):
     """ActionBar Autopilot custom proxy object."""
 
-    def _get_action_button(self, action_object_name):
-        try:
-            object_name = action_object_name + "_action_button"
-            button = self.select_single(objectName=object_name)
-        except dbus.StateNotFoundError:
-            # the button is not in the ActionBar, but it may be in the overflow
-            try:
-                button = self._get_action_button_in_overflow(
-                    action_object_name)
-            except dbus.StateNotFoundError:
-                raise _common.ToolkitException(
-                    'Button not found in ActionBar or overflow')
-
-        return button
-
-    def _get_action_button_in_overflow(self, action_object_name):
+    def _open_overflow(self):
+        """Click the overflow button and return the overflow panel"""
         actions_overflow_button = self.select_single(
-            objectName='actions_overflow_button')
+            objectName='overflow_action_button')
 
         if not actions_overflow_button.visible:
             raise _common.ToolkitException('No actions in overflow')
 
         # open the popover
         self.pointing_device.click_object(actions_overflow_button)
-        object_name = action_object_name + "_header_overflow_button"
 
         # the popover is not a child of the ActionBar, so use the popover
         # object to find the requested button
@@ -62,7 +47,7 @@ class ActionBar(_common.UbuntuUIToolkitCustomProxyObjectBase):
             raise _common.ToolkitException(
                 'Failed to select overflow panel')
 
-        return popover.select_single(objectName=object_name)
+        return popover
 
     @autopilot_logging.log_action(logger.info)
     def click_action_button(self, action_object_name):
@@ -73,5 +58,16 @@ class ActionBar(_common.UbuntuUIToolkitCustomProxyObjectBase):
             name.
 
         """
-        button = self._get_action_button(action_object_name)
-        self.pointing_device.click_object(button)
+
+        try:
+            object_name = action_object_name + "_action_button"
+            button = self.select_single(objectName=object_name)
+            self.pointing_device.click_object(button)
+        except dbus.StateNotFoundError:
+            # the button is not in the ActionBar, but it may be in the overflow
+            try:
+                popover = self._open_overflow()
+                popover.click_action_button(action_object_name)
+            except dbus.StateNotFoundError:
+                raise _common.ToolkitException(
+                    'Button not found in ActionBar or overflow')

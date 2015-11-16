@@ -121,6 +121,54 @@ Item {
             value: 3
             live: true
         }
+
+        Item {
+            width: parent.width
+            height: childrenRect.height
+
+            Label {
+                anchors {
+                    left: parent.left
+                    verticalCenter: customDelegateBar.verticalCenter
+                }
+                text: "Custom delegate"
+            }
+            ActionBar {
+                id: customDelegateBar
+                anchors.right: parent.right
+                actions: root.shortActionList
+                delegate: Button {
+                    action: modelData
+                    width: units.gu(14)
+                    strokeColor: UbuntuColors.purple
+                    objectName: "custom_delegate_button_" + index
+                }
+            }
+        }
+
+        Item {
+            width: parent.width
+            height: childrenRect.height
+            Label {
+                anchors {
+                    left: parent.left
+                    verticalCenter: greenButtonsBar.verticalCenter
+                }
+                text: "Custom delegate 2"
+            }
+            ActionBar {
+                id: greenButtonsBar
+                anchors.right: parent.right
+                actions: root.actionList
+                delegate: AbstractButton {
+                    styleName: "IconButtonStyle"
+                    action: modelData
+                    StyleHints {
+                        foregroundColor: UbuntuColors.green
+                    }
+                }
+            }
+        }
     }
 
     UbuntuTestCase {
@@ -141,22 +189,18 @@ Item {
         }
 
         function get_overflow_button_visible(actionBar) {
-            var overflowButton = findChild(actionBar, "actions_overflow_button")
-            return overflowButton.visible
+            var overflowButton = findChild(actionBar, "overflow_action_button")
+            return overflowButton !== null && overflowButton.visible
         }
 
         function get_number_of_visible_buttons(actionBar) {
             var repeater = findChild(actionBar, "actions_repeater");
-            var n = repeater.model;
-            if (get_overflow_button_visible(actionBar)) {
-                n++;
-            }
-            return n;
+            return repeater.count;
         }
 
         function get_number_of_actions_in_overflow(actionBar) {
             if (get_overflow_button_visible(actionBar)) {
-                var overflowButton = findChild(actionBar, "actions_overflow_button");
+                var overflowButton = findChild(actionBar, "overflow_action_button");
                 // click the overflow button in order to create the overflow panel
                 mouseClick(overflowButton, overflowButton.width/2, overflowButton.height/2);
                 // the overflow panel is not a child of the ActionBar, so use
@@ -221,6 +265,16 @@ Item {
             bar.numberOfSlots = 0;
             compare(actionList.length, get_number_of_actions_in_overflow(bar),
                     "Incorrect number of actions in overflow when num slots = 0.");
+        }
+
+        function test_custom_delegate() {
+            var i = 0; var button; var n = shortActionList.length;
+            for (i = 0; i < n; i++) {
+                button = findChild(customDelegateBar, "custom_delegate_button_"+i);
+                compare(button.text, shortActionList[i].text, "Incorrect custom button " + i);
+            }
+            button = findChild(customDelegateBar, "custom_delegate_button_" + n);
+            compare(button, null, "Too many buttons.");
         }
     }
 }

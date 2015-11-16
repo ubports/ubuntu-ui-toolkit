@@ -41,10 +41,12 @@ import "tree.js" as Tree
   the column next to the source page. Giving a null value to the source page will
   add the page to the leftmost column of the view.
 
-  The primary page, the very first page must be specified through the \l primaryPage
-  property. The property cannot be changed after component completion and can hold
-  a Page instance, a Component or a url to a document defining a Page. The page
-  cannot be removed from the view.
+  The primary page, the very first page must be specified either through the
+  \l primaryPage or \l primaryPageSource properties. \l primaryPage can only
+  hold a Page instance, \l primaryPageSource can either be a Component or a
+  url to a document defining a Page. \l primaryPageSource has precedence over
+  \l primaryPage, and when set it will report the loaded Page through \l primaryPage
+  property, and will replace any value set into that property.
 
   \qml
     import QtQuick 2.4
@@ -112,7 +114,7 @@ import "tree.js" as Tree
 
         AdaptivePageLayout {
             anchors.fill: parent
-            primaryPage: page1
+            primaryPageSource: page1
             layouts: PageColumnsLayout {
                 when: width > units.gu(80)
                 // column #0
@@ -127,17 +129,20 @@ import "tree.js" as Tree
                 }
             }
 
-            Page {
-                id: page1
-                title: "Main page"
-                Column {
-                    Button {
-                        text: "Add Page2 above " + page1.title
-                        onClicked: page1.pageStack.addPageToCurrentColumn(page1, page2)
-                    }
-                    Button {
-                        text: "Add Page3 next to " + page1.title
-                        onClicked: page1.pageStack.addPageToNextColumn(page1, page3)
+            Component {
+                id: page1Component
+                Page {
+                    id: page1
+                    title: "Main page"
+                    Column {
+                        Button {
+                            text: "Add Page2 above " + page1.title
+                            onClicked: page1.pageStack.addPageToCurrentColumn(page1, page2)
+                        }
+                        Button {
+                            text: "Add Page3 next to " + page1.title
+                            onClicked: page1.pageStack.addPageToNextColumn(page1, page3)
+                        }
                     }
                 }
             }
@@ -161,6 +166,11 @@ import "tree.js" as Tree
   and the preferred width is set to 40 grid units. This width is set every time
   the layout is activated.
 
+  When a \l Page with the \l Page::header property set is added to an
+  AdaptivePageLayout, the AdaptivePageLayout will synchronize the height of that
+  header with the height of the headers in other columns, i.e., the height of
+  each of the headers will be set to the maximum implicitHeight of all the headers.
+
   \sa PageStack, PageColumnsLayout, PageColumn
 */
 
@@ -181,11 +191,20 @@ PageTreeNode {
     /*!
       The property holds the first Page which will be added to the view. If the
       view has more than one column, the page will be added to the leftmost column.
-      The property can hold either a Page instance, a component holding a Page
-      or a QML document defining the Page. The property cannot be changed after
-      component completion.
+      The property can only hold a Page instance. When changed runtime (not by the
+      AdaptivePageLayout component itself), the \l primaryPageSource property
+      will be reset.
       */
     property Page primaryPage
+
+    /*!
+      The property specifies the source of the primaryPage in case the primary
+      page is created from a Component or loaded from an external document. It
+      has precedence over \l primaryPage. The page specified in this way will
+      be cerated asynchronously and the instance will be reported through
+      \l primaryPage property.
+      */
+    property var primaryPageSource
 
     /*!
       \qmlproperty int columns
@@ -307,12 +326,7 @@ PageTreeNode {
       pages will be removed.
       */
     function removePages(page) {
-        var nodeToRemove = d.getWrapper(page);
-        var removedNodes = d.tree.chop(nodeToRemove, page != layout.primaryPage);
-        for (var i = removedNodes.length-1; i >= 0; i--) {
-            var node = removedNodes[i];
-            d.updatePageForColumn(node.column);
-        }
+        d.removeAllPages(page, page != layout.primaryPage);
     }
 
     /*
@@ -326,20 +340,40 @@ PageTreeNode {
         } else {
             d.relayout();
         }
-        d.completed = true;
-        if (primaryPage) {
-            var wrapper = d.createWrapper(primaryPage);
-            d.addWrappedPage(wrapper);
-        } else {
-            console.warn("No primary page set. No pages can be added without a primary page.");
+        if (primaryPageSource) {
+            d.createPrimaryPage(primaryPageSource);
+        } else if (primaryPage) {
+            d.createPrimaryPage(primaryPage);
         }
+        d.completed = true;
     }
     onPrimaryPageChanged: {
-        if (d.completed) {
-            console.warn("Cannot change primaryPage after completion.");
+        if (!d.completed || d.internalUpdate) {
             return;
         }
+        // reset the primaryPageSource
+        d.internalPropertyUpdate("primaryPageSource", undefined);
+        // clear the layout
+        d.purgeLayout();
+        // add the new page if valid
+        if (primaryPage !== null) {
+            d.createPrimaryPage(primaryPage);
+        }
     }
+    onPrimaryPageSourceChanged: {
+        if (!d.completed || d.internalUpdate) {
+            return;
+        }
+        // remove all pages first
+        d.purgeLayout();
+        // create the new primary page if a valid component is specified
+        if (primaryPageSource) {
+            d.createPrimaryPage(primaryPageSource);
+        } else {
+            d.internalPropertyUpdate("primaryPage", null);
+        }
+    }
+
     onLayoutsChanged: {
         if (d.completed) {
             // only deal with this if the layouts array changes after completion
@@ -353,6 +387,7 @@ PageTreeNode {
     QtObject {
         id: d
 
+        property bool internalUpdate: false
         property bool completed: false
         property var tree: new Tree.Tree()
 
@@ -361,6 +396,7 @@ PageTreeNode {
                                   (activeLayout ? activeLayout.data.length : 1)
         property PageColumnsLayout activeLayout: null
         property list<PageColumnsLayout> prevLayouts
+        property Page prevPrimaryPage
 
         /*! internal */
         onColumnsChanged: {
@@ -372,6 +408,36 @@ PageTreeNode {
         }
         property real defaultColumnWidth: units.gu(40)
         onDefaultColumnWidthChanged: body.applyMetrics()
+
+        function internalPropertyUpdate(propertyName, value) {
+            internalUpdate = true;
+            layout[propertyName] = value;
+            internalUpdate = false;
+        }
+
+        function createPrimaryPage(source) {
+            var wrapper = d.createWrapper(source);
+            if (wrapper.incubator) {
+                wrapper.pageLoaded.connect(finalizeAddingPage.bind(wrapper));
+                wrapper.incubator.onStatusChanged = function (status) {
+                    if (status == Component.Ready) {
+                        internalPropertyUpdate("primaryPage", wrapper.incubator.object);
+                        prevPrimaryPage = wrapper.incubator.object;
+                    }
+                }
+            } else {
+                finalizeAddingPage(wrapper);
+                prevPrimaryPage = wrapper.object;
+            }
+        }
+
+        // remove all pages, including primaryPage
+        function purgeLayout() {
+            if (prevPrimaryPage) {
+                removeAllPages(prevPrimaryPage, true);
+                prevPrimaryPage = null;
+            }
+        }
 
         function createWrapper(page, properties) {
             var wrapperComponent = Qt.createComponent("PageWrapper.qml");
@@ -391,7 +457,17 @@ PageTreeNode {
             // replace page holder's child
             var holder = body.children[targetColumn];
             holder.detachCurrentPage();
-            holder.attachPage(pageWrapper);
+            holder.attachPage(pageWrapper); // sets pageWrapper.pageHolder
+
+            // set the back action for Page.header:
+            var page = pageWrapper.object;
+            if (page && page.hasOwnProperty("header") && page.header &&
+                    page.header.hasOwnProperty("navigationActions")) {
+                // Page.header is an instance of PageHeader.
+                var backAction = backActionComponent.createObject(
+                            pageWrapper, { 'wrapper': pageWrapper } );
+                page.header.navigationActions = [ backAction ] ;
+            }
         }
 
         function getWrapper(page) {
@@ -462,6 +538,17 @@ PageTreeNode {
             }
 
             return newWrapper.incubator;
+        }
+
+        // removes all pages from the layout, and may include the page itself
+        function removeAllPages(page, inclusive) {
+            inclusive = typeof inclusive !== 'undefined' ? inclusive : true;
+            var nodeToRemove = d.getWrapper(page);
+            var removedNodes = d.tree.chop(nodeToRemove, inclusive);
+            for (var i = removedNodes.length-1; i >= 0; i--) {
+                var node = removedNodes[i];
+                updatePageForColumn(node.column);
+            }
         }
 
         // update the page for the specified column
@@ -572,6 +659,42 @@ PageTreeNode {
         }
     }
 
+    // An instance will be added to each Page with
+    Component {
+        id: backActionComponent
+
+        Action {
+            // used when the Page has a Page.header property set.
+            id: backAction
+            objectName: "apl_back_action"
+            iconName: "back"
+            text: "Back"
+
+            // set when backAction is created.
+            property PageWrapper wrapper
+            onTriggered: layout.removePages(wrapper.object)
+
+            visible: {
+                var parentWrapper;
+                try {
+                    parentWrapper = d.tree.parent(wrapper);
+                } catch(err) {
+                    // Root node has no parent node.
+                    return false;
+                }
+                if (!wrapper.pageHolder) {
+                    // columns are being re-arranged.
+                    return false;
+                }
+                // wrapper.column is the virtual column, pageHolder.column the actual column.
+                var column = wrapper.pageHolder.column;
+                var nextInColumn = d.tree.top(column, column < d.columns - 1, 1);
+                return parentWrapper === nextInColumn;
+            }
+        }
+    }
+
+
     // Page holder component, can have only one Page as child at a time, all stacked pages
     // will be parented into hiddenPool
     Component {
@@ -595,13 +718,26 @@ PageTreeNode {
             Layout.minimumWidth: metrics.minimumWidth
             Layout.maximumWidth: metrics.maximumWidth
 
+            property var page: pageWrapper ? pageWrapper.object : null
+            property bool customHeader: page && page.hasOwnProperty("header") &&
+                                        page.header
+            onPageChanged: body.updateHeaderHeight(0)
+            Connections {
+                target: page
+                onHeaderChanged: body.updateHeaderHeight(0)
+            }
+            Connections {
+                target: page ? page.header : null
+                onImplicitHeightChanged: body.updateHeaderHeight(page.header.implicitHeight)
+            }
+
             // prevent the pages from taking the app header height into account.
             __propagated: null
             Item {
                 id: holderBody
                 objectName: parent.objectName + "Body"
                 anchors {
-                    top: subHeader.bottom
+                    top: customHeader ? parent.top : subHeader.bottom
                     bottom: parent.bottom
                     left: parent.left
                     right: parent.right
@@ -616,6 +752,8 @@ PageTreeNode {
                 }
             }
 
+            // subHeader is to be deprecated in UITK 1.4 and will be replaced
+            //  by the Page.header property (introduced in 1.3).
             property alias head: subHeader
             StyledItem {
                 id: subHeader
@@ -627,7 +765,6 @@ PageTreeNode {
                 height: body.headerHeight
 
                 styleName: "PageHeadStyle"
-                theme.version: Ubuntu.toolkitVersion
                 objectName: "Header" + column
 
                 property real preferredHeight: subHeader.__styleInstance ?
@@ -643,12 +780,12 @@ PageTreeNode {
                 property color dividerColor: layout.__propagated.header.dividerColor
                 property color panelColor: layout.__propagated.header.panelColor
 
-                visible: holder.pageWrapper && holder.pageWrapper.active
+                visible: !customHeader && holder.pageWrapper && holder.pageWrapper.active
 
                 // The multiColumn, page and showBackButton properties are used in
                 //  PageHeadStyle to show/hide the back button.
                 property var multiColumn: layout
-                property var page: holder.pageWrapper ? holder.pageWrapper.object : null
+                property alias page: holder.page // used in PageHeadStyle for the back button.
                 property bool showBackButton: {
                     if (!page) {
                         return false;
@@ -719,8 +856,8 @@ PageTreeNode {
                 onXChanged: holder.Layout.preferredWidth = x
             }
 
-            function attachPage(page) {
-                pageWrapper = page;
+            function attachPage(wrapper) {
+                pageWrapper = wrapper;
                 pageWrapper.parent = holderBody;
                 pageWrapper.pageHolder = holder;
                 pageWrapper.active = true;
@@ -778,16 +915,31 @@ PageTreeNode {
         property real headerHeight: 0
 
         function updateHeaderHeight(newHeight) {
+            var page;
+            var i;
             if (newHeight > body.headerHeight) {
                 body.headerHeight = newHeight;
             } else {
                 var h = 0;
                 var subHeight = 0;
-                for (var i = 0; i < children.length; i++) {
-                    subHeight = children[i].head.preferredHeight;
+                for (i = 0; i < children.length; i++) {
+                    page = children[i].page;
+                    if (page && page.hasOwnProperty("header") && page.header) {
+                        subHeight = page.header.implicitHeight;
+                    } else {
+                        subHeight = children[i].head.preferredHeight;
+                    }
                     if (subHeight > h) h = subHeight;
                 }
                 body.headerHeight = h;
+            }
+
+            // Update all the Page.header heights.
+            for (i = 0; i < body.children.length; i++) {
+                page = body.children[i].page;
+                if (page && page.hasOwnProperty("header") && page.header) {
+                    page.header.height = headerHeight;
+                }
             }
         }
 

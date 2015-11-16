@@ -34,6 +34,11 @@ TestCase {
     }
 
     /*!
+        This property holds the inner TestUtil instance.
+    */
+    property alias testUtil: util
+
+    /*!
         Find a child from the item based on the objectName.
     */
     function findChild(obj,objectName) {

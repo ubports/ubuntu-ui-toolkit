@@ -24,9 +24,12 @@ class QTouchDevice;
 class UCTestExtras : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(bool touchPresent READ touchDevicePresent)
+    Q_PROPERTY(bool touchPresent READ touchDevicePresent NOTIFY touchDevicePresentChanged)
 public:
     explicit UCTestExtras(QObject *parent = 0);
+
+Q_SIGNALS:
+    void touchDevicePresentChanged();
 
 public Q_SLOTS:
     static QString openGLflavor();
@@ -43,6 +46,7 @@ public Q_SLOTS:
 
 private:
     static QTouchDevice *m_touchDevice;
+    static UCTestExtras *m_testExtras;
 };
 
 #endif // TESTEXTRAS_H

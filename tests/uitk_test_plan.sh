@@ -37,30 +37,30 @@ ONLYCOMPARE=false
 DISTUPGRADE=false
 BOOTSTRAP=false
 UNLOCK_ONLY=false
+NORMAL_USE=false
 
 declare -a TEST_SUITE=(
     " -p ubuntu-ui-toolkit-autopilot ubuntuuitoolkit"
     " -p webbrowser-app-autopilot webbrowser_app"
     " -p address-book-app-autopilot address_book_app" 
     " sudoku_app"
-    " online_accounts_ui"
-# comment out if calculator AP:s broken
     " ubuntu_calculator_app"
     " -p mediaplayer-app-autopilot mediaplayer_app"
     " dropping_letters_app"
-    " shorts_app"
     " ubuntu_weather_app"
     " -p ubuntu-system-settings-autopilot ubuntu_system_settings"
     " music_app"
     " gallery_app"
-# comment out if filemanager AP:s broken
+    " -p dialer-app-autopilot dialer_app"
+    " -p reminders-app-autopilot reminders"
+    " -p messaging-app-autopilot messaging_app"
+    " camera_app"
 #   " filemanager"
-#    " ubuntu_terminal_app"
-#    " -n unity8"
-    " ubuntu_clock_app"
-#    " -p dialer-app-autopilot dialer_app"
-#    " -p reminders-app-autopilot reminders"
-#    " -p messaging-app-autopilot messaging_app"
+#   " ubuntu_terminal_app"
+#   " -n unity8"
+#   " ubuntu_clock_app"
+#   " shorts_app"
+#   " online_accounts_ui"
 )
 
 
@@ -95,12 +95,22 @@ declare -a UNREGISTERED_APPS=(
 	"com.ubuntu.shorts"
 )
 
+# some apps needs special permission to access system service.
+fix_permissions () {
+	APP_ID=$1
+	SERVICE=$2
+	NUMBER_OF_ROWS=`adb shell  "echo 'SELECT Count(*) FROM requests;' | sqlite3 /home/phablet/.local/share/${SERVICE}/trust.db"`
+	NUMBER_OF_ROWS="${NUMBER_OF_ROWS%"${NUMBER_OF_ROWS##*[![:space:]]}"}"
+	NUMBER_OF_ROWS=$(( $NUMBER_OF_ROWS + 1 ))
+	EPOCH_DATE=`date +%s%N | cut -b1-17`
+	APP_ID=$1
+	adb shell "echo \"INSERT INTO requests VALUES(${NUMBER_OF_ROWS}, '${APP_ID}', 1, ${EPOCH_DATE}, 1);\"|sqlite3 /home/phablet/.local/share/${SERVICE}/trust.db"
+}
+
 fatal_failure () {
     echo -e "\e[31mFailed operation:\e[0m $1"
     exit
 }
-
-
 
 sleep_indicator () {
     if [ -z "$1" ]; then
@@ -148,18 +158,20 @@ function reset {
              sleep_indicator 10
              network
         fi
-        phablet-config -s ${SERIALNUMBER} autopilot --dbus-probe enable 2>&1 > /dev/null
-        adb -s ${SERIALNUMBER} shell powerd-cli display on |egrep -v "Display State requested, cookie is|Press ctrl-c to exit|not fully supported." &
-        adb -s ${SERIALNUMBER} shell powerd-cli active |egrep -v "requested, cookie is|Press ctrl-c to exit|not fully supported." &
-        sleep_indicator 10
-        adb -s ${SERIALNUMBER} shell amixer -D pulse set Master 1+ mute 2>&1 > /dev/null
-        adb -s ${SERIALNUMBER} shell "gdbus call --session --dest com.canonical.UnityGreeter --object-path / --method com.canonical.UnityGreeter.HideGreeter|grep -v '\(\)'"
-        adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S dbus-send   --system --print-reply \
-                                                 --dest=org.freedesktop.Accounts \
-                                                 /org/freedesktop/Accounts/User32011 \
-                                                 org.freedesktop.DBus.Properties.Set \
-                                                 string:com.canonical.unity.AccountsService \
-                                                 string:demo-edges variant:boolean:false 2>&1|grep -v password|egrep -v '\(\)|method return'"
+	if [ ${NORMAL_USE} == false ]; then
+	        phablet-config -s ${SERIALNUMBER} autopilot --dbus-probe enable 2>&1 > /dev/null
+	        adb -s ${SERIALNUMBER} shell powerd-cli display on |egrep -v "Display State requested, cookie is|Press ctrl-c to exit|not fully supported." &
+	        adb -s ${SERIALNUMBER} shell powerd-cli active |egrep -v "requested, cookie is|Press ctrl-c to exit|not fully supported." &
+	        sleep_indicator 10
+	        adb -s ${SERIALNUMBER} shell amixer -D pulse set Master 1+ mute 2>&1 > /dev/null
+	        adb -s ${SERIALNUMBER} shell "gdbus call --session --dest com.canonical.UnityGreeter --object-path / --method com.canonical.UnityGreeter.HideGreeter|grep -v '\(\)'"
+	        adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S dbus-send   --system --print-reply \
+	                                                 --dest=org.freedesktop.Accounts \
+        	                                         /org/freedesktop/Accounts/User32011 \
+                	                                 org.freedesktop.DBus.Properties.Set \
+                        	                         string:com.canonical.unity.AccountsService \
+                                	                 string:demo-edges variant:boolean:false 2>&1|grep -v password|egrep -v '\(\)|method return'"
+	fi
     fi
 }
 
@@ -176,35 +188,48 @@ function device_comission {
         ubuntu-device-flash touch --serial=${SERIALNUMBER} --channel=${CHANNEL} --wipe --developer-mode --password=${PASSWORD}
     fi
     sleep_indicator ${BOOTTIME}
+    reset -f
     echo -e "Disable the intro wizard"
     phablet-config -s ${SERIALNUMBER}  welcome-wizard --disable
     echo -e "Disable the edge swiping lecture "
     phablet-config -s ${SERIALNUMBER} edges-intro --disable
     echo -e "Clone the network "
     network
-    adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S reboot 2>&1|grep -v password"
-    sleep_indicator 120
-    # Unregister few apps as they break phablet-click-test-setup or something else
-    echo -e "Unregister few apps"
-    for APP_TO_UNREGISTER in "${UNREGISTERED_APPS[@]}"
-    do
-	echo -e "\e[31m${APP_TO_UNREGISTER}\e[0m"
-	adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S click unregister ${APP_TO_UNREGISTER} 2>&1|grep -v password"
-    done
-    echo -e "phablet-click-test-setup  \e[31m${DISTRO} ${SERIES}\e[0m"
-    phablet-click-test-setup -s ${SERIALNUMBER} --distribution=${DISTRO} --series=${SERIES} 2>&1 || fatal_failure "phablet-click-test-setup has failed" 
-    echo "Sleep after phablet-click-test-setup";
-    sleep_indicator 120
+    sleep_indicator 10
+    reset 
+    if [ ${NORMAL_USE} == false ]; then
+        # skip the click setup and app configuration if teh device is provisioned for normal use
+        echo -e "Unregister few apps"
+	# Unregister few apps as they break phablet-click-test-setup or something else
+        for APP_TO_UNREGISTER in "${UNREGISTERED_APPS[@]}"
+        do
+	    echo -e "\e[31m${APP_TO_UNREGISTER}\e[0m"
+            adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S click unregister ${APP_TO_UNREGISTER} 2>&1|grep -v password"
+        done
+	echo -e "Configure permissions for applications"
+	fix_permissions com.ubuntu.camera_camera PulseAudio
+	fix_permissions com.ubuntu.camera_camera CameraService
+	fix_permissions com.ubuntu.clock_clock UbuntuLocationService
+	echo -e "phablet-click-test-setup  \e[31m${DISTRO} ${SERIES}\e[0m"
+	phablet-click-test-setup -s ${SERIALNUMBER} --distribution=${DISTRO} --series=${SERIES} 2>&1 || fatal_failure "phablet-click-test-setup has failed" 
+	echo "Sleep after phablet-click-test-setup";
+	sleep_indicator 120
+    fi
     if [ ${PPA} == "archive"  ]; then
         echo "Set up with the archive image"
-        phablet-config -s ${SERIALNUMBER} writable-image -r ${PASSWORD} 2>&1 > /dev/null
-        echo "Sleep after phablet-config";
+        adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S touch /userdata/.writable_image 2>&1|grep -v password > /dev/null"
+        adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S touch /userdata/.adb_onlock 2>&1|grep -v password > /dev/null"
+	reset -f
+        echo "Sleep after turning the device writable";
         sleep_indicator 120
         network
     else
         if [[ "$PPA" =~ ^[0-9]{3}$ ]]; then
             echo -e "Set up with the silo \e[31m${PPA}\e[0m"
-            phablet-config -s ${SERIALNUMBER} writable-image -r ${PASSWORD} 2>&1 > /dev/null
+            adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S touch /userdata/.writable_image 2>&1|grep -v password > /dev/null"
+            adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S touch /userdata/.adb_onlock 2>&1|grep -v password > /dev/null"
+            reset -f
+	    echo "Sleep after turning the device writable";
 	    sleep_indicator 120
             network
             # TODO: hide the sudo output
@@ -215,11 +240,17 @@ function device_comission {
             adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S apt-get update 2>&1|grep -v password > /dev/null"
         else
             echo  -e "Set up with the PPA \e[31m${PPA}\e[0m"
-            phablet-config -s ${SERIALNUMBER} writable-image -r ${PASSWORD}  2>&1 > /dev/null
+            adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S touch /userdata/.writable_image 2>&1|grep -v password > /dev/null"
+            adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S touch /userdata/.adb_onlock 2>&1|grep -v password > /dev/null"
+	    reset -f
+	    echo "Sleep after turning the device writable";
 	    sleep_indicator 120
             network
-            adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S  bash -c 'echo \"deb http://ppa.launchpad.net/${PPA}/${DISTRO} ${SERIES} main\" > /etc/apt/sources.list.d/testing-ppa.list' 2>&1|grep -v password > /dev/null"
-            adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S apt-get update 2>&1|grep -v password > /dev/null"
+            adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S  bash -c 'echo \"deb http://ppa.launchpad.net/${PPA}/${DISTRO} ${SERIES} main\" > /etc/apt/sources.list.d/ppa.list' 2>&1|grep -v password > /dev/null"
+           #pin up the PPA
+           PIN_UP_PPA=${PPA/\//-}
+           adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S  bash -c 'echo -e \"Package: *\nPin: release o=LP-PPA-${PIN_UP_PPA}\nPin-Priority: 1100\" > /etc/apt/preferences.d/ppa.pref' 2>&1|grep -v password > /dev/null "
+           adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S apt-get update 2>&1|grep -v password > /dev/null"
         fi
     fi
     adb -s ${SERIALNUMBER} shell rm -rf /home/phablet/autopilot/ubuntuuitoolkit
@@ -258,7 +289,7 @@ function compare_results {
         fi
         egrep -v "NO TAGS DATABASE" $RESULT_FILE |egrep "^ERROR:|^FAIL:" | while read -r FAILED ; 
         do
-            FAILED=${FAILED/ERROR:/FAIL:}
+	    FAILED=${FAILED/ERROR:/FAIL:}
             echo -e "\tFailed with ${PPA} - $FAILED"  >> ${MAINFILE}
             if grep --quiet "$FAILED" *archive.tests; then
                 echo -e "\tSame on archive"  >> ${MAINFILE}
@@ -269,7 +300,7 @@ function compare_results {
     done
 }
 
-while getopts ":hrcintduslwbv:o:p:f:a:" opt; do
+while getopts ":hrcintduslqwbv:o:p:f:a:" opt; do
     case $opt in
         r)
             RESET=true
@@ -321,6 +352,11 @@ while getopts ":hrcintduslwbv:o:p:f:a:" opt; do
         l)
            UNLOCK_ONLY=true
            ;;
+	q)
+	   NORMAL_USE=true
+	   DONOTRUNTESTS=true
+           COMISSION=true
+	   ;;
         h)
             echo "Usage: uitk_test_plan.sh -s [serial number] -m -c"
             echo -e "\t-r : Reset after each tests. Default: ${RESET}"
@@ -335,6 +371,7 @@ while getopts ":hrcintduslwbv:o:p:f:a:" opt; do
             echo -e "\t-u : Provision the Development release of Ubuntu, Wily. Default is vivid-overlay (formerly RTM)."
             echo -e "\t-w : dist-upgrade to the whole PPA instead of just Ubuntu UI Toolkit. Default is only UITK."
             echo -e "\t-b : Bootstrap the device with the ${PPA} enabled."
+            echo -e "\t-q : Provision the device for normal use with the ${PPA} enabled"
             echo ""
             echo "By default tihe uitk_test_plan.sh flashes the latest vivid-overlay image on the device, installs the click application"
             echo "tests, configures the ppa:ubuntu-sdk-team/staging PPA, installs the UITK from the PPA and executes the test plan."
@@ -410,6 +447,7 @@ echo "Commission: ${COMISSION}"
 echo "Bootstrap: ${BOOTSTRAP}"
 echo "Only compare: ${ONLYCOMPARE}"
 echo "Do not run tests: ${DONOTRUNTESTS}"
+echo "Provision for normal use: ${NORMAL_USE}"
 echo "RTM: ${RTM}"
 echo "Dist-upgrade: ${DISTUPGRADE}"
 echo "Main logs: ${MAINFILE}"
@@ -424,7 +462,9 @@ fi
 # Check if the device need to be flashed and set up for testing
 if [ ${COMISSION} == true ]; then
     device_comission
-    egrep "regression" -B1 ${MAINFILE} |grep Failed|sort|uniq -c|grep " 2"
+    if [[ -f ${MAINFILE} ]]; then
+	    egrep "regression" -B1 ${MAINFILE} |grep Failed|sort|uniq -c|grep " 2"
+    fi
 fi
 
 # Fix the PPA string as it is used in log file names
@@ -474,7 +514,7 @@ if [ ${DONOTRUNTESTS} != true ]; then
     done
 fi
 
-if [ ${PPA} != "archive"  ]; then 
+if [[ ${NORMAL_USE} != true  && ${PPA} != "archive" ]]; then
    echo "Comparing results with the archive tests"  > $MAINFILE
    compare_results
 fi

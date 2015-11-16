@@ -87,7 +87,8 @@ void main(void)
 
     } else if (aspect == DROP_SHADOW) {
         // Get the shape mask.
-        lowp float mask = shapeData[yCoord <= 0.0 ? 0 : 1];
+        lowp int shapeSide = yCoord <= 0.0 ? 0 : 1;
+        lowp float mask = shapeData[shapeSide];
         // Get the shadow color outside of the shape mask.
         lowp float shadow = (shapeData.b * -mask) + shapeData.b;  // -ab + a = a(1 - b)
         // Mask the current color then blend the shadow over the resulting color. We simply use

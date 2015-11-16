@@ -25,7 +25,7 @@
 class tst_Performance : public QObject
 {
     Q_OBJECT
-    
+
 public:
     tst_Performance() {}
 
@@ -120,8 +120,16 @@ private Q_SLOTS:
         QTest::newRow("list with Captions, preset: caption") << "ListOfCaptions.qml" << QUrl();
         QTest::newRow("list with Captions 1.3, preset: caption") << "ListOfCaptions13.qml" << QUrl();
         QTest::newRow("list with ListItems.Empty (equivalent to the new ListItem") << "ListItemsEmptyList.qml" << QUrl();
+        QTest::newRow("list with new ListItem (inline actions!) with a Row of 4 Items") << "ListItemWithInlineActionsAndFourContainersList.qml" << QUrl();
+        QTest::newRow("list with new ListItem (inline actions!) with a Row of 4 MouseAreas") << "ListItemWithInlineActionsAndFourMouseAreas.qml" << QUrl();
+        QTest::newRow("list with new ListItem (no actions) and empty ListItemLayout") << "ListOfEmptyListItemLayout.qml" << QUrl();
+        QTest::newRow("list with new ListItem (no actions) and empty ListItemLayout with progression symbol") << "ListOfEmptyListItemLayout_withProgression.qml" << QUrl();
+        QTest::newRow("list with new ListItem (no actions) and ListItemLayout with 2 defined labels") << "ListOfListItemLayout_labelsOnly.qml" << QUrl();
+        QTest::newRow("list with new ListItem (no actions) and ListItemLayout with 2 defined labels and 3 slots") << "ListOfListItemLayout_complex1.qml" << QUrl();
+        QTest::newRow("list with new ListItem (inline actions!) and ListItemLayout with 3 labels and 3 slots") << "ListOfListItemLayout_complex2.qml" << QUrl();
+        QTest::newRow("list with new ListItem (inline actions!) and a custom purpose-built layout which simulates ListItemLayout with 3 labels and 3 slots") << "ListOfCustomListItemLayouts.qml" << QUrl();
         // disable this test as it takes >20 seconds. Kept still for measurements to be done during development
-//        QTest::newRow("list with ListItems.Base (one icon, one label and one chevron)") << "ListItemsBaseList.qml" << QUrl();
+        //        QTest::newRow("list with ListItems.Base (one icon, one label and one chevron)") << "ListItemsBaseList.qml" << QUrl();
         QTest::newRow("single MainView") << "MainView.qml" << QUrl();
     }
 

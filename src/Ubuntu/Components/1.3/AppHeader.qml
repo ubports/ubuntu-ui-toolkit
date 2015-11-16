@@ -23,19 +23,13 @@ import Ubuntu.Components 1.3 as Components
     \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
 */
-Components.StyledItem {
+Components.Header {
     id: header
 
     anchors {
         left: parent.left
         right: parent.right
     }
-    y: 0
-
-    /*!
-      Animate showing and hiding of the header.
-     */
-    property bool animate: true
 
     /*!
       The background color of the divider. Value set by MainView.
@@ -47,79 +41,19 @@ Components.StyledItem {
      */
     property color panelColor
 
-    Behavior on y {
-        enabled: animate && !(header.flickable && header.flickable.moving)
-        SmoothedAnimation {
-            duration: Components.UbuntuAnimation.BriskDuration
-        }
-    }
-
-    /*! \internal */
-    onHeightChanged: {
-        internal.checkFlickableMargins();
-        internal.movementEnded();
-        if (header.config.visible) {
-            header.show();
-        } else {
-            header.hide();
-        }
-    }
-
-    // with PageHeadConfiguration 1.2, always be visible.
-    visible: title || contents || tabsModel || internal.newConfig
-    onVisibleChanged: {
-        internal.checkFlickableMargins();
-    }
-    enabled: header.y === 0
-
-    /*!
-      Show the header
-     */
-    function show() {
-        if (internal.newConfig) {
-            header.config.visible = true;
-        }
-        // Enable the header as soon as it finished animating
-        //  to the fully visible state:
-        header.enabled = Qt.binding(function() { return header.y === 0; });
-        header.y = 0;
-    }
-
-    /*!
-      Hide the header
-     */
-    function hide() {
-        if (internal.newConfig) {
-            header.config.visible = false;
-        }
-        // Disable the header immediately (the update of the y-value
-        //  is delayed because of the Behavior defined on it):
-        header.enabled = false;
-        header.y = -header.height;
-    }
+    // prevent triggering buttons in the header when it is moving
+    enabled: header.exposed && !header.moving
 
     /*!
       The text to display in the header
      */
     property string title: ""
-    onTitleChanged: {
-        // deprecated for new versions of PageHeadConfiguration
-        if (!internal.newConfig) {
-            header.show();
-        }
-    }
 
     /*!
       The contents of the header. If this is set, \l title will be ignored.
       DEPRECATED and replaced by Page.head.contents.
      */
     property Item contents: null
-    onContentsChanged: {
-        // deprecated for new versions of PageHeadConfiguration
-        if (!internal.newConfig) {
-            header.show();
-        }
-    }
 
     /*!
       A model of tabs to represent in the header.
@@ -171,19 +105,6 @@ Components.StyledItem {
     }
 
     /*!
-      The flickable that controls the movement of the header.
-      Will be set automatically by Pages inside a MainView, but can
-      be overridden.
-     */
-    property Flickable flickable: null
-    onFlickableChanged: {
-        internal.connectFlickable();
-        if (!internal.newConfig || !header.config.locked) {
-            header.show();
-        }
-    }
-
-    /*!
       Configuration of the header.
       FIXME: Must be of type PageHeadConfiguration. Setting that as the property type
       however will use the latest version (1.3) and a Page that uses an older
@@ -191,164 +112,44 @@ Components.StyledItem {
      */
     property QtObject config: null
     onConfigChanged: {
-        // set internal.newConfig because when we rely on the binding,
-        //  the value of newConfig may be updated after executing the code below.
-        internal.newConfig = config && config.hasOwnProperty("visible") &&
-                config.hasOwnProperty("locked");
-        internal.connectFlickable();
-
-        if (internal.newConfig && header.config.locked &&!header.config.visible) {
-            header.hide();
+        if (header.config.locked) {
+            header.flickable = null;
         } else {
-            header.show();
+            header.flickable = header.config.flickable;
+        }
+
+        if (!header.flickable && !header.config.visible) {
+            // locked.
+            header.exposed = false;
+        } else {
+            header.config.visible = true;
+            header.exposed = true;
+        }
+    }
+    onExposedChanged: {
+        if(header.config) {
+            header.config.visible = exposed;
         }
     }
     Connections {
         target: header.config
-        ignoreUnknownSignals: true // PageHeadConfiguration <1.2 lacks the signals below
+        ignoreUnknownSignals: true
         onVisibleChanged: {
-            if (header.config.visible) {
-                header.show();
-            } else {
-                header.hide();
-            }
-            internal.checkFlickableMargins();
+            header.exposed = header.config.visible;
         }
         onLockedChanged: {
-            internal.connectFlickable();
+            if (header.config.locked) {
+                header.flickable = null;
+            } else {
+                header.flickable = header.config.flickable;
+            }
+        }
+        onFlickableChanged: {
             if (!header.config.locked) {
-                internal.movementEnded();
+                header.flickable = header.config.flickable;
             }
         }
     }
 
-    /*!
-      The header is not fully opened or fully closed.
-
-      This property is true if the header is animating towards a fully
-      opened or fully closed state, or if the header is moving due to user
-      interaction with the flickable.
-
-      The value of moving is always false when using an old version of
-      PageHeadConfiguration (which does not have the visible property).
-
-      Used in tst_header_locked_visible.qml.
-    */
-    readonly property bool moving: internal.newConfig &&
-                                   ((config.visible && header.y !== 0) ||
-                                    (!config.visible && header.y !== -header.height))
-
-    QtObject {
-        id: internal
-
-        // This property is updated in header.onConfigChanged to ensure it
-        //  is updated before other functions are called in onConfigChanged.
-        property bool newConfig: header.config &&
-                                 header.config.hasOwnProperty("locked") &&
-                                 header.config.hasOwnProperty("visible")
-
-        /*!
-          Track the y-position inside the flickable.
-         */
-        property real previousContentY: 0
-
-        /*!
-          The previous flickable to disconnect events
-         */
-        property Flickable previousFlickable: null
-
-        /*!
-          Disconnect previous flickable, and connect the new one.
-         */
-        function connectFlickable() {
-            // Finish the current header movement in case the current
-            // flickable is disconnected while scrolling:
-            internal.movementEnded();
-
-            if (previousFlickable) {
-                previousFlickable.contentYChanged.disconnect(internal.scrollContents);
-                previousFlickable.movementEnded.disconnect(internal.movementEnded);
-                previousFlickable.interactiveChanged.disconnect(internal.interactiveChanged);
-                previousFlickable = null;
-            }
-            if (flickable && !(internal.newConfig && header.config.locked)) {
-                // Connect flicking to movements of the header
-                previousContentY = flickable.contentY;
-                flickable.contentYChanged.connect(internal.scrollContents);
-                flickable.movementEnded.connect(internal.movementEnded);
-                flickable.interactiveChanged.connect(internal.interactiveChanged);
-                flickable.contentHeightChanged.connect(internal.contentHeightChanged);
-                previousFlickable = flickable;
-            }
-            internal.checkFlickableMargins();
-        }
-
-        /*!
-          Update the position of the header to scroll with the flickable.
-         */
-        function scrollContents() {
-            // Avoid updating header.y when rebounding or being dragged over the bounds.
-            if (!flickable.atYBeginning && !flickable.atYEnd) {
-                var deltaContentY = flickable.contentY - previousContentY;
-                // FIXME: MathUtils.clamp  is expensive. Fix clamp, or replace it here.
-                header.y = MathUtils.clamp(header.y - deltaContentY, -header.height, 0);
-            }
-            previousContentY = flickable.contentY;
-        }
-
-        /*!
-          Fully show or hide the header, depending on its current y.
-         */
-        function movementEnded() {
-            if (!(internal.newConfig && header.config.locked)) {
-                if ( (flickable && flickable.contentY < 0) ||
-                        (header.y > -header.height/2)) {
-                    header.show();
-                } else {
-                    header.hide();
-                }
-            }
-        }
-
-        /*
-          Content height of flickable changed
-         */
-        function contentHeightChanged() {
-            if (flickable && flickable.height >= flickable.contentHeight) header.show();
-        }
-
-        /*
-          Flickable became interactive or non-interactive.
-         */
-        function interactiveChanged() {
-            if (flickable && !flickable.interactive) header.show();
-        }
-
-        /*
-          Check the topMargin of the flickable and set it if needed to avoid
-          contents becoming unavailable behind the header.
-         */
-        function checkFlickableMargins() {
-            if (header.flickable) {
-                var headerHeight = 0;
-                if (header.visible && !(internal.newConfig &&
-                                        header.config.locked &&
-                                        !header.config.visible)) {
-                    headerHeight = header.height;
-                }
-
-                if (flickable.topMargin !== headerHeight) {
-                    var oldContentY = flickable.contentY;
-                    var previousHeaderHeight = flickable.topMargin;
-                    flickable.topMargin = headerHeight;
-                    // push down contents when header grows,
-                    // pull up contents when header shrinks.
-                    flickable.contentY = oldContentY - headerHeight + previousHeaderHeight;
-                }
-            }
-        }
-    }
-
-    theme.version: Components.Ubuntu.toolkitVersion
     styleName: "PageHeadStyle"
 }

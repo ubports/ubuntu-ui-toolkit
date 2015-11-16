@@ -1,0 +1,412 @@
+# Italian translation for ubuntu-ui-toolkit
+# Copyright (c) 2015 Rosetta Contributors and Canonical Ltd 2015
+# This file is distributed under the same license as the ubuntu-ui-toolkit package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2015.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ubuntu-ui-toolkit\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2014-11-11 11:21+0100\n"
+"PO-Revision-Date: 2015-09-23 21:24+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Italian <it@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2015-10-16 05:54+0000\n"
+"X-Generator: Launchpad (build 17812)\n"
+
+#: Animations.qml:24
+msgid "NumberAnimation"
+msgstr ""
+
+#: Animations.qml:28 Buttons.qml:28 Dialog.qml:29 ListItems.qml:25
+#: ProgressBars.qml:28 ProgressBars.qml:84 Sheet.qml:40 Sheet.qml:73
+#: Sliders.qml:28 TextInputs.qml:45
+msgid "Standard"
+msgstr ""
+
+#: Animations.qml:58
+msgid "Standard Durations"
+msgstr ""
+
+#: Animations.qml:62
+msgid "Snap"
+msgstr ""
+
+#: Animations.qml:98
+msgid "Fast"
+msgstr ""
+
+#: Animations.qml:134
+msgid "Slow"
+msgstr ""
+
+#: Animations.qml:159
+msgid "Sleepy"
+msgstr ""
+
+#: Buttons.qml:32 Buttons.qml:41 Buttons.qml:51 Buttons.qml:71 Buttons.qml:79
+#: Buttons.qml:89
+msgid "Call"
+msgstr ""
+
+#: Buttons.qml:37
+msgid "Stroke"
+msgstr ""
+
+#: Buttons.qml:47 UbuntuShape.qml:28
+msgid "Color"
+msgstr ""
+
+#: Buttons.qml:57 Buttons.qml:114 ListItems.qml:43
+msgid "Icon"
+msgstr ""
+
+#: Buttons.qml:66 Buttons.qml:128
+msgid "Icon+Text"
+msgstr ""
+
+#: Buttons.qml:85 TextInputs.qml:88 Toggles.qml:45 Toggles.qml:83
+msgid "Disabled"
+msgstr ""
+
+#: Buttons.qml:99 OptionSelectors.qml:34
+msgid "Collapsed"
+msgstr ""
+
+#: Buttons.qml:142 ListItems.qml:120 OptionSelectors.qml:43
+msgid "Expanded"
+msgstr ""
+
+#: Colors.qml:30
+msgid "Orange"
+msgstr ""
+
+#: Colors.qml:36
+msgid "Light grey"
+msgstr ""
+
+#: Colors.qml:42
+msgid "Dark grey"
+msgstr ""
+
+#: Colors.qml:48
+msgid "Red"
+msgstr ""
+
+#: Colors.qml:54
+msgid "Green"
+msgstr ""
+
+#: Colors.qml:60
+msgid "Blue"
+msgstr ""
+
+#: Colors.qml:66
+msgid "Purple"
+msgstr ""
+
+#: Dialog.qml:32 Popover.qml:45 Sheet.qml:43 Sheet.qml:76
+msgid "Open"
+msgstr ""
+
+#: Icons.qml:30
+msgid "Scaling"
+msgstr ""
+
+#: Icons.qml:55
+msgid "Colorization"
+msgstr ""
+
+#: Icons.qml:80
+msgid "Theme"
+msgstr ""
+
+#: ListItems.qml:28 ListItems.qml:36 ListItems.qml:46 ListItems.qml:60
+#: ListItems.qml:66 ListItems.qml:76 ListItems.qml:85 ListItems.qml:94
+#: ListItems.qml:160 ListItems.qml:173 ListItems.qml:193
+msgid "Label"
+msgstr ""
+
+#: ListItems.qml:33
+msgid "Subtitled"
+msgstr ""
+
+#: ListItems.qml:37
+msgid "Secondary label"
+msgstr ""
+
+#: ListItems.qml:52
+msgid "ThinDivider"
+msgstr ""
+
+#: ListItems.qml:73
+msgid "Progression"
+msgstr ""
+
+#: ListItems.qml:82
+msgid "Single value"
+msgstr ""
+
+#: ListItems.qml:86
+msgid "Value"
+msgstr ""
+
+#: ListItems.qml:91
+msgid "Multi value"
+msgstr ""
+
+#: ListItems.qml:95 ListItems.qml:113 ListItems.qml:122 ListItems.qml:132
+#: ListItems.qml:161 ListItems.qml:176 OptionSelectors.qml:35
+#: OptionSelectors.qml:45 OptionSelectors.qml:56 OptionSelectors.qml:86
+#: OptionSelectors.qml:101
+msgid "Value 1"
+msgstr ""
+
+#: ListItems.qml:96 ListItems.qml:114 ListItems.qml:123 ListItems.qml:133
+#: ListItems.qml:162 ListItems.qml:177 OptionSelectors.qml:36
+#: OptionSelectors.qml:46 OptionSelectors.qml:57 OptionSelectors.qml:87
+#: OptionSelectors.qml:102
+msgid "Value 2"
+msgstr ""
+
+#: ListItems.qml:97 ListItems.qml:115 ListItems.qml:124 ListItems.qml:134
+#: ListItems.qml:163 ListItems.qml:178 OptionSelectors.qml:37
+#: OptionSelectors.qml:47 OptionSelectors.qml:58 OptionSelectors.qml:88
+#: OptionSelectors.qml:103
+msgid "Value 3"
+msgstr ""
+
+#: ListItems.qml:98 ListItems.qml:116 ListItems.qml:125 ListItems.qml:135
+#: ListItems.qml:164 ListItems.qml:179 OptionSelectors.qml:38
+#: OptionSelectors.qml:48 OptionSelectors.qml:59 OptionSelectors.qml:89
+#: OptionSelectors.qml:104
+msgid "Value 4"
+msgstr ""
+
+#: ListItems.qml:103
+msgid "Item selector"
+msgstr ""
+
+#: ListItems.qml:112 TextInputs.qml:114
+msgid "Expanding"
+msgstr ""
+
+#: ListItems.qml:129 OptionSelectors.qml:53
+msgid "Multiple Selection"
+msgstr ""
+
+#: ListItems.qml:139 OptionSelectors.qml:64
+msgid "Custom Model"
+msgstr ""
+
+#: ListItems.qml:165 ListItems.qml:180 OptionSelectors.qml:90
+#: OptionSelectors.qml:105
+msgid "Value 5"
+msgstr ""
+
+#: ListItems.qml:166 ListItems.qml:181 OptionSelectors.qml:91
+#: OptionSelectors.qml:106
+msgid "Value 6"
+msgstr ""
+
+#: ListItems.qml:167 ListItems.qml:182 OptionSelectors.qml:92
+#: OptionSelectors.qml:107
+msgid "Value 7"
+msgstr ""
+
+#: ListItems.qml:168 ListItems.qml:183 OptionSelectors.qml:93
+#: OptionSelectors.qml:108
+msgid "Value 8"
+msgstr ""
+
+#: ListItems.qml:190
+msgid "Control"
+msgstr ""
+
+#: ListItems.qml:202
+msgid "Removable"
+msgstr ""
+
+#: ListItems.qml:205
+msgid "Slide to remove"
+msgstr ""
+
+#: ListItems.qml:215
+msgid "Reset"
+msgstr ""
+
+#: ListItems.qml:226
+msgid "Grouped list"
+msgstr ""
+
+#: ListItems.qml:261
+msgid "UbuntuListView"
+msgstr ""
+
+#: ListItems.qml:321
+msgid "ExpandablesColumn"
+msgstr ""
+
+#: ListItems.qml:364
+msgid "Expandable"
+msgstr ""
+
+#: OptionSelectors.qml:24
+msgid "Option Selector"
+msgstr ""
+
+#: OptionSelectors.qml:85
+msgid "Custom container height"
+msgstr ""
+
+#: OptionSelectors.qml:98
+msgid "No initial selection, scrollable."
+msgstr ""
+
+#: Pickers.qml:29
+msgid "Linear"
+msgstr ""
+
+#: Pickers.qml:48
+msgid "Circular"
+msgstr ""
+
+#: Pickers.qml:73 ProgressBars.qml:48
+msgid "Infinite"
+msgstr ""
+
+#: Pickers.qml:110
+msgid "Clock"
+msgstr ""
+
+#: Pickers.qml:147
+msgid "Overlay"
+msgstr ""
+
+#: Popover.qml:41
+msgid "Flickable"
+msgstr ""
+
+#: Popover.qml:77
+msgid "Action #1"
+msgstr ""
+
+#: Popover.qml:81
+msgid "Action #2"
+msgstr ""
+
+#: Popover.qml:85
+msgid "Action #3"
+msgstr ""
+
+#: Popover.qml:89
+msgid "Action #4"
+msgstr ""
+
+#: Popover.qml:93
+msgid "Action #5"
+msgstr ""
+
+#: ProgressBars.qml:24
+msgid "Progress Bar"
+msgstr ""
+
+#: ProgressBars.qml:58
+msgid "No label"
+msgstr ""
+
+#: ProgressBars.qml:80
+msgid "Activity Indicator"
+msgstr ""
+
+#: Sheet.qml:28
+msgid "The visual style of the Sheet is early work and thus clunky looking."
+msgstr ""
+
+#: Sheet.qml:53 Sheet.qml:86
+msgid "Title"
+msgstr ""
+
+#: Sliders.qml:36 Sliders.qml:51 Sliders.qml:68
+#, qt-format
+msgid "Actual value: %1"
+msgstr ""
+
+#: Sliders.qml:42
+msgid "Live Update"
+msgstr ""
+
+#: Sliders.qml:57
+msgid "Range"
+msgstr ""
+
+#: Styles.qml:27
+msgid "Switch between old and new style header"
+msgstr ""
+
+#: Styles.qml:40
+msgid "Switch between themes"
+msgstr ""
+
+#: TextInputs.qml:49
+msgid "Type me in..."
+msgstr ""
+
+#: TextInputs.qml:55
+msgid "Password"
+msgstr ""
+
+#: TextInputs.qml:66
+msgid "Numbers"
+msgstr ""
+
+#: TextInputs.qml:77
+msgid "Read-only"
+msgstr ""
+
+#: TextInputs.qml:81
+msgid "Nobody type here"
+msgstr ""
+
+#: TextInputs.qml:92
+msgid "No interaction allowed"
+msgstr ""
+
+#: TextInputs.qml:104
+msgid "Default"
+msgstr ""
+
+#: TextInputs.qml:126
+msgid "Rich Text"
+msgstr ""
+
+#: Toggles.qml:28 Toggles.qml:66
+msgid "Unchecked"
+msgstr ""
+
+#: Toggles.qml:36 Toggles.qml:74
+msgid "Checked"
+msgstr ""
+
+#: Toolbar.qml:30
+msgid "Share"
+msgstr ""
+
+#: Toolbar.qml:46
+msgid "See below"
+msgstr ""
+
+#: UbuntuShape.qml:49
+msgid "Image"
+msgstr ""
+
+#: UbuntuShape.qml:64
+msgid "Radius"
+msgstr ""
+
+#: UbuntuShape.qml:97
+msgid "Sizes"
+msgstr ""
