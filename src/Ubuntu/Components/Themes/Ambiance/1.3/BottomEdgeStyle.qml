@@ -25,10 +25,11 @@ BottomEdgeStyle {
     panelAnimation: panelBehavior
 
     // own styling properties
-    property color backgroundColor: Qt.rgba(theme.palette.normal.background.r,
-                                            theme.palette.normal.background.g,
-                                            theme.palette.normal.background.b,
-                                            bottomEdge.dragProgress)
+//    property color backgroundColor: Qt.rgba(theme.palette.normal.background.r,
+//                                            theme.palette.normal.background.g,
+//                                            theme.palette.normal.background.b,
+//                                            bottomEdge.dragProgress)
+    property color backgroundColor: "transparent"
     property color panelColor: theme.palette.normal.background
     property color shadowColor: theme.palette.selected.background
 
@@ -48,8 +49,9 @@ BottomEdgeStyle {
         anchors {
             left: parent.left
             right: parent.right
+            top: bottomEdge.state > BottomEdge.Hidden ? undefined : parent.bottom
         }
-        height: bottomEdge.height
+        height: bottomEdge.height * bottomEdge.commitPoint
         y: bottomEdge.height
         color: panelColor
         opacity: y < bottomEdge.height ? 1.0 : 0.0
@@ -81,9 +83,9 @@ BottomEdgeStyle {
             }
         ]
 
-        // shadow
+        // shadows
         Rectangle {
-            id: shadow
+            id: topShadow
             anchors {
                 bottom: parent.top
                 left: parent.left
@@ -95,7 +97,22 @@ BottomEdgeStyle {
                 GradientStop { position: 1.0; color: Qt.rgba(shadowColor.r, shadowColor.g, shadowColor.b, 0.3) }
             }
         }
+        Rectangle {
+            id: bottomShadow
+            anchors {
+                top: parent.bottom
+                left: parent.left
+                right: parent.right
+            }
+            height: units.gu(1)
+            rotation: 180
+            gradient: Gradient {
+                GradientStop { position: 0.0; color: Qt.rgba(shadowColor.r, shadowColor.g, shadowColor.b, 0.0) }
+                GradientStop { position: 1.0; color: Qt.rgba(shadowColor.r, shadowColor.g, shadowColor.b, 0.3) }
+            }
+        }
 
+        // content
         Loader {
             id: loader
             anchors.horizontalCenter: parent.horizontalCenter

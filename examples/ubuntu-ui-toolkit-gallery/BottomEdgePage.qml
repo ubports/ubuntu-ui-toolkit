@@ -61,8 +61,6 @@ Page {
                     switch (bottomEdge.state) {
                     case BottomEdge.Hidden: return prefix + "Status: Hidden"
                     case BottomEdge.Revealed: return prefix + "Status: Revealed"
-                    case BottomEdge.CanCommit: return prefix + "Status: CanCommit"
-                    case BottomEdge.SectionCommitted: return prefix + "Status: SectionCommitted"
                     case BottomEdge.Committed: return prefix + "Status: Committed"
                     default: return prefix + "UNKNOWN";
                     }
@@ -88,32 +86,33 @@ Page {
         }
         height: page.height// - units.gu(6)
         contentComponent: bottomEdgeContent
+//        commitPoint: 0.6
 
-        BottomEdgeRange {
-            objectName: "FirstSection"
-            from: 0.2
-            to: 0.4
-            onDragEnded: bottomEdge.commit()
-            property color baseColor: Qt.rgba(0.5, 0.4, bottomEdge.dragProgress, 1)
-            contentComponent: Rectangle {
-                anchors.fill: parent
-                border.width: units.gu(1)
-                PageHeader {
-                    title: "Not a page"
-                }
-            }
-        }
-        BottomEdgeRange {
-            objectName: "SecondSection"
-            from: 0.4
-            to: 0.8
-            property color baseColor: Qt.rgba(1, 0.4, bottomEdge.dragProgress, 1)
-        }
-        BottomEdgeRange {
-            objectName: "ThirdSection"
-            from: 0.8
-            to: bottomEdge.commitPoint
-            property color baseColor: Qt.rgba(0, 1, bottomEdge.dragProgress, 1)
-        }
+//        BottomEdgeRange {
+//            objectName: "FirstSection"
+//            from: 0.2
+//            to: 0.4
+//            onDragEnded: bottomEdge.commit()
+//            property color baseColor: Qt.rgba(0.5, 0.4, bottomEdge.dragProgress, 1)
+//            contentComponent: Rectangle {
+//                anchors.fill: parent
+//                border.width: units.gu(1)
+//                PageHeader {
+//                    title: "Not a page"
+//                }
+//            }
+//        }
+//        BottomEdgeRange {
+//            objectName: "SecondSection"
+//            from: 0.4
+//            to: 0.8
+//            property color baseColor: Qt.rgba(1, 0.4, bottomEdge.dragProgress, 1)
+//        }
+//        BottomEdgeRange {
+//            objectName: "ThirdSection"
+//            from: 0.8
+//            to: bottomEdge.commitPoint
+//            property color baseColor: Qt.rgba(0, 1, bottomEdge.dragProgress, 1)
+//        }
     }
 }
