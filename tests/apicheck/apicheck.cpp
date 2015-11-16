@@ -439,9 +439,15 @@ public:
 
     void dumpQMLComponent(QObject* qtobject, const QString& qmlTyName, const QString& version, const QString& filename, bool isSingleton, const QStringList& internalTypes)
     {
+        QStringList typeNameVersion(qmlTyName.split("/"));
+        QString nameSpace(typeNameVersion[0]);
+        QString typeName(typeNameVersion[1]);
+        if (internalTypes.contains(typeName))
+            return;
+
         const QMetaObject *mainMeta = qtobject->metaObject();
         QJsonObject object;
-        QStringList exportStrings(QStringList() << QString("%1 %2").arg(qmlTyName).arg(version));
+        QStringList exportStrings(QStringList() << QString("%1 %2").arg(typeName).arg(version));
         // Merge objects to get all exported versions of the same type
         QString id(filename);
         if (json->contains(id)) {
@@ -477,7 +483,7 @@ public:
             writeMetaContent(&object, mainMeta->superClass(), &knownAttributes);
         writeMetaContent(&object, mainMeta, &knownAttributes);
 
-        object["namespace"] = relocatableModuleUri;
+        object["namespace"] = nameSpace;
         json->insert(id, object);
     }
 
@@ -1009,6 +1015,7 @@ int main(int argc, char *argv[])
             if (c.internal)
                 continue;
             QString version(QString("%1.%2").arg(c.majorVersion).arg(c.minorVersion));
+            // Work-around for version -1, -1
             if (c.majorVersion == -1)
                 version = pluginImportVersion;
             QQmlComponent e(&engine, pluginModulePath + "/" + c.fileName);
@@ -1019,7 +1026,28 @@ int main(int argc, char *argv[])
                     std::cerr << qPrintable(error.toString()) << std::endl;
                 exit(1);
             }
-            dumper.dumpQMLComponent(qtobject, c.typeName, version, e.url().toString(), c.singleton, internalTypes);
+            dumper.dumpQMLComponent(qtobject, pluginImportUri + "/" + c.typeName, version, e.url().toString(), c.singleton, internalTypes);
+        }
+        Q_FOREACH(const QQmlType *compositeType, qmlTypesByCompositeName) {
+            QQmlComponent e(&engine, compositeType->sourceUrl());
+            if (!e.isReady()) {
+                std::cerr << "Failed to create " << qPrintable(compositeType->qmlTypeName()) << " from " << qPrintable(e.url().toString()) << std::endl;
+                exit(1);
+            }
+            QObject* qtobject(e.create());
+            if (!qtobject) {
+                std::cerr << "Failed to instantiate " << qPrintable(compositeType->qmlTypeName()) << " from " << qPrintable(e.url().toString()) << std::endl;
+                Q_FOREACH (const QQmlError &error, e.errors())
+                    std::cerr << qPrintable(error.toString()) << std::endl;
+                exit(1);
+            }
+            QString version(QString("%1.%2").arg(compositeType->majorVersion()).arg(compositeType->minorVersion()));
+            // Work-around for version -1, -1
+            if (compositeType->majorVersion() == -1)
+                version = pluginImportVersion;
+            QString typeName(compositeType->qmlTypeName());
+            if (!json.contains(e.url().toString()) && typeName.contains("/"))
+                dumper.dumpQMLComponent(qtobject, typeName, version, e.url().toString(), compositeType->isSingleton(), internalTypes);
         }
     }
 
