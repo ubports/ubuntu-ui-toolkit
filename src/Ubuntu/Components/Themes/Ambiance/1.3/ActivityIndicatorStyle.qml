@@ -22,7 +22,7 @@ Image {
 
     anchors.fill: parent
     smooth: true
-    visible: styledItem.running
+    visible: styledItem.running && styledItem.visible
     fillMode: Image.PreserveAspectFit
     horizontalAlignment: Image.AlignHCenter
     verticalAlignment: Image.AlignVCenter
