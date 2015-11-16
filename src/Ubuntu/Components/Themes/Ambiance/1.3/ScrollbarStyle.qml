@@ -59,6 +59,9 @@ Item {
     property real troughThicknessThumbStyle : units.gu(2)
     property real troughThicknessIndicatorStyle : units.dp(12) //1.5gu
 
+    property real shortScrollingRatio: 0.1
+    property real longScrollingRatio: 0.9
+
     //used to offset viewport and scrollbars to allow non-overlay scrollbars
     property real nonOverlayScrollbarMargin: troughThicknessSteppersStyle
 
@@ -107,15 +110,16 @@ Item {
 
     property bool draggingThumb: thumbArea.drag.active
     property PropertyAnimation scrollbarThicknessAnimation: UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration }
-    property PropertyAnimation scrollbarFadeInAnimation: UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration }
-    property PropertyAnimation scrollbarFadeOutAnimation: UbuntuNumberAnimation { duration: UbuntuAnimation.SlowDuration }
+    //duration coming from the UX spec
+    property PropertyAnimation scrollbarFadeInAnimation: UbuntuNumberAnimation { duration: 500/*UbuntuAnimation.SnapDuration*/}
+    property PropertyAnimation scrollbarFadeOutAnimation: UbuntuNumberAnimation { duration: 500/*UbuntuAnimation.SlowDuration*/ }
     property int scrollbarFadeOutPause: 3000
     //the time before a thumb style scrollbar goes back to indicator style after the mouse has left
     //the proximity area
     property int scrollbarCollapsePause: 1000
     property PropertyAnimation sliderAnimation: UbuntuNumberAnimation {}
     //property PropertyAnimation thumbConnectorFading: UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration }
-    property PropertyAnimation thumbFading: UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration }
+    //property PropertyAnimation thumbFading: UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration }
 
     property color troughColorThumbStyle: "#CDCDCD"
     property color troughColorSteppersStyle: "#f7f7f7"
@@ -456,8 +460,9 @@ Item {
 
     SmoothedAnimation {
         id: scrollAnimation
-        duration: 200
-        easing.type: Easing.InOutQuad
+        //duration and easing coming from UX spec
+        duration: 500
+        easing.type: Easing.InOutCubic
         target: styledItem.flickableItem
         property: (isVertical) ? "contentY" : "contentX"
     }
@@ -589,10 +594,10 @@ Item {
                     var mouseScrollingProp = isVertical ? mouseY : mouseX
                     if (mouseScrollingProp < slider[scrollingProp]) {
                         console.log("SCROLLING UP")
-                        slider.scroll(-pageSize*0.9)
+                        slider.scroll(-pageSize*visuals.longScrollingRatio)
                     } else if (mouseScrollingProp > slider[scrollingProp] + slider[sizeProp]) {
                         console.log("SCROLL DOWN")
-                        slider.scroll(pageSize*0.9)
+                        slider.scroll(pageSize*visuals.longScrollingRatio)
                     }
                 }
 
@@ -663,7 +668,7 @@ Item {
                         start()
                     }
 
-                    interval: firstTrigger ? 1000 : 500
+                    interval: firstTrigger ? 500 : 250
                     onTriggered: {
                         if (firstTrigger) firstTrigger = false
                         if (startedBy !== undefined) {
@@ -700,9 +705,9 @@ Item {
                 var mappedCoordSecondStepper = mapToItem(secondStepper, mouseX, mouseY)
 
                 if (firstStepper.contains(Qt.point(mappedCoordFirstStepper.x, mappedCoordFirstStepper.y))) {
-                    slider.scroll(-pageSize * 0.05)
+                    slider.scroll(-pageSize * visuals.shortScrollingRatio)
                 } else if (secondStepper.contains(Qt.point(mappedCoordSecondStepper.x, mappedCoordSecondStepper.y))) {
-                    slider.scroll(pageSize * 0.05)
+                    slider.scroll(pageSize * visuals.shortScrollingRatio)
                 }
             }
 

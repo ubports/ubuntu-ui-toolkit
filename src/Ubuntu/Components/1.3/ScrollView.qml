@@ -111,31 +111,36 @@ StyledItem {
             anchors.bottomMargin: (horizontalScrollbar.align === Qt.AlignBottom && horizontalScrollbar.__alwaysOnScrollbars)
                                   ? internal.nonOverlayScrollbarMargin : 0
 
+            //shortScrollingRation is used for arrow keys, longScrollingRatio is used for pgUp/pgDown
+            //0.1 means we will scroll 10% of the *visible* flickable area
+            property real shortScrollingRatio: __styleInstance ? __styleInstance.shortScrollingRatio : 0.1
+            property real longScrollingRatio: __styleInstance ? __styleInstance.longScrollingRatio : 0.9
+
             clip: true
             focus: true
             Keys.enabled: true
             Keys.onLeftPressed: {
                 console.log("Left pressed")
                 if (horizontalScrollbar.__styleInstance !== null) {
-                    horizontalScrollbar.__styleInstance.scroll(-flickableItem.width*0.05)
+                    horizontalScrollbar.__styleInstance.scroll(-flickableItem.width*shortScrollingRatio)
                 }
             }
             Keys.onRightPressed: {
                 console.log("Right pressed")
                 if (horizontalScrollbar.__styleInstance !== null) {
-                    horizontalScrollbar.__styleInstance.scroll(flickableItem.width*0.05)
+                    horizontalScrollbar.__styleInstance.scroll(flickableItem.width*shortScrollingRatio)
                 }
             }
             Keys.onDownPressed: {
                 console.log("Down pressed")
                 if (verticalScrollbar.__styleInstance !== null) {
-                    verticalScrollbar.__styleInstance.scroll(flickableItem.height*0.05)
+                    verticalScrollbar.__styleInstance.scroll(flickableItem.height*shortScrollingRatio)
                 }
             }
             Keys.onUpPressed: {
                 console.log("Up pressed")
                 if (verticalScrollbar.__styleInstance !== null) {
-                    verticalScrollbar.__styleInstance.scroll(-flickableItem.height*0.05)
+                    verticalScrollbar.__styleInstance.scroll(-flickableItem.height*shortScrollingRatio)
                 }
             }
             Keys.onPressed:  {
@@ -150,9 +155,9 @@ StyledItem {
                     event.accepted = true
                 } else if (verticalScrollbar.__styleInstance !== null) {
                     if (event.key == Qt.Key_PageDown) {
-                        verticalScrollbar.__styleInstance.scroll(flickableItem.height*0.9)
+                        verticalScrollbar.__styleInstance.scroll(flickableItem.height*longScrollingRatio)
                     } else if (event.key == Qt.Key_PageUp) {
-                        verticalScrollbar.__styleInstance.scroll(-flickableItem.height*0.9)
+                        verticalScrollbar.__styleInstance.scroll(-flickableItem.height*longScrollingRatio)
                     } else if (event.key == Qt.Key_Home) {
                         verticalScrollbar.__styleInstance.scrollToBeginning()
                     } else if (event.key == Qt.Key_End) {
