@@ -278,7 +278,7 @@ QQuickMouseArea *UCAbstractButton::privateMouseArea() const
  *         // no need to set the vertical direction as the minimum of
  *         // 4 grid units will be taken automatically
  *         leftMargin: units.gu(1)
- *         // we only have to add 2 grid units as the wisth + left margin
+ *         // we only have to add 2 grid units as the width + left margin
  *         // already gives us 3 grid units out of 5
  *         rightMargin: units.gu(2)
  *     }
