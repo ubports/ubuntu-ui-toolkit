@@ -48,6 +48,7 @@ class UCListItem : public UCStyledItemBase
     // 1.3
     Q_PROPERTY(UCListItemExpansion* expansion READ expansion CONSTANT REVISION 1)
     Q_PROPERTY(bool swipeEnabled READ isSwipeEnabled WRITE setSwipeEnabled NOTIFY swipeEnabledChanged FINAL REVISION 1)
+    Q_PROPERTY(bool swiped READ isSwiped NOTIFY swipedChanged FINAL REVISION 1)
 public:
     explicit UCListItem(QQuickItem *parent = 0);
     ~UCListItem();
@@ -68,6 +69,7 @@ public:
     UCListItemExpansion *expansion();
     bool isSwipeEnabled() const;
     void setSwipeEnabled(bool swipeEnabled);
+    bool isSwiped();
 
 protected:
     virtual QObject *attachedViewItems(QObject *object, bool create);
@@ -96,6 +98,7 @@ Q_SIGNALS:
     void actionChanged();
     void listItemChildrenChanged();
     Q_REVISION(1) void swipeEnabledChanged();
+    Q_REVISION(1) void swipedChanged();
 
     void clicked();
     void pressAndHold();

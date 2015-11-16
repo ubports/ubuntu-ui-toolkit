@@ -239,7 +239,10 @@ void UCListItemPrivate::init()
     // watch grid unit size change and set implicit size
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_updateSize()));
     _q_updateSize();
-    setStyleName("ListItemStyle");
+    styleDocument = "ListItemStyle";
+
+    // create selection object
+    selection = new ListItemSelection(q);
 }
 
 void UCListItemPrivate::_q_themeChanged()
@@ -325,7 +328,7 @@ bool UCListItemPrivate::loadStyleItem(bool animated)
 {
     // the style should be loaded only if one of the condition is satisfied
     // do not use selectMode() as that will create the selection handler, which may not even be needed at this phase.
-    bool inSelectMode = (selection && selection->inSelectMode()) || (parentAttached && parentAttached->selectMode());
+    bool inSelectMode = (selection && selection->inSelectMode());
     if (!swiped && !inSelectMode && !dragMode() && !(expansion && expansion->expanded())) {
         return false;
     }
@@ -424,6 +427,7 @@ void UCListItemPrivate::setSwiped(bool swiped)
         // lock contentItem left/right edges
         lockContentItem(true);
     }
+    Q_EMIT q->swipedChanged();
 }
 
 // connects/disconnects from the Flickable anchestor to get notified when to do rebound
@@ -1011,11 +1015,6 @@ void UCListItem::componentComplete()
     }
 
     if (d->parentAttached) {
-        if (d->parentAttached->selectMode() && !d->selection) {
-            if (!d->selection) {
-                d->selection = new ListItemSelection(this);
-            }
-        }
         // update draggable
         connect(d->parentAttached, SIGNAL(dragModeChanged()),
                 this, SLOT(_q_syncDragMode()));
@@ -1053,17 +1052,8 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
             // attach to ListView
             d->parentAttached = static_cast<UCViewItemsAttached*>(attachedViewItems(d->flickable, true));
             parentAttachee = d->flickable;
-            if (d->selection) {
-                d->selection->init(d->parentAttached.data());
-                // sync selection data to parentAttached
-                d->selection->syncToViewItems();
-            }
         } else if (data.item) {
             d->parentAttached = static_cast<UCViewItemsAttached*>(attachedViewItems(data.item, true));
-            if (d->selection) {
-                d->selection->init(d->parentAttached.data());
-                d->selection->syncToViewItems();
-            }
         } else {
             // mark as not ready, so no action should be performed which depends on readyness
             d->ready = false;
@@ -1077,6 +1067,7 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
         }
 
         if (d->parentAttached) {
+            d->selection->attachToViewItems(d->parentAttached.data());
             connect(d->parentAttached.data(), SIGNAL(expandedIndicesChanged(QList<int>)),
                     this, SLOT(_q_updateExpansion(QList<int>)), Qt::DirectConnection);
         }
@@ -1698,17 +1689,13 @@ void UCListItemPrivate::setDragMode(bool draggable)
 bool UCListItemPrivate::isSelected()
 {
     Q_Q(UCListItem);
-    if (!selection) {
-        selection = new ListItemSelection(q);
-    }
+    Q_ASSERT(selection);
     return selection->isSelected();
 }
 void UCListItemPrivate::setSelected(bool value)
 {
     Q_Q(UCListItem);
-    if (!selection) {
-        selection = new ListItemSelection(q);
-    }
+    Q_ASSERT(selection);
     selection->setSelected(value);
 }
 
@@ -1858,6 +1845,19 @@ void UCListItem::setSwipeEnabled(bool swipeEnabled)
     }
     d->swipeEnabled = swipeEnabled;
     Q_EMIT swipeEnabledChanged();
+}
+
+/*!
+ * \qmlproperty bool ListItem::swiped
+ * \readonly
+ * \since Ubuntu.Components 1.3
+ * The property notifies about the content being swiped so leading or trailing
+ * actions are visible.
+ */
+bool UCListItem::isSwiped()
+{
+    Q_D(UCListItem);
+    return d->swiped;
 }
 
 #include "moc_uclistitem.cpp"

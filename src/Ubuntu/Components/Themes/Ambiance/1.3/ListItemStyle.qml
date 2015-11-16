@@ -234,7 +234,7 @@ Styles.ListItemStyle {
             right: parent.left
         }
         width: styledItem.width
-        sourceComponent: internals.swiped && styledItem.leadingActions && styledItem.leadingActions.actions.length > 0 ?
+        sourceComponent: styledItem.swiped && styledItem.leadingActions && styledItem.leadingActions.actions.length > 0 ?
                              panelComponent : null
         // context properties used in delegates
         readonly property bool leading: true
@@ -283,7 +283,7 @@ Styles.ListItemStyle {
             left: parent.right
         }
         width: styledItem.width
-        sourceComponent: internals.swiped && styledItem.trailingActions && styledItem.trailingActions.actions.length > 0 ?
+        sourceComponent: styledItem.swiped && styledItem.trailingActions && styledItem.trailingActions.actions.length > 0 ?
                              panelComponent : null
         // context properties used in delegates
         readonly property bool leading: false
@@ -327,7 +327,6 @@ Styles.ListItemStyle {
         // action triggered
         property Action selectedAction
         // swipe handling
-        readonly property bool swiped: listItemStyle.x != styledItem.x && !styledItem.selectMode && !styledItem.dragMode
         readonly property Item swipedPanel: leadingPanel ? leadingLoader.item : trailingLoader.item
         readonly property bool leadingPanel: listItemStyle.LayoutMirroring.enabled ? (listItemStyle.x < 0) : (listItemStyle.x > 0)
         readonly property real swipedOffset: (leadingPanel ? listItemStyle.x : -listItemStyle.x) *

@@ -26,10 +26,9 @@ class ListItemSelection : public QObject
 {
     Q_OBJECT
 public:
-    explicit ListItemSelection(QObject *parent = 0);
+    explicit ListItemSelection(UCListItem *parent = 0);
 
-    void init(UCViewItemsAttached * viewItems);
-    void syncToViewItems();
+    void attachToViewItems(UCViewItemsAttached * newViewItems);
 
     bool inSelectMode() const;
     void setSelectMode(bool mode);
@@ -37,14 +36,21 @@ public:
     bool isSelected() const;
     void setSelected(bool selected);
 
-    Q_SLOT void updateSelectMode();
-    Q_SLOT void updateSelected(const QList<int> &indices);
+    void onSelectModeChanged();
+    void onSelectedIndicesChanged(const QList<int> &indices);
 
 private:
     QPointer<UCViewItemsAttached> viewItems;
     UCListItem *hostItem;
+    enum {
+        SelectModeDirty = 0x01,
+        SelectedDirty = 0x02
+    };
+    quint8 dirtyFlags;
     bool selectMode:1;
     bool selected:1;
+
+    void syncWithViewItems();
 };
 
 #endif // LISTITEMSELECTION_H

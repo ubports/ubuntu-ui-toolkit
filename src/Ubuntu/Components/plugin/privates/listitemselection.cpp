@@ -17,50 +17,64 @@
 #include "listitemselection.h"
 #include "uclistitem_p.h"
 
-ListItemSelection::ListItemSelection(QObject *parent)
+ListItemSelection::ListItemSelection(UCListItem *parent)
     : QObject(parent)
-    , hostItem(static_cast<UCListItem*>(parent))
+    , hostItem(parent)
+    , dirtyFlags(0)
     , selectMode(false)
     , selected(false)
 {
-    UCListItemPrivate *d = UCListItemPrivate::get(hostItem);
-    init(d->parentAttached);
-    if (d->parentAttached) {
-        selectMode = inSelectMode();
-        selected = isSelected();
-    }
 }
 
 // initialize connections between ViewItems and selection handler
-void ListItemSelection::init(UCViewItemsAttached *attached)
+void ListItemSelection::attachToViewItems(UCViewItemsAttached *newViewItems)
 {
+    if (viewItems.data() == newViewItems) {
+        return;
+    }
     if (viewItems) {
-        disconnect(viewItems.data(), SIGNAL(selectModeChanged()),
-                   this, SLOT(updateSelectMode()));
-        disconnect(viewItems.data(), SIGNAL(selectedIndicesChanged(QList<int>)),
-                   this, SLOT(updateSelected(QList<int>)));
+        disconnect(viewItems.data(), &UCViewItemsAttached::selectModeChanged,
+                   this, &ListItemSelection::onSelectModeChanged);
+        disconnect(viewItems.data(), &UCViewItemsAttached::selectedIndicesChanged,
+                   this, &ListItemSelection::onSelectedIndicesChanged);
         viewItems.clear();
     }
-    if (attached && (viewItems.data() != attached)) {
-        viewItems = attached;
-        connect(attached, SIGNAL(selectModeChanged()),
-                this, SLOT(updateSelectMode()));
-        connect(attached, SIGNAL(selectedIndicesChanged(QList<int>)),
-                this, SLOT(updateSelected(QList<int>)));
+    if (newViewItems) {
+        viewItems = newViewItems;
+        connect(viewItems.data(), &UCViewItemsAttached::selectModeChanged,
+               this, &ListItemSelection::onSelectModeChanged);
+        connect(viewItems.data(), &UCViewItemsAttached::selectedIndicesChanged,
+                this, &ListItemSelection::onSelectedIndicesChanged);
+        syncWithViewItems();
     }
 }
 
 // synchronize selection handler data to the ViewItems
-void ListItemSelection::syncToViewItems()
+void ListItemSelection::syncWithViewItems()
 {
     if (viewItems) {
         QSignalBlocker blocker(viewItems.data());
-        viewItems->setSelectMode(selectMode);
-        if (selected) {
-            UCViewItemsAttachedPrivate::get(viewItems.data())->addSelectedItem(hostItem);
-        } else {
-            UCViewItemsAttachedPrivate::get(viewItems.data())->removeSelectedItem(hostItem);
+
+        // sync selectMode
+        if (dirtyFlags & SelectModeDirty) {
+            viewItems->setSelectMode(selectMode);
+        } else if (viewItems->selectMode() != selectMode) {
+            selectMode = inSelectMode();
+            Q_EMIT hostItem->selectModeChanged();
         }
+
+        // sync selected
+        if (dirtyFlags & SelectedDirty) {
+            if (selected) {
+                UCViewItemsAttachedPrivate::get(viewItems.data())->addSelectedItem(hostItem);
+            } else {
+                UCViewItemsAttachedPrivate::get(viewItems.data())->removeSelectedItem(hostItem);
+            }
+        } else if (selected != isSelected()) {
+            selected = isSelected();
+            Q_EMIT hostItem->selectedChanged();
+        }
+        dirtyFlags = 0;
     }
 }
 
@@ -78,15 +92,17 @@ void ListItemSelection::setSelectMode(bool mode)
         viewItems->setSelectMode(mode);
     } else {
         selectMode = mode;
+        dirtyFlags |= SelectModeDirty;
         Q_EMIT hostItem->selectModeChanged();
     }
 }
 
 bool ListItemSelection::isSelected() const
 {
-    return viewItems ?
-                UCViewItemsAttachedPrivate::get(viewItems.data())->isItemSelected(hostItem):
-                selected;
+    if (viewItems) {
+        return UCViewItemsAttachedPrivate::get(viewItems.data())->isItemSelected(hostItem);
+    }
+    return selected;
 }
 void ListItemSelection::setSelected(bool selected)
 {
@@ -102,11 +118,12 @@ void ListItemSelection::setSelected(bool selected)
         }
     } else {
         this->selected = selected;
+        dirtyFlags |= SelectedDirty;
         Q_EMIT hostItem->selectedChanged();
     }
 }
 
-void ListItemSelection::updateSelectMode()
+void ListItemSelection::onSelectModeChanged()
 {
     UCListItemPrivate *d = UCListItemPrivate::get(hostItem);
     selectMode = d->parentAttached->selectMode();
@@ -114,7 +131,7 @@ void ListItemSelection::updateSelectMode()
     Q_EMIT hostItem->selectModeChanged();
 }
 
-void ListItemSelection::updateSelected(const QList<int> &indices)
+void ListItemSelection::onSelectedIndicesChanged(const QList<int> &indices)
 {
     UCListItemPrivate *d = UCListItemPrivate::get(hostItem);
     if (selected != indices.contains(d->index())) {

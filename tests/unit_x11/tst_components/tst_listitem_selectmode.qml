@@ -84,8 +84,15 @@ MainView {
             anchors {
                 fill: parent
                 topMargin: parent.height / 2
+                bottomMargin: notInView.height
             }
             clip: true
+        }
+
+        // for bug1514928
+        ListItem {
+            id: notInView
+            selected: true
         }
     }
 
