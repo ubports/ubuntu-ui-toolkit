@@ -1,4 +1,5 @@
-TEMPLATE = subdirs
+TEMPLATE = app
+TARGET = $$PWD/gallery
 
 SUBDIRS += po
 
