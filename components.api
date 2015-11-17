@@ -1050,11 +1050,11 @@ Ubuntu.Components.SwipeArea 1.3: Item
     readonly property bool dragging
     property bool immediateRecognition
     signal directionChanged(Direction direction)
-    signal draggingChanged(bool value)
-    signal pressedChanged(bool value)
-    signal distanceChanged(double value)
-    signal touchPositionChanged(QPointF pos)
-    signal immediateRecognitionChanged(bool value)
+    signal draggingChanged(bool dragging)
+    signal pressedChanged(bool pressed)
+    signal distanceChanged(double distance)
+    signal touchPositionChanged(QPointF position)
+    signal immediateRecognitionChanged(bool immediateRecognition)
     readonly property bool pressed
     readonly property QPointF touchPosition
 Ubuntu.Components.SwipeArea.Direction: Enum
