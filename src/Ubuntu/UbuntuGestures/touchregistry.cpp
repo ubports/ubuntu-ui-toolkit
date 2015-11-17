@@ -19,22 +19,17 @@
 #include <QCoreApplication>
 #include <QDebug>
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-pedantic"
 #include <private/qquickitem_p.h>
-#pragma GCC diagnostic pop
 
 #include "candidateinactivitytimer.h"
 #include "timer.h"
 #include "touchownershipevent.h"
 #include "unownedtouchevent.h"
 
-#define TOUCHREGISTRY_DEBUG 0
+Q_LOGGING_CATEGORY(ugTouchRegistry, "libubuntugestures.TouchRegistry", QtMsgType::QtWarningMsg)
 
-#if TOUCHREGISTRY_DEBUG
-    #include "DebugHelpers.h"
-    #define UG_DEBUG qDebug() << "[TouchRegistry]"
-#endif // TOUCHREGISTRY_DEBUG
+#include "debughelpers.h"
+#define UG_DEBUG qCDebug(ugTouchRegistry) << "[TouchRegistry]"
 
 using namespace UbuntuGestures;
 
@@ -70,9 +65,7 @@ void TouchRegistry::setTimerFactory(AbstractTimerFactory *timerFactory)
 
 void TouchRegistry::update(const QTouchEvent *event)
 {
-    #if TOUCHREGISTRY_DEBUG
     UG_DEBUG << "got" << qPrintable(touchEventToString(event));
-    #endif
 
     const QList<QTouchEvent::TouchPoint> &touchPoints = event->touchPoints();
     for (int i = 0; i < touchPoints.count(); ++i) {
@@ -205,10 +198,8 @@ void TouchRegistry::dispatchPointsToItem(const QTouchEvent *event, const QList<i
 
     UnownedTouchEvent unownedTouchEvent(eventForItem);
 
-    #if TOUCHREGISTRY_DEBUG
     UG_DEBUG << "Sending unowned" << qPrintable(touchEventToString(eventForItem))
         << "to" << item;
-    #endif
 
     QCoreApplication::sendEvent(item, &unownedTouchEvent);
 }
@@ -247,9 +238,7 @@ bool TouchRegistry::eventFilter(QObject *watched, QEvent *event)
 
 void TouchRegistry::addCandidateOwnerForTouch(int id, QQuickItem *candidate)
 {
-    #if TOUCHREGISTRY_DEBUG
     UG_DEBUG << "addCandidateOwnerForTouch id" << id << "candidate" << candidate;
-    #endif
 
     Pool<TouchInfo>::Iterator touchInfo = findTouchInfo(id);
     if (!touchInfo) { qFatal("TouchRegistry: Failed to find TouchInfo"); }
@@ -277,9 +266,7 @@ void TouchRegistry::addCandidateOwnerForTouch(int id, QQuickItem *candidate)
 
 void TouchRegistry::addTouchWatcher(int touchId, QQuickItem *watcher)
 {
-    #if TOUCHREGISTRY_DEBUG
     UG_DEBUG << "addTouchWatcher id" << touchId << "watcher" << watcher;
-    #endif
 
     Pool<TouchInfo>::Iterator touchInfo = findTouchInfo(touchId);
     if (!touchInfo) { qFatal("TouchRegistry: Failed to find TouchInfo"); }
@@ -291,13 +278,10 @@ void TouchRegistry::addTouchWatcher(int touchId, QQuickItem *watcher)
 
 void TouchRegistry::removeCandidateOwnerForTouch(int id, QQuickItem *candidate)
 {
-    #if TOUCHREGISTRY_DEBUG
     UG_DEBUG << "removeCandidateOwnerForTouch id" << id << "candidate" << candidate;
-    #endif
 
     Pool<TouchInfo>::Iterator touchInfo = findTouchInfo(id);
     if (!touchInfo) { qFatal("TouchRegistry: Failed to find TouchInfo"); }
-
 
     // TODO: check if the candidate is in fact the owner of the touch
 
@@ -312,9 +296,7 @@ void TouchRegistry::removeCandidateOwnerForTouch(int id, QQuickItem *candidate)
 
 void TouchRegistry::pruneNullCandidatesForTouch(int touchId)
 {
-    #if TOUCHREGISTRY_DEBUG
     UG_DEBUG << "pruneNullCandidatesForTouch touchId" << touchId;
-    #endif
 
     Pool<TouchInfo>::Iterator touchInfo = findTouchInfo(touchId);
     if (!touchInfo) {
@@ -359,9 +341,7 @@ void TouchRegistry::removeCandidateOwnerForTouchByIndex(Pool<TouchRegistry::Touc
 
 void TouchRegistry::requestTouchOwnership(int id, QQuickItem *candidate)
 {
-    #if TOUCHREGISTRY_DEBUG
     UG_DEBUG << "requestTouchOwnership id " << id << "candidate" << candidate;
-    #endif
 
     Pool<TouchInfo>::Iterator touchInfo = findTouchInfo(id);
     if (!touchInfo) { qFatal("TouchRegistry: Failed to find TouchInfo"); }
@@ -422,15 +402,11 @@ void TouchRegistry::rejectCandidateOwnerForTouch(int id, QQuickItem *candidate)
     // Although that would most likely be due to a bug in our code.
     // In any case, only dereference it after it's confirmed that it indeed exists.
 
-    #if TOUCHREGISTRY_DEBUG
     UG_DEBUG << "rejectCandidateOwnerForTouch id" << id << "candidate" << (void*)candidate;
-    #endif
 
     Pool<TouchInfo>::Iterator touchInfo = findTouchInfo(id);
     if (!touchInfo) {
-        #if TOUCHREGISTRY_DEBUG
         UG_DEBUG << "Failed to find TouchInfo for id" << id;
-        #endif
         return;
     }
 
@@ -528,10 +504,8 @@ void TouchRegistry::TouchInfo::notifyCandidatesOfOwnershipResolution()
 {
     Q_ASSERT(isOwned());
 
-    #if TOUCHREGISTRY_DEBUG
     UG_DEBUG << "sending TouchOwnershipEvent(id =" << id
         << " gained) to candidate" << candidates[0].item;
-    #endif
 
     TouchOwnershipEvent gainedOwnershipEvent(id, true /*gained*/);
     QCoreApplication::sendEvent(candidates[0].item, &gainedOwnershipEvent);
@@ -539,10 +513,8 @@ void TouchRegistry::TouchInfo::notifyCandidatesOfOwnershipResolution()
 
     TouchOwnershipEvent lostOwnershipEvent(id, false /*gained*/);
     for (int i = 1; i < candidates.count(); ++i) {
-        #if TOUCHREGISTRY_DEBUG
         UG_DEBUG << "sending TouchWonershipEvent(id =" << id << " lost) to candidate"
             << candidates[i].item;
-        #endif
         QCoreApplication::sendEvent(candidates[i].item, &lostOwnershipEvent);
     }
 }

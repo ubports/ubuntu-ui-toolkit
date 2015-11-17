@@ -93,8 +93,8 @@ Multi-Arch: same
 Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
 Depends: ${misc:Depends},
          ${shlibs:Depends},
-Description: Ubuntu gestures library - DragArea
- Ubuntu gestures library with DragArea 
+Description: Ubuntu gestures library - SwipeArea
+ Ubuntu gestures library with SwipeArea
 
 Package: libubuntugestures-dev
 Architecture: any

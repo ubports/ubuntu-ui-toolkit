@@ -26,7 +26,7 @@
 
 namespace UbuntuGestures {
 
-/* Defines an interface for a Timer. Useful for tests. */
+/* Defines an interface for a Timer. */
 class UBUNTUGESTURES_EXPORT AbstractTimer : public QObject
 {
     Q_OBJECT

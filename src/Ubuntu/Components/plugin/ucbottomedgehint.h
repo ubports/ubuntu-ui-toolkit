@@ -19,17 +19,14 @@
 #ifndef UCBOTTOMEDGEHINT_H
 #define UCBOTTOMEDGEHINT_H
 
-#include "ucstyleditembase.h"
+#include "ucactionitem.h"
 
 class QQuickFlickable;
 class UCSwipeArea;
-class UCBottomEdgeHint : public UCStyledItemBase
+class UCBottomEdgeHint : public UCActionItem
 {
     Q_OBJECT
     Q_ENUMS(Status)
-    Q_PROPERTY(QString text MEMBER m_text NOTIFY textChanged FINAL)
-    Q_PROPERTY(QUrl iconSource MEMBER m_iconSource NOTIFY iconSourceChanged FINAL)
-    Q_PROPERTY(QString iconName MEMBER m_iconName NOTIFY iconNameChanged FINAL)
     Q_PROPERTY(QQuickFlickable *flickable MEMBER m_flickable WRITE setFlickable NOTIFY flickableChanged FINAL)
     Q_PROPERTY(Status status MEMBER m_status WRITE setStatus NOTIFY statusChanged FINAL)
     Q_PROPERTY(int deactivateTimeout MEMBER m_deactivateTimeout WRITE setDeactivateTimeout NOTIFY deactivateTimeoutChanged FINAL)
@@ -85,9 +82,6 @@ protected:
 
 private:
     QBasicTimer m_deactivationTimer;
-    QString m_text;
-    QUrl m_iconSource;
-    QString m_iconName;
     UCSwipeArea *m_swipeArea;
     QQuickFlickable *m_flickable;
     int m_deactivateTimeout;

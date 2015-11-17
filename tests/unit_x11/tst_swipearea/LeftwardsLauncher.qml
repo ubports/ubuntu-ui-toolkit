@@ -32,8 +32,8 @@ Item {
         y: 0
 
         function followDragArea() {
-            return dragArea.distance > -width ?
-                        root.width + dragArea.distance
+            return swipeArea.distance > -width ?
+                        root.width + swipeArea.distance
                     :
                         root.width - width
         }
@@ -41,13 +41,13 @@ Item {
 
     Rectangle {
         id: dragAreaRect
-        opacity: dragArea.dragging ? 0.5 : 0.0
+        opacity: swipeArea.dragging ? 0.5 : 0.0
         color: "green"
-        anchors.fill: dragArea
+        anchors.fill: swipeArea
     }
 
     SwipeArea {
-        id: dragArea
+        id: swipeArea
         objectName: "hnDragArea"
 
         width: units.gu(5)

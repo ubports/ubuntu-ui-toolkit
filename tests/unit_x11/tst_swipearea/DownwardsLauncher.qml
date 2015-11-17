@@ -31,19 +31,19 @@ Item {
         y: followDragArea()
 
         function followDragArea() {
-            return dragArea.distance < height ? -height + dragArea.distance : 0
+            return swipeArea.distance < height ? -height + swipeArea.distance : 0
         }
     }
 
     Rectangle {
         id: dragAreaRect
-        opacity: dragArea.dragging ? 0.5 : 0.0
+        opacity: swipeArea.dragging ? 0.5 : 0.0
         color: "green"
-        anchors.fill: dragArea
+        anchors.fill: swipeArea
     }
 
     SwipeArea {
-        id: dragArea
+        id: swipeArea
         objectName: "vpDragArea"
 
         height: units.gu(5)

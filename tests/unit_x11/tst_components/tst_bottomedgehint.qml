@@ -36,6 +36,11 @@ MainView {
 
     BottomEdgeHint {
         id: bottomEdgeHint
+        property int triggerCount: 0
+        function trigger(v)
+        {
+            triggerCount++;
+        }
     }
     BottomEdgeHint {
         id: floatingHint
@@ -209,6 +214,14 @@ MainView {
             tryCompare(bottomEdgeHint, "status", BottomEdgeHint.Active, 400);
             // then wait till we get back to Idle
             tryCompare(bottomEdgeHint, "status", BottomEdgeHint.Inactive, 1000);
+        }
+
+        function test_custom_trigger_on_clicked() {
+            bottomEdgeHint.status = BottomEdgeHint.Locked;
+            var prevCount = bottomEdgeHint.triggerCount;
+            mouseClick(bottomEdgeHint, centerOf(bottomEdgeHint).x, centerOf(bottomEdgeHint).y);
+            clickSpy.wait(500);
+            compare(bottomEdgeHint.triggerCount, prevCount + 1, "Overloaded trigger not called");
         }
     }
 }

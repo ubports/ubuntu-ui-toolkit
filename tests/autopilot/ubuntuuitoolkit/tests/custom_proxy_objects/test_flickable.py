@@ -16,13 +16,19 @@
 
 from unittest import mock
 
+from autopilot.matchers import Eventually
+from autopilot._fixtures import OSKAlwaysEnabled
+from testtools.matchers import Equals
 import testtools
 import ubuntuuitoolkit
 from ubuntuuitoolkit import (
     tests,
     units,
 )
-from ubuntuuitoolkit._custom_proxy_objects import _flickable
+from ubuntuuitoolkit._custom_proxy_objects import (
+    _flickable,
+    _common,
+)
 
 
 class FlickableTestCase(testtools.TestCase):
@@ -127,17 +133,34 @@ MainView {
             text: 'Top button'
             onClicked: clickedLabel.text = objectName
         }
-        Rectangle {
-            id: emptyRectangle
-            height: units.gu(80)
+        TextField {
+            id: topTextField
+            objectName: 'topTextField'
             anchors.top: topButton.bottom
+        }
+        Rectangle {
+            id: emptyRectangle1
+            height: units.gu(40)
+            anchors.top: topTextField.bottom
+        }
+        Button {
+            id: middleButton
+            objectName: 'middleButton'
+            text: 'Middle button'
+            onClicked: clickedLabel.text = objectName
+            anchors.top: emptyRectangle1.bottom
+        }
+        Rectangle {
+            id: emptyRectangle2
+            height: units.gu(40)
+            anchors.top: middleButton.bottom
         }
         Button {
             id: bottomButton
             objectName: 'bottomButton'
             text: 'Bottom button'
             onClicked: clickedLabel.text = objectName
-            anchors.top: emptyRectangle.bottom
+            anchors.top: emptyRectangle2.bottom
         }
     }
 }
@@ -159,6 +182,19 @@ MainView {
 
         self.pointing_device.click_object(button)
         self.assertEqual(self.label.text, 'bottomButton')
+
+    def test_swipe_into_view_behind_keyboard(self):
+        self.main_view.close_toolbar()
+        self.useFixture(OSKAlwaysEnabled())
+        keyboard = _common.get_keyboard()
+        topTextField = self.main_view.select_single(objectName='topTextField')
+        self.pointing_device.click_object(topTextField)
+        self.assertTrue(keyboard._keyboard.wait_for_keyboard_ready(),
+                        'Keyboard not displayed when requested.')
+        button = self.main_view.select_single(objectName='middleButton')
+        button.swipe_into_view()
+        self.pointing_device.click_object(button)
+        self.assertThat(self.label.text, Eventually(Equals('middleButton')))
 
     def test_swipe_into_view_top_element(self):
         self.main_view.close_toolbar()

@@ -990,13 +990,18 @@ void UCSlotsLayout::itemChange(ItemChange change, const ItemChangeData &data)
     }
    \endqml
  */
+QQuickItem *UCSlotsLayout::mainSlot()
+{
+    Q_D(const UCSlotsLayout);
+    return d->mainSlot;
+}
 QQuickItem *UCSlotsLayout::mainSlot() const
 {
     Q_D(const UCSlotsLayout);
     return d->mainSlot;
 }
 
-void UCSlotsLayout::setMainSlot(QQuickItem *item)
+void UCSlotsLayout::setMainSlot(QQuickItem *item, bool fireSignal)
 {
     Q_D(UCSlotsLayout);
     if (d->mainSlot != item && item != Q_NULLPTR) {
@@ -1008,7 +1013,10 @@ void UCSlotsLayout::setMainSlot(QQuickItem *item)
         }
         d->mainSlot = item;
         d->mainSlot->setParentItem(this);
-        Q_EMIT mainSlotChanged();
+
+        if (fireSignal) {
+            Q_EMIT mainSlotChanged();
+        }
     }
 }
 

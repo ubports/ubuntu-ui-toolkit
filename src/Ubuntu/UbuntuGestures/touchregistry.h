@@ -28,6 +28,9 @@
 #include "timer.h"
 #include "pool.h"
 
+// logging
+#include <QtCore/QLoggingCategory>
+
 namespace UbuntuGestures {
     class AbstractTimerFactory;
 }
@@ -197,5 +200,7 @@ private:
     friend class tst_TouchRegistry;
     friend class tst_DirectionalDragArea;
 };
+
+Q_DECLARE_LOGGING_CATEGORY(ugTouchRegistry)
 
 #endif // UNITY_TOUCHREGISTRY_H

@@ -30,7 +30,7 @@
     \qmltype BottomEdgeHint
     \inqmlmodule Ubuntu.Components 1.3
     \ingroup ubuntu
-    \inherits StyledItem
+    \inherits ActionItem
     \brief The BottomEdgeHint shows the availability of extra features
     available from the bottom edge of the application.
 
@@ -53,7 +53,7 @@
     The component is styled through \b BottomEdgeHintStyle.
 */
 UCBottomEdgeHint::UCBottomEdgeHint(QQuickItem *parent)
-    : UCStyledItemBase(parent)
+    : UCActionItem(parent)
     , m_swipeArea(new UCSwipeArea)
     , m_flickable(Q_NULLPTR)
     , m_deactivateTimeout(800)
@@ -62,6 +62,10 @@ UCBottomEdgeHint::UCBottomEdgeHint(QQuickItem *parent)
     , m_status(QuickUtils::instance().mouseAttached() ? Locked : Inactive)
     , m_pressed(false)
 {
+    connect(this, &UCBottomEdgeHint::clicked, [=]() {
+        // make sure the overloaded trigger is called!
+        metaObject()->invokeMethod(this, "trigger", Q_ARG(QVariant, QVariant()));
+    });
     /*
      * we cannot use setStyleName as that will trigger style loading
      * and the qmlEngine is not known at this phase of the of the initialization
@@ -106,14 +110,14 @@ void UCBottomEdgeHint::init()
     anchors->setLeft(thisPrivate->left());
     anchors->setBottom(thisPrivate->bottom());
     anchors->setRight(thisPrivate->right());
-    m_swipeArea->setHeight(UCUnits::instance().gu(SWIPE_AREA_HEIGHT_GU));
+    m_swipeArea->setImplicitHeight(UCUnits::instance().gu(SWIPE_AREA_HEIGHT_GU));
 
     // direction
     m_swipeArea->setDirection(UCSwipeArea::Upwards);
 
     // grid unit sync
     connect(&UCUnits::instance(), &UCUnits::gridUnitChanged, [this] {
-        m_swipeArea->setHeight(UCUnits::instance().gu(SWIPE_AREA_HEIGHT_GU));
+        m_swipeArea->setImplicitHeight(UCUnits::instance().gu(SWIPE_AREA_HEIGHT_GU));
     });
 
     // connect to gesture detection

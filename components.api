@@ -202,15 +202,12 @@ Ubuntu.Components.BottomEdge.State: Enum
     Committed
     Hidden
     Revealed
-Ubuntu.Components.BottomEdgeHint 1.3: StyledItem
+Ubuntu.Components.BottomEdgeHint 1.3: ActionItem
     property int deactivateTimeout
     property Flickable flickable
-    property string iconName
-    property url iconSource
     signal clicked()
     property Status status
     readonly property SwipeArea swipeArea
-    property string text
 Ubuntu.Components.BottomEdgeHint.Status: Enum
     Active
     Hidden
@@ -1091,11 +1088,11 @@ Ubuntu.Components.SwipeArea 1.3: Item
     readonly property bool dragging
     property bool immediateRecognition
     signal directionChanged(Direction direction)
-    signal draggingChanged(bool value)
-    signal pressedChanged(bool value)
-    signal distanceChanged(double value)
-    signal touchPositionChanged(QPointF pos)
-    signal immediateRecognitionChanged(bool value)
+    signal draggingChanged(bool dragging)
+    signal pressedChanged(bool pressed)
+    signal distanceChanged(double distance)
+    signal touchPositionChanged(QPointF position)
+    signal immediateRecognitionChanged(bool immediateRecognition)
     readonly property bool pressed
     readonly property QPointF touchPosition
 Ubuntu.Components.SwipeArea.Direction: Enum
@@ -1585,6 +1582,7 @@ Ubuntu.Test.UbuntuTestCase 1.0 0.1: TestCase
     function var typeString(var string)
     function var warningFormat(var line, var column, var message)
     function var waitForHeaderAnimation(var mainView)
+    readonly property QuickTestUtil testUtil
 Ubuntu.Components.UriHandler 1.0 0.1: QtObject singleton
     signal opened(QStringList uris)
 Ubuntu.Components.ListItems.ValueSelector 1.0 0.1: Empty

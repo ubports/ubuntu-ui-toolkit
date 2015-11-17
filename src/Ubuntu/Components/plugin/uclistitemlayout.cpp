@@ -212,16 +212,7 @@
 UCListItemLayout::UCListItemLayout(QQuickItem *parent)
     : UCSlotsLayout(parent)
 {
-    //don't set the parent, we have to create qqmldata first
-    UCThreeLabelsSlot *main = new UCThreeLabelsSlot();
 
-    //create QML data for mainSlot otherwise qmlAttachedProperties
-    //calls in SlotsLayout will fail
-    QQmlData::get(main, true);
-    main->setParent(this);
-
-    //this will also set the parentItem
-    UCSlotsLayout::setMainSlot(main);
 }
 
 /*!
@@ -269,7 +260,25 @@ UCLabel *UCListItemLayout::summary()
     return qobject_cast<UCThreeLabelsSlot *>(mainSlot())->summary();
 }
 
-void UCListItemLayout::setMainSlot(QQuickItem *slot) {
+QQuickItem *UCListItemLayout::mainSlot() {
+    if (UCSlotsLayout::mainSlot() == Q_NULLPTR) {
+        //don't set the parent, we have to create qqmldata first
+        UCThreeLabelsSlot *main = new UCThreeLabelsSlot();
+
+        //create QML data for mainSlot otherwise qmlAttachedProperties
+        //calls in SlotsLayout will fail (setContextForObject will create the QQmlData)
+        QQmlEngine::setContextForObject(main, qmlContext(this));
+        main->setParent(this);
+
+        //this will also set the parentItem
+        UCSlotsLayout::setMainSlot(main, false);
+    }
+
+    return UCSlotsLayout::mainSlot();
+}
+
+void UCListItemLayout::setMainSlot(QQuickItem *slot, bool fireSignal) {
     Q_UNUSED(slot);
+    Q_UNUSED(fireSignal);
     qmlInfo(this) << "Setting a different mainSlot on ListItemLayout is not supported. Please use SlotsLayout instead.";
 }
