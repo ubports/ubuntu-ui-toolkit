@@ -32,6 +32,8 @@ BottomEdgeStyle {
     property color backgroundColor: "transparent"
     property color panelColor: theme.palette.normal.background
     property color shadowColor: theme.palette.selected.background
+    property bool attachHintToContent: false
+    onAttachHintToContentChanged: print("attachHintToContent", attachHintToContent)
 
     anchors.bottom: parent.bottom
     width: bottomEdge.width
@@ -41,6 +43,19 @@ BottomEdgeStyle {
         id: background
         anchors.fill: parent
         color: backgroundColor
+    }
+
+    states: State {
+        name: "reparentedHint"
+        when: attachHintToContent
+        PropertyChanges {
+            target: bottomEdge.hint
+            parent: panelItem.parent
+        }
+        AnchorChanges {
+            target: bottomEdge.hint
+            anchors.bottom: panelItem.top
+        }
     }
 
     Rectangle {
@@ -55,7 +70,7 @@ BottomEdgeStyle {
             right: parent.right
             top: unlocked ? undefined : parent.bottom
         }
-        height: loader.item ? loader.item.height : bottomEdge.height
+        height: loader.item ? loader.item.height : 0
         y: bottomEdge.height
         color: panelColor
         opacity: y < bottomEdge.height ? 1.0 : 0.0

@@ -81,35 +81,58 @@ Page {
             flickable: listView
             deactivateTimeout: 1000
         }
-        height: page.height - units.gu(20)
-        contentComponent: bottomEdgeContent
-
-        BottomEdgeRange {
-            objectName: "FirstSection"
-            from: 0.2
-            to: 0.4
-            onDragEnded: bottomEdge.commit()
-            property color baseColor: Qt.rgba(0.5, 0.4, bottomEdge.dragProgress, 1)
-            contentComponent: Rectangle {
-                width: bottomEdge.width
-                height: bottomEdge.height * 0.1
-                border.width: units.gu(1)
-//                PageHeader {
-//                    title: "Not a page"
-//                }
-            }
+        height: page.height
+        StyleHints {
+            attachHintToContent: true
         }
-        BottomEdgeRange {
-            objectName: "SecondSection"
-            from: 0.4
-            to: 0.8
-            property color baseColor: Qt.rgba(1, 0.4, bottomEdge.dragProgress, 1)
-        }
-        BottomEdgeRange {
-            objectName: "ThirdSection"
-            from: 0.8
-            to: 1.0
-            property color baseColor: Qt.rgba(0, 1, bottomEdge.dragProgress, 1)
+        contentComponent: Rectangle {
+            width: bottomEdge.width
+            height: bottomEdge.height * 0.1
+            border.width: units.gu(1)
         }
     }
+
+//    BottomEdge {
+//        id: bottomEdge
+//        visible: active
+//        hint {
+//            text: "Compose a new message"
+//            iconName: "stock_message"
+//            flickable: listView
+//            deactivateTimeout: 1000
+//        }
+//        height: page.height// - units.gu(20)
+//        contentComponent: bottomEdgeContent
+//        StyleHints {
+//            attachHintToContent: true
+//        }
+
+//        BottomEdgeRange {
+//            objectName: "FirstSection"
+//            from: 0.2
+//            to: 0.4
+//            onDragEnded: bottomEdge.commit()
+//            property color baseColor: Qt.rgba(0.5, 0.4, bottomEdge.dragProgress, 1)
+//            contentComponent: Rectangle {
+//                width: bottomEdge.width
+//                height: bottomEdge.height * 0.1
+//                border.width: units.gu(1)
+////                PageHeader {
+////                    title: "Not a page"
+////                }
+//            }
+//        }
+//        BottomEdgeRange {
+//            objectName: "SecondSection"
+//            from: 0.4
+//            to: 0.8
+//            property color baseColor: Qt.rgba(1, 0.4, bottomEdge.dragProgress, 1)
+//        }
+//        BottomEdgeRange {
+//            objectName: "ThirdSection"
+//            from: 0.8
+//            to: 1.0
+//            property color baseColor: Qt.rgba(0, 1, bottomEdge.dragProgress, 1)
+//        }
+//    }
 }
