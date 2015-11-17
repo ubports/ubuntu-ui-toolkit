@@ -177,7 +177,6 @@ Ubuntu.Components.ListItems.Base 1.3: Empty
     property bool progression
 Ubuntu.Components.BottomEdge 1.3: StyledItem
     readonly property BottomEdgeRange activeRange
-    property double commitPoint
     property url content
     property Component contentComponent
     readonly property Item contentItem

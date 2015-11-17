@@ -41,7 +41,6 @@ class UCBottomEdge : public UCStyledItemBase
     Q_PROPERTY(QQuickItem* contentItem READ contentItem NOTIFY contentItemChanged FINAL)
     Q_PROPERTY(QQmlListProperty<UCBottomEdgeRange> ranges READ ranges NOTIFY rangesChanged FINAL)
     Q_PROPERTY(UCBottomEdgeRange* activeRange READ activeRange NOTIFY activeRangeChanged FINAL)
-    Q_PROPERTY(qreal commitPoint READ commitPoint WRITE setCommitPoint NOTIFY commitPointChanged FINAL)
 
     // overloaded data property to catch ranges
     Q_PRIVATE_PROPERTY(UCBottomEdge::d_func(), QQmlListProperty<QObject> data READ data DESIGNABLE false)
@@ -73,8 +72,6 @@ public:
     void setFillWindow(bool fill);
     QQmlListProperty<UCBottomEdgeRange> ranges();
     UCBottomEdgeRange *activeRange();
-    qreal commitPoint() const;
-    void setCommitPoint(qreal point);
 
 Q_SIGNALS:
     void hintChanged();
@@ -87,7 +84,6 @@ Q_SIGNALS:
     void fillWindowChanged();
     void rangesChanged();
     void activeRangeChanged();
-    void commitPointChanged();
 
     void commitStarted();
     void commitCompleted();

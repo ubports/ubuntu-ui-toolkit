@@ -29,9 +29,9 @@
  * \inmodule Ubuntu.Components 1.3
  * \since Ubuntu.Components 1.3
  * \ingroup ubuntu
- * \brief Defines an active section within the BottomEdge component.
+ * \brief Defines an active region within the BottomEdge component.
  *
- * Bottom edge sections are portions within the bottom edge area which can define
+ * Bottom edge regions are portions within the bottom edge area which can define
  * different content or action whenever the drag enters in the area. The area is
  * defined by \l from and \l to properties, and horizontally is stretched
  * across bottom edge width. Custom content can be defined through \l content or
@@ -52,19 +52,23 @@
  *         }
  *
  *         BottomEdge {
+ *             id: bottomEdge
  *             height: parent.height - units.gu(20)
  *             hint: BottomEdgeHint {
  *                 text: "My bottom edge"
  *             }
  *             // a fake content till we reach the committable area
  *             contentComponent: Rectangle {
- *                 anchors.fill: parent
+ *                 width: bottomEdge.width
+ *                 height: bottomEdge.height
  *                 color: UbuntuColors.green
  *             }
  *             // override bottom edge sections to switch to real content
  *             BottomEdgeRange {
  *                 from: 0.33
  *                 contentComponent: Page {
+ *                     width: bottomEdge.width
+ *                     height: bottomEdge.height
  *                     header: PageHeader {
  *                         title: "BottomEdge Content"
  *                     }
@@ -78,9 +82,9 @@
  * Entering into the section area is signalled by the \l entered signal and when
  * drag leaves the area the \l exited signal is emitted. If the drag ends within
  * the section area, the \l dragEnded signal is emitted. In case the section's
- * \l to property differs from 1.0, the bottom edge content will only be exposed
- * to that value, and the \l BottomEdge::state will get the \e SectionCommitted
- * value.
+ * \l to property is less than 1.0, the bottom edge content will only be exposed
+ * to that value, and the \l BottomEdge::state will get the \e Committed value.
+ * No further drag is possible after reaching \e Commited state.
  *
  * \note Whereas there is no restriction on making overlapping sections, beware that
  * overlapping sections changing the content through the \l content or \l contentComponent
@@ -106,7 +110,7 @@ void UCBottomEdgeRange::attachToBottomEdge(UCBottomEdge *bottomEdge)
     m_bottomEdge = bottomEdge;
     // adjust to property value if not set yet
     if (m_to <= 0.0) {
-        m_to = UCBottomEdgePrivate::get(m_bottomEdge)->commitPoint;
+        m_to = 1.0;
         Q_EMIT toChanged();
     }
 }
@@ -116,7 +120,7 @@ void UCBottomEdgeRange::onDragEnded()
     if (!m_bottomEdge) {
         return;
     }
-    if (m_to == m_bottomEdge->commitPoint()) {
+    if (m_to == 1.0) {
         m_bottomEdge->commit();
     } else {
         // move the bottom edge panel to the m_to
@@ -183,10 +187,10 @@ void UCBottomEdgeRange::exitSection()
 /*!
  * \qmlproperty real BottomEdgeRange::to
  * Specifies the ending ratio of the bottom edge area. The value must be bigger
- * than \l from and smaller or equal to \l BottomEdge::commitPoint.
- * \note If the end point is less than the \l BottomEdge::commitPoint, ending the
- * drag within the section will result in exposing the bottom edge content only
- * till the section's end point.
+ * than \l from and smaller or equal to 1.0.
+ * \note If the end point is less than 1.0, ending the drag within the section
+ * will result in exposing the bottom edge content only till the ration specified
+ * by this property.
  */
 
 /*!

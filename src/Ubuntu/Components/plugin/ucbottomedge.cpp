@@ -43,7 +43,6 @@ UCBottomEdgePrivate::UCBottomEdgePrivate()
     , hint(new UCBottomEdgeHint)
     , contentComponent(Q_NULLPTR)
     , bottomPanel(Q_NULLPTR)
-    , commitPoint(1.0)
     , previousPanelY(0.0)
     , state(UCBottomEdge::Hidden)
     , operationStatus(Idle)
@@ -130,12 +129,6 @@ void UCBottomEdgePrivate::createDefaultRanges()
     // enters in this stage when drag ratio reaches 30% of the area
     commitRange->m_from = 0.33;
     commitRange->m_to = 1.0;
-    // connect to commitPointChange so we get the top
-    // of the default range in sync with commitPoint
-    QObject::connect(q, &UCBottomEdge::commitPointChanged, [=]() {
-        commitRange->m_to = commitPoint;
-        Q_EMIT commitRange->toChanged();
-    });
 
     ranges.append(commitRange);
 }
@@ -311,7 +304,7 @@ void UCBottomEdgePrivate::itemChildRemoved(QQuickItem *item, QQuickItem *child)
  *
  * The height of the BottomEdge drives till what extent the bottom edge content
  * should be exposed. The content is centered into a panel which is dragged from
- * the bottom of the BottomEdge.
+ * the bottom of the BottomEdge. The content must specify its width and height.
  * \qml
  * import QtQuick 2.4
  * import Ubuntu.Components 1.3
@@ -321,13 +314,15 @@ void UCBottomEdgePrivate::itemChildRemoved(QQuickItem *item, QQuickItem *child)
  *     height: units.gu(70)
  *
  *     Page {
+ *         id: page
  *         title: "BottomEdge"
  *
  *         BottomEdge {
  *             height: parent.height - units.gu(20)
  *             hint.text: "My bottom edge"
  *             contentComponent: Rectangle {
- *                 anchors.fill: parent
+ *                 width: page.width
+ *                 height: page.height
  *                 color: UbuntuColors.green
  *             }
  *         }
@@ -339,22 +334,23 @@ void UCBottomEdgePrivate::itemChildRemoved(QQuickItem *item, QQuickItem *child)
  * Loader's \e source, \e sourceComponent and \e item properties. See Loader
  * documentation for further details.
  *
- * There can be situations when the there should be different content shown
- * depending on the progress of the drag or when the drag is in different
- * sections of the area. The first can be achieved by tracking the \l dragProgress.
+ * There can be situations when the content depends on the progress of the drag
+ * or when the drag is in different regions of the area. The first can be achieved
+ * by tracking the \l dragProgress.
  * \qml
  * BottomEdge {
  *     id: bottomEdge
  *     height: parent.height
  *     hint.text: "progression"
  *     contentComponent: Rectangle {
- *         anchors.fill: parent
+ *         width: bottomEdge.width
+ *         height: bottomEdge.height
  *         color: Qt.rgba(0.5, 1, bottomEdge.dragProgress, 1);
  *     }
  * }
  * \endqml
- * In other cases the content may need to be sligtly different on certain sections
- * of the area. These sections can be defined through BottomEdgeRange elements
+ * An other case is when the content needs to be completely different in certain
+ * regions of the area. These regions can be defined through BottomEdgeRange elements
  * listed in the \l ranges property.
  * \qml
  * import QtQuick 2.4
@@ -372,7 +368,8 @@ void UCBottomEdgePrivate::itemChildRemoved(QQuickItem *item, QQuickItem *child)
  *             height: parent.height - units.gu(20)
  *             hint.text: "My bottom edge"
  *             contentComponent: Rectangle {
- *                 anchors.fill: parent
+ *                 width: bottomEdge.width
+ *                 height: bottomEdge.height
  *                 color: bottomEdge.activeRange ?
  *                          bottomEdge.activeRange.color : UbuntuColors.green
  *             }
@@ -384,7 +381,7 @@ void UCBottomEdgePrivate::itemChildRemoved(QQuickItem *item, QQuickItem *child)
  *                 },
  *                 BottomEdgeRange {
  *                     from: 0.6
- *                     to: bottomEdge.commitPoint
+ *                     to: 1.0
  *                     property color color: UbuntuColors.lightGrey
  *                 }
  *             ]
@@ -392,11 +389,7 @@ void UCBottomEdgePrivate::itemChildRemoved(QQuickItem *item, QQuickItem *child)
  *     }
  * }
  * \endqml
- * \note Ranges can also be declared as child elements, in which case the data
- * property will forward each declared range into the \l ranges array the same
- * way as the resources are forwarded.
- * \note BottomEdgeRange can also replace the complete bottom edge content if
- * needed.
+ * \note Ranges can also be declared as child elements the same way as resources.
  * \sa BottomEdgeRange
  *
  * \section2 Page As Content
@@ -411,7 +404,8 @@ void UCBottomEdgePrivate::itemChildRemoved(QQuickItem *item, QQuickItem *child)
  *     height: parent.height
  *     hint.text: "Sample collapse"
  *     contentComponent: Rectangle {
- *         anchors.fill: parent
+ *         width: bottomEdge.width
+ *         height: bottomEdge.height
  *         color: Qt.rgba(0.5, 1, bottomEdge.dragProgress, 1);
  *         Button {
  *             text: "Collapse"
@@ -428,7 +422,8 @@ void UCBottomEdgePrivate::itemChildRemoved(QQuickItem *item, QQuickItem *child)
  *     height: parent.height
  *     hint.text: "Injected collapse"
  *     contentComponent: Rectangle {
- *         anchors.fill: parent
+ *         width: bottomEdge.width
+ *         height: bottomEdge.height
  *         color: Qt.rgba(0.5, 1, bottomEdge.dragProgress, 1);
  *         PageHeader {
  *             text: "Fancy content"
@@ -686,7 +681,7 @@ void UCBottomEdge::commit()
         connect(d->bottomPanel->m_panelAnimation, &QQuickAbstractAnimation::runningChanged,
                 this, &UCBottomEdge::unlockOperation);
     }
-    d->positionPanel(d->commitPoint);
+    d->positionPanel(1.0);
     if (!animated) {
         unlockOperation(false);
     }
@@ -814,26 +809,6 @@ UCBottomEdgeRange *UCBottomEdge::activeRange()
 {
     Q_D(UCBottomEdge);
     return d->activeRange;
-}
-
-/*!
- * \qmlproperty real BottomEdge::commitPoint
- * Specifies the ratio the bottom edge content should be committed to. Same as
- * \l dragProgress, the value can be set between 0 and 1. Defaults to 1.
- */
-qreal UCBottomEdge::commitPoint() const
-{
-    Q_D(const UCBottomEdge);
-    return d->commitPoint;
-}
-void UCBottomEdge::setCommitPoint(qreal point)
-{
-    Q_D(UCBottomEdge);
-    if (point == d->commitPoint || (point < 0.0 || point > 1.0)) {
-        return;
-    }
-    d->commitPoint = point;
-    Q_EMIT commitPointChanged();
 }
 
 #include "moc_ucbottomedge.cpp"

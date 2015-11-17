@@ -71,7 +71,6 @@ public:
     QQmlComponent *contentComponent;
     UCBottomEdgeStyle *bottomPanel;
 
-    qreal commitPoint;
     qreal previousPanelY;
     UCBottomEdge::State state;
 
