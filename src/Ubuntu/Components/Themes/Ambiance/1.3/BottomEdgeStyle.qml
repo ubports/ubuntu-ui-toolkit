@@ -55,7 +55,7 @@ BottomEdgeStyle {
             right: parent.right
             top: unlocked ? undefined : parent.bottom
         }
-        height: bottomEdge.height * bottomEdge.commitPoint
+        height: loader.item ? loader.item.height : bottomEdge.height
         y: bottomEdge.height
         color: panelColor
         opacity: y < bottomEdge.height ? 1.0 : 0.0
