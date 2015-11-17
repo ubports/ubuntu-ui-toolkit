@@ -663,7 +663,7 @@ void tst_UCSwipeArea::disabledWhileDragging()
     QCOMPARE((int)edgeDragArea->d->status, (int)UCSwipeAreaPrivate::Recognized);
     QCOMPARE(edgeDragArea->dragging(), true);
 
-    // disable the dragArea while it's being dragged.
+    // disable the swipeArea while it's being dragged.
     edgeDragArea->setEnabled(false);
 
     QCOMPARE((int)edgeDragArea->d->status, (int)UCSwipeAreaPrivate::WaitingForTouch);
@@ -931,7 +931,7 @@ void tst_UCSwipeArea::withdrawTouchOwnershipCandidacyIfDisabledDuringRecognition
         QCOMPARE(touchInfo->candidates.at(0).state, TouchRegistry::CandidateInfo::Undecided);
     }
 
-    // disable the dragArea while it's still recognizing a possible drag gesture.
+    // disable the swipeArea while it's still recognizing a possible drag gesture.
     QFETCH(bool, disable);
     if (disable) {
         edgeDragArea->setEnabled(false);

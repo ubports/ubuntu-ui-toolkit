@@ -32,19 +32,19 @@ Item {
         y: 0
 
         function followDragArea() {
-            return dragArea.distance < width ? -width + dragArea.distance : 0
+            return swipeArea.distance < width ? -width + swipeArea.distance : 0
         }
     }
 
     Rectangle {
         id: dragAreaRect
-        opacity: dragArea.dragging ? 0.5 : 0.0
+        opacity: swipeArea.dragging ? 0.5 : 0.0
         color: "green"
-        anchors.fill: dragArea
+        anchors.fill: swipeArea
     }
 
     SwipeArea {
-        id: dragArea
+        id: swipeArea
         objectName: "hpDragArea"
 
         // give some room for items to be dynamically stacked right behind him

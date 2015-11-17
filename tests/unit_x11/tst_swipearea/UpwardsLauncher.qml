@@ -32,8 +32,8 @@ Item {
         y: root.height
 
         function followDragArea() {
-            return dragArea.distance > -height ?
-                        root.height + dragArea.distance
+            return swipeArea.distance > -height ?
+                        root.height + swipeArea.distance
                     :
                         root.height - height
         }
@@ -41,13 +41,13 @@ Item {
 
     Rectangle {
         id: dragAreaRect
-        opacity: dragArea.dragging ? 0.5 : 0.0
+        opacity: swipeArea.dragging ? 0.5 : 0.0
         color: "green"
-        anchors.fill: dragArea
+        anchors.fill: swipeArea
     }
 
     SwipeArea {
-        id: dragArea
+        id: swipeArea
         objectName: "vnDragArea"
 
         height: units.gu(5)
