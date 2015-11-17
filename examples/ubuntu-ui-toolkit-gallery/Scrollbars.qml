@@ -133,20 +133,8 @@ Template {
             height: units.gu(40)
             ScrollView {
                 anchors.fill: parent
-
-                Flickable {
-                    id: flickable4
-                    anchors.fill: parent
-                    contentHeight: rect4.height
-                    contentWidth: rect4.width
-                    clip: true
-
-                    Rectangle {
-                        id: rect4
-                        color: "pink"
-                        width: units.gu(60)
-                        height: units.gu(50)
-                    }
+                Image {
+                    source: "http://files.explosm.net/comics/Rob/sbTotal.png"
                 }
             }
         }
@@ -159,29 +147,8 @@ Template {
 
             ScrollView {
                 anchors.fill: parent
-                alwaysOnScrollbars: true
-
-                Flickable {
-                    id: flickable5
-                    anchors.fill: parent
-                    contentHeight: rect5.height
-                    contentWidth: rect5.width
-                    Rectangle {
-                        id: rect5
-                        width: units.gu(60)
-                        height: units.gu(50)
-                        color: "blue"
-
-                        Button {
-                            id: rect5Btn
-                            color: "purple"
-                            text: "focus " + focus + " activeFocus " + activeFocus + "\n"
-                                    + "RECT focus " + parent.focus + " activeFocus " + parent.activeFocus
-                            anchors.fill: parent
-                            anchors.margins: units.gu(5)
-                            onClicked: rect4.width += units.gu(5)
-                        }
-                    }
+                Image {
+                    source: "http://mapdesign.icaci.org/wp-content/uploads/2014/07/MapCarte197_tokyo_large.png"
                 }
             }
         }
