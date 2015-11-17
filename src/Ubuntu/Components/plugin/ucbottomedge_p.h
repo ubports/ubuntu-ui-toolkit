@@ -48,8 +48,6 @@ public:
     // page header manipulation
     void patchContentItemHeader();
     void createDefaultRanges();
-    void onSwipeAreaDistanceChanged(qreal distance);
-    void onSwipeAreaDraggingChanged(bool dragging);
     void updateProgressionStates();
     void detectDirection(qreal currentPanelY);
     void setDragDirection(UCBottomEdge::DragDirection direction);

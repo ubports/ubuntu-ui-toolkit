@@ -84,7 +84,7 @@ Page {
             flickable: listView
             deactivateTimeout: 1000
         }
-        height: page.height// - units.gu(6)
+        height: page.height - units.gu(20)
         contentComponent: bottomEdgeContent
 //        commitPoint: 0.6
 

@@ -46,10 +46,14 @@ BottomEdgeStyle {
     Rectangle {
         id: panelItem
         objectName: "bottomedge_panel"
+        property bool swipedAboveHint: false
+        property bool unlocked: (bottomEdge.state > BottomEdge.Hidden)
+                                || hintArea.pressed
+                                || swipedAboveHint
         anchors {
             left: parent.left
             right: parent.right
-            top: bottomEdge.state > BottomEdge.Hidden ? undefined : parent.bottom
+            top: unlocked ? undefined : parent.bottom
         }
         height: bottomEdge.height * bottomEdge.commitPoint
         y: bottomEdge.height
@@ -127,6 +131,38 @@ BottomEdgeStyle {
             }
         }
 
+        // drag handling
+        function dragEnded() {
+            if (!bottomEdge.activeRange || bottomEdge.dragDirection == BottomEdge.Downwards) {
+                bottomEdge.collapse();
+            } else {
+                bottomEdge.activeRange.dragEnded();
+            }
+        }
+
+        Connections {
+            target: bottomEdge.hint.swipeArea
+            onDistanceChanged: {
+                if (bottomEdge.hint.status == BottomEdgeHint.Active
+                        && value >= bottomEdge.hint.height) {
+                    // this will turn the bottomEdge.state into Revealed
+                    panelItem.swipedAboveHint = true;
+                    panelItem.y = bottomEdge.height - value;
+                }
+                if (bottomEdge.state == BottomEdge.Revealed
+                        && (bottomEdge.height - value) > 0) {
+                    panelItem.y = bottomEdge.height - value;
+                }
+            }
+            onDraggingChanged: {
+                if (value) {
+                    return;
+                }
+                panelItem.dragEnded();
+            }
+        }
+
+
         // grab mouse events over the hint to proceed with drag
         // touch events will be consumed by the hint, so only
         // real mouse events will land here
@@ -144,13 +180,7 @@ BottomEdgeStyle {
             }
 
             onClicked: bottomEdge.hint.clicked()
-            onReleased: {
-                if (!bottomEdge.activeRange || bottomEdge.dragDirection == BottomEdge.Downwards) {
-                    bottomEdge.collapse();
-                } else {
-                    bottomEdge.activeRange.dragEnded();
-                }
-            }
+            onReleased: panelItem.dragEnded()
         }
     }
 }

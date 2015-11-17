@@ -60,16 +60,6 @@ void UCBottomEdgePrivate::init()
     hint->setParentItem(q);
     QObject::connect(hint, SIGNAL(clicked()), q, SLOT(commit()), Qt::DirectConnection);
 
-    // follow hint swipe distance to know when to reveale the content
-    QObject::connect(hint->swipeArea(), &UCSwipeArea::distanceChanged, [this](qreal distance) {
-        onSwipeAreaDistanceChanged(distance);
-    });
-
-    // follow gesture completion
-    QObject::connect(hint->swipeArea(), &UCSwipeArea::draggingChanged, [=](bool dragging) {
-        onSwipeAreaDraggingChanged(dragging);
-    });
-
     // create default stages
     createDefaultRanges();
 
@@ -150,37 +140,6 @@ void UCBottomEdgePrivate::createDefaultRanges()
     ranges.append(commitRange);
 }
 
-// handler connected to hint SwipeArea's distanceChanged() signal
-// to handle state changes as well as eventual swipe/drag direction changes
-void UCBottomEdgePrivate::onSwipeAreaDistanceChanged(qreal distance)
-{
-    if ((hint->status() == UCBottomEdgeHint::Active)
-        && (distance >= hint->height())
-        && (state == UCBottomEdge::Hidden)) {
-        setState(UCBottomEdge::Revealed);
-    }
-    if (state == UCBottomEdge::Revealed) {
-        Q_Q(UCBottomEdge);
-        bottomPanel->m_panel->setY(q->height() - distance);
-    }
-}
-
-// handler connected to the hint SwipeArea's draggingChanged() signal
-// to handle the action to be triggered when dragging is over
-void UCBottomEdgePrivate::onSwipeAreaDraggingChanged(bool dragging)
-{
-    if (dragging) {
-        return;
-    }
-    qDebug() << activeRange << dragDirection;
-    if (!activeRange || dragDirection == UCBottomEdge::Downwards) {
-        Q_Q(UCBottomEdge);
-        q->collapse();
-    } else {
-        Q_EMIT activeRange->dragEnded();
-    }
-}
-
 // update state and sections during drag
 void UCBottomEdgePrivate::updateProgressionStates()
 {
@@ -190,6 +149,9 @@ void UCBottomEdgePrivate::updateProgressionStates()
     }
     Q_Q(UCBottomEdge);
     qreal progress = q->dragProgress();
+    if (progress > 0) {
+        setState(UCBottomEdge::Revealed);
+    }
 
     // go through the stages
     Q_FOREACH(UCBottomEdgeRange *range, ranges) {
