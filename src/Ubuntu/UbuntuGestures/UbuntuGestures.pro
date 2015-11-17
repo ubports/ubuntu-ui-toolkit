@@ -13,7 +13,7 @@ load(qt_build_config)
 load(ubuntu_qt_module)
 
 HEADERS += candidateinactivitytimer.h \
-#           debughelpers.h \
+           debughelpers.h \
            timer.h \
            timesource.h \
            touchownershipevent.h \
