@@ -208,7 +208,7 @@ void UCHeader::updateFlickableMargins() {
 }
 
 void UCHeader::show(bool animate) {
-    if (m_exposed && !m_moving) return;
+    if (m_exposed && !m_moving && y() == 0.0) return;
     if (!m_exposed) {
         m_exposed = true;
         Q_EMIT exposedChanged();
@@ -234,7 +234,7 @@ void UCHeader::show(bool animate) {
 }
 
 void UCHeader::hide(bool animate) {
-    if (!(m_exposed || m_moving)) return;
+    if (!m_exposed && !m_moving && y() == -1.0*height()) return;
     if (m_exposed) {
         m_exposed = false;
         Q_EMIT exposedChanged();

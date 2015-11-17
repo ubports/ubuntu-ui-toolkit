@@ -42,6 +42,11 @@ Item {
                 width: 2
             }
         }
+
+        onMovingChanged: {
+            movingLabel.text = "Moving changed to "+moving
+            movingLabel.color = moving ? "purple" : "red"
+        }
     }
 
     Flickable {
@@ -105,12 +110,21 @@ Item {
             text: "Set contentY to " + newY
         }
         Label {
+            id: flickLabel
             anchors {
-                top : contentYButton.bottom
+                top: contentYButton.bottom
                 horizontalCenter: parent.horizontalCenter
                 topMargin: units.gu(8)
             }
             text: "Flick me"
+        }
+        Label {
+            id: movingLabel
+            anchors {
+                top: flickLabel.bottom
+                horizontalCenter: parent.horizontalCenter
+            }
+            text: "hmm"
         }
     }
 
@@ -367,6 +381,18 @@ Item {
             wait_for_exposed(true, "Scrolling up disconnected flickable hides header.");
 
             header.flickable = flickable;
+        }
+
+        function test_dont_move_when_flickable_shortens_bug1514143() {
+            var flickableContentHeight = flickable.contentHeight;
+            print("fch = "+flickableContentHeight)
+            movingLabel.text = "HEADER DID NOT MOVE";
+            flickable.contentHeight = 200;
+            compare(movingLabel.text, "HEADER DID NOT MOVE",
+                    "Reducing flickable contents height unneccessary sets header.moving.");
+            flickable.contentHeight = flickableContentHeight;
+            compare(movingLabel.text, "HEADER DID NOT MOVE",
+                    "Increasing flickable contents height unneccessary sets header.moving.");
         }
     }
 }
