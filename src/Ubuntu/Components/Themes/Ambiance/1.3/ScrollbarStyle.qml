@@ -68,7 +68,7 @@ Item {
     //whether we should show steppers or not. This has to be linked to a gsetting or something like that
     //because it will probably be a system setting
     //TODO: move to Scrollbar.qml?
-    property bool useSteppers: false
+    property bool useSteppers: true
 
     //INTERNAL: simulate the system setting (which will be implemented in unity8, I guess)
     //True --> Steppers style, non-overlay scrollbars
@@ -539,11 +539,15 @@ Item {
 
             Rectangle {
                 id: slider
-                color: styledItem.focus ? "red" : Qt.rgba(sliderColor.r, sliderColor.g, sliderColor.b, sliderColor.a * 0.7/*(overlay ? 0.8 : 1.0)*/)
+                color: Qt.rgba(sliderColor.r, sliderColor.g, sliderColor.b, sliderColor.a *
+                               (thumbArea.drag.active || (thumbArea.pressed && slider.containsMouse && !pressHoldTimer.running) ? 1.0 : 0.7))
                 anchors {
                     verticalCenter: (isVertical) ? undefined : trough.verticalCenter
                     horizontalCenter: (isVertical) ? trough.horizontalCenter : undefined
                 }
+
+                property bool containsMouse: contains(Qt.point(slider.mapFromItem(thumbArea, thumbArea.mouseX, thumbArea.mouseY).x,
+                                                               slider.mapFromItem(thumbArea, thumbArea.mouseX, thumbArea.mouseY).y))
 
                 x: (isVertical) ? 0 : ScrollbarUtils.sliderPos(styledItem, thumbsExtremesMargin, trough.width - slider.width - thumbsExtremesMargin)
                 y: (!isVertical) ? 0 : ScrollbarUtils.sliderPos(styledItem, thumbsExtremesMargin, trough.height - slider.height - thumbsExtremesMargin)
