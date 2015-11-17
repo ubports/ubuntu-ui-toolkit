@@ -47,6 +47,8 @@ public Q_SLOTS:
 private:
     static QTouchDevice *m_touchDevice;
     static UCTestExtras *m_testExtras;
+
+    friend class UCMouseTouchAdaptor;
 };
 
 #endif // TESTEXTRAS_H
