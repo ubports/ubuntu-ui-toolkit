@@ -144,18 +144,18 @@ BottomEdgeStyle {
             target: bottomEdge.hint.swipeArea
             onDistanceChanged: {
                 if (bottomEdge.hint.status == BottomEdgeHint.Active
-                        && value >= bottomEdge.hint.height) {
+                        && distance >= bottomEdge.hint.height) {
                     // this will turn the bottomEdge.state into Revealed
                     panelItem.swipedAboveHint = true;
-                    panelItem.y = bottomEdge.height - value;
+                    panelItem.y = bottomEdge.height - distance;
                 }
                 if (bottomEdge.state == BottomEdge.Revealed
-                        && (bottomEdge.height - value) > 0) {
-                    panelItem.y = bottomEdge.height - value;
+                        && (bottomEdge.height - distance) > 0) {
+                    panelItem.y = bottomEdge.height - distance;
                 }
             }
             onDraggingChanged: {
-                if (value) {
+                if (dragging) {
                     return;
                 }
                 panelItem.dragEnded();
