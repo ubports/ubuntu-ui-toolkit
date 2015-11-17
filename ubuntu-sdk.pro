@@ -33,6 +33,7 @@ check.commands = $$PWD/tests/checkresults.sh $$PWD/tests/test_tst_*.xml
 OTHER_FILES += \
     features/ubuntu_qml_module.prf \
     features/ubuntu_qml_plugin.prf \
+    features/ubuntu_qt_module.prf \
     features/ubuntu_enable_testing.prf \
     features/coverage.prf \
     .qmake.conf
