@@ -76,11 +76,11 @@ public:
 
 Q_SIGNALS:
     void directionChanged(Direction direction);
-    void draggingChanged(bool value);
-    void pressedChanged(bool value);
-    void distanceChanged(qreal value);
-    void touchPositionChanged(const QPointF &pos);
-    void immediateRecognitionChanged(bool value);
+    void draggingChanged(bool dragging);
+    void pressedChanged(bool pressed);
+    void distanceChanged(qreal distance);
+    void touchPositionChanged(const QPointF &position);
+    void immediateRecognitionChanged(bool immediateRecognition);
 
 protected:
     bool event(QEvent *e) override;
