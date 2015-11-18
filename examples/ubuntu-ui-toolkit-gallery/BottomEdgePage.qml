@@ -82,7 +82,7 @@ Template {
         }
         Repeater {
             id: rangeConfig
-            model: Math.floor(rangeCount.value)
+            model: rangeCount.value.toFixed(0)
             TemplateRow {
                 title: i18n.tr("Range #%1").arg(index)
                 property int rangeIndex: index

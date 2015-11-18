@@ -274,9 +274,6 @@ bool UCBottomEdgePrivate::loadStyleItem(bool animated)
         bottomPanel->setZ(std::numeric_limits<qreal>::max());
 
         // connect style stuff
-        QObject::connect(bottomPanel, &UCBottomEdgeStyle::contentItemChanged, [=]() {
-            patchContentItemHeader();
-        });
         QObject::connect(bottomPanel, &UCBottomEdgeStyle::contentItemChanged,
                          q, &UCBottomEdge::contentItemChanged, Qt::DirectConnection);
         QObject::connect(bottomPanel->m_panel, &QQuickItem::yChanged,
@@ -769,6 +766,7 @@ void UCBottomEdge::unlockOperation(bool running)
     switch (d->operationStatus) {
     case UCBottomEdgePrivate::CommitToTop:
         d->setState(UCBottomEdge::Committed);
+        d->patchContentItemHeader();
         Q_EMIT commitCompleted();
         break;
     case UCBottomEdgePrivate::Collapsing:
