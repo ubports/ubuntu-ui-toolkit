@@ -59,7 +59,6 @@ QML_FILES += 1.2/AbstractButton.qml \
              1.2/Panel.qml \
              1.2/PullToRefresh.qml \
              1.2/Scrollbar.qml \
-             1.2/scrollbarUtils.js \
              1.2/Slider.qml \
              1.2/sliderUtils.js \
              1.2/stack.js \

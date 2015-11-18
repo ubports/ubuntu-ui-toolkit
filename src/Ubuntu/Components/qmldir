@@ -37,7 +37,6 @@ UbuntuNumberAnimation 0.1 1.2/UbuntuNumberAnimation.qml
 UbuntuListView 0.1 1.2/UbuntuListView.qml
 singleton UbuntuColors 0.1 1.0/UbuntuColors.qml
 SliderUtils 0.1 1.2/sliderUtils.js
-ScrollbarUtils 0.1 1.2/scrollbarUtils.js
 ColorUtils 0.1 1.2/colorUtils.js
 DateUtils 0.1 1.2/dateUtils.js
 
@@ -73,7 +72,6 @@ OrientationHelper 1.0 1.2/OrientationHelper.qml
 UbuntuNumberAnimation 1.0 1.2/UbuntuNumberAnimation.qml
 singleton UbuntuColors 1.0 1.0/UbuntuColors.qml
 SliderUtils 1.0 1.2/sliderUtils.js
-ScrollbarUtils 1.0 1.2/scrollbarUtils.js
 ColorUtils 1.0 1.2/colorUtils.js
 DateUtils 1.0 1.2/dateUtils.js
 UbuntuListView 1.0 1.2/UbuntuListView.qml

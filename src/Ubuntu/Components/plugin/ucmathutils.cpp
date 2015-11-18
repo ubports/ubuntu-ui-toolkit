@@ -16,6 +16,7 @@
  */
 
 #include "ucmathutils.h"
+#include <QDebug>
 
 /*!
   \qmltype mathUtils
@@ -35,7 +36,7 @@ UCMathUtils::UCMathUtils(QObject *parent) : QObject(parent)
  */
 double UCMathUtils::clamp(double x, double min, double max)
 {
-    if (min <= max) {
+    if (!(min > max)) {
         return qMax(min, qMin(x, max));
     } else {
         // swap min/max if min > max
@@ -74,7 +75,6 @@ QObject *UCMathUtils::qmlInstanceProvider(QQmlEngine *engine, QJSEngine *scriptE
 {
     Q_UNUSED(engine);
     Q_UNUSED(scriptEngine);
-
     return new UCMathUtils;
 }
 
