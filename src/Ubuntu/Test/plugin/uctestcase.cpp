@@ -32,7 +32,7 @@ Q_DECLARE_METATYPE(QList<QQmlError>)
  * \ingroup ubuntu
  * \brief UbuntuTestCase is the C++ pendant to the QML UbuntuTestCase.
  */
-UbuntuTestCase::UbuntuTestCase(const QString& file, bool assertOnFailure, QWindow* parent) : QQuickView(parent)
+UbuntuTestCase::UbuntuTestCase(const QString& file, ResizeMode resize, bool assertOnFailure, QWindow* parent) : QQuickView(parent)
 {
     QString modules(UBUNTU_QML_IMPORT_PATH);
     Q_ASSERT(QDir(modules).exists());
@@ -44,6 +44,7 @@ UbuntuTestCase::UbuntuTestCase(const QString& file, bool assertOnFailure, QWindo
     m_spy->setParent(this);
 
     Q_ASSERT(!file.isEmpty());
+    setResizeMode(resize);
     setSource(QUrl::fromLocalFile(file));
     if (assertOnFailure) {
         Q_ASSERT(status() == QQuickView::Ready);

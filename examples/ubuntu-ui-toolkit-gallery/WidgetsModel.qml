@@ -102,6 +102,11 @@ ListModel {
         source: "CrossFadeImage.qml"
     }
     ListElement {
+        objectName: "swipeAreaElement"
+        label: "SwipeArea"
+        source: "SwipeAreaPage.qml"
+    }
+    ListElement {
         objectName: "bottomEdgeHintElement"
         label: "Bottom Edge"
         source: "BottomEdgePage.qml"
