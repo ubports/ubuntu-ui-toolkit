@@ -197,6 +197,7 @@ void UbuntuComponentsPlugin::registerTypesToVersion(const char *uri, int major, 
     qmlRegisterType<UCInverseMouse>(uri, major, minor, "InverseMouse");
     qmlRegisterType<UCActionItem>(uri, major, minor, "ActionItem");
     qmlRegisterSingletonType<UCHaptics>(uri, major, minor, "Haptics", registerHaptics);
+    qmlRegisterSingletonType<UCMathUtils>(uri, major, minor, "MathUtils", UCMathUtils::qmlInstanceProvider);
 }
 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
@@ -253,7 +254,6 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCLabel>(uri, 1, 3, "Label");
     qmlRegisterType<UCBottomEdgeHint>(uri, 1, 3, "BottomEdgeHint");
     qmlRegisterType<UCSwipeArea>(uri, 1, 3, "SwipeArea");
-    qmlRegisterSingletonType<UCMathUtils>(uri, 1, 3, "MathUtils", UCMathUtils::qmlInstanceProvider);
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)

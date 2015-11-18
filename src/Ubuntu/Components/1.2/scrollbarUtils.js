@@ -16,7 +16,7 @@
 
 .pragma library
 
-Qt.include("mathUtils.js")
+.import Ubuntu.Components 1.2 as Toolkit
 
 /*!
   \internal
@@ -71,7 +71,7 @@ function isVertical(scrollbar) {
   */
 function sliderPos(scrollbar, min, max) {
     if (!__check(scrollbar)) return 0;
-    return clamp(scrollbar.flickableItem.visibleArea[_obj.propPosRatio] * scrollbar.flickableItem[_obj.propSize], min, max);
+    return Toolkit.MathUtils.clamp(scrollbar.flickableItem.visibleArea[_obj.propPosRatio] * scrollbar.flickableItem[_obj.propSize], min, max);
 }
 
 /*!
@@ -112,7 +112,7 @@ function sliderSize(scrollbar, min, max) {
 function scrollAndClamp(scrollbar, amount, min, max) {
     if (!__check(scrollbar)) return 0;
     return scrollbar.flickableItem[_obj.propOrigin] +
-            clamp(scrollbar.flickableItem[_obj.propContent] - scrollbar.flickableItem[_obj.propOrigin] + amount,
+            Toolkit.MathUtils.clamp(scrollbar.flickableItem[_obj.propContent] - scrollbar.flickableItem[_obj.propOrigin] + amount,
                   min, max);
 }
 
