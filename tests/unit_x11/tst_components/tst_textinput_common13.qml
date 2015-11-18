@@ -469,18 +469,24 @@ Item {
                 verify(popoverY >= 0, 'Popover went off-screen: %1'.arg(popoverY));
         }
 
-        function test_secondaryItem_must_not_grab_focus() {
-            var textField = customTextField;
-            textField.forceActiveFocus();
-            compare(textField.focus, true, 'TextField is focused');
+        function test_secondaryItem_must_not_grab_focus_data() {
+            return [
+                { tag: 'same', input: customTextField },
+                { tag: 'other', input: textField },
+                ];
+        }
+        function test_secondaryItem_must_not_grab_focus(data) {
+            // Focus a TextField that may not be one containing the buttons
+            data.input.forceActiveFocus();
+            compare(data.input.focus, true, 'TextField is not focused');
 
-            var clearButton = findChild(textField, "clear_button")
+            var clearButton = findChild(customTextField, "clear_button")
             mouseClick(clearButton, clearButton.width/2, clearButton.height/2);
-            compare(textField.focus, true, 'TextField remains focused');
+            compare(data.input.focus, true, 'TextField remains focused');
             mouseClick(primaryButton, primaryButton.width/2, primaryButton.height/2);
-            compare(textField.focus, true, 'TextField remains focused');
+            compare(data.input.focus, true, 'TextField remains focused');
             mouseClick(secondaryButton, secondaryButton.width/2, secondaryButton.height/2);
-            compare(textField.focus, true, 'TextField remains focused');
+            compare(data.input.focus, true, 'TextField remains focused');
         }
     }
 }
