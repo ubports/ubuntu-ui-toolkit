@@ -160,9 +160,8 @@ void UCBottomEdgePrivate::updateProgressionStates()
     // go through the ranges
     Q_FOREACH(UCBottomEdgeRange *range, ranges) {
         if (range->contains(progress)) {
-            if (setActiveRange(range)) {
-                break;
-            }
+            setActiveRange(range);
+            break;
         } else if (activeRange == range) {
             setActiveRange(Q_NULLPTR);
         }
