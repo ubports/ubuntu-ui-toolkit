@@ -25,24 +25,25 @@ BottomEdgeStyle {
     panelAnimation: panelBehavior
 
     // own styling properties
-//    property color backgroundColor: Qt.rgba(theme.palette.normal.background.r,
-//                                            theme.palette.normal.background.g,
-//                                            theme.palette.normal.background.b,
-//                                            bottomEdge.dragProgress)
     property color backgroundColor: "transparent"
     property color panelColor: theme.palette.normal.background
     property color shadowColor: theme.palette.selected.background
     property bool attachHintToContent: false
-    onAttachHintToContentChanged: print("attachHintToContent", attachHintToContent)
+    property real touchDragThreshold: units.gu(2)
 
-    anchors.bottom: parent.bottom
-    width: bottomEdge.width
-    height: bottomEdge.height
+    anchors {
+        // break the fill from BottomEdge, StyledItem automatically fills that
+//        fill: undefined
+        bottom: parent.bottom
+    }
+    width: parent.width
+    height: parent.height
 
     Rectangle {
         id: background
         anchors.fill: parent
         color: backgroundColor
+        z: -1
     }
 
     states: State {
@@ -56,6 +57,13 @@ BottomEdgeStyle {
             target: bottomEdge.hint
             anchors.bottom: panelItem.top
         }
+    }
+
+    // unlock/lock panel also when commit/collapse is called manually
+    Connections {
+        target: bottomEdge
+        onCommitStarted: panelItem.swipedAboveHint = true
+        onCollapseCompleted: panelItem.swipedAboveHint = false
     }
 
     Rectangle {
@@ -136,8 +144,8 @@ BottomEdgeStyle {
             id: loader
             anchors.horizontalCenter: parent.horizontalCenter
             asynchronous: true
-            source: bottomEdge.content
-            sourceComponent: bottomEdge.contentComponent
+            source: bottomEdge.state > BottomEdge.Hidden ? bottomEdge.content : ""
+            sourceComponent: bottomEdge.state > BottomEdge.Hidden ? bottomEdge.contentComponent : null
             onItemChanged: {
                 if (item) {
                     item.parent = panelItem;
@@ -146,7 +154,7 @@ BottomEdgeStyle {
             }
         }
 
-        // drag handling
+        // drag ended handling
         function dragEnded() {
             if (!bottomEdge.activeRange || bottomEdge.dragDirection == BottomEdge.Downwards) {
                 bottomEdge.collapse();
@@ -159,7 +167,7 @@ BottomEdgeStyle {
             target: bottomEdge.hint.swipeArea
             onDistanceChanged: {
                 if (bottomEdge.hint.status == BottomEdgeHint.Active
-                        && distance >= bottomEdge.hint.height) {
+                        && distance >= (bottomEdge.hint.height + touchDragThreshold)) {
                     // this will turn the bottomEdge.state into Revealed
                     panelItem.swipedAboveHint = true;
                     panelItem.y = bottomEdge.height - distance;

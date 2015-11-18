@@ -17,122 +17,179 @@
 import QtQuick 2.4
 import Ubuntu.Components 1.3
 
-Page {
+Template {
     id: page
-    header: PageHeader {
-        title: "Bottom Edge"
+    title: i18n.tr("Bottom Edge")
+
+    TemplateSection {
+        title: "BottomEdgeHint"
+        className: "BottomEdgeHint"
+
+        TemplateRow {
+            title: i18n.tr("On clicked")
+            Row {
+                spacing: units.gu(1)
+                CheckBox {
+                    id: contentToLayout
+                    text: i18n.tr("push content into the layout")
+                    enabled: bottomEdge.hint.status >= BottomEdgeHint.Active
+                }
+                Label {
+                    text: contentToLayout.text
+                    anchors.verticalCenter: contentToLayout.verticalCenter
+                }
+            }
+        }
     }
 
     TemplateSection {
-        title: "Bottom Edge Hint"
-        className: "BottomEdgeHint"
+        title: "BottomEdge"
+        className: "BottomEdge"
 
-        anchors {
-            top: parent.top
-            topMargin: page.header.height
-            left: parent.left
-            right: parent.right
-            margins: units.gu(2)
-        }
-        height: parent.height - page.header.height
-        ListView {
-            id: listView
-            height: parent.height
-            width: units.gu(40)
-            model: 50
-            delegate: ListItemLayout {
-                title.text: "Item #" + index
+        TemplateRow {
+            title: i18n.tr("Top")
+            Slider {
+                id: bottomEdgeHeight
+                maximumValue: page.height
+                value: bottomEdge.height
+                onValueChanged: bottomEdge.height = value
             }
         }
-    }
 
-
-    Component {
-        id: bottomEdgeContent
-        Page {
-            width: units.gu(40)
-            height: bottomEdge.height
-            header: PageHeader {
-                title: {
-                    var prefix = "Yohoooo! ";
-                    switch (bottomEdge.state) {
-                    case BottomEdge.Hidden: return prefix + "Status: Hidden"
-                    case BottomEdge.Revealed: return prefix + "Status: Revealed"
-                    case BottomEdge.Committed: return prefix + "Status: Committed"
-                    default: return prefix + "UNKNOWN";
-                    }
+        TemplateRow {
+            title: i18n.tr("Hint")
+            Row {
+                spacing: units.gu(1)
+                CheckBox {
+                    id: attachHintToContent
+                    text: i18n.tr("attach hint to content")
+                }
+                Label {
+                    text: attachHintToContent.text
+                    anchors.verticalCenter: attachHintToContent.verticalCenter
                 }
             }
-            Rectangle {
-                anchors.fill: parent
-                anchors.margins: units.gu(1)
-                color: bottomEdge.activeRange ?
-                           bottomEdge.activeRange.baseColor : Qt.rgba(0.5, 1, bottomEdge.dragProgress, 1)
+        }
+
+        TemplateRow {
+            title: i18n.tr("Ranges")
+            Slider {
+                id: rangeCount
+                width: units.gu(20)
+                maximumValue: 3.0
+                live: true
+            }
+        }
+        Repeater {
+            id: rangeConfig
+            model: Math.floor(rangeCount.value)
+            TemplateRow {
+                title: i18n.tr("Range #%1").arg(index)
+                property int rangeIndex: index
+                Repeater {
+                    model: ["from", "to"]
+                    Row {
+                        spacing: units.gu(2)
+                        Label {
+                            text: i18n.tr(modelData)
+                        }
+                        TextField {
+                            id: rangeFrom
+                            text: bottomEdge.ranges[rangeIndex][modelData]
+                            inputMask: "0.0"
+                            validator: DoubleValidator {bottom: 0.0; top: 1.0; decimals: 2}
+                            inputMethodHints: Qt.ImhPreferNumbers | Qt.ImhFormattedNumbersOnly
+                            width: units.gu(7)
+                            hasClearButton: false
+                            errorHighlight: true
+                            onAccepted: bottomEdge.ranges[rangeIndex][modelData] = text
+                            onTextChanged: if (acceptableInput) bottomEdge.ranges[rangeIndex][modelData] = text
+                        }
+                    }
+                }
             }
         }
     }
 
     BottomEdge {
         id: bottomEdge
-        visible: active
-        hint {
-            text: "Compose a new message"
-            iconName: "stock_message"
-            flickable: listView
-            deactivateTimeout: 1000
-        }
+        // make sure it doesn't land inside the flickable
+        parent: page
         height: page.height
-        StyleHints {
-            attachHintToContent: true
+        // hint
+        hint {
+            action: Action {
+                text: "Demo content"
+                iconName: "stock_message"
+                onTriggered: bottomEdge.commit()
+            }
+            flickable: page.flickable
         }
-        contentComponent: Rectangle {
-            width: bottomEdge.width
-            height: bottomEdge.height * 0.1
-            border.width: units.gu(1)
+        contentComponent: bottomEdgeContent
+
+        StyleHints {
+//            backgroundColor: Qt.rgba(theme.palette.normal.background.r,
+//                                     theme.palette.normal.background.g,
+//                                     theme.palette.normal.background.b,
+//                                     bottomEdge.dragProgress)
+            attachHintToContent: attachHintToContent.checked
+        }
+
+        onCommitCompleted: {
+            if (contentToLayout.checked && contentToLayout.enabled) {
+                page.pageStack.addPageToCurrentColumn(page, contentComponent);
+                collapse();
+            }
+        }
+
+        ranges: [
+            BottomEdgeRange {
+                objectName: "CustomRange1"
+                enabled: rangeConfig.model >= 1
+                property color baseColor: UbuntuColors.lightGrey
+                onFromChanged: print(objectName, "from", from)
+                onToChanged: print(objectName, "to", to)
+            },
+            BottomEdgeRange {
+                objectName: "CustomRange2"
+                enabled: rangeConfig.model >= 2
+            },
+            BottomEdgeRange {
+                objectName: "CustomRange3"
+                enabled: rangeConfig.model >= 3
+            },
+            // default range, mimics the default setup
+            BottomEdgeRange {
+                objectName: "DefaultRange"
+                enabled: rangeConfig.model <= 0
+                from: 0.3
+            }
+        ]
+
+        Component {
+            id: bottomEdgeContent
+            Page {
+                height: bottomEdge.height
+                header: PageHeader {
+                    title: {
+                        var state = "UNDEFINED";
+                        switch (bottomEdge.state) {
+                        case BottomEdge.Hidden: state = "Hidden"; break;
+                        case BottomEdge.Revealed: state = "Revealed"; break;
+                        case BottomEdge.Committed: state = "Hidden"; break;
+                        }
+                        return bottomEdge.activeRange
+                          ? i18n.tr("Within range '%1', state: %2").arg(bottomEdge.activeRange.objectName).arg(state)
+                          : i18n.tr("Not in any active range, state: %1").arg(state);
+                    }
+                }
+                Rectangle {
+                    anchors.fill: parent
+                    anchors.margins: units.gu(1)
+                    color: bottomEdge.activeRange && bottomEdge.activeRange.hasOwnProperty("baseColor") ?
+                               bottomEdge.activeRange.baseColor : Qt.rgba(0.5, 1, bottomEdge.dragProgress, 1)
+                }
+            }
         }
     }
-
-//    BottomEdge {
-//        id: bottomEdge
-//        visible: active
-//        hint {
-//            text: "Compose a new message"
-//            iconName: "stock_message"
-//            flickable: listView
-//            deactivateTimeout: 1000
-//        }
-//        height: page.height// - units.gu(20)
-//        contentComponent: bottomEdgeContent
-//        StyleHints {
-//            attachHintToContent: true
-//        }
-
-//        BottomEdgeRange {
-//            objectName: "FirstSection"
-//            from: 0.2
-//            to: 0.4
-//            onDragEnded: bottomEdge.commit()
-//            property color baseColor: Qt.rgba(0.5, 0.4, bottomEdge.dragProgress, 1)
-//            contentComponent: Rectangle {
-//                width: bottomEdge.width
-//                height: bottomEdge.height * 0.1
-//                border.width: units.gu(1)
-////                PageHeader {
-////                    title: "Not a page"
-////                }
-//            }
-//        }
-//        BottomEdgeRange {
-//            objectName: "SecondSection"
-//            from: 0.4
-//            to: 0.8
-//            property color baseColor: Qt.rgba(1, 0.4, bottomEdge.dragProgress, 1)
-//        }
-//        BottomEdgeRange {
-//            objectName: "ThirdSection"
-//            from: 0.8
-//            to: 1.0
-//            property color baseColor: Qt.rgba(0, 1, bottomEdge.dragProgress, 1)
-//        }
-//    }
 }

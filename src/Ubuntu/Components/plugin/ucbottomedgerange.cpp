@@ -128,12 +128,12 @@ void UCBottomEdgeRange::onDragEnded()
     }
 }
 
-bool UCBottomEdgeRange::dragInSection(qreal dragRatio)
+bool UCBottomEdgeRange::contains(qreal dragRatio)
 {
     return (m_enabled && dragRatio >= m_from && dragRatio <= m_to);
 }
 
-void UCBottomEdgeRange::enterSection()
+void UCBottomEdgeRange::enter()
 {
     Q_EMIT entered();
     // backup url
@@ -159,7 +159,7 @@ void UCBottomEdgeRange::enterSection()
     }
 }
 
-void UCBottomEdgeRange::exitSection()
+void UCBottomEdgeRange::exit()
 {
     if (m_componentBackup) {
         delete m_componentBackup;

@@ -49,6 +49,7 @@ public:
     void patchContentItemHeader();
     void createDefaultRanges();
     void updateProgressionStates();
+    bool setActiveRange(UCBottomEdgeRange *range);
     void detectDirection(qreal currentPanelY);
     void setDragDirection(UCBottomEdge::DragDirection direction);
 
@@ -58,7 +59,8 @@ public:
     void setState(UCBottomEdge::State state);
 
     // from UCStyledItemBase
-    virtual bool loadStyleItem(bool animated = true);
+    bool loadStyleItem(bool animated = true) override;
+    void _q_styleResized() override {}
     // from QQuickItemChangeListener
     void itemChildAdded(QQuickItem *item, QQuickItem *child);
     void itemChildRemoved(QQuickItem *item, QQuickItem *child);

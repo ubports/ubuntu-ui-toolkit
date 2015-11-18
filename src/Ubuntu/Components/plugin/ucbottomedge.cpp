@@ -65,6 +65,9 @@ void UCBottomEdgePrivate::init()
     // set the style name
     styleDocument = QStringLiteral("BottomEdgeStyle");
 }
+
+// overload default data property so we can filter out the ranges declared
+// in the body of the component as resources
 QQmlListProperty<QObject> UCBottomEdgePrivate::data()
 {
     return QQmlListProperty<QObject>(q_func(), 0, UCBottomEdgePrivate::overload_data_append,
@@ -92,8 +95,13 @@ void UCBottomEdgePrivate::overload_data_clear(QQmlListProperty<QObject> *data)
     QQuickItemPrivate::data_clear(data);
 }
 
+// appends a BottomEdgeRange to the list; clears the default ranges before appends the
+// custom ones
 void UCBottomEdgePrivate::appendRange(UCBottomEdgeRange *range)
 {
+    Q_Q(UCBottomEdge);
+    // the range must be owned by the component, we cannot "reuse" declared ranges
+    Q_ASSERT(range && range->parent() == q);
     if (!defaultRangesReset) {
         defaultRangesReset = true;
         qDeleteAll(ranges);
@@ -102,9 +110,10 @@ void UCBottomEdgePrivate::appendRange(UCBottomEdgeRange *range)
     ranges.append(range);
     // take ownership!
     QQmlEngine::setObjectOwnership(range, QQmlEngine::CppOwnership);
-    range->attachToBottomEdge(q_func());
+    range->attachToBottomEdge(q);
 }
 
+// clears the custom ranges list and restores the default ones
 void UCBottomEdgePrivate::clearRanges(bool destroy)
 {
     if (!defaultRangesReset) {
@@ -118,14 +127,14 @@ void UCBottomEdgePrivate::clearRanges(bool destroy)
     createDefaultRanges();
 }
 
-// creates the default section(s)
+// creates the default ranges(s)
 void UCBottomEdgePrivate::createDefaultRanges()
 {
     Q_Q(UCBottomEdge);
     // add the default stages
     UCBottomEdgeRange *commitRange = new UCBottomEdgeRange(q);
     // for testing purposes
-    commitRange->setObjectName("default_bottomedge_stage");
+    commitRange->setObjectName("default_bottomedgerange");
     // enters in this stage when drag ratio reaches 30% of the area
     commitRange->m_from = 0.33;
     commitRange->m_to = 1.0;
@@ -133,34 +142,48 @@ void UCBottomEdgePrivate::createDefaultRanges()
     ranges.append(commitRange);
 }
 
-// update state and sections during drag
+// update state, drag direction and activeRange during drag
 void UCBottomEdgePrivate::updateProgressionStates()
 {
     detectDirection(bottomPanel->m_panel->y());
     if (isLocked()) {
+        // there is an operation ongoing, do not update drag and activeRange
         return;
     }
     Q_Q(UCBottomEdge);
     qreal progress = q->dragProgress();
     if (progress > 0) {
+        // the content is revealed
         setState(UCBottomEdge::Revealed);
     }
 
-    // go through the stages
+    // go through the ranges
     Q_FOREACH(UCBottomEdgeRange *range, ranges) {
-        if (range->dragInSection(progress)) {
-            if (!activeRange) {
-                range->enterSection();
-                activeRange = range;
-                Q_EMIT q->activeRangeChanged();
+        if (range->contains(progress)) {
+            if (setActiveRange(range)) {
                 break;
             }
         } else if (activeRange == range) {
-            range->exitSection();
-            activeRange = Q_NULLPTR;
-            Q_EMIT q->activeRangeChanged();
+            setActiveRange(Q_NULLPTR);
         }
     }
+}
+
+// set teh active range
+bool UCBottomEdgePrivate::setActiveRange(UCBottomEdgeRange *range)
+{
+    if (activeRange == range) {
+        return false;
+    }
+    if (activeRange) {
+        activeRange->exit();
+    }
+    activeRange = range;
+    if (activeRange) {
+        activeRange->enter();
+    }
+    Q_EMIT q_func()->activeRangeChanged();
+    return true;
 }
 
 // updates the dragDirection property
@@ -182,6 +205,7 @@ void UCBottomEdgePrivate::detectDirection(qreal currentPanelY)
     setDragDirection(newDirection);
 }
 
+// internal dragDirection property setter
 void UCBottomEdgePrivate::setDragDirection(UCBottomEdge::DragDirection direction)
 {
     if (dragDirection != direction) {
@@ -191,22 +215,22 @@ void UCBottomEdgePrivate::setDragDirection(UCBottomEdge::DragDirection direction
 }
 
 
-// positions the bottom edge panel holding the content to the given position
-// position is a percentage of the height
+// positions the bottom edge panel holding the content to the given height percentage
 void UCBottomEdgePrivate::positionPanel(qreal position)
 {
-    // use QQmlProperty so the bindings on y are broken,
-    // otherwise AdaptivePageLayout relayouting makes bottom
-    // edge to collapse
+    // use QQmlProperty so the bindings on y get broken when we set the value
+    // otherwise AdaptivePageLayout relayouting makes bottom edge to collapse
     // also makes Behavior to run on the property
     Q_Q(UCBottomEdge);
     qreal height = q->height();
     QQmlProperty::write(bottomPanel->m_panel, "y", height - height * position, qmlContext(bottomPanel->m_panel));
 }
 
+// inject collapse action into the content if the content has a PageHeader
 Q_DECLARE_METATYPE(QQmlListProperty<UCAction>)
 void UCBottomEdgePrivate::patchContentItemHeader()
 {
+    // ugly, as it can be, as we don't have teh PageHeader in cpp to detect the type
     UCHeader *header = bottomPanel->m_contentItem ? bottomPanel->m_contentItem->findChild<UCHeader*>() : Q_NULLPTR;
     if (!header || !QuickUtils::inherits(header, "PageHeader")) {
         return;
@@ -741,6 +765,7 @@ void UCBottomEdge::unlockOperation(bool running)
                    0, 0);
     }
 
+    UCBottomEdgePrivate::OperationStatus oldStatus = d->operationStatus;
     switch (d->operationStatus) {
     case UCBottomEdgePrivate::CommitToTop:
         d->setState(UCBottomEdge::Committed);
@@ -753,8 +778,12 @@ void UCBottomEdge::unlockOperation(bool running)
     default: break;
     }
 
-    d->setDragDirection(Undefined);
-    d->setOperationStatus(UCBottomEdgePrivate::Idle);
+    // the operation status may got changed due to a new operation being
+    // initiated from the previosu one (e.g.collapse from commitCompleted, etc
+    if (oldStatus == d->operationStatus) {
+        d->setDragDirection(Undefined);
+        d->setOperationStatus(UCBottomEdgePrivate::Idle);
+    }
 }
 
 /*!

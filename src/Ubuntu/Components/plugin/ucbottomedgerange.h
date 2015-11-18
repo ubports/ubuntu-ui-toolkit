@@ -27,10 +27,9 @@
 class UCBottomEdge;
 class QQmlComponent;
 class PropertyChange;
-class UCBottomEdgeRange : public QObject, public QQmlParserStatus
+class UCBottomEdgeRange : public QObject
 {
     Q_OBJECT
-    Q_INTERFACES(QQmlParserStatus)
 
     Q_PROPERTY(bool enabled MEMBER m_enabled NOTIFY enabledChanged FINAL)
     Q_PROPERTY(qreal from MEMBER m_from NOTIFY fromChanged FINAL)
@@ -42,9 +41,9 @@ public:
     void attachToBottomEdge(UCBottomEdge *bottomEdge);
 
     // used internally
-    bool dragInSection(qreal dragRatio);
-    void enterSection();
-    void exitSection();
+    bool contains(qreal dragRatio);
+    void enter();
+    void exit();
 
 Q_SIGNALS:
     void enabledChanged();
@@ -58,8 +57,6 @@ Q_SIGNALS:
     void dragEnded();
 
 protected:
-    void classBegin(){}
-    void componentComplete(){}
     void onDragEnded();
 
     QUrl m_url;
