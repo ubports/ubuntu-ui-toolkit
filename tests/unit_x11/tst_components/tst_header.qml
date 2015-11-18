@@ -48,8 +48,8 @@ Item {
             // - test_dont_move_when_flickable_shortens_bug1514143()
             // - test_dont_move_exposed_header_when_scrolling_down_bug1514143()
             // - test_dont_move_hidden_header_when_scrolling_up()
-            movingLabel.text = "Moving changed to "+moving
-            movingLabel.color = moving ? "purple" : "red"
+            movingLabel.text = "Moving changed to " + moving;
+            movingLabel.color = moving ? "purple" : "red";
         }
     }
 
