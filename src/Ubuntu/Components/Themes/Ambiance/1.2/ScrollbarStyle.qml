@@ -101,47 +101,19 @@ Item {
     QtObject {
         id: scrollbarUtils
 
-        property var scrollbar: null
-        property bool vertical: false
-        property string propOrigin: ""
-        property string propContent: ""
-        property string propPosRatio: ""
-        property string propSizeRatio: ""
-        property string propCoordinate: ""
-        property string propSize: ""
-
-        function refresh () {
-            vertical = (styledItem.align === Qt.AlignLeading) || (styledItem.align === Qt.AlignTrailing)
-            propOrigin = (vertical) ? "originY" : "originX";
-            propContent = (vertical) ? "contentY" : "contentX";
-            propPosRatio = (vertical) ? "yPosition" : "xPosition";
-            propSizeRatio = (vertical) ? "heightRatio" : "widthRatio";
-            propCoordinate = (vertical) ? "y" : "x";
-            propSize = (vertical) ? "height" : "width";
-        }
-
-        /*!
-          \internal
-          Checks whether the _obj is valid or not. Must be called in every function
-          as those can be invoked prior to the host (style) component completion.
-          */
-        function __check() {
-            if (styledItem !== null && (scrollbar !== styledItem)) {
-                scrollbar = styledItem;
-                styledItem.flickableItemChanged.connect(refresh);
-                styledItem.alignChanged.connect(refresh);
-                refresh();
-            }
-
-            return scrollbar;
-        }
+        property bool vertical: (styledItem.align === Qt.AlignLeading) || (styledItem.align === Qt.AlignTrailing)
+        property string propOrigin: (vertical) ? "originY" : "originX"
+        property string propContent: (vertical) ? "contentY" : "contentX"
+        property string propPosRatio: (vertical) ? "yPosition" : "xPosition"
+        property string propSizeRatio: (vertical) ? "heightRatio" : "widthRatio"
+        property string propCoordinate: (vertical) ? "y" : "x"
+        property string propSize: (vertical) ? "height" : "width"
 
         /*!
           \internal
           Returns whether the scrollbar is vertical or horizontal.
           */
         function isVertical() {
-            if (!__check(styledItem)) return 0;
             return vertical;
         }
 
@@ -150,7 +122,6 @@ Item {
           Calculates the slider position based on the visible area's ratios.
           */
         function sliderPos(min, max) {
-            if (!__check(styledItem)) return 0;
             return MathUtils.clamp(styledItem.flickableItem.visibleArea[propPosRatio] * styledItem.flickableItem[propSize], min, max);
         }
 
@@ -162,7 +133,6 @@ Item {
           The function can be used in Scrollbar styles to calculate the size of the slider.
           */
         function sliderSize(min, max) {
-            if (!__check(styledItem)) return 0;
             var sizeRatio = styledItem.flickableItem.visibleArea[propSizeRatio];
             var posRatio = styledItem.flickableItem.visibleArea[propPosRatio];
             var sizeUnderflow = (sizeRatio * max) < min ? min - (sizeRatio * max) : 0
@@ -192,7 +162,6 @@ Item {
           using an invisible cursor to drag the slider and the ListView position.
           */
         function scrollAndClamp(amount, min, max) {
-            if (!__check(styledItem)) return 0;
             return styledItem.flickableItem[propOrigin] +
                     MathUtils.clamp(styledItem.flickableItem[propContent] - styledItem.flickableItem[propOrigin] + amount,
                           min, max);
@@ -206,7 +175,6 @@ Item {
           specifies the visibleArea, and it is usually the heigtht/width of the scrolling area.
           */
         function dragAndClamp(cursor, contentSize, pageSize) {
-            if (!__check(styledItem)) return 0;
             styledItem.flickableItem[propContent] =
                     styledItem.flickableItem[propOrigin] + cursor[propCoordinate] * contentSize / pageSize;
         }
