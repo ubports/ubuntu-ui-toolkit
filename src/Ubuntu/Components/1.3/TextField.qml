@@ -809,7 +809,7 @@ Ubuntu.ActionItem {
     // internals
 
     opacity: enabled ? 1.0 : 0.3
-    activeFocusOnPress: true
+    activeFocusOnTab: true
 
     /*! \internal */
     onVisibleChanged: {
@@ -995,7 +995,7 @@ Ubuntu.ActionItem {
 
             // overrides
             selectByMouse: true
-            activeFocusOnPress: control.activeFocusOnPress
+            activeFocusOnPress: true
             onActiveFocusChanged: if (!activeFocus && inputHandler.popover) PopupUtils.close(inputHandler.popover)
 
             // input selection and navigation handling

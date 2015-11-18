@@ -34,6 +34,15 @@ UCStyledItemBasePrivate::UCStyledItemBasePrivate()
 {
 }
 
+bool UCStyledItemBase::activeFocusOnTab2() const
+{
+    return activeFocusOnTab();
+}
+void UCStyledItemBase::setActiveFocusOnTab2(bool v)
+{
+    setActiveFocusOnTab(v);
+}
+
 UCStyledItemBasePrivate::~UCStyledItemBasePrivate()
 {
 }
@@ -111,6 +120,7 @@ UCStyledItemBase::UCStyledItemBase(QQuickItem *parent)
     , UCThemingExtension(this)
 {
     Q_D(UCStyledItemBase);
+    connect(this, &QQuickItem::activeFocusOnTabChanged, this, &UCStyledItemBase::activeFocusOnTabChanged2);
     d->init();
 }
 
@@ -119,6 +129,7 @@ UCStyledItemBase::UCStyledItemBase(UCStyledItemBasePrivate &dd, QQuickItem *pare
     , UCThemingExtension(this)
 {
     Q_D(UCStyledItemBase);
+    connect(this, &QQuickItem::activeFocusOnTabChanged, this, &UCStyledItemBase::activeFocusOnTabChanged2);
     d->init();
 }
 
@@ -202,7 +213,6 @@ void UCStyledItemBase::setActiveFocusOnPress(bool value)
         return;
     d->activeFocusOnPress = value;
     d->setFocusable(d->activeFocusOnPress);
-    setActiveFocusOnTab(value);
     Q_EMIT activeFocusOnPressChanged();
 }
 
