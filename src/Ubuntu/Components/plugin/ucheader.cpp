@@ -310,10 +310,14 @@ void UCHeader::_q_scrolledContents() {
         qreal clampedY = qMin(qMax(-height(), y() - dy), 0.0);
         setY(clampedY);
     }
+
     m_previous_contentY = m_flickable->contentY();
     if (!m_moving) {
-        m_moving = true;
-        Q_EMIT movingChanged();
+        bool move = m_exposed ? y() != 0.0 : y() != -height();
+        if (move) {
+            m_moving = true;
+            Q_EMIT movingChanged();
+        }
     }
     if (!m_flickable->isMoving()) {
         // m_flickable.contentY was set directly, so no user flicking.
