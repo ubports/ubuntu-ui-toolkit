@@ -310,7 +310,6 @@ void UCHeader::_q_scrolledContents() {
         qreal clampedY = qMin(qMax(-height(), y() - dy), 0.0);
         setY(clampedY);
     }
-
     m_previous_contentY = m_flickable->contentY();
     if (!m_moving) {
         bool move = m_exposed ? y() != 0.0 : y() != -height();
