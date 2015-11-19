@@ -92,7 +92,7 @@ UCBottomEdgeHint::UCBottomEdgeHint(QQuickItem *parent)
 
 void UCBottomEdgeHint::classBegin()
 {
-    UCStyledItemBase::classBegin();
+    UCActionItem::classBegin();
     init();
 }
 
@@ -127,7 +127,7 @@ void UCBottomEdgeHint::init()
 
 void UCBottomEdgeHint::itemChange(ItemChange change, const ItemChangeData &data)
 {
-    UCStyledItemBase::itemChange(change, data);
+    UCActionItem::itemChange(change, data);
     if (change == ItemParentHasChanged) {
         QQmlProperty bottomAnchors(this, "anchors.bottom", qmlContext(this));
         if (data.item && !QQmlPropertyPrivate::binding(bottomAnchors)) {
@@ -139,7 +139,7 @@ void UCBottomEdgeHint::itemChange(ItemChange change, const ItemChangeData &data)
 
 void UCBottomEdgeHint::timerEvent(QTimerEvent *event)
 {
-    UCStyledItemBase::timerEvent(event);
+    UCActionItem::timerEvent(event);
     if (event->timerId() == m_deactivationTimer.timerId()) {
         setStatus(Inactive);
         m_deactivationTimer.stop();
@@ -149,7 +149,7 @@ void UCBottomEdgeHint::timerEvent(QTimerEvent *event)
 // handle clicked event when locked and enter or return is pressed
 void UCBottomEdgeHint::keyPressEvent(QKeyEvent *event)
 {
-    UCStyledItemBase::keyPressEvent(event);
+    UCActionItem::keyPressEvent(event);
     if ((status() >= Active) && (event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)) {
         Q_EMIT clicked();
     }
@@ -161,12 +161,12 @@ void UCBottomEdgeHint::mousePressEvent(QMouseEvent *event)
     if (contains(event->localPos()) && (m_status >= Active)) {
         m_pressed = true;
     } else {
-        UCStyledItemBase::mousePressEvent(event);
+        UCActionItem::mousePressEvent(event);
     }
 }
 void UCBottomEdgeHint::mouseReleaseEvent(QMouseEvent *event)
 {
-    UCStyledItemBase::mouseReleaseEvent(event);
+    UCActionItem::mouseReleaseEvent(event);
     if (m_pressed && (m_status >= Active)) {
         Q_EMIT clicked();
     }
