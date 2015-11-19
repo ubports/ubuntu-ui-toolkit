@@ -34,7 +34,7 @@ public:
     Q_INVOKABLE double projectValue(double x, double xmin, double xmax, double ymin, double ymax);
     Q_INVOKABLE double clampAndProject(double x, double xmin, double xmax, double ymin, double ymax);
 
-    static QObject *qmlInstanceProvider(QQmlEngine *engine, QJSEngine *scriptEngine);
+    static QObject *qmlRegisterTypeCallback(QQmlEngine *engine, QJSEngine *scriptEngine);
 };
 
 #endif // UCMATHUTILS_H
