@@ -73,7 +73,7 @@
 #include "ucbottomedgehint.h"
 #include "gestures/ucswipearea.h"
 #include "ucbottomedge.h"
-#include "ucbottomedgerange.h"
+#include "ucbottomedgeregion.h"
 #include "ucbottomedgestyle.h"
 
 #include <sys/types.h>
@@ -256,7 +256,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCBottomEdgeHint>(uri, 1, 3, "BottomEdgeHint");
     qmlRegisterType<UCSwipeArea>(uri, 1, 3, "SwipeArea");
     qmlRegisterType<UCBottomEdge>(uri, 1, 3, "BottomEdge");
-    qmlRegisterType<UCBottomEdgeRange>(uri, 1, 3, "BottomEdgeRange");
+    qmlRegisterType<UCBottomEdgeRegion>(uri, 1, 3, "BottomEdgeRegion");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)

@@ -176,7 +176,7 @@ Ubuntu.Components.ListItems.Base 1.3: Empty
     property bool iconFrame
     property bool progression
 Ubuntu.Components.BottomEdge 1.3: StyledItem
-    readonly property BottomEdgeRange activeRange
+    readonly property BottomEdgeRegion activeRegion
     property url content
     property Component contentComponent
     readonly property Item contentItem
@@ -192,7 +192,7 @@ Ubuntu.Components.BottomEdge 1.3: StyledItem
     signal collapseCompleted()
     function commit()
     function collapse()
-    property list<BottomEdgeRange> ranges
+    property list<BottomEdgeRegion> regions
 Ubuntu.Components.BottomEdge.DragDirection: Enum
     Downwards
     Undefined
@@ -212,7 +212,7 @@ Ubuntu.Components.BottomEdgeHint.Status: Enum
     Hidden
     Inactive
     Locked
-Ubuntu.Components.BottomEdgeRange 1.3: QtObject
+Ubuntu.Components.BottomEdgeRegion 1.3: QtObject
     property url content
     property Component contentComponent
     property bool enabled

@@ -156,10 +156,10 @@ BottomEdgeStyle {
 
         // drag ended handling
         function dragEnded() {
-            if (!bottomEdge.activeRange || bottomEdge.dragDirection == BottomEdge.Downwards) {
+            if (!bottomEdge.activeRegion || bottomEdge.dragDirection == BottomEdge.Downwards) {
                 bottomEdge.collapse();
             } else {
-                bottomEdge.activeRange.dragEnded();
+                bottomEdge.activeRegion.dragEnded();
             }
         }
 

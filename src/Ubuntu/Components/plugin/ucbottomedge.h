@@ -24,7 +24,7 @@
 #include <QtQuick/private/qquickitemchangelistener_p.h>
 
 class UCBottomEdgeHint;
-class UCBottomEdgeRange;
+class UCBottomEdgeRegion;
 class QQuickAbstractAnimation;
 class UCBottomEdgePrivate;
 class UCBottomEdge : public UCStyledItemBase
@@ -39,10 +39,10 @@ class UCBottomEdge : public UCStyledItemBase
     Q_PROPERTY(QUrl content READ content WRITE setContent NOTIFY contentChanged FINAL)
     Q_PROPERTY(QQmlComponent *contentComponent READ contentComponent WRITE setContentComponent NOTIFY contentComponentChanged FINAL)
     Q_PROPERTY(QQuickItem* contentItem READ contentItem NOTIFY contentItemChanged FINAL)
-    Q_PROPERTY(QQmlListProperty<UCBottomEdgeRange> ranges READ ranges NOTIFY rangesChanged FINAL)
-    Q_PROPERTY(UCBottomEdgeRange* activeRange READ activeRange NOTIFY activeRangeChanged FINAL)
+    Q_PROPERTY(QQmlListProperty<UCBottomEdgeRegion> regions READ regions NOTIFY regionsChanged FINAL)
+    Q_PROPERTY(UCBottomEdgeRegion* activeRegion READ activeRegion NOTIFY activeRegionChanged FINAL)
 
-    // overloaded data property to catch ranges
+    // overloaded data property to catch regions
     Q_PRIVATE_PROPERTY(UCBottomEdge::d_func(), QQmlListProperty<QObject> data READ data DESIGNABLE false)
     Q_CLASSINFO("DefaultProperty", "data")
 public:
@@ -70,8 +70,8 @@ public:
     void setContentComponent(QQmlComponent *component);
     QQuickItem *contentItem() const;
     void setFillWindow(bool fill);
-    QQmlListProperty<UCBottomEdgeRange> ranges();
-    UCBottomEdgeRange *activeRange();
+    QQmlListProperty<UCBottomEdgeRegion> regions();
+    UCBottomEdgeRegion *activeRegion();
 
 Q_SIGNALS:
     void hintChanged();
@@ -82,8 +82,8 @@ Q_SIGNALS:
     void contentComponentChanged(QQmlComponent *component);
     void contentItemChanged();
     void fillWindowChanged();
-    void rangesChanged();
-    void activeRangeChanged();
+    void regionsChanged();
+    void activeRegionChanged();
 
     void commitStarted();
     void commitCompleted();
@@ -95,13 +95,13 @@ public Q_SLOTS:
     void collapse();
 
 public: // non-public to QML
-    void commitToRange(UCBottomEdgeRange *range);
+    void commitToRange(UCBottomEdgeRegion *range);
 
 protected:
-    static void ranges_append(QQmlListProperty<UCBottomEdgeRange> *sections, UCBottomEdgeRange *section);
-    static int ranges_count(QQmlListProperty<UCBottomEdgeRange> *sections);
-    static UCBottomEdgeRange *ranges_at(QQmlListProperty<UCBottomEdgeRange> *sections, int index);
-    static void ranges_clear(QQmlListProperty<UCBottomEdgeRange> *sections);
+    static void regions_append(QQmlListProperty<UCBottomEdgeRegion> *sections, UCBottomEdgeRegion *section);
+    static int regions_count(QQmlListProperty<UCBottomEdgeRegion> *sections);
+    static UCBottomEdgeRegion *regions_at(QQmlListProperty<UCBottomEdgeRegion> *sections, int index);
+    static void regions_clear(QQmlListProperty<UCBottomEdgeRegion> *sections);
 
     void classBegin();
     void componentComplete();

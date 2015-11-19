@@ -18,13 +18,13 @@
 
 #include "ucbottomedge.h"
 #include "ucbottomedge_p.h"
-#include "ucbottomedgerange.h"
+#include "ucbottomedgeregion.h"
 #include "propertychange_p.h"
 #include <QtQml/private/qqmlproperty_p.h>
 
 /*!
- * \qmltype BottomEdgeRange
- * \instantiates UCBottomEdgeRange
+ * \qmltype BottomEdgeRegion
+ * \instantiates UCBottomEdgeRegion
  * \inherits QtObject
  * \inmodule Ubuntu.Components 1.3
  * \since Ubuntu.Components 1.3
@@ -48,7 +48,7 @@
  *
  *     Page {
  *         header: PageHeader {
- *             title: "BottomEdge ranges"
+ *             title: "BottomEdge regions"
  *         }
  *
  *         BottomEdge {
@@ -64,7 +64,7 @@
  *                 color: UbuntuColors.green
  *             }
  *             // override bottom edge sections to switch to real content
- *             BottomEdgeRange {
+ *             BottomEdgeRegion {
  *                 from: 0.33
  *                 contentComponent: Page {
  *                     width: bottomEdge.width
@@ -91,7 +91,7 @@
  * properties will cause unpredictable results.
  */
 
-UCBottomEdgeRange::UCBottomEdgeRange(QObject *parent)
+UCBottomEdgeRegion::UCBottomEdgeRegion(QObject *parent)
     : QObject(parent)
     , m_bottomEdge(qobject_cast<UCBottomEdge*>(parent))
     , m_component(Q_NULLPTR)
@@ -101,10 +101,10 @@ UCBottomEdgeRange::UCBottomEdgeRange(QObject *parent)
     , m_to(-1.0)
     , m_enabled(true)
 {
-    connect(this, &UCBottomEdgeRange::dragEnded, &UCBottomEdgeRange::onDragEnded);
+    connect(this, &UCBottomEdgeRegion::dragEnded, &UCBottomEdgeRegion::onDragEnded);
 }
 
-void UCBottomEdgeRange::attachToBottomEdge(UCBottomEdge *bottomEdge)
+void UCBottomEdgeRegion::attachToBottomEdge(UCBottomEdge *bottomEdge)
 {
     QQml_setParent_noEvent(this, bottomEdge);
     m_bottomEdge = bottomEdge;
@@ -115,7 +115,7 @@ void UCBottomEdgeRange::attachToBottomEdge(UCBottomEdge *bottomEdge)
     }
 }
 
-void UCBottomEdgeRange::onDragEnded()
+void UCBottomEdgeRegion::onDragEnded()
 {
     if (!m_bottomEdge) {
         return;
@@ -128,12 +128,12 @@ void UCBottomEdgeRange::onDragEnded()
     }
 }
 
-bool UCBottomEdgeRange::contains(qreal dragRatio)
+bool UCBottomEdgeRegion::contains(qreal dragRatio)
 {
     return (m_enabled && dragRatio >= m_from && dragRatio <= m_to);
 }
 
-void UCBottomEdgeRange::enter()
+void UCBottomEdgeRegion::enter()
 {
     Q_EMIT entered();
     // backup url
@@ -159,7 +159,7 @@ void UCBottomEdgeRange::enter()
     }
 }
 
-void UCBottomEdgeRange::exit()
+void UCBottomEdgeRegion::exit()
 {
     if (m_componentBackup) {
         delete m_componentBackup;
@@ -173,19 +173,19 @@ void UCBottomEdgeRange::exit()
 }
 
 /*!
- * \qmlproperty bool BottomEdgeRange::enabled
+ * \qmlproperty bool BottomEdgeRegion::enabled
  * Enables the section. Disabled sections do not trigger nor change the BottomEdge
  * content. Defaults to false.
  */
 
 /*!
- * \qmlproperty real BottomEdgeRange::from
+ * \qmlproperty real BottomEdgeRegion::from
  * Specifies the starting ratio of the bottom erge area. The value must be bigger
  * or equal to 0 but strictly smaller than \l to. Defaults to 0.0.
  */
 
 /*!
- * \qmlproperty real BottomEdgeRange::to
+ * \qmlproperty real BottomEdgeRegion::to
  * Specifies the ending ratio of the bottom edge area. The value must be bigger
  * than \l from and smaller or equal to 1.0.
  * \note If the end point is less than 1.0, ending the drag within the section
@@ -194,7 +194,7 @@ void UCBottomEdgeRange::exit()
  */
 
 /*!
- * \qmlproperty url BottomEdgeRange::content
+ * \qmlproperty url BottomEdgeRegion::content
  * Specifies the url to the document defining the section specific content. This
  * propery will temporarily override the \l BottomEdge::content property value
  * when the drag gesture enters the section area. The orginal value will be restored
@@ -202,7 +202,7 @@ void UCBottomEdgeRange::exit()
  */
 
 /*!
- * \qmlproperty Component BottomEdgeRange::contentComponent
+ * \qmlproperty Component BottomEdgeRegion::contentComponent
  * Specifies the component defining the section specific content. This propery
  * will temporarily override the \l BottomEdge::contentComponent property value
  * when the drag gesture enters the section area. The orginal value will be restored
@@ -210,17 +210,17 @@ void UCBottomEdgeRange::exit()
  */
 
 /*!
- * \qmlsignal void BottomEdgeRange::entered()
+ * \qmlsignal void BottomEdgeRegion::entered()
  * Signal triggered when the drag enters into the area defined by the bottom edge
  * section.
  */
 
 /*!
- * \qmlsignal void BottomEdgeRange::exited()
+ * \qmlsignal void BottomEdgeRegion::exited()
  * Signal triggered when the drag leaves the area defined by the bottom edge section.
  */
 
 /*!
- * \qmlsignal void BottomEdgeRange::dragEnded()
+ * \qmlsignal void BottomEdgeRegion::dragEnded()
  * Signal triggered when the drag ends within the active bottom edge section area.
  */

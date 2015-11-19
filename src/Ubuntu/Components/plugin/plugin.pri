@@ -100,8 +100,8 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/gestures/ubuntugesturesqmlglobal.h \
     $$PWD/ucbottomedge.h \
     $$PWD/ucbottomedge_p.h \
-    $$PWD/ucbottomedgerange.h \
     $$PWD/ucbottomedgestyle.h \
+    $$PWD/ucbottomedgeregion.h
 
 SOURCES += $$PWD/plugin.cpp \
     $$PWD/uctheme.cpp \
@@ -168,8 +168,8 @@ SOURCES += $$PWD/plugin.cpp \
     $$PWD/ucbottomedgehint.cpp \
     $$PWD/gestures/ucswipearea.cpp \
     $$PWD/ucbottomedge.cpp \
-    $$PWD/ucbottomedgerange.cpp \
     $$PWD/ucbottomedgestyle.cpp \
+    $$PWD/ucbottomedgeregion.cpp
 
 # adapters
 SOURCES += $$PWD/adapters/alarmsadapter_organizer.cpp

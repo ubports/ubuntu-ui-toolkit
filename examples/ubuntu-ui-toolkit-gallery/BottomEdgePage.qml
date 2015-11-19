@@ -72,7 +72,7 @@ Template {
         }
 
         TemplateRow {
-            title: i18n.tr("Ranges")
+            title: i18n.tr("Regions")
             Slider {
                 id: rangeCount
                 width: units.gu(20)
@@ -84,7 +84,7 @@ Template {
             id: rangeConfig
             model: rangeCount.value.toFixed(0)
             TemplateRow {
-                title: i18n.tr("Range #%1").arg(index)
+                title: i18n.tr("Region #%1").arg(index)
                 property int rangeIndex: index
                 Repeater {
                     model: ["from", "to"]
@@ -95,15 +95,15 @@ Template {
                         }
                         TextField {
                             id: rangeFrom
-                            text: bottomEdge.ranges[rangeIndex][modelData]
+                            text: bottomEdge.regions[rangeIndex][modelData]
                             inputMask: "0.0"
                             validator: DoubleValidator {bottom: 0.0; top: 1.0; decimals: 2}
                             inputMethodHints: Qt.ImhPreferNumbers | Qt.ImhFormattedNumbersOnly
                             width: units.gu(7)
                             hasClearButton: false
                             errorHighlight: true
-                            onAccepted: bottomEdge.ranges[rangeIndex][modelData] = text
-                            onTextChanged: if (acceptableInput) bottomEdge.ranges[rangeIndex][modelData] = text
+                            onAccepted: bottomEdge.regions[rangeIndex][modelData] = text
+                            onTextChanged: if (acceptableInput) bottomEdge.regions[rangeIndex][modelData] = text
                         }
                     }
                 }
@@ -142,24 +142,24 @@ Template {
             }
         }
 
-        ranges: [
-            BottomEdgeRange {
-                objectName: "CustomRange1"
+        regions: [
+            BottomEdgeRegion {
+                objectName: "CustomRegion1"
                 enabled: rangeConfig.model >= 1
                 property color baseColor: UbuntuColors.lightGrey
                 onFromChanged: print(objectName, "from", from)
                 onToChanged: print(objectName, "to", to)
             },
-            BottomEdgeRange {
-                objectName: "CustomRange2"
+            BottomEdgeRegion {
+                objectName: "CustomRegion2"
                 enabled: rangeConfig.model >= 2
             },
-            BottomEdgeRange {
-                objectName: "CustomRange3"
+            BottomEdgeRegion {
+                objectName: "CustomRegion3"
                 enabled: rangeConfig.model >= 3
             },
             // default range, mimics the default setup
-            BottomEdgeRange {
+            BottomEdgeRegion {
                 objectName: "DefaultRange"
                 enabled: rangeConfig.model <= 0
                 from: 0.3
@@ -178,16 +178,16 @@ Template {
                         case BottomEdge.Revealed: state = "Revealed"; break;
                         case BottomEdge.Committed: state = "Hidden"; break;
                         }
-                        return bottomEdge.activeRange
-                          ? i18n.tr("Within range '%1', state: %2").arg(bottomEdge.activeRange.objectName).arg(state)
+                        return bottomEdge.activeRegion
+                          ? i18n.tr("Within region '%1', state: %2").arg(bottomEdge.activeRegion.objectName).arg(state)
                           : i18n.tr("Not in any active range, state: %1").arg(state);
                     }
                 }
                 Rectangle {
                     anchors.fill: parent
                     anchors.margins: units.gu(1)
-                    color: bottomEdge.activeRange && bottomEdge.activeRange.hasOwnProperty("baseColor") ?
-                               bottomEdge.activeRange.baseColor : Qt.rgba(0.5, 1, bottomEdge.dragProgress, 1)
+                    color: bottomEdge.activeRegion && bottomEdge.activeRegion.hasOwnProperty("baseColor") ?
+                               bottomEdge.activeRegion.baseColor : Qt.rgba(0.5, 1, bottomEdge.dragProgress, 1)
                 }
             }
         }

@@ -18,7 +18,7 @@
 
 #include "ucbottomedge_p.h"
 #include "ucbottomedgestyle.h"
-#include "ucbottomedgerange.h"
+#include "ucbottomedgeregion.h"
 #include "ucbottomedgehint.h"
 #include "ucstyleditembase_p.h"
 #include <QtQml/QQmlEngine>
@@ -39,7 +39,7 @@
 
 UCBottomEdgePrivate::UCBottomEdgePrivate()
     : UCStyledItemBasePrivate()
-    , activeRange(Q_NULLPTR)
+    , activeRegion(Q_NULLPTR)
     , hint(new UCBottomEdgeHint)
     , contentComponent(Q_NULLPTR)
     , bottomPanel(Q_NULLPTR)
@@ -47,7 +47,7 @@ UCBottomEdgePrivate::UCBottomEdgePrivate()
     , state(UCBottomEdge::Hidden)
     , operationStatus(Idle)
     , dragDirection(UCBottomEdge::Undefined)
-    , defaultRangesReset(false)
+    , defaultRegionsReset(false)
 {
 }
 
@@ -60,13 +60,13 @@ void UCBottomEdgePrivate::init()
     QObject::connect(hint, SIGNAL(clicked()), q, SLOT(commit()), Qt::DirectConnection);
 
     // create default stages
-    createDefaultRanges();
+    createDefaultRegions();
 
     // set the style name
     styleDocument = QStringLiteral("BottomEdgeStyle");
 }
 
-// overload default data property so we can filter out the ranges declared
+// overload default data property so we can filter out the regions declared
 // in the body of the component as resources
 QQmlListProperty<QObject> UCBottomEdgePrivate::data()
 {
@@ -79,75 +79,75 @@ QQmlListProperty<QObject> UCBottomEdgePrivate::data()
 void UCBottomEdgePrivate::overload_data_append(QQmlListProperty<QObject> *data, QObject *object)
 {
     QQuickItemPrivate::data_append(data, object);
-    // if the object is a range, add to the ranges as well
-    UCBottomEdgeRange *range = qobject_cast<UCBottomEdgeRange*>(object);
+    // if the object is a range, add to the regions as well
+    UCBottomEdgeRegion *range = qobject_cast<UCBottomEdgeRegion*>(object);
     if (range) {
         UCBottomEdgePrivate *bottomEdge = UCBottomEdgePrivate::get(static_cast<UCBottomEdge*>(data->object));
-        bottomEdge->appendRange(range);
+        bottomEdge->appendRegion(range);
     }
 }
 
 void UCBottomEdgePrivate::overload_data_clear(QQmlListProperty<QObject> *data)
 {
-    // clear ranges as well
+    // clear regions as well
     UCBottomEdgePrivate *bottomEdge = UCBottomEdgePrivate::get(static_cast<UCBottomEdge*>(data->object));
-    bottomEdge->clearRanges(false);
+    bottomEdge->clearRegions(false);
     QQuickItemPrivate::data_clear(data);
 }
 
-// appends a BottomEdgeRange to the list; clears the default ranges before appends the
+// appends a BottomEdgeRegion to the list; clears the default regions before appends the
 // custom ones
-void UCBottomEdgePrivate::appendRange(UCBottomEdgeRange *range)
+void UCBottomEdgePrivate::appendRegion(UCBottomEdgeRegion *range)
 {
     Q_Q(UCBottomEdge);
-    // the range must be owned by the component, we cannot "reuse" declared ranges
+    // the range must be owned by the component, we cannot "reuse" declared regions
     Q_ASSERT(range && range->parent() == q);
-    if (!defaultRangesReset) {
-        defaultRangesReset = true;
-        qDeleteAll(ranges);
-        ranges.clear();
+    if (!defaultRegionsReset) {
+        defaultRegionsReset = true;
+        qDeleteAll(regions);
+        regions.clear();
     }
-    ranges.append(range);
+    regions.append(range);
     // take ownership!
     QQmlEngine::setObjectOwnership(range, QQmlEngine::CppOwnership);
     range->attachToBottomEdge(q);
 }
 
-// clears the custom ranges list and restores the default ones
-void UCBottomEdgePrivate::clearRanges(bool destroy)
+// clears the custom regions list and restores the default ones
+void UCBottomEdgePrivate::clearRegions(bool destroy)
 {
-    if (!defaultRangesReset) {
+    if (!defaultRegionsReset) {
         return;
     }
     if (destroy) {
-        qDeleteAll(ranges);
+        qDeleteAll(regions);
     }
-    ranges.clear();
-    defaultRangesReset = false;
-    createDefaultRanges();
+    regions.clear();
+    defaultRegionsReset = false;
+    createDefaultRegions();
 }
 
-// creates the default ranges(s)
-void UCBottomEdgePrivate::createDefaultRanges()
+// creates the default regions(s)
+void UCBottomEdgePrivate::createDefaultRegions()
 {
     Q_Q(UCBottomEdge);
     // add the default stages
-    UCBottomEdgeRange *commitRange = new UCBottomEdgeRange(q);
+    UCBottomEdgeRegion *commitRange = new UCBottomEdgeRegion(q);
     // for testing purposes
-    commitRange->setObjectName("default_bottomedgerange");
+    commitRange->setObjectName("default_BottomEdgeRegion");
     // enters in this stage when drag ratio reaches 30% of the area
     commitRange->m_from = 0.33;
     commitRange->m_to = 1.0;
 
-    ranges.append(commitRange);
+    regions.append(commitRange);
 }
 
-// update state, drag direction and activeRange during drag
+// update state, drag direction and activeRegion during drag
 void UCBottomEdgePrivate::updateProgressionStates()
 {
     detectDirection(bottomPanel->m_panel->y());
     if (isLocked()) {
-        // there is an operation ongoing, do not update drag and activeRange
+        // there is an operation ongoing, do not update drag and activeRegion
         return;
     }
     Q_Q(UCBottomEdge);
@@ -157,31 +157,31 @@ void UCBottomEdgePrivate::updateProgressionStates()
         setState(UCBottomEdge::Revealed);
     }
 
-    // go through the ranges
-    Q_FOREACH(UCBottomEdgeRange *range, ranges) {
+    // go through the regions
+    Q_FOREACH(UCBottomEdgeRegion *range, regions) {
         if (range->contains(progress)) {
-            setActiveRange(range);
+            setActiveRegion(range);
             break;
-        } else if (activeRange == range) {
-            setActiveRange(Q_NULLPTR);
+        } else if (activeRegion == range) {
+            setActiveRegion(Q_NULLPTR);
         }
     }
 }
 
-// set teh active range
-bool UCBottomEdgePrivate::setActiveRange(UCBottomEdgeRange *range)
+// set the active range
+bool UCBottomEdgePrivate::setActiveRegion(UCBottomEdgeRegion *range)
 {
-    if (activeRange == range) {
+    if (activeRegion == range) {
         return false;
     }
-    if (activeRange) {
-        activeRange->exit();
+    if (activeRegion) {
+        activeRegion->exit();
     }
-    activeRange = range;
-    if (activeRange) {
-        activeRange->enter();
+    activeRegion = range;
+    if (activeRegion) {
+        activeRegion->enter();
     }
-    Q_EMIT q_func()->activeRangeChanged();
+    Q_EMIT q_func()->activeRegionChanged();
     return true;
 }
 
@@ -229,7 +229,7 @@ void UCBottomEdgePrivate::positionPanel(qreal position)
 Q_DECLARE_METATYPE(QQmlListProperty<UCAction>)
 void UCBottomEdgePrivate::patchContentItemHeader()
 {
-    // ugly, as it can be, as we don't have teh PageHeader in cpp to detect the type
+    // ugly, as it can be, as we don't have the PageHeader in cpp to detect the type
     UCHeader *header = bottomPanel->m_contentItem ? bottomPanel->m_contentItem->findChild<UCHeader*>() : Q_NULLPTR;
     if (!header || !QuickUtils::inherits(header, "PageHeader")) {
         return;
@@ -315,15 +315,13 @@ void UCBottomEdgePrivate::itemChildRemoved(QQuickItem *item, QQuickItem *child)
  * The component provides bottom edge content handling. The bottom egde feature
  * is typically composed of a hint and some content. The content is committed
  * (i.e. fully shown) when the drag is completed after it has been dragged for
- * a certain amount. The content can be anything, defined by \l content or
- * \l contentComponent.
+ * a certain amount, that is 30% of the height of the BottomEdge. The content
+ * can be anything, defined by \l content or \l contentComponent.
  *
  * As the name suggests, the component automatically anchors to the bottom of its
  * parent and takes the width of the parent. The drag is detected within the parent
- * area.
- *
- * The height of the BottomEdge drives till what extent the bottom edge content
- * should be exposed. The content is centered into a panel which is dragged from
+ * area, and the height drives till what extent the bottom edge content should be
+ * exposed on \l commit call. The content is centered into a panel which is dragged from
  * the bottom of the BottomEdge. The content must specify its width and height.
  * \qml
  * import QtQuick 2.4
@@ -354,9 +352,9 @@ void UCBottomEdgePrivate::itemChildRemoved(QQuickItem *item, QQuickItem *child)
  * Loader's \e source, \e sourceComponent and \e item properties. See Loader
  * documentation for further details.
  *
- * There can be situations when the content depends on the progress of the drag
- * or when the drag is in different regions of the area. The first can be achieved
- * by tracking the \l dragProgress.
+ * There can be situations when the content depends on the progress of the drag.
+ * There are two possibilities to follow this, depending on the use case. The
+ * \l dragProgress provides live updates about the percentage of the drag.
  * \qml
  * BottomEdge {
  *     id: bottomEdge
@@ -369,9 +367,10 @@ void UCBottomEdgePrivate::itemChildRemoved(QQuickItem *item, QQuickItem *child)
  *     }
  * }
  * \endqml
- * An other case is when the content needs to be completely different in certain
- * regions of the area. These regions can be defined through BottomEdgeRange elements
- * listed in the \l ranges property.
+ *
+ * The other usecase is when the content needs to be completely different in certain
+ * regions of the area. These regions can be defined through BottomEdgeRegion elements
+ * listed in the \l regions property.
  * \qml
  * import QtQuick 2.4
  * import Ubuntu.Components 1.3
@@ -390,16 +389,16 @@ void UCBottomEdgePrivate::itemChildRemoved(QQuickItem *item, QQuickItem *child)
  *             contentComponent: Rectangle {
  *                 width: bottomEdge.width
  *                 height: bottomEdge.height
- *                 color: bottomEdge.activeRange ?
- *                          bottomEdge.activeRange.color : UbuntuColors.green
+ *                 color: bottomEdge.activeRegion ?
+ *                          bottomEdge.activeRegion.color : UbuntuColors.green
  *             }
- *             ranges: [
- *                 BottomEdgeRange {
+ *             regions: [
+ *                 BottomEdgeRegion {
  *                     from: 0.4
  *                     to: 0.6
  *                     property color color: UbuntuColors.red
  *                 },
- *                 BottomEdgeRange {
+ *                 BottomEdgeRegion {
  *                     from: 0.6
  *                     to: 1.0
  *                     property color color: UbuntuColors.lightGrey
@@ -410,7 +409,7 @@ void UCBottomEdgePrivate::itemChildRemoved(QQuickItem *item, QQuickItem *child)
  * }
  * \endqml
  * \note Ranges can also be declared as child elements the same way as resources.
- * \sa BottomEdgeRange
+ * \sa BottomEdgeRegion
  *
  * \section2 Page As Content
  * BottomEdge accepts any component to be set as content. Also it can detect
@@ -730,7 +729,7 @@ void UCBottomEdge::collapse()
 }
 
 // yet internal, commits to the top of the range
-void UCBottomEdge::commitToRange(UCBottomEdgeRange *range)
+void UCBottomEdge::commitToRange(UCBottomEdgeRegion *range)
 {
     Q_D(UCBottomEdge);
     if (!range || d->isLocked()) {
@@ -784,57 +783,57 @@ void UCBottomEdge::unlockOperation(bool running)
 }
 
 /*!
- * \qmlproperty list<BottomEdgeRange> BottomEdge::ranges
- * The property holds the custom ranges configured for the BottomEdge. The default
+ * \qmlproperty list<BottomEdgeRegion> BottomEdge::regions
+ * The property holds the custom regions configured for the BottomEdge. The default
  * configuration contains one range, which commits the content when reached. The
  * defaults can be restored by setting an empty list to the property or by
- * calling ranges.clear().
- * See \l BottomEdgeRange.
+ * calling regions.clear().
+ * See \l BottomEdgeRegion.
  */
-QQmlListProperty<UCBottomEdgeRange> UCBottomEdge::ranges()
+QQmlListProperty<UCBottomEdgeRegion> UCBottomEdge::regions()
 {
     Q_D(UCBottomEdge);
-    return QQmlListProperty<UCBottomEdgeRange>(this, &d->ranges,
-                                                 ranges_append,
-                                                 ranges_count,
-                                                 ranges_at,
-                                                 ranges_clear);
+    return QQmlListProperty<UCBottomEdgeRegion>(this, &d->regions,
+                                                 regions_append,
+                                                 regions_count,
+                                                 regions_at,
+                                                 regions_clear);
 }
 
-void UCBottomEdge::ranges_append(QQmlListProperty<UCBottomEdgeRange> *ranges, UCBottomEdgeRange *range)
+void UCBottomEdge::regions_append(QQmlListProperty<UCBottomEdgeRegion> *regions, UCBottomEdgeRegion *range)
 {
-    UCBottomEdgePrivate *bottomEdge = UCBottomEdgePrivate::get(static_cast<UCBottomEdge*>(ranges->object));
-    bottomEdge->appendRange(range);
+    UCBottomEdgePrivate *bottomEdge = UCBottomEdgePrivate::get(static_cast<UCBottomEdge*>(regions->object));
+    bottomEdge->appendRegion(range);
 }
 
-int UCBottomEdge::ranges_count(QQmlListProperty<UCBottomEdgeRange> *ranges)
+int UCBottomEdge::regions_count(QQmlListProperty<UCBottomEdgeRegion> *regions)
 {
-    UCBottomEdgePrivate *bottomEdge = UCBottomEdgePrivate::get(static_cast<UCBottomEdge*>(ranges->object));
-    return bottomEdge->ranges.size();
+    UCBottomEdgePrivate *bottomEdge = UCBottomEdgePrivate::get(static_cast<UCBottomEdge*>(regions->object));
+    return bottomEdge->regions.size();
 }
 
-UCBottomEdgeRange *UCBottomEdge::ranges_at(QQmlListProperty<UCBottomEdgeRange> *ranges, int index)
+UCBottomEdgeRegion *UCBottomEdge::regions_at(QQmlListProperty<UCBottomEdgeRegion> *regions, int index)
 {
-    UCBottomEdgePrivate *bottomEdge = UCBottomEdgePrivate::get(static_cast<UCBottomEdge*>(ranges->object));
-    Q_ASSERT((index >= 0) && (index < bottomEdge->ranges.size()));
-    return bottomEdge->ranges.at(index);
+    UCBottomEdgePrivate *bottomEdge = UCBottomEdgePrivate::get(static_cast<UCBottomEdge*>(regions->object));
+    Q_ASSERT((index >= 0) && (index < bottomEdge->regions.size()));
+    return bottomEdge->regions.at(index);
 }
 
-void UCBottomEdge::ranges_clear(QQmlListProperty<UCBottomEdgeRange> *ranges)
+void UCBottomEdge::regions_clear(QQmlListProperty<UCBottomEdgeRegion> *regions)
 {
-    UCBottomEdgePrivate *bottomEdge = UCBottomEdgePrivate::get(static_cast<UCBottomEdge*>(ranges->object));
-    bottomEdge->clearRanges(true);
+    UCBottomEdgePrivate *bottomEdge = UCBottomEdgePrivate::get(static_cast<UCBottomEdge*>(regions->object));
+    bottomEdge->clearRegions(true);
 }
 
 /*!
- * \qmlproperty BottomEdgeRange BottomEdge::activeRange
+ * \qmlproperty BottomEdgeRegion BottomEdge::activeRegion
  * \readonly
  * Specifies the current active range.
  */
-UCBottomEdgeRange *UCBottomEdge::activeRange()
+UCBottomEdgeRegion *UCBottomEdge::activeRegion()
 {
     Q_D(UCBottomEdge);
-    return d->activeRange;
+    return d->activeRegion;
 }
 
 #include "moc_ucbottomedge.cpp"

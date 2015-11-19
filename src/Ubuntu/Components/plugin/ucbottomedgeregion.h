@@ -16,8 +16,8 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef UCBOTTOMEDGERANGE_H
-#define UCBOTTOMEDGERANGE_H
+#ifndef UCBOTTOMEDGEREGION_H
+#define UCBOTTOMEDGEREGION_H
 
 #include <QtCore/QObject>
 #include <QtQml/QQmlParserStatus>
@@ -27,7 +27,7 @@
 class UCBottomEdge;
 class QQmlComponent;
 class PropertyChange;
-class UCBottomEdgeRange : public QObject
+class UCBottomEdgeRegion : public QObject
 {
     Q_OBJECT
 
@@ -37,7 +37,7 @@ class UCBottomEdgeRange : public QObject
     Q_PROPERTY(QUrl content MEMBER m_url NOTIFY contentChanged FINAL)
     Q_PROPERTY(QQmlComponent* contentComponent MEMBER m_component NOTIFY contentComponentChanged FINAL)
 public:
-    explicit UCBottomEdgeRange(QObject *parent = 0);
+    explicit UCBottomEdgeRegion(QObject *parent = 0);
     void attachToBottomEdge(UCBottomEdge *bottomEdge);
 
     // used internally
@@ -72,4 +72,4 @@ protected:
     friend class UCBottomEdgePrivate;
 };
 
-#endif // UCBOTTOMEDGERANGE_H
+#endif // UCBOTTOMEDGEREGION_H

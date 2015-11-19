@@ -42,14 +42,14 @@ public:
     static void overload_data_clear(QQmlListProperty<QObject> *);
 
     // range funcs
-    void appendRange(UCBottomEdgeRange *range);
-    void clearRanges(bool destroy);
+    void appendRegion(UCBottomEdgeRegion *range);
+    void clearRegions(bool destroy);
 
     // page header manipulation
     void patchContentItemHeader();
-    void createDefaultRanges();
+    void createDefaultRegions();
     void updateProgressionStates();
-    bool setActiveRange(UCBottomEdgeRange *range);
+    bool setActiveRegion(UCBottomEdgeRegion *range);
     void detectDirection(qreal currentPanelY);
     void setDragDirection(UCBottomEdge::DragDirection direction);
 
@@ -67,8 +67,8 @@ public:
 
     // members
     QUrl contentUrl;
-    QList<UCBottomEdgeRange*> ranges;
-    UCBottomEdgeRange *activeRange;
+    QList<UCBottomEdgeRegion*> regions;
+    UCBottomEdgeRegion *activeRegion;
     UCBottomEdgeHint *hint;
     QQmlComponent *contentComponent;
     UCBottomEdgeStyle *bottomPanel;
@@ -85,7 +85,7 @@ public:
     OperationStatus operationStatus;
     UCBottomEdge::DragDirection dragDirection;
 
-    bool defaultRangesReset:1;
+    bool defaultRegionsReset:1;
 
     // status management
     void setOperationStatus(OperationStatus s)
