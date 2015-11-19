@@ -666,7 +666,7 @@ Item {
 
                 function scroll(amount) {
                     scrollAnimation.to = ScrollbarUtils.scrollAndClamp(styledItem, amount, 0.0,
-                                                                       totalContentSize - pageSize);
+                                                                       Math.max(totalContentSize - pageSize, 0));
                     console.log(scrollAnimation.to)
                     scrollAnimation.restart();
                 }
