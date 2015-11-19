@@ -37,10 +37,10 @@ UCMathUtils::UCMathUtils(QObject *parent) : QObject(parent)
 double UCMathUtils::clamp(double x, double min, double max)
 {
     if (!(min > max)) {
-        return qMax(min, qMin(x, max));
+        return qBound(min, x, max);
     } else {
         // swap min/max if min > max
-        return clamp(x, max, min);
+        return qBound(max, x, min);
     }
 }
 
