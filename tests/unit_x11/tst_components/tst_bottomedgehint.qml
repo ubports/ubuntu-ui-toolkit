@@ -105,6 +105,7 @@ MainView {
         }
 
         function cleanup() {
+            mainView.forceActiveFocus();
             listView.positionViewAtBeginning();
             bottomEdgeHint.visible = true;
             bottomEdgeHint.iconName = "";
@@ -222,6 +223,19 @@ MainView {
             mouseClick(bottomEdgeHint, centerOf(bottomEdgeHint).x, centerOf(bottomEdgeHint).y);
             clickSpy.wait(500);
             compare(bottomEdgeHint.triggerCount, prevCount + 1, "Overloaded trigger not called");
+        }
+
+        function test_active_focus_on_press_bug1517777() {
+            var testItem = bottomEdgeHint;
+            testItem.status = BottomEdgeHint.Active;
+            testItem.activeFocusOnPress = true;
+            // make sure the test item is not active focus
+            floatingHint.forceActiveFocus();
+            verify(testItem.status >= BottomEdgeHint.Active);
+            compare(testItem.activeFocus, false, "BottomEdgeHint is focus before the test!");
+
+            mouseClick(testItem, centerOf(testItem).x, centerOf(testItem).y);
+            compare(testItem.activeFocus, true, "BottomEdgeHint is not focus");
         }
     }
 }
