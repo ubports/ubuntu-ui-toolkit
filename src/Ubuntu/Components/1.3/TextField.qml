@@ -809,6 +809,8 @@ Ubuntu.ActionItem {
     // internals
 
     opacity: enabled ? 1.0 : 0.3
+    property alias activeFocusOnPress: editor.activeFocusOnPress
+    activeFocusOnPress: true
     activeFocusOnTab: true
 
     /*! \internal */

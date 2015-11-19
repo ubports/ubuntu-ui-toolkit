@@ -482,11 +482,14 @@ Item {
 
             var clearButton = findChild(customTextField, "clear_button")
             mouseClick(clearButton, clearButton.width/2, clearButton.height/2);
-            compare(data.input.focus, true, 'TextField remains focused');
+            waitForRendering(data.input.focus, 500);
+            compare(data.input.focus, true, 'TextField no longer focused');
             mouseClick(primaryButton, primaryButton.width/2, primaryButton.height/2);
-            compare(data.input.focus, true, 'TextField remains focused');
+            waitForRendering(data.input.focus, 500);
+            compare(data.input.focus, true, 'TextField no longer focused');
             mouseClick(secondaryButton, secondaryButton.width/2, secondaryButton.height/2);
-            compare(data.input.focus, true, 'TextField remains focused');
+            waitForRendering(data.input.focus, 500);
+            compare(data.input.focus, true, 'TextField no longer focused');
         }
     }
 }

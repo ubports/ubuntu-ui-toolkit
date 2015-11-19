@@ -51,6 +51,7 @@ void UCStyledItemBasePrivate::init()
 {
     Q_Q(UCStyledItemBase);
     q->setFlag(QQuickItem::ItemIsFocusScope);
+    QObject::connect(q, &QQuickItem::activeFocusOnTabChanged, q, &UCStyledItemBase::activeFocusOnTabChanged2);
 }
 
 
@@ -120,7 +121,6 @@ UCStyledItemBase::UCStyledItemBase(QQuickItem *parent)
     , UCThemingExtension(this)
 {
     Q_D(UCStyledItemBase);
-    connect(this, &QQuickItem::activeFocusOnTabChanged, this, &UCStyledItemBase::activeFocusOnTabChanged2);
     d->init();
 }
 
@@ -129,7 +129,6 @@ UCStyledItemBase::UCStyledItemBase(UCStyledItemBasePrivate &dd, QQuickItem *pare
     , UCThemingExtension(this)
 {
     Q_D(UCStyledItemBase);
-    connect(this, &QQuickItem::activeFocusOnTabChanged, this, &UCStyledItemBase::activeFocusOnTabChanged2);
     d->init();
 }
 

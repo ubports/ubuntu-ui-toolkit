@@ -32,6 +32,8 @@ class UCStyledItemBase : public QQuickItem, public UCThemingExtension
     Q_PROPERTY(bool activeFocusOnPress
                READ activefocusOnPress WRITE setActiveFocusOnPress
                NOTIFY activeFocusOnPressChanged REVISION 1)
+    // FIXME Re-expose property that would be inaccessible due to a QML bug
+    // https://bugs.launchpad.net/ubuntu/+source/qtdeclarative-opensource-src/+bug/1389721
     Q_PROPERTY(bool activeFocusOnTab
             READ activeFocusOnTab2
             WRITE setActiveFocusOnTab2
