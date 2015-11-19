@@ -36,6 +36,11 @@ MainView {
 
     BottomEdgeHint {
         id: bottomEdgeHint
+        property int triggerCount: 0
+        function trigger(v)
+        {
+            triggerCount++;
+        }
     }
     BottomEdgeHint {
         id: floatingHint
@@ -199,7 +204,7 @@ MainView {
 
         // FIXME: must be executed before the test_hiding as flick with mouse affects
         // the touch drag on ListView for some unknown reason
-        function test_touch_gesture() {
+        function test_0_touch_gesture() {
             if (hasMouseAttached) {
                 skip("", "The test requires touch environment");
             }
@@ -209,6 +214,14 @@ MainView {
             tryCompare(bottomEdgeHint, "status", BottomEdgeHint.Active, 400);
             // then wait till we get back to Idle
             tryCompare(bottomEdgeHint, "status", BottomEdgeHint.Inactive, 1000);
+        }
+
+        function test_custom_trigger_on_clicked() {
+            bottomEdgeHint.status = BottomEdgeHint.Locked;
+            var prevCount = bottomEdgeHint.triggerCount;
+            mouseClick(bottomEdgeHint, centerOf(bottomEdgeHint).x, centerOf(bottomEdgeHint).y);
+            clickSpy.wait(500);
+            compare(bottomEdgeHint.triggerCount, prevCount + 1, "Overloaded trigger not called");
         }
     }
 }
