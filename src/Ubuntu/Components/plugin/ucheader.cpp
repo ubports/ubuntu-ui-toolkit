@@ -208,6 +208,7 @@ void UCHeader::updateFlickableMargins() {
 }
 
 void UCHeader::show(bool animate) {
+    if (m_exposed && !m_moving && y() == 0.0) return;
     if (!m_exposed) {
         m_exposed = true;
         Q_EMIT exposedChanged();
@@ -233,6 +234,7 @@ void UCHeader::show(bool animate) {
 }
 
 void UCHeader::hide(bool animate) {
+    if (!m_exposed && !m_moving && y() == -1.0*height()) return;
     if (m_exposed) {
         m_exposed = false;
         Q_EMIT exposedChanged();
@@ -310,8 +312,11 @@ void UCHeader::_q_scrolledContents() {
     }
     m_previous_contentY = m_flickable->contentY();
     if (!m_moving) {
-        m_moving = true;
-        Q_EMIT movingChanged();
+        bool move = m_exposed ? y() != 0.0 : y() != -height();
+        if (move) {
+            m_moving = true;
+            Q_EMIT movingChanged();
+        }
     }
     if (!m_flickable->isMoving()) {
         // m_flickable.contentY was set directly, so no user flicking.
