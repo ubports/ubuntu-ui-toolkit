@@ -85,7 +85,7 @@ Item {
     property Flickable flickableItem: styledItem.flickableItem
     property bool isScrollable: styledItem.__private.scrollable && pageSize > 0.0
                                 && contentSize > 0.0 && contentSize > pageSize
-    property bool isVertical: scrollbarUtils.isVertical(styledItem)
+    property bool isVertical: (styledItem.align === Qt.AlignLeading) || (styledItem.align === Qt.AlignTrailing)
     property bool frontAligned: (styledItem.align === Qt.AlignLeading)
     property bool rearAligned: (styledItem.align === Qt.AlignTrailing)
     property bool topAligned: (styledItem.align === Qt.AlignTop)
@@ -101,21 +101,12 @@ Item {
     QtObject {
         id: scrollbarUtils
 
-        property bool vertical: (styledItem.align === Qt.AlignLeading) || (styledItem.align === Qt.AlignTrailing)
-        property string propOrigin: (vertical) ? "originY" : "originX"
-        property string propContent: (vertical) ? "contentY" : "contentX"
-        property string propPosRatio: (vertical) ? "yPosition" : "xPosition"
-        property string propSizeRatio: (vertical) ? "heightRatio" : "widthRatio"
-        property string propCoordinate: (vertical) ? "y" : "x"
-        property string propSize: (vertical) ? "height" : "width"
-
-        /*!
-          \internal
-          Returns whether the scrollbar is vertical or horizontal.
-          */
-        function isVertical() {
-            return vertical;
-        }
+        property string propOrigin: (isVertical) ? "originY" : "originX"
+        property string propContent: (isVertical) ? "contentY" : "contentX"
+        property string propPosRatio: (isVertical) ? "yPosition" : "xPosition"
+        property string propSizeRatio: (isVertical) ? "heightRatio" : "widthRatio"
+        property string propCoordinate: (isVertical) ? "y" : "x"
+        property string propSize: (isVertical) ? "height" : "width"
 
         /*!
           \internal
