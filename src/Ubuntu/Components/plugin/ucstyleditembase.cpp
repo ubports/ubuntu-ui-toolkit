@@ -54,19 +54,26 @@ void UCStyledItemBasePrivate::setFocusable(bool focus)
 
 bool UCStyledItemBasePrivate::isParentFocusable()
 {
+    Q_Q(UCStyledItemBase);
+    qDebug() << "isParentFocusable: BEGIN on" << q;
     if (!activeFocusOnPress) {
+        qDebug() << "isParentFocusable: NO ACTIVE FOCUS ON PRESS" << q;
         return false;
     }
     QQuickItem *pl = parentItem;
     while (pl) {
         UCStyledItemBase *scope = qobject_cast<UCStyledItemBase*>(pl);
+        qDebug() << "isParentFocusable: checking item" << pl;
         if (scope) {
             UCStyledItemBasePrivate *pscope = UCStyledItemBasePrivate::get(scope);
-            return pscope->isParentFocusable();
+            bool focusable = pscope->isParentFocusable();
+            qDebug() << "isParentFocusable: scope found" << pl << focusable;
+            return focusable;
         }
         pl = pl->parentItem();
     }
 
+    qDebug() << "isParentFocusable: RETURNING TRUE FOR" << q << "NO SCOPE FOUND";
     return true;
 }
 
@@ -199,9 +206,12 @@ bool UCStyledItemBase::activefocusOnPress() const
 void UCStyledItemBase::setActiveFocusOnPress(bool value)
 {
     Q_D(UCStyledItemBase);
-    if (d->activeFocusOnPress == value)
+    if (d->activeFocusOnPress == value) {
+        qDebug() << "Setting active focus to item" << this << "to value" << value << "SKIPPING, ALREADY AT THE SAME VALUE!";
         return;
+    }
     d->activeFocusOnPress = value;
+    qDebug() << "Setting active focus to item" << this << "to value" << value;
     d->setFocusable(d->activeFocusOnPress);
     setActiveFocusOnTab(value);
     Q_EMIT activeFocusOnPressChanged();

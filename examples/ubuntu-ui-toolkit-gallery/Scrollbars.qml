@@ -132,6 +132,7 @@ Template {
             width: units.gu(30)
             height: units.gu(40)
             ScrollView {
+                id: view
                 anchors.fill: parent
                 Image {
                     source: "http://files.explosm.net/comics/Rob/sbTotal.png"
@@ -147,8 +148,14 @@ Template {
 
             ScrollView {
                 anchors.fill: parent
-                Image {
-                    source: "http://mapdesign.icaci.org/wp-content/uploads/2014/07/MapCarte197_tokyo_large.png"
+                //Image {
+                //    source: "http://mapdesign.icaci.org/wp-content/uploads/2014/07/MapCarte197_tokyo_large.png"
+                //}
+
+                //quick way to test the "hinting" behaviour when the contentItem size changes
+                Button {
+                    text :"Trigger hint"
+                    onClicked: view.flickableItem.contentWidth+=10
                 }
             }
         }

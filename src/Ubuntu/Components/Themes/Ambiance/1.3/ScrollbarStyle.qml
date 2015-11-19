@@ -84,8 +84,8 @@ Item {
                     flickableItem.contentHeight, flickableItem.height, (flickableItem.contentHeight > flickableItem.height * 10),
                     flickableItem.contentWidth, flickableItem.width, (flickableItem.contentWidth > flickableItem.width * 10))
         return flickableItem && initialized
-                                        && ((flickableItem.contentHeight > flickableItem.height * 10)
-                                            || (flickableItem.contentWidth > flickableItem.width * 10))
+                && ((flickableItem.contentHeight > flickableItem.height * 10)
+                    || (flickableItem.contentWidth > flickableItem.width * 10))
     }
 
     property real thumbThickness: units.gu(1)
@@ -104,8 +104,8 @@ Item {
     //This property is also queried by the "buddyScrollbar" to make sure both scrollbars
     //are in thumb style even when only one of them has a true thumbStyleFlag
     property bool thumbStyleFlag: hoverTransformationFlag || draggingThumb
-                                    //only show the thumb if the page AND the view is moving,
-                                    //don't keep it on screen just because the page is long
+    //only show the thumb if the page AND the view is moving,
+    //don't keep it on screen just because the page is long
                                   || (veryLongContentItem && (flickableItem.moving || scrollAnimation.running))
 
     property bool draggingThumb: thumbArea.drag.active
@@ -179,6 +179,14 @@ Item {
         target: visuals
         property: 'state'
         value: {
+            console.log("REEVALUATING STATE\n",
+                        "isScrollable", isScrollable,
+                        "alwaysOnScrollbars", alwaysOnScrollbars,
+                        "overlay", overlay, "\n",
+                        "hoverTransformationFlag", hoverTransformationFlag,
+                        "draggingThumb", draggingThumb,
+                        "overshoot timer running", __overshootTimer.running, "\n",
+                        "thumbStyleFlag", thumbStyleFlag)
             if (!isScrollable && !alwaysOnScrollbars)
                 return '';
             else if (overlay) {
@@ -235,6 +243,11 @@ Item {
                 showCornerRect: false
             }
             PropertyChanges {
+                target: steppersMouseArea
+                width: 0
+                height: 0
+            }
+            PropertyChanges {
                 target: trough
                 color: Qt.rgba(troughColorThumbStyle.r,
                                troughColorThumbStyle.g,
@@ -252,6 +265,11 @@ Item {
                 showSteppers: false
                 showTrough: alwaysOnScrollbars
                 showCornerRect: false
+            }
+            PropertyChanges {
+                target: steppersMouseArea
+                width: 0
+                height: 0
             }
             PropertyChanges {
                 target: trough
@@ -273,6 +291,16 @@ Item {
                 showCornerRect: true
             }
             PropertyChanges {
+                target: steppersMouseArea
+                width: isVertical ? flowContainer.width
+                                  : (firstStepper.visible ? firstStepper.width : 0)
+                                    + (secondStepper.visible ? secondStepper.width : 0)
+                height: isVertical ? (firstStepper.visible ? firstStepper.height : 0)
+                                     + (secondStepper.visible ? secondStepper.height : 0)
+                                   : trough.height
+            }
+
+            PropertyChanges {
                 target: trough
                 color: Qt.rgba(troughColorSteppersStyle.r,
                                troughColorSteppersStyle.g,
@@ -285,6 +313,7 @@ Item {
         Transition {
             from: ''
             to: 'shown'
+            onRunningChanged: console.log("RUNNING SHOWN TRANSITION", running)
             NumberAnimation {
                 target: visuals
                 property: "opacity"
@@ -302,17 +331,21 @@ Item {
                 console.log("COLLAPSING TO INDICATOR transition running changed", running, __disableStateBinding, hintingStyle, visuals)
 
                 if (!running && __disableStateBinding && hintingStyle === 'indicator') {
-                                  //this handles the case when we're briefly showing the scrollbar
-                                  //as a hint, as a consequence of the resizing of the flickable item or
-                                  //its content item
-                                  console.log("END FLASHING INDICATOR STYLE")
-                                  __disableStateBinding = false
-                              }
+                    //this handles the case when we're briefly showing the scrollbar
+                    //as a hint, as a consequence of the resizing of the flickable item or
+                    //its content item
+                    console.log("END FLASHING INDICATOR STYLE")
+                    __disableStateBinding = false
+                }
             }
             SequentialAnimation {
                 //don't pause the animation if we're showing the *hint* and the hintingStyle changes from
                 //thumb/steppers to indicator
                 PauseAnimation { id: scrollbarCollapseAnim; duration: __disableStateBinding ? 0 : scrollbarCollapsePause }
+                PropertyAction {
+                    target: steppersMouseArea
+                    properties: isVertical ? "width" : "height"
+                }
                 ParallelAnimation {
                     NumberAnimation {
                         target: flowContainer
@@ -322,7 +355,7 @@ Item {
                     }
                     NumberAnimation {
                         target: steppersMouseArea
-                        properties: "height,width"
+                        properties: isVertical ? "height" : "width"
                         duration: scrollbarThicknessAnimation.duration
                         easing: scrollbarThicknessAnimation.easing
                     }
@@ -344,16 +377,22 @@ Item {
                 console.log("INDICATOR transition running changed", running, __disableStateBinding, hintingStyle, visuals)
 
                 if (!running && __disableStateBinding && hintingStyle === 'indicator') {
-                                  //this handles the case when we're briefly showing the scrollbar
-                                  //as a hint, as a consequence of the resizing of the flickable item or
-                                  //its content item
-                                  console.log("END FLASHING INDICATOR STYLE")
-                                  __disableStateBinding = false
-                              }
+                    //this handles the case when we're briefly showing the scrollbar
+                    //as a hint, as a consequence of the resizing of the flickable item or
+                    //its content item
+                    console.log("END FLASHING INDICATOR STYLE")
+                    __disableStateBinding = false
+                }
             }
 
             SequentialAnimation {
                 ParallelAnimation {
+                    NumberAnimation {
+                        target: visuals
+                        property: "opacity"
+                        duration: scrollbarThicknessAnimation.duration
+                        easing: scrollbarThicknessAnimation.easing
+                    }
                     NumberAnimation {
                         target: flowContainer
                         properties: "thickness,thumbThickness"
@@ -375,33 +414,92 @@ Item {
         },
         Transition {
             id: growingTransition
+            from: 'indicator'
+            to: 'thumb,steppers'
+            reversible: true
+            SequentialAnimation {
+                PropertyAction {
+                    target: flowContainer
+                    properties: "showSteppers,showTrough,showCornerRect"
+                }
+                PropertyAction {
+                    target: steppersMouseArea
+                    properties: isVertical ? "width" : "height"
+                }
+                ParallelAnimation {
+                    NumberAnimation {
+                        target: visuals
+                        property: "opacity"
+                        duration: scrollbarThicknessAnimation.duration
+                        easing: scrollbarThicknessAnimation.easing
+                    }
+                    NumberAnimation {
+                        target: flowContainer
+                        properties: "thickness,thumbThickness"
+                        duration: scrollbarThicknessAnimation.duration
+                        easing: scrollbarThicknessAnimation.easing
+                    }
+                    NumberAnimation {
+                        target: steppersMouseArea
+                        properties: isVertical ? "height" : "width"
+                        duration: scrollbarThicknessAnimation.duration
+                        easing: scrollbarThicknessAnimation.easing
+                    }
+                    ColorAnimation { target: trough; duration: scrollbarThicknessAnimation.duration }
+                }
+            }
+        },
+        Transition {
+            id: steppersTransition
             from: '*'
             to: 'thumb,steppers'
             onRunningChanged:
             {
                 console.log("THUMB transition running changed", running, __disableStateBinding, hintingStyle, visuals)
                 if (!running && __disableStateBinding && hintingStyle === 'thumb') {
-                                  //this handles the case when we're briefly showing the scrollbar
-                                  //as a hint, as a consequence of the resizing of the flickable item or
-                                  //its content item
-                                  console.log("END FLASHING THUMB STYLE")
-                                  __disableStateBinding = false
-                              }
+                    //this handles the case when we're briefly showing the scrollbar
+                    //as a hint, as a consequence of the resizing of the flickable item or
+                    //its content item
+                    console.log("END FLASHING THUMB STYLE")
+                    __disableStateBinding = false
+                }
             }
-            ParallelAnimation {
-                NumberAnimation {
+            SequentialAnimation {
+                PropertyAction {
                     target: flowContainer
-                    properties: "thickness,thumbThickness"
-                    duration: scrollbarThicknessAnimation.duration
-                    easing: scrollbarThicknessAnimation.easing
+                    properties: "showSteppers,showTrough,showCornerRect"
                 }
-                NumberAnimation {
+                PropertyAction {
                     target: steppersMouseArea
-                    properties: "height,width"
-                    duration: scrollbarThicknessAnimation.duration
-                    easing: scrollbarThicknessAnimation.easing
+                    properties: isVertical ? "width" : "height"
                 }
-                ColorAnimation { target: trough; duration: scrollbarThicknessAnimation.duration }
+                ParallelAnimation {
+                    NumberAnimation {
+                        target: visuals
+                        property: "opacity"
+                        duration: scrollbarThicknessAnimation.duration
+                        easing: scrollbarThicknessAnimation.easing
+                    }
+                    NumberAnimation {
+                        target: flowContainer
+                        properties: "thickness,thumbThickness"
+                        //the check on opacity is needed because this transition is also run when a transition to "hidden"
+                        //is still in progress! For example: transition from indicator to hidden is started, the state is set to "hidden"
+                        //immediately, but the transition still has to happen. If, in this situation, we trigger a state change from "hidden"
+                        //to another state (thumb/steppers) this transition is fired, but the fact that state is "hidden" is not
+                        //really informative, we need to know if the stuff is actually visible on screen, because we want different
+                        //animation based on whether we're animating from visible or invisible content, even if in both cases the state is "hidden"!
+                        duration: visuals.opacity > 0 ? scrollbarThicknessAnimation.duration : 0
+                        easing: scrollbarThicknessAnimation.easing
+                    }
+                    NumberAnimation {
+                        target: steppersMouseArea
+                        properties: isVertical ? "height" : "width"
+                        duration: visuals.opacity > 0 ? scrollbarThicknessAnimation.duration : 0
+                        easing: scrollbarThicknessAnimation.easing
+                    }
+                    ColorAnimation { target: trough; duration: visuals.opacity > 0 ? scrollbarThicknessAnimation.duration : 0 }
+                }
             }
         },
         Transition {
@@ -417,12 +515,20 @@ Item {
                     easing: scrollbarFadeOutAnimation.easing
                 }
                 PropertyAction {
+                    target: steppersMouseArea
+                    properties: "width,height"
+                }
+                PropertyAction {
                     target: flowContainer
                     properties: "thickness,thumbThickness,showSteppers,showTrough,showCornerRect"
                 }
                 PropertyAction {
                     target: trough
                     properties: "color"
+                }
+                PropertyAction {
+                    target: visuals
+                    properties: "state"
                 }
             }
         }
@@ -476,6 +582,9 @@ Item {
             topMargin: (isVertical || topAligned) ? 0.0 : flowContainer.proximityThickness
             bottomMargin: (isVertical || bottomAligned) ? 0.0 : flowContainer.proximityThickness
         }
+
+        clip: true
+
         property real thickness: 0
         property real thumbThickness: 0
 
@@ -694,12 +803,8 @@ Item {
         }
         MouseArea {
             id: steppersMouseArea
-            width: isVertical ? flowContainer.width
-                              : (firstStepper.visible ? firstStepper.width : 0)
-                                + (secondStepper.visible ? secondStepper.width : 0)
-            height: isVertical ? (firstStepper.visible ? firstStepper.height : 0)
-                                 + (secondStepper.visible ? secondStepper.height : 0)
-                               : trough.height
+
+            //size is handled by the states
 
             enabled: isScrollable && interactive
             visible: flowContainer.showSteppers
@@ -726,6 +831,9 @@ Item {
                 id: firstStepper
 
                 color: trough.color
+                visible: parent.visible
+                clip: true
+
                 anchors {
                     left: parent.left //it's left in both cases, otherwise using RTL would break the layout of the arrow
                     right: isVertical ? parent.right : undefined
@@ -736,14 +844,15 @@ Item {
                     target: firstStepper
                     property: "height"
                     when: isVertical
-                    value: units.gu(2)
+                    value: visible ? units.gu(2) : 0
                 }
                 Binding {
                     target: firstStepper
                     property: "width"
                     when: !isVertical
-                    value: units.gu(2)
+                    value: visible ? units.gu(2) : 0
                 }
+
                 Image {
                     anchors.centerIn: parent
                     //fillMode: Image.PreserveAspectFit
@@ -755,6 +864,9 @@ Item {
             Rectangle {
                 id: secondStepper
                 color: trough.color
+                clip: true
+
+                visible: parent.visible
 
                 anchors {
                     left: isVertical ? parent.left : firstStepper.right
@@ -767,15 +879,14 @@ Item {
                     target: secondStepper
                     property: "height"
                     when: isVertical
-                    value: units.gu(2)
+                    value: visible ? units.gu(2) : 0
                 }
                 Binding {
                     target: secondStepper
                     property: "width"
                     when: !isVertical
-                    value: units.gu(2)
+                    value: visible ? units.gu(2) : 0
                 }
-
                 Image {
                     anchors.centerIn: parent
                     fillMode: Image.PreserveAspectFit
@@ -878,7 +989,7 @@ Item {
 
         Timer {
             id: overshootTimer
-            interval: scrollbarThicknessAnimation.duration * 2
+            interval: scrollbarThicknessAnimation.duration * 10
         }
 
         onPositionChanged: mouse.accepted = false
