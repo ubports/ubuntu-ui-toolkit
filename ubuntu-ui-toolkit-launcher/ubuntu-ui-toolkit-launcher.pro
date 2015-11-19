@@ -2,7 +2,7 @@ TEMPLATE = app
 QT += qml quick
 # For setSharedOpenGLContext
 QT += core-private gui-private testlib quick-private
-CONFIG += no_keywords
+CONFIG += no_keywords C++11
 HEADERS += MouseTouchAdaptor.h
 SOURCES += launcher.cpp \
     MouseTouchAdaptor.cpp
