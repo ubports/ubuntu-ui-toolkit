@@ -124,7 +124,7 @@ void UCBottomEdgeRegion::onDragEnded()
         m_bottomEdge->commit();
     } else {
         // move the bottom edge panel to the m_to
-        m_bottomEdge->commitToRange(this);
+        m_bottomEdge->commitToRegion(this);
     }
 }
 

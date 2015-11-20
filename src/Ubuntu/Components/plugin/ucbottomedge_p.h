@@ -79,7 +79,7 @@ public:
     enum OperationStatus {
         Idle,
         CommitToTop,
-        CommitToRange,
+        CommitToRegion,
         Collapsing
     };
     OperationStatus operationStatus;
@@ -88,10 +88,7 @@ public:
     bool defaultRegionsReset:1;
 
     // status management
-    void setOperationStatus(OperationStatus s)
-    {
-        operationStatus = s;
-    }
+    void setOperationStatus(OperationStatus s);
     bool isLocked()
     {
         return operationStatus > Idle;

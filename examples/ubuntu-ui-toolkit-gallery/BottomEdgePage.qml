@@ -19,7 +19,12 @@ import Ubuntu.Components 1.3
 
 Template {
     id: page
-    title: i18n.tr("Bottom Edge")
+    header: PageHeader {
+        title: i18n.tr("Bottom Edge")
+        trailingActionBar.actions: [
+            bottomEdge.hint.action
+        ]
+    }
 
     TemplateSection {
         title: "BottomEdgeHint"
@@ -74,18 +79,18 @@ Template {
         TemplateRow {
             title: i18n.tr("Regions")
             Slider {
-                id: rangeCount
+                id: regionCount
                 width: units.gu(20)
                 maximumValue: 3.0
                 live: true
             }
         }
         Repeater {
-            id: rangeConfig
-            model: rangeCount.value.toFixed(0)
+            id: regionConfig
+            model: regionCount.value.toFixed(0)
             TemplateRow {
                 title: i18n.tr("Region #%1").arg(index)
-                property int rangeIndex: index
+                property int regionIndex: index
                 Repeater {
                     model: ["from", "to"]
                     Row {
@@ -94,16 +99,16 @@ Template {
                             text: i18n.tr(modelData)
                         }
                         TextField {
-                            id: rangeFrom
-                            text: bottomEdge.regions[rangeIndex][modelData]
+                            id: regionFrom
+                            text: bottomEdge.regions[regionIndex][modelData]
                             inputMask: "0.0"
                             validator: DoubleValidator {bottom: 0.0; top: 1.0; decimals: 2}
                             inputMethodHints: Qt.ImhPreferNumbers | Qt.ImhFormattedNumbersOnly
                             width: units.gu(7)
                             hasClearButton: false
                             errorHighlight: true
-                            onAccepted: bottomEdge.regions[rangeIndex][modelData] = text
-                            onTextChanged: if (acceptableInput) bottomEdge.regions[rangeIndex][modelData] = text
+                            onAccepted: bottomEdge.regions[regionIndex][modelData] = text
+                            onTextChanged: if (acceptableInput) bottomEdge.regions[regionIndex][modelData] = text
                         }
                     }
                 }
@@ -145,23 +150,23 @@ Template {
         regions: [
             BottomEdgeRegion {
                 objectName: "CustomRegion1"
-                enabled: rangeConfig.model >= 1
+                enabled: regionConfig.model >= 1
                 property color baseColor: UbuntuColors.lightGrey
                 onFromChanged: print(objectName, "from", from)
                 onToChanged: print(objectName, "to", to)
             },
             BottomEdgeRegion {
                 objectName: "CustomRegion2"
-                enabled: rangeConfig.model >= 2
+                enabled: regionConfig.model >= 2
             },
             BottomEdgeRegion {
                 objectName: "CustomRegion3"
-                enabled: rangeConfig.model >= 3
+                enabled: regionConfig.model >= 3
             },
-            // default range, mimics the default setup
+            // default region, mimics the default setup
             BottomEdgeRegion {
-                objectName: "DefaultRange"
-                enabled: rangeConfig.model <= 0
+                objectName: "DefaultRegion"
+                enabled: regionConfig.model <= 0
                 from: 0.3
             }
         ]
@@ -176,11 +181,11 @@ Template {
                         switch (bottomEdge.state) {
                         case BottomEdge.Hidden: state = "Hidden"; break;
                         case BottomEdge.Revealed: state = "Revealed"; break;
-                        case BottomEdge.Committed: state = "Hidden"; break;
+                        case BottomEdge.Committed: state = "Committed"; break;
                         }
                         return bottomEdge.activeRegion
                           ? i18n.tr("Within region '%1', state: %2").arg(bottomEdge.activeRegion.objectName).arg(state)
-                          : i18n.tr("Not in any active range, state: %1").arg(state);
+                          : i18n.tr("Not in any active region, state: %1").arg(state);
                     }
                 }
                 Rectangle {

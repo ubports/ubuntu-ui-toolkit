@@ -22,6 +22,7 @@
 #include "ucstyleditembase.h"
 #include <QtCore/QPointer>
 #include <QtQuick/private/qquickitemchangelistener_p.h>
+#include <QtCore/QLoggingCategory>
 
 class UCBottomEdgeHint;
 class UCBottomEdgeRegion;
@@ -95,7 +96,7 @@ public Q_SLOTS:
     void collapse();
 
 public: // non-public to QML
-    void commitToRange(UCBottomEdgeRegion *range);
+    void commitToRegion(UCBottomEdgeRegion *region);
 
 protected:
     static void regions_append(QQmlListProperty<UCBottomEdgeRegion> *sections, UCBottomEdgeRegion *section);
@@ -111,5 +112,7 @@ protected:
 
     Q_DECLARE_PRIVATE(UCBottomEdge)
 };
+
+Q_DECLARE_LOGGING_CATEGORY(ucBottomEdge)
 
 #endif // UCBOTTOMEDGE_H

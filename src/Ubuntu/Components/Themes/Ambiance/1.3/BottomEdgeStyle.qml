@@ -49,10 +49,6 @@ BottomEdgeStyle {
     states: State {
         name: "reparentedHint"
         when: attachHintToContent
-        PropertyChanges {
-            target: bottomEdge.hint
-            parent: panelItem.parent
-        }
         AnchorChanges {
             target: bottomEdge.hint
             anchors.bottom: panelItem.top
@@ -71,7 +67,6 @@ BottomEdgeStyle {
         objectName: "bottomedge_panel"
         property bool swipedAboveHint: false
         property bool unlocked: (bottomEdge.state > BottomEdge.Hidden)
-                                || hintArea.pressed
                                 || swipedAboveHint
         anchors {
             left: parent.left
@@ -183,27 +178,6 @@ BottomEdgeStyle {
                 }
                 panelItem.dragEnded();
             }
-        }
-
-
-        // grab mouse events over the hint to proceed with drag
-        // touch events will be consumed by the hint, so only
-        // real mouse events will land here
-        MouseArea {
-            id: hintArea
-            parent: bottomEdge.hint
-            anchors.fill: parent
-            enabled: bottomEdge.hint.status >= BottomEdgeHint.Active
-
-            drag {
-                axis: Drag.YAxis
-                target: panelItem
-                minimumY: 0
-                maximumY: bottomEdge.height
-            }
-
-            onClicked: bottomEdge.hint.clicked()
-            onReleased: panelItem.dragEnded()
         }
     }
 }
