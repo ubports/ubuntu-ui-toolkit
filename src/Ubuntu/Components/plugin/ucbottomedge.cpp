@@ -602,6 +602,9 @@ void UCBottomEdge::initializeComponent()
             d->onDragEnded();
         }
     });
+
+    // filter hint for mouse events
+    d->hint->installEventFilter(this);
 }
 
 void UCBottomEdge::classBegin()
@@ -650,6 +653,40 @@ void UCBottomEdge::itemChange(ItemChange change, const ItemChangeData &data)
         }
     }
     QQuickItem::itemChange(change, data);
+}
+
+bool UCBottomEdge::eventFilter(QObject *target, QEvent *event)
+{
+    static bool pressed = false;
+    Q_D(UCBottomEdge);
+
+    switch (event->type()) {
+    case QEvent::MouseButtonPress:
+    {
+        QMouseEvent *mouse = static_cast<QMouseEvent*>(event);
+        pressed = d->hint->contains(mouse->localPos());
+        LOG << "drag with mouse";
+        break;
+    }
+    case QEvent::MouseButtonRelease:
+        if (pressed) {
+            d_func()->onDragEnded();
+        }
+        pressed = false;
+        break;
+    case QEvent::MouseMove:
+    {
+        if (pressed) {
+            QMouseEvent *mouse = static_cast<QMouseEvent*>(event);
+            QPointF winScene = mapToScene(position()) + QPointF(0, height());
+            QPointF pos = mouse->windowPos();
+            d->updateProgressionStates(abs(pos.y() - winScene.y()));
+        }
+        break;
+    }
+    default: break;
+    }
+    return QQuickItem::eventFilter(target, event);
 }
 
 /*!

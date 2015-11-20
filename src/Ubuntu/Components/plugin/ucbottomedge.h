@@ -103,6 +103,7 @@ protected:
     void classBegin();
     void componentComplete();
     void itemChange(ItemChange change, const ItemChangeData &data);
+    bool eventFilter(QObject *target, QEvent *event) override;
 
     void unlockOperation(bool running);
 
