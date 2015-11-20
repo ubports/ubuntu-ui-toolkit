@@ -7,23 +7,44 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ubuntu-ui-toolkit\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2014-11-11 11:21+0100\n"
+"POT-Creation-Date: 2015-11-05 10:04+0100\n"
 "PO-Revision-Date: 2015-08-12 21:44+0000\n"
 "Last-Translator: Phillip Sz <Unknown>\n"
 "Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-10-16 05:54+0000\n"
-"X-Generator: Launchpad (build 17812)\n"
+"X-Launchpad-Export-Date: 2015-11-20 05:28+0000\n"
+"X-Generator: Launchpad (build 17850)\n"
+
+#: About.qml:34
+msgid "About..."
+msgstr "Über …"
+
+#: ActionBars.qml:68
+msgid "Short list"
+msgstr "Kurze Liste"
+
+#: ActionBars.qml:79
+msgid "Number of slots"
+msgstr "Anzahl der Slots"
+
+#: ActionBars.qml:92
+msgid "Long list"
+msgstr "Lange Liste"
+
+#: ActionBars.qml:102 Buttons.qml:91 Sections.qml:45 TextInputs.qml:90
+#: Toggles.qml:45 Toggles.qml:83
+msgid "Disabled"
+msgstr "Deaktiviert"
 
 #: Animations.qml:24
 msgid "NumberAnimation"
 msgstr "Zahlenanimation"
 
 #: Animations.qml:28 Buttons.qml:28 Dialog.qml:29 ListItems.qml:25
-#: ProgressBars.qml:28 ProgressBars.qml:84 Sheet.qml:40 Sheet.qml:73
-#: Sliders.qml:28 TextInputs.qml:45
+#: ProgressBars.qml:29 ProgressBars.qml:85 Sheet.qml:40 Sheet.qml:73
+#: Sliders.qml:28 TextInputs.qml:46
 msgid "Standard"
 msgstr "Standard"
 
@@ -47,8 +68,7 @@ msgstr "Langsam"
 msgid "Sleepy"
 msgstr "Schläfrig"
 
-#: Buttons.qml:32 Buttons.qml:41 Buttons.qml:51 Buttons.qml:71 Buttons.qml:79
-#: Buttons.qml:89
+#: Buttons.qml:32 Buttons.qml:41 Buttons.qml:77 Buttons.qml:85 Buttons.qml:95
 msgid "Call"
 msgstr "Anruf"
 
@@ -56,27 +76,28 @@ msgstr "Anruf"
 msgid "Stroke"
 msgstr "Geste"
 
-#: Buttons.qml:47 UbuntuShape.qml:28
+#: Buttons.qml:47 Icons.qml:54
 msgid "Color"
 msgstr "Farbe"
 
-#: Buttons.qml:57 Buttons.qml:114 ListItems.qml:43
+#: Buttons.qml:53
+#, qt-format
+msgid "Call %1"
+msgstr "Rufe %1 an"
+
+#: Buttons.qml:63 Buttons.qml:120 ListItems.qml:43
 msgid "Icon"
 msgstr "Symbol"
 
-#: Buttons.qml:66 Buttons.qml:128
+#: Buttons.qml:72 Buttons.qml:134
 msgid "Icon+Text"
 msgstr "Symbol+Text"
 
-#: Buttons.qml:85 TextInputs.qml:88 Toggles.qml:45 Toggles.qml:83
-msgid "Disabled"
-msgstr "Deaktiviert"
-
-#: Buttons.qml:99 OptionSelectors.qml:34
+#: Buttons.qml:105 OptionSelectors.qml:41
 msgid "Collapsed"
 msgstr "Eingeklappt"
 
-#: Buttons.qml:142 ListItems.qml:120 OptionSelectors.qml:43
+#: Buttons.qml:148 ListItems.qml:120 OptionSelectors.qml:47
 msgid "Expanded"
 msgstr "Ausgeklappt"
 
@@ -108,21 +129,21 @@ msgstr "Blau"
 msgid "Purple"
 msgstr "Lila"
 
-#: Dialog.qml:32 Popover.qml:45 Sheet.qml:43 Sheet.qml:76
+#: Dialog.qml:32 Popover.qml:42 Sheet.qml:43 Sheet.qml:76
 msgid "Open"
 msgstr "Öffnen"
 
-#: Icons.qml:30
+#: Icons.qml:29
 msgid "Scaling"
 msgstr "Skalierung"
 
-#: Icons.qml:55
-msgid "Colorization"
-msgstr "Farbgebung"
-
-#: Icons.qml:80
+#: Icons.qml:79
 msgid "Theme"
 msgstr "Thema"
+
+#: ListItemLayouts.qml:208 NewListItems.qml:79
+msgid "Leading and trailing actions"
+msgstr ""
 
 #: ListItems.qml:28 ListItems.qml:36 ListItems.qml:46 ListItems.qml:60
 #: ListItems.qml:66 ListItems.qml:76 ListItems.qml:85 ListItems.qml:94
@@ -159,30 +180,26 @@ msgid "Multi value"
 msgstr "Mehrere Werte"
 
 #: ListItems.qml:95 ListItems.qml:113 ListItems.qml:122 ListItems.qml:132
-#: ListItems.qml:161 ListItems.qml:176 OptionSelectors.qml:35
-#: OptionSelectors.qml:45 OptionSelectors.qml:56 OptionSelectors.qml:86
-#: OptionSelectors.qml:101
+#: ListItems.qml:161 ListItems.qml:176 OptionSelectors.qml:33
+#: OptionSelectors.qml:84 OptionSelectors.qml:99
 msgid "Value 1"
 msgstr "Wert 1"
 
 #: ListItems.qml:96 ListItems.qml:114 ListItems.qml:123 ListItems.qml:133
-#: ListItems.qml:162 ListItems.qml:177 OptionSelectors.qml:36
-#: OptionSelectors.qml:46 OptionSelectors.qml:57 OptionSelectors.qml:87
-#: OptionSelectors.qml:102
+#: ListItems.qml:162 ListItems.qml:177 OptionSelectors.qml:85
+#: OptionSelectors.qml:100
 msgid "Value 2"
 msgstr "Wert 2"
 
 #: ListItems.qml:97 ListItems.qml:115 ListItems.qml:124 ListItems.qml:134
-#: ListItems.qml:163 ListItems.qml:178 OptionSelectors.qml:37
-#: OptionSelectors.qml:47 OptionSelectors.qml:58 OptionSelectors.qml:88
-#: OptionSelectors.qml:103
+#: ListItems.qml:163 ListItems.qml:178 OptionSelectors.qml:86
+#: OptionSelectors.qml:101
 msgid "Value 3"
 msgstr "Wert 3"
 
 #: ListItems.qml:98 ListItems.qml:116 ListItems.qml:125 ListItems.qml:135
-#: ListItems.qml:164 ListItems.qml:179 OptionSelectors.qml:38
-#: OptionSelectors.qml:48 OptionSelectors.qml:59 OptionSelectors.qml:89
-#: OptionSelectors.qml:104
+#: ListItems.qml:164 ListItems.qml:179 OptionSelectors.qml:87
+#: OptionSelectors.qml:102
 msgid "Value 4"
 msgstr "Wert 4"
 
@@ -190,35 +207,35 @@ msgstr "Wert 4"
 msgid "Item selector"
 msgstr "Objektwähler"
 
-#: ListItems.qml:112 TextInputs.qml:114
+#: ListItems.qml:112 TextInputs.qml:117
 msgid "Expanding"
 msgstr "Ausdehnung"
 
-#: ListItems.qml:129 OptionSelectors.qml:53
+#: ListItems.qml:129 OptionSelectors.qml:54
 msgid "Multiple Selection"
 msgstr "Mehrfachauswahl"
 
-#: ListItems.qml:139 OptionSelectors.qml:64
+#: ListItems.qml:139 OptionSelectors.qml:62
 msgid "Custom Model"
 msgstr "Angepasstes Modell"
 
-#: ListItems.qml:165 ListItems.qml:180 OptionSelectors.qml:90
-#: OptionSelectors.qml:105
+#: ListItems.qml:165 ListItems.qml:180 OptionSelectors.qml:88
+#: OptionSelectors.qml:103
 msgid "Value 5"
 msgstr "Wert 5"
 
-#: ListItems.qml:166 ListItems.qml:181 OptionSelectors.qml:91
-#: OptionSelectors.qml:106
+#: ListItems.qml:166 ListItems.qml:181 OptionSelectors.qml:89
+#: OptionSelectors.qml:104
 msgid "Value 6"
 msgstr "Wert 6"
 
-#: ListItems.qml:167 ListItems.qml:182 OptionSelectors.qml:92
-#: OptionSelectors.qml:107
+#: ListItems.qml:167 ListItems.qml:182 OptionSelectors.qml:90
+#: OptionSelectors.qml:105
 msgid "Value 7"
 msgstr "Wert 7"
 
-#: ListItems.qml:168 ListItems.qml:183 OptionSelectors.qml:93
-#: OptionSelectors.qml:108
+#: ListItems.qml:168 ListItems.qml:183 OptionSelectors.qml:91
+#: OptionSelectors.qml:106
 msgid "Value 8"
 msgstr "Wert 8"
 
@@ -254,59 +271,118 @@ msgstr "Erweiterbare Spalte"
 msgid "Expandable"
 msgstr "Erweiterbar"
 
+#: NewListItems.qml:39
+msgid "Colored"
+msgstr "Farbig"
+
+#: NewListItems.qml:42
+msgid "Highlight color"
+msgstr "Farbe für Hervorhebungen"
+
+#: NewListItems.qml:71
+msgid "Leading actions"
+msgstr ""
+
+#: NewListItems.qml:75
+msgid "Trailing actions"
+msgstr ""
+
+#: NewListItems.qml:84
+msgid "Custom action delegates"
+msgstr ""
+
+#: NewListItems.qml:111
+msgid "Edit"
+msgstr "Bearbeiten"
+
+#: NewListItems.qml:114
+msgid "Move"
+msgstr "Verschieben"
+
+#: NewListItems.qml:163
+msgid "Basic"
+msgstr "Standard"
+
+#: NewListItems.qml:163 NewListItems.qml:168 NewListItems.qml:169
+#: NewListItems.qml:213 NewListItems.qml:214
+msgid "Colored divider"
+msgstr "Farbiger Teiler"
+
+#: NewListItems.qml:163
+msgid "Immutable"
+msgstr "Unveränderbar"
+
+#: NewListItems.qml:163 NewListItems.qml:170 NewListItems.qml:215
+msgid "No divider"
+msgstr "No divider"
+
 #: OptionSelectors.qml:24
 msgid "Option Selector"
 msgstr "Optionswähler"
 
-#: OptionSelectors.qml:85
+#: OptionSelectors.qml:34
+msgid "This is the second value"
+msgstr "Das ist der zweite Wert"
+
+#: OptionSelectors.qml:35
+msgid ""
+"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy "
+"nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."
+msgstr "Falsches Üben von Xylophonmusik quält jeden größeren Zwerg"
+
+#: OptionSelectors.qml:36
+msgid "Once upon a time there was a story nobody told."
+msgstr "Es war einmal eine Geschichte, die niemand erzählt hat."
+
+#: OptionSelectors.qml:83
 msgid "Custom container height"
 msgstr "Angepasste Containerhöhe"
 
-#: OptionSelectors.qml:98
+#: OptionSelectors.qml:96
 msgid "No initial selection, scrollable."
 msgstr "Keine Vorauswahl, verschiebbar."
 
-#: Pickers.qml:29
+#: Pickers.qml:31
 msgid "Linear"
 msgstr "Linear"
 
-#: Pickers.qml:48
+#: Pickers.qml:63
 msgid "Circular"
 msgstr "Kreisförmig"
 
-#: Pickers.qml:73 ProgressBars.qml:48
+#: Pickers.qml:100 ProgressBars.qml:49
 msgid "Infinite"
 msgstr "Unbegrenzt"
 
-#: Pickers.qml:110
+#: Pickers.qml:137
 msgid "Clock"
 msgstr "Uhr"
 
-#: Pickers.qml:147
+#: Pickers.qml:174
 msgid "Overlay"
 msgstr "Überlagerung"
 
-#: Popover.qml:41
+#: Popover.qml:38
 msgid "Flickable"
 msgstr "Verschiebbar"
 
-#: Popover.qml:77
+#: Popover.qml:74
 msgid "Action #1"
 msgstr "Aktion #1"
 
-#: Popover.qml:81
+#: Popover.qml:78
 msgid "Action #2"
 msgstr "Aktion #2"
 
-#: Popover.qml:85
+#: Popover.qml:82
 msgid "Action #3"
 msgstr "Aktion #3"
 
-#: Popover.qml:89
+#: Popover.qml:86
 msgid "Action #4"
 msgstr "Aktion #4"
 
-#: Popover.qml:93
+#: Popover.qml:90
 msgid "Action #5"
 msgstr "Aktion #5"
 
@@ -314,13 +390,21 @@ msgstr "Aktion #5"
 msgid "Progress Bar"
 msgstr "Fortschrittsanzeige"
 
-#: ProgressBars.qml:58
+#: ProgressBars.qml:59
 msgid "No label"
 msgstr "Ohne Label"
 
-#: ProgressBars.qml:80
+#: ProgressBars.qml:81
 msgid "Activity Indicator"
 msgstr "Aktivitätsanzeiger"
+
+#: ProportionalShape.qml:28
+msgid "Sizes"
+msgstr "Größen"
+
+#: Sections.qml:34
+msgid "Enabled"
+msgstr "Aktiviert"
 
 #: Sheet.qml:28
 msgid "The visual style of the Sheet is early work and thus clunky looking."
@@ -332,7 +416,7 @@ msgstr ""
 msgid "Title"
 msgstr "Titel"
 
-#: Sliders.qml:36 Sliders.qml:51 Sliders.qml:68
+#: Sliders.qml:36 Sliders.qml:51 Sliders.qml:68 Sliders.qml:93
 #, qt-format
 msgid "Actual value: %1"
 msgstr "Aktueller Wert: %1"
@@ -345,43 +429,51 @@ msgstr "Echtzeitaktualisierung"
 msgid "Range"
 msgstr "Bereich"
 
-#: Styles.qml:27
-msgid "Switch between old and new style header"
-msgstr "Zwischen alter und neuer Kopfzeile umschalten"
+#: Sliders.qml:74
+msgid "Labels"
+msgstr "Beschriftungen"
 
-#: Styles.qml:40
-msgid "Switch between themes"
-msgstr "Zwischen Themen umschalten"
+#: Sliders.qml:85
+msgid "Small"
+msgstr "Klein"
 
-#: TextInputs.qml:49
+#: Sliders.qml:87
+msgid "Medium"
+msgstr "Mittel"
+
+#: Sliders.qml:89
+msgid "Large"
+msgstr "Groß"
+
+#: TextInputs.qml:50
 msgid "Type me in..."
 msgstr "Hier eintippen …"
 
-#: TextInputs.qml:55
+#: TextInputs.qml:56
 msgid "Password"
 msgstr "Passwort"
 
-#: TextInputs.qml:66
+#: TextInputs.qml:67
 msgid "Numbers"
 msgstr "Nummern"
 
-#: TextInputs.qml:77
+#: TextInputs.qml:78
 msgid "Read-only"
 msgstr "Nur lesen"
 
-#: TextInputs.qml:81
+#: TextInputs.qml:82
 msgid "Nobody type here"
 msgstr "Hier kann man nichts eintippen"
 
-#: TextInputs.qml:92
+#: TextInputs.qml:94
 msgid "No interaction allowed"
 msgstr "Keine Interaktion erlaubt"
 
-#: TextInputs.qml:104
+#: TextInputs.qml:107
 msgid "Default"
 msgstr "Vorgabe"
 
-#: TextInputs.qml:126
+#: TextInputs.qml:129
 msgid "Rich Text"
 msgstr "Rich Text"
 
@@ -393,22 +485,18 @@ msgstr "Nicht ausgewählt"
 msgid "Checked"
 msgstr "Geprüft"
 
-#: Toolbar.qml:30
-msgid "Share"
-msgstr "Teilen"
+#: UbuntuShape.qml:28
+msgid "Aspect"
+msgstr ""
 
-#: Toolbar.qml:46
-msgid "See below"
-msgstr "Siehe unten"
-
-#: UbuntuShape.qml:49
-msgid "Image"
-msgstr "Bild"
-
-#: UbuntuShape.qml:64
+#: UbuntuShape.qml:73
 msgid "Radius"
 msgstr "Radius"
 
-#: UbuntuShape.qml:97
-msgid "Sizes"
-msgstr "Größen"
+#: UbuntuShape.qml:115
+msgid "Image"
+msgstr "Bild"
+
+#: UbuntuShape.qml:134
+msgid "Gradient"
+msgstr ""
