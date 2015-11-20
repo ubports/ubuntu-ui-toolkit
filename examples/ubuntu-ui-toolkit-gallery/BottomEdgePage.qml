@@ -141,6 +141,7 @@ Template {
 //                                     theme.palette.normal.background.g,
 //                                     theme.palette.normal.background.b,
 //                                     bottomEdge.dragProgress)
+            backgroundColor: "#AA00AA0A"
             attachHintToContent: attachHintToContent.checked
         }
 

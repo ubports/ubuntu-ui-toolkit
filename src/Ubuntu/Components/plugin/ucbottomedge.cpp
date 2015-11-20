@@ -678,9 +678,9 @@ bool UCBottomEdge::eventFilter(QObject *target, QEvent *event)
     {
         if (d->mousePressed) {
             QMouseEvent *mouse = static_cast<QMouseEvent*>(event);
-            QPointF winScene = mapToScene(position()) + QPointF(0, height());
-            QPointF pos = mouse->windowPos();
-            d->updateProgressionStates(abs(pos.y() - winScene.y()));
+            qreal mouseItemY = mapFromScene(mouse->windowPos()).y();
+            qreal distance = abs(height() - mouseItemY);
+            d->updateProgressionStates(distance);
         }
         break;
     }
