@@ -94,50 +94,50 @@ msgstr "HH:mm"
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:293
-msgid "'Yesterdayâ€ƒ'h:mm ap"
-msgstr "'Вчораâ€ƒ'HH:mm"
+msgid "'Yesterday 'h:mm ap"
+msgstr "'Вчора 'HH:mm"
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:296
-msgid "'Yesterdayâ€ƒ'HH:mm"
-msgstr "'Вчораâ€ƒ'HH:mm"
+msgid "'Yesterday 'HH:mm"
+msgstr "'Вчора 'HH:mm"
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:302
-msgid "'Tomorrowâ€ƒ'h:mm ap"
-msgstr "'Завтраâ€ƒ'HH:mm"
+msgid "'Tomorrow 'h:mm ap"
+msgstr "'Завтра 'HH:mm"
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:305
-msgid "'Tomorrowâ€ƒ'HH:mm"
-msgstr "'Завтраâ€ƒ'HH:mm"
+msgid "'Tomorrow 'HH:mm"
+msgstr "'Завтра 'HH:mm"
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:312
-msgid "ddd'â€ƒ'h:mm ap"
-msgstr "ddd'â€ƒ'HH:mm"
+msgid "ddd' 'h:mm ap"
+msgstr "ddd' 'HH:mm"
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:315
-msgid "ddd'â€ƒ'HH:mm"
-msgstr "ddd'â€ƒ'HH:mm"
+msgid "ddd' 'HH:mm"
+msgstr "ddd' 'HH:mm"
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:322
-msgid "ddd d MMM'â€ƒ'h:mm ap"
-msgstr "ddd d MMM'â€ƒ'HH:mm"
+msgid "ddd d MMM' 'h:mm ap"
+msgstr "ddd d MMM' 'HH:mm"
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:325
-msgid "ddd d MMM'â€ƒ'HH:mm"
-msgstr "ddd d MMM'â€ƒ'HH:mm"
+msgid "ddd d MMM' 'HH:mm"
+msgstr "ddd d MMM' 'HH:mm"
 
 #: Ubuntu/Components/plugin/privates/listitemdragarea.cpp:122
 msgid ""
