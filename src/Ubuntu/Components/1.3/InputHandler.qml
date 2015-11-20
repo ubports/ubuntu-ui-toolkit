@@ -285,13 +285,17 @@ MultiPointTouchArea {
         }
     ]
 
-    // brings the state back to default when the component looses focuse
+    // brings the state back to default when the component looses focus
+    // and ensures input has active focus when component regains focus
     Connections {
         target: main
         ignoreUnknownSignals: true
         onFocusChanged: {
             UbuntuApplication.inputMethod.commit()
             state = (main.focus) ? "" : "inactive";
+            if (main.focus) {
+                input.forceActiveFocus()
+            }
         }
     }
 
