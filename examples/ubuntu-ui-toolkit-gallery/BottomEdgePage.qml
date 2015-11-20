@@ -112,6 +112,7 @@ Template {
                                     bottomEdge.regions[regionIndex][modelData] = parseFloat(text);
                                 }
                             }
+                            onActiveFocusChanged: if (activeFocus) selectAll()
                         }
                     }
                 }

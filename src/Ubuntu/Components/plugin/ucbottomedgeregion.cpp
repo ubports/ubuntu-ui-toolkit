@@ -33,11 +33,11 @@
  *
  * Bottom edge regions are portions within the bottom edge area which can define
  * different content or action whenever the drag enters in the area. The area is
- * defined by \l from and \l to properties, and horizontally is stretched
- * across bottom edge width. Custom content can be defined through \l content or
- * \l contentComponent properties, which will override the \l BottomEdge::content
- * and \l BottomEdge::contentComponent properties for the time the gesture is in
- * the section area.
+ * defined by \l from and \l to properties vertically, whereas horizontally is
+ * stretched across bottom edge width. Custom content can be defined through
+ * \l content or \l contentComponent properties, which will override the
+ * \l BottomEdge::content and \l BottomEdge::contentComponent properties for the
+ * time the gesture is in the section area.
  * \qml
  * import QtQuick 2.4
  * import Ubuntu.Components 1.3
@@ -111,20 +111,6 @@ void UCBottomEdgeRegion::attachToBottomEdge(UCBottomEdge *bottomEdge)
     if (m_to <= 0.0) {
         m_to = 1.0;
         Q_EMIT toChanged();
-    }
-}
-
-void UCBottomEdgeRegion::onDragEnded()
-{
-    if (!m_bottomEdge) {
-        return;
-    }
-    if (m_to == 1.0) {
-        m_bottomEdge->commit();
-    } else {
-        Q_EMIT onDragEnded();
-        // move the bottom edge panel to the m_to
-        m_bottomEdge->commitToRegion(this);
     }
 }
 

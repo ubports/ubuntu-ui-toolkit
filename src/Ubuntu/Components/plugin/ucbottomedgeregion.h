@@ -57,8 +57,6 @@ Q_SIGNALS:
     void dragEnded();
 
 protected:
-    void onDragEnded();
-
     QUrl m_url;
     QPointer<UCBottomEdge> m_bottomEdge;
     QQmlComponent *m_component;

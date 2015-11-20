@@ -53,6 +53,7 @@ public:
     void detectDirection(qreal currentDistance);
     void setDragDirection(UCBottomEdge::DragDirection direction);
     void onDragEnded();
+    void commit(qreal to);
 
     // panel positioning
     void setDragProgress(qreal position);

@@ -93,9 +93,6 @@ public Q_SLOTS:
     void commit();
     void collapse();
 
-public: // non-public to QML
-    void commitToRegion(UCBottomEdgeRegion *region);
-
 protected:
     static void regions_append(QQmlListProperty<UCBottomEdgeRegion> *sections, UCBottomEdgeRegion *section);
     static int regions_count(QQmlListProperty<UCBottomEdgeRegion> *sections);

@@ -225,12 +225,78 @@ void UCBottomEdgePrivate::setDragDirection(UCBottomEdge::DragDirection direction
     }
 }
 
+// proceed with drag completion action
 void UCBottomEdgePrivate::onDragEnded()
 {
     if (!activeRegion || (dragDirection == UCBottomEdge::Downwards)) {
         q_func()->collapse();
     } else {
-        activeRegion->onDragEnded();
+        // emit region's dragEnded first
+        Q_EMIT activeRegion->dragEnded();
+        commit(activeRegion->m_to);
+    }
+}
+
+void UCBottomEdgePrivate::commit(qreal to)
+{
+    if (operationStatus == CommitToTop
+            || operationStatus == CommitToRegion
+            || state == UCBottomEdge::Committed) {
+        LOG << "redundant commit call";
+        return;
+    }
+    Q_Q(UCBottomEdge);
+    setOperationStatus(qFuzzyCompare(to, 1.0) ? CommitToTop : CommitToRegion);
+    if (operationStatus == CommitToTop) {
+        LOG << "emit commitStarted()";
+        Q_EMIT q->commitStarted();
+    }
+    bool animated = bottomPanel && bottomPanel->m_panelAnimation;
+    if (animated) {
+        QObject::connect(bottomPanel->m_panelAnimation, &QQuickAbstractAnimation::runningChanged,
+                q, &UCBottomEdge::unlockOperation);
+    }
+    setDragProgress(to);
+    if (!animated) {
+        q->unlockOperation(false);
+    }
+}
+
+// common handler to complete the operations
+void UCBottomEdge::unlockOperation(bool running)
+{
+    if (running) {
+        return;
+    }
+    Q_D(UCBottomEdge);
+    if (d->bottomPanel && d->bottomPanel->m_panelAnimation) {
+        disconnect(d->bottomPanel->m_panelAnimation, &QQuickAbstractAnimation::runningChanged,
+                   0, 0);
+    }
+
+    UCBottomEdgePrivate::OperationStatus oldStatus = d->operationStatus;
+    switch (d->operationStatus) {
+    case UCBottomEdgePrivate::CommitToTop:
+    case UCBottomEdgePrivate::CommitToRegion:
+        d->setState(UCBottomEdge::Committed);
+        d->patchContentItemHeader();
+        if (d->operationStatus == UCBottomEdgePrivate::CommitToRegion) {
+            LOG << "emit commitCompleted()";
+            Q_EMIT commitCompleted();
+        }
+        break;
+    case UCBottomEdgePrivate::Collapsing:
+        d->setState(UCBottomEdge::Hidden);
+        Q_EMIT collapseCompleted();
+        break;
+    default: break;
+    }
+
+    // the operation status may got changed due to a new operation being
+    // initiated from the previosu one (e.g.collapse from commitCompleted, etc
+    if (oldStatus == d->operationStatus) {
+        d->setDragDirection(Undefined);
+        d->setOperationStatus(UCBottomEdgePrivate::Idle);
     }
 }
 
@@ -439,6 +505,9 @@ void UCBottomEdgePrivate::setOperationStatus(OperationStatus s)
  *     }
  * }
  * \endqml
+ * \note Custom regions override the defaul declared ones. Therefore there must
+ * be one region which has its \l {BottomEdgeRegion::to}{to} limit set to 1.0
+ * otherwise the content will not be committed at all.
  * \note Regions can also be declared as child elements the same way as resources.
  * \sa BottomEdgeRegion
  *
@@ -743,21 +812,7 @@ QQuickItem *UCBottomEdge::contentItem() const
 void UCBottomEdge::commit()
 {
     Q_D(UCBottomEdge);
-    if (d->operationStatus == UCBottomEdgePrivate::CommitToTop || d->state == UCBottomEdge::Committed) {
-        LOG << "redundant commit call";
-        return;
-    }
-    d->setOperationStatus(UCBottomEdgePrivate::CommitToTop);
-    Q_EMIT commitStarted();
-    bool animated = d->bottomPanel && d->bottomPanel->m_panelAnimation;
-    if (animated) {
-        connect(d->bottomPanel->m_panelAnimation, &QQuickAbstractAnimation::runningChanged,
-                this, &UCBottomEdge::unlockOperation);
-    }
-    d->setDragProgress(1.0);
-    if (!animated) {
-        unlockOperation(false);
-    }
+    d->commit(1.0);
 }
 
 /*!
@@ -783,60 +838,6 @@ void UCBottomEdge::collapse()
     d->setDragProgress(0.0);
     if (!animated) {
         unlockOperation(false);
-    }
-}
-
-// yet internal, commits to the top of the region
-void UCBottomEdge::commitToRegion(UCBottomEdgeRegion *region)
-{
-    Q_D(UCBottomEdge);
-    if (!region || d->isLocked()) {
-        return;
-    }
-
-    bool animated = d->bottomPanel && d->bottomPanel->m_panelAnimation;
-    if (animated) {
-        QObject::connect(d->bottomPanel->m_panelAnimation, &QQuickAbstractAnimation::runningChanged,
-                         this, &UCBottomEdge::unlockOperation);
-    }
-    d->setOperationStatus(UCBottomEdgePrivate::CommitToTop);
-    d->setDragProgress(region->m_to);
-    if (!animated) {
-        unlockOperation(false);
-    }
-}
-
-// common handler to complete the operations
-void UCBottomEdge::unlockOperation(bool running)
-{
-    if (running) {
-        return;
-    }
-    Q_D(UCBottomEdge);
-    if (d->bottomPanel && d->bottomPanel->m_panelAnimation) {
-        disconnect(d->bottomPanel->m_panelAnimation, &QQuickAbstractAnimation::runningChanged,
-                   0, 0);
-    }
-
-    UCBottomEdgePrivate::OperationStatus oldStatus = d->operationStatus;
-    switch (d->operationStatus) {
-    case UCBottomEdgePrivate::CommitToTop:
-        d->setState(UCBottomEdge::Committed);
-        d->patchContentItemHeader();
-        Q_EMIT commitCompleted();
-        break;
-    case UCBottomEdgePrivate::Collapsing:
-        d->setState(UCBottomEdge::Hidden);
-        Q_EMIT collapseCompleted();
-        break;
-    default: break;
-    }
-
-    // the operation status may got changed due to a new operation being
-    // initiated from the previosu one (e.g.collapse from commitCompleted, etc
-    if (oldStatus == d->operationStatus) {
-        d->setDragDirection(Undefined);
-        d->setOperationStatus(UCBottomEdgePrivate::Idle);
     }
 }
 
