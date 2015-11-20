@@ -36,6 +36,11 @@ MainView {
 
     BottomEdgeHint {
         id: bottomEdgeHint
+        property int triggerCount: 0
+        function trigger(v)
+        {
+            triggerCount++;
+        }
     }
     BottomEdgeHint {
         id: floatingHint
@@ -100,6 +105,7 @@ MainView {
         }
 
         function cleanup() {
+            mainView.forceActiveFocus();
             listView.positionViewAtBeginning();
             bottomEdgeHint.visible = true;
             bottomEdgeHint.iconName = "";
@@ -199,7 +205,7 @@ MainView {
 
         // FIXME: must be executed before the test_hiding as flick with mouse affects
         // the touch drag on ListView for some unknown reason
-        function test_touch_gesture() {
+        function test_0_touch_gesture() {
             if (hasMouseAttached) {
                 skip("", "The test requires touch environment");
             }
@@ -209,6 +215,27 @@ MainView {
             tryCompare(bottomEdgeHint, "status", BottomEdgeHint.Active, 400);
             // then wait till we get back to Idle
             tryCompare(bottomEdgeHint, "status", BottomEdgeHint.Inactive, 1000);
+        }
+
+        function test_custom_trigger_on_clicked() {
+            bottomEdgeHint.status = BottomEdgeHint.Locked;
+            var prevCount = bottomEdgeHint.triggerCount;
+            mouseClick(bottomEdgeHint, centerOf(bottomEdgeHint).x, centerOf(bottomEdgeHint).y);
+            clickSpy.wait(500);
+            compare(bottomEdgeHint.triggerCount, prevCount + 1, "Overloaded trigger not called");
+        }
+
+        function test_active_focus_on_press_bug1517777() {
+            var testItem = bottomEdgeHint;
+            testItem.status = BottomEdgeHint.Active;
+            testItem.activeFocusOnPress = true;
+            // make sure the test item is not active focus
+            floatingHint.forceActiveFocus();
+            verify(testItem.status >= BottomEdgeHint.Active);
+            compare(testItem.activeFocus, false, "BottomEdgeHint is focus before the test!");
+
+            mouseClick(testItem, centerOf(testItem).x, centerOf(testItem).y);
+            compare(testItem.activeFocus, true, "BottomEdgeHint is not focus");
         }
     }
 }
