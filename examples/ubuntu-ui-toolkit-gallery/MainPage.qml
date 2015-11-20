@@ -50,6 +50,7 @@ Page {
                 onTriggered: gallery.theme.name = 'Ubuntu.Components.Themes.Ambiance'
             },
             Action {
+                id: aboutAction
                 text: i18n.tr('About')
                 iconName: "info"
                 onTriggered: mainPage.pageStack.addPageToCurrentColumn(mainPage, Qt.resolvedUrl("About.qml"))
@@ -135,8 +136,6 @@ Page {
 
     BottomEdgeHint {
         flickable: widgetList
-        text: i18n.tr('About')
-        iconName: "info"
-        onClicked: mainPage.pageStack.addPageToCurrentColumn(mainPage, Qt.resolvedUrl("About.qml"))
+        action: aboutAction
     }
 }
