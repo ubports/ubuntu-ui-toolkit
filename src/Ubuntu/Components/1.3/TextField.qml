@@ -870,6 +870,7 @@ Ubuntu.ActionItem {
             for (var i = 0; i < children.length; i++) {
                 children[i].parent = leftPane;
                 children[i].anchors.verticalCenter = verticalCenter;
+                children[i].activeFocusOnPress = false;
             }
         }
     }
@@ -892,6 +893,7 @@ Ubuntu.ActionItem {
             for (var i = 0; i < children.length; i++) {
                 children[i].parent = rightPane;
                 children[i].anchors.verticalCenter = verticalCenter;
+                children[i].activeFocusOnPress = false;
             }
         }
     }

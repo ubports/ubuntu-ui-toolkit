@@ -96,6 +96,31 @@ Item {
         TextField {
             id: textField
         }
+
+        TextField {
+            id: customTextField
+            text: 'Lorem ipsum dolor sit amet'
+            primaryItem: AbstractButton {
+                id: primaryButton
+                height: parent.height
+                width: height
+                Image {
+                    anchors.fill: parent
+                    anchors.margins: units.gu(0.5)
+                    source: 'image://theme/torch-on'
+                }
+            }
+            secondaryItem: AbstractButton {
+                id: secondaryButton
+                height: parent.height
+                width: height
+                Image {
+                    anchors.fill: parent
+                    anchors.margins: units.gu(0.5)
+                    source: 'image://theme/settings'
+                }
+            }
+        }
         TextArea {
             id: textArea
         }
@@ -442,6 +467,20 @@ Item {
                 verify(popoverY < 0, 'Dialog did not shift upwards: %1'.arg(popoverY));
             else
                 verify(popoverY >= 0, 'Popover went off-screen: %1'.arg(popoverY));
+        }
+
+        function test_secondaryItem_must_not_grab_focus() {
+            var textField = customTextField;
+            textField.forceActiveFocus();
+            compare(textField.focus, true, 'TextField is focused');
+
+            var clearButton = findChild(textField, "clear_button")
+            mouseClick(clearButton, clearButton.width/2, clearButton.height/2);
+            compare(textField.focus, true, 'TextField remains focused');
+            mouseClick(primaryButton, primaryButton.width/2, primaryButton.height/2);
+            compare(textField.focus, true, 'TextField remains focused');
+            mouseClick(secondaryButton, secondaryButton.width/2, secondaryButton.height/2);
+            compare(textField.focus, true, 'TextField remains focused');
         }
     }
 }
