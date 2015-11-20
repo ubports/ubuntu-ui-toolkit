@@ -101,14 +101,17 @@ Template {
                         TextField {
                             id: regionFrom
                             text: bottomEdge.regions[regionIndex][modelData]
-                            inputMask: "0.0"
-                            validator: DoubleValidator {bottom: 0.0; top: 1.0; decimals: 2}
+                            validator: DoubleValidator {bottom: 0.0; top: 1.0; decimals: 2; locale: "d.d"}
                             inputMethodHints: Qt.ImhPreferNumbers | Qt.ImhFormattedNumbersOnly
                             width: units.gu(7)
                             hasClearButton: false
                             errorHighlight: true
                             onAccepted: bottomEdge.regions[regionIndex][modelData] = text
-                            onTextChanged: if (acceptableInput) bottomEdge.regions[regionIndex][modelData] = text
+                            onTextChanged: {
+                                if (regionFrom.acceptableInput) {
+                                    bottomEdge.regions[regionIndex][modelData] = parseFloat(text);
+                                }
+                            }
                         }
                     }
                 }
@@ -158,10 +161,14 @@ Template {
             BottomEdgeRegion {
                 objectName: "CustomRegion2"
                 enabled: regionConfig.model >= 2
+                onFromChanged: print(objectName, "from", from)
+                onToChanged: print(objectName, "to", to)
             },
             BottomEdgeRegion {
                 objectName: "CustomRegion3"
                 enabled: regionConfig.model >= 3
+                onFromChanged: print(objectName, "from", from)
+                onToChanged: print(objectName, "to", to)
             },
             // default region, mimics the default setup
             BottomEdgeRegion {

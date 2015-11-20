@@ -533,8 +533,6 @@ void UCBottomEdge::componentComplete()
 
 void UCBottomEdge::itemChange(ItemChange change, const ItemChangeData &data)
 {
-    if (change == ItemVisibleHasChanged) {
-    }
     if (change == ItemParentHasChanged) {
         Q_D(UCBottomEdge);
         QQuickAnchors *anchors = QQuickItemPrivate::get(this)->anchors();
@@ -550,6 +548,9 @@ void UCBottomEdge::itemChange(ItemChange change, const ItemChangeData &data)
             anchors->resetLeft();
             anchors->resetRight();
             anchors->resetBottom();
+        }
+        if (d->bottomPanel) {
+            d->bottomPanel->setParentItem(data.item);
         }
     }
     QQuickItem::itemChange(change, data);
