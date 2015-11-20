@@ -101,7 +101,6 @@ UCBottomEdgeRegion::UCBottomEdgeRegion(QObject *parent)
     , m_to(-1.0)
     , m_enabled(true)
 {
-    connect(this, &UCBottomEdgeRegion::dragEnded, &UCBottomEdgeRegion::onDragEnded);
 }
 
 void UCBottomEdgeRegion::attachToBottomEdge(UCBottomEdge *bottomEdge)
@@ -123,6 +122,7 @@ void UCBottomEdgeRegion::onDragEnded()
     if (m_to == 1.0) {
         m_bottomEdge->commit();
     } else {
+        Q_EMIT onDragEnded();
         // move the bottom edge panel to the m_to
         m_bottomEdge->commitToRegion(this);
     }

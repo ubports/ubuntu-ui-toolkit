@@ -34,7 +34,7 @@ class UCBottomEdge : public UCStyledItemBase
     Q_ENUMS(State DragDirection)
 
     Q_PROPERTY(UCBottomEdgeHint* hint READ hint CONSTANT FINAL)
-    Q_PROPERTY(qreal dragProgress READ dragProgress NOTIFY dragProggressChanged FINAL)
+    Q_PROPERTY(qreal dragProgress READ dragProgress NOTIFY dragProgressChanged FINAL)
     Q_PROPERTY(DragDirection dragDirection READ dragDirection NOTIFY dragDirectionChanged FINAL)
     Q_PROPERTY(State state READ state NOTIFY stateChanged FINAL)
     Q_PROPERTY(QUrl content READ content WRITE setContent NOTIFY contentChanged FINAL)
@@ -75,16 +75,14 @@ public:
     UCBottomEdgeRegion *activeRegion();
 
 Q_SIGNALS:
-    void hintChanged();
-    void dragProggressChanged();
-    void dragDirectionChanged();
+    void dragProgressChanged(qreal dragProgress);
+    void dragDirectionChanged(DragDirection direction);
     void stateChanged(State state);
     void contentChanged(const QUrl url);
     void contentComponentChanged(QQmlComponent *component);
     void contentItemChanged();
-    void fillWindowChanged();
     void regionsChanged();
-    void activeRegionChanged();
+    void activeRegionChanged(UCBottomEdgeRegion *activeRegion);
 
     void commitStarted();
     void commitCompleted();
@@ -104,6 +102,7 @@ protected:
     static UCBottomEdgeRegion *regions_at(QQmlListProperty<UCBottomEdgeRegion> *sections, int index);
     static void regions_clear(QQmlListProperty<UCBottomEdgeRegion> *sections);
 
+    void initializeComponent();
     void classBegin();
     void componentComplete();
     void itemChange(ItemChange change, const ItemChangeData &data);

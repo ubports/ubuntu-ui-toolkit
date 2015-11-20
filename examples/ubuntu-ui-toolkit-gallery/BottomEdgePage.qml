@@ -157,18 +157,21 @@ Template {
                 property color baseColor: UbuntuColors.lightGrey
                 onFromChanged: print(objectName, "from", from)
                 onToChanged: print(objectName, "to", to)
+                onDragEnded: print("drag ended!!!")
             },
             BottomEdgeRegion {
                 objectName: "CustomRegion2"
                 enabled: regionConfig.model >= 2
                 onFromChanged: print(objectName, "from", from)
                 onToChanged: print(objectName, "to", to)
+                onDragEnded: print("drag ended!!!")
             },
             BottomEdgeRegion {
                 objectName: "CustomRegion3"
                 enabled: regionConfig.model >= 3
                 onFromChanged: print(objectName, "from", from)
                 onToChanged: print(objectName, "to", to)
+                onDragEnded: print("drag ended!!!")
             },
             // default region, mimics the default setup
             BottomEdgeRegion {

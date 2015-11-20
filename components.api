@@ -183,9 +183,12 @@ Ubuntu.Components.BottomEdge 1.3: StyledItem
     readonly property DragDirection dragDirection
     readonly property double dragProgress
     readonly property BottomEdgeHint hint
+    signal dragProgressChanged(double dragProgress)
+    signal dragDirectionChanged(DragDirection direction)
     signal stateChanged(State state)
     signal contentChanged(url url)
     signal contentComponentChanged(Component component)
+    signal activeRegionChanged(BottomEdgeRegion activeRegion)
     signal commitStarted()
     signal commitCompleted()
     signal collapseStarted()
@@ -225,6 +228,7 @@ Ubuntu.Components.Styles.BottomEdgeStyle 1.3: Item
     property Item contentItem
     property Item panel
     property Animation panelAnimation
+    property double revealThreshold
 Ubuntu.Components.Button 1.0 0.1: AbstractButton
     property color color
     property QFont font

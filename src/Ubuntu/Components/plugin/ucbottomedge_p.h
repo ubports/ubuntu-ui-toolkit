@@ -48,13 +48,14 @@ public:
     // page header manipulation
     void patchContentItemHeader();
     void createDefaultRegions();
-    void updateProgressionStates();
+    void updateProgressionStates(qreal distance);
     bool setActiveRegion(UCBottomEdgeRegion *range);
-    void detectDirection(qreal currentPanelY);
+    void detectDirection(qreal currentDistance);
     void setDragDirection(UCBottomEdge::DragDirection direction);
+    void onDragEnded();
 
     // panel positioning
-    void positionPanel(qreal position);
+    void setDragProgress(qreal position);
     // internal setters
     void setState(UCBottomEdge::State state);
 
@@ -73,7 +74,8 @@ public:
     QQmlComponent *contentComponent;
     UCBottomEdgeStyle *bottomPanel;
 
-    qreal previousPanelY;
+    qreal previousDistance;
+    qreal dragProgress;
     UCBottomEdge::State state;
 
     enum OperationStatus {

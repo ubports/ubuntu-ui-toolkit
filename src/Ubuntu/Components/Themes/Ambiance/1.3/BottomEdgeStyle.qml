@@ -23,13 +23,13 @@ BottomEdgeStyle {
     panel: panelItem
     contentItem: loader.item
     panelAnimation: panelBehavior
+    revealThreshold: bottomEdge.hint.height + units.gu(2)
 
     // own styling properties
     property color backgroundColor: "transparent"
     property color panelColor: theme.palette.normal.background
     property color shadowColor: theme.palette.selected.background
     property bool attachHintToContent: false
-    property real touchDragThreshold: units.gu(2)
 
     anchors {
         // break the fill from BottomEdge, StyledItem automatically fills that
@@ -149,34 +149,10 @@ BottomEdgeStyle {
             }
         }
 
-        // drag ended handling
-        function dragEnded() {
-            if (!bottomEdge.activeRegion || bottomEdge.dragDirection == BottomEdge.Downwards) {
-                bottomEdge.collapse();
-            } else {
-                bottomEdge.activeRegion.dragEnded();
-            }
-        }
-
         Connections {
-            target: bottomEdge.hint.swipeArea
-            onDistanceChanged: {
-                if (bottomEdge.hint.status == BottomEdgeHint.Active
-                        && distance >= (bottomEdge.hint.height + touchDragThreshold)) {
-                    // this will turn the bottomEdge.state into Revealed
-                    panelItem.swipedAboveHint = true;
-                    panelItem.y = bottomEdge.height - distance;
-                }
-                if (bottomEdge.state == BottomEdge.Revealed
-                        && (bottomEdge.height - distance) > 0) {
-                    panelItem.y = bottomEdge.height - distance;
-                }
-            }
-            onDraggingChanged: {
-                if (dragging) {
-                    return;
-                }
-                panelItem.dragEnded();
+            target: bottomEdge
+            onDragProgressChanged: {
+                panelItem.y = bottomEdge.height * (1.0 - dragProgress);
             }
         }
     }

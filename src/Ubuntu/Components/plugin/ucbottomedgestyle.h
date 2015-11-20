@@ -30,8 +30,11 @@ class UCBottomEdgeStyle : public QQuickItem
     Q_PROPERTY(QQuickItem* panel MEMBER m_panel NOTIFY panelChanged FINAL)
     Q_PROPERTY(QQuickItem* contentItem MEMBER m_contentItem NOTIFY contentItemChanged FINAL)
     Q_PROPERTY(QQuickAbstractAnimation *panelAnimation MEMBER m_panelAnimation NOTIFY panelAnimationChanged FINAL)
+    Q_PROPERTY(qreal revealThreshold MEMBER m_revealThreshold NOTIFY revealThresholdChanged FINAL)
 public:
-    explicit UCBottomEdgeStyle(QQuickItem *parent = 0);
+    explicit UCBottomEdgeStyle(QQuickItem *parent = 0)
+        : QQuickItem(parent)
+    {}
 
     void setConsumeMouse(bool consume);
 
@@ -39,14 +42,16 @@ Q_SIGNALS:
     void panelChanged();
     void contentItemChanged();
     void panelAnimationChanged();
+    void revealThresholdChanged();
 
 protected:
     void mousePressEvent(QMouseEvent *event);
 
 private:
-    QQuickItem *m_panel;
-    QQuickItem *m_contentItem;
-    QQuickAbstractAnimation *m_panelAnimation;
+    QQuickItem *m_panel = nullptr;
+    QQuickItem *m_contentItem = nullptr;
+    QQuickAbstractAnimation *m_panelAnimation = nullptr;
+    qreal m_revealThreshold = 0.;
 
     friend class UCBottomEdge;
     friend class UCBottomEdgePrivate;

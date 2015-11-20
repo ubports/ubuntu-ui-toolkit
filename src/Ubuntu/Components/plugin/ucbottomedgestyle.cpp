@@ -27,13 +27,6 @@
  * \ingroup style-api
  * \brief Style API for BottomEdge content holder panel.
  */
-UCBottomEdgeStyle::UCBottomEdgeStyle(QQuickItem *parent)
-    : QQuickItem(parent)
-    , m_panel(Q_NULLPTR)
-    , m_contentItem(Q_NULLPTR)
-    , m_panelAnimation(Q_NULLPTR)
-{
-}
 
 void UCBottomEdgeStyle::setConsumeMouse(bool consume)
 {
@@ -63,4 +56,10 @@ void UCBottomEdgeStyle::mousePressEvent(QMouseEvent *event)
  * \qmlproperty Animation BottomEdgeStyle::panelAnimation
  * Holds the animation of the panel. BottomEdge requires this property to know
  * when the bottom edge is fully committed or collapsed.
+ */
+
+/*!
+ * \qmlproperty real BottomEdgeStyle::revealThreshold
+ * Holds the style configured value which drives when the bottom edge content
+ * should be exposed.
  */

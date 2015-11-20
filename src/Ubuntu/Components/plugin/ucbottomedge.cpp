@@ -47,7 +47,8 @@ UCBottomEdgePrivate::UCBottomEdgePrivate()
     , hint(new UCBottomEdgeHint)
     , contentComponent(Q_NULLPTR)
     , bottomPanel(Q_NULLPTR)
-    , previousPanelY(0.0)
+    , previousDistance(0.0)
+    , dragProgress(0.)
     , state(UCBottomEdge::Hidden)
     , operationStatus(Idle)
     , dragDirection(UCBottomEdge::Undefined)
@@ -61,9 +62,8 @@ void UCBottomEdgePrivate::init()
     // initialize hint
     QQml_setParent_noEvent(hint, q);
     hint->setParentItem(q);
-    QObject::connect(hint, SIGNAL(clicked()), q, SLOT(commit()), Qt::DirectConnection);
 
-    // create default stages
+    // create default regions
     createDefaultRegions();
 
     // set the style name
@@ -147,23 +147,26 @@ void UCBottomEdgePrivate::createDefaultRegions()
 }
 
 // update state, drag direction and activeRegion during drag
-void UCBottomEdgePrivate::updateProgressionStates()
+void UCBottomEdgePrivate::updateProgressionStates(qreal distance)
 {
-    detectDirection(bottomPanel->m_panel->y());
+    Q_Q(UCBottomEdge);
+
+    // refresh drag progress
+    setDragProgress(distance / q->height());
+
+    detectDirection(distance);
     if (isLocked()) {
         // there is an operation ongoing, do not update drag and activeRegion
         return;
     }
-    Q_Q(UCBottomEdge);
-    qreal progress = q->dragProgress();
-    if (progress > 0) {
-        // the content is revealed
+    if (distance > bottomPanel->m_revealThreshold) {
+        // the content can be revealed
         setState(UCBottomEdge::Revealed);
     }
 
-    // go through the regions
+    // go through the regions and spot the active region
     Q_FOREACH(UCBottomEdgeRegion *region, regions) {
-        if (region->contains(progress)) {
+        if (region->contains(dragProgress)) {
             setActiveRegion(region);
             break;
         } else if (activeRegion == region) {
@@ -185,26 +188,26 @@ bool UCBottomEdgePrivate::setActiveRegion(UCBottomEdgeRegion *region)
     if (activeRegion) {
         activeRegion->enter();
     }
-    Q_EMIT q_func()->activeRegionChanged();
+    Q_EMIT q_func()->activeRegionChanged(activeRegion);
     return true;
 }
 
 // updates the dragDirection property
-void UCBottomEdgePrivate::detectDirection(qreal currentPanelY)
+void UCBottomEdgePrivate::detectDirection(qreal currentDistance)
 {
-    if (!previousPanelY) {
-        previousPanelY = currentPanelY;
+    if (!previousDistance) {
+        previousDistance = currentDistance;
     }
 
     UCBottomEdge::DragDirection newDirection = dragDirection;
-    qreal delta = previousPanelY - currentPanelY;
+    qreal delta = previousDistance - currentDistance;
     bool deltaPassed = abs(delta) >= qApp->styleHints()->startDragDistance();
     if (!deltaPassed) {
         return;
     }
 
-    previousPanelY = currentPanelY;
-    newDirection = (delta > 0) ? UCBottomEdge::Upwards : UCBottomEdge::Downwards;
+    previousDistance = currentDistance;
+    newDirection = (delta < 0) ? UCBottomEdge::Upwards : UCBottomEdge::Downwards;
     setDragDirection(newDirection);
 }
 
@@ -213,20 +216,29 @@ void UCBottomEdgePrivate::setDragDirection(UCBottomEdge::DragDirection direction
 {
     if (dragDirection != direction) {
         dragDirection = direction;
-        Q_EMIT q_func()->dragDirectionChanged();
+        switch (dragDirection) {
+        case UCBottomEdge::Undefined: LOG << "direction: Undefined"; break;
+        case UCBottomEdge::Upwards: LOG << "direction: Upwards"; break;
+        case UCBottomEdge::Downwards: LOG << "direction: Downwards"; break;
+        }
+        Q_EMIT q_func()->dragDirectionChanged(dragDirection);
     }
 }
 
+void UCBottomEdgePrivate::onDragEnded()
+{
+    if (!activeRegion || (dragDirection == UCBottomEdge::Downwards)) {
+        q_func()->collapse();
+    } else {
+        activeRegion->onDragEnded();
+    }
+}
 
 // positions the bottom edge panel holding the content to the given height percentage
-void UCBottomEdgePrivate::positionPanel(qreal position)
+void UCBottomEdgePrivate::setDragProgress(qreal position)
 {
-    // use QQmlProperty so the bindings on y get broken when we set the value
-    // otherwise AdaptivePageLayout relayouting makes bottom edge to collapse
-    // also makes Behavior to run on the property
-    Q_Q(UCBottomEdge);
-    qreal height = q->height();
-    QQmlProperty::write(bottomPanel->m_panel, "y", height - height * position, qmlContext(bottomPanel->m_panel));
+    dragProgress = position;
+    Q_EMIT q_func()->dragProgressChanged(dragProgress);
 }
 
 // inject collapse action into the content if the content has a PageHeader
@@ -284,11 +296,6 @@ bool UCBottomEdgePrivate::loadStyleItem(bool animated)
         // connect style stuff
         QObject::connect(bottomPanel, &UCBottomEdgeStyle::contentItemChanged,
                          q, &UCBottomEdge::contentItemChanged, Qt::DirectConnection);
-        QObject::connect(bottomPanel->m_panel, &QQuickItem::yChanged,
-                         q, &UCBottomEdge::dragProggressChanged, Qt::DirectConnection);
-        QObject::connect(bottomPanel->m_panel, &QQuickItem::yChanged, [=]() {
-            updateProgressionStates();
-        });
         // follow contentItem change to patch the header
         QObject::connect(bottomPanel, &UCBottomEdgeStyle::contentItemChanged, [=]() {
             patchContentItemHeader();
@@ -506,12 +513,32 @@ UCBottomEdge::~UCBottomEdge()
 {
 }
 
-void UCBottomEdge::classBegin()
+void UCBottomEdge::initializeComponent()
 {
-    UCStyledItemBase::classBegin();
     Q_D(UCBottomEdge);
     // initialize hint
     d->hint->init();
+
+    // hint click() always commits
+    connect(d->hint, SIGNAL(clicked()), this, SLOT(commit()), Qt::DirectConnection);
+
+    // follow drag progress
+    connect(d->hint->swipeArea(), &UCSwipeArea::distanceChanged, [=](qreal distance) {
+        d->updateProgressionStates(distance);
+    });
+
+    // follow swipe end
+    connect(d->hint->swipeArea(), &UCSwipeArea::draggingChanged, [=](bool dragging) {
+        if (!dragging) {
+            d->onDragEnded();
+        }
+    });
+}
+
+void UCBottomEdge::classBegin()
+{
+    UCStyledItemBase::classBegin();
+    initializeComponent();
 }
 
 void UCBottomEdge::componentComplete()
@@ -574,7 +601,7 @@ UCBottomEdgeHint *UCBottomEdge::hint() const
 qreal UCBottomEdge::dragProgress()
 {
     Q_D(UCBottomEdge);
-    return (d->bottomPanel && d->bottomPanel->m_panel) ? 1.0 - (d->bottomPanel->m_panel->y() / height()) : 0.0;
+    return d->dragProgress;
 }
 
 /*!
@@ -727,7 +754,7 @@ void UCBottomEdge::commit()
         connect(d->bottomPanel->m_panelAnimation, &QQuickAbstractAnimation::runningChanged,
                 this, &UCBottomEdge::unlockOperation);
     }
-    d->positionPanel(1.0);
+    d->setDragProgress(1.0);
     if (!animated) {
         unlockOperation(false);
     }
@@ -753,7 +780,7 @@ void UCBottomEdge::collapse()
         connect(d->bottomPanel->m_panelAnimation, &QQuickAbstractAnimation::runningChanged,
                 this, &UCBottomEdge::unlockOperation);
     }
-    d->positionPanel(0.0);
+    d->setDragProgress(0.0);
     if (!animated) {
         unlockOperation(false);
     }
@@ -773,7 +800,7 @@ void UCBottomEdge::commitToRegion(UCBottomEdgeRegion *region)
                          this, &UCBottomEdge::unlockOperation);
     }
     d->setOperationStatus(UCBottomEdgePrivate::CommitToTop);
-    d->positionPanel(region->m_to);
+    d->setDragProgress(region->m_to);
     if (!animated) {
         unlockOperation(false);
     }
