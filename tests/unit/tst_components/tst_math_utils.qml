@@ -84,6 +84,17 @@ TestCase {
         compare(clamped, maxValue, "clamped value not within range")
     }
 
+    function test_clamp_min_and_max_switched() {
+        var minValue = 45
+        var maxValue = 10
+        var clampValue = 50
+
+        ignoreWarning("MathUtils.clamp, min value should not be bigger than the max value")
+
+        var clamped = MathUtils.clamp(clampValue, minValue, maxValue)
+        compare(clamped, minValue, "clamped value not within range")
+    }
+
     function test_lerp() {
         var lerped = MathUtils.lerp(0.25, 90, 0)
         compare(lerped, 67.5)
