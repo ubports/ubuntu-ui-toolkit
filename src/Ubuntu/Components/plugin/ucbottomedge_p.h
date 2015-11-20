@@ -89,6 +89,7 @@ public:
     UCBottomEdge::DragDirection dragDirection;
 
     bool defaultRegionsReset:1;
+    bool mousePressed:1;
 
     // status management
     void setOperationStatus(OperationStatus s);

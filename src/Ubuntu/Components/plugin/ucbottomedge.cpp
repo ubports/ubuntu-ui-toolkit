@@ -53,6 +53,7 @@ UCBottomEdgePrivate::UCBottomEdgePrivate()
     , operationStatus(Idle)
     , dragDirection(UCBottomEdge::Undefined)
     , defaultRegionsReset(false)
+    , mousePressed(false)
 {
 }
 
@@ -657,26 +658,25 @@ void UCBottomEdge::itemChange(ItemChange change, const ItemChangeData &data)
 
 bool UCBottomEdge::eventFilter(QObject *target, QEvent *event)
 {
-    static bool pressed = false;
     Q_D(UCBottomEdge);
 
     switch (event->type()) {
     case QEvent::MouseButtonPress:
     {
         QMouseEvent *mouse = static_cast<QMouseEvent*>(event);
-        pressed = d->hint->contains(mouse->localPos());
+        d->mousePressed = d->hint->contains(mouse->localPos());
         LOG << "drag with mouse";
         break;
     }
     case QEvent::MouseButtonRelease:
-        if (pressed) {
+        if (d->mousePressed) {
             d_func()->onDragEnded();
         }
-        pressed = false;
+        d->mousePressed = false;
         break;
     case QEvent::MouseMove:
     {
-        if (pressed) {
+        if (d->mousePressed) {
             QMouseEvent *mouse = static_cast<QMouseEvent*>(event);
             QPointF winScene = mapToScene(position()) + QPointF(0, height());
             QPointF pos = mouse->windowPos();
