@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: ubuntu-ui-toolkit\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2015-11-05 10:05+0100\n"
-"PO-Revision-Date: 2014-10-02 19:14+0000\n"
-"Last-Translator: Phillip Sz <Unknown>\n"
+"PO-Revision-Date: 2015-11-20 22:23+0000\n"
+"Last-Translator: Tobias Bannert <Unknown>\n"
 "Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2015-11-20 05:28+0000\n"
+"X-Launchpad-Export-Date: 2015-11-21 05:30+0000\n"
 "X-Generator: Launchpad (build 17850)\n"
 
 #: Ubuntu/Components/1.2/TextInputPopover.qml:29
@@ -92,49 +92,49 @@ msgstr "hh:mm"
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:293
 msgid "'Yesterdayâ€ƒ'h:mm ap"
-msgstr "'Gestern   'h:mm"
+msgstr "'Gestern   'hh:mm"
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:296
 msgid "'Yesterdayâ€ƒ'HH:mm"
-msgstr "'Gestern   'HH:mm"
+msgstr "'Gestern   'hh:mm"
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:302
 msgid "'Tomorrowâ€ƒ'h:mm ap"
-msgstr "'Morgen   'h:mm"
+msgstr "'Morgen   'hh:mm"
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:305
 msgid "'Tomorrowâ€ƒ'HH:mm"
-msgstr "'Morgen 'HH:mm"
+msgstr "'Morgen 'hh:mm"
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:312
 msgid "ddd'â€ƒ'h:mm ap"
-msgstr "ddd' 'h:mm"
+msgstr "ddd' 'hh:mm"
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:315
 msgid "ddd'â€ƒ'HH:mm"
-msgstr "ddd'   'HH:mm"
+msgstr "ddd'   'hh:mm"
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:322
 msgid "ddd d MMM'â€ƒ'h:mm ap"
-msgstr "ddd, d. MMM'   'h:mm"
+msgstr "ddd, d. MMM.'   'hh:mm"
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:325
 msgid "ddd d MMM'â€ƒ'HH:mm"
-msgstr "ddd, d. MMM'   'HH:mm"
+msgstr "ddd, d. MMM.'   'hh:mm"
 
 #: Ubuntu/Components/plugin/privates/listitemdragarea.cpp:122
 msgid ""
@@ -166,7 +166,7 @@ msgstr "Alarm"
 #: Ubuntu/Components/plugin/ucalarm.cpp:635
 #: Ubuntu/Components/plugin/ucalarm.cpp:667
 msgid "Alarm has a pending operation."
-msgstr "Der Alarm hat einen bevorstehende Einsatz."
+msgstr "Der Alarm hat einen bevorstehenden Einsatz."
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:188
 msgid "Usage: "
@@ -247,7 +247,7 @@ msgstr ""
 
 #: Ubuntu/Components/plugin/ucviewitemsattached.cpp:462
 msgid "Dragging mode requires ListView"
-msgstr ""
+msgstr "Ziehmodus erfordert »ListView«"
 
 #: Ubuntu/Components/plugin/ucviewitemsattached.cpp:468
 msgid ""
