@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2015-11-20 05:28+0000\n"
+"X-Launchpad-Export-Date: 2015-11-22 05:26+0000\n"
 "X-Generator: Launchpad (build 17850)\n"
 
 #: Ubuntu/Components/1.2/TextInputPopover.qml:29
@@ -50,12 +50,12 @@ msgstr "Eliminar"
 
 #: Ubuntu/Components/plugin/adapters/dbuspropertywatcher_p.cpp:51
 msgid "No service/path specified"
-msgstr ""
+msgstr "Sem serviço/caminho especificado"
 
 #: Ubuntu/Components/plugin/adapters/dbuspropertywatcher_p.cpp:69
 #, qt-format
 msgid "Invalid bus type: %1."
-msgstr ""
+msgstr "Tipo de endereço inválido: %1"
 
 #. TRANSLATORS: Time based "this is happening/happened now"
 #: Ubuntu/Components/plugin/i18n.cpp:268
@@ -80,7 +80,7 @@ msgstr[1] "%1 minutos"
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:284
 msgid "h:mm ap"
-msgstr ""
+msgstr "h:mm ap"
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
@@ -91,49 +91,49 @@ msgstr "HH:mm"
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:293
-msgid "'Yesterday 'h:mm ap"
+msgid "'Yesterday 'h:mm ap"
 msgstr ""
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:296
-msgid "'Yesterday 'HH:mm"
+msgid "'Yesterday 'HH:mm"
 msgstr ""
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:302
-msgid "'Tomorrow 'h:mm ap"
+msgid "'Tomorrow 'h:mm ap"
 msgstr ""
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:305
-msgid "'Tomorrow 'HH:mm"
+msgid "'Tomorrow 'HH:mm"
 msgstr ""
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:312
-msgid "ddd' 'h:mm ap"
+msgid "ddd' 'h:mm ap"
 msgstr ""
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:315
-msgid "ddd' 'HH:mm"
+msgid "ddd' 'HH:mm"
 msgstr ""
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:322
-msgid "ddd d MMM' 'h:mm ap"
+msgid "ddd d MMM' 'h:mm ap"
 msgstr ""
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:325
-msgid "ddd d MMM' 'HH:mm"
+msgid "ddd d MMM' 'HH:mm"
 msgstr ""
 
 #: Ubuntu/Components/plugin/privates/listitemdragarea.cpp:122
@@ -141,6 +141,8 @@ msgid ""
 "ListView has no ViewItems.dragUpdated() signal handler implemented. No "
 "dragging will be possible."
 msgstr ""
+"ListView não tem o sinal ViewItems.dragUpdated() implementado. Arrastamento "
+"não será possível."
 
 #: Ubuntu/Components/plugin/statesaverbackend_p.cpp:176
 #, qt-format
@@ -191,11 +193,11 @@ msgstr "%1 está à espera de argumentos adicionais: %2"
 
 #: Ubuntu/Components/plugin/uclistitemstyle.cpp:145
 msgid "consider overriding swipeEvent() slot!"
-msgstr ""
+msgstr "considere sobrepor o solt swipeEvent()!"
 
 #: Ubuntu/Components/plugin/uclistitemstyle.cpp:165
 msgid "consider overriding rebound() slot!"
-msgstr ""
+msgstr "considere sobrepor o slot rebound()!"
 
 #: Ubuntu/Components/plugin/ucmousefilters.cpp:1065
 msgid "Ignoring AfterItem priority for InverseMouse filters."
@@ -203,13 +205,15 @@ msgstr "Ignorando prioriedade depoisdoitem para filtros de iversãoderato."
 
 #: Ubuntu/Components/plugin/ucserviceproperties.cpp:77
 msgid "Changing connection parameters forbidden."
-msgstr ""
+msgstr "Proibido mudar os parâmetros de ligação."
 
 #: Ubuntu/Components/plugin/ucserviceproperties.cpp:160
 #, qt-format
 msgid ""
 "Binding detected on property '%1' will be removed by the service updates."
 msgstr ""
+"Vínculo detetado na propriedade '%1' irá ser removido pelas atualizações de "
+"serviço."
 
 #: Ubuntu/Components/plugin/ucstatesaver.cpp:46
 msgid "Warning: attachee must have an ID. State will not be saved."
@@ -233,21 +237,23 @@ msgstr ""
 #: Ubuntu/Components/plugin/uctheme.cpp:208
 #, qt-format
 msgid "Theme not found: \"%1\""
-msgstr ""
+msgstr "Tema não encontrado: \"%1\""
 
 #: Ubuntu/Components/plugin/uctheme.cpp:539
 msgid "Not a Palette component."
-msgstr ""
+msgstr "Não é um componente da Paleta."
 
 #: Ubuntu/Components/plugin/ucviewitemsattached.cpp:462
 msgid "Dragging mode requires ListView"
-msgstr ""
+msgstr "Modo de arrastamento requere ListView"
 
 #: Ubuntu/Components/plugin/ucviewitemsattached.cpp:468
 msgid ""
 "Dragging is only supported when using a QAbstractItemModel, ListModel or "
 "list."
 msgstr ""
+"Arrastamento é apenas suportado quando usar um QAbstractItemModel, ListModel "
+"ou list."
 
 #: Ubuntu/Components/Popups/1.2/ComposerSheet.qml:78
 #: Ubuntu/Components/Popups/1.3/ComposerSheet.qml:78

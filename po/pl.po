@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2015-11-20 05:28+0000\n"
+"X-Launchpad-Export-Date: 2015-11-22 05:26+0000\n"
 "X-Generator: Launchpad (build 17850)\n"
 
 #: Ubuntu/Components/1.2/TextInputPopover.qml:29
@@ -51,7 +51,7 @@ msgstr "Usuń"
 
 #: Ubuntu/Components/plugin/adapters/dbuspropertywatcher_p.cpp:51
 msgid "No service/path specified"
-msgstr ""
+msgstr "Nie określono usługi/ścieżki"
 
 #: Ubuntu/Components/plugin/adapters/dbuspropertywatcher_p.cpp:69
 #, qt-format
@@ -61,21 +61,23 @@ msgstr ""
 #. TRANSLATORS: Time based "this is happening/happened now"
 #: Ubuntu/Components/plugin/i18n.cpp:268
 msgid "Now"
-msgstr ""
+msgstr "Teraz"
 
 #: Ubuntu/Components/plugin/i18n.cpp:275
 #, qt-format
 msgid "%1 minute ago"
 msgid_plural "%1 minutes ago"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Przed %1 minutą"
+msgstr[1] "Przed %1 minutami"
+msgstr[2] "%1 minut temu"
 
 #: Ubuntu/Components/plugin/i18n.cpp:277
 #, qt-format
 msgid "%1 minute"
 msgid_plural "%1 minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%1 minuta"
+msgstr[1] "%1 minuty"
+msgstr[2] "%1 minut"
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
@@ -87,54 +89,54 @@ msgstr ""
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:287
 msgid "HH:mm"
-msgstr ""
+msgstr "HH:mm"
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:293
-msgid "'Yesterday 'h:mm ap"
+msgid "'Yesterday 'h:mm ap"
 msgstr ""
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:296
-msgid "'Yesterday 'HH:mm"
+msgid "'Yesterday 'HH:mm"
 msgstr ""
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:302
-msgid "'Tomorrow 'h:mm ap"
+msgid "'Tomorrow 'h:mm ap"
 msgstr ""
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:305
-msgid "'Tomorrow 'HH:mm"
+msgid "'Tomorrow 'HH:mm"
 msgstr ""
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:312
-msgid "ddd' 'h:mm ap"
+msgid "ddd' 'h:mm ap"
 msgstr ""
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:315
-msgid "ddd' 'HH:mm"
+msgid "ddd' 'HH:mm"
 msgstr ""
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:322
-msgid "ddd d MMM' 'h:mm ap"
+msgid "ddd d MMM' 'h:mm ap"
 msgstr ""
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:325
-msgid "ddd d MMM' 'HH:mm"
+msgid "ddd d MMM' 'HH:mm"
 msgstr ""
 
 #: Ubuntu/Components/plugin/privates/listitemdragarea.cpp:122
@@ -240,11 +242,11 @@ msgstr ""
 #: Ubuntu/Components/plugin/uctheme.cpp:208
 #, qt-format
 msgid "Theme not found: \"%1\""
-msgstr ""
+msgstr "Nie odnaleziono motywu: \"%1\""
 
 #: Ubuntu/Components/plugin/uctheme.cpp:539
 msgid "Not a Palette component."
-msgstr ""
+msgstr "To nie jest komponent palety."
 
 #: Ubuntu/Components/plugin/ucviewitemsattached.cpp:462
 msgid "Dragging mode requires ListView"

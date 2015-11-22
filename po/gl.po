@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2015-11-20 05:28+0000\n"
+"X-Launchpad-Export-Date: 2015-11-22 05:26+0000\n"
 "X-Generator: Launchpad (build 17850)\n"
 
 #: Ubuntu/Components/1.2/TextInputPopover.qml:29
@@ -91,50 +91,50 @@ msgstr "HH:mm"
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:293
-msgid "'Yesterday 'h:mm ap"
-msgstr ""
+msgid "'Yesterday 'h:mm ap"
+msgstr "'Onte 'h:mm ap"
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:296
-msgid "'Yesterday 'HH:mm"
-msgstr ""
+msgid "'Yesterday 'HH:mm"
+msgstr "'Onte 'HH:mm"
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:302
-msgid "'Tomorrow 'h:mm ap"
-msgstr ""
+msgid "'Tomorrow 'h:mm ap"
+msgstr "'Mañá 'h:mm ap"
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:305
-msgid "'Tomorrow 'HH:mm"
-msgstr ""
+msgid "'Tomorrow 'HH:mm"
+msgstr "'Mañá 'HH:mm"
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:312
-msgid "ddd' 'h:mm ap"
-msgstr ""
+msgid "ddd' 'h:mm ap"
+msgstr "ddd' 'h:mm ap"
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:315
-msgid "ddd' 'HH:mm"
-msgstr ""
+msgid "ddd' 'HH:mm"
+msgstr "ddd' 'HH:mm"
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:322
-msgid "ddd d MMM' 'h:mm ap"
-msgstr ""
+msgid "ddd d MMM' 'h:mm ap"
+msgstr "ddd d MMM' 'h:mm ap"
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:325
-msgid "ddd d MMM' 'HH:mm"
-msgstr ""
+msgid "ddd d MMM' 'HH:mm"
+msgstr "ddd d MMM' 'HH:mm"
 
 #: Ubuntu/Components/plugin/privates/listitemdragarea.cpp:122
 msgid ""
