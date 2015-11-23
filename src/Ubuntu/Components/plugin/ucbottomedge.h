@@ -109,6 +109,8 @@ protected:
     void onParentHeightChanged();
 
     Q_DECLARE_PRIVATE(UCBottomEdge)
+
+    friend class tst_BottomEdge;
 };
 
 Q_DECLARE_LOGGING_CATEGORY(ucBottomEdge)

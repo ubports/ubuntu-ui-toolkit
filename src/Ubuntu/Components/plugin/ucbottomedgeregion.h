@@ -68,6 +68,7 @@ protected:
 
     friend class UCBottomEdge;
     friend class UCBottomEdgePrivate;
+    friend class tst_BottomEdge;
 };
 
 #endif // UCBOTTOMEDGEREGION_H

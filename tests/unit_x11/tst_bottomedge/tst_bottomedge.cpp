@@ -50,7 +50,7 @@ public:
     UCBottomEdgeRegion *regionAt(const QString &testItem, int index)
     {
         QVERIFY_RETURN(regions(testItem), nullptr);
-        QVERIFY_RETURN(regions(testItem)->size() < index, nullptr);
+        QVERIFY_RETURN(regions(testItem)->size() > index, nullptr);
         return regions(testItem)->at(index);
     }
 };
@@ -75,9 +75,18 @@ private Q_SLOTS:
     {
         QScopedPointer<BottomEdgeTestCase> test(new BottomEdgeTestCase("Defaults.qml"));
         QCOMPARE(test->testItem()->height(), test->rootObject()->height());
+        QCOMPARE(test->testItem()->dragProgress(), 0.0);
+        QCOMPARE(test->testItem()->dragDirection(), UCBottomEdge::Undefined);
+        QCOMPARE(test->testItem()->state(), UCBottomEdge::Hidden);
+        QCOMPARE(test->testItem()->content(), QUrl());
+        QVERIFY(!test->testItem()->contentComponent());
+        QVERIFY(!test->testItem()->contentItem());
         QVERIFY(test->regions("testItem"));
         QCOMPARE(test->regions("testItem")->size(), 1);
         QCOMPARE(test->regionAt("testItem", 0)->objectName(), QString("default_BottomEdgeRegion"));
+        QCOMPARE(test->regionAt("testItem", 0)->m_from, 0.33);
+        QCOMPARE(test->regionAt("testItem", 0)->m_to, 1.0);
+        QVERIFY(!test->testItem()->activeRegion());
     }
 };
 
