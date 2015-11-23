@@ -60,6 +60,7 @@ protected:
     virtual void postThemeChanged();
 
     void componentComplete();
+    void itemChange(ItemChange change, const ItemChangeData &data);
     void mousePressEvent(QMouseEvent *event);
     bool childMouseEventFilter(QQuickItem *child, QEvent *event);
 

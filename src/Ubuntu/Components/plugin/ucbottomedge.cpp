@@ -661,6 +661,11 @@ void UCBottomEdge::itemChange(ItemChange change, const ItemChangeData &data)
 {
     if (change == ItemParentHasChanged) {
         Q_D(UCBottomEdge);
+        // disconnect from old parent
+        if (d->oldParentItem) {
+            disconnect(d->oldParentItem, &QQuickItem::heightChanged,
+                       this, &UCBottomEdge::onParentHeightChanged);
+        }
         QQuickAnchors *anchors = QQuickItemPrivate::get(this)->anchors();
         if (data.item) {
             const QQuickAnchorLine left = QQuickItemPrivate::get(data.item)->left();
@@ -671,7 +676,8 @@ void UCBottomEdge::itemChange(ItemChange change, const ItemChangeData &data)
             anchors->setBottom(bottom);
             QQuickItemPrivate::get(data.item)->addItemChangeListener(d, QQuickItemPrivate::Children);
             // follow implicitHeight
-            connect(d->parentItem, &QQuickItem::heightChanged, this, &UCBottomEdge::onParentHeightChanged);
+            connect(data.item, &QQuickItem::heightChanged,
+                    this, &UCBottomEdge::onParentHeightChanged);
             onParentHeightChanged();
         } else {
             anchors->resetLeft();
@@ -682,7 +688,7 @@ void UCBottomEdge::itemChange(ItemChange change, const ItemChangeData &data)
             d->bottomPanel->setParentItem(data.item);
         }
     }
-    QQuickItem::itemChange(change, data);
+    UCStyledItemBase::itemChange(change, data);
 }
 
 bool UCBottomEdge::eventFilter(QObject *target, QEvent *event)
@@ -715,7 +721,7 @@ bool UCBottomEdge::eventFilter(QObject *target, QEvent *event)
     }
     default: break;
     }
-    return QQuickItem::eventFilter(target, event);
+    return UCStyledItemBase::eventFilter(target, event);
 }
 
 /*!

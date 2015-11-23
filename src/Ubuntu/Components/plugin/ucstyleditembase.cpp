@@ -26,7 +26,8 @@
 #include <QtQuick/private/qquickanchors_p.h>
 
 UCStyledItemBasePrivate::UCStyledItemBasePrivate()
-    : styleComponent(Q_NULLPTR)
+    : oldParentItem(Q_NULLPTR)
+    , styleComponent(Q_NULLPTR)
     , styleItem(Q_NULLPTR)
     , styleVersion(0)
     , activeFocusOnPress(false)
@@ -486,6 +487,15 @@ void UCStyledItemBase::componentComplete()
     d->styleVersion = d->importVersion(this);
     UCTheme::checkMixedVersionImports(this, d->styleVersion);
     d->completeStyledItem();
+}
+
+void UCStyledItemBase::itemChange(ItemChange change, const ItemChangeData &data)
+{
+    QQuickItem::itemChange(change, data);
+    if (change == ItemParentHasChanged) {
+        // update parentItem
+        d_func()->oldParentItem = data.item;
+    }
 }
 
 // grab pressed state and focus if it can be

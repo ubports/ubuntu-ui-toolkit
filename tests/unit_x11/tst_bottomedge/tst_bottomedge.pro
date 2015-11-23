@@ -5,4 +5,5 @@ SOURCES += \
     tst_bottomedge.cpp
 
 DISTFILES += \
-    Defaults.qml
+    Defaults.qml \
+    DifferentSizes.qml

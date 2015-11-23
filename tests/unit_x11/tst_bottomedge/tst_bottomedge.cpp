@@ -88,6 +88,25 @@ private Q_SLOTS:
         QCOMPARE(test->regionAt("testItem", 0)->m_to, 1.0);
         QVERIFY(!test->testItem()->activeRegion());
     }
+
+    void test_height_moves_when_reparented()
+    {
+        QScopedPointer<BottomEdgeTestCase> test(new BottomEdgeTestCase("DifferentSizes.qml"));
+        QQuickItem *newParent = test->rootObject();
+        QQuickItem *oldParent = test->findItem<QQuickItem*>("oldParent");
+        UCBottomEdge *testItem = test->testItem();
+
+        QSignalSpy spy(testItem, SIGNAL(implicitHeightChanged()));
+        testItem->setParentItem(newParent);
+        UbuntuTestCase::waitForSignal(&spy);
+
+        // change the implicit height so we are sure we don't get the height change triggered
+        testItem->setImplicitHeight(0);
+        spy.clear();
+        oldParent->setHeight(20);
+        QEXPECT_FAIL(0, "no implicitHeight change is expected", Continue);
+        QVERIFY(spy.wait(400));
+    }
 };
 
 QTEST_MAIN(tst_BottomEdge)

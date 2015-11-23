@@ -124,7 +124,6 @@ Template {
         id: bottomEdge
         // make sure it doesn't land inside the flickable
         parent: page
-        height: page.height
         // hint
         hint {
             action: Action {

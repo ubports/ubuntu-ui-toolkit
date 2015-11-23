@@ -65,6 +65,7 @@ public:
 
     QPointer<QQmlContext> styleItemContext;
     QString styleDocument;
+    QQuickItem *oldParentItem;
     QQmlComponent *styleComponent;
     QQuickItem *styleItem;
     quint16 styleVersion;
