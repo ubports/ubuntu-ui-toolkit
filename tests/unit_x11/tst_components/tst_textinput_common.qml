@@ -23,7 +23,7 @@ import Ubuntu.Components.Popups 1.0
 Item {
     id: testMain
     width: units.gu(40)
-    height: units.gu(71)
+    height: units.gu(50)
 
     Component {
         id: popoverComponent
@@ -443,6 +443,27 @@ Item {
                 verify(popoverY < 0, 'Dialog did not shift upwards: %1'.arg(popoverY));
             else
                 verify(popoverY >= 0, 'Popover went off-screen: %1'.arg(popoverY));
+        }
+
+        function test_osk_shrinks_dialog() {
+            var popover = PopupUtils.open(dialogComponent, dialogButton);
+            waitForRendering(popover);
+            // Original height before showing OSK
+            var originalHeight = popover.height;
+            // Subtract OSK
+            var expectedHeight = originalHeight - UbuntuApplication.inputMethod.keyboardRectangle.height;
+            popover.textField.forceActiveFocus();
+            waitForRendering(popover.textField);
+            // Only get the value here so in case of failure the popover won't get stuck
+            var foreground = findChild(popover, "dialogForeground")
+            var availableHeight = foreground.height;
+
+            // dismiss popover
+            PopupUtils.close(popover);
+            // add some timeout to get the event buffer cleaned
+            wait(500);
+
+            verify(availableHeight <= expectedHeight, 'Dialog did not shrink (%1 > %2)'.arg(availableHeight).arg(expectedHeight));
         }
 
     }
