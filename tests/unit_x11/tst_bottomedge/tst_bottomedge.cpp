@@ -17,8 +17,15 @@
 
 #include <QtTest/QtTest>
 #include "ucbottomedge.h"
+#include "ucbottomedgeregion.h"
 #include "uctestcase.h"
 #include "uctestextras.h"
+
+#define QVERIFY_RETURN(statement, returnValue) \
+do {\
+    if (!QTest::qVerify((statement), #statement, "", __FILE__, __LINE__))\
+        return returnValue;\
+} while (0)
 
 class BottomEdgeTestCase : public UbuntuTestCase
 {
@@ -27,9 +34,24 @@ public:
     BottomEdgeTestCase(const QString& file, ResizeMode resize = SizeViewToRootObject, bool assertOnFailure = true, QWindow* parent = 0)
         : UbuntuTestCase(file, resize, assertOnFailure, parent)
     {}
-    UCBottomEdge *testItem()
+
+    UCBottomEdge *testItem(const QString &objectName = "testItem")
     {
-        return findItem<UCBottomEdge*>("testItem");
+        return findItem<UCBottomEdge*>(objectName);
+    }
+
+    typedef QList<UCBottomEdgeRegion*> RegionList;
+    RegionList *regions(const QString &testItem)
+    {
+        QQmlListProperty<UCBottomEdgeRegion> qmlRegions(this->testItem(testItem)->regions());
+        return reinterpret_cast<RegionList*>(qmlRegions.data);
+    }
+
+    UCBottomEdgeRegion *regionAt(const QString &testItem, int index)
+    {
+        QVERIFY_RETURN(regions(testItem), nullptr);
+        QVERIFY_RETURN(regions(testItem)->size() < index, nullptr);
+        return regions(testItem)->at(index);
     }
 };
 
@@ -53,6 +75,9 @@ private Q_SLOTS:
     {
         QScopedPointer<BottomEdgeTestCase> test(new BottomEdgeTestCase("Defaults.qml"));
         QCOMPARE(test->testItem()->height(), test->rootObject()->height());
+        QVERIFY(test->regions("testItem"));
+        QCOMPARE(test->regions("testItem")->size(), 1);
+        QCOMPARE(test->regionAt("testItem", 0)->objectName(), QString("default_BottomEdgeRegion"));
     }
 };
 
