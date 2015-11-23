@@ -99,7 +99,7 @@ MainViewBase {
 
         Component {
             id: toolbarComponent
-            Toolbar {
+            DeprecatedToolbar {
                 parent: canvas
                 onPressedChanged: {
                     if (!pressed) return;
