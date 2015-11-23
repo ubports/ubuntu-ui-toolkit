@@ -98,6 +98,7 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/gestures/ucswipearea_p.h \
     $$PWD/gestures/damper.h \
     $$PWD/gestures/ubuntugesturesqmlglobal.h \
+    $$PWD/ucmathutils.h
 
 SOURCES += $$PWD/plugin.cpp \
     $$PWD/uctheme.cpp \
@@ -163,6 +164,7 @@ SOURCES += $$PWD/plugin.cpp \
     $$PWD/ucimportversionchecker_p.cpp \
     $$PWD/ucbottomedgehint.cpp \
     $$PWD/gestures/ucswipearea.cpp \
+    $$PWD/ucmathutils.cpp
 
 # adapters
 SOURCES += $$PWD/adapters/alarmsadapter_organizer.cpp

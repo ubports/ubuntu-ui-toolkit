@@ -160,15 +160,20 @@ void UCBottomEdgeHint::mousePressEvent(QMouseEvent *event)
 {
     if (contains(event->localPos()) && (m_status >= Active)) {
         m_pressed = true;
+        event->accept();
+        // also call requestFocus
+        requestFocus(Qt::MouseFocusReason);
     } else {
         UCActionItem::mousePressEvent(event);
     }
 }
 void UCBottomEdgeHint::mouseReleaseEvent(QMouseEvent *event)
 {
-    UCActionItem::mouseReleaseEvent(event);
     if (m_pressed && (m_status >= Active)) {
         Q_EMIT clicked();
+        event->accept();
+    } else {
+        UCActionItem::mouseReleaseEvent(event);
     }
 }
 
