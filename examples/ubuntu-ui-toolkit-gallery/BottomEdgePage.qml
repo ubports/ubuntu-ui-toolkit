@@ -141,7 +141,6 @@ Template {
         }
 
         onCommitCompleted: {
-            print("committed")
             if (contentToLayout.checked && contentToLayout.enabled) {
                 page.pageStack.addPageToCurrentColumn(page, contentComponent);
                 collapse();

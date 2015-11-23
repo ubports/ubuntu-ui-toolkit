@@ -36,7 +36,7 @@ public:
         return item->d_func();
     }
 
-    virtual void _q_styleResized();
+    void _q_styleResized();
 
     UCStyledItemBasePrivate();
     virtual ~UCStyledItemBasePrivate();

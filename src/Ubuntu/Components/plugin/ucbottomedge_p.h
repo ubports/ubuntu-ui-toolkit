@@ -62,7 +62,6 @@ public:
 
     // from UCStyledItemBase
     bool loadStyleItem(bool animated = true) override;
-    void _q_styleResized() override {}
     // from QQuickItemChangeListener
     void itemChildAdded(QQuickItem *item, QQuickItem *child);
     void itemChildRemoved(QQuickItem *item, QQuickItem *child);

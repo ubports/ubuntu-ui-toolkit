@@ -65,6 +65,7 @@ bool QuickUtils::eventFilter(QObject *obj, QEvent *event)
  */
 QQuickItem *QuickUtils::rootObject()
 {
+    qmlInfo(this) << "WARNING: QuickUtils.rootObject property is deprecated: Use QuickUtils::rootItem() function instead.";
     if (!m_rootView)
         lookupQuickView();
     return (m_rootView) ? m_rootView->rootObject() : 0;

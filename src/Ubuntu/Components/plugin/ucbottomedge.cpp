@@ -688,7 +688,7 @@ bool UCBottomEdge::eventFilter(QObject *target, QEvent *event)
     }
     case QEvent::MouseButtonRelease:
         if (d->mousePressed) {
-            d_func()->onDragEnded();
+            d->onDragEnded();
         }
         d->mousePressed = false;
         break;
