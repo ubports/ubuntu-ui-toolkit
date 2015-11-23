@@ -626,6 +626,14 @@ void UCBottomEdge::initializeComponent()
     d->hint->installEventFilter(this);
 }
 
+void UCBottomEdge::onParentHeightChanged()
+{
+    Q_D(UCBottomEdge);
+    if (d->parentItem) {
+        setImplicitHeight(d->parentItem->height());
+    }
+}
+
 void UCBottomEdge::classBegin()
 {
     UCStyledItemBase::classBegin();
@@ -662,6 +670,9 @@ void UCBottomEdge::itemChange(ItemChange change, const ItemChangeData &data)
             anchors->setRight(right);
             anchors->setBottom(bottom);
             QQuickItemPrivate::get(data.item)->addItemChangeListener(d, QQuickItemPrivate::Children);
+            // follow implicitHeight
+            connect(d->parentItem, &QQuickItem::heightChanged, this, &UCBottomEdge::onParentHeightChanged);
+            onParentHeightChanged();
         } else {
             anchors->resetLeft();
             anchors->resetRight();

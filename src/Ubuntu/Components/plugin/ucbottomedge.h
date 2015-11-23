@@ -106,6 +106,7 @@ protected:
     bool eventFilter(QObject *target, QEvent *event) override;
 
     void unlockOperation(bool running);
+    void onParentHeightChanged();
 
     Q_DECLARE_PRIVATE(UCBottomEdge)
 };
