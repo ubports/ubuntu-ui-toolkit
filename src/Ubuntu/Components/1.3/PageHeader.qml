@@ -206,10 +206,53 @@ Header {
     }
 
     /*!
+      FIXME TIM: agree on property name.
+      Toolbar shown under the regular header as a subheader.
+      Example:
+      \qml
+        PageHeader {
+            title: "Header with sections"
+            toolbar: Sections {
+                anchors {
+                    left: parent.left
+                    leftMargin: units.gu(2)
+                    bottom: parent.bottom
+                }
+                model: ["one", "two", "three"]
+            }
+        }
+      \endqml
+    */
+    property Item toolbar
+
+    onToolbarChanged: internal.updateToolbar()
+    Object {
+        id: internal
+        property Item previousToolbar: toolbar
+        property Item previousToolbarParent: null
+
+        function updateToolbar() {
+            if (internal.previousToolbar) {
+                internal.previousToolbar.parent = internal.previousToolbarParent;
+            }
+            if (toolbar) {
+                internal.previousToolbar = header.toolbar;
+                internal.previousToolbarParent = header.toolbar.parent;
+                header.toolbar.parent = header;
+                // TODO: set some anchors?
+            } else {
+                internal.previousToolbar = null;
+                internal.previousToolbarParent = null;
+            }
+        }
+    }
+
+    /*!
       \qmlproperty Sections sections
       Sections shown at the bottom of the header. By default,
       the sections will only be visible if its actions or model
       is set. See \l Sections.
+      \deprecated Use \l toolbar instead.
      */
     readonly property alias sections: sectionsItem
     Sections {
@@ -219,7 +262,7 @@ Header {
             leftMargin: units.gu(2)
             top: holder.bottom
         }
-        visible: model && model.length > 0
+        visible: model && model.length > 0 && !header.toolbar
         height: visible ? implicitHeight : 0
     }
 

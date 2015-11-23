@@ -77,6 +77,23 @@ Item {
             }
         ]
 
+        Rectangle {
+            id: toolbar
+            anchors {
+                left: parent ? parent.left : undefined
+                right: parent ? parent.right : undefined
+                bottom: parent ? parent.bottom : undefined
+            }
+            height: units.gu(4)
+            color: UbuntuColors.orange
+            Label {
+                anchors.centerIn: parent
+                text: "Mock toolbar"
+                color: "white"
+            }
+            visible: header.toolbar === toolbar
+        }
+
         PageHeader {
             id: header
             flickable: flickable
@@ -89,6 +106,7 @@ Item {
                                            root.actionList : []
             navigationActions: leadingActionsSwitch.checked ?
                                           root.actionList : []
+            toolbar: toolbarSwitch.checked ? toolbar : null
         }
 
         Flickable {
@@ -169,6 +187,14 @@ Item {
                 Label {
                     text: "show sections"
                 }
+
+                Switch {
+                    id: toolbarSwitch
+                    checked: false
+                }
+                Label {
+                    text: "(mock) toolbar"
+                }
             }
 
             PageHeader {
@@ -239,6 +265,15 @@ Item {
                 sections.actions = [];
                 compare(header.height, initialHeight,
                         "Unsetting sections does not revert the header height.");
+
+                header.toolbar = toolbar;
+                compare(toolbar.height > 0, true, "Toolbar height is 0.");
+                compare(header.height, initialHeight + toolbar.height,
+                        "Setting toolbar does not correctly update header height.");
+
+                header.toolbar = null;
+                compare(header.height, initialHeight,
+                        "Unsetting toolbar does not revert the header height.");
             }
 
             function test_background_color() {
