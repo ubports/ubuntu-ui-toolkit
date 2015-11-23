@@ -98,6 +98,7 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/gestures/ucswipearea_p.h \
     $$PWD/gestures/damper.h \
     $$PWD/gestures/ubuntugesturesqmlglobal.h \
+    $$PWD/ucmathutils.h \
     $$PWD/ucbottomedge.h \
     $$PWD/ucbottomedge_p.h \
     $$PWD/ucbottomedgestyle.h \
@@ -167,6 +168,7 @@ SOURCES += $$PWD/plugin.cpp \
     $$PWD/ucimportversionchecker_p.cpp \
     $$PWD/ucbottomedgehint.cpp \
     $$PWD/gestures/ucswipearea.cpp \
+    $$PWD/ucmathutils.cpp \
     $$PWD/ucbottomedge.cpp \
     $$PWD/ucbottomedgestyle.cpp \
     $$PWD/ucbottomedgeregion.cpp
