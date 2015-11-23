@@ -107,6 +107,146 @@ private Q_SLOTS:
         QEXPECT_FAIL(0, "no implicitHeight change is expected", Continue);
         QVERIFY(spy.wait(400));
     }
+
+    void test_last_item_of_parent()
+    {
+
+    }
+
+    void test_commit_when_clicked()
+    {
+
+    }
+
+    void test_revealed_when_hint_threshold_passed()
+    {
+
+    }
+
+    void test_commit_when_onethird_passed()
+    {
+
+    }
+
+    void test_collapse_before_onethird()
+    {
+
+    }
+
+    void test_collapse_when_dragged_downwards_data()
+    {
+        // when onethird not passed
+        // when onethird was passed
+    }
+    void test_collapse_when_dragged_downwards()
+    {
+
+    }
+
+    void test_height_less_than_parent()
+    {
+
+    }
+
+    void test_collapse_during_commit()
+    {
+
+    }
+
+    void test_commit_during_collapse()
+    {
+
+    }
+
+    void test_alternative_content_for_default_commit_region()
+    {
+
+    }
+
+    void test_page_as_content()
+    {
+
+    }
+
+    void test_custom_content()
+    {
+
+    }
+
+    void test_detect_page_header_in_content()
+    {
+
+    }
+
+    void test_autocollapse_navigation_action_on_collapse_completed()
+    {
+
+    }
+
+    void test_region_entered_triggered()
+    {
+
+    }
+
+    void test_region_exited_triggered()
+    {
+
+    }
+
+    void test_region_dragEnded_triggered()
+    {
+
+    }
+
+    void test_region_from_and_to_data()
+    {
+
+    }
+    void test_region_from_and_to()
+    {
+
+    }
+
+    void test_overlapping_regions()
+    {
+
+    }
+
+    void test_overlapping_regions_with_alternate_content()
+    {
+
+    }
+
+    void test_custom_region_not_reaching_top()
+    {
+
+    }
+
+    void test_drag_into_uncovered_region()
+    {
+
+    }
+
+    void test_end_drag_in_region()
+    {
+
+    }
+
+    void test_overload_region_drag_ending_with_commit()
+    {
+
+    }
+
+    void test_commit_region_content()
+    {
+
+    }
+
+    // this is a style hinted test, maybe move the feature to the public API
+    void test_attach_hint_to_content()
+    {
+
+    }
 };
 
 QTEST_MAIN(tst_BottomEdge)
