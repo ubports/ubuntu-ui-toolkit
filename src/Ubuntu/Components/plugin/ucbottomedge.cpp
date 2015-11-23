@@ -252,10 +252,15 @@ void UCBottomEdgePrivate::commit(qreal to)
         LOG << "emit commitStarted()";
         Q_EMIT q->commitStarted();
     }
+    // make sure the status is set to revealed first
     bool animated = bottomPanel && bottomPanel->m_panelAnimation;
     if (animated) {
         QObject::connect(bottomPanel->m_panelAnimation, &QQuickAbstractAnimation::runningChanged,
                 q, &UCBottomEdge::unlockOperation);
+    }
+    // make sure the state is set to Revealed first
+    if (state == UCBottomEdge::Hidden) {
+        setState(UCBottomEdge::Revealed);
     }
     setDragProgress(to);
     if (!animated) {
@@ -281,7 +286,7 @@ void UCBottomEdge::unlockOperation(bool running)
     case UCBottomEdgePrivate::CommitToRegion:
         d->setState(UCBottomEdge::Committed);
         d->patchContentItemHeader();
-        if (d->operationStatus == UCBottomEdgePrivate::CommitToRegion) {
+        if (d->operationStatus == UCBottomEdgePrivate::CommitToTop) {
             LOG << "emit commitCompleted()";
             Q_EMIT commitCompleted();
         }
@@ -354,6 +359,11 @@ bool UCBottomEdgePrivate::loadStyleItem(bool animated)
         bottomPanel->setParentItem(parentItem);
         // bring style item in front
         bottomPanel->setZ(std::numeric_limits<qreal>::max());
+        // reset filling of the style
+        QQuickAnchors *styleAnchors = QQuickItemPrivate::get(bottomPanel)->anchors();
+        styleAnchors->resetFill();
+        // and anchor to the bottom of the BottomEdge
+        styleAnchors->setBottom(anchors()->bottom());
 
         // move hint under the panel
         hint->setParentItem(bottomPanel);
@@ -551,6 +561,14 @@ void UCBottomEdgePrivate::setOperationStatus(OperationStatus s)
  *     }
  * }
  * \endqml
+ *
+ * /section2 Styling
+ * Similar to the other components the default style is expected to be defined
+ * in the theme's \e BottomEdgeStyle. However the style is not parented to the
+ * BottomEdge itself, but to the BottomEdge's parent item. When loaded, the style
+ * does not fill the parent but its bottom anchor is set to the bottom of the
+ * BottomEdge. Beside this the hint is also parented to the style instance. Custom
+ * styles are expected to implement the BottomEgdeStyle API.
  */
 
 /*!
@@ -871,6 +889,10 @@ void UCBottomEdge::collapse()
     if (animated) {
         connect(d->bottomPanel->m_panelAnimation, &QQuickAbstractAnimation::runningChanged,
                 this, &UCBottomEdge::unlockOperation);
+    }
+    // set the state first to Revealed
+    if (d->state == UCBottomEdge::Committed) {
+        d->setState(Revealed);
     }
     d->setDragProgress(0.0);
     if (!animated) {

@@ -137,15 +137,11 @@ Template {
         contentComponent: bottomEdgeContent
 
         StyleHints {
-//            backgroundColor: Qt.rgba(theme.palette.normal.background.r,
-//                                     theme.palette.normal.background.g,
-//                                     theme.palette.normal.background.b,
-//                                     bottomEdge.dragProgress)
-            backgroundColor: "#AA00AA0A"
             attachHintToContent: attachHintToContent.checked
         }
 
         onCommitCompleted: {
+            print("committed")
             if (contentToLayout.checked && contentToLayout.enabled) {
                 page.pageStack.addPageToCurrentColumn(page, contentComponent);
                 collapse();
@@ -157,23 +153,14 @@ Template {
                 objectName: "CustomRegion1"
                 enabled: regionConfig.model >= 1
                 property color baseColor: UbuntuColors.lightGrey
-                onFromChanged: print(objectName, "from", from)
-                onToChanged: print(objectName, "to", to)
-                onDragEnded: print("drag ended!!!")
             },
             BottomEdgeRegion {
                 objectName: "CustomRegion2"
                 enabled: regionConfig.model >= 2
-                onFromChanged: print(objectName, "from", from)
-                onToChanged: print(objectName, "to", to)
-                onDragEnded: print("drag ended!!!")
             },
             BottomEdgeRegion {
                 objectName: "CustomRegion3"
                 enabled: regionConfig.model >= 3
-                onFromChanged: print(objectName, "from", from)
-                onToChanged: print(objectName, "to", to)
-                onDragEnded: print("drag ended!!!")
             },
             // default region, mimics the default setup
             BottomEdgeRegion {

@@ -18,6 +18,7 @@ import Ubuntu.Components 1.3
 import Ubuntu.Components.Styles 1.3
 
 BottomEdgeStyle {
+    id: bottomEdgeStyle
     //setup properties
     property BottomEdge bottomEdge: styledItem
     panel: panelItem
@@ -31,11 +32,6 @@ BottomEdgeStyle {
     property color shadowColor: theme.palette.selected.background
     property bool attachHintToContent: false
 
-    anchors {
-        // break the fill from BottomEdge, StyledItem automatically fills that
-//        fill: undefined
-        bottom: parent.bottom
-    }
     width: parent.width
     height: parent.height
 
@@ -55,49 +51,27 @@ BottomEdgeStyle {
         }
     }
 
-    // unlock/lock panel also when commit/collapse is called manually
-    Connections {
-        target: bottomEdge
-        onCommitStarted: panelItem.swipedAboveHint = true
-        onCollapseCompleted: panelItem.swipedAboveHint = false
-    }
-
     Rectangle {
         id: panelItem
         objectName: "bottomedge_panel"
-        property bool swipedAboveHint: false
-        property bool unlocked: (bottomEdge.state > BottomEdge.Hidden)
-                                || swipedAboveHint
         anchors {
             left: parent.left
             right: parent.right
-            top: unlocked ? undefined : parent.bottom
+            top: parent.bottom
+            topMargin: bottomEdge.state >= BottomEdge.Revealed
+                       ? -(bottomEdge.height * bottomEdge.dragProgress)
+                       : 0
         }
         height: loader.item ? loader.item.height : 0
-        y: bottomEdge.height
         color: panelColor
-        opacity: y < bottomEdge.height ? 1.0 : 0.0
+        opacity: bottomEdge.state >= BottomEdge.Revealed ? 1.0 : 0.0
 
-        Behavior on y { UbuntuNumberAnimation { id: panelBehavior } }
+        Behavior on anchors.topMargin { UbuntuNumberAnimation { id: panelBehavior } }
 
-        state: {
-            switch (bottomEdge.state) {
-            case BottomEdge.Revealed: return "Revealed"
-            case BottomEdge.Committed: return "Committed"
-            default: return ""
-            }
-        }
-
+        state: bottomEdge.state > BottomEdge.Hidden ? "lock-hint" : ""
         states: [
             State {
-                name: "Revealed"
-                PropertyChanges {
-                    target: bottomEdge.hint
-                    status: BottomEdgeHint.Locked
-                }
-            },
-            State {
-                name: "Committed"
+                name: "lock-hint"
                 PropertyChanges {
                     target: bottomEdge.hint
                     status: BottomEdgeHint.Locked
@@ -146,13 +120,6 @@ BottomEdgeStyle {
                     item.parent = panelItem;
                     item.anchors.horizontalCenter = panelItem.horizontalCenter;
                 }
-            }
-        }
-
-        Connections {
-            target: bottomEdge
-            onDragProgressChanged: {
-                panelItem.y = bottomEdge.height * (1.0 - dragProgress);
             }
         }
     }
