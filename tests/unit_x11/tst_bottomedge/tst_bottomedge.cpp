@@ -240,19 +240,83 @@ private Q_SLOTS:
         QTRY_COMPARE_WITH_TIMEOUT(bottomEdge->status(), UCBottomEdge::Committed, 1000);
     }
 
+    void test_collapse_before_onethird_data()
+    {
+        QTest::addColumn<bool>("withMouse");
+
+        QTest::newRow("with mouse") << true;
+        QTest::newRow("with touch") << false;
+    }
     void test_collapse_before_onethird()
     {
+        QFETCH(bool, withMouse);
 
+        QScopedPointer<BottomEdgeTestCase> test(new BottomEdgeTestCase("BottomEdgeInItem.qml"));
+        UCBottomEdge *bottomEdge = test->testItem();
+
+        QPoint from(bottomEdge->width() / 2.0f, bottomEdge->height() - 1);
+        QPoint delta(0, -(bottomEdge->height() / 4));
+
+        if (withMouse) {
+            bottomEdge->hint()->setStatus(UCBottomEdgeHint::Locked);
+        }
+        // we need to do the swipe in more steps
+        if (withMouse) {
+            UCTestExtras::mouseDrag(bottomEdge, from, delta, Qt::LeftButton, 0, 20);
+        } else {
+            UCTestExtras::touchDrag(0, bottomEdge, from, delta, 20);
+        }
+        QTRY_COMPARE_WITH_TIMEOUT(bottomEdge->status(), UCBottomEdge::Hidden, 1000);
     }
 
     void test_collapse_when_dragged_downwards_data()
     {
         // when onethird not passed
         // when onethird was passed
+        QTest::addColumn<bool>("withMouse");
+        QTest::addColumn< QList<QPoint> >("moves");
+
+        QList<QPoint> shortPath, longPath;
+        // upwards
+        for (int i = 0; i < 10; i++) {
+            shortPath << QPointF(0, -UCUnits::instance().gu(3)).toPoint();
+            longPath << QPointF(0, -UCUnits::instance().gu(7)).toPoint();
+        }
+        // downwards
+        for (int i = 0; i < 5; i++) {
+            shortPath << QPointF(0, UCUnits::instance().gu(2)).toPoint();
+            longPath << QPointF(0, UCUnits::instance().gu(2)).toPoint();
+        }
+
+        QTest::newRow("with mouse, onethird not passed")
+                << true << shortPath;
+        QTest::newRow("with touch, onethird not passed")
+                << false << shortPath;
+        QTest::newRow("with mouse, onethird passed")
+                << true << longPath;
+        QTest::newRow("with touch, onethird passed")
+                << false << longPath;
     }
     void test_collapse_when_dragged_downwards()
     {
+        QFETCH(bool, withMouse);
+        QFETCH(QList<QPoint>, moves);
 
+        QScopedPointer<BottomEdgeTestCase> test(new BottomEdgeTestCase("BottomEdgeInItem.qml"));
+        UCBottomEdge *bottomEdge = test->testItem();
+
+        QPoint from(bottomEdge->width() / 2.0f, bottomEdge->height() - 1);
+        moves.prepend(from);
+
+        if (withMouse) {
+            bottomEdge->hint()->setStatus(UCBottomEdgeHint::Locked);
+        }
+        if (withMouse) {
+            UCTestExtras::mouseDragWithPoints(bottomEdge, moves, Qt::LeftButton);
+        } else {
+            UCTestExtras::touchDragWithPoints(0, bottomEdge, moves);
+        }
+        QTRY_COMPARE_WITH_TIMEOUT(bottomEdge->status(), UCBottomEdge::Hidden, 1000);
     }
 
     void test_height_less_than_parent()
