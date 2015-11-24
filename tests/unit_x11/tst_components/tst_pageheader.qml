@@ -77,7 +77,7 @@ Item {
             }
         ]
 
-        Rectangle {
+        Toolbar {
             id: toolbar
             anchors {
                 left: parent ? parent.left : undefined
@@ -85,13 +85,13 @@ Item {
                 bottom: parent ? parent.bottom : undefined
             }
             height: units.gu(4)
-            color: UbuntuColors.orange
-            Label {
-                anchors.centerIn: parent
-                text: "Mock toolbar"
-                color: "white"
-            }
             visible: header.toolbar === toolbar
+            actions: root.actionList
+            fixedAction: Action {
+                iconName: "delete"
+                text: "delete"
+                onTriggered: print("Delete action triggered")
+            }
         }
 
         PageHeader {
@@ -190,10 +190,10 @@ Item {
 
                 Switch {
                     id: toolbarSwitch
-                    checked: false
+                    checked: true//false
                 }
                 Label {
-                    text: "(mock) toolbar"
+                    text: "toolbar"
                 }
             }
 

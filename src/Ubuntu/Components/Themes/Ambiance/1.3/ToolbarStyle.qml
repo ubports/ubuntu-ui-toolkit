@@ -15,31 +15,65 @@
  */
 import QtQuick 2.4
 import Ubuntu.Components 1.3
+import Ubuntu.Components.Popups 1.3
+import Ubuntu.Components.Styles 1.3 as Style
 
-Item {
-    id: visuals
-    // styling properties
-    property color color: theme.palette.normal.overlay
+Style.ToolbarStyle {
+    id: toolbarStyle
+//    implicitWidth: actionsContainer.implicitWidth
+    implicitWidth: parent.width
+    implicitHeight: units.gu(4)
 
-    anchors.fill: parent
+//    overflowIconName: "contextual-menu"
 
-    Rectangle {
-        id: background
-        anchors.fill: parent
-        color: visuals.color
+    // Unused with the standard action icon buttons, but may be used with a custom delegate.
+//    overflowText: "More"
+
+    /*!
+      The default action delegate if the styled item does
+      not provide a delegate.
+     */
+    defaultDelegate: AbstractButton {
+        style: IconButtonStyle { }
+        objectName: action.objectName + "_button"
+//        height: parent ? parent.height : undefined
+        width: units.gu(4)
+        height: units.gu(4)
+        action: modelData
     }
 
-    Image {
-        id: dropshadow
+//    defaultNumberOfSlots: 3
+
+    Row {
+        id: actionsContainer
         anchors {
-            left: parent.left
+            top: parent.top
+            bottom: parent.bottom
             right: parent.right
-            bottom: background.top
+            rightMargin: units.gu(1)
         }
-        source: Qt.resolvedUrl("../artwork/toolbar_dropshadow.png")
-        opacity: styledItem.opened || styledItem.animating ? 0.5 : 0.0
-        Behavior on opacity {
-            UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration }
+
+        property var visibleActions: getVisibleActions(styledItem.actions)
+        function getVisibleActions(actions) {
+            var visibleActionList = [];
+            for (var i in actions) {
+                var action = actions[i];
+                if (action && action.hasOwnProperty("visible") && action.visible) {
+                    if (visibleActionList.length > 8) {
+                        print("Toolbar currently only supports up to 9 actions.");
+                        break;
+                    }
+                    visibleActionList.push(action);
+                }
+            }
+            return visibleActionList;
+        }
+
+        Repeater {
+            id: actionsRepeater
+            objectName: "actions_repeater"
+            model: actionsContainer.visibleActions
+            delegate: styledItem.delegate
         }
     }
 }

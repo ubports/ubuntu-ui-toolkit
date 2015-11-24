@@ -25,11 +25,13 @@ import Ubuntu.Components 1.3
 */
 ActionBar {
     id: bar
-    styleName: "ActionBarStyle"
+    styleName: "ToolbarStyle"
 
 //    property list<Action> actions
 //    property int numberOfSlots: __styleInstance.defaultNumberOfSlots
 //    property Component delegate: __styleInstance.defaultDelegate
+
+    numberOfSlots: 9
 
     /*!
       A fixed action displayed on the left side of the toolbar.
