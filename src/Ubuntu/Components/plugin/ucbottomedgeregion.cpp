@@ -35,8 +35,8 @@
  * different content or action whenever the drag enters in the area. The area is
  * defined by \l from and \l to properties vertically, whereas horizontally is
  * stretched across bottom edge width. Custom content can be defined through
- * \l content or \l contentComponent properties, which will override the
- * \l BottomEdge::content and \l BottomEdge::contentComponent properties for the
+ * \l contentUrl or \l contentComponent properties, which will override the
+ * \l BottomEdge::contentUrl and \l BottomEdge::contentComponent properties for the
  * time the gesture is in the section area.
  * \qml
  * import QtQuick 2.4
@@ -83,11 +83,11 @@
  * drag leaves the area the \l exited signal is emitted. If the drag ends within
  * the section area, the \l dragEnded signal is emitted. In case the section's
  * \l to property is less than 1.0, the bottom edge content will only be exposed
- * to that value, and the \l BottomEdge::state will get the \e Committed value.
+ * to that value, and the \l BottomEdge::status will get the \e Committed value.
  * No further drag is possible after reaching \e Commited state.
  *
  * \note Whereas there is no restriction on making overlapping sections, beware that
- * overlapping sections changing the content through the \l content or \l contentComponent
+ * overlapping sections changing the content through the \l contentUrl or \l contentComponent
  * properties will cause unpredictable results.
  */
 
@@ -124,8 +124,8 @@ void UCBottomEdgeRegion::enter()
     Q_EMIT entered();
     // backup url
     if (m_url.isValid()) {
-        m_urlBackup = new PropertyChange(m_bottomEdge, "content");
-        QQmlProperty property(this, "content", qmlContext(this));
+        m_urlBackup = new PropertyChange(m_bottomEdge, "contentUrl");
+        QQmlProperty property(this, "contentUrl", qmlContext(this));
         QQmlAbstractBinding *binding = QQmlPropertyPrivate::binding(property);
         if (binding) {
             PropertyChange::setBinding(m_urlBackup, binding);
@@ -180,9 +180,9 @@ void UCBottomEdgeRegion::exit()
  */
 
 /*!
- * \qmlproperty url BottomEdgeRegion::content
+ * \qmlproperty url BottomEdgeRegion::contentUrl
  * Specifies the url to the document defining the section specific content. This
- * propery will temporarily override the \l BottomEdge::content property value
+ * propery will temporarily override the \l BottomEdge::contentUrl property value
  * when the drag gesture enters the section area. The orginal value will be restored
  * once the gesture leaves the section area.
  */

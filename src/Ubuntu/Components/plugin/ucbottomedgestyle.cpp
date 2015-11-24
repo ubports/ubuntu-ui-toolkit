@@ -49,7 +49,7 @@ void UCBottomEdgeStyle::mousePressEvent(QMouseEvent *event)
 
 /*!
  * \qmlproperty Item BottomEdgeStyle::contentItem
- * Holds the current content item created from \l BottomEdge::content or \l BottomEdge::contentComponent.
+ * Holds the current content item created from \l BottomEdge::contentUrl or \l BottomEdge::contentComponent.
  */
 
 /*!

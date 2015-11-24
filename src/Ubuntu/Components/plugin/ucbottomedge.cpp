@@ -49,7 +49,7 @@ UCBottomEdgePrivate::UCBottomEdgePrivate()
     , bottomPanel(Q_NULLPTR)
     , previousDistance(0.0)
     , dragProgress(0.)
-    , state(UCBottomEdge::Hidden)
+    , status(UCBottomEdge::Hidden)
     , operationStatus(Idle)
     , dragDirection(UCBottomEdge::Undefined)
     , defaultRegionsReset(false)
@@ -147,7 +147,7 @@ void UCBottomEdgePrivate::createDefaultRegions()
     regions.append(commitregion);
 }
 
-// update state, drag direction and activeRegion during drag
+// update status, drag direction and activeRegion during drag
 void UCBottomEdgePrivate::updateProgressionStates(qreal distance)
 {
     Q_Q(UCBottomEdge);
@@ -162,7 +162,7 @@ void UCBottomEdgePrivate::updateProgressionStates(qreal distance)
     }
     if (distance > bottomPanel->m_revealThreshold) {
         // the content can be revealed
-        setState(UCBottomEdge::Revealed);
+        setStatus(UCBottomEdge::Revealed);
     }
 
     // go through the regions and spot the active region
@@ -242,7 +242,7 @@ void UCBottomEdgePrivate::commit(qreal to)
 {
     if (operationStatus == CommitToTop
             || operationStatus == CommitToRegion
-            || state == UCBottomEdge::Committed) {
+            || status == UCBottomEdge::Committed) {
         LOG << "redundant commit call";
         return;
     }
@@ -258,9 +258,9 @@ void UCBottomEdgePrivate::commit(qreal to)
         QObject::connect(bottomPanel->m_panelAnimation, &QQuickAbstractAnimation::runningChanged,
                 q, &UCBottomEdge::unlockOperation);
     }
-    // make sure the state is set to Revealed first
-    if (state == UCBottomEdge::Hidden) {
-        setState(UCBottomEdge::Revealed);
+    // make sure the setStatus is set to Revealed first
+    if (status == UCBottomEdge::Hidden) {
+        setStatus(UCBottomEdge::Revealed);
     }
     setDragProgress(to);
     if (!animated) {
@@ -284,7 +284,7 @@ void UCBottomEdge::unlockOperation(bool running)
     switch (d->operationStatus) {
     case UCBottomEdgePrivate::CommitToTop:
     case UCBottomEdgePrivate::CommitToRegion:
-        d->setState(UCBottomEdge::Committed);
+        d->setStatus(UCBottomEdge::Committed);
         d->patchContentItemHeader();
         if (d->operationStatus == UCBottomEdgePrivate::CommitToTop) {
             LOG << "emit commitCompleted()";
@@ -292,7 +292,7 @@ void UCBottomEdge::unlockOperation(bool running)
         }
         break;
     case UCBottomEdgePrivate::Collapsing:
-        d->setState(UCBottomEdge::Hidden);
+        d->setStatus(UCBottomEdge::Hidden);
         Q_EMIT collapseCompleted();
         break;
     default: break;
@@ -319,7 +319,7 @@ void UCBottomEdgePrivate::patchContentItemHeader()
 {
     // ugly, as it can be, as we don't have the PageHeader in cpp to detect the type
     UCHeader *header = bottomPanel->m_contentItem ? bottomPanel->m_contentItem->findChild<UCHeader*>() : Q_NULLPTR;
-    if (!header || !QuickUtils::inherits(header, "PageHeader") || state != UCBottomEdge::Committed) {
+    if (!header || !QuickUtils::inherits(header, "PageHeader") || status != UCBottomEdge::Committed) {
         return;
     }
 
@@ -421,10 +421,10 @@ void UCBottomEdgePrivate::setOperationStatus(OperationStatus s)
  * \brief A component to handle bottom edge gesture and content.
  *
  * The component provides bottom edge content handling. The bottom egde feature
- * is typically composed of a hint and some content. The content is committed
+ * is typically composed of a hint and some content. The contentUrl is committed
  * (i.e. fully shown) when the drag is completed after it has been dragged for
- * a certain amount, that is 30% of the height of the BottomEdge. The content
- * can be anything, defined by \l content or \l contentComponent.
+ * a certain amount, that is 30% of the height of the BottomEdge. The contentUrl
+ * can be anything, defined by \l contentUrl or \l contentComponent.
  *
  * As the name suggests, the component automatically anchors to the bottom of its
  * parent and takes the width of the parent. The drag is detected within the parent
@@ -456,7 +456,7 @@ void UCBottomEdgePrivate::setOperationStatus(OperationStatus s)
  * }
  * \endqml
  *
- * \note \l content, \l contentComponent and \l contentItem is equivalent to
+ * \note \l contentUrl, \l contentComponent and \l contentItem is equivalent to
  * Loader's \e source, \e sourceComponent and \e item properties. See Loader
  * documentation for further details.
  *
@@ -776,7 +776,7 @@ UCBottomEdge::DragDirection UCBottomEdge::dragDirection() const
 }
 
 /*!
- * \qmlproperty enum BottomEdge::state
+ * \qmlproperty Status BottomEdge::status
  * \readonly
  * The property reports the actual state of the bottom edge. It can have the
  * following values:
@@ -795,39 +795,39 @@ UCBottomEdge::DragDirection UCBottomEdge::dragDirection() const
  *  \li Committed
  *  \li The bottom edge content is fully exposed.
  * \endtable
- * \note Once \e Commited states is set, no further draging is possible on the content.
+ * \note Once \e Commited status is set, no further draging is possible on the content.
  */
-UCBottomEdge::State UCBottomEdge::state() const
+UCBottomEdge::Status UCBottomEdge::status() const
 {
     Q_D(const UCBottomEdge);
-    return d->state;
+    return d->status;
 }
-void UCBottomEdgePrivate::setState(UCBottomEdge::State state)
+void UCBottomEdgePrivate::setStatus(UCBottomEdge::Status status)
 {
-    if (state == this->state) {
+    if (status == this->status) {
         return;
     }
-    this->state = state;
+    this->status = status;
     // logging
-    switch (state) {
-        case UCBottomEdge::Hidden: LOG << "STATE" << "Hidden"; break;
-        case UCBottomEdge::Revealed: LOG << "STATE" << "Revealed"; break;
-        case UCBottomEdge::Committed: LOG << "STATE" << "Committed"; break;
+    switch (status) {
+        case UCBottomEdge::Hidden: LOG << "STATUS" << "Hidden"; break;
+        case UCBottomEdge::Revealed: LOG << "STATUS" << "Revealed"; break;
+        case UCBottomEdge::Committed: LOG << "STATUS" << "Committed"; break;
     }
 
     if (bottomPanel) {
-        bottomPanel->setConsumeMouse(state > UCBottomEdge::Hidden);
+        bottomPanel->setConsumeMouse(status > UCBottomEdge::Hidden);
     }
 
-    Q_EMIT q_func()->stateChanged(this->state);
+    Q_EMIT q_func()->statusChanged(this->status);
 }
 
 /*!
- * \qmlproperty url BottomEdge::content
+ * \qmlproperty url BottomEdge::contentUrl
  * The property holds the url to the document defining the content of the bottom
  * edge. The property behaves the same way as Loader's \e source property.
  */
-QUrl UCBottomEdge::content() const
+QUrl UCBottomEdge::contentUrl() const
 {
     Q_D(const UCBottomEdge);
     return d->contentUrl;
@@ -866,7 +866,7 @@ void UCBottomEdge::setContentComponent(QQmlComponent *component)
 /*!
  * \qmlproperty Item BottomEdge::contentItem
  * \readonly
- * The property holds the item created either from \l content or \l contentComponent
+ * The property holds the item created either from \l contentUrl or \l contentComponent
  * properties.
  */
 QQuickItem *UCBottomEdge::contentItem() const
@@ -896,7 +896,7 @@ void UCBottomEdge::commit()
 void UCBottomEdge::collapse()
 {
     Q_D(UCBottomEdge);
-    if (d->operationStatus == UCBottomEdgePrivate::Collapsing || d->state == UCBottomEdge::Hidden) {
+    if (d->operationStatus == UCBottomEdgePrivate::Collapsing || d->status == UCBottomEdge::Hidden) {
         LOG << "redundant collapse call";
         return;
     }
@@ -907,9 +907,9 @@ void UCBottomEdge::collapse()
         connect(d->bottomPanel->m_panelAnimation, &QQuickAbstractAnimation::runningChanged,
                 this, &UCBottomEdge::unlockOperation);
     }
-    // set the state first to Revealed
-    if (d->state == UCBottomEdge::Committed) {
-        d->setState(Revealed);
+    // set the setStatus first to Revealed
+    if (d->status == UCBottomEdge::Committed) {
+        d->setStatus(Revealed);
     }
     d->setDragProgress(0.0);
     if (!animated) {

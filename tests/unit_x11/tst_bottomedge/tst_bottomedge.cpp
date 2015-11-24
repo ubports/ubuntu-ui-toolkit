@@ -93,8 +93,8 @@ private Q_SLOTS:
         QCOMPARE(test->testItem()->height(), test->rootObject()->height());
         QCOMPARE(test->testItem()->dragProgress(), 0.0);
         QCOMPARE(test->testItem()->dragDirection(), UCBottomEdge::Undefined);
-        QCOMPARE(test->testItem()->state(), UCBottomEdge::Hidden);
-        QCOMPARE(test->testItem()->content(), QUrl());
+        QCOMPARE(test->testItem()->status(), UCBottomEdge::Hidden);
+        QCOMPARE(test->testItem()->contentUrl(), QUrl());
         QVERIFY(!test->testItem()->contentComponent());
         QVERIFY(!test->testItem()->contentItem());
         QVERIFY(test->regions("testItem"));
@@ -143,7 +143,7 @@ private Q_SLOTS:
         test->testItem()->hint()->setStatus(UCBottomEdgeHint::Locked);
         UCBottomEdgeHint *hint = test->testItem()->hint();
         QTest::mouseClick(test->testItem()->hint()->window(), Qt::LeftButton, 0, UbuntuTestCase::centerOf(hint, true).toPoint());
-        QTRY_COMPARE_WITH_TIMEOUT(test->testItem()->state(), UCBottomEdge::Committed, 1000);
+        QTRY_COMPARE_WITH_TIMEOUT(test->testItem()->status(), UCBottomEdge::Committed, 1000);
     }
 
     void test_commit_when_touch_clicked()
@@ -156,7 +156,7 @@ private Q_SLOTS:
         QTRY_COMPARE_WITH_TIMEOUT(hint->status(), UCBottomEdgeHint::Active, 1000);
 
         UCTestExtras::touchClick(0, hint, UbuntuTestCase::centerOf(hint).toPoint());
-        QTRY_COMPARE_WITH_TIMEOUT(test->testItem()->state(), UCBottomEdge::Committed, 1000);
+        QTRY_COMPARE_WITH_TIMEOUT(test->testItem()->status(), UCBottomEdge::Committed, 1000);
     }
 
     void test_revealed_when_hint_threshold_passed()

@@ -34,7 +34,7 @@ class UCBottomEdgeRegion : public QObject
     Q_PROPERTY(bool enabled MEMBER m_enabled NOTIFY enabledChanged FINAL)
     Q_PROPERTY(qreal from MEMBER m_from NOTIFY fromChanged FINAL)
     Q_PROPERTY(qreal to MEMBER m_to NOTIFY toChanged FINAL)
-    Q_PROPERTY(QUrl content MEMBER m_url NOTIFY contentChanged FINAL)
+    Q_PROPERTY(QUrl contentUrl MEMBER m_url NOTIFY contentChanged FINAL)
     Q_PROPERTY(QQmlComponent* contentComponent MEMBER m_component NOTIFY contentComponentChanged FINAL)
 public:
     explicit UCBottomEdgeRegion(QObject *parent = 0);

@@ -58,17 +58,17 @@ BottomEdgeStyle {
             left: parent.left
             right: parent.right
             top: parent.bottom
-            topMargin: bottomEdge.state >= BottomEdge.Revealed
+            topMargin: bottomEdge.status >= BottomEdge.Revealed
                        ? -(bottomEdge.height * bottomEdge.dragProgress)
                        : 0
         }
         height: loader.item ? loader.item.height : 0
         color: panelColor
-        opacity: bottomEdge.state >= BottomEdge.Revealed ? 1.0 : 0.0
+        opacity: bottomEdge.status >= BottomEdge.Revealed ? 1.0 : 0.0
 
         Behavior on anchors.topMargin { UbuntuNumberAnimation { id: panelBehavior } }
 
-        state: bottomEdge.state > BottomEdge.Hidden ? "lock-hint" : ""
+        state: bottomEdge.status > BottomEdge.Hidden ? "lock-hint" : ""
         states: [
             State {
                 name: "lock-hint"
@@ -113,8 +113,8 @@ BottomEdgeStyle {
             id: loader
             anchors.horizontalCenter: parent.horizontalCenter
             asynchronous: true
-            source: bottomEdge.state > BottomEdge.Hidden ? bottomEdge.content : ""
-            sourceComponent: bottomEdge.state > BottomEdge.Hidden ? bottomEdge.contentComponent : null
+            source: bottomEdge.status > BottomEdge.Hidden ? bottomEdge.contentUrl : ""
+            sourceComponent: bottomEdge.status > BottomEdge.Hidden ? bottomEdge.contentComponent : null
             onItemChanged: {
                 if (item) {
                     item.parent = panelItem;

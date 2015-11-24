@@ -175,14 +175,14 @@ Template {
                 header: PageHeader {
                     title: {
                         var state = "UNDEFINED";
-                        switch (bottomEdge.state) {
+                        switch (bottomEdge.status) {
                         case BottomEdge.Hidden: state = "Hidden"; break;
                         case BottomEdge.Revealed: state = "Revealed"; break;
                         case BottomEdge.Committed: state = "Committed"; break;
                         }
                         return bottomEdge.activeRegion
-                          ? i18n.tr("Within region '%1', state: %2").arg(bottomEdge.activeRegion.objectName).arg(state)
-                          : i18n.tr("Not in any active region, state: %1").arg(state);
+                          ? i18n.tr("Within region '%1', status: %2").arg(bottomEdge.activeRegion.objectName).arg(state)
+                          : i18n.tr("Not in any active region, status: %1").arg(state);
                     }
                 }
                 Rectangle {

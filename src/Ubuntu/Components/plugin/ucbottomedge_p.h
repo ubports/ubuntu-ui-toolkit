@@ -58,7 +58,7 @@ public:
     // panel positioning
     void setDragProgress(qreal position);
     // internal setters
-    void setState(UCBottomEdge::State state);
+    void setStatus(UCBottomEdge::Status status);
 
     // from UCStyledItemBase
     bool loadStyleItem(bool animated = true) override;
@@ -76,7 +76,7 @@ public:
 
     qreal previousDistance;
     qreal dragProgress;
-    UCBottomEdge::State state;
+    UCBottomEdge::Status status;
 
     enum OperationStatus {
         Idle,

@@ -31,13 +31,13 @@ class UCBottomEdgePrivate;
 class UCBottomEdge : public UCStyledItemBase
 {
     Q_OBJECT
-    Q_ENUMS(State DragDirection)
+    Q_ENUMS(Status DragDirection)
 
     Q_PROPERTY(UCBottomEdgeHint* hint READ hint CONSTANT FINAL)
     Q_PROPERTY(qreal dragProgress READ dragProgress NOTIFY dragProgressChanged FINAL)
     Q_PROPERTY(DragDirection dragDirection READ dragDirection NOTIFY dragDirectionChanged FINAL)
-    Q_PROPERTY(State state READ state NOTIFY stateChanged FINAL)
-    Q_PROPERTY(QUrl content READ content WRITE setContent NOTIFY contentChanged FINAL)
+    Q_PROPERTY(Status status READ status NOTIFY statusChanged FINAL)
+    Q_PROPERTY(QUrl contentUrl READ contentUrl WRITE setContent NOTIFY contentChanged FINAL)
     Q_PROPERTY(QQmlComponent *contentComponent READ contentComponent WRITE setContentComponent NOTIFY contentComponentChanged FINAL)
     Q_PROPERTY(QQuickItem* contentItem READ contentItem NOTIFY contentItemChanged FINAL)
     Q_PROPERTY(QQmlListProperty<UCBottomEdgeRegion> regions READ regions NOTIFY regionsChanged FINAL)
@@ -47,7 +47,7 @@ class UCBottomEdge : public UCStyledItemBase
     Q_PRIVATE_PROPERTY(UCBottomEdge::d_func(), QQmlListProperty<QObject> data READ data DESIGNABLE false)
     Q_CLASSINFO("DefaultProperty", "data")
 public:
-    enum State {
+    enum Status {
         Hidden,
         Revealed,
         Committed
@@ -64,8 +64,8 @@ public:
     UCBottomEdgeHint *hint() const;
     qreal dragProgress();
     DragDirection dragDirection() const;
-    State state() const;
-    QUrl content() const;
+    Status status() const;
+    QUrl contentUrl() const;
     void setContent(const QUrl &url);
     QQmlComponent *contentComponent() const;
     void setContentComponent(QQmlComponent *component);
@@ -77,7 +77,7 @@ public:
 Q_SIGNALS:
     void dragProgressChanged(qreal dragProgress);
     void dragDirectionChanged(DragDirection direction);
-    void stateChanged(State state);
+    void statusChanged(Status status);
     void contentChanged(const QUrl url);
     void contentComponentChanged(QQmlComponent *component);
     void contentItemChanged();
