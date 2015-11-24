@@ -19,6 +19,7 @@
 #include "ucbottomedge.h"
 #include "ucbottomedgeregion.h"
 #include "ucbottomedge_p.h"
+#include "ucbottomedgehint.h"
 #include "uctestcase.h"
 #include "uctestextras.h"
 
@@ -124,7 +125,11 @@ private Q_SLOTS:
 
     void test_commit_when_clicked()
     {
-
+        QScopedPointer<BottomEdgeTestCase> test(new BottomEdgeTestCase("BottomEdgeInItem.qml"));
+        test->testItem()->hint()->setStatus(UCBottomEdgeHint::Locked);
+        UCBottomEdgeHint *hint = test->testItem()->hint();
+        QTest::mouseClick(test->testItem()->hint()->window(), Qt::LeftButton, 0, UbuntuTestCase::centerOf(hint, true).toPoint());
+        QTRY_COMPARE_WITH_TIMEOUT(test->testItem()->state(), UCBottomEdge::Committed, 1000);
     }
 
     void test_revealed_when_hint_threshold_passed()

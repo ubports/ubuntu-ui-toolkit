@@ -7,4 +7,5 @@ SOURCES += \
 DISTFILES += \
     Defaults.qml \
     DifferentSizes.qml \
-    LastItem.qml
+    LastItem.qml \
+    BottomEdgeInItem.qml
