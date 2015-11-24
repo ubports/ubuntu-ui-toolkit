@@ -227,18 +227,18 @@ void UCTestExtras::touchDrag(int touchId, QQuickItem *item, const QPoint &from, 
         steps = 5;
     }
     touchPress(touchId, item, from);
-    QTest::qWait(10);
+    QTest::qWait(20);
     touchMove(touchId, item, from);
     QPoint movePoint(from);
     qreal stepDx = delta.x() / steps;
     qreal stepDy = delta.y() / steps;
     if (!delta.isNull()) {
         for (int i = 0; i < steps - 1; i++) {
-            QTest::qWait(10);
+            QTest::qWait(20);
             movePoint += QPoint(stepDx, stepDy);
             touchMove(touchId, item, movePoint);
         }
     }
-    QTest::qWait(10);
+    QTest::qWait(20);
     touchRelease(touchId, item, from + delta);
 }

@@ -20,8 +20,12 @@
 #include "ucbottomedgeregion.h"
 #include "ucbottomedge_p.h"
 #include "ucbottomedgehint.h"
+#include "gestures/ucswipearea.h"
 #include "uctestcase.h"
 #include "uctestextras.h"
+#define private public
+#include "quickutils.h"
+#undef private
 
 #define QVERIFY_RETURN(statement, returnValue) \
 do {\
@@ -35,7 +39,20 @@ class BottomEdgeTestCase : public UbuntuTestCase
 public:
     BottomEdgeTestCase(const QString& file, ResizeMode resize = SizeViewToRootObject, bool assertOnFailure = true, QWindow* parent = 0)
         : UbuntuTestCase(file, resize, assertOnFailure, parent)
-    {}
+    {
+        // patch all BottomEdges' SwipeArea gesture recognition timer
+        QList<UCBottomEdge*> list = findChildren<UCBottomEdge*>();
+        for (int i = 0; i < list.size(); ++i) {
+            UCBottomEdge *bottomEdge = list[i];
+            UCSwipeArea *swipeArea = bottomEdge->hint()->swipeArea();
+            swipeArea->setImmediateRecognition(true);
+        }
+    }
+    ~BottomEdgeTestCase()
+    {
+        // add a small timeout after each run to have a proper cleanup
+        QTest::qWait(400);
+    }
 
     UCBottomEdge *testItem(const QString &objectName = "testItem")
     {
@@ -66,11 +83,8 @@ private Q_SLOTS:
     void initTestCase()
     {
         UCTestExtras::registerTouchDevice();
-    }
-
-    void cleanup()
-    {
-
+        // make sure we disable the mouse
+        QuickUtils::instance().m_mouseAttached = false;
     }
 
     void test_defaults()
@@ -129,6 +143,19 @@ private Q_SLOTS:
         test->testItem()->hint()->setStatus(UCBottomEdgeHint::Locked);
         UCBottomEdgeHint *hint = test->testItem()->hint();
         QTest::mouseClick(test->testItem()->hint()->window(), Qt::LeftButton, 0, UbuntuTestCase::centerOf(hint, true).toPoint());
+        QTRY_COMPARE_WITH_TIMEOUT(test->testItem()->state(), UCBottomEdge::Committed, 1000);
+    }
+
+    void test_commit_when_touch_clicked()
+    {
+        QScopedPointer<BottomEdgeTestCase> test(new BottomEdgeTestCase("BottomEdgeInItem.qml"));
+        UCBottomEdgeHint *hint = test->testItem()->hint();
+        // swipe a bit to reveal
+
+        UCTestExtras::touchDrag(0, hint, QPoint(hint->width() / 2, hint->height()), QPoint(0, -hint->height()));
+        QTRY_COMPARE_WITH_TIMEOUT(hint->status(), UCBottomEdgeHint::Active, 1000);
+
+        UCTestExtras::touchClick(0, hint, UbuntuTestCase::centerOf(hint).toPoint());
         QTRY_COMPARE_WITH_TIMEOUT(test->testItem()->state(), UCBottomEdge::Committed, 1000);
     }
 
