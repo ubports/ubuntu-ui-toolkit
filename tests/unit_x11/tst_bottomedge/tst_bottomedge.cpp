@@ -25,6 +25,7 @@
 #include "uctestextras.h"
 #define private public
 #include "quickutils.h"
+#include "ucbottomedgestyle.h"
 #undef private
 
 #define QVERIFY_RETURN(statement, returnValue) \
@@ -159,9 +160,53 @@ private Q_SLOTS:
         QTRY_COMPARE_WITH_TIMEOUT(test->testItem()->status(), UCBottomEdge::Committed, 1000);
     }
 
+    void test_revealed_when_hint_threshold_passed_data()
+    {
+        QTest::addColumn<bool>("withMouse");
+        QTest::addColumn<bool>("lockHint");
+        QTest::addColumn<bool>("xfail");
+
+        QTest::newRow("drag with mouse, unlocked hint") << true << false << true;
+        QTest::newRow("drag with mouse, locked hint") << true << true << false;
+        QTest::newRow("drag with touch, unlocked hint") << false << false << false;
+        QTest::newRow("drag with touch, locked hint") << false << true << false;
+    }
     void test_revealed_when_hint_threshold_passed()
     {
+        QFETCH(bool, withMouse);
+        QFETCH(bool, lockHint);
+        QFETCH(bool, xfail);
 
+        QScopedPointer<BottomEdgeTestCase> test(new BottomEdgeTestCase("BottomEdgeInItem.qml"));
+        UCBottomEdge *bottomEdge = test->testItem();
+        UCBottomEdgeStyle *style = UCBottomEdgePrivate::get(bottomEdge)->bottomPanel;
+        QSignalSpy spy(bottomEdge, SIGNAL(statusChanged(UCBottomEdge::Status)));
+
+        // swipe till we reveal it
+        QPoint from(bottomEdge->width() / 2.0f, bottomEdge->height() - 1);
+        QPoint delta(0, -(2 * style->m_revealThreshold));
+        if (lockHint) {
+            bottomEdge->hint()->setStatus(UCBottomEdgeHint::Locked);
+        }
+        if (withMouse) {
+            UCTestExtras::mouseDrag(bottomEdge, from, delta, Qt::LeftButton);
+        } else {
+            UCTestExtras::touchDrag(0, bottomEdge, from, delta);
+        }
+        if (xfail) {
+            QEXPECT_FAIL(0, "failure expected", Continue);
+        }
+        QVERIFY(spy.wait(500));
+        if (xfail) {
+            QCOMPARE(spy.count(), 0);
+        } else {
+            // there must be two state changes here, one Hidden->Revealed, and one Revealed->Hidden
+            QCOMPARE(spy.count(), 2);
+            QList<QVariant> state1 = spy.at(0);
+            QCOMPARE(state1[0].value<int>(), (int)UCBottomEdge::Revealed);
+            QList<QVariant> state2 = spy.at(1);
+            QCOMPARE(state2[0].value<int>(), (int)UCBottomEdge::Hidden);
+        }
     }
 
     void test_commit_when_onethird_passed()

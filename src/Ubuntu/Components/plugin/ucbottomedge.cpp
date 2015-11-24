@@ -160,7 +160,7 @@ void UCBottomEdgePrivate::updateProgressionStates(qreal distance)
         // there is an operation ongoing, do not update drag and activeRegion
         return;
     }
-    if (distance > bottomPanel->m_revealThreshold) {
+    if (distance >= bottomPanel->m_revealThreshold) {
         // the content can be revealed
         setStatus(UCBottomEdge::Revealed);
     }

@@ -76,8 +76,8 @@ public:
 
 Q_SIGNALS:
     void dragProgressChanged(qreal dragProgress);
-    void dragDirectionChanged(DragDirection direction);
-    void statusChanged(Status status);
+    void dragDirectionChanged(UCBottomEdge::DragDirection direction);
+    void statusChanged(UCBottomEdge::Status status);
     void contentChanged(const QUrl url);
     void contentComponentChanged(QQmlComponent *component);
     void contentItemChanged();
@@ -112,6 +112,8 @@ protected:
 
     friend class tst_BottomEdge;
 };
+Q_DECLARE_METATYPE(UCBottomEdge::Status)
+Q_DECLARE_METATYPE(UCBottomEdge::DragDirection)
 
 Q_DECLARE_LOGGING_CATEGORY(ucBottomEdge)
 

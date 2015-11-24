@@ -242,3 +242,35 @@ void UCTestExtras::touchDrag(int touchId, QQuickItem *item, const QPoint &from, 
     QTest::qWait(20);
     touchRelease(touchId, item, from + delta);
 }
+
+/*!
+ * \qmlmethod void TestExtras::mouseDrag(item, button, modifiers, from, delta[, steps])
+ * Similar to \l touchDrag, performs a drag gesture on the \e item starting point \e from
+ * with a \e delta.
+ */
+
+void UCTestExtras::mouseDrag(QQuickItem *item, const QPoint &from, const QPoint &delta, Qt::MouseButton button, Qt::KeyboardModifiers stateKey, int steps, int delay)
+{
+    if (delta.isNull()) {
+        qWarning() << "delta point is invalid";
+        return;
+    }
+    if (steps <= 0) {
+        steps = 5;
+    }
+    if (delay < 20) {
+        delay = 20;
+    }
+    QTest::mousePress(item->window(), button, stateKey, from, delay);
+    QTest::mouseMove(item->window(), from, delay);
+    QPoint movePoint(from);
+    qreal stepDx = delta.x() / steps;
+    qreal stepDy = delta.y() / steps;
+    if (!delta.isNull()) {
+        for (int i = 0; i < steps - 1; i++) {
+            movePoint += QPoint(stepDx, stepDy);
+            QTest::mouseMove(item->window(), movePoint, delay);
+        }
+    }
+    QTest::mouseRelease(item->window(), button, stateKey, from + delta, delay);
+}
