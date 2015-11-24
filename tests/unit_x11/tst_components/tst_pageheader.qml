@@ -86,7 +86,14 @@ Item {
             }
             height: units.gu(4)
             visible: header.toolbar === toolbar
-            actions: root.actionList
+            actions: [
+                Action { iconName: "bookmark-new" },
+                Action { iconName: "add" },
+                Action { iconName: "edit-select-all" },
+                Action { iconName: "mail-forward" },
+                Action { iconName: "edit-copy" },
+                Action { iconName: "select-none" }
+            ]
             fixedAction: Action {
                 iconName: "delete"
                 text: "delete"

@@ -23,18 +23,27 @@ import Ubuntu.Components 1.3
     \ingroup ubuntu
     TODO
 */
-ActionBar {
+StyledItem {
     id: bar
     styleName: "ToolbarStyle"
 
-//    property list<Action> actions
-//    property int numberOfSlots: __styleInstance.defaultNumberOfSlots
-//    property Component delegate: __styleInstance.defaultDelegate
-
-    numberOfSlots: 9
+    /*!
+      The actions to display in the bar.
+      If more actions are specified than there are slots, an overflow
+      button will be show which opens a popover with the actions that
+      did not fit in the bar directly.
+     */
+    property list<Action> actions
 
     /*!
-      A fixed action displayed on the left side of the toolbar.
+      Set this to override the default delegate button that shows
+      the actions in the ActionBar. Uses the defaultDelegate of
+      ToolbarStyle by default.
+     */
+    property Component delegate: __styleInstance.defaultDelegate
+
+    /*!
+      A single fixed action displayed on the left side of the toolbar.
      */
     property Action fixedAction
 }
