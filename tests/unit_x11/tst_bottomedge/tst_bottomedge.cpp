@@ -18,6 +18,7 @@
 #include <QtTest/QtTest>
 #include "ucbottomedge.h"
 #include "ucbottomedgeregion.h"
+#include "ucbottomedge_p.h"
 #include "uctestcase.h"
 #include "uctestextras.h"
 
@@ -108,9 +109,17 @@ private Q_SLOTS:
         QVERIFY(spy.wait(400));
     }
 
-    void test_last_item_of_parent()
+    void test_panel_is_last_item_of_parent()
     {
+        QScopedPointer<BottomEdgeTestCase> test(new BottomEdgeTestCase("LastItem.qml"));
+        QQuickItem *bottomEdgeParent = test->testItem()->parentItem();
+        UCBottomEdgePrivate *privateTestItem = UCBottomEdgePrivate::get(test->testItem());
+        QCOMPARE(bottomEdgeParent->childItems().last(), privateTestItem->styleItem);
 
+        QQuickItem *dynamicItem = test->findItem<QQuickItem*>("dynamicItem");
+        dynamicItem->setParentItem(bottomEdgeParent);
+        // still the last one
+        QCOMPARE(bottomEdgeParent->childItems().last(), privateTestItem->styleItem);
     }
 
     void test_commit_when_clicked()

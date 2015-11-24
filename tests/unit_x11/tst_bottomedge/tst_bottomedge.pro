@@ -6,4 +6,5 @@ SOURCES += \
 
 DISTFILES += \
     Defaults.qml \
-    DifferentSizes.qml
+    DifferentSizes.qml \
+    LastItem.qml
