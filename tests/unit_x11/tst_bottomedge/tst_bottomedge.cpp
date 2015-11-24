@@ -209,9 +209,32 @@ private Q_SLOTS:
         }
     }
 
+    void test_commit_when_onethird_passed_data()
+    {
+        QTest::addColumn<bool>("withMouse");
+
+        QTest::newRow("with mouse") << true;
+        QTest::newRow("with touch") << false;
+    }
     void test_commit_when_onethird_passed()
     {
+        QFETCH(bool, withMouse);
 
+        QScopedPointer<BottomEdgeTestCase> test(new BottomEdgeTestCase("BottomEdgeInItem.qml"));
+        UCBottomEdge *bottomEdge = test->testItem();
+
+        QPoint from(bottomEdge->width() / 2.0f, bottomEdge->height() - 1);
+        QPoint delta(0, -(bottomEdge->height() / 3));
+
+        if (withMouse) {
+            bottomEdge->hint()->setStatus(UCBottomEdgeHint::Locked);
+        }
+        if (withMouse) {
+            UCTestExtras::mouseDrag(bottomEdge, from, delta, Qt::LeftButton);
+        } else {
+            UCTestExtras::touchDrag(0, bottomEdge, from, delta);
+        }
+        QTRY_COMPARE_WITH_TIMEOUT(bottomEdge->status(), UCBottomEdge::Committed, 1000);
     }
 
     void test_collapse_before_onethird()
