@@ -21,6 +21,7 @@
 #include "ucbottomedge_p.h"
 #include "ucbottomedgehint.h"
 #include "gestures/ucswipearea.h"
+#include "ucunits.h"
 #include "uctestcase.h"
 #include "uctestextras.h"
 #define private public
@@ -191,7 +192,7 @@ private Q_SLOTS:
         if (withMouse) {
             UCTestExtras::mouseDrag(bottomEdge, from, delta, Qt::LeftButton);
         } else {
-            UCTestExtras::touchDrag(0, bottomEdge, from, delta);
+            UCTestExtras::touchDrag(0, bottomEdge, from, delta, 8);
         }
         if (xfail) {
             QEXPECT_FAIL(0, "failure expected", Continue);
@@ -224,15 +225,17 @@ private Q_SLOTS:
         UCBottomEdge *bottomEdge = test->testItem();
 
         QPoint from(bottomEdge->width() / 2.0f, bottomEdge->height() - 1);
-        QPoint delta(0, -(bottomEdge->height() / 3));
+        // add some extra space for the touch
+        QPoint delta(0, -(bottomEdge->height() / 3 + UCUnits::instance().gu(4)));
 
         if (withMouse) {
             bottomEdge->hint()->setStatus(UCBottomEdgeHint::Locked);
         }
+        // we need to do the swipe in more steps
         if (withMouse) {
-            UCTestExtras::mouseDrag(bottomEdge, from, delta, Qt::LeftButton);
+            UCTestExtras::mouseDrag(bottomEdge, from, delta, Qt::LeftButton, 0, 20);
         } else {
-            UCTestExtras::touchDrag(0, bottomEdge, from, delta);
+            UCTestExtras::touchDrag(0, bottomEdge, from, delta, 20);
         }
         QTRY_COMPARE_WITH_TIMEOUT(bottomEdge->status(), UCBottomEdge::Committed, 1000);
     }
