@@ -30,7 +30,7 @@
 #include "ucunits.h"
 #include "quickutils.h"
 #include <QtGui/QGuiApplication>
-#include <QtQml/qqmlinfo.h>
+#include <QtQml/QQmlInfo>
 #include <QtQuick/private/qsgadaptationlayer_p.h>
 // This private header uses the emit keyword while we build with QT_NO_KEYWORDS set. See #1507910.
 #define emit Q_EMIT
