@@ -149,6 +149,9 @@ Item {
     property Item trough: trough
     property alias __overshootTimer: overshootTimer
 
+    //used by scrollbarUtils to query its size (trying to avoid changing the scrollbarUtils API)
+    property alias thumb: slider
+
     //internals
     property bool __recursionGuard: false
     property bool __disableStateBinding: false
@@ -630,19 +633,19 @@ Item {
             // total size of the flickable.
             Item {
 
-                //Rectangle {
-                //    anchors.fill: parent
-                //    color: "green"
-                //}
+//                Rectangle {
+//                    anchors.fill: parent
+//                    color: "green"
+//                }
 
                 id: scrollCursor
-                x: (isVertical) ? 0 : ScrollbarUtils.sliderPos(styledItem, thumbsExtremesMargin, trough.width - scrollCursor.width - thumbsExtremesMargin)
-                y: (!isVertical) ? 0 : ScrollbarUtils.sliderPos(styledItem, thumbsExtremesMargin, trough.height - scrollCursor.height - thumbsExtremesMargin)
-                width: (isVertical) ? flowContainer.thumbThickness : ScrollbarUtils.sliderSize(styledItem, 0.0, trough.width - thumbsExtremesMargin*2)
-                height: (!isVertical) ? flowContainer.thumbThickness : ScrollbarUtils.sliderSize(styledItem, 0.0, trough.height - thumbsExtremesMargin*2)
+                //x: (isVertical) ? 0 : ScrollbarUtils.sliderPos(styledItem, thumbsExtremesMargin, trough.width - scrollCursor.width - thumbsExtremesMargin)
+                //y: (!isVertical) ? 0 : ScrollbarUtils.sliderPos(styledItem, thumbsExtremesMargin, trough.height - scrollCursor.height - thumbsExtremesMargin)
+                //width: (isVertical) ? flowContainer.thumbThickness : ScrollbarUtils.sliderSize(styledItem, 0.0, trough.width - thumbsExtremesMargin*2)
+                //height: (!isVertical) ? flowContainer.thumbThickness : ScrollbarUtils.sliderSize(styledItem, 0.0, trough.height - thumbsExtremesMargin*2)
 
                 function drag() {
-                    ScrollbarUtils.dragAndClamp(styledItem, scrollCursor, totalContentSize, pageSize);
+                    ScrollbarUtils.dragAndClamp(styledItem, slider.relThumbPosition, totalContentSize, pageSize);
                 }
             }
 
@@ -658,10 +661,16 @@ Item {
                 property bool containsMouse: contains(Qt.point(slider.mapFromItem(thumbArea, thumbArea.mouseX, thumbArea.mouseY).x,
                                                                slider.mapFromItem(thumbArea, thumbArea.mouseX, thumbArea.mouseY).y))
 
+                //the proportional position of the thumb relative to the trough it can move into
+                //It is 0 when the thumb is at its minimum value, and 1 when it is at its maximum value
+                property real relThumbPosition : isVertical
+                                                 ? (slider.y - thumbsExtremesMargin) / (trough.height - 2*thumbsExtremesMargin - slider.height)
+                                                 : (slider.x - thumbsExtremesMargin) / (trough.width - 2*thumbsExtremesMargin - slider.width)
+
                 x: (isVertical) ? 0 : ScrollbarUtils.sliderPos(styledItem, thumbsExtremesMargin, trough.width - slider.width - thumbsExtremesMargin)
                 y: (!isVertical) ? 0 : ScrollbarUtils.sliderPos(styledItem, thumbsExtremesMargin, trough.height - slider.height - thumbsExtremesMargin)
-                width: (isVertical) ? flowContainer.thumbThickness : ScrollbarUtils.sliderSize(styledItem, flowContainer.thumbThickness, trough.width)
-                height: (!isVertical) ? flowContainer.thumbThickness : ScrollbarUtils.sliderSize(styledItem, flowContainer.thumbThickness, trough.height)
+                width: (isVertical) ? flowContainer.thumbThickness : ScrollbarUtils.sliderSize(styledItem, units.gu(5), trough.width - 2 * thumbsExtremesMargin)
+                height: (!isVertical) ? flowContainer.thumbThickness : ScrollbarUtils.sliderSize(styledItem, flowContainer.thumbThickness, trough.height - 2 * thumbsExtremesMargin)
                 radius: visuals.sliderRadius
 
                 function scroll(amount) {
@@ -732,12 +741,13 @@ Item {
 
                 drag {
                     //don't start a drag while we're scrolling using press and hold
-                    target: pressHoldTimer.running ? undefined : scrollCursor
+                    target: pressHoldTimer.running ? undefined : slider
                     axis: (isVertical) ? Drag.YAxis : Drag.XAxis
-                    minimumY: 0
-                    maximumY: trough.height - slider.height
-                    minimumX: 0
-                    maximumX: trough.width - slider.width
+                    minimumY: thumbsExtremesMargin
+                    maximumY: trough.height - slider.height - thumbsExtremesMargin
+                    minimumX: thumbsExtremesMargin
+                    maximumX: trough.width - slider.width - thumbsExtremesMargin
+                    onMaximumXChanged: console.log("MAX X!", drag.maximumX)
                     onActiveChanged: {
                         if (drag.active) {
                             thumbArea.saveFlickableScrollingState()

@@ -74,7 +74,24 @@ function isVertical(scrollbar) {
 function sliderPos(scrollbar, min, max) {
     if (!__check(scrollbar)) return 0;
     //console.log("SLIDER POS", scrollbar.flickableItem.visibleArea[_obj.propPosRatio],"*", scrollbar.height, min, max)
-    return clamp(scrollbar.flickableItem.visibleArea[_obj.propPosRatio] * scrollbar.__trough[_obj.propSize] /*flickableItem[_obj.propSize]*/, min, max);
+    //the margin between the trough and the thumb min and max values
+    var margin = scrollbar.__styleInstance.thumbsExtremesMargin
+
+    //The total length of the path where the thumb can be positioned, from its min to its max value
+    var draggableLength = scrollbar.__trough[_obj.propSize] - margin*2
+    var maxPosRatio = 1.0 - scrollbar.flickableItem.visibleArea[_obj.propSizeRatio]
+
+    //Example with x/width, same applies to y/height
+    //xPosition is in the range [0...1 - widthRatio]
+    //and we want the following mapping (xPosition --> thumb.x):
+    //   0              ---> margin (margin is the min position for the thumb)
+    //   1 - widthRatio ---> (draggableLength - scrollbar.__styleInstance.thumb[_obj.propSize]) + margin
+    //So we scale the maximum thumb position by xPosition. But that's not enough, because that would mean
+    //the maxPosition is reached when xPosition becomes 1, and that never happens. To compensate that, we
+    //scale xPosition by ( 1 / ( 1 - widthRatio) ). This way, when xPosition reaches its max ( 1 - widthRatio )
+    //we get a multiplication factor of 1
+    return clamp(1.0 / maxPosRatio * scrollbar.flickableItem.visibleArea[_obj.propPosRatio]
+                 * (draggableLength - scrollbar.__styleInstance.thumb[_obj.propSize]) + margin, min, max);
 }
 
 /*!
@@ -82,12 +99,23 @@ function sliderPos(scrollbar, min, max) {
   and size ratios, clamping it between min and max.
 
   The function can be used in Scrollbar styles to calculate the size of the slider.
+
+  NOTE: THIS CODE IS ASSUMING THAT "MAX" IS ALSO THE "SIZE" OF THE TROUGH THAT THE
+  THUMB CAN MOVE INTO! (which is what you want in 99.9% of the cases, for a scrollbar)
   */
 function sliderSize(scrollbar, min, max) {
     if (!__check(scrollbar)) return 0;
     var sizeRatio = scrollbar.flickableItem.visibleArea[_obj.propSizeRatio];
     var posRatio = scrollbar.flickableItem.visibleArea[_obj.propPosRatio];
+
+    //(sizeRatio * max) is the current ideal size, as recommended by Flickable visibleArea props
     var sizeUnderflow = (sizeRatio * max) < min ? min - (sizeRatio * max) : 0
+
+    //we multiply by (max - sizeUndeflow) because we want to simulate a shorter trough. This is because
+    //posRatio value is [0...1-sizeRatio] so it assumes the slider will be of size sizeRatio*size_of_the_trough
+    //(because that's the only way to make the slider fill the remaining part of the trough when posRatio is
+    //at its maximum value), while our slider could actually be bigger due to the imposed "min" value.
+    //We will compensate for this shift by adding sizeUnderflow to endPos.
     var startPos = posRatio * (max - sizeUnderflow)
     var endPos = (posRatio + sizeRatio) * (max - sizeUnderflow) + sizeUnderflow
     var overshootStart = startPos < 0 ? -startPos : 0
@@ -97,7 +125,7 @@ function sliderSize(scrollbar, min, max) {
     var adjustedStartPos = startPos + overshootStart
     var adjustedEndPos = endPos - overshootStart - overshootEnd
 
-    // final position and size of thumb
+    // final position and size of slider
     var position = adjustedStartPos + min > max ? max - min : adjustedStartPos
     var result = (adjustedEndPos - position) < min ? min : (adjustedEndPos - position)
 
@@ -130,11 +158,10 @@ function scrollAndClamp(scrollbar, amount, min, max) {
   //FIXME: should we change the API and remove pageSize or just pass trough's size as pageSize par?
 
   */
-function dragAndClamp(scrollbar, cursor, contentSize, pageSize) {
+function dragAndClamp(scrollbar, relThumbPosition, contentSize, pageSize) {
     if (!__check(scrollbar)) return 0;
     scrollbar.flickableItem[_obj.propContent] =
-            scrollbar.flickableItem[_obj.propOrigin] + cursor[_obj.propCoordinate]
-            * (contentSize) / scrollbar.__trough[_obj.propSize]; //don't use pageSize, we don't know if the scrollbar is edge to edge!;
+            scrollbar.flickableItem[_obj.propOrigin] + relThumbPosition * (contentSize - scrollbar.flickableItem[_obj.propSize]); //don't use pageSize, we don't know if the scrollbar is edge to edge!;
 }
 
 function scrollToBeginning(scrollbar) {
