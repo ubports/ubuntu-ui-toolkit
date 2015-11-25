@@ -48,7 +48,11 @@ import Ubuntu.Components 1.3
 Item {
     id: visuals
     // styling properties
-    property bool interactive: false
+    property bool interactive: isMouseConnected //|| veryLongContentItem
+
+    //this will eventually come from QInputInfo
+    property bool isMouseConnected: true
+
     property real minimumSliderSize: units.gu(2)
 
     property bool overlay: !alwaysOnScrollbars
@@ -280,6 +284,16 @@ Item {
         function dragAndClamp(scrollbar, relThumbPosition, contentSize, pageSize) {
             scrollbar.flickableItem[propContent] =
                     scrollbar.flickableItem[propOrigin] + relThumbPosition * (contentSize - scrollbar.flickableItem[propSize]); //don't use pageSize, we don't know if the scrollbar is edge to edge!;
+        }
+    }
+
+    //FIXME: we should use QInputInfo for this but it's not ready yet
+    MouseArea {
+        anchors.fill: parent
+        hoverEnabled: true
+        onEntered: {
+            console.log("MOUSE DETECTED")
+            isMouseConnected = true
         }
     }
 
@@ -729,10 +743,10 @@ Item {
 
             // The presence of a mouse enables the interactive thumb
             // FIXME: Should use form factor hints
-            InverseMouse.onEntered: {
+            /*InverseMouse.onEntered: {
                 console.log("FIXME: INVERSE AREA ENTERED, setting interactive to true. THIS IS NOT RELIABLE!")
                 interactive = true
-            }
+            }*/
 
             // The slider's position represents which part of the flickable is visible.
             // The slider's size represents the size the visible part relative to the
