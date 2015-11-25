@@ -459,9 +459,8 @@ void UCBottomEdgePrivate::setOperationStatus(OperationStatus s)
  * }
  * \endqml
  *
- * \note \l contentUrl, \l contentComponent and \l contentItem is equivalent to
- * Loader's \e source, \e sourceComponent and \e item properties. See Loader
- * documentation for further details.
+ * \note The content is specified either through \l contentUrl or \l contentComponent,
+ * where \l contentComponent has precedence over \l contentUrl.
  *
  * There can be situations when the content depends on the progress of the drag.
  * There are two possibilities to follow this, depending on the use case. The
