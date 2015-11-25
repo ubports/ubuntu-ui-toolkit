@@ -8,4 +8,5 @@ DISTFILES += \
     Defaults.qml \
     DifferentSizes.qml \
     LastItem.qml \
-    BottomEdgeInItem.qml
+    BottomEdgeInItem.qml \
+    ShorterBottomEdge.qml

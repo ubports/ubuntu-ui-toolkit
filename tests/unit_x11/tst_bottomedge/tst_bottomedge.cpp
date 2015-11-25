@@ -226,7 +226,7 @@ private Q_SLOTS:
 
         QPoint from(bottomEdge->width() / 2.0f, bottomEdge->height() - 1);
         // add some extra space for the touch
-        QPoint delta(0, -(bottomEdge->height() / 3 + UCUnits::instance().gu(4)));
+        QPoint delta(0, -(bottomEdge->height() / 3 + UCUnits::instance().gu(6)));
 
         if (withMouse) {
             bottomEdge->hint()->setStatus(UCBottomEdgeHint::Locked);
@@ -321,7 +321,12 @@ private Q_SLOTS:
 
     void test_height_less_than_parent()
     {
-
+        QScopedPointer<BottomEdgeTestCase> test(new BottomEdgeTestCase("ShorterBottomEdge.qml"));
+        UCBottomEdge *bottomEdge = test->testItem();
+        UCBottomEdgeStyle *style = UCBottomEdgePrivate::get(bottomEdge)->bottomPanel;
+        bottomEdge->commit();
+        QTRY_COMPARE_WITH_TIMEOUT(bottomEdge->status(), UCBottomEdge::Committed, 1000);
+        QCOMPARE(style->m_panel->y(), bottomEdge->y());
     }
 
     void test_collapse_during_commit()

@@ -32,8 +32,7 @@ BottomEdgeStyle {
     property color shadowColor: theme.palette.selected.background
     property bool attachHintToContent: false
 
-    width: parent.width
-    height: parent.height
+    anchors.fill: parent
 
     Rectangle {
         id: background
