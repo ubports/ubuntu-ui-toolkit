@@ -518,7 +518,7 @@ void UCBottomEdgePrivate::setOperationStatus(OperationStatus s)
  *     }
  * }
  * \endqml
- * \note Custom regions override the defaul declared ones. Therefore there must
+ * \note Custom regions override the default declared ones. Therefore there must
  * be one region which has its \l {BottomEdgeRegion::to}{to} limit set to 1.0
  * otherwise the content will not be committed at all.
  * \note Regions can also be declared as child elements the same way as resources.
