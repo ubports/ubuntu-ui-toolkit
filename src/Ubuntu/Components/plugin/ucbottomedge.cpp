@@ -309,6 +309,9 @@ void UCBottomEdge::unlockOperation(bool running)
 // positions the bottom edge panel holding the content to the given height percentage
 void UCBottomEdgePrivate::setDragProgress(qreal position)
 {
+    if (dragProgress == position || (position < 0.0) || position > 1.0) {
+        return;
+    }
     dragProgress = position;
     Q_EMIT q_func()->dragProgressChanged(dragProgress);
 }

@@ -268,17 +268,16 @@ void UCTestExtras::mouseDrag(QQuickItem *item, const QPoint &from, const QPoint 
         delay = 20;
     }
     QTest::mousePress(item->window(), button, stateKey, from, delay);
-    QTest::mouseMove(item->window(), from, delay);
     QPoint movePoint(from);
     qreal stepDx = delta.x() / steps;
     qreal stepDy = delta.y() / steps;
     if (!delta.isNull()) {
-        for (int i = 0; i < steps - 1; i++) {
-            movePoint += QPoint(stepDx, stepDy);
+        for (int i = 0; i < steps; i++) {
             QTest::mouseMove(item->window(), movePoint, delay);
+            movePoint += QPoint(stepDx, stepDy);
         }
     }
-    QTest::mouseRelease(item->window(), button, stateKey, from + delta, delay);
+    QTest::mouseRelease(item->window(), button, stateKey, movePoint, delay);
 }
 
 /*

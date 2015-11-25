@@ -329,6 +329,50 @@ private Q_SLOTS:
         QCOMPARE(style->m_panel->y(), bottomEdge->y());
     }
 
+    void test_do_not_overshoot_data()
+    {
+        QTest::addColumn<bool>("withMouse");
+
+        QTest::newRow("with touch") << false;
+        QTest::newRow("with mouse") << true;
+    }
+    void test_do_not_overshoot()
+    {
+        QFETCH(bool, withMouse);
+
+        QScopedPointer<BottomEdgeTestCase> test(new BottomEdgeTestCase("ShorterBottomEdge.qml"));
+        UCBottomEdge *bottomEdge = test->testItem();
+        UCBottomEdgeStyle *style = UCBottomEdgePrivate::get(bottomEdge)->bottomPanel;
+
+        QPoint from(bottomEdge->width() / 2.0f, bottomEdge->height() - 1);
+        QPoint to = from + QPoint(0, -(bottomEdge->parentItem()->height() - 1));
+
+        if (withMouse) {
+            bottomEdge->hint()->setStatus(UCBottomEdgeHint::Locked);
+            from = bottomEdge->mapToScene(from).toPoint();
+            to = bottomEdge->mapToScene(to).toPoint();
+            QTest::mousePress(bottomEdge->window(), Qt::LeftButton, 0, from, 20);
+            QPoint movePos(from);
+            while (movePos.y() > to.y()) {
+                QTest::mouseMove(bottomEdge->window(), movePos, 20);
+                movePos += QPoint(0, -10);
+                QVERIFY(style->m_panel->y() >= bottomEdge->y());
+            }
+            QTest::mouseRelease(bottomEdge->window(),Qt::LeftButton, 0, movePos, 20);
+        } else {
+            UCTestExtras::touchPress(0, bottomEdge, from);
+            QPoint movePos(from);
+            while (movePos.y() > to.y()) {
+                QTest::qWait(20);
+                UCTestExtras::touchMove(0, bottomEdge, movePos);
+                movePos += QPoint(0, -10);
+                QVERIFY(style->m_panel->y() >= bottomEdge->y());
+            }
+            QTest::qWait(20);
+            UCTestExtras::touchRelease(0, bottomEdge, movePos);
+        }
+    }
+
     void test_collapse_during_commit()
     {
 
