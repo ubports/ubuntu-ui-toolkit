@@ -423,7 +423,22 @@ private Q_SLOTS:
 
     void test_commit_during_collapse()
     {
-        QSKIP("not yet implemented");
+        QScopedPointer<BottomEdgeTestCase> test(new BottomEdgeTestCase("BottomEdgeInItem.qml"));
+        UCBottomEdge *bottomEdge = test->testItem();
+        bottomEdge->commit();
+
+        QSignalSpy commitStartedSpy(bottomEdge, SIGNAL(commitStarted()));
+        QSignalSpy commitCompletedSpy(bottomEdge, SIGNAL(commitCompleted()));
+        QSignalSpy collapseStartedSpy(bottomEdge, SIGNAL(collapseStarted()));
+        QSignalSpy collapseCompletedSpy(bottomEdge, SIGNAL(collapseCompleted()));
+
+        connect(bottomEdge, SIGNAL(collapseStarted()), bottomEdge, SLOT(commit()), Qt::QueuedConnection);
+
+        bottomEdge->collapse();
+        QTRY_COMPARE_WITH_TIMEOUT(collapseStartedSpy.count(), 1, 1000);
+        QTRY_COMPARE_WITH_TIMEOUT(collapseCompletedSpy.count(), 0, 1000);
+        QTRY_COMPARE_WITH_TIMEOUT(commitStartedSpy.count(), 1, 1000);
+        QTRY_COMPARE_WITH_TIMEOUT(commitCompletedSpy.count(), 1, 1000);
     }
 
     void test_alternative_content_for_default_commit_region()
