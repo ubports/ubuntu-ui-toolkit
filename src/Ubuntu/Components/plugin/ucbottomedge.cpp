@@ -564,7 +564,7 @@ void UCBottomEdgePrivate::setOperationStatus(OperationStatus s)
  * }
  * \endqml
  *
- * /section2 Styling
+ * \section2 Styling
  * Similar to the other components the default style is expected to be defined
  * in the theme's \e BottomEdgeStyle. However the style is not parented to the
  * BottomEdge itself, but to the BottomEdge's parent item. When loaded, the style
