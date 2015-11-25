@@ -10,12 +10,6 @@ load(qt_parts)
 
 SUBDIRS += po documentation app-launch-profiler ubuntu-ui-toolkit-launcher
 
-#when standalone we always want tests to be built
-!build_with_qt{
-    sub_tests.CONFIG -= no_default_target
-    sub_tests.CONFIG -= no_default_install
-}
-
 # additional 'make test' target required by continuous integration system
 test.target = test
 test.commands = make check
