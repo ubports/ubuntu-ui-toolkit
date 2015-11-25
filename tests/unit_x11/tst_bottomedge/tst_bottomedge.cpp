@@ -385,6 +385,22 @@ private Q_SLOTS:
         QTRY_COMPARE_WITH_TIMEOUT(commitCompletedSpy.count(), 1, 1000);
     }
 
+    void test_collapseStarted_collapseCompleted_emitted()
+    {
+        QScopedPointer<BottomEdgeTestCase> test(new BottomEdgeTestCase("BottomEdgeInItem.qml"));
+        UCBottomEdge *bottomEdge = test->testItem();
+        bottomEdge->commit();
+        QTRY_COMPARE_WITH_TIMEOUT(bottomEdge->status(), UCBottomEdge::Committed, 1000);
+        // wait few milliseconds before we initiate collapse
+        QTest::qWait(200);
+
+        QSignalSpy collapseStartedSpy(bottomEdge, SIGNAL(collapseStarted()));
+        QSignalSpy collapseCompletedSpy(bottomEdge, SIGNAL(collapseCompleted()));
+        bottomEdge->collapse();
+        QTRY_COMPARE_WITH_TIMEOUT(collapseStartedSpy.count(), 1, 1000);
+        QTRY_COMPARE_WITH_TIMEOUT(collapseCompletedSpy.count(), 1, 1000);
+    }
+
     void test_collapse_during_commit()
     {
 
