@@ -35,7 +35,7 @@ StyledItem {
         reparented to this item to make sure the scrollbars are correctly positioned and
         the items are clipped at their boundaries.
     */
-    property alias viewport: viewportItem
+    readonly property alias viewport: viewportItem
 
     /*!
         \qmlproperty Item ScrollView::flickableItem
@@ -194,7 +194,7 @@ StyledItem {
         Scrollbar {
             id: horizontalScrollbar
             flickableItem: internal.flickableItem
-            viewport: viewportItem
+            __viewport: viewportItem
             align: Qt.AlignBottom
             buddyScrollbar: verticalScrollbar
             __alwaysOnScrollbars: alwaysOnScrollbars
@@ -204,7 +204,7 @@ StyledItem {
         Scrollbar {
             id: verticalScrollbar
             flickableItem: internal.flickableItem
-            viewport: viewportItem
+            __viewport: viewportItem
             align: Qt.AlignTrailing
             buddyScrollbar: horizontalScrollbar
             __alwaysOnScrollbars: alwaysOnScrollbars

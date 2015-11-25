@@ -63,21 +63,24 @@ Toolkit.StyledItem {
     id: scrollbar
 
     /*!
+        \qmlproperty Flickable Scrollbar::flickableItem
         This property holds the flickable item (Flickable, ListView or GridView)
         the Scrollbar is attached to.
       */
     property Flickable flickableItem: null
 
     /*!
+        \qmlproperty var Scrollbar::buddyScrollbar
         This property holds the other scrollbar that is attached to the same flickable,
         if any. For instance, if this scrollbar is horizontal, buddyScrollbar must be set
         to the vertical scrollbar, if any. This is to allow a correct layout of both
-        horizontal and vertical scrollbars.
+        horizontal and vertical scrollbars when a view is scrollable in both directions.
     */
     //can't use property Scrollbar here as it would complain "Scrollbar instantiated recursively"
     property var buddyScrollbar: null
 
     /*!
+      \qmlproperty int Scrollbar::align
       The property defines the alignment of the scrollbar to the flickableItem.
       The implementation handles the alignment as follows:
         \list
@@ -113,7 +116,10 @@ Toolkit.StyledItem {
     */
     property bool __alwaysOnScrollbars: false
 
-    property Item viewport: null
+    /*! internal
+      Used by ScrollView to tweak Scrollbar's anchoring logic for the always-on scrollbars.
+    */
+    property Item __viewport: null
 
     //Disable the input handling to let the events pass through in case we have an
     //interactive scrollbar right below us (can happen with nested views)
@@ -123,13 +129,13 @@ Toolkit.StyledItem {
     implicitHeight: !internals.vertical ? units.gu(3) : flickableItem.height
 
     anchors {
-        left: internals.leftAnchor(viewport ? viewport : flickableItem)
+        left: internals.leftAnchor(__viewport ? __viewport : flickableItem)
         leftMargin: internals.leftAnchorMargin()
-        right: internals.rightAnchor(viewport ? viewport : flickableItem)
+        right: internals.rightAnchor(__viewport ? __viewport : flickableItem)
         rightMargin: internals.rightAnchorMargin()
-        top: internals.topAnchor(viewport ? viewport : flickableItem)
+        top: internals.topAnchor(__viewport ? __viewport : flickableItem)
         topMargin: internals.topAnchorMargin()
-        bottom: internals.bottomAnchor(viewport ? viewport : flickableItem)
+        bottom: internals.bottomAnchor(__viewport ? __viewport : flickableItem)
         bottomMargin: internals.bottomAnchorMargin()
     }
 
