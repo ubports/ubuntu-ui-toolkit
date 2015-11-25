@@ -62,21 +62,9 @@ class TextInputPopover(_common.UbuntuUIToolkitCustomProxyObjectBase):
     def _get_button(self, text):
         # Try the C++ class name in case this is a 1.3 AbstractButton
         try:
-            buttons = self.select_many('UCAbstractButton')
+            return self.wait_select_single('UCAbstractButton', text=text)
         except dbus.StateNotFoundError:
-            buttons = self.select_many('AbstractButton')
-        texts = []
-        for button in buttons:
-            # workaround used in the text input's context menu to access
-            # action.text so we can get the proper button by text, action
-            # being not accessible
-            # https://bugs.launchpad.net/autopilot/+bug/1334599
-            if button.text == text:
-                return button
-            texts.append(button.text)
-        raise _common.ToolkitException(
-            'Could not find a button with text %s (Available buttons are %s)'
-            % (text, ','.join(texts)))
+            return self.wait_select_single('AbstractButton', text=text)
 
 
 class ActionSelectionPopover(_common.UbuntuUIToolkitCustomProxyObjectBase):

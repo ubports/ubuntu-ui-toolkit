@@ -27,12 +27,13 @@ license.commands = cd $$PWD; $$PWD/tests/license/checklicense.sh
 QMAKE_EXTRA_TARGETS += license
 
 check.target = check
-check.commands = $$PWD/tests/checkresults.sh $$PWD/tests/test_tst_*.xml
+check.commands = $$PWD/tests/checkresults.sh $$OUT_PWD/tests/test_tst_*.xml
 
 #helper files
 OTHER_FILES += \
     features/ubuntu_qml_module.prf \
     features/ubuntu_qml_plugin.prf \
+    features/ubuntu_qt_module.prf \
     features/ubuntu_enable_testing.prf \
     features/coverage.prf \
     .qmake.conf
