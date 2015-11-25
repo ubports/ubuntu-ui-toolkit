@@ -558,7 +558,7 @@ void UCBottomEdgePrivate::setOperationStatus(OperationStatus s)
  *         height: bottomEdge.height
  *         color: Qt.rgba(0.5, 1, bottomEdge.dragProgress, 1);
  *         PageHeader {
- *             text: "Fancy content"
+ *             title: "Fancy content"
  *         }
  *     }
  * }
