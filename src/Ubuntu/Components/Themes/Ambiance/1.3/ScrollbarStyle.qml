@@ -132,7 +132,7 @@ Item {
     property Flickable flickableItem: styledItem.flickableItem
     property bool isScrollable: styledItem.__private.scrollable && pageSize > 0.0
                                 && contentSize > 0.0 && contentSize > pageSize
-    property bool isVertical: ScrollbarUtils.isVertical(styledItem)
+    property bool isVertical: (styledItem.align === Qt.AlignLeading) || (styledItem.align === Qt.AlignTrailing)
     property bool frontAligned: (styledItem.align === Qt.AlignLeading)
     property bool rearAligned: (styledItem.align === Qt.AlignTrailing)
     property bool topAligned: (styledItem.align === Qt.AlignTop)
@@ -176,6 +176,112 @@ Item {
      *****************************************/
     anchors.fill: parent
     opacity: overlayOpacityWhenHidden
+
+    /*!
+        \internal
+        Object storing property names used in calculations.
+    */
+    QtObject {
+        id: scrollbarUtils
+        property string propOrigin: (isVertical) ? "originY" : "originX"
+        property string propContent: (isVertical) ? "contentY" : "contentX"
+        property string propPosRatio: (isVertical) ? "yPosition" : "xPosition"
+        property string propSizeRatio: (isVertical) ? "heightRatio" : "widthRatio"
+        property string propCoordinate: (isVertical) ? "y" : "x"
+        property string propSize: (isVertical) ? "height" : "width"
+
+        /*!
+          Calculates the slider position based on the visible area's ratios.
+          */
+        function sliderPos(scrollbar, min, max) {
+            //console.log("SLIDER POS", scrollbar.flickableItem.visibleArea[propPosRatio],"*", scrollbar.height, min, max)
+            //the margin between the trough and the thumb min and max values
+            var margin = scrollbar.__styleInstance.thumbsExtremesMargin
+
+            //The total length of the path where the thumb can be positioned, from its min to its max value
+            var draggableLength = scrollbar.__trough[propSize] - margin*2
+            var maxPosRatio = 1.0 - scrollbar.flickableItem.visibleArea[propSizeRatio]
+
+            //Example with x/width, same applies to y/height
+            //xPosition is in the range [0...1 - widthRatio]
+            //and we want the following mapping (xPosition --> thumb.x):
+            //   0              ---> margin (margin is the min position for the thumb)
+            //   1 - widthRatio ---> (draggableLength - scrollbar.__styleInstance.thumb[propSize]) + margin
+            //So we scale the maximum thumb position by xPosition. But that's not enough, because that would mean
+            //the maxPosition is reached when xPosition becomes 1, and that never happens. To compensate that, we
+            //scale xPosition by ( 1 / ( 1 - widthRatio) ). This way, when xPosition reaches its max ( 1 - widthRatio )
+            //we get a multiplication factor of 1
+            return MathUtils.clamp(1.0 / maxPosRatio * scrollbar.flickableItem.visibleArea[propPosRatio]
+                         * (draggableLength - scrollbar.__styleInstance.thumb[propSize]) + margin, min, max);
+        }
+
+        /*!
+          Calculates the slider size for ListViews based on the visible area's position
+          and size ratios, clamping it between min and max.
+
+          The function can be used in Scrollbar styles to calculate the size of the slider.
+
+          NOTE: THIS CODE IS ASSUMING THAT "MAX" IS ALSO THE "SIZE" OF THE TROUGH THAT THE
+          THUMB CAN MOVE INTO! (which is what you want in 99.9% of the cases, for a scrollbar)
+          */
+        function sliderSize(scrollbar, min, max) {
+            var sizeRatio = scrollbar.flickableItem.visibleArea[propSizeRatio];
+            var posRatio = scrollbar.flickableItem.visibleArea[propPosRatio];
+
+            //(sizeRatio * max) is the current ideal size, as recommended by Flickable visibleArea props
+            var sizeUnderflow = (sizeRatio * max) < min ? min - (sizeRatio * max) : 0
+
+            //we multiply by (max - sizeUndeflow) because we want to simulate a shorter trough. This is because
+            //posRatio value is [0...1-sizeRatio] so it assumes the slider will be of size sizeRatio*size_of_the_trough
+            //(because that's the only way to make the slider fill the remaining part of the trough when posRatio is
+            //at its maximum value), while our slider could actually be bigger due to the imposed "min" value.
+            //We will compensate for this shift by adding sizeUnderflow to endPos.
+            var startPos = posRatio * (max - sizeUnderflow)
+            var endPos = (posRatio + sizeRatio) * (max - sizeUnderflow) + sizeUnderflow
+            var overshootStart = startPos < 0 ? -startPos : 0
+            var overshootEnd = endPos > max ? endPos - max : 0
+
+            // overshoot adjusted start and end
+            var adjustedStartPos = startPos + overshootStart
+            var adjustedEndPos = endPos - overshootStart - overshootEnd
+
+            // final position and size of slider
+            var position = adjustedStartPos + min > max ? max - min : adjustedStartPos
+            var result = (adjustedEndPos - position) < min ? min : (adjustedEndPos - position)
+
+            return result;
+        }
+
+        /*!
+          The function calculates and clamps the position to be scrolled to the minimum
+          and maximum values.
+
+          The scroll and drag functions require a slider that does not have any minimum
+          size set (meaning the minimum is set to 0.0). Implementations should consider
+          using an invisible cursor to drag the slider and the ListView position.
+          */
+        function scrollAndClamp(scrollbar, amount, min, max) {
+            console.log(scrollbar.flickableItem[propOrigin])
+            console.log(scrollbar.flickableItem[propContent] - scrollbar.flickableItem[propOrigin] + amount, min, max)
+            return scrollbar.flickableItem[propOrigin] +
+                    MathUtils.clamp(scrollbar.flickableItem[propContent] - scrollbar.flickableItem[propOrigin] + amount,
+                          min, max);
+        }
+
+        /*!
+          The function calculates the new position of the dragged slider. The amount is
+          relative to the contentSize, which is either the flickable's contentHeight or
+          contentWidth or other calculated value, depending on its orientation. The pageSize
+          specifies the visibleArea, and it is usually the heigtht/width of the scrolling area.
+
+          //FIXME: should we change the API and remove pageSize or just pass trough's size as pageSize par?
+
+          */
+        function dragAndClamp(scrollbar, relThumbPosition, contentSize, pageSize) {
+            scrollbar.flickableItem[propContent] =
+                    scrollbar.flickableItem[propOrigin] + relThumbPosition * (contentSize - scrollbar.flickableItem[propSize]); //don't use pageSize, we don't know if the scrollbar is edge to edge!;
+        }
+    }
 
     Binding {
         when: !__disableStateBinding
@@ -639,13 +745,13 @@ Item {
 //                }
 
                 id: scrollCursor
-                //x: (isVertical) ? 0 : ScrollbarUtils.sliderPos(styledItem, thumbsExtremesMargin, trough.width - scrollCursor.width - thumbsExtremesMargin)
-                //y: (!isVertical) ? 0 : ScrollbarUtils.sliderPos(styledItem, thumbsExtremesMargin, trough.height - scrollCursor.height - thumbsExtremesMargin)
-                //width: (isVertical) ? flowContainer.thumbThickness : ScrollbarUtils.sliderSize(styledItem, 0.0, trough.width - thumbsExtremesMargin*2)
-                //height: (!isVertical) ? flowContainer.thumbThickness : ScrollbarUtils.sliderSize(styledItem, 0.0, trough.height - thumbsExtremesMargin*2)
+                //x: (isVertical) ? 0 : scrollbarUtils.sliderPos(styledItem, thumbsExtremesMargin, trough.width - scrollCursor.width - thumbsExtremesMargin)
+                //y: (!isVertical) ? 0 : scrollbarUtils.sliderPos(styledItem, thumbsExtremesMargin, trough.height - scrollCursor.height - thumbsExtremesMargin)
+                //width: (isVertical) ? flowContainer.thumbThickness : scrollbarUtils.sliderSize(styledItem, 0.0, trough.width - thumbsExtremesMargin*2)
+                //height: (!isVertical) ? flowContainer.thumbThickness : scrollbarUtils.sliderSize(styledItem, 0.0, trough.height - thumbsExtremesMargin*2)
 
                 function drag() {
-                    ScrollbarUtils.dragAndClamp(styledItem, slider.relThumbPosition, totalContentSize, pageSize);
+                    scrollbarUtils.dragAndClamp(styledItem, slider.relThumbPosition, totalContentSize, pageSize);
                 }
             }
 
@@ -667,14 +773,14 @@ Item {
                                                  ? (slider.y - thumbsExtremesMargin) / (trough.height - 2*thumbsExtremesMargin - slider.height)
                                                  : (slider.x - thumbsExtremesMargin) / (trough.width - 2*thumbsExtremesMargin - slider.width)
 
-                x: (isVertical) ? 0 : ScrollbarUtils.sliderPos(styledItem, thumbsExtremesMargin, trough.width - slider.width - thumbsExtremesMargin)
-                y: (!isVertical) ? 0 : ScrollbarUtils.sliderPos(styledItem, thumbsExtremesMargin, trough.height - slider.height - thumbsExtremesMargin)
-                width: (isVertical) ? flowContainer.thumbThickness : ScrollbarUtils.sliderSize(styledItem, units.gu(5), trough.width - 2 * thumbsExtremesMargin)
-                height: (!isVertical) ? flowContainer.thumbThickness : ScrollbarUtils.sliderSize(styledItem, flowContainer.thumbThickness, trough.height - 2 * thumbsExtremesMargin)
+                x: (isVertical) ? 0 : scrollbarUtils.sliderPos(styledItem, thumbsExtremesMargin, trough.width - slider.width - thumbsExtremesMargin)
+                y: (!isVertical) ? 0 : scrollbarUtils.sliderPos(styledItem, thumbsExtremesMargin, trough.height - slider.height - thumbsExtremesMargin)
+                width: (isVertical) ? flowContainer.thumbThickness : scrollbarUtils.sliderSize(styledItem, units.gu(5), trough.width - 2 * thumbsExtremesMargin)
+                height: (!isVertical) ? flowContainer.thumbThickness : scrollbarUtils.sliderSize(styledItem, flowContainer.thumbThickness, trough.height - 2 * thumbsExtremesMargin)
                 radius: visuals.sliderRadius
 
                 function scroll(amount) {
-                    scrollAnimation.to = ScrollbarUtils.scrollAndClamp(styledItem, amount, 0.0,
+                    scrollAnimation.to = scrollbarUtils.scrollAndClamp(styledItem, amount, 0.0,
                                                                        Math.max(totalContentSize - pageSize, 0));
                     console.log(scrollAnimation.to)
                     scrollAnimation.restart();
