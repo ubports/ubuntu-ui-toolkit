@@ -35,6 +35,7 @@ Style.ToolbarStyle {
     }
 
     Item {
+        objectName: "fixedAction_container_item"
         anchors {
             left: parent.left
             leftMargin: units.gu(1)
@@ -44,6 +45,7 @@ Style.ToolbarStyle {
         Repeater {
             // FIXME: A Loader may be enough here, but then we
             //  have no way to set the model (action) of the ActionButton.
+            objectName: "fixedAction_repeater"
             model: styledItem.fixedAction
             delegate: styledItem.delegate
         }
@@ -51,6 +53,7 @@ Style.ToolbarStyle {
 
     Row {
         id: actionsContainer
+        objectName: "actions_container_row"
         anchors {
             top: parent.top
             bottom: parent.bottom
