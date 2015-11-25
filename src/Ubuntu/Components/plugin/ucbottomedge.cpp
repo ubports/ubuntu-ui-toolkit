@@ -478,7 +478,7 @@ void UCBottomEdgePrivate::setOperationStatus(OperationStatus s)
  * }
  * \endqml
  *
- * The other usecase is when the content needs to be completely different in certain
+ * The other use case is when the content needs to be completely different in certain
  * regions of the area. These regions can be defined through BottomEdgeRegion elements
  * listed in the \l regions property.
  * \qml
