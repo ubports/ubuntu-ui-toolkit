@@ -373,6 +373,18 @@ private Q_SLOTS:
         }
     }
 
+    void test_commitStarted_commitCompleted_emitted()
+    {
+        QScopedPointer<BottomEdgeTestCase> test(new BottomEdgeTestCase("BottomEdgeInItem.qml"));
+        UCBottomEdge *bottomEdge = test->testItem();
+
+        QSignalSpy commitStartedSpy(bottomEdge, SIGNAL(commitStarted()));
+        QSignalSpy commitCompletedSpy(bottomEdge, SIGNAL(commitCompleted()));
+        bottomEdge->commit();
+        QTRY_COMPARE_WITH_TIMEOUT(commitStartedSpy.count(), 1, 1000);
+        QTRY_COMPARE_WITH_TIMEOUT(commitCompletedSpy.count(), 1, 1000);
+    }
+
     void test_collapse_during_commit()
     {
 
