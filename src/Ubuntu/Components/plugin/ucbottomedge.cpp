@@ -100,7 +100,7 @@ void UCBottomEdgePrivate::overload_data_clear(QQmlListProperty<QObject> *data)
     QQuickItemPrivate::data_clear(data);
 }
 
-// appends a BottomEdgeRegion to the list; clears the default regions before appends the
+// appends a BottomEdgeRegion to the list; clears the default regions before appending the
 // custom ones
 void UCBottomEdgePrivate::appendRegion(UCBottomEdgeRegion *region)
 {
@@ -132,19 +132,19 @@ void UCBottomEdgePrivate::clearRegions(bool destroy)
     createDefaultRegions();
 }
 
-// creates the default regions(s)
+// creates the default region(s)
 void UCBottomEdgePrivate::createDefaultRegions()
 {
     Q_Q(UCBottomEdge);
     // add the default stages
-    UCBottomEdgeRegion *commitregion = new UCBottomEdgeRegion(q);
+    UCBottomEdgeRegion *commitRegion = new UCBottomEdgeRegion(q);
     // for testing purposes
-    commitregion->setObjectName("default_BottomEdgeRegion");
+    commitRegion->setObjectName("default_BottomEdgeRegion");
     // enters in this stage when drag ratio reaches 30% of the area
-    commitregion->m_from = 0.33;
-    commitregion->m_to = 1.0;
+    commitRegion->m_from = 0.33;
+    commitRegion->m_to = 1.0;
 
-    regions.append(commitregion);
+    regions.append(commitRegion);
 }
 
 // update status, drag direction and activeRegion during drag
@@ -256,7 +256,7 @@ void UCBottomEdgePrivate::commit(qreal to)
     bool animated = bottomPanel && bottomPanel->m_panelAnimation;
     if (animated) {
         QObject::connect(bottomPanel->m_panelAnimation, &QQuickAbstractAnimation::runningChanged,
-                q, &UCBottomEdge::unlockOperation);
+                q, &UCBottomEdge::unlockOperation, Qt::UniqueConnection);
     }
     // make sure the setStatus is set to Revealed first
     if (status == UCBottomEdge::Hidden) {
@@ -908,7 +908,7 @@ void UCBottomEdge::collapse()
     bool animated = d->bottomPanel && d->bottomPanel->m_panelAnimation;
     if (animated) {
         connect(d->bottomPanel->m_panelAnimation, &QQuickAbstractAnimation::runningChanged,
-                this, &UCBottomEdge::unlockOperation);
+                this, &UCBottomEdge::unlockOperation, Qt::UniqueConnection);
     }
     // set the setStatus first to Revealed
     if (d->status == UCBottomEdge::Committed) {

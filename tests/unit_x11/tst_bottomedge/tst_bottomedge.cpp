@@ -403,102 +403,116 @@ private Q_SLOTS:
 
     void test_collapse_during_commit()
     {
+        QScopedPointer<BottomEdgeTestCase> test(new BottomEdgeTestCase("BottomEdgeInItem.qml"));
+        UCBottomEdge *bottomEdge = test->testItem();
 
+        QSignalSpy commitStartedSpy(bottomEdge, SIGNAL(commitStarted()));
+        QSignalSpy commitCompletedSpy(bottomEdge, SIGNAL(commitCompleted()));
+        QSignalSpy collapseStartedSpy(bottomEdge, SIGNAL(collapseStarted()));
+        QSignalSpy collapseCompletedSpy(bottomEdge, SIGNAL(collapseCompleted()));
+
+        connect(bottomEdge, SIGNAL(commitStarted()), bottomEdge, SLOT(collapse()), Qt::QueuedConnection);
+
+        bottomEdge->commit();
+
+        QTRY_COMPARE_WITH_TIMEOUT(commitStartedSpy.count(), 1, 1000);
+        QTRY_COMPARE_WITH_TIMEOUT(commitCompletedSpy.count(), 0, 1000);
+        QTRY_COMPARE_WITH_TIMEOUT(collapseStartedSpy.count(), 1, 1000);
+        QTRY_COMPARE_WITH_TIMEOUT(collapseCompletedSpy.count(), 1, 1000);
     }
 
     void test_commit_during_collapse()
     {
-
+        QSKIP("not yet implemented");
     }
 
     void test_alternative_content_for_default_commit_region()
     {
-
+        QSKIP("not yet implemented");
     }
 
     void test_page_as_content()
     {
-
+        QSKIP("not yet implemented");
     }
 
     void test_custom_content()
     {
-
+        QSKIP("not yet implemented");
     }
 
     void test_detect_page_header_in_content()
     {
-
+        QSKIP("not yet implemented");
     }
 
     void test_autocollapse_navigation_action_on_collapse_completed()
     {
-
+        QSKIP("not yet implemented");
     }
 
     void test_region_entered_triggered()
     {
-
+        QSKIP("not yet implemented");
     }
 
     void test_region_exited_triggered()
     {
-
+        QSKIP("not yet implemented");
     }
 
     void test_region_dragEnded_triggered()
     {
-
+        QSKIP("not yet implemented");
     }
 
     void test_region_from_and_to_data()
     {
-
     }
     void test_region_from_and_to()
     {
-
+        QSKIP("not yet implemented");
     }
 
     void test_overlapping_regions()
     {
-
+        QSKIP("not yet implemented");
     }
 
     void test_overlapping_regions_with_alternate_content()
     {
-
+        QSKIP("not yet implemented");
     }
 
     void test_custom_region_not_reaching_top()
     {
-
+        QSKIP("not yet implemented");
     }
 
     void test_drag_into_uncovered_region()
     {
-
+        QSKIP("not yet implemented");
     }
 
     void test_end_drag_in_region()
     {
-
+        QSKIP("not yet implemented");
     }
 
     void test_overload_region_drag_ending_with_commit()
     {
-
+        QSKIP("not yet implemented");
     }
 
     void test_commit_region_content()
     {
-
+        QSKIP("not yet implemented");
     }
 
     // this is a style hinted test, maybe move the feature to the public API
     void test_attach_hint_to_content()
     {
-
+        QSKIP("not yet implemented");
     }
 };
 
