@@ -464,7 +464,7 @@ void UCBottomEdgePrivate::setOperationStatus(OperationStatus s)
  *
  * There can be situations when the content depends on the progress of the drag.
  * There are two possibilities to follow this, depending on the use case. The
- * \l dragProgress provides live updates about the percentage of the drag.
+ * \l dragProgress provides live updates about the fraction of the drag.
  * \qml
  * BottomEdge {
  *     id: bottomEdge
