@@ -879,6 +879,7 @@ Ubuntu.ActionItem {
                 children[i].parent = leftPane;
                 children[i].anchors.verticalCenter = verticalCenter;
                 children[i].activeFocusOnPress = false;
+                children[i].activeFocusOnTab = false;
             }
         }
     }
@@ -902,6 +903,7 @@ Ubuntu.ActionItem {
                 children[i].parent = rightPane;
                 children[i].anchors.verticalCenter = verticalCenter;
                 children[i].activeFocusOnPress = false;
+                children[i].activeFocusOnTab = false;
             }
         }
     }
@@ -910,6 +912,7 @@ Ubuntu.ActionItem {
         id: clearButton
         objectName: "clear_button"
         activeFocusOnPress: false
+        activeFocusOnTab: false
 
         anchors {
             top: parent.top
