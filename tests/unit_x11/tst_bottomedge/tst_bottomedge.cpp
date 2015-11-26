@@ -193,6 +193,7 @@ private Q_SLOTS:
         if (withMouse) {
             UCTestExtras::mouseDrag(bottomEdge, from, delta, Qt::LeftButton);
         } else {
+            // FLAKY
             UCTestExtras::touchDrag(0, bottomEdge, from, delta, 8);
         }
         if (xfail) {
@@ -573,6 +574,7 @@ private Q_SLOTS:
         QPoint from(bottomEdge->width() / 2.0f, bottomEdge->height() - 5);
         QPoint delta(0, -(bottomEdge->height() / 2));
 
+        // FLAKY
         UCTestExtras::touchDrag(0, bottomEdge, from, delta, 20);
         QTRY_COMPARE_WITH_TIMEOUT(bottomEdge->status(), UCBottomEdge::Committed, 1000);
         QCOMPARE(bottomEdge->contentItem()->objectName(), QString("regionContent"));
@@ -741,14 +743,41 @@ private Q_SLOTS:
         QString document("OverlappingRegions.qml");
         UbuntuTestCase::ignoreWarning(document, 34, 9, "QML BottomEdgeRegion: Region intersects the one from index 0 having from: 0.2 and to: 0.5", 1);
         UbuntuTestCase::ignoreWarning(document, 37, 9, "QML BottomEdgeRegion: Region intersects the one from index 0 having from: 0.2 and to: 0.5", 1);
-        UbuntuTestCase::ignoreWarning(document, 37, 9, "QML BottomEdgeRegion: Region intersects the one from index 1 having from: 0.4 and to: 1", 1);
-        UbuntuTestCase::ignoreWarning(document, 41, 9, "QML BottomEdgeRegion: Region intersects the one from index 1 having from: 0.4 and to: 1", 1);
+        UbuntuTestCase::ignoreWarning(document, 37, 9, "QML BottomEdgeRegion: Region at index 1 contains this region. This region will never activate.", 1);
+        UbuntuTestCase::ignoreWarning(document, 41, 9, "QML BottomEdgeRegion: Region at index 1 contains this region. This region will never activate.", 1);
         QScopedPointer<BottomEdgeTestCase> test(new BottomEdgeTestCase(document));
     }
 
-    void test_overlapping_regions_with_alternate_content()
+    void test_region_does_not_activate_when_from_greater_than_to_data()
     {
-        QSKIP("not yet implemented");
+        QTest::addColumn<bool>("withMouse");
+
+        QTest::newRow("with mouse") << true;
+        QTest::newRow("with touch") << false;
+    }
+    void test_region_does_not_activate_when_from_greater_than_to()
+    {
+        QFETCH(bool, withMouse);
+
+        QScopedPointer<BottomEdgeTestCase> test(new BottomEdgeTestCase("AlternateRegionContent.qml"));
+        UCBottomEdge *bottomEdge = test->testItem();
+        UCBottomEdgePrivate *privateBottomEdge = UCBottomEdgePrivate::get(bottomEdge);
+        UCBottomEdgeRegion *region = privateBottomEdge->regions[0];
+
+        // adjust region data for the test
+        region->m_from = 0.4;
+        region->m_to = 0.2;
+        QPoint from(bottomEdge->width() / 2.0f, bottomEdge->height() - 5);
+        QPoint delta(0, -(bottomEdge->height() / 2.0f));
+        QSignalSpy activeRegion(bottomEdge, SIGNAL(activeRegionChanged(UCBottomEdgeRegion*)));
+        if (withMouse) {
+            bottomEdge->hint()->setStatus(UCBottomEdgeHint::Locked);
+            UCTestExtras::mouseDrag(bottomEdge, from, delta, Qt::LeftButton, 0, 10);
+        } else {
+            UCTestExtras::touchDrag(0, bottomEdge, from, delta, 10);
+        }
+        QEXPECT_FAIL(0, "region should not activate", Continue);
+        QVERIFY(activeRegion.wait(400));
     }
 
     void test_detect_page_header_in_content()

@@ -116,7 +116,7 @@ void UCBottomEdgeRegion::attachToBottomEdge(UCBottomEdge *bottomEdge)
 
 bool UCBottomEdgeRegion::contains(qreal dragRatio)
 {
-    return (m_enabled && dragRatio >= m_from && dragRatio <= m_to);
+    return (m_enabled && (m_from < m_to) && dragRatio >= m_from && dragRatio <= m_to);
 }
 
 void UCBottomEdgeRegion::enter()

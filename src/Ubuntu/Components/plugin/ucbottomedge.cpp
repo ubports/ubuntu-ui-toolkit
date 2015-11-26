@@ -158,11 +158,15 @@ void UCBottomEdgePrivate::validateRegion(UCBottomEdgeRegion *region)
     const QRectF regionRect(region->rect(boundingRect));
     for (int i = 0; i < regions.size(); ++i) {
         UCBottomEdgeRegion *stackedRegion = regions[i];
-        QRectF intersect = regionRect.intersected(stackedRegion->rect(boundingRect));
-        if (!intersect.isNull()) {
-            QString msg("Region intersects the one from index %1 having from: %2 and to: %3");
-            msg = msg.arg(i).arg(stackedRegion->m_from).arg(stackedRegion->m_to);
-            qmlInfo(region) << msg;
+        QRectF rect(stackedRegion->rect(boundingRect));
+        if (rect.contains(regionRect)) {
+            qmlInfo(region) << QString("Region at index %1 contains this region. This region will never activate.").arg(i);
+        } else {
+            QRectF intersect = regionRect.intersected(stackedRegion->rect(boundingRect));
+            if (!intersect.isNull()) {
+                qmlInfo(region) << QString("Region intersects the one from index %1 having from: %2 and to: %3")
+                                   .arg(i).arg(stackedRegion->m_from).arg(stackedRegion->m_to);
+            }
         }
     }
 }
