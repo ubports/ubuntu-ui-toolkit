@@ -832,12 +832,6 @@ private Q_SLOTS:
         QPoint delta(0, -bottomEdge->height());
         UCTestExtras::touchDrag(0, bottomEdge, from, delta, 20);
     }
-
-    // this is a style hinted test, maybe move the feature to the public API
-    void test_attach_hint_to_content()
-    {
-        QSKIP("not yet implemented");
-    }
 };
 
 QTEST_MAIN(tst_BottomEdge)
