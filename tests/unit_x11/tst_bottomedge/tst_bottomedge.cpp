@@ -627,6 +627,7 @@ private Q_SLOTS:
         QVERIFY(bottomEdge->activeRegion());
         // the top of the committed content should not be the top of the bottom edge
         QVERIFY(style->m_panel->y() > bottomEdge->y());
+        QCOMPARE(bottomEdge->status(), UCBottomEdge::Revealed);
     }
 
     void test_drag_ends_in_uncovered_region_collapses_data()
@@ -682,17 +683,55 @@ private Q_SLOTS:
         QTRY_COMPARE_WITH_TIMEOUT(bottomEdge->status(), UCBottomEdge::Hidden, 1000);
     }
 
-    void test_region_from_and_to_data()
+    void test_commit_region_content_data()
     {
-    }
-    void test_region_from_and_to()
-    {
-        QSKIP("not yet implemented");
-    }
+        QTest::addColumn<bool>("withMouse");
 
+        QTest::newRow("with mouse") << true;
+        QTest::newRow("with touch") << false;
+    }
     void test_commit_region_content()
     {
-        QSKIP("not yet implemented");
+        QFETCH(bool, withMouse);
+
+        QScopedPointer<BottomEdgeTestCase> test(new BottomEdgeTestCase("AlternateRegionContent.qml"));
+        UCBottomEdge *bottomEdge = test->testItem();
+        UCBottomEdgePrivate *privateBottomEdge = UCBottomEdgePrivate::get(bottomEdge);
+        UCBottomEdgeRegion *region = privateBottomEdge->regions[0];
+
+        // alter region for testing
+        region->m_from = 0.1;
+        region->m_to = 0.8;
+        // and connect commit to dragEnded
+        connect(region, &UCBottomEdgeRegion::dragEnded, bottomEdge, &UCBottomEdge::commit);
+
+        QPoint from(bottomEdge->width() / 2.0f, bottomEdge->height() - 5);
+        QPoint to = from + QPoint(0, -(bottomEdge->parentItem()->height() - 1));
+
+        if (withMouse) {
+            bottomEdge->hint()->setStatus(UCBottomEdgeHint::Locked);
+            from = bottomEdge->mapToScene(from).toPoint();
+            to = bottomEdge->mapToScene(to).toPoint();
+            QTest::mousePress(bottomEdge->window(), Qt::LeftButton, 0, from, 20);
+            QPoint movePos(from);
+            while (movePos.y() > to.y() && !bottomEdge->activeRegion()) {
+                QTest::mouseMove(bottomEdge->window(), movePos, 20);
+                movePos += QPoint(0, -10);
+            }
+            QTest::mouseRelease(bottomEdge->window(),Qt::LeftButton, 0, movePos, 20);
+        } else {
+            UCTestExtras::touchPress(0, bottomEdge, from);
+            QPoint movePos(from);
+            while (movePos.y() > to.y() && !bottomEdge->activeRegion()) {
+                QTest::qWait(20);
+                UCTestExtras::touchMove(0, bottomEdge, movePos);
+                movePos += QPoint(0, -10);
+            }
+            QTest::qWait(20);
+            UCTestExtras::touchRelease(0, bottomEdge, movePos);
+        }
+        QTRY_COMPARE_WITH_TIMEOUT(bottomEdge->status(), UCBottomEdge::Committed, 1000);
+        QCOMPARE(bottomEdge->contentItem()->objectName(), QString("regionContent"));
     }
 
     void test_overlapping_regions()
