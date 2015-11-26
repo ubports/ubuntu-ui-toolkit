@@ -236,8 +236,7 @@ Header {
         anchors {
             left: parent.left
             right: parent.right
-            bottom: parent.bottom
-            bottomMargin: header.__styleInstance.dividerHeight
+            top: contentsHolder.bottom
         }
         height: header.toolbar ? header.toolbar.height : 0
 
@@ -272,8 +271,7 @@ Header {
         anchors {
             left: parent.left
             leftMargin: units.gu(2)
-            bottom: parent.bottom
-            bottomMargin: header.__styleInstance.dividerHeight
+            top: contentsHolder.bottom
         }
         visible: model && model.length > 0 && !header.toolbar
         height: visible ? implicitHeight : 0

@@ -27,8 +27,7 @@ Style.PageHeaderStyle {
     property int textSize: Label.Large
 
     contentHeight: units.gu(6)
-    dividerHeight: divider.height
-    implicitHeight: contentHeight + dividerHeight + internal.toolbarHeight
+    implicitHeight: contentHeight + divider.height + internal.toolbarHeight
 
     Object {
         id: internal
