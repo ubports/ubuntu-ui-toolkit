@@ -147,17 +147,29 @@ void UCBottomEdgePrivate::clearRegions(bool destroy)
 }
 
 // validates an added region
-void UCBottomEdgePrivate::validateRegion(UCBottomEdgeRegion *region)
+void UCBottomEdgePrivate::validateRegion(UCBottomEdgeRegion *region, int regionsSize)
 {
+    // we should not validate unti the bottom edge is not completed,
+    // property changes may invalidate the result of the validation
+    // also leave if the region is disabled
+    if (!componentComplete || !region->m_enabled) {
+        return;
+    }
     Q_Q(UCBottomEdge);
     // use QRectF to help on finding the intersection
     QRectF boundingRect = q->boundingRect();
     if (boundingRect.isNull()) {
         boundingRect = QRectF(0, 0, 1, 1);
     }
+    if (regionsSize < 0 || regionsSize > regions.size()) {
+        regionsSize = regions.size();
+    }
     const QRectF regionRect(region->rect(boundingRect));
-    for (int i = 0; i < regions.size(); ++i) {
+    for (int i = 0; i < regionsSize; ++i) {
         UCBottomEdgeRegion *stackedRegion = regions[i];
+        if (region == stackedRegion || !stackedRegion->m_enabled) {
+            continue;
+        }
         QRectF rect(stackedRegion->rect(boundingRect));
         if (rect.contains(regionRect)) {
             qmlInfo(region) << QString("Region at index %1 contains this region. This region will never activate.").arg(i);
@@ -720,6 +732,12 @@ void UCBottomEdge::componentComplete()
     QQmlEngine::setContextForObject(d->hint, new QQmlContext(qmlContext(this), d->hint));
     // finally complete hint creation
     hintPrivate->completeStyledItem();
+    // and validate regions, leave out the first one as that supposed to be added first
+    // mimic the top limit of the regions list like we would add them one by one
+    for (int i = 1; i < d->regions.size(); ++i) {
+        UCBottomEdgeRegion *region = d->regions[i];
+        d->validateRegion(region, i);
+    }
 }
 
 void UCBottomEdge::itemChange(ItemChange change, const ItemChangeData &data)

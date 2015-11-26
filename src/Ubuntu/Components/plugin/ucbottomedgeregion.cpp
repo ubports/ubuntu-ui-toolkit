@@ -171,12 +171,34 @@ const QRectF UCBottomEdgeRegion::rect(const QRectF &bottomEdgeRect)
  * Enables the section. Disabled sections do not trigger nor change the BottomEdge
  * content. Defaults to false.
  */
+void UCBottomEdgeRegion::setEnabled(bool enabled)
+{
+    if (enabled == m_enabled) {
+        return;
+    }
+    m_enabled = enabled;
+    if (m_bottomEdge) {
+        UCBottomEdgePrivate::get(m_bottomEdge)->validateRegion(this);
+    }
+    Q_EMIT enabledChanged();
+}
 
 /*!
  * \qmlproperty real BottomEdgeRegion::from
  * Specifies the starting ratio of the bottom erge area. The value must be bigger
  * or equal to 0 but strictly smaller than \l to. Defaults to 0.0.
  */
+void UCBottomEdgeRegion::setFrom(qreal from)
+{
+    if (from == m_from) {
+        return;
+    }
+    m_from = from;
+    if (m_bottomEdge) {
+        UCBottomEdgePrivate::get(m_bottomEdge)->validateRegion(this);
+    }
+    Q_EMIT fromChanged();
+}
 
 /*!
  * \qmlproperty real BottomEdgeRegion::to
@@ -186,6 +208,17 @@ const QRectF UCBottomEdgeRegion::rect(const QRectF &bottomEdgeRect)
  * will result in exposing the bottom edge content only till the ration specified
  * by this property.
  */
+void UCBottomEdgeRegion::setTo(qreal to)
+{
+    if (to == m_to) {
+        return;
+    }
+    m_to = to;
+    if (m_bottomEdge) {
+        UCBottomEdgePrivate::get(m_bottomEdge)->validateRegion(this);
+    }
+    Q_EMIT toChanged();
+}
 
 /*!
  * \qmlproperty url BottomEdgeRegion::contentUrl

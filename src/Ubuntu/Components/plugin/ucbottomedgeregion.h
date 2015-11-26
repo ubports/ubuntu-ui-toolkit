@@ -31,9 +31,9 @@ class UCBottomEdgeRegion : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(bool enabled MEMBER m_enabled NOTIFY enabledChanged FINAL)
-    Q_PROPERTY(qreal from MEMBER m_from NOTIFY fromChanged FINAL)
-    Q_PROPERTY(qreal to MEMBER m_to NOTIFY toChanged FINAL)
+    Q_PROPERTY(bool enabled MEMBER m_enabled WRITE setEnabled NOTIFY enabledChanged FINAL)
+    Q_PROPERTY(qreal from MEMBER m_from WRITE setFrom NOTIFY fromChanged FINAL)
+    Q_PROPERTY(qreal to MEMBER m_to WRITE setTo NOTIFY toChanged FINAL)
     Q_PROPERTY(QUrl contentUrl MEMBER m_url NOTIFY contentChanged FINAL)
     Q_PROPERTY(QQmlComponent* contentComponent MEMBER m_component NOTIFY contentComponentChanged FINAL)
 public:
@@ -41,6 +41,9 @@ public:
     void attachToBottomEdge(UCBottomEdge *bottomEdge);
 
     // used internally
+    void setFrom(qreal from);
+    void setTo(qreal to);
+    void setEnabled(bool enabled);
     bool contains(qreal dragRatio);
     void enter();
     void exit();
