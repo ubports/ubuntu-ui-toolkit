@@ -150,15 +150,19 @@ Template {
             BottomEdgeRegion {
                 objectName: "CustomRegion1"
                 enabled: regionConfig.model >= 1
+                to: 0.3
                 property color baseColor: UbuntuColors.lightGrey
             },
             BottomEdgeRegion {
                 objectName: "CustomRegion2"
                 enabled: regionConfig.model >= 2
+                from: 0.3
+                to: 0.6
             },
             BottomEdgeRegion {
                 objectName: "CustomRegion3"
                 enabled: regionConfig.model >= 3
+                from: 0.6
             },
             // default region, mimics the default setup
             BottomEdgeRegion {
