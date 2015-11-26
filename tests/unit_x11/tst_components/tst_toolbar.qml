@@ -213,6 +213,12 @@ Item {
             var button = findChild(container, "delete_action_button");
             compare(null !== button, true,
                     "Incorrect delete action button.");
+            deleteAction.visible = false;
+            compare(false, has_visible_fixed_action_button(fixedBar),
+                    "Toolbar shows invisible fixed action.");
+            deleteAction.visible = true;
+            compare(true, has_visible_fixed_action_button(fixedBar),
+                    "Setting visible of fixed action does not show the button.");
         }
 
         function test_number_of_visible_buttons() {
@@ -220,6 +226,12 @@ Item {
                     "Incorrect number of buttons visible for " + shortActionList.length + " actions.");
             compare(actionList.length, get_number_of_visible_buttons(bar),
                     "Incorrect number of buttons visible for " + actionList.length + " actions.");
+            actionList[2].visible = false;
+            compare(actionList.length - 1, get_number_of_visible_buttons(bar),
+                    "Invisible action still gets represented by a button.");
+            actionList[2].visible = true;
+            compare(actionList.length, get_number_of_visible_buttons(bar),
+                    "Making action visible does not make its button visible.");
         }
 
         function test_custom_delegate() {

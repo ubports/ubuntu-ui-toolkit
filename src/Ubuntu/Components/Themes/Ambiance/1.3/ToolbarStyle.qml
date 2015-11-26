@@ -46,7 +46,8 @@ Style.ToolbarStyle {
             // FIXME: A Loader may be enough here, but then we
             //  have no way to set the model (action) of the ActionButton.
             objectName: "fixedAction_repeater"
-            model: styledItem.fixedAction
+            model: styledItem.fixedAction && styledItem.fixedAction.visible ?
+                       styledItem.fixedAction : 0
             delegate: styledItem.delegate
         }
     }
