@@ -536,6 +536,16 @@ private Q_SLOTS:
         QTRY_COMPARE_WITH_TIMEOUT(exited.count(), 1, 500);
     }
 
+    void test_region_dragEnded_emitted()
+    {
+        QSKIP("not yet implemented");
+    }
+
+    void test_end_drag_in_region()
+    {
+        QSKIP("not yet implemented");
+    }
+
     void test_alternative_content_for_default_commit_region()
     {
         QScopedPointer<BottomEdgeTestCase> test(new BottomEdgeTestCase("AlternateDefaultRegionContent.qml"));
@@ -549,37 +559,7 @@ private Q_SLOTS:
         QCOMPARE(bottomEdge->contentItem()->objectName(), QString("regionContent"));
     }
 
-    void test_page_as_content()
-    {
-        QSKIP("not yet implemented");
-    }
-
-    void test_custom_content()
-    {
-        QSKIP("not yet implemented");
-    }
-
-    void test_detect_page_header_in_content()
-    {
-        QSKIP("not yet implemented");
-    }
-
-    void test_autocollapse_navigation_action_on_collapse_completed()
-    {
-        QSKIP("not yet implemented");
-    }
-
-    void test_region_entered_triggered()
-    {
-        QSKIP("not yet implemented");
-    }
-
-    void test_region_exited_triggered()
-    {
-        QSKIP("not yet implemented");
-    }
-
-    void test_region_dragEnded_triggered()
+    void test_drag_into_uncovered_region()
     {
         QSKIP("not yet implemented");
     }
@@ -588,6 +568,11 @@ private Q_SLOTS:
     {
     }
     void test_region_from_and_to()
+    {
+        QSKIP("not yet implemented");
+    }
+
+    void test_commit_region_content()
     {
         QSKIP("not yet implemented");
     }
@@ -602,27 +587,17 @@ private Q_SLOTS:
         QSKIP("not yet implemented");
     }
 
-    void test_custom_region_not_reaching_top()
+    void test_detect_page_header_in_content()
     {
         QSKIP("not yet implemented");
     }
 
-    void test_drag_into_uncovered_region()
+    void test_page_as_content()
     {
         QSKIP("not yet implemented");
     }
 
-    void test_end_drag_in_region()
-    {
-        QSKIP("not yet implemented");
-    }
-
-    void test_overload_region_drag_ending_with_commit()
-    {
-        QSKIP("not yet implemented");
-    }
-
-    void test_commit_region_content()
+    void test_autocollapse_navigation_action_on_commit_completed()
     {
         QSKIP("not yet implemented");
     }
