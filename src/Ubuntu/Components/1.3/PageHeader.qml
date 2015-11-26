@@ -74,11 +74,11 @@ Header {
      */
     property Item contents
 
-    Component.onCompleted: holder.updateContents()
-    onContentsChanged: holder.updateContents()
+    Component.onCompleted: contentsHolder.updateContents()
+    onContentsChanged: contentsHolder.updateContents()
 
     Item {
-        id: holder
+        id: contentsHolder
         anchors {
             left: leading.right
             right: trailing.left
@@ -95,17 +95,17 @@ Header {
         property Item previousContentsParent: null
 
         function updateContents() {
-            if (holder.previousContents) {
-                holder.previousContents.parent = holder.previousContentsParent;
+            if (previousContents) {
+                previousContents.parent = previousContentsParent;
             }
             if (contents) {
                 titleLoader.sourceComponent = null;
-                holder.previousContents = header.contents;
-                holder.previousContentsParent = header.contents.parent;
+                previousContents = header.contents;
+                previousContentsParent = header.contents.parent;
                 header.contents.parent = holder;
             } else {
-                holder.previousContents = null;
-                holder.previousContentsParent = null;
+                previousContents = null;
+                previousContentsParent = null;
                 titleLoader.sourceComponent = __styleInstance.titleComponent;
             }
         }
@@ -208,6 +208,11 @@ Header {
     /*!
       FIXME TIM: agree on property name.
       Toolbar shown under the regular header as a subheader.
+      The toolbar can be any Item, but it must have a height so that
+      the PageHeader correctly adjusts its height for the toolbar to fit.
+      The toolbar Item should anchor to the left, right and bottom of
+      its parent so that it will be automatically positioned above the
+      header divider.
       Example:
       \qml
         PageHeader {
@@ -225,24 +230,31 @@ Header {
     */
     property Item toolbar
 
-    onToolbarChanged: internal.updateToolbar()
-    Object {
-        id: internal
+    onToolbarChanged: toolbarHolder.updateToolbar()
+    Item {
+        id: toolbarHolder
+        anchors {
+            left: parent.left
+            right: parent.right
+            bottom: parent.bottom
+            bottomMargin: header.__styleInstance.dividerHeight
+        }
+        height: header.toolbar ? header.toolbar.height : 0
+
         property Item previousToolbar: toolbar
         property Item previousToolbarParent: null
 
         function updateToolbar() {
-            if (internal.previousToolbar) {
-                internal.previousToolbar.parent = internal.previousToolbarParent;
+            if (previousToolbar) {
+                previousToolbar.parent = previousToolbarParent;
             }
             if (toolbar) {
-                internal.previousToolbar = header.toolbar;
-                internal.previousToolbarParent = header.toolbar.parent;
-                header.toolbar.parent = header;
-                // TODO: set some anchors?
+                previousToolbar = header.toolbar;
+                previousToolbarParent = header.toolbar.parent;
+                header.toolbar.parent = toolbarHolder;
             } else {
-                internal.previousToolbar = null;
-                internal.previousToolbarParent = null;
+                previousToolbar = null;
+                previousToolbarParent = null;
             }
         }
     }
@@ -260,7 +272,8 @@ Header {
         anchors {
             left: parent.left
             leftMargin: units.gu(2)
-            top: holder.bottom
+            bottom: parent.bottom
+            bottomMargin: header.__styleInstance.dividerHeight
         }
         visible: model && model.length > 0 && !header.toolbar
         height: visible ? implicitHeight : 0
