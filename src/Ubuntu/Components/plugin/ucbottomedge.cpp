@@ -406,10 +406,8 @@ bool UCBottomEdgePrivate::loadStyleItem(bool animated)
         bottomPanel->setParentItem(parentItem);
         // bring style item in front
         bottomPanel->setZ(std::numeric_limits<qreal>::max());
-        // reset filling of the style
+        // anchor to the bottom of the BottomEdge
         QQuickAnchors *styleAnchors = QQuickItemPrivate::get(bottomPanel)->anchors();
-        styleAnchors->resetFill();
-        // and anchor to the bottom of the BottomEdge
         styleAnchors->setBottom(anchors()->bottom());
 
         // move hint under the panel
