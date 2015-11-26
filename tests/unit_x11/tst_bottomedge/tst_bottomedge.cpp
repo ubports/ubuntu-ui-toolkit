@@ -179,7 +179,6 @@ private Q_SLOTS:
         // swipe a bit to reveal
 
         UCTestExtras::touchDrag(0, hint, QPoint(hint->width() / 2, hint->height()), QPoint(0, -hint->height()));
-        // FLAKY
         QTRY_COMPARE_WITH_TIMEOUT(hint->status(), UCBottomEdgeHint::Active, 1000);
 
         UCTestExtras::touchClick(0, hint, UbuntuTestCase::centerOf(hint).toPoint());
@@ -217,7 +216,6 @@ private Q_SLOTS:
         if (withMouse) {
             UCTestExtras::mouseDrag(bottomEdge, from, delta, Qt::LeftButton);
         } else {
-            // FLAKY
             UCTestExtras::touchDrag(0, bottomEdge, from, delta, 8);
         }
         if (xfail) {
@@ -587,7 +585,6 @@ private Q_SLOTS:
         } else {
             UCTestExtras::touchDrag(0, bottomEdge, from, delta);
         }
-        // FLAKY on touch
         UbuntuTestCase::waitForSignal(&dragEnded);
     }
 
@@ -599,7 +596,6 @@ private Q_SLOTS:
         QPoint from(bottomEdge->width() / 2.0f, bottomEdge->height() - 5);
         QPoint delta(0, -(bottomEdge->height() / 2));
 
-        // FLAKY
         UCTestExtras::touchDrag(0, bottomEdge, from, delta, 20);
         QTRY_COMPARE_WITH_TIMEOUT(bottomEdge->status(), UCBottomEdge::Committed, 1000);
         QCOMPARE(bottomEdge->contentItem()->objectName(), QString("regionContent"));
@@ -650,7 +646,6 @@ private Q_SLOTS:
             }
             QTest::qWait(20);
             UCTestExtras::touchRelease(0, bottomEdge, movePos);
-            // FLAKY
         }
 
         QVERIFY(bottomEdge->activeRegion());
@@ -758,7 +753,6 @@ private Q_SLOTS:
             }
             QTest::qWait(20);
             UCTestExtras::touchRelease(0, bottomEdge, movePos);
-            // FLAKY
         }
         QTRY_COMPARE_WITH_TIMEOUT(bottomEdge->status(), UCBottomEdge::Committed, 1000);
         QCOMPARE(bottomEdge->contentItem()->objectName(), QString("regionContent"));
