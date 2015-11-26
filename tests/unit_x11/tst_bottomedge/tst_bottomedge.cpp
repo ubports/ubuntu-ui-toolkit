@@ -594,7 +594,6 @@ private Q_SLOTS:
         UCBottomEdgeRegion *region = privateBottomEdge->regions[0];
         UCBottomEdgeStyle *style = UCBottomEdgePrivate::get(bottomEdge)->bottomPanel;
 
-
         // alter default region for testing
         region->m_from = 0.1;
         region->m_to = 0.8;
@@ -630,9 +629,57 @@ private Q_SLOTS:
         QVERIFY(style->m_panel->y() > bottomEdge->y());
     }
 
-    void test_drag_into_uncovered_region()
+    void test_drag_ends_in_uncovered_region_collapses_data()
     {
-        QSKIP("not yet implemented");
+        QTest::addColumn<bool>("withMouse");
+
+        QTest::newRow("with mouse") << true;
+        QTest::newRow("with touch") << false;
+    }
+    void test_drag_ends_in_uncovered_region_collapses()
+    {
+        QFETCH(bool, withMouse);
+
+        QScopedPointer<BottomEdgeTestCase> test(new BottomEdgeTestCase("AlternateDefaultRegionContent.qml"));
+        UCBottomEdge *bottomEdge = test->testItem();
+        UCBottomEdgePrivate *privateBottomEdge = UCBottomEdgePrivate::get(bottomEdge);
+        UCBottomEdgeRegion *region = privateBottomEdge->regions[0];
+
+        // alter region values to adjust to the test
+        region->m_from = 0.1;
+        region->m_to = 0.5;
+
+        QPoint from(bottomEdge->width() / 2.0f, bottomEdge->height() - 5);
+        QPoint to = from + QPoint(0, -(bottomEdge->parentItem()->height() - 1));
+        // let us know when we are out of the region
+        QSignalSpy exitRegion(region, SIGNAL(exited()));
+
+        if (withMouse) {
+            bottomEdge->hint()->setStatus(UCBottomEdgeHint::Locked);
+            from = bottomEdge->mapToScene(from).toPoint();
+            to = bottomEdge->mapToScene(to).toPoint();
+            QTest::mousePress(bottomEdge->window(), Qt::LeftButton, 0, from, 20);
+            QPoint movePos(from);
+            while (movePos.y() > to.y() && !exitRegion.count()) {
+                QTest::mouseMove(bottomEdge->window(), movePos, 20);
+                movePos += QPoint(0, -10);
+            }
+            QTest::mouseRelease(bottomEdge->window(),Qt::LeftButton, 0, movePos, 20);
+        } else {
+            UCTestExtras::touchPress(0, bottomEdge, from);
+            QPoint movePos(from);
+            while (movePos.y() > to.y() && !exitRegion.count()) {
+                QTest::qWait(20);
+                UCTestExtras::touchMove(0, bottomEdge, movePos);
+                movePos += QPoint(0, -10);
+            }
+            QTest::qWait(20);
+            UCTestExtras::touchRelease(0, bottomEdge, movePos);
+        }
+
+        QVERIFY(!bottomEdge->activeRegion());
+        // we should be collapsing!
+        QTRY_COMPARE_WITH_TIMEOUT(bottomEdge->status(), UCBottomEdge::Hidden, 1000);
     }
 
     void test_region_from_and_to_data()
