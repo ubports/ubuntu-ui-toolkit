@@ -441,6 +441,101 @@ private Q_SLOTS:
         QTRY_COMPARE_WITH_TIMEOUT(commitCompletedSpy.count(), 1, 1000);
     }
 
+    // region tests
+
+    void test_region_operations_data()
+    {
+        QTest::addColumn<QString>("document");
+        QTest::addColumn<QString>("warning");
+        QTest::addColumn<qreal>("xFrom");
+        QTest::addColumn<qreal>("xTo");
+        QTest::addColumn<QString>("xName");
+
+        QTest::newRow("add through regions property")
+                << "AddCustomRegionUsingRegionsProperty.qml"
+                << QString()
+                << 0.0 << 1.0 << QString("customRegion");
+        QTest::newRow("add through data property")
+                << "AddCustomRegionUsingDataProperty.qml"
+                << QString()
+                << 0.0 << 1.0 << QString("customRegion");
+        QTest::newRow("add through Component.onCompleted")
+                << "AddCustomRegionOnCompleted.qml"
+                << QString()
+                << 0.0 << 1.0 << QString("customRegion");
+        QTest::newRow("add owned by other BottomEdge")
+                << "AddCustomRegionOwnedByOtherBottomEdge.qml"
+                << "QML BottomEdge: Cannot reuse region owned by other BottomEdge components"
+                   // we should have the default region still
+                << 0.33 << 1.0 << "default_BottomEdgeRegion";
+        QTest::newRow("clear")
+                << "ClearCustomRegions.qml"
+                << QString()
+                   // we should have the default region back
+                << 0.33 << 1.0 << "default_BottomEdgeRegion";
+    }
+
+    void test_region_operations()
+    {
+        QFETCH(QString, document);
+        QFETCH(QString, warning);
+        QFETCH(qreal, xFrom);
+        QFETCH(qreal, xTo);
+        QFETCH(QString, xName);
+
+        if (!warning.isEmpty()) {
+            UbuntuTestCase::ignoreWarning(document, 26, 5, warning, 1);
+        }
+        QScopedPointer<BottomEdgeTestCase> test(new BottomEdgeTestCase(document));
+        UCBottomEdge *bottomEdge = test->testItem();
+        UCBottomEdgePrivate *privateBottomEdge = UCBottomEdgePrivate::get(bottomEdge);
+
+        // the regions has the custom one
+        QCOMPARE(privateBottomEdge->regions.size(), 1);
+        UCBottomEdgeRegion *region = privateBottomEdge->regions[0];
+        QVERIFY(region);
+        QCOMPARE(region->m_from, xFrom);
+        QCOMPARE(region->m_to, xTo);
+        QCOMPARE(region->objectName(), xName);
+    }
+
+    void test_region_signals_emitted_data()
+    {
+        QTest::addColumn<bool>("withMouse");
+
+        QTest::newRow("with mouse") << true;
+        QTest::newRow("with touch") << false;
+    }
+    void test_region_signals_emitted()
+    {
+        QFETCH(bool, withMouse);
+
+        QScopedPointer<BottomEdgeTestCase> test(new BottomEdgeTestCase("BottomEdgeInItem.qml"));
+        UCBottomEdge *bottomEdge = test->testItem();
+        UCBottomEdgePrivate *privateBottomEdge = UCBottomEdgePrivate::get(bottomEdge);
+        UCBottomEdgeRegion *region = privateBottomEdge->regions[0];
+
+        // change the region so we can get the signals while dragged
+        region->m_from = 0.1;
+        region->m_to = 0.2;
+
+        QPoint from(bottomEdge->width() / 2.0f, bottomEdge->height() - 5);
+        QPoint delta(0, -(bottomEdge->height() / 3 + UCUnits::instance().gu(6)));
+        QSignalSpy entered(region, SIGNAL(entered()));
+        QSignalSpy exited(region, SIGNAL(exited()));
+
+        if (withMouse) {
+            bottomEdge->hint()->setStatus(UCBottomEdgeHint::Locked);
+        }
+        if (withMouse) {
+            UCTestExtras::mouseDrag(bottomEdge, from, delta, Qt::LeftButton, 0);
+        } else {
+            UCTestExtras::touchDrag(0, bottomEdge, from, delta);
+        }
+        QTRY_COMPARE_WITH_TIMEOUT(entered.count(), 1, 500);
+        QTRY_COMPARE_WITH_TIMEOUT(exited.count(), 1, 500);
+    }
+
     void test_alternative_content_for_default_commit_region()
     {
         QSKIP("not yet implemented");

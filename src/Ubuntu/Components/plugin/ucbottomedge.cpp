@@ -105,8 +105,15 @@ void UCBottomEdgePrivate::overload_data_clear(QQmlListProperty<QObject> *data)
 void UCBottomEdgePrivate::appendRegion(UCBottomEdgeRegion *region)
 {
     Q_Q(UCBottomEdge);
-    // the region must be owned by the component, we cannot "reuse" declared regions
-    Q_ASSERT(region && region->parent() == q);
+    Q_ASSERT(region);
+    // the region must be owned by other non-BottomEdge component,
+    // otherwise we cannot "reuse" the region
+    if (region->parent() != q && qobject_cast<UCBottomEdge*>(region->parent())) {
+        qmlInfo(q) << "Cannot reuse region owned by other BottomEdge components";
+        return;
+    }
+    // make sure we own the region!
+    QQml_setParent_noEvent(region, q);
     if (!defaultRegionsReset) {
         defaultRegionsReset = true;
         qDeleteAll(regions);
@@ -522,6 +529,27 @@ void UCBottomEdgePrivate::setOperationStatus(OperationStatus s)
  * be one region which has its \l {BottomEdgeRegion::to}{to} limit set to 1.0
  * otherwise the content will not be committed at all.
  * \note Regions can also be declared as child elements the same way as resources.
+ *
+ * The BottomEdge takes ownership over the custom BottomEdgeRegions, therefore
+ * we cannot 'reuse' regions declared in other BottomEdge components, as those
+ * will be destroyed together with the reusing BottomEdge component. The following
+ * scenario only works if the \e customRegion is not used in any other regions.
+ * \qml
+ * Page {
+ *     BottomEdge {
+ *         id: bottomEdge
+ *         hint.text: "reusing regions"
+ *         // put your content and setup here
+ *
+ *         regions: [customRegion]
+ *     }
+ *
+ *     BottomEdgeRegion {
+ *         id: customRegion
+ *         from: 0.2
+ *     }
+ * }
+ * \endqml
  * \sa BottomEdgeRegion
  *
  * \section2 Page As Content

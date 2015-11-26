@@ -9,4 +9,10 @@ DISTFILES += \
     DifferentSizes.qml \
     LastItem.qml \
     BottomEdgeInItem.qml \
-    ShorterBottomEdge.qml
+    ShorterBottomEdge.qml \
+    AlternateRegionContent.qml \
+    AddCustomRegionUsingRegionsProperty.qml \
+    AddCustomRegionUsingDataProperty.qml \
+    AddCustomRegionOnCompleted.qml \
+    AddCustomRegionOwnedByOtherBottomEdge.qml \
+    ClearCustomRegions.qml
