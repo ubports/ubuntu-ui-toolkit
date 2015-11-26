@@ -44,6 +44,7 @@ public:
     bool contains(qreal dragRatio);
     void enter();
     void exit();
+    const QRectF rect(const QRectF &bottomEdgeRect);
 
 Q_SIGNALS:
     void enabledChanged();

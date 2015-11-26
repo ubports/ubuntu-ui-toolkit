@@ -44,6 +44,7 @@ public:
     // range funcs
     void appendRegion(UCBottomEdgeRegion *range);
     void clearRegions(bool destroy);
+    void validateRegion(UCBottomEdgeRegion *region);
 
     // page header manipulation
     void patchContentItemHeader();

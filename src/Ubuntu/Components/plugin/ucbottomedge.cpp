@@ -112,17 +112,24 @@ void UCBottomEdgePrivate::appendRegion(UCBottomEdgeRegion *region)
         qmlInfo(q) << "Cannot reuse region owned by other BottomEdge components";
         return;
     }
+
     // make sure we own the region!
     QQml_setParent_noEvent(region, q);
+    // take ownership!
+    QQmlEngine::setObjectOwnership(region, QQmlEngine::CppOwnership);
+    region->attachToBottomEdge(q);
+
     if (!defaultRegionsReset) {
         defaultRegionsReset = true;
         qDeleteAll(regions);
         regions.clear();
     }
+
+    // validate the region before we append
+    validateRegion(region);
+
+    // append region definition
     regions.append(region);
-    // take ownership!
-    QQmlEngine::setObjectOwnership(region, QQmlEngine::CppOwnership);
-    region->attachToBottomEdge(q);
 }
 
 // clears the custom regions list and restores the default ones
@@ -137,6 +144,27 @@ void UCBottomEdgePrivate::clearRegions(bool destroy)
     regions.clear();
     defaultRegionsReset = false;
     createDefaultRegions();
+}
+
+// validates an added region
+void UCBottomEdgePrivate::validateRegion(UCBottomEdgeRegion *region)
+{
+    Q_Q(UCBottomEdge);
+    // use QRectF to help on finding the intersection
+    QRectF boundingRect = q->boundingRect();
+    if (boundingRect.isNull()) {
+        boundingRect = QRectF(0, 0, 1, 1);
+    }
+    const QRectF regionRect(region->rect(boundingRect));
+    for (int i = 0; i < regions.size(); ++i) {
+        UCBottomEdgeRegion *stackedRegion = regions[i];
+        QRectF intersect = regionRect.intersected(stackedRegion->rect(boundingRect));
+        if (!intersect.isNull()) {
+            QString msg("Region intersects the one from index %1 having from: %2 and to: %3");
+            msg = msg.arg(i).arg(stackedRegion->m_from).arg(stackedRegion->m_to);
+            qmlInfo(region) << msg;
+        }
+    }
 }
 
 // creates the default region(s)

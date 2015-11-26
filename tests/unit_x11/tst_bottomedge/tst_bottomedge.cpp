@@ -155,6 +155,7 @@ private Q_SLOTS:
         // swipe a bit to reveal
 
         UCTestExtras::touchDrag(0, hint, QPoint(hint->width() / 2, hint->height()), QPoint(0, -hint->height()));
+        // FLAKY
         QTRY_COMPARE_WITH_TIMEOUT(hint->status(), UCBottomEdgeHint::Active, 1000);
 
         UCTestExtras::touchClick(0, hint, UbuntuTestCase::centerOf(hint).toPoint());
@@ -622,6 +623,7 @@ private Q_SLOTS:
             }
             QTest::qWait(20);
             UCTestExtras::touchRelease(0, bottomEdge, movePos);
+            // FLAKY
         }
 
         QVERIFY(bottomEdge->activeRegion());
@@ -736,7 +738,12 @@ private Q_SLOTS:
 
     void test_overlapping_regions()
     {
-        QSKIP("not yet implemented");
+        QString document("OverlappingRegions.qml");
+        UbuntuTestCase::ignoreWarning(document, 34, 9, "QML BottomEdgeRegion: Region intersects the one from index 0 having from: 0.2 and to: 0.5", 1);
+        UbuntuTestCase::ignoreWarning(document, 37, 9, "QML BottomEdgeRegion: Region intersects the one from index 0 having from: 0.2 and to: 0.5", 1);
+        UbuntuTestCase::ignoreWarning(document, 37, 9, "QML BottomEdgeRegion: Region intersects the one from index 1 having from: 0.4 and to: 1", 1);
+        UbuntuTestCase::ignoreWarning(document, 41, 9, "QML BottomEdgeRegion: Region intersects the one from index 1 having from: 0.4 and to: 1", 1);
+        QScopedPointer<BottomEdgeTestCase> test(new BottomEdgeTestCase(document));
     }
 
     void test_overlapping_regions_with_alternate_content()

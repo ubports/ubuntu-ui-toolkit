@@ -158,6 +158,14 @@ void UCBottomEdgeRegion::exit()
     Q_EMIT exited();
 }
 
+const QRectF UCBottomEdgeRegion::rect(const QRectF &bottomEdgeRect)
+{
+    QRectF regionRect(
+                bottomEdgeRect.topLeft() + QPointF(0, bottomEdgeRect.height() * (1.0 - m_to)),
+                QSizeF(bottomEdgeRect.width(), bottomEdgeRect.height() * (m_to - m_from)));
+    return regionRect;
+}
+
 /*!
  * \qmlproperty bool BottomEdgeRegion::enabled
  * Enables the section. Disabled sections do not trigger nor change the BottomEdge

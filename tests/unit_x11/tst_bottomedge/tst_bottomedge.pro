@@ -16,4 +16,5 @@ DISTFILES += \
     AddCustomRegionOnCompleted.qml \
     AddCustomRegionOwnedByOtherBottomEdge.qml \
     ClearCustomRegions.qml \
-    AlternateDefaultRegionContent.qml
+    AlternateDefaultRegionContent.qml \
+    OverlappingRegions.qml
