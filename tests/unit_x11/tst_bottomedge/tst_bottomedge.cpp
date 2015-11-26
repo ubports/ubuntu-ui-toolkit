@@ -538,7 +538,15 @@ private Q_SLOTS:
 
     void test_alternative_content_for_default_commit_region()
     {
-        QSKIP("not yet implemented");
+        QScopedPointer<BottomEdgeTestCase> test(new BottomEdgeTestCase("AlternateDefaultRegionContent.qml"));
+        UCBottomEdge *bottomEdge = test->testItem();
+
+        QPoint from(bottomEdge->width() / 2.0f, bottomEdge->height() - 5);
+        QPoint delta(0, -(bottomEdge->height() / 2));
+
+        UCTestExtras::touchDrag(0, bottomEdge, from, delta, 20);
+        QTRY_COMPARE_WITH_TIMEOUT(bottomEdge->status(), UCBottomEdge::Committed, 1000);
+        QCOMPARE(bottomEdge->contentItem()->objectName(), QString("regionContent"));
     }
 
     void test_page_as_content()

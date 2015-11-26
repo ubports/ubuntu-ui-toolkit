@@ -15,4 +15,5 @@ DISTFILES += \
     AddCustomRegionUsingDataProperty.qml \
     AddCustomRegionOnCompleted.qml \
     AddCustomRegionOwnedByOtherBottomEdge.qml \
-    ClearCustomRegions.qml
+    ClearCustomRegions.qml \
+    AlternateDefaultRegionContent.qml
