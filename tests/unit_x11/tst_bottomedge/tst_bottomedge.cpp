@@ -536,9 +536,32 @@ private Q_SLOTS:
         QTRY_COMPARE_WITH_TIMEOUT(exited.count(), 1, 500);
     }
 
+    void test_region_dragEnded_emitted_data()
+    {
+        QTest::addColumn<bool>("withMouse");
+
+        QTest::newRow("with mouse") << true;
+        QTest::newRow("with touch") << false;
+    }
     void test_region_dragEnded_emitted()
     {
-        QSKIP("not yet implemented");
+        QFETCH(bool, withMouse);
+
+        QScopedPointer<BottomEdgeTestCase> test(new BottomEdgeTestCase("BottomEdgeInItem.qml"));
+        UCBottomEdge *bottomEdge = test->testItem();
+        UCBottomEdgePrivate *privateBottomEdge = UCBottomEdgePrivate::get(bottomEdge);
+        UCBottomEdgeRegion *region = privateBottomEdge->regions[0];
+
+        QSignalSpy dragEnded(region, SIGNAL(dragEnded()));
+        QPoint from(bottomEdge->width() / 2.0f, bottomEdge->height() - 5);
+        QPoint delta(0, -(bottomEdge->height() / 2.0f));
+        if (withMouse) {
+            bottomEdge->hint()->setStatus(UCBottomEdgeHint::Locked);
+            UCTestExtras::mouseDrag(bottomEdge, from, delta, Qt::LeftButton, 0);
+        } else {
+            UCTestExtras::touchDrag(0, bottomEdge, from, delta);
+        }
+        UbuntuTestCase::waitForSignal(&dragEnded);
     }
 
     void test_end_drag_in_region()
