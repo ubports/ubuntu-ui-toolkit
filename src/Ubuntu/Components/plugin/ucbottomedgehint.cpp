@@ -20,14 +20,17 @@
 #include "ucstyleditembase_p.h"
 #include "quickutils.h"
 #include "ucunits.h"
+#include "gestures/ucswipearea.h"
 #include <QtQml/private/qqmlproperty_p.h>
 #include <QtQuick/private/qquickflickable_p.h>
+
+#define SWIPE_AREA_HEIGHT_GU    3
 
 /*!
     \qmltype BottomEdgeHint
     \inqmlmodule Ubuntu.Components 1.3
     \ingroup ubuntu
-    \inherits StyledItem
+    \inherits ActionItem
     \brief The BottomEdgeHint shows the availability of extra features
     available from the bottom edge of the application.
 
@@ -50,14 +53,19 @@
     The component is styled through \b BottomEdgeHintStyle.
 */
 UCBottomEdgeHint::UCBottomEdgeHint(QQuickItem *parent)
-    : UCStyledItemBase(parent)
-    , m_gestureDetector(this)
+    : UCActionItem(parent)
+    , m_swipeArea(new UCSwipeArea)
     , m_flickable(Q_NULLPTR)
     , m_deactivateTimeout(800)
     // FIXME: we need QInputDeviceInfo to be complete with the locked!!
+    // https://bugs.launchpad.net/ubuntu/+source/ubuntu-ui-toolkit/+bug/1276808
     , m_status(QuickUtils::instance().mouseAttached() ? Locked : Inactive)
     , m_pressed(false)
 {
+    connect(this, &UCBottomEdgeHint::clicked, [=]() {
+        // make sure the overloaded trigger is called!
+        metaObject()->invokeMethod(this, "trigger", Q_ARG(QVariant, QVariant()));
+    });
     /*
      * we cannot use setStyleName as that will trigger style loading
      * and the qmlEngine is not known at this phase of the of the initialization
@@ -69,13 +77,8 @@ UCBottomEdgeHint::UCBottomEdgeHint(QQuickItem *parent)
     // connect old stateChanged
     connect(this, &QQuickItem::stateChanged, this, &UCBottomEdgeHint::stateChanged);
 
-    // connect to gesture detection
-    connect(&m_gestureDetector, &GestureDetector::bottomUpSwipeDetected,
-            this, &UCBottomEdgeHint::onBottomUpSwipeDetected);
-    connect(&m_gestureDetector, &GestureDetector::statusChanged,
-            this, &UCBottomEdgeHint::onGestureStatusChanged);
-
     // FIXME: use QInputDeviceInfo once available
+    // https://bugs.launchpad.net/ubuntu/+source/ubuntu-ui-toolkit/+bug/1276808
     connect(&QuickUtils::instance(), &QuickUtils::mouseAttachedChanged, [this]() {
         setStatus(QuickUtils::instance().mouseAttached() ? Locked : Active);
         if (m_status == Active) {
@@ -87,9 +90,44 @@ UCBottomEdgeHint::UCBottomEdgeHint(QQuickItem *parent)
     setAcceptedMouseButtons(Qt::LeftButton);
 }
 
+void UCBottomEdgeHint::classBegin()
+{
+    UCActionItem::classBegin();
+    init();
+}
+
+void UCBottomEdgeHint::init()
+{
+    QQml_setParent_noEvent(m_swipeArea, this);
+    m_swipeArea->setParentItem(this);
+
+    // set context
+    QQmlEngine::setContextForObject(m_swipeArea, qmlContext(this));
+
+    // initialize swipe area size
+    QQuickAnchors *anchors = QQuickItemPrivate::get(m_swipeArea)->anchors();
+    QQuickItemPrivate *thisPrivate = QQuickItemPrivate::get(this);
+    anchors->setLeft(thisPrivate->left());
+    anchors->setBottom(thisPrivate->bottom());
+    anchors->setRight(thisPrivate->right());
+    m_swipeArea->setImplicitHeight(UCUnits::instance().gu(SWIPE_AREA_HEIGHT_GU));
+
+    // direction
+    m_swipeArea->setDirection(UCSwipeArea::Upwards);
+
+    // grid unit sync
+    connect(&UCUnits::instance(), &UCUnits::gridUnitChanged, [this] {
+        m_swipeArea->setImplicitHeight(UCUnits::instance().gu(SWIPE_AREA_HEIGHT_GU));
+    });
+
+    // connect to gesture detection
+    connect(m_swipeArea, &UCSwipeArea::draggingChanged,
+            this, &UCBottomEdgeHint::onDraggingChanged, Qt::DirectConnection);
+}
+
 void UCBottomEdgeHint::itemChange(ItemChange change, const ItemChangeData &data)
 {
-    UCStyledItemBase::itemChange(change, data);
+    UCActionItem::itemChange(change, data);
     if (change == ItemParentHasChanged) {
         QQmlProperty bottomAnchors(this, "anchors.bottom", qmlContext(this));
         if (data.item && !QQmlPropertyPrivate::binding(bottomAnchors)) {
@@ -101,7 +139,7 @@ void UCBottomEdgeHint::itemChange(ItemChange change, const ItemChangeData &data)
 
 void UCBottomEdgeHint::timerEvent(QTimerEvent *event)
 {
-    UCStyledItemBase::timerEvent(event);
+    UCActionItem::timerEvent(event);
     if (event->timerId() == m_deactivationTimer.timerId()) {
         setStatus(Inactive);
         m_deactivationTimer.stop();
@@ -111,17 +149,10 @@ void UCBottomEdgeHint::timerEvent(QTimerEvent *event)
 // handle clicked event when locked and enter or return is pressed
 void UCBottomEdgeHint::keyPressEvent(QKeyEvent *event)
 {
-    UCStyledItemBase::keyPressEvent(event);
+    UCActionItem::keyPressEvent(event);
     if ((status() >= Active) && (event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)) {
         Q_EMIT clicked();
     }
-}
-
-// handle gesture detection
-void UCBottomEdgeHint::touchEvent(QTouchEvent *event)
-{
-    UCStyledItemBase::touchEvent(event);
-    m_gestureDetector.handleTouchEvent(this, event);
 }
 
 // handle click event
@@ -129,31 +160,31 @@ void UCBottomEdgeHint::mousePressEvent(QMouseEvent *event)
 {
     if (contains(event->localPos()) && (m_status >= Active)) {
         m_pressed = true;
+        event->accept();
+        // also call requestFocus
+        requestFocus(Qt::MouseFocusReason);
     } else {
-        UCStyledItemBase::mousePressEvent(event);
+        UCActionItem::mousePressEvent(event);
     }
 }
 void UCBottomEdgeHint::mouseReleaseEvent(QMouseEvent *event)
 {
-    UCStyledItemBase::mouseReleaseEvent(event);
     if (m_pressed && (m_status >= Active)) {
         Q_EMIT clicked();
+        event->accept();
+    } else {
+        UCActionItem::mouseReleaseEvent(event);
     }
 }
 
 // watch gesture detection status changes
-void UCBottomEdgeHint::onBottomUpSwipeDetected()
+void UCBottomEdgeHint::onDraggingChanged(bool dragging)
 {
-    m_deactivationTimer.stop();
-    setStatus(Active);
-}
-
-void UCBottomEdgeHint::onGestureStatusChanged(GestureDetector::Status status)
-{
-    if (status == GestureDetector::Completed) {
-        if (m_status == Active) {
-            m_deactivationTimer.start(m_deactivateTimeout, this);
-        }
+    if (dragging) {
+        m_deactivationTimer.stop();
+        setStatus(Active);
+    } else if (m_status == Active) {
+        m_deactivationTimer.start(m_deactivateTimeout, this);
     }
 }
 
@@ -200,7 +231,6 @@ void UCBottomEdgeHint::setFlickable(QQuickFlickable *flickable)
                    this, &UCBottomEdgeHint::handleFlickableActivation);
         disconnect(m_flickable, &QQuickFlickable::movingChanged,
                    this, &UCBottomEdgeHint::handleFlickableActivation);
-        m_gestureDetector.removeItemFilter(m_flickable);
     }
     m_flickable = flickable;
     if (m_flickable) {
@@ -208,7 +238,6 @@ void UCBottomEdgeHint::setFlickable(QQuickFlickable *flickable)
                 this, &UCBottomEdgeHint::handleFlickableActivation, Qt::DirectConnection);
         connect(m_flickable, &QQuickFlickable::movingChanged,
                 this, &UCBottomEdgeHint::handleFlickableActivation, Qt::DirectConnection);
-        m_gestureDetector.setItemFilter(m_flickable);
     }
     Q_EMIT flickableChanged();
 }
@@ -216,7 +245,7 @@ void UCBottomEdgeHint::setFlickable(QQuickFlickable *flickable)
 // flickable moves hide the hint only if the current status is not Locked
 void UCBottomEdgeHint::handleFlickableActivation()
 {
-    if (m_status < Locked && !m_gestureDetector.isDetecting() && !m_deactivationTimer.isActive()) {
+    if (m_status < Locked && !m_swipeArea->dragging() && !m_deactivationTimer.isActive()) {
         bool moving = m_flickable->isFlicking() || m_flickable->isMoving();
         if (moving) {
             setStatus(Hidden);
@@ -304,6 +333,7 @@ void UCBottomEdgeHint::setState(const QString &state)
 UCBottomEdgeHint::Status UCBottomEdgeHint::status()
 {
     // FIXME: we won't need this once we get the QInputDeviceInfo reporting mouse attach/detach
+    // https://bugs.launchpad.net/ubuntu/+source/ubuntu-ui-toolkit/+bug/1276808
     if (QuickUtils::instance().mouseAttached()) {
         m_status = Locked;
     }
@@ -313,15 +343,19 @@ UCBottomEdgeHint::Status UCBottomEdgeHint::status()
 void UCBottomEdgeHint::setStatus(Status status)
 {
     // FIXME: we need QInputDeviceInfo to complete this!
+    // https://bugs.launchpad.net/ubuntu/+source/ubuntu-ui-toolkit/+bug/1276808
     // cannot unlock if mouse is attached or we don't have touch screen available
     if (status == m_status || (status != Locked && QuickUtils::instance().mouseAttached())) {
         return;
     }
-    m_status = status;
-    // make sure we stop the deactivation timer if Inactive or Locked
-    if (status != Active && m_deactivationTimer.isActive()) {
+    // if the previous state was Locked and the new one is Active, start deactivation timer
+    if (m_status == Locked && status == Active && !m_deactivationTimer.isActive()) {
+        m_deactivationTimer.start(m_deactivateTimeout, this);
+    } else if (status != Active && m_deactivationTimer.isActive()) {
+        // make sure we stop the deactivation timer if Inactive or Locked
         m_deactivationTimer.stop();
     }
+    m_status = status;
     Q_EMIT statusChanged();
 }
 
@@ -345,3 +379,10 @@ void UCBottomEdgeHint::setDeactivateTimeout(int timeout)
     }
     Q_EMIT deactivateTimeoutChanged();
 }
+
+/*!
+ * \qmlproperty SwipeArea BottomEdgeHint::swipeArea
+ * \readonly
+ * The property specifies the SwipeArea attached to the component driving its
+ * behavior.
+ */
