@@ -102,7 +102,7 @@ Header {
                 titleLoader.sourceComponent = null;
                 previousContents = header.contents;
                 previousContentsParent = header.contents.parent;
-                header.contents.parent = holder;
+                header.contents.parent = contentsHolder;
             } else {
                 previousContents = null;
                 previousContentsParent = null;
