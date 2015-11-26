@@ -17,4 +17,6 @@ DISTFILES += \
     AddCustomRegionOwnedByOtherBottomEdge.qml \
     ClearCustomRegions.qml \
     AlternateDefaultRegionContent.qml \
-    OverlappingRegions.qml
+    OverlappingRegions.qml \
+    AutoCollapseInPageHeader.qml \
+    AutoCollapseInPageWithPageHeader.qml

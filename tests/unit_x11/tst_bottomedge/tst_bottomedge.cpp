@@ -22,6 +22,8 @@
 #include "ucbottomedgehint.h"
 #include "gestures/ucswipearea.h"
 #include "ucunits.h"
+#include "ucheader.h"
+#include "ucaction.h"
 #include "uctestcase.h"
 #include "uctestextras.h"
 #define private public
@@ -73,6 +75,28 @@ public:
         QVERIFY_RETURN(regions(testItem), nullptr);
         QVERIFY_RETURN(regions(testItem)->size() > index, nullptr);
         return regions(testItem)->at(index);
+    }
+
+    bool hasContentAutoCollapse(const QString &testItem = "testItem")
+    {
+        UCBottomEdge *bottomEdge = this->testItem(testItem);
+        QQuickItem *contentItem = bottomEdge->contentItem();
+        if (!contentItem) {
+            return false;
+        }
+        // we do not have the PageHeader in cpp, therefore we need the same workaround we have in the code
+        UCHeader *header = contentItem->findChild<UCHeader*>();
+        if (!QuickUtils::inherits(header, "PageHeader")) {
+            return false;
+        }
+
+        QVariant list(header->property("navigationActions"));
+        QQmlListProperty<UCAction> actions = list.value< QQmlListProperty<UCAction> >();
+        QList<UCAction*> *navigationActions = reinterpret_cast<QList<UCAction*>*>(actions.data);
+        if (navigationActions->size() <= 0) {
+            return false;
+        }
+        return (qobject_cast<UCCollapseAction*>(navigationActions->at(0)) != Q_NULLPTR);
     }
 };
 
@@ -563,6 +587,7 @@ private Q_SLOTS:
         } else {
             UCTestExtras::touchDrag(0, bottomEdge, from, delta);
         }
+        // FLAKY on touch
         UbuntuTestCase::waitForSignal(&dragEnded);
     }
 
@@ -733,6 +758,7 @@ private Q_SLOTS:
             }
             QTest::qWait(20);
             UCTestExtras::touchRelease(0, bottomEdge, movePos);
+            // FLAKY
         }
         QTRY_COMPARE_WITH_TIMEOUT(bottomEdge->status(), UCBottomEdge::Committed, 1000);
         QCOMPARE(bottomEdge->contentItem()->objectName(), QString("regionContent"));
@@ -780,19 +806,31 @@ private Q_SLOTS:
         QVERIFY(activeRegion.wait(400));
     }
 
-    void test_detect_page_header_in_content()
+    void test_autocollapse_navigation_action_on_commit_completed_data()
     {
-        QSKIP("not yet implemented");
-    }
+        QTest::addColumn<QString>("document");
 
-    void test_page_as_content()
-    {
-        QSKIP("not yet implemented");
+        QTest::newRow("content has PageHeader") << "AutoCollapseInPageHeader.qml";
+        QTest::newRow("content is Page with PageHeader") << "AutoCollapseInPageWithPageHeader.qml";
     }
-
     void test_autocollapse_navigation_action_on_commit_completed()
     {
-        QSKIP("not yet implemented");
+        QFETCH(QString, document);
+
+        QScopedPointer<BottomEdgeTestCase> test(new BottomEdgeTestCase(document));
+        UCBottomEdge *bottomEdge = test->testItem();
+
+        BottomEdgeTestCase *testCase = test.data();
+        connect(bottomEdge, &UCBottomEdge::contentItemChanged, [=]() {
+            QVERIFY(!testCase->hasContentAutoCollapse());
+        });
+        connect(bottomEdge, &UCBottomEdge::commitCompleted, [=]() {
+            QVERIFY(testCase->hasContentAutoCollapse());
+        });
+        // drag slowly
+        QPoint from(bottomEdge->width() / 2.0f, bottomEdge->height() - 5);
+        QPoint delta(0, -bottomEdge->height());
+        UCTestExtras::touchDrag(0, bottomEdge, from, delta, 20);
     }
 
     // this is a style hinted test, maybe move the feature to the public API

@@ -355,8 +355,15 @@ void UCBottomEdgePrivate::setDragProgress(qreal position)
     Q_EMIT q_func()->dragProgressChanged(dragProgress);
 }
 
+// separated in a derived class to ease testing
+UCCollapseAction::UCCollapseAction(QObject *parent)
+    : UCAction(parent)
+{
+    QQmlEngine::setObjectOwnership(this, QQmlEngine::objectOwnership(parent));
+    setIconName("down");
+}
+
 // inject collapse action into the content if the content has a PageHeader
-Q_DECLARE_METATYPE(QQmlListProperty<UCAction>)
 void UCBottomEdgePrivate::patchContentItemHeader()
 {
     // ugly, as it can be, as we don't have the PageHeader in cpp to detect the type
@@ -374,9 +381,7 @@ void UCBottomEdgePrivate::patchContentItemHeader()
     navigationActions->clear();
 
     // inject the action
-    UCAction *collapse = new UCAction(header);
-    QQmlEngine::setObjectOwnership(collapse, QQmlEngine::objectOwnership(header));
-    collapse->setIconName("down");
+    UCAction *collapse = new UCCollapseAction(header);
     QObject::connect(collapse, &UCAction::triggered, q_func(), &UCBottomEdge::collapse, Qt::DirectConnection);
     navigationActions->append(collapse);
 

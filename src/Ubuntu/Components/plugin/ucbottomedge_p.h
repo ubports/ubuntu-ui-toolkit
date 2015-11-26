@@ -21,6 +21,7 @@
 
 #include "ucbottomedge.h"
 #include "ucstyleditembase_p.h"
+#include "ucaction.h"
 
 class UCBottomEdgeStyle;
 class UCBottomEdgePrivate : public UCStyledItemBasePrivate, protected QQuickItemChangeListener
@@ -98,5 +99,13 @@ public:
         return operationStatus > Idle;
     }
 };
+
+class UCCollapseAction : public UCAction
+{
+    Q_OBJECT
+public:
+    UCCollapseAction(QObject *parent = 0);
+};
+Q_DECLARE_METATYPE(QQmlListProperty<UCAction>)
 
 #endif // UCBOTTOMEDGE_P_H
