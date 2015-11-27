@@ -113,7 +113,7 @@ Template {
             delegate: editHeader.delegate
         }
 
-        toolbar: Toolbar {
+        extension: Toolbar {
             anchors {
                 left: parent.left
                 right: parent.right
