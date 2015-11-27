@@ -27,13 +27,12 @@ Style.PageHeaderStyle {
     property int textSize: Label.Large
 
     contentHeight: units.gu(6)
-    dividerHeight: divider.height
-    implicitHeight: contentHeight + dividerHeight + internal.toolbarHeight
+    implicitHeight: contentHeight + divider.height + internal.extensionHeight
 
     Object {
         id: internal
-        property real toolbarHeight: styledItem.toolbar ?
-                                         styledItem.toolbar.height
+        property real extensionHeight: styledItem.extension ?
+                                         styledItem.extension.height
                                        : styledItem.sections.height
     }
 
