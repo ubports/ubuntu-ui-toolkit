@@ -523,6 +523,29 @@ private Q_SLOTS:
         QCOMPARE(region->objectName(), xName);
     }
 
+    void test_active_region_changes()
+    {
+        QScopedPointer<BottomEdgeTestCase> test(new BottomEdgeTestCase("LeanActiveRegionChange.qml"));
+        UCBottomEdge *bottomEdge = test->testItem();
+
+        QPoint from(bottomEdge->width() / 2.0f, bottomEdge->height() - 5);
+        QPoint to = from + QPoint(0, -(bottomEdge->parentItem()->height() - 1));
+        QSignalSpy spy(bottomEdge, SIGNAL(activeRegionChanged(UCBottomEdgeRegion*)));
+
+        UCTestExtras::touchPress(0, bottomEdge, from);
+        QPoint movePos(from);
+        while (movePos.y() > to.y()) {
+            QTest::qWait(20);
+            UCTestExtras::touchMove(0, bottomEdge, movePos);
+            movePos += QPoint(0, -10);
+        }
+        QTest::qWait(20);
+        UCTestExtras::touchRelease(0, bottomEdge, movePos);
+        // we should have had 3 active region changes by now
+        // null -> region #0 -> region #1 -> null
+        QCOMPARE(spy.count(), 3);
+    }
+
     void test_region_signals_emitted_data()
     {
         QTest::addColumn<bool>("withMouse");

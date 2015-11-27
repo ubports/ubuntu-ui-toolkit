@@ -19,4 +19,5 @@ DISTFILES += \
     AlternateDefaultRegionContent.qml \
     OverlappingRegions.qml \
     AutoCollapseInPageHeader.qml \
-    AutoCollapseInPageWithPageHeader.qml
+    AutoCollapseInPageWithPageHeader.qml \
+    LeanActiveRegionChange.qml

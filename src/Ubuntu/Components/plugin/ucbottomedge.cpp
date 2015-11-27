@@ -217,13 +217,15 @@ void UCBottomEdgePrivate::updateProgressionStates(qreal distance)
     }
 
     // go through the regions and spot the active region
+    UCBottomEdgeRegion *newActive = Q_NULLPTR;
     Q_FOREACH(UCBottomEdgeRegion *region, regions) {
         if (region->contains(dragProgress)) {
-            setActiveRegion(region);
+            newActive = region;
             break;
-        } else if (activeRegion == region) {
-            setActiveRegion(Q_NULLPTR);
         }
+    }
+    if (newActive != activeRegion) {
+        setActiveRegion(newActive);
     }
 }
 
