@@ -256,7 +256,7 @@ void TouchRegistry::addCandidateOwnerForTouch(int id, QQuickItem *candidate)
     candidateInfo.inactivityTimer = new CandidateInactivityTimer(id, candidate,
                                                                  m_timerFactory->createTimer(),
                                                                  this);
-    connect(candidateInfo.inactivityTimer, &CandidateInactivityTimer::candidateDefaulted,
+    connect(candidateInfo.inactivityTimer.data(), &CandidateInactivityTimer::candidateDefaulted,
             this, &TouchRegistry::rejectCandidateOwnerForTouch);
 
     touchInfo->candidates.append(candidateInfo);
