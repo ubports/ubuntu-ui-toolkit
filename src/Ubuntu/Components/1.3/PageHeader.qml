@@ -272,7 +272,7 @@ Header {
             leftMargin: units.gu(2)
             top: contentsHolder.bottom
         }
-        visible: model && model.length > 0 && !header.toolbar
+        visible: model && model.length > 0 && !header.extension
         height: visible ? implicitHeight : 0
     }
 
