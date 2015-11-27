@@ -98,7 +98,7 @@ Header {
             if (previousContents) {
                 previousContents.parent = previousContentsParent;
             }
-            if (contents) {
+            if (header.contents) {
                 titleLoader.sourceComponent = null;
                 previousContents = header.contents;
                 previousContentsParent = header.contents.parent;
