@@ -738,11 +738,11 @@ Ubuntu.Components.Styles.PageHeadStyle 1.3: Item
     property int textSize
 Ubuntu.Components.PageHeader 1.3: Header
     property Item contents
+    property Item extension
     readonly property ActionBar leadingActionBar
     property list<Action> navigationActions
     readonly property Sections sections
     property string title
-    property Item toolbar
     readonly property ActionBar trailingActionBar
 Ubuntu.Components.Styles.PageHeaderStyle 1.3: Item
     property color backgroundColor

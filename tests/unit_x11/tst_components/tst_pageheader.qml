@@ -78,7 +78,7 @@ Item {
         ]
 
         Rectangle {
-            id: toolbar
+            id: appendix
             anchors {
                 left: parent ? parent.left : undefined
                 right: parent ? parent.right : undefined
@@ -88,10 +88,10 @@ Item {
             color: UbuntuColors.orange
             Label {
                 anchors.centerIn: parent
-                text: "Mock toolbar"
+                text: "Mock extension"
                 color: "white"
             }
-            visible: header.toolbar === toolbar
+            visible: header.extension === appendix
         }
 
         PageHeader {
@@ -106,7 +106,7 @@ Item {
                                            root.actionList : []
             navigationActions: leadingActionsSwitch.checked ?
                                           root.actionList : []
-            toolbar: toolbarSwitch.checked ? toolbar : null
+            extension: extensionSwitch.checked ? appendix : null
         }
 
         Flickable {
@@ -189,11 +189,11 @@ Item {
                 }
 
                 Switch {
-                    id: toolbarSwitch
+                    id: extensionSwitch
                     checked: false
                 }
                 Label {
-                    text: "(mock) toolbar"
+                    text: "extension"
                 }
             }
 
@@ -266,14 +266,14 @@ Item {
                 compare(header.height, initialHeight,
                         "Unsetting sections does not revert the header height.");
 
-                header.toolbar = toolbar;
-                compare(toolbar.height > 0, true, "Toolbar height is 0.");
-                compare(header.height, initialHeight + toolbar.height,
-                        "Setting toolbar does not correctly update header height.");
+                header.extension = appendix;
+                compare(appendix.height > 0, true, "Extension height is 0.");
+                compare(header.height, initialHeight + appendix.height,
+                        "Setting extension does not correctly update header height.");
 
-                header.toolbar = null;
+                header.extension = null;
                 compare(header.height, initialHeight,
-                        "Unsetting toolbar does not revert the header height.");
+                        "Unsetting extension does not revert the header height.");
             }
 
             function test_background_color() {

@@ -206,18 +206,17 @@ Header {
     }
 
     /*!
-      FIXME TIM: agree on property name.
-      Toolbar shown under the regular header as a subheader.
-      The toolbar can be any Item, but it must have a height so that
-      the PageHeader correctly adjusts its height for the toolbar to fit.
-      The toolbar Item should anchor to the left, right and bottom of
+      Item shown under the regular header as a subheader.
+      The extension can be any Item, but it must have a height so that
+      the PageHeader correctly adjusts its height for the extension to fit.
+      The extension Item should anchor to the left, right and bottom of
       its parent so that it will be automatically positioned above the
       header divider.
       Example:
       \qml
         PageHeader {
             title: "Header with sections"
-            toolbar: Sections {
+            extension: Sections {
                 anchors {
                     left: parent.left
                     leftMargin: units.gu(2)
@@ -228,32 +227,32 @@ Header {
         }
       \endqml
     */
-    property Item toolbar
+    property Item extension
 
-    onToolbarChanged: toolbarHolder.updateToolbar()
+    onExtensionChanged: extensionHolder.updateExtension()
     Item {
-        id: toolbarHolder
+        id: extensionHolder
         anchors {
             left: parent.left
             right: parent.right
             top: contentsHolder.bottom
         }
-        height: header.toolbar ? header.toolbar.height : 0
+        height: header.extension ? header.extension.height : 0
 
-        property Item previousToolbar: toolbar
-        property Item previousToolbarParent: null
+        property Item previousExtension: header.extension
+        property Item previousExtensionParent: null
 
-        function updateToolbar() {
-            if (previousToolbar) {
-                previousToolbar.parent = previousToolbarParent;
+        function updateExtension() {
+            if (previousExtension) {
+                previousExtension.parent = previousExtensionParent;
             }
-            if (toolbar) {
-                previousToolbar = header.toolbar;
-                previousToolbarParent = header.toolbar.parent;
-                header.toolbar.parent = toolbarHolder;
+            if (header.extension) {
+                previousExtension = header.extension;
+                previousExtensionParent = header.extension.parent;
+                header.extension.parent = extensionHolder;
             } else {
-                previousToolbar = null;
-                previousToolbarParent = null;
+                previousExtension = null;
+                previousExtensionParent = null;
             }
         }
     }
@@ -263,7 +262,7 @@ Header {
       Sections shown at the bottom of the header. By default,
       the sections will only be visible if its actions or model
       is set. See \l Sections.
-      \deprecated Use \l toolbar instead.
+      \deprecated Use \l extension instead.
      */
     readonly property alias sections: sectionsItem
     Sections {
