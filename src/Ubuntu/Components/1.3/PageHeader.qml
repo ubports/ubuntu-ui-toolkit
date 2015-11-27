@@ -206,7 +206,7 @@ Header {
     }
 
     /*!
-      Item shown under the regular header as a subheader.
+      Item shown at the bottom of the header.
       The extension can be any Item, but it must have a height so that
       the PageHeader correctly adjusts its height for the extension to fit.
       The extension Item should anchor to the left, right and bottom of
