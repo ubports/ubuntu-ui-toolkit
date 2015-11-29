@@ -17,3 +17,6 @@ CONFIG -= create_cmake
 }
 
 QMAKE_CXXFLAGS += -Werror
+
+#do not warn for deprecated declarations
+QMAKE_CXXFLAGS -= -Werror=deprecated-declarations

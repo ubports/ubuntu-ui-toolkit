@@ -79,3 +79,6 @@ load(ubuntu_enable_testing)
 
 QMAKE_CXXFLAGS += -Werror
 
+#do not warn for deprecated declarations
+QMAKE_CXXFLAGS -= -Werror=deprecated-declarations
+
