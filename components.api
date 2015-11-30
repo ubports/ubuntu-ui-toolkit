@@ -811,8 +811,10 @@ Ubuntu.Components.Themes.Palette 0.1: QtObject
     property PaletteValues normal
     property PaletteValues selected
 Ubuntu.Components.Themes.Palette 1.3: QtObject
+    property PaletteValues inactive
     property PaletteValues normal
     property PaletteValues selected
+    property PaletteValues selectedInactive
 Ubuntu.Components.Themes.PaletteValues 0.1: QtObject
     property color background
     property color backgroundText
@@ -826,7 +828,11 @@ Ubuntu.Components.Themes.PaletteValues 0.1: QtObject
     property color overlayText
     property color selection
 Ubuntu.Components.Themes.PaletteValues 1.3: QtObject
+    property color activity
+    property color activityText
     property color background
+    property color backgroundSecondaryText
+    property color backgroundTertiaryText
     property color backgroundText
     property color base
     property color baseText
@@ -834,9 +840,20 @@ Ubuntu.Components.Themes.PaletteValues 1.3: QtObject
     property color fieldText
     property color foreground
     property color foregroundText
+    property color highlight
+    property color highlightText
+    property color negative
+    property color negativeText
     property color overlay
+    property color overlaySecondaryText
     property color overlayText
+    property color positive
+    property color positiveText
+    property color raised
+    property color raisedSecondaryText
+    property color raisedText
     property color selection
+    property color selectionText
 Ubuntu.Components.Panel 1.0 0.1: Item
     property int align
     property bool animate
@@ -1524,6 +1541,26 @@ Ubuntu.Components.UbuntuColors 1.1: QtObject singleton
     property Gradient orangeGradient
     readonly property color purple
     readonly property color red
+    readonly property color warmGrey
+Ubuntu.Components.UbuntuColors 1.3: QtObject singleton
+    readonly property color blue
+    readonly property color charcoal
+    readonly property color coolGrey
+    readonly property color darkAubergine
+    readonly property color darkGrey
+    readonly property color deepSpace
+    readonly property color green
+    readonly property color grey
+    property Gradient greyGradient
+    readonly property color lightAubergine
+    readonly property color lightGrey
+    readonly property color midAubergine
+    readonly property color moon
+    readonly property color orange
+    property Gradient orangeGradient
+    readonly property color purple
+    readonly property color red
+    readonly property color starDust
     readonly property color warmGrey
 Ubuntu.Components.UbuntuListView 1.0 0.1: ListView
     property int expandedIndex
