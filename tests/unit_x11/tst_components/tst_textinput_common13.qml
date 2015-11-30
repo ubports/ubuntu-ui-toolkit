@@ -497,20 +497,20 @@ Item {
                 ];
         }
 
-        function test_secondaryItem_must_not_grab_focus() {
+        function test_secondaryItem_must_not_grab_focus(data) {
             textField.forceActiveFocus();
             compare(textField.focus, true, 'TextField is focused');
 
             var clearButton = findChild(textField, "clear_button")
             mouseClick(clearButton, clearButton.width/2, clearButton.height/2);
             waitForRendering(data.input, 500);
-            compare(data.input.focus, true, 'TextField no longer focused');
+            compare(textField.focus, true, 'TextField no longer focused');
             mouseClick(primaryButton, primaryButton.width/2, primaryButton.height/2);
             waitForRendering(data.input, 500);
-            compare(data.input.focus, true, 'TextField no longer focused');
+            compare(textField.focus, true, 'TextField no longer focused');
             mouseClick(secondaryButton, secondaryButton.width/2, secondaryButton.height/2);
             waitForRendering(data.input, 500);
-            compare(data.input.focus, true, 'TextField no longer focused');
+            compare(textField.focus, true, 'TextField no longer focused');
         }
     }
 }
