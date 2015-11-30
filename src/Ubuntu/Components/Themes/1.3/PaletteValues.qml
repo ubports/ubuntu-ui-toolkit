@@ -43,6 +43,9 @@ QtObject {
     */
     property color backgroundTertiaryText
 
+    /*!
+       Color applied to the background of widgets.
+    */
     property color base
     /*!
        Color applied to elements placed on top of the \l base color.
