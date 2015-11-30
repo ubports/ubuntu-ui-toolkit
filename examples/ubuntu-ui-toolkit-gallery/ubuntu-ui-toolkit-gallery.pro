@@ -1,7 +1,6 @@
-TEMPLATE = app
-TARGET = $$PWD/gallery
+TEMPLATE = subdirs
 
-SUBDIRS += po
+SUBDIRS += Gallery.pro po
 
 filetypes = qml png svg js jpg qmlproject desktop
 
