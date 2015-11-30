@@ -169,7 +169,7 @@ void UCBottomEdgeHint::mousePressEvent(QMouseEvent *event)
 }
 void UCBottomEdgeHint::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (m_pressed && (m_status >= Active)) {
+    if (m_pressed && (m_status >= Active) && contains(event->localPos())) {
         Q_EMIT clicked();
         event->accept();
     } else {

@@ -73,6 +73,9 @@
 #include "ucbottomedgehint.h"
 #include "gestures/ucswipearea.h"
 #include "ucmathutils.h"
+#include "ucbottomedge.h"
+#include "ucbottomedgeregion.h"
+#include "ucbottomedgestyle.h"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -254,6 +257,8 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCLabel>(uri, 1, 3, "Label");
     qmlRegisterType<UCBottomEdgeHint>(uri, 1, 3, "BottomEdgeHint");
     qmlRegisterType<UCSwipeArea>(uri, 1, 3, "SwipeArea");
+    qmlRegisterType<UCBottomEdge>(uri, 1, 3, "BottomEdge");
+    qmlRegisterType<UCBottomEdgeRegion>(uri, 1, 3, "BottomEdgeRegion");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
@@ -265,6 +270,7 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     const char *styleUri = "Ubuntu.Components.Styles";
     qmlRegisterType<UCListItemStyle>(styleUri, 1, 2, "ListItemStyle");
     qmlRegisterType<UCListItemStyle, 1>(styleUri, 1, 3, "ListItemStyle");
+    qmlRegisterType<UCBottomEdgeStyle>(styleUri, 1, 3, "BottomEdgeStyle");
 
     QQmlExtensionPlugin::initializeEngine(engine, uri);
     QQmlContext* context = engine->rootContext();
