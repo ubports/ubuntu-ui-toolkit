@@ -48,9 +48,15 @@ import QtQuick 2.4
 */
 QtObject {
     /*!
-       Color palette to use when the widget is not in any particular state.
+       Color palette to use when the widget is in the default state.
     */
     property PaletteValues normal: PaletteValues{}
+
+    /*!
+      \preliminary
+       Color palette to use when the widget is in the inactive state.
+    */
+    property PaletteValues inactive: PaletteValues{}
 
     /*!
        Color palette to use when the widget is selected, for example when
