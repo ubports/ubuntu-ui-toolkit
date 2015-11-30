@@ -33,14 +33,23 @@ QtObject {
     */
     property color backgroundText
     /*!
-       Color applied to the background of widgets.
+       Color applied to secondary content on the \l background color.
+       \since Ubuntu.Components.Themes 1.3
     */
+    property color backgroundSecondaryText
+    /*!
+       Color applied to tertiary content on the \l background color.
+       \since Ubuntu.Components.Themes 1.3
+    */
+    property color backgroundTertiaryText
+
     property color base
     /*!
        Color applied to elements placed on top of the \l base color.
        Typically used for labels and images.
     */
     property color baseText
+
     /*!
        Color applied to widgets on top of the base colour.
     */
@@ -50,9 +59,26 @@ QtObject {
        Typically used for labels and images.
     */
     property color foregroundText
+
+    /*!
+       Color applied to widgets on top of any layer, background or base.
+       \since Ubuntu.Components.Themes 1.3
+    */
+    property color raised
+    /*!
+       Color applied to elements placed on top of the \l raised color.
+       \since Ubuntu.Components.Themes 1.3
+    */
+    property color raisedText
+    /*!
+       Color applied to seconday elements placed on top of the \l raised color.
+       \since Ubuntu.Components.Themes 1.3
+    */
+    property color raisedSecondaryText
+
     /*!
        Color applied to the background of widgets floating over other widgets.
-       For example: popovers, Toolbar.
+       For example popovers, menus, dialogs.
     */
     property color overlay
     /*!
@@ -61,7 +87,13 @@ QtObject {
     */
     property color overlayText
     /*!
-       Colour applied to the backgrouhnd of text input fields.
+       Color applied to secondary elements placed on top of the \l overlay color.
+       \since Ubuntu.Components.Themes 1.3
+    */
+    property color overlaySecondaryText
+
+    /*!
+       Colour applied to the background of text input fields.
     */
     property color field
     /*!
@@ -69,8 +101,59 @@ QtObject {
        Typically used for labels and images.
     */
     property color fieldText
+
+    /*!
+       Colour applied to the highlights.
+       \since Ubuntu.Components.Themes 1.3
+    */
+    property color highlight
+    /*!
+       Color applied to elements placed on top of the \l highlight color.
+       \since Ubuntu.Components.Themes 1.3
+    */
+    property color highlightText
+
+    /*!
+       Colour applied to the positive actions.
+       \since Ubuntu.Components.Themes 1.3
+    */
+    property color positive
+    /*!
+       Color applied to elements placed on top of the \l positive color.
+       \since Ubuntu.Components.Themes 1.3
+    */
+    property color positiveText
+
+    /*!
+       Colour applied to the negative actions.
+       \since Ubuntu.Components.Themes 1.3
+    */
+    property color negative
+    /*!
+       Color applied to elements placed on top of the \l negative color.
+       \since Ubuntu.Components.Themes 1.3
+    */
+    property color hegativeText
+
+    /*!
+       Colour applied to the activity colors. Typical example is progress indication,
+       activity indication.
+       \since Ubuntu.Components.Themes 1.3
+    */
+    property color activity
+    /*!
+       Color applied to elements placed on top of the \l activity color.
+       \since Ubuntu.Components.Themes 1.3
+    */
+    property color actvityText
+
     /*!
        Color applied to selected text in editable components.
     */
     property color selection
+    /*!
+       Color applied to elements placed on top of the \l selection color.
+       \since Ubuntu.Components.Themes 1.3
+    */
+    property color selectionText
 }
