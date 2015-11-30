@@ -1,4 +1,5 @@
 module Extinct.Animals
+plugin ExtinctAnimals
 Titanoboa 4.2 test.qml
 Gigantophis 4.3 gigantophis.qml
 internal WoollyMammoth mammoth.qml

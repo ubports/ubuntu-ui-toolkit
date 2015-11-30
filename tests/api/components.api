@@ -1,8 +1,14 @@
+Extinct.Animals.Andrewsarchus 2.0: Item
+    property double saggitalCrestSize
+    property int skullSize
 Extinct.Animals.Excavator 1.0
 Extinct.Animals.Gigantophis 4.3: QQuickItem
     property bool extinct
     function var first()
     function var fourth()
+Extinct.Animals.Smilodon 1.0 ScimitarCat 0.1: QtObject
+    function string paw(int i)
+    property string name
 Extinct.Animals.Titanoboa 4.2 MonsterSnake 3.1: Item
     property string bar
     property var basket

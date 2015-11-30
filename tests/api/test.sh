@@ -16,16 +16,19 @@
 #
 ################################################################################
 
-. `dirname $0`/../../../build_paths.inc
+. `dirname $0`/../../build_paths.inc
 
-if [ ! -e $BUILD_DIR/tests/apicheck/apicheck ]; then
+if [ ! -e $BUILD_DIR/apicheck/apicheck ]; then
     echo API check tool not built!
+    exit 1
+elif [ ! -e $BUILD_DIR/qml/Extinct/Animals/libExtinctAnimals.so ]; then
+    echo You need to build Extinct.Animals before you can dump QML API!
     exit 1
 fi
 
 echo Self-testing API dump
-env QML2_IMPORT_PATH=$SRC_DIR/tests/apicheck/test \
-    $BUILD_DIR/tests/apicheck/apicheck --qml Extinct.Animals | \
-    diff -F '[.0-9]' -u $SRC_DIR/tests/apicheck/test/components.api -
+env QML2_IMPORT_PATH=$BUILD_DIR/qml \
+    $BUILD_DIR/apicheck/apicheck --qml Extinct.Animals | \
+    diff -F '[.0-9]' -u $SRC_DIR/tests/api/components.api -
 test $? != 0 && echo Error: Mismatch && exit 1
 echo All fine.

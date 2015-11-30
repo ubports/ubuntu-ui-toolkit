@@ -27,7 +27,7 @@ CPP="Ubuntu.Components Ubuntu.Components.ListItems Ubuntu.Components.Popups Ubun
 echo Dumping QML API of C++ components
 test -s $BUILD_DIR/components.api.new && rm $BUILD_DIR/components.api.new
 env ALARM_BACKEND=memory QML2_IMPORT_PATH=$BUILD_DIR/qml LD_LIBRARY_PATH=$BUILD_DIR/lib \
-    $BUILD_DIR/tests/apicheck/apicheck \
+    $BUILD_DIR/apicheck/apicheck \
     --qml $CPP 1>> $BUILD_DIR/components.api.new &&
     echo Verifying the diff between existing and generated API
 if [ $? -gt 0 ]; then
