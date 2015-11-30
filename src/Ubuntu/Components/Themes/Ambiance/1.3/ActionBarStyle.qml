@@ -41,6 +41,16 @@ Style.ActionBarStyle {
 
     defaultNumberOfSlots: 3
 
+    UbuntuNumberAnimation {
+        id: fadeIn
+        from: 0.0
+        to: 1.0
+        property: "opacity"
+        alwaysRunToEnd: true
+        duration: 1000
+        onTargetChanged: print("new target = "+target)
+    }
+
     Row {
         id: actionsContainer
 
@@ -81,6 +91,19 @@ Style.ActionBarStyle {
             objectName: "actions_repeater"
             model: actionsContainer.barActions
             delegate: styledItem.delegate
+            property int previousCount: count
+            onItemAdded: {
+                if (numberOfSlots.available < numberOfSlots.requested) {
+                    // there is an overflow.
+                    if (count > previousCount && index == count - 2) {
+                        // the item next to the overflow button was added
+//                        item.opacity = 0.0;
+                        print("fading in item "+item);
+                        fadeIn.target = item;
+                        fadeIn.start();
+                    }
+                }
+            }
         }
 
         Action {
