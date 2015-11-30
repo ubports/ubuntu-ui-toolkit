@@ -19,7 +19,7 @@ import QtQuick 2.4
 
 /*!
     \qmltype UbuntuColors
-    \inqmlmodule Ubuntu.Components 1.1
+    \inqmlmodule Ubuntu.Components 1.3
     \ingroup ubuntu
     \brief Singleton defining the Ubuntu color palette.
 
@@ -37,13 +37,10 @@ import QtQuick 2.4
     \endqml
 */
 QtObject {
-    // old colors from UbuntuColors 1.0:
 
-    /*!
-      Orange. Recommended for branded elements, display progress
-      and intensity, textual links on light backgrounds.
-    */
-    readonly property color orange: "#DD4814"
+    /*---------------------------------------------------------------
+      Deprecated colors
+      ---------------------------------------------------------------*/
     /*!
       \deprecated
       Ubuntu supporting color: light aubergine
@@ -72,7 +69,7 @@ QtObject {
 
     /*!
       Ubuntu orange gradient
-
+      \deprecated
       \sa Button::gradient
     */
     property Gradient orangeGradient: Gradient {
@@ -81,7 +78,7 @@ QtObject {
     }
     /*!
       Ubuntu grey gradient
-
+      \deprecated
       \sa Button::gradient
     */
     property Gradient greyGradient: Gradient {
@@ -89,14 +86,21 @@ QtObject {
         GradientStop { position: 1.0; color: "#BBBBBB" }
     }
 
-    // New colors introduced in UbuntuColors 1.1:
+    /*---------------------------------------------------------------
+      Supported colors
+      ---------------------------------------------------------------*/
+    /*!
+      Orange. Recommended for branded elements, display progress
+      and intensity, textual links on light backgrounds.
+    */
+    readonly property color orange: "#E95420"
 
     /*!
       Light grey. Recommended for neutral action buttons and
       secondary text.
       \since Ubuntu.Components 1.1
      */
-    readonly property color lightGrey: "#929292"
+    readonly property color lightGrey: "#cdcdcd"
 
     /*!
       Dark grey. Recommended for text and action icons.
@@ -109,19 +113,19 @@ QtObject {
       buttons, errors and alerts.
       \since Ubuntu.Components 1.1
      */
-    readonly property color red: "#f32c36"
+    readonly property color red: "#ed3146"
 
     /*!
       Green. Recommended for positive action buttons.
       \since Ubuntu.Components 1.1
      */
-    readonly property color green: "#00a132"
+    readonly property color green: "#3eb34f"
 
     /*!
       Blue. Recommended for text selection and text cursor.
       \since Ubuntu.Components 1.1
      */
-    readonly property color blue: "#12a3d8"
+    readonly property color blue: "#19b6ee"
 
     /*!
       Purple. Recommended for proper nouns in
@@ -129,4 +133,34 @@ QtObject {
       \since Ubuntu.Components 1.1
      */
     readonly property color purple: "#762572"
+
+    /*!
+      Stardust. Recommended for foregrounds.
+      \since Ubuntu.Components 1.3
+      */
+    readonly property color stardust: "#f7f7f7"
+
+    /*!
+      Grey. Recommended for subtitles and other tertiary content.
+      \since Ubuntu.Components 1.3
+      */
+    readonly property color grey: "#888888"
+
+    /*!
+      Moon. Recommended for coloring dark themes' background.
+      \since Ubuntu.Components 1.3
+      */
+    readonly property color moon: "#666666"
+
+    /*!
+      Deep space. Recommended for foreground colors in dark themes.
+      \since Ubuntu.Components 1.3
+      */
+    readonly property color deepSpace: "#3b3b3b"
+
+    /*!
+      Charcoal. Recommended for content coloring.
+      \since Ubuntu.Components 1.3
+      */
+    readonly property color charcoal: "#292929"
 }
