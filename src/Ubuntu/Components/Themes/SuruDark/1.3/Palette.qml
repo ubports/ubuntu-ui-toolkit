@@ -20,26 +20,30 @@ import Ubuntu.Components 1.3
 import Ubuntu.Components.Themes 1.3
 
 Palette {
-    normal {
-        background: "#221E1C"
-        backgroundText: "#5D5D5D78"
-        base: "#19000000"
-        baseText: "#FFFFFF"
-        foreground: "#888888"
-        foregroundText: "#FFFFFF"
-        overlay: "#F2F2F2"
-        overlayText: "#888888"
-        field: "#19000000"
-        fieldText: "#7F7F7F7F"
+    normal: SuruDarkNormal {}
+    inactive: SuruDarkNormal {
+        // inactive is 30% transparent normal
+        Component.onCompleted: {
+            for (var p in normal) {
+                // skip objectName and all change signals
+                if (p == "objectName" || p.indexOf("Changed") > 0) continue;
+                inactive[p] = Qt.rgba(normal[p].r, normal[p].g, normal[p].b, 0.3);
+            }
+        }
     }
-    selected {
-        background: "#88D6D6D6"
-        backgroundText: "#FFFFFF"
-        selection: Qt.rgba(UbuntuColors.blue.r, UbuntuColors.blue.g, UbuntuColors.blue.b, 0.2)
-        foreground: UbuntuColors.orange
-        foregroundText: UbuntuColors.darkGrey
-        field: "#FFFFFF"
-        fieldText: "#888888"
+
+    // selected differs from normal in background, base, foreground
+    selected: SuruDarkNormal {
+        background: Qt.rgba(UbuntuColors.orange.r, UbuntuColors.orange.g, UbuntuColors.orange.b, 0.1)
+        base: Qt.rgba(UbuntuColors.orange.r, UbuntuColors.orange.g, UbuntuColors.orange.b, 0.1)
+        foreground: Qt.rgba(UbuntuColors.orange.r, UbuntuColors.orange.g, UbuntuColors.orange.b, 0.1)
+    }
+
+    // selected differs from normal in background, base, foreground
+    selectedInactive: SuruDarkNormal {
+        background: UbuntuColors.deepSpace
+        base: UbuntuColors.deepSpace
+        foreground: UbuntuColors.deepSpace
     }
 }
 //![0]

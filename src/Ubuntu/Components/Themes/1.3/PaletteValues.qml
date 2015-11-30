@@ -106,17 +106,6 @@ QtObject {
     property color fieldText
 
     /*!
-       Colour applied to the highlights.
-       \since Ubuntu.Components.Themes 1.3
-    */
-    property color highlight
-    /*!
-       Color applied to elements placed on top of the \l highlight color.
-       \since Ubuntu.Components.Themes 1.3
-    */
-    property color highlightText
-
-    /*!
        Colour applied to the positive actions.
        \since Ubuntu.Components.Themes 1.3
     */

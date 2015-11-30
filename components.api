@@ -840,8 +840,6 @@ Ubuntu.Components.Themes.PaletteValues 1.3: QtObject
     property color fieldText
     property color foreground
     property color foregroundText
-    property color highlight
-    property color highlightText
     property color negative
     property color negativeText
     property color overlay

@@ -5,3 +5,4 @@ Palette 1.1 ./1.2/Palette.qml
 
 #version 1.3
 Palette 1.3 ./1.3/Palette.qml
+SuruDarkNormal 1.3 ./1.3/SuruDarkNormal.qml
