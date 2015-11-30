@@ -492,25 +492,24 @@ Item {
 
         function test_secondaryItem_must_not_grab_focus_data() {
             return [
-                { tag: 'same', input: customTextField },
-                { tag: 'other', input: textField },
+                { tag: 'same', input: textField },
+                { tag: 'other', input: customTextField },
                 ];
         }
 
         function test_secondaryItem_must_not_grab_focus() {
-            var textField = customTextField;
             textField.forceActiveFocus();
             compare(textField.focus, true, 'TextField is focused');
 
-            var clearButton = findChild(customTextField, "clear_button")
+            var clearButton = findChild(textField, "clear_button")
             mouseClick(clearButton, clearButton.width/2, clearButton.height/2);
             waitForRendering(data.input, 500);
             compare(data.input.focus, true, 'TextField no longer focused');
             mouseClick(primaryButton, primaryButton.width/2, primaryButton.height/2);
-            waitForRendering(data.input.focus, 500);
+            waitForRendering(data.input, 500);
             compare(data.input.focus, true, 'TextField no longer focused');
             mouseClick(secondaryButton, secondaryButton.width/2, secondaryButton.height/2);
-            waitForRendering(data.input.focus, 500);
+            waitForRendering(data.input, 500);
             compare(data.input.focus, true, 'TextField no longer focused');
         }
     }
