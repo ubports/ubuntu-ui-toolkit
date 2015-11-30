@@ -74,6 +74,22 @@ Item {
                 iconName: "appointment"
                 text: "fourth"
                 onTriggered: print("Trigger fourth action")
+            },
+            Action {
+                iconName: "attachment"
+                text: "Attach"
+            },
+            Action {
+                iconName: "contact"
+                text: "Contact"
+            },
+            Action {
+                iconName: "like"
+                text: "Like"
+            },
+            Action {
+                iconName: "lock"
+                text: "Lock"
             }
         ]
 
