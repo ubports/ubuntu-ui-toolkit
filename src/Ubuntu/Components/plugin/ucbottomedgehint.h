@@ -87,6 +87,8 @@ private:
     int m_deactivateTimeout;
     Status m_status;
     bool m_pressed:1;
+
+    friend class UCBottomEdge;
 };
 
 #endif // UCBOTTOMEDGEHINT_H

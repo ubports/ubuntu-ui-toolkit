@@ -26,7 +26,7 @@ Item {
     default property alias content: contentRow.children
 
     height: Math.max(contentRow.height, label.height)
-    width: parent.width
+    width: parent ? parent.width : 0
 
     Label {
         id: label

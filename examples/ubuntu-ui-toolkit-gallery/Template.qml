@@ -23,6 +23,7 @@ Page {
     default property alias content: column.children
     property alias spacing: column.spacing
     property alias scrollable: flickable.interactive
+    readonly property alias flickable: flickable
 
     header: PageHeader {
         title: template.title
