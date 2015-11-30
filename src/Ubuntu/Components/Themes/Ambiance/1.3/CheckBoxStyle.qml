@@ -28,14 +28,16 @@ Item {
     /*!
       The background color when the checkbox is not checked.
      */
-    property color uncheckedBackgroundColor: Qt.rgba(theme.palette.normal.foreground.r,
-                                                     theme.palette.normal.foreground.g,
-                                                     theme.palette.normal.foreground.b, 0.2)
+    property color uncheckedBackgroundColor: styledItem.enabled
+                                                ? Qt.rgba(theme.palette.normal.foreground.r,
+                                                          theme.palette.normal.foreground.g,
+                                                          theme.palette.normal.foreground.b, 0.2)
+                                                : theme.palette.inactive.foreground
 
     /*!
       The background color when the checkbox is checked.
      */
-    property color checkedBackgroundColor: theme.palette.normal.positive
+    property color checkedBackgroundColor: styledItem.enabled ? theme.palette.normal.positive : theme.palette.inactive.raised
 
     /*!
       The image to show inside the checkbox when it is checked.
@@ -45,14 +47,12 @@ Item {
     /*!
       The color of the icon.
      */
-    property color iconColor: theme.palette.normal.positiveText
+    property color iconColor: styledItem.enabled ? theme.palette.normal.positiveText : theme.palette.inactive.raisedText
 
     /*!
       The padding between the icon and the border of the thumb.
      */
     property real iconPadding: units.gu(0.4)
-
-    opacity: enabled ? 1.0 : 0.5
 
     implicitWidth: units.gu(2)
     implicitHeight: units.gu(2)
@@ -64,7 +64,6 @@ Item {
             margins: checkBoxStyle.backgroundPadding
         }
         property real iconSize: Math.min(width, height) - 2*checkBoxStyle.iconPadding
-        onIconSizeChanged: print(iconSize)
 
         Icon {
             color: checkBoxStyle.iconColor
