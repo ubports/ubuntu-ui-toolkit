@@ -35,7 +35,7 @@ Item {
     /*!
       The background color when the checkbox is checked.
      */
-    property color checkedBackgroundColor: UbuntuColors.green
+    property color checkedBackgroundColor: theme.palette.normal.positive
 
     /*!
       The image to show inside the checkbox when it is checked.
@@ -45,7 +45,7 @@ Item {
     /*!
       The color of the icon.
      */
-    property color iconColor: theme.palette.normal.foregroundText
+    property color iconColor: theme.palette.normal.positiveText
 
     /*!
       The padding between the icon and the border of the thumb.
