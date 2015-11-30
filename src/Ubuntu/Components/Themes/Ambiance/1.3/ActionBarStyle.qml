@@ -41,14 +41,21 @@ Style.ActionBarStyle {
 
     defaultNumberOfSlots: 3
 
-    UbuntuNumberAnimation {
+    SequentialAnimation {
         id: fadeIn
-        from: 0.0
-        to: 1.0
-        property: "opacity"
-        alwaysRunToEnd: true
-        duration: 1000
-        onTargetChanged: print("new target = "+target)
+        property alias target: opacityAnimation.target
+        ScriptAction {
+            script: fadeIn.target.opacity = 0.0;
+        }
+        PauseAnimation { duration: UbuntuAnimation.FastDuration }
+        UbuntuNumberAnimation {
+            id: opacityAnimation
+            from: 0.0
+            to: 1.0
+            property: "opacity"
+            alwaysRunToEnd: true
+            duration: UbuntuAnimation.BriskDuration
+        }
     }
 
     Row {
@@ -97,8 +104,9 @@ Style.ActionBarStyle {
                     // there is an overflow.
                     if (count > previousCount && index == count - 2) {
                         // the item next to the overflow button was added
-//                        item.opacity = 0.0;
-                        print("fading in item "+item);
+                        if (fadeIn.running) {
+                            fadeIn.complete();
+                        }
                         fadeIn.target = item;
                         fadeIn.start();
                     }
