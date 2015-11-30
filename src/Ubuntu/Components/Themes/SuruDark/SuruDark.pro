@@ -17,6 +17,3 @@ QML_FILES += 1.2/MainViewStyle.qml \
              $$PARENT_THEME_FILE
 
 load(ubuntu_qml_module)
-
-DISTFILES += \
-    1.3/SuruDarkNormal.qml
