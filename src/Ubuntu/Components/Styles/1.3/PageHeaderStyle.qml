@@ -51,7 +51,7 @@ Item {
     property Component titleComponent
 
     /*!
-      The height of the header excluding the divider and sections.
+      The height of the header excluding the divider and extension.
      */
     property real contentHeight
 }

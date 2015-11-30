@@ -77,6 +77,23 @@ Item {
             }
         ]
 
+        Rectangle {
+            id: appendix
+            anchors {
+                left: parent ? parent.left : undefined
+                right: parent ? parent.right : undefined
+                bottom: parent ? parent.bottom : undefined
+            }
+            height: units.gu(4)
+            color: UbuntuColors.orange
+            Label {
+                anchors.centerIn: parent
+                text: "Mock extension"
+                color: "white"
+            }
+            visible: header.extension === appendix
+        }
+
         PageHeader {
             id: header
             flickable: flickable
@@ -89,6 +106,7 @@ Item {
                                            root.actionList : []
             navigationActions: leadingActionsSwitch.checked ?
                                           root.actionList : []
+            extension: extensionSwitch.checked ? appendix : null
         }
 
         Flickable {
@@ -169,6 +187,14 @@ Item {
                 Label {
                     text: "show sections"
                 }
+
+                Switch {
+                    id: extensionSwitch
+                    checked: false
+                }
+                Label {
+                    text: "extension"
+                }
             }
 
             PageHeader {
@@ -239,6 +265,15 @@ Item {
                 sections.actions = [];
                 compare(header.height, initialHeight,
                         "Unsetting sections does not revert the header height.");
+
+                header.extension = appendix;
+                compare(appendix.height > 0, true, "Extension height is 0.");
+                compare(header.height, initialHeight + appendix.height,
+                        "Setting extension does not correctly update header height.");
+
+                header.extension = null;
+                compare(header.height, initialHeight,
+                        "Unsetting extension does not revert the header height.");
             }
 
             function test_background_color() {
@@ -360,6 +395,23 @@ Item {
                 header.leadingActionBar.actions = [];
                 compare(header.navigationActions.length, 0,
                         "Reverting leading actions changes navigationActions.");
+            }
+
+            function test_sections_visible() {
+                compare(header.sections.visible, false,
+                        "Sections is not hidden by default.");
+                header.sections.actions = root.sectionActions;
+                compare(header.sections.visible, true,
+                        "Sections is not made visible by setting actions.");
+                header.extension = appendix;
+                compare(header.sections.visible, false,
+                        "Sections are not hidden when extension is set.");
+                header.extension = null;
+                compare(header.sections.visible, true,
+                        "Sections are not shown when extension is unset.");
+                header.sections.actions = [];
+                compare(header.sections.visible, false,
+                        "Sections is not hidden by clearing the actions.");
             }
 
             // The properties of header.sections, header.leadingActionBar and
