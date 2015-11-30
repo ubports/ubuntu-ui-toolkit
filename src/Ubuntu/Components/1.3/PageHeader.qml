@@ -144,6 +144,7 @@ Header {
       The default value of \l leadingActionBar actions is
       \l navigationActions, but that value can be changed to show
       different actions in front of the title.
+      The leading action bar has only one slot.
       See \l ActionBar.
      */
     readonly property alias leadingActionBar: leading
@@ -189,6 +190,9 @@ Header {
           }
       }
       \endqml
+      By default the trailing action bar automatically adapts
+      its number of slots to the available space in the range
+      from 3 to 6.
       See \l ActionBar.
       */
     readonly property alias trailingActionBar: trailing
