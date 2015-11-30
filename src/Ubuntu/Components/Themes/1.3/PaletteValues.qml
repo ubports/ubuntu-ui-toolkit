@@ -133,7 +133,7 @@ QtObject {
        Color applied to elements placed on top of the \l negative color.
        \since Ubuntu.Components.Themes 1.3
     */
-    property color hegativeText
+    property color negativeText
 
     /*!
        Colour applied to the activity colors. Typical example is progress indication,
@@ -145,7 +145,7 @@ QtObject {
        Color applied to elements placed on top of the \l activity color.
        \since Ubuntu.Components.Themes 1.3
     */
-    property color actvityText
+    property color activityText
 
     /*!
        Color applied to selected text in editable components.

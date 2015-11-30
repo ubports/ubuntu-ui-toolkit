@@ -53,8 +53,7 @@ QtObject {
     property PaletteValues normal: PaletteValues{}
 
     /*!
-      \preliminary
-       Color palette to use when the widget is in the inactive state.
+       Color palette to use when the widget is in the inactive (disabled) state.
     */
     property PaletteValues inactive: PaletteValues{}
 

@@ -21,23 +21,58 @@ import Ubuntu.Components.Themes 1.3
 Palette {
     normal {
         background: "#FFFFFF"
-        backgroundText: "#81888888"
-        base: Qt.rgba(0, 0, 0, 0.1)
-        baseText: UbuntuColors.lightGrey
-        foreground: UbuntuColors.lightGrey
-        foregroundText: "#FFFFFF"
-        overlay: "#FDFDFD"
-        overlayText: UbuntuColors.lightGrey
-        field: "lightgray"
-        fieldText: UbuntuColors.darkGrey
+        backgroundText: UbuntuColors.charcoal
+        backgroundSecondaryText: UbuntuColors.darkGrey
+        backgroundTertiaryText: UbuntuColors.grey
+        base: UbuntuColors.lightGrey
+        baseText: UbuntuColors.darkGrey
+        foreground: UbuntuColors.starDust
+        foregroundText: UbuntuColors.charcoal
+        raised: "#FFFFFF"
+        raisedText: UbuntuColors.darkGrey
+        raisedSecondaryText: UbuntuColors.lightGrey
+        overlay: "#FFFFFF"
+        overlayText: UbuntuColors.darkGrey
+        overlaySecondaryText: UbuntuColors.lightGrey
+        field: "#FFFFFF"
+        fieldText: UbuntuColors.charcoal
+        selection: Qt.rgba(UbuntuColors.orange.r, UbuntuColors.orange.g, UbuntuColors.orange.b, 0.2)
+        selectionText: UbuntuColors.charcoal
+        highlight: UbuntuColors.orange
+        highlightText: "#FFFFFF"
+        positive: UbuntuColors.green
+        positiveText: "#FFFFFF"
+        negative: UbuntuColors.red
+        negativeText: "#FFFFFF"
+        activity: UbuntuColors.blue
+        activityText: "#FFFFFF"
     }
     selected {
-        background: Qt.rgba(0, 0, 0, 0.05)
-        backgroundText: UbuntuColors.darkGrey
-        selection: selected.foreground
-        foreground: Qt.rgba(UbuntuColors.blue.r, UbuntuColors.blue.g, UbuntuColors.blue.b, 0.2)
-        foregroundText: UbuntuColors.darkGrey
+        background: Qt.rgba(UbuntuColors.orange.r, UbuntuColors.orange.g, UbuntuColors.orange.b, 0.05)
+        backgroundText: UbuntuColors.charcoal
+        backgroundSecondaryText: UbuntuColors.darkGrey
+        backgroundTertiaryText: UbuntuColors.grey
+        base: UbuntuColors.lightGrey
+        baseText: UbuntuColors.darkGrey
+        foreground: UbuntuColors.starDust
+        foregroundText: UbuntuColors.charcoal
+        raised: "#FFFFFF"
+        raisedText: UbuntuColors.darkGrey
+        raisedSecondaryText: UbuntuColors.lightGrey
+        overlay: "#FFFFFF"
+        overlayText: UbuntuColors.darkGrey
+        overlaySecondaryText: UbuntuColors.lightGrey
         field: "#FFFFFF"
-        fieldText: UbuntuColors.darkGrey
+        fieldText: UbuntuColors.charcoal
+        selection: Qt.rgba(UbuntuColors.orange.r, UbuntuColors.orange.g, UbuntuColors.orange.b, 0.2)
+        selectionText: UbuntuColors.charcoal
+        highlight: UbuntuColors.orange
+        highlightText: "#FFFFFF"
+        positive: UbuntuColors.green
+        positiveText: "#FFFFFF"
+        negative: UbuntuColors.red
+        negativeText: "#FFFFFF"
+        activity: UbuntuColors.blue
+        activityText: "#FFFFFF"
     }
 }
