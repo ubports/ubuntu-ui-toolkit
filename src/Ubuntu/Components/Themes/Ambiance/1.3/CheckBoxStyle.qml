@@ -23,7 +23,7 @@ Item {
     /*!
       The padding between the background shape and the outside border of the checkbox.
      */
-    property real backgroundPadding: units.gu(0.33)
+    property real backgroundPadding: 0
 
     /*!
       The background color when the checkbox is not checked.
@@ -50,12 +50,12 @@ Item {
     /*!
       The padding between the icon and the border of the thumb.
      */
-    property real iconPadding: backgroundPadding
+    property real iconPadding: units.gu(0.4)
 
     opacity: enabled ? 1.0 : 0.5
 
-    implicitWidth: units.gu(3)
-    implicitHeight: units.gu(3)
+    implicitWidth: units.gu(2)
+    implicitHeight: units.gu(2)
 
     UbuntuShape {
         id: background
@@ -64,6 +64,7 @@ Item {
             margins: checkBoxStyle.backgroundPadding
         }
         property real iconSize: Math.min(width, height) - 2*checkBoxStyle.iconPadding
+        onIconSizeChanged: print(iconSize)
 
         Icon {
             color: checkBoxStyle.iconColor
