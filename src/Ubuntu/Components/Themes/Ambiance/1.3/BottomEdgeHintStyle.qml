@@ -103,6 +103,7 @@ Item {
             topMargin: styledItem.height
         }
         name: "up"
+        color: theme.palette.normal.overlayText
     }
 
     Rectangle {

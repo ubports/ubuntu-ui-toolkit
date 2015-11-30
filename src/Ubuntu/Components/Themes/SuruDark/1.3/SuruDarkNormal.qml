@@ -30,9 +30,9 @@ PaletteValues {
     raised: "#FFFFFF"
     raisedText: UbuntuColors.darkGrey
     raisedSecondaryText: UbuntuColors.lightGrey
-    overlay: "#FFFFFF"
-    overlayText: UbuntuColors.darkGrey
-    overlaySecondaryText: UbuntuColors.lightGrey
+    overlay: UbuntuColors.deepSpace
+    overlayText: "#FFFFFF"
+    overlaySecondaryText: UbuntuColors.darkGrey
     field: UbuntuColors.charcoal
     fieldText: "#FFFFFF"
     selection: Qt.rgba(UbuntuColors.orange.r, UbuntuColors.orange.g, UbuntuColors.orange.b, 0.2)
