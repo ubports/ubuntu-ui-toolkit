@@ -135,10 +135,10 @@ QtObject {
     readonly property color purple: "#762572"
 
     /*!
-      Stardust. Recommended for foregrounds.
+      Star dust. Recommended for foregrounds.
       \since Ubuntu.Components 1.3
       */
-    readonly property color stardust: "#f7f7f7"
+    readonly property color starDust: "#f7f7f7"
 
     /*!
       Grey. Recommended for subtitles and other tertiary content.
