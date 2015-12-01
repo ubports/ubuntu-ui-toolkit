@@ -33,12 +33,14 @@ Item {
     /*!
       The background color of the switch.
      */
-    property color backgroundColor: styledItem.enabled
-                                      ? (styledItem.checked ? theme.palette.normal.positive : theme.palette.normal.base)
-                                      : theme.palette.inactive.base
+    property color backgroundColor: styledItem.enabled ? theme.palette.normal.base : theme.palette.inactive.base
 
     /*!
-      The background color of the thumb when the switch is not checked.
+      The background color of the checked switch.
+      */
+    property color checkedBackgroundColor: styledItem.enabled ? theme.palette.normal.positive : theme.palette.inactive.base
+    /*!
+      The background color of the thumb.
      */
     property color thumbColor: styledItem.enabled ? theme.palette.normal.raised : theme.palette.inactive.raised
 
@@ -58,6 +60,10 @@ Item {
                         target: thumb
                         anchors.left: undefined
                         anchors.right: parent.right
+                    }
+                    PropertyChanges {
+                        target: background
+                        backgroundColor: switchStyle.checkedBackgroundColor
                     }
                 }
             ]
