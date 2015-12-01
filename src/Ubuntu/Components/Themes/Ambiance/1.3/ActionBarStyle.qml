@@ -41,20 +41,26 @@ Style.ActionBarStyle {
 
     defaultNumberOfSlots: 3
 
-    SequentialAnimation {
-        id: fadeIn
-        property alias target: opacityAnimation.target
-        ScriptAction {
-            script: fadeIn.target.opacity = 0.0;
-        }
-        PauseAnimation { duration: UbuntuAnimation.FastDuration }
-        UbuntuNumberAnimation {
-            id: opacityAnimation
-            from: 0.0
-            to: 1.0
-            property: "opacity"
-            alwaysRunToEnd: true
-            duration: UbuntuAnimation.BriskDuration
+    Component {
+        id: fadeInComponent
+        SequentialAnimation {
+            id: fadeIn
+            property alias target: opacityAnimation.target
+            ScriptAction {
+                script: fadeIn.target.opacity = 0.0;
+            }
+            PauseAnimation { duration: UbuntuAnimation.FastDuration }
+            UbuntuNumberAnimation {
+                id: opacityAnimation
+                from: 0.0
+                to: 1.0
+                property: "opacity"
+                alwaysRunToEnd: true
+                duration: UbuntuAnimation.BriskDuration
+            }
+            ScriptAction {
+                script: fadeIn.destroy()
+            }
         }
     }
 
@@ -94,22 +100,28 @@ Style.ActionBarStyle {
         }
 
         Repeater {
+            function fadeIn(item) {
+                var fadeObject = fadeInComponent.createObject(actionBarStyle,
+                                                              {"target": item});
+                fadeObject.target = item;
+                fadeObject.start();
+
+            }
             id: actionsRepeater
             objectName: "actions_repeater"
             model: actionsContainer.barActions
             delegate: styledItem.delegate
             property int previousCount: count
+            onCountChanged: {
+                // after all itemAdded signals
+                previousCount = count;
+            }
+
             onItemAdded: {
-                if (numberOfSlots.available < numberOfSlots.requested) {
-                    // there is an overflow.
-                    if (count > previousCount && index == count - 2) {
-                        // the item next to the overflow button was added
-                        if (fadeIn.running) {
-                            fadeIn.complete();
-                        }
-                        fadeIn.target = item;
-                        fadeIn.start();
-                    }
+                if (count <= previousCount) return; // no items added
+                var isOverflow = (index == count - numberOfSlots.overflow);
+                if (index >= previousCount - 1 && !isOverflow) {
+                    fadeIn(item);
                 }
             }
         }
