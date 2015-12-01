@@ -374,6 +374,10 @@ UCCollapseAction::UCCollapseAction(QObject *parent)
     : UCAction(parent)
 {
     QQmlEngine::setObjectOwnership(this, QQmlEngine::objectOwnership(parent));
+}
+
+void UCCollapseAction::activate()
+{
     setIconName("down");
 }
 
@@ -382,7 +386,7 @@ void UCBottomEdgePrivate::patchContentItemHeader()
 {
     // ugly, as it can be, as we don't have the PageHeader in cpp to detect the type
     UCHeader *header = bottomPanel->m_contentItem ? bottomPanel->m_contentItem->findChild<UCHeader*>() : Q_NULLPTR;
-    if (!header || !QuickUtils::inherits(header, "PageHeader") || status != UCBottomEdge::Committed) {
+    if (!header || !QuickUtils::inherits(header, "PageHeader")) {
         return;
     }
 
@@ -391,13 +395,23 @@ void UCBottomEdgePrivate::patchContentItemHeader()
     QQmlListProperty<UCAction> actions = list.value< QQmlListProperty<UCAction> >();
     QList<UCAction*> *navigationActions = reinterpret_cast<QList<UCAction*>*>(actions.data);
 
-    // clear the actions first
-    navigationActions->clear();
-
-    // inject the action
-    UCAction *collapse = new UCCollapseAction(header);
-    QObject::connect(collapse, &UCAction::triggered, q_func(), &UCBottomEdge::collapse, Qt::DirectConnection);
-    navigationActions->append(collapse);
+    // are we committed?
+    if (status == UCBottomEdge::Committed) {
+        // activate the action
+        UCCollapseAction *collapse = qobject_cast<UCCollapseAction*>(navigationActions->at(0));
+        collapse->activate();
+        QObject::connect(collapse, &UCAction::triggered, q_func(), &UCBottomEdge::collapse, Qt::DirectConnection);
+    } else if (navigationActions->size() <= 0) {
+        navigationActions->append(new UCCollapseAction(header));
+    } else {
+        // we have actions in the navigationActions array, check if those are UCCollapseActions,
+        // if not, clear them
+        UCCollapseAction *collapse = qobject_cast<UCCollapseAction*>(navigationActions->at(0));
+        if (!collapse) {
+            navigationActions->clear();
+            navigationActions->append(new UCCollapseAction(header));
+        }
+    }
 
     // invoke PageHeader.navigationActionsChanged signal
     int signal = header->metaObject()->indexOfSignal("navigationActionsChanged()");

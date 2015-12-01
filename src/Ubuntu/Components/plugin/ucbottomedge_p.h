@@ -105,6 +105,7 @@ class UCCollapseAction : public UCAction
     Q_OBJECT
 public:
     UCCollapseAction(QObject *parent = 0);
+    void activate();
 };
 Q_DECLARE_METATYPE(QQmlListProperty<UCAction>)
 
