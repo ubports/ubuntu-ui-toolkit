@@ -49,7 +49,6 @@ Style.ActionBarStyle {
             ScriptAction {
                 script: fadeIn.target.opacity = 0.0;
             }
-            PauseAnimation { duration: UbuntuAnimation.FastDuration }
             UbuntuNumberAnimation {
                 id: opacityAnimation
                 from: 0.0
@@ -78,9 +77,18 @@ Style.ActionBarStyle {
             }
             return visibleActionList;
         }
+        function getReversedActions(actions) {
+            var newlist = [];
+            for (var i=actions.length-1; i >= 0; i--) {
+                newlist.push(actions[i]);
+            }
+            return newlist;
+        }
+
+        property var directActions: getReversedActions(visibleActions.slice(0, numberOfSlots.used))
         property var barActions: overflowAction.visible
-                                 ? visibleActions.slice(0, numberOfSlots.used).concat(overflowAction)
-                                 : visibleActions.slice(0, numberOfSlots.used)
+                                 ? directActions.concat(overflowAction)
+                                 : directActions
         property var overflowActions: visibleActions.slice(numberOfSlots.used,
                                                            numberOfSlots.requested)
 
@@ -119,10 +127,7 @@ Style.ActionBarStyle {
 
             onItemAdded: {
                 if (count <= previousCount) return; // no items added
-                var isOverflow = (index == count - numberOfSlots.overflow);
-                if (index >= previousCount - 1 && !isOverflow) {
-                    fadeIn(item);
-                }
+                if (index == 0) fadeIn(item)
             }
         }
 
