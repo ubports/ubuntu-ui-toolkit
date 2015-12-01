@@ -79,12 +79,7 @@ UCBottomEdgeHint::UCBottomEdgeHint(QQuickItem *parent)
 
     // FIXME: use QInputDeviceInfo once available
     // https://bugs.launchpad.net/ubuntu/+source/ubuntu-ui-toolkit/+bug/1276808
-    connect(&QuickUtils::instance(), &QuickUtils::mouseAttachedChanged, [this]() {
-        setStatus(QuickUtils::instance().mouseAttached() ? Locked : Active);
-        if (m_status == Active) {
-            m_deactivationTimer.start(m_deactivateTimeout, this);
-        }
-    });
+    connect(&QuickUtils::instance(), &QuickUtils::mouseAttachedChanged, this, &UCBottomEdgeHint::onMouseAttached);
 
     // accept mouse events
     setAcceptedMouseButtons(Qt::LeftButton);
@@ -116,13 +111,24 @@ void UCBottomEdgeHint::init()
     m_swipeArea->setDirection(UCSwipeArea::Upwards);
 
     // grid unit sync
-    connect(&UCUnits::instance(), &UCUnits::gridUnitChanged, [this] {
-        m_swipeArea->setImplicitHeight(UCUnits::instance().gu(SWIPE_AREA_HEIGHT_GU));
-    });
+    connect(&UCUnits::instance(), &UCUnits::gridUnitChanged, this, &UCBottomEdgeHint::onGridUnitChanged);
 
     // connect to gesture detection
     connect(m_swipeArea, &UCSwipeArea::draggingChanged,
             this, &UCBottomEdgeHint::onDraggingChanged, Qt::DirectConnection);
+}
+
+void UCBottomEdgeHint::onMouseAttached()
+{
+    setStatus(QuickUtils::instance().mouseAttached() ? Locked : Active);
+    if (m_status == Active) {
+        m_deactivationTimer.start(m_deactivateTimeout, this);
+    }
+}
+
+void UCBottomEdgeHint::onGridUnitChanged()
+{
+    m_swipeArea->setImplicitHeight(UCUnits::instance().gu(SWIPE_AREA_HEIGHT_GU));
 }
 
 void UCBottomEdgeHint::itemChange(ItemChange change, const ItemChangeData &data)

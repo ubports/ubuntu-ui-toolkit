@@ -79,6 +79,8 @@ protected:
     void onDraggingChanged(bool dragging);
 
     void init();
+    void onMouseAttached();
+    void onGridUnitChanged();
 
 private:
     QBasicTimer m_deactivationTimer;
