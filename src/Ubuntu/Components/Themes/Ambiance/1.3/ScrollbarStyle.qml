@@ -1018,6 +1018,11 @@ Item {
             enabled: isScrollable && interactive
             visible: flowContainer.showSteppers
 
+            //We don't change the size of the images because we let the image reader figure the size out,
+            //though that means we have to hide the images somehow while the mousearea is visible but has
+            //null size. We choose to enable clipping here instead of creating bindings on images' visible prop
+            clip: true
+
             function handlePress() {
                 var mappedCoordFirstStepper = mapToItem(firstStepper, mouseX, mouseY)
                 var mappedCoordSecondStepper = mapToItem(secondStepper, mouseX, mouseY)
