@@ -48,7 +48,7 @@ import Ubuntu.Components 1.3
 Item {
     id: visuals
     // styling properties
-    property bool interactive: isMouseConnected //|| veryLongContentItem
+    property bool interactive: isMouseConnected || veryLongContentItem
 
     //this will eventually come from QInputInfo
     property bool isMouseConnected: true
@@ -111,6 +111,8 @@ Item {
     //only show the thumb if the page AND the view is moving,
     //don't keep it on screen just because the page is long
                                   || (veryLongContentItem && (flickableItem.moving || scrollAnimation.running))
+
+    property real touchDragStartMargin: units.gu(2)
 
     property bool draggingThumb: thumbArea.drag.active
     property PropertyAnimation scrollbarThicknessAnimation: UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration }
@@ -216,7 +218,7 @@ Item {
             //scale xPosition by ( 1 / ( 1 - widthRatio) ). This way, when xPosition reaches its max ( 1 - widthRatio )
             //we get a multiplication factor of 1
             return MathUtils.clamp(1.0 / maxPosRatio * scrollbar.flickableItem.visibleArea[propPosRatio]
-                         * (draggableLength - scrollbar.__styleInstance.thumb[propSize]) + margin, min, max);
+                                   * (draggableLength - scrollbar.__styleInstance.thumb[propSize]) + margin, min, max);
         }
 
         /*!
@@ -269,7 +271,7 @@ Item {
             console.log(scrollbar.flickableItem[propContent] - scrollbar.flickableItem[propOrigin] + amount, min, max)
             return scrollbar.flickableItem[propOrigin] +
                     MathUtils.clamp(scrollbar.flickableItem[propContent] - scrollbar.flickableItem[propOrigin] + amount,
-                          min, max);
+                                    min, max);
         }
 
         /*!
@@ -287,14 +289,47 @@ Item {
         }
     }
 
-    //FIXME: we should use QInputInfo for this but it's not ready yet
+    // The thumb appears whenever the mouse gets close enough to the scrollbar
+    // and disappears after being for a long enough time far enough of it
     MouseArea {
+        id: proximityArea
+
+        //        Rectangle {
+        //            anchors.fill: parent
+        //            color:"red"
+        //            opacity:0.2
+        //            visible: parent.enabled
+        //        }
+
         anchors.fill: parent
-        hoverEnabled: true
+        propagateComposedEvents: true
+        enabled: isScrollable && interactive //&& alwaysOnScrollbars
+        hoverEnabled: isScrollable && interactive //&& alwaysOnScrollbars
         onEntered: {
             console.log("MOUSE DETECTED")
             isMouseConnected = true
         }
+        onExited: /*if (state === 'steppers')*/ overshootTimer.restart()
+
+        Timer {
+            id: overshootTimer
+            interval: scrollbarThicknessAnimation.duration * 10
+        }
+
+        onPositionChanged: mouse.accepted = false
+        onPressed: mouse.accepted = false
+        onClicked: mouse.accepted = false
+        onReleased: mouse.accepted = false
+    }
+
+    //this prevents the mouse area underneath to get hover events
+    MultiPointTouchArea {
+        //make sure we cover the whole mouse proximity area
+        anchors.fill: proximityArea
+        mouseEnabled: false
+        //onGestureStarted: { console.log("GESTURE STARTED")}
+        onPressed: console.log("PRESSED", visuals)
+        enabled: proximityArea.enabled
     }
 
     Binding {
@@ -317,9 +352,9 @@ Item {
                 //to the steppers (or thumb) state even when the mouse exits the area prematurely (e.g. when the mouse
                 //overshoots, without the .running check the scrollbar would stop the growing transition halfway and
                 //go back to hidden mode)
-                if (hoverTransformationFlag || draggingThumb || __overshootTimer.running) {
+                if (hoverTransformationFlag || (draggingThumb && slider.mouseDragging) || __overshootTimer.running) {
                     return 'steppers'
-                } else if (thumbStyleFlag || __overshootTimer.running) {
+                } else if (thumbStyleFlag || (draggingThumb && slider.touchDragging) || __overshootTimer.running) {
                     return 'thumb'
                 } else if (flickableItem.moving || scrollAnimation.running || transitionToIndicator.running) {
                     return 'indicator';
@@ -753,10 +788,10 @@ Item {
             // total size of the flickable.
             Item {
 
-//                Rectangle {
-//                    anchors.fill: parent
-//                    color: "green"
-//                }
+                //                Rectangle {
+                //                    anchors.fill: parent
+                //                    color: "green"
+                //                }
 
                 id: scrollCursor
                 //x: (isVertical) ? 0 : scrollbarUtils.sliderPos(styledItem, thumbsExtremesMargin, trough.width - scrollCursor.width - thumbsExtremesMargin)
@@ -781,6 +816,27 @@ Item {
                 property bool containsMouse: contains(Qt.point(slider.mapFromItem(thumbArea, thumbArea.mouseX, thumbArea.mouseY).x,
                                                                slider.mapFromItem(thumbArea, thumbArea.mouseX, thumbArea.mouseY).y))
 
+                property bool containsTouch: {
+                    console.log(visuals)
+                    var touchX = slider.mapFromItem(thumbArea, thumbArea.mouseX, thumbArea.mouseY).x
+                    var touchY = slider.mapFromItem(thumbArea, thumbArea.mouseX, thumbArea.mouseY).y
+                    console.log(touchX, touchY, slider.width, slider.height, visuals.touchDragStartMargin, slider.containsMouse)
+                    //relaxed checks on the position of the touch, to allow some error
+                    if (touchX >= -visuals.touchDragStartMargin
+                            && touchX <= slider.width + visuals.touchDragStartMargin
+                            && touchY >= -visuals.touchDragStartMargin
+                            && touchY <= slider.height + visuals.touchDragStartMargin) {
+                        console.log("CONTAINS TOUCH NOW!")
+                        return true
+                    } else {
+                        console.log("DOESN'T CONTAIN TOUCH")
+                        return false
+                    }
+                }
+
+                property bool mouseDragging: false
+                property bool touchDragging: false
+
                 //the proportional position of the thumb relative to the trough it can move into
                 //It is 0 when the thumb is at its minimum value, and 1 when it is at its maximum value
                 property real relThumbPosition : isVertical
@@ -801,6 +857,9 @@ Item {
                 }
             }
 
+            //we reuse the MouseArea for touch interactions as well, because MultiTouchPointArea doesn't handle
+            //drag, we would have to rewrite the drag functionality if we were to use MTPointArea
+
             MouseArea {
                 id: thumbArea
 
@@ -819,11 +878,22 @@ Item {
                 }
                 enabled: isScrollable && interactive //&& alwaysOnScrollbars
                 onPressed: {
-                    handlePress(mouse.x, mouse.y)
-                    //don't start the press and hold timer to avoid conflicts with the drag
-                    var mappedCoord = mapToItem(slider, mouseX, mouseY)
-                    if (!slider.contains(Qt.point(mappedCoord.x, mappedCoord.y))) {
-                        pressHoldTimer.startTimer(thumbArea)
+                    //potentially we allow using touch to trigger mouse interactions, in case the
+                    //mouse has previously hovered over the area and activated the steppers style
+                    //checking for the value of visuals.state wouldn't be useful here, the value could be
+                    //"hidden" even if the values have only just started transitioning from "steppers" state
+                    if (trough.visible) {
+                        handlePress(mouse.x, mouse.y)
+                        //don't start the press and hold timer to avoid conflicts with the drag
+                        var mappedCoord = mapToItem(slider, mouseX, mouseY)
+                        if (!slider.contains(Qt.point(mappedCoord.x, mappedCoord.y))) {
+                            pressHoldTimer.startTimer(thumbArea)
+                        }
+                    } else if (visuals.veryLongContentItem && slider.containsTouch){
+                        console.log("COULD DRAG TOUCH")
+                    } else {
+                        //propagate otherwise
+                        mouse.accepted = false
                     }
                 }
 
@@ -870,8 +940,17 @@ Item {
                     onMaximumXChanged: console.log("MAX X!", drag.maximumX)
                     onActiveChanged: {
                         if (drag.active) {
+                            //we can't tell whether the drag is started from mouse or touch
+                            //(unless we add an additional multipointtoucharea and reimplement drag)
+                            //so we assume that it's a mouse drag if the mouse is within the proximity area
+                            //when the mouse is dragged
+                            slider.mouseDragging = proximityArea.containsMouse
+                            slider.touchDragging = !slider.mouseDragging
                             thumbArea.saveFlickableScrollingState()
                             scrollCursor.drag()
+                        } else {
+                            slider.mouseDragging = false
+                            slider.touchDragging = false
                         }
                     }
 
@@ -1094,37 +1173,5 @@ Item {
         height: isVertical ? units.gu(2) : flowContainer.thickness
         color: trough.color
         visible: flowContainer.showCornerRect && styledItem.buddyScrollbar && styledItem.buddyScrollbar.__styleInstance.isScrollable
-    }
-
-    // The thumb appears whenever the mouse gets close enough to the scrollbar
-    // and disappears after being for a long enough time far enough of it
-    MouseArea {
-        id: proximityArea
-
-        //        Rectangle {
-        //            anchors.fill: parent
-        //            color:"red"
-        //            opacity:0.2
-        //            visible: parent.enabled
-        //        }
-
-        anchors.fill: parent
-        propagateComposedEvents: true
-        enabled: isScrollable && interactive //&& alwaysOnScrollbars
-        hoverEnabled: isScrollable && interactive //&& alwaysOnScrollbars
-        onEntered: {
-            console.log("PROXIMITY ENTERED")
-        }
-        onExited: /*if (state === 'steppers')*/ overshootTimer.restart()
-
-        Timer {
-            id: overshootTimer
-            interval: scrollbarThicknessAnimation.duration * 10
-        }
-
-        onPositionChanged: mouse.accepted = false
-        onPressed: mouse.accepted = false
-        onClicked: mouse.accepted = false
-        onReleased: mouse.accepted = false
     }
 }
