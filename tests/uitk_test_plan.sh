@@ -95,6 +95,24 @@ declare -a UNREGISTERED_APPS=(
 	"com.ubuntu.shorts"
 )
 
+wait_for_shell()
+{
+	# Waiting for device on ADB
+	set -e
+	adb -s ${SERIALNUMBER} wait-for-device
+	# The device is accessible on ADB"
+	set +e
+	error=$(adb -s ${SERIALNUMBER} shell echo ok 2>&1)
+	set -e
+	# Start waiting for Unity8"
+	until PIDS=$(adb -s ${SERIALNUMBER} shell pidof unity8 2>/dev/null|egrep -v "^$"); 
+	do
+        	sleep 0.1;
+	done;
+	echo "Unity8 is up with PID: ${PIDS}"
+	set +e
+}
+
 # some apps needs special permission to access system service.
 fix_permissions () {
 	APP_ID=$1
@@ -154,7 +172,7 @@ function reset {
 	if [ ${UNLOCK_ONLY} == false ]; then
             adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S reboot 2>&1|grep -v password"
              sleep_indicator 120
-             /usr/share/qtcreator/ubuntu/scripts/device_wait_for_shell ${SERIALNUMBER} > /dev/null
+             device_wait_for_shell 
              sleep_indicator 10
              network
         fi
@@ -453,7 +471,6 @@ echo "Dist-upgrade: ${DISTUPGRADE}"
 echo "Main logs: ${MAINFILE}"
 echo "*** Starting ***"
 echo ""
-
 
 if [ ${UNLOCK_ONLY} == true ]; then
    reset -f
