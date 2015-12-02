@@ -27,7 +27,7 @@ BottomEdgeStyle {
     revealThreshold: bottomEdge.hint.height + units.gu(2)
 
     // own styling properties
-    property color backgroundColor: "transparent"
+    property color backgroundColor: Qt.rgba(0, 0, 0, Math.min(0.25, (height - revealThreshold - panelItem.y) / (height - revealThreshold)))
     property color panelColor: theme.palette.normal.background
     property color shadowColor: theme.palette.selected.background
     property bool attachHintToContent: false
