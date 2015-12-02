@@ -211,8 +211,8 @@ Header {
       the PageHeader correctly adjusts its height for the extension to fit.
       The extension Item should anchor to the left, right and bottom of
       its parent so that it will be automatically positioned above the
-      header divider.
-      Example:
+      header divider. This property replaces the sections property. Sections
+      can now be added to the header as follows:
       \qml
         PageHeader {
             title: "Header with sections"

@@ -397,6 +397,23 @@ Item {
                         "Reverting leading actions changes navigationActions.");
             }
 
+            function test_sections_visible() {
+                compare(header.sections.visible, false,
+                        "Sections is not hidden by default.");
+                header.sections.actions = root.sectionActions;
+                compare(header.sections.visible, true,
+                        "Sections is not made visible by setting actions.");
+                header.extension = appendix;
+                compare(header.sections.visible, false,
+                        "Sections are not hidden when extension is set.");
+                header.extension = null;
+                compare(header.sections.visible, true,
+                        "Sections are not shown when extension is unset.");
+                header.sections.actions = [];
+                compare(header.sections.visible, false,
+                        "Sections is not hidden by clearing the actions.");
+            }
+
             // The properties of header.sections, header.leadingActionBar and
             //  header.trailingActionBar are tested in tst_sections.qml and tst_actionbar.qml.
         }
