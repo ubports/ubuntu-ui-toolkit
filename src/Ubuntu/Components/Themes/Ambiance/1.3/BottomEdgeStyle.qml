@@ -28,8 +28,8 @@ BottomEdgeStyle {
 
     // own styling properties
     property color backgroundColor: Qt.rgba(0, 0, 0, Math.min(0.25, (height - revealThreshold - panelItem.y) / (height - revealThreshold)))
-    property color panelColor: theme.palette.normal.background
-    property color shadowColor: theme.palette.selected.background
+    property color panelColor: theme.palette.normal.overlay
+    property color shadowColor: "#000000"
     property bool attachHintToContent: false
 
     anchors.fill: parent
@@ -86,10 +86,11 @@ BottomEdgeStyle {
                 left: parent.left
                 right: parent.right
             }
-            height: units.gu(1)
+            height: units.gu(1.5)
             gradient: Gradient {
                 GradientStop { position: 0.0; color: Qt.rgba(shadowColor.r, shadowColor.g, shadowColor.b, 0.0) }
-                GradientStop { position: 1.0; color: Qt.rgba(shadowColor.r, shadowColor.g, shadowColor.b, 0.3) }
+                GradientStop { position: 0.75; color: Qt.rgba(shadowColor.r, shadowColor.g, shadowColor.b, 0.05) }
+                GradientStop { position: 1.0; color: Qt.rgba(shadowColor.r, shadowColor.g, shadowColor.b, 0.1) }
             }
         }
         Rectangle {
@@ -99,11 +100,12 @@ BottomEdgeStyle {
                 left: parent.left
                 right: parent.right
             }
-            height: units.gu(1)
+            height: units.gu(1.5)
             rotation: 180
             gradient: Gradient {
                 GradientStop { position: 0.0; color: Qt.rgba(shadowColor.r, shadowColor.g, shadowColor.b, 0.0) }
-                GradientStop { position: 1.0; color: Qt.rgba(shadowColor.r, shadowColor.g, shadowColor.b, 0.3) }
+                GradientStop { position: 0.75; color: Qt.rgba(shadowColor.r, shadowColor.g, shadowColor.b, 0.05) }
+                GradientStop { position: 1.0; color: Qt.rgba(shadowColor.r, shadowColor.g, shadowColor.b, 0.1) }
             }
         }
 
