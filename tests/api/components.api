@@ -1,7 +1,7 @@
 Extinct.Animals.Andrewsarchus 2.0: Item
     property double saggitalCrestSize
     property int skullSize
-Extinct.Animals.AndrewsarchusMongoliensis 2.5 2.4: Item
+Extinct.Animals.AndrewsarchusMongoliensis 2.5: Item
     property double saggitalCrestSize
     property int skullSize
 Extinct.Animals.Europe 4.1: QtObject

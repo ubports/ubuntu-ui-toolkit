@@ -19,69 +19,45 @@
 #include "smilodon.h"
 
 /*!
- * \qmltype Argument
- * \instantiates UCArgument
- * \inqmlmodule Ubuntu.Components 1.1
+ * \qmltype Smilodon
+ * \instantiates EASmilodon
+ * \inqmlmodule Extinct.Animals 1.0
  * \ingroup ubuntu-commandline
- * \brief The Argument class specifies what type a given command line parameter should be.
+ * \brief The Smilodon class specifies the behavior of an extinct big cat.
  *
- * \b Important: Argument is not used on its own but must be a child of \l Arguments.
- *
- * An Argument is defined by its \l name and \l valueNames properties which correspond
- * to a command line parameter (e.g. \e{--target}) and the values passed to it
- * (e.g. \e{--target=http://myaddress}).
- *
- * For example, the following code allows to retrieve parameters on the
- * command line of the form \e{--target=URL}:
- *
- * \qml
- * Argument {
- *     name: "target"
- *     help: "address of the resource to retrieve"
- *     required: true
- *     valueNames: ["URL"]
- * }
- * \endqml
- *
- * To retrieve a value passed to the parameter knowing its position, use the \l at
- * method.
- *
- * \sa Arguments
- *
+ * \sa Andrewsarchus
  */
 
-UCArgument::UCArgument(QObject *parent) :
+EASmilodon::EASmilodon(QObject *parent) :
     QObject(parent)
 {
 }
 
 /*!
- * \qmlproperty string Argument::name
+ * \qmlproperty string Smilodon::name
  *
- * Name identifying the command line argument.
- *
- * For example 'target' corrsesponds to the \e{'--target'} command line argument.
+ * Name identifying the smilodon.
  *
  */
-QString UCArgument::name() const
+QString EASmilodon::name() const
 {
     return m_name;
 }
 
-void UCArgument::setName(const QString &name)
+void EASmilodon::setName(const QString &name)
 {
     m_name = name;
     Q_EMIT(nameChanged());
 }
 
 /*!
- * \qmlmethod string Argument::at(int i)
+ * \qmlmethod string Smilodon::paw(int i)
  *
- * Returns the \e{i}th value of the argument.
+ * Returns the \e{i}th paw of the smilodon.
  * Values are counted from 0.
  *
  */
-QString UCArgument::paw(int i) const
+QString EASmilodon::paw(int i) const
 {
     return QString("Paw #%1").arg(i);
 }

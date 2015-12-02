@@ -50,8 +50,8 @@ void ExtinctAnimalsPlugin::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QLatin1String("Extinct.Animals"));
 
-    qmlRegisterType<UCArgument>(uri, 1, 0, "Smilodon");
-    qmlRegisterType<UCArgument>(uri, 0, 1, "ScimitarCat");
+    qmlRegisterType<EASmilodon>(uri, 1, 0, "Smilodon");
+    qmlRegisterType<EASmilodon>(uri, 0, 1, "ScimitarCat");
 
     qmlRegisterType(QUrl(baseUrl().toString() + "/Andrewsarchus.qml"), uri, 0, 1, "Andrewsarchus");
     // The second call overrrides the previous one, only the last version will show up

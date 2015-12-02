@@ -16,8 +16,8 @@
  * Author: Christian Dywan <christian.dywan@canonical.com>
  */
 
-#ifndef QQUICKIMAGEEXTENSION_H
-#define QQUICKIMAGEEXTENSION_H
+#ifndef EA_RUNE_H
+#define EA_RUNE_H
 
 #include <QtCore/QObject>
 #include <QtCore/QUrl>
@@ -46,4 +46,4 @@ private:
     static QHash<QUrl, QSharedPointer<QTemporaryFile> > s_rewrittenSciFiles;
 };
 
-#endif // QQUICKIMAGEEXTENSION_H
+#endif // EA_RUNE_H

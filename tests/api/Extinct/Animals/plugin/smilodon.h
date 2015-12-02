@@ -23,14 +23,14 @@
 #include <QtCore/QStringList>
 #include <QtCore/QVariant>
 
-class UCArgument : public QObject
+class EASmilodon : public QObject
 {
     Q_OBJECT
 
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
 
 public:
-    explicit UCArgument(QObject *parent = 0);
+    explicit EASmilodon(QObject *parent = 0);
 
     QString name() const;
     void setName(const QString &name);
