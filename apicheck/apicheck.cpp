@@ -982,7 +982,7 @@ int main(int argc, char *argv[])
 
         QMap<QString, QString> scripts;
         Q_FOREACH(QQmlDirParser::Script s, p.scripts()) {
-            QFile sf(pluginModulePath + "/" + s.fileName);
+            QFile sf(s.fileName[0] == 'q' ? QString(s.fileName).replace("qrc:/", ":/") : pluginModulePath + "/" + s.fileName);
             if (!sf.open(QIODevice::ReadOnly)) {
                 std::cerr << "Failed to read " << qPrintable(sf.fileName()) << std::endl;
                 return EXIT_IMPORTERROR;
@@ -1018,7 +1018,8 @@ int main(int argc, char *argv[])
             // Work-around for version -1, -1
             if (c.majorVersion == -1)
                 version = pluginImportVersion;
-            QQmlComponent e(&engine, pluginModulePath + "/" + c.fileName);
+            QQmlComponent e(&engine,
+                c.fileName[0] == 'q' ? QUrl(c.fileName) : pluginModulePath + "/" + c.fileName);
             QObject* qtobject(e.create());
             if (!qtobject) {
                 std::cerr << "Failed to instantiate " << qPrintable(c.typeName) << " from " << qPrintable(e.url().toString()) << std::endl;
