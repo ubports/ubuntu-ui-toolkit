@@ -30,7 +30,6 @@ BottomEdgeStyle {
     property color backgroundColor: Qt.rgba(0, 0, 0, Math.min(0.25, (height - revealThreshold - panelItem.y) / (height - revealThreshold)))
     property color panelColor: theme.palette.normal.overlay
     property color shadowColor: "#000000"
-    property bool attachHintToContent: false
 
     anchors.fill: parent
 
@@ -39,15 +38,6 @@ BottomEdgeStyle {
         anchors.fill: parent
         color: backgroundColor
         z: -1
-    }
-
-    states: State {
-        name: "reparentedHint"
-        when: attachHintToContent
-        AnchorChanges {
-            target: bottomEdge.hint
-            anchors.bottom: panelItem.top
-        }
     }
 
     Rectangle {
