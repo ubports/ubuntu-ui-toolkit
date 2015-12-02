@@ -53,7 +53,7 @@ StyledItem {
       The toolbar of the node. Propagates down from the root node.
       This property is DEPRECATED.
      */
-    property Toolbar toolbar: node.__propagated && node.__propagated.hasOwnProperty("toolbar")
+    property DeprecatedToolbar toolbar: node.__propagated && node.__propagated.hasOwnProperty("toolbar")
                               ? node.__propagated.toolbar : null
 
     /*!

@@ -15,31 +15,74 @@
  */
 import QtQuick 2.4
 import Ubuntu.Components 1.3
+import Ubuntu.Components.Styles 1.3 as Style
 
-Item {
-    id: visuals
-    // styling properties
-    property color color: theme.palette.normal.overlay
+Style.ToolbarStyle {
+    id: toolbarStyle
+    implicitWidth: parent ? parent.width : 0
+    implicitHeight: units.gu(4)
 
-    anchors.fill: parent
-
-    Rectangle {
-        id: background
-        anchors.fill: parent
-        color: visuals.color
+    /*!
+      The default action delegate if the styled item does
+      not provide a delegate.
+     */
+    defaultDelegate: AbstractButton {
+        style: IconButtonStyle { }
+        objectName: action.objectName + "_button"
+        height: parent ? parent.height : undefined
+        width: units.gu(4)
+        action: modelData
     }
 
-    Image {
-        id: dropshadow
+    Item {
+        objectName: "fixedAction_container_item"
         anchors {
             left: parent.left
-            right: parent.right
-            bottom: background.top
+            leftMargin: units.gu(1)
+            top: parent.top
+            bottom: parent.bottom
         }
-        source: Qt.resolvedUrl("../artwork/toolbar_dropshadow.png")
-        opacity: styledItem.opened || styledItem.animating ? 0.5 : 0.0
-        Behavior on opacity {
-            UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration }
+        Repeater {
+            // FIXME: A Loader may be enough here, but then we
+            //  have no way to set the model (action) of the ActionButton.
+            objectName: "fixedAction_repeater"
+            model: styledItem.fixedAction && styledItem.fixedAction.visible ?
+                       styledItem.fixedAction : 0
+            delegate: styledItem.delegate
+        }
+    }
+
+    Row {
+        id: actionsContainer
+        objectName: "actions_container_row"
+        anchors {
+            top: parent.top
+            bottom: parent.bottom
+            right: parent.right
+            rightMargin: units.gu(1)
+        }
+
+        property var visibleActions: getVisibleActions(styledItem.actions)
+        function getVisibleActions(actions) {
+            var visibleActionList = [];
+            for (var i in actions) {
+                var action = actions[i];
+                if (action && action.hasOwnProperty("visible") && action.visible) {
+                    if (visibleActionList.length > 8) {
+                        print("Toolbar currently only supports up to 9 actions.");
+                        break;
+                    }
+                    visibleActionList.push(action);
+                }
+            }
+            return visibleActionList;
+        }
+
+        Repeater {
+            id: actionsRepeater
+            objectName: "actions_repeater"
+            model: actionsContainer.visibleActions
+            delegate: styledItem.delegate
         }
     }
 }

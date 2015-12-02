@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,133 +15,35 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.3 as Toolkit
+import Ubuntu.Components 1.3
 
 /*!
-    \internal
     \qmltype Toolbar
-    \inqmlmodule Ubuntu.Components 1.1
+    \inqmlmodule Ubuntu.Components 1.3
     \ingroup ubuntu
-    \brief Application toolbar. This class is not exposed because it will
-            be automatically added when a Page defines tools.
+    TODO
 */
-Panel {
-    id: toolbar
-    anchors {
-        left: parent ? parent.left : undefined
-        right: parent ? parent.right : undefined
-        bottom: parent ? parent.bottom : undefined
-    }
-    height: background.height
-
-    LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
-    LayoutMirroring.childrenInherit: true
-
-    // Closing of the toolbar on app contents interaction is handled by the Page.
-    __closeOnContentsClicks: false
-
-    // Open toolbar on hover (for desktop only)
-    __openOnHover: true
+StyledItem {
+    id: bar
+    styleName: "ToolbarStyle"
 
     /*!
-      The list of \l Actions to be shown on the toolbar
+      The actions to display in the bar.
+      If more actions are specified than there are slots, an overflow
+      button will be show which opens a popover with the actions that
+      did not fit in the bar directly.
      */
-    property Item tools: null
+    property list<Action> actions
 
-    hideTimeout: 5000
+    /*!
+      Set this to override the default delegate button that shows
+      the actions in the ActionBar. Uses the defaultDelegate of
+      ToolbarStyle by default.
+     */
+    property Component delegate: __styleInstance.defaultDelegate
 
-    /*! \internal */
-    onToolsChanged: {
-        internal.updateVisibleTools();
-        if (tools) {
-            if (tools && tools.hasOwnProperty("locked")) locked = tools.locked;
-            // open the toolbar, except when it is locked in closed position
-            if (tools && tools.hasOwnProperty("locked") && tools.hasOwnProperty("opened")
-                    && !tools.opened && tools.locked) {
-                // toolbar is locked in closed state
-                toolbar.close();
-            } else {
-                toolbar.open();
-            }
-
-            if (tools && tools.hasOwnProperty("opened")) {
-                tools.opened = toolbar.opened;
-            }
-        } else { // no tools
-            locked = true;
-            toolbar.close();
-        }
-    }
-
-    // if tools is not specified, lock the toolbar in closed position
-    locked: tools && tools.hasOwnProperty("locked") ? tools.locked : false
-
-    onOpenedChanged: {
-        if (tools && tools.hasOwnProperty("opened")) {
-            tools.opened = toolbar.opened;
-        }
-    }
-
-    Connections {
-        target: tools
-        ignoreUnknownSignals: true
-        onOpenedChanged: {
-            if (tools.opened) {
-                toolbar.open();
-            } else {
-                toolbar.close();
-            }
-        }
-        onLockedChanged: {
-            toolbar.locked = tools.locked;
-            // open the toolbar when it becomes unlocked
-            // (may be because a new page was pushed to the page stack)
-            if (!toolbar.locked) toolbar.open();
-        }
-    }
-
-    QtObject {
-        id: internal
-        property Item visibleTools: tools
-        function updateVisibleTools() {
-            if (internal.visibleTools !== toolbar.tools) {
-                if (internal.visibleTools) internal.visibleTools.parent = null;
-                internal.visibleTools = toolbar.tools;
-            }
-            if (internal.visibleTools) internal.visibleTools.parent = visibleToolsContainer;
-        }
-    }
-
-    onAnimatingChanged: {
-        if (!animating && !opened) {
-            internal.updateVisibleTools();
-        }
-    }
-
-    Toolkit.StyledItem {
-        // FIXME:
-        // All theming items go into the background because only the children
-        //  of the Panel are being shown/hidden while the toolbar
-        //  itself may stay in place.
-        id: background
-        anchors {
-            left: parent.left
-            right: parent.right
-            bottom: parent.bottom
-        }
-        height: units.gu(8)
-
-        // The values of opened and animated properties are used in the style
-        property bool opened: toolbar.opened
-        property bool animating: toolbar.animating
-
-        styleName: "ToolbarStyle"
-    }
-
-    Item {
-        id: visibleToolsContainer
-        anchors {
-            fill: background
-        }
-    }
+    /*!
+      A single fixed action displayed on the left side of the toolbar.
+     */
+    property Action fixedAction
 }

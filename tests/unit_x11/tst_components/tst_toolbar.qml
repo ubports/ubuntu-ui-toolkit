@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,114 +14,235 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import QtTest 1.0
-import Ubuntu.Components 1.1
+import QtQuick 2.4
+import Ubuntu.Test 1.0
+import Ubuntu.Components 1.3
 
 Item {
-    width: units.gu(50)
-    height: units.gu(80)
+    id: root
+    width: 400
+    height: 600
 
-    MainView {
-        anchors.fill: parent
-        id: mainView
+    property list<Action> actionList:  [
+        Action {
+            iconName: "alarm-clock"
+            text: "Tick tock"
+        },
+        Action {
+            iconName: "appointment"
+            text: "Date"
+        },
+        Action {
+            iconName: "attachment"
+            text: "Attach"
+        },
+        Action {
+            iconName: "contact"
+            text: "Contact"
+        },
+        Action {
+            iconName: "like"
+            text: "Like"
+        },
+        Action {
+            iconName: "lock"
+            text: "Lock"
+        }
+    ]
 
-        Page {
-            id: page
-            title: "test page"
+    property list<Action> shortActionList: [
+        Action {
+            iconName: "share"
+            text: "Share"
+        },
+        Action {
+            iconName: "starred"
+            text: "Favorite"
+        }
+    ]
+
+    property Action deleteAction: Action {
+        iconName: "delete"
+        text: "Delete"
+        onTriggered: print("Delete action triggered")
+        objectName: "delete_action"
+    }
+
+    Column {
+        anchors {
+            left: parent.left
+            right: parent.right
+            top: parent.top
+            margins: units.gu(2)
+        }
+        height: childrenRect.height
+        Item {
+            width: parent.width
+            height: childrenRect.height
+
             Label {
-                anchors.centerIn: parent
-                text: "testing the toolbar"
+                id: shortLabel
+                anchors {
+                    left: parent.left
+                    verticalCenter: shortBar.verticalCenter
+                }
+                text: "" + shortActionList.length + " actions:"
             }
-            tools: ToolbarItems {
-                id: toolbarItems
-                ToolbarButton {
-                    id: toolbarButton
-                    text: "action1"
+            Toolbar {
+                id: shortBar
+                anchors {
+                    left: shortLabel.right
+                    right: parent.right
+                }
+                actions: root.shortActionList
+            }
+        }
+
+        Item {
+            width: parent.width
+            height: childrenRect.height
+            Label {
+                id: label
+                anchors {
+                    left: parent.left
+                    verticalCenter: bar.verticalCenter
+                }
+                text: "" + actionList.length + " actions:"
+            }
+            Toolbar {
+                id: bar
+                anchors {
+                    left: label.right
+                    right: parent.right
+                }
+                actions: root.actionList
+            }
+        }
+
+        Item {
+            width: parent.width
+            height: childrenRect.height
+
+            Label {
+                id: fixedLabel
+                anchors {
+                    left: parent.left
+                    verticalCenter: fixedBar.verticalCenter
+                }
+                text: "Fixed action:"
+            }
+            Toolbar {
+                id: fixedBar
+                anchors {
+                    left: fixedLabel.right
+                    right: parent.right
+                }
+                actions: root.shortActionList
+                fixedAction: deleteAction
+            }
+        }
+
+        Item {
+            width: parent.width
+            height: childrenRect.height
+            Label {
+                id: orangeLabel
+                anchors {
+                    left: parent.left
+                    verticalCenter: orangeBar.verticalCenter
+                }
+                text: "Custom delegate:"
+            }
+            Toolbar {
+                id: orangeBar
+                anchors {
+                    left: orangeLabel.right
+                    right: parent.right
+                }
+                actions: root.actionList
+                fixedAction: deleteAction
+                delegate: AbstractButton {
+                    styleName: "IconButtonStyle"
+                    action: modelData
+                    StyleHints {
+                        foregroundColor: UbuntuColors.orange
+                    }
+                    width: units.gu(3)
+                    objectName: "custom_delegate_button_" + index
                 }
             }
         }
-
-        ToolbarItems {
-            id: lockedTools
-            ToolbarButton {
-                text: "locked"
-            }
-            locked: true
-            opened: true
-        }
     }
 
-    TestCase {
-        name: "ToolbarAPI"
+    UbuntuTestCase {
+        id: testCase
+        name: "ToolbarApi"
         when: windowShown
 
-        function initTestCase() {
-            compare(page.tools, toolbarItems, "Page tools are set initially");
-            compare(page.__propagated, mainView.__propagated, "propagated property is propagated from mainView to page")
-            compare(mainView.__propagated.toolbar.tools, toolbarItems, "Toolbar tools are set to page tools initially");
-            compare(toolbarItems.opened, true, "Toolbar is opened initially");
-            compare(toolbarItems.locked, false, "Toolbar is initially not locked");
+        function init() {
+            // revert to initial values
+            bar.actions = root.actionList;
+            bar.fixedAction = null;
+            shortBar.actions = root.shortActionList;
+            shortBar.fixedAction = null;
         }
 
-        function test_opened() {
-            mainView.__propagated.toolbar.open()
-            compare(mainView.__propagated.toolbar.opened, true, "Toolbar can be made opened");
-            mainView.__propagated.toolbar.close();
-            compare(mainView.__propagated.toolbar.opened, false, "Toolbar can be made closed");
-            page.tools.opened = true;
-            compare(mainView.__propagated.toolbar.opened, true, "Toolbar can be made opened by setting page.tools.opened");
-            page.tools.opened = false;
-            compare(mainView.__propagated.toolbar.opened, false, "Toolbar can be made closed by setting page.tools.opened to false");
+        // excludes the fixed action button
+        function get_number_of_visible_buttons(toolbar) {
+            var repeater = findChild(toolbar, "actions_repeater");
+            return repeater.count;
         }
 
-        function test_hideTimeout_bug1249031() {
-            compare(mainView.__propagated.toolbar.hideTimeout, 5000, "Toolbar hide timeout is initially 5 seconds.");
-            mainView.__propagated.toolbar.open();
-            compare(mainView.__propagated.toolbar.opened, true, "Toolbar can be made opened");
-            wait(mainView.__propagated.toolbar.hideTimeout + 500); // add 500 ms margin
-            compare(mainView.__propagated.toolbar.opened, false, "Toolbar automatically closes after timeout");
-
-            // now, wait in total more than hideTimeout, but less than 2*hideTimeout,
-            //  and have user interaction half-way to verify that the interaction
-            //  resets the timer and the toolbar is not closed.
-            mainView.__propagated.toolbar.open();
-            wait(0.6*mainView.__propagated.toolbar.hideTimeout);
-            mouseClick(toolbarButton, toolbarButton.width/2, toolbarButton.height/2);
-            wait(0.6*mainView.__propagated.toolbar.hideTimeout);
-            compare(mainView.__propagated.toolbar.opened, true, "Interacting with toolbar contents resets the hide timer");
-            // verify that the timer is still running by waiting a bit longer:
-            wait(0.6*mainView.__propagated.toolbar.hideTimeout);
-            compare(mainView.__propagated.toolbar.opened, false, "Interacting with the toolbar contents does not stop the timer")
+        function has_visible_fixed_action_button(toolbar) {
+            var repeater = findChild(toolbar, "fixedAction_repeater");
+            return repeater.count > 0;
         }
 
-        function test_locked() {
-            compare(mainView.__propagated.toolbar.tools.locked, false, "Toolbar initially not locked");
-            mainView.__propagated.toolbar.locked = true;
-            compare(mainView.__propagated.toolbar.locked, true, "Toolbar can be locked");
-            mainView.__propagated.toolbar.locked = false;
-            compare(mainView.__propagated.toolbar.locked, false, "Toolbar can be unlocked");
-            page.tools.locked = true;
-            compare(mainView.__propagated.toolbar.locked, true, "Toolbar can be locked by setting page.tools.locked");
-            page.tools.locked = false;
-            compare(mainView.__propagated.toolbar.locked, false, "Toolbar can be unlocked by setting page.tools.locked to false");
+        function test_actions() {
+            compare(bar.actions, root.actionList, "Actions property can be initialized.");
+            bar.actions = root.shortActionList;
+            compare(bar.actions, root.shortActionList, "Actions property can be updated.");
         }
 
-        function test_bug1192673() {
-            toolbarItems.opened = false;
-            mainView.__propagated.toolbar.open();
-            compare(toolbarItems.opened, true, "opening the toolbar updates toolbarItems.opened");
-            toolbarItems.opened = false;
-            compare(mainView.__propagated.toolbar.opened, false, "setting toolbarActions.opened to false closes the toolbar");
+        function test_fixed_action() {
+            compare(false, has_visible_fixed_action_button(bar),
+                    "Fixed action button visible without fixed action defined.");
+            compare(true, has_visible_fixed_action_button(fixedBar),
+                    "No fixed action button with fixed action defined.");
+            var container = findChild(fixedBar, "fixedAction_container_item");
+            var button = findChild(container, "delete_action_button");
+            compare(null !== button, true,
+                    "Incorrect delete action button.");
+            deleteAction.visible = false;
+            compare(false, has_visible_fixed_action_button(fixedBar),
+                    "Toolbar shows invisible fixed action.");
+            deleteAction.visible = true;
+            compare(true, has_visible_fixed_action_button(fixedBar),
+                    "Setting visible of fixed action does not show the button.");
         }
 
-        function test_dont_hide_locked_toolbar_bug1248759() {
-            page.tools = lockedTools;
-            compare(mainView.__propagated.toolbar.tools.locked, true, "Setting locked tools locks the toolbar");
-            wait(mainView.__propagated.toolbar.hideTimeout + 500);
-            compare(mainView.__propagated.toolbar.opened, true, "Don't auto-hide locked toolbar after timeout");
-            // revert original tools for other tests:
-            page.tools = toolbarItems;
+        function test_number_of_visible_buttons() {
+            compare(shortActionList.length, get_number_of_visible_buttons(shortBar),
+                    "Incorrect number of buttons visible for " + shortActionList.length + " actions.");
+            compare(actionList.length, get_number_of_visible_buttons(bar),
+                    "Incorrect number of buttons visible for " + actionList.length + " actions.");
+            actionList[2].visible = false;
+            compare(actionList.length - 1, get_number_of_visible_buttons(bar),
+                    "Invisible action still gets represented by a button.");
+            actionList[2].visible = true;
+            compare(actionList.length, get_number_of_visible_buttons(bar),
+                    "Making action visible does not make its button visible.");
+        }
+
+        function test_custom_delegate() {
+            var i = 0; var button; var n = actionList.length;
+            var row = findChild(orangeBar, "actions_container_row");
+            for (i = 0; i < n; i++) {
+                button = findChild(row, "custom_delegate_button_"+i);
+                compare(button.text, actionList[i].text, "Incorrect custom button " + i);
+            }
+            button = findChild(row, "custom_delegate_button_" + n);
+            compare(button, null, "Too many buttons.");
         }
     }
 }
