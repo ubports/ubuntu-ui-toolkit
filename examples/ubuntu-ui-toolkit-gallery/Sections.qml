@@ -22,9 +22,38 @@ Template {
     id: sectionsTemplate
 
     header: PageHeader {
+        id: h
         title: sectionsTemplate.title
-        sections.model: ["first", "second", "third"]
+        extension: Sections {
+            anchors {
+                left: parent.left
+                right: parent.right
+                bottom: parent.bottom
+            }
+
+            model: h.showManySections ? sectionsTemplate.manyActions
+                                      : sectionsTemplate.fewActions
+        }
+        property bool showManySections: false
+        trailingActionBar.actions: [
+            Action {
+                iconName: h.showManySections ? "view-collapse" : "view-expand"
+                text: h.showManySections ? "less" : "more"
+                onTriggered: h.showManySections = !h.showManySections;
+            }
+        ]
     }
+
+    property list<Action> fewActions: [
+        Action { text: "one" },
+        Action { text: "two" },
+        Action { text: "three" }
+    ]
+
+    property var manyActions: [
+        "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
+        "ten", "eleven", "twelve", "thirteen"
+    ]
 
     TemplateSection {
         title: "Sections"
@@ -34,18 +63,35 @@ Template {
             title: i18n.tr("Enabled")
 
             Sections {
-                actions: [
-                    Action { text: "one" },
-                    Action { text: "two" },
-                    Action { text: "three" }
-                ]
+                actions: sectionsTemplate.fewActions
             }
         }
         TemplateRow {
             title: i18n.tr("Disabled")
 
             Sections {
-                model: ["one", "two", "three"]
+                model: sectionsTemplate.fewActions
+                enabled: false
+            }
+        }
+    }
+
+    TemplateSection {
+        title: "Scrollable sections"
+        className: "Sections"
+
+        TemplateRow {
+            title: i18n.tr("Enabled")
+
+            Sections {
+                model: sectionsTemplate.manyActions
+            }
+        }
+        TemplateRow {
+            title: i18n.tr("Disabled")
+
+            Sections {
+                model: sectionsTemplate.manyActions
                 enabled: false
             }
         }
