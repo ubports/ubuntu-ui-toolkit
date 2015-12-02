@@ -282,9 +282,13 @@ void UCBottomEdgePrivate::setDragDirection(UCBottomEdge::DragDirection direction
 // proceed with drag completion action
 void UCBottomEdgePrivate::onDragEnded()
 {
-    if (!activeRegion || (dragDirection == UCBottomEdge::Downwards)) {
+    // collapse if we drag downwards, or not in any active region and we did not pass 30% of the BottomEdge height
+    if (dragDirection == UCBottomEdge::Downwards || (!activeRegion && dragProgress < 0.33)) {
         q_func()->collapse();
-    } else {
+    } else if (!activeRegion && dragProgress >= 0.33) {
+        // commit if we are not in an active region but we passed 30% of the BottomEdge height
+        q_func()->commit();
+    } else if (activeRegion) {
         // emit region's dragEnded first
         Q_EMIT activeRegion->dragEnded();
         commit(activeRegion->m_to);
