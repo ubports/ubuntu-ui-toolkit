@@ -420,6 +420,12 @@ bool UCMouse::mouseEvents(QObject *target, QMouseEvent *event)
 {
     bool result = false;
     Q_UNUSED(target);
+
+    if (event->source() == Qt::MouseEventSynthesizedByQt) {
+        qDebug() << "IGNORE SYNTHESIZED EVENT!";
+        return result;
+    }
+
     switch (event->type()) {
     case QEvent::MouseButtonPress:
     {

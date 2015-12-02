@@ -59,9 +59,9 @@ Item {
     property real overlayOpacityWhenShown: 1.0
     property real overlayOpacityWhenHidden: 0.0
 
-    property real troughThicknessSteppersStyle : units.gu(2)
-    property real troughThicknessThumbStyle : units.gu(2)
-    property real troughThicknessIndicatorStyle : units.dp(12) //1.5gu
+    property real troughThicknessSteppersStyle : units.dp(14)
+    property real troughThicknessThumbStyle : units.dp(14)
+    property real troughThicknessIndicatorStyle : units.dp(9)
 
     property real shortScrollingRatio: 0.1
     property real longScrollingRatio: 0.9
@@ -93,7 +93,7 @@ Item {
     }
 
     property real thumbThickness: units.gu(1)
-    property real indicatorThickness : units.dp(4)
+    property real indicatorThickness : units.dp(3)
     //this is the top/bottom (for the vertical scrollbar) and left/right (for horiz scrollbar) margin
     //from the trough
     //It is supposed to be the same margin as the one that separates the thumb from the left/right
@@ -103,7 +103,8 @@ Item {
     property bool initialized: false
 
     //this is the flag that tells us if we should change style when the mouse is hovering on the proximity area
-    property bool hoverTransformationFlag: (proximityArea.containsMouse /*&& (flickableItem.moving || scrollAnimation.running)*/)
+    property bool hoverTransformationFlag: (proximityArea.containsMouseDevice /*&& (flickableItem.moving || scrollAnimation.running)*/)
+
     //this is the condition that triggers "Thumb Style"
     //This property is also queried by the "buddyScrollbar" to make sure both scrollbars
     //are in thumb style even when only one of them has a true thumbStyleFlag
@@ -129,8 +130,9 @@ Item {
 
     property color troughColorThumbStyle: "#CDCDCD"
     property color troughColorSteppersStyle: "#f7f7f7"
-    property color sliderColor: "#5d5d5d"
-    property string sliderRadius: units.dp(2)
+
+    property color sliderColor: "#3b3b3b"
+    property string sliderRadius: units.dp(3)
 
     property real marginFromEdge: units.gu(1)
 
@@ -302,34 +304,35 @@ Item {
         //        }
 
         anchors.fill: parent
-        propagateComposedEvents: true
+        //propagateComposedEvents: true
+        property bool containsMouseDevice: false
+        preventStealing: false
         enabled: isScrollable && interactive //&& alwaysOnScrollbars
         hoverEnabled: isScrollable && interactive //&& alwaysOnScrollbars
-        onEntered: {
-            console.log("MOUSE DETECTED")
+        Mouse.onEntered: {
+            console.log("----------------------------MOUSE DETECTED--------------------------\n",
+                        "--------------------------------------------------------------------")
             isMouseConnected = true
+            proximityArea.containsMouseDevice = true
         }
-        onExited: /*if (state === 'steppers')*/ overshootTimer.restart()
+
+        Mouse.onExited: /*if (state === 'steppers')*/ { overshootTimer.restart(); proximityArea.containsMouseDevice = false }
 
         Timer {
             id: overshootTimer
             interval: scrollbarThicknessAnimation.duration * 10
         }
 
+        Mouse.onPositionChanged: mouse.accepted = false
+        Mouse.onPressed: { console.log("PRESSED NOW-----FILTER"); mouse.accepted = false }
+        Mouse.onClicked: mouse.accepted = false
+        Mouse.onReleased: mouse.accepted = false
+
         onPositionChanged: mouse.accepted = false
-        onPressed: mouse.accepted = false
+        onPressed: { console.log("PRESSED NOW"); mouse.accepted = false }
         onClicked: mouse.accepted = false
         onReleased: mouse.accepted = false
-    }
 
-    //this prevents the mouse area underneath to get hover events
-    MultiPointTouchArea {
-        //make sure we cover the whole mouse proximity area
-        anchors.fill: proximityArea
-        mouseEnabled: false
-        //onGestureStarted: { console.log("GESTURE STARTED")}
-        onPressed: console.log("PRESSED", visuals)
-        enabled: proximityArea.enabled
     }
 
     Binding {
@@ -463,7 +466,7 @@ Item {
                 color: Qt.rgba(troughColorSteppersStyle.r,
                                troughColorSteppersStyle.g,
                                troughColorSteppersStyle.b,
-                               troughColorSteppersStyle.a)
+                               troughColorSteppersStyle.a * 0.9)
             }
         }
     ]
@@ -807,7 +810,7 @@ Item {
             Rectangle {
                 id: slider
                 color: Qt.rgba(sliderColor.r, sliderColor.g, sliderColor.b, sliderColor.a *
-                               (thumbArea.drag.active || (thumbArea.pressed && slider.containsMouse && !pressHoldTimer.running) ? 1.0 : 0.7))
+                               (thumbArea.drag.active || (thumbArea.pressed && slider.containsMouse && !pressHoldTimer.running) ? 1.0 : 0.6))
                 anchors {
                     verticalCenter: (isVertical) ? undefined : trough.verticalCenter
                     horizontalCenter: (isVertical) ? trough.horizontalCenter : undefined
@@ -816,7 +819,12 @@ Item {
                 property bool containsMouse: contains(Qt.point(slider.mapFromItem(thumbArea, thumbArea.mouseX, thumbArea.mouseY).x,
                                                                slider.mapFromItem(thumbArea, thumbArea.mouseX, thumbArea.mouseY).y))
 
-                property bool containsTouch: {
+                //we just need to call this onPressed, so we shouldn't use a binding for it, which would get
+                //reevaluated any time one of the properties changes.
+                //+ having it as a binding has the sideeffect that when we query its value from inside onPressed
+                //it may not be using the most up-to-date value for *all* the variables it uses, and that would
+                //break the logic
+                function containsTouch() {
                     console.log(visuals)
                     var touchX = slider.mapFromItem(thumbArea, thumbArea.mouseX, thumbArea.mouseY).x
                     var touchY = slider.mapFromItem(thumbArea, thumbArea.mouseX, thumbArea.mouseY).y
@@ -889,7 +897,7 @@ Item {
                         if (!slider.contains(Qt.point(mappedCoord.x, mappedCoord.y))) {
                             pressHoldTimer.startTimer(thumbArea)
                         }
-                    } else if (visuals.veryLongContentItem && slider.containsTouch){
+                    } else if (visuals.veryLongContentItem && slider.containsTouch()){
                         console.log("COULD DRAG TOUCH")
                     } else {
                         //propagate otherwise
@@ -944,7 +952,7 @@ Item {
                             //(unless we add an additional multipointtoucharea and reimplement drag)
                             //so we assume that it's a mouse drag if the mouse is within the proximity area
                             //when the mouse is dragged
-                            slider.mouseDragging = proximityArea.containsMouse
+                            slider.mouseDragging = proximityArea.containsMouseDevice
                             slider.touchDragging = !slider.mouseDragging
                             thumbArea.saveFlickableScrollingState()
                             scrollCursor.drag()
@@ -1058,13 +1066,13 @@ Item {
                     target: firstStepper
                     property: "height"
                     when: isVertical
-                    value: visible ? units.gu(2) : 0
+                    value: visible ? troughThicknessSteppersStyle : 0
                 }
                 Binding {
                     target: firstStepper
                     property: "width"
                     when: !isVertical
-                    value: visible ? units.gu(2) : 0
+                    value: visible ? troughThicknessSteppersStyle : 0
                 }
 
                 Image {
@@ -1072,7 +1080,6 @@ Item {
                     //fillMode: Image.PreserveAspectFit
                     rotation: isVertical ? 180 : 90
                     source: Qt.resolvedUrl("../artwork/scrollbar_arrow.png")
-                    opacity: 0.5
                 }
             }
             Rectangle {
@@ -1093,13 +1100,13 @@ Item {
                     target: secondStepper
                     property: "height"
                     when: isVertical
-                    value: visible ? units.gu(2) : 0
+                    value: visible ? troughThicknessSteppersStyle : 0
                 }
                 Binding {
                     target: secondStepper
                     property: "width"
                     when: !isVertical
-                    value: visible ? units.gu(2) : 0
+                    value: visible ? troughThicknessSteppersStyle : 0
                 }
                 Image {
                     anchors.centerIn: parent
@@ -1107,7 +1114,6 @@ Item {
 
                     rotation: isVertical ? 0 : -90
                     source: Qt.resolvedUrl("../artwork/scrollbar_arrow.png") //Qt.resolvedUrl("../artwork/scrollbar_arrow.png")
-                    opacity: 0.5
                 }
             }
         }
@@ -1174,8 +1180,8 @@ Item {
 
         //remember the thickness animates during state changes,
         //so we want to bind the right side to the thickness of the scrollbar
-        width: isVertical ? flowContainer.thickness : units.gu(2)
-        height: isVertical ? units.gu(2) : flowContainer.thickness
+        width: isVertical ? flowContainer.thickness : troughThicknessSteppersStyle
+        height: isVertical ? troughThicknessSteppersStyle : flowContainer.thickness
         color: trough.color
         visible: flowContainer.showCornerRect && styledItem.buddyScrollbar && styledItem.buddyScrollbar.__styleInstance.isScrollable
     }
