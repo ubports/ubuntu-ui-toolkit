@@ -172,7 +172,7 @@ function reset {
 	if [ ${UNLOCK_ONLY} == false ]; then
             adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S reboot 2>&1|grep -v password"
              sleep_indicator 120
-             device_wait_for_shell 
+             wait_for_shell 
              sleep_indicator 10
              network
         fi
