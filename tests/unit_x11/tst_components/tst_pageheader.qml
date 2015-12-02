@@ -64,16 +64,39 @@ Item {
                 iconName: "info"
                 text: "second"
                 onTriggered: print("Trigger second action")
+                objectName: "two"
             },
             Action {
                 iconName: "search"
                 text: "third"
                 onTriggered: print("Trigger third action")
+                objectName: "three"
             },
             Action {
                 iconName: "appointment"
                 text: "fourth"
                 onTriggered: print("Trigger fourth action")
+                objectName: "four"
+            },
+            Action {
+                iconName: "attachment"
+                text: "Attach"
+                objectName: "five"
+            },
+            Action {
+                iconName: "contact"
+                text: "Contact"
+                objectName: "six"
+            },
+            Action {
+                iconName: "like"
+                text: "Like"
+                objectName: "seven"
+            },
+            Action {
+                iconName: "lock"
+                text: "Lock"
+                objectName: "eight"
             }
         ]
 
@@ -197,10 +220,10 @@ Item {
                 }
             }
 
-            PageHeader {
-                id: defaultHeader
-                visible: false
-            }
+//            PageHeader {
+//                id: defaultHeader
+//                visible: false
+//            }
         }
 
         UbuntuTestCase {
