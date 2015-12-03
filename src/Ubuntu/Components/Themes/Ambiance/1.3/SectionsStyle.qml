@@ -25,6 +25,11 @@ Item {
     //- added underlineColor
     //- fontsize to medium
     //- font weight to Light
+//    Rectangle {
+//        anchors.fill: parent
+//        color: "pink"
+//        opacity: 0.3
+//    }
 
     implicitWidth: units.gu(50) //sectionsRow.width
     implicitHeight: units.gu(4)
@@ -41,7 +46,7 @@ Item {
       The foreground color of underline rectangle of unselected sections.
      */
     //FIXME: hardcoded color
-    property color underlineColor: Qt.rgba(0,0,0,0.2)//theme.palette.selected.backgroundText
+    property color underlineColor: "#CDCDCD"//Qt.rgba(0,0,0,0.2)//theme.palette.selected.backgroundText
 
     /*!
       The foreground color of the selected section.
@@ -245,7 +250,23 @@ Item {
                     text: modelData.hasOwnProperty("text") ? modelData.text : modelData
                     fontSize: sectionsStyle.fontSize
                     font.weight: Font.Light
-                    anchors.centerIn: parent
+//                    anchors.centerIn: parent
+//                    anchors.baseline: underline.top
+//                    anchors.baselineOffset: units.gu(2)
+                    // FIXME: baseline must be 2gu above the line
+                    anchors {
+                        baseline: underline.bottom
+//                        bottom: parent.bottom
+//                        bottomMargin: units.gu(1)
+                        baselineOffset: -units.gu(2)
+                        horizontalCenter: parent.horizontalCenter
+                    }
+//                    Rectangle {
+//                        anchors.fill: parent
+//                        color: "blue"
+//                        opacity: 0.2
+//                    }
+
                     color: sectionButton.selected ?
                                sectionsStyle.selectedSectionColor :
                                sectionsStyle.sectionColor
@@ -256,6 +277,7 @@ Item {
 
                 // Section title underline
                 Rectangle {
+                    id: underline
                     anchors {
                         bottom: parent.bottom
                         left: parent.left

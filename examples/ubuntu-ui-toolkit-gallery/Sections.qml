@@ -45,14 +45,15 @@ Template {
     }
 
     property list<Action> fewActions: [
-        Action { text: "one" },
-        Action { text: "two" },
-        Action { text: "three" }
+        Action { text: "One" },
+        Action { text: "Two" },
+        Action { text: "Three" }
     ]
 
     property var manyActions: [
         "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
-        "ten", "eleven", "twelve", "thirteen"
+        "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen",
+        "sixteen", "seveneen", "eighteen", "nineteen", "twenty"
     ]
 
     TemplateSection {
