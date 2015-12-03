@@ -57,13 +57,14 @@ BottomEdgeStyle {
 
         Behavior on anchors.topMargin { UbuntuNumberAnimation { id: panelBehavior } }
 
-        state: bottomEdge.status > BottomEdge.Hidden ? "lock-hint" : ""
+        state: bottomEdge.status > BottomEdge.Hidden ? "drop-hint" : ""
         states: [
             State {
-                name: "lock-hint"
+                name: "drop-hint"
                 PropertyChanges {
                     target: bottomEdge.hint
-                    status: BottomEdgeHint.Locked
+                    restoreEntryValues: false
+                    status: BottomEdgeHint.Inactive
                 }
             }
         ]
