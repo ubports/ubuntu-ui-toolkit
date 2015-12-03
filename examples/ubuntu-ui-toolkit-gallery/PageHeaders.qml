@@ -117,7 +117,7 @@ Template {
                     anchors.centerIn: parent
                     id: label
                     text: action.text
-                    font.weight: Font.Normal
+                    font.weight: Font.Light
                 }
             }
         }
