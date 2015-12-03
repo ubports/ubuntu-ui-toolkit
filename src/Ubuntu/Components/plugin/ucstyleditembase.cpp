@@ -481,7 +481,6 @@ QString UCStyledItemBasePrivate::propertyForVersion(quint16 version) const
 
 void UCStyledItemBasePrivate::completeStyledItem()
 {
-    Q_Q(UCStyledItemBase);
     // no animation at this time
     // prepare style context if not been done yet
     postStyleChanged();
