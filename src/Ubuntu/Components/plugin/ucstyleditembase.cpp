@@ -35,6 +35,15 @@ UCStyledItemBasePrivate::UCStyledItemBasePrivate()
 {
 }
 
+bool UCStyledItemBase::activeFocusOnTab2() const
+{
+    return activeFocusOnTab();
+}
+void UCStyledItemBase::setActiveFocusOnTab2(bool v)
+{
+    setActiveFocusOnTab(v);
+}
+
 UCStyledItemBasePrivate::~UCStyledItemBasePrivate()
 {
 }
@@ -43,6 +52,7 @@ void UCStyledItemBasePrivate::init()
 {
     Q_Q(UCStyledItemBase);
     q->setFlag(QQuickItem::ItemIsFocusScope);
+    QObject::connect(q, &QQuickItem::activeFocusOnTabChanged, q, &UCStyledItemBase::activeFocusOnTabChanged2);
 }
 
 
@@ -203,7 +213,6 @@ void UCStyledItemBase::setActiveFocusOnPress(bool value)
         return;
     d->activeFocusOnPress = value;
     d->setFocusable(d->activeFocusOnPress);
-    setActiveFocusOnTab(value);
     Q_EMIT activeFocusOnPressChanged();
 }
 
@@ -472,7 +481,6 @@ QString UCStyledItemBasePrivate::propertyForVersion(quint16 version) const
 
 void UCStyledItemBasePrivate::completeStyledItem()
 {
-    Q_Q(UCStyledItemBase);
     // no animation at this time
     // prepare style context if not been done yet
     postStyleChanged();
