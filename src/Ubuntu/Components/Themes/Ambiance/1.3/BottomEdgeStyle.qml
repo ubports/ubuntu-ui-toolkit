@@ -27,7 +27,9 @@ BottomEdgeStyle {
     revealThreshold: bottomEdge.hint.height + units.gu(2)
 
     // own styling properties
-    property color backgroundColor: Qt.rgba(0, 0, 0, Math.min(0.25, (height - revealThreshold - panelItem.y) / (height - revealThreshold)))
+    property color backgroundColor: !panelItem.collapsing
+                                    ? Qt.rgba(0, 0, 0, Math.min(0.25, (height - revealThreshold - panelItem.y) / (height - revealThreshold)))
+                                    : "transparent"
     property color panelColor: theme.palette.normal.overlay
     property color shadowColor: "#000000"
 
@@ -43,6 +45,7 @@ BottomEdgeStyle {
     Rectangle {
         id: panelItem
         objectName: "bottomedge_panel"
+        property bool collapsing: false
         anchors {
             left: parent.left
             right: parent.right
@@ -56,6 +59,12 @@ BottomEdgeStyle {
         opacity: bottomEdge.status >= BottomEdge.Revealed ? 1.0 : 0.0
 
         Behavior on anchors.topMargin { UbuntuNumberAnimation { id: panelBehavior } }
+
+        Connections {
+            target: bottomEdge
+            onCollapseStarted: panelItem.collapsing = true
+            onCollapseCompleted: panelItem.collapsing = false
+        }
 
         state: bottomEdge.status > BottomEdge.Hidden ? "drop-hint" : ""
         states: [

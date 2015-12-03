@@ -402,7 +402,13 @@ void UCBottomEdgePrivate::patchContentItemHeader()
     // are we committed?
     if (status == UCBottomEdge::Committed) {
         // activate the action
-        UCCollapseAction *collapse = qobject_cast<UCCollapseAction*>(navigationActions->at(0));
+        UCCollapseAction *collapse = navigationActions->size() > 0
+                ? qobject_cast<UCCollapseAction*>(navigationActions->at(0))
+                : Q_NULLPTR;
+        if (!collapse) {
+            collapse = new UCCollapseAction(header);
+            navigationActions->append(collapse);
+        }
         collapse->activate();
         QObject::connect(collapse, &UCAction::triggered, q_func(), &UCBottomEdge::collapse, Qt::DirectConnection);
     } else if (navigationActions->size() <= 0) {
