@@ -111,9 +111,9 @@ Item {
                         cancelFlick()
                     }
 
-                    console.log("CONTENTX", contentX)
+//                    console.log("CONTENTX", contentX)
                     if (contentXAnim.running) { contentXAnim.stop() }
-                    console.log("CONTENTXAFTER", contentX)
+//                    console.log("CONTENTXAFTER", contentX)
 
                     var pos =  currentItem.mapToItem(sectionsListView.contentItem, 0, 0)
 
@@ -140,7 +140,7 @@ Item {
                     contentXAnim.to =  Math.max(originX, Math.min(newContentX, originX + contentWidth - width))
                     contentXAnim.start()
 
-                    console.log("OUR VALUES", contentX, originX, contentWidth, contentXAnim.to)
+//                    console.log("OUR VALUES", contentX, originX, contentWidth, contentXAnim.to)
                     //FIXME: due to listview internal implementation and the fact that delegates don't have a fixed size,
                     //this breaks in some cases, due to originX changing *after* we start the
                     //animation. In those cases the current item doesn't align to the horizontal center because we compute
@@ -159,7 +159,7 @@ Item {
             //this is just to disable keyboard navigation to avoid messing with contentX/contentWidth while
             //the view is moving
             focus: !moving
-            onContentXChanged: console.log(contentX, originX, contentWidth)
+//            onContentXChanged: console.log(contentX, originX, contentWidth)
 
             //FIXME: this means when we resize the window it will refocus on the current item even if it's outside of the view!
             //NOTE: removing this also breaks the alignment when the sections are initialized, because of contentX/contentWidth changing
@@ -318,7 +318,7 @@ Item {
             }
         }
 
-        onContainsMouseChanged: console.log(containsMouse)
+//        onContainsMouseChanged: console.log(containsMouse)
         anchors.fill: parent
         hoverEnabled: true
 
