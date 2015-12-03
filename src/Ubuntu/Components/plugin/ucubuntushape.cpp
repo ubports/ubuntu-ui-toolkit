@@ -28,6 +28,7 @@
 #include "ucubuntushape.h"
 #include "ucubuntushapetexture.h"
 #include "ucunits.h"
+#include "ucnamespace.h"
 #include "quickutils.h"
 #include <QtCore/QPointer>
 #include <QtGui/QGuiApplication>
@@ -307,6 +308,7 @@ UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
     , m_sourceFillMode(Stretch)
     , m_sourceHorizontalWrapMode(Transparent)
     , m_sourceVerticalWrapMode(Transparent)
+    , m_version(Version12)
     , m_sourceOpacity(255)
     , m_flags(Stretched)
 {
@@ -326,6 +328,11 @@ bool UCUbuntuShape::useDistanceFields(const QOpenGLContext* openglContext)
         // OpenGL and OpenGL ES with standard derivatives.
         (!openglContext->isOpenGLES()
          || openglContext->hasExtension(QByteArrayLiteral("GL_OES_standard_derivatives")));
+}
+
+bool UCUbuntuShape::isVersionGreaterThanOrEqual(Version version)
+{
+    return static_cast<int>(m_version) >= static_cast<int>(version);
 }
 
 /*! \qmlproperty string UbuntuShape::radius
@@ -808,7 +815,7 @@ void UCUbuntuShape::setBorderSource(const QString& borderSource)
 void UCUbuntuShape::setColor(const QColor& color)
 {
     static bool loggedOnce = false;
-    if (!loggedOnce) {
+    if (isVersionGreaterThanOrEqual(Version13) && !loggedOnce) {
         loggedOnce = true;
         qmlInfo(this) << "'color' is deprecated. Use 'backgroundColor', 'secondaryBackgroundColor' "
             "and 'backgroundMode' instead.";
@@ -841,7 +848,7 @@ void UCUbuntuShape::setColor(const QColor& color)
 void UCUbuntuShape::setGradientColor(const QColor& gradientColor)
 {
     static bool loggedOnce = false;
-    if (!loggedOnce) {
+    if (isVersionGreaterThanOrEqual(Version13) && !loggedOnce) {
         loggedOnce = true;
         qmlInfo(this) << "'gradientColor' is deprecated. Use 'backgroundColor', "
             "'secondaryBackgroundColor' and 'backgroundMode' instead.";
@@ -872,7 +879,7 @@ void UCUbuntuShape::setGradientColor(const QColor& gradientColor)
 void UCUbuntuShape::setImage(const QVariant& image)
 {
     static bool loggedOnce = false;
-    if (!loggedOnce) {
+    if (isVersionGreaterThanOrEqual(Version13) && !loggedOnce) {
         loggedOnce = true;
         qmlInfo(this) << "'image' is deprecated. Use 'source' instead.";
     }
@@ -904,12 +911,6 @@ void UCUbuntuShape::setImage(const QVariant& image)
 // maintain it for a while for compatibility reasons.
 void UCUbuntuShape::setStretched(bool stretched)
 {
-    static bool loggedOnce = false;
-    if (!loggedOnce) {
-        loggedOnce = true;
-        qmlInfo(this) << "'stretched' is deprecated. Use 'sourceFillMode' instead";
-    }
-
     if (!(m_flags & SourceApiSet)) {
         if (!!(m_flags & Stretched) != stretched) {
             if (stretched) {
@@ -927,13 +928,6 @@ void UCUbuntuShape::setStretched(bool stretched)
 // Deprecation layer. Same comment as setStretched().
 void UCUbuntuShape::setHorizontalAlignment(HAlignment horizontalAlignment)
 {
-    static bool loggedOnce = false;
-    if (!loggedOnce) {
-        loggedOnce = true;
-        qmlInfo(this) << "'horizontalAlignment' is deprecated. Use 'sourceHorizontalAlignment' "
-            "instead";
-    }
-
     if (!(m_flags & SourceApiSet)) {
         if (m_imageHorizontalAlignment != horizontalAlignment) {
             m_imageHorizontalAlignment = horizontalAlignment;
@@ -947,13 +941,6 @@ void UCUbuntuShape::setHorizontalAlignment(HAlignment horizontalAlignment)
 // Deprecation layer. Same comment as setStretched().
 void UCUbuntuShape::setVerticalAlignment(VAlignment verticalAlignment)
 {
-    static bool loggedOnce = false;
-    if (!loggedOnce) {
-        loggedOnce = true;
-        qmlInfo(this) << "'horizontalAlignment' is deprecated. Use 'sourceVerticalAlignment' "
-            "instead";
-    }
-
     if (!(m_flags & SourceApiSet)) {
         if (m_imageVerticalAlignment != verticalAlignment) {
             m_imageVerticalAlignment = verticalAlignment;
@@ -1045,6 +1032,21 @@ void UCUbuntuShape::_q_textureChanged()
 {
     m_flags |= DirtySourceTransform;
     update();
+}
+
+QString UCUbuntuShape::propertyForVersion(quint16 version) const
+{
+    if (MINOR_VERSION(version) == 3) {
+        return QStringLiteral("relativeRadius");
+    } else {
+        return QString();
+    }
+}
+
+void UCUbuntuShape::componentComplete()
+{
+    QQuickItem::componentComplete();
+    m_version = MINOR_VERSION(importVersion(this)) == 3 ? Version13 : Version12;
 }
 
 void UCUbuntuShape::geometryChanged(const QRectF& newGeometry, const QRectF& oldGeometry)
