@@ -21,6 +21,7 @@
 #include "quickutils.h"
 #include "ucunits.h"
 #include "gestures/ucswipearea.h"
+#include "propertychange_p.h"
 #include <QtQml/private/qqmlproperty_p.h>
 #include <QtQuick/private/qquickflickable_p.h>
 
@@ -123,7 +124,22 @@ void UCBottomEdgeHint::onMouseAttached()
     setStatus(QuickUtils::instance().mouseAttached() ? Locked : Active);
     if (m_status == Active) {
         m_deactivationTimer.start(m_deactivateTimeout, this);
+        if (m_flickableBottomMargin) {
+            delete m_flickableBottomMargin;
+            m_flickableBottomMargin = Q_NULLPTR;
+        }
+    } else if (m_flickable) {
+        adjustFlickableBottomMargin();
     }
+}
+
+void UCBottomEdgeHint::adjustFlickableBottomMargin()
+{
+    if (!m_flickableBottomMargin) {
+        m_flickableBottomMargin = new PropertyChange(m_flickable, "bottomMargin");
+    }
+    PropertyChange::setValue(m_flickableBottomMargin, height());
+    m_flickable->setContentY(m_flickable->contentY() + height());
 }
 
 void UCBottomEdgeHint::onGridUnitChanged()

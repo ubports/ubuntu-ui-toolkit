@@ -23,6 +23,7 @@
 
 class QQuickFlickable;
 class UCSwipeArea;
+class PropertyChange;
 class UCBottomEdgeHint : public UCActionItem
 {
     Q_OBJECT
@@ -86,11 +87,14 @@ private:
     QBasicTimer m_deactivationTimer;
     UCSwipeArea *m_swipeArea;
     QQuickFlickable *m_flickable;
+    PropertyChange *m_flickableBottomMargin = nullptr;
     int m_deactivateTimeout;
     Status m_status;
     bool m_pressed:1;
 
     friend class UCBottomEdge;
+
+    void adjustFlickableBottomMargin();
 };
 
 #endif // UCBOTTOMEDGEHINT_H
