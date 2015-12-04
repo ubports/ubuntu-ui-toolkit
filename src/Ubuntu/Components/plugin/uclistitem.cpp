@@ -94,7 +94,6 @@ void UCListItemDivider::paletteChanged()
 {
     Q_D(UCListItemDivider);
     if (!d->colorFromChanged || !d->colorToChanged) {
-        // TODO: the palette colors seem to be basted?
         QColor themeColor = d->listItem->getTheme()->getPaletteColor("normal", "base");
         if (!d->colorFromChanged) {
             d->colorFrom = themeColor;
@@ -116,9 +115,7 @@ void UCListItemDivider::updateGradient()
         d->gradient.append(QGradientStop(0.5, d->colorTo));
         d->gradient.append(QGradientStop(1.0, d->colorTo));
     }
-    if (d->listItem) {
-        d->listItem->update();
-    }
+    update();
 }
 
 QSGNode *UCListItemDivider::updatePaintNode(QSGNode *node, UpdatePaintNodeData *data)
@@ -137,7 +134,7 @@ QSGNode *UCListItemDivider::updatePaintNode(QSGNode *node, UpdatePaintNodeData *
         if (d->gradient.size() > 0) {
             dividerNode->setGradientStops(d->gradient);
         } else {
-            dividerNode->setColor(d->colorTo);
+            dividerNode->setColor(d->colorFrom);
         }
         dividerNode->update();
         return dividerNode;
