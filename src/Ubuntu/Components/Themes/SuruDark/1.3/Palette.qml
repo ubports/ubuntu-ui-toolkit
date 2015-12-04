@@ -22,11 +22,12 @@ import Ubuntu.Components.Themes 1.3
 Palette {
     normal: SuruDarkNormal {}
     inactive: SuruDarkNormal {
+        field: UbuntuColors.deepSpace
         // inactive is 30% transparent normal
         Component.onCompleted: {
             for (var p in normal) {
                 // skip objectName and all change signals
-                if (p == "objectName" || p.indexOf("Changed") > 0) continue;
+                if (p == "objectName" || p == "field" || p.indexOf("Changed") > 0) continue;
                 inactive[p] = Qt.rgba(normal[p].r, normal[p].g, normal[p].b, 0.3);
             }
         }
@@ -34,9 +35,9 @@ Palette {
 
     // selected differs from normal in background, base, foreground
     selected: SuruDarkNormal {
-        background: Qt.rgba(UbuntuColors.orange.r, UbuntuColors.orange.g, UbuntuColors.orange.b, 0.1)
-        base: Qt.rgba(UbuntuColors.orange.r, UbuntuColors.orange.g, UbuntuColors.orange.b, 0.1)
-        foreground: Qt.rgba(UbuntuColors.orange.r, UbuntuColors.orange.g, UbuntuColors.orange.b, 0.1)
+        background: Qt.rgba(UbuntuColors.orange.r, UbuntuColors.orange.g, UbuntuColors.orange.b, 0.4)
+        base: Qt.rgba(UbuntuColors.orange.r, UbuntuColors.orange.g, UbuntuColors.orange.b, 0.4)
+        foreground: Qt.rgba(UbuntuColors.orange.r, UbuntuColors.orange.g, UbuntuColors.orange.b, 0.4)
     }
 
     // selected differs from normal in background, base, foreground

@@ -757,7 +757,6 @@ Ubuntu.StyledItem {
 
     //internals
 
-    opacity: enabled ? 1.0 : 0.3
     activeFocusOnPress: true
     activeFocusOnTab: true
 
@@ -824,7 +823,7 @@ Ubuntu.StyledItem {
         }
         // hint is shown till user types something in the field
         visible: (editor.text == "") && !editor.inputMethodComposing
-        color: theme.palette.normal.backgroundText
+        color: "blue"//theme.palette.normal.base
         font: editor.font
         elide: Text.ElideRight
         wrapMode: Text.WordWrap

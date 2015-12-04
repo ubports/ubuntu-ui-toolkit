@@ -35,7 +35,7 @@ PaletteValues {
     overlaySecondaryText: UbuntuColors.darkGrey
     field: UbuntuColors.charcoal
     fieldText: "#FFFFFF"
-    selection: Qt.rgba(UbuntuColors.orange.r, UbuntuColors.orange.g, UbuntuColors.orange.b, 0.2)
+    selection: Qt.rgba(UbuntuColors.orange.r, UbuntuColors.orange.g, UbuntuColors.orange.b, 0.4)
     selectionText: "#FFFFFF"
     positive: UbuntuColors.green
     positiveText: "#FFFFFF"

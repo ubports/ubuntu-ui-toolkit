@@ -815,7 +815,6 @@ Ubuntu.ActionItem {
 
     // internals
 
-    opacity: enabled ? 1.0 : 0.3
     activeFocusOnPress: true
     activeFocusOnTab: true
 
@@ -956,7 +955,7 @@ Ubuntu.ActionItem {
         }
         // hint is shown till user types something in the field
         visible: (editor.text == "") && !editor.inputMethodComposing
-        color: theme.palette.normal.backgroundText
+        color: theme.palette.normal.base
         font: editor.font
         elide: Text.ElideRight
     }
