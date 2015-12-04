@@ -29,9 +29,7 @@ Item {
       The background color when the checkbox is not checked.
      */
     property color uncheckedBackgroundColor: styledItem.enabled
-                                                ? Qt.rgba(theme.palette.normal.foreground.r,
-                                                          theme.palette.normal.foreground.g,
-                                                          theme.palette.normal.foreground.b, 0.2)
+                                                ? theme.palette.normal.foreground
                                                 : theme.palette.inactive.foreground
 
     /*!
