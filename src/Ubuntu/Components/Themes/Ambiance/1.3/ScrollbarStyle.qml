@@ -296,15 +296,8 @@ Item {
     MouseArea {
         id: proximityArea
 
-        //        Rectangle {
-        //            anchors.fill: parent
-        //            color:"red"
-        //            opacity:0.2
-        //            visible: parent.enabled
-        //        }
-
         anchors.fill: parent
-        //propagateComposedEvents: true
+        propagateComposedEvents: true
         property bool containsMouseDevice: false
         preventStealing: false
         enabled: isScrollable && interactive //&& alwaysOnScrollbars
@@ -323,16 +316,7 @@ Item {
             interval: scrollbarThicknessAnimation.duration * 10
         }
 
-        Mouse.onPositionChanged: mouse.accepted = false
-        Mouse.onPressed: { console.log("PRESSED NOW-----FILTER"); mouse.accepted = false }
-        Mouse.onClicked: mouse.accepted = false
-        Mouse.onReleased: mouse.accepted = false
-
-        onPositionChanged: mouse.accepted = false
         onPressed: { console.log("PRESSED NOW"); mouse.accepted = false }
-        onClicked: mouse.accepted = false
-        onReleased: mouse.accepted = false
-
     }
 
     Binding {
