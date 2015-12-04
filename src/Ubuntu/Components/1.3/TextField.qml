@@ -172,6 +172,13 @@ Ubuntu.ActionItem {
     property alias acceptableInput: editor.acceptableInput
 
     /*!
+      Whether the TextField should gain active focus on a mouse press. By default
+      this is set to true.
+      \qmlproperty bool activeFocusOnPress
+    */
+    property alias activeFocusOnPress: editor.activeFocusOnPress
+
+    /*!
       Whether the TextField should scroll when the text is longer than the width.
       By default this is set to true.
 
@@ -810,6 +817,7 @@ Ubuntu.ActionItem {
 
     opacity: enabled ? 1.0 : 0.3
     activeFocusOnPress: true
+    activeFocusOnTab: true
 
     /*! \internal */
     onVisibleChanged: {
@@ -871,6 +879,7 @@ Ubuntu.ActionItem {
                 children[i].parent = leftPane;
                 children[i].anchors.verticalCenter = verticalCenter;
                 children[i].activeFocusOnPress = false;
+                children[i].activeFocusOnTab = false;
             }
         }
     }
@@ -894,6 +903,7 @@ Ubuntu.ActionItem {
                 children[i].parent = rightPane;
                 children[i].anchors.verticalCenter = verticalCenter;
                 children[i].activeFocusOnPress = false;
+                children[i].activeFocusOnTab = false;
             }
         }
     }
@@ -902,6 +912,7 @@ Ubuntu.ActionItem {
         id: clearButton
         objectName: "clear_button"
         activeFocusOnPress: false
+        activeFocusOnTab: false
 
         anchors {
             top: parent.top
@@ -995,7 +1006,7 @@ Ubuntu.ActionItem {
 
             // overrides
             selectByMouse: true
-            activeFocusOnPress: control.activeFocusOnPress
+            activeFocusOnPress: true
             onActiveFocusChanged: if (!activeFocus && inputHandler.popover) PopupUtils.close(inputHandler.popover)
 
             // input selection and navigation handling

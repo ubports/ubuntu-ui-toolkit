@@ -21,6 +21,7 @@
 #include "quickutils.h"
 #include "ucunits.h"
 #include "gestures/ucswipearea.h"
+#include "propertychange_p.h"
 #include <QtQml/private/qqmlproperty_p.h>
 #include <QtQuick/private/qquickflickable_p.h>
 
@@ -79,12 +80,7 @@ UCBottomEdgeHint::UCBottomEdgeHint(QQuickItem *parent)
 
     // FIXME: use QInputDeviceInfo once available
     // https://bugs.launchpad.net/ubuntu/+source/ubuntu-ui-toolkit/+bug/1276808
-    connect(&QuickUtils::instance(), &QuickUtils::mouseAttachedChanged, [this]() {
-        setStatus(QuickUtils::instance().mouseAttached() ? Locked : Active);
-        if (m_status == Active) {
-            m_deactivationTimer.start(m_deactivateTimeout, this);
-        }
-    });
+    connect(&QuickUtils::instance(), &QuickUtils::mouseAttachedChanged, this, &UCBottomEdgeHint::onMouseAttached);
 
     // accept mouse events
     setAcceptedMouseButtons(Qt::LeftButton);
@@ -116,13 +112,39 @@ void UCBottomEdgeHint::init()
     m_swipeArea->setDirection(UCSwipeArea::Upwards);
 
     // grid unit sync
-    connect(&UCUnits::instance(), &UCUnits::gridUnitChanged, [this] {
-        m_swipeArea->setImplicitHeight(UCUnits::instance().gu(SWIPE_AREA_HEIGHT_GU));
-    });
+    connect(&UCUnits::instance(), &UCUnits::gridUnitChanged, this, &UCBottomEdgeHint::onGridUnitChanged);
 
     // connect to gesture detection
     connect(m_swipeArea, &UCSwipeArea::draggingChanged,
             this, &UCBottomEdgeHint::onDraggingChanged, Qt::DirectConnection);
+}
+
+void UCBottomEdgeHint::onMouseAttached()
+{
+    setStatus(QuickUtils::instance().mouseAttached() ? Locked : Active);
+    if (m_status == Active) {
+        m_deactivationTimer.start(m_deactivateTimeout, this);
+        if (m_flickableBottomMargin) {
+            delete m_flickableBottomMargin;
+            m_flickableBottomMargin = Q_NULLPTR;
+        }
+    } else if (m_flickable) {
+        adjustFlickableBottomMargin();
+    }
+}
+
+void UCBottomEdgeHint::adjustFlickableBottomMargin()
+{
+    if (!m_flickableBottomMargin) {
+        m_flickableBottomMargin = new PropertyChange(m_flickable, "bottomMargin");
+    }
+    PropertyChange::setValue(m_flickableBottomMargin, height());
+    m_flickable->setContentY(m_flickable->contentY() + height());
+}
+
+void UCBottomEdgeHint::onGridUnitChanged()
+{
+    m_swipeArea->setImplicitHeight(UCUnits::instance().gu(SWIPE_AREA_HEIGHT_GU));
 }
 
 void UCBottomEdgeHint::itemChange(ItemChange change, const ItemChangeData &data)
@@ -169,7 +191,7 @@ void UCBottomEdgeHint::mousePressEvent(QMouseEvent *event)
 }
 void UCBottomEdgeHint::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (m_pressed && (m_status >= Active)) {
+    if (m_pressed && (m_status >= Active) && contains(event->localPos())) {
         Q_EMIT clicked();
         event->accept();
     } else {
