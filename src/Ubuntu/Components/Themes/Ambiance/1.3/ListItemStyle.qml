@@ -25,10 +25,10 @@ Styles.ListItemStyle {
     /*
      * Coloring properties
      */
-    property color leadingPanelColor: UbuntuColors.red
-    property color trailingPanelColor: "white"
-    property color leadingForegroundColor: "white"
-    property color trailingForegroundColor: theme.palette.normal.foreground
+    property color leadingPanelColor: theme.palette.normal.foreground
+    property color trailingPanelColor: theme.palette.normal.foreground
+    property color leadingForegroundColor: theme.palette.normal.negative
+    property color trailingForegroundColor: theme.palette.normal.foregroundText
 
     // anchoring
     anchors {
@@ -189,6 +189,7 @@ Styles.ListItemStyle {
                 name: "view-grid-symbolic"
                 opacity: 0.0
                 scale: 0.5
+                color: theme.palette.normal.base
             }
             Binding {
                 target: listItemStyle

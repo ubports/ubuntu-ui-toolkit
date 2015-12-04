@@ -163,7 +163,7 @@ Template {
             model: [ i18n.tr("Basic"), i18n.tr("Colored divider"), i18n.tr("Immutable"), i18n.tr("No divider") ]
             delegate: ListItemWithLabel {
                 title.text: modelData
-                color: dragging ? "lightblue" : "transparent"
+                color: dragging ? theme.palette.selected.base : "transparent"
                 divider {
                     colorFrom: modelData == i18n.tr("Colored divider") ? UbuntuColors.red : Qt.rgba(0.0, 0.0, 0.0, 0.0)
                     colorTo: modelData == i18n.tr("Colored divider") ? UbuntuColors.green : Qt.rgba(0.0, 0.0, 0.0, 0.0)

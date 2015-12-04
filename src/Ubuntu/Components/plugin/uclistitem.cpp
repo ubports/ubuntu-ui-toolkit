@@ -93,20 +93,14 @@ void UCListItemDivider::init(UCListItem *listItem)
 void UCListItemDivider::paletteChanged()
 {
     Q_D(UCListItemDivider);
-    QColor background = d->listItem->getTheme()->getPaletteColor("normal", "background");
-    if (!background.isValid()) {
-        return;
-    }
-    // FIXME: we need a palette value for divider colors, till then base on the background
-    // luminance
     if (!d->colorFromChanged || !d->colorToChanged) {
-        qreal luminance = (background.red()*212 + background.green()*715 + background.blue()*73)/1000.0/255.0;
-        bool lightBackground = (luminance > 0.85);
+        // TODO: the palette colors seem to be basted?
+        QColor themeColor = d->listItem->getTheme()->getPaletteColor("normal", "base");
         if (!d->colorFromChanged) {
-            d->colorFrom = lightBackground ? QColor("#26000000") : QColor("#26FFFFFF");
+            d->colorFrom = themeColor;
         }
         if (!d->colorToChanged) {
-            d->colorTo = lightBackground ? QColor("#14FFFFFF") : QColor("#14000000");
+            d->colorTo = themeColor;
         }
         updateGradient();
     }
@@ -116,10 +110,12 @@ void UCListItemDivider::updateGradient()
 {
     Q_D(UCListItemDivider);
     d->gradient.clear();
-    d->gradient.append(QGradientStop(0.0, d->colorFrom));
-    d->gradient.append(QGradientStop(0.49, d->colorFrom));
-    d->gradient.append(QGradientStop(0.5, d->colorTo));
-    d->gradient.append(QGradientStop(1.0, d->colorTo));
+    if (height() > UCUnits::instance().dp(1)) {
+        d->gradient.append(QGradientStop(0.0, d->colorFrom));
+        d->gradient.append(QGradientStop(0.49, d->colorFrom));
+        d->gradient.append(QGradientStop(0.5, d->colorTo));
+        d->gradient.append(QGradientStop(1.0, d->colorTo));
+    }
     if (d->listItem) {
         d->listItem->update();
     }
@@ -136,9 +132,13 @@ QSGNode *UCListItemDivider::updatePaintNode(QSGNode *node, UpdatePaintNodeData *
 
     UCListItemPrivate *pListItem = UCListItemPrivate::get(d->listItem);
     bool lastItem = pListItem->countOwner ? (pListItem->index() == (pListItem->countOwner->property("count").toInt() - 1)): false;
-    if (!lastItem && (d->gradient.size() > 0) && ((d->colorFrom.alphaF() >= (1.0f / 255.0f)) || (d->colorTo.alphaF() >= (1.0f / 255.0f)))) {
+    if (!lastItem && ((d->colorFrom.alphaF() >= (1.0f / 255.0f)) || (d->colorTo.alphaF() >= (1.0f / 255.0f)))) {
         dividerNode->setRect(boundingRect());
-        dividerNode->setGradientStops(d->gradient);
+        if (d->gradient.size() > 0) {
+            dividerNode->setGradientStops(d->gradient);
+        } else {
+            dividerNode->setColor(d->colorTo);
+        }
         dividerNode->update();
         return dividerNode;
     } else if (node) {
