@@ -133,6 +133,7 @@ QML_FILES += 1.3/ActionBar.qml \
              1.3/PageColumnsLayout.qml \
              1.3/ProgressionSlot.qml \
              1.3/PageHeader.qml \
+             1.3/Icon.qml
 
 OTHER_FILES+= qmldir \
              1.3/CrossFadeImage.qdoc \

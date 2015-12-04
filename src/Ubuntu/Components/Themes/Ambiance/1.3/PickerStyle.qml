@@ -34,7 +34,7 @@ Item {
     /*!
       Highlight color.
       */
-    property color highlightColor: theme.palette.normal.selection
+    property color highlightColor: UbuntuColors.orange
     /*!
       Scale of the highlight item
       */

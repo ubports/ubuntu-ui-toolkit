@@ -497,6 +497,11 @@ Ubuntu.Components.Icon 1.0 0.1: Item
     property string name
 Ubuntu.Components.Icon 1.1: Icon
     property url source
+Ubuntu.Components.Icon 1.3: Item
+    property color color
+    property color keyColor
+    property string name
+    property url source
 Ubuntu.Components.InverseMouse 1.0 0.1: Mouse
 Ubuntu.Components.InverseMouseArea 1.0 0.1: MouseArea
     function bool contains(QPointF point)
@@ -959,7 +964,10 @@ Ubuntu.Components.ProgressBar 1.3: AnimatedItem
     property bool onScreen
     property bool showProgressPercentage
     property double value
-Ubuntu.Components.ProgressionSlot 1.3: Icon
+Ubuntu.Components.ProgressionSlot 1.3: Item
+    property color color
+    property color keyColor
+    property string name
     property url source
 Ubuntu.Components.ProportionalShape 1.3: UbuntuShape
 Ubuntu.Components.PullToRefresh 1.1: StyledItem
