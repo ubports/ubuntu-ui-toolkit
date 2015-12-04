@@ -208,7 +208,7 @@ Ubuntu.StyledItem {
             }
             // The style may render handlers either on top or bottom
             var flip = caret.rotation == 180;
-            draggedItem.x = fakeCursor.x + (flip ? -units.gu(1) : -draggedItem.width + units.gu(1));
+            draggedItem.x = fakeCursor.x + (flip ? -caret.width : -draggedItem.width + caret.width);
             draggedItem.y = fakeCursor.y + caret.y + caret.height - threshold;
         }
         // positions caret to the dragged position
