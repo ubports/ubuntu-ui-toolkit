@@ -289,6 +289,15 @@ void UCAction::setShortcut(const QVariant& shortcut)
     m_shortcut = shortcut;
     Q_EMIT shortcutChanged();
 }
+void UCAction::resetShortcut()
+{
+    if (!m_shortcut.isValid()) {
+        return;
+    }
+    QGuiApplicationPrivate::instance()->shortcutMap.removeShortcut(0, this, sequenceFromVariant(m_shortcut));
+    m_shortcut = QVariant();
+    Q_EMIT shortcutChanged();
+}
 
 bool UCAction::event(QEvent *event)
 {
