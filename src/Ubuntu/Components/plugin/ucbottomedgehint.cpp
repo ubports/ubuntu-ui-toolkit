@@ -304,7 +304,12 @@ void UCBottomEdgeHint::setState(const QString &state)
 {
     QQuickItem::setState(state);
 
-    qmlInfo(this) << "Overloaded 'state' property deprecated, will be removed from 1.3 release. Use 'status' instead.";
+    static bool loggedOnce = false;
+    if (!loggedOnce) {
+        loggedOnce = true;
+        qmlInfo(this) << "Overloaded 'state' property deprecated, will be removed from 1.3 release. Use 'status' instead.";
+    }
+
     QQuickItem *style = UCStyledItemBasePrivate::get(this)->styleItem;
     if (!style) {
         return;
