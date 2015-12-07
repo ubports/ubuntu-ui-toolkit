@@ -138,7 +138,9 @@ Rectangle {
             compare(label.text, "No action triggered.", "An action was triggered initially.");
         }
 
-        function cleanup() {
+        function init() {
+            enabledSections.actions = root.actionList;
+            enabledSections.model = enabledSections.actions;
             enabledSections.selectedIndex = 0;
             disabledSections.selectedIndex = 0;
             enabledStringSections.selectedIndex = 0;
@@ -304,6 +306,17 @@ Rectangle {
             var name = "string three";
             disabledStringSections.selectedIndex = index;
             check_selected_section(disabledStringSections, index, name);
+        }
+
+        function test_selectedIndex_when_model_changes_bug1513933() {
+            enabledSections.model = ["1", "2", "3", "4", "5", "6"];
+            enabledSections.selectedIndex = 5;
+            enabledSections.model = ["1", "2", "3"];
+            wait_for_animation(enabledSections);
+            var index = enabledSections.selectedIndex;
+            compare(index < enabledSections.model.length, true,
+                    "Downsizing the model does not set selectedIndex to a valid value.");
+            check_selected_section(enabledSections, index, enabledSections.model[index]);
         }
     }
 }
