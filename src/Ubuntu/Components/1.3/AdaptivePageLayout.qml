@@ -743,8 +743,6 @@ PageTreeNode {
                     right: parent.right
                     rightMargin: dividerThickness
                 }
-                // we need to clip because the header does not have a background
-                clip: true
                 Item {
                     id: hiddenItem
                     anchors.fill: parent

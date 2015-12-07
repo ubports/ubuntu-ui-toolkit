@@ -56,6 +56,7 @@ public:
     virtual void preStyleChanged();
     virtual void postStyleChanged() {}
     virtual bool loadStyleItem(bool animated = true);
+    virtual void completeStyledItem();
 
     // from UCImportVersionChecker
     virtual QString propertyForVersion(quint16 version) const;
@@ -64,6 +65,7 @@ public:
 
     QPointer<QQmlContext> styleItemContext;
     QString styleDocument;
+    QQuickItem *oldParentItem;
     QQmlComponent *styleComponent;
     QQuickItem *styleItem;
     quint16 styleVersion;

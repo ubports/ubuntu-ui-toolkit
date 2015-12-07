@@ -23,7 +23,7 @@ import Ubuntu.Components.Popups 1.3
 Item {
     id: testMain
     width: units.gu(40)
-    height: units.gu(71)
+    height: units.gu(50)
 
     Component {
         id: popoverComponent
@@ -469,18 +469,48 @@ Item {
                 verify(popoverY >= 0, 'Popover went off-screen: %1'.arg(popoverY));
         }
 
-        function test_secondaryItem_must_not_grab_focus() {
-            var textField = customTextField;
+        function test_osk_shrinks_dialog() {
+            var popover = PopupUtils.open(dialogComponent, dialogButton);
+            waitForRendering(popover);
+            // Original height before showing OSK
+            var originalHeight = popover.height;
+            // Subtract OSK
+            var expectedHeight = originalHeight - UbuntuApplication.inputMethod.keyboardRectangle.height;
+            popover.textField.forceActiveFocus();
+            waitForRendering(popover.textField);
+            // Only get the value here so in case of failure the popover won't get stuck
+            var foreground = findChild(popover, "dialogForeground")
+            var availableHeight = foreground.height;
+
+            // dismiss popover
+            PopupUtils.close(popover);
+            // add some timeout to get the event buffer cleaned
+            wait(500);
+
+            verify(availableHeight <= expectedHeight, 'Dialog did not shrink (%1 > %2)'.arg(availableHeight).arg(expectedHeight));
+        }
+
+        function test_secondaryItem_must_not_grab_focus_data() {
+            return [
+                { tag: 'same', input: textField },
+                { tag: 'other', input: customTextField },
+                ];
+        }
+
+        function test_secondaryItem_must_not_grab_focus(data) {
             textField.forceActiveFocus();
             compare(textField.focus, true, 'TextField is focused');
 
             var clearButton = findChild(textField, "clear_button")
             mouseClick(clearButton, clearButton.width/2, clearButton.height/2);
-            compare(textField.focus, true, 'TextField remains focused');
+            waitForRendering(data.input, 500);
+            compare(textField.focus, true, 'TextField no longer focused');
             mouseClick(primaryButton, primaryButton.width/2, primaryButton.height/2);
-            compare(textField.focus, true, 'TextField remains focused');
+            waitForRendering(data.input, 500);
+            compare(textField.focus, true, 'TextField no longer focused');
             mouseClick(secondaryButton, secondaryButton.width/2, secondaryButton.height/2);
-            compare(textField.focus, true, 'TextField remains focused');
+            waitForRendering(data.input, 500);
+            compare(textField.focus, true, 'TextField no longer focused');
         }
     }
 }

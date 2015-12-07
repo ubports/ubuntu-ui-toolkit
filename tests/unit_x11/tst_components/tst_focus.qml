@@ -192,10 +192,11 @@ Item {
         }
         function test_tab_focus(data) {
             data.from.forceActiveFocus();
-            verify(data.from.focus, "Source component is not focused");
+            verify(data.from.activeFocus, "Source component is not focused");
             keyClick(data.key);
-            waitForRendering(data.to, 200);
-            verify(data.to.focus, "Target component is not focused");
+            waitForRendering(data.to, 500);
+            verify(!data.from.activeFocus, "Source component still keeps focus");
+            verify(data.to.activeFocus, "Target component is not focused");
         }
 
         function test_hide_osk_when_pickerpanel_opens() {

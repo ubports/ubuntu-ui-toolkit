@@ -27,7 +27,14 @@ Style.PageHeaderStyle {
     property int textSize: Label.Large
 
     contentHeight: units.gu(6)
-    implicitHeight: contentHeight + divider.height + styledItem.sections.height
+    implicitHeight: contentHeight + divider.height + internal.extensionHeight
+
+    Object {
+        id: internal
+        property real extensionHeight: styledItem.extension ?
+                                         styledItem.extension.height
+                                       : styledItem.sections.height
+    }
 
     defaultActionDelegate: AbstractButton {
         style: IconButtonStyle { }
