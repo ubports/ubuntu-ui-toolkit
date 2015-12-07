@@ -302,6 +302,7 @@ Item {
         preventStealing: false
         enabled: isScrollable && interactive //&& alwaysOnScrollbars
         hoverEnabled: isScrollable && interactive //&& alwaysOnScrollbars
+        Mouse.ignoreSynthesizedEvents: true
         Mouse.onEntered: {
             console.log("----------------------------MOUSE DETECTED--------------------------\n",
                         "--------------------------------------------------------------------")
