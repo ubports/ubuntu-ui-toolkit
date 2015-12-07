@@ -17,6 +17,42 @@
 import QtQuick 2.4
 import Ubuntu.Components 1.3
 
+/*!
+    \qmltype ScrollView
+    \inqmlmodule Ubuntu.Components 1.3
+    \ingroup ubuntu
+    \brief ScrollView is a scrollable view that features scrollbars and scrolling via keyboard keys.
+
+    ScrollView is the recommended component to use in the implementation of scrollable content. It
+    features scrollbars and handles keyboard input.
+    Old applications that implemented scrollable views directly using the \l Scrollbar component should
+    migrate to ScrollView, to ensure the UX is ready for convergent devices and is consistent with the
+    rest of the platform.
+
+    Adding scrollbars and keyboard input handling to a QML item is as simple as wrapping that item in a
+    ScrollView, as shown in the following example:
+
+    \qml
+    import QtQuick 2.4
+    import Ubuntu.Components 1.3
+
+    ScrollView {
+        width: units.gu(40)
+        height: units.gu(30)
+
+        Rectangle {
+            width: units.gu(140)
+            height: units.gu(40)
+            gradient: Gradient {
+                GradientStop { position: 0.0; color: "lightsteelblue" }
+                GradientStop { position: 1.0; color: "blue" }
+            }
+        }
+    }
+    \endqml
+
+    NOTE: the items that are wrapped in the ScrollView are reparanted to \l viewport.
+*/
 StyledItem {
     id: root
 
@@ -27,7 +63,8 @@ StyledItem {
     //TODO: add horizontalScrollbarPolicy
     //TODO: add verticalScrollbarPolicy
 
-    property bool alwaysOnScrollbars: false
+    //Currently we want to push the platform towards overlay scrollbars
+    //readonly property bool alwaysOnScrollbars: false
 
     /*!
         \qmlproperty Item ScrollView::viewport
@@ -197,7 +234,7 @@ StyledItem {
             __viewport: viewportItem
             align: Qt.AlignBottom
             buddyScrollbar: verticalScrollbar
-            __alwaysOnScrollbars: alwaysOnScrollbars
+            __alwaysOnScrollbars: false//alwaysOnScrollbars
             focus: false
         }
 
@@ -207,7 +244,7 @@ StyledItem {
             __viewport: viewportItem
             align: Qt.AlignTrailing
             buddyScrollbar: horizontalScrollbar
-            __alwaysOnScrollbars: alwaysOnScrollbars
+            __alwaysOnScrollbars: false//alwaysOnScrollbars
             focus: false
         }
 
