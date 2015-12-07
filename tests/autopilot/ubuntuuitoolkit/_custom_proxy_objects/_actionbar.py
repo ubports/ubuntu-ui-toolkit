@@ -68,6 +68,6 @@ class ActionBar(_common.UbuntuUIToolkitCustomProxyObjectBase):
             try:
                 popover = self._open_overflow()
                 popover.click_action_button(action_object_name)
-            except dbus.StateNotFoundError:
+            except _common.ToolkitException:
                 raise _common.ToolkitException(
                     'Button not found in ActionBar or overflow')
