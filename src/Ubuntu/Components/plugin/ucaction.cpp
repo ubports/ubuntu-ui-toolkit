@@ -153,7 +153,6 @@ QString UCAction::text()
     }
     return m_text;
 }
-
 void UCAction::setText(const QString &text)
 {
     if (m_text == text) {
@@ -162,6 +161,10 @@ void UCAction::setText(const QString &text)
     m_text = text;
     setMnemonicFromText(m_text);
     Q_EMIT textChanged();
+}
+void UCAction::resetText()
+{
+    setText(QString());
 }
 
 void UCAction::setMnemonicFromText(const QString &text)

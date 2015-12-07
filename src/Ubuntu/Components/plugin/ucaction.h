@@ -65,11 +65,7 @@ public:
     void setName(const QString &name);
     QString text();
     void setText(const QString &text);
-    void resetText()
-    {
-        setText(QString());
-    }
-
+    void resetText();
     void setIconName(const QString &name);
     void setIconSource(const QUrl &url);
     void setItemHint(QQmlComponent *);
