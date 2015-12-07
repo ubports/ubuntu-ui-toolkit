@@ -60,7 +60,7 @@ class ActionBar(_common.UbuntuUIToolkitCustomProxyObjectBase):
         """
 
         try:
-            object_name = action_object_name + "_action_button"
+            object_name = action_object_name + "_button"
             button = self.select_single(objectName=object_name)
             self.pointing_device.click_object(button)
         except dbus.StateNotFoundError:
