@@ -20,6 +20,7 @@
 #include <QtCore/QObject>
 #include <QtCore/QVariant>
 #include <QtCore/QUrl>
+#include <QtGui/QKeySequence>
 
 class QQmlComponent;
 class UCAction : public QObject
@@ -29,7 +30,7 @@ class UCAction : public QObject
     // transferred from Unity Actions
     Q_ENUMS(Type)
     Q_PROPERTY(QString name MEMBER m_name WRITE setName NOTIFY nameChanged)
-    Q_PROPERTY(QString text MEMBER m_text NOTIFY textChanged)
+    Q_PROPERTY(QString text READ text WRITE setText RESET resetText NOTIFY textChanged)
     Q_PROPERTY(QString iconName MEMBER m_iconName WRITE setIconName NOTIFY iconNameChanged)
     Q_PROPERTY(QString description MEMBER m_description NOTIFY descriptionChanged)
     Q_PROPERTY(QString keywords MEMBER m_keywords NOTIFY keywordsChanged)
@@ -54,6 +55,7 @@ public:
     };
 
     explicit UCAction(QObject *parent = 0);
+    ~UCAction();
 
     inline bool isPublished() const
     {
@@ -61,6 +63,13 @@ public:
     }
 
     void setName(const QString &name);
+    QString text();
+    void setText(const QString &text);
+    void resetText()
+    {
+        setText(QString());
+    }
+
     void setIconName(const QString &name);
     void setIconSource(const QUrl &url);
     void setItemHint(QQmlComponent *);
@@ -91,6 +100,7 @@ private:
     QString m_description;
     QString m_keywords;
     QVariant m_shortcut;
+    QKeySequence m_mnemonic;
     QQmlComponent *m_itemHint;
     Type m_parameterType;
     bool m_factoryIconSource:1;
@@ -106,7 +116,9 @@ private:
 
     bool isValidType(QVariant::Type valueType);
     void generateName();
+    void setMnemonicFromText(const QString &text);
     bool event(QEvent *event);
+    void onKeyboardAttached();
 };
 
 #endif // UCACTION_H

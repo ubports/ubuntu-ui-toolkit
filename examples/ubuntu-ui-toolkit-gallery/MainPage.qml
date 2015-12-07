@@ -66,6 +66,18 @@ Page {
                 iconName: "starred"
                 visible: !QuickUtils.mouseAttached
                 onTriggered: QuickUtils.mouseAttached = true
+            },
+            Action {
+                text: i18n.tr("Detach keyboard")
+                iconName: "non-starred"
+                visible: QuickUtils.keyboardAttached
+                onTriggered: QuickUtils.keyboardAttached = false
+            },
+            Action {
+                text: i18n.tr("Attach keyboard")
+                iconName: "starred"
+                visible: !QuickUtils.keyboardAttached
+                onTriggered: QuickUtils.keyboardAttached = true
             }
         ]
     }

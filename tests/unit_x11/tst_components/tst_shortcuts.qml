@@ -46,6 +46,10 @@ Item {
 
         function init() {
         }
+        function cleanup() {
+            spy.clear();
+            shortcutSpy.clear();
+        }
 
         SignalSpy {
             id: spy
@@ -102,6 +106,38 @@ Item {
             shortcutSpy.clear();
             action.shortcut = undefined;
             shortcutSpy.wait(200);
+            shortcutSpy.target = null;
+        }
+
+        function test_mnemonic_data() {
+            return [
+                {tag: "HW keyboard, valid", kbd: true, text: "C&all", displayText: "C<u>a</u>ll"},
+                {tag: "HW keyboard, invalid", kbd: true, text: "&&Call", displayText: "&&Call"},
+                {tag: "no HW keyboard", kbd: false, text: "&Call", displayText: "Call"},
+            ];
+        }
+        function test_mnemonic(data) {
+            QuickUtils.keyboardAttached = data.kbd;
+            action.text = data.text;
+            if (!data.kbd && QuickUtils.keyboardAttached) {
+                skip("Cannot test this case: " + data.tag);
+            }
+            compare(action.text, data.displayText);
+        }
+
+        function test_mnemonic_trigger_data() {
+            return [
+                        {tag: "valid", text: "C&all", key: Qt.Key_A, mod: Qt.AltModifier, xfail: false},
+                        {tag: "invalid", text: "C&&all", key: Qt.Key_Asterisk, mod: Qt.AltModifier, xfail: true},
+                    ];
+        }
+        function test_mnemonic_trigger(data) {
+            action.text = data.text;
+            keyClick(data.key, data.mod);
+            if (data.xfail) {
+                expectFail(data.tag, "invalid mnemonic");
+            }
+            spy.wait(200);
         }
     }
 }

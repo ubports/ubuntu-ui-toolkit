@@ -206,7 +206,7 @@ QString UCActionItem::text()
     if (m_flags & CustomText) {
         return m_text;
     }
-    return m_action ? m_action->m_text : QString();
+    return m_action ? m_action->text() : QString();
 }
 void UCActionItem::setText(const QString &text)
 {

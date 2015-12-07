@@ -15,12 +15,37 @@
  */
 
 #include "ucaction.h"
+#include "quickutils.h"
 
 #include <QtDebug>
 #include <QtQml/QQmlInfo>
 #include <QtQuick/qquickitem.h>
 #include <QtQuick/qquickwindow.h>
 #include <private/qguiapplication_p.h>
+
+bool shortcutContextMatcher(QObject* object, Qt::ShortcutContext context)
+{
+    UCAction* action = static_cast<UCAction*>(object);
+    // Can't access member here because it's not public
+    if (!action->property("enabled").toBool())
+        return false;
+
+    switch (context) {
+    case Qt::ApplicationShortcut:
+        return true;
+    case Qt::WindowShortcut: {
+        QObject* window = object;
+        while (window && !window->isWindowType()) {
+            window = window->parent();
+            if (QQuickItem* item = qobject_cast<QQuickItem*>(window))
+                window = item->window();
+        }
+        return window && window == QGuiApplication::focusWindow();
+    }
+    default: break;
+    }
+    return false;
+}
 
 /*!
  * \qmltype Action
@@ -94,7 +119,68 @@
 /*!
  * \qmlproperty string Action::text
  * The user visible primary label of the action.
+ *
+ * Since Ubuntu.Componenst version 1.3 Action supports mnemonics. Mnemonics can
+ * be defined using the \e & character. The property filters the mnemonic from the
+ * given text and returns the formatted text underscoring the mnemonic, which can
+ * then be used in components to identify the mnemonic.
+ * \qml
+ * Button {
+ *     action: Action {
+ *         text: "&Call"
+ *         onTriggered: console.log("Dial out")
+ *     }
+ * }
+ * \endqml
+ * \note The mnemonic is only shown (underscored) when there is a hardware keyboard
+ * attached.
  */
+QString UCAction::text()
+{
+    // if we have a mnemonic, underscore it
+    if (!m_mnemonic.isEmpty()) {
+        // underscore the character
+        int mnemonicIndex = m_text.indexOf('&');
+        QChar mnemonic = m_text[mnemonicIndex + 1];
+        QString displayText(m_text);
+        // FIXME we should only do this if we have HW keyboard attached
+        if (QuickUtils::instance().keyboardAttached()) {
+            displayText.replace(mnemonicIndex, 2, "<u>" + mnemonic + "</u>");
+        } else {
+            displayText.remove(mnemonicIndex, 1);
+        }
+        return displayText;
+    }
+    return m_text;
+}
+
+void UCAction::setText(const QString &text)
+{
+    if (m_text == text) {
+        return;
+    }
+    m_text = text;
+    setMnemonicFromText(m_text);
+    Q_EMIT textChanged();
+}
+
+void UCAction::setMnemonicFromText(const QString &text)
+{
+    QKeySequence sequence = QKeySequence::mnemonic(text);
+    if (sequence == m_mnemonic) {
+        return;
+    }
+    if (!m_mnemonic.isEmpty()) {
+        QGuiApplicationPrivate::instance()->shortcutMap.removeShortcut(0, this, m_mnemonic);
+    }
+
+    m_mnemonic = sequence;
+
+    if (!m_mnemonic.isEmpty()) {
+        Qt::ShortcutContext context = Qt::WindowShortcut;
+        QGuiApplicationPrivate::instance()->shortcutMap.addShortcut(this, m_mnemonic, context, shortcutContextMatcher);
+    }
+}
 
 /*!
  * \qmlproperty string Action::keywords
@@ -158,6 +244,15 @@ UCAction::UCAction(QObject *parent)
     , m_published(false)
 {
     generateName();
+    // FIXME: do this with a proper API
+    connect(&QuickUtils::instance(), &QuickUtils::keyboardAttachedChanged,
+            this, &UCAction::onKeyboardAttached);
+}
+
+UCAction::~UCAction()
+{
+    resetShortcut();
+    resetText();
 }
 
 bool UCAction::isValidType(QVariant::Type valueType)
@@ -244,22 +339,6 @@ void UCAction::setItemHint(QQmlComponent *)
     qWarning() << "Action.itemHint is a DEPRECATED property. Use ActionItems to specify the representation of an Action.";
 }
 
-bool shortcutContextMatcher(QObject* object, Qt::ShortcutContext)
-{
-    UCAction* action = static_cast<UCAction*>(object);
-    // Can't access member here because it's not public
-    if (!action->property("enabled").toBool())
-        return false;
-
-    QObject* window = object;
-    while (window && !window->isWindowType()) {
-        window = window->parent();
-        if (QQuickItem* item = qobject_cast<QQuickItem*>(window))
-            window = item->window();
-    }
-    return window && window == QGuiApplication::focusWindow();
-}
-
 QKeySequence sequenceFromVariant(const QVariant& variant) {
     if (variant.type() == QVariant::Int)
         return static_cast<QKeySequence::StandardKey>(variant.toInt());
@@ -313,6 +392,14 @@ bool UCAction::event(QEvent *event)
     // do not call trigger() directly but invoke, as it may get overridden in QML
     metaObject()->invokeMethod(this, "trigger");
     return true;
+}
+
+// trigger text changes whenever HW keyboad is attached/detached
+void UCAction::onKeyboardAttached()
+{
+    if (!m_mnemonic.isEmpty()) {
+        Q_EMIT textChanged();
+    }
 }
 
 /*!
