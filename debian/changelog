@@ -103,6 +103,11 @@ ubuntu-ui-toolkit (1.3.1742+16.04.20151205-0ubuntu1) UNRELEASED; urgency=medium
     Fixes LP: #1484004, LP: #1450346
   * Workaround 'emit' declaration in Qt 5.5 Fixes LP: #1507910
   * Build depend on libxkbcommon-dev Fixes LP: #1508447
+
+  [ Brendan Donegan ]
+  * Only the OSK has the _keyboard attribute which we need for getting the info
+    about it, so only try to use that if the keyboard is OSK
+    Fixes LP: #1523501
  
  -- Zoltán Balogh <zoltan@bakter.hu>  Sat, 05 Dec 2015 12:22:04 +0200
 

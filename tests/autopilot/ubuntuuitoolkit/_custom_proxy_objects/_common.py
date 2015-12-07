@@ -60,7 +60,7 @@ def get_keyboard():
         restart_maliit_with_testability()
         return input.Keyboard.create('OSK')
     else:
-        return input.Keyboard.create()
+        return None
 
 
 def restart_maliit_with_testability():
