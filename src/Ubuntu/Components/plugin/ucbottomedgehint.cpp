@@ -19,6 +19,7 @@
 #include "ucbottomedgehint.h"
 #include "ucstyleditembase_p.h"
 #include "quickutils.h"
+#include "ucnamespace.h"
 #include "ucunits.h"
 #include "gestures/ucswipearea.h"
 #include "propertychange_p.h"
@@ -303,12 +304,7 @@ QString UCBottomEdgeHint::state() const
 void UCBottomEdgeHint::setState(const QString &state)
 {
     QQuickItem::setState(state);
-
-    static bool loggedOnce = false;
-    if (!loggedOnce) {
-        loggedOnce = true;
-        qmlInfo(this) << "Overloaded 'state' property deprecated, will be removed from 1.3 release. Use 'status' instead.";
-    }
+    UC_QML_DEPRECATION_WARNING("Overloaded 'state' property deprecated, will be removed from 1.3 release. Use 'status' instead.");
 
     QQuickItem *style = UCStyledItemBasePrivate::get(this)->styleItem;
     if (!style) {

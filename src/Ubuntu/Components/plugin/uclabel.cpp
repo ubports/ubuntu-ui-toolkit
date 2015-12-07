@@ -16,9 +16,9 @@
 
 #include "uclabel.h"
 #include "ucfontutils.h"
+#include "ucnamespace.h"
 #include "ucunits.h"
 #include "uctheme.h"
-#include "quickutils.h"
 
 void UCLabel::updatePixelSize()
 {
@@ -172,13 +172,7 @@ void UCLabel::setFontSize(const QString& fontSize)
         return;
     }
 
-    static bool logOnce = false;
-    if (!logOnce) {
-        logOnce = true;
-        if (QuickUtils::showDeprecationWarnings()) {
-            qmlInfo(this) << "'fontSize' is deprecated, use 'textSize' property instead.";
-        }
-    }
+    UC_QML_DEPRECATION_WARNING("'fontSize' is deprecated, use 'textSize' property instead.");
 
     TextSize textSize;
     switch (SCALE_CODE(fontSize)) {
