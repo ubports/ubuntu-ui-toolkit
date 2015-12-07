@@ -140,11 +140,12 @@ Rectangle {
 
         function init() {
             enabledSections.actions = root.actionList;
-            enabledSections.model = enabledSections.actions;
+            enabledSections.model = root.actionList;
             enabledSections.selectedIndex = 0;
             disabledSections.selectedIndex = 0;
             enabledStringSections.selectedIndex = 0;
             disabledStringSections.selectedIndex = 0;
+            label.text = "No action triggered."
         }
 
         function wait_for_animation(sections) {
@@ -203,6 +204,7 @@ Rectangle {
             compare(v, index, "selectedIndex "+v+" does not match "+index);
             v = get_selected_section_button_index(sections);
             compare(v, index, "selected button index "+v+" does not match "+index);
+            if (v === -1) return;
             var w = get_selected_section_button_text(sections);
             compare(w, name, "selected button text \'"+w+"\' does not match \'"+name+"\'");
         }
@@ -309,9 +311,9 @@ Rectangle {
         }
 
         function test_selectedIndex_when_model_changes_bug1513933() {
-            enabledSections.model = ["1", "2", "3", "4", "5", "6"];
-            enabledSections.selectedIndex = 5;
             enabledSections.model = ["1", "2", "3"];
+            enabledSections.selectedIndex = 2;
+            enabledSections.model = ["1", "2"];
             wait_for_animation(enabledSections);
             var index = enabledSections.selectedIndex;
             compare(index < enabledSections.model.length, true,

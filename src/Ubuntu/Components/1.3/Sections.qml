@@ -84,6 +84,11 @@ StyledItem {
             // FIXME: Make the Sections scrollable for more than 3 sections.
             console.warn("It is not YET recommended or supported to use more than three sections.");
         }
+        if (model.length > 0) {
+            selectedIndex = 0;
+        } else {
+            selectedIndex = -1;
+        }
     }
 
     /*!
