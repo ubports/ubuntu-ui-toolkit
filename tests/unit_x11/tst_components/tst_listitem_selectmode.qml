@@ -141,7 +141,7 @@ MainView {
             compare(checkBox.checked, false);
         }
 
-        function test_select_mode_turned_on_delegate_on_creation_bug1493882() {
+        function test_select_mode_set_in_listview_delegate_bug1493882() {
             testView.delegate = selectModePreset;
             testView.model = 10;
             waitForRendering(testView, 500);
@@ -151,7 +151,7 @@ MainView {
             verify(selectPanel, "selection panel not found");
         }
 
-        function test_togle_selded_triggers_one_selectedChanged_bug1493880() {
+        function test_togle_selecded_triggers_one_selectedChanged_bug1493880() {
             testView.delegate = selectModePreset;
             testView.model = 10;
             waitForRendering(testView, 500);
