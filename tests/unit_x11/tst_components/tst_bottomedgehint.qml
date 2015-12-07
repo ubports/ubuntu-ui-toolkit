@@ -133,15 +133,18 @@ MainView {
 
         function test_clicking_data() {
             return [
-                {tag: "when Locked", status: BottomEdgeHint.Locked, xfail: false},
-                {tag: "when Active", status: BottomEdgeHint.Active, xfail: hasMouseAttached},
-                {tag: "when Inactive", status: BottomEdgeHint.Inactive, xfail: true},
-                {tag: "when Hidden", status: BottomEdgeHint.Hidden, xfail: true},
+                {tag: "when Locked", status: BottomEdgeHint.Locked, statusFail: false, xfail: false},
+                {tag: "when Active", status: BottomEdgeHint.Active, statusFail: hasMouseAttached, xfail: false},
+                {tag: "when Inactive", status: BottomEdgeHint.Inactive, statusFail: hasMouseAttached, xfail: !hasMouseAttached},
+                {tag: "when Hidden", status: BottomEdgeHint.Hidden, statusFail: hasMouseAttached, xfail: !hasMouseAttached},
             ];
         }
         function test_clicking(data) {
             bottomEdgeHint.status = data.status;
-            compare(bottomEdgeHint.status, data.status);
+            // states cannot be set when mouse attached
+            if (!data.statusFail) {
+                compare(bottomEdgeHint.status, data.status);
+            }
             mouseClick(bottomEdgeHint, centerOf(bottomEdgeHint).x, centerOf(bottomEdgeHint).y);
             if (data.xfail) {
                 expectFailContinue(data.tag, "No click is expected");
@@ -151,8 +154,8 @@ MainView {
 
         function test_alter_deprecated_state_data() {
             return [
-                {tag: "Hidden", status: BottomEdgeHint.Hidden},
-                {tag: "Visible", status: BottomEdgeHint.Inactive},
+                {tag: "Hidden", status: hasMouseAttached ? BottomEdgeHint.Locked : BottomEdgeHint.Hidden},
+                {tag: "Visible", status: hasMouseAttached ? BottomEdgeHint.Locked : BottomEdgeHint.Inactive},
             ];
         }
         function test_alter_deprecated_state(data) {
@@ -206,15 +209,14 @@ MainView {
         // FIXME: must be executed before the test_hiding as flick with mouse affects
         // the touch drag on ListView for some unknown reason
         function test_0_touch_gesture() {
-            if (hasMouseAttached) {
-                skip("", "The test requires touch environment");
-            }
             bottomEdgeHint.text = "Touch Activated";
             var gestureStartPoint = Qt.point(centerOf(bottomEdgeHint).x, bottomEdgeHint.height - 1);
             TestExtras.touchDrag(0, bottomEdgeHint, gestureStartPoint, Qt.point(0, -units.gu(8)), 6);
-            tryCompare(bottomEdgeHint, "status", BottomEdgeHint.Active, 400);
+            var expectedStatus = hasMouseAttached ? BottomEdgeHint.Locked : BottomEdgeHint.Active;
+            tryCompare(bottomEdgeHint, "status", expectedStatus, 400);
             // then wait till we get back to Idle
-            tryCompare(bottomEdgeHint, "status", BottomEdgeHint.Inactive, 1000);
+            expectedStatus = hasMouseAttached ? BottomEdgeHint.Locked : BottomEdgeHint.Inactive;
+            tryCompare(bottomEdgeHint, "status", expectedStatus, 1000);
         }
 
         function test_custom_trigger_on_clicked() {
