@@ -31,4 +31,5 @@ OTHER_FILES += \
     DoubleClicked.qml \
     HoverEvent.qml \
     ForwardComposedEvents.qml \
-    ForwardEventChained.qml
+    ForwardEventChained.qml \
+    FilterSynthesizedEvents.qml
