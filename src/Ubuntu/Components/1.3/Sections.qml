@@ -84,11 +84,17 @@ StyledItem {
             // FIXME: Make the Sections scrollable for more than 3 sections.
             console.warn("It is not YET recommended or supported to use more than three sections.");
         }
-        if (model.length > 0) {
-            selectedIndex = 0;
-        } else {
+        if (internal.done) {
             selectedIndex = -1;
         }
+    }
+
+    Component.onCompleted: {
+        internal.done = true;
+    }
+    QtObject {
+        id: internal
+        property bool done: false
     }
 
     /*!
