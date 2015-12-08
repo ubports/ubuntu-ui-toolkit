@@ -917,20 +917,25 @@ Item {
                     flickableItem.contentY = originYAtDragStart + contentYAtDragStart
                 }
 
-                property int originXAtDragStart
-                property int originYAtDragStart
-                property int contentXAtDragStart
-                property int contentYAtDragStart
+                property int originXAtDragStart: 0
+                property int originYAtDragStart: 0
+                property int contentXAtDragStart: 0
+                property int contentYAtDragStart: 0
+
+                //following UX spec, if during a drag the mouse goes far away from the scrollbar
+                //we want to temporarily lock the drag and reset the scrollbar to where it was when
+                //the drag started, WITHOUT losing the drag (if the mouse gets back within the distance
+                //threshold, the drag has to resum without the need to release and pressHold again)
+                property bool lockDrag: false
 
                 drag {
                     //don't start a drag while we're scrolling using press and hold
                     target: pressHoldTimer.running ? undefined : slider
                     axis: (isVertical) ? Drag.YAxis : Drag.XAxis
-                    minimumY: thumbsExtremesMargin
-                    maximumY: trough.height - slider.height - thumbsExtremesMargin
-                    minimumX: thumbsExtremesMargin
-                    maximumX: trough.width - slider.width - thumbsExtremesMargin
-                    onMaximumXChanged: console.log("MAX X!", drag.maximumX)
+                    minimumY: lockDrag ? slider.y : thumbsExtremesMargin
+                    maximumY: lockDrag ? slider.y : trough.height - slider.height - thumbsExtremesMargin
+                    minimumX: lockDrag ? slider.x : thumbsExtremesMargin
+                    maximumX: lockDrag ? slider.x : trough.width - slider.width - thumbsExtremesMargin
                     onActiveChanged: {
                         if (drag.active) {
                             //we can't tell whether the drag is started from mouse or touch
@@ -942,6 +947,7 @@ Item {
                             thumbArea.saveFlickableScrollingState()
                             scrollCursor.drag()
                         } else {
+                            thumbArea.lockDrag = false
                             slider.mouseDragging = false
                             slider.touchDragging = false
                         }
@@ -958,8 +964,10 @@ Item {
                         console.log("DRAGGING")
                         if ((isVertical && Math.abs(mouse.x - thumbArea.x) >= flowContainer.thickness * 10)
                                 || (!isVertical && Math.abs(mouse.y - thumbArea.y) >= flowContainer.thickness * 10)) {
+                            thumbArea.lockDrag = true
                             resetFlickableToPreDragState()
                         } else {
+                            if (thumbArea.lockDrag) thumbArea.lockDrag = false
                             scrollCursor.drag()
                         }
                     }
