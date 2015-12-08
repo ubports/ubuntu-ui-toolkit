@@ -102,7 +102,9 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/ucbottomedge.h \
     $$PWD/ucbottomedge_p.h \
     $$PWD/ucbottomedgestyle.h \
-    $$PWD/ucbottomedgeregion.h
+    $$PWD/ucbottomedgeregion.h \
+    $$PWD/ucpagetreenode.h \
+    $$PWD/ucpagetreenode_p.h
 
 SOURCES += $$PWD/plugin.cpp \
     $$PWD/uctheme.cpp \
@@ -171,7 +173,8 @@ SOURCES += $$PWD/plugin.cpp \
     $$PWD/ucmathutils.cpp \
     $$PWD/ucbottomedge.cpp \
     $$PWD/ucbottomedgestyle.cpp \
-    $$PWD/ucbottomedgeregion.cpp
+    $$PWD/ucbottomedgeregion.cpp \
+    $$PWD/ucpagetreenode.cpp
 
 # adapters
 SOURCES += $$PWD/adapters/alarmsadapter_organizer.cpp
