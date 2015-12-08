@@ -970,6 +970,9 @@ Item {
                                 thumbArea.lockDrag = true
                             }
                         } else {
+                            //don't clash with scrolling animation
+                            if (scrollAnimation.running) scrollAnimation.stop()
+
                             if (thumbArea.lockDrag) thumbArea.lockDrag = false
                             scrollCursor.drag()
                         }
