@@ -981,7 +981,6 @@ Ubuntu.Components.Scrollbar 1.0 0.1: StyledItem
     property Flickable flickableItem
 Ubuntu.Components.Scrollbar 1.3: StyledItem
     property int align
-    property var buddyScrollbar
     property Flickable flickableItem
 Ubuntu.Components.Sections 1.3: StyledItem
     property list<Action> actions

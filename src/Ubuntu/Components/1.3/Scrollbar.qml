@@ -69,15 +69,14 @@ Toolkit.StyledItem {
       */
     property Flickable flickableItem: null
 
-    /*!
-        \qmlproperty var Scrollbar::buddyScrollbar
+    /*
         This property holds the other scrollbar that is attached to the same flickable,
         if any. For instance, if this scrollbar is horizontal, buddyScrollbar must be set
         to the vertical scrollbar, if any. This is to allow a correct layout of both
         horizontal and vertical scrollbars when a view is scrollable in both directions.
     */
     //can't use property Scrollbar here as it would complain "Scrollbar instantiated recursively"
-    property var buddyScrollbar: null
+    property var __buddyScrollbar: null
 
     /*!
       \qmlproperty int Scrollbar::align
@@ -178,10 +177,10 @@ Toolkit.StyledItem {
                 return __alwaysOnScrollbars ? -nonOverlayScrollbarMargin : 0
             case Qt.AlignBottom:
             case Qt.AlignTop:
-                if (!__alwaysOnScrollbars && buddyScrollbar !== null
-                        && buddyScrollbar.align === Qt.AlignLeading
-                        && buddyScrollbar.__styleInstance.isScrollable)
-                    return buddyScrollbar.__styleInstance.troughThicknessSteppersStyle
+                if (!__alwaysOnScrollbars && __buddyScrollbar !== null
+                        && __buddyScrollbar.align === Qt.AlignLeading
+                        && __buddyScrollbar.__styleInstance.isScrollable)
+                    return __buddyScrollbar.__styleInstance.troughThicknessSteppersStyle
                     //return buddyScrollbar.__styleInstance.indicatorThickness
                 // *ELSE FALLTHROUGH*
             default:
@@ -204,10 +203,10 @@ Toolkit.StyledItem {
                 return __alwaysOnScrollbars ? -nonOverlayScrollbarMargin : 0
             case Qt.AlignBottom:
             case Qt.AlignTop:
-                if (!__alwaysOnScrollbars && buddyScrollbar !== null
-                        && buddyScrollbar.align === Qt.AlignTrailing
-                        && buddyScrollbar.__styleInstance.isScrollable)
-                    return buddyScrollbar.__styleInstance.troughThicknessSteppersStyle
+                if (!__alwaysOnScrollbars && __buddyScrollbar !== null
+                        && __buddyScrollbar.align === Qt.AlignTrailing
+                        && __buddyScrollbar.__styleInstance.isScrollable)
+                    return __buddyScrollbar.__styleInstance.troughThicknessSteppersStyle
                     //return buddyScrollbar.__styleInstance.indicatorThickness
                 // *ELSE FALLTHROUGH*
             default:
@@ -229,10 +228,10 @@ Toolkit.StyledItem {
                 return __alwaysOnScrollbars ? -nonOverlayScrollbarMargin : 0
             case Qt.AlignLeading:
             case Qt.AlignTrailing:
-                if (!__alwaysOnScrollbars && buddyScrollbar !== null
-                        && buddyScrollbar.align === Qt.AlignTop
-                        && buddyScrollbar.__styleInstance.isScrollable)
-                    return buddyScrollbar.__styleInstance.troughThicknessSteppersStyle
+                if (!__alwaysOnScrollbars && __buddyScrollbar !== null
+                        && __buddyScrollbar.align === Qt.AlignTop
+                        && __buddyScrollbar.__styleInstance.isScrollable)
+                    return __buddyScrollbar.__styleInstance.troughThicknessSteppersStyle
                     //return buddyScrollbar.__styleInstance.indicatorThickness
                 // *ELSE FALLTHROUGH*
 
@@ -255,10 +254,10 @@ Toolkit.StyledItem {
                 return __alwaysOnScrollbars ? -nonOverlayScrollbarMargin : 0
             case Qt.AlignLeading:
             case Qt.AlignTrailing:
-                if (!__alwaysOnScrollbars && buddyScrollbar !== null
-                        && buddyScrollbar.align === Qt.AlignBottom
-                        && buddyScrollbar.__styleInstance.isScrollable)
-                    return buddyScrollbar.__styleInstance.troughThicknessSteppersStyle
+                if (!__alwaysOnScrollbars && __buddyScrollbar !== null
+                        && __buddyScrollbar.align === Qt.AlignBottom
+                        && __buddyScrollbar.__styleInstance.isScrollable)
+                    return __buddyScrollbar.__styleInstance.troughThicknessSteppersStyle
                     //return buddyScrollbar.__styleInstance.indicatorThickness
                 // *ELSE FALLTHROUGH*
             default:

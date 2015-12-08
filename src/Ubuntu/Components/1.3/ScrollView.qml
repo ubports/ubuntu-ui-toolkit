@@ -233,7 +233,7 @@ StyledItem {
             flickableItem: internal.flickableItem
             __viewport: viewportItem
             align: Qt.AlignBottom
-            buddyScrollbar: verticalScrollbar
+            __buddyScrollbar: verticalScrollbar
             __alwaysOnScrollbars: false//alwaysOnScrollbars
             focus: false
         }
@@ -243,7 +243,7 @@ StyledItem {
             flickableItem: internal.flickableItem
             __viewport: viewportItem
             align: Qt.AlignTrailing
-            buddyScrollbar: horizontalScrollbar
+            __buddyScrollbar: horizontalScrollbar
             __alwaysOnScrollbars: false//alwaysOnScrollbars
             focus: false
         }

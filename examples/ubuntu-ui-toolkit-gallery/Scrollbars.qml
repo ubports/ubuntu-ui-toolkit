@@ -45,13 +45,13 @@ Template {
                 id: scrollbar1
                 align: Qt.AlignLeading
                 flickableItem: flickable1
-                buddyScrollbar: scrollbar2
+                __buddyScrollbar: scrollbar2
             }
             Scrollbar {
                 id: scrollbar2
                 align: Qt.AlignTop
                 flickableItem: flickable1
-                buddyScrollbar: scrollbar1
+                __buddyScrollbar: scrollbar1
             }
         }
 
@@ -77,13 +77,13 @@ Template {
                 id: scrollbar3
                 align: Qt.AlignTrailing
                 flickableItem: flickable2
-                buddyScrollbar: scrollbar4
+                __buddyScrollbar: scrollbar4
             }
             Scrollbar {
                 id: scrollbar4
                 align: Qt.AlignBottom
                 flickableItem: flickable2
-                buddyScrollbar: scrollbar3
+                __buddyScrollbar: scrollbar3
             }
         }
 
@@ -109,14 +109,14 @@ Template {
                 id: scrollbar5
                 align: Qt.AlignTrailing
                 flickableItem: flickable3
-                buddyScrollbar: scrollbar6
+                __buddyScrollbar: scrollbar6
                 //__alwaysOnScrollbars: true
             }
             Scrollbar {
                 id: scrollbar6
                 align: Qt.AlignBottom
                 flickableItem: flickable3
-                buddyScrollbar: scrollbar5
+                __buddyScrollbar: scrollbar5
                 //__alwaysOnScrollbars: true
             }
         }
