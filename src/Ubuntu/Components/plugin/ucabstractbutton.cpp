@@ -140,7 +140,7 @@ void UCAbstractButton::keyPressEvent(QKeyEvent *event)
         case Qt::Key_Return:
         case Qt::Key_Space:
         {
-            Q_EMIT trigger();
+            Q_EMIT triggered();
             break;
         }
     }
