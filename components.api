@@ -564,6 +564,7 @@ Ubuntu.Components.ListItem 1.3 1.2: StyledItem
     property bool selectMode
     property bool selected
     property bool swipeEnabled 1.3
+    readonly property bool swiped 1.3
     property ListItemActions trailingActions
 Ubuntu.Components.ListItemActions 1.2: QtObject
     property list<Action> actions
@@ -1619,6 +1620,7 @@ Ubuntu.Components.ViewItems 1.2: QtObject
     property bool dragMode
     property list<int> expandedIndices
     property int expansionFlags
+    signal selectedIndicesChanged(list<int> indices)
     signal dragUpdated(ListItemDrag event)
     signal expandedIndicesChanged(list<int> indices)
     property bool selectMode
