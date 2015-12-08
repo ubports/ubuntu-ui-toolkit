@@ -1108,12 +1108,12 @@ Item {
     Rectangle {
         id: cornerRect
         anchors.left: {
-            if (styledItem.buddyScrollbar && styledItem.buddyScrollbar.__styleInstance
-                    && styledItem.buddyScrollbar.__styleInstance.isScrollable) {
+            if (styledItem.__buddyScrollbar && styledItem.__buddyScrollbar.__styleInstance
+                    && styledItem.__buddyScrollbar.__styleInstance.isScrollable) {
                 if (isVertical) {
                     return flowContainer.left
                 } else {
-                    if (styledItem.buddyScrollbar.align === Qt.AlignTrailing) {
+                    if (styledItem.__buddyScrollbar.align === Qt.AlignTrailing) {
                         return flowContainer.right
                     } else
                         return undefined
@@ -1121,12 +1121,12 @@ Item {
             }
         }
         anchors.right: {
-            if (styledItem.buddyScrollbar && styledItem.buddyScrollbar.__styleInstance
-                    && styledItem.buddyScrollbar.__styleInstance.isScrollable) {
+            if (styledItem.__buddyScrollbar && styledItem.__buddyScrollbar.__styleInstance
+                    && styledItem.__buddyScrollbar.__styleInstance.isScrollable) {
                 if (isVertical) {
                     return flowContainer.right
                 } else {
-                    if (styledItem.buddyScrollbar.align === Qt.AlignLeading) {
+                    if (styledItem.__buddyScrollbar.align === Qt.AlignLeading) {
                         return flowContainer.left
                     } else {
                         return undefined
@@ -1135,10 +1135,10 @@ Item {
             }
         }
         anchors.top: {
-            if (styledItem.buddyScrollbar && styledItem.buddyScrollbar.__styleInstance
-                    && styledItem.buddyScrollbar.__styleInstance.isScrollable) {
+            if (styledItem.__buddyScrollbar && styledItem.__buddyScrollbar.__styleInstance
+                    && styledItem.__buddyScrollbar.__styleInstance.isScrollable) {
                 if (isVertical) {
-                    if (styledItem.buddyScrollbar.align === Qt.AlignBottom) {
+                    if (styledItem.__buddyScrollbar.align === Qt.AlignBottom) {
                         return flowContainer.bottom
                     } else {
                         return undefined
@@ -1149,10 +1149,10 @@ Item {
             }
         }
         anchors.bottom: {
-            if (styledItem.buddyScrollbar && styledItem.buddyScrollbar.__styleInstance
-                    && styledItem.buddyScrollbar.__styleInstance.isScrollable) {
+            if (styledItem.__buddyScrollbar && styledItem.__buddyScrollbar.__styleInstance
+                    && styledItem.__buddyScrollbar.__styleInstance.isScrollable) {
                 if (isVertical) {
-                    if (styledItem.buddyScrollbar.align === Qt.AlignTop) {
+                    if (styledItem.__buddyScrollbar.align === Qt.AlignTop) {
                         return flowContainer.top
                     } else {
                         return undefined
@@ -1168,6 +1168,6 @@ Item {
         width: isVertical ? flowContainer.thickness : troughThicknessSteppersStyle
         height: isVertical ? troughThicknessSteppersStyle : flowContainer.thickness
         color: trough.color
-        visible: flowContainer.showCornerRect && styledItem.buddyScrollbar && styledItem.buddyScrollbar.__styleInstance.isScrollable
+        visible: flowContainer.showCornerRect && styledItem.__buddyScrollbar && styledItem.__buddyScrollbar.__styleInstance.isScrollable
     }
 }
