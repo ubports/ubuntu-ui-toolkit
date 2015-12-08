@@ -71,9 +71,10 @@ Item {
                             margins: units.gu(1)
                         }
                         width: height
-                        backgroundColor: page.head.sections.selectedIndex >= 0  ?
-                                             page.head.sections.actions[page.head.sections.selectedIndex].text :
-                                             "black"
+                        property int index: page.head.sections.selectedIndex
+                        backgroundColor: index >= 0
+                                         ? page.head.sections.actions[index].text
+                                         : "black"
                     }
 
                     Label {
