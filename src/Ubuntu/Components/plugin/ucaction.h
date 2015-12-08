@@ -54,6 +54,7 @@ public:
     };
 
     explicit UCAction(QObject *parent = 0);
+    ~UCAction();
 
     inline bool isPublished() const
     {
