@@ -113,8 +113,9 @@ Item {
         function check_selected_button(selectedButtonIndex) {
             compare(selectedButtonIndex, sectionsItem.selectedIndex,
                     "Incorrect button selected.");
-            // Checks that the correct Item is visualized as selected
-            //  are in tst_sections.qml.
+            var button = findChild(sectionsItem, "section_button_"+selectedButtonIndex);
+            verify(button);
+            verify(button.selected);
         }
 
         function test_selected_section() {

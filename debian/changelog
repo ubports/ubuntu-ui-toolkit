@@ -1,3 +1,54 @@
+ubuntu-ui-toolkit (1.3.1705+16.04.20151120.1-0ubuntu2) xenial; urgency=medium
+
+  * Rebuild against Qt 5.5.1.
+  * Cherry-pick required patches from staging branch:
+    - externalimagetype.patch (LP: #1473890)
+    - hack-qt55-int.patch (LP: #1484004)
+    - workaround_emit.patch (LP: #1507910)
+
+ -- Timo Jyrinki <timo-jyrinki@ubuntu.com>  Fri, 20 Nov 2015 15:16:08 +0200
+
+ubuntu-ui-toolkit (1.3.1705+16.04.20151120.1-0ubuntu1) xenial; urgency=medium
+
+  [ Timo Jyrinki ]
+  * Update toolkit and gallery po templates and fixes LP: #1517829 (LP:
+    #1517829)
+
+  [ Zoltán Balogh ]
+  * Update toolkit and gallery po templates and fixes LP: #1517829 (LP:
+    #1517829)
+
+ -- Zoltan Balogh <zoltan.balogh@canonical.com>  Fri, 20 Nov 2015 10:39:29 +0000
+
+ubuntu-ui-toolkit (1.3.1705+16.04.20151118-0ubuntu1) xenial; urgency=medium
+
+  [ Zoltán Balogh ]
+  * Update toolkit and gallery po templates
+
+ -- Zoltan Balogh <zoltan.balogh@canonical.com>  Wed, 18 Nov 2015 06:13:32 +0000
+
+ubuntu-ui-toolkit (1.3.1705+16.04.20151103-0ubuntu1) xenial; urgency=medium
+
+  [ Zsombor Egri ]
+  * Fix Sections sync with PageHeadSections selectedIndex changes. (LP:
+    #1511839)
+
+ -- Zoltan Balogh <zoltan.balogh@canonical.com>  Tue, 03 Nov 2015 11:16:12 +0000
+
+ubuntu-ui-toolkit (1.3.1705+16.04.20151031-0ubuntu1) xenial; urgency=medium
+
+  [ CI Train Bot ]
+  * Resync trunk. added: po/vi.po
+
+  [ Christian Dywan ]
+  * Smaller handlers, entirely draggable caret (LP: #1450222)
+
+  [ Zsombor Egri ]
+  * Switch and CheckBox fix when checked is not toggled when clicked()
+    signal is emitted. (LP: #1510919)
+
+ -- Zoltan Balogh <zoltan.balogh@canonical.com>  Sat, 31 Oct 2015 04:59:31 +0000
+
 ubuntu-ui-toolkit (1.3.1688+15.10.20151018.1-0ubuntu1) wily; urgency=medium
 
   [ Tim Peeters ] 

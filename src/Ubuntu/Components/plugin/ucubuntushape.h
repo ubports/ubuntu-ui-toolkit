@@ -24,8 +24,7 @@
 #include <QtQuick/qsgtexture.h>
 #include <QtQuick/qsgmaterial.h>
 #include <QtGui/QOpenGLFunctions>
-
-class UCUbuntuShape;
+#include "ucimportversionchecker_p.h"
 
 // --- Scene graph shader ---
 
@@ -121,7 +120,7 @@ private:
 
 // --- QtQuick item ---
 
-class UCUbuntuShape : public QQuickItem
+class UCUbuntuShape : public QQuickItem, public UCImportVersionChecker
 {
     Q_OBJECT
 
@@ -183,6 +182,7 @@ public:
 
     static bool useDistanceFields(const QOpenGLContext* openglContext);
 
+    enum Version { Version12 = 0 /* Or lesser */, Version13 = 1 };
     enum Aspect { Flat = 0, Inset = 1, DropShadow = 2 };  // Don't forget to update private enum.
     enum BackgroundMode { SolidColor = 0, VerticalGradient = 1 };
     enum HAlignment { AlignLeft = 0, AlignHCenter = 1, AlignRight = 2 };
@@ -287,6 +287,8 @@ Q_SIGNALS:
     void verticalAlignmentChanged();
 
 protected:
+    virtual QString propertyForVersion(quint16 version) const;
+    virtual void componentComplete();
     virtual QSGNode* updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* data);
     virtual void geometryChanged(const QRectF& newGeometry, const QRectF& oldGeometry);
 
@@ -305,6 +307,7 @@ private Q_SLOTS:
     void _q_textureChanged();
 
 private:
+    bool isVersionGreaterThanOrEqual(Version version);
     void updateFromImageProperties(QQuickItem* image);
     void connectToPropertyChange(
         QObject* sender, const char* property, QObject* receiver, const char* slot);
@@ -344,7 +347,8 @@ private:
     FillMode m_sourceFillMode : 2;
     WrapMode m_sourceHorizontalWrapMode : 1;
     WrapMode m_sourceVerticalWrapMode : 1;
-    quint8 __explicit_padding : 6;
+    Version m_version : 1;
+    quint8 __explicit_padding : 5;
     quint8 m_sourceOpacity;
     quint8 m_flags;
 

@@ -631,6 +631,7 @@ Ubuntu.Components.Mouse 1.0 0.1: QtObject
     property bool enabled
     property list<Item> forwardTo
     readonly property bool hoverEnabled
+    property bool ignoreSynthesizedEvents
     signal pressed(QQuickMouseEvent mouse, Item host)
     signal released(QQuickMouseEvent mouse, Item host)
     signal clicked(QQuickMouseEvent mouse, Item host)

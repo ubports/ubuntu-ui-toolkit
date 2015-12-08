@@ -62,21 +62,6 @@ Template {
         }
 
         TemplateRow {
-            title: i18n.tr("Hint")
-            Row {
-                spacing: units.gu(1)
-                CheckBox {
-                    id: attachHintToContent
-                    text: i18n.tr("attach hint to content")
-                }
-                Label {
-                    text: attachHintToContent.text
-                    anchors.verticalCenter: attachHintToContent.verticalCenter
-                }
-            }
-        }
-
-        TemplateRow {
             title: i18n.tr("Regions")
             Slider {
                 id: regionCount
@@ -134,10 +119,6 @@ Template {
             flickable: page.flickable
         }
         contentComponent: bottomEdgeContent
-
-        StyleHints {
-            attachHintToContent: attachHintToContent.checked
-        }
 
         onCommitCompleted: {
             if (contentToLayout.checked && contentToLayout.enabled) {
