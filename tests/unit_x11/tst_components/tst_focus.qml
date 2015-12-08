@@ -47,6 +47,8 @@ Item {
         }
         Button {
             id: dummy
+            property bool overridden: false
+            function trigger() { overridden = true; }
         }
         TextField {
             id: textField
@@ -284,6 +286,12 @@ Item {
             keyClick(data.key);
             waitForRendering(button);
             buttonTriggerSpy.wait();
+
+            dummy.overridden = false;
+            dummy.forceActiveFocus();
+            keyClick(data.key);
+            waitForRendering(dummy);
+            verify(dummy.overridden, "Overridden trigger wasn't called'");
         }
 
         function test_disabled_component_does_not_focus() {
