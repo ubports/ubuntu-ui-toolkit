@@ -99,6 +99,9 @@ StyledItem {
 
     /*!
       The index of the currently selected section in \l model.
+      If a model is set, the initial value will be 0. Without a model, the initial
+      value is -1, which means no section is selected. When the model is replaced
+      by a different model, the selected index is reset to -1.
      */
     property int selectedIndex: model ? 0 : -1
 
