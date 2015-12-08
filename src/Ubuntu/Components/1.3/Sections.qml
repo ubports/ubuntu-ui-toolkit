@@ -85,7 +85,7 @@ StyledItem {
             console.warn("It is not YET recommended or supported to use more than three sections.");
         }
         if (internal.done) {
-            if (model.length === 0) {
+            if (!model || model.length === 0) {
                 selectedIndex = -1;
             } else if (selectedIndex === 0) {
                 // selectedIndex does not change, but action 0 should be triggered.
