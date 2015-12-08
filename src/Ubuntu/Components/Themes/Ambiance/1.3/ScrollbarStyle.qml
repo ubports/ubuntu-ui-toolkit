@@ -947,7 +947,7 @@ Item {
                             thumbArea.saveFlickableScrollingState()
                             scrollCursor.drag()
                         } else {
-                            thumbArea.lockDrag = false
+                            if (thumbArea.lockDrag) thumbArea.lockDrag = false
                             slider.mouseDragging = false
                             slider.touchDragging = false
                         }
@@ -964,8 +964,11 @@ Item {
                         console.log("DRAGGING")
                         if ((isVertical && Math.abs(mouse.x - thumbArea.x) >= flowContainer.thickness * 10)
                                 || (!isVertical && Math.abs(mouse.y - thumbArea.y) >= flowContainer.thickness * 10)) {
-                            thumbArea.lockDrag = true
-                            resetFlickableToPreDragState()
+                            //don't reset it if the user is already scrolling the view (via keyboard or similar)
+                            if (!scrollAnimation.running) {
+                                resetFlickableToPreDragState()
+                                thumbArea.lockDrag = true
+                            }
                         } else {
                             if (thumbArea.lockDrag) thumbArea.lockDrag = false
                             scrollCursor.drag()
@@ -974,8 +977,14 @@ Item {
                 }
 
                 //onExited: pressHoldTimer.stop()
-                onCanceled: pressHoldTimer.stop()
-                onReleased: pressHoldTimer.stop()
+                onCanceled: {
+                    if (thumbArea.lockDrag) thumbArea.lockDrag = false
+                    pressHoldTimer.stop()
+                }
+                onReleased: {
+                    if (thumbArea.lockDrag) thumbArea.lockDrag = false
+                    pressHoldTimer.stop()
+                }
 
                 Timer {
                     id: pressHoldTimer
