@@ -23,15 +23,18 @@ void UCPageTreeNodePrivate::init()
         this->updatePageTree();
     });
 
-    QObject::connect(q, &UCPageTreeNode::isLeafChanged,
-            [q](bool isLeaf){
+    auto updateParentLeafNode = [q] () {
         if (q->active() && q->parentNode()) {
-            if (isLeaf)
+            if (q->isLeaf())
                 q->parentNode()->setActiveLeafNode(q);
             else
                 q->parentNode()->setActiveLeafNode(q->activeLeafNode());
         }
-    });
+    };
+
+    QObject::connect(q, &UCPageTreeNode::activeChanged,updateParentLeafNode);
+    QObject::connect(q, &UCPageTreeNode::isLeafChanged,updateParentLeafNode);
+    QObject::connect(q, &UCPageTreeNode::activeLeafNodeChanged,updateParentLeafNode);
 
     //make sure all bindings are in tact
     q->resetActive();
@@ -46,38 +49,51 @@ void UCPageTreeNodePrivate::init()
 void UCPageTreeNodePrivate::updatePageTree()
 {
     Q_Q(UCPageTreeNode);
-    q->setParentNode(getParentPageTreeNode(q));
-}
 
-/*!
-  \internal
-  Return the parent node in the page tree, or null if the item is the root node or invalid.
- */
-bool UCPageTreeNodePrivate::isPageTreeNode(QObject *obj)
-{
-    return (qobject_cast<UCPageTreeNode *>(obj) != 0);
-}
-
-UCPageTreeNode *UCPageTreeNodePrivate::getParentPageTreeNode(QQuickItem *item)
-{
-    UCPageTreeNode *node = nullptr;
-    if (item) {
-        QQuickItem *currItem = item->parentItem();
-        while (currItem) {
-            UCPageTreeNode *currPageTreeNode = qobject_cast<UCPageTreeNode *>(currItem);
-            if (currPageTreeNode) {
-                if (currPageTreeNode->isLeaf()) {
-                    // children of a leaf are not part of the tree
-                    node = nullptr;
-                } else {
-                    // current node is part of the tree with currPageTreeNode as its parent.
-                    node = currPageTreeNode;
-                }
-                break;
-            }
-            currItem = currItem->parentItem();
-        }
+    UCPageTreeNode *node = getParentPageTreeNode();
+    q->setParentNode(node);
+#if 0
+    QList<UCPageTreeNode *> nodes;
+    nodes << q;
+    while(node) {
+        nodes.prepend(node);
+        node = node->d_func()->getParentPageTreeNode();
     }
+
+    QString intent;
+    QString spaces;
+    qDebug().noquote().nospace()<<"\nBegin Node List";
+    Q_FOREACH(UCPageTreeNode *currNode, nodes) {
+        qDebug().noquote().nospace()<<QString("+%1 ").arg(intent)<<currNode;
+        qDebug().noquote().nospace()<<QString("%1  +-pageStack: ").arg(spaces)<<currNode->pageStack();
+        intent += "--";
+        spaces += "  ";
+    }
+    qDebug().noquote().nospace()<<"End Node List\n";
+#endif
+}
+
+UCPageTreeNode *UCPageTreeNodePrivate::getParentPageTreeNode()
+{
+    Q_Q(UCPageTreeNode);
+    UCPageTreeNode *node = nullptr;
+
+    QQuickItem *currItem = q->parentItem();
+    while (currItem) {
+        UCPageTreeNode *currPageTreeNode = qobject_cast<UCPageTreeNode *>(currItem);
+        if (currPageTreeNode) {
+            if (currPageTreeNode->isLeaf()) {
+                // children of a leaf are not part of the tree
+                node = nullptr;
+            } else {
+                // current node is part of the tree with currPageTreeNode as its parent.
+                node = currPageTreeNode;
+            }
+            break;
+        }
+        currItem = currItem->parentItem();
+    }
+
     return node;
 }
 
@@ -179,9 +195,14 @@ void UCPageTreeNode::setParentNode(UCPageTreeNode *parentNode)
     }
 
     Q_EMIT parentNodeChanged (parentNode);
-    d->_q_activeBinding (parentNode && parentNode->active() );
-    d->_q_pageStackBinding (parentNode ? parentNode->pageStack() : nullptr);
-    d->_q_propagatedBinding (parentNode ? parentNode->propagated() : nullptr);
+
+    //update properties if they are not set manually
+    if (!(d->m_flags & UCPageTreeNodePrivate::CustomActive))
+        d->_q_activeBinding (parentNode && parentNode->active() );
+    if (!(d->m_flags & UCPageTreeNodePrivate::CustomPageStack))
+        d->_q_pageStackBinding (parentNode ? parentNode->pageStack() : nullptr);
+    if (!(d->m_flags & UCPageTreeNodePrivate::CustomPropagated))
+        d->_q_propagatedBinding (parentNode ? parentNode->propagated() : nullptr);
 }
 
 UCPageTreeNode *UCPageTreeNode::parentNode() const
@@ -191,6 +212,7 @@ UCPageTreeNode *UCPageTreeNode::parentNode() const
 
 void UCPageTreeNode::componentComplete()
 {
+    UCStyledItemBase::componentComplete();
     d_func()->updatePageTree();
 }
 
@@ -244,6 +266,10 @@ void UCPageTreeNode::setToolbar(QQuickItem *toolbar)
     Q_EMIT toolbarChanged(toolbar);
 }
 
+bool UCPageTreeNode::isPageTreeNode() const
+{
+    return true;
+}
 
 void UCPageTreeNode::setActiveLeafNode(QQuickItem *activeLeafNode)
 {
@@ -297,7 +323,6 @@ void UCPageTreeNode::resetActive()
     d->_q_activeBinding(resActive);
 }
 
-//    property Item pageStack: node.parentNode ? node.parentNode.pageStack : null
 void UCPageTreeNode::setPageStack(QQuickItem *pageStack)
 {
     Q_D(UCPageTreeNode);

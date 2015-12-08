@@ -26,7 +26,7 @@ import QtQuick.Window 2.0
   \ingroup ubuntu
   \brief The base class for MainView and MultiColumnView.
 */
-PageTreeNode {
+Toolkit.PageTreeNode {
     id: mainView
     styleName: "MainViewStyle"
 

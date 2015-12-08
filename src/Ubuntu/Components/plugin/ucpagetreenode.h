@@ -7,6 +7,7 @@ class UCPageTreeNodePrivate;
 class UCPageTreeNode : public UCStyledItemBase
 {
     Q_OBJECT
+    Q_PROPERTY(bool __isPageTreeNode READ isPageTreeNode NOTIFY isPageTreeNodeChanged)
     Q_PROPERTY(QQuickItem* toolbar READ toolbar WRITE setToolbar NOTIFY toolbarChanged)
     Q_PROPERTY(QObject* __propagated READ propagated WRITE setPropagated NOTIFY propagatedChanged RESET resetPropagated)
     Q_PROPERTY(bool active READ active WRITE setActive RESET resetActive NOTIFY activeChanged)
@@ -44,6 +45,8 @@ public:
     QQuickItem *toolbar() const;
     void setToolbar(QQuickItem *toolbar);
 
+    bool isPageTreeNode() const;
+
 Q_SIGNALS:
     void isLeafChanged(bool isLeaf);
     void activeChanged(bool active);
@@ -52,6 +55,7 @@ Q_SIGNALS:
     void activeLeafNodeChanged(QQuickItem* activeLeafNode);
     void propagatedChanged(QObject* propagated);
     void toolbarChanged(QQuickItem* toolbar);
+    void isPageTreeNodeChanged(bool isPageTreeNode);
 
 protected:
     UCPageTreeNode(UCPageTreeNodePrivate &, QQuickItem *parent);
@@ -60,6 +64,8 @@ private:
     Q_DECLARE_PRIVATE(UCPageTreeNode)
     Q_PRIVATE_SLOT(d_func(), void _q_activeBinding(bool active))
     Q_PRIVATE_SLOT(d_func(), void _q_pageStackBinding (QQuickItem *pageStack))
+    Q_PRIVATE_SLOT(d_func(), void _q_propagatedBinding (QObject *propagated))
+    bool m___isPageTreeNode;
 };
 
 #endif // UCPAGETREENODE_H

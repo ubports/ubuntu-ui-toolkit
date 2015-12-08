@@ -12,8 +12,7 @@ public:
     UCPageTreeNodePrivate ();
     void init ();
     void updatePageTree ();
-    bool isPageTreeNode (QObject *obj);
-    UCPageTreeNode *getParentPageTreeNode (QQuickItem *item);
+    UCPageTreeNode *getParentPageTreeNode ();
 
     enum PropertyFlags {
         CustomToolBar    = 0x01,
