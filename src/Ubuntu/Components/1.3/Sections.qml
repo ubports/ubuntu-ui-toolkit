@@ -85,31 +85,50 @@ StyledItem {
             console.warn("It is not YET recommended or supported to use more than three sections.");
         }
         if (internal.done) {
-            selectedIndex = -1;
+            if (model.length === 0) {
+                selectedIndex = -1;
+            } else if (selectedIndex === 0) {
+                // selectedIndex does not change, but action 0 should be triggered.
+                internal.triggerAction(0);
+            } else {
+                // change selectedIndex, which will trigger action 0.
+                selectedIndex = 0;
+            }
         }
     }
 
     Component.onCompleted: {
         internal.done = true;
+        internal.triggerAction(selectedIndex);
     }
     QtObject {
         id: internal
         property bool done: false
+
+        /*!
+          Triggers the action associated with the given
+          index, if that action exists.
+         */
+        function triggerAction(index) {
+            if ((index >= 0) && (index < model.length)) {
+                if (model[index].hasOwnProperty("trigger")) {
+                    model[index].trigger();
+                }
+            }
+        }
     }
 
     /*!
       The index of the currently selected section in \l model.
-      If a model is set, the initial value will be 0. Without a model, the initial
-      value is -1, which means no section is selected. When the model is replaced
-      by a different model, the selected index is reset to -1.
+      The default value is 0 if there is at least 1 section, or -1 for no sections.
+      When the model is changed, selectedIndex is reset to 0 and the first action
+      is triggered.
+      Upon completion of the Sections component, if there is an Action associated
+      with the selected index, that Action will be triggered.
      */
     property int selectedIndex: model ? 0 : -1
 
     onSelectedIndexChanged: {
-        if ((selectedIndex >= 0) && (selectedIndex < model.length)) {
-            if (model[selectedIndex].hasOwnProperty("trigger")) {
-                model[selectedIndex].trigger();
-            }
-        }
+        internal.triggerAction(selectedIndex);
     }
 }
