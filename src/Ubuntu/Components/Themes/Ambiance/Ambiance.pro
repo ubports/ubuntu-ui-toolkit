@@ -121,6 +121,3 @@ QML_FILES += 1.2/ActivityIndicatorStyle.qml \
 load(ubuntu_qml_module)
 
 OTHER_FILES+=qmldir
-
-DISTFILES += \
-    1.3/AmbianceNormal.qml
