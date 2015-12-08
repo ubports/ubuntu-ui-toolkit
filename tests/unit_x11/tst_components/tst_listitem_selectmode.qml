@@ -151,7 +151,7 @@ MainView {
             verify(selectPanel, "selection panel not found");
         }
 
-        function test_togle_selecded_triggers_one_selectedChanged_bug1493880() {
+        function test_toggle_selected_triggers_one_selectedChanged_bug1493880() {
             testView.delegate = selectModePreset;
             testView.model = 10;
             waitForRendering(testView, 500);
