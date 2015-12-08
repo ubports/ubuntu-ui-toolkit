@@ -197,7 +197,7 @@ Ubuntu.StyledItem {
                 anchors.fill: parent
                 color: 'red'
                 opacity: 0.1
-                visible: draggedItemMouseArea.enabled
+                visible: false // draggedItemMouseArea.enabled
             }
         }
 
