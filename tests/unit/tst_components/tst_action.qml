@@ -137,10 +137,22 @@ TestCase {
          verify(!data.inactive.active, "Context deactivation error");
      }
 
-     function test_overloaded_action_trigger() {
-         triggeredSignalSpy.target = suppressTrigger;
-         suppressTrigger.trigger();
-         compare(triggeredSignalSpy.count, 0, "Overloaded trigger should not trigger action");
+     function test_overloaded_action_trigger_data() {
+         return [
+             {tag: "invoke parameterless", invoked: true},
+             {tag: "invoke with parameter", value: 1, type: Action.Integer, invoked: true},
+         ];
+     }
+     function test_overloaded_action_trigger(data) {
+         suppressTrigger.invoked = false;
+         suppressTrigger.parameterType = Action.None;
+         if (data.value) {
+             suppressTrigger.parameterType = data.type;
+             testButton.trigger(data.value)
+         } else {
+             testButton.trigger(data.value)
+         }
+         compare(suppressTrigger.invoked, data.invoked);
      }
 
      Action {
@@ -198,7 +210,13 @@ TestCase {
 
      Action {
          id: suppressTrigger
-         function trigger() {}
+         property bool invoked: false
+         function trigger() { invoked = true }
+     }
+
+     Button {
+         id: testButton
+         action: suppressTrigger
      }
 
 }
