@@ -211,7 +211,8 @@ TestCase {
      Action {
          id: suppressTrigger
          property bool invoked: false
-         function trigger() { invoked = true }
+         // we must override the parametered version as Button connects to the parametered version
+         function trigger(v) { invoked = true }
      }
 
      Button {
