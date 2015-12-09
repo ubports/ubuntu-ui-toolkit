@@ -714,29 +714,26 @@ void UCSwipeAreaPrivate::setStatus(Status newStatus)
         recognitionTimer->stop();
     }
 
+    const bool wasDragging = q->dragging();
+    const bool wasPressed = q->pressed();
+
     status = newStatus;
     Q_EMIT statusChanged(status);
 
     SA_TRACE(statusToString(oldStatus) << " -> " << statusToString(newStatus));
 
-    switch (newStatus) {
-        case WaitingForTouch:
-            if (oldStatus == Recognized) {
-                Q_EMIT q->draggingChanged(false);
-            }
-            Q_EMIT q->pressedChanged(false);
-            break;
-        case Undecided:
-            recognitionTimer->start();
-            Q_EMIT q->pressedChanged(true);
-            break;
-        case Recognized:
-            Q_EMIT q->draggingChanged(true);
-            break;
-        default:
-            // no-op
-            break;
+    if (newStatus == Undecided) {
+        recognitionTimer->start();
     }
+
+    const bool isDragging = q->dragging();
+    const bool isPressed = q->pressed();
+
+    if (isDragging != wasDragging)
+        Q_EMIT q->draggingChanged(isDragging);
+
+    if (isPressed != wasPressed)
+        Q_EMIT q->pressedChanged(isPressed);
 }
 
 void UCSwipeAreaPrivate::updatePosition(const QPointF &point)
@@ -940,7 +937,8 @@ qreal UCSwipeAreaPrivate::projectOntoDirectionVector(const QPointF &sceneVector)
 }
 
 UCSwipeAreaPrivate::UCSwipeAreaPrivate(UCSwipeArea *q)
-    : timeSource(new RealTimeSource)
+    : QObject(q)
+    , timeSource(new RealTimeSource)
     , activeTouches(timeSource)
     , q(q)
     , recognitionTimer(nullptr)
