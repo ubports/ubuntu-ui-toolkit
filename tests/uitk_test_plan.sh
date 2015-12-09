@@ -381,7 +381,7 @@ while getopts ":hrcintduslqwbv:o:p:f:a:" opt; do
             echo "By default tihe uitk_test_plan.sh flashes the latest vivid-overlay image on the device, installs the click application"
             echo "tests, configures the ppa:ubuntu-sdk-team/staging PPA, installs the UITK from the PPA and executes the test plan."
             echo ""
-	    echo "Provision the device for normal use without wiping the userdata"
+	    echo "Provision the device for normal use and wipe the userdata"
 	    echo -e "\t$ ./uitk_test_plan.sh -q"
             echo ""
             echo "Validate the staging branch of the UITK against the vivid-overlay image"
