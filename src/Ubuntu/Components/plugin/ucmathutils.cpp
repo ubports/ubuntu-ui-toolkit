@@ -40,7 +40,6 @@ double UCMathUtils::clamp(double x, double min, double max)
         return qBound(min, x, max);
     } else {
         // swap min/max if min > max
-        qWarning()<<"MathUtils.clamp, min value should not be bigger than the max value";
         return qBound(max, x, min);
     }
 }

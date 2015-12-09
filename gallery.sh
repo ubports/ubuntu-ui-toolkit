@@ -15,8 +15,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-source export_modules_dir.sh
-
 if [ "$1" == "--autopilot" ]
 then
 	examples/ubuntu-ui-toolkit-gallery/gallery -testability &

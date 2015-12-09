@@ -71,6 +71,10 @@ class UCMouse : public QObject
     Q_PROPERTY(int clickAndHoldThreshold READ clickAndHoldThreshold WRITE setClickAndHoldThreshold NOTIFY clickAndHoldThresholdChanged)
     Q_PROPERTY(QQmlListProperty<QQuickItem> forwardTo READ forwardTo)
     Q_PROPERTY(Priority priority READ priority WRITE setPriority NOTIFY priorityChanged)
+
+    //Added in 1.3, but we can't use REVISION because of QTBUG-40043
+    Q_PROPERTY(bool ignoreSynthesizedEvents MEMBER m_ignoreSynthesizedEvents NOTIFY ignoreSynthesizedEventsChanged)
+
     Q_ENUMS(Priority)
 public:
     enum Priority {
@@ -98,6 +102,7 @@ Q_SIGNALS:
     void hoverEnabledChanged();
     void clickAndHoldThresholdChanged();
     void priorityChanged();
+    void ignoreSynthesizedEventsChanged();
 
     void pressed(QQuickMouseEvent *mouse, QQuickItem *host);
     void released(QQuickMouseEvent *mouse, QQuickItem *host);
@@ -151,6 +156,7 @@ protected:
     bool m_longPress:1;
     bool m_hovered:1;
     bool m_doubleClicked:1;
+    bool m_ignoreSynthesizedEvents:1;
 };
 QML_DECLARE_TYPEINFO(UCMouse, QML_HAS_ATTACHED_PROPERTIES)
 
