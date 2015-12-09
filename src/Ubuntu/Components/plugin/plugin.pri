@@ -75,6 +75,7 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/ucserviceproperties_p.h \
     $$PWD/privates/listitemdragarea.h \
     $$PWD/privates/listitemdraghandler.h \
+    $$PWD/privates/listitemselection.h \
     $$PWD/ucnamespace.h \
     $$PWD/ucdeprecatedtheme.h \
     $$PWD/ucdefaulttheme.h \
@@ -152,6 +153,7 @@ SOURCES += $$PWD/plugin.cpp \
     $$PWD/privates/listitemdragarea.cpp \
     $$PWD/privates/listitemdraghandler.cpp \
     $$PWD/privates/listitemexpansion.cpp \
+    $$PWD/privates/listitemselection.cpp \
     $$PWD/ucnamespace.cpp \
     $$PWD/ucdeprecatedtheme.cpp \
     $$PWD/ucdefaulttheme.cpp \
