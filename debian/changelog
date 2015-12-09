@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (1.3.1742+16.04-0ubuntu1) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.3.1742+16.04.20151209-0ubuntu1) xenial; urgency=medium
 
   [ Zoltán Balogh ]
   * Enable building the UITK tests in any case.
@@ -107,7 +107,10 @@ ubuntu-ui-toolkit (1.3.1742+16.04-0ubuntu1) UNRELEASED; urgency=medium
   * Workaround 'emit' declaration in Qt 5.5 Fixes LP: #1507910
   * Build depend on libxkbcommon-dev Fixes LP: #1508447
 
- -- Zoltán Balogh <zoltan@bakter.hu>  Sat, 05 Dec 2015 12:22:04 +0200
+  [ CI Train Bot ]
+  * No-change rebuild.
+
+ -- Zoltan Balogh <zoltan.balogh@canonical.com>  Wed, 09 Dec 2015 14:44:07 +0000
 
 ubuntu-ui-toolkit (1.3.1705+16.04.20151120.1-0ubuntu2) xenial; urgency=medium
 
