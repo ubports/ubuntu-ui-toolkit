@@ -83,6 +83,7 @@ ubuntu-ui-toolkit (1.3.1742+16.04-0ubuntu1) UNRELEASED; urgency=medium
   * Add a navigationActions property to PageHeader.
   * Fix links to Page in the documentation.
   * Fix several header CPO related issues.
+  * Only select visible header label instance in checkPageHeader().
 
   [ Florian Boucault ]
   * DraggingArea: import Ubuntu.Components so that MathUtils is available and  
