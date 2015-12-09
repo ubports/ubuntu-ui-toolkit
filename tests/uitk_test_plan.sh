@@ -100,10 +100,6 @@ wait_for_shell()
 	# Waiting for device on ADB
 	set -e
 	adb -s ${SERIALNUMBER} wait-for-device
-	# The device is accessible on ADB"
-	set +e
-	error=$(adb -s ${SERIALNUMBER} shell echo ok 2>&1)
-	set -e
 	# Start waiting for Unity8"
 	until PIDS=$(adb -s ${SERIALNUMBER} shell pidof unity8 2>/dev/null|egrep -v "^$"); 
 	do
