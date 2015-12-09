@@ -24,9 +24,12 @@ class QTouchDevice;
 class UCTestExtras : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(bool touchPresent READ touchDevicePresent)
+    Q_PROPERTY(bool touchPresent READ touchDevicePresent NOTIFY touchDevicePresentChanged)
 public:
     explicit UCTestExtras(QObject *parent = 0);
+
+Q_SIGNALS:
+    void touchDevicePresentChanged();
 
 public Q_SLOTS:
     static QString openGLflavor();
@@ -41,8 +44,17 @@ public Q_SLOTS:
     static void touchMove(int touchId, QQuickItem *item, const QPoint &point);
     static void touchDrag(int touchId, QQuickItem *item, const QPoint &from, const QPoint &delta, int steps = 5);
 
+    static void mouseDrag(QQuickItem *item, const QPoint &from, const QPoint &delta, Qt::MouseButton button, Qt::KeyboardModifiers stateKey = 0, int steps = -1, int delay = -1);
+
+public: // yet for cpp use
+    static void touchDragWithPoints(int touchId, QQuickItem *item, QList<QPoint> points, int delay = -1);
+    static void mouseDragWithPoints(QQuickItem *item, QList<QPoint> points, Qt::MouseButton button, Qt::KeyboardModifiers stateKey = 0, int delay = -1);
+
 private:
     static QTouchDevice *m_touchDevice;
+    static UCTestExtras *m_testExtras;
+
+    friend class UCMouseTouchAdaptor;
 };
 
 #endif // TESTEXTRAS_H

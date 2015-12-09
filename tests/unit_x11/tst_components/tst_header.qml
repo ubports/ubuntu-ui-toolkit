@@ -42,6 +42,15 @@ Item {
                 width: 2
             }
         }
+
+        onMovingChanged: {
+            // The value of movingLabel.text is used in:
+            // - test_dont_move_when_flickable_shortens_bug1514143()
+            // - test_dont_move_exposed_header_when_scrolling_down_bug1514143()
+            // - test_dont_move_hidden_header_when_scrolling_up()
+            movingLabel.text = "Moving changed to " + moving;
+            movingLabel.color = moving ? "purple" : "red";
+        }
     }
 
     Flickable {
@@ -105,12 +114,21 @@ Item {
             text: "Set contentY to " + newY
         }
         Label {
+            id: flickLabel
             anchors {
-                top : contentYButton.bottom
+                top: contentYButton.bottom
                 horizontalCenter: parent.horizontalCenter
                 topMargin: units.gu(8)
             }
             text: "Flick me"
+        }
+        Label {
+            id: movingLabel
+            anchors {
+                top: flickLabel.bottom
+                horizontalCenter: parent.horizontalCenter
+            }
+            text: "hmm"
         }
     }
 
@@ -189,7 +207,7 @@ Item {
             var p = centerOf(flickable);
             // Use mouseWheel to scroll because mouseDrag is very unreliable
             // and does not properly handle negative values for dy.
-            mouseWheel(flickable, p.x, p.y, 0,dy);
+            mouseWheel(flickable, p.x, p.y, 0, dy);
         }
 
         function scroll_down() {
@@ -367,6 +385,40 @@ Item {
             wait_for_exposed(true, "Scrolling up disconnected flickable hides header.");
 
             header.flickable = flickable;
+        }
+
+        function test_dont_move_when_flickable_shortens_bug1514143() {
+            var flickableContentHeight = flickable.contentHeight;
+            movingLabel.text = "HEADER DID NOT MOVE";
+            flickable.contentHeight = 200;
+            compare(movingLabel.text, "HEADER DID NOT MOVE",
+                    "Reducing flickable contents height unneccessary sets header.moving.");
+            flickable.contentHeight = flickableContentHeight;
+            compare(movingLabel.text, "HEADER DID NOT MOVE",
+                    "Increasing flickable contents height unneccessary sets header.moving.");
+        }
+
+        function test_dont_move_exposed_header_when_scrolling_down_bug1514143() {
+            scroll_down(); scroll_down();
+            wait_for_exposed(false, "Header doesn't hide when scrolling down.");
+            header.exposed = true;
+            wait_for_exposed(true, "Cannot expose header after scrolling down.");
+            movingLabel.text = "HEADER DID NOT MOVE";
+            scroll_up();
+            wait(100);
+            compare(movingLabel.text, "HEADER DID NOT MOVE",
+                    "Header moved when scrolling up while header was already exposed.");
+        }
+
+        function test_dont_move_hidden_header_when_scrolling_up() {
+            // flickable is at the top.
+            header.exposed = false;
+            wait_for_exposed(false, "Cannot hide header.");
+            movingLabel.text = "HEADER DID NOT MOVE";
+            scroll_down();
+            wait(100);
+            compare(movingLabel.text, "HEADER DID NOT MOVE",
+                    "Header moved when scrolling down while header was already hidden.");
         }
     }
 }

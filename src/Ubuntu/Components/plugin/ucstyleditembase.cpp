@@ -26,12 +26,22 @@
 #include <QtQuick/private/qquickanchors_p.h>
 
 UCStyledItemBasePrivate::UCStyledItemBasePrivate()
-    : styleComponent(Q_NULLPTR)
+    : oldParentItem(Q_NULLPTR)
+    , styleComponent(Q_NULLPTR)
     , styleItem(Q_NULLPTR)
-    , styleVersion(LATEST_UITK_VERSION)
+    , styleVersion(0)
     , activeFocusOnPress(false)
     , wasStyleLoaded(false)
 {
+}
+
+bool UCStyledItemBase::activeFocusOnTab2() const
+{
+    return activeFocusOnTab();
+}
+void UCStyledItemBase::setActiveFocusOnTab2(bool v)
+{
+    setActiveFocusOnTab(v);
 }
 
 UCStyledItemBasePrivate::~UCStyledItemBasePrivate()
@@ -42,6 +52,7 @@ void UCStyledItemBasePrivate::init()
 {
     Q_Q(UCStyledItemBase);
     q->setFlag(QQuickItem::ItemIsFocusScope);
+    QObject::connect(q, &QQuickItem::activeFocusOnTabChanged, q, &UCStyledItemBase::activeFocusOnTabChanged2);
 }
 
 
@@ -108,6 +119,7 @@ bool UCStyledItemBasePrivate::isParentFocusable()
  */
 UCStyledItemBase::UCStyledItemBase(QQuickItem *parent)
     : QQuickItem(*(new UCStyledItemBasePrivate), parent)
+    , UCThemingExtension(this)
 {
     Q_D(UCStyledItemBase);
     d->init();
@@ -115,6 +127,7 @@ UCStyledItemBase::UCStyledItemBase(QQuickItem *parent)
 
 UCStyledItemBase::UCStyledItemBase(UCStyledItemBasePrivate &dd, QQuickItem *parent)
     : QQuickItem(dd, parent)
+    , UCThemingExtension(this)
 {
     Q_D(UCStyledItemBase);
     d->init();
@@ -200,7 +213,6 @@ void UCStyledItemBase::setActiveFocusOnPress(bool value)
         return;
     d->activeFocusOnPress = value;
     d->setFocusable(d->activeFocusOnPress);
-    setActiveFocusOnTab(value);
     Q_EMIT activeFocusOnPressChanged();
 }
 
@@ -308,7 +320,7 @@ bool UCStyledItemBasePrivate::loadStyleItem(bool animated)
     // either styleComponent or styleName is valid
     QQmlComponent *component = styleComponent;
     if (!component) {
-        component = getTheme()->createStyleComponent(styleDocument + ".qml", q, styleVersion);
+        component = q->getTheme()->createStyleComponent(styleDocument + ".qml", q, styleVersion);
     }
     if (!component) {
         return false;
@@ -442,45 +454,56 @@ void UCStyledItemBasePrivate::_q_styleResized()
  * if any, or to the system default theme.
  */
 
-void UCStyledItemBasePrivate::preThemeChanged()
+void UCStyledItemBase::preThemeChanged()
 {
-    wasStyleLoaded = (styleItem != Q_NULLPTR);
-    preStyleChanged();
+    Q_D(UCStyledItemBase);
+    d->wasStyleLoaded = (d->styleItem != Q_NULLPTR);
+    d->preStyleChanged();
 }
-void UCStyledItemBasePrivate::postThemeChanged()
+void UCStyledItemBase::postThemeChanged()
 {
-    Q_EMIT q_func()->themeChanged();
-    if (!wasStyleLoaded) {
+    Q_EMIT themeChanged();
+    Q_D(UCStyledItemBase);
+    if (!d->wasStyleLoaded) {
         return;
     }
-    postStyleChanged();
-    loadStyleItem();
+    d->postStyleChanged();
+    d->loadStyleItem();
 }
 
-void UCStyledItemBase::classBegin()
+QString UCStyledItemBasePrivate::propertyForVersion(quint16 version) const
 {
-    QQuickItem::classBegin();
-    d_func()->initTheming(this);
+    switch (MINOR_VERSION(version)) {
+    case 3: return QStringLiteral("theme");
+    default: return QString();
+    }
+}
+
+void UCStyledItemBasePrivate::completeStyledItem()
+{
+    // no animation at this time
+    // prepare style context if not been done yet
+    postStyleChanged();
+    loadStyleItem(false);
 }
 
 void UCStyledItemBase::componentComplete()
 {
     QQuickItem::componentComplete();
     Q_D(UCStyledItemBase);
+    // make sure the theme version is up to date
+    d->styleVersion = d->importVersion(this);
+    UCTheme::checkMixedVersionImports(this, d->styleVersion);
+    d->completeStyledItem();
+}
 
-    QQmlData *data = QQmlData::get(this);
-    QQmlContextData *cdata = QQmlContextData::get(qmlContext(this));
-    QQmlPropertyData l;
-    QQmlPropertyData *pdata = QQmlPropertyCache::property(qmlEngine(this), this, QStringLiteral("theme"), cdata, l);
-    // FIXME MainView internal styler uses theme property, meaning imports13 will be true,
-    // therefore we must check the type of the property as well in case anyone else overrides it
-    d->styleVersion = data->propertyCache->isAllowedInRevision(pdata) && (property("theme").type() != QVariant::String)
-            ? BUILD_VERSION(1, 3)
-            : BUILD_VERSION(1, 2);
-    // no animation at this time
-    // prepare style context if not been done yet
-    d->postStyleChanged();
-    d->loadStyleItem(false);
+void UCStyledItemBase::itemChange(ItemChange change, const ItemChangeData &data)
+{
+    QQuickItem::itemChange(change, data);
+    if (change == ItemParentHasChanged) {
+        // update parentItem
+        d_func()->oldParentItem = data.item;
+    }
 }
 
 // grab pressed state and focus if it can be
@@ -507,15 +530,6 @@ bool UCStyledItemBase::childMouseEventFilter(QQuickItem *child, QEvent *event)
     }
     // let the event be passed to children
     return QQuickItem::childMouseEventFilter(child, event);
-}
-
-// catch UCThemeEvent
-void UCStyledItemBase::customEvent(QEvent *event)
-{
-    Q_D(UCStyledItemBase);
-    if (UCThemeEvent::isThemeEvent(event)) {
-        d->handleThemeEvent(static_cast<UCThemeEvent*>(event));
-    }
 }
 
 #include "moc_ucstyleditembase.cpp"

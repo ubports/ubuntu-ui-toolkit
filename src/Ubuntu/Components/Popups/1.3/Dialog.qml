@@ -157,6 +157,8 @@ PopupBase {
         focus: visible
         width: Math.min(minimumWidth, dialog.width)
         anchors.centerIn: parent
+        clip: true
+        objectName: 'dialogForeground'
 
         // used in the style
         property string title
@@ -167,8 +169,9 @@ PopupBase {
         property real margins: units.gu(4)
         property real itemSpacing: units.gu(2)
         property Item dismissArea: dialog.dismissArea
+        property real keyboardHeight: dialog.anchorToKeyboard && UbuntuApplication.inputMethod.visible ? UbuntuApplication.inputMethod.keyboardRectangle.height : 0
 
-        height: Math.min(contentsColumn.height + foreground.margins, dialog.height)
+        height: Math.min(contentsColumn.height + foreground.margins, dialog.height - keyboardHeight)
 
         Flickable {
             anchors.fill: parent
@@ -213,7 +216,6 @@ PopupBase {
             }
         }
 
-        theme.version: Ubuntu.toolkitVersion
         styleName: "DialogForegroundStyle"
     }
 }

@@ -143,7 +143,6 @@ StyledItem {
     width: parent.width
     height: parent.height
     activeFocusOnPress: true
-    theme.version: Ubuntu.toolkitVersion
     styleName: "DialerHandStyle"
 
     /*! \internal */

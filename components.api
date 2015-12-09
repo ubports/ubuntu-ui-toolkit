@@ -31,7 +31,7 @@ Ubuntu.Components.Action.Type: Enum
     Real
     String
 Ubuntu.Components.ActionBar 1.3: StyledItem
-    readonly property Action actions
+    property list<Action> actions
     property Component delegate
     property int numberOfSlots
 Ubuntu.Components.Styles.ActionBarStyle 1.3: Item
@@ -41,7 +41,7 @@ Ubuntu.Components.Styles.ActionBarStyle 1.3: Item
     property url overflowIconSource
     property string overflowText
 Ubuntu.Components.ActionContext 1.0 0.1: QtObject
-    default readonly property Action actions
+    default property list<Action> actions
     property bool active
     function addAction(Action action)
     function removeAction(Action action)
@@ -54,15 +54,15 @@ Ubuntu.Components.ActionItem 1.0 0.1: StyledItem
     function trigger()
     property string text
 Ubuntu.Components.ActionList 1.0 0.1: QtObject
-    readonly property Action actions
-    default readonly property Action children
+    property list<Action> actions
+    default property list<Action> children
 Ubuntu.Components.ActionList 1.3: QtObject
-    readonly property Action actions
-    default readonly property Action children
+    property list<Action> actions
+    default property list<Action> children
 Ubuntu.Components.ActionManager 1.0 0.1: QtObject
-    default readonly property Action actions
+    default property list<Action> actions
     readonly property ActionContext globalContext
-    readonly property ActionContext localContexts
+    property list<ActionContext> localContexts
     signal quit()
     function addAction(Action action)
     function removeAction(Action action)
@@ -84,7 +84,7 @@ Ubuntu.Components.ActivityIndicator 1.3: AnimatedItem
     property bool running
 Ubuntu.Components.AdaptivePageLayout 1.3: PageTreeNode
     readonly property int columns
-    readonly property PageColumnsLayout layouts
+    property list<PageColumnsLayou> layouts
     function var addPageToCurrentColumn(var sourcePage, var page, var properties)
     function var addPageToNextColumn(var sourcePage, var page, var properties)
     function var removePages(var page)
@@ -155,7 +155,7 @@ Ubuntu.Components.Argument 1.0 0.1: QtObject
     property bool required
     property QStringList valueNames
 Ubuntu.Components.Arguments 1.0 0.1: QtObject
-    default readonly property Argument arguments
+    default property list<Argument> arguments
     property Argument defaultArgument
     readonly property bool error
     readonly property string errorMessage
@@ -175,11 +175,61 @@ Ubuntu.Components.ListItems.Base 1.3: Empty
     property var icon
     property bool iconFrame
     property bool progression
-Ubuntu.Components.BottomEdgeHint 1.3: Item
-    property string iconName
-    property url iconSource
+Ubuntu.Components.BottomEdge 1.3: StyledItem
+    readonly property BottomEdgeRegion activeRegion
+    property Component contentComponent
+    readonly property Item contentItem
+    property url contentUrl
+    readonly property DragDirection dragDirection
+    readonly property double dragProgress
+    readonly property BottomEdgeHint hint
+    signal dragProgressChanged(double dragProgress)
+    signal dragDirectionChanged(BottomEdge.DragDirection direction)
+    signal statusChanged(BottomEdge.Status status)
+    signal contentChanged(url url)
+    signal contentComponentChanged(Component component)
+    signal activeRegionChanged(BottomEdgeRegion activeRegion)
+    signal commitStarted()
+    signal commitCompleted()
+    signal collapseStarted()
+    signal collapseCompleted()
+    function commit()
+    function collapse()
+    property list<BottomEdgeRegion> regions
+    readonly property Status status
+Ubuntu.Components.BottomEdge.DragDirection: Enum
+    Downwards
+    Undefined
+    Upwards
+Ubuntu.Components.BottomEdge.Status: Enum
+    Committed
+    Hidden
+    Revealed
+Ubuntu.Components.BottomEdgeHint 1.3: ActionItem
+    property int deactivateTimeout
+    property Flickable flickable
     signal clicked()
-    property string text
+    property Status status
+    readonly property SwipeArea swipeArea
+Ubuntu.Components.BottomEdgeHint.Status: Enum
+    Active
+    Hidden
+    Inactive
+    Locked
+Ubuntu.Components.BottomEdgeRegion 1.3: QtObject
+    property Component contentComponent
+    property url contentUrl
+    property bool enabled
+    property double from
+    signal entered()
+    signal exited()
+    signal dragEnded()
+    property double to
+Ubuntu.Components.Styles.BottomEdgeStyle 1.3: Item
+    property Item contentItem
+    property Item panel
+    property Animation panelAnimation
+    property double revealThreshold
 Ubuntu.Components.Button 1.0 0.1: AbstractButton
     property color color
     property QFont font
@@ -221,14 +271,14 @@ Ubuntu.Components.Clipboard 1.0 0.1: QtObject singleton
 Ubuntu.Components.ColorUtils 0.1 1.0
 Ubuntu.Components.ComboButton 1.1: Button
     property double collapsedHeight
-    default readonly property QtObject comboList
+    default property list<QtObject> comboList
     readonly property double comboListHeight
     property color dropdownColor
     property bool expanded
     property double expandedHeight
 Ubuntu.Components.ComboButton 1.3: Button
     property double collapsedHeight
-    default readonly property QtObject comboList
+    default property list<QtObject> comboList
     readonly property double comboListHeight
     property color dropdownColor
     property bool expanded
@@ -318,7 +368,7 @@ Ubuntu.Components.Popups.DefaultSheet 1.3: SheetBase
     signal closeClicked()
     signal doneClicked()
 Ubuntu.Components.Pickers.Dialer 1.0 0.1: StyledItem
-    readonly property QtObject centerContent
+    property list<QtObject> centerContent
     readonly property Item centerItem
     property double handSpace
     readonly property var hands
@@ -327,7 +377,7 @@ Ubuntu.Components.Pickers.Dialer 1.0 0.1: StyledItem
     property double minimumValue
     property double size
 Ubuntu.Components.Pickers.Dialer 1.3: StyledItem
-    readonly property QtObject centerContent
+    property list<QtObject> centerContent
     readonly property Item centerItem
     property double handSpace
     readonly property var hands
@@ -339,18 +389,18 @@ Ubuntu.Components.Pickers.DialerHand 1.0 0.1: StyledItem
     readonly property Dialer dialer
     property DialerHandGroup hand
     readonly property int index
-    default readonly property QtObject overlay
+    default property list<QtObject> overlay
     property double value
 Ubuntu.Components.Pickers.DialerHand 1.3: StyledItem
     readonly property Dialer dialer
     property DialerHandGroup hand
     readonly property int index
-    default readonly property QtObject overlay
+    default property list<QtObject> overlay
     property double value
 Ubuntu.Components.Popups.Dialog 1.0 0.1: PopupBase
     property Item caller
     property double callerMargin
-    default readonly property QtObject contents
+    default property list<QtObject> contents
     property double edgeMargins
     property bool modal
     property Item pointerTarget
@@ -359,34 +409,16 @@ Ubuntu.Components.Popups.Dialog 1.0 0.1: PopupBase
 Ubuntu.Components.Popups.Dialog 1.3: PopupBase
     property Item caller
     property double callerMargin
-    default readonly property QtObject contents
+    default property list<QtObject> contents
     property double edgeMargins
     property bool modal
     property Item pointerTarget
     property string text
     property string title
 Ubuntu.Components.ListItems.Divider 1.0 0.1: QQuickImageBase
-    property FillMode fillMode
-    property HAlignment horizontalAlignment
-    signal horizontalAlignmentChanged(HAlignment alignment)
-    signal verticalAlignmentChanged(VAlignment alignment)
-    signal mipmapChanged(bool )
-    property bool mipmap
-    readonly property double paintedHeight
-    readonly property double paintedWidth
-    property VAlignment verticalAlignment
 Ubuntu.Components.ListItems.Divider 1.3: QQuickImageBase
-    property FillMode fillMode
-    property HAlignment horizontalAlignment
-    signal horizontalAlignmentChanged(HAlignment alignment)
-    signal verticalAlignmentChanged(VAlignment alignment)
-    signal mipmapChanged(bool )
-    property bool mipmap
-    readonly property double paintedHeight
-    readonly property double paintedWidth
-    property VAlignment verticalAlignment
 Ubuntu.Components.ListItems.Empty 1.0 0.1: AbstractButton
-    readonly property Item backgroundIndicator
+    property list<Item> backgroundIndicator
     property bool confirmRemoval
     readonly property ThinDivider divider
     property bool highlightWhenPressed
@@ -398,7 +430,7 @@ Ubuntu.Components.ListItems.Empty 1.0 0.1: AbstractButton
     readonly property string swipingState
     readonly property bool waitingConfirmationForRemoval
 Ubuntu.Components.ListItems.Empty 1.3: AbstractButton
-    readonly property Item backgroundIndicator
+    property list<Item> backgroundIndicator
     property bool confirmRemoval
     readonly property ThinDivider divider
     property bool highlightWhenPressed
@@ -510,7 +542,7 @@ Ubuntu.Components.Label.TextSize: Enum
     XxSmall
 Ubuntu.Layouts.Layouts 1.0 0.1: Item
     readonly property string currentLayout
-    readonly property ConditionalLayout layouts
+    property list<ConditionalLayout> layouts
 Ubuntu.Components.ListItem 1.3 1.2: StyledItem
     property Action action
     property color color
@@ -523,18 +555,19 @@ Ubuntu.Components.ListItem 1.3 1.2: StyledItem
     property color highlightColor
     readonly property bool highlighted
     property ListItemActions leadingActions
-    readonly property Item listItemChildren
-    default readonly property QtObject listItemData
+    property list<Item> listItemChildren
+    default property list<QtObject> listItemData
     signal clicked()
     signal pressAndHold()
     signal contentMovementStarted()
     signal contentMovementEnded()
     property bool selectMode
     property bool selected
+    property bool swipeEnabled 1.3
     property ListItemActions trailingActions
 Ubuntu.Components.ListItemActions 1.2: QtObject
-    readonly property Action actions
-    default readonly property QtObject data
+    property list<Action> actions
+    default property list<QtObject> data
     property Component delegate
 Ubuntu.Components.ListItemDrag 1.2: QtObject
     property bool accept
@@ -572,28 +605,33 @@ Ubuntu.Components.LiveTimer.Frequency: Enum
     Second
 Ubuntu.Components.MainView 1.0 0.1: MainViewBase
     property bool automaticOrientation
-    default readonly property QtObject contentsItem
+    default property list<QtObject> contentsItem
     property bool useDeprecatedToolbar
 Ubuntu.Components.MainView 1.2: MainViewBase
     property bool automaticOrientation
-    default readonly property QtObject contentsItem
+    default property list<QtObject> contentsItem
 Ubuntu.Components.MainView 1.3: MainViewBase
     property bool automaticOrientation
-    default readonly property QtObject contentsItem
-Ubuntu.Components.MathUtils 0.1 1.0 1.3
+    default property list<QtObject> contentsItem
+Ubuntu.Components.MathUtils 1.0 0.1: QtObject singleton
+    function double clamp(double x, double min, double max)
+    function double lerp(double delta, double from, double to)
+    function double projectValue(double x, double xmin, double xmax, double ymin, double ymax)
+    function double clampAndProject(double x, double xmin, double xmax, double ymin, double ymax)
 Ubuntu.Components.MimeData 1.0 0.1: QtObject
     property color color
     property var data
     readonly property QStringList formats
     property string html
     property string text
-    property QList<QUrl> urls
+    property list<url> urls
 Ubuntu.Components.Mouse 1.0 0.1: QtObject
     readonly property Qt.MouseButtons acceptedButtons
     property int clickAndHoldThreshold
     property bool enabled
-    readonly property Item forwardTo
+    property list<Item> forwardTo
     readonly property bool hoverEnabled
+    property bool ignoreSynthesizedEvents
     signal pressed(QQuickMouseEvent mouse, Item host)
     signal released(QQuickMouseEvent mouse, Item host)
     signal clicked(QQuickMouseEvent mouse, Item host)
@@ -606,12 +644,15 @@ Ubuntu.Components.Mouse 1.0 0.1: QtObject
 Ubuntu.Components.Mouse.Priority: Enum
     AfterItem
     BeforeItem
+Ubuntu.Test.MouseTouchAdaptor 1.0: QtObject singleton
+    property bool enabled
+    signal enabledChanged(bool value)
 Ubuntu.Components.ListItems.MultiValue 1.0 0.1: Base
     property var values
 Ubuntu.Components.ListItems.MultiValue 1.3: Base
     property var values
 Ubuntu.Components.Object 1.0 0.1: QtObject
-    default readonly property QtObject children
+    default property list<QtObject> children
 Ubuntu.Components.OptionSelector 1.0 0.1: Empty
     property bool colourImage
     property double containerHeight
@@ -665,11 +706,11 @@ Ubuntu.Components.OrientationHelper 1.3: Item
     readonly property bool rotating
     property bool transitionEnabled
 Ubuntu.Components.Page 1.0 0.1: PageTreeNode
-    readonly property Action actions
+    property list<Action> actions
     property Flickable flickable
     property string title
     property Item tools
-Ubuntu.Components.Page 1.1: Page
+Ubuntu.Components.Page 1.1: Page10
     readonly property PageHeadConfiguration head
 Ubuntu.Components.Page 1.3: PageTreeNode
     property Flickable flickable
@@ -682,17 +723,17 @@ Ubuntu.Components.PageColumn 1.3: QtObject
     property double minimumWidth
     property double preferredWidth
 Ubuntu.Components.PageColumnsLayout 1.3: QtObject
-    default readonly property PageColumn data
+    default property list<PageColum> data
     property bool when
 Ubuntu.Components.PageHeadConfiguration 1.1: Object
-    readonly property Action actions
+    property list<Action> actions
     property Action backAction
     property Item contents
     property color foregroundColor
     property string preset
     readonly property PageHeadSections sections
 Ubuntu.Components.PageHeadConfiguration 1.3: Object
-    readonly property Action actions
+    property list<Action> actions
     property Action backAction
     property Item contents
     property Flickable flickable
@@ -707,17 +748,17 @@ Ubuntu.Components.PageHeadSections 1.1: QtObject
     property var model
     property int selectedIndex
 Ubuntu.Components.PageHeadSections 1.3: QtObject
-    readonly property Action actions
+    property list<Action> actions
     property bool enabled
     property var model
     property int selectedIndex
 Ubuntu.Components.PageHeadState 1.1: State
-    readonly property Action actions
+    property list<Action> actions
     property Action backAction
     property Item contents
     property PageHeadConfiguration head
 Ubuntu.Components.PageHeadState 1.3: State
-    readonly property Action actions
+    property list<Action> actions
     property Action backAction
     property Item contents
     property PageHeadConfiguration head
@@ -742,7 +783,9 @@ Ubuntu.Components.Styles.PageHeadStyle 1.3: Item
     property int textSize
 Ubuntu.Components.PageHeader 1.3: Header
     property Item contents
+    property Item extension
     readonly property ActionBar leadingActionBar
+    property list<Action> navigationActions
     readonly property Sections sections
     property string title
     readonly property ActionBar trailingActionBar
@@ -799,7 +842,7 @@ Ubuntu.Components.Panel 1.0 0.1: Item
     property int align
     property bool animate
     readonly property bool animating
-    default readonly property QtObject contents
+    default property list<QtObject> contents
     property int hideTimeout
     property double hintSize
     property bool locked
@@ -813,7 +856,7 @@ Ubuntu.Components.Panel 1.3: Item
     property int align
     property bool animate
     readonly property bool animating
-    default readonly property QtObject contents
+    default property list<QtObject> contents
     property int hideTimeout
     property double hintSize
     property bool locked
@@ -854,7 +897,7 @@ Ubuntu.Components.Popups.Popover 1.0 0.1: PopupBase
     property bool autoClose
     property Item caller
     property double callerMargin
-    default readonly property QtObject container
+    default property list<QtObject> container
     property double contentHeight
     property double contentWidth
     property double edgeMargins
@@ -866,7 +909,7 @@ Ubuntu.Components.Popups.Popover 1.3: PopupBase
     property bool autoClose
     property Item caller
     property double callerMargin
-    default readonly property QtObject container
+    default property list<QtObject> container
     property double contentHeight
     property double contentWidth
     property double edgeMargins
@@ -935,9 +978,8 @@ Ubuntu.Components.Scrollbar 1.0 0.1: StyledItem
 Ubuntu.Components.Scrollbar 1.3: StyledItem
     property int align
     property Flickable flickableItem
-Ubuntu.Components.ScrollbarUtils 0.1 1.0
 Ubuntu.Components.Sections 1.3: StyledItem
-    readonly property Action actions
+    property list<Action> actions
     property var model
     property int selectedIndex
 Ubuntu.Components.ServiceProperties 1.1: QtObject
@@ -958,13 +1000,13 @@ Ubuntu.Components.ServiceProperties.Status: Enum
     Inactive
     Synchronizing
 Ubuntu.Components.Popups.SheetBase 1.0 0.1: PopupBase
-    default readonly property QtObject container
+    default property list<QtObject> container
     property double contentsHeight
     property double contentsWidth
     property bool modal
     property string title
 Ubuntu.Components.Popups.SheetBase 1.3: PopupBase
-    default readonly property QtObject container
+    default property list<QtObject> container
     property double contentsHeight
     property double contentsWidth
     property bool modal
@@ -1040,6 +1082,7 @@ Ubuntu.Components.StyleHints 1.3: QtObject
     property bool ignoreUnknownProperties
 Ubuntu.Components.StyledItem 1.3 1.3 1.1 1.0 0.1: Item
     property bool activeFocusOnPress 1.3
+    signal activeFocusOnTabChanged2() 1.3
     function bool requestFocus(Qt.FocusReason reason) 1.3
     function bool requestFocus() 1.3
     property Component style
@@ -1049,6 +1092,26 @@ Ubuntu.Components.ListItems.Subtitled 1.0 0.1: Base
     property string subText
 Ubuntu.Components.ListItems.Subtitled 1.3: Base
     property string subText
+Ubuntu.Components.SwipeArea 1.3: Item
+    property Direction direction
+    readonly property double distance
+    readonly property bool dragging
+    property bool immediateRecognition
+    signal directionChanged(Direction direction)
+    signal draggingChanged(bool dragging)
+    signal pressedChanged(bool pressed)
+    signal distanceChanged(double distance)
+    signal touchPositionChanged(QPointF position)
+    signal immediateRecognitionChanged(bool immediateRecognition)
+    readonly property bool pressed
+    readonly property QPointF touchPosition
+Ubuntu.Components.SwipeArea.Direction: Enum
+    Downwards
+    Horizontal
+    Leftwards
+    Rightwards
+    Upwards
+    Vertical
 Ubuntu.Components.SwipeEvent 1.2: QtObject
     property QPointF content
     readonly property QPointF from
@@ -1094,14 +1157,14 @@ Ubuntu.Components.Tabs 1.0 0.1: PageTreeNode
     readonly property Tab selectedTab
     property int selectedTabIndex
     property TabBar tabBar
-    default readonly property QtObject tabChildren
+    default property list<QtObject> tabChildren
 Ubuntu.Components.Tabs 1.3: PageTreeNode
     readonly property int count
     readonly property Item currentPage
     readonly property Tab selectedTab
     property int selectedTabIndex
     property TabBar tabBar
-    default readonly property QtObject tabChildren
+    default property list<QtObject> tabChildren
 Ubuntu.Test.TestExtras 1.0: QtObject singleton
     function string openGLflavor()
     function string cpuArchitecture()
@@ -1115,6 +1178,10 @@ Ubuntu.Test.TestExtras 1.0: QtObject singleton
     function touchMove(int touchId, Item item, Qt.point point)
     function touchDrag(int touchId, Item item, Qt.point from, Qt.point delta, int steps)
     function touchDrag(int touchId, Item item, Qt.point from, Qt.point delta)
+    function mouseDrag(Item item, Qt.point from, Qt.point delta, Qt.MouseButton button, Qt.KeyboardModifiers stateKey, int steps, int delay)
+    function mouseDrag(Item item, Qt.point from, Qt.point delta, Qt.MouseButton button, Qt.KeyboardModifiers stateKey, int steps)
+    function mouseDrag(Item item, Qt.point from, Qt.point delta, Qt.MouseButton button, Qt.KeyboardModifiers stateKey)
+    function mouseDrag(Item item, Qt.point from, Qt.point delta, Qt.MouseButton button)
     readonly property bool touchPresent
 Ubuntu.Components.TextArea 1.0 0.1: StyledItem
     property bool autoExpand
@@ -1284,10 +1351,10 @@ Ubuntu.Components.TextField 1.0 0.1: ActionItem
     property bool persistentSelection
     property string placeholderText
     property var popover
-    readonly property QtObject primaryItem
+    property list<QtObject> primaryItem
     property bool readOnly
     property int renderType
-    readonly property QtObject secondaryItem
+    property list<QtObject> secondaryItem
     property bool selectByMouse
     readonly property string selectedText
     property color selectedTextColor
@@ -1345,10 +1412,10 @@ Ubuntu.Components.TextField 1.3: ActionItem
     property bool persistentSelection
     property string placeholderText
     property var popover
-    readonly property QtObject primaryItem
+    property list<QtObject> primaryItem
     property bool readOnly
     property int renderType
-    readonly property QtObject secondaryItem
+    property list<QtObject> secondaryItem
     property bool selectByMouse
     readonly property string selectedText
     property color selectedTextColor
@@ -1363,7 +1430,6 @@ Ubuntu.Components.ThemeSettings 1.3: QtObject
     property string name
     property QtObject palette
     readonly property ThemeSettings parentTheme
-    property ushort version
 Ubuntu.Components.ListItems.ThinDivider 1.0 0.1: Rectangle
 Ubuntu.Components.ListItems.ThinDivider 1.3: Rectangle
 Ubuntu.Components.ToolbarButton 1.0 0.1: StyledItem
@@ -1384,13 +1450,13 @@ Ubuntu.Components.ToolbarButton 1.3: StyledItem
     property string text
 Ubuntu.Components.ToolbarItems 1.0 0.1: Item
     property Item back
-    default readonly property QtObject contents
+    default property list<QtObject> contents
     property bool locked
     property bool opened
     property Item pageStack
 Ubuntu.Components.ToolbarItems 1.3: Item
     property Item back
-    default readonly property QtObject contents
+    default property list<QtObject> contents
     property bool locked
     property bool opened
     property Item pageStack
@@ -1400,7 +1466,6 @@ Ubuntu.Components.UCApplication 1.0 0.1: QtObject
 Ubuntu.Components.UCFontUtils 1.0 0.1: QtObject
     function double sizeToPixels(string size)
     function double modularScale(string size)
-UCItemAttached: QtObject
 UCListItemDivider: Item
     property color colorFrom
     property color colorTo
@@ -1531,6 +1596,7 @@ Ubuntu.Test.UbuntuTestCase 1.0 0.1: TestCase
     function var typeString(var string)
     function var warningFormat(var line, var column, var message)
     function var waitForHeaderAnimation(var mainView)
+    readonly property QuickTestUtil testUtil
 Ubuntu.Components.UriHandler 1.0 0.1: QtObject singleton
     signal opened(QStringList uris)
 Ubuntu.Components.ListItems.ValueSelector 1.0 0.1: Empty
@@ -1551,12 +1617,12 @@ Ubuntu.Components.ListItems.ValueSelector 1.3: Empty
     property var values
 Ubuntu.Components.ViewItems 1.2: QtObject
     property bool dragMode
-    property QList<int> expandedIndices
+    property list<int> expandedIndices
     property int expansionFlags
     signal dragUpdated(ListItemDrag event)
-    signal expandedIndicesChanged(QList<int> indices)
+    signal expandedIndicesChanged(list<int> indices)
     property bool selectMode
-    property QList<int> selectedIndices
+    property list<int> selectedIndices
 Ubuntu.Components.ViewItems.ExpansionFlag: Enum
     CollapseOnOutsidePress
     Exclusive

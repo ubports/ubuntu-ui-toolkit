@@ -14,9 +14,11 @@ uri = Ubuntu.Test
 HEADERS += \
     $$PWD/uctestcase.h \
     $$PWD/testplugin.h \
-    $$PWD/uctestextras.h
+    $$PWD/uctestextras.h \
+    $$PWD/ucmousetouchadaptor.h \
 
 SOURCES += \
     $$PWD/uctestcase.cpp \
     $$PWD/testplugin.cpp \
-    $$PWD/uctestextras.cpp
+    $$PWD/uctestextras.cpp \
+    $$PWD/ucmousetouchadaptor.cpp \

@@ -101,6 +101,9 @@ void UbuntuI18n::bindtextdomain(const QString& domain_name, const QString& dir_n
 }
 
 void UbuntuI18n::setDomain(const QString &domain) {
+    if (m_domain == domain)
+        return;
+
     m_domain = domain;
     C::textdomain(domain.toUtf8());
     /*
@@ -118,6 +121,9 @@ void UbuntuI18n::setDomain(const QString &domain) {
 }
 
 void UbuntuI18n::setLanguage(const QString &lang) {
+    if (m_language == lang)
+        return;
+
     m_language = lang;
 
     /*

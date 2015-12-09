@@ -294,6 +294,10 @@ Item {
         name: "SlotsLayout"
         when: windowShown
 
+        function warningMsg(msg) {
+            return testUtil.callerFile() + ": " + msg
+        }
+
         //Visual rule:
         //when we have at least one slot which is taller than mainSlot and taller than 4GU,
         //we want the top and bottom padding to be 1GU instead of 2GU
@@ -841,8 +845,33 @@ Item {
 
         Label {id: customMainSlot }
         function test_warningOnAttemptToChangeListItemLayoutMainSlot() {
+            ignoreWarning(warningFormat(60, 9, "QML ListItemLayout: Setting a different mainSlot on ListItemLayout is not supported. Please use SlotsLayout instead."))
             layoutLabels.mainSlot = customMainSlot
-            console.log(warningFormat(60, 9, "QML ListItemLayout: Setting a different mainSlot on ListItemLayout is not supported. Please use SlotsLayout instead."))
+        }
+
+
+        Component {
+            id: layoutTestQmlContextComponent
+            ListItemLayout {
+                id: layoutTestQmlContext
+                title.text: "<html><body><p dir='ltr'>TEST <img align=absmiddle height=\"10\" width=\"10\" src=\"file:///test.png\" /> </p></body></html>"
+                title.textFormat: Text.RichText
+                subtitle.text: "<html><body><p dir='ltr'>TEST <img align=absmiddle height=\"10\" width=\"10\" src=\"file:///test.png\" /> </p></body></html>"
+                subtitle.textFormat: Text.RichText
+                summary.text: "<html><body><p dir='ltr'>TEST <img align=absmiddle height=\"10\" width=\"10\" src=\"file:///test.png\" /> </p></body></html>"
+                summary.textFormat: Text.RichText
+            }
+        }
+        //lp#1514173
+        //this will make the test segfault if there is a regression
+        function test_defaultLabelsQmlContext() {
+            ignoreWarning(warningMsg("QML Label: Cannot open: file:///test.png"))
+            var obj = layoutTestQmlContextComponent.createObject(main)
+            //wait for rendering otherwise we will not get the "cannot find file" warning
+            //because the img is loaded async
+            waitForRendering(obj)
+            compare(obj !== null, true, "QML ListItemLayout: testing labels' QML context.")
+            obj.destroy()
         }
     }
 }

@@ -21,17 +21,24 @@ Style.PageHeaderStyle {
     id: pageHeaderStyle
 
     foregroundColor: theme.palette.selected.backgroundText
-    backgroundColor: "white"
+    backgroundColor: theme.palette.normal.background
     dividerColor: Qt.rgba(0, 0, 0, 0.1)
     property int fontWeight: Font.Light
     property int textSize: Label.Large
 
     contentHeight: units.gu(6)
-    implicitHeight: contentHeight + divider.height + styledItem.sections.height
+    implicitHeight: contentHeight + divider.height + internal.extensionHeight
+
+    Object {
+        id: internal
+        property real extensionHeight: styledItem.extension ?
+                                         styledItem.extension.height
+                                       : styledItem.sections.height
+    }
 
     defaultActionDelegate: AbstractButton {
         style: IconButtonStyle { }
-        objectName: action.objectName + "_action_button"
+        objectName: action.objectName + "_button"
         height: parent ? parent.height : undefined
         action: modelData
         StyleHints {

@@ -125,10 +125,6 @@ Toolkit.StyledItem {
                         if (i.isLeaf) {
                             // children of a leaf are not part of the tree
                             node = null;
-                            print("WARNING! " +
-                                "Do not put Page/Tabs/PageStack inside another "+
-                                "Page because that causes confusion which is the "+
-                                "active page that sets the title and actions.");
                         } else {
                             // current node is part of the tree with i as its parent.
                             node = i;
@@ -148,6 +144,4 @@ Toolkit.StyledItem {
             node.parentNode = internal.getParentPageTreeNode(node);
         }
     }
-
-    theme.version: Toolkit.Ubuntu.toolkitVersion
 }

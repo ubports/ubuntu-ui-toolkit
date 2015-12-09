@@ -70,6 +70,12 @@
 #include "ucheader.h"
 #include "uclabel.h"
 #include "uclistitemlayout.h"
+#include "ucbottomedgehint.h"
+#include "gestures/ucswipearea.h"
+#include "ucmathutils.h"
+#include "ucbottomedge.h"
+#include "ucbottomedgeregion.h"
+#include "ucbottomedgestyle.h"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -194,6 +200,7 @@ void UbuntuComponentsPlugin::registerTypesToVersion(const char *uri, int major, 
     qmlRegisterType<UCInverseMouse>(uri, major, minor, "InverseMouse");
     qmlRegisterType<UCActionItem>(uri, major, minor, "ActionItem");
     qmlRegisterSingletonType<UCHaptics>(uri, major, minor, "Haptics", registerHaptics);
+    qmlRegisterSingletonType<UCMathUtils>(uri, major, minor, "MathUtils", UCMathUtils::qmlRegisterTypeCallback);
 }
 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
@@ -230,7 +237,6 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCUbuntuShapeOverlay>(uri, 1, 2, "UbuntuShapeOverlay");
 
     // register 1.3 API
-    qmlRegisterType<UCItemAttached>();
     qmlRegisterType<UCListItem, 1>(uri, 1, 3, "ListItem");
     qmlRegisterType<UCListItemExpansion>();
     qmlRegisterType<UCTheme>(uri, 1, 3, "ThemeSettings");
@@ -249,6 +255,10 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCListItemLayout>(uri, 1, 3, "ListItemLayout");
     qmlRegisterType<UCHeader>(uri, 1, 3, "Header");
     qmlRegisterType<UCLabel>(uri, 1, 3, "Label");
+    qmlRegisterType<UCBottomEdgeHint>(uri, 1, 3, "BottomEdgeHint");
+    qmlRegisterType<UCSwipeArea>(uri, 1, 3, "SwipeArea");
+    qmlRegisterType<UCBottomEdge>(uri, 1, 3, "BottomEdge");
+    qmlRegisterType<UCBottomEdgeRegion>(uri, 1, 3, "BottomEdgeRegion");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
@@ -260,6 +270,7 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     const char *styleUri = "Ubuntu.Components.Styles";
     qmlRegisterType<UCListItemStyle>(styleUri, 1, 2, "ListItemStyle");
     qmlRegisterType<UCListItemStyle, 1>(styleUri, 1, 3, "ListItemStyle");
+    qmlRegisterType<UCBottomEdgeStyle>(styleUri, 1, 3, "BottomEdgeStyle");
 
     QQmlExtensionPlugin::initializeEngine(engine, uri);
     QQmlContext* context = engine->rootContext();

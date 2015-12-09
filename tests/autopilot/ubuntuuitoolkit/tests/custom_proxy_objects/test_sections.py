@@ -28,10 +28,8 @@ class SectionsTestCase(tests.QMLFileAppTestCase):
 
     def setUp(self):
         super().setUp()
-        self.sections = self.app.select_single(
-            'Sections', objectName='sections')
-        self.label = self.app.select_single(
-            'Label', objectName='label')
+        self.sections = self.app.select_single(objectName='sections')
+        self.label = self.app.select_single(objectName='label')
         self.assertEqual(self.label.text, 'Section 0 is selected.')
 
     def test_custom_proxy_object(self):

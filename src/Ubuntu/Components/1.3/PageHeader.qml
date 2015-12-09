@@ -40,8 +40,8 @@ import Ubuntu.Components 1.3
 Header {
     id: header
     anchors {
-        left: parent.left
-        right: parent.right
+        left: parent ? parent.left : undefined
+        right: parent ? parent.right : undefined
     }
 
     /*!
@@ -74,11 +74,11 @@ Header {
      */
     property Item contents
 
-    Component.onCompleted: holder.updateContents()
-    onContentsChanged: holder.updateContents()
+    Component.onCompleted: contentsHolder.updateContents()
+    onContentsChanged: contentsHolder.updateContents()
 
     Item {
-        id: holder
+        id: contentsHolder
         anchors {
             left: leading.right
             right: trailing.left
@@ -95,21 +95,37 @@ Header {
         property Item previousContentsParent: null
 
         function updateContents() {
-            if (holder.previousContents) {
-                holder.previousContents.parent = holder.previousContentsParent;
+            if (previousContents) {
+                previousContents.parent = previousContentsParent;
             }
-            if (contents) {
+            if (header.contents) {
                 titleLoader.sourceComponent = null;
-                holder.previousContents = header.contents;
-                holder.previousContentsParent = header.contents.parent;
-                header.contents.parent = holder;
+                previousContents = header.contents;
+                previousContentsParent = header.contents.parent;
+                header.contents.parent = contentsHolder;
             } else {
-                holder.previousContents = null;
-                holder.previousContentsParent = null;
+                previousContents = null;
+                previousContentsParent = null;
                 titleLoader.sourceComponent = __styleInstance.titleComponent;
             }
         }
+
+        // When the style changes, make sure that the titleLoader loads
+        //  the new titleComponent.
+        property Item styleInstance: __styleInstance
+        onStyleInstanceChanged: updateContents()
     }
+
+    /*!
+      The actions to be shown in the leading action bar.
+      This property is automatically set by the
+      \l AdaptivePageLayout and other navigation components to configure the
+      back action for the \l Page.
+      Application developers should not set this property, because the
+      value may be overridden by Ubuntu components that have navigation.
+      Instead, set \l leadingActionBar's actions property.
+     */
+    property list<Action> navigationActions
 
     /*!
       \qmlproperty ActionBar leadingActionBar
@@ -125,6 +141,9 @@ Header {
           ]
       }
       \endqml
+      The default value of \l leadingActionBar actions is
+      \l navigationActions, but that value can be changed to show
+      different actions in front of the title.
       See \l ActionBar.
      */
     readonly property alias leadingActionBar: leading
@@ -138,7 +157,8 @@ Header {
         height: header.__styleInstance.contentHeight
         numberOfSlots: 1
         delegate: header.__styleInstance.defaultActionDelegate
-        visible: actions.length > 0
+        actions: header.navigationActions
+        visible: leading.width > 0 // at least 1 visible action
         StyleHints {
             overflowIconName: "navigation-menu"
         }
@@ -182,7 +202,59 @@ Header {
         height: header.__styleInstance.contentHeight
         numberOfSlots: 3
         delegate: header.__styleInstance.defaultActionDelegate
-        visible: actions.length > 0
+        visible: trailing.width > 0 // at least 1 visible action
+    }
+
+    /*!
+      Item shown at the bottom of the header.
+      The extension can be any Item, but it must have a height so that
+      the PageHeader correctly adjusts its height for the extension to fit.
+      The extension Item should anchor to the left, right and bottom of
+      its parent so that it will be automatically positioned above the
+      header divider. This property replaces the sections property. Sections
+      can now be added to the header as follows:
+      \qml
+        PageHeader {
+            title: "Header with sections"
+            extension: Sections {
+                anchors {
+                    left: parent.left
+                    leftMargin: units.gu(2)
+                    bottom: parent.bottom
+                }
+                model: ["one", "two", "three"]
+            }
+        }
+      \endqml
+    */
+    property Item extension
+
+    onExtensionChanged: extensionHolder.updateExtension()
+    Item {
+        id: extensionHolder
+        anchors {
+            left: parent.left
+            right: parent.right
+            top: contentsHolder.bottom
+        }
+        height: header.extension ? header.extension.height : 0
+
+        property Item previousExtension: header.extension
+        property Item previousExtensionParent: null
+
+        function updateExtension() {
+            if (previousExtension) {
+                previousExtension.parent = previousExtensionParent;
+            }
+            if (header.extension) {
+                previousExtension = header.extension;
+                previousExtensionParent = header.extension.parent;
+                header.extension.parent = extensionHolder;
+            } else {
+                previousExtension = null;
+                previousExtensionParent = null;
+            }
+        }
     }
 
     /*!
@@ -190,6 +262,7 @@ Header {
       Sections shown at the bottom of the header. By default,
       the sections will only be visible if its actions or model
       is set. See \l Sections.
+      \deprecated Use \l extension instead.
      */
     readonly property alias sections: sectionsItem
     Sections {
@@ -197,12 +270,11 @@ Header {
         anchors {
             left: parent.left
             leftMargin: units.gu(2)
-            top: holder.bottom
+            top: contentsHolder.bottom
         }
-        visible: model && model.length > 0
+        visible: model && model.length > 0 && !header.extension
         height: visible ? implicitHeight : 0
     }
 
-    theme.version: Ubuntu.toolkitVersion
     styleName: "PageHeaderStyle"
 }

@@ -405,6 +405,16 @@ Style.PageHeadStyle {
 
             actions: headerStyle.config.actions
             numberOfSlots: 3
+
+            delegate: AbstractButton {
+                style: IconButtonStyle { }
+                objectName: action.objectName + "_button"
+                height: parent ? parent.height : undefined
+                action: modelData
+                StyleHints {
+                    foregroundColor: headerStyle.buttonColor
+                }
+            }
         }
     }
 }

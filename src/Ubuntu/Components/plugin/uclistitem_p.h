@@ -95,6 +95,7 @@ public:
     qreal xAxisMoveThresholdGU;
     Qt::MouseButton button;
     bool highlighted:1;
+    bool swipeEnabled:1;
     bool contentMoved:1;
     bool swiped:1;
     bool suppressClick:1;

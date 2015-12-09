@@ -46,7 +46,7 @@ PageTreeNode {
     property bool canDestroy: false
 
     /*!
-      Column number in MultiColumnView.
+      Column number in AdaptivePageLayout.
       */
     property int column: 0
 
@@ -61,7 +61,7 @@ PageTreeNode {
     property Item parentWrapper
 
     /*!
-      Page holder in MultiColumnView
+      Page holder in AdaptivePageLayout.
       */
     property Item pageHolder
 

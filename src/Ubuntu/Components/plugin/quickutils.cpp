@@ -32,7 +32,8 @@
 
 QuickUtils::QuickUtils(QObject *parent) :
     QObject(parent),
-    m_rootView(0)
+    m_rootView(0),
+    m_mouseAttached(false)
 {
     QGuiApplication::instance()->installEventFilter(this);
     m_omitIM << "ibus" << "none" << "compose";

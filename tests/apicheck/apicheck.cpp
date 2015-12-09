@@ -137,14 +137,21 @@ QByteArray convertToId(const QString &cppName)
 
     QList<const QQmlType*>types(qmlTypesByCppName[qPrintable(cppName)].toList());
     std::sort(types.begin(), types.end(), typeNameSort);
-    // Strip internal _QMLTYPE_xy suffix
-    qmlType = qmlType.split("_")[0];
     if (!types.isEmpty())
         qmlType = QString(types[0]->qmlTypeName()).split("/")[1].toUtf8();
     else
         qmlType = cppToId.value(qPrintable(qmlType), qPrintable(cppName));
     // Strip internal _QMLTYPE_xy suffix
     qmlType = qmlType.split("_")[0];
+    // List type
+    if (qmlType.startsWith("QQmlListProperty<")) {
+        QString subType(qmlType.mid(17, qmlType.size() - 18));
+        qmlType = "list<" + convertToId(subType) + ">";
+    }
+    else if (qmlType.startsWith("QList<")) {
+        QString subType(qmlType.mid(6, qmlType.size() - 7));
+        qmlType = "list<" + convertToId(subType) + ">";
+    }
     return qPrintable(qmlType.replace("QTestRootObject", "QtObject"));
 }
 
@@ -359,11 +366,17 @@ public:
 
     void writeMetaContent(QJsonObject* object, const QMetaObject *meta, KnownAttributes *knownAttributes = 0)
     {
+        QSet<QString> internalSignals;
         QSet<QString> implicitSignals;
         for (int index = meta->propertyOffset(); index < meta->propertyCount(); ++index) {
             const QMetaProperty &property = meta->property(index);
             const QMetaObject* superClass(meta->superClass());
-            if (!(superClass && superClass->indexOfProperty(property.name()) > -1))
+            // FIXME: Work-around to omit properties from Qt superclasses
+            bool isQtAPI(QString(superClass->className()) == "QQuickImageBase"
+             && QString("autoTransform,fillMode,horizontalAlignment,mipmap,paintedWidth,paintedHeight,verticalAlignment").contains(property.name()));
+            if (isQtAPI)
+                internalSignals.insert(property.notifySignal().name());
+            else if (!(superClass && superClass->indexOfProperty(property.name()) > -1))
                 dump(object, property, knownAttributes);
             if (knownAttributes)
                 knownAttributes->knownMethod(property.notifySignal().name(),
@@ -415,6 +428,8 @@ public:
                 QByteArray methName(meth.name());
                 if (!methName.isEmpty() && methName.endsWith("Changed") && !meth.parameterCount())
                     continue;
+                if (internalSignals.contains(methName))
+                    continue;
                 dump(object, &methods, meta->method(index), implicitSignals, knownAttributes);
             }
         }
@@ -424,9 +439,15 @@ public:
 
     void dumpQMLComponent(QObject* qtobject, const QString& qmlTyName, const QString& version, const QString& filename, bool isSingleton, const QStringList& internalTypes)
     {
+        QStringList typeNameVersion(qmlTyName.split("/"));
+        QString nameSpace(typeNameVersion[0]);
+        QString typeName(typeNameVersion[1]);
+        if (internalTypes.contains(typeName))
+            return;
+
         const QMetaObject *mainMeta = qtobject->metaObject();
         QJsonObject object;
-        QStringList exportStrings(QStringList() << QString("%1 %2").arg(qmlTyName).arg(version));
+        QStringList exportStrings(QStringList() << QString("%1 %2").arg(typeName).arg(version));
         // Merge objects to get all exported versions of the same type
         QString id(filename);
         if (json->contains(id)) {
@@ -462,7 +483,7 @@ public:
             writeMetaContent(&object, mainMeta->superClass(), &knownAttributes);
         writeMetaContent(&object, mainMeta, &knownAttributes);
 
-        object["namespace"] = relocatableModuleUri;
+        object["namespace"] = nameSpace;
         json->insert(id, object);
     }
 
@@ -535,38 +556,18 @@ public:
     }
 
 private:
-    /* Removes pointer and list annotations from a type name, returning
-       what was removed in isList and isPointer
-    */
-    static void removePointerAndList(QByteArray *typeName, bool *isList, bool *isPointer)
-    {
-        static QByteArray declListPrefix = "QQmlListProperty<";
-
-        if (typeName->endsWith('*')) {
-            *isPointer = true;
-            typeName->truncate(typeName->length() - 1);
-            removePointerAndList(typeName, isList, isPointer);
-        } else if (typeName->startsWith(declListPrefix)) {
-            *isList = true;
-            typeName->truncate(typeName->length() - 1); // get rid of the suffix '>'
-            *typeName = typeName->mid(declListPrefix.size());
-            removePointerAndList(typeName, isList, isPointer);
-        }
-    }
-
     void writeTypeProperties(QJsonObject* object, QByteArray typeName, bool isWritable)
     {
-        bool isList = false, isPointer = false;
-        removePointerAndList(&typeName, &isList, &isPointer);
-
+        if (typeName.endsWith("*")) {
+            typeName.truncate(typeName.size() - 1);
+            object->insert("isPointer", true);
+        }
+        if (typeName.startsWith("QQmlListProperty<"))
+            object->insert("isList", true);
         object->insert("type", QString(typeName));
 
-        if (isList)
-            object->insert("isList", true);
         if (!isWritable)
             object->insert("isReadonly", true);
-        if (isPointer)
-            object->insert("isPointer", true);
     }
 
     void dump(QJsonObject* object, const QMetaProperty &prop, KnownAttributes *knownAttributes = 0)
@@ -816,6 +817,7 @@ int main(int argc, char *argv[])
 
     // setup static rewrites of type names
     cppToId.insert("QString", "string");
+    cppToId.insert("QQuickItem", "Item");
     cppToId.insert("QUrl", "url");
     cppToId.insert("QVariant", "var");
     cppToId.insert("QVector2D", "vector2d");
@@ -844,9 +846,7 @@ int main(int argc, char *argv[])
     QJsonObject json;
 
     Q_FOREACH (const QString& pluginImportUri, modules) {
-        // FIXME: Bacon2D.1.0 → Bacon2D 1.0
         QString pluginImportVersion;
-
         QStringList pathList((QString(getenv("QML2_IMPORT_PATH"))
                               + ":" + QLibraryInfo::location(QLibraryInfo::Qml2ImportsPath))
                              .split(':', QString::SkipEmptyParts));
@@ -854,6 +854,14 @@ int main(int argc, char *argv[])
         QFile qmlDirFile;
         QString pluginModulePath;
         Q_FOREACH(const QString& path, pathList) {
+            // Bacon2D.1.0 → Bacon2D 1.0
+            pluginModulePath = path + "/" + QString(pluginImportUri) + ".1.0";
+            qmlDirFile.setFileName(pluginModulePath + "/qmldir");
+            if (qmlDirFile.exists() && qmlDirFile.open(QIODevice::ReadOnly)) {
+                engine.addImportPath(pluginModulePath);
+                break;
+            }
+            // com.Canonical.Oxide → com/Canonical/Oxide
             pluginModulePath = path + "/" + QString(pluginImportUri).replace(".", "/");
             qmlDirFile.setFileName(pluginModulePath + "/qmldir");
             if (qmlDirFile.exists() && qmlDirFile.open(QIODevice::ReadOnly)) {
@@ -904,29 +912,11 @@ int main(int argc, char *argv[])
         // Create a component with all QML types to add them to the type system
         QByteArray code = importCode;
         Q_FOREACH(const QString& version, importVersions) {
-            QString pluginAlias(QString("%1.%2").arg(pluginImportUri).arg(version).replace(".", "_"));
+            // First letter must be uppercase
+            QString pluginAlias(QString("A%1.%2").arg(pluginImportUri).arg(version).replace(".", "_"));
             code += QString("import %1 %2 as %3\n").arg(pluginImportUri).arg(version).arg(pluginAlias);
         }
-        code += "Item {\n";
-
-        QStringList exportedTypes;
-        Q_FOREACH(QQmlDirParser::Component c, p.components()) {
-            // Map filename-based PageHeadConfiguration11 to PageHeadConfiguration
-            QString filename(QFileInfo(c.fileName).baseName());
-            cppToId.insert(qPrintable(filename), qPrintable(c.typeName));
-
-            if (c.internal) {
-                internalTypes.append(c.typeName);
-                continue;
-            }
-            if (c.majorVersion == -1) {
-                std::cerr << "Public QML type " << qPrintable(c.typeName) << " in qmldir has no version!" << std::endl;
-                return EXIT_IMPORTERROR;
-            }
-            exportedTypes.append(QFileInfo(c.fileName).fileName());
-        }
-
-        code += "}";
+        code += "QtObject { }\n";
         if (verbose)
             std::cerr << "Importing QML components:" << std::endl << qPrintable(code) << std::endl;
 
@@ -938,10 +928,40 @@ int main(int argc, char *argv[])
             Q_FOREACH (const QQmlError &error, c.errors()) {
                 // Despite the error we get all type information we need from singletons
                 if (error.description().contains(QRegExp("(Composite Singleton Type .+|Element) is not creatable")))
+                std::cerr << qPrintable( error.toString() ) << std::endl;
+                if (error.description().contains(QRegExp("(Composite Singleton Type .+|Element) is not creatable")))
                     continue;
+                // If we guessed the version, we may have been wrong
+                if (error.description().contains(QRegExp("version .+ is not installed"))) {
+                    // First letter must be uppercase
+                    QString pluginAlias(QString("A%1.%2").arg(pluginImportUri).replace(".", "_"));
+                    // 1.0 should work if 0.1 didn't and qmldir didn't specify
+                    code += QString("import %1 1.0 as %3\n").arg(pluginImportUri).arg(pluginAlias);
+                    c.setData(code, QUrl::fromLocalFile(qmlDirFile.fileName()));
+                    std::cerr << "Re-creating QML component for " << qPrintable(pluginImportUri) << std::endl;
+                    c.create();
+                    // This time around it worked
+                    if (!c.errors().isEmpty())
+                        continue;
+                }
                 std::cerr << "Failed to load " << qPrintable(pluginImportUri) << std::endl;
                 std::cerr << qPrintable(code) << std::endl;
                 std::cerr << qPrintable( error.toString() ) << std::endl;
+                return EXIT_IMPORTERROR;
+            }
+        }
+
+        Q_FOREACH(QQmlDirParser::Component c, p.components()) {
+            // Map filename-based PageHeadConfiguration11 to PageHeadConfiguration
+            QString filename(QFileInfo(c.fileName).baseName());
+            cppToId.insert(qPrintable(filename), qPrintable(c.typeName));
+
+            if (c.internal) {
+                internalTypes.append(c.typeName);
+                continue;
+            }
+            if (c.majorVersion == -1) {
+                std::cerr << "Public QML type " << qPrintable(c.typeName) << " in qmldir has no version!" << std::endl;
                 return EXIT_IMPORTERROR;
             }
         }
@@ -995,6 +1015,7 @@ int main(int argc, char *argv[])
             if (c.internal)
                 continue;
             QString version(QString("%1.%2").arg(c.majorVersion).arg(c.minorVersion));
+            // Work-around for version -1, -1
             if (c.majorVersion == -1)
                 version = pluginImportVersion;
             QQmlComponent e(&engine, pluginModulePath + "/" + c.fileName);
@@ -1005,7 +1026,28 @@ int main(int argc, char *argv[])
                     std::cerr << qPrintable(error.toString()) << std::endl;
                 exit(1);
             }
-            dumper.dumpQMLComponent(qtobject, c.typeName, version, e.url().toString(), c.singleton, internalTypes);
+            dumper.dumpQMLComponent(qtobject, pluginImportUri + "/" + c.typeName, version, e.url().toString(), c.singleton, internalTypes);
+        }
+        Q_FOREACH(const QQmlType *compositeType, qmlTypesByCompositeName) {
+            QQmlComponent e(&engine, compositeType->sourceUrl());
+            if (!e.isReady()) {
+                std::cerr << "Failed to create " << qPrintable(compositeType->qmlTypeName()) << " from " << qPrintable(e.url().toString()) << std::endl;
+                exit(1);
+            }
+            QObject* qtobject(e.create());
+            if (!qtobject) {
+                std::cerr << "Failed to instantiate " << qPrintable(compositeType->qmlTypeName()) << " from " << qPrintable(e.url().toString()) << std::endl;
+                Q_FOREACH (const QQmlError &error, e.errors())
+                    std::cerr << qPrintable(error.toString()) << std::endl;
+                exit(1);
+            }
+            QString version(QString("%1.%2").arg(compositeType->majorVersion()).arg(compositeType->minorVersion()));
+            // Work-around for version -1, -1
+            if (compositeType->majorVersion() == -1)
+                version = pluginImportVersion;
+            QString typeName(compositeType->qmlTypeName());
+            if (!json.contains(e.url().toString()) && typeName.contains("/"))
+                dumper.dumpQMLComponent(qtobject, typeName, version, e.url().toString(), compositeType->isSingleton(), internalTypes);
         }
     }
 
@@ -1094,7 +1136,8 @@ int main(int argc, char *argv[])
                     signature += "    ";
                     if (object["defaultProperty"] == fieldName)
                         signature += "default ";
-                    if (field.contains("isReadonly"))
+                    // in QML semantics lists are not read-only
+                    if (field.contains("isReadonly") && !field.contains("isList"))
                         signature += "readonly ";
                     if (field.contains("type"))
                         signature += "property " + QString(convertToId(field["type"].toString())) + " ";

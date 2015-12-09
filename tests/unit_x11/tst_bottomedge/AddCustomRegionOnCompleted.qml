@@ -12,13 +12,30 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
  */
+
 import QtQuick 2.4
 import Ubuntu.Components 1.3
 
-StyledItem {
-    id: item
-    theme.name: "TestModule.TestTheme"
-    theme.version: Ubuntu.version(1, 0)
-    styleName: "TestStyle"
+Item {
+    id: holder
+    width: units.gu(40)
+    height: units.gu(71)
+
+    BottomEdge {
+        hint.text: "Test"
+        objectName: "testItem"
+
+        Component.onCompleted: {
+            var v = [];
+            v.push(customRegion);
+            regions = v;
+        }
+    }
+    BottomEdgeRegion {
+        id: customRegion
+        objectName: "customRegion"
+    }
 }
+

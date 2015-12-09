@@ -22,11 +22,13 @@
 #include <QtQuick/private/qquickitem_p.h>
 #include "ucstyleditembase.h"
 #include "ucthemingextension.h"
+#include "ucimportversionchecker_p.h"
 
 class QQuickMouseArea;
 class UCStyledItemBase;
-class UCStyledItemBasePrivate : public QQuickItemPrivate, public UCThemingExtension
+class UCStyledItemBasePrivate : public QQuickItemPrivate, public UCImportVersionChecker
 {
+    Q_INTERFACES(UCThemingExtension)
     Q_DECLARE_PUBLIC(UCStyledItemBase)
 public:
 
@@ -54,14 +56,16 @@ public:
     virtual void preStyleChanged();
     virtual void postStyleChanged() {}
     virtual bool loadStyleItem(bool animated = true);
+    virtual void completeStyledItem();
 
-    virtual void preThemeChanged();
-    virtual void postThemeChanged();
+    // from UCImportVersionChecker
+    virtual QString propertyForVersion(quint16 version) const;
 
 public:
 
     QPointer<QQmlContext> styleItemContext;
     QString styleDocument;
+    QQuickItem *oldParentItem;
     QQmlComponent *styleComponent;
     QQuickItem *styleItem;
     quint16 styleVersion;

@@ -34,7 +34,7 @@ Style.ActionBarStyle {
      */
     defaultDelegate: AbstractButton {
         style: IconButtonStyle { }
-        objectName: action.objectName + "_action_button"
+        objectName: action.objectName + "_button"
         height: parent ? parent.height : undefined
         action: modelData
     }
@@ -88,7 +88,7 @@ Style.ActionBarStyle {
             iconSource: actionBarStyle.overflowIconSource
             iconName: actionBarStyle.overflowIconName
             text: actionBarStyle.overflowText
-            objectName: "overflow"
+            objectName: "overflow_action"
             visible: numberOfSlots.requested > numberOfSlots.available
             onTriggered: {
                 var overflowButton = actionsRepeater.itemAt(actionsRepeater.count - 1);

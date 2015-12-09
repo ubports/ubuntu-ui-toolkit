@@ -78,6 +78,7 @@ void UCLabel::_q_customColor()
  */
 UCLabel::UCLabel(QQuickItem* parent)
     : QQuickText(parent)
+    , UCThemingExtension(this)
     , m_textSize(Medium)
     , m_flags(0)
 {
@@ -91,7 +92,6 @@ void UCLabel::classBegin()
 
 void UCLabel::init()
 {
-    initTheming(this);
     postThemeChanged();
     updatePixelSize();
     m_defaultFont = font();
@@ -101,13 +101,6 @@ void UCLabel::init()
 
     connect(this, &UCLabel::fontChanged, this, &UCLabel::_q_updateFontFlag, Qt::DirectConnection);
     connect(this, &UCLabel::colorChanged, this, &UCLabel::_q_customColor, Qt::DirectConnection);
-}
-
-void UCLabel::customEvent(QEvent *event)
-{
-    if (UCThemeEvent::isThemeEvent(event)) {
-        handleThemeEvent(static_cast<UCThemeEvent*>(event));
-    }
 }
 
 void UCLabel::postThemeChanged()

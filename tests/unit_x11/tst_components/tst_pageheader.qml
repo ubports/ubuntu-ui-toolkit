@@ -77,6 +77,23 @@ Item {
             }
         ]
 
+        Rectangle {
+            id: appendix
+            anchors {
+                left: parent ? parent.left : undefined
+                right: parent ? parent.right : undefined
+                bottom: parent ? parent.bottom : undefined
+            }
+            height: units.gu(4)
+            color: UbuntuColors.orange
+            Label {
+                anchors.centerIn: parent
+                text: "Mock extension"
+                color: "white"
+            }
+            visible: header.extension === appendix
+        }
+
         PageHeader {
             id: header
             flickable: flickable
@@ -87,8 +104,9 @@ Item {
             sections.actions: sectionsSwitch.checked ? root.sectionActions : []
             trailingActionBar.actions: trailingActionsSwitch.checked ?
                                            root.actionList : []
-            leadingActionBar.actions: leadingActionsSwitch.checked ?
+            navigationActions: leadingActionsSwitch.checked ?
                                           root.actionList : []
+            extension: extensionSwitch.checked ? appendix : null
         }
 
         Flickable {
@@ -169,6 +187,14 @@ Item {
                 Label {
                     text: "show sections"
                 }
+
+                Switch {
+                    id: extensionSwitch
+                    checked: false
+                }
+                Label {
+                    text: "extension"
+                }
             }
 
             PageHeader {
@@ -191,7 +217,7 @@ Item {
                 var p = centerOf(flickable);
                 // Use mouseWheel to scroll because mouseDrag is very unreliable
                 // and does not properly handle negative values for dy.
-                mouseWheel(flickable, p.x, p.y, 0,dy);
+                mouseWheel(flickable, p.x, p.y, 0, dy);
             }
 
             function scroll_down() {
@@ -239,6 +265,15 @@ Item {
                 sections.actions = [];
                 compare(header.height, initialHeight,
                         "Unsetting sections does not revert the header height.");
+
+                header.extension = appendix;
+                compare(appendix.height > 0, true, "Extension height is 0.");
+                compare(header.height, initialHeight + appendix.height,
+                        "Setting extension does not correctly update header height.");
+
+                header.extension = null;
+                compare(header.height, initialHeight,
+                        "Unsetting extension does not revert the header height.");
             }
 
             function test_background_color() {
@@ -260,7 +295,7 @@ Item {
             function test_foreground_color() {
                 var color1 = color_by_value(style.foregroundColor);
                 var bar = header.trailingActionBar;
-                var iconButton = findChild(bar, "action1_action_button");
+                var iconButton = findChild(bar, "action1_button");
                 var buttonStyle = iconButton.__styleInstance;
                 compare(Qt.colorEqual(buttonStyle.foregroundColor, color1), true,
                         "Button foreground color does not match header foreground color.");
@@ -342,6 +377,41 @@ Item {
                         "Previous header contents is not removed as a child of header.");
                 compare(alternativeContents.parent, altParent,
                         "Contents parent was not reverted.");
+            }
+
+            function test_navigationActions() {
+                header.navigationActions = [];
+                compare(header.leadingActionBar.actions, header.navigationActions,
+                        "Leading action bar actions does not equal navigationActions initially.");
+                header.navigationActions = root.actionList;
+                compare(header.leadingActionBar.actions, header.navigationActions,
+                        "Updating navigationActions does not update leading actions.");
+                header.navigationActions = [];
+                compare(header.leadingActionBar.actions, header.navigationActions,
+                        "Reverting navigationActions does not revert leading actions.");
+                header.leadingActionBar.actions = root.actionList;
+                compare(header.navigationActions.length, 0,
+                        "Setting leading actions changes navigationActions.");
+                header.leadingActionBar.actions = [];
+                compare(header.navigationActions.length, 0,
+                        "Reverting leading actions changes navigationActions.");
+            }
+
+            function test_sections_visible() {
+                compare(header.sections.visible, false,
+                        "Sections is not hidden by default.");
+                header.sections.actions = root.sectionActions;
+                compare(header.sections.visible, true,
+                        "Sections is not made visible by setting actions.");
+                header.extension = appendix;
+                compare(header.sections.visible, false,
+                        "Sections are not hidden when extension is set.");
+                header.extension = null;
+                compare(header.sections.visible, true,
+                        "Sections are not shown when extension is unset.");
+                header.sections.actions = [];
+                compare(header.sections.visible, false,
+                        "Sections is not hidden by clearing the actions.");
             }
 
             // The properties of header.sections, header.leadingActionBar and

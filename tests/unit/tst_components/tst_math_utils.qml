@@ -84,6 +84,69 @@ TestCase {
         compare(clamped, maxValue, "clamped value not within range")
     }
 
+    function test_clamp_positive_lower_switched() {
+        var minValue = 42
+        var maxValue = 9
+        var clampValue = -7
+
+        var clamped = MathUtils.clamp(clampValue, minValue, maxValue)
+        compare(clamped, maxValue, "clamped value not within range")
+    }
+
+    function test_clamp_positive_greater_switched() {
+        var minValue = 42
+        var maxValue = 9
+        var clampValue = 111
+
+        var clamped = MathUtils.clamp(clampValue, minValue, maxValue)
+        compare(clamped, minValue, "clamped value not within range")
+    }
+
+    function test_clamp_positive_within_switched() {
+        var minValue = 53
+        var maxValue = 9
+        var clampValue = 42
+
+        var clamped = MathUtils.clamp(clampValue, minValue, maxValue)
+        compare(clamped, clampValue, "clamped value changed even though it shouldn't have")
+    }
+
+    function test_clamp_positive_on_border_switched() {
+        var minValue = 42
+        var maxValue = 9
+        var clampValue = 9
+
+        var clamped = MathUtils.clamp(clampValue, minValue, maxValue)
+        compare(clamped, clampValue, "clamped value changed even though it shouldn't have")
+    }
+
+    function test_clamp_negative_lower_switched() {
+        var minValue = -9
+        var maxValue = -42
+        var clampValue = -50
+
+        var clamped = MathUtils.clamp(clampValue, minValue, maxValue)
+        compare(clamped, maxValue, "clamped value not within range")
+    }
+
+    function test_clamp_negative_greater_switched() {
+        var minValue = -9
+        var maxValue = -42
+        var clampValue = 50
+
+        var clamped = MathUtils.clamp(clampValue, minValue, maxValue)
+        compare(clamped, minValue, "clamped value not within range")
+    }
+
+    function test_clamp_postive_and_negative_greater_switched() {
+        var minValue = 9
+        var maxValue = -42
+        var clampValue = 50
+
+        var clamped = MathUtils.clamp(clampValue, minValue, maxValue)
+        compare(clamped, minValue, "clamped value not within range")
+    }
+
     function test_lerp() {
         var lerped = MathUtils.lerp(0.25, 90, 0)
         compare(lerped, 67.5)

@@ -49,6 +49,5 @@ AbstractButton {
      */
     onTriggered: checked = !checked
 
-    theme.version: Ubuntu.toolkitVersion
     styleName: "CheckBoxStyle"
 }

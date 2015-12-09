@@ -36,8 +36,19 @@ load(ubuntu_enable_testing)
     membackend.name = ALARM_BACKEND
     membackend.value = memory
 
+    #make sure qmlplugindump finds all libs
+    ld_lib_path.name  = LD_LIBRARY_PATH
+    ld_lib_path.value =
+    for(qmod, QTREPOS) {
+        qmod = $$qmod/lib
+        exists($$qmod): ld_lib_path.value += $$shell_path($$qmod)
+    }
+    ld_lib_path.value += $$shell_path($$ROOT_BUILD_DIR/lib)
+    ld_lib_path.value = $$unique(ld_lib_path.value)
+
     qtAddToolEnv(QMLPLUGINDUMP, importpath)
     qtAddToolEnv(QMLPLUGINDUMP, membackend)
+    qtAddToolEnv(QMLPLUGINDUMP, ld_lib_path)
 
     TARGETPATHBASE = $$replace(TARGETPATH, \\.\\d+\$, )
 
@@ -67,4 +78,7 @@ load(ubuntu_enable_testing)
 }
 
 QMAKE_CXXFLAGS += -Werror
+
+#do not warn for deprecated declarations
+QMAKE_CXXFLAGS -= -Werror=deprecated-declarations
 

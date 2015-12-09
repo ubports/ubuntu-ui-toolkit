@@ -47,6 +47,7 @@ class UCListItem : public UCStyledItemBase
     Q_CLASSINFO("DefaultProperty", "listItemData")
     // 1.3
     Q_PROPERTY(UCListItemExpansion* expansion READ expansion CONSTANT REVISION 1)
+    Q_PROPERTY(bool swipeEnabled READ isSwipeEnabled WRITE setSwipeEnabled NOTIFY swipeEnabledChanged FINAL REVISION 1)
 public:
     explicit UCListItem(QQuickItem *parent = 0);
     ~UCListItem();
@@ -65,6 +66,8 @@ public:
     void resetHighlightColor();
     // 1.3
     UCListItemExpansion *expansion();
+    bool isSwipeEnabled() const;
+    void setSwipeEnabled(bool swipeEnabled);
 
 protected:
     virtual QObject *attachedViewItems(QObject *object, bool create);
@@ -92,6 +95,7 @@ Q_SIGNALS:
     void selectModeChanged();
     void actionChanged();
     void listItemChildrenChanged();
+    Q_REVISION(1) void swipeEnabledChanged();
 
     void clicked();
     void pressAndHold();
