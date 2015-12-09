@@ -905,7 +905,6 @@ Ubuntu.ActionItem {
     AbstractButton {
         id: clearButton
         objectName: "clear_button"
-        activeFocusOnPress: false
 
         anchors {
             top: parent.top

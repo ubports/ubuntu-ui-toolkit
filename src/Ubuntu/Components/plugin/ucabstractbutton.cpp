@@ -54,8 +54,6 @@ UCAbstractButton::UCAbstractButton(QQuickItem *parent)
     , m_acceptEvents(true)
     , m_pressAndHoldConnected(false)
 {
-    setActiveFocusOnPress(true);
-    setActiveFocusOnTab(true);
 }
 
 bool UCAbstractButton::isPressAndHoldConnected()

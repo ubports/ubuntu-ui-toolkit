@@ -84,6 +84,9 @@ Item {
     property bool isGradient: button.gradient && (button.color == defaultColor ||
                               button.gradient != defaultGradient)
 
+    FocusShape {
+    }
+
     Image {
         id: strokeBorder
         anchors.fill: parent
