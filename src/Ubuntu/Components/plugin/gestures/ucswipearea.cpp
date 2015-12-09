@@ -940,7 +940,8 @@ qreal UCSwipeAreaPrivate::projectOntoDirectionVector(const QPointF &sceneVector)
 }
 
 UCSwipeAreaPrivate::UCSwipeAreaPrivate(UCSwipeArea *q)
-    : timeSource(new RealTimeSource)
+    : QObject(q)
+    , timeSource(new RealTimeSource)
     , activeTouches(timeSource)
     , q(q)
     , recognitionTimer(nullptr)
