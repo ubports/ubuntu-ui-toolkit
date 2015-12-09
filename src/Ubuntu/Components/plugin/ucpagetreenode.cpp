@@ -18,24 +18,17 @@ void UCPageTreeNodePrivate::init()
     Q_Q(UCPageTreeNode);
     q->setActiveFocusOnPress(true);
 
-    QObject::connect(q, &QQuickItem::parentChanged,
-                     [this] () {
-        this->updatePageTree();
+    QObject::connect(q, &QQuickItem::parentChanged, [this] () {
+        updatePageTree();
     });
 
-    auto updateParentLeafNode = [q] () {
-        if (q->active() && q->parentNode()) {
-            if (q->isLeaf())
-                q->parentNode()->setActiveLeafNode(q);
-            else
-                q->parentNode()->setActiveLeafNode(q->activeLeafNode());
-        }
+    auto slotUpdateParentLeafNode = [this] () {
+        updateParentLeafNode();
     };
 
-    QObject::connect(q, &UCPageTreeNode::activeChanged,updateParentLeafNode);
-    QObject::connect(q, &UCPageTreeNode::isLeafChanged,updateParentLeafNode);
-    QObject::connect(q, &UCPageTreeNode::activeLeafNodeChanged,updateParentLeafNode);
-    QObject::connect(q, &UCPageTreeNode::parentChanged,updateParentLeafNode);
+    QObject::connect(q, &UCPageTreeNode::activeChanged, slotUpdateParentLeafNode);
+    QObject::connect(q, &UCPageTreeNode::isLeafChanged, slotUpdateParentLeafNode);
+    QObject::connect(q, &UCPageTreeNode::activeLeafNodeChanged, slotUpdateParentLeafNode);
 
     //make sure all bindings are in tact
     q->resetActive();
@@ -107,35 +100,111 @@ void UCPageTreeNodePrivate::_q_propagatedBinding(QObject *propagated)
     Q_EMIT q->propagatedChanged(propagated);
 }
 
+void UCPageTreeNodePrivate::updateParentLeafNode()
+{
+    Q_Q(UCPageTreeNode);
+    if (q->active() && q->parentNode()) {
+        if (q->isLeaf())
+            q->parentNode()->setActiveLeafNode(q);
+        else
+            q->parentNode()->setActiveLeafNode(q->activeLeafNode());
+    }
+}
+
+static QList<UCPageTreeNode *> findPTNChild (QQuickItem *i)
+{
+    QList<UCPageTreeNode *> nodes;
+    UCPageTreeNode *thisNode = qobject_cast<UCPageTreeNode *>(i);
+    if(thisNode)
+        nodes << thisNode;
+    else {
+        Q_FOREACH(QQuickItem *curr, i->childItems()) {
+            nodes.append(findPTNChild(curr));
+        }
+    }
+    return nodes;
+}
+
+static QList<UCPageTreeNodePrivate::Node> collectNodes (UCPageTreeNode *root)
+{
+    if (!root)
+        return QList<UCPageTreeNodePrivate::Node>();
+
+    QList<UCPageTreeNodePrivate::Node> nodes;
+
+    QList<QQuickItem *> items = root->childItems();
+    Q_FOREACH(QQuickItem *item, items) {
+        QList<UCPageTreeNode *>subNodes = findPTNChild(item);
+
+        if (subNodes.isEmpty()) continue;
+
+        Q_FOREACH(UCPageTreeNode *currPTN, subNodes) {
+            UCPageTreeNodePrivate::Node n;
+            n.m_node = currPTN;
+            n.m_children = collectNodes(currPTN);
+            nodes.append(n);
+        }
+    }
+
+    return nodes;
+}
+
+void UCPageTreeNodePrivate::dumpNode (const Node &n, const QString &oldDepth,const QString &depth, bool isRoot)
+{
+    UCPageTreeNode *currNode = n.m_node;
+
+    if (!isRoot)
+        qDebug().noquote().nospace()<<oldDepth<<"+--"<<currNode;
+    else
+        qDebug().noquote().nospace()<<currNode;
+
+    qDebug().noquote().nospace()<<QString("%1|  ->parentNode: ").arg(depth)<<currNode->parentNode();
+    qDebug().noquote().nospace()<<QString("%1|  ->pageStack: ").arg(depth)<<currNode->pageStack()
+                               <<" custom:"<<((currNode->d_func()->m_flags & UCPageTreeNodePrivate::CustomPageStack) ? true : false);
+    qDebug().noquote().nospace()<<QString("%1|  ->propagated: ").arg(depth)<<currNode->propagated()
+                               <<" custom:"<<((currNode->d_func()->m_flags & UCPageTreeNodePrivate::CustomPropagated) ? true : false);
+    qDebug().noquote().nospace()<<QString("%1|  ->active: ").arg(depth)<<currNode->active()
+                               <<" custom:"<<((currNode->d_func()->m_flags & UCPageTreeNodePrivate::CustomActive) ? true : false);
+    qDebug().noquote().nospace()<<QString("%1|  ->activeLeaf: ").arg(depth)<<currNode->activeLeafNode();
+
+    if (n.m_children.length())
+        qDebug().noquote().nospace()<<QString("%1|  ->isLeaf: ").arg(depth)<<currNode->isLeaf();
+    else
+        qDebug().noquote().nospace()<<QString("%1└  ->isLeaf: ").arg(depth)<<currNode->isLeaf();
+
+    for (int i = 0; i < n.m_children.length(); i++) {
+        QString subDepth = depth;
+
+        if (i == n.m_children.length() - 1 ) //last
+            subDepth.append("   ");
+        else
+            subDepth.append("|  ");
+
+        dumpNode(n.m_children.at(i), depth, subDepth, false);
+    }
+}
+
 void UCPageTreeNodePrivate::dumpNodeTree()
 {
     Q_Q(UCPageTreeNode);
 
-    QList<UCPageTreeNode *> nodes;
     UCPageTreeNode *node = q;
+    UCPageTreeNode *rootNode = nullptr;
     while(node) {
-        nodes.prepend(node);
+        rootNode = node;
         node = node->d_func()->getParentPageTreeNode();
     }
 
-    QString intent;
-    QString spaces;
-    qDebug().noquote().nospace()<<"\nBegin Node List";
-    Q_FOREACH(UCPageTreeNode *currNode, nodes) {
-        qDebug().noquote().nospace()<<QString("+%1 ").arg(intent)<<currNode;
-        qDebug().noquote().nospace()<<QString("%1  +-pageStack: ").arg(spaces)<<currNode->pageStack()
-                                   <<" custom:"<<((currNode->d_func()->m_flags & UCPageTreeNodePrivate::CustomPageStack) ? true : false);
-        qDebug().noquote().nospace()<<QString("%1  +-propagated: ").arg(spaces)<<currNode->propagated()
-                                   <<" custom:"<<((currNode->d_func()->m_flags & UCPageTreeNodePrivate::CustomPropagated) ? true : false);
-        qDebug().noquote().nospace()<<QString("%1  +-active: ").arg(spaces)<<currNode->active()
-                                   <<" custom:"<<((currNode->d_func()->m_flags & UCPageTreeNodePrivate::CustomActive) ? true : false);
-        qDebug().noquote().nospace()<<QString("%1  +-activeLeaf: ").arg(spaces)<<currNode->activeLeafNode();
-        qDebug().noquote().nospace()<<QString("%1  +-isLeaf: ").arg(spaces)<<currNode->isLeaf();
-
-        intent += "--";
-        spaces += "  ";
+    if (!rootNode) {
+        qDebug()<<"Empty tree";
+    } else {
+        qDebug().noquote().nospace()<<"\nBegin Node List for"<<q;
+        Node root;
+        root.m_node = rootNode;
+        root.m_children = collectNodes(rootNode);
+        dumpNode(root);
+        qDebug().noquote().nospace()<<"End Node List\n";
     }
-    qDebug().noquote().nospace()<<"End Node List\n";
 }
 
 UCPageTreeNode::UCPageTreeNode(QQuickItem *parent)
@@ -218,8 +287,8 @@ void UCPageTreeNode::setParentNode(UCPageTreeNode *parentNode)
     if (!(d->m_flags & UCPageTreeNodePrivate::CustomPropagated))
         d->_q_propagatedBinding (parentNode ? parentNode->propagated() : nullptr);
 
-
-    //d->dumpNodeTree();
+    //make sure the activeLeafNode is set correctly
+    d->updateParentLeafNode();
 }
 
 UCPageTreeNode *UCPageTreeNode::parentNode() const
@@ -231,6 +300,11 @@ void UCPageTreeNode::componentComplete()
 {
     UCStyledItemBase::componentComplete();
     d_func()->updatePageTree();
+}
+
+void UCPageTreeNode::dumpNodeTree()
+{
+    d_func()->dumpNodeTree();
 }
 
 QObject *UCPageTreeNode::propagated() const
@@ -312,9 +386,10 @@ void UCPageTreeNode::setActive(bool active)
         return;
 
     //remove the binding to parent
-    if (d->m_parentNode && !(d->m_flags & UCPageTreeNodePrivate::CustomActive))
+    if (d->m_parentNode && !(d->m_flags & UCPageTreeNodePrivate::CustomActive)) {
         disconnect(d->m_parentNode, SIGNAL(activeChanged(bool)),
                    this, SLOT(_q_activeBinding(bool)));
+    }
 
     d->m_flags |= UCPageTreeNodePrivate::CustomActive;
     d->_q_activeBinding(active);

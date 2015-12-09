@@ -20,9 +20,15 @@ public:
         CustomPageStack  = 0x04
     };
 
+    struct Node {
+        UCPageTreeNode *m_node = 0;
+        QList<Node> m_children;
+    };
+
     void _q_activeBinding (bool active);
     void _q_pageStackBinding (QQuickItem *pageStack);
     void _q_propagatedBinding (QObject *propagated);
+    void updateParentLeafNode ();
     void dumpNodeTree ();
 
 public:
@@ -34,6 +40,9 @@ public:
     qint8 m_flags;
     bool m_isLeaf:1;
     bool m_active:1;
+
+private:
+    void dumpNode(const Node &n, const QString &oldDepth = QString(), const QString &depth = QString(), bool isRoot = true);
 };
 
 #endif // UCPAGETREENODE_P_H
