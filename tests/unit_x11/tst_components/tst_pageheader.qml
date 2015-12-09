@@ -467,7 +467,6 @@ Rectangle {
                         "Header with width " + widthGU + " GU does not have "
                         + numberOfSlots + " action slots.");
             }
-
             function test_number_of_action_slots() {
                 var initialWidth = root.width;
                 // test for the values specified in the UX specs document

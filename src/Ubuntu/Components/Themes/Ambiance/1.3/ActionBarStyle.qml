@@ -108,13 +108,6 @@ Style.ActionBarStyle {
         }
 
         Repeater {
-            function fadeIn(item) {
-                var fadeObject = fadeInComponent.createObject(actionBarStyle,
-                                                              {"target": item});
-                fadeObject.target = item;
-                fadeObject.start();
-
-            }
             id: actionsRepeater
             objectName: "actions_repeater"
             model: actionsContainer.barActions
@@ -125,9 +118,15 @@ Style.ActionBarStyle {
                 previousCount = count;
             }
 
+            function fadeIn(item) {
+                var fadeObject = fadeInComponent.createObject(actionBarStyle,
+                                                              {"target": item});
+                fadeObject.target = item;
+                fadeObject.start();
+            }
             onItemAdded: {
                 if (count <= previousCount) return; // no items added
-                if (index == 0) fadeIn(item)
+                if (index == 0) fadeIn(item);
             }
         }
 
