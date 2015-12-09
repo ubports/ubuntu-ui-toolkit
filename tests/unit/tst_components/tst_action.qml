@@ -139,20 +139,23 @@ TestCase {
 
      function test_overloaded_action_trigger_data() {
          return [
-             {tag: "invoke parameterless", invoked: true},
-             {tag: "invoke with parameter", value: 1, type: Action.Integer, invoked: true},
+             {tag: "parametered override without parameter", action: suppressTrigger, invoked: true},
+             {tag: "parametered override with parameter", action: suppressTrigger, value: 1, type: Action.Integer, invoked: true},
+             {tag: "paremeterless override without parameter", action: override, invoked: false},
+             {tag: "paremeterless override with parameter", action: override, value: 1, type: Action.Integer, invoked: false},
          ];
      }
      function test_overloaded_action_trigger(data) {
-         suppressTrigger.invoked = false;
-         suppressTrigger.parameterType = Action.None;
+         data.action.invoked = false;
+         data.action.parameterType = Action.None;
+         testItem.action = data.action;
          if (data.value) {
-             suppressTrigger.parameterType = data.type;
-             testButton.trigger(data.value)
+             data.action.parameterType = data.type;
+             testItem.trigger(data.value)
          } else {
-             testButton.trigger(data.value)
+             testItem.trigger(data.value)
          }
-         compare(suppressTrigger.invoked, data.invoked);
+         compare(data.action.invoked, data.invoked);
      }
 
      Action {
@@ -215,9 +218,14 @@ TestCase {
          function trigger(v) { invoked = true }
      }
 
-     Button {
-         id: testButton
-         action: suppressTrigger
+     Action {
+         id: override
+         property bool invoked: false
+         function trigger() { invoked = true }
+     }
+
+     ActionItem {
+         id: testItem
      }
 
 }
