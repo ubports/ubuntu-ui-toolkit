@@ -15,15 +15,15 @@ public:
     UCPageTreeNode *getParentPageTreeNode ();
 
     enum PropertyFlags {
-        CustomToolBar    = 0x01,
-        CustomPropagated = 0x02,
-        CustomActive     = 0x04,
-        CustomPageStack  = 0x08
+        CustomPropagated = 0x01,
+        CustomActive     = 0x02,
+        CustomPageStack  = 0x04
     };
 
     void _q_activeBinding (bool active);
     void _q_pageStackBinding (QQuickItem *pageStack);
     void _q_propagatedBinding (QObject *propagated);
+    void dumpNodeTree ();
 
 public:
     UCPageTreeNode *m_parentNode;
