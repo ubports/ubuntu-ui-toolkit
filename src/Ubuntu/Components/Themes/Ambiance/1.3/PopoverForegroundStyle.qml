@@ -27,6 +27,9 @@ BubbleShape {
     onShowCompleted: styledItem.showCompleted()
     onHideCompleted: styledItem.hideCompleted()
 
+    onVisibleChanged: if (visible) forceActiveFocus()
+    Keys.onEscapePressed: hideCompleted()
+
     Item {
         id: content
         anchors.fill: parent
