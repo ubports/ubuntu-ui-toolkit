@@ -106,12 +106,9 @@ Item {
     property bool hoverTransformationFlag: (proximityArea.containsMouseDevice /*&& (flickableItem.moving || scrollAnimation.running)*/)
 
     //this is the condition that triggers "Thumb Style"
-    //This property is also queried by the "buddyScrollbar" to make sure both scrollbars
-    //are in thumb style even when only one of them has a true thumbStyleFlag
-    property bool thumbStyleFlag: hoverTransformationFlag || draggingThumb
     //only show the thumb if the page AND the view is moving,
     //don't keep it on screen just because the page is long
-                                  || (veryLongContentItem && (flickableItem.moving || scrollAnimation.running))
+    property bool thumbStyleFlag: (veryLongContentItem && (flickableItem.moving || scrollAnimation.running))
 
     property real touchDragStartMargin: units.gu(2)
 
@@ -310,7 +307,10 @@ Item {
             proximityArea.containsMouseDevice = true
         }
 
-        Mouse.onExited: /*if (state === 'steppers')*/ { overshootTimer.restart(); proximityArea.containsMouseDevice = false }
+        Mouse.onExited: /*if (state === 'steppers')*/ {
+            console.log("----------------------------MOUSE EXITED--------------------------\n",
+                        "--------------------------------------------------------------------")
+            overshootTimer.restart(); proximityArea.containsMouseDevice = false }
 
         Timer {
             id: overshootTimer
@@ -318,6 +318,8 @@ Item {
         }
 
         onPressed: { console.log("PRESSED NOW"); mouse.accepted = false }
+        onEntered: { console.log("ENTERED") }
+        onExited: { console.log("EXITED") }
     }
 
     Binding {
@@ -349,12 +351,6 @@ Item {
                 } else return 'hidden';
             } else {
                 return 'steppers'
-                //                if (proximityArea.containsMouse || growingTransition.running/*|| (styledItem.buddyScrollbar //NEW UX DIRECTIONS: only one scrollbar at a time can be in thumb style
-                //                            && styledItem.buddyScrollbar.__styleInstance
-                //                            && styledItem.buddyScrollbar.__styleInstance.thumbStyleFlag)*/) {
-                //                    return 'steppers';
-                //                } else
-                //                    return 'indicator';
             }
         }
     }
@@ -938,6 +934,7 @@ Item {
                     maximumX: lockDrag ? slider.x : trough.width - slider.width - thumbsExtremesMargin
                     onActiveChanged: {
                         if (drag.active) {
+                            console.log("ACTIVATING DRAG!")
                             //we can't tell whether the drag is started from mouse or touch
                             //(unless we add an additional multipointtoucharea and reimplement drag)
                             //so we assume that it's a mouse drag if the mouse is within the proximity area
