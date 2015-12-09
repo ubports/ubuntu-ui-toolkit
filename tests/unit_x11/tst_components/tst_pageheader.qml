@@ -453,12 +453,12 @@ Rectangle {
             }
 
             function wait_for_animation() {
-                // one or more action fading animations with a duration
+                // One or more action fading animations with a duration
                 // of UbuntuAnimation.BriskDuration = 333ms.
                 wait(500);
             }
             function check_number_of_action_slots(widthGU, numberOfSlots) {
-                var width = units.gu(widthGU)
+                var width = units.gu(widthGU);
                 if (wrapper.width < width) {
                     skip("Only for screen at least " + widthGU + " GU wide.");
                 }
