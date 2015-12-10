@@ -71,7 +71,10 @@ Item {
                             margins: units.gu(1)
                         }
                         width: height
-                        color: page.head.sections.actions[page.head.sections.selectedIndex].text
+                        property int index: page.head.sections.selectedIndex
+                        backgroundColor: index >= 0
+                                         ? page.head.sections.actions[index].text
+                                         : "black"
                     }
 
                     Label {
@@ -99,6 +102,9 @@ Item {
             compare(page.active, true, "Single page is active in MainView.");
             testCase.sectionsItem = findChild(mainView, "headerSectionsItem");
         }
+        function init() {
+            page.head.sections.selectedIndex = 0;
+        }
 
         function test_number_of_sections() {
             compare(sectionsItem.model.length, 3, "Number of sections initialization failed.");
@@ -111,7 +117,7 @@ Item {
         }
 
         function check_selected_button(selectedButtonIndex) {
-            compare(selectedButtonIndex, sectionsItem.selectedIndex,
+            compare(sectionsItem.selectedIndex, selectedButtonIndex,
                     "Incorrect button selected.");
             var button = findChild(sectionsItem, "section_button_"+selectedButtonIndex);
             verify(button);
