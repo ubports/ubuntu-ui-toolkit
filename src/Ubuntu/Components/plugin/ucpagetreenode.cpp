@@ -24,11 +24,49 @@ void UCPageTreeNodePrivate::init()
 
     QObject::connect(q, &UCPageTreeNode::activeChanged, slotUpdateParentLeafNode);
     QObject::connect(q, &UCPageTreeNode::activeLeafNodeChanged, slotUpdateParentLeafNode);
+    QObject::connect(q, &UCPageTreeNode::parentNodeChanged, slotUpdateParentLeafNode);
 
     //make sure all bindings are in tact
-    q->resetActive();
-    q->resetPageStack();
-    q->resetPropagated();
+    initActive();
+    initPageStack();
+    initPropagated();
+}
+
+void UCPageTreeNodePrivate::initActive()
+{
+    Q_Q(UCPageTreeNode);
+    bool intialActive = false;
+    if (m_parentNode) {
+        intialActive = m_parentNode->active();
+        QObject::connect(m_parentNode, SIGNAL(activeChanged(bool)),
+                         q, SLOT(_q_activeBinding(bool)));
+    }
+    _q_activeBinding(intialActive);
+}
+
+void UCPageTreeNodePrivate::initPageStack()
+{
+    Q_Q(UCPageTreeNode);
+    QQuickItem *initialPageStack = nullptr;
+    if (m_parentNode) {
+        initialPageStack = m_parentNode->pageStack();
+        QObject::connect(m_parentNode,SIGNAL(pageStackChanged(QQuickItem*)),
+                         q, SLOT(_q_pageStackBinding (QQuickItem *)));
+    }
+    _q_pageStackBinding(initialPageStack);
+}
+
+
+void UCPageTreeNodePrivate::initPropagated()
+{
+    Q_Q(UCPageTreeNode);
+    QObject *initialPropagated = nullptr;
+    if (m_parentNode) {
+        initialPropagated = m_parentNode->propagated();
+        QObject::connect(m_parentNode,SIGNAL(propagatedChanged(QObject*)),
+                         q, SLOT(_q_propagatedBinding (QObject *)));
+    }
+    _q_propagatedBinding(initialPropagated);
 }
 
 /*!
@@ -290,9 +328,6 @@ void UCPageTreeNode::setParentNode(UCPageTreeNode *parentNode)
         d->_q_pageStackBinding (parentNode ? parentNode->pageStack() : nullptr);
     if (!(d->m_flags & UCPageTreeNodePrivate::CustomPropagated))
         d->_q_propagatedBinding (parentNode ? parentNode->propagated() : nullptr);
-
-    //make sure the activeLeafNode is set correctly
-    d->updateParentLeafNode();
 }
 
 UCPageTreeNode *UCPageTreeNode::parentNode() const
@@ -330,20 +365,6 @@ void UCPageTreeNode::setPropagated(QObject *propagated)
 
     d->m_flags |= UCPageTreeNodePrivate::CustomPropagated;
     d->_q_propagatedBinding(propagated);
-}
-
-void UCPageTreeNode::resetPropagated()
-{
-    Q_D(UCPageTreeNode);
-    d->m_flags &= ~UCPageTreeNodePrivate::CustomPropagated;
-
-    QObject *resPropagated = nullptr;
-    if (d->m_parentNode) {
-        resPropagated = d->m_parentNode->propagated();
-        connect(d->m_parentNode,SIGNAL(propagatedChanged(QObject*)),
-                this, SLOT(_q_propagatedBinding (QObject *)));
-    }
-    d->_q_propagatedBinding(resPropagated);
 }
 
 QQuickItem *UCPageTreeNode::toolbar() const
@@ -404,21 +425,6 @@ bool UCPageTreeNode::active() const
     return d_func()->m_active;
 }
 
-void UCPageTreeNode::resetActive()
-{
-    Q_D(UCPageTreeNode);
-
-    d->m_flags &= ~UCPageTreeNodePrivate::CustomActive;
-
-    bool resActive = false;
-    if (d->m_parentNode) {
-        resActive = d->m_parentNode->active();
-        connect(d->m_parentNode, SIGNAL(activeChanged(bool)),
-                this, SLOT(_q_activeBinding(bool)));
-    }
-    d->_q_activeBinding(resActive);
-}
-
 void UCPageTreeNode::setPageStack(QQuickItem *pageStack)
 {
     Q_D(UCPageTreeNode);
@@ -438,22 +444,6 @@ void UCPageTreeNode::setPageStack(QQuickItem *pageStack)
 QQuickItem *UCPageTreeNode::pageStack() const
 {
     return d_func()->m_pageStack;
-}
-
-void UCPageTreeNode::resetPageStack()
-{
-    Q_D(UCPageTreeNode);
-
-    d->m_flags &= ~UCPageTreeNodePrivate::CustomPageStack;
-
-    QQuickItem *resPageStack = nullptr;
-    if (d->m_parentNode) {
-        resPageStack = d->m_parentNode->pageStack();
-        connect(d->m_parentNode,SIGNAL(pageStackChanged(QQuickItem*)),
-               this, SLOT(_q_pageStackBinding (QQuickItem *)));
-    }
-
-    d->_q_pageStackBinding(resPageStack);
 }
 
 #include "moc_ucpagetreenode.cpp"

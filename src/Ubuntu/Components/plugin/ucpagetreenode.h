@@ -10,12 +10,12 @@ class UCPageTreeNode : public UCStyledItemBase
     Q_PROPERTY(bool isLeaf READ isLeaf WRITE setIsLeaf NOTIFY isLeafChanged)
     Q_PROPERTY(QQuickItem* toolbar READ toolbar WRITE setToolbar NOTIFY toolbarChanged)
     Q_PROPERTY(QQuickItem* activeLeafNode READ activeLeafNode NOTIFY activeLeafNodeChanged)
-    Q_PROPERTY(bool active READ active WRITE setActive RESET resetActive NOTIFY activeChanged)
+    Q_PROPERTY(bool active READ active WRITE setActive NOTIFY activeChanged)
     Q_PROPERTY(UCPageTreeNode* parentNode READ parentNode WRITE setParentNode NOTIFY parentNodeChanged)
-    Q_PROPERTY(QQuickItem* pageStack READ pageStack WRITE setPageStack RESET resetPageStack NOTIFY pageStackChanged)
+    Q_PROPERTY(QQuickItem* pageStack READ pageStack WRITE setPageStack NOTIFY pageStackChanged)
 
     Q_PROPERTY(bool __isPageTreeNode READ isPageTreeNode NOTIFY isPageTreeNodeChanged)
-    Q_PROPERTY(QObject* __propagated READ propagated WRITE setPropagated NOTIFY propagatedChanged RESET resetPropagated)
+    Q_PROPERTY(QObject* __propagated READ propagated WRITE setPropagated NOTIFY propagatedChanged)
 public:
     UCPageTreeNode(QQuickItem *parent = 0);
 
@@ -27,14 +27,11 @@ public:
 
     void setActive(bool active);
     bool active() const;
-    void resetActive ();
 
     void setPageStack(QQuickItem *pageStack);
     QQuickItem *pageStack() const;
-    void resetPageStack ();
 
     QQuickItem *activeLeafNode() const;
-    void setActiveLeafNode(QQuickItem* activeLeafNode);
 
     QObject *propagated() const;
     void setPropagated(QObject *propagated);
@@ -62,6 +59,8 @@ Q_SIGNALS:
 
 protected:
     UCPageTreeNode(UCPageTreeNodePrivate &, QQuickItem *parent);
+
+    void setActiveLeafNode(QQuickItem* activeLeafNode);
 
     // QQuickItem interface
     virtual void itemChange(ItemChange change, const ItemChangeData &value) override;

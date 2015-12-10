@@ -30,6 +30,12 @@ public:
     void _q_propagatedBinding (QObject *propagated);
     void updateParentLeafNode ();
     void dumpNodeTree ();
+    void initActive();
+    void initPageStack();
+    void initPropagated();
+
+private:
+    void dumpNode(const Node &n, const QString &oldDepth = QString(), const QString &depth = QString(), bool isRoot = true);
 
 public:
     UCPageTreeNode *m_parentNode;
@@ -40,9 +46,6 @@ public:
     qint8 m_flags;
     bool m_isLeaf:1;
     bool m_active:1;
-
-private:
-    void dumpNode(const Node &n, const QString &oldDepth = QString(), const QString &depth = QString(), bool isRoot = true);
 };
 
 #endif // UCPAGETREENODE_P_H
