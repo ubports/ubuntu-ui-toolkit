@@ -184,15 +184,10 @@ public:
  * SwipeArea next to the Flickable as sibling.
  */
 UCSwipeArea::UCSwipeArea(QQuickItem *parent)
-    : QQuickItem(parent)
-    , d(new UCSwipeAreaPrivate(this))
+    : QQuickItem(*(new UCSwipeAreaPrivate), parent)
 {
-    d->setRecognitionTimer(new Timer(this));
-    d->recognitionTimer->setInterval(d->maxTime);
-    d->recognitionTimer->setSingleShot(true);
-
-    connect(this, &QQuickItem::enabledChanged, d, &UCSwipeAreaPrivate::giveUpIfDisabledOrInvisible);
-    connect(this, &QQuickItem::visibleChanged, d, &UCSwipeAreaPrivate::giveUpIfDisabledOrInvisible);
+    Q_D(UCSwipeArea);
+    d->init();
 }
 
 /*!
@@ -224,11 +219,13 @@ UCSwipeArea::UCSwipeArea(QQuickItem *parent)
  */
 UCSwipeArea::Direction UCSwipeArea::direction() const
 {
+    Q_D(const UCSwipeArea);
     return d->direction;
 }
 
 void UCSwipeArea::setDirection(Direction direction)
 {
+    Q_D(UCSwipeArea);
     if (direction != d->direction) {
         d->direction = direction;
         Q_EMIT directionChanged(d->direction);
@@ -256,13 +253,14 @@ void UCSwipeAreaPrivate::setRecognitionTimer(UbuntuGestures::AbstractTimer *time
     int interval = 0;
     bool timerWasRunning = false;
     bool wasSingleShot = false;
+    Q_Q(UCSwipeArea);
 
     // can be null when called from the constructor
     if (recognitionTimer) {
         wasSingleShot = recognitionTimer->isSingleShot();
         interval = recognitionTimer->interval();
         timerWasRunning = recognitionTimer->isRunning();
-        if (recognitionTimer->parent() == this) {
+        if (recognitionTimer->parent() == q) {
             delete recognitionTimer;
         }
     }
@@ -270,8 +268,8 @@ void UCSwipeAreaPrivate::setRecognitionTimer(UbuntuGestures::AbstractTimer *time
     recognitionTimer = timer;
     timer->setInterval(interval);
     timer->setSingleShot(wasSingleShot);
-    connect(timer, &UbuntuGestures::AbstractTimer::timeout,
-            this, &UCSwipeAreaPrivate::rejectGesture);
+    QObject::connect(timer, &UbuntuGestures::AbstractTimer::timeout,
+            q, &UCSwipeArea::rejectGesture);
     if (timerWasRunning) {
         recognitionTimer->start();
     }
@@ -291,6 +289,7 @@ void UCSwipeAreaPrivate::setTimeSource(const SharedTimeSource &timeSource)
  */
 qreal UCSwipeArea::distance() const
 {
+    Q_D(const UCSwipeArea);
     return d->sceneDistance;
 }
 
@@ -301,6 +300,7 @@ qreal UCSwipeArea::distance() const
  */
 QPointF UCSwipeArea::touchPosition() const
 {
+    Q_D(const UCSwipeArea);
     return mapFromScene(d->publicScenePos);
 }
 
@@ -311,6 +311,7 @@ QPointF UCSwipeArea::touchPosition() const
  */
 bool UCSwipeArea::dragging() const
 {
+    Q_D(const UCSwipeArea);
     return d->status == UCSwipeAreaPrivate::Recognized;
 }
 
@@ -321,6 +322,7 @@ bool UCSwipeArea::dragging() const
  */
 bool UCSwipeArea::pressed() const
 {
+    Q_D(const UCSwipeArea);
     return d->status != UCSwipeAreaPrivate::WaitingForTouch;
 }
 
@@ -333,11 +335,13 @@ bool UCSwipeArea::pressed() const
  */
 bool UCSwipeArea::immediateRecognition() const
 {
+    Q_D(const UCSwipeArea);
     return d->immediateRecognition;
 }
 
 void UCSwipeArea::setImmediateRecognition(bool enabled)
 {
+    Q_D(UCSwipeArea);
     if (d->immediateRecognition != enabled) {
         d->immediateRecognition = enabled;
         Q_EMIT immediateRecognitionChanged(enabled);
@@ -346,6 +350,7 @@ void UCSwipeArea::setImmediateRecognition(bool enabled)
 
 bool UCSwipeArea::event(QEvent *event)
 {
+    Q_D(UCSwipeArea);
     if (event->type() == TouchOwnershipEvent::touchOwnershipEventType()) {
         d->touchOwnershipEvent(static_cast<TouchOwnershipEvent *>(event));
         return true;
@@ -359,6 +364,7 @@ bool UCSwipeArea::event(QEvent *event)
 
 void UCSwipeAreaPrivate::touchOwnershipEvent(TouchOwnershipEvent *event)
 {
+    Q_Q(UCSwipeArea);
     if (event->gained()) {
         QVector<int> ids;
         ids.append(event->touchId());
@@ -374,6 +380,7 @@ void UCSwipeAreaPrivate::touchOwnershipEvent(TouchOwnershipEvent *event)
 
 void UCSwipeAreaPrivate::unownedTouchEvent(UnownedTouchEvent *unownedTouchEvent)
 {
+    Q_Q(UCSwipeArea);
     QTouchEvent *event = unownedTouchEvent->touchEvent();
 
     Q_ASSERT(!event->touchPointStates().testFlag(Qt::TouchPointPressed));
@@ -398,6 +405,7 @@ void UCSwipeAreaPrivate::unownedTouchEvent(UnownedTouchEvent *unownedTouchEvent)
 
 void UCSwipeAreaPrivate::unownedTouchEvent_undecided(UnownedTouchEvent *unownedTouchEvent)
 {
+    Q_Q(UCSwipeArea);
     const QTouchEvent::TouchPoint *touchPoint = fetchTargetTouchPoint(unownedTouchEvent->touchEvent());
     if (!touchPoint) {
         qCritical() << "UCSwipeArea[status=Undecided]: touch " << touchId
@@ -459,6 +467,7 @@ void UCSwipeArea::touchEvent(QTouchEvent *event)
     // FIXME: Consider when more than one touch starts in the same event (although it's not possible
     //       with Mir's android-input). Have to track them all. Consider it a plus/bonus.
 
+    Q_D(UCSwipeArea);
     SA_TRACE(d->timeSource->msecsSinceReference() << " " << qPrintable(touchEventToString(event)));
 
     if (!isEnabled() || !isVisible()) {
@@ -526,6 +535,7 @@ void UCSwipeAreaPrivate::touchEvent_absent(QTouchEvent *event)
 
     if (allGood) {
         Q_ASSERT(newTouchPoint);
+        Q_Q(UCSwipeArea);
 
         startScenePos = newTouchPoint->scenePos();
         touchId = newTouchPoint->id();
@@ -569,6 +579,7 @@ void UCSwipeAreaPrivate::touchEvent_undecided(QTouchEvent *event)
         // multi-finger drags are not accepted
         SA_TRACE("Multi-finger drags are not accepted");
 
+        Q_Q(UCSwipeArea);
         TouchRegistry::instance()->removeCandidateOwnerForTouch(touchId, q);
         // We still wanna know when it ends for keeping the composition time window up-to-date
         TouchRegistry::instance()->addTouchWatcher(touchId, q);
@@ -597,6 +608,7 @@ void UCSwipeAreaPrivate::touchEvent_recognized(QTouchEvent *event)
 
 void UCSwipeAreaPrivate::watchPressedTouchPoints(const QList<QTouchEvent::TouchPoint> &touchPoints)
 {
+    Q_Q(UCSwipeArea);
     for (int i = 0; i < touchPoints.count(); ++i) {
         const QTouchEvent::TouchPoint &touchPoint = touchPoints.at(i);
         if (touchPoint.state() == Qt::TouchPointPressed) {
@@ -674,32 +686,34 @@ bool UCSwipeAreaPrivate::isPastMaxDistance() const
     return squaredDistance > maxDistance*maxDistance;
 }
 
-void UCSwipeAreaPrivate::giveUpIfDisabledOrInvisible()
+void UCSwipeArea::giveUpIfDisabledOrInvisible()
 {
-    if (!q->isEnabled() || !q->isVisible()) {
-        if (status == Undecided) {
-            TouchRegistry::instance()->removeCandidateOwnerForTouch(touchId, q);
+    if (!isEnabled() || !isVisible()) {
+        Q_D(UCSwipeArea);
+        if (d->status == UCSwipeAreaPrivate::Undecided) {
+            TouchRegistry::instance()->removeCandidateOwnerForTouch(d->touchId, this);
             // We still wanna know when it ends for keeping the composition time window up-to-date
-            TouchRegistry::instance()->addTouchWatcher(touchId, q);
+            TouchRegistry::instance()->addTouchWatcher(d->touchId, this);
         }
 
-        if (status != WaitingForTouch) {
+        if (d->status != UCSwipeAreaPrivate::WaitingForTouch) {
             SA_TRACE("Resetting status because got disabled or made invisible");
-            setStatus(WaitingForTouch);
+            d->setStatus(UCSwipeAreaPrivate::WaitingForTouch);
         }
     }
 }
 
-void UCSwipeAreaPrivate::rejectGesture()
+void UCSwipeArea::rejectGesture()
 {
-    if (status == Undecided) {
+    Q_D(UCSwipeArea);
+    if (d->status == UCSwipeAreaPrivate::Undecided) {
         SA_TRACE("Rejecting gesture because it's taking too long to drag beyond the threshold.");
 
-        TouchRegistry::instance()->removeCandidateOwnerForTouch(touchId, q);
+        TouchRegistry::instance()->removeCandidateOwnerForTouch(d->touchId, this);
         // We still wanna know when it ends for keeping the composition time window up-to-date
-        TouchRegistry::instance()->addTouchWatcher(touchId, q);
+        TouchRegistry::instance()->addTouchWatcher(d->touchId, this);
 
-        setStatus(WaitingForTouch);
+        d->setStatus(UCSwipeAreaPrivate::WaitingForTouch);
     }
 }
 
@@ -714,11 +728,14 @@ void UCSwipeAreaPrivate::setStatus(Status newStatus)
         recognitionTimer->stop();
     }
 
+    Q_Q(UCSwipeArea);
     const bool wasDragging = q->dragging();
     const bool wasPressed = q->pressed();
 
     status = newStatus;
-    Q_EMIT statusChanged(status);
+    for (int i = 0; i < statusChangeListeners.size(); i++) {
+        statusChangeListeners[i]->swipeStatusChanged(oldStatus, status);
+    }
 
     SA_TRACE(statusToString(oldStatus) << " -> " << statusToString(newStatus));
 
@@ -763,6 +780,7 @@ void UCSwipeAreaPrivate::updatePosition(const QPointF &point)
     }
 
     if (xChanged || yChanged) {
+        Q_Q(UCSwipeArea);
         Q_EMIT q->touchPositionChanged(q->touchPosition());
 
         // handle distance change
@@ -789,9 +807,13 @@ void UCSwipeArea::itemChange(ItemChange change, const ItemChangeData &value)
             value.window->installEventFilter(TouchRegistry::instance());
 
             // FIXME: Handle window->screen() changes (ie window changing screens)
+            Q_D(UCSwipeArea);
             qreal pixelsPerMm = value.window->screen()->physicalDotsPerInch() / 25.4;
             d->setPixelsPerMm(pixelsPerMm);
         }
+    }
+    if (change == ItemVisibleHasChanged) {
+        giveUpIfDisabledOrInvisible();
     }
 }
 
@@ -924,6 +946,7 @@ void UCSwipeAreaPrivate::updateSceneDirectionVector()
             localDirection.ry() = 0.;
             break;
     }
+    Q_Q(UCSwipeArea);
     QPointF sceneOrigin = q->mapToScene(localOrigin);
     QPointF sceneDirection = q->mapToScene(localDirection);
     sceneDirectionVector = sceneDirection - sceneOrigin;
@@ -936,11 +959,10 @@ qreal UCSwipeAreaPrivate::projectOntoDirectionVector(const QPointF &sceneVector)
             sceneVector.y() * sceneDirectionVector.y();
 }
 
-UCSwipeAreaPrivate::UCSwipeAreaPrivate(UCSwipeArea *q)
-    : QObject(q)
+UCSwipeAreaPrivate::UCSwipeAreaPrivate()
+    : QQuickItemPrivate()
     , timeSource(new RealTimeSource)
     , activeTouches(timeSource)
-    , q(q)
     , recognitionTimer(nullptr)
     , distanceThreshold(0)
     , distanceThresholdSquared(0.)
@@ -953,4 +975,26 @@ UCSwipeAreaPrivate::UCSwipeAreaPrivate(UCSwipeArea *q)
     , direction(UCSwipeArea::Rightwards)
     , immediateRecognition(false)
 {
+}
+
+void UCSwipeAreaPrivate::init()
+{
+    Q_Q(UCSwipeArea);
+    setRecognitionTimer(new Timer(q));
+    recognitionTimer->setInterval(maxTime);
+    recognitionTimer->setSingleShot(true);
+
+    QObject::connect(q, &QQuickItem::enabledChanged, q, &UCSwipeArea::giveUpIfDisabledOrInvisible);
+}
+
+void UCSwipeAreaPrivate::addStatusChangeListener(UCSwipeAreaStatusListener *listener)
+{
+    if (!statusChangeListeners.contains(listener)) {
+        statusChangeListeners.append(listener);
+    }
+}
+
+void UCSwipeAreaPrivate::removeStatusChangeListener(UCSwipeAreaStatusListener *listener)
+{
+    statusChangeListeners.removeAll(listener);
 }
