@@ -18,16 +18,11 @@ void UCPageTreeNodePrivate::init()
     Q_Q(UCPageTreeNode);
     q->setActiveFocusOnPress(true);
 
-    QObject::connect(q, &QQuickItem::parentChanged, [this] () {
-        updatePageTree();
-    });
-
     auto slotUpdateParentLeafNode = [this] () {
         updateParentLeafNode();
     };
 
     QObject::connect(q, &UCPageTreeNode::activeChanged, slotUpdateParentLeafNode);
-    QObject::connect(q, &UCPageTreeNode::isLeafChanged, slotUpdateParentLeafNode);
     QObject::connect(q, &UCPageTreeNode::activeLeafNodeChanged, slotUpdateParentLeafNode);
 
     //make sure all bindings are in tact
@@ -219,6 +214,14 @@ UCPageTreeNode::UCPageTreeNode(UCPageTreeNodePrivate &dd, QQuickItem *parent)
     d_func()->init();
 }
 
+void UCPageTreeNode::itemChange(QQuickItem::ItemChange change, const QQuickItem::ItemChangeData &value)
+{
+    Q_D(UCPageTreeNode);
+    UCStyledItemBase::itemChange(change, value);
+    if (change == QQuickItem::ItemParentHasChanged)
+        d->updatePageTree();
+}
+
 bool UCPageTreeNode::isLeaf() const
 {
     return d_func()->m_isLeaf;
@@ -233,6 +236,7 @@ void UCPageTreeNode::setIsLeaf(bool isLeaf)
 
     d->m_isLeaf = isLeaf;
     Q_EMIT isLeafChanged(isLeaf);
+    d->updateParentLeafNode();
 }
 
 void UCPageTreeNode::setParentNode(UCPageTreeNode *parentNode)

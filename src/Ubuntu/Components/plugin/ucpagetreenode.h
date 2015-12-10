@@ -63,6 +63,9 @@ Q_SIGNALS:
 protected:
     UCPageTreeNode(UCPageTreeNodePrivate &, QQuickItem *parent);
 
+    // QQuickItem interface
+    virtual void itemChange(ItemChange change, const ItemChangeData &value) override;
+
 private:
     Q_DECLARE_PRIVATE(UCPageTreeNode)
     Q_PRIVATE_SLOT(d_func(), void _q_activeBinding(bool active))

@@ -1688,13 +1688,11 @@ void UCListItemPrivate::setDragMode(bool draggable)
  */
 bool UCListItemPrivate::isSelected()
 {
-    Q_Q(UCListItem);
     Q_ASSERT(selection);
     return selection->isSelected();
 }
 void UCListItemPrivate::setSelected(bool value)
 {
-    Q_Q(UCListItem);
     Q_ASSERT(selection);
     selection->setSelected(value);
 }
