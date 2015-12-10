@@ -111,9 +111,13 @@ Item {
 
         function test_mnemonic_data() {
             return [
-                {tag: "HW keyboard, valid", kbd: true, text: "C&all", displayText: "C<u>a</u>ll"},
-                {tag: "HW keyboard, invalid", kbd: true, text: "&&Call", displayText: "&&Call"},
-                {tag: "no HW keyboard", kbd: false, text: "&Call", displayText: "Call"},
+                {tag: "HW keyboard, valid A", kbd: true, text: "C&all", displayText: "C<u>a</u>ll", key: Qt.Key_A, xfail: false},
+                {tag: "HW keyboard, valid S", kbd: true, text: "&Save & Exit", displayText: "<u>S</u>ave & Exit", key: Qt.Key_S, xfail: false},
+                {tag: "HW keyboard, valid space", kbd: true, text: "Save & Exit", displayText: "Save <u> </u>Exit", key: Qt.Key_Space, xfail: false},
+
+                {tag: "HW keyboard, invalid", kbd: true, text: "&&Call", displayText: "&&Call", key: Qt.Key_Asterisk, xfail: true},
+
+                {tag: "no HW keyboard", kbd: false, text: "&Call", displayText: "Call", key: Qt.Key_C, xfail: false},
             ];
         }
         function test_mnemonic(data) {
@@ -123,21 +127,32 @@ Item {
                 skip("Cannot test this case: " + data.tag);
             }
             compare(action.text, data.displayText);
-        }
-
-        function test_mnemonic_trigger_data() {
-            return [
-                        {tag: "valid", text: "C&all", key: Qt.Key_A, mod: Qt.AltModifier, xfail: false},
-                        {tag: "invalid", text: "C&&all", key: Qt.Key_Asterisk, mod: Qt.AltModifier, xfail: true},
-                    ];
-        }
-        function test_mnemonic_trigger(data) {
-            action.text = data.text;
-            keyClick(data.key, data.mod);
+            // shortcut
+            keyClick(data.key, Qt.AltModifier);
             if (data.xfail) {
                 expectFail(data.tag, "invalid mnemonic");
             }
             spy.wait(200);
+        }
+
+        SignalSpy {
+            id: textSpy
+            target: action
+            signalName: "textChanged"
+        }
+
+        function test_mnemonic_displaytext() {
+            QuickUtils.keyboardAttached = false;
+            if (QuickUtils.keyboardAttached) {
+                skip("the test needs to be able to detach the keyboard");
+            }
+            action.text = "&Call";
+            textSpy.clear();
+            QuickUtils.keyboardAttached = true;
+            if (!QuickUtils.keyboardAttached) {
+                skip("the test needs to be able to attach the keyboard");
+            }
+            textSpy.wait(200);
         }
     }
 }

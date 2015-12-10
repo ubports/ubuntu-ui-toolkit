@@ -99,6 +99,20 @@ bool shortcutContextMatcher(QObject* object, Qt::ShortcutContext context)
  * as well as to define actions for pages, or when defining options in \c ListItemOptions.
  *
  * Examples: See \l Page
+ *
+ * \section2 Mnemonics
+ * Since Ubuntu.Components 1.3 Action supports mnemonics. Mnemonics are shortcuts
+ * defined in the \l text property, prefixed the shortcut letter with \&. For instance
+ * \c "\&Call" will bint the \c "Alt-C" shortcut to the action. When a mnemonic
+ * is detected on the Action and a keyboard is attached to the device, the \l text
+ * property will provide a formatted text having the mnemonic letter underscored.
+ * \qml
+ * Action {
+ *     id: call
+ *     iconName: "call"
+ *     text: "&Call"
+ * }
+ * \endqml
  */
 
 /*!
@@ -120,20 +134,9 @@ bool shortcutContextMatcher(QObject* object, Qt::ShortcutContext context)
  * \qmlproperty string Action::text
  * The user visible primary label of the action.
  *
- * Since Ubuntu.Componenst version 1.3 Action supports mnemonics. Mnemonics can
- * be defined using the \e & character. The property filters the mnemonic from the
- * given text and returns the formatted text underscoring the mnemonic, which can
- * then be used in components to identify the mnemonic.
- * \qml
- * Button {
- *     action: Action {
- *         text: "&Call"
- *         onTriggered: console.log("Dial out")
- *     }
- * }
- * \endqml
- * \note The mnemonic is only shown (underscored) when there is a hardware keyboard
- * attached.
+ * Mnemonics are shortcuts prefixed in the text with \&. If the text has multiple
+ * occurences of the \& character, the first one will be considered for the shortcut.
+ * The \& character cannot be used as shortcut.
  */
 QString UCAction::text()
 {
@@ -256,11 +259,6 @@ UCAction::~UCAction()
 {
     resetShortcut();
     resetText();
-}
-
-UCAction::~UCAction()
-{
-    resetShortcut();
 }
 
 bool UCAction::isValidType(QVariant::Type valueType)
