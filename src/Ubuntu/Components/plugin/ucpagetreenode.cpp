@@ -319,8 +319,6 @@ void UCPageTreeNode::setParentNode(UCPageTreeNode *parentNode)
         }
     }
 
-    Q_EMIT parentNodeChanged (parentNode);
-
     //update properties if they are not set manually
     if (!(d->m_flags & UCPageTreeNodePrivate::CustomActive))
         d->_q_activeBinding (parentNode && parentNode->active() );
@@ -328,6 +326,8 @@ void UCPageTreeNode::setParentNode(UCPageTreeNode *parentNode)
         d->_q_pageStackBinding (parentNode ? parentNode->pageStack() : nullptr);
     if (!(d->m_flags & UCPageTreeNodePrivate::CustomPropagated))
         d->_q_propagatedBinding (parentNode ? parentNode->propagated() : nullptr);
+
+    Q_EMIT parentNodeChanged (parentNode);
 }
 
 UCPageTreeNode *UCPageTreeNode::parentNode() const
