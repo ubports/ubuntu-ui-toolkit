@@ -258,6 +258,11 @@ UCAction::~UCAction()
     resetText();
 }
 
+UCAction::~UCAction()
+{
+    resetShortcut();
+}
+
 bool UCAction::isValidType(QVariant::Type valueType)
 {
     bool valid = (valueType == QVariant::String && m_parameterType == String) ||
