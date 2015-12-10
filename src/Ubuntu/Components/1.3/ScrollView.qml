@@ -205,6 +205,25 @@ StyledItem {
             }
         }
 
+        Scrollbar {
+            id: horizontalScrollbar
+            flickableItem: internal.flickableItem
+            __viewport: viewportItem
+            align: Qt.AlignBottom
+            __buddyScrollbar: verticalScrollbar
+            __alwaysOnScrollbars: false//alwaysOnScrollbars
+            focus: false
+        }
+
+        Scrollbar {
+            id: verticalScrollbar
+            flickableItem: internal.flickableItem
+            __viewport: viewportItem
+            align: Qt.AlignTrailing
+            __buddyScrollbar: horizontalScrollbar
+            __alwaysOnScrollbars: false//alwaysOnScrollbars
+            focus: false
+        }
         //When you click outside of a child of the scrollview, this restores the focus to the ScrollView
         //Why is this needed?
         //  Suppose the viewport has a child ScrollView (or another Item which handles some or all of the hw keys we handle).
@@ -227,25 +246,6 @@ StyledItem {
                 viewportItem.focus = true
                 mouse.accepted = false
             }
-        }
-        Scrollbar {
-            id: horizontalScrollbar
-            flickableItem: internal.flickableItem
-            __viewport: viewportItem
-            align: Qt.AlignBottom
-            __buddyScrollbar: verticalScrollbar
-            __alwaysOnScrollbars: false//alwaysOnScrollbars
-            focus: false
-        }
-
-        Scrollbar {
-            id: verticalScrollbar
-            flickableItem: internal.flickableItem
-            __viewport: viewportItem
-            align: Qt.AlignTrailing
-            __buddyScrollbar: horizontalScrollbar
-            __alwaysOnScrollbars: false//alwaysOnScrollbars
-            focus: false
         }
 
         Column {
