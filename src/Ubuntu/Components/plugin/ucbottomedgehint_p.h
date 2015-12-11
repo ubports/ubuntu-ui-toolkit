@@ -30,19 +30,16 @@ public:
     {
         return item->d_func();
     }
-
     UCBottomEdgeHintPrivate();
     void init();
 
     QBasicTimer deactivationTimer;
     UCSwipeArea *swipeArea;
-    QQuickFlickable *flickable = nullptr;
-    PropertyChange *flickableBottomMargin = nullptr;
-    int deactivateTimeout = 800;
+    QQuickFlickable *flickable;
+    PropertyChange *flickableBottomMargin;
+    int deactivateTimeout;
     UCBottomEdgeHint::Status status;
     bool pressed:1;
-
-    void completeComponentInitialization() override;
 };
 
 #endif // UCBOTTOMEDGEHINT_P
