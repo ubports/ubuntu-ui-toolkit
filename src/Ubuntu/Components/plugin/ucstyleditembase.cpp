@@ -479,7 +479,12 @@ QString UCStyledItemBasePrivate::propertyForVersion(quint16 version) const
     }
 }
 
-void UCStyledItemBasePrivate::completeStyledItem()
+/*
+ * The method is called on component completion, separated for the cases when
+ * the component is embedded in another CPP component and functionality depends
+ * on this initialization.
+ */
+void UCStyledItemBasePrivate::completeComponentInitialization()
 {
     // no animation at this time
     // prepare style context if not been done yet
@@ -494,7 +499,7 @@ void UCStyledItemBase::componentComplete()
     // make sure the theme version is up to date
     d->styleVersion = d->importVersion(this);
     UCTheme::checkMixedVersionImports(this, d->styleVersion);
-    d->completeStyledItem();
+    d->completeComponentInitialization();
 }
 
 void UCStyledItemBase::itemChange(ItemChange change, const ItemChangeData &data)

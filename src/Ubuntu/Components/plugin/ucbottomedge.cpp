@@ -19,7 +19,7 @@
 #include "ucbottomedge_p.h"
 #include "ucbottomedgestyle.h"
 #include "ucbottomedgeregion.h"
-#include "ucbottomedgehint.h"
+#include "ucbottomedgehint_p.h"
 #include "ucstyleditembase_p.h"
 #include <QtQml/QQmlEngine>
 #include <QtGui/QScreen>
@@ -737,26 +737,26 @@ void UCBottomEdge::classBegin()
     initializeComponent();
 }
 
-void UCBottomEdge::componentComplete()
+void UCBottomEdgePrivate::completeComponentInitialization()
 {
-    UCStyledItemBase::componentComplete();
-    Q_D(UCBottomEdge);
+    UCStyledItemBasePrivate::completeComponentInitialization();
+    Q_Q(UCBottomEdge);
     // fix the hint's style version as that has no qmlContext of its own
     // and thus import version check will fail; setting the context for
     // the hint using this component's hint won't work either as this
     // component's context does not contain the properties from the hint.
-    UCStyledItemBasePrivate *hintPrivate = UCStyledItemBasePrivate::get(d->hint);
-    hintPrivate->styleVersion = d->styleVersion;
-    // also set the qml data as hitn does not have that either
-    QQmlData::get(d->hint, true);
-    QQmlEngine::setContextForObject(d->hint, new QQmlContext(qmlContext(this), d->hint));
+    UCBottomEdgeHintPrivate *hintPrivate = UCBottomEdgeHintPrivate::get(hint);
+    hintPrivate->styleVersion = styleVersion;
+    // also set the qml data as hint does not have that either
+    QQmlData::get(hint, true);
+    QQmlEngine::setContextForObject(hint, new QQmlContext(qmlContext(q), hint));
     // finally complete hint creation
-    hintPrivate->completeStyledItem();
+    hintPrivate->completeComponentInitialization();
     // and validate regions, leave out the first one as that supposed to be added first
     // mimic the top limit of the regions list like we would add them one by one
-    for (int i = 1; i < d->regions.size(); ++i) {
-        UCBottomEdgeRegion *region = d->regions[i];
-        d->validateRegion(region, i);
+    for (int i = 1; i < regions.size(); ++i) {
+        UCBottomEdgeRegion *region = regions[i];
+        validateRegion(region, i);
     }
 }
 
