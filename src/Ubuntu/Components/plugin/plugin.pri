@@ -105,7 +105,8 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/ucbottomedge_p.h \
     $$PWD/ucbottomedgestyle.h \
     $$PWD/ucbottomedgeregion.h \
-    $$PWD/ucabstractbutton_p.h
+    $$PWD/ucabstractbutton_p.h \
+    $$PWD/ucbottomedgehint_p.h
 
 SOURCES += $$PWD/plugin.cpp \
     $$PWD/uctheme.cpp \
