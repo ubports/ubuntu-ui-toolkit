@@ -1,6 +1,8 @@
 #include "ucpagetreenode.h"
 #include "ucpagetreenode_p.h"
 
+#include <QQmlEngine>
+
 UCPageTreeNodePrivate::UCPageTreeNodePrivate()
     : m_parentNode(nullptr),
       m_activeLeafNode(nullptr),
@@ -127,7 +129,6 @@ void UCPageTreeNodePrivate::_q_propagatedBinding(QObject *propagated)
 {
     if (m_propagated == propagated)
         return;
-
     Q_Q(UCPageTreeNode);
     m_propagated = propagated;
     Q_EMIT q->propagatedChanged(propagated);
@@ -191,7 +192,17 @@ void UCPageTreeNodePrivate::dumpNode (const Node &n, const QString &oldDepth,con
     else
         qDebug().noquote().nospace()<<currNode;
 
+    switch(QQmlEngine::objectOwnership(currNode)) {
+        case QQmlEngine::CppOwnership:
+            qDebug().noquote().nospace()<<QString("%1|  ->ownership: ").arg(depth)<<"C++";
+        break;
+        case QQmlEngine::JavaScriptOwnership:
+            qDebug().noquote().nospace()<<QString("%1|  ->ownership: ").arg(depth)<<"JS";
+        break;
+    }
+
     qDebug().noquote().nospace()<<QString("%1|  ->parentNode: ").arg(depth)<<currNode->parentNode();
+    qDebug().noquote().nospace()<<QString("%1|  ->parent: ").arg(depth)<<currNode->parent();
     qDebug().noquote().nospace()<<QString("%1|  ->pageStack: ").arg(depth)<<currNode->pageStack()
                                <<" custom:"<<((currNode->d_func()->m_flags & UCPageTreeNodePrivate::CustomPageStack) ? true : false);
     qDebug().noquote().nospace()<<QString("%1|  ->propagated: ").arg(depth)<<currNode->propagated()
@@ -256,8 +267,9 @@ void UCPageTreeNode::itemChange(QQuickItem::ItemChange change, const QQuickItem:
 {
     Q_D(UCPageTreeNode);
     UCStyledItemBase::itemChange(change, value);
-    if (change == QQuickItem::ItemParentHasChanged)
+    if (change == QQuickItem::ItemParentHasChanged) {
         d->updatePageTree();
+    }
 }
 
 bool UCPageTreeNode::isLeaf() const
