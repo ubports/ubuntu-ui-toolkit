@@ -194,6 +194,11 @@ bool UCAbstractButton::acceptEvents() const
     Q_D(const UCAbstractButton);
     return d->acceptEvents;
 }
+void UCAbstractButton::setAcceptEvents(bool value)
+{
+    Q_D(UCAbstractButton);
+    d->acceptEvents = value;
+}
 
 QQuickMouseArea *UCAbstractButton::privateMouseArea() const
 {

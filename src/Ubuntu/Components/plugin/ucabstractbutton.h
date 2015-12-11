@@ -29,7 +29,7 @@ class UCAbstractButton : public UCActionItem
     Q_PROPERTY(bool hovered READ hovered NOTIFY hoveredChanged)
 
     // internal, declared to support the deprecated ListItem module
-    Q_PROPERTY(bool __acceptEvents READ acceptEvents)
+    Q_PROPERTY(bool __acceptEvents READ acceptEvents WRITE setAcceptEvents)
     Q_PROPERTY(QQuickMouseArea *__mouseArea READ privateMouseArea CONSTANT)
 public:
     explicit UCAbstractButton(QQuickItem *parent = 0);
@@ -40,6 +40,7 @@ public:
     bool privateAcceptEvents() const;
     void setPrivateAcceptEvents(bool accept);
     bool acceptEvents() const;
+    void setAcceptEvents(bool value);
     QQuickMouseArea *privateMouseArea() const;
 
 protected:
