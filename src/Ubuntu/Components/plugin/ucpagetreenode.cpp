@@ -3,6 +3,10 @@
 
 #include <QQmlEngine>
 
+Q_LOGGING_CATEGORY(ucPageTreeNode, "ubuntu.components.PageTreeNode", QtMsgType::QtWarningMsg)
+
+#define PT_TRACE(params) qCDebug(ucPageTreeNode).noquote().nospace()<< params
+
 UCPageTreeNodePrivate::UCPageTreeNodePrivate()
     : m_parentNode(nullptr),
       m_activeLeafNode(nullptr),
@@ -270,34 +274,34 @@ void UCPageTreeNodePrivate::dumpNode (const Node &n, const QString &oldDepth,con
 
     //print the current node name and info
     if (!isRoot)
-        qDebug().noquote().nospace()<<oldDepth<<"+--"<<currNode;
+        PT_TRACE(oldDepth<<"+--"<<currNode);
     else
-        qDebug().noquote().nospace()<<currNode;
+        PT_TRACE(currNode);
 
     //print the current nodes properties we are interested in
     switch(QQmlEngine::objectOwnership(currNode)) {
         case QQmlEngine::CppOwnership:
-            qDebug().noquote().nospace()<<QString("%1|  ->ownership: ").arg(depth)<<"C++";
+            PT_TRACE(QString("%1|  ->ownership: ").arg(depth)<<"C++");
         break;
         case QQmlEngine::JavaScriptOwnership:
-            qDebug().noquote().nospace()<<QString("%1|  ->ownership: ").arg(depth)<<"JS";
+            PT_TRACE(QString("%1|  ->ownership: ").arg(depth)<<"JS");
         break;
     }
 
-    qDebug().noquote().nospace()<<QString("%1|  ->parentNode: ").arg(depth)<<currNode->parentNode();
-    qDebug().noquote().nospace()<<QString("%1|  ->parent: ").arg(depth)<<currNode->parent();
-    qDebug().noquote().nospace()<<QString("%1|  ->pageStack: ").arg(depth)<<currNode->pageStack()
-                               <<" custom:"<<((currNode->d_func()->m_flags & UCPageTreeNodePrivate::CustomPageStack) ? true : false);
-    qDebug().noquote().nospace()<<QString("%1|  ->propagated: ").arg(depth)<<currNode->propagated()
-                               <<" custom:"<<((currNode->d_func()->m_flags & UCPageTreeNodePrivate::CustomPropagated) ? true : false);
-    qDebug().noquote().nospace()<<QString("%1|  ->active: ").arg(depth)<<currNode->active()
-                               <<" custom:"<<((currNode->d_func()->m_flags & UCPageTreeNodePrivate::CustomActive) ? true : false);
-    qDebug().noquote().nospace()<<QString("%1|  ->activeLeaf: ").arg(depth)<<currNode->activeLeafNode();
+    PT_TRACE(QString("%1|  ->parentNode: ").arg(depth)<<currNode->parentNode());
+    PT_TRACE(QString("%1|  ->parent: ").arg(depth)<<currNode->parent());
+    PT_TRACE(QString("%1|  ->pageStack: ").arg(depth)<<currNode->pageStack()
+                               <<" custom:"<<((currNode->d_func()->m_flags & UCPageTreeNodePrivate::CustomPageStack) ? true : false));
+    PT_TRACE(QString("%1|  ->propagated: ").arg(depth)<<currNode->propagated()
+                               <<" custom:"<<((currNode->d_func()->m_flags & UCPageTreeNodePrivate::CustomPropagated) ? true : false));
+    PT_TRACE(QString("%1|  ->active: ").arg(depth)<<currNode->active()
+                               <<" custom:"<<((currNode->d_func()->m_flags & UCPageTreeNodePrivate::CustomActive) ? true : false));
+    PT_TRACE(QString("%1|  ->activeLeaf: ").arg(depth)<<currNode->activeLeafNode());
 
     if (n.m_children.length())
-        qDebug().noquote().nospace()<<QString("%1|  ->isLeaf: ").arg(depth)<<currNode->isLeaf();
+        PT_TRACE(QString("%1|  ->isLeaf: ").arg(depth)<<currNode->isLeaf());
     else
-        qDebug().noquote().nospace()<<QString("%1└  ->isLeaf: ").arg(depth)<<currNode->isLeaf();
+        PT_TRACE(QString("%1└  ->isLeaf: ").arg(depth)<<currNode->isLeaf());
 
     //print the current nodes children
     for (int i = 0; i < n.m_children.length(); i++) {
@@ -330,16 +334,16 @@ void UCPageTreeNodePrivate::dumpNodeTree()
         node = node->d_func()->getParentPageTreeNode();
     }
 
-    if (!rootNode) {
-        qDebug()<<"Empty tree";
+    PT_TRACE("Begin Node List for"<<q);
+    if (Q_UNLIKELY(!rootNode)) {
+        PT_TRACE("Empty tree");
     } else {
-        qDebug().noquote().nospace()<<"\nBegin Node List for"<<q;
         Node root;
         root.m_node = rootNode;
         root.m_children = collectNodes(rootNode);
         dumpNode(root);
-        qDebug().noquote().nospace()<<"End Node List\n";
     }
+    PT_TRACE("End Node List\n");
 }
 
 /*!
