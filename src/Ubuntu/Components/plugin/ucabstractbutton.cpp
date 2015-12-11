@@ -140,8 +140,7 @@ void UCAbstractButton::keyPressEvent(QKeyEvent *event)
         case Qt::Key_Return:
         case Qt::Key_Space:
         {
-            // make sure the overloaded trigger is called!
-            metaObject()->invokeMethod(this, "trigger", Q_ARG(QVariant, QVariant()));
+            trigger();
             break;
         }
     }
