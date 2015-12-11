@@ -133,9 +133,4 @@ Page {
         }
         highlightMoveDuration: 0
     }
-
-    BottomEdgeHint {
-        flickable: widgetList
-        action: aboutAction
-    }
 }
