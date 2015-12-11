@@ -138,10 +138,9 @@ void UCAbstractButton::keyPressEvent(QKeyEvent *event)
     switch (event->key()) {
         case Qt::Key_Enter:
         case Qt::Key_Return:
-        // FIXME: space may also come here, however that depends on the button type
-        // (i.e default Dialog btn) so we may need to add that to Button
+        case Qt::Key_Space:
         {
-            Q_EMIT clicked();
+            trigger();
             break;
         }
     }
