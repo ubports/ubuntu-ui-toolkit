@@ -83,13 +83,19 @@ Style.PullToRefreshStyle {
           will be restored to the default value before the animation, and the content
           will be pushed under the header. We need to connect to the header changes
           so we can reset the state and the topMargin.
-          */
+        */
         if (rootItem && rootItem.__propagated && rootItem.__propagated.header) {
             rootItem.__propagated.header.visibleChanged.connect(fixTopMargin);
             rootItem.__propagated.header.heightChanged.connect(fixTopMargin);
         }
         ready = true;
     }
+
+    Component.onDestruction: {
+        rootItem.__propagated.header.visibleChanged.disconnect(fixTopMargin);
+        rootItem.__propagated.header.heightChanged.disconnect(fixTopMargin);
+    }
+
     function fixTopMargin() {
         if (style.state === "refreshing") {
             /*
