@@ -790,6 +790,7 @@ void UCSwipeArea::itemChange(ItemChange change, const ItemChangeData &value)
 
             // FIXME: Handle window->screen() changes (ie window changing screens)
             qreal pixelsPerMm = value.window->screen()->physicalDotsPerInch() / 25.4;
+            // FIXME: dpi can be negative lp#1525293
             if (pixelsPerMm > 0)
                 d->setPixelsPerMm(pixelsPerMm);
         }
