@@ -15,6 +15,11 @@ UCPageTreeNodePrivate::UCPageTreeNodePrivate()
 
 {}
 
+/*!
+ * \internal
+ * \brief UCPageTreeNodePrivate::init
+ * Initialize the UCPageTreeNode and setup the bindings
+ */
 void UCPageTreeNodePrivate::init()
 {
     Q_Q(UCPageTreeNode);
@@ -24,6 +29,9 @@ void UCPageTreeNodePrivate::init()
         updateParentLeafNode();
     };
 
+    //connect all signals that are required to keep the "activeLeafNode" in the
+    //parents valid. The activeLeadNode property in the parent is set if the current
+    //PTN is a leaf itself (isLeaf = true) or one of its children is a leaf
     QObject::connect(q, &UCPageTreeNode::activeChanged, slotUpdateParentLeafNode);
     QObject::connect(q, &UCPageTreeNode::activeLeafNodeChanged, slotUpdateParentLeafNode);
     QObject::connect(q, &UCPageTreeNode::parentNodeChanged, slotUpdateParentLeafNode);
@@ -34,6 +42,12 @@ void UCPageTreeNodePrivate::init()
     initPropagated();
 }
 
+/*!
+ * \internal
+ * \brief UCPageTreeNodePrivate::initActive
+ * Initialize active property and setup the propagating binding.
+ * By default the parents active property is propagated to the children.
+ */
 void UCPageTreeNodePrivate::initActive()
 {
     Q_Q(UCPageTreeNode);
@@ -46,6 +60,12 @@ void UCPageTreeNodePrivate::initActive()
     _q_activeBinding(intialActive);
 }
 
+/*!
+ * \internal
+ * \brief UCPageTreeNodePrivate::initPageStack
+ * Initialize pageStack property and setup the propagating binding.
+ * By default the parents pageStack property is propagated to the children.
+ */
 void UCPageTreeNodePrivate::initPageStack()
 {
     Q_Q(UCPageTreeNode);
@@ -58,7 +78,12 @@ void UCPageTreeNodePrivate::initPageStack()
     _q_pageStackBinding(initialPageStack);
 }
 
-
+/*!
+ * \internal
+ * \brief UCPageTreeNodePrivate::initPropagated
+ * Initialize __propagated property and setup the propagating binding.
+ * By default the parents __propagated property is propagated to the children.
+ */
 void UCPageTreeNodePrivate::initPropagated()
 {
     Q_Q(UCPageTreeNode);
@@ -73,7 +98,7 @@ void UCPageTreeNodePrivate::initPropagated()
 
 /*!
   \internal
-  Find the parent node.
+  Find the parent node and update the parentNode property
  */
 void UCPageTreeNodePrivate::updatePageTree()
 {
@@ -81,11 +106,19 @@ void UCPageTreeNodePrivate::updatePageTree()
     q->setParentNode(getParentPageTreeNode());
 }
 
+
+/*!
+   \internal
+   \brief UCPageTreeNodePrivate::getParentPageTreeNode
+   \return the parent node in the page tree, or null if the item is the root node or invalid.
+ */
 UCPageTreeNode *UCPageTreeNodePrivate::getParentPageTreeNode()
 {
     Q_Q(UCPageTreeNode);
     UCPageTreeNode *node = nullptr;
 
+    //search the current tree for the next parent item that
+    //is a UCPageTreeNode
     QQuickItem *currItem = q->parentItem();
     while (currItem) {
         UCPageTreeNode *currPageTreeNode = qobject_cast<UCPageTreeNode *>(currItem);
@@ -105,6 +138,13 @@ UCPageTreeNode *UCPageTreeNodePrivate::getParentPageTreeNode()
     return node;
 }
 
+/*!
+ * \internal
+ * \brief UCPageTreeNodePrivate::_q_activeBinding
+ * \param active
+ * Directly updates the activeBinding property. Is used as
+ * callback to support qml style bindings that can be overriden
+ */
 void UCPageTreeNodePrivate::_q_activeBinding(bool active)
 {
     if (m_active == active)
@@ -115,6 +155,14 @@ void UCPageTreeNodePrivate::_q_activeBinding(bool active)
     Q_EMIT q->activeChanged(active);
 }
 
+
+/*!
+ * \internal
+ * \brief UCPageTreeNodePrivate::_q_pageStackBinding
+ * \param pageStack
+ * Directly updates the pageStack property. Is used as
+ * callback to support qml style bindings that can be overriden
+ */
 void UCPageTreeNodePrivate::_q_pageStackBinding(QQuickItem *pageStack)
 {
     if (m_pageStack == pageStack)
@@ -125,6 +173,14 @@ void UCPageTreeNodePrivate::_q_pageStackBinding(QQuickItem *pageStack)
     Q_EMIT q->pageStackChanged(pageStack);
 }
 
+
+/*!
+ * \internal
+ * \brief UCPageTreeNodePrivate::_q_propagatedBinding
+ * \param propagated
+ * Directly updates the __propagated property. Is used as
+ * callback to support qml style bindings that can be overriden
+ */
 void UCPageTreeNodePrivate::_q_propagatedBinding(QObject *propagated)
 {
     if (m_propagated == propagated)
@@ -134,6 +190,13 @@ void UCPageTreeNodePrivate::_q_propagatedBinding(QObject *propagated)
     Q_EMIT q->propagatedChanged(propagated);
 }
 
+/*!
+ * \internal
+ * \brief UCPageTreeNodePrivate::updateParentLeafNode
+ * Update the activeLeafNode of the parent. The activeLeadNode property
+ * in the parent is set if the current PTN is a leaf itself (isLeaf = true)
+ * or one of its children is a leaf
+ */
 void UCPageTreeNodePrivate::updateParentLeafNode()
 {
     Q_Q(UCPageTreeNode);
@@ -145,20 +208,30 @@ void UCPageTreeNodePrivate::updateParentLeafNode()
     }
 }
 
-static QList<UCPageTreeNode *> findPTNChild (QQuickItem *i)
+/*!
+ * \brief findPTNChild
+ * Returns only the next level of UCPageTreeNode children of \l rootNode.
+ * Just used for debugging output.
+ */
+static QList<UCPageTreeNode *> findPTNChild (QQuickItem *rootNode)
 {
     QList<UCPageTreeNode *> nodes;
-    UCPageTreeNode *thisNode = qobject_cast<UCPageTreeNode *>(i);
+    UCPageTreeNode *thisNode = qobject_cast<UCPageTreeNode *>(rootNode);
     if(thisNode)
         nodes << thisNode;
     else {
-        Q_FOREACH(QQuickItem *curr, i->childItems()) {
+        Q_FOREACH(QQuickItem *curr, rootNode->childItems()) {
             nodes.append(findPTNChild(curr));
         }
     }
     return nodes;
 }
 
+/*!
+ * \brief collectNodes
+ * Recursively collects all UCPageTreeNodes in a node tree and builds up
+ * a representation of the Tree. Just used for debugging output.
+ */
 static QList<UCPageTreeNodePrivate::Node> collectNodes (UCPageTreeNode *root)
 {
     if (!root)
@@ -183,15 +256,25 @@ static QList<UCPageTreeNodePrivate::Node> collectNodes (UCPageTreeNode *root)
     return nodes;
 }
 
+/*!
+ * \brief UCPageTreeNodePrivate::dumpNode
+ * \param n The node to dump
+ * \param oldDepth The string prefix used by the parent Node
+ * \param depth The string prefix to used for this Node
+ * \param isRoot Is the current Node the root Node
+ * Pretty prints the given Node \l n to the
+ */
 void UCPageTreeNodePrivate::dumpNode (const Node &n, const QString &oldDepth,const QString &depth, bool isRoot)
 {
     UCPageTreeNode *currNode = n.m_node;
 
+    //print the current node name and info
     if (!isRoot)
         qDebug().noquote().nospace()<<oldDepth<<"+--"<<currNode;
     else
         qDebug().noquote().nospace()<<currNode;
 
+    //print the current nodes properties we are interested in
     switch(QQmlEngine::objectOwnership(currNode)) {
         case QQmlEngine::CppOwnership:
             qDebug().noquote().nospace()<<QString("%1|  ->ownership: ").arg(depth)<<"C++";
@@ -216,6 +299,7 @@ void UCPageTreeNodePrivate::dumpNode (const Node &n, const QString &oldDepth,con
     else
         qDebug().noquote().nospace()<<QString("%1└  ->isLeaf: ").arg(depth)<<currNode->isLeaf();
 
+    //print the current nodes children
     for (int i = 0; i < n.m_children.length(); i++) {
         QString subDepth = depth;
 
@@ -228,6 +312,13 @@ void UCPageTreeNodePrivate::dumpNode (const Node &n, const QString &oldDepth,con
     }
 }
 
+/*!
+ * \brief UCPageTreeNodePrivate::dumpNodeTree
+ * Prints the complete node tree this node is part of.
+ * This recursively searches and prints the whole tree, so
+ * its pretty expensive. Do not leaf the calls to it after
+ * finishing the debugging.
+ */
 void UCPageTreeNodePrivate::dumpNodeTree()
 {
     Q_Q(UCPageTreeNode);
@@ -251,6 +342,16 @@ void UCPageTreeNodePrivate::dumpNodeTree()
     }
 }
 
+/*!
+    \internal
+    \qmltype PageTreeNode
+    \inqmlmodule Ubuntu.Components 1.1
+    \ingroup ubuntu
+    \brief The common parent of \l Page, \l MainView, \l PageStack and \l Tabs.
+
+    It is used to propagate properties such as \l header and \l toolbar from a
+    \l MainView (the root node) to each \l Page (leaf node) in the tree.
+*/
 UCPageTreeNode::UCPageTreeNode(QQuickItem *parent)
     : UCStyledItemBase(*(new UCPageTreeNodePrivate), parent)
 {
@@ -266,12 +367,20 @@ UCPageTreeNode::UCPageTreeNode(UCPageTreeNodePrivate &dd, QQuickItem *parent)
 void UCPageTreeNode::itemChange(QQuickItem::ItemChange change, const QQuickItem::ItemChangeData &value)
 {
     Q_D(UCPageTreeNode);
+
+    //update the parentNode property.
+    //Likely it changes together with the Items parent
     UCStyledItemBase::itemChange(change, value);
     if (change == QQuickItem::ItemParentHasChanged) {
         d->updatePageTree();
     }
 }
 
+/*!
+  \qmlproperty Item PageTreeNode::isLeaf
+  Whether or not this node is a leaf, that is if it has no descendant that are nodes.
+  Pages are leafs, and they don't have descendants in the PageTree.
+ */
 bool UCPageTreeNode::isLeaf() const
 {
     return d_func()->m_isLeaf;
@@ -286,9 +395,15 @@ void UCPageTreeNode::setIsLeaf(bool isLeaf)
 
     d->m_isLeaf = isLeaf;
     Q_EMIT isLeafChanged(isLeaf);
+
+    //notify all our parent nodes that we are the leaf
     d->updateParentLeafNode();
 }
 
+/*!
+  \qmlproperty Item PageTreeNode::parentNode
+  The parent node of the current node in the page tree.
+ */
 void UCPageTreeNode::setParentNode(UCPageTreeNode *parentNode)
 {
     Q_D(UCPageTreeNode);
@@ -296,6 +411,8 @@ void UCPageTreeNode::setParentNode(UCPageTreeNode *parentNode)
     if (d->m_parentNode == parentNode)
         return;
 
+    //disconnect from the old parent, we do not want to get
+    //false property updates
     if (d->m_parentNode) {
         if (!(d->m_flags & UCPageTreeNodePrivate::CustomActive)) {
             disconnect(d->m_parentNode, SIGNAL(activeChanged(bool)),
@@ -309,13 +426,21 @@ void UCPageTreeNode::setParentNode(UCPageTreeNode *parentNode)
             disconnect(d->m_parentNode,SIGNAL(propagatedChanged(QObject*)),
                        this, SLOT(_q_propagatedBinding (QObject *)));
         }
-        if (d->m_parentNode->activeLeafNode() == this) {
+
+        //the parent has changed, in case we or one of our children
+        //were the active leaf node
+        //make sure we are not anymore, since we are not part of that
+        //tree
+        if (d->m_parentNode->activeLeafNode() == this
+                || d->m_parentNode->activeLeafNode() == activeLeafNode()) {
             d->m_parentNode->setActiveLeafNode(nullptr);
         }
     }
 
     d->m_parentNode = parentNode;
 
+    //connect to the property changes of the parent node so they
+    //can be propagated
     if (d->m_parentNode ) {
         if (!(d->m_flags & UCPageTreeNodePrivate::CustomActive)) {
             connect(d->m_parentNode, SIGNAL(activeChanged(bool)),
@@ -358,6 +483,18 @@ void UCPageTreeNode::dumpNodeTree()
     d_func()->dumpNodeTree();
 }
 
+/*!
+  \internal
+  \qmlproperty Item PageTreeNode::__propagated
+  QtObject containing all the properties that are propagated from the
+  root (MainView) of a page tree to its leafs (Pages).
+  This object contains properties such as the header and toolbar that are
+  instantiated by the MainView.
+
+  This property is internal because the derived classes (MainView and Page)
+  need to access it, but other components using those classes should not have
+  access to it.
+ */
 QObject *UCPageTreeNode::propagated() const
 {
     return d_func()->m_propagated;
@@ -379,6 +516,12 @@ void UCPageTreeNode::setPropagated(QObject *propagated)
     d->_q_propagatedBinding(propagated);
 }
 
+/*!
+  \qmlproperty Item PageTreeNode::toolbar
+  \deprecated
+  The toolbar of the node. Propagates down from the root node.
+  This property is DEPRECATED.
+ */
 QQuickItem *UCPageTreeNode::toolbar() const
 {
     return d_func()->m_toolbar;
@@ -394,11 +537,20 @@ void UCPageTreeNode::setToolbar(QQuickItem *toolbar)
     Q_EMIT toolbarChanged(toolbar);
 }
 
+/*!
+  \internal
+  \qmlproperty Item PageTreeNode::__isPageTreeNode
+  Used to determine whether an Item is a PageTreeNode
+ */
 bool UCPageTreeNode::isPageTreeNode() const
 {
     return true;
 }
 
+/*!
+  \qmlproperty Item PageTreeNode::activeLeafNode
+  The leaf node that is active.
+ */
 void UCPageTreeNode::setActiveLeafNode(QQuickItem *activeLeafNode)
 {
     Q_D(UCPageTreeNode);
@@ -414,7 +566,14 @@ QQuickItem *UCPageTreeNode::activeLeafNode() const
     return d_func()->m_activeLeafNode;
 }
 
-//property bool active: node.parentNode ? node.parentNode.active : false
+
+/*!
+  \qmlproperty Item PageTreeNode::active
+  At any time, there is exactly one path from the root node to a Page leaf node
+  where all nodes are active. All other nodes are not active. This is used by
+  \l Tabs and \l PageStack to determine which of multiple nodes in the Tabs or
+  PageStack is the currently active one.
+ */
 void UCPageTreeNode::setActive(bool active)
 {
     Q_D(UCPageTreeNode);
@@ -437,6 +596,14 @@ bool UCPageTreeNode::active() const
     return d_func()->m_active;
 }
 
+/*!
+  \qmlproperty Item PageTreeNode::pageStack
+  The \l PageStack that this Page has been pushed on, or null if it is not
+  part of a PageStack. This value is automatically set for pages that are pushed
+  on a PageStack, and propagates to its child nodes.
+ */
+// Note: pageStack is not included in the propagated property because there may
+//  be multiple PageStacks in a single page tree.
 void UCPageTreeNode::setPageStack(QQuickItem *pageStack)
 {
     Q_D(UCPageTreeNode);
