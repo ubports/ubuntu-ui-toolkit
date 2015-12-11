@@ -15,11 +15,25 @@
  */
 
 #include "ucactionitem.h"
+#include "ucactionitem_p.h"
 #include "ucaction.h"
 #include "ucstyleditembase_p.h"
 #define foreach Q_FOREACH
 #include <QtQml/private/qqmlbinding_p.h>
 #undef foreach
+
+UCActionItemPrivate::UCActionItemPrivate()
+    : action(Q_NULLPTR)
+    , flags(0)
+{
+}
+
+void UCActionItemPrivate::init()
+{
+    Q_Q(UCActionItem);
+    QObject::connect(q, &UCActionItem::enabledChanged, q, &UCActionItem::enabledChanged2);
+    QObject::connect(q, &UCActionItem::visibleChanged, q, &UCActionItem::visibleChanged2);
+}
 
 /*!
  * \qmltype ActionItem
@@ -40,57 +54,61 @@
  * Called when the actionItem is triggered.
  */
 UCActionItem::UCActionItem(QQuickItem *parent)
-    : UCStyledItemBase(parent)
-    , m_action(Q_NULLPTR)
-    , m_flags(0)
+    : UCStyledItemBase(*(new UCActionItemPrivate), parent)
 {
-    connect(this, &UCActionItem::enabledChanged, this, &UCActionItem::enabledChanged2);
-    connect(this, &UCActionItem::visibleChanged, this, &UCActionItem::visibleChanged2);
+    d_func()->init();
 }
 
-bool UCActionItem::hasBindingOnProperty(const QString &name)
+UCActionItem::UCActionItem(UCActionItemPrivate &dd, QQuickItem *parent)
+    : UCStyledItemBase(dd, parent)
 {
-    QQmlProperty property(this, name, qmlContext(this));
+    d_func()->init();
+}
+
+bool UCActionItemPrivate::hasBindingOnProperty(const QString &name)
+{
+    Q_Q(UCActionItem);
+    QQmlProperty property(q, name, qmlContext(q));
     return QQmlPropertyPrivate::binding(property) != Q_NULLPTR;
 }
 
-void UCActionItem::componentComplete()
+void UCActionItemPrivate::completeComponentInitialization()
 {
-    UCStyledItemBase::componentComplete();
+    UCStyledItemBasePrivate::completeComponentInitialization();
     // make sure we connect to the right signals, so we detach and re-attach actions
     // to make sure the SLOT macro picks up the custom trigger() slot
-    if (m_action) {
+    if (action) {
         attachAction(false);
         attachAction(true);
     }
 }
 
 // update visible property
-void UCActionItem::_q_visibleBinding()
+void UCActionItemPrivate::_q_visibleBinding()
 {
-    if (m_flags & CustomVisible) {
+    if (flags & CustomVisible) {
         return;
     }
     if (hasBindingOnProperty(QStringLiteral("visible"))) {
-        m_flags |= CustomEnabled;
+        flags |= CustomEnabled;
         return;
     }
-    bool visible = m_action ? m_action->m_visible : true;
-    setVisible(visible);
+    bool visible = action ? action->m_visible : true;
+    q_func()->setVisible(visible);
 }
 
 // update enabled property
-void UCActionItem::_q_enabledBinding()
+void UCActionItemPrivate::_q_enabledBinding()
 {
-    if (m_flags & CustomEnabled) {
+    if (flags & CustomEnabled) {
         return;
     }
     if (hasBindingOnProperty(QStringLiteral("enabled"))) {
-        m_flags |= CustomEnabled;
+        flags |= CustomEnabled;
         return;
     }
-    bool enabled = m_action ? m_action->m_enabled : true;
-    setEnabled(enabled);
+    bool enabled = action ? action->m_enabled : true;
+    q_func()->setEnabled(enabled);
 }
 
 // setter called when bindings from QML set the value. Internal functions will
@@ -99,75 +117,77 @@ void UCActionItem::_q_enabledBinding()
 void UCActionItem::setVisible2(bool visible)
 {
     // set the custom flag and forward the value to the original proepry setter
-    m_flags |= CustomVisible;
+    d_func()->flags |= UCActionItemPrivate::CustomVisible;
     setVisible(visible);
 }
 void UCActionItem::setEnabled2(bool enabled)
 {
-    m_flags |= CustomEnabled;
+    d_func()->flags |= UCActionItemPrivate::CustomEnabled;
     setEnabled(enabled);
 }
 
-void UCActionItem::updateProperties()
+void UCActionItemPrivate::updateProperties()
 {
-    if (!(m_flags & CustomText)) {
-        Q_EMIT textChanged();
+    Q_Q(UCActionItem);
+    if (!(flags & CustomText)) {
+        Q_EMIT q->textChanged();
     }
-    if (!(m_flags & CustomIconSource)) {
-        Q_EMIT iconSourceChanged();
+    if (!(flags & CustomIconSource)) {
+        Q_EMIT q->iconSourceChanged();
     }
-    if (!(m_flags & CustomIconName)) {
-        Q_EMIT iconNameChanged();
+    if (!(flags & CustomIconName)) {
+        Q_EMIT q->iconNameChanged();
     }
 }
 
-void UCActionItem::attachAction(bool attach)
+void UCActionItemPrivate::attachAction(bool attach)
 {
+    Q_Q(UCActionItem);
     if (attach) {
-        connect(this, SIGNAL(triggered(QVariant)),
-                m_action, SLOT(trigger(QVariant)), Qt::DirectConnection);
-        if (!(m_flags & CustomVisible)) {
-            connect(m_action, &UCAction::visibleChanged,
-                    this, &UCActionItem::_q_visibleBinding, Qt::DirectConnection);
+        QObject::connect(q, SIGNAL(triggered(QVariant)),
+                action, SLOT(trigger(QVariant)), Qt::DirectConnection);
+        if (!(flags & CustomVisible)) {
+            QObject::connect(action, SIGNAL(visibleChanged()),
+                    q, SLOT(_q_visibleBinding()), Qt::DirectConnection);
         }
-        if (!(m_flags & CustomEnabled)) {
-            connect(m_action, &UCAction::enabledChanged,
-                    this, &UCActionItem::_q_enabledBinding, Qt::DirectConnection);
+        if (!(flags & CustomEnabled)) {
+            QObject::connect(action, SIGNAL(enabledChanged()),
+                    q, SLOT(_q_enabledBinding()), Qt::DirectConnection);
         }
-        if (!(m_flags & CustomText)) {
-            connect(m_action, &UCAction::textChanged,
-                    this, &UCActionItem::textChanged, Qt::DirectConnection);
+        if (!(flags & CustomText)) {
+            QObject::connect(action, &UCAction::textChanged,
+                    q, &UCActionItem::textChanged, Qt::DirectConnection);
         }
-        if (!(m_flags & CustomIconSource)) {
-            connect(m_action, &UCAction::iconSourceChanged,
-                    this, &UCActionItem::iconSourceChanged, Qt::DirectConnection);
+        if (!(flags & CustomIconSource)) {
+            QObject::connect(action, &UCAction::iconSourceChanged,
+                    q, &UCActionItem::iconSourceChanged, Qt::DirectConnection);
         }
-        if (!(m_flags & CustomIconName)) {
-            connect(m_action, &UCAction::iconNameChanged,
-                    this, &UCActionItem::iconNameChanged, Qt::DirectConnection);
+        if (!(flags & CustomIconName)) {
+            QObject::connect(action, &UCAction::iconNameChanged,
+                    q, &UCActionItem::iconNameChanged, Qt::DirectConnection);
         }
     } else {
-        disconnect(this, SIGNAL(triggered(QVariant)),
-                   m_action, SLOT(trigger(QVariant)));
-        if (!(m_flags & CustomVisible)) {
-            disconnect(m_action, &UCAction::visibleChanged,
-                       this, &UCActionItem::_q_visibleBinding);
+        QObject::disconnect(q, SIGNAL(triggered(QVariant)),
+                   action, SLOT(trigger(QVariant)));
+        if (!(flags & CustomVisible)) {
+            QObject::disconnect(action, SIGNAL(visibleChanged()),
+                       q, SLOT(_q_visibleBinding()));
         }
-        if (!(m_flags & CustomEnabled)) {
-            disconnect(m_action, &UCAction::enabledChanged,
-                       this, &UCActionItem::_q_enabledBinding);
+        if (!(flags & CustomEnabled)) {
+            QObject::disconnect(action, SIGNAL(enabledChanged()),
+                       q, SLOT(_q_enabledBinding()));
         }
-        if (!(m_flags & CustomText)) {
-            disconnect(m_action, &UCAction::textChanged,
-                       this, &UCActionItem::textChanged);
+        if (!(flags & CustomText)) {
+            QObject::disconnect(action, &UCAction::textChanged,
+                       q, &UCActionItem::textChanged);
         }
-        if (!(m_flags & CustomIconSource)) {
-            disconnect(m_action, &UCAction::iconSourceChanged,
-                       this, &UCActionItem::iconSourceChanged);
+        if (!(flags & CustomIconSource)) {
+            QObject::disconnect(action, &UCAction::iconSourceChanged,
+                       q, &UCActionItem::iconSourceChanged);
         }
-        if (!(m_flags & CustomIconName)) {
-            disconnect(m_action, &UCAction::iconNameChanged,
-                       this, &UCActionItem::iconNameChanged);
+        if (!(flags & CustomIconName)) {
+            QObject::disconnect(action, &UCAction::iconNameChanged,
+                       q, &UCActionItem::iconNameChanged);
         }
     }
 }
@@ -178,23 +198,29 @@ void UCActionItem::attachAction(bool attach)
  * of the \l Action properties are copied to the values of the ActionItem
  * properties, unless those were previously overridden.
  */
+UCAction* UCActionItem::action() const
+{
+    Q_D(const UCActionItem);
+    return d->action;
+}
 void UCActionItem::setAction(UCAction *action)
 {
-    if (m_action == action) {
+    Q_D(UCActionItem);
+    if (d->action == action) {
         return;
     }
-    if (m_action) {
-        attachAction(false);
+    if (d->action) {
+        d->attachAction(false);
     }
-    m_action = action;
+    d->action = action;
     Q_EMIT actionChanged();
 
-    if (m_action) {
-        attachAction(true);
+    if (d->action) {
+        d->attachAction(true);
     }
-    _q_visibleBinding();
-    _q_enabledBinding();
-    updateProperties();
+    d->_q_visibleBinding();
+    d->_q_enabledBinding();
+    d->updateProperties();
 }
 
 /*!
@@ -203,32 +229,35 @@ void UCActionItem::setAction(UCAction *action)
  */
 QString UCActionItem::text()
 {
-    if (m_flags & CustomText) {
-        return m_text;
+    Q_D(UCActionItem);
+    if (d->flags & UCActionItemPrivate::CustomText) {
+        return d->text;
     }
-    return m_action ? m_action->m_text : QString();
+    return d->action ? d->action->m_text : QString();
 }
 void UCActionItem::setText(const QString &text)
 {
-    if (m_text == text) {
+    Q_D(UCActionItem);
+    if (d->text == text) {
         return;
     }
-    m_text = text;
-    if (m_action && !(m_flags & CustomText)) {
+    d->text = text;
+    if (d->action && !(d->flags & UCActionItemPrivate::CustomText)) {
         // disconnect change signal from Action
-        disconnect(m_action, &UCAction::textChanged,
+        disconnect(d->action, &UCAction::textChanged,
                    this, &UCActionItem::textChanged);
     }
-    m_flags |= CustomText;
+    d->flags |= UCActionItemPrivate::CustomText;
     Q_EMIT textChanged();
 }
 void UCActionItem::resetText()
 {
-    m_text.clear();
-    m_flags &= ~CustomText;
-    if (m_action) {
+    Q_D(UCActionItem);
+    d->text.clear();
+    d->flags &= ~UCActionItemPrivate::CustomText;
+    if (d->action) {
         // re-connect change signal from Action
-        connect(m_action, &UCAction::textChanged,
+        connect(d->action, &UCAction::textChanged,
                 this, &UCActionItem::textChanged, Qt::DirectConnection);
     }
     Q_EMIT textChanged();
@@ -243,35 +272,38 @@ void UCActionItem::resetText()
  */
 QUrl UCActionItem::iconSource()
 {
-    if (m_flags & CustomIconSource) {
-        return m_iconSource;
+    Q_D(UCActionItem);
+    if (d->flags & UCActionItemPrivate::CustomIconSource) {
+        return d->iconSource;
     }
-    if (m_action) {
-        return m_action->m_iconSource;
+    if (d->action) {
+        return d->action->m_iconSource;
     }
     return !iconName().isEmpty() ? QUrl(QString("image://theme/%1").arg(iconName())) : QUrl();
 }
 void UCActionItem::setIconSource(const QUrl &iconSource)
 {
-    if (m_iconSource == iconSource) {
+    Q_D(UCActionItem);
+    if (d->iconSource == iconSource) {
         return;
     }
-    m_iconSource = iconSource;
-    if (m_action && !(m_flags & CustomIconSource)) {
+    d->iconSource = iconSource;
+    if (d->action && !(d->flags & UCActionItemPrivate::CustomIconSource)) {
         // disconnect change signal from Action
-        disconnect(m_action, &UCAction::iconSourceChanged,
+        disconnect(d->action, &UCAction::iconSourceChanged,
                    this, &UCActionItem::iconSourceChanged);
     }
-    m_flags |= CustomIconSource;
+    d->flags |= UCActionItemPrivate::CustomIconSource;
     Q_EMIT iconSourceChanged();
 }
 void UCActionItem::resetIconSource()
 {
-    m_iconSource.clear();
-    m_flags &= ~CustomIconSource;
-    if (m_action) {
+    Q_D(UCActionItem);
+    d->iconSource.clear();
+    d->flags &= ~UCActionItemPrivate::CustomIconSource;
+    if (d->action) {
         // re-connect change signal from Action
-        connect(m_action, &UCAction::iconSourceChanged,
+        connect(d->action, &UCAction::iconSourceChanged,
                 this, &UCActionItem::iconSourceChanged, Qt::DirectConnection);
     }
     Q_EMIT iconSourceChanged();
@@ -294,36 +326,39 @@ void UCActionItem::resetIconSource()
  */
 QString UCActionItem::iconName()
 {
-    if (m_flags & CustomIconName) {
-        return m_iconName;
+    Q_D(UCActionItem);
+    if (d->flags & UCActionItemPrivate::CustomIconName) {
+        return d->iconName;
     }
-    return m_action ? m_action->m_iconName : QString();
+    return d->action ? d->action->m_iconName : QString();
 }
 void UCActionItem::setIconName(const QString &iconName)
 {
-    if (m_iconName == iconName) {
+    Q_D(UCActionItem);
+    if (d->iconName == iconName) {
         return;
     }
-    m_iconName = iconName;
-    if (m_action && !(m_flags & CustomIconName)) {
+    d->iconName = iconName;
+    if (d->action && !(d->flags & UCActionItemPrivate::CustomIconName)) {
         // disconnect change signal from Action
-        disconnect(m_action, &UCAction::iconNameChanged,
+        disconnect(d->action, &UCAction::iconNameChanged,
                    this, &UCActionItem::iconNameChanged);
     }
-    m_flags |= CustomIconName;
+    d->flags |= UCActionItemPrivate::CustomIconName;
     Q_EMIT iconNameChanged();
     // also sync iconSource if that is not a custom one or taken from action
-    if (!m_action || (m_flags & CustomIconSource)) {
+    if (!d->action || (d->flags & UCActionItemPrivate::CustomIconSource)) {
         Q_EMIT iconSourceChanged();
     }
 }
 void UCActionItem::resetIconName()
 {
-    m_iconName.clear();
-    m_flags &= ~CustomIconName;
-    if (m_action) {
+    Q_D(UCActionItem);
+    d->iconName.clear();
+    d->flags &= ~UCActionItemPrivate::CustomIconName;
+    if (d->action) {
         // re-connect change signal from Action
-        connect(m_action, &UCAction::iconNameChanged,
+        connect(d->action, &UCAction::iconNameChanged,
                 this, &UCActionItem::iconNameChanged, Qt::DirectConnection);
     }
     Q_EMIT iconNameChanged();
@@ -340,3 +375,5 @@ void UCActionItem::trigger(const QVariant &value)
         Q_EMIT triggered(value);
     }
 }
+
+#include "moc_ucactionitem.cpp"
