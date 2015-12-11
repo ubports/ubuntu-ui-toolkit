@@ -30,17 +30,13 @@
 #include "ucunits.h"
 #include "ucnamespace.h"
 #include "quickutils.h"
-#include <QtCore/QPointer>
 #include <QtGui/QGuiApplication>
-#include <QtGui/QScreen>
-#include <QtQuick/QQuickWindow>
-#include <QtQuick/QSGTextureProvider>
+#include <QtQml/QQmlInfo>
+#include <QtQuick/private/qsgadaptationlayer_p.h>
+// This private header uses the emit keyword while we build with QT_NO_KEYWORDS set. See #1507910.
 #define emit Q_EMIT
 #include <QtQuick/private/qquickimage_p.h>
 #undef emit
-#include <QtQuick/private/qsgadaptationlayer_p.h>
-#include <QtQml/qqmlinfo.h>
-#include <math.h>
 
 // Anti-aliasing distance of the contour in pixels.
 const float distanceAApx = 1.75f;
