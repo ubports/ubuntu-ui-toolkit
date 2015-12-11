@@ -13,6 +13,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
+ * Author: Christian Dywan <christian.dywan@canonical.com>
  */
 
 #ifndef EA_EUROPE_H
@@ -38,30 +39,22 @@ public:
     explicit EAEurope(QObject *parent = 0);
 };
 
-class EAEurope4 : public EAEurope
+class EAEurope42 : public EAEurope
 {
     Q_OBJECT
-    Q_PROPERTY(quint16 toolkitVersion READ toolkitVersion NOTIFY toolkitVersionChanged REVISION 1)
+    Q_PROPERTY(quint16 era READ era NOTIFY eraChanged REVISION 1)
 public:
-    explicit EAEurope4(QObject *parent = 0) : EAEurope(parent)
+    explicit EAEurope42(QObject *parent = 0) : EAEurope(parent)
     {
     }
 
-    Q_INVOKABLE quint16 version(quint8 major, quint8 minor);
+    Q_INVOKABLE quint16 era(quint8 year);
 
 Q_SIGNALS:
-    void toolkitVersionChanged();
+    void eraChanged();
 
 protected:
-    virtual quint16 toolkitVersion() const
-    {
-        return 0;
-    }
-    quint16 toolkitVersionMajor() const
-    {
-        return 0;
-    }
-    quint16 toolkitVersionMinor() const
+    virtual quint16 era() const
     {
         return 0;
     }

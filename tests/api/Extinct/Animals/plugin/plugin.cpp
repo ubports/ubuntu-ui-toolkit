@@ -65,7 +65,7 @@ void ExtinctAnimalsPlugin::registerTypes(const char *uri)
     qmlRegisterSingletonType<EAPangaea4>(uri, 4, 0, "Pangaea", registerPangaea4);
 
     qmlRegisterUncreatableType<EAEurope>(uri, 4, 1, "Europe", "");
-    qmlRegisterUncreatableType<EAEurope4, 1>(uri, 4, 2, "Europe", "");
+    qmlRegisterUncreatableType<EAEurope42, 1>(uri, 4, 2, "Europe", "");
 
     qmlRegisterExtendedType<QQuickImageBase, UCQQuickImageExtension>(uri, 3, 3, "QQuickImageBase");
 }

@@ -19,7 +19,7 @@ import QtQuick 2.0
 Item {
     id: body
     /*!
-       \qmlproperty int skullSize
+       \qmlproperty real skullSize
     */
-    property int skullSize
+    property real skullSize
 }

@@ -12,6 +12,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Author: Christian Dywan <christian.dywan@canonical.com>
  */
 
 import QtQuick 2.0
@@ -19,9 +21,9 @@ import QtQuick 2.0
 Item {
     id: body
     /*!
-       \qmlproperty int skullSize
+       \qmlproperty real skullSize
     */
-    property int skullSize
+    property real skullSize
 
     /*!
        \qmlproperty real saggitalCrestSize

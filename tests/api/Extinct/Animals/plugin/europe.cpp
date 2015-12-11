@@ -13,6 +13,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
+ * Author: Christian Dywan <christian.dywan@canonical.com>
  */
 
 #include "europe.h"
@@ -20,25 +21,25 @@
 /*!
  * \qmltype Ubuntu
  * \instantiates EAEurope
- * \inqmlmodule Ubuntu.Components 1.2
+ * \inqmlmodule Extinct.Animals 1.2
  * \ingroup ubuntu
- * \since Ubuntu.Components 1.2
+ * \since Extinct.Animals 1.2
  * \brief Provides global object with different enums.
  *
  * \section2 Enums
  *
- * \section4 CaptionStyle enum
- * The enumeration configures the Captions component style.
+ * \section4 ModernContinent enum
+ * The enumeration identifies the modern concept of a continent.
  * \table
  *  \header
  *      \li Enum
  *      \li Description
  *  \row
- *      \li TitleCaptionStyle
- *      \li The Captions labels are configured to represent caption behavior.
+ *      \li America
+ *      \li Originally part of Laurasia, Laurentia split from Eurasia, now known as America.
  *  \row
- *      \li SummaryCaptionStyle
- *      \li The Captions labels are configured to represent a summary-like description.
+ *      \li Europe
+ *      \li The second smallest continent today, part of Eurasia.
  * \endtable
  */
 EAEurope::EAEurope(QObject *parent)
@@ -47,20 +48,19 @@ EAEurope::EAEurope(QObject *parent)
 }
 
 /*!
- * \qmlproperty uint16 Ubuntu::toolkitVersion
- * \since Ubuntu.Components 1.3
+ * \qmlproperty uint16 Extinct::era
+ * \since Extinct.Animals 4.2
  * \readonly
- * The property holds the version of the current toolkit imported.
+ * The property holds the tectonic formation of the current continent.
  */
 
 /*!
- * \qmlmethod uint16 Ubuntu::version(int major, int minor)
- * \since Ubuntu.Components 1.3
- * The function builds a version identifier using a major and minor components.
+ * \qmlmethod uint16 Extinct::era(int year)
+ * \since Extinct.Animals 4.2
+ * The function builds a tectonic identifier using the year.
  */
-quint16 EAEurope4::version(quint8 major, quint8 minor)
+quint16 EAEurope42::era(quint8 year)
 {
-    Q_UNUSED(major);
-    Q_UNUSED(minor);
+    Q_UNUSED(year);
     return 0;
 }

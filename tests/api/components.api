@@ -1,13 +1,13 @@
 Extinct.Animals.Andrewsarchus 2.0: Item
     property double saggitalCrestSize
-    property int skullSize
+    property double skullSize
 Extinct.Animals.AndrewsarchusMongoliensis 2.5: Item
     property double saggitalCrestSize
-    property int skullSize
+    property double skullSize
 Extinct.Animals.Europe 4.1: QtObject
 Extinct.Animals.Europe 4.2: Europe
-    function ushort version(uchar major, uchar minor)
-    readonly property ushort toolkitVersion 4.2
+    readonly property ushort era 4.2
+    function ushort era(uchar year)
 Extinct.Animals.Europe.ModernContinent: Enum
     America
     Europe
@@ -18,8 +18,8 @@ Extinct.Animals.Gigantophis 4.3: QQuickItem
     function var fourth()
 Extinct.Animals.Pangaea 1.0: QtObject singleton
 Extinct.Animals.Pangaea 4.0: Pangaea singleton
-    function ushort version(uchar major, uchar minor)
-    readonly property ushort toolkitVersion 4.0
+    readonly property ushort era 4.0
+    function ushort era(uchar year)
 Extinct.Animals.Pangaea.ModernContinent: Enum
     America
     Europe
