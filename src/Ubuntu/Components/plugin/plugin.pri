@@ -86,6 +86,7 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/livetimer_p.h \
     $$PWD/timeutils_p.h \
     $$PWD/ucactionitem.h \
+    $$PWD/ucactionitem_p.h \
     $$PWD/uchaptics.h \
     $$PWD/ucabstractbutton.h \
     $$PWD/ucthemingextension.h \

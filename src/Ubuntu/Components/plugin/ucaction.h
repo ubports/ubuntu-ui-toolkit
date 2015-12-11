@@ -101,6 +101,7 @@ private:
 
     friend class UCActionContext;
     friend class UCActionItem;
+    friend class UCActionItemPrivate;
     friend class UCListItemPrivate;
     friend class UCListItemAttached;
     friend class UCListItemActionsPrivate;

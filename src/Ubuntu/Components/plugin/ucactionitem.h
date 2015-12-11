@@ -19,10 +19,11 @@
 #include "ucstyleditembase.h"
 
 class UCAction;
+class UCActionItemPrivate;
 class UCActionItem : public UCStyledItemBase
 {
     Q_OBJECT
-    Q_PROPERTY(UCAction *action MEMBER m_action WRITE setAction NOTIFY actionChanged FINAL)
+    Q_PROPERTY(UCAction *action READ action WRITE setAction NOTIFY actionChanged FINAL)
     Q_PROPERTY(QString text READ text WRITE setText RESET resetText NOTIFY textChanged)
     Q_PROPERTY(QUrl iconSource READ iconSource WRITE setIconSource RESET resetIconSource NOTIFY iconSourceChanged)
     Q_PROPERTY(QString iconName READ iconName WRITE setIconName RESET resetIconName NOTIFY iconNameChanged)
@@ -33,6 +34,7 @@ class UCActionItem : public UCStyledItemBase
 public:
     explicit UCActionItem(QQuickItem *parent = 0);
 
+    UCAction *action() const;
     void setAction(UCAction *action);
     QString text();
     void setText(const QString &text);
@@ -60,29 +62,14 @@ Q_SIGNALS:
 public Q_SLOTS:
     void trigger(const QVariant &value = QVariant());
 
-protected Q_SLOTS:
-    void _q_visibleBinding();
-    void _q_enabledBinding();
-
 protected:
-    enum {
-        CustomText = 0x01,
-        CustomIconSource = 0x02,
-        CustomIconName = 0x04,
-        CustomVisible = 0x40,
-        CustomEnabled = 0x80
-    };
-    QString m_text;
-    QString m_iconName;
-    QUrl m_iconSource;
-    UCAction *m_action;
-    quint8 m_flags;
+    UCActionItem(UCActionItemPrivate &, QQuickItem *parent);
+
+    Q_DECLARE_PRIVATE(UCActionItem)
+    Q_PRIVATE_SLOT(d_func(), void _q_visibleBinding())
+    Q_PRIVATE_SLOT(d_func(), void _q_enabledBinding())
 
     void componentComplete();
-
-    bool hasBindingOnProperty(const QString &name);
-    void updateProperties();
-    void attachAction(bool attach);
 };
 
 #endif // UCACTIONITEM_H
