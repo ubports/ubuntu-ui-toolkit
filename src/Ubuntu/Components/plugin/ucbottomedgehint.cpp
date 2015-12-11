@@ -32,6 +32,7 @@ UCBottomEdgeHintPrivate::UCBottomEdgeHintPrivate()
     : UCActionItemPrivate()
     , swipeArea(new UCSwipeArea)
     , flickable(Q_NULLPTR)
+    , flickableBottomMargin(Q_NULLPTR)
     , deactivateTimeout(800)
     // FIXME: we need QInputDeviceInfo to be complete with the locked!!
     // https://bugs.launchpad.net/ubuntu/+source/ubuntu-ui-toolkit/+bug/1276808
