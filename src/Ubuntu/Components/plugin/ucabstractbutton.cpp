@@ -15,10 +15,25 @@
  */
 
 #include "ucabstractbutton.h"
+#include "ucabstractbutton_p.h"
 #include "uchaptics.h"
 #include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickmousearea_p.h>
 #include <QtQml/private/qqmlglobal_p.h>
+
+UCAbstractButtonPrivate::UCAbstractButtonPrivate()
+    : UCActionItemPrivate()
+    , mouseArea(new QQuickMouseArea)
+    , acceptEvents(true)
+    , pressAndHoldConnected(false)
+{
+}
+void UCAbstractButtonPrivate::init()
+{
+    Q_Q(UCAbstractButton);
+    q->setActiveFocusOnPress(true);
+    q->setActiveFocusOnTab(true);
+}
 
 /*!
     \qmltype AbstractButton
@@ -49,18 +64,20 @@
  */
 
 UCAbstractButton::UCAbstractButton(QQuickItem *parent)
-    : UCActionItem(parent)
-    , m_mouseArea(new QQuickMouseArea)
-    , m_acceptEvents(true)
-    , m_pressAndHoldConnected(false)
+    : UCActionItem(*(new UCAbstractButtonPrivate), parent)
 {
-    setActiveFocusOnPress(true);
-    setActiveFocusOnTab(true);
+    d_func()->init();
+}
+UCAbstractButton::UCAbstractButton(UCAbstractButtonPrivate &&dd, QQuickItem *parent)
+    : UCActionItem(dd, parent)
+{
+    d_func()->init();
 }
 
-bool UCAbstractButton::isPressAndHoldConnected()
+bool UCAbstractButtonPrivate::isPressAndHoldConnected()
 {
-    IS_SIGNAL_CONNECTED(this, UCAbstractButton, pressAndHold, ());
+    Q_Q(UCAbstractButton);
+    IS_SIGNAL_CONNECTED(q, UCAbstractButton, pressAndHold, ());
 }
 
 void UCAbstractButton::classBegin()
@@ -71,63 +88,68 @@ void UCAbstractButton::classBegin()
     HapticsProxy::instance().initialize();
 
     // set up mouse area
-    QQml_setParent_noEvent(m_mouseArea, this);
-    m_mouseArea->setParentItem(this);
-    QQuickAnchors *anchors = QQuickItemPrivate::get(m_mouseArea)->anchors();
+    Q_D(UCAbstractButton);
+    QQml_setParent_noEvent(d->mouseArea, this);
+    d->mouseArea->setParentItem(this);
+    QQuickAnchors *anchors = QQuickItemPrivate::get(d->mouseArea)->anchors();
     anchors->setFill(this);
-    m_mouseArea->setHoverEnabled(true);
+    d->mouseArea->setHoverEnabled(true);
 }
 
-void UCAbstractButton::componentComplete()
+void UCAbstractButtonPrivate::completeComponentInitialization()
 {
-    UCActionItem::componentComplete();
+    UCActionItemPrivate::completeComponentInitialization();
+    Q_Q(UCAbstractButton);
     // connect to the right slot, using macros so we get the proper slot
-    connect(m_mouseArea, SIGNAL(clicked(QQuickMouseEvent*)), this, SLOT(trigger()));
+    QObject::connect(mouseArea, SIGNAL(clicked(QQuickMouseEvent*)), q, SLOT(trigger()));
 
     // bind mouse area
-    connect(m_mouseArea, &QQuickMouseArea::pressedChanged, this, &UCAbstractButton::pressedChanged);
-    connect(m_mouseArea, &QQuickMouseArea::hoveredChanged, this, &UCAbstractButton::hoveredChanged);
-    connect(m_mouseArea, SIGNAL(clicked(QQuickMouseEvent*)), this, SLOT(_q_mouseAreaClicked()));
-    connect(m_mouseArea, SIGNAL(pressed(QQuickMouseEvent*)), this, SLOT(_q_mouseAreaPressed()));
+    QObject::connect(mouseArea, &QQuickMouseArea::pressedChanged, q, &UCAbstractButton::pressedChanged);
+    QObject::connect(mouseArea, &QQuickMouseArea::hoveredChanged, q, &UCAbstractButton::hoveredChanged);
+    QObject::connect(mouseArea, SIGNAL(clicked(QQuickMouseEvent*)), q, SLOT(_q_mouseAreaClicked()));
+    QObject::connect(mouseArea, SIGNAL(pressed(QQuickMouseEvent*)), q, SLOT(_q_mouseAreaPressed()));
 }
 
 // check the pressAndHold connection on runtime, as Connections
 // may not be available on compoennt completion
-void UCAbstractButton::_q_mouseAreaPressed()
+void UCAbstractButtonPrivate::_q_mouseAreaPressed()
 {
     bool longPressConnected = isPressAndHoldConnected();
-    if (longPressConnected && !m_pressAndHoldConnected) {
+    Q_Q(UCAbstractButton);
+    if (longPressConnected && !pressAndHoldConnected) {
         // do not use UniqueConnection as that has huge impact on performance
-        connect(m_mouseArea, SIGNAL(pressAndHold(QQuickMouseEvent*)),
-                this, SLOT(_q_mouseAreaPressAndHold()));
-        m_pressAndHoldConnected = true;
-    } else if (!longPressConnected && m_pressAndHoldConnected) {
-        disconnect(m_mouseArea, SIGNAL(pressAndHold(QQuickMouseEvent*)),
-                   this, SLOT(_q_mouseAreaPressAndHold()));
-        m_pressAndHoldConnected = false;
+        QObject::connect(mouseArea, SIGNAL(pressAndHold(QQuickMouseEvent*)),
+                q, SLOT(_q_mouseAreaPressAndHold()));
+        pressAndHoldConnected = true;
+    } else if (!longPressConnected && pressAndHoldConnected) {
+        QObject::disconnect(mouseArea, SIGNAL(pressAndHold(QQuickMouseEvent*)),
+                   q, SLOT(_q_mouseAreaPressAndHold()));
+        pressAndHoldConnected = false;
     }
 }
 
 // handle mouseClicked with Haptics
-void UCAbstractButton::_q_mouseAreaClicked()
+void UCAbstractButtonPrivate::_q_mouseAreaClicked()
 {
     // required by the deprecated ListItem module
-    if (!m_acceptEvents) {
+    Q_Q(UCAbstractButton);
+    if (!acceptEvents) {
         return;
     }
     // play haptics
     HapticsProxy::instance().play(QVariant());
-    Q_EMIT clicked();
+    Q_EMIT q->clicked();
 }
 
 // handle pressAndHold
-void UCAbstractButton::_q_mouseAreaPressAndHold()
+void UCAbstractButtonPrivate::_q_mouseAreaPressAndHold()
 {
     // required by the deprecated ListItem module
-    if (!m_acceptEvents) {
+    Q_Q(UCAbstractButton);
+    if (!acceptEvents) {
         return;
     }
-    Q_EMIT pressAndHold();
+    Q_EMIT q->pressAndHold();
 }
 
 // emit clicked when Enter/Return is pressed
@@ -153,7 +175,8 @@ void UCAbstractButton::keyPressEvent(QKeyEvent *event)
  */
 bool UCAbstractButton::pressed() const
 {
-    return m_mouseArea ? m_mouseArea->pressed() : false;
+    Q_D(const UCAbstractButton);
+    return d->mouseArea ? d->mouseArea->pressed() : false;
 }
 
 /*!
@@ -162,10 +185,20 @@ bool UCAbstractButton::pressed() const
  */
 bool UCAbstractButton::hovered() const
 {
-    return m_mouseArea ? m_mouseArea->hovered() : false;
+    Q_D(const UCAbstractButton);
+    return d->mouseArea ? d->mouseArea->hovered() : false;
+}
+
+bool UCAbstractButton::acceptEvents() const
+{
+    Q_D(const UCAbstractButton);
+    return d->acceptEvents;
 }
 
 QQuickMouseArea *UCAbstractButton::privateMouseArea() const
 {
-    return m_mouseArea;
+    Q_D(const UCAbstractButton);
+    return d->mouseArea;
 }
+
+#include "moc_ucabstractbutton.cpp"

@@ -751,7 +751,7 @@ void UCBottomEdge::componentComplete()
     QQmlData::get(d->hint, true);
     QQmlEngine::setContextForObject(d->hint, new QQmlContext(qmlContext(this), d->hint));
     // finally complete hint creation
-    hintPrivate->completeStyledItem();
+    hintPrivate->completeComponentInitialization();
     // and validate regions, leave out the first one as that supposed to be added first
     // mimic the top limit of the regions list like we would add them one by one
     for (int i = 1; i < d->regions.size(); ++i) {

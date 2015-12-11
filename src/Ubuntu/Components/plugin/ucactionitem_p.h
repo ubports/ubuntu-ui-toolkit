@@ -38,6 +38,9 @@ public:
     void updateProperties();
     void attachAction(bool attach);
 
+    // overrides
+    void completeComponentInitialization() override;
+
     // private slots
     void _q_visibleBinding();
     void _q_enabledBinding();

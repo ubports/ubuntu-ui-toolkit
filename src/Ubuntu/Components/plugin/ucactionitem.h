@@ -68,8 +68,6 @@ protected:
     Q_DECLARE_PRIVATE(UCActionItem)
     Q_PRIVATE_SLOT(d_func(), void _q_visibleBinding())
     Q_PRIVATE_SLOT(d_func(), void _q_enabledBinding())
-
-    void componentComplete();
 };
 
 #endif // UCACTIONITEM_H

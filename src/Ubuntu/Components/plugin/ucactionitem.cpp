@@ -72,15 +72,14 @@ bool UCActionItemPrivate::hasBindingOnProperty(const QString &name)
     return QQmlPropertyPrivate::binding(property) != Q_NULLPTR;
 }
 
-void UCActionItem::componentComplete()
+void UCActionItemPrivate::completeComponentInitialization()
 {
-    UCStyledItemBase::componentComplete();
-    Q_D(UCActionItem);
+    UCStyledItemBasePrivate::completeComponentInitialization();
     // make sure we connect to the right signals, so we detach and re-attach actions
     // to make sure the SLOT macro picks up the custom trigger() slot
-    if (d->action) {
-        d->attachAction(false);
-        d->attachAction(true);
+    if (action) {
+        attachAction(false);
+        attachAction(true);
     }
 }
 
