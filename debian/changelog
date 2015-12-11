@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (1.3.1742+16.04-0ubuntu2) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.3.1755+16.04-0ubuntu2) UNRELEASED; urgency=medium
 
   [ Zoltán Balogh ]
   * Drop dependency on qtc plugin script and wait for the shell with a local 
