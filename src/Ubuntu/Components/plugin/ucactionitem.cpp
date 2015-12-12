@@ -72,17 +72,6 @@ bool UCActionItemPrivate::hasBindingOnProperty(const QString &name)
     return QQmlPropertyPrivate::binding(property) != Q_NULLPTR;
 }
 
-void UCActionItemPrivate::completeComponentInitialization()
-{
-    UCStyledItemBasePrivate::completeComponentInitialization();
-    // make sure we connect to the right signals, so we detach and re-attach actions
-    // to make sure the SLOT macro picks up the custom trigger() slot
-    if (action) {
-        attachAction(false);
-        attachAction(true);
-    }
-}
-
 // update visible property
 void UCActionItemPrivate::_q_visibleBinding()
 {
