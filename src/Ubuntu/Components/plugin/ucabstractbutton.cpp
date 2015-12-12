@@ -17,6 +17,7 @@
 #include "ucabstractbutton.h"
 #include "ucabstractbutton_p.h"
 #include "uchaptics.h"
+#include "ucaction.h"
 #include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickmousearea_p.h>
 #include <QtQml/private/qqmlglobal_p.h>
@@ -100,8 +101,6 @@ void UCAbstractButtonPrivate::completeComponentInitialization()
 {
     UCActionItemPrivate::completeComponentInitialization();
     Q_Q(UCAbstractButton);
-    // connect to the right slot, using macros so we get the proper slot
-    QObject::connect(mouseArea, SIGNAL(clicked(QQuickMouseEvent*)), q, SLOT(trigger()));
 
     // bind mouse area
     QObject::connect(mouseArea, &QQuickMouseArea::pressedChanged, q, &UCAbstractButton::pressedChanged);
@@ -139,6 +138,8 @@ void UCAbstractButtonPrivate::_q_mouseAreaClicked()
     // play haptics
     HapticsProxy::instance().play(QVariant());
     Q_EMIT q->clicked();
+    // call the overridden QML trigger function
+    INVOKE_TRIGGER(q, QVariant());
 }
 
 // handle pressAndHold
@@ -162,7 +163,10 @@ void UCAbstractButton::keyPressEvent(QKeyEvent *event)
         case Qt::Key_Return:
         case Qt::Key_Space:
         {
-            trigger();
+            // trigger clicked signal first
+            Q_EMIT clicked();
+            // then invoke the overloaded trigger
+            INVOKE_TRIGGER(this, QVariant());
             break;
         }
     }

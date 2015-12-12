@@ -111,6 +111,12 @@ void UCActionItemPrivate::_q_enabledBinding()
     q_func()->setEnabled(enabled);
 }
 
+// invoke actions' overridden triger() function
+void UCActionItemPrivate::_q_invokeActionTrigger(const QVariant &value)
+{
+    INVOKE_TRIGGER(action, value);
+}
+
 // setter called when bindings from QML set the value. Internal functions will
 // all use the setVisible setter, so initialization and (re)parenting related
 // visible alteration won't set the custom flag
@@ -145,7 +151,7 @@ void UCActionItemPrivate::attachAction(bool attach)
     Q_Q(UCActionItem);
     if (attach) {
         QObject::connect(q, SIGNAL(triggered(QVariant)),
-                action, SLOT(trigger(QVariant)), Qt::DirectConnection);
+                q, SLOT(_q_invokeActionTrigger(QVariant)), Qt::DirectConnection);
         if (!(flags & CustomVisible)) {
             QObject::connect(action, SIGNAL(visibleChanged()),
                     q, SLOT(_q_visibleBinding()), Qt::DirectConnection);
@@ -168,7 +174,7 @@ void UCActionItemPrivate::attachAction(bool attach)
         }
     } else {
         QObject::disconnect(q, SIGNAL(triggered(QVariant)),
-                   action, SLOT(trigger(QVariant)));
+                   q, SLOT(_q_invokeActionTrigger(QVariant)));
         if (!(flags & CustomVisible)) {
             QObject::disconnect(action, SIGNAL(visibleChanged()),
                        q, SLOT(_q_visibleBinding()));
@@ -371,7 +377,6 @@ void UCActionItem::resetIconName()
 void UCActionItem::trigger(const QVariant &value)
 {
     if (isEnabled()) {
-        // FIXME: bug #1524234: invoke function from QMetaObject (zsombi)
         Q_EMIT triggered(value);
     }
 }

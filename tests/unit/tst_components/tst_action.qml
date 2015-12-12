@@ -141,8 +141,8 @@ TestCase {
          return [
              {tag: "parametered override without parameter", action: suppressTrigger, invoked: true},
              {tag: "parametered override with parameter", action: suppressTrigger, value: 1, type: Action.Integer, invoked: true},
-             {tag: "paremeterless override without parameter", action: override, invoked: false},
-             {tag: "paremeterless override with parameter", action: override, value: 1, type: Action.Integer, invoked: false},
+             {tag: "paremeterless override without parameter", action: override, invoked: true},
+             {tag: "paremeterless override with parameter", action: override, value: 1, type: Action.Integer, invoked: true},
          ];
      }
      function test_overloaded_action_trigger(data) {

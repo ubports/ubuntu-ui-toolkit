@@ -44,6 +44,7 @@ public:
     // private slots
     void _q_visibleBinding();
     void _q_enabledBinding();
+    void _q_invokeActionTrigger(const QVariant &value);
 
     enum {
         CustomText = 0x01,
