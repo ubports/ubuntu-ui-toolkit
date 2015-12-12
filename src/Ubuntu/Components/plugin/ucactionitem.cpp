@@ -371,6 +371,7 @@ void UCActionItem::resetIconName()
 void UCActionItem::trigger(const QVariant &value)
 {
     if (isEnabled()) {
+        // FIXME: bug #1524234: invoke function from QMetaObject (zsombi)
         Q_EMIT triggered(value);
     }
 }
