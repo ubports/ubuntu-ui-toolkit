@@ -151,9 +151,9 @@ TestCase {
          testItem.action = data.action;
          if (data.value) {
              data.action.parameterType = data.type;
-             testItem.trigger(data.value)
+             testItem.trigger(data.value);
          } else {
-             testItem.trigger(data.value)
+             testItem.trigger(data.value);
          }
          compare(data.action.invoked, data.invoked);
      }

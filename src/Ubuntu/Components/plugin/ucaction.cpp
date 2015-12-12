@@ -339,3 +339,20 @@ void UCAction::trigger(const QVariant &value)
         Q_EMIT triggered(value);
     }
 }
+
+bool UCAction::invokeQmlTrigger(QObject *object, const QVariant &value)
+{
+    bool invoked = false;
+    const QMetaObject *mo = object->metaObject();
+    int offset = mo->methodOffset();
+    int paramlessTriggerIndex = mo->indexOfSlot("trigger()") - offset;
+    int paramTriggerIndex = mo->indexOfSlot("trigger(QVariant)") - offset;
+
+    /* if we have the parametered version, call that even if the value given is invalid */
+    if (paramTriggerIndex >= 0) {
+        invoked = mo->invokeMethod(object, "trigger", Q_ARG(QVariant, value));
+    } else if (paramlessTriggerIndex >= 0) {
+        invoked = mo->invokeMethod(object, "trigger");
+    }
+    return invoked;
+}
