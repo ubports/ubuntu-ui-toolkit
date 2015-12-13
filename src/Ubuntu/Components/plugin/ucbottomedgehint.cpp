@@ -47,7 +47,7 @@ void UCBottomEdgeHintPrivate::init()
     Q_Q(UCBottomEdgeHint);
     QObject::connect(q, &UCBottomEdgeHint::clicked, [=]() {
         // make sure the overloaded trigger is called!
-        INVOKE_TRIGGER(q, QVariant());
+        invokeTrigger<UCBottomEdgeHint>(q, QVariant());
     });
     /*
      * we cannot use setStyleName as that will trigger style loading

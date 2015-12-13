@@ -103,7 +103,7 @@ void UCActionItemPrivate::_q_enabledBinding()
 // invoke actions' overridden triger() function
 void UCActionItemPrivate::_q_invokeActionTrigger(const QVariant &value)
 {
-    INVOKE_TRIGGER(action, value);
+    invokeTrigger<UCAction>(action, value);
 }
 
 // setter called when bindings from QML set the value. Internal functions will

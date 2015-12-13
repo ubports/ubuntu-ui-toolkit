@@ -139,7 +139,7 @@ void UCAbstractButtonPrivate::_q_mouseAreaClicked()
     HapticsProxy::instance().play(QVariant());
     Q_EMIT q->clicked();
     // call the overridden QML trigger function
-    INVOKE_TRIGGER(q, QVariant());
+    invokeTrigger<UCAbstractButton>(q, QVariant());
 }
 
 // handle pressAndHold
@@ -166,7 +166,7 @@ void UCAbstractButton::keyPressEvent(QKeyEvent *event)
             // trigger clicked signal first
             Q_EMIT clicked();
             // then invoke the overloaded trigger
-            INVOKE_TRIGGER(this, QVariant());
+            invokeTrigger<UCAbstractButton>(this, QVariant());
             break;
         }
     }
