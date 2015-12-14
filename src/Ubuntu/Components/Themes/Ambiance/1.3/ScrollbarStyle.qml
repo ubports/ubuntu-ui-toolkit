@@ -108,11 +108,11 @@ Item {
     //this is the condition that triggers "Thumb Style"
     //only show the thumb if the page AND the view is moving,
     //don't keep it on screen just because the page is long
-    property bool thumbStyleFlag: (veryLongContentItem && (flickableItem.moving || scrollAnimation.running))
+    property bool thumbStyleFlag: veryLongContentItem && (flickableItem.moving || scrollAnimation.running)
 
     property real touchDragStartMargin: units.gu(2)
 
-    property bool draggingThumb: thumbArea.drag.active
+    property bool draggingThumb: thumbArea.drag.active || slider.mouseDragging || slider.touchDragging
     property PropertyAnimation scrollbarThicknessAnimation: UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration }
     //duration coming from the UX spec
     property PropertyAnimation scrollbarFadeInAnimation: UbuntuNumberAnimation { duration: 500/*UbuntuAnimation.SnapDuration*/}
@@ -520,7 +520,6 @@ Item {
             //for brief hinting purposes (in that case, in fact, the binding to the "state" var is disabled)
             onRunningChanged: {
                 console.log("INDICATOR transition running changed", running, __disableStateBinding, hintingStyle, visuals)
-
                 if (!running && __disableStateBinding && hintingStyle === 'indicator') {
                     //this handles the case when we're briefly showing the scrollbar
                     //as a hint, as a consequence of the resizing of the flickable item or
@@ -794,7 +793,7 @@ Item {
             Rectangle {
                 id: slider
                 color: Qt.rgba(sliderColor.r, sliderColor.g, sliderColor.b, sliderColor.a *
-                               (thumbArea.drag.active || (thumbArea.pressed && slider.containsMouse && !pressHoldTimer.running) ? 1.0 : 0.6))
+                               (visuals.draggingThumb ? 1.0 : 0.6))
                 anchors {
                     verticalCenter: (isVertical) ? undefined : trough.verticalCenter
                     horizontalCenter: (isVertical) ? trough.horizontalCenter : undefined
@@ -826,6 +825,16 @@ Item {
                     }
                 }
 
+
+                //this property is true if the user could be starting a drag (i.e. pressed inside the thumb)
+                //but drag.active is not true yet (because that requires dragging >0 pixels)
+                //Usecase: thumb is at the top, user drags towards the top and
+                //goes out of window -> drag.active won't trigger because the thumb can't move by even 1px,
+                //but we still want the logic to know that user could be trying to drag (by moving the
+                //mouse down again afterwards, for example)
+                //
+                //NOTE: starting a drag while the scrollbars are in steppers mode is considered a mouse drag
+                //(because we want the style to stay to steppers) even when started with touch!
                 property bool mouseDragging: false
                 property bool touchDragging: false
 
@@ -880,13 +889,39 @@ Item {
                         var mappedCoord = mapToItem(slider, mouseX, mouseY)
                         if (!slider.contains(Qt.point(mappedCoord.x, mappedCoord.y))) {
                             pressHoldTimer.startTimer(thumbArea)
+                        } else {
+                            //we can't tell whether the drag is started from mouse or touch
+                            //(unless we add an additional multipointtoucharea and reimplement drag
+                            //but MPTArea can't ignore touch events so we wouldn't be able to propagate those)
+                            //so we assume that it's a mouse drag if the mouse is within the proximity area
+                            //when the mouse is dragged
+                            initDrag(true)
                         }
                     } else if (visuals.veryLongContentItem && slider.containsTouch()){
-                        console.log("COULD DRAG TOUCH")
+                        initDrag(false)
                     } else {
                         //propagate otherwise
                         mouse.accepted = false
                     }
+                }
+
+                function initDrag(isMouse) {
+                    __disableStateBinding = true
+                    thumbArea.saveFlickableScrollingState()
+                    if (isMouse) {
+                        slider.mouseDragging = true
+                        visuals.state = "steppers"
+                    } else {
+                        slider.touchDragging = true
+                        visuals.state = "thumb"
+                    }
+                }
+
+                function resetDrag() {
+                    if (thumbArea.lockDrag) thumbArea.lockDrag = false
+                    slider.mouseDragging = false
+                    slider.touchDragging = false
+                    __disableStateBinding = false
                 }
 
                 function handlePress(mouseX, mouseY) {
@@ -937,19 +972,18 @@ Item {
                     maximumX: lockDrag ? slider.x : trough.width - slider.width - thumbsExtremesMargin
                     onActiveChanged: {
                         if (drag.active) {
-                            console.log("ACTIVATING DRAG!")
-                            //we can't tell whether the drag is started from mouse or touch
-                            //(unless we add an additional multipointtoucharea and reimplement drag)
-                            //so we assume that it's a mouse drag if the mouse is within the proximity area
-                            //when the mouse is dragged
-                            slider.mouseDragging = proximityArea.containsMouseDevice
-                            slider.touchDragging = !slider.mouseDragging
-                            thumbArea.saveFlickableScrollingState()
-                            scrollCursor.drag()
+                            console.log("ACTIVATING MOUSEAREA'S DRAG!")
+                            //drag.active is true only when the target has been moved by >0 pixels (if threshold == 0)
+                            //that means if the bar is at the top and user drags it upwards, drag.active won't change,
+                            //but the user will still be able to leave the app window from above, move mouse to the left (or right)
+                            //enough to trigger the drag lock logic, and then come back in the window and move downwards.
+                            //At *that* point drag.active will become true, but we don't want to actually drag the thumb
+                            //because the mouse is still outside the area where thumb is follow input device movements
+                            if (!lockDrag) {
+                                scrollCursor.drag()
+                            }
                         } else {
-                            if (thumbArea.lockDrag) thumbArea.lockDrag = false
-                            slider.mouseDragging = false
-                            slider.touchDragging = false
+                            resetDrag()
                         }
                     }
 
@@ -960,7 +994,7 @@ Item {
 
                 // drag slider and content to the proper position
                 onPositionChanged: {
-                    if (pressedButtons == Qt.LeftButton && drag.active) {
+                    if (pressedButtons == Qt.LeftButton && (slider.mouseDragging || slider.touchDragging)) {
                         console.log("DRAGGING")
                         if ((isVertical && Math.abs(mouse.x - thumbArea.x) >= flowContainer.thickness * 10)
                                 || (!isVertical && Math.abs(mouse.y - thumbArea.y) >= flowContainer.thickness * 10)) {
@@ -981,11 +1015,13 @@ Item {
 
                 //onExited: pressHoldTimer.stop()
                 onCanceled: {
-                    if (thumbArea.lockDrag) thumbArea.lockDrag = false
+                    console.log("CANCELED")
+                    resetDrag()
                     pressHoldTimer.stop()
                 }
                 onReleased: {
-                    if (thumbArea.lockDrag) thumbArea.lockDrag = false
+                    console.log("RELEASED")
+                    resetDrag()
                     pressHoldTimer.stop()
                 }
 
