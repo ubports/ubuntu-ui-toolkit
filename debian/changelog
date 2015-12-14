@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (1.3.1758+16.04-0ubuntu1) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.3.1761+16.04-0ubuntu1) UNRELEASED; urgency=medium
 
   [ Zoltán Balogh ]
   * Drop dependency on qtc plugin script and wait for the shell with a local 
@@ -40,6 +40,11 @@ ubuntu-ui-toolkit (1.3.1758+16.04-0ubuntu1) UNRELEASED; urgency=medium
     Fixes: LP: #1493880, LP: #1493882, LP: #1514928. 
   * Add private implementations to ActionItem, AbstractButton, BottomEdgeHint
     and BottomEdge. Fixes: LP: #1524234
+  * Close Popups.Dialog when Esc key is pressed. Fixes LP: #1523833
+  * Invoke the overridden trigger() function for Action and ActionItem 
+    derivates. Fixes LP: #1524234
+  * Fix BottomEdge assertion when the content is committed by clicking on the 
+    hint. Fixes LP: #1524407
 
  -- Zoltán Balogh <zoltan@bakter.hu>  Fri, 11 Dec 2015 15:19:06 +0200
 

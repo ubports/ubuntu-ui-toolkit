@@ -21,6 +21,7 @@
 #include "ucstyleditembase_p.h"
 #include "quickutils.h"
 #include "ucunits.h"
+#include "ucaction.h"
 #include "gestures/ucswipearea.h"
 #include "propertychange_p.h"
 #include <QtQml/private/qqmlproperty_p.h>
@@ -46,7 +47,7 @@ void UCBottomEdgeHintPrivate::init()
     Q_Q(UCBottomEdgeHint);
     QObject::connect(q, &UCBottomEdgeHint::clicked, [=]() {
         // make sure the overloaded trigger is called!
-        q->metaObject()->invokeMethod(q, "trigger", Q_ARG(QVariant, QVariant()));
+        invokeTrigger<UCBottomEdgeHint>(q, QVariant());
     });
     /*
      * we cannot use setStyleName as that will trigger style loading
