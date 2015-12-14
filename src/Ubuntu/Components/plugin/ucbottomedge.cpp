@@ -399,28 +399,32 @@ void UCBottomEdgePrivate::patchContentItemHeader()
     QQmlListProperty<UCAction> actions = list.value< QQmlListProperty<UCAction> >();
     QList<UCAction*> *navigationActions = reinterpret_cast<QList<UCAction*>*>(actions.data);
 
+    // do we have any action in the list?
+    if (navigationActions->size()) {
+        // we have actions in the list, check if those are ours
+        UCCollapseAction *collapse = qobject_cast<UCCollapseAction*>(navigationActions->at(0));
+        if (!collapse) {
+            // not ours, clear the list
+            navigationActions->clear();
+        }
+    }
+    if (navigationActions->size() <= 0) {
+        // no actions, patch
+        navigationActions->append(new UCCollapseAction(header));
+        // invoke PageHeader.navigationActionsChanged signal
+        int signal = header->metaObject()->indexOfSignal("navigationActionsChanged()");
+        if (signal >= 0) {
+            header->metaObject()->invokeMethod(header, "navigationActionsChanged");
+        }
+    }
+
     // are we committed?
     if (status == UCBottomEdge::Committed) {
         // activate the action
         UCCollapseAction *collapse = qobject_cast<UCCollapseAction*>(navigationActions->at(0));
+        Q_ASSERT(collapse);
         collapse->activate();
         QObject::connect(collapse, &UCAction::triggered, q_func(), &UCBottomEdge::collapse, Qt::DirectConnection);
-    } else if (navigationActions->size() <= 0) {
-        navigationActions->append(new UCCollapseAction(header));
-    } else {
-        // we have actions in the navigationActions array, check if those are UCCollapseActions,
-        // if not, clear them
-        UCCollapseAction *collapse = qobject_cast<UCCollapseAction*>(navigationActions->at(0));
-        if (!collapse) {
-            navigationActions->clear();
-            navigationActions->append(new UCCollapseAction(header));
-        }
-    }
-
-    // invoke PageHeader.navigationActionsChanged signal
-    int signal = header->metaObject()->indexOfSignal("navigationActionsChanged()");
-    if (signal >= 0) {
-        header->metaObject()->invokeMethod(header, "navigationActionsChanged");
     }
 }
 
