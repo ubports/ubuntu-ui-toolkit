@@ -56,7 +56,7 @@ public:
     virtual void preStyleChanged();
     virtual void postStyleChanged() {}
     virtual bool loadStyleItem(bool animated = true);
-    virtual void completeStyledItem();
+    virtual void completeComponentInitialization();
 
     // from UCImportVersionChecker
     virtual QString propertyForVersion(quint16 version) const;
