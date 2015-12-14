@@ -24,13 +24,14 @@
 class QQuickFlickable;
 class UCSwipeArea;
 class PropertyChange;
+class UCBottomEdgeHintPrivate;
 class UCBottomEdgeHint : public UCActionItem
 {
     Q_OBJECT
     Q_ENUMS(Status)
-    Q_PROPERTY(QQuickFlickable *flickable MEMBER m_flickable WRITE setFlickable NOTIFY flickableChanged FINAL)
-    Q_PROPERTY(Status status MEMBER m_status WRITE setStatus NOTIFY statusChanged FINAL)
-    Q_PROPERTY(int deactivateTimeout MEMBER m_deactivateTimeout WRITE setDeactivateTimeout NOTIFY deactivateTimeoutChanged FINAL)
+    Q_PROPERTY(QQuickFlickable *flickable READ flickable WRITE setFlickable NOTIFY flickableChanged FINAL)
+    Q_PROPERTY(Status status READ status WRITE setStatus NOTIFY statusChanged FINAL)
+    Q_PROPERTY(int deactivateTimeout READ deactivateTimeout WRITE setDeactivateTimeout NOTIFY deactivateTimeoutChanged FINAL)
     Q_PROPERTY(UCSwipeArea* swipeArea READ swipeArea CONSTANT FINAL)
     // deprecated
     Q_PROPERTY(QString state READ state WRITE setState NOTIFY stateChanged)
@@ -43,14 +44,13 @@ public:
     };
     explicit UCBottomEdgeHint(QQuickItem *parent = 0);
 
+    QQuickFlickable *flickable() const;
     void setFlickable(QQuickFlickable *flickable);
     Status status();
     void setStatus(Status status);
+    int deactivateTimeout() const;
     void setDeactivateTimeout(int timeout);
-    UCSwipeArea *swipeArea() const
-    {
-        return m_swipeArea;
-    }
+    UCSwipeArea *swipeArea() const;
 
     // deprecated
     QString state() const;
@@ -69,6 +69,7 @@ Q_SIGNALS:
     // deprecated
     void stateChanged();
 protected:
+    UCBottomEdgeHint(UCBottomEdgeHintPrivate &&, QQuickItem *parent);
     void classBegin();
     void itemChange(ItemChange change, const ItemChangeData &data);
     void timerEvent(QTimerEvent *event);
@@ -84,13 +85,7 @@ protected:
     void onGridUnitChanged();
 
 private:
-    QBasicTimer m_deactivationTimer;
-    UCSwipeArea *m_swipeArea;
-    QQuickFlickable *m_flickable;
-    PropertyChange *m_flickableBottomMargin = nullptr;
-    int m_deactivateTimeout;
-    Status m_status;
-    bool m_pressed:1;
+    Q_DECLARE_PRIVATE(UCBottomEdgeHint)
 
     friend class UCBottomEdge;
 

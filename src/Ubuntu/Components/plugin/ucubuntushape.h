@@ -21,7 +21,6 @@
 
 #include <QtQuick/QQuickItem>
 #include <QtQuick/QSGNode>
-#include <QtQuick/qsgtexture.h>
 #include <QtQuick/qsgmaterial.h>
 #include <QtGui/QOpenGLFunctions>
 #include "ucimportversionchecker_p.h"

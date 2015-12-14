@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/ea">
+        <file>../Paratriisodon.qml</file>
+        <file>../digger.js</file>
+    </qresource>
+</RCC>
