@@ -21,7 +21,7 @@
 #include <QtCore/QVariant>
 #include <QtCore/QUrl>
 
-// the function detectes whether QML has an overridden trigger() slot available
+// the function detects whether QML has an overridden trigger() slot available
 // and invokes the one with the appropriate signature
 template<class T>
 inline void invokeTrigger(T *object, const QVariant &value)
