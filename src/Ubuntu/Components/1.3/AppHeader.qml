@@ -111,43 +111,14 @@ Components.Header {
       version (1.1) will no longer work.
      */
     property QtObject config: null
-    onConfigChanged: {
-        if (header.config.locked) {
-            header.flickable = null;
-        } else {
-            header.flickable = header.config.flickable;
-        }
 
-        if (!header.flickable && !header.config.visible) {
-            // locked.
-            header.exposed = false;
-        } else {
-            header.config.visible = true;
-            header.exposed = true;
-        }
-    }
-    onExposedChanged: {
-        if(header.config) {
-            header.config.visible = exposed;
-        }
-    }
-    Connections {
-        target: header.config
-        ignoreUnknownSignals: true
-        onVisibleChanged: {
-            header.exposed = header.config.visible;
-        }
-        onLockedChanged: {
-            if (header.config.locked) {
-                header.flickable = null;
-            } else {
-                header.flickable = header.config.flickable;
-            }
-        }
-        onFlickableChanged: {
-            if (!header.config.locked) {
-                header.flickable = header.config.flickable;
-            }
+    flickable: !config ? null : (config.locked ? null : config.flickable)
+    exposed: !flickable && !config.visible ? false : true
+
+    QtObject {
+        property bool headConfVisible: header.flickable && header.exposed
+        onHeadConfVisibleChanged: {
+            header.config.visible = headConfVisible
         }
     }
 
