@@ -165,11 +165,12 @@ Item {
         slider.scroll(amount)
     }
     function scrollToBeginning() {
-        scrollAnimation.to = 0
+        scrollAnimation.to = flickableItem[scrollbarUtils.propOrigin] - visuals.leadingContentMargin
         scrollAnimation.restart()
     }
     function scrollToEnd() {
-        scrollAnimation.to = contentSize - pageSize
+        scrollAnimation.to = flickableItem[scrollbarUtils.propOrigin]
+                + totalContentSize - visuals.leadingContentMargin - pageSize
         scrollAnimation.restart()
     }
     function resetScrollingToPreDrag() {
@@ -269,7 +270,8 @@ Item {
             console.log(scrollbar.flickableItem[propOrigin])
             console.log(scrollbar.flickableItem[propContent] - scrollbar.flickableItem[propOrigin] + amount, min, max)
             return scrollbar.flickableItem[propOrigin] +
-                    MathUtils.clamp(scrollbar.flickableItem[propContent] - scrollbar.flickableItem[propOrigin] + amount,
+                    MathUtils.clamp(scrollbar.flickableItem[propContent]
+                                    - scrollbar.flickableItem[propOrigin] + amount,
                                     min, max);
         }
 
@@ -281,10 +283,11 @@ Item {
 
           //FIXME: should we change the API and remove pageSize or just pass trough's size as pageSize par?
 
+          NOTE: when flickable.topMargin is 5GU, contentY has to be -5GU (not 0!) to be at the top of the scrollable!!
           */
         function dragAndClamp(scrollbar, relThumbPosition, contentSize, pageSize) {
             scrollbar.flickableItem[propContent] =
-                    scrollbar.flickableItem[propOrigin] + relThumbPosition * (contentSize - scrollbar.flickableItem[propSize]); //don't use pageSize, we don't know if the scrollbar is edge to edge!;
+                    scrollbar.flickableItem[propOrigin] + relThumbPosition * (contentSize - scrollbar.flickableItem[propSize]) - leadingContentMargin; //don't use pageSize, we don't know if the scrollbar is edge to edge!;
         }
     }
 
@@ -839,8 +842,8 @@ Item {
                 radius: visuals.sliderRadius
 
                 function scroll(amount) {
-                    scrollAnimation.to = scrollbarUtils.scrollAndClamp(styledItem, amount, 0.0,
-                                                                       Math.max(totalContentSize - pageSize, 0));
+                    scrollAnimation.to = scrollbarUtils.scrollAndClamp(styledItem, amount, -leadingContentMargin,
+                                                                       Math.max(contentSize + trailingContentMargin - pageSize, -leadingContentMargin));
                     console.log(scrollAnimation.to)
                     scrollAnimation.restart();
                 }
@@ -1038,8 +1041,10 @@ Item {
                 var mappedCoordSecondStepper = mapToItem(secondStepper, mouseX, mouseY)
 
                 if (firstStepper.contains(Qt.point(mappedCoordFirstStepper.x, mappedCoordFirstStepper.y))) {
+                    console.log("scroll up stepper")
                     slider.scroll(-pageSize * visuals.shortScrollingRatio)
                 } else if (secondStepper.contains(Qt.point(mappedCoordSecondStepper.x, mappedCoordSecondStepper.y))) {
+                    console.log("scroll down stepper")
                     slider.scroll(pageSize * visuals.shortScrollingRatio)
                 }
             }
