@@ -21,7 +21,7 @@ import Ubuntu.Components.Themes 1.3
 Palette {
     normal: AmbianceNormal {}
     inactive: AmbianceNormal {
-        field: UbuntuColors.starDust;
+        field: UbuntuColors.porcelain;
         // inactive is 30% transparent normal
         Component.onCompleted: {
             for (var p in normal) {
@@ -41,8 +41,8 @@ Palette {
 
     // selected differs from normal in background, base, foreground
     selectedInactive: AmbianceNormal {
-        background: UbuntuColors.starDust
-        base: UbuntuColors.starDust
-        foreground: UbuntuColors.starDust
+        background: UbuntuColors.porcelain
+        base: UbuntuColors.porcelain
+        foreground: UbuntuColors.porcelain
     }
 }

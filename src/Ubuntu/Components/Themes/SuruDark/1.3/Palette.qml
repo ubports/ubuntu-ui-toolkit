@@ -22,7 +22,7 @@ import Ubuntu.Components.Themes 1.3
 Palette {
     normal: SuruDarkNormal {}
     inactive: SuruDarkNormal {
-        field: UbuntuColors.deepSpace
+        field: UbuntuColors.cinder
         // inactive is 30% transparent normal
         Component.onCompleted: {
             for (var p in normal) {
@@ -42,9 +42,9 @@ Palette {
 
     // selected differs from normal in background, base, foreground
     selectedInactive: SuruDarkNormal {
-        background: UbuntuColors.deepSpace
-        base: UbuntuColors.deepSpace
-        foreground: UbuntuColors.deepSpace
+        background: UbuntuColors.cinder
+        base: UbuntuColors.cinder
+        foreground: UbuntuColors.cinder
     }
 }
 //![0]

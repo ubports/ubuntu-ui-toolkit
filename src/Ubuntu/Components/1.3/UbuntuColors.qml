@@ -135,32 +135,32 @@ QtObject {
     readonly property color purple: "#762572"
 
     /*!
-      Star dust. Recommended for foregrounds.
+      Porcelain. Recommended for foregrounds.
       \since Ubuntu.Components 1.3
       */
-    readonly property color starDust: "#f7f7f7"
+    readonly property color porcelain: "#f7f7f7"
 
     /*!
-      Grey. Recommended for subtitles and other tertiary content.
+      Ash. Recommended for subtitles and other tertiary content.
       \since Ubuntu.Components 1.3
       */
-    readonly property color grey: "#888888"
+    readonly property color ash: "#888888"
 
     /*!
-      Moon. Recommended for coloring dark themes' background.
+      Lead. Recommended for coloring dark themes' background.
       \since Ubuntu.Components 1.3
       */
-    readonly property color moon: "#666666"
+    readonly property color lead: "#666666"
 
     /*!
-      Deep space. Recommended for foreground colors in dark themes.
+      Cinder. Recommended for foreground colors in dark themes.
       \since Ubuntu.Components 1.3
       */
-    readonly property color deepSpace: "#3b3b3b"
+    readonly property color cinder: "#3b3b3b"
 
     /*!
-      Charcoal. Recommended for content coloring.
+      Lacquer. Recommended for content coloring.
       \since Ubuntu.Components 1.3
       */
-    readonly property color charcoal: "#292929"
+    readonly property color lacquer: "#292929"
 }
