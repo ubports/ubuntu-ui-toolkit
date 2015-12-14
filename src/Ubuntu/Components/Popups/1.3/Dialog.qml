@@ -164,6 +164,8 @@ PopupBase {
 
         height: Math.min(contentsColumn.height + foreground.margins, dialog.height - keyboardHeight)
 
+        Keys.onEscapePressed: dialog.hide()
+
         Flickable {
             anchors.fill: parent
             anchors.margins: foreground.margins
@@ -208,5 +210,7 @@ PopupBase {
         }
 
         styleName: "DialogForegroundStyle"
+
+        Component.onCompleted: foreground.forceActiveFocus()
     }
 }

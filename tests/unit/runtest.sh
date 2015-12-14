@@ -26,7 +26,7 @@ _MINIMAL=$3
 
 _TARGET=$(basename $1)
 _TESTFILE=$(basename $2)
-_LIB_PATH="${BUILD_DIR}/lib:$LD_LIBRARY_PATH"
+_LIB_PATH="${BUILD_DIR}/lib:${BUILD_DIR}/qml/Ubuntu/Components:${BUILD_DIR}/qml/Ubuntu/Test:$LD_LIBRARY_PATH"
 _IMPORT_PATH="${BUILD_DIR}/qml:$QML2_IMPORT_PATH"
 _THEMES_PATH="${BUILD_DIR}/qml"
 _XML="${BUILD_DIR}/tests/test_$_TARGET_$_TESTFILE.xml"

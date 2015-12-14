@@ -127,6 +127,23 @@ Rectangle {
             model: root.stringList
             enabled: false
         }
+        Sections {
+            id: selectedIndexSections
+            property bool action0Triggered: false;
+            property bool action1Triggered: false;
+            property bool action2Triggered: false;
+            property Action action0: Action {
+                onTriggered: selectedIndexSections.action0Triggered = true;
+            }
+            property Action action1: Action {
+                onTriggered: selectedIndexSections.action1Triggered = true;
+            }
+            property Action action2: Action {
+                onTriggered: selectedIndexSections.action2Triggered = true;
+            }
+            actions: [action0, action1, action2]
+            selectedIndex: 1
+        }
     }
 
     UbuntuTestCase {
@@ -135,14 +152,23 @@ Rectangle {
         when: windowShown
 
         function initTestCase() {
-            compare(label.text, "No action triggered.", "An action was triggered initially.");
+            // The initially selected actions must be triggered.
+            compare(label.text, "First action triggered.",
+                    "The first action was not triggered automatically.");
+            compare(selectedIndexSections.action0Triggered, false,
+                    "Action 0 was triggered with selectedIndex: 1.");
+            compare(selectedIndexSections.action1Triggered, true,
+                    "Action 1 was not automatically triggered with selectedIndex: 1.");
         }
 
-        function cleanup() {
+        function init() {
+            enabledSections.actions = root.actionList;
+            enabledSections.model = root.actionList;
             enabledSections.selectedIndex = 0;
             disabledSections.selectedIndex = 0;
             enabledStringSections.selectedIndex = 0;
             disabledStringSections.selectedIndex = 0;
+            label.text = "No action triggered."
         }
 
         function wait_for_animation(sections) {
@@ -201,6 +227,7 @@ Rectangle {
             compare(v, index, "selectedIndex "+v+" does not match "+index);
             v = get_selected_section_button_index(sections);
             compare(v, index, "selected button index "+v+" does not match "+index);
+            if (v === -1) return;
             var w = get_selected_section_button_text(sections);
             compare(w, name, "selected button text \'"+w+"\' does not match \'"+name+"\'");
         }
@@ -304,6 +331,45 @@ Rectangle {
             var name = "string three";
             disabledStringSections.selectedIndex = index;
             check_selected_section(disabledStringSections, index, name);
+        }
+
+        function test_selectedIndex_when_model_changes_bug1513933() {
+            enabledSections.model = ["1", "2", "3"];
+            enabledSections.selectedIndex = 2;
+            enabledSections.model = ["1", "2"];
+            wait_for_animation(enabledSections);
+            compare(enabledSections.selectedIndex, 0,
+                    "Changing the model does not set the selected index to 0.");
+            check_selected_section(enabledSections, 0, "1");
+            enabledSections.model = [];
+            wait_for_animation(enabledSections);
+            compare(enabledSections.selectedIndex, -1,
+                    "Setting an empty model does not set the selected index to -1.");
+            enabledSections.model = ["1", "2", "3"];
+            wait_for_animation(enabledSections);
+            compare(enabledSections.selectedIndex, 0,
+                    "Setting a non-empty model does not set the selected index to 0.");
+            check_selected_section(enabledSections, 0, "1");
+        }
+
+        function test_model_changes_triggers_action_0() {
+            selectedIndexSections.action0Triggered = false;
+            selectedIndexSections.action1Triggered = false;
+            selectedIndexSections.action2Triggered = false;
+            var originalActions = selectedIndexSections.actions;
+            selectedIndexSections.actions = [
+                        selectedIndexSections.action0,
+                        selectedIndexSections.action2
+                    ]
+            wait_for_animation(selectedIndexSections);
+            compare(selectedIndexSections.action0Triggered, true,
+                    "Changing the model does not trigger the first action.");
+            compare(selectedIndexSections.action1Triggered, false,
+                    "Changing the model triggers the second action.");
+            compare(selectedIndexSections.action2Triggered, false,
+                    "Changing the model triggers the third action.");
+            selectedIndexSections.actions = originalActions;
+            wait_for_animation(selectedIndexSections);
         }
     }
 }
