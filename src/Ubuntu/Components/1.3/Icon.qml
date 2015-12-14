@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 Canonical, Ltd.
+ * Copyright (C) 2015 Canonical, Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -12,26 +12,94 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Authors: Zsombor Egri <zsombor.egri@canonical.com>
+ *          Loic Molinari <loic.molinari@canonical.com>
  */
 
 import QtQuick 2.4
 
+/*!
+    \qmltype Icon
+    \inqmlmodule Ubuntu.Components 1.3
+    \inherits Item
+    \ingroup ubuntu
+    \brief The Icon component displays an icon from the icon theme.
+
+    The icon theme contains a set of standard icons referred to by their name.
+    Using icons whenever possible enhances consistency accross applications.
+    Each icon has a name and can have different visual representations depending
+    on the size requested.
+
+    Icons can also be colorized. Setting the \l color property will make all pixels
+    with the \l keyColor (by default #808080) colored.
+
+    Example:
+    \qml
+    Icon {
+        width: 64
+        height: 64
+        name: "search"
+    }
+    \endqml
+
+    Example of colorization:
+    \qml
+    Icon {
+        width: 64
+        height: 64
+        name: "search"
+        color: UbuntuColors.warmGrey
+    }
+    \endqml
+
+    Icon themes are created following the
+    \l{http://standards.freedesktop.org/icon-theme-spec/icon-theme-spec-latest.html}{Freedesktop Icon Theme Specification}.
+*/
+
 Item {
     id: icon
 
+    /*!
+       The name of the icon to display.
+       \qmlproperty string Icon::name
+
+       If both name and source are set, name will be ignored.
+
+       \note The complete list of icons available in Ubuntu is not published yet.
+           For now please refer to the folders where the icon themes are installed:
+           \list
+             \li Ubuntu Touch: \l file:/usr/share/icons/suru
+             \li Ubuntu Desktop: \l file:/usr/share/icons/ubuntu-mono-dark
+           \endlist
+           These 2 separate icon themes will be merged soon.
+    */
     property string name
 
     /*!
-       \qmlproperty color color
+       The color that all pixels that originally are of color \l keyColor should take.
+       \qmlproperty color Icon::color
     */
+
     property alias color: colorizedImage.keyColorOut
 
     /*!
-       \qmlproperty color keyColor
+       The color of the pixels that should be colorized.
+       By default it is set to #808080.
+       \qmlproperty color Icon::keyColor
     */
     property alias keyColor: colorizedImage.keyColorIn
 
-    property url source: name ? "image://theme/%1".arg(name) : ""
+    /*!
+       The source url of the icon to display. It has precedence over name.
+
+       If both name and source are set, name will be ignored.
+
+       \since Ubuntu.Components 1.1
+       \qmlproperty url Icon::source
+    */
+
+    property alias source: image.name
 
     implicitWidth: image.implicitWidth
     implicitHeight: image.implicitHeight
@@ -47,14 +115,7 @@ Item {
             height: icon.height
         }
 
-        source: {
-            if (icon.hasOwnProperty("source"))
-                return icon.source;
-            else if (icon.name)
-                return "image://theme/%1".arg(icon.name);
-            else
-                return "";
-        }
+        source: icon.name ? "image://theme/%1".arg(icon.name) : ""
 
         cache: true
         visible: !colorizedImage.visible
