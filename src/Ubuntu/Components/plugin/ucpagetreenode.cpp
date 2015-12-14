@@ -523,9 +523,6 @@ QObject *UCPageTreeNode::propagated() const
 void UCPageTreeNode::setPropagated(QObject *propagated)
 {
     Q_D(UCPageTreeNode);
-    if (d->m_propagated == propagated) {
-        return;
-    }
 
     //remove the binding to parent
     if (d->m_parentNode && !(d->m_flags & UCPageTreeNodePrivate::CustomPropagated))
@@ -598,9 +595,6 @@ void UCPageTreeNode::setActive(bool active)
 {
     Q_D(UCPageTreeNode);
 
-    if (d->m_active == active)
-        return;
-
     //remove the binding to parent
     if (d->m_parentNode && !(d->m_flags & UCPageTreeNodePrivate::CustomActive)) {
         disconnect(d->m_parentNode, SIGNAL(activeChanged(bool)),
@@ -627,9 +621,6 @@ bool UCPageTreeNode::active() const
 void UCPageTreeNode::setPageStack(QQuickItem *pageStack)
 {
     Q_D(UCPageTreeNode);
-
-    if (d->m_pageStack == pageStack)
-        return;
 
     //remove the binding to parent
     if (d->m_parentNode && !(d->m_flags & UCPageTreeNodePrivate::CustomPageStack))
