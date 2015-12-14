@@ -72,17 +72,6 @@ bool UCActionItemPrivate::hasBindingOnProperty(const QString &name)
     return QQmlPropertyPrivate::binding(property) != Q_NULLPTR;
 }
 
-void UCActionItemPrivate::completeComponentInitialization()
-{
-    UCStyledItemBasePrivate::completeComponentInitialization();
-    // make sure we connect to the right signals, so we detach and re-attach actions
-    // to make sure the SLOT macro picks up the custom trigger() slot
-    if (action) {
-        attachAction(false);
-        attachAction(true);
-    }
-}
-
 // update visible property
 void UCActionItemPrivate::_q_visibleBinding()
 {
@@ -109,6 +98,12 @@ void UCActionItemPrivate::_q_enabledBinding()
     }
     bool enabled = action ? action->m_enabled : true;
     q_func()->setEnabled(enabled);
+}
+
+// invoke actions' overridden triger() function
+void UCActionItemPrivate::_q_invokeActionTrigger(const QVariant &value)
+{
+    invokeTrigger<UCAction>(action, value);
 }
 
 // setter called when bindings from QML set the value. Internal functions will
@@ -145,7 +140,7 @@ void UCActionItemPrivate::attachAction(bool attach)
     Q_Q(UCActionItem);
     if (attach) {
         QObject::connect(q, SIGNAL(triggered(QVariant)),
-                action, SLOT(trigger(QVariant)), Qt::DirectConnection);
+                q, SLOT(_q_invokeActionTrigger(QVariant)), Qt::DirectConnection);
         if (!(flags & CustomVisible)) {
             QObject::connect(action, SIGNAL(visibleChanged()),
                     q, SLOT(_q_visibleBinding()), Qt::DirectConnection);
@@ -168,7 +163,7 @@ void UCActionItemPrivate::attachAction(bool attach)
         }
     } else {
         QObject::disconnect(q, SIGNAL(triggered(QVariant)),
-                   action, SLOT(trigger(QVariant)));
+                   q, SLOT(_q_invokeActionTrigger(QVariant)));
         if (!(flags & CustomVisible)) {
             QObject::disconnect(action, SIGNAL(visibleChanged()),
                        q, SLOT(_q_visibleBinding()));
@@ -371,7 +366,6 @@ void UCActionItem::resetIconName()
 void UCActionItem::trigger(const QVariant &value)
 {
     if (isEnabled()) {
-        // FIXME: bug #1524234: invoke function from QMetaObject (zsombi)
         Q_EMIT triggered(value);
     }
 }

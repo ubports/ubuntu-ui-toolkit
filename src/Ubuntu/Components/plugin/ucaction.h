@@ -21,6 +21,28 @@
 #include <QtCore/QVariant>
 #include <QtCore/QUrl>
 
+// the function detects whether QML has an overridden trigger() slot available
+// and invokes the one with the appropriate signature
+template<class T>
+inline void invokeTrigger(T *object, const QVariant &value)
+{
+    bool invoked = false;
+    const QMetaObject *mo = object->metaObject();
+    int offset = mo->methodOffset();
+    int paramlessTriggerIndex = mo->indexOfSlot("trigger()") - offset;
+    int paramTriggerIndex = mo->indexOfSlot("trigger(QVariant)") - offset;
+
+    /* if we have the parametered version, call that even if the value given is invalid */
+    if (paramTriggerIndex >= 0) {
+        invoked = QMetaObject::invokeMethod(object, "trigger", Q_ARG(QVariant, value));
+    } else if (paramlessTriggerIndex >= 0) {
+        invoked = QMetaObject::invokeMethod(object, "trigger");
+    }
+    if (!invoked) {
+        object->trigger(value);
+    }
+}
+
 class QQmlComponent;
 class UCAction : public QObject
 {
