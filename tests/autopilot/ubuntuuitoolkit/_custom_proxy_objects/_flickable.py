@@ -37,9 +37,6 @@ def _get_visible_container_bottom(containers):
     containers_bottom = [
         container.globalRect.y + container.globalRect.height
         for container in containers if container.globalRect.height > 0]
-    keyboard = _common.get_keyboard()
-    if keyboard._keyboard.is_available():
-        containers_bottom.append(keyboard._keyboard.keyboard.globalRect.y)
     return min(containers_bottom)
 
 
