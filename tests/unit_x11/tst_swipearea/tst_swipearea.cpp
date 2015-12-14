@@ -884,10 +884,17 @@ void tst_UCSwipeArea::immediateRecognitionWhenConstraintsDisabled()
 
     QPoint touch0Pos(edgeDragArea->width()/2.0f, m_view->height()/2.0f);
 
+    QSignalSpy pressedSpy(edgeDragArea, &UCSwipeArea::pressedChanged);
+    QCOMPARE(edgeDragArea->pressed(), false);
+
     QTest::touchEvent(m_view, m_device).press(0, touch0Pos);
 
     // check for immediate recognition
     QCOMPARE((int)edgeDragArea->d->status, (int)UCSwipeAreaPrivate::Recognized);
+
+    // and it is pressed
+    QCOMPARE(edgeDragArea->pressed(), true);
+    QCOMPARE(pressedSpy.count(), 1);
 
     // and therefore it should have immediately grabbed the touch point,
     // not letting it leak to items behind him.
