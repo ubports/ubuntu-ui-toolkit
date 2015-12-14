@@ -99,7 +99,7 @@ Item {
        \qmlproperty url Icon::source
     */
 
-    property alias source: image.name
+    property alias source: image.source
 
     implicitWidth: image.implicitWidth
     implicitHeight: image.implicitHeight
