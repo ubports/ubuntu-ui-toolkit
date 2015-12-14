@@ -80,6 +80,8 @@ ActionItem {
      */
     property alias __mouseArea: mouseArea
 
+    activeFocusOnPress: true
+
     MouseArea {
         id: mouseArea
         anchors.fill: parent
