@@ -205,7 +205,7 @@ class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
 
     def checkPageHeader(self, pageTitle):
         header_label = self.main_view.wait_select_single(
-            objectName="header_title_label", text=pageTitle)
+            objectName="header_title_label", text=pageTitle, visible=True)
         self.assertThat(header_label, Not(Is(None)))
         self.assertThat(header_label.visible, Eventually(Equals(True)))
 

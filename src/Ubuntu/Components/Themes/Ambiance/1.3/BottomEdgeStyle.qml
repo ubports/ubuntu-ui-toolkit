@@ -122,6 +122,12 @@ BottomEdgeStyle {
                     item.anchors.horizontalCenter = panelItem.horizontalCenter;
                 }
             }
+
+            Connections {
+                target: bottomEdge
+                onCommitStarted: loader.asynchronous = false
+                onCommitCompleted: loader.asynchronous = true
+            }
         }
     }
 }

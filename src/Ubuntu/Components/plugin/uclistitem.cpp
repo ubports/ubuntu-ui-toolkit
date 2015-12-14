@@ -21,6 +21,7 @@
 #include "uclistitem_p.h"
 #include "uclistitemactions.h"
 #include "uclistitemactions_p.h"
+#include "privates/listitemselection.h"
 #include "ucubuntuanimation.h"
 #include "propertychange_p.h"
 #include "i18n.h"
@@ -192,6 +193,7 @@ UCListItemPrivate::UCListItemPrivate()
     , trailingActions(Q_NULLPTR)
     , mainAction(Q_NULLPTR)
     , expansion(Q_NULLPTR)
+    , selection(Q_NULLPTR)
     , xAxisMoveThresholdGU(DEFAULT_SWIPE_THRESHOLD_GU)
     , button(Qt::NoButton)
     , highlighted(false)
@@ -234,7 +236,10 @@ void UCListItemPrivate::init()
     // watch grid unit size change and set implicit size
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_updateSize()));
     _q_updateSize();
-    setStyleName("ListItemStyle");
+    styleDocument = "ListItemStyle";
+
+    // create selection object
+    selection = new ListItemSelection(q);
 }
 
 void UCListItemPrivate::_q_themeChanged()
@@ -300,13 +305,6 @@ void UCListItemPrivate::_q_contentMoving()
 
 // synchronizes selection mode, initializes the style if has not been done yet,
 // which in turn reveals the selection panels
-void UCListItemPrivate::_q_syncSelectMode()
-{
-    loadStyleItem();
-    Q_Q(UCListItem);
-    Q_EMIT q->selectModeChanged();
-}
-
 // same for the dragMode
 void UCListItemPrivate::_q_syncDragMode()
 {
@@ -326,7 +324,9 @@ void UCListItemPrivate::preStyleChanged()
 bool UCListItemPrivate::loadStyleItem(bool animated)
 {
     // the style should be loaded only if one of the condition is satisfied
-    if (!swiped && !selectMode() && !dragMode() && !(expansion && expansion->expanded())) {
+    // do not use selectMode() as that will create the selection handler, which may not even be needed at this phase.
+    bool inSelectMode = (selection && selection->inSelectMode());
+    if (!swiped && !inSelectMode && !dragMode() && !(expansion && expansion->expanded())) {
         return false;
     }
 
@@ -424,6 +424,7 @@ void UCListItemPrivate::setSwiped(bool swiped)
         // lock contentItem left/right edges
         lockContentItem(true);
     }
+    Q_EMIT q->swipedChanged();
 }
 
 // connects/disconnects from the Flickable anchestor to get notified when to do rebound
@@ -1011,13 +1012,7 @@ void UCListItem::componentComplete()
     }
 
     if (d->parentAttached) {
-        // connect selectedIndicesChanged
-        connect(d->parentAttached.data(), &UCViewItemsAttached::selectedIndicesChanged,
-                this, &UCListItem::selectedChanged);
-        // sync selectModeChanged()
-        connect(d->parentAttached, SIGNAL(selectModeChanged()),
-                this, SLOT(_q_syncSelectMode()));
-        // also draggable
+        // update draggable
         connect(d->parentAttached, SIGNAL(dragModeChanged()),
                 this, SLOT(_q_syncDragMode()));
 
@@ -1069,6 +1064,7 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
         }
 
         if (d->parentAttached) {
+            d->selection->attachToViewItems(d->parentAttached.data());
             connect(d->parentAttached.data(), SIGNAL(expandedIndicesChanged(QList<int>)),
                     this, SLOT(_q_updateExpansion(QList<int>)), Qt::DirectConnection);
         }
@@ -1690,16 +1686,14 @@ void UCListItemPrivate::setDragMode(bool draggable)
 bool UCListItemPrivate::isSelected()
 {
     Q_Q(UCListItem);
-    return UCViewItemsAttachedPrivate::get(parentAttached)->isItemSelected(q);
+    Q_ASSERT(selection);
+    return selection->isSelected();
 }
 void UCListItemPrivate::setSelected(bool value)
 {
     Q_Q(UCListItem);
-    if (value) {
-        UCViewItemsAttachedPrivate::get(parentAttached)->addSelectedItem(q);
-    } else {
-        UCViewItemsAttachedPrivate::get(parentAttached)->removeSelectedItem(q);
-    }
+    Q_ASSERT(selection);
+    selection->setSelected(value);
 }
 
 /*!
@@ -1712,14 +1706,19 @@ void UCListItemPrivate::setSelected(bool value)
  */
 bool UCListItemPrivate::selectMode()
 {
-    UCViewItemsAttachedPrivate *attached = UCViewItemsAttachedPrivate::get(parentAttached);
-    return attached ? attached->selectable : false;
+    Q_Q(UCListItem);
+    if (!selection) {
+        selection = new ListItemSelection(q);
+    }
+    return selection->inSelectMode();
 }
 void UCListItemPrivate::setSelectMode(bool selectable)
 {
-    if (parentAttached) {
-        parentAttached->setSelectMode(selectable);
+    Q_Q(UCListItem);
+    if (!selection) {
+        selection = new ListItemSelection(q);
     }
+    selection->setSelectMode(selectable);
 }
 
 /*!
@@ -1843,6 +1842,19 @@ void UCListItem::setSwipeEnabled(bool swipeEnabled)
     }
     d->swipeEnabled = swipeEnabled;
     Q_EMIT swipeEnabledChanged();
+}
+
+/*!
+ * \qmlproperty bool ListItem::swiped
+ * \readonly
+ * \since Ubuntu.Components 1.3
+ * The property notifies about the content being swiped so leading or trailing
+ * actions are visible.
+ */
+bool UCListItem::isSwiped()
+{
+    Q_D(UCListItem);
+    return d->swiped;
 }
 
 #include "moc_uclistitem.cpp"

@@ -409,10 +409,11 @@ Ubuntu.Components.Popups.Dialog 1.0 0.1: PopupBase
 Ubuntu.Components.Popups.Dialog 1.3: PopupBase
     property Item caller
     property double callerMargin
+    property double contentHeight
+    property double contentWidth
     default property list<QtObject> contents
     property double edgeMargins
     property bool modal
-    property Item pointerTarget
     property string text
     property string title
 Ubuntu.Components.ListItems.Divider 1.0 0.1: QQuickImageBase
@@ -569,6 +570,7 @@ Ubuntu.Components.ListItem 1.3 1.2: StyledItem
     property bool selectMode
     property bool selected
     property bool swipeEnabled 1.3
+    readonly property bool swiped 1.3
     property ListItemActions trailingActions
 Ubuntu.Components.ListItemActions 1.2: QtObject
     property list<Action> actions
@@ -636,6 +638,7 @@ Ubuntu.Components.Mouse 1.0 0.1: QtObject
     property bool enabled
     property list<Item> forwardTo
     readonly property bool hoverEnabled
+    property bool ignoreSynthesizedEvents
     signal pressed(QQuickMouseEvent mouse, Item host)
     signal released(QQuickMouseEvent mouse, Item host)
     signal clicked(QQuickMouseEvent mouse, Item host)
@@ -1661,6 +1664,7 @@ Ubuntu.Components.ViewItems 1.2: QtObject
     property bool dragMode
     property list<int> expandedIndices
     property int expansionFlags
+    signal selectedIndicesChanged(list<int> indices)
     signal dragUpdated(ListItemDrag event)
     signal expandedIndicesChanged(list<int> indices)
     property bool selectMode
