@@ -126,7 +126,7 @@ Template {
                 Action { iconName: "edit-select-all" },
                 Action { iconName: "mail-forward" },
                 Action { iconName: "edit-copy" },
-                Action { iconName: "select-none" }
+                Action { iconName: "select" }
             ]
             fixedAction: Action {
                 iconName: "delete"
