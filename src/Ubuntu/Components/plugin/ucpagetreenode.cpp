@@ -130,7 +130,7 @@ void UCPageTreeNodePrivate::updatePageTree()
 /*!
    \internal
    \brief UCPageTreeNodePrivate::getParentPageTreeNode
-   \return the parent node in the page tree, or null if the item is the root node or invalid.
+   Returns the parent node in the page tree, or null if the item is the root node or invalid.
  */
 UCPageTreeNode *UCPageTreeNodePrivate::getParentPageTreeNode()
 {
@@ -161,7 +161,6 @@ UCPageTreeNode *UCPageTreeNodePrivate::getParentPageTreeNode()
 /*!
  * \internal
  * \brief UCPageTreeNodePrivate::_q_activeBinding
- * \param active
  * Directly updates the activeBinding property. Is used as
  * callback to support qml style bindings that can be overriden
  */
@@ -179,7 +178,6 @@ void UCPageTreeNodePrivate::_q_activeBinding(bool active)
 /*!
  * \internal
  * \brief UCPageTreeNodePrivate::_q_pageStackBinding
- * \param pageStack
  * Directly updates the pageStack property. Is used as
  * callback to support qml style bindings that can be overriden
  */
@@ -197,7 +195,6 @@ void UCPageTreeNodePrivate::_q_pageStackBinding(QQuickItem *pageStack)
 /*!
  * \internal
  * \brief UCPageTreeNodePrivate::_q_propagatedBinding
- * \param propagated
  * Directly updates the __propagated property. Is used as
  * callback to support qml style bindings that can be overriden
  */
@@ -278,11 +275,9 @@ static QList<UCPageTreeNodePrivate::Node> collectNodes (UCPageTreeNode *root)
 
 /*!
  * \brief UCPageTreeNodePrivate::dumpNode
- * \param n The node to dump
- * \param oldDepth The string prefix used by the parent Node
- * \param depth The string prefix to used for this Node
- * \param isRoot Is the current Node the root Node
- * Pretty prints the given Node \l n to the
+ * Pretty prints the node \l n using the \l oldDepth of the parentNode and
+ * \l depth as the current Nodes prefix. The \l isRoot parameter
+ * specifies if the current Node \l n is the root Node.
  */
 void UCPageTreeNodePrivate::dumpNode (const Node &n, const QString &oldDepth,const QString &depth, bool isRoot)
 {
