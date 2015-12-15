@@ -95,6 +95,55 @@ StyledItem {
     /*! \internal */
     //property alias __verticalScrollBar: scroller.verticalScrollBar
 
+    Keys.enabled: true
+    Keys.onLeftPressed: {
+        console.log("Left pressed")
+        if (horizontalScrollbar.__styleInstance !== null) {
+            horizontalScrollbar.__styleInstance.scroll(-flickableItem.width*internal.shortScrollingRatio)
+        }
+    }
+    Keys.onRightPressed: {
+        console.log("Right pressed")
+        if (horizontalScrollbar.__styleInstance !== null) {
+            horizontalScrollbar.__styleInstance.scroll(flickableItem.width*internal.shortScrollingRatio)
+        }
+    }
+    Keys.onDownPressed: {
+        console.log("Down pressed")
+        if (verticalScrollbar.__styleInstance !== null) {
+            verticalScrollbar.__styleInstance.scroll(flickableItem.height*internal.shortScrollingRatio)
+        }
+    }
+    Keys.onUpPressed: {
+        console.log("Up pressed")
+        if (verticalScrollbar.__styleInstance !== null) {
+            verticalScrollbar.__styleInstance.scroll(-flickableItem.height*internal.shortScrollingRatio)
+        }
+    }
+    Keys.onPressed:  {
+        console.log("Pressed")
+        if (event.key == Qt.Key_Escape) {
+            var scrollbarWithActiveDrag = (horizontalScrollbar.__styleInstance && horizontalScrollbar.__styleInstance.draggingThumb)
+                    || (verticalScrollbar.__styleInstance && verticalScrollbar.__styleInstance.draggingThumb)
+                    || null
+            if (scrollbarWithActiveDrag !== null) {
+                scrollbarWithActiveDrag.__styleInstance.resetScrollingToPreDrag()
+            }
+            event.accepted = true
+        } else if (verticalScrollbar.__styleInstance !== null) {
+            if (event.key == Qt.Key_PageDown) {
+                verticalScrollbar.__styleInstance.scroll(flickableItem.height*internal.longScrollingRatio)
+            } else if (event.key == Qt.Key_PageUp) {
+                verticalScrollbar.__styleInstance.scroll(-flickableItem.height*internal.longScrollingRatio)
+            } else if (event.key == Qt.Key_Home) {
+                verticalScrollbar.__styleInstance.scrollToBeginning()
+            } else if (event.key == Qt.Key_End) {
+                verticalScrollbar.__styleInstance.scrollToEnd()
+            }
+            event.accepted = true
+        }
+    }
+
     onContentItemChanged: {
         // Check if the item provided is a Flickable
         if (contentItem.hasOwnProperty("contentWidth") &&
@@ -114,6 +163,10 @@ StyledItem {
 
         property Flickable flickableItem
         property real nonOverlayScrollbarMargin: verticalScrollbar.__styleInstance ? verticalScrollbar.__styleInstance.nonOverlayScrollbarMargin : 0
+        //shortScrollingRation is used for arrow keys, longScrollingRatio is used for pgUp/pgDown
+        //0.1 means we will scroll 10% of the *visible* flickable area
+        property real shortScrollingRatio: __styleInstance ? __styleInstance.shortScrollingRatio : 0.1
+        property real longScrollingRatio: __styleInstance ? __styleInstance.longScrollingRatio : 0.9
 
         //if the flickable is not coming from the user but from our internal Component...
         Binding {
@@ -148,61 +201,8 @@ StyledItem {
             anchors.bottomMargin: (horizontalScrollbar.align === Qt.AlignBottom && horizontalScrollbar.__alwaysOnScrollbars)
                                   ? internal.nonOverlayScrollbarMargin : 0
 
-            //shortScrollingRation is used for arrow keys, longScrollingRatio is used for pgUp/pgDown
-            //0.1 means we will scroll 10% of the *visible* flickable area
-            property real shortScrollingRatio: __styleInstance ? __styleInstance.shortScrollingRatio : 0.1
-            property real longScrollingRatio: __styleInstance ? __styleInstance.longScrollingRatio : 0.9
-
             clip: true
             focus: true
-            Keys.enabled: true
-            Keys.onLeftPressed: {
-                console.log("Left pressed")
-                if (horizontalScrollbar.__styleInstance !== null) {
-                    horizontalScrollbar.__styleInstance.scroll(-flickableItem.width*shortScrollingRatio)
-                }
-            }
-            Keys.onRightPressed: {
-                console.log("Right pressed")
-                if (horizontalScrollbar.__styleInstance !== null) {
-                    horizontalScrollbar.__styleInstance.scroll(flickableItem.width*shortScrollingRatio)
-                }
-            }
-            Keys.onDownPressed: {
-                console.log("Down pressed")
-                if (verticalScrollbar.__styleInstance !== null) {
-                    verticalScrollbar.__styleInstance.scroll(flickableItem.height*shortScrollingRatio)
-                }
-            }
-            Keys.onUpPressed: {
-                console.log("Up pressed")
-                if (verticalScrollbar.__styleInstance !== null) {
-                    verticalScrollbar.__styleInstance.scroll(-flickableItem.height*shortScrollingRatio)
-                }
-            }
-            Keys.onPressed:  {
-                console.log("Pressed")
-                if (event.key == Qt.Key_Escape) {
-                    var scrollbarWithActiveDrag = (horizontalScrollbar.__styleInstance && horizontalScrollbar.__styleInstance.draggingThumb)
-                            || (verticalScrollbar.__styleInstance && verticalScrollbar.__styleInstance.draggingThumb)
-                            || null
-                    if (scrollbarWithActiveDrag !== null) {
-                        scrollbarWithActiveDrag.__styleInstance.resetScrollingToPreDrag()
-                    }
-                    event.accepted = true
-                } else if (verticalScrollbar.__styleInstance !== null) {
-                    if (event.key == Qt.Key_PageDown) {
-                        verticalScrollbar.__styleInstance.scroll(flickableItem.height*longScrollingRatio)
-                    } else if (event.key == Qt.Key_PageUp) {
-                        verticalScrollbar.__styleInstance.scroll(-flickableItem.height*longScrollingRatio)
-                    } else if (event.key == Qt.Key_Home) {
-                        verticalScrollbar.__styleInstance.scrollToBeginning()
-                    } else if (event.key == Qt.Key_End) {
-                        verticalScrollbar.__styleInstance.scrollToEnd()
-                    }
-                    event.accepted = true
-                }
-            }
         }
 
         Scrollbar {
@@ -242,8 +242,14 @@ StyledItem {
             anchors.fill: parent
             enabled: true
             onPressed: {
-                console.log("REQUESTING FOCUS ON VIEWPORT OF", root)
                 viewportItem.focus = true
+
+                //activeFocusOnPress only works if *all* the parents have activeFocusOnPress enabled
+                //Some applications (like messaging-app at the moment) have activeFocusOnPress:false on
+                //the MainView, and that would make focusing the scrollview impossible. Hence we also
+                //force it from QML side
+                root.forceActiveFocus()
+
                 mouse.accepted = false
             }
         }
