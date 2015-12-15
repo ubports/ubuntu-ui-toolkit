@@ -76,6 +76,7 @@
 #include "ucbottomedge.h"
 #include "ucbottomedgeregion.h"
 #include "ucbottomedgestyle.h"
+#include "ucpagetreenode.h"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -259,6 +260,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCSwipeArea>(uri, 1, 3, "SwipeArea");
     qmlRegisterType<UCBottomEdge>(uri, 1, 3, "BottomEdge");
     qmlRegisterType<UCBottomEdgeRegion>(uri, 1, 3, "BottomEdgeRegion");
+    qmlRegisterType<UCPageTreeNode>(uri, 1, 3, "PageTreeNode");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
