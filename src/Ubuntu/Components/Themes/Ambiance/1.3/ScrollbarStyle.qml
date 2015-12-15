@@ -831,7 +831,6 @@ Item {
                     }
                 }
 
-
                 //this property is true if the user could be starting a drag (i.e. pressed inside the thumb)
                 //but drag.active is not true yet (because that requires dragging >0 pixels)
                 //Usecase: thumb is at the top, user drags towards the top and

@@ -22,31 +22,36 @@ Page {
 
     default property alias content: column.children
     property alias spacing: column.spacing
-    property alias scrollable: flickable.interactive
-    readonly property alias flickable: flickable
+    property alias scrollable: templateFlickable.interactive
+    flickable: templateFlickable
 
     header: PageHeader {
         title: template.title
-        flickable: layout.columns === 1 ? flickable : null
+        flickable: layout.columns === 1 ? templateFlickable : null
         onFlickableChanged: exposed = true;
     }
 
     ScrollView {
-        anchors.fill: parent
-        anchors.topMargin: template.header.flickable ? 0 : template.header.height
+        //anchors.fill: parent
+        //anchors.topMargin: template.header.flickable ? 0 : template.header.height
+        anchors {
+            fill: parent
+            topMargin: template.header.flickable ? 0 : template.header.height
+        }
         Flickable {
-            id: flickable
+            id: templateFlickable
             objectName: "TemplateFlickable"
             anchors.fill: parent
+            topMargin: units.gu(2)
+            bottomMargin: units.gu(2)
             contentHeight: column.height
-            contentWidth: column.width
             interactive: contentHeight > height
             Column {
                 id: column
                 spacing: units.gu(6)
-                width: flickable.width
-                height: childrenRect.height
-                //anchors.margins: units.gu(2)
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.margins: units.gu(2)
             }
         }
     }

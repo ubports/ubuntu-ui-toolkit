@@ -258,8 +258,8 @@ Item {
             popoverTest.popoverComponent = data.component;
             var center = centerOf(popoverTest);
             mouseClick(popoverTest, center.x, center.y);
-            verify(popoverTest.focus, "Button focus not gained.");
             waitForRendering(popoverTest.popover);
+            verify(popoverTest.popover, "Popover focus not gained.");
             popupCloseSpy.target = popoverTest.popover.Component;
 
             var closeButton = findChildWithProperty(popoverTest.popover, "text", "close");

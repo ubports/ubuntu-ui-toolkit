@@ -810,6 +810,22 @@ Ubuntu.Components.PageStack 1.3: PageTreeNode
     function var push(var page, var properties)
     function var pop()
     function var clear()
+Ubuntu.Components.PageTreeNode 1.3: StyledItem
+    property bool active
+    readonly property Item activeLeafNode
+    property bool isLeaf
+    signal isLeafChanged(bool isLeaf)
+    signal activeChanged(bool active)
+    signal parentNodeChanged(PageTreeNode parentNode)
+    signal pageStackChanged(Item pageStack)
+    signal activeLeafNodeChanged(Item activeLeafNode)
+    signal propagatedChanged(QtObject propagated)
+    signal toolbarChanged(Item toolbar)
+    signal isPageTreeNodeChanged(bool isPageTreeNode)
+    function dumpNodeTree()
+    property Item pageStack
+    property PageTreeNode parentNode
+    property Item toolbar
 Ubuntu.Components.Themes.Palette 0.1: QtObject
     property PaletteValues normal
     property PaletteValues selected
