@@ -902,6 +902,7 @@ Item {
                 }
                 enabled: isScrollable && interactive //&& alwaysOnScrollbars
                 onPressed: {
+                    cacheMousePosition(mouse)
                     //potentially we allow using touch to trigger mouse interactions, in case the
                     //mouse has previously hovered over the area and activated the steppers style
                     //checking for the value of visuals.state wouldn't be useful here, the value could be
@@ -985,10 +986,15 @@ Item {
                     flickableItem.contentY = contentYAtDragStart
                 }
 
-                property int originXAtDragStart: 0
-                property int originYAtDragStart: 0
-                property int contentXAtDragStart: 0
-                property int contentYAtDragStart: 0
+                function cacheMousePosition(mouse) {
+                    previousX = mouse.x
+                    previousY = mouse.y
+                }
+
+                property real originXAtDragStart: 0
+                property real originYAtDragStart: 0
+                property real contentXAtDragStart: 0
+                property real contentYAtDragStart: 0
 
                 //following UX spec, if during a drag the mouse goes far away from the scrollbar
                 //we want to temporarily lock the drag and reset the scrollbar to where it was when
@@ -996,6 +1002,8 @@ Item {
                 //threshold, the drag has to resum without the need to release and pressHold again)
                 property bool lockDrag: false
 
+                property real previousX: 0
+                property real previousY: 0
                 drag {
                     //don't start a drag while we're scrolling using press and hold
                     target: pressHoldTimer.running ? undefined : slider
@@ -1028,6 +1036,13 @@ Item {
 
                 // drag slider and content to the proper position
                 onPositionChanged: {
+                    //avoid shaking the view when the user is draggin via touch
+                    if (Math.abs(mouse.x - previousX) < units.dp(2)
+                            && Math.abs(mouse.y - previousY) < units.dp(2)) {
+                        return
+                    }
+                    cacheMousePosition(mouse)
+
                     if (pressedButtons == Qt.LeftButton && (slider.mouseDragging || slider.touchDragging)) {
                         console.log("DRAGGING")
                         if ((isVertical && Math.abs(mouse.x - thumbArea.x) >= flowContainer.thickness * 10)
