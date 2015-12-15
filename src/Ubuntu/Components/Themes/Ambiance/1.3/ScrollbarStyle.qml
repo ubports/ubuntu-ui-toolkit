@@ -692,10 +692,10 @@ Item {
         //(it could happen that while it is showing the hint the size of the flickable changes enough
         //to trigger the transition to thumb style, and in that case we want to hint again using thumb
         //style)
-        if (initialized && isScrollable && (state == '' || state === 'hidden' || (__disableStateBinding && state !== hintingStyle))) {
-            console.log("STARTING HINT", __disableStateBinding, state, hintingStyle, visuals)
+        if (initialized && isScrollable && !draggingThumb && !pressHoldTimer.running
+                && (state == '' || state === 'hidden' || (__disableStateBinding && visuals.state !== hintingStyle))) {
             __disableStateBinding = true
-            state = hintingStyle
+            visuals.state = hintingStyle
         }
     }
     //each scrollbar connects to both width and height because we want to show both the scrollbar in
