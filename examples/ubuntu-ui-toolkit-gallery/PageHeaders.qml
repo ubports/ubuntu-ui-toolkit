@@ -71,7 +71,7 @@ Template {
     PageHeader {
         id: editHeader
         visible: page.header === editHeader
-        property Item delegate: Component {
+        property Component delegate: Component {
             // FIXME: Replace this delegate with the new
             //  text button when it becomes available.
             AbstractButton {

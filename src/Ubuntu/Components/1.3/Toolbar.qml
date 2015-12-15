@@ -26,7 +26,7 @@ import Ubuntu.Components 1.3
     \qml
     PageHeader {
         id: editHeader
-        property Item delegate: Component {
+        property Component delegate: Component {
             // FIXME: Replace this delegate with the new
             //  text button when it becomes available.
             AbstractButton {
