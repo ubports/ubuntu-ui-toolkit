@@ -20,6 +20,6 @@ examples/ubuntu-ui-toolkit-gallery/po/*.mo
 tests/unit/tst_i18n/tst_*/*/share/locale/en/LC_MESSAGES/*.mo
 tests/unit/tst_i18n/*/share/locale/en/LC_MESSAGES/*.mo
 tests/unit/tst_units/dpr*/dpr*
-tests/apicheck/apicheck
+apicheck/apicheck
 ubuntu-ui-toolkit-launcher/ubuntu-ui-toolkit-launcher
 build_paths.inc

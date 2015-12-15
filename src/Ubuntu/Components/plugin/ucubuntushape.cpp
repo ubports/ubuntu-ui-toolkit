@@ -29,18 +29,14 @@
 #include "ucubuntushapetexture.h"
 #include "ucunits.h"
 #include "ucnamespace.h"
-#include "quickutils.h"
 #include <QtCore/QPointer>
 #include <QtGui/QGuiApplication>
-#include <QtGui/QScreen>
-#include <QtQuick/QQuickWindow>
-#include <QtQuick/QSGTextureProvider>
+#include <QtQml/QQmlInfo>
+#include <QtQuick/private/qsgadaptationlayer_p.h>
+// This private header uses the emit keyword while we build with QT_NO_KEYWORDS set. See #1507910.
 #define emit Q_EMIT
 #include <QtQuick/private/qquickimage_p.h>
 #undef emit
-#include <QtQuick/private/qsgadaptationlayer_p.h>
-#include <QtQml/qqmlinfo.h>
-#include <math.h>
 
 // Anti-aliasing distance of the contour in pixels.
 const float distanceAApx = 1.75f;
@@ -814,12 +810,9 @@ void UCUbuntuShape::setBorderSource(const QString& borderSource)
 */
 void UCUbuntuShape::setColor(const QColor& color)
 {
-    static bool loggedOnce = false;
-    if (isVersionGreaterThanOrEqual(Version13) && !loggedOnce) {
-        loggedOnce = true;
-        qmlInfo(this) << "'color' is deprecated. Use 'backgroundColor', 'secondaryBackgroundColor' "
-            "and 'backgroundMode' instead.";
-    }
+    Q_UNUSED(color);
+    if (isVersionGreaterThanOrEqual(Version13))
+        UC_QML_DEPRECATION_WARNING("'color' is deprecated. Use 'backgroundColor', 'secondaryBackgroundColor' and 'backgroundMode' instead.");
 
     if (!(m_flags & BackgroundApiSet)) {
         const QRgb colorRgb = qRgba(color.red(), color.green(), color.blue(), color.alpha());
@@ -847,12 +840,8 @@ void UCUbuntuShape::setColor(const QColor& color)
 */
 void UCUbuntuShape::setGradientColor(const QColor& gradientColor)
 {
-    static bool loggedOnce = false;
-    if (isVersionGreaterThanOrEqual(Version13) && !loggedOnce) {
-        loggedOnce = true;
-        qmlInfo(this) << "'gradientColor' is deprecated. Use 'backgroundColor', "
-            "'secondaryBackgroundColor' and 'backgroundMode' instead.";
-    }
+    if (isVersionGreaterThanOrEqual(Version13))
+        UC_QML_DEPRECATION_WARNING("'gradientColor' is deprecated. Use 'backgroundColor', 'secondaryBackgroundColor' and 'backgroundMode' instead.");
 
     if (!(m_flags & BackgroundApiSet)) {
         m_flags |= GradientColorSet;
@@ -878,11 +867,8 @@ void UCUbuntuShape::setGradientColor(const QColor& gradientColor)
 */
 void UCUbuntuShape::setImage(const QVariant& image)
 {
-    static bool loggedOnce = false;
-    if (isVersionGreaterThanOrEqual(Version13) && !loggedOnce) {
-        loggedOnce = true;
-        qmlInfo(this) << "'image' is deprecated. Use 'source' instead.";
-    }
+    if (isVersionGreaterThanOrEqual(Version13))
+        UC_QML_DEPRECATION_WARNING("'image' is deprecated. Use 'source' instead.");
 
     if (!(m_flags & SourceApiSet)) {
         QQuickItem* newImage = qobject_cast<QQuickItem*>(qvariant_cast<QObject*>(image));
