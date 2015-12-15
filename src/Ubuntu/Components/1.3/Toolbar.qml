@@ -21,7 +21,73 @@ import Ubuntu.Components 1.3
     \qmltype Toolbar
     \inqmlmodule Ubuntu.Components 1.3
     \ingroup ubuntu
-    TODO
+    \brief Toolbar that can be used as an extension for the edit mode header.
+    Example:
+    \qml
+    PageHeader {
+        id: editHeader
+        property Item delegate: Component {
+            // FIXME: Replace this delegate with the new
+            //  text button when it becomes available.
+            AbstractButton {
+                id: button
+                action: modelData
+                width: label.width + units.gu(4)
+                height: parent.height
+                Rectangle {
+                    color: UbuntuColors.darkGrey
+                    opacity: 0.1
+                    anchors.fill: parent
+                    visible: button.pressed
+                }
+                Label {
+                    anchors.centerIn: parent
+                    id: label
+                    text: action.text
+                    font.weight: text === "Confirm" ? Font.Normal : Font.Light
+                }
+            }
+        }
+
+        leadingActionBar {
+            anchors.leftMargin: 0
+            actions: Action {
+                text: "Cancel"
+                iconName: "close"
+            }
+            delegate: editHeader.delegate
+        }
+        trailingActionBar {
+            anchors.rightMargin: 0
+            actions: Action {
+                text: "Confirm"
+                iconName: "tick"
+            }
+            delegate: editHeader.delegate
+        }
+
+        extension: Toolbar {
+            anchors {
+                left: parent.left
+                right: parent.right
+                bottom: parent.bottom
+            }
+            trailingActionBar.actions: [
+                Action { iconName: "bookmark-new" },
+                Action { iconName: "add" },
+                Action { iconName: "edit-select-all" },
+                Action { iconName: "edit-copy" },
+                Action { iconName: "select" }
+            ]
+            leadingActionBar.actions: Action {
+                iconName: "delete"
+                text: "delete"
+                onTriggered: print("Delete action triggered")
+            }
+        }
+    }
+    \endqml
+    See \l PageHeader.
 */
 StyledItem {
     id: toolbar
@@ -73,8 +139,8 @@ StyledItem {
                 Action { iconName: "bookmark-new" },
                 Action { iconName: "add" },
                 Action { iconName: "edit-select-all" },
-                Action { iconName: "edit-copy" },
-            }
+                Action { iconName: "edit-copy" }
+            ]
       }
       \endqml
       The trailing ActionBar may contain up to 8 actions.

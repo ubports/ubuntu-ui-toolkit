@@ -72,7 +72,7 @@ Template {
         id: editHeader
         visible: page.header === editHeader
         property Item delegate: Component {
-            // FIXME: We can replace this delegate with the new
+            // FIXME: Replace this delegate with the new
             //  text button when it becomes available.
             AbstractButton {
                 id: button
@@ -89,7 +89,7 @@ Template {
                     anchors.centerIn: parent
                     id: label
                     text: action.text
-                    font.weight: Font.Light
+                    font.weight: text === "Confirm" ? Font.Normal : Font.Light
                 }
             }
         }
