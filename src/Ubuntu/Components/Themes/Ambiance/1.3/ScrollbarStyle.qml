@@ -964,18 +964,16 @@ Item {
                 }
 
                 function saveFlickableScrollingState() {
-                    originXAtDragStart = flickableItem.originX
-                    originYAtDragStart = flickableItem.originY
                     contentXAtDragStart = flickableItem.contentX
                     contentYAtDragStart = flickableItem.contentY
                 }
                 function resetFlickableToPreDragState() {
-                    flickableItem.contentX = originXAtDragStart + contentXAtDragStart
-                    flickableItem.contentY = originYAtDragStart + contentYAtDragStart
+                    flickableItem.contentX = contentXAtDragStart
+                    flickableItem.contentY = contentYAtDragStart
                 }
 
-                property int originXAtDragStart: 0
-                property int originYAtDragStart: 0
+                //NOTE: contentX already includes originX offset,
+                //so we just have to cache and restore contentX/Y
                 property int contentXAtDragStart: 0
                 property int contentYAtDragStart: 0
 
