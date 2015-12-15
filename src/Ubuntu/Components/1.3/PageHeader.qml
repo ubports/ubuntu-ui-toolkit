@@ -74,11 +74,11 @@ Header {
      */
     property Item contents
 
-    Component.onCompleted: holder.updateContents()
-    onContentsChanged: holder.updateContents()
+    Component.onCompleted: contentsHolder.updateContents()
+    onContentsChanged: contentsHolder.updateContents()
 
     Item {
-        id: holder
+        id: contentsHolder
         anchors {
             left: leading.right
             right: trailing.left
@@ -95,17 +95,17 @@ Header {
         property Item previousContentsParent: null
 
         function updateContents() {
-            if (holder.previousContents) {
-                holder.previousContents.parent = holder.previousContentsParent;
+            if (previousContents) {
+                previousContents.parent = previousContentsParent;
             }
-            if (contents) {
+            if (header.contents) {
                 titleLoader.sourceComponent = null;
-                holder.previousContents = header.contents;
-                holder.previousContentsParent = header.contents.parent;
-                header.contents.parent = holder;
+                previousContents = header.contents;
+                previousContentsParent = header.contents.parent;
+                header.contents.parent = contentsHolder;
             } else {
-                holder.previousContents = null;
-                holder.previousContentsParent = null;
+                previousContents = null;
+                previousContentsParent = null;
                 titleLoader.sourceComponent = __styleInstance.titleComponent;
             }
         }
@@ -144,6 +144,7 @@ Header {
       The default value of \l leadingActionBar actions is
       \l navigationActions, but that value can be changed to show
       different actions in front of the title.
+      The leading action bar has only one slot.
       See \l ActionBar.
      */
     readonly property alias leadingActionBar: leading
@@ -189,6 +190,9 @@ Header {
           }
       }
       \endqml
+      By default the trailing action bar automatically adapts
+      its number of slots to the available space in the range
+      from 3 to 6.
       See \l ActionBar.
       */
     readonly property alias trailingActionBar: trailing
@@ -200,9 +204,61 @@ Header {
             rightMargin: units.gu(1)
         }
         height: header.__styleInstance.contentHeight
-        numberOfSlots: 3
+        numberOfSlots: MathUtils.clamp(0.3*header.width/units.gu(4), 3, 6)
         delegate: header.__styleInstance.defaultActionDelegate
         visible: trailing.width > 0 // at least 1 visible action
+    }
+
+    /*!
+      Item shown at the bottom of the header.
+      The extension can be any Item, but it must have a height so that
+      the PageHeader correctly adjusts its height for the extension to fit.
+      The extension Item should anchor to the left, right and bottom of
+      its parent so that it will be automatically positioned above the
+      header divider. This property replaces the sections property. Sections
+      can now be added to the header as follows:
+      \qml
+        PageHeader {
+            title: "Header with sections"
+            extension: Sections {
+                anchors {
+                    left: parent.left
+                    leftMargin: units.gu(2)
+                    bottom: parent.bottom
+                }
+                model: ["one", "two", "three"]
+            }
+        }
+      \endqml
+    */
+    property Item extension
+
+    onExtensionChanged: extensionHolder.updateExtension()
+    Item {
+        id: extensionHolder
+        anchors {
+            left: parent.left
+            right: parent.right
+            top: contentsHolder.bottom
+        }
+        height: header.extension ? header.extension.height : 0
+
+        property Item previousExtension: header.extension
+        property Item previousExtensionParent: null
+
+        function updateExtension() {
+            if (previousExtension) {
+                previousExtension.parent = previousExtensionParent;
+            }
+            if (header.extension) {
+                previousExtension = header.extension;
+                previousExtensionParent = header.extension.parent;
+                header.extension.parent = extensionHolder;
+            } else {
+                previousExtension = null;
+                previousExtensionParent = null;
+            }
+        }
     }
 
     /*!
@@ -210,6 +266,7 @@ Header {
       Sections shown at the bottom of the header. By default,
       the sections will only be visible if its actions or model
       is set. See \l Sections.
+      \deprecated Use \l extension instead.
      */
     readonly property alias sections: sectionsItem
     Sections {
@@ -217,9 +274,9 @@ Header {
         anchors {
             left: parent.left
             leftMargin: units.gu(2)
-            top: holder.bottom
+            top: contentsHolder.bottom
         }
-        visible: model && model.length > 0
+        visible: model && model.length > 0 && !header.extension
         height: visible ? implicitHeight : 0
     }
 

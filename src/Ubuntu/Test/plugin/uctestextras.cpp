@@ -227,18 +227,151 @@ void UCTestExtras::touchDrag(int touchId, QQuickItem *item, const QPoint &from, 
         steps = 5;
     }
     touchPress(touchId, item, from);
-    QTest::qWait(10);
+    QTest::qWait(20);
     touchMove(touchId, item, from);
     QPoint movePoint(from);
     qreal stepDx = delta.x() / steps;
     qreal stepDy = delta.y() / steps;
     if (!delta.isNull()) {
         for (int i = 0; i < steps - 1; i++) {
-            QTest::qWait(10);
+            QTest::qWait(20);
             movePoint += QPoint(stepDx, stepDy);
             touchMove(touchId, item, movePoint);
         }
     }
-    QTest::qWait(10);
+    QTest::qWait(20);
     touchRelease(touchId, item, from + delta);
+}
+
+/*!
+ * \qmlmethod void TestExtras::mouseDrag(touchId, item, from, delta, button, stateKey, steps = 5, delay = 20)
+ * The function performs a drag with a mouse over an \a item from the starting
+ * point \a from with a \a delta. The gesture is realized with a mouse press,
+ * \a step moves and a release event, with a \e delay in between each mouse event.
+ *
+ * By default the function uses 5 steps to produce the drag. This value can be any
+ * positive number, driving the gesture appliance to be faster (less than 5 moves) or
+ * slower (more than 5 moves). If a negative or 0 value is given, the function will
+ * use the default 5 steps to produce the gesture.
+ */
+
+void UCTestExtras::mouseDrag(QQuickItem *item, const QPoint &from, const QPoint &delta, Qt::MouseButton button, Qt::KeyboardModifiers stateKey, int steps, int delay)
+{
+    if (delta.isNull()) {
+        qWarning() << "delta point is invalid";
+        return;
+    }
+    if (steps <= 0) {
+        steps = 5;
+    }
+    if (delay < 20) {
+        delay = 20;
+    }
+    QTest::mousePress(item->window(), button, stateKey, from, delay);
+    QPoint movePoint(from);
+    qreal stepDx = delta.x() / steps;
+    qreal stepDy = delta.y() / steps;
+    if (!delta.isNull()) {
+        for (int i = 0; i < steps; i++) {
+            QTest::mouseMove(item->window(), movePoint, delay);
+            movePoint += QPoint(stepDx, stepDy);
+        }
+    }
+    QTest::mouseRelease(item->window(), button, stateKey, movePoint, delay);
+}
+
+/*
+ * void TestExtras::touchDragWithPoints(touchId, item, list<point> ponts, delay = 20)
+ * Similar to \l touchDrag function, but here the points must be specified in \e points property.
+ * The first point is expected to be the starting position, after which each point is a relative
+ * point defining the move. A minimum of 5 points are needed to properly produce a drag.
+ * \qml
+ * import Qt.Test 1.0
+ * import Ubuntu.Test 1.0
+ * Item {
+ *     id: testItem
+ *     UbuntuTestCase {
+ *
+ *         function test_vertical_drag_upwards() {
+ *             var points = [];
+ *             points.push(centerOf(testItem));
+ *             points.push(Qt.point(0, -1));
+ *             points.push(Qt.point(0, -3));
+ *             points.push(Qt.point(0, -6));
+ *             points.push(Qt.point(0, -5));
+ *             points.push(Qt.point(0, -2));
+ *             TestExtras.touchDragWithPoints(0, testItem, points);
+ *         }
+ *     }
+ * }
+ * \endqml
+ * The delay must be a minimum of 20 milliseconds.
+ */
+void UCTestExtras::touchDragWithPoints(int touchId, QQuickItem *item, QList<QPoint> points, int delay)
+{
+    if (points.size() < 5) {
+        qWarning() << "minimum 5 points are needed.";
+        return;
+    }
+    if (delay < 20) {
+        delay = 20;
+    }
+
+    QPoint movePoint(points[0]);
+    touchPress(touchId, item, movePoint);
+    QTest::qWait(delay);
+    touchMove(touchId, item, movePoint);
+    for (int i = 1; i < points.size(); ++i) {
+        QTest::qWait(delay);
+        movePoint += points[i];
+        touchMove(touchId, item, movePoint);
+    }
+    QTest::qWait(delay);
+    touchRelease(touchId, item, movePoint);
+}
+
+/*
+ * void TestExtras::mouseDragWithPoints(item, button, list<point> ponts, stateKey = 0, delay = 20)
+ * Similar to \l mouseDrag function, but here the points must be specified in \e points property.
+ * The first point is expected to be the starting position, after which each point is a relative
+ * point defining the move. A minimum of 5 points are needed to properly produce a drag.
+ * \qml
+ * import Qt.Test 1.0
+ * import Ubuntu.Test 1.0
+ * Item {
+ *     id: testItem
+ *     UbuntuTestCase {
+ *
+ *         function test_vertical_drag_upwards() {
+ *             var points = [];
+ *             points.push(centerOf(testItem));
+ *             points.push(Qt.point(0, -1));
+ *             points.push(Qt.point(0, -3));
+ *             points.push(Qt.point(0, -6));
+ *             points.push(Qt.point(0, -5));
+ *             points.push(Qt.point(0, -2));
+ *             TestExtras.mouseDragWithPoints(testItem, Qt.LeftButton, points);
+ *         }
+ *     }
+ * }
+ * \endqml
+ * The delay must be a minimum of 20 milliseconds.
+ */
+void UCTestExtras::mouseDragWithPoints(QQuickItem *item, QList<QPoint> points, Qt::MouseButton button, Qt::KeyboardModifiers stateKey, int delay)
+{
+    if (points.size() < 5) {
+        qWarning() << "minimum 5 points are needed.";
+        return;
+    }
+    if (delay < 20) {
+        delay = 20;
+    }
+    QTest::mousePress(item->window(), button, stateKey, item->mapToScene(points[0]).toPoint(), delay);
+    QPoint movePoint(item->mapToScene(points[0]).toPoint());
+    QTest::mouseMove(item->window(), movePoint, delay);
+    for (int i = 1; i < points.size(); ++i) {
+        movePoint += points[i];
+        QTest::mouseMove(item->window(), movePoint, delay);
+    }
+    QTest::mouseRelease(item->window(), button, stateKey, movePoint, delay);
 }

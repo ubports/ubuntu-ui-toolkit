@@ -93,22 +93,13 @@ PopupBase {
     property alias text: foreground.text
 
     /*!
+      \deprecated
       The Item such as a \l Button that the user interacted with to open the Dialog.
       This property will be used for the automatic positioning of the Dialog next to
       the caller, if possible.
      */
     property Item caller
-
-    /*!
-      The property holds the item to which the pointer should be anchored to.
-      This can be same as the caller or any child of the caller. By default the
-      property is set to caller.
-      */
-    property Item pointerTarget
-    /*! \internal */
-    onPointerTargetChanged: {
-        console.debug("pointerTarget DEPRECATED")
-    }
+    onCallerChanged: console.debug("caller DEPRECATED")
 
     /*!
       The property holds the margins from the dialog's dismissArea. The property
@@ -132,19 +123,19 @@ PopupBase {
       */
     property bool modal: true
 
-    /*
-    QtObject {
-        id: internal
+    /*!
+      \qmlproperty real contentWidth
+      \since Ubuntu.Components 1.3
+      Specifies the width of the dialog content.
+      */
+    property alias contentWidth: foreground.width
 
-        function updatePosition() {
-            var pos = new InternalPopupUtils.CallerPositioning(foreground, pointer, dialog, caller, pointerTarget, edgeMargins, callerMargin);
-            pos.auto();
-
-        }
-    }
-
-    Pointer { id: pointer }
-    */
+    /*!
+      \qmlproperty real contentHeight
+      \since Ubuntu.Components 1.3
+      Specifies the height of the dialog content.
+      */
+    property alias contentHeight: foreground.height
 
     __foreground: foreground
     __eventGrabber.enabled: modal
@@ -157,6 +148,8 @@ PopupBase {
         focus: visible
         width: Math.min(minimumWidth, dialog.width)
         anchors.centerIn: parent
+        clip: true
+        objectName: 'dialogForeground'
 
         // used in the style
         property string title
@@ -167,8 +160,11 @@ PopupBase {
         property real margins: units.gu(4)
         property real itemSpacing: units.gu(2)
         property Item dismissArea: dialog.dismissArea
+        property real keyboardHeight: dialog.anchorToKeyboard && UbuntuApplication.inputMethod.visible ? UbuntuApplication.inputMethod.keyboardRectangle.height : 0
 
-        height: Math.min(contentsColumn.height + foreground.margins, dialog.height)
+        height: Math.min(contentsColumn.height + foreground.margins, dialog.height - keyboardHeight)
+
+        Keys.onEscapePressed: dialog.hide()
 
         Flickable {
             anchors.fill: parent
@@ -214,5 +210,7 @@ PopupBase {
         }
 
         styleName: "DialogForegroundStyle"
+
+        Component.onCompleted: foreground.forceActiveFocus()
     }
 }

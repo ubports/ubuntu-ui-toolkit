@@ -21,6 +21,28 @@
 #include <QtCore/QVariant>
 #include <QtCore/QUrl>
 
+// the function detects whether QML has an overridden trigger() slot available
+// and invokes the one with the appropriate signature
+template<class T>
+inline void invokeTrigger(T *object, const QVariant &value)
+{
+    bool invoked = false;
+    const QMetaObject *mo = object->metaObject();
+    int offset = mo->methodOffset();
+    int paramlessTriggerIndex = mo->indexOfSlot("trigger()") - offset;
+    int paramTriggerIndex = mo->indexOfSlot("trigger(QVariant)") - offset;
+
+    /* if we have the parametered version, call that even if the value given is invalid */
+    if (paramTriggerIndex >= 0) {
+        invoked = QMetaObject::invokeMethod(object, "trigger", Q_ARG(QVariant, value));
+    } else if (paramlessTriggerIndex >= 0) {
+        invoked = QMetaObject::invokeMethod(object, "trigger");
+    }
+    if (!invoked) {
+        object->trigger(value);
+    }
+}
+
 class QQmlComponent;
 class UCAction : public QObject
 {
@@ -42,7 +64,7 @@ class UCAction : public QObject
     Q_PROPERTY(QQmlComponent *itemHint MEMBER m_itemHint WRITE setItemHint)
 
     // QtQuickControls.Action
-    Q_PROPERTY(QVariant shortcut MEMBER m_shortcut WRITE setShortcut NOTIFY shortcutChanged REVISION 1)
+    Q_PROPERTY(QVariant shortcut MEMBER m_shortcut WRITE setShortcut RESET resetShortcut NOTIFY shortcutChanged REVISION 1)
 public:
     enum Type {
         None,
@@ -54,11 +76,19 @@ public:
     };
 
     explicit UCAction(QObject *parent = 0);
+    ~UCAction();
 
     inline bool isPublished() const
     {
         return m_published;
     }
+
+    void setName(const QString &name);
+    void setIconName(const QString &name);
+    void setIconSource(const QUrl &url);
+    void setItemHint(QQmlComponent *);
+    void setShortcut(const QVariant&);
+    void resetShortcut();
 
 Q_SIGNALS:
     void nameChanged();
@@ -93,17 +123,13 @@ private:
 
     friend class UCActionContext;
     friend class UCActionItem;
+    friend class UCActionItemPrivate;
     friend class UCListItemPrivate;
     friend class UCListItemAttached;
     friend class UCListItemActionsPrivate;
 
     bool isValidType(QVariant::Type valueType);
     void generateName();
-    void setName(const QString &name);
-    void setIconName(const QString &name);
-    void setIconSource(const QUrl &url);
-    void setItemHint(QQmlComponent *);
-    void setShortcut(const QVariant&);
     bool event(QEvent *event);
 };
 

@@ -43,7 +43,6 @@ QML_FILES += 1.2/AbstractButton.qml \
              1.2/MainView12.qml \
              1.2/MainViewBase.qml \
              1.2/MainView.qml \
-             1.2/mathUtils.js \
              1.2/Object.qml \
              1.2/OptionSelectorDelegate.qml \
              1.2/OptionSelector.qml \
@@ -60,7 +59,6 @@ QML_FILES += 1.2/AbstractButton.qml \
              1.2/Panel.qml \
              1.2/PullToRefresh.qml \
              1.2/Scrollbar.qml \
-             1.2/scrollbarUtils.js \
              1.2/Slider.qml \
              1.2/sliderUtils.js \
              1.2/stack.js \
@@ -96,7 +94,6 @@ QML_FILES += 1.3/ActionBar.qml \
              1.3/InputHandler.qml \
              1.3/MainViewBase.qml \
              1.3/MainView.qml \
-             1.3/mathUtils.js \
              1.3/OptionSelectorDelegate.qml \
              1.3/OptionSelector.qml \
              1.3/OrientationHelper.qml \
@@ -135,7 +132,7 @@ QML_FILES += 1.3/ActionBar.qml \
              1.3/PageColumn.qml \
              1.3/PageColumnsLayout.qml \
              1.3/ProgressionSlot.qml \
-	     1.3/PageHeader.qml \
+             1.3/PageHeader.qml \
 
 OTHER_FILES+= qmldir \
              1.3/CrossFadeImage.qdoc \

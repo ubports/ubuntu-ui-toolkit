@@ -18,16 +18,23 @@ import QtQuick 2.4
 import Ubuntu.Components 1.3
 import Ubuntu.Test 1.0
 
-Item {
+Rectangle {
     // Wrap the root Item to work around bug #1504755 which
     //  causes the OverflowPanel to open behind the PageHeader
     //  without this wrapper Item.
     id: wrapper
-    width: units.gu(50)
+    width: units.gu(100)
     height: units.gu(70)
+    color: "darkgrey"
 
-    Item {
-        anchors.fill: parent
+    Rectangle {
+        anchors {
+            top: parent.top
+            bottom: parent.bottom
+            left: parent.left
+        }
+        width: widthSwitch.checked ? parent.width : units.gu(40)
+        color: "white"
         id: root
 
         property real initialHeaderHeight: units.gu(6)
@@ -64,18 +71,58 @@ Item {
                 iconName: "info"
                 text: "second"
                 onTriggered: print("Trigger second action")
+                objectName: "two"
             },
             Action {
                 iconName: "search"
                 text: "third"
                 onTriggered: print("Trigger third action")
+                objectName: "three"
             },
             Action {
                 iconName: "appointment"
                 text: "fourth"
                 onTriggered: print("Trigger fourth action")
+                objectName: "four"
+            },
+            Action {
+                iconName: "attachment"
+                text: "Attach"
+                objectName: "five"
+            },
+            Action {
+                iconName: "contact"
+                text: "Contact"
+                objectName: "six"
+            },
+            Action {
+                iconName: "like"
+                text: "Like"
+                objectName: "seven"
+            },
+            Action {
+                iconName: "lock"
+                text: "Lock"
+                objectName: "eight"
             }
         ]
+
+        Rectangle {
+            id: appendix
+            anchors {
+                left: parent ? parent.left : undefined
+                right: parent ? parent.right : undefined
+                bottom: parent ? parent.bottom : undefined
+            }
+            height: units.gu(4)
+            color: UbuntuColors.orange
+            Label {
+                anchors.centerIn: parent
+                text: "Mock extension"
+                color: "white"
+            }
+            visible: header.extension === appendix
+        }
 
         PageHeader {
             id: header
@@ -89,6 +136,7 @@ Item {
                                            root.actionList : []
             navigationActions: leadingActionsSwitch.checked ?
                                           root.actionList : []
+            extension: extensionSwitch.checked ? appendix : null
         }
 
         Flickable {
@@ -169,6 +217,22 @@ Item {
                 Label {
                     text: "show sections"
                 }
+
+                Switch {
+                    id: extensionSwitch
+                    checked: false
+                }
+                Label {
+                    text: "extension"
+                }
+
+                Switch {
+                    id: widthSwitch
+                    checked: false
+                }
+                Label {
+                    text: "Resize with window"
+                }
             }
 
             PageHeader {
@@ -239,6 +303,15 @@ Item {
                 sections.actions = [];
                 compare(header.height, initialHeight,
                         "Unsetting sections does not revert the header height.");
+
+                header.extension = appendix;
+                compare(appendix.height > 0, true, "Extension height is 0.");
+                compare(header.height, initialHeight + appendix.height,
+                        "Setting extension does not correctly update header height.");
+
+                header.extension = null;
+                compare(header.height, initialHeight,
+                        "Unsetting extension does not revert the header height.");
             }
 
             function test_background_color() {
@@ -360,6 +433,51 @@ Item {
                 header.leadingActionBar.actions = [];
                 compare(header.navigationActions.length, 0,
                         "Reverting leading actions changes navigationActions.");
+            }
+
+            function test_sections_visible() {
+                compare(header.sections.visible, false,
+                        "Sections is not hidden by default.");
+                header.sections.actions = root.sectionActions;
+                compare(header.sections.visible, true,
+                        "Sections is not made visible by setting actions.");
+                header.extension = appendix;
+                compare(header.sections.visible, false,
+                        "Sections are not hidden when extension is set.");
+                header.extension = null;
+                compare(header.sections.visible, true,
+                        "Sections are not shown when extension is unset.");
+                header.sections.actions = [];
+                compare(header.sections.visible, false,
+                        "Sections is not hidden by clearing the actions.");
+            }
+
+            function wait_for_animation() {
+                // One or more action fading animations with a duration
+                // of UbuntuAnimation.BriskDuration = 333ms.
+                wait(500);
+            }
+            function check_number_of_action_slots(widthGU, numberOfSlots) {
+                var width = units.gu(widthGU);
+                if (wrapper.width < width) {
+                    skip("Only for screen at least " + widthGU + " GU wide.");
+                }
+                root.width = width;
+                compare(header.trailingActionBar.numberOfSlots, numberOfSlots,
+                        "Header with width " + widthGU + " GU does not have "
+                        + numberOfSlots + " action slots.");
+            }
+            function test_number_of_action_slots() {
+                var initialWidth = root.width;
+                // test for the values specified in the UX specs document
+                check_number_of_action_slots(40, 3);
+                check_number_of_action_slots(50, 3);
+                check_number_of_action_slots(60, 4);
+                check_number_of_action_slots(70, 5);
+                check_number_of_action_slots(80, 6);
+                check_number_of_action_slots(90, 6);
+                check_number_of_action_slots(100, 6);
+                root.width = initialWidth;
             }
 
             // The properties of header.sections, header.leadingActionBar and

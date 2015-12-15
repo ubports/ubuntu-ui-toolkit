@@ -175,6 +175,36 @@ Ubuntu.Components.ListItems.Base 1.3: Empty
     property var icon
     property bool iconFrame
     property bool progression
+Ubuntu.Components.BottomEdge 1.3: StyledItem
+    readonly property BottomEdgeRegion activeRegion
+    property Component contentComponent
+    readonly property Item contentItem
+    property url contentUrl
+    readonly property DragDirection dragDirection
+    readonly property double dragProgress
+    readonly property BottomEdgeHint hint
+    signal dragProgressChanged(double dragProgress)
+    signal dragDirectionChanged(BottomEdge.DragDirection direction)
+    signal statusChanged(BottomEdge.Status status)
+    signal contentChanged(url url)
+    signal contentComponentChanged(Component component)
+    signal activeRegionChanged(BottomEdgeRegion activeRegion)
+    signal commitStarted()
+    signal commitCompleted()
+    signal collapseStarted()
+    signal collapseCompleted()
+    function commit()
+    function collapse()
+    property list<BottomEdgeRegion> regions
+    readonly property Status status
+Ubuntu.Components.BottomEdge.DragDirection: Enum
+    Downwards
+    Undefined
+    Upwards
+Ubuntu.Components.BottomEdge.Status: Enum
+    Committed
+    Hidden
+    Revealed
 Ubuntu.Components.BottomEdgeHint 1.3: ActionItem
     property int deactivateTimeout
     property Flickable flickable
@@ -186,6 +216,20 @@ Ubuntu.Components.BottomEdgeHint.Status: Enum
     Hidden
     Inactive
     Locked
+Ubuntu.Components.BottomEdgeRegion 1.3: QtObject
+    property Component contentComponent
+    property url contentUrl
+    property bool enabled
+    property double from
+    signal entered()
+    signal exited()
+    signal dragEnded()
+    property double to
+Ubuntu.Components.Styles.BottomEdgeStyle 1.3: Item
+    property Item contentItem
+    property Item panel
+    property Animation panelAnimation
+    property double revealThreshold
 Ubuntu.Components.Button 1.0 0.1: AbstractButton
     property color color
     property QFont font
@@ -365,10 +409,11 @@ Ubuntu.Components.Popups.Dialog 1.0 0.1: PopupBase
 Ubuntu.Components.Popups.Dialog 1.3: PopupBase
     property Item caller
     property double callerMargin
+    property double contentHeight
+    property double contentWidth
     default property list<QtObject> contents
     property double edgeMargins
     property bool modal
-    property Item pointerTarget
     property string text
     property string title
 Ubuntu.Components.ListItems.Divider 1.0 0.1: QQuickImageBase
@@ -520,6 +565,7 @@ Ubuntu.Components.ListItem 1.3 1.2: StyledItem
     property bool selectMode
     property bool selected
     property bool swipeEnabled 1.3
+    readonly property bool swiped 1.3
     property ListItemActions trailingActions
 Ubuntu.Components.ListItemActions 1.2: QtObject
     property list<Action> actions
@@ -569,7 +615,11 @@ Ubuntu.Components.MainView 1.2: MainViewBase
 Ubuntu.Components.MainView 1.3: MainViewBase
     property bool automaticOrientation
     default property list<QtObject> contentsItem
-Ubuntu.Components.MathUtils 0.1 1.0 1.3
+Ubuntu.Components.MathUtils 1.0 0.1: QtObject singleton
+    function double clamp(double x, double min, double max)
+    function double lerp(double delta, double from, double to)
+    function double projectValue(double x, double xmin, double xmax, double ymin, double ymax)
+    function double clampAndProject(double x, double xmin, double xmax, double ymin, double ymax)
 Ubuntu.Components.MimeData 1.0 0.1: QtObject
     property color color
     property var data
@@ -583,6 +633,7 @@ Ubuntu.Components.Mouse 1.0 0.1: QtObject
     property bool enabled
     property list<Item> forwardTo
     readonly property bool hoverEnabled
+    property bool ignoreSynthesizedEvents
     signal pressed(QQuickMouseEvent mouse, Item host)
     signal released(QQuickMouseEvent mouse, Item host)
     signal clicked(QQuickMouseEvent mouse, Item host)
@@ -734,6 +785,7 @@ Ubuntu.Components.Styles.PageHeadStyle 1.3: Item
     property int textSize
 Ubuntu.Components.PageHeader 1.3: Header
     property Item contents
+    property Item extension
     readonly property ActionBar leadingActionBar
     property list<Action> navigationActions
     readonly property Sections sections
@@ -928,7 +980,6 @@ Ubuntu.Components.Scrollbar 1.0 0.1: StyledItem
 Ubuntu.Components.Scrollbar 1.3: StyledItem
     property int align
     property Flickable flickableItem
-Ubuntu.Components.ScrollbarUtils 0.1 1.0
 Ubuntu.Components.Sections 1.3: StyledItem
     property list<Action> actions
     property var model
@@ -1033,6 +1084,7 @@ Ubuntu.Components.StyleHints 1.3: QtObject
     property bool ignoreUnknownProperties
 Ubuntu.Components.StyledItem 1.3 1.3 1.1 1.0 0.1: Item
     property bool activeFocusOnPress 1.3
+    signal activeFocusOnTabChanged2() 1.3
     function bool requestFocus(Qt.FocusReason reason) 1.3
     function bool requestFocus() 1.3
     property Component style
@@ -1128,6 +1180,10 @@ Ubuntu.Test.TestExtras 1.0: QtObject singleton
     function touchMove(int touchId, Item item, Qt.point point)
     function touchDrag(int touchId, Item item, Qt.point from, Qt.point delta, int steps)
     function touchDrag(int touchId, Item item, Qt.point from, Qt.point delta)
+    function mouseDrag(Item item, Qt.point from, Qt.point delta, Qt.MouseButton button, Qt.KeyboardModifiers stateKey, int steps, int delay)
+    function mouseDrag(Item item, Qt.point from, Qt.point delta, Qt.MouseButton button, Qt.KeyboardModifiers stateKey, int steps)
+    function mouseDrag(Item item, Qt.point from, Qt.point delta, Qt.MouseButton button, Qt.KeyboardModifiers stateKey)
+    function mouseDrag(Item item, Qt.point from, Qt.point delta, Qt.MouseButton button)
     readonly property bool touchPresent
 Ubuntu.Components.TextArea 1.0 0.1: StyledItem
     property bool autoExpand
@@ -1565,6 +1621,7 @@ Ubuntu.Components.ViewItems 1.2: QtObject
     property bool dragMode
     property list<int> expandedIndices
     property int expansionFlags
+    signal selectedIndicesChanged(list<int> indices)
     signal dragUpdated(ListItemDrag event)
     signal expandedIndicesChanged(list<int> indices)
     property bool selectMode
