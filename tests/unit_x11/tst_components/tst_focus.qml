@@ -140,6 +140,11 @@ Item {
         when: windowShown
 
         SignalSpy {
+            id: buttonTriggerSpy
+            signalName: "onTriggered"
+        }
+
+        SignalSpy {
             id: popupCloseSpy
             signalName: "onDestruction"
         }
@@ -253,8 +258,8 @@ Item {
             popoverTest.popoverComponent = data.component;
             var center = centerOf(popoverTest);
             mouseClick(popoverTest, center.x, center.y);
-            verify(popoverTest.focus, "Button focus not gained.");
             waitForRendering(popoverTest.popover);
+            verify(popoverTest.popover, "Popover focus not gained.");
             popupCloseSpy.target = popoverTest.popover.Component;
 
             var closeButton = findChildWithProperty(popoverTest.popover, "text", "close");
@@ -264,6 +269,21 @@ Item {
             verify(!popoverTest.focus, "Button focus not lost.");
             popupCloseSpy.wait();
             verify(popoverTest.focus, "Button focus not restored.");
+        }
+
+        function test_button_trigger_via_keyboard_data() {
+            return [
+                {tag: "Enter", key: Qt.Key_Enter},
+                {tag: "Return", key: Qt.Key_Return},
+                {tag: "Space", key: Qt.Key_Space},
+            ];
+        }
+        function test_button_trigger_via_keyboard(data) {
+            buttonTriggerSpy.target = button;
+            button.forceActiveFocus();
+            keyClick(data.key);
+            waitForRendering(button);
+            buttonTriggerSpy.wait();
         }
 
         function test_disabled_component_does_not_focus() {

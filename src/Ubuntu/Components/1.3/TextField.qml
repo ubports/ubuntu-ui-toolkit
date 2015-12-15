@@ -825,6 +825,9 @@ Ubuntu.ActionItem {
             control.focus = false;
     }
 
+    // Escape should close the context menu even if the menu takes no input focus
+    Keys.onEscapePressed: if (activeFocus && inputHandler.popover) PopupUtils.close(inputHandler.popover)
+
     LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
     LayoutMirroring.childrenInherit: true
 

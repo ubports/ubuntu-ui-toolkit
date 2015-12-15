@@ -185,6 +185,22 @@ private Q_SLOTS:
         QTRY_COMPARE_WITH_TIMEOUT(test->testItem()->status(), UCBottomEdge::Committed, 1000);
     }
 
+    void test_overridden_triggers_bug1524234()
+    {
+        QScopedPointer<BottomEdgeTestCase> test(new BottomEdgeTestCase("OverriddenHintTrigger.qml"));
+        test->testItem()->hint()->setStatus(UCBottomEdgeHint::Locked);
+        UCBottomEdgeHint *hint = test->testItem()->hint();
+        UCAction *action = hint->action();
+        QSignalSpy actionSpy(action, SIGNAL(triggered(QVariant)));
+        QSignalSpy hintSpy(hint, SIGNAL(triggered(QVariant)));
+
+        QTest::mouseClick(test->testItem()->hint()->window(), Qt::LeftButton, 0, UbuntuTestCase::centerOf(hint, true).toPoint());
+        QTRY_COMPARE_WITH_TIMEOUT(test->testItem()->status(), UCBottomEdge::Committed, 1000);
+
+        QCOMPARE(actionSpy.count(), 0);
+        QCOMPARE(hintSpy.count(), 1);
+    }
+
     void test_revealed_when_hint_threshold_passed_data()
     {
         QTest::addColumn<bool>("withMouse");
@@ -688,17 +704,13 @@ private Q_SLOTS:
     {
         QFETCH(bool, withMouse);
 
-        QScopedPointer<BottomEdgeTestCase> test(new BottomEdgeTestCase("AlternateDefaultRegionContent.qml"));
+        QScopedPointer<BottomEdgeTestCase> test(new BottomEdgeTestCase("UncoveredByRegion.qml"));
         UCBottomEdge *bottomEdge = test->testItem();
         UCBottomEdgePrivate *privateBottomEdge = UCBottomEdgePrivate::get(bottomEdge);
         UCBottomEdgeRegion *region = privateBottomEdge->regions[0];
 
-        // alter region values to adjust to the test
-        region->m_from = 0.1;
-        region->m_to = 0.5;
-
-        QPoint from(bottomEdge->width() / 2.0f, bottomEdge->height() - 5);
-        QPoint to = from + QPoint(0, -(bottomEdge->parentItem()->height() - 1));
+        QPoint from(bottomEdge->width() / 2.0f, bottomEdge->height() - 1);
+        QPoint to = from + QPoint(0, -(bottomEdge->parentItem()->height() - UCUnits::instance().gu(10)));
         // let us know when we are out of the region
         QSignalSpy exitRegion(region, SIGNAL(exited()));
 
@@ -708,26 +720,28 @@ private Q_SLOTS:
             to = bottomEdge->mapToScene(to).toPoint();
             QTest::mousePress(bottomEdge->window(), Qt::LeftButton, 0, from, 20);
             QPoint movePos(from);
-            while (movePos.y() > to.y() && !exitRegion.count()) {
+            while (movePos.y() > to.y()) {
                 QTest::mouseMove(bottomEdge->window(), movePos, 20);
-                movePos += QPoint(0, -10);
+                movePos += QPoint(0, -20);
             }
+            movePos -= QPoint(0, -20);
             QTest::mouseRelease(bottomEdge->window(),Qt::LeftButton, 0, movePos, 20);
         } else {
             UCTestExtras::touchPress(0, bottomEdge, from);
             QPoint movePos(from);
-            while (movePos.y() > to.y() && !exitRegion.count()) {
+            while (movePos.y() > to.y()) {
                 QTest::qWait(20);
                 UCTestExtras::touchMove(0, bottomEdge, movePos);
-                movePos += QPoint(0, -10);
+                movePos += QPoint(0, -20);
             }
+            movePos -= QPoint(0, -20);
             QTest::qWait(20);
             UCTestExtras::touchRelease(0, bottomEdge, movePos);
         }
 
         QVERIFY(!bottomEdge->activeRegion());
         // we should be collapsing!
-        QTRY_COMPARE_WITH_TIMEOUT(bottomEdge->status(), UCBottomEdge::Hidden, 1000);
+        QTRY_COMPARE_WITH_TIMEOUT(bottomEdge->status(), UCBottomEdge::Committed, 1000);
     }
 
     void test_commit_region_content_data()
