@@ -136,7 +136,7 @@ Item {
     // helper properties to ease code readability
     property Flickable flickableItem: styledItem.flickableItem
     property bool isScrollable: styledItem.__private.scrollable && pageSize > 0.0
-                                && contentSize > 0.0 && contentSize > pageSize
+                                && contentSize > 0.0 && totalContentSize > pageSize
     property bool isVertical: (styledItem.align === Qt.AlignLeading) || (styledItem.align === Qt.AlignTrailing)
     property bool frontAligned: (styledItem.align === Qt.AlignLeading)
     property bool rearAligned: (styledItem.align === Qt.AlignTrailing)
