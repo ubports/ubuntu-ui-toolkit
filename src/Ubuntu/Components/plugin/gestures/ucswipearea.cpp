@@ -243,6 +243,11 @@ void UCSwipeAreaPrivate::setDistanceThreshold(qreal value)
     }
 }
 
+void UCSwipeAreaPrivate::setCompositionTime(int value)
+{
+    compositionTime = value;
+}
+
 void UCSwipeAreaPrivate::setMaxTime(int value)
 {
     if (maxTime != value) {
