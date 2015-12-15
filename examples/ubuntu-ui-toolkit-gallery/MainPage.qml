@@ -88,7 +88,7 @@ Page {
         }
 
         model: WidgetsModel {}
-        currentIndex: -1
+        currentIndex: 10 // FIXME TIM -1
 
         onCurrentIndexChanged: openPage()
 

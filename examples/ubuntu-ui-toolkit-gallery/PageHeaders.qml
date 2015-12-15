@@ -119,16 +119,14 @@ Template {
                 right: parent.right
                 bottom: parent.bottom
             }
-            height: units.gu(4)
-            actions: [
+            trailingActionBar.actions: [
                 Action { iconName: "bookmark-new" },
                 Action { iconName: "add" },
                 Action { iconName: "edit-select-all" },
-                Action { iconName: "mail-forward" },
                 Action { iconName: "edit-copy" },
                 Action { iconName: "select" }
             ]
-            fixedAction: Action {
+            leadingActionBar.actions: Action {
                 iconName: "delete"
                 text: "delete"
                 onTriggered: print("Delete action triggered")
