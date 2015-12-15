@@ -17,6 +17,8 @@
 import QtQuick 2.4
 import Ubuntu.Components 1.3
 
+// FIXME: In the example code below, replace the delegate
+//  by the new text button when it becomes available.
 /*!
     \qmltype Toolbar
     \inqmlmodule Ubuntu.Components 1.3
@@ -27,8 +29,6 @@ import Ubuntu.Components 1.3
     PageHeader {
         id: editHeader
         property Component delegate: Component {
-            // FIXME: Replace this delegate with the new
-            //  text button when it becomes available.
             AbstractButton {
                 id: button
                 action: modelData

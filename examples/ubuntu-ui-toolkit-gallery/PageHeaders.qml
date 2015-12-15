@@ -74,6 +74,7 @@ Template {
         property Component delegate: Component {
             // FIXME: Replace this delegate with the new
             //  text button when it becomes available.
+            //  Also update example code in Toolbar.qml.
             AbstractButton {
                 id: button
                 action: modelData
