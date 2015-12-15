@@ -964,16 +964,29 @@ Item {
                 }
 
                 function saveFlickableScrollingState() {
+                    originXAtDragStart = flickableItem.originX
+                    originYAtDragStart = flickableItem.originY
                     contentXAtDragStart = flickableItem.contentX
                     contentYAtDragStart = flickableItem.contentY
                 }
                 function resetFlickableToPreDragState() {
+                    //NOTE: when dealing with ListViews which have
+                    //delegates that are highly variable in size originX/Y and contentWidth/Height
+                    //change based on "out-of-view delegates" size estimation done by ListView.
+                    //In that case, we can't do anything to bring back the view to where it was
+                    //when the drag started, so we'd better not do anything instead of doing something
+                    //which we're sure will be wrong
+                    if (originXAtDragStart != flickableItem.originX
+                            || originYAtDragStart != flickableItem.originY) {
+                        return
+                    }
+
                     flickableItem.contentX = contentXAtDragStart
                     flickableItem.contentY = contentYAtDragStart
                 }
 
-                //NOTE: contentX already includes originX offset,
-                //so we just have to cache and restore contentX/Y
+                property int originXAtDragStart: 0
+                property int originYAtDragStart: 0
                 property int contentXAtDragStart: 0
                 property int contentYAtDragStart: 0
 
