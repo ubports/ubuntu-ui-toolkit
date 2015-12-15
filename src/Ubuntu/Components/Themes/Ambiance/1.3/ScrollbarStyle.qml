@@ -846,9 +846,26 @@ Item {
 
                 x: (isVertical) ? 0 : scrollbarUtils.sliderPos(styledItem, thumbsExtremesMargin, trough.width - slider.width - thumbsExtremesMargin)
                 y: (!isVertical) ? 0 : scrollbarUtils.sliderPos(styledItem, thumbsExtremesMargin, trough.height - slider.height - thumbsExtremesMargin)
-                width: (isVertical) ? flowContainer.thumbThickness : scrollbarUtils.sliderSize(styledItem, units.gu(5), trough.width - 2 * thumbsExtremesMargin)
-                height: (!isVertical) ? flowContainer.thumbThickness : scrollbarUtils.sliderSize(styledItem, flowContainer.thumbThickness, trough.height - 2 * thumbsExtremesMargin)
                 radius: visuals.sliderRadius
+
+                //This is to stop the scrollbar from changing size while being dragged when we have listviews
+                //with delegates of variable size (in those cases, contentWidth/height changes as the user scrolls
+                //because of the way ListView estimates the size of the out-of-views delegates
+                //and that would trigger resizing of the thumb)
+                //NOTE: otoh, we want the x/y binding to apply (even though it will cause a small flickering occasionally)
+                //even while dragging, because that guarantees the view is at the top when the user drags to the top
+                Binding {
+                    when: !visuals.draggingThumb
+                    target: slider
+                    property: "width"
+                    value: (isVertical) ? flowContainer.thumbThickness : scrollbarUtils.sliderSize(styledItem, units.gu(5), trough.width - 2 * thumbsExtremesMargin)
+                }
+                Binding {
+                    when: !visuals.draggingThumb
+                    target: slider
+                    property: "height"
+                    value: (!isVertical) ? flowContainer.thumbThickness : scrollbarUtils.sliderSize(styledItem, flowContainer.thumbThickness, trough.height - 2 * thumbsExtremesMargin)
+                }
 
                 function scroll(amount) {
                     scrollAnimation.to = scrollbarUtils.scrollAndClamp(styledItem, amount, -leadingContentMargin,
