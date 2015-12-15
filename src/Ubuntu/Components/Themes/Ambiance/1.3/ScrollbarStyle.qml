@@ -715,6 +715,12 @@ Item {
         easing.type: Easing.InOutCubic
         target: styledItem.flickableItem
         property: (isVertical) ? "contentY" : "contentX"
+        //when the listview has variable size delegates the contentHeight estimation done by ListView
+        //could make us overshoot, especially when going from top to bottom of the list or viceversa.
+        //We call returnToBounds to mitigate that.
+        onRunningChanged: if (!running && flickableItem) {
+                              flickableItem.returnToBounds()
+                          }
     }
 
     Flow {

@@ -249,7 +249,6 @@ StyledItem {
                 //the MainView, and that would make focusing the scrollview impossible. Hence we also
                 //force it from QML side
                 root.forceActiveFocus()
-
                 mouse.accepted = false
             }
         }
