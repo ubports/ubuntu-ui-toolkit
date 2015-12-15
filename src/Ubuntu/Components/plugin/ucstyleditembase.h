@@ -29,6 +29,9 @@ class UCStyledItemBase : public QQuickItem, public UCThemingExtension
 {
     Q_OBJECT
     Q_INTERFACES(UCThemingExtension)
+    Q_PROPERTY(bool keyNavigationFocus
+              READ keyNavigationFocus
+              NOTIFY keyNavigationFocusChanged REVISION 2)
     Q_PROPERTY(bool activeFocusOnPress
                READ activefocusOnPress WRITE setActiveFocusOnPress
                NOTIFY activeFocusOnPressChanged REVISION 1)
@@ -45,6 +48,7 @@ class UCStyledItemBase : public QQuickItem, public UCThemingExtension
 public:
     explicit UCStyledItemBase(QQuickItem *parent = 0);
 
+    bool keyNavigationFocus();
     bool activefocusOnPress() const;
     void setActiveFocusOnPress(bool value);
     bool activeFocusOnTab2() const;
@@ -56,6 +60,7 @@ public Q_SLOTS:
 Q_SIGNALS:
     void styleChanged();
     void styleInstanceChanged();
+    Q_REVISION(2) void keyNavigationFocusChanged();
     Q_REVISION(1) void activeFocusOnPressChanged();
     Q_REVISION(1) void activeFocusOnTabChanged2();
     Q_REVISION(2) void themeChanged();
@@ -70,6 +75,8 @@ protected:
 
     void componentComplete();
     void itemChange(ItemChange change, const ItemChangeData &data);
+    void focusInEvent(QFocusEvent *key);
+    void focusOutEvent(QFocusEvent *key);
     void mousePressEvent(QMouseEvent *event);
     bool childMouseEventFilter(QQuickItem *child, QEvent *event);
 
