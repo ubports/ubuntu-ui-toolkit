@@ -62,16 +62,19 @@ Item {
         }
         CheckBox {
             id: checkbox
-            text: "Check me"
         }
         Switch {
-            id: switchBox
+            id: switchbox
+        }
+        Button {
+            id: dummy2
         }
         ActionBar {
             id: actions
             actions: [
                 Action {
                     iconName: 'share'
+                    objectName: 'actionBarShare'
                 },
                 Action {
                     iconName: 'starred'
@@ -96,8 +99,9 @@ Item {
         Slider {
             id: slider
         }
-        StyledItem {
+        Button {
             id: disabledButton
+            text: 'Disabled'
             enabled: false
             width: units.gu(20)
             height: units.gu(6)
@@ -112,7 +116,7 @@ Item {
         Button {
             id: popoverTest
             text: "Popovers"
-            property Item popover
+            property var popover
             property Component popoverComponent
             onClicked: {
                 popover = PopupUtils.open(popoverComponent)
@@ -181,26 +185,31 @@ Item {
                 {tag: "Button(back)", from: button, to: textArea, key: Qt.Key_Backtab},
                 {tag: "CheckBox", from: checkbox, to: switchbox, key: Qt.Key_Tab},
                 {tag: "CheckBox", from: switchbox, to: checkbox, key: Qt.Key_Backtab},
-                {tag: "Switch", from: switchbox, to: actions, key: Qt.Key_Tab},
-                {tag: "Switch(back)", from: actions, to: switchbox, key: Qt.Key_Backtab},
-                {tag: "ActionBar", from: actions, to: picker, key: Qt.Key_Tab},
-                {tag: "ActionBar(back)", from: picker, to: actions, key: Qt.Key_Backtab},
+                {tag: "Switch", from: switchbox, to: dummy2, key: Qt.Key_Tab},
+                {tag: "Switch(back)", from: dummy2, to: switchbox, key: Qt.Key_Backtab},
+                /* FIXME: Figure out how to test ActionBar delegate focus
+                {tag: "ActionBar", from: 'actionBarShare_button', to: picker, key: Qt.Key_Tab},
+                {tag: "ActionBar(back)", from: picker, to: 'actionBarShare_button', key: Qt.Key_Backtab},
+                */
                 // Left click/ tap
                 {tag: "TextField(click)", from: dummy, to: textField, key: Qt.LeftButton},
                 {tag: "TextArea(click)", from: dummy, to: textArea, key: Qt.LeftButton},
                 // FIXME: lp#1368390: Buttons shouldn't grab input focus on click
                 {tag: "Button(click)", from: dummy, to: button, key: Qt.LeftButton},
                 {tag: "CheckBox(click)", from: dummy, to: checkbox, key: Qt.LeftButton},
-                {tag: "Switch(click)", from: dummy, to: switchbox, key: Qt.LeftButton},
+                {tag: "Switch(click)", from: dummy, to: switchbox, key: Qt.LeftButton}
             ];
         }
         function test_tab_focus(data) {
             data.from.forceActiveFocus();
             verify(data.from.activeFocus, "Source component is not focused");
-            if (data.key == Qt.LeftButton)
+            if (data.key == Qt.LeftButton) {
+                verify(data.to.activeFocusOnPress, "Target doesn't take focus on click");
                 mouseClick(data.to, centerOf(data.to).x, centerOf(data.to).y);
-            else
+            } else {
+                verify(data.to.activeFocusOnTab, "Target doesn't take keyboard focus");
                 keyClick(data.key);
+            }
             waitForRendering(data.to, 500);
             verify(!data.from.activeFocus, "Source component still keeps focus");
             verify(data.to.activeFocus, "Target component is not focused");
@@ -259,7 +268,9 @@ Item {
 
         function test_popover_refocus(data) {
             popoverTest.popoverComponent = data.component;
-            popoverTest.forceActiveFocus();
+            var center = centerOf(popoverTest);
+            mouseClick(popoverTest, center.x, center.y);
+            verify(popoverTest.popover !== undefined, "No popover created");
             verify(popoverTest.focus, "Button focus not gained.");
             waitForRendering(popoverTest.popover);
             popupCloseSpy.target = popoverTest.popover.Component;
@@ -289,6 +300,7 @@ Item {
         }
 
         function test_disabled_component_does_not_focus() {
+            verify(disabledButton.activeFocusOnPress, "Disabled component doesn't take focus on click");
             mousePress(disabledButton, centerOf(disabledButton).x, centerOf(disabledButton).y);
             compare(disabledButton.focus, false, "Disabled component shoudl not focus");
         }
