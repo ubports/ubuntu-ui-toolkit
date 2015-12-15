@@ -271,7 +271,7 @@ Item {
             var i = 0; var button; var n = shortActionList.length;
             for (i = 0; i < n; i++) {
                 button = findChild(customDelegateBar, "custom_delegate_button_"+i);
-                compare(button.text, shortActionList[i].text, "Incorrect custom button " + i);
+                compare(button.text, shortActionList[n-1-i].text, "Incorrect custom button " + i);
             }
             button = findChild(customDelegateBar, "custom_delegate_button_" + n);
             compare(button, null, "Too many buttons.");

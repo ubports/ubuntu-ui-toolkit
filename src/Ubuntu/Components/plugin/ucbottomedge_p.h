@@ -37,6 +37,8 @@ public:
     }
     void init();
 
+    void completeComponentInitialization() override;
+
     // data property
     QQmlListProperty<QObject> data();
     static void overload_data_append(QQmlListProperty<QObject> *, QObject *);

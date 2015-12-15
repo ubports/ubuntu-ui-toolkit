@@ -41,6 +41,28 @@ Style.ActionBarStyle {
 
     defaultNumberOfSlots: 3
 
+    Component {
+        id: fadeInComponent
+        SequentialAnimation {
+            id: fadeIn
+            property alias target: opacityAnimation.target
+            ScriptAction {
+                script: fadeIn.target.opacity = 0.0;
+            }
+            UbuntuNumberAnimation {
+                id: opacityAnimation
+                from: 0.0
+                to: 1.0
+                property: "opacity"
+                alwaysRunToEnd: true
+                duration: UbuntuAnimation.BriskDuration
+            }
+            ScriptAction {
+                script: fadeIn.destroy()
+            }
+        }
+    }
+
     Row {
         id: actionsContainer
 
@@ -55,9 +77,18 @@ Style.ActionBarStyle {
             }
             return visibleActionList;
         }
+        function getReversedActions(actions) {
+            var newlist = [];
+            for (var i=actions.length-1; i >= 0; i--) {
+                newlist.push(actions[i]);
+            }
+            return newlist;
+        }
+
+        property var directActions: getReversedActions(visibleActions.slice(0, numberOfSlots.used))
         property var barActions: overflowAction.visible
-                                 ? visibleActions.slice(0, numberOfSlots.used).concat(overflowAction)
-                                 : visibleActions.slice(0, numberOfSlots.used)
+                                 ? directActions.concat(overflowAction)
+                                 : directActions
         property var overflowActions: visibleActions.slice(numberOfSlots.used,
                                                            numberOfSlots.requested)
 
@@ -81,6 +112,22 @@ Style.ActionBarStyle {
             objectName: "actions_repeater"
             model: actionsContainer.barActions
             delegate: styledItem.delegate
+            property int previousCount: count
+            onCountChanged: {
+                // after all itemAdded signals
+                previousCount = count;
+            }
+
+            function fadeIn(item) {
+                var fadeObject = fadeInComponent.createObject(actionBarStyle,
+                                                              {"target": item});
+                fadeObject.target = item;
+                fadeObject.start();
+            }
+            onItemAdded: {
+                if (count <= previousCount) return; // no items added
+                if (index == 0) fadeIn(item);
+            }
         }
 
         Action {

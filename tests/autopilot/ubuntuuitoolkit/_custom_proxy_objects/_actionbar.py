@@ -60,7 +60,7 @@ class ActionBar(_common.UbuntuUIToolkitCustomProxyObjectBase):
         """
 
         try:
-            object_name = action_object_name + "_action_button"
+            object_name = action_object_name + "_button"
             button = self.select_single(objectName=object_name)
             self.pointing_device.click_object(button)
         except dbus.StateNotFoundError:
@@ -68,6 +68,6 @@ class ActionBar(_common.UbuntuUIToolkitCustomProxyObjectBase):
             try:
                 popover = self._open_overflow()
                 popover.click_action_button(action_object_name)
-            except dbus.StateNotFoundError:
+            except _common.ToolkitException:
                 raise _common.ToolkitException(
                     'Button not found in ActionBar or overflow')

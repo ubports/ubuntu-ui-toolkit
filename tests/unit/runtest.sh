@@ -26,7 +26,7 @@ _MINIMAL=$3
 
 _TARGET=$(basename $1)
 _TESTFILE=$(basename $2)
-_LIB_PATH="${BUILD_DIR}/lib:$LD_LIBRARY_PATH"
+_LIB_PATH="${BUILD_DIR}/lib:${BUILD_DIR}/qml/Ubuntu/Components:${BUILD_DIR}/qml/Ubuntu/Test:$LD_LIBRARY_PATH"
 _IMPORT_PATH="${BUILD_DIR}/qml:$QML2_IMPORT_PATH"
 _THEMES_PATH="${BUILD_DIR}/qml"
 _XML="${BUILD_DIR}/tests/test_$_TARGET_$_TESTFILE.xml"
@@ -66,7 +66,7 @@ function execute_test_cmd {
 	
     QML2_IMPORT_PATH=${_IMPORT_PATH} UBUNTU_UI_TOOLKIT_THEMES_PATH=${_THEMES_PATH} \
     LD_LIBRARY_PATH=${_LIB_PATH} \
-    ALARM_BACKEND=memory SUPPRESS_DEPRECATED_NOTE=yes \
+    ALARM_BACKEND=memory SUPPRESS_DEPRECATED_NOTE=no \
     $_CMD $_ARGS 2>&1 | grep -v 'QFontDatabase: Cannot find font directory'
     if [ "x$UITK_TEST_KEEP_RUNNING" != "x1" ]; then
         ${BUILD_DIR}/tests/checkresults.sh $_XML
