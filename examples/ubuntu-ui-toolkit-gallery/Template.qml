@@ -22,8 +22,8 @@ Page {
 
     default property alias content: column.children
     property alias spacing: column.spacing
-    property alias scrollable: flickable.interactive
-    readonly property alias flickable: flickable
+    property alias scrollable: templateFlickable.interactive
+    flickable: templateFlickable
 
     header: PageHeader {
         title: template.title
@@ -32,7 +32,7 @@ Page {
     }
 
     Flickable {
-        id: flickable
+        id: templateFlickable
         objectName: "TemplateFlickable"
         anchors {
             fill: parent

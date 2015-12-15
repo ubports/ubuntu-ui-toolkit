@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.4
+import Ubuntu.Components 1.3 as Toolkit
 import "PageWrapperUtils.js" as Utils
 
 /*!
@@ -24,7 +25,7 @@ import "PageWrapperUtils.js" as Utils
     \ingroup ubuntu
     \brief Internal class used by \l PageStack
 */
-PageTreeNode {
+Toolkit.PageTreeNode {
     id: pageWrapper
     anchors.fill: parent
 

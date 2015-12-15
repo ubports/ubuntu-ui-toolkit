@@ -102,7 +102,6 @@ QML_FILES += 1.3/ActionBar.qml \
              1.3/PageHeadState.qml \
              1.3/Page.qml \
              1.3/PageStack.qml \
-             1.3/PageTreeNode.qml \
              1.3/pageUtils.js \
              1.3/PageWrapper.qml \
              1.3/PageWrapperUtils.js \
