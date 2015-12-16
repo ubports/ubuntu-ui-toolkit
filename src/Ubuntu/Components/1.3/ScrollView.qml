@@ -242,7 +242,8 @@ StyledItem {
             anchors.fill: parent
             enabled: true
             onPressed: {
-                viewportItem.focus = true
+                //NOTE: we can't force focus on the viewport, this breaks text selection inside scrollview!
+                //viewportItem.focus = true
 
                 //activeFocusOnPress only works if *all* the parents have activeFocusOnPress enabled
                 //Some applications (like messaging-app at the moment) have activeFocusOnPress:false on
