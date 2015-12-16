@@ -271,9 +271,11 @@ Item {
             var center = centerOf(popoverTest);
             mouseClick(popoverTest, center.x, center.y);
             verify(popoverTest.popover !== undefined, "No popover created");
-            verify(popoverTest.focus, "Button focus not gained.");
             waitForRendering(popoverTest.popover);
-            verify(popoverTest.popover, "Popover focus not gained.");
+            verify(!popoverTest.focus, "Button focus not lost.");
+            var foreground = findChild(popoverTest.popover, "popover_foreground");
+            verify(foreground, "Popover foreground not ready");
+            verify(foreground.focus, "Popover focus not gained. Focus went to %1".arg(window.activeFocusItem));
             popupCloseSpy.target = popoverTest.popover.Component;
 
             var closeButton = findChildWithProperty(popoverTest.popover, "text", "close");
