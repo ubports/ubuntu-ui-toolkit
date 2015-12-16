@@ -186,19 +186,34 @@ Item {
         //style)
         if (initialized && isScrollable && !draggingThumb && !pressHoldTimer.running
                 && (state == '' || state === 'hidden' || (__disableStateBinding && visuals.state !== hintingStyle))) {
-
-            if (!isVertical) {
-            console.log("FLASHING SCROLLBAR", isScrollable, draggingThumb, hintingStyle, visuals)
-            }
             __disableStateBinding = true
             __hinting = true
             visuals.state = hintingStyle
+            hintingTimer.restart()
         }
     }
 
     anchors.fill: parent
     opacity: overlayOpacityWhenHidden
     Component.onCompleted: initialized = true
+
+    //we can't use onRunningChanged in the state transitions to enable the state binding again
+    //after hinting, because that was causing
+    //"Can't apply a state change as part of a state definition." when the state it was transitioning
+    //to was different from the one the binding evaluationg was returning
+    //Instead we use a timer, tune it so that it lasts as long as needed, and then we reenable the
+    //state binding once the transition has completed
+    Timer {
+        id: hintingTimer
+        repeat: false
+        //we assume thickness animation duration is enough to complete the
+        //transition to the hinting style
+        interval: scrollbarThicknessAnimation.duration
+        onTriggered: {
+            __hinting = false
+            __disableStateBinding = false
+        }
+    }
 
     /*!
         \internal
@@ -856,7 +871,6 @@ Item {
                  && styledItem.__buddyScrollbar.__styleInstance.isScrollable
     }
 
-    onStateChanged: console.log("STATE", state, visuals, isVertical)
     Binding {
         when: !__disableStateBinding
         target: visuals
@@ -990,14 +1004,6 @@ Item {
             from: 'thumb,steppers'
             to: 'indicator'
             id: collapsingTransition
-            //we use __disableStateBinding as the proof that the indicator style we are in was just
-            //for brief hinting purposes (in that case, in fact, the binding to the "state" var is disabled)
-            onRunningChanged: {
-                if (!running && __hinting) {
-                    __hinting = false
-                    __disableStateBinding = false
-                }
-            }
             SequentialAnimation {
                 //don't pause the animation if we're showing the *hint* and the hintingStyle changes from
                 //thumb/steppers to indicator
@@ -1031,14 +1037,6 @@ Item {
             id: transitionToIndicator
             from: '*'
             to: 'indicator'
-            //we use __disableStateBinding as the proof that the indicator style we are in was just
-            //for brief hinting purposes (in that case, in fact, the binding to the "state" var is disabled)
-            onRunningChanged: {
-                if (!running && __hinting) {
-                    __hinting = false
-                    __disableStateBinding = false
-                }
-            }
             SequentialAnimation {
                 ParallelAnimation {
                     NumberAnimation {
@@ -1071,12 +1069,6 @@ Item {
             from: 'indicator'
             to: 'thumb,steppers'
             reversible: true
-            onRunningChanged: {
-                if (!running && __hinting) {
-                    __hinting = false
-                    __disableStateBinding = false
-                }
-            }
             SequentialAnimation {
                 PropertyAction {
                     target: flowContainer
@@ -1113,12 +1105,6 @@ Item {
             id: steppersTransition
             from: '*'
             to: 'thumb,steppers'
-            onRunningChanged: {
-                if (!running && __hinting) {
-                    __hinting = false
-                    __disableStateBinding = false
-                }
-            }
             SequentialAnimation {
                 PropertyAction {
                     target: flowContainer
