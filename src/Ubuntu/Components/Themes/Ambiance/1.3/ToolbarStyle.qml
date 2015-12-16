@@ -14,13 +14,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import QtQuick 2.4
+import QtQuick.Window 2.2
 import Ubuntu.Components 1.3
 import Ubuntu.Components.Styles 1.3 as Style
 
 Style.ToolbarStyle {
     id: toolbarStyle
     implicitWidth: parent ? parent.width : 0
-    implicitHeight: units.gu(4)
+    // reduce toolbar height on phone in landscape orientation:
+    implicitHeight: Screen.height > units.gu(50) ? units.gu(4) : units.gu(3)
 
     /*!
       The default action delegate if the styled item does
