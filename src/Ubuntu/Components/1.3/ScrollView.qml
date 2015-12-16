@@ -205,6 +205,7 @@ StyledItem {
 
         Scrollbar {
             id: horizontalScrollbar
+            objectName: "horizontalScrollbar"
             flickableItem: internal.flickableItem
             __viewport: viewportItem
             align: Qt.AlignBottom
@@ -215,6 +216,7 @@ StyledItem {
 
         Scrollbar {
             id: verticalScrollbar
+            objectName: "verticalScrollbar"
             flickableItem: internal.flickableItem
             __viewport: viewportItem
             align: Qt.AlignTrailing

@@ -114,7 +114,7 @@ Item {
         function getFreshFlickable() {
             var flickable = flickableComp.createObject(column)
             if (!flickable) {
-                console.log("ERROR WHILE DYNAMICALLY CREATING A FRESH FLICKABLE INSTANCE")
+                console.log("Error: dynamic item creation failed.")
             }
             return flickable
         }
