@@ -24,8 +24,7 @@ UbuntuShape {
 
     anchors.fill: parent
     anchors.margins: -units.gu(0.4)
-    // No transparency in this use case
-    backgroundColor: Qt.rgba(focusColor.r, focusColor.g, focusColor.b, 1.0)
+    backgroundColor: Qt.rgba(focusColor.r, focusColor.g, focusColor.b, 0.8)
     visible: styledItem.keyNavigationFocus
     z: styledItem.z - 1
 
