@@ -97,31 +97,26 @@ StyledItem {
 
     Keys.enabled: true
     Keys.onLeftPressed: {
-        console.log("Left pressed")
         if (horizontalScrollbar.__styleInstance !== null) {
             horizontalScrollbar.__styleInstance.scroll(-flickableItem.width*internal.shortScrollingRatio)
         }
     }
     Keys.onRightPressed: {
-        console.log("Right pressed")
         if (horizontalScrollbar.__styleInstance !== null) {
             horizontalScrollbar.__styleInstance.scroll(flickableItem.width*internal.shortScrollingRatio)
         }
     }
     Keys.onDownPressed: {
-        console.log("Down pressed")
         if (verticalScrollbar.__styleInstance !== null) {
             verticalScrollbar.__styleInstance.scroll(flickableItem.height*internal.shortScrollingRatio)
         }
     }
     Keys.onUpPressed: {
-        console.log("Up pressed")
         if (verticalScrollbar.__styleInstance !== null) {
             verticalScrollbar.__styleInstance.scroll(-flickableItem.height*internal.shortScrollingRatio)
         }
     }
     Keys.onPressed:  {
-        console.log("Pressed")
         if (event.key == Qt.Key_Escape) {
             var scrollbarWithActiveDrag = (horizontalScrollbar.__styleInstance && horizontalScrollbar.__styleInstance.draggingThumb)
                     || (verticalScrollbar.__styleInstance && verticalScrollbar.__styleInstance.draggingThumb)
@@ -242,7 +237,8 @@ StyledItem {
             anchors.fill: parent
             enabled: true
             onPressed: {
-                //NOTE: we can't force focus on the viewport, this breaks text selection inside scrollview!
+                //FIXME: we can't force focus on the viewport, this breaks text selection inside scrollview!
+                //Without this we can't shift focus from a child ScrollView to a parent ScrollView
                 //viewportItem.focus = true
 
                 //activeFocusOnPress only works if *all* the parents have activeFocusOnPress enabled

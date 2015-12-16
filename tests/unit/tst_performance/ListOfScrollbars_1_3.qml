@@ -22,11 +22,16 @@ Column {
     height: 600
     Repeater {
         id: repeater
-        model: 5000
-	Item {
-	    width: units.gu(10)
+        model: 50
+        Item {
+            width: units.gu(10)
             height: units.gu(20)
-            Scrollbar { }
-	}
+            Flickable {
+                id: flick
+                width: units.gu(20)
+                height: units.gu(20)
+            }
+            Scrollbar { flickableItem: flick }
+        }
     }
 }

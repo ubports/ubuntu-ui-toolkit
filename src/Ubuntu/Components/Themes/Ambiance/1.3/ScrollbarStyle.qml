@@ -767,6 +767,7 @@ Item {
                     anchors.centerIn: parent
                     rotation: isVertical ? 180 : 90
                     source: Qt.resolvedUrl("../artwork/scrollbar_arrow.png")
+                    cache: true
                 }
             }
             Rectangle {
@@ -798,6 +799,7 @@ Item {
                     fillMode: Image.PreserveAspectFit
                     rotation: isVertical ? 0 : -90
                     source: Qt.resolvedUrl("../artwork/scrollbar_arrow.png")
+                    cache: true
                 }
             }
         }
