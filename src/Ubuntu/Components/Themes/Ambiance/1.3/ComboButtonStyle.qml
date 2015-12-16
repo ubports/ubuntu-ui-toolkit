@@ -21,6 +21,8 @@ import Ubuntu.Components.Styles 1.3 as Style
 Style.ComboButtonStyle {
     id: comboStyle
 
+    property ComboButton combo: styledItem
+
     // configurations
     dropDownWidth: units.gu(5)
     dropDownSeparatorWidth: units.dp(2)
@@ -29,14 +31,11 @@ Style.ComboButtonStyle {
     comboListPanel: panelItem
     defaultColor: mainButton.defaultColor
     defaultGradient: mainButton.defaultGradient
-    defaultDropdownColor: combo.expanded ? Qt.rgba(0, 0, 0, 0.05) : defaultColor
+    defaultDropdownColor: combo.expanded ? Qt.rgba(0, 0, 0, 0.05) : mainButton.defaultColor
     defaultFont: mainButton.defaultFont
-
 
     width: combo.width
     height: combo.collapsedHeight
-
-    property ComboButton combo: styledItem
 
     implicitWidth: mainButton.implicitWidth
     implicitHeight: mainButton.implicitHeight
@@ -44,25 +43,246 @@ Style.ComboButtonStyle {
     LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
     LayoutMirroring.childrenInherit: true
 
-    ButtonStyle {
+    Item {
         id: mainButton
+
+        property real minimumWidth: units.gu(36)
+        property real horizontalPadding: units.gu(4) - dropDownSeparatorWidth
+        // FIXME: Add this color to the palette
+        property color defaultColor: "#b2b2b2"
+        property font defaultFont: Qt.font({family: "Ubuntu", pixelSize: FontUtils.sizeToPixels("medium")})
+        property Gradient defaultGradient: null
+        property real buttonFaceOffset: -dropDownWidth/2 - dropDownSeparatorWidth
+        property bool stroke: styledItem.hasOwnProperty("strokeColor") && styledItem.strokeColor != Qt.rgba(0.0, 0.0, 0.0, 0.0)
+        /*!
+          The property overrides the button's default background with an item. This
+          item can be used by derived styles to reuse the ButtonStyle and override
+          the default coloured background with an image or any other drawing.
+          The default value is null.
+          */
+        property Item backgroundSource: comboFace
+
+        /* The proxy is necessary because Gradient.stops and GradientStop.color are
+           non-NOTIFYable properties. They cannot be written to so it is fine but
+           the proxy avoids the warnings.
+        */
+        property QtObject gradientProxy: gradientProxyObject
+        QtObject {
+            id: gradientProxyObject
+            property color topColor
+            property color bottomColor
+
+            function updateGradient() {
+                if (styledItem.gradient) {
+                    topColor = styledItem.gradient.stops[0].color;
+                    bottomColor = styledItem.gradient.stops[1].color;
+                }
+            }
+
+            Component.onCompleted: {
+                updateGradient();
+                styledItem.gradientChanged.connect(updateGradient);
+            }
+        }
+
+        // Use the gradient if it is defined and the color has not been set
+        // manually or the gradient has been set manually
+        property bool isGradient: styledItem.gradient && (
+            styledItem.color == defaultColor || styledItem.gradient != defaultGradient
+        )
+
         anchors {
             left: parent.left
             top: parent.top
             right: parent.right
         }
+        width: styledItem.width
         height: combo.collapsedHeight
-        // overrides
-        backgroundSource: comboFace
-        buttonFaceOffset: -dropDownWidth/2 - dropDownSeparatorWidth
-        horizontalPadding: units.gu(4) - dropDownSeparatorWidth
-        minimumWidth: units.gu(36)
+        implicitWidth: Math.max(
+            minimumWidth, foreground.implicitWidth + 2 * mainButton.horizontalPadding
+        )
+        implicitHeight: units.gu(4)
 
-        // FIXME: use hardcoded color while we get the theme palette updated
-        defaultColor: "#b2b2b2"
-        defaultGradient: null
+        LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
+        LayoutMirroring.childrenInherit: true
 
-        // button face
+        Image {
+            id: strokeBorder
+            anchors.fill: parent
+            anchors.margins: -units.gu(0.5)
+            // FIXME: this PNG is way too big (462x108) and do not scale properly
+            // ie. the corners are visually incorrect at most sizes
+            source: mainButton.stroke ? Qt.resolvedUrl("../artwork/stroke_button.png") : ""
+            visible: false
+            cache: false
+            asynchronous: true
+        }
+
+        ShaderEffect {
+            id: colorizedImage
+
+            anchors.fill: parent
+            visible: mainButton.stroke && strokeBorder.status == Image.Ready
+
+            property Item source: visible ? strokeBorder : null
+            property color keyColorOut: mainButton.stroke ? styledItem.strokeColor : Qt.rgba(0.0, 0.0, 0.0, 0.0)
+            property color keyColorIn: Qt.rgba(1.0, 1.0, 1.0, 1.0)
+            property real threshold: 1.0
+
+            fragmentShader: "
+            varying highp vec2 qt_TexCoord0;
+            uniform sampler2D source;
+            uniform highp vec4 keyColorOut;
+            uniform highp vec4 keyColorIn;
+            uniform lowp float threshold;
+            uniform lowp float qt_Opacity;
+            void main() {
+                lowp vec4 sourceColor = texture2D(source, qt_TexCoord0);
+                gl_FragColor = mix(vec4(keyColorOut.rgb, 1.0) * sourceColor.a, sourceColor, step(threshold, distance(sourceColor.rgb / sourceColor.a, keyColorIn.rgb))) * qt_Opacity;
+            }"
+        }
+
+        UbuntuShape {
+            id: background
+            anchors.fill: parent
+            borderSource: "radius_idle.sci"  // Deprecated, use a dedicated shape.
+            visible: mainButton.stroke ? false : ((backgroundColor.a != 0.0) || mainButton.backgroundSource)
+            source: mainButton.backgroundSource
+
+            backgroundColor: mainButton.backgroundSource ? "#00000000" : (mainButton.isGradient ? gradientProxy.topColor : styledItem.color)
+            secondaryBackgroundColor: mainButton.backgroundSource ? "#00000000" : (mainButton.isGradient ? gradientProxy.bottomColor : styledItem.color)
+            backgroundMode: mainButton.isGradient ? UbuntuShape.VerticalGradient : UbuntuShape.SolidColor
+            opacity: styledItem.enabled ? 1.0 : 0.6
+        }
+
+        UbuntuShape {
+            id: backgroundPressed
+            anchors.fill: parent
+            backgroundColor: mainButton.stroke ? styledItem.strokeColor : background.backgroundColor
+            secondaryBackgroundColor: background.secondaryBackgroundColor
+            backgroundMode: mainButton.stroke ? UbuntuShape.SolidColor : UbuntuShape.VerticalGradient
+            borderSource: "radius_pressed.sci"  // Deprecated, use a dedicated shape.
+            opacity: styledItem.pressed ? 1.0 : 0.0
+            Behavior on opacity {
+                NumberAnimation {
+                    duration: UbuntuAnimation.SnapDuration
+                    easing.type: Easing.Linear
+                }
+            }
+            visible: mainButton.stroke || background.visible
+        }
+
+        Item {
+            id: foreground
+
+            property string iconPosition: styledItem.iconPosition
+            property real iconSize: units.gu(3)
+            property real spacing: mainButton.horizontalPadding
+            property bool hasIcon: styledItem.iconSource != ""
+            property bool hasText: styledItem.text != ""
+
+            anchors {
+                centerIn: parent
+                horizontalCenterOffset: mainButton.buttonFaceOffset
+            }
+            transformOrigin: Item.Top
+            width: parent.width - 2*mainButton.horizontalPadding
+            implicitHeight: Math.max(foregroundIcon.height, foregroundLabel.height)
+            scale: styledItem.pressed ? 0.98 : 1.0
+            Behavior on scale {
+                NumberAnimation {
+                    duration: UbuntuAnimation.SnapDuration
+                    easing.type: Easing.Linear
+                }
+            }
+            state: foreground.hasIcon && hasText ? iconPosition : "center"
+
+            Icon {
+                id: foregroundIcon
+                visible: foreground.hasIcon
+                anchors.verticalCenter: parent.verticalCenter
+                width: foreground.iconSize
+                height: foreground.iconSize
+                color: foregroundLabel.color
+                source: combo.iconSource
+            }
+
+            Label {
+                id: foregroundLabel
+                anchors.verticalCenter: parent.verticalCenter
+                elide: Text.ElideRight
+                /* Pick either a clear or dark text color depending on the
+                 * luminance of the background color to maintain good contrast
+                 * (works in most cases)
+                 */
+                color: ColorUtils.luminance(combo.color) <= 0.85 && !(mainButton.stroke && !combo.pressed) ? "#FFFFFF" : "#888888"
+                font: styledItem.font
+                text: combo.text
+            }
+
+            states: [
+                State {
+                    name: "left"
+                    AnchorChanges {
+                        target: foregroundIcon
+                        anchors.left: foreground.left
+                    }
+                    AnchorChanges {
+                        target: foregroundLabel
+                        anchors.left: foregroundIcon.right
+                    }
+                    PropertyChanges {
+                        target: foregroundLabel
+                        anchors.leftMargin: spacing
+                        width: foreground.width - foregroundIcon.width - spacing
+                    }
+                    PropertyChanges {
+                        target: foreground
+                        implicitWidth: foregroundIcon.implicitWidth + spacing + foregroundLabel.implicitWidth
+                    }
+                },
+                State {
+                    name: "right"
+                    AnchorChanges {
+                        target: foregroundIcon
+                        anchors.right: foreground.right
+                    }
+                    AnchorChanges {
+                        target: foregroundLabel
+                        anchors.right: foregroundIcon.left
+                    }
+                    PropertyChanges {
+                        target: foregroundLabel
+                        anchors.rightMargin: spacing
+                        width: foreground.width - foregroundIcon.width - spacing
+                    }
+                    PropertyChanges {
+                        target: foreground
+                        implicitWidth: foregroundIcon.implicitWidth + spacing + foregroundLabel.implicitWidth
+                    }
+                },
+                State {
+                    name: "center"
+                    AnchorChanges {
+                        target: foregroundIcon
+                        anchors.horizontalCenter: foreground.horizontalCenter
+                    }
+                    AnchorChanges {
+                        target: foregroundLabel
+                        anchors.horizontalCenter: foreground.horizontalCenter
+                    }
+                    PropertyChanges {
+                        target: foregroundLabel
+                        width: Math.min(foregroundLabel.implicitWidth, foreground.width)
+                    }
+                    PropertyChanges {
+                        target: foreground
+                        implicitWidth: foreground.hasText ? foregroundLabel.implicitWidth : foregroundIcon.implicitWidth
+                    }
+                }
+            ]
+        }
+
         ShaderEffectSource {
             id: comboFace
             sourceItem: content
@@ -107,7 +327,7 @@ Style.ComboButtonStyle {
                     bottom: parent.bottom
                 }
                 width: comboStyle.dropDownWidth
-                color: mainButton.__colorHack(combo.dropdownColor)
+                color: combo.dropdownColor
                 Image {
                     source: Qt.resolvedUrl("../artwork/chevron.png")
                     anchors.centerIn: parent
@@ -144,7 +364,7 @@ Style.ComboButtonStyle {
                 topMargin: comboListMargin
             }
             clip: true
-            color: mainButton.__colorHack(combo.dropdownColor)
+            color: combo.dropdownColor
         }
 
         BorderImage {

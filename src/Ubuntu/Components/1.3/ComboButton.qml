@@ -161,8 +161,44 @@ import Ubuntu.Components.Popups 1.3
     \section2 Styling
     The style of the component is defined in \l ComboButtonStyle.
   */
-Button {
+AbstractButton {
     id: combo
+
+    /*!
+      If set to a color, the button has a stroke border instead of a filled shape.
+    */
+    property color strokeColor: Qt.rgba(0.0, 0.0, 0.0, 0.0)
+
+    /*!
+       The background color of the button.
+    */
+    property color color: __styleInstance.defaultColor
+
+    /*!
+      The gradient used to fill the background of the button.
+      Standard Ubuntu gradients are defined in \l UbuntuColors.
+      If both a gradient and a color are specified, the gradient will be used.
+    */
+    property Gradient gradient
+
+    /*!
+      The font used for the button's text.
+    */
+    property font font: __styleInstance.defaultFont
+
+    /*!
+      The position of the icon relative to the text. Options
+      are "left" and "right". The default value is "left".
+
+      If only text or only an icon is defined, this
+      property is ignored and the text or icon is
+      centered horizontally and vertically in the button.
+
+      Currently this is a string value. We are waiting for
+      support for enums:
+      https://bugreports.qt-project.org/browse/QTBUG-14861
+    */
+    property string iconPosition: "left"
 
     /*!
       Specifies whether the combo list is expanded or not. The default falue is
