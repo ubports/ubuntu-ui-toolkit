@@ -238,9 +238,9 @@ StyledItem {
         //recently
         MouseArea {
             anchors.fill: parent
-            enabled: true
             onPressed: {
                 //FIXME: we can't force focus on the viewport, this breaks text selection inside scrollview!
+                //+ it still doesn't work in Sliders page, for yet unknown reasons
                 //Without this we can't shift focus from a child ScrollView to a parent ScrollView
                 //viewportItem.focus = true
 
@@ -249,17 +249,9 @@ StyledItem {
                 //the MainView, and that would make focusing the scrollview impossible. Hence we also
                 //force it from QML side
                 root.forceActiveFocus()
+
                 mouse.accepted = false
             }
         }
-
-        Column {
-            anchors.left: viewportItem.left
-            anchors.right: viewportItem.right
-            Text { color: root.activeFocus ? "red" : "black"; text:"ROOT focus " + root.focus + " activeFocus " + root.activeFocus; }
-            Text { color: viewportItem.activeFocus ? "red" : "black"; text:"VIEWPORT focus " + viewportItem.focus + " activeFocus " + viewportItem.activeFocus; }
-            Text { color: internal.activeFocus ? "red" : "black"; text:"INTERNAL focus " + internal.focus + " activeFocus " + internal.activeFocus; }
-        }
-
     }
 }

@@ -28,6 +28,36 @@ Item {
     width: units.gu(50)
     height: units.gu(100)
 
+
+    Component {
+        id: flickableComp
+        Item {
+            width: units.gu(20)
+            height: units.gu(30)
+            property alias flickable: freshFlickable
+            property alias scrollbar: freshScrollbar
+            property alias content: content
+            Flickable {
+                id: freshFlickable
+                anchors.fill: parent
+                contentHeight: content.height
+                contentWidth: content.width
+                clip: true
+                Rectangle {
+                    id: content
+                    width: units.gu(40)
+                    height: units.gu(50)
+                    color: "blue"
+                }
+            }
+            Scrollbar {
+                id: freshScrollbar
+                flickableItem: parent.flickable
+            }
+        }
+
+    }
+
     Flickable {
         anchors.fill: parent
         Column {
@@ -81,6 +111,13 @@ Item {
         name: "Scrollbar"
         when: windowShown
 
+        function getFreshFlickable() {
+            var flickable = flickableComp.createObject(column)
+            if (!flickable) {
+                console.log("ERROR WHILE DYNAMICALLY CREATING A FRESH FLICKABLE INSTANCE")
+            }
+            return flickable
+        }
         function warningMsg(msg) {
             return testUtil.callerFile() + ": " + msg
         }
@@ -125,6 +162,20 @@ Item {
                     scrollbar_trailingAlign_anchors.flickableItem.bottom, "bottom anchor")
             compare(scrollbar_trailingAlign_anchors.anchors.top,
                     scrollbar_trailingAlign_anchors.flickableItem.top, "top anchor")
+        }
+
+        function test_indicatorWhileFlicking() {
+            var freshTestItem = getFreshFlickable()
+            if (!freshTestItem) return
+
+            var flickable = freshTestItem.flickable
+            var scrollbar = freshTestItem.scrollbar
+
+            flick(flickable, 1, 2, units.gu(2), units.gu(3))
+            compare(flickable.moving, true, "not moving")
+            compare(scrollbar.__styleInstance.state, "indicator", "wrong style while flicking")
+
+            freshTestItem.destroy()
         }
     }
 }
