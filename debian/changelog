@@ -1,4 +1,7 @@
-ubuntu-ui-toolkit (1.3.1777+16.04-0ubuntu1) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.3.1778+16.04-0ubuntu1) UNRELEASED; urgency=medium
+
+  [ Andrea Bernabei ]
+  * Rework Scrollbars and add ScrollView component.
 
   [ Zsombor Egri ]
   * Refactor UCSwipeAreaPrivate to use QQuickItemPrivate instead of being

@@ -990,6 +990,10 @@ Ubuntu.PerformanceMetrics.RenderingTimes 1.0 0.1: Item
     property int period
     property int samples
     property RenderTimer.TimerType timerType
+Ubuntu.Components.ScrollView 1.3: StyledItem
+    default property Item contentItem
+    readonly property Flickable flickableItem
+    readonly property Item viewport
 Ubuntu.Components.Scrollbar 1.0 0.1: StyledItem
     property int align
     property Flickable flickableItem
