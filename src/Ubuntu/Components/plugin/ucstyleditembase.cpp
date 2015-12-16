@@ -73,8 +73,7 @@ bool UCStyledItemBasePrivate::isParentFocusable()
         UCStyledItemBase *scope = qobject_cast<UCStyledItemBase*>(pl);
         if (scope) {
             UCStyledItemBasePrivate *pscope = UCStyledItemBasePrivate::get(scope);
-            bool focusable = pscope->isParentFocusable();
-            return focusable;
+            return pscope->isParentFocusable();
         }
         pl = pl->parentItem();
     }

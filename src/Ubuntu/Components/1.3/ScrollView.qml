@@ -21,6 +21,7 @@ import Ubuntu.Components 1.3
     \qmltype ScrollView
     \inqmlmodule Ubuntu.Components 1.3
     \ingroup ubuntu
+    \inherits StyledItem
     \brief ScrollView is a scrollable view that features scrollbars and scrolling via keyboard keys.
 
     ScrollView is the recommended component to use in the implementation of scrollable content. It
@@ -144,8 +145,7 @@ StyledItem {
 
     onContentItemChanged: {
         // Check if the item provided is a Flickable
-        if (contentItem.hasOwnProperty("contentWidth") &&
-                contentItem.hasOwnProperty("flickableDirection")) {
+        if (QuickUtils.inherits(contentItem, "QQuickFlickable")) {
             internal.flickableItem = contentItem
             internal.flickableItem.parent = viewportItem
         } else {

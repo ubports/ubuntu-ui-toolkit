@@ -364,7 +364,7 @@ Item {
     SmoothedAnimation {
         id: scrollAnimation
         //duration and easing coming from UX spec
-        duration: 500
+        duration: UbuntuAnimation.SlowDuration
         easing.type: Easing.InOutCubic
         target: styledItem.flickableItem
         property: (isVertical) ? "contentY" : "contentX"
