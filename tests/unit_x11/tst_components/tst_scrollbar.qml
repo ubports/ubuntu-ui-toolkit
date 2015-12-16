@@ -55,7 +55,10 @@ Item {
                 flickableItem: parent.flickable
             }
         }
+    }
 
+    SignalSpy {
+        id: signalSpy
     }
 
     Flickable {
@@ -118,6 +121,15 @@ Item {
             }
             return flickable
         }
+        function setVeryLongContentItem(flickable) {
+            flickable.contentHeight = flickable.height * 10 + 1
+        }
+        function setupSignalSpy(spy, target, signalName) {
+            spy.clear()
+            spy.target = target
+            spy.signalName = signalName
+        }
+
         function warningMsg(msg) {
             return testUtil.callerFile() + ": " + msg
         }
@@ -171,10 +183,39 @@ Item {
             var flickable = freshTestItem.flickable
             var scrollbar = freshTestItem.scrollbar
 
+            setupSignalSpy(signalSpy, flickable, "movementEnded")
+
             flick(flickable, 1, 2, units.gu(2), units.gu(3))
             compare(flickable.moving, true, "not moving")
             compare(scrollbar.__styleInstance.state, "indicator", "wrong style while flicking")
 
+            signalSpy.wait()
+            compare(signalSpy.count, 1, "flick not completed")
+
+            compare(scrollbar.__styleInstance.state, "hidden", "wrong style while flicking short item")
+            freshTestItem.destroy()
+        }
+
+        function test_thumbStyleVeryLongContent() {
+            var freshTestItem = getFreshFlickable()
+            if (!freshTestItem) return
+
+            var flickable = freshTestItem.flickable
+            var scrollbar = freshTestItem.scrollbar
+
+            setVeryLongContentItem(flickable)
+            compare(scrollbar.__styleInstance.veryLongContentItem, true, "very long content item not detected")
+
+            setupSignalSpy(signalSpy, flickable, "movementEnded")
+
+            flick(flickable, 1, 2, units.gu(2), units.gu(3))
+            compare(flickable.moving, true, "not moving")
+            compare(scrollbar.__styleInstance.state, "thumb", "wrong style while flicking a very long item")
+
+            signalSpy.wait()
+            compare(signalSpy.count, 1, "flick not completed")
+
+            compare(scrollbar.__styleInstance.state, "hidden", "wrong style while flicking a very long item")
             freshTestItem.destroy()
         }
     }
