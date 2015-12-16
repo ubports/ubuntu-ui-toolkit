@@ -196,8 +196,6 @@ void UCSlotsLayoutPrivate::_q_updateCachedHeight()
 
 void UCSlotsLayoutPrivate::_q_updateGuValues()
 {
-    Q_Q(UCSlotsLayout);
-
     if (!padding.leadingWasSetFromQml) {
         padding.setLeading(UCUnits::instance().gu(SLOTSLAYOUT_LEFTMARGIN_GU));
     }
@@ -992,13 +990,18 @@ void UCSlotsLayout::itemChange(ItemChange change, const ItemChangeData &data)
     }
    \endqml
  */
+QQuickItem *UCSlotsLayout::mainSlot()
+{
+    Q_D(const UCSlotsLayout);
+    return d->mainSlot;
+}
 QQuickItem *UCSlotsLayout::mainSlot() const
 {
     Q_D(const UCSlotsLayout);
     return d->mainSlot;
 }
 
-void UCSlotsLayout::setMainSlot(QQuickItem *item)
+void UCSlotsLayout::setMainSlot(QQuickItem *item, bool fireSignal)
 {
     Q_D(UCSlotsLayout);
     if (d->mainSlot != item && item != Q_NULLPTR) {
@@ -1010,7 +1013,10 @@ void UCSlotsLayout::setMainSlot(QQuickItem *item)
         }
         d->mainSlot = item;
         d->mainSlot->setParentItem(this);
-        Q_EMIT mainSlotChanged();
+
+        if (fireSignal) {
+            Q_EMIT mainSlotChanged();
+        }
     }
 }
 
@@ -1058,7 +1064,6 @@ UCSlotsAttachedPrivate::UCSlotsAttachedPrivate()
 
 void UCSlotsAttachedPrivate::_q_onGuValueChanged()
 {
-    Q_Q(UCSlotsAttached);
     if (!padding.leadingWasSetFromQml)
         padding.setLeading(UCUnits::instance().gu(SLOTSLAYOUT_SLOTS_SIDEMARGINS_GU));
 

@@ -48,7 +48,7 @@ UnixSignalHandler::HandlerType UnixSignalHandler::createHandler(int signal)
         qFatal("UNIX signal registration error");
     }
     HandlerType handler;
-    if (::socketpair(AF_UNIX, SOCK_STREAM, 0, handler.first)) {
+    if (::socketpair(AF_UNIX, SOCK_STREAM, 0, handler.first.data())) {
         qFatal("Cannot create signal socketpair");
     }
     handler.second = new QSocketNotifier(handler.first[1], QSocketNotifier::Read, this);

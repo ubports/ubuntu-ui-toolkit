@@ -111,21 +111,10 @@ Components.Header {
       version (1.1) will no longer work.
      */
     property QtObject config: null
-    onConfigChanged: {
-        if (header.config.locked) {
-            header.flickable = null;
-        } else {
-            header.flickable = header.config.flickable;
-        }
 
-        if (!header.flickable && !header.config.visible) {
-            // locked.
-            header.exposed = false;
-        } else {
-            header.config.visible = true;
-            header.exposed = true;
-        }
-    }
+    Component.onCompleted: internal.updateProperties()
+    onConfigChanged: internal.updateProperties()
+
     onExposedChanged: {
         if(header.config) {
             header.config.visible = exposed;
@@ -151,6 +140,24 @@ Components.Header {
         }
     }
 
-    theme.version: Components.Ubuntu.toolkitVersion
+    QtObject {
+        id: internal
+        function updateProperties() {
+            if (header.config.locked) {
+                header.flickable = null;
+            } else {
+                header.flickable = header.config.flickable;
+            }
+
+            if (!header.flickable && !header.config.visible) {
+                // locked.
+                header.exposed = false;
+            } else {
+                header.config.visible = true;
+                header.exposed = true;
+            }
+        }
+    }
+
     styleName: "PageHeadStyle"
 }

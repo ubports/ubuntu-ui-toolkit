@@ -16,9 +16,9 @@
 
 #include "uclabel.h"
 #include "ucfontutils.h"
+#include "ucnamespace.h"
 #include "ucunits.h"
 #include "uctheme.h"
-#include "quickutils.h"
 
 void UCLabel::updatePixelSize()
 {
@@ -78,6 +78,7 @@ void UCLabel::_q_customColor()
  */
 UCLabel::UCLabel(QQuickItem* parent)
     : QQuickText(parent)
+    , UCThemingExtension(this)
     , m_textSize(Medium)
     , m_flags(0)
 {
@@ -91,7 +92,6 @@ void UCLabel::classBegin()
 
 void UCLabel::init()
 {
-    initTheming(this);
     postThemeChanged();
     updatePixelSize();
     m_defaultFont = font();
@@ -101,13 +101,6 @@ void UCLabel::init()
 
     connect(this, &UCLabel::fontChanged, this, &UCLabel::_q_updateFontFlag, Qt::DirectConnection);
     connect(this, &UCLabel::colorChanged, this, &UCLabel::_q_customColor, Qt::DirectConnection);
-}
-
-void UCLabel::customEvent(QEvent *event)
-{
-    if (UCThemeEvent::isThemeEvent(event)) {
-        handleThemeEvent(static_cast<UCThemeEvent*>(event));
-    }
 }
 
 void UCLabel::postThemeChanged()
@@ -179,13 +172,7 @@ void UCLabel::setFontSize(const QString& fontSize)
         return;
     }
 
-    static bool logOnce = false;
-    if (!logOnce) {
-        logOnce = true;
-        if (QuickUtils::showDeprecationWarnings()) {
-            qmlInfo(this) << "'fontSize' is deprecated, use 'textSize' property instead.";
-        }
-    }
+    UC_QML_DEPRECATION_WARNING("'fontSize' is deprecated, use 'textSize' property instead.");
 
     TextSize textSize;
     switch (SCALE_CODE(fontSize)) {

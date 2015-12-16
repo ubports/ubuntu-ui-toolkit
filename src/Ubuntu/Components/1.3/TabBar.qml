@@ -97,7 +97,6 @@ Toolkit.StyledItem {
 
     implicitHeight: units.gu(7.5)
     activeFocusOnPress: true
-    theme.version: Toolkit.Ubuntu.toolkitVersion
     styleName: "TabBarStyle"
 
     QtObject {

@@ -96,7 +96,21 @@ declare -a UNREGISTERED_APPS=(
 	"com.ubuntu.shorts"
 )
 
-# some apps needs special permission to access sysetm service.
+wait_for_shell()
+{
+	# Waiting for device on ADB
+	set -e
+	adb -s ${SERIALNUMBER} wait-for-device
+	# Start waiting for Unity8"
+	until PIDS=$(adb -s ${SERIALNUMBER} shell pidof unity8 2>/dev/null|egrep -v "^$"); 
+	do
+        	sleep 0.1;
+	done;
+	echo "Unity8 is up with PID: ${PIDS}"
+	set +e
+}
+
+# some apps needs special permission to access system service.
 fix_permissions () {
 	APP_ID=$1
 	SERVICE=$2
@@ -155,7 +169,7 @@ function reset {
 	if [ ${UNLOCK_ONLY} == false ]; then
             adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S reboot 2>&1|grep -v password"
              sleep_indicator 120
-             /usr/share/qtcreator/ubuntu/scripts/device_wait_for_shell ${SERIALNUMBER} > /dev/null
+             wait_for_shell 
              sleep_indicator 10
              network
         fi
@@ -289,6 +303,19 @@ function compare_results {
 	    echo -e "\tBroken tests"  >> ${MAINFILE}
         fi
         egrep -v "NO TAGS DATABASE" $RESULT_FILE |egrep "^ERROR:|^FAIL:" | while read -r FAILED ; 
+        do
+	    FAILED=${FAILED/ERROR:/FAIL:}
+            echo -e "\tFailed with ${PPA} - $FAILED"  >> ${MAINFILE}
+            FAILED_TEST_CASE=${FAILED/FAIL: /}
+            #echo ${FAILED_TEST_CASE}
+	    if grep --quiet "$FAILED_TEST_CASE" *archive.tests; then
+                echo -e "\tSame on archive"  >> ${MAINFILE}
+            else
+                echo -e "\tPossible regression"  >> ${MAINFILE}
+            fi
+        done
+
+
         do
 	    FAILED=${FAILED/ERROR:/FAIL:}
 	    FAILED_TEST=${FAILED/ERROR:/}
@@ -461,7 +488,6 @@ echo "Dist-upgrade: ${DISTUPGRADE}"
 echo "Main logs: ${MAINFILE}"
 echo "*** Starting ***"
 echo ""
-
 
 if [ ${UNLOCK_ONLY} == true ]; then
    reset -f

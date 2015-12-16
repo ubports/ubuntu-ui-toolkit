@@ -17,7 +17,6 @@
 import QtQuick 2.4
 import Ubuntu.Components 1.2 as Ubuntu
 import Ubuntu.Components.Popups 1.0
-import "mathUtils.js" as MathUtils
 
 /*!
     \qmltype TextArea
@@ -767,7 +766,7 @@ Ubuntu.StyledItem {
                 var max = (control.maximumLineCount <= 0) ?
                             control.lineCount :
                             Math.min(control.maximumLineCount, control.lineCount);
-                control.height = linesHeight(MathUtils.clamp(control.lineCount, 1, max));
+                control.height = linesHeight(Ubuntu.MathUtils.clamp(control.lineCount, 1, max));
             }
         }
     }

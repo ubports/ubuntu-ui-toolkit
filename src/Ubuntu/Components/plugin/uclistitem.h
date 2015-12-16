@@ -47,6 +47,8 @@ class UCListItem : public UCStyledItemBase
     Q_CLASSINFO("DefaultProperty", "listItemData")
     // 1.3
     Q_PROPERTY(UCListItemExpansion* expansion READ expansion CONSTANT REVISION 1)
+    Q_PROPERTY(bool swipeEnabled READ isSwipeEnabled WRITE setSwipeEnabled NOTIFY swipeEnabledChanged FINAL REVISION 1)
+    Q_PROPERTY(bool swiped READ isSwiped NOTIFY swipedChanged FINAL REVISION 1)
 public:
     explicit UCListItem(QQuickItem *parent = 0);
     ~UCListItem();
@@ -65,6 +67,9 @@ public:
     void resetHighlightColor();
     // 1.3
     UCListItemExpansion *expansion();
+    bool isSwipeEnabled() const;
+    void setSwipeEnabled(bool swipeEnabled);
+    bool isSwiped();
 
 protected:
     virtual QObject *attachedViewItems(QObject *object, bool create);
@@ -92,6 +97,8 @@ Q_SIGNALS:
     void selectModeChanged();
     void actionChanged();
     void listItemChildrenChanged();
+    Q_REVISION(1) void swipeEnabledChanged();
+    Q_REVISION(1) void swipedChanged();
 
     void clicked();
     void pressAndHold();
@@ -111,7 +118,6 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_updateSize())
     Q_PRIVATE_SLOT(d_func(), void _q_updateIndex())
     Q_PRIVATE_SLOT(d_func(), void _q_contentMoving())
-    Q_PRIVATE_SLOT(d_func(), void _q_syncSelectMode())
     Q_PRIVATE_SLOT(d_func(), void _q_syncDragMode())
     Q_PRIVATE_SLOT(d_func(), void _q_updateExpansion(const QList<int> &indices))
     Q_PRIVATE_SLOT(d_func(), void _q_popoverClosed())
@@ -194,7 +200,7 @@ private Q_SLOTS:
 
 Q_SIGNALS:
     void selectModeChanged();
-    void selectedIndicesChanged();
+    void selectedIndicesChanged(const QList<int> &indices);
     void dragModeChanged();
 
     void dragUpdated(UCDragEvent *event);

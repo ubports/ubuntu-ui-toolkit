@@ -216,7 +216,6 @@ ListItem.Empty {
                 right: parent.right
             }
             state: itemSelector.expanded ? "expanded" : "collapsed"
-            theme.version: Ubuntu.toolkitVersion
             styleName: "ListItemOptionSelectorStyle"
 
             states: [ State {

@@ -20,6 +20,7 @@ import Ubuntu.Components 1.3
 
 Item {
     id: ambianceStyle
+    objectName: "OptionSelector13"
 
     property url chevron: Qt.resolvedUrl("../artwork/chevron_down.png")
     property url tick: Qt.resolvedUrl("../artwork/tick.png")

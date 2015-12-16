@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.4
+import Ubuntu.Components 1.3 as Toolkit
 import "PageWrapperUtils.js" as Utils
 
 /*!
@@ -24,7 +25,7 @@ import "PageWrapperUtils.js" as Utils
     \ingroup ubuntu
     \brief Internal class used by \l PageStack
 */
-PageTreeNode {
+Toolkit.PageTreeNode {
     id: pageWrapper
     anchors.fill: parent
 
@@ -46,7 +47,7 @@ PageTreeNode {
     property bool canDestroy: false
 
     /*!
-      Column number in MultiColumnView.
+      Column number in AdaptivePageLayout.
       */
     property int column: 0
 
@@ -61,7 +62,7 @@ PageTreeNode {
     property Item parentWrapper
 
     /*!
-      Page holder in MultiColumnView
+      Page holder in AdaptivePageLayout.
       */
     property Item pageHolder
 

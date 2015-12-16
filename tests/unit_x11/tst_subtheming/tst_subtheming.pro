@@ -28,8 +28,6 @@ OTHER_FILES += \
     themes/CustomTheme/1.3/TestStyle.qml \
     StyledItemV12.qml \
     StyledItemV13.qml \
-    StyledItemFallback.qml \
-    StyledItemAppThemeFallback.qml \
     DeprecatedTheme.qml \
     StyledItemAppThemeVersioned.qml \
     StyleOverride.qml \
@@ -43,6 +41,7 @@ OTHER_FILES += \
     MoreStyleHints.qml \
     GroupPropertyBindingHints.qml \
     OverrideStyleHints.qml \
-    HintedButton.qml
+    HintedButton.qml \
+    OtherVersion.qml
 
 

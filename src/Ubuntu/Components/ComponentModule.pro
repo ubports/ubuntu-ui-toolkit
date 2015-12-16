@@ -43,7 +43,6 @@ QML_FILES += 1.2/AbstractButton.qml \
              1.2/MainView12.qml \
              1.2/MainViewBase.qml \
              1.2/MainView.qml \
-             1.2/mathUtils.js \
              1.2/Object.qml \
              1.2/OptionSelectorDelegate.qml \
              1.2/OptionSelector.qml \
@@ -60,7 +59,6 @@ QML_FILES += 1.2/AbstractButton.qml \
              1.2/Panel.qml \
              1.2/PullToRefresh.qml \
              1.2/Scrollbar.qml \
-             1.2/scrollbarUtils.js \
              1.2/Slider.qml \
              1.2/sliderUtils.js \
              1.2/stack.js \
@@ -74,7 +72,7 @@ QML_FILES += 1.2/AbstractButton.qml \
              1.2/TextInputPopover.qml \
              1.2/ToolbarButton.qml \
              1.2/ToolbarItems.qml \
-             1.2/Toolbar.qml \
+             1.2/DeprecatedToolbar.qml \
              1.2/UbuntuListView11.qml \
              1.2/UbuntuListView.qml \
              1.2/UbuntuNumberAnimation.qml
@@ -96,7 +94,6 @@ QML_FILES += 1.3/ActionBar.qml \
              1.3/InputHandler.qml \
              1.3/MainViewBase.qml \
              1.3/MainView.qml \
-             1.3/mathUtils.js \
              1.3/OptionSelectorDelegate.qml \
              1.3/OptionSelector.qml \
              1.3/OrientationHelper.qml \
@@ -105,7 +102,6 @@ QML_FILES += 1.3/ActionBar.qml \
              1.3/PageHeadState.qml \
              1.3/Page.qml \
              1.3/PageStack.qml \
-             1.3/PageTreeNode.qml \
              1.3/pageUtils.js \
              1.3/PageWrapper.qml \
              1.3/PageWrapperUtils.js \
@@ -123,24 +119,23 @@ QML_FILES += 1.3/ActionBar.qml \
              1.3/TextCursor.qml \
              1.3/TextField.qml \
              1.3/TextInputPopover.qml \
+             1.3/Toolbar.qml \
              1.3/ToolbarButton.qml \
              1.3/ToolbarItems.qml \
-             1.3/Toolbar.qml \
              1.3/tree.js \
              1.3/UbuntuColors.qml \
              1.3/UbuntuListView11.qml \
              1.3/UbuntuListView.qml \
              1.3/UbuntuNumberAnimation.qml \
              1.3/ListItemPopover.qml \
-             1.3/BottomEdgeHint.qml \
              1.3/PageColumn.qml \
              1.3/PageColumnsLayout.qml \
              1.3/ProgressionSlot.qml \
+             1.3/PageHeader.qml \
 
 OTHER_FILES+= qmldir \
              1.3/CrossFadeImage.qdoc \
              1.3/UbuntuListView11.qdoc \
-             1.3/Page.qdoc \
              1.3/PageHeadConfiguration.qdoc \
              1.3/MainView.qdoc \
              1.3/Icon.qdoc

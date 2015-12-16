@@ -25,7 +25,7 @@ import Ubuntu.Components 1.3 as Toolkit
 
     Examples: See \l Tabs.
 */
-PageTreeNode {
+Toolkit.PageTreeNode {
     id: tab
 
     anchors.fill: parent ? parent : undefined

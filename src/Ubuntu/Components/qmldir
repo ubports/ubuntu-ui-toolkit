@@ -25,7 +25,7 @@ OptionSelector 0.1 1.2/OptionSelector.qml
 OptionSelectorDelegate 0.1 1.2/OptionSelectorDelegate.qml
 Page 0.1 1.2/Page10.qml
 PageStack 0.1 1.2/PageStack.qml
-internal Toolbar 1.2/Toolbar.qml
+internal DeprecatedToolbar 1.2/DeprecatedToolbar.qml
 internal AppHeader 1.2/AppHeader.qml
 Header 0.1 1.2/Header.qml
 internal AnimatedItem 1.2/AnimatedItem.qml
@@ -36,9 +36,7 @@ OrientationHelper 0.1 1.2/OrientationHelper.qml
 UbuntuNumberAnimation 0.1 1.2/UbuntuNumberAnimation.qml
 UbuntuListView 0.1 1.2/UbuntuListView.qml
 singleton UbuntuColors 0.1 1.0/UbuntuColors.qml
-MathUtils 0.1 1.2/mathUtils.js
 SliderUtils 0.1 1.2/sliderUtils.js
-ScrollbarUtils 0.1 1.2/scrollbarUtils.js
 ColorUtils 0.1 1.2/colorUtils.js
 DateUtils 0.1 1.2/dateUtils.js
 
@@ -73,9 +71,7 @@ Icon 1.0 1.0/Icon.qml
 OrientationHelper 1.0 1.2/OrientationHelper.qml
 UbuntuNumberAnimation 1.0 1.2/UbuntuNumberAnimation.qml
 singleton UbuntuColors 1.0 1.0/UbuntuColors.qml
-MathUtils 1.0 1.2/mathUtils.js
 SliderUtils 1.0 1.2/sliderUtils.js
-ScrollbarUtils 1.0 1.2/scrollbarUtils.js
 ColorUtils 1.0 1.2/colorUtils.js
 DateUtils 1.0 1.2/dateUtils.js
 UbuntuListView 1.0 1.2/UbuntuListView.qml
@@ -136,8 +132,8 @@ UbuntuNumberAnimation 1.3 1.3/UbuntuNumberAnimation.qml
 PullToRefresh 1.3 1.3/PullToRefresh.qml
 UbuntuListView 1.3 1.3/UbuntuListView11.qml
 Captions 1.3 1.3/Captions.qml
-MathUtils 1.3 1.3/mathUtils.js
 internal ColorUtils 1.3/colorUtils.js
 DateUtils 1.3 1.3/dateUtils.js
-BottomEdgeHint 1.3 1.3/BottomEdgeHint.qml
 ProgressionSlot 1.3 1.3/ProgressionSlot.qml
+PageHeader 1.3 1.3/PageHeader.qml
+Toolbar 1.3 1.3/Toolbar.qml

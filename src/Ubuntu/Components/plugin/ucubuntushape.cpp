@@ -28,16 +28,15 @@
 #include "ucubuntushape.h"
 #include "ucubuntushapetexture.h"
 #include "ucunits.h"
-#include "quickutils.h"
+#include "ucnamespace.h"
 #include <QtCore/QPointer>
 #include <QtGui/QGuiApplication>
-#include <QtGui/QScreen>
-#include <QtQuick/QQuickWindow>
-#include <QtQuick/QSGTextureProvider>
-#include <QtQuick/private/qquickimage_p.h>
+#include <QtQml/QQmlInfo>
 #include <QtQuick/private/qsgadaptationlayer_p.h>
-#include <QtQml/qqmlinfo.h>
-#include <math.h>
+// This private header uses the emit keyword while we build with QT_NO_KEYWORDS set. See #1507910.
+#define emit Q_EMIT
+#include <QtQuick/private/qquickimage_p.h>
+#undef emit
 
 // Anti-aliasing distance of the contour in pixels.
 const float distanceAApx = 1.75f;
@@ -305,6 +304,7 @@ UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
     , m_sourceFillMode(Stretch)
     , m_sourceHorizontalWrapMode(Transparent)
     , m_sourceVerticalWrapMode(Transparent)
+    , m_version(Version12)
     , m_sourceOpacity(255)
     , m_flags(Stretched)
 {
@@ -324,6 +324,11 @@ bool UCUbuntuShape::useDistanceFields(const QOpenGLContext* openglContext)
         // OpenGL and OpenGL ES with standard derivatives.
         (!openglContext->isOpenGLES()
          || openglContext->hasExtension(QByteArrayLiteral("GL_OES_standard_derivatives")));
+}
+
+bool UCUbuntuShape::isVersionGreaterThanOrEqual(Version version)
+{
+    return static_cast<int>(m_version) >= static_cast<int>(version);
 }
 
 /*! \qmlproperty string UbuntuShape::radius
@@ -805,12 +810,9 @@ void UCUbuntuShape::setBorderSource(const QString& borderSource)
 */
 void UCUbuntuShape::setColor(const QColor& color)
 {
-    static bool loggedOnce = false;
-    if (!loggedOnce) {
-        loggedOnce = true;
-        qmlInfo(this) << "'color' is deprecated. Use 'backgroundColor', 'secondaryBackgroundColor' "
-            "and 'backgroundMode' instead.";
-    }
+    Q_UNUSED(color);
+    if (isVersionGreaterThanOrEqual(Version13))
+        UC_QML_DEPRECATION_WARNING("'color' is deprecated. Use 'backgroundColor', 'secondaryBackgroundColor' and 'backgroundMode' instead.");
 
     if (!(m_flags & BackgroundApiSet)) {
         const QRgb colorRgb = qRgba(color.red(), color.green(), color.blue(), color.alpha());
@@ -838,12 +840,8 @@ void UCUbuntuShape::setColor(const QColor& color)
 */
 void UCUbuntuShape::setGradientColor(const QColor& gradientColor)
 {
-    static bool loggedOnce = false;
-    if (!loggedOnce) {
-        loggedOnce = true;
-        qmlInfo(this) << "'gradientColor' is deprecated. Use 'backgroundColor', "
-            "'secondaryBackgroundColor' and 'backgroundMode' instead.";
-    }
+    if (isVersionGreaterThanOrEqual(Version13))
+        UC_QML_DEPRECATION_WARNING("'gradientColor' is deprecated. Use 'backgroundColor', 'secondaryBackgroundColor' and 'backgroundMode' instead.");
 
     if (!(m_flags & BackgroundApiSet)) {
         m_flags |= GradientColorSet;
@@ -869,11 +867,8 @@ void UCUbuntuShape::setGradientColor(const QColor& gradientColor)
 */
 void UCUbuntuShape::setImage(const QVariant& image)
 {
-    static bool loggedOnce = false;
-    if (!loggedOnce) {
-        loggedOnce = true;
-        qmlInfo(this) << "'image' is deprecated. Use 'source' instead.";
-    }
+    if (isVersionGreaterThanOrEqual(Version13))
+        UC_QML_DEPRECATION_WARNING("'image' is deprecated. Use 'source' instead.");
 
     if (!(m_flags & SourceApiSet)) {
         QQuickItem* newImage = qobject_cast<QQuickItem*>(qvariant_cast<QObject*>(image));
@@ -902,12 +897,6 @@ void UCUbuntuShape::setImage(const QVariant& image)
 // maintain it for a while for compatibility reasons.
 void UCUbuntuShape::setStretched(bool stretched)
 {
-    static bool loggedOnce = false;
-    if (!loggedOnce) {
-        loggedOnce = true;
-        qmlInfo(this) << "'stretched' is deprecated. Use 'sourceFillMode' instead";
-    }
-
     if (!(m_flags & SourceApiSet)) {
         if (!!(m_flags & Stretched) != stretched) {
             if (stretched) {
@@ -925,13 +914,6 @@ void UCUbuntuShape::setStretched(bool stretched)
 // Deprecation layer. Same comment as setStretched().
 void UCUbuntuShape::setHorizontalAlignment(HAlignment horizontalAlignment)
 {
-    static bool loggedOnce = false;
-    if (!loggedOnce) {
-        loggedOnce = true;
-        qmlInfo(this) << "'horizontalAlignment' is deprecated. Use 'sourceHorizontalAlignment' "
-            "instead";
-    }
-
     if (!(m_flags & SourceApiSet)) {
         if (m_imageHorizontalAlignment != horizontalAlignment) {
             m_imageHorizontalAlignment = horizontalAlignment;
@@ -945,13 +927,6 @@ void UCUbuntuShape::setHorizontalAlignment(HAlignment horizontalAlignment)
 // Deprecation layer. Same comment as setStretched().
 void UCUbuntuShape::setVerticalAlignment(VAlignment verticalAlignment)
 {
-    static bool loggedOnce = false;
-    if (!loggedOnce) {
-        loggedOnce = true;
-        qmlInfo(this) << "'horizontalAlignment' is deprecated. Use 'sourceVerticalAlignment' "
-            "instead";
-    }
-
     if (!(m_flags & SourceApiSet)) {
         if (m_imageVerticalAlignment != verticalAlignment) {
             m_imageVerticalAlignment = verticalAlignment;
@@ -1045,6 +1020,21 @@ void UCUbuntuShape::_q_textureChanged()
     update();
 }
 
+QString UCUbuntuShape::propertyForVersion(quint16 version) const
+{
+    if (MINOR_VERSION(version) == 3) {
+        return QStringLiteral("relativeRadius");
+    } else {
+        return QString();
+    }
+}
+
+void UCUbuntuShape::componentComplete()
+{
+    QQuickItem::componentComplete();
+    m_version = MINOR_VERSION(importVersion(this)) == 3 ? Version13 : Version12;
+}
+
 void UCUbuntuShape::geometryChanged(const QRectF& newGeometry, const QRectF& oldGeometry)
 {
     QQuickItem::geometryChanged(newGeometry, oldGeometry);
@@ -1103,7 +1093,6 @@ static void createShapeTextures(QOpenGLContext* openglContext, int index)
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, shapeTextureMipmapCount - 1);
             for (int j = 0; j < shapeTextureMipmapCount; j++) {
                 glTexImage2D(GL_TEXTURE_2D, j, GL_RGBA, shapeTextureMipmapWidth >> j,
                              shapeTextureMipmapHeight >> j, 0, GL_RGBA, GL_UNSIGNED_BYTE,

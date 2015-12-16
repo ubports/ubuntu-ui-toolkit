@@ -126,6 +126,17 @@ MainView {
             popoverSpy.wait();
         }
 
+        function test_dismiss_on_key() {
+            mouseClick(pressMe, pressMe.width / 2, pressMe.height / 2);
+            waitForRendering(pressMe);
+            verify(popoverSpy.target !== null, "The popover did not open");
+
+            keyClick(Qt.Key_Escape);
+            popoverSpy.wait();
+            // Dismiss via click to avoid false negatives on other cases
+            mouseClick(main, 10, 10, Qt.LeftButton);
+        }
+
         function test_popover_consumes_clicks_bug1488540_data() {
             return [
                 { tag: 'Left-click', button: Qt.LeftButton },

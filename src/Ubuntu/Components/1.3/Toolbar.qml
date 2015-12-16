@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,134 +15,154 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.3 as Toolkit
+import Ubuntu.Components 1.3
 
+// FIXME: In the example code below, replace the delegate
+//  by the new text button when it becomes available.
 /*!
-    \internal
     \qmltype Toolbar
-    \inqmlmodule Ubuntu.Components 1.1
+    \inqmlmodule Ubuntu.Components 1.3
     \ingroup ubuntu
-    \brief Application toolbar. This class is not exposed because it will
-            be automatically added when a Page defines tools.
-*/
-Panel {
-    id: toolbar
-    anchors {
-        left: parent ? parent.left : undefined
-        right: parent ? parent.right : undefined
-        bottom: parent ? parent.bottom : undefined
+    \brief Toolbar that can be used as an extension for the edit mode header.
+    Example:
+    \qml
+    PageHeader {
+        id: editHeader
+        property Component delegate: Component {
+            AbstractButton {
+                id: button
+                action: modelData
+                width: label.width + units.gu(4)
+                height: parent.height
+                Rectangle {
+                    color: UbuntuColors.darkGrey
+                    opacity: 0.1
+                    anchors.fill: parent
+                    visible: button.pressed
+                }
+                Label {
+                    anchors.centerIn: parent
+                    id: label
+                    text: action.text
+                    font.weight: text === "Confirm" ? Font.Normal : Font.Light
+                }
+            }
+        }
+
+        leadingActionBar {
+            anchors.leftMargin: 0
+            actions: Action {
+                text: "Cancel"
+                iconName: "close"
+            }
+            delegate: editHeader.delegate
+        }
+        trailingActionBar {
+            anchors.rightMargin: 0
+            actions: Action {
+                text: "Confirm"
+                iconName: "tick"
+            }
+            delegate: editHeader.delegate
+        }
+
+        extension: Toolbar {
+            anchors {
+                left: parent.left
+                right: parent.right
+                bottom: parent.bottom
+            }
+            trailingActionBar.actions: [
+                Action { iconName: "bookmark-new" },
+                Action { iconName: "add" },
+                Action { iconName: "edit-select-all" },
+                Action { iconName: "edit-copy" },
+                Action { iconName: "select" }
+            ]
+            leadingActionBar.actions: Action {
+                iconName: "delete"
+                text: "delete"
+                onTriggered: print("Delete action triggered")
+            }
+        }
     }
-    height: background.height
-
-    LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
-    LayoutMirroring.childrenInherit: true
-
-    // Closing of the toolbar on app contents interaction is handled by the Page.
-    __closeOnContentsClicks: false
-
-    // Open toolbar on hover (for desktop only)
-    __openOnHover: true
+    \endqml
+    See \l PageHeader.
+*/
+StyledItem {
+    id: toolbar
+    styleName: "ToolbarStyle"
 
     /*!
-      The list of \l Actions to be shown on the toolbar
+      \qmlproperty ActionBar leadingActionBar
+      The leading ActionBar that should hold at most one action.
+      Recommneded for the delete action.
+      Example:
+      \qml
+      Toolbar {
+          leadingActionBar.actions: [
+              Action {
+                  iconName: "delete"
+                  text: "Delete"
+                  onTriggered: print("delete!")
+              }
+          ]
+      }
+      \endqml
+      See \l ActionBar.
      */
-    property Item tools: null
-
-    hideTimeout: 5000
-
-    /*! \internal */
-    onToolsChanged: {
-        internal.updateVisibleTools();
-        if (tools) {
-            if (tools && tools.hasOwnProperty("locked")) locked = tools.locked;
-            // open the toolbar, except when it is locked in closed position
-            if (tools && tools.hasOwnProperty("locked") && tools.hasOwnProperty("opened")
-                    && !tools.opened && tools.locked) {
-                // toolbar is locked in closed state
-                toolbar.close();
-            } else {
-                toolbar.open();
-            }
-
-            if (tools && tools.hasOwnProperty("opened")) {
-                tools.opened = toolbar.opened;
-            }
-        } else { // no tools
-            locked = true;
-            toolbar.close();
-        }
-    }
-
-    // if tools is not specified, lock the toolbar in closed position
-    locked: tools && tools.hasOwnProperty("locked") ? tools.locked : false
-
-    onOpenedChanged: {
-        if (tools && tools.hasOwnProperty("opened")) {
-            tools.opened = toolbar.opened;
-        }
-    }
-
-    Connections {
-        target: tools
-        ignoreUnknownSignals: true
-        onOpenedChanged: {
-            if (tools.opened) {
-                toolbar.open();
-            } else {
-                toolbar.close();
-            }
-        }
-        onLockedChanged: {
-            toolbar.locked = tools.locked;
-            // open the toolbar when it becomes unlocked
-            // (may be because a new page was pushed to the page stack)
-            if (!toolbar.locked) toolbar.open();
-        }
-    }
-
-    QtObject {
-        id: internal
-        property Item visibleTools: tools
-        function updateVisibleTools() {
-            if (internal.visibleTools !== toolbar.tools) {
-                if (internal.visibleTools) internal.visibleTools.parent = null;
-                internal.visibleTools = toolbar.tools;
-            }
-            if (internal.visibleTools) internal.visibleTools.parent = visibleToolsContainer;
-        }
-    }
-
-    onAnimatingChanged: {
-        if (!animating && !opened) {
-            internal.updateVisibleTools();
-        }
-    }
-
-    Toolkit.StyledItem {
-        // FIXME:
-        // All theming items go into the background because only the children
-        //  of the Panel are being shown/hidden while the toolbar
-        //  itself may stay in place.
-        id: background
+    readonly property alias leadingActionBar: leading
+    ActionBar {
+        id: leading
         anchors {
             left: parent.left
-            right: parent.right
+            top: parent.top
             bottom: parent.bottom
+            leftMargin: units.gu(1)
         }
-        height: units.gu(8)
-
-        // The values of opened and animated properties are used in the style
-        property bool opened: toolbar.opened
-        property bool animating: toolbar.animating
-
-        theme.version: Toolkit.Ubuntu.toolkitVersion
-        styleName: "ToolbarStyle"
+        numberOfSlots: 1
+        delegate: toolbar.__styleInstance.defaultDelegate
+        Component.onCompleted: {
+            if (actions && actions.length > 1) {
+                print("WARNING: Toolbar with more than one leading actions is not supported.");
+            }
+        }
     }
 
-    Item {
-        id: visibleToolsContainer
+    /*!
+      \qmlproperty ActionBar trailingActionBar
+      The \l ActionBar with trailing actions.
+      Example:
+      \qml
+      Toolbar {
+            trailingActionBar.actions: [
+                Action { iconName: "bookmark-new" },
+                Action { iconName: "add" },
+                Action { iconName: "edit-select-all" },
+                Action { iconName: "edit-copy" }
+            ]
+      }
+      \endqml
+      The trailing ActionBar may contain up to 8 actions.
+      Scrolling and support for more than 8 actions will be added in the near future.
+      See \l ActionBar.
+      */
+    readonly property alias trailingActionBar: trailing
+    ActionBar {
+        id: trailing
         anchors {
-            fill: background
+            right: parent.right
+            top: parent.top
+            bottom: parent.bottom
+            rightMargin: units.gu(1)
         }
+        numberOfSlots: 8
+        delegate: toolbar.__styleInstance.defaultDelegate
+        Component.onCompleted: {
+            if (actions && actions.length > 8) {
+                print("WARNING: Toolbar with more than one leading actions is not supported.");
+            }
+        }
+
     }
 }

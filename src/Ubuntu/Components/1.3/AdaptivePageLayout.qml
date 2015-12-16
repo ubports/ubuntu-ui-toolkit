@@ -166,6 +166,11 @@ import "tree.js" as Tree
   and the preferred width is set to 40 grid units. This width is set every time
   the layout is activated.
 
+  When a \l Page with the \l Page::header property set is added to an
+  AdaptivePageLayout, the AdaptivePageLayout will synchronize the height of that
+  header with the height of the headers in other columns, i.e., the height of
+  each of the headers will be set to the maximum implicitHeight of all the headers.
+
   \sa PageStack, PageColumnsLayout, PageColumn
 */
 
@@ -452,7 +457,17 @@ PageTreeNode {
             // replace page holder's child
             var holder = body.children[targetColumn];
             holder.detachCurrentPage();
-            holder.attachPage(pageWrapper);
+            holder.attachPage(pageWrapper); // sets pageWrapper.pageHolder
+
+            // set the back action for Page.header:
+            var page = pageWrapper.object;
+            if (page && page.hasOwnProperty("header") && page.header &&
+                    page.header.hasOwnProperty("navigationActions")) {
+                // Page.header is an instance of PageHeader.
+                var backAction = backActionComponent.createObject(
+                            pageWrapper, { 'wrapper': pageWrapper } );
+                page.header.navigationActions = [ backAction ] ;
+            }
         }
 
         function getWrapper(page) {
@@ -644,6 +659,42 @@ PageTreeNode {
         }
     }
 
+    // An instance will be added to each Page with
+    Component {
+        id: backActionComponent
+
+        Action {
+            // used when the Page has a Page.header property set.
+            id: backAction
+            objectName: "apl_back_action"
+            iconName: "back"
+            text: "Back"
+
+            // set when backAction is created.
+            property PageWrapper wrapper
+            onTriggered: layout.removePages(wrapper.object)
+
+            visible: {
+                var parentWrapper;
+                try {
+                    parentWrapper = d.tree.parent(wrapper);
+                } catch(err) {
+                    // Root node has no parent node.
+                    return false;
+                }
+                if (!wrapper.pageHolder) {
+                    // columns are being re-arranged.
+                    return false;
+                }
+                // wrapper.column is the virtual column, pageHolder.column the actual column.
+                var column = wrapper.pageHolder.column;
+                var nextInColumn = d.tree.top(column, column < d.columns - 1, 1);
+                return parentWrapper === nextInColumn;
+            }
+        }
+    }
+
+
     // Page holder component, can have only one Page as child at a time, all stacked pages
     // will be parented into hiddenPool
     Component {
@@ -667,20 +718,31 @@ PageTreeNode {
             Layout.minimumWidth: metrics.minimumWidth
             Layout.maximumWidth: metrics.maximumWidth
 
+            property var page: pageWrapper ? pageWrapper.object : null
+            property bool customHeader: page && page.hasOwnProperty("header") &&
+                                        page.header
+            onPageChanged: body.updateHeaderHeight(0)
+            Connections {
+                target: page
+                onHeaderChanged: body.updateHeaderHeight(0)
+            }
+            Connections {
+                target: page ? page.header : null
+                onImplicitHeightChanged: body.updateHeaderHeight(page.header.implicitHeight)
+            }
+
             // prevent the pages from taking the app header height into account.
             __propagated: null
             Item {
                 id: holderBody
                 objectName: parent.objectName + "Body"
                 anchors {
-                    top: subHeader.bottom
+                    top: customHeader ? parent.top : subHeader.bottom
                     bottom: parent.bottom
                     left: parent.left
                     right: parent.right
                     rightMargin: dividerThickness
                 }
-                // we need to clip because the header does not have a background
-                clip: true
                 Item {
                     id: hiddenItem
                     anchors.fill: parent
@@ -688,6 +750,8 @@ PageTreeNode {
                 }
             }
 
+            // subHeader is to be deprecated in UITK 1.4 and will be replaced
+            //  by the Page.header property (introduced in 1.3).
             property alias head: subHeader
             StyledItem {
                 id: subHeader
@@ -699,7 +763,6 @@ PageTreeNode {
                 height: body.headerHeight
 
                 styleName: "PageHeadStyle"
-                theme.version: Ubuntu.toolkitVersion
                 objectName: "Header" + column
 
                 property real preferredHeight: subHeader.__styleInstance ?
@@ -715,12 +778,12 @@ PageTreeNode {
                 property color dividerColor: layout.__propagated.header.dividerColor
                 property color panelColor: layout.__propagated.header.panelColor
 
-                visible: holder.pageWrapper && holder.pageWrapper.active
+                visible: !customHeader && holder.pageWrapper && holder.pageWrapper.active
 
                 // The multiColumn, page and showBackButton properties are used in
                 //  PageHeadStyle to show/hide the back button.
                 property var multiColumn: layout
-                property var page: holder.pageWrapper ? holder.pageWrapper.object : null
+                property alias page: holder.page // used in PageHeadStyle for the back button.
                 property bool showBackButton: {
                     if (!page) {
                         return false;
@@ -791,8 +854,8 @@ PageTreeNode {
                 onXChanged: holder.Layout.preferredWidth = x
             }
 
-            function attachPage(page) {
-                pageWrapper = page;
+            function attachPage(wrapper) {
+                pageWrapper = wrapper;
                 pageWrapper.parent = holderBody;
                 pageWrapper.pageHolder = holder;
                 pageWrapper.active = true;
@@ -850,16 +913,31 @@ PageTreeNode {
         property real headerHeight: 0
 
         function updateHeaderHeight(newHeight) {
+            var page;
+            var i;
             if (newHeight > body.headerHeight) {
                 body.headerHeight = newHeight;
             } else {
                 var h = 0;
                 var subHeight = 0;
-                for (var i = 0; i < children.length; i++) {
-                    subHeight = children[i].head.preferredHeight;
+                for (i = 0; i < children.length; i++) {
+                    page = children[i].page;
+                    if (page && page.hasOwnProperty("header") && page.header) {
+                        subHeight = page.header.implicitHeight;
+                    } else {
+                        subHeight = children[i].head.preferredHeight;
+                    }
                     if (subHeight > h) h = subHeight;
                 }
                 body.headerHeight = h;
+            }
+
+            // Update all the Page.header heights.
+            for (i = 0; i < body.children.length; i++) {
+                page = body.children[i].page;
+                if (page && page.hasOwnProperty("header") && page.header) {
+                    page.header.height = headerHeight;
+                }
             }
         }
 

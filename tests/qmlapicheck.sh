@@ -26,8 +26,8 @@ fi
 CPP="Ubuntu.Components Ubuntu.Components.ListItems Ubuntu.Components.Popups Ubuntu.Components.Pickers Ubuntu.Components.Styles Ubuntu.Components.Themes Ubuntu.Layouts Ubuntu.PerformanceMetrics Ubuntu.Test"
 echo Dumping QML API of C++ components
 test -s $BUILD_DIR/components.api.new && rm $BUILD_DIR/components.api.new
-env ALARM_BACKEND=memory QML2_IMPORT_PATH=$BUILD_DIR/qml \
-    $BUILD_DIR/tests/apicheck/apicheck \
+env ALARM_BACKEND=memory QML2_IMPORT_PATH=$BUILD_DIR/qml LD_LIBRARY_PATH=$BUILD_DIR/lib \
+    $BUILD_DIR/apicheck/apicheck \
     --qml $CPP 1>> $BUILD_DIR/components.api.new &&
     echo Verifying the diff between existing and generated API
 if [ $? -gt 0 ]; then

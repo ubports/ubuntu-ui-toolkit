@@ -69,6 +69,14 @@ MainView {
                     text: "Add page with head contents right"
                     onClicked: layout.addPageToNextColumn(rootPage, headContentsPage)
                 }
+                ListItemWithLabel {
+                    text: "Add page with header left"
+                    onClicked: layout.addPageToCurrentColumn(rootPage, pageWithHeader)
+                }
+                ListItemWithLabel {
+                    text: "Add page with header right"
+                    onClicked: layout.addPageToNextColumn(rootPage, pageWithHeader)
+                }
             }
         }
         Page {
@@ -124,6 +132,31 @@ MainView {
                 anchors.fill: parent
             }
         }
+        Page {
+            id: pageWithHeader
+            header: PageHeader {
+                title: "Page with header"
+                StyleHints {
+                    backgroundColor: UbuntuColors.blue
+                    foregroundColor: "white"
+                }
+            }
+            Rectangle {
+                anchors {
+                    top: pageWithHeader.header.bottom
+                    left: parent.left
+                    right: parent.right
+                    bottom: parent.bottom
+                    margins: units.gu(2)
+                }
+                color: UbuntuColors.warmGrey
+                Button {
+                    anchors.centerIn: parent
+                    text: "Add sections to next column."
+                    onTriggered: layout.addPageToNextColumn(pageWithHeader, sectionsPage)
+                }
+            }
+        }
     }
 
     UbuntuTestCase {
@@ -143,13 +176,31 @@ MainView {
             return body.children.length;
         }
 
-        function get_header(column) {
+        // old APL subheader
+        function get_subheader(column) {
             return findChild(layout, "Header" + column);
         }
 
+        // new Page header
+        function get_pageheader(column) {
+            var holder = findChild(layout, "ColumnHolder" + column);
+            if (holder && holder.page && holder.page.hasOwnProperty("header")) {
+                return holder.page.header;
+            } else {
+                return null;
+            }
+        }
+
+        function get_header(column) {
+            var pageHeader = get_pageheader(column);
+            if (pageHeader) {
+                return pageHeader;
+            } else {
+                return get_subheader(column);
+            }
+        }
+
         function get_number_of_headers() {
-            // FIXME: With only one column, revert to using the AppHeader
-            //  so layout will not include any headers.
             var numHeaders = 0;
             var header = get_header(0);
             verify(header !== null, "No header found!");
@@ -160,10 +211,24 @@ MainView {
             return numHeaders;
         }
 
-        function get_back_button_visible(column) {
-            var header = get_header(column);
-            var back_button = findChild(header, "backButton");
-            return back_button.visible;
+        function get_back_button_visible(column) {            
+            var header = get_pageheader(column);
+            var back_button;
+            if (header) {
+                // new PageHeader
+                back_button = findChild(header, "apl_back_action_button");
+                if (back_button) {
+                    // Wait for back_button.visible to match back_button.action.visible
+                    waitForRendering(header, 100);
+                }
+                // FIXME TIM: when visibleActions is fixed, only check for back_button
+                return back_button != null && back_button.visible;
+            } else {
+                // old APL subHeader
+                header = get_subheader(column);
+                back_button = findChild(header, "backButton");
+                return back_button.visible;
+            }
         }
 
         function cleanup() {
@@ -192,27 +257,27 @@ MainView {
                 skip("Only for wide view.");
             }
             compare(get_number_of_headers(), 2, "Number of headers is not 2 initially.");
-            compare(get_header(0).config, rootPage.head,
+            compare(get_subheader(0).config, rootPage.head,
                     "First column header is not initialized with primaryPage header config.");
-            compare(get_header(1).config, null,
+            compare(get_subheader(1).config, null,
                     "Second column header is not initalized with null.");
 
             layout.addPageToCurrentColumn(rootPage, leftPage);
-            compare(get_header(0).config, leftPage.head,
+            compare(get_subheader(0).config, leftPage.head,
                     "First column header is not updated properly.");
-            compare(get_header(1).config, null,
+            compare(get_subheader(1).config, null,
                     "Second column header is updated when it should not be.");
             layout.removePages(leftPage);
-            compare(get_header(0).config, rootPage.head,
+            compare(get_subheader(0).config, rootPage.head,
                     "First column header is not reverted properly.");
 
             layout.addPageToNextColumn(rootPage, rightPage);
-            compare(get_header(0).config, rootPage.head,
+            compare(get_subheader(0).config, rootPage.head,
                     "First column header is updated when it should not be.");
-            compare(get_header(1).config, rightPage.head,
+            compare(get_subheader(1).config, rightPage.head,
                     "Second column header is not updated properly.");
             layout.removePages(rightPage);
-            compare(get_header(1).config, null,
+            compare(get_subheader(1).config, null,
                     "Second column header is not reverted properly.");
         }
 
@@ -221,21 +286,21 @@ MainView {
                 resize_single_column_width();
             }
             compare(get_number_of_headers(), 1, "Number of headers is not 1.");
-            compare(get_header(0).config, rootPage.head,
+            compare(get_subheader(0).config, rootPage.head,
                     "First column header is not initialized with primaryPage header config.");
 
             layout.addPageToCurrentColumn(rootPage, leftPage);
-            compare(get_header(0).config, leftPage.head,
+            compare(get_subheader(0).config, leftPage.head,
                     "Single column header is not updated properly.");
             layout.removePages(leftPage);
-            compare(get_header(0).config, rootPage.head,
+            compare(get_subheader(0).config, rootPage.head,
                     "Single column header is not reverted properly.");
 
             layout.addPageToNextColumn(rootPage, rightPage);
-            compare(get_header(0).config, rightPage.head,
+            compare(get_subheader(0).config, rightPage.head,
                     "Single column header is not updated properly when adding to next column.");
             layout.removePages(rightPage);
-            compare(get_header(0).config, rootPage.head,
+            compare(get_subheader(0).config, rootPage.head,
                     "Single column header is not reverted properly after adding to next column.");
         }
 
@@ -247,11 +312,11 @@ MainView {
             }
             tryCompareFunction(function() {return pageLoaded}, true, 1000);
             var n = root.columns === 2 ? 1 : 0
-            compare(get_header(n).config.title, "Page from QML file",
+            compare(get_subheader(n).config.title, "Page from QML file",
                     "Adding external Page does not update the header title.");
         }
 
-        function test_header_height() {
+        function test_subheader_height() {
             // contentHeight + divider height
             var baseHeight = units.gu(6) + units.dp(1);
             var withSectionsHeight = baseHeight + units.gu(4);
@@ -280,7 +345,36 @@ MainView {
             }
         }
 
+        function test_pageheader_height() {
+            if (root.columns !== 2) {
+                skip("Only for wide view.");
+            }
+
+            // baseHeight was checked in test_subheader_height().
+            var baseHeight = get_header(0).height;
+
+            layout.addPageToCurrentColumn(rootPage, pageWithHeader);
+            compare(pageWithHeader.header.height, baseHeight,
+                    "Page header height does not match the base header height.");
+
+            layout.addPageToNextColumn(pageWithHeader, sectionsPage);
+
+            // withSectionsHeight was checked in test_subheader_height().
+            var withSectionsHeight = get_header(1).height;
+            compare(withSectionsHeight > baseHeight, true,
+                    "Header with sections is not higher than header without sections.");
+            compare(pageWithHeader.header.height, withSectionsHeight,
+                    "Page header does not adapt its height to header with sections in other column.");
+
+            layout.removePages(sectionsPage);
+            compare(pageWithHeader.header.height, baseHeight,
+                    "Page header height is not reverted when header with sections is removed from next column.");
+        }
+
         function test_back_button_wide() {
+            // FIXME: When we remove support for the old subHeader and all
+            //  pages use a PageHeader, the repeated tests for PageHeader below
+            //  can be removed.
             if (root.columns !== 2) {
                 skip("Only for wide view.");
             }
@@ -300,6 +394,31 @@ MainView {
             // A:1, B:0
             compare(get_back_button_visible(0), false,
                     "Removing page 2 from column A does not hide back button.");
+
+            //// repeat the test for PageHeader ////
+            layout.addPageToCurrentColumn(rootPage, pageWithHeader);
+            compare(get_back_button_visible(0), true,
+                    "Adding page with header to column A does not show back button.");
+            layout.removePages(pageWithHeader);
+            compare(get_back_button_visible(0), false,
+                    "Removing page with header from column A does not hide back button.");
+            //// done ////
+
+            //// first test right column for PageHeader ////
+            layout.addPageToNextColumn(rootPage, pageWithHeader);
+            compare(get_back_button_visible(0), false,
+                    "Adding page with header to column B shows back button in column A.");
+            compare(get_back_button_visible(1), false,
+                    "Adding page with header to column B shows back button in column B.");
+            layout.removePages(pageWithHeader);
+            layout.addPageToNextColumn(rootPage, rightPage);
+            layout.addPageToNextColumn(rightPage, pageWithHeader);
+            compare(get_back_button_visible(0), false,
+                    "Adding second page (with header) to column B shows back button in column A.");
+            compare(get_back_button_visible(1), true,
+                    "Adding second page (with header) to column B hides back button in column B.");
+            layout.removePages(pageWithHeader);
+            //// done ////
 
             layout.addPageToNextColumn(rootPage, rightPage);
             // A:1, B:1
@@ -375,6 +494,33 @@ MainView {
             compare(headRectangle.visible, true, "Head contents not visible in next column.");
             compare(headRectangle.parent == null, false, "Head contents has no parent in next column.");
             layout.removePages(headContentsPage);
+        }
+
+        function test_page_header_disables_apl_subheader() {
+            layout.addPageToCurrentColumn(rootPage, pageWithHeader);
+            var subHeader = get_subheader(0);
+            compare(subHeader.visible, false,
+                    "Adding a Page with header does not hide the column's subHeader.");
+
+            layout.addPageToCurrentColumn(pageWithHeader, sectionsPage);
+            subHeader = get_subheader(0);
+            compare(subHeader.visible, true,
+                    "Adding a Page without header does not reveal the column's subHeader.");
+
+            layout.removePages(sectionsPage);
+            subHeader = get_subheader(0);
+            compare(subHeader.visible, false,
+                    "Going back to Page with header does not hide the column's subHeader.");
+
+            if (root.columns > 1) {
+                layout.addPageToNextColumn(pageWithHeader, sectionsPage);
+                subHeader = get_subheader(0);
+                compare(subHeader.visible, false,
+                        "Adding Page without header to next column shows subHeader in first column.");
+                subHeader = get_subheader(1);
+                compare(subHeader.visible, true,
+                        "Adding Page without header to next column does not show subHeader in next column");
+            }
         }
     }
 }

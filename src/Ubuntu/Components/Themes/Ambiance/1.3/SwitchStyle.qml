@@ -71,6 +71,9 @@ Item {
      */
     property url uncheckedIconSource: "image://theme/close"
 
+    FocusShape {
+    }
+
     UbuntuShape {
         id: background
         anchors.fill: parent

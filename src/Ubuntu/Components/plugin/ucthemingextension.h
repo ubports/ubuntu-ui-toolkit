@@ -24,54 +24,10 @@
 #include <QtCore/QPointer>
 #include <QtQml>
 
+#include <QtQuick/private/qquickitem_p.h>
+
 class QQuickItem;
-class UCStyledItemBase;
 class UCTheme;
-class UCThemingExtension;
-class UCItemAttached : public QObject
-{
-    Q_OBJECT
-public:
-    explicit UCItemAttached(QObject *owner = 0);
-    ~UCItemAttached();
-    static bool isThemed(QQuickItem *item);
-    static UCItemAttached *qmlAttachedProperties(QObject *owner);
-
-    QQuickItem *m_item;
-    QQuickItem *m_prevParent;
-    UCThemingExtension *m_extension;
-
-private:
-    Q_SLOT void handleParentChanged(QQuickItem *newParent);
-    Q_SLOT void reloadTheme();
-
-    friend class UCThemingExtension;
-};
-QML_DECLARE_TYPEINFO(UCItemAttached, QML_HAS_ATTACHED_PROPERTIES)
-
-class UCThemeEvent : public QEvent
-{
-public: // statics
-    static bool isThemeEvent(const QEvent *event);
-
-public:
-    explicit UCThemeEvent(UCTheme *reloadedTheme);
-    UCThemeEvent(UCTheme *oldTheme, UCTheme *newTheme);
-    UCThemeEvent(const UCThemeEvent &other);
-
-    UCTheme *oldTheme() const
-    {
-        return m_oldTheme;
-    }
-    UCTheme *newTheme() const
-    {
-        return m_newTheme;
-    }
-private:
-    UCTheme *m_oldTheme;
-    UCTheme *m_newTheme;
-};
-
 class UCThemingExtension
 {
 public:
@@ -80,31 +36,30 @@ public:
         Custom
     };
 
-    explicit UCThemingExtension();
+    explicit UCThemingExtension(QQuickItem *extendedItem);
+    virtual ~UCThemingExtension();
 
     virtual void preThemeChanged() = 0;
     virtual void postThemeChanged() = 0;
-
-    virtual void initTheming(QQuickItem *item);
-    virtual void handleThemeEvent(UCThemeEvent *event);
+    virtual void itemThemeChanged(UCTheme *, UCTheme*);
+    virtual void itemThemeReloaded(UCTheme *);
 
     UCTheme *getTheme() const;
     void setTheme(UCTheme *newTheme, ThemeType type = Custom);
     void resetTheme();
 
+    static bool isThemed(QQuickItem *item);
     static QQuickItem *ascendantThemed(QQuickItem *item);
 
-    static void forwardEvent(QQuickItem *item, UCThemeEvent *event);
-    static void broadcastThemeChange(QQuickItem *item, UCTheme *oldTheme, UCTheme *newTheme);
-    static void broadcastThemeReloaded(QQuickItem *item, UCTheme *theme);
-
 protected:
-    QQuickItem *themedItem;
-    UCItemAttached *attachedThemer;
     QPointer<UCTheme> theme;
+    QQuickItem *themedItem;
     ThemeType themeType;
 
     void setParentTheme();
 };
+
+#define UCThemingExtension_iid "org.qt-project.Qt.UCThemingExtension"
+Q_DECLARE_INTERFACE(UCThemingExtension, UCThemingExtension_iid)
 
 #endif // UCITEMEXTENSION_H

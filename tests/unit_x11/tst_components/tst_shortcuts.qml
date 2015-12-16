@@ -75,7 +75,8 @@ Item {
         function test_shortcut_invalid_data() {
             return [
                 { tag: 'Typo', shortcut: 'Ctr+F' },
-                { tag: 'Number', shortcut: 1234567890 }
+                { tag: 'Number', shortcut: 1234567890 },
+                { tag: "Empty string", shortcut: "" }
             ];
         }
         function test_shortcut_invalid(data) {
@@ -87,6 +88,20 @@ Item {
             ignoreQMLWarning(':30:5: QML Action: Ambiguous shortcut: Ctrl+G');
             action.shortcut = other.shortcut;
             keyClick(Qt.Key_G, Qt.ControlModifier);
+        }
+
+        SignalSpy {
+            id: shortcutSpy
+            signalName: "shortcutChanged"
+        }
+
+        function test_shortcut_reset_bug1518420() {
+            shortcutSpy.target = action;
+            action.shortcut = "Ctrl+A";
+            shortcutSpy.wait(200);
+            shortcutSpy.clear();
+            action.shortcut = undefined;
+            shortcutSpy.wait(200);
         }
     }
 }

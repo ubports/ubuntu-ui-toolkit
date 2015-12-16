@@ -102,7 +102,7 @@ Style.PageHeadStyle {
         color: styledItem.dividerColor
     }
 
-    Sections {
+    SectionsForPageHead {
         id: sectionsItem
         objectName: "headerSectionsItem"
         anchors {
@@ -123,9 +123,11 @@ Style.PageHeadStyle {
             }
         }
 
-        Connections {
-            target: sectionsItem.sections
-            onSelectedIndexChanged: sectionsItem.selectedIndex = sectionsItem.sections.selectedIndex
+        Binding {
+            target: sectionsItem
+            when: sectionsItem.sections
+            property: "selectedIndex"
+            value: sectionsItem.sections.selectedIndex
         }
     }
 
@@ -403,6 +405,16 @@ Style.PageHeadStyle {
 
             actions: headerStyle.config.actions
             numberOfSlots: 3
+
+            delegate: AbstractButton {
+                style: IconButtonStyle { }
+                objectName: action.objectName + "_button"
+                height: parent ? parent.height : undefined
+                action: modelData
+                StyleHints {
+                    foregroundColor: headerStyle.buttonColor
+                }
+            }
         }
     }
 }

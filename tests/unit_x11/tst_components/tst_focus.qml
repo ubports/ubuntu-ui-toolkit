@@ -62,10 +62,24 @@ Item {
         }
         CheckBox {
             id: checkbox
-            text: "Check me"
         }
         Switch {
-            id: switchBox
+            id: switchbox
+        }
+        Button {
+            id: dummy2
+        }
+        ActionBar {
+            id: actions
+            actions: [
+                Action {
+                    iconName: 'share'
+                    objectName: 'actionBarShare'
+                },
+                Action {
+                    iconName: 'starred'
+                }
+            ]
         }
         Picker {
             id: picker
@@ -85,8 +99,9 @@ Item {
         Slider {
             id: slider
         }
-        StyledItem {
+        Button {
             id: disabledButton
+            text: 'Disabled'
             enabled: false
             width: units.gu(20)
             height: units.gu(6)
@@ -101,7 +116,7 @@ Item {
         Button {
             id: popoverTest
             text: "Popovers"
-            property Item popover
+            property var popover
             property Component popoverComponent
             onClicked: {
                 popover = PopupUtils.open(popoverComponent)
@@ -140,6 +155,11 @@ Item {
         when: windowShown
 
         SignalSpy {
+            id: buttonTriggerSpy
+            signalName: "onTriggered"
+        }
+
+        SignalSpy {
             id: popupCloseSpy
             signalName: "onDestruction"
         }
@@ -155,47 +175,44 @@ Item {
             popupCloseSpy.target = null;
         }
 
-        // make this as the very first test executed
-        function test_0_transfer_focus_data() {
-            return [
-                {tag: "TextArea", previousFocused: textField, focusOn: textArea, clickToDismiss: false},
-                {tag: "Button", previousFocused: textArea, focusOn: button, clickToDismiss: false},
-                {tag: "Checkbox", previousFocused: button, focusOn: checkbox, clickToDismiss: false},
-                {tag: "Switch", previousFocused: checkbox, focusOn: switchBox, clickToDismiss: false},
-                {tag: "Picker - linear", previousFocused: switchBox, focusOn: picker, clickToDismiss: false},
-                {tag: "Picker - circular", previousFocused: picker, focusOn: roundPicker, clickToDismiss: false},
-                {tag: "PickerPanel", previousFocused: roundPicker, focusOn: pickerPanel, clickToDismiss: true},
-                {tag: "UbuntuListView", previousFocused: pickerPanel, focusOn: listView, clickToDismiss: false},
-                {tag: "Slider", previousFocused: listView, focusOn: slider, clickToDismiss: false},
-                {tag: "ComboButton", previousFocused: slider, focusOn: comboButton, clickToDismiss: false},
-            ];
-        }
-        function test_0_transfer_focus(data) {
-            // perform mouse press on
-            mouseClick(data.focusOn, centerOf(data.focusOn).x, centerOf(data.focusOn).y);
-            compare(data.previousFocused.focus, false, "Previous focus is still set!");
-            compare(data.focusOn.focus, true, data.tag + " is not focused!");
-            if (data.clickToDismiss) {
-                mouseClick(main, 0, 0);
-            }
-            waitForRendering(data.focusOn, 200);
-        }
-
         function test_tab_focus_data() {
             return [
+                // (Shift)Tab via keyboard
                 {tag: "TextField", from: dummy, to: textField, key: Qt.Key_Tab},
                 {tag: "TextField(back)", from: textField, to: dummy, key: Qt.Key_Backtab},
                 {tag: "TextArea", from: textField, to: textArea, key: Qt.Key_Tab},
                 {tag: "TextArea(back)", from: textArea, to: textField, key: Qt.Key_Backtab},
                 {tag: "Button(back)", from: button, to: textArea, key: Qt.Key_Backtab},
+                {tag: "CheckBox", from: checkbox, to: switchbox, key: Qt.Key_Tab},
+                {tag: "CheckBox", from: switchbox, to: checkbox, key: Qt.Key_Backtab},
+                {tag: "Switch", from: switchbox, to: dummy2, key: Qt.Key_Tab},
+                {tag: "Switch(back)", from: dummy2, to: switchbox, key: Qt.Key_Backtab},
+                /* FIXME: Figure out how to test ActionBar delegate focus
+                {tag: "ActionBar", from: 'actionBarShare_button', to: picker, key: Qt.Key_Tab},
+                {tag: "ActionBar(back)", from: picker, to: 'actionBarShare_button', key: Qt.Key_Backtab},
+                */
+                // Left click/ tap
+                {tag: "TextField(click)", from: dummy, to: textField, key: Qt.LeftButton},
+                {tag: "TextArea(click)", from: dummy, to: textArea, key: Qt.LeftButton},
+                // FIXME: lp#1368390: Buttons shouldn't grab input focus on click
+                {tag: "Button(click)", from: dummy, to: button, key: Qt.LeftButton},
+                {tag: "CheckBox(click)", from: dummy, to: checkbox, key: Qt.LeftButton},
+                {tag: "Switch(click)", from: dummy, to: switchbox, key: Qt.LeftButton}
             ];
         }
         function test_tab_focus(data) {
             data.from.forceActiveFocus();
-            verify(data.from.focus, "Source component is not focused");
-            keyClick(data.key);
-            waitForRendering(data.to, 200);
-            verify(data.to.focus, "Target component is not focused");
+            verify(data.from.activeFocus, "Source component is not focused");
+            if (data.key == Qt.LeftButton) {
+                verify(data.to.activeFocusOnPress, "Target doesn't take focus on click");
+                mouseClick(data.to, centerOf(data.to).x, centerOf(data.to).y);
+            } else {
+                verify(data.to.activeFocusOnTab, "Target doesn't take keyboard focus");
+                keyClick(data.key);
+            }
+            waitForRendering(data.to, 500);
+            verify(!data.from.activeFocus, "Source component still keeps focus");
+            verify(data.to.activeFocus, "Target component is not focused");
         }
 
         function test_hide_osk_when_pickerpanel_opens() {
@@ -235,6 +252,7 @@ Item {
             var center = centerOf(dropdownButton);
             mouseClick(dropdownButton, center.x, center.y);
             waitForRendering(comboButton);
+            // FIXME: lp#1368390: Buttons shouldn't grab input focus on click
             compare(dropdownButton.focus, true, "Dropdown button hasn't got focused!");
             compare(comboButton.focus, true, "ComboButton hasn't been focused!");
             comboButton.expanded = false;
@@ -252,8 +270,12 @@ Item {
             popoverTest.popoverComponent = data.component;
             var center = centerOf(popoverTest);
             mouseClick(popoverTest, center.x, center.y);
-            verify(popoverTest.focus, "Button focus not gained.");
+            verify(popoverTest.popover !== undefined, "No popover created");
             waitForRendering(popoverTest.popover);
+            verify(!popoverTest.focus, "Button focus not lost.");
+            var foreground = findChild(popoverTest.popover, "popover_foreground");
+            verify(foreground, "Popover foreground not ready");
+            verify(foreground.focus, "Popover focus not gained. Focus went to %1".arg(window.activeFocusItem));
             popupCloseSpy.target = popoverTest.popover.Component;
 
             var closeButton = findChildWithProperty(popoverTest.popover, "text", "close");
@@ -265,7 +287,23 @@ Item {
             verify(popoverTest.focus, "Button focus not restored.");
         }
 
+        function test_button_trigger_via_keyboard_data() {
+            return [
+                {tag: "Enter", key: Qt.Key_Enter},
+                {tag: "Return", key: Qt.Key_Return},
+                {tag: "Space", key: Qt.Key_Space},
+            ];
+        }
+        function test_button_trigger_via_keyboard(data) {
+            buttonTriggerSpy.target = button;
+            button.forceActiveFocus();
+            keyClick(data.key);
+            waitForRendering(button);
+            buttonTriggerSpy.wait();
+        }
+
         function test_disabled_component_does_not_focus() {
+            verify(disabledButton.activeFocusOnPress, "Disabled component doesn't take focus on click");
             mousePress(disabledButton, centerOf(disabledButton).x, centerOf(disabledButton).y);
             compare(disabledButton.focus, false, "Disabled component shoudl not focus");
         }

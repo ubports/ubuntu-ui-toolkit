@@ -30,9 +30,8 @@ Page {
         anchors.fill: parent
         color: theme.palette.normal.background
     }
-    head {
-        title: i18n.tr('About...')
-        foregroundColor: theme.palette.selected.foregroundText
+    header: PageHeader {
+        title: i18n.tr("About...")
     }
 
     Column {

@@ -64,6 +64,12 @@ Popover {
         }
     ]
 
+    function show() {
+        visible = true;
+        __foreground.show();
+        // No input focus on the context menu!
+    }
+
     // removes hide animation
     function hide() {
         popover.visible = false;
@@ -86,7 +92,6 @@ Popover {
                 width: Math.max(units.gu(5), implicitWidth) + units.gu(2)
                 height: units.gu(6)
                 action: actions[modelData]
-                theme.version: Ubuntu.toolkitVersion
                 styleName: "ToolbarButtonStyle"
             }
         }

@@ -159,7 +159,7 @@ Toolkit.StyledItem {
                 return Toolkit.MathUtils.clampAndProject(value, slider.minimumValue,
                                                  slider.maximumValue, 1.0, 0.0);
             } else {
-                return MathUtils.clampAndProject(value, slider.minimumValue,
+                return Toolkit.MathUtils.clampAndProject(value, slider.minimumValue,
                                                  slider.maximumValue, 0.0, 1.0);
             }
 
@@ -167,10 +167,10 @@ Toolkit.StyledItem {
 
         function valueFromNormalizedValue(normalizedValue) {
             if (Qt.application.layoutDirection == Qt.RightToLeft) {
-                return MathUtils.lerp(MathUtils.clamp(normalizedValue, 0.0, 1.0),
+                return Toolkit.MathUtils.lerp(Toolkit.MathUtils.clamp(normalizedValue, 0.0, 1.0),
                                       slider.maximumValue, slider.minimumValue);
             } else {
-                return MathUtils.lerp(MathUtils.clamp(normalizedValue, 0.0, 1.0),
+                return Toolkit.MathUtils.lerp(Toolkit.MathUtils.clamp(normalizedValue, 0.0, 1.0),
                                       slider.minimumValue, slider.maximumValue);
             }
         }
@@ -206,6 +206,5 @@ Toolkit.StyledItem {
         onLiveValueChanged: if (isPressed) slider.requestFocus(Qt.MouseFocusReason)
     }
 
-    theme.version: Toolkit.Ubuntu.toolkitVersion
     styleName: "SliderStyle"
 }

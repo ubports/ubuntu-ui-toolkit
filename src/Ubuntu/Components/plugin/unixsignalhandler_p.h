@@ -32,7 +32,7 @@ public:
         Terminate = SIGTERM
     };
 
-    typedef QPair<int[2], QSocketNotifier*> HandlerType;
+    typedef QPair<std::array<int, 2>, QSocketNotifier*> HandlerType;
 
     static UnixSignalHandler &instance()
     {

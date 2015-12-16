@@ -34,6 +34,7 @@ class UCListItemDivider;
 class UCListItemActions;
 class UCListItemStyle;
 class ListItemDragHandler;
+class ListItemSelection;
 class UCListItemPrivate : public UCStyledItemBasePrivate
 {
     Q_DECLARE_PUBLIC(UCListItem)
@@ -57,7 +58,6 @@ public:
     void _q_updateSize();
     void _q_updateIndex();
     void _q_contentMoving();
-    void _q_syncSelectMode();
     void _q_syncDragMode();
     void _q_updateExpansion(const QList<int> &indices);
     int index();
@@ -92,9 +92,11 @@ public:
     UCListItemActions *trailingActions;
     UCAction *mainAction;
     UCListItemExpansion *expansion;
+    ListItemSelection *selection;
     qreal xAxisMoveThresholdGU;
     Qt::MouseButton button;
     bool highlighted:1;
+    bool swipeEnabled:1;
     bool contentMoved:1;
     bool swiped:1;
     bool suppressClick:1;

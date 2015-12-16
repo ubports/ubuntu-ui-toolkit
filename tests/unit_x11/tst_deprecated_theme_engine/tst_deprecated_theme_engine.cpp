@@ -31,7 +31,7 @@ class ThemeTestCase : public UbuntuTestCase
     Q_OBJECT
 public:
     ThemeTestCase(const QString& file, QWindow* parent = 0)
-        : UbuntuTestCase(file, parent)
+        : UbuntuTestCase(file, QQuickView::SizeViewToRootObject, true, parent)
     {
     }
 

@@ -19,6 +19,5 @@ import Ubuntu.Components 1.3
 StyledItem {
     id: item
     theme.name: "themes.CustomTheme"
-    theme.version: Ubuntu.toolkitVersion
     styleName: "TestStyle"
 }

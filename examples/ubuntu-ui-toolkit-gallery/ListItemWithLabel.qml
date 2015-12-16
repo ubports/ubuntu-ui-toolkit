@@ -20,7 +20,7 @@ import Ubuntu.Components 1.3
 ListItem {
     property alias title: layout.title
 
-    height: layout.height
+    height: layout.height + (divider.visible ? divider.height : 0)
     onPressAndHold: selectMode = !selectMode
 
     ListItemLayout { id: layout }

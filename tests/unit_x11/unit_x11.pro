@@ -14,4 +14,7 @@ SUBDIRS += tst_components \
     tst_mousefilters \
     tst_animator \
     tst_serviceproperties \
-    tst_subtheming
+    tst_subtheming \
+    tst_swipearea \
+    tst_touchregistry \
+    tst_bottomedge

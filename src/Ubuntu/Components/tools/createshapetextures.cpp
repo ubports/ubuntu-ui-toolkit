@@ -46,7 +46,7 @@ const int size = width * height;
 const int widthMipmap = 256;
 const int heightMipmap = 256;
 const int sizeMipmap = widthMipmap * heightMipmap;
-const int mipmapCount = 5; // Minimum size is 16.
+const int mipmapCount = 9;  // Minimum size is 1.
 const int biggestSize = size > sizeMipmap ? size : sizeMipmap;
 
 // Shape buffers.
@@ -317,31 +317,45 @@ static void dumpTexture(QTextStream& cppOut, const uint* data, int size)
     cppOut.setIntegerBase(16);
     cppOut.setFieldWidth(2);
     cppOut.setPadChar('0');
-    for (int i = 0; i < size; i += 4) {
-        cppOut << "    \""
-                << "\\x" << (data[i] & 0xff)
-                << "\\x" << ((data[i] >> 8) & 0xff)
-                << "\\x" << ((data[i] >> 16) & 0xff)
-                << "\\x" << ((data[i] >> 24) & 0xff)
-                << "\\x" << (data[i+1] & 0xff)
-                << "\\x" << ((data[i+1] >> 8) & 0xff)
-                << "\\x" << ((data[i+1] >> 16) & 0xff)
-                << "\\x" << ((data[i+1] >> 24) & 0xff)
-                << "\\x" << (data[i+2] & 0xff)
-                << "\\x" << ((data[i+2] >> 8) & 0xff)
-                << "\\x" << ((data[i+2] >> 16) & 0xff)
-                << "\\x" << ((data[i+2] >> 24) & 0xff)
-                << "\\x" << (data[i+3] & 0xff)
-                << "\\x" << ((data[i+3] >> 8) & 0xff)
-                << "\\x" << ((data[i+3] >> 16) & 0xff)
-                << "\\x" << ((data[i+3] >> 24) & 0xff);
-        cppOut.setFieldWidth(1);
+    if (size >= 16) {
+        for (int i = 0; i < size; i += 4) {
+            cppOut << "    \""
+                   << "\\x" << (data[i] & 0xff)
+                   << "\\x" << ((data[i] >> 8) & 0xff)
+                   << "\\x" << ((data[i] >> 16) & 0xff)
+                   << "\\x" << ((data[i] >> 24) & 0xff)
+                   << "\\x" << (data[i+1] & 0xff)
+                   << "\\x" << ((data[i+1] >> 8) & 0xff)
+                   << "\\x" << ((data[i+1] >> 16) & 0xff)
+                   << "\\x" << ((data[i+1] >> 24) & 0xff)
+                   << "\\x" << (data[i+2] & 0xff)
+                   << "\\x" << ((data[i+2] >> 8) & 0xff)
+                   << "\\x" << ((data[i+2] >> 16) & 0xff)
+                   << "\\x" << ((data[i+2] >> 24) & 0xff)
+                   << "\\x" << (data[i+3] & 0xff)
+                   << "\\x" << ((data[i+3] >> 8) & 0xff)
+                   << "\\x" << ((data[i+3] >> 16) & 0xff)
+                   << "\\x" << ((data[i+3] >> 24) & 0xff);
+            cppOut.setFieldWidth(0);
+            cppOut << "\"\n";
+            cppOut.setFieldWidth(2);
+        }
+        cppOut.setIntegerBase(10);
+        cppOut.setFieldWidth(0);
+        cppOut.setPadChar(' ');
+    } else {
+        cppOut << "    \"";
+        for (int i = 0; i < size; i++) {
+            cppOut << "\\x" << (data[i] & 0xff)
+                   << "\\x" << ((data[i] >> 8) & 0xff)
+                   << "\\x" << ((data[i] >> 16) & 0xff)
+                   << "\\x" << ((data[i] >> 24) & 0xff);
+        }
+        cppOut.setIntegerBase(10);
+        cppOut.setFieldWidth(0);
+        cppOut.setPadChar(' ');
         cppOut << "\"\n";
-        cppOut.setFieldWidth(2);
     }
-    cppOut.setIntegerBase(10);
-    cppOut.setFieldWidth(0);
-    cppOut.setPadChar(' ');
 }
 
 int main(int argc, char* argv[])
@@ -392,14 +406,15 @@ int main(int argc, char* argv[])
     cppOut << "const int shapeTextureMipmapWidth = " << widthMipmap << ";\n"
            << "const int shapeTextureMipmapHeight = " << heightMipmap << ";\n"
            << "const int shapeTextureMipmapCount = " << mipmapCount << ";\n"
-           << "static const int shapeTextureMipmapOffset[" << mipmapCount << "] = { 0";
+           << "static const int shapeTextureMipmapOffset[" << mipmapCount << "] = {\n"
+           << "    0";
     int size = 0, i = 0;
     for (int i = 0; i < mipmapCount-1; i++) {
         size += (widthMipmap >> i) * (heightMipmap >> i) * 4;
         cppOut << ", " << size;
     }
     size += (widthMipmap >> (mipmapCount-1)) * (heightMipmap >> (mipmapCount-1)) * 4;
-    cppOut << " };\n";
+    cppOut << "\n};\n";
     cppOut << "static const unsigned char shapeTextureMipmapData[" << textureCount
            <<   "][" << size + 1 << "] = {\n";
     for (int i = 0; i < mipmapCount; i++) {
