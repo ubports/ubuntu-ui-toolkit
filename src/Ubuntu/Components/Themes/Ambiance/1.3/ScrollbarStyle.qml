@@ -73,7 +73,7 @@ Item {
      *      STYLING PROPERTIES                           *
      *****************************************************/
     property bool interactive: isMouseConnected || veryLongContentItem
-    property real minimumSliderSize: units.gu(2)
+    property real minimumSliderSize: units.gu(3)
 
     property bool overlay: !alwaysOnScrollbars
     property real overlayOpacityWhenShown: 1.0
@@ -143,14 +143,9 @@ Item {
     //only show the thumb if the page AND the view is moving
     property bool thumbStyleFlag: veryLongContentItem && (flickableItem.moving || scrollAnimation.running)
     //we show thumb style instead of indicator style if the content item is very long on *any* of the 2 axes
-    property bool veryLongContentItem: {
-        console.log("EVALUATING veryLongContentItem for item", visuals, isVertical, flickableItem, initialized,
-                    flickableItem.contentHeight, flickableItem.height, (flickableItem.contentHeight > flickableItem.height * 10),
-                    flickableItem.contentWidth, flickableItem.width, (flickableItem.contentWidth > flickableItem.width * 10))
-        return flickableItem && initialized
+    property bool veryLongContentItem: flickableItem && initialized
                                        && ((flickableItem.contentHeight > flickableItem.height * 10)
                                            || (flickableItem.contentWidth > flickableItem.width * 10))
-    }
 
     //this will eventually come from QInputInfo
     property bool isMouseConnected: true
@@ -472,14 +467,14 @@ Item {
                     target: slider
                     property: "width"
                     value: (isVertical) ? flowContainer.thumbThickness
-                                        : scrollbarUtils.sliderSize(styledItem, units.gu(5), trough.width - 2 * thumbsExtremesMargin)
+                                        : scrollbarUtils.sliderSize(styledItem, visuals.minimumSliderSize, trough.width - 2 * thumbsExtremesMargin)
                 }
                 Binding {
                     when: !visuals.draggingThumb
                     target: slider
                     property: "height"
                     value: (!isVertical) ? flowContainer.thumbThickness
-                                         : scrollbarUtils.sliderSize(styledItem, flowContainer.thumbThickness, trough.height - 2 * thumbsExtremesMargin)
+                                         : scrollbarUtils.sliderSize(styledItem, visuals.minimumSliderSize, trough.height - 2 * thumbsExtremesMargin)
                 }
             }
 
@@ -867,14 +862,6 @@ Item {
         target: visuals
         property: 'state'
         value: {
-            console.log("REEVALUATING STATE\n", visuals,
-                        "isVertical", isVertical,
-                        "isScrollable", isScrollable,
-                        "alwaysOnScrollbars", alwaysOnScrollbars,
-                        "overlay", overlay, "\n",
-                        "draggingThumb", draggingThumb,
-                        "overshoot timer running", __overshootTimer.running, "\n",
-                        "thumbStyleFlag", thumbStyleFlag)
             if (!isScrollable && !alwaysOnScrollbars)
                 return '';
             else if (overlay) {
