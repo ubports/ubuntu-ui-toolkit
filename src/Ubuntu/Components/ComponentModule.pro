@@ -125,7 +125,6 @@ QML_FILES += 1.3/ActionBar.qml \
              1.3/tree.js \
              1.3/UbuntuColors.qml \
              1.3/UbuntuListView11.qml \
-             1.3/UbuntuListView.qml \
              1.3/UbuntuNumberAnimation.qml \
              1.3/ListItemPopover.qml \
              1.3/PageColumn.qml \
@@ -135,7 +134,6 @@ QML_FILES += 1.3/ActionBar.qml \
 
 OTHER_FILES+= qmldir \
              1.3/CrossFadeImage.qdoc \
-             1.3/UbuntuListView11.qdoc \
              1.3/PageHeadConfiguration.qdoc \
              1.3/MainView.qdoc \
              1.3/Icon.qdoc
