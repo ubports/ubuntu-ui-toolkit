@@ -1,3 +1,56 @@
+ubuntu-ui-toolkit (1.3.1761+16.04.20151216.1-0ubuntu1) xenial; urgency=medium
+
+  [ Zoltán Balogh ]
+  * Drop dependency on qtc plugin script and wait for the shell with a local 
+    function.
+
+  [ Christian Dywan ]
+  * runtest.sh needs to add subdirs to the libpath. Fixes: LP: #1524710.
+  * Explicit click/ touch threshold beyond handler.
+  * Enter/Return/Space should trigger() Button. Fixes: LP: #1523794.
+  * Only set ppmm in SwipeArea if screen has valid dpi. Fixes: LP: #1525174.
+
+  [ Tim Peeters ]
+  * Implement header slot management for convergence:
+    - Adapt the number of action slots to the width of the view.
+    - When a new action appears, show a quick fade-in.
+    - Reverse the order of the actions in the header.
+    - Update icon width to 4GU. Fixes: LP: #1428757.
+  * To prevent an invalid sectionIndex, reset the value of sectionIndex to -1
+    when the model of Sections is changed. Fixes: LP: #1513933.
+
+  [ Loïc Molinari ]
+  * UbuntuShape - Cleaned up includes.
+  
+  [ Albert Astals Cid ]
+  * Simplify logic for emitting draggingChanged/pressedChanged
+    No need for a switch that considers the possible cases, just store the
+    status before and check after
+    Fixes an issue in which the SwipeArea pressedChanged signal was not emitted
+    if switching directly from WaitingForTouch to Recognized.
+  * Fix memory leak in SwipeArea
+    SwipeAreaPrivate is not deleted directly so make it part of the qobject
+    hierarchy so it's auto deleted on parent destruction.
+   
+  [ Zsombor Egri ]
+  * Add reset functionality to Action.shortcut property. Fixes: LP: #1518420.
+  * Add contentWidth and contentHeight to Dialog so foreground can be resized. 
+    Fixes: LP: #1249325.
+  * Fixing ListItem.selected and ListItem.selectMode bugs. 
+    Fixes: LP: #1493880, LP: #1493882, LP: #1514928. 
+  * Add private implementations to ActionItem, AbstractButton, BottomEdgeHint
+    and BottomEdge. Fixes: LP: #1524234
+  * Close Popups.Dialog when Esc key is pressed. Fixes LP: #1523833
+  * Invoke the overridden trigger() function for Action and ActionItem 
+    derivates. Fixes LP: #1524234
+  * Fix BottomEdge assertion when the content is committed by clicking on the 
+    hint. Fixes LP: #1524407
+
+  [ CI Train Bot ]
+  * No-change rebuild.
+
+ -- Zoltan Balogh <zoltan.balogh@canonical.com>  Wed, 16 Dec 2015 10:01:47 +0000
+
 ubuntu-ui-toolkit (1.3.1742+16.04.20151209-0ubuntu1) xenial; urgency=medium
 
   [ Zoltán Balogh ]

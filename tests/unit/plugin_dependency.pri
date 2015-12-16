@@ -8,7 +8,7 @@ PRE_TARGETDEPS =  $$PLUGIN_BLD/Components/libUbuntuComponents.so
 PRE_TARGETDEPS += $$PLUGIN_BLD/Test/libUbuntuTest.so
 LIBS += -L$$PLUGIN_BLD/Components -lUbuntuComponents
 LIBS += -L$$PLUGIN_BLD/Test -lUbuntuTest
-+LIBS += -L$$PWD/../../lib -lUbuntuGestures
+LIBS += -L$$PWD/../../lib -lUbuntuGestures
 DEFINES += QUICK_TEST_SOURCE_DIR=\"\\\"$$_PRO_FILE_PWD_\\\"\"
 QMAKE_CXXFLAGS += -Werror
 
