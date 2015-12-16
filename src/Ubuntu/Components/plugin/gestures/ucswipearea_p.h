@@ -59,6 +59,18 @@ public:
         return area->d_func();
     }
 
+    void setMaxTime(int value);
+
+    void setCompositionTime(int value);
+
+    // Replaces the existing Timer with the given one.
+    //
+    // Useful for providing a fake timer when testing.
+    void setRecognitionTimer(UbuntuGestures::AbstractTimer *timer);
+
+    // Useful for testing, where a fake time source can be supplied
+    void setTimeSource(const UbuntuGestures::SharedTimeSource &timeSource);
+
 public:
     // Describes the state of the directional drag gesture.
     enum Status {
@@ -102,18 +114,9 @@ public:
     void watchPressedTouchPoints(const QList<QTouchEvent::TouchPoint> &touchPoints);
     bool recognitionIsDisabled() const;
     bool sanityCheckRecognitionProperties();
-    void setMaxTime(int value);
     void setDistanceThreshold(qreal value);
     void setPixelsPerMm(qreal pixelsPerMm);
     QString objectName() const { return q_func()->objectName(); }
-
-    // Replaces the existing Timer with the given one.
-    //
-    // Useful for providing a fake timer when testing.
-    void setRecognitionTimer(UbuntuGestures::AbstractTimer *timer);
-
-    // Useful for testing, where a fake time source can be supplied
-    void setTimeSource(const UbuntuGestures::SharedTimeSource &timeSource);
 
     // manage status change listeners
     void addStatusChangeListener(UCSwipeAreaStatusListener *listener);
@@ -163,7 +166,7 @@ public:
 class UBUNTUGESTURESQML_EXPORT UCSwipeAreaStatusListener
 {
 public:
-    void swipeStatusChanged(UCSwipeAreaPrivate::Status /*old*/, UCSwipeAreaPrivate::Status /*new*/) {}
+    virtual void swipeStatusChanged(UCSwipeAreaPrivate::Status /*old*/, UCSwipeAreaPrivate::Status /*new*/) {}
 };
 
 #endif // UCSWIPEAREAPRIVATE_H

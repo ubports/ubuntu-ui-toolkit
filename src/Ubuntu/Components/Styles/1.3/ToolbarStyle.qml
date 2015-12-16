@@ -14,23 +14,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import QtQuick 2.4
-import Ubuntu.Components 1.3
-import Ubuntu.Components.Styles 1.3 as Style
 
-Style.ToolbarStyle {
-    id: toolbarStyle
-    implicitWidth: parent ? parent.width : 0
-    implicitHeight: units.gu(4)
+/*!
+    \qmltype ToolbarStyle
+    \inqmlmodule Ubuntu.Components.Styles 1.3
+    \ingroup style-api
+    \brief Style API for toolbar.
 
+    The component defines the style API for the \l Toolbar component.
+  */
+Item {
     /*!
       The default action delegate if the styled item does
-      not provide a delegate.
+      not provide a different delegate.
      */
-    defaultDelegate: AbstractButton {
-        style: IconButtonStyle { }
-        objectName: action.objectName + "_button"
-        height: parent ? parent.height : undefined
-        width: units.gu(4)
-        action: modelData
-    }
+    property Component defaultDelegate
 }

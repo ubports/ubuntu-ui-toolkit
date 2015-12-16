@@ -59,7 +59,8 @@ public:
     }
 
 private:
-    void swipeStatusChanged(UCSwipeAreaPrivate::Status, UCSwipeAreaPrivate::Status status) {
+    void swipeStatusChanged(UCSwipeAreaPrivate::Status, UCSwipeAreaPrivate::Status status) override
+    {
         m_recognized |= status == UCSwipeAreaPrivate::Recognized;
     }
 
@@ -1168,7 +1169,7 @@ void tst_UCSwipeArea::makoRightEdgeDrag()
     sendTouchUpdate(320171, 0, QPointF(447.232,1012.08));
     sendTouchRelease(320171, 0, QPointF(447.232,1012.08));
 
-    QCOMPARE(statusSpy->recognized(), true);
+    QTRY_COMPARE_WITH_TIMEOUT(statusSpy->recognized(), true, 500);
 
     delete statusSpy;
 }

@@ -166,6 +166,7 @@ PopupBase {
         */
         visible = true;
         foreground.show();
+        foreground.forceActiveFocus();
     }
 
     /*!
@@ -206,8 +207,8 @@ PopupBase {
 
     StyledItem {
         id: foreground
-        activeFocusOnPress: true
         objectName: "popover_foreground"
+        Keys.onEscapePressed: hideCompleted()
 
         //styling properties
         property real minimumWidth: units.gu(40)
