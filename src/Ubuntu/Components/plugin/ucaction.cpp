@@ -160,6 +160,11 @@ UCAction::UCAction(QObject *parent)
     generateName();
 }
 
+UCAction::~UCAction()
+{
+    resetShortcut();
+}
+
 bool UCAction::isValidType(QVariant::Type valueType)
 {
     bool valid = (valueType == QVariant::String && m_parameterType == String) ||
@@ -289,6 +294,15 @@ void UCAction::setShortcut(const QVariant& shortcut)
     m_shortcut = shortcut;
     Q_EMIT shortcutChanged();
 }
+void UCAction::resetShortcut()
+{
+    if (!m_shortcut.isValid()) {
+        return;
+    }
+    QGuiApplicationPrivate::instance()->shortcutMap.removeShortcut(0, this, sequenceFromVariant(m_shortcut));
+    m_shortcut = QVariant();
+    Q_EMIT shortcutChanged();
+}
 
 bool UCAction::event(QEvent *event)
 {
@@ -302,7 +316,7 @@ bool UCAction::event(QEvent *event)
     }
 
     // do not call trigger() directly but invoke, as it may get overridden in QML
-    metaObject()->invokeMethod(this, "trigger");
+    invokeTrigger<UCAction>(this, QVariant());
     return true;
 }
 

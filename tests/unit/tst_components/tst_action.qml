@@ -137,10 +137,25 @@ TestCase {
          verify(!data.inactive.active, "Context deactivation error");
      }
 
-     function test_overloaded_action_trigger() {
-         triggeredSignalSpy.target = suppressTrigger;
-         suppressTrigger.trigger();
-         compare(triggeredSignalSpy.count, 0, "Overloaded trigger should not trigger action");
+     function test_overloaded_action_trigger_data() {
+         return [
+             {tag: "parametered override without parameter", action: suppressTrigger, invoked: true},
+             {tag: "parametered override with parameter", action: suppressTrigger, value: 1, type: Action.Integer, invoked: true},
+             {tag: "paremeterless override without parameter", action: override, invoked: true},
+             {tag: "paremeterless override with parameter", action: override, value: 1, type: Action.Integer, invoked: true},
+         ];
+     }
+     function test_overloaded_action_trigger(data) {
+         data.action.invoked = false;
+         data.action.parameterType = Action.None;
+         testItem.action = data.action;
+         if (data.value) {
+             data.action.parameterType = data.type;
+             testItem.trigger(data.value);
+         } else {
+             testItem.trigger(data.value);
+         }
+         compare(data.action.invoked, data.invoked);
      }
 
      Action {
@@ -198,7 +213,19 @@ TestCase {
 
      Action {
          id: suppressTrigger
-         function trigger() {}
+         property bool invoked: false
+         // we must override the parametered version as Button connects to the parametered version
+         function trigger(v) { invoked = true }
+     }
+
+     Action {
+         id: override
+         property bool invoked: false
+         function trigger() { invoked = true }
+     }
+
+     ActionItem {
+         id: testItem
      }
 
 }
