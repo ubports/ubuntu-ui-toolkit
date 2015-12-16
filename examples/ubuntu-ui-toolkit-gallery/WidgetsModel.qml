@@ -77,6 +77,11 @@ ListModel {
         source: "ProgressBars.qml"
     }
     ListElement {
+        objectName: "pageHeaderElement"
+        label: "Page header"
+        source: "PageHeaders.qml"
+    }
+    ListElement {
         objectName: "sectionsElement"
         label: "Sections"
         source: "Sections.qml"
