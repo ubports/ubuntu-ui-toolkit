@@ -19,11 +19,6 @@ import QtQuick 2.0
 ListModel {
     // Already in design guidelines
     ListElement {
-        objectName: "scrollbarsElement"
-        label: "Scrollbars"
-        source: "Scrollbars.qml"
-    }
-    ListElement {
         objectName: "navigationElement"
         label: "Navigation"
         source: "Navigation.qml"
