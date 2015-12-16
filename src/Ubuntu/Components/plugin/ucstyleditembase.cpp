@@ -36,9 +36,9 @@ UCStyledItemBasePrivate::UCStyledItemBasePrivate()
 {
 }
 
-bool UCStyledItemBase::keyNavigationFocus()
+bool UCStyledItemBase::keyNavigationFocus() const
 {
-    Q_D(UCStyledItemBase);
+    Q_D(const UCStyledItemBase);
     return d->keyNavigationFocus;
 }
 
