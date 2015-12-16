@@ -56,13 +56,4 @@ Page {
             }
         }
     }
-
-    //FIXME: gallery AP test expects a Scrollbar with TemplateScrollbar objectName, but we don't have that anymore!
-    //    Scrollbar {
-    //        id: sb
-    //        objectName: "TemplateScrollbar"
-    //        flickableItem: flickable
-    //        property alias interactive: sb.__interactive
-    //        __alwaysOnScrollbars: true
-    //    }
 }
