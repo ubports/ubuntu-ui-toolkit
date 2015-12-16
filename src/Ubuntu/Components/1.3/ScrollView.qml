@@ -128,14 +128,17 @@ StyledItem {
         } else if (verticalScrollbar.__styleInstance !== null) {
             if (event.key == Qt.Key_PageDown) {
                 verticalScrollbar.__styleInstance.scroll(flickableItem.height*internal.longScrollingRatio)
+                event.accepted = true
             } else if (event.key == Qt.Key_PageUp) {
                 verticalScrollbar.__styleInstance.scroll(-flickableItem.height*internal.longScrollingRatio)
+                event.accepted = true
             } else if (event.key == Qt.Key_Home) {
                 verticalScrollbar.__styleInstance.scrollToBeginning()
+                event.accepted = true
             } else if (event.key == Qt.Key_End) {
                 verticalScrollbar.__styleInstance.scrollToEnd()
+                event.accepted = true
             }
-            event.accepted = true
         }
     }
 
