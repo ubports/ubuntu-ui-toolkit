@@ -150,6 +150,8 @@ public:
 
     bool immediateRecognition;
 
+    bool monitorOnly;
+
 Q_SIGNALS:
     void statusChanged(Status value);
 };
