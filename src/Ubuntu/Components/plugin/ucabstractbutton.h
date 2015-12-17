@@ -45,7 +45,7 @@ public:
 
 protected:
     void classBegin();
-    void keyPressEvent(QKeyEvent *key);
+    void keyReleaseEvent(QKeyEvent *key);
 
 Q_SIGNALS:
     void pressedChanged();

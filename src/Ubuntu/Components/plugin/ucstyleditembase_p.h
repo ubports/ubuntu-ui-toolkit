@@ -69,6 +69,7 @@ public:
     QQmlComponent *styleComponent;
     QQuickItem *styleItem;
     quint16 styleVersion;
+    bool keyNavigationFocus:1;
     bool activeFocusOnPress:1;
     bool wasStyleLoaded:1;
 

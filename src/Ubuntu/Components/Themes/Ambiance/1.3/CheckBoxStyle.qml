@@ -57,6 +57,9 @@ Item {
     implicitWidth: units.gu(3)
     implicitHeight: units.gu(3)
 
+    FocusShape {
+    }
+
     UbuntuShape {
         id: background
         anchors {

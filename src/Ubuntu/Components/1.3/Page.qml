@@ -69,7 +69,7 @@ import "pageUtils.js" as Utils
     use a Page inside a Loader, but in that case do not set the anchors or size of the Loader
     so that the Page can control its width and height.
 */
-PageTreeNode {
+Toolkit13.PageTreeNode {
     id: page
     anchors {
         left: parent ? parent.left : undefined

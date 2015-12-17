@@ -64,6 +64,12 @@ Popover {
         }
     ]
 
+    function show() {
+        visible = true;
+        __foreground.show();
+        // No input focus on the context menu!
+    }
+
     // removes hide animation
     function hide() {
         popover.visible = false;

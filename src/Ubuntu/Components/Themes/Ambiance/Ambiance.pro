@@ -32,8 +32,8 @@ ARTWORK_FILES += artwork/background_paper@27.png \
              artwork/spinner@8.png \
              artwork/stroke_button@27.png \
              artwork/tick@30.png \
-             artwork/toolbar_dropshadow@20.png
-
+             artwork/toolbar_dropshadow@20.png \
+             artwork/scrollbar_arrow@27.png
 
 QML_FILES += 1.2/ActivityIndicatorStyle.qml \
              1.2/BubbleShape.qml \
@@ -72,7 +72,7 @@ QML_FILES += 1.2/ActivityIndicatorStyle.qml \
              1.2/TextCursorStyle.qml \
              1.2/TextFieldStyle.qml \
              1.2/ToolbarButtonStyle.qml \
-             1.2/ToolbarStyle.qml \
+             1.2/DeprecatedToolbarStyle.qml \
              1.3/ActionBarStyle.qml \
              1.3/ActivityIndicatorStyle.qml \
              1.3/BubbleShape.qml \
@@ -115,6 +115,7 @@ QML_FILES += 1.2/ActivityIndicatorStyle.qml \
 	     1.3/PageHeaderStyle.qml \
              1.3/BottomEdgeHintStyle.qml \
              1.3/BottomEdgeStyle.qml \
+             1.3/FocusShape.qml \
 	     1.3/SectionsForPageHead.qml \
              $$ARTWORK_FILES
 

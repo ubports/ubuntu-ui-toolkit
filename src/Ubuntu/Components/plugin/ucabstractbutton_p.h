@@ -35,6 +35,7 @@ public:
     void completeComponentInitialization() override;
 
     bool isPressAndHoldConnected();
+    void onClicked();
 
     // private slots
     void _q_mouseAreaPressed();

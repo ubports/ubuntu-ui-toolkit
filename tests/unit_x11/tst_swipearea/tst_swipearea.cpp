@@ -38,24 +38,34 @@ using namespace UbuntuGestures;
 
 // Because QSignalSpy(UCSwipeArea, SIGNAL(UCSwipeArea::Status)) simply
 // doesn't work
-class StatusSpy : public QObject {
-    Q_OBJECT
+class StatusSpy : public UCSwipeAreaStatusListener
+{
 public:
-    StatusSpy(UCSwipeArea *edgeDragArea) {
-        m_recognized = false;
-        connect(edgeDragArea->d, &UCSwipeAreaPrivate::statusChanged,
-                this, &StatusSpy::onStatusChanged);
+    StatusSpy(UCSwipeArea *edgeDragArea)
+        : m_edgeDragArea(edgeDragArea)
+        , m_recognized(false)
+    {
+        UCSwipeAreaPrivate *d = UCSwipeAreaPrivate::get(m_edgeDragArea);
+        d->addStatusChangeListener(this);
     }
+    virtual ~StatusSpy()
+    {
+        UCSwipeAreaPrivate *d = UCSwipeAreaPrivate::get(m_edgeDragArea);
+        d->removeStatusChangeListener(this);
+    }
+
     bool recognized() {
         return m_recognized;
     }
 
-private Q_SLOTS:
-    void onStatusChanged(UCSwipeAreaPrivate::Status status) {
+private:
+    void swipeStatusChanged(UCSwipeAreaPrivate::Status, UCSwipeAreaPrivate::Status status) override
+    {
         m_recognized |= status == UCSwipeAreaPrivate::Recognized;
     }
 
 private:
+    UCSwipeArea *m_edgeDragArea;
     bool m_recognized;
 };
 
@@ -207,17 +217,18 @@ void tst_UCSwipeArea::dragWithShortDirectionChange()
     UCSwipeArea *edgeDragArea =
         m_view->rootObject()->findChild<UCSwipeArea*>("hpDragArea");
     QVERIFY(edgeDragArea != 0);
-    edgeDragArea->d->setRecognitionTimer(m_fakeTimerFactory->createTimer(edgeDragArea));
-    edgeDragArea->d->setTimeSource(m_fakeTimerFactory->timeSource());
+    UCSwipeAreaPrivate *d = UCSwipeAreaPrivate::get(edgeDragArea);
+    d->setRecognitionTimer(m_fakeTimerFactory->createTimer(edgeDragArea));
+    d->setTimeSource(m_fakeTimerFactory->timeSource());
 
     QPointF initialtouchPosition = calculateInitialtouchPosition(edgeDragArea);
     QPointF touchPoint = initialtouchPosition;
 
-    qreal desiredDragDistance = edgeDragArea->d->distanceThreshold * 2.0;
+    qreal desiredDragDistance = d->distanceThreshold * 2.0;
     QPointF dragDirectionVector(1.0, 0.0);
-    qreal touchStepDistance = edgeDragArea->d->distanceThreshold * 0.1f;
+    qreal touchStepDistance = d->distanceThreshold * 0.1f;
     // make sure we are above maximum time
-    int touchStepTimeMs = edgeDragArea->d->maxTime / 20. ;
+    int touchStepTimeMs = d->maxTime / 20. ;
     QPointF touchMovement = dragDirectionVector * touchStepDistance;
 
     QTest::touchEvent(m_view, m_device).press(0, touchPoint.toPoint());
@@ -241,9 +252,9 @@ void tst_UCSwipeArea::dragWithShortDirectionChange()
         passTime(touchStepTimeMs);
         QTest::touchEvent(m_view, m_device).move(0, touchPoint.toPoint());
     } while ((touchPoint - initialtouchPosition).manhattanLength() < desiredDragDistance
-            || m_fakeTimerFactory->timeSource()->msecsSinceReference() < (edgeDragArea->d->compositionTime * 1.5f));
+            || m_fakeTimerFactory->timeSource()->msecsSinceReference() < (d->compositionTime * 1.5f));
 
-    QCOMPARE((int)edgeDragArea->d->status, (int)UCSwipeAreaPrivate::Recognized);
+    QCOMPARE((int)d->status, (int)UCSwipeAreaPrivate::Recognized);
 
     QTest::touchEvent(m_view, m_device).release(0, touchPoint.toPoint());
 }
@@ -259,8 +270,9 @@ void tst_UCSwipeArea::recognitionTimerUsage()
         m_view->rootObject()->findChild<UCSwipeArea*>("hpDragArea");
     QVERIFY(edgeDragArea != 0);
     AbstractTimer *fakeTimer = m_fakeTimerFactory->createTimer();
-    edgeDragArea->d->setRecognitionTimer(fakeTimer);
-    edgeDragArea->d->setTimeSource(m_fakeTimerFactory->timeSource());
+    UCSwipeAreaPrivate *d = UCSwipeAreaPrivate::get(edgeDragArea);
+    d->setRecognitionTimer(fakeTimer);
+    d->setTimeSource(m_fakeTimerFactory->timeSource());
 
     int timeStepMs = 5; // some arbitrary small value.
 
@@ -268,28 +280,28 @@ void tst_UCSwipeArea::recognitionTimerUsage()
     QPointF touchPoint = initialtouchPosition;
 
     QPointF dragDirectionVector(1.0, 0.0);
-    QPointF touchMovement = dragDirectionVector * (edgeDragArea->d->distanceThreshold * 0.2f);
+    QPointF touchMovement = dragDirectionVector * (d->distanceThreshold * 0.2f);
 
-    QCOMPARE((int)edgeDragArea->d->status, (int)UCSwipeAreaPrivate::WaitingForTouch);
+    QCOMPARE((int)d->status, (int)UCSwipeAreaPrivate::WaitingForTouch);
     QVERIFY(!fakeTimer->isRunning());
 
     QTest::touchEvent(m_view, m_device).press(0, touchPoint.toPoint());
 
-    QCOMPARE((int)edgeDragArea->d->status, (int)UCSwipeAreaPrivate::Undecided);
+    QCOMPARE((int)d->status, (int)UCSwipeAreaPrivate::Undecided);
     QVERIFY(fakeTimer->isRunning());
 
     // Move beyond distance threshold and composition time to ensure recognition
-    while (m_fakeTimerFactory->timeSource()->msecsSinceReference() <= edgeDragArea->d->compositionTime ||
-           (touchPoint - initialtouchPosition).manhattanLength() <= edgeDragArea->d->distanceThreshold) {
+    while (m_fakeTimerFactory->timeSource()->msecsSinceReference() <= d->compositionTime ||
+           (touchPoint - initialtouchPosition).manhattanLength() <= d->distanceThreshold) {
 
-        QCOMPARE(edgeDragArea->d->status == UCSwipeAreaPrivate::Undecided, fakeTimer->isRunning());
+        QCOMPARE(d->status == UCSwipeAreaPrivate::Undecided, fakeTimer->isRunning());
 
         touchPoint += touchMovement;
         passTime(timeStepMs);
         QTest::touchEvent(m_view, m_device).move(0, touchPoint.toPoint());
     }
 
-    QCOMPARE((int)edgeDragArea->d->status, (int)UCSwipeAreaPrivate::Recognized);
+    QCOMPARE((int)d->status, (int)UCSwipeAreaPrivate::Recognized);
     QVERIFY(!fakeTimer->isRunning());
 }
 
@@ -302,8 +314,9 @@ void tst_UCSwipeArea::sceneXAndX()
     UCSwipeArea *edgeDragArea =
         m_view->rootObject()->findChild<UCSwipeArea*>("hnDragArea");
     QVERIFY(edgeDragArea != 0);
-    edgeDragArea->d->setRecognitionTimer(m_fakeTimerFactory->createTimer(edgeDragArea));
-    edgeDragArea->d->setTimeSource(m_fakeTimerFactory->timeSource());
+    UCSwipeAreaPrivate *d = UCSwipeAreaPrivate::get(edgeDragArea);
+    d->setRecognitionTimer(m_fakeTimerFactory->createTimer(edgeDragArea));
+    d->setTimeSource(m_fakeTimerFactory->timeSource());
     edgeDragArea->setImmediateRecognition(true);
 
     QPointF touchScenePosition(m_view->width() - (edgeDragArea->width()/2.0f), m_view->height()/2.0f);
@@ -328,8 +341,9 @@ void tst_UCSwipeArea::sceneYAndY()
     UCSwipeArea *edgeDragArea =
         m_view->rootObject()->findChild<UCSwipeArea*>("vnDragArea");
     QVERIFY(edgeDragArea != 0);
-    edgeDragArea->d->setRecognitionTimer(m_fakeTimerFactory->createTimer(edgeDragArea));
-    edgeDragArea->d->setTimeSource(m_fakeTimerFactory->timeSource());
+    UCSwipeAreaPrivate *d = UCSwipeAreaPrivate::get(edgeDragArea);
+    d->setRecognitionTimer(m_fakeTimerFactory->createTimer(edgeDragArea));
+    d->setTimeSource(m_fakeTimerFactory->timeSource());
     edgeDragArea->setImmediateRecognition(true);
 
     QPointF touchScenePosition(m_view->width()/2.0f, m_view->height() - (edgeDragArea->height()/2.0f));
@@ -356,8 +370,9 @@ void tst_UCSwipeArea::twoFingerTap()
     UCSwipeArea *edgeDragArea =
         m_view->rootObject()->findChild<UCSwipeArea*>("hpDragArea");
     QVERIFY(edgeDragArea != 0);
-    edgeDragArea->d->setRecognitionTimer(m_fakeTimerFactory->createTimer(edgeDragArea));
-    edgeDragArea->d->setTimeSource(m_fakeTimerFactory->timeSource());
+    UCSwipeAreaPrivate *d = UCSwipeAreaPrivate::get(edgeDragArea);
+    d->setRecognitionTimer(m_fakeTimerFactory->createTimer(edgeDragArea));
+    d->setTimeSource(m_fakeTimerFactory->timeSource());
 
     // Make touches evenly spaced along the edgeDragArea
     QPoint touchAPos(edgeDragArea->width()/2.0f, m_view->height()*0.33f);
@@ -371,7 +386,7 @@ void tst_UCSwipeArea::twoFingerTap()
     QTest::touchEvent(m_view, m_device)
         .press(0, touchAPos);
 
-    QCOMPARE((int)edgeDragArea->d->status, (int)UCSwipeAreaPrivate::Undecided);
+    QCOMPARE((int)d->status, (int)UCSwipeAreaPrivate::Undecided);
 
     passTime(timeStepMsecs);
     QTest::touchEvent(m_view, m_device)
@@ -380,20 +395,20 @@ void tst_UCSwipeArea::twoFingerTap()
 
     // A second touch point appeared during recognition, reject immediately as this
     // can't be a single-touch gesture anymore.
-    QCOMPARE((int)edgeDragArea->d->status, (int)UCSwipeAreaPrivate::WaitingForTouch);
+    QCOMPARE((int)d->status, (int)UCSwipeAreaPrivate::WaitingForTouch);
 
     passTime(timeStepMsecs);
     QTest::touchEvent(m_view, m_device)
         .release(0, touchAPos)
         .move(1, touchBPos);
 
-    QCOMPARE((int)edgeDragArea->d->status, (int)UCSwipeAreaPrivate::WaitingForTouch);
+    QCOMPARE((int)d->status, (int)UCSwipeAreaPrivate::WaitingForTouch);
 
     passTime(timeStepMsecs);
     QTest::touchEvent(m_view, m_device)
         .release(1, touchBPos);
 
-    QCOMPARE((int)edgeDragArea->d->status, (int)UCSwipeAreaPrivate::WaitingForTouch);
+    QCOMPARE((int)d->status, (int)UCSwipeAreaPrivate::WaitingForTouch);
 
     // Perform the second two-finger tap
 
@@ -401,27 +416,27 @@ void tst_UCSwipeArea::twoFingerTap()
     QTest::touchEvent(m_view, m_device)
         .press(0, touchAPos);
 
-    QCOMPARE((int)edgeDragArea->d->status, (int)UCSwipeAreaPrivate::Undecided);
+    QCOMPARE((int)d->status, (int)UCSwipeAreaPrivate::Undecided);
 
     passTime(timeStepMsecs);
     QTest::touchEvent(m_view, m_device)
         .move(0, touchAPos)
         .press(1, touchBPos);
 
-    QCOMPARE((int)edgeDragArea->d->status, (int)UCSwipeAreaPrivate::WaitingForTouch);
+    QCOMPARE((int)d->status, (int)UCSwipeAreaPrivate::WaitingForTouch);
 
     passTime(timeStepMsecs);
     QTest::touchEvent(m_view, m_device)
         .release(0, touchAPos)
         .move(1, touchBPos);
 
-    QCOMPARE((int)edgeDragArea->d->status, (int)UCSwipeAreaPrivate::WaitingForTouch);
+    QCOMPARE((int)d->status, (int)UCSwipeAreaPrivate::WaitingForTouch);
 
     passTime(timeStepMsecs);
     QTest::touchEvent(m_view, m_device)
         .release(1, touchBPos);
 
-    QCOMPARE((int)edgeDragArea->d->status, (int)UCSwipeAreaPrivate::WaitingForTouch);
+    QCOMPARE((int)d->status, (int)UCSwipeAreaPrivate::WaitingForTouch);
 }
 
 /*
@@ -438,25 +453,26 @@ void tst_UCSwipeArea::movingDDA()
     UCSwipeArea *edgeDragArea =
         rightwardsLauncher->findChild<UCSwipeArea*>("hpDragArea");
     Q_ASSERT(edgeDragArea != 0);
-    edgeDragArea->d->setRecognitionTimer(m_fakeTimerFactory->createTimer(edgeDragArea));
-    edgeDragArea->d->setTimeSource(m_fakeTimerFactory->timeSource());
+    UCSwipeAreaPrivate *d = UCSwipeAreaPrivate::get(edgeDragArea);
+    d->setRecognitionTimer(m_fakeTimerFactory->createTimer(edgeDragArea));
+    d->setTimeSource(m_fakeTimerFactory->timeSource());
 
     QPointF initialtouchPosition = calculateInitialtouchPosition(edgeDragArea);
     QPointF touchPoint = initialtouchPosition;
 
-    qreal desiredDragDistance = edgeDragArea->d->distanceThreshold * 2.0f;
+    qreal desiredDragDistance = d->distanceThreshold * 2.0f;
     QPointF dragDirectionVector(1.0f, 0.0f);
 
-    qreal movementStepDistance = edgeDragArea->d->distanceThreshold * 0.1f;
+    qreal movementStepDistance = d->distanceThreshold * 0.1f;
     QPointF touchMovement = dragDirectionVector * movementStepDistance;
     int totalMovementSteps = qCeil(desiredDragDistance / movementStepDistance);
-    int movementTimeStepMs = (edgeDragArea->d->compositionTime * 1.5f) / totalMovementSteps;
+    int movementTimeStepMs = (d->compositionTime * 1.5f) / totalMovementSteps;
 
     QTest::touchEvent(m_view, m_device).press(0, touchPoint.toPoint());
 
     // Move it far ahead along the direction of the gesture
     // rightwardsLauncher is a parent of our UCSwipeArea. So moving it will move our DDA
-    rightwardsLauncher->setX(rightwardsLauncher->x() + edgeDragArea->d->distanceThreshold * 5.0f);
+    rightwardsLauncher->setX(rightwardsLauncher->x() + d->distanceThreshold * 5.0f);
 
     for (int i = 0; i < totalMovementSteps; ++i) {
         touchPoint += touchMovement;
@@ -464,7 +480,7 @@ void tst_UCSwipeArea::movingDDA()
         QTest::touchEvent(m_view, m_device).move(0, touchPoint.toPoint());
     }
 
-    QCOMPARE((int)edgeDragArea->d->status, (int)UCSwipeAreaPrivate::Recognized);
+    QCOMPARE((int)d->status, (int)UCSwipeAreaPrivate::Recognized);
 
     QTest::touchEvent(m_view, m_device).release(0, touchPoint.toPoint());
 }
@@ -478,8 +494,9 @@ void tst_UCSwipeArea::ignoreOldFinger()
     UCSwipeArea *edgeDragArea =
         m_view->rootObject()->findChild<UCSwipeArea*>("hpDragArea");
     Q_ASSERT(edgeDragArea != 0);
-    edgeDragArea->d->setRecognitionTimer(m_fakeTimerFactory->createTimer(edgeDragArea));
-    edgeDragArea->d->setTimeSource(m_fakeTimerFactory->timeSource());
+    UCSwipeAreaPrivate *d = UCSwipeAreaPrivate::get(edgeDragArea);
+    d->setRecognitionTimer(m_fakeTimerFactory->createTimer(edgeDragArea));
+    d->setTimeSource(m_fakeTimerFactory->timeSource());
 
     // Make touches evenly spaced along the edgeDragArea
     QPoint touch0Pos(edgeDragArea->width()/2.0f, m_view->height()*0.33f);
@@ -487,26 +504,26 @@ void tst_UCSwipeArea::ignoreOldFinger()
 
     QTest::touchEvent(m_view, m_device).press(0, touch0Pos);
 
-    QCOMPARE((int)edgeDragArea->d->status, (int)UCSwipeAreaPrivate::Undecided);
+    QCOMPARE((int)d->status, (int)UCSwipeAreaPrivate::Undecided);
 
     // leave it lying around for some time
-    passTime(edgeDragArea->d->maxTime * 10);
+    passTime(d->maxTime * 10);
 
-    QCOMPARE((int)edgeDragArea->d->status, (int)UCSwipeAreaPrivate::WaitingForTouch);
+    QCOMPARE((int)d->status, (int)UCSwipeAreaPrivate::WaitingForTouch);
 
-    qreal desiredDragDistance = edgeDragArea->d->distanceThreshold * 2.0f;
+    qreal desiredDragDistance = d->distanceThreshold * 2.0f;
     QPointF dragDirectionVector(1.0f, 0.0f);
 
-    qreal movementStepDistance = edgeDragArea->d->distanceThreshold * 0.1f;
+    qreal movementStepDistance = d->distanceThreshold * 0.1f;
     QPointF touchMovement = dragDirectionVector * movementStepDistance;
     int totalMovementSteps = qCeil(desiredDragDistance / movementStepDistance);
-    int movementTimeStepMs = (edgeDragArea->d->compositionTime * 1.5f) / totalMovementSteps;
+    int movementTimeStepMs = (d->compositionTime * 1.5f) / totalMovementSteps;
 
     QTest::touchEvent(m_view, m_device)
         .move(0, touch0Pos)
         .press(1, touch1Pos);
 
-    QCOMPARE((int)edgeDragArea->d->status, (int)UCSwipeAreaPrivate::Undecided);
+    QCOMPARE((int)d->status, (int)UCSwipeAreaPrivate::Undecided);
 
     for (int i = 0; i < totalMovementSteps; ++i) {
         touch1Pos += touchMovement.toPoint();
@@ -516,13 +533,13 @@ void tst_UCSwipeArea::ignoreOldFinger()
             .move(1, touch1Pos);
     }
 
-    QCOMPARE((int)edgeDragArea->d->status, (int)UCSwipeAreaPrivate::Recognized);
+    QCOMPARE((int)d->status, (int)UCSwipeAreaPrivate::Recognized);
 
     QTest::touchEvent(m_view, m_device)
         .move(0, touch0Pos)
         .release(1, touch1Pos);
 
-    QCOMPARE((int)edgeDragArea->d->status, (int)UCSwipeAreaPrivate::WaitingForTouch);
+    QCOMPARE((int)d->status, (int)UCSwipeAreaPrivate::WaitingForTouch);
 }
 
 /*
@@ -541,19 +558,20 @@ void tst_UCSwipeArea::rotated()
     UCSwipeArea *edgeDragArea =
         rightwardsLauncher->findChild<UCSwipeArea*>("hpDragArea");
     Q_ASSERT(edgeDragArea != 0);
-    edgeDragArea->d->setRecognitionTimer(m_fakeTimerFactory->createTimer(edgeDragArea));
-    edgeDragArea->d->setTimeSource(m_fakeTimerFactory->timeSource());
+    UCSwipeAreaPrivate *d = UCSwipeAreaPrivate::get(edgeDragArea);
+    d->setRecognitionTimer(m_fakeTimerFactory->createTimer(edgeDragArea));
+    d->setTimeSource(m_fakeTimerFactory->timeSource());
 
     QPointF initialtouchPosition = calculateInitialtouchPosition(edgeDragArea);
     QPointF touchPoint = initialtouchPosition;
 
-    qreal desiredDragDistance = edgeDragArea->d->distanceThreshold * 2.0f;
+    qreal desiredDragDistance = d->distanceThreshold * 2.0f;
     QPointF dragDirectionVector(0.0f, 1.0f);
 
-    qreal movementStepDistance = edgeDragArea->d->distanceThreshold * 0.1f;
+    qreal movementStepDistance = d->distanceThreshold * 0.1f;
     QPointF touchMovement = dragDirectionVector * movementStepDistance;
     int totalMovementSteps = qCeil(desiredDragDistance / movementStepDistance);
-    int movementTimeStepMs = (edgeDragArea->d->compositionTime * 1.5f) / totalMovementSteps;
+    int movementTimeStepMs = (d->compositionTime * 1.5f) / totalMovementSteps;
 
     QTest::touchEvent(m_view, m_device).press(0, touchPoint.toPoint());
 
@@ -563,7 +581,7 @@ void tst_UCSwipeArea::rotated()
         QTest::touchEvent(m_view, m_device).move(0, touchPoint.toPoint());
     }
 
-    QCOMPARE((int)edgeDragArea->d->status, (int)UCSwipeAreaPrivate::Recognized);
+    QCOMPARE((int)d->status, (int)UCSwipeAreaPrivate::Recognized);
 
     QTest::touchEvent(m_view, m_device).release(0, touchPoint.toPoint());
 }
@@ -581,8 +599,9 @@ void tst_UCSwipeArea::distance()
     UCSwipeArea *edgeDragArea =
         rightwardsLauncher->findChild<UCSwipeArea*>("hpDragArea");
     Q_ASSERT(edgeDragArea != 0);
-    edgeDragArea->d->setRecognitionTimer(m_fakeTimerFactory->createTimer(edgeDragArea));
-    edgeDragArea->d->setTimeSource(m_fakeTimerFactory->timeSource());
+    UCSwipeAreaPrivate *d = UCSwipeAreaPrivate::get(edgeDragArea);
+    d->setRecognitionTimer(m_fakeTimerFactory->createTimer(edgeDragArea));
+    d->setTimeSource(m_fakeTimerFactory->timeSource());
 
     // to disable the position smoothing so that we can more easily check distance values
     edgeDragArea->setImmediateRecognition(true);
@@ -590,12 +609,12 @@ void tst_UCSwipeArea::distance()
     QPointF initialtouchPosition = calculateInitialtouchPosition(edgeDragArea);
     QPointF touchPoint = initialtouchPosition;
 
-    qreal desiredDragDistance = edgeDragArea->d->distanceThreshold * 2.0f;
+    qreal desiredDragDistance = d->distanceThreshold * 2.0f;
 
-    qreal movementStepDistance = edgeDragArea->d->distanceThreshold * 0.1f;
+    qreal movementStepDistance = d->distanceThreshold * 0.1f;
     QPointF touchMovement = dragDirectionVector * movementStepDistance;
     int totalMovementSteps = qCeil(desiredDragDistance / movementStepDistance);
-    int movementTimeStepMs = (edgeDragArea->d->compositionTime * 1.5f) / totalMovementSteps;
+    int movementTimeStepMs = (d->compositionTime * 1.5f) / totalMovementSteps;
 
     qint64 timestamp = 0;
 
@@ -639,18 +658,19 @@ void tst_UCSwipeArea::disabledWhileDragging()
     UCSwipeArea *edgeDragArea =
         m_view->rootObject()->findChild<UCSwipeArea*>("hpDragArea");
     Q_ASSERT(edgeDragArea != 0);
-    edgeDragArea->d->setRecognitionTimer(m_fakeTimerFactory->createTimer(edgeDragArea));
-    edgeDragArea->d->setTimeSource(m_fakeTimerFactory->timeSource());
+    UCSwipeAreaPrivate *d = UCSwipeAreaPrivate::get(edgeDragArea);
+    d->setRecognitionTimer(m_fakeTimerFactory->createTimer(edgeDragArea));
+    d->setTimeSource(m_fakeTimerFactory->timeSource());
 
     QPointF touchPoint = calculateInitialtouchPosition(edgeDragArea);
 
-    qreal desiredDragDistance = edgeDragArea->d->distanceThreshold * 2.0f;
+    qreal desiredDragDistance = d->distanceThreshold * 2.0f;
     QPointF dragDirectionVector(1., 0.); // horizontal positive
 
-    qreal movementStepDistance = edgeDragArea->d->distanceThreshold * 0.1f;
+    qreal movementStepDistance = d->distanceThreshold * 0.1f;
     QPointF touchMovement = dragDirectionVector * movementStepDistance;
     int totalMovementSteps = qCeil(desiredDragDistance / movementStepDistance);
-    int movementTimeStepMs = (edgeDragArea->d->compositionTime * 1.5f) / totalMovementSteps;
+    int movementTimeStepMs = (d->compositionTime * 1.5f) / totalMovementSteps;
 
     QTest::touchEvent(m_view, m_device).press(0, touchPoint.toPoint());
 
@@ -660,13 +680,13 @@ void tst_UCSwipeArea::disabledWhileDragging()
         QTest::touchEvent(m_view, m_device).move(0, touchPoint.toPoint());
     }
 
-    QCOMPARE((int)edgeDragArea->d->status, (int)UCSwipeAreaPrivate::Recognized);
+    QCOMPARE((int)d->status, (int)UCSwipeAreaPrivate::Recognized);
     QCOMPARE(edgeDragArea->dragging(), true);
 
     // disable the swipeArea while it's being dragged.
     edgeDragArea->setEnabled(false);
 
-    QCOMPARE((int)edgeDragArea->d->status, (int)UCSwipeAreaPrivate::WaitingForTouch);
+    QCOMPARE((int)d->status, (int)UCSwipeAreaPrivate::WaitingForTouch);
     QCOMPARE(edgeDragArea->dragging(), false);
 
     QTest::touchEvent(m_view, m_device).release(0, touchPoint.toPoint());
@@ -677,14 +697,15 @@ void tst_UCSwipeArea::oneFingerDownFollowedByLateSecondFingerDown()
     UCSwipeArea *edgeDragArea =
         m_view->rootObject()->findChild<UCSwipeArea*>("hpDragArea");
     Q_ASSERT(edgeDragArea != 0);
-    edgeDragArea->d->setRecognitionTimer(m_fakeTimerFactory->createTimer(edgeDragArea));
-    edgeDragArea->d->setTimeSource(m_fakeTimerFactory->timeSource());
+    UCSwipeAreaPrivate *d = UCSwipeAreaPrivate::get(edgeDragArea);
+    d->setRecognitionTimer(m_fakeTimerFactory->createTimer(edgeDragArea));
+    d->setTimeSource(m_fakeTimerFactory->timeSource());
 
     // Disable some constraints we're not interested in
-    edgeDragArea->d->setMaxTime(60 * 1000);
+    d->setMaxTime(60 * 1000);
 
     // And ensure others have the values we want
-    edgeDragArea->d->compositionTime = 60;
+    d->compositionTime = 60;
 
     // Put an item right behind edgeDragArea to receive the touches ignored by it
     DummyItem *dummyItem = new DummyItem;
@@ -701,10 +722,10 @@ void tst_UCSwipeArea::oneFingerDownFollowedByLateSecondFingerDown()
 
     QTest::touchEvent(m_view, m_device).press(0, touch0Pos);
 
-    QCOMPARE((int)edgeDragArea->d->status, (int)UCSwipeAreaPrivate::Undecided);
+    QCOMPARE((int)d->status, (int)UCSwipeAreaPrivate::Undecided);
 
     // We are now going to be way beyond compositionTime
-    passTime(edgeDragArea->d->compositionTime*3);
+    passTime(d->compositionTime*3);
 
     QTest::touchEvent(m_view, m_device)
         .move(0, touch0Pos)
@@ -726,7 +747,7 @@ void tst_UCSwipeArea::oneFingerDownFollowedByLateSecondFingerDown()
         .move(0, touch0Pos)
         .move(1, touch1Pos);
 
-    QCOMPARE((int)edgeDragArea->d->status, (int)UCSwipeAreaPrivate::Undecided);
+    QCOMPARE((int)d->status, (int)UCSwipeAreaPrivate::Undecided);
 
     passTime(5);
 
@@ -734,7 +755,7 @@ void tst_UCSwipeArea::oneFingerDownFollowedByLateSecondFingerDown()
         .release(0, touch0Pos)
         .move(1, touch1Pos);
 
-    QCOMPARE((int)edgeDragArea->d->status, (int)UCSwipeAreaPrivate::WaitingForTouch);
+    QCOMPARE((int)d->status, (int)UCSwipeAreaPrivate::WaitingForTouch);
 
     passTime(5);
 
@@ -742,7 +763,7 @@ void tst_UCSwipeArea::oneFingerDownFollowedByLateSecondFingerDown()
         .release(1, touch1Pos);
 
     // Shouldn't be keepping info about touches that no longer exist or interest us
-    QVERIFY(edgeDragArea->d->activeTouches.isEmpty());
+    QVERIFY(d->activeTouches.isEmpty());
 
     delete dummyItem;
 }
@@ -752,11 +773,12 @@ void tst_UCSwipeArea::givesUpWhenLosesTouch()
     UCSwipeArea *edgeDragArea =
         m_view->rootObject()->findChild<UCSwipeArea*>("hpDragArea");
     Q_ASSERT(edgeDragArea != 0);
-    edgeDragArea->d->setRecognitionTimer(m_fakeTimerFactory->createTimer(edgeDragArea));
-    edgeDragArea->d->setTimeSource(m_fakeTimerFactory->timeSource());
+    UCSwipeAreaPrivate *d = UCSwipeAreaPrivate::get(edgeDragArea);
+    d->setRecognitionTimer(m_fakeTimerFactory->createTimer(edgeDragArea));
+    d->setTimeSource(m_fakeTimerFactory->timeSource());
 
     // Disable some constraints we're not interested in
-    edgeDragArea->d->setMaxTime(60 * 1000);
+    d->setMaxTime(60 * 1000);
 
     // Put an item right in front of edgeDragArea
     DummyItem *dummyItem = new DummyItem(edgeDragArea->parentItem());
@@ -775,11 +797,11 @@ void tst_UCSwipeArea::givesUpWhenLosesTouch()
 
     QTest::touchEvent(m_view, m_device).press(0, touchPosition);
 
-    QCOMPARE((int)edgeDragArea->d->status, (int)UCSwipeAreaPrivate::Undecided);
+    QCOMPARE((int)d->status, (int)UCSwipeAreaPrivate::Undecided);
 
     m_touchRegistry->requestTouchOwnership(0, dummyItem);
 
-    QCOMPARE((int)edgeDragArea->d->status, (int)UCSwipeAreaPrivate::WaitingForTouch);
+    QCOMPARE((int)d->status, (int)UCSwipeAreaPrivate::WaitingForTouch);
 
     dummyItem->grabTouchPoints({0});
     dummyItem->touchEventHandler = [&](QTouchEvent *event) { event->accept(); };
@@ -787,9 +809,9 @@ void tst_UCSwipeArea::givesUpWhenLosesTouch()
     passTime(5);
     QTest::touchEvent(m_view, m_device).release(0, touchPosition);
 
-    QCOMPARE((int)edgeDragArea->d->status, (int)UCSwipeAreaPrivate::WaitingForTouch);
+    QCOMPARE((int)d->status, (int)UCSwipeAreaPrivate::WaitingForTouch);
 
-    QVERIFY(edgeDragArea->d->activeTouches.isEmpty());
+    QVERIFY(d->activeTouches.isEmpty());
 }
 
 void tst_UCSwipeArea::threeFingerDrag()
@@ -797,14 +819,15 @@ void tst_UCSwipeArea::threeFingerDrag()
     UCSwipeArea *edgeDragArea =
         m_view->rootObject()->findChild<UCSwipeArea*>("hpDragArea");
     Q_ASSERT(edgeDragArea != 0);
-    edgeDragArea->d->setRecognitionTimer(m_fakeTimerFactory->createTimer(edgeDragArea));
-    edgeDragArea->d->setTimeSource(m_fakeTimerFactory->timeSource());
+    UCSwipeAreaPrivate *d = UCSwipeAreaPrivate::get(edgeDragArea);
+    d->setRecognitionTimer(m_fakeTimerFactory->createTimer(edgeDragArea));
+    d->setTimeSource(m_fakeTimerFactory->timeSource());
 
     // Disable some constraints we're not interested in
-    edgeDragArea->d->setMaxTime(60 * 1000);
+    d->setMaxTime(60 * 1000);
 
     // And ensure others have the values we want
-    edgeDragArea->d->compositionTime = 60;
+    d->compositionTime = 60;
 
     // Make touches evenly spaced along the edgeDragArea
     QPoint touch0Pos(edgeDragArea->width()/2.0f, m_view->height()*0.25f);
@@ -814,14 +837,14 @@ void tst_UCSwipeArea::threeFingerDrag()
     QTest::touchEvent(m_view, m_device)
         .press(0, touch0Pos);
 
-    QCOMPARE((int)edgeDragArea->d->status, (int)UCSwipeAreaPrivate::Undecided);
+    QCOMPARE((int)d->status, (int)UCSwipeAreaPrivate::Undecided);
 
     passTime(5);
     QTest::touchEvent(m_view, m_device)
         .move(0, touch0Pos)
         .press(1, touch1Pos);
 
-    QCOMPARE((int)edgeDragArea->d->status, (int)UCSwipeAreaPrivate::WaitingForTouch);
+    QCOMPARE((int)d->status, (int)UCSwipeAreaPrivate::WaitingForTouch);
 
     passTime(5);
     QTest::touchEvent(m_view, m_device)
@@ -829,7 +852,7 @@ void tst_UCSwipeArea::threeFingerDrag()
         .move(1, touch1Pos)
         .press(2, touch2Pos);
 
-    QCOMPARE((int)edgeDragArea->d->status, (int)UCSwipeAreaPrivate::WaitingForTouch);
+    QCOMPARE((int)d->status, (int)UCSwipeAreaPrivate::WaitingForTouch);
 
     passTime(10);
     QTest::touchEvent(m_view, m_device)
@@ -853,7 +876,7 @@ void tst_UCSwipeArea::threeFingerDrag()
         .release(0, touch0Pos);
 
     // Shouldn't be keepping info about touches that no longer exist or interest us
-    QVERIFY(edgeDragArea->d->activeTouches.isEmpty());
+    QVERIFY(d->activeTouches.isEmpty());
 }
 
 /*
@@ -866,12 +889,13 @@ void tst_UCSwipeArea::immediateRecognitionWhenConstraintsDisabled()
     UCSwipeArea *edgeDragArea =
         m_view->rootObject()->findChild<UCSwipeArea*>("hpDragArea");
     Q_ASSERT(edgeDragArea != 0);
-    edgeDragArea->d->setRecognitionTimer(m_fakeTimerFactory->createTimer(edgeDragArea));
-    edgeDragArea->d->setTimeSource(m_fakeTimerFactory->timeSource());
+    UCSwipeAreaPrivate *d = UCSwipeAreaPrivate::get(edgeDragArea);
+    d->setRecognitionTimer(m_fakeTimerFactory->createTimer(edgeDragArea));
+    d->setTimeSource(m_fakeTimerFactory->timeSource());
 
     // Disable the minimum amount of constraints to ensure immediate recognition
-    edgeDragArea->d->setDistanceThreshold(0);
-    edgeDragArea->d->compositionTime = 0;
+    d->setDistanceThreshold(0);
+    d->compositionTime = 0;
 
     // Put an item right behind edgeDragArea to receive the touches ignored by it
     DummyItem *dummyItem = new DummyItem;
@@ -890,7 +914,7 @@ void tst_UCSwipeArea::immediateRecognitionWhenConstraintsDisabled()
     QTest::touchEvent(m_view, m_device).press(0, touch0Pos);
 
     // check for immediate recognition
-    QCOMPARE((int)edgeDragArea->d->status, (int)UCSwipeAreaPrivate::Recognized);
+    QCOMPARE((int)d->status, (int)UCSwipeAreaPrivate::Recognized);
 
     // and it is pressed
     QCOMPARE(edgeDragArea->pressed(), true);
@@ -906,19 +930,20 @@ void tst_UCSwipeArea::withdrawTouchOwnershipCandidacyIfDisabledDuringRecognition
     UCSwipeArea *edgeDragArea =
         m_view->rootObject()->findChild<UCSwipeArea*>("hpDragArea");
     Q_ASSERT(edgeDragArea != 0);
-    edgeDragArea->d->setRecognitionTimer(m_fakeTimerFactory->createTimer(edgeDragArea));
-    edgeDragArea->d->setTimeSource(m_fakeTimerFactory->timeSource());
+    UCSwipeAreaPrivate *d = UCSwipeAreaPrivate::get(edgeDragArea);
+    d->setRecognitionTimer(m_fakeTimerFactory->createTimer(edgeDragArea));
+    d->setTimeSource(m_fakeTimerFactory->timeSource());
 
     QPointF touchPoint = calculateInitialtouchPosition(edgeDragArea);
 
     // Move less than the minimum needed for the drag gesture recognition
-    qreal desiredDragDistance = edgeDragArea->d->distanceThreshold * 0.5f;
+    qreal desiredDragDistance = d->distanceThreshold * 0.5f;
     QPointF dragDirectionVector(1., 0.); // horizontal positive
 
-    qreal movementStepDistance = edgeDragArea->d->distanceThreshold * 0.1f;
+    qreal movementStepDistance = d->distanceThreshold * 0.1f;
     QPointF touchMovement = dragDirectionVector * movementStepDistance;
     int totalMovementSteps = qCeil(desiredDragDistance / movementStepDistance);
-    int movementTimeStepMs = (edgeDragArea->d->compositionTime * 0.8f) / totalMovementSteps;
+    int movementTimeStepMs = (d->compositionTime * 0.8f) / totalMovementSteps;
 
     QTest::touchEvent(m_view, m_device).press(0, touchPoint.toPoint());
 
@@ -928,7 +953,7 @@ void tst_UCSwipeArea::withdrawTouchOwnershipCandidacyIfDisabledDuringRecognition
         QTest::touchEvent(m_view, m_device).move(0, touchPoint.toPoint());
     }
 
-    QCOMPARE((int)edgeDragArea->d->status, (int)UCSwipeAreaPrivate::Undecided);
+    QCOMPARE((int)d->status, (int)UCSwipeAreaPrivate::Undecided);
 
     // edgeDragArea should be an undecided candidate
     {
@@ -952,7 +977,7 @@ void tst_UCSwipeArea::withdrawTouchOwnershipCandidacyIfDisabledDuringRecognition
         QCOMPARE(touchInfo->candidates.size(), 0);
     }
 
-    QCOMPARE((int)edgeDragArea->d->status, (int)UCSwipeAreaPrivate::WaitingForTouch);
+    QCOMPARE((int)d->status, (int)UCSwipeAreaPrivate::WaitingForTouch);
 
     QTest::touchEvent(m_view, m_device).release(0, touchPoint.toPoint());
 }
@@ -970,8 +995,9 @@ void tst_UCSwipeArea::gettingTouchOwnershipMakesMouseAreaBehindGetCanceled()
     UCSwipeArea *edgeDragArea =
         m_view->rootObject()->findChild<UCSwipeArea*>("hpDragArea");
     QVERIFY(edgeDragArea != nullptr);
-    edgeDragArea->d->setRecognitionTimer(m_fakeTimerFactory->createTimer(edgeDragArea));
-    edgeDragArea->d->setTimeSource(m_fakeTimerFactory->timeSource());
+    UCSwipeAreaPrivate *d = UCSwipeAreaPrivate::get(edgeDragArea);
+    d->setRecognitionTimer(m_fakeTimerFactory->createTimer(edgeDragArea));
+    d->setTimeSource(m_fakeTimerFactory->timeSource());
 
     QQuickMouseArea *mouseArea =
         m_view->rootObject()->findChild<QQuickMouseArea*>("mouseArea");
@@ -982,12 +1008,12 @@ void tst_UCSwipeArea::gettingTouchOwnershipMakesMouseAreaBehindGetCanceled()
     QPointF initialtouchPosition = calculateInitialtouchPosition(edgeDragArea);
     QPointF touchPoint = initialtouchPosition;
 
-    qreal desiredDragDistance = edgeDragArea->d->distanceThreshold * 2;
+    qreal desiredDragDistance = d->distanceThreshold * 2;
     QPointF dragDirectionVector(1.0f, 0.0f); // rightwards
-    qreal movementStepDistance = edgeDragArea->d->distanceThreshold * 0.1f;
+    qreal movementStepDistance = d->distanceThreshold * 0.1f;
     QPointF touchMovement = dragDirectionVector * movementStepDistance;
     int totalMovementSteps = qCeil(desiredDragDistance / movementStepDistance);
-    int movementTimeStepMs = (edgeDragArea->d->compositionTime * 1.5f) / totalMovementSteps;
+    int movementTimeStepMs = (d->compositionTime * 1.5f) / totalMovementSteps;
 
     QCOMPARE(mouseArea->pressed(), false);
 
@@ -1008,7 +1034,7 @@ void tst_UCSwipeArea::gettingTouchOwnershipMakesMouseAreaBehindGetCanceled()
     // As the UCSwipeArea recognizes the gesture, it grabs the touch from the MouseArea,
     // which should make the MouseArea get a cancelation event, which will then cause it to
     // reset its state (going back to "unpressed"/"released").
-    QCOMPARE((int)edgeDragArea->d->status, (int)UCSwipeAreaPrivate::Recognized);
+    QCOMPARE((int)d->status, (int)UCSwipeAreaPrivate::Recognized);
     QCOMPARE(mouseArea->pressed(), false);
     QCOMPARE(mouseAreaSpy.canceledCount, 1);
 
@@ -1020,18 +1046,19 @@ void tst_UCSwipeArea::interleavedTouches()
     UCSwipeArea *edgeDragArea =
         m_view->rootObject()->findChild<UCSwipeArea*>("hpDragArea");
     QVERIFY(edgeDragArea != 0);
-    edgeDragArea->d->setRecognitionTimer(m_fakeTimerFactory->createTimer(edgeDragArea));
-    edgeDragArea->d->setTimeSource(m_fakeTimerFactory->timeSource());
+    UCSwipeAreaPrivate *d = UCSwipeAreaPrivate::get(edgeDragArea);
+    d->setRecognitionTimer(m_fakeTimerFactory->createTimer(edgeDragArea));
+    d->setTimeSource(m_fakeTimerFactory->timeSource());
 
     QPointF touch0 = edgeDragArea->mapToScene(
             QPointF(edgeDragArea->width()*0.5, edgeDragArea->height()*0.3));
 
-    qreal desiredDragDistance = edgeDragArea->d->distanceThreshold * 2;
+    qreal desiredDragDistance = d->distanceThreshold * 2;
     QPointF dragDirectionVector(1.0f, 0.0f); // rightwards
-    qreal movementStepDistance = edgeDragArea->d->distanceThreshold * 0.1f;
+    qreal movementStepDistance = d->distanceThreshold * 0.1f;
     QPointF touchMovement = dragDirectionVector * movementStepDistance;
     int totalMovementSteps = qCeil(desiredDragDistance / movementStepDistance);
-    int movementTimeStepMs = (edgeDragArea->d->maxTime * 0.4f) / totalMovementSteps;
+    int movementTimeStepMs = (d->maxTime * 0.4f) / totalMovementSteps;
 
     QTest::touchEvent(m_view, m_device).press(0, touch0.toPoint());
     for (int i = 0; i < totalMovementSteps; ++i) {
@@ -1039,7 +1066,7 @@ void tst_UCSwipeArea::interleavedTouches()
         passTime(movementTimeStepMs);
         QTest::touchEvent(m_view, m_device).move(0, touch0.toPoint());
     }
-    QCOMPARE((int)edgeDragArea->d->status, (int)UCSwipeAreaPrivate::Recognized);
+    QCOMPARE((int)d->status, (int)UCSwipeAreaPrivate::Recognized);
 
     QPointF touch1 = edgeDragArea->mapToScene(
             QPointF(edgeDragArea->width()*0.5, edgeDragArea->height()*0.6));
@@ -1054,31 +1081,31 @@ void tst_UCSwipeArea::interleavedTouches()
         .move(0, touch0.toPoint())
         .move(1, touch1.toPoint());
 
-    QCOMPARE((int)edgeDragArea->d->status, (int)UCSwipeAreaPrivate::Recognized);
+    QCOMPARE((int)d->status, (int)UCSwipeAreaPrivate::Recognized);
 
     QTest::touchEvent(m_view, m_device)
         .release(0, touch0.toPoint())
         .move(1, touch1.toPoint());
 
-    QCOMPARE((int)edgeDragArea->d->status, (int)UCSwipeAreaPrivate::WaitingForTouch);
+    QCOMPARE((int)d->status, (int)UCSwipeAreaPrivate::WaitingForTouch);
 
     touch1 += touchMovement;
     passTime(movementTimeStepMs);
     QTest::touchEvent(m_view, m_device)
         .move(1, touch1.toPoint());
 
-    QCOMPARE((int)edgeDragArea->d->status, (int)UCSwipeAreaPrivate::WaitingForTouch);
+    QCOMPARE((int)d->status, (int)UCSwipeAreaPrivate::WaitingForTouch);
 
     QPointF touch2 = edgeDragArea->mapToScene(
             QPointF(edgeDragArea->width()*0.5, edgeDragArea->height()*0.9));
 
-    passTime(edgeDragArea->d->compositionTime + movementTimeStepMs);
+    passTime(d->compositionTime + movementTimeStepMs);
     QTest::touchEvent(m_view, m_device)
         .move(1, touch1.toPoint())
         .press(2, touch2.toPoint());
 
-    QCOMPARE((int)edgeDragArea->d->status, (int)UCSwipeAreaPrivate::Undecided);
-    QCOMPARE(edgeDragArea->d->touchId, 2);
+    QCOMPARE((int)d->status, (int)UCSwipeAreaPrivate::Undecided);
+    QCOMPARE(d->touchId, 2);
 
     touch2 += touchMovement;
     passTime(movementTimeStepMs);
@@ -1101,7 +1128,7 @@ void tst_UCSwipeArea::interleavedTouches()
     QTest::touchEvent(m_view, m_device)
         .release(2, touch2.toPoint());
 
-    QCOMPARE((int)edgeDragArea->d->status, (int)UCSwipeAreaPrivate::WaitingForTouch);
+    QCOMPARE((int)d->status, (int)UCSwipeAreaPrivate::WaitingForTouch);
 }
 
 /*
@@ -1115,12 +1142,13 @@ void tst_UCSwipeArea::makoRightEdgeDrag()
     UCSwipeArea *edgeDragArea =
         m_view->rootObject()->findChild<UCSwipeArea*>("hnDragArea");
     QVERIFY(edgeDragArea != nullptr);
-    edgeDragArea->d->setRecognitionTimer(m_fakeTimerFactory->createTimer(edgeDragArea));
-    edgeDragArea->d->setTimeSource(m_fakeTimerFactory->timeSource());
+    UCSwipeAreaPrivate *d = UCSwipeAreaPrivate::get(edgeDragArea);
+    d->setRecognitionTimer(m_fakeTimerFactory->createTimer(edgeDragArea));
+    d->setTimeSource(m_fakeTimerFactory->timeSource());
 
     StatusSpy *statusSpy = new StatusSpy(edgeDragArea);
 
-    edgeDragArea->d->setPixelsPerMm(320.0 /*mako ppi*/ * 0.03937 /* inches per mm*/);
+    d->setPixelsPerMm(320.0 /*mako ppi*/ * 0.03937 /* inches per mm*/);
 
     sendTouchPress(319744, 0, QPointF(767.001, 719.719));
     sendTouchUpdate(319765, 0, QPointF(765.744,729.973));
@@ -1141,7 +1169,7 @@ void tst_UCSwipeArea::makoRightEdgeDrag()
     sendTouchUpdate(320171, 0, QPointF(447.232,1012.08));
     sendTouchRelease(320171, 0, QPointF(447.232,1012.08));
 
-    QCOMPARE(statusSpy->recognized(), true);
+    QTRY_COMPARE_WITH_TIMEOUT(statusSpy->recognized(), true, 500);
 
     delete statusSpy;
 }
@@ -1160,10 +1188,11 @@ void tst_UCSwipeArea::makoRightEdgeDrag_verticalDownwards()
     UCSwipeArea *edgeDragArea =
         m_view->rootObject()->findChild<UCSwipeArea*>("hnDragArea");
     QVERIFY(edgeDragArea != nullptr);
-    edgeDragArea->d->setRecognitionTimer(m_fakeTimerFactory->createTimer(edgeDragArea));
-    edgeDragArea->d->setTimeSource(m_fakeTimerFactory->timeSource());
+    UCSwipeAreaPrivate *d = UCSwipeAreaPrivate::get(edgeDragArea);
+    d->setRecognitionTimer(m_fakeTimerFactory->createTimer(edgeDragArea));
+    d->setTimeSource(m_fakeTimerFactory->timeSource());
 
-    edgeDragArea->d->setPixelsPerMm(320.0 /*mako ppi*/ * 0.03937 /* inches per mm*/);
+    d->setPixelsPerMm(320.0 /*mako ppi*/ * 0.03937 /* inches per mm*/);
 
     StatusSpy *statusSpy = new StatusSpy(edgeDragArea);
 
@@ -1204,10 +1233,11 @@ void tst_UCSwipeArea::makoLeftEdgeDrag_slowStart()
     UCSwipeArea *edgeDragArea =
         m_view->rootObject()->findChild<UCSwipeArea*>("hpDragArea");
     QVERIFY(edgeDragArea != nullptr);
-    edgeDragArea->d->setRecognitionTimer(m_fakeTimerFactory->createTimer(edgeDragArea));
-    edgeDragArea->d->setTimeSource(m_fakeTimerFactory->timeSource());
+    UCSwipeAreaPrivate *d = UCSwipeAreaPrivate::get(edgeDragArea);
+    d->setRecognitionTimer(m_fakeTimerFactory->createTimer(edgeDragArea));
+    d->setTimeSource(m_fakeTimerFactory->timeSource());
 
-    edgeDragArea->d->setPixelsPerMm(320.0 /*mako ppi*/ * 0.03937 /* inches per mm*/);
+    d->setPixelsPerMm(320.0 /*mako ppi*/ * 0.03937 /* inches per mm*/);
 
     StatusSpy *statusSpy = new StatusSpy(edgeDragArea);
 
@@ -1268,10 +1298,11 @@ void tst_UCSwipeArea::makoLeftEdgeDrag_movesSlightlyBackwardsOnStart()
     UCSwipeArea *edgeDragArea =
         m_view->rootObject()->findChild<UCSwipeArea*>("hpDragArea");
     QVERIFY(edgeDragArea != nullptr);
-    edgeDragArea->d->setRecognitionTimer(m_fakeTimerFactory->createTimer(edgeDragArea));
-    edgeDragArea->d->setTimeSource(m_fakeTimerFactory->timeSource());
+    UCSwipeAreaPrivate *d = UCSwipeAreaPrivate::get(edgeDragArea);
+    d->setRecognitionTimer(m_fakeTimerFactory->createTimer(edgeDragArea));
+    d->setTimeSource(m_fakeTimerFactory->timeSource());
 
-    edgeDragArea->d->setPixelsPerMm(320.0 /*mako ppi*/ * 0.03937 /* inches per mm*/);
+    d->setPixelsPerMm(320.0 /*mako ppi*/ * 0.03937 /* inches per mm*/);
 
     StatusSpy *statusSpy = new StatusSpy(edgeDragArea);
 
