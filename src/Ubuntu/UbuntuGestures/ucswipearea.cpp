@@ -15,7 +15,7 @@
  *
  */
 
-#include "ucswipearea_p.h"
+#include "ucswipearea_p_p.h"
 
 #include <QQuickWindow>
 #include <QtCore/qmath.h>

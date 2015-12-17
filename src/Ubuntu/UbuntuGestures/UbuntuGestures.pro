@@ -21,8 +21,8 @@ HEADERS += candidateinactivitytimer.h \
            unownedtouchevent.h \
            ubuntugesturesglobal.h \
            pool.h \
-           ucswipearea.h \
            ucswipearea_p.h \
+           ucswipearea_p_p.h \
            damper.h \
 
 

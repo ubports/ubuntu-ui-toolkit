@@ -23,7 +23,7 @@
 #include "ucnamespace.h"
 #include "ucunits.h"
 #include "ucaction.h"
-#include "ucswipearea.h"
+#include "private/ucswipearea_p.h"
 #include "propertychange_p.h"
 #include <QtQml/private/qqmlproperty_p.h>
 #include <QtQuick/private/qquickflickable_p.h>

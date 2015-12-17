@@ -17,8 +17,8 @@
 #include "uctestextras.h"
 #include "uctestcase.h"
 
-#include "ucswipearea.h"
 #include "ucswipearea_p.h"
+#include "ucswipearea_p_p.h"
 
 #include <qpa/qwindowsysteminterface.h>
 #include <private/qobject_p.h>

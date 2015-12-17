@@ -18,10 +18,10 @@
 #ifndef UCSWIPEAREAPRIVATE_H
 #define UCSWIPEAREAPRIVATE_H
 
-#include "ucswipearea.h"
+#include "ucswipearea_p.h"
 #include <QtQuick/private/qquickitem_p.h>
 
-#include "damper.h"
+#include "damper_p.h"
 
 // Information about an active touch point
 struct UBUNTUGESTURES_EXPORT ActiveTouchInfo {

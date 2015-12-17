@@ -78,7 +78,7 @@
 #include "ucpagetreenode.h"
 
 // From UbuntuGestures
-#include "ucswipearea.h"
+#include "private/ucswipearea_p.h"
 
 #include <sys/types.h>
 #include <unistd.h>
