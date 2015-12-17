@@ -27,8 +27,10 @@ class ScrollBarTestCase(gallery.GalleryTestCase):
     def setUp(self):
         super().setUp()
         self.open_page('navigationElement')
-        self.scrollbar = self.main_view.wait_select_single(
-            'Scrollbar', objectName="TemplateScrollbar")
+        self.scrollview = self.main_view.wait_select_single(
+            'ScrollView', objectName="TemplateScrollView")
+        self.scrollbar = self.scrollview.select_single(
+            objectName="verticalScrollbar")
 
     def move_mouse_to_thumb(self):
         # TODO we need a helper to move the interactive thumb.
@@ -39,18 +41,6 @@ class ScrollBarTestCase(gallery.GalleryTestCase):
     def get_mouse_thumb(self):
         return self.scrollbar.select_single(
             objectName='interactiveScrollbarThumb')
-
-    def test_scrollbar_must_start_without_interactive_thumb(self):
-        self.assertEqual(self.scrollbar.interactive, False)
-
-    def test_move_mouse_to_thumb_must_make_scrollbar_interactive(self):
-        if platform.model() != 'Desktop':
-            self.skipTest(
-                'The interactive thumb is activated by the move of a mouse')
-
-        self.move_mouse_to_thumb()
-
-        self.assertEqual(self.scrollbar.interactive, True)
 
     def test_drag_thumb_down_must_make_bottom_visible(self):
         if platform.model() != 'Desktop':
@@ -66,7 +56,7 @@ class ScrollBarTestCase(gallery.GalleryTestCase):
         mouse_thumb = self.get_mouse_thumb()
         x, y, width, height = mouse_thumb.globalRect
         start_x = stop_x = x + (width // 2)
-        start_y = y + (height // 0.8)
+        start_y = y + (height // 2)
         stop_y = self.main_view.y + self.main_view.height
 
         self.pointing_device.drag(start_x, start_y, stop_x, stop_y)

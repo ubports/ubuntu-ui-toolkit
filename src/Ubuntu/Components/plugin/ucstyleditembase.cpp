@@ -216,8 +216,9 @@ bool UCStyledItemBase::activefocusOnPress() const
 void UCStyledItemBase::setActiveFocusOnPress(bool value)
 {
     Q_D(UCStyledItemBase);
-    if (d->activeFocusOnPress == value)
+    if (d->activeFocusOnPress == value) {
         return;
+    }
     d->activeFocusOnPress = value;
     d->setFocusable(d->activeFocusOnPress);
     Q_EMIT activeFocusOnPressChanged();

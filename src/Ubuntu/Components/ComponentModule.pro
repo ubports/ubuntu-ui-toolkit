@@ -72,7 +72,7 @@ QML_FILES += 1.2/AbstractButton.qml \
              1.2/TextInputPopover.qml \
              1.2/ToolbarButton.qml \
              1.2/ToolbarItems.qml \
-             1.2/DeprecatedToolbar.qml \
+             1.2/Toolbar.qml \
              1.2/UbuntuListView11.qml \
              1.2/UbuntuListView.qml \
              1.2/UbuntuNumberAnimation.qml
@@ -130,7 +130,8 @@ QML_FILES += 1.3/ActionBar.qml \
              1.3/PageColumn.qml \
              1.3/PageColumnsLayout.qml \
              1.3/ProgressionSlot.qml \
-             1.3/PageHeader.qml \
+             1.3/ScrollView.qml \
+             1.3/PageHeader.qml
 
 OTHER_FILES+= qmldir \
              1.3/CrossFadeImage.qdoc \

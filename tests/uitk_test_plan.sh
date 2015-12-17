@@ -38,6 +38,7 @@ DISTUPGRADE=false
 BOOTSTRAP=false
 UNLOCK_ONLY=false
 NORMAL_USE=false
+WIPE="--wipe"
 
 declare -a TEST_SUITE=(
     " -p ubuntu-ui-toolkit-autopilot ubuntuuitoolkit"
@@ -116,9 +117,9 @@ fix_permissions () {
 	NUMBER_OF_ROWS=`adb shell  "echo 'SELECT Count(*) FROM requests;' | sqlite3 /home/phablet/.local/share/${SERVICE}/trust.db"`
 	NUMBER_OF_ROWS="${NUMBER_OF_ROWS%"${NUMBER_OF_ROWS##*[![:space:]]}"}"
 	NUMBER_OF_ROWS=$(( $NUMBER_OF_ROWS + 1 ))
-	EPOCH_DATE=`date +%s%N | cut -b1-17`
+	EPOCH_DATE=`date +%s%N | cut -b1-19`
 	APP_ID=$1
-	adb shell "echo \"INSERT INTO requests VALUES(${NUMBER_OF_ROWS}, '${APP_ID}', 1, ${EPOCH_DATE}, 1);\"|sqlite3 /home/phablet/.local/share/${SERVICE}/trust.db"
+	adb shell "echo \"INSERT INTO requests VALUES(${NUMBER_OF_ROWS}, '${APP_ID}', 0, ${EPOCH_DATE}, 1);\"|sqlite3 /home/phablet/.local/share/${SERVICE}/trust.db"
 }
 
 fatal_failure () {
@@ -199,7 +200,7 @@ function device_comission {
         adb -s ${SERIALNUMBER} shell "echo ${PASSWORD} |sudo -S rm -rf /userdata/user-data/phablet/.cache/com.ubuntu.gallery 2>&1|grep -v password"
         # flash the latest image
         echo -e "Flashing \e[31m${CHANNEL}\e[0m"
-        ubuntu-device-flash touch --serial=${SERIALNUMBER} --channel=${CHANNEL} --wipe --developer-mode --password=${PASSWORD}
+        ubuntu-device-flash touch --serial=${SERIALNUMBER} --channel=${CHANNEL} ${WIPE} --developer-mode --password=${PASSWORD}
     fi
     sleep_indicator ${BOOTTIME}
     reset -f
@@ -305,7 +306,23 @@ function compare_results {
         do
 	    FAILED=${FAILED/ERROR:/FAIL:}
             echo -e "\tFailed with ${PPA} - $FAILED"  >> ${MAINFILE}
-            if grep --quiet "$FAILED" *archive.tests; then
+            FAILED_TEST_CASE=${FAILED/FAIL: /}
+            #echo ${FAILED_TEST_CASE}
+	    if grep --quiet "$FAILED_TEST_CASE" *archive.tests; then
+                echo -e "\tSame on archive"  >> ${MAINFILE}
+            else
+                echo -e "\tPossible regression"  >> ${MAINFILE}
+            fi
+        done
+
+
+        do
+	    FAILED=${FAILED/ERROR:/FAIL:}
+	    FAILED_TEST=${FAILED/ERROR:/}
+            FAILED_TEST=${FAILED_TEST/FAIL:/}
+
+            echo -e "\tFailed with ${PPA} - $FAILED"  >> ${MAINFILE}
+            if grep --quiet "$FAILED_TEST" *archive.tests; then
                 echo -e "\tSame on archive"  >> ${MAINFILE}
             else
                 echo -e "\tPossible regression"  >> ${MAINFILE}
@@ -370,6 +387,7 @@ while getopts ":hrcintduslqwbv:o:p:f:a:" opt; do
 	   NORMAL_USE=true
 	   DONOTRUNTESTS=true
            COMISSION=true
+	   WIPE=""
 	   ;;
         h)
             echo "Usage: uitk_test_plan.sh -s [serial number] -m -c"
@@ -389,6 +407,9 @@ while getopts ":hrcintduslqwbv:o:p:f:a:" opt; do
             echo ""
             echo "By default tihe uitk_test_plan.sh flashes the latest vivid-overlay image on the device, installs the click application"
             echo "tests, configures the ppa:ubuntu-sdk-team/staging PPA, installs the UITK from the PPA and executes the test plan."
+            echo ""
+	    echo "Provision the device for normal use without wipeing the userdata"
+	    echo -e "\t$ ./uitk_test_plan.sh -q"
             echo ""
             echo "Validate the staging branch of the UITK against the vivid-overlay image"
             echo -e "\t$ ./uitk_test_plan.sh -c"

@@ -51,7 +51,7 @@ function create_test_cmd {
   if [ $_TARGETPATH != $_TESTFILEPATH ]; then
       _CMD="$_CMD -p -input -p $_TESTFILEPATH"
   fi
-  _CMD="$_CMD -p -maxwarnings -p 40"
+  _CMD="$_CMD -p -maxwarnings -p 100"
 }
 
 function execute_test_cmd {
