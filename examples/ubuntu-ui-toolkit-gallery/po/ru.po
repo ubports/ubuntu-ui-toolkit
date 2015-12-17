@@ -14,12 +14,12 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-11-20 05:28+0000\n"
-"X-Generator: Launchpad (build 17850)\n"
+"X-Launchpad-Export-Date: 2015-12-17 05:31+0000\n"
+"X-Generator: Launchpad (build 17865)\n"
 
 #: About.qml:34
 msgid "About..."
-msgstr ""
+msgstr "О программе..."
 
 #: ActionBars.qml:68
 msgid "Short list"
@@ -36,7 +36,7 @@ msgstr ""
 #: ActionBars.qml:102 Buttons.qml:91 Sections.qml:45 TextInputs.qml:90
 #: Toggles.qml:45 Toggles.qml:83
 msgid "Disabled"
-msgstr ""
+msgstr "Отключено"
 
 #: Animations.qml:24
 msgid "NumberAnimation"
@@ -78,7 +78,7 @@ msgstr ""
 
 #: Buttons.qml:47 Icons.qml:54
 msgid "Color"
-msgstr ""
+msgstr "Цвет"
 
 #: Buttons.qml:53
 #, qt-format
@@ -87,55 +87,55 @@ msgstr ""
 
 #: Buttons.qml:63 Buttons.qml:120 ListItems.qml:43
 msgid "Icon"
-msgstr ""
+msgstr "Значок"
 
 #: Buttons.qml:72 Buttons.qml:134
 msgid "Icon+Text"
-msgstr ""
+msgstr "Значок+Текст"
 
 #: Buttons.qml:105 OptionSelectors.qml:41
 msgid "Collapsed"
-msgstr ""
+msgstr "Свёрнуто"
 
 #: Buttons.qml:148 ListItems.qml:120 OptionSelectors.qml:47
 msgid "Expanded"
-msgstr ""
+msgstr "Развёрнуто"
 
 #: Colors.qml:30
 msgid "Orange"
-msgstr ""
+msgstr "Оранжевый"
 
 #: Colors.qml:36
 msgid "Light grey"
-msgstr ""
+msgstr "Светло-серый"
 
 #: Colors.qml:42
 msgid "Dark grey"
-msgstr ""
+msgstr "Тёмно-серый"
 
 #: Colors.qml:48
 msgid "Red"
-msgstr ""
+msgstr "Красный"
 
 #: Colors.qml:54
 msgid "Green"
-msgstr ""
+msgstr "Зелёный"
 
 #: Colors.qml:60
 msgid "Blue"
-msgstr ""
+msgstr "Синий"
 
 #: Colors.qml:66
 msgid "Purple"
-msgstr ""
+msgstr "Фиолетовый"
 
 #: Dialog.qml:32 Popover.qml:42 Sheet.qml:43 Sheet.qml:76
 msgid "Open"
-msgstr ""
+msgstr "Открыть"
 
 #: Icons.qml:29
 msgid "Scaling"
-msgstr ""
+msgstr "Масштабирование"
 
 #: Icons.qml:79
 msgid "Theme"
@@ -173,35 +173,35 @@ msgstr ""
 
 #: ListItems.qml:86
 msgid "Value"
-msgstr ""
+msgstr "Значение"
 
 #: ListItems.qml:91
 msgid "Multi value"
-msgstr ""
+msgstr "Несколько значений"
 
 #: ListItems.qml:95 ListItems.qml:113 ListItems.qml:122 ListItems.qml:132
 #: ListItems.qml:161 ListItems.qml:176 OptionSelectors.qml:33
 #: OptionSelectors.qml:84 OptionSelectors.qml:99
 msgid "Value 1"
-msgstr ""
+msgstr "Значение 1"
 
 #: ListItems.qml:96 ListItems.qml:114 ListItems.qml:123 ListItems.qml:133
 #: ListItems.qml:162 ListItems.qml:177 OptionSelectors.qml:85
 #: OptionSelectors.qml:100
 msgid "Value 2"
-msgstr ""
+msgstr "Значение 2"
 
 #: ListItems.qml:97 ListItems.qml:115 ListItems.qml:124 ListItems.qml:134
 #: ListItems.qml:163 ListItems.qml:178 OptionSelectors.qml:86
 #: OptionSelectors.qml:101
 msgid "Value 3"
-msgstr ""
+msgstr "Значение 3"
 
 #: ListItems.qml:98 ListItems.qml:116 ListItems.qml:125 ListItems.qml:135
 #: ListItems.qml:164 ListItems.qml:179 OptionSelectors.qml:87
 #: OptionSelectors.qml:102
 msgid "Value 4"
-msgstr ""
+msgstr "Значение 4"
 
 #: ListItems.qml:103
 msgid "Item selector"
@@ -222,22 +222,22 @@ msgstr ""
 #: ListItems.qml:165 ListItems.qml:180 OptionSelectors.qml:88
 #: OptionSelectors.qml:103
 msgid "Value 5"
-msgstr ""
+msgstr "Значение 5"
 
 #: ListItems.qml:166 ListItems.qml:181 OptionSelectors.qml:89
 #: OptionSelectors.qml:104
 msgid "Value 6"
-msgstr ""
+msgstr "Значение 6"
 
 #: ListItems.qml:167 ListItems.qml:182 OptionSelectors.qml:90
 #: OptionSelectors.qml:105
 msgid "Value 7"
-msgstr ""
+msgstr "Значение 7"
 
 #: ListItems.qml:168 ListItems.qml:183 OptionSelectors.qml:91
 #: OptionSelectors.qml:106
 msgid "Value 8"
-msgstr ""
+msgstr "Значение 8"
 
 #: ListItems.qml:190
 msgid "Control"
@@ -253,7 +253,7 @@ msgstr ""
 
 #: ListItems.qml:215
 msgid "Reset"
-msgstr ""
+msgstr "Сброс"
 
 #: ListItems.qml:226
 msgid "Grouped list"
@@ -293,11 +293,11 @@ msgstr ""
 
 #: NewListItems.qml:111
 msgid "Edit"
-msgstr ""
+msgstr "Редактировать"
 
 #: NewListItems.qml:114
 msgid "Move"
-msgstr ""
+msgstr "Переместить"
 
 #: NewListItems.qml:163
 msgid "Basic"
@@ -314,7 +314,7 @@ msgstr ""
 
 #: NewListItems.qml:163 NewListItems.qml:170 NewListItems.qml:215
 msgid "No divider"
-msgstr ""
+msgstr "Без разделителя"
 
 #: OptionSelectors.qml:24
 msgid "Option Selector"
@@ -322,7 +322,7 @@ msgstr ""
 
 #: OptionSelectors.qml:34
 msgid "This is the second value"
-msgstr ""
+msgstr "Это второе значение"
 
 #: OptionSelectors.qml:35
 msgid ""
