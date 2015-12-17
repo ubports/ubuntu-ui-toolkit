@@ -34,7 +34,7 @@
 #include "ucheader.h"
 #include "ucaction.h"
 #include "quickutils.h"
-#include "gestures/ucswipearea.h"
+#include "ucswipearea.h"
 #include <QtQuick/private/qquickanimation_p.h>
 
 Q_LOGGING_CATEGORY(ucBottomEdge, "ubuntu.components.BottomEdge", QtMsgType::QtWarningMsg)

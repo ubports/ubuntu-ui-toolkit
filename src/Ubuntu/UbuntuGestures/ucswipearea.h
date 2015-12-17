@@ -19,8 +19,7 @@
 #define UCSWIPEAREA_H
 
 #include <QtQuick/QQuickItem>
-#include "ubuntugesturesqmlglobal.h"
-#include "damper.h"
+#include "ubuntugesturesglobal.h"
 
 // lib UbuntuGestures
 #include <UbuntuGestures/Pool>
@@ -34,7 +33,7 @@ class UnownedTouchEvent;
 class UCSwipeAreaPrivate;
 
 class UCSwipeAreaPrivate;
-class UBUNTUGESTURESQML_EXPORT UCSwipeArea : public QQuickItem
+class UBUNTUGESTURES_EXPORT UCSwipeArea : public QQuickItem
 {
     Q_OBJECT
 
