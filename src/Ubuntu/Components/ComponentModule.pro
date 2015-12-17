@@ -72,7 +72,7 @@ QML_FILES += 1.2/AbstractButton.qml \
              1.2/TextInputPopover.qml \
              1.2/ToolbarButton.qml \
              1.2/ToolbarItems.qml \
-             1.2/DeprecatedToolbar.qml \
+             1.2/Toolbar.qml \
              1.2/UbuntuListView11.qml \
              1.2/UbuntuListView.qml \
              1.2/UbuntuNumberAnimation.qml
