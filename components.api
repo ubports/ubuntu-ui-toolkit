@@ -307,14 +307,14 @@ Ubuntu.PerformanceMetrics.CpuUsage 1.0 0.1: Item
     readonly property UPMGraphModel graphModel
     property int period
     property int samplingInterval
-Ubuntu.Components.CrossFadeImage 1.0 0.1: Item
+Ubuntu.Components.CrossFadeImage 1.0 0.1 CrossFadeImage10: Item
     property int fadeDuration
     property int fillMode
     readonly property bool running
     property url source
     property QSizeF sourceSize
     readonly property int status
-Ubuntu.Components.CrossFadeImage 1.1: Item
+Ubuntu.Components.CrossFadeImage 1.1 CrossFadeImage11: Item
     property int fadeDuration
     property string fadeStyle
     property int fillMode
@@ -468,7 +468,7 @@ Ubuntu.Components.Haptics 1.0 0.1: QtObject singleton
     readonly property bool enabled
     function play(var customEffect)
     function play()
-Ubuntu.Components.ListItems.Header 1.0 0.1: Item
+Ubuntu.Components.ListItems.Header 1.0 0.1 ListItemHeader: Item
     property string text
 Ubuntu.Components.Header 1.0 0.1: AppHeader
     property string _for_autopilot
@@ -486,7 +486,7 @@ Ubuntu.Components.Header 1.0 0.1: AppHeader
     property var tabsModel
     property string title
     property bool useDeprecatedToolbar
-Ubuntu.Components.ListItems.Header 1.3: Item
+Ubuntu.Components.ListItems.Header 1.3 ListItemHeader: Item
     property string text
 Ubuntu.Components.Header 1.3: StyledItem
     property bool exposed
@@ -609,7 +609,7 @@ Ubuntu.Components.MainView 1.0 0.1: MainViewBase
     property bool automaticOrientation
     default property list<QtObject> contentsItem
     property bool useDeprecatedToolbar
-Ubuntu.Components.MainView 1.2: MainViewBase
+Ubuntu.Components.MainView 1.2 MainView12: MainViewBase
     property bool automaticOrientation
     default property list<QtObject> contentsItem
 Ubuntu.Components.MainView 1.3: MainViewBase
@@ -707,12 +707,12 @@ Ubuntu.Components.OrientationHelper 1.3: Item
     property int orientationAngle
     readonly property bool rotating
     property bool transitionEnabled
-Ubuntu.Components.Page 1.0 0.1: PageTreeNode
+Ubuntu.Components.Page 1.0 0.1 Page10: PageTreeNode
     property list<Action> actions
     property Flickable flickable
     property string title
     property Item tools
-Ubuntu.Components.Page 1.1: Page10
+Ubuntu.Components.Page 1.1 Page11: Page10
     readonly property PageHeadConfiguration head
 Ubuntu.Components.Page 1.3: PageTreeNode
     property Flickable flickable
@@ -1557,9 +1557,9 @@ Ubuntu.Components.UbuntuColors 1.1: QtObject singleton
     readonly property color warmGrey
 Ubuntu.Components.UbuntuListView 1.0 0.1: ListView
     property int expandedIndex
-Ubuntu.Components.UbuntuListView 1.1: UbuntuListView
+Ubuntu.Components.UbuntuListView 1.1 UbuntuListView11: UbuntuListView
     readonly property PullToRefresh pullToRefresh
-Ubuntu.Components.UbuntuListView 1.3: UbuntuListView
+Ubuntu.Components.UbuntuListView 1.3 UbuntuListView11: UbuntuListView
     readonly property PullToRefresh pullToRefresh
 Ubuntu.Components.UbuntuNumberAnimation 1.0 0.1: PropertyAnimation
 Ubuntu.Components.UbuntuNumberAnimation 1.3: PropertyAnimation
