@@ -48,5 +48,4 @@ TestCase {
         compare(FontUtils.sizeToPixels("xxsmall"), 0.0, "xxsmall not defined");
         compare(FontUtils.sizeToPixels("undefined"), 0.0, "undefined scale");
     }
-
 }
