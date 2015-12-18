@@ -53,10 +53,24 @@ Item {
             signalName: "visibleChanged"
         }
 
-        function test_sourceChanged() {
+        function cleanup() {
+            sourceChangeSpy.clear();
+            visibleChangedSpy.clear();
+        }
+
+        // tests adjusted to reproduce bug #1401920
+        function test_sourceChanged_bug1401920_data() {
+            var file = "/usr/share/icons/ubuntu-mobile/actions/scalable/delete.svg";
+            return [
+                {rag: "Existing file", file: file},
+                {rag: "Non-existing file", file: file + "#" + Date.now()},
+            ];
+        }
+
+        function test_sourceChanged_bug1401920(data) {
             sourceChangeSpy.target = test;
-            test.source = "/usr/share/icons/ubuntu-mobile/actions/scalable/delete.svg";
-            sourceChangeSpy.wait();
+            test.source = data.file;
+            sourceChangeSpy.wait(400);
         }
 
         function test_sourceNOTIFYable() {
