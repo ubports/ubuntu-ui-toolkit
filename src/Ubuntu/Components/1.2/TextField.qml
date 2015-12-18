@@ -929,7 +929,7 @@ Ubuntu.ActionItem {
             width: units.gu(2.5)
             height: width
             // use icon from icon-theme
-            name: control.hasClearButton && !control.readOnly ? "clear-search" : ""
+            name: control.hasClearButton && !control.readOnly ? "edit-clear" : ""
         }
 
         onClicked: editor.text = ""
