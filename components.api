@@ -1561,7 +1561,8 @@ Ubuntu.Components.UbuntuListView 1.0 0.1: ListView
     property int expandedIndex
 Ubuntu.Components.UbuntuListView 1.1: UbuntuListView
     readonly property PullToRefresh pullToRefresh
-Ubuntu.Components.UbuntuListView 1.3: UbuntuListView
+Ubuntu.Components.UbuntuListView 1.3: ListView
+    property int expandedIndex
     readonly property PullToRefresh pullToRefresh
 Ubuntu.Components.UbuntuNumberAnimation 1.0 0.1: PropertyAnimation
 Ubuntu.Components.UbuntuNumberAnimation 1.3: PropertyAnimation
