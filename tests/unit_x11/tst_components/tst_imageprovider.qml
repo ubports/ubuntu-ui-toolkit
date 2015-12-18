@@ -60,10 +60,10 @@ Item {
 
         // tests adjusted to reproduce bug #1401920
         function test_sourceChanged_bug1401920_data() {
-            var file = "/usr/share/icons/ubuntu-mobile/actions/scalable/delete.svg";
+            var file = "file:///usr/share/icons/ubuntu-mobile/actions/scalable/delete.svg";
             return [
                 {rag: "Existing file", file: file},
-                {rag: "Non-existing file", file: file + "#" + Date.now()},
+                {rag: "Url with fragment", file: file + "#" + Date.now()},
             ];
         }
 
