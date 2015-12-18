@@ -142,13 +142,22 @@ QString UCAction::text()
 {
     // if we have a mnemonic, underscore it
     if (!m_mnemonic.isEmpty()) {
-        // underscore the character
-        int mnemonicIndex = m_text.indexOf('&');
-        QChar mnemonic = m_text[mnemonicIndex + 1];
+
+        QString mnemonic = "&" + m_mnemonic.toString().remove("Alt+");
+        // patch special cases
+        mnemonic.replace("Space", " ");
+        int mnemonicIndex = m_text.indexOf(mnemonic);
+        if (mnemonicIndex < 0) {
+            // try lower case
+            mnemonic = mnemonic.toLower();
+            mnemonicIndex = m_text.indexOf(mnemonic);
+        }
         QString displayText(m_text);
-        // FIXME we should only do this if we have HW keyboard attached
+        // FIXME: we need QInputDeviceInfo to detect the keyboard attechment
+        // https://bugs.launchpad.net/ubuntu/+source/ubuntu-ui-toolkit/+bug/1276808
         if (QuickUtils::instance().keyboardAttached()) {
-            displayText.replace(mnemonicIndex, 2, "<u>" + mnemonic + "</u>");
+            // underscore the character
+            displayText.replace(mnemonicIndex, mnemonic.length(), "<u>" + mnemonic[1] + "</u>");
         } else {
             displayText.remove(mnemonicIndex, 1);
         }
@@ -250,7 +259,8 @@ UCAction::UCAction(QObject *parent)
     , m_published(false)
 {
     generateName();
-    // FIXME: do this with a proper API
+    // FIXME: we need QInputDeviceInfo to detect the keyboard attechment
+    // https://bugs.launchpad.net/ubuntu/+source/ubuntu-ui-toolkit/+bug/1276808
     connect(&QuickUtils::instance(), &QuickUtils::keyboardAttachedChanged,
             this, &UCAction::onKeyboardAttached);
 }

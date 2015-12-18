@@ -33,7 +33,7 @@
 QuickUtils::QuickUtils(QObject *parent) :
     QObject(parent),
     m_rootView(0),
-    m_mouseAttached(true),
+    m_mouseAttached(false),
     m_keyboardAttached(false)
 {
     QGuiApplication::instance()->installEventFilter(this);

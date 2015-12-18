@@ -111,11 +111,18 @@ Item {
 
         function test_mnemonic_data() {
             return [
-                {tag: "HW keyboard, valid A", kbd: true, text: "C&all", displayText: "C<u>a</u>ll", key: Qt.Key_A, xfail: false},
-                {tag: "HW keyboard, valid S", kbd: true, text: "&Save & Exit", displayText: "<u>S</u>ave & Exit", key: Qt.Key_S, xfail: false},
-                {tag: "HW keyboard, valid space", kbd: true, text: "Save & Exit", displayText: "Save <u> </u>Exit", key: Qt.Key_Space, xfail: false},
+                {tag: "HW keyboard, valid 'C&all'", kbd: true, text: "C&all", displayText: "C<u>a</u>ll", key: Qt.Key_A, xfail: false},
+                {tag: "HW keyboard, valid '&Save & Exit", kbd: true, text: "&Save & Exit", displayText: "<u>S</u>ave & Exit", key: Qt.Key_S, xfail: false},
+                {tag: "HW keyboard, valid 'Hide &Seek'", kbd: true, text: "Hide&Seek", displayText: "Hide<u>S</u>eek", key: Qt.Key_S, xfail: false},
+                {tag: "HW keyboard, valid 'Save & Exit'", kbd: true, text: "Save & Exit", displayText: "Save <u> </u>Exit", key: Qt.Key_Space, xfail: false},
+                {tag: "HW keyboard, valid 'Paste &&&Proceed'", kbd: true, text: "Paste &&&Proceed", displayText: "Paste &&<u>P</u>roceed", key: Qt.Key_P, xfail: false},
+                {tag: "HW keyboard, valid 'Cut &$'", kbd: true, text: "Cut &$", displayText: "Cut <u>$</u>", key: Qt.Key_Dollar, xfail: false},
+                {tag: "HW keyboard, valid 'At &@'", kbd: true, text: "At &@", displayText: "At <u>@</u>", key: Qt.Key_At, xfail: false},
+                {tag: "HW keyboard, valid '&_'", kbd: true, text: "&_", displayText: "<u>_</u>", key: Qt.Key_Underscore, xfail: false},
 
-                {tag: "HW keyboard, invalid", kbd: true, text: "&&Call", displayText: "&&Call", key: Qt.Key_Asterisk, xfail: true},
+                {tag: "HW keyboard, invalid '&&Call'", kbd: true, text: "&&Call", displayText: "&&Call", key: Qt.Key_Asterisk, xfail: true},
+                {tag: "HW keyboard, invalid 'Jump &'", kbd: true, text: "Jump &", displayText: "Jump &", key: Qt.Key_Asterisk, xfail: true},
+                {tag: "HW keyboard, invalid '&&'", kbd: true, text: "&&", displayText: "&&", key: Qt.Key_Asterisk, xfail: true},
 
                 {tag: "no HW keyboard", kbd: false, text: "&Call", displayText: "Call", key: Qt.Key_C, xfail: false},
             ];
