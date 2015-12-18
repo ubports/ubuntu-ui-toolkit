@@ -556,9 +556,9 @@ public:
             return;
         }
 
-        // The QML class name derived from the filename is used by AP.
+        // The C++ class is used by AP.
         QString className(meta->className());
-        if (!(isSingleton || isUncreatable))
+        if (!(isSingleton || isUncreatable || exportStrings.empty()))
             object["className"] = className;
         json->insert(id, object);
     }
