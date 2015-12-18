@@ -20,8 +20,8 @@ import Ubuntu.Components 1.3
 Item {
     id: iconButtonStyle
 
-    implicitWidth: units.gu(5)
-    implicitHeight: units.gu(5)
+    implicitWidth: units.gu(4)
+    implicitHeight: units.gu(4)
 
     /*!
       The color of the icons.
@@ -42,6 +42,9 @@ Item {
       Show a text label under the icon.
      */
     property bool showLabel: false
+
+    FocusShape {
+    }
 
     Rectangle {
         id: background

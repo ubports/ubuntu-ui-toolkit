@@ -396,7 +396,7 @@ bool UCAction::event(QEvent *event)
     }
 
     // do not call trigger() directly but invoke, as it may get overridden in QML
-    metaObject()->invokeMethod(this, "trigger");
+    invokeTrigger<UCAction>(this, QVariant());
     return true;
 }
 

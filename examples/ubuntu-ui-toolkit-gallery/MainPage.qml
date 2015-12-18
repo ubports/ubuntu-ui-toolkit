@@ -113,41 +113,14 @@ Page {
 
         delegate: ListItem {
             objectName: model.objectName
-            contentItem {
-                anchors.leftMargin: units.gu(2)
-                anchors.rightMargin: units.gu(2)
-            }
             enabled: source != ""
             // Used by Autopilot
             property string text: label
             onClicked: widgetList.currentIndex = index
-            Label {
-                id: labelItem
-                anchors {
-                    fill: parent
-                    rightMargin: units.gu(4)
-                }
-                text: label
-                verticalAlignment: Text.AlignVCenter
-            }
-            Icon {
-                name: "next"
-                width: units.gu(2)
-                height: units.gu(2)
-                anchors {
-                    verticalCenter: parent.verticalCenter
-                    right: parent.right
-                }
+            ListItemLayout {
+                title.text: label
+                ProgressionSlot {}
             }
         }
-        highlight: Rectangle {
-            color: theme.palette.selected.background
-        }
-        highlightMoveDuration: 0
-    }
-
-    BottomEdgeHint {
-        flickable: widgetList
-        action: aboutAction
     }
 }

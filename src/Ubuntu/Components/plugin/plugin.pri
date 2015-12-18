@@ -86,8 +86,10 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/livetimer_p.h \
     $$PWD/timeutils_p.h \
     $$PWD/ucactionitem.h \
+    $$PWD/ucactionitem_p.h \
     $$PWD/uchaptics.h \
     $$PWD/ucabstractbutton.h \
+    $$PWD/ucabstractbutton_p.h \
     $$PWD/ucthemingextension.h \
     $$PWD/ucheader.h \
     $$PWD/uclabel.h \
@@ -95,6 +97,7 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/privates/threelabelsslot_p.h \
     $$PWD/ucimportversionchecker_p.h \
     $$PWD/ucbottomedgehint.h \
+    $$PWD/ucbottomedgehint_p.h \
     $$PWD/gestures/ucswipearea.h \
     $$PWD/gestures/ucswipearea_p.h \
     $$PWD/gestures/damper.h \
@@ -103,7 +106,9 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/ucbottomedge.h \
     $$PWD/ucbottomedge_p.h \
     $$PWD/ucbottomedgestyle.h \
-    $$PWD/ucbottomedgeregion.h
+    $$PWD/ucbottomedgeregion.h \
+    $$PWD/ucpagetreenode.h \
+    $$PWD/ucpagetreenode_p.h
 
 SOURCES += $$PWD/plugin.cpp \
     $$PWD/uctheme.cpp \
@@ -173,7 +178,8 @@ SOURCES += $$PWD/plugin.cpp \
     $$PWD/ucmathutils.cpp \
     $$PWD/ucbottomedge.cpp \
     $$PWD/ucbottomedgestyle.cpp \
-    $$PWD/ucbottomedgeregion.cpp
+    $$PWD/ucbottomedgeregion.cpp \
+    $$PWD/ucpagetreenode.cpp
 
 # adapters
 SOURCES += $$PWD/adapters/alarmsadapter_organizer.cpp

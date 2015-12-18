@@ -1223,7 +1223,7 @@ void UCListItemPrivate::handleLeftButtonRelease(QMouseEvent *event)
             if (!swiped) {
                 Q_EMIT q->clicked();
                 if (mainAction) {
-                    Q_EMIT mainAction->trigger(index());
+                    invokeTrigger<UCAction>(mainAction, index());
                 }
             }
             snapOut();
@@ -1688,13 +1688,11 @@ void UCListItemPrivate::setDragMode(bool draggable)
  */
 bool UCListItemPrivate::isSelected()
 {
-    Q_Q(UCListItem);
     Q_ASSERT(selection);
     return selection->isSelected();
 }
 void UCListItemPrivate::setSelected(bool value)
 {
-    Q_Q(UCListItem);
     Q_ASSERT(selection);
     selection->setSelected(value);
 }

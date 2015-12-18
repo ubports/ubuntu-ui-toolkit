@@ -102,7 +102,7 @@ Style.PageHeadStyle {
         color: styledItem.dividerColor
     }
 
-    Sections {
+    SectionsForPageHead {
         id: sectionsItem
         objectName: "headerSectionsItem"
         anchors {
