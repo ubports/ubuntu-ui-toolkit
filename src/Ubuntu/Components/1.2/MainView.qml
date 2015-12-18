@@ -99,7 +99,7 @@ MainViewBase {
 
         Component {
             id: toolbarComponent
-            DeprecatedToolbar {
+            Toolbar {
                 parent: canvas
                 onPressedChanged: {
                     if (!pressed) return;
@@ -264,7 +264,7 @@ MainViewBase {
           \deprecated
           The toolbar that will be propagated to the children in the page tree node.
          */
-        property DeprecatedToolbar toolbar: toolbarLoader.item
+        property Toolbar toolbar: toolbarLoader.item
 
         /*!
           \internal
