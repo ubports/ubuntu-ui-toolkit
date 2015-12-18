@@ -548,6 +548,7 @@ Ubuntu.ActionItem {
       TextField {
           echoMode: TextInput.Password
           validator: RegExpValidator { regExp: /^\d{4}$/ }
+          inputMethodHints: Qt.ImhDigitsOnly
       }
       \endqml
 
