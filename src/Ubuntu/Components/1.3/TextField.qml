@@ -329,6 +329,11 @@ Ubuntu.ActionItem {
       inputs. See QLineEdit::inputMask for further details, as the exact same mask strings
       are used by TextField.
 
+      Note that when using an inputMask together with echoMode to hide the input
+      the empty TextField may still show masked characters - consider \l validator instead.
+
+      \sa acceptableInput, validator
+
       \qmlproperty string inputMask
     */
     property alias inputMask: editor.inputMask
@@ -531,6 +536,18 @@ Ubuntu.ActionItem {
       TextField{
           validator: IntValidator{bottom: 11; top: 31;}
           focus: true
+      }
+      \endqml
+
+      The next example is for a use case of typing a PIN with masked characters.
+
+      \qml
+      import QtQuick 2.4
+      import Ubuntu.Components 1.3
+
+      TextField {
+          echoMode: TextInput.Password
+          validator: RegExpValidator { regExp: /^\d{4}$/ }
       }
       \endqml
 
