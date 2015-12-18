@@ -1205,6 +1205,7 @@ Ubuntu.Test.TestExtras 1.0: QtObject singleton
     function mouseDrag(Item item, Qt.point from, Qt.point delta, Qt.MouseButton button, Qt.KeyboardModifiers stateKey, int steps)
     function mouseDrag(Item item, Qt.point from, Qt.point delta, Qt.MouseButton button, Qt.KeyboardModifiers stateKey)
     function mouseDrag(Item item, Qt.point from, Qt.point delta, Qt.MouseButton button)
+    function removeTimeConstraintsFromSwipeArea(Item item)
     readonly property bool touchPresent
 Ubuntu.Components.TextArea 1.0 0.1: StyledItem
     property bool autoExpand
