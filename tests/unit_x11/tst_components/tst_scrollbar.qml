@@ -190,16 +190,16 @@ Item {
             var flickable = freshTestItem.flickable
             var scrollbar = freshTestItem.scrollbar
 
-            compare(scrollbar.__styleInstance.veryLongContentItem, false, "scrollable item should be short")
+            compare(scrollbar.__styleInstance.veryLongContentItem, false, "Scrollable item should be short.")
 
             setupSignalSpy(signalSpy, flickable, "movingChanged")
 
             flick(flickable, 1, 2, units.gu(2), -units.gu(10))
 
             signalSpy.wait()
-            compare(signalSpy.count, 1, "flick not started")
-            compare(flickable.moving, true, "not moving")
-            compare(scrollbar.__styleInstance.state, "indicator", "wrong style while flicking")
+            compare(signalSpy.count, 1, "No movingChanged signal after simulating a flick.")
+            compare(flickable.moving, true, "Flickable not moving after simulating a flick.")
+            compare(scrollbar.__styleInstance.state, "indicator", "Wrong style while flicking.")
 
             //we don't set it up before because the hinting feature already changes the style to thumb
             //at the beginning
@@ -211,12 +211,12 @@ Item {
             mouseRelease(flickable, 0, 0)
 
             signalSpy.wait()
-            compare(flickable.moving, false, "still moving")
-            compare(signalSpy.count, 2, "flick not completed")
+            compare(flickable.moving, false, "Flickable still moving after simulating mouse click.")
+            compare(signalSpy.count, 2, "No movingChanged signal after Flickable stopped moving.")
 
             anotherSignalSpy.wait()
-            compare(anotherSignalSpy.count, 1, "state unchanged after flickable stopped moving")
-            compare(scrollbar.__styleInstance.state, "hidden", "wrong style while flicking short item")
+            compare(anotherSignalSpy.count, 1, "State unchanged after Flickable stopped moving.")
+            compare(scrollbar.__styleInstance.state, "hidden", "Wrong style after the item stopped moving.")
 
             freshTestItem.destroy()
         }
@@ -232,15 +232,15 @@ Item {
             setVeryLongContentItem(flickable)
             signalSpy.wait()
 
-            compare(scrollbar.__styleInstance.veryLongContentItem, true, "very long content item not detected")
+            compare(scrollbar.__styleInstance.veryLongContentItem, true, "Very long content item not detected")
 
             setupSignalSpy(signalSpy, flickable, "movingChanged")
             flick(flickable, 1, 2, units.gu(2), -units.gu(10))
 
             signalSpy.wait()
-            compare(signalSpy.count, 1, "flick not started")
-            compare(flickable.moving, true, "not moving")
-            compare(scrollbar.__styleInstance.state, "thumb", "wrong style while flicking a very long item")
+            compare(signalSpy.count, 1, "No movingChanged signal after simulating a flick.")
+            compare(flickable.moving, true, "Flickable not moving after simulating a flick.")
+            compare(scrollbar.__styleInstance.state, "thumb", "Wrong style while flicking a very long item")
 
             //we don't set it up before because the hinting feature already changes the style to thumb
             //at the beginning
@@ -252,12 +252,12 @@ Item {
             mouseRelease(flickable, 0, 0)
 
             signalSpy.wait()
-            compare(flickable.moving, false, "still moving")
-            compare(signalSpy.count, 2, "still moving")
+            compare(flickable.moving, false, "Flickable still moving after simulating mouse click.")
+            compare(signalSpy.count, 2, "No movingChanged signal after Flickable stopped moving.")
 
             anotherSignalSpy.wait()
-            compare(anotherSignalSpy.count, 1, "state unchanged after flickable stopped moving")
-            compare(scrollbar.__styleInstance.state, "hidden", "wrong style while flicking a very long item")
+            compare(anotherSignalSpy.count, 1, "State unchanged after Flickable stopped moving.")
+            compare(scrollbar.__styleInstance.state, "hidden", "Wrong style after a the item stopped moving.")
             freshTestItem.destroy()
         }
     }
