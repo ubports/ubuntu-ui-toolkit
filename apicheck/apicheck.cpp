@@ -484,6 +484,10 @@ public:
         writeMetaContent(&object, mainMeta, &knownAttributes);
 
         object["namespace"] = nameSpace;
+        // The QML class name derived from the filename is used by AP.
+        QString className(QFileInfo(filename).baseName());
+        if (typeName != className)
+            object["className"] = className;
         json->insert(id, object);
     }
 
@@ -552,6 +556,10 @@ public:
             return;
         }
 
+        // The C++ class is used by AP.
+        QString className(meta->className());
+        if (!(isSingleton || isUncreatable || exportStrings.empty()))
+            object["className"] = className;
         json->insert(id, object);
     }
 
@@ -1102,6 +1110,8 @@ int main(int argc, char *argv[])
                 QString signature(exports);
                 if (object.contains("namespace"))
                     signature = object.take("namespace").toString() + "." + signature;
+                if (object.contains("className"))
+                    signature += " " + object.take("className").toString();
                 QString prototype(object.take("prototype").toString());
                 if (!prototype.isEmpty())
                     signature += ": " + convertToId(prototype);
