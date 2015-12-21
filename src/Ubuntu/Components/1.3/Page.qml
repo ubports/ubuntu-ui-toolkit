@@ -21,6 +21,7 @@ import "pageUtils.js" as Utils
 /*!
     \qmltype Page
     \inqmlmodule Ubuntu.Components 1.1
+    \inherits StyledItem
     \ingroup ubuntu
     \brief A page is the basic Item that must be used inside the \l MainView,
         \l PageStack and \l Tabs.
@@ -81,10 +82,14 @@ PageTreeNode {
     height: parentNode ? page.flickable ? parentNode.height : parentNode.height - internal.headerHeight : undefined
 
     /*!
+      \qmlproperty ActrionContext Page::context
+      \readonly
       \since Ubuntu.Components 1.3
       The action context of the page.
       */
-    readonly property ActionContext context: ActionContext {
+    readonly property alias context: localContext
+    ActionContext {
+        id: localContext
         active: page.active
         objectName: page.objectName + "Context"
     }

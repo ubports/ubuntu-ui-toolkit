@@ -28,18 +28,9 @@ ActionProxy::ActionProxy()
 }
 ActionProxy::~ActionProxy()
 {
-    // if there is still an active context clear it
-    if (!m_activeContext.isNull()) {
-        m_activeContext->setActive(false);
-    }
     // clear context explicitly, as global context is not connected to
     clearContextActions(globalContext);
     delete globalContext;
-}
-
-UCActionContext *ActionProxy::currentContext()
-{
-    return instance().m_activeContext;
 }
 
 const QSet<UCActionContext*> &ActionProxy::localContexts()
@@ -67,8 +58,6 @@ void ActionProxy::addContext(UCActionContext *context)
         return;
     }
     instance().m_localContexts.insert(context);
-    // watch context activation changes
-    instance().watchContextActivation(context, true);
 }
 // Remove a local context. If the context was active, removes the actions from the system.
 void ActionProxy::removeContext(UCActionContext *context)
@@ -78,60 +67,26 @@ void ActionProxy::removeContext(UCActionContext *context)
     }
     // make sure the context is deactivated
     context->setActive(false);
-    instance().watchContextActivation(context, false);
     instance().m_localContexts.remove(context);
 }
 
-// toggles context activation watching for a given context
-void ActionProxy::watchContextActivation(UCActionContext *context, bool watch)
+// publishes/removes context actions on activation/deactivation
+void ActionProxy::activateContext(UCActionContext *context, bool activate)
 {
     if (!context) {
         return;
     }
-    if (watch) {
-        // connect to action proxy
-        QObject::connect(context, SIGNAL(activeChanged()),
-                         this, SLOT(handleContextActivation()),
-                         Qt::DirectConnection);
-    } else {
-        // disconnect
-        QObject::disconnect(context, SIGNAL(activeChanged()),
-                         this, SLOT(handleContextActivation()));
+    if (activate && !context->active()) {
+        // publish the context's actions to the system
+        instance().publishContextActions(context);
+        context->markActionsPublished(true);
+    } else if (!activate && context->active()){
+        // remove actions from the system
+        instance().clearContextActions(context);
+        context->markActionsPublished(false);
     }
 }
 
-// handles the local context activation
-void ActionProxy::handleContextActivation()
-{
-    // sender is the context changing activation
-//    UCActionContext *context = qobject_cast<UCActionContext*>(sender());
-//    if (!context) {
-//        return;
-//    }
-    // deactivate the previous context if any
-//    if (!m_activeContext.isNull()) {
-//        if (!context->active()) {
-//            // the slot has been called due to the previous active deactivation,
-//            // so perform system cleanup
-//            clearContextActions(m_activeContext);
-//            m_activeContext->markActionsPublished(false);
-//            // finally clear the context and leave
-//            m_activeContext.clear();
-//            return;
-//        } else {
-//            // deactivate previous actiev context, this will cause the slot to
-//            // be called with active = false within this call context
-//            m_activeContext->setActive(false);
-//        }
-//    }
-//    if (context->active()) {
-//        // publish the context's actions to the system
-//        publishContextActions(context);
-//        context->markActionsPublished(true);
-//        // and finally set it as active
-//        m_activeContext = context;
-//    }
-}
 // empty functions for context activation/deactivation, connect to HUD
 void ActionProxy::clearContextActions(UCActionContext *context)
 {

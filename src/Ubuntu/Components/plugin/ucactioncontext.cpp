@@ -19,6 +19,9 @@
 #include "adapters/actionsproxy_p.h"
 #include <QtQuick/QQuickItem>
 
+Q_LOGGING_CATEGORY(ucActionContext, "ubuntu.components.ActionContext", QtMsgType::QtWarningMsg)
+
+#define CONTEXT_TRACE(params) qCDebug(ucActionContext) << params
 
 UCActionContextAttached::UCActionContextAttached(QObject *owner)
     : QObject(owner)
@@ -140,8 +143,10 @@ void UCActionContext::setActive(bool active)
     if (!active && (ActionProxy::instance().globalContext == this)) {
         return;
     }
+    CONTEXT_TRACE("ACTIVATE CONTEXT" << this << active);
+    // activate context first, then set the state and emit the change signal
+    ActionProxy::activateContext(this, m_active);
     m_active = active;
-    qDebug() << "ACTIVATE CONTEXT" << this << m_active;
     Q_EMIT activeChanged();
 }
 
