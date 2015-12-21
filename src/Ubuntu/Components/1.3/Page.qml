@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.3 as Toolkit13
+import Ubuntu.Components 1.3
 import "pageUtils.js" as Utils
 
 /*!
@@ -69,7 +69,7 @@ import "pageUtils.js" as Utils
     use a Page inside a Loader, but in that case do not set the anchors or size of the Loader
     so that the Page can control its width and height.
 */
-Toolkit13.PageTreeNode {
+PageTreeNode {
     id: page
     anchors {
         left: parent ? parent.left : undefined
@@ -81,6 +81,16 @@ Toolkit13.PageTreeNode {
     height: parentNode ? page.flickable ? parentNode.height : parentNode.height - internal.headerHeight : undefined
 
     /*!
+      \since Ubuntu.Components 1.3
+      The action context of the page.
+      */
+    readonly property ActionContext context: ActionContext {
+        active: page.active
+        objectName: page.objectName + "Context"
+    }
+
+    /*!
+      \since Ubuntu.Components 1.3
       The header property for this page. Setting this property will reparent the
       header to the page and disable the \l MainView's application header.
       \qml
@@ -157,13 +167,13 @@ Toolkit13.PageTreeNode {
       Deprecated: This configuration will be replaced by setting the \l header property.
      */
     readonly property alias head: headerConfig
-    Toolkit13.PageHeadConfiguration {
+    PageHeadConfiguration {
         id: headerConfig
         title: page.title
         flickable: page.flickable
     }
 
-    Toolkit13.Object {
+    Object {
         id: internal
 
         property Item previousHeader: null

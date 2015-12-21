@@ -17,6 +17,15 @@
 #include "ucactioncontext.h"
 #include "ucaction.h"
 #include "adapters/actionsproxy_p.h"
+#include <QtQuick/QQuickItem>
+
+
+UCActionContextAttached::UCActionContextAttached(QObject *owner)
+    : QObject(owner)
+    , m_owner(qobject_cast<QQuickItem*>(owner))
+    , m_context(Q_NULLPTR)
+{
+}
 
 /*!
  * \qmltype ActionContext
@@ -35,6 +44,19 @@ UCActionContext::UCActionContext(QObject *parent)
 UCActionContext::~UCActionContext()
 {
     ActionProxy::removeContext(this);
+}
+
+UCActionContextAttached *UCActionContext::qmlAttachedProperties(QObject *owner)
+{
+    return new UCActionContextAttached(owner);
+}
+
+void UCActionContext::classBegin()
+{
+    // make sure we attach to the parent
+    UCActionContextAttached *attached = static_cast<UCActionContextAttached*>(
+            qmlAttachedPropertiesObject<UCActionContext>(parent()));
+    attached->m_context = this;
 }
 
 void UCActionContext::componentComplete()
@@ -119,12 +141,12 @@ void UCActionContext::setActive(bool active)
         return;
     }
     m_active = active;
+    qDebug() << "ACTIVATE CONTEXT" << this << m_active;
     Q_EMIT activeChanged();
 }
 
 /*!
  * \qmlmethod ActionContext::addAction(Action action)
- * \deprecated
  * Adds an Action to the context programatically.
  */
 void UCActionContext::addAction(UCAction *action)
@@ -137,7 +159,6 @@ void UCActionContext::addAction(UCAction *action)
 
 /*!
  * \qmlmethod ActionContext::removeAction(Action action)
- * \deprecated
  * Removes an action from the context programatically.
  */
 void UCActionContext::removeAction(UCAction *action)

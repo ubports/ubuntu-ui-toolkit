@@ -24,6 +24,7 @@
 #include <QtQml>
 
 class UCAction;
+class UCActionContextAttached;
 class UCActionContext : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
@@ -35,7 +36,9 @@ public:
     explicit UCActionContext(QObject *parent = 0);
     ~UCActionContext();
 
-    void classBegin(){}
+    static UCActionContextAttached *qmlAttachedProperties(QObject *owner);
+
+    void classBegin();
     void componentComplete();
     void markActionsPublished(bool mark);
 
@@ -61,6 +64,18 @@ private:
     static int count(QQmlListProperty<UCAction> *list);
 };
 
+class QQuickItem;
+class UCActionContextAttached : public QObject
+{
+    Q_OBJECT
+public:
+    explicit UCActionContextAttached(QObject *owner);
+
+    QQuickItem *m_owner;
+    UCActionContext *m_context;
+};
+
 QML_DECLARE_TYPE(UCActionContext)
+QML_DECLARE_TYPEINFO(UCActionContext, QML_HAS_ATTACHED_PROPERTIES)
 
 #endif // UCACTIONCONTEXT_H

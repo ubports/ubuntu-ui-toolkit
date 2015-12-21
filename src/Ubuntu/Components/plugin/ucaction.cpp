@@ -16,6 +16,7 @@
 
 #include "ucaction.h"
 #include "quickutils.h"
+#include "ucactioncontext.h"
 
 #include <QtDebug>
 #include <QtQml/QQmlInfo>
@@ -26,9 +27,28 @@
 bool shortcutContextMatcher(QObject* object, Qt::ShortcutContext context)
 {
     UCAction* action = static_cast<UCAction*>(object);
-    // Can't access member here because it's not public
-    if (!action->property("enabled").toBool())
+    // TODO: is the last action owner item in an active context?
+    bool inActiveContext = true;
+    QQuickItem *pl = action->lastOwningItem();
+    while (pl) {
+        UCActionContextAttached *attached = static_cast<UCActionContextAttached*>(
+                    qmlAttachedPropertiesObject<UCActionContext>(pl, false));
+        if (attached) {
+            qDebug() << attached << attached->m_context << attached->m_context->active();
+            if (!attached->m_context->active()) {
+                inActiveContext = false;
+                qDebug() << "Belongs to inactive shortcut" << action;
+                break;
+            }
+        }
+        pl = pl->parentItem();
+    }
+
+    if (!action->isEnabled() || !inActiveContext) {
         return false;
+    }
+
+    qDebug() << "ACTION" << action;
 
     switch (context) {
     case Qt::ApplicationShortcut:
@@ -152,6 +172,7 @@ QString UCAction::text()
             mnemonic = mnemonic.toLower();
             mnemonicIndex = m_text.indexOf(mnemonic);
         }
+        qDebug() << "MNEM" << mnemonic;
         QString displayText(m_text);
         // FIXME: we need QInputDeviceInfo to detect the keyboard attechment
         // https://bugs.launchpad.net/ubuntu/+source/ubuntu-ui-toolkit/+bug/1276808
@@ -192,6 +213,7 @@ void UCAction::setMnemonicFromText(const QString &text)
     m_mnemonic = sequence;
 
     if (!m_mnemonic.isEmpty()) {
+        qDebug() << "MNEN SET" << m_mnemonic.toString();
         Qt::ShortcutContext context = Qt::WindowShortcut;
         QGuiApplicationPrivate::instance()->shortcutMap.addShortcut(this, m_mnemonic, context, shortcutContextMatcher);
     }
@@ -358,8 +380,11 @@ void UCAction::setItemHint(QQmlComponent *)
 QKeySequence sequenceFromVariant(const QVariant& variant) {
     if (variant.type() == QVariant::Int)
         return static_cast<QKeySequence::StandardKey>(variant.toInt());
-    if (variant.type() == QVariant::String)
-        return QKeySequence::fromString(variant.toString());
+    if (variant.type() == QVariant::String) {
+        QString string = variant.toString();
+        qDebug() << "STRING" << string;
+        return QKeySequence::fromString(string);
+    }
     return QKeySequence();
 }
 
@@ -376,10 +401,12 @@ void UCAction::setShortcut(const QVariant& shortcut)
         QGuiApplicationPrivate::instance()->shortcutMap.removeShortcut(0, this, sequenceFromVariant(m_shortcut));
 
     QKeySequence sequence(sequenceFromVariant(shortcut));
-    if (!sequence.toString().isEmpty())
+    if (!sequence.isEmpty()) {
+        qDebug() << "ADD" << sequence.toString();
         QGuiApplicationPrivate::instance()->shortcutMap.addShortcut(this, sequence, Qt::WindowShortcut, shortcutContextMatcher);
-    else
+    } else {
         qmlInfo(this) << "Invalid shortcut: " << shortcut.toString();
+    }
 
     m_shortcut = shortcut;
     Q_EMIT shortcutChanged();
@@ -399,6 +426,8 @@ bool UCAction::event(QEvent *event)
     if (event->type() != QEvent::Shortcut)
         return false;
 
+    // when we reach this point, we can be sure the Action is used
+    // by a component belonging to an active ActionContext.
     QShortcutEvent *shortcut_event(static_cast<QShortcutEvent*>(event));
     if (shortcut_event->isAmbiguous()) {
         qmlInfo(this) << "Ambiguous shortcut: " << shortcut_event->key().toString();
@@ -414,6 +443,7 @@ bool UCAction::event(QEvent *event)
 void UCAction::onKeyboardAttached()
 {
     if (!m_mnemonic.isEmpty()) {
+        qDebug() << "UPDATE" << m_mnemonic.toString();
         Q_EMIT textChanged();
     }
 }
@@ -436,4 +466,18 @@ void UCAction::trigger(const QVariant &value)
     } else {
         Q_EMIT triggered(value);
     }
+}
+
+void UCAction::addOwningItem(QQuickItem *item)
+{
+    if (!m_owningItems.contains(item)) {
+        m_owningItems.append(item);
+        qDebug() << "ADD ITEM" << item << "TO" << this;
+    }
+}
+
+void UCAction::removeOwningItem(QQuickItem *item)
+{
+    m_owningItems.removeOne(item);
+    qDebug() << "REMOVE ITEM" << item << "FROM" << this;
 }

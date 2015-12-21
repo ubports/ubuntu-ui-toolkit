@@ -1491,6 +1491,8 @@ Ubuntu.Components.ToolbarItems 1.3: Item
     property Item pageStack
 Ubuntu.Components.Styles.ToolbarStyle 1.3: Item
     property Component defaultDelegate
+UCActionContextAttached: QtObject
+    property string actionLists
 Ubuntu.Components.UCApplication 1.0 0.1: QtObject
     property string applicationName
     property QtObject inputMethod

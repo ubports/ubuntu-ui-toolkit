@@ -117,6 +117,12 @@ Page {
             // Used by Autopilot
             property string text: label
             onClicked: widgetList.currentIndex = index
+            action: Action {
+                objectName: model.objectName + "-action"
+                shortcut: model.shortcut ? model.shortcut : undefined
+                onTriggered: widgetList.currentIndex = index
+            }
+
             ListItemLayout {
                 title.text: label
                 ProgressionSlot {}

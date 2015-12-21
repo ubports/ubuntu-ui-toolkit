@@ -104,33 +104,33 @@ void ActionProxy::watchContextActivation(UCActionContext *context, bool watch)
 void ActionProxy::handleContextActivation()
 {
     // sender is the context changing activation
-    UCActionContext *context = qobject_cast<UCActionContext*>(sender());
-    if (!context) {
-        return;
-    }
+//    UCActionContext *context = qobject_cast<UCActionContext*>(sender());
+//    if (!context) {
+//        return;
+//    }
     // deactivate the previous context if any
-    if (!m_activeContext.isNull()) {
-        if (!context->active()) {
-            // the slot has been called due to the previous active deactivation,
-            // so perform system cleanup
-            clearContextActions(m_activeContext);
-            m_activeContext->markActionsPublished(false);
-            // finally clear the context and leave
-            m_activeContext.clear();
-            return;
-        } else {
-            // deactivate previous actiev context, this will cause the slot to
-            // be called with active = false within this call context
-            m_activeContext->setActive(false);
-        }
-    }
-    if (context->active()) {
-        // publish the context's actions to the system
-        publishContextActions(context);
-        context->markActionsPublished(true);
-        // and finally set it as active
-        m_activeContext = context;
-    }
+//    if (!m_activeContext.isNull()) {
+//        if (!context->active()) {
+//            // the slot has been called due to the previous active deactivation,
+//            // so perform system cleanup
+//            clearContextActions(m_activeContext);
+//            m_activeContext->markActionsPublished(false);
+//            // finally clear the context and leave
+//            m_activeContext.clear();
+//            return;
+//        } else {
+//            // deactivate previous actiev context, this will cause the slot to
+//            // be called with active = false within this call context
+//            m_activeContext->setActive(false);
+//        }
+//    }
+//    if (context->active()) {
+//        // publish the context's actions to the system
+//        publishContextActions(context);
+//        context->markActionsPublished(true);
+//        // and finally set it as active
+//        m_activeContext = context;
+//    }
 }
 // empty functions for context activation/deactivation, connect to HUD
 void ActionProxy::clearContextActions(UCActionContext *context)

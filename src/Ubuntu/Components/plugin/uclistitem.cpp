@@ -1745,10 +1745,16 @@ void UCListItemPrivate::setAction(UCAction *action)
     if (mainAction == action) {
         return;
     }
+    if (mainAction) {
+        mainAction->removeOwningItem(q);
+    }
     mainAction = action;
-    if (mainAction && (mainAction->m_parameterType == UCAction::None)) {
-        // call setProperty to invoke notify signal
-        mainAction->setProperty("parameterType", UCAction::Integer);
+    if (mainAction) {
+        mainAction->addOwningItem(q);
+        if (mainAction->m_parameterType == UCAction::None) {
+            // call setProperty to invoke notify signal
+            mainAction->setProperty("parameterType", UCAction::Integer);
+        }
     }
     Q_EMIT q->actionChanged();
 }
