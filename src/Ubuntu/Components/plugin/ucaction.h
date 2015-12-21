@@ -20,6 +20,29 @@
 #include <QtCore/QObject>
 #include <QtCore/QVariant>
 #include <QtCore/QUrl>
+#include <QtGui/QKeySequence>
+
+// the function detects whether QML has an overridden trigger() slot available
+// and invokes the one with the appropriate signature
+template<class T>
+inline void invokeTrigger(T *object, const QVariant &value)
+{
+    bool invoked = false;
+    const QMetaObject *mo = object->metaObject();
+    int offset = mo->methodOffset();
+    int paramlessTriggerIndex = mo->indexOfSlot("trigger()") - offset;
+    int paramTriggerIndex = mo->indexOfSlot("trigger(QVariant)") - offset;
+
+    /* if we have the parametered version, call that even if the value given is invalid */
+    if (paramTriggerIndex >= 0) {
+        invoked = QMetaObject::invokeMethod(object, "trigger", Q_ARG(QVariant, value));
+    } else if (paramlessTriggerIndex >= 0) {
+        invoked = QMetaObject::invokeMethod(object, "trigger");
+    }
+    if (!invoked) {
+        object->trigger(value);
+    }
+}
 
 class QQmlComponent;
 class UCAction : public QObject
@@ -29,7 +52,7 @@ class UCAction : public QObject
     // transferred from Unity Actions
     Q_ENUMS(Type)
     Q_PROPERTY(QString name MEMBER m_name WRITE setName NOTIFY nameChanged)
-    Q_PROPERTY(QString text MEMBER m_text NOTIFY textChanged)
+    Q_PROPERTY(QString text READ text WRITE setText RESET resetText NOTIFY textChanged)
     Q_PROPERTY(QString iconName MEMBER m_iconName WRITE setIconName NOTIFY iconNameChanged)
     Q_PROPERTY(QString description MEMBER m_description NOTIFY descriptionChanged)
     Q_PROPERTY(QString keywords MEMBER m_keywords NOTIFY keywordsChanged)
@@ -42,7 +65,7 @@ class UCAction : public QObject
     Q_PROPERTY(QQmlComponent *itemHint MEMBER m_itemHint WRITE setItemHint)
 
     // QtQuickControls.Action
-    Q_PROPERTY(QVariant shortcut MEMBER m_shortcut WRITE setShortcut NOTIFY shortcutChanged REVISION 1)
+    Q_PROPERTY(QVariant shortcut MEMBER m_shortcut WRITE setShortcut RESET resetShortcut NOTIFY shortcutChanged REVISION 1)
 public:
     enum Type {
         None,
@@ -54,6 +77,7 @@ public:
     };
 
     explicit UCAction(QObject *parent = 0);
+    ~UCAction();
 
     inline bool isPublished() const
     {
@@ -61,10 +85,14 @@ public:
     }
 
     void setName(const QString &name);
+    QString text();
+    void setText(const QString &text);
+    void resetText();
     void setIconName(const QString &name);
     void setIconSource(const QUrl &url);
     void setItemHint(QQmlComponent *);
     void setShortcut(const QVariant&);
+    void resetShortcut();
 
 Q_SIGNALS:
     void nameChanged();
@@ -90,6 +118,7 @@ private:
     QString m_description;
     QString m_keywords;
     QVariant m_shortcut;
+    QKeySequence m_mnemonic;
     QQmlComponent *m_itemHint;
     Type m_parameterType;
     bool m_factoryIconSource:1;
@@ -99,13 +128,16 @@ private:
 
     friend class UCActionContext;
     friend class UCActionItem;
+    friend class UCActionItemPrivate;
     friend class UCListItemPrivate;
     friend class UCListItemAttached;
     friend class UCListItemActionsPrivate;
 
     bool isValidType(QVariant::Type valueType);
     void generateName();
+    void setMnemonicFromText(const QString &text);
     bool event(QEvent *event);
+    void onKeyboardAttached();
 };
 
 #endif // UCACTION_H

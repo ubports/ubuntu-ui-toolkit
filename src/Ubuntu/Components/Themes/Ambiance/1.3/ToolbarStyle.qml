@@ -14,13 +14,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import QtQuick 2.4
+import QtQuick.Window 2.2
 import Ubuntu.Components 1.3
 import Ubuntu.Components.Styles 1.3 as Style
 
 Style.ToolbarStyle {
     id: toolbarStyle
     implicitWidth: parent ? parent.width : 0
-    implicitHeight: units.gu(4)
+    // reduce toolbar height on phone in landscape orientation:
+    implicitHeight: Screen.height > units.gu(50) ? units.gu(4) : units.gu(3)
 
     /*!
       The default action delegate if the styled item does
@@ -32,57 +34,5 @@ Style.ToolbarStyle {
         height: parent ? parent.height : undefined
         width: units.gu(4)
         action: modelData
-    }
-
-    Item {
-        objectName: "fixedAction_container_item"
-        anchors {
-            left: parent.left
-            leftMargin: units.gu(1)
-            top: parent.top
-            bottom: parent.bottom
-        }
-        Repeater {
-            // FIXME: A Loader may be enough here, but then we
-            //  have no way to set the model (action) of the ActionButton.
-            objectName: "fixedAction_repeater"
-            model: styledItem.fixedAction && styledItem.fixedAction.visible ?
-                       styledItem.fixedAction : 0
-            delegate: styledItem.delegate
-        }
-    }
-
-    Row {
-        id: actionsContainer
-        objectName: "actions_container_row"
-        anchors {
-            top: parent.top
-            bottom: parent.bottom
-            right: parent.right
-            rightMargin: units.gu(1)
-        }
-
-        property var visibleActions: getVisibleActions(styledItem.actions)
-        function getVisibleActions(actions) {
-            var visibleActionList = [];
-            for (var i in actions) {
-                var action = actions[i];
-                if (action && action.hasOwnProperty("visible") && action.visible) {
-                    if (visibleActionList.length > 8) {
-                        print("Toolbar currently only supports up to 9 actions.");
-                        break;
-                    }
-                    visibleActionList.push(action);
-                }
-            }
-            return visibleActionList;
-        }
-
-        Repeater {
-            id: actionsRepeater
-            objectName: "actions_repeater"
-            model: actionsContainer.visibleActions
-            delegate: styledItem.delegate
-        }
     }
 }

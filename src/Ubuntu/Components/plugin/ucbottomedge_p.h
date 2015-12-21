@@ -37,6 +37,8 @@ public:
     }
     void init();
 
+    void completeComponentInitialization() override;
+
     // data property
     QQmlListProperty<QObject> data();
     static void overload_data_append(QQmlListProperty<QObject> *, QObject *);
@@ -105,6 +107,7 @@ class UCCollapseAction : public UCAction
     Q_OBJECT
 public:
     UCCollapseAction(QObject *parent = 0);
+    void activate();
 };
 Q_DECLARE_METATYPE(QQmlListProperty<UCAction>)
 

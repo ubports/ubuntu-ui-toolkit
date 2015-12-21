@@ -17,33 +17,152 @@
 import QtQuick 2.4
 import Ubuntu.Components 1.3
 
+// FIXME: In the example code below, replace the delegate
+//  by the new text button when it becomes available.
 /*!
     \qmltype Toolbar
     \inqmlmodule Ubuntu.Components 1.3
     \ingroup ubuntu
-    TODO
+    \brief Toolbar that can be used as an extension for the edit mode header.
+    Example:
+    \qml
+    PageHeader {
+        id: editHeader
+        property Component delegate: Component {
+            AbstractButton {
+                id: button
+                action: modelData
+                width: label.width + units.gu(4)
+                height: parent.height
+                Rectangle {
+                    color: UbuntuColors.darkGrey
+                    opacity: 0.1
+                    anchors.fill: parent
+                    visible: button.pressed
+                }
+                Label {
+                    anchors.centerIn: parent
+                    id: label
+                    text: action.text
+                    font.weight: text === "Confirm" ? Font.Normal : Font.Light
+                }
+            }
+        }
+
+        leadingActionBar {
+            anchors.leftMargin: 0
+            actions: Action {
+                text: "Cancel"
+                iconName: "close"
+            }
+            delegate: editHeader.delegate
+        }
+        trailingActionBar {
+            anchors.rightMargin: 0
+            actions: Action {
+                text: "Confirm"
+                iconName: "tick"
+            }
+            delegate: editHeader.delegate
+        }
+
+        extension: Toolbar {
+            anchors {
+                left: parent.left
+                right: parent.right
+                bottom: parent.bottom
+            }
+            trailingActionBar.actions: [
+                Action { iconName: "bookmark-new" },
+                Action { iconName: "add" },
+                Action { iconName: "edit-select-all" },
+                Action { iconName: "edit-copy" },
+                Action { iconName: "select" }
+            ]
+            leadingActionBar.actions: Action {
+                iconName: "delete"
+                text: "delete"
+                onTriggered: print("Delete action triggered")
+            }
+        }
+    }
+    \endqml
+    See \l PageHeader.
 */
 StyledItem {
-    id: bar
+    id: toolbar
     styleName: "ToolbarStyle"
 
     /*!
-      The actions to display in the bar.
-      If more actions are specified than there are slots, an overflow
-      button will be show which opens a popover with the actions that
-      did not fit in the bar directly.
+      \qmlproperty ActionBar leadingActionBar
+      The leading ActionBar that should hold at most one action.
+      Recommneded for the delete action.
+      Example:
+      \qml
+      Toolbar {
+          leadingActionBar.actions: [
+              Action {
+                  iconName: "delete"
+                  text: "Delete"
+                  onTriggered: print("delete!")
+              }
+          ]
+      }
+      \endqml
+      See \l ActionBar.
      */
-    property list<Action> actions
+    readonly property alias leadingActionBar: leading
+    ActionBar {
+        id: leading
+        anchors {
+            left: parent.left
+            top: parent.top
+            bottom: parent.bottom
+            leftMargin: units.gu(1)
+        }
+        numberOfSlots: 1
+        delegate: toolbar.__styleInstance.defaultDelegate
+        Component.onCompleted: {
+            if (actions && actions.length > 1) {
+                print("WARNING: Toolbar with more than one leading actions is not supported.");
+            }
+        }
+    }
 
     /*!
-      Set this to override the default delegate button that shows
-      the actions in the ActionBar. Uses the defaultDelegate of
-      ToolbarStyle by default.
-     */
-    property Component delegate: __styleInstance.defaultDelegate
+      \qmlproperty ActionBar trailingActionBar
+      The \l ActionBar with trailing actions.
+      Example:
+      \qml
+      Toolbar {
+            trailingActionBar.actions: [
+                Action { iconName: "bookmark-new" },
+                Action { iconName: "add" },
+                Action { iconName: "edit-select-all" },
+                Action { iconName: "edit-copy" }
+            ]
+      }
+      \endqml
+      The trailing ActionBar may contain up to 8 actions.
+      Scrolling and support for more than 8 actions will be added in the near future.
+      See \l ActionBar.
+      */
+    readonly property alias trailingActionBar: trailing
+    ActionBar {
+        id: trailing
+        anchors {
+            right: parent.right
+            top: parent.top
+            bottom: parent.bottom
+            rightMargin: units.gu(1)
+        }
+        numberOfSlots: 8
+        delegate: toolbar.__styleInstance.defaultDelegate
+        Component.onCompleted: {
+            if (actions && actions.length > 8) {
+                print("WARNING: Toolbar with more than one leading actions is not supported.");
+            }
+        }
 
-    /*!
-      A single fixed action displayed on the left side of the toolbar.
-     */
-    property Action fixedAction
+    }
 }
