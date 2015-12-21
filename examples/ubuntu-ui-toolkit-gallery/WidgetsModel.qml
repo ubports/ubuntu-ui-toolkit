@@ -42,7 +42,6 @@ ListModel {
         objectName: "buttonsElement"
         label: "Buttons"
         source: "Buttons.qml"
-        shortcut: 'Ctrl+L'
     }
     ListElement {
         objectName: "slidersElement"

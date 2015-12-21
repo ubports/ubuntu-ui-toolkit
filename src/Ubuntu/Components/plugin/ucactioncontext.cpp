@@ -152,6 +152,7 @@ void UCActionContext::setActive(bool active)
 
 /*!
  * \qmlmethod ActionContext::addAction(Action action)
+ * \deprecated
  * Adds an Action to the context programatically.
  */
 void UCActionContext::addAction(UCAction *action)
@@ -164,6 +165,7 @@ void UCActionContext::addAction(UCAction *action)
 
 /*!
  * \qmlmethod ActionContext::removeAction(Action action)
+ * \deprecated
  * Removes an action from the context programatically.
  */
 void UCActionContext::removeAction(UCAction *action)

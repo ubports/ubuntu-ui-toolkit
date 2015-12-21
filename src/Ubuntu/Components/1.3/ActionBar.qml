@@ -53,7 +53,6 @@ StyledItem {
     styleName: "ActionBarStyle"
 
     /*!
-      \qmlproperty list<Action> actions
       The actions to display in the bar.
       If more actions are specified than there are slots, an overflow
       button will be show which opens a popover with the actions that

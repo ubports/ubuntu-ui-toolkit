@@ -50,7 +50,6 @@ Template {
                 objectName: "button_color"
                 width: units.gu(20)
                 action: Action {
-                    objectName: "ButtonsPage"
                     text: i18n.tr("C&all %1").arg(shortcut)
                     shortcut: 'Ctrl+L'
                     property bool flipped

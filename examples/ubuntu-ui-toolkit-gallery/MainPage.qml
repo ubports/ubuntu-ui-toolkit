@@ -117,7 +117,6 @@ Page {
             // Used by Autopilot
             property string text: label
             onClicked: widgetList.currentIndex = index
-
             ListItemLayout {
                 title.text: label
                 ProgressionSlot {}
