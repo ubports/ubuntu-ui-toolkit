@@ -76,14 +76,17 @@ void ActionProxy::activateContext(UCActionContext *context, bool activate)
     if (!context) {
         return;
     }
-    if (activate && !context->active()) {
+    if (!instance().m_activeContexts.contains(context) && activate) {
         // publish the context's actions to the system
         instance().publishContextActions(context);
         context->markActionsPublished(true);
-    } else if (!activate && context->active()){
+        // register context as active
+        instance().m_activeContexts << context;
+    } else if (!activate && instance().m_activeContexts.contains(context)){
         // remove actions from the system
         instance().clearContextActions(context);
         context->markActionsPublished(false);
+        instance().m_activeContexts.remove(context);
     }
 }
 

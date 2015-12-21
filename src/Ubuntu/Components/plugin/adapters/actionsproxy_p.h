@@ -52,6 +52,7 @@ protected Q_SLOTS:
 
 private:
     QSet<UCActionContext*> m_localContexts;
+    QSet<UCActionContext*> m_activeContexts;
 };
 
 #endif // ACTIONSPROXY_P_H
