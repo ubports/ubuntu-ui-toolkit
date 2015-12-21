@@ -715,6 +715,7 @@ Ubuntu.Components.Page 1.0 0.1 Page10: PageTreeNode
 Ubuntu.Components.Page 1.1 Page11: Page10
     readonly property PageHeadConfiguration head
 Ubuntu.Components.Page 1.3: PageTreeNode
+    readonly property ActionContext context
     property Flickable flickable
     readonly property PageHeadConfiguration head
     property Item header
@@ -1492,7 +1493,6 @@ Ubuntu.Components.ToolbarItems 1.3: Item
 Ubuntu.Components.Styles.ToolbarStyle 1.3: Item
     property Component defaultDelegate
 UCActionContextAttached: QtObject
-    property string actionLists
 Ubuntu.Components.UCApplication 1.0 0.1: QtObject
     property string applicationName
     property QtObject inputMethod
