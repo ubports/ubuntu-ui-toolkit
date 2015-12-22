@@ -82,12 +82,12 @@ PageTreeNode {
     height: parentNode ? page.flickable ? parentNode.height : parentNode.height - internal.headerHeight : undefined
 
     /*!
-      \qmlproperty ActrionContext Page::context
+      \qmlproperty ActrionContext Page::actionContext
       \readonly
       \since Ubuntu.Components 1.3
       The action context of the page.
       */
-    readonly property alias context: localContext
+    readonly property alias actionContext: localContext
     ActionContext {
         id: localContext
         active: page.active

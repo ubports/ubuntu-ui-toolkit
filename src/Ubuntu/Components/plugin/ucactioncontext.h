@@ -41,27 +41,44 @@ public:
     void classBegin();
     void componentComplete();
     void markActionsPublished(bool mark);
+    bool isPopup() const
+    {
+        return m_popup;
+    }
 
     QQmlListProperty<UCAction> actions();
 
     bool active();
     void setActive(bool active);
+    void setEffectiveActive(bool active);
 
 Q_SIGNALS:
     void activeChanged();
+    Q_REVISION(1) void popupChanged();
 
 public Q_SLOTS:
     void addAction(UCAction *action);
     void removeAction(UCAction *action);
 
-private:
-    bool m_active;
+protected:
     QSet<UCAction*> m_actions;
+    bool m_active:1;
+    bool m_effectiveActive:1;
+    // declare popup flag within ActionContext to avoid unnecessary object-casting
+    // to detect whether a context is a popup or normal context.
+    bool m_popup:1;
     friend class UCActionManager;
 
     static void append(QQmlListProperty<UCAction> *list, UCAction *action);
     static void clear(QQmlListProperty<UCAction> *list);
     static int count(QQmlListProperty<UCAction> *list);
+};
+
+class UCPopupContext : public UCActionContext
+{
+    Q_OBJECT
+public:
+    explicit UCPopupContext(QObject *parent = 0);
 };
 
 class QQuickItem;
@@ -71,8 +88,19 @@ class UCActionContextAttached : public QObject
 public:
     explicit UCActionContextAttached(QObject *owner);
 
+    inline QQuickItem *owner() const
+    {
+        return m_owner;
+    }
+    inline UCActionContext *context() const
+    {
+        return m_context;
+    }
+
+private:
     QQuickItem *m_owner;
     UCActionContext *m_context;
+    friend class UCActionContext;
 };
 
 QML_DECLARE_TYPE(UCActionContext)

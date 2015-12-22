@@ -38,10 +38,68 @@ UCActionContextAttached::UCActionContextAttached(QObject *owner)
  * \brief ActionContext groups actions together and by providing multiple contexts
  * the developer is able to control the visibility of the actions. The \l ActionManager
  * then exposes the actions from these different contexts.
+ *
+ * ActionContext drives the Action objects declared within the ActionContext
+ * through the \l actions list. Beside that the ActionContext drives the activability
+ * of Action objects' shortcuts declared in a hierarchy. In the following
+ * example the ActionContext drives the underlaying \c action1 and \c action2
+ * shortcuts:
+ * \qml
+ * import QtQuick 2.4
+ * import ubuntu.Componenst 1.3
+ *
+ * Rectangle {
+ *     id: root
+ *     width: units.gu(40)
+ *     height: units.gu(71)
+ *     ActionContext {
+ *         id: rootContext
+ *         active: true
+ *         actions: Action {
+ *             shortcut: 'Ctrl+A'
+ *             text: rootContext.active ? "Deactivate" : "Activate"
+ *             onTriggered: rootContext.active = !rootContext.active
+ *         }
+ *     }
+ *
+ *     Column {
+ *         Button {
+ *             text: rootContext.active ? "Deactivate" : "Activate"
+ *             onClicked: rootContext.active = !rootContext.active
+ *         }
+ *         Button {
+ *             action: Action {
+ *                 id: action1
+ *                 text: "F&irst Button"
+ *                 onTriggered: console.log("First Button triggered")
+ *             }
+ *         }
+ *         Button {
+ *             action: Action {
+ *                 id: action2
+ *                 text: "S&econd Button"
+ *                 shortcut: 'Ctrl+Alt+2'
+ *                 onTriggered: console.log("Second Button triggered")
+ *             }
+ *         }
+ *     }
+ * }
+ * \endqml
+ * \note An Action can be triggered by a shortcut (or mnemonic) only if it is
+ * assigned to a component. In the example above the action declared in the \c
+ * rootContext will never be triggered through the \c {Ctrl+A} shortcut as it
+ * is not assigned to any component.
+ *
+ * The toolkit assigns an ActionContext to each Page component, which is
+ * activated/deactivated together with the Page itself, driving the shortcut
+ * activations on the components and actions declared in the Page.
+ * \sa PopupContext
  */
 UCActionContext::UCActionContext(QObject *parent)
     : QObject(parent)
     , m_active(false)
+    , m_effectiveActive(true)
+    , m_popup(false)
 {
 }
 UCActionContext::~UCActionContext()
@@ -56,16 +114,16 @@ UCActionContextAttached *UCActionContext::qmlAttachedProperties(QObject *owner)
 
 void UCActionContext::classBegin()
 {
+    // add the context to the management
+    ActionProxy::addContext(this);
     // make sure we attach to the parent
     UCActionContextAttached *attached = static_cast<UCActionContextAttached*>(
-            qmlAttachedPropertiesObject<UCActionContext>(parent()));
+            qmlAttachedPropertiesObject<UCActionContext>(parent(), true));
     attached->m_context = this;
 }
 
 void UCActionContext::componentComplete()
 {
-    // add the context to the management
-    ActionProxy::addContext(this);
 }
 
 /*
@@ -122,18 +180,16 @@ int UCActionContext::count(QQmlListProperty<UCAction> *list)
  * whether or not the actions in a context are available to external components.
  *
  * The \l ActionManager monitors the active property of each of the local contexts
- * that has been added to it. There can be only one active local context at a time.
- * When one of the local contexts sets itself active the manager will notice this,
- * export the actions from that given context and set the previously active local
- * context as inactive. This way setting active to true on a local context is
- * sufficient to manage the active local context of the manager and no additional
- * calls are necessary to manually inactivate the other contexts.
+ * that has been added to it. There can be more than one local context active at a.
+ * time. When a local context is set active the manager will notice this and will
+ * export the actions from the context.
+ * \note An Action declared to a component alling under an item that is a child of
+ * an inactive ActiveContext can be triggered manually using the mouse or connections.
  */
 bool UCActionContext::active()
 {
-    return m_active;
+    return m_active && m_effectiveActive;
 }
-
 void UCActionContext::setActive(bool active)
 {
     if (m_active == active) {
@@ -144,9 +200,25 @@ void UCActionContext::setActive(bool active)
         return;
     }
     CONTEXT_TRACE("ACTIVATE CONTEXT" << this << active);
-    // activate context first, then set the state and emit the change signal
-    ActionProxy::activateContext(this, m_active);
+
     m_active = active;
+    ActionProxy::activateContext(this);
+    Q_EMIT activeChanged();
+}
+
+// similar to setActive() but does not alter the actions from the proxy
+void UCActionContext::setEffectiveActive(bool active)
+{
+    if (m_effectiveActive == active) {
+        return;
+    }
+    // skip deactivation for global context
+    if (!active && (ActionProxy::instance().globalContext == this)) {
+        return;
+    }
+    CONTEXT_TRACE("EFECTIVE ACTIVATE CONTEXT" << this << active);
+
+    m_effectiveActive = active;
     Q_EMIT activeChanged();
 }
 
@@ -174,4 +246,29 @@ void UCActionContext::removeAction(UCAction *action)
         return;
     }
     m_actions.remove(action);
+}
+
+
+/*!
+ * \qmltype PopupContext
+ * \instantiates UCPopupContext
+ * \inqmlmodule Ubuntu.Components 1.3
+ * \since Ubuntu.Components 1.3
+ * \inherits ActionContext
+ * \ingroup ubuntu
+ * \brief A special ActionContext used in Dialogs and Popups.
+ *
+ * A PopupContext is similar to the ActionContext, with the only difference being
+ * that there can be only one PopupContext active at a time in an application.
+ * A PopupContext can have several active ActionContext children declared, however
+ * when deactivated all child contexts will be deactivated as well, and no Action
+ * declared in these contexts will be available through shortcuts.
+ *
+ * The toolkit provides such kind of contexts in MainView, Popup and Dialog. It is
+ * highly recommended for applications to have a PopupContext defined in their rootItem.
+ */
+UCPopupContext::UCPopupContext(QObject *parent)
+    : UCActionContext(parent)
+{
+    m_popup = true;
 }

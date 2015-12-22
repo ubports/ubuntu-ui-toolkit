@@ -23,6 +23,7 @@
 #include "ucaction.h"
 
 class UCActionContext;
+class UCPopupContext;
 class ActionProxy : public QObject
 {
     Q_OBJECT
@@ -41,7 +42,7 @@ public:
     static void publishGlobalContext();
     static void addContext(UCActionContext *context);
     static void removeContext(UCActionContext *context);
-    static void activateContext(UCActionContext *context, bool activate);
+    static void activateContext(UCActionContext *context);
 
 protected:
     ActionProxy();
@@ -52,7 +53,7 @@ protected Q_SLOTS:
 
 private:
     QSet<UCActionContext*> m_localContexts;
-    QSet<UCActionContext*> m_activeContexts;
+    QStack<UCPopupContext*> m_popupContexts;
 };
 
 #endif // ACTIONSPROXY_P_H

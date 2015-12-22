@@ -263,6 +263,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCBottomEdge>(uri, 1, 3, "BottomEdge");
     qmlRegisterType<UCBottomEdgeRegion>(uri, 1, 3, "BottomEdgeRegion");
     qmlRegisterType<UCPageTreeNode>(uri, 1, 3, "PageTreeNode");
+    qmlRegisterType<UCPopupContext>(uri, 1, 3, "PopupContext");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)

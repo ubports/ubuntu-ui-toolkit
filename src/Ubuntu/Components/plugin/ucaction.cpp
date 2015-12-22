@@ -31,27 +31,9 @@ Q_LOGGING_CATEGORY(ucAction, "ubuntu.components.Action", QtMsgType::QtWarningMsg
 bool shortcutContextMatcher(QObject* object, Qt::ShortcutContext context)
 {
     UCAction* action = static_cast<UCAction*>(object);
-    // is the last action owner item in an active context?
-    bool inActiveContext = true;
-    QQuickItem *pl = action->lastOwningItem();
-    while (pl) {
-        UCActionContextAttached *attached = static_cast<UCActionContextAttached*>(
-                    qmlAttachedPropertiesObject<UCActionContext>(pl, false));
-        if (attached) {
-            if (!attached->m_context->active()) {
-                inActiveContext = false;
-                ACT_TRACE(action << "Belongs to inactive context");
-                break;
-            }
-        }
-        pl = pl->parentItem();
-    }
-
-    if (!action->isEnabled() || !inActiveContext) {
+    if (!action->isEnabled()) {
         return false;
     }
-
-    ACT_TRACE("ACTION" << action);
 
     switch (context) {
     case Qt::ApplicationShortcut:
@@ -60,10 +42,31 @@ bool shortcutContextMatcher(QObject* object, Qt::ShortcutContext context)
         QObject* window = object;
         while (window && !window->isWindowType()) {
             window = window->parent();
-            if (QQuickItem* item = qobject_cast<QQuickItem*>(window))
+            if (QQuickItem* item = qobject_cast<QQuickItem*>(window)) {
                 window = item->window();
+            }
         }
-        return window && window == QGuiApplication::focusWindow();
+        bool activable = window && window == QGuiApplication::focusWindow();
+
+        if (activable) {
+            // is the last action owner item in an active context?
+            QQuickItem *pl = action->lastOwningItem();
+            activable = (pl != Q_NULLPTR);
+            while (pl && activable) {
+                UCActionContextAttached *attached = static_cast<UCActionContextAttached*>(
+                            qmlAttachedPropertiesObject<UCActionContext>(pl, false));
+                if (attached && !attached->context()->active()) {
+                    ACT_TRACE(action << "Inactive context found" << attached->context());
+                    activable = false;
+                }
+                pl = pl->parentItem();
+            }
+        }
+        if (activable) {
+            ACT_TRACE("SELECTED ACTION" << action);
+        }
+
+        return activable;
     }
     default: break;
     }

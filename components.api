@@ -715,7 +715,7 @@ Ubuntu.Components.Page 1.0 0.1 Page10: PageTreeNode
 Ubuntu.Components.Page 1.1 Page11: Page10
     readonly property PageHeadConfiguration head
 Ubuntu.Components.Page 1.3: PageTreeNode
-    readonly property ActionContext context
+    readonly property ActionContext actionContext
     property Flickable flickable
     readonly property PageHeadConfiguration head
     property Item header
@@ -948,6 +948,7 @@ Ubuntu.Components.Popups.PopupBase 1.3: OrientationHelper
     property bool grabDismissAreaEvents
     function var show()
     function var hide()
+Ubuntu.Components.PopupContext 1.3 UCPopupContext: ActionContext
 Ubuntu.Components.Popups.PopupUtils 0.1 1.0 1.3
 Ubuntu.Components.ProgressBar 1.0 0.1: AnimatedItem
     property bool indeterminate
