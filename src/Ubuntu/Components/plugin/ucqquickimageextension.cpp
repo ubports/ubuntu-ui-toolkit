@@ -81,9 +81,11 @@ void UCQQuickImageExtension::reloadSource()
     if (scaleFactor == "1") {
         if (qFuzzyCompare(qGuiApp->devicePixelRatio(), (qreal)1.0)
                 || selectedFilePath.endsWith(".svg") || selectedFilePath.endsWith(".svgz")) {
-            // No scaling necessary. Just pass the original file as is
-            // to keep the full url structure
-            m_image->setSource(m_source);
+            // Take care to pass the original fragment
+            QUrl resolvedSource(QUrl::fromLocalFile(selectedFilePath));
+            if (m_source.hasFragment())
+                resolvedSource.setFragment(m_source.fragment());
+            m_image->setSource(resolvedSource);
         } else {
             // Need to scale the pixel-based image to suit the devicePixelRatio setting ourselves.
             // If we let Qt do it, Qt will not choose the UITK-supported "@gu" scaled images.

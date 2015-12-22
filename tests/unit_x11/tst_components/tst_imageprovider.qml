@@ -62,8 +62,8 @@ Item {
         function test_sourceChanged_bug1401920_data() {
             var file = "file:///usr/share/icons/ubuntu-mobile/actions/scalable/delete.svg";
             return [
-                {rag: "Existing file", file: file},
-                {rag: "Url with fragment", file: file + "#" + Date.now()},
+                {tag: "Existing file", file: file},
+                {tag: "Url with fragment", file: file + "#" + Date.now()},
             ];
         }
 
