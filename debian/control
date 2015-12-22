@@ -74,7 +74,7 @@ Depends: qml-module-qtgraphicaleffects | libqt5qml-graphicaleffects,
          suru-icon-theme,
          ttf-ubuntu-font-family,
          ubuntu-ui-toolkit-theme (= ${binary:Version}),
-         libubuntugestures (= ${binary:Version}),
+         libubuntugestures5 (= ${binary:Version}),
          ${misc:Depends},
          ${shlibs:Depends},
 Conflicts: qt-components-ubuntu
@@ -87,16 +87,17 @@ Description: Qt Components for Ubuntu - QML plugin
  This package contains the Ubuntu Components QML plugin.
 
 
-Package: libubuntugestures
+Package: libubuntugestures5
 Architecture: any
 Multi-Arch: same
 Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
 Depends: ${misc:Depends},
          ${shlibs:Depends},
-Description: Ubuntu gestures library - SwipeArea
- Ubuntu gestures library with SwipeArea
+Description: Ubuntu gestures library for Ubuntu UI Toolkit
+ Library supporting Gesture recognition for Ubuntu UI Toolkit
+ Classes for SwipeArea, and for Ubuntu Gestures in general.
 
-Package: libubuntugestures-dev
+Package: libubuntugestures5-dev
 Architecture: any
 Multi-Arch: same
 Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
@@ -106,6 +107,15 @@ Description: Ubuntu gestures library development files
  This package contains the development files for 
  Ubuntu gestures library with SwipeArea
 
+Package: libubuntugestures5-private-dev
+Architecture: any
+Multi-Arch: same
+Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+Description: Ubuntu gestures library private development files
+ This package contains the private development files for
+ Ubuntu gestures library with SwipeArea
 
 
 Package: ubuntu-ui-toolkit-theme

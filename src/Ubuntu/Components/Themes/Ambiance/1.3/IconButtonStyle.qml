@@ -43,6 +43,9 @@ Item {
      */
     property bool showLabel: false
 
+    FocusShape {
+    }
+
     Rectangle {
         id: background
         color: iconButtonStyle.backgroundColor

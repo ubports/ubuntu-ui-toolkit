@@ -149,7 +149,7 @@ import Ubuntu.Components 1.3 as Toolkit
         }
     \endqml
 */
-PageTreeNode {
+Toolkit.PageTreeNode {
     id: tabs
     anchors.fill: parent
 

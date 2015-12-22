@@ -227,8 +227,7 @@ Components.StyledItem {
             // Avoid updating header.y when rebounding or being dragged over the bounds.
             if (!flickable.atYBeginning && !flickable.atYEnd) {
                 var deltaContentY = flickable.contentY - previousContentY;
-                // FIXME: MathUtils.clamp  is expensive. Fix clamp, or replace it here.
-                header.y = MathUtils.clamp(header.y - deltaContentY, -header.height, 0);
+                header.y = Components.MathUtils.clamp(header.y - deltaContentY, -header.height, 0);
             }
             previousContentY = flickable.contentY;
         }

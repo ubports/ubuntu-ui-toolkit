@@ -1,5 +1,5 @@
 include(../test-include.pri)
-QT += core-private qml-private quick-private gui-private UbuntuGestures
+QT += core-private qml-private quick-private gui-private UbuntuGestures UbuntuGestures_private
 
 SOURCES += \
     tst_bottomedge.cpp
@@ -20,4 +20,6 @@ DISTFILES += \
     OverlappingRegions.qml \
     AutoCollapseInPageHeader.qml \
     AutoCollapseInPageWithPageHeader.qml \
-    LeanActiveRegionChange.qml
+    LeanActiveRegionChange.qml \
+    UncoveredByRegion.qml \
+    OverriddenHintTrigger.qml

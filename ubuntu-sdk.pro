@@ -8,13 +8,10 @@ write_file($$PWD/build_paths.inc,BUILD_PATH_CONTENTS)
 requires(qtHaveModule(quick))
 load(qt_parts)
 
-SUBDIRS += po documentation app-launch-profiler ubuntu-ui-toolkit-launcher
+SUBDIRS += po documentation app-launch-profiler ubuntu-ui-toolkit-launcher apicheck
 
-#when standalone we always want tests to be built
-!build_with_qt{
-    sub_tests.CONFIG -= no_default_target
-    sub_tests.CONFIG -= no_default_install
-}
+sub_tests.CONFIG -= no_default_target
+sub_tests.CONFIG -= no_default_install
 
 # additional 'make test' target required by continuous integration system
 test.target = test

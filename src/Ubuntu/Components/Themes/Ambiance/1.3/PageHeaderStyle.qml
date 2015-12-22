@@ -27,6 +27,7 @@ Style.PageHeaderStyle {
     property int fontWeight: Font.Light
     property int textSize: Label.Large
 
+    // reduced content height on a phone in landscape mode
     contentHeight: Screen.height > units.gu(50) ? units.gu(6) : units.gu(5)
     implicitHeight: contentHeight + divider.height + internal.extensionHeight
 

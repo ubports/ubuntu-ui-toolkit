@@ -99,9 +99,10 @@ Template {
     PageHeader {
         id: editHeader
         visible: page.header === editHeader
-        property Item delegate: Component {
-            // FIXME: We can replace this delegate with the new
+        property Component delegate: Component {
+            // FIXME: Replace this delegate with the new
             //  text button when it becomes available.
+            //  Also update example code in Toolbar.qml.
             AbstractButton {
                 id: button
                 action: modelData
@@ -117,7 +118,7 @@ Template {
                     anchors.centerIn: parent
                     id: label
                     text: action.text
-                    font.weight: Font.Light
+                    font.weight: text === "Confirm" ? Font.Normal : Font.Light
                 }
             }
         }
@@ -147,16 +148,14 @@ Template {
                 right: parent.right
                 bottom: parent.bottom
             }
-            height: units.gu(4)
-            actions: [
+            trailingActionBar.actions: [
                 Action { iconName: "bookmark-new" },
                 Action { iconName: "add" },
                 Action { iconName: "edit-select-all" },
-                Action { iconName: "mail-forward" },
                 Action { iconName: "edit-copy" },
-                Action { iconName: "select-none" }
+                Action { iconName: "select" }
             ]
-            fixedAction: Action {
+            leadingActionBar.actions: Action {
                 iconName: "delete"
                 text: "delete"
                 onTriggered: print("Delete action triggered")

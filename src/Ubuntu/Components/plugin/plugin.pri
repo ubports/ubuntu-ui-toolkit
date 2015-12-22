@@ -3,7 +3,7 @@ unix {
     PKGCONFIG += gio-2.0 dbus-1 libnih-dbus
 }
 
-QT *= core-private qml qml-private quick quick-private gui-private dbus svg UbuntuGestures
+QT *= core-private qml qml-private quick quick-private gui-private dbus svg UbuntuGestures UbuntuGestures_private
 
 equals(QT_MAJOR_VERSION, 5):lessThan(QT_MINOR_VERSION, 2) {
     QT += v8-private
@@ -75,6 +75,7 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/ucserviceproperties_p.h \
     $$PWD/privates/listitemdragarea.h \
     $$PWD/privates/listitemdraghandler.h \
+    $$PWD/privates/listitemselection.h \
     $$PWD/ucnamespace.h \
     $$PWD/ucdeprecatedtheme.h \
     $$PWD/ucdefaulttheme.h \
@@ -85,8 +86,10 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/livetimer_p.h \
     $$PWD/timeutils_p.h \
     $$PWD/ucactionitem.h \
+    $$PWD/ucactionitem_p.h \
     $$PWD/uchaptics.h \
     $$PWD/ucabstractbutton.h \
+    $$PWD/ucabstractbutton_p.h \
     $$PWD/ucthemingextension.h \
     $$PWD/ucheader.h \
     $$PWD/uclabel.h \
@@ -94,15 +97,16 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/privates/threelabelsslot_p.h \
     $$PWD/ucimportversionchecker_p.h \
     $$PWD/ucbottomedgehint.h \
-    $$PWD/gestures/ucswipearea.h \
-    $$PWD/gestures/ucswipearea_p.h \
+    $$PWD/ucbottomedgehint_p.h \
     $$PWD/gestures/damper.h \
     $$PWD/gestures/ubuntugesturesqmlglobal.h \
     $$PWD/ucmathutils.h \
     $$PWD/ucbottomedge.h \
     $$PWD/ucbottomedge_p.h \
     $$PWD/ucbottomedgestyle.h \
-    $$PWD/ucbottomedgeregion.h
+    $$PWD/ucbottomedgeregion.h \
+    $$PWD/ucpagetreenode.h \
+    $$PWD/ucpagetreenode_p.h
 
 SOURCES += $$PWD/plugin.cpp \
     $$PWD/uctheme.cpp \
@@ -150,6 +154,7 @@ SOURCES += $$PWD/plugin.cpp \
     $$PWD/privates/listitemdragarea.cpp \
     $$PWD/privates/listitemdraghandler.cpp \
     $$PWD/privates/listitemexpansion.cpp \
+    $$PWD/privates/listitemselection.cpp \
     $$PWD/ucnamespace.cpp \
     $$PWD/ucdeprecatedtheme.cpp \
     $$PWD/ucdefaulttheme.cpp \
@@ -167,11 +172,11 @@ SOURCES += $$PWD/plugin.cpp \
     $$PWD/privates/threelabelsslot_p.cpp \
     $$PWD/ucimportversionchecker_p.cpp \
     $$PWD/ucbottomedgehint.cpp \
-    $$PWD/gestures/ucswipearea.cpp \
     $$PWD/ucmathutils.cpp \
     $$PWD/ucbottomedge.cpp \
     $$PWD/ucbottomedgestyle.cpp \
-    $$PWD/ucbottomedgeregion.cpp
+    $$PWD/ucbottomedgeregion.cpp \
+    $$PWD/ucpagetreenode.cpp
 
 # adapters
 SOURCES += $$PWD/adapters/alarmsadapter_organizer.cpp

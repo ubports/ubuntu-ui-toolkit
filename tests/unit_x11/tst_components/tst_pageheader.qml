@@ -18,16 +18,23 @@ import QtQuick 2.4
 import Ubuntu.Components 1.3
 import Ubuntu.Test 1.0
 
-Item {
+Rectangle {
     // Wrap the root Item to work around bug #1504755 which
     //  causes the OverflowPanel to open behind the PageHeader
     //  without this wrapper Item.
     id: wrapper
-    width: units.gu(50)
+    width: units.gu(100)
     height: units.gu(70)
+    color: "darkgrey"
 
-    Item {
-        anchors.fill: parent
+    Rectangle {
+        anchors {
+            top: parent.top
+            bottom: parent.bottom
+            left: parent.left
+        }
+        width: widthSwitch.checked ? parent.width : units.gu(40)
+        color: "white"
         id: root
 
         property real initialHeaderHeight: units.gu(6)
@@ -218,12 +225,20 @@ Item {
                 Label {
                     text: "extension"
                 }
+
+                Switch {
+                    id: widthSwitch
+                    checked: false
+                }
+                Label {
+                    text: "Resize with window"
+                }
             }
 
-//            PageHeader {
-//                id: defaultHeader
-//                visible: false
-//            }
+            PageHeader {
+                id: defaultHeader
+                visible: false
+            }
         }
 
         UbuntuTestCase {
@@ -435,6 +450,34 @@ Item {
                 header.sections.actions = [];
                 compare(header.sections.visible, false,
                         "Sections is not hidden by clearing the actions.");
+            }
+
+            function wait_for_animation() {
+                // One or more action fading animations with a duration
+                // of UbuntuAnimation.BriskDuration = 333ms.
+                wait(500);
+            }
+            function check_number_of_action_slots(widthGU, numberOfSlots) {
+                var width = units.gu(widthGU);
+                if (wrapper.width < width) {
+                    skip("Only for screen at least " + widthGU + " GU wide.");
+                }
+                root.width = width;
+                compare(header.trailingActionBar.numberOfSlots, numberOfSlots,
+                        "Header with width " + widthGU + " GU does not have "
+                        + numberOfSlots + " action slots.");
+            }
+            function test_number_of_action_slots() {
+                var initialWidth = root.width;
+                // test for the values specified in the UX specs document
+                check_number_of_action_slots(40, 3);
+                check_number_of_action_slots(50, 3);
+                check_number_of_action_slots(60, 4);
+                check_number_of_action_slots(70, 5);
+                check_number_of_action_slots(80, 6);
+                check_number_of_action_slots(90, 6);
+                check_number_of_action_slots(100, 6);
+                root.width = initialWidth;
             }
 
             // The properties of header.sections, header.leadingActionBar and

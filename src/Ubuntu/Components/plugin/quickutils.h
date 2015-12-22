@@ -32,6 +32,7 @@ class QuickUtils : public QObject
     Q_PROPERTY(QString inputMethodProvider READ inputMethodProvider)
     Q_PROPERTY(bool touchScreenAvailable READ touchScreenAvailable NOTIFY touchScreenAvailableChanged)
     Q_PROPERTY(bool mouseAttached MEMBER m_mouseAttached NOTIFY mouseAttachedChanged)
+    Q_PROPERTY(bool keyboardAttached MEMBER m_keyboardAttached NOTIFY keyboardAttachedChanged)
 public:
     static QuickUtils& instance()
     {
@@ -53,6 +54,10 @@ public:
     {
         return m_mouseAttached;
     }
+    bool keyboardAttached()
+    {
+        return m_keyboardAttached;
+    }
 
 Q_SIGNALS:
     void rootObjectChanged();
@@ -60,6 +65,7 @@ Q_SIGNALS:
     void deactivated();
     void touchScreenAvailableChanged();
     void mouseAttachedChanged();
+    void keyboardAttachedChanged();
 
 protected:
     bool eventFilter(QObject *, QEvent *);
@@ -69,6 +75,7 @@ private:
     QPointer<QQuickView> m_rootView;
     QStringList m_omitIM;
     bool m_mouseAttached;
+    bool m_keyboardAttached;
 
     void lookupQuickView();
 };

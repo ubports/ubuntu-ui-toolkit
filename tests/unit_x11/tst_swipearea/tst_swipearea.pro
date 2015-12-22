@@ -1,5 +1,5 @@
 include(../test-include.pri)
-QT += core-private qml-private quick-private gui-private UbuntuGestures
+QT += core-private qml-private quick-private gui-private UbuntuGestures UbuntuGestures_private
 SOURCES += \
     GestureTest.cpp \
     tst_swipearea.cpp

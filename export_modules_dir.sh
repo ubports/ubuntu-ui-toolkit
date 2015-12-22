@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Copyright 2012 - 2015 Canonical Ltd.
 #
@@ -15,7 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-. `dirname $0`/build_paths.inc
+. `dirname ${BASH_SOURCE[0]}`/build_paths.inc || return 1
 export QML_IMPORT_PATH=$BUILD_DIR/qml
 export QML2_IMPORT_PATH=$BUILD_DIR/qml
 export UBUNTU_UI_TOOLKIT_THEMES_PATH=$BUILD_DIR/qml
