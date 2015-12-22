@@ -232,6 +232,7 @@ PopupBase {
             // in the context lookup
             PopupContext {
                 id: popupContext
+                objectName: popover.objectName + "PopupContext"
                 active: foreground.visible
             }
         }

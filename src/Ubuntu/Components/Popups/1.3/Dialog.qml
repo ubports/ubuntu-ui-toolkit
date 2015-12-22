@@ -183,6 +183,7 @@ PopupBase {
                 // put the context into this component to save ActionContext lookup
                 PopupContext {
                     id: localContext
+                    objectName: dialog.objectName + "DialogContext"
                     active: foreground.visible
                 }
 

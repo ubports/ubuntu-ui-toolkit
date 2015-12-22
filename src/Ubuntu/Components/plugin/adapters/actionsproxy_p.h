@@ -24,9 +24,8 @@
 
 class UCActionContext;
 class UCPopupContext;
-class ActionProxy : public QObject
+class ActionProxy
 {
-    Q_OBJECT
 public:
 
     ~ActionProxy();
@@ -47,13 +46,16 @@ public:
 protected:
     ActionProxy();
 
-protected Q_SLOTS:
+protected:
     virtual void clearContextActions(UCActionContext *context);
     virtual void publishContextActions(UCActionContext *context);
 
 private:
     QSet<UCActionContext*> m_localContexts;
     QStack<UCPopupContext*> m_popupContexts;
+
+    void addPopupContext(UCPopupContext *context);
+    void removePopupContext(UCPopupContext *context);
 };
 
 #endif // ACTIONSPROXY_P_H

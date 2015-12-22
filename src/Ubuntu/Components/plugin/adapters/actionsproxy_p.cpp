@@ -24,8 +24,7 @@ Q_LOGGING_CATEGORY(ucActionProxy, "ubuntu.components.ActionProxy", QtMsgType::Qt
 #define AP_TRACE(params) qCDebug(ucActionProxy) << params
 
 ActionProxy::ActionProxy()
-    : QObject(0)
-    , globalContext(new UCActionContext)
+    : globalContext(new UCActionContext)
 {
     // for testing purposes
     globalContext->setObjectName("GlobalActionContext");
@@ -73,7 +72,7 @@ void ActionProxy::removeContext(UCActionContext *context)
     // make sure the context is deactivated
     context->setActive(false);
     instance().m_localContexts.remove(context);
-    AP_TRACE("REMOVE CONTEXT" << context);
+    AP_TRACE("REMOVE CONTEXT FROM REGISTRY" << context);
 }
 
 // publishes/removes context actions on activation/deactivation
@@ -91,15 +90,7 @@ void ActionProxy::activateContext(UCActionContext *context)
         context->markActionsPublished(true);
 
         if (context->isPopup()) {
-            // deactivate last context and append
-            UCPopupContext *lastActive = instance().m_popupContexts.isEmpty() ?
-                        Q_NULLPTR : instance().m_popupContexts.top();
-            if (lastActive) {
-                lastActive->setEffectiveActive(false);
-                AP_TRACE("DEACTIVATE POPUPCONTEXT" << lastActive);
-            }
-            instance().m_popupContexts.push(static_cast<UCPopupContext*>(context));
-            AP_TRACE("ACTIVATE POPUPCONTEXT" << context);
+            instance().addPopupContext(static_cast<UCPopupContext*>(context));
         } else {
             AP_TRACE("ACTIVATE CONTEXT" << context);
         }
@@ -109,18 +100,45 @@ void ActionProxy::activateContext(UCActionContext *context)
         context->markActionsPublished(false);
 
         if (context->isPopup()) {
-            // remove last context and activate the leftover
-            AP_TRACE("DEACTIVATE POPUPCONTEXT" << instance().m_popupContexts.top());
-            instance().m_popupContexts.pop();
-            UCPopupContext *last = instance().m_popupContexts.isEmpty() ?
-                        Q_NULLPTR : instance().m_popupContexts.top();
-            if (last) {
-                last->setEffectiveActive(true);
-                AP_TRACE("REACTIVATE POPUPCONTEXT" << last);
-            }
+            instance().removePopupContext(static_cast<UCPopupContext*>(context));
         } else {
             AP_TRACE("DEACTIVATE CONTEXT" << context);
         }
+    }
+}
+
+void ActionProxy::addPopupContext(UCPopupContext *context)
+{
+    // deactivate last context and append
+    UCPopupContext *lastActive = m_popupContexts.isEmpty() ?
+                Q_NULLPTR : m_popupContexts.top();
+    if (lastActive) {
+        lastActive->setEffectiveActive(false);
+        AP_TRACE("DEACTIVATE POPUPCONTEXT" << lastActive);
+    }
+    m_popupContexts.push(context);
+    AP_TRACE("ACTIVATE POPUPCONTEXT" << context);
+}
+
+void ActionProxy::removePopupContext(UCPopupContext *context)
+{
+    UCPopupContext *last = m_popupContexts.isEmpty() ?
+                Q_NULLPTR : m_popupContexts.top();
+
+    if (last == context) {
+        // we are about to remove the last one
+        AP_TRACE("DEACTIVATE POPUPCONTEXT" << last);
+        m_popupContexts.pop();
+        // and then re-activate the second last one
+        last = m_popupContexts.isEmpty() ? Q_NULLPTR : m_popupContexts.top();
+        if (last) {
+            AP_TRACE("REACTIVATE POPUPCONTEXT" << last);
+            last->setEffectiveActive(true);
+        }
+    } else {
+        // we simply remove the context and leave
+        AP_TRACE("REMOVE POPUPCONTEXT" << context);
+        m_popupContexts.removeAll(context);
     }
 }
 
