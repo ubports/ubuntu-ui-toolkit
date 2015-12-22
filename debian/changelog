@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (1.3.1790+16.04) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.3.1790+16.04-0ubuntu1) UNRELEASED; urgency=medium
 
   [ Christian Dywan ]
   * Fix typo in runtest.sh: $? is the error code, not $*.
