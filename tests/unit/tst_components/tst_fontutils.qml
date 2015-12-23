@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2012-2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -22,12 +22,12 @@ TestCase {
     name: "FontUtilsAPI"
 
     function test_modularScale() {
-        compare(FontUtils.modularScale("xx-small"), 0.677, "xx-small scale");
-        compare(FontUtils.modularScale("x-small"), 0.804, "x-small scale");
-        compare(FontUtils.modularScale("small"), 0.931, "small scale");
-        compare(FontUtils.modularScale("medium"), 1.079, "medium scale");
-        compare(FontUtils.modularScale("large"), 1.291, "large scale");
-        compare(FontUtils.modularScale("x-large"), 1.714, "x-large scale");
+        compare(FontUtils.modularScale("xx-small"), 0.606, "xx-small scale");
+        compare(FontUtils.modularScale("x-small"), 0.707, "x-small scale");
+        compare(FontUtils.modularScale("small"), 0.857, "small scale");
+        compare(FontUtils.modularScale("medium"), 1.0, "medium scale");
+        compare(FontUtils.modularScale("large"), 1.414, "large scale");
+        compare(FontUtils.modularScale("x-large"), 1.905, "x-large scale");
     }
 
     function test_modularScale_failures() {
@@ -36,17 +36,16 @@ TestCase {
     }
 
     function test_sizeToPixels() {
-        compare(FontUtils.sizeToPixels("xx-small"), 0.677 * units.dp(14), "xx-small scale");
-        compare(FontUtils.sizeToPixels("x-small"), 0.804 * units.dp(14), "x-small scale");
-        compare(FontUtils.sizeToPixels("small"), 0.931 * units.dp(14), "small scale");
-        compare(FontUtils.sizeToPixels("medium"), 1.079 * units.dp(14), "medium scale");
-        compare(FontUtils.sizeToPixels("large"), 1.291 * units.dp(14), "large scale");
-        compare(FontUtils.sizeToPixels("x-large"), 1.714 * units.dp(14), "x-large scale");
+        compare(FontUtils.sizeToPixels("xx-small"), 0.606 * units.dp(14), "xx-small scale");
+        compare(FontUtils.sizeToPixels("x-small"), 0.707 * units.dp(14), "x-small scale");
+        compare(FontUtils.sizeToPixels("small"), 0.857 * units.dp(14), "small scale");
+        compare(FontUtils.sizeToPixels("medium"), 1.0 * units.dp(14), "medium scale");
+        compare(FontUtils.sizeToPixels("large"), 1.414 * units.dp(14), "large scale");
+        compare(FontUtils.sizeToPixels("x-large"), 1.905 * units.dp(14), "x-large scale");
     }
 
     function test_sizeToPixels_failures() {
         compare(FontUtils.sizeToPixels("xxsmall"), 0.0, "xxsmall not defined");
         compare(FontUtils.sizeToPixels("undefined"), 0.0, "undefined scale");
     }
-
 }
