@@ -60,16 +60,19 @@ Item {
 
         // tests adjusted to reproduce bug #1401920
         function test_sourceChanged_bug1401920_data() {
-            var file = "file:///usr/share/icons/ubuntu-mobile/actions/scalable/delete.svg";
             return [
-                {tag: "Existing file", file: file},
-                {tag: "Url with fragment", file: file + "#" + Date.now()},
+                {tag: "Bitmap file", file: 'tst_icon-select.png'},
+                {tag: "Bitmap with fragment", file: 'tst_icon-select.png#' + Date.now()},
+                {tag: "Bitmap file with gu", file: 'tst_icon-select@18.png'},
+                {tag: "Bitmap with gu/ fragment", file: 'tst_icon-select@18.png#' + Date.now()},
+                {tag: "Scalable file", file: 'battery-100-charging.svg'},
+                {tag: "Scalable with fragment", file: 'battery-100-charging.svg#' + Date.now()},
             ];
         }
 
         function test_sourceChanged_bug1401920(data) {
             sourceChangeSpy.target = test;
-            test.source = data.file;
+            test.source = Qt.resolvedUrl(data.file);
             sourceChangeSpy.wait(400);
         }
 
