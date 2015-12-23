@@ -40,7 +40,9 @@ QImage UCScalingImageProvider::requestImage(const QString &id, QSize *size, cons
 {
     int separatorPosition = id.indexOf("/");
     float scaleFactor = id.left(separatorPosition).toFloat();
-    QString path = id.mid(separatorPosition+1);
+    int fragmentPosition = id.lastIndexOf("#");
+    int pathLength = fragmentPosition > -1 ? fragmentPosition - separatorPosition - 1 : -1;
+    QString path = id.mid(separatorPosition + 1, pathLength);
     QFile file(path);
 
     if (file.open(QIODevice::ReadOnly)) {

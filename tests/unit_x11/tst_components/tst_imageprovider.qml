@@ -74,6 +74,7 @@ Item {
             sourceChangeSpy.target = test;
             test.source = Qt.resolvedUrl(data.file);
             sourceChangeSpy.wait(400);
+            compare(test.source, Qt.resolvedUrl(data.file));
         }
 
         function test_sourceNOTIFYable() {
