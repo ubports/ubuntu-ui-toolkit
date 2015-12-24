@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (1.3.1792+16.04-0ubuntu1) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.3.1793+16.04-0ubuntu1) UNRELEASED; urgency=medium
 
   [ Christian Dywan ]
   * Fix typo in runtest.sh: $? is the error code, not $*.
@@ -8,7 +8,8 @@ ubuntu-ui-toolkit (1.3.1792+16.04-0ubuntu1) UNRELEASED; urgency=medium
   * No transparency in focus outline.
   * Give the original Toolbar its name back.
   * Fix typo in runtest.sh: $? is the error code, not $*.
- 
+  * Use resolved filename but add fragment. Fixes LP: #1401920 
+
   [ Zoltán Balogh ]
   * Use build root for the Gestures library instead of relative path.
   
