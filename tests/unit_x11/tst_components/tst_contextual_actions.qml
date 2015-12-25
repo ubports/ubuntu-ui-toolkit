@@ -220,7 +220,7 @@ Item {
             testLoader.sourceComponent = component;
             tryCompareFunction(function() { return testLoader.item != null }, true, 1000);
             waitForRendering(testLoader.item);
-            wait(1000)
+            wait(200)
             return testLoader.item;
         }
 
