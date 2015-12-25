@@ -54,7 +54,6 @@ public:
 
 Q_SIGNALS:
     void activeChanged();
-    Q_REVISION(1) void popupChanged();
 
 public Q_SLOTS:
     void addAction(UCAction *action);

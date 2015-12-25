@@ -46,32 +46,35 @@ bool shortcutContextMatcher(QObject* object, Qt::ShortcutContext context)
                 window = item->window();
             }
         }
-        bool activable = window && window == QGuiApplication::focusWindow();
+        bool activatable = window && window == QGuiApplication::focusWindow();
 
-        if (activable) {
+        if (activatable) {
             // is the last action owner item in an active context?
             QQuickItem *pl = action->lastOwningItem();
-            activable = (pl != Q_NULLPTR);
-            while (pl && activable) {
+            activatable = false;
+            while (pl) {
                 UCActionContextAttached *attached = static_cast<UCActionContextAttached*>(
                             qmlAttachedPropertiesObject<UCActionContext>(pl, false));
-                if (attached && !attached->context()->active()) {
-                    ACT_TRACE(action << "Inactive context found" << attached->context());
-                    activable = false;
+                if (attached) {
+                    activatable = attached->context()->active();
+                    if (!activatable) {
+                        ACT_TRACE(action << "Inactive context found" << attached->context());
+                        break;
+                    }
                 }
                 pl = pl->parentItem();
             }
-            if (!activable) {
+            if (!activatable) {
                 // check if the action is in an active context
                 UCActionContext *context = qobject_cast<UCActionContext*>(action->parent());
-                activable = context && context->active();
+                activatable = context && context->active();
             }
         }
-        if (activable) {
+        if (activatable) {
             ACT_TRACE("SELECTED ACTION" << action);
         }
 
-        return activable;
+        return activatable;
     }
     default: break;
     }

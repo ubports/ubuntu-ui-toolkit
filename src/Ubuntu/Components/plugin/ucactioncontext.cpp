@@ -183,7 +183,7 @@ int UCActionContext::count(QQmlListProperty<UCAction> *list)
  * that has been added to it. There can be more than one local context active at a.
  * time. When a local context is set active the manager will notice this and will
  * export the actions from the context.
- * \note An Action declared to a component alling under an item that is a child of
+ * \note An Action declared to a component falling under an item that is a child of
  * an inactive ActiveContext can be triggered manually using the mouse or connections.
  */
 bool UCActionContext::active()
@@ -264,7 +264,7 @@ void UCActionContext::removeAction(UCAction *action)
  * when deactivated all child contexts will be deactivated as well, and no Action
  * declared in these contexts will be available through shortcuts.
  *
- * The toolkit provides such kind of contexts in MainView, Popup and Dialog. It is
+ * The toolkit provides this kind of contexts in MainView, Popup and Dialog. It is
  * highly recommended for applications to have a PopupContext defined in their rootItem.
  */
 UCPopupContext::UCPopupContext(QObject *parent)
