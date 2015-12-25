@@ -24,12 +24,16 @@ Item {
     width: 400
     height: 600
 
-    Action {
-        id: action
-    }
-    Action {
-        id: other
-        shortcut: 'Ctrl+G'
+    // actions must be either assigned to an active ActionContext or to an ActionItem to activate shortcuts
+    ActionContext {
+        active: true
+        Action {
+            id: action
+        }
+        Action {
+            id: other
+            shortcut: 'Ctrl+G'
+        }
     }
 
     TestUtil {
@@ -84,12 +88,12 @@ Item {
             ];
         }
         function test_shortcut_invalid(data) {
-            ignoreQMLWarning(':27:5: QML Action: Invalid shortcut: ');
+            ignoreQMLWarning(':30:9: QML Action: Invalid shortcut: ');
             action.shortcut = data;
         }
 
         function test_shortcut_duplicate() {
-            ignoreQMLWarning(':30:5: QML Action: Ambiguous shortcut: Ctrl+G');
+            ignoreQMLWarning(':33:9: QML Action: Ambiguous shortcut: Ctrl+G');
             action.shortcut = other.shortcut;
             keyClick(Qt.Key_G, Qt.ControlModifier);
         }

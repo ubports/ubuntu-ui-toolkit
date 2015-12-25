@@ -61,6 +61,11 @@ bool shortcutContextMatcher(QObject* object, Qt::ShortcutContext context)
                 }
                 pl = pl->parentItem();
             }
+            if (!activable) {
+                // check if the action is in an active context
+                UCActionContext *context = qobject_cast<UCActionContext*>(action->parent());
+                activable = context && context->active();
+            }
         }
         if (activable) {
             ACT_TRACE("SELECTED ACTION" << action);
