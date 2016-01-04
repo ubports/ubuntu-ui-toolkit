@@ -1105,6 +1105,8 @@ Ubuntu.Components.SwipeArea 1.3: Item
     signal distanceChanged(double distance)
     signal touchPositionChanged(QPointF position)
     signal immediateRecognitionChanged(bool immediateRecognition)
+    signal monitorOnlyChanged(bool monitorOnly)
+    property bool monitorOnly
     readonly property bool pressed
     readonly property QPointF touchPosition
 Ubuntu.Components.SwipeArea.Direction: Enum
