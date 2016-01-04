@@ -33,6 +33,7 @@ class TouchOwnershipEvent;
 class UnownedTouchEvent;
 class UCSwipeAreaPrivate;
 
+class UCSwipeAreaPrivate;
 class UBUNTUGESTURESQML_EXPORT UCSwipeArea : public QQuickItem
 {
     Q_OBJECT
@@ -93,8 +94,12 @@ protected:
     void touchEvent(QTouchEvent *event) override;
     void itemChange(ItemChange change, const ItemChangeData &value) override;
 
-public: // so tests can access it
-    UCSwipeAreaPrivate *d;
+    // functors
+    void giveUpIfDisabledOrInvisible();
+    void rejectGesture();
+
+private:
+    Q_DECLARE_PRIVATE(UCSwipeArea)
 };
 
 Q_DECLARE_LOGGING_CATEGORY(ucSwipeArea)

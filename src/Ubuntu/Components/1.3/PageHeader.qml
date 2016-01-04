@@ -230,6 +230,7 @@ Header {
             }
         }
       \endqml
+      See \l Toolbar and \l Sections.
     */
     property Item extension
 

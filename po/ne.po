@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2015-12-17 05:31+0000\n"
+"X-Launchpad-Export-Date: 2015-12-25 05:33+0000\n"
 "X-Generator: Launchpad (build 17865)\n"
 
 #: Ubuntu/Components/1.2/TextInputPopover.qml:29
@@ -104,7 +104,7 @@ msgstr "'Yesterday 'HH:mm"
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:302
 msgid "'Tomorrow 'h:mm ap"
-msgstr ""
+msgstr "'Tomorrow 'h:mm ap"
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
@@ -122,7 +122,7 @@ msgstr "ddd' 'h:mm ap"
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:315
 msgid "ddd' 'HH:mm"
-msgstr ""
+msgstr "ddd' 'HH:mm"
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
@@ -141,6 +141,8 @@ msgid ""
 "ListView has no ViewItems.dragUpdated() signal handler implemented. No "
 "dragging will be possible."
 msgstr ""
+"ListView ले कुनै ViewItems.dragUpdated() संकेत ह्यान्डलर कार्यान्वयन गरेको "
+"छैन​। तान्ने सम्भव हुनेछैन।"
 
 #: Ubuntu/Components/plugin/statesaverbackend_p.cpp:176
 #, qt-format
@@ -201,13 +203,14 @@ msgstr "इन्भर्ज माउस फिल्टर लागि आ�
 
 #: Ubuntu/Components/plugin/ucserviceproperties.cpp:77
 msgid "Changing connection parameters forbidden."
-msgstr ""
+msgstr "जडान मानकहरू परिवर्तन गर्न ​निषेध गरिएको छ।"
 
 #: Ubuntu/Components/plugin/ucserviceproperties.cpp:160
 #, qt-format
 msgid ""
 "Binding detected on property '%1' will be removed by the service updates."
 msgstr ""
+"प्रोपर्टि '%1' मा पत्ता लगाइएको बाध्यकारी सेवा अद्यावधिकद्वारा हटाइनेछ।"
 
 #: Ubuntu/Components/plugin/ucstatesaver.cpp:46
 msgid "Warning: attachee must have an ID. State will not be saved."

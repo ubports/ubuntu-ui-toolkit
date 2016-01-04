@@ -41,6 +41,15 @@ Item {
         name: "ListItemsStandardAPI"
         when: windowShown
 
+        function test_clickToTrigger_bug1527811() {
+            compare(listItemTriggeredSpy.valid, true, "triggered signal exists")
+            var listItemTriggeredCount = listItemTriggeredSpy.count
+            mouseMove(listItemStandard, 10, 10)
+            mouseClick(listItemStandard, 10, 10, Qt.LeftButton)
+            compare(listItemTriggeredSpy.count, listItemTriggeredCount + 1,
+                    "Clicking the list item triggers it")
+        }
+
         function test_fallbackIconSource() {
             expectFail("","https://bugs.launchpad.net/tavastia/+bug/1076762")
             compare(listItemStandard.fallbackIconSource,undefined,"fallbackIconSource is not set by default")
@@ -118,6 +127,12 @@ Item {
             id: controlClickedSpy
             target: testControl
             signalName: "clicked"
+        }
+
+        SignalSpy {
+            id: listItemTriggeredSpy
+            target: listItemStandard
+            signalName: "triggered"
         }
     }
 }
