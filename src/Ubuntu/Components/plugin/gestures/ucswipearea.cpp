@@ -362,11 +362,13 @@ void UCSwipeArea::setImmediateRecognition(bool enabled)
  */
 bool UCSwipeArea::monitorOnly() const
 {
+    Q_D(const UCSwipeArea);
     return d->monitorOnly;
 }
 
 void UCSwipeArea::setMonitorOnly(bool enabled)
 {
+    Q_D(UCSwipeArea);
     if (d->monitorOnly != enabled) {
         d->monitorOnly = enabled;
 
