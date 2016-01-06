@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (1.3.1793+16.04-0ubuntu1) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.3.1795+16.04-0ubuntu1) UNRELEASED; urgency=medium
 
   [ Christian Dywan ]
   * Fix typo in runtest.sh: $? is the error code, not $*.
@@ -12,6 +12,7 @@ ubuntu-ui-toolkit (1.3.1793+16.04-0ubuntu1) UNRELEASED; urgency=medium
 
   [ Zoltán Balogh ]
   * Use build root for the Gestures library instead of relative path.
+  * Fix the tests for the gallery change
   
   [ Zsombor Egri ]
   * Add mnemonics support to Action. Fixes LP: #1527527
