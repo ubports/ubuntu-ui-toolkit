@@ -26,21 +26,21 @@ Rectangle {
 
     property list<Action> actionList: [
         Action {
-            text: "first";
+            text: "action 0";
             onTriggered: label.text = "First action triggered.";
         },
         Action {
-            text: "second";
+            text: "action 1";
             onTriggered: label.text = "Second action triggered.";
         },
         Action {
-            text: "third";
+            text: "action 2";
             onTriggered: label.text = "Third action triggered.";
         }
     ]
 
     property var stringList: [
-        "string one", "string two", "string three"
+        "string zero", "string one", "string two"
     ]
 
     property var longStringList: [
@@ -60,29 +60,14 @@ Rectangle {
         }
         spacing: units.gu(2)
 
-        Label {
-            anchors.horizontalCenter: parent.horizontalCenter
-            text: "Sections with actions"
-        }
-        Label {
-            anchors.left: parent.left
-            text: "actions in-line:"
-            textSize: Label.Small
-        }
-
         Sections {
             // Not used in the tests below, but added here to
             //  verify that the Actions can be defined directly
             //  inside the list of actions.
             actions: [
-                Action { text: "inline action 1" },
-                Action { text: "inline action 2" }
+                Action { text: "inline action 0" },
+                Action { text: "inline action 1" }
             ]
-        }
-        Label {
-            anchors.left: parent.left
-            text: "enabled:"
-            textSize: Label.Small
         }
         Rectangle {
             anchors {
@@ -103,33 +88,14 @@ Rectangle {
             id: enabledSections
             actions: root.actionList
         }
-        Label {
-            text: "disabled:"
-            textSize: Label.Small
-        }
         Sections {
             id: disabledSections
             actions: root.actionList
             enabled: false
         }
-
-        Label {
-            anchors.horizontalCenter: parent.horizontalCenter
-            text: "Sections with strings"
-        }
-        Label {
-            anchors.left: parent.left
-            text: "enabled:"
-            textSize: Label.Small
-        }
         Sections {
             id: enabledStringSections
             model: root.stringList
-        }
-        Label {
-            anchors.left: parent.left
-            text: "disabled:"
-            textSize: Label.Small
         }
         Sections {
             id: disabledStringSections
@@ -146,7 +112,7 @@ Rectangle {
                 onTriggered: selectedIndexSections.action0Triggered = true;
             }
             property Action action1: Action {
-                text: "action1"
+                text: "action1 (selected)"
                 onTriggered: selectedIndexSections.action1Triggered = true;
             }
             property Action action2: Action {
@@ -248,16 +214,16 @@ Rectangle {
         //  for both enabledSections and disabledSections.
 
         function test_0_first_section_initially_selected_actions_enabled() {
-            check_selected_section(enabledSections, 0, "first");
+            check_selected_section(enabledSections, 0, "action 0");
         }
         function test_0_first_section_initially_selected_actions_disabled() {
-            check_selected_section(disabledSections, 0, "first");
+            check_selected_section(disabledSections, 0, "action 0");
         }
         function test_0_first_section_initially_selected_strings_enabled() {
-            check_selected_section(enabledStringSections, 0, "string one");
+            check_selected_section(enabledStringSections, 0, "string zero");
         }
         function test_0_first_section_initially_selected_strings_disabled() {
-            check_selected_section(disabledStringSections, 0, "string one");
+            check_selected_section(disabledStringSections, 0, "string zero");
         }
 
         function test_number_of_section_buttons() {
@@ -270,7 +236,7 @@ Rectangle {
 
         function test_click_to_select_section_and_trigger_action() {
             var index = 2;
-            var name = "third";
+            var name = "action 2";
             click_section_button(enabledSections, name);
             wait_for_animation(enabledSections);
             check_selected_section(enabledSections, index, name);
@@ -280,12 +246,12 @@ Rectangle {
 
         function test_click_disabled_section_action() {
             var index = 2;
-            var name = "third";
+            var name = "action 2";
             click_section_button(disabledSections, name);
             wait_for_animation(disabledSections);
             // first button should still be selected:
             index = 0;
-            name = "first";
+            name = "action 0";
             check_selected_section(disabledSections, index, name);
             var text = "No action triggered.";
             compare(label.text, text, "Clicking disabled button triggered something.");
@@ -293,25 +259,25 @@ Rectangle {
 
         function test_click_to_select_section_string() {
             var index = 2;
-            var name = "string three";
+            var name = "string two";
             click_section_button(enabledStringSections, name);
             wait_for_animation(enabledStringSections);
             check_selected_section(enabledStringSections, index, name);
         }
 
         function test_click_disabled_section_string() {
-            var name = "string three";
+            var name = "string two";
             click_section_button(disabledStringSections, name);
             wait_for_animation(disabledStringSections);
             // first button should still be selected:
             var index = 0;
-            name = "string one";
+            name = "string zero";
             check_selected_section(disabledStringSections, index, name);
         }
 
         function test_set_selectedIndex_to_select_section_and_trigger_action_enabled() {
             var index = 1;
-            var name = "second";
+            var name = "action 1";
             enabledSections.selectedIndex = index;
             wait_for_animation(enabledSections);
             check_selected_section(enabledSections, index, name);
@@ -321,7 +287,7 @@ Rectangle {
 
         function test_set_selectedIndex_to_select_section_and_trigger_action_disabled() {
             var index = 2;
-            var name = "third";
+            var name = "action 2";
             disabledSections.selectedIndex = index;
             wait_for_animation(disabledSections);
             check_selected_section(disabledSections, index, name);
@@ -332,7 +298,7 @@ Rectangle {
 
         function test_set_selectedIndex_to_select_section_string_enabled() {
             var index = 1;
-            var name = "string two";
+            var name = "string one";
             enabledStringSections.selectedIndex = index;
             wait_for_animation(enabledStringSections);
             check_selected_section(enabledStringSections, index, name);
@@ -340,7 +306,7 @@ Rectangle {
 
         function test_set_selectedIndex_to_select_section_string_disabled() {
             var index = 2;
-            var name = "string three";
+            var name = "string two";
             disabledStringSections.selectedIndex = index;
             check_selected_section(disabledStringSections, index, name);
         }
