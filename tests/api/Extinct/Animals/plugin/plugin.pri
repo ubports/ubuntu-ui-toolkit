@@ -13,6 +13,7 @@ uri = Extinct.Animals
 
 HEADERS += \
     $$PWD/plugin.h \
+    $$PWD/tarpan.h \
     $$PWD/smilodon.h \
     $$PWD/pangaea.h \
     $$PWD/rune.h \
@@ -21,6 +22,7 @@ HEADERS += \
 
 SOURCES += \
     $$PWD/plugin.cpp \
+    $$PWD/tarpan.cpp \
     $$PWD/smilodon.cpp \
     $$PWD/pangaea.cpp \
     $$PWD/rune.cpp \

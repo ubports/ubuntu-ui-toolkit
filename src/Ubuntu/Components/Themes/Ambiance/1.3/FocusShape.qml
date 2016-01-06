@@ -24,7 +24,7 @@ UbuntuShape {
 
     anchors.fill: parent
     anchors.margins: -units.gu(0.4)
-    backgroundColor: Qt.rgba(focusColor.r, focusColor.g, focusColor.b, 0.8)
+    backgroundColor: Qt.rgba(focusColor.r, focusColor.g, focusColor.b, 1.0)
     visible: styledItem.keyNavigationFocus
     z: styledItem.z - 1
 

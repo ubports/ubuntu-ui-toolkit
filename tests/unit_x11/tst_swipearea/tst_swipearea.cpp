@@ -23,8 +23,8 @@
 #include <private/qquickmousearea_p.h>
 #include <private/qquickwindow_p.h>
 
-#include "gestures/ucswipearea.h"
-#include "gestures/ucswipearea_p.h"
+#include "private/ucswipearea_p.h"
+#include "private/ucswipearea_p_p.h"
 #define protected public
 #define private public
 #include <UbuntuGestures/TouchRegistry>

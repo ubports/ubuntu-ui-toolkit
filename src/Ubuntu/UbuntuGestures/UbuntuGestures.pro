@@ -21,6 +21,10 @@ HEADERS += candidateinactivitytimer.h \
            unownedtouchevent.h \
            ubuntugesturesglobal.h \
            pool.h \
+           ucswipearea_p.h \
+           ucswipearea_p_p.h \
+           damper.h \
+
 
 SOURCES += candidateinactivitytimer.cpp \
            debughelpers.cpp \
@@ -29,3 +33,5 @@ SOURCES += candidateinactivitytimer.cpp \
            touchownershipevent.cpp \
            touchregistry.cpp \
            unownedtouchevent.cpp \
+           ucswipearea.cpp \
+           damper.cpp \

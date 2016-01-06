@@ -16,7 +16,6 @@
 
 import QtQuick 2.4
 import Ubuntu.Components 1.3
-import Ubuntu.Components.ListItems 1.3 as ListItem
 
 Template {
     objectName: "ubuntuListViewTemplate"
@@ -52,9 +51,14 @@ Template {
             height: units.gu(36)
             model: fruitModel
             clip: true
+            currentIndex: -1
 
-            delegate: ListItem.Standard {
-                text: name
+            delegate: ListItem {
+                ListItemLayout {
+                    title.text: name
+                }
+                // to enable highlight
+                onClicked: ListView.view.currentIndex = index
             }
 
             pullToRefresh {
