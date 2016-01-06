@@ -14,12 +14,12 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-12-17 05:31+0000\n"
+"X-Launchpad-Export-Date: 2015-12-25 05:33+0000\n"
 "X-Generator: Launchpad (build 17865)\n"
 
 #: About.qml:34
 msgid "About..."
-msgstr ""
+msgstr "Περί..."
 
 #: ActionBars.qml:68
 msgid "Short list"
@@ -54,7 +54,7 @@ msgstr "Τυπικές διάρκειες"
 
 #: Animations.qml:62
 msgid "Snap"
-msgstr ""
+msgstr "Προσκόλληση"
 
 #: Animations.qml:98
 msgid "Fast"
@@ -293,11 +293,11 @@ msgstr ""
 
 #: NewListItems.qml:111
 msgid "Edit"
-msgstr ""
+msgstr "Επεξεργασία"
 
 #: NewListItems.qml:114
 msgid "Move"
-msgstr ""
+msgstr "Μετακίνηση"
 
 #: NewListItems.qml:163
 msgid "Basic"
@@ -322,7 +322,7 @@ msgstr ""
 
 #: OptionSelectors.qml:34
 msgid "This is the second value"
-msgstr ""
+msgstr "Αυτή είναι η δεύτερη τιμή"
 
 #: OptionSelectors.qml:35
 msgid ""
@@ -404,7 +404,7 @@ msgstr "Μεγέθη"
 
 #: Sections.qml:34
 msgid "Enabled"
-msgstr ""
+msgstr "Ενεργοποιημένο"
 
 #: Sheet.qml:28
 msgid "The visual style of the Sheet is early work and thus clunky looking."
@@ -429,19 +429,19 @@ msgstr "Εύρος"
 
 #: Sliders.qml:74
 msgid "Labels"
-msgstr ""
+msgstr "Ετικέτες"
 
 #: Sliders.qml:85
 msgid "Small"
-msgstr ""
+msgstr "Μικρό"
 
 #: Sliders.qml:87
 msgid "Medium"
-msgstr ""
+msgstr "Μεσαίο"
 
 #: Sliders.qml:89
 msgid "Large"
-msgstr ""
+msgstr "Μεγάλο"
 
 #: TextInputs.qml:50
 msgid "Type me in..."
