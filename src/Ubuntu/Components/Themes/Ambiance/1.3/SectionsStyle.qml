@@ -20,7 +20,7 @@ import QtGraphicalEffects 1.0
 Item {
     id: sectionsStyle
 
-    implicitWidth: units.gu(50) //sectionsRow.width
+    implicitWidth: units.gu(50) //sectionsRow.width // FIXME
     implicitHeight: units.gu(4)
 
     enabled: styledItem.enabled

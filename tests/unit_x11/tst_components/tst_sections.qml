@@ -122,6 +122,14 @@ Rectangle {
             actions: [action0, action1, action2]
             selectedIndex: 1
         }
+        Sections {
+            id: scrollingSections
+            model: root.longStringList
+            anchors {
+                left: parent.left
+                right: parent.right
+            }
+        }
     }
 
     UbuntuTestCase {
