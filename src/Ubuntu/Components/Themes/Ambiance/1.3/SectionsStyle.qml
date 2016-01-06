@@ -20,17 +20,6 @@ import QtGraphicalEffects 1.0
 Item {
     id: sectionsStyle
 
-    //VISUAL CHANGES:
-    //- sectionColor
-    //- added underlineColor
-    //- fontsize to medium
-    //- font weight to Light
-//    Rectangle {
-//        anchors.fill: parent
-//        color: "pink"
-//        opacity: 0.3
-//    }
-
     implicitWidth: units.gu(50) //sectionsRow.width
     implicitHeight: units.gu(4)
 
@@ -97,7 +86,7 @@ Item {
 
         ListView {
             id: sectionsListView
-            objectName: "section_listview"
+            objectName: "sections_listview"
 
             property bool animateContentX: false
 

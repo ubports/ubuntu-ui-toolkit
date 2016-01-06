@@ -43,6 +43,13 @@ Rectangle {
         "string one", "string two", "string three"
     ]
 
+    property var longStringList: [
+        "one", "two", "three", "four", "five", "six", "seven",
+        "eight", "nine", "ten", "eleven", "twelve", "thirteen",
+        "fourteen", "fifteen", "sixteen", "seventeen",
+        "eighteen", "nineteen", "twenty"
+    ]
+
     Column {
         id: column
         anchors {
@@ -62,19 +69,35 @@ Rectangle {
             text: "actions in-line:"
             textSize: Label.Small
         }
+
         Sections {
             // Not used in the tests below, but added here to
             //  verify that the Actions can be defined directly
             //  inside the list of actions.
             actions: [
-                Action { text: "1" },
-                Action { text: "2" }
+                Action { text: "inline action 1" },
+                Action { text: "inline action 2" }
             ]
         }
         Label {
             anchors.left: parent.left
             text: "enabled:"
             textSize: Label.Small
+        }
+        Rectangle {
+            anchors {
+                left: parent.left
+                right: parent.right
+                margins: units.gu(2)
+            }
+            color: UbuntuColors.blue
+            height: units.gu(5)
+            Label {
+                id: label
+                anchors.centerIn: parent
+                text: "No action triggered."
+                color: "white"
+            }
         }
         Sections {
             id: enabledSections
@@ -89,21 +112,7 @@ Rectangle {
             actions: root.actionList
             enabled: false
         }
-        Rectangle {
-            anchors {
-                left: parent.left
-                right: parent.right
-                margins: units.gu(2)
-            }
-            color: UbuntuColors.blue
-            height: units.gu(10)
-            Label {
-                id: label
-                anchors.centerIn: parent
-                text: "No action triggered."
-                color: "white"
-            }
-        }
+
         Label {
             anchors.horizontalCenter: parent.horizontalCenter
             text: "Sections with strings"
@@ -133,12 +142,15 @@ Rectangle {
             property bool action1Triggered: false;
             property bool action2Triggered: false;
             property Action action0: Action {
+                text: "action0"
                 onTriggered: selectedIndexSections.action0Triggered = true;
             }
             property Action action1: Action {
+                text: "action1"
                 onTriggered: selectedIndexSections.action1Triggered = true;
             }
             property Action action2: Action {
+                text: "action2"
                 onTriggered: selectedIndexSections.action2Triggered = true;
             }
             actions: [action0, action1, action2]
@@ -176,8 +188,8 @@ Rectangle {
         }
 
         function get_number_of_section_buttons(sections) {
-            var repeater = findChild(sections, "sections_repeater");
-            return repeater.count;
+            var listview = findChild(sections, "sections_listview");
+            return listview.count;
         }
 
         // return the index of the selected section button,
