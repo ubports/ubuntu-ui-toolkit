@@ -375,6 +375,17 @@ Item {
             compare(item.padding.trailing, units.gu(1), "Default trailing padding")
         }
 
+        function checkDefaultWrapping(item) {
+            //we have to use WrapAnywhere because otherwise it will have unexpected behaviour
+            //when used together with ElideRight when the string wraps (it will elide too early).
+            compare(item.title.wrapMode, Label.WrapAnywhere, "Wrong default title wrapMode")
+            compare(item.subtitle.wrapMode, Label.WrapAnywhere, "Wrong default subtitle wrapMode")
+            compare(item.summary.wrapMode, Label.WrapAnywhere, "Wrong default summary wrapMode")
+            compare(item.title.elide, Label.ElideRight, "Wrong default title elide")
+            compare(item.subtitle.elide, Label.ElideRight, "Wrong default subtitle elide")
+            compare(item.summary.elide, Label.ElideRight, "Wrong default summary elide")
+        }
+
         function checkImplicitSize(item) {
             compare(item.implicitHeight, expectedImplicitHeight(item), "Implicit height check")
             compare(item.implicitWidth, column.width, "Fill parent's width")
@@ -742,6 +753,10 @@ Item {
                             "Default labels positioning, summary's y")
                 }
             }
+        }
+
+        function test_defaultLabelsWrappingAndElide() {
+            checkDefaultWrapping(layoutLabels)
         }
 
         function test_defaultMainSlotHeight() {
