@@ -27,6 +27,7 @@
     \qmltype ListItemLayout
     \instantiates UCListItemLayout
     \inqmlmodule Ubuntu.Components 1.3
+    \since Ubuntu.Components 1.3
     \inherits SlotsLayout
     \ingroup ubuntu
 
@@ -74,7 +75,7 @@
     \l ListItem and ListItemLayout:
     \qml
     ListItem {
-        height: layout.height + divider.height
+        height: layout.height + (divider.visible ? divider.height : 0)
         ListItemLayout {
             id: layout
             title.text: "Hello developers!"
@@ -103,7 +104,7 @@
     \qml
     ListItem {
         id: listItem
-        height: layout.height + divider.height
+        height: layout.height + (divider.visible ? divider.height : 0)
 
         ListItemLayout {
             id: layout
@@ -155,8 +156,8 @@
     The \l title is positioned at the top, followed by \l subtitle and \l summary,
     respectively.
 
-    The \l subtitle has its top anchored to \l {title}'s baseline, with a margin of
-    4 DPs.
+    The \l subtitle has its top anchored to \l {title}'s bottom, with a margin of
+    2 DPs.
 
     The \l summary has its top tightly anchored to \l {subtitle}'s bottom.
 
@@ -207,6 +208,81 @@
         title.text: "Hello developers!"
     }
     \endqml
+
+    \section1 About aliasing labels properties
+    Due to the way ListItemsLayout's labels are created (see
+    \l {Optimizing memory consumption}) it is not possible to
+    directly alias their properties. It is still possible, however,
+    to expose an API that gives indirect read-write access to those
+    properties.
+    The following code:
+
+    \qml
+    ListItem {
+        property alias titleText: layout.title.text
+        ListItemLayout {
+            id: layout
+        }
+    }
+    \endqml
+
+    will return the error "Invalid alias location", because
+    the title object does not yet exist at time when the alias
+    is created.
+
+    If you need to expose an API for your component that allows
+    changing the properties of the labels, we recommend aliasing
+    the labels themselves. Let's assume you want to create a
+    QML component to use as a delegate of many
+    list views inside your application: you will probably have a qml
+    file holding the definition of the that delegate, and the content
+    of that file will be similar to:
+    \qml
+    //Content of CustomListItem.qml
+    import QtQuick 2.4
+    import Ubuntu.Components 1.3
+
+    ListItem {
+        id: listitem
+        property alias title: layout.title
+        property alias iconName: icon.name
+
+        height: layout.height + (divider.visible ? divider.height : 0)
+
+        ListItemLayout {
+            id: layout
+            Icon {
+                id: icon
+                width: units.gu(2)
+            }
+        }
+    }
+    \endqml
+
+    As you can see, we alias the label item itself instead of its
+    properties. This also has the advantage of only exposing one alias
+    instead of one for each property, thus making your QML app a bit more performant.
+    Once your delegate is defined, you can use it in your ListViews like usual.
+    \qml
+    //other UI code...
+
+    ListView {
+        anchors.fill: parent
+        model: ListModel {
+            id: listViewModel
+            ListElement { titleText: "Hello1"; icon: "message" }
+            ListElement { titleText: "Hello2"; icon: "email" }
+            ListElement { titleText: "Hello3"; icon: "email" }
+            ListElement { titleText: "Hello4"; icon: "message" }
+        }
+        delegate: CustomListItem {
+            title.text: model.titleText
+            iconName: model.icon
+        }
+    }
+    \endqml
+
+    Note how title's properties are all accessible via the "title" identifier.
 
 */
 UCListItemLayout::UCListItemLayout(QQuickItem *parent)
