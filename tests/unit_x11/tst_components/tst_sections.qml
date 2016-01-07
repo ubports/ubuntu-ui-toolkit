@@ -405,7 +405,7 @@ Rectangle {
                     "Using right key navigates beyond the last section.");
 
             while (i > 0) {
-                i--
+                i--;
                 keyClick(Qt.Key_Left);
                 wait_for_animation(sections);
                 compare(sections.selectedIndex, i,
