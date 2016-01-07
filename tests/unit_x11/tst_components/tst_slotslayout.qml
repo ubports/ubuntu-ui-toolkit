@@ -66,6 +66,17 @@ Item {
             readonly property var trailingSlots: []
         }
         ListItemLayout {
+            id: layoutMultilineLabels
+            title.text: "test \n test"
+            title.maximumLineCount: 2
+            subtitle.text: "test2 \n test2 \n test2"
+            subtitle.maximumLineCount: 3
+            summary.text: "test3 \n test3"
+            summary.maximumLineCount: 2
+            readonly property var leadingSlots: []
+            readonly property var trailingSlots: []
+        }
+        ListItemLayout {
             id: layoutOneLeading
             readonly property var leadingSlots: [layoutOneLeading_leading1]
             readonly property var trailingSlots: []
@@ -729,7 +740,7 @@ Item {
                             "Default labels positioning, subtitle's y")
                 } else {
                     compare(listitemlayout.subtitle.y,
-                            listitemlayout.title.baselineOffset + units.dp(4),
+                            listitemlayout.title.y + listitemlayout.title.height + units.dp(2),
                             "Default labels positioning, subtitle's y")
                 }
             }
@@ -745,7 +756,7 @@ Item {
                         compare(listitemlayout.summary.y, 0,
                                 "Default labels positioning, summary's y")
                     } else {
-                        compare(listitemlayout.summary.y, listitemlayout.title.baselineOffset + units.dp(4),
+                        compare(listitemlayout.summary.y, listitemlayout.title.y + listitemlayout.title.height + units.dp(2),
                                 "Default labels positioning, summary's y")
                     }
                 } else  {
@@ -887,6 +898,25 @@ Item {
             waitForRendering(obj)
             compare(obj !== null, true, "QML ListItemLayout: testing labels' QML context.")
             obj.destroy()
+        }
+
+        //first version of ListItemLayout anchored subtitle to title's baseline, but that breaks
+        //when title is multiline
+        function test_multilineLabelsPositioning() {
+            compare(layoutMultilineLabels.title.maximumLineCount, 2,
+                    "Multiline labels positioning: wrong title maximumLineCount")
+            compare(layoutMultilineLabels.subtitle.maximumLineCount, 3,
+                    "Multiline labels positioning: wrong subtitle maximumLineCount")
+            compare(layoutMultilineLabels.summary.maximumLineCount, 2,
+                    "Multiline labels positioning: wrong summary maximumLineCount")
+
+            compare(layoutMultilineLabels.title.lineCount, 2,
+                    "Multiline labels positioning: wrong title lineCount")
+            compare(layoutMultilineLabels.subtitle.lineCount, 3,
+                    "Multiline labels positioning: wrong subtitle lineCount")
+            compare(layoutMultilineLabels.summary.lineCount, 2,
+                    "Multiline labels positioning: wrong summary lineCount")
+            checkLabelsY(layoutMultilineLabels)
         }
     }
 }

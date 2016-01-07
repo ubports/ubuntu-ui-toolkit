@@ -102,19 +102,19 @@ void UCThreeLabelsSlotPrivate::_q_updateLabelsAnchorsAndBBoxHeight()
         QQuickAnchors *subtitleAnchors = QQuickItemPrivate::get(m_subtitle)->anchors();
         subtitleAnchors->setTop(skipTitle
                                 ? top()
-                                : QQuickItemPrivate::get(m_title)->baseline());
+                                : QQuickItemPrivate::get(m_title)->bottom());
         subtitleAnchors->setTopMargin(skipTitle
                                       ? 0
-                                      : UCUnits::instance().dp(LABELSBLOCK_SPACING_DP));
+                                      : UCUnits::instance().dp(TITLE_SPACING_DP));
     }
 
     if (!skipSummary) {
         QQuickAnchors *summaryAnchors = QQuickItemPrivate::get(m_summary)->anchors();
         summaryAnchors->setTop(skipSubtitle
-                               ? (skipTitle ? top() : QQuickItemPrivate::get(m_title)->baseline())
+                               ? (skipTitle ? top() : QQuickItemPrivate::get(m_title)->bottom())
                                : QQuickItemPrivate::get(m_subtitle)->bottom());
         summaryAnchors->setTopMargin(skipSubtitle
-                                     ? (skipTitle ? 0 : UCUnits::instance().dp(LABELSBLOCK_SPACING_DP))
+                                     ? (skipTitle ? 0 : UCUnits::instance().dp(TITLE_SPACING_DP))
                                      : 0);
     }
     //Update height of the labels box
