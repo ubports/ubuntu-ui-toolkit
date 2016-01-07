@@ -357,5 +357,66 @@ Rectangle {
             selectedIndexSections.actions = originalActions;
             wait_for_animation(selectedIndexSections);
         }
+
+        function test_keyboard_navigation_data() {
+            return [
+                        { tag: "actions",
+                            item: enabledSections,
+                            initialButton: root.actionList[0].text,
+                            initialIndex: 0
+                        },
+                        { tag: "strings",
+                            item: enabledStringSections,
+                            initialButton: root.stringList[0],
+                            initialIndex: 0
+                        },
+                        { tag: "scrolling",
+                            item: scrollingSections,
+                            initialButton: root.longStringList[0],
+                            initialIndex: 0
+                        }
+                    ];
+        }
+
+        function test_keyboard_navigation(data) {
+            var sections = data.item;
+            var initialButtonName = data.initialButton;
+            click_section_button(sections, initialButtonName);
+            wait_for_animation(sections);
+            compare(sections.selectedIndex, data.initialIndex,
+                    "Clicking the initial button does not select section "+data.initialIndex);
+            var numberOfSections = sections.model.length;
+            var i = sections.selectedIndex;
+
+            // Sections has focus because it was just clicked on,
+            //  so we can use keyboard navigation.
+            while (i < numberOfSections - 1) {
+                i++;
+                keyClick(Qt.Key_Right);
+                wait_for_animation(sections);
+                compare(sections.selectedIndex, i,
+                        "Could not navigate to index " + i + " using right key.");
+            }
+
+            // Navigated to the last section. Right key should do nothing now.
+            keyClick(Qt.Key_Right);
+            wait_for_animation(sections);
+            compare(sections.selectedIndex, i,
+                    "Using right key navigates beyond the last section.");
+
+            while (i > 0) {
+                i--
+                keyClick(Qt.Key_Left);
+                wait_for_animation(sections);
+                compare(sections.selectedIndex, i,
+                        "Could not navigate back to index " + i + " using left key.");
+            }
+
+            // Navigated back to the beginning. Left key should do nothing now.
+            keyClick(Qt.Key_Left);
+            wait_for_animation(sections);
+            compare(sections.selectedIndex, i,
+                    "Using left key navigates beyond the first section.");
+        }
     }
 }
