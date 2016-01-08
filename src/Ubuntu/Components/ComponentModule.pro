@@ -72,7 +72,7 @@ QML_FILES += 1.2/AbstractButton.qml \
              1.2/TextInputPopover.qml \
              1.2/ToolbarButton.qml \
              1.2/ToolbarItems.qml \
-             1.2/DeprecatedToolbar.qml \
+             1.2/Toolbar.qml \
              1.2/UbuntuListView11.qml \
              1.2/UbuntuListView.qml \
              1.2/UbuntuNumberAnimation.qml
@@ -124,7 +124,6 @@ QML_FILES += 1.3/ActionBar.qml \
              1.3/ToolbarItems.qml \
              1.3/tree.js \
              1.3/UbuntuColors.qml \
-             1.3/UbuntuListView11.qml \
              1.3/UbuntuListView.qml \
              1.3/UbuntuNumberAnimation.qml \
              1.3/ListItemPopover.qml \
@@ -136,7 +135,6 @@ QML_FILES += 1.3/ActionBar.qml \
 
 OTHER_FILES+= qmldir \
              1.3/CrossFadeImage.qdoc \
-             1.3/UbuntuListView11.qdoc \
              1.3/PageHeadConfiguration.qdoc \
              1.3/MainView.qdoc \
              1.3/Icon.qdoc

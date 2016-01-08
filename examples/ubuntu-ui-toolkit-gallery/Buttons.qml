@@ -50,8 +50,8 @@ Template {
                 objectName: "button_color"
                 width: units.gu(20)
                 action: Action {
-                    text: i18n.tr("Call %1").arg(shortcut)
-                    shortcut: 'Ctrl+C'
+                    text: i18n.tr("C&all %1").arg(shortcut)
+                    shortcut: 'Ctrl+L'
                     property bool flipped
                     onTriggered: flipped = !flipped
                 }

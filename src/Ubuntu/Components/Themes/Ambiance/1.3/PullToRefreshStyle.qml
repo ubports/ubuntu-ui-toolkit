@@ -92,8 +92,10 @@ Style.PullToRefreshStyle {
     }
 
     Component.onDestruction: {
-        rootItem.__propagated.header.visibleChanged.disconnect(fixTopMargin);
-        rootItem.__propagated.header.heightChanged.disconnect(fixTopMargin);
+        if (rootItem && rootItem.__propagated && rootItem.__propagated.header) {
+            rootItem.__propagated.header.visibleChanged.disconnect(fixTopMargin);
+            rootItem.__propagated.header.heightChanged.disconnect(fixTopMargin);
+        }
     }
 
     function fixTopMargin() {

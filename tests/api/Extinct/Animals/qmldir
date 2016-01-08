@@ -1,7 +1,7 @@
 module Extinct.Animals
 plugin ExtinctAnimals
 Titanoboa 4.2 test.qml
-Gigantophis 4.3 gigantophis.qml
+Gigantophis 4.3 Gigantophis.qml
 internal WoollyMammoth mammoth.qml
 MonsterSnake 3.1 test.qml
 Excavator 1.0 digger.js

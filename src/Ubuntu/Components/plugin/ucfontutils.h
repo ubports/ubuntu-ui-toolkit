@@ -26,12 +26,12 @@ class UCFontUtils : public QObject
 
 public:
     static constexpr float fontUnits = 14.0f;
-    static constexpr float xxSmallScale = 0.677f;
-    static constexpr float xSmallScale = 0.804f;
-    static constexpr float smallScale = 0.931f;
-    static constexpr float mediumScale = 1.079f;
-    static constexpr float largeScale = 1.291f;
-    static constexpr float xLargeScale = 1.714f;
+    static constexpr float xxSmallScale = 0.606f;
+    static constexpr float xSmallScale = 0.707f;
+    static constexpr float smallScale = 0.857f;
+    static constexpr float mediumScale = 1.0f;
+    static constexpr float largeScale = 1.414f;
+    static constexpr float xLargeScale = 1.905f;
 
     static UCFontUtils& instance()
     {

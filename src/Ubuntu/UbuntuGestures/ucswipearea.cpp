@@ -15,7 +15,7 @@
  *
  */
 
-#include "ucswipearea_p.h"
+#include "ucswipearea_p_p.h"
 
 #include <QQuickWindow>
 #include <QtCore/qmath.h>
@@ -71,19 +71,19 @@ QString touchEventToString(const QTouchEvent *ev)
 
     switch (ev->type()) {
     case QEvent::TouchBegin:
-        message.append("TouchBegin ");
+        message.append(QStringLiteral("TouchBegin "));
         break;
     case QEvent::TouchUpdate:
-        message.append("TouchUpdate ");
+        message.append(QStringLiteral("TouchUpdate "));
         break;
     case QEvent::TouchEnd:
-        message.append("TouchEnd ");
+        message.append(QStringLiteral("TouchEnd "));
         break;
     case QEvent::TouchCancel:
-        message.append("TouchCancel ");
+        message.append(QStringLiteral("TouchCancel "));
         break;
     default:
-        message.append("INVALID_TOUCH_EVENT_TYPE ");
+        message.append(QStringLiteral("INVALID_TOUCH_EVENT_TYPE "));
     }
 
     Q_FOREACH(const QTouchEvent::TouchPoint& touchPoint, ev->touchPoints()) {
@@ -859,7 +859,7 @@ void ActiveTouchesInfo::update(QTouchEvent *event)
 
 QString ActiveTouchesInfo::toString()
 {
-    QString string = "(";
+    QString string = QStringLiteral("(");
 
     {
         QTextStream stream(&string);
@@ -869,7 +869,7 @@ QString ActiveTouchesInfo::toString()
         });
     }
 
-    string.append(")");
+    string.append(QStringLiteral(")"));
 
     return string;
 }

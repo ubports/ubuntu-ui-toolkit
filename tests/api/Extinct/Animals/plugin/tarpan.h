@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -12,22 +12,35 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Author: Christian Dywan <christian.dywan@canonical.com>
  */
 
-import QtQuick 2.4
+#ifndef UCTARPAN_H
+#define UCTARPAN_H
 
-// documentation in UbuntuListView11.qdoc
-UbuntuListView {
+#include <QtCore/QObject>
+#include <QtCore/QString>
 
-    /*!
-      \internal
-      \qmlproperty PullToRefresh pullToRefresh
-      */
-    property alias pullToRefresh: refreshItem
+class EATarpan : public QObject
+{
+    Q_OBJECT
 
-    PullToRefresh {
-        objectName: "listview_pulltorefresh"
-        id: refreshItem
-        enabled: false
-    }
-}
+    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
+
+public:
+    explicit EATarpan(QObject *parent = 0);
+
+    QString name() const;
+    void setName(const QString &name);
+
+    Q_INVOKABLE void kick() const;
+
+Q_SIGNALS:
+    void nameChanged();
+
+private:
+    QString m_name;
+};
+
+#endif // UCTARPAN_H
