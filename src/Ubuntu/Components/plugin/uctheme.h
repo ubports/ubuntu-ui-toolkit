@@ -64,10 +64,9 @@ public:
     };
 
     explicit UCTheme(QObject *parent = 0);
-    static UCTheme &defaultTheme()
+    static UCTheme *defaultTheme()
     {
-        static UCTheme instance(true);
-        return instance;
+        return m_default.data();
     }
 
     // getter/setters
@@ -106,7 +105,7 @@ private Q_SLOTS:
     void _q_defaultThemeChanged();
 
 private:
-    UCTheme(bool defaultStyle, QObject *parent = 0);
+    void setupDefault();
     void init();
     void updateEnginePaths();
     void updateThemePaths();
@@ -168,6 +167,8 @@ private:
     QQmlEngine *m_engine;
     bool m_defaultStyle:1;
     bool m_completed:1;
+
+    static QPointer<UCTheme> m_default;
 
     friend class UCDeprecatedTheme;
 };

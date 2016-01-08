@@ -112,8 +112,8 @@ void UCItemAttached::itemParentChanged(QQuickItem *, QQuickItem *newParent)
     QQuickItem *newThemedAscendant = UCThemingExtension::ascendantThemed(newParent);
     UCThemingExtension *oldExtension = qobject_cast<UCThemingExtension*>(oldThemedAscendant);
     UCThemingExtension *newExtension = qobject_cast<UCThemingExtension*>(newThemedAscendant);
-    UCTheme *oldTheme = oldExtension ? oldExtension->getTheme() : &UCTheme::defaultTheme();
-    UCTheme *newTheme = newExtension ? newExtension->getTheme() : &UCTheme::defaultTheme();
+    UCTheme *oldTheme = oldExtension ? oldExtension->getTheme() : UCTheme::defaultTheme();
+    UCTheme *newTheme = newExtension ? newExtension->getTheme() : UCTheme::defaultTheme();
 
     if (oldTheme != newTheme) {
         UCThemingExtension *extension = qobject_cast<UCThemingExtension*>(m_item);
@@ -134,7 +134,7 @@ void UCItemAttached::itemParentChanged(QQuickItem *, QQuickItem *newParent)
  *
  */
 UCThemingExtension::UCThemingExtension(QQuickItem *extendedItem)
-    : theme(&UCTheme::defaultTheme())
+    : theme(UCTheme::defaultTheme())
     , themedItem(extendedItem)
     , themeType(Inherited)
 {
@@ -157,7 +157,7 @@ void UCThemingExtension::setParentTheme()
     }
     QQuickItem *upperThemed = ascendantThemed(QQuickItemPrivate::get(themedItem)->parentItem);
     UCThemingExtension *extension = qobject_cast<UCThemingExtension*>(upperThemed);
-    UCTheme *parentTheme = extension ? extension->getTheme() : &UCTheme::defaultTheme();
+    UCTheme *parentTheme = extension ? extension->getTheme() : UCTheme::defaultTheme();
     if (parentTheme != theme) {
         theme->setParentTheme(parentTheme);
     }
@@ -244,7 +244,7 @@ void UCThemingExtension::resetTheme()
 {
     QQuickItem *upperThemed = ascendantThemed(QQuickItemPrivate::get(themedItem)->parentItem);
     UCThemingExtension *extension = qobject_cast<UCThemingExtension*>(upperThemed);
-    UCTheme *theme = extension ? extension->getTheme() : &UCTheme::defaultTheme();
+    UCTheme *theme = extension ? extension->getTheme() : UCTheme::defaultTheme();
     setTheme(theme, Inherited);
 }
 

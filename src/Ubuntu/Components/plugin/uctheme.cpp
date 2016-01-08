@@ -345,20 +345,23 @@ void UCTheme::PaletteConfig::apply(QObject *themePalette)
  */
 UCTheme::UCTheme(QObject *parent)
     : QObject(parent)
-    , m_palette(UCTheme::defaultTheme().m_palette)
-    , m_engine(UCTheme::defaultTheme().m_engine)
+    , m_palette(Q_NULLPTR)
+    , m_engine(qobject_cast<QQmlEngine*>(parent))
     , m_defaultStyle(false)
 {
+    if (m_engine) {
+        // we are initializing a default theme
+        setupDefault();
+    } else if (UCTheme::defaultTheme()) {
+        m_palette = UCTheme::defaultTheme()->m_palette;
+        m_engine = UCTheme::defaultTheme()->m_engine;
+    }
     init();
 }
 
-UCTheme::UCTheme(bool defaultStyle, QObject *parent)
-    : QObject(parent)
-    , m_palette(NULL)
-    , m_engine(NULL)
-    , m_defaultStyle(defaultStyle)
+void UCTheme::setupDefault()
 {
-    init();
+    // FIXME: move this into QPA
     // set the default font
     QFont defaultFont = QGuiApplication::font();
     defaultFont.setFamily("Ubuntu");
@@ -610,17 +613,21 @@ QUrl UCTheme::styleUrl(const QString& styleName, quint16 version, bool *isFallba
     return QUrl();
 }
 
+QPointer<UCTheme> UCTheme::m_default = Q_NULLPTR;
+
 // registers the default theme property to the root context
 void UCTheme::registerToContext(QQmlContext* context)
 {
-    UCTheme *defaultTheme = &UCTheme::defaultTheme();
-    defaultTheme->m_engine = context->engine();
-    defaultTheme->updateEnginePaths();
+    // there should not be any theme created at his point!
+    Q_ASSERT(!m_default);
 
-    context->setContextProperty("theme", defaultTheme);
+    m_default = new UCTheme(context->engine());
+    m_default->updateEnginePaths();
+
+    context->setContextProperty("theme", m_default.data());
     ContextPropertyChangeListener *listener =
         new ContextPropertyChangeListener(context, "theme");
-    QObject::connect(defaultTheme, &UCTheme::nameChanged,
+    QObject::connect(m_default.data(), &UCTheme::nameChanged,
                      listener, &ContextPropertyChangeListener::updateContextProperty);
 }
 
@@ -731,7 +738,7 @@ void UCTheme::loadPalette(bool notify)
         }
     } else {
         // use the default palette if none defined
-        m_palette = defaultTheme().m_palette;
+        m_palette = defaultTheme()->m_palette;
     }
 }
 

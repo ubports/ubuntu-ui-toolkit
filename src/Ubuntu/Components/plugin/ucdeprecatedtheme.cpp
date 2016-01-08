@@ -68,9 +68,9 @@ UCDeprecatedTheme::UCDeprecatedTheme(QObject *parent)
     : QObject(parent)
 {
     m_notes = QHash<QString, bool>();
-    connect(&UCTheme::defaultTheme(), &UCTheme::nameChanged,
+    connect(UCTheme::defaultTheme(), &UCTheme::nameChanged,
             this, &UCDeprecatedTheme::nameChanged);
-    connect(&UCTheme::defaultTheme(), &UCTheme::paletteChanged,
+    connect(UCTheme::defaultTheme(), &UCTheme::paletteChanged,
             this, &UCDeprecatedTheme::paletteChanged);
 }
 
@@ -103,17 +103,17 @@ void UCDeprecatedTheme::showDeprecatedNote(QObject *onItem, const char *note)
 QString UCDeprecatedTheme::name()
 {
     showDeprecatedNote(this, "Theme.name is deprecated. Use ThemeSettings instead.");
-    return UCTheme::defaultTheme().name();
+    return UCTheme::defaultTheme()->name();
 }
 void UCDeprecatedTheme::setName(const QString& name)
 {
     showDeprecatedNote(this, "Theme.name is deprecated. Use ThemeSettings instead.");
-    UCTheme::defaultTheme().setName(name);
+    UCTheme::defaultTheme()->setName(name);
 }
 void UCDeprecatedTheme::resetName()
 {
     showDeprecatedNote(this, "Theme.name is deprecated. Use ThemeSettings instead.");
-    UCTheme::defaultTheme().resetName();
+    UCTheme::defaultTheme()->resetName();
 }
 
 /*!
@@ -124,7 +124,7 @@ void UCDeprecatedTheme::resetName()
 QObject* UCDeprecatedTheme::palette()
 {
     showDeprecatedNote(this, "Theme.palette is deprecated. Use ThemeSettings instead.");
-    return UCTheme::defaultTheme().palette();
+    return UCTheme::defaultTheme()->palette();
 }
 
 /*!
@@ -135,13 +135,13 @@ QObject* UCDeprecatedTheme::palette()
 QQmlComponent* UCDeprecatedTheme::createStyleComponent(const QString& styleName, QObject* parent)
 {
     showDeprecatedNote(parent, "Theme.createStyleComponent() is deprecated. Use ThemeSettings instead.");
-    return UCTheme::defaultTheme().createStyleComponent(styleName, parent, BUILD_VERSION(1, 2));
+    return UCTheme::defaultTheme()->createStyleComponent(styleName, parent, BUILD_VERSION(1, 2));
 }
 
 void UCDeprecatedTheme::registerToContext(QQmlContext* context)
 {
-    UCTheme::defaultTheme().m_engine = context->engine();
-    UCTheme::defaultTheme().updateEnginePaths();
+    // the default theme must be set up prior to this call
+    Q_ASSERT(UCTheme::defaultTheme());
     // register deprecated Theme property
     context->setContextProperty("Theme", this);
 

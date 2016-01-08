@@ -128,6 +128,22 @@ private Q_SLOTS:
         QCOMPARE(theme.name(), QString("Ubuntu.Components.Themes.Ambiance"));
     }
 
+    void test_default_theme_cleared_with_engine_bug1527546()
+    {
+        qputenv("QV4_FORCE_INTERPRETER", "1");
+        qputenv("QV4_MM_AGGRESSIVE_GC", "1");
+        QQuickView *prevView = Q_NULLPTR;
+        for (int i = 0; i < 1; i++)
+        {
+            ThemeTestCase *view = new ThemeTestCase("DefaultTheme.qml");
+            QVERIFY(prevView != view);
+            prevView = view;
+            QVERIFY(view->globalTheme());
+            delete view;
+            QVERIFY(!UCTheme::defaultTheme());
+        }
+    }
+
     void test_create_style_component_data() {
         QTest::addColumn<QString>("styleName");
         QTest::addColumn<QString>("parentName");
@@ -304,7 +320,7 @@ private Q_SLOTS:
         mainItem->resetTheme();
         parentChangeSpy.wait(200);
         QCOMPARE(parentChangeSpy.count(), 1);
-        QCOMPARE(mainItem->getTheme(), &UCTheme::defaultTheme());
+        QCOMPARE(mainItem->getTheme(), UCTheme::defaultTheme());
         QCOMPARE(testSet->parentTheme(), mainItem->getTheme());
     }
 
@@ -605,7 +621,7 @@ private Q_SLOTS:
         movableItem->setParentItem(Q_NULLPTR);
         spy.wait(500);
         QCOMPARE(spy.count(), 1);
-        QCOMPARE(movableItem->getTheme(), &UCTheme::defaultTheme());
+        QCOMPARE(movableItem->getTheme(), UCTheme::defaultTheme());
     }
 
     void test_reparented_styleditem_special_case()
