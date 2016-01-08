@@ -161,7 +161,7 @@ public:
     UCSwipeArea::Direction direction;
 
     bool immediateRecognition;
-    bool monitorOnly;
+    bool grabGesture;
 };
 
 class UBUNTUGESTURESQML_EXPORT UCSwipeAreaStatusListener

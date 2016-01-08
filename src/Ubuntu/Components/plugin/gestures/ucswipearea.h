@@ -47,7 +47,7 @@ class UBUNTUGESTURESQML_EXPORT UCSwipeArea : public QQuickItem
             READ immediateRecognition
             WRITE setImmediateRecognition
             NOTIFY immediateRecognitionChanged)
-    Q_PROPERTY(bool monitorOnly READ monitorOnly WRITE setMonitorOnly NOTIFY monitorOnlyChanged)
+    Q_PROPERTY(bool grabGesture READ grabGesture WRITE setGrabGesture NOTIFY grabGestureChanged)
 
     Q_ENUMS(Direction)
 public:
@@ -76,8 +76,8 @@ public:
     bool immediateRecognition() const;
     void setImmediateRecognition(bool enabled);
 
-    bool monitorOnly() const;
-    void setMonitorOnly(bool enabled);
+    bool grabGesture() const;
+    void setGrabGesture(bool enabled);
 
 Q_SIGNALS:
     void directionChanged(Direction direction);
@@ -86,7 +86,7 @@ Q_SIGNALS:
     void distanceChanged(qreal distance);
     void touchPositionChanged(const QPointF &position);
     void immediateRecognitionChanged(bool immediateRecognition);
-    void monitorOnlyChanged(bool monitorOnly);
+    void grabGestureChanged(bool grabGesture);
 
 protected:
     bool event(QEvent *e) override;
