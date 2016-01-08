@@ -20,7 +20,7 @@
 #include "ucbottomedgeregion.h"
 #include "ucbottomedge_p.h"
 #include "ucbottomedgehint.h"
-#include "gestures/ucswipearea.h"
+#include "private/ucswipearea_p.h"
 #include "ucunits.h"
 #include "ucheader.h"
 #include "ucaction.h"

@@ -18,18 +18,20 @@
 #ifndef UCSWIPEAREAPRIVATE_H
 #define UCSWIPEAREAPRIVATE_H
 
-#include "ucswipearea.h"
+#include "ucswipearea_p.h"
 #include <QtQuick/private/qquickitem_p.h>
 
+#include "damper_p.h"
+
 // Information about an active touch point
-struct UBUNTUGESTURESQML_EXPORT ActiveTouchInfo {
+struct UBUNTUGESTURES_EXPORT ActiveTouchInfo {
     ActiveTouchInfo() : id(-1), startTime(-1) {}
     bool isValid() const { return id != -1; }
     void reset() { id = -1; }
     int id;
     qint64 startTime;
 };
-class UBUNTUGESTURESQML_EXPORT ActiveTouchesInfo {
+class UBUNTUGESTURES_EXPORT ActiveTouchesInfo {
 public:
     ActiveTouchesInfo(const UbuntuGestures::SharedTimeSource &timeSource);
     void update(QTouchEvent *event);
@@ -46,7 +48,7 @@ private:
 };
 
 class UCSwipeAreaStatusListener;
-class UBUNTUGESTURESQML_EXPORT UCSwipeAreaPrivate : public QQuickItemPrivate
+class UBUNTUGESTURES_EXPORT UCSwipeAreaPrivate : public QQuickItemPrivate
 {
     Q_DECLARE_PUBLIC(UCSwipeArea)
 
@@ -71,7 +73,6 @@ public:
     // Useful for testing, where a fake time source can be supplied
     void setTimeSource(const UbuntuGestures::SharedTimeSource &timeSource);
 
-public:
     // Describes the state of the directional drag gesture.
     enum Status {
         // Waiting for a new touch point to land on this area. No gesture is being processed
@@ -164,7 +165,7 @@ public:
     bool grabGesture;
 };
 
-class UBUNTUGESTURESQML_EXPORT UCSwipeAreaStatusListener
+class UBUNTUGESTURES_EXPORT UCSwipeAreaStatusListener
 {
 public:
     virtual void swipeStatusChanged(UCSwipeAreaPrivate::Status /*old*/, UCSwipeAreaPrivate::Status /*new*/) {}

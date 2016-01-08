@@ -17,6 +17,7 @@
  */
 
 #include "plugin.h"
+#include "tarpan.h"
 #include "smilodon.h"
 #include "pangaea.h"
 #include "rune.h"
@@ -50,6 +51,7 @@ void ExtinctAnimalsPlugin::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QLatin1String("Extinct.Animals"));
 
+    qmlRegisterType<EATarpan>();
     qmlRegisterType<EASmilodon>(uri, 1, 0, "Smilodon");
     qmlRegisterType<EASmilodon>(uri, 0, 1, "ScimitarCat");
 

@@ -71,12 +71,14 @@
 #include "uclabel.h"
 #include "uclistitemlayout.h"
 #include "ucbottomedgehint.h"
-#include "gestures/ucswipearea.h"
 #include "ucmathutils.h"
 #include "ucbottomedge.h"
 #include "ucbottomedgeregion.h"
 #include "ucbottomedgestyle.h"
 #include "ucpagetreenode.h"
+
+// From UbuntuGestures
+#include "private/ucswipearea_p.h"
 
 #include <sys/types.h>
 #include <unistd.h>
