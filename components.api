@@ -1119,6 +1119,7 @@ Ubuntu.Components.SwipeArea 1.3 UCSwipeArea: Item
     property Direction direction
     readonly property double distance
     readonly property bool dragging
+    property bool grabGesture
     property bool immediateRecognition
     signal directionChanged(Direction direction)
     signal draggingChanged(bool dragging)
@@ -1127,7 +1128,6 @@ Ubuntu.Components.SwipeArea 1.3 UCSwipeArea: Item
     signal touchPositionChanged(QPointF position)
     signal immediateRecognitionChanged(bool immediateRecognition)
     signal grabGestureChanged(bool grabGesture)
-    property bool grabGesture
     readonly property bool pressed
     readonly property QPointF touchPosition
 Ubuntu.Components.SwipeArea.Direction: Enum
