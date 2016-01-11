@@ -101,7 +101,7 @@ bool UCThemingExtension::isThemed(QQuickItem *item)
 }
 
 // handle parent changes
-void UCItemAttached::itemParentChanged(QQuickItem *item, QQuickItem *newParent)
+void UCItemAttached::itemParentChanged(QQuickItem *, QQuickItem *newParent)
 {
     if (newParent == m_prevParent || QQuickItemPrivate::get(m_item)->wasDeleted) {
         return;
