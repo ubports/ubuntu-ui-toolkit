@@ -75,7 +75,6 @@ private:
     }
     void initDeprecatedTheme(QQmlEngine &engine)
     {
-        UCTheme::createDefaultTheme(&engine);
         UCDeprecatedTheme::registerToContext(engine.rootContext());
     }
 

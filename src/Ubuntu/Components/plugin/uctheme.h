@@ -78,7 +78,6 @@ public:
 
     // internal, used by the deprecated Theme.createStyledComponent()
     QQmlComponent* createStyleComponent(const QString& styleName, QObject* parent, quint16 version = 0);
-    static void createDefaultTheme(QQmlEngine* engine);
     void attachItem(QQuickItem *item, bool attach);
 
     // helper functions
@@ -102,6 +101,7 @@ private Q_SLOTS:
     void _q_defaultThemeChanged();
 
 private:
+    static void createDefaultTheme(QQmlEngine* engine);
     void setupDefault();
     void init();
     void updateEnginePaths(QQmlEngine *engine);

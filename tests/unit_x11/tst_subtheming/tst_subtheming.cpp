@@ -157,6 +157,18 @@ private Q_SLOTS:
         QVERIFY(view1->globalTheme() != view2->globalTheme());
     }
 
+    void test_multiple_themes_on_engine_bug1527546()
+    {
+        qputenv("QV4_FORCE_INTERPRETER", "1");
+        qputenv("QV4_MM_AGGRESSIVE_GC", "1");
+
+        QQmlEngine engine;
+        UCTheme *theme0 = UCTheme::defaultTheme(&engine);
+
+        UCTheme *theme1 = new UCTheme(&engine);
+        QVERIFY(theme0 != theme1);
+    }
+
     void test_create_style_component_data() {
         QTest::addColumn<QString>("styleName");
         QTest::addColumn<QString>("parentName");

@@ -44,7 +44,7 @@
 #include <QtQml/private/qqmlbinding_p.h>
 #undef foreach
 
-
+const char *CONTEXT_THEME = "theme";
 quint16 UCTheme::previousVersion = 0;
 /*!
  * \qmltype ThemeSettings
@@ -349,15 +349,6 @@ UCTheme::UCTheme(QObject *parent)
     , m_palette(Q_NULLPTR)
     , m_completed(false)
 {
-    QQmlEngine *engine = qobject_cast<QQmlEngine*>(parent);
-    if (engine) {
-        // this is the default theme
-        QQmlEngine::setContextForObject(this, engine->rootContext());
-        engine->rootContext()->setContextProperty("theme", this);
-
-        setupDefault();
-        updateEnginePaths(engine);
-    }
     init();
 }
 
@@ -366,7 +357,13 @@ UCTheme *UCTheme::defaultTheme(QQmlEngine *engine)
     if (!engine || !engine->rootContext()) {
         return Q_NULLPTR;
     }
-    UCTheme *theme = engine->rootContext()->contextProperty("theme").value<UCTheme*>();
+    UCTheme *theme = Q_NULLPTR;
+    for (int tryCount = 0; !theme && tryCount < 2; tryCount++) {
+        theme = engine->rootContext()->contextProperty(CONTEXT_THEME).value<UCTheme*>();
+        if (!theme) {
+            createDefaultTheme(engine);
+        }
+    }
     return theme;
 }
 
@@ -630,15 +627,17 @@ QUrl UCTheme::styleUrl(const QString& styleName, quint16 version, bool *isFallba
 // registers the default theme property to the root context
 void UCTheme::createDefaultTheme(QQmlEngine* engine)
 {
-    // the engine should not have any defautl theme yet!
-    UCTheme *theme = UCTheme::defaultTheme(engine);
-    Q_ASSERT(!theme);
-
-    theme = new UCTheme(engine);
-
     QQmlContext *context = engine->rootContext();
+
+    UCTheme *theme = new UCTheme(engine);
+    QQmlEngine::setContextForObject(theme, context);
+    context->setContextProperty(CONTEXT_THEME, theme);
+
+    theme->setupDefault();
+    theme->updateEnginePaths(engine);
+
     ContextPropertyChangeListener *listener =
-        new ContextPropertyChangeListener(context, "theme");
+        new ContextPropertyChangeListener(context, CONTEXT_THEME);
     QObject::connect(theme, &UCTheme::nameChanged,
                      listener, &ContextPropertyChangeListener::updateContextProperty);
 }
