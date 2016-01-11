@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -139,7 +139,6 @@ UCStyledItemBase::UCStyledItemBase(UCStyledItemBasePrivate &dd, QQuickItem *pare
     Q_D(UCStyledItemBase);
     d->init();
 }
-
 
 /*!
  * \qmlmethod void StyledItemBase::requestFocus(Qt::FocusReason reason)
