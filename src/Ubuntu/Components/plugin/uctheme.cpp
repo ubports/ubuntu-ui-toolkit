@@ -346,6 +346,7 @@ void UCTheme::PaletteConfig::apply(QObject *themePalette)
 UCTheme::UCTheme(QObject *parent)
     : QObject(parent)
     , m_palette(Q_NULLPTR)
+    , m_completed(false)
 {
     QQmlEngine *engine = qobject_cast<QQmlEngine*>(parent);
     if (engine) {
