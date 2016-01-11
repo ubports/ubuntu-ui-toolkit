@@ -29,6 +29,7 @@ class SectionsTestCase(tests.QMLFileAppTestCase):
     def setUp(self):
         super().setUp()
         self.sections = self.app.select_single(objectName='sections')
+        self.moreSections = self.app.select_single(objectName='moreSections')
         self.label = self.app.select_single(objectName='label')
         self.assertEqual(self.label.text, 'Section 0 is selected.')
 
@@ -39,6 +40,9 @@ class SectionsTestCase(tests.QMLFileAppTestCase):
     def test_click_section_button(self):
         self.sections.click_section_button(2)
         self.assertEqual(self.label.text, 'Section 2 is selected.')
+
+    def test_scroll_and_click_section_button(self):
+        self.sections.click_section_button(15)
 
     def test_click_unexisting_section_button(self):
         error = self.assertRaises(

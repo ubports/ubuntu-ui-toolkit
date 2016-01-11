@@ -28,6 +28,7 @@ MainView {
             objectName: "label"
             anchors {
                 top: parent.top
+                topMargin: units.gu(2)
                 horizontalCenter: parent.horizontalCenter
             }
             text: "Section " + sections.selectedIndex + " is selected."
@@ -35,8 +36,34 @@ MainView {
         Sections {
             id: sections
             objectName: "sections"
-            anchors.centerIn: parent
+            anchors {
+                horizontalCenter: parent.horizontalCenter
+                top: label.bottom
+                topMargin: units.gu(4)
+            }
             model: [ "first", "second", "third" ]
+        }
+        Label {
+            id: moreLabel
+            objectName: "moreLabel"
+            anchors {
+                centerIn: parent
+            }
+            text: "Scrollable section " + moreSections.selectedIndex + " is selected."
+        }
+        Sections {
+            id: moreSections
+            objectName: "moreSections"
+            anchors {
+                horizontalCenter: parent.horizontalCenter
+                top: moreLabel.bottom
+                topMargin: units.gu(4)
+            }
+            model: ["one", "two", "three", "four", "five", "six",
+                "seven", "eight", "nine", "ten", "eleven", "twelve",
+                "thirteen", "fourteen", "fifteen", "sixteen",
+                "seventeen", "eighteen", "nineteen", "twenty"
+            ]
         }
     }
 }
