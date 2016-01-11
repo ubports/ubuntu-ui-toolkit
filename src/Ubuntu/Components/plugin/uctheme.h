@@ -104,10 +104,10 @@ private Q_SLOTS:
 private:
     void setupDefault();
     void init();
-    void updateEnginePaths();
+    void updateEnginePaths(QQmlEngine *engine);
     void updateThemePaths();
     QUrl styleUrl(const QString& styleName, quint16 version, bool *isFallback = NULL);
-    void loadPalette(bool notify = true);
+    void loadPalette(QQmlEngine *engine, bool notify = true);
     void updateThemedItems();
 
     class PaletteConfig
@@ -161,7 +161,6 @@ private:
     QList<ThemeRecord> m_themePaths;
     UCDefaultTheme m_defaultTheme;
     QPODVector<QQuickItem*, 4> m_attachedItems;
-    QQmlEngine *m_engine;
     bool m_completed:1;
 
     friend class UCDeprecatedTheme;

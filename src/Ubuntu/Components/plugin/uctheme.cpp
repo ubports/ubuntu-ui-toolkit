@@ -346,13 +346,15 @@ void UCTheme::PaletteConfig::apply(QObject *themePalette)
 UCTheme::UCTheme(QObject *parent)
     : QObject(parent)
     , m_palette(Q_NULLPTR)
-    , m_engine(qobject_cast<QQmlEngine*>(parent))
 {
-    if (m_engine) {
+    QQmlEngine *engine = qobject_cast<QQmlEngine*>(parent);
+    if (engine) {
         // this is the default theme
-        QQmlEngine::setContextForObject(this, m_engine->rootContext());
+        QQmlEngine::setContextForObject(this, engine->rootContext());
+        engine->rootContext()->setContextProperty("theme", this);
+
         setupDefault();
-        updateEnginePaths();
+        updateEnginePaths(engine);
     }
     init();
 }
@@ -388,21 +390,24 @@ void UCTheme::init()
 
 void UCTheme::classBegin()
 {
-    m_engine = qmlEngine(this);
-    updateEnginePaths();
-    loadPalette();
+    QQmlEngine *engine = qmlEngine(this);
+    updateEnginePaths(engine);
+    m_palette = UCTheme::defaultTheme(engine)->m_palette;
+    if (!m_palette) {
+        loadPalette(engine);
+    }
 }
 
-void UCTheme::updateEnginePaths()
+void UCTheme::updateEnginePaths(QQmlEngine *engine)
 {
-    if (!m_engine) {
+    if (!engine) {
         return;
     }
 
     QStringList paths = themeSearchPath();
     Q_FOREACH(const QString &path, paths) {
-        if (QDir(path).exists() && !m_engine->importPathList().contains(path)) {
-            m_engine->addImportPath(path);
+        if (QDir(path).exists() && !engine->importPathList().contains(path)) {
+            engine->addImportPath(path);
         }
     }
 }
@@ -468,7 +473,7 @@ void UCTheme::setName(const QString& name)
                             this, &UCTheme::_q_defaultThemeChanged);
         updateThemePaths();
     }
-    loadPalette();
+    loadPalette(qmlEngine(this));
     Q_EMIT nameChanged();
     updateThemedItems();
 }
@@ -536,7 +541,7 @@ void UCTheme::resetName()
 QObject* UCTheme::palette()
 {
     if (!m_palette) {
-        loadPalette(false);
+        loadPalette(qmlEngine(this), false);
     }
     return m_palette;
 }
@@ -630,7 +635,6 @@ void UCTheme::createDefaultTheme(QQmlEngine* engine)
     theme = new UCTheme(engine);
 
     QQmlContext *context = engine->rootContext();
-    context->setContextProperty("theme", theme);
     ContextPropertyChangeListener *listener =
         new ContextPropertyChangeListener(context, "theme");
     QObject::connect(theme, &UCTheme::nameChanged,
@@ -687,10 +691,8 @@ QQmlComponent* UCTheme::createStyleComponent(const QString& styleName, QObject* 
 
     if (parent != NULL) {
         QQmlEngine* engine = qmlEngine(parent);
-        if (engine != m_engine && !m_engine) {
-            m_engine = engine;
-            updateEnginePaths();
-        }
+        Q_ASSERT(engine);
+        Q_ASSERT(engine == qmlEngine(this));
         // make sure we have the paths
         if (engine != NULL) {
             bool fallback = false;
@@ -720,9 +722,9 @@ QQmlComponent* UCTheme::createStyleComponent(const QString& styleName, QObject* 
     return component;
 }
 
-void UCTheme::loadPalette(bool notify)
+void UCTheme::loadPalette(QQmlEngine *engine, bool notify)
 {
-    if (!m_engine) {
+    if (!engine) {
         return;
     }
     if (m_palette) {
@@ -734,7 +736,7 @@ void UCTheme::loadPalette(bool notify)
     // theme may not have palette defined
     QUrl paletteUrl = styleUrl("Palette.qml", previousVersion ? previousVersion : LATEST_UITK_VERSION);
     if (paletteUrl.isValid()) {
-        m_palette = QuickUtils::instance().createQmlObject(paletteUrl, m_engine);
+        m_palette = QuickUtils::instance().createQmlObject(paletteUrl, engine);
         if (m_palette) {
             m_palette->setParent(this);
         }
@@ -744,7 +746,7 @@ void UCTheme::loadPalette(bool notify)
         }
     } else {
         // use the default palette if none defined
-        m_palette = defaultTheme(m_engine)->m_palette;
+        m_palette = defaultTheme(engine)->m_palette;
     }
 }
 
