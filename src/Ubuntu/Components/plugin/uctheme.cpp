@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -695,28 +695,26 @@ QQmlComponent* UCTheme::createStyleComponent(const QString& styleName, QObject* 
         Q_ASSERT(engine);
         Q_ASSERT(engine == qmlEngine(this));
         // make sure we have the paths
-        if (engine != NULL) {
-            bool fallback = false;
-            QUrl url = styleUrl(styleName, version, &fallback);
-            if (url.isValid()) {
-                if (fallback) {
-                    qmlInfo(parent) << QStringLiteral("Theme '%1' has no '%2' style for version %3.%4, fall back to version %5.%6.")
-                                       .arg(name()).arg(styleName).arg(MAJOR_VERSION(version)).arg(MINOR_VERSION(version))
-                                       .arg(MAJOR_VERSION(LATEST_UITK_VERSION)).arg(MINOR_VERSION(LATEST_UITK_VERSION));
-                }
-                component = new QQmlComponent(engine, url, QQmlComponent::PreferSynchronous, parent);
-                if (component->isError()) {
-                    qmlInfo(parent) << component->errorString();
-                    delete component;
-                    component = NULL;
-                } else {
-                    // set context for the component
-                    QQmlEngine::setContextForObject(component, qmlContext(parent));
-                }
-            } else {
-                qmlInfo(parent) <<
-                   UbuntuI18n::instance().tr(QString("Warning: Style %1 not found in theme %2").arg(styleName).arg(name()));
+        bool fallback = false;
+        QUrl url = styleUrl(styleName, version, &fallback);
+        if (url.isValid()) {
+            if (fallback) {
+                qmlInfo(parent) << QStringLiteral("Theme '%1' has no '%2' style for version %3.%4, fall back to version %5.%6.")
+                                   .arg(name()).arg(styleName).arg(MAJOR_VERSION(version)).arg(MINOR_VERSION(version))
+                                   .arg(MAJOR_VERSION(LATEST_UITK_VERSION)).arg(MINOR_VERSION(LATEST_UITK_VERSION));
             }
+            component = new QQmlComponent(engine, url, QQmlComponent::PreferSynchronous, parent);
+            if (component->isError()) {
+                qmlInfo(parent) << component->errorString();
+                delete component;
+                component = NULL;
+            } else {
+                // set context for the component
+                QQmlEngine::setContextForObject(component, qmlContext(parent));
+            }
+        } else {
+            qmlInfo(parent) <<
+               UbuntuI18n::instance().tr(QString("Warning: Style %1 not found in theme %2").arg(styleName).arg(name()));
         }
     }
 

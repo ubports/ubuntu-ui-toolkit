@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -101,7 +101,7 @@ bool UCThemingExtension::isThemed(QQuickItem *item)
 }
 
 // handle parent changes
-void UCItemAttached::itemParentChanged(QQuickItem *, QQuickItem *newParent)
+void UCItemAttached::itemParentChanged(QQuickItem *item, QQuickItem *newParent)
 {
     if (newParent == m_prevParent || QQuickItemPrivate::get(m_item)->wasDeleted) {
         return;
