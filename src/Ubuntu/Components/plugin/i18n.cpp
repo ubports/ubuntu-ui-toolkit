@@ -41,7 +41,7 @@ namespace C {
  * a project. Example:
  * \qml
  * import QtQuick 2.4
- * import Ubunut.Components 0.1
+ * import Ubuntu.Components 0.1
  *
  * Item {
  *      width: units.gu(40)
