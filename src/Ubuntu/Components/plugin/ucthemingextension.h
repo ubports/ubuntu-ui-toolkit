@@ -44,14 +44,14 @@ public:
     virtual void itemThemeChanged(UCTheme *, UCTheme*);
     virtual void itemThemeReloaded(UCTheme *);
 
-    UCTheme *getTheme() const;
+    UCTheme *getTheme();
     void setTheme(UCTheme *newTheme, ThemeType type = Custom);
     void resetTheme();
 
     static bool isThemed(QQuickItem *item);
     static QQuickItem *ascendantThemed(QQuickItem *item);
 
-protected:
+private:
     QPointer<UCTheme> theme;
     QQuickItem *themedItem;
     ThemeType themeType;

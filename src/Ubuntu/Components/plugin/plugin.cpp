@@ -283,12 +283,12 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     // that can be accessed from any object
     context->setContextProperty("QuickUtils", &QuickUtils::instance());
 
-    // register theme context property
-    UCTheme::registerToContext(context);
+    // create default theme and register theme context property
+    UCTheme::createDefaultTheme(engine);
 
-    UCDeprecatedTheme::instance().registerToContext(context);
+    UCDeprecatedTheme::registerToContext(context);
 
-    HapticsProxy::instance().setEngine(context->engine());
+    HapticsProxy::instance().setEngine(engine);
 
     context->setContextProperty("i18n", &UbuntuI18n::instance());
     ContextPropertyChangeListener *i18nChangeListener =

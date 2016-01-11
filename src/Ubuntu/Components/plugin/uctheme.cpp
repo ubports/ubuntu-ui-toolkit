@@ -347,16 +347,23 @@ UCTheme::UCTheme(QObject *parent)
     : QObject(parent)
     , m_palette(Q_NULLPTR)
     , m_engine(qobject_cast<QQmlEngine*>(parent))
-    , m_defaultStyle(false)
 {
     if (m_engine) {
-        // we are initializing a default theme
+        // this is the default theme
+        QQmlEngine::setContextForObject(this, m_engine->rootContext());
         setupDefault();
-    } else if (UCTheme::defaultTheme()) {
-        m_palette = UCTheme::defaultTheme()->m_palette;
-        m_engine = UCTheme::defaultTheme()->m_engine;
+        updateEnginePaths();
     }
     init();
+}
+
+UCTheme *UCTheme::defaultTheme(QQmlEngine *engine)
+{
+    if (!engine || !engine->rootContext()) {
+        return Q_NULLPTR;
+    }
+    UCTheme *theme = engine->rootContext()->contextProperty("theme").value<UCTheme*>();
+    return theme;
 }
 
 void UCTheme::setupDefault()
@@ -613,21 +620,20 @@ QUrl UCTheme::styleUrl(const QString& styleName, quint16 version, bool *isFallba
     return QUrl();
 }
 
-QPointer<UCTheme> UCTheme::m_default = Q_NULLPTR;
-
 // registers the default theme property to the root context
-void UCTheme::registerToContext(QQmlContext* context)
+void UCTheme::createDefaultTheme(QQmlEngine* engine)
 {
-    // there should not be any theme created at his point!
-    Q_ASSERT(!m_default);
+    // the engine should not have any defautl theme yet!
+    UCTheme *theme = UCTheme::defaultTheme(engine);
+    Q_ASSERT(!theme);
 
-    m_default = new UCTheme(context->engine());
-    m_default->updateEnginePaths();
+    theme = new UCTheme(engine);
 
-    context->setContextProperty("theme", m_default.data());
+    QQmlContext *context = engine->rootContext();
+    context->setContextProperty("theme", theme);
     ContextPropertyChangeListener *listener =
         new ContextPropertyChangeListener(context, "theme");
-    QObject::connect(m_default.data(), &UCTheme::nameChanged,
+    QObject::connect(theme, &UCTheme::nameChanged,
                      listener, &ContextPropertyChangeListener::updateContextProperty);
 }
 
@@ -738,7 +744,7 @@ void UCTheme::loadPalette(bool notify)
         }
     } else {
         // use the default palette if none defined
-        m_palette = defaultTheme()->m_palette;
+        m_palette = defaultTheme(m_engine)->m_palette;
     }
 }
 
@@ -754,4 +760,3 @@ QColor UCTheme::getPaletteColor(const char *profile, const char *color)
     }
     return result;
 }
-

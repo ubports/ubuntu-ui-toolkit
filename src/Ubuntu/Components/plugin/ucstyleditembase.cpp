@@ -140,6 +140,7 @@ UCStyledItemBase::UCStyledItemBase(UCStyledItemBasePrivate &dd, QQuickItem *pare
     d->init();
 }
 
+
 /*!
  * \qmlmethod void StyledItemBase::requestFocus(Qt::FocusReason reason)
  * \since Ubuntu.Components 1.1

@@ -108,7 +108,7 @@ void UCLabel::postThemeChanged()
     if (m_flags & ColorSet) {
         return;
     }
-    setColor(theme->getPaletteColor("selected", "backgroundText"));
+    setColor(getTheme()->getPaletteColor("selected", "backgroundText"));
     m_flags &= ~ColorSet;
 }
 

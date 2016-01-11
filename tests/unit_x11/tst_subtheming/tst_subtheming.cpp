@@ -100,7 +100,8 @@ private Q_SLOTS:
 
     void test_default_theme()
     {
-        UCTheme::defaultTheme();
+        QQmlEngine engine;
+        UCTheme::defaultTheme(&engine);
     }
 
     void test_default_name()
@@ -132,16 +133,28 @@ private Q_SLOTS:
     {
         qputenv("QV4_FORCE_INTERPRETER", "1");
         qputenv("QV4_MM_AGGRESSIVE_GC", "1");
-        QQuickView *prevView = Q_NULLPTR;
-        for (int i = 0; i < 1; i++)
+        for (int i = 0; i < 2; i++)
         {
             ThemeTestCase *view = new ThemeTestCase("DefaultTheme.qml");
-            QVERIFY(prevView != view);
-            prevView = view;
             QVERIFY(view->globalTheme());
+            QVERIFY(UCTheme::defaultTheme(view->engine()));
+            QObjectCleanupHandler themeCleanup;
+            themeCleanup.add(UCTheme::defaultTheme(view->engine()));
             delete view;
-            QVERIFY(!UCTheme::defaultTheme());
+            QVERIFY(themeCleanup.isEmpty());
         }
+    }
+
+    void test_multiple_view_instances_bug1527546()
+    {
+        qputenv("QV4_FORCE_INTERPRETER", "1");
+        qputenv("QV4_MM_AGGRESSIVE_GC", "1");
+
+        QScopedPointer<ThemeTestCase> view1(new ThemeTestCase("DefaultTheme.qml"));
+        QScopedPointer<ThemeTestCase> view2(new ThemeTestCase("DefaultTheme.qml"));
+
+        // the two views must have different default themes
+        QVERIFY(view1->globalTheme() != view2->globalTheme());
     }
 
     void test_create_style_component_data() {
@@ -320,7 +333,7 @@ private Q_SLOTS:
         mainItem->resetTheme();
         parentChangeSpy.wait(200);
         QCOMPARE(parentChangeSpy.count(), 1);
-        QCOMPARE(mainItem->getTheme(), UCTheme::defaultTheme());
+        QCOMPARE(mainItem->getTheme(), UCTheme::defaultTheme(view->engine()));
         QCOMPARE(testSet->parentTheme(), mainItem->getTheme());
     }
 
@@ -621,7 +634,7 @@ private Q_SLOTS:
         movableItem->setParentItem(Q_NULLPTR);
         spy.wait(500);
         QCOMPARE(spy.count(), 1);
-        QCOMPARE(movableItem->getTheme(), UCTheme::defaultTheme());
+        QCOMPARE(movableItem->getTheme(), UCTheme::defaultTheme(view->engine()));
     }
 
     void test_reparented_styleditem_special_case()

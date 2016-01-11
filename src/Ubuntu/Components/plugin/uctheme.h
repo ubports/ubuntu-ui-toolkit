@@ -64,10 +64,7 @@ public:
     };
 
     explicit UCTheme(QObject *parent = 0);
-    static UCTheme *defaultTheme()
-    {
-        return m_default.data();
-    }
+    static UCTheme *defaultTheme(QQmlEngine *engine);
 
     // getter/setters
     UCTheme *parentTheme();
@@ -81,7 +78,7 @@ public:
 
     // internal, used by the deprecated Theme.createStyledComponent()
     QQmlComponent* createStyleComponent(const QString& styleName, QObject* parent, quint16 version = 0);
-    static void registerToContext(QQmlContext* context);
+    static void createDefaultTheme(QQmlEngine* engine);
     void attachItem(QQuickItem *item, bool attach);
 
     // helper functions
@@ -165,10 +162,7 @@ private:
     UCDefaultTheme m_defaultTheme;
     QPODVector<QQuickItem*, 4> m_attachedItems;
     QQmlEngine *m_engine;
-    bool m_defaultStyle:1;
     bool m_completed:1;
-
-    static QPointer<UCTheme> m_default;
 
     friend class UCDeprecatedTheme;
 };
