@@ -16,17 +16,17 @@
  * Author: Loïc Molinari <loic.molinari@canonical.com>
  */
 
-#ifndef UCSTROKESHAPE_H
-#define UCSTROKESHAPE_H
+#ifndef FRAME_H
+#define FRAME_H
 
 #include <QtQuick/QQuickItem>
 #include <QtQuick/QSGMaterial>
 #include <QtQuick/QSGNode>
 
-class UCStrokeShapeMaterial : public QSGMaterial
+class UCFrameMaterial : public QSGMaterial
 {
 public:
-    UCStrokeShapeMaterial();
+    UCFrameMaterial();
     virtual QSGMaterialType* type() const;
     virtual QSGMaterialShader* createShader() const;
     virtual int compare(const QSGMaterial* other) const;
@@ -37,7 +37,7 @@ private:
     quint32 m_textureId;
 };
 
-class UCStrokeShapeNode : public QSGGeometryNode
+class UCFrameNode : public QSGGeometryNode
 {
 public:
   struct Vertex { float x, y, s1, t1, s2, t2; quint32 color; };
@@ -45,15 +45,15 @@ public:
     static const unsigned short* indices();
     static const QSGGeometry::AttributeSet& attributeSet();
 
-    UCStrokeShapeNode();
+    UCFrameNode();
     void updateGeometry(const QSizeF& itemSize, float weight, float radius, QRgb color);
 
 private:
-    UCStrokeShapeMaterial m_material;
+    UCFrameMaterial m_material;
     QSGGeometry m_geometry;
 };
 
-class UCStrokeShape : public QQuickItem
+class UCFrame : public QQuickItem
 {
     Q_OBJECT
 
@@ -62,7 +62,7 @@ class UCStrokeShape : public QQuickItem
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
 
 public:
-    UCStrokeShape(QQuickItem* parent = 0);
+    UCFrame(QQuickItem* parent = 0);
 
     qreal weight() const { return m_weight; }
     void setWeight(qreal weight);
@@ -84,9 +84,9 @@ private:
     float m_weight;
     float m_radius;
 
-    Q_DISABLE_COPY(UCStrokeShape)
+    Q_DISABLE_COPY(UCFrame)
 };
 
-QML_DECLARE_TYPE(UCStrokeShape)
+QML_DECLARE_TYPE(UCFrame)
 
-#endif  // UCSTROKESHAPE_H
+#endif  // FRAME_H

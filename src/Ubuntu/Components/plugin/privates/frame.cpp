@@ -16,7 +16,7 @@
  * Author: Loïc Molinari <loic.molinari@canonical.com>
  */
 
-#include "strokeshape.h"
+#include "frame.h"
 #include "textures.h"
 #include <QtGui/QOpenGLContext>
 #include <QtGui/QOpenGLFunctions>
@@ -27,10 +27,10 @@ const float defaultRadius = 50.0f;
 
 // --- Shader ---
 
-class StrokeShapeShader : public QSGMaterialShader
+class FrameShader : public QSGMaterialShader
 {
 public:
-    StrokeShapeShader();
+    FrameShader();
     virtual char const* const* attributeNames() const;
     virtual void initialize();
     virtual void updateState(
@@ -41,15 +41,15 @@ private:
     int m_opacityId;
 };
 
-StrokeShapeShader::StrokeShapeShader()
+FrameShader::FrameShader()
 {
     setShaderSourceFile(
-        QOpenGLShader::Vertex, QStringLiteral(":/uc/privates/shaders/strokeshape.vert"));
+        QOpenGLShader::Vertex, QStringLiteral(":/uc/privates/shaders/frame.vert"));
     setShaderSourceFile(
-        QOpenGLShader::Fragment, QStringLiteral(":/uc/privates/shaders/strokeshape.frag"));
+        QOpenGLShader::Fragment, QStringLiteral(":/uc/privates/shaders/frame.frag"));
 }
 
-char const* const* StrokeShapeShader::attributeNames() const
+char const* const* FrameShader::attributeNames() const
 {
     static char const* const attributes[] = {
         "positionAttrib", "texCoord1Attrib", "texCoord2Attrib", "colorAttrib", 0
@@ -57,7 +57,7 @@ char const* const* StrokeShapeShader::attributeNames() const
     return attributes;
 }
 
-void StrokeShapeShader::initialize()
+void FrameShader::initialize()
 {
     QSGMaterialShader::initialize();
     program()->bind();
@@ -66,14 +66,14 @@ void StrokeShapeShader::initialize()
     m_opacityId = program()->uniformLocation("opacity");
 }
 
-void StrokeShapeShader::updateState(
+void FrameShader::updateState(
     const RenderState& state, QSGMaterial* newEffect, QSGMaterial* oldEffect)
 {
     Q_UNUSED(oldEffect);
 
     QOpenGLFunctions* funcs = QOpenGLContext::currentContext()->functions();
     funcs->glBindTexture(
-        GL_TEXTURE_2D, static_cast<UCStrokeShapeMaterial*>(newEffect)->textureId());
+        GL_TEXTURE_2D, static_cast<UCFrameMaterial*>(newEffect)->textureId());
 
     if (state.isMatrixDirty()) {
         program()->setUniformValue(m_matrixId, state.combinedMatrix());
@@ -116,7 +116,7 @@ static int getEmptyTexturesIndex()
     return index;
 }
 
-UCStrokeShapeMaterial::UCStrokeShapeMaterial()
+UCFrameMaterial::UCFrameMaterial()
 {
     setFlag(Blending, true);
 
@@ -153,18 +153,18 @@ UCStrokeShapeMaterial::UCStrokeShapeMaterial()
     m_textureId = textures[index].textureId;
 }
 
-QSGMaterialType* UCStrokeShapeMaterial::type() const
+QSGMaterialType* UCFrameMaterial::type() const
 {
     static QSGMaterialType type;
     return &type;
 }
 
-QSGMaterialShader* UCStrokeShapeMaterial::createShader() const
+QSGMaterialShader* UCFrameMaterial::createShader() const
 {
-    return new StrokeShapeShader;
+    return new FrameShader;
 }
 
-int UCStrokeShapeMaterial::compare(const QSGMaterial* other) const
+int UCFrameMaterial::compare(const QSGMaterial* other) const
 {
     Q_UNUSED(other);
     return 0;
@@ -172,7 +172,7 @@ int UCStrokeShapeMaterial::compare(const QSGMaterial* other) const
 
 // --- Node ---
 
-UCStrokeShapeNode::UCStrokeShapeNode()
+UCFrameNode::UCFrameNode()
     : QSGGeometryNode()
     , m_material()
     , m_geometry(attributeSet(), 20, 34, GL_UNSIGNED_SHORT)
@@ -187,7 +187,7 @@ UCStrokeShapeNode::UCStrokeShapeNode()
 }
 
 // static
-const unsigned short* UCStrokeShapeNode::indices()
+const unsigned short* UCFrameNode::indices()
 {
     // The geometry is made of 8 vertices indexed with a triangle strip mode.
     //     0 -1 ----- 2- 3
@@ -212,7 +212,7 @@ const unsigned short* UCStrokeShapeNode::indices()
 }
 
 // static
-const QSGGeometry::AttributeSet& UCStrokeShapeNode::attributeSet()
+const QSGGeometry::AttributeSet& UCFrameNode::attributeSet()
 {
     static const QSGGeometry::Attribute attributes[] = {
         QSGGeometry::Attribute::create(0, 2, GL_FLOAT, true),
@@ -236,11 +236,10 @@ static quint32 packColor(QRgb color)
     return (a << 24) | ((b & 0xff) << 16) | ((g & 0xff) << 8) | (r & 0xff);
 }
 
-void UCStrokeShapeNode::updateGeometry(
+void UCFrameNode::updateGeometry(
     const QSizeF& itemSize, float weight, float radius, QRgb color)
 {
-    UCStrokeShapeNode::Vertex* v =
-        reinterpret_cast<UCStrokeShapeNode::Vertex*>(m_geometry.vertexData());
+    UCFrameNode::Vertex* v = reinterpret_cast<UCFrameNode::Vertex*>(m_geometry.vertexData());
     const float w = static_cast<float>(itemSize.width());
     const float h = static_cast<float>(itemSize.height());
     const float maxSize = qMin(w, h) * 0.5f;
@@ -412,7 +411,7 @@ void UCStrokeShapeNode::updateGeometry(
 
 // --- Item ---
 
-UCStrokeShape::UCStrokeShape(QQuickItem* parent)
+UCFrame::UCFrame(QQuickItem* parent)
     : QQuickItem(parent)
     , m_color(defaultColor)
     , m_weight(defaultWeight)
@@ -421,7 +420,7 @@ UCStrokeShape::UCStrokeShape(QQuickItem* parent)
     setFlag(ItemHasContents);
 }
 
-void UCStrokeShape::setWeight(qreal weight)
+void UCFrame::setWeight(qreal weight)
 {
     weight = qMax(0.0f, static_cast<float>(weight));
     if (m_weight != weight) {
@@ -431,7 +430,7 @@ void UCStrokeShape::setWeight(qreal weight)
     }
 }
 
-void UCStrokeShape::setRadius(qreal radius)
+void UCFrame::setRadius(qreal radius)
 {
     radius = qMax(0.0f, static_cast<float>(radius));
     if (m_radius != radius) {
@@ -441,7 +440,7 @@ void UCStrokeShape::setRadius(qreal radius)
     }
 }
 
-void UCStrokeShape::setColor(const QColor& color)
+void UCFrame::setColor(const QColor& color)
 {
     const QRgb rgbColor = qRgba(color.red(), color.green(), color.blue(), color.alpha());
     if (m_color != rgbColor) {
@@ -451,7 +450,7 @@ void UCStrokeShape::setColor(const QColor& color)
     }
 }
 
-QSGNode* UCStrokeShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* data)
+QSGNode* UCFrame::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* data)
 {
     Q_UNUSED(data);
 
@@ -461,8 +460,7 @@ QSGNode* UCStrokeShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
         return NULL;
     }
 
-    UCStrokeShapeNode* node =
-        oldNode ? static_cast<UCStrokeShapeNode*>(oldNode) : new UCStrokeShapeNode();
+    UCFrameNode* node = oldNode ? static_cast<UCFrameNode*>(oldNode) : new UCFrameNode();
     node->updateGeometry(itemSize, m_weight, m_radius, m_color);
 
     return node;

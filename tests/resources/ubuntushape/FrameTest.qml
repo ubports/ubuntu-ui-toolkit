@@ -25,17 +25,17 @@ Item {
     focus: true
 
     property string textOverlayString:
-        "weight   (w/W): " + stroke.weight.toFixed(1) + "\n" +
-        "radius   (r/R): " + stroke.radius.toFixed(1) + "\n" +
-        "color      (c): " + stroke.color + "\n" +
-        "opacity  (o/O): " + stroke.opacity.toFixed(2) + "\n"
+        "weight   (w/W): " + frame.weight.toFixed(1) + "\n" +
+        "radius   (r/R): " + frame.radius.toFixed(1) + "\n" +
+        "color      (c): " + frame.color + "\n" +
+        "opacity  (o/O): " + frame.opacity.toFixed(2) + "\n"
 
     Item {
         id: scene
         anchors.fill: parent
 
-        StrokeShape {
-            id: stroke
+        Frame {
+            id: frame
             anchors.fill: parent
             anchors.margins: 100.0
             color: "blue"
@@ -59,13 +59,13 @@ Item {
     Keys.onPressed: {
         var shift = event.modifiers & Qt.ShiftModifier;
         if (event.key == Qt.Key_W) {
-            stroke.weight = stroke.weight + (shift ? 1.0 : -1.0);
+            frame.weight = frame.weight + (shift ? 1.0 : -1.0);
         } else if (event.key == Qt.Key_R) {
-            stroke.radius = stroke.radius + (shift ? 1.0 : -1.0);
+            frame.radius = frame.radius + (shift ? 1.0 : -1.0);
         } else if (event.key == Qt.Key_C) {
-            stroke.color = Qt.rgba(Math.random(), Math.random(), Math.random(), 1.0);
+            frame.color = Qt.rgba(Math.random(), Math.random(), Math.random(), 1.0);
         } else if (event.key == Qt.Key_O) {
-            stroke.opacity = stroke.opacity + (shift ? 0.02 : -0.02);
+            frame.opacity = frame.opacity + (shift ? 0.02 : -0.02);
         }
     }
 }
