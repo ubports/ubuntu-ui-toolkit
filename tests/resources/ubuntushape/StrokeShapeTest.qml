@@ -25,7 +25,7 @@ Item {
     focus: true
 
     property string textOverlayString:
-        "size     (s/S): " + stroke.size.toFixed(1) + "\n" +
+        "weight   (w/W): " + stroke.weight.toFixed(1) + "\n" +
         "radius   (r/R): " + stroke.radius.toFixed(1) + "\n" +
         "color      (c): " + stroke.color + "\n" +
         "opacity  (o/O): " + stroke.opacity.toFixed(2) + "\n"
@@ -58,8 +58,8 @@ Item {
 
     Keys.onPressed: {
         var shift = event.modifiers & Qt.ShiftModifier;
-        if (event.key == Qt.Key_S) {
-            stroke.size = stroke.size + (shift ? 1.0 : -1.0);
+        if (event.key == Qt.Key_W) {
+            stroke.weight = stroke.weight + (shift ? 1.0 : -1.0);
         } else if (event.key == Qt.Key_R) {
             stroke.radius = stroke.radius + (shift ? 1.0 : -1.0);
         } else if (event.key == Qt.Key_C) {

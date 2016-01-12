@@ -25,7 +25,7 @@ Item {
     focus: true
 
     property string textOverlayString:
-        "size     (s/S): " + strokeRectangle.size.toFixed(1) + "\n" +
+        "weight   (w/W): " + strokeRectangle.weight.toFixed(1) + "\n" +
         "color      (c): " + strokeRectangle.color + "\n" +
         "opacity  (o/O): " + strokeRectangle.opacity.toFixed(2) + "\n"
 
@@ -57,8 +57,8 @@ Item {
 
     Keys.onPressed: {
         var shift = event.modifiers & Qt.ShiftModifier;
-        if (event.key == Qt.Key_S) {
-            strokeRectangle.size = strokeRectangle.size + (shift ? 1.0 : -1.0);
+        if (event.key == Qt.Key_W) {
+            strokeRectangle.weight = strokeRectangle.weight + (shift ? 1.0 : -1.0);
         } else if (event.key == Qt.Key_C) {
             strokeRectangle.color = Qt.rgba(Math.random(), Math.random(), Math.random(), 1.0);
         } else if (event.key == Qt.Key_O) {

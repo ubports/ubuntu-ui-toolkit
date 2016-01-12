@@ -19,7 +19,7 @@
 #include "strokerectangle.h"
 
 const QRgb defaultColor = qRgba(255, 255, 255, 255);
-const float defaultSize = 50.0f;
+const float defaultWeight = 50.0f;
 
 // --- Shader ---
 
@@ -148,14 +148,14 @@ static quint32 packColor(QRgb color)
     return (a << 24) | ((b & 0xff) << 16) | ((g & 0xff) << 8) | (r & 0xff);
 }
 
-void UCStrokeRectangleNode::updateGeometry(const QSizeF& itemSize, float strokeSize, QRgb color)
+void UCStrokeRectangleNode::updateGeometry(const QSizeF& itemSize, float weight, QRgb color)
 {
     UCStrokeRectangleNode::Vertex* v =
         reinterpret_cast<UCStrokeRectangleNode::Vertex*>(m_geometry.vertexData());
     const float w = static_cast<float>(itemSize.width());
     const float h = static_cast<float>(itemSize.height());
     const float maxSize = qMin(w, h) * 0.5f;
-    const float adaptedStrokeSize = qMin(strokeSize, maxSize);
+    const float clampedWeight = qMin(weight, maxSize);
     const quint32 packedColor = packColor(color);
 
     v[0].x = 0.0f;
@@ -164,17 +164,17 @@ void UCStrokeRectangleNode::updateGeometry(const QSizeF& itemSize, float strokeS
     v[1].x = w;
     v[1].y = 0.0f;
     v[1].color = packedColor;
-    v[2].x = adaptedStrokeSize;
-    v[2].y = adaptedStrokeSize;
+    v[2].x = clampedWeight;
+    v[2].y = clampedWeight;
     v[2].color = packedColor;
-    v[3].x = w - adaptedStrokeSize;
-    v[3].y = adaptedStrokeSize;
+    v[3].x = w - clampedWeight;
+    v[3].y = clampedWeight;
     v[3].color = packedColor;
-    v[4].x = adaptedStrokeSize;
-    v[4].y = h - adaptedStrokeSize;
+    v[4].x = clampedWeight;
+    v[4].y = h - clampedWeight;
     v[4].color = packedColor;
-    v[5].x = w - adaptedStrokeSize;
-    v[5].y = h - adaptedStrokeSize;
+    v[5].x = w - clampedWeight;
+    v[5].y = h - clampedWeight;
     v[5].color = packedColor;
     v[6].x = 0.0f;
     v[6].y = h;
@@ -191,18 +191,18 @@ void UCStrokeRectangleNode::updateGeometry(const QSizeF& itemSize, float strokeS
 UCStrokeRectangle::UCStrokeRectangle(QQuickItem* parent)
     : QQuickItem(parent)
     , m_color(defaultColor)
-    , m_size(defaultSize)
+    , m_weight(defaultWeight)
 {
     setFlag(ItemHasContents);
 }
 
-void UCStrokeRectangle::setSize(qreal size)
+void UCStrokeRectangle::setWeight(qreal weight)
 {
-    size = qMax(0.0f, static_cast<float>(size));
-    if (m_size != size) {
-        m_size = size;
+    weight = qMax(0.0f, static_cast<float>(weight));
+    if (m_weight != weight) {
+        m_weight = weight;
         update();
-        Q_EMIT sizeChanged();
+        Q_EMIT weightChanged();
     }
 }
 
@@ -221,14 +221,14 @@ QSGNode* UCStrokeRectangle::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeDat
     Q_UNUSED(data);
 
     const QSizeF itemSize(width(), height());
-    if (itemSize.isEmpty() || m_size <= 0.0f) {
+    if (itemSize.isEmpty() || m_weight <= 0.0f) {
         delete oldNode;
         return NULL;
     }
 
     UCStrokeRectangleNode* node =
         oldNode ? static_cast<UCStrokeRectangleNode*>(oldNode) : new UCStrokeRectangleNode;
-    node->updateGeometry(itemSize, m_size, m_color);
+    node->updateGeometry(itemSize, m_weight, m_color);
 
     return node;
 }

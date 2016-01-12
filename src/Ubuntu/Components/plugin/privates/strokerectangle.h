@@ -41,7 +41,7 @@ public:
     static const QSGGeometry::AttributeSet& attributeSet();
 
     UCStrokeRectangleNode();
-    void updateGeometry(const QSizeF& itemSize, float strokeSize, QRgb color);
+    void updateGeometry(const QSizeF& itemSize, float weight, QRgb color);
 
 private:
     UCStrokeRectangleMaterial m_material;
@@ -52,27 +52,27 @@ class UCStrokeRectangle : public QQuickItem
 {
     Q_OBJECT
 
-    Q_PROPERTY(qreal size READ size WRITE setSize NOTIFY sizeChanged)
+    Q_PROPERTY(qreal weight READ weight WRITE setWeight NOTIFY weightChanged)
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
 
 public:
     UCStrokeRectangle(QQuickItem* parent = 0);
 
-    qreal size() const { return m_size; }
-    void setSize(qreal size);
+    qreal weight() const { return m_weight; }
+    void setWeight(qreal weight);
     QColor color() const {
       return QColor(qRed(m_color), qGreen(m_color), qBlue(m_color), qAlpha(m_color)); }
     void setColor(const QColor& color);
 
 Q_SIGNALS:
-    void sizeChanged();
+    void weightChanged();
     void colorChanged();
 
 private:
     virtual QSGNode* updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* data);
 
     QRgb m_color;
-    float m_size;
+    float m_weight;
 
     Q_DISABLE_COPY(UCStrokeRectangle)
 };

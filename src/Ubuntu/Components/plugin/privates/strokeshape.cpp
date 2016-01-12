@@ -22,7 +22,7 @@
 #include <QtGui/QOpenGLFunctions>
 
 const QRgb defaultColor = qRgba(255, 255, 255, 255);
-const float defaultSize = 20.0f;
+const float defaultWeight = 20.0f;
 const float defaultRadius = 50.0f;
 
 // --- Shader ---
@@ -237,20 +237,22 @@ static quint32 packColor(QRgb color)
 }
 
 void UCStrokeShapeNode::updateGeometry(
-    const QSizeF& itemSize, float strokeSize, float radiusSize, QRgb color)
+    const QSizeF& itemSize, float weight, float radius, QRgb color)
 {
     UCStrokeShapeNode::Vertex* v =
         reinterpret_cast<UCStrokeShapeNode::Vertex*>(m_geometry.vertexData());
     const float w = static_cast<float>(itemSize.width());
     const float h = static_cast<float>(itemSize.height());
     const float maxSize = qMin(w, h) * 0.5f;
-    const float stroke = qMin(strokeSize, maxSize);
-    const float radiusOut = qBound(0.01f, radiusSize, maxSize);
-    const float radiusIn = radiusOut * ((maxSize - stroke) / maxSize);
-    const float tc1 = (((1.0f - shapeOffset) / radiusOut) * (stroke + radiusIn)) + shapeOffset;
-    const float tc2 = (((1.0f - shapeOffset) / radiusOut) * stroke) + shapeOffset;
-    const float tc3 = (((1.0f - shapeOffset) / radiusIn) * -stroke) + shapeOffset;
-    const float tc4 = (((1.0f - shapeOffset) / radiusIn) * (radiusOut - stroke)) + shapeOffset;
+    const float clampedWeight = qMin(weight, maxSize);
+    const float radiusOut = qBound(0.01f, radius, maxSize);
+    const float radiusIn = radiusOut * ((maxSize - clampedWeight) / maxSize);
+    const float tc1 =
+        (((1.0f - shapeOffset) / radiusOut) * (clampedWeight + radiusIn)) + shapeOffset;
+    const float tc2 = (((1.0f - shapeOffset) / radiusOut) * clampedWeight) + shapeOffset;
+    const float tc3 = (((1.0f - shapeOffset) / radiusIn) * -clampedWeight) + shapeOffset;
+    const float tc4 =
+        (((1.0f - shapeOffset) / radiusIn) * (radiusOut - clampedWeight)) + shapeOffset;
     const quint32 packedColor = packColor(color);
 
     // 1st row.
@@ -284,15 +286,15 @@ void UCStrokeShapeNode::updateGeometry(
     v[3].color = packedColor;
 
     // 2nd row.
-    v[4].x = stroke + radiusIn;
-    v[4].y = stroke;
+    v[4].x = clampedWeight + radiusIn;
+    v[4].y = clampedWeight;
     v[4].s1 = tc1;
     v[4].t1 = tc2;
     v[4].s2 = 1.0f;
     v[4].t2 = shapeOffset;
     v[4].color = packedColor;
-    v[5].x = w - (stroke + radiusIn);
-    v[5].y = stroke;
+    v[5].x = w - (clampedWeight + radiusIn);
+    v[5].y = clampedWeight;
     v[5].s1 = tc1;
     v[5].t1 = tc2;
     v[5].s2 = 1.0f;
@@ -307,15 +309,15 @@ void UCStrokeShapeNode::updateGeometry(
     v[6].s2 = tc3;
     v[6].t2 = tc4;
     v[6].color = packedColor;
-    v[7].x = stroke;
-    v[7].y = stroke + radiusIn;
+    v[7].x = clampedWeight;
+    v[7].y = clampedWeight + radiusIn;
     v[7].s1 = tc2;
     v[7].t1 = tc1;
     v[7].s2 = shapeOffset;
     v[7].t2 = 1.0f;
     v[7].color = packedColor;
-    v[8].x = w - stroke;
-    v[8].y = stroke + radiusIn;
+    v[8].x = w - clampedWeight;
+    v[8].y = clampedWeight + radiusIn;
     v[8].s1 = tc2;
     v[8].t1 = tc1;
     v[8].s2 = shapeOffset;
@@ -337,15 +339,15 @@ void UCStrokeShapeNode::updateGeometry(
     v[10].s2 = tc3;
     v[10].t2 = tc4;
     v[10].color = packedColor;
-    v[11].x = stroke;
-    v[11].y = h - (stroke + radiusIn);
+    v[11].x = clampedWeight;
+    v[11].y = h - (clampedWeight + radiusIn);
     v[11].s1 = tc2;
     v[11].t1 = tc1;
     v[11].s2 = shapeOffset;
     v[11].t2 = 1.0f;
     v[11].color = packedColor;
-    v[12].x = w - stroke;
-    v[12].y = h - (stroke + radiusIn);
+    v[12].x = w - clampedWeight;
+    v[12].y = h - (clampedWeight + radiusIn);
     v[12].s1 = tc2;
     v[12].t1 = tc1;
     v[12].s2 = shapeOffset;
@@ -360,15 +362,15 @@ void UCStrokeShapeNode::updateGeometry(
     v[13].color = packedColor;
 
     // 5th row.
-    v[14].x = stroke + radiusIn;
-    v[14].y = h - stroke;
+    v[14].x = clampedWeight + radiusIn;
+    v[14].y = h - clampedWeight;
     v[14].s1 = tc1;
     v[14].t1 = tc2;
     v[14].s2 = 1.0f;
     v[14].t2 = shapeOffset;
     v[14].color = packedColor;
-    v[15].x = w - (stroke + radiusIn);
-    v[15].y = h - stroke;
+    v[15].x = w - (clampedWeight + radiusIn);
+    v[15].y = h - clampedWeight;
     v[15].s1 = tc1;
     v[15].t1 = tc2;
     v[15].s2 = 1.0f;
@@ -413,19 +415,19 @@ void UCStrokeShapeNode::updateGeometry(
 UCStrokeShape::UCStrokeShape(QQuickItem* parent)
     : QQuickItem(parent)
     , m_color(defaultColor)
-    , m_size(defaultSize)
+    , m_weight(defaultWeight)
     , m_radius(defaultRadius)
 {
     setFlag(ItemHasContents);
 }
 
-void UCStrokeShape::setSize(qreal size)
+void UCStrokeShape::setWeight(qreal weight)
 {
-    size = qMax(0.0f, static_cast<float>(size));
-    if (m_size != size) {
-        m_size = size;
+    weight = qMax(0.0f, static_cast<float>(weight));
+    if (m_weight != weight) {
+        m_weight = weight;
         update();
-        Q_EMIT sizeChanged();
+        Q_EMIT weightChanged();
     }
 }
 
@@ -454,14 +456,14 @@ QSGNode* UCStrokeShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
     Q_UNUSED(data);
 
     const QSizeF itemSize(width(), height());
-    if (itemSize.isEmpty() || m_size <= 0.0f) {
+    if (itemSize.isEmpty() || m_weight <= 0.0f) {
         delete oldNode;
         return NULL;
     }
 
     UCStrokeShapeNode* node =
         oldNode ? static_cast<UCStrokeShapeNode*>(oldNode) : new UCStrokeShapeNode();
-    node->updateGeometry(itemSize, m_size, m_radius, m_color);
+    node->updateGeometry(itemSize, m_weight, m_radius, m_color);
 
     return node;
 }
