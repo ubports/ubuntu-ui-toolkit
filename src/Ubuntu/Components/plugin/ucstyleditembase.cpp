@@ -327,8 +327,9 @@ bool UCStyledItemBasePrivate::loadStyleItem(bool animated)
     Q_Q(UCStyledItemBase);
     // either styleComponent or styleName is valid
     QQmlComponent *component = styleComponent;
-    if (!component) {
-        component = q->getTheme()->createStyleComponent(styleDocument + ".qml", q, styleVersion);
+    UCTheme *theme = q->getTheme();
+    if (!component && theme) {
+        component = theme->createStyleComponent(styleDocument + ".qml", q, styleVersion);
     }
     if (!component) {
         return false;

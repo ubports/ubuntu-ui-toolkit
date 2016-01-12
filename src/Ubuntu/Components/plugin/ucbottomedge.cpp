@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -62,7 +62,6 @@ void UCBottomEdgePrivate::init()
     Q_Q(UCBottomEdge);
     // initialize hint
     QQml_setParent_noEvent(hint, q);
-    hint->setParentItem(q);
 
     // create default regions
     createDefaultRegions();
@@ -706,6 +705,7 @@ void UCBottomEdge::initializeComponent()
 {
     Q_D(UCBottomEdge);
     // initialize hint
+    d->hint->setParentItem(this);
     d->hint->init();
 
     // hint click() always commits

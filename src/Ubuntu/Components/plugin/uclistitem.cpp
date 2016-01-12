@@ -94,9 +94,13 @@ void UCListItemDivider::init(UCListItem *listItem)
 void UCListItemDivider::paletteChanged()
 {
     Q_D(UCListItemDivider);
-    QColor background = d->listItem->getTheme()->getPaletteColor("normal", "background");
-    if (!background.isValid()) {
-        return;
+    QColor background;
+    UCTheme *theme = d->listItem->getTheme();
+    if (theme) {
+        background = theme->getPaletteColor("normal", "background");
+        if (!background.isValid()) {
+            return;
+        }
     }
     // FIXME: we need a palette value for divider colors, till then base on the background
     // luminance
@@ -1648,7 +1652,10 @@ void UCListItem::resetHighlightColor()
 {
     Q_D(UCListItem);
     d->customColor = false;
-    d->highlightColor = getTheme()->getPaletteColor("selected", "background");
+    UCTheme *theme = getTheme();
+    if (theme) {
+        d->highlightColor = theme->getPaletteColor("selected", "background");
+    }
     update();
     Q_EMIT highlightColorChanged();
 }
