@@ -16,56 +16,65 @@
  * Author: Loïc Molinari <loic.molinari@canonical.com>
  */
 
-#ifndef UCSTROKE_H
-#define UCSTROKE_H
+#ifndef UCSTROKESHAPE_H
+#define UCSTROKESHAPE_H
 
 #include <QtQuick/QQuickItem>
 #include <QtQuick/QSGMaterial>
 #include <QtQuick/QSGNode>
 
-class UCStrokeMaterial : public QSGMaterial
+class UCStrokeShapeMaterial : public QSGMaterial
 {
 public:
-    UCStrokeMaterial();
+    UCStrokeShapeMaterial();
     virtual QSGMaterialType* type() const;
     virtual QSGMaterialShader* createShader() const;
     virtual int compare(const QSGMaterial* other) const;
+
+    quint32 textureId() const { return m_textureId; }
+
+private:
+    quint32 m_textureId;
 };
 
-class UCStrokeNode : public QSGGeometryNode
+class UCStrokeShapeNode : public QSGGeometryNode
 {
 public:
-    struct Vertex { float x, y; quint32 color; };
+  struct Vertex { float x, y, s1, t1, s2, t2; quint32 color; };
 
     static const unsigned short* indices();
     static const QSGGeometry::AttributeSet& attributeSet();
 
-    UCStrokeNode();
-    void updateGeometry(const QSizeF& itemSize, float strokeSize, QRgb color);
+    UCStrokeShapeNode();
+    void updateGeometry(const QSizeF& itemSize, float strokeSize, float radiusSize, QRgb color);
 
 private:
-    UCStrokeMaterial m_material;
+    UCStrokeShapeMaterial m_material;
     QSGGeometry m_geometry;
 };
 
-class UCStroke : public QQuickItem
+class UCStrokeShape : public QQuickItem
 {
     Q_OBJECT
 
     Q_PROPERTY(qreal size READ size WRITE setSize NOTIFY sizeChanged)
+    Q_PROPERTY(qreal radius READ radius WRITE setRadius NOTIFY radiusChanged)
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
 
 public:
-    UCStroke(QQuickItem* parent = 0);
+    UCStrokeShape(QQuickItem* parent = 0);
 
     qreal size() const { return m_size; }
     void setSize(qreal size);
+    qreal radius() const { return m_radius; }
+    void setRadius(qreal radius);
     QColor color() const {
       return QColor(qRed(m_color), qGreen(m_color), qBlue(m_color), qAlpha(m_color)); }
     void setColor(const QColor& color);
 
 Q_SIGNALS:
     void sizeChanged();
+    void radiusChanged();
     void colorChanged();
 
 private:
@@ -73,10 +82,11 @@ private:
 
     QRgb m_color;
     float m_size;
+    float m_radius;
 
-    Q_DISABLE_COPY(UCStroke)
+    Q_DISABLE_COPY(UCStrokeShape)
 };
 
-QML_DECLARE_TYPE(UCStroke)
+QML_DECLARE_TYPE(UCStrokeShape)
 
-#endif  // UCSTROKE_H
+#endif  // UCSTROKESHAPE_H

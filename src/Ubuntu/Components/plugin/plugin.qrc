@@ -9,5 +9,7 @@
 
         <file>privates/shaders/stroke.frag</file>
         <file>privates/shaders/stroke.vert</file>
+        <file>privates/shaders/strokeshape.frag</file>
+        <file>privates/shaders/strokeshape.vert</file>
     </qresource>
 </RCC>

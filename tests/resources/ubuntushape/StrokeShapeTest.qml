@@ -26,6 +26,7 @@ Item {
 
     property string textOverlayString:
         "size     (s/S): " + stroke.size.toFixed(1) + "\n" +
+        "radius   (r/R): " + stroke.radius.toFixed(1) + "\n" +
         "color      (c): " + stroke.color + "\n" +
         "opacity  (o/O): " + stroke.opacity.toFixed(2) + "\n"
 
@@ -33,7 +34,7 @@ Item {
         id: scene
         anchors.fill: parent
 
-        Stroke {
+        StrokeShape {
             id: stroke
             anchors.fill: parent
             anchors.margins: 100.0
@@ -59,6 +60,8 @@ Item {
         var shift = event.modifiers & Qt.ShiftModifier;
         if (event.key == Qt.Key_S) {
             stroke.size = stroke.size + (shift ? 1.0 : -1.0);
+        } else if (event.key == Qt.Key_R) {
+            stroke.radius = stroke.radius + (shift ? 1.0 : -1.0);
         } else if (event.key == Qt.Key_C) {
             stroke.color = Qt.rgba(Math.random(), Math.random(), Math.random(), 1.0);
         } else if (event.key == Qt.Key_O) {

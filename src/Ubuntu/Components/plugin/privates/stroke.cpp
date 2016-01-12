@@ -18,6 +18,7 @@
 
 #include "stroke.h"
 
+const QRgb defaultColor = qRgba(255, 255, 255, 255);
 const float defaultSize = 50.0f;
 
 // --- Shader ---
@@ -38,9 +39,10 @@ private:
 
 StrokeShader::StrokeShader()
 {
-    setShaderSourceFile(QOpenGLShader::Vertex, QStringLiteral(":/uc/privates/shaders/stroke.vert"));
-    setShaderSourceFile(QOpenGLShader::Fragment,
-                        QStringLiteral(":/uc/privates//shaders/stroke.frag"));
+    setShaderSourceFile(
+        QOpenGLShader::Vertex, QStringLiteral(":/uc/privates/shaders/stroke.vert"));
+    setShaderSourceFile(
+        QOpenGLShader::Fragment, QStringLiteral(":/uc/privates/shaders/stroke.frag"));
 }
 
 char const* const* StrokeShader::attributeNames() const
@@ -146,36 +148,38 @@ static quint32 packColor(QRgb color)
     return (a << 24) | ((b & 0xff) << 16) | ((g & 0xff) << 8) | (r & 0xff);
 }
 
-void UCStrokeNode::updateGeometry(QSizeF itemSize, float strokeSize, QRgb color)
+void UCStrokeNode::updateGeometry(const QSizeF& itemSize, float strokeSize, QRgb color)
 {
     UCStrokeNode::Vertex* v = reinterpret_cast<UCStrokeNode::Vertex*>(m_geometry.vertexData());
-    const float lowerSize = static_cast<float>(qMin(itemSize.width(), itemSize.height()));
-    const float adaptedStrokeSize = qMin(strokeSize, lowerSize * 0.5f);
+    const float w = static_cast<float>(itemSize.width());
+    const float h = static_cast<float>(itemSize.height());
+    const float maxSize = qMin(w, h) * 0.5f;
+    const float adaptedStrokeSize = qMin(strokeSize, maxSize);
     const quint32 packedColor = packColor(color);
 
     v[0].x = 0.0f;
     v[0].y = 0.0f;
     v[0].color = packedColor;
-    v[1].x = itemSize.width();
+    v[1].x = w;
     v[1].y = 0.0f;
     v[1].color = packedColor;
     v[2].x = adaptedStrokeSize;
     v[2].y = adaptedStrokeSize;
     v[2].color = packedColor;
-    v[3].x = itemSize.width() - adaptedStrokeSize;
+    v[3].x = w - adaptedStrokeSize;
     v[3].y = adaptedStrokeSize;
     v[3].color = packedColor;
     v[4].x = adaptedStrokeSize;
-    v[4].y = itemSize.height() - adaptedStrokeSize;
+    v[4].y = h - adaptedStrokeSize;
     v[4].color = packedColor;
-    v[5].x = itemSize.width() - adaptedStrokeSize;
-    v[5].y = itemSize.height() - adaptedStrokeSize;
+    v[5].x = w - adaptedStrokeSize;
+    v[5].y = h - adaptedStrokeSize;
     v[5].color = packedColor;
     v[6].x = 0.0f;
-    v[6].y = itemSize.height();
+    v[6].y = h;
     v[6].color = packedColor;
-    v[7].x = itemSize.width();
-    v[7].y = itemSize.height();
+    v[7].x = w;
+    v[7].y = h;
     v[7].color = packedColor;
 
     markDirty(QSGNode::DirtyGeometry);
@@ -185,7 +189,7 @@ void UCStrokeNode::updateGeometry(QSizeF itemSize, float strokeSize, QRgb color)
 
 UCStroke::UCStroke(QQuickItem* parent)
     : QQuickItem(parent)
-    , m_color(qRgba(255, 255, 255, 255))
+    , m_color(defaultColor)
     , m_size(defaultSize)
 {
     setFlag(ItemHasContents);
