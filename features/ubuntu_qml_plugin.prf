@@ -54,7 +54,7 @@ load(ubuntu_enable_testing)
 
     QMLTYPEFILE = $$instbase/$$TARGETPATH/plugins.qmltypes
     autobld_qmltypes.target = $$QMLTYPEFILE
-    autobld_qmltypes.commands = $$QMLPLUGINDUMP -nonrelocatable $$replace(TARGETPATHBASE, /, .) $$IMPORT_VERSION > $$QMLTYPEFILE
+    autobld_qmltypes.commands = $$QMLPLUGINDUMP -nonrelocatable -noinstantiate $$replace(TARGETPATHBASE, /, .) $$IMPORT_VERSION > $$QMLTYPEFILE
     autobld_qmltypes.commands += && sed -i \'s?-1.-1\"?0.1\"?\' $$QMLTYPEFILE
     autobld_qmltypes.commands += && sed -i \'s?exportMetaObjectRevisions: \\[-1\\]?exportMetaObjectRevisions: [0,0]?\' $$QMLTYPEFILE
     autobld_qmltypes.depends = $$QMAKE_RESOLVED_TARGET
