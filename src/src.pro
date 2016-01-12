@@ -15,6 +15,7 @@ src_gestures.target  = sub-gestures
 
 src_test.subdir  = Ubuntu/Test
 src_test.target  = sub-test
+src_test.depends = sub-components
 
 #order is important
 SUBDIRS += src_gestures src_components src_layouts src_performance_metrics src_test

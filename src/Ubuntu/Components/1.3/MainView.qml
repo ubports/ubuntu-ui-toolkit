@@ -162,7 +162,8 @@ MainViewBase {
             // don't show the application header if the page has its own header.
             visible: !(internal.activePage &&
                        internal.activePage.hasOwnProperty("header") &&
-                       internal.activePage.header)
+                       internal.activePage.header) &&
+                     internal.activePage
 
             height: visible ? implicitHeight : 0
 
