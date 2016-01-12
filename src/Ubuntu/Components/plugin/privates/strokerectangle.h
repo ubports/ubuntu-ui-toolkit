@@ -16,23 +16,23 @@
  * Author: Loïc Molinari <loic.molinari@canonical.com>
  */
 
-#ifndef UCSTROKE_H
-#define UCSTROKE_H
+#ifndef UCSTROKERECTANGLE_H
+#define UCSTROKERECTANGLE_H
 
 #include <QtQuick/QQuickItem>
 #include <QtQuick/QSGMaterial>
 #include <QtQuick/QSGNode>
 
-class UCStrokeMaterial : public QSGMaterial
+class UCStrokeRectangleMaterial : public QSGMaterial
 {
 public:
-    UCStrokeMaterial();
+    UCStrokeRectangleMaterial();
     virtual QSGMaterialType* type() const;
     virtual QSGMaterialShader* createShader() const;
     virtual int compare(const QSGMaterial* other) const;
 };
 
-class UCStrokeNode : public QSGGeometryNode
+class UCStrokeRectangleNode : public QSGGeometryNode
 {
 public:
     struct Vertex { float x, y; quint32 color; };
@@ -40,15 +40,15 @@ public:
     static const unsigned short* indices();
     static const QSGGeometry::AttributeSet& attributeSet();
 
-    UCStrokeNode();
+    UCStrokeRectangleNode();
     void updateGeometry(const QSizeF& itemSize, float strokeSize, QRgb color);
 
 private:
-    UCStrokeMaterial m_material;
+    UCStrokeRectangleMaterial m_material;
     QSGGeometry m_geometry;
 };
 
-class UCStroke : public QQuickItem
+class UCStrokeRectangle : public QQuickItem
 {
     Q_OBJECT
 
@@ -56,7 +56,7 @@ class UCStroke : public QQuickItem
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
 
 public:
-    UCStroke(QQuickItem* parent = 0);
+    UCStrokeRectangle(QQuickItem* parent = 0);
 
     qreal size() const { return m_size; }
     void setSize(qreal size);
@@ -74,9 +74,9 @@ private:
     QRgb m_color;
     float m_size;
 
-    Q_DISABLE_COPY(UCStroke)
+    Q_DISABLE_COPY(UCStrokeRectangle)
 };
 
-QML_DECLARE_TYPE(UCStroke)
+QML_DECLARE_TYPE(UCStrokeRectangle)
 
-#endif  // UCSTROKE_H
+#endif  // UCSTROKERECTANGLE_H

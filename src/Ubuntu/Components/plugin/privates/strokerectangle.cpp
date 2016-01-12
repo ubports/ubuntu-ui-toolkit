@@ -16,7 +16,7 @@
  * Author: Loïc Molinari <loic.molinari@canonical.com>
  */
 
-#include "stroke.h"
+#include "strokerectangle.h"
 
 const QRgb defaultColor = qRgba(255, 255, 255, 255);
 const float defaultSize = 50.0f;
@@ -40,9 +40,9 @@ private:
 StrokeShader::StrokeShader()
 {
     setShaderSourceFile(
-        QOpenGLShader::Vertex, QStringLiteral(":/uc/privates/shaders/stroke.vert"));
+        QOpenGLShader::Vertex, QStringLiteral(":/uc/privates/shaders/strokerectangle.vert"));
     setShaderSourceFile(
-        QOpenGLShader::Fragment, QStringLiteral(":/uc/privates/shaders/stroke.frag"));
+        QOpenGLShader::Fragment, QStringLiteral(":/uc/privates/shaders/strokerectangle.frag"));
 }
 
 char const* const* StrokeShader::attributeNames() const
@@ -74,23 +74,23 @@ void StrokeShader::updateState(
 
 // --- Material ---
 
-UCStrokeMaterial::UCStrokeMaterial()
+UCStrokeRectangleMaterial::UCStrokeRectangleMaterial()
 {
     setFlag(Blending, false);
 }
 
-QSGMaterialType* UCStrokeMaterial::type() const
+QSGMaterialType* UCStrokeRectangleMaterial::type() const
 {
     static QSGMaterialType type;
     return &type;
 }
 
-QSGMaterialShader* UCStrokeMaterial::createShader() const
+QSGMaterialShader* UCStrokeRectangleMaterial::createShader() const
 {
     return new StrokeShader;
 }
 
-int UCStrokeMaterial::compare(const QSGMaterial* other) const
+int UCStrokeRectangleMaterial::compare(const QSGMaterial* other) const
 {
     Q_UNUSED(other);
     return 0;
@@ -98,7 +98,7 @@ int UCStrokeMaterial::compare(const QSGMaterial* other) const
 
 // --- Node ---
 
-UCStrokeNode::UCStrokeNode()
+UCStrokeRectangleNode::UCStrokeRectangleNode()
     : QSGGeometryNode()
     , m_material()
     , m_geometry(attributeSet(), 8, 10, GL_UNSIGNED_SHORT)
@@ -113,7 +113,7 @@ UCStrokeNode::UCStrokeNode()
 }
 
 // static
-const unsigned short* UCStrokeNode::indices()
+const unsigned short* UCStrokeRectangleNode::indices()
 {
     // The geometry is made of 8 vertices indexed with a triangle strip mode.
     //     0 ----- 1
@@ -126,7 +126,7 @@ const unsigned short* UCStrokeNode::indices()
 }
 
 // static
-const QSGGeometry::AttributeSet& UCStrokeNode::attributeSet()
+const QSGGeometry::AttributeSet& UCStrokeRectangleNode::attributeSet()
 {
     static const QSGGeometry::Attribute attributes[] = {
         QSGGeometry::Attribute::create(0, 2, GL_FLOAT, true),
@@ -148,9 +148,10 @@ static quint32 packColor(QRgb color)
     return (a << 24) | ((b & 0xff) << 16) | ((g & 0xff) << 8) | (r & 0xff);
 }
 
-void UCStrokeNode::updateGeometry(const QSizeF& itemSize, float strokeSize, QRgb color)
+void UCStrokeRectangleNode::updateGeometry(const QSizeF& itemSize, float strokeSize, QRgb color)
 {
-    UCStrokeNode::Vertex* v = reinterpret_cast<UCStrokeNode::Vertex*>(m_geometry.vertexData());
+    UCStrokeRectangleNode::Vertex* v =
+        reinterpret_cast<UCStrokeRectangleNode::Vertex*>(m_geometry.vertexData());
     const float w = static_cast<float>(itemSize.width());
     const float h = static_cast<float>(itemSize.height());
     const float maxSize = qMin(w, h) * 0.5f;
@@ -187,7 +188,7 @@ void UCStrokeNode::updateGeometry(const QSizeF& itemSize, float strokeSize, QRgb
 
 // --- Item ---
 
-UCStroke::UCStroke(QQuickItem* parent)
+UCStrokeRectangle::UCStrokeRectangle(QQuickItem* parent)
     : QQuickItem(parent)
     , m_color(defaultColor)
     , m_size(defaultSize)
@@ -195,7 +196,7 @@ UCStroke::UCStroke(QQuickItem* parent)
     setFlag(ItemHasContents);
 }
 
-void UCStroke::setSize(qreal size)
+void UCStrokeRectangle::setSize(qreal size)
 {
     size = qMax(0.0f, static_cast<float>(size));
     if (m_size != size) {
@@ -205,7 +206,7 @@ void UCStroke::setSize(qreal size)
     }
 }
 
-void UCStroke::setColor(const QColor& color)
+void UCStrokeRectangle::setColor(const QColor& color)
 {
     const QRgb rgbColor = qRgba(color.red(), color.green(), color.blue(), color.alpha());
     if (m_color != rgbColor) {
@@ -215,7 +216,7 @@ void UCStroke::setColor(const QColor& color)
     }
 }
 
-QSGNode* UCStroke::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* data)
+QSGNode* UCStrokeRectangle::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* data)
 {
     Q_UNUSED(data);
 
@@ -225,7 +226,8 @@ QSGNode* UCStroke::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* data)
         return NULL;
     }
 
-    UCStrokeNode* node = oldNode ? static_cast<UCStrokeNode*>(oldNode) : new UCStrokeNode;
+    UCStrokeRectangleNode* node =
+        oldNode ? static_cast<UCStrokeRectangleNode*>(oldNode) : new UCStrokeRectangleNode;
     node->updateGeometry(itemSize, m_size, m_color);
 
     return node;

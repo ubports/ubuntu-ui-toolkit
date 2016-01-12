@@ -109,7 +109,7 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/ucbottomedgeregion.h \
     $$PWD/ucpagetreenode.h \
     $$PWD/ucpagetreenode_p.h \
-    $$PWD/privates/stroke.h \
+    $$PWD/privates/strokerectangle.h \
     $$PWD/privates/strokeshape.h
 
 SOURCES += $$PWD/plugin.cpp \
@@ -182,7 +182,7 @@ SOURCES += $$PWD/plugin.cpp \
     $$PWD/ucbottomedgestyle.cpp \
     $$PWD/ucbottomedgeregion.cpp \
     $$PWD/ucpagetreenode.cpp \
-    $$PWD/privates/stroke.cpp \
+    $$PWD/privates/strokerectangle.cpp \
     $$PWD/privates/strokeshape.cpp
 
 # adapters
@@ -198,7 +198,7 @@ OTHER_FILES += \
     $$PWD/shaders/shapeoverlay.vert \
     $$PWD/shaders/shapeoverlay.frag \
     $$PWD/shaders/shapeoverlay_no_dfdy.frag \
-    $$PWD/privates/shaders/stroke.vert \
-    $$PWD/privates/shaders/stroke.frag \
+    $$PWD/privates/shaders/strokerectangle.vert \
+    $$PWD/privates/shaders/strokerectangle.frag \
     $$PWD/privates/shaders/strokeshape.vert \
     $$PWD/privates/shaders/strokeshape.frag
