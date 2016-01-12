@@ -26,6 +26,7 @@
 #include "ucstyleditembase_p.h"
 #include "ucnamespace.h"
 #include "ucunits.h"
+#include "uclabel.h"
 
 class ThemeTestCase : public UbuntuTestCase
 {
@@ -127,6 +128,13 @@ private Q_SLOTS:
         // reset
         theme.resetName();
         QCOMPARE(theme.name(), QString("Ubuntu.Components.Themes.Ambiance"));
+    }
+
+    void test_create_without_engine()
+    {
+        QTest::ignoreMessage(QtCriticalMsg, "The item UCLabel was created without a valid QML Engine. Styling will not be possible.");
+        QScopedPointer<UCLabel> item(new UCLabel);
+        QVERIFY(!item->getTheme());
     }
 
     void test_default_theme_cleared_with_engine_bug1527546()

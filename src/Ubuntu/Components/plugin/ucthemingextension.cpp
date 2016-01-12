@@ -221,7 +221,12 @@ UCTheme *UCThemingExtension::getTheme()
 {
     if (!theme) {
         theme = UCTheme::defaultTheme(qmlEngine(themedItem));
-        Q_ASSERT(theme);
+        if (!theme) {
+            QString msg = QStringLiteral("The item %1 was created without a valid QML Engine. Styling will not be possible.")
+                    .arg(themedItem->metaObject()->className());
+            qCritical().noquote() << msg;
+            return Q_NULLPTR;
+        }
         theme->attachItem(themedItem, true);
     }
     return theme;
