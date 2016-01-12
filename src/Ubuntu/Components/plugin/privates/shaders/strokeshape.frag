@@ -28,7 +28,6 @@ void main(void)
     lowp float shapeIn = texture2D(texture, texCoord2).r;
     // FMA'd shapeOut * (1.0 - shapeIn)
     lowp float shape = (shapeOut * -shapeIn) + shapeOut;
-    // sin approx to make thinner corners (particularly visible at stroke 1).
-    shape = (shape + 1.0) * (shape - 1.0) + 1.0;
-    gl_FragColor = vec4(shape * opacity) * color;
+    // shape is squared to make thinner corners (particularly visible at stroke 1).
+    gl_FragColor = vec4(shape * shape * opacity) * color;
 }
