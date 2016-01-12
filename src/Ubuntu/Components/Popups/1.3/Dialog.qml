@@ -180,6 +180,13 @@ PopupBase {
                 height: childrenRect.height + foreground.margins
                 onWidthChanged: updateChildrenWidths();
 
+                // put the context into this component to save ActionContext lookup
+                PopupContext {
+                    id: localContext
+                    objectName: dialog.objectName + "DialogContext"
+                    active: foreground.visible
+                }
+
                 Label {
                     horizontalAlignment: Text.AlignHCenter
                     text: dialog.title

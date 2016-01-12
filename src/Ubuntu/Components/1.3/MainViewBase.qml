@@ -159,6 +159,19 @@ Toolkit.PageTreeNode {
         }
     }
 
+    /*!
+      \qmlproperty ActrionContext MainView::actionContext
+      \readonly
+      \since Ubuntu.Components 1.3
+      The action context of the MainView.
+      */
+    readonly property alias actionContext: localContext
+    Toolkit.PopupContext {
+        id: localContext
+        objectName: "RootContext"
+        active: true
+    }
+
     onApplicationNameChanged: {
         if (applicationName !== "") {
             i18n.domain = applicationName;
