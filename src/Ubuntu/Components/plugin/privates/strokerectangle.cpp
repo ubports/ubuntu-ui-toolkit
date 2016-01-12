@@ -23,10 +23,10 @@ const float defaultSize = 50.0f;
 
 // --- Shader ---
 
-class StrokeShader : public QSGMaterialShader
+class StrokeRectangleShader : public QSGMaterialShader
 {
 public:
-    StrokeShader();
+    StrokeRectangleShader();
     virtual char const* const* attributeNames() const;
     virtual void initialize();
     virtual void updateState(
@@ -37,7 +37,7 @@ private:
     int m_opacityId;
 };
 
-StrokeShader::StrokeShader()
+StrokeRectangleShader::StrokeRectangleShader()
 {
     setShaderSourceFile(
         QOpenGLShader::Vertex, QStringLiteral(":/uc/privates/shaders/strokerectangle.vert"));
@@ -45,20 +45,20 @@ StrokeShader::StrokeShader()
         QOpenGLShader::Fragment, QStringLiteral(":/uc/privates/shaders/strokerectangle.frag"));
 }
 
-char const* const* StrokeShader::attributeNames() const
+char const* const* StrokeRectangleShader::attributeNames() const
 {
     static char const* const attributes[] = { "positionAttrib", "colorAttrib", 0 };
     return attributes;
 }
 
-void StrokeShader::initialize()
+void StrokeRectangleShader::initialize()
 {
     QSGMaterialShader::initialize();
     m_matrixId = program()->uniformLocation("matrix");
     m_opacityId = program()->uniformLocation("opacity");
 }
 
-void StrokeShader::updateState(
+void StrokeRectangleShader::updateState(
     const RenderState& state, QSGMaterial* newEffect, QSGMaterial* oldEffect)
 {
     Q_UNUSED(newEffect);
@@ -87,7 +87,7 @@ QSGMaterialType* UCStrokeRectangleMaterial::type() const
 
 QSGMaterialShader* UCStrokeRectangleMaterial::createShader() const
 {
-    return new StrokeShader;
+    return new StrokeRectangleShader;
 }
 
 int UCStrokeRectangleMaterial::compare(const QSGMaterial* other) const
