@@ -34,7 +34,7 @@ class ButtonsTestCase(gallery.GalleryTestCase):
             text="Call")),
         ('button with color', dict(
             button_name="button_color", is_enabled=True,
-            color=[0, 161, 50, 255], icon=None, text="Call Ctrl+C")),
+            color=[0, 161, 50, 255], icon=None, text="C&all Ctrl+L")),
         ('button with icon', dict(
             button_name="button_iconsource", is_enabled=True, color=None,
             icon="call.png", text=None)),

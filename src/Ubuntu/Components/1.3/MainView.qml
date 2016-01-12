@@ -121,28 +121,10 @@ MainViewBase {
                     UbuntuApplication.inputMethod.keyboardRectangle.height : 0
         }
 
-        // clip the contents so that it does not overlap the header
         Item {
-            id: contentsClipper
+            id: contents
             anchors {
-                left: parent.left
-                right: parent.right
-                top: headerItem.bottom
-                bottom: parent.bottom
-            }
-            // only clip when necessary
-            // ListView headers may be positioned at the top, independent from
-            // flickable.contentY, so do not clip depending on activePage.flickable.contentY.
-            clip: headerItem.bottomY > 0 && internal.activePage && internal.activePage.flickable
-
-            Item {
-                id: contents
-                anchors {
-                    fill: parent
-                    
-                    // compensate so that the actual y is always 0
-                    topMargin: -parent.y
-                }
+                fill: parent
             }
         }
 
@@ -159,6 +141,7 @@ MainViewBase {
             property real bottomY: headerItem.y + headerItem.height
             dividerColor: Qt.darker(mainView.headerColor, 1.1)
             panelColor: Qt.lighter(mainView.headerColor, 1.1)
+            backgroundColor: mainView.headerColor
 
             title: internal.activePage ? internal.activePage.title : ""
             pageStack: internal.activePage ? internal.activePage.pageStack : null
@@ -179,7 +162,8 @@ MainViewBase {
             // don't show the application header if the page has its own header.
             visible: !(internal.activePage &&
                        internal.activePage.hasOwnProperty("header") &&
-                       internal.activePage.header)
+                       internal.activePage.header) &&
+                     internal.activePage
 
             height: visible ? implicitHeight : 0
 
