@@ -813,10 +813,13 @@ void UCSwipeArea::itemChange(ItemChange change, const ItemChangeData &value)
 
             // FIXME: Handle window->screen() changes (ie window changing screens)
             Q_D(UCSwipeArea);
-            qreal pixelsPerMm = value.window->screen()->physicalDotsPerInch() / 25.4;
-            // FIXME: dpi can be negative lp#1525293
-            if (pixelsPerMm > 0)
-                d->setPixelsPerMm(pixelsPerMm);
+            qreal pixelsPerInch = value.window->screen()->physicalDotsPerInch();
+            if (pixelsPerInch < 0) {
+                // FIXME: dpi can be negative lp#1525293
+                // It can return garbage when run in a XVFB server (Virtual Framebuffer 'fake' X server)
+                pixelsPerInch = 72;
+            }
+            d->setPixelsPerMm(pixelsPerInch / 25.4);
         }
     }
     if (change == ItemVisibleHasChanged) {
