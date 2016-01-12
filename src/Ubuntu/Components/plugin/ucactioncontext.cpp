@@ -39,11 +39,12 @@ UCActionContextAttached::UCActionContextAttached(QObject *owner)
  * the developer is able to control the visibility of the actions. The \l ActionManager
  * then exposes the actions from these different contexts.
  *
- * ActionContext drives the Action objects declared within the ActionContext
- * through the \l actions list. Beside that the ActionContext drives the activability
- * of Action objects' shortcuts declared in a hierarchy. In the following
+ * ActionContext drives the state of its \l actions. Shortcuts and mnemonics are
+ * only registered if the context is active or if the action is assigned to an
+ * \l ActionItem all of whose parent contexts are active. In the following
  * example the ActionContext drives the underlaying \c action1 and \c action2
- * shortcuts:
+ * shortcuts, and \c orphanAction will never trigger as it is neither enclosed
+ * in an active context nor assigned to an ActionItem.
  * \qml
  * import QtQuick 2.4
  * import ubuntu.Componenst 1.3
@@ -60,6 +61,13 @@ UCActionContextAttached::UCActionContextAttached(QObject *owner)
  *             text: rootContext.active ? "Deactivate" : "Activate"
  *             onTriggered: rootContext.active = !rootContext.active
  *         }
+ *     }
+ *
+ *     Action {
+ *         id: orphanAction
+ *         text: "Orphan"
+ *         shortcut: 'Ctrl+O'
+ *         onTriggered: console.log("This will not be called")
  *     }
  *
  *     Column {
@@ -85,10 +93,6 @@ UCActionContextAttached::UCActionContextAttached(QObject *owner)
  *     }
  * }
  * \endqml
- * \note An Action can be triggered by a shortcut (or mnemonic) only if it is
- * assigned to a component. In the example above the action declared in the \c
- * rootContext will never be triggered through the \c {Ctrl+A} shortcut as it
- * is not assigned to any component.
  *
  * The toolkit assigns an ActionContext to each Page component, which is
  * activated/deactivated together with the Page itself, driving the shortcut
