@@ -6,8 +6,6 @@
         <file>shaders/shapeoverlay.frag</file>
         <file>shaders/shapeoverlay_mipmap.frag</file>
         <file>shaders/shapeoverlay.vert</file>
-        <file>privates/shaders/strokerectangle.frag</file>
-        <file>privates/shaders/strokerectangle.vert</file>
         <file>privates/shaders/strokeshape.frag</file>
         <file>privates/shaders/strokeshape.vert</file>
     </qresource>

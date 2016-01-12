@@ -109,7 +109,6 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/ucbottomedgeregion.h \
     $$PWD/ucpagetreenode.h \
     $$PWD/ucpagetreenode_p.h \
-    $$PWD/privates/strokerectangle.h \
     $$PWD/privates/strokeshape.h
 
 SOURCES += $$PWD/plugin.cpp \
@@ -182,7 +181,6 @@ SOURCES += $$PWD/plugin.cpp \
     $$PWD/ucbottomedgestyle.cpp \
     $$PWD/ucbottomedgeregion.cpp \
     $$PWD/ucpagetreenode.cpp \
-    $$PWD/privates/strokerectangle.cpp \
     $$PWD/privates/strokeshape.cpp
 
 # adapters
