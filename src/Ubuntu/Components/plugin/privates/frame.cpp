@@ -22,7 +22,7 @@
 #include <QtGui/QOpenGLFunctions>
 
 const QRgb defaultColor = qRgba(255, 255, 255, 255);
-const float defaultWeight = 20.0f;
+const float defaultThickness = 20.0f;
 const float defaultRadius = 50.0f;
 
 // --- Shader ---
@@ -237,21 +237,21 @@ static quint32 packColor(QRgb color)
 }
 
 void UCFrameNode::updateGeometry(
-    const QSizeF& itemSize, float weight, float radius, QRgb color)
+    const QSizeF& itemSize, float thickness, float radius, QRgb color)
 {
     UCFrameNode::Vertex* v = reinterpret_cast<UCFrameNode::Vertex*>(m_geometry.vertexData());
     const float w = static_cast<float>(itemSize.width());
     const float h = static_cast<float>(itemSize.height());
     const float maxSize = qMin(w, h) * 0.5f;
-    const float clampedWeight = qMin(weight, maxSize);
+    const float clampedThickness = qMin(thickness, maxSize);
     const float radiusOut = qBound(0.01f, radius, maxSize);
-    const float radiusIn = radiusOut * ((maxSize - clampedWeight) / maxSize);
+    const float radiusIn = radiusOut * ((maxSize - clampedThickness) / maxSize);
     const float tc1 =
-        (((1.0f - shapeOffset) / radiusOut) * (clampedWeight + radiusIn)) + shapeOffset;
-    const float tc2 = (((1.0f - shapeOffset) / radiusOut) * clampedWeight) + shapeOffset;
-    const float tc3 = (((1.0f - shapeOffset) / radiusIn) * -clampedWeight) + shapeOffset;
+        (((1.0f - shapeOffset) / radiusOut) * (clampedThickness + radiusIn)) + shapeOffset;
+    const float tc2 = (((1.0f - shapeOffset) / radiusOut) * clampedThickness) + shapeOffset;
+    const float tc3 = (((1.0f - shapeOffset) / radiusIn) * -clampedThickness) + shapeOffset;
     const float tc4 =
-        (((1.0f - shapeOffset) / radiusIn) * (radiusOut - clampedWeight)) + shapeOffset;
+        (((1.0f - shapeOffset) / radiusIn) * (radiusOut - clampedThickness)) + shapeOffset;
     const quint32 packedColor = packColor(color);
 
     // 1st row.
@@ -285,15 +285,15 @@ void UCFrameNode::updateGeometry(
     v[3].color = packedColor;
 
     // 2nd row.
-    v[4].x = clampedWeight + radiusIn;
-    v[4].y = clampedWeight;
+    v[4].x = clampedThickness + radiusIn;
+    v[4].y = clampedThickness;
     v[4].s1 = tc1;
     v[4].t1 = tc2;
     v[4].s2 = 1.0f;
     v[4].t2 = shapeOffset;
     v[4].color = packedColor;
-    v[5].x = w - (clampedWeight + radiusIn);
-    v[5].y = clampedWeight;
+    v[5].x = w - (clampedThickness + radiusIn);
+    v[5].y = clampedThickness;
     v[5].s1 = tc1;
     v[5].t1 = tc2;
     v[5].s2 = 1.0f;
@@ -308,15 +308,15 @@ void UCFrameNode::updateGeometry(
     v[6].s2 = tc3;
     v[6].t2 = tc4;
     v[6].color = packedColor;
-    v[7].x = clampedWeight;
-    v[7].y = clampedWeight + radiusIn;
+    v[7].x = clampedThickness;
+    v[7].y = clampedThickness + radiusIn;
     v[7].s1 = tc2;
     v[7].t1 = tc1;
     v[7].s2 = shapeOffset;
     v[7].t2 = 1.0f;
     v[7].color = packedColor;
-    v[8].x = w - clampedWeight;
-    v[8].y = clampedWeight + radiusIn;
+    v[8].x = w - clampedThickness;
+    v[8].y = clampedThickness + radiusIn;
     v[8].s1 = tc2;
     v[8].t1 = tc1;
     v[8].s2 = shapeOffset;
@@ -338,15 +338,15 @@ void UCFrameNode::updateGeometry(
     v[10].s2 = tc3;
     v[10].t2 = tc4;
     v[10].color = packedColor;
-    v[11].x = clampedWeight;
-    v[11].y = h - (clampedWeight + radiusIn);
+    v[11].x = clampedThickness;
+    v[11].y = h - (clampedThickness + radiusIn);
     v[11].s1 = tc2;
     v[11].t1 = tc1;
     v[11].s2 = shapeOffset;
     v[11].t2 = 1.0f;
     v[11].color = packedColor;
-    v[12].x = w - clampedWeight;
-    v[12].y = h - (clampedWeight + radiusIn);
+    v[12].x = w - clampedThickness;
+    v[12].y = h - (clampedThickness + radiusIn);
     v[12].s1 = tc2;
     v[12].t1 = tc1;
     v[12].s2 = shapeOffset;
@@ -361,15 +361,15 @@ void UCFrameNode::updateGeometry(
     v[13].color = packedColor;
 
     // 5th row.
-    v[14].x = clampedWeight + radiusIn;
-    v[14].y = h - clampedWeight;
+    v[14].x = clampedThickness + radiusIn;
+    v[14].y = h - clampedThickness;
     v[14].s1 = tc1;
     v[14].t1 = tc2;
     v[14].s2 = 1.0f;
     v[14].t2 = shapeOffset;
     v[14].color = packedColor;
-    v[15].x = w - (clampedWeight + radiusIn);
-    v[15].y = h - clampedWeight;
+    v[15].x = w - (clampedThickness + radiusIn);
+    v[15].y = h - clampedThickness;
     v[15].s1 = tc1;
     v[15].t1 = tc2;
     v[15].s2 = 1.0f;
@@ -414,19 +414,19 @@ void UCFrameNode::updateGeometry(
 UCFrame::UCFrame(QQuickItem* parent)
     : QQuickItem(parent)
     , m_color(defaultColor)
-    , m_weight(defaultWeight)
+    , m_thickness(defaultThickness)
     , m_radius(defaultRadius)
 {
     setFlag(ItemHasContents);
 }
 
-void UCFrame::setWeight(qreal weight)
+void UCFrame::setThickness(qreal thickness)
 {
-    weight = qMax(0.0f, static_cast<float>(weight));
-    if (m_weight != weight) {
-        m_weight = weight;
+    thickness = qMax(0.0f, static_cast<float>(thickness));
+    if (m_thickness != thickness) {
+        m_thickness = thickness;
         update();
-        Q_EMIT weightChanged();
+        Q_EMIT thicknessChanged();
     }
 }
 
@@ -455,13 +455,13 @@ QSGNode* UCFrame::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* data)
     Q_UNUSED(data);
 
     const QSizeF itemSize(width(), height());
-    if (itemSize.isEmpty() || m_weight <= 0.0f) {
+    if (itemSize.isEmpty() || m_thickness <= 0.0f) {
         delete oldNode;
         return NULL;
     }
 
     UCFrameNode* node = oldNode ? static_cast<UCFrameNode*>(oldNode) : new UCFrameNode();
-    node->updateGeometry(itemSize, m_weight, m_radius, m_color);
+    node->updateGeometry(itemSize, m_thickness, m_radius, m_color);
 
     return node;
 }

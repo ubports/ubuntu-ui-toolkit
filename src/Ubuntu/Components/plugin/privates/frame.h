@@ -46,7 +46,7 @@ public:
     static const QSGGeometry::AttributeSet& attributeSet();
 
     UCFrameNode();
-    void updateGeometry(const QSizeF& itemSize, float weight, float radius, QRgb color);
+    void updateGeometry(const QSizeF& itemSize, float thickness, float radius, QRgb color);
 
 private:
     UCFrameMaterial m_material;
@@ -57,15 +57,15 @@ class UCFrame : public QQuickItem
 {
     Q_OBJECT
 
-    Q_PROPERTY(qreal weight READ weight WRITE setWeight NOTIFY weightChanged)
+    Q_PROPERTY(qreal thickness READ thickness WRITE setThickness NOTIFY thicknessChanged)
     Q_PROPERTY(qreal radius READ radius WRITE setRadius NOTIFY radiusChanged)
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
 
 public:
     UCFrame(QQuickItem* parent = 0);
 
-    qreal weight() const { return m_weight; }
-    void setWeight(qreal weight);
+    qreal thickness() const { return m_thickness; }
+    void setThickness(qreal thickness);
     qreal radius() const { return m_radius; }
     void setRadius(qreal radius);
     QColor color() const {
@@ -73,7 +73,7 @@ public:
     void setColor(const QColor& color);
 
 Q_SIGNALS:
-    void weightChanged();
+    void thicknessChanged();
     void radiusChanged();
     void colorChanged();
 
@@ -81,7 +81,7 @@ private:
     virtual QSGNode* updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* data);
 
     QRgb m_color;
-    float m_weight;
+    float m_thickness;
     float m_radius;
 
     Q_DISABLE_COPY(UCFrame)

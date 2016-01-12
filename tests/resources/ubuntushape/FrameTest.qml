@@ -25,10 +25,10 @@ Item {
     focus: true
 
     property string textOverlayString:
-        "weight   (w/W): " + frame.weight.toFixed(1) + "\n" +
-        "radius   (r/R): " + frame.radius.toFixed(1) + "\n" +
-        "color      (c): " + frame.color + "\n" +
-        "opacity  (o/O): " + frame.opacity.toFixed(2) + "\n"
+        "thickness (t/T): " + frame.thickness.toFixed(1) + "\n" +
+        "radius    (r/R): " + frame.radius.toFixed(1) + "\n" +
+        "color       (c): " + frame.color + "\n" +
+        "opacity   (o/O): " + frame.opacity.toFixed(2) + "\n"
 
     Item {
         id: scene
@@ -58,8 +58,8 @@ Item {
 
     Keys.onPressed: {
         var shift = event.modifiers & Qt.ShiftModifier;
-        if (event.key == Qt.Key_W) {
-            frame.weight = frame.weight + (shift ? 1.0 : -1.0);
+        if (event.key == Qt.Key_T) {
+            frame.thickness = frame.thickness + (shift ? 1.0 : -1.0);
         } else if (event.key == Qt.Key_R) {
             frame.radius = frame.radius + (shift ? 1.0 : -1.0);
         } else if (event.key == Qt.Key_C) {
