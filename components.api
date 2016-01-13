@@ -1587,14 +1587,14 @@ Ubuntu.Components.UbuntuColors 1.1: QtObject singleton
 Ubuntu.Components.UbuntuColors 1.3: QtObject singleton
     readonly property color ash
     readonly property color blue
-    readonly property color cinder
     readonly property color coolGrey
     readonly property color darkAubergine
     readonly property color darkGrey
+    readonly property color graphite
     readonly property color green
     property Gradient greyGradient
-    readonly property color lacquer
-    readonly property color lead
+    readonly property color inkstone
+    readonly property color jet
     readonly property color lightAubergine
     readonly property color lightGrey
     readonly property color midAubergine
@@ -1603,6 +1603,8 @@ Ubuntu.Components.UbuntuColors 1.3: QtObject singleton
     readonly property color porcelain
     readonly property color purple
     readonly property color red
+    readonly property color silk
+    readonly property color slate
     readonly property color warmGrey
 Ubuntu.Components.UbuntuListView 1.0 0.1: ListView
     property int expandedIndex
