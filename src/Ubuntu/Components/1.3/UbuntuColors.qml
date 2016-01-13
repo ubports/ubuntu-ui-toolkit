@@ -96,6 +96,7 @@ QtObject {
     readonly property color orange: "#E95420"
 
     /*!
+      \deprecated
       Light grey. Recommended for neutral action buttons and
       secondary text.
       \since Ubuntu.Components 1.1
@@ -103,10 +104,24 @@ QtObject {
     readonly property color lightGrey: "#cdcdcd"
 
     /*!
+      Silk. Recommended for neutral action buttons and
+      secondary text.
+      \since Ubuntu.Components 1.3
+     */
+    readonly property color silk: "#cdcdcd"
+
+    /*!
+      \deprecated
       Dark grey. Recommended for text and action icons.
       \since Ubuntu.Components 1.1
      */
     readonly property color darkGrey: "#5d5d5d"
+
+    /*!
+      Slate. Recommended for text and action icons.
+      \since Ubuntu.Components 1.3
+     */
+    readonly property color slate: "#5d5d5d"
 
     /*!
       Red. Recommended for negative and irreversible action

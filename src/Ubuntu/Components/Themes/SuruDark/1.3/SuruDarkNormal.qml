@@ -21,18 +21,18 @@ import Ubuntu.Components.Themes 1.3
 PaletteValues {
     background: UbuntuColors.jet
     backgroundText: "#FFFFFF"
-    backgroundSecondaryText: UbuntuColors.lightGrey
+    backgroundSecondaryText: UbuntuColors.silk
     backgroundTertiaryText: UbuntuColors.ash
     base: UbuntuColors.graphite
-    baseText: UbuntuColors.lightGrey
+    baseText: UbuntuColors.silk
     foreground: UbuntuColors.inkstone
     foregroundText: "#FFFFFF"
     raised: "#FFFFFF"
-    raisedText: UbuntuColors.darkGrey
-    raisedSecondaryText: UbuntuColors.lightGrey
+    raisedText: UbuntuColors.slate
+    raisedSecondaryText: UbuntuColors.silk
     overlay: UbuntuColors.inkstone
     overlayText: "#FFFFFF"
-    overlaySecondaryText: UbuntuColors.darkGrey
+    overlaySecondaryText: UbuntuColors.slate
     field: UbuntuColors.jet
     fieldText: "#FFFFFF"
     selection: Qt.rgba(UbuntuColors.orange.r, UbuntuColors.orange.g, UbuntuColors.orange.b, 0.4)

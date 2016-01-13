@@ -38,7 +38,7 @@ Palette {
         backgroundText: UbuntuColors.blue
         base: UbuntuColors.ash
         baseText: UbuntuColors.blue
-        foreground: UbuntuColors.lightGrey
+        foreground: UbuntuColors.silk
         foregroundText: UbuntuColors.blue
     }
 

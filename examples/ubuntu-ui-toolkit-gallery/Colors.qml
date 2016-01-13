@@ -39,9 +39,9 @@ Template {
             }
         }
         TemplateRow {
-            title: i18n.tr("Light grey")
+            title: i18n.tr("Silk")
             UbuntuShape {
-                backgroundColor: UbuntuColors.lightGrey
+                backgroundColor: UbuntuColors.silk
             }
         }
         TemplateRow {
@@ -57,9 +57,9 @@ Template {
             }
         }
         TemplateRow {
-            title: i18n.tr("Dark grey")
+            title: i18n.tr("Slate")
             UbuntuShape {
-                backgroundColor: UbuntuColors.darkGrey
+                backgroundColor: UbuntuColors.slate
             }
         }
         TemplateRow {

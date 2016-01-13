@@ -23,7 +23,7 @@ Page {
     theme: ThemeSettings {
         name: "Ubuntu.Components.Themes.SuruDark"
         palette: Palette {
-            normal.background: UbuntuColors.darkGrey
+            normal.background: UbuntuColors.slate
         }
     }
     style: Rectangle {
