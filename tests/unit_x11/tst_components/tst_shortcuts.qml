@@ -24,12 +24,17 @@ Item {
     width: 400
     height: 600
 
-    Action {
-        id: action
-    }
-    Action {
-        id: other
-        shortcut: 'Ctrl+G'
+    // actions must be either assigned to an active ActionContext or to an ActionItem to activate shortcuts
+    ActionContext {
+        id: context
+        active: true
+        Action {
+            id: action
+        }
+        Action {
+            id: other
+            shortcut: 'Ctrl+G'
+        }
     }
 
     TestUtil {
@@ -45,6 +50,8 @@ Item {
         }
 
         function init() {
+            context.active = true;
+            spy.target = action;
         }
         function cleanup() {
             spy.clear();
@@ -84,12 +91,12 @@ Item {
             ];
         }
         function test_shortcut_invalid(data) {
-            ignoreQMLWarning(':27:5: QML Action: Invalid shortcut: ');
+            ignoreQMLWarning(':31:9: QML Action: Invalid shortcut: ');
             action.shortcut = data;
         }
 
         function test_shortcut_duplicate() {
-            ignoreQMLWarning(':30:5: QML Action: Ambiguous shortcut: Ctrl+G');
+            ignoreQMLWarning(':34:9: QML Action: Ambiguous shortcut: Ctrl+G');
             action.shortcut = other.shortcut;
             keyClick(Qt.Key_G, Qt.ControlModifier);
         }
@@ -160,6 +167,23 @@ Item {
                 skip("the test needs to be able to attach the keyboard");
             }
             textSpy.wait(200);
+        }
+
+        function test_contextual_action_shortcut_data() {
+            return [
+                {tag: "Active context", active: true, xfail: false},
+                {tag: "Inactive context", active: false, xfail: true},
+            ];
+        }
+        function test_contextual_action_shortcut(data) {
+            context.active = data.active;
+            spy.target = other;
+            spy.clear();
+            keyClick(Qt.Key_G, Qt.ControlModifier);
+            if (data.xfail) {
+                expectFailContinue("", "No shortcut fires");
+            }
+            spy.wait(200);
         }
     }
 }

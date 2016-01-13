@@ -21,6 +21,9 @@
 #include <QtCore/QVariant>
 #include <QtCore/QUrl>
 #include <QtGui/QKeySequence>
+#include <QtQml>
+#include <QtQml/QQmlListProperty>
+#include <QtQml/private/qpodvector_p.h>
 
 // the function detects whether QML has an overridden trigger() slot available
 // and invokes the one with the appropriate signature
@@ -45,6 +48,8 @@ inline void invokeTrigger(T *object, const QVariant &value)
 }
 
 class QQmlComponent;
+class QQuickItem;
+class UCActionAttached;
 class UCAction : public QObject
 {
     Q_OBJECT
@@ -83,6 +88,17 @@ public:
     {
         return m_published;
     }
+    inline bool isEnabled() const
+    {
+        return m_enabled;
+    }
+    inline QQuickItem *lastOwningItem() const
+    {
+        return m_owningItems.count() > 0 ?
+                    m_owningItems.at(m_owningItems.count() - 1) : Q_NULLPTR;
+    }
+    void addOwningItem(QQuickItem *item);
+    void removeOwningItem(QQuickItem *item);
 
     void setName(const QString &name);
     QString text();
@@ -111,6 +127,7 @@ public Q_SLOTS:
     void trigger(const QVariant &value = QVariant());
 
 private:
+    QPODVector<QQuickItem*, 4> m_owningItems;
     QString m_name;
     QString m_text;
     QString m_iconName;
@@ -139,5 +156,6 @@ private:
     bool event(QEvent *event);
     void onKeyboardAttached();
 };
+QML_DECLARE_TYPE(UCAction)
 
 #endif // UCACTION_H
