@@ -22,7 +22,7 @@ import Ubuntu.Components.Themes 1.3
 Palette {
     normal: SuruDarkNormal {}
     inactive: SuruDarkNormal {
-        field: UbuntuColors.cinder
+        field: UbuntuColors.inkstone
         // inactive is 30% transparent normal
         Component.onCompleted: {
             for (var p in normal) {
@@ -35,16 +35,19 @@ Palette {
 
     // selected differs from normal in background, base, foreground
     selected: SuruDarkNormal {
-        background: Qt.rgba(UbuntuColors.orange.r, UbuntuColors.orange.g, UbuntuColors.orange.b, 0.4)
-        base: Qt.rgba(UbuntuColors.orange.r, UbuntuColors.orange.g, UbuntuColors.orange.b, 0.4)
-        foreground: Qt.rgba(UbuntuColors.orange.r, UbuntuColors.orange.g, UbuntuColors.orange.b, 0.4)
+        background: UbuntuColors.inkstone
+        backgroundText: UbuntuColors.blue
+        base: UbuntuColors.ash
+        baseText:UbuntuColors.blue
+        foreground: UbuntuColors.darkGrey
+        foregroundText: UbuntuColors.blue
     }
 
     // selected differs from normal in background, base, foreground
     selectedInactive: SuruDarkNormal {
-        background: UbuntuColors.cinder
-        base: UbuntuColors.cinder
-        foreground: UbuntuColors.cinder
+        background: UbuntuColors.inkstone
+        base: UbuntuColors.inkstone
+        foreground: UbuntuColors.inkstone
     }
 }
 //![0]

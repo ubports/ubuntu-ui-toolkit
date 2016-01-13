@@ -34,9 +34,12 @@ Palette {
 
     // selected differs from normal in background, base, foreground
     selected: AmbianceNormal {
-        background: Qt.rgba(UbuntuColors.orange.r, UbuntuColors.orange.g, UbuntuColors.orange.b, 0.05)
-        base: Qt.rgba(UbuntuColors.orange.r, UbuntuColors.orange.g, UbuntuColors.orange.b, 0.05)
-        foreground: Qt.rgba(UbuntuColors.orange.r, UbuntuColors.orange.g, UbuntuColors.orange.b, 0.05)
+        background: UbuntuColors.porcelain
+        backgroundText: UbuntuColors.blue
+        base: UbuntuColors.ash
+        baseText: UbuntuColors.blue
+        foreground: UbuntuColors.lightGrey
+        foregroundText: UbuntuColors.blue
     }
 
     // selected differs from normal in background, base, foreground

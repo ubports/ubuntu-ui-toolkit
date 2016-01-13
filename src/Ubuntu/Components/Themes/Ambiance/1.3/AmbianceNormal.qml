@@ -20,13 +20,13 @@ import Ubuntu.Components.Themes 1.3
 
 PaletteValues {
     background: "#FFFFFF"
-    backgroundText: UbuntuColors.lacquer
+    backgroundText: UbuntuColors.jet
     backgroundSecondaryText: UbuntuColors.darkGrey
     backgroundTertiaryText: UbuntuColors.ash
     base: UbuntuColors.lightGrey
     baseText: UbuntuColors.darkGrey
     foreground: UbuntuColors.porcelain
-    foregroundText: UbuntuColors.lacquer
+    foregroundText: UbuntuColors.jet
     raised: "#FFFFFF"
     raisedText: UbuntuColors.darkGrey
     raisedSecondaryText: UbuntuColors.lightGrey
@@ -34,9 +34,9 @@ PaletteValues {
     overlayText: UbuntuColors.darkGrey
     overlaySecondaryText: UbuntuColors.lightGrey
     field: "#FFFFFF"
-    fieldText: UbuntuColors.lacquer
+    fieldText: UbuntuColors.jet
     selection: Qt.rgba(UbuntuColors.orange.r, UbuntuColors.orange.g, UbuntuColors.orange.b, 0.2)
-    selectionText: UbuntuColors.lacquer
+    selectionText: UbuntuColors.jet
     positive: UbuntuColors.green
     positiveText: "#FFFFFF"
     negative: UbuntuColors.red

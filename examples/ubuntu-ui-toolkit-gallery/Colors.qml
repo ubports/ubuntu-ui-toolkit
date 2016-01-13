@@ -51,9 +51,9 @@ Template {
             }
         }
         TemplateRow {
-            title: i18n.tr("Lead")
+            title: i18n.tr("Graphite")
             UbuntuShape {
-                backgroundColor: UbuntuColors.lead
+                backgroundColor: UbuntuColors.graphite
             }
         }
         TemplateRow {
@@ -63,15 +63,15 @@ Template {
             }
         }
         TemplateRow {
-            title: i18n.tr("Cinder")
+            title: i18n.tr("Inkstone")
             UbuntuShape {
-                backgroundColor: UbuntuColors.cinder
+                backgroundColor: UbuntuColors.inkstone
             }
         }
         TemplateRow {
-            title: i18n.tr("Lacquer")
+            title: i18n.tr("Jet")
             UbuntuShape {
-                backgroundColor: UbuntuColors.lacquer
+                backgroundColor: UbuntuColors.jet
             }
         }
         TemplateRow {
