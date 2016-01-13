@@ -58,9 +58,8 @@ class IsFlickableTestCase(tests.QMLStringAppTestCase):
     """
 
     test_qml = ("""
-import QtQuick 2.0
-import Ubuntu.Components 1.0
-import Ubuntu.Components.ListItems 1.0 as ListItem
+import QtQuick 2.4
+import Ubuntu.Components 1.3
 
 MainView {
     objectName: 'mainView'
@@ -95,8 +94,8 @@ MainView {
 class SwipeFlickableTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
-import QtQuick 2.0
-import Ubuntu.Components 1.0
+import QtQuick 2.4
+import Ubuntu.Components 1.3
 
 MainView {
     width: units.gu(48)
@@ -113,9 +112,6 @@ MainView {
         anchors {
             fill: parent
             topMargin: clickedLabel.height
-            // It can't be at the bottom, or the toolbar will be opened
-            // when we try to click it.
-            bottomMargin: units.gu(10)
         }
         objectName: 'flickable'
         height: units.gu(60)
@@ -147,13 +143,10 @@ MainView {
         super().setUp()
         self.flickable = self.main_view.select_single(
             ubuntuuitoolkit.QQuickFlickable, objectName='flickable')
-        self.label = self.main_view.select_single(
-            'Label', objectName='clickedLabel')
+        self.label = self.main_view.select_single(objectName='clickedLabel')
         self.assertEqual(self.label.text, 'No element clicked.')
 
     def test_swipe_into_view_bottom_element(self):
-        self.main_view.close_toolbar()
-
         button = self.main_view.select_single(objectName='bottomButton')
         button.swipe_into_view()
 
@@ -161,7 +154,6 @@ MainView {
         self.assertEqual(self.label.text, 'bottomButton')
 
     def test_swipe_into_view_top_element(self):
-        self.main_view.close_toolbar()
         bottomButton = self.main_view.select_single(objectName='bottomButton')
         bottomButton.swipe_into_view()
 
@@ -274,8 +266,8 @@ MainView {
 class UnityFlickableTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
-import QtQuick 2.0
-import Ubuntu.Components 1.0
+import QtQuick 2.4
+import Ubuntu.Components 1.3
 
 MainView {
     width: units.gu(48)
