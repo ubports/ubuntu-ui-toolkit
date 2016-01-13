@@ -40,6 +40,18 @@ def _get_visible_container_bottom(containers):
     return min(containers_bottom)
 
 
+def _get_visible_container_left(containers):
+    containers_left = [container.globalRect.x for container in containers]
+    return max(containers_left)
+
+
+def _get_visible_container_right(containers):
+    containers_right = [
+        container.globalRect.x + container.globalRect.width
+        for container in containers if container.globalRect.width > 0]
+    return min(containers_right)
+
+
 class Scrollable(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
     @autopilot_logging.log_action(logger.info)
@@ -69,11 +81,16 @@ class Scrollable(_common.UbuntuUIToolkitCustomProxyObjectBase):
         :return: True if the center of the child is visible, False otherwise.
 
         """
-        object_center = child.globalRect.y + child.globalRect.height // 2
+        object_center_y = child.globalRect.y + child.globalRect.height // 2
+        object_center_x = child.globalRect.x + child.globalRect.width // 2
         visible_top = _get_visible_container_top(containers)
         visible_bottom = _get_visible_container_bottom(containers)
-        return (object_center >= visible_top and
-                object_center <= visible_bottom)
+        visible_left = _get_visible_container_left(containers)
+        visible_right = _get_visible_container_right(containers)
+        return (object_center_y >= visible_top and
+                object_center_y <= visible_bottom and
+                object_center_x >= visible_left and
+                object_center_x <= visible_right)
 
     def _slow_drag_rate(self):
         # I found that when the flickDeceleration is 1500, the rate should be
@@ -88,12 +105,14 @@ class Scrollable(_common.UbuntuUIToolkitCustomProxyObjectBase):
         # If we drag too fast, we end up scrolling more than what we
         # should, sometimes missing the  element we are looking for.
         original_content_y = self.contentY
+        original_content_x = self.contentX
 
         if rate is None:
             rate = self._slow_drag_rate()
         self.pointing_device.drag(start_x, start_y, stop_x, stop_y, rate=rate)
 
-        if self.contentY == original_content_y:
+        if (self.contentY == original_content_y and
+           self.contentX == original_content_x):
             raise _common.ToolkitException('Could not swipe in the flickable.')
 
 
