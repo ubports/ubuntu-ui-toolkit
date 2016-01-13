@@ -17,6 +17,7 @@
 #include "ucabstractbutton.h"
 #include "ucabstractbutton_p.h"
 #include "uchaptics.h"
+#include "ucaction.h"
 #include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickmousearea_p.h>
 #include <QtQml/private/qqmlglobal_p.h>
@@ -80,6 +81,15 @@ bool UCAbstractButtonPrivate::isPressAndHoldConnected()
     IS_SIGNAL_CONNECTED(q, UCAbstractButton, pressAndHold, ());
 }
 
+void UCAbstractButtonPrivate::onClicked()
+{
+    Q_Q(UCAbstractButton);
+    // call the overridden QML trigger function
+    invokeTrigger<UCAbstractButton>(q, QVariant());
+    // then emit the clicked signal
+    Q_EMIT q->clicked();
+}
+
 void UCAbstractButton::classBegin()
 {
     UCActionItem::classBegin();
@@ -100,8 +110,6 @@ void UCAbstractButtonPrivate::completeComponentInitialization()
 {
     UCActionItemPrivate::completeComponentInitialization();
     Q_Q(UCAbstractButton);
-    // connect to the right slot, using macros so we get the proper slot
-    QObject::connect(mouseArea, SIGNAL(clicked(QQuickMouseEvent*)), q, SLOT(trigger()));
 
     // bind mouse area
     QObject::connect(mouseArea, &QQuickMouseArea::pressedChanged, q, &UCAbstractButton::pressedChanged);
@@ -138,7 +146,7 @@ void UCAbstractButtonPrivate::_q_mouseAreaClicked()
     }
     // play haptics
     HapticsProxy::instance().play(QVariant());
-    Q_EMIT q->clicked();
+    onClicked();
 }
 
 // handle pressAndHold
@@ -153,18 +161,18 @@ void UCAbstractButtonPrivate::_q_mouseAreaPressAndHold()
 }
 
 // emit clicked when Enter/Return is pressed
-void UCAbstractButton::keyPressEvent(QKeyEvent *event)
+void UCAbstractButton::keyReleaseEvent(QKeyEvent *event)
 {
-    UCActionItem::keyPressEvent(event);
+    UCActionItem::keyReleaseEvent(event);
 
     switch (event->key()) {
         case Qt::Key_Enter:
         case Qt::Key_Return:
         case Qt::Key_Space:
-        {
-            trigger();
+            d_func()->onClicked();
             break;
-        }
+        default:
+            break;
     }
 }
 

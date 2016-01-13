@@ -164,6 +164,8 @@ PopupBase {
 
         height: Math.min(contentsColumn.height + foreground.margins, dialog.height - keyboardHeight)
 
+        Keys.onEscapePressed: dialog.hide()
+
         Flickable {
             anchors.fill: parent
             anchors.margins: foreground.margins
@@ -177,6 +179,13 @@ PopupBase {
                 width: foreground.width - foreground.margins * 2
                 height: childrenRect.height + foreground.margins
                 onWidthChanged: updateChildrenWidths();
+
+                // put the context into this component to save ActionContext lookup
+                PopupContext {
+                    id: localContext
+                    objectName: dialog.objectName + "DialogContext"
+                    active: foreground.visible
+                }
 
                 Label {
                     horizontalAlignment: Text.AlignHCenter
@@ -208,5 +217,7 @@ PopupBase {
         }
 
         styleName: "DialogForegroundStyle"
+
+        Component.onCompleted: foreground.forceActiveFocus()
     }
 }

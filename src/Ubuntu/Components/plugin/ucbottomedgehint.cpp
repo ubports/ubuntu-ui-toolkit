@@ -20,8 +20,10 @@
 #include "ucbottomedgehint_p.h"
 #include "ucstyleditembase_p.h"
 #include "quickutils.h"
+#include "ucnamespace.h"
 #include "ucunits.h"
-#include "gestures/ucswipearea.h"
+#include "ucaction.h"
+#include "private/ucswipearea_p.h"
 #include "propertychange_p.h"
 #include <QtQml/private/qqmlproperty_p.h>
 #include <QtQuick/private/qquickflickable_p.h>
@@ -46,7 +48,7 @@ void UCBottomEdgeHintPrivate::init()
     Q_Q(UCBottomEdgeHint);
     QObject::connect(q, &UCBottomEdgeHint::clicked, [=]() {
         // make sure the overloaded trigger is called!
-        q->metaObject()->invokeMethod(q, "trigger", Q_ARG(QVariant, QVariant()));
+        invokeTrigger<UCBottomEdgeHint>(q, QVariant());
     });
     /*
      * we cannot use setStyleName as that will trigger style loading
@@ -337,8 +339,8 @@ QString UCBottomEdgeHint::state() const
 void UCBottomEdgeHint::setState(const QString &state)
 {
     QQuickItem::setState(state);
+    UC_QML_DEPRECATION_WARNING("Overloaded 'state' property deprecated, will be removed from 1.3 release. Use 'status' instead.");
 
-    qmlInfo(this) << "Overloaded 'state' property deprecated, will be removed from 1.3 release. Use 'status' instead.";
     Q_D(UCBottomEdgeHint);
     QQuickItem *style = d->styleItem;
     if (!style) {

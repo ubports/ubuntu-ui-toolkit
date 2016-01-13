@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -21,6 +21,7 @@ import Ubuntu.Components 1.3 as Toolkit
     \qmltype UbuntuListView
     \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
+    \inherits ListView
     \brief A ListView with special features tailored for a look and feel fitting the
     Ubuntu Touch platform.
     The UbuntuListView works just like a regular ListView, but it adds special features
@@ -62,9 +63,56 @@ ListView {
     id: root
 
     /*!
+      \deprecated
       The index of the currently expanded item. -1 if no item is expanded.
+      \b {THIS PROPERTY IS DEPRECATED. USE THE NEW ListItem TO HANDLE EXPANSION}
      */
     property int expandedIndex: -1
+
+    /*!
+      \qmlproperty pullToRefresh UbuntuListView::pullToRefresh
+      \readonly
+      \since Ubuntu.Components 1.1
+
+      Attached PullToRefresh to control manual model refresh. The component is disabled
+      by default.
+
+      \qml
+      import QtQuick 2.4
+      import Ubuntu.Components 1.3
+
+      UbuntuListView {
+          width: units.gu(40)
+          height: units.gu(71)
+          model: XmlListModel {
+              source: "http://feeds.reuters.com/reuters/topNews"
+              query: "/rss/channel/item"
+              XmlRole { name: "title"; query: "title/string()" }
+          }
+          // let refresh control know when the refresh gets completed
+          pullToRefresh {
+              enable: true
+              refreshing: model.status === XmlListModel.Loading
+              onRefresh: model.reload()
+          }
+          delegate: ListItem {
+              ListItemLayout {
+                  title.text: modelData
+              }
+              onClicked: {
+                  ListView.view.model.reload();
+              }
+          }
+      }
+      \endqml
+      */
+    readonly property alias pullToRefresh: refreshItem
+
+    PullToRefresh {
+        objectName: "listview_pulltorefresh"
+        id: refreshItem
+        enabled: false
+    }
 
     QtObject {
         id: priv
@@ -95,7 +143,12 @@ ListView {
             // lookup for the currentItem, and if it is a FocusScope, focus the view
             // this will also focus the currentItem
             if (root.currentItem && root.currentItem.hasOwnProperty("activeFocusOnPress")) {
-                root.forceActiveFocus(reason);
+                // is the currentItem a ListItem?
+                if (QuickUtils.inherits(root.currentItem, "UCListItem")) {
+                    root.currentItem.requestFocus(reason);
+                } else {
+                    root.forceActiveFocus(reason);
+                }
             }
         }
     }
@@ -140,4 +193,10 @@ ListView {
             properties: "x,y"
         }
     }
+
+    // highlight current item
+    highlight: Rectangle {
+        color: theme.palette.selected.background
+    }
+    highlightMoveDuration: 0
 }

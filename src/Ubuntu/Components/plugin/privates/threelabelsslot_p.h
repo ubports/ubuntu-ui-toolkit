@@ -20,7 +20,9 @@
 #include <QQuickItem>
 #include <private/qquickitem_p.h>
 
-#define LABELSBLOCK_SPACING_DP                       4
+//The padding between title and the string below it (i.e. subtitle, or
+//summary, when subtitle is empty)
+#define TITLE_SPACING_DP                       2
 
 class UCLabel;
 class UCThreeLabelsSlotPrivate;

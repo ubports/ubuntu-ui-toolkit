@@ -95,7 +95,14 @@ void UCListItemDivider::paletteChanged()
 {
     Q_D(UCListItemDivider);
     if (!d->colorFromChanged || !d->colorToChanged) {
-        QColor themeColor = d->listItem->getTheme()->getPaletteColor("normal", "base");
+        QColor themeColor;
+        UCTheme *theme = d->listItem->getTheme();
+        if (theme) {
+            themeColor = d->listItem->getTheme()->getPaletteColor("normal", "base");
+        }
+        if (!themeColor.isValid()) {
+            return;
+        }
         if (!d->colorFromChanged) {
             d->colorFrom = themeColor;
         }
@@ -1220,7 +1227,7 @@ void UCListItemPrivate::handleLeftButtonRelease(QMouseEvent *event)
             if (!swiped) {
                 Q_EMIT q->clicked();
                 if (mainAction) {
-                    Q_EMIT mainAction->trigger(index());
+                    invokeTrigger<UCAction>(mainAction, index());
                 }
             }
             snapOut();
@@ -1645,7 +1652,10 @@ void UCListItem::resetHighlightColor()
 {
     Q_D(UCListItem);
     d->customColor = false;
-    d->highlightColor = getTheme()->getPaletteColor("selected", "background");
+    UCTheme *theme = getTheme();
+    if (theme) {
+        d->highlightColor = theme->getPaletteColor("selected", "background");
+    }
     update();
     Q_EMIT highlightColorChanged();
 }
@@ -1685,13 +1695,11 @@ void UCListItemPrivate::setDragMode(bool draggable)
  */
 bool UCListItemPrivate::isSelected()
 {
-    Q_Q(UCListItem);
     Q_ASSERT(selection);
     return selection->isSelected();
 }
 void UCListItemPrivate::setSelected(bool value)
 {
-    Q_Q(UCListItem);
     Q_ASSERT(selection);
     selection->setSelected(value);
 }
@@ -1744,10 +1752,16 @@ void UCListItemPrivate::setAction(UCAction *action)
     if (mainAction == action) {
         return;
     }
+    if (mainAction) {
+        mainAction->removeOwningItem(q);
+    }
     mainAction = action;
-    if (mainAction && (mainAction->m_parameterType == UCAction::None)) {
-        // call setProperty to invoke notify signal
-        mainAction->setProperty("parameterType", UCAction::Integer);
+    if (mainAction) {
+        mainAction->addOwningItem(q);
+        if (mainAction->m_parameterType == UCAction::None) {
+            // call setProperty to invoke notify signal
+            mainAction->setProperty("parameterType", UCAction::Integer);
+        }
     }
     Q_EMIT q->actionChanged();
 }

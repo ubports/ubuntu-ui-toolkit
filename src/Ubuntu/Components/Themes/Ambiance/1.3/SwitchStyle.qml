@@ -44,6 +44,9 @@ Item {
      */
     property color thumbColor: styledItem.enabled ? theme.palette.normal.raised : theme.palette.inactive.raised
 
+    FocusShape {
+    }
+
     UbuntuShape {
         id: background
         anchors.fill: parent

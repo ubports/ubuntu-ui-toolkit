@@ -1,9 +1,12 @@
-Extinct.Animals.Andrewsarchus 2.0: Item
+Extinct.Animals.Andrewsarchus 2.0 Paratriisodon: Item
     property double saggitalCrestSize
     property double skullSize
-Extinct.Animals.AndrewsarchusMongoliensis 2.5: Item
+Extinct.Animals.AndrewsarchusMongoliensis 2.5 Paratriisodon: Item
     property double saggitalCrestSize
     property double skullSize
+EATarpan: QtObject
+    function kick()
+    property string name
 Extinct.Animals.Europe 4.1: QtObject
 Extinct.Animals.Europe 4.2: Europe
     readonly property ushort era 4.2
@@ -23,10 +26,10 @@ Extinct.Animals.Pangaea 4.0: Pangaea singleton
 Extinct.Animals.Pangaea.ModernContinent: Enum
     America
     Europe
-Extinct.Animals.Smilodon 1.0 ScimitarCat 0.1: QtObject
+Extinct.Animals.Smilodon 1.0 ScimitarCat 0.1 EASmilodon: QtObject
     function string paw(int i)
     property string name
-Extinct.Animals.Titanoboa 4.2 MonsterSnake 3.1: Item
+Extinct.Animals.Titanoboa 4.2 MonsterSnake 3.1 test: Item
     property string bar
     property var basket
     property url bazz

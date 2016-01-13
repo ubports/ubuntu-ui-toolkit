@@ -166,6 +166,7 @@ PopupBase {
         */
         visible = true;
         foreground.show();
+        foreground.forceActiveFocus();
     }
 
     /*!
@@ -206,8 +207,8 @@ PopupBase {
 
     StyledItem {
         id: foreground
-        activeFocusOnPress: true
         objectName: "popover_foreground"
+        Keys.onEscapePressed: hideCompleted()
 
         //styling properties
         property real minimumWidth: units.gu(40)
@@ -226,6 +227,14 @@ PopupBase {
                 right: parent.right
             }
             height: childrenRect.height
+
+            // put the PopupContext inside the container to save one step
+            // in the context lookup
+            PopupContext {
+                id: popupContext
+                objectName: popover.objectName + "PopupContext"
+                active: foreground.visible
+            }
         }
 
         onWidthChanged: internal.updatePosition()

@@ -37,6 +37,8 @@ TestCase {
      function cleanup() {
          triggeredSignalSpy.target = action;
          triggeredSignalSpy.clear();
+         context1.active = false;
+         context2.active = false;
      }
 
      function initTestCase() {
@@ -126,21 +128,42 @@ TestCase {
 
      function test_activate_contexts_data() {
          return [
-             {tag: "Activate context1", active: context1, inactive: context2},
-             {tag: "Activate context2", active: context2, inactive: context1},
-             {tag: "Activate context1 again", active: context1, inactive: context2},
+             {tag: "Activate context1", active: [context1], inactive: [context2]},
+             {tag: "Activate context2", active: [context2], inactive: [context1]},
+             {tag: "Activate context1, context2", active: [context1, context2], inactive: []},
          ];
      }
      function test_activate_contexts(data) {
-         data.active.active = true;
-         verify(data.active.active, "Context activation error");
-         verify(!data.inactive.active, "Context deactivation error");
+         for (var i = 0; i < data.active.length; i++) {
+            data.active[i].active = true;
+         }
+         for (var i = 0; i < data.active.length; i++) {
+            verify(data.active[i].active, "Context activation error");
+         }
+         for (var i = 0; i < data.inactive.length; i++) {
+            verify(!data.inactive[i].active, "Context deactivation error");
+         }
      }
 
-     function test_overloaded_action_trigger() {
-         triggeredSignalSpy.target = suppressTrigger;
-         suppressTrigger.trigger();
-         compare(triggeredSignalSpy.count, 0, "Overloaded trigger should not trigger action");
+     function test_overloaded_action_trigger_data() {
+         return [
+             {tag: "parametered override without parameter", action: suppressTrigger, invoked: true},
+             {tag: "parametered override with parameter", action: suppressTrigger, value: 1, type: Action.Integer, invoked: true},
+             {tag: "paremeterless override without parameter", action: override, invoked: true},
+             {tag: "paremeterless override with parameter", action: override, value: 1, type: Action.Integer, invoked: true},
+         ];
+     }
+     function test_overloaded_action_trigger(data) {
+         data.action.invoked = false;
+         data.action.parameterType = Action.None;
+         testItem.action = data.action;
+         if (data.value) {
+             data.action.parameterType = data.type;
+             testItem.trigger(data.value);
+         } else {
+             testItem.trigger(data.value);
+         }
+         compare(data.action.invoked, data.invoked);
      }
 
      Action {
@@ -198,7 +221,19 @@ TestCase {
 
      Action {
          id: suppressTrigger
-         function trigger() {}
+         property bool invoked: false
+         // we must override the parametered version as Button connects to the parametered version
+         function trigger(v) { invoked = true }
+     }
+
+     Action {
+         id: override
+         property bool invoked: false
+         function trigger() { invoked = true }
+     }
+
+     ActionItem {
+         id: testItem
      }
 
 }

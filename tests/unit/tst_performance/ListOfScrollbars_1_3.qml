@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,19 +15,23 @@
  */
 
 import QtQuick 2.4
+import Ubuntu.Components 1.3
 
-// documentation in UbuntuListView11.qdoc
-UbuntuListView {
-
-    /*!
-      \internal
-      \qmlproperty PullToRefresh pullToRefresh
-      */
-    property alias pullToRefresh: refreshItem
-
-    PullToRefresh {
-        objectName: "listview_pulltorefresh"
-        id: refreshItem
-        enabled: false
+Column {
+    width: 800
+    height: 600
+    Repeater {
+        id: repeater
+        model: 50
+        Item {
+            width: units.gu(10)
+            height: units.gu(20)
+            Flickable {
+                id: flick
+                width: units.gu(20)
+                height: units.gu(20)
+            }
+            Scrollbar { flickableItem: flick }
+        }
     }
 }

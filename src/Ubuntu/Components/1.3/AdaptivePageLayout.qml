@@ -777,6 +777,7 @@ PageTreeNode {
 
                 property color dividerColor: layout.__propagated.header.dividerColor
                 property color panelColor: layout.__propagated.header.panelColor
+                property color backgroundColor: layout.__propagated.header.backgroundColor
 
                 visible: !customHeader && holder.pageWrapper && holder.pageWrapper.active
 

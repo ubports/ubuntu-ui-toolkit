@@ -273,7 +273,10 @@ Empty {
 
         Connections {
             target: listItem.__mouseArea
-            onClicked: listItem.clicked()
+            onClicked: {
+                listItem.trigger();
+                listItem.clicked();
+            }
             onPressAndHold: listItem.pressAndHold()
         }
     }

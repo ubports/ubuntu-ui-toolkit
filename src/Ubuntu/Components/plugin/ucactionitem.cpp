@@ -72,17 +72,6 @@ bool UCActionItemPrivate::hasBindingOnProperty(const QString &name)
     return QQmlPropertyPrivate::binding(property) != Q_NULLPTR;
 }
 
-void UCActionItemPrivate::completeComponentInitialization()
-{
-    UCStyledItemBasePrivate::completeComponentInitialization();
-    // make sure we connect to the right signals, so we detach and re-attach actions
-    // to make sure the SLOT macro picks up the custom trigger() slot
-    if (action) {
-        attachAction(false);
-        attachAction(true);
-    }
-}
-
 // update visible property
 void UCActionItemPrivate::_q_visibleBinding()
 {
@@ -109,6 +98,12 @@ void UCActionItemPrivate::_q_enabledBinding()
     }
     bool enabled = action ? action->m_enabled : true;
     q_func()->setEnabled(enabled);
+}
+
+// invoke actions' overridden triger() function
+void UCActionItemPrivate::_q_invokeActionTrigger(const QVariant &value)
+{
+    invokeTrigger<UCAction>(action, value);
 }
 
 // setter called when bindings from QML set the value. Internal functions will
@@ -144,8 +139,9 @@ void UCActionItemPrivate::attachAction(bool attach)
 {
     Q_Q(UCActionItem);
     if (attach) {
+        action->addOwningItem(q);
         QObject::connect(q, SIGNAL(triggered(QVariant)),
-                action, SLOT(trigger(QVariant)), Qt::DirectConnection);
+                q, SLOT(_q_invokeActionTrigger(QVariant)), Qt::DirectConnection);
         if (!(flags & CustomVisible)) {
             QObject::connect(action, SIGNAL(visibleChanged()),
                     q, SLOT(_q_visibleBinding()), Qt::DirectConnection);
@@ -167,8 +163,9 @@ void UCActionItemPrivate::attachAction(bool attach)
                     q, &UCActionItem::iconNameChanged, Qt::DirectConnection);
         }
     } else {
+        action->removeOwningItem(q);
         QObject::disconnect(q, SIGNAL(triggered(QVariant)),
-                   action, SLOT(trigger(QVariant)));
+                   q, SLOT(_q_invokeActionTrigger(QVariant)));
         if (!(flags & CustomVisible)) {
             QObject::disconnect(action, SIGNAL(visibleChanged()),
                        q, SLOT(_q_visibleBinding()));
@@ -233,21 +230,23 @@ QString UCActionItem::text()
     if (d->flags & UCActionItemPrivate::CustomText) {
         return d->text;
     }
-    return d->action ? d->action->m_text : QString();
+    return d->action ? d->action->text() : QString();
 }
 void UCActionItem::setText(const QString &text)
 {
     Q_D(UCActionItem);
-    if (d->text == text) {
-        return;
-    }
-    d->text = text;
+
     if (d->action && !(d->flags & UCActionItemPrivate::CustomText)) {
         // disconnect change signal from Action
         disconnect(d->action, &UCAction::textChanged,
                    this, &UCActionItem::textChanged);
     }
     d->flags |= UCActionItemPrivate::CustomText;
+
+    if (d->text == text) {
+        return;
+    }
+    d->text = text;
     Q_EMIT textChanged();
 }
 void UCActionItem::resetText()
@@ -284,16 +283,18 @@ QUrl UCActionItem::iconSource()
 void UCActionItem::setIconSource(const QUrl &iconSource)
 {
     Q_D(UCActionItem);
-    if (d->iconSource == iconSource) {
-        return;
-    }
-    d->iconSource = iconSource;
+
     if (d->action && !(d->flags & UCActionItemPrivate::CustomIconSource)) {
         // disconnect change signal from Action
         disconnect(d->action, &UCAction::iconSourceChanged,
                    this, &UCActionItem::iconSourceChanged);
     }
     d->flags |= UCActionItemPrivate::CustomIconSource;
+
+    if (d->iconSource == iconSource) {
+        return;
+    }
+    d->iconSource = iconSource;
     Q_EMIT iconSourceChanged();
 }
 void UCActionItem::resetIconSource()
@@ -335,16 +336,18 @@ QString UCActionItem::iconName()
 void UCActionItem::setIconName(const QString &iconName)
 {
     Q_D(UCActionItem);
-    if (d->iconName == iconName) {
-        return;
-    }
-    d->iconName = iconName;
+
     if (d->action && !(d->flags & UCActionItemPrivate::CustomIconName)) {
         // disconnect change signal from Action
         disconnect(d->action, &UCAction::iconNameChanged,
                    this, &UCActionItem::iconNameChanged);
     }
     d->flags |= UCActionItemPrivate::CustomIconName;
+
+    if (d->iconName == iconName) {
+        return;
+    }
+    d->iconName = iconName;
     Q_EMIT iconNameChanged();
     // also sync iconSource if that is not a custom one or taken from action
     if (!d->action || (d->flags & UCActionItemPrivate::CustomIconSource)) {
@@ -371,7 +374,6 @@ void UCActionItem::resetIconName()
 void UCActionItem::trigger(const QVariant &value)
 {
     if (isEnabled()) {
-        // FIXME: bug #1524234: invoke function from QMetaObject (zsombi)
         Q_EMIT triggered(value);
     }
 }

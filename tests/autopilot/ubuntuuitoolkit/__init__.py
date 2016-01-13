@@ -48,6 +48,7 @@ __all__ = [
     'ToolkitException',
     'ubuntu_scenarios',
     'UbuntuListView11',
+    'UbuntuListView',
     'UbuntuUIToolkitCustomProxyObjectBase',
 ]
 
@@ -86,4 +87,5 @@ from ubuntuuitoolkit._custom_proxy_objects import (
     ToolkitException,
     UbuntuUIToolkitCustomProxyObjectBase,
     UbuntuListView11,
+    UbuntuListView,
 )
