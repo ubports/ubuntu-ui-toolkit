@@ -75,22 +75,36 @@ class Scrollable(_common.UbuntuUIToolkitCustomProxyObjectBase):
         containers = [self._get_top_container(), self]
         return containers
 
+    def _is_child_in_visible_y_range(self, child, containers):
+        """Check if the center of the child has an y-value in the visible range.
+
+        :return: True if the center of the child is y-visible, False otherwise.
+        """
+        object_center_y = child.globalRect.y + child.globalRect.height // 2
+        visible_top = _get_visible_container_top(containers)
+        visible_bottom = _get_visible_container_bottom(containers)
+        return (object_center_y >= visible_top and
+                object_center_y <= visible_bottom)
+
+    def _is_child_in_visible_x_range(self, child, containers):
+        """Check if the center of the child has an x-value in the visible range.
+
+        :return: True if the center of the child is x-visible. False otherwise.
+        """
+        object_center_x = child.globalRect.x + child.globalRect.width // 2
+        visible_left = _get_visible_container_left(containers)
+        visible_right = _get_visible_container_right(containers)
+        return (object_center_x >= visible_left and
+                object_center_x <= visible_right)
+
     def _is_child_visible(self, child, containers):
         """Check if the center of the child is visible.
 
         :return: True if the center of the child is visible, False otherwise.
 
         """
-        object_center_y = child.globalRect.y + child.globalRect.height // 2
-        object_center_x = child.globalRect.x + child.globalRect.width // 2
-        visible_top = _get_visible_container_top(containers)
-        visible_bottom = _get_visible_container_bottom(containers)
-        visible_left = _get_visible_container_left(containers)
-        visible_right = _get_visible_container_right(containers)
-        return (object_center_y >= visible_top and
-                object_center_y <= visible_bottom and
-                object_center_x >= visible_left and
-                object_center_x <= visible_right)
+        return (self._is_child_in_visible_y_range(child, containers) and
+                self._is_child_in_visible_x_range(child, containers))
 
     def _slow_drag_rate(self):
         # I found that when the flickDeceleration is 1500, the rate should be
@@ -118,20 +132,20 @@ class Scrollable(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
 class QQuickFlickable(Scrollable):
 
-    # Swiping from below can open the toolbar or trigger the bottom edge
-    # gesture. Use this margin to start a swipe that will not be that close to
-    # the bottom edge.
+    # Swiping from below can open the deprecated toolbar or trigger the bottom
+    # edge gesture. Use this margin to start a swipe that will not be that
+    # close to the bottom edge.
     margin_to_swipe_from_bottom = units.gu(2)
     # Swiping from above can open the indicators or resize the window. Use this
     # margin to start a swipe that will not be that close to the top edge.
     margin_to_swipe_from_top = units.gu(1)
+    # Swiping from left and right can resize the window.
+    margin_to_swipe_from_left = units.gu(1)
+    margin_to_swipe_from_right = units.gu(1)
 
     @autopilot_logging.log_action(logger.info)
     def swipe_child_into_view(self, child):
         """Make the child visible.
-
-        Currently it works only when the object needs to be swiped vertically.
-        TODO implement horizontal swiping. --elopio - 2014-03-21
 
         """
         containers = self._get_containers()
@@ -142,13 +156,19 @@ class QQuickFlickable(Scrollable):
 
     @autopilot_logging.log_action(logger.info)
     def _swipe_non_visible_child_into_view(self, child, containers):
-        while not self._is_child_visible(child, containers):
+        while not self._is_child_in_visible_y_range(child, containers):
             # Check the direction of the swipe based on the position of the
             # child relative to the immediate flickable container.
             if child.globalRect.y < self.globalRect.y:
                 self.swipe_to_show_more_above(containers)
             else:
                 self.swipe_to_show_more_below(containers)
+
+        while not self._is_child_in_visible_x_range(child, containers):
+            if child.globalRect.x < self.globalRect.x:
+                self.swipe_to_show_more_left(containers)
+            else:
+                self.swipe_to_show_more_right(containers)
 
     @autopilot_logging.log_action(logger.info)
     def swipe_to_show_more_above(self, containers=None):
@@ -168,13 +188,34 @@ class QQuickFlickable(Scrollable):
         else:
             self._swipe_to_show_more('below', containers)
 
+    @autopilot_logging.log_action(logger.info)
+    def swipe_to_show_more_left(self, containers=None):
+        if self.atXBeginning:
+            raise _common.ToolkitException(
+                "Can't swipe more, we are already at the left of the "
+                "container.")
+        else:
+            self._swipe_to_show_more('left', containers)
+
+    @autopilot_logging.log_action(logger.info)
+    def swipe_to_show_more_right(self, containers=None):
+        if self.atXEnd:
+            raise _common.ToolkitException(
+                "Can't swipe more, we are already at the right of the "
+                "container.")
+        else:
+            self._swipe_to_show_more('right', containers)
+
     def _swipe_to_show_more(self, direction, containers=None):
         if containers is None:
             containers = self._get_containers()
         start_x = stop_x = self.globalRect.x + (self.globalRect.width // 2)
+        start_y = stop_y = self.globalRect.y + (self.globalRect.height // 2)
 
         top = _get_visible_container_top(containers)
         bottom = _get_visible_container_bottom(containers)
+        left = _get_visible_container_left(containers)
+        right = _get_visible_container_right(containers)
 
         # Make the drag range be a multiple of the drag "rate" value.
         # Workarounds https://bugs.launchpad.net/mir/+bug/1399690
@@ -189,6 +230,14 @@ class QQuickFlickable(Scrollable):
         elif direction == 'above':
             start_y = top + self.margin_to_swipe_from_top
             stop_y = start_y + (bottom - start_y) // rate * rate
+
+        elif direction == 'left':
+            start_x = left + self.margin_to_swipe_from_left
+            stop_x = start_x + (right - start_x) // rate * rate
+
+        elif direction == 'right':
+            start_x = right + self.margin_to_swipe_from_right
+            stop_x = start_x + (left - start_x) // rate * rate
 
         else:
             raise _common.ToolkitException(
@@ -210,6 +259,19 @@ class QQuickFlickable(Scrollable):
             containers = self._get_containers()
             while not self.atYEnd:
                 self.swipe_to_show_more_below(containers)
+
+    @autopilot_logging.log_action(logger.info)
+    def swipe_to_leftmost(self):
+        if not self.atXBeginning:
+            containers = self._get_containers()
+            while not self.atXBeginning:
+                self.swipe_to_show_more_left(containers)
+
+    def swipe_to_rightmost(self):
+        if not self.atXEnd:
+            containers = self._get_containers()
+            while not self.atXEnd:
+                self.swipe_to_show_more_right(containers)
 
     @autopilot_logging.log_action(logger.info)
     def pull_to_refresh(self):
