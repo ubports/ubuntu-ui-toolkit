@@ -102,6 +102,7 @@ public:
     bool suppressClick:1;
     bool ready:1;
     bool customColor:1;
+    bool listViewKeyNavigation:1;
 
     // getters/setters
     QQmlListProperty<QObject> data();
@@ -156,6 +157,7 @@ public:
     // focus handling in case of ListView
     bool focusInListViewEvent(QFocusEvent *event);
     bool keyPressListViewEvent(QKeyEvent *event);
+    void setKeyNavigationForListView(bool value);
 
     // expansion
     void expand(int index, UCListItem *listItem, bool emitChangeSignal = true);

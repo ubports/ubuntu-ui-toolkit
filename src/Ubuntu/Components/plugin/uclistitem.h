@@ -83,6 +83,8 @@ protected:
     bool childMouseEventFilter(QQuickItem *child, QEvent *event);
     bool eventFilter(QObject *, QEvent *);
     void timerEvent(QTimerEvent *event);
+    void focusInEvent(QFocusEvent *event) override;
+    void focusOutEvent(QFocusEvent *event) override;
 
 Q_SIGNALS:
     void leadingActionsChanged();

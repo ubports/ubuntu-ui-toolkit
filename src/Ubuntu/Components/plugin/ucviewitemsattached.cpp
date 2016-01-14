@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 Canonical Ltd.
+ * Copyright 2014-2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -23,6 +23,7 @@
 #include "i18n.h"
 #include "uclistitemstyle.h"
 #include "privates/listitemdragarea.h"
+#include "privates/listviewhandler.h"
 #include <QtQuick/private/qquickflickable_p.h>
 #include <QtQml/private/qqmlcomponentattached_p.h>
 #include <QtQml/QQmlInfo>
@@ -122,11 +123,6 @@ void UCViewItemsAttachedPrivate::init()
     if (parent->inherits("QQuickListView")) {
         listView = static_cast<QQuickFlickable*>(parent);
 
-        // DEBUG - follow activeFocusItem of the ListView window
-        QObject::connect(listView->window(), &QQuickWindow::activeFocusItemChanged, [=] {
-            qDebug() << "FOCUS ITEM=" << listView->window()->activeFocusItem();
-        });
-
         // ListView focus handling
         listView->setActiveFocusOnTab(true);
         // filter ListView events to override up/down focus handling
@@ -180,13 +176,16 @@ bool UCViewItemsAttachedPrivate::focusInListViewEvent(QFocusEvent *event)
     switch (event->reason()) {
         case Qt::TabFocusReason:
         case Qt::BacktabFocusReason:
-            qDebug() << "FOCUS BY (BACK)TAB";
+        {
+            QQuickItem *currentItem = ListViewHandler::currentItem(listView);
+            if (!currentItem && ListViewHandler::count(listView) > 0) {
+                // set the first one to be the focus
+                ListViewHandler::setCurrentIndex(listView, 0);
+                setKeyNavigationForListView(true);
+            }
             break;
-        case Qt::MouseFocusReason:
-            qDebug() << "FOCUS BY MOUSE";
-            break;
+        }
         default:
-            qDebug() << "OTHER FOCUS REASON:" << event->reason();
             break;
     }
     return false;
@@ -199,8 +198,25 @@ bool UCViewItemsAttachedPrivate::keyPressListViewEvent(QKeyEvent *event)
     if (key != Qt::Key_Up && key != Qt::Key_Down) {
         return false;
     }
+    bool up = key == Qt::Key_Up;
+    int currentIndex = ListViewHandler::currentIndex(listView);
+    int count = ListViewHandler::count(listView);
+    if (currentIndex >= 0 && count > 0) {
+        currentIndex = qBound<int>(0, up ? currentIndex - 1 : currentIndex + 1, count);
+        ListViewHandler::setCurrentIndex(listView, currentIndex);
+        setKeyNavigationForListView(true);
+    }
 
     return true;
+}
+
+void UCViewItemsAttachedPrivate::setKeyNavigationForListView(bool value)
+{
+    UCListItem *listItem = qobject_cast<UCListItem*>(ListViewHandler::currentItem(listView));
+    if (listItem) {
+        UCListItemPrivate::get(listItem)->listViewKeyNavigation = value;
+        listItem->update();
+    }
 }
 
 /*!

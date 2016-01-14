@@ -210,6 +210,7 @@ UCListItemPrivate::UCListItemPrivate()
     , suppressClick(false)
     , ready(false)
     , customColor(false)
+    , listViewKeyNavigation(false)
 {
 }
 UCListItemPrivate::~UCListItemPrivate()
@@ -1101,17 +1102,34 @@ QSGNode *UCListItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data
     if (!rectNode) {
         rectNode = QQuickItemPrivate::get(this)->sceneGraphContext()->createRectangleNode();
     }
+    QRectF rect(boundingRect());
+    bool updateNode = false;
+
+    // focus frame
+    if (hasActiveFocus() && (d->keyNavigationFocus || d->listViewKeyNavigation)) {
+        // FIXME: zsombi - use theme colors!
+        QColor penColor("#DD4814");
+        rectNode->setPenColor(penColor);
+        rectNode->setPenWidth(UCUnits::instance().dp(1));
+        rectNode->setColor(QColor("#00000000"));
+        updateNode = true;
+    } else if (d->divider->isVisible()) {
+        // cover only the area of the contentItem, removing divider's thickness
+        rect -= QMarginsF(0, 0, 0, d->divider->height());
+    }
+    rectNode->setRect(rect);
+
+    // highlight color
     if (color.alphaF() >= (1.0f / 255.0f)) {
         rectNode->setColor(color);
-        // cover only the area of the contentItem, removing divider's thickness
-        QRectF rect(boundingRect());
-        if (d->divider->isVisible()) {
-            rect -= QMarginsF(0, 0, 0, d->divider->height());
-        }
-        rectNode->setRect(rect);
         rectNode->setGradientStops(QGradientStops());
         rectNode->setAntialiasing(true);
         rectNode->setAntialiasing(false);
+        updateNode = true;
+    }
+
+    // update
+    if (updateNode) {
         rectNode->update();
     } else {
         // delete node, this will delete the divider node as well
@@ -1422,6 +1440,24 @@ void UCListItem::timerEvent(QTimerEvent *event)
     } else {
         QQuickItem::timerEvent(event);
     }
+}
+
+void UCListItem::focusInEvent(QFocusEvent *event)
+{
+    UCStyledItemBase::focusInEvent(event);
+    if (event->reason() == Qt::MouseFocusReason) {
+        d_func()->listViewKeyNavigation = false;
+    }
+    update();
+}
+
+void UCListItem::focusOutEvent(QFocusEvent *event)
+{
+    UCStyledItemBase::focusOutEvent(event);
+    if (event->reason() == Qt::MouseFocusReason) {
+        d_func()->listViewKeyNavigation = false;
+    }
+    update();
 }
 
 /*!
