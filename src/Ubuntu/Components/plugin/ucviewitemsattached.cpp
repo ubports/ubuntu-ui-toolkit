@@ -23,7 +23,7 @@
 #include "i18n.h"
 #include "uclistitemstyle.h"
 #include "privates/listitemdragarea.h"
-#include "privates/listviewhandler.h"
+#include "privates/listviewextensions.h"
 #include <QtQuick/private/qquickflickable_p.h>
 #include <QtQml/private/qqmlcomponentattached_p.h>
 #include <QtQml/QQmlInfo>
@@ -115,18 +115,21 @@ UCViewItemsAttachedPrivate::UCViewItemsAttachedPrivate()
 UCViewItemsAttachedPrivate::~UCViewItemsAttachedPrivate()
 {
     clearFlickablesList();
+    if (listView) {
+        listView->view()->removeEventFilter(q_func());
+    }
 }
 
 void UCViewItemsAttachedPrivate::init()
 {
     Q_Q(UCViewItemsAttached);
     if (parent->inherits("QQuickListView")) {
-        listView = static_cast<QQuickFlickable*>(parent);
+        listView = new ListViewProxy(static_cast<QQuickFlickable*>(parent), q);
 
         // ListView focus handling
-        listView->setActiveFocusOnTab(true);
+        listView->view()->setActiveFocusOnTab(true);
         // filter ListView events to override up/down focus handling
-        listView->installEventFilter(q);
+        listView->view()->installEventFilter(q);
     }
     // listen readyness
     QQmlComponentAttached *attached = QQmlComponent::qmlAttachedProperties(parent);
@@ -177,10 +180,10 @@ bool UCViewItemsAttachedPrivate::focusInListViewEvent(QFocusEvent *event)
         case Qt::TabFocusReason:
         case Qt::BacktabFocusReason:
         {
-            QQuickItem *currentItem = ListViewHandler::currentItem(listView);
-            if (!currentItem && ListViewHandler::count(listView) > 0) {
+            QQuickItem *currentItem = listView->currentItem();
+            if (!currentItem && listView->count() > 0) {
                 // set the first one to be the focus
-                ListViewHandler::setCurrentIndex(listView, 0);
+                listView->setCurrentIndex(0);
                 setKeyNavigationForListView(true);
             }
             break;
@@ -199,11 +202,11 @@ bool UCViewItemsAttachedPrivate::keyPressListViewEvent(QKeyEvent *event)
         return false;
     }
     bool up = key == Qt::Key_Up;
-    int currentIndex = ListViewHandler::currentIndex(listView);
-    int count = ListViewHandler::count(listView);
+    int currentIndex = listView->currentIndex();
+    int count = listView->count();
     if (currentIndex >= 0 && count > 0) {
         currentIndex = qBound<int>(0, up ? currentIndex - 1 : currentIndex + 1, count);
-        ListViewHandler::setCurrentIndex(listView, currentIndex);
+        listView->setCurrentIndex(currentIndex);
         setKeyNavigationForListView(true);
     }
 
@@ -212,7 +215,7 @@ bool UCViewItemsAttachedPrivate::keyPressListViewEvent(QKeyEvent *event)
 
 void UCViewItemsAttachedPrivate::setKeyNavigationForListView(bool value)
 {
-    UCListItem *listItem = qobject_cast<UCListItem*>(ListViewHandler::currentItem(listView));
+    UCListItem *listItem = qobject_cast<UCListItem*>(listView->currentItem());
     if (listItem) {
         UCListItemPrivate::get(listItem)->listViewKeyNavigation = value;
         listItem->update();
@@ -538,7 +541,7 @@ void UCViewItemsAttached::setDragMode(bool value)
             qmlInfo(parent()) << UbuntuI18n::instance().tr("Dragging mode requires ListView");
             return;
         }
-        QVariant model = d->listView->property("model");
+        QVariant model = d->listView->model();
         // warn if the model is anything else but Instance model (ObjectModel or DelegateModel)
         // or a derivate of QAbstractItemModel
         QString warning = UbuntuI18n::instance().tr("Dragging is only supported when using a QAbstractItemModel, ListModel or list.");
@@ -568,7 +571,7 @@ void UCViewItemsAttachedPrivate::enterDragMode()
         dragArea->reset();
         return;
     }
-    dragArea = new ListItemDragArea(listView);
+    dragArea = new ListItemDragArea(listView->view());
     dragArea->init(q_func());
 }
 
@@ -591,7 +594,7 @@ bool UCViewItemsAttachedPrivate::isDragUpdatedConnected()
 // updates the selected indices list in ViewAttached which is changed due to dragging
 void UCViewItemsAttachedPrivate::updateSelectedIndices(int fromIndex, int toIndex)
 {
-    if (selectedList.count() == listView->property("count").toInt()) {
+    if (selectedList.count() == listView->count()) {
         // all indices selected, no need to reorder
         return;
     }

@@ -131,6 +131,7 @@ UCListItemStyle *UCListItemPrivate::listItemStyle() const
 
 class PropertyChange;
 class ListItemDragArea;
+class ListViewProxy;
 class UCViewItemsAttachedPrivate : public QObjectPrivate
 {
     Q_DECLARE_PUBLIC(UCViewItemsAttached)
@@ -169,7 +170,7 @@ public:
     QMap<int, QPointer<UCListItem> > expansionList;
     QList< QPointer<QQuickFlickable> > flickables;
     QPointer<UCListItem> boundItem;
-    QQuickFlickable *listView;
+    ListViewProxy *listView;
     ListItemDragArea *dragArea;
     UCViewItemsAttached::ExpansionFlags expansionFlags;
     bool selectable:1;

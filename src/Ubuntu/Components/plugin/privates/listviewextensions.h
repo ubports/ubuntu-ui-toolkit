@@ -16,32 +16,31 @@
  * Author Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#include "listviewhandler.h"
-#include <QtQuick/QQuickItem>
-#include <QtQuick/private/qquickflickable_p.h>
+#ifndef LISTVIEWEXTENSIONS_H
+#define LISTVIEWEXTENSIONS_H
 
-ListViewHandler::ListViewHandler(QObject *parent)
-    : QObject(parent)
+#include <QtCore/QObject>
+
+class QQuickFlickable;
+class QQuickItem;
+class ListViewProxy : public QObject
 {
-}
+    Q_OBJECT
+public:
+    explicit ListViewProxy(QQuickFlickable *listView, QObject *parent = 0);
+    inline QQuickFlickable *view() const
+    {
+        return listView;
+    }
 
-int ListViewHandler::count(QQuickFlickable *listView)
-{
-    return listView->property("count").toInt();
-}
+    int count();
+    QQuickItem *currentItem();
+    int currentIndex();
+    void setCurrentIndex(int index);
+    QVariant model();
 
-QQuickItem *ListViewHandler::currentItem(QQuickFlickable *listView)
-{
-    return listView->property("currentItem").value<QQuickItem*>();
-}
+private:
+    QQuickFlickable *listView;
+};
 
-int ListViewHandler::currentIndex(QQuickFlickable *listView)
-{
-    return listView->property("currentIndex").toInt();
-}
-
-void ListViewHandler::setCurrentIndex(QQuickFlickable *listView, int index)
-{
-    listView->setProperty("currentIndex", index);
-}
-
+#endif // LISTVIEWEXTENSIONS_H
