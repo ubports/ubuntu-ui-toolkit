@@ -136,6 +136,7 @@ class UCViewItemsAttachedPrivate : public QObjectPrivate
 public:
     UCViewItemsAttachedPrivate();
     ~UCViewItemsAttachedPrivate();
+    void init();
 
     static UCViewItemsAttachedPrivate *get(UCViewItemsAttached *item)
     {

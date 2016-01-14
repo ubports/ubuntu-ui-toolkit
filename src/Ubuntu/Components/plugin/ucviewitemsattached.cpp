@@ -116,6 +116,17 @@ UCViewItemsAttachedPrivate::~UCViewItemsAttachedPrivate()
     clearFlickablesList();
 }
 
+void UCViewItemsAttachedPrivate::init()
+{
+    Q_Q(UCViewItemsAttached);
+    if (parent->inherits("QQuickListView")) {
+        listView = static_cast<QQuickFlickable*>(parent);
+    }
+    // listen readyness
+    QQmlComponentAttached *attached = QQmlComponent::qmlAttachedProperties(parent);
+    QObject::connect(attached, &QQmlComponentAttached::completed, q, &UCViewItemsAttached::completed);
+}
+
 // disconnect all flickables
 void UCViewItemsAttachedPrivate::clearFlickablesList()
 {
@@ -167,12 +178,7 @@ void UCViewItemsAttachedPrivate::buildFlickablesList()
 UCViewItemsAttached::UCViewItemsAttached(QObject *owner)
     : QObject(*(new UCViewItemsAttachedPrivate()), owner)
 {
-    if (owner->inherits("QQuickListView")) {
-        d_func()->listView = static_cast<QQuickFlickable*>(owner);
-    }
-    // listen readyness
-    QQmlComponentAttached *attached = QQmlComponent::qmlAttachedProperties(owner);
-    connect(attached, &QQmlComponentAttached::completed, this, &UCViewItemsAttached::completed);
+    d_func()->init();
 }
 
 UCViewItemsAttached::~UCViewItemsAttached()
