@@ -63,12 +63,23 @@ Toolkit.StyledItem {
     id: scrollbar
 
     /*!
+        \qmlproperty Flickable Scrollbar::flickableItem
         This property holds the flickable item (Flickable, ListView or GridView)
         the Scrollbar is attached to.
       */
     property Flickable flickableItem: null
 
+    /*
+        This property holds the other scrollbar that is attached to the same flickable,
+        if any. For instance, if this scrollbar is horizontal, buddyScrollbar must be set
+        to the vertical scrollbar, if any. This is to allow a correct layout of both
+        horizontal and vertical scrollbars when a view is scrollable in both directions.
+    */
+    //can't use property Scrollbar here as it would complain "Scrollbar instantiated recursively"
+    property var __buddyScrollbar: null
+
     /*!
+      \qmlproperty int Scrollbar::align
       The property defines the alignment of the scrollbar to the flickableItem.
       The implementation handles the alignment as follows:
         \list
@@ -88,14 +99,43 @@ Toolkit.StyledItem {
     */
     property bool __interactive: __styleInstance !== null && __styleInstance.interactive
 
-    implicitWidth: internals.vertical ? units.gu(4) : flickableItem.width
-    implicitHeight: !internals.vertical ? units.gu(4) : flickableItem.height
+
+    /*!
+      \internal
+      This trough of the scrollbar, it is used to define the position of the slider.
+    */
+    property Item __trough: __styleInstance !== null && __styleInstance.trough
+
+
+    /*!
+      \internal
+      simulate the system setting (which will be implemented in unity8, I guess)
+      True --> Steppers style, non-overlay scrollbars
+      False --> Indicator and Trough styles
+    */
+    property bool __alwaysOnScrollbars: false
+
+    /*! internal
+      Used by ScrollView to tweak Scrollbar's anchoring logic for the always-on scrollbars.
+    */
+    property Item __viewport: null
+
+    //Disable the input handling to let the events pass through in case we have an
+    //interactive scrollbar right below us (can happen with nested views)
+    enabled: __interactive//&& __alwaysOnScrollbars
+
+    implicitWidth: internals.vertical ? units.gu(3) : flickableItem.width
+    implicitHeight: !internals.vertical ? units.gu(3) : flickableItem.height
 
     anchors {
-        left: internals.leftAnchor(flickableItem)
-        right: internals.rightAnchor(flickableItem)
-        top: internals.topAnchor(flickableItem)
-        bottom: internals.bottomAnchor(flickableItem)
+        left: internals.leftAnchor(__viewport ? __viewport : flickableItem)
+        leftMargin: internals.leftAnchorMargin()
+        right: internals.rightAnchor(__viewport ? __viewport : flickableItem)
+        rightMargin: internals.rightAnchorMargin()
+        top: internals.topAnchor(__viewport ? __viewport : flickableItem)
+        topMargin: internals.topAnchorMargin()
+        bottom: internals.bottomAnchor(__viewport ? __viewport : flickableItem)
+        bottomMargin: internals.bottomAnchorMargin()
     }
 
     /*!
@@ -113,6 +153,7 @@ Toolkit.StyledItem {
         id: internals
         property bool vertical: (align === Qt.AlignLeading) || (align === Qt.AlignTrailing)
         property bool scrollable: flickableItem && flickableItem.interactive && checkAlign()
+        property real nonOverlayScrollbarMargin: __styleInstance ? __styleInstance.nonOverlayScrollbarMargin : 0
 
         function checkAlign()
         {
@@ -122,15 +163,55 @@ Toolkit.StyledItem {
         // LTR and RTL are provided by LayoutMirroring, so no need to check that
         function leftAnchor(object)
         {
-            if (!internals.vertical || (align == Qt.AlignLeading))
+            if (!internals.vertical || (align == Qt.AlignLeading)) {
                 return object.left;
+            }
             return undefined;
+        }
+        function leftAnchorMargin()
+        {
+            if (__styleInstance === null) return 0
+
+            switch (align) {
+            case Qt.AlignLeading:
+                return __alwaysOnScrollbars ? -nonOverlayScrollbarMargin : 0
+            case Qt.AlignBottom:
+            case Qt.AlignTop:
+                if (!__alwaysOnScrollbars && __buddyScrollbar !== null
+                        && __buddyScrollbar.align === Qt.AlignLeading
+                        && __buddyScrollbar.__styleInstance.isScrollable)
+                    return __buddyScrollbar.__styleInstance.troughThicknessSteppersStyle
+                    //return buddyScrollbar.__styleInstance.indicatorThickness
+                // *ELSE FALLTHROUGH*
+            default:
+                return 0
+            }
         }
         function rightAnchor(object)
         {
-            if (!internals.vertical || (align == Qt.AlignTrailing))
+            if (!internals.vertical || (align == Qt.AlignTrailing)) {
                 return object.right;
+            }
             return undefined;
+        }
+        function rightAnchorMargin()
+        {
+            if (__styleInstance === null) return 0
+
+            switch (align) {
+            case Qt.AlignTrailing:
+                return __alwaysOnScrollbars ? -nonOverlayScrollbarMargin : 0
+            case Qt.AlignBottom:
+            case Qt.AlignTop:
+                if (!__alwaysOnScrollbars && __buddyScrollbar !== null
+                        && __buddyScrollbar.align === Qt.AlignTrailing
+                        && __buddyScrollbar.__styleInstance.isScrollable)
+                    return __buddyScrollbar.__styleInstance.troughThicknessSteppersStyle
+                    //return buddyScrollbar.__styleInstance.indicatorThickness
+                // *ELSE FALLTHROUGH*
+            default:
+                return 0
+            }
         }
         function topAnchor(object)
         {
@@ -138,11 +219,50 @@ Toolkit.StyledItem {
                 return object.top;
             return undefined;
         }
+        function topAnchorMargin()
+        {
+            if (__styleInstance === null) return 0
+
+            switch (align) {
+            case Qt.AlignTop:
+                return __alwaysOnScrollbars ? -nonOverlayScrollbarMargin : 0
+            case Qt.AlignLeading:
+            case Qt.AlignTrailing:
+                if (!__alwaysOnScrollbars && __buddyScrollbar !== null
+                        && __buddyScrollbar.align === Qt.AlignTop
+                        && __buddyScrollbar.__styleInstance.isScrollable)
+                    return __buddyScrollbar.__styleInstance.troughThicknessSteppersStyle
+                    //return buddyScrollbar.__styleInstance.indicatorThickness
+                // *ELSE FALLTHROUGH*
+
+            default:
+                return 0
+            }
+        }
         function bottomAnchor(object)
         {
             if (internals.vertical || (align == Qt.AlignBottom))
                 return object.bottom;
             return undefined;
+        }
+        function bottomAnchorMargin()
+        {
+            if (__styleInstance === null) return 0
+
+            switch (align) {
+            case Qt.AlignBottom:
+                return __alwaysOnScrollbars ? -nonOverlayScrollbarMargin : 0
+            case Qt.AlignLeading:
+            case Qt.AlignTrailing:
+                if (!__alwaysOnScrollbars && __buddyScrollbar !== null
+                        && __buddyScrollbar.align === Qt.AlignBottom
+                        && __buddyScrollbar.__styleInstance.isScrollable)
+                    return __buddyScrollbar.__styleInstance.troughThicknessSteppersStyle
+                    //return buddyScrollbar.__styleInstance.indicatorThickness
+                // *ELSE FALLTHROUGH*
+            default:
+                return 0
+            }
         }
     }
 

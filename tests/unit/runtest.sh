@@ -51,7 +51,7 @@ function create_test_cmd {
   if [ $_TARGETPATH != $_TESTFILEPATH ]; then
       _CMD="$_CMD -p -input -p $_TESTFILEPATH"
   fi
-  _CMD="$_CMD -p -maxwarnings -p 40"
+  _CMD="$_CMD -p -maxwarnings -p 100"
 }
 
 function execute_test_cmd {
@@ -66,11 +66,11 @@ function execute_test_cmd {
 	
     QML2_IMPORT_PATH=${_IMPORT_PATH} UBUNTU_UI_TOOLKIT_THEMES_PATH=${_THEMES_PATH} \
     LD_LIBRARY_PATH=${_LIB_PATH} \
-    ALARM_BACKEND=memory SUPPRESS_DEPRECATED_NOTE=yes \
+    ALARM_BACKEND=memory SUPPRESS_DEPRECATED_NOTE=no \
     $_CMD $_ARGS 2>&1 | grep -v 'QFontDatabase: Cannot find font directory'
     if [ "x$UITK_TEST_KEEP_RUNNING" != "x1" ]; then
         ${BUILD_DIR}/tests/checkresults.sh $_XML
-        RESULT=$*
+        RESULT=$?
     fi
   else
     echo "Skipped because no DISPLAY available"

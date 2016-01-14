@@ -14,6 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import QtQuick 2.4
+import QtQuick.Window 2.2
 import Ubuntu.Components 1.3
 import Ubuntu.Components.Styles 1.3 as Style
 
@@ -26,7 +27,8 @@ Style.PageHeaderStyle {
     property int fontWeight: Font.Light
     property int textSize: Label.Large
 
-    contentHeight: units.gu(6)
+    // reduced content height on a phone in landscape mode
+    contentHeight: Screen.height > units.gu(50) ? units.gu(6) : units.gu(5)
     implicitHeight: contentHeight + divider.height + internal.extensionHeight
 
     Object {

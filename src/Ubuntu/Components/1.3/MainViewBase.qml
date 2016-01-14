@@ -26,7 +26,7 @@ import QtQuick.Window 2.0
   \ingroup ubuntu
   \brief The base class for MainView and MultiColumnView.
 */
-PageTreeNode {
+Toolkit.PageTreeNode {
     id: mainView
     styleName: "MainViewStyle"
 
@@ -157,6 +157,19 @@ PageTreeNode {
             // FIXME Wire this up to the application lifecycle management API instead of quit().
             Qt.quit()
         }
+    }
+
+    /*!
+      \qmlproperty ActrionContext MainView::actionContext
+      \readonly
+      \since Ubuntu.Components 1.3
+      The action context of the MainView.
+      */
+    readonly property alias actionContext: localContext
+    Toolkit.PopupContext {
+        id: localContext
+        objectName: "RootContext"
+        active: true
     }
 
     onApplicationNameChanged: {

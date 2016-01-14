@@ -46,6 +46,8 @@ public Q_SLOTS:
 
     static void mouseDrag(QQuickItem *item, const QPoint &from, const QPoint &delta, Qt::MouseButton button, Qt::KeyboardModifiers stateKey = 0, int steps = -1, int delay = -1);
 
+    static void removeTimeConstraintsFromSwipeArea(QQuickItem *item);
+
 public: // yet for cpp use
     static void touchDragWithPoints(int touchId, QQuickItem *item, QList<QPoint> points, int delay = -1);
     static void mouseDragWithPoints(QQuickItem *item, QList<QPoint> points, Qt::MouseButton button, Qt::KeyboardModifiers stateKey = 0, int delay = -1);
