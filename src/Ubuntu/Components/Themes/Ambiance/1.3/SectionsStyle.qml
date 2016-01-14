@@ -28,7 +28,7 @@ Item {
     /*!
       The foreground color of unselected sections.
      */
-    property color sectionColor: theme.palette.selected.backgroundText
+    property color sectionColor: theme.palette.normal.backgroundText
 
     /*!
       The foreground color of the selected section.
