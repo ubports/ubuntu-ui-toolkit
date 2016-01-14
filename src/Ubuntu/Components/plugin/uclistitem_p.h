@@ -153,6 +153,10 @@ public:
     bool isDragUpdatedConnected();
     void updateSelectedIndices(int fromIndex, int toIndex);
 
+    // focus handling in case of ListView
+    bool focusInListViewEvent(QFocusEvent *event);
+    bool keyPressListViewEvent(QKeyEvent *event);
+
     // expansion
     void expand(int index, UCListItem *listItem, bool emitChangeSignal = true);
     void collapse(int index, bool emitChangeSignal = true);

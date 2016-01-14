@@ -121,6 +121,16 @@ void UCViewItemsAttachedPrivate::init()
     Q_Q(UCViewItemsAttached);
     if (parent->inherits("QQuickListView")) {
         listView = static_cast<QQuickFlickable*>(parent);
+
+        // DEBUG - follow activeFocusItem of the ListView window
+        QObject::connect(listView->window(), &QQuickWindow::activeFocusItemChanged, [=] {
+            qDebug() << "FOCUS ITEM=" << listView->window()->activeFocusItem();
+        });
+
+        // ListView focus handling
+        listView->setActiveFocusOnTab(true);
+        // filter ListView events to override up/down focus handling
+        listView->installEventFilter(q);
     }
     // listen readyness
     QQmlComponentAttached *attached = QQmlComponent::qmlAttachedProperties(parent);
@@ -164,6 +174,35 @@ void UCViewItemsAttachedPrivate::buildFlickablesList()
     }
 }
 
+// handle ListView focusing
+bool UCViewItemsAttachedPrivate::focusInListViewEvent(QFocusEvent *event)
+{
+    switch (event->reason()) {
+        case Qt::TabFocusReason:
+        case Qt::BacktabFocusReason:
+            qDebug() << "FOCUS BY (BACK)TAB";
+            break;
+        case Qt::MouseFocusReason:
+            qDebug() << "FOCUS BY MOUSE";
+            break;
+        default:
+            qDebug() << "OTHER FOCUS REASON:" << event->reason();
+            break;
+    }
+    return false;
+}
+
+// override up/down key presses for ListView
+bool UCViewItemsAttachedPrivate::keyPressListViewEvent(QKeyEvent *event)
+{
+    int key = event->key();
+    if (key != Qt::Key_Up && key != Qt::Key_Down) {
+        return false;
+    }
+
+    return true;
+}
+
 /*!
  * \qmltype ViewItems
  * \instantiates UCViewItemsAttached
@@ -188,6 +227,21 @@ UCViewItemsAttached::~UCViewItemsAttached()
 UCViewItemsAttached *UCViewItemsAttached::qmlAttachedProperties(QObject *owner)
 {
     return new UCViewItemsAttached(owner);
+}
+
+// filters the ListView events
+bool UCViewItemsAttached::eventFilter(QObject *, QEvent *event)
+{
+    switch (event->type()) {
+        case QEvent::FocusIn:
+            return d_func()->focusInListViewEvent(static_cast<QFocusEvent*>(event));
+        case QEvent::KeyPress:
+            return d_func()->keyPressListViewEvent(static_cast<QKeyEvent*>(event));
+        default:
+            break;
+    }
+
+    return false;
 }
 
 // register item to be rebound
