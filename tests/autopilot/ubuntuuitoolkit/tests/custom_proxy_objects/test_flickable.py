@@ -116,6 +116,7 @@ MainView {
         objectName: 'flickable'
         height: units.gu(60)
         contentHeight: bottomButton.y + bottomButton.height
+        contentWidth: topRightButton.x + Math.max(topRightButton.width, bottomRightButton.width)
 
         Button {
             id: topButton
@@ -125,6 +126,7 @@ MainView {
         }
         Rectangle {
             id: emptyRectangle
+            width: units.gu(70)
             height: units.gu(80)
             anchors.top: topButton.bottom
         }
@@ -134,6 +136,26 @@ MainView {
             text: 'Bottom button'
             onClicked: clickedLabel.text = objectName
             anchors.top: emptyRectangle.bottom
+        }
+        Button {
+            id: topRightButton
+            objectName: 'topRightButton'
+            text: 'Top-right button'
+            onClicked: clickedLabel.text = objectName
+            anchors {
+                top: parent.top
+                left: emptyRectangle.right
+            }
+        }
+        Button {
+            id: bottomRightButton
+            objectName: 'bottomRightButton'
+            text: 'Bottom-right button'
+            onClicked: clickedLabel.text = objectName
+            anchors {
+                top: emptyRectangle.bottom
+                left: emptyRectangle.right
+            }
         }
     }
 }
@@ -162,6 +184,20 @@ MainView {
 
         self.pointing_device.click_object(topButton)
         self.assertEqual(self.label.text, 'topButton')
+
+    def test_swipe_into_view_bottom_right_element(self):
+        bottomRightButton = self.main_view.select_single(objectName='bottomRightButton')
+        bottomRightButton.swipe_into_view()
+
+        self.pointing_device.click_object(bottomRightButton)
+        self.assertEqual(self.label.text, 'bottomRightButton')
+
+    def test_swipe_into_view_top_right_element(self):
+        topRightButton = self.main_view.select_single(objectName='topRightButton')
+        topRightButton.swipe_into_view()
+
+        self.pointing_device.click_object(topRightButton)
+        self.assertEqual(self.label.text, 'topRightButton')
 
     def test_swipe_to_top_must_leave_flickable_at_y_beginning(self):
         self.flickable.swipe_to_bottom()

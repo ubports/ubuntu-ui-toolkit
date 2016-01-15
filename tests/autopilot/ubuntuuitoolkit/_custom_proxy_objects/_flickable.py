@@ -236,7 +236,7 @@ class QQuickFlickable(Scrollable):
             stop_x = start_x + (right - start_x) // rate * rate
 
         elif direction == 'right':
-            start_x = right + self.margin_to_swipe_from_right
+            start_x = right - self.margin_to_swipe_from_right
             stop_x = start_x + (left - start_x) // rate * rate
 
         else:
