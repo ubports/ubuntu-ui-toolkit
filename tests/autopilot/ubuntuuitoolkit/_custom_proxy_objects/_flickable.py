@@ -26,7 +26,7 @@ from ubuntuuitoolkit._custom_proxy_objects import _common
 logger = logging.getLogger(__name__)
 
 # FIXME: Only left-to-right (where x=0 is leftmost) layouts are taken into
-#   account. Add support for right-to-left layouts.
+#   account. Add support for horizontal flicking with right-to-left layouts.
 
 # Containers helpers.
 

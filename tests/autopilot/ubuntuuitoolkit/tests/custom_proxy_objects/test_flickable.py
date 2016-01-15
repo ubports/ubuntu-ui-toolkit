@@ -92,7 +92,7 @@ MainView {
 
 
 # FIXME: Only left-to-right (where x=0 is leftmost) layouts are taken into
-#   account. Add support for right-to-left layouts.
+#   account. Add support for horizontal flicking with right-to-left layouts.
 class SwipeFlickableTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
