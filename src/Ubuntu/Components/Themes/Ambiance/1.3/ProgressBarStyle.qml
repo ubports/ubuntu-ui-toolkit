@@ -20,8 +20,8 @@ import Ubuntu.Components 1.3
 Item {
     id: progressBarStyle
 
-    property color foregroundColor: UbuntuColors.orange
-    property color foregroundTextColor: '#FFFFFF'
+    property color foregroundColor: theme.palette.normal.activity
+    property color foregroundTextColor: theme.palette.normal.activityText
     property color backgroundColor: theme.palette.normal.base
     property color backgroundTextColor: theme.palette.normal.baseText
 

@@ -24,7 +24,9 @@ Item {
     /*!
       Specifies the background color
       */
-    property color backgroundColor: "#0A000000"
+    property color backgroundColor: styledItem.enabled
+                                        ? theme.palette.normal.foreground
+                                        : theme.palette.inactive.foreground
     /*!
       Background color for highlight.
       */

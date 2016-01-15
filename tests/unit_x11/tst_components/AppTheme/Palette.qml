@@ -20,5 +20,5 @@ import Ubuntu.Components.Themes.SuruDark 1.3 as Suru
 
 Suru.Palette {
     normal.background: "#A21E1C"
-    selected.backgroundText: "lightblue"
+    normal.baseText: "lightblue"
 }
