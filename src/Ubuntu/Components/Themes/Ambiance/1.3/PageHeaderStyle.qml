@@ -21,9 +21,9 @@ import Ubuntu.Components.Styles 1.3 as Style
 Style.PageHeaderStyle {
     id: pageHeaderStyle
 
-    foregroundColor: theme.palette.selected.backgroundText
+    foregroundColor: theme.palette.normal.backgroundText
     backgroundColor: theme.palette.normal.background
-    dividerColor: Qt.rgba(0, 0, 0, 0.1)
+    dividerColor: theme.palette.normal.base
     property int fontWeight: Font.Light
     property int textSize: Label.Large
 
@@ -44,6 +44,7 @@ Style.PageHeaderStyle {
         height: parent ? parent.height : undefined
         action: modelData
         StyleHints {
+            // FIXME: introduce inactiveForegroundColor to PageHeaderStyle
             foregroundColor: pageHeaderStyle.foregroundColor
         }
     }

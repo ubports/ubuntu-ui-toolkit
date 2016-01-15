@@ -194,14 +194,14 @@ PopupBase {
                     maximumLineCount: 2
                     elide: Text.ElideRight
                     textSize: Label.Large
-                    color: UbuntuColors.darkGrey
+                    color: UbuntuColors.slate
                     visible: (text !== "")
                 }
 
                 Label {
                     horizontalAlignment: Text.AlignHCenter
                     text: dialog.text
-                    color: UbuntuColors.darkGrey
+                    color: UbuntuColors.slate
                     wrapMode: Text.Wrap
                     visible: (text !== "")
                 }

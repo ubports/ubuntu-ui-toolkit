@@ -588,7 +588,7 @@ void UCBottomEdgePrivate::setOperationStatus(OperationStatus s)
  *                 BottomEdgeRegion {
  *                     from: 0.6
  *                     to: 1.0
- *                     property color color: UbuntuColors.lightGrey
+ *                     property color color: UbuntuColors.silk
  *                 }
  *             ]
  *         }

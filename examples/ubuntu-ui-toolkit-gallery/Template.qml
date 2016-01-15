@@ -23,12 +23,14 @@ Page {
     default property alias content: column.children
     property alias spacing: column.spacing
     property alias scrollable: templateFlickable.interactive
+    property list<Action> trailingActions
     flickable: templateFlickable
 
     header: PageHeader {
         title: template.title
         flickable: layout.columns === 1 ? templateFlickable : null
         onFlickableChanged: exposed = true;
+        trailingActionBar.actions: trailingActions
     }
 
     ScrollView {

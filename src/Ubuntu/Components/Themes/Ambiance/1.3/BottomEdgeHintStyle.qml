@@ -102,7 +102,8 @@ Item {
             centerIn: parent
             topMargin: styledItem.height
         }
-        name: "up"
+        name: "toolkit_bottom-edge-hint"
+        color: theme.palette.normal.overlayText
     }
 
     Rectangle {
