@@ -90,7 +90,8 @@ MainView {
         element = self.app.select_single(objectName=self.object_name)
         self.assertEqual(element.is_flickable(), self.is_flickable)
 
-
+# FIXME: Only left-to-right (where x=0 is leftmost) layouts are taken into
+#   account. Add support for right-to-left layouts.
 class SwipeFlickableTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
