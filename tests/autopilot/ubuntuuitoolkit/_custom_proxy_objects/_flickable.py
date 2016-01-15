@@ -30,6 +30,7 @@ logger = logging.getLogger(__name__)
 
 # Containers helpers.
 
+
 def _get_visible_container_top(containers):
     containers_top = [container.globalRect.y for container in containers]
     return max(containers_top)

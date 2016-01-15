@@ -90,6 +90,7 @@ MainView {
         element = self.app.select_single(objectName=self.object_name)
         self.assertEqual(element.is_flickable(), self.is_flickable)
 
+
 # FIXME: Only left-to-right (where x=0 is leftmost) layouts are taken into
 #   account. Add support for right-to-left layouts.
 class SwipeFlickableTestCase(tests.QMLStringAppTestCase):
@@ -117,7 +118,8 @@ MainView {
         objectName: 'flickable'
         height: units.gu(60)
         contentHeight: bottomButton.y + bottomButton.height
-        contentWidth: topRightButton.x + Math.max(topRightButton.width, bottomRightButton.width)
+        contentWidth: topRightButton.x +
+            Math.max(topRightButton.width, bottomRightButton.width)
 
         Button {
             id: topButton
@@ -187,14 +189,16 @@ MainView {
         self.assertEqual(self.label.text, 'topButton')
 
     def test_swipe_into_view_bottom_right_element(self):
-        bottomRightButton = self.main_view.select_single(objectName='bottomRightButton')
+        bottomRightButton = self.main_view.select_single(
+            objectName='bottomRightButton')
         bottomRightButton.swipe_into_view()
 
         self.pointing_device.click_object(bottomRightButton)
         self.assertEqual(self.label.text, 'bottomRightButton')
 
     def test_swipe_into_view_top_right_element(self):
-        topRightButton = self.main_view.select_single(objectName='topRightButton')
+        topRightButton = self.main_view.select_single(
+            objectName='topRightButton')
         topRightButton.swipe_into_view()
 
         self.pointing_device.click_object(topRightButton)
@@ -352,7 +356,8 @@ MainView {
                 pass
 
         mock_drag.assert_called_with(
-            rightmost - units.gu(6), mock.ANY, mock.ANY, mock.ANY, rate=mock.ANY)
+            rightmost - units.gu(6), mock.ANY, mock.ANY, mock.ANY,
+            rate=mock.ANY)
 
     def test_swipe_to_show_more_left_with_left_margin(self):
         """Calling swipe to show more above will use the margin in the drag."""
@@ -372,7 +377,8 @@ MainView {
                 pass
 
         mock_drag.assert_called_with(
-            leftmost + units.gu(6), mock.ANY, mock.ANY, mock.ANY, rate=mock.ANY)
+            leftmost + units.gu(6), mock.ANY, mock.ANY, mock.ANY,
+            rate=mock.ANY)
 
     def test_failed_drag_must_raise_exception(self):
         dummy_coordinates = (0, 0, 10, 10)
