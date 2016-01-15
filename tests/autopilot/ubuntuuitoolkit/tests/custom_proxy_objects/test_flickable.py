@@ -213,6 +213,20 @@ MainView {
         self.flickable.swipe_to_bottom()
         self.assertTrue(self.flickable.atYEnd)
 
+    def test_swipe_to_leftmost_must_leave_flickable_at_x_beginning(self):
+        self.flickable.swipe_to_rightmost()
+        self.assertFalse(self.flickable.atXBeginning)
+
+        self.flickable.swipe_to_leftmost()
+        self.assertTrue(self.flickable.atXBeginning)
+
+    def test_swipe_to_rightmost_must_leave_flickable_at_x_end(self):
+        self.flickable.swipe_to_leftmost()
+        self.assertFalse(self.flickable.atXEnd)
+
+        self.flickable.swipe_to_rightmost()
+        self.assertTrue(self.flickable.atXEnd)
+
     def test_swipe_to_show_more_above_with_containers(self):
         """Swipe to show more above must receive containers as parameter."""
         self.flickable.swipe_to_bottom()
@@ -247,13 +261,47 @@ MainView {
         self.flickable.swipe_to_show_more_below()
         self.assertFalse(self.flickable.atYBeginning)
 
+    def test_swipe_to_show_more_left_with_containers(self):
+        """Swipe to show more left must receive containers as parameter."""
+        self.flickable.swipe_to_rightmost()
+        self.assertTrue(self.flickable.atXEnd)
+
+        containers = self.flickable._get_containers()
+        self.flickable.swipe_to_show_more_left(containers)
+        self.assertFalse(self.flickable.atXEnd)
+
+    def test_swipe_to_show_more_left_without_arguments(self):
+        """Calling swipe to show more left must get containers by default."""
+        self.flickable.swipe_to_rightmost()
+        self.assertTrue(self.flickable.atXEnd)
+
+        self.flickable.swipe_to_show_more_left()
+        self.assertFalse(self.flickable.atXEnd)
+
+    def test_swipe_to_show_more_right_with_containers(self):
+        """Swipe to show more right must receive containers as parameter."""
+        self.flickable.swipe_to_leftmost()
+        self.assertTrue(self.flickable.atXBeginning)
+
+        containers = self.flickable._get_containers()
+        self.flickable.swipe_to_show_more_right(containers)
+        self.assertFalse(self.flickable.atXBeginning)
+
+    def test_swipe_to_show_more_right_without_arguments(self):
+        """Calling swipe to show more right must get containers by default."""
+        self.flickable.swipe_to_leftmost()
+        self.assertTrue(self.flickable.atXBeginning)
+
+        self.flickable.swipe_to_show_more_right()
+        self.assertFalse(self.flickable.atXBeginning)
+
     def test_swipe_to_show_more_below_with_bottom_margin(self):
         """Calling swipe to show more below will use the margin in the drag."""
         qquickflickable = self.main_view.select_single(
             ubuntuuitoolkit.QQuickFlickable, objectName='flickable')
         qquickflickable.margin_to_swipe_from_bottom = units.gu(6)
         containers = qquickflickable._get_containers()
-        bottom = _flickable._get_visible_container_bottom(containers)
+        bottom = _flickable._bottom(containers)
 
         with mock.patch.object(
                 qquickflickable.pointing_device, 'drag') as mock_drag:
@@ -285,6 +333,45 @@ MainView {
 
         mock_drag.assert_called_with(
             mock.ANY, top + units.gu(6), mock.ANY, mock.ANY, rate=mock.ANY)
+
+    def test_swipe_to_show_more_right_with_right_margin(self):
+        """Calling swipe to show more right will use the margin in the drag."""
+        qquickflickable = self.main_view.select_single(
+            ubuntuuitoolkit.QQuickFlickable, objectName='flickable')
+        qquickflickable.margin_to_swipe_from_right = units.gu(6)
+        containers = qquickflickable._get_containers()
+        rightmost = _flickable._get_visible_container_rightmost(containers)
+
+        with mock.patch.object(
+                qquickflickable.pointing_device, 'drag') as mock_drag:
+            try:
+                qquickflickable.swipe_to_show_more_right()
+            except ubuntuuitoolkit.ToolkitException:
+                # An exception will be raised because the drag was faked.
+                pass
+
+        mock_drag.assert_called_with(
+            rightmost - units.gu(6), mock.ANY, mock.ANY, mock.ANY, rate=mock.ANY)
+
+    def test_swipe_to_show_more_left_with_left_margin(self):
+        """Calling swipe to show more above will use the margin in the drag."""
+        qquickflickable = self.main_view.select_single(
+            ubuntuuitoolkit.QQuickFlickable, objectName='flickable')
+        qquickflickable.margin_to_swipe_from_left = units.gu(6)
+        containers = qquickflickable._get_containers()
+        leftmost = _flickable._get_visible_container_leftmost(containers)
+
+        qquickflickable.swipe_to_rightmost()
+        with mock.patch.object(
+                qquickflickable.pointing_device, 'drag') as mock_drag:
+            try:
+                qquickflickable.swipe_to_show_more_left()
+            except ubuntuuitoolkit.ToolkitException:
+                # An exception will be raised because the drag was faked.
+                pass
+
+        mock_drag.assert_called_with(
+            leftmost + units.gu(6), mock.ANY, mock.ANY, mock.ANY, rate=mock.ANY)
 
     def test_failed_drag_must_raise_exception(self):
         dummy_coordinates = (0, 0, 10, 10)

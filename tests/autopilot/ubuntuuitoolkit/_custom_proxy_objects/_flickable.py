@@ -40,12 +40,12 @@ def _get_visible_container_bottom(containers):
     return min(containers_bottom)
 
 
-def _get_visible_container_left(containers):
+def _get_visible_container_leftmost(containers):
     containers_left = [container.globalRect.x for container in containers]
     return max(containers_left)
 
 
-def _get_visible_container_right(containers):
+def _get_visible_container_rightmost(containers):
     containers_right = [
         container.globalRect.x + container.globalRect.width
         for container in containers if container.globalRect.width > 0]
@@ -92,8 +92,8 @@ class Scrollable(_common.UbuntuUIToolkitCustomProxyObjectBase):
         :return: True if the center of the child is x-visible. False otherwise.
         """
         object_center_x = child.globalRect.x + child.globalRect.width // 2
-        visible_left = _get_visible_container_left(containers)
-        visible_right = _get_visible_container_right(containers)
+        visible_left = _get_visible_container_leftmost(containers)
+        visible_right = _get_visible_container_rightmost(containers)
         return (object_center_x >= visible_left and
                 object_center_x <= visible_right)
 
@@ -214,8 +214,8 @@ class QQuickFlickable(Scrollable):
 
         top = _get_visible_container_top(containers)
         bottom = _get_visible_container_bottom(containers)
-        left = _get_visible_container_left(containers)
-        right = _get_visible_container_right(containers)
+        leftmost = _get_visible_container_leftmost(containers)
+        rightmost = _get_visible_container_rightmost(containers)
 
         # Make the drag range be a multiple of the drag "rate" value.
         # Workarounds https://bugs.launchpad.net/mir/+bug/1399690
@@ -232,12 +232,12 @@ class QQuickFlickable(Scrollable):
             stop_y = start_y + (bottom - start_y) // rate * rate
 
         elif direction == 'left':
-            start_x = left + self.margin_to_swipe_from_left
-            stop_x = start_x + (right - start_x) // rate * rate
+            start_x = leftmost + self.margin_to_swipe_from_left
+            stop_x = start_x + (rightmost - start_x) // rate * rate
 
         elif direction == 'right':
-            start_x = right - self.margin_to_swipe_from_right
-            stop_x = start_x + (left - start_x) // rate * rate
+            start_x = rightmost - self.margin_to_swipe_from_right
+            stop_x = start_x + (leftmost - start_x) // rate * rate
 
         else:
             raise _common.ToolkitException(
