@@ -216,6 +216,12 @@ bool UCViewItemsAttached::listenToRebind(UCListItem *item, bool listen)
     return result;
 }
 
+// reports whether the ViewItems is attached to ListView
+bool UCViewItemsAttached::isAttachedToListView()
+{
+    return (d_func()->listView != Q_NULLPTR);
+}
+
 // reports true if any of the ascendant flickables is moving
 bool UCViewItemsAttached::isMoving()
 {

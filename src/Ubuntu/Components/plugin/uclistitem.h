@@ -179,6 +179,7 @@ public:
     static UCViewItemsAttached *qmlAttachedProperties(QObject *owner);
 
     bool listenToRebind(UCListItem *item, bool listen);
+    bool isAttachedToListView();
     bool isMoving();
     bool isBoundTo(UCListItem *item);
 

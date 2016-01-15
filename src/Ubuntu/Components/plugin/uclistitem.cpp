@@ -1075,6 +1075,8 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
             d->selection->attachToViewItems(d->parentAttached.data());
             connect(d->parentAttached.data(), SIGNAL(expandedIndicesChanged(QList<int>)),
                     this, SLOT(_q_updateExpansion(QList<int>)), Qt::DirectConnection);
+            // if the ViewItems is attached to a ListView, disable tab stops on the ListItem
+            setActiveFocusOnTab(!d->parentAttached->isAttachedToListView());
         }
 
         if (parentAttachee) {
@@ -1106,12 +1108,13 @@ QSGNode *UCListItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data
     bool updateNode = false;
 
     // focus frame
-    if (hasActiveFocus() && (d->keyNavigationFocus || d->listViewKeyNavigation)) {
+    bool paintFocus = hasActiveFocus() && (d->keyNavigationFocus || d->listViewKeyNavigation);
+    rectNode->setPenWidth(paintFocus ? UCUnits::instance().dp(1) : 0);
+    if (paintFocus) {
         // FIXME: zsombi - use theme colors!
         QColor penColor("#DD4814");
         rectNode->setPenColor(penColor);
-        rectNode->setPenWidth(UCUnits::instance().dp(1));
-        rectNode->setColor(QColor("#00000000"));
+        rectNode->setColor(Qt::transparent);
         updateNode = true;
     } else if (d->divider->isVisible()) {
         // cover only the area of the contentItem, removing divider's thickness
@@ -1454,9 +1457,7 @@ void UCListItem::focusInEvent(QFocusEvent *event)
 void UCListItem::focusOutEvent(QFocusEvent *event)
 {
     UCStyledItemBase::focusOutEvent(event);
-    if (event->reason() == Qt::MouseFocusReason) {
-        d_func()->listViewKeyNavigation = false;
-    }
+    d_func()->listViewKeyNavigation = false;
     update();
 }
 
