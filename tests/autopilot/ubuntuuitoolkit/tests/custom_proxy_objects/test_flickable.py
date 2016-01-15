@@ -301,7 +301,7 @@ MainView {
             ubuntuuitoolkit.QQuickFlickable, objectName='flickable')
         qquickflickable.margin_to_swipe_from_bottom = units.gu(6)
         containers = qquickflickable._get_containers()
-        bottom = _flickable._bottom(containers)
+        bottom = _flickable._get_visible_container_bottom(containers)
 
         with mock.patch.object(
                 qquickflickable.pointing_device, 'drag') as mock_drag:
