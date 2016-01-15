@@ -115,9 +115,6 @@ UCViewItemsAttachedPrivate::UCViewItemsAttachedPrivate()
 UCViewItemsAttachedPrivate::~UCViewItemsAttachedPrivate()
 {
     clearFlickablesList();
-    if (listView) {
-        listView->view()->removeEventFilter(q_func());
-    }
 }
 
 void UCViewItemsAttachedPrivate::init()
@@ -129,7 +126,7 @@ void UCViewItemsAttachedPrivate::init()
         // ListView focus handling
         listView->view()->setActiveFocusOnTab(true);
         // filter ListView events to override up/down focus handling
-        listView->view()->installEventFilter(q);
+        listView->overrideItemNavigation(true);
     }
     // listen readyness
     QQmlComponentAttached *attached = QQmlComponent::qmlAttachedProperties(parent);
@@ -173,55 +170,6 @@ void UCViewItemsAttachedPrivate::buildFlickablesList()
     }
 }
 
-// handle ListView focusing
-bool UCViewItemsAttachedPrivate::focusInListViewEvent(QFocusEvent *event)
-{
-    switch (event->reason()) {
-        case Qt::TabFocusReason:
-        case Qt::BacktabFocusReason:
-        {
-            QQuickItem *currentItem = listView->currentItem();
-            if (!currentItem && listView->count() > 0) {
-                // set the first one to be the focus
-                listView->setCurrentIndex(0);
-                setKeyNavigationForListView(true);
-            }
-            break;
-        }
-        default:
-            break;
-    }
-    return false;
-}
-
-// override up/down key presses for ListView
-bool UCViewItemsAttachedPrivate::keyPressListViewEvent(QKeyEvent *event)
-{
-    int key = event->key();
-    if (key != Qt::Key_Up && key != Qt::Key_Down) {
-        return false;
-    }
-    bool up = key == Qt::Key_Up;
-    int currentIndex = listView->currentIndex();
-    int count = listView->count();
-    if (currentIndex >= 0 && count > 0) {
-        currentIndex = qBound<int>(0, up ? currentIndex - 1 : currentIndex + 1, count);
-        listView->setCurrentIndex(currentIndex);
-        setKeyNavigationForListView(true);
-    }
-
-    return true;
-}
-
-void UCViewItemsAttachedPrivate::setKeyNavigationForListView(bool value)
-{
-    UCListItem *listItem = qobject_cast<UCListItem*>(listView->currentItem());
-    if (listItem) {
-        UCListItemPrivate::get(listItem)->listViewKeyNavigation = value;
-        listItem->update();
-    }
-}
-
 /*!
  * \qmltype ViewItems
  * \instantiates UCViewItemsAttached
@@ -246,21 +194,6 @@ UCViewItemsAttached::~UCViewItemsAttached()
 UCViewItemsAttached *UCViewItemsAttached::qmlAttachedProperties(QObject *owner)
 {
     return new UCViewItemsAttached(owner);
-}
-
-// filters the ListView events
-bool UCViewItemsAttached::eventFilter(QObject *, QEvent *event)
-{
-    switch (event->type()) {
-        case QEvent::FocusIn:
-            return d_func()->focusInListViewEvent(static_cast<QFocusEvent*>(event));
-        case QEvent::KeyPress:
-            return d_func()->keyPressListViewEvent(static_cast<QKeyEvent*>(event));
-        default:
-            break;
-    }
-
-    return false;
 }
 
 // register item to be rebound

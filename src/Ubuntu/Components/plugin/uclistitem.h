@@ -196,9 +196,6 @@ public:
     int expansionFlags() const;
     void setExpansionFlags(int flags);
 
-protected:
-    bool eventFilter(QObject *, QEvent *) override;
-
 private Q_SLOTS:
     void unbindItem();
     void completed();

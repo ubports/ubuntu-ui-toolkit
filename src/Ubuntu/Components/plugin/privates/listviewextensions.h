@@ -23,24 +23,38 @@
 
 class QQuickFlickable;
 class QQuickItem;
+class QFocusEvent;
+class QKeyEvent;
 class ListViewProxy : public QObject
 {
     Q_OBJECT
 public:
     explicit ListViewProxy(QQuickFlickable *listView, QObject *parent = 0);
+    virtual ~ListViewProxy();
     inline QQuickFlickable *view() const
     {
         return listView;
     }
+    void overrideItemNavigation(bool override);
 
+
+    // proxied methods
+    Qt::Orientation orientation();
     int count();
     QQuickItem *currentItem();
     int currentIndex();
     void setCurrentIndex(int index);
     QVariant model();
 
+protected:
+    bool eventFilter(QObject *, QEvent *) override;
+
+    bool focusInEvent(QFocusEvent *event);
+    bool keyPressEvent(QKeyEvent *event);
+    void setKeyNavigationForListView(bool value);
 private:
     QQuickFlickable *listView;
+    bool isEventFilter:1;
 };
 
 #endif // LISTVIEWEXTENSIONS_H
