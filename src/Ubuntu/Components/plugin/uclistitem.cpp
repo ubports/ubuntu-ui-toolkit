@@ -221,10 +221,10 @@ void UCListItemPrivate::init()
 {
     Q_Q(UCListItem);
     contentItem->setObjectName("ListItemHolder");
+    divider->init(q);
     QQml_setParent_noEvent(contentItem, q);
     contentItem->setParentItem(q);
     contentItem->setClip(true);
-    divider->init(q);
     // content will be redirected to the contentItem, therefore we must report
     // children changes as it would come from the main component
     QObject::connect(contentItem, &QQuickItem::childrenChanged,
@@ -1104,7 +1104,6 @@ QSGNode *UCListItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data
     if (!rectNode) {
         rectNode = QQuickItemPrivate::get(this)->sceneGraphContext()->createRectangleNode();
     }
-    QRectF rect(boundingRect());
     bool updateNode = false;
 
     // focus frame
@@ -1116,10 +1115,10 @@ QSGNode *UCListItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data
         rectNode->setPenColor(penColor);
         rectNode->setColor(Qt::transparent);
         updateNode = true;
-    } else if (d->divider->isVisible()) {
-        // cover only the area of the contentItem, removing divider's thickness
-        rect -= QMarginsF(0, 0, 0, d->divider->height());
     }
+    QRectF rect(boundingRect());
+    rect -= QMarginsF(0, 0, UCUnits::instance().dp(1), 0);
+    d->divider->setOpacity(paintFocus ? 0.0 : 1.0);
     rectNode->setRect(rect);
 
     // highlight color
