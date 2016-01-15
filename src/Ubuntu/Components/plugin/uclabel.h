@@ -74,6 +74,7 @@ Q_SIGNALS:
 
 private:
     void updatePixelSize();
+    Q_SLOT void updateRenderType();
     Q_SLOT void _q_updateFontFlag(const QFont &font);
     Q_SLOT void _q_customColor();
 

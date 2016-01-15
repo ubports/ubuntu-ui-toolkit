@@ -37,6 +37,15 @@ void UCLabel::updatePixelSize()
     m_flags &= ~PixelSizeSet;
 }
 
+void UCLabel::updateRenderType()
+{
+    if (UCUnits::instance().gridUnit() <= 10) {
+        setRenderType(QQuickText::NativeRendering);
+    } else {
+        setRenderType(QQuickText::QtRendering);
+    }
+}
+
 void UCLabel::_q_updateFontFlag(const QFont &font)
 {
     Q_UNUSED(font);
@@ -98,7 +107,9 @@ void UCLabel::init()
     m_defaultFont.setFamily("Ubuntu");
     m_defaultFont.setWeight(QFont::Light);
     setFont(m_defaultFont);
+    updateRenderType();
 
+    connect(&UCUnits::instance(), &UCUnits::gridUnitChanged, this, &UCLabel::updateRenderType);
     connect(this, &UCLabel::fontChanged, this, &UCLabel::_q_updateFontFlag, Qt::DirectConnection);
     connect(this, &UCLabel::colorChanged, this, &UCLabel::_q_customColor, Qt::DirectConnection);
 }
