@@ -120,6 +120,7 @@ public:
     void setSelectMode(bool selectable);
     UCAction *action() const;
     void setAction(UCAction *action);
+    void setListViewKeyNavigation(bool value);
 
     virtual void postThemeChanged();
     inline UCListItemStyle *listItemStyle() const;

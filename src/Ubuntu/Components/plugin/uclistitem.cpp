@@ -981,6 +981,23 @@ UCListItem::~UCListItem()
 {
 }
 
+// override keyNavigationFocus getter
+bool UCListItem::keyNavigationFocus() const
+{
+    Q_D(const UCListItem);
+    return d->keyNavigationFocus ||d->listViewKeyNavigation;
+}
+
+void UCListItemPrivate::setListViewKeyNavigation(bool value)
+{
+    Q_Q(UCListItem);
+    bool prevKeyNav = q->keyNavigationFocus();
+    listViewKeyNavigation = value;
+    if (prevKeyNav != q->keyNavigationFocus()) {
+        Q_EMIT q->keyNavigationFocusChanged();
+    }
+}
+
 QObject *UCListItem::attachedViewItems(QObject *object, bool create)
 {
     return qmlAttachedPropertiesObject<UCViewItemsAttached>(object, create);
@@ -1109,7 +1126,7 @@ QSGNode *UCListItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data
     bool updateNode = false;
 
     // focus frame
-    bool paintFocus = hasActiveFocus() && (d->keyNavigationFocus || d->listViewKeyNavigation);
+    bool paintFocus = hasActiveFocus() && keyNavigationFocus();
     rectNode->setPenWidth(paintFocus ? UCUnits::instance().dp(1) : 0);
     if (paintFocus) {
         // FIXME: zsombi - use theme colors!
@@ -1450,7 +1467,7 @@ void UCListItem::focusInEvent(QFocusEvent *event)
 {
     UCStyledItemBase::focusInEvent(event);
     if (event->reason() == Qt::MouseFocusReason) {
-        d_func()->listViewKeyNavigation = false;
+        d_func()->setListViewKeyNavigation(false);
     }
     update();
 }
@@ -1458,7 +1475,7 @@ void UCListItem::focusInEvent(QFocusEvent *event)
 void UCListItem::focusOutEvent(QFocusEvent *event)
 {
     UCStyledItemBase::focusOutEvent(event);
-    d_func()->listViewKeyNavigation = false;
+    d_func()->setListViewKeyNavigation(false);
     update();
 }
 

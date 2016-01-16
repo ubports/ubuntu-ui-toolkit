@@ -53,6 +53,9 @@ public:
     explicit UCListItem(QQuickItem *parent = 0);
     ~UCListItem();
 
+    // overrides
+    bool keyNavigationFocus() const override;
+
     QQuickItem *contentItem() const;
     UCListItemDivider *divider() const;
     UCListItemActions *leadingActions() const;

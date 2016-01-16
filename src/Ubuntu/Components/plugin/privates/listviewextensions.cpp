@@ -98,7 +98,7 @@ void ListViewProxy::setKeyNavigationForListView(bool value)
 {
     UCListItem *listItem = qobject_cast<UCListItem*>(currentItem());
     if (listItem) {
-        UCListItemPrivate::get(listItem)->listViewKeyNavigation = value;
+        UCListItemPrivate::get(listItem)->setListViewKeyNavigation(value);
         listItem->update();
     }
 }
