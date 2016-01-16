@@ -73,6 +73,7 @@ protected:
     virtual void preThemeChanged();
     virtual void postThemeChanged();
 
+    void classBegin();
     void componentComplete();
     void itemChange(ItemChange change, const ItemChangeData &data);
     void focusInEvent(QFocusEvent *key);

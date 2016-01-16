@@ -212,6 +212,8 @@ UCListItemPrivate::UCListItemPrivate()
     , customColor(false)
     , listViewKeyNavigation(false)
 {
+    // the ListItem is not a focus scope
+    isFocusScope = false;
 }
 UCListItemPrivate::~UCListItemPrivate()
 {
@@ -1458,6 +1460,20 @@ void UCListItem::focusOutEvent(QFocusEvent *event)
     UCStyledItemBase::focusOutEvent(event);
     d_func()->listViewKeyNavigation = false;
     update();
+}
+
+// handle horizontal keys to navigate between focusable slots
+void UCListItem::keyPressEvent(QKeyEvent *event)
+{
+    UCStyledItemBase::keyPressEvent(event);
+    Q_D(UCListItem);
+    int key = event->key();
+    if (key != Qt::Key_Left && key != Qt::Key_Right) {
+        return;
+    }
+
+    bool forwards = (d->effectiveLayoutMirror ? key == Qt::Key_Left : key == Qt::Key_Right);
+    d->focusNextPrev(window()->activeFocusItem(), forwards);
 }
 
 /*!
