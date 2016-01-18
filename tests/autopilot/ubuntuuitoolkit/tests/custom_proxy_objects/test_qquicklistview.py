@@ -87,7 +87,7 @@ class QQuickListViewTestCase(tests.QMLFileAppTestCase):
         self.list_view.click_element(objectName)
         self.assertEqual(self.label.text, 'testListElement19')
 
-    def test_click_element_from_first_page_deleted_when_swiping_down(self):
+    def test_click_element_from_first_page_deleted_when_swiping_forward(self):
         """Test that no more swiping is done after finding the element.
 
         This is a regression test for bug http://pad.lv/1342521 that caused
@@ -109,10 +109,11 @@ class QQuickListViewTestCase(tests.QMLFileAppTestCase):
                 self.list_view,
                 'swipe_to_show_more_below') as mock_swipe_down:
             with mock.patch.object(
-                self.list_view,
-                'swipe_to_show_more_right') as mock_swipe_right:
+                    self.list_view,
+                    'swipe_to_show_more_right') as mock_swipe_right:
                 self.list_view.click_element(objectName)
         self.assertFalse(mock_swipe_down.called)
+        self.assertFalse(mock_swipe_right.called)
         self.assertEqual(self.label.text, 'testListElement1')
 
     def test_click_unexisting_element(self):
