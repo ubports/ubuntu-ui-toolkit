@@ -11,7 +11,7 @@ UBUNTU_MANIFEST_FILE=manifest.json.in
 # app name in the manifest file
 UBUNTU_TRANSLATION_DOMAIN="untitled11.bzoltan"
 
-SUBDIRS += Gallery.pro po
+SUBDIRS += po
 
 filetypes = qml png svg js jpg qmlproject desktop
 
