@@ -103,7 +103,7 @@ Ubuntu.StyledItem {
       text input. This property allows to control the highlight separately from
       the focused behavior.
       */
-    property bool highlighted: activeFocus
+    property bool highlighted
     /*!
       Text that appears when there is no focus and no content in the component
       (hint text).
@@ -543,7 +543,7 @@ Ubuntu.StyledItem {
       this is set to true.
       \qmlproperty bool activeFocusOnPress
     */
-    property alias activeFocusOnPress: editor.activeFocusOnPress
+    //property alias activeFocusOnPress: editor.activeFocusOnPress
 
     // signals
     /*!
@@ -756,9 +756,7 @@ Ubuntu.StyledItem {
     }
 
     //internals
-
     activeFocusOnPress: true
-    activeFocusOnTab: true
 
     /*!\internal */
     onVisibleChanged: {
@@ -862,7 +860,6 @@ Ubuntu.StyledItem {
             objectName: "text_input"
             readOnly: false
             id: editor
-            focus: true
             width: control.contentWidth
             height: Math.max(control.contentHeight, editor.contentHeight)
             wrapMode: TextEdit.WrapAtWordBoundaryOrAnywhere

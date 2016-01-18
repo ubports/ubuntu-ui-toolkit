@@ -33,7 +33,7 @@ PaletteValues {
     overlay: "#FFFFFF"
     overlayText: UbuntuColors.slate
     overlaySecondaryText: UbuntuColors.silk
-    field: "#FFFFFF"
+    field: UbuntuColors.porcelain
     fieldText: UbuntuColors.jet
     selection: Qt.rgba(UbuntuColors.orange.r, UbuntuColors.orange.g, UbuntuColors.orange.b, 0.2)
     selectionText: UbuntuColors.jet

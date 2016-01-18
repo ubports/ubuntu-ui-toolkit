@@ -20,7 +20,7 @@ import QtQuick 2.4
 import Ubuntu.Components 1.3
 
 UbuntuShape {
-    property color focusColor: UbuntuColors.orange // FIXME: Use color from palette
+    property color focusColor: theme.palette.normal.selection
 
     anchors.fill: parent
     anchors.margins: -units.gu(0.4)
@@ -30,7 +30,7 @@ UbuntuShape {
 
     UbuntuShape {
         anchors.fill: parent
-        anchors.margins: styledItem.keyNavigationFocus ? units.gu(0.2) : 0
+        anchors.margins: parent.visible ? units.gu(0.2) : 0
         backgroundColor: theme.palette.normal.background
         aspect: UbuntuShape.Flat
         visible: parent.visible

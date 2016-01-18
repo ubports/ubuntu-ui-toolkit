@@ -290,12 +290,23 @@ MultiPointTouchArea {
     Connections {
         target: main
         ignoreUnknownSignals: true
+        onActiveFocusChanged: {
+            if (!main.activeFocus) {
+                main.keyNavigationFocus = false
+                input.focus = false;
+            }
+        }
+        onKeyNavigationFocusChanged: {
+            if (main.keyNavigationFocus) {
+                input.forceActiveFocus();
+                main.keyNavigationFocus = true;
+            }
+        }
         onFocusChanged: {
             UbuntuApplication.inputMethod.commit()
             state = (main.focus) ? "" : "inactive";
-            if (main.focus) {
+            if (main.focus)
                 input.forceActiveFocus()
-            }
         }
     }
 

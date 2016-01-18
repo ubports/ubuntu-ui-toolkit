@@ -110,7 +110,7 @@ Ubuntu.ActionItem {
       text input. This property allows to control the highlight separately from
       the focused behavior.
       */
-    property bool highlighted: activeFocus
+    property bool highlighted
 
     /*!
       Text that appears when there is no content in the component.
@@ -176,7 +176,7 @@ Ubuntu.ActionItem {
       this is set to true.
       \qmlproperty bool activeFocusOnPress
     */
-    property alias activeFocusOnPress: editor.activeFocusOnPress
+    //property alias activeFocusOnPress: editor.activeFocusOnPress
 
     /*!
       Whether the TextField should scroll when the text is longer than the width.
@@ -832,9 +832,7 @@ Ubuntu.ActionItem {
     }
 
     // internals
-
     activeFocusOnPress: true
-    activeFocusOnTab: true
 
     /*! \internal */
     onVisibleChanged: {
@@ -1007,7 +1005,6 @@ Ubuntu.ActionItem {
             id: editor
             objectName: "text_input"
             // FocusScope will forward focus to this component
-            focus: true
             anchors.verticalCenter: parent.verticalCenter
             verticalAlignment: TextInput.AlignVCenter
             width: flicker.width

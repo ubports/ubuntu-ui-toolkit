@@ -41,6 +41,15 @@ bool UCStyledItemBase::keyNavigationFocus() const
     Q_D(const UCStyledItemBase);
     return d->keyNavigationFocus;
 }
+void UCStyledItemBase::setKeyNavigationFocus(bool v)
+{
+    Q_D(UCStyledItemBase);
+    if (d->keyNavigationFocus == v)
+        return;
+
+    d->keyNavigationFocus = v;
+    Q_EMIT keyNavigationFocusChanged();
+}
 
 bool UCStyledItemBase::activeFocusOnTab2() const
 {
@@ -524,15 +533,10 @@ void UCStyledItemBase::focusInEvent(QFocusEvent *event)
 {
     QQuickItem::focusInEvent(event);
 
-    Q_D(UCStyledItemBase);
-    if (d->keyNavigationFocus)
-        return;
-
     switch (event->reason()) {
         case Qt::TabFocusReason:
         case Qt::BacktabFocusReason:
-            d->keyNavigationFocus = true;
-            Q_EMIT keyNavigationFocusChanged();
+            setKeyNavigationFocus(true);
             break;
         default:
             // Mouse or window focus don't affect keyNavigationFocus status
@@ -544,12 +548,7 @@ void UCStyledItemBase::focusOutEvent(QFocusEvent *event)
 {
     QQuickItem::focusOutEvent(event);
 
-    Q_D(UCStyledItemBase);
-    if (!d->keyNavigationFocus)
-        return;
-
-    d->keyNavigationFocus = false;
-    Q_EMIT keyNavigationFocusChanged();
+    setKeyNavigationFocus(false);
 }
 
 // grab pressed state and focus if it can be

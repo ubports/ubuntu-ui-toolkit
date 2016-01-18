@@ -38,6 +38,7 @@ Palette {
         backgroundText: UbuntuColors.blue
         base: UbuntuColors.ash
         baseText: UbuntuColors.blue
+        field: "#FFFFFF"
         foreground: UbuntuColors.silk
         foregroundText: UbuntuColors.blue
     }
