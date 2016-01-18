@@ -27,6 +27,16 @@ from ubuntuuitoolkit import tests
 
 
 class QQuickListViewTestCase(tests.QMLFileAppTestCase):
+    """Test clicking on elements in the ListView
+
+    The ListView may need to be scrolled forward or backwards before
+    the element can be clicked. In a standard vertical ListView,
+    'forward' means 'down' and 'backward' means 'up. In a horizontal
+    ListView, 'forward' means to the right, and 'backward' means to
+    the left.
+
+    TODO: Add support for right-to-left layouts.
+    """
 
     path = os.path.abspath(__file__)
     dir_path = os.path.dirname(path)
@@ -48,27 +58,27 @@ class QQuickListViewTestCase(tests.QMLFileAppTestCase):
         self.list_view.click_element('testListElement0')
         self.assertEqual(self.label.text, 'testListElement0')
 
-    def test_click_element_outside_view_below(self):
+    def test_click_element_outside_view_after(self):
         # Click the first element out of view to make sure we are not scrolling
-        # to the bottom at once.
+        # towards the end at once.
         self.assertFalse(
             self.list_view._is_element_clickable('testListElement5'))
 
         self.list_view.click_element('testListElement5')
         self.assertEqual(self.label.text, 'testListElement5')
 
-    def test_click_element_outside_view_above(self):
+    def test_click_element_outside_view_before(self):
         self.list_view.click_element('testListElement9')
 
         # Click the first element out of view to make sure we are not scrolling
-        # to the top at once.
+        # towards the beginning at once.
         self.assertFalse(
             self.list_view._is_element_clickable('testListElement4'))
 
         self.list_view.click_element('testListElement4')
         self.assertEqual(self.label.text, 'testListElement4')
 
-    def test_click_element_not_created_at_start_below(self):
+    def test_click_element_not_created_at_start_after(self):
         objectName = 'testListElement19'
         self.assertRaises(
             dbus.StateNotFoundError,
@@ -82,12 +92,12 @@ class QQuickListViewTestCase(tests.QMLFileAppTestCase):
 
         This is a regression test for bug http://pad.lv/1342521 that caused
         us to swipe down after finding an element on the first page of the
-        list. If we were lucky, the element was still cashed so we just ended
+        list. If we were lucky, the element was still cached so we just ended
         up doing two extra swipes. If not, then the element will be deleted
         from the tree and the helper failed.
 
         """
-        # Swipe to the bottom.
+        # Swipe forward.
         self.list_view.click_element('testListElement19')
 
         objectName = 'testListElement1'
@@ -98,7 +108,10 @@ class QQuickListViewTestCase(tests.QMLFileAppTestCase):
         with mock.patch.object(
                 self.list_view,
                 'swipe_to_show_more_below') as mock_swipe_down:
-            self.list_view.click_element(objectName)
+            with mock.patch.object(
+                self.list_view,
+                'swipe_to_show_more_right') as mock_swipe_right:
+                self.list_view.click_element(objectName)
         self.assertFalse(mock_swipe_down.called)
         self.assertEqual(self.label.text, 'testListElement1')
 
