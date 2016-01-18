@@ -18,6 +18,7 @@
 
 #include "listviewextensions.h"
 #include "uclistitem_p.h"
+#include "quickutils.h"
 #include <QtQuick/QQuickItem>
 #include <QtQuick/private/qquickflickable_p.h>
 
@@ -25,6 +26,12 @@ ListViewProxy::ListViewProxy(QQuickFlickable *listView, QObject *parent)
     : QObject(parent)
     , listView(listView)
 {
+    // DEBUG
+//    connect(listView, &QQuickItem::windowChanged, [=] {
+//        connect(listView->window(), &QQuickWindow::activeFocusItemChanged, [=] {
+//            qDebug() << "FOCUS" << listView->window()->activeFocusItem();
+//        });
+//    });
 }
 ListViewProxy::~ListViewProxy()
 {
@@ -148,4 +155,3 @@ bool ListViewProxy::keyPressEvent(QKeyEvent *event)
 
     return true;
 }
-

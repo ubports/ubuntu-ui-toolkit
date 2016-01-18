@@ -207,3 +207,33 @@ bool QuickUtils::showDeprecationWarnings() {
     }
     return showWarnings == 2;
 }
+
+// check whether an item is a descendant of parent
+bool QuickUtils::descendantItemOf(QQuickItem *item, const QQuickItem *parent)
+{
+    while (item && parent) {
+        if (item == parent) {
+            return true;
+        }
+        item = item->parentItem();
+    }
+    return false;
+}
+
+// returns true if the item has any key-focusable child items
+bool QuickUtils::hasKeyFocusableChildren(QQuickItem *item)
+{
+    if (!item) {
+        return false;
+    }
+    QList<QQuickItem*> list = item->childItems();
+    Q_FOREACH(QQuickItem *child, list) {
+        if (child->activeFocusOnTab()) {
+            return true;
+        }
+        if (hasKeyFocusableChildren(child)) {
+            return true;
+        }
+    }
+    return false;
+}

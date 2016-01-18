@@ -28,6 +28,7 @@
 #include "quickutils.h"
 #include "ucaction.h"
 #include "ucnamespace.h"
+#include "privates/listviewextensions.h"
 #include <QtQml/QQmlInfo>
 #include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickflickable_p.h>
@@ -1096,6 +1097,7 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
                     this, SLOT(_q_updateExpansion(QList<int>)), Qt::DirectConnection);
             // if the ViewItems is attached to a ListView, disable tab stops on the ListItem
             setActiveFocusOnTab(!d->parentAttached->isAttachedToListView());
+            d->isTabFence = d->parentAttached->isAttachedToListView();
         }
 
         if (parentAttachee) {
@@ -1465,6 +1467,7 @@ void UCListItem::timerEvent(QTimerEvent *event)
 
 void UCListItem::focusInEvent(QFocusEvent *event)
 {
+    Q_D(UCListItem);
     UCStyledItemBase::focusInEvent(event);
     if (event->reason() == Qt::MouseFocusReason) {
         d_func()->setListViewKeyNavigation(false);
@@ -1490,7 +1493,16 @@ void UCListItem::keyPressEvent(QKeyEvent *event)
     }
 
     bool forwards = (d->effectiveLayoutMirror ? key == Qt::Key_Left : key == Qt::Key_Right);
-    d->focusNextPrev(window()->activeFocusItem(), forwards);
+    // we must check whether the ListItem has any key navigation focusable child
+    // this is needed due to the Qt bug https://bugreports.qt.io/browse/QTBUG-50516
+    if (!QuickUtils::hasKeyFocusableChildren(this)) {
+        return;
+    }
+    QQuickItem *activeFocus = window()->activeFocusItem();
+    QQuickItem *nextFocus = QQuickItemPrivate::nextPrevItemInTabFocusChain(activeFocus, forwards);
+    if (QuickUtils::descendantItemOf(nextFocus, this)) {
+        nextFocus->forceActiveFocus(forwards ? Qt::TabFocusReason : Qt::BacktabFocusReason);
+    }
 }
 
 /*!

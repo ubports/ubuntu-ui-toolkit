@@ -49,6 +49,8 @@ public:
     Q_REVISION(1) Q_INVOKABLE static bool inherits(QObject *object, const QString &fromClass);
     QObject* createQmlObject(const QUrl &url, QQmlEngine *engine);
     static bool showDeprecationWarnings();
+    static bool descendantItemOf(QQuickItem *item, const QQuickItem *parent);
+    static bool hasKeyFocusableChildren(QQuickItem *item);
 
     bool mouseAttached()
     {
