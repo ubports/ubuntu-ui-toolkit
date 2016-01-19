@@ -33,6 +33,11 @@ UPMPerformanceMonitor::UPMPerformanceMonitor(QObject* parent) :
                      this, &UPMPerformanceMonitor::onApplicationStateChanged);
 }
 
+UPMPerformanceMonitor::~UPMPerformanceMonitor()
+{
+    connectToWindow(NULL);
+}
+
 QQuickWindow* UPMPerformanceMonitor::findQQuickWindow()
 {
     Q_FOREACH (QWindow *w, QGuiApplication::topLevelWindows()) {

@@ -31,6 +31,7 @@ class UPMPerformanceMonitor : public QObject
 
 public:
     explicit UPMPerformanceMonitor(QObject* parent = 0);
+    ~UPMPerformanceMonitor();
 
 private Q_SLOTS:
     void onApplicationStateChanged(Qt::ApplicationState state);
