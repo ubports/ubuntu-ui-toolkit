@@ -115,9 +115,9 @@ Toolkit.PageTreeNode {
 
         Connections {
             target: mainView
-            onBackgroundColorChanged: selectTheme()
+            onBackgroundColorChanged: autoTheme.selectTheme()
         }
-        Component.onCompleted: selectTheme()
+        Component.onCompleted: autoTheme.selectTheme()
 
         property string themeName
         onThemeNameChanged: {
