@@ -1,6 +1,6 @@
 # -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
 #
-# Copyright (C) 2013-2015 Canonical Ltd.
+# Copyright (C) 2013-2016 Canonical Ltd.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -44,13 +44,16 @@ class QQuickListViewTestCase(tests.QMLFileAppTestCase):
         dir_path, 'test_listview.QQuickListViewTestCase.Uitk10.vertical.qml')
     uitk13v_qml_file_path = os.path.join(
         dir_path, 'test_listview.QQuickListViewTestCase.Uitk13.vertical.qml')
-    # TODO: Add UITK 1.3 horizontal
+    uitk13h_qml_file_path = os.path.join(
+        dir_path, 'test_listview.QQuickListViewTestCase.Uitk13.horizontal.qml')
 
     scenarios = [
         ('UITK 1.0 vertical',
             dict(test_qml_file_path=uitk10v_qml_file_path)),
         ('UITK 1.3 vertical',
-            dict(test_qml_file_path=uitk13v_qml_file_path))
+            dict(test_qml_file_path=uitk13v_qml_file_path)),
+        ('UITK 1.3 horizontal',
+            dict(test_qml_file_path=uitk13h_qml_file_path))
     ]
 
     def setUp(self):
