@@ -90,8 +90,8 @@ void UCPerformanceMonitor::startTimer()
 
 void UCPerformanceMonitor::stopTimer()
 {
-    int singleFrameThreshold = 50;
-    int multipleFrameThreshold = 10;
+    int singleFrameThreshold = 32;
+    int multipleFrameThreshold = 17;
     int framesCountThreshold = 10;
     int warningCountThreshold = 30;
 
