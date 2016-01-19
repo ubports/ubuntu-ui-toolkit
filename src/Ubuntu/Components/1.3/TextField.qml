@@ -172,13 +172,6 @@ Ubuntu.ActionItem {
     property alias acceptableInput: editor.acceptableInput
 
     /*!
-      Whether the TextField should gain active focus on a mouse press. By default
-      this is set to true.
-      \qmlproperty bool activeFocusOnPress
-    */
-    //property alias activeFocusOnPress: editor.activeFocusOnPress
-
-    /*!
       Whether the TextField should scroll when the text is longer than the width.
       By default this is set to true.
 
@@ -834,12 +827,6 @@ Ubuntu.ActionItem {
     // internals
     activeFocusOnPress: true
 
-    /*! \internal */
-    onVisibleChanged: {
-        if (!visible)
-            control.focus = false;
-    }
-
     // Escape should close the context menu even if the menu takes no input focus
     Keys.onEscapePressed: if (activeFocus && inputHandler.popover) PopupUtils.close(inputHandler.popover)
 
@@ -1023,8 +1010,6 @@ Ubuntu.ActionItem {
 
             // overrides
             selectByMouse: true
-            activeFocusOnPress: true
-            onActiveFocusChanged: if (!activeFocus && inputHandler.popover) PopupUtils.close(inputHandler.popover)
 
             // input selection and navigation handling
             Ubuntu.Mouse.forwardTo: [inputHandler]

@@ -1129,7 +1129,7 @@ Ubuntu.Components.StyleHints 1.3 UCStyleHints: QtObject
     property bool ignoreUnknownProperties
 Ubuntu.Components.StyledItem 1.3 1.3 1.1 1.0 0.1 UCStyledItemBase: Item
     property bool activeFocusOnPress 1.3
-    readonly property bool keyNavigationFocus 1.3
+    property bool keyNavigationFocus 1.3
     signal activeFocusOnTabChanged2() 1.3
     function bool requestFocus(Qt.FocusReason reason) 1.3
     function bool requestFocus() 1.3
