@@ -20,6 +20,8 @@
 #include <QtCore/qmath.h>
 #include <QtGui/QGuiApplication>
 
+Q_LOGGING_CATEGORY(ucPerformance, "[PERFORMANCE]")
+
 UPMPerformanceMonitor::UPMPerformanceMonitor(QObject* parent) :
     QObject(parent),
     m_framesAboveThreshold(0),
@@ -90,14 +92,15 @@ void UPMPerformanceMonitor::onAfterRendering()
     int totalTimeInMs = m_totalTimer->elapsed();
 
     if (totalTimeInMs >= singleFrameThreshold) {
-        qWarning("[PERFORMANCE] Last frame took %d ms to render.", totalTimeInMs);
+        qCWarning(ucPerformance, "Last frame took %d ms to render.", totalTimeInMs);
     }
 
     if (totalTimeInMs >= multipleFrameThreshold) {
         m_framesAboveThreshold++;
         if (m_framesAboveThreshold >= framesCountThreshold) {
-            qWarning("[PERFORMANCE] Last %d frames took over %d ms to render (last frame: %d ms)",
-                     m_framesAboveThreshold, multipleFrameThreshold, totalTimeInMs);
+            qCWarning(ucPerformance,
+                      "Last %d frames took over %d ms to render (last frame: %d ms)",
+                      m_framesAboveThreshold, multipleFrameThreshold, totalTimeInMs);
             m_framesAboveThreshold = 0;
         }
     } else {

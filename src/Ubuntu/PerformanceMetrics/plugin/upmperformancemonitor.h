@@ -22,6 +22,7 @@
 #include <QtCore/QObject>
 #include <QtCore/QSharedPointer>
 #include <QtCore/QElapsedTimer>
+#include <QtCore/QLoggingCategory>
 #include <QtQuick/QQuickWindow>
 
 class UPMPerformanceMonitor : public QObject
@@ -45,5 +46,7 @@ private:
     QSharedPointer<QElapsedTimer> m_totalTimer;
     QQuickWindow* m_window;
 };
+
+Q_DECLARE_LOGGING_CATEGORY(ucPerformance)
 
 #endif // UPMPERFORMANCE_MONITOR_H
