@@ -43,6 +43,7 @@ private:
 
 private:
     int m_framesAboveThreshold;
+    int m_warningCount;
     QSharedPointer<QElapsedTimer> m_totalTimer;
     QQuickWindow* m_window;
 };

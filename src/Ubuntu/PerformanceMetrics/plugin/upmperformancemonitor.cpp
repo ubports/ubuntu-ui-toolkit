@@ -25,6 +25,7 @@ Q_LOGGING_CATEGORY(ucPerformance, "[PERFORMANCE]")
 UPMPerformanceMonitor::UPMPerformanceMonitor(QObject* parent) :
     QObject(parent),
     m_framesAboveThreshold(0),
+    m_warningCount(0),
     m_totalTimer(NULL),
     m_window(NULL)
 {
@@ -93,6 +94,7 @@ void UPMPerformanceMonitor::onAfterRendering()
 
     if (totalTimeInMs >= singleFrameThreshold) {
         qCWarning(ucPerformance, "Last frame took %d ms to render.", totalTimeInMs);
+        m_warningCount++;
     }
 
     if (totalTimeInMs >= multipleFrameThreshold) {
@@ -102,9 +104,16 @@ void UPMPerformanceMonitor::onAfterRendering()
                       "Last %d frames took over %d ms to render (last frame: %d ms)",
                       m_framesAboveThreshold, multipleFrameThreshold, totalTimeInMs);
             m_framesAboveThreshold = 0;
+            m_warningCount++;
         }
     } else {
         m_framesAboveThreshold = 0;
     }
     m_totalTimer->invalidate();
+
+    int warningCountThreshold = 30;
+    if (m_warningCount >= warningCountThreshold) {
+        qCWarning(ucPerformance, "Too many warnings were given. Performance monitoring stops.");
+        connectToWindow(NULL);
+    }
 }
