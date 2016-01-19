@@ -32,6 +32,11 @@ Components.Header {
     }
 
     /*!
+      The background color of the header. Value set by MainView.
+     */
+    property color backgroundColor
+
+    /*!
       The background color of the divider. Value set by MainView.
      */
     property color dividerColor

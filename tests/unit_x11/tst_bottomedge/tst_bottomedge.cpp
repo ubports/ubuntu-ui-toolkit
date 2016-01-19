@@ -20,7 +20,7 @@
 #include "ucbottomedgeregion.h"
 #include "ucbottomedge_p.h"
 #include "ucbottomedgehint.h"
-#include "gestures/ucswipearea.h"
+#include "private/ucswipearea_p.h"
 #include "ucunits.h"
 #include "ucheader.h"
 #include "ucaction.h"
@@ -183,6 +183,22 @@ private Q_SLOTS:
 
         UCTestExtras::touchClick(0, hint, UbuntuTestCase::centerOf(hint).toPoint());
         QTRY_COMPARE_WITH_TIMEOUT(test->testItem()->status(), UCBottomEdge::Committed, 1000);
+    }
+
+    void test_overridden_triggers_bug1524234()
+    {
+        QScopedPointer<BottomEdgeTestCase> test(new BottomEdgeTestCase("OverriddenHintTrigger.qml"));
+        test->testItem()->hint()->setStatus(UCBottomEdgeHint::Locked);
+        UCBottomEdgeHint *hint = test->testItem()->hint();
+        UCAction *action = hint->action();
+        QSignalSpy actionSpy(action, SIGNAL(triggered(QVariant)));
+        QSignalSpy hintSpy(hint, SIGNAL(triggered(QVariant)));
+
+        QTest::mouseClick(test->testItem()->hint()->window(), Qt::LeftButton, 0, UbuntuTestCase::centerOf(hint, true).toPoint());
+        QTRY_COMPARE_WITH_TIMEOUT(test->testItem()->status(), UCBottomEdge::Committed, 1000);
+
+        QCOMPARE(actionSpy.count(), 0);
+        QCOMPARE(hintSpy.count(), 1);
     }
 
     void test_revealed_when_hint_threshold_passed_data()

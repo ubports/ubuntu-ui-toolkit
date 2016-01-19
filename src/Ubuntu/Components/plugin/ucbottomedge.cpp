@@ -19,7 +19,7 @@
 #include "ucbottomedge_p.h"
 #include "ucbottomedgestyle.h"
 #include "ucbottomedgeregion.h"
-#include "ucbottomedgehint.h"
+#include "ucbottomedgehint_p.h"
 #include "ucstyleditembase_p.h"
 #include <QtQml/QQmlEngine>
 #include <QtGui/QScreen>
@@ -34,7 +34,7 @@
 #include "ucheader.h"
 #include "ucaction.h"
 #include "quickutils.h"
-#include "gestures/ucswipearea.h"
+#include "private/ucswipearea_p.h"
 #include <QtQuick/private/qquickanimation_p.h>
 
 Q_LOGGING_CATEGORY(ucBottomEdge, "ubuntu.components.BottomEdge", QtMsgType::QtWarningMsg)
@@ -399,28 +399,32 @@ void UCBottomEdgePrivate::patchContentItemHeader()
     QQmlListProperty<UCAction> actions = list.value< QQmlListProperty<UCAction> >();
     QList<UCAction*> *navigationActions = reinterpret_cast<QList<UCAction*>*>(actions.data);
 
+    // do we have any action in the list?
+    if (navigationActions->size()) {
+        // we have actions in the list, check if those are ours
+        UCCollapseAction *collapse = qobject_cast<UCCollapseAction*>(navigationActions->at(0));
+        if (!collapse) {
+            // not ours, clear the list
+            navigationActions->clear();
+        }
+    }
+    if (navigationActions->size() <= 0) {
+        // no actions, patch
+        navigationActions->append(new UCCollapseAction(header));
+        // invoke PageHeader.navigationActionsChanged signal
+        int signal = header->metaObject()->indexOfSignal("navigationActionsChanged()");
+        if (signal >= 0) {
+            header->metaObject()->invokeMethod(header, "navigationActionsChanged");
+        }
+    }
+
     // are we committed?
     if (status == UCBottomEdge::Committed) {
         // activate the action
         UCCollapseAction *collapse = qobject_cast<UCCollapseAction*>(navigationActions->at(0));
+        Q_ASSERT(collapse);
         collapse->activate();
         QObject::connect(collapse, &UCAction::triggered, q_func(), &UCBottomEdge::collapse, Qt::DirectConnection);
-    } else if (navigationActions->size() <= 0) {
-        navigationActions->append(new UCCollapseAction(header));
-    } else {
-        // we have actions in the navigationActions array, check if those are UCCollapseActions,
-        // if not, clear them
-        UCCollapseAction *collapse = qobject_cast<UCCollapseAction*>(navigationActions->at(0));
-        if (!collapse) {
-            navigationActions->clear();
-            navigationActions->append(new UCCollapseAction(header));
-        }
-    }
-
-    // invoke PageHeader.navigationActionsChanged signal
-    int signal = header->metaObject()->indexOfSignal("navigationActionsChanged()");
-    if (signal >= 0) {
-        header->metaObject()->invokeMethod(header, "navigationActionsChanged");
     }
 }
 
@@ -737,26 +741,26 @@ void UCBottomEdge::classBegin()
     initializeComponent();
 }
 
-void UCBottomEdge::componentComplete()
+void UCBottomEdgePrivate::completeComponentInitialization()
 {
-    UCStyledItemBase::componentComplete();
-    Q_D(UCBottomEdge);
+    UCStyledItemBasePrivate::completeComponentInitialization();
+    Q_Q(UCBottomEdge);
     // fix the hint's style version as that has no qmlContext of its own
     // and thus import version check will fail; setting the context for
     // the hint using this component's hint won't work either as this
     // component's context does not contain the properties from the hint.
-    UCStyledItemBasePrivate *hintPrivate = UCStyledItemBasePrivate::get(d->hint);
-    hintPrivate->styleVersion = d->styleVersion;
-    // also set the qml data as hitn does not have that either
-    QQmlData::get(d->hint, true);
-    QQmlEngine::setContextForObject(d->hint, new QQmlContext(qmlContext(this), d->hint));
+    UCBottomEdgeHintPrivate *hintPrivate = UCBottomEdgeHintPrivate::get(hint);
+    hintPrivate->styleVersion = styleVersion;
+    // also set the qml data as hint does not have that either
+    QQmlData::get(hint, true);
+    QQmlEngine::setContextForObject(hint, new QQmlContext(qmlContext(q), hint));
     // finally complete hint creation
-    hintPrivate->completeStyledItem();
+    hintPrivate->completeComponentInitialization();
     // and validate regions, leave out the first one as that supposed to be added first
     // mimic the top limit of the regions list like we would add them one by one
-    for (int i = 1; i < d->regions.size(); ++i) {
-        UCBottomEdgeRegion *region = d->regions[i];
-        d->validateRegion(region, i);
+    for (int i = 1; i < regions.size(); ++i) {
+        UCBottomEdgeRegion *region = regions[i];
+        validateRegion(region, i);
     }
 }
 

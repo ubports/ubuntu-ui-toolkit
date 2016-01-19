@@ -21,6 +21,7 @@
 
 class QQuickMouseArea;
 class QQuickMouseEvent;
+class UCAbstractButtonPrivate;
 class UCAbstractButton : public UCActionItem
 {
     Q_OBJECT
@@ -28,7 +29,7 @@ class UCAbstractButton : public UCActionItem
     Q_PROPERTY(bool hovered READ hovered NOTIFY hoveredChanged)
 
     // internal, declared to support the deprecated ListItem module
-    Q_PROPERTY(bool __acceptEvents MEMBER m_acceptEvents)
+    Q_PROPERTY(bool __acceptEvents READ acceptEvents WRITE setAcceptEvents)
     Q_PROPERTY(QQuickMouseArea *__mouseArea READ privateMouseArea CONSTANT)
 public:
     explicit UCAbstractButton(QQuickItem *parent = 0);
@@ -38,12 +39,13 @@ public:
 
     bool privateAcceptEvents() const;
     void setPrivateAcceptEvents(bool accept);
+    bool acceptEvents() const;
+    void setAcceptEvents(bool value);
     QQuickMouseArea *privateMouseArea() const;
 
 protected:
     void classBegin();
-    void componentComplete();
-    void keyPressEvent(QKeyEvent *key);
+    void keyReleaseEvent(QKeyEvent *key);
 
 Q_SIGNALS:
     void pressedChanged();
@@ -51,17 +53,13 @@ Q_SIGNALS:
     void clicked();
     void pressAndHold();
 
-protected Q_SLOTS:
-    void _q_mouseAreaPressed();
-    void _q_mouseAreaClicked();
-    void _q_mouseAreaPressAndHold();
-
 protected:
-    QQuickMouseArea *m_mouseArea;
-    bool m_acceptEvents:1;
-    bool m_pressAndHoldConnected:1;
+    UCAbstractButton(UCAbstractButtonPrivate &&, QQuickItem *parent = 0);
 
-    bool isPressAndHoldConnected();
+    Q_DECLARE_PRIVATE(UCAbstractButton)
+    Q_PRIVATE_SLOT(d_func(), void _q_mouseAreaPressed())
+    Q_PRIVATE_SLOT(d_func(), void _q_mouseAreaClicked())
+    Q_PRIVATE_SLOT(d_func(), void _q_mouseAreaPressAndHold())
 };
 
 #endif // UCABSTRACTBUTTON_H

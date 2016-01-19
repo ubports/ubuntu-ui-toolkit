@@ -43,4 +43,6 @@ OTHER_FILES += \
     ListOfEmptyListItemLayout_withProgression.qml \
     ListOfListItemLayout_complex1.qml \
     ListOfListItemLayout_complex2.qml \
-    ListOfListItemLayout_labelsOnly.qml
+    ListOfListItemLayout_labelsOnly.qml \
+    ListOfScrollbars_1_3.qml \
+    ListOfScrollView_bothScrollbars_1_3.qml

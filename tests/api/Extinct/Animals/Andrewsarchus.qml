@@ -14,11 +14,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Damper.h"
-#include <QDebug>
+import QtQuick 2.0
 
-QDebug operator<<(QDebug dbg, const DampedPointF &p)
-{
-    dbg.nospace() << "(" << p.x() << ", " << p.y() << ")";
-    return dbg.space();
+Item {
+    id: body
+    /*!
+       \qmlproperty real skullSize
+    */
+    property real skullSize
 }

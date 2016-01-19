@@ -124,6 +124,7 @@ void UCPageTreeNodePrivate::updatePageTree()
 {
     Q_Q(UCPageTreeNode);
     q->setParentNode(getParentPageTreeNode());
+    dumpNodeTree();
 }
 
 
@@ -413,6 +414,7 @@ void UCPageTreeNode::setIsLeaf(bool isLeaf)
 
     //notify all our parent nodes that we are the leaf
     d->updateParentLeafNode();
+    dumpNodeTree();
 }
 
 /*!
@@ -491,6 +493,8 @@ void UCPageTreeNode::componentComplete()
 {
     UCStyledItemBase::componentComplete();
     d_func()->updatePageTree();
+
+    dumpNodeTree();
 }
 
 void UCPageTreeNode::dumpNodeTree()

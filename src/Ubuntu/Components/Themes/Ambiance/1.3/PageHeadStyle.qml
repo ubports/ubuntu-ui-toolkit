@@ -44,6 +44,15 @@ Style.PageHeadStyle {
      */
     property color titleColor: headerStyle.config.foregroundColor
 
+    /*!
+      The background color of the header.
+     */
+    property color backgroundColor: styledItem.backgroundColor
+    Rectangle {
+        anchors.fill: parent
+        color: headerStyle.backgroundColor
+    }
+
     // FIXME: When the three panel color properties below are removed,
     //  update unity8/Dash/PageHeader to use the new theming (currently
     //  in progress) to set these colors.

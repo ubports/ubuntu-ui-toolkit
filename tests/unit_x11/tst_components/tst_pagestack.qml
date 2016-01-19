@@ -54,9 +54,15 @@ Item {
         id: tabs
         Tab {
             id: tab1
+            page: Page {
+                title: "Tab 1"
+            }
         }
         Tab {
             id: tab2
+            page: Page {
+                title: "Tab 2"
+            }
         }
     }
     Page {

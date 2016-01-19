@@ -56,7 +56,7 @@ public:
     virtual void preStyleChanged();
     virtual void postStyleChanged() {}
     virtual bool loadStyleItem(bool animated = true);
-    virtual void completeStyledItem();
+    virtual void completeComponentInitialization();
 
     // from UCImportVersionChecker
     virtual QString propertyForVersion(quint16 version) const;
@@ -69,6 +69,7 @@ public:
     QQmlComponent *styleComponent;
     QQuickItem *styleItem;
     quint16 styleVersion;
+    bool keyNavigationFocus:1;
     bool activeFocusOnPress:1;
     bool wasStyleLoaded:1;
 

@@ -484,6 +484,10 @@ public:
         writeMetaContent(&object, mainMeta, &knownAttributes);
 
         object["namespace"] = nameSpace;
+        // The QML class name derived from the filename is used by AP.
+        QString className(QFileInfo(filename).baseName());
+        if (typeName != className)
+            object["className"] = className;
         json->insert(id, object);
     }
 
@@ -552,6 +556,10 @@ public:
             return;
         }
 
+        // The C++ class is used by AP.
+        QString className(meta->className());
+        if (!(isSingleton || isUncreatable || exportStrings.empty()))
+            object["className"] = className;
         json->insert(id, object);
     }
 
@@ -982,7 +990,7 @@ int main(int argc, char *argv[])
 
         QMap<QString, QString> scripts;
         Q_FOREACH(QQmlDirParser::Script s, p.scripts()) {
-            QFile sf(pluginModulePath + "/" + s.fileName);
+            QFile sf(s.fileName[0] == 'q' ? QString(s.fileName).replace("qrc:/", ":/") : pluginModulePath + "/" + s.fileName);
             if (!sf.open(QIODevice::ReadOnly)) {
                 std::cerr << "Failed to read " << qPrintable(sf.fileName()) << std::endl;
                 return EXIT_IMPORTERROR;
@@ -1018,7 +1026,8 @@ int main(int argc, char *argv[])
             // Work-around for version -1, -1
             if (c.majorVersion == -1)
                 version = pluginImportVersion;
-            QQmlComponent e(&engine, pluginModulePath + "/" + c.fileName);
+            QQmlComponent e(&engine,
+                c.fileName[0] == 'q' ? QUrl(c.fileName) : pluginModulePath + "/" + c.fileName);
             QObject* qtobject(e.create());
             if (!qtobject) {
                 std::cerr << "Failed to instantiate " << qPrintable(c.typeName) << " from " << qPrintable(e.url().toString()) << std::endl;
@@ -1101,6 +1110,8 @@ int main(int argc, char *argv[])
                 QString signature(exports);
                 if (object.contains("namespace"))
                     signature = object.take("namespace").toString() + "." + signature;
+                if (object.contains("className"))
+                    signature += " " + object.take("className").toString();
                 QString prototype(object.take("prototype").toString());
                 if (!prototype.isEmpty())
                     signature += ": " + convertToId(prototype);
