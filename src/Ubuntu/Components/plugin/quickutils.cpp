@@ -220,20 +220,43 @@ bool QuickUtils::descendantItemOf(QQuickItem *item, const QQuickItem *parent)
     return false;
 }
 
-// returns true if the item has any key-focusable child items
-bool QuickUtils::hasKeyFocusableChildren(QQuickItem *item)
+// returns the first key-focusable child item
+QQuickItem *QuickUtils::firstFocusableChild(QQuickItem *item)
 {
     if (!item) {
-        return false;
+        return Q_NULLPTR;
     }
-    QList<QQuickItem*> list = item->childItems();
-    Q_FOREACH(QQuickItem *child, list) {
+    const QList<QQuickItem*> &list = item->childItems();
+    for (int i = 0; i < list.count(); i++) {
+        QQuickItem *child = list.at(i);
         if (child->activeFocusOnTab()) {
-            return true;
+            return child;
         }
-        if (hasKeyFocusableChildren(child)) {
-            return true;
+        QQuickItem *focus = firstFocusableChild(child);
+        if (focus) {
+            return focus;
         }
     }
-    return false;
+    return Q_NULLPTR;
+}
+
+// returns the last key-focusable child item
+QQuickItem *QuickUtils::lastFocusableChild(QQuickItem *item)
+{
+    if (!item) {
+        return Q_NULLPTR;
+    }
+    const QList<QQuickItem*> &list = item->childItems();
+    int i = list.count() - 1;
+    while (i >= 0) {
+        QQuickItem *child = list.at(i--);
+        if (child->activeFocusOnTab()) {
+            return child;
+        }
+        QQuickItem *focus = lastFocusableChild(child);
+        if (focus) {
+            return focus;
+        }
+    }
+    return Q_NULLPTR;
 }

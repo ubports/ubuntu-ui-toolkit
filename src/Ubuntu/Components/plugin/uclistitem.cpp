@@ -1495,13 +1495,32 @@ void UCListItem::keyPressEvent(QKeyEvent *event)
     bool forwards = (d->effectiveLayoutMirror ? key == Qt::Key_Left : key == Qt::Key_Right);
     // we must check whether the ListItem has any key navigation focusable child
     // this is needed due to the Qt bug https://bugreports.qt.io/browse/QTBUG-50516
-    if (!QuickUtils::hasKeyFocusableChildren(this)) {
+    if (!QuickUtils::firstFocusableChild(this)) {
         return;
     }
-    QQuickItem *activeFocus = window()->activeFocusItem();
-    QQuickItem *nextFocus = QQuickItemPrivate::nextPrevItemInTabFocusChain(activeFocus, forwards);
-    if (QuickUtils::descendantItemOf(nextFocus, this)) {
-        nextFocus->forceActiveFocus(forwards ? Qt::TabFocusReason : Qt::BacktabFocusReason);
+
+    // get the next focusable relative to the active focus item
+    QQuickItem *activeFocus = isFocusScope() ? scopedFocusItem() : window()->activeFocusItem();
+    if (!activeFocus) {
+        return;
+    }
+    Qt::FocusReason reason = forwards ? Qt::TabFocusReason : Qt::BacktabFocusReason;
+    if ((activeFocus == QuickUtils::firstFocusableChild(this) && !forwards) ||
+        (activeFocus == QuickUtils::lastFocusableChild(this) && forwards)) {
+        // first or the last focus child is reached, so we wrap around
+        // but for that we must set the activeFocus to false in order to
+        // be able to focus the ListItem, especially when the ListItem is a Tab fence
+        activeFocus->setFocus(false);
+        forceActiveFocus(reason);
+    } else if (activeFocus == this) {
+        // get the first or last focusable item, depending on the direction
+        QQuickItem *nextFocus = forwards
+                ? QuickUtils::firstFocusableChild(this)
+                : QuickUtils::lastFocusableChild(this);
+        nextFocus->forceActiveFocus(reason);
+    } else {
+        // in case the ListItem is in ListView, we can freely proceed with the focusing
+        QQuickItemPrivate::focusNextPrev(activeFocus, forwards);
     }
 }
 

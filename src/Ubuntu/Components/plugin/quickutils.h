@@ -50,7 +50,8 @@ public:
     QObject* createQmlObject(const QUrl &url, QQmlEngine *engine);
     static bool showDeprecationWarnings();
     static bool descendantItemOf(QQuickItem *item, const QQuickItem *parent);
-    static bool hasKeyFocusableChildren(QQuickItem *item);
+    static QQuickItem *firstFocusableChild(QQuickItem *item);
+    static QQuickItem *lastFocusableChild(QQuickItem *item);
 
     bool mouseAttached()
     {

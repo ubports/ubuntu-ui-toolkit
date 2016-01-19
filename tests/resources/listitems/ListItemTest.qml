@@ -264,9 +264,13 @@ MainView {
                         Label {
                             text: modelData + " Flickable item"
                         }
-                        Button {
-                            text: "Pressme..."
+                        Row {
                             anchors.centerIn: parent
+                            spacing: units.dp(4)
+                            Button {
+                                text: "Pressme..."
+                            }
+                            Switch {}
                         }
 
                         onClicked: divider.visible = !divider.visible
