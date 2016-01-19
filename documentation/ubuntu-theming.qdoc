@@ -270,16 +270,10 @@
  * The extended (or even overridden) style component documents must follow the naming
  * convention, and must have the names implied by the components styled.
  *
- * SuruDark theme overrides the Ambiance theme's ListItemStyle, therefore declares the
- * ListItemStyle.qml document, with the following content:
- * \snippet Themes/SuruDark/1.3/ListItemStyle.qml 0
- *
  * The style imports the Ambiance theme module, and extends the Ambiance ListItemStyle
  * component. The same is done in the other style components. However, Palette defines
  * own values, and does not re-use Ambiance palette values.
  * \snippet Themes/SuruDark/1.3/Palette.qml 0
- *
- * The same is done with TabBarStyle and OptionSelectorStyle components.
  *
  * \note If a theme derived from SuruDark wants to override style components not present
  * in SuruDark, they must import the SuruDark's parent theme in the style component.

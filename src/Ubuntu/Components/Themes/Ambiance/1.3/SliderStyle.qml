@@ -26,7 +26,7 @@ import Ubuntu.Components 1.3
 Item {
     id: sliderStyle
 
-    property color foregroundColor: UbuntuColors.orange
+    property color foregroundColor: theme.palette.normal.activity
     property color backgroundColor: theme.palette.normal.base
 
     property real thumbSpacing: units.gu(0)
@@ -43,8 +43,9 @@ Item {
             right: parent.right
             left: parent.left
         }
-        height: units.dp(4)
+        height: units.dp(2)
         backgroundColor: sliderStyle.backgroundColor
+        aspect: UbuntuShape.Flat
         overlayColor: sliderStyle.foregroundColor
         overlayRect: Qt.application.layoutDirection == Qt.LeftToRight ?
             Qt.rect(0.0, 0.0, thumb.x / thumb.barMinusThumbWidth, 1.0) :
@@ -80,18 +81,17 @@ Item {
         }
         width: units.gu(2)
         height: units.gu(2)
-        opacity: 0.97
-        backgroundColor: theme.palette.normal.overlay
+        backgroundColor: theme.palette.normal.raised
     }
 
     BubbleShape {
         id: bubbleShape
 
-        property real minimumWidth: units.gu(8)
+        property real minimumWidth: units.gu(6)
         property real horizontalPadding: units.gu(1)
 
-        width: Math.max(minimumWidth, label.implicitWidth + 2*horizontalPadding)
-        height: units.gu(6)
+        width: label.implicitWidth + 2*horizontalPadding
+        height: label.implicitHeight + 2*horizontalPadding
 
         // FIXME: very temporary implementation
         property real minX: 0.0
@@ -117,7 +117,7 @@ Item {
             anchors.centerIn: parent
             text: styledItem.formatValue(SliderUtils.liveValue(styledItem))
             textSize: Label.Large
-            color: theme.palette.normal.overlayText
+            color: theme.palette.normal.raisedText
         }
     }
 }

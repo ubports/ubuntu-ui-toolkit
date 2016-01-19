@@ -498,6 +498,11 @@ Ubuntu.Components.Icon 1.0 0.1: Item
     property string name
 Ubuntu.Components.Icon 1.1: Icon
     property url source
+Ubuntu.Components.Icon 1.3: Item
+    property color color
+    property color keyColor
+    property string name
+    property url source
 Ubuntu.Components.InverseMouse 1.0 0.1 UCInverseMouse: Mouse
 Ubuntu.Components.InverseMouseArea 1.0 0.1 InverseMouseAreaType: MouseArea
     function bool contains(QPointF point)
@@ -715,6 +720,7 @@ Ubuntu.Components.Page 1.0 0.1 Page10: PageTreeNode
 Ubuntu.Components.Page 1.1 Page11: Page10
     readonly property PageHeadConfiguration head
 Ubuntu.Components.Page 1.3: PageTreeNode
+    readonly property ActionContext actionContext
     property Flickable flickable
     readonly property PageHeadConfiguration head
     property Item header
@@ -830,8 +836,10 @@ Ubuntu.Components.Themes.Palette 0.1: QtObject
     property PaletteValues normal
     property PaletteValues selected
 Ubuntu.Components.Themes.Palette 1.3: QtObject
+    property PaletteValues inactive
     property PaletteValues normal
     property PaletteValues selected
+    property PaletteValues selectedInactive
 Ubuntu.Components.Themes.PaletteValues 0.1: QtObject
     property color background
     property color backgroundText
@@ -845,7 +853,11 @@ Ubuntu.Components.Themes.PaletteValues 0.1: QtObject
     property color overlayText
     property color selection
 Ubuntu.Components.Themes.PaletteValues 1.3: QtObject
+    property color activity
+    property color activityText
     property color background
+    property color backgroundSecondaryText
+    property color backgroundTertiaryText
     property color backgroundText
     property color base
     property color baseText
@@ -853,9 +865,18 @@ Ubuntu.Components.Themes.PaletteValues 1.3: QtObject
     property color fieldText
     property color foreground
     property color foregroundText
+    property color negative
+    property color negativeText
     property color overlay
+    property color overlaySecondaryText
     property color overlayText
+    property color positive
+    property color positiveText
+    property color raised
+    property color raisedSecondaryText
+    property color raisedText
     property color selection
+    property color selectionText
 Ubuntu.Components.Panel 1.0 0.1: Item
     property int align
     property bool animate
@@ -947,6 +968,7 @@ Ubuntu.Components.Popups.PopupBase 1.3: OrientationHelper
     property bool grabDismissAreaEvents
     function var show()
     function var hide()
+Ubuntu.Components.PopupContext 1.3 UCPopupContext: ActionContext
 Ubuntu.Components.Popups.PopupUtils 0.1 1.0 1.3
 Ubuntu.Components.ProgressBar 1.0 0.1: AnimatedItem
     property bool indeterminate
@@ -963,7 +985,10 @@ Ubuntu.Components.ProgressBar 1.3: AnimatedItem
     property bool onScreen
     property bool showProgressPercentage
     property double value
-Ubuntu.Components.ProgressionSlot 1.3: Icon
+Ubuntu.Components.ProgressionSlot 1.3: Item
+    property color color
+    property color keyColor
+    property string name
     property url source
 Ubuntu.Components.ProportionalShape 1.3 UCProportionalShape: UbuntuShape
 Ubuntu.Components.PullToRefresh 1.1: StyledItem
@@ -1491,6 +1516,7 @@ Ubuntu.Components.ToolbarItems 1.3: Item
     property Item pageStack
 Ubuntu.Components.Styles.ToolbarStyle 1.3: Item
     property Component defaultDelegate
+UCActionContextAttached: QtObject
 Ubuntu.Components.UCApplication 1.0 0.1: QtObject
     property string applicationName
     property QtObject inputMethod
@@ -1557,6 +1583,28 @@ Ubuntu.Components.UbuntuColors 1.1: QtObject singleton
     property Gradient orangeGradient
     readonly property color purple
     readonly property color red
+    readonly property color warmGrey
+Ubuntu.Components.UbuntuColors 1.3: QtObject singleton
+    readonly property color ash
+    readonly property color blue
+    readonly property color coolGrey
+    readonly property color darkAubergine
+    readonly property color darkGrey
+    readonly property color graphite
+    readonly property color green
+    property Gradient greyGradient
+    readonly property color inkstone
+    readonly property color jet
+    readonly property color lightAubergine
+    readonly property color lightGrey
+    readonly property color midAubergine
+    readonly property color orange
+    property Gradient orangeGradient
+    readonly property color porcelain
+    readonly property color purple
+    readonly property color red
+    readonly property color silk
+    readonly property color slate
     readonly property color warmGrey
 Ubuntu.Components.UbuntuListView 1.0 0.1: ListView
     property int expandedIndex

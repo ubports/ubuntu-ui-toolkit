@@ -32,7 +32,7 @@ Object {
         visible: inputMethod.visible
 
         parent: QuickUtils.rootItem(inputMethod)
-        color: UbuntuColors.lightGrey
+        color: UbuntuColors.silk
         opacity: 0.5
         // Always on top, even modal Dialog overlay
         z: 100

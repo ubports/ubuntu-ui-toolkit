@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -263,6 +263,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCBottomEdge>(uri, 1, 3, "BottomEdge");
     qmlRegisterType<UCBottomEdgeRegion>(uri, 1, 3, "BottomEdgeRegion");
     qmlRegisterType<UCPageTreeNode>(uri, 1, 3, "PageTreeNode");
+    qmlRegisterType<UCPopupContext>(uri, 1, 3, "PopupContext");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
@@ -283,12 +284,9 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     // that can be accessed from any object
     context->setContextProperty("QuickUtils", &QuickUtils::instance());
 
-    // register theme context property
-    UCTheme::registerToContext(context);
+    UCDeprecatedTheme::registerToContext(context);
 
-    UCDeprecatedTheme::instance().registerToContext(context);
-
-    HapticsProxy::instance().setEngine(context->engine());
+    HapticsProxy::instance().setEngine(engine);
 
     context->setContextProperty("i18n", &UbuntuI18n::instance());
     ContextPropertyChangeListener *i18nChangeListener =

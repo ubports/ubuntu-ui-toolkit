@@ -254,11 +254,9 @@ Item {
             var mappedDividerPos = defaults.mapFromItem(defaults.divider, defaults.divider.x, defaults.divider.y);
             compare(mappedDividerPos.x, 0, "divider's left anchor is wrong");
             compare(mappedDividerPos.x + defaults.divider.width, defaults.width, "divider's right anchor is wrong");
-            compare(defaults.divider.height, units.dp(2), "divider's thickness is wrong");
-            compare(defaults.divider.colorFrom, "#000000", "colorFrom differs.");
-            fuzzyCompare(defaults.divider.colorFrom.a, 0.14, 0.01, "colorFrom alpha differs");
-            compare(defaults.divider.colorTo, "#ffffff", "colorTo differs.");
-            fuzzyCompare(defaults.divider.colorTo.a, 0.07, 0.01, "colorTo alpha differs");
+            compare(defaults.divider.height, units.dp(1), "divider's thickness is wrong");
+            compare(defaults.divider.colorFrom, theme.palette.normal.base, "colorFrom differs.");
+            compare(defaults.divider.colorTo, theme.palette.normal.base, "colorTo differs.");
             compare(defaults.action, null, "No action by default.");
             compare(defaults.style, null, "Style is loaded upon first use.");
             compare(defaults.__styleInstance, null, "__styleInstance must be null.");

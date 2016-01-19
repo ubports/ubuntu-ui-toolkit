@@ -138,3 +138,5 @@ ProgressionSlot 1.3 1.3/ProgressionSlot.qml
 ScrollView 1.3 1.3/ScrollView.qml
 PageHeader 1.3 1.3/PageHeader.qml
 Toolbar 1.3 1.3/Toolbar.qml
+singleton UbuntuColors 1.3 1.3/UbuntuColors.qml
+Icon 1.3 1.3/Icon.qml
