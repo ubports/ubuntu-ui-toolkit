@@ -9,7 +9,7 @@ UBUNTU_MANIFEST_FILE=manifest.json.in
 
 # specify translation domain, this must be equal with the
 # app name in the manifest file
-UBUNTU_TRANSLATION_DOMAIN="untitled11.bzoltan"
+UBUNTU_TRANSLATION_DOMAIN="com.ubuntu.developer.bzoltan.ubuntu-ui-toolkit-gallery"
 
 SUBDIRS += po
 
