@@ -50,11 +50,11 @@ for i in $*; do
         echo "FIXME: $WARNINGS warnings in $_TESTNAME - Known problematic test"
       else
         echo "Error: $WARNINGS warnings in $_TESTNAME"
-        FAILURES=$(echo "$FAILURES+1" | bc)
+        ((FAILURES+=1))
       fi
     elif [ $ERRORS -ne 0 ]; then
       echo "Error: $ERRORS errors in $_TESTNAME ($WARNINGS warnings)"
-      FAILURES=$(echo "$FAILURES+1" | bc)
+      ((FAILURES+=1))
     elif [[ $EXCEPTIONS == *$_TESTNAME* ]]; then
       echo Woot! Known problematic test $_TESTNAME did pass afterall!
       echo '  ' Consider removing $_TESTNAME from EXCEPTIONS in $0
