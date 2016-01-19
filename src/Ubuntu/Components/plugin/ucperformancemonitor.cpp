@@ -55,6 +55,11 @@ QQuickWindow* UCPerformanceMonitor::findQQuickWindow()
 
 void UCPerformanceMonitor::onApplicationStateChanged(Qt::ApplicationState state)
 {
+    if (m_warningCount >= warningCountThreshold) {
+        // do not monitor performance if the warning count threshold was reached
+        return;
+    }
+
     if (state == Qt::ApplicationActive) {
         connectToWindow(findQQuickWindow());
     } else {
