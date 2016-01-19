@@ -89,8 +89,10 @@ void UPMPerformanceMonitor::onAfterRendering()
     int singleFrameThreshold = 50;
     int multipleFrameThreshold = 10;
     int framesCountThreshold = 10;
+    int warningCountThreshold = 30;
 
     int totalTimeInMs = m_totalTimer->elapsed();
+    m_totalTimer->invalidate();
 
     if (totalTimeInMs >= singleFrameThreshold) {
         qCWarning(ucPerformance, "Last frame took %d ms to render.", totalTimeInMs);
@@ -109,9 +111,7 @@ void UPMPerformanceMonitor::onAfterRendering()
     } else {
         m_framesAboveThreshold = 0;
     }
-    m_totalTimer->invalidate();
 
-    int warningCountThreshold = 30;
     if (m_warningCount >= warningCountThreshold) {
         qCWarning(ucPerformance, "Too many warnings were given. Performance monitoring stops.");
         connectToWindow(NULL);
