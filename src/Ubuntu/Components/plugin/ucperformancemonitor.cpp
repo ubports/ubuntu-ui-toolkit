@@ -21,6 +21,11 @@
 
 Q_LOGGING_CATEGORY(ucPerformance, "[PERFORMANCE]")
 
+const int singleFrameThreshold = 32;
+const int multipleFrameThreshold = 17;
+const int framesCountThreshold = 10;
+const int warningCountThreshold = 30;
+
 UCPerformanceMonitor::UCPerformanceMonitor(QObject* parent) :
     QObject(parent),
     m_framesAboveThreshold(0),
@@ -90,11 +95,6 @@ void UCPerformanceMonitor::startTimer()
 
 void UCPerformanceMonitor::stopTimer()
 {
-    int singleFrameThreshold = 32;
-    int multipleFrameThreshold = 17;
-    int framesCountThreshold = 10;
-    int warningCountThreshold = 30;
-
     int totalTimeInMs = m_timer->elapsed();
     m_timer->invalidate();
 
