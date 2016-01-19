@@ -58,25 +58,25 @@ void UPMPerformanceMonitor::connectToWindow(QQuickWindow* window)
     if (window != m_window) {
         if (m_window != NULL) {
             QObject::disconnect(m_window, &QQuickWindow::beforeSynchronizing,
-                                this, &UPMPerformanceMonitor::onBeforeSynchronizing);
+                                this, &UPMPerformanceMonitor::startTimer);
             QObject::disconnect(m_window, &QQuickWindow::afterRendering,
-                                this, &UPMPerformanceMonitor::onAfterRendering);
+                                this, &UPMPerformanceMonitor::stopTimer);
         }
 
         m_window = window;
 
         if (m_window != NULL) {
             QObject::connect(m_window, &QQuickWindow::beforeSynchronizing,
-                             this, &UPMPerformanceMonitor::onBeforeSynchronizing,
+                             this, &UPMPerformanceMonitor::startTimer,
                              Qt::DirectConnection);
             QObject::connect(m_window, &QQuickWindow::afterRendering,
-                             this, &UPMPerformanceMonitor::onAfterRendering,
+                             this, &UPMPerformanceMonitor::stopTimer,
                              Qt::DirectConnection);
         }
     }
 }
 
-void UPMPerformanceMonitor::onBeforeSynchronizing()
+void UPMPerformanceMonitor::startTimer()
 {
     if (!m_timer) {
         m_timer.reset(new QElapsedTimer);
@@ -84,7 +84,7 @@ void UPMPerformanceMonitor::onBeforeSynchronizing()
     m_timer->start();
 }
 
-void UPMPerformanceMonitor::onAfterRendering()
+void UPMPerformanceMonitor::stopTimer()
 {
     int singleFrameThreshold = 50;
     int multipleFrameThreshold = 10;

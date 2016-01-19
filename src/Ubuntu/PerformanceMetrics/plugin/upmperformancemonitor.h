@@ -35,8 +35,8 @@ public:
 private Q_SLOTS:
     void onApplicationStateChanged(Qt::ApplicationState state);
     void connectToWindow(QQuickWindow* window);
-    void onBeforeSynchronizing();
-    void onAfterRendering();
+    void startTimer();
+    void stopTimer();
 
 private:
     QQuickWindow* findQQuickWindow();
