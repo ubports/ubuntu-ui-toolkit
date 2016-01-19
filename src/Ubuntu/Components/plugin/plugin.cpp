@@ -76,6 +76,7 @@
 #include "ucbottomedgeregion.h"
 #include "ucbottomedgestyle.h"
 #include "ucpagetreenode.h"
+#include "ucperformancemonitor.h"
 
 // From UbuntuGestures
 #include "private/ucswipearea_p.h"
@@ -331,4 +332,7 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
             Qt::InvertedLandscapeOrientation);
 
     registerWindowContextProperty();
+
+    // register performance monitor
+    context->setContextProperty("performanceMonitor", new UCPerformanceMonitor);
 }

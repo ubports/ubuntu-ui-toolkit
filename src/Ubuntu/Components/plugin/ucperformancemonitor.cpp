@@ -16,12 +16,12 @@
  * Author: Florian Boucault <florian.boucault@canonical.com>
  */
 
-#include "upmperformancemonitor.h"
+#include "ucperformancemonitor.h"
 #include <QtGui/QGuiApplication>
 
 Q_LOGGING_CATEGORY(ucPerformance, "[PERFORMANCE]")
 
-UPMPerformanceMonitor::UPMPerformanceMonitor(QObject* parent) :
+UCPerformanceMonitor::UCPerformanceMonitor(QObject* parent) :
     QObject(parent),
     m_framesAboveThreshold(0),
     m_warningCount(0),
@@ -29,15 +29,15 @@ UPMPerformanceMonitor::UPMPerformanceMonitor(QObject* parent) :
     m_window(NULL)
 {
     QObject::connect((QGuiApplication*)QGuiApplication::instance(), &QGuiApplication::applicationStateChanged,
-                     this, &UPMPerformanceMonitor::onApplicationStateChanged);
+                     this, &UCPerformanceMonitor::onApplicationStateChanged);
 }
 
-UPMPerformanceMonitor::~UPMPerformanceMonitor()
+UCPerformanceMonitor::~UCPerformanceMonitor()
 {
     connectToWindow(NULL);
 }
 
-QQuickWindow* UPMPerformanceMonitor::findQQuickWindow()
+QQuickWindow* UCPerformanceMonitor::findQQuickWindow()
 {
     Q_FOREACH (QWindow *w, QGuiApplication::topLevelWindows()) {
         QQuickWindow* rootWindow = qobject_cast<QQuickWindow*>(w);
@@ -48,7 +48,7 @@ QQuickWindow* UPMPerformanceMonitor::findQQuickWindow()
     return NULL;
 }
 
-void UPMPerformanceMonitor::onApplicationStateChanged(Qt::ApplicationState state)
+void UCPerformanceMonitor::onApplicationStateChanged(Qt::ApplicationState state)
 {
     if (state == Qt::ApplicationActive) {
         connectToWindow(findQQuickWindow());
@@ -57,30 +57,30 @@ void UPMPerformanceMonitor::onApplicationStateChanged(Qt::ApplicationState state
     }
 }
 
-void UPMPerformanceMonitor::connectToWindow(QQuickWindow* window)
+void UCPerformanceMonitor::connectToWindow(QQuickWindow* window)
 {
     if (window != m_window) {
         if (m_window != NULL) {
             QObject::disconnect(m_window, &QQuickWindow::beforeSynchronizing,
-                                this, &UPMPerformanceMonitor::startTimer);
+                                this, &UCPerformanceMonitor::startTimer);
             QObject::disconnect(m_window, &QQuickWindow::afterRendering,
-                                this, &UPMPerformanceMonitor::stopTimer);
+                                this, &UCPerformanceMonitor::stopTimer);
         }
 
         m_window = window;
 
         if (m_window != NULL) {
             QObject::connect(m_window, &QQuickWindow::beforeSynchronizing,
-                             this, &UPMPerformanceMonitor::startTimer,
+                             this, &UCPerformanceMonitor::startTimer,
                              Qt::DirectConnection);
             QObject::connect(m_window, &QQuickWindow::afterRendering,
-                             this, &UPMPerformanceMonitor::stopTimer,
+                             this, &UCPerformanceMonitor::stopTimer,
                              Qt::DirectConnection);
         }
     }
 }
 
-void UPMPerformanceMonitor::startTimer()
+void UCPerformanceMonitor::startTimer()
 {
     if (!m_timer) {
         m_timer.reset(new QElapsedTimer);
@@ -88,7 +88,7 @@ void UPMPerformanceMonitor::startTimer()
     m_timer->start();
 }
 
-void UPMPerformanceMonitor::stopTimer()
+void UCPerformanceMonitor::stopTimer()
 {
     int singleFrameThreshold = 50;
     int multipleFrameThreshold = 10;

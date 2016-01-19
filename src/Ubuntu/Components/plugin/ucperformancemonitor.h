@@ -16,8 +16,8 @@
  * Author: Florian Boucault <florian.boucault@canonical.com>
  */
 
-#ifndef UPMPERFORMANCE_MONITOR_H
-#define UPMPERFORMANCE_MONITOR_H
+#ifndef UCPERFORMANCE_MONITOR_H
+#define UCPERFORMANCE_MONITOR_H
 
 #include <QtCore/QObject>
 #include <QtCore/QSharedPointer>
@@ -25,13 +25,13 @@
 #include <QtCore/QLoggingCategory>
 #include <QtQuick/QQuickWindow>
 
-class UPMPerformanceMonitor : public QObject
+class UCPerformanceMonitor : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit UPMPerformanceMonitor(QObject* parent = 0);
-    ~UPMPerformanceMonitor();
+    explicit UCPerformanceMonitor(QObject* parent = 0);
+    ~UCPerformanceMonitor();
 
 private Q_SLOTS:
     void onApplicationStateChanged(Qt::ApplicationState state);
@@ -51,4 +51,4 @@ private:
 
 Q_DECLARE_LOGGING_CATEGORY(ucPerformance)
 
-#endif // UPMPERFORMANCE_MONITOR_H
+#endif // UCPERFORMANCE_MONITOR_H
