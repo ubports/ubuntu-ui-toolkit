@@ -25,6 +25,7 @@
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlContext>
 #include "upmrenderingtimes.h"
+#include "upmperformancemonitor.h"
 
 void UbuntuPerformanceMetricsPlugin::registerTypeVersion(const char *uri, int major, int minor)
 {
@@ -47,4 +48,5 @@ void UbuntuPerformanceMetricsPlugin::initializeEngine(QQmlEngine *engine, const 
     QQmlContext* context = engine->rootContext();
     QByteArray performanceOverlay = qgetenv("PERFORMANCE_OVERLAY");
     context->setContextProperty("performanceOverlayEnabled", QVariant(!performanceOverlay.isEmpty()));
+    context->setContextProperty("performanceMonitor", new UPMPerformanceMonitor);
 }

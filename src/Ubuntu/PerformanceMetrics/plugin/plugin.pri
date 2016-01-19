@@ -10,7 +10,8 @@ SOURCES += \
     $$PWD/upmtexturefromimage.cpp \
     $$PWD/upmrenderingtimes.cpp \
     $$PWD/upmcpuusage.cpp \
-    $$PWD/rendertimer.cpp
+    $$PWD/rendertimer.cpp \
+    $$PWD/upmperformancemonitor.cpp
 
 HEADERS += \
     $$PWD/upmplugin.h \
@@ -18,7 +19,8 @@ HEADERS += \
     $$PWD/upmtexturefromimage.h \
     $$PWD/upmrenderingtimes.h \
     $$PWD/upmcpuusage.h \
-    $$PWD/rendertimer.h
+    $$PWD/rendertimer.h \
+    $$PWD/upmperformancemonitor.h
 
 contains(QT_CONFIG, opengles2) {
     CONFIG += egl
