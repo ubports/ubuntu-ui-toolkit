@@ -334,5 +334,5 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     registerWindowContextProperty();
 
     // register performance monitor
-    context->setContextProperty("performanceMonitor", new UCPerformanceMonitor);
+    context->setContextProperty("performanceMonitor", new UCPerformanceMonitor(engine));
 }
