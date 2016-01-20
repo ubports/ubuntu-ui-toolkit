@@ -1,6 +1,6 @@
 TEMPLATE = subdirs
 
-SUBDIRS += Gallery.pro po
+SUBDIRS += po ubuntu-ui-toolkit-gallery-click.pro
 
 filetypes = qml png svg js jpg qmlproject desktop
 

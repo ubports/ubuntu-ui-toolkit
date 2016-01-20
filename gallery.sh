@@ -17,8 +17,9 @@
 
 if [ "$1" == "--autopilot" ]
 then
-	examples/ubuntu-ui-toolkit-gallery/gallery -testability &
+	tests/Gallery/gallery -testability &
 	autopilot vis
 else
-	examples/ubuntu-ui-toolkit-gallery/gallery $@
+	tests/Gallery/gallery $@
+
 fi
