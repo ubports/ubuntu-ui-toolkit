@@ -45,6 +45,9 @@ public:
 
     UCPopupContext* actionContext() const;
 
+    // QQmlParserStatus interface
+    virtual void componentComplete() override;
+
 Q_SIGNALS:
     void applicationNameChanged(QString applicationName);
     void anchorToKeyboardChanged(bool anchorToKeyboard);
