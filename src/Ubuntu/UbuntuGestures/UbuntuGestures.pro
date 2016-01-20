@@ -23,7 +23,7 @@ HEADERS += candidateinactivitytimer.h \
            pool.h \
            ucswipearea_p.h \
            ucswipearea_p_p.h \
-           damper.h \
+           damper_p.h \
 
 
 SOURCES += candidateinactivitytimer.cpp \

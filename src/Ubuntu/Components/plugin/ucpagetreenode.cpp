@@ -124,7 +124,6 @@ void UCPageTreeNodePrivate::updatePageTree()
 {
     Q_Q(UCPageTreeNode);
     q->setParentNode(getParentPageTreeNode());
-    dumpNodeTree();
 }
 
 
@@ -165,8 +164,7 @@ UCPageTreeNode *UCPageTreeNodePrivate::getParentPageTreeNode()
  * Directly updates the activeBinding property. Is used as
  * callback to support qml style bindings that can be overriden
  */
-void UCPageTreeNodePrivate::_q_activeBinding(bool active)
-{
+void UCPageTreeNodePrivate::_q_activeBinding(bool active{
     if (m_active == active)
         return;
 
@@ -414,7 +412,6 @@ void UCPageTreeNode::setIsLeaf(bool isLeaf)
 
     //notify all our parent nodes that we are the leaf
     d->updateParentLeafNode();
-    dumpNodeTree();
 }
 
 /*!
@@ -493,8 +490,6 @@ void UCPageTreeNode::componentComplete()
 {
     UCStyledItemBase::componentComplete();
     d_func()->updatePageTree();
-
-    dumpNodeTree();
 }
 
 void UCPageTreeNode::dumpNodeTree()

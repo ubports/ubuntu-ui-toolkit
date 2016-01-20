@@ -5,6 +5,7 @@
 
 class UCMainViewBasePrivate;
 class UCActionManager;
+class UCPopupContext;
 class UCAction;
 
 class UCMainViewBase : public UCPageTreeNode
@@ -16,7 +17,8 @@ class UCMainViewBase : public UCPageTreeNode
     Q_PROPERTY(QColor backgroundColor READ backgroundColor WRITE setBackgroundColor NOTIFY backgroundColorChanged)
     Q_PROPERTY(QColor footerColor READ footerColor WRITE setFooterColor NOTIFY footerColorChanged)
     Q_PROPERTY(QQmlListProperty<UCAction> actions READ actions)
-    Q_PROPERTY(UCActionManager* actionManager READ actionManager)
+    Q_PROPERTY(UCActionManager* actionManager READ actionManager NOTIFY actionManagerChanged)
+    Q_PROPERTY(UCPopupContext* actionContext READ actionContext NOTIFY actionContextChanged)
 
 public:
     UCMainViewBase(QQuickItem *parent = nullptr);
@@ -41,18 +43,24 @@ public:
 
     UCActionManager *actionManager() const;
 
+    UCPopupContext* actionContext() const;
+
 Q_SIGNALS:
     void applicationNameChanged(QString applicationName);
     void anchorToKeyboardChanged(bool anchorToKeyboard);
-    void headerColorChanged(QColor headerColor);
-    void backgroundColorChanged(QColor backgroundColor);
-    void footerColorChanged(QColor footerColor);
+    void headerColorChanged(const QColor &headerColor);
+    void backgroundColorChanged(const QColor &backgroundColor);
+    void footerColorChanged(const QColor &footerColor);
+    void actionManagerChanged(UCActionManager* actionManager);
+    void actionContextChanged(UCPopupContext* actionContext);
 
 protected:
     UCMainViewBase(UCMainViewBasePrivate &dd, QQuickItem *parent);
 
 private:
     Q_DECLARE_PRIVATE(UCMainViewBase)
+    UCActionManager* m_actionManager;
+    UCPopupContext* m_actionContext;
 };
 
 #endif // UCMAINVIEWBASE_H
