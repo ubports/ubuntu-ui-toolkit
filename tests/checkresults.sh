@@ -61,5 +61,6 @@ for i in $*; do
 done
 
 if [ $FAILURES -ne 0 ]; then
+    echo Found $FAILURES failures including warnings.
     exit $FAILURES
 fi
