@@ -38,8 +38,7 @@ Palette {
         backgroundText: UbuntuColors.blue
         base: UbuntuColors.ash
         baseText: UbuntuColors.blue
-        field: "#FFFFFF"
-        foreground: UbuntuColors.silk
+        foreground: Qt.lighter(UbuntuColors.ash)
         foregroundText: UbuntuColors.blue
     }
 

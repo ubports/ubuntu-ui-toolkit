@@ -39,7 +39,7 @@ Palette {
         backgroundText: UbuntuColors.blue
         base: UbuntuColors.ash
         baseText:UbuntuColors.blue
-        foreground: UbuntuColors.slate
+        foreground: Qt.darker(UbuntuColors.ash)
         foregroundText: UbuntuColors.blue
     }
 

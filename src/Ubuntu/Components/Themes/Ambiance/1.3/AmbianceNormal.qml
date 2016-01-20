@@ -25,6 +25,8 @@ PaletteValues {
     backgroundTertiaryText: UbuntuColors.ash
     base: UbuntuColors.silk
     baseText: UbuntuColors.slate
+    focus: UbuntuColors.orange
+    focusText: "#FFFFFF"
     foreground: UbuntuColors.porcelain
     foregroundText: UbuntuColors.jet
     raised: "#FFFFFF"
@@ -33,9 +35,9 @@ PaletteValues {
     overlay: "#FFFFFF"
     overlayText: UbuntuColors.slate
     overlaySecondaryText: UbuntuColors.silk
-    field: UbuntuColors.porcelain
+    field: "#FFFFFF"
     fieldText: UbuntuColors.jet
-    selection: Qt.rgba(UbuntuColors.orange.r, UbuntuColors.orange.g, UbuntuColors.orange.b, 0.2)
+    selection: Qt.rgba(UbuntuColors.blue.r, UbuntuColors.blue.g, UbuntuColors.blue.b, 0.2)
     selectionText: UbuntuColors.jet
     positive: UbuntuColors.green
     positiveText: "#FFFFFF"

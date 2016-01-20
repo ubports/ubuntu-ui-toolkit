@@ -811,7 +811,7 @@ Ubuntu.StyledItem {
         }
         // hint is shown till user types something in the field
         visible: (editor.text == "") && !editor.inputMethodComposing
-        color: theme.palette.normal.base
+        color: theme.palette.normal.baseText
         font: editor.font
         elide: Text.ElideRight
         wrapMode: Text.WordWrap
