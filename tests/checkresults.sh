@@ -17,8 +17,6 @@
 # Author: Christian Dywan <christian.dywan@canonical.com>
 ################################################################################
 
-. `dirname $0`/../build_paths.inc
-
 FAILURES=0
 for i in $*; do
     _XML=$i
@@ -45,22 +43,23 @@ for i in $*; do
 
     WARNINGS=$(grep -c -e 'qwarn' $_XML)
     ERRORS=$(grep -c -e 'result="fail"' $_XML)
-    if [ $WARNINGS -ne 0 ]; then
+    if [ $ERRORS -ne 0 ]; then
+      echo "Error: $ERRORS errors in $_TESTNAME ($WARNINGS warnings)"
+      ((FAILURES+=$ERRORS))
+      ((FAILURES+=$WARNINGS))
+    elif [ $WARNINGS -ne 0 ]; then
       if [[ $EXCEPTIONS == *$_TESTNAME* ]]; then
         echo "FIXME: $WARNINGS warnings in $_TESTNAME - Known problematic test"
       else
         echo "Error: $WARNINGS warnings in $_TESTNAME"
-        ((FAILURES+=1))
+        ((FAILURES+=$WARNINGS))
       fi
-    elif [ $ERRORS -ne 0 ]; then
-      echo "Error: $ERRORS errors in $_TESTNAME ($WARNINGS warnings)"
-      ((FAILURES+=1))
     elif [[ $EXCEPTIONS == *$_TESTNAME* ]]; then
       echo Woot! Known problematic test $_TESTNAME did pass afterall!
-      echo '  ' Consider removing $_TESTNAME from EXCEPTIONS in $0
+      echo '  ' Consider removing $_TESTNAME from EXCEPTIONS in ${0#$(pwd)/}
     fi
 done
 
 if [ $FAILURES -ne 0 ]; then
-    exit 666
+    exit $FAILURES
 fi
