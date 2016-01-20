@@ -95,7 +95,7 @@ class QQuickListViewTestCase(tests.QMLFileAppTestCase):
         objectName = 'testListElement' + str(i)
 
         if i == self.list_view.count:
-           raise ubuntuuitoolkit.ToolkitException(
+            raise ubuntuuitoolkit.ToolkitException(
                 'Example program has no invisible item that is not cached.')
 
         self.assertTrue(self.list_view._is_element_cached(objectName))
@@ -221,7 +221,7 @@ MainView {
         # Click the first element out of view to make sure we are not scrolling
         # to the bottom at once.
         self.assertFalse(
-            self.list_view._is_element_clickable('testListElement9'))
+            self.list_view._is_element_visible('testListElement9'))
 
         self.list_view.click_element('testListElement9')
         self.assertEqual(self.label.text, 'testListElement9')
