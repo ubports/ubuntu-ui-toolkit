@@ -100,13 +100,24 @@ class QQuickListView(_flickable.QQuickFlickable):
                     'List element with objectName "{}" not found.'.format(
                         object_name))
 
-    def _is_element_clickable(self, object_name):
+    def _is_element_cached(self, object_name):
+        """Return the object with the given object name if the element
+           is cached, or None if the element is not cached.
+        """
         try:
             child = self.select_single(objectName=object_name)
         except dbus.StateNotFoundError:
-            # An instance of the element was not (yet) created, so
-            # the element is not clickable.
-            return False
+            return None
+
+        return child
+
+    def _is_element_visible(self, object_name):
+        """Return True if the center of element with the given object name
+           is visible and False otherwise.
+        """
+        child = self._is_element_cached(object_name)
+        if not child:
+            return False;
 
         containers = self._get_containers()
         return self._is_child_visible(child, containers)

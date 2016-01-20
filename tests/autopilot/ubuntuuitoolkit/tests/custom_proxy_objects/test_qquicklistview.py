@@ -67,38 +67,52 @@ class QQuickListViewTestCase(tests.QMLFileAppTestCase):
     def test_qquicklistview_custom_proxy_object(self):
         self.assertIsInstance(self.list_view, ubuntuuitoolkit.QQuickListView)
 
-    def test_click_element(self):
-        self.list_view.click_element('testListElement0')
-        self.assertEqual(self.label.text, 'testListElement0')
+    def _click_element(self, object_name):
+        """Click the element with the given object name and verify
+           that the label text was updated.
+        """
+        self.list_view.click_element(object_name)
+        self.assertEqual(self.label.text, object_name)
 
-    def test_click_element_outside_view_after(self):
+    def test_click_element_in_view(self):
+        self.assertTrue(self.list_view._is_element_visible('testListElement0'))
+        self._click_element('testListElement0')
+
+    def test_click_cached_element_outside_view_after(self):
         # Click the first element out of view to make sure we are not scrolling
         # towards the end at once.
-        self.assertFalse(
-            self.list_view._is_element_clickable('testListElement5'))
+        i = 0
+        while i < self.list_view.count:
+            objectName = 'testListElement' + str(i)
+            if not self.list_view._is_element_visible(objectName):
+                break
+            i = i + 1
 
-        self.list_view.click_element('testListElement5')
-        self.assertEqual(self.label.text, 'testListElement5')
+        # _is_element_visible() checks that the center of the element is not
+        # visible. To make sure the element is fully invisible, take the
+        # next one.
+        i = i + 1
+        objectName = 'testListElement' + str(i)
+
+        if i == self.list_view.count:
+           raise ubuntuuitoolkit.ToolkitException(
+                'Example program has no invisible item that is not cached.')
+
+        self.assertTrue(self.list_view._is_element_cached(objectName))
+        self._click_element(objectName)
 
     def test_click_element_outside_view_before(self):
         self.list_view.click_element('testListElement9')
 
-        # Click the first element out of view to make sure we are not scrolling
-        # towards the beginning at once.
         self.assertFalse(
-            self.list_view._is_element_clickable('testListElement4'))
+            self.list_view._is_element_visible('testListElement4'))
 
-        self.list_view.click_element('testListElement4')
-        self.assertEqual(self.label.text, 'testListElement4')
+        self._click_element('testListElement4')
 
-    def test_click_element_not_created_at_start_after(self):
+    def test_click_uncached_element_outside_view_after(self):
         objectName = 'testListElement19'
-        self.assertRaises(
-            dbus.StateNotFoundError,
-            self.list_view.select_single,
-            objectName=objectName)
-        self.list_view.click_element(objectName)
-        self.assertEqual(self.label.text, 'testListElement19')
+        self.assertFalse(self.list_view._is_element_cached(objectName))
+        self._click_element(objectName)
 
     def test_click_element_from_first_page_deleted_when_swiping_forward(self):
         """Test that no more swiping is done after finding the element.
@@ -114,20 +128,18 @@ class QQuickListViewTestCase(tests.QMLFileAppTestCase):
         self.list_view.click_element('testListElement19')
 
         objectName = 'testListElement1'
-        self.assertRaises(
-            dbus.StateNotFoundError,
-            self.list_view.select_single,
-            objectName=objectName)
+        self.assertFalse(self.list_view._is_element_cached(objectName))
+
         with mock.patch.object(
                 self.list_view,
                 'swipe_to_show_more_below') as mock_swipe_down:
             with mock.patch.object(
                     self.list_view,
                     'swipe_to_show_more_right') as mock_swipe_right:
-                self.list_view.click_element(objectName)
+                self._click_element(objectName)
+
         self.assertFalse(mock_swipe_down.called)
         self.assertFalse(mock_swipe_right.called)
-        self.assertEqual(self.label.text, 'testListElement1')
 
     def test_click_unexisting_element(self):
         error = self.assertRaises(
