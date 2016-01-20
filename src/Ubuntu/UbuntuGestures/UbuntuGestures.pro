@@ -34,4 +34,5 @@ SOURCES += candidateinactivitytimer.cpp \
            touchregistry.cpp \
            unownedtouchevent.cpp \
            ucswipearea.cpp \
-           damper.cpp \
+           damper.cpp
+
