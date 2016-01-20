@@ -33,6 +33,7 @@ for i in $*; do
                 tst_qquick_image_extension \
                 tst_page.qml \
                 tst_toolbar.qml \
+                tst_label13.qml \
                 tst_tabs.qml \
                 tst_focus.qml \
                 tst_pickerpanel.qml \
