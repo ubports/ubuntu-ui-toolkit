@@ -1,17 +1,6 @@
 TEMPLATE = subdirs
 
-#load Ubuntu specific features
-load(ubuntu-click)
-
-# specify the manifest file, this file is required for click
-# packaging and for the IDE to create runconfigurations
-UBUNTU_MANIFEST_FILE=manifest.json.in
-
-# specify translation domain, this must be equal with the
-# app name in the manifest file
-UBUNTU_TRANSLATION_DOMAIN="com.ubuntu.developer.bzoltan.ubuntu-ui-toolkit-gallery"
-
-SUBDIRS += po
+SUBDIRS += po ubuntu-ui-toolkit-gallery-click.pro
 
 filetypes = qml png svg js jpg qmlproject desktop
 
