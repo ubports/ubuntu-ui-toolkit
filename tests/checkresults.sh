@@ -39,6 +39,7 @@ for i in $*; do
                 tst_picker.qml \
                 tst_listitems_itemselector.qml \
                 tst_tabs_with_repeater.deprecated_toolbar.qml \
+                tst_inversemousearea \
                 '
 
     WARNINGS=$(grep -c -e 'qwarn' $_XML)
