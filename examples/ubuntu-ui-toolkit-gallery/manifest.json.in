@@ -8,7 +8,6 @@
             "desktop": "ubuntu-ui-toolkit-gallery.desktop"
         }
     },
-    "installed-size": "1337",
     "maintainer": "Zoltán Balogh <zoltan.balogh@ubuntu.com>",
     "name": "com.ubuntu.developer.bzoltan.ubuntu-ui-toolkit-gallery",
     "title": "Ubuntu UI Toolkit Gallery",
