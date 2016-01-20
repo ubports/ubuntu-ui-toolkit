@@ -42,7 +42,7 @@ ActionSelectionPopover {
     /*!
       The foreground color (icon and text) of actions in the panel.
      */
-    property color foregroundColor: theme.palette.selected.backgroundText
+    property color foregroundColor: theme.palette.normal.backgroundText
 
     property bool square: true
     callerMargin: -units.gu(1) + units.dp(4)

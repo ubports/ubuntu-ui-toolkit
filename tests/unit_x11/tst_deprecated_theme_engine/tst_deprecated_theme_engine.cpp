@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2015 Canonical Ltd.
+ * Copyright 2013-2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -21,6 +21,7 @@
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlComponent>
 #include "ucdeprecatedtheme.h"
+#include "uctheme.h"
 #include "uctestcase.h"
 #include <private/qquicktext_p.h>
 
@@ -68,10 +69,18 @@ class tst_UCDeprecatedTheme : public QObject
 private:
     QString m_xdgDataPath;
 
+    UCDeprecatedTheme *instance(QQmlEngine &engine)
+    {
+        return engine.rootContext()->contextProperty("Theme").value<UCDeprecatedTheme*>();
+    }
+    void initDeprecatedTheme(QQmlEngine &engine)
+    {
+        UCDeprecatedTheme::registerToContext(engine.rootContext());
+    }
+
 private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
-    void testInstance();
     void testNameDefault();
     void testNameSet();
     void testCreateStyleComponent();
@@ -97,24 +106,21 @@ void tst_UCDeprecatedTheme::cleanupTestCase()
     qputenv("XDG_DATA_DIRS", m_xdgDataPath.toLocal8Bit());
 }
 
-void tst_UCDeprecatedTheme::testInstance()
-{
-    UCDeprecatedTheme::instance();
-}
-
 void tst_UCDeprecatedTheme::testNameDefault()
 {
-    UCDeprecatedTheme theme;
-    QCOMPARE(theme.name(), QString("Ubuntu.Components.Themes.Ambiance"));
+    QQmlEngine engine;
+    initDeprecatedTheme(engine);
+    QCOMPARE(instance(engine)->name(), QString("Ubuntu.Components.Themes.Ambiance"));
 }
 
 void tst_UCDeprecatedTheme::testNameSet()
 {
     QTest::ignoreMessage(QtWarningMsg, "Theme not found: \"MyBeautifulTheme\"");
 
-    UCDeprecatedTheme theme;
-    theme.setName("MyBeautifulTheme");
-    QCOMPARE(theme.name(), QString("MyBeautifulTheme"));
+    QQmlEngine engine;
+    initDeprecatedTheme(engine);
+    instance(engine)->setName("MyBeautifulTheme");
+    QCOMPARE(instance(engine)->name(), QString("MyBeautifulTheme"));
 }
 
 void tst_UCDeprecatedTheme::testCreateStyleComponent()
@@ -217,8 +223,9 @@ void tst_UCDeprecatedTheme::testNoImportPathSet()
     qputenv("XDG_DATA_DIRS", "");
     qputenv("QML2_IMPORT_PATH", "");
 
-    UCDeprecatedTheme theme;
-    QCOMPARE(theme.name(), QString("Ubuntu.Components.Themes.Ambiance"));
+    QQmlEngine engine;
+    initDeprecatedTheme(engine);
+    QCOMPARE(instance(engine)->name(), QString("Ubuntu.Components.Themes.Ambiance"));
 }
 
 void tst_UCDeprecatedTheme::testBogusImportPathSet()
@@ -230,8 +237,9 @@ void tst_UCDeprecatedTheme::testBogusImportPathSet()
     qputenv("XDG_DATA_DIRS", "");
     qputenv("QML2_IMPORT_PATH", "/no/plugins/here");
 
-    UCDeprecatedTheme theme;
-    QCOMPARE(theme.name(), QString("Ubuntu.Components.Themes.Ambiance"));
+    QQmlEngine engine;
+    initDeprecatedTheme(engine);
+    QCOMPARE(instance(engine)->name(), QString("Ubuntu.Components.Themes.Ambiance"));
 }
 
 void tst_UCDeprecatedTheme::testMultipleImportPathsSet()

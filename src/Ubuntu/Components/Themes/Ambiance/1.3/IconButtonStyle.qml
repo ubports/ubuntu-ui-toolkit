@@ -26,7 +26,9 @@ Item {
     /*!
       The color of the icons.
      */
-    property color foregroundColor: "#808080"
+    property color foregroundColor: styledItem.enabled
+                                    ? theme.palette.normal.backgroundText
+                                    : theme.palette.inactive.backgroundText
 
     /*!
       The background color of the button.
@@ -59,7 +61,6 @@ Item {
         height: iconButtonStyle.iconHeight
         source: styledItem.iconSource
         color: iconButtonStyle.foregroundColor
-        opacity: styledItem.enabled ? 1.0 : 0.3
     }
 
     Component {
@@ -67,7 +68,6 @@ Item {
         Label {
             objectName: styledItem.objectName + "_label"
             color: iconButtonStyle.foregroundColor
-            opacity: styledItem.enabled ? 1.0 : 0.3
             text: styledItem.text
             textSize: Label.XxSmall
         }

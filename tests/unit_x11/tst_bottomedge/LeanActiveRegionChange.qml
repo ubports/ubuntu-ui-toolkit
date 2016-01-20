@@ -30,7 +30,7 @@ Item {
         contentComponent: Rectangle {
             width: bottomEdge.width
             height: bottomEdge.height
-            color: UbuntuColors.lightGrey
+            color: UbuntuColors.silk
         }
 
         BottomEdgeRegion {
