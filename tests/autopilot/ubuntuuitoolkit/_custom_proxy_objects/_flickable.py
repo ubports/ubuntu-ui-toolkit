@@ -228,19 +228,19 @@ class QQuickFlickable(Scrollable):
         # they could trigger edge gestures or resize windows.
         if direction == 'below':
             start_y = bottom - self.margin_to_swipe_from_bottom
-            stop_y = start_y + (top - start_y) // rate * rate
+            stop_y = start_y + (top - start_y) / rate * rate
 
         elif direction == 'above':
             start_y = top + self.margin_to_swipe_from_top
-            stop_y = start_y + (bottom - start_y) // rate * rate
+            stop_y = start_y + (bottom - start_y) / rate * rate
 
         elif direction == 'left':
             start_x = leftmost + self.margin_to_swipe_from_left
-            stop_x = start_x + (rightmost - start_x) // rate * rate
+            stop_x = start_x + (rightmost - start_x) / rate * rate
 
         elif direction == 'right':
             start_x = rightmost - self.margin_to_swipe_from_right
-            stop_x = start_x + (leftmost - start_x) // rate * rate
+            stop_x = start_x + (leftmost - start_x) / rate * rate
 
         else:
             raise _common.ToolkitException(
