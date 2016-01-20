@@ -227,6 +227,14 @@ PopupBase {
                 right: parent.right
             }
             height: childrenRect.height
+
+            // put the PopupContext inside the container to save one step
+            // in the context lookup
+            PopupContext {
+                id: popupContext
+                objectName: popover.objectName + "PopupContext"
+                active: foreground.visible
+            }
         }
 
         onWidthChanged: internal.updatePosition()

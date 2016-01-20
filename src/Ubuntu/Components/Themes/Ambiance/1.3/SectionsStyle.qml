@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -25,11 +25,11 @@ Item {
 
     enabled: styledItem.enabled
     opacity: enabled ? 1.0 : 0.5
+
     /*!
       The foreground color of unselected sections.
      */
-    //FIXME: hardcoded color
-    property color sectionColor: "#888888"//theme.palette.selected.backgroundText
+    property color sectionColor: theme.palette.normal.backgroundText
 
     /*!
       The foreground color of underline rectangle of unselected sections.

@@ -35,7 +35,7 @@ import Ubuntu.Components 1.3
                 width: label.width + units.gu(4)
                 height: parent.height
                 Rectangle {
-                    color: UbuntuColors.darkGrey
+                    color: UbuntuColors.slate
                     opacity: 0.1
                     anchors.fill: parent
                     visible: button.pressed

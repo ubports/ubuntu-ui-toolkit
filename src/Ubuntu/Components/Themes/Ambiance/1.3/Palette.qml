@@ -19,25 +19,33 @@ import Ubuntu.Components 1.3
 import Ubuntu.Components.Themes 1.3
 
 Palette {
-    normal {
-        background: "#FFFFFF"
-        backgroundText: "#81888888"
-        base: Qt.rgba(0, 0, 0, 0.1)
-        baseText: UbuntuColors.lightGrey
-        foreground: UbuntuColors.lightGrey
-        foregroundText: "#FFFFFF"
-        overlay: "#FDFDFD"
-        overlayText: UbuntuColors.lightGrey
-        field: "lightgray"
-        fieldText: UbuntuColors.darkGrey
+    normal: AmbianceNormal {}
+    inactive: AmbianceNormal {
+        field: UbuntuColors.porcelain;
+        // inactive is 30% transparent normal
+        Component.onCompleted: {
+            for (var p in normal) {
+                // skip objectName and all change signals
+                if (p == "objectName" || p == "field" || p.indexOf("Changed") > 0) continue;
+                inactive[p] = Qt.rgba(normal[p].r, normal[p].g, normal[p].b, 0.3);
+            }
+        }
     }
-    selected {
-        background: Qt.rgba(0, 0, 0, 0.05)
-        backgroundText: UbuntuColors.darkGrey
-        selection: selected.foreground
-        foreground: Qt.rgba(UbuntuColors.blue.r, UbuntuColors.blue.g, UbuntuColors.blue.b, 0.2)
-        foregroundText: UbuntuColors.darkGrey
-        field: "#FFFFFF"
-        fieldText: UbuntuColors.darkGrey
+
+    // selected differs from normal in background, base, foreground
+    selected: AmbianceNormal {
+        background: UbuntuColors.porcelain
+        backgroundText: UbuntuColors.blue
+        base: UbuntuColors.ash
+        baseText: UbuntuColors.blue
+        foreground: UbuntuColors.silk
+        foregroundText: UbuntuColors.blue
+    }
+
+    // selected differs from normal in background, base, foreground
+    selectedInactive: AmbianceNormal {
+        background: UbuntuColors.porcelain
+        base: UbuntuColors.porcelain
+        foreground: UbuntuColors.porcelain
     }
 }

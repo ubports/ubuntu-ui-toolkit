@@ -31,6 +31,8 @@ Item {
         height: icon.height + label.height + label.anchors.topMargin
         opacity: styledItem.enabled ? 1.0 : 0.3
 
+        // FIXME: is there a reason we are still using styledItem.iconSource instead of iconName
+        // so we coudl use the Icon?
         Image {
             id: icon
             anchors {
@@ -53,6 +55,9 @@ Item {
             width: paintedWidth
             text: styledItem.text
             textSize: Label.XSmall
+            color: styledItem.enabled
+                   ? theme.palette.normal.raisedText
+                   : theme.palette.inactive.raisedText
         }
     }
 

@@ -25,14 +25,22 @@ Item {
     // FIXME: needs type checking in themes to define the proper type to be used
     // if color type is used, alpha value gets lost
 
-    property color color: (styledItem.activeFocus || styledItem.highlighted) ? theme.palette.selected.fieldText : theme.palette.normal.fieldText
-    property color selectedTextColor: theme.palette.selected.foregroundText
-    property color selectionColor: theme.palette.selected.foreground
+    property color color: styledItem.enabled
+                          ? ((styledItem.activeFocus || styledItem.highlighted)
+                            ? theme.palette.selected.fieldText
+                            : theme.palette.normal.fieldText)
+                          : theme.palette.inactive.fieldText
+    property color selectedTextColor: styledItem.enabled ? theme.palette.selected.selectionText : theme.palette.inactive.selectionText
+    property color selectionColor: styledItem.enabled ? theme.palette.selected.selection : theme.palette.inactive.selection
     /*!
       Background fill color
       */
-    property color backgroundColor: (styledItem.activeFocus || styledItem.highlighted) ? theme.palette.selected.field : theme.palette.normal.field
-    property color errorColor: UbuntuColors.orange
+    property color backgroundColor: styledItem.enabled
+                                        ? ((styledItem.activeFocus || styledItem.highlighted)
+                                            ? theme.palette.selected.field
+                                            : theme.palette.normal.field)
+                                        : theme.palette.inactive.field
+    property color errorColor: styledItem.enabled ? theme.palette.normal.negative : theme.palette.inactive.negative
 
     /*!
       Spacing between the frame and the text editor area

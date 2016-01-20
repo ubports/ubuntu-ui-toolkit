@@ -1103,11 +1103,11 @@ UCSlotsAttached::UCSlotsAttached(QObject *object)
     \li * SlotsLayout.Trailing: the slot will be positioned in
         the trailing slots, i.e. the one towards the end of the
         layout.
-    \li * SlotsLayout.End: the slot will be positioned at
+    \li * SlotsLayout.Last: the slot will be positioned at
         the end of the layout.
     \endlist
 
-    \l {ProgressionSlot}, for instance, has its position set to SlotsLayout.End,
+    \l {ProgressionSlot}, for instance, has its position set to SlotsLayout.Last,
     in order to make sure the chevron is always displayed as the last trailing slot.
 
     Whenever there are more slots with the same \l {SlotsLayout::position},

@@ -48,12 +48,24 @@ import QtQuick 2.4
 */
 QtObject {
     /*!
-       Color palette to use when the widget is not in any particular state.
+       Color palette to use when the widget is in the default state.
     */
     property PaletteValues normal: PaletteValues{}
+
+    /*!
+       Color palette to use when the widget is in the inactive (disabled) state.
+    */
+    property PaletteValues inactive: PaletteValues{}
+
     /*!
        Color palette to use when the widget is selected, for example when
        a tab is the current one.
     */
     property PaletteValues selected: PaletteValues{}
+
+    /*!
+      Color palette values to use when the widget is selected and inactive.
+      \since Ubuntu.Components.Themes 1.3
+      */
+    property PaletteValues selectedInactive: PaletteValues{}
 }

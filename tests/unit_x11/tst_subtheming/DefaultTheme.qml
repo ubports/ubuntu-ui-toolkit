@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,11 +15,14 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components.Themes.Ambiance 1.2 as Ambiance
+import Ubuntu.Components 1.3
 
-Ambiance.ListItemStyle {
-    // 20% lighter that background color
-    trailingPanelColor: Qt.lighter(theme.palette.normal.background, 1.2)
-    // 40% lighter than foreground color
-    trailingForegroundColor: Qt.lighter(theme.palette.normal.foreground, 1.4)
+Label {
+    id: label
+    width: 400
+    height: width
+    text: "HOLA"
+
+    Label {  }
+    Button {  }
 }
