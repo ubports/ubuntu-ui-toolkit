@@ -164,7 +164,8 @@ UCPageTreeNode *UCPageTreeNodePrivate::getParentPageTreeNode()
  * Directly updates the activeBinding property. Is used as
  * callback to support qml style bindings that can be overriden
  */
-void UCPageTreeNodePrivate::_q_activeBinding(bool active{
+void UCPageTreeNodePrivate::_q_activeBinding(bool active)
+{
     if (m_active == active)
         return;
 
