@@ -79,6 +79,21 @@ void UCMainViewBasePrivate::_q_footerColorBinding(const QColor &col)
     Q_EMIT q->footerColorChanged(col);
 }
 
+void UCMainViewBasePrivate::doAutoTheme()
+{
+    Q_Q(UCMainViewBase);
+    UCTheme *theme = q->getTheme();
+    if (m_backgroundColor != theme->getPaletteColor("normal", "background")) {
+        QString themeName = m_backgroundColor.lightnessF() >= 0.85 ? QStringLiteral("Ambiance")
+                                                                   : QStringLiteral("SuruDark");
+
+        // only change the theme if the current one is a system one.
+        if (theme->name().startsWith(QStringLiteral("Ubuntu.Components.Themes"))) {
+            q->getTheme()->setName(QString(QStringLiteral("Ubuntu.Components.Themes.%1")).arg(themeName));
+        }
+    }
+}
+
 UCMainViewBase::UCMainViewBase(QQuickItem *parent)
     : UCPageTreeNode(*(new UCMainViewBasePrivate), parent)
 {
@@ -218,17 +233,10 @@ void UCMainViewBase::setBackgroundColor(QColor backgroundColor)
 
       Qt bug: https://bugreports.qt-project.org/browse/QTBUG-11712
      */
-    if (d->m_backgroundColor != getTheme()->getPaletteColor("normal", "background")) {
-        QString themeName = d->m_backgroundColor.lightnessF() >= 0.85 ? QStringLiteral("Ambiance")
-                                                                   : QStringLiteral("SuruDark");
-
-        // only change the theme if the current one is a system one.
-        if (getTheme()->name().startsWith(QStringLiteral("Ubuntu.Components.Themes"))) {
-            getTheme()->setName(QString(QStringLiteral("Ubuntu.Components.Themes.%1")).arg(themeName));
-        }
-    }
-
     Q_EMIT backgroundColorChanged(backgroundColor);
+
+    //do NOT change the order here, the signal HAS to be emitted first
+    d->doAutoTheme();
 }
 
 /*!
@@ -292,6 +300,8 @@ UCPopupContext *UCMainViewBase::actionContext() const
 
 void UCMainViewBase::componentComplete()
 {
+    Q_D(UCMainViewBase);
     UCPageTreeNode::componentComplete();
-    d_func()->setStyleName(QStringLiteral("MainViewStyle"));
+    d->setStyleName(QStringLiteral("MainViewStyle"));
+    d->doAutoTheme();
 }

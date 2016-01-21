@@ -40,6 +40,7 @@ public:
 
     void _q_headerColorBinding (const QColor &col);
     void _q_footerColorBinding (const QColor &col);
+    void doAutoTheme ();
 
     QString m_applicationName;
     QColor m_headerColor;
