@@ -107,7 +107,8 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/ucpagetreenode.h \
     $$PWD/ucpagetreenode_p.h \
     $$PWD/ucmainviewbase.h \
-    $$PWD/ucmainviewbase_p.h
+    $$PWD/ucmainviewbase_p.h \
+    $$PWD/ucperformancemonitor.h
 
 SOURCES += $$PWD/plugin.cpp \
     $$PWD/uctheme.cpp \
@@ -178,7 +179,8 @@ SOURCES += $$PWD/plugin.cpp \
     $$PWD/ucbottomedgestyle.cpp \
     $$PWD/ucbottomedgeregion.cpp \
     $$PWD/ucpagetreenode.cpp \
-    $$PWD/ucmainviewbase.cpp
+    $$PWD/ucmainviewbase.cpp \
+    $$PWD/ucperformancemonitor.cpp
 
 # adapters
 SOURCES += $$PWD/adapters/alarmsadapter_organizer.cpp
