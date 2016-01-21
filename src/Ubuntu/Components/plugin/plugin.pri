@@ -107,6 +107,7 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/ucbottomedgeregion.h \
     $$PWD/ucpagetreenode.h \
     $$PWD/ucpagetreenode_p.h \
+    $$PWD/ucperformancemonitor.h \
     $$PWD/privates/listviewextensions.h
 
 SOURCES += $$PWD/plugin.cpp \
@@ -178,6 +179,7 @@ SOURCES += $$PWD/plugin.cpp \
     $$PWD/ucbottomedgestyle.cpp \
     $$PWD/ucbottomedgeregion.cpp \
     $$PWD/ucpagetreenode.cpp \
+    $$PWD/ucperformancemonitor.cpp \
     $$PWD/privates/listviewextensions.cpp
 
 # adapters
