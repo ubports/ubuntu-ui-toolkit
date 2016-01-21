@@ -1,4 +1,8 @@
-ubuntu-ui-toolkit (1.3.1813+16.04-0ubuntu1) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.3.1814+16.04-0ubuntu1) UNRELEASED; urgency=medium
+
+  [ Loïc Molinari ]
+  * Added private items and nodes for the new component styles. 
+    Fixes LP: #1523836
 
   [ Florian Boucault ]
   * Always on performance monitor that logs frames that too long to render.
