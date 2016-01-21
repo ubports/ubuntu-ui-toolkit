@@ -22,6 +22,8 @@
 #include <QObject>
 #include <QtCore/QHash>
 #include <QtCore/QUrl>
+#include <QGuiApplication>
+class QScreen;
 
 class UCUnits : public QObject
 {
@@ -30,11 +32,11 @@ class UCUnits : public QObject
 
 public:
     static UCUnits& instance() {
-        static UCUnits instance;
+        static UCUnits instance(qGuiApp->primaryScreen());
         return instance;
     }
 
-    explicit UCUnits(QObject *parent = 0);
+    explicit UCUnits(QScreen *screen);
     Q_INVOKABLE float dp(float value);
     Q_INVOKABLE float gu(float value);
     QString resolveResource(const QUrl& url);

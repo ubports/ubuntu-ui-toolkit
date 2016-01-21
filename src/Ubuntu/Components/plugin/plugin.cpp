@@ -173,6 +173,56 @@ void UbuntuComponentsPlugin::setWindowContextProperty(QWindow* focusWindow)
     }
 }
 
+void UbuntuComponentsPlugin::registerUnitsContextProperty()
+{
+    QGuiApplication* application = static_cast<QGuiApplication*>(QCoreApplication::instance());
+    QObject::connect(application, &QGuiApplication::screenAdded,
+                     this, &UbuntuComponentsPlugin::attachUnitsInstanceToScreen,
+                     Qt::ConnectionType(Qt::DirectConnection | Qt::UniqueConnection));
+    Q_FOREACH(QScreen *screen, application->screens()) {
+        attachUnitsInstanceToScreen(screen);
+    }
+
+    QObject::connect(application, &QGuiApplication::focusWindowChanged, // window creation event????
+                     this, &UbuntuComponentsPlugin::setUnitsContextProperty,
+                     Qt::ConnectionType(Qt::DirectConnection | Qt::UniqueConnection));
+
+    Q_FOREACH(QWindow *window, application->allWindows()) {
+        setUnitsContextProperty(window);
+    }
+}
+
+void UbuntuComponentsPlugin::attachUnitsInstanceToScreen(QScreen* screen)
+{
+    qDebug() << "Attached Units to Screen;" << screen;
+    screen->setProperty("units", QVariant::fromValue(new UCUnits(screen))); // QScreen will be parent of the UCUnits object
+}
+
+void UbuntuComponentsPlugin::setUnitsContextProperty(QWindow* window)
+{
+    QQuickView* view = qobject_cast<QQuickView*>(window);
+    if (!view) {
+        return;
+    }
+    QQuickItem* rootItem = view->rootObject();
+    if (!rootItem) {
+        return;
+    }
+    QVariant units = window->screen()->property("units");
+    if (!units.isValid()) {
+        qDebug() << "ERROR: no units property found on the QScreen";
+        return;
+    }
+
+    QQmlContext* rootItemContext = QQmlEngine::contextForObject(rootItem);
+    if (rootItemContext) {
+        qDebug() << "Setting context property 'units' on root context" << rootItemContext;
+        rootItemContext->setContextProperty("units", units.value<UCUnits*>());
+    } else {
+        qDebug() << "NO CONTEXT FOR" << view;
+    }
+}
+
 void UbuntuComponentsPlugin::registerTypesToVersion(const char *uri, int major, int minor)
 {
     qmlRegisterType<UCAction>(uri, major, minor, "Action");
@@ -307,11 +357,12 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     // Give the application object access to the engine
     UCApplication::instance().setContext(context);
 
-    context->setContextProperty("units", &UCUnits::instance());
-    ContextPropertyChangeListener *unitsChangeListener =
-        new ContextPropertyChangeListener(context, "units");
-    QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()),
-                     unitsChangeListener, SLOT(updateContextProperty()));
+    registerUnitsContextProperty();
+//    context->setContextProperty("units", &UCUnits::instance());
+//    ContextPropertyChangeListener *unitsChangeListener =
+//        new ContextPropertyChangeListener(context, "units");
+//    QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()),
+//                     unitsChangeListener, SLOT(updateContextProperty()));
 
     // register FontUtils
     context->setContextProperty("FontUtils", &UCFontUtils::instance());

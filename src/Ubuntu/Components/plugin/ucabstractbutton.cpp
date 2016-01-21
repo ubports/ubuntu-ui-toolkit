@@ -140,7 +140,7 @@ void UCAbstractButtonPrivate::_q_mouseAreaPressed()
 void UCAbstractButtonPrivate::_q_mouseAreaClicked()
 {
     // required by the deprecated ListItem module
-    Q_Q(UCAbstractButton);
+    //Q_Q(UCAbstractButton);
     if (!acceptEvents) {
         return;
     }
