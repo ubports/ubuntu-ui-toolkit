@@ -35,6 +35,7 @@
 UCMainViewBasePrivate::UCMainViewBasePrivate()
     : m_actionManager(nullptr),
       m_actionContext(nullptr),
+      m_flags(0),
       m_anchorToKeyboard(false)
 {
 }
