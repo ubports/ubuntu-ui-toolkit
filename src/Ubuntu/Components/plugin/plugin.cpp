@@ -71,13 +71,16 @@
 #include "uclabel.h"
 #include "uclistitemlayout.h"
 #include "ucbottomedgehint.h"
-#include "gestures/ucswipearea.h"
 #include "ucmathutils.h"
 #include "ucbottomedge.h"
 #include "ucbottomedgeregion.h"
 #include "ucbottomedgestyle.h"
 #include "ucpagetreenode.h"
+#include "ucperformancemonitor.h"
 #include "privates/frame.h"
+
+// From UbuntuGestures
+#include "private/ucswipearea_p.h"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -262,6 +265,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCBottomEdge>(uri, 1, 3, "BottomEdge");
     qmlRegisterType<UCBottomEdgeRegion>(uri, 1, 3, "BottomEdgeRegion");
     qmlRegisterType<UCPageTreeNode>(uri, 1, 3, "PageTreeNode");
+    qmlRegisterType<UCPopupContext>(uri, 1, 3, "PopupContext");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
@@ -285,12 +289,9 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     // that can be accessed from any object
     context->setContextProperty("QuickUtils", &QuickUtils::instance());
 
-    // register theme context property
-    UCTheme::registerToContext(context);
+    UCDeprecatedTheme::registerToContext(context);
 
-    UCDeprecatedTheme::instance().registerToContext(context);
-
-    HapticsProxy::instance().setEngine(context->engine());
+    HapticsProxy::instance().setEngine(engine);
 
     context->setContextProperty("i18n", &UbuntuI18n::instance());
     ContextPropertyChangeListener *i18nChangeListener =
@@ -335,4 +336,7 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
             Qt::InvertedLandscapeOrientation);
 
     registerWindowContextProperty();
+
+    // register performance monitor
+    context->setContextProperty("performanceMonitor", new UCPerformanceMonitor(engine));
 }

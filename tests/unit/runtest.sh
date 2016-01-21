@@ -70,7 +70,7 @@ function execute_test_cmd {
     $_CMD $_ARGS 2>&1 | grep -v 'QFontDatabase: Cannot find font directory'
     if [ "x$UITK_TEST_KEEP_RUNNING" != "x1" ]; then
         ${BUILD_DIR}/tests/checkresults.sh $_XML
-        RESULT=$*
+        RESULT=$?
     fi
   else
     echo "Skipped because no DISPLAY available"

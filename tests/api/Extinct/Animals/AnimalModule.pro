@@ -8,7 +8,7 @@ include(plugin/plugin.pri)
 QML_FILES += \
     Andrewsarchus.qml \
     Paratriisodon.qml \
-    gigantophis.qml \
+    Gigantophis.qml \
     test.qml \
     digger.js \
 

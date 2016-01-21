@@ -15,7 +15,7 @@
  *
  */
 
-#include "ucswipearea_p.h"
+#include "ucswipearea_p_p.h"
 
 #include <QQuickWindow>
 #include <QtCore/qmath.h>
@@ -71,19 +71,19 @@ QString touchEventToString(const QTouchEvent *ev)
 
     switch (ev->type()) {
     case QEvent::TouchBegin:
-        message.append("TouchBegin ");
+        message.append(QStringLiteral("TouchBegin "));
         break;
     case QEvent::TouchUpdate:
-        message.append("TouchUpdate ");
+        message.append(QStringLiteral("TouchUpdate "));
         break;
     case QEvent::TouchEnd:
-        message.append("TouchEnd ");
+        message.append(QStringLiteral("TouchEnd "));
         break;
     case QEvent::TouchCancel:
-        message.append("TouchCancel ");
+        message.append(QStringLiteral("TouchCancel "));
         break;
     default:
-        message.append("INVALID_TOUCH_EVENT_TYPE ");
+        message.append(QStringLiteral("INVALID_TOUCH_EVENT_TYPE "));
     }
 
     Q_FOREACH(const QTouchEvent::TouchPoint& touchPoint, ev->touchPoints()) {
@@ -813,10 +813,13 @@ void UCSwipeArea::itemChange(ItemChange change, const ItemChangeData &value)
 
             // FIXME: Handle window->screen() changes (ie window changing screens)
             Q_D(UCSwipeArea);
-            qreal pixelsPerMm = value.window->screen()->physicalDotsPerInch() / 25.4;
-            // FIXME: dpi can be negative lp#1525293
-            if (pixelsPerMm > 0)
-                d->setPixelsPerMm(pixelsPerMm);
+            qreal pixelsPerInch = value.window->screen()->physicalDotsPerInch();
+            if (pixelsPerInch < 0) {
+                // FIXME: dpi can be negative lp#1525293
+                // It can return garbage when run in a XVFB server (Virtual Framebuffer 'fake' X server)
+                pixelsPerInch = 72;
+            }
+            d->setPixelsPerMm(pixelsPerInch / 25.4);
         }
     }
     if (change == ItemVisibleHasChanged) {
@@ -859,7 +862,7 @@ void ActiveTouchesInfo::update(QTouchEvent *event)
 
 QString ActiveTouchesInfo::toString()
 {
-    QString string = "(";
+    QString string = QStringLiteral("(");
 
     {
         QTextStream stream(&string);
@@ -869,7 +872,7 @@ QString ActiveTouchesInfo::toString()
         });
     }
 
-    string.append(")");
+    string.append(QStringLiteral(")"));
 
     return string;
 }

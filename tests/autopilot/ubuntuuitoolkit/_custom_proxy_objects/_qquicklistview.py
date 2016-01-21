@@ -59,9 +59,15 @@ class QQuickListView(_flickable.QQuickFlickable):
     def _find_element(self, object_name, direction=None):
         if direction is None:
             # We don't know where the object is so we start looking for it from
-            # the top.
-            self.swipe_to_top()
-            direction = 'below'
+            # the top or left, depending on the ListView orientation.
+            if self.orientation == 2:
+                # 2 == ListView.Vertical
+                self.swipe_to_top()
+                direction = 'below'
+            else:
+                # orientation == 1 == ListView.Horizontal
+                self.swipe_to_leftmost()
+                direction = 'right'
 
         if direction == 'below':
             fail_condition = lambda: self.atYEnd
@@ -69,6 +75,12 @@ class QQuickListView(_flickable.QQuickFlickable):
         elif direction == 'above':
             fail_condition = lambda: self.atYBeginning
             swipe_method = self.swipe_to_show_more_above
+        elif direction == 'left':
+            fail_condition = lambda: self.atXBeginning
+            swipe_method = self.swipe_to_show_more_left
+        elif direction == 'right':
+            fail_condition = lambda: self.atXEnd
+            swipe_method = self.swipe_to_show_more_right
         else:
             raise _common.ToolkitException(
                 'Invalid direction: {}'.format(direction))
@@ -88,8 +100,25 @@ class QQuickListView(_flickable.QQuickFlickable):
                     'List element with objectName "{}" not found.'.format(
                         object_name))
 
-    def _is_element_clickable(self, object_name):
-        child = self.select_single(objectName=object_name)
+    def _is_element_cached(self, object_name):
+        """Return the object with the given object name if the element
+           is cached, or None if the element is not cached.
+        """
+        try:
+            child = self.select_single(objectName=object_name)
+        except dbus.StateNotFoundError:
+            return None
+
+        return child
+
+    def _is_element_visible(self, object_name):
+        """Return True if the center of element with the given object name
+           is visible and False otherwise.
+        """
+        child = self._is_element_cached(object_name)
+        if not child:
+            return False;
+
         containers = self._get_containers()
         return self._is_child_visible(child, containers)
 

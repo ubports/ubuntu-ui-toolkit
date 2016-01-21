@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -44,14 +44,14 @@ public:
     virtual void itemThemeChanged(UCTheme *, UCTheme*);
     virtual void itemThemeReloaded(UCTheme *);
 
-    UCTheme *getTheme() const;
+    UCTheme *getTheme();
     void setTheme(UCTheme *newTheme, ThemeType type = Custom);
     void resetTheme();
 
     static bool isThemed(QQuickItem *item);
     static QQuickItem *ascendantThemed(QQuickItem *item);
 
-protected:
+private:
     QPointer<UCTheme> theme;
     QQuickItem *themedItem;
     ThemeType themeType;

@@ -19,27 +19,21 @@
 
 #include <QDebug>
 
+Q_LOGGING_CATEGORY(ucActionProxy, "ubuntu.components.ActionProxy", QtMsgType::QtWarningMsg)
+
+#define AP_TRACE(params) qCDebug(ucActionProxy) << params
+
 ActionProxy::ActionProxy()
-    : QObject(0)
-    , globalContext(new UCActionContext)
+    : globalContext(new UCActionContext)
 {
     // for testing purposes
     globalContext->setObjectName("GlobalActionContext");
 }
 ActionProxy::~ActionProxy()
 {
-    // if there is still an active context clear it
-    if (!m_activeContext.isNull()) {
-        m_activeContext->setActive(false);
-    }
     // clear context explicitly, as global context is not connected to
     clearContextActions(globalContext);
     delete globalContext;
-}
-
-UCActionContext *ActionProxy::currentContext()
-{
-    return instance().m_activeContext;
 }
 
 const QSet<UCActionContext*> &ActionProxy::localContexts()
@@ -67,8 +61,7 @@ void ActionProxy::addContext(UCActionContext *context)
         return;
     }
     instance().m_localContexts.insert(context);
-    // watch context activation changes
-    instance().watchContextActivation(context, true);
+    AP_TRACE("ADD CONTEXT" << context);
 }
 // Remove a local context. If the context was active, removes the actions from the system.
 void ActionProxy::removeContext(UCActionContext *context)
@@ -78,60 +71,77 @@ void ActionProxy::removeContext(UCActionContext *context)
     }
     // make sure the context is deactivated
     context->setActive(false);
-    instance().watchContextActivation(context, false);
     instance().m_localContexts.remove(context);
+    AP_TRACE("REMOVE CONTEXT FROM REGISTRY" << context);
 }
 
-// toggles context activation watching for a given context
-void ActionProxy::watchContextActivation(UCActionContext *context, bool watch)
+// publishes/removes context actions on activation/deactivation
+void ActionProxy::activateContext(UCActionContext *context)
 {
     if (!context) {
         return;
     }
-    if (watch) {
-        // connect to action proxy
-        QObject::connect(context, SIGNAL(activeChanged()),
-                         this, SLOT(handleContextActivation()),
-                         Qt::DirectConnection);
-    } else {
-        // disconnect
-        QObject::disconnect(context, SIGNAL(activeChanged()),
-                         this, SLOT(handleContextActivation()));
-    }
-}
 
-// handles the local context activation
-void ActionProxy::handleContextActivation()
-{
-    // sender is the context changing activation
-    UCActionContext *context = qobject_cast<UCActionContext*>(sender());
-    if (!context) {
-        return;
-    }
-    // deactivate the previous context if any
-    if (!m_activeContext.isNull()) {
-        if (!context->active()) {
-            // the slot has been called due to the previous active deactivation,
-            // so perform system cleanup
-            clearContextActions(m_activeContext);
-            m_activeContext->markActionsPublished(false);
-            // finally clear the context and leave
-            m_activeContext.clear();
-            return;
-        } else {
-            // deactivate previous actiev context, this will cause the slot to
-            // be called with active = false within this call context
-            m_activeContext->setActive(false);
-        }
-    }
+    // if a context to be activated is a popup one, we must deactivate all other ones
+    // and then activate this
     if (context->active()) {
         // publish the context's actions to the system
-        publishContextActions(context);
+        instance().publishContextActions(context);
         context->markActionsPublished(true);
-        // and finally set it as active
-        m_activeContext = context;
+
+        if (context->isPopup()) {
+            instance().addPopupContext(static_cast<UCPopupContext*>(context));
+        } else {
+            AP_TRACE("ACTIVATE CONTEXT" << context);
+        }
+    } else {
+        // remove actions from the system
+        instance().clearContextActions(context);
+        context->markActionsPublished(false);
+
+        if (context->isPopup()) {
+            instance().removePopupContext(static_cast<UCPopupContext*>(context));
+        } else {
+            AP_TRACE("DEACTIVATE CONTEXT" << context);
+        }
     }
 }
+
+void ActionProxy::addPopupContext(UCPopupContext *context)
+{
+    // deactivate last context and append
+    UCPopupContext *lastActive = m_popupContexts.isEmpty() ?
+                Q_NULLPTR : m_popupContexts.top();
+    if (lastActive) {
+        lastActive->setEffectiveActive(false);
+        AP_TRACE("DEACTIVATE POPUPCONTEXT" << lastActive);
+    }
+    m_popupContexts.push(context);
+    AP_TRACE("ACTIVATE POPUPCONTEXT" << context);
+}
+
+void ActionProxy::removePopupContext(UCPopupContext *context)
+{
+    UCPopupContext *last = m_popupContexts.isEmpty() ?
+                Q_NULLPTR : m_popupContexts.top();
+
+    if (last == context) {
+        // we are about to remove the last one
+        AP_TRACE("DEACTIVATE POPUPCONTEXT" << last);
+        m_popupContexts.pop();
+        // and then re-activate the second last one
+        last = m_popupContexts.isEmpty() ? Q_NULLPTR : m_popupContexts.top();
+        if (last) {
+            AP_TRACE("REACTIVATE POPUPCONTEXT" << last);
+            last->setEffectiveActive(true);
+        }
+    } else {
+        // we simply remove the context and leave
+        AP_TRACE("REMOVE POPUPCONTEXT" << context);
+        m_popupContexts.removeAll(context);
+    }
+}
+
 // empty functions for context activation/deactivation, connect to HUD
 void ActionProxy::clearContextActions(UCActionContext *context)
 {

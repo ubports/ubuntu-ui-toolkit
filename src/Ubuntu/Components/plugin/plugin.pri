@@ -3,7 +3,7 @@ unix {
     PKGCONFIG += gio-2.0 dbus-1 libnih-dbus
 }
 
-QT *= core-private qml qml-private quick quick-private gui-private dbus svg UbuntuGestures
+QT *= core-private qml qml-private quick quick-private gui-private dbus svg UbuntuGestures UbuntuGestures_private
 
 equals(QT_MAJOR_VERSION, 5):lessThan(QT_MINOR_VERSION, 2) {
     QT += v8-private
@@ -98,8 +98,6 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/ucimportversionchecker_p.h \
     $$PWD/ucbottomedgehint.h \
     $$PWD/ucbottomedgehint_p.h \
-    $$PWD/gestures/ucswipearea.h \
-    $$PWD/gestures/ucswipearea_p.h \
     $$PWD/gestures/damper.h \
     $$PWD/gestures/ubuntugesturesqmlglobal.h \
     $$PWD/ucmathutils.h \
@@ -109,6 +107,7 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/ucbottomedgeregion.h \
     $$PWD/ucpagetreenode.h \
     $$PWD/ucpagetreenode_p.h \
+    $$PWD/ucperformancemonitor.h \
     $$PWD/privates/frame.h
 
 SOURCES += $$PWD/plugin.cpp \
@@ -175,12 +174,12 @@ SOURCES += $$PWD/plugin.cpp \
     $$PWD/privates/threelabelsslot_p.cpp \
     $$PWD/ucimportversionchecker_p.cpp \
     $$PWD/ucbottomedgehint.cpp \
-    $$PWD/gestures/ucswipearea.cpp \
     $$PWD/ucmathutils.cpp \
     $$PWD/ucbottomedge.cpp \
     $$PWD/ucbottomedgestyle.cpp \
     $$PWD/ucbottomedgeregion.cpp \
     $$PWD/ucpagetreenode.cpp \
+    $$PWD/ucperformancemonitor.cpp \
     $$PWD/privates/frame.cpp
 
 # adapters

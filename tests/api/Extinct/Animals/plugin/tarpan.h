@@ -12,14 +12,35 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Author: Christian Dywan <christian.dywan@canonical.com>
  */
 
-import QtQuick 2.4
-import Ubuntu.Components.Themes.Ambiance 1.2 as Ambiance
+#ifndef UCTARPAN_H
+#define UCTARPAN_H
 
-Ambiance.ListItemStyle {
-    // 20% lighter that background color
-    trailingPanelColor: Qt.lighter(theme.palette.normal.background, 1.2)
-    // 40% lighter than foreground color
-    trailingForegroundColor: Qt.lighter(theme.palette.normal.foreground, 1.4)
-}
+#include <QtCore/QObject>
+#include <QtCore/QString>
+
+class EATarpan : public QObject
+{
+    Q_OBJECT
+
+    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
+
+public:
+    explicit EATarpan(QObject *parent = 0);
+
+    QString name() const;
+    void setName(const QString &name);
+
+    Q_INVOKABLE void kick() const;
+
+Q_SIGNALS:
+    void nameChanged();
+
+private:
+    QString m_name;
+};
+
+#endif // UCTARPAN_H

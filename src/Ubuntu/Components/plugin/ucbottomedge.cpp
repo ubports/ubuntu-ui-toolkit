@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -34,7 +34,7 @@
 #include "ucheader.h"
 #include "ucaction.h"
 #include "quickutils.h"
-#include "gestures/ucswipearea.h"
+#include "private/ucswipearea_p.h"
 #include <QtQuick/private/qquickanimation_p.h>
 
 Q_LOGGING_CATEGORY(ucBottomEdge, "ubuntu.components.BottomEdge", QtMsgType::QtWarningMsg)
@@ -62,7 +62,6 @@ void UCBottomEdgePrivate::init()
     Q_Q(UCBottomEdge);
     // initialize hint
     QQml_setParent_noEvent(hint, q);
-    hint->setParentItem(q);
 
     // create default regions
     createDefaultRegions();
@@ -589,7 +588,7 @@ void UCBottomEdgePrivate::setOperationStatus(OperationStatus s)
  *                 BottomEdgeRegion {
  *                     from: 0.6
  *                     to: 1.0
- *                     property color color: UbuntuColors.lightGrey
+ *                     property color color: UbuntuColors.silk
  *                 }
  *             ]
  *         }
@@ -706,6 +705,7 @@ void UCBottomEdge::initializeComponent()
 {
     Q_D(UCBottomEdge);
     // initialize hint
+    d->hint->setParentItem(this);
     d->hint->init();
 
     // hint click() always commits

@@ -73,6 +73,7 @@ QML_FILES += 1.2/ActivityIndicatorStyle.qml \
              1.2/TextFieldStyle.qml \
              1.2/ToolbarButtonStyle.qml \
              1.2/DeprecatedToolbarStyle.qml \
+             1.3/AmbianceNormal.qml \
              1.3/ActionBarStyle.qml \
              1.3/ActivityIndicatorStyle.qml \
              1.3/BubbleShape.qml \

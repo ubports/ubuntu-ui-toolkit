@@ -105,17 +105,19 @@ Toolkit.PageTreeNode {
           Qt bug: https://bugreports.qt-project.org/browse/QTBUG-11712
          */
 
-        Connections {
-            target: mainView
-
-            onBackgroundColorChanged: {
-                if (mainView.backgroundColor != theme.palette.normal.background) {
-                    // custom color, proceed with auto-theming
-                    autoTheme.themeName = (ColorUtils.luminance(backgroundColor) >= 0.85) ?
-                                "Ambiance" : "SuruDark";
-                }
+        function selectTheme() {
+            if (mainView.backgroundColor != theme.palette.normal.background) {
+                // custom color, proceed with auto-theming
+                autoTheme.themeName = (ColorUtils.luminance(backgroundColor) >= 0.85) ?
+                            "Ambiance" : "SuruDark";
             }
         }
+
+        Connections {
+            target: mainView
+            onBackgroundColorChanged: autoTheme.selectTheme()
+        }
+        Component.onCompleted: autoTheme.selectTheme()
 
         property string themeName
         onThemeNameChanged: {
@@ -157,6 +159,19 @@ Toolkit.PageTreeNode {
             // FIXME Wire this up to the application lifecycle management API instead of quit().
             Qt.quit()
         }
+    }
+
+    /*!
+      \qmlproperty ActrionContext MainView::actionContext
+      \readonly
+      \since Ubuntu.Components 1.3
+      The action context of the MainView.
+      */
+    readonly property alias actionContext: localContext
+    Toolkit.PopupContext {
+        id: localContext
+        objectName: "RootContext"
+        active: true
     }
 
     onApplicationNameChanged: {

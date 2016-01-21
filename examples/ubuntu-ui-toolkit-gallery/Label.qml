@@ -28,27 +28,27 @@ Template {
 
             Label {
                 textSize: Label.XxSmall
-                text: "xx-small"
+                text: "Label.XxSmall"
             }
             Label {
                 textSize: Label.XSmall
-                text: "x-small"
+                text: "Label.XSmall"
             }
             Label {
                 textSize: Label.Small
-                text: "small"
+                text: "Label.Small"
             }
             Label {
                 textSize: Label.Medium
-                text: "medium"
+                text: "Label.Medium"
             }
             Label {
                 textSize: Label.Large
-                text: "large"
+                text: "Label.Large"
             }
             Label {
                 textSize: Label.XLarge
-                text: "x-large"
+                text: "Label.XLarge"
             }
         }
     }

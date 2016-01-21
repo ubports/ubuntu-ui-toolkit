@@ -160,6 +160,9 @@ MainView {
             compare(defaults.primaryPageSource, undefined, "primaryPageSource not set by default");
             compare(defaults.layouts.length, 0, "no layouts by default");
             compare(defaults.columns, columns, columns + " column(s) as default");
+
+            verify(page1.active, "Page1 is not active but should be! Bug(1535241)");
+            verify(!page2.active, "Page2 is active but should not be! Bug(1535241)");
         }
 
         function test_change_primaryPage() {

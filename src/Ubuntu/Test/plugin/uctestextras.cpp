@@ -17,7 +17,11 @@
 #include "uctestextras.h"
 #include "uctestcase.h"
 
+#include "ucswipearea_p.h"
+#include "ucswipearea_p_p.h"
+
 #include <qpa/qwindowsysteminterface.h>
+#include <private/qobject_p.h>
 #include <QSysInfo>
 
 const char *DEVICE_MISSING_MSG = "No touch device registered. Register one using registerTouchDevice() before using %1";
@@ -374,4 +378,18 @@ void UCTestExtras::mouseDragWithPoints(QQuickItem *item, QList<QPoint> points, Q
         QTest::mouseMove(item->window(), movePoint, delay);
     }
     QTest::mouseRelease(item->window(), button, stateKey, movePoint, delay);
+}
+
+
+void UCTestExtras::removeTimeConstraintsFromSwipeArea(QQuickItem *item)
+{
+    UCSwipeArea *swipeArea = dynamic_cast<UCSwipeArea*>(item);
+    if (!swipeArea) {
+        qWarning() << item << "is not a SwipeArea";
+        return;
+    }
+
+    UCSwipeAreaPrivate *priv = static_cast<UCSwipeAreaPrivate *>(QObjectPrivate::get(swipeArea));
+    priv->setMaxTime(60 * 60 * 1000);
+    priv->setCompositionTime(0);
 }

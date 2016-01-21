@@ -552,3 +552,4 @@ if [[ ${NORMAL_USE} != true  && ${PPA} != "archive" ]]; then
    echo "Comparing results with the archive tests"  > $MAINFILE
    compare_results
 fi
+
