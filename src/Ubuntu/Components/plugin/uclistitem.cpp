@@ -1504,6 +1504,7 @@ void UCListItem::keyPressEvent(QKeyEvent *event)
     if (!activeFocus) {
         return;
     }
+
     Qt::FocusReason reason = forwards ? Qt::TabFocusReason : Qt::BacktabFocusReason;
     if ((activeFocus == QuickUtils::firstFocusableChild(this) && !forwards) ||
         (activeFocus == QuickUtils::lastFocusableChild(this) && forwards)) {

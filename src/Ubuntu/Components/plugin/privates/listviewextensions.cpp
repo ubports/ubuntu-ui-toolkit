@@ -26,12 +26,6 @@ ListViewProxy::ListViewProxy(QQuickFlickable *listView, QObject *parent)
     : QObject(parent)
     , listView(listView)
 {
-    // DEBUG
-//    connect(listView, &QQuickItem::windowChanged, [=] {
-//        connect(listView->window(), &QQuickWindow::activeFocusItemChanged, [=] {
-//            qDebug() << "FOCUS" << listView->window()->activeFocusItem();
-//        });
-//    });
 }
 ListViewProxy::~ListViewProxy()
 {
