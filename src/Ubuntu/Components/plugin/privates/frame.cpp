@@ -189,7 +189,7 @@ UCFrameNode::UCFrameNode()
 // static
 const unsigned short* UCFrameNode::indices()
 {
-    // The geometry is made of 8 vertices indexed with a triangle strip mode.
+    // The geometry is made of 20 vertices indexed with a triangle strip mode.
     //     0 -1 ----- 2- 3
     //     |   4 --- 5   |
     //     6  /       \  9
