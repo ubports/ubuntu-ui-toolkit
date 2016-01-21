@@ -1,6 +1,6 @@
 # -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
 #
-# Copyright (C) 2015 Canonical Ltd.
+# Copyright (C) 2016 Canonical Ltd.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -26,6 +26,10 @@ logger = logging.getLogger(__name__)
 
 class Sections(_common.UbuntuUIToolkitCustomProxyObjectBase):
     """Sections Autopilot custom proxy object."""
+
+    def __init__(self, *args):
+        super().__init__(*args)
+        self.listview = self.select_single(objectName='sections_listview')
 
     def _get_section_button(self, section_index):
         try:

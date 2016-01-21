@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -22,12 +22,15 @@ MainView {
     height: units.gu(60)
     objectName: "mainView"
     Page {
-        title: "Sections test"
+        id: page
+        header: PageHeader {
+            title: "Sections test"
+        }
         Label {
             id: label
             objectName: "label"
             anchors {
-                top: parent.top
+                top: page.header.bottom
                 topMargin: units.gu(2)
                 horizontalCenter: parent.horizontalCenter
             }
@@ -45,7 +48,7 @@ MainView {
         }
         Label {
             id: moreLabel
-            objectName: "moreLabel"
+            objectName: "scrolling_label"
             anchors {
                 centerIn: parent
             }
@@ -53,7 +56,7 @@ MainView {
         }
         Sections {
             id: moreSections
-            objectName: "moreSections"
+            objectName: "scrolling_sections"
             anchors {
                 horizontalCenter: parent.horizontalCenter
                 top: moreLabel.bottom
