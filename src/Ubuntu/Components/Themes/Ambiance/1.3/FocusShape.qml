@@ -21,11 +21,9 @@ import Ubuntu.Components 1.3
 import Ubuntu.Components.Private 1.3
 
 Frame {
-    property color focusColor: UbuntuColors.orange // FIXME: Use color from palette
-
     anchors.fill: parent
     anchors.margins: -units.gu(0.46)
-    color: Qt.rgba(focusColor.r, focusColor.g, focusColor.b, 1.0)
+    color: UbuntuColors.orange // FIXME: Use color from palette
     thickness: units.gu(0.21)
     radius: units.gu(1.7)
     visible: styledItem.keyNavigationFocus
