@@ -42,6 +42,7 @@ for i in $*; do
                 tst_picker13.qml \
                 tst_recreateview \
                 tst_touchregistry \
+                tst_mainview \
                 tst_listitems_itemselector.qml \
                 tst_tabs_with_repeater.deprecated_toolbar.qml \
                 tst_inversemousearea \
