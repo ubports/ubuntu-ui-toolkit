@@ -57,6 +57,7 @@ Item {
         anchors.fill: parent
         color: mainViewStyle.backgroundColor
         gradient: internals.isGradient ? backgroundGradient : null
+        visible: internals.isGradient
     }
 
     QtObject {
