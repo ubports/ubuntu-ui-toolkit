@@ -172,7 +172,6 @@ MainViewBase {
             property bool windowActive: typeof window != 'undefined'
             onWindowActiveChanged: {
                 window.title = headerItem.title
-                window.color = backgroundColor
             }
 
             Connections {

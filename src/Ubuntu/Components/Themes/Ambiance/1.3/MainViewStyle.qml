@@ -60,6 +60,12 @@ Item {
         visible: internals.isGradient
     }
 
+    Binding {
+        target: typeof window != 'undefined' ? window : null
+        property: "color"
+        value: mainViewStyle.backgroundColor
+    }
+
     QtObject {
         id: internals
         property bool isGradient: mainViewStyle.backgroundColor != mainViewStyle.headerColor ||
