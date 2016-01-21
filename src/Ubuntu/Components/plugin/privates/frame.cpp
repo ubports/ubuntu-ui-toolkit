@@ -183,7 +183,7 @@ UCFrameNode::UCFrameNode()
     m_geometry.setVertexDataPattern(QSGGeometry::AlwaysUploadPattern);
     setMaterial(&m_material);
     setGeometry(&m_geometry);
-    qsgnode_set_description(this, QLatin1String("strokeshape"));
+    qsgnode_set_description(this, QLatin1String("frame"));
 }
 
 // static
