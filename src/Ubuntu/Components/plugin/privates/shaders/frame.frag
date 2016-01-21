@@ -18,14 +18,14 @@
 
 uniform sampler2D texture;
 uniform lowp float opacity;
-varying mediump vec2 texCoord1;
-varying mediump vec2 texCoord2;
+varying mediump vec2 outerCoord;
+varying mediump vec2 innerCoord;
 varying lowp vec4 color;
 
 void main(void)
 {
-    lowp float shapeOut = texture2D(texture, texCoord1).r;
-    lowp float shapeIn = texture2D(texture, texCoord2).r;
+    lowp float shapeOut = texture2D(texture, outerCoord).r;
+    lowp float shapeIn = texture2D(texture, innerCoord).r;
     // Fused multiply-add friendly version of (shapeOut * (1.0 - shapeIn))
     lowp float shape = (shapeOut * -shapeIn) + shapeOut;
     // shape is squared to make thinner corners (particularly visible at stroke 1).

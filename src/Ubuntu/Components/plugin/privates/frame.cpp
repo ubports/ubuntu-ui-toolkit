@@ -52,7 +52,7 @@ FrameShader::FrameShader()
 char const* const* FrameShader::attributeNames() const
 {
     static char const* const attributes[] = {
-        "positionAttrib", "texCoord1Attrib", "texCoord2Attrib", "colorAttrib", 0
+        "positionAttrib", "outerCoordAttrib", "innerCoordAttrib", "colorAttrib", 0
     };
     return attributes;
 }
@@ -246,11 +246,13 @@ void UCFrameNode::updateGeometry(
     const float clampedThickness = qMin(thickness, maxSize);
     const float radiusOut = qBound(0.01f, radius, maxSize);
     const float radiusIn = radiusOut * ((maxSize - clampedThickness) / maxSize);
-    const float tc1 =
+    const float outerCoord1 =
         (((1.0f - shapeOffset) / radiusOut) * (clampedThickness + radiusIn)) + shapeOffset;
-    const float tc2 = (((1.0f - shapeOffset) / radiusOut) * clampedThickness) + shapeOffset;
-    const float tc3 = (((1.0f - shapeOffset) / radiusIn) * -clampedThickness) + shapeOffset;
-    const float tc4 =
+    const float outerCoord2 =
+        (((1.0f - shapeOffset) / radiusOut) * clampedThickness) + shapeOffset;
+    const float innerCoord1 =
+        (((1.0f - shapeOffset) / radiusIn) * -clampedThickness) + shapeOffset;
+    const float innerCoord2 =
         (((1.0f - shapeOffset) / radiusIn) * (radiusOut - clampedThickness)) + shapeOffset;
     const quint32 packedColor = packColor(color);
 
@@ -259,43 +261,43 @@ void UCFrameNode::updateGeometry(
     v[0].y = 0.0f;
     v[0].s1 = shapeOffset;
     v[0].t1 = shapeOffset;
-    v[0].s2 = tc3;
-    v[0].t2 = tc3;
+    v[0].s2 = innerCoord1;
+    v[0].t2 = innerCoord1;
     v[0].color = packedColor;
     v[1].x = radiusOut;
     v[1].y = 0.0f;
     v[1].s1 = 1.0f;
     v[1].t1 = shapeOffset;
-    v[1].s2 = tc4;
-    v[1].t2 = tc3;
+    v[1].s2 = innerCoord2;
+    v[1].t2 = innerCoord1;
     v[1].color = packedColor;
     v[2].x = w - radiusOut;
     v[2].y = 0.0f;
     v[2].s1 = 1.0f;
     v[2].t1 = shapeOffset;
-    v[2].s2 = tc4;
-    v[2].t2 = tc3;
+    v[2].s2 = innerCoord2;
+    v[2].t2 = innerCoord1;
     v[2].color = packedColor;
     v[3].x = w;
     v[3].y = 0.0f;
     v[3].s1 = shapeOffset;
     v[3].t1 = shapeOffset;
-    v[3].s2 = tc3;
-    v[3].t2 = tc3;
+    v[3].s2 = innerCoord1;
+    v[3].t2 = innerCoord1;
     v[3].color = packedColor;
 
     // 2nd row.
     v[4].x = clampedThickness + radiusIn;
     v[4].y = clampedThickness;
-    v[4].s1 = tc1;
-    v[4].t1 = tc2;
+    v[4].s1 = outerCoord1;
+    v[4].t1 = outerCoord2;
     v[4].s2 = 1.0f;
     v[4].t2 = shapeOffset;
     v[4].color = packedColor;
     v[5].x = w - (clampedThickness + radiusIn);
     v[5].y = clampedThickness;
-    v[5].s1 = tc1;
-    v[5].t1 = tc2;
+    v[5].s1 = outerCoord1;
+    v[5].t1 = outerCoord2;
     v[5].s2 = 1.0f;
     v[5].t2 = shapeOffset;
     v[5].color = packedColor;
@@ -305,20 +307,20 @@ void UCFrameNode::updateGeometry(
     v[6].y = radiusOut;
     v[6].s1 = shapeOffset;
     v[6].t1 = 1.0f;
-    v[6].s2 = tc3;
-    v[6].t2 = tc4;
+    v[6].s2 = innerCoord1;
+    v[6].t2 = innerCoord2;
     v[6].color = packedColor;
     v[7].x = clampedThickness;
     v[7].y = clampedThickness + radiusIn;
-    v[7].s1 = tc2;
-    v[7].t1 = tc1;
+    v[7].s1 = outerCoord2;
+    v[7].t1 = outerCoord1;
     v[7].s2 = shapeOffset;
     v[7].t2 = 1.0f;
     v[7].color = packedColor;
     v[8].x = w - clampedThickness;
     v[8].y = clampedThickness + radiusIn;
-    v[8].s1 = tc2;
-    v[8].t1 = tc1;
+    v[8].s1 = outerCoord2;
+    v[8].t1 = outerCoord1;
     v[8].s2 = shapeOffset;
     v[8].t2 = 1.0f;
     v[8].color = packedColor;
@@ -326,8 +328,8 @@ void UCFrameNode::updateGeometry(
     v[9].y = radiusOut;
     v[9].s1 = shapeOffset;
     v[9].t1 = 1.0f;
-    v[9].s2 = tc3;
-    v[9].t2 = tc4;
+    v[9].s2 = innerCoord1;
+    v[9].t2 = innerCoord2;
     v[9].color = packedColor;
 
     // 4th row.
@@ -335,20 +337,20 @@ void UCFrameNode::updateGeometry(
     v[10].y = h - radiusOut;
     v[10].s1 = shapeOffset;
     v[10].t1 = 1.0f;
-    v[10].s2 = tc3;
-    v[10].t2 = tc4;
+    v[10].s2 = innerCoord1;
+    v[10].t2 = innerCoord2;
     v[10].color = packedColor;
     v[11].x = clampedThickness;
     v[11].y = h - (clampedThickness + radiusIn);
-    v[11].s1 = tc2;
-    v[11].t1 = tc1;
+    v[11].s1 = outerCoord2;
+    v[11].t1 = outerCoord1;
     v[11].s2 = shapeOffset;
     v[11].t2 = 1.0f;
     v[11].color = packedColor;
     v[12].x = w - clampedThickness;
     v[12].y = h - (clampedThickness + radiusIn);
-    v[12].s1 = tc2;
-    v[12].t1 = tc1;
+    v[12].s1 = outerCoord2;
+    v[12].t1 = outerCoord1;
     v[12].s2 = shapeOffset;
     v[12].t2 = 1.0f;
     v[12].color = packedColor;
@@ -356,22 +358,22 @@ void UCFrameNode::updateGeometry(
     v[13].y = h - radiusOut;
     v[13].s1 = shapeOffset;
     v[13].t1 = 1.0f;
-    v[13].s2 = tc3;
-    v[13].t2 = tc4;
+    v[13].s2 = innerCoord1;
+    v[13].t2 = innerCoord2;
     v[13].color = packedColor;
 
     // 5th row.
     v[14].x = clampedThickness + radiusIn;
     v[14].y = h - clampedThickness;
-    v[14].s1 = tc1;
-    v[14].t1 = tc2;
+    v[14].s1 = outerCoord1;
+    v[14].t1 = outerCoord2;
     v[14].s2 = 1.0f;
     v[14].t2 = shapeOffset;
     v[14].color = packedColor;
     v[15].x = w - (clampedThickness + radiusIn);
     v[15].y = h - clampedThickness;
-    v[15].s1 = tc1;
-    v[15].t1 = tc2;
+    v[15].s1 = outerCoord1;
+    v[15].t1 = outerCoord2;
     v[15].s2 = 1.0f;
     v[15].t2 = shapeOffset;
     v[15].color = packedColor;
@@ -381,29 +383,29 @@ void UCFrameNode::updateGeometry(
     v[16].y = h;
     v[16].s1 = shapeOffset;
     v[16].t1 = shapeOffset;
-    v[16].s2 = tc3;
-    v[16].t2 = tc3;
+    v[16].s2 = innerCoord1;
+    v[16].t2 = innerCoord1;
     v[16].color = packedColor;
     v[17].x = radiusOut;
     v[17].y = h;
     v[17].s1 = 1.0f;
     v[17].t1 = shapeOffset;
-    v[17].s2 = tc4;
-    v[17].t2 = tc3;
+    v[17].s2 = innerCoord2;
+    v[17].t2 = innerCoord1;
     v[17].color = packedColor;
     v[18].x = w - radiusOut;
     v[18].y = h;
     v[18].s1 = 1.0f;
     v[18].t1 = shapeOffset;
-    v[18].s2 = tc4;
-    v[18].t2 = tc3;
+    v[18].s2 = innerCoord2;
+    v[18].t2 = innerCoord1;
     v[18].color = packedColor;
     v[19].x = w;
     v[19].y = h;
     v[19].s1 = shapeOffset;
     v[19].t1 = shapeOffset;
-    v[19].s2 = tc3;
-    v[19].t2 = tc3;
+    v[19].s2 = innerCoord1;
+    v[19].t2 = innerCoord1;
     v[19].color = packedColor;
 
     markDirty(QSGNode::DirtyGeometry);
