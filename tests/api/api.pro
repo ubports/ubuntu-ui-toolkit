@@ -4,4 +4,4 @@ SUBDIRS = Extinct
 
 OTHER_FILES += test.sh
 
-check.commands += ./test.sh || exit 1;
+check.commands += $$PWD/test.sh || exit 1;
