@@ -31,16 +31,6 @@ class Sections(_common.UbuntuUIToolkitCustomProxyObjectBase):
         super().__init__(*args)
         self.listview = self.select_single(objectName='sections_listview')
 
-    def _get_section_button(self, section_index):
-        try:
-            object_name = "section_button_" + str(section_index)
-            button = self.select_single(objectName=object_name)
-        except dbus.StateNotFoundError:
-            raise _common.ToolkitException(
-                'Button not found in Sections.')
-
-        return button
-
     @autopilot_logging.log_action(logger.info)
     def click_section_button(self, section_index):
         """Click a section button of the Sections.
@@ -49,5 +39,10 @@ class Sections(_common.UbuntuUIToolkitCustomProxyObjectBase):
         :raise ToolkitException: If there is no section button with that index.
 
         """
-        button = self._get_section_button(section_index)
-        self.pointing_device.click_object(button)
+        button_object_name = 'section_button_' + str(section_index)
+        try:
+            self.listview.click_element(button_object_name)
+        except _common.ToolkitException:
+            raise _common.ToolkitException(
+                'Button with section index ' + str(section_index) +
+                ' not found in Sections.')

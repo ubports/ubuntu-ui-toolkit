@@ -54,8 +54,8 @@ class SectionsTestCase(tests.QMLFileAppTestCase):
         self.scrollingSections.click_section_button(15)
         self.assertEqual(self.scrollingLabel.text, 'Scrollable section 15 is selected.')
         # scroll back and click:
-        self.scrollingSections.click_section_button(3)
-        self.assertEqual(self.scrollingLabel.text, 'Scrollable section 3 is selected.')
+        self.scrollingSections.click_section_button(1)
+        self.assertEqual(self.scrollingLabel.text, 'Scrollable section 1 is selected.')
 
     def test_click_unexisting_section_button(self):
         error = self.assertRaises(
@@ -63,11 +63,11 @@ class SectionsTestCase(tests.QMLFileAppTestCase):
             self.sections.click_section_button, 3)
         self.assertEqual(
             str(error),
-            'Button not found in Sections.')
+            'Button with section index 3 not found in Sections.')
 
         error = self.assertRaises(
             ubuntuuitoolkit.ToolkitException,
             self.scrollingSections.click_section_button, 20)
         self.assertEqual(
             str(error),
-            'Button not found in Sections.')
+            'Button with section index 20 not found in Sections.')
