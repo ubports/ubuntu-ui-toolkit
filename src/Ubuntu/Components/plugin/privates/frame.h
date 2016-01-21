@@ -53,12 +53,21 @@ private:
     QSGGeometry m_geometry;
 };
 
+// Renders the frame (border) of a shape.
 class UCFrame : public QQuickItem
 {
     Q_OBJECT
 
+    // Thickness of the frame in pixels.
     Q_PROPERTY(qreal thickness READ thickness WRITE setThickness NOTIFY thicknessChanged)
+
+    // Radius of the shape in pixels. A rectangle frame could be obtained using
+    // a radius of 0 but it's recommended to use a Ractangle with a border for
+    // that as it is a bit more efficient in term of rendering speed (reason is
+    // we don't bother to specify a dedicated mesh and shader when radius is 0).
     Q_PROPERTY(qreal radius READ radius WRITE setRadius NOTIFY radiusChanged)
+
+    // Color of the frame. Translucent colors are supported too.
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
 
 public:
