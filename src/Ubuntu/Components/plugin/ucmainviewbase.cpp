@@ -233,10 +233,8 @@ void UCMainViewBase::setBackgroundColor(QColor backgroundColor)
 
       Qt bug: https://bugreports.qt-project.org/browse/QTBUG-11712
      */
-    Q_EMIT backgroundColorChanged(backgroundColor);
-
-    //do NOT change the order here, the signal HAS to be emitted first
     d->doAutoTheme();
+    Q_EMIT backgroundColorChanged(backgroundColor);
 }
 
 /*!
