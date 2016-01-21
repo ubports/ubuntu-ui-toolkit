@@ -1,4 +1,7 @@
-ubuntu-ui-toolkit (1.3.1811+16.04-0ubuntu1) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.3.1812+16.04-0ubuntu1) UNRELEASED; urgency=medium
+
+  [ Florian Boucault ]
+  * Always on performance monitor that logs frames that too long to render.
 
   [ Tim Peeters ]
   * Support scrolling in ListViews with horizontal orientation to the 
