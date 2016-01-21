@@ -76,6 +76,8 @@
 #include "ucbottomedgeregion.h"
 #include "ucbottomedgestyle.h"
 #include "ucpagetreenode.h"
+#include "ucperformancemonitor.h"
+#include "privates/frame.h"
 
 // From UbuntuGestures
 #include "private/ucswipearea_p.h"
@@ -277,6 +279,9 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     qmlRegisterType<UCListItemStyle, 1>(styleUri, 1, 3, "ListItemStyle");
     qmlRegisterType<UCBottomEdgeStyle>(styleUri, 1, 3, "BottomEdgeStyle");
 
+    // Register private types.
+    qmlRegisterType<UCFrame>("Ubuntu.Components.Private", 1, 3, "Frame");
+
     QQmlExtensionPlugin::initializeEngine(engine, uri);
     QQmlContext* context = engine->rootContext();
 
@@ -331,4 +336,7 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
             Qt::InvertedLandscapeOrientation);
 
     registerWindowContextProperty();
+
+    // register performance monitor
+    context->setContextProperty("performanceMonitor", new UCPerformanceMonitor(engine));
 }
