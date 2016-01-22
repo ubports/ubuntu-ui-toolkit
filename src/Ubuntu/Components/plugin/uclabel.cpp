@@ -110,7 +110,7 @@ void UCLabel::postThemeChanged()
     }
     UCTheme *theme = getTheme();
     if (theme) {
-        setColor(theme->getPaletteColor("normal", "baseText"));
+        setColor(theme->getPaletteColor("normal", "backgroundText"));
         m_flags &= ~ColorSet;
     }
 }
