@@ -217,7 +217,9 @@ void UbuntuComponentsPlugin::setUnitsContextProperty(QWindow* window)
     QQmlContext* rootItemContext = QQmlEngine::contextForObject(rootItem);
     if (rootItemContext) {
         qDebug() << "Setting context property 'units' on root context" << rootItemContext;
-        rootItemContext->setContextProperty("units", units.value<UCUnits*>());
+        QQmlContext* newContext = new QQmlContext(rootItemContext);
+        newContext->setContextProperty("units", units.value<UCUnits*>());
+        QQmlEngine::setContextForObject(rootItem, newContext);
     } else {
         qDebug() << "NO CONTEXT FOR" << view;
     }
