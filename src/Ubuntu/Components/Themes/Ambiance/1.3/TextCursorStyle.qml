@@ -55,8 +55,8 @@ Item {
         Rectangle {
             objectName: "text_cursor_style_" + styledItem.positionProperty
             width: cursorWidth
-            // FIXME: Extend the palette and use palette values here
-            color: UbuntuColors.blue
+            // FIXME: check with design whether should it be activity or something else
+            color: theme.palette.normal.activity
             visible: blinkTimer.timerShowCursor || !blinkTimer.running
             Timer {
                 id: blinkTimer

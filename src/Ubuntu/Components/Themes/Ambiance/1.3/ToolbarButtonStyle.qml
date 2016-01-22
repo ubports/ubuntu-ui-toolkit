@@ -29,20 +29,19 @@ Item {
     Item {
         anchors.centerIn: parent
         height: icon.height + label.height + label.anchors.topMargin
-        opacity: styledItem.enabled ? 1.0 : 0.3
 
         // FIXME: is there a reason we are still using styledItem.iconSource instead of iconName
         // so we coudl use the Icon?
-        Image {
+        Icon {
             id: icon
             anchors {
                 top: parent.top
                 horizontalCenter: parent.horizontalCenter
             }
-            sourceSize.width: iconWidth
-            sourceSize.height: iconWidth
-            source: styledItem.iconSource
-            smooth: true
+            width: iconWidth
+            height: iconWidth
+            name: styledItem.iconName
+            color: label.color
         }
 
         Label {
