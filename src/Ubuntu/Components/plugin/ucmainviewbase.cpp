@@ -84,6 +84,9 @@ void UCMainViewBasePrivate::doAutoTheme()
 {
     Q_Q(UCMainViewBase);
     UCTheme *theme = q->getTheme();
+    if (!theme)
+        return;
+
     if (m_backgroundColor != theme->getPaletteColor("normal", "background")) {
         QString themeName = m_backgroundColor.lightnessF() >= 0.85 ? QStringLiteral("Ambiance")
                                                                    : QStringLiteral("SuruDark");
@@ -219,6 +222,8 @@ void UCMainViewBase::setBackgroundColor(QColor backgroundColor)
 
     d->m_backgroundColor = backgroundColor;
 
+    Q_EMIT backgroundColorChanged(backgroundColor);
+
     if (!(d->m_flags & UCMainViewBasePrivate::CustomHeaderColor))
         d->_q_headerColorBinding(d->m_backgroundColor);
     if (!(d->m_flags & UCMainViewBasePrivate::CustomFooterColor))
@@ -226,16 +231,7 @@ void UCMainViewBase::setBackgroundColor(QColor backgroundColor)
 
     // FIXME: Define the background colors in MainViewStyle and get rid of the properties
     //  in MainViewBase. That removes the need for auto-theming.
-
-    /*
-      As we don't know the order the property bindings and onXXXChanged signals are evaluated
-      we should rely only on one property when changing the theme to avoid intermediate
-      theme changes due to properties being evaluated separately.
-
-      Qt bug: https://bugreports.qt-project.org/browse/QTBUG-11712
-     */
     d->doAutoTheme();
-    Q_EMIT backgroundColorChanged(backgroundColor);
 }
 
 /*!
@@ -287,7 +283,7 @@ UCActionManager *UCMainViewBase::actionManager() const
 }
 
 /*!
-  \qmlproperty ActrionContext MainView::actionContext
+  \qmlproperty ActionContext MainView::actionContext
   \readonly
   \since Ubuntu.Components 1.3
   The action context of the MainView.
@@ -303,4 +299,25 @@ void UCMainViewBase::componentComplete()
     UCPageTreeNode::componentComplete();
     d->setStyleName(QStringLiteral("MainViewStyle"));
     d->doAutoTheme();
+
+    if (m_actionContext)
+        m_actionContext->componentComplete();
+
+    if (m_actionManager)
+        m_actionManager->componentComplete();
+}
+
+void UCMainViewBase::classBegin()
+{
+    UCPageTreeNode::classBegin();
+
+    if (m_actionManager) {
+        QQmlEngine::setContextForObject(m_actionManager, qmlContext(this));
+        m_actionManager->classBegin();
+    }
+
+    if (m_actionContext) {
+        QQmlEngine::setContextForObject(m_actionContext, qmlContext(this));
+        m_actionContext->classBegin();
+    }
 }

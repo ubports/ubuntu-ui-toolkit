@@ -23,6 +23,7 @@ import QtQuick.Window 2.2
     \qmltype MainView
     \inqmlmodule Ubuntu.Components 1.3
     \ingroup ubuntu
+    \inherits StyledItem
     \brief MainView is the root Item that should be used for all applications.
         It automatically adds a header and toolbar for its contents and can
         rotate its content based on the device orientation.

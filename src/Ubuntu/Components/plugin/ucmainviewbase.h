@@ -63,6 +63,7 @@ public:
 
     // QQmlParserStatus interface
     virtual void componentComplete() override;
+    virtual void classBegin() override;
 
 Q_SIGNALS:
     void applicationNameChanged(QString applicationName);
