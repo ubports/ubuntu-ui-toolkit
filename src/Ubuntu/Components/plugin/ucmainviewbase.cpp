@@ -111,7 +111,8 @@ UCMainViewBase::UCMainViewBase(UCMainViewBasePrivate &dd, QQuickItem *parent)
 }
 
 /*!
-  \qmlproperty string MainViewBase::applicationName
+  \qmlproperty string MainView::applicationName
+
   The property holds the application's name, which must be the same as the
   desktop file's name.
   The name also sets the name of the QCoreApplication and defaults for data
@@ -141,7 +142,7 @@ void UCMainViewBase::setApplicationName(QString applicationName)
 }
 
 /*!
-  \qmlproperty bool MainViewBase::anchorToKeyboard
+  \qmlproperty bool MainView::anchorToKeyboard
 
   The property holds if the application should automatically resize the
   contents when the input method appears
@@ -255,7 +256,7 @@ void UCMainViewBase::setFooterColor(QColor footerColor)
 }
 
 /*!
-  \qmlproperty list<Action> MainViewBase::actions
+  \qmlproperty list<Action> MainView::actions
   \readonly
 
   A global list of actions that will be available to the system (including HUD)
