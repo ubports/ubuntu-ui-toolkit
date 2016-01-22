@@ -81,6 +81,9 @@
 // From UbuntuGestures
 #include "private/ucswipearea_p.h"
 
+//From UbuntuToolkit
+#include <ColorUtils>
+
 #include <sys/types.h>
 #include <unistd.h>
 #include <stdexcept>
@@ -90,6 +93,20 @@ QUrl UbuntuComponentsPlugin::m_baseUrl = QUrl();
 /*
  * Type registration functions.
  */
+
+template<typename T> static QObject *qmlRegisterSimpleSingletonTypeCallback(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+    Q_UNUSED(engine)
+    Q_UNUSED(scriptEngine)
+
+    T *type = new T;
+    return type;
+}
+
+template<typename T> static int qmlRegisterSimpleSingletonType(const char *uri, int major, int minor, const char *typeName)
+{
+    return qmlRegisterSingletonType<T>(uri, major, minor, typeName, qmlRegisterSimpleSingletonTypeCallback<T>);
+}
 
 static QObject *registerClipboard(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
@@ -205,6 +222,7 @@ void UbuntuComponentsPlugin::registerTypesToVersion(const char *uri, int major, 
     qmlRegisterType<UCActionItem>(uri, major, minor, "ActionItem");
     qmlRegisterSingletonType<UCHaptics>(uri, major, minor, "Haptics", registerHaptics);
     qmlRegisterSingletonType<UCMathUtils>(uri, major, minor, "MathUtils", UCMathUtils::qmlRegisterTypeCallback);
+    qmlRegisterSimpleSingletonType<UbuntuToolkit::ColorUtils>(uri, major, minor, "ColorUtils");
 }
 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
