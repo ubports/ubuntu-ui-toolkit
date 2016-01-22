@@ -20,13 +20,13 @@ override_dh_auto_configure:
 	dh $@ --parallel
 
 override_dh_auto_test:
-#ifneq ($(DEB_HOST_ARCH),$(findstring $(DEB_HOST_ARCH), $(testskip_architectures)))
-#ifeq (,$(findstring nocheck,$(DEB_BUILD_OPTIONS)))
-#	mkdir -p debian/tmp/home/run
-#	chmod +x tests/xvfb.sh
-#	tests/xvfb.sh dh_auto_test || exit $?
-#endif
-#endif
+ifneq ($(DEB_HOST_ARCH),$(findstring $(DEB_HOST_ARCH), $(testskip_architectures)))
+ifeq (,$(findstring nocheck,$(DEB_BUILD_OPTIONS)))
+	mkdir -p debian/tmp/home/run
+	chmod +x tests/xvfb.sh
+	tests/xvfb.sh dh_auto_test || exit $?
+endif
+endif
 
 override_dh_build:
 	dh_auto_build --parallel
