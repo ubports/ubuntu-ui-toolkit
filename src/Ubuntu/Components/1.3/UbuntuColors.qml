@@ -177,5 +177,5 @@ QtObject {
       Jet. Recommended for content coloring.
       \since Ubuntu.Components 1.3
       */
-    readonly property color jet: "#292929"
+    readonly property color jet: "#111111"
 }

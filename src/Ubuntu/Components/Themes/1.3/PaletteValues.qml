@@ -148,4 +148,15 @@ QtObject {
        \since Ubuntu.Components.Themes 1.3
     */
     property color selectionText
+
+    /*!
+      Color applied for the focus frame drawn around the active focus component
+      if it was focused using keyboard navigation.
+      */
+    property color focus
+
+    /*!
+      Color applied to elements placed on top of the \l focus color.
+      */
+    property color focusText
 }

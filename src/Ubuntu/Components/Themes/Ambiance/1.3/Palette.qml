@@ -22,7 +22,7 @@ Palette {
     normal: AmbianceNormal {}
     inactive: AmbianceNormal {
         field: UbuntuColors.porcelain;
-        // inactive is 30% transparent normal
+        // inactive is 30% opaque normal
         Component.onCompleted: {
             for (var p in normal) {
                 // skip objectName and all change signals
@@ -33,19 +33,21 @@ Palette {
     }
 
     // selected differs from normal in background, base, foreground
-    selected: AmbianceNormal {
-        background: UbuntuColors.porcelain
-        backgroundText: UbuntuColors.blue
-        base: UbuntuColors.ash
-        baseText: UbuntuColors.blue
-        foreground: UbuntuColors.silk
-        foregroundText: UbuntuColors.blue
-    }
+    selected: AmbianceSelected {}
 
     // selected differs from normal in background, base, foreground
-    selectedInactive: AmbianceNormal {
+    selectedInactive: AmbianceSelected {
         background: UbuntuColors.porcelain
         base: UbuntuColors.porcelain
         foreground: UbuntuColors.porcelain
+        // inactive is 30% opaque normal
+        Component.onCompleted: {
+            for (var p in selected) {
+                // skip objectName and all change signals
+                if (p == "objectName" || p.indexOf("Changed") > 0
+                        || p == "background" || p == "base" || p == "foreground" ) continue;
+                selectedInactive[p] = Qt.rgba(selected[p].r, selected[p].g, selected[p].b, 0.3);
+            }
+        }
     }
 }
