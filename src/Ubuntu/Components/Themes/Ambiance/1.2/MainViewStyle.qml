@@ -40,6 +40,13 @@ Item {
         anchors.fill: parent
         color: styledItem.backgroundColor
         gradient: internals.isGradient ? backgroundGradient : null
+        visible: internals.isGradient
+    }
+
+    Binding {
+        target: typeof window != 'undefined' ? window : null
+        property: "color"
+        value: styledItem.backgroundColor
     }
 
     Image {
