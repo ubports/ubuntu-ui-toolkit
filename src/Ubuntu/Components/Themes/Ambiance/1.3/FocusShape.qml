@@ -23,7 +23,9 @@ import Ubuntu.Components.Private 1.3
 Frame {
     anchors.fill: parent
     anchors.margins: -units.gu(0.46)
-    color: UbuntuColors.orange // FIXME: Use color from palette
+    color: styledItem.enabled
+                ? theme.palette.normal.focus
+                : theme.palette.inactive.focus
     thickness: units.gu(0.21)
     radius: units.gu(1.7)
     visible: styledItem.keyNavigationFocus

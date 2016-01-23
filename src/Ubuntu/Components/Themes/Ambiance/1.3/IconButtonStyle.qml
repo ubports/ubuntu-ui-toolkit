@@ -45,9 +45,6 @@ Item {
      */
     property bool showLabel: false
 
-    FocusShape {
-    }
-
     Rectangle {
         id: background
         color: iconButtonStyle.backgroundColor
@@ -61,6 +58,9 @@ Item {
         height: iconButtonStyle.iconHeight
         source: styledItem.iconSource
         color: iconButtonStyle.foregroundColor
+
+        FocusShape {
+        }
     }
 
     Component {
