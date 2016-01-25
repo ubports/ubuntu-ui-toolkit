@@ -23,22 +23,27 @@ Item {
     implicitHeight: units.gu(4)
 
     enabled: styledItem.enabled
-    opacity: enabled ? 1.0 : 0.5
 
     /*!
       The foreground color of unselected sections.
      */
-    property color sectionColor: theme.palette.normal.backgroundText
+    property color sectionColor: enabled
+                                    ? theme.palette.normal.backgroundTertiaryText
+                                    : theme.palette.inactive.backgroundTertiaryText
 
     /*!
       The foreground color of the selected section.
      */
-    property color selectedSectionColor: UbuntuColors.orange
+    property color selectedSectionColor: enabled
+                                            ? theme.palette.selected.backgroundTertiaryText
+                                            : theme.palette.selectedInactive.backgroundTertiaryText
 
     /*!
       The background color for the pressed section button.
      */
-    property color pressedBackgroundColor: theme.palette.selected.background
+    property color pressedBackgroundColor: enabled
+                                            ? theme.palette.selected.background
+                                            : theme.palette.selectedInactive.background
 
     /*!
       The font size for the text in the buttons.
