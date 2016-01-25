@@ -301,24 +301,26 @@ void UCMainViewBase::componentComplete()
     d->setStyleName(QStringLiteral("MainViewStyle"));
     d->doAutoTheme();
 
-    if (m_actionContext)
-        m_actionContext->componentComplete();
+    if (d->m_actionContext)
+        d->m_actionContext->componentComplete();
 
-    if (m_actionManager)
-        m_actionManager->componentComplete();
+    if (d->m_actionManager)
+        d->m_actionManager->componentComplete();
 }
 
 void UCMainViewBase::classBegin()
 {
+    Q_D(UCMainViewBase);
     UCPageTreeNode::classBegin();
 
-    if (m_actionManager) {
-        QQmlEngine::setContextForObject(m_actionManager, qmlContext(this));
-        m_actionManager->classBegin();
+    QQmlContext *contextForThis = qmlContext(this);
+    if (d->m_actionManager) {
+        QQmlEngine::setContextForObject(d->m_actionManager, contextForThis);
+        d->m_actionManager->classBegin();
     }
 
-    if (m_actionContext) {
-        QQmlEngine::setContextForObject(m_actionContext, qmlContext(this));
-        m_actionContext->classBegin();
+    if (d->m_actionContext) {
+        QQmlEngine::setContextForObject(d->m_actionContext, contextForThis);
+        d->m_actionContext->classBegin();
     }
 }

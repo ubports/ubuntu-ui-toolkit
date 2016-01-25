@@ -79,8 +79,6 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(UCMainViewBase)
-    UCActionManager* m_actionManager;
-    UCPopupContext* m_actionContext;
 };
 
 #endif // UCMAINVIEWBASE_H
