@@ -17,8 +17,6 @@
 # Author: Christian Dywan <christian.dywan@canonical.com>
 ################################################################################
 
-. `dirname $0`/../build_paths.inc
-
 FAILURES=0
 for i in $*; do
     _XML=$i
@@ -35,32 +33,41 @@ for i in $*; do
                 tst_qquick_image_extension \
                 tst_page.qml \
                 tst_toolbar.qml \
+                tst_label13.qml \
+                tst_performance \
                 tst_tabs.qml \
                 tst_focus.qml \
                 tst_pickerpanel.qml \
                 tst_picker.qml \
+                tst_picker13.qml \
+                tst_recreateview \
+                tst_touchregistry \
+                tst_mainview \
                 tst_listitems_itemselector.qml \
                 tst_tabs_with_repeater.deprecated_toolbar.qml \
+                tst_inversemousearea \
                 '
 
     WARNINGS=$(grep -c -e 'qwarn' $_XML)
     ERRORS=$(grep -c -e 'result="fail"' $_XML)
-    if [ $WARNINGS -ne 0 ]; then
+    if [ $ERRORS -ne 0 ]; then
+      echo "Error: $ERRORS errors in $_TESTNAME ($WARNINGS warnings)"
+      ((FAILURES+=$ERRORS))
+      ((FAILURES+=$WARNINGS))
+    elif [ $WARNINGS -ne 0 ]; then
       if [[ $EXCEPTIONS == *$_TESTNAME* ]]; then
         echo "FIXME: $WARNINGS warnings in $_TESTNAME - Known problematic test"
       else
         echo "Error: $WARNINGS warnings in $_TESTNAME"
-        FAILURES=$(echo "$FAILURES+1" | bc)
+        # FIXME: ((FAILURES+=$WARNINGS))
       fi
-    elif [ $ERRORS -ne 0 ]; then
-      echo "Error: $ERRORS errors in $_TESTNAME ($WARNINGS warnings)"
-      FAILURES=$(echo "$FAILURES+1" | bc)
     elif [[ $EXCEPTIONS == *$_TESTNAME* ]]; then
       echo Woot! Known problematic test $_TESTNAME did pass afterall!
-      echo '  ' Consider removing $_TESTNAME from EXCEPTIONS in $0
+      echo '  ' Consider removing $_TESTNAME from EXCEPTIONS in ${0#$(pwd)/}
     fi
 done
 
 if [ $FAILURES -ne 0 ]; then
-    exit 666
+    echo Found $FAILURES failures including warnings.
+    exit $FAILURES
 fi
