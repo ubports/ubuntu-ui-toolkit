@@ -1,13 +1,17 @@
-ubuntu-ui-toolkit (1.3.1814+16.04-0ubuntu1) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.3.1818+16.04-0ubuntu1) UNRELEASED; urgency=medium
 
   [ Loïc Molinari ]
   * Added private items and nodes for the new component styles. 
     Fixes LP: #1523836
+  * Made use of new private Frame item for the focusing.
 
   [ Florian Boucault ]
   * Always on performance monitor that logs frames that too long to render.
   * MainView: proceed to selecting the theme automatically at startup too. 
     Fixes LP: #1535819
+  * MainView: when no gradient color is needed for the background, rely on 
+    QQuickWindow's GL clear color. Lessens overdraw considerably for most 
+    apps. Fixes LP: #1439133.
 
   [ Tim Peeters ]
   * Support scrolling in ListViews with horizontal orientation to the 
@@ -34,7 +38,8 @@ ubuntu-ui-toolkit (1.3.1814+16.04-0ubuntu1) UNRELEASED; urgency=medium
 
   [ Benjamin Zeller ] 
   * Fix Bug lp:1535241 "AdaptivePageLayout first example is badly broken". 
-   Fixes LP: #1535241.
+    Fixes LP: #1535241.
+  * The click project file is should not be part of the UITK project.
   
   [ Zsombor Egri ]
   * Update Palette values for Ubuntu.Components 1.3 and apply the palette on 
