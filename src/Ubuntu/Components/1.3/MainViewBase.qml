@@ -111,7 +111,7 @@ Toolkit.PageTreeNode {
             onBackgroundColorChanged: {
                 if (mainView.backgroundColor != theme.palette.normal.background) {
                     // custom color, proceed with auto-theming
-                    autoTheme.themeName = (ColorUtils.luminance(backgroundColor) >= 0.85) ?
+                    autoTheme.themeName = (Toolkit.ColorUtils.luminance(backgroundColor) >= 0.85) ?
                                 "Ambiance" : "SuruDark";
                 }
             }
