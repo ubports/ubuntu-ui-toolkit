@@ -18,6 +18,9 @@ import QtQuick 2.4
 
 BubbleShape {
     property alias contentItem: content
+    color: styledItem.enabled
+            ? theme.palette.normal.overlay
+            : theme.palette.inactive.overlay
 
     target: styledItem.target
     direction: styledItem.direction

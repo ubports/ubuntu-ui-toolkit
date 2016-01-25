@@ -55,8 +55,8 @@ Item {
             text: styledItem.text
             textSize: Label.XSmall
             color: styledItem.enabled
-                   ? theme.palette.normal.raisedText
-                   : theme.palette.inactive.raisedText
+                   ? theme.palette.normal.overlayText
+                   : theme.palette.inactive.overlayText
         }
     }
 

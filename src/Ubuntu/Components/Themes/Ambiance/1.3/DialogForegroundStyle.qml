@@ -23,6 +23,6 @@ Item {
     UbuntuShape {
         id: background
         anchors.fill: parent
-        backgroundColor: "white"
+        backgroundColor: theme.palette.normal.overlay
     }
 }

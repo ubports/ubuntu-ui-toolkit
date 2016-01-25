@@ -117,7 +117,7 @@ Item {
             anchors.centerIn: parent
             text: styledItem.formatValue(SliderUtils.liveValue(styledItem))
             textSize: Label.Large
-            color: theme.palette.normal.raisedText
+            color: theme.palette.normal.overlayText
         }
     }
 }
