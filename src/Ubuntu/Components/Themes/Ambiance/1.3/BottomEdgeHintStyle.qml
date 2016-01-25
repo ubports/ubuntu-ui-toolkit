@@ -25,6 +25,14 @@ Item {
 
     readonly property BottomEdgeHint hint: styledItem
 
+    property color backgroundColor: styledItem.enabled
+                                    ? theme.palette.normal.overlay
+                                    : theme.palette.inactive.overlay
+
+    property color foregroundColor: styledItem.enabled
+                                    ? theme.palette.normal.overlayText
+                                    : theme.palette.inactive.overlayText
+
     // translate hint status into state
     state: {
         switch (hint.status) {
@@ -103,7 +111,7 @@ Item {
             topMargin: styledItem.height
         }
         name: "toolkit_bottom-edge-hint"
-        color: theme.palette.normal.overlayText
+        color: foregroundColor
     }
 
     Rectangle {
@@ -115,7 +123,7 @@ Item {
             topMargin: styledItem.height
         }
         height: styledItem.height
-        color: theme.palette.normal.overlay
+        color: backgroundColor
         ThinDivider {
             anchors.top: parent.top
         }
@@ -134,13 +142,13 @@ Item {
                 width: height
                 height: units.gu(2)
                 anchors.verticalCenter: parent.verticalCenter
-                color: theme.palette.normal.overlayText
+                color: foregroundColor
             }
             Label {
                 id: label
                 text: styledItem.text
                 textSize: Label.Medium
-                color: theme.palette.normal.overlayText
+                color: foregroundColor
                 height: styledItem.height
                 anchors.verticalCenter: parent.verticalCenter
                 verticalAlignment: Text.AlignVCenter
