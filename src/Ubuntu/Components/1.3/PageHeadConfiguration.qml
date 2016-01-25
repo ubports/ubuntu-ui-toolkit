@@ -50,7 +50,7 @@ Object {
     PageHeadSections {
         id: headSections
     }
-    property color foregroundColor: theme.palette.selected.backgroundText
+    property color foregroundColor: theme.palette.normal.backgroundText
 
     property bool locked: false
 
