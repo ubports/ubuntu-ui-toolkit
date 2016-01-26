@@ -32,7 +32,9 @@ Item {
     /*!
       Highlight color.
       */
-    property color highlightColor: UbuntuColors.orange
+    property color highlightColor: styledItem.enabled
+                                    ? theme.palette.selected.baseText
+                                    : theme.palette.selectedInactive.baseText
     /*!
       Scale of the highlight item
       */

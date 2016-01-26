@@ -66,28 +66,38 @@ Style.PageHeadStyle {
        \deprecated
        The background color of the tapped item in the panel.
       */
-    property color panelHighlightColor: theme.palette.selected.background
+    property color panelHighlightColor: styledItem.enabled
+                                            ? theme.palette.selected.background
+                                            : theme.palette.selectedInactive.background
 
     /*!
        \deprecated
        The foreground color (icon and text) of actions in the panel.
       */
-    property color panelForegroundColor: theme.palette.selected.backgroundText
+    property color panelForegroundColor: styledItem.enabled
+                                            ? theme.palette.normal.backgroundText
+                                            : theme.palette.inactive.backgroundText
 
     /*!
       The text color of unselected sections and the section divider.
      */
-    property color sectionColor: theme.palette.selected.backgroundText
+    property color sectionColor: styledItem.enabled
+                                    ? theme.palette.normal.backgroundText
+                                    : theme.palette.inactive.backgroundText
 
     /*!
       The text color of the selected section.
      */
-    property color selectedSectionColor: UbuntuColors.orange
+    property color selectedSectionColor: styledItem.enabled
+                                            ? theme.palette.selected.backgroundText
+                                            : theme.palette.selectedInactive.backgroundText
 
     /*!
       The background color of the pressed section.
      */
-    property color sectionHighlightColor: theme.palette.selected.background
+    property color sectionHighlightColor: styledItem.enabled
+                                            ? theme.palette.selected.background
+                                            : theme.palette.selectedInactive.background
 
     implicitHeight: headerStyle.contentHeight + divider.height + sectionsItem.height
 
