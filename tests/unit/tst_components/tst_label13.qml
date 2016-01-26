@@ -107,6 +107,58 @@ TestCase {
         compare(lightLabel2.font.weight, Font.Light, "font.weight takes precedence over font.bold")
     }
 
+
+    function verifyAutomaticRenderType(label) {
+        if (units.gridUnit <= 10) {
+            compare(label.renderType, Text.NativeRendering,
+                    "On low dpi screen renderType is Text.NativeRendering by default");
+        } else {
+            compare(label.renderType, Text.QtRendering,
+                    "On high dpi screen renderType is Text.QtRendering by default");
+        }
+    }
+
+    function verifyManualRenderType(label, renderType) {
+        compare(label.renderType, renderType,
+                "renderType was set manually, no automatic change should happen to it");
+    }
+
+    function test_renderTypeDefault_data() {
+        return [
+            {tag: "Default", gridUnit: 8.0},
+            {tag: "HighDPI", gridUnit: 16.0},
+            {tag: "LowDPI", gridUnit: 10.0},
+        ];
+    }
+
+    function test_renderTypeDefault(data) {
+        verifyAutomaticRenderType(textRenderTypeDefault);
+        units.gridUnit = data.gridUnit;
+        verifyAutomaticRenderType(textRenderTypeDefault);
+    }
+
+    function test_presetRenderType_data() {
+        return test_renderTypeDefault_data();
+    }
+
+    function test_presetRenderType(data) {
+        verifyManualRenderType(textRenderTypePreset, Text.QtRendering);
+        units.gridUnit = data.gridUnit;
+        verifyManualRenderType(textRenderTypePreset, Text.QtRendering);
+    }
+
+    function test_setRenderType_data() {
+        return test_renderTypeDefault_data();
+    }
+
+    function test_setRenderType(data) {
+        verifyAutomaticRenderType(textSetRenderType);
+        textSetRenderType.renderType = Text.NativeRendering;
+        verifyManualRenderType(textRenderTypePreset, Text.NativeRendering);
+        units.gridUnit = data.gridUnit;
+        verifyManualRenderType(textRenderTypePreset, Text.NativeRendering);
+    }
+
     Label {
         id: textCustom
     }
@@ -124,5 +176,18 @@ TestCase {
 
     Label {
         id: textSizeTest
+    }
+
+    Label {
+        id: textRenderTypeDefault
+    }
+
+    Label {
+        id: textRenderTypePreset
+        renderType: Text.QtRendering
+    }
+
+    Label {
+        id: textSetRenderType
     }
 }
