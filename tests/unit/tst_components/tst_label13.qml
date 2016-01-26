@@ -141,22 +141,21 @@ TestCase {
         return test_renderTypeDefault_data();
     }
 
-    function test_presetRenderType(data) {
-        verifyManualRenderType(textRenderTypePreset, Text.QtRendering);
-        units.gridUnit = data.gridUnit;
-        verifyManualRenderType(textRenderTypePreset, Text.QtRendering);
-    }
-
-    function test_setRenderType_data() {
-        return test_renderTypeDefault_data();
-    }
-
-    function test_setRenderType(data) {
+    function test_setRenderType() {
+        units.gridUnit = 8;
         verifyAutomaticRenderType(textSetRenderType);
+        units.gridUnit = 16;
+        verifyAutomaticRenderType(textSetRenderType);
+
+        // set renderType manually
         textSetRenderType.renderType = Text.NativeRendering;
-        verifyManualRenderType(textRenderTypePreset, Text.NativeRendering);
-        units.gridUnit = data.gridUnit;
-        verifyManualRenderType(textRenderTypePreset, Text.NativeRendering);
+        verifyManualRenderType(textSetRenderType, Text.NativeRendering);
+
+        units.gridUnit = 8;
+        verifyManualRenderType(textSetRenderType, Text.NativeRendering);
+
+        units.gridUnit = 16;
+        verifyManualRenderType(textSetRenderType, Text.NativeRendering);
     }
 
     Label {
