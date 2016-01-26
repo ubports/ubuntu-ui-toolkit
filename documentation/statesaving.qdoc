@@ -53,7 +53,7 @@
     for the application. However runtime application name change would require
     application restart.
 
-    Having these preconditions, we can deduct that \l MainViewBase::applicationName
+    Having these preconditions, we can deduct that \l MainView::applicationName
     property is one of the properties which cannot be serialized.
 
     \section1 IDs

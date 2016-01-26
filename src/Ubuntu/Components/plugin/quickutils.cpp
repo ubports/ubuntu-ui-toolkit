@@ -194,7 +194,12 @@ QObject* QuickUtils::createQmlObject(const QUrl &url, QQmlEngine *engine)
        the error "QQmlComponent: Component is not ready".
     */
     QQmlComponent *component = new QQmlComponent(engine, url, QQmlComponent::PreferSynchronous);
-    QObject* result = component->create();
+    QObject* result(Q_NULLPTR);
+    if (component->isError()) {
+        qmlInfo(engine) << component->errorString();
+    } else {
+        result = component->create();
+    }
     delete component;
     return result;
 }

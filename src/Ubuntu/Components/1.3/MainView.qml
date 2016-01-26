@@ -23,6 +23,7 @@ import QtQuick.Window 2.2
     \qmltype MainView
     \inqmlmodule Ubuntu.Components 1.3
     \ingroup ubuntu
+    \inherits StyledItem
     \brief MainView is the root Item that should be used for all applications.
         It automatically adds a header and toolbar for its contents and can
         rotate its content based on the device orientation.
@@ -93,7 +94,7 @@ import QtQuick.Window 2.2
     The examples above show how to include a single \l Page inside a MainView, but more
     advanced application structures are possible using \l PageStack and \l Tabs.
 */
-MainViewBase {
+Toolkit.MainViewBase {
     id: mainView
 
     /*!
@@ -241,5 +242,12 @@ MainViewBase {
 //                                              headerItem.__styleInstance.hasOwnProperty("animateOut") &&
 //                                              headerItem.__styleInstance.hasOwnProperty("animateInFinished") &&
 //                                              headerItem.__styleInstance.hasOwnProperty("animateOutFinished")
+    }
+
+    backgroundColor: theme.palette.normal.background
+
+    PerformanceOverlay {
+        id: performanceOverlay
+        active: false
     }
 }
