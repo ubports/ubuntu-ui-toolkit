@@ -27,6 +27,9 @@ class UCLabel : public QQuickText, public UCThemingExtension
     Q_ENUMS(TextSize)
     Q_PROPERTY(TextSize textSize MEMBER m_textSize WRITE setTextSize NOTIFY textSizeChanged FINAL)
 
+    // Overriden from QQuickText
+    Q_PROPERTY(RenderType renderType READ renderType WRITE setRenderType)
+
     // Deprecated.
     Q_PROPERTY(QString fontSize READ fontSize WRITE setFontSize NOTIFY fontSizeChanged)
 
@@ -45,6 +48,7 @@ public:
     };
 
     void setTextSize(TextSize size);
+    void setRenderType(RenderType renderType);
 
     // Deprecated.
     QString fontSize() const

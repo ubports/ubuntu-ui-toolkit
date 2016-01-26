@@ -40,9 +40,9 @@ void UCLabel::updatePixelSize()
 void UCLabel::updateRenderType()
 {
     if (UCUnits::instance().gridUnit() <= 10) {
-        setRenderType(QQuickText::NativeRendering);
+        QQuickText::setRenderType(QQuickText::NativeRendering);
     } else {
-        setRenderType(QQuickText::QtRendering);
+        QQuickText::setRenderType(QQuickText::QtRendering);
     }
 }
 
@@ -156,6 +156,13 @@ void UCLabel::setTextSize(TextSize size)
         updatePixelSize();
         Q_EMIT textSizeChanged();
     }
+}
+
+void UCLabel::setRenderType(RenderType renderType)
+{
+    disconnect(&UCUnits::instance(), &UCUnits::gridUnitChanged,
+               this, &UCLabel::updateRenderType);
+    QQuickText::setRenderType(renderType);
 }
 
 /*!
