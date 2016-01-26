@@ -76,16 +76,16 @@ void UCSlotsLayoutPrivate::updateTopBottomPaddingIfNeeded()
 {
     if (!padding.topWasSetFromQml) {
         padding.setTop((getVerticalPositioningMode() == UCSlotPositioningMode::CenterVertically
-                        && maxSlotsHeight > UCUnits::instance().gu2(SLOTSLAYOUT_TOPBOTTOMMARGIN_SIZETHRESHOLD_GU))
-                       ? UCUnits::instance().gu2(SLOTSLAYOUT_TOPMARGIN1_GU)
-                       : UCUnits::instance().gu2(SLOTSLAYOUT_TOPMARGIN2_GU));
+                        && maxSlotsHeight > UCUnits::instance().gu(SLOTSLAYOUT_TOPBOTTOMMARGIN_SIZETHRESHOLD_GU))
+                       ? UCUnits::instance().gu(SLOTSLAYOUT_TOPMARGIN1_GU)
+                       : UCUnits::instance().gu(SLOTSLAYOUT_TOPMARGIN2_GU));
     }
 
     if (!padding.bottomWasSetFromQml) {
         padding.setBottom((getVerticalPositioningMode() == UCSlotPositioningMode::CenterVertically
-                           && maxSlotsHeight > UCUnits::instance().gu2(SLOTSLAYOUT_TOPBOTTOMMARGIN_SIZETHRESHOLD_GU))
-                          ? UCUnits::instance().gu2(SLOTSLAYOUT_BOTTOMMARGIN1_GU)
-                          : UCUnits::instance().gu2(SLOTSLAYOUT_BOTTOMMARGIN2_GU));
+                           && maxSlotsHeight > UCUnits::instance().gu(SLOTSLAYOUT_TOPBOTTOMMARGIN_SIZETHRESHOLD_GU))
+                          ? UCUnits::instance().gu(SLOTSLAYOUT_BOTTOMMARGIN1_GU)
+                          : UCUnits::instance().gu(SLOTSLAYOUT_BOTTOMMARGIN2_GU));
     }
 
     return;
@@ -197,11 +197,11 @@ void UCSlotsLayoutPrivate::_q_updateCachedHeight()
 void UCSlotsLayoutPrivate::_q_updateGuValues()
 {
     if (!padding.leadingWasSetFromQml) {
-        padding.setLeading(UCUnits::instance().gu2(SLOTSLAYOUT_LEFTMARGIN_GU));
+        padding.setLeading(UCUnits::instance().gu(SLOTSLAYOUT_LEFTMARGIN_GU));
     }
 
     if (!padding.trailingWasSetFromQml) {
-        padding.setTrailing(UCUnits::instance().gu2(SLOTSLAYOUT_RIGHTMARGIN_GU));
+        padding.setTrailing(UCUnits::instance().gu(SLOTSLAYOUT_RIGHTMARGIN_GU));
     }
 
     updateTopBottomPaddingIfNeeded();
@@ -299,7 +299,7 @@ void UCSlotsLayoutPrivate::_q_updateSize()
         return;
 
     Q_Q(UCSlotsLayout);
-    q->setImplicitWidth(parentItem ? parentItem->width() : UCUnits::instance().gu2(IMPLICIT_SLOTSLAYOUT_WIDTH_GU));
+    q->setImplicitWidth(parentItem ? parentItem->width() : UCUnits::instance().gu(IMPLICIT_SLOTSLAYOUT_WIDTH_GU));
     q->setImplicitHeight(qMax<qreal>(maxSlotsHeight, mainSlotHeight)
                          + padding.top() + padding.bottom());
 
@@ -1065,16 +1065,16 @@ UCSlotsAttachedPrivate::UCSlotsAttachedPrivate()
 void UCSlotsAttachedPrivate::_q_onGuValueChanged()
 {
     if (!padding.leadingWasSetFromQml)
-        padding.setLeading(UCUnits::instance().gu2(SLOTSLAYOUT_SLOTS_SIDEMARGINS_GU));
+        padding.setLeading(UCUnits::instance().gu(SLOTSLAYOUT_SLOTS_SIDEMARGINS_GU));
 
     if (!padding.trailingWasSetFromQml)
-        padding.setTrailing(UCUnits::instance().gu2(SLOTSLAYOUT_SLOTS_SIDEMARGINS_GU));
+        padding.setTrailing(UCUnits::instance().gu(SLOTSLAYOUT_SLOTS_SIDEMARGINS_GU));
 
     if (!padding.topWasSetFromQml)
-        padding.setTop(UCUnits::instance().gu2(SLOTSLAYOUT_SLOTS_TOPBOTTOMMARGINS_GU));
+        padding.setTop(UCUnits::instance().gu(SLOTSLAYOUT_SLOTS_TOPBOTTOMMARGINS_GU));
 
     if (!padding.bottomWasSetFromQml)
-        padding.setBottom(UCUnits::instance().gu2(SLOTSLAYOUT_SLOTS_TOPBOTTOMMARGINS_GU));
+        padding.setBottom(UCUnits::instance().gu(SLOTSLAYOUT_SLOTS_TOPBOTTOMMARGINS_GU));
 }
 
 /******************************************************************************

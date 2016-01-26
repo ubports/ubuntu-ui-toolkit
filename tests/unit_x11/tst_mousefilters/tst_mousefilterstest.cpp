@@ -82,7 +82,7 @@ private:
 
     QPoint guPoint(qreal guX, qreal guY)
     {
-        return QPoint(UCUnits::instance().gu2(guX), UCUnits::instance().gu2(guY));
+        return QPoint(UCUnits::instance().gu(guX), UCUnits::instance().gu(guY));
     }
 
     void preventDblClick()
