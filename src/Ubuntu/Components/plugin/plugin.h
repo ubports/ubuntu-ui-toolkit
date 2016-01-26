@@ -22,7 +22,6 @@
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlExtensionPlugin>
 
-class QScreen;
 class QWindow;
 
 class UbuntuComponentsPlugin : public QQmlExtensionPlugin
@@ -41,10 +40,6 @@ public:
 private Q_SLOTS:
     void registerWindowContextProperty();
     void setWindowContextProperty(QWindow* focusWindow);
-
-    void registerUnitsContextProperty();
-    void attachUnitsInstanceToScreen(QScreen *screen);
-    void setUnitsContextProperty(QWindow *window);
 
 private:
     static QUrl m_baseUrl;
