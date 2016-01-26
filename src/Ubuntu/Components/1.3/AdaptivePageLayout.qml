@@ -892,10 +892,11 @@ PageTreeNode {
     /*! \internal */
     // Pages declared as children will be placed directly into hiddenPages
     default property alias data: hiddenPages.data
-    Item {
+    PageTreeNode {
         id: hiddenPages
         objectName: "HiddenPagePool"
         visible: false
+        active: false
         // make sure nothing is shown eventually
         clip: true
         anchors.fill: parent

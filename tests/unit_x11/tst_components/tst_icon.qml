@@ -91,11 +91,11 @@ Item {
 
         function test_source() {
             icon2.name = "search";
-            icon2.source = "/usr/share/icons/suru/actions/scalable/search.svg";
+            icon2.source = "/usr/share/icons/suru/actions/scalable/edit-find.svg";
 
             var image = findChild(icon2, "image");
             compare(image.source,
-                    "file:///usr/share/icons/suru/actions/scalable/search.svg",
+                    "file:///usr/share/icons/suru/actions/scalable/edit-find.svg",
                     "Source of the image should equal icon2.source.");
         }
 
