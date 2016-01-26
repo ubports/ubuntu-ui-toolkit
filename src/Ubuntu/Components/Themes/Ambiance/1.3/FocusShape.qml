@@ -18,27 +18,19 @@
 
 import QtQuick 2.4
 import Ubuntu.Components 1.3
+import Ubuntu.Components.Private 1.3
 
-UbuntuShape {
-    property color focusColor: theme.palette.normal.focus
-
+Frame {
     anchors.fill: parent
-    anchors.margins: -units.gu(0.4)
-    backgroundColor: Qt.rgba(focusColor.r, focusColor.g, focusColor.b, 1.0)
+    anchors.margins: -units.gu(0.46)
+    color: theme.palette.normal.focus
+    thickness: units.gu(0.21)
+    radius: units.gu(1.7)
     visible: styledItem.keyNavigationFocus
-    z: styledItem.z - 1
 
-    UbuntuShape {
-        anchors.fill: parent
-        anchors.margins: parent.visible ? units.gu(0.2) : 0
-        backgroundColor: theme.palette.normal.background
-        aspect: UbuntuShape.Flat
-        visible: parent.visible
-
-        Behavior on anchors.margins {
-            UbuntuNumberAnimation {
-                duration: UbuntuAnimation.FastDuration
-            }
+    Behavior on anchors.margins {
+        UbuntuNumberAnimation {
+            duration: UbuntuAnimation.FastDuration
         }
     }
 
@@ -49,4 +41,3 @@ UbuntuShape {
         when: styledItem
     }
 }
-
