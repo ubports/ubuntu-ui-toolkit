@@ -805,9 +805,9 @@ private Q_SLOTS:
         QTest::addColumn<float>("width");
 
         QTest::newRow("Same document")
-                << "MoreStyleHints.qml" << "defaultColor" << QColor("brown") << QColor("brown") << "minimumWidth" << UCUnits::instance().gu(20);
+                << "MoreStyleHints.qml" << "defaultColor" << QColor("brown") << QColor("brown") << "minimumWidth" << UCUnits::instance().gu2(20);
         QTest::newRow("Different document")
-                << "GroupPropertyBindingHints.qml" << "gradientProxy.topColor" << QColor("blue") << QColor("tan") << "minimumWidth" << UCUnits::instance().gu(20);
+                << "GroupPropertyBindingHints.qml" << "gradientProxy.topColor" << QColor("blue") << QColor("tan") << "minimumWidth" << UCUnits::instance().gu2(20);
     }
     void test_stylehints_multiple()
     {

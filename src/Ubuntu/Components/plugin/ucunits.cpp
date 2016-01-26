@@ -128,7 +128,7 @@ void UCUnits::setGridUnit(float gridUnit)
     Returns the number of pixels \a value density independent pixels correspond to.
 */
 // Density-independent pixels (and not physical pixels) because Qt sizes in terms of density-independent pixels.
-float UCUnits::dp(float value)
+float UCUnits::dp2(float value)
 {
     const float ratio = m_gridUnit / DEFAULT_GRID_UNIT_PX;
     if (value <= 2.0) {
@@ -139,6 +139,21 @@ float UCUnits::dp(float value)
     }
 }
 
+void UCUnits::dp(QQmlV4Function *args)
+{
+    if (args->length() != 0) {
+        QV4::ExecutionEngine *v4 = args->v4engine();
+        QV4::Scope scope(v4);
+        QV4::ScopedValue v(scope, (*args)[0]);
+        double value = v->toNumber();
+
+        QV4::ScopedValue d(scope, QV4::Primitive::fromDouble( dp2(value) ));
+
+        //args->setReturnValue(v4->newNumberObject(d)->asReturnedValue()); // returns a QJSValue
+        args->setReturnValue( QV4::Encode( dp2(value) ));
+    }
+}
+
 /*!
     \qmlmethod real Units::gu(real value)
 
@@ -146,9 +161,25 @@ float UCUnits::dp(float value)
 */
 // Density-independent pixels (and not physical pixels) because Qt sizes in terms of density-independent pixels.
 
-float UCUnits::gu(float value)
+float UCUnits::gu2(float value)
 {
     return qRound(value * m_gridUnit) / m_devicePixelRatio;
+}
+
+void UCUnits::gu(QQmlV4Function *args)
+{
+    if (args->length() != 0) {
+        QV4::ExecutionEngine *v4 = args->v4engine();
+        QV4::Scope scope(v4);
+        QV4::ScopedValue v(scope, (*args)[0]);
+        double value = v->toNumber();
+
+        args->setReturnValue( QV4::Encode( gu2(value) ));
+
+        QV4::ExecutionContext *context = v4->currentContext();
+        QV4::ReturnedValue val = context->getProperty(v4->newIdentifier("test"));
+        qDebug() << "test" << val << val.;
+    }
 }
 
 QString UCUnits::resolveResource(const QUrl& url)

@@ -23,6 +23,8 @@
 #include <QtCore/QHash>
 #include <QtCore/QUrl>
 
+#include <private/qv8engine_p.h>
+
 class UCUnits : public QObject
 {
     Q_OBJECT
@@ -35,8 +37,10 @@ public:
     }
 
     explicit UCUnits(QObject *parent = 0);
-    Q_INVOKABLE float dp(float value);
-    Q_INVOKABLE float gu(float value);
+    Q_INVOKABLE void dp(QQmlV4Function *args);
+    Q_INVOKABLE void gu(QQmlV4Function *args);
+    float dp2(float value);
+    float gu2(float value);
     QString resolveResource(const QUrl& url);
 
     // getters

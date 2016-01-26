@@ -355,13 +355,13 @@ void UCListItemPrivate::_q_updateSize()
 {
     Q_Q(UCListItem);
     // update divider thickness
-    divider->setImplicitHeight(UCUnits::instance().dp(DIVIDER_THICKNESS_DP));
+    divider->setImplicitHeight(UCUnits::instance().dp2(DIVIDER_THICKNESS_DP));
     QQuickItem *owner = qobject_cast<QQuickItem*>(q->sender());
     if (!owner && parentAttached) {
         owner = static_cast<QQuickItem*>(parentAttached->parent());
     }
-    q->setImplicitWidth(owner ? owner->width() : UCUnits::instance().gu(IMPLICIT_LISTITEM_WIDTH_GU));
-    q->setImplicitHeight(UCUnits::instance().gu(IMPLICIT_LISTITEM_HEIGHT_GU));
+    q->setImplicitWidth(owner ? owner->width() : UCUnits::instance().gu2(IMPLICIT_LISTITEM_WIDTH_GU));
+    q->setImplicitHeight(UCUnits::instance().gu2(IMPLICIT_LISTITEM_HEIGHT_GU));
 }
 
 // returns the index of the list item when used in model driven views,
@@ -1257,7 +1257,7 @@ bool UCListItemPrivate::swipedOverThreshold(const QPointF &mousePos, const QPoin
     {
         return false;
     }
-    qreal threshold = UCUnits::instance().gu(xAxisMoveThresholdGU);
+    qreal threshold = UCUnits::instance().gu2(xAxisMoveThresholdGU);
     qreal mouseX = mousePos.x();
     qreal pressedX = relativePos.x();
     return swipeEnabled && ((mouseX < (pressedX - threshold)) || (mouseX > (pressedX + threshold)));

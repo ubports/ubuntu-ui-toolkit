@@ -128,7 +128,7 @@ void UCBottomEdgeHint::init()
     anchors->setLeft(thisPrivate->left());
     anchors->setBottom(thisPrivate->bottom());
     anchors->setRight(thisPrivate->right());
-    d->swipeArea->setImplicitHeight(UCUnits::instance().gu(SWIPE_AREA_HEIGHT_GU));
+    d->swipeArea->setImplicitHeight(UCUnits::instance().gu2(SWIPE_AREA_HEIGHT_GU));
 
     // direction
     d->swipeArea->setDirection(UCSwipeArea::Upwards);
@@ -169,7 +169,7 @@ void UCBottomEdgeHint::adjustFlickableBottomMargin()
 void UCBottomEdgeHint::onGridUnitChanged()
 {
     Q_D(UCBottomEdgeHint);
-    d->swipeArea->setImplicitHeight(UCUnits::instance().gu(SWIPE_AREA_HEIGHT_GU));
+    d->swipeArea->setImplicitHeight(UCUnits::instance().gu2(SWIPE_AREA_HEIGHT_GU));
 }
 
 void UCBottomEdgeHint::itemChange(ItemChange change, const ItemChangeData &data)

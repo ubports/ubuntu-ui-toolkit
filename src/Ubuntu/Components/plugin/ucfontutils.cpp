@@ -64,7 +64,7 @@
  */
 qreal UCFontUtils::sizeToPixels(const QString &size)
 {
-    return modularScale(size) * UCUnits::instance().dp(fontUnits);
+    return modularScale(size) * UCUnits::instance().dp2(fontUnits);
 }
 
 /*!
