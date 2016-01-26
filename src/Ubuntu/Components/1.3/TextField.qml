@@ -896,10 +896,13 @@ Ubuntu.ActionItem {
         onChildrenChanged: {
             // reparenting
             for (var i = 0; i < children.length; i++) {
-                children[i].parent = leftPane;
-                children[i].anchors.verticalCenter = verticalCenter;
-                children[i].activeFocusOnPress = false;
-                children[i].activeFocusOnTab = false;
+                var child = children[i];
+                child.parent = leftPane;
+                child.anchors.verticalCenter = verticalCenter;
+                if (child.hasOwnProperty("activeFocusOnPress") {
+                    child.activeFocusOnPress = false;
+                }
+                child.activeFocusOnTab = false;
             }
         }
     }
@@ -920,10 +923,13 @@ Ubuntu.ActionItem {
         onChildrenChanged: {
             // reparenting
             for (var i = 0; i < children.length; i++) {
-                children[i].parent = rightPane;
-                children[i].anchors.verticalCenter = verticalCenter;
-                children[i].activeFocusOnPress = false;
-                children[i].activeFocusOnTab = false;
+                var child = children[i];
+                child.parent = rightPane;
+                child.anchors.verticalCenter = verticalCenter;
+                if (child.hasOwnProperty("activeFocusOnPress") {
+                    child.activeFocusOnPress = false;
+                }
+                child.activeFocusOnTab = false;
             }
         }
     }
