@@ -36,9 +36,6 @@ Item {
     property string direction: "down"
     property bool clipContent: false
     default property alias children: content.children
-    // FIXME: This should not be necessary. See
-    // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1214978
-    property alias arrowSource: arrow.source
 
     implicitWidth: units.gu(10)
     implicitHeight: units.gu(8)
@@ -139,36 +136,6 @@ Item {
             anchors.fill: parent
             color: bubbleShape.color
             visible: bubbleShape.clipContent
-        }
-    }
-
-    Item {
-        x: target.x
-        y: target.y
-
-        Image {
-            id: arrow
-
-            visible: !square && bubbleShape.direction != "none"
-
-            function directionToRotation(direction) {
-                switch (direction) {
-                case "up":
-                    return 180;
-                case "left":
-                    return 90;
-                case "right":
-                    return -90;
-                default: // "down" or "none"
-                    return 0;
-                }
-            }
-
-            x: -width / 2.0
-            y: -height
-            transformOrigin: Item.Bottom
-            rotation: directionToRotation(bubbleShape.direction)
-            source: Qt.resolvedUrl("../artwork/bubble_arrow.png")
         }
     }
 }
