@@ -48,8 +48,8 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_onGuValueChanged())
     Q_PRIVATE_SLOT(d_func(), void _q_updateLabelsAnchorsAndBBoxHeight())
 
-    static QColor getSubtitleColor(UCTheme *theme);
-    static QColor getSummaryColor(UCTheme *theme);
+    static QColor getSubtitleColor(QQuickItem *item, UCTheme *theme);
+    static QColor getSummaryColor(QQuickItem *item, UCTheme *theme);
 };
 
 class UCThreeLabelsSlotPrivate : public QQuickItemPrivate

@@ -179,9 +179,12 @@ UCLabel *UCThreeLabelsSlot::title()
     return d->m_title;
 }
 
-QColor UCThreeLabelsSlot::getSubtitleColor(UCTheme *theme)
+QColor UCThreeLabelsSlot::getSubtitleColor(QQuickItem *item, UCTheme *theme)
 {
-    return theme ? theme->getPaletteColor("normal", "backgroundSecondaryText") : QColor();
+    // FIXME: replace the code below with automatic color
+    // change detection based on teh item's state
+    const char *valueSet = item->isEnabled() ? "normal" : "disabled";
+    return theme ? theme->getPaletteColor(valueSet, "backgroundSecondaryText") : QColor();
 }
 
 UCLabel *UCThreeLabelsSlot::subtitle()
@@ -206,9 +209,12 @@ UCLabel *UCThreeLabelsSlot::subtitle()
     return d->m_subtitle;
 }
 
-QColor UCThreeLabelsSlot::getSummaryColor(UCTheme *theme)
+QColor UCThreeLabelsSlot::getSummaryColor(QQuickItem *item, UCTheme *theme)
 {
-    return theme ? theme->getPaletteColor("normal", "backgroundTertiaryText") : QColor();
+    // FIXME: replace the code below with automatic color
+    // change detection based on teh item's state
+    const char *valueSet = item->isEnabled() ? "normal" : "disabled";
+    return theme ? theme->getPaletteColor(valueSet, "backgroundTertiaryText") : QColor();
 }
 
 UCLabel *UCThreeLabelsSlot::summary()

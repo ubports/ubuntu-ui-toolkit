@@ -35,7 +35,7 @@ class UCLabel : public QQuickText, public UCThemingExtension
 public:
     UCLabel(QQuickItem* parent=0);
     // custom constructor to create the label with a different default color provider
-    UCLabel(std::function<QColor (UCTheme*)> defaultColor, QQuickItem *parent = 0);
+    UCLabel(std::function<QColor (QQuickItem*, UCTheme*)> defaultColor, QQuickItem *parent = 0);
     //QQuickTextPrivate is not exported as of 5.4.1 so we need the init here
     void init();
 
@@ -78,7 +78,7 @@ Q_SIGNALS:
 
 private:
     void updatePixelSize();
-    static QColor getDefaultColor(UCTheme *theme);
+    static QColor getDefaultColor(QQuickItem *item, UCTheme *theme);
     Q_SLOT void _q_updateFontFlag(const QFont &font);
     Q_SLOT void _q_customColor();
 
@@ -89,7 +89,7 @@ private:
     };
 
     QFont m_defaultFont;
-    std::function<QColor (UCTheme*)> m_defaultColor;
+    std::function<QColor (QQuickItem *, UCTheme*)> m_defaultColor;
     TextSize m_textSize;
     quint8 m_flags;
 
