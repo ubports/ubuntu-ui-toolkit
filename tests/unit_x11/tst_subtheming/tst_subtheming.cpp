@@ -631,6 +631,17 @@ private Q_SLOTS:
         QScopedPointer<ThemeTestCase> view(new ThemeTestCase("InvalidPalette.qml"));
     }
 
+    void test_invalid_palette_value()
+    {
+        QString url(QUrl::fromLocalFile(QFileInfo("themes/BuggyTheme/Palette.qml").absoluteFilePath()).toEncoded());
+        QString warning(QString("<Unknown File>: QML QQmlEngine: %1:24 Cannot assign to non-existent property \"imaginary\"\n").arg(url));
+        QTest::ignoreMessage(QtWarningMsg, warning.toUtf8());
+
+        qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "./themes");
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase("SimpleItem.qml"));
+        view->setTheme("BuggyTheme", view->rootObject());
+    }
+
     void test_removing_closest_parent_styled()
     {
         qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "");

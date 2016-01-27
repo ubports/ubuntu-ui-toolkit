@@ -92,7 +92,6 @@ QML_FILES += 1.3/ActionBar.qml \
              1.3/dateUtils.js \
              1.3/DraggingArea.qml \
              1.3/InputHandler.qml \
-             1.3/MainViewBase.qml \
              1.3/MainView.qml \
              1.3/OptionSelectorDelegate.qml \
              1.3/OptionSelector.qml \
