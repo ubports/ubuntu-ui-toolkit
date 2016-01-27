@@ -29,21 +29,19 @@ Item {
      */
     property color sectionColor: enabled
                                     ? theme.palette.normal.backgroundTertiaryText
-                                    : theme.palette.inactive.backgroundTertiaryText
+                                    : theme.palette.disabled.backgroundTertiaryText
 
     /*!
       The foreground color of the selected section.
      */
     property color selectedSectionColor: enabled
                                             ? theme.palette.selected.backgroundTertiaryText
-                                            : theme.palette.selectedInactive.backgroundTertiaryText
+                                            : theme.palette.selectedDisabled.backgroundTertiaryText
 
     /*!
       The background color for the pressed section button.
      */
-    property color pressedBackgroundColor: enabled
-                                            ? theme.palette.selected.background
-                                            : theme.palette.selectedInactive.background
+    property color pressedBackgroundColor: theme.palette.highlighted.background
 
     /*!
       The font size for the text in the buttons.

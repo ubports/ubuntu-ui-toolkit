@@ -22,16 +22,16 @@ Item {
 
     property color foregroundColor: styledItem.enabled
                                         ? theme.palette.normal.activity
-                                        : theme.palette.inactive.activity
+                                        : theme.palette.disabled.activity
     property color foregroundTextColor: styledItem.enabled
                                             ? theme.palette.normal.activityText
-                                            : theme.palette.inactive.activityText
+                                            : theme.palette.disabled.activityText
     property color backgroundColor: styledItem.enabled
                                         ? theme.palette.normal.base
-                                        : theme.palette.inactive.base
+                                        : theme.palette.disabled.base
     property color backgroundTextColor: styledItem.enabled
                                             ? theme.palette.normal.baseText
-                                            : theme.palette.inactive.baseText
+                                            : theme.palette.disabled.baseText
 
     property var progressBar: styledItem
 

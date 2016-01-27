@@ -293,7 +293,7 @@ AbstractButton {
             top: parent.top
         }
         height: emptyListItem.height - bottomDividerLine.height
-        color: theme.palette.selected.background
+        color: theme.palette.highlighted.background
     }
 
     ThinDivider {

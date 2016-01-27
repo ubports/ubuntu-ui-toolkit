@@ -33,16 +33,16 @@ Item {
     /*!
       The background color of the switch.
      */
-    property color backgroundColor: styledItem.enabled ? theme.palette.normal.base : theme.palette.inactive.base
+    property color backgroundColor: styledItem.enabled ? theme.palette.normal.base : theme.palette.disabled.base
 
     /*!
       The background color of the checked switch.
       */
-    property color checkedBackgroundColor: styledItem.enabled ? theme.palette.normal.positive : theme.palette.inactive.base
+    property color checkedBackgroundColor: styledItem.enabled ? theme.palette.normal.positive : theme.palette.disabled.base
     /*!
       The background color of the thumb.
      */
-    property color thumbColor: styledItem.enabled ? theme.palette.normal.raised : theme.palette.inactive.raised
+    property color thumbColor: styledItem.enabled ? theme.palette.normal.raised : theme.palette.disabled.raised
 
     FocusShape {
     }

@@ -25,7 +25,7 @@ Frame {
     anchors.margins: -units.gu(0.46)
     color: styledItem.enabled
                 ? theme.palette.normal.focus
-                : theme.palette.inactive.focus
+                : theme.palette.disabled.focus
     thickness: units.gu(0.21)
     radius: units.gu(1.7)
     visible: styledItem.keyNavigationFocus

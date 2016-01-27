@@ -32,9 +32,7 @@ Item {
     /*!
       Highlight color.
       */
-    property color highlightColor: styledItem.enabled
-                                    ? theme.palette.selected.baseText
-                                    : theme.palette.selectedInactive.baseText
+    property color highlightColor: theme.palette.highlight.baseText
     /*!
       Scale of the highlight item
       */

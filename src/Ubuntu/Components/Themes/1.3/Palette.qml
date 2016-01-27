@@ -53,9 +53,11 @@ QtObject {
     property PaletteValues normal: PaletteValues{}
 
     /*!
-       Color palette to use when the widget is in the inactive (disabled) state.
+      Color palette to use when the widget is in the disabled (enabled: false)
+      state.
+      \since Ubuntu.Components.Themes 1.3
     */
-    property PaletteValues inactive: PaletteValues{}
+    property PaletteValues disabled: PaletteValues{}
 
     /*!
        Color palette to use when the widget is selected, for example when
@@ -64,8 +66,14 @@ QtObject {
     property PaletteValues selected: PaletteValues{}
 
     /*!
-      Color palette values to use when the widget is selected and inactive.
+       Color palette to use when the widget is selected and disabled.
+      \since Ubuntu.Components.Themes 1.3
+    */
+    property PaletteValues selectedDisabled: PaletteValues{}
+
+    /*!
+      Color palette values to use when the widget is highlighted.
       \since Ubuntu.Components.Themes 1.3
       */
-    property PaletteValues selectedInactive: PaletteValues{}
+    property PaletteValues highlighted: PaletteValues{}
 }

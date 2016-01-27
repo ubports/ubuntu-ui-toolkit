@@ -20,14 +20,14 @@ import Ubuntu.Components.Themes 1.3
 
 Palette {
     normal: AmbianceNormal {}
-    inactive: AmbianceNormal {
+    disabled: AmbianceNormal {
         field: UbuntuColors.porcelain;
         // inactive is 30% opaque normal
         Component.onCompleted: {
             for (var p in normal) {
                 // skip objectName and all change signals
                 if (p == "objectName" || p == "field" || p.indexOf("Changed") > 0) continue;
-                inactive[p] = Qt.rgba(normal[p].r, normal[p].g, normal[p].b, 0.3);
+                disabled[p] = Qt.rgba(normal[p].r, normal[p].g, normal[p].b, 0.3);
             }
         }
     }
@@ -36,7 +36,7 @@ Palette {
     selected: AmbianceSelected {}
 
     // selected differs from normal in background, base, foreground
-    selectedInactive: AmbianceSelected {
+    selectedDisabled: AmbianceSelected {
         background: UbuntuColors.porcelain
         base: UbuntuColors.porcelain
         foreground: UbuntuColors.porcelain
@@ -46,8 +46,14 @@ Palette {
                 // skip objectName and all change signals
                 if (p == "objectName" || p.indexOf("Changed") > 0
                         || p == "background" || p == "base" || p == "foreground" ) continue;
-                selectedInactive[p] = Qt.rgba(selected[p].r, selected[p].g, selected[p].b, 0.3);
+                selectedDisabled[p] = Qt.rgba(selected[p].r, selected[p].g, selected[p].b, 0.3);
             }
         }
+    }
+
+    highlighted: AmbianceNormal {
+        background: UbuntuColors.silk
+        base: UbuntuColors.jet
+        foreground: UbuntuColors.silk
     }
 }

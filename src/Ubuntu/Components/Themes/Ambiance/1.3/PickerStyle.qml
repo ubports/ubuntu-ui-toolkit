@@ -26,7 +26,7 @@ Item {
       */
     property color backgroundColor: styledItem.enabled
                                         ? theme.palette.normal.foreground
-                                        : theme.palette.inactive.foreground
+                                        : theme.palette.disabled.foreground
     /*!
       Background color for highlight.
       */
@@ -34,9 +34,7 @@ Item {
     /*!
       Highlight color.
       */
-    property color highlightColor: styledItem.enabled
-                                    ? theme.palette.selected.baseText
-                                    : theme.palette.selectedInactive.baseText
+    property color highlightColor: theme.palette.highlighted.baseText
     /*!
       Scale of the highlight item
       */

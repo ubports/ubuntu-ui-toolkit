@@ -20,7 +20,7 @@ BubbleShape {
     property alias contentItem: content
     color: styledItem.enabled
             ? theme.palette.normal.overlay
-            : theme.palette.inactive.overlay
+            : theme.palette.disabled.overlay
 
     target: styledItem.target
     direction: styledItem.direction

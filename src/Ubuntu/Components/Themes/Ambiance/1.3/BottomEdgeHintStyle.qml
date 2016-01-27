@@ -27,11 +27,11 @@ Item {
 
     property color backgroundColor: styledItem.enabled
                                     ? theme.palette.normal.overlay
-                                    : theme.palette.inactive.overlay
+                                    : theme.palette.disabled.overlay
 
     property color foregroundColor: styledItem.enabled
                                     ? theme.palette.normal.overlayText
-                                    : theme.palette.inactive.overlayText
+                                    : theme.palette.disabled.overlayText
 
     // translate hint status into state
     state: {

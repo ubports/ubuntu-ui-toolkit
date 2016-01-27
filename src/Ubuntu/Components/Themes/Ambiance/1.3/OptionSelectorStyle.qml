@@ -52,6 +52,6 @@ Item {
         anchors.fill: parent
         color: styledItem.enabled
                 ? theme.palette.normal.background
-                : theme.palette.inactive.background
+                : theme.palette.disabled.background
     }
 }

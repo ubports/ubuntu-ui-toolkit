@@ -1654,7 +1654,7 @@ void UCListItem::resetHighlightColor()
     d->customColor = false;
     UCTheme *theme = getTheme();
     if (theme) {
-        d->highlightColor = theme->getPaletteColor("selected", "foreground");
+        d->highlightColor = theme->getPaletteColor("highlighted", "background");
     }
     update();
     Q_EMIT highlightColorChanged();

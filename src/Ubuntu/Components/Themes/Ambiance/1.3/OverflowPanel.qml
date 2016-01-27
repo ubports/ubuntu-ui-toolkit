@@ -37,7 +37,7 @@ ActionSelectionPopover {
     /*!
       The background color of the tapped item in the panel.
      */
-    property color highlightColor: theme.palette.selected.background
+    property color highlightColor: theme.palette.highlighted.background
 
     /*!
       The foreground color (icon and text) of actions in the panel.

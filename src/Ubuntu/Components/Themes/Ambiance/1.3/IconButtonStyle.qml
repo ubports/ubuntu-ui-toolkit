@@ -28,13 +28,13 @@ Item {
      */
     property color foregroundColor: styledItem.enabled
                                     ? theme.palette.normal.backgroundText
-                                    : theme.palette.inactive.backgroundText
+                                    : theme.palette.disabled.backgroundText
 
     /*!
       The background color of the button.
      */
     property color backgroundColor: styledItem.pressed ?
-                                        theme.palette.selected.background :
+                                        theme.palette.highlighted.background :
                                         "transparent"
 
     property real iconWidth: units.gu(2)

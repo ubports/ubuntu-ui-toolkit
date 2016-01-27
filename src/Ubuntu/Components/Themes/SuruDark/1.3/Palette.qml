@@ -21,7 +21,7 @@ import Ubuntu.Components.Themes 1.3
 
 Palette {
     normal: SuruDarkNormal {}
-    inactive: SuruDarkNormal {
+    disabled: SuruDarkNormal {
         field: UbuntuColors.inkstone
         // inactive is 30% transparent normal
         Component.onCompleted: {
@@ -29,7 +29,7 @@ Palette {
                 // skip objectName and all change signals
                 if (p == "objectName"|| p.indexOf("Changed") > 0
                          || p == "field"  || p == "foreground" ) continue;
-                inactive[p] = Qt.rgba(normal[p].r, normal[p].g, normal[p].b, 0.3);
+                disabled[p] = Qt.rgba(normal[p].r, normal[p].g, normal[p].b, 0.3);
             }
         }
     }
@@ -38,7 +38,7 @@ Palette {
     selected: SuruDarkSelected {}
 
     // selected differs from normal in background, base, foreground
-    selectedInactive: SuruDarkSelected {
+    selectedDisabled: SuruDarkSelected {
         background: UbuntuColors.inkstone
         base: UbuntuColors.inkstone
         foreground: UbuntuColors.inkstone
@@ -48,9 +48,15 @@ Palette {
                 // skip objectName and all change signals
                 if (p == "objectName"|| p.indexOf("Changed") > 0
                          || p == "field"  || p == "foreground" ) continue;
-                selectedInactive[p] = Qt.rgba(selected[p].r, selected[p].g, selected[p].b, 0.3);
+                selectedDisabled[p] = Qt.rgba(selected[p].r, selected[p].g, selected[p].b, 0.3);
             }
         }
+    }
+
+    highlighted: SuruDarkNormal {
+        background: UbuntuColors.slate
+        base: UbuntuColors.graphite
+        foreground: UbuntuColors.slate
     }
 }
 //![0]

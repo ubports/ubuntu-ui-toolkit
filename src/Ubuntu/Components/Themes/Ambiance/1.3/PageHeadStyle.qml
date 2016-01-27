@@ -66,9 +66,7 @@ Style.PageHeadStyle {
        \deprecated
        The background color of the tapped item in the panel.
       */
-    property color panelHighlightColor: styledItem.enabled
-                                            ? theme.palette.selected.background
-                                            : theme.palette.selectedInactive.background
+    property color panelHighlightColor: theme.palette.highlighted.background
 
     /*!
        \deprecated
@@ -76,28 +74,26 @@ Style.PageHeadStyle {
       */
     property color panelForegroundColor: styledItem.enabled
                                             ? theme.palette.normal.backgroundText
-                                            : theme.palette.inactive.backgroundText
+                                            : theme.palette.disabled.backgroundText
 
     /*!
       The text color of unselected sections and the section divider.
      */
     property color sectionColor: styledItem.enabled
                                     ? theme.palette.normal.backgroundText
-                                    : theme.palette.inactive.backgroundText
+                                    : theme.palette.disabled.backgroundText
 
     /*!
       The text color of the selected section.
      */
     property color selectedSectionColor: styledItem.enabled
                                             ? theme.palette.selected.backgroundText
-                                            : theme.palette.selectedInactive.backgroundText
+                                            : theme.palette.selectedDisabled.backgroundText
 
     /*!
       The background color of the pressed section.
      */
-    property color sectionHighlightColor: styledItem.enabled
-                                            ? theme.palette.selected.background
-                                            : theme.palette.selectedInactive.background
+    property color sectionHighlightColor: theme.palette.highlighted.background
 
     implicitHeight: headerStyle.contentHeight + divider.height + sectionsItem.height
 
