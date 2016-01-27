@@ -16,13 +16,14 @@
 
 import QtQuick 2.4
 import Ubuntu.Components 1.3
+import Ubuntu.Components.Themes 1.3
 
-Item {
-    id: dialogForegroundStyle
-
-    UbuntuShape {
-        id: background
-        anchors.fill: parent
-        backgroundColor: theme.palette.normal.overlay
-    }
+SuruDarkNormal {
+    background: UbuntuColors.inkstone
+    backgroundText: UbuntuColors.blue
+    backgroundTertiaryText: UbuntuColors.blue
+    base: UbuntuColors.ash
+    baseText:UbuntuColors.blue
+    foreground: UbuntuColors.slate
 }
+

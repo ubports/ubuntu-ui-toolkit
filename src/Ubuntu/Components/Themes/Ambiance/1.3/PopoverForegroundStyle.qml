@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -18,6 +18,9 @@ import QtQuick 2.4
 
 BubbleShape {
     property alias contentItem: content
+    color: styledItem.enabled
+            ? theme.palette.normal.overlay
+            : theme.palette.disabled.overlay
 
     target: styledItem.target
     direction: styledItem.direction

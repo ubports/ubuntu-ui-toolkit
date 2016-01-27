@@ -37,12 +37,14 @@ ActionSelectionPopover {
     /*!
       The background color of the tapped item in the panel.
      */
-    property color highlightColor: theme.palette.selected.background
+    property color highlightColor: theme.palette.highlighted.background
 
     /*!
       The foreground color (icon and text) of actions in the panel.
      */
-    property color foregroundColor: theme.palette.normal.backgroundText
+    property color foregroundColor: styledItem.enabled
+                                        ? theme.palette.normal.backgroundText
+                                        : theme.palette.disabled.backgroundText
 
     property bool square: true
     callerMargin: -units.gu(1) + units.dp(4)
@@ -90,7 +92,6 @@ ActionSelectionPopover {
             }
             width: units.gu(2)
             height: units.gu(2)
-            opacity: action.enabled ? 1.0 : 0.5
         }
 
         Label {
@@ -107,7 +108,6 @@ ActionSelectionPopover {
             elide: Text.ElideRight
             text: action.text
             color: overflow.foregroundColor
-            opacity: action.enabled ? 1.0 : 0.5
         }
 
         // The value of showDivider is automatically set by ActionSelectionPopover.
