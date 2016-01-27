@@ -277,6 +277,8 @@ AbstractButton {
         }
     }
 
+    // exposed for OptionSelector
+    property alias __highlight: highlight
     Rectangle {
         id: highlight
 
