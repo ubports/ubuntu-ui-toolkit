@@ -79,9 +79,24 @@ void UCLabel::_q_customColor()
 UCLabel::UCLabel(QQuickItem* parent)
     : QQuickText(parent)
     , UCThemingExtension(this)
+    , m_defaultColor(getDefaultColor)
     , m_textSize(Medium)
     , m_flags(0)
 {
+}
+
+UCLabel::UCLabel(std::function<QColor (UCTheme*)> defaultColor, QQuickItem *parent)
+    : QQuickText(parent)
+    , UCThemingExtension(this)
+    , m_defaultColor(defaultColor)
+    , m_textSize(Medium)
+    , m_flags(0)
+{
+}
+
+QColor UCLabel::getDefaultColor(UCTheme *theme)
+{
+    return theme ? theme->getPaletteColor("normal", "backgroundText") : QColor();
 }
 
 void UCLabel::classBegin()
@@ -110,7 +125,7 @@ void UCLabel::postThemeChanged()
     }
     UCTheme *theme = getTheme();
     if (theme) {
-        setColor(theme->getPaletteColor("normal", "backgroundText"));
+        setColor(m_defaultColor(theme));
         m_flags &= ~ColorSet;
     }
 }

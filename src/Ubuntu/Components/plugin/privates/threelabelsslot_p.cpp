@@ -18,6 +18,7 @@
 #include "uclabel.h"
 #include "ucunits.h"
 #include "ucfontutils.h"
+#include "uctheme.h"
 
 UCThreeLabelsSlotPrivate::UCThreeLabelsSlotPrivate()
     : QQuickItemPrivate()
@@ -178,11 +179,16 @@ UCLabel *UCThreeLabelsSlot::title()
     return d->m_title;
 }
 
+QColor UCThreeLabelsSlot::getSubtitleColor(UCTheme *theme)
+{
+    return theme ? theme->getPaletteColor("normal", "backgroundSecondaryText") : QColor();
+}
+
 UCLabel *UCThreeLabelsSlot::subtitle()
 {
     Q_D(UCThreeLabelsSlot);
     if (d->m_subtitle == Q_NULLPTR) {
-        d->m_subtitle = new UCLabel(this);
+        d->m_subtitle = new UCLabel(getSubtitleColor, this);
         QQmlEngine::setContextForObject(d->m_subtitle, qmlContext(this));
         d->m_subtitle->init();
 
@@ -200,11 +206,16 @@ UCLabel *UCThreeLabelsSlot::subtitle()
     return d->m_subtitle;
 }
 
+QColor UCThreeLabelsSlot::getSummaryColor(UCTheme *theme)
+{
+    return theme ? theme->getPaletteColor("normal", "backgroundTertiaryText") : QColor();
+}
+
 UCLabel *UCThreeLabelsSlot::summary()
 {
     Q_D(UCThreeLabelsSlot);
     if (d->m_summary == Q_NULLPTR) {
-        d->m_summary = new UCLabel(this);
+        d->m_summary = new UCLabel(getSummaryColor, this);
         QQmlEngine::setContextForObject(d->m_summary, qmlContext(this));
         d->m_summary->init();
 

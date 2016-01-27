@@ -24,6 +24,7 @@
 //summary, when subtitle is empty)
 #define TITLE_SPACING_DP                       2
 
+class UCTheme;
 class UCLabel;
 class UCThreeLabelsSlotPrivate;
 class UCThreeLabelsSlot : public QQuickItem
@@ -46,6 +47,9 @@ protected:
 private:
     Q_PRIVATE_SLOT(d_func(), void _q_onGuValueChanged())
     Q_PRIVATE_SLOT(d_func(), void _q_updateLabelsAnchorsAndBBoxHeight())
+
+    static QColor getSubtitleColor(UCTheme *theme);
+    static QColor getSummaryColor(UCTheme *theme);
 };
 
 class UCThreeLabelsSlotPrivate : public QQuickItemPrivate
