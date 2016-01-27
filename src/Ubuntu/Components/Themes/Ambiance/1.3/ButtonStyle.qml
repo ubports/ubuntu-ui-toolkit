@@ -27,7 +27,7 @@ Item {
     property real horizontalPadding: units.gu(1)
     // FIXME: Add this color to the palette
     property color defaultColor: "#b2b2b2"
-    property font defaultFont: Qt.font({family: "Ubuntu", pixelSize: FontUtils.sizeToPixels("medium")})
+    property font defaultFont: Qt.font({family: "Ubuntu", pixelSize: fontUtils.sizeToPixels("medium")})
     property Gradient defaultGradient
     property real buttonFaceOffset: 0
     property bool stroke: button.hasOwnProperty("strokeColor") && button.strokeColor != Qt.rgba(0.0, 0.0, 0.0, 0.0)
