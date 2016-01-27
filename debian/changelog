@@ -1,4 +1,11 @@
-ubuntu-ui-toolkit (1.3.1818+16.04-0ubuntu1) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.3.1823+16.04-0ubuntu1) UNRELEASED; urgency=medium
+
+  [ Christian Dywan ]
+  * Print errors when QuickUtils fails to create a component.
+
+  [ Oliver Tilloy ]
+  * Do not try to assign to non-existent property "activeFocusOnPress". 
+    Fixes LP: #1532953
 
   [ Loïc Molinari ]
   * Added private items and nodes for the new component styles. 
@@ -12,6 +19,8 @@ ubuntu-ui-toolkit (1.3.1818+16.04-0ubuntu1) UNRELEASED; urgency=medium
   * MainView: when no gradient color is needed for the background, rely on 
     QQuickWindow's GL clear color. Lessens overdraw considerably for most 
     apps. Fixes LP: #1439133.
+  * Panel: MathUtils used without import prefix was leading to undefined 
+    reference.
 
   [ Tim Peeters ]
   * Support scrolling in ListViews with horizontal orientation to the 
@@ -22,6 +31,8 @@ ubuntu-ui-toolkit (1.3.1818+16.04-0ubuntu1) UNRELEASED; urgency=medium
     Fixes LP: #1531871.
   * Implement horizontal flicking in the flickable autopilot CPO.
   * Re-order to list of pages in the gallery to be alphabetical.
+  * Fix the autopilot failures introduced with the horizontal scrolling in 
+    the Flickable CPO.
 
   [ Zoltán Balogh ]
   * Create a click packaging project for the UITK Component Gallery.
@@ -40,6 +51,7 @@ ubuntu-ui-toolkit (1.3.1818+16.04-0ubuntu1) UNRELEASED; urgency=medium
   * Fix Bug lp:1535241 "AdaptivePageLayout first example is badly broken". 
     Fixes LP: #1535241.
   * The click project file is should not be part of the UITK project.
+  * Move MainViewBase to C++.
   
   [ Zsombor Egri ]
   * Update Palette values for Ubuntu.Components 1.3 and apply the palette on 

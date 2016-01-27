@@ -321,7 +321,7 @@ Item {
             name: "moving"
             PropertyChanges {
                 target: bar
-                position: MathUtils.clamp(draggingArea.mousePosition - internal.movingDelta, 0, bar.size)
+                position: Toolkit.MathUtils.clamp(draggingArea.mousePosition - internal.movingDelta, 0, bar.size)
             }
         },
         State {
