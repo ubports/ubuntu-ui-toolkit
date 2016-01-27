@@ -27,28 +27,28 @@ Template {
             spacing: units.gu(2)
 
             Label {
-                fontSize: "xx-small"
-                text: "xx-small"
+                textSize: Label.XxSmall
+                text: "Label.XxSmall"
             }
             Label {
-                fontSize: "x-small"
-                text: "x-small"
+                textSize: Label.XSmall
+                text: "Label.XSmall"
             }
             Label {
-                fontSize: "small"
-                text: "small"
+                textSize: Label.Small
+                text: "Label.Small"
             }
             Label {
-                fontSize: "medium"
-                text: "medium"
+                textSize: Label.Medium
+                text: "Label.Medium"
             }
             Label {
-                fontSize: "large"
-                text: "large"
+                textSize: Label.Large
+                text: "Label.Large"
             }
             Label {
-                fontSize: "x-large"
-                text: "x-large"
+                textSize: Label.XLarge
+                text: "Label.XLarge"
             }
         }
     }

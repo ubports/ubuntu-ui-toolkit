@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/uc">
+        <file>shaders/shape.frag</file>
+        <file>shaders/shape_mipmap.frag</file>
+        <file>shaders/shape.vert</file>
+        <file>shaders/shapeoverlay.frag</file>
+        <file>shaders/shapeoverlay_mipmap.frag</file>
+        <file>shaders/shapeoverlay.vert</file>
+        <file>privates/shaders/frame.frag</file>
+        <file>privates/shaders/frame.vert</file>
+    </qresource>
+</RCC>

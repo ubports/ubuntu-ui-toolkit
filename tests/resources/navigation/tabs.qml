@@ -15,8 +15,8 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 1.2
-import Ubuntu.Components.ListItems 1.0 as ListItem
+import Ubuntu.Components 1.3
+import Ubuntu.Components.ListItems 1.3 as ListItem
 
 MainView {
     width: 800

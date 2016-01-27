@@ -106,27 +106,27 @@ MainView {
                 anchors.fill: parent
                 spacing: units.gu(0.5)
                 Label {
-                    fontSize: "large"
+                    textSize: Label.Large
                     property var date: new Date()
                     text: "Date: " + date.toLocaleDateString(Qt.locale(root.locale))
                 }
                 Label {
-                    fontSize: "large"
+                    textSize: Label.Large
                     property var date: new Date()
                     text: "Time: " + date.toLocaleTimeString(Qt.locale(root.locale))
                 }
                 Label {
-                    fontSize: "large"
+                    textSize: Label.Large
                     property var dow: Qt.locale(root.locale).firstDayOfWeek
                     text: "First day of week: " + Qt.locale(root.locale).standaloneDayName(dow)
                 }
                 Label {
-                    fontSize: "large"
+                    textSize: Label.Large
                     property var num: 10023823
                     text: "Number: " + num.toLocaleString(Qt.locale(root.locale))
                 }
                 Label {
-                    fontSize: "large"
+                    textSize: Label.Large
                     property var num: 10023823
                     text: "Currency: " + num.toLocaleCurrencyString(Qt.locale(root.locale))
                 }

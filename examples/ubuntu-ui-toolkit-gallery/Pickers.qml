@@ -14,13 +14,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
+import QtQuick 2.4
 import Ubuntu.Components 1.3
 import Ubuntu.Components.Pickers 1.3
 
 Template {
     objectName: "pickersTemplate"
     id: root
+
+    property var stringListModel: ["starred", "media-record", "like", "language-chooser", "go-home", "email", "contact-group", "notification", "active-call"]
     TemplateSection {
         className: "Picker"
         documentation: "qml-ubuntu-components-pickers-picker.html"
@@ -41,6 +43,19 @@ Template {
                 }
 
                 onSelectedIndexChanged: print("index=" + selectedIndex)
+            }
+            Picker {
+                circular: false
+                model: stringListModel
+                itemHeight: units.gu(3)
+                delegate: PickerDelegate {
+                    Icon {
+                        anchors.centerIn: parent
+                        name: modelData
+                        width: units.gu(2)
+                        height: units.gu(2)
+                    }
+                }
             }
         }
 
@@ -65,6 +80,18 @@ Template {
                     }
                     model = stack;
                     selectedIndex = 3;
+                }
+            }
+            Picker {
+                model: stringListModel
+                itemHeight: units.gu(3)
+                delegate: PickerDelegate {
+                    Icon {
+                        anchors.centerIn: parent
+                        name: modelData
+                        width: units.gu(2)
+                        height: units.gu(2)
+                    }
                 }
             }
         }

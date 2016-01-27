@@ -1,0 +1,54 @@
+module Ubuntu.Components.ListItems
+Empty 0.1 1.2/Empty.qml
+Base 0.1 1.2/Base.qml
+Caption 0.1 1.2/Caption.qml
+Divider 0.1 1.2/Divider.qml
+Header 0.1 1.2/ListItemHeader.qml
+internal IconVisual IconVisual.qml
+internal LabelVisual LabelVisual.qml
+MultiValue 0.1 1.2/MultiValue.qml
+ItemSelector 0.1 1.2/ItemSelector.qml
+internal ProgressionVisual ProgressionVisual.qml
+ValueSelector 0.1 1.2/ValueSelector.qml
+SingleValue 0.1 1.2/SingleValue.qml
+Standard 0.1 1.2/Standard.qml
+Subtitled 0.1 1.2/Subtitled.qml
+SingleControl 0.1 1.2/SingleControl.qml
+ThinDivider 0.1 1.2/ThinDivider.qml
+Expandable 0.1 1.2/Expandable.qml
+ExpandablesColumn 0.1 1.2/ExpandablesColumn.qml
+
+#version 1.0
+Empty 1.0 1.2/Empty.qml
+Base 1.0 1.2/Base.qml
+Caption 1.0 1.2/Caption.qml
+Divider 1.0 1.2/Divider.qml
+Header 1.0 1.2/ListItemHeader.qml
+MultiValue 1.0 1.2/MultiValue.qml
+ItemSelector 1.0 1.2/ItemSelector.qml
+ValueSelector 1.0 1.2/ValueSelector.qml
+SingleValue 1.0 1.2/SingleValue.qml
+Standard 1.0 1.2/Standard.qml
+Subtitled 1.0 1.2/Subtitled.qml
+SingleControl 1.0 1.2/SingleControl.qml
+ThinDivider 1.0 1.2/ThinDivider.qml
+Expandable 1.0 1.2/Expandable.qml
+ExpandablesColumn 1.0 1.2/ExpandablesColumn.qml
+
+#################################################
+#version 1.3
+Empty 1.3 1.3/Empty.qml
+Base 1.3 1.3/Base.qml
+Caption 1.3 1.3/Caption.qml
+Divider 1.3 1.3/Divider.qml
+Header 1.3 1.3/ListItemHeader.qml
+MultiValue 1.3 1.3/MultiValue.qml
+ItemSelector 1.3 1.3/ItemSelector.qml
+ValueSelector 1.3 1.3/ValueSelector.qml
+SingleValue 1.3 1.3/SingleValue.qml
+Standard 1.3 1.3/Standard.qml
+Subtitled 1.3 1.3/Subtitled.qml
+SingleControl 1.3 1.3/SingleControl.qml
+ThinDivider 1.3 1.3/ThinDivider.qml
+Expandable 1.3 1.3/Expandable.qml
+ExpandablesColumn 1.3 1.3/ExpandablesColumn.qml

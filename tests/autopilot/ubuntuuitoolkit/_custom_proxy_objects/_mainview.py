@@ -40,6 +40,11 @@ logger = logging.getLogger(__name__)
 class MainView(_common.UbuntuUIToolkitCustomProxyObjectBase):
     """MainView Autopilot custom proxy object."""
 
+    def __init__(self, *args):
+        super().__init__(*args)
+        if not hasattr(self, 'useDeprecatedToolbar'):
+            self.useDeprecatedToolbar = None
+
     @classmethod
     def validate_dbus_object(cls, path, state):
         if super().validate_dbus_object(path, state):

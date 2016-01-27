@@ -1,0 +1,54 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Christian Dywan <christian.dywan@canonical.com>\n"
+"Language-Team: \n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Now"
+msgstr "tr:Now"
+
+msgid "%1 minute ago"
+msgid_plural "%1 minutes ago"
+msgstr[0] "tr:%1 minute ago"
+msgstr[1] "tr:%1 minutes ago"
+
+msgid "%1 minute"
+msgid_plural "%1 minutes"
+msgstr[0] "tr:%1 minute"
+msgstr[1] "tr:%1 minutes"
+
+msgid "h:mm ap"
+msgstr "'tr:'h:mm ap"
+
+msgid "HH:mm"
+msgstr "'tr:'HH:mm"
+
+msgid "'Yesterday 'h:mm ap"
+msgstr "'tr:Yesterday 'h:mm ap"
+
+msgid "'Yesterday 'HH:mm"
+msgstr "'tr:Yesterday 'HH:mm"
+
+msgid "'Tomorrow 'h:mm ap"
+msgstr "'tr:Tomorrow 'h:mm ap"
+
+msgid "'Tomorrow 'HH:mm"
+msgstr "'tr:Tomorrow 'HH:mm"
+
+msgid "ddd' 'h:mm ap"
+msgstr "'tr:'ddd' 'h:mm ap"
+
+msgid "ddd' 'HH:mm"
+msgstr "'tr:'ddd' 'HH:mm"
+
+msgid "ddd d MMM' 'h:mm ap"
+msgstr "'tr:FarAway'"
+
+msgid "ddd d MMM' 'HH:mm"
+msgstr "'tr:FarAway'"

@@ -38,6 +38,7 @@ __all__ = [
     'QQuickFlickable',
     'QQuickGridView',
     'QQuickListView',
+    'Sections',
     'TabBar',
     'Tabs',
     'tests',
@@ -47,6 +48,7 @@ __all__ = [
     'ToolkitException',
     'ubuntu_scenarios',
     'UbuntuListView11',
+    'UbuntuListView',
     'UbuntuUIToolkitCustomProxyObjectBase',
 ]
 
@@ -76,6 +78,7 @@ from ubuntuuitoolkit._custom_proxy_objects import (
     QQuickFlickable,
     QQuickGridView,
     QQuickListView,
+    Sections,
     TabBar,
     Tabs,
     TextArea,
@@ -84,4 +87,5 @@ from ubuntuuitoolkit._custom_proxy_objects import (
     ToolkitException,
     UbuntuUIToolkitCustomProxyObjectBase,
     UbuntuListView11,
+    UbuntuListView,
 )

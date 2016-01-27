@@ -1,5 +1,5 @@
-LAYOUT_SRC = $$PWD/../../modules/Ubuntu/Layouts
-LAYOUT_BLD = $$shadowed($$PWD)/../../modules/Ubuntu/Layouts
+LAYOUT_SRC = $$PWD/../../src/Ubuntu/Layouts
+LAYOUT_BLD = $$shadowed($$PWD)/../../qml/Ubuntu/Layouts
 
 INCLUDEPATH += $$LAYOUT_SRC/plugin
 PRE_TARGETDEPS = $$LAYOUT_BLD/libUbuntuLayouts.so

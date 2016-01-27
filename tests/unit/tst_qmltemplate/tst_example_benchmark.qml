@@ -47,7 +47,7 @@ TestCase {
      */
     function benchmark_create_component_data() {
         return [
-                { tag: "Button", fileName: "../../../modules/Ubuntu/Components/Button.qml" }
+                { tag: "Button", fileName: "../../../qml/Ubuntu/Components/Button.qml" }
                ];
     }
     

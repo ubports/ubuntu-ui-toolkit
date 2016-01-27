@@ -1,3 +1,805 @@
+ubuntu-ui-toolkit (1.3.1795+16.04.20160106-0ubuntu1) xenial; urgency=medium
+
+  [ Christian Dywan ]
+  * Fix typo in runtest.sh: $? is the error code, not $*.
+  * Document use of RegExpValidator for password/ PIN input.
+  * Include filename derived QML class name in .api. Fixes LP: #1527138
+  * Use edit-clear for clear button instead of the invalid clear search.
+  * No transparency in focus outline.
+  * Give the original Toolbar its name back.
+  * Fix typo in runtest.sh: $? is the error code, not $*.
+  * Use resolved filename but add fragment. Fixes LP: #1401920 
+
+  [ Zoltán Balogh ]
+  * Use build root for the Gestures library instead of relative path.
+  * Fix the tests for the gallery change
+  
+  [ Zsombor Egri ]
+  * Add mnemonics support to Action. Fixes LP: #1527527
+  * Use original Image.source in image extension when no scaling is needed in 
+    order to keep the formatting which would be otherwise removed from a 
+    resolved file URL. Fixes LP: #1401920
+  * Move UbuntuListView 1.3 code into one single file. Fixes LP: #1523815
+ 
+  [ Albert Astals Cid ]
+  * Add UCTestExtras::removeTimeConstraintsFromSwipeArea
+    For that needed to move ucswipearea.cpp from UbuntuComponents to 
+    UbuntuGestures but made it in a private header so we don't have to care much
+    for the API/ABI stability for now.
+  
+  [ Andrea Bernabei ]
+  * make scrollbars tests more robust.
+
+  [ Tim Peeters ]
+  * Update font sizes. Fixes LP: #1528263  
+
+  [ CI Train Bot ]
+  * No-change rebuild.
+
+ -- Zoltan Balogh <zoltan.balogh@canonical.com>  Wed, 06 Jan 2016 04:27:02 +0000
+
+ubuntu-ui-toolkit (1.3.1778+16.04.20151221-0ubuntu1) xenial; urgency=medium
+
+  [ Tim Peeters ]
+  * Fix issue with trigger() for ListItems.Standard. (LP: #1527811)
+
+ -- Zoltan Balogh <zoltan.balogh@canonical.com>  Mon, 21 Dec 2015 21:09:04 +0000
+
+ubuntu-ui-toolkit (1.3.1778+16.04.20151217.1-0ubuntu1) xenial; urgency=medium
+
+  [ Andrea Bernabei ]
+  * Rework Scrollbars and add ScrollView component.
+
+  [ Zsombor Egri ]
+  * Refactor UCSwipeAreaPrivate to use QQuickItemPrivate instead of being
+    a QObject.
+
+  [ Tim Peeters ]
+  * Reduce toolbar height on phone in landscape orientation. 
+    Fixes LP: #1336793.
+  * Introduce the new Toolbar component for the header edit mode. 
+  * Reduce the PageHeader height by 1 GU on phone in landscape orientation. 
+    Fixes LP: #1336793
+  * Fix AppHeader 1.2 to use the new MathUtils. This fixes a failing autopilot
+    CPO test.
+
+  [ Zoltan Balogh ]
+  * Do not wipe when provisioning for normal use and improve 
+    regression detection.
+  * Try to link Gestures more explicitely. (kudos to xnox).
+
+  [ Christian Dywan ]
+  * Proper keyboard navigation and focus visuals for buttons. 
+    Fixes LP: #1225139, LP: #1514850
+  * Escape should close popover. Fixes LP: #1523828
+  * Surround state overloading message with static boolean. Fixes LP: #1523399
+  * Don't exit, return 1 from export_modules_dir.sh.
+
+  [ Michael Sheldon ]
+  * Set the activeFocus on the input component when a text input area receive
+    focus. Fixes LP: #1518352
+
+  [ Benjamin Zeller ]
+  * Move PageTreeNode to C++.
+  * Custom property flag needs to be set always even when the value itself does not change.
+
+  [ Albert Astals Cid ]
+  * Make some more members slots
+    This way we can use them in unity8 to make the drag areas more easily 
+    testable by making the times to recognize the gestures longer.
+
+  [ CI Train Bot ]
+  * No-change rebuild.
+
+ -- Zoltan Balogh <zoltan.balogh@canonical.com>  Thu, 17 Dec 2015 17:13:56 +0000
+
+ubuntu-ui-toolkit (1.3.1761+16.04.20151216.1-0ubuntu1) xenial; urgency=medium
+
+  [ Zoltán Balogh ]
+  * Drop dependency on qtc plugin script and wait for the shell with a local 
+    function.
+
+  [ Christian Dywan ]
+  * runtest.sh needs to add subdirs to the libpath. Fixes: LP: #1524710.
+  * Explicit click/ touch threshold beyond handler.
+  * Enter/Return/Space should trigger() Button. Fixes: LP: #1523794.
+  * Only set ppmm in SwipeArea if screen has valid dpi. Fixes: LP: #1525174.
+
+  [ Tim Peeters ]
+  * Implement header slot management for convergence:
+    - Adapt the number of action slots to the width of the view.
+    - When a new action appears, show a quick fade-in.
+    - Reverse the order of the actions in the header.
+    - Update icon width to 4GU. Fixes: LP: #1428757.
+  * To prevent an invalid sectionIndex, reset the value of sectionIndex to -1
+    when the model of Sections is changed. Fixes: LP: #1513933.
+
+  [ Loïc Molinari ]
+  * UbuntuShape - Cleaned up includes.
+  
+  [ Albert Astals Cid ]
+  * Simplify logic for emitting draggingChanged/pressedChanged
+    No need for a switch that considers the possible cases, just store the
+    status before and check after
+    Fixes an issue in which the SwipeArea pressedChanged signal was not emitted
+    if switching directly from WaitingForTouch to Recognized.
+  * Fix memory leak in SwipeArea
+    SwipeAreaPrivate is not deleted directly so make it part of the qobject
+    hierarchy so it's auto deleted on parent destruction.
+   
+  [ Zsombor Egri ]
+  * Add reset functionality to Action.shortcut property. Fixes: LP: #1518420.
+  * Add contentWidth and contentHeight to Dialog so foreground can be resized. 
+    Fixes: LP: #1249325.
+  * Fixing ListItem.selected and ListItem.selectMode bugs. 
+    Fixes: LP: #1493880, LP: #1493882, LP: #1514928. 
+  * Add private implementations to ActionItem, AbstractButton, BottomEdgeHint
+    and BottomEdge. Fixes: LP: #1524234
+  * Close Popups.Dialog when Esc key is pressed. Fixes LP: #1523833
+  * Invoke the overridden trigger() function for Action and ActionItem 
+    derivates. Fixes LP: #1524234
+  * Fix BottomEdge assertion when the content is committed by clicking on the 
+    hint. Fixes LP: #1524407
+
+  [ CI Train Bot ]
+  * No-change rebuild.
+
+ -- Zoltan Balogh <zoltan.balogh@canonical.com>  Wed, 16 Dec 2015 10:01:47 +0000
+
+ubuntu-ui-toolkit (1.3.1742+16.04.20151209-0ubuntu1) xenial; urgency=medium
+
+  [ Zoltán Balogh ]
+  * Enable building the UITK tests in any case.
+  * Remove Q_Q(UCStyledItemBase) because of unused variable warning.
+  * Resolve Trusty specific compiler issue not resolving QPointer data on 
+    connections.
+  * Use only the object name when selecting sections and labels in tests.
+
+  [Zsombor Egri ]
+  * Update BottomEdge with UI/UX agreed during the sprint. Fixes LP: #1368811.
+  * BottomEdge component. Fixes LP: #1368811.
+  * Remove build failure on Xenial caused by deprecated Qt functions.
+  * Fix BottomEdgeHint consumes activeFocusOnPress handling. Fixes LP: #1517777
+  * Migrate DirectionalDragArea from Unity8, named as SwipeArea. Original code 
+    (from lp:unity8) by: Daniel d'Andrada <daniel.dandrada@canonical.com>.
+  * Delete QQuickView when the application quits. Fixing segfault caused by the
+    dangling objects in GestireDetector.
+  * BottomEdgeHint API changes, deprecating state property, introducing locked
+    property to drive visuals lock and click handling.
+  * Fixing CheckBox and Switch getting checked property altered after clicked()
+    signal is emitted. Fixes LP: #1510919.
+  * Add ListItem.swipeEnabled property to block swiping when overlay MouseArea 
+    is used to drag content. Fixes swiping when leading/trailing actions list 
+    is empty. Fixes LP: #1500409, LP: #1500416.
+  * Follow the new design in BottomEdgeHint.
+  * Provide import version information for StyledItem and remove theme.version 
+    obsolete property.
+  * Use QQuickItemChangeListener to listen parent changes, skipping the meta 
+    object model. Convert UCThemingExtension into a Q_INTERFACE so object_cast<>
+    can work with it saving the need to memorise on an item whether it is an 
+    extended item or not.
+  * Set mouseAttached to false to revert regression in UITK gallery.
+  * Remove BottomEdgeHint from UITK gallery's MainPage.qml which occludes with 
+    the bottom-up dragging of the ListView.
+
+  [ Benjamin Zeller ]
+  * Avoid unnecessary updates for i18n strings.
+  * "MathUtils.clamp, min value should not be bigger than the max value". 
+    Fixes LP: #1520557.
+  * Move MathUtils to Cpp.
+
+  [ Loïc Molinari ]
+  * UbuntuShape - Fixed deprecation logging issues.
+  * This fix prevents logging a deprecation warning for "image", "color" and 
+    "gradientColor" properties when the import version is less than 1.3. The 
+    logging of properties used internally (through the old image wrapper) have 
+    been removed too since the user might not even have used them. 
+    Fixes LP: #1519414.
+
+  [ Christian Dywan ]
+  * Enable gallery target in qmake.
+  * Don't set activeFocusOnPress on TextField but on child only. 
+    Fixes LP: #1486274, LP: #1513897.
+  * Make runtest.sh work out of the box again.
+  * Explicitly handle keyboard anchoring in dialog foreground. 
+    Fixes LP: #1376763.
+  * Remove GestureDetector in favor of SwipeArea in BottomEdgeHint. Also make
+    possible to assign Action to the component. Fixes LP: #1517771, LP: #1517798
+  * Enforce !activeFocusOnPress on TextField primary/secondaryItem. 
+    Fixes LP: #1513897.
+  * Only run ActivityIndicator if visible. Fixes LP: #1513450.
+  * Use wait_select_single for _get_button in Popover CPO.
+  * Include composite types in .api again.
+  * More forgiving QML plugin/ version discovery.
+  * Update toolkit and gallery po templates. Fixes LP: #1512924.
+  * Improve handling of list types in apicheck.
+  * Smaller handlers, entirely draggable caret. Fixes LP: #1450222.
+  * Special-case leaked QQuickImageBase properties. Fixes LP: #1473890.
+  * Don't use UniqueConnection in the image extension
+  * Sync the height of the Page header with the other subheaders in the 
+    AdaptivePageLayout.
+
+  [ Tim Peeters ]
+  * Add extension property to PageHeader.
+  * Don't set the header.moving property when flickable contents height changes 
+    but the header does not actually move. Fixes LP: #1514143.
+  * Fix the icon color in the AppHeader. Fixes LP: #1515593.
+  * Use PageHeader in the UITK gallery.
+  * Ensure PageHeader style works properly with run-time theme changes.
+  * Add a back action to the Page.header automatically in PageStack and 
+    AdaptivePageLayout.
+  * Add a navigationActions property to PageHeader.
+  * Fix links to Page in the documentation.
+  * Fix several header CPO related issues.
+  * Only select visible header label instance in checkPageHeader().
+
+  [ Florian Boucault ]
+  * DraggingArea: import Ubuntu.Components so that MathUtils is available and  
+    no warning is output.
+
+  [ Brendan Donegan ]
+  * Account for presence of OSK in Flickable helpers and add a test for the same
+  
+  [ Andrea Bernabei ]
+  * ListItemLayout: set QML context of the predefined labels. Fixes lp1514173.
+    Fixes LP: #1514173.
+  * Add the ignoreSynthesizedEvents property. When the property is enabled, the 
+    Mouse filter ignores any synthesized mouse event, such as those created by 
+    the touch-to-mouse events synthesis. Enabling this property makes it 
+    possible to only trigger the hovering logic ONLY when using a mouse, and not
+    when using a touchscreen (as it happens when using MouseArea).
+  
+  [ Timo Jyrinki ]
+  * Change HandlerType from int[2] to QVector<int> to make it work with Qt 5.5 
+    Fixes LP: #1484004, LP: #1450346
+  * Workaround 'emit' declaration in Qt 5.5 Fixes LP: #1507910
+  * Build depend on libxkbcommon-dev Fixes LP: #1508447
+
+  [ CI Train Bot ]
+  * No-change rebuild.
+
+ -- Zoltan Balogh <zoltan.balogh@canonical.com>  Wed, 09 Dec 2015 14:44:07 +0000
+
+ubuntu-ui-toolkit (1.3.1705+16.04.20151120.1-0ubuntu2) xenial; urgency=medium
+
+  * Rebuild against Qt 5.5.1.
+  * Cherry-pick required patches from staging branch:
+    - externalimagetype.patch (LP: #1473890)
+    - hack-qt55-int.patch (LP: #1484004)
+    - workaround_emit.patch (LP: #1507910)
+
+ -- Timo Jyrinki <timo-jyrinki@ubuntu.com>  Fri, 20 Nov 2015 15:16:08 +0200
+
+ubuntu-ui-toolkit (1.3.1705+16.04.20151120.1-0ubuntu1) xenial; urgency=medium
+
+  [ Timo Jyrinki ]
+  * Update toolkit and gallery po templates and fixes LP: #1517829 (LP:
+    #1517829)
+
+  [ Zoltán Balogh ]
+  * Update toolkit and gallery po templates and fixes LP: #1517829 (LP:
+    #1517829)
+
+ -- Zoltan Balogh <zoltan.balogh@canonical.com>  Fri, 20 Nov 2015 10:39:29 +0000
+
+ubuntu-ui-toolkit (1.3.1705+16.04.20151118-0ubuntu1) xenial; urgency=medium
+
+  [ Zoltán Balogh ]
+  * Update toolkit and gallery po templates
+
+ -- Zoltan Balogh <zoltan.balogh@canonical.com>  Wed, 18 Nov 2015 06:13:32 +0000
+
+ubuntu-ui-toolkit (1.3.1705+16.04.20151103-0ubuntu1) xenial; urgency=medium
+
+  [ Zsombor Egri ]
+  * Fix Sections sync with PageHeadSections selectedIndex changes. (LP:
+    #1511839)
+
+ -- Zoltan Balogh <zoltan.balogh@canonical.com>  Tue, 03 Nov 2015 11:16:12 +0000
+
+ubuntu-ui-toolkit (1.3.1705+16.04.20151031-0ubuntu1) xenial; urgency=medium
+
+  [ CI Train Bot ]
+  * Resync trunk. added: po/vi.po
+
+  [ Christian Dywan ]
+  * Smaller handlers, entirely draggable caret (LP: #1450222)
+
+  [ Zsombor Egri ]
+  * Switch and CheckBox fix when checked is not toggled when clicked()
+    signal is emitted. (LP: #1510919)
+
+ -- Zoltan Balogh <zoltan.balogh@canonical.com>  Sat, 31 Oct 2015 04:59:31 +0000
+
+ubuntu-ui-toolkit (1.3.1688+15.10.20151018.1-0ubuntu1) wily; urgency=medium
+
+  [ Tim Peeters ] 
+  * Add delegate property to ActionBar.
+  * Introduce PageHeader component.
+  * Add header property to Page. 
+    Fixes LP: #1248898, LP: #1350893, LP: #1445016, LP: #1492328
+  * Use the correct navigation overflow icon in PageHeader.
+  
+  [ Loïc Molinari ]
+  * Fixed OpenGL ES 2 mipmap fallback. OpenGL ES 2 doesn't support 
+    GL_TEXTURE_MAX_LEVEL by default, it is only available via an extension. It 
+    was working on the devices where this extension is available but not on 
+    the emulator. Fixes LP: #1505221.
+
+  [ Christian Dywan ]
+  * Handle incubateObject returning null in PageWrapperUtils. 
+    Fixes LP: #1505197
+  * Add module header to PageWrapperUtils.
+
+  [ Zoltan Balogh ]
+  * Improve test plan
+    - Ad -q parameter to provision the device for normal use with a PPA
+    - Fix up the camera and clock app on the device to acces services
+    - Replace phablet tools with manual enabling writable image
+    - Fix PPA pin up for staging and other regular PPAs.
+
+  [ Zsombor Egri ]
+  * Emit Dropped event for live ListItem drag'n'drop. Fixes LP: #1500118.
+
+  [ Timo Jyrinki ]
+  * Build dep on libinput-dev and libxkbcommon-dev (LP: #1437192). 
+
+  [ Benjamon Zeller ]
+  * Remove unused variables.
+  
+  [ CI Train Bot ]
+  * No-change rebuild.
+
+ -- Zoltan Balogh <zoltan.balogh@canonical.com>  Sun, 18 Oct 2015 03:47:27 +0000
+
+ubuntu-ui-toolkit (1.3.1676+15.10.20151008-0ubuntu1) wily; urgency=medium
+
+  [ Zsombor Egri ]
+  * Fix corner case on Label having styled item. (LP: #1503901)
+
+ -- Zoltan Balogh <zoltan.balogh@canonical.com>  Thu, 08 Oct 2015 10:57:10 +0000
+
+ubuntu-ui-toolkit (1.3.1676+15.10.20151006.2-0ubuntu1) wily; urgency=medium
+
+  [ Zsombor Egri ] 
+  * StyledItem does no longer fall back to 1.2 style loading on mixed import
+    versions.
+  * Make primaryPage and primaryPageSource replaceable after component 
+    completion. Fixes LP: #1500934
+
+  [ Christian Dywan ]
+  * Merge open_page and _open_page in GalleryTestCase.
+
+  [ CI Train Bot ]
+  * Resync trunk. added: po/zh_HK.po
+
+ -- Zoltan Balogh <zoltan.balogh@canonical.com>  Tue, 06 Oct 2015 09:11:40 +0000
+
+ubuntu-ui-toolkit (1.3.1672+15.10.20151002.1-0ubuntu1) wily; urgency=medium
+
+  [ Tim Peeters ]
+  * Use the new cpp Header in the internal AppHeader.
+  * Don't use old Label type in AP tests for header.
+  * Fix failing AP tests for actions and tabs overflow panels by using the 
+    ActionSelectionPopover CPO.
+  * Don't assume Label in ActionBarTestCase is of type Label.
+  * Animate hidden header on app focus. Fixes LP: #1500483
+
+  [ Zsombor Egri ]
+  * AbstractButton.pressAndHold captured in Connection. Fixes LP: #1495554.
+  * Introduce AdaptivePageLayout.primaryPageSource to load primary pages 
+    asynchronously. Fixes LP: #1499179.
+ 
+  [ Andrea Bernabei ]
+
+  * Remove REVISION 1 from textSize property of UCLabel and add test in 
+    ListItemLayout tests to avoid breaking textSize initialization again. 
+    Fixes LP: #1501673
+
+  [ Christian Dywan ]
+  * Remove ' from ActionList - no separator here.
+  * Accomodate gallery for moving to UbuntuListView and ListItem.
+
+  [ Albert Astals Cid ]
+  * Enable Efficient String Construction by default See 
+    http://blog.qt.io/blog/2011/06/13/string-concatenation-with-qstringbuilder/
+
+  [ Loïc Molinari ]
+  * [UbuntuShape] Workaround Adreno 320's shader compiler bug.
+
+  [ CI Train Bot ]
+  * No-change rebuild.
+
+ -- Zoltan Balogh <zoltan.balogh@canonical.com>  Fri, 02 Oct 2015 16:32:27 +0000
+
+ubuntu-ui-toolkit (1.3.1658+15.10.20151001-0ubuntu1) wily; urgency=medium
+
+  [ Zsombor Egri ]
+  * Boosting ListItem performance by removing the workaround brought in for 1.3
+    specific API.
+  * Fix Picker's pathItemCount binding loops in 1.3. 
+    Fixes LP: #1419667
+  * Moving Label to cpp.
+  * Separate theming from StyledItem to ease subtheming. 
+    Prerequisite for Label optimisations.
+  * Add pages to columns in AdaptivePageLayout only when the page loading 
+    completes. Fixes LP: #1492343, LP: #1499178.
+  * AdaptivePageLayout loads URL based Page Components asynchronously. 
+    Fixes: LP: #1499174.
+
+  [ Andrea Bernabei ]
+  * Add init() to UCLabel so that C++ class can create *and* initialize UCLabel.
+
+  [  Zoltan Balogh ]
+  * Integrated application startup time profiling tool.
+
+  [ Christian Dywan ]
+  * Implement RTL switch in toolkit gallery. Fixes LP: #1496913.
+  * wait_select_single in checkPageHeader. The page is being loading 
+    asynchronously in an AdaptivePageLayout so it may not be instantly 
+    available. Fixes LP: #1498863.
+  * checkPageHeader mustn't assume OrientationHelper in MainView. 
+    Fixes LP: #1498412.
+
+  [ Ken VanDine]
+  * Don't fail if AppHeader doesn't have a useDeprecatedToolbar property
+
+  [ Loïc Molinari  ]
+  * [UbuntuShape] Added mipmap based anti-aliasing fallback
+    Some OpenGL implementations not supporting standard derivatives (like the 
+    Ubuntu Touch emulator) need a fallback solution. This change implements 
+    that using mipmaps. It also implied a change in the way y coordinates are 
+    computed allowing to make the distance fields version perfectly anti-aliased
+    under any rotation. Fixes LP: #1480199, LP: #1494272.
+
+  [  Tim Peeters ]
+  * New Header C++ component.
+
+  [ CI Train Bot ]
+  * New rebuild forced.
+  * Resync trunk. added: examples/ubuntu-ui-toolkit-gallery/po/pt.po
+
+ -- Zoltan Balogh <zoltan.balogh@canonical.com>  Thu, 01 Oct 2015 19:52:41 +0000
+
+ubuntu-ui-toolkit (1.3.1641+15.10.20150922-0ubuntu1) wily; urgency=medium
+
+  [ Zsombor Egri ]
+  * ActionItem visible and enabled internal bindings not broken when the 
+    property values are having new bindings or value assignments. 
+    Fixes LP: #1495408
+  * ListItem swipe over leading/trailing actions blocked.
+    Fixes LP: #1486008, LP: #1496468, LP: #1497156
+
+  [ Christian Dywan ]
+  * Use new launcher path in gallery script and .bzrignore.
+  * FragmentShader of Icon shouldn't activate when unwanted.
+  * Unit test that popovers block mouse clicks. Fixes LP: #1488540
+  * Install ubuntu-ui-toolkit-launcher under /usr/bin.
+  * Register UCApplication and UCFontsUtils so they appear in .api.
+  * Cope with different AbstractButton class name in 1.3.
+  * Implement click_action_button in ActionSelectionPopover CPO. 
+    Fixes LP: #1205144
+
+  [ Albert Astals Cid ]
+  * Make sure pageWrapper.incubator is set before manually calling 
+    incubatorStatusChanged
+  * Bring back pageComponent.createObject for sync pages Fixes regression in 
+    unity8's unity8.settings_wizard.tests.test_settings_wizard.
+    SkipThroughSettingsWizardTestCase.test_skipping_through_wizard autopilot
+
+  [ Olivier Tilloy ]
+  * Take custom key indexes into account in QSortFilterProxyModelQML::get(). 
+    Fixes LP: #1495641
+
+  [ Zoltan Balogh ]
+  * Customize the UITK test plan and add silo pinning.
+  * Disable crahsing gallery.test_gallery.OpenPagesTestCase.test_open_page
+
+  [ CI Train Bot ]
+  * No-change rebuild.
+
+ -- Timo Jyrinki <timo.jyrinki@canonical.com>  Tue, 22 Sep 2015 01:28:56 +0000
+
+ubuntu-ui-toolkit (1.3.1627+15.10.20150908-0ubuntu1) wily; urgency=medium
+
+  [ Zsombor Egri ]
+  * Implement list item expansion.
+  * Turn AdaptivePageLayout page creation to be asynchronous.
+  * Fix ListItem swipe handling when gesture is initiated over an overlay 
+    MouseArea which does not accept pressed event. Fixes LP: #1484545
+  * AbstractButton to C++. Fixes LP: #1365471, LP: #1458028
+  * Haptics singleton moved to C++.
+  * ActionItem moved to C++.
+  * Making columns resizable in an AdaptivePageLayout.
+  * Introducing column configuration into AdaptivePageLayout.
+
+  [ Benjamin Zeller ]
+  * Fix build inside qt and shadowbuild.
+
+  [ Tim Peeters ]
+  * Remove old and unused header-related files, and update unit test filenames. 
+  * Don't unset the subheader style when Page.head changes because that unsets 
+    the parent of Page.head.contents. Fixes LP: #1488922
+  * Fix the theming of the MainView.
+  * Fix the background color of the overflow panel.
+
+  [ Christian Dywan ]
+  * Include change signals with arguments in .api.
+  * A public QML type with no version is an error. Rather than silently breaking
+    as QML does normally at least apicheck can make this fatal.
+  * UbuntuShape shouldn't emit redundant deprecation warnings. Fixes LP: #1481791
+  * Update .bzrignore to new upstream style layout. Fixes LP: #1433308
+  * Revert unnecessary change of Popover minimumWidth. Fixes LP: #1483708
+
+  [ Ken VanDine ]
+  * Fixed a few typos in the api docs for StateSaver.
+
+  [ Olivier Tilloy ]
+  * Take custom key indexes into account to allow sorting on custom roles. 
+    Fixes LP: #1485674
+
+  [ Albert Astals Cid ]
+  * Properly free shapeTextures[index] The old code assumes that the UbuntuShape 
+    will still be around when the opengl context is destroyed, but that seldom 
+    happens so connect the signal to a lambda that will be there and does the 
+    cleanup properly. Without this patch testDirectionalDragArea from unity8 was 
+    hitting the qFatal because it ran out of space in shapeTextures.
+
+  [ Richard Huddie ]
+  * Remove all usage of the autopilot simulated keyboard when the OSK is being 
+    used. Fixes LP: 31483668
+
+  [ Gerry Boland ]
+  * Compensate for Qt's device pixel ratio multiplier. 
+    Fixes: LP: #1207270, LP: #1275748, LP: #1468402
+
+  [ Nick Dedekind ]
+  * Added relative date time i18n.
+
+  [ CI Train Bot ]
+  * Resync trunk.
+
+ -- Zoltan Balogh <zoltan.balogh@canonical.com>  Tue, 08 Sep 2015 04:10:50 +0000
+
+ubuntu-ui-toolkit (1.3.1603+15.10.20150824.1-0ubuntu1) wily; urgency=medium
+
+  [ CI Train Bot ]
+  * Resync trunk. added: po/eo.po
+
+  [ Christian Dywan ]
+  * Make deprecation warnings from C++ opt-in (LP: #1467851)
+
+ -- CI Train Bot <ci-train-bot@canonical.com>  Mon, 24 Aug 2015 20:49:45 +0000
+
+ubuntu-ui-toolkit (1.3.1603+15.10.20150819.2-0ubuntu1) wily; urgency=medium
+
+  [ CI Train Bot ]
+  * Resync trunk.
+
+  [ Tim Peeters ]
+  * Do not use the GL_OES_standard_derivatives extension in the emulator
+    (and other possible unsupported platforms). (LP: #1458694)
+
+ -- CI Train Bot <ci-train-bot@canonical.com>  Wed, 19 Aug 2015 19:49:50 +0000
+
+ubuntu-ui-toolkit (1.3.1603+15.10.20150812-0ubuntu1) wily; urgency=medium
+
+  [ Tim Peeters ]
+  * Use grid units in Icons in the showcase gallery. Fixes LP: #1481489
+  * Disable header buttons when the header is animating. Fixes LP: #1478147
+  * Add ActionBar examples to the gallery.
+  * Make the default MainView background plain white. Fixes LP: #1481834 
+
+  [ Zsombor Egri ]
+  * Fixing swiping over active components. Fixes LP: #1479688.
+  * Fixing broken BottomEdgeHint gallery page.
+
+  [ Zoltán Balogh ]
+  * Fix packaging question marks / issues. Fixes LP: #1481584
+
+  [ Loïc Molinari ]
+  * UbuntuShape - Added support drop shadow aspect support to UbuntuShapeOverlay
+    Fixes LP: #1480197.
+  * UbuntuShape - Removed content orientation work around.
+    The shape was using a workaround to make it render correctly when the 
+    content orientation was not the native one. This was perfect for the 
+    OrientationHelper shipped with the toolkit but now that the Shell 
+    implements the rotation, this is not needed anymore and causes some 
+    rendering issues. Note that the shape will still needs to support 
+    correct rendering when rotated using the rotation property of the Item, 
+    but that is a different issue. Fixes LP: #1466656.
+  * UbuntuShape - Added a DropShadow aspect. Fixes LP: #1478129.
+  * Renamed ShellIcon to ProportionalShape.
+  * UbuntuShape - Added an ShellIcon item. Fixes LP: #1478130
+
+  [ Nick Dedekind ]
+  * Added LiveTimer.
+
+  [ Christian Dywan ]
+  * Grab focus when Dialog is shown.
+  * Set Qt.IBeamCursor on text component MouseArea's. Fixes LP: #1483823
+  * Make automaticOrientation on MainView a no-op. Fixes LP: #1470258
+  * Fix warnings on undefine theme.name in gallery
+    examples/ubuntu-ui-toolkit-gallery/ubuntu-ui-toolkit-gallery.qml:48:
+      TypeError: Cannot read property of null.
+
+  [ Ken VanDine ]
+  * Don't fail if MainView doesn't have a useDeprecatedToolbar property
+    Fixes LP: #1451243
+
+  [ CI Train Bot ]
+  * Resync trunk. added: examples/ubuntu-ui-toolkit-gallery/po/uk.po
+
+ -- CI Train Bot <ci-train-bot@canonical.com>  Wed, 12 Aug 2015 17:31:20 +0000
+
+ubuntu-ui-toolkit (1.3.1584+15.10.20150730-0ubuntu1) wily; urgency=medium
+
+  [ Florian Boucault ]
+  * New BottomEdgeHint component to represent extra features available from the 
+    bottom edge of an application.
+
+  [ Loïc Molinari ]
+  * [UbuntuShape] Added a big radius.
+  * [UbuntuShape] Added relative radius support. Fixes LP: #1478124.
+  * Ensured components, styles, examples and tests use the new UbuntuShape 
+    properties (not deprecated). Fixes LP: #1437412.
+
+  [ Benjamin Zeller ]
+  * Make use of the official qt build macros to blend into the Qt buildprocess.
+  * Fix debug builds, optimization is always enabled by the system qt build.
+
+  [ Richard Huddie ]
+  * Fix for autopilot bug lp:1476715. Don't throw an exception if maliit-server
+    is not found. Fixes LP: #1476715.
+
+  [ Tim Peeters ]
+  * Clean up the MainView docs.
+  * Set theme version for Sections component.
+  * Implement AdaptivePageLayout.
+
+  [ Zsombor Egri ]
+  * Fix width for trailing and leading actions of a ListItem. Fixes LP: #1465582.
+  * Button and Haptics import wrong toolkit versions, thus they break style 
+    versioning. Moving Icon and ProgressBar to 1.0 and 1.1 version source folder.
+  * SuruDark theme for ListItem style. Fixes LP: #1451225.
+  * Swiping ListItem when no actions are defined for the gesture breaks 
+    selectMode. Fixes LP: #1468100.
+  * Fixing selected connection with the ListItem's select mode checkbox state. 
+    Fixes LP: #1461501, LP: #1469471.
+
+  [ Timo Jyrinki ]
+  * Fix ucstylehints.cpp compilation with Qt 5.5. Fixes LP: #1473873.
+  * Add PageHeadStyle 1.3 reference to fix install_plugins_qmltypes failure with 
+    Qt 5.5. Fixes LP: #1466484.
+
+  [ Christian Dywan ]
+  * Avoid hard-coded skipping of members by name "type" can be a property name 
+    regardless of also being a field in the JSON description of a property.
+  * Add apicheck unit test for QML and Javascript.
+  * Remove "do cleanup" comments. Fixes LP: #1369874.
+  * Initialize defaultTypes later to avoid bogus types.
+  * Implement Action.shortcut property. Fixes LP: #1202464.
+  * Update text handler to 3gu assert.
+  * Add a deprecated note to ListItems.ThinDivider. Fixes LP: #1470951.
+  * Don't include overridden properties in API.
+  * Clean-up API check wrapper scripts.
+  * Track version members were introduced.
+  * Implement ListItemPopover on right-click. Fixes LP: #1452676.
+  * Move delegate's chevron into the row and size it explicitly. 
+    Fixes LP: #1474418.
+  * Enable (Shift)Tab via activeFocusOnTab. Fixes LP: #1276797.
+  * Only swipe with left button and block timer otherwise. 
+    Fixes LP: #1476300, LP: #1476310.
+  * Include Javascript libraries in QML documentation. Fixes LP: #1466058.
+
+  [ Albert Astals Cid ]
+  * Fix warning if there's no __propagated
+  * TypeError: Cannot call method 'hasOwnProperty' of null.
+
+ -- CI Train Bot <ci-train-bot@canonical.com>  Thu, 30 Jul 2015 13:04:18 +0000
+
+ubuntu-ui-toolkit (1.3.1549+15.10.20150710.1-0ubuntu1) wily; urgency=medium
+
+  [ Timo Jyrinki ]
+  * arch specific deps (LP: #1473035) (LP: #1473035)
+
+ -- CI Train Bot <ci-train-bot@canonical.com>  Fri, 10 Jul 2015 06:31:57 +0000
+
+ubuntu-ui-toolkit (1.3.1549+15.10.20150706-0ubuntu1) wily; urgency=medium
+
+  [ Tim Peeters ]
+  * Disable header animations to avoid bugs when popping a PageStack in a loop. 
+    Fixes LP: #1461729
+  * New header visuals, using the ActionBar and Sections components.  
+  * Introduce the new Sections component.
+  * Fix initialization for hidden and locked header.
+
+  [ Benjamin Zeller ]
+  * Fixes LP: #1461042 Qthelp documentation (pressing in F1) has no style in 
+    qtcreator.
+  
+  [ Richard Huddie ]
+  * Use the real OSK for keyboard input.
+
+  [ Zsombor Egri ]
+  * Fix AlamrModel segfault when updating elements. Fixes LP: #1463430
+
+  [ Vincent Ladeuil ]
+  * In the initctl test fixture,add the option to unset an environment variable
+  
+  [ Christian Dywan ]
+  * QQmlContextData.url is a method in 5.5.0. Fixes LP: #1461897.
+  * OrientationHelper shouldn't move depending on availableHeight. The 
+    parentChanged/availableHeight change in OrientationHelper is the bug fix 
+    itself. The new property UbuntuApplication.inputMethod defaults to 
+    Qt.inputMethod and the unit test overrides it to reproduce the bug (fix) 
+    regardless of device and input method setup - the mock keyboard is NOT 
+    expected to be fully functional, buttons are but a placeholder irrelevant 
+    for the test case.
+    I removed hideInputPanel() as it's not being used anywhere, not essential 
+    to the bug, but mainly unconfusing anyone working with the code as to what 
+    actually affects inputMethod visibility. 
+    Fixes LP: #1428206, LP: #1455406, LP: #1466222.
+  * Use a custom sort function for type names.
+  * Popover sizing should depend on whether it has a target.
+  * Replace Styles page with a header action.
+
+  [ Leo Arias ]
+  * Updated the documentation of the autopilot click_element helpers. 
+    Fixes LP: #1451945
+
+ -- CI Train Bot <ci-train-bot@canonical.com>  Mon, 06 Jul 2015 18:24:30 +0000
+
+ubuntu-ui-toolkit (1.3.1534+15.10.20150625-0ubuntu1) wily; urgency=medium
+
+  [ Christian Dywan ]
+  * Use TextField.write rather than keyboard.type.
+  * Update normal.backgroundText in SuruDark to #5D5D5D. Fixes LP: #1413801.
+  * Fix "runtest.sh: line 78: [: -eq: unary operator expected]".
+  * Consider caret visibility to decide text menu anchor. Fixes LP: #1462419.
+  * Remove text from header textinput AP test QML. Fixes LP: #1459632.
+  * No deprecation notes for our own components. Fixes LP: #1457528.
+ 
+  [ Leonardo Arias Fonseca ]
+  * Add url protocols to the fake application.
+  * Adds a dependency to url-dispatcher-tools in ubuntu-ui-toolkit-autopilot.
+  * Use the test launcher for all the toolkit autopilot tests.
+ 
+  [ Zsombor Egri ]
+  * Remove property bindings before property write does it. Fixes LP: #1462738.
+  * Introducing StyleHints to provide style specific property changes.
+  * Remove ThemeSettings.createStyleComponent() and add styleName to StyledItem.
+    Fixes LP: #1458845.
+ 
+  [ Loïc Molinari ]
+  * [UbuntuShape] Computed dfdt factors based on window content orientation.
+  * Previous logic was based on screen orientation which is not in sync with 
+    OrientationHelper.qml. Fixes LP: #1455567.
+ 
+  [ Timo Jyrinki ] 
+  * Change -html documentation runtime dependencies into Suggests only to limit
+    ubuntu-sdk download size. We're switching to offering only .qch offline 
+    documentation in SDK (inside of it), and they're being added to the seed. 
+    Fixes LP: #1461034.
+  * Licensecheck started complaining about a person name, change to Canonical. 
+    Fixes LP: #1464549
+ 
+  [ Andrea Bernabei ]
+  * Modify ListItem.Caption label margins. Fixes LP: #1314672.
+ 
+  [ Tim Peeters ]
+  * Introduce IconButtonStyle. 
+
+ -- CI Train Bot <ci-train-bot@canonical.com>  Thu, 25 Jun 2015 04:37:52 +0000
+
+ubuntu-ui-toolkit (1.3.1517+15.10.20150523-0ubuntu3) wily; urgency=medium
+
+  * Rebuild against Qt 5.4.2
+  * debian/patches/fix_copyright.patch:
+    - licensecheck started complaining about a person name, change to Canonical
+
+ -- Timo Jyrinki <timo-jyrinki@ubuntu.com>  Fri, 12 Jun 2015 07:48:37 +0000
+
 ubuntu-ui-toolkit (1.3.1517+15.10.20150523-0ubuntu1) wily; urgency=medium
 
   [ Christian Dywan ]

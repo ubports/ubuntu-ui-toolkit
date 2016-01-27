@@ -8,10 +8,10 @@ for(filetype, filetypes) {
   OTHER_FILES += *.$$filetype
 }
 
-desktop_files.path = /usr/share/applications
+desktop_files.path = $$[QT_INSTALL_EXAMPLES]/ubuntu-ui-toolkit/examples/jokes
 desktop_files.files = jokes.desktop
 
-other_files.path = /usr/lib/ubuntu-ui-toolkit/examples/jokes
+other_files.path = $$[QT_INSTALL_EXAMPLES]/ubuntu-ui-toolkit/examples/jokes
 other_files.files = $$OTHER_FILES
 
 INSTALLS += other_files desktop_files

@@ -20,6 +20,7 @@
 __all__ = [
     'AppHeader',
     'ActionBar',
+    'ActionSelectionPopover',
     'check_autopilot_version',
     'CheckBox',
     'get_keyboard',
@@ -35,6 +36,7 @@ __all__ = [
     'QQuickFlickable',
     'QQuickGridView',
     'QQuickListView',
+    'Sections',
     'TabBar',
     'Tabs',
     'TextArea',
@@ -42,10 +44,12 @@ __all__ = [
     'Toolbar',
     'ToolkitException',
     'UbuntuListView11',
+    'UbuntuListView',
     'UbuntuUIToolkitCustomProxyObjectBase',
 ]
 
 from ubuntuuitoolkit._custom_proxy_objects._actionbar import ActionBar
+from ubuntuuitoolkit._custom_proxy_objects._sections import Sections
 from ubuntuuitoolkit._custom_proxy_objects._checkbox import CheckBox
 from ubuntuuitoolkit._custom_proxy_objects._common import (
     check_autopilot_version,
@@ -61,7 +65,8 @@ from ubuntuuitoolkit._custom_proxy_objects._header import (
 )
 
 from ubuntuuitoolkit._custom_proxy_objects.popups import (
-    Dialog
+    Dialog,
+    ActionSelectionPopover,
 )
 
 from ubuntuuitoolkit._custom_proxy_objects import listitems
@@ -86,5 +91,6 @@ from ubuntuuitoolkit._custom_proxy_objects._textarea import TextArea
 from ubuntuuitoolkit._custom_proxy_objects._textfield import TextField
 from ubuntuuitoolkit._custom_proxy_objects._toolbar import Toolbar
 from ubuntuuitoolkit._custom_proxy_objects._ubuntulistview import (
-    UbuntuListView11
+    UbuntuListView11,
+    UbuntuListView,
 )

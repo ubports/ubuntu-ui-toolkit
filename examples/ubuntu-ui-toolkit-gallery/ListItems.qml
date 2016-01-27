@@ -352,7 +352,7 @@ Template {
                         Toolkit.UbuntuShape {
                             anchors { left: parent.left; right: parent.right }
                             height: index % 2 == 0 ? units.gu(6) : units.gu(18)
-                            color: "khaki"
+                            backgroundColor: "khaki"
                         }
                     }
                 }
@@ -393,7 +393,7 @@ Template {
                         Toolkit.UbuntuShape {
                             anchors { left: parent.left; right: parent.right }
                             height: index % 2 == 0 ? units.gu(6) : units.gu(18)
-                            color: "khaki"
+                            backgroundColor: "khaki"
                         }
                     }
                 }

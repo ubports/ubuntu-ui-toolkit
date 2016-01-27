@@ -8,6 +8,8 @@ Build-Depends: debhelper (>= 9.0.0),
                libglib2.0-dev,
                python3:any,
                qml-module-qtgraphicaleffects | libqt5qml-graphicaleffects,
+               libinput-dev,
+               libxkbcommon-dev,
                qtbase5-dev,
                qtbase5-private-dev,
                qttools5-dev-tools,
@@ -45,6 +47,12 @@ Build-Depends: debhelper (>= 9.0.0),
                suru-icon-theme,
                uuid-runtime,
                python3-sphinx,
+               libfontconfig1-dev,
+               libfreetype6-dev,
+               libmtdev-dev,
+               libudev-dev,
+               libxrender-dev,
+               liblttng-ust-dev
 Standards-Version: 3.9.4
 Homepage: https://launchpad.net/ubuntu-ui-toolkit
 # If you aren't a member of ~ubuntu-sdk-team but need to upload packaging
@@ -66,6 +74,7 @@ Depends: qml-module-qtgraphicaleffects | libqt5qml-graphicaleffects,
          suru-icon-theme,
          ttf-ubuntu-font-family,
          ubuntu-ui-toolkit-theme (= ${binary:Version}),
+         libubuntugestures5 (= ${binary:Version}),
          ${misc:Depends},
          ${shlibs:Depends},
 Conflicts: qt-components-ubuntu
@@ -76,6 +85,38 @@ Description: Qt Components for Ubuntu - QML plugin
  components for Qt Quick 2 / QML.
  .
  This package contains the Ubuntu Components QML plugin.
+
+
+Package: libubuntugestures5
+Architecture: any
+Multi-Arch: same
+Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+Description: Ubuntu gestures library for Ubuntu UI Toolkit
+ Library supporting Gesture recognition for Ubuntu UI Toolkit
+ Classes for SwipeArea, and for Ubuntu Gestures in general.
+
+Package: libubuntugestures5-dev
+Architecture: any
+Multi-Arch: same
+Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+Description: Ubuntu gestures library development files
+ This package contains the development files for 
+ Ubuntu gestures library with SwipeArea
+
+Package: libubuntugestures5-private-dev
+Architecture: any
+Multi-Arch: same
+Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+Description: Ubuntu gestures library private development files
+ This package contains the private development files for
+ Ubuntu gestures library with SwipeArea
+
 
 Package: ubuntu-ui-toolkit-theme
 Architecture: any
@@ -97,12 +138,12 @@ Multi-Arch: foreign
 Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
 Depends: ${misc:Depends},
          ${shlibs:Depends},
-         qtdeclarative5-doc-html,
-         qtwebkit5-doc-html,
-         qtsvg5-doc-html,
-         qtscript5-doc-html,
-         qtmultimedia5-doc-html,
-         unity-action-doc,
+Suggests: qtdeclarative5-doc-html,
+          qtwebkit5-doc-html,
+          qtsvg5-doc-html,
+          qtscript5-doc-html,
+          qtmultimedia5-doc-html,
+          unity-action-doc,
 Conflicts: qt-components-ubuntu-doc
 Replaces: qt-components-ubuntu-doc
 Provides: qt-components-ubuntu-doc
@@ -115,7 +156,7 @@ Description: Qt Components for Ubuntu - documentation
 Package: ubuntu-ui-toolkit-examples
 Section: devel
 Architecture: any
-Depends: qmlscene,
+Depends: ubuntu-ui-toolkit-tools (>= ${source:Version}),
          qtdeclarative5-ubuntu-ui-toolkit-plugin (= ${binary:Version}) | qtdeclarative5-ubuntu-ui-toolkit-plugin-gles,
          ubuntu-ui-toolkit-theme (= ${binary:Version}),
          qml-module-qtquick-xmllistmodel,
@@ -147,9 +188,36 @@ Depends: ${misc:Depends},
          python3-autopilot (>= 1.4),
          python3-autopilot-trace,
          qttestability-autopilot,
+         ubuntu-keyboard-autopilot [amd64 armhf i386],
          ubuntu-ui-toolkit-examples (>= ${source:Version}),
          upstart,
+         url-dispatcher-tools,
          qtdeclarative5-ubuntu-ui-toolkit-plugin (>= ${source:Version}) | qtdeclarative5-ubuntu-ui-toolkit-plugin-gles,
-         qml-module-qttest,
+         ubuntu-app-launch-profiler (>= ${source:Version}),
+         qml-module-qttest | qtdeclarative5-test-plugin,
 Description: Test package for Ubuntu UI Toolkit
  Autopilot tests for the ubuntu-ui-toolkit package
+
+Package: ubuntu-app-launch-profiler
+Architecture: any
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+         lttng-tools,
+         python3-babeltrace
+Description: Qt Components for Ubuntu - startup time profiling tool
+ Qt Components for Ubuntu offers a set of reusable user interface
+ components for Qt Quick 2 / QML.
+ .
+ This package contains the application startup time profiling tools.
+
+Package: ubuntu-ui-toolkit-tools
+Architecture: any
+Depends: ${misc:Depends},
+         ${shlibs:Depends}
+Description: Qt Components for Ubuntu - productive tools
+ Qt Components for Ubuntu offers a set of reusable user interface
+ components for Qt Quick 2 / QML.
+ .
+ This package contains the application launcher, which is a drop-in
+ replacement for qmlscene, oxideqmlscene, qml and derivatives.
+

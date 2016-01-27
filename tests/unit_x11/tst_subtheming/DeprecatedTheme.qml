@@ -21,5 +21,5 @@ StyledItem {
     width: units.gu(40)
     height: units.gu(40)
     theme.name: "Ubuntu.Components.Themes.SuruGradient"
-    style: theme.createStyleComponent("OptionSelectorStyle.qml", item)
+    styleName: "OptionSelectorStyle"
 }

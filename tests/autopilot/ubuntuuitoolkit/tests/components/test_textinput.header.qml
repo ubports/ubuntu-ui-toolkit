@@ -37,8 +37,6 @@ MainView {
             inputMethodHints: Qt.ImhNoPredictiveText
             hasClearButton: false
 
-            text: "Then two bears came out of the woods and mauled forty-two of the youths."
-
             anchors {
                 fill: parent
                 leftMargin: units.gu(1)

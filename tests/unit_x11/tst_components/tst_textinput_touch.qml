@@ -192,7 +192,7 @@ Item {
             if(TestExtras.openGLflavor() == "opengles2" &&
                TestExtras.cpuArchitecture() != "arm")
                 skip("This test doesn't pass with OpenGLES other than arm");
-            data.input.focus = true;
+            TestExtras.touchClick(0, data.input, centerOf(data.input));
             popupSpy.target = findChild(data.input, "input_handler");
 
             TestExtras.touchLongPress(0, data.input, guPoint(1, 1));
@@ -283,6 +283,7 @@ Item {
             data.input.focus = true;
             data.input.cursorPosition = data.initialCursorPosition;
             data.input.selectWord();
+            verify(data.input.selectedText !== "", "No word selected initially!");
             var selectedText = data.input.selectedText;
 
             var caret = findChild(data.input, "input_handler")[data.cursorName + "Cursor"];

@@ -33,7 +33,7 @@ Column {
         Label {
             id: label
             text: templateSection.title
-            fontSize: "large"
+            textSize: Label.Large
             anchors.left: parent.left
         }
 
@@ -45,7 +45,7 @@ Column {
             label: title ? "API Documentation" : "%1 API Documentation".arg(className)
             url: prefix + documentation
             visible: documentation != ""
-            fontSize: "small"
+            textSize: Label.Small
         }
     }
 }

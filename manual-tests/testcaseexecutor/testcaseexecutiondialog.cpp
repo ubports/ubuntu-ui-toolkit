@@ -48,7 +48,7 @@ TestCaseExecutionDialog::TestCaseExecutionDialog(QString testcase,
     tmpQmlFile.close();
     qDebug() << "using temporary file" << tmpQmlFile.fileName();
 
-    m_declarativeView->engine()->addImportPath("../modules/");
+    m_declarativeView->engine()->addImportPath("../qml/");
     QGLFormat format = QGLFormat::defaultFormat();
     format.setSampleBuffers(false);
     format.setSwapInterval(1);

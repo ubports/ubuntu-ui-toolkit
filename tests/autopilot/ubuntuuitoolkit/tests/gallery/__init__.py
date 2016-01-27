@@ -98,7 +98,9 @@ class GalleryTestCase(ubuntuuitoolkit.tests.QMLFileAppTestCase):
             'ubuntu-ui-toolkit-gallery.qml')
 
     def _get_path_to_installed_gallery(self):
-        return '/usr/lib/ubuntu-ui-toolkit/examples/ubuntu-ui-toolkit-gallery'
+        host_multiarch = ubuntuuitoolkit.base.get_host_multiarch()
+        return '/usr/lib/{}/qt5/examples//ubuntu-ui-toolkit/examples/' \
+               'ubuntu-ui-toolkit-gallery'.format(host_multiarch)
 
     def _get_desktop_file_path(self):
         desktop_file_path = os.path.join(
@@ -126,11 +128,12 @@ class GalleryTestCase(ubuntuuitoolkit.tests.QMLFileAppTestCase):
             the page.
 
         """
-        list_view = self.main_view.select_single(
-            ubuntuuitoolkit.QQuickListView, objectName="widgetList")
-        list_view.click_element(page)
-        element = self.main_view.select_single('Standard', objectName=page)
-        element.selected.wait_for(True)
+        list_view = self.main_view.select_single(objectName="widgetList")
+        element = list_view.click_element(page)
+        # Do not check the ListItem's highlight
+        # the actual highlight is implemented in the UbuntuListView
+        self.checkPageHeader(element.text)
+        return element
 
     def tearDown(self):
         super().tearDown()

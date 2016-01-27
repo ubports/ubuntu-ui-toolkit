@@ -1,0 +1,503 @@
+# Ukrainian translation for ubuntu-ui-toolkit
+# Copyright (c) 2015 Rosetta Contributors and Canonical Ltd 2015
+# This file is distributed under the same license as the ubuntu-ui-toolkit package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2015.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ubuntu-ui-toolkit\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2015-11-05 10:04+0100\n"
+"PO-Revision-Date: 2015-08-03 22:47+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Ukrainian <uk@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2015-12-25 05:33+0000\n"
+"X-Generator: Launchpad (build 17865)\n"
+
+#: About.qml:34
+msgid "About..."
+msgstr "Про програму…"
+
+#: ActionBars.qml:68
+msgid "Short list"
+msgstr "Короткий список"
+
+#: ActionBars.qml:79
+msgid "Number of slots"
+msgstr "Кількість слотів"
+
+#: ActionBars.qml:92
+msgid "Long list"
+msgstr "Довгий список"
+
+#: ActionBars.qml:102 Buttons.qml:91 Sections.qml:45 TextInputs.qml:90
+#: Toggles.qml:45 Toggles.qml:83
+msgid "Disabled"
+msgstr "Вимкнено"
+
+#: Animations.qml:24
+msgid "NumberAnimation"
+msgstr "Анімація номера"
+
+#: Animations.qml:28 Buttons.qml:28 Dialog.qml:29 ListItems.qml:25
+#: ProgressBars.qml:29 ProgressBars.qml:85 Sheet.qml:40 Sheet.qml:73
+#: Sliders.qml:28 TextInputs.qml:46
+msgid "Standard"
+msgstr "Стандартно"
+
+#: Animations.qml:58
+msgid "Standard Durations"
+msgstr "Стандартні тривалості"
+
+#: Animations.qml:62
+msgid "Snap"
+msgstr "Прилипання"
+
+#: Animations.qml:98
+msgid "Fast"
+msgstr "Швидко"
+
+#: Animations.qml:134
+msgid "Slow"
+msgstr "Повільно"
+
+#: Animations.qml:159
+msgid "Sleepy"
+msgstr "Сонливо"
+
+#: Buttons.qml:32 Buttons.qml:41 Buttons.qml:77 Buttons.qml:85 Buttons.qml:95
+msgid "Call"
+msgstr "Дзвінок"
+
+#: Buttons.qml:37
+msgid "Stroke"
+msgstr "Жест"
+
+#: Buttons.qml:47 Icons.qml:54
+msgid "Color"
+msgstr "Колір"
+
+#: Buttons.qml:53
+#, qt-format
+msgid "Call %1"
+msgstr "Виклик %1"
+
+#: Buttons.qml:63 Buttons.qml:120 ListItems.qml:43
+msgid "Icon"
+msgstr "Піктограма"
+
+#: Buttons.qml:72 Buttons.qml:134
+msgid "Icon+Text"
+msgstr "Піктограма та Текст"
+
+#: Buttons.qml:105 OptionSelectors.qml:41
+msgid "Collapsed"
+msgstr "Згорнуто"
+
+#: Buttons.qml:148 ListItems.qml:120 OptionSelectors.qml:47
+msgid "Expanded"
+msgstr "Розгорнуто"
+
+#: Colors.qml:30
+msgid "Orange"
+msgstr "Помаранчевий"
+
+#: Colors.qml:36
+msgid "Light grey"
+msgstr "Світло-сірий"
+
+#: Colors.qml:42
+msgid "Dark grey"
+msgstr "Темно-сірий"
+
+#: Colors.qml:48
+msgid "Red"
+msgstr "Червоний"
+
+#: Colors.qml:54
+msgid "Green"
+msgstr "Зелений"
+
+#: Colors.qml:60
+msgid "Blue"
+msgstr "Синій"
+
+#: Colors.qml:66
+msgid "Purple"
+msgstr "Пурпурний"
+
+#: Dialog.qml:32 Popover.qml:42 Sheet.qml:43 Sheet.qml:76
+msgid "Open"
+msgstr "Відкрити"
+
+#: Icons.qml:29
+msgid "Scaling"
+msgstr "Масштабування"
+
+#: Icons.qml:79
+msgid "Theme"
+msgstr "Тема"
+
+#: ListItemLayouts.qml:208 NewListItems.qml:79
+msgid "Leading and trailing actions"
+msgstr "Початкові і завершальні дії"
+
+#: ListItems.qml:28 ListItems.qml:36 ListItems.qml:46 ListItems.qml:60
+#: ListItems.qml:66 ListItems.qml:76 ListItems.qml:85 ListItems.qml:94
+#: ListItems.qml:160 ListItems.qml:173 ListItems.qml:193
+msgid "Label"
+msgstr "Мітка"
+
+#: ListItems.qml:33
+msgid "Subtitled"
+msgstr "З підзаголовком"
+
+#: ListItems.qml:37
+msgid "Secondary label"
+msgstr "Другорядна мітка"
+
+#: ListItems.qml:52
+msgid "ThinDivider"
+msgstr "Тонкий роздільник"
+
+#: ListItems.qml:73
+msgid "Progression"
+msgstr "Прогресія"
+
+#: ListItems.qml:82
+msgid "Single value"
+msgstr "Одинарне значення"
+
+#: ListItems.qml:86
+msgid "Value"
+msgstr "Значення"
+
+#: ListItems.qml:91
+msgid "Multi value"
+msgstr "Множинне значення"
+
+#: ListItems.qml:95 ListItems.qml:113 ListItems.qml:122 ListItems.qml:132
+#: ListItems.qml:161 ListItems.qml:176 OptionSelectors.qml:33
+#: OptionSelectors.qml:84 OptionSelectors.qml:99
+msgid "Value 1"
+msgstr "Значення 1"
+
+#: ListItems.qml:96 ListItems.qml:114 ListItems.qml:123 ListItems.qml:133
+#: ListItems.qml:162 ListItems.qml:177 OptionSelectors.qml:85
+#: OptionSelectors.qml:100
+msgid "Value 2"
+msgstr "Значення 2"
+
+#: ListItems.qml:97 ListItems.qml:115 ListItems.qml:124 ListItems.qml:134
+#: ListItems.qml:163 ListItems.qml:178 OptionSelectors.qml:86
+#: OptionSelectors.qml:101
+msgid "Value 3"
+msgstr "Значення 3"
+
+#: ListItems.qml:98 ListItems.qml:116 ListItems.qml:125 ListItems.qml:135
+#: ListItems.qml:164 ListItems.qml:179 OptionSelectors.qml:87
+#: OptionSelectors.qml:102
+msgid "Value 4"
+msgstr "Значення 4"
+
+#: ListItems.qml:103
+msgid "Item selector"
+msgstr "Вибір пункту"
+
+#: ListItems.qml:112 TextInputs.qml:117
+msgid "Expanding"
+msgstr "Розширяється"
+
+#: ListItems.qml:129 OptionSelectors.qml:54
+msgid "Multiple Selection"
+msgstr "Позначення багатьох пунктів"
+
+#: ListItems.qml:139 OptionSelectors.qml:62
+msgid "Custom Model"
+msgstr "Нетипова модель"
+
+#: ListItems.qml:165 ListItems.qml:180 OptionSelectors.qml:88
+#: OptionSelectors.qml:103
+msgid "Value 5"
+msgstr "Значення 5"
+
+#: ListItems.qml:166 ListItems.qml:181 OptionSelectors.qml:89
+#: OptionSelectors.qml:104
+msgid "Value 6"
+msgstr "Значення 6"
+
+#: ListItems.qml:167 ListItems.qml:182 OptionSelectors.qml:90
+#: OptionSelectors.qml:105
+msgid "Value 7"
+msgstr "Значення 7"
+
+#: ListItems.qml:168 ListItems.qml:183 OptionSelectors.qml:91
+#: OptionSelectors.qml:106
+msgid "Value 8"
+msgstr "Значення 8"
+
+#: ListItems.qml:190
+msgid "Control"
+msgstr "Керування"
+
+#: ListItems.qml:202
+msgid "Removable"
+msgstr "Придатний до вилучення"
+
+#: ListItems.qml:205
+msgid "Slide to remove"
+msgstr "Проведіть, щоб вилучити"
+
+#: ListItems.qml:215
+msgid "Reset"
+msgstr "Скинути"
+
+#: ListItems.qml:226
+msgid "Grouped list"
+msgstr "Згрупований список"
+
+#: ListItems.qml:261
+msgid "UbuntuListView"
+msgstr "UbuntuListView"
+
+#: ListItems.qml:321
+msgid "ExpandablesColumn"
+msgstr "ExpandablesColumn"
+
+#: ListItems.qml:364
+msgid "Expandable"
+msgstr "З розгортанням"
+
+#: NewListItems.qml:39
+msgid "Colored"
+msgstr "З кольором"
+
+#: NewListItems.qml:42
+msgid "Highlight color"
+msgstr "Колір позначення"
+
+#: NewListItems.qml:71
+msgid "Leading actions"
+msgstr "Початкові дії"
+
+#: NewListItems.qml:75
+msgid "Trailing actions"
+msgstr "Завершальні дії"
+
+#: NewListItems.qml:84
+msgid "Custom action delegates"
+msgstr "Нетипове делегування дій"
+
+#: NewListItems.qml:111
+msgid "Edit"
+msgstr "Змінити"
+
+#: NewListItems.qml:114
+msgid "Move"
+msgstr "Пересунути"
+
+#: NewListItems.qml:163
+msgid "Basic"
+msgstr "Основні"
+
+#: NewListItems.qml:163 NewListItems.qml:168 NewListItems.qml:169
+#: NewListItems.qml:213 NewListItems.qml:214
+msgid "Colored divider"
+msgstr "Кольоровий роздільник"
+
+#: NewListItems.qml:163
+msgid "Immutable"
+msgstr "Незмінний"
+
+#: NewListItems.qml:163 NewListItems.qml:170 NewListItems.qml:215
+msgid "No divider"
+msgstr "Без роздільника"
+
+#: OptionSelectors.qml:24
+msgid "Option Selector"
+msgstr "Засіб вибору з варіантів"
+
+#: OptionSelectors.qml:34
+msgid "This is the second value"
+msgstr "Це друге значення"
+
+#: OptionSelectors.qml:35
+msgid ""
+"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy "
+"nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."
+msgstr ""
+"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy "
+"nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."
+
+#: OptionSelectors.qml:36
+msgid "Once upon a time there was a story nobody told."
+msgstr "Колись давно була казка, яку ніхто не розповідав."
+
+#: OptionSelectors.qml:83
+msgid "Custom container height"
+msgstr "Нетипова висота контейнера"
+
+#: OptionSelectors.qml:96
+msgid "No initial selection, scrollable."
+msgstr "Немає початкового вибору, можливе гортання"
+
+#: Pickers.qml:31
+msgid "Linear"
+msgstr "Лінійний"
+
+#: Pickers.qml:63
+msgid "Circular"
+msgstr "Круговий"
+
+#: Pickers.qml:100 ProgressBars.qml:49
+msgid "Infinite"
+msgstr "Нескінченний"
+
+#: Pickers.qml:137
+msgid "Clock"
+msgstr "Годинник"
+
+#: Pickers.qml:174
+msgid "Overlay"
+msgstr "Накладання"
+
+#: Popover.qml:38
+msgid "Flickable"
+msgstr "Блимання"
+
+#: Popover.qml:74
+msgid "Action #1"
+msgstr "Дія 1"
+
+#: Popover.qml:78
+msgid "Action #2"
+msgstr "Дія 2"
+
+#: Popover.qml:82
+msgid "Action #3"
+msgstr "Дія 3"
+
+#: Popover.qml:86
+msgid "Action #4"
+msgstr "Дія 4"
+
+#: Popover.qml:90
+msgid "Action #5"
+msgstr "Дія 5"
+
+#: ProgressBars.qml:24
+msgid "Progress Bar"
+msgstr "Смужка поступу"
+
+#: ProgressBars.qml:59
+msgid "No label"
+msgstr "Без мітки"
+
+#: ProgressBars.qml:81
+msgid "Activity Indicator"
+msgstr "Індикатор діяльності"
+
+#: ProportionalShape.qml:28
+msgid "Sizes"
+msgstr "Розміри"
+
+#: Sections.qml:34
+msgid "Enabled"
+msgstr "Увімкнено"
+
+#: Sheet.qml:28
+msgid "The visual style of the Sheet is early work and thus clunky looking."
+msgstr ""
+"Вигляд Sheet ще недостатньо опрацьовано, тому він доволі недосконалий."
+
+#: Sheet.qml:53 Sheet.qml:86
+msgid "Title"
+msgstr "Заголовок"
+
+#: Sliders.qml:36 Sliders.qml:51 Sliders.qml:68 Sliders.qml:93
+#, qt-format
+msgid "Actual value: %1"
+msgstr "Поточна значення: %1"
+
+#: Sliders.qml:42
+msgid "Live Update"
+msgstr "Інтерактивне оновлення"
+
+#: Sliders.qml:57
+msgid "Range"
+msgstr "Діапазон"
+
+#: Sliders.qml:74
+msgid "Labels"
+msgstr "Мітки"
+
+#: Sliders.qml:85
+msgid "Small"
+msgstr "Малий"
+
+#: Sliders.qml:87
+msgid "Medium"
+msgstr "Середній"
+
+#: Sliders.qml:89
+msgid "Large"
+msgstr "Великий"
+
+#: TextInputs.qml:50
+msgid "Type me in..."
+msgstr "Впишіть щось…"
+
+#: TextInputs.qml:56
+msgid "Password"
+msgstr "Пароль"
+
+#: TextInputs.qml:67
+msgid "Numbers"
+msgstr "Числа"
+
+#: TextInputs.qml:78
+msgid "Read-only"
+msgstr "Лише читання"
+
+#: TextInputs.qml:82
+msgid "Nobody type here"
+msgstr "Тут не можна писати"
+
+#: TextInputs.qml:94
+msgid "No interaction allowed"
+msgstr "Взаємодію заборонено"
+
+#: TextInputs.qml:107
+msgid "Default"
+msgstr "Типовий"
+
+#: TextInputs.qml:129
+msgid "Rich Text"
+msgstr "Текст із форматуванням"
+
+#: Toggles.qml:28 Toggles.qml:66
+msgid "Unchecked"
+msgstr "Непозначений"
+
+#: Toggles.qml:36 Toggles.qml:74
+msgid "Checked"
+msgstr "Позначений"
+
+#: UbuntuShape.qml:28
+msgid "Aspect"
+msgstr "Вигляд"
+
+#: UbuntuShape.qml:73
+msgid "Radius"
+msgstr "Радіус"
+
+#: UbuntuShape.qml:115
+msgid "Image"
+msgstr "Зображення"
+
+#: UbuntuShape.qml:134
+msgid "Gradient"
+msgstr "Градієнт"

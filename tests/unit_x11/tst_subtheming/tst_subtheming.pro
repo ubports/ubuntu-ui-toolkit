@@ -28,9 +28,23 @@ OTHER_FILES += \
     themes/CustomTheme/1.3/TestStyle.qml \
     StyledItemV12.qml \
     StyledItemV13.qml \
-    StyledItemFallback.qml \
-    StyledItemAppThemeFallback.qml \
     DeprecatedTheme.qml \
-    StyledItemAppThemeVersioned.qml
+    StyledItemAppThemeVersioned.qml \
+    StyleOverride.qml \
+    StyleKept.qml \
+    SimplePropertyHints.qml \
+    StyleHintsWithSignal.qml \
+    StyleHintsWithObject.qml \
+    StyleHintsElsewhere.qml \
+    StyleHintsInvalidProperty.qml \
+    PropertyBindingHints.qml \
+    MoreStyleHints.qml \
+    GroupPropertyBindingHints.qml \
+    OverrideStyleHints.qml \
+    HintedButton.qml \
+    OtherVersion.qml
+
+DISTFILES += \
+    DefaultTheme.qml
 
 

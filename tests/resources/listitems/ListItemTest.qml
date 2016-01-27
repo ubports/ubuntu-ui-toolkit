@@ -106,6 +106,7 @@ MainView {
             id: testItem
             objectName: "single"
             color: "lime"
+            height: units.gu(15)
             onClicked: {
                 print("click")
                 units.gridUnit += 2;
@@ -262,6 +263,11 @@ MainView {
                         Label {
                             text: modelData + " Flickable item"
                         }
+                        Button {
+                            text: "Pressme..."
+                            anchors.centerIn: parent
+                        }
+
                         onClicked: divider.visible = !divider.visible
                     }
                 }

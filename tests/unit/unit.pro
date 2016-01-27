@@ -14,7 +14,9 @@ SUBDIRS += testparser
         tst_components_benchmark
 #}
 
-SUBDIRS += tst_units \
+SUBDIRS += \
+    custom_qpa \
+    tst_units \
     tst_scaling_image_provider \
     tst_qquick_image_extension \
     tst_performance \

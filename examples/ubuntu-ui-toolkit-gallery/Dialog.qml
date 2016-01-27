@@ -26,7 +26,7 @@ Template {
         documentation: "qml-ubuntu-components-popups-%1.html".arg(className.toLowerCase())
 
         TemplateRow {
-            title: i18n.tr("Standard")
+            title: i18n.tr("Dialog")
 
             Button {
                 text: i18n.tr("Open")
@@ -43,17 +43,21 @@ Template {
                 title: "Sample Dialog"
                 text: "Descriptive text goes here"
 
+                TextField {
+                    placeholderText: "Type like your lifes depends on it"
+                }
+
                 Row {
                     id: row
                     width: parent.width
                     spacing: units.gu(1)
                     Button {
-                        width: parent.width/2
+                        width: parent.width/2 - row.spacing/2
                         text: "Cancel"
                         onClicked: PopupUtils.close(dialogue)
                     }
                     Button {
-                        width: parent.width/2
+                        width: parent.width/2 - row.spacing/2
                         text: "Confirm"
                         color: UbuntuColors.green
                         onClicked: PopupUtils.close(dialogue)

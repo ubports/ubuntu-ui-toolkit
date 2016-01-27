@@ -29,43 +29,73 @@ Template {
         TemplateRow {
             title: i18n.tr("Orange")
             UbuntuShape {
-                color: UbuntuColors.orange
+                backgroundColor: UbuntuColors.orange
             }
         }
         TemplateRow {
-            title: i18n.tr("Light grey")
+            title: i18n.tr("Porcelain")
             UbuntuShape {
-                color: UbuntuColors.lightGrey
+                backgroundColor: UbuntuColors.porcelain
             }
         }
         TemplateRow {
-            title: i18n.tr("Dark grey")
+            title: i18n.tr("Silk")
             UbuntuShape {
-                color: UbuntuColors.darkGrey
+                backgroundColor: UbuntuColors.silk
+            }
+        }
+        TemplateRow {
+            title: i18n.tr("Ash")
+            UbuntuShape {
+                backgroundColor: UbuntuColors.ash
+            }
+        }
+        TemplateRow {
+            title: i18n.tr("Graphite")
+            UbuntuShape {
+                backgroundColor: UbuntuColors.graphite
+            }
+        }
+        TemplateRow {
+            title: i18n.tr("Slate")
+            UbuntuShape {
+                backgroundColor: UbuntuColors.slate
+            }
+        }
+        TemplateRow {
+            title: i18n.tr("Inkstone")
+            UbuntuShape {
+                backgroundColor: UbuntuColors.inkstone
+            }
+        }
+        TemplateRow {
+            title: i18n.tr("Jet")
+            UbuntuShape {
+                backgroundColor: UbuntuColors.jet
             }
         }
         TemplateRow {
             title: i18n.tr("Red")
             UbuntuShape {
-                color: UbuntuColors.red
+                backgroundColor: UbuntuColors.red
             }
         }
         TemplateRow {
             title: i18n.tr("Green")
             UbuntuShape {
-                color: UbuntuColors.green
+                backgroundColor: UbuntuColors.green
             }
         }
         TemplateRow {
             title: i18n.tr("Blue")
             UbuntuShape {
-                color: UbuntuColors.blue
+                backgroundColor: UbuntuColors.blue
             }
         }
         TemplateRow {
             title: i18n.tr("Purple")
             UbuntuShape {
-                color: UbuntuColors.purple
+                backgroundColor: UbuntuColors.purple
             }
         }
     }

@@ -61,13 +61,12 @@ def get_qmlscene_launch_command():
 def get_toolkit_launcher_command():
     root = ubuntuuitoolkit.tests.get_path_to_build_root()
     path_to_local_launcher = os.path.join(
-        root, 'tests', 'launcher', 'launcher')
+        root, 'ubuntu-ui-toolkit-launcher', 'ubuntu-ui-toolkit-launcher')
     if os.path.exists(path_to_local_launcher):
         return path_to_local_launcher
     else:
-        arch = ubuntuuitoolkit.base.get_host_multiarch()
         path_to_installed_launcher = os.path.join(
-            '/', 'usr', 'lib', arch, 'ubuntu-ui-toolkit', 'launcher')
+            '/', 'usr', 'bin', 'ubuntu-ui-toolkit-launcher')
     return path_to_installed_launcher
 
 

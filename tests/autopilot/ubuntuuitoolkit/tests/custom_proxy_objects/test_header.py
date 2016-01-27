@@ -72,8 +72,7 @@ class ActionsTestCase(tests.QMLFileAppTestCase):
     def setUp(self):
         super().setUp()
         self.header = self.main_view.get_header()
-        self.label = self.app.select_single(
-            'Label', objectName='clicked_label')
+        self.label = self.app.select_single(objectName='clicked_label')
         self.assertEqual(self.label.text, 'No button clicked.')
 
     def test_header_custom_proxy_object(self):
@@ -110,20 +109,6 @@ class ActionsTestCase(tests.QMLFileAppTestCase):
         self.assertFalse(self.header._is_visible())
         self.header.click_action_button('action0')
         self.assertEqual(self.label.text, 'Button 0 clicked.')
-
-    def test_overflow_button(self):
-        # there are 5 actions plus a custom back action
-        overflow_button = self.header.select_single(
-            objectName='actions_overflow_button')
-        self.assertEqual(overflow_button.visible, True)
-
-        hide_actions_button = self.main_view.select_single(
-            'Button',
-            objectName='hide_actions_button')
-        self.pointing_device.click_object(hide_actions_button)
-
-        # only three actions are visible
-        self.assertEqual(overflow_button.visible, False)
 
 
 class SectionsTestCase(tests.QMLFileAppTestCase):

@@ -18,16 +18,108 @@ import QtQuick 2.0
 import QtTest 1.0
 import Ubuntu.Test 1.0
 import Ubuntu.Components 1.3
+import Ubuntu.Components.Popups 1.3
 
 Item {
     id: testMain
     width: units.gu(40)
-    height: units.gu(71)
+    height: units.gu(50)
+
+    Component {
+        id: popoverComponent
+        Popover {
+            property var textField: textFieldInPopover
+            Rectangle {
+                anchors.fill: parent
+                color: UbuntuColors.orange
+            }
+            Column {
+                anchors.margins: units.gu(2)
+                Label {
+                    text: 'This is a text field in a popover'
+                }
+                TextField {
+                    id: textFieldInPopover
+                }
+                Label {
+                    text: 'Focus the text field'
+                }
+            }
+        }
+    }
+
+    Component {
+        id: dialogComponent
+        Dialog {
+            id: dialog
+            property var textField: textFieldInDialog
+            Label {
+                text: 'This is a text field in a dialog'
+                height: units.gu(10)
+            }
+            TextField {
+                id: textFieldInDialog
+                height: units.gu(10)
+            }
+            Label {
+                text: 'Focus the text field'
+                height: units.gu(10)
+            }
+            Button {
+                text: 'Close'
+                onClicked: PopupUtils.close(dialog)
+            }
+        }
+    }
 
     Column {
         spacing: units.gu(1)
+        anchors {
+            topMargin: units.gu(4)
+            top: parent.top
+        }
+        Button {
+            id: popoverButton
+            text: 'Open Popover'
+            onClicked: PopupUtils.open(popoverComponent, popoverButton)
+        }
+        Button {
+            text: 'Open Popover with no target'
+            onClicked: PopupUtils.open(popoverComponent)
+        }
+        Button {
+            id: dialogButton
+            text: 'Open Dialog'
+            onClicked: PopupUtils.open(dialogComponent, dialogButton)
+        }
+
         TextField {
             id: textField
+        }
+
+        TextField {
+            id: customTextField
+            text: 'Lorem ipsum dolor sit amet'
+            primaryItem: AbstractButton {
+                id: primaryButton
+                height: parent.height
+                width: height
+                Image {
+                    anchors.fill: parent
+                    anchors.margins: units.gu(0.5)
+                    source: 'image://theme/torch-on'
+                }
+            }
+            secondaryItem: AbstractButton {
+                id: secondaryButton
+                height: parent.height
+                width: height
+                Image {
+                    anchors.fill: parent
+                    anchors.margins: units.gu(0.5)
+                    source: 'image://theme/settings'
+                }
+            }
         }
         TextArea {
             id: textArea
@@ -37,6 +129,10 @@ Item {
             echoMode: TextInput.Password
             text: 'deadbeef'
         }
+    }
+
+    MockKeyboard {
+        Component.onCompleted: UbuntuApplication.inputMethod = this
     }
 
     SignalSpy {
@@ -73,7 +169,7 @@ Item {
     }
 
     UbuntuTestCase {
-        name: "TextInputCommonTest"
+        name: "TextInputCommonTest13"
         when: windowShown
 
         function init() {
@@ -344,6 +440,77 @@ Item {
             waitForRendering(data.input, 500);
             expectFail(data.tag, "mouseDoubleClick() fails to trigger")
             verify(data.input.selectedText != "", "No text selected.");
+        }
+
+        function test_osk_displaces_popover_data() {
+            return [
+                { tag: 'popover', component: popoverComponent, target: popoverButton, offScreen: false },
+                { tag: 'popover', component: popoverComponent, target: null, offScreen: false },
+                { tag: 'dialog', component: dialogComponent, target: dialogButton, offScreen: true },
+            ]
+        }
+
+        function test_osk_displaces_popover(data) {
+            var popover = PopupUtils.open(data.component, data.target);
+            waitForRendering(popover);
+            popover.textField.forceActiveFocus();
+            waitForRendering(popover.textField);
+            // Only get the value here so in case of failure the popover won't get stuck
+            var popoverY = popover.y;
+
+            // dismiss popover
+            PopupUtils.close(popover);
+            // add some timeout to get the event buffer cleaned
+            wait(500);
+
+            if (data.offScreen)
+                verify(popoverY < 0, 'Dialog did not shift upwards: %1'.arg(popoverY));
+            else
+                verify(popoverY >= 0, 'Popover went off-screen: %1'.arg(popoverY));
+        }
+
+        function test_osk_shrinks_dialog() {
+            var popover = PopupUtils.open(dialogComponent, dialogButton);
+            waitForRendering(popover);
+            // Original height before showing OSK
+            var originalHeight = popover.height;
+            // Subtract OSK
+            var expectedHeight = originalHeight - UbuntuApplication.inputMethod.keyboardRectangle.height;
+            popover.textField.forceActiveFocus();
+            waitForRendering(popover.textField);
+            // Only get the value here so in case of failure the popover won't get stuck
+            var foreground = findChild(popover, "dialogForeground")
+            var availableHeight = foreground.height;
+
+            // dismiss popover
+            PopupUtils.close(popover);
+            // add some timeout to get the event buffer cleaned
+            wait(500);
+
+            verify(availableHeight <= expectedHeight, 'Dialog did not shrink (%1 > %2)'.arg(availableHeight).arg(expectedHeight));
+        }
+
+        function test_secondaryItem_must_not_grab_focus_data() {
+            return [
+                { tag: 'same', input: textField },
+                { tag: 'other', input: customTextField },
+                ];
+        }
+
+        function test_secondaryItem_must_not_grab_focus(data) {
+            textField.forceActiveFocus();
+            compare(textField.focus, true, 'TextField is focused');
+
+            var clearButton = findChild(textField, "clear_button")
+            mouseClick(clearButton, clearButton.width/2, clearButton.height/2);
+            waitForRendering(data.input, 500);
+            compare(textField.focus, true, 'TextField no longer focused');
+            mouseClick(primaryButton, primaryButton.width/2, primaryButton.height/2);
+            waitForRendering(data.input, 500);
+            compare(textField.focus, true, 'TextField no longer focused');
+            mouseClick(secondaryButton, secondaryButton.width/2, secondaryButton.height/2);
+            waitForRendering(data.input, 500);
+            compare(textField.focus, true, 'TextField no longer focused');
         }
     }
 }

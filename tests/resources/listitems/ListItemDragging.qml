@@ -15,9 +15,9 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.2
+import Ubuntu.Components 1.3
 import QtQuick.Layouts 1.1
-import Ubuntu.Components.ListItems 1.0
+import Ubuntu.Components.ListItems 1.3
 import QtQml.Models 2.1
 
 MainView {
@@ -133,6 +133,7 @@ MainView {
                         trailingActions: ListItemActions {
                             actions: contextualActions
                         }
+                        onSelectedChanged: print(selected)
 
                         RowLayout {
                             anchors {
@@ -150,6 +151,10 @@ MainView {
                                 captionStyle: Ubuntu.SummaryCaptionStyle
                                 title.text: "LTR"
                                 subtitle.text: "RTL"
+                                MouseArea {
+                                    anchors.fill: parent
+                                    onClicked: item.selected = !item.selected
+                                }
                             }
                         }
 

@@ -20,7 +20,7 @@
  * Activity Indicator crashes in QML/Widget mixed applications
  */
 
-import QtQuick 2.2
+import QtQuick 2.0
 import Ubuntu.Components 1.1
 
 Item {
@@ -49,7 +49,7 @@ Item {
                 fillMode: Image.PreserveAspectFit
                 horizontalAlignment: Image.AlignHCenter
                 verticalAlignment: Image.AlignVCenter
-                source: "../../../modules/Ubuntu/Components/Themes/Ambiance/artwork/spinner@8.png"
+                source: "../../../src/Ubuntu/Components/Themes/Ambiance/artwork/spinner@8.png"
 
 
                 RotationAnimator on rotation {

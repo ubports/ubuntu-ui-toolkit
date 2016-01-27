@@ -14,9 +14,6 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from unittest import mock
-
-from autopilot import platform
 from testtools.matchers import GreaterThan
 
 import ubuntuuitoolkit
@@ -56,17 +53,11 @@ MainView {
         self.simple_text_area.clear()
         self.assertEqual(self.simple_text_area.text, '')
 
-    def test_clear_with_multiple_lines_on_touch(self):
+    def test_clear_with_multiple_lines(self):
         # This is a regrestion test for http://pad.lv/1359167
         self.simple_text_area.write(
             'Long text that will make it wrap into multiple lines.')
         self.assertThat(self.simple_text_area.lineCount, GreaterThan(1))
-        self.simple_text_area.keyboard.press_and_release('Ctrl+Home')
-        if platform.model() == 'Desktop':
-            # Use a touch mock.
-            patcher = mock.patch('autopilot.platform.model')
-            mock_model = patcher.start()
-            self.addCleanup(patcher.stop)
-            mock_model.return_value = 'not desktop'
+        self.simple_text_area._go_to_start()
         self.simple_text_area.clear()
         self.assertEqual(self.simple_text_area.text, '')

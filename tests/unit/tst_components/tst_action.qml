@@ -17,8 +17,6 @@
 import QtQuick 2.0
 import QtTest 1.0
 import Ubuntu.Components 1.1
-// FIXME: do cleanup https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1369874
-import Ubuntu.Unity.Action 1.1 as Unity
 
 TestCase {
      name: "ActionAPI"
@@ -34,6 +32,13 @@ TestCase {
              }
          }
          return false;
+     }
+
+     function cleanup() {
+         triggeredSignalSpy.target = action;
+         triggeredSignalSpy.clear();
+         context1.active = false;
+         context2.active = false;
      }
 
      function initTestCase() {
@@ -121,38 +126,44 @@ TestCase {
          ignoreWarning(util.callerFile() + message);
      }
 
-     function test_add_unity_actioncontext_failure() {
-         ignoreQMLWarning(':217:6: QML ActionContext: Unity.ActionContext deprecated. Please use ActionContext from Ubuntu.Components.');
-         manager.addLocalContext(unityContext);
-         verify(!contains(manager.localContexts, unityContext), "Unity ActionContext cannot be added");
-     }
-
-     function test_unity_action_not_in_context() {
-         verify(!contains(manager.globalContext.actions, unityAction, "Unity Action cannot be registered"));
-     }
-
-     function test_0_cannot_add_unity_action_to_global_context() {
-         ignoreQMLWarning(':166:6: QML Action: Unity.Action deprecated. Please use Action from Ubuntu.Components.');
-         manager.globalContext.addAction(stockUnityAction);
-         verify(!contains(manager.globalContext.actions, stockUnityAction, "Unity Action cannot be registered"));
-     }
-
-     function test_1_cannot_add_unity_action_to_local_context() {
-         ignoreQMLWarning(':166:6: QML Action: Unity.Action deprecated. Please use Action from Ubuntu.Components.');
-         context1.addAction(stockUnityAction);
-         verify(!contains(context1.actions, stockUnityAction, "Unity Action cannot be registered"));
-     }
      function test_activate_contexts_data() {
          return [
-             {tag: "Activate context1", active: context1, inactive: context2},
-             {tag: "Activate context2", active: context2, inactive: context1},
-             {tag: "Activate context1 again", active: context1, inactive: context2},
+             {tag: "Activate context1", active: [context1], inactive: [context2]},
+             {tag: "Activate context2", active: [context2], inactive: [context1]},
+             {tag: "Activate context1, context2", active: [context1, context2], inactive: []},
          ];
      }
      function test_activate_contexts(data) {
-         data.active.active = true;
-         verify(data.active.active, "Context activation error");
-         verify(!data.inactive.active, "Context deactivation error");
+         for (var i = 0; i < data.active.length; i++) {
+            data.active[i].active = true;
+         }
+         for (var i = 0; i < data.active.length; i++) {
+            verify(data.active[i].active, "Context activation error");
+         }
+         for (var i = 0; i < data.inactive.length; i++) {
+            verify(!data.inactive[i].active, "Context deactivation error");
+         }
+     }
+
+     function test_overloaded_action_trigger_data() {
+         return [
+             {tag: "parametered override without parameter", action: suppressTrigger, invoked: true},
+             {tag: "parametered override with parameter", action: suppressTrigger, value: 1, type: Action.Integer, invoked: true},
+             {tag: "paremeterless override without parameter", action: override, invoked: true},
+             {tag: "paremeterless override with parameter", action: override, value: 1, type: Action.Integer, invoked: true},
+         ];
+     }
+     function test_overloaded_action_trigger(data) {
+         data.action.invoked = false;
+         data.action.parameterType = Action.None;
+         testItem.action = data.action;
+         if (data.value) {
+             data.action.parameterType = data.type;
+             testItem.trigger(data.value);
+         } else {
+             testItem.trigger(data.value);
+         }
+         compare(data.action.invoked, data.invoked);
      }
 
      Action {
@@ -162,9 +173,6 @@ TestCase {
          id: valueType
          property var parameter
          onTriggered: parameter = value
-     }
-     Unity.Action {
-         id: stockUnityAction
      }
 
      QtObject {
@@ -202,9 +210,6 @@ TestCase {
          }
          Action {
          }
-         Unity.Action {
-             id: unityAction
-         }
      }
 
      ActionContext {
@@ -214,7 +219,21 @@ TestCase {
          id: context2
      }
 
-     Unity.ActionContext {
-         id: unityContext
+     Action {
+         id: suppressTrigger
+         property bool invoked: false
+         // we must override the parametered version as Button connects to the parametered version
+         function trigger(v) { invoked = true }
      }
+
+     Action {
+         id: override
+         property bool invoked: false
+         function trigger() { invoked = true }
+     }
+
+     ActionItem {
+         id: testItem
+     }
+
 }
