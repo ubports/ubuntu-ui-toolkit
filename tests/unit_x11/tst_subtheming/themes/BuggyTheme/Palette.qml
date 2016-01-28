@@ -16,13 +16,10 @@
 
 import QtQuick 2.4
 import Ubuntu.Components 1.3
+import Ubuntu.Components.Themes 1.3
 
-Item {
-    id: dialogForegroundStyle
-
-    UbuntuShape {
-        id: background
-        anchors.fill: parent
-        backgroundColor: theme.palette.normal.overlay
-    }
+Palette {
+    normal.selection: "#A21E1C"
+    selected.selection: "#1C1EA2"
+    imaginary.selection: "pink"
 }

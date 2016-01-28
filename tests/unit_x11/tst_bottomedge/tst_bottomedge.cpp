@@ -863,6 +863,14 @@ private Q_SLOTS:
         QPoint delta(0, -bottomEdge->height());
         UCTestExtras::touchDrag(0, bottomEdge, from, delta, 20);
     }
+
+    void test_bottomedge_hint_enabled() {
+        QScopedPointer<BottomEdgeTestCase> view(new BottomEdgeTestCase("Defaults.qml"));
+        UCBottomEdge *bottomEdge = view->testItem();
+        QCOMPARE(bottomEdge->isEnabled(), bottomEdge->hint()->isEnabled());
+        bottomEdge->setEnabled(!bottomEdge->isEnabled());
+        QCOMPARE(bottomEdge->isEnabled(), bottomEdge->hint()->isEnabled());
+    }
 };
 
 QTEST_MAIN(tst_BottomEdge)

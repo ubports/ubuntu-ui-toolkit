@@ -88,9 +88,27 @@ void UCLabel::_q_customColor()
 UCLabel::UCLabel(QQuickItem* parent)
     : QQuickText(parent)
     , UCThemingExtension(this)
+    , m_defaultColor(getDefaultColor)
     , m_textSize(Medium)
     , m_flags(0)
 {
+}
+
+UCLabel::UCLabel(std::function<QColor (QQuickItem*, UCTheme*)> defaultColor, QQuickItem *parent)
+    : QQuickText(parent)
+    , UCThemingExtension(this)
+    , m_defaultColor(defaultColor)
+    , m_textSize(Medium)
+    , m_flags(0)
+{
+}
+
+QColor UCLabel::getDefaultColor(QQuickItem *item, UCTheme *theme)
+{
+    // FIXME: replace the code below with automatic color
+    // change detection based on teh item's state
+    const char *valueSet = item->isEnabled() ? "normal" : "disabled";
+    return theme ? theme->getPaletteColor(valueSet, "backgroundText") : QColor();
 }
 
 void UCLabel::classBegin()
@@ -112,6 +130,7 @@ void UCLabel::init()
     connect(&UCUnits::instance(), &UCUnits::gridUnitChanged, this, &UCLabel::updateRenderType);
     connect(this, &UCLabel::fontChanged, this, &UCLabel::_q_updateFontFlag, Qt::DirectConnection);
     connect(this, &UCLabel::colorChanged, this, &UCLabel::_q_customColor, Qt::DirectConnection);
+    connect(this, &UCLabel::enabledChanged, this, &UCLabel::postThemeChanged, Qt::DirectConnection);
 }
 
 void UCLabel::postThemeChanged()
@@ -121,7 +140,7 @@ void UCLabel::postThemeChanged()
     }
     UCTheme *theme = getTheme();
     if (theme) {
-        setColor(theme->getPaletteColor("normal", "baseText"));
+        setColor(m_defaultColor(this, theme));
         m_flags &= ~ColorSet;
     }
 }
