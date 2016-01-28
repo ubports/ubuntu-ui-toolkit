@@ -29,9 +29,9 @@ Item {
                           ? ((styledItem.activeFocus || styledItem.highlighted)
                             ? theme.palette.selected.fieldText
                             : theme.palette.normal.fieldText)
-                          : theme.palette.inactive.fieldText
-    property color selectedTextColor: styledItem.enabled ? theme.palette.selected.selectionText : theme.palette.inactive.selectionText
-    property color selectionColor: styledItem.enabled ? theme.palette.selected.selection : theme.palette.inactive.selection
+                          : theme.palette.disabled.fieldText
+    property color selectedTextColor: styledItem.enabled ? theme.palette.selected.selectionText : theme.palette.disabled.selectionText
+    property color selectionColor: styledItem.enabled ? theme.palette.selected.selection : theme.palette.disabled.selection
     /*!
       Background fill color
       */
@@ -39,8 +39,8 @@ Item {
                                         ? ((styledItem.activeFocus || styledItem.highlighted)
                                             ? theme.palette.selected.field
                                             : theme.palette.normal.field)
-                                        : theme.palette.inactive.field
-    property color errorColor: styledItem.enabled ? theme.palette.normal.negative : theme.palette.inactive.negative
+                                        : theme.palette.disabled.field
+    property color errorColor: styledItem.enabled ? theme.palette.normal.negative : theme.palette.disabled.negative
 
     /*!
       Spacing between the frame and the text editor area
