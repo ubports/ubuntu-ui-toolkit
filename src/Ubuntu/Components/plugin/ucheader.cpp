@@ -87,6 +87,7 @@ UCHeader::UCHeader(QQuickItem *parent)
     , m_previous_contentY(0)
     , m_exposed(true)
     , m_moving(false)
+    , m_animate(true)
 {
     m_showHideAnimation->setParent(this);
     m_showHideAnimation->setTargetObject(this);

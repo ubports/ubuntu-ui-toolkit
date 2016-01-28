@@ -117,7 +117,11 @@ Components.Header {
      */
     property QtObject config: null
 
-    Component.onCompleted: internal.updateProperties()
+    animate: false
+    Component.onCompleted: {
+        internal.updateProperties();
+        header.animate = true;
+    }
     onConfigChanged: internal.updateProperties()
 
     onExposedChanged: {
