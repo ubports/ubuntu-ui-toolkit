@@ -18,6 +18,7 @@
 #include "uclabel.h"
 #include "ucunits.h"
 #include "ucfontutils.h"
+#include "uctheme.h"
 
 UCThreeLabelsSlotPrivate::UCThreeLabelsSlotPrivate()
     : QQuickItemPrivate()
@@ -178,11 +179,19 @@ UCLabel *UCThreeLabelsSlot::title()
     return d->m_title;
 }
 
+QColor UCThreeLabelsSlot::getSubtitleColor(QQuickItem *item, UCTheme *theme)
+{
+    // FIXME: replace the code below with automatic color
+    // change detection based on teh item's state
+    const char *valueSet = item->isEnabled() ? "normal" : "disabled";
+    return theme ? theme->getPaletteColor(valueSet, "backgroundSecondaryText") : QColor();
+}
+
 UCLabel *UCThreeLabelsSlot::subtitle()
 {
     Q_D(UCThreeLabelsSlot);
     if (d->m_subtitle == Q_NULLPTR) {
-        d->m_subtitle = new UCLabel(this);
+        d->m_subtitle = new UCLabel(getSubtitleColor, this);
         QQmlEngine::setContextForObject(d->m_subtitle, qmlContext(this));
         d->m_subtitle->init();
 
@@ -200,11 +209,19 @@ UCLabel *UCThreeLabelsSlot::subtitle()
     return d->m_subtitle;
 }
 
+QColor UCThreeLabelsSlot::getSummaryColor(QQuickItem *item, UCTheme *theme)
+{
+    // FIXME: replace the code below with automatic color
+    // change detection based on teh item's state
+    const char *valueSet = item->isEnabled() ? "normal" : "disabled";
+    return theme ? theme->getPaletteColor(valueSet, "backgroundTertiaryText") : QColor();
+}
+
 UCLabel *UCThreeLabelsSlot::summary()
 {
     Q_D(UCThreeLabelsSlot);
     if (d->m_summary == Q_NULLPTR) {
-        d->m_summary = new UCLabel(this);
+        d->m_summary = new UCLabel(getSummaryColor, this);
         QQmlEngine::setContextForObject(d->m_summary, qmlContext(this));
         d->m_summary->init();
 

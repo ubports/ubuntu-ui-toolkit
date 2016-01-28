@@ -852,10 +852,11 @@ Ubuntu.Components.Themes.Palette 0.1: QtObject
     property PaletteValues normal
     property PaletteValues selected
 Ubuntu.Components.Themes.Palette 1.3: QtObject
-    property PaletteValues inactive
+    property PaletteValues disabled
+    property PaletteValues highlighted
     property PaletteValues normal
     property PaletteValues selected
-    property PaletteValues selectedInactive
+    property PaletteValues selectedDisabled
 Ubuntu.Components.Themes.PaletteValues 0.1: QtObject
     property color background
     property color backgroundText
@@ -879,6 +880,8 @@ Ubuntu.Components.Themes.PaletteValues 1.3: QtObject
     property color baseText
     property color field
     property color fieldText
+    property color focus
+    property color focusText
     property color foreground
     property color foregroundText
     property color negative

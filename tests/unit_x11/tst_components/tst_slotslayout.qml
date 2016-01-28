@@ -447,6 +447,13 @@ Item {
             }
         }
 
+        function initTestCase() {
+            // check the coloring of the mainslot labels
+            compare(layoutEmpty.title.color, theme.palette.normal.backgroundText, "wrong title color");
+            compare(layoutEmpty.subtitle.color, theme.palette.normal.backgroundSecondaryText, "wrong subtitle color");
+            compare(layoutEmpty.summary.color, theme.palette.normal.backgroundTertiaryText, "wrong summary color");
+        }
+
         function test_contentPadding_data() {
             return standardTestsData()
         }
