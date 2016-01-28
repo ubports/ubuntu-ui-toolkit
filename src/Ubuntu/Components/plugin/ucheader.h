@@ -31,6 +31,7 @@ class UCHeader : public UCStyledItemBase
     Q_PROPERTY(QQuickFlickable* flickable READ flickable WRITE setFlickable NOTIFY flickableChanged FINAL)
     Q_PROPERTY(bool exposed MEMBER m_exposed WRITE setExposed NOTIFY exposedChanged FINAL)
     Q_PROPERTY(bool moving READ moving NOTIFY movingChanged FINAL)
+    Q_PROPERTY(bool animate MEMBER m_animate WRITE setAnimate NOTIFY animateChanged FINAL)
 
 public:
     explicit UCHeader(QQuickItem *parent = 0);
@@ -39,12 +40,14 @@ public:
     QQuickFlickable* flickable();
     void setFlickable(QQuickFlickable* flickable);
     void setExposed(bool exposed);
+    void setAnimate(bool animate);
     bool moving();
 
 Q_SIGNALS:
     void flickableChanged();
     void exposedChanged();
     void movingChanged();
+    void animateChanged();
 
 protected:
     void show(bool animate = true);
@@ -66,6 +69,7 @@ private:
     qreal m_previous_contentY;
     bool m_exposed:1;
     bool m_moving:1;
+    bool m_animate:1;
 
     // used to set the easing and duration of m_showHideAnimation
     static UCUbuntuAnimation *s_ubuntuAnimation;

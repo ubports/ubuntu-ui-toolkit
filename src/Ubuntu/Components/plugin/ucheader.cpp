@@ -273,6 +273,20 @@ void UCHeader::_q_showHideAnimationRunningChanged() {
 }
 
 /*!
+ * \qmlproperty bool Header::animate
+ * Animate the y-value when the value of \l exposed is set or unset.
+ * If the header is already animating while the value is set to false,
+ * the current animation is not cancelled.
+ * Default value: true.
+ */
+void UCHeader::setAnimate(bool animate) {
+    if (animate != m_animate) {
+        m_animate = animate;
+        Q_EMIT animateChanged();
+    }
+}
+
+/*!
  * \qmlproperty bool Header::exposed
  * Exposes and hides the header by animating its y-value between -height and 0
  * to move it in or out of its parent Item. The value of exposed can be set directly,
