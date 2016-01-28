@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -24,9 +24,7 @@ PaletteValues {
     backgroundSecondaryText: UbuntuColors.slate
     backgroundTertiaryText: UbuntuColors.ash
     base: UbuntuColors.silk
-    baseText: UbuntuColors.slate
-    focus: UbuntuColors.orange
-    focusText: "#FFFFFF"
+    baseText: UbuntuColors.ash
     foreground: UbuntuColors.porcelain
     foregroundText: UbuntuColors.jet
     raised: "#FFFFFF"
@@ -37,6 +35,8 @@ PaletteValues {
     overlaySecondaryText: UbuntuColors.silk
     field: "#FFFFFF"
     fieldText: UbuntuColors.jet
+    focus: UbuntuColors.orange
+    focusText: "#FFFFFF"
     selection: Qt.rgba(UbuntuColors.blue.r, UbuntuColors.blue.g, UbuntuColors.blue.b, 0.2)
     selectionText: UbuntuColors.jet
     positive: UbuntuColors.green

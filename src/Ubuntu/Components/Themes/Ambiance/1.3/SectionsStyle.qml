@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -23,22 +23,25 @@ Item {
     implicitHeight: units.gu(4)
 
     enabled: styledItem.enabled
-    opacity: enabled ? 1.0 : 0.5
 
     /*!
       The foreground color of unselected sections.
      */
-    property color sectionColor: theme.palette.normal.backgroundText
+    property color sectionColor: enabled
+                                    ? theme.palette.normal.backgroundTertiaryText
+                                    : theme.palette.disabled.backgroundTertiaryText
 
     /*!
       The foreground color of the selected section.
      */
-    property color selectedSectionColor: UbuntuColors.orange
+    property color selectedSectionColor: enabled
+                                            ? theme.palette.selected.backgroundTertiaryText
+                                            : theme.palette.selectedDisabled.backgroundTertiaryText
 
     /*!
       The background color for the pressed section button.
      */
-    property color pressedBackgroundColor: theme.palette.selected.background
+    property color pressedBackgroundColor: theme.palette.highlighted.background
 
     /*!
       The font size for the text in the buttons.

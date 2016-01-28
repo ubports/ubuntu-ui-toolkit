@@ -29,7 +29,8 @@ Styles.ListItemStyle {
     property color trailingPanelColor: theme.palette.normal.foreground
     property color leadingForegroundColor: theme.palette.normal.negative
     property color trailingForegroundColor: theme.palette.normal.foregroundText
-
+    property color leadingDisabledForegroundColor: theme.palette.disabled.negative
+    property color trailingDisabledForegroundColor: theme.palette.disabled.foregroundText
     // anchoring
     anchors {
         // do not anchor fill
@@ -78,7 +79,6 @@ Styles.ListItemStyle {
                         id: actionButton
                         action: modelData
                         enabled: action.enabled
-                        opacity: action.enabled ? 1.0 : 0.5
                         width: MathUtils.clamp(delegateLoader.item ? delegateLoader.item.width : 0, actionsRow.minItemWidth, actionsRow.maxItemWidth)
                         anchors {
                             top: parent ? parent.top : undefined
@@ -91,7 +91,7 @@ Styles.ListItemStyle {
 
                         Rectangle {
                             anchors.fill: parent
-                            color: theme.palette.selected.background
+                            color: theme.palette.highlighted.background
                             visible: pressed
                         }
 
@@ -122,7 +122,9 @@ Styles.ListItemStyle {
                         width: units.gu(2)
                         height: width
                         name: action.iconName
-                        color: leading ? leadingForegroundColor : trailingForegroundColor
+                        color: leading
+                               ? (action.enabled ? leadingForegroundColor : leadingDisabledForegroundColor)
+                               : (action.enabled ? trailingForegroundColor : trailingDisabledForegroundColor)
                         anchors.centerIn: parent
                     }
                 }
