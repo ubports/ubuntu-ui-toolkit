@@ -489,6 +489,7 @@ Ubuntu.Components.Header 1.0 0.1: AppHeader
 Ubuntu.Components.ListItems.Header 1.3 ListItemHeader: Item
     property string text
 Ubuntu.Components.Header 1.3 UCHeader: StyledItem
+    property bool animate
     property bool exposed
     property Flickable flickable
     readonly property bool moving
