@@ -31,7 +31,7 @@ void UCLabel::updatePixelSize()
     };
     QFont textFont = font();
     textFont.setPixelSize(
-        qRound(sizes[m_textSize] * UCUnits::instance().dp(UCFontUtils::fontUnits)));
+        qRound(sizes[m_textSize] * UCUnits::instance(this).dp(UCFontUtils::fontUnits)));
     setFont(textFont);
     // remove PixelSizeSet flag
     m_flags &= ~PixelSizeSet;

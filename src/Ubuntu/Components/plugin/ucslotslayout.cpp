@@ -52,7 +52,7 @@ void UCSlotsLayoutPrivate::init()
     QObject::connect(&padding, SIGNAL(topChanged()), q, SLOT(_q_relayout()));
     QObject::connect(&padding, SIGNAL(bottomChanged()), q, SLOT(_q_relayout()));
 
-    QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_onGuValueChanged()));
+    QObject::connect(&UCUnits::instance(q), SIGNAL(gridUnitChanged()), q, SLOT(_q_onGuValueChanged()));
 
     //FIXME (if possible): this will cause relayout to be called 4-5 times when the layout has "anchors.fill: parent"
     //defined on QML side
@@ -74,18 +74,19 @@ UCSlotsLayoutPrivate::UCSlotPositioningMode UCSlotsLayoutPrivate::getVerticalPos
 
 void UCSlotsLayoutPrivate::updateTopBottomPaddingIfNeeded()
 {
+    Q_Q(UCSlotsLayout);
     if (!padding.topWasSetFromQml) {
         padding.setTop((getVerticalPositioningMode() == UCSlotPositioningMode::CenterVertically
-                        && maxSlotsHeight > UCUnits::instance().gu(SLOTSLAYOUT_TOPBOTTOMMARGIN_SIZETHRESHOLD_GU))
-                       ? UCUnits::instance().gu(SLOTSLAYOUT_TOPMARGIN1_GU)
-                       : UCUnits::instance().gu(SLOTSLAYOUT_TOPMARGIN2_GU));
+                        && maxSlotsHeight > UCUnits::instance(q).gu(SLOTSLAYOUT_TOPBOTTOMMARGIN_SIZETHRESHOLD_GU))
+                       ? UCUnits::instance(q).gu(SLOTSLAYOUT_TOPMARGIN1_GU)
+                       : UCUnits::instance(q).gu(SLOTSLAYOUT_TOPMARGIN2_GU));
     }
 
     if (!padding.bottomWasSetFromQml) {
         padding.setBottom((getVerticalPositioningMode() == UCSlotPositioningMode::CenterVertically
-                           && maxSlotsHeight > UCUnits::instance().gu(SLOTSLAYOUT_TOPBOTTOMMARGIN_SIZETHRESHOLD_GU))
-                          ? UCUnits::instance().gu(SLOTSLAYOUT_BOTTOMMARGIN1_GU)
-                          : UCUnits::instance().gu(SLOTSLAYOUT_BOTTOMMARGIN2_GU));
+                           && maxSlotsHeight > UCUnits::instance(q).gu(SLOTSLAYOUT_TOPBOTTOMMARGIN_SIZETHRESHOLD_GU))
+                          ? UCUnits::instance(q).gu(SLOTSLAYOUT_BOTTOMMARGIN1_GU)
+                          : UCUnits::instance(q).gu(SLOTSLAYOUT_BOTTOMMARGIN2_GU));
     }
 
     return;
@@ -196,12 +197,13 @@ void UCSlotsLayoutPrivate::_q_updateCachedHeight()
 
 void UCSlotsLayoutPrivate::_q_updateGuValues()
 {
+    Q_Q(UCSlotsLayout);
     if (!padding.leadingWasSetFromQml) {
-        padding.setLeading(UCUnits::instance().gu(SLOTSLAYOUT_LEFTMARGIN_GU));
+        padding.setLeading(UCUnits::instance(q).gu(SLOTSLAYOUT_LEFTMARGIN_GU));
     }
 
     if (!padding.trailingWasSetFromQml) {
-        padding.setTrailing(UCUnits::instance().gu(SLOTSLAYOUT_RIGHTMARGIN_GU));
+        padding.setTrailing(UCUnits::instance(q).gu(SLOTSLAYOUT_RIGHTMARGIN_GU));
     }
 
     updateTopBottomPaddingIfNeeded();
@@ -299,7 +301,7 @@ void UCSlotsLayoutPrivate::_q_updateSize()
         return;
 
     Q_Q(UCSlotsLayout);
-    q->setImplicitWidth(parentItem ? parentItem->width() : UCUnits::instance().gu(IMPLICIT_SLOTSLAYOUT_WIDTH_GU));
+    q->setImplicitWidth(parentItem ? parentItem->width() : UCUnits::instance(q).gu(IMPLICIT_SLOTSLAYOUT_WIDTH_GU));
     q->setImplicitHeight(qMax<qreal>(maxSlotsHeight, mainSlotHeight)
                          + padding.top() + padding.bottom());
 

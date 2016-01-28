@@ -68,7 +68,7 @@ void ListItemDragArea::timerEvent(QTimerEvent *event)
 {
     QQuickItem::timerEvent(event);
     if (event->timerId() == scrollTimer.timerId()) {
-        qreal scrollAmount = UCUnits::instance().gu(0.5) * scrollDirection;
+        qreal scrollAmount = UCUnits::instance(this).gu(0.5) * scrollDirection;
         qreal contentHeight = listView->contentHeight();
         qreal height = listView->height();
         if ((contentHeight - height) > 0) {

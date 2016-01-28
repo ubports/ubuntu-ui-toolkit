@@ -20,12 +20,17 @@
 
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlFile>
+#include <QtQuick/QQuickItem>
+#include <QtQuick/QQuickWindow>
 #include <QtCore/QFileInfo>
 #include <QtCore/QDir>
 #include <QtCore/QRegularExpression>
 #include <QtCore/qmath.h>
 #include <QtGui/QGuiApplication>
 #include <QtGui/QScreen>
+
+#include <QtGui/qpa/qplatformnativeinterface.h>
+#include <QtGui/qpa/qplatformwindow.h>
 
 #define ENV_GRID_UNIT_PX "GRID_UNIT_PX"
 #define DEFAULT_GRID_UNIT_PX 8
@@ -106,6 +111,30 @@ UCUnits::UCUnits(QObject *parent) :
     }
 }
 
+UCUnits::~UCUnits()
+{
+    Q_FOREACH (auto unit, _q_unitsHash) {
+        delete unit;
+    }
+    _q_unitsHash.clear();
+}
+
+UCUnits &UCUnits::instance(QQuickItem *item)
+{
+    QWindow *window = static_cast<QWindow *>(item->window()); qDebug() << "creating for" << item;
+    if (!window) {
+        qDebug() << "no window??";
+        return instance();
+    }
+    if (_q_unitsHash.contains(window)) {
+        return *(_q_unitsHash.value(window));
+    } else {
+        auto units = new UCUnits(window); // warning, memory not reclaimed when window deleted
+        _q_unitsHash.insert(window, units);
+        return *units;
+    }
+}
+
 /*!
     \qmlproperty real Units::gridUnit
 
@@ -118,8 +147,48 @@ float UCUnits::gridUnit()
 
 void UCUnits::setGridUnit(float gridUnit)
 {
+    if (qFuzzyCompare(gridUnit, m_gridUnit)) {
+        return;
+    }
     m_gridUnit = gridUnit;
     Q_EMIT gridUnitChanged();
+}
+
+void UCUnits::classBegin()
+{
+    // parent is set by the QML engine after the constructor is called. Is definitely set by now.
+
+    // If running under Mir, try to fetch and listen to the "scale" window property available
+    // only through the QPlatformNativeInterface
+    if (qGuiApp->platformName() == "ubuntumirclient" || qGuiApp->platformName() == "mirserver") {
+        // at this stage in QML instantiation, I see UCUnits parented to the QQuickWindow, before being reparented to
+        // its proper parent Item. So try to attach to this window, and if fails, get parent Item and get its window.
+        auto window = qobject_cast<QWindow *>(parent());
+        if (!window) {
+            auto parentItem = qobject_cast<QQuickItem *>(parent());
+            if (!parentItem) {
+                return;
+            }
+
+            window = qobject_cast<QWindow *>(parentItem->window());
+        }
+        if (window) {
+            auto nativeInterface = qGuiApp->platformNativeInterface();
+            QObject::connect(nativeInterface, &QPlatformNativeInterface::windowPropertyChanged,
+                             this, &UCUnits::windowPropertyChanged);
+
+            // fetch current value
+            QVariant scaleVal = nativeInterface->windowProperty(window->handle(), "scale");
+            if (!scaleVal.isValid()) {
+                return;
+            }
+            bool ok;
+            float scale = scaleVal.toFloat(&ok);
+            if (ok) {
+                m_gridUnit = DEFAULT_GRID_UNIT_PX * m_devicePixelRatio * scale;
+            }
+        }
+    }
 }
 
 /*!
@@ -237,5 +306,30 @@ float UCUnits::gridUnitSuffixFromFileName(const QString& fileName)
         return match.captured(1).toFloat();
     } else {
         return 0;
+    }
+}
+
+void UCUnits::windowPropertyChanged(QPlatformWindow *window, const QString &propertyName)
+{
+    if (propertyName != QStringLiteral("scale")) { //don't care otherwise
+        return;
+    }
+
+    auto parentItem = qobject_cast<QQuickItem *>(parent());
+    if (parentItem && parentItem->window()) {
+        if (parentItem->window()->handle() != window) {
+            return;
+        }
+        auto nativeInterface = qGuiApp->platformNativeInterface();
+        QVariant scaleVal = nativeInterface->windowProperty(window, "scale");
+        if (!scaleVal.isValid()) {
+            return;
+        }
+        bool ok;
+        float scale = scaleVal.toFloat(&ok);
+        if (!ok) {
+            return;
+        }
+        setGridUnit(DEFAULT_GRID_UNIT_PX * m_devicePixelRatio * scale);
     }
 }

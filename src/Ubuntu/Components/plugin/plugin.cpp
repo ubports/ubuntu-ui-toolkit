@@ -179,11 +179,11 @@ void UbuntuComponentsPlugin::registerTypesToVersion(const char *uri, int major, 
     qmlRegisterType<UCActionContext>(uri, major, minor, "ActionContext");
     qmlRegisterUncreatableType<UCApplication>(uri, major, minor, "UCApplication", "Not instantiable");
     qmlRegisterType<UCActionManager>(uri, major, minor, "ActionManager");
-    qmlRegisterUncreatableType<UCFontUtils>(uri, major, minor, "UCFontUtils", "Not instantiable");
+    qmlRegisterType<UCFontUtils>(uri, major, minor, "UCFontUtils");
     qmlRegisterType<UCStyledItemBase>(uri, major, minor, "StyledItem");
     qmlRegisterUncreatableType<UbuntuI18n>(uri, major, minor, "i18n", "Singleton object");
     qmlRegisterExtendedType<QQuickImageBase, UCQQuickImageExtension>(uri, major, minor, "QQuickImageBase");
-    qmlRegisterUncreatableType<UCUnits>(uri, major, minor, "UCUnits", "Not instantiable");
+    qmlRegisterType<UCUnits>(uri, major, minor, "UCUnits");
     qmlRegisterType<UCUbuntuShape>(uri, major, minor, "UbuntuShape");
     // FIXME/DEPRECATED: Shape is exported for backwards compatibility only
     qmlRegisterType<UCUbuntuShape>(uri, major, minor, "Shape");
@@ -322,10 +322,8 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
 
     // register fontUtils - lower case, can be out-precedented by a QML property
     context->setContextProperty("fontUtils", &UCFontUtils::instance());
-    ContextPropertyChangeListener *fontUtilsListener2 =
-        new ContextPropertyChangeListener(context, "fontUtils");
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()),
-                     fontUtilsListener2, SLOT(updateContextProperty()));
+                     fontUtilsListener, SLOT(updateContextProperty()));
 
     engine->addImageProvider(QLatin1String("scaling"), new UCScalingImageProvider);
 
