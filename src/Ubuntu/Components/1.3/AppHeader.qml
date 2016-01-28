@@ -118,6 +118,7 @@ Components.Header {
     property QtObject config: null
 
     animate: false
+    exposed: false
     Component.onCompleted: {
         internal.updateProperties();
         header.animate = true;
