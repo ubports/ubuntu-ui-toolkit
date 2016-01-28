@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -295,9 +295,9 @@ void UCHeader::setAnimate(bool animate) {
  */
 void UCHeader::setExposed(bool exposed) {
     if (exposed) {
-        show();
+        show(m_animate);
     } else {
-        hide();
+        hide(m_animate);
     }
 }
 
@@ -342,9 +342,9 @@ void UCHeader::_q_flickableMovementEnded() {
     Q_ASSERT(!m_flickable.isNull());
     if ((m_flickable->contentY() < 0)
             || (y() > -height()/2.0)) {
-        show();
+        show(m_animate);
     } else {
-        hide();
+        hide(m_animate);
     }
 }
 
@@ -353,7 +353,7 @@ void UCHeader::_q_contentHeightChanged() {
     if (m_flickable->height() >= m_flickable->contentHeight()) {
         // The user cannot scroll down to expose the header, so ensure
         //  that it is visible.
-        show();
+        show(m_animate);
     }
 }
 
@@ -362,6 +362,6 @@ void UCHeader::_q_flickableInteractiveChanged() {
     if (!m_flickable->isInteractive()) {
         // The user cannot scroll down to expose the header, so ensure
         //  that it is visible.
-        show();
+        show(m_animate);
     }
 }
