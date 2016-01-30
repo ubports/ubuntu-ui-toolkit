@@ -274,6 +274,7 @@ void UbuntuComponentsPlugin::initializeContextProperties(QQmlEngine *engine)
 {
     UCUnits::instance(engine);
     UbuntuI18n::instance(engine);
+    UCApplication::instance(engine);
 
     UCTheme::defaultTheme(engine);
 }
@@ -315,13 +316,13 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
                      i18nChangeListener, SLOT(updateContextProperty()));
 
     // We can't use 'Application' because it exists (undocumented)
-    context->setContextProperty("UbuntuApplication", &UCApplication::instance());
+    context->setContextProperty("UbuntuApplication", UCApplication::instance());
     ContextPropertyChangeListener *applicationChangeListener =
         new ContextPropertyChangeListener(context, "UbuntuApplication");
-    QObject::connect(&UCApplication::instance(), SIGNAL(applicationNameChanged()),
+    QObject::connect(UCApplication::instance(), SIGNAL(applicationNameChanged()),
                      applicationChangeListener, SLOT(updateContextProperty()));
     // Give the application object access to the engine
-    UCApplication::instance().setContext(context);
+    UCApplication::instance()->setContext(context);
 
     context->setContextProperty("units", UCUnits::instance());
     ContextPropertyChangeListener *unitsChangeListener =

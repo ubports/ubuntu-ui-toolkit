@@ -44,9 +44,9 @@ StateSaverBackend::StateSaverBackend(QObject *parent)
     QObject::connect(&QuickUtils::instance(), &QuickUtils::deactivated,
                      this, &StateSaverBackend::initiateStateSaving);
     // catch eventual app name changes so we can have different path for the states if needed
-    QObject::connect(&UCApplication::instance(), &UCApplication::applicationNameChanged,
+    QObject::connect(UCApplication::instance(), &UCApplication::applicationNameChanged,
                      this, &StateSaverBackend::initialize);
-    if (!UCApplication::instance().applicationName().isEmpty()) {
+    if (!UCApplication::instance()->applicationName().isEmpty()) {
         initialize();
     }
 
@@ -72,7 +72,7 @@ void StateSaverBackend::initialize()
         delete m_archive.data();
         m_archive.clear();
     }
-    QString applicationName(UCApplication::instance().applicationName());
+    QString applicationName(UCApplication::instance()->applicationName());
     if (applicationName.isEmpty()) {
         qCritical() << "[StateSaver] Cannot create appstate file, application name not defined.";
         return;
