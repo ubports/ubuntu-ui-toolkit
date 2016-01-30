@@ -270,6 +270,13 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCMainViewBase>(uri, 1, 3, "MainViewBase");
 }
 
+void UbuntuComponentsPlugin::initializeContextProperties(QQmlEngine *engine)
+{
+    UCUnits::instance(engine);
+
+    UCTheme::defaultTheme(engine);
+}
+
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 {
     // initialize baseURL
@@ -286,6 +293,9 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
 
     QQmlExtensionPlugin::initializeEngine(engine, uri);
     QQmlContext* context = engine->rootContext();
+
+    // allocate all context property objects prior we register them
+    initializeContextProperties(engine);
 
     // register root object watcher that sets a global property with the root object
     // that can be accessed from any object
@@ -312,17 +322,17 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     // Give the application object access to the engine
     UCApplication::instance().setContext(context);
 
-    context->setContextProperty("units", &UCUnits::instance());
+    context->setContextProperty("units", UCUnits::instance());
     ContextPropertyChangeListener *unitsChangeListener =
         new ContextPropertyChangeListener(context, "units");
-    QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()),
+    QObject::connect(UCUnits::instance(), SIGNAL(gridUnitChanged()),
                      unitsChangeListener, SLOT(updateContextProperty()));
 
     // register FontUtils
     context->setContextProperty("FontUtils", &UCFontUtils::instance());
     ContextPropertyChangeListener *fontUtilsListener =
         new ContextPropertyChangeListener(context, "FontUtils");
-    QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()),
+    QObject::connect(UCUnits::instance(), SIGNAL(gridUnitChanged()),
                      fontUtilsListener, SLOT(updateContextProperty()));
 
     engine->addImageProvider(QLatin1String("scaling"), new UCScalingImageProvider);

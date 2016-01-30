@@ -40,7 +40,7 @@ UCQQuickImageExtension::UCQQuickImageExtension(QObject *parent) :
     QObject(parent),
     m_image(static_cast<QQuickImageBase*>(parent))
 {
-    QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()),
+    QObject::connect(UCUnits::instance(), SIGNAL(gridUnitChanged()),
                      this, SLOT(reloadSource()));
     // connect sourceChanged signal to extendedSourceChanged
     QObject::connect(m_image, &QQuickImageBase::sourceChanged,
@@ -67,7 +67,7 @@ void UCQQuickImageExtension::reloadSource()
         return;
     }
 
-    QString resolved = UCUnits::instance().resolveResource(m_source);
+    QString resolved = UCUnits::instance()->resolveResource(m_source);
 
     if (resolved.isEmpty()) {
         m_image->setSource(m_source);
