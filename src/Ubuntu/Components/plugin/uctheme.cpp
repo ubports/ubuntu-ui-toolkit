@@ -205,7 +205,7 @@ QString parentThemeName(const UCTheme::ThemeRecord& themePath)
 {
     QString parentTheme;
     if (!themePath.isValid()) {
-        qWarning() << qPrintable(UbuntuI18n::instance().tr("Theme not found: \"%1\"").arg(themePath.name));
+        qWarning() << qPrintable(QStringLiteral("Theme not found: \"%1\"").arg(themePath.name));
     } else {
         QFile file(themePath.path.resolved(PARENT_THEME_FILE).toLocalFile());
         if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -550,7 +550,7 @@ void UCTheme::setPalette(QObject *config)
         return;
     }
     if (config && !QuickUtils::inherits(config, "Palette")) {
-        qmlInfo(config) << UbuntuI18n::instance().tr("Not a Palette component.");
+        qmlInfo(config) << QStringLiteral("Not a Palette component.");
         return;
     }
 
@@ -714,7 +714,7 @@ QQmlComponent* UCTheme::createStyleComponent(const QString& styleName, QObject* 
             }
         } else {
             qmlInfo(parent) <<
-               UbuntuI18n::instance().tr(QString("Warning: Style %1 not found in theme %2").arg(styleName).arg(name()));
+               QStringLiteral("Warning: Style %1 not found in theme %2").arg(styleName).arg(name());
         }
     }
 

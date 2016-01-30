@@ -135,7 +135,7 @@ void UCMainViewBase::setApplicationName(QString applicationName)
     d->m_applicationName = applicationName;
 
     if (applicationName != "") {
-        UbuntuI18n::instance().setDomain(applicationName);
+        UbuntuI18n::instance()->setDomain(applicationName);
         UCApplication::instance().setApplicationName(applicationName);
     }
     Q_EMIT applicationNameChanged(applicationName);

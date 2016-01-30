@@ -43,7 +43,7 @@ void UCStateSaverAttachedPrivate::_q_init()
 {
     m_id = qmlContext(m_attachee)->nameForObject(m_attachee);
     if (m_id.isEmpty()) {
-        qmlInfo(m_attachee) << UbuntuI18n::instance().tr("Warning: attachee must have an ID. State will not be saved.");
+        qmlInfo(m_attachee) << QStringLiteral("Warning: attachee must have an ID. State will not be saved.");
         q_func()->setEnabled(false);
         return;
     }
@@ -53,7 +53,7 @@ void UCStateSaverAttachedPrivate::_q_init()
         return;
     }
     if (!StateSaverBackend::instance().registerId(m_absoluteId)) {
-        qmlInfo(m_attachee) << UbuntuI18n::instance().tr("Warning: attachee's UUID is already registered, state won't be saved: %1").arg(m_absoluteId);
+        qmlInfo(m_attachee) << QStringLiteral("Warning: attachee's UUID is already registered, state won't be saved: %1").arg(m_absoluteId);
         m_absoluteId.clear();
         q_func()->setEnabled(false);
         return;
@@ -104,7 +104,7 @@ QString UCStateSaverAttachedPrivate::absoluteId(const QString &id)
         if (!parentId.isEmpty()) {
             path.prepend(className + '-' + parentId + ":");
         } else {
-            qmlInfo(parent) << UbuntuI18n::instance().tr("All the parents must have an id.\nState saving disabled for %1, class %2").
+            qmlInfo(parent) << QStringLiteral("All the parents must have an id.\nState saving disabled for %1, class %2").
                                arg(path).arg(className);
             return QString();
         }

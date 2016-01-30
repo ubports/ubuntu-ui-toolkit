@@ -118,8 +118,7 @@ void ListItemDragArea::mousePressEvent(QMouseEvent *event)
         min = drag.m_minimum;
         max = drag.m_maximum;
     } else {
-        qmlInfo(parentItem()) << UbuntuI18n::instance().tr(
-                                     "ListView has no ViewItems.dragUpdated() signal handler implemented. "\
+        qmlInfo(parentItem()) << QStringLiteral("ListView has no ViewItems.dragUpdated() signal handler implemented. "\
                                      "No dragging will be possible.");
     }
     if (start) {

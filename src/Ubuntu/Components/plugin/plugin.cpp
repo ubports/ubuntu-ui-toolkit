@@ -273,6 +273,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
 void UbuntuComponentsPlugin::initializeContextProperties(QQmlEngine *engine)
 {
     UCUnits::instance(engine);
+    UbuntuI18n::instance(engine);
 
     UCTheme::defaultTheme(engine);
 }
@@ -305,12 +306,12 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
 
     HapticsProxy::instance().setEngine(engine);
 
-    context->setContextProperty("i18n", &UbuntuI18n::instance());
+    context->setContextProperty("i18n", UbuntuI18n::instance());
     ContextPropertyChangeListener *i18nChangeListener =
         new ContextPropertyChangeListener(context, "i18n");
-    QObject::connect(&UbuntuI18n::instance(), SIGNAL(domainChanged()),
+    QObject::connect(UbuntuI18n::instance(), SIGNAL(domainChanged()),
                      i18nChangeListener, SLOT(updateContextProperty()));
-    QObject::connect(&UbuntuI18n::instance(), SIGNAL(languageChanged()),
+    QObject::connect(UbuntuI18n::instance(), SIGNAL(languageChanged()),
                      i18nChangeListener, SLOT(updateContextProperty()));
 
     // We can't use 'Application' because it exists (undocumented)
