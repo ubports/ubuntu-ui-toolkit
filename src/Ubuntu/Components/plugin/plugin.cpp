@@ -79,6 +79,7 @@
 #include "ucmainviewbase.h"
 #include "ucperformancemonitor.h"
 #include "privates/frame.h"
+#include "privates/appheaderbase.h"
 
 // From UbuntuGestures
 #include "private/ucswipearea_p.h"
@@ -86,6 +87,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <stdexcept>
+
+#include <QDebug>
 
 QUrl UbuntuComponentsPlugin::m_baseUrl = QUrl();
 
@@ -211,6 +214,7 @@ void UbuntuComponentsPlugin::registerTypesToVersion(const char *uri, int major, 
 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
+    qDebug() << "registerTypes("<<uri<<")";
     Q_ASSERT(uri == QLatin1String("Ubuntu.Components"));
     initializeBaseUrl();
 
@@ -268,10 +272,12 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCPageTreeNode>(uri, 1, 3, "PageTreeNode");
     qmlRegisterType<UCPopupContext>(uri, 1, 3, "PopupContext");
     qmlRegisterType<UCMainViewBase>(uri, 1, 3, "MainViewBase");
+//    qmlRegisterType<AppHeaderBase>("Ubuntu.Components", 1, 3, "AppHeaderBase");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 {
+    qDebug()<<"initializeEngine(engine, "<<uri<<")";
     // initialize baseURL
     initializeBaseUrl();
 
@@ -283,6 +289,11 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
 
     // Register private types.
     qmlRegisterType<UCFrame>("Ubuntu.Components.Private", 1, 3, "Frame");
+//    qmlRegisterType<UCStyledItemBase>("Ubuntu.Components.Private", 1, 3, "StyledItem");
+//    qmlRegisterType<UCHeader>("Ubuntu.Components.Private", 1, 3, "Header");
+    qmlRegisterType<UCAppHeaderBase>("Ubuntu.Components.Private", 1, 3, "AppHeaderBase");
+//    qmlRegisterType<AppHeaderBase>("Ubuntu.Components", 1, 3, "HeaderBase");
+
 
     QQmlExtensionPlugin::initializeEngine(engine, uri);
     QQmlContext* context = engine->rootContext();

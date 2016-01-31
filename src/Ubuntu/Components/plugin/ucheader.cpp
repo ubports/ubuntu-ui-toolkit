@@ -87,7 +87,7 @@ UCHeader::UCHeader(QQuickItem *parent)
     , m_previous_contentY(0)
     , m_exposed(true)
     , m_moving(false)
-    , m_animate(true)
+//    , m_animate(true)
 {
     m_showHideAnimation->setParent(this);
     m_showHideAnimation->setTargetObject(this);
@@ -273,19 +273,19 @@ void UCHeader::_q_showHideAnimationRunningChanged() {
     } // else: Transition from flickable movement to showHideAnimation running.
 }
 
-/*!
- * \qmlproperty bool Header::animate
- * Animate the y-value when the value of \l exposed is set or unset.
- * If the header is already animating while the value is set to false,
- * the current animation is not cancelled.
- * Default value: true.
- */
-void UCHeader::setAnimate(bool animate) {
-    if (animate != m_animate) {
-        m_animate = animate;
-        Q_EMIT animateChanged();
-    }
-}
+///*!
+// * \qmlproperty bool Header::animate
+// * Animate the y-value when the value of \l exposed is set or unset.
+// * If the header is already animating while the value is set to false,
+// * the current animation is not cancelled.
+// * Default value: true.
+// */
+//void UCHeader::setAnimate(bool animate) {
+//    if (animate != m_animate) {
+//        m_animate = animate;
+//        Q_EMIT animateChanged();
+//    }
+//}
 
 /*!
  * \qmlproperty bool Header::exposed
@@ -296,9 +296,9 @@ void UCHeader::setAnimate(bool animate) {
  */
 void UCHeader::setExposed(bool exposed) {
     if (exposed) {
-        show(m_animate);
+        show(true);
     } else {
-        hide(m_animate);
+        hide(true);
     }
 }
 
@@ -343,9 +343,9 @@ void UCHeader::_q_flickableMovementEnded() {
     Q_ASSERT(!m_flickable.isNull());
     if ((m_flickable->contentY() < 0)
             || (y() > -height()/2.0)) {
-        show(m_animate);
+        show(true);
     } else {
-        hide(m_animate);
+        hide(true);
     }
 }
 
@@ -354,7 +354,7 @@ void UCHeader::_q_contentHeightChanged() {
     if (m_flickable->height() >= m_flickable->contentHeight()) {
         // The user cannot scroll down to expose the header, so ensure
         //  that it is visible.
-        show(m_animate);
+        show(true);
     }
 }
 
@@ -363,6 +363,6 @@ void UCHeader::_q_flickableInteractiveChanged() {
     if (!m_flickable->isInteractive()) {
         // The user cannot scroll down to expose the header, so ensure
         //  that it is visible.
-        show(m_animate);
+        show(true);
     }
 }

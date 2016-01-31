@@ -109,7 +109,8 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/ucmainviewbase.h \
     $$PWD/ucmainviewbase_p.h \
     $$PWD/ucperformancemonitor.h \
-    $$PWD/privates/frame.h
+    $$PWD/privates/frame.h \
+    $$PWD/privates/appheaderbase.h
 
 SOURCES += $$PWD/plugin.cpp \
     $$PWD/uctheme.cpp \
@@ -182,7 +183,8 @@ SOURCES += $$PWD/plugin.cpp \
     $$PWD/ucpagetreenode.cpp \
     $$PWD/ucmainviewbase.cpp \
     $$PWD/ucperformancemonitor.cpp \
-    $$PWD/privates/frame.cpp
+    $$PWD/privates/frame.cpp \
+    $$PWD/privates/appheaderbase.cpp
 
 # adapters
 SOURCES += $$PWD/adapters/alarmsadapter_organizer.cpp

@@ -15,7 +15,8 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.3 as Components
+import Ubuntu.Components 1.3 //as Components
+import Ubuntu.Components.Private 1.3 //as Privates
 
 /*!
     \internal
@@ -23,7 +24,9 @@ import Ubuntu.Components 1.3 as Components
     \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
 */
-Components.Header {
+//Components.Header {
+//Privates.AppHeaderBase {
+AppHeaderBase {
     id: header
 
     anchors {
@@ -117,11 +120,12 @@ Components.Header {
      */
     property QtObject config: null
 
-    animate: false
-    exposed: false
+//    animate: false
+//    exposed: false
     Component.onCompleted: {
         internal.updateProperties();
-        header.animate = true;
+//        header.animate = true;
+        print("AppHeader 1.3 completed.")
     }
     onConfigChanged: internal.updateProperties()
 
@@ -169,5 +173,8 @@ Components.Header {
         }
     }
 
+    // three properties inherited from the parent, but only styleName gives an error.
+    flickable: null
     styleName: "PageHeadStyle"
+    activeFocusOnTab: true
 }
