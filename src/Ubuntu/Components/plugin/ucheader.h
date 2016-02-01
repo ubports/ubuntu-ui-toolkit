@@ -50,8 +50,8 @@ Q_SIGNALS:
 //    void animateChanged();
 
 protected:
-    void show(bool animate);
-    void hide(bool animate);
+    virtual void show(bool animate);
+    virtual void hide(bool animate);
 
 private Q_SLOTS:
     void _q_scrolledContents();

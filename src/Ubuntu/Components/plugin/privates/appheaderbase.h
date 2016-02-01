@@ -18,19 +18,12 @@
 #define APPHEADERBASE_H
 
 #include "ucheader.h"
-//#include <QtCore/QPointer>
-
-//class QQuickFlickable;
-//class QQuickNumberAnimation;
-//class UCUbuntuAnimation;
-//class PropertyChange;
-
 class UCTheme;
 
 class UCAppHeaderBase : public UCHeader
 {
     Q_OBJECT
-//    Q_PROPERTY(bool animate MEMBER m_animate WRITE setAnimate NOTIFY animateChanged FINAL)
+    Q_PROPERTY(bool animate MEMBER m_animate WRITE setAnimate NOTIFY animateChanged FINAL)
 
     // FIXME Re-expose properties that would be inaccessible due to a QML bug
     // https://bugs.launchpad.net/ubuntu/+source/qtdeclarative-opensource-src/+bug/1389721
@@ -38,35 +31,24 @@ class UCAppHeaderBase : public UCHeader
             READ theme2
             WRITE setTheme2
             NOTIFY themeChanged2 FINAL)
-//    Q_PROPERTY(QString styleName
-//            READ styleName2
-//            WRITE setStyleName2
-//            NOTIFY styleNameChanged2 FINAL )
 
 public:
     explicit UCAppHeaderBase(QQuickItem *parent = 0);
-//    AppHeaderBase(QQuickItem *parent = 0);
-
-    //    void setAnimate(bool animate);
+    void setAnimate(bool animate);
 
     UCTheme* theme2();
     void setTheme2(UCTheme* value);
-//    QString styleName2();
-//    void setStyleName2(QString value);
 
 Q_SIGNALS:
-//    void animateChanged();
+    void animateChanged();
     void themeChanged2();
-//    void styleNameChanged2();
-
 
 protected:
-//    void show(bool animate);
-//    void hide(bool animate);
-    virtual void componentComplete();
+    virtual void show(bool animate);
+    virtual void hide(bool animate);
 
 private:
-//    bool m_animate:1;
+    bool m_animate:1;
 };
 
 #endif // APPHEADERBASE_H

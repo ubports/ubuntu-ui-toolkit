@@ -88,8 +88,6 @@
 #include <unistd.h>
 #include <stdexcept>
 
-#include <QDebug>
-
 QUrl UbuntuComponentsPlugin::m_baseUrl = QUrl();
 
 /*
@@ -214,7 +212,6 @@ void UbuntuComponentsPlugin::registerTypesToVersion(const char *uri, int major, 
 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
-    qDebug() << "registerTypes("<<uri<<")";
     Q_ASSERT(uri == QLatin1String("Ubuntu.Components"));
     initializeBaseUrl();
 
@@ -276,7 +273,6 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 {
-    qDebug()<<"initializeEngine(engine, "<<uri<<")";
     // initialize baseURL
     initializeBaseUrl();
 

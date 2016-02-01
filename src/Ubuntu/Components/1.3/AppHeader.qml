@@ -24,6 +24,7 @@ import Ubuntu.Components.Private 1.3 as Privates
     \ingroup ubuntu
 */
 Privates.AppHeaderBase {
+    // Note: styleName is set to "PageHeadStyle" in UCAppHeaderBase.
     id: header
 
     anchors {
@@ -117,12 +118,11 @@ Privates.AppHeaderBase {
      */
     property QtObject config: null
 
-//    animate: false
-//    exposed: false
+    animate: false
+    exposed: false
     Component.onCompleted: {
         internal.updateProperties();
-//        header.animate = true;
-        print("AppHeader 1.3 completed.")
+        header.animate = true;
     }
     onConfigChanged: internal.updateProperties()
 
@@ -169,9 +169,4 @@ Privates.AppHeaderBase {
             }
         }
     }
-
-    // three properties inherited from the parent, but only styleName gives an error.
-    flickable: null
-//    styleName: "PageHeadStyle"
-    activeFocusOnTab: true
 }
