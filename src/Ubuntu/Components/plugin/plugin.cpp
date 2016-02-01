@@ -322,8 +322,10 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
 
     // register fontUtils - lower case, can be out-precedented by a QML property
     context->setContextProperty("fontUtils", &UCFontUtils::instance());
+    ContextPropertyChangeListener *fontUtils2Listener =
+        new ContextPropertyChangeListener(context, "fontUtils");
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()),
-                     fontUtilsListener, SLOT(updateContextProperty()));
+                     fontUtils2Listener, SLOT(updateContextProperty()));
 
     engine->addImageProvider(QLatin1String("scaling"), new UCScalingImageProvider);
 
