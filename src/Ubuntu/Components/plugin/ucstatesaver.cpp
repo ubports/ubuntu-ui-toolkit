@@ -24,6 +24,7 @@
 #include <QtQml/QQmlComponent>
 #include <QtQml/QQmlInfo>
 #include <QtQml/QQmlProperty>
+#include <QtQml/QQmlEngine>
 #include <QtGui/QGuiApplication>
 #include "private/qqmldata_p.h"
 #include "private/qqmlcontext_p.h"
@@ -52,7 +53,7 @@ void UCStateSaverAttachedPrivate::_q_init()
         q_func()->setEnabled(false);
         return;
     }
-    if (!StateSaverBackend::instance().registerId(m_absoluteId)) {
+    if (!StateSaverBackend::instance()->registerId(m_absoluteId)) {
         qmlInfo(m_attachee) << QStringLiteral("Warning: attachee's UUID is already registered, state won't be saved: %1").arg(m_absoluteId);
         m_absoluteId.clear();
         q_func()->setEnabled(false);
@@ -66,8 +67,8 @@ void UCStateSaverAttachedPrivate::_q_init()
  */
 void UCStateSaverAttachedPrivate::_q_save()
 {
-    if (m_enabled && StateSaverBackend::instance().enabled() && !m_properties.isEmpty() && !m_absoluteId.isEmpty()) {
-        StateSaverBackend::instance().save(m_absoluteId, m_attachee, m_properties);
+    if (m_enabled && StateSaverBackend::instance()->enabled() && !m_properties.isEmpty() && !m_absoluteId.isEmpty()) {
+        StateSaverBackend::instance()->save(m_absoluteId, m_attachee, m_properties);
     }
 }
 
@@ -118,7 +119,7 @@ void UCStateSaverAttachedPrivate::restore()
 {
     if (m_enabled && !m_absoluteId.isEmpty() && !m_properties.isEmpty()) {
         // load group
-        StateSaverBackend::instance().load(m_absoluteId, m_attachee, m_properties);
+        StateSaverBackend::instance()->load(m_absoluteId, m_attachee, m_properties);
     }
 }
 
@@ -132,12 +133,12 @@ void UCStateSaverAttachedPrivate::watchComponent(bool watch)
         // disconnect to save processing time if no state save is needed
         QQmlComponentAttached *componentAttached = QQmlComponent::qmlAttachedProperties(m_attachee);
         QObject::disconnect(componentAttached, SIGNAL(completed()), q, SLOT(_q_init()));
-        QObject::disconnect(&StateSaverBackend::instance(), SIGNAL(initiateStateSaving()), q, SLOT(_q_save()));
+        QObject::disconnect(StateSaverBackend::instance(), SIGNAL(initiateStateSaving()), q, SLOT(_q_save()));
     } else {
         // re-connect to proceed with saving
         QQmlComponentAttached *componentAttached = QQmlComponent::qmlAttachedProperties(m_attachee);
         QObject::connect(componentAttached, SIGNAL(completed()), q, SLOT(_q_init()));
-        QObject::connect(&StateSaverBackend::instance(), SIGNAL(initiateStateSaving()), q, SLOT(_q_save()));
+        QObject::connect(StateSaverBackend::instance(), SIGNAL(initiateStateSaving()), q, SLOT(_q_save()));
     }
 }
 
@@ -257,14 +258,17 @@ UCStateSaverAttached::UCStateSaverAttached(QObject *attachee)
     : QObject(attachee)
     , d_ptr(new UCStateSaverAttachedPrivate(this, attachee))
 {
+    // make sure we have the backend linked to the engine
+    Q_ASSERT(qmlEngine(attachee));
+    StateSaverBackend::instance(qmlEngine(attachee));
     setEnabled(true);
     // connect to StateSaverBackend's enabledChanged signal to sync when the state saver is globally disabled/enabled
-    connect(&StateSaverBackend::instance(), SIGNAL(enabledChanged(bool)), this, SLOT(_q_globalEnableChanged(bool)));
+    connect(StateSaverBackend::instance(), SIGNAL(enabledChanged(bool)), this, SLOT(_q_globalEnableChanged(bool)));
 }
 
 UCStateSaverAttached::~UCStateSaverAttached()
 {
-    StateSaverBackend::instance().removeId(d_func()->m_absoluteId);
+    StateSaverBackend::instance()->removeId(d_func()->m_absoluteId);
 }
 
 // getter/setter
@@ -285,7 +289,7 @@ void UCStateSaverAttached::setEnabled(bool v)
     if (d->m_enabled != v) {
         d->m_enabled = v;
         // make sure next time we sync properties
-        if (StateSaverBackend::instance().enabled()) {
+        if (StateSaverBackend::instance()->enabled()) {
             d->watchComponent(d->m_enabled);
         }
         Q_EMIT enabledChanged();

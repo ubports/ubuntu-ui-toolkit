@@ -31,6 +31,8 @@
 
 #include "unixsignalhandler_p.h"
 
+StateSaverBackend *StateSaverBackend::m_instance = nullptr;
+
 StateSaverBackend::StateSaverBackend(QObject *parent)
     : QObject(parent)
     , m_archive(0)
@@ -61,6 +63,7 @@ StateSaverBackend::~StateSaverBackend()
     if (m_archive) {
         delete m_archive;
     }
+    m_instance = nullptr;
 }
 
 void StateSaverBackend::initialize()
