@@ -15,15 +15,6 @@
  */
 
 #include "appheaderbase.h"
-//#include "ucheader.h"
-#include <QDebug>
-//#include <QtQuick/private/qquickflickable_p.h>
-//#include <QtQuick/private/qquickanchors_p.h>
-//#include <QtQuick/private/qquickanimation_p.h>
-//#include "ucubuntuanimation.h"
-//#include "ucunits.h"
-//#include "propertychange_p.h"
-//#include "uctheme.h"
 #include "ucstyleditembase_p.h"
 
 /*!
