@@ -735,7 +735,7 @@ void UCTheme::loadPalette(QQmlEngine *engine, bool notify)
     // theme may not have palette defined
     QUrl paletteUrl = styleUrl("Palette.qml", previousVersion ? previousVersion : LATEST_UITK_VERSION);
     if (paletteUrl.isValid()) {
-        m_palette = QuickUtils::instance().createQmlObject(paletteUrl, engine);
+        m_palette = QuickUtils::instance()->createQmlObject(paletteUrl, engine);
         if (m_palette) {
             m_palette->setParent(this);
         }

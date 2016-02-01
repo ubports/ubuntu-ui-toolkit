@@ -1201,7 +1201,7 @@ void UCListItemPrivate::showContextMenu()
         QQmlEngine::setContextForObject(component, qmlContext(q));
         QQuickItem* item = static_cast<QQuickItem*>(component->create(qmlContext(q)));
         item->setProperty("caller", QVariant::fromValue(q));
-        item->setParentItem(QuickUtils::instance().rootItem(q));
+        item->setParentItem(QuickUtils::instance()->rootItem(q));
         QMetaObject::invokeMethod(item, "show");
         QObject::connect(item, SIGNAL(visibleChanged()), q,
             SLOT(_q_popoverClosed()), Qt::DirectConnection);

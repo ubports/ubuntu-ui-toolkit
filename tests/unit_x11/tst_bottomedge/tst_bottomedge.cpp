@@ -110,7 +110,7 @@ private Q_SLOTS:
     {
         UCTestExtras::registerTouchDevice();
         // make sure we disable the mouse
-        QuickUtils::instance().m_mouseAttached = false;
+        QuickUtils::instance()->m_mouseAttached = false;
     }
 
     void test_defaults()

@@ -479,7 +479,7 @@ private Q_SLOTS:
         QCOMPARE(items.count(), 5); // 4 Rectangles + 1 Repeater
 
         Q_FOREACH(QQuickItem *item, items) {
-            if (QuickUtils::instance().className(item) == "QQuickRectangle") {
+            if (QuickUtils::instance()->className(item) == "QQuickRectangle") {
                 item->setHeight(25);
             }
         }
@@ -493,7 +493,7 @@ private Q_SLOTS:
         QCOMPARE(items.count(), 5); // 4 Rectangles + 1 Repeater
 
         Q_FOREACH(QQuickItem *item, items) {
-            if (QuickUtils::instance().className(item) == "QQuickRectangle") {
+            if (QuickUtils::instance()->className(item) == "QQuickRectangle") {
                 QCOMPARE(item->height(), 25.0);
             }
         }

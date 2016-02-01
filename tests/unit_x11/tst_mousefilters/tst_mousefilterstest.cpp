@@ -77,7 +77,7 @@ private:
 
     bool inputPanelPresent()
     {
-        return !QuickUtils::instance().inputMethodProvider().isEmpty();
+        return !QuickUtils::instance()->inputMethodProvider().isEmpty();
     }
 
     QPoint guPoint(qreal guX, qreal guY)

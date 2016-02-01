@@ -273,6 +273,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
 void UbuntuComponentsPlugin::initializeContextProperties(QQmlEngine *engine)
 {
     UCUnits::instance(engine);
+    QuickUtils::instance(engine);
     UbuntuI18n::instance(engine);
     UCApplication::instance(engine);
     UCFontUtils::instance(engine);
@@ -302,7 +303,7 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
 
     // register root object watcher that sets a global property with the root object
     // that can be accessed from any object
-    context->setContextProperty("QuickUtils", &QuickUtils::instance());
+    context->setContextProperty("QuickUtils", QuickUtils::instance());
 
     UCDeprecatedTheme::registerToContext(context);
 

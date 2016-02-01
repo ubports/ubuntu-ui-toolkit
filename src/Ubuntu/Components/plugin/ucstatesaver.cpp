@@ -101,7 +101,7 @@ QString UCStateSaverAttachedPrivate::absoluteId(const QString &id)
 
     while (parent) {
         QString parentId = qmlContext(parent)->nameForObject(parent);
-        QString className = QuickUtils::instance().className(parent);
+        QString className = QuickUtils::instance()->className(parent);
         if (!parentId.isEmpty()) {
             path.prepend(className + '-' + parentId + ":");
         } else {
