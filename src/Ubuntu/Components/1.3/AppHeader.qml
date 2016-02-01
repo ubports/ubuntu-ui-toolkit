@@ -15,8 +15,7 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.3 //as Components
-import Ubuntu.Components.Private 1.3 //as Privates
+import Ubuntu.Components.Private 1.3 as Privates
 
 /*!
     \internal
@@ -24,9 +23,7 @@ import Ubuntu.Components.Private 1.3 //as Privates
     \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
 */
-//Components.Header {
-//Privates.AppHeaderBase {
-AppHeaderBase {
+Privates.AppHeaderBase {
     id: header
 
     anchors {
@@ -175,6 +172,6 @@ AppHeaderBase {
 
     // three properties inherited from the parent, but only styleName gives an error.
     flickable: null
-    styleName: "PageHeadStyle"
+//    styleName: "PageHeadStyle"
     activeFocusOnTab: true
 }

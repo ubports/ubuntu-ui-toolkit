@@ -272,7 +272,6 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCPageTreeNode>(uri, 1, 3, "PageTreeNode");
     qmlRegisterType<UCPopupContext>(uri, 1, 3, "PopupContext");
     qmlRegisterType<UCMainViewBase>(uri, 1, 3, "MainViewBase");
-//    qmlRegisterType<AppHeaderBase>("Ubuntu.Components", 1, 3, "AppHeaderBase");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
@@ -288,12 +287,9 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     qmlRegisterType<UCBottomEdgeStyle>(styleUri, 1, 3, "BottomEdgeStyle");
 
     // Register private types.
-    qmlRegisterType<UCFrame>("Ubuntu.Components.Private", 1, 3, "Frame");
-//    qmlRegisterType<UCStyledItemBase>("Ubuntu.Components.Private", 1, 3, "StyledItem");
-//    qmlRegisterType<UCHeader>("Ubuntu.Components.Private", 1, 3, "Header");
-    qmlRegisterType<UCAppHeaderBase>("Ubuntu.Components.Private", 1, 3, "AppHeaderBase");
-//    qmlRegisterType<AppHeaderBase>("Ubuntu.Components", 1, 3, "HeaderBase");
-
+    const char *privateUri = "Ubuntu.Components.Private";
+    qmlRegisterType<UCFrame>(privateUri, 1, 3, "Frame");
+    qmlRegisterType<UCAppHeaderBase>(privateUri, 1, 3, "AppHeaderBase");
 
     QQmlExtensionPlugin::initializeEngine(engine, uri);
     QQmlContext* context = engine->rootContext();
