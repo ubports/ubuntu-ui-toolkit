@@ -275,6 +275,7 @@ void UbuntuComponentsPlugin::initializeContextProperties(QQmlEngine *engine)
     UCUnits::instance(engine);
     UbuntuI18n::instance(engine);
     UCApplication::instance(engine);
+    UCFontUtils::instance(engine);
 
     UCTheme::defaultTheme(engine);
 }
@@ -331,7 +332,7 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
                      unitsChangeListener, SLOT(updateContextProperty()));
 
     // register FontUtils
-    context->setContextProperty("FontUtils", &UCFontUtils::instance());
+    context->setContextProperty("FontUtils", UCFontUtils::instance());
     ContextPropertyChangeListener *fontUtilsListener =
         new ContextPropertyChangeListener(context, "FontUtils");
     QObject::connect(UCUnits::instance(), SIGNAL(gridUnitChanged()),

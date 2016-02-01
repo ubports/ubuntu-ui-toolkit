@@ -18,6 +18,8 @@
 #include "ucfontutils.h"
 #include "ucunits.h"
 
+UCFontUtils *UCFontUtils::m_instance = nullptr;
+
 /*!
  * \qmltype FontUtils
  * \instantiates UCFontUtils
