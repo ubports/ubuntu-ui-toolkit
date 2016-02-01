@@ -109,6 +109,10 @@ UCUnits::UCUnits(QObject *parent) :
     } else {
         m_gridUnit = DEFAULT_GRID_UNIT_PX * m_devicePixelRatio;
     }
+
+    auto nativeInterface = qGuiApp->platformNativeInterface();
+    QObject::connect(nativeInterface, &QPlatformNativeInterface::windowPropertyChanged,
+                     this, &UCUnits::windowPropertyChanged);
 }
 
 UCUnits::~UCUnits()
@@ -129,7 +133,7 @@ UCUnits &UCUnits::instance(QQuickItem *item)
     if (_q_unitsHash.contains(window)) {
         return *(_q_unitsHash.value(window));
     } else {
-        auto units = new UCUnits(window); // warning, memory not reclaimed when window deleted
+        auto units = new UCUnits(window); // FIXME, memory not reclaimed when window deleted
         _q_unitsHash.insert(window, units);
         return *units;
     }
@@ -154,7 +158,7 @@ void UCUnits::setGridUnit(float gridUnit)
     Q_EMIT gridUnitChanged();
 }
 
-void UCUnits::classBegin()
+void UCUnits::classBegin() // called by QML only if UCUnits is *not* a singleton/context property
 {
     // parent is set by the QML engine after the constructor is called. Is definitely set by now.
 
@@ -173,11 +177,8 @@ void UCUnits::classBegin()
             window = qobject_cast<QWindow *>(parentItem->window());
         }
         if (window) {
-            auto nativeInterface = qGuiApp->platformNativeInterface();
-            QObject::connect(nativeInterface, &QPlatformNativeInterface::windowPropertyChanged,
-                             this, &UCUnits::windowPropertyChanged);
-
             // fetch current value
+            auto nativeInterface = qGuiApp->platformNativeInterface();
             QVariant scaleVal = nativeInterface->windowProperty(window->handle(), "scale");
             if (!scaleVal.isValid()) {
                 return;
@@ -315,21 +316,27 @@ void UCUnits::windowPropertyChanged(QPlatformWindow *window, const QString &prop
         return;
     }
 
-    auto parentItem = qobject_cast<QQuickItem *>(parent());
-    if (parentItem && parentItem->window()) {
-        if (parentItem->window()->handle() != window) {
+    // Two cases, either this is a singleton, and parent is null, or it's an instance, so has a parent
+    if (parent()) {
+        auto parentItem = qobject_cast<QQuickItem *>(parent());
+        if (!parentItem || !parentItem->window()) {
             return;
         }
-        auto nativeInterface = qGuiApp->platformNativeInterface();
-        QVariant scaleVal = nativeInterface->windowProperty(window, "scale");
-        if (!scaleVal.isValid()) {
+        if (parentItem->window()->handle() != window) { // not my window, ignore
             return;
         }
-        bool ok;
-        float scale = scaleVal.toFloat(&ok);
-        if (!ok) {
-            return;
-        }
-        setGridUnit(DEFAULT_GRID_UNIT_PX * m_devicePixelRatio * scale);
+    } // else I've no idea what my window is, but any messages I get should only be about my window!
+
+    auto nativeInterface = qGuiApp->platformNativeInterface();
+    QVariant scaleVal = nativeInterface->windowProperty(window, "scale");
+    if (!scaleVal.isValid()) {
+        return;
     }
+    bool ok;
+    float scale = scaleVal.toFloat(&ok);
+    if (!ok || scale <= 0) {
+        return;
+    }
+    // choose integral grid unit value closest to requested scale
+    setGridUnit(qCeil(scale * DEFAULT_GRID_UNIT_PX) * m_devicePixelRatio);
 }
