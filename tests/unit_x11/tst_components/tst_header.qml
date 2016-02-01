@@ -97,15 +97,9 @@ Item {
             Label {
                 text: "header exposed"
             }
-            Switch {
-                id: animateSwitch
-                checked: header.animate
-                function trigger() {
-                    header.animate = !header.animate;
-                }
-            }
-            Label {
-                text: "animate header"
+            Item {
+                width: 1
+                height: 1
             }
         }
         Button {
@@ -134,7 +128,7 @@ Item {
                 top: flickLabel.bottom
                 horizontalCenter: parent.horizontalCenter
             }
-            text: "moving was not yet updated"
+            text: "hmm"
         }
     }
 
@@ -199,7 +193,6 @@ Item {
             // note: moving may be true briefly due to header height changes, but
             //  it does not change in the initialization after wait_for_exposed() above.
             compare(header.moving, false, "Header moving initially.");
-            compare(header.animate, true, "Header does not animate initially.");
         }
 
         function init() {
@@ -229,10 +222,6 @@ Item {
             tryCompare(header, "exposed", exposed, 5000, errorMessage);
             // wait for the animation to finish:
             tryCompare(header, "moving", false, 5000, "Header still moving?");
-            check_exposed(exposed, errorMessage);
-        }
-
-        function check_exposed(exposed, errorMessage) {
             if (exposed) {
                 compare(header.y, 0, errorMessage +
                         " y-value/exposed mismatch for exposed header!");
@@ -333,15 +322,6 @@ Item {
 
             header.exposed = true;
             wait_for_exposed(true);
-        }
-
-        function test_set_exposed_to_hide_and_show_without_animation() {
-            header.animate = false;
-            header.exposed = false;
-            check_exposed(false, "Setting exposed to false without animation does not hide instantly.");
-            header.exposed = true;
-            check_exposed(true, "Setting exposed to true without animation does not show instantly.");
-            header.animate = true;
         }
 
         function test_scroll_updates_exposed() {
