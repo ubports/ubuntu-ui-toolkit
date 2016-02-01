@@ -24,7 +24,7 @@
 //#include "ucunits.h"
 //#include "propertychange_p.h"
 //#include "uctheme.h"
-
+#include "ucstyleditembase_p.h"
 
 UCAppHeaderBase::UCAppHeaderBase(QQuickItem *parent)
     : UCHeader(parent)
@@ -35,6 +35,7 @@ UCAppHeaderBase::UCAppHeaderBase(QQuickItem *parent)
 //    connect(this, &UCHeader::styleNameChanged, this, &UCAppHeaderBase::styleNameChanged2);
 //    setStyleName("PageHeadStyle");
 //    setProperty("styleName", "PageHeadStyle");
+     UCStyledItemBasePrivate::get(this)->styleDocument = "PageHeadStyle";
 }
 
 // Set the styleName in componentComplete(), because that property is not available in QML
@@ -42,7 +43,7 @@ UCAppHeaderBase::UCAppHeaderBase(QQuickItem *parent)
 void UCAppHeaderBase::componentComplete() {
     qDebug()<<"componentComplete()";
     UCHeader::componentComplete();
-    setProperty("styleName", "PageHeadStyle");
+//    setProperty("styleName", "PageHeadStyle");
 }
 
 //UCStyledItemBase::UCStyledItemBase(QQuickItem *parent)
