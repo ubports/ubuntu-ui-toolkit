@@ -117,17 +117,17 @@ UCUnits::UCUnits(QObject *parent) :
 
 UCUnits::~UCUnits()
 {
-    Q_FOREACH (auto unit, _q_unitsHash) {
-        delete unit;
-    }
-    _q_unitsHash.clear();
+//    Q_FOREACH (auto unit, _q_unitsHash) { // bad idea!!
+//        delete unit;
+//    }
+//    _q_unitsHash.clear();
 }
 
 UCUnits &UCUnits::instance(QQuickItem *item)
 {
-    QWindow *window = static_cast<QWindow *>(item->window()); qDebug() << "creating for" << item;
+    QWindow *window = static_cast<QWindow *>(item->window()); //qDebug() << "creating for" << item;
     if (!window) {
-        qDebug() << "no window??";
+        //qDebug() << "no window??";
         return instance();
     }
     if (_q_unitsHash.contains(window)) {
