@@ -23,6 +23,7 @@
 //#include "ucubuntuanimation.h"
 //#include "ucunits.h"
 //#include "propertychange_p.h"
+//#include "uctheme.h"
 
 
 UCAppHeaderBase::UCAppHeaderBase(QQuickItem *parent)
@@ -30,7 +31,57 @@ UCAppHeaderBase::UCAppHeaderBase(QQuickItem *parent)
 //    , m_animate(true)
 {
     qDebug()<<"Create AppHeaderBase.";
+    connect(this, &UCHeader::themeChanged, this, &UCAppHeaderBase::themeChanged2);
+//    connect(this, &UCHeader::styleNameChanged, this, &UCAppHeaderBase::styleNameChanged2);
+//    setStyleName("PageHeadStyle");
+//    setProperty("styleName", "PageHeadStyle");
 }
+
+// Set the styleName in componentComplete(), because that property is not available in QML
+//  due to https://bugs.launchpad.net/ubuntu/+source/qtdeclarative-opensource-src/+bug/1389721
+void UCAppHeaderBase::componentComplete() {
+    qDebug()<<"componentComplete()";
+    UCHeader::componentComplete();
+    setProperty("styleName", "PageHeadStyle");
+}
+
+//UCStyledItemBase::UCStyledItemBase(QQuickItem *parent)
+//    : QQuickItem(*(new UCStyledItemBasePrivate), parent)
+//    , UCThemingExtension(this)
+//{
+//    Q_D(UCStyledItemBase);
+//    d->init();
+//}
+
+//UCStyledItemBase::UCStyledItemBase(UCStyledItemBasePrivate &dd, QQuickItem *parent)
+//    : QQuickItem(dd, parent)
+//    , UCThemingExtension(this)
+//{
+//    Q_D(UCStyledItemBase);
+//    d->init();
+//}
+
+UCTheme* UCAppHeaderBase::theme2()
+{
+    return getTheme();
+}
+
+void UCAppHeaderBase::setTheme2(UCTheme* value)
+{
+    setTheme(value);
+}
+
+//QString UCAppHeaderBase::styleName2()
+//{
+////    return styleName();
+//    return UCStyledItemBase::styleName;
+//}
+
+//void UCAppHeaderBase::setStyleName2(QString value)
+//{
+////    setStyleName(value);
+//}
+
 
 //void AppHeaderBase::show(bool animate) {
 //    if (m_exposed && !m_moving && y() == 0.0) return;
