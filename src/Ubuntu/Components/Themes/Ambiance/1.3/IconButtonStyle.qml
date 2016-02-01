@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -26,13 +26,15 @@ Item {
     /*!
       The color of the icons.
      */
-    property color foregroundColor: "#808080"
+    property color foregroundColor: styledItem.enabled
+                                    ? theme.palette.normal.backgroundText
+                                    : theme.palette.disabled.backgroundText
 
     /*!
       The background color of the button.
      */
     property color backgroundColor: styledItem.pressed ?
-                                        theme.palette.selected.background :
+                                        theme.palette.highlighted.background :
                                         "transparent"
 
     property real iconWidth: units.gu(2)
@@ -42,9 +44,6 @@ Item {
       Show a text label under the icon.
      */
     property bool showLabel: false
-
-    FocusShape {
-    }
 
     Rectangle {
         id: background
@@ -59,7 +58,9 @@ Item {
         height: iconButtonStyle.iconHeight
         source: styledItem.iconSource
         color: iconButtonStyle.foregroundColor
-        opacity: styledItem.enabled ? 1.0 : 0.3
+
+        FocusShape {
+        }
     }
 
     Component {
@@ -67,7 +68,6 @@ Item {
         Label {
             objectName: styledItem.objectName + "_label"
             color: iconButtonStyle.foregroundColor
-            opacity: styledItem.enabled ? 1.0 : 0.3
             text: styledItem.text
             textSize: Label.XxSmall
         }

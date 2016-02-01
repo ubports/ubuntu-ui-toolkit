@@ -18,17 +18,20 @@
 #ifndef UCSWIPEAREAPRIVATE_H
 #define UCSWIPEAREAPRIVATE_H
 
-#include "ucswipearea.h"
+#include "ucswipearea_p.h"
+#include <QtQuick/private/qquickitem_p.h>
+
+#include "damper_p.h"
 
 // Information about an active touch point
-struct UBUNTUGESTURESQML_EXPORT ActiveTouchInfo {
+struct UBUNTUGESTURES_EXPORT ActiveTouchInfo {
     ActiveTouchInfo() : id(-1), startTime(-1) {}
     bool isValid() const { return id != -1; }
     void reset() { id = -1; }
     int id;
     qint64 startTime;
 };
-class UBUNTUGESTURESQML_EXPORT ActiveTouchesInfo {
+class UBUNTUGESTURES_EXPORT ActiveTouchesInfo {
 public:
     ActiveTouchesInfo(const UbuntuGestures::SharedTimeSource &timeSource);
     void update(QTouchEvent *event);
@@ -44,17 +47,19 @@ private:
     Pool<ActiveTouchInfo> m_touchInfoPool;
 };
 
-class UBUNTUGESTURESQML_EXPORT UCSwipeAreaPrivate : public QObject
+class UCSwipeAreaStatusListener;
+class UBUNTUGESTURES_EXPORT UCSwipeAreaPrivate : public QQuickItemPrivate
 {
-    Q_OBJECT
+    Q_DECLARE_PUBLIC(UCSwipeArea)
 
     Q_ENUMS(Status)
 public:
-    UCSwipeAreaPrivate(UCSwipeArea *q);
-
-public Q_SLOTS:
-    void giveUpIfDisabledOrInvisible();
-    void rejectGesture();
+    UCSwipeAreaPrivate();
+    void init();
+    static UCSwipeAreaPrivate *get(UCSwipeArea *area)
+    {
+        return area->d_func();
+    }
 
     void setMaxTime(int value);
 
@@ -68,7 +73,6 @@ public Q_SLOTS:
     // Useful for testing, where a fake time source can be supplied
     void setTimeSource(const UbuntuGestures::SharedTimeSource &timeSource);
 
-public:
     // Describes the state of the directional drag gesture.
     enum Status {
         // Waiting for a new touch point to land on this area. No gesture is being processed
@@ -113,7 +117,11 @@ public:
     bool sanityCheckRecognitionProperties();
     void setDistanceThreshold(qreal value);
     void setPixelsPerMm(qreal pixelsPerMm);
-    QString objectName() const { return q->objectName(); }
+    QString objectName() const { return q_func()->objectName(); }
+
+    // manage status change listeners
+    void addStatusChangeListener(UCSwipeAreaStatusListener *listener);
+    void removeStatusChangeListener(UCSwipeAreaStatusListener *listener);
 
     QPointF startScenePos;
     // The touch position exposed in the public API.
@@ -128,7 +136,9 @@ public:
     UbuntuGestures::SharedTimeSource timeSource;
     ActiveTouchesInfo activeTouches;
 
-    UCSwipeArea *q;
+    // status change listeners
+    QList<UCSwipeAreaStatusListener*> statusChangeListeners;
+
     UbuntuGestures::AbstractTimer *recognitionTimer;
 
     // How far a touch point has to move from its initial position along the gesture axis in order
@@ -152,9 +162,12 @@ public:
     UCSwipeArea::Direction direction;
 
     bool immediateRecognition;
+};
 
-Q_SIGNALS:
-    void statusChanged(Status value);
+class UBUNTUGESTURES_EXPORT UCSwipeAreaStatusListener
+{
+public:
+    virtual void swipeStatusChanged(UCSwipeAreaPrivate::Status /*old*/, UCSwipeAreaPrivate::Status /*new*/) {}
 };
 
 #endif // UCSWIPEAREAPRIVATE_H

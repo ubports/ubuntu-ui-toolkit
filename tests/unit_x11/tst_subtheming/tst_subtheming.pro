@@ -44,4 +44,7 @@ OTHER_FILES += \
     HintedButton.qml \
     OtherVersion.qml
 
+DISTFILES += \
+    DefaultTheme.qml
+
 

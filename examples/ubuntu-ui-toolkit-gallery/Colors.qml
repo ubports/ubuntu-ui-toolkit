@@ -33,15 +33,45 @@ Template {
             }
         }
         TemplateRow {
-            title: i18n.tr("Light grey")
+            title: i18n.tr("Porcelain")
             UbuntuShape {
-                backgroundColor: UbuntuColors.lightGrey
+                backgroundColor: UbuntuColors.porcelain
             }
         }
         TemplateRow {
-            title: i18n.tr("Dark grey")
+            title: i18n.tr("Silk")
             UbuntuShape {
-                backgroundColor: UbuntuColors.darkGrey
+                backgroundColor: UbuntuColors.silk
+            }
+        }
+        TemplateRow {
+            title: i18n.tr("Ash")
+            UbuntuShape {
+                backgroundColor: UbuntuColors.ash
+            }
+        }
+        TemplateRow {
+            title: i18n.tr("Graphite")
+            UbuntuShape {
+                backgroundColor: UbuntuColors.graphite
+            }
+        }
+        TemplateRow {
+            title: i18n.tr("Slate")
+            UbuntuShape {
+                backgroundColor: UbuntuColors.slate
+            }
+        }
+        TemplateRow {
+            title: i18n.tr("Inkstone")
+            UbuntuShape {
+                backgroundColor: UbuntuColors.inkstone
+            }
+        }
+        TemplateRow {
+            title: i18n.tr("Jet")
+            UbuntuShape {
+                backgroundColor: UbuntuColors.jet
             }
         }
         TemplateRow {

@@ -23,39 +23,39 @@ Page {
     default property alias content: column.children
     property alias spacing: column.spacing
     property alias scrollable: templateFlickable.interactive
+    property list<Action> trailingActions
     flickable: templateFlickable
 
     header: PageHeader {
         title: template.title
-        flickable: layout.columns === 1 ? flickable : null
+        flickable: layout.columns === 1 ? templateFlickable : null
         onFlickableChanged: exposed = true;
+        trailingActionBar.actions: trailingActions
     }
 
-    Flickable {
-        id: templateFlickable
-        objectName: "TemplateFlickable"
+    ScrollView {
+        //anchors.fill: parent
+        //anchors.topMargin: template.header.flickable ? 0 : template.header.height
+        objectName: "TemplateScrollView"
         anchors {
             fill: parent
-            topMargin: template.header.flickable ? units.gu(2) :
-                                                   units.gu(2) + template.header.height
+            topMargin: template.header.flickable ? 0 : template.header.height
+        }
+        Flickable {
+            id: templateFlickable
+            objectName: "TemplateFlickable"
+            anchors.fill: parent
+            topMargin: units.gu(2)
             bottomMargin: units.gu(2)
+            contentHeight: column.height
+            interactive: contentHeight > height
+            Column {
+                id: column
+                spacing: units.gu(6)
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.margins: units.gu(2)
+            }
         }
-        contentHeight: column.height
-        interactive: contentHeight > height
-
-        Column {
-            id: column
-            spacing: units.gu(6)
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.margins: units.gu(2)
-        }
-    }
-
-    Scrollbar {
-        id: sb
-        objectName: "TemplateScrollbar"
-        flickableItem: flickable
-        property alias interactive: sb.__interactive
     }
 }

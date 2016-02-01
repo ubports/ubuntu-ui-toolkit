@@ -20,7 +20,7 @@
 #include "ucbottomedgeregion.h"
 #include "ucbottomedge_p.h"
 #include "ucbottomedgehint.h"
-#include "gestures/ucswipearea.h"
+#include "private/ucswipearea_p.h"
 #include "ucunits.h"
 #include "ucheader.h"
 #include "ucaction.h"
@@ -862,6 +862,14 @@ private Q_SLOTS:
         QPoint from(bottomEdge->width() / 2.0f, bottomEdge->height() - 5);
         QPoint delta(0, -bottomEdge->height());
         UCTestExtras::touchDrag(0, bottomEdge, from, delta, 20);
+    }
+
+    void test_bottomedge_hint_enabled() {
+        QScopedPointer<BottomEdgeTestCase> view(new BottomEdgeTestCase("Defaults.qml"));
+        UCBottomEdge *bottomEdge = view->testItem();
+        QCOMPARE(bottomEdge->isEnabled(), bottomEdge->hint()->isEnabled());
+        bottomEdge->setEnabled(!bottomEdge->isEnabled());
+        QCOMPARE(bottomEdge->isEnabled(), bottomEdge->hint()->isEnabled());
     }
 };
 

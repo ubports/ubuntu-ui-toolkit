@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Damper.h"
+#include "damper_p.h"
 #include <QDebug>
 
 QDebug operator<<(QDebug dbg, const DampedPointF &p)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -26,6 +26,7 @@
 #include "ucstyleditembase_p.h"
 #include "ucnamespace.h"
 #include "ucunits.h"
+#include "uclabel.h"
 
 class ThemeTestCase : public UbuntuTestCase
 {
@@ -100,7 +101,8 @@ private Q_SLOTS:
 
     void test_default_theme()
     {
-        UCTheme::defaultTheme();
+        QQmlEngine engine;
+        UCTheme::defaultTheme(&engine);
     }
 
     void test_default_name()
@@ -126,6 +128,53 @@ private Q_SLOTS:
         // reset
         theme.resetName();
         QCOMPARE(theme.name(), QString("Ubuntu.Components.Themes.Ambiance"));
+    }
+
+    void test_create_without_engine()
+    {
+        QTest::ignoreMessage(QtCriticalMsg, "The item UCLabel was created without a valid QML Engine. Styling will not be possible.");
+        QScopedPointer<UCLabel> item(new UCLabel);
+        QVERIFY(!item->getTheme());
+    }
+
+    void test_default_theme_cleared_with_engine_bug1527546()
+    {
+        qputenv("QV4_FORCE_INTERPRETER", "1");
+        qputenv("QV4_MM_AGGRESSIVE_GC", "1");
+        for (int i = 0; i < 2; i++)
+        {
+            ThemeTestCase *view = new ThemeTestCase("DefaultTheme.qml");
+            QVERIFY(view->globalTheme());
+            QVERIFY(UCTheme::defaultTheme(view->engine()));
+            QObjectCleanupHandler themeCleanup;
+            themeCleanup.add(UCTheme::defaultTheme(view->engine()));
+            delete view;
+            QVERIFY(themeCleanup.isEmpty());
+        }
+    }
+
+    void test_multiple_view_instances_bug1527546()
+    {
+        qputenv("QV4_FORCE_INTERPRETER", "1");
+        qputenv("QV4_MM_AGGRESSIVE_GC", "1");
+
+        QScopedPointer<ThemeTestCase> view1(new ThemeTestCase("DefaultTheme.qml"));
+        QScopedPointer<ThemeTestCase> view2(new ThemeTestCase("DefaultTheme.qml"));
+
+        // the two views must have different default themes
+        QVERIFY(view1->globalTheme() != view2->globalTheme());
+    }
+
+    void test_multiple_themes_on_engine_bug1527546()
+    {
+        qputenv("QV4_FORCE_INTERPRETER", "1");
+        qputenv("QV4_MM_AGGRESSIVE_GC", "1");
+
+        QQmlEngine engine;
+        UCTheme *theme0 = UCTheme::defaultTheme(&engine);
+
+        UCTheme *theme1 = new UCTheme(&engine);
+        QVERIFY(theme0 != theme1);
     }
 
     void test_create_style_component_data() {
@@ -304,7 +353,7 @@ private Q_SLOTS:
         mainItem->resetTheme();
         parentChangeSpy.wait(200);
         QCOMPARE(parentChangeSpy.count(), 1);
-        QCOMPARE(mainItem->getTheme(), &UCTheme::defaultTheme());
+        QCOMPARE(mainItem->getTheme(), UCTheme::defaultTheme(view->engine()));
         QCOMPARE(testSet->parentTheme(), mainItem->getTheme());
     }
 
@@ -582,6 +631,17 @@ private Q_SLOTS:
         QScopedPointer<ThemeTestCase> view(new ThemeTestCase("InvalidPalette.qml"));
     }
 
+    void test_invalid_palette_value()
+    {
+        QString url(QUrl::fromLocalFile(QFileInfo("themes/BuggyTheme/Palette.qml").absoluteFilePath()).toEncoded());
+        QString warning(QString("<Unknown File>: QML QQmlEngine: %1:24 Cannot assign to non-existent property \"imaginary\"\n").arg(url));
+        QTest::ignoreMessage(QtWarningMsg, warning.toUtf8());
+
+        qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "./themes");
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase("SimpleItem.qml"));
+        view->setTheme("BuggyTheme", view->rootObject());
+    }
+
     void test_removing_closest_parent_styled()
     {
         qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "");
@@ -605,7 +665,7 @@ private Q_SLOTS:
         movableItem->setParentItem(Q_NULLPTR);
         spy.wait(500);
         QCOMPARE(spy.count(), 1);
-        QCOMPARE(movableItem->getTheme(), &UCTheme::defaultTheme());
+        QCOMPARE(movableItem->getTheme(), UCTheme::defaultTheme(view->engine()));
     }
 
     void test_reparented_styleditem_special_case()

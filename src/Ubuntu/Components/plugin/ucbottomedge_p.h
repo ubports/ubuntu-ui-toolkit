@@ -109,6 +109,5 @@ public:
     UCCollapseAction(QObject *parent = 0);
     void activate();
 };
-Q_DECLARE_METATYPE(QQmlListProperty<UCAction>)
 
 #endif // UCBOTTOMEDGE_P_H

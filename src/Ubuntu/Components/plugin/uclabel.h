@@ -19,6 +19,8 @@
 
 #include <QtQuick/private/qquicktext_p.h>
 #include "ucthemingextension.h"
+// C++ std lib for std::function declaration
+#include <functional>
 
 class UCLabel : public QQuickText, public UCThemingExtension
 {
@@ -27,11 +29,16 @@ class UCLabel : public QQuickText, public UCThemingExtension
     Q_ENUMS(TextSize)
     Q_PROPERTY(TextSize textSize MEMBER m_textSize WRITE setTextSize NOTIFY textSizeChanged FINAL)
 
+    // Overriden from QQuickText
+    Q_PROPERTY(RenderType renderType READ renderType WRITE setRenderType)
+
     // Deprecated.
     Q_PROPERTY(QString fontSize READ fontSize WRITE setFontSize NOTIFY fontSizeChanged)
 
 public:
     UCLabel(QQuickItem* parent=0);
+    // custom constructor to create the label with a different default color provider
+    UCLabel(std::function<QColor (QQuickItem*, UCTheme*)> defaultColor, QQuickItem *parent = 0);
     //QQuickTextPrivate is not exported as of 5.4.1 so we need the init here
     void init();
 
@@ -45,6 +52,7 @@ public:
     };
 
     void setTextSize(TextSize size);
+    void setRenderType(RenderType renderType);
 
     // Deprecated.
     QString fontSize() const
@@ -74,6 +82,8 @@ Q_SIGNALS:
 
 private:
     void updatePixelSize();
+    static QColor getDefaultColor(QQuickItem *item, UCTheme *theme);
+    Q_SLOT void updateRenderType();
     Q_SLOT void _q_updateFontFlag(const QFont &font);
     Q_SLOT void _q_customColor();
 
@@ -84,6 +94,7 @@ private:
     };
 
     QFont m_defaultFont;
+    std::function<QColor (QQuickItem *, UCTheme*)> m_defaultColor;
     TextSize m_textSize;
     quint8 m_flags;
 

@@ -20,7 +20,7 @@
  * Activity Indicator crashes in QML/Widget mixed applications
  */
 
-import QtQuick 2.2
+import QtQuick 2.0
 import Ubuntu.Components 1.1
 
 Item {

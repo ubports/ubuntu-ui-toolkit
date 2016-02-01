@@ -32,12 +32,20 @@ class Tst_Animator : public QObject
     Q_OBJECT
 
 private Q_SLOTS:
+    void tst_animatorRegression_data() {
+        QTest::addColumn<QString>("filename");
+        QTest::newRow("1.1") << QString("tst_animator.qml");
+        QTest::newRow("1.3") << QString("tst_animator13.qml");
+    }
+
     void tst_animatorRegression ()
     {
+        QFETCH(QString, filename);
+
         QEventLoop l;
         QScopedPointer<QQuickView> w(new QQuickView());
         w->setResizeMode(QQuickView::SizeRootObjectToView);
-        w->setSource(QUrl::fromLocalFile("tst_animator.qml"));
+        w->setSource(QUrl::fromLocalFile(filename));
         w->show();
 
         int countdown = 20;

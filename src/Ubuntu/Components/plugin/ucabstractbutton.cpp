@@ -81,6 +81,15 @@ bool UCAbstractButtonPrivate::isPressAndHoldConnected()
     IS_SIGNAL_CONNECTED(q, UCAbstractButton, pressAndHold, ());
 }
 
+void UCAbstractButtonPrivate::onClicked()
+{
+    Q_Q(UCAbstractButton);
+    // call the overridden QML trigger function
+    invokeTrigger<UCAbstractButton>(q, QVariant());
+    // then emit the clicked signal
+    Q_EMIT q->clicked();
+}
+
 void UCAbstractButton::classBegin()
 {
     UCActionItem::classBegin();
@@ -131,15 +140,12 @@ void UCAbstractButtonPrivate::_q_mouseAreaPressed()
 void UCAbstractButtonPrivate::_q_mouseAreaClicked()
 {
     // required by the deprecated ListItem module
-    Q_Q(UCAbstractButton);
     if (!acceptEvents) {
         return;
     }
     // play haptics
     HapticsProxy::instance().play(QVariant());
-    Q_EMIT q->clicked();
-    // call the overridden QML trigger function
-    invokeTrigger<UCAbstractButton>(q, QVariant());
+    onClicked();
 }
 
 // handle pressAndHold
@@ -154,21 +160,18 @@ void UCAbstractButtonPrivate::_q_mouseAreaPressAndHold()
 }
 
 // emit clicked when Enter/Return is pressed
-void UCAbstractButton::keyPressEvent(QKeyEvent *event)
+void UCAbstractButton::keyReleaseEvent(QKeyEvent *event)
 {
-    UCActionItem::keyPressEvent(event);
+    UCActionItem::keyReleaseEvent(event);
 
     switch (event->key()) {
         case Qt::Key_Enter:
         case Qt::Key_Return:
         case Qt::Key_Space:
-        {
-            // trigger clicked signal first
-            Q_EMIT clicked();
-            // then invoke the overloaded trigger
-            invokeTrigger<UCAbstractButton>(this, QVariant());
+            d_func()->onClicked();
             break;
-        }
+        default:
+            break;
     }
 }
 

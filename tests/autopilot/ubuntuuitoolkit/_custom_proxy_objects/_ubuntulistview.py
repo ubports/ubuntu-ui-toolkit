@@ -45,3 +45,7 @@ class UbuntuListView11(_qquicklistview.QQuickListView):
             refresh.wait_for_refresh()
             return True
         return False
+
+
+class UbuntuListView(UbuntuListView11):
+    """Autopilot helper for the UbuntuListView 1.3."""
