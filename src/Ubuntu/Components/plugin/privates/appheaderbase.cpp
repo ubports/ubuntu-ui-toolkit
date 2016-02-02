@@ -36,7 +36,6 @@ UCAppHeaderBase::UCAppHeaderBase(QQuickItem *parent)
     UCStyledItemBasePrivate::get(this)->styleDocument = "PageHeadStyle";
 }
 
-
 UCTheme* UCAppHeaderBase::theme2()
 {
     return getTheme();
