@@ -20,7 +20,8 @@
 /*!
     \qmltype AppHeaderBase
     \instantiates UCAppHeaderBase
-    \inherits AppHeader
+    \inherits UCHeader
+    \internal
     \inqmlmodule Ubuntu.Components.Private 1.3
     \ingroup ubuntu
     \since Ubuntu.Components.Private 1.3
@@ -56,7 +57,7 @@ void UCAppHeaderBase::hide(bool animate) {
 
 /*!
  * \qmlproperty bool AppHeaderBase::animate
- * Animate the y-value when the value of \l exposed is set or unset.
+ * Animate the y-value when the value of \l Header::exposed is set or unset.
  * If the header is already animating while the value is set to false,
  * the current animation is not cancelled.
  * Default value: true.
