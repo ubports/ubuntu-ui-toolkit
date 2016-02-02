@@ -258,6 +258,7 @@ void UCMainViewBase::setFooterColor(QColor footerColor)
 /*!
   \qmlproperty list<Action> MainView::actions
   \readonly
+  \deprecated
 
   A global list of actions that will be available to the system (including HUD)
   as long as the application is running. For actions that are not always available to the
@@ -271,6 +272,7 @@ QQmlListProperty<UCAction> UCMainViewBase::actions() const
 /*!
   \qmlproperty ActionManager MainView::actionManager
   \readonly
+  \deprecated
 
   The ActionManager that supervises the global and local ActionContexts.
   The \l actions property should be used preferably since it covers most

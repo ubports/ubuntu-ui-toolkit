@@ -109,6 +109,7 @@ PageTreeNode {
                     Action { iconName: "settings" },
                     Action { iconName: "info" }
                 ]
+                flickable: myFlickable
             }
         }
       \endqml
