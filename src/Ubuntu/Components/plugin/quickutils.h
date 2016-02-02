@@ -34,11 +34,15 @@ class QuickUtils : public QObject
     Q_PROPERTY(bool mouseAttached MEMBER m_mouseAttached NOTIFY mouseAttachedChanged)
     Q_PROPERTY(bool keyboardAttached MEMBER m_keyboardAttached NOTIFY keyboardAttachedChanged)
 public:
-    static QuickUtils& instance()
+    static QuickUtils *instance(QObject *parent = Q_NULLPTR)
     {
-        static QuickUtils instance;
-        return instance;
+        if (!m_instance) {
+            Q_ASSERT(parent);
+            m_instance = new QuickUtils(parent);
+        }
+        return m_instance;
     }
+    ~QuickUtils() { m_instance = Q_NULLPTR; }
 
     QQuickItem *rootObject();
     Q_INVOKABLE QQuickItem *rootItem(QObject *object);
@@ -76,6 +80,8 @@ private:
     QStringList m_omitIM;
     bool m_mouseAttached;
     bool m_keyboardAttached;
+
+    static QuickUtils *m_instance;
 
     void lookupQuickView();
 };

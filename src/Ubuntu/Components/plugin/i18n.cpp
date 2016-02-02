@@ -54,6 +54,8 @@ namespace C {
  * }
  * \endqml
  */
+UbuntuI18n *UbuntuI18n::m_i18 = nullptr;
+
 UbuntuI18n::UbuntuI18n(QObject* parent) : QObject(parent)
 {
     /*
@@ -66,6 +68,11 @@ UbuntuI18n::UbuntuI18n(QObject* parent) : QObject(parent)
      *   defines the order of multiple locales
      */
     m_language = setlocale(LC_ALL, "");
+}
+
+UbuntuI18n::~UbuntuI18n()
+{
+    m_i18 = nullptr;
 }
 
 /*!
