@@ -31,6 +31,8 @@
 
 #include "unixsignalhandler_p.h"
 
+StateSaverBackend *StateSaverBackend::m_instance = nullptr;
+
 StateSaverBackend::StateSaverBackend(QObject *parent)
     : QObject(parent)
     , m_archive(0)
@@ -39,14 +41,14 @@ StateSaverBackend::StateSaverBackend(QObject *parent)
     // connect to application quit signal so when that is called, we can clean the states saved
     QObject::connect(QCoreApplication::instance(), &QCoreApplication::aboutToQuit,
                      this, &StateSaverBackend::cleanup);
-    QObject::connect(&QuickUtils::instance(), &QuickUtils::activated,
+    QObject::connect(QuickUtils::instance(), &QuickUtils::activated,
                      this, &StateSaverBackend::reset);
-    QObject::connect(&QuickUtils::instance(), &QuickUtils::deactivated,
+    QObject::connect(QuickUtils::instance(), &QuickUtils::deactivated,
                      this, &StateSaverBackend::initiateStateSaving);
     // catch eventual app name changes so we can have different path for the states if needed
-    QObject::connect(&UCApplication::instance(), &UCApplication::applicationNameChanged,
+    QObject::connect(UCApplication::instance(), &UCApplication::applicationNameChanged,
                      this, &StateSaverBackend::initialize);
-    if (!UCApplication::instance().applicationName().isEmpty()) {
+    if (!UCApplication::instance()->applicationName().isEmpty()) {
         initialize();
     }
 
@@ -61,6 +63,7 @@ StateSaverBackend::~StateSaverBackend()
     if (m_archive) {
         delete m_archive;
     }
+    m_instance = nullptr;
 }
 
 void StateSaverBackend::initialize()
@@ -72,7 +75,7 @@ void StateSaverBackend::initialize()
         delete m_archive.data();
         m_archive.clear();
     }
-    QString applicationName(UCApplication::instance().applicationName());
+    QString applicationName(UCApplication::instance()->applicationName());
     if (applicationName.isEmpty()) {
         qCritical() << "[StateSaver] Cannot create appstate file, application name not defined.";
         return;
@@ -173,7 +176,7 @@ int StateSaverBackend::load(const QString &id, QObject *item, const QStringList 
             if (writeSuccess) {
                 result++;
             } else {
-                qmlInfo(item) << UbuntuI18n::instance().tr("property \"%1\" of "
+                qmlInfo(item) << QStringLiteral("property \"%1\" of "
                     "object %2 has type %3 and cannot be set to value \"%4\" of"
                     " type %5").arg(propertyName)
                                .arg(qmlContext(item)->nameForObject(item))
@@ -182,7 +185,7 @@ int StateSaverBackend::load(const QString &id, QObject *item, const QStringList 
                                .arg(value.typeName());
             }
         } else {
-            qmlInfo(item) << UbuntuI18n::instance().tr("property \"%1\" does not exist or is not writable for object %2")
+            qmlInfo(item) << QStringLiteral("property \"%1\" does not exist or is not writable for object %2")
                              .arg(propertyName).arg(qmlContext(item)->nameForObject(item));
         }
     }
