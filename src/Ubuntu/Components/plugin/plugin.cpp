@@ -79,6 +79,7 @@
 #include "ucmainviewbase.h"
 #include "ucperformancemonitor.h"
 #include "privates/frame.h"
+#include "ucpagewrapper.h"
 
 // From UbuntuGestures
 #include "private/ucswipearea_p.h"
@@ -283,6 +284,7 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
 
     // Register private types.
     qmlRegisterType<UCFrame>("Ubuntu.Components.Private", 1, 3, "Frame");
+    qmlRegisterType<UCPageWrapper>("Ubuntu.Components.Private", 1, 3, "PageWrapper");
 
     QQmlExtensionPlugin::initializeEngine(engine, uri);
     QQmlContext* context = engine->rootContext();
