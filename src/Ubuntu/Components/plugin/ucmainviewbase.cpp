@@ -164,12 +164,7 @@ void UCMainViewBase::setAnchorToKeyboard(bool anchorToKeyboard)
     Q_EMIT anchorToKeyboardChanged(anchorToKeyboard);
 }
 
-/*!
-  \qmlproperty color MainView::headerColor
-  Color of the header's background.
-
-  \sa backgroundColor, footerColor
-*/
+// deprecated
 QColor UCMainViewBase::headerColor() const
 {
     return d_func()->m_headerColor;
@@ -188,26 +183,17 @@ void UCMainViewBase::setHeaderColor(QColor headerColor)
   \qmlproperty color MainView::backgroundColor
   Color of the background.
 
-  The background is usually a single color. However if \l headerColor
-  or \l footerColor are set then a gradient of colors will be drawn.
-
-  For example, in order for the MainView to draw a color gradient beneath
-  the content:
+  Example:
   \qml
       import QtQuick 2.4
-      import Ubuntu.Components 1.2
+      import Ubuntu.Components 1.3
 
       MainView {
           width: units.gu(40)
           height: units.gu(60)
-
-          headerColor: "#343C60"
-          backgroundColor: "#6A69A2"
-          footerColor: "#8896D5"
+          backgroundColor: UbuntuColors.blue
       }
   \endqml
-
-  \sa footerColor, headerColor
 */
 QColor UCMainViewBase::backgroundColor() const
 {
@@ -235,12 +221,7 @@ void UCMainViewBase::setBackgroundColor(QColor backgroundColor)
     d->doAutoTheme();
 }
 
-/*!
-  \qmlproperty color MainView::footerColor
-  Color of the footer's background.
-
-  \sa backgroundColor, headerColor
-*/
+// deprecated
 QColor UCMainViewBase::footerColor() const
 {
     return d_func()->m_footerColor;
