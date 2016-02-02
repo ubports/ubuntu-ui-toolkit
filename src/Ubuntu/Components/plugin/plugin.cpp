@@ -277,37 +277,15 @@ void UbuntuComponentsPlugin::initializeContextProperties(QQmlEngine *engine)
     UbuntuI18n::instance(engine);
     UCApplication::instance(engine);
     UCFontUtils::instance(engine);
-
     UCTheme::defaultTheme(engine);
-}
 
-void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
-{
-    // initialize baseURL
-    initializeBaseUrl();
-
-    // register internal styles
-    const char *styleUri = "Ubuntu.Components.Styles";
-    qmlRegisterType<UCListItemStyle>(styleUri, 1, 2, "ListItemStyle");
-    qmlRegisterType<UCListItemStyle, 1>(styleUri, 1, 3, "ListItemStyle");
-    qmlRegisterType<UCBottomEdgeStyle>(styleUri, 1, 3, "BottomEdgeStyle");
-
-    // Register private types.
-    qmlRegisterType<UCFrame>("Ubuntu.Components.Private", 1, 3, "Frame");
-
-    QQmlExtensionPlugin::initializeEngine(engine, uri);
     QQmlContext* context = engine->rootContext();
-
-    // allocate all context property objects prior we register them
-    initializeContextProperties(engine);
 
     // register root object watcher that sets a global property with the root object
     // that can be accessed from any object
     context->setContextProperty("QuickUtils", QuickUtils::instance());
 
     UCDeprecatedTheme::registerToContext(context);
-
-    HapticsProxy::instance().setEngine(engine);
 
     context->setContextProperty("i18n", UbuntuI18n::instance());
     ContextPropertyChangeListener *i18nChangeListener =
@@ -339,6 +317,29 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     QObject::connect(UCUnits::instance(), SIGNAL(gridUnitChanged()),
                      fontUtilsListener, SLOT(updateContextProperty()));
 
+}
+
+void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
+{
+    // initialize baseURL
+    initializeBaseUrl();
+
+    // register internal styles
+    const char *styleUri = "Ubuntu.Components.Styles";
+    qmlRegisterType<UCListItemStyle>(styleUri, 1, 2, "ListItemStyle");
+    qmlRegisterType<UCListItemStyle, 1>(styleUri, 1, 3, "ListItemStyle");
+    qmlRegisterType<UCBottomEdgeStyle>(styleUri, 1, 3, "BottomEdgeStyle");
+
+    // Register private types.
+    qmlRegisterType<UCFrame>("Ubuntu.Components.Private", 1, 3, "Frame");
+
+    QQmlExtensionPlugin::initializeEngine(engine, uri);
+
+    // allocate all context property objects prior we register them
+    initializeContextProperties(engine);
+
+    HapticsProxy::instance().setEngine(engine);
+
     engine->addImageProvider(QLatin1String("scaling"), new UCScalingImageProvider);
 
     // register icon provider
@@ -354,5 +355,5 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     registerWindowContextProperty();
 
     // register performance monitor
-    context->setContextProperty("performanceMonitor", new UCPerformanceMonitor(engine));
+    engine->rootContext()->setContextProperty("performanceMonitor", new UCPerformanceMonitor(engine));
 }
