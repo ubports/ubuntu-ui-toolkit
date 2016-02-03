@@ -20,8 +20,6 @@
 
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlFile>
-#include <QtQuick/QQuickItem>
-#include <QtQuick/QQuickWindow>
 #include <QtCore/QFileInfo>
 #include <QtCore/QDir>
 #include <QtCore/QRegularExpression>
@@ -31,6 +29,7 @@
 
 #include <QtGui/qpa/qplatformnativeinterface.h>
 #include <QtGui/qpa/qplatformwindow.h>
+#include <QtGui/qpa/qplatformscreen.h>
 
 #define ENV_GRID_UNIT_PX "GRID_UNIT_PX"
 #define DEFAULT_GRID_UNIT_PX 8
@@ -115,30 +114,6 @@ UCUnits::UCUnits(QObject *parent) :
                      this, &UCUnits::windowPropertyChanged);
 }
 
-UCUnits::~UCUnits()
-{
-//    Q_FOREACH (auto unit, _q_unitsHash) { // bad idea!!
-//        delete unit;
-//    }
-//    _q_unitsHash.clear();
-}
-
-UCUnits &UCUnits::instance(QQuickItem *item)
-{
-    QWindow *window = static_cast<QWindow *>(item->window()); //qDebug() << "creating for" << item;
-    if (!window) {
-        //qDebug() << "no window??";
-        return instance();
-    }
-    if (_q_unitsHash.contains(window)) {
-        return *(_q_unitsHash.value(window));
-    } else {
-        auto units = new UCUnits(window); // FIXME, memory not reclaimed when window deleted
-        _q_unitsHash.insert(window, units);
-        return *units;
-    }
-}
-
 /*!
     \qmlproperty real Units::gridUnit
 
@@ -156,40 +131,6 @@ void UCUnits::setGridUnit(float gridUnit)
     }
     m_gridUnit = gridUnit;
     Q_EMIT gridUnitChanged();
-}
-
-void UCUnits::classBegin() // called by QML only if UCUnits is *not* a singleton/context property
-{
-    // parent is set by the QML engine after the constructor is called. Is definitely set by now.
-
-    // If running under Mir, try to fetch and listen to the "scale" window property available
-    // only through the QPlatformNativeInterface
-    if (qGuiApp->platformName() == "ubuntumirclient" || qGuiApp->platformName() == "mirserver") {
-        // at this stage in QML instantiation, I see UCUnits parented to the QQuickWindow, before being reparented to
-        // its proper parent Item. So try to attach to this window, and if fails, get parent Item and get its window.
-        auto window = qobject_cast<QWindow *>(parent());
-        if (!window) {
-            auto parentItem = qobject_cast<QQuickItem *>(parent());
-            if (!parentItem) {
-                return;
-            }
-
-            window = qobject_cast<QWindow *>(parentItem->window());
-        }
-        if (window) {
-            // fetch current value
-            auto nativeInterface = qGuiApp->platformNativeInterface();
-            QVariant scaleVal = nativeInterface->windowProperty(window->handle(), "scale");
-            if (!scaleVal.isValid()) {
-                return;
-            }
-            bool ok;
-            float scale = scaleVal.toFloat(&ok);
-            if (ok) {
-                m_gridUnit = DEFAULT_GRID_UNIT_PX * m_devicePixelRatio * scale;
-            }
-        }
-    }
 }
 
 /*!
@@ -309,23 +250,22 @@ float UCUnits::gridUnitSuffixFromFileName(const QString& fileName)
         return 0;
     }
 }
-
+#include <QDebug>
 void UCUnits::windowPropertyChanged(QPlatformWindow *window, const QString &propertyName)
-{
+{ qDebug() << "UCUnits::windowPropertyChanged" << window << propertyName;
     if (propertyName != QStringLiteral("scale")) { //don't care otherwise
         return;
     }
 
-    // Two cases, either this is a singleton, and parent is null, or it's an instance, so has a parent
-    if (parent()) {
-        auto parentItem = qobject_cast<QQuickItem *>(parent());
-        if (!parentItem || !parentItem->window()) {
+    // I've no idea what my window is, but any messages I get should only be about my window!
+
+    // HACK - if multimonitor situation, ignore any scale changes reported by the LVDS screen (unity8-specific policy)
+    if (qGuiApp->allWindows().count() > 1) {
+        if (window && window->screen()
+                && window->screen()->name().contains("LVDS")) {
             return;
         }
-        if (parentItem->window()->handle() != window) { // not my window, ignore
-            return;
-        }
-    } // else I've no idea what my window is, but any messages I get should only be about my window!
+    }
 
     auto nativeInterface = qGuiApp->platformNativeInterface();
     QVariant scaleVal = nativeInterface->windowProperty(window, "scale");
@@ -336,7 +276,7 @@ void UCUnits::windowPropertyChanged(QPlatformWindow *window, const QString &prop
     float scale = scaleVal.toFloat(&ok);
     if (!ok || scale <= 0) {
         return;
-    }
+    } qDebug() << "SCALE reported" << scale;
     // choose integral grid unit value closest to requested scale
     setGridUnit(qCeil(scale * DEFAULT_GRID_UNIT_PX) * m_devicePixelRatio);
 }

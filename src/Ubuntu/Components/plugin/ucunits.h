@@ -20,20 +20,12 @@
 #define UBUNTU_COMPONENTS_UNITS_H
 
 #include <QObject>
-#include <QtQml/QQmlParserStatus>
 #include <QtCore/QHash>
 #include <QtCore/QString>
 #include <QtCore/QUrl>
 
-class QWindow;
-class QQuickItem;
 class QPlatformWindow;
-
-class UCUnits;
-static QHash<QWindow*, UCUnits*> _q_unitsHash;
-
-
-class UCUnits : public QObject, public QQmlParserStatus
+class UCUnits : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(float gridUnit READ gridUnit WRITE setGridUnit NOTIFY gridUnitChanged)
@@ -43,11 +35,8 @@ public:
         static UCUnits instance;
         return instance;
     }
-    static UCUnits& instance(QQuickItem *item); // returns unique instance per QWindow
 
-    UCUnits(QObject *parent = 0);
-    virtual ~UCUnits();
-
+    explicit UCUnits(QObject *parent = 0);
     Q_INVOKABLE float dp(float value);
     Q_INVOKABLE float gu(float value);
     QString resolveResource(const QUrl& url);
@@ -57,10 +46,6 @@ public:
 
     // setters
     void setGridUnit(float gridUnit);
-
-    // from QQmlParserStatus
-    void classBegin() Q_DECL_OVERRIDE;
-    void componentComplete() Q_DECL_OVERRIDE {}
 
 Q_SIGNALS:
     void gridUnitChanged();
