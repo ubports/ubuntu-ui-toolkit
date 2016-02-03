@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -28,15 +28,14 @@ Item {
     /*!
       The background color of the bubble.
      */
-    property color color: square ? theme.palette.normal.background : theme.palette.normal.overlay
+    property color color: square
+                            ? theme.palette.normal.background
+                            : theme.palette.normal.overlay
 
     property point target
     property string direction: "down"
     property bool clipContent: false
     default property alias children: content.children
-    // FIXME: This should not be necessary. See
-    // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1214978
-    property alias arrowSource: arrow.source
 
     implicitWidth: units.gu(10)
     implicitHeight: units.gu(8)
@@ -111,7 +110,7 @@ Item {
     UbuntuShape {
         anchors.fill: parent
         aspect: UbuntuShape.Flat
-        backgroundColor: theme.palette.normal.overlay
+        backgroundColor: bubbleShape.color
         source: bubbleShape.clipContent ? shapeSource : null
         visible: !square
     }
@@ -137,36 +136,6 @@ Item {
             anchors.fill: parent
             color: bubbleShape.color
             visible: bubbleShape.clipContent
-        }
-    }
-
-    Item {
-        x: target.x
-        y: target.y
-
-        Image {
-            id: arrow
-
-            visible: !square && bubbleShape.direction != "none"
-
-            function directionToRotation(direction) {
-                switch (direction) {
-                case "up":
-                    return 180;
-                case "left":
-                    return 90;
-                case "right":
-                    return -90;
-                default: // "down" or "none"
-                    return 0;
-                }
-            }
-
-            x: -width / 2.0
-            y: -height
-            transformOrigin: Item.Bottom
-            rotation: directionToRotation(bubbleShape.direction)
-            source: Qt.resolvedUrl("../artwork/bubble_arrow.png")
         }
     }
 }

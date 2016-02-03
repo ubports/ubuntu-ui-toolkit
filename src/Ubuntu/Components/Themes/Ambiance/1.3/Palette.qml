@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -19,25 +19,41 @@ import Ubuntu.Components 1.3
 import Ubuntu.Components.Themes 1.3
 
 Palette {
-    normal {
-        background: "#FFFFFF"
-        backgroundText: "#81888888"
-        base: Qt.rgba(0, 0, 0, 0.1)
-        baseText: UbuntuColors.lightGrey
-        foreground: UbuntuColors.lightGrey
-        foregroundText: "#FFFFFF"
-        overlay: "#FDFDFD"
-        overlayText: UbuntuColors.lightGrey
-        field: "lightgray"
-        fieldText: UbuntuColors.darkGrey
+    normal: AmbianceNormal {}
+    disabled: AmbianceNormal {
+        field: UbuntuColors.porcelain;
+        // inactive is 30% opaque normal
+        Component.onCompleted: {
+            for (var p in normal) {
+                // skip objectName and all change signals
+                if (p == "objectName" || p == "field" || p.indexOf("Changed") > 0) continue;
+                disabled[p] = Qt.rgba(normal[p].r, normal[p].g, normal[p].b, 0.3);
+            }
+        }
     }
-    selected {
-        background: Qt.rgba(0, 0, 0, 0.05)
-        backgroundText: UbuntuColors.darkGrey
-        selection: selected.foreground
-        foreground: Qt.rgba(UbuntuColors.blue.r, UbuntuColors.blue.g, UbuntuColors.blue.b, 0.2)
-        foregroundText: UbuntuColors.darkGrey
-        field: "#FFFFFF"
-        fieldText: UbuntuColors.darkGrey
+
+    // selected differs from normal in background, base, foreground
+    selected: AmbianceSelected {}
+
+    // selected differs from normal in background, base, foreground
+    selectedDisabled: AmbianceSelected {
+        background: UbuntuColors.porcelain
+        base: UbuntuColors.porcelain
+        foreground: UbuntuColors.porcelain
+        // inactive is 30% opaque normal
+        Component.onCompleted: {
+            for (var p in selected) {
+                // skip objectName and all change signals
+                if (p == "objectName" || p.indexOf("Changed") > 0
+                        || p == "background" || p == "base" || p == "foreground" ) continue;
+                selectedDisabled[p] = Qt.rgba(selected[p].r, selected[p].g, selected[p].b, 0.3);
+            }
+        }
+    }
+
+    highlighted: AmbianceNormal {
+        background: UbuntuColors.silk
+        base: UbuntuColors.jet
+        foreground: UbuntuColors.silk
     }
 }

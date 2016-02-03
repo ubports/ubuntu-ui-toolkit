@@ -92,7 +92,6 @@ QML_FILES += 1.3/ActionBar.qml \
              1.3/dateUtils.js \
              1.3/DraggingArea.qml \
              1.3/InputHandler.qml \
-             1.3/MainViewBase.qml \
              1.3/MainView.qml \
              1.3/OptionSelectorDelegate.qml \
              1.3/OptionSelector.qml \
@@ -131,7 +130,8 @@ QML_FILES += 1.3/ActionBar.qml \
              1.3/PageColumnsLayout.qml \
              1.3/ProgressionSlot.qml \
              1.3/ScrollView.qml \
-             1.3/PageHeader.qml
+             1.3/PageHeader.qml \
+             1.3/Icon.qml
 
 OTHER_FILES+= qmldir \
              1.3/CrossFadeImage.qdoc \

@@ -33,12 +33,15 @@ class UCApplication : public QObject
 private:
     Q_DISABLE_COPY(UCApplication)
     explicit UCApplication(QObject* parent = 0);
-
+    ~UCApplication();
 
 public:
-    static UCApplication& instance() {
-        static UCApplication instance;
-        return instance;
+    static UCApplication *instance(QObject *parent = Q_NULLPTR) {
+        if (!m_app) {
+            Q_ASSERT(parent);
+            m_app = new UCApplication(parent);
+        }
+        return m_app;
     }
 
     // getter
@@ -53,6 +56,7 @@ public:
 private:
     QQmlContext* m_context;
     QObject* m_inputMethod;
+    static UCApplication *m_app;
 
 Q_SIGNALS:
     void applicationNameChanged();

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -18,27 +18,21 @@
 
 import QtQuick 2.4
 import Ubuntu.Components 1.3
+import Ubuntu.Components.Private 1.3
 
-UbuntuShape {
-    property color focusColor: UbuntuColors.orange // FIXME: Use color from palette
-
+Frame {
     anchors.fill: parent
-    anchors.margins: -units.gu(0.4)
-    backgroundColor: Qt.rgba(focusColor.r, focusColor.g, focusColor.b, 1.0)
+    anchors.margins: -units.gu(0.46)
+    color: styledItem.enabled
+                ? theme.palette.normal.focus
+                : theme.palette.disabled.focus
+    thickness: units.gu(0.21)
+    radius: units.gu(1.7)
     visible: styledItem.keyNavigationFocus
-    z: styledItem.z - 1
 
-    UbuntuShape {
-        anchors.fill: parent
-        anchors.margins: styledItem.keyNavigationFocus ? units.gu(0.2) : 0
-        backgroundColor: theme.palette.normal.background
-        aspect: UbuntuShape.Flat
-        visible: parent.visible
-
-        Behavior on anchors.margins {
-            UbuntuNumberAnimation {
-                duration: UbuntuAnimation.FastDuration
-            }
+    Behavior on anchors.margins {
+        UbuntuNumberAnimation {
+            duration: UbuntuAnimation.FastDuration
         }
     }
 
@@ -49,4 +43,3 @@ UbuntuShape {
         when: styledItem
     }
 }
-

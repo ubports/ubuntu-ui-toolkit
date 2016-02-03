@@ -62,6 +62,10 @@ void UCBottomEdgePrivate::init()
     Q_Q(UCBottomEdge);
     // initialize hint
     QQml_setParent_noEvent(hint, q);
+    // keep BottomEdge.enabled in sync with the hint
+    QObject::connect(q, &UCBottomEdge::enabledChanged, [=] {
+        hint->setEnabled2(q->isEnabled());
+    });
 
     // create default regions
     createDefaultRegions();
@@ -588,7 +592,7 @@ void UCBottomEdgePrivate::setOperationStatus(OperationStatus s)
  *                 BottomEdgeRegion {
  *                     from: 0.6
  *                     to: 1.0
- *                     property color color: UbuntuColors.lightGrey
+ *                     property color color: UbuntuColors.silk
  *                 }
  *             ]
  *         }

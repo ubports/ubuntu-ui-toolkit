@@ -66,28 +66,34 @@ Style.PageHeadStyle {
        \deprecated
        The background color of the tapped item in the panel.
       */
-    property color panelHighlightColor: theme.palette.selected.background
+    property color panelHighlightColor: theme.palette.highlighted.background
 
     /*!
        \deprecated
        The foreground color (icon and text) of actions in the panel.
       */
-    property color panelForegroundColor: theme.palette.selected.backgroundText
+    property color panelForegroundColor: styledItem.enabled
+                                            ? theme.palette.normal.backgroundText
+                                            : theme.palette.disabled.backgroundText
 
     /*!
       The text color of unselected sections and the section divider.
      */
-    property color sectionColor: theme.palette.selected.backgroundText
+    property color sectionColor: styledItem.enabled
+                                    ? theme.palette.normal.backgroundText
+                                    : theme.palette.disabled.backgroundText
 
     /*!
       The text color of the selected section.
      */
-    property color selectedSectionColor: UbuntuColors.orange
+    property color selectedSectionColor: styledItem.enabled
+                                            ? theme.palette.selected.backgroundText
+                                            : theme.palette.selectedDisabled.backgroundText
 
     /*!
       The background color of the pressed section.
      */
-    property color sectionHighlightColor: theme.palette.selected.background
+    property color sectionHighlightColor: theme.palette.highlighted.background
 
     implicitHeight: headerStyle.contentHeight + divider.height + sectionsItem.height
 

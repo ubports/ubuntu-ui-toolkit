@@ -76,6 +76,9 @@
 #include "ucbottomedgeregion.h"
 #include "ucbottomedgestyle.h"
 #include "ucpagetreenode.h"
+#include "ucmainviewbase.h"
+#include "ucperformancemonitor.h"
+#include "privates/frame.h"
 
 // From UbuntuGestures
 #include "private/ucswipearea_p.h"
@@ -264,6 +267,56 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCBottomEdgeRegion>(uri, 1, 3, "BottomEdgeRegion");
     qmlRegisterType<UCPageTreeNode>(uri, 1, 3, "PageTreeNode");
     qmlRegisterType<UCPopupContext>(uri, 1, 3, "PopupContext");
+    qmlRegisterType<UCMainViewBase>(uri, 1, 3, "MainViewBase");
+}
+
+void UbuntuComponentsPlugin::initializeContextProperties(QQmlEngine *engine)
+{
+    UCUnits::instance(engine);
+    QuickUtils::instance(engine);
+    UbuntuI18n::instance(engine);
+    UCApplication::instance(engine);
+    UCFontUtils::instance(engine);
+    UCTheme::defaultTheme(engine);
+
+    QQmlContext* context = engine->rootContext();
+
+    // register root object watcher that sets a global property with the root object
+    // that can be accessed from any object
+    context->setContextProperty("QuickUtils", QuickUtils::instance());
+
+    UCDeprecatedTheme::registerToContext(context);
+
+    context->setContextProperty("i18n", UbuntuI18n::instance());
+    ContextPropertyChangeListener *i18nChangeListener =
+        new ContextPropertyChangeListener(context, "i18n");
+    QObject::connect(UbuntuI18n::instance(), SIGNAL(domainChanged()),
+                     i18nChangeListener, SLOT(updateContextProperty()));
+    QObject::connect(UbuntuI18n::instance(), SIGNAL(languageChanged()),
+                     i18nChangeListener, SLOT(updateContextProperty()));
+
+    // We can't use 'Application' because it exists (undocumented)
+    context->setContextProperty("UbuntuApplication", UCApplication::instance());
+    ContextPropertyChangeListener *applicationChangeListener =
+        new ContextPropertyChangeListener(context, "UbuntuApplication");
+    QObject::connect(UCApplication::instance(), SIGNAL(applicationNameChanged()),
+                     applicationChangeListener, SLOT(updateContextProperty()));
+    // Give the application object access to the engine
+    UCApplication::instance()->setContext(context);
+
+    context->setContextProperty("units", UCUnits::instance());
+    ContextPropertyChangeListener *unitsChangeListener =
+        new ContextPropertyChangeListener(context, "units");
+    QObject::connect(UCUnits::instance(), SIGNAL(gridUnitChanged()),
+                     unitsChangeListener, SLOT(updateContextProperty()));
+
+    // register FontUtils
+    context->setContextProperty("FontUtils", UCFontUtils::instance());
+    ContextPropertyChangeListener *fontUtilsListener =
+        new ContextPropertyChangeListener(context, "FontUtils");
+    QObject::connect(UCUnits::instance(), SIGNAL(gridUnitChanged()),
+                     fontUtilsListener, SLOT(updateContextProperty()));
+
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
@@ -277,46 +330,15 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     qmlRegisterType<UCListItemStyle, 1>(styleUri, 1, 3, "ListItemStyle");
     qmlRegisterType<UCBottomEdgeStyle>(styleUri, 1, 3, "BottomEdgeStyle");
 
+    // Register private types.
+    qmlRegisterType<UCFrame>("Ubuntu.Components.Private", 1, 3, "Frame");
+
     QQmlExtensionPlugin::initializeEngine(engine, uri);
-    QQmlContext* context = engine->rootContext();
 
-    // register root object watcher that sets a global property with the root object
-    // that can be accessed from any object
-    context->setContextProperty("QuickUtils", &QuickUtils::instance());
-
-    UCDeprecatedTheme::registerToContext(context);
+    // allocate all context property objects prior we register them
+    initializeContextProperties(engine);
 
     HapticsProxy::instance().setEngine(engine);
-
-    context->setContextProperty("i18n", &UbuntuI18n::instance());
-    ContextPropertyChangeListener *i18nChangeListener =
-        new ContextPropertyChangeListener(context, "i18n");
-    QObject::connect(&UbuntuI18n::instance(), SIGNAL(domainChanged()),
-                     i18nChangeListener, SLOT(updateContextProperty()));
-    QObject::connect(&UbuntuI18n::instance(), SIGNAL(languageChanged()),
-                     i18nChangeListener, SLOT(updateContextProperty()));
-
-    // We can't use 'Application' because it exists (undocumented)
-    context->setContextProperty("UbuntuApplication", &UCApplication::instance());
-    ContextPropertyChangeListener *applicationChangeListener =
-        new ContextPropertyChangeListener(context, "UbuntuApplication");
-    QObject::connect(&UCApplication::instance(), SIGNAL(applicationNameChanged()),
-                     applicationChangeListener, SLOT(updateContextProperty()));
-    // Give the application object access to the engine
-    UCApplication::instance().setContext(context);
-
-    context->setContextProperty("units", &UCUnits::instance());
-    ContextPropertyChangeListener *unitsChangeListener =
-        new ContextPropertyChangeListener(context, "units");
-    QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()),
-                     unitsChangeListener, SLOT(updateContextProperty()));
-
-    // register FontUtils
-    context->setContextProperty("FontUtils", &UCFontUtils::instance());
-    ContextPropertyChangeListener *fontUtilsListener =
-        new ContextPropertyChangeListener(context, "FontUtils");
-    QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()),
-                     fontUtilsListener, SLOT(updateContextProperty()));
 
     engine->addImageProvider(QLatin1String("scaling"), new UCScalingImageProvider);
 
@@ -331,4 +353,7 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
             Qt::InvertedLandscapeOrientation);
 
     registerWindowContextProperty();
+
+    // register performance monitor
+    engine->rootContext()->setContextProperty("performanceMonitor", new UCPerformanceMonitor(engine));
 }

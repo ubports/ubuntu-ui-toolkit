@@ -38,6 +38,7 @@ namespace C {
 
 #include "ucunits.h"
 #include "i18n.h"
+#include "plugin.h"
 
 class tst_I18n_LocalizedApp : public QObject
 {
@@ -87,8 +88,9 @@ private Q_SLOTS:
 
         view = new QQuickView;
         QQmlEngine *quickEngine = view->engine();
+        UbuntuComponentsPlugin::initializeContextProperties(quickEngine);
 
-        view->setGeometry(0,0, UCUnits::instance().gu(40), UCUnits::instance().gu(30));
+        view->setGeometry(0,0, UCUnits::instance()->gu(40), UCUnits::instance()->gu(30));
         //add modules folder so we have access to the plugin from QML
         QStringList imports = quickEngine->importPathList();
         imports.prepend(QDir(modules).absolutePath());
@@ -102,7 +104,9 @@ private Q_SLOTS:
 
     void testCase_LocalizedApp()
     {
-        UbuntuI18n* i18n = &UbuntuI18n::instance();
+        QQmlEngine engine;
+        UbuntuComponentsPlugin::initializeContextProperties(&engine);
+        UbuntuI18n* i18n = UbuntuI18n::instance();
         // By default no domain is set
         QCOMPARE(i18n->domain(), QString(""));
 
