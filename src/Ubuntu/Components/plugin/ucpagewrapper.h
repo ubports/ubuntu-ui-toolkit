@@ -18,6 +18,9 @@ class UCPageWrapper : public UCPageTreeNode
     Q_PROPERTY(bool synchronous READ synchronous WRITE setSynchronous NOTIFY synchronousChanged)
     Q_PROPERTY(QVariant properties READ properties WRITE setProperties NOTIFY propertiesChanged)
 
+    //overrides
+    Q_PROPERTY(bool visible READ isVisible WRITE setVisible2 NOTIFY visibleChanged2 FINAL)
+
 public:
     explicit UCPageWrapper(QQuickItem *parent = 0);
 
@@ -52,8 +55,8 @@ public:
 
     QObject *incubator() const;
 
-    // UCPageTreeNode interface
-    virtual void setActive(bool active) override;
+    //override QQuickItem properties
+    void setVisible2(bool visible);
 
 Q_SIGNALS:
     void referenceChanged(const QVariant &reference);
@@ -67,14 +70,15 @@ Q_SIGNALS:
     void pageLoaded();
     void parentPageChanged(QQuickItem* parentPage);
     void incubatorChanged(QObject* incubator);
+    void visibleChanged2();
 
 protected:
     UCPageWrapper(UCPageWrapperPrivate &dd, QQuickItem *parent);
 
 private:
     Q_DECLARE_PRIVATE(UCPageWrapper)
-    Q_PRIVATE_SLOT(d_func(), void onIncubatorStatusChanged())
-    Q_PRIVATE_SLOT(d_func(), void onVisibleChanged())
+    Q_PRIVATE_SLOT(d_func(), void nextStep())
+    Q_PRIVATE_SLOT(d_func(), void onActiveChanged())
 };
 
 #endif // UCPAGEWRAPPER_H

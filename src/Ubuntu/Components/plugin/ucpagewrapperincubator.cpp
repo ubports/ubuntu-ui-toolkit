@@ -15,6 +15,7 @@
  */
 
 #include "ucpagewrapperincubator_p.h"
+#include <QDebug>
 
 UCPageWrapperIncubator::UCPageWrapperIncubator(QQmlIncubator::IncubationMode mode, QObject *parent)
     : QObject(parent),
@@ -39,6 +40,7 @@ void UCPageWrapperIncubator::setOnStatusChanged(QJSValue onStatusChanged)
 
 void UCPageWrapperIncubator::statusChanged(QQmlIncubator::Status status)
 {
+    qDebug()<<m_onStatusChanged.toVariant();
     if (m_onStatusChanged.isCallable()) {
         m_onStatusChanged.call(QJSValueList()<<QJSValue(static_cast<int>(status)));
     }

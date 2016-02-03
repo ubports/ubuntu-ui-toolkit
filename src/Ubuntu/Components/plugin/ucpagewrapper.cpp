@@ -11,10 +11,12 @@ UCPageWrapperPrivate::UCPageWrapperPrivate() :
     m_parentWrapper(nullptr),
     m_pageHolder(nullptr),
     m_incubator(nullptr),
-    m_localComponent(nullptr),
+    m_component(nullptr),
+    m_state(Waiting),
     m_column(0),
     m_canDestroy(false),
-    m_synchronous(true)
+    m_synchronous(true),
+    m_ownsComponent(false)
 { }
 
 UCPageWrapperPrivate::~UCPageWrapperPrivate()
@@ -25,14 +27,13 @@ UCPageWrapperPrivate::~UCPageWrapperPrivate()
 void UCPageWrapperPrivate::init()
 {
     Q_Q(UCPageWrapper);
-    q->setActive(false);
 
-    //this will disable the superclass' binding
+    q->setActive(false);
     q->setVisible(false);
 
-    //and we introduce our own one here
-    QObject::connect(q, SIGNAL(visibleChanged()),
-                     q, SLOT(onVisibleChanged()));
+    //bind the value of visible to active
+    QObject::connect(q, SIGNAL(activeChanged(bool)),
+                     q, SLOT(onActiveChanged()));
 
     QObject::connect(q, &UCPageWrapper::referenceChanged,
                      [this](){
@@ -76,47 +77,9 @@ void UCPageWrapperPrivate::init()
 
 void UCPageWrapperPrivate::initPage()
 {
-    Q_Q(UCPageWrapper);
-
     //make sure we are clean
     reset();
-
-    QQmlComponent *pageComponent = nullptr;
-    if (m_reference.canConvert<QQmlComponent *>()) {
-        pageComponent = m_reference.value<QQmlComponent *>();
-    } else if (m_reference.canConvert<QString>()) {
-        if (m_synchronous) {
-            m_localComponent = pageComponent = new QQmlComponent(qmlEngine(q), QUrl::fromLocalFile(m_reference.toString()),QQmlComponent::PreferSynchronous);
-        } else {
-            m_localComponent = pageComponent = new QQmlComponent(qmlEngine(q), QUrl::fromLocalFile(m_reference.toString()),QQmlComponent::Asynchronous);
-        }
-    } else if (m_reference.canConvert<QObject *>()) {
-        QObject *theObject = m_reference.value<QObject *>();
-        theObject->setParent(q);
-
-        q->setObject(theObject);
-        q->setCanDestroy(false);
-        copyProperties(theObject);
-    } else {
-        qmlInfo(q) << "PageWrapper.reference contains unsupported data";
-        return;
-    }
-
-    if (pageComponent) {
-        if (pageComponent->status() != QQmlComponent::Loading)
-            onComponentStatusChanged(pageComponent);
-        else {
-            //async behaviour
-            QSharedPointer<QMetaObject::Connection> connHandle(new QMetaObject::Connection);
-            *connHandle = QObject::connect(pageComponent, &QQmlComponent::statusChanged,
-                                           [this, connHandle, pageComponent](){
-                if(pageComponent->status() != QQmlComponent::Loading)
-                    QObject::disconnect(*connHandle);
-
-                onComponentStatusChanged(pageComponent);
-            });
-        }
-    }
+    nextStep();
 }
 
 void UCPageWrapperPrivate::reset()
@@ -140,16 +103,18 @@ void UCPageWrapperPrivate::reset()
         q->setObject(nullptr);
     }
 
-    if (m_localComponent) {
-        delete m_localComponent;
-        m_localComponent = nullptr;
+    if (m_component && m_ownsComponent) {
+        delete m_component;
+        m_component = nullptr;
     }
+
+    m_state = Waiting;
 }
 
 void UCPageWrapperPrivate::activate()
 {
     Q_Q(UCPageWrapper);
-    if (!m_object) {
+    if (!m_object && m_state != LoadingComponent && m_state != CreatingObject) {
         initPage();
     }
 
@@ -199,61 +164,132 @@ void UCPageWrapperPrivate::setIncubator(UCPageWrapperIncubator *incubator)
     Q_EMIT q->incubatorChanged(incubator);
 }
 
-void UCPageWrapperPrivate::onComponentStatusChanged(QQmlComponent *pageComponent)
+void UCPageWrapperPrivate::nextStep()
 {
     Q_Q(UCPageWrapper);
-    if (pageComponent->status() == QQmlComponent::Error) {
-        if (m_localComponent) {
-            delete m_localComponent;
-            m_localComponent = nullptr;
+    switch(m_state) {
+        case Waiting:{
+            m_state = LoadingComponent;
+
+            if (m_reference.canConvert<QQmlComponent *>()) {
+                m_ownsComponent = false;
+                m_component = m_reference.value<QQmlComponent *>();
+            } else if (m_reference.canConvert<QString>()) {
+                QUrl componentUrl = QUrl(m_reference.toString());
+                qDebug()<<"Loading component: "<<componentUrl;
+
+                m_ownsComponent = true;
+                if (m_synchronous) {
+                    m_component = new QQmlComponent(qmlEngine(q), componentUrl,QQmlComponent::PreferSynchronous);
+                } else {
+                    m_component = new QQmlComponent(qmlEngine(q), componentUrl,QQmlComponent::PreferSynchronous);
+                }
+            } else if (m_reference.canConvert<QObject *>()) {
+                QObject *theObject = m_reference.value<QObject *>();
+                theObject->setParent(q);
+
+                q->setObject(theObject);
+                q->setCanDestroy(false);
+                copyProperties(theObject);
+
+                //proceed to final step
+                m_state = NotifyPageLoaded;
+                nextStep();
+                return;
+            } else {
+                m_state = Error;
+                qmlInfo(q) << "PageWrapper.reference contains unsupported data";
+                return;
+            }
+
+            if (m_component) {
+                if (m_component->status() != QQmlComponent::Loading)
+                    nextStep();
+                else {
+                    //async behaviour
+                    QSharedPointer<QMetaObject::Connection> connHandle(new QMetaObject::Connection);
+                    *connHandle = QObject::connect(m_component, &QQmlComponent::statusChanged,
+                                                   [this, connHandle](){
+                        if(m_component->status() != QQmlComponent::Loading) {
+                            QObject::disconnect(*connHandle);
+                            nextStep();
+                        }
+                    });
+                }
+            }
+            break;
         }
-        return; //full stop
-    }
-    if (m_synchronous) {
-        q->setObject(pageComponent->create(qmlContext(q)));
-        if (m_localComponent) {
-            delete m_localComponent;
-            m_localComponent = nullptr;
+        case LoadingComponent:{
+            m_state = CreatingObject;
+            if (m_component->status() == QQmlComponent::Error) {
+                qmlInfo(q) << m_component->errors();
+                m_state = Error;
+                return; //full stop
+            }
+            if (m_synchronous) {
+                QObject *theObject = m_component->create(qmlContext(q));
+                if (theObject) {
+                    copyProperties(theObject);
+                    q->setObject(theObject);
+
+                    m_state = NotifyPageLoaded;
+                    nextStep();
+                    return;
+                }
+                qmlInfo(q) << "Error creating the object";
+                m_state = Error;
+                return;
+            } else {
+                UCPageWrapperIncubator *incubator = new UCPageWrapperIncubator(QQmlIncubator::Asynchronous, q);
+                //connect the change signal first so we definately catch the signal even when the creation finishes right away
+                QObject::connect(incubator, SIGNAL(statusHasChanged(int)),
+                                 q, SLOT(nextStep()));
+
+                setIncubator(incubator);
+                m_component->create(*incubator, qmlContext(q));
+            }
+            break;
         }
-    } else {
-        UCPageWrapperIncubator *incubator = new UCPageWrapperIncubator(QQmlIncubator::Asynchronous, q);
-        //connect the change signal first so we definately catch the signal even when the creation finishes right away
-        QObject::connect(incubator, SIGNAL(statusHasChanged(int)),
-                         q, SLOT(onIncubatorStatusChanged()));
+        case CreatingObject:{
+            if(m_incubator->status() == QQmlIncubator::Ready) {
+                QObject *theObject = m_incubator->object();
+                copyProperties(theObject);
 
-        setIncubator(incubator);
-        pageComponent->create(*incubator, qmlContext(q));
-    }
-}
+                q->setObject(theObject);
 
-void UCPageWrapperPrivate::onIncubatorStatusChanged()
-{
-    Q_Q(UCPageWrapper);
+                m_state = NotifyPageLoaded;
+                nextStep();
 
-    // emit pageWrapper's pageLoaded signal to complete page activation
-    if(m_incubator->status() == QQmlIncubator::Ready) {
-        QObject *theObject = m_incubator->object();
-        copyProperties(theObject);
+            } else if(m_incubator->status() == QQmlIncubator::Error) {
+                m_state = Error;
+                qmlInfo(q) << m_incubator->errors();
+            }
 
-        q->setObject(theObject);
-
-        if (theObject)
+            //@BUG this will throw unexpected null receiver in gallery
+            //is there some code that stores the incubator over time?
+#if 0
+            // cleanup if ready or error
+            if(m_incubator->status() != QQmlIncubator::Loading) {
+                setIncubator(nullptr);
+                m_incubator->deleteLater();
+            }
+#endif
+            break;
+        }
+        case NotifyPageLoaded: {
+            // emit pageWrapper's pageLoaded signal to complete page activation
+            m_state = Ready;
             Q_EMIT q->pageLoaded();
-
-    } else if(m_incubator->status() == QQmlIncubator::Error) {
-        qmlInfo(q) << m_incubator->errors();
-    }
-
-    // cleanup of ready or error
-    if(m_incubator->status() != QQmlIncubator::Loading) {
-        setIncubator(nullptr);
-        m_incubator->deleteLater();
+            break;
+        }
+        default:
+            break; // do nothing
     }
 }
 
-void UCPageWrapperPrivate::onVisibleChanged()
+void UCPageWrapperPrivate::onActiveChanged()
 {
-    _q_activeBinding(q_func()->isVisible());
+    q_func()->setVisible(m_active);
 }
 
 UCPageWrapper::UCPageWrapper(QQuickItem *parent)
@@ -343,18 +379,18 @@ void UCPageWrapper::setParentPage(QQuickItem *parentPage)
     Q_EMIT parentPageChanged(parentPage);
 }
 
-void UCPageWrapper::setActive(bool active)
+void UCPageWrapper::setVisible2(bool visible)
 {
     Q_D(UCPageWrapper);
 
     //remove the binding to visible
-    if (!(d->m_flags & UCPageWrapperPrivate::CustomPageWrapperActive)) {
-        disconnect(this, SIGNAL(visibleChanged()),
-                   this, SLOT(onVisibleChanged()));
+    if (!(d->m_flags & UCPageWrapperPrivate::CustomVisible)) {
+        disconnect(this, SIGNAL(activeChanged(bool)),
+                   this, SLOT(onActiveChanged()));
     }
 
-    d->m_flags |= UCPageWrapperPrivate::CustomPageWrapperActive;
-    UCPageTreeNode::setActive(active);
+    d->m_flags |= UCPageWrapperPrivate::CustomVisible;
+    setVisible(visible);
 }
 
 QObject *UCPageWrapper::incubator() const

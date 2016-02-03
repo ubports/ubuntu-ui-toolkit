@@ -31,7 +31,11 @@ public:
     void init();
 
     enum PropertyFlags {
-        CustomPageWrapperActive = LastPageTreeNodeFlag
+        CustomVisible = LastPageTreeNodeFlag
+    };
+
+    enum State {
+        Waiting, LoadingComponent, CreatingObject, NotifyPageLoaded, Ready, Error
     };
 
     void initPage();
@@ -41,9 +45,9 @@ public:
     void copyProperties (QObject *target);
 
     void setIncubator(UCPageWrapperIncubator* incubator);
-    void onComponentStatusChanged(QQmlComponent *pageComponent);
-    void onIncubatorStatusChanged();
-    void onVisibleChanged();
+    void onActiveChanged();
+
+    void nextStep ();
 
     QVariant m_reference;
     QVariant m_properties;
@@ -52,10 +56,12 @@ public:
     QQuickItem* m_parentWrapper;
     QQuickItem* m_pageHolder;
     UCPageWrapperIncubator* m_incubator;
-    QQmlComponent *m_localComponent; //component was created by us
+    QQmlComponent *m_component; //component was created by us
+    State m_state;
     int m_column;
     bool m_canDestroy:1;
     bool m_synchronous:1;
+    bool m_ownsComponent:1;
 };
 
 

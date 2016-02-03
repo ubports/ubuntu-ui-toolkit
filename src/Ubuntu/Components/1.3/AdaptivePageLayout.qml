@@ -712,7 +712,7 @@ PageTreeNode {
             id: holder
             active: false
             objectName: "ColumnHolder" + column
-            property PageWrapper pageWrapper
+            property var pageWrapper: pageWrapperComponent.createObject()
             property int column
             property alias config: subHeader.config
             property PageColumn metrics: getDefaultMetrics()
