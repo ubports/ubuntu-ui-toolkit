@@ -21,6 +21,9 @@ class UCPageWrapper : public UCPageTreeNode
     //overrides
     Q_PROPERTY(bool visible READ isVisible WRITE setVisible2 NOTIFY visibleChanged2 FINAL)
 
+    // FIXME Re-expose property that would be inaccessible due to a QML bug
+    // https://bugs.launchpad.net/ubuntu/+source/qtdeclarative-opensource-src/+bug/1389721
+    Q_PROPERTY(UCTheme *theme READ getTheme2 WRITE setTheme2 RESET resetTheme2 NOTIFY themeChanged2 FINAL)
 public:
     explicit UCPageWrapper(QQuickItem *parent = 0);
 
@@ -58,6 +61,10 @@ public:
     //override QQuickItem properties
     void setVisible2(bool visible);
 
+    UCTheme *getTheme2();
+    void setTheme2(UCTheme * theme);
+    void resetTheme2();
+
 Q_SIGNALS:
     void referenceChanged(const QVariant &reference);
     void objectChanged(QObject* object);
@@ -71,6 +78,7 @@ Q_SIGNALS:
     void parentPageChanged(QQuickItem* parentPage);
     void incubatorChanged(QObject* incubator);
     void visibleChanged2();
+    void themeChanged2();
 
 protected:
     UCPageWrapper(UCPageWrapperPrivate &dd, QQuickItem *parent);

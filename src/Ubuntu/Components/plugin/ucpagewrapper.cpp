@@ -73,6 +73,9 @@ void UCPageWrapperPrivate::init()
             }
         }
     });
+
+    //FIXME bind re-exposed property signals lp:1389721
+    QObject::connect(q, SIGNAL(themeChanged()), q, SIGNAL(themeChanged2()));
 }
 
 void UCPageWrapperPrivate::initPage()
@@ -151,6 +154,7 @@ void UCPageWrapperPrivate::copyProperties(QObject *target)
     while ( i != propMap.constEnd()) {
         if (!target->setProperty(qPrintable(i.key()), i.value()))
             qmlInfo(q) << "Setting unknown property "<<i.key();
+        i++;
     }
 }
 
@@ -175,14 +179,16 @@ void UCPageWrapperPrivate::nextStep()
                 m_ownsComponent = false;
                 m_component = m_reference.value<QQmlComponent *>();
             } else if (m_reference.canConvert<QString>()) {
-                QUrl componentUrl = QUrl(m_reference.toString());
-                qDebug()<<"Loading component: "<<componentUrl;
 
+                QQmlComponent::CompilationMode cMode = m_synchronous ? QQmlComponent::PreferSynchronous :
+                                                                       QQmlComponent::Asynchronous;
+                QUrl componentUrl = QUrl(m_reference.toString());
                 m_ownsComponent = true;
-                if (m_synchronous) {
-                    m_component = new QQmlComponent(qmlEngine(q), componentUrl,QQmlComponent::PreferSynchronous);
-                } else {
-                    m_component = new QQmlComponent(qmlEngine(q), componentUrl,QQmlComponent::PreferSynchronous);
+                m_component = new QQmlComponent(qmlEngine(q), componentUrl, cMode);
+
+                if (!m_synchronous) {
+                    //The Incubator needs to be created ahead of time because QML code assumes its valid right away
+                    setIncubator(new UCPageWrapperIncubator(QQmlIncubator::Asynchronous, q));
                 }
             } else if (m_reference.canConvert<QObject *>()) {
                 QObject *theObject = m_reference.value<QObject *>();
@@ -240,13 +246,11 @@ void UCPageWrapperPrivate::nextStep()
                 m_state = Error;
                 return;
             } else {
-                UCPageWrapperIncubator *incubator = new UCPageWrapperIncubator(QQmlIncubator::Asynchronous, q);
                 //connect the change signal first so we definately catch the signal even when the creation finishes right away
-                QObject::connect(incubator, SIGNAL(statusHasChanged(int)),
+                QObject::connect(m_incubator, SIGNAL(statusHasChanged(int)),
                                  q, SLOT(nextStep()));
 
-                setIncubator(incubator);
-                m_component->create(*incubator, qmlContext(q));
+                m_component->create(*m_incubator, qmlContext(q));
             }
             break;
         }
@@ -267,13 +271,13 @@ void UCPageWrapperPrivate::nextStep()
 
             //@BUG this will throw unexpected null receiver in gallery
             //is there some code that stores the incubator over time?
-#if 0
+
             // cleanup if ready or error
             if(m_incubator->status() != QQmlIncubator::Loading) {
                 setIncubator(nullptr);
                 m_incubator->deleteLater();
             }
-#endif
+
             break;
         }
         case NotifyPageLoaded: {
@@ -289,6 +293,7 @@ void UCPageWrapperPrivate::nextStep()
 
 void UCPageWrapperPrivate::onActiveChanged()
 {
+    qDebug()<<"Executing binding";
     q_func()->setVisible(m_active);
 }
 
@@ -391,6 +396,21 @@ void UCPageWrapper::setVisible2(bool visible)
 
     d->m_flags |= UCPageWrapperPrivate::CustomVisible;
     setVisible(visible);
+}
+
+UCTheme *UCPageWrapper::getTheme2()
+{
+    return getTheme();
+}
+
+void UCPageWrapper::setTheme2(UCTheme *theme)
+{
+    setTheme(theme);
+}
+
+void UCPageWrapper::resetTheme2()
+{
+    resetTheme();
 }
 
 QObject *UCPageWrapper::incubator() const
