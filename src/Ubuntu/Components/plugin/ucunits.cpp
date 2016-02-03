@@ -31,6 +31,8 @@
 #include <QtGui/qpa/qplatformwindow.h>
 #include <QtGui/qpa/qplatformscreen.h>
 
+#include <QDebug>
+
 #define ENV_GRID_UNIT_PX "GRID_UNIT_PX"
 #define DEFAULT_GRID_UNIT_PX 8
 
@@ -131,6 +133,7 @@ void UCUnits::setGridUnit(float gridUnit)
     }
     m_gridUnit = gridUnit;
     Q_EMIT gridUnitChanged();
+    qDebug() << "GRID UNIT changed to " << m_gridUnit;
 }
 
 /*!
@@ -250,9 +253,9 @@ float UCUnits::gridUnitSuffixFromFileName(const QString& fileName)
         return 0;
     }
 }
-#include <QDebug>
+
 void UCUnits::windowPropertyChanged(QPlatformWindow *window, const QString &propertyName)
-{ qDebug() << "UCUnits::windowPropertyChanged" << window << propertyName;
+{
     if (propertyName != QStringLiteral("scale")) { //don't care otherwise
         return;
     }
@@ -276,7 +279,7 @@ void UCUnits::windowPropertyChanged(QPlatformWindow *window, const QString &prop
     float scale = scaleVal.toFloat(&ok);
     if (!ok || scale <= 0) {
         return;
-    } qDebug() << "SCALE reported" << scale;
+    }
     // choose integral grid unit value closest to requested scale
     setGridUnit(qCeil(scale * DEFAULT_GRID_UNIT_PX) * m_devicePixelRatio);
 }
