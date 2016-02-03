@@ -229,7 +229,7 @@ InverseMouseAreaType::InverseMouseAreaType(QQuickItem *parent) :
     QQuickMouseArea(parent),
     m_ready(false),
     m_topmostItem(false),
-    m_sensingArea(QuickUtils::instance().rootItem(this))
+    m_sensingArea(QuickUtils::instance()->rootItem(this))
 {
     /*
      * QQuickMouseArea overrides enabledChanged() signal, therefore we must make sure
@@ -283,7 +283,7 @@ void InverseMouseAreaType::update()
     }
     // update sensing area
     if (!m_sensingArea) {
-        m_sensingArea = QuickUtils::instance().rootItem(this);
+        m_sensingArea = QuickUtils::instance()->rootItem(this);
     }
     updateEventFilter(isEnabled() && isVisible() && m_topmostItem);
     QQuickMouseArea::update();
@@ -526,7 +526,7 @@ QQuickItem *InverseMouseAreaType::sensingArea() const
 void InverseMouseAreaType::setSensingArea(QQuickItem *sensing)
 {
     if (!sensing)
-        sensing = QuickUtils::instance().rootItem(this);
+        sensing = QuickUtils::instance()->rootItem(this);
     if (sensing != m_sensingArea) {
         // clear previous filter
         updateEventFilter(false);

@@ -77,12 +77,12 @@ private:
 
     bool inputPanelPresent()
     {
-        return !QuickUtils::instance().inputMethodProvider().isEmpty();
+        return !QuickUtils::instance()->inputMethodProvider().isEmpty();
     }
 
     QPoint guPoint(qreal guX, qreal guY)
     {
-        return QPoint(UCUnits::instance().gu(guX), UCUnits::instance().gu(guY));
+        return QPoint(UCUnits::instance()->gu(guX), UCUnits::instance()->gu(guY));
     }
 
     void preventDblClick()
