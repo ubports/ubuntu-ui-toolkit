@@ -73,7 +73,7 @@ Q_SIGNALS:
     void fontSizeChanged();
 
 private:
-    void updatePixelSize();
+    Q_SLOT void updatePixelSize();
     Q_SLOT void _q_updateFontFlag(const QFont &font);
     Q_SLOT void _q_customColor();
 

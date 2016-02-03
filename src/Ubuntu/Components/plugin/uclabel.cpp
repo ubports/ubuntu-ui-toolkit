@@ -101,6 +101,7 @@ void UCLabel::init()
 
     connect(this, &UCLabel::fontChanged, this, &UCLabel::_q_updateFontFlag, Qt::DirectConnection);
     connect(this, &UCLabel::colorChanged, this, &UCLabel::_q_customColor, Qt::DirectConnection);
+    connect(&UCUnits::instance(), &UCUnits::gridUnitChanged, this, &UCLabel::updatePixelSize, Qt::DirectConnection);
 }
 
 void UCLabel::postThemeChanged()
