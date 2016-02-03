@@ -120,7 +120,6 @@ MainView {
           The following testcases are all related to bug #1253804
           */
         function test_tabOrder_bug1253804() {
-            // FIXME: Don't skip the test on i386
             if(TestExtras.openGLflavor() == "opengles" &&
                (TestExtras.cpuArchitecture() == "i386" || TestExtras.cpuArchitecture() == "amd64") )
                 skip("This test on amd64 and i386 with GLES.");
