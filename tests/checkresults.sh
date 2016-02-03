@@ -49,7 +49,7 @@ for i in $*; do
                 '
 
     WARNINGS=$(grep -c -e 'qwarn' $_XML)
-    ERRORS=$(grep -c -e 'result="fail"' $_XML)
+    ERRORS=$(grep -c -e '<failure' $_XML)
     if [ $ERRORS -ne 0 ]; then
       echo "Error: $ERRORS errors in $_TESTNAME ($WARNINGS warnings)"
       ((FAILURES+=$ERRORS))
