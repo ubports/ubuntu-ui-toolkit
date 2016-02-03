@@ -122,7 +122,7 @@ MainView {
         function test_tabOrder_bug1253804() {
             if(TestExtras.openGLflavor() == "opengles" &&
                (TestExtras.cpuArchitecture() == "i386" || TestExtras.cpuArchitecture() == "amd64") )
-                skip("This test on amd64 and i386 with GLES.");
+                skip("This test fails on amd64 and i386 with GLES.");
             var tabsModel = tabsWithRepeater.__model;
 
             compare(tabsRepeater.count, inputModel.count, "Incorrect number of tabs in Tabs");
