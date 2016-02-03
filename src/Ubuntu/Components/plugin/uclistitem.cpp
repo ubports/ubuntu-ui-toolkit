@@ -237,7 +237,7 @@ void UCListItemPrivate::init()
                      q, SLOT(_q_themeChanged()), Qt::DirectConnection);
 
     // watch grid unit size change and set implicit size
-    QObject::connect(&UCUnits::instance(q), SIGNAL(gridUnitChanged()), q, SLOT(_q_updateSize()));
+    QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_updateSize()));
     _q_updateSize();
     styleDocument = "ListItemStyle";
 
@@ -355,13 +355,13 @@ void UCListItemPrivate::_q_updateSize()
 {
     Q_Q(UCListItem);
     // update divider thickness
-    divider->setImplicitHeight(UCUnits::instance(q).dp(DIVIDER_THICKNESS_DP));
+    divider->setImplicitHeight(UCUnits::instance().dp(DIVIDER_THICKNESS_DP));
     QQuickItem *owner = qobject_cast<QQuickItem*>(q->sender());
     if (!owner && parentAttached) {
         owner = static_cast<QQuickItem*>(parentAttached->parent());
     }
-    q->setImplicitWidth(owner ? owner->width() : UCUnits::instance(q).gu(IMPLICIT_LISTITEM_WIDTH_GU));
-    q->setImplicitHeight(UCUnits::instance(q).gu(IMPLICIT_LISTITEM_HEIGHT_GU));
+    q->setImplicitWidth(owner ? owner->width() : UCUnits::instance().gu(IMPLICIT_LISTITEM_WIDTH_GU));
+    q->setImplicitHeight(UCUnits::instance().gu(IMPLICIT_LISTITEM_HEIGHT_GU));
 }
 
 // returns the index of the list item when used in model driven views,
@@ -1252,13 +1252,12 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
 // returns true if the mouse is swiped over the threshold value
 bool UCListItemPrivate::swipedOverThreshold(const QPointF &mousePos, const QPointF relativePos)
 {
-    Q_Q(UCListItem);
     if ((!leadingActions || UCListItemActionsPrivate::get(leadingActions)->actions.size() <= 0) &&
         (!trailingActions || UCListItemActionsPrivate::get(trailingActions)->actions.size() <= 0))
     {
         return false;
     }
-    qreal threshold = UCUnits::instance(q).gu(xAxisMoveThresholdGU);
+    qreal threshold = UCUnits::instance().gu(xAxisMoveThresholdGU);
     qreal mouseX = mousePos.x();
     qreal pressedX = relativePos.x();
     return swipeEnabled && ((mouseX < (pressedX - threshold)) || (mouseX > (pressedX + threshold)));

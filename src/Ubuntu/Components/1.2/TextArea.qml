@@ -852,7 +852,7 @@ Ubuntu.StyledItem {
             color: control.__styleInstance.color
             selectedTextColor: control.__styleInstance.selectedTextColor
             selectionColor: control.__styleInstance.selectionColor
-            font.pixelSize: fontUtils.sizeToPixels("medium")
+            font.pixelSize: FontUtils.sizeToPixels("medium")
             // forward keys to the root element so it can be captured outside of it
             // as well as to InputHandler to handle PageUp/PageDown keys
             Keys.forwardTo: [control, inputHandler]

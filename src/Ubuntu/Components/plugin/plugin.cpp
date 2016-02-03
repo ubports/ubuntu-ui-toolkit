@@ -179,11 +179,11 @@ void UbuntuComponentsPlugin::registerTypesToVersion(const char *uri, int major, 
     qmlRegisterType<UCActionContext>(uri, major, minor, "ActionContext");
     qmlRegisterUncreatableType<UCApplication>(uri, major, minor, "UCApplication", "Not instantiable");
     qmlRegisterType<UCActionManager>(uri, major, minor, "ActionManager");
-    qmlRegisterType<UCFontUtils>(uri, major, minor, "UCFontUtils");
+    qmlRegisterUncreatableType<UCFontUtils>(uri, major, minor, "UCFontUtils", "Not instantiable");
     qmlRegisterType<UCStyledItemBase>(uri, major, minor, "StyledItem");
     qmlRegisterUncreatableType<UbuntuI18n>(uri, major, minor, "i18n", "Singleton object");
     qmlRegisterExtendedType<QQuickImageBase, UCQQuickImageExtension>(uri, major, minor, "QQuickImageBase");
-    qmlRegisterType<UCUnits>(uri, major, minor, "UCUnits");
+    qmlRegisterUncreatableType<UCUnits>(uri, major, minor, "UCUnits", "Not instantiable");
     qmlRegisterType<UCUbuntuShape>(uri, major, minor, "UbuntuShape");
     // FIXME/DEPRECATED: Shape is exported for backwards compatibility only
     qmlRegisterType<UCUbuntuShape>(uri, major, minor, "Shape");
@@ -313,19 +313,12 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()),
                      unitsChangeListener, SLOT(updateContextProperty()));
 
-    // register FontUtils (for apps which depend on it)
+    // register FontUtils
     context->setContextProperty("FontUtils", &UCFontUtils::instance());
     ContextPropertyChangeListener *fontUtilsListener =
         new ContextPropertyChangeListener(context, "FontUtils");
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()),
                      fontUtilsListener, SLOT(updateContextProperty()));
-
-    // register fontUtils - lower case, can be out-precedented by a QML property
-    context->setContextProperty("fontUtils", &UCFontUtils::instance());
-    ContextPropertyChangeListener *fontUtils2Listener =
-        new ContextPropertyChangeListener(context, "fontUtils");
-    QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()),
-                     fontUtils2Listener, SLOT(updateContextProperty()));
 
     engine->addImageProvider(QLatin1String("scaling"), new UCScalingImageProvider);
 
