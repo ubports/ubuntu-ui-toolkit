@@ -187,7 +187,7 @@ Item {
         }
 
         function test_set_visible_to_hide_and_show() {
-            // FIXME: Don't skip the test on i386
+            // FIXME: Don't skip the test on i386, bug #1541385
             if(TestExtras.openGLflavor() == "opengl" &&
                TestExtras.cpuArchitecture() == "i386")
                 skip("This test fails on i386");
@@ -204,7 +204,7 @@ Item {
         }
 
         function test_scroll_when_unlocked_updates_visible() {
-            // FIXME: Don't skip the test on i386
+            // FIXME: Don't skip the test on i386, bug #1541385
             if(TestExtras.openGLflavor() == "opengl" &&
                TestExtras.cpuArchitecture() == "i386")
                 skip("This test fails on i386");
