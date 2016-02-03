@@ -99,7 +99,7 @@ PopupBase {
       the caller, if possible.
      */
     property Item caller
-    onCallerChanged: console.debug("caller DEPRECATED")
+    onCallerChanged: console.warn("'caller' is DEPRECATED. It has no effect.")
 
     /*!
       The property holds the margins from the dialog's dismissArea. The property
