@@ -1250,6 +1250,8 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
     }
 
     UCStyledItemBase::mouseReleaseEvent(event);
+    if (!d->contentItem->contains(d->contentItem->mapFromScene(event->windowPos())))
+        d->suppressClick = true;
     d->handleLeftButtonRelease(event);
 }
 
