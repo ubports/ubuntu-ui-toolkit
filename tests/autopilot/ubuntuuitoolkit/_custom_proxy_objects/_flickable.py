@@ -121,6 +121,9 @@ class Scrollable(_common.UbuntuUIToolkitCustomProxyObjectBase):
     def _slow_drag(self, start_x, stop_x, start_y, stop_y, rate=None):
         # If we drag too fast, we end up scrolling more than what we
         # should, sometimes missing the  element we are looking for.
+
+        # FIXME: Not all scrollables have contentX and contentY
+        # (PathView does not have them), so use this only in a Flickable.
         original_content_y = self.contentY
         original_content_x = self.contentX
 
@@ -142,9 +145,9 @@ class QQuickFlickable(Scrollable):
     # Swiping from above can open the indicators or resize the window. Use this
     # margin to start a swipe that will not be that close to the top edge.
     margin_to_swipe_from_top = units.gu(1)
-    # Swiping from left and right can resize the window.
-    margin_to_swipe_from_left = units.gu(1)
-    margin_to_swipe_from_right = units.gu(1)
+    # Swiping from left and right can show the launcher or open app switcher.
+    margin_to_swipe_from_left = units.gu(3)
+    margin_to_swipe_from_right = units.gu(3)
 
     @autopilot_logging.log_action(logger.info)
     def swipe_child_into_view(self, child):

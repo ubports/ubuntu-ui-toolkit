@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -99,7 +99,7 @@ PopupBase {
       the caller, if possible.
      */
     property Item caller
-    onCallerChanged: console.debug("caller DEPRECATED")
+    onCallerChanged: console.warn("'caller' is DEPRECATED. It has no effect.")
 
     /*!
       The property holds the margins from the dialog's dismissArea. The property
@@ -194,14 +194,14 @@ PopupBase {
                     maximumLineCount: 2
                     elide: Text.ElideRight
                     textSize: Label.Large
-                    color: UbuntuColors.slate
+                    color: theme.palette.normal.overlayText
                     visible: (text !== "")
                 }
 
                 Label {
                     horizontalAlignment: Text.AlignHCenter
                     text: dialog.text
-                    color: UbuntuColors.slate
+                    color: theme.palette.normal.overlayText
                     wrapMode: Text.Wrap
                     visible: (text !== "")
                 }

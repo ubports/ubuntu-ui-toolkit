@@ -149,8 +149,8 @@ private Q_SLOTS:
         QVERIFY(!layouts->layoutList().isEmpty());
         QSignalSpy layoutChangeSpy(layouts, SIGNAL(currentLayoutChanged()));
 
-        root->setWidth(UCUnits::instance().gu(55));
-        QCOMPARE(root->width(), UCUnits::instance().gu(55));
+        root->setWidth(UCUnits::instance()->gu(55));
+        QCOMPARE(root->width(), UCUnits::instance()->gu(55));
         layoutChangeSpy.wait(100);
         QCOMPARE(layoutChangeSpy.count(), 1);
 
@@ -181,8 +181,8 @@ private Q_SLOTS:
         QVERIFY(!layouts->layoutList().isEmpty());
         QSignalSpy layoutChangeSpy(layouts, SIGNAL(currentLayoutChanged()));
 
-        root->setWidth(UCUnits::instance().gu(65));
-        QCOMPARE(root->width(), UCUnits::instance().gu(65));
+        root->setWidth(UCUnits::instance()->gu(65));
+        QCOMPARE(root->width(), UCUnits::instance()->gu(65));
         layoutChangeSpy.wait(100);
         QCOMPARE(layoutChangeSpy.count(), 1);
 
@@ -245,7 +245,7 @@ private Q_SLOTS:
         QVERIFY(!layouts->layoutList().isEmpty());
         QSignalSpy layoutChangeSpy(layouts, SIGNAL(currentLayoutChanged()));
 
-        root->setWidth(UCUnits::instance().gu(55));
+        root->setWidth(UCUnits::instance()->gu(55));
         layoutChangeSpy.wait(100);
         QCOMPARE(layoutChangeSpy.count(), 1);
 
@@ -264,7 +264,7 @@ private Q_SLOTS:
         QVERIFY(!layouts->layoutList().isEmpty());
         QSignalSpy layoutChangeSpy(layouts, SIGNAL(currentLayoutChanged()));
 
-        root->setWidth(UCUnits::instance().gu(65));
+        root->setWidth(UCUnits::instance()->gu(65));
         layoutChangeSpy.wait(100);
         QCOMPARE(layoutChangeSpy.count(), 1);
 
@@ -300,13 +300,13 @@ private Q_SLOTS:
         QVERIFY(!layouts->layoutList().isEmpty());
         QSignalSpy layoutChangeSpy(layouts, SIGNAL(currentLayoutChanged()));
 
-        root->setWidth(UCUnits::instance().gu(90));
+        root->setWidth(UCUnits::instance()->gu(90));
         layoutChangeSpy.wait(100);
         QCOMPARE(layoutChangeSpy.count(), 1);
 
         QCOMPARE(layouts->currentLayout(), QString("extra-large"));
 
-        root->setWidth(UCUnits::instance().gu(50));
+        root->setWidth(UCUnits::instance()->gu(50));
         layoutChangeSpy.wait(100);
         QCOMPARE(layoutChangeSpy.count(), 2);
 
@@ -333,27 +333,27 @@ private Q_SLOTS:
         QVERIFY(!layouts->layoutList().isEmpty());
         QSignalSpy layoutChangeSpy(layouts, SIGNAL(currentLayoutChanged()));
 
-        root->setWidth(UCUnits::instance().gu(50));
+        root->setWidth(UCUnits::instance()->gu(50));
         layoutChangeSpy.wait(100);
         QCOMPARE(layouts->currentLayout(), QString("small"));
-        QCOMPARE(item->width(), UCUnits::instance().gu(10));
-        QCOMPARE(item->height(), UCUnits::instance().gu(10));
+        QCOMPARE(item->width(), UCUnits::instance()->gu(10));
+        QCOMPARE(item->height(), UCUnits::instance()->gu(10));
 
-        root->setWidth(UCUnits::instance().gu(60));
+        root->setWidth(UCUnits::instance()->gu(60));
         layoutChangeSpy.wait(100);
         QCOMPARE(layouts->currentLayout(), QString("large"));
-        QCOMPARE(item->width(), UCUnits::instance().gu(22));
-        QCOMPARE(item->height(), UCUnits::instance().gu(22));
+        QCOMPARE(item->width(), UCUnits::instance()->gu(22));
+        QCOMPARE(item->height(), UCUnits::instance()->gu(22));
 
-        root->setWidth(UCUnits::instance().gu(80));
+        root->setWidth(UCUnits::instance()->gu(80));
         layoutChangeSpy.wait(100);
         QCOMPARE(layouts->currentLayout(), QString("xlarge"));
-        QCOMPARE(item->width(), UCUnits::instance().gu(30));
-        QCOMPARE(item->height(), UCUnits::instance().gu(30));
-        QCOMPARE(item2->width(), UCUnits::instance().gu(40));
-        QCOMPARE(item2->height(), UCUnits::instance().gu(50));
+        QCOMPARE(item->width(), UCUnits::instance()->gu(30));
+        QCOMPARE(item->height(), UCUnits::instance()->gu(30));
+        QCOMPARE(item2->width(), UCUnits::instance()->gu(40));
+        QCOMPARE(item2->height(), UCUnits::instance()->gu(50));
 
-        root->setWidth(UCUnits::instance().gu(40));
+        root->setWidth(UCUnits::instance()->gu(40));
         layoutChangeSpy.wait(100);
         QCOMPARE(item->width(), width);
         QCOMPARE(item->height(), height);

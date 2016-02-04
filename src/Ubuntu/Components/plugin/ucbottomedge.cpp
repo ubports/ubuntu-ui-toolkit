@@ -62,6 +62,10 @@ void UCBottomEdgePrivate::init()
     Q_Q(UCBottomEdge);
     // initialize hint
     QQml_setParent_noEvent(hint, q);
+    // keep BottomEdge.enabled in sync with the hint
+    QObject::connect(q, &UCBottomEdge::enabledChanged, [=] {
+        hint->setEnabled2(q->isEnabled());
+    });
 
     // create default regions
     createDefaultRegions();

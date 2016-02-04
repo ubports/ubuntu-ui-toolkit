@@ -17,12 +17,11 @@
 import QtQuick 2.4
 import Ubuntu.Components 1.3
 
-Item {
-    id: dialogForegroundStyle
-
-    UbuntuShape {
-        id: background
-        anchors.fill: parent
-        backgroundColor: theme.palette.normal.overlay
-    }
+AmbianceNormal {
+    background: UbuntuColors.porcelain
+    backgroundText: UbuntuColors.blue
+    backgroundTertiaryText: UbuntuColors.blue
+    base: UbuntuColors.ash
+    baseText: UbuntuColors.blue
+    foreground: UbuntuColors.ash
 }

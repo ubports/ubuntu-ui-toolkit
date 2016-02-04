@@ -32,11 +32,11 @@ Label {
 
     elide: Text.ElideRight
     color: selected
-           ? UbuntuColors.orange
+           ? theme.palette.selected.backgroundText
            : (secondary
               ? (overlay
-                 ? theme.palette.normal.overlayText
-                 : theme.palette.normal.backgroundText)
+                 ? theme.palette.normal.overlaySecondaryText
+                 : theme.palette.normal.backgroundSecondaryText)
               : (overlay
                  ? theme.palette.normal.overlayText
                  : theme.palette.normal.backgroundText))
