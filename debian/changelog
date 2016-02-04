@@ -1,9 +1,13 @@
-ubuntu-ui-toolkit (1.3.1830+16.04-0ubuntu1) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.3.1833+16.04-0ubuntu1) UNRELEASED; urgency=medium
+  [ Timo Jyrinki ]
+  * Fix gles unit test skipping.
+  * Add s390x to the unit test skipping architectures
 
   [ Christian Dywan ]
   * Print errors when QuickUtils fails to create a component.
-  * unit tests shouldn't use deprecated Dialog.caller
-
+  * unit tests shouldn't use deprecated Dialog.callera
+  * Correctly count only test case results. The result= value is used in suites
+     and results.
 
   [ Oliver Tilloy ]
   * Do not try to assign to non-existent property "activeFocusOnPress". 
