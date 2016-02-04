@@ -79,7 +79,7 @@
 #include "ucmainviewbase.h"
 #include "ucperformancemonitor.h"
 #include "privates/frame.h"
-#include "ucpagewrapper.h"
+#include "privates/ucpagewrapper.h"
 
 // From UbuntuGestures
 #include "private/ucswipearea_p.h"

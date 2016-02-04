@@ -8,8 +8,8 @@ class UCPageWrapper : public UCPageTreeNode
 {
     Q_OBJECT
     Q_PROPERTY(QVariant reference READ reference WRITE setReference NOTIFY referenceChanged)
-    Q_PROPERTY(QObject* object READ object WRITE setObject NOTIFY objectChanged)
-    Q_PROPERTY(bool canDestroy READ canDestroy WRITE setCanDestroy NOTIFY canDestroyChanged)
+    Q_PROPERTY(QQuickItem* object READ object WRITE setObject NOTIFY objectChanged)
+    Q_PROPERTY(bool canDestroy READ canDestroy NOTIFY canDestroyChanged)
     Q_PROPERTY(int column READ column WRITE setColumn NOTIFY columnChanged)
     Q_PROPERTY(QQuickItem* parentPage READ parentPage WRITE setParentPage NOTIFY parentPageChanged)
     Q_PROPERTY(QQuickItem* parentWrapper READ parentWrapper WRITE setParentWrapper NOTIFY parentWrapperChanged)
@@ -31,11 +31,10 @@ public:
     QVariant reference() const;
     void setReference(const QVariant &reference);
 
-    QObject *object() const;
-    void setObject(QObject* object);
+    QQuickItem *object() const;
+    void setObject(QQuickItem *object);
 
     bool canDestroy() const;
-    void setCanDestroy(bool canDestroy);
 
     int column() const;
     void setColumn(int column);

@@ -29,7 +29,9 @@ void UCPageWrapperPrivate::init()
 {
     Q_Q(UCPageWrapper);
 
+    //This value is updated when a PageWrapper is pushed to/popped from a PageStack.
     q->setActive(false);
+
     q->setVisible(false);
 
     //bind the value of visible to active
@@ -79,6 +81,9 @@ void UCPageWrapperPrivate::init()
     QObject::connect(q, SIGNAL(themeChanged()), q, SIGNAL(themeChanged2()));
 }
 
+/*!
+ Starts loading the component in m_reference, cleans up old objects
+ */
 void UCPageWrapperPrivate::initPage()
 {
     //make sure we are clean
@@ -86,6 +91,10 @@ void UCPageWrapperPrivate::initPage()
     nextStep();
 }
 
+/*!
+ Reset the internal state of the PageWrapper, deletes also all objects
+ that were created by this PageWrapper instance
+ */
 void UCPageWrapperPrivate::reset()
 {
     Q_Q(UCPageWrapper);
@@ -114,10 +123,17 @@ void UCPageWrapperPrivate::reset()
     m_state = Waiting;
 }
 
+/*!
+  \internal
+  Create the page object if needed, and make the page object visible.
+ */
 void UCPageWrapperPrivate::activate()
 {
     Q_Q(UCPageWrapper);
-    if (!m_object && m_state != LoadingComponent && m_state != CreatingObject) {
+    if (!m_object
+            && m_state != LoadingComponent
+            && m_state != CreatingObject)
+    {
         initPage();
     }
 
@@ -137,11 +153,51 @@ void UCPageWrapperPrivate::activate()
     q->setActive(true);
 }
 
+/*!
+  \internal
+  Hide page object.
+ */
 void UCPageWrapperPrivate::deactivate()
 {
     q_func()->setActive(false);
 }
 
+/*!
+ Converts the QObject into a QQuickItem, if that is not possible
+ the pointer is destroyed and nullptr is returned
+ */
+QQuickItem *UCPageWrapperPrivate::toItem(QObject *theObject)
+{
+    Q_Q(UCPageWrapper);
+    QQuickItem *theItem = qobject_cast<QQuickItem *>(theObject);
+    if (!theItem) {
+        //the returned object has to be a Item but if its a Object
+        //do not leak the pointer
+        if (theObject) delete theObject;
+
+        qmlInfo(q) << "PageWrapper only supports components that are derived from Item";;
+        return nullptr;
+    }
+    return theItem;
+}
+
+/*!
+ Initialize the Item and make sure the object property is set
+ */
+void UCPageWrapperPrivate::initItem(QQuickItem *theItem)
+{
+    Q_Q(UCPageWrapper);
+    if (theItem) {
+        theItem->setParentItem(q);
+        copyProperties(theItem);
+        q->setObject(theItem);
+    }
+}
+
+/*!
+  \internal
+  Hide page object.
+ */
 void UCPageWrapperPrivate::copyProperties(QObject *target)
 {
     if (!target)
@@ -158,6 +214,11 @@ void UCPageWrapperPrivate::copyProperties(QObject *target)
     }
 }
 
+/*!
+  \internal
+ Creates the Incubator wrapper object and makes sure the object
+ ownership is set to JS
+ */
 void UCPageWrapperPrivate::createIncubator()
 {
     Q_Q(UCPageWrapper);
@@ -170,6 +231,10 @@ void UCPageWrapperPrivate::createIncubator()
     Q_EMIT q->incubatorChanged(m_incubator);
 }
 
+/*!
+  \internal
+ Destroys the Incubator wrapper if it was set before
+ */
 void UCPageWrapperPrivate::destroyIncubator()
 {
     //the incubator has JS ownership, this should cause a deletion!!
@@ -181,6 +246,10 @@ void UCPageWrapperPrivate::destroyIncubator()
     }
 }
 
+/*!
+ Handles all state transitions and advances the statemachine until the
+ component is either instantiated or an error occured
+ */
 void UCPageWrapperPrivate::nextStep()
 {
     Q_Q(UCPageWrapper);
@@ -189,26 +258,29 @@ void UCPageWrapperPrivate::nextStep()
             m_state = LoadingComponent;
 
             if (m_reference.canConvert<QQmlComponent *>()) {
+
+                //m_reference points to a Component already, make sure we do not
+                //delete it later on
                 m_ownsComponent = false;
                 m_component = m_reference.value<QQmlComponent *>();
+
             } else if (m_reference.canConvert<QString>()) {
 
+                //m_reference contains a URL to the Component we have to load, in this
+                //case we need to destroy the component ourselves lateron
                 QQmlComponent::CompilationMode cMode = m_synchronous ? QQmlComponent::PreferSynchronous :
                                                                        QQmlComponent::Asynchronous;
                 QUrl componentUrl = QUrl(m_reference.toString());
                 m_ownsComponent = true;
                 m_component = new QQmlComponent(qmlEngine(q), componentUrl, cMode);
-            } else if (m_reference.canConvert<QObject *>()) {
-                QObject *theObject = m_reference.value<QObject *>();
 
-                QQuickItem *theItem = qobject_cast<QQuickItem *>(theObject);
-                if (theItem)
-                    theItem->setParentItem(q);
+            } else if (m_reference.canConvert<QQuickItem *>()) {
+                //the object is owned by JS
+                setCanDestroy(false);
 
-                copyProperties(theObject);
-
-                q->setCanDestroy(false);
-                q->setObject(theObject);
+                //m_reference is already a Item, we just need to copy the properties and we are done
+                QQuickItem *theItem = m_reference.value<QQuickItem *>();
+                initItem(theItem);
 
                 //proceed to final step
                 m_state = NotifyPageLoaded;
@@ -225,10 +297,12 @@ void UCPageWrapperPrivate::nextStep()
                     //The Incubator needs to be created ahead of time because QML code assumes its valid right away
                     createIncubator();
                 }
+
+                //check if the component is already available
                 if (m_component->status() != QQmlComponent::Loading)
                     nextStep();
                 else {
-                    //async behaviour
+                    //async behaviour, advance to the next state once the component was loaded
                     QSharedPointer<QMetaObject::Connection> connHandle(new QMetaObject::Connection);
                     *connHandle = QObject::connect(m_component, &QQmlComponent::statusChanged,
                                                    [this, connHandle](){
@@ -242,34 +316,27 @@ void UCPageWrapperPrivate::nextStep()
             break;
         }
         case LoadingComponent:{
-            m_state = CreatingObject;
             if (m_component->status() == QQmlComponent::Error) {
                 qmlInfo(q) << m_component->errors();
                 m_state = Error;
                 return; //full stop
             }
 
+            //the Component was created, next step is to create a Item instance
+            m_state = CreatingObject;
+
             //Object has C++ ownership
-            q->setCanDestroy(true);
+            setCanDestroy(true);
 
             if (m_synchronous) {
-                QObject *theObject = m_component->create(qmlContext(q));
-                if (theObject) {
-
-                    QQuickItem *theItem = qobject_cast<QQuickItem *>(theObject);
-                    if (theItem)
-                        theItem->setParentItem(q);
-
-                    copyProperties(theObject);
-                    q->setObject(theObject);
-
+                QQuickItem *theItem = toItem(m_component->create(qmlContext(q)));
+                if (theItem) {
+                    initItem(theItem);
                     m_state = NotifyPageLoaded;
                     nextStep();
-                    return;
+                } else {
+                    m_state = Error;
                 }
-                qmlInfo(q) << "Error creating the object";
-                m_state = Error;
-                return;
             } else {
                 //connect the change signal first so we definately catch the signal even when the creation finishes right away
                 QObject::connect(m_incubator, SIGNAL(statusHasChanged(int)),
@@ -281,18 +348,15 @@ void UCPageWrapperPrivate::nextStep()
         }
         case CreatingObject:{
             if(m_incubator->status() == QQmlIncubator::Ready) {
-                QObject *theObject = m_incubator->object();
-
-                QQuickItem *theItem = qobject_cast<QQuickItem *>(theObject);
-                if (theItem)
-                    theItem->setParentItem(q);
-
-                copyProperties(theObject);
-                q->setObject(theObject);
-
-                m_state = NotifyPageLoaded;
-                nextStep();
-
+                //the object was created, now initialize it
+                QQuickItem *theItem = toItem(m_incubator->object());
+                if (theItem) {
+                    initItem(theItem);
+                    m_state = NotifyPageLoaded;
+                    nextStep();
+                } else {
+                    m_state = Error;
+                }
             } else if(m_incubator->status() == QQmlIncubator::Error) {
                 m_state = Error;
                 qmlInfo(q) << m_incubator->errors();
@@ -320,8 +384,21 @@ void UCPageWrapperPrivate::onActiveChanged()
     q_func()->setVisible(m_active);
 }
 
+/*!
+    \internal
+    \qmltype PageWrapper
+    \inqmlmodule Ubuntu.Components 1.1
+    \ingroup ubuntu
+    \brief Internal class used by \l PageStack
+*/
 UCPageWrapper::UCPageWrapper(QQuickItem *parent)
     : UCPageTreeNode((* new UCPageWrapperPrivate), parent)
+{
+    d_func()->init();
+}
+
+UCPageWrapper::UCPageWrapper(UCPageWrapperPrivate &dd, QQuickItem *parent)
+    : UCPageTreeNode(dd, parent)
 {
     d_func()->init();
 }
@@ -331,12 +408,11 @@ UCPageWrapper::~UCPageWrapper()
     d_func()->deactivate();
 }
 
-UCPageWrapper::UCPageWrapper(UCPageWrapperPrivate &dd, QQuickItem *parent)
-    : UCPageTreeNode(dd, parent)
-{
-    d_func()->init();
-}
-
+/*!
+  \qmlproperty var PageWrapper::reference
+  The reference to the page object. This can be the page
+  itself (which is an Item), but also a url pointing to a QML file.
+ */
 QVariant UCPageWrapper::reference() const
 {
     return d_func()->m_reference;
@@ -352,12 +428,16 @@ void UCPageWrapper::setReference(const QVariant &reference)
     Q_EMIT referenceChanged(reference);
 }
 
-QObject *UCPageWrapper::object() const
+/*!
+  \qmlproperty Item PageWrapper::object
+  The initialized page object, or null if the object needs to be created.
+ */
+QQuickItem *UCPageWrapper::object() const
 {
     return d_func()->m_object;
 }
 
-void UCPageWrapper::setObject(QObject *object)
+void UCPageWrapper::setObject(QQuickItem *object)
 {
     Q_D(UCPageWrapper);
     if (d->m_object == object)
@@ -367,21 +447,30 @@ void UCPageWrapper::setObject(QObject *object)
     Q_EMIT objectChanged(object);
 }
 
+/*!
+  \qmlproperty bool PageWrapper::canDestroy
+  This property will be true if \l object holds an object that was created
+  from the given reference, and thus can be destroyed when no the page is deactivated.
+ */
 bool UCPageWrapper::canDestroy() const
 {
     return d_func()->m_canDestroy;
 }
 
-void UCPageWrapper::setCanDestroy(bool canDestroy)
+void UCPageWrapperPrivate::setCanDestroy(bool canDestroy)
 {
-    Q_D(UCPageWrapper);
-    if (d->m_canDestroy == canDestroy)
+    Q_Q(UCPageWrapper);
+    if (m_canDestroy == canDestroy)
         return;
 
-    d->m_canDestroy = canDestroy;
-    Q_EMIT canDestroyChanged(canDestroy);
+    m_canDestroy = canDestroy;
+    Q_EMIT q->canDestroyChanged(canDestroy);
 }
 
+/*!
+  \qmlproperty int PageWrapper::column
+  Column number in AdaptivePageLayout.
+*/
 int UCPageWrapper::column() const
 {
     return d_func()->m_column;
@@ -397,6 +486,10 @@ void UCPageWrapper::setColumn(int column)
     Q_EMIT columnChanged(column);
 }
 
+/*!
+  \qmlproperty Item PageWrapper::parentPage
+  Parent page.
+*/
 QQuickItem *UCPageWrapper::parentPage() const
 {
     return d_func()->m_parentPage;
@@ -411,6 +504,144 @@ void UCPageWrapper::setParentPage(QQuickItem *parentPage)
     d->m_parentPage = parentPage;
     Q_EMIT parentPageChanged(parentPage);
 }
+
+/*!
+  \qmlproperty var PageWrapper::incubator
+  Incubator for the asynchronous page creation
+  */
+QObject *UCPageWrapper::incubator() const
+{
+    return d_func()->m_incubator;
+}
+
+/*!
+  \internal
+  \qmlmethod PageWrapper::destroyObject()
+  Destroy \l object. Only call this function if \l canDestroy
+ */
+void UCPageWrapper::destroyObject()
+{
+    Q_D(UCPageWrapper);
+    if (d->m_canDestroy && d->m_object) {
+        d->m_object->deleteLater();
+        d->m_canDestroy = false;
+        setObject(nullptr);
+    }
+}
+
+void UCPageWrapper::itemChange(QQuickItem::ItemChange change, const QQuickItem::ItemChangeData &data)
+{
+    if (change == ItemParentHasChanged) {
+        //make sure we always fill the parents space completely
+        QQuickAnchors *anchors = QQuickItemPrivate::get(this)->anchors();
+        if (data.item) {
+            anchors->setFill(data.item);
+        } else {
+            anchors->resetFill();
+        }
+    }
+    UCStyledItemBase::itemChange(change, data);
+}
+
+/*!
+  \qmlproperty Item PageWrapper::parentWrapper
+  Parent PageWrapper or the parentPage.
+  */
+QQuickItem *UCPageWrapper::parentWrapper() const
+{
+    return d_func()->m_parentWrapper;
+}
+
+void UCPageWrapper::setParentWrapper(QQuickItem *parentWrapper)
+{
+    Q_D(UCPageWrapper);
+    if (d->m_parentWrapper == parentWrapper)
+        return;
+
+    d->m_parentWrapper = parentWrapper;
+    Q_EMIT parentWrapperChanged(parentWrapper);
+}
+
+/*!
+  \qmlproperty Item PageWrapper::pageHolder
+  Page holder in AdaptivePageLayout.
+  */
+QQuickItem *UCPageWrapper::pageHolder() const
+{
+    return d_func()->m_pageHolder;
+}
+
+void UCPageWrapper::setPageHolder(QQuickItem *pageHolder)
+{
+    Q_D(UCPageWrapper);
+    if (d->m_pageHolder == pageHolder)
+        return;
+
+    d->m_pageHolder = pageHolder;
+    Q_EMIT pageHolderChanged(pageHolder);
+}
+
+/*!
+  \qmlproperty bool PageWrapper::synchronous
+  Instructs to load the page synchronously or not. Used by AdaptivePageLayout.
+  True by default to keep PageStack integrity.
+  */
+bool UCPageWrapper::synchronous() const
+{
+    return d_func()->m_synchronous;
+}
+
+void UCPageWrapper::setSynchronous(bool synchronous)
+{
+    Q_D(UCPageWrapper);
+    if (d->m_synchronous == synchronous)
+        return;
+
+    d->m_synchronous = synchronous;
+    Q_EMIT synchronousChanged(synchronous);
+}
+
+/*!
+  \qmlmethod bool PageWrapper::childOf(Item)
+  Returns true if the current PageWrapper is a child of the given page
+  */
+bool UCPageWrapper::childOf(QQuickItem *page)
+{
+    Q_D(UCPageWrapper);
+    if (d->m_parentPage == page) return true;
+    if (page && d->m_parentWrapper) {
+        UCPageWrapper *wrapper = qobject_cast<UCPageWrapper *>(d->m_parentWrapper);
+        while (wrapper) {
+            if (wrapper->object() == page) {
+                return true;
+            }
+            wrapper = qobject_cast<UCPageWrapper *>(wrapper->parentWrapper());
+        }
+    }
+    return false;
+}
+
+/*!
+  \qmlproperty var PageWrapper::properties
+  Properties are use to initialize a new object, or if reference
+  is already an object, properties are copied to the object when activated.
+  Set properties before setting the reference.
+ */
+QVariant UCPageWrapper::properties() const
+{
+    return d_func()->m_properties;
+}
+
+void UCPageWrapper::setProperties(const QVariant &properties)
+{
+    Q_D(UCPageWrapper);
+    if (d->m_properties == properties)
+        return;
+
+    d->m_properties = properties;
+    Q_EMIT propertiesChanged(properties);
+}
+
 
 void UCPageWrapper::setVisible2(bool visible)
 {
@@ -441,109 +672,10 @@ void UCPageWrapper::resetTheme2()
     resetTheme();
 }
 
-QObject *UCPageWrapper::incubator() const
-{
-    return d_func()->m_incubator;
-}
-
-void UCPageWrapper::destroyObject()
-{
-    Q_D(UCPageWrapper);
-    if (d->m_canDestroy && d->m_object) {
-        d->m_object->deleteLater();
-        d->m_canDestroy = false;
-        setObject(nullptr);
-    }
-}
-
-void UCPageWrapper::itemChange(QQuickItem::ItemChange change, const QQuickItem::ItemChangeData &data)
-{
-    if (change == ItemParentHasChanged) {
-        QQuickAnchors *anchors = QQuickItemPrivate::get(this)->anchors();
-        if (data.item) {
-            anchors->setFill(data.item);
-        } else {
-            anchors->resetFill();
-        }
-    }
-    UCStyledItemBase::itemChange(change, data);
-}
-
-QQuickItem *UCPageWrapper::parentWrapper() const
-{
-    return d_func()->m_parentWrapper;
-}
-
-void UCPageWrapper::setParentWrapper(QQuickItem *parentWrapper)
-{
-    Q_D(UCPageWrapper);
-    if (d->m_parentWrapper == parentWrapper)
-        return;
-
-    d->m_parentWrapper = parentWrapper;
-    Q_EMIT parentWrapperChanged(parentWrapper);
-}
-
-QQuickItem *UCPageWrapper::pageHolder() const
-{
-    return d_func()->m_pageHolder;
-}
-
-void UCPageWrapper::setPageHolder(QQuickItem *pageHolder)
-{
-    Q_D(UCPageWrapper);
-    if (d->m_pageHolder == pageHolder)
-        return;
-
-    d->m_pageHolder = pageHolder;
-    Q_EMIT pageHolderChanged(pageHolder);
-}
-
-bool UCPageWrapper::synchronous() const
-{
-    return d_func()->m_synchronous;
-}
-
-void UCPageWrapper::setSynchronous(bool synchronous)
-{
-    Q_D(UCPageWrapper);
-    if (d->m_synchronous == synchronous)
-        return;
-
-    d->m_synchronous = synchronous;
-    Q_EMIT synchronousChanged(synchronous);
-}
-
-bool UCPageWrapper::childOf(QQuickItem *page)
-{
-    Q_D(UCPageWrapper);
-    if (d->m_parentPage == page) return true;
-    if (page && d->m_parentWrapper) {
-        UCPageWrapper *wrapper = qobject_cast<UCPageWrapper *>(d->m_parentWrapper);
-        while (wrapper) {
-            if (wrapper->object() == page) {
-                return true;
-            }
-            wrapper = qobject_cast<UCPageWrapper *>(wrapper->parentWrapper());
-        }
-    }
-    return false;
-}
-
-QVariant UCPageWrapper::properties() const
-{
-    return d_func()->m_properties;
-}
-
-void UCPageWrapper::setProperties(const QVariant &properties)
-{
-    Q_D(UCPageWrapper);
-    if (d->m_properties == properties)
-        return;
-
-    d->m_properties = properties;
-    Q_EMIT propertiesChanged(properties);
-}
+/*!
+  \qmlsignal PageWrapper::pageLoaded()
+  Signal emitted when incubator completes page loading.
+ */
 
 #include "moc_ucpagewrapper.cpp"
 

@@ -17,6 +17,10 @@
 #include "ucpagewrapperincubator_p.h"
 #include <QDebug>
 
+/*!
+  \internal
+  Incubator wrapper object. Used when page is loaded asynchronously.
+  */
 UCPageWrapperIncubator::UCPageWrapperIncubator(QQmlIncubator::IncubationMode mode, QObject *parent)
     : QObject(parent),
       QQmlIncubator(mode)

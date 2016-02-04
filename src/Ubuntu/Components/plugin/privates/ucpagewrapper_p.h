@@ -42,17 +42,21 @@ public:
     void reset ();
     void activate   ();
     void deactivate ();
+    QQuickItem *toItem (QObject *theObject);
+    void initItem (QQuickItem *theItem);
     void copyProperties (QObject *target);
 
     void createIncubator  ();
     void destroyIncubator ();
     void onActiveChanged();
 
+    void setCanDestroy(bool canDestroy);
+
     void nextStep ();
 
     QVariant m_reference;
     QVariant m_properties;
-    QObject* m_object;
+    QQuickItem* m_object;
     QQuickItem* m_parentPage;
     QQuickItem* m_parentWrapper;
     QQuickItem* m_pageHolder;
