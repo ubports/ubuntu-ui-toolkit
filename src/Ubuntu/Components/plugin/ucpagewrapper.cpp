@@ -65,6 +65,7 @@ void UCPageWrapperPrivate::init()
 
     QObject::connect(q, &UCPageWrapper::activeChanged,
                      [this](){
+        qDebug()<<"Activating";
         if (m_reference.isValid()) {
             if (m_active) {
                 this->activate();
@@ -192,11 +193,15 @@ void UCPageWrapperPrivate::nextStep()
                 }
             } else if (m_reference.canConvert<QObject *>()) {
                 QObject *theObject = m_reference.value<QObject *>();
-                theObject->setParent(q);
+
+                QQuickItem *theItem = qobject_cast<QQuickItem *>(theObject);
+                if (theItem)
+                    theItem->setParentItem(q);
+
+                copyProperties(theObject);
 
                 q->setObject(theObject);
                 q->setCanDestroy(false);
-                copyProperties(theObject);
 
                 //proceed to final step
                 m_state = NotifyPageLoaded;
@@ -232,9 +237,18 @@ void UCPageWrapperPrivate::nextStep()
                 m_state = Error;
                 return; //full stop
             }
+
+            //Object has C++ ownership
+            q->setCanDestroy(true);
+
             if (m_synchronous) {
                 QObject *theObject = m_component->create(qmlContext(q));
                 if (theObject) {
+
+                    QQuickItem *theItem = qobject_cast<QQuickItem *>(theObject);
+                    if (theItem)
+                        theItem->setParentItem(q);
+
                     copyProperties(theObject);
                     q->setObject(theObject);
 
@@ -257,8 +271,12 @@ void UCPageWrapperPrivate::nextStep()
         case CreatingObject:{
             if(m_incubator->status() == QQmlIncubator::Ready) {
                 QObject *theObject = m_incubator->object();
-                copyProperties(theObject);
 
+                QQuickItem *theItem = qobject_cast<QQuickItem *>(theObject);
+                if (theItem)
+                    theItem->setParentItem(q);
+
+                copyProperties(theObject);
                 q->setObject(theObject);
 
                 m_state = NotifyPageLoaded;
@@ -277,7 +295,6 @@ void UCPageWrapperPrivate::nextStep()
                 setIncubator(nullptr);
                 m_incubator->deleteLater();
             }
-
             break;
         }
         case NotifyPageLoaded: {
@@ -293,13 +310,14 @@ void UCPageWrapperPrivate::nextStep()
 
 void UCPageWrapperPrivate::onActiveChanged()
 {
-    qDebug()<<"Executing binding";
+    qDebug()<<"Setting visibility to: "<<m_active;
     q_func()->setVisible(m_active);
 }
 
 UCPageWrapper::UCPageWrapper(QQuickItem *parent)
     : UCPageTreeNode((* new UCPageWrapperPrivate), parent)
 {
+    qDebug()<<"Creating PageWrapper";
     d_func()->init();
 }
 
