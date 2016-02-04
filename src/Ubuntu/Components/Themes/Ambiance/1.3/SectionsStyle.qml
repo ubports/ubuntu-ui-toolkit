@@ -20,7 +20,7 @@ import QtGraphicalEffects 1.0
 Item {
     id: sectionsStyle
 
-    implicitWidth: units.gu(50) //sectionsRow.width // FIXME
+    implicitWidth: sectionsListView.contentWidth //+ 2*__listViewMargin
     implicitHeight: units.gu(4)
 
     enabled: styledItem.enabled
@@ -35,8 +35,7 @@ Item {
     /*!
       The foreground color of underline rectangle of unselected sections.
      */
-    //FIXME: hardcoded color
-    property color underlineColor: "#CDCDCD"//Qt.rgba(0,0,0,0.2)//theme.palette.selected.backgroundText
+    property color underlineColor: theme.palette.normal.base
 
     /*!
       The foreground color of the selected section.
@@ -46,6 +45,7 @@ Item {
                                             : theme.palette.selectedDisabled.backgroundTertiaryText
 
     /*!
+      The background color for the pressed section button.
       The background color for the pressed section button.
      */
     property color pressedBackgroundColor: theme.palette.highlighted.background
@@ -82,6 +82,14 @@ Item {
     Item {
         id: listviewcontainer
         anchors.fill: parent
+
+//        Rectangle {
+//            color: "red"
+//            anchors {
+//                fill: parent
+//                margins: units.gu(1)
+//            }
+//        }
 
         //We need to set this to 0.0 when OpacityMask will draw this listview for us.
         //we don't set visible: false because we still want to get the input events!
@@ -151,6 +159,7 @@ Item {
             //this is just to disable keyboard navigation to avoid messing with contentX/contentWidth while
             //the view is moving
             focus: !moving
+            //            onContentXChanged: console.log(contentX, originX, contentWidth)
 //            onContentXChanged: console.log(contentX, originX, contentWidth)
 
             //FIXME: this means when we resize the window it will refocus on the current item even if it's outside of the view!

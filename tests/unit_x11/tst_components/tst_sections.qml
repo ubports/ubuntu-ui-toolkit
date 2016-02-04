@@ -20,7 +20,7 @@ import Ubuntu.Components 1.3
 
 Rectangle {
     id: root
-    width: units.gu(50)
+    width: units.gu(60)
     height: units.gu(75)
     color: "white"
 
@@ -68,6 +68,7 @@ Rectangle {
                 Action { text: "inline action 0" },
                 Action { text: "inline action 1" }
             ]
+//            width: units.gu(20)
         }
         Rectangle {
             anchors {
