@@ -4,6 +4,7 @@
 
 #include <QQmlEngine>
 #include <QQmlContext>
+#include <QtQuick/private/qquickitem_p.h>
 
 UCPageWrapperPrivate::UCPageWrapperPrivate() :
     m_object(nullptr),
@@ -126,13 +127,13 @@ void UCPageWrapperPrivate::activate()
     if (!m_object)
         return;
 
-    // Having the same page pushed multiple times on a stack changes
-    // the parent of the page object. Change it back here.
-    m_object->setParent(q);
-
-    // Some page objects are invisible initially. Make visible.
     QQuickItem *item = qobject_cast<QQuickItem *>(m_object);
     if (item){
+        // Having the same page pushed multiple times on a stack changes
+        // the parent of the page object. Change it back here.
+        item->setParentItem(q);
+
+        // Some page objects are invisible initially. Make visible.
         item->setVisible(true);
     }
     q->setActive(true);
@@ -200,8 +201,8 @@ void UCPageWrapperPrivate::nextStep()
 
                 copyProperties(theObject);
 
-                q->setObject(theObject);
                 q->setCanDestroy(false);
+                q->setObject(theObject);
 
                 //proceed to final step
                 m_state = NotifyPageLoaded;
@@ -321,6 +322,11 @@ UCPageWrapper::UCPageWrapper(QQuickItem *parent)
     d_func()->init();
 }
 
+UCPageWrapper::~UCPageWrapper()
+{
+    d_func()->deactivate();
+}
+
 UCPageWrapper::UCPageWrapper(UCPageWrapperPrivate &dd, QQuickItem *parent)
     : UCPageTreeNode(dd, parent)
 {
@@ -434,6 +440,29 @@ void UCPageWrapper::resetTheme2()
 QObject *UCPageWrapper::incubator() const
 {
     return d_func()->m_incubator;
+}
+
+void UCPageWrapper::destroyObject()
+{
+    Q_D(UCPageWrapper);
+    if (d->m_canDestroy && d->m_object) {
+        d->m_object->deleteLater();
+        d->m_canDestroy = false;
+        setObject(nullptr);
+    }
+}
+
+void UCPageWrapper::itemChange(QQuickItem::ItemChange change, const QQuickItem::ItemChangeData &data)
+{
+    if (change == ItemParentHasChanged) {
+        QQuickAnchors *anchors = QQuickItemPrivate::get(this)->anchors();
+        if (data.item) {
+            anchors->setFill(data.item);
+        } else {
+            anchors->resetFill();
+        }
+    }
+    UCStyledItemBase::itemChange(change, data);
 }
 
 QQuickItem *UCPageWrapper::parentWrapper() const

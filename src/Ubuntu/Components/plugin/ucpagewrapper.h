@@ -26,6 +26,7 @@ class UCPageWrapper : public UCPageTreeNode
     Q_PROPERTY(UCTheme *theme READ getTheme2 WRITE setTheme2 RESET resetTheme2 NOTIFY themeChanged2 FINAL)
 public:
     explicit UCPageWrapper(QQuickItem *parent = 0);
+    virtual ~UCPageWrapper();
 
     QVariant reference() const;
     void setReference(const QVariant &reference);
@@ -57,6 +58,11 @@ public:
     void setParentPage(QQuickItem* parentPage);
 
     QObject *incubator() const;
+
+    Q_INVOKABLE void destroyObject ();
+
+    // QQuickItem interface
+    virtual void itemChange(ItemChange change, const ItemChangeData &data) override;
 
     //override QQuickItem properties
     void setVisible2(bool visible);
