@@ -32,7 +32,7 @@ void UCThreeLabelsSlotPrivate::init()
 {
     Q_Q(UCThreeLabelsSlot);
 
-    QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_onGuValueChanged()));
+    QObject::connect(UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_onGuValueChanged()));
     _q_onGuValueChanged();
 }
 
@@ -106,7 +106,7 @@ void UCThreeLabelsSlotPrivate::_q_updateLabelsAnchorsAndBBoxHeight()
                                 : QQuickItemPrivate::get(m_title)->bottom());
         subtitleAnchors->setTopMargin(skipTitle
                                       ? 0
-                                      : UCUnits::instance().dp(TITLE_SPACING_DP));
+                                      : UCUnits::instance()->dp(TITLE_SPACING_DP));
     }
 
     if (!skipSummary) {
@@ -115,7 +115,7 @@ void UCThreeLabelsSlotPrivate::_q_updateLabelsAnchorsAndBBoxHeight()
                                ? (skipTitle ? top() : QQuickItemPrivate::get(m_title)->bottom())
                                : QQuickItemPrivate::get(m_subtitle)->bottom());
         summaryAnchors->setTopMargin(skipSubtitle
-                                     ? (skipTitle ? 0 : UCUnits::instance().dp(TITLE_SPACING_DP))
+                                     ? (skipTitle ? 0 : UCUnits::instance()->dp(TITLE_SPACING_DP))
                                      : 0);
     }
     //Update height of the labels box

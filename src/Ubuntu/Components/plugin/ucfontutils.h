@@ -20,6 +20,7 @@
 
 #include <QtCore/QObject>
 
+class UCUnits;
 class UCFontUtils : public QObject
 {
     Q_OBJECT
@@ -33,16 +34,23 @@ public:
     static constexpr float largeScale = 1.414f;
     static constexpr float xLargeScale = 1.905f;
 
-    static UCFontUtils& instance()
+    static UCFontUtils *instance(QObject *parent = Q_NULLPTR)
     {
-        static UCFontUtils instance;
-        return instance;
+        if (!m_instance) {
+            Q_ASSERT(parent);
+            m_instance = new UCFontUtils(parent);
+        }
+        return m_instance;
     }
 
     explicit UCFontUtils(QObject *parent = 0) : QObject(parent) {}
+    ~UCFontUtils() { m_instance = Q_NULLPTR; }
 
     Q_INVOKABLE qreal sizeToPixels(const QString &size);
     Q_INVOKABLE qreal modularScale(const QString &size);
+
+private:
+    static UCFontUtils *m_instance;
 };
 
 #define SCALE_CODE(size)    reinterpret_cast<int*>(size.toLatin1().data())[0]

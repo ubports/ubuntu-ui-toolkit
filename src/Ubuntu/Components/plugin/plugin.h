@@ -36,6 +36,7 @@ public:
     {
         return m_baseUrl;
     }
+    static void initializeContextProperties(QQmlEngine*);
 
 private Q_SLOTS:
     void registerWindowContextProperty();
