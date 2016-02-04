@@ -34,12 +34,18 @@
  *
  * UbuntuApplication is a context property in QML.
  */
+UCApplication *UCApplication::m_app = nullptr;
 UCApplication::UCApplication(QObject* parent) : QObject(parent), m_context(0)
                                                                , m_inputMethod(QGuiApplication::inputMethod())
 {
     // Make sure we receive application name changes from C++ modules
     connect(QCoreApplication::instance(), &QCoreApplication::applicationNameChanged,
             this, &UCApplication::applicationNameChanged);
+}
+
+UCApplication::~UCApplication()
+{
+    m_app = nullptr;
 }
 
 void UCApplication::setContext(QQmlContext* context) {

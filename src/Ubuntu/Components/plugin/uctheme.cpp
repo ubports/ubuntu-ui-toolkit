@@ -205,7 +205,7 @@ QString parentThemeName(const UCTheme::ThemeRecord& themePath)
 {
     QString parentTheme;
     if (!themePath.isValid()) {
-        qWarning() << qPrintable(UbuntuI18n::instance().tr("Theme not found: \"%1\"").arg(themePath.name));
+        qWarning() << qPrintable(QStringLiteral("Theme not found: \"%1\"").arg(themePath.name));
     } else {
         QFile file(themePath.path.resolved(PARENT_THEME_FILE).toLocalFile());
         if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -373,7 +373,7 @@ void UCTheme::setupDefault()
     // set the default font
     QFont defaultFont = QGuiApplication::font();
     defaultFont.setFamily("Ubuntu");
-    defaultFont.setPixelSize(UCFontUtils::instance().sizeToPixels("medium"));
+    defaultFont.setPixelSize(UCFontUtils::instance()->sizeToPixels("medium"));
     defaultFont.setWeight(QFont::Light);
     QGuiApplication::setFont(defaultFont);
     setObjectName("default");
@@ -550,7 +550,7 @@ void UCTheme::setPalette(QObject *config)
         return;
     }
     if (config && !QuickUtils::inherits(config, "Palette")) {
-        qmlInfo(config) << UbuntuI18n::instance().tr("Not a Palette component.");
+        qmlInfo(config) << QStringLiteral("Not a Palette component.");
         return;
     }
 
@@ -714,7 +714,7 @@ QQmlComponent* UCTheme::createStyleComponent(const QString& styleName, QObject* 
             }
         } else {
             qmlInfo(parent) <<
-               UbuntuI18n::instance().tr(QString("Warning: Style %1 not found in theme %2").arg(styleName).arg(name()));
+               QStringLiteral("Warning: Style %1 not found in theme %2").arg(styleName).arg(name());
         }
     }
 
@@ -735,7 +735,7 @@ void UCTheme::loadPalette(QQmlEngine *engine, bool notify)
     // theme may not have palette defined
     QUrl paletteUrl = styleUrl("Palette.qml", previousVersion ? previousVersion : LATEST_UITK_VERSION);
     if (paletteUrl.isValid()) {
-        m_palette = QuickUtils::instance().createQmlObject(paletteUrl, engine);
+        m_palette = QuickUtils::instance()->createQmlObject(paletteUrl, engine);
         if (m_palette) {
             m_palette->setParent(this);
         }
