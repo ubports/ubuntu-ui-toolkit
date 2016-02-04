@@ -51,7 +51,7 @@ private Q_SLOTS:
     {
         QFETCH(QByteArray, envVar);
         qputenv("QT_IM_MODULE", envVar);
-        QVERIFY(QuickUtils::instance().inputMethodProvider().isEmpty());
+        QVERIFY(QuickUtils::instance()->inputMethodProvider().isEmpty());
     }
 };
 

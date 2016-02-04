@@ -183,7 +183,7 @@ QString UCArguments::usage() {
     QLatin1String indentation("  ");
     QString usage;
     QTextStream usageStream(&usage);
-    UbuntuI18n* i18n = &UbuntuI18n::instance();
+    UbuntuI18n* i18n = UbuntuI18n::instance();
 
     usageStream << i18n->tr("Usage: ");
 
@@ -494,12 +494,12 @@ bool UCArguments::requiredArgumentsProvided(const QHash<QString, QStringList>& a
     Q_FOREACH (UCArgument* argument, m_arguments) {
         if (argument->required()) {
             if (!argumentsValues.contains(argument->name())) {
-                UbuntuI18n* i18n = &UbuntuI18n::instance();
+                UbuntuI18n* i18n = UbuntuI18n::instance();
                 error = i18n->tr("%1 is expecting an additional argument: %2");
                 error = error.arg(m_applicationBinary).arg(argument->syntax());
                 return false;
             } else if (argumentsValues.value(argument->name()).size() < argument->valueNames().size()) {
-                UbuntuI18n* i18n = &UbuntuI18n::instance();
+                UbuntuI18n* i18n = UbuntuI18n::instance();
                 error = i18n->tr("%1 is expecting a value for argument: %2");
                 error = error.arg(m_applicationBinary).arg(argument->syntax());
                 return false;
@@ -516,7 +516,7 @@ bool UCArguments::requiredDefaultArgumentProvided(const QHash<QString, QStringLi
     if (m_defaultArgument != NULL && m_defaultArgument->required() &&
          ((!argumentsValues.contains("") && m_defaultArgument->valueNames().size() > 0)
        || (argumentsValues.value("").size() < m_defaultArgument->valueNames().size()))) {
-        UbuntuI18n* i18n = &UbuntuI18n::instance();
+        UbuntuI18n* i18n = UbuntuI18n::instance();
         error = i18n->tr("%1 is expecting additional arguments: %2").arg(m_applicationBinary).arg(m_defaultArgument->syntax());
         return false;
     } else {

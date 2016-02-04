@@ -32,9 +32,14 @@ class StateSaverBackend : public QObject
 public:
     ~StateSaverBackend();
 
-    static StateSaverBackend &instance() {
-        static StateSaverBackend instance;
-        return instance;
+    // FIXME: with multiple engines/views in an application, we must provide
+    // separate SatteSaver backends per engine! This must be refactored!
+    static StateSaverBackend *instance(QObject *parent = Q_NULLPTR) {
+        if (!m_instance) {
+            Q_ASSERT(parent);
+            m_instance = new StateSaverBackend(parent);
+        }
+        return m_instance;
     }
 
     bool enabled() const;
@@ -66,6 +71,8 @@ private:
     QSet<QString> m_register;
     QStack<QString> m_groupStack;
     bool m_globalEnabled;
+
+    static StateSaverBackend *m_instance;
 };
 
 #endif // STATESAVERBACKEND_P_H

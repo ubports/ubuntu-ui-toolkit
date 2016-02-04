@@ -18,6 +18,8 @@
 #include "ucfontutils.h"
 #include "ucunits.h"
 
+UCFontUtils *UCFontUtils::m_instance = nullptr;
+
 /*!
  * \qmltype FontUtils
  * \instantiates UCFontUtils
@@ -64,7 +66,7 @@
  */
 qreal UCFontUtils::sizeToPixels(const QString &size)
 {
-    return modularScale(size) * UCUnits::instance().dp(fontUnits);
+    return modularScale(size) * UCUnits::instance()->dp(fontUnits);
 }
 
 /*!

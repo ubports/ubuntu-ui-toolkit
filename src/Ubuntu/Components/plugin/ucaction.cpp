@@ -190,7 +190,7 @@ QString UCAction::text()
         QString displayText(m_text);
         // FIXME: we need QInputDeviceInfo to detect the keyboard attechment
         // https://bugs.launchpad.net/ubuntu/+source/ubuntu-ui-toolkit/+bug/1276808
-        if (QuickUtils::instance().keyboardAttached()) {
+        if (QuickUtils::instance()->keyboardAttached()) {
             // underscore the character
             displayText.replace(mnemonicIndex, mnemonic.length(), "<u>" + mnemonic[1] + "</u>");
         } else {
@@ -297,7 +297,7 @@ UCAction::UCAction(QObject *parent)
     generateName();
     // FIXME: we need QInputDeviceInfo to detect the keyboard attechment
     // https://bugs.launchpad.net/ubuntu/+source/ubuntu-ui-toolkit/+bug/1276808
-    connect(&QuickUtils::instance(), &QuickUtils::keyboardAttachedChanged,
+    connect(QuickUtils::instance(), &QuickUtils::keyboardAttachedChanged,
             this, &UCAction::onKeyboardAttached);
 }
 

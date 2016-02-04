@@ -31,7 +31,7 @@ void UCLabel::updatePixelSize()
     };
     QFont textFont = font();
     textFont.setPixelSize(
-        qRound(sizes[m_textSize] * UCUnits::instance().dp(UCFontUtils::fontUnits)));
+        qRound(sizes[m_textSize] * UCUnits::instance()->dp(UCFontUtils::fontUnits)));
     setFont(textFont);
     // remove PixelSizeSet flag
     m_flags &= ~PixelSizeSet;
@@ -39,7 +39,7 @@ void UCLabel::updatePixelSize()
 
 void UCLabel::updateRenderType()
 {
-    if (UCUnits::instance().gridUnit() <= 10) {
+    if (UCUnits::instance()->gridUnit() <= 10) {
         QQuickText::setRenderType(QQuickText::NativeRendering);
     } else {
         QQuickText::setRenderType(QQuickText::QtRendering);
@@ -127,7 +127,7 @@ void UCLabel::init()
     setFont(m_defaultFont);
     updateRenderType();
 
-    connect(&UCUnits::instance(), &UCUnits::gridUnitChanged, this, &UCLabel::updateRenderType);
+    connect(UCUnits::instance(), &UCUnits::gridUnitChanged, this, &UCLabel::updateRenderType);
     connect(this, &UCLabel::fontChanged, this, &UCLabel::_q_updateFontFlag, Qt::DirectConnection);
     connect(this, &UCLabel::colorChanged, this, &UCLabel::_q_customColor, Qt::DirectConnection);
     connect(this, &UCLabel::enabledChanged, this, &UCLabel::postThemeChanged, Qt::DirectConnection);
@@ -179,7 +179,7 @@ void UCLabel::setTextSize(TextSize size)
 
 void UCLabel::setRenderType(RenderType renderType)
 {
-    disconnect(&UCUnits::instance(), &UCUnits::gridUnitChanged,
+    disconnect(UCUnits::instance(), &UCUnits::gridUnitChanged,
                this, &UCLabel::updateRenderType);
     QQuickText::setRenderType(renderType);
 }
