@@ -23,6 +23,9 @@ UCPageWrapperIncubator::UCPageWrapperIncubator(QQmlIncubator::IncubationMode mod
 {
 }
 
+UCPageWrapperIncubator::~UCPageWrapperIncubator()
+{}
+
 void UCPageWrapperIncubator::forceCompletion()
 {
     QQmlIncubator::forceCompletion();

@@ -66,7 +66,6 @@ void UCPageWrapperPrivate::init()
 
     QObject::connect(q, &UCPageWrapper::activeChanged,
                      [this](){
-        qDebug()<<"Activating";
         if (m_reference.isValid()) {
             if (m_active) {
                 this->activate();
@@ -97,8 +96,7 @@ void UCPageWrapperPrivate::reset()
             m_incubator->object()->deleteLater();
         }
         m_incubator->clear();
-        m_incubator->deleteLater();
-        setIncubator(nullptr);
+        destroyIncubator();
     }
 
     if (m_object) {
@@ -160,14 +158,27 @@ void UCPageWrapperPrivate::copyProperties(QObject *target)
     }
 }
 
-void UCPageWrapperPrivate::setIncubator(UCPageWrapperIncubator *incubator)
+void UCPageWrapperPrivate::createIncubator()
 {
     Q_Q(UCPageWrapper);
-    if (m_incubator == incubator)
-        return;
+    if (m_incubator)
+        destroyIncubator();
 
-    m_incubator = incubator;
-    Q_EMIT q->incubatorChanged(incubator);
+    m_incubator = new UCPageWrapperIncubator(QQmlIncubator::Asynchronous, q);
+    QQmlEngine::setObjectOwnership(m_incubator, QQmlEngine::JavaScriptOwnership);
+
+    Q_EMIT q->incubatorChanged(m_incubator);
+}
+
+void UCPageWrapperPrivate::destroyIncubator()
+{
+    //the incubator has JS ownership, this should cause a deletion!!
+    if (m_incubator) {
+        m_incubator->setParent(nullptr);
+        m_incubator = nullptr;
+
+        Q_EMIT q_func()->incubatorChanged(m_incubator);
+    }
 }
 
 void UCPageWrapperPrivate::nextStep()
@@ -187,11 +198,6 @@ void UCPageWrapperPrivate::nextStep()
                 QUrl componentUrl = QUrl(m_reference.toString());
                 m_ownsComponent = true;
                 m_component = new QQmlComponent(qmlEngine(q), componentUrl, cMode);
-
-                if (!m_synchronous) {
-                    //The Incubator needs to be created ahead of time because QML code assumes its valid right away
-                    setIncubator(new UCPageWrapperIncubator(QQmlIncubator::Asynchronous, q));
-                }
             } else if (m_reference.canConvert<QObject *>()) {
                 QObject *theObject = m_reference.value<QObject *>();
 
@@ -215,6 +221,10 @@ void UCPageWrapperPrivate::nextStep()
             }
 
             if (m_component) {
+                if (!m_synchronous) {
+                    //The Incubator needs to be created ahead of time because QML code assumes its valid right away
+                    createIncubator();
+                }
                 if (m_component->status() != QQmlComponent::Loading)
                     nextStep();
                 else {
@@ -288,13 +298,9 @@ void UCPageWrapperPrivate::nextStep()
                 qmlInfo(q) << m_incubator->errors();
             }
 
-            //@BUG this will throw unexpected null receiver in gallery
-            //is there some code that stores the incubator over time?
-
             // cleanup if ready or error
             if(m_incubator->status() != QQmlIncubator::Loading) {
-                setIncubator(nullptr);
-                m_incubator->deleteLater();
+                destroyIncubator();
             }
             break;
         }
@@ -311,14 +317,12 @@ void UCPageWrapperPrivate::nextStep()
 
 void UCPageWrapperPrivate::onActiveChanged()
 {
-    qDebug()<<"Setting visibility to: "<<m_active;
     q_func()->setVisible(m_active);
 }
 
 UCPageWrapper::UCPageWrapper(QQuickItem *parent)
     : UCPageTreeNode((* new UCPageWrapperPrivate), parent)
 {
-    qDebug()<<"Creating PageWrapper";
     d_func()->init();
 }
 

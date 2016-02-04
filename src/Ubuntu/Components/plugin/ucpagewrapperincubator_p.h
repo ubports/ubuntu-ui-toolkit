@@ -32,6 +32,7 @@ class UCPageWrapperIncubator : public QObject, public QQmlIncubator
 public:
     UCPageWrapperIncubator(QQmlIncubator::IncubationMode mode = QQmlIncubator::Asynchronous,
                            QObject *parent = 0);
+    ~UCPageWrapperIncubator();
 
     // QQmlIncubator interface
     virtual void statusChanged(Status status) override;

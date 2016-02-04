@@ -44,7 +44,8 @@ public:
     void deactivate ();
     void copyProperties (QObject *target);
 
-    void setIncubator(UCPageWrapperIncubator* incubator);
+    void createIncubator  ();
+    void destroyIncubator ();
     void onActiveChanged();
 
     void nextStep ();
