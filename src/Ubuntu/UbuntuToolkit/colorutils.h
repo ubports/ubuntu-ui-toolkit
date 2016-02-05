@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -12,27 +12,23 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
-
-#ifndef UCMATHUTILS_H
-#define UCMATHUTILS_H
+#ifndef COLORUTILS_H
+#define COLORUTILS_H
 
 #include <QObject>
+#include "ubuntutoolkitglobal.h"
 
-QT_FORWARD_DECLARE_CLASS(QQmlEngine)
-QT_FORWARD_DECLARE_CLASS(QJSEngine)
+namespace UbuntuToolkit {
 
-class UCMathUtils : public QObject
+class UBUNTUTOOLKIT_EXPORT ColorUtils : public QObject
 {
     Q_OBJECT
 public:
-    explicit UCMathUtils(QObject *parent = 0);
-
-    Q_INVOKABLE double clamp(double x, double min, double max);
-    Q_INVOKABLE double lerp(double delta, double from, double to);
-    Q_INVOKABLE double projectValue(double x, double xmin, double xmax, double ymin, double ymax);
-    Q_INVOKABLE double clampAndProject(double x, double xmin, double xmax, double ymin, double ymax);
+    explicit ColorUtils(QObject *parent = 0);
+    Q_INVOKABLE static qreal luminance(const QColor &color);
 };
 
-#endif // UCMATHUTILS_H
+}
+
+#endif // COLORUTILS_H
