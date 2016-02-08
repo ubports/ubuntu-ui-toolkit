@@ -17,7 +17,7 @@
 import QtQuick 2.4
 import "../1.2/stack.js" as Stack
 import Ubuntu.Components 1.3
-import Ubuntu.Components.Private 1.3 as Privates
+import Ubuntu.Components.Private 1.3
 
 /*!
     \qmltype PageStack
@@ -228,7 +228,7 @@ PageTreeNode {
 
     Component {
         id: pageWrapperComponent
-        Privates.PageWrapper{
+        PageWrapper{
         }
     }
 

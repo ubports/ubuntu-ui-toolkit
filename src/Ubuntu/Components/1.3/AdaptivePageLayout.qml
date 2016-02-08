@@ -17,7 +17,7 @@
 import QtQuick 2.4
 import QtQuick.Layouts 1.1
 import Ubuntu.Components 1.3
-import Ubuntu.Components.Private 1.3 as Privates
+import Ubuntu.Components.Private 1.3
 import "tree.js" as Tree
 
 /*!
@@ -652,7 +652,7 @@ PageTreeNode {
 
     Component{
         id: pageWrapperComponent
-        Privates.PageWrapper{
+        PageWrapper{
         }
     }
 
