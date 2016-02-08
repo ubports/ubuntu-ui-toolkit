@@ -47,10 +47,10 @@ void UCPageWrapperIncubator::setOnStatusChanged(QJSValue onStatusChanged)
 
 void UCPageWrapperIncubator::statusChanged(QQmlIncubator::Status status)
 {
+    Q_EMIT enterOnStatusChanged();
     if (m_onStatusChanged.isCallable()) {
         m_onStatusChanged.call(QJSValueList()<<QJSValue(static_cast<int>(status)));
     }
-
-    Q_EMIT statusHasChanged(static_cast<int>(status));
+    Q_EMIT statusHasChanged(status);
 }
 

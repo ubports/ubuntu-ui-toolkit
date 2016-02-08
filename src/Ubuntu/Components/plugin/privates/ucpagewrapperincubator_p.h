@@ -41,8 +41,10 @@ public:
     QJSValue onStatusChanged() const;
     void setOnStatusChanged(QJSValue onStatusChanged);
 
+
 Q_SIGNALS:
-    void statusHasChanged(int status);
+    void statusHasChanged (QQmlIncubator::Status status);
+    void enterOnStatusChanged();
 
 private:
     QJSValue m_onStatusChanged;

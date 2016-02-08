@@ -61,7 +61,8 @@ public:
     QQuickItem* m_parentWrapper;
     QQuickItem* m_pageHolder;
     UCPageWrapperIncubator* m_incubator;
-    QQmlComponent *m_component; //component was created by us
+    QQmlComponent *m_component;
+    QQmlContext *m_itemContext;
     State m_state;
     int m_column;
     bool m_canDestroy:1;

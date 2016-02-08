@@ -13,6 +13,7 @@ UCPageWrapperPrivate::UCPageWrapperPrivate() :
     m_pageHolder(nullptr),
     m_incubator(nullptr),
     m_component(nullptr),
+    m_itemContext(nullptr),
     m_state(Waiting),
     m_column(0),
     m_canDestroy(false),
@@ -37,33 +38,6 @@ void UCPageWrapperPrivate::init()
     //bind the value of visible to active
     QObject::connect(q, SIGNAL(activeChanged(bool)),
                      q, SLOT(onActiveChanged()));
-
-    QObject::connect(q, &UCPageWrapper::referenceChanged,
-                     [this](){
-        Q_Q(UCPageWrapper);
-
-        deactivate();
-        initPage();
-
-        if (m_active && m_reference.isValid()) {
-            if ((m_incubator && m_incubator->status() == QQmlIncubator::Ready) || m_object) {
-                activate();
-            } else {
-                // asynchronous, connect page activation
-
-                //make sure this connection is destroyed once it was fired. Using a stack
-                //variable does not work because it would not yet be initialized when the variable
-                //is captured
-                QSharedPointer<QMetaObject::Connection> sharedConn(new QMetaObject::Connection);
-                *sharedConn = QObject::connect(q, &UCPageWrapper::pageLoaded,
-                                               [this, sharedConn](){
-                    activate();
-                    QObject::disconnect(*sharedConn);
-                });
-            }
-        }
-
-    });
 
 
     QObject::connect(q, &UCPageWrapper::activeChanged,
@@ -118,6 +92,14 @@ void UCPageWrapperPrivate::reset()
     if (m_component && m_ownsComponent) {
         delete m_component;
         m_component = nullptr;
+    }
+
+    //if itemContext is a valid pointer at this place
+    //it was never used and can be deleted
+    if (m_itemContext) {
+        //use deleteLater just to be sure
+        m_itemContext->deleteLater();
+        m_itemContext = nullptr;
     }
 
     m_state = Waiting;
@@ -207,10 +189,10 @@ void UCPageWrapperPrivate::copyProperties(QObject *target)
     // copy the properties to the page object
     QVariantMap propMap = m_properties.toMap();
     QVariantMap::const_iterator i = propMap.constBegin();
-    while ( i != propMap.constEnd()) {
-        if (!target->setProperty(qPrintable(i.key()), i.value()))
+    for (;i != propMap.constEnd(); i++) {
+        if (!target->setProperty(qPrintable(i.key()), i.value())) {
             qmlInfo(q) << "Setting unknown property "<<i.key();
-        i++;
+        }
     }
 }
 
@@ -304,13 +286,14 @@ void UCPageWrapperPrivate::nextStep()
                 else {
                     //async behaviour, advance to the next state once the component was loaded
                     QSharedPointer<QMetaObject::Connection> connHandle(new QMetaObject::Connection);
-                    *connHandle = QObject::connect(m_component, &QQmlComponent::statusChanged,
-                                                   [this, connHandle](){
+                    auto asyncCallback = [this, connHandle](){
                         if(m_component->status() != QQmlComponent::Loading) {
                             QObject::disconnect(*connHandle);
                             nextStep();
                         }
-                    });
+                    };
+
+                    *connHandle = QObject::connect(m_component, &QQmlComponent::statusChanged,asyncCallback);
                 }
             }
             break;
@@ -328,32 +311,69 @@ void UCPageWrapperPrivate::nextStep()
             //Object has C++ ownership
             setCanDestroy(true);
 
+            // create context
+            // use creation context as parent to create the context we load the style item with
+            QQmlContext *creationContext = m_component->creationContext();
+            if (!creationContext) {
+                creationContext = qmlContext(q);
+            }
+            if (creationContext && !creationContext->isValid()) {
+                // we are having the changes in the component being under deletion
+
+                qmlInfo(q) << "Could not get creation context";
+                m_state = Error;
+                return;
+            }
+
+            m_itemContext = new QQmlContext(creationContext);
+
             if (m_synchronous) {
-                QQuickItem *theItem = toItem(m_component->create(qmlContext(q)));
+                QQuickItem *theItem = toItem(m_component->create(m_itemContext));
                 if (theItem) {
+                    m_itemContext->setParent(theItem);
+                    m_itemContext = nullptr;
                     initItem(theItem);
                     m_state = NotifyPageLoaded;
                     nextStep();
                 } else {
+                    delete m_itemContext;
+                    m_itemContext = nullptr;
                     m_state = Error;
                 }
             } else {
                 //connect the change signal first so we definately catch the signal even when the creation finishes right away
-                QObject::connect(m_incubator, SIGNAL(statusHasChanged(int)),
+                QObject::connect(m_incubator, SIGNAL(enterOnStatusChanged()),
                                  q, SLOT(nextStep()));
 
-                m_component->create(*m_incubator, qmlContext(q));
+                m_component->create(*m_incubator, m_itemContext);
             }
             break;
         }
         case CreatingObject:{
             if(m_incubator->status() == QQmlIncubator::Ready) {
+
+                QObject::disconnect(m_incubator, SIGNAL(enterOnStatusChanged()),
+                                 q, SLOT(nextStep()));
+
                 //the object was created, now initialize it
                 QQuickItem *theItem = toItem(m_incubator->object());
                 if (theItem) {
                     initItem(theItem);
-                    m_state = NotifyPageLoaded;
-                    nextStep();
+                    m_itemContext->setParent(theItem);
+                    m_itemContext = nullptr;
+
+                    //this code needs to be executed after the Incubator has executed the JS callback
+                    QSharedPointer<QMetaObject::Connection> sharedConn(new QMetaObject::Connection);
+                    auto asyncCallback = [this, sharedConn](){
+                        QObject::disconnect(*sharedConn);
+                        destroyIncubator();
+
+                        m_state = NotifyPageLoaded;
+                        nextStep();
+                    };
+                    *sharedConn = QObject::connect(m_incubator, &UCPageWrapperIncubator::statusHasChanged,asyncCallback);
+
+                    return;
                 } else {
                     m_state = Error;
                 }
@@ -362,8 +382,14 @@ void UCPageWrapperPrivate::nextStep()
                 qmlInfo(q) << m_incubator->errors();
             }
 
-            // cleanup if ready or error
+            // cleanup
             if(m_incubator->status() != QQmlIncubator::Loading) {
+                //if we reach this point there was a error, make sure the item context is properly
+                //destroyed
+                if (m_itemContext) {
+                    delete m_itemContext;
+                    m_itemContext = nullptr;
+                }
                 destroyIncubator();
             }
             break;
@@ -425,6 +451,30 @@ void UCPageWrapper::setReference(const QVariant &reference)
         return;
 
     d->m_reference = reference;
+
+    d->deactivate();
+    d->initPage();
+
+    if (d->m_active && d->m_reference.isValid()) {
+        if ((d->m_incubator && d->m_incubator->status() == QQmlIncubator::Ready) || d->m_object) {
+            d->activate();
+        } else {
+            // asynchronous, connect page activation
+
+            //make sure this connection is destroyed once it was fired. Using a stack
+            //variable does not work because it would not yet be initialized when the variable
+            //is captured
+            QSharedPointer<QMetaObject::Connection> sharedConn(new QMetaObject::Connection);
+            auto asyncCallback = [d, sharedConn](){
+                d->activate();
+                QObject::disconnect(*sharedConn);
+            };
+
+            *sharedConn = QObject::connect(this, &UCPageWrapper::pageLoaded,asyncCallback);
+        }
+    }
+
+
     Q_EMIT referenceChanged(reference);
 }
 
