@@ -79,6 +79,7 @@
 #include "ucmainviewbase.h"
 #include "ucperformancemonitor.h"
 #include "privates/frame.h"
+#include "privates/appheaderbase.h"
 
 // From UbuntuGestures
 #include "private/ucswipearea_p.h"
@@ -294,7 +295,9 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     qmlRegisterType<UCBottomEdgeStyle>(styleUri, 1, 3, "BottomEdgeStyle");
 
     // Register private types.
-    qmlRegisterType<UCFrame>("Ubuntu.Components.Private", 1, 3, "Frame");
+    const char *privateUri = "Ubuntu.Components.Private";
+    qmlRegisterType<UCFrame>(privateUri, 1, 3, "Frame");
+    qmlRegisterType<UCAppHeaderBase>(privateUri, 1, 3, "AppHeaderBase");
 
     QQmlExtensionPlugin::initializeEngine(engine, uri);
 
