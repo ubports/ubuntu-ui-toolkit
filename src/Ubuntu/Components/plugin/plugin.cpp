@@ -84,6 +84,9 @@
 // From UbuntuGestures
 #include "private/ucswipearea_p.h"
 
+//From UbuntuToolkit
+#include <ColorUtils>
+
 #include <sys/types.h>
 #include <unistd.h>
 #include <stdexcept>
@@ -94,55 +97,14 @@ QUrl UbuntuComponentsPlugin::m_baseUrl = QUrl();
  * Type registration functions.
  */
 
-static QObject *registerClipboard(QQmlEngine *engine, QJSEngine *scriptEngine)
+template<typename T> static QObject *qmlRegisterSimpleSingletonTypeCallback(QQmlEngine *, QJSEngine *)
 {
-    Q_UNUSED(engine)
-    Q_UNUSED(scriptEngine)
-
-    QQuickClipboard *clipboard = new QQuickClipboard;
-    return clipboard;
+    return (new T);
 }
 
-static QObject *registerUCUbuntuAnimation(QQmlEngine *engine, QJSEngine *scriptEngine)
+template<typename T> static int qmlRegisterSimpleSingletonType(const char *uri, int major, int minor, const char *typeName)
 {
-    Q_UNUSED(engine)
-    Q_UNUSED(scriptEngine)
-
-    UCUbuntuAnimation *animation = new UCUbuntuAnimation();
-    return animation;
-}
-
-static QObject *registerUriHandler(QQmlEngine *engine, QJSEngine *scriptEngine)
-{
-    Q_UNUSED(engine)
-    Q_UNUSED(scriptEngine)
-
-    UCUriHandler *uriHandler = new UCUriHandler();
-    return uriHandler;
-}
-
-static QObject *registerUbuntuNamespace(QQmlEngine *engine, QJSEngine *scriptEngine)
-{
-    Q_UNUSED(engine)
-    Q_UNUSED(scriptEngine)
-
-    return new UCNamespace();
-}
-
-static QObject *registerUbuntuNamespace13(QQmlEngine *engine, QJSEngine *scriptEngine)
-{
-    Q_UNUSED(engine)
-    Q_UNUSED(scriptEngine)
-
-    return new UCNamespaceV13();
-}
-
-static QObject *registerHaptics(QQmlEngine *engine, QJSEngine *scriptEngine)
-{
-    Q_UNUSED(engine)
-    Q_UNUSED(scriptEngine)
-
-    return new UCHaptics();
+    return qmlRegisterSingletonType<T>(uri, major, minor, typeName, qmlRegisterSimpleSingletonTypeCallback<T>);
 }
 
 void UbuntuComponentsPlugin::initializeBaseUrl()
@@ -193,8 +155,8 @@ void UbuntuComponentsPlugin::registerTypesToVersion(const char *uri, int major, 
     qmlRegisterType<UCUbuntuShape>(uri, major, minor, "Shape");
     qmlRegisterType<InverseMouseAreaType>(uri, major, minor, "InverseMouseArea");
     qmlRegisterType<QQuickMimeData>(uri, major, minor, "MimeData");
-    qmlRegisterSingletonType<QQuickClipboard>(uri, major, minor, "Clipboard", registerClipboard);
-    qmlRegisterSingletonType<UCUbuntuAnimation>(uri, major, minor, "UbuntuAnimation", registerUCUbuntuAnimation);
+    qmlRegisterSimpleSingletonType<QQuickClipboard>(uri, major, minor, "Clipboard");
+    qmlRegisterSimpleSingletonType<UCUbuntuAnimation>(uri, major, minor, "UbuntuAnimation");
     qmlRegisterType<UCArguments>(uri, major, minor, "Arguments");
     qmlRegisterType<UCArgument>(uri, major, minor, "Argument");
     qmlRegisterType<QQmlPropertyMap>();
@@ -202,12 +164,13 @@ void UbuntuComponentsPlugin::registerTypesToVersion(const char *uri, int major, 
     qmlRegisterType<UCAlarmModel>(uri, major, minor, "AlarmModel");
     qmlRegisterType<UCStateSaver>(uri, major, minor, "StateSaver");
     qmlRegisterType<UCStateSaverAttached>();
-    qmlRegisterSingletonType<UCUriHandler>(uri, major, minor, "UriHandler", registerUriHandler);
+    qmlRegisterSimpleSingletonType<UCUriHandler>(uri, major, minor, "UriHandler");
     qmlRegisterType<UCMouse>(uri, major, minor, "Mouse");
     qmlRegisterType<UCInverseMouse>(uri, major, minor, "InverseMouse");
     qmlRegisterType<UCActionItem>(uri, major, minor, "ActionItem");
-    qmlRegisterSingletonType<UCHaptics>(uri, major, minor, "Haptics", registerHaptics);
-    qmlRegisterSingletonType<UCMathUtils>(uri, major, minor, "MathUtils", UCMathUtils::qmlRegisterTypeCallback);
+    qmlRegisterSimpleSingletonType<UCHaptics>(uri, major, minor, "Haptics");
+    qmlRegisterSimpleSingletonType<UCMathUtils>(uri, major, minor, "MathUtils");
+    qmlRegisterSimpleSingletonType<UbuntuToolkit::ColorUtils>(uri, major, minor, "ColorUtils");
 }
 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
@@ -239,7 +202,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterUncreatableType<UCDragEvent>(uri, 1, 2, "ListItemDrag", "This is an event object");
     qmlRegisterType<UCListItemActions>(uri, 1, 2, "ListItemActions");
     qmlRegisterUncreatableType<UCViewItemsAttached>(uri, 1, 2, "ViewItems", "Not instantiable");
-    qmlRegisterSingletonType<UCNamespace>(uri, 1, 2, "Ubuntu", registerUbuntuNamespace);
+    qmlRegisterSimpleSingletonType<UCNamespace>(uri, 1, 2, "Ubuntu");
     qmlRegisterType<UCUbuntuShape, 1>(uri, 1, 2, "UbuntuShape");
     qmlRegisterType<UCUbuntuShapeOverlay>(uri, 1, 2, "UbuntuShapeOverlay");
 
@@ -248,7 +211,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCListItemExpansion>();
     qmlRegisterType<UCTheme>(uri, 1, 3, "ThemeSettings");
     qmlRegisterType<UCStyledItemBase, 2>(uri, 1, 3, "StyledItem");
-    qmlRegisterSingletonType<UCNamespaceV13>(uri, 1, 3, "Ubuntu", registerUbuntuNamespace13);
+    qmlRegisterSimpleSingletonType<UCNamespaceV13>(uri, 1, 3, "Ubuntu");
     qmlRegisterType<UCStyledItemBase, 2>(uri, 1, 3, "StyledItem");
     qmlRegisterCustomType<UCStyleHints>(uri, 1, 3, "StyleHints", new UCStyleHintsParser);
     qmlRegisterType<UCAction, 1>(uri, 1, 3, "Action");

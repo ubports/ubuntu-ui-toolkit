@@ -31,7 +31,6 @@ QML_FILES += 1.2/AbstractButton.qml \
              1.2/AppHeader.qml \
              1.2/Captions.qml \
              1.2/CheckBox.qml \
-             1.2/colorUtils.js \
              1.2/ComboButton.qml \
              1.2/CrossFadeImage10.qml \
              1.2/CrossFadeImage11.qml \
