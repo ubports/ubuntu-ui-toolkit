@@ -16,15 +16,15 @@ Build-Depends: debhelper (>= 9.0.0),
                libqt5sql5-sqlite,
                qtdeclarative5-dev-tools,
                qtdeclarative5-private-dev,
-               qml-module-qtquick2 | qtdeclarative5-qtquick2-plugin,
-               qml-module-qttest | qtdeclarative5-test-plugin,
-               qml-module-qtquick-window2 | qtdeclarative5-window-plugin,
+               qml-module-qtquick2,
+               qml-module-qttest,
+               qml-module-qtquick-window2,
                qml-module-qtquick-layouts,
-               qtdeclarative5-qtfeedback-plugin,
+               qml-module-qtfeedback,
                qtdeclarative5-unity-action-plugin (>= 1.1.0),
                qtdeclarative5-private-dev,
-               qml-module-qtquick-localstorage | qtdeclarative5-localstorage-plugin,
-               qml-module-qt-labs-settings | qtdeclarative5-settings-plugin,
+               qml-module-qtquick-localstorage,
+               qml-module-qt-labs-settings,
                qml-module-qtqml-models2,
                qtdeclarative5-doc-html,
                qtwebkit5-doc-html,
@@ -66,15 +66,16 @@ Multi-Arch: same
 Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
 Depends: qml-module-qtgraphicaleffects | libqt5qml-graphicaleffects,
          libqt5svg5,
-         qml-module-qtquick2 | qtdeclarative5-qtquick2-plugin,
-         qml-module-qtquick-window2 | qtdeclarative5-window-plugin,
+         qml-module-qtquick2,
+         qml-module-qtquick-window2,
          qml-module-qtquick-layouts,
-         qtdeclarative5-qtfeedback-plugin,
+         qml-module-qtfeedback,
          qtdeclarative5-unity-action-plugin (>= 1.1.0),
          suru-icon-theme,
          ttf-ubuntu-font-family,
          ubuntu-ui-toolkit-theme (= ${binary:Version}),
          libubuntugestures5 (= ${binary:Version}),
+         libubuntutoolkit5 (= ${binary:Version}),
          ${misc:Depends},
          ${shlibs:Depends},
 Conflicts: qt-components-ubuntu
@@ -104,7 +105,7 @@ Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
 Depends: ${misc:Depends},
          ${shlibs:Depends},
 Description: Ubuntu gestures library development files
- This package contains the development files for 
+ This package contains the development files for
  Ubuntu gestures library with SwipeArea
 
 Package: libubuntugestures5-private-dev
@@ -117,6 +118,25 @@ Description: Ubuntu gestures library private development files
  This package contains the private development files for
  Ubuntu gestures library with SwipeArea
 
+Package: libubuntutoolkit5
+Architecture: any
+Multi-Arch: same
+Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+Description: Ubuntu toolkit common library for Ubuntu UI Toolkit
+ Contains components and helper classes that are shared between the
+ Ubuntu QML plugins
+
+Package: libubuntutoolkit5-dev
+Architecture: any
+Multi-Arch: same
+Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+Description: Ubuntu toolkit common library development files
+ This package contains the development files for
+ Ubuntu toolkit common library
 
 Package: ubuntu-ui-toolkit-theme
 Architecture: any
@@ -159,7 +179,7 @@ Architecture: any
 Depends: ubuntu-ui-toolkit-tools (>= ${source:Version}),
          qtdeclarative5-ubuntu-ui-toolkit-plugin (= ${binary:Version}) | qtdeclarative5-ubuntu-ui-toolkit-plugin-gles,
          ubuntu-ui-toolkit-theme (= ${binary:Version}),
-         qml-module-qtquick-xmllistmodel | qtdeclarative5-xmllistmodel-plugin,
+         qml-module-qtquick-xmllistmodel,
          qml-module-qt-labs-folderlistmodel,
          ${misc:Depends},
          ${shlibs:Depends}
@@ -220,4 +240,3 @@ Description: Qt Components for Ubuntu - productive tools
  .
  This package contains the application launcher, which is a drop-in
  replacement for qmlscene, oxideqmlscene, qml and derivatives.
-
