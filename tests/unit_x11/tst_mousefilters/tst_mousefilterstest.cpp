@@ -544,6 +544,7 @@ private Q_SLOTS:
 
     void testCase_doubleClicked()
     {
+        QSKIP("FIXME: lp#1542215 Flaky test result");
         QScopedPointer<QQuickView> view(loadTest("DoubleClicked.qml"));
         QVERIFY(view);
         UCMouse *filter = attachedFilter<UCMouse>(view->rootObject(), "FilterOwner");
