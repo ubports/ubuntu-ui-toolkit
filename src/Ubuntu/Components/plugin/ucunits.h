@@ -29,12 +29,17 @@ class UCUnits : public QObject
     Q_PROPERTY(float gridUnit READ gridUnit WRITE setGridUnit NOTIFY gridUnitChanged)
 
 public:
-    static UCUnits& instance() {
-        static UCUnits instance;
-        return instance;
+    static UCUnits *instance(QObject *parent = Q_NULLPTR) {
+        if (!m_units) {
+            // we must have a parent!
+            Q_ASSERT(parent);
+            new UCUnits(parent);
+        }
+        return m_units;
     }
 
     explicit UCUnits(QObject *parent = 0);
+    ~UCUnits();
     Q_INVOKABLE float dp(float value);
     Q_INVOKABLE float gu(float value);
     QString resolveResource(const QUrl& url);
@@ -53,6 +58,7 @@ protected:
     float gridUnitSuffixFromFileName(const QString &fileName);
 
 private:
+    static UCUnits *m_units;
     float m_devicePixelRatio;
     float m_gridUnit;
 };

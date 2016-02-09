@@ -74,7 +74,7 @@ void UCServicePropertiesPrivate::setStatus(UCServiceProperties::Status status)
 void printLocked(UCServiceProperties *owner)
 {
     UCServicePropertiesPrivate::get(owner)->
-            warning(UbuntuI18n::instance().tr("Changing connection parameters forbidden."));
+            warning(QStringLiteral("Changing connection parameters forbidden."));
 }
 
 /*!
@@ -156,8 +156,7 @@ void UCServiceProperties::componentComplete()
         // check the binding on the property and warn if there is one.
         QQmlProperty qmlProperty(this, property);
         if (QQmlPropertyPrivate::binding(qmlProperty)) {
-            d->warning(UbuntuI18n::instance().
-                       tr("Binding detected on property '%1' will be removed by the service updates.").
+            d->warning(QStringLiteral("Binding detected on property '%1' will be removed by the service updates.").
                        arg(property));
         }
         // insert both the declared and capitalized first character properties

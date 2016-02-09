@@ -38,7 +38,7 @@ void UCAlarmPrivate::setDefaults()
 {
     QDateTime date = AlarmUtils::normalizeDate(QDateTime::currentDateTime());
     setDate(date);
-    setMessage(UbuntuI18n::instance().tr("Alarm"));
+    setMessage(UbuntuI18n::instance()->tr("Alarm"));
     setType(UCAlarm::OneTime);
     setDaysOfWeek(UCAlarm::AutoDetect);
 }
@@ -632,7 +632,7 @@ UCAlarm::Status UCAlarm::status() const
 void UCAlarm::save()
 {
     if (d_ptr->status == InProgress) {
-        qmlInfo(this) << UbuntuI18n::instance().tr("Alarm has a pending operation.");
+        qmlInfo(this) << QStringLiteral("Alarm has a pending operation.");
         return;
     }
 
@@ -640,7 +640,7 @@ void UCAlarm::save()
     d_ptr->status = Ready;
 
     if (d_ptr->message().isEmpty()) {
-        d_ptr->setMessage(UbuntuI18n::instance().tr("Alarm"));
+        d_ptr->setMessage(UbuntuI18n::instance()->tr("Alarm"));
         d_ptr->changes |= AlarmManager::Message;
     }
 
@@ -664,7 +664,7 @@ void UCAlarm::save()
 void UCAlarm::cancel()
 {
     if (d_ptr->status == InProgress) {
-        qmlInfo(this) << UbuntuI18n::instance().tr("Alarm has a pending operation.");
+        qmlInfo(this) << QStringLiteral("Alarm has a pending operation.");
         return;
     }
 

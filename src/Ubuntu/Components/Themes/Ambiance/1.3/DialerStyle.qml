@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -26,12 +26,14 @@ Rectangle {
 
     property real offset : units.gu(0.2)
 
+    property color dialerColor: theme.palette.normal.base
+
     gradient: Gradient {
-        GradientStop { position: 0.0;  color: "#512F48" }
-        GradientStop { position: 0.25; color: "#583048" }
-        GradientStop { position: 0.5;  color: "#653449" }
-        GradientStop { position: 0.75; color: "#6D384A" }
-        GradientStop { position: 1.0;  color: "#753B4A" }
+        GradientStop { position: 0.0;  color: dialerColor }
+        GradientStop { position: 0.25; color: Qt.darker(dialerColor, 1.0) }
+        GradientStop { position: 0.5;  color: Qt.darker(dialerColor, 1.1) }
+        GradientStop { position: 0.75; color: Qt.darker(dialerColor, 1.2) }
+        GradientStop { position: 1.0;  color: Qt.darker(dialerColor, 1.3) }
     }
     // draws the outter shadow/highlight
     Rectangle {
@@ -79,11 +81,11 @@ Rectangle {
         antialiasing: true;
 
         gradient: Gradient {
-            GradientStop { position: 0.0;  color: "#7A4C68" }
-            GradientStop { position: 0.25; color: "#804563" }
-            GradientStop { position: 0.5;  color: "#864660" }
-            GradientStop { position: 0.75; color: "#86465E" }
-            GradientStop { position: 1.0;  color: "#964E66" }
+            GradientStop { position: 0.0;  color: dialerColor }
+            GradientStop { position: 0.25; color: Qt.darker(dialerColor, 1.0) }
+            GradientStop { position: 0.5;  color: Qt.darker(dialerColor, 1.1) }
+            GradientStop { position: 0.75; color: Qt.darker(dialerColor, 1.2) }
+            GradientStop { position: 1.0;  color: Qt.darker(dialerColor, 1.3) }
         }
 
         // draws the inner highlight / shadow

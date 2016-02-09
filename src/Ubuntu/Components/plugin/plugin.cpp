@@ -79,9 +79,14 @@
 #include "ucmainviewbase.h"
 #include "ucperformancemonitor.h"
 #include "privates/frame.h"
+#include "privates/ucpagewrapper.h"
+#include "privates/appheaderbase.h"
 
 // From UbuntuGestures
 #include "private/ucswipearea_p.h"
+
+//From UbuntuToolkit
+#include <ColorUtils>
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -93,55 +98,14 @@ QUrl UbuntuComponentsPlugin::m_baseUrl = QUrl();
  * Type registration functions.
  */
 
-static QObject *registerClipboard(QQmlEngine *engine, QJSEngine *scriptEngine)
+template<typename T> static QObject *qmlRegisterSimpleSingletonTypeCallback(QQmlEngine *, QJSEngine *)
 {
-    Q_UNUSED(engine)
-    Q_UNUSED(scriptEngine)
-
-    QQuickClipboard *clipboard = new QQuickClipboard;
-    return clipboard;
+    return (new T);
 }
 
-static QObject *registerUCUbuntuAnimation(QQmlEngine *engine, QJSEngine *scriptEngine)
+template<typename T> static int qmlRegisterSimpleSingletonType(const char *uri, int major, int minor, const char *typeName)
 {
-    Q_UNUSED(engine)
-    Q_UNUSED(scriptEngine)
-
-    UCUbuntuAnimation *animation = new UCUbuntuAnimation();
-    return animation;
-}
-
-static QObject *registerUriHandler(QQmlEngine *engine, QJSEngine *scriptEngine)
-{
-    Q_UNUSED(engine)
-    Q_UNUSED(scriptEngine)
-
-    UCUriHandler *uriHandler = new UCUriHandler();
-    return uriHandler;
-}
-
-static QObject *registerUbuntuNamespace(QQmlEngine *engine, QJSEngine *scriptEngine)
-{
-    Q_UNUSED(engine)
-    Q_UNUSED(scriptEngine)
-
-    return new UCNamespace();
-}
-
-static QObject *registerUbuntuNamespace13(QQmlEngine *engine, QJSEngine *scriptEngine)
-{
-    Q_UNUSED(engine)
-    Q_UNUSED(scriptEngine)
-
-    return new UCNamespaceV13();
-}
-
-static QObject *registerHaptics(QQmlEngine *engine, QJSEngine *scriptEngine)
-{
-    Q_UNUSED(engine)
-    Q_UNUSED(scriptEngine)
-
-    return new UCHaptics();
+    return qmlRegisterSingletonType<T>(uri, major, minor, typeName, qmlRegisterSimpleSingletonTypeCallback<T>);
 }
 
 void UbuntuComponentsPlugin::initializeBaseUrl()
@@ -192,8 +156,8 @@ void UbuntuComponentsPlugin::registerTypesToVersion(const char *uri, int major, 
     qmlRegisterType<UCUbuntuShape>(uri, major, minor, "Shape");
     qmlRegisterType<InverseMouseAreaType>(uri, major, minor, "InverseMouseArea");
     qmlRegisterType<QQuickMimeData>(uri, major, minor, "MimeData");
-    qmlRegisterSingletonType<QQuickClipboard>(uri, major, minor, "Clipboard", registerClipboard);
-    qmlRegisterSingletonType<UCUbuntuAnimation>(uri, major, minor, "UbuntuAnimation", registerUCUbuntuAnimation);
+    qmlRegisterSimpleSingletonType<QQuickClipboard>(uri, major, minor, "Clipboard");
+    qmlRegisterSimpleSingletonType<UCUbuntuAnimation>(uri, major, minor, "UbuntuAnimation");
     qmlRegisterType<UCArguments>(uri, major, minor, "Arguments");
     qmlRegisterType<UCArgument>(uri, major, minor, "Argument");
     qmlRegisterType<QQmlPropertyMap>();
@@ -201,12 +165,13 @@ void UbuntuComponentsPlugin::registerTypesToVersion(const char *uri, int major, 
     qmlRegisterType<UCAlarmModel>(uri, major, minor, "AlarmModel");
     qmlRegisterType<UCStateSaver>(uri, major, minor, "StateSaver");
     qmlRegisterType<UCStateSaverAttached>();
-    qmlRegisterSingletonType<UCUriHandler>(uri, major, minor, "UriHandler", registerUriHandler);
+    qmlRegisterSimpleSingletonType<UCUriHandler>(uri, major, minor, "UriHandler");
     qmlRegisterType<UCMouse>(uri, major, minor, "Mouse");
     qmlRegisterType<UCInverseMouse>(uri, major, minor, "InverseMouse");
     qmlRegisterType<UCActionItem>(uri, major, minor, "ActionItem");
-    qmlRegisterSingletonType<UCHaptics>(uri, major, minor, "Haptics", registerHaptics);
-    qmlRegisterSingletonType<UCMathUtils>(uri, major, minor, "MathUtils", UCMathUtils::qmlRegisterTypeCallback);
+    qmlRegisterSimpleSingletonType<UCHaptics>(uri, major, minor, "Haptics");
+    qmlRegisterSimpleSingletonType<UCMathUtils>(uri, major, minor, "MathUtils");
+    qmlRegisterSimpleSingletonType<UbuntuToolkit::ColorUtils>(uri, major, minor, "ColorUtils");
 }
 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
@@ -238,7 +203,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterUncreatableType<UCDragEvent>(uri, 1, 2, "ListItemDrag", "This is an event object");
     qmlRegisterType<UCListItemActions>(uri, 1, 2, "ListItemActions");
     qmlRegisterUncreatableType<UCViewItemsAttached>(uri, 1, 2, "ViewItems", "Not instantiable");
-    qmlRegisterSingletonType<UCNamespace>(uri, 1, 2, "Ubuntu", registerUbuntuNamespace);
+    qmlRegisterSimpleSingletonType<UCNamespace>(uri, 1, 2, "Ubuntu");
     qmlRegisterType<UCUbuntuShape, 1>(uri, 1, 2, "UbuntuShape");
     qmlRegisterType<UCUbuntuShapeOverlay>(uri, 1, 2, "UbuntuShapeOverlay");
 
@@ -247,7 +212,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCListItemExpansion>();
     qmlRegisterType<UCTheme>(uri, 1, 3, "ThemeSettings");
     qmlRegisterType<UCStyledItemBase, 2>(uri, 1, 3, "StyledItem");
-    qmlRegisterSingletonType<UCNamespaceV13>(uri, 1, 3, "Ubuntu", registerUbuntuNamespace13);
+    qmlRegisterSimpleSingletonType<UCNamespaceV13>(uri, 1, 3, "Ubuntu");
     qmlRegisterType<UCStyledItemBase, 2>(uri, 1, 3, "StyledItem");
     qmlRegisterCustomType<UCStyleHints>(uri, 1, 3, "StyleHints", new UCStyleHintsParser);
     qmlRegisterType<UCAction, 1>(uri, 1, 3, "Action");
@@ -270,6 +235,55 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCMainViewBase>(uri, 1, 3, "MainViewBase");
 }
 
+void UbuntuComponentsPlugin::initializeContextProperties(QQmlEngine *engine)
+{
+    UCUnits::instance(engine);
+    QuickUtils::instance(engine);
+    UbuntuI18n::instance(engine);
+    UCApplication::instance(engine);
+    UCFontUtils::instance(engine);
+    UCTheme::defaultTheme(engine);
+
+    QQmlContext* context = engine->rootContext();
+
+    // register root object watcher that sets a global property with the root object
+    // that can be accessed from any object
+    context->setContextProperty("QuickUtils", QuickUtils::instance());
+
+    UCDeprecatedTheme::registerToContext(context);
+
+    context->setContextProperty("i18n", UbuntuI18n::instance());
+    ContextPropertyChangeListener *i18nChangeListener =
+        new ContextPropertyChangeListener(context, "i18n");
+    QObject::connect(UbuntuI18n::instance(), SIGNAL(domainChanged()),
+                     i18nChangeListener, SLOT(updateContextProperty()));
+    QObject::connect(UbuntuI18n::instance(), SIGNAL(languageChanged()),
+                     i18nChangeListener, SLOT(updateContextProperty()));
+
+    // We can't use 'Application' because it exists (undocumented)
+    context->setContextProperty("UbuntuApplication", UCApplication::instance());
+    ContextPropertyChangeListener *applicationChangeListener =
+        new ContextPropertyChangeListener(context, "UbuntuApplication");
+    QObject::connect(UCApplication::instance(), SIGNAL(applicationNameChanged()),
+                     applicationChangeListener, SLOT(updateContextProperty()));
+    // Give the application object access to the engine
+    UCApplication::instance()->setContext(context);
+
+    context->setContextProperty("units", UCUnits::instance());
+    ContextPropertyChangeListener *unitsChangeListener =
+        new ContextPropertyChangeListener(context, "units");
+    QObject::connect(UCUnits::instance(), SIGNAL(gridUnitChanged()),
+                     unitsChangeListener, SLOT(updateContextProperty()));
+
+    // register FontUtils
+    context->setContextProperty("FontUtils", UCFontUtils::instance());
+    ContextPropertyChangeListener *fontUtilsListener =
+        new ContextPropertyChangeListener(context, "FontUtils");
+    QObject::connect(UCUnits::instance(), SIGNAL(gridUnitChanged()),
+                     fontUtilsListener, SLOT(updateContextProperty()));
+
+}
+
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 {
     // initialize baseURL
@@ -282,48 +296,17 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     qmlRegisterType<UCBottomEdgeStyle>(styleUri, 1, 3, "BottomEdgeStyle");
 
     // Register private types.
-    qmlRegisterType<UCFrame>("Ubuntu.Components.Private", 1, 3, "Frame");
+    const char *privateUri = "Ubuntu.Components.Private";
+    qmlRegisterType<UCFrame>(privateUri, 1, 3, "Frame");
+    qmlRegisterType<UCPageWrapper>(privateUri, 1, 3, "PageWrapper");
+    qmlRegisterType<UCAppHeaderBase>(privateUri, 1, 3, "AppHeaderBase");
 
     QQmlExtensionPlugin::initializeEngine(engine, uri);
-    QQmlContext* context = engine->rootContext();
 
-    // register root object watcher that sets a global property with the root object
-    // that can be accessed from any object
-    context->setContextProperty("QuickUtils", &QuickUtils::instance());
-
-    UCDeprecatedTheme::registerToContext(context);
+    // allocate all context property objects prior we register them
+    initializeContextProperties(engine);
 
     HapticsProxy::instance().setEngine(engine);
-
-    context->setContextProperty("i18n", &UbuntuI18n::instance());
-    ContextPropertyChangeListener *i18nChangeListener =
-        new ContextPropertyChangeListener(context, "i18n");
-    QObject::connect(&UbuntuI18n::instance(), SIGNAL(domainChanged()),
-                     i18nChangeListener, SLOT(updateContextProperty()));
-    QObject::connect(&UbuntuI18n::instance(), SIGNAL(languageChanged()),
-                     i18nChangeListener, SLOT(updateContextProperty()));
-
-    // We can't use 'Application' because it exists (undocumented)
-    context->setContextProperty("UbuntuApplication", &UCApplication::instance());
-    ContextPropertyChangeListener *applicationChangeListener =
-        new ContextPropertyChangeListener(context, "UbuntuApplication");
-    QObject::connect(&UCApplication::instance(), SIGNAL(applicationNameChanged()),
-                     applicationChangeListener, SLOT(updateContextProperty()));
-    // Give the application object access to the engine
-    UCApplication::instance().setContext(context);
-
-    context->setContextProperty("units", &UCUnits::instance());
-    ContextPropertyChangeListener *unitsChangeListener =
-        new ContextPropertyChangeListener(context, "units");
-    QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()),
-                     unitsChangeListener, SLOT(updateContextProperty()));
-
-    // register FontUtils
-    context->setContextProperty("FontUtils", &UCFontUtils::instance());
-    ContextPropertyChangeListener *fontUtilsListener =
-        new ContextPropertyChangeListener(context, "FontUtils");
-    QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()),
-                     fontUtilsListener, SLOT(updateContextProperty()));
 
     engine->addImageProvider(QLatin1String("scaling"), new UCScalingImageProvider);
 
@@ -340,5 +323,5 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     registerWindowContextProperty();
 
     // register performance monitor
-    context->setContextProperty("performanceMonitor", new UCPerformanceMonitor(engine));
+    engine->rootContext()->setContextProperty("performanceMonitor", new UCPerformanceMonitor(engine));
 }

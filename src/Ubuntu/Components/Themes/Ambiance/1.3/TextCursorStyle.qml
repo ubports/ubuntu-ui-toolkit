@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -55,8 +55,8 @@ Item {
         Rectangle {
             objectName: "text_cursor_style_" + styledItem.positionProperty
             width: cursorWidth
-            // FIXME: Extend the palette and use palette values here
-            color: UbuntuColors.blue
+            // FIXME: check with design whether should it be activity or something else
+            color: theme.palette.normal.activity
             visible: blinkTimer.timerShowCursor || !blinkTimer.running
             Timer {
                 id: blinkTimer

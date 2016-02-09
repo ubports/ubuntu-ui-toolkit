@@ -1,0 +1,13 @@
+usr/include/*/qt5/UbuntuToolkit/ColorUtils
+usr/include/*/qt5/UbuntuToolkit/UbuntuToolkit
+usr/include/*/qt5/UbuntuToolkit/UbuntuToolkitDepends
+usr/include/*/qt5/UbuntuToolkit/UbuntuToolkitVersion
+usr/include/*/qt5/UbuntuToolkit/colorutils.h
+usr/include/*/qt5/UbuntuToolkit/ubuntutoolkitglobal.h
+usr/include/*/qt5/UbuntuToolkit/ubuntutoolkitversion.h
+usr/lib/*/libUbuntuToolkit.prl
+usr/lib/*/libUbuntuToolkit.la
+usr/lib/*/libUbuntuToolkit.so
+usr/lib/*/pkgconfig/UbuntuToolkit.pc
+usr/lib/*/qt5/mkspecs/modules/qt_lib_UbuntuToolkit.pri
+usr/lib/*/qt5/mkspecs/modules/qt_lib_UbuntuToolkit_private.pri

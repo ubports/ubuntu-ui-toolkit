@@ -79,6 +79,7 @@ Template {
                 id: telegramContactsLayout
                 title.text: "Telegram Name goes here"
                 subtitle.text: "last seen 12:02"
+                summary.text: "Oh wow! What a nice layout!"
 
                 Rectangle {
                     id: imageShape

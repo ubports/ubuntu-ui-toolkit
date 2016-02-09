@@ -82,10 +82,10 @@ Item {
     property real troughThicknessSteppersStyle : units.dp(14)
     property real troughThicknessThumbStyle : units.dp(14)
     property real troughThicknessIndicatorStyle : units.dp(9)
-    property color troughColorThumbStyle: "#CDCDCD"
-    property color troughColorSteppersStyle: "#f7f7f7"
+    property color troughColorThumbStyle: theme.palette.normal.foreground
+    property color troughColorSteppersStyle: theme.palette.normal.foreground
 
-    property color sliderColor: "#3b3b3b"
+    property color sliderColor: theme.palette.normal.foregroundText
     property real sliderRadius: units.dp(3)
     property real thumbThickness: units.gu(1)
     property real indicatorThickness : units.dp(3)
@@ -764,11 +764,13 @@ Item {
                     when: !isVertical
                     value: visible ? troughThicknessSteppersStyle : 0
                 }
-                Image {
+
+                Icon {
                     anchors.centerIn: parent
                     rotation: isVertical ? 180 : 90
                     source: Qt.resolvedUrl("../artwork/scrollbar_arrow.png")
-                    cache: true
+                    color: sliderColor
+                    keyColor: "#5d5d5d"
                 }
             }
             Rectangle {
@@ -795,12 +797,12 @@ Item {
                     when: !isVertical
                     value: visible ? troughThicknessSteppersStyle : 0
                 }
-                Image {
+                Icon {
                     anchors.centerIn: parent
-                    fillMode: Image.PreserveAspectFit
                     rotation: isVertical ? 0 : -90
                     source: Qt.resolvedUrl("../artwork/scrollbar_arrow.png")
-                    cache: true
+                    color: sliderColor
+                    keyColor: "#5d5d5d"
                 }
             }
         }

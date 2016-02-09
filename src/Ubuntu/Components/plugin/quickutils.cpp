@@ -30,6 +30,8 @@
 #include <private/qquicktextinput_p.h>
 #include <private/qquicktextedit_p.h>
 
+QuickUtils *QuickUtils::m_instance = nullptr;
+
 QuickUtils::QuickUtils(QObject *parent) :
     QObject(parent),
     m_rootView(0),
@@ -194,7 +196,12 @@ QObject* QuickUtils::createQmlObject(const QUrl &url, QQmlEngine *engine)
        the error "QQmlComponent: Component is not ready".
     */
     QQmlComponent *component = new QQmlComponent(engine, url, QQmlComponent::PreferSynchronous);
-    QObject* result = component->create();
+    QObject* result(Q_NULLPTR);
+    if (component->isError()) {
+        qmlInfo(engine) << component->errorString();
+    } else {
+        result = component->create();
+    }
     delete component;
     return result;
 }

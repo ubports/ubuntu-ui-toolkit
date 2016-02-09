@@ -30,12 +30,14 @@ Item {
      */
     property color uncheckedBackgroundColor: styledItem.enabled
                                                 ? theme.palette.normal.foreground
-                                                : theme.palette.inactive.foreground
+                                                : theme.palette.disabled.foreground
 
     /*!
       The background color when the checkbox is checked.
      */
-    property color checkedBackgroundColor: styledItem.enabled ? theme.palette.normal.positive : theme.palette.inactive.raised
+    property color checkedBackgroundColor: styledItem.enabled
+                                            ? theme.palette.normal.positive
+                                            : theme.palette.disabled.raised
 
     /*!
       The image to show inside the checkbox when it is checked.
@@ -45,7 +47,9 @@ Item {
     /*!
       The color of the icon.
      */
-    property color iconColor: styledItem.enabled ? theme.palette.normal.positiveText : theme.palette.inactive.raisedText
+    property color iconColor: styledItem.enabled
+                                ? theme.palette.normal.positiveText
+                                : theme.palette.disabled.raisedText
 
     /*!
       The padding between the icon and the border of the thumb.
