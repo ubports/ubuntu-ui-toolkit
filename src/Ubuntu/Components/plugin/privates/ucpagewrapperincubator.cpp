@@ -15,7 +15,6 @@
  */
 
 #include "ucpagewrapperincubator_p.h"
-#include <QDebug>
 
 /*!
   \internal
@@ -53,4 +52,3 @@ void UCPageWrapperIncubator::statusChanged(QQmlIncubator::Status status)
     }
     Q_EMIT statusHasChanged(status);
 }
-

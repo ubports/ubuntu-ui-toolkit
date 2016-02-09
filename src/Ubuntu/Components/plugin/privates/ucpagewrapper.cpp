@@ -253,161 +253,15 @@ void UCPageWrapperPrivate::nextStep()
     Q_Q(UCPageWrapper);
     switch(m_state) {
         case Waiting:{
-            m_state = LoadingComponent;
-
-            if (m_reference.canConvert<QQmlComponent *>()) {
-
-                //m_reference points to a Component already, make sure we do not
-                //delete it later on
-                m_ownsComponent = false;
-                m_component = m_reference.value<QQmlComponent *>();
-
-            } else if (m_reference.canConvert<QString>()) {
-
-                //m_reference contains a URL to the Component we have to load, in this
-                //case we need to destroy the component ourselves lateron
-                QQmlComponent::CompilationMode cMode = m_synchronous ? QQmlComponent::PreferSynchronous :
-                                                                       QQmlComponent::Asynchronous;
-                QUrl componentUrl = QUrl(m_reference.toString());
-                m_ownsComponent = true;
-                m_component = new QQmlComponent(qmlEngine(q), componentUrl, cMode);
-
-            } else if (m_reference.canConvert<QQuickItem *>()) {
-                //the object is owned by JS
-                setCanDestroy(false);
-
-                //m_reference is already a Item, we just need to copy the properties and we are done
-                QQuickItem *theItem = m_reference.value<QQuickItem *>();
-                initItem(theItem);
-
-                //proceed to final step
-                m_state = NotifyPageLoaded;
-                nextStep();
-                return;
-            } else {
-                m_state = Error;
-                qmlInfo(q) << "PageWrapper.reference contains unsupported data";
-                return;
-            }
-
-            if (m_component) {
-                if (!m_synchronous) {
-                    //The Incubator needs to be created ahead of time because QML code assumes its valid right away
-                    createIncubator();
-                }
-
-                //check if the component is already available
-                if (m_component->status() != QQmlComponent::Loading)
-                    nextStep();
-                else {
-                    //async behaviour, advance to the next state once the component was loaded
-                    QSharedPointer<QMetaObject::Connection> connHandle(new QMetaObject::Connection);
-                    auto asyncCallback = [this, connHandle](){
-                        if(m_component->status() != QQmlComponent::Loading) {
-                            QObject::disconnect(*connHandle);
-                            nextStep();
-                        }
-                    };
-
-                    *connHandle = QObject::connect(m_component, &QQmlComponent::statusChanged,asyncCallback);
-                }
-            }
+            loadComponentState();
             break;
         }
         case LoadingComponent:{
-            if (m_component->status() == QQmlComponent::Error) {
-                qmlInfo(q) << m_component->errors();
-                m_state = Error;
-                return; //full stop
-            }
-
-            //the Component was created, next step is to create a Item instance
-            m_state = CreatingObject;
-
-            //Object has C++ ownership
-            setCanDestroy(true);
-
-            // create context
-            // use creation context as parent to create the context we load the style item with
-            QQmlContext *creationContext = m_component->creationContext();
-            if (!creationContext) {
-                creationContext = qmlContext(q);
-            }
-            if (creationContext && !creationContext->isValid()) {
-                // we are having the changes in the component being under deletion
-
-                qmlInfo(q) << "Could not get creation context";
-                m_state = Error;
-                return;
-            }
-
-            m_itemContext = new QQmlContext(creationContext);
-
-            if (m_synchronous) {
-                QQuickItem *theItem = toItem(m_component->create(m_itemContext));
-                if (theItem) {
-                    m_itemContext->setParent(theItem);
-                    m_itemContext = nullptr;
-                    initItem(theItem);
-                    m_state = NotifyPageLoaded;
-                    nextStep();
-                } else {
-                    delete m_itemContext;
-                    m_itemContext = nullptr;
-                    m_state = Error;
-                }
-            } else {
-                //connect the change signal first so we definately catch the signal even when the creation finishes right away
-                QObject::connect(m_incubator, SIGNAL(enterOnStatusChanged()),
-                                 q, SLOT(nextStep()));
-
-                m_component->create(*m_incubator, m_itemContext);
-            }
+            createObjectState();
             break;
         }
         case CreatingObject:{
-            if(m_incubator->status() == QQmlIncubator::Ready) {
-
-                QObject::disconnect(m_incubator, SIGNAL(enterOnStatusChanged()),
-                                 q, SLOT(nextStep()));
-
-                //the object was created, now initialize it
-                QQuickItem *theItem = toItem(m_incubator->object());
-                if (theItem) {
-                    initItem(theItem);
-                    m_itemContext->setParent(theItem);
-                    m_itemContext = nullptr;
-
-                    //this code needs to be executed after the Incubator has executed the JS callback
-                    QSharedPointer<QMetaObject::Connection> sharedConn(new QMetaObject::Connection);
-                    auto asyncCallback = [this, sharedConn](){
-                        QObject::disconnect(*sharedConn);
-                        destroyIncubator();
-
-                        m_state = NotifyPageLoaded;
-                        nextStep();
-                    };
-                    *sharedConn = QObject::connect(m_incubator, &UCPageWrapperIncubator::statusHasChanged,asyncCallback);
-
-                    return;
-                } else {
-                    m_state = Error;
-                }
-            } else if(m_incubator->status() == QQmlIncubator::Error) {
-                m_state = Error;
-                qmlInfo(q) << m_incubator->errors();
-            }
-
-            // cleanup
-            if(m_incubator->status() != QQmlIncubator::Loading) {
-                //if we reach this point there was a error, make sure the item context is properly
-                //destroyed
-                if (m_itemContext) {
-                    delete m_itemContext;
-                    m_itemContext = nullptr;
-                }
-                destroyIncubator();
-            }
+            initializeObjectIfReady();
             break;
         }
         case NotifyPageLoaded: {
@@ -418,6 +272,170 @@ void UCPageWrapperPrivate::nextStep()
         }
         default:
             break; // do nothing
+    }
+}
+
+void UCPageWrapperPrivate::loadComponentState()
+{
+    Q_Q(UCPageWrapper);
+    m_state = LoadingComponent;
+
+    if (m_reference.canConvert<QQmlComponent *>()) {
+
+        //m_reference points to a Component already, make sure we do not
+        //delete it later on
+        m_ownsComponent = false;
+        m_component = m_reference.value<QQmlComponent *>();
+
+    } else if (m_reference.canConvert<QString>()) {
+
+        //m_reference contains a URL to the Component we have to load, in this
+        //case we need to destroy the component ourselves lateron
+        QQmlComponent::CompilationMode cMode = m_synchronous ? QQmlComponent::PreferSynchronous :
+                                                               QQmlComponent::Asynchronous;
+        QUrl componentUrl = QUrl(m_reference.toString());
+        m_ownsComponent = true;
+        m_component = new QQmlComponent(qmlEngine(q), componentUrl, cMode);
+
+    } else if (m_reference.canConvert<QQuickItem *>()) {
+        //the object is owned by JS
+        setCanDestroy(false);
+
+        //m_reference is already a Item, we just need to copy the properties and we are done
+        QQuickItem *theItem = m_reference.value<QQuickItem *>();
+        initItem(theItem);
+
+        //proceed to final step
+        m_state = NotifyPageLoaded;
+        nextStep();
+        return;
+    } else {
+        m_state = Error;
+        qmlInfo(q) << "PageWrapper.reference contains unsupported data";
+        return;
+    }
+
+    if (m_component) {
+        if (!m_synchronous) {
+            //The Incubator needs to be created ahead of time because QML code assumes its valid right away
+            createIncubator();
+        }
+
+        //check if the component is already available
+        if (m_component->status() != QQmlComponent::Loading)
+            nextStep();
+        else {
+            //async behaviour, advance to the next state once the component was loaded
+            QSharedPointer<QMetaObject::Connection> connHandle(new QMetaObject::Connection);
+            auto asyncCallback = [this, connHandle](){
+                if(m_component->status() != QQmlComponent::Loading) {
+                    QObject::disconnect(*connHandle);
+                    nextStep();
+                }
+            };
+
+            *connHandle = QObject::connect(m_component, &QQmlComponent::statusChanged,asyncCallback);
+        }
+    }
+}
+
+void UCPageWrapperPrivate::createObjectState()
+{
+    Q_Q(UCPageWrapper);
+    if (m_component->status() == QQmlComponent::Error) {
+        qmlInfo(q) << m_component->errors();
+        m_state = Error;
+        return; //full stop
+    }
+
+    //the Component was created, next step is to create a Item instance
+    m_state = CreatingObject;
+
+    //Object has C++ ownership
+    setCanDestroy(true);
+
+    // create context
+    // use creation context as parent to create the context we load the style item with
+    QQmlContext *creationContext = m_component->creationContext();
+    if (!creationContext) {
+        creationContext = qmlContext(q);
+    }
+    if (creationContext && !creationContext->isValid()) {
+        // we are having the changes in the component being under deletion
+
+        qmlInfo(q) << "Could not get creation context";
+        m_state = Error;
+        return;
+    }
+
+    m_itemContext = new QQmlContext(creationContext);
+
+    if (m_synchronous) {
+        QQuickItem *theItem = toItem(m_component->create(m_itemContext));
+        if (theItem) {
+            m_itemContext->setParent(theItem);
+            m_itemContext = nullptr;
+            initItem(theItem);
+            m_state = NotifyPageLoaded;
+            nextStep();
+        } else {
+            delete m_itemContext;
+            m_itemContext = nullptr;
+            m_state = Error;
+        }
+    } else {
+        //connect the change signal first so we definately catch the signal even when the creation finishes right away
+        QObject::connect(m_incubator, SIGNAL(enterOnStatusChanged()),
+                         q, SLOT(nextStep()));
+
+        m_component->create(*m_incubator, m_itemContext);
+    }
+}
+
+void UCPageWrapperPrivate::initializeObjectIfReady()
+{
+    Q_Q(UCPageWrapper);
+    if(m_incubator->status() == QQmlIncubator::Ready) {
+
+        QObject::disconnect(m_incubator, SIGNAL(enterOnStatusChanged()),
+                         q, SLOT(nextStep()));
+
+        //the object was created, now initialize it
+        QQuickItem *theItem = toItem(m_incubator->object());
+        if (theItem) {
+            initItem(theItem);
+            m_itemContext->setParent(theItem);
+            m_itemContext = nullptr;
+
+            //this code needs to be executed after the Incubator has executed the JS callback
+            QSharedPointer<QMetaObject::Connection> sharedConn(new QMetaObject::Connection);
+            auto asyncCallback = [this, sharedConn](){
+                QObject::disconnect(*sharedConn);
+                destroyIncubator();
+
+                m_state = NotifyPageLoaded;
+                nextStep();
+            };
+            *sharedConn = QObject::connect(m_incubator, &UCPageWrapperIncubator::statusHasChanged,asyncCallback);
+
+            return;
+        } else {
+            m_state = Error;
+        }
+    } else if(m_incubator->status() == QQmlIncubator::Error) {
+        m_state = Error;
+        qmlInfo(q) << m_incubator->errors();
+    }
+
+    // cleanup
+    if(m_incubator->status() != QQmlIncubator::Loading) {
+        //if we reach this point there was a error, make sure the item context is properly
+        //destroyed
+        if (m_itemContext) {
+            delete m_itemContext;
+            m_itemContext = nullptr;
+        }
+        destroyIncubator();
     }
 }
 
@@ -744,4 +762,3 @@ void UCPageWrapper::resetTheme2()
  */
 
 #include "moc_ucpagewrapper.cpp"
-

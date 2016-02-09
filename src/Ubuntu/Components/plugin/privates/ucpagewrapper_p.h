@@ -52,7 +52,11 @@ public:
 
     void setCanDestroy(bool canDestroy);
 
+    //state machine functions
     void nextStep ();
+    void loadComponentState ();
+    void createObjectState ();
+    void initializeObjectIfReady ();
 
     QVariant m_reference;
     QVariant m_properties;
@@ -70,8 +74,4 @@ public:
     bool m_ownsComponent:1;
 };
 
-
-
-
 #endif // UCPAGEWRAPPER_P_H
-
