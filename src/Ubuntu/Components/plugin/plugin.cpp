@@ -79,6 +79,7 @@
 #include "ucmainviewbase.h"
 #include "ucperformancemonitor.h"
 #include "privates/frame.h"
+#include "privates/ucpagewrapper.h"
 #include "privates/appheaderbase.h"
 
 // From UbuntuGestures
@@ -297,6 +298,7 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     // Register private types.
     const char *privateUri = "Ubuntu.Components.Private";
     qmlRegisterType<UCFrame>(privateUri, 1, 3, "Frame");
+    qmlRegisterType<UCPageWrapper>(privateUri, 1, 3, "PageWrapper");
     qmlRegisterType<UCAppHeaderBase>(privateUri, 1, 3, "AppHeaderBase");
 
     QQmlExtensionPlugin::initializeEngine(engine, uri);
