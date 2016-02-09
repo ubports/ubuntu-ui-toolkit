@@ -3,7 +3,7 @@ unix {
     PKGCONFIG += gio-2.0 dbus-1 libnih-dbus
 }
 
-QT *= core-private qml qml-private quick quick-private gui-private dbus svg UbuntuGestures UbuntuGestures_private
+QT *= core-private qml qml-private quick quick-private gui-private dbus svg UbuntuGestures UbuntuGestures_private UbuntuToolkit
 
 equals(QT_MAJOR_VERSION, 5):lessThan(QT_MINOR_VERSION, 2) {
     QT += v8-private
@@ -109,7 +109,8 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/ucmainviewbase.h \
     $$PWD/ucmainviewbase_p.h \
     $$PWD/ucperformancemonitor.h \
-    $$PWD/privates/frame.h
+    $$PWD/privates/frame.h \
+    $$PWD/privates/appheaderbase.h
 
 SOURCES += $$PWD/plugin.cpp \
     $$PWD/uctheme.cpp \
@@ -182,7 +183,8 @@ SOURCES += $$PWD/plugin.cpp \
     $$PWD/ucpagetreenode.cpp \
     $$PWD/ucmainviewbase.cpp \
     $$PWD/ucperformancemonitor.cpp \
-    $$PWD/privates/frame.cpp
+    $$PWD/privates/frame.cpp \
+    $$PWD/privates/appheaderbase.cpp
 
 # adapters
 SOURCES += $$PWD/adapters/alarmsadapter_organizer.cpp
