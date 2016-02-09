@@ -25,13 +25,13 @@ Style.ComboButtonStyle {
 
     // configurations
     dropDownWidth: units.gu(5)
-    dropDownSeparatorWidth: units.dp(2)
+    dropDownSeparatorWidth: 0
     comboListMargin: units.gu(0.8)
     comboListHolder: comboListContent
     comboListPanel: panelItem
     defaultColor: mainButton.defaultColor
     defaultGradient: mainButton.defaultGradient
-    defaultDropdownColor: combo.expanded ? Qt.rgba(0, 0, 0, 0.05) : mainButton.defaultColor
+    defaultDropdownColor: mainButton.defaultColor
     defaultFont: mainButton.defaultFont
 
     width: combo.width
@@ -48,48 +48,19 @@ Style.ComboButtonStyle {
 
         property real minimumWidth: units.gu(36)
         property real horizontalPadding: units.gu(4) - dropDownSeparatorWidth
-        // FIXME: Add this color to the palette
-        property color defaultColor: "#b2b2b2"
+        property color defaultColor: theme.palette.normal.foreground
         property font defaultFont: Qt.font({family: "Ubuntu", pixelSize: FontUtils.sizeToPixels("medium")})
         property Gradient defaultGradient: null
         property real buttonFaceOffset: -dropDownWidth/2 - dropDownSeparatorWidth
-        property bool stroke: styledItem.hasOwnProperty("strokeColor") && styledItem.strokeColor != Qt.rgba(0.0, 0.0, 0.0, 0.0)
+        property bool stroke: false
+
         /*!
           The property overrides the button's default background with an item. This
           item can be used by derived styles to reuse the ButtonStyle and override
           the default coloured background with an image or any other drawing.
           The default value is null.
-          */
-        property Item backgroundSource: comboFace
-
-        /* The proxy is necessary because Gradient.stops and GradientStop.color are
-           non-NOTIFYable properties. They cannot be written to so it is fine but
-           the proxy avoids the warnings.
         */
-        property QtObject gradientProxy: gradientProxyObject
-        QtObject {
-            id: gradientProxyObject
-            property color topColor
-            property color bottomColor
-
-            function updateGradient() {
-                if (styledItem.gradient) {
-                    topColor = styledItem.gradient.stops[0].color;
-                    bottomColor = styledItem.gradient.stops[1].color;
-                }
-            }
-
-            Component.onCompleted: {
-                updateGradient();
-                styledItem.gradientChanged.connect(updateGradient);
-            }
-        }
-
-        // Use the gradient if it is defined and the color has not been set
-        // manually or the gradient has been set manually
-        property bool isGradient: styledItem.gradient && (
-            styledItem.color == defaultColor || styledItem.gradient != defaultGradient
-        )
+        property Item backgroundSource: comboFace
 
         anchors {
             left: parent.left
@@ -106,42 +77,6 @@ Style.ComboButtonStyle {
         LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
         LayoutMirroring.childrenInherit: true
 
-        Image {
-            id: strokeBorder
-            anchors.fill: parent
-            anchors.margins: -units.gu(0.5)
-            // FIXME: this PNG is way too big (462x108) and do not scale properly
-            // ie. the corners are visually incorrect at most sizes
-            source: mainButton.stroke ? Qt.resolvedUrl("../artwork/stroke_button.png") : ""
-            visible: false
-            cache: false
-            asynchronous: true
-        }
-
-        ShaderEffect {
-            id: colorizedImage
-
-            anchors.fill: parent
-            visible: mainButton.stroke && strokeBorder.status == Image.Ready
-
-            property Item source: visible ? strokeBorder : null
-            property color keyColorOut: mainButton.stroke ? styledItem.strokeColor : Qt.rgba(0.0, 0.0, 0.0, 0.0)
-            property color keyColorIn: Qt.rgba(1.0, 1.0, 1.0, 1.0)
-            property real threshold: 1.0
-
-            fragmentShader: "
-            varying highp vec2 qt_TexCoord0;
-            uniform sampler2D source;
-            uniform highp vec4 keyColorOut;
-            uniform highp vec4 keyColorIn;
-            uniform lowp float threshold;
-            uniform lowp float qt_Opacity;
-            void main() {
-                lowp vec4 sourceColor = texture2D(source, qt_TexCoord0);
-                gl_FragColor = mix(vec4(keyColorOut.rgb, 1.0) * sourceColor.a, sourceColor, step(threshold, distance(sourceColor.rgb / sourceColor.a, keyColorIn.rgb))) * qt_Opacity;
-            }"
-        }
-
         UbuntuShape {
             id: background
             anchors.fill: parent
@@ -149,34 +84,16 @@ Style.ComboButtonStyle {
             visible: mainButton.stroke ? false : ((backgroundColor.a != 0.0) || mainButton.backgroundSource)
             source: mainButton.backgroundSource
 
-            backgroundColor: mainButton.backgroundSource ? "#00000000" : (mainButton.isGradient ? gradientProxy.topColor : styledItem.color)
-            secondaryBackgroundColor: mainButton.backgroundSource ? "#00000000" : (mainButton.isGradient ? gradientProxy.bottomColor : styledItem.color)
-            backgroundMode: mainButton.isGradient ? UbuntuShape.VerticalGradient : UbuntuShape.SolidColor
+            backgroundColor: defaultColor
+            backgroundMode: UbuntuShape.SolidColor
             opacity: styledItem.enabled ? 1.0 : 0.6
-        }
-
-        UbuntuShape {
-            id: backgroundPressed
-            anchors.fill: parent
-            backgroundColor: mainButton.stroke ? styledItem.strokeColor : background.backgroundColor
-            secondaryBackgroundColor: background.secondaryBackgroundColor
-            backgroundMode: mainButton.stroke ? UbuntuShape.SolidColor : UbuntuShape.VerticalGradient
-            borderSource: "radius_pressed.sci"  // Deprecated, use a dedicated shape.
-            opacity: styledItem.pressed ? 1.0 : 0.0
-            Behavior on opacity {
-                NumberAnimation {
-                    duration: UbuntuAnimation.SnapDuration
-                    easing.type: Easing.Linear
-                }
-            }
-            visible: mainButton.stroke || background.visible
         }
 
         Item {
             id: foreground
 
             property string iconPosition: styledItem.iconPosition
-            property real iconSize: units.gu(3)
+            property real iconSize: units.gu(2)
             property real spacing: mainButton.horizontalPadding
             property bool hasIcon: styledItem.iconSource != ""
             property bool hasText: styledItem.text != ""
@@ -211,11 +128,7 @@ Style.ComboButtonStyle {
                 id: foregroundLabel
                 anchors.verticalCenter: parent.verticalCenter
                 elide: Text.ElideRight
-                /* Pick either a clear or dark text color depending on the
-                 * luminance of the background color to maintain good contrast
-                 * (works in most cases)
-                 */
-                color: ColorUtils.luminance(combo.color) <= 0.85 && !(mainButton.stroke && !combo.pressed) ? "#FFFFFF" : "#888888"
+                color: theme.palette.normal.foregroundText
                 font: styledItem.font
                 text: combo.text
             }
@@ -299,23 +212,13 @@ Style.ComboButtonStyle {
             width: mainButton.width
             height: mainButton.height
 
+            // button background
             Rectangle {
                 anchors {
                     fill: parent
                     rightMargin: comboStyle.dropDownSeparatorWidth + comboStyle.dropDownWidth
                 }
-                color: combo.color
-                gradient: mainButton.isGradient ? combo.gradient : null
-            }
-
-            // distancer
-            Item {
-                anchors {
-                    right: dropDownButton.right
-                    top: parent.top
-                    bottom: parent.bottom
-                }
-                width: comboStyle.dropDownSeparatorWidth
+                color: defaultColor
             }
 
             Rectangle {
@@ -327,11 +230,13 @@ Style.ComboButtonStyle {
                     bottom: parent.bottom
                 }
                 width: comboStyle.dropDownWidth
-                color: combo.dropdownColor
-                Image {
-                    source: Qt.resolvedUrl("../artwork/chevron.png")
+                color: defaultDropdownColor
+                Icon {
                     anchors.centerIn: parent
-                    rotation: combo.expanded ? -90 : 90
+                    height: parent.height / 2
+                    width: height
+                    name: combo.expanded? "up" : "down"
+                    color: foregroundLabel.color
                 }
             }
         }
@@ -364,40 +269,16 @@ Style.ComboButtonStyle {
                 topMargin: comboListMargin
             }
             clip: true
-            color: combo.dropdownColor
+            color: defaultDropdownColor
         }
 
-        BorderImage {
-            id: shadow
-            anchors {
-                fill: parent
-                leftMargin: -units.gu(0.5)
-                topMargin: comboListMargin - units.gu(0.5)
-                rightMargin: -units.gu(0.5)
-                bottomMargin: -units.gu(0.5)
-            }
-            source: Qt.resolvedUrl("../artwork/bubble_shadow.sci")
-        }
         UbuntuShape {
             id: shape
             anchors {
                 fill: parent
                 topMargin: comboListMargin
             }
-            visible: true
             source: listContent
-        }
-
-        Image {
-            source: Qt.resolvedUrl("../artwork/bubble_arrow.png")
-            rotation: 180
-            anchors {
-                bottom: shape.top
-                bottomMargin: -1
-                right: parent.right
-                rightMargin: dropDownWidth / 2 - units.gu(0.5)
-            }
-
         }
 
         Behavior on height {

@@ -165,21 +165,43 @@ AbstractButton {
     id: combo
 
     /*!
-      If set to a color, the button has a stroke border instead of a filled shape.
+      \deprecated
+      If set to a color, the button has a stroke border instead of a filled
+      shape.
     */
-    property color strokeColor: Qt.rgba(0.0, 0.0, 0.0, 0.0)
+    property color strokeColor
+    onStrokeColorChanged: console.warn(
+        "WARNING: ComboButton.strokeColor is deprecated."
+    )
 
     /*!
-       The background color of the button.
+      \deprecated
+      The background color of the button.
     */
-    property color color: __styleInstance.defaultColor
+    property color color
+    onColorChanged: console.warn("WARNING: ComboButton.color is deprecated.")
 
     /*!
+      \deprecated
       The gradient used to fill the background of the button.
       Standard Ubuntu gradients are defined in \l UbuntuColors.
       If both a gradient and a color are specified, the gradient will be used.
     */
     property Gradient gradient
+    onGradientChanged: console.warn(
+        "WARNING: ComboButton.gradient is deprecated."
+    )
+
+    /*!
+      \deprecated
+      The property specifies the color of the dropdown button and the combo
+      list for both collapsed and expanded states. You can use \l expanded to
+      define different colors for expanded or collapsed states.
+      */
+    property color dropdownColor
+    onDropdownColorChanged: console.warn(
+        "WARNING: ComboButton.dropdownColor is deprecated."
+    )
 
     /*!
       The font used for the button's text.
@@ -274,15 +296,6 @@ AbstractButton {
         expanded height.
       */
     default property alias comboList: comboListHolder.data
-
-    /* ----------------- Color and font configurations ----------------- */
-    /*!
-      The property specifies the color of the dropdown button and the combo list
-      for both collapsed and expanded states. You can use \l expanded to define
-      different colors for expanded or collapsed states.
-      */
-    property color dropdownColor: __styleInstance ? __styleInstance.defaultDropdownColor : color
-
 
     styleName: "ComboButtonStyle"
 
