@@ -21,11 +21,8 @@ import Ubuntu.Components.Styles 1.3 as Style
 Style.ComboButtonStyle {
     id: comboStyle
 
-    property ComboButton combo: styledItem
-
     // configurations
     dropDownWidth: units.gu(5)
-    dropDownSeparatorWidth: 0
     comboListMargin: units.gu(0.8)
     comboListHolder: comboListContent
     comboListPanel: panelItem
@@ -34,8 +31,8 @@ Style.ComboButtonStyle {
     defaultDropdownColor: mainButton.defaultColor
     defaultFont: mainButton.defaultFont
 
-    width: combo.width
-    height: combo.collapsedHeight
+    width: styledItem.width
+    height: styledItem.collapsedHeight
 
     implicitWidth: mainButton.implicitWidth
     implicitHeight: mainButton.implicitHeight
@@ -47,11 +44,11 @@ Style.ComboButtonStyle {
         id: mainButton
 
         property real minimumWidth: units.gu(36)
-        property real horizontalPadding: units.gu(4) - dropDownSeparatorWidth
+        property real horizontalPadding: units.gu(4)
         property color defaultColor: theme.palette.normal.foreground
         property font defaultFont: Qt.font({family: "Ubuntu", pixelSize: FontUtils.sizeToPixels("medium")})
         property Gradient defaultGradient: null
-        property real buttonFaceOffset: -dropDownWidth/2 - dropDownSeparatorWidth
+        property real buttonFaceOffset: -dropDownWidth/2
         property bool stroke: false
 
         /*!
@@ -68,7 +65,7 @@ Style.ComboButtonStyle {
             right: parent.right
         }
         width: styledItem.width
-        height: combo.collapsedHeight
+        height: styledItem.collapsedHeight
         implicitWidth: Math.max(
             minimumWidth, foreground.implicitWidth + 2 * mainButton.horizontalPadding
         )
@@ -121,7 +118,7 @@ Style.ComboButtonStyle {
                 width: foreground.iconSize
                 height: foreground.iconSize
                 color: foregroundLabel.color
-                source: combo.iconSource
+                source: styledItem.iconSource
             }
 
             Label {
@@ -130,7 +127,7 @@ Style.ComboButtonStyle {
                 elide: Text.ElideRight
                 color: theme.palette.normal.foregroundText
                 font: styledItem.font
-                text: combo.text
+                text: styledItem.text
             }
 
             states: [
@@ -216,7 +213,7 @@ Style.ComboButtonStyle {
             Rectangle {
                 anchors {
                     fill: parent
-                    rightMargin: comboStyle.dropDownSeparatorWidth + comboStyle.dropDownWidth
+                    rightMargin: comboStyle.dropDownWidth
                 }
                 color: defaultColor
             }
@@ -235,7 +232,7 @@ Style.ComboButtonStyle {
                     anchors.centerIn: parent
                     height: parent.height / 2
                     width: height
-                    name: combo.expanded? "up" : "down"
+                    name: styledItem.expanded? "up" : "down"
                     color: foregroundLabel.color
                 }
             }
@@ -250,7 +247,7 @@ Style.ComboButtonStyle {
             top: mainButton.bottom
             right: parent.right
         }
-        opacity: combo.expanded && (combo.comboList.length > 0)? 1.0 : 0.0
+        opacity: styledItem.expanded && (styledItem.comboList.length > 0)? 1.0 : 0.0
 
         ShaderEffectSource {
             id: listContent

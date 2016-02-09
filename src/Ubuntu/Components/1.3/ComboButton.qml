@@ -307,7 +307,7 @@ AbstractButton {
         __mouseArea.anchors.left = Qt.binding(function() {return combo.left;});
         __mouseArea.anchors.top = Qt.binding(function() {return combo.top;});
         __mouseArea.anchors.right = Qt.binding(function() {return combo.right;});
-        __mouseArea.anchors.rightMargin = Qt.binding(function() {return combo.__styleInstance.dropDownWidth + combo.__styleInstance.dropDownSeparatorWidth;});
+        __mouseArea.anchors.rightMargin = Qt.binding(function() {return combo.__styleInstance.dropDownWidth;});
         __mouseArea.height = Qt.binding(function() {return collapsedHeight;});
         // for autopilot, set the main button name
         __mouseArea.objectName = "combobutton_mainbutton";
