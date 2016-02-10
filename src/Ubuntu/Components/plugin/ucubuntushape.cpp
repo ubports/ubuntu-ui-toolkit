@@ -207,8 +207,9 @@ ShapeMaterial::ShapeMaterial()
 
     // Get or create the set of textures associated with the current context. We assume that QtQuick
     // associates the same graphics context to a material for its entire lifetime.
+    QOpenGLContext* context = QOpenGLContext::currentContext();
     shapeTexturesHashMutex.lock();
-    ShapeTextures& textures = shapeTexturesHash[QOpenGLContext::currentContext()];
+    ShapeTextures& textures = shapeTexturesHash[context];
     if (textures.ref() == 1) {
         createShapeTextures(context, textures.ids());
     }
