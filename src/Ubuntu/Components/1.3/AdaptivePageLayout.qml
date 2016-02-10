@@ -17,6 +17,7 @@
 import QtQuick 2.4
 import QtQuick.Layouts 1.1
 import Ubuntu.Components 1.3
+import Ubuntu.Components.Private 1.3
 import "tree.js" as Tree
 
 /*!
@@ -445,8 +446,7 @@ PageTreeNode {
         }
 
         function createWrapper(page, properties) {
-            var wrapperComponent = Qt.createComponent("PageWrapper.qml");
-            var wrapperObject = wrapperComponent.createObject(hiddenPages, {synchronous: !layout.asynchronous});
+            var wrapperObject = pageWrapperComponent.createObject(hiddenPages, {synchronous: !layout.asynchronous});
             wrapperObject.pageStack = layout;
             wrapperObject.properties = properties;
             // set reference last because it will trigger creation of the object
@@ -655,6 +655,13 @@ PageTreeNode {
         }
     }
 
+    Component{
+        id: pageWrapperComponent
+        PageWrapper{
+        }
+    }
+
+
     // default metrics
     Component {
         id: defaultMetrics
@@ -710,7 +717,7 @@ PageTreeNode {
             id: holder
             active: false
             objectName: "ColumnHolder" + column
-            property PageWrapper pageWrapper
+            property var pageWrapper: pageWrapperComponent.createObject()
             property int column
             property alias config: subHeader.config
             property PageColumn metrics: getDefaultMetrics()
