@@ -26,6 +26,7 @@ _MINIMAL=$3
 
 _TARGET=$(basename $1)
 _TESTFILE=$(basename $2)
+_LIB_PATH="${BUILD_DIR}/lib:${BUILD_DIR}/qml/Ubuntu/Components:${BUILD_DIR}/qml/Ubuntu/Test:$LD_LIBRARY_PATH"
 _IMPORT_PATH="${BUILD_DIR}/qml:$QML2_IMPORT_PATH"
 _THEMES_PATH="${BUILD_DIR}/qml"
 _XML="${BUILD_DIR}/tests/test_$_TARGET_$_TESTFILE.xml"
@@ -50,7 +51,7 @@ function create_test_cmd {
   if [ $_TARGETPATH != $_TESTFILEPATH ]; then
       _CMD="$_CMD -p -input -p $_TESTFILEPATH"
   fi
-  _CMD="$_CMD -p -maxwarnings -p 40"
+  _CMD="$_CMD -p -maxwarnings -p 100"
 }
 
 function execute_test_cmd {
@@ -64,11 +65,13 @@ function execute_test_cmd {
     # https://bugreports.qt-project.org/browse/QTBUG-36243
 	
     QML2_IMPORT_PATH=${_IMPORT_PATH} UBUNTU_UI_TOOLKIT_THEMES_PATH=${_THEMES_PATH} \
-    ALARM_BACKEND=memory SUPPRESS_DEPRECATED_NOTE=yes \
+    LD_LIBRARY_PATH=${_LIB_PATH} \
+    ALARM_BACKEND=memory SUPPRESS_DEPRECATED_NOTE=no \
+    QT_LOGGING_RULES=ucPerformance.warning=false \
     $_CMD $_ARGS 2>&1 | grep -v 'QFontDatabase: Cannot find font directory'
     if [ "x$UITK_TEST_KEEP_RUNNING" != "x1" ]; then
         ${BUILD_DIR}/tests/checkresults.sh $_XML
-        RESULT=$*
+        RESULT=$?
     fi
   else
     echo "Skipped because no DISPLAY available"

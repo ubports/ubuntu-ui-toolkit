@@ -15,14 +15,30 @@
  */
 
 #include "ucabstractbutton.h"
+#include "ucabstractbutton_p.h"
 #include "uchaptics.h"
 #include "ucunits.h"
+#include "ucaction.h"
 #include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickmousearea_p.h>
 #include <QtQml/private/qqmlglobal_p.h>
 
 #define MIN_SENSING_WIDTH_GU    4
 #define MIN_SENSING_HEIGHT_GU   4
+
+UCAbstractButtonPrivate::UCAbstractButtonPrivate()
+    : UCActionItemPrivate()
+    , mouseArea(new QQuickMouseArea)
+    , acceptEvents(true)
+    , pressAndHoldConnected(false)
+{
+}
+void UCAbstractButtonPrivate::init()
+{
+    Q_Q(UCAbstractButton);
+    q->setActiveFocusOnPress(true);
+    q->setActiveFocusOnTab(true);
+}
 
 /*!
     \qmltype AbstractButton
@@ -82,17 +98,29 @@
  */
 
 UCAbstractButton::UCAbstractButton(QQuickItem *parent)
-    : UCActionItem(parent)
-    , m_mouseArea(new QQuickMouseArea)
-    , m_acceptEvents(true)
-    , m_pressAndHoldConnected(false)
+    : UCActionItem(*(new UCAbstractButtonPrivate), parent)
 {
-    setActiveFocusOnPress(true);
+    d_func()->init();
+}
+UCAbstractButton::UCAbstractButton(UCAbstractButtonPrivate &&dd, QQuickItem *parent)
+    : UCActionItem(dd, parent)
+{
+    d_func()->init();
 }
 
-bool UCAbstractButton::isPressAndHoldConnected()
+bool UCAbstractButtonPrivate::isPressAndHoldConnected()
 {
-    IS_SIGNAL_CONNECTED(this, UCAbstractButton, pressAndHold, ());
+    Q_Q(UCAbstractButton);
+    IS_SIGNAL_CONNECTED(q, UCAbstractButton, pressAndHold, ());
+}
+
+void UCAbstractButtonPrivate::onClicked()
+{
+    Q_Q(UCAbstractButton);
+    // call the overridden QML trigger function
+    invokeTrigger<UCAbstractButton>(q, QVariant());
+    // then emit the clicked signal
+    Q_EMIT q->clicked();
 }
 
 void UCAbstractButton::classBegin()
@@ -103,119 +131,120 @@ void UCAbstractButton::classBegin()
     HapticsProxy::instance().initialize();
 
     // set up mouse area
-    QQml_setParent_noEvent(m_mouseArea, this);
-    m_mouseArea->setParentItem(this);
-    QQuickAnchors *anchors = QQuickItemPrivate::get(m_mouseArea)->anchors();
+    Q_D(UCAbstractButton);
+    QQml_setParent_noEvent(d->mouseArea, this);
+    d->mouseArea->setParentItem(this);
+    QQuickAnchors *anchors = QQuickItemPrivate::get(d->mouseArea)->anchors();
     anchors->setFill(this);
-    m_mouseArea->setHoverEnabled(true);
+    d->mouseArea->setHoverEnabled(true);
 }
 
-void UCAbstractButton::componentComplete()
+void UCAbstractButtonPrivate::completeComponentInitialization()
 {
-    UCActionItem::componentComplete();
+    UCActionItemPrivate::completeComponentInitialization();
+    Q_Q(UCAbstractButton);
 
     // adjust sensing area
-    adjustSensingArea();
-
-    // connect to the right slot, using macros so we get the proper slot
-    connect(m_mouseArea, SIGNAL(clicked(QQuickMouseEvent*)), this, SLOT(trigger()));
+    q->adjustSensingArea();
 
     // bind mouse area
-    connect(m_mouseArea, &QQuickMouseArea::pressedChanged, this, &UCAbstractButton::pressedChanged);
-    connect(m_mouseArea, &QQuickMouseArea::hoveredChanged, this, &UCAbstractButton::hoveredChanged);
-    connect(m_mouseArea, &QQuickMouseArea::clicked, this, &UCAbstractButton::onMouseAreaClicked);
-    connect(m_mouseArea, &QQuickMouseArea::pressedChanged, this, &UCAbstractButton::onMouseAreaPressedChanged);
+    QObject::connect(mouseArea, &QQuickMouseArea::pressedChanged, q, &UCAbstractButton::pressedChanged);
+    QObject::connect(mouseArea, &QQuickMouseArea::hoveredChanged, q, &UCAbstractButton::hoveredChanged);
+    QObject::connect(mouseArea, SIGNAL(clicked(QQuickMouseEvent*)), q, SLOT(_q_mouseAreaClicked()));
+    QObject::connect(mouseArea, SIGNAL(pressed(QQuickMouseEvent*)), q, SLOT(_q_mouseAreaPressed()));
 }
 
 // check the pressAndHold connection on runtime, as Connections
 // may not be available on compoennt completion
-void UCAbstractButton::onMouseAreaPressedChanged()
+void UCAbstractButtonPrivate::_q_mouseAreaPressed()
 {
-    if (!m_mouseArea->pressed()) {
+    if (!mouseArea->pressed()) {
         return;
     }
     bool longPressConnected = isPressAndHoldConnected();
-    if (longPressConnected && !m_pressAndHoldConnected) {
+    Q_Q(UCAbstractButton);
+    if (longPressConnected && !pressAndHoldConnected) {
         // do not use UniqueConnection as that has huge impact on performance
-        connect(m_mouseArea, &QQuickMouseArea::pressAndHold,
-                this, &UCAbstractButton::onMouseAreaPressAndHold);
-        m_pressAndHoldConnected = true;
-    } else if (!longPressConnected && m_pressAndHoldConnected) {
-        disconnect(m_mouseArea, &QQuickMouseArea::pressAndHold,
-                   this, &UCAbstractButton::onMouseAreaPressAndHold);
-        m_pressAndHoldConnected = false;
+        QObject::connect(mouseArea, SIGNAL(pressAndHold(QQuickMouseEvent*)),
+                q, SLOT(_q_mouseAreaPressAndHold()));
+        pressAndHoldConnected = true;
+    } else if (!longPressConnected && pressAndHoldConnected) {
+        QObject::disconnect(mouseArea, SIGNAL(pressAndHold(QQuickMouseEvent*)),
+                   q, SLOT(_q_mouseAreaPressAndHold()));
+        pressAndHoldConnected = false;
     }
 }
 
 // handle mouseClicked with Haptics
-void UCAbstractButton::onMouseAreaClicked(QQuickMouseEvent*)
+void UCAbstractButtonPrivate::_q_mouseAreaClicked()
 {
     // required by the deprecated ListItem module
-    if (!m_acceptEvents) {
+    if (!acceptEvents) {
         return;
     }
     // play haptics
     HapticsProxy::instance().play(QVariant());
-    Q_EMIT clicked();
+    onClicked();
 }
 
 // handle pressAndHold
-void UCAbstractButton::onMouseAreaPressAndHold(QQuickMouseEvent*)
+void UCAbstractButtonPrivate::_q_mouseAreaPressAndHold()
 {
     // required by the deprecated ListItem module
-    if (!m_acceptEvents) {
+    Q_Q(UCAbstractButton);
+    if (!acceptEvents) {
         return;
     }
-    Q_EMIT pressAndHold();
+    Q_EMIT q->pressAndHold();
 }
 
 // emit clicked when Enter/Return is pressed
-void UCAbstractButton::keyPressEvent(QKeyEvent *event)
+void UCAbstractButton::keyReleaseEvent(QKeyEvent *event)
 {
-    UCActionItem::keyPressEvent(event);
+    UCActionItem::keyReleaseEvent(event);
 
     switch (event->key()) {
         case Qt::Key_Enter:
         case Qt::Key_Return:
-        // FIXME: space may also come here, however that depends on the button type
-        // (i.e default Dialog btn) so we may need to add that to Button
-        {
-            Q_EMIT clicked();
+        case Qt::Key_Space:
+            d_func()->onClicked();
             break;
-        }
+        default:
+            break;
     }
 }
 
 void UCAbstractButton::adjustSensingArea()
 {
+    Q_D(UCAbstractButton);
     if (!isComponentComplete()) {
         // we do not hammer the component until completion
         return;
     }
     // use the sensingMargins in the minimum calculation
-    qreal minimumWidth = UCUnits::instance().gu(MIN_SENSING_WIDTH_GU);
-    qreal minimumHeight = UCUnits::instance().gu(MIN_SENSING_HEIGHT_GU);
+    qreal minimumWidth = UCUnits::instance()->gu(MIN_SENSING_WIDTH_GU);
+    qreal minimumHeight = UCUnits::instance()->gu(MIN_SENSING_HEIGHT_GU);
     qreal hDelta = minimumWidth
-            - (width() + (m_sensingMargins ? (m_sensingMargins->left() + m_sensingMargins->right()) : 0.0));
+            - (width() + (d->sensingMargins ? (d->sensingMargins->left() + d->sensingMargins->right()) : 0.0));
     qreal vDelta = minimumHeight
-            - (height() + (m_sensingMargins ? (m_sensingMargins->top() + m_sensingMargins->bottom()) : 0.0));
+            - (height() + (d->sensingMargins ? (d->sensingMargins->top() + d->sensingMargins->bottom()) : 0.0));
     // adjust the sensing area
-    QQuickAnchors *mouseAreaAnchors = QQuickItemPrivate::get(m_mouseArea)->anchors();
+    QQuickAnchors *mouseAreaAnchors = QQuickItemPrivate::get(d->mouseArea)->anchors();
     if (hDelta > 0) {
         // the horizontal size is still smaller than the minimum
-        mouseAreaAnchors->setLeftMargin(-(hDelta / 2 + (m_sensingMargins ? m_sensingMargins->left() : 0.0)));
-        mouseAreaAnchors->setRightMargin(-(hDelta / 2 + (m_sensingMargins ? m_sensingMargins->right() : 0.0)));
-    } else if (m_sensingMargins) {
-        mouseAreaAnchors->setLeftMargin(-m_sensingMargins->left());
-        mouseAreaAnchors->setRightMargin(-m_sensingMargins->right());
+        mouseAreaAnchors->setLeftMargin(-(hDelta / 2 + (d->sensingMargins ? d->sensingMargins->left() : 0.0)));
+        mouseAreaAnchors->setRightMargin(-(hDelta / 2 + (d->sensingMargins ? d->sensingMargins->right() : 0.0)));
+    } else if (d->sensingMargins) {
+        mouseAreaAnchors->setLeftMargin(-d->sensingMargins->left());
+        mouseAreaAnchors->setRightMargin(-d->sensingMargins->right());
     }
     if (vDelta > 0) {
         // the vertical size is still smaller than the minimum
-        mouseAreaAnchors->setTopMargin(-(vDelta / 2 + (m_sensingMargins ? m_sensingMargins->top() : 0.0)));
-        mouseAreaAnchors->setBottomMargin(-(vDelta / 2 + (m_sensingMargins ? m_sensingMargins->bottom() : 0.0)));
-    } else if (m_sensingMargins) {
-        mouseAreaAnchors->setTopMargin(-m_sensingMargins->top());
-        mouseAreaAnchors->setBottomMargin(-m_sensingMargins->bottom());
+        mouseAreaAnchors->setTopMargin(-(vDelta / 2 + (d->sensingMargins ? d->sensingMargins->top() : 0.0)));
+        mouseAreaAnchors->setBottomMargin(-(vDelta / 2 + (d->sensingMargins ? d->sensingMargins->bottom() : 0.0)));
+    } else if (d->sensingMargins) {
+        mouseAreaAnchors->setTopMargin(-d->sensingMargins->top());
+        mouseAreaAnchors->setBottomMargin(-d->sensingMargins->bottom());
     }
 }
 
@@ -233,7 +262,8 @@ void UCAbstractButton::geometryChanged(const QRectF &newGeometry, const QRectF &
  */
 bool UCAbstractButton::pressed() const
 {
-    return m_mouseArea ? m_mouseArea->pressed() : false;
+    Q_D(const UCAbstractButton);
+    return d->mouseArea ? d->mouseArea->pressed() : false;
 }
 
 /*!
@@ -242,12 +272,25 @@ bool UCAbstractButton::pressed() const
  */
 bool UCAbstractButton::hovered() const
 {
-    return m_mouseArea ? m_mouseArea->hovered() : false;
+    Q_D(const UCAbstractButton);
+    return d->mouseArea ? d->mouseArea->hovered() : false;
+}
+
+bool UCAbstractButton::acceptEvents() const
+{
+    Q_D(const UCAbstractButton);
+    return d->acceptEvents;
+}
+void UCAbstractButton::setAcceptEvents(bool value)
+{
+    Q_D(UCAbstractButton);
+    d->acceptEvents = value;
 }
 
 QQuickMouseArea *UCAbstractButton::privateMouseArea() const
 {
-    return m_mouseArea;
+    Q_D(const UCAbstractButton);
+    return d->mouseArea;
 }
 
 /*!
@@ -287,18 +330,21 @@ QQuickMouseArea *UCAbstractButton::privateMouseArea() const
  */
 UCMargins *UCAbstractButton::sensingMargins()
 {
-    if (!m_sensingMargins) {
-        m_sensingMargins = new UCMargins(this);
+    Q_D(UCAbstractButton);
+    if (!d->sensingMargins) {
+        d->sensingMargins = new UCMargins(this);
 
         // as this is the first time we create the sensing margins we only
         // connect now to grid unit changes to keep sensing area size in sync
-        connect(&UCUnits::instance(), &UCUnits::gridUnitChanged, this, &UCAbstractButton::adjustSensingArea);
+        connect(UCUnits::instance(), &UCUnits::gridUnitChanged, this, &UCAbstractButton::adjustSensingArea);
         // also connect to the margin changes
-        connect(m_sensingMargins, &UCMargins::leftChanged, this, &UCAbstractButton::adjustSensingArea);
-        connect(m_sensingMargins, &UCMargins::rightChanged, this, &UCAbstractButton::adjustSensingArea);
-        connect(m_sensingMargins, &UCMargins::topChanged, this, &UCAbstractButton::adjustSensingArea);
-        connect(m_sensingMargins, &UCMargins::bottomChanged, this, &UCAbstractButton::adjustSensingArea);
-        connect(m_sensingMargins, &UCMargins::allChanged, this, &UCAbstractButton::adjustSensingArea);
+        connect(d->sensingMargins, &UCMargins::leftChanged, this, &UCAbstractButton::adjustSensingArea);
+        connect(d->sensingMargins, &UCMargins::rightChanged, this, &UCAbstractButton::adjustSensingArea);
+        connect(d->sensingMargins, &UCMargins::topChanged, this, &UCAbstractButton::adjustSensingArea);
+        connect(d->sensingMargins, &UCMargins::bottomChanged, this, &UCAbstractButton::adjustSensingArea);
+        connect(d->sensingMargins, &UCMargins::allChanged, this, &UCAbstractButton::adjustSensingArea);
     }
-    return m_sensingMargins;
+    return d->sensingMargins;
 }
+
+#include "moc_ucabstractbutton.cpp"

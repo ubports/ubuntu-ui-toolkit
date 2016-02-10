@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2015-2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -172,6 +172,13 @@ Ubuntu.ActionItem {
     property alias acceptableInput: editor.acceptableInput
 
     /*!
+      Whether the TextField should gain active focus on a mouse press. By default
+      this is set to true.
+      \qmlproperty bool activeFocusOnPress
+    */
+    property alias activeFocusOnPress: editor.activeFocusOnPress
+
+    /*!
       Whether the TextField should scroll when the text is longer than the width.
       By default this is set to true.
 
@@ -321,6 +328,11 @@ Ubuntu.ActionItem {
       Allows you to set an input mask on the TextField, restricting the  text
       inputs. See QLineEdit::inputMask for further details, as the exact same mask strings
       are used by TextField.
+
+      Note that when using an inputMask together with echoMode to hide the input
+      the empty TextField may still show masked characters - consider \l validator instead.
+
+      \sa acceptableInput, validator
 
       \qmlproperty string inputMask
     */
@@ -524,6 +536,19 @@ Ubuntu.ActionItem {
       TextField{
           validator: IntValidator{bottom: 11; top: 31;}
           focus: true
+      }
+      \endqml
+
+      The next example is for a use case of typing a PIN with masked characters.
+
+      \qml
+      import QtQuick 2.4
+      import Ubuntu.Components 1.3
+
+      TextField {
+          echoMode: TextInput.Password
+          validator: RegExpValidator { regExp: /^\d{4}$/ }
+          inputMethodHints: Qt.ImhDigitsOnly
       }
       \endqml
 
@@ -808,14 +833,17 @@ Ubuntu.ActionItem {
 
     // internals
 
-    opacity: enabled ? 1.0 : 0.3
     activeFocusOnPress: true
+    activeFocusOnTab: true
 
     /*! \internal */
     onVisibleChanged: {
         if (!visible)
             control.focus = false;
     }
+
+    // Escape should close the context menu even if the menu takes no input focus
+    Keys.onEscapePressed: if (activeFocus && inputHandler.popover) PopupUtils.close(inputHandler.popover)
 
     LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
     LayoutMirroring.childrenInherit: true
@@ -868,9 +896,13 @@ Ubuntu.ActionItem {
         onChildrenChanged: {
             // reparenting
             for (var i = 0; i < children.length; i++) {
-                children[i].parent = leftPane;
-                children[i].anchors.verticalCenter = verticalCenter;
-                children[i].activeFocusOnPress = false;
+                var child = children[i];
+                child.parent = leftPane;
+                child.anchors.verticalCenter = verticalCenter;
+                if (child.hasOwnProperty("activeFocusOnPress")) {
+                    child.activeFocusOnPress = false;
+                }
+                child.activeFocusOnTab = false;
             }
         }
     }
@@ -891,9 +923,13 @@ Ubuntu.ActionItem {
         onChildrenChanged: {
             // reparenting
             for (var i = 0; i < children.length; i++) {
-                children[i].parent = rightPane;
-                children[i].anchors.verticalCenter = verticalCenter;
-                children[i].activeFocusOnPress = false;
+                var child = children[i];
+                child.parent = rightPane;
+                child.anchors.verticalCenter = verticalCenter;
+                if (child.hasOwnProperty("activeFocusOnPress")) {
+                    child.activeFocusOnPress = false;
+                }
+                child.activeFocusOnTab = false;
             }
         }
     }
@@ -902,6 +938,7 @@ Ubuntu.ActionItem {
         id: clearButton
         objectName: "clear_button"
         activeFocusOnPress: false
+        activeFocusOnTab: false
 
         anchors {
             top: parent.top
@@ -925,7 +962,7 @@ Ubuntu.ActionItem {
             width: units.gu(2.5)
             height: width
             // use icon from icon-theme
-            name: control.hasClearButton && !control.readOnly ? "clear-search" : ""
+            name: control.hasClearButton && !control.readOnly ? "edit-clear" : ""
         }
 
         onClicked: editor.text = ""
@@ -945,7 +982,7 @@ Ubuntu.ActionItem {
         }
         // hint is shown till user types something in the field
         visible: (editor.text == "") && !editor.inputMethodComposing
-        color: theme.palette.normal.backgroundText
+        color: theme.palette.normal.baseText
         font: editor.font
         elide: Text.ElideRight
     }
@@ -995,7 +1032,7 @@ Ubuntu.ActionItem {
 
             // overrides
             selectByMouse: true
-            activeFocusOnPress: control.activeFocusOnPress
+            activeFocusOnPress: true
             onActiveFocusChanged: if (!activeFocus && inputHandler.popover) PopupUtils.close(inputHandler.popover)
 
             // input selection and navigation handling

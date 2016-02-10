@@ -15,12 +15,71 @@
  */
 
 #include "ucaction.h"
+#include "quickutils.h"
+#include "ucactioncontext.h"
 
 #include <QtDebug>
 #include <QtQml/QQmlInfo>
 #include <QtQuick/qquickitem.h>
 #include <QtQuick/qquickwindow.h>
 #include <private/qguiapplication_p.h>
+
+Q_LOGGING_CATEGORY(ucAction, "ubuntu.components.Action", QtMsgType::QtWarningMsg)
+
+#define ACT_TRACE(params) qCDebug(ucAction) << params
+
+bool shortcutContextMatcher(QObject* object, Qt::ShortcutContext context)
+{
+    UCAction* action = static_cast<UCAction*>(object);
+    if (!action->isEnabled()) {
+        return false;
+    }
+
+    switch (context) {
+    case Qt::ApplicationShortcut:
+        return true;
+    case Qt::WindowShortcut: {
+        QObject* window = object;
+        while (window && !window->isWindowType()) {
+            window = window->parent();
+            if (QQuickItem* item = qobject_cast<QQuickItem*>(window)) {
+                window = item->window();
+            }
+        }
+        bool activatable = window && window == QGuiApplication::focusWindow();
+
+        if (activatable) {
+            // is the last action owner item in an active context?
+            QQuickItem *pl = action->lastOwningItem();
+            activatable = false;
+            while (pl) {
+                UCActionContextAttached *attached = static_cast<UCActionContextAttached*>(
+                            qmlAttachedPropertiesObject<UCActionContext>(pl, false));
+                if (attached) {
+                    activatable = attached->context()->active();
+                    if (!activatable) {
+                        ACT_TRACE(action << "Inactive context found" << attached->context());
+                        break;
+                    }
+                }
+                pl = pl->parentItem();
+            }
+            if (!activatable) {
+                // check if the action is in an active context
+                UCActionContext *context = qobject_cast<UCActionContext*>(action->parent());
+                activatable = context && context->active();
+            }
+        }
+        if (activatable) {
+            ACT_TRACE("SELECTED ACTION" << action);
+        }
+
+        return activatable;
+    }
+    default: break;
+    }
+    return false;
+}
 
 /*!
  * \qmltype Action
@@ -74,6 +133,20 @@
  * as well as to define actions for pages, or when defining options in \c ListItemOptions.
  *
  * Examples: See \l Page
+ *
+ * \section2 Mnemonics
+ * Since Ubuntu.Components 1.3 Action supports mnemonics. Mnemonics are shortcuts
+ * defined in the \l text property, prefixed the shortcut letter with \&. For instance
+ * \c "\&Call" will bint the \c "Alt-C" shortcut to the action. When a mnemonic
+ * is detected on the Action and a keyboard is attached to the device, the \l text
+ * property will provide a formatted text having the mnemonic letter underscored.
+ * \qml
+ * Action {
+ *     id: call
+ *     iconName: "call"
+ *     text: "&Call"
+ * }
+ * \endqml
  */
 
 /*!
@@ -94,7 +167,71 @@
 /*!
  * \qmlproperty string Action::text
  * The user visible primary label of the action.
+ *
+ * Mnemonics are shortcuts prefixed in the text with \&. If the text has multiple
+ * occurences of the \& character, the first one will be considered for the shortcut.
+ * The \& character cannot be used as shortcut.
  */
+QString UCAction::text()
+{
+    // if we have a mnemonic, underscore it
+    if (!m_mnemonic.isEmpty()) {
+
+        QString mnemonic = "&" + m_mnemonic.toString().remove("Alt+");
+        // patch special cases
+        mnemonic.replace("Space", " ");
+        int mnemonicIndex = m_text.indexOf(mnemonic);
+        if (mnemonicIndex < 0) {
+            // try lower case
+            mnemonic = mnemonic.toLower();
+            mnemonicIndex = m_text.indexOf(mnemonic);
+        }
+        ACT_TRACE("MNEM" << mnemonic);
+        QString displayText(m_text);
+        // FIXME: we need QInputDeviceInfo to detect the keyboard attechment
+        // https://bugs.launchpad.net/ubuntu/+source/ubuntu-ui-toolkit/+bug/1276808
+        if (QuickUtils::instance()->keyboardAttached()) {
+            // underscore the character
+            displayText.replace(mnemonicIndex, mnemonic.length(), "<u>" + mnemonic[1] + "</u>");
+        } else {
+            displayText.remove(mnemonicIndex, 1);
+        }
+        return displayText;
+    }
+    return m_text;
+}
+void UCAction::setText(const QString &text)
+{
+    if (m_text == text) {
+        return;
+    }
+    m_text = text;
+    setMnemonicFromText(m_text);
+    Q_EMIT textChanged();
+}
+void UCAction::resetText()
+{
+    setText(QString());
+}
+
+void UCAction::setMnemonicFromText(const QString &text)
+{
+    QKeySequence sequence = QKeySequence::mnemonic(text);
+    if (sequence == m_mnemonic) {
+        return;
+    }
+    if (!m_mnemonic.isEmpty()) {
+        QGuiApplicationPrivate::instance()->shortcutMap.removeShortcut(0, this, m_mnemonic);
+    }
+
+    m_mnemonic = sequence;
+
+    if (!m_mnemonic.isEmpty()) {
+        ACT_TRACE("MNEMONIC SET" << m_mnemonic.toString());
+        Qt::ShortcutContext context = Qt::WindowShortcut;
+        QGuiApplicationPrivate::instance()->shortcutMap.addShortcut(this, m_mnemonic, context, shortcutContextMatcher);
+    }
+}
 
 /*!
  * \qmlproperty string Action::keywords
@@ -158,6 +295,16 @@ UCAction::UCAction(QObject *parent)
     , m_published(false)
 {
     generateName();
+    // FIXME: we need QInputDeviceInfo to detect the keyboard attechment
+    // https://bugs.launchpad.net/ubuntu/+source/ubuntu-ui-toolkit/+bug/1276808
+    connect(QuickUtils::instance(), &QuickUtils::keyboardAttachedChanged,
+            this, &UCAction::onKeyboardAttached);
+}
+
+UCAction::~UCAction()
+{
+    resetShortcut();
+    resetText();
 }
 
 bool UCAction::isValidType(QVariant::Type valueType)
@@ -244,27 +391,13 @@ void UCAction::setItemHint(QQmlComponent *)
     qWarning() << "Action.itemHint is a DEPRECATED property. Use ActionItems to specify the representation of an Action.";
 }
 
-bool shortcutContextMatcher(QObject* object, Qt::ShortcutContext)
-{
-    UCAction* action = static_cast<UCAction*>(object);
-    // Can't access member here because it's not public
-    if (!action->property("enabled").toBool())
-        return false;
-
-    QObject* window = object;
-    while (window && !window->isWindowType()) {
-        window = window->parent();
-        if (QQuickItem* item = qobject_cast<QQuickItem*>(window))
-            window = item->window();
-    }
-    return window && window == QGuiApplication::focusWindow();
-}
-
 QKeySequence sequenceFromVariant(const QVariant& variant) {
-    if (variant.type() == QVariant::Int)
+    if (variant.type() == QVariant::Int) {
         return static_cast<QKeySequence::StandardKey>(variant.toInt());
-    if (variant.type() == QVariant::String)
+    }
+    if (variant.type() == QVariant::String) {
         return QKeySequence::fromString(variant.toString());
+    }
     return QKeySequence();
 }
 
@@ -281,12 +414,23 @@ void UCAction::setShortcut(const QVariant& shortcut)
         QGuiApplicationPrivate::instance()->shortcutMap.removeShortcut(0, this, sequenceFromVariant(m_shortcut));
 
     QKeySequence sequence(sequenceFromVariant(shortcut));
-    if (!sequence.toString().isEmpty())
+    if (!sequence.isEmpty()) {
+        ACT_TRACE("ADD SHORTCUT" << sequence.toString());
         QGuiApplicationPrivate::instance()->shortcutMap.addShortcut(this, sequence, Qt::WindowShortcut, shortcutContextMatcher);
-    else
+    } else {
         qmlInfo(this) << "Invalid shortcut: " << shortcut.toString();
+    }
 
     m_shortcut = shortcut;
+    Q_EMIT shortcutChanged();
+}
+void UCAction::resetShortcut()
+{
+    if (!m_shortcut.isValid()) {
+        return;
+    }
+    QGuiApplicationPrivate::instance()->shortcutMap.removeShortcut(0, this, sequenceFromVariant(m_shortcut));
+    m_shortcut = QVariant();
     Q_EMIT shortcutChanged();
 }
 
@@ -295,6 +439,8 @@ bool UCAction::event(QEvent *event)
     if (event->type() != QEvent::Shortcut)
         return false;
 
+    // when we reach this point, we can be sure the Action is used
+    // by a component belonging to an active ActionContext.
     QShortcutEvent *shortcut_event(static_cast<QShortcutEvent*>(event));
     if (shortcut_event->isAmbiguous()) {
         qmlInfo(this) << "Ambiguous shortcut: " << shortcut_event->key().toString();
@@ -302,8 +448,16 @@ bool UCAction::event(QEvent *event)
     }
 
     // do not call trigger() directly but invoke, as it may get overridden in QML
-    metaObject()->invokeMethod(this, "trigger");
+    invokeTrigger<UCAction>(this, QVariant());
     return true;
+}
+
+// trigger text changes whenever HW keyboad is attached/detached
+void UCAction::onKeyboardAttached()
+{
+    if (!m_mnemonic.isEmpty()) {
+        Q_EMIT textChanged();
+    }
 }
 
 /*!
@@ -324,4 +478,18 @@ void UCAction::trigger(const QVariant &value)
     } else {
         Q_EMIT triggered(value);
     }
+}
+
+void UCAction::addOwningItem(QQuickItem *item)
+{
+    if (!m_owningItems.contains(item)) {
+        m_owningItems.append(item);
+        ACT_TRACE("ADD ACTION OWNER" << item->objectName() << "TO" << this);
+    }
+}
+
+void UCAction::removeOwningItem(QQuickItem *item)
+{
+    m_owningItems.removeOne(item);
+    ACT_TRACE("REMOVE ACTION OWNER" << item->objectName() << "FROM" << this);
 }

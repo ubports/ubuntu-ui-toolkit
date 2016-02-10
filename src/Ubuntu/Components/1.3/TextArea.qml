@@ -538,6 +538,13 @@ Ubuntu.StyledItem {
       */
     property alias wrapMode:editor.wrapMode
 
+    /*!
+      Whether the TextArea should gain active focus on a mouse press. By default
+      this is set to true.
+      \qmlproperty bool activeFocusOnPress
+    */
+    property alias activeFocusOnPress: editor.activeFocusOnPress
+
     // signals
     /*!
       This handler is called when the user clicks on a link embedded in the text.
@@ -750,14 +757,17 @@ Ubuntu.StyledItem {
 
     //internals
 
-    opacity: enabled ? 1.0 : 0.3
     activeFocusOnPress: true
+    activeFocusOnTab: true
 
     /*!\internal */
     onVisibleChanged: {
         if (!visible)
             control.focus = false;
     }
+
+    // Escape should close the context menu even if the menu takes no input focus
+    Keys.onEscapePressed: if (activeFocus && inputHandler.popover) PopupUtils.close(inputHandler.popover)
 
     LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
     LayoutMirroring.childrenInherit: true
@@ -816,7 +826,7 @@ Ubuntu.StyledItem {
         }
         // hint is shown till user types something in the field
         visible: (editor.text == "") && !editor.inputMethodComposing
-        color: theme.palette.normal.backgroundText
+        color: theme.palette.normal.base
         font: editor.font
         elide: Text.ElideRight
         wrapMode: Text.WordWrap
@@ -858,7 +868,7 @@ Ubuntu.StyledItem {
             wrapMode: TextEdit.WrapAtWordBoundaryOrAnywhere
             mouseSelectionMode: TextEdit.SelectWords
             selectByMouse: true
-            activeFocusOnPress: control.activeFocusOnPress
+            activeFocusOnPress: true
             onActiveFocusChanged: if (!activeFocus && inputHandler.popover) PopupUtils.close(inputHandler.popover)
             cursorDelegate: TextCursor {
                 handler: inputHandler

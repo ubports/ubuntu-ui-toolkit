@@ -29,6 +29,8 @@
 #include <QtTest/QTest>
 #include <QtTest/QSignalSpy>
 #include <QtCore/QTimeZone>
+#include <QtQml/QQmlEngine>
+#include "plugin.h"
 
 class tst_UCAlarms : public QObject
 {
@@ -45,6 +47,7 @@ private:
     QSignalSpy *insertSpy;
     QSignalSpy *updateSpy;
     QSignalSpy *cancelSpy;
+    QQmlEngine *engine;
 
     void syncFetch()
     {
@@ -107,6 +110,9 @@ private Q_SLOTS:
 
     void initTestCase()
     {
+        engine = new QQmlEngine;
+        UbuntuComponentsPlugin::initializeContextProperties(engine);
+
         AlarmManager::instance();
 
         // connect alarmUpdated() and alarmMoveFinished to the test signal so we get either of those on alarm updates
@@ -141,6 +147,7 @@ private Q_SLOTS:
         delete cancelSpy;
         delete updateSpy;
         delete insertSpy;
+        delete engine;
     }
 
     void cleanup()

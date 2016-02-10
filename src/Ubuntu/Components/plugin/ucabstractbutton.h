@@ -19,10 +19,11 @@
 
 #include "ucactionitem.h"
 #include "ucmargins.h"
-#include "QtQuick/private/qquickevents_p_p.h"
+#include <QtQuick/private/qquickevents_p_p.h>
 
 class QQuickMouseArea;
 class QQuickMouseEvent;
+class UCAbstractButtonPrivate;
 class UCAbstractButton : public UCActionItem
 {
     Q_OBJECT
@@ -31,7 +32,7 @@ class UCAbstractButton : public UCActionItem
     Q_PROPERTY(UCMargins *sensingMargins READ sensingMargins CONSTANT FINAL)
 
     // internal, declared to support the deprecated ListItem module
-    Q_PROPERTY(bool __acceptEvents MEMBER m_acceptEvents)
+    Q_PROPERTY(bool __acceptEvents READ acceptEvents WRITE setAcceptEvents)
     Q_PROPERTY(QQuickMouseArea *__mouseArea READ privateMouseArea CONSTANT)
 public:
     explicit UCAbstractButton(QQuickItem *parent = 0);
@@ -42,15 +43,16 @@ public:
 
     bool privateAcceptEvents() const;
     void setPrivateAcceptEvents(bool accept);
+    bool acceptEvents() const;
+    void setAcceptEvents(bool value);
     QQuickMouseArea *privateMouseArea() const;
 
 protected:
     void classBegin();
-    void componentComplete();
-    void keyPressEvent(QKeyEvent *key);
     virtual void geometryChanged(const QRectF &newGeometry,
                                  const QRectF &oldGeometry);
     void adjustSensingArea();
+    void keyReleaseEvent(QKeyEvent *key);
 
 Q_SIGNALS:
     void pressedChanged();
@@ -59,17 +61,12 @@ Q_SIGNALS:
     void pressAndHold();
 
 protected:
-    void onMouseAreaPressedChanged();
-    void onMouseAreaClicked(QQuickMouseEvent*);
-    void onMouseAreaPressAndHold(QQuickMouseEvent*);
+    UCAbstractButton(UCAbstractButtonPrivate &&, QQuickItem *parent = 0);
 
-protected:
-    UCMargins *m_sensingMargins = nullptr;
-    QQuickMouseArea *m_mouseArea;
-    bool m_acceptEvents:1;
-    bool m_pressAndHoldConnected:1;
-
-    bool isPressAndHoldConnected();
+    Q_DECLARE_PRIVATE(UCAbstractButton)
+    Q_PRIVATE_SLOT(d_func(), void _q_mouseAreaPressed())
+    Q_PRIVATE_SLOT(d_func(), void _q_mouseAreaClicked())
+    Q_PRIVATE_SLOT(d_func(), void _q_mouseAreaPressAndHold())
 };
 
 QML_DECLARE_TYPE(UCMargins)

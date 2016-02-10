@@ -7,23 +7,44 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ubuntu-ui-toolkit\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2014-11-11 11:21+0100\n"
+"POT-Creation-Date: 2015-11-05 10:04+0100\n"
 "PO-Revision-Date: 2015-02-09 08:21+0000\n"
 "Last-Translator: Richard Somlói <ricsipontaz@gmail.com>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-10-16 05:54+0000\n"
-"X-Generator: Launchpad (build 17812)\n"
+"X-Launchpad-Export-Date: 2015-12-25 05:33+0000\n"
+"X-Generator: Launchpad (build 17865)\n"
+
+#: About.qml:34
+msgid "About..."
+msgstr ""
+
+#: ActionBars.qml:68
+msgid "Short list"
+msgstr ""
+
+#: ActionBars.qml:79
+msgid "Number of slots"
+msgstr ""
+
+#: ActionBars.qml:92
+msgid "Long list"
+msgstr ""
+
+#: ActionBars.qml:102 Buttons.qml:91 Sections.qml:45 TextInputs.qml:90
+#: Toggles.qml:45 Toggles.qml:83
+msgid "Disabled"
+msgstr "Letiltott"
 
 #: Animations.qml:24
 msgid "NumberAnimation"
 msgstr ""
 
 #: Animations.qml:28 Buttons.qml:28 Dialog.qml:29 ListItems.qml:25
-#: ProgressBars.qml:28 ProgressBars.qml:84 Sheet.qml:40 Sheet.qml:73
-#: Sliders.qml:28 TextInputs.qml:45
+#: ProgressBars.qml:29 ProgressBars.qml:85 Sheet.qml:40 Sheet.qml:73
+#: Sliders.qml:28 TextInputs.qml:46
 msgid "Standard"
 msgstr "Normál"
 
@@ -47,8 +68,7 @@ msgstr "Lassú"
 msgid "Sleepy"
 msgstr ""
 
-#: Buttons.qml:32 Buttons.qml:41 Buttons.qml:51 Buttons.qml:71 Buttons.qml:79
-#: Buttons.qml:89
+#: Buttons.qml:32 Buttons.qml:41 Buttons.qml:77 Buttons.qml:85 Buttons.qml:95
 msgid "Call"
 msgstr "Hívás"
 
@@ -56,27 +76,28 @@ msgstr "Hívás"
 msgid "Stroke"
 msgstr ""
 
-#: Buttons.qml:47 UbuntuShape.qml:28
+#: Buttons.qml:47 Icons.qml:54
 msgid "Color"
 msgstr "Színes"
 
-#: Buttons.qml:57 Buttons.qml:114 ListItems.qml:43
+#: Buttons.qml:53
+#, qt-format
+msgid "Call %1"
+msgstr ""
+
+#: Buttons.qml:63 Buttons.qml:120 ListItems.qml:43
 msgid "Icon"
 msgstr "Ikon"
 
-#: Buttons.qml:66 Buttons.qml:128
+#: Buttons.qml:72 Buttons.qml:134
 msgid "Icon+Text"
 msgstr "Ikon + szöveg"
 
-#: Buttons.qml:85 TextInputs.qml:88 Toggles.qml:45 Toggles.qml:83
-msgid "Disabled"
-msgstr "Letiltott"
-
-#: Buttons.qml:99 OptionSelectors.qml:34
+#: Buttons.qml:105 OptionSelectors.qml:41
 msgid "Collapsed"
 msgstr "Összecsukott"
 
-#: Buttons.qml:142 ListItems.qml:120 OptionSelectors.qml:43
+#: Buttons.qml:148 ListItems.qml:120 OptionSelectors.qml:47
 msgid "Expanded"
 msgstr "Lenyitott"
 
@@ -108,21 +129,21 @@ msgstr "Kék"
 msgid "Purple"
 msgstr "Lila"
 
-#: Dialog.qml:32 Popover.qml:45 Sheet.qml:43 Sheet.qml:76
+#: Dialog.qml:32 Popover.qml:42 Sheet.qml:43 Sheet.qml:76
 msgid "Open"
 msgstr "Megnyitás"
 
-#: Icons.qml:30
+#: Icons.qml:29
 msgid "Scaling"
 msgstr "Átméretezés"
 
-#: Icons.qml:55
-msgid "Colorization"
-msgstr "Színezés"
-
-#: Icons.qml:80
+#: Icons.qml:79
 msgid "Theme"
 msgstr "Téma"
+
+#: ListItemLayouts.qml:208 NewListItems.qml:79
+msgid "Leading and trailing actions"
+msgstr ""
 
 #: ListItems.qml:28 ListItems.qml:36 ListItems.qml:46 ListItems.qml:60
 #: ListItems.qml:66 ListItems.qml:76 ListItems.qml:85 ListItems.qml:94
@@ -159,30 +180,26 @@ msgid "Multi value"
 msgstr "Többértékű"
 
 #: ListItems.qml:95 ListItems.qml:113 ListItems.qml:122 ListItems.qml:132
-#: ListItems.qml:161 ListItems.qml:176 OptionSelectors.qml:35
-#: OptionSelectors.qml:45 OptionSelectors.qml:56 OptionSelectors.qml:86
-#: OptionSelectors.qml:101
+#: ListItems.qml:161 ListItems.qml:176 OptionSelectors.qml:33
+#: OptionSelectors.qml:84 OptionSelectors.qml:99
 msgid "Value 1"
 msgstr "1. érték"
 
 #: ListItems.qml:96 ListItems.qml:114 ListItems.qml:123 ListItems.qml:133
-#: ListItems.qml:162 ListItems.qml:177 OptionSelectors.qml:36
-#: OptionSelectors.qml:46 OptionSelectors.qml:57 OptionSelectors.qml:87
-#: OptionSelectors.qml:102
+#: ListItems.qml:162 ListItems.qml:177 OptionSelectors.qml:85
+#: OptionSelectors.qml:100
 msgid "Value 2"
 msgstr "2. érték"
 
 #: ListItems.qml:97 ListItems.qml:115 ListItems.qml:124 ListItems.qml:134
-#: ListItems.qml:163 ListItems.qml:178 OptionSelectors.qml:37
-#: OptionSelectors.qml:47 OptionSelectors.qml:58 OptionSelectors.qml:88
-#: OptionSelectors.qml:103
+#: ListItems.qml:163 ListItems.qml:178 OptionSelectors.qml:86
+#: OptionSelectors.qml:101
 msgid "Value 3"
 msgstr "3. érték"
 
 #: ListItems.qml:98 ListItems.qml:116 ListItems.qml:125 ListItems.qml:135
-#: ListItems.qml:164 ListItems.qml:179 OptionSelectors.qml:38
-#: OptionSelectors.qml:48 OptionSelectors.qml:59 OptionSelectors.qml:89
-#: OptionSelectors.qml:104
+#: ListItems.qml:164 ListItems.qml:179 OptionSelectors.qml:87
+#: OptionSelectors.qml:102
 msgid "Value 4"
 msgstr "4. érték"
 
@@ -190,35 +207,35 @@ msgstr "4. érték"
 msgid "Item selector"
 msgstr "Elemválasztó"
 
-#: ListItems.qml:112 TextInputs.qml:114
+#: ListItems.qml:112 TextInputs.qml:117
 msgid "Expanding"
 msgstr "Növekvő"
 
-#: ListItems.qml:129 OptionSelectors.qml:53
+#: ListItems.qml:129 OptionSelectors.qml:54
 msgid "Multiple Selection"
 msgstr "Többesválasztó"
 
-#: ListItems.qml:139 OptionSelectors.qml:64
+#: ListItems.qml:139 OptionSelectors.qml:62
 msgid "Custom Model"
 msgstr "Egyéni modell"
 
-#: ListItems.qml:165 ListItems.qml:180 OptionSelectors.qml:90
-#: OptionSelectors.qml:105
+#: ListItems.qml:165 ListItems.qml:180 OptionSelectors.qml:88
+#: OptionSelectors.qml:103
 msgid "Value 5"
 msgstr "5. érték"
 
-#: ListItems.qml:166 ListItems.qml:181 OptionSelectors.qml:91
-#: OptionSelectors.qml:106
+#: ListItems.qml:166 ListItems.qml:181 OptionSelectors.qml:89
+#: OptionSelectors.qml:104
 msgid "Value 6"
 msgstr "6. érték"
 
-#: ListItems.qml:167 ListItems.qml:182 OptionSelectors.qml:92
-#: OptionSelectors.qml:107
+#: ListItems.qml:167 ListItems.qml:182 OptionSelectors.qml:90
+#: OptionSelectors.qml:105
 msgid "Value 7"
 msgstr "7. érték"
 
-#: ListItems.qml:168 ListItems.qml:183 OptionSelectors.qml:93
-#: OptionSelectors.qml:108
+#: ListItems.qml:168 ListItems.qml:183 OptionSelectors.qml:91
+#: OptionSelectors.qml:106
 msgid "Value 8"
 msgstr "8. érték"
 
@@ -254,59 +271,118 @@ msgstr ""
 msgid "Expandable"
 msgstr ""
 
+#: NewListItems.qml:39
+msgid "Colored"
+msgstr ""
+
+#: NewListItems.qml:42
+msgid "Highlight color"
+msgstr ""
+
+#: NewListItems.qml:71
+msgid "Leading actions"
+msgstr ""
+
+#: NewListItems.qml:75
+msgid "Trailing actions"
+msgstr ""
+
+#: NewListItems.qml:84
+msgid "Custom action delegates"
+msgstr ""
+
+#: NewListItems.qml:111
+msgid "Edit"
+msgstr ""
+
+#: NewListItems.qml:114
+msgid "Move"
+msgstr ""
+
+#: NewListItems.qml:163
+msgid "Basic"
+msgstr ""
+
+#: NewListItems.qml:163 NewListItems.qml:168 NewListItems.qml:169
+#: NewListItems.qml:213 NewListItems.qml:214
+msgid "Colored divider"
+msgstr ""
+
+#: NewListItems.qml:163
+msgid "Immutable"
+msgstr ""
+
+#: NewListItems.qml:163 NewListItems.qml:170 NewListItems.qml:215
+msgid "No divider"
+msgstr ""
+
 #: OptionSelectors.qml:24
 msgid "Option Selector"
 msgstr "Opcióválasztó"
 
-#: OptionSelectors.qml:85
+#: OptionSelectors.qml:34
+msgid "This is the second value"
+msgstr ""
+
+#: OptionSelectors.qml:35
+msgid ""
+"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy "
+"nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."
+msgstr ""
+
+#: OptionSelectors.qml:36
+msgid "Once upon a time there was a story nobody told."
+msgstr ""
+
+#: OptionSelectors.qml:83
 msgid "Custom container height"
 msgstr "Egyedi konténer magassága"
 
-#: OptionSelectors.qml:98
+#: OptionSelectors.qml:96
 msgid "No initial selection, scrollable."
 msgstr "Nincs kezdeti kijelölés, görgethető."
 
-#: Pickers.qml:29
+#: Pickers.qml:31
 msgid "Linear"
 msgstr "Lineáris"
 
-#: Pickers.qml:48
+#: Pickers.qml:63
 msgid "Circular"
 msgstr "Körkörös"
 
-#: Pickers.qml:73 ProgressBars.qml:48
+#: Pickers.qml:100 ProgressBars.qml:49
 msgid "Infinite"
 msgstr "Végtelen"
 
-#: Pickers.qml:110
+#: Pickers.qml:137
 msgid "Clock"
 msgstr "Óra"
 
-#: Pickers.qml:147
+#: Pickers.qml:174
 msgid "Overlay"
 msgstr ""
 
-#: Popover.qml:41
+#: Popover.qml:38
 msgid "Flickable"
 msgstr ""
 
-#: Popover.qml:77
+#: Popover.qml:74
 msgid "Action #1"
 msgstr "1. művelet"
 
-#: Popover.qml:81
+#: Popover.qml:78
 msgid "Action #2"
 msgstr "2. művelet"
 
-#: Popover.qml:85
+#: Popover.qml:82
 msgid "Action #3"
 msgstr "3. művelet"
 
-#: Popover.qml:89
+#: Popover.qml:86
 msgid "Action #4"
 msgstr "4. művelet"
 
-#: Popover.qml:93
+#: Popover.qml:90
 msgid "Action #5"
 msgstr "5. művelet"
 
@@ -314,13 +390,21 @@ msgstr "5. művelet"
 msgid "Progress Bar"
 msgstr "Folyamatjelző"
 
-#: ProgressBars.qml:58
+#: ProgressBars.qml:59
 msgid "No label"
 msgstr "Nincs címke"
 
-#: ProgressBars.qml:80
+#: ProgressBars.qml:81
 msgid "Activity Indicator"
 msgstr "Tevékenységmutató"
+
+#: ProportionalShape.qml:28
+msgid "Sizes"
+msgstr "Méretek"
+
+#: Sections.qml:34
+msgid "Enabled"
+msgstr ""
 
 #: Sheet.qml:28
 msgid "The visual style of the Sheet is early work and thus clunky looking."
@@ -330,7 +414,7 @@ msgstr ""
 msgid "Title"
 msgstr "Cím"
 
-#: Sliders.qml:36 Sliders.qml:51 Sliders.qml:68
+#: Sliders.qml:36 Sliders.qml:51 Sliders.qml:68 Sliders.qml:93
 #, qt-format
 msgid "Actual value: %1"
 msgstr "Aktuális érték: %1"
@@ -343,43 +427,51 @@ msgstr "Élő frissítés"
 msgid "Range"
 msgstr "Tartomány"
 
-#: Styles.qml:27
-msgid "Switch between old and new style header"
-msgstr "Váltás a régi és az új fejléc stílusa között"
+#: Sliders.qml:74
+msgid "Labels"
+msgstr ""
 
-#: Styles.qml:40
-msgid "Switch between themes"
-msgstr "Témák közötti váltás"
+#: Sliders.qml:85
+msgid "Small"
+msgstr ""
 
-#: TextInputs.qml:49
+#: Sliders.qml:87
+msgid "Medium"
+msgstr ""
+
+#: Sliders.qml:89
+msgid "Large"
+msgstr ""
+
+#: TextInputs.qml:50
 msgid "Type me in..."
 msgstr "Ide írhat…"
 
-#: TextInputs.qml:55
+#: TextInputs.qml:56
 msgid "Password"
 msgstr "Jelszó"
 
-#: TextInputs.qml:66
+#: TextInputs.qml:67
 msgid "Numbers"
 msgstr "Számok"
 
-#: TextInputs.qml:77
+#: TextInputs.qml:78
 msgid "Read-only"
 msgstr "Csak olvasható"
 
-#: TextInputs.qml:81
+#: TextInputs.qml:82
 msgid "Nobody type here"
 msgstr "Senki nem írhat ide"
 
-#: TextInputs.qml:92
+#: TextInputs.qml:94
 msgid "No interaction allowed"
 msgstr "Az interakció nem engedélyezett"
 
-#: TextInputs.qml:104
+#: TextInputs.qml:107
 msgid "Default"
 msgstr "Alapértelmezett"
 
-#: TextInputs.qml:126
+#: TextInputs.qml:129
 msgid "Rich Text"
 msgstr ""
 
@@ -391,22 +483,18 @@ msgstr "Kijelöletlen"
 msgid "Checked"
 msgstr "Kijelölt"
 
-#: Toolbar.qml:30
-msgid "Share"
-msgstr "Megosztás"
+#: UbuntuShape.qml:28
+msgid "Aspect"
+msgstr ""
 
-#: Toolbar.qml:46
-msgid "See below"
-msgstr "Megtekintés alább"
-
-#: UbuntuShape.qml:49
-msgid "Image"
-msgstr "Kép"
-
-#: UbuntuShape.qml:64
+#: UbuntuShape.qml:73
 msgid "Radius"
 msgstr "Sugár"
 
-#: UbuntuShape.qml:97
-msgid "Sizes"
-msgstr "Méretek"
+#: UbuntuShape.qml:115
+msgid "Image"
+msgstr "Kép"
+
+#: UbuntuShape.qml:134
+msgid "Gradient"
+msgstr ""

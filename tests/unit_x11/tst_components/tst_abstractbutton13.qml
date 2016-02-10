@@ -51,6 +51,19 @@ Item {
             }
         }
 
+        AbstractButton {
+            id: suppressTrigger2
+            width: units.gu(10)
+            height: width
+            function trigger(v) {}
+        }
+        AbstractButton {
+            id: suppressTrigger3
+            width: units.gu(10)
+            height: width
+            function trigger(v) { triggered(v) }
+        }
+
         Loader {
             id: loader
             width: units.gu(10)
@@ -72,6 +85,11 @@ Item {
         id: action1
         property int triggerCount: 0
         onTriggered: triggerCount++
+    }
+
+    Action {
+        id: override
+        function trigger() {}
     }
 
     SignalSpy {
@@ -105,6 +123,7 @@ Item {
             buttonWithSensing.height = 0;
             signalSpy.target = absButton;
             signalSpy.clear();
+            signalSpy.target = absButton;
             triggeredSpy.clear();
             loader.click = false;
             loader.longPress = false;
@@ -130,11 +149,36 @@ Item {
             absButton.action = null
         }
 
-        function test_custom_trigger_function() {
-            suppressTrigger.action = action1;
+        function test_custom_trigger_function_data() {
+            return [
+                {tag: "parameterless trigger", testItem: suppressTrigger},
+                {tag: "parameted trigger", testItem: suppressTrigger2},
+            ];
+        }
+        function test_custom_trigger_function(data) {
+            data.testItem.action = action1;
             triggeredSpy.target = action1;
-            mouseClick(suppressTrigger, centerOf(suppressTrigger).x, centerOf(suppressTrigger).y);
+            mouseClick(data.testItem, centerOf(data.testItem).x, centerOf(data.testItem).y);
             compare(triggeredSpy.count, 0, "Trigger should be overridden");
+        }
+
+        function test_custom_trigger_overrides_triggered_bug1524234_data() {
+            return [
+                {tag: "parameterless trigger", testItem: suppressTrigger, action: action1, triggeredWatch: action1, triggeredCount: 0 },
+                {tag: "parameted trigger", testItem: suppressTrigger2, action: action1, triggeredWatch: action1, triggeredCount: 0 },
+                {tag: "button trigger fired", testItem: suppressTrigger3, action: action1, triggeredWatch: suppressTrigger3, triggeredCount: 1 },
+                {tag: "action trigger fired", testItem: suppressTrigger3, action: action1, triggeredWatch: action1, triggeredCount: 1 },
+                {tag: "action trigger overridden", testItem: suppressTrigger3, action: override, triggeredWatch: override, triggeredCount: 0 },
+            ];
+        }
+        function test_custom_trigger_overrides_triggered_bug1524234(data) {
+            data.testItem.action = data.action;
+            triggeredSpy.target = data.triggeredWatch;
+            signalSpy.target = data.testItem;
+            data.testItem.forceActiveFocus();
+            keyClick(Qt.Key_Space);
+            signalSpy.wait(200);
+            compare(triggeredSpy.count, data.triggeredCount);
         }
 
         // fixing bugs 1365471 and 1458028

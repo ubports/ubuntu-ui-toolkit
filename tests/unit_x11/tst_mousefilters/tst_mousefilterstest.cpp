@@ -29,6 +29,7 @@
 #include "quickutils.h"
 #include "inversemouseareatype.h"
 #include "uctestcase.h"
+#include "uctestextras.h"
 #include <private/qquickevents_p_p.h>
 #include <private/qquickmousearea_p.h>
 
@@ -76,12 +77,12 @@ private:
 
     bool inputPanelPresent()
     {
-        return !QuickUtils::instance().inputMethodProvider().isEmpty();
+        return !QuickUtils::instance()->inputMethodProvider().isEmpty();
     }
 
     QPoint guPoint(qreal guX, qreal guY)
     {
-        return QPoint(UCUnits::instance().gu(guX), UCUnits::instance().gu(guY));
+        return QPoint(UCUnits::instance()->gu(guX), UCUnits::instance()->gu(guY));
     }
 
     void preventDblClick()
@@ -116,6 +117,8 @@ private Q_SLOTS:
 
     void initTestCase()
     {
+        UCTestExtras::registerTouchDevice();
+
         QString modules(UBUNTU_QML_IMPORT_PATH);
         QVERIFY(QDir(modules).exists());
 
@@ -541,6 +544,7 @@ private Q_SLOTS:
 
     void testCase_doubleClicked()
     {
+        QSKIP("FIXME: lp#1542215 Flaky test result");
         QScopedPointer<QQuickView> view(loadTest("DoubleClicked.qml"));
         QVERIFY(view);
         UCMouse *filter = attachedFilter<UCMouse>(view->rootObject(), "FilterOwner");
@@ -1099,6 +1103,65 @@ private Q_SLOTS:
 
         // click
         QTest::mouseRelease(test.data(), Qt::LeftButton, 0, guPoint(20, 30));
+        QTest::waitForEvents();
+    }
+
+    void testCase_ignoreSynthesizedEvents() {
+        QScopedPointer<UbuntuTestCase> test(new UbuntuTestCase("FilterSynthesizedEvents.qml"));
+        QQuickMouseArea *rootMouseArea = qobject_cast<QQuickMouseArea *>(test->rootObject());
+        QQuickMouseArea* overlayArea = test->findItem<QQuickMouseArea *>("overlayArea");
+        UCMouse *overlayFilter = attachedFilter<UCMouse>(test->rootObject(), "overlayArea");
+
+        QCOMPARE(rootMouseArea != Q_NULLPTR, true);
+        QCOMPARE(overlayArea != Q_NULLPTR, true);
+        QCOMPARE(overlayFilter != Q_NULLPTR, true);
+
+        QSignalSpy areaPressed(rootMouseArea, SIGNAL(pressed(QQuickMouseEvent *)));
+        QSignalSpy overlayAreaPressed(overlayArea, SIGNAL(pressed(QQuickMouseEvent *)));
+        QSignalSpy overlayFilterPressed(overlayFilter, SIGNAL(pressed(QQuickMouseEvent*, QQuickItem*)));
+        QCOMPARE(overlayFilter->property("ignoreSynthesizedEvents").toBool(), true);
+
+        //we're assuming the priority is set to BeforeItem, the functionality is not priority-dependent anyway,
+        //just the outcome is.
+        QCOMPARE(overlayFilter->priority(), UCMouse::BeforeItem);
+        QCOMPARE(overlayArea->isEnabled(), true);
+
+        //send a touch event, which will be converted to a synthesized mouse event, since
+        //no item in this QML is handling touch events
+        UCTestExtras::touchPress(0, overlayArea, guPoint(15, 15));
+        QTest::waitForEvents();
+
+        QCOMPARE(areaPressed.count(), 0);
+        QCOMPARE(overlayAreaPressed.count(), 1);
+        QCOMPARE(overlayFilterPressed.count(), 0);
+        UCTestExtras::touchRelease(0, overlayArea, guPoint(15, 15));
+
+        QTest::waitForEvents();
+
+        overlayFilter->setProperty("ignoreSynthesizedEvents", false);
+        QCOMPARE(overlayFilter->property("ignoreSynthesizedEvents").toBool(), false);
+        UCTestExtras::touchPress(1, overlayArea, guPoint(15, 15));
+        QTest::waitForEvents();
+
+        QCOMPARE(areaPressed.count(), 0);
+        //the filter doesn't accept the pressed event by default
+        QCOMPARE(overlayAreaPressed.count(), 2);
+        QCOMPARE(overlayFilterPressed.count(), 1);
+        UCTestExtras::touchRelease(1, overlayArea, guPoint(15, 15));
+        QTest::waitForEvents();
+
+        overlayArea->setEnabled(false);
+        QCOMPARE(overlayArea->isEnabled(), false);
+
+        UCTestExtras::touchPress(2, overlayArea, guPoint(15, 15));
+        QTest::waitForEvents();
+
+        //the filter gets the event but its owner is not enabled, so we expect it
+        //to propagate to the area underneath
+        QCOMPARE(areaPressed.count(), 1);
+        QCOMPARE(overlayAreaPressed.count(), 2);
+        QCOMPARE(overlayFilterPressed.count(), 2);
+        UCTestExtras::touchRelease(2, overlayArea, guPoint(15, 15));
         QTest::waitForEvents();
     }
 };

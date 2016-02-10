@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.3 as Components
+import Ubuntu.Components.Private 1.3 as Privates
 
 /*!
     \internal
@@ -23,13 +23,19 @@ import Ubuntu.Components 1.3 as Components
     \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
 */
-Components.Header {
+Privates.AppHeaderBase {
+    // Note: styleName is set to "PageHeadStyle" in UCAppHeaderBase.
     id: header
 
     anchors {
         left: parent.left
         right: parent.right
     }
+
+    /*!
+      The background color of the header. Value set by MainView.
+     */
+    property color backgroundColor
 
     /*!
       The background color of the divider. Value set by MainView.
@@ -111,21 +117,15 @@ Components.Header {
       version (1.1) will no longer work.
      */
     property QtObject config: null
-    onConfigChanged: {
-        if (header.config.locked) {
-            header.flickable = null;
-        } else {
-            header.flickable = header.config.flickable;
-        }
 
-        if (!header.flickable && !header.config.visible) {
-            // locked.
-            header.exposed = false;
-        } else {
-            header.config.visible = true;
-            header.exposed = true;
-        }
+    animate: false
+    exposed: false
+    Component.onCompleted: {
+        internal.updateProperties();
+        header.animate = true;
     }
+    onConfigChanged: internal.updateProperties()
+
     onExposedChanged: {
         if(header.config) {
             header.config.visible = exposed;
@@ -151,5 +151,22 @@ Components.Header {
         }
     }
 
-    styleName: "PageHeadStyle"
+    QtObject {
+        id: internal
+        function updateProperties() {
+            if (header.config.locked) {
+                header.flickable = null;
+            } else {
+                header.flickable = header.config.flickable;
+            }
+
+            if (!header.flickable && !header.config.visible) {
+                // locked.
+                header.exposed = false;
+            } else {
+                header.config.visible = true;
+                header.exposed = true;
+            }
+        }
+    }
 }

@@ -47,8 +47,7 @@ T *createAttachedFilter(QObject *owner, const QString &qmlName)
 {
     QQuickItem *item = qobject_cast<QQuickItem*>(owner);
     if (!item) {
-        qmlInfo(owner) << UbuntuI18n::instance().
-                          tr(QString("Warning: %1 filter can only be attached to Items.").arg(qmlName));
+        qmlInfo(owner) << QStringLiteral("Warning: %1 filter can only be attached to Items.").arg(qmlName);
     }
 
     T *filter = new T(owner);
@@ -333,8 +332,48 @@ T *createAttachedFilter(QObject *owner, const QString &qmlName)
 
    Similar functionality for the case when the mouse event occurs outside of the
    owner is brought by the \l InverseMouse attached property.
- */
 
+   \section1 Mouse events synthesis
+   QtQuick automatically creates artificial mouse events whenever a scene receives
+   touch events that are not consumed by any item (either by using MultiPointTouchArea
+   or a custom C++ item). The Mouse filter provides the possibility to ignore
+   synthesized mouse events by enabling the \l ignoreSynthesizedEvents
+   property.
+
+   This is really useful when, while developing a convergent application, the app developer
+   wants to avoid triggering the hovering logic using a touchscreen,
+   but still be able to handle the hover events when using a mouse, and at the same time
+   doesn't want to stop the mouse and touch events from propagating to items underneath the
+   MouseArea which handles the hovering.
+   The following is an example of how that functionaly can be implemented:
+   \qml
+    MouseArea {
+        id: proximityArea
+        anchors.fill: parent
+        propagateComposedEvents: true
+        hoverEnabled: true
+
+        //We use a separate variable to detect whether the area contains
+        //a mouse, because MouseArea's containsMouse is true even when
+        //tapping on it using a touchscreen (due to the touch events being
+        //converted to mouse events if no item consumes them).
+        property bool containsPointerDevice: false
+
+        //handle hover events using the Mouse filter instead of MouseArea, so that
+        //we can ignore synthesized mouse events and not trigger hover logic when the
+        //user is interacting with the app using a touch device.
+        Mouse.ignoreSynthesizedEvents: true
+        Mouse.onEntered: {
+            console.log("ONLY A MOUSE CAN TRIGGER THIS SLOT")
+            proximityArea.containsPointerDevice = true
+        }
+        Mouse.onExited: proximityArea.containsPointerDevice = false
+
+        //let mouse and touch events propagate underneath the mouse area
+        onPressed: mouse.accepted = false
+    }
+   \endqml
+ */
 UCMouse::UCMouse(QObject *parent)
     : QObject(parent)
     , m_owner(qobject_cast<QQuickItem*>(parent))
@@ -349,6 +388,7 @@ UCMouse::UCMouse(QObject *parent)
     , m_longPress(false)
     , m_hovered(false)
     , m_doubleClicked(false)
+    , m_ignoreSynthesizedEvents(false)
 {
     // if owner is MouseArea or InverseMouseArea, connect to the acceptedButtons
     // and hoverEnabled change signals
@@ -420,6 +460,11 @@ bool UCMouse::mouseEvents(QObject *target, QMouseEvent *event)
 {
     bool result = false;
     Q_UNUSED(target);
+
+    if (m_ignoreSynthesizedEvents && event->source() == Qt::MouseEventSynthesizedByQt) {
+        return result;
+    }
+
     switch (event->type()) {
     case QEvent::MouseButtonPress:
     {
@@ -791,6 +836,20 @@ void UCMouse::setEnabled(bool enabled)
 }
 
 /*!
+   \qmlproperty bool Mouse::ignoreSynthesizedEvents
+   This property controls how the filter handles the mouse events
+   synthesized by Qt (e.g. the artificial mouse events created when
+   an original touch event is not consumed by any Item in the scene).
+
+   If the value is true, the filter will ignore the synthesized mouse
+   events.
+
+   More info at \l{Mouse events synthesis}.
+
+   The default value is false.
+ */
+
+/*!
    \qmlproperty Qt::MouseButtons Mouse::acceptedButtons
    \readonly
    The property holds the accepted mouse buttons of the owner.
@@ -1062,7 +1121,7 @@ void UCInverseMouse::setEnabled(bool enabled)
 void UCInverseMouse::setPriority(Priority priority)
 {
     if (priority != m_priority) {
-        qmlInfo(m_owner) << UbuntuI18n::instance().tr("Ignoring AfterItem priority for InverseMouse filters.");
+        qmlInfo(m_owner) << QStringLiteral("Ignoring AfterItem priority for InverseMouse filters.");
     }
 }
 

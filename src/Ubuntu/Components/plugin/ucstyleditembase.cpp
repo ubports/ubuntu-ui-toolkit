@@ -26,12 +26,29 @@
 #include <QtQuick/private/qquickanchors_p.h>
 
 UCStyledItemBasePrivate::UCStyledItemBasePrivate()
-    : styleComponent(Q_NULLPTR)
+    : oldParentItem(Q_NULLPTR)
+    , styleComponent(Q_NULLPTR)
     , styleItem(Q_NULLPTR)
     , styleVersion(0)
+    , keyNavigationFocus(false)
     , activeFocusOnPress(false)
     , wasStyleLoaded(false)
 {
+}
+
+bool UCStyledItemBase::keyNavigationFocus() const
+{
+    Q_D(const UCStyledItemBase);
+    return d->keyNavigationFocus;
+}
+
+bool UCStyledItemBase::activeFocusOnTab2() const
+{
+    return activeFocusOnTab();
+}
+void UCStyledItemBase::setActiveFocusOnTab2(bool v)
+{
+    setActiveFocusOnTab(v);
 }
 
 UCStyledItemBasePrivate::~UCStyledItemBasePrivate()
@@ -42,6 +59,7 @@ void UCStyledItemBasePrivate::init()
 {
     Q_Q(UCStyledItemBase);
     q->setFlag(QQuickItem::ItemIsFocusScope);
+    QObject::connect(q, &QQuickItem::activeFocusOnTabChanged, q, &UCStyledItemBase::activeFocusOnTabChanged2);
 }
 
 
@@ -198,11 +216,11 @@ bool UCStyledItemBase::activefocusOnPress() const
 void UCStyledItemBase::setActiveFocusOnPress(bool value)
 {
     Q_D(UCStyledItemBase);
-    if (d->activeFocusOnPress == value)
+    if (d->activeFocusOnPress == value) {
         return;
+    }
     d->activeFocusOnPress = value;
     d->setFocusable(d->activeFocusOnPress);
-    setActiveFocusOnTab(value);
     Q_EMIT activeFocusOnPressChanged();
 }
 
@@ -309,8 +327,9 @@ bool UCStyledItemBasePrivate::loadStyleItem(bool animated)
     Q_Q(UCStyledItemBase);
     // either styleComponent or styleName is valid
     QQmlComponent *component = styleComponent;
-    if (!component) {
-        component = q->getTheme()->createStyleComponent(styleDocument + ".qml", q, styleVersion);
+    UCTheme *theme = q->getTheme();
+    if (!component && theme) {
+        component = theme->createStyleComponent(styleDocument + ".qml", q, styleVersion);
     }
     if (!component) {
         return false;
@@ -469,6 +488,19 @@ QString UCStyledItemBasePrivate::propertyForVersion(quint16 version) const
     }
 }
 
+/*
+ * The method is called on component completion, separated for the cases when
+ * the component is embedded in another CPP component and functionality depends
+ * on this initialization.
+ */
+void UCStyledItemBasePrivate::completeComponentInitialization()
+{
+    // no animation at this time
+    // prepare style context if not been done yet
+    postStyleChanged();
+    loadStyleItem(false);
+}
+
 void UCStyledItemBase::componentComplete()
 {
     QQuickItem::componentComplete();
@@ -476,10 +508,48 @@ void UCStyledItemBase::componentComplete()
     // make sure the theme version is up to date
     d->styleVersion = d->importVersion(this);
     UCTheme::checkMixedVersionImports(this, d->styleVersion);
-    // no animation at this time
-    // prepare style context if not been done yet
-    d->postStyleChanged();
-    d->loadStyleItem(false);
+    d->completeComponentInitialization();
+}
+
+void UCStyledItemBase::itemChange(ItemChange change, const ItemChangeData &data)
+{
+    QQuickItem::itemChange(change, data);
+    if (change == ItemParentHasChanged) {
+        // update parentItem
+        d_func()->oldParentItem = data.item;
+    }
+}
+
+void UCStyledItemBase::focusInEvent(QFocusEvent *event)
+{
+    QQuickItem::focusInEvent(event);
+
+    Q_D(UCStyledItemBase);
+    if (d->keyNavigationFocus)
+        return;
+
+    switch (event->reason()) {
+        case Qt::TabFocusReason:
+        case Qt::BacktabFocusReason:
+            d->keyNavigationFocus = true;
+            Q_EMIT keyNavigationFocusChanged();
+            break;
+        default:
+            // Mouse or window focus don't affect keyNavigationFocus status
+            break;
+    }
+}
+
+void UCStyledItemBase::focusOutEvent(QFocusEvent *event)
+{
+    QQuickItem::focusOutEvent(event);
+
+    Q_D(UCStyledItemBase);
+    if (!d->keyNavigationFocus)
+        return;
+
+    d->keyNavigationFocus = false;
+    Q_EMIT keyNavigationFocusChanged();
 }
 
 // grab pressed state and focus if it can be

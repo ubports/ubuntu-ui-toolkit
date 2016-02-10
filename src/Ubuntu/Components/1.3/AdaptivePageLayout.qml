@@ -17,6 +17,7 @@
 import QtQuick 2.4
 import QtQuick.Layouts 1.1
 import Ubuntu.Components 1.3
+import Ubuntu.Components.Private 1.3
 import "tree.js" as Tree
 
 /*!
@@ -440,8 +441,7 @@ PageTreeNode {
         }
 
         function createWrapper(page, properties) {
-            var wrapperComponent = Qt.createComponent("PageWrapper.qml");
-            var wrapperObject = wrapperComponent.createObject(hiddenPages, {synchronous: false});
+            var wrapperObject = pageWrapperComponent.createObject(hiddenPages, {synchronous: false});
             wrapperObject.pageStack = layout;
             wrapperObject.properties = properties;
             // set reference last because it will trigger creation of the object
@@ -650,6 +650,13 @@ PageTreeNode {
         }
     }
 
+    Component{
+        id: pageWrapperComponent
+        PageWrapper{
+        }
+    }
+
+
     // default metrics
     Component {
         id: defaultMetrics
@@ -705,7 +712,7 @@ PageTreeNode {
             id: holder
             active: false
             objectName: "ColumnHolder" + column
-            property PageWrapper pageWrapper
+            property var pageWrapper: pageWrapperComponent.createObject()
             property int column
             property alias config: subHeader.config
             property PageColumn metrics: getDefaultMetrics()
@@ -743,8 +750,6 @@ PageTreeNode {
                     right: parent.right
                     rightMargin: dividerThickness
                 }
-                // we need to clip because the header does not have a background
-                clip: true
                 Item {
                     id: hiddenItem
                     anchors.fill: parent
@@ -779,6 +784,7 @@ PageTreeNode {
 
                 property color dividerColor: layout.__propagated.header.dividerColor
                 property color panelColor: layout.__propagated.header.panelColor
+                property color backgroundColor: layout.__propagated.header.backgroundColor
 
                 visible: !customHeader && holder.pageWrapper && holder.pageWrapper.active
 
@@ -811,7 +817,7 @@ PageTreeNode {
                     rightMargin: dividerThickness
                 }
                 width: (column == (d.columns - 1)) || !pageWrapper ? 0 : units.dp(1)
-                color: theme.palette.selected.background
+                color: theme.palette.normal.base
                 MouseArea {
                     id: resizerSensing
                     objectName: "Divider"
@@ -836,7 +842,7 @@ PageTreeNode {
                     when: resizerSensing.pressed
                     PropertyChanges {
                         target: verticalDivider
-                        color: Qt.darker(theme.palette.normal.background, 1.5)
+                        color: Qt.darker(theme.palette.normal.background, 1.7)
                     }
                 }
                 transitions: Transition {
@@ -893,10 +899,11 @@ PageTreeNode {
     /*! \internal */
     // Pages declared as children will be placed directly into hiddenPages
     default property alias data: hiddenPages.data
-    Item {
+    PageTreeNode {
         id: hiddenPages
         objectName: "HiddenPagePool"
         visible: false
+        active: false
         // make sure nothing is shown eventually
         clip: true
         anchors.fill: parent

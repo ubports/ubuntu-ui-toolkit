@@ -7,19 +7,138 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ubuntu-ui-toolkit\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2014-11-05 14:29+0100\n"
+"POT-Creation-Date: 2015-11-05 10:05+0100\n"
 "PO-Revision-Date: 2014-07-06 06:53+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Chinese (Simplified) <zh_CN@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-10-16 05:54+0000\n"
-"X-Generator: Launchpad (build 17812)\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Launchpad-Export-Date: 2015-12-25 05:33+0000\n"
+"X-Generator: Launchpad (build 17865)\n"
 
-#: Ubuntu/Components/ListItems/Empty.qml:413
+#: Ubuntu/Components/1.2/TextInputPopover.qml:29
+#: Ubuntu/Components/1.3/TextInputPopover.qml:29
+msgid "Select All"
+msgstr "全选"
+
+#: Ubuntu/Components/1.2/TextInputPopover.qml:36
+#: Ubuntu/Components/1.3/TextInputPopover.qml:36
+msgid "Cut"
+msgstr "剪切"
+
+#: Ubuntu/Components/1.2/TextInputPopover.qml:48
+#: Ubuntu/Components/1.3/TextInputPopover.qml:48
+msgid "Copy"
+msgstr "复制"
+
+#: Ubuntu/Components/1.2/TextInputPopover.qml:57
+#: Ubuntu/Components/1.3/TextInputPopover.qml:57
+msgid "Paste"
+msgstr "粘贴"
+
+#: Ubuntu/Components/1.2/ToolbarItems.qml:143
+#: Ubuntu/Components/1.3/ToolbarItems.qml:143
+msgid "Back"
+msgstr "返回"
+
+#: Ubuntu/Components/ListItems/1.2/Empty.qml:398
+#: Ubuntu/Components/ListItems/1.3/Empty.qml:398
 msgid "Delete"
 msgstr "删除"
+
+#: Ubuntu/Components/plugin/adapters/dbuspropertywatcher_p.cpp:51
+msgid "No service/path specified"
+msgstr "没有指定服务/路径"
+
+#: Ubuntu/Components/plugin/adapters/dbuspropertywatcher_p.cpp:69
+#, qt-format
+msgid "Invalid bus type: %1."
+msgstr "无效的总线类型: %1."
+
+#. TRANSLATORS: Time based "this is happening/happened now"
+#: Ubuntu/Components/plugin/i18n.cpp:268
+msgid "Now"
+msgstr "当前"
+
+#: Ubuntu/Components/plugin/i18n.cpp:275
+#, qt-format
+msgid "%1 minute ago"
+msgid_plural "%1 minutes ago"
+msgstr[0] "%1 分钟前"
+
+#: Ubuntu/Components/plugin/i18n.cpp:277
+#, qt-format
+msgid "%1 minute"
+msgid_plural "%1 minutes"
+msgstr[0] "%1 分钟"
+
+#. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
+#. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
+#: Ubuntu/Components/plugin/i18n.cpp:284
+msgid "h:mm ap"
+msgstr "h:mm ap"
+
+#. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
+#. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
+#: Ubuntu/Components/plugin/i18n.cpp:287
+msgid "HH:mm"
+msgstr "HH:mm"
+
+#. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
+#. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
+#: Ubuntu/Components/plugin/i18n.cpp:293
+msgid "'Yesterday 'h:mm ap"
+msgstr "'昨天 'h:mm ap"
+
+#. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
+#. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
+#: Ubuntu/Components/plugin/i18n.cpp:296
+msgid "'Yesterday 'HH:mm"
+msgstr "'昨天 'HH:mm"
+
+#. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
+#. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
+#: Ubuntu/Components/plugin/i18n.cpp:302
+msgid "'Tomorrow 'h:mm ap"
+msgstr "'明天 'h:mm ap"
+
+#. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
+#. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
+#: Ubuntu/Components/plugin/i18n.cpp:305
+msgid "'Tomorrow 'HH:mm"
+msgstr "'明天 'HH:mm"
+
+#. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
+#. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
+#: Ubuntu/Components/plugin/i18n.cpp:312
+msgid "ddd' 'h:mm ap"
+msgstr "ddd' 'h:mm ap"
+
+#. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
+#. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
+#: Ubuntu/Components/plugin/i18n.cpp:315
+msgid "ddd' 'HH:mm"
+msgstr "ddd' 'HH:mm"
+
+#. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
+#. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
+#: Ubuntu/Components/plugin/i18n.cpp:322
+msgid "ddd d MMM' 'h:mm ap"
+msgstr "MMM d ddd' 'h:mm ap"
+
+#. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
+#. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
+#: Ubuntu/Components/plugin/i18n.cpp:325
+msgid "ddd d MMM' 'HH:mm"
+msgstr "MMM d ddd' 'HH:mm"
+
+#: Ubuntu/Components/plugin/privates/listitemdragarea.cpp:122
+msgid ""
+"ListView has no ViewItems.dragUpdated() signal handler implemented. No "
+"dragging will be possible."
+msgstr "ListView 没有实现 ViewItems.dragUpdated() 信号处理：拖动操作不能。"
 
 #: Ubuntu/Components/plugin/statesaverbackend_p.cpp:176
 #, qt-format
@@ -31,15 +150,15 @@ msgstr "对象 %2 的属性 \"%1\" 类型为 %3，不能被赋值为 %5 类型�
 #: Ubuntu/Components/plugin/statesaverbackend_p.cpp:185
 #, qt-format
 msgid "property \"%1\" does not exist or is not writable for object %2"
-msgstr ""
+msgstr "属性 \"%1\" 不存在或是对象 %2 的不可写属性"
 
-#: Ubuntu/Components/plugin/ucalarm.cpp:42
-#: Ubuntu/Components/plugin/ucalarm.cpp:136
+#: Ubuntu/Components/plugin/ucalarm.cpp:41
+#: Ubuntu/Components/plugin/ucalarm.cpp:643
 msgid "Alarm"
 msgstr "报警"
 
-#: Ubuntu/Components/plugin/ucalarm.cpp:684
-#: Ubuntu/Components/plugin/ucalarm.cpp:716
+#: Ubuntu/Components/plugin/ucalarm.cpp:635
+#: Ubuntu/Components/plugin/ucalarm.cpp:667
 msgid "Alarm has a pending operation."
 msgstr "警报器有一项待处理的操作。"
 
@@ -66,75 +185,97 @@ msgstr "%1 需要一个参数值: %2"
 msgid "%1 is expecting additional arguments: %2"
 msgstr "%1 需要额外的参数: %2"
 
-#: Ubuntu/Components/plugin/ucmousefilters.cpp:1064
+#: Ubuntu/Components/plugin/uclistitemstyle.cpp:145
+msgid "consider overriding swipeEvent() slot!"
+msgstr "请考虑重载swipeEvent()槽!"
+
+#: Ubuntu/Components/plugin/uclistitemstyle.cpp:165
+msgid "consider overriding rebound() slot!"
+msgstr "请考虑重载rebound()槽!"
+
+#: Ubuntu/Components/plugin/ucmousefilters.cpp:1065
 msgid "Ignoring AfterItem priority for InverseMouse filters."
-msgstr ""
+msgstr "忽略用于InverseMouse过滤器的AfterItem优先级。"
+
+#: Ubuntu/Components/plugin/ucserviceproperties.cpp:77
+msgid "Changing connection parameters forbidden."
+msgstr "禁止修改连接参数。"
+
+#: Ubuntu/Components/plugin/ucserviceproperties.cpp:160
+#, qt-format
+msgid ""
+"Binding detected on property '%1' will be removed by the service updates."
+msgstr "在属性'%1'上侦测到的绑定将在服务升级后被移除。"
 
 #: Ubuntu/Components/plugin/ucstatesaver.cpp:46
 msgid "Warning: attachee must have an ID. State will not be saved."
-msgstr ""
+msgstr "警告：附属必须有一个ID。状态不会被保存。"
 
 #: Ubuntu/Components/plugin/ucstatesaver.cpp:56
 #, qt-format
 msgid ""
 "Warning: attachee's UUID is already registered, state won't be saved: %1"
-msgstr ""
+msgstr "警告：附属的UUID已经被注册过，状态将不会被保存：%1"
 
-#: Ubuntu/Components/plugin/ucstatesaver.cpp:102
+#: Ubuntu/Components/plugin/ucstatesaver.cpp:107
 #, qt-format
 msgid ""
 "All the parents must have an id.\n"
 "State saving disabled for %1, class %2"
 msgstr ""
+"所有的双亲必须有一个id。\n"
+"状态保存禁用 %1，类 %2"
 
-#: Ubuntu/Components/plugin/uctheme.cpp:233
-msgid "Theme not found: "
-msgstr ""
+#: Ubuntu/Components/plugin/uctheme.cpp:208
+#, qt-format
+msgid "Theme not found: \"%1\""
+msgstr "主题没有找到: \"%1\""
 
-#: Ubuntu/Components/Popups/ComposerSheet.qml:80
+#: Ubuntu/Components/plugin/uctheme.cpp:539
+msgid "Not a Palette component."
+msgstr "并非调色板组件。"
+
+#: Ubuntu/Components/plugin/ucviewitemsattached.cpp:462
+msgid "Dragging mode requires ListView"
+msgstr "需要ListView进行拖放模式"
+
+#: Ubuntu/Components/plugin/ucviewitemsattached.cpp:468
+msgid ""
+"Dragging is only supported when using a QAbstractItemModel, ListModel or "
+"list."
+msgstr "拖放仅在使用 QAbstractItemModel， ListModel 或 list 时被支持。"
+
+#: Ubuntu/Components/Popups/1.2/ComposerSheet.qml:78
+#: Ubuntu/Components/Popups/1.3/ComposerSheet.qml:78
 msgid "Cancel"
 msgstr "取消"
 
-#: Ubuntu/Components/Popups/ComposerSheet.qml:90
+#: Ubuntu/Components/Popups/1.2/ComposerSheet.qml:88
+#: Ubuntu/Components/Popups/1.3/ComposerSheet.qml:88
 msgid "Confirm"
 msgstr "确认"
 
-#: Ubuntu/Components/Popups/DefaultSheet.qml:89
+#: Ubuntu/Components/Popups/1.2/DefaultSheet.qml:85
+#: Ubuntu/Components/Popups/1.3/DefaultSheet.qml:85
 msgid "Close"
 msgstr "关闭"
 
-#: Ubuntu/Components/Popups/DefaultSheet.qml:99
+#: Ubuntu/Components/Popups/1.2/DefaultSheet.qml:95
+#: Ubuntu/Components/Popups/1.3/DefaultSheet.qml:95
 msgid "Done"
 msgstr "完成"
 
-#: Ubuntu/Components/TextInputPopover.qml:27
-msgid "Select All"
-msgstr "全选"
-
-#: Ubuntu/Components/TextInputPopover.qml:33
-msgid "Cut"
-msgstr "剪切"
-
-#: Ubuntu/Components/TextInputPopover.qml:42
-msgid "Copy"
-msgstr "复制"
-
-#: Ubuntu/Components/TextInputPopover.qml:49
-msgid "Paste"
-msgstr "粘贴"
-
-#: Ubuntu/Components/Themes/Ambiance/ProgressBarStyle.qml:57
+#: Ubuntu/Components/Themes/Ambiance/1.2/ProgressBarStyle.qml:51
+#: Ubuntu/Components/Themes/Ambiance/1.3/ProgressBarStyle.qml:50
 msgid "In Progress"
 msgstr "处理中"
 
-#: Ubuntu/Components/Themes/Ambiance/PullToRefreshStyle.qml:28
+#: Ubuntu/Components/Themes/Ambiance/1.2/PullToRefreshStyle.qml:28
+#: Ubuntu/Components/Themes/Ambiance/1.3/PullToRefreshStyle.qml:28
 msgid "Release to refresh..."
 msgstr "释放以刷新..."
 
-#: Ubuntu/Components/Themes/Ambiance/PullToRefreshStyle.qml:28
+#: Ubuntu/Components/Themes/Ambiance/1.2/PullToRefreshStyle.qml:28
+#: Ubuntu/Components/Themes/Ambiance/1.3/PullToRefreshStyle.qml:28
 msgid "Pull to refresh..."
 msgstr "下拉以刷新..."
-
-#: Ubuntu/Components/ToolbarItems.qml:142
-msgid "Back"
-msgstr "返回"

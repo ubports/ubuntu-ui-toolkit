@@ -18,6 +18,7 @@
 #include "uclabel.h"
 #include "ucunits.h"
 #include "ucfontutils.h"
+#include "uctheme.h"
 
 UCThreeLabelsSlotPrivate::UCThreeLabelsSlotPrivate()
     : QQuickItemPrivate()
@@ -31,14 +32,17 @@ void UCThreeLabelsSlotPrivate::init()
 {
     Q_Q(UCThreeLabelsSlot);
 
-    QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_onGuValueChanged()));
+    QObject::connect(UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_onGuValueChanged()));
     _q_onGuValueChanged();
 }
 
 void UCThreeLabelsSlotPrivate::setTitleProperties()
 {
     if (m_title != Q_NULLPTR) {
-        m_title->setWrapMode(UCLabel::WordWrap);
+        //Using WrapAnywhere because ElideRight elides too early when used
+        //together with WrapWord, and that produces an unexpected result.
+        //This will cover most of the usecases.
+        m_title->setWrapMode(UCLabel::WrapAnywhere);
         m_title->setElideMode(UCLabel::ElideRight);
         m_title->setMaximumLineCount(1);
         m_title->setTextSize(UCLabel::Medium);
@@ -48,7 +52,7 @@ void UCThreeLabelsSlotPrivate::setTitleProperties()
 void UCThreeLabelsSlotPrivate::setSubtitleProperties()
 {
     if (m_subtitle != Q_NULLPTR) {
-        m_subtitle->setWrapMode(UCLabel::WordWrap);
+        m_subtitle->setWrapMode(UCLabel::WrapAnywhere);
         m_subtitle->setElideMode(UCLabel::ElideRight);
         m_subtitle->setMaximumLineCount(1);
         m_subtitle->setTextSize(UCLabel::Small);
@@ -58,7 +62,7 @@ void UCThreeLabelsSlotPrivate::setSubtitleProperties()
 void UCThreeLabelsSlotPrivate::setSummaryProperties()
 {
     if (m_summary != Q_NULLPTR) {
-        m_summary->setWrapMode(UCLabel::WordWrap);
+        m_summary->setWrapMode(UCLabel::WrapAnywhere);
         m_summary->setElideMode(UCLabel::ElideRight);
         m_summary->setMaximumLineCount(2);
         m_summary->setTextSize(UCLabel::Small);
@@ -99,19 +103,19 @@ void UCThreeLabelsSlotPrivate::_q_updateLabelsAnchorsAndBBoxHeight()
         QQuickAnchors *subtitleAnchors = QQuickItemPrivate::get(m_subtitle)->anchors();
         subtitleAnchors->setTop(skipTitle
                                 ? top()
-                                : QQuickItemPrivate::get(m_title)->baseline());
+                                : QQuickItemPrivate::get(m_title)->bottom());
         subtitleAnchors->setTopMargin(skipTitle
                                       ? 0
-                                      : UCUnits::instance().dp(LABELSBLOCK_SPACING_DP));
+                                      : UCUnits::instance()->dp(TITLE_SPACING_DP));
     }
 
     if (!skipSummary) {
         QQuickAnchors *summaryAnchors = QQuickItemPrivate::get(m_summary)->anchors();
         summaryAnchors->setTop(skipSubtitle
-                               ? (skipTitle ? top() : QQuickItemPrivate::get(m_title)->baseline())
+                               ? (skipTitle ? top() : QQuickItemPrivate::get(m_title)->bottom())
                                : QQuickItemPrivate::get(m_subtitle)->bottom());
         summaryAnchors->setTopMargin(skipSubtitle
-                                     ? (skipTitle ? 0 : UCUnits::instance().dp(LABELSBLOCK_SPACING_DP))
+                                     ? (skipTitle ? 0 : UCUnits::instance()->dp(TITLE_SPACING_DP))
                                      : 0);
     }
     //Update height of the labels box
@@ -175,11 +179,19 @@ UCLabel *UCThreeLabelsSlot::title()
     return d->m_title;
 }
 
+QColor UCThreeLabelsSlot::getSubtitleColor(QQuickItem *item, UCTheme *theme)
+{
+    // FIXME: replace the code below with automatic color
+    // change detection based on teh item's state
+    const char *valueSet = item->isEnabled() ? "normal" : "disabled";
+    return theme ? theme->getPaletteColor(valueSet, "backgroundSecondaryText") : QColor();
+}
+
 UCLabel *UCThreeLabelsSlot::subtitle()
 {
     Q_D(UCThreeLabelsSlot);
     if (d->m_subtitle == Q_NULLPTR) {
-        d->m_subtitle = new UCLabel(this);
+        d->m_subtitle = new UCLabel(getSubtitleColor, this);
         QQmlEngine::setContextForObject(d->m_subtitle, qmlContext(this));
         d->m_subtitle->init();
 
@@ -197,11 +209,19 @@ UCLabel *UCThreeLabelsSlot::subtitle()
     return d->m_subtitle;
 }
 
+QColor UCThreeLabelsSlot::getSummaryColor(QQuickItem *item, UCTheme *theme)
+{
+    // FIXME: replace the code below with automatic color
+    // change detection based on teh item's state
+    const char *valueSet = item->isEnabled() ? "normal" : "disabled";
+    return theme ? theme->getPaletteColor(valueSet, "backgroundTertiaryText") : QColor();
+}
+
 UCLabel *UCThreeLabelsSlot::summary()
 {
     Q_D(UCThreeLabelsSlot);
     if (d->m_summary == Q_NULLPTR) {
-        d->m_summary = new UCLabel(this);
+        d->m_summary = new UCLabel(getSummaryColor, this);
         QQmlEngine::setContextForObject(d->m_summary, qmlContext(this));
         d->m_summary->init();
 

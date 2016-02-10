@@ -75,7 +75,7 @@ private:
 
     QPoint guPoint(qreal guX, qreal guY)
     {
-        return QPointF(UCUnits::instance().gu(guX), UCUnits::instance().gu(guY)).toPoint();
+        return QPointF(UCUnits::instance()->gu(guX), UCUnits::instance()->gu(guY)).toPoint();
     }
 
 protected Q_SLOTS:
