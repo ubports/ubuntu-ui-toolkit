@@ -220,8 +220,7 @@ ShapeMaterial::ShapeMaterial()
 ShapeMaterial::~ShapeMaterial()
 {
     shapeTexturesHashMutex.lock();
-    QHash<QOpenGLContext*, ShapeTextures>::iterator it =
-        shapeTexturesHash.find(QOpenGLContext::currentContext());
+    auto it = shapeTexturesHash.find(QOpenGLContext::currentContext());
     Q_ASSERT(it != shapeTexturesHash.end());
     if (it.value().unref() == 0) {
         glDeleteTextures(shapeTextureCount, it.value().ids());
