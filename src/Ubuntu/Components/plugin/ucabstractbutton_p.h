@@ -41,6 +41,7 @@ public:
     void _q_mouseAreaPressed();
     void _q_mouseAreaClicked();
     void _q_mouseAreaPressAndHold();
+    void _q_adjustSensingArea();
 
     QQuickMouseArea *mouseArea;
     UCMargins *sensingMargins = nullptr;

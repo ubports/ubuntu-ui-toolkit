@@ -51,7 +51,6 @@ protected:
     void classBegin();
     virtual void geometryChanged(const QRectF &newGeometry,
                                  const QRectF &oldGeometry);
-    void adjustSensingArea();
     void keyReleaseEvent(QKeyEvent *key);
 
 Q_SIGNALS:
@@ -67,6 +66,7 @@ protected:
     Q_PRIVATE_SLOT(d_func(), void _q_mouseAreaPressed())
     Q_PRIVATE_SLOT(d_func(), void _q_mouseAreaClicked())
     Q_PRIVATE_SLOT(d_func(), void _q_mouseAreaPressAndHold())
+    Q_PRIVATE_SLOT(d_func(), void _q_adjustSensingArea())
 };
 
 QML_DECLARE_TYPE(UCMargins)

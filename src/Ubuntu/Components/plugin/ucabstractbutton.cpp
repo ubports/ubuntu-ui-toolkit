@@ -145,7 +145,7 @@ void UCAbstractButtonPrivate::completeComponentInitialization()
     Q_Q(UCAbstractButton);
 
     // adjust sensing area
-    q->adjustSensingArea();
+    _q_adjustSensingArea();
 
     // bind mouse area
     QObject::connect(mouseArea, &QQuickMouseArea::pressedChanged, q, &UCAbstractButton::pressedChanged);
@@ -214,10 +214,10 @@ void UCAbstractButton::keyReleaseEvent(QKeyEvent *event)
     }
 }
 
-void UCAbstractButton::adjustSensingArea()
+void UCAbstractButtonPrivate::_q_adjustSensingArea()
 {
-    Q_D(UCAbstractButton);
-    if (!isComponentComplete()) {
+    Q_Q(UCAbstractButton);
+    if (!componentComplete) {
         // we do not hammer the component until completion
         return;
     }
@@ -225,26 +225,26 @@ void UCAbstractButton::adjustSensingArea()
     qreal minimumWidth = UCUnits::instance()->gu(MIN_SENSING_WIDTH_GU);
     qreal minimumHeight = UCUnits::instance()->gu(MIN_SENSING_HEIGHT_GU);
     qreal hDelta = minimumWidth
-            - (width() + (d->sensingMargins ? (d->sensingMargins->left() + d->sensingMargins->right()) : 0.0));
+            - (q->width() + (sensingMargins ? (sensingMargins->left() + sensingMargins->right()) : 0.0));
     qreal vDelta = minimumHeight
-            - (height() + (d->sensingMargins ? (d->sensingMargins->top() + d->sensingMargins->bottom()) : 0.0));
+            - (q->height() + (sensingMargins ? (sensingMargins->top() + sensingMargins->bottom()) : 0.0));
     // adjust the sensing area
-    QQuickAnchors *mouseAreaAnchors = QQuickItemPrivate::get(d->mouseArea)->anchors();
-    if (hDelta > 0) {
+    QQuickAnchors *mouseAreaAnchors = QQuickItemPrivate::get(mouseArea)->anchors();
+    if (hDelta >= 0) {
         // the horizontal size is still smaller than the minimum
-        mouseAreaAnchors->setLeftMargin(-(hDelta / 2 + (d->sensingMargins ? d->sensingMargins->left() : 0.0)));
-        mouseAreaAnchors->setRightMargin(-(hDelta / 2 + (d->sensingMargins ? d->sensingMargins->right() : 0.0)));
-    } else if (d->sensingMargins) {
-        mouseAreaAnchors->setLeftMargin(-d->sensingMargins->left());
-        mouseAreaAnchors->setRightMargin(-d->sensingMargins->right());
+        mouseAreaAnchors->setLeftMargin(-(hDelta / 2 + (sensingMargins ? sensingMargins->left() : 0.0)));
+        mouseAreaAnchors->setRightMargin(-(hDelta / 2 + (sensingMargins ? sensingMargins->right() : 0.0)));
+    } else if (sensingMargins) {
+        mouseAreaAnchors->setLeftMargin(-sensingMargins->left());
+        mouseAreaAnchors->setRightMargin(-sensingMargins->right());
     }
-    if (vDelta > 0) {
+    if (vDelta >= 0) {
         // the vertical size is still smaller than the minimum
-        mouseAreaAnchors->setTopMargin(-(vDelta / 2 + (d->sensingMargins ? d->sensingMargins->top() : 0.0)));
-        mouseAreaAnchors->setBottomMargin(-(vDelta / 2 + (d->sensingMargins ? d->sensingMargins->bottom() : 0.0)));
-    } else if (d->sensingMargins) {
-        mouseAreaAnchors->setTopMargin(-d->sensingMargins->top());
-        mouseAreaAnchors->setBottomMargin(-d->sensingMargins->bottom());
+        mouseAreaAnchors->setTopMargin(-(vDelta / 2 + (sensingMargins ? sensingMargins->top() : 0.0)));
+        mouseAreaAnchors->setBottomMargin(-(vDelta / 2 + (sensingMargins ? sensingMargins->bottom() : 0.0)));
+    } else if (sensingMargins) {
+        mouseAreaAnchors->setTopMargin(-sensingMargins->top());
+        mouseAreaAnchors->setBottomMargin(-sensingMargins->bottom());
     }
 }
 
@@ -253,7 +253,7 @@ void UCAbstractButton::geometryChanged(const QRectF &newGeometry, const QRectF &
     UCActionItem::geometryChanged(newGeometry, oldGeometry);
 
     // adjust internal mouse area's size
-    adjustSensingArea();
+    d_func()->_q_adjustSensingArea();
 }
 
 /*!
@@ -308,7 +308,7 @@ QQuickMouseArea *UCAbstractButton::privateMouseArea() const
  *
  * \note If the visual area and the sensing margins are not reaching the 4x4 grid
  * units limit, the component will fall back to these minimum limits.
- * For example, extending a 2x2 grid unit visual component into 4x10 grid units
+ * For example, extending a 2x2 grid unit visual component into 5x4 grid units
  * sensing area would look as follows:
  * \qml
  * AbstractButton {
@@ -336,13 +336,13 @@ UCMargins *UCAbstractButton::sensingMargins()
 
         // as this is the first time we create the sensing margins we only
         // connect now to grid unit changes to keep sensing area size in sync
-        connect(UCUnits::instance(), &UCUnits::gridUnitChanged, this, &UCAbstractButton::adjustSensingArea);
+        connect(UCUnits::instance(), SIGNAL(gridUnitChanged()), this, SLOT(_q_adjustSensingArea()));
         // also connect to the margin changes
-        connect(d->sensingMargins, &UCMargins::leftChanged, this, &UCAbstractButton::adjustSensingArea);
-        connect(d->sensingMargins, &UCMargins::rightChanged, this, &UCAbstractButton::adjustSensingArea);
-        connect(d->sensingMargins, &UCMargins::topChanged, this, &UCAbstractButton::adjustSensingArea);
-        connect(d->sensingMargins, &UCMargins::bottomChanged, this, &UCAbstractButton::adjustSensingArea);
-        connect(d->sensingMargins, &UCMargins::allChanged, this, &UCAbstractButton::adjustSensingArea);
+        connect(d->sensingMargins, SIGNAL(leftChanged()), this, SLOT(_q_adjustSensingArea()));
+        connect(d->sensingMargins, SIGNAL(rightChanged()), this, SLOT(_q_adjustSensingArea()));
+        connect(d->sensingMargins, SIGNAL(topChanged()), this, SLOT(_q_adjustSensingArea()));
+        connect(d->sensingMargins, SIGNAL(bottomChanged()), this, SLOT(_q_adjustSensingArea()));
+        connect(d->sensingMargins, SIGNAL(allChanged()), this, SLOT(_q_adjustSensingArea()));
     }
     return d->sensingMargins;
 }
