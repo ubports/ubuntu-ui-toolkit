@@ -32,7 +32,7 @@ Item {
     /*!
       Highlight color.
       */
-    property color highlightColor: theme.palette.highlighted.baseText
+    property color highlightColor: theme.palette.highlight.baseText
     /*!
       Scale of the highlight item
       */

@@ -234,8 +234,8 @@ PageTreeNode {
 
       The function creates the new page asynchronously if the new \c page to be
       added is a Component or a QML document and the \l asynchronous property is
-      set. In this case the function returns an incubator which can be used to
-      track the page creation. For more about incubation in QML and creating
+      set to true. In this case the function returns an incubator which can be
+      used to track the page creation. For more about incubation in QML and creating
       components asynchronously, see
       \l {http://doc.qt.io/qt-5/qml-qtqml-component.html#incubateObject-method}
       {Component.incubateObject()}.
