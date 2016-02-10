@@ -112,6 +112,9 @@ Item {
         }
         name: "toolkit_bottom-edge-hint"
         color: foregroundColor
+
+        FocusShape {
+        }
     }
 
     Rectangle {
