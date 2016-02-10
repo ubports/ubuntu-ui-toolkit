@@ -40,7 +40,7 @@ public:
     void setParentNode(UCPageTreeNode *parentNode);
     UCPageTreeNode *parentNode() const;
 
-    void setActive(bool active);
+    virtual void setActive(bool active);
     bool active() const;
 
     void setPageStack(QQuickItem *pageStack);
