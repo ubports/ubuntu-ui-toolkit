@@ -24,6 +24,7 @@
 #include "uctheme.h"
 #include "uctestcase.h"
 #include <private/qquicktext_p.h>
+#include "plugin.h"
 
 Q_DECLARE_METATYPE(QList<QQmlError>)
 
@@ -75,7 +76,7 @@ private:
     }
     void initDeprecatedTheme(QQmlEngine &engine)
     {
-        UCDeprecatedTheme::registerToContext(engine.rootContext());
+        UbuntuComponentsPlugin::initializeContextProperties(&engine);
     }
 
 private Q_SLOTS:
