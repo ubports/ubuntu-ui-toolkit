@@ -43,8 +43,10 @@ UCQQuickImageExtension::UCQQuickImageExtension(QObject *parent) :
     QObject::connect(UCUnits::instance(), SIGNAL(gridUnitChanged()),
                      this, SLOT(reloadSource()));
     // connect sourceChanged signal to extendedSourceChanged
-    QObject::connect(m_image, &QQuickImageBase::sourceChanged,
-                     this, &UCQQuickImageExtension::extendedSourceChanged);
+    if (m_image) {
+        QObject::connect(m_image, &QQuickImageBase::sourceChanged,
+                         this, &UCQQuickImageExtension::extendedSourceChanged);
+    }
 }
 
 QUrl UCQQuickImageExtension::source() const
@@ -62,6 +64,10 @@ void UCQQuickImageExtension::setSource(const QUrl& url)
 
 void UCQQuickImageExtension::reloadSource()
 {
+    if (!m_image) {
+        // nothing to do, we don't have the image instance
+        return;
+    }
     if (m_source.isEmpty()) {
         m_image->setSource(m_source);
         return;

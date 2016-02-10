@@ -27,6 +27,8 @@
 #include <QtTest/QSignalSpy>
 
 #include "uctestcase.h"
+#include <QtQml/QQmlEngine>
+#include "i18n.h"
 
 class tst_UCArguments : public QObject
 {
@@ -39,11 +41,14 @@ private:
     QVector<char*> m_arguments;
     int m_argumentsSize;
     QCoreApplication* m_application;
+    QQmlEngine *engine = Q_NULLPTR;
 
     void clearCommandLine() {
         m_arguments.clear();
         m_argumentsSize = 0;
 
+        delete engine;
+        engine = Q_NULLPTR;
         if (m_application != NULL) {
             delete m_application;
             m_application = NULL;
@@ -66,6 +71,9 @@ private:
 
         m_argumentsSize = m_arguments.size();
         m_application = new QCoreApplication(m_argumentsSize, m_arguments.data());
+        engine = new QQmlEngine;
+        // initialize i18 only
+        UbuntuI18n::instance(engine);
     }
 
     void testCommandLine(QString commandLine, bool expectedError, QString dataTag=QString()) {
