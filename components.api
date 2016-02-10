@@ -83,6 +83,7 @@ Ubuntu.Components.ActivityIndicator 1.3: AnimatedItem
     property bool onScreen
     property bool running
 Ubuntu.Components.AdaptivePageLayout 1.3: PageTreeNode
+    property bool asynchronous
     readonly property int columns
     property list<PageColumnsLayou> layouts
     function var addPageToCurrentColumn(var sourcePage, var page, var properties)
