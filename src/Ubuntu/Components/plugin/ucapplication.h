@@ -38,7 +38,9 @@ private:
 public:
     static UCApplication *instance(QObject *parent = Q_NULLPTR) {
         if (!m_app) {
-            qFatal("Creating UbuntuApplication singleton requires a parent object!");
+            if (!parent) {
+                qFatal("Creating UbuntuApplication singleton requires a parent object!");
+            }
             m_app = new UCApplication(parent);
         }
         return m_app;

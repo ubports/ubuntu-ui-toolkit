@@ -32,7 +32,9 @@ public:
     static UCUnits *instance(QObject *parent = Q_NULLPTR) {
         if (!m_units) {
             // we must have a parent!
-            qFatal("Creating units singleton requires a parent object!");
+            if (!parent) {
+                qFatal("Creating units singleton requires a parent object!");
+            }
             m_units = new UCUnits(parent);
         }
         return m_units;
