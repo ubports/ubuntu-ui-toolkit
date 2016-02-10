@@ -23,6 +23,7 @@
 #include <QtQuick/QSGNode>
 #include <QtQuick/qsgmaterial.h>
 #include <QtGui/QOpenGLFunctions>
+#include "ucubuntushapetextures.h"
 #include "ucimportversionchecker_p.h"
 
 // --- Scene graph shader ---
@@ -66,22 +67,25 @@ public:
             Pressed              = (1 << 6)
         };
         QSGTextureProvider* sourceTextureProvider;
-        quint32 shapeTextureId;
+        quint8 shapeTextureIndex;
         quint8 distanceAAFactor;
         quint8 sourceOpacity;
         quint8 flags;
     };
 
     ShapeMaterial();
+    ~ShapeMaterial();
     virtual QSGMaterialType* type() const;
     virtual QSGMaterialShader* createShader() const;
     virtual int compare(const QSGMaterial* other) const;
     virtual void updateTextures();
     const Data* constData() const { return &m_data; }
     Data* data() { return &m_data; }
+    quint32* textureIds() { return m_shapeTexturesId; }
 
 private:
     Data m_data;
+    quint32 m_shapeTexturesId[shapeTextureCount];
 };
 
 // --- Scene graph node ---
@@ -293,7 +297,8 @@ protected:
 
     // Virtual functions for extended shapes.
     virtual QSGNode* createSceneGraphNode() const;
-    virtual void updateMaterial(QSGNode* node, float radius, quint32 shapeTextureId, bool textured);
+    virtual void updateMaterial(
+        QSGNode* node, float radius, quint8 shapeTextureIndex, bool textured);
     virtual void updateGeometry(
         QSGNode* node, const QSizeF& itemSize, float radius, float shapeOffset,
         const QVector4D& sourceCoordTransform, const QVector4D& sourceMaskTransform,
