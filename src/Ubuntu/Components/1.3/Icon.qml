@@ -103,7 +103,7 @@ Item {
 
     /*!
       \qmlproperty bool Icon::asynchronous
-      The proeprty drives the image loading of the icon. Defaults to true.
+      The property drives the image loading of the icon. Defaults to false.
     */
     property alias asynchronous: image.asynchronous
 
