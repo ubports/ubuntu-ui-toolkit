@@ -459,13 +459,13 @@ void UCViewItemsAttached::setDragMode(bool value)
          * not enable dragging if these conditions are not fulfilled.
          */
         if (!d->listView) {
-            qmlInfo(parent()) << UbuntuI18n::instance().tr("Dragging mode requires ListView");
+            qmlInfo(parent()) << QStringLiteral("Dragging mode requires ListView");
             return;
         }
         QVariant model = d->listView->property("model");
         // warn if the model is anything else but Instance model (ObjectModel or DelegateModel)
         // or a derivate of QAbstractItemModel
-        QString warning = UbuntuI18n::instance().tr("Dragging is only supported when using a QAbstractItemModel, ListModel or list.");
+        QString warning = QStringLiteral("Dragging is only supported when using a QAbstractItemModel, ListModel or list.");
         if (model.isValid() && !model.value<QQmlInstanceModel*>() && !model.value<QAbstractItemModel*>() && !(model.type() == QVariant::List)) {
             qmlInfo(parent()) << warning;
         }

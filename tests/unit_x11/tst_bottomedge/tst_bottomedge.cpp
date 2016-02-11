@@ -44,6 +44,9 @@ public:
     BottomEdgeTestCase(const QString& file, ResizeMode resize = SizeViewToRootObject, bool assertOnFailure = true, QWindow* parent = 0)
         : UbuntuTestCase(file, resize, assertOnFailure, parent)
     {
+        // make sure we disable the mouse
+        QuickUtils::instance()->m_mouseAttached = false;
+
         // patch all BottomEdges' SwipeArea gesture recognition timer
         QList<UCBottomEdge*> list = findChildren<UCBottomEdge*>();
         for (int i = 0; i < list.size(); ++i) {
@@ -98,6 +101,13 @@ public:
         }
         return (qobject_cast<UCCollapseAction*>(navigationActions->at(0)) != Q_NULLPTR);
     }
+
+    void guToPoints(QList<QPoint> &guMoves)
+    {
+        for (int i = 0; i < guMoves.size(); i++) {
+            guMoves[i] = QPointF(UCUnits::instance()->gu(guMoves[i].x()), UCUnits::instance()->gu(guMoves[i].y())).toPoint();
+        }
+    }
 };
 
 
@@ -109,8 +119,6 @@ private Q_SLOTS:
     void initTestCase()
     {
         UCTestExtras::registerTouchDevice();
-        // make sure we disable the mouse
-        QuickUtils::instance().m_mouseAttached = false;
     }
 
     void test_defaults()
@@ -266,7 +274,7 @@ private Q_SLOTS:
 
         QPoint from(bottomEdge->width() / 2.0f, bottomEdge->height() - 1);
         // add some extra space for the touch
-        QPoint delta(0, -(bottomEdge->height() / 3 + UCUnits::instance().gu(6)));
+        QPoint delta(0, -(bottomEdge->height() / 3 + UCUnits::instance()->gu(6)));
 
         if (withMouse) {
             bottomEdge->hint()->setStatus(UCBottomEdgeHint::Locked);
@@ -319,13 +327,13 @@ private Q_SLOTS:
         QList<QPoint> shortPath, longPath;
         // upwards
         for (int i = 0; i < 10; i++) {
-            shortPath << QPointF(0, -UCUnits::instance().gu(3)).toPoint();
-            longPath << QPointF(0, -UCUnits::instance().gu(7)).toPoint();
+            shortPath << QPoint(0, -3);
+            longPath << QPoint(0, -7);
         }
         // downwards
         for (int i = 0; i < 5; i++) {
-            shortPath << QPointF(0, UCUnits::instance().gu(2)).toPoint();
-            longPath << QPointF(0, UCUnits::instance().gu(2)).toPoint();
+            shortPath << QPoint(0, 2);
+            longPath << QPoint(0, 2);
         }
 
         QTest::newRow("with mouse, onethird not passed")
@@ -344,6 +352,7 @@ private Q_SLOTS:
 
         QScopedPointer<BottomEdgeTestCase> test(new BottomEdgeTestCase("BottomEdgeInItem.qml"));
         UCBottomEdge *bottomEdge = test->testItem();
+        test->guToPoints(moves);
 
         QPoint from(bottomEdge->width() / 2.0f, bottomEdge->height() - 1);
         moves.prepend(from);
@@ -583,7 +592,7 @@ private Q_SLOTS:
         region->m_to = 0.2;
 
         QPoint from(bottomEdge->width() / 2.0f, bottomEdge->height() - 5);
-        QPoint delta(0, -(bottomEdge->height() / 3 + UCUnits::instance().gu(6)));
+        QPoint delta(0, -(bottomEdge->height() / 3 + UCUnits::instance()->gu(6)));
         QSignalSpy entered(region, SIGNAL(entered()));
         QSignalSpy exited(region, SIGNAL(exited()));
 
@@ -710,7 +719,7 @@ private Q_SLOTS:
         UCBottomEdgeRegion *region = privateBottomEdge->regions[0];
 
         QPoint from(bottomEdge->width() / 2.0f, bottomEdge->height() - 1);
-        QPoint to = from + QPoint(0, -(bottomEdge->parentItem()->height() - UCUnits::instance().gu(10)));
+        QPoint to = from + QPoint(0, -(bottomEdge->parentItem()->height() - UCUnits::instance()->gu(10)));
         // let us know when we are out of the region
         QSignalSpy exitRegion(region, SIGNAL(exited()));
 

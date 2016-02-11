@@ -30,6 +30,8 @@
 #include <private/qquicktextinput_p.h>
 #include <private/qquicktextedit_p.h>
 
+QuickUtils *QuickUtils::m_instance = nullptr;
+
 QuickUtils::QuickUtils(QObject *parent) :
     QObject(parent),
     m_rootView(0),

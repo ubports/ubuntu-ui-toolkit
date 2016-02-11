@@ -110,7 +110,10 @@ Item {
             compare(shader.status, ShaderEffect.Uncompiled)
             icon.color = UbuntuColors.orange;
             shaderSpy.wait();
-            compare(shader.status, ShaderEffect.Compiled)
+            compare(shader.log, '')
+            // https://bugreports.qt.io/browse/QTBUG-49713
+            // status may be Error with no log even if successful
+            verify(shader.status !== ShaderEffect.Uncompiled)
             compare(shader.keyColorOut, icon.color);
             compare(shader.visible, true);
             compare(shader.source, image);
