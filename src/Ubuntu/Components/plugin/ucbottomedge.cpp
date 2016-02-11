@@ -37,6 +37,8 @@
 #include "private/ucswipearea_p.h"
 #include <QtQuick/private/qquickanimation_p.h>
 
+using namespace UbuntuToolkit;
+
 Q_LOGGING_CATEGORY(ucBottomEdge, "ubuntu.components.BottomEdge", QtMsgType::QtWarningMsg)
 
 #define LOG     qCDebug(ucBottomEdge) << "[BottomEdge]"
@@ -47,6 +49,7 @@ UCBottomEdgePrivate::UCBottomEdgePrivate()
     , hint(new UCBottomEdgeHint)
     , contentComponent(Q_NULLPTR)
     , bottomPanel(Q_NULLPTR)
+    , loader(Q_NULLPTR)
     , previousDistance(0.0)
     , dragProgress(0.)
     , status(UCBottomEdge::Hidden)
@@ -54,6 +57,7 @@ UCBottomEdgePrivate::UCBottomEdgePrivate()
     , dragDirection(UCBottomEdge::Undefined)
     , defaultRegionsReset(false)
     , mousePressed(false)
+    , preloadContent(false)
 {
 }
 
@@ -1080,6 +1084,60 @@ UCBottomEdgeRegion *UCBottomEdge::activeRegion()
 {
     Q_D(UCBottomEdge);
     return d->activeRegion;
+}
+
+/*!
+ * \qmlproperty bool BottomEdge::preloadContent
+ * If set, all the contents set in the component and in regions will be loaded
+ * in the background, so it will be available before it is revealed.
+ */
+bool UCBottomEdge::preloadContent() const
+{
+    return d_func()->preloadContent;
+}
+void UCBottomEdge::setPreloadContent(bool value)
+{
+    Q_D(UCBottomEdge);
+    if (d->preloadContent == value) {
+        return;
+    }
+    d->preloadContent = value;
+    if (!d->preloadContent) {
+        d->loader->reset();
+    } else {
+        d->preload();
+    }
+
+    // TODO: instruct regions to preload
+    Q_EMIT preloadContentChanged();
+}
+
+void UCBottomEdgePrivate::preload()
+{
+    if (!preloadContent) {
+        return;
+    }
+    Q_Q(UCBottomEdge);
+    if (!loader) {
+        loader = new AsyncLoader(q);
+        QObject::connect(loader, SIGNAL(statusChanged(QQmlIncubator::Status,QObject*)),
+                         q, SLOT(onLoaderStatusChanged(QQmlIncubator::Status,QObject*)));
+    }
+    // component has priority over the URL!
+    if (contentComponent) {
+        loader->load(contentComponent, new QQmlContext(qmlContext(q)));
+    } else if (contentUrl.isValid()) {
+        loader->load(qmlEngine(q), contentUrl, new QQmlContext(qmlContext(q)));
+    }
+}
+
+void UCBottomEdgePrivate::onLoaderStatusChanged(QQmlIncubator::Status status, QObject *object)
+{
+    qDebug() << status << object;
+    if (status == QQmlIncubator::Ready && object) {
+        object->setParent(bottomPanel->m_panel);
+        qobject_cast<QQuickItem*>(object)->setParentItem(bottomPanel->m_panel);
+    }
 }
 
 #include "moc_ucbottomedge.cpp"

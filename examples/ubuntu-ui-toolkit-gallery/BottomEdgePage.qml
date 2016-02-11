@@ -119,6 +119,7 @@ Template {
             flickable: page.flickable
         }
         contentComponent: bottomEdgeContent
+        preloadContent: true
 
         onCommitCompleted: {
             if (contentToLayout.checked && contentToLayout.enabled) {

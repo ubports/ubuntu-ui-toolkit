@@ -23,6 +23,10 @@
 #include "ucstyleditembase_p.h"
 #include "ucaction.h"
 
+#include <AsyncLoader>
+
+using namespace UbuntuToolkit;
+
 class UCBottomEdgeStyle;
 class UCBottomEdgePrivate : public UCStyledItemBasePrivate, protected QQuickItemChangeListener
 {
@@ -70,6 +74,9 @@ public:
     void itemChildAdded(QQuickItem *item, QQuickItem *child);
     void itemChildRemoved(QQuickItem *item, QQuickItem *child);
 
+    void preload();
+    void onLoaderStatusChanged(QQmlIncubator::Status status, QObject *object);
+
     // members
     QUrl contentUrl;
     QList<UCBottomEdgeRegion*> regions;
@@ -77,6 +84,7 @@ public:
     UCBottomEdgeHint *hint;
     QQmlComponent *contentComponent;
     UCBottomEdgeStyle *bottomPanel;
+    UbuntuToolkit::AsyncLoader *loader;
 
     qreal previousDistance;
     qreal dragProgress;
@@ -93,6 +101,7 @@ public:
 
     bool defaultRegionsReset:1;
     bool mousePressed:1;
+    bool preloadContent:1;
 
     // status management
     void setOperationStatus(OperationStatus s);

@@ -137,6 +137,7 @@ private Q_SLOTS:
         QCOMPARE(test->regionAt("testItem", 0)->m_from, 0.33);
         QCOMPARE(test->regionAt("testItem", 0)->m_to, 1.0);
         QVERIFY(!test->testItem()->activeRegion());
+        QVERIFY(!test->testItem()->preloadContent());
     }
 
     void test_height_moves_when_reparented()

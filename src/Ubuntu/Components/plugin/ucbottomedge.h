@@ -42,6 +42,7 @@ class UCBottomEdge : public UCStyledItemBase
     Q_PROPERTY(QQuickItem* contentItem READ contentItem NOTIFY contentItemChanged FINAL)
     Q_PROPERTY(QQmlListProperty<UCBottomEdgeRegion> regions READ regions NOTIFY regionsChanged FINAL)
     Q_PROPERTY(UCBottomEdgeRegion* activeRegion READ activeRegion NOTIFY activeRegionChanged FINAL)
+    Q_PROPERTY(bool preloadContent READ preloadContent WRITE setPreloadContent NOTIFY preloadContentChanged FINAL DESIGNABLE false)
 
     // overloaded data property to catch regions
     Q_PRIVATE_PROPERTY(UCBottomEdge::d_func(), QQmlListProperty<QObject> data READ data DESIGNABLE false)
@@ -73,6 +74,8 @@ public:
     void setFillWindow(bool fill);
     QQmlListProperty<UCBottomEdgeRegion> regions();
     UCBottomEdgeRegion *activeRegion();
+    bool preloadContent() const;
+    void setPreloadContent(bool value);
 
 Q_SIGNALS:
     void dragProgressChanged(qreal dragProgress);
@@ -83,6 +86,7 @@ Q_SIGNALS:
     void contentItemChanged();
     void regionsChanged();
     void activeRegionChanged(UCBottomEdgeRegion *activeRegion);
+    void preloadContentChanged();
 
     void commitStarted();
     void commitCompleted();
@@ -108,6 +112,9 @@ protected:
     void onParentHeightChanged();
 
     Q_DECLARE_PRIVATE(UCBottomEdge)
+
+private:
+    Q_PRIVATE_SLOT(d_func(), void onLoaderStatusChanged(QQmlIncubator::Status status, QObject *object))
 
     friend class tst_BottomEdge;
 };
