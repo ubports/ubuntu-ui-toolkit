@@ -20,7 +20,6 @@
 
 #include <QQmlEngine>
 #include <QQmlContext>
-#include <QtQuick/private/qquickitem_p.h>
 
 UCPageWrapperPrivate::UCPageWrapperPrivate() :
     m_object(nullptr),
@@ -214,8 +213,7 @@ void UCPageWrapperPrivate::copyProperties(QObject *target)
 
 /*!
   \internal
- Creates the Incubator wrapper object and makes sure the object
- ownership is set to JS
+ Creates the Incubator wrapper object
  */
 void UCPageWrapperPrivate::createIncubator()
 {
@@ -224,8 +222,6 @@ void UCPageWrapperPrivate::createIncubator()
         destroyIncubator();
 
     m_incubator = new UCPageWrapperIncubator(QQmlIncubator::Asynchronous, q);
-    QQmlEngine::setObjectOwnership(m_incubator, QQmlEngine::JavaScriptOwnership);
-
     Q_EMIT q->incubatorChanged(m_incubator);
 }
 
@@ -235,11 +231,9 @@ void UCPageWrapperPrivate::createIncubator()
  */
 void UCPageWrapperPrivate::destroyIncubator()
 {
-    //the incubator has JS ownership, this should cause a deletion!!
     if (m_incubator) {
-        m_incubator->setParent(nullptr);
+        m_incubator->deleteLater();
         m_incubator = nullptr;
-
         Q_EMIT q_func()->incubatorChanged(m_incubator);
     }
 }
