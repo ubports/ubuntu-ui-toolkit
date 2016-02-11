@@ -306,7 +306,7 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     // allocate all context property objects prior we register them
     initializeContextProperties(engine);
 
-    HapticsProxy::instance().setEngine(engine);
+    HapticsProxy::instance(engine);
 
     engine->addImageProvider(QLatin1String("scaling"), new UCScalingImageProvider);
 
