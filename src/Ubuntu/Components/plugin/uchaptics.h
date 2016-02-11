@@ -19,6 +19,7 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QVariant>
+#include <QtQml/QQmlEngine>
 
 class UCHaptics : public QObject
 {
@@ -46,19 +47,23 @@ public:
     explicit HapticsProxy(QObject *parent = 0)
         : QObject(parent)
         , m_proxyObject(Q_NULLPTR)
-        , m_engine(Q_NULLPTR)
+        , m_engine(static_cast<QQmlEngine*>(parent))
     {
+        if (!m_engine) {
+            qFatal("HaptixProxy must be a child of the QML Engine!");
+        }
+    }
+    ~HapticsProxy()
+    {
+        m_instance = Q_NULLPTR;
     }
 
-    static HapticsProxy &instance()
+    static HapticsProxy *instance(QQmlEngine *engine = Q_NULLPTR)
     {
-        static HapticsProxy instance;
-        return instance;
-    }
-
-    void setEngine(QQmlEngine *engine)
-    {
-        m_engine = engine;
+        if (!m_instance) {
+            m_instance = new HapticsProxy(engine);
+        }
+        return m_instance;
     }
 
     void initialize();
@@ -71,6 +76,7 @@ Q_SIGNALS:
     void enabledChanged();
 
 private:
+    static HapticsProxy *m_instance;
     QObject *m_proxyObject;
     QQmlEngine *m_engine;
 };
