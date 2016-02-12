@@ -110,6 +110,9 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/ucmainviewbase_p.h \
     $$PWD/ucperformancemonitor.h \
     $$PWD/privates/frame.h \
+    $$PWD/privates/ucpagewrapper.h \
+    $$PWD/privates/ucpagewrapper_p.h \
+    $$PWD/privates/ucpagewrapperincubator_p.h \
     $$PWD/privates/appheaderbase.h
 
 SOURCES += $$PWD/plugin.cpp \
@@ -184,6 +187,8 @@ SOURCES += $$PWD/plugin.cpp \
     $$PWD/ucmainviewbase.cpp \
     $$PWD/ucperformancemonitor.cpp \
     $$PWD/privates/frame.cpp \
+    $$PWD/privates/ucpagewrapper.cpp \
+    $$PWD/privates/ucpagewrapperincubator.cpp \
     $$PWD/privates/appheaderbase.cpp
 
 # adapters
