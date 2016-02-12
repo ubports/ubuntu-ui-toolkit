@@ -212,8 +212,14 @@ Toolkit.StyledItem {
         onLiveValueChanged: if (isPressed) slider.requestFocus(Qt.MouseFocusReason)
     }
 
-    Keys.onLeftPressed: __internals.adjustValue(-slider.stepSize)
-    Keys.onRightPressed: __internals.adjustValue(slider.stepSize)
+    Keys.onLeftPressed: {
+        if (event.modifiers === Qt.NoModifier)
+            __internals.adjustValue(-slider.stepSize);
+    }
+    Keys.onRightPressed: {
+        if (event.modifiers === Qt.NoModifier)
+            __internals.adjustValue(slider.stepSize);
+    }
 
     styleName: "SliderStyle"
 }
