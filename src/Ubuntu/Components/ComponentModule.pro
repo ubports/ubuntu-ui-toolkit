@@ -118,7 +118,6 @@ QML_FILES += 1.3/ActionBar.qml \
              1.3/Toolbar.qml \
              1.3/ToolbarButton.qml \
              1.3/ToolbarItems.qml \
-             1.3/tree.js \
              1.3/UbuntuColors.qml \
              1.3/UbuntuListView.qml \
              1.3/UbuntuNumberAnimation.qml \

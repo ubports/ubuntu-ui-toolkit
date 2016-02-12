@@ -14,7 +14,9 @@ load(ubuntu_qt_module)
 
 HEADERS += \ 
     colorutils.h \
-    ubuntutoolkitglobal.h
+    ubuntutoolkitglobal.h \
+    tree.h
 
 SOURCES += \ 
-    colorutils.cpp
+    colorutils.cpp \
+    tree.cpp
