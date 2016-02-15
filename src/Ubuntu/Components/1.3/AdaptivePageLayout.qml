@@ -61,8 +61,12 @@ import Ubuntu.Components.Private 1.3
             primaryPage: page1
             Page {
                 id: page1
-                title: "Main page"
+                header: PageHeader {
+                    id: header
+                    title: "Main Page"
+                }
                 Column {
+                    anchors.top: header.bottom
                     Button {
                         text: "Add Page2 above " + page1.title
                         onClicked: page1.pageStack.addPageToCurrentColumn(page1, page2)
@@ -75,11 +79,15 @@ import Ubuntu.Components.Private 1.3
             }
             Page {
                 id: page2
-                title: "Page #2"
+                header: PageHeader {
+                    title: "Page #2"
+                }
             }
             Page {
                 id: page3
-                title: "Page #3"
+                header: PageHeader {
+                    title: "Page #3"
+                }
             }
         }
     }
@@ -133,8 +141,12 @@ import Ubuntu.Components.Private 1.3
                 id: page1Component
                 Page {
                     id: page1
-                    title: "Main page"
+                    header: PageHeader {
+                        id: header
+                        title: "Main page"
+                    }
                     Column {
+                        anchors.top: header.bottom
                         Button {
                             text: "Add Page2 above " + page1.title
                             onClicked: page1.pageStack.addPageToCurrentColumn(page1, page2)
@@ -148,11 +160,15 @@ import Ubuntu.Components.Private 1.3
             }
             Page {
                 id: page2
-                title: "Page #2"
+                header: PageHeader {
+                    title: "Page #2"
+                }
             }
             Page {
                 id: page3
-                title: "Page #3"
+                header: PageHeader {
+                    title: "Page #3"
+                }
             }
         }
     }
@@ -237,53 +253,60 @@ PageTreeNode {
       page opened in the second column is closed. Note, the example must be run
       on desktop or on a device with at least 90 grid units screen width.
       \qml
-      import QtQuick 2.4
-      import Ubuntu.Components 1.3
+        import QtQuick 2.4
+        import Ubuntu.Components 1.3
 
-      MainView {
-          width: units.gu(90)
-          height: units.gu(70)
+        MainView {
+            width: units.gu(90)
+            height: units.gu(70)
 
-          Component {
-              id: page2Component
-              Page {
-                  title: "Second Page"
-                  Button {
-                      text: "Close me"
-                      onClicked: pageStack.removePages(pageStack.primaryPage);
-                  }
-              }
-          }
+            Component {
+                id: page2Component
+                Page {
+                    header: PageHeader {
+                        id: header
+                        title: "Second Page"
+                    }
+                    Button {
+                        anchors.top: header.bottom
+                        text: "Close me"
+                        onClicked: pageStack.removePages(pageStack.primaryPage);
+                    }
+                }
+            }
 
-          AdaptivePageLayout {
-              id: pageLayout
-              anchors.fill: parent
-              primaryPage: Page {
-                  title: "Primary Page"
-                  ListView {
-                      id: listView
-                      anchors.fill: parent
-                      model: 10
-                      delegate: ListItem {
-                          Label { text: modelData }
-                          onClicked: {
-                              var incubator = pageLayout.addPageToNextColumn(pageLayout.primaryPage, page2Component);
-                              if (incubator && incubator.status == Component.Loading) {
-                                  incubator.onStatusChanged = function(status) {
-                                      if (status == Component.Ready) {
-                                          // connect page's destruction to decrement model
-                                          incubator.object.Component.destruction.connect(function() {
-                                              listView.model--;
-                                          });
-                                      }
-                                  }
-                              }
-                          }
-                      }
-                  }
-              }
-          }
-      }
+            AdaptivePageLayout {
+                id: pageLayout
+                anchors.fill: parent
+                primaryPage: Page {
+                    header: PageHeader {
+                        title: "Primary Page"
+                        flickable: listView
+                    }
+                    ListView {
+                        id: listView
+                        anchors.fill: parent
+                        model: 10
+                        delegate: ListItem {
+                            Label { text: modelData }
+                            onClicked: {
+                                var incubator = pageLayout.addPageToNextColumn(pageLayout.primaryPage, page2Component);
+                                if (incubator && incubator.status == Component.Loading) {
+                                    incubator.onStatusChanged = function(status) {
+                                        if (status == Component.Ready) {
+                                            // connect page's destruction to decrement model
+                                            incubator.object.Component.destruction.connect(function() {
+                                                listView.model--;
+                                            });
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
       \endqml
 
       \sa {http://doc.qt.io/qt-5/qml-qtqml-component.html#incubateObject-method}{Component.incubateObject}
