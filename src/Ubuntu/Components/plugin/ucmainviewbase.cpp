@@ -23,6 +23,8 @@
 #include "uctheme.h"
 #include "i18n.h"
 
+#include <ColorUtils>
+
 #include <QCoreApplication>
 
 /*!
@@ -88,7 +90,7 @@ void UCMainViewBasePrivate::doAutoTheme()
         return;
 
     if (m_backgroundColor != theme->getPaletteColor("normal", "background")) {
-        QString themeName = m_backgroundColor.lightnessF() >= 0.85 ? QStringLiteral("Ambiance")
+        QString themeName = UbuntuToolkit::ColorUtils::luminance(m_backgroundColor) >= 0.85 ? QStringLiteral("Ambiance")
                                                                    : QStringLiteral("SuruDark");
 
         // only change the theme if the current one is a system one.

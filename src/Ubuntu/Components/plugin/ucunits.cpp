@@ -100,9 +100,6 @@ UCUnits::UCUnits(QObject *parent) :
     QObject(parent),
     m_devicePixelRatio(qGuiApp->devicePixelRatio())
 {
-    if (!m_units) {
-        m_units = this;
-    }
     // If GRID_UNIT_PX set, always use it. If not, 1GU := DEFAULT_GRID_UNIT_PX * m_devicePixelRatio
     if (qEnvironmentVariableIsSet(ENV_GRID_UNIT_PX)) {
         m_gridUnit = getenvFloat(ENV_GRID_UNIT_PX, DEFAULT_GRID_UNIT_PX);

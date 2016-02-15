@@ -17,7 +17,7 @@
 import QtQuick 2.4
 import QtQuick.Layouts 1.1
 import Ubuntu.Components 1.3
-import "tree.js" as Tree
+import Ubuntu.Components.Private 1.3
 
 /*!
   \qmltype AdaptivePageLayout
@@ -412,7 +412,7 @@ PageTreeNode {
 
         property bool internalUpdate: false
         property bool completed: false
-        property var tree: new Tree.Tree()
+        property var tree: Tree{}
 
         property int columns: !layout.layouts.length ?
                                   (layout.width >= units.gu(80) ? 2 : 1) :
@@ -463,8 +463,7 @@ PageTreeNode {
         }
 
         function createWrapper(page, properties) {
-            var wrapperComponent = Qt.createComponent("PageWrapper.qml");
-            var wrapperObject = wrapperComponent.createObject(hiddenPages, {synchronous: false});
+            var wrapperObject = pageWrapperComponent.createObject(hiddenPages, {synchronous: false});
             wrapperObject.pageStack = layout;
             wrapperObject.properties = properties;
             // set reference last because it will trigger creation of the object
@@ -673,6 +672,13 @@ PageTreeNode {
         }
     }
 
+    Component{
+        id: pageWrapperComponent
+        PageWrapper{
+        }
+    }
+
+
     // default metrics
     Component {
         id: defaultMetrics
@@ -698,13 +704,12 @@ PageTreeNode {
             onTriggered: layout.removePages(wrapper.object)
 
             visible: {
-                var parentWrapper;
-                try {
-                    parentWrapper = d.tree.parent(wrapper);
-                } catch(err) {
+                var parentWrapper = d.tree.parent(wrapper);
+
+                if (!parentWrapper)
                     // Root node has no parent node.
                     return false;
-                }
+
                 if (!wrapper.pageHolder) {
                     // columns are being re-arranged.
                     return false;
@@ -728,7 +733,7 @@ PageTreeNode {
             id: holder
             active: false
             objectName: "ColumnHolder" + column
-            property PageWrapper pageWrapper
+            property var pageWrapper: pageWrapperComponent.createObject()
             property int column
             property alias config: subHeader.config
             property PageColumn metrics: getDefaultMetrics()
@@ -812,13 +817,13 @@ PageTreeNode {
                     if (!page) {
                         return false;
                     }
-                    var parentWrapper;
-                    try {
-                        parentWrapper = d.tree.parent(holder.pageWrapper);
-                    } catch(err) {
+                    var parentWrapper = d.tree.parent(holder.pageWrapper);
+
+                    if (!parentWrapper) {
                         // Root node has no parent node.
                         return false;
                     }
+
                     var nextInColumn = d.tree.top(holder.column, holder.column < d.columns - 1, 1);
                     return parentWrapper === nextInColumn;
                 }
