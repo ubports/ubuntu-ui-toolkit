@@ -1103,6 +1103,7 @@ Ubuntu.Components.Slider 1.3: StyledItem
     function var formatValue(var v)
     property double minimumValue
     readonly property bool pressed
+    property double stepSize
     property double value
 Ubuntu.Components.SliderUtils 0.1 1.0
 Ubuntu.Components.SlotsAttached 1.3: QtObject
