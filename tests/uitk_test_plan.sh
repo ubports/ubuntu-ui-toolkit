@@ -41,24 +41,24 @@ NORMAL_USE=false
 WIPE="--wipe"
 
 declare -a TEST_SUITE=(
+    " -p mediaplayer-app-autopilot mediaplayer_app"
+    " -p dialer-app-autopilot dialer_app"
+    " -p reminders-app-autopilot reminders"
     " -p ubuntu-ui-toolkit-autopilot ubuntuuitoolkit"
     " -p webbrowser-app-autopilot webbrowser_app"
     " -p address-book-app-autopilot address_book_app" 
     " sudoku_app"
     " ubuntu_calculator_app"
-    " -p mediaplayer-app-autopilot mediaplayer_app"
     " dropping_letters_app"
     " ubuntu_weather_app"
     " -p ubuntu-system-settings-autopilot ubuntu_system_settings"
     " music_app"
     " gallery_app"
-    " -p dialer-app-autopilot dialer_app"
-    " -p reminders-app-autopilot reminders"
     " -p messaging-app-autopilot messaging_app"
     " camera_app"
 #   " filemanager"
 #   " ubuntu_terminal_app"
-#   " -n unity8"
+    " -n unity8"
 #   " ubuntu_clock_app"
 #   " shorts_app"
 #   " online_accounts_ui"
@@ -87,8 +87,9 @@ AP_PACKAGES="address-book-service-dummy \
              unity-webapps-qml-autopilot \
              ubuntu-system-settings-autopilot\
              ubuntu-html5-ui-toolkit-autopilot \
-             ubuntu-system-settings-online-accounts-autopilot"
-#             messaging-app-autopilot \
+             ubuntu-system-settings-online-accounts-autopilot \
+             messaging-app-autopilot \
+             unity8"
 
 declare -a UNREGISTERED_APPS=(
 	"com.ubuntu.terminal"
@@ -314,20 +315,6 @@ function compare_results {
                 echo -e "\tPossible regression"  >> ${MAINFILE}
             fi
         done
-
-
-        do
-	    FAILED=${FAILED/ERROR:/FAIL:}
-	    FAILED_TEST=${FAILED/ERROR:/}
-            FAILED_TEST=${FAILED_TEST/FAIL:/}
-
-            echo -e "\tFailed with ${PPA} - $FAILED"  >> ${MAINFILE}
-            if grep --quiet "$FAILED_TEST" *archive.tests; then
-                echo -e "\tSame on archive"  >> ${MAINFILE}
-            else
-                echo -e "\tPossible regression"  >> ${MAINFILE}
-            fi
-        done
     done
 }
 
@@ -387,7 +374,7 @@ while getopts ":hrcintduslqwbv:o:p:f:a:" opt; do
 	   NORMAL_USE=true
 	   DONOTRUNTESTS=true
            COMISSION=true
-	   WIPE=""
+           WIPE=""
 	   ;;
         h)
             echo "Usage: uitk_test_plan.sh -s [serial number] -m -c"
@@ -552,4 +539,3 @@ if [[ ${NORMAL_USE} != true  && ${PPA} != "archive" ]]; then
    echo "Comparing results with the archive tests"  > $MAINFILE
    compare_results
 fi
-
