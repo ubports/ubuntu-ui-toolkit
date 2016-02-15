@@ -16,6 +16,7 @@
 
 #include "ucmainviewbase.h"
 #include "ucmainviewbase_p.h"
+#include "ucnamespace.h"
 
 #include "ucactionmanager.h"
 #include "ucactioncontext.h"
@@ -179,6 +180,7 @@ void UCMainViewBase::setHeaderColor(QColor headerColor)
     //disable binding to background color
     d->m_flags |= UCMainViewBasePrivate::CustomHeaderColor;
     d->_q_headerColorBinding(headerColor);
+    UC_QML_DEPRECATION_WARNING("MainView.headerColor is deprecated in Ubuntu.Components 1.3.")
 }
 
 /*!
@@ -236,6 +238,7 @@ void UCMainViewBase::setFooterColor(QColor footerColor)
     //disable binding to background color
     d->m_flags |= UCMainViewBasePrivate::CustomFooterColor;
     d->_q_footerColorBinding(footerColor);
+    UC_QML_DEPRECATION_WARNING("MainView.footerColor is deprecated in Ubuntu.Components 1.3.")
 }
 
 /*!

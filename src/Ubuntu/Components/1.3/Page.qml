@@ -138,14 +138,34 @@ PageTreeNode {
         id: headerConfig
         title: page.title
         flickable: page.flickable
+        onFlickableChanged: internal.printDeprecationWarning()
+        onTitleChanged: internal.printDeprecationWarning()
+        onActionsChanged: internal.printDeprecationWarning()
+        onBackActionChanged: internal.printDeprecationWarning()
     }
 
     Object {
         id: internal
 
+        property bool showDeprecationWarning: true
+        function printDeprecationWarning() {
+            if (internal.showDeprecationWarning) {
+                var titleStr = page;
+                if (page.title) {
+                    titleStr += "\"" + page.title + "\"";
+                }
+                titleStr += ": "
+
+                print(titleStr + "In Ubuntu.Components 1.3, the use of Page.title, Page.flickable and Page.head"+
+                      " is deprecated. Use Page.header and the PageHeader component instead.");
+                internal.showDeprecationWarning = false;
+            }
+        }
+
         property Item previousHeader: null
         property Item previousHeaderParent: null
         function updateHeader() {
+            internal.showDeprecationWarning = false;
             if (internal.previousHeader) {
                 internal.previousHeader.parent = internal.previousHeaderParent;
             }
