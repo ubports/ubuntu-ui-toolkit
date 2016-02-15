@@ -155,9 +155,8 @@ PageTreeNode {
                     titleStr += "\"" + page.title + "\"";
                 }
                 titleStr += ": "
-
-                print(titleStr + "In Ubuntu.Components 1.3, the use of Page.title, Page.flickable and Page.head"+
-                      " is deprecated. Use Page.header and the PageHeader component instead.");
+                print(titleStr + "In Ubuntu.Components 1.3, the use of Page.title, Page.flickable and" +
+                      " Page.head is deprecated. Use Page.header and the PageHeader component instead.");
                 internal.showDeprecationWarning = false;
             }
         }
