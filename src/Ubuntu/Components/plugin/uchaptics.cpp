@@ -84,7 +84,7 @@
 UCHaptics::UCHaptics(QObject *parent)
     : QObject(parent)
 {
-    connect(&HapticsProxy::instance(), &HapticsProxy::enabledChanged,
+    connect(HapticsProxy::instance(), &HapticsProxy::enabledChanged,
             this, &UCHaptics::enabledChanged);
 }
 
@@ -95,7 +95,7 @@ UCHaptics::UCHaptics(QObject *parent)
   */
 bool UCHaptics::enabled() const
 {
-    return HapticsProxy::instance().enabled();
+    return HapticsProxy::instance()->enabled();
 }
 
 /*!
@@ -109,7 +109,7 @@ bool UCHaptics::enabled() const
   */
 QObject *UCHaptics::effect() const
 {
-    return HapticsProxy::instance().effect();
+    return HapticsProxy::instance()->effect();
 }
 
 /*!
@@ -130,12 +130,14 @@ QObject *UCHaptics::effect() const
   */
 void UCHaptics::play(const QVariant &customEffect)
 {
-    HapticsProxy::instance().play(customEffect);
+    HapticsProxy::instance()->play(customEffect);
 }
 
 /*********************************************************
  * Proxy implementation
  */
+HapticsProxy *HapticsProxy::m_instance = nullptr;
+
 bool HapticsProxy::enabled()
 {
     initialize();

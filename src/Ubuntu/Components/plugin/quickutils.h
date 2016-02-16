@@ -37,7 +37,9 @@ public:
     static QuickUtils *instance(QObject *parent = Q_NULLPTR)
     {
         if (!m_instance) {
-            Q_ASSERT(parent);
+            if (!parent) {
+                qFatal("Creating QuickUtils singleton requires a parent object!");
+            }
             m_instance = new QuickUtils(parent);
         }
         return m_instance;

@@ -38,7 +38,9 @@ private:
 public:
     static UbuntuI18n *instance(QObject *parent = Q_NULLPTR) {
         if (!m_i18) {
-            Q_ASSERT(parent);
+            if (!parent) {
+                qFatal("Creating i18n singleton requires a parent object!");
+            }
             m_i18 = new UbuntuI18n(parent);
         }
         return m_i18;

@@ -31,6 +31,7 @@ Item {
     }
 
     InverseMouseArea {
+        objectName: "testObject"
         anchors.fill: nil
         onClicked: {
             color.color = "red"

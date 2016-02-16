@@ -76,6 +76,9 @@ Item {
         Switch {
             id: switchbox
         }
+        Slider {
+            id: slider
+        }
         Button {
             id: dummy2
         }
@@ -105,9 +108,6 @@ Item {
             property date date: new Date()
             text: Qt.formatDateTime(date, "yyyy/MMMM")
             onClicked: PickerPanel.openDatePicker(pickerPanel, "date", "Years|Months")
-        }
-        Slider {
-            id: slider
         }
         Button {
             id: disabledButton
@@ -201,8 +201,10 @@ Item {
                 {tag: "Button(back)", from: button, to: textArea, key: Qt.Key_Backtab},
                 {tag: "CheckBox", from: checkbox, to: switchbox, key: Qt.Key_Tab},
                 {tag: "CheckBox", from: switchbox, to: checkbox, key: Qt.Key_Backtab},
-                {tag: "Switch", from: switchbox, to: dummy2, key: Qt.Key_Tab},
-                {tag: "Switch(back)", from: dummy2, to: switchbox, key: Qt.Key_Backtab},
+                {tag: "Switch", from: switchbox, to: slider, key: Qt.Key_Tab},
+                {tag: "Switch(back)", from: slider, to: switchbox, key: Qt.Key_Backtab},
+                {tag: "Slider", from: slider, to: dummy2, key: Qt.Key_Tab},
+                {tag: "Slider(back)", from: dummy2, to: slider, key: Qt.Key_Backtab},
                 /* FIXME: Figure out how to test ActionBar delegate focus
                 {tag: "ActionBar", from: 'actionBarShare_button', to: picker, key: Qt.Key_Tab},
                 {tag: "ActionBar(back)", from: picker, to: 'actionBarShare_button', key: Qt.Key_Backtab},
@@ -213,7 +215,8 @@ Item {
                 // FIXME: lp#1368390: Buttons shouldn't grab input focus on click
                 {tag: "Button(click)", from: dummy, to: button, key: Qt.LeftButton},
                 {tag: "CheckBox(click)", from: dummy, to: checkbox, key: Qt.LeftButton},
-                {tag: "Switch(click)", from: dummy, to: switchbox, key: Qt.LeftButton}
+                {tag: "Switch(click)", from: dummy, to: switchbox, key: Qt.LeftButton},
+                {tag: "Slider(click)", from: dummy, to: slider, key: Qt.LeftButton},
             ];
         }
         function test_tab_focus(data) {
