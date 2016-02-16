@@ -30,9 +30,11 @@ public:
     UCPageTreeNode *getParentPageTreeNode ();
 
     enum PropertyFlags {
-        CustomPropagated = 0x01,
-        CustomActive     = 0x02,
-        CustomPageStack  = 0x04
+        FirstFlag            = 0x01,
+        CustomPropagated     = FirstFlag,
+        CustomActive         = FirstFlag << 1,
+        CustomPageStack      = FirstFlag << 2,
+        LastPageTreeNodeFlag = FirstFlag << 8
     };
 
     struct Node {

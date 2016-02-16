@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -46,11 +46,9 @@
         width: units.gu(50)
         height: units.gu(70)
 
-        Header {
-            id: header
+        header: Header {
             width: parent.width
             height: units.gu(6)
-            z: 1 // ensure the header goes on top of the flickable contents
             flickable: scrollableContent
 
             Rectangle {
@@ -71,8 +69,6 @@
     }
     \endqml
 
-    The default z-value is 0, so declare the Header after any Items that it should
-    overlay, or set its z-value to be larger than that of the other Items.
     The initial y-value is 0, but scrolling the flickable or setting \l exposed to
     false will change the y-value in the range from -height to 0.
 */
@@ -281,9 +277,9 @@ void UCHeader::_q_showHideAnimationRunningChanged() {
  */
 void UCHeader::setExposed(bool exposed) {
     if (exposed) {
-        show();
+        show(true);
     } else {
-        hide();
+        hide(true);
     }
 }
 
@@ -328,9 +324,9 @@ void UCHeader::_q_flickableMovementEnded() {
     Q_ASSERT(!m_flickable.isNull());
     if ((m_flickable->contentY() < 0)
             || (y() > -height()/2.0)) {
-        show();
+        show(true);
     } else {
-        hide();
+        hide(true);
     }
 }
 
@@ -339,7 +335,7 @@ void UCHeader::_q_contentHeightChanged() {
     if (m_flickable->height() >= m_flickable->contentHeight()) {
         // The user cannot scroll down to expose the header, so ensure
         //  that it is visible.
-        show();
+        show(true);
     }
 }
 
@@ -348,6 +344,6 @@ void UCHeader::_q_flickableInteractiveChanged() {
     if (!m_flickable->isInteractive()) {
         // The user cannot scroll down to expose the header, so ensure
         //  that it is visible.
-        show();
+        show(true);
     }
 }
