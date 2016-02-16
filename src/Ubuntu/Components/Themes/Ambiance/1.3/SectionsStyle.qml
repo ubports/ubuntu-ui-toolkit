@@ -20,7 +20,7 @@ import QtGraphicalEffects 1.0
 Item {
     id: sectionsStyle
 
-    implicitWidth: sectionsListView.contentWidth + 2 * __listViewMargin
+    implicitWidth: sectionsListView.contentWidth + 2 * listViewContainer.listViewMargins
     implicitHeight: units.gu(4)
 
     enabled: styledItem.enabled
@@ -66,7 +66,6 @@ Item {
      */
     property real underlineHeight: units.dp(2)
 
-    property real __listViewMargin: units.gu(3)
     property bool __hoveringLeft: false
     property bool __hoveringRight: false
 
@@ -80,16 +79,10 @@ Item {
     //to be within the listview, that item will not be positioned under the opacity mask. (which is
     //what would have happened if the listview were filling the parent)
     Item {
-        id: listviewcontainer
+        id: listViewContainer
         anchors.fill: parent
 
-//        Rectangle {
-//            color: "red"
-//            anchors {
-//                fill: parent
-//                margins: units.gu(1)
-//            }
-//        }
+        property real listViewMargins: units.gu(3)
 
         //We need to set this to 0.0 when OpacityMask will draw this listview for us.
         //we don't set visible: false because we still want to get the input events!
@@ -152,8 +145,8 @@ Item {
 
             anchors {
                 fill: parent
-                leftMargin: __listViewMargin
-                rightMargin: __listViewMargin
+                leftMargin: listViewContainer.listViewMargins
+                rightMargin: listViewContainer.listViewMargins
             }
 
             //this is just to disable keyboard navigation to avoid messing with contentX/contentWidth while
@@ -176,8 +169,8 @@ Item {
 
             //We need this to make sure that we have delegates for the whole width, since we have
             //clip disabled. Read more
-            displayMarginBeginning: __listViewMargin
-            displayMarginEnd: __listViewMargin
+            displayMarginBeginning: listViewContainer.listViewMargins
+            displayMarginEnd: listViewContainer.listViewMargins
 
             //make sure that the currentItem is in the middle when everything is initialized
             Component.onCompleted: ensureItemIsInTheMiddle(currentItem)
@@ -309,9 +302,9 @@ Item {
         property real iconsDisabledOpacity: 0.3
 
         function checkHovering(mouse) {
-            if (mouse.x < __listViewMargin) {
+            if (mouse.x < listViewContainer.listViewMargins) {
                 if (!__hoveringLeft) __hoveringLeft = true
-            } else if (mouse.x > width - __listViewMargin ) {
+            } else if (mouse.x > width - listViewContainer.listViewMargins) {
                 if (!__hoveringRight) __hoveringRight = true
             } else {
                 __hoveringLeft = false
@@ -319,7 +312,6 @@ Item {
             }
         }
 
-//        onContainsMouseChanged: console.log(containsMouse)
         anchors.fill: parent
         hoverEnabled: true
 
@@ -409,7 +401,7 @@ Item {
         anchors.fill: parent
 
         visible: false
-        source: listviewcontainer
+        source: listViewContainer
         maskSource: gradient
     }
 
@@ -419,7 +411,7 @@ Item {
             name: "hovering"
             when: hoveringArea.containsMouse
             PropertyChanges { target: mask; visible: true }
-            PropertyChanges { target: listviewcontainer; opacity: 0.0 }
+            PropertyChanges { target: listViewContainer; opacity: 0.0 }
             PropertyChanges { target: leftHoveringIcon; visible: true; }
             PropertyChanges { target: rightHoveringIcon; visible: true; }
         }
