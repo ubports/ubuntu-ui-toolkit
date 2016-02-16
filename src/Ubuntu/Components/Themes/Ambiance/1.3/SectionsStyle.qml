@@ -378,14 +378,6 @@ Item {
         }
     }
 
-    Rectangle {
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
-        height: units.dp(1)
-        color: sectionsStyle.underlineColor
-    }
-
     LinearGradient {
         id: gradient
 

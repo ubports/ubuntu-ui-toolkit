@@ -85,6 +85,10 @@ Template {
             title: i18n.tr("Enabled")
 
             Sections {
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                }
                 model: sectionsTemplate.manyActions
             }
         }
@@ -92,6 +96,10 @@ Template {
             title: i18n.tr("Disabled")
 
             Sections {
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                }
                 model: sectionsTemplate.manyActions
                 enabled: false
             }
