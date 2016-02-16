@@ -131,6 +131,17 @@ Item {
             anchors.top: parent.top
         }
 
+        FocusShape {
+            anchors {
+                fill: undefined
+                margins: 0
+                top: parent.top
+                bottom: parent.bottom
+                horizontalCenter: parent.horizontalCenter
+            }
+            // icon, spacing, label, margin on either side
+            width: icon.width + units.gu(1) + label.width + units.gu(0.46) * 2
+        }
         Row {
             anchors {
                 top: parent.top
