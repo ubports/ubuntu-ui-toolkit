@@ -23,14 +23,12 @@ Item {
     implicitWidth: sectionsListView.contentWidth + 2 * listViewContainer.listViewMargins
     implicitHeight: units.gu(4)
 
-    enabled: styledItem.enabled
-
     /*!
       The foreground color of unselected sections.
      */
     property color sectionColor: enabled
-                                    ? theme.palette.normal.backgroundTertiaryText
-                                    : theme.palette.disabled.backgroundTertiaryText
+                                 ? theme.palette.normal.backgroundTertiaryText
+                                 : theme.palette.disabled.backgroundTertiaryText
 
     /*!
       The foreground color of underline rectangle of unselected sections.
@@ -41,19 +39,18 @@ Item {
       The foreground color of the selected section.
      */
     property color selectedSectionColor: enabled
-                                            ? theme.palette.selected.backgroundTertiaryText
-                                            : theme.palette.selectedDisabled.backgroundTertiaryText
+                                         ? theme.palette.selected.backgroundTertiaryText
+                                         : theme.palette.selectedDisabled.backgroundTertiaryText
 
     /*!
-      The background color for the pressed section button.
       The background color for the pressed section button.
      */
     property color pressedBackgroundColor: theme.palette.highlighted.background
 
     /*!
-      The font size for the text in the buttons.
+      The for the text in the buttons.
      */
-    property string fontSize: "medium"
+    property int textSize: Label.Medium
 
     /*!
       The spacing on the left and right sides of the label
@@ -66,8 +63,8 @@ Item {
      */
     property real underlineHeight: units.dp(2)
 
-    //we don't clip listview on purpose, so we have to clip here to prevent Sections element
-    //from painting outside its area
+    // We don't clip listview on purpose, so we have to clip here to prevent Sections element
+    // from painting outside its area.
     clip: true
 
     //This item is needed for the OpacityMask feature. It is needed to make sure that when we
@@ -91,52 +88,26 @@ Item {
 
             property bool animateContentX: false
 
-            function ensureItemIsInTheMiddle(currentItem) {
-                if (currentItem !== null) {
+            function ensureItemIsInTheMiddle(item) {
+                if (item !== null) {
                     //stop the flick before doing computations
                     if (moving) {
-                        return
+                        return;
                     }
                     if (dragging || flicking) {
-                        cancelFlick()
+                        cancelFlick();
+                    }
+                    if (contentXAnim.running) {
+                        contentXAnim.stop();
                     }
 
-//                    console.log("CONTENTX", contentX)
-                    if (contentXAnim.running) { contentXAnim.stop() }
-//                    console.log("CONTENTXAFTER", contentX)
-
-                    var pos =  currentItem.mapToItem(sectionsListView.contentItem, 0, 0)
-
-                    //In the case where we're moving to an item which is outside of the screen (this
-                    //happens when using Keyboard navigation after scrolling the view), we
-                    //try working around the fact that contentWidth/X keeps changing
-                    //by using listview's functions (WHICH DON'T HAVE ANIMATIONS though) just to position the
-                    //view more or less at the right place. After that, we'll fake an animation from one side to the middle of the
-                    //screen.
-                    /*if (pos.x + pos.width <= sectionsListView.x) {
-                        positionViewAtIndex(currentIndex, ListView.Beginning)
-                        //refresh the mapping as we've moved the view
-                        pos = currentItem.mapToItem(sectionsListView, 0, 0)
-
-                    } else if (pos.x >= sectionsListView.x + sectionsListView.width) {
-                        positionViewAtIndex(currentIndex, ListView.End)
-                        //refresh the mapping as we've moved the view
-                        pos = currentItem.mapToItem(sectionsListView, 0, 0)
-                    }*/
-
-                    var newContentX = pos.x - sectionsListView.width/2 + currentItem.width/2
-                    contentXAnim.from = contentX
+                    var pos = item.mapToItem(sectionsListView.contentItem, 0, 0);
+                    var newContentX = pos.x - sectionsListView.width/2 + item.width/2;
+                    contentXAnim.from = contentX;
                     //make sure we don't overshoot bounds
-                    contentXAnim.to =  Math.max(originX, Math.min(newContentX, originX + contentWidth - width))
-                    contentXAnim.start()
-
-//                    console.log("OUR VALUES", contentX, originX, contentWidth, contentXAnim.to)
-                    //FIXME: due to listview internal implementation and the fact that delegates don't have a fixed size,
-                    //this breaks in some cases, due to originX changing *after* we start the
-                    //animation. In those cases the current item doesn't align to the horizontal center because we compute
-                    //contentXAnim.to based on an originX which is then changed by the internals after we have already
-                    //started the animation. We could fixup the position at the end of the animation,
-                    //but that would just be a workaround.
+//                    contentXAnim.to =  Math.max(originX, Math.min(newContentX, originX + contentWidth - width));
+                    contentXAnim.to = MathUtils.clamp(newContentX, originX, originX + contentWidth - width);
+                    contentXAnim.start();
                 }
             }
 
@@ -149,23 +120,15 @@ Item {
             //this is just to disable keyboard navigation to avoid messing with contentX/contentWidth while
             //the view is moving
             focus: !moving
-            //            onContentXChanged: console.log(contentX, originX, contentWidth)
-//            onContentXChanged: console.log(contentX, originX, contentWidth)
 
-            //FIXME: this means when we resize the window it will refocus on the current item even if it's outside of the view!
-            //NOTE: removing this also breaks the alignment when the sections are initialized, because of contentX/contentWidth changing
             onWidthChanged: ensureItemIsInTheMiddle(currentItem)
-
             orientation: ListView.Horizontal
-
-            //We want to block dragging but at the same time we want the keyboard to work!!!
-            //interactive: contentWidth > width
             boundsBehavior: Flickable.StopAtBounds
 
             model: styledItem.model
 
             //We need this to make sure that we have delegates for the whole width, since we have
-            //clip disabled. Read more
+            //clip disabled.
             displayMarginBeginning: listViewContainer.listViewMargins
             displayMarginEnd: listViewContainer.listViewMargins
 
@@ -175,32 +138,19 @@ Item {
             //FIXME: keyboard navigation offered by ListView will break this, won't it?
             currentIndex: styledItem.selectedIndex
             onCurrentIndexChanged: {
-                styledItem.selectedIndex = currentIndex
+                styledItem.selectedIndex = currentIndex;
             }
             onCurrentItemChanged: {
                 //adjust contentX so that the item is kept in the middle
                 //don't use ListView.ApplyRange because that does an awkward animation when you select an item
                 //*while* the current item is outside of screen
-                ensureItemIsInTheMiddle(currentItem)
+                ensureItemIsInTheMiddle(currentItem);
             }
 
-            //highlightMoveDuration: UbuntuAnimation.BriskDuration
-            //highlightResizeDuration: UbuntuAnimation.BriskDuration
-
             highlightFollowsCurrentItem: false
-            //DON'T use ApplyRange, because it will cause a weird animation when you select an item which is on screen
-            //with the previously selected item being out of screen
-            //highlightRangeMode: ListView.ApplyRange
-            //preferredHighlightEnd: width/2 + currentItem.width/2
-            //preferredHighlightBegin: width/2 - currentItem.width/2
-
-            //highlightFollowsCurrentItem will resize the highlight element to fill the delegate,
-            //so we need an Item in the middle to set a height for the highlight rectangle different
-            //from the delegate size
             highlight: Item {
                 //show the highlight on top of the delegate
                 z: 2
-
                 x: sectionsListView.currentItem ? sectionsListView.currentItem.x : -width
                 width: sectionsListView.currentItem ? sectionsListView.currentItem.width : 0
                 height: sectionsListView.currentItem ? sectionsListView.currentItem.height : 0
@@ -239,24 +189,13 @@ Item {
                     objectName: "section_button_label_" + index
                     // modelData may be either a string, or an Action
                     text: modelData.hasOwnProperty("text") ? modelData.text : modelData
-                    fontSize: sectionsStyle.fontSize
+                    textSize: sectionsStyle.textSize
                     font.weight: Font.Light
-//                    anchors.centerIn: parent
-//                    anchors.baseline: underline.top
-//                    anchors.baselineOffset: units.gu(2)
-                    // FIXME: baseline must be 2gu above the line
                     anchors {
                         baseline: underline.bottom
-//                        bottom: parent.bottom
-//                        bottomMargin: units.gu(1)
                         baselineOffset: -units.gu(2)
                         horizontalCenter: parent.horizontalCenter
                     }
-//                    Rectangle {
-//                        anchors.fill: parent
-//                        color: "blue"
-//                        opacity: 0.2
-//                    }
 
                     color: sectionButton.selected ?
                                sectionsStyle.selectedSectionColor :
@@ -285,11 +224,7 @@ Item {
                 property: "contentX"
                 duration: UbuntuAnimation.FastDuration
                 velocity: units.gu(10)
-                //alwaysRunToEnd: true
             }
-
-            //Behavior on contentX { SmoothedAnimation { duration: UbuntuAnimation.FastDuration; velocity: units.gu(10)} }
-
         }
     }
 
@@ -332,7 +267,8 @@ Item {
             var newContentX = sectionsListView.contentX + (sectionsListView.width * (hoveringLeft ? -1 : 1))
             contentXAnim.from = sectionsListView.contentX;
             // make sure we don't overshoot bounds
-            contentXAnim.to = MathUtils.clamp(newContentX, sectionsListView.originX + sectionsListView.contentWidth - sectionsListView.width, sectionsListView.originX);
+//            contentXAnim.to = Math.max(sectionsListView.originX, Math.min(newContentX, sectionsListView.originX + sectionsListView.contentWidth - sectionsListView.width))
+            contentXAnim.to = MathUtils.clamp(newContentX, sectionsListView.originX, sectionsListView.originX + sectionsListView.contentWidth - sectionsListView.width);
             contentXAnim.start();
         }
 
@@ -385,7 +321,6 @@ Item {
             GradientStop { position: 1.0 - gradient.__gradientSplitPosition; color: Qt.rgba(1,1,1,0) }
             GradientStop { position: 1.0; color: Qt.rgba(1,1,1,0) }
         }
-
     }
 
     OpacityMask {
