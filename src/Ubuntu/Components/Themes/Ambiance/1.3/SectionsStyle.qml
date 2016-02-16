@@ -20,7 +20,7 @@ import QtGraphicalEffects 1.0
 Item {
     id: sectionsStyle
 
-    implicitWidth: sectionsListView.contentWidth //+ 2*__listViewMargin
+    implicitWidth: sectionsListView.contentWidth + 2 * __listViewMargin
     implicitHeight: units.gu(4)
 
     enabled: styledItem.enabled
