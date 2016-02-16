@@ -1,13 +1,20 @@
-ubuntu-ui-toolkit (1.3.1833+16.04-0ubuntu1) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.3.1853+16.04-0ubuntu1) UNRELEASED; urgency=medium
+
   [ Timo Jyrinki ]
   * Fix gles unit test skipping.
   * Add s390x to the unit test skipping architectures
+  * UITK test plan - wily -> xenial. Fixes LP: #1544490
 
   [ Christian Dywan ]
   * Print errors when QuickUtils fails to create a component.
   * unit tests shouldn't use deprecated Dialog.callera
   * Correctly count only test case results. The result= value is used in suites
-     and results.
+    and results.
+  * Skip tst_pagehead_visible flakes on non-arm. Fixes LP: #1534651
+  * Skip flaky tst_mousefilterTest::doubleClicked. Fixes LP: #1542215
+  * Suppress click signal if releasing outside of ListItem. Fixes LP: #1541148.
+  * Use gdb in runtest.sh to produce backtraces.
+  * Arrow keys change value of a Slider. Fixes LP: #1523824.
 
   [ Oliver Tilloy ]
   * Do not try to assign to non-existent property "activeFocusOnPress". 
@@ -41,10 +48,16 @@ ubuntu-ui-toolkit (1.3.1833+16.04-0ubuntu1) UNRELEASED; urgency=medium
   * Re-order to list of pages in the gallery to be alphabetical.
   * Fix the autopilot failures introduced with the horizontal scrolling in 
     the Flickable CPO.
+  * Update documentation for MainView, Page, AdaptivePageLayout to use the new 
+    PageHeader in all examples. Deprecate old properties. Fixes LP: #1540574
+  * Add 'animate' property to new internal AppHeaderBase, and do not show a 
+    header animation when starting an app without header. 
+    Fixes LP: #1518002, LP: #1524901.
 
   [ Zoltán Balogh ]
   * Create a click packaging project for the UITK Component Gallery.
-  
+  * Improve the test plan executor script.  
+
   [ Andrea Bernabei ] 
   * Refer to SlotsLayout.Last instead of SlotsLayout.End in SlotsLayout 
     documentation. Fixes LP: #1536170.
@@ -60,6 +73,13 @@ ubuntu-ui-toolkit (1.3.1833+16.04-0ubuntu1) UNRELEASED; urgency=medium
     Fixes LP: #1535241.
   * The click project file is should not be part of the UITK project.
   * Move MainViewBase to C++.
+  * Move tree.js to C++.
+  * Do not leak the incubator pointer in case a QML engine never took care of 
+    it. Delete the object directly.
+  * Move PageWrapper.qml to C++ for 1.3.
+  * Add Ubuntu toolkit shared library
+  * Move ColorUtils to UbuntuToolkit.
+  * Fixes LP: #1540642
   
   [ Zsombor Egri ]
   * Update Palette values for Ubuntu.Components 1.3 and apply the palette on 
@@ -76,10 +96,25 @@ ubuntu-ui-toolkit (1.3.1833+16.04-0ubuntu1) UNRELEASED; urgency=medium
   * Link singletons used as context properties in root context of the QML 
     Engine to the engine instance. Fixes LP: #1539558.
   * Specify message severity for the performance logging category.
+  * Expose Icon.asynchronous property to drive image loading of the icon. 
+    Fixes LP: #1535480.
+  * Redo InverseMosueArea tests to not to use shared view for all the tests. 
+    Fixes LP: #1544455
+  * Get singletons report fatal error in case the parent is null upon first 
+    creation. Adjust failing test cases. Fixes LP: #1542309
 
   [ Albert Astals Cid ] 
   * Have a default pixelsPerInch value. Otherwise when running unity8 tests
     under xvfb we get the wrong parameters warning and tests fail.
+
+  [ Robert Ancell ]
+  * Fix documentation typo - Ubunut -> Ubuntu.
+  * Use new QML package name for qml-module-qtfeedback, drop old QML 
+    package names.
+ 
+  [ Colin Watson ]
+  * Make src/Ubuntu/Test depend on src/Ubuntu/Components, to fix build with 
+    high parallelisation.
 
  -- Zoltán Balogh <zoltan@bakter.hu>  Thu, 21 Jan 2016 06:21:26 +0200
 
