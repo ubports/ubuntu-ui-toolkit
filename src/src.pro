@@ -15,7 +15,6 @@ src_gestures.target  = sub-gestures
 
 src_toolkitlib.subdir  = Ubuntu/UbuntuToolkit
 src_toolkitlib.target  = sub-libtoolkit
-src_toolkitlib.depends = sub-components
 
 src_test.subdir  = Ubuntu/Test
 src_test.target  = sub-test
