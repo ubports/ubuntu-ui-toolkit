@@ -66,9 +66,6 @@ Item {
      */
     property real underlineHeight: units.dp(2)
 
-    property bool __hoveringLeft: false
-    property bool __hoveringRight: false
-
     //we don't clip listview on purpose, so we have to clip here to prevent Sections element
     //from painting outside its area
     clip: true
@@ -297,18 +294,22 @@ Item {
     }
 
     MouseArea {
+        // Detect hovering over the left and right areas to show the scrolling chevrons.
         id: hoveringArea
 
         property real iconsDisabledOpacity: 0.3
 
+        property bool hoveringLeft: false
+        property bool hoveringRight: false
+
         function checkHovering(mouse) {
             if (mouse.x < listViewContainer.listViewMargins) {
-                if (!__hoveringLeft) __hoveringLeft = true
+                if (!hoveringLeft) hoveringLeft = true;
             } else if (mouse.x > width - listViewContainer.listViewMargins) {
-                if (!__hoveringRight) __hoveringRight = true
+                if (!hoveringRight) hoveringRight = true;
             } else {
-                __hoveringLeft = false
-                __hoveringRight = false
+                hoveringLeft = false;
+                hoveringRight = false;
             }
         }
 
@@ -317,31 +318,22 @@ Item {
 
         onPositionChanged: checkHovering(mouse)
         onExited: {
-            __hoveringLeft = false
-            __hoveringRight = false
+            hoveringLeft = false;
+            hoveringRight = false;
         }
-        onPressed: if (!__hoveringLeft && !__hoveringRight) {
-                       mouse.accepted = false
-                   }
+        onPressed: {
+            if (!hoveringLeft && !hoveringRight) {
+                mouse.accepted = false;
+            }
+        }
         onClicked: {
-            //scroll the list to bring the element which is under the cursor into the view
-            //var item = sectionsListView.itemAt(mouse.x + sectionsListView.contentX - __listViewMargin, mouse.y)
-            //if (item !== null) {
-            //We could use positionViewAtIndex(...) here but it wouldn't provide animation
-
-            if (contentXAnim.running) contentXAnim.stop()
-
-            //Scroll one item at a time with animation
-            //sectionsListView.contentX = __hoveringLeft ? item.mapToItem(sectionsListView.contentItem, 0,0).x : item.mapToItem(sectionsListView.contentItem, 0,0).x - sectionsListView.width + item.width
-            var newContentX = sectionsListView.contentX + (sectionsListView.width * (__hoveringLeft ? -1 : 1))
-
-            contentXAnim.from = sectionsListView.contentX
-            //make sure we don't overshoot bounds
-            contentXAnim.to = Math.max(sectionsListView.originX, Math.min(newContentX, sectionsListView.originX + sectionsListView.contentWidth - sectionsListView.width))
-
-            contentXAnim.start()
-
-            //}
+            // positionViewAtIndex() does not provide animation
+            if (contentXAnim.running) contentXAnim.stop();
+            var newContentX = sectionsListView.contentX + (sectionsListView.width * (hoveringLeft ? -1 : 1))
+            contentXAnim.from = sectionsListView.contentX;
+            // make sure we don't overshoot bounds
+            contentXAnim.to = MathUtils.clamp(newContentX, sectionsListView.originX + sectionsListView.contentWidth - sectionsListView.width, sectionsListView.originX);
+            contentXAnim.start();
         }
 
         Icon {
@@ -405,7 +397,6 @@ Item {
         maskSource: gradient
     }
 
-    //Since we only show one arrow at a time, let's reuse the same item and handle the property changes with states
     states: [
         State {
             name: "hovering"
