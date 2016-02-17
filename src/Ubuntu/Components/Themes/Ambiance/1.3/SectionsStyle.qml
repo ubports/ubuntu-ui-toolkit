@@ -173,7 +173,6 @@ Item {
                     height: sectionsStyle.underlineHeight
                     color: sectionsStyle.selectedSectionColor
                 }
-
                 Behavior on x { UbuntuNumberAnimation {} }
             }
 
@@ -210,8 +209,9 @@ Item {
                                sectionsStyle.selectedSectionColor :
                                sectionsStyle.sectionColor
 
-                    //FIXME: color animation? is that ok to design? what's the duration?
-                    Behavior on color { ColorAnimation { duration: 500 } }
+                    Behavior on color {
+                        ColorAnimation { duration: UbuntuAnimation.SlowDuration }
+                    }
                 }
 
                 // Section title underline
@@ -276,8 +276,10 @@ Item {
             var newContentX = sectionsListView.contentX + (sectionsListView.width * (hoveringLeft ? -1 : 1))
             contentXAnim.from = sectionsListView.contentX;
             // make sure we don't overshoot bounds
-//            contentXAnim.to = Math.max(sectionsListView.originX, Math.min(newContentX, sectionsListView.originX + sectionsListView.contentWidth - sectionsListView.width))
-            contentXAnim.to = MathUtils.clamp(newContentX, sectionsListView.originX, sectionsListView.originX + sectionsListView.contentWidth - sectionsListView.width);
+            contentXAnim.to = MathUtils.clamp(
+                        newContentX,
+                        sectionsListView.originX,
+                        sectionsListView.originX + sectionsListView.contentWidth - sectionsListView.width);
             contentXAnim.start();
         }
 
@@ -315,19 +317,19 @@ Item {
         start: Qt.point(0,0)
         end: Qt.point(width,0)
 
-        property real __gradientWidth: units.gu(3) / gradient.width
-        //the width is __gradientWidth, but we want the gradient to actually start/finish at __gradientSplitPosition
+        property real gradientWidth: units.gu(3) / gradient.width
+        //the width is gradientWidth, but we want the gradient to actually start/finish at gradientSplitPosition
         //just to leave some margin.
-        property real __gradientSplitPosition: 3/4 * __gradientWidth
+        property real gradientSplitPosition: 3/4 * gradientWidth
 
         gradient: Gradient {
             //left gradient
             GradientStop { position: 0.0 ; color: Qt.rgba(1,1,1,0) }
-            GradientStop { position: gradient.__gradientSplitPosition ; color: Qt.rgba(1,1,1,0) }
-            GradientStop { position: gradient.__gradientWidth; color: Qt.rgba(1,1,1,1) }
+            GradientStop { position: gradient.gradientSplitPosition ; color: Qt.rgba(1,1,1,0) }
+            GradientStop { position: gradient.gradientWidth; color: Qt.rgba(1,1,1,1) }
             //right gradient
-            GradientStop { position: 1.0 - gradient.__gradientWidth; color: Qt.rgba(1,1,1,1) }
-            GradientStop { position: 1.0 - gradient.__gradientSplitPosition; color: Qt.rgba(1,1,1,0) }
+            GradientStop { position: 1.0 - gradient.gradientWidth; color: Qt.rgba(1,1,1,1) }
+            GradientStop { position: 1.0 - gradient.gradientSplitPosition; color: Qt.rgba(1,1,1,0) }
             GradientStop { position: 1.0; color: Qt.rgba(1,1,1,0) }
         }
     }
