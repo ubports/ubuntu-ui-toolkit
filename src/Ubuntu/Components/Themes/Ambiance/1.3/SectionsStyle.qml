@@ -141,13 +141,10 @@ Item {
             model: styledItem.model
 
             //We need this to make sure that we have delegates for the whole width, since we have
-            //We need this to make sure that we have delegates for the whole width, since we have
             //clip disabled.
             displayMarginBeginning: listViewContainer.listViewMargins
             displayMarginEnd: listViewContainer.listViewMargins
 
-
-            //FIXME: keyboard navigation offered by ListView will break this, won't it?
             currentIndex: styledItem.selectedIndex
             onCurrentIndexChanged: {
                 styledItem.selectedIndex = currentIndex;
