@@ -160,17 +160,42 @@ Item {
     //True --> Steppers style, non-overlay scrollbars
     //False --> Indicator, Trough and Steppers styles, overlaid to the content
     property bool alwaysOnScrollbars: styledItem.__alwaysOnScrollbars
-    function scroll(amount) {
-        slider.scroll(amount)
+    function scrollBy(amount, animate) {
+        if (isNaN(amount)) {
+            console.log("BUG: Invalid scrolling delta.")
+            return
+        }
+        scrollTo(scrollbarUtils.scrollAndClamp(
+                     styledItem, amount, -leadingContentMargin,
+                     Math.max(contentSize + trailingContentMargin - pageSize,
+                              -leadingContentMargin))
+                 , animate)
     }
-    function scrollToBeginning() {
-        scrollAnimation.to = flickableItem[scrollbarUtils.propOrigin] - visuals.leadingContentMargin
-        scrollAnimation.restart()
+    function scrollTo(value, animate) {
+        if (isNaN(value)) {
+            console.log("BUG: Invalid scrolling value.")
+            return
+        }
+
+        //don't setup an animation with duration 0, if we just don't want the animation
+        if (animate) {
+            scrollAnimation.to = value
+            scrollAnimation.restart()
+        } else {
+            if (scrollAnimation.running) scrollAnimation.stop()
+            styledItem.flickableItem[scrollbarUtils.propContent] = value
+            styledItem.flickableItem.returnToBounds()
+        }
     }
-    function scrollToEnd() {
-        scrollAnimation.to = flickableItem[scrollbarUtils.propOrigin]
-                + totalContentSize - visuals.leadingContentMargin - pageSize
-        scrollAnimation.restart()
+    function scrollToBeginning(animate) {
+        scrollTo(flickableItem[scrollbarUtils.propOrigin] - visuals.leadingContentMargin, animate)
+    }
+    function scrollToEnd(animate) {
+        scrollTo((flickableItem[scrollbarUtils.propOrigin]
+                  + totalContentSize - visuals.leadingContentMargin - pageSize), animate)
+    }
+    function drag() {
+        scrollbarUtils.dragAndClamp(styledItem, slider.relThumbPosition, totalContentSize, pageSize);
     }
     function resetScrollingToPreDrag() {
         thumbArea.resetFlickableToPreDragState()
@@ -363,11 +388,12 @@ Item {
 
     SmoothedAnimation {
         id: scrollAnimation
+
         //duration and easing coming from UX spec
         duration: UbuntuAnimation.SlowDuration
         easing.type: Easing.InOutCubic
         target: styledItem.flickableItem
-        property: (isVertical) ? "contentY" : "contentX"
+        property: scrollbarUtils.propContent
         //when the listview has variable size delegates the contentHeight estimation done by ListView
         //could make us overshoot, especially when going from top to bottom of the list or viceversa.
         //We call returnToBounds to mitigate that.
@@ -453,14 +479,6 @@ Item {
                         return false
                     }
                 }
-                function scroll(amount) {
-                    scrollAnimation.to = scrollbarUtils.scrollAndClamp(styledItem, amount, -leadingContentMargin,
-                                                                       Math.max(contentSize + trailingContentMargin - pageSize, -leadingContentMargin));
-                    scrollAnimation.restart();
-                }
-                function drag() {
-                    scrollbarUtils.dragAndClamp(styledItem, slider.relThumbPosition, totalContentSize, pageSize);
-                }
 
                 anchors {
                     verticalCenter: (isVertical) ? undefined : trough.verticalCenter
@@ -545,9 +563,9 @@ Item {
 
                     var mouseScrollingProp = isVertical ? mouseY : mouseX
                     if (mouseScrollingProp < slider[scrollingProp]) {
-                        slider.scroll(-pageSize*visuals.longScrollingRatio)
+                        scrollBy(-pageSize*visuals.longScrollingRatio)
                     } else if (mouseScrollingProp > slider[scrollingProp] + slider[sizeProp]) {
-                        slider.scroll(pageSize*visuals.longScrollingRatio)
+                        scrollBy(pageSize*visuals.longScrollingRatio)
                     }
                 }
 
@@ -635,7 +653,7 @@ Item {
                             if (scrollAnimation.running) scrollAnimation.stop()
 
                             if (thumbArea.lockDrag) thumbArea.lockDrag = false
-                            slider.drag()
+                            visuals.drag()
                         }
                     }
                 }
@@ -664,7 +682,7 @@ Item {
                             //At *that* point drag.active will become true, but we don't want to actually drag the thumb
                             //because the mouse is still outside the area where thumb is follow input device movements
                             if (!lockDrag) {
-                                slider.drag()
+                                visuals.drag()
                             }
                         } else {
                             resetDrag()
@@ -718,9 +736,9 @@ Item {
                 var mappedCoordSecondStepper = mapToItem(secondStepper, mouseX, mouseY)
 
                 if (firstStepper.contains(Qt.point(mappedCoordFirstStepper.x, mappedCoordFirstStepper.y))) {
-                    slider.scroll(-pageSize * visuals.shortScrollingRatio)
+                    scrollBy(-pageSize * visuals.shortScrollingRatio, true)
                 } else if (secondStepper.contains(Qt.point(mappedCoordSecondStepper.x, mappedCoordSecondStepper.y))) {
-                    slider.scroll(pageSize * visuals.shortScrollingRatio)
+                    scrollBy(pageSize * visuals.shortScrollingRatio, true)
                 }
             }
 
