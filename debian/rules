@@ -14,6 +14,10 @@ DEB_HOST_ARCH ?= $(shell dpkg-architecture -qDEB_HOST_ARCH)
 testskip_architectures := powerpc arm64 ppc64el s390x
 non_parallel_archs := s390x
 
+ifneq ($(DEB_HOST_ARCH),$(findstring $(DEB_HOST_ARCH), $(non_parallel_archs)))
+export DEB_BUILD_OPTIONS=--max-parallel=1
+endif
+
 override_dh_auto_configure:
 	qmake -r
 
@@ -38,7 +42,7 @@ ifneq ($(DEB_HOST_ARCH),$(findstring $(DEB_HOST_ARCH), $(non_parallel_archs)))
 	dh_auto_build --parallel -- docs
 endif
 	dh_auto_build
-	dh_auto_build
+	dh_auto_build -- docs
 
 
 override_dh_install:
