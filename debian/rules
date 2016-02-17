@@ -12,12 +12,16 @@ DEB_HOST_ARCH ?= $(shell dpkg-architecture -qDEB_HOST_ARCH)
 
 # Skip tests on the archs they are known to be flaky  with current configuration
 testskip_architectures := powerpc arm64 ppc64el s390x
+non_parallel_archs := s390x
 
 override_dh_auto_configure:
 	qmake -r
 
 %:
+ifneq ($(DEB_HOST_ARCH),$(findstring $(DEB_HOST_ARCH), $(non_parallel_archs)))
 	dh $@ --parallel
+endif
+	dh $@
 
 override_dh_auto_test:
 ifneq ($(DEB_HOST_ARCH),$(findstring $(DEB_HOST_ARCH), $(testskip_architectures)))
@@ -29,8 +33,13 @@ endif
 endif
 
 override_dh_build:
+ifneq ($(DEB_HOST_ARCH),$(findstring $(DEB_HOST_ARCH), $(non_parallel_archs)))
 	dh_auto_build --parallel
 	dh_auto_build --parallel -- docs
+endif
+        dh_auto_build
+        dh_auto_build
+
 
 override_dh_install:
 	mkdir -p debian/tmp/`qmake -query QT_INSTALL_DOCS`/qch
