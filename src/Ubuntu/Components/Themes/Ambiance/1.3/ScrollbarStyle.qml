@@ -248,6 +248,7 @@ Item {
     */
     QtObject {
         id: scrollbarUtils
+        objectName: "scrollbarUtils"
         property string propOrigin: (isVertical) ? "originY" : "originX"
         property string propContent: (isVertical) ? "contentY" : "contentX"
         property string propPosRatio: (isVertical) ? "yPosition" : "xPosition"
@@ -437,12 +438,14 @@ Item {
             //slider and thumb connector are placed
             Rectangle {
                 id: trough
+                objectName: "trough"
                 anchors.fill: parent
                 visible: flowContainer.showTrough
             }
 
             Rectangle {
                 id: slider
+                objectName: "interactiveScrollbarThumb"
 
                 //this property is true if the user could be starting a drag (i.e. pressed inside the thumb)
                 //but drag.active is not true yet (because that requires dragging >0 pixels)
@@ -518,6 +521,7 @@ Item {
             //(it would also require implementing drag as it doesn't have it)
             MouseArea {
                 id: thumbArea
+                objectName: "thumbArea"
 
                 property real originXAtDragStart: 0
                 property real originYAtDragStart: 0
@@ -759,6 +763,7 @@ Item {
 
             Rectangle  {
                 id: firstStepper
+                objectName: "firstStepper"
                 anchors {
                     //it's left in both cases, otherwise using RTL
                     //would break the layout of the arrow
@@ -794,6 +799,7 @@ Item {
             }
             Rectangle {
                 id: secondStepper
+                objectName: "secondStepper"
                 anchors {
                     left: isVertical ? parent.left : firstStepper.right
                     right: isVertical ? parent.right : undefined
@@ -1090,6 +1096,7 @@ Item {
         },
         Transition {
             id: growingTransition
+            objectName: "indicatorToThumbSteppersTransition"
             from: 'indicator'
             to: 'thumb,steppers'
             reversible: true
@@ -1127,6 +1134,7 @@ Item {
         },
         Transition {
             id: steppersTransition
+            objectName: "anythingToThumbSteppersTransition"
             from: '*'
             to: 'thumb,steppers'
             SequentialAnimation {
