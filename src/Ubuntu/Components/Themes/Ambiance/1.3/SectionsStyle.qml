@@ -48,7 +48,7 @@ Item {
     property color pressedBackgroundColor: theme.palette.highlighted.background
 
     /*!
-      The for the text in the buttons.
+      The size of text in the buttons.
      */
     property int textSize: Label.Medium
 
@@ -182,7 +182,10 @@ Item {
                 width: label.width + 2 * sectionsStyle.horizontalLabelSpacing
                 height: sectionsStyle.height
                 property bool selected: index === styledItem.selectedIndex
-                onClicked: { styledItem.selectedIndex = index; sectionsListView.forceActiveFocus() }
+                onClicked: {
+                    styledItem.selectedIndex = index;
+                    sectionsListView.forceActiveFocus();
+                }
 
                 // Background pressed highlight
                 Rectangle {
@@ -273,7 +276,7 @@ Item {
         onClicked: {
             // positionViewAtIndex() does not provide animation
             if (contentXAnim.running) contentXAnim.stop();
-            var newContentX = sectionsListView.contentX + (sectionsListView.width * (hoveringLeft ? -1 : 1))
+            var newContentX = sectionsListView.contentX + (sectionsListView.width * (hoveringLeft ? -1 : 1));
             contentXAnim.from = sectionsListView.contentX;
             // make sure we don't overshoot bounds
             contentXAnim.to = MathUtils.clamp(

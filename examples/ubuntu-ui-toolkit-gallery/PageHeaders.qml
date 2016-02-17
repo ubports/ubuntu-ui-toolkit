@@ -68,7 +68,6 @@ Template {
                 right: parent.right
                 bottom: parent.bottom
             }
-//            width: implicitWidth > parent.width ? parent.width : implicitWidth
             model: ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
                     "ten", "eleven", "twelve", "thirteen"]
         }

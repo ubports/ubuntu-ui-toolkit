@@ -30,7 +30,6 @@ Template {
                 right: parent.right
                 bottom: parent.bottom
             }
-
             model: h.showManySections ? sectionsTemplate.manyActions
                                       : sectionsTemplate.fewActions
         }
