@@ -277,13 +277,18 @@ Ubuntu.Components.ComboButton 1.1: Button
     property color dropdownColor
     property bool expanded
     property double expandedHeight
-Ubuntu.Components.ComboButton 1.3: Button
+Ubuntu.Components.ComboButton 1.3: AbstractButton
     property double collapsedHeight
+    property color color
     default property list<QtObject> comboList
     readonly property double comboListHeight
     property color dropdownColor
     property bool expanded
     property double expandedHeight
+    property QFont font
+    property Gradient gradient
+    property string iconPosition
+    property color strokeColor
 Ubuntu.Components.Styles.ComboButtonStyle 1.1: Item
     property Item comboListHolder
     property double comboListMargin
