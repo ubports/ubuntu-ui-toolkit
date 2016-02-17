@@ -68,7 +68,7 @@ Rectangle {
                 Action { text: "inline action 0" },
                 Action { text: "inline action 1" }
             ]
-//            width: units.gu(20)
+            width: parent.width
         }
         Rectangle {
             anchors {
@@ -126,10 +126,7 @@ Rectangle {
         Sections {
             id: scrollingSections
             model: root.longStringList
-            anchors {
-                left: parent.left
-                right: parent.right
-            }
+            width: parent.width
         }
     }
 

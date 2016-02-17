@@ -88,7 +88,10 @@ Item {
 
             property bool animateContentX: false
 
-            function ensureItemIsInTheMiddle(item) {
+            // Position the selected item correctly. For a scrollable ListView,
+            //  this positions the item in the middle. If the ListView is not scrollable,
+            //  the first item will be aligned with the left of the ListView.
+            function positionItem(item) {
                 if (item !== null) {
                     //stop the flick before doing computations
                     if (moving) {
@@ -105,9 +108,16 @@ Item {
                     var newContentX = pos.x - sectionsListView.width/2 + item.width/2;
                     contentXAnim.from = contentX;
                     //make sure we don't overshoot bounds
-//                    contentXAnim.to =  Math.max(originX, Math.min(newContentX, originX + contentWidth - width));
-                    contentXAnim.to = MathUtils.clamp(newContentX, originX, originX + contentWidth - width);
-                    contentXAnim.start();
+                    if (sectionsListView.contentWidth <= sectionsListView.width) {
+                        // No scrolling, position the sections on the left.
+                        contentXAnim.to = originX;
+                    } else {
+                        // Position the selected Item in the middle.
+                        contentXAnim.to = MathUtils.clamp(newContentX, originX, originX + contentWidth - width);
+                    }
+                    if (contentXAnim.from !== contentXAnim.to) {
+                        contentXAnim.start();
+                    }
                 }
             }
 
@@ -121,19 +131,21 @@ Item {
             //the view is moving
             focus: !moving
 
-            onWidthChanged: ensureItemIsInTheMiddle(currentItem)
+            onWidthChanged: positionItem(currentItem)
+            //make sure that the currentItem is in the middle when everything is initialized
+            Component.onCompleted: positionItem(currentItem)
+
             orientation: ListView.Horizontal
             boundsBehavior: Flickable.StopAtBounds
 
             model: styledItem.model
 
             //We need this to make sure that we have delegates for the whole width, since we have
+            //We need this to make sure that we have delegates for the whole width, since we have
             //clip disabled.
             displayMarginBeginning: listViewContainer.listViewMargins
             displayMarginEnd: listViewContainer.listViewMargins
 
-            //make sure that the currentItem is in the middle when everything is initialized
-            Component.onCompleted: ensureItemIsInTheMiddle(currentItem)
 
             //FIXME: keyboard navigation offered by ListView will break this, won't it?
             currentIndex: styledItem.selectedIndex
@@ -144,7 +156,7 @@ Item {
                 //adjust contentX so that the item is kept in the middle
                 //don't use ListView.ApplyRange because that does an awkward animation when you select an item
                 //*while* the current item is outside of screen
-                ensureItemIsInTheMiddle(currentItem);
+                positionItem(currentItem);
             }
 
             highlightFollowsCurrentItem: false
