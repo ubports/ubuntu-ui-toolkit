@@ -61,6 +61,8 @@ MainView {
                 horizontalCenter: parent.horizontalCenter
                 top: moreLabel.bottom
                 topMargin: units.gu(4)
+                left: parent.left
+                right: parent.right
             }
             model: ["one", "two", "three", "four", "five", "six",
                 "seven", "eight", "nine", "ten", "eleven", "twelve",
