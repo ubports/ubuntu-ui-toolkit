@@ -156,6 +156,8 @@ Item {
     //the thumb will have a touchDragStartMargin margin on both sides
     //to be more easily draggable via touch
     property real touchDragStartMargin: units.gu(2)
+    //NOTE: this is not used for Qt's drag.treshold, just for our logic!
+    property real dragThreshold: units.dp(2)
     //this could eventually become a system setting
     //True --> Steppers style, non-overlay scrollbars
     //False --> Indicator, Trough and Steppers styles, overlaid to the content
@@ -441,7 +443,6 @@ Item {
 
             Rectangle {
                 id: slider
-                objectName: "interactiveScrollbarThumb"
 
                 //this property is true if the user could be starting a drag (i.e. pressed inside the thumb)
                 //but drag.active is not true yet (because that requires dragging >0 pixels)
@@ -634,8 +635,8 @@ Item {
                 }
                 onPositionChanged: {
                     //avoid shaking the view when the user is draggin via touch
-                    if (Math.abs(mouse.x - previousX) < units.dp(2)
-                            && Math.abs(mouse.y - previousY) < units.dp(2)) {
+                    if (Math.abs(mouse.x - previousX) < visuals.dragThreshold
+                            && Math.abs(mouse.y - previousY) < visuals.dragThreshold) {
                         return
                     }
                     cacheMousePosition(mouse)
