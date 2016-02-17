@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2015-2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -32,11 +32,17 @@ Item {
     Component {
         id: flickableComp
         Item {
+            id: item
             width: units.gu(20)
             height: units.gu(30)
             property alias flickable: freshFlickable
             property alias scrollbar: freshScrollbar
             property alias content: content
+            property alias scrollbarAlignment: freshScrollbar.align
+
+            //Don't change this to a ListView, this usecase has to be simple,
+            //we don't want the difficulties added by ListView, i.e. delegates
+            //size estimation, dynamic contentWidth/Height, etc
             Flickable {
                 id: freshFlickable
                 anchors.fill: parent
@@ -115,30 +121,45 @@ Item {
         }
     }
 
-    UbuntuTestCase {
+    ScrollbarTestCase {
         name: "Scrollbar"
-        when: windowShown
 
-        function getFreshFlickable() {
-            var flickable = flickableComp.createObject(column)
-            if (!flickable) {
-                console.log("Error: dynamic item creation failed.")
+        //every test will assign the current view component (that is dynamically created) to this var
+        //so that the cleanup() will destroy it (thus releasing mouse etc) even when a test fails midway
+        property var currComponent: null
+
+        function getFreshFlickable(alignment) {
+            var wrapper = flickableComp.createObject(column, { scrollbarAlignment: alignment } )
+            verify(wrapper !== null, "Error: dynamic item creation failed.")
+            compare(wrapper.scrollbar.align, alignment, "getFreshFlickable: wrong alignment.")
+            currComponent = wrapper
+            return currComponent
+        }
+
+        //some tests do dragging, let's make sure the mouse is released if they fail midway
+        //otherwise other tests will fail just because they still have mouse pressed from
+        //the previous (failing) drag test
+        function cleanup() {
+            if (currComponent) {
+                currComponent.destroy()
+                currComponent = null
             }
-            return flickable
-        }
-        function setVeryLongContentItem(flickable) {
-            flickable.contentHeight = flickable.height * 10 + 1
-        }
-        function setupSignalSpy(spy, target, signalName) {
-            spy.clear()
-            //reset signalName otherwise it will look for the old signalName in the new target
-            spy.signalName = ""
-            spy.target = target
-            spy.signalName = signalName
+            gc()
         }
 
-        function warningMsg(msg) {
-            return testUtil.callerFile() + ": " + msg
+        function init_data() {
+            return [
+                        { tag: "vertical scrollbar", alignment: Qt.AlignTrailing },
+                        { tag: "horizontal scrollbar", alignment: Qt.AlignBottom }
+                    ]
+        }
+
+        function clickOnStepperAndCheckNoContentPositionChange(msgPrefix, itemToClickOn, flickable, expectedContentX, expectedContentY) {
+            clickInTheMiddle(itemToClickOn)
+            console.log(itemToClickOn.x, itemToClickOn.y, itemToClickOn.width, itemToClickOn.height)
+            wait(150)
+            console.log(itemToClickOn.x, itemToClickOn.y, itemToClickOn.width, itemToClickOn.height)
+            checkNoContentPositionChange(msgPrefix, flickable, expectedContentX, expectedContentY)
         }
 
         function test_bottomAlign_anchors() {
@@ -183,10 +204,8 @@ Item {
                     scrollbar_trailingAlign_anchors.flickableItem.top, "top anchor")
         }
 
-        function test_indicatorStyleWhileFlicking_shortContent() {
-            var freshTestItem = getFreshFlickable()
-            if (!freshTestItem) return
-
+        function test_indicatorStyleWhileFlicking_shortContent(data) {
+            var freshTestItem = getFreshFlickable(data.alignment)
             var flickable = freshTestItem.flickable
             var scrollbar = freshTestItem.scrollbar
 
@@ -194,7 +213,7 @@ Item {
 
             setupSignalSpy(signalSpy, flickable, "movingChanged")
 
-            flick(flickable, 1, 2, units.gu(2), -units.gu(10))
+            flick(flickable, 1, 2, units.gu(2), -units.gu(1))
 
             signalSpy.wait()
             compare(signalSpy.count, 1, "No movingChanged signal after simulating a flick.")
@@ -221,21 +240,19 @@ Item {
             freshTestItem.destroy()
         }
 
-        function test_thumbStyleWhileFlicking_veryLongContent() {
-            var freshTestItem = getFreshFlickable()
-            if (!freshTestItem) return
-
+        function test_thumbStyleWhileFlicking_veryLongContent(data) {
+            var freshTestItem = getFreshFlickable(data.alignment)
             var flickable = freshTestItem.flickable
             var scrollbar = freshTestItem.scrollbar
 
             setupSignalSpy(signalSpy, scrollbar.__styleInstance, "veryLongContentItemChanged")
-            setVeryLongContentItem(flickable)
+            setVeryLongContentItem(flickable, scrollbar.__styleInstance, false)
             signalSpy.wait()
 
             compare(scrollbar.__styleInstance.veryLongContentItem, true, "Very long content item not detected")
 
             setupSignalSpy(signalSpy, flickable, "movingChanged")
-            flick(flickable, 1, 2, units.gu(2), -units.gu(10))
+            flick(flickable, 1, 2, units.gu(2), -units.gu(1))
 
             signalSpy.wait()
             compare(signalSpy.count, 1, "No movingChanged signal after simulating a flick.")
@@ -259,6 +276,414 @@ Item {
             compare(anotherSignalSpy.count, 1, "State unchanged after Flickable stopped moving.")
             compare(scrollbar.__styleInstance.state, "hidden", "Wrong style after a the item stopped moving.")
             freshTestItem.destroy()
+        }
+
+        function test_scrollingWithContentMargins(data) {
+            var freshTestItem = getFreshFlickable(data.alignment)
+            var flickable = freshTestItem.flickable
+            var scrollbar = freshTestItem.scrollbar
+            var style = freshTestItem.scrollbar.__styleInstance
+            var scrollbarUtils = getScrollbarUtils(scrollbar)
+            //to make sure that it's only scrolling in the direction it should
+            var notScrollingProperty = scrollbarUtils.propContent === "contentX" ? "contentY" : "contentX"
+            addContentMargins(flickable)
+
+            style.scrollToBeginning(false)
+            compare(flickable[notScrollingProperty], 0, "ContentX changed when it shouldn't")
+            compare(flickable[scrollbarUtils.propContent],
+                    style.isVertical ? -flickable.topMargin : -flickable.leftMargin,
+                                       "Wrong beginning contentY")
+
+            style.scrollToEnd(false)
+            compare(flickable[notScrollingProperty], 0, "ContentX changed when it shouldn't")
+            compare(flickable[scrollbarUtils.propContent],
+                    style.isVertical
+                    ? flickable.contentHeight + flickable.bottomMargin - flickable[scrollbarUtils.propSize]
+                    : flickable.contentWidth + flickable.rightMargin - flickable[scrollbarUtils.propSize],
+                      "Wrong end contentY")
+
+            //contentHeight+top+bottom is the max you can scroll anyway, so it's
+            //safe to use it, and the scrollbar should go to returnToBounds() if it goes beyond
+            var maxScrolling = style.totalContentSize
+            console.log(maxScrolling, flickable.contentX)
+            style.scrollBy(-maxScrolling, false)
+            console.log(flickable.leftMargin)
+            compare(flickable[notScrollingProperty], 0, "ContentX changed when it shouldn't")
+            compare(flickable[scrollbarUtils.propContent],
+                    style.isVertical ? -flickable.topMargin : -flickable.leftMargin,
+                                       "scrollBy: wrong contentY after scrolling to the beginning")
+
+            style.scrollBy(maxScrolling, false)
+            compare(flickable[notScrollingProperty], 0, "ContentX changed when it shouldn't")
+            compare(flickable[scrollbarUtils.propContent],
+                    style.isVertical
+                    ? flickable.contentHeight + flickable.bottomMargin - flickable[scrollbarUtils.propSize]
+                    : flickable.contentWidth + flickable.rightMargin - flickable[scrollbarUtils.propSize],
+                      "scrollBy: wrong contentY after scrolling to the end")
+
+            //we can only scroll up now
+            var oldContentProp = flickable[scrollbarUtils.propContent]
+            style.scrollBy(-units.gu(1), false)
+            compare(flickable[scrollbarUtils.propContent],
+                    oldContentProp - units.gu(1),
+                    "scrollBy: wrong contentY after scrolling by +1GU")
+            style.scrollBy(units.gu(1), false)
+            compare(flickable[scrollbarUtils.propContent],
+                    oldContentProp,
+                    "scrollBy: wrong contentY after scrolling by -1GU")
+            freshTestItem.destroy()
+        }
+
+        function test_showSteppers(data) {
+            var freshTestItem = getFreshFlickable(data.alignment)
+            var flickable = freshTestItem.flickable
+            var scrollbar = freshTestItem.scrollbar
+            var steppersTransition = findInListProperty(scrollbar.__styleInstance.transitions, "indicatorToThumbSteppersTransition")
+            verify(steppersTransition !== null, "Could not find transition object")
+
+            setupSignalSpy(signalSpy, scrollbar.__styleInstance, "stateChanged")
+            setupSignalSpy(anotherSignalSpy, steppersTransition, "runningChanged")
+
+            //show steppers on mouse move
+            mouseMove(scrollbar, 0, 0)
+
+            signalSpy.wait()
+            compare(signalSpy.count, 1, "Mouse move doesn't trigger state change")
+            anotherSignalSpy.wait()
+            compare(anotherSignalSpy.count, 1, "Mouse move doesn't trigger state transition")
+
+            compare(scrollbar.__styleInstance.state, "steppers", "Mouse move doesn't trigger steppers state.")
+            var firstStepper = getFirstStepper(scrollbar)
+            var secondStepper = getSecondStepper(scrollbar)
+            var trough = getTrough(scrollbar)
+
+            compare(trough.visible, true, "Trough not visible in steppers state")
+            compare(firstStepper.visible, true, "First stepper not visible in steppers state")
+            compare(secondStepper.visible, true, "Second stepper not visible in steppers state")
+
+            anotherSignalSpy.wait()
+            compare(anotherSignalSpy.count, 2, "State transition does not complete.")
+            compare(steppersTransition.running, false, "State transition does not stop.")
+
+            if (scrollbar.__styleInstance.isVertical) {
+                compare(trough.width, scrollbar.__styleInstance.troughThicknessSteppersStyle, "Wrong trough thickness in steppers style")
+            } else {
+                compare(trough.height, scrollbar.__styleInstance.troughThicknessSteppersStyle, "Wrong trough thickness in steppers style")
+            }
+
+            freshTestItem.destroy()
+        }
+
+
+        function test_dragThumb(data) {
+            var freshTestItem = getFreshFlickable(data.alignment)
+            var flickable = freshTestItem.flickable
+            var scrollbar = freshTestItem.scrollbar
+            var thumb = getThumb(scrollbar)
+            var thumbArea = getThumbArea(scrollbar)
+            var trough = getTrough(scrollbar)
+            var style = freshTestItem.scrollbar.__styleInstance
+            var scrollbarUtils = getScrollbarUtils(scrollbar)
+
+            addContentMargins(flickable)
+
+            triggerSteppersMode(scrollbar)
+
+            if (scrollbar.__styleInstance.isVertical) {
+                mouseDrag(thumb, 0, 0, 0, trough.height)
+                compare(flickable[scrollbarUtils.propContent],
+                        flickable.contentHeight + flickable.bottomMargin - flickable.height,
+                        "Vertical thumb mouse drag: wrong contentProp after dragging to the end")
+
+                mouseDrag(thumb, 0, 0, 0, -trough.height)
+                compare(flickable[scrollbarUtils.propContent], -flickable.topMargin,
+                        "Vertical thumb mouse drag: wrong contentProp after dragging to the beginning")
+            } else {
+                mouseDrag(thumb, 0, 0, trough.width, 0)
+                compare(flickable[scrollbarUtils.propContent],
+                        flickable.contentWidth + flickable.rightMargin - flickable.width,
+                        "Horizontal thumb mouse drag: wrong contentProp after dragging to the end")
+
+                mouseDrag(thumb, 0, 0, -trough.width, 0)
+                compare(flickable[scrollbarUtils.propContent], -flickable.leftMargin,
+                        "Horizontal thumb mouse drag: wrong contentProp after dragging to the beginning")
+            }
+
+            freshTestItem.destroy()
+        }
+
+        function test_hinting_data() {
+            return [
+                        {tag:"short content item", veryLongContentItem: true},
+                        {tag:"long content item", veryLongContentItem: false}
+                    ];
+        }
+
+        //test that the scrollbar is shown on contentHeight/width changes
+        function test_hinting(data) {
+            var freshTestItem = getFreshFlickable(Qt.AlignTrailing)
+            var flickable = freshTestItem.flickable
+            var scrollbar = freshTestItem.scrollbar
+            var style = freshTestItem.scrollbar.__styleInstance
+
+            if (data.veryLongContentItem) {
+                setVeryLongContentItem(flickable, style, !style.isVertical)
+                tryCompare(style, "veryLongContentItem", true, 1000, "Hinting: veryLongContentItem should be true.")
+            } else {
+                tryCompare(style, "veryLongContentItem", false, 1000, "Hinting: veryLongContentItem should be false.")
+            }
+
+            tryCompare(style, "state", "hidden")
+            tryCompare(style, "opacity", style.overlayOpacityWhenHidden)
+
+            flickable.contentWidth += 5
+
+            tryCompare(style, "state", style.veryLongContentItem ? "thumb" : "indicator")
+            tryCompare(style, "opacity", style.overlayOpacityWhenShown)
+
+            tryCompare(style, "state", "hidden")
+            tryCompare(style, "opacity", style.overlayOpacityWhenHidden)
+
+            flickable.contentHeight += 5
+
+            tryCompare(style, "state", style.veryLongContentItem ? "thumb" : "indicator")
+            tryCompare(style, "opacity", style.overlayOpacityWhenShown)
+
+            freshTestItem.destroy()
+        }
+
+        function test_onlyShowScrollbarIfNeeded(data) {
+            var freshTestItem = getFreshFlickable(data.alignment)
+            var flickable = freshTestItem.flickable
+            var scrollbar = freshTestItem.scrollbar
+            var style = freshTestItem.scrollbar.__styleInstance
+
+            flickable.contentWidth = flickable.width
+            flickable.contentHeight = flickable.height
+
+            tryCompare(style, "state", "")
+            tryCompare(style, "isScrollable", false)
+
+            flickable.contentWidth = flickable.width + 1
+
+            if (style.isVertical) {
+                //nothing should happen to the variable
+                compare(style.state, "", "Only show scrollbars if needed: contentWidth change causes vertical scrollbar to show.")
+                compare(style.isScrollable, false, "Only show scrollbars if needed: contentWidth change affects scrollability of vertical scrollbar.")
+            } else {
+                compare(style.isScrollable, true, "Only show scrollbars if needed: contentWidth does not make horizontal scrollbar scrollable.")
+                tryCompare(style, "state", "indicator")
+                //wait for it to hide
+                tryCompare(style, "state", "hidden")
+            }
+
+            console.log("STATE", style.state, style.isScrollable)
+            flickable.contentHeight = flickable.height + 1
+            console.log("STATE", style.state, style.isScrollable)
+
+            if (style.isVertical) {
+                compare(style.isScrollable, true, "Only show scrollbars if needed: contentHeight does not make vertical scrollbar scrollable.")
+                tryCompare(style, "state", "indicator")
+                //wait for it to hide
+                tryCompare(style, "state", "hidden")
+            } else {
+                console.log("STATE", style.state, style.isScrollable)
+
+                compare(style.state, "", "Only show scrollbars if needed: contentHeight change causes horizontal scrollbar to show.")
+                compare(style.isScrollable, false, "Only show scrollbars if needed: contentHeight change affects scrollability of horizontal scrollbar.")
+            }
+
+            freshTestItem.destroy()
+        }
+
+        function test_minimumSliderSize(data) {
+            var freshTestItem = getFreshFlickable(data.alignment)
+            var flickable = freshTestItem.flickable
+            var scrollbar = freshTestItem.scrollbar
+            var trough = getTrough(scrollbar)
+            var thumb = getThumb(scrollbar)
+            var style = freshTestItem.scrollbar.__styleInstance
+            var minSize = style.minimumSliderSize
+
+            verify(trough !== null, "Could not find the trough.")
+            verify(thumb !== null, "Could not find the thumb.")
+
+            if (style.isVertical) {
+                //ignore margins etc, just go for an upper bound
+                flickable.contentHeight = flickable.height * (flickable.height / minSize) + units.gu(100)
+                compare(thumb.height, minSize, "Thumb does not respect the minimum size.")
+            } else {
+                flickable.contentWidth = flickable.width * (flickable.width / minSize) + units.gu(100)
+                compare(thumb.width, minSize, "Thumb does not respect the minimum size.")
+            }
+
+            freshTestItem.destroy()
+        }
+
+        function test_scrollingRatioValuesSanityCheck() {
+            var freshTestItem = getFreshFlickable(Qt.AlignTrailing)
+            var style = freshTestItem.scrollbar.__styleInstance
+            verify(style.shortScrollingRatio > 0, true,
+                   "Short scrolling ratio must be > 0.")
+            verify(style.longScrollingRatio > 0, true,
+                   "Short scrolling ratio must be > 0.")
+            verify(style.shortScrollingRatio <= style.longScrollingRatio, true,
+                   "Short scrolling ratio is higher than long scrolling ratio.")
+        }
+
+        //        NOTE: ANY FAILURE COMING AFTER MOUSEPRESS WILL LEAVE THE MOUSE IN A DIRTY STATE!
+        //        (QQuickWindow's mouseGrabberItem is not reset)
+        //        OTHER TESTS WILL FAIL JUST BECAUSE THIS TEST HAS NOT CALLED MOUSERELEASE!
+        //        I REPORTED https://bugreports.qt.io/browse/QTBUG-51193 TO GET THIS FIXED
+        function test_resetDragWhenMouseIsVeryFarFromTheThumb(data) {
+            var freshTestItem = getFreshFlickable(data.alignment)
+            var flickable = freshTestItem.flickable
+            var scrollbar = freshTestItem.scrollbar
+            var thumb = getThumb(scrollbar)
+            var style = freshTestItem.scrollbar.__styleInstance
+
+            compare(style.isScrollable, true, "Item is assumed to be scrollable.")
+            triggerSteppersMode(scrollbar)
+
+            var contentXBackup = flickable.contentX
+            var contentYBackup = flickable.contentY
+
+            //coords of the 2 mouse move used to simulate a drag
+            var firstStep = units.gu(5)
+            var secondStep = units.gu(10)
+            var releaseCoord = units.gu(11)
+
+            mousePress(thumb, 0, 0)
+            mouseMove(thumb,
+                      (style.isVertical ? 0 : firstStep),
+                      (style.isVertical ? firstStep : 0))
+            mouseMove(thumb,
+                      (style.isVertical ? 0 : secondStep),
+                      (style.isVertical ? secondStep : 0))
+
+            var newContentX = flickable.contentX
+            var newContentY = flickable.contentY
+
+            if (style.isVertical) {
+                verify(newContentY !== contentYBackup, "Check that mouse drag changed contentY." )
+            } else {
+                verify(newContentX !== contentXBackup, "Check that mouse drag changed contentX." )
+            }
+
+            mouseMove(thumb,
+                      (style.isVertical ? dragResetThreshold(scrollbar)+1 : secondStep),
+                      (style.isVertical ? secondStep : dragResetThreshold(scrollbar)+1))
+
+            compare(flickable.contentX, contentXBackup, "Mouse drag reset: contentX not reset.")
+            compare(flickable.contentY, contentYBackup, "Mouse drag reset: contentY not reset.")
+
+            //go back to the old position
+            mouseMove(thumb,
+                      (style.isVertical ? 0 : secondStep),
+                      (style.isVertical ? secondStep : 0))
+            //resume the drag by moving at least 1 px (scrollbar should have 0 drag threshold)
+            mouseMove(thumb,
+                      (style.isVertical ? 0 : secondStep + style.dragThreshold + 1),
+                      (style.isVertical ? secondStep + style.dragThreshold + 1 : 0))
+
+            //NOTE: now the thumb has moved, adding another mouseMove here will use
+            //coordinates relative to the NEW position!
+            mouseMove(thumb,
+                      (style.isVertical ? 0 : -(style.dragThreshold + 1)),
+                      (style.isVertical ? -(style.dragThreshold + 1) : 0))
+
+            compare(flickable.contentX, contentXBackup, "Mouse drag reset: contentX not reset.")
+            compare(flickable.contentY, contentYBackup, "Mouse drag reset: contentY not reset.")
+
+            //test that we resume dragging
+            if (style.isVertical) {
+                verify(newContentY !== contentYBackup, "Check that mouse drag changed contentY." )
+            } else {
+                verify(newContentX !== contentXBackup, "Check that mouse drag changed contentX." )
+            }
+
+            //try moving the other way
+            //FIXME: I'M USING +7 BECAUSE THE LOGIC USES (mouse.x - thumbArea.x)
+            //AND HERE WE START AT 5px AND THEN MOVE BY 10x + 1
+            //THE LOGIC HAS TO USE A DIFFERENT CONDITION
+            mouseMove(thumb,
+                      (style.isVertical ? -(dragResetThreshold(scrollbar) + 7) : secondStep),
+                      (style.isVertical ? secondStep : -(dragResetThreshold(scrollbar) + 7)))
+
+            compare(flickable.contentX, contentXBackup, "Mouse drag reset: contentX not reset.")
+            compare(flickable.contentY, contentYBackup, "Mouse drag reset: contentY not reset.")
+
+            mouseRelease(thumb,
+                         (style.isVertical ? -(dragResetThreshold(scrollbar) + 7) : secondStep),
+                         (style.isVertical ? secondStep : -(dragResetThreshold(scrollbar) + 7)))
+        }
+
+        function test_actionSteppers_data() {
+            return [
+                        {tag:"Content item with margins and vertical scrollbar", addContentMargins: true, alignment: Qt.AlignTrailing},
+                        {tag:"Content item and vertical scrollbar", addContentMargins: false, alignment: Qt.AlignTrailing},
+                        {tag:"Content item with margins and horizontal scrollbar", addContentMargins: true, alignment: Qt.AlignBottom},
+                        {tag:"Content item and horizontal scrollbar", addContentMargins: false, alignment: Qt.AlignBottom}
+                    ];
+        }
+        function test_actionSteppers(data) {
+            var freshTestItem = getFreshFlickable(data.alignment)
+            var flickable = freshTestItem.flickable
+            var scrollbar = freshTestItem.scrollbar
+            var trough = getTrough(scrollbar)
+            var thumb = getThumb(scrollbar)
+            var firstStepper = getFirstStepper(scrollbar)
+            var secondStepper = getSecondStepper(scrollbar)
+            var style = freshTestItem.scrollbar.__styleInstance
+            var minSize = style.minimumSliderSize
+
+            if (data.addContentMargins) {
+                addContentMargins(flickable)
+            }
+
+            triggerSteppersMode(scrollbar)
+
+            setContentPositionToTopLeft(flickable)
+            var contentXBackup = flickable.contentX
+            var contentYBackup = flickable.contentY
+            clickOnStepperAndCheckNoContentPositionChange("First stepper", firstStepper, flickable,
+                                                          contentXBackup, contentYBackup)
+
+            //NOTE: mouseClick(secondStepper, 0, 0) would trigger firstStepper, because
+            //the logic uses contains(point) that also counts the edges!
+            //(the code uses if firstStepper.contains else if secondStepper.contains
+            //so it stops at the first branch)
+            clickInTheMiddle(secondStepper)
+            checkScrolling(flickable, contentXBackup, contentYBackup, style,
+                           false, 1, "Second stepper, first click")
+
+            contentXBackup = flickable.contentX
+            contentYBackup = flickable.contentY
+
+            //do it once more
+            clickInTheMiddle(secondStepper)
+            checkScrolling(flickable, contentXBackup, contentYBackup, style,
+                           false, 1, "Second stepper, second click")
+
+            setContentPositionToBottomRight(flickable)
+            contentXBackup = flickable.contentX
+            contentYBackup = flickable.contentY
+
+            clickOnStepperAndCheckNoContentPositionChange("Second stepper", secondStepper, flickable,
+                                                          contentXBackup, contentYBackup)
+
+            clickInTheMiddle(firstStepper)
+            checkScrolling(flickable, contentXBackup, contentYBackup, style,
+                           false, -1, "First stepper, first click")
+
+            contentXBackup = flickable.contentX
+            contentYBackup = flickable.contentY
+
+            //do it once more
+            clickInTheMiddle(firstStepper)
+            checkScrolling(flickable, contentXBackup, contentYBackup, style,
+                           false, -1, "First stepper, second click")
+
         }
     }
 }
