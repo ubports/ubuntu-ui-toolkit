@@ -371,7 +371,6 @@ Item {
             contentYBackup = flickable.contentY
 
             //Key_Down should work as intended
-            console.log(verticalScrollbarStyle.isVertical, "TET")
             keyClick(Qt.Key_Down)
             checkScrolling(flickable, contentXBackup, contentYBackup,
                            verticalScrollbarStyle, false, 1, "Down key")

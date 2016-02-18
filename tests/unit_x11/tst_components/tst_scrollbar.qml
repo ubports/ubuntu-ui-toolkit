@@ -156,9 +156,7 @@ Item {
 
         function clickOnStepperAndCheckNoContentPositionChange(msgPrefix, itemToClickOn, flickable, expectedContentX, expectedContentY) {
             clickInTheMiddle(itemToClickOn)
-            console.log(itemToClickOn.x, itemToClickOn.y, itemToClickOn.width, itemToClickOn.height)
             wait(150)
-            console.log(itemToClickOn.x, itemToClickOn.y, itemToClickOn.width, itemToClickOn.height)
             checkNoContentPositionChange(msgPrefix, flickable, expectedContentX, expectedContentY)
         }
 
@@ -305,9 +303,7 @@ Item {
             //contentHeight+top+bottom is the max you can scroll anyway, so it's
             //safe to use it, and the scrollbar should go to returnToBounds() if it goes beyond
             var maxScrolling = style.totalContentSize
-            console.log(maxScrolling, flickable.contentX)
             style.scrollBy(-maxScrolling, false)
-            console.log(flickable.leftMargin)
             compare(flickable[notScrollingProperty], 0, "ContentX changed when it shouldn't")
             compare(flickable[scrollbarUtils.propContent],
                     style.isVertical ? -flickable.topMargin : -flickable.leftMargin,

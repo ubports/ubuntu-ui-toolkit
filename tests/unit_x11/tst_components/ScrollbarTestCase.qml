@@ -107,7 +107,6 @@ UbuntuTestCase {
         var nonScrollingPropName = verticalScrolling ? "contentX" : "contentY"
         var errorMsg = msgPrefix + ": wrong " + contentPropName + "."
 
-        console.log(verticalScrolling)
         tryCompare(flickable, contentPropName, newContentProp, 2000, errorMsg)
         wait(150)
         compare(flickable[contentPropName], newContentProp, errorMsg)
