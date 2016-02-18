@@ -62,6 +62,9 @@ void AsyncLoader::statusChanged(Status status)
 // procected methods
 void AsyncLoader::emitStatus(LoadingStatus status, QObject *object)
 {
+    if (m_status == status) {
+        return;
+    }
     if (!object) {
         object = this->object();
     }

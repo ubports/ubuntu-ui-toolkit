@@ -9,6 +9,7 @@ PRE_TARGETDEPS += $$PLUGIN_BLD/Test/libUbuntuTest.so
 LIBS += -L$$PLUGIN_BLD/Components -lUbuntuComponents
 LIBS += -L$$PLUGIN_BLD/Test -lUbuntuTest
 LIBS += -L$${ROOT_BUILD_DIR}/lib -lUbuntuGestures
+#LIBS += -L$${ROOT_BUILD_DIR}/lib -lUbuntuToolkit
 DEFINES += QUICK_TEST_SOURCE_DIR=\"\\\"$$_PRO_FILE_PWD_\\\"\"
 QMAKE_CXXFLAGS += -Werror
 
