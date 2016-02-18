@@ -99,7 +99,12 @@ void UCPerformanceMonitor::startTimer()
 
 void UCPerformanceMonitor::stopTimer()
 {
+    if (!m_timer.isValid()) {
+        return;
+    }
+
     const int totalTimeInMs = m_timer.elapsed();
+    m_timer.invalidate();
 
     if (totalTimeInMs >= singleFrameThreshold) {
         qCWarning(ucPerformance, "Last frame took %d ms to render.", totalTimeInMs);
