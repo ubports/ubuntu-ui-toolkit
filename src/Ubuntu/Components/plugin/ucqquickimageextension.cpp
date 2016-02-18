@@ -40,9 +40,14 @@ UCQQuickImageExtension::UCQQuickImageExtension(QObject *parent) :
     QObject(parent),
     m_image(static_cast<QQuickImageBase*>(parent))
 {
+    // FIXME(loicm) When the grid unit is changed following a QPA plugin scale
+    //     notification, we experienced a crash in reloadSource() while setting
+    //     the QQuickImageBase source. It seems like a resource handling issue
+    //     in Qt but we have not managed to identify it exactly. We work around
+    //     it by using a queued connection for gridUnitChanged() signal for now.
     QObject::connect(UCUnits::instance(), SIGNAL(gridUnitChanged()),
-                     this, SLOT(reloadSource()));
-    // connect sourceChanged signal to extendedSourceChanged
+                     this, SLOT(reloadSource()), Qt::QueuedConnection);
+
     if (m_image) {
         QObject::connect(m_image, &QQuickImageBase::sourceChanged,
                          this, &UCQQuickImageExtension::extendedSourceChanged);

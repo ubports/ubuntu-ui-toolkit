@@ -56,3 +56,9 @@ void UCProportionalShape::_q_updateHeight()
         setHeight(newHeight);
     }
 }
+
+void UCProportionalShape::componentComplete()
+{
+    QQuickItem::componentComplete();
+    _q_updateHeight();
+}
