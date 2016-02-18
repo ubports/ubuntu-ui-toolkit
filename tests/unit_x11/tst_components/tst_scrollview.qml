@@ -217,37 +217,34 @@ Item {
             if (data.setHeight) {
                 setVeryLongContentItem(scrollview.flickableItem, horizontalScrollbar.__styleInstance, false)
                 setVeryLongContentItem(scrollview.flickableItem, verticalScrollbar.__styleInstance, false)
+                //make it long enough to avoid timing issues with the flickable stopping before we manage
+                //to check the variables
+                if (!data.setWidth)
+                    scrollview.flickableItem.contentWidth = scrollview.flickableItem.width * 4
             }
 
             if (data.setWidth) {
                 setVeryLongContentItem(scrollview.flickableItem, horizontalScrollbar.__styleInstance, true)
                 setVeryLongContentItem(scrollview.flickableItem, verticalScrollbar.__styleInstance, true)
+                if (!data.setHeight)
+                    scrollview.flickableItem.contentHeight = scrollview.flickableItem.height * 4
             }
 
-            setupSignalSpy(signalSpy, scrollview.flickableItem, "movingChanged")
+            flick(scrollview.flickableItem, 20, 20, -units.gu(10), -units.gu(10))
 
-            flick(scrollview.flickableItem, 1, 2, units.gu(2), -units.gu(1))
-
-            signalSpy.wait()
-            compare(signalSpy.count, 1, "No movingChanged signal after simulating a flick.")
-            compare(scrollview.flickableItem.moving, true, "Flickable not moving after simulating a flick.")
-            compare(horizontalScrollbar.__styleInstance.state, "thumb", "Horizontal scrollbar: wrong style while flicking.")
-            compare(verticalScrollbar.__styleInstance.state, "thumb", "Vertical scrollbar: wrong style while flicking.")
+            //NOTE: this becomes FLAKY if you move the mouse inside the window the test is being rendered on
+            //because the mouse moves interfere with the flicking
+            tryCompare(horizontalScrollbar.__styleInstance, "state", "thumb", 1000, "Horizontal scrollbar: wrong style while flicking.")
+            tryCompare(verticalScrollbar.__styleInstance, "state", "thumb", 1000, "Vertical scrollbar: wrong style while flicking.")
 
             //we don't set it up before because the hinting feature already changes the style to thumb
             //at the beginning
             setupSignalSpy(anotherSignalSpy, horizontalScrollbar.__styleInstance, "stateChanged")
             setupSignalSpy(ultimateSignalSpy, verticalScrollbar.__styleInstance, "stateChanged")
 
-            //make sure the flickable stops
-            mouseClick(scrollview, 0, 0)
+            //wait for the flickable to stop
+            tryCompare(scrollview.flickableItem, "moving", false, 5000, "Flickable still moving after simulating mouse click.")
 
-            signalSpy.wait()
-            compare(scrollview.flickableItem.moving, false, "Flickable still moving after simulating mouse click.")
-            compare(signalSpy.count, 2, "No movingChanged signal after Flickable stopped moving.")
-
-            anotherSignalSpy.wait()
-            compare(anotherSignalSpy.count, 1, "State unchanged after Flickable stopped moving.")
             compare(horizontalScrollbar.__styleInstance.state, "hidden", "Horizontal scrollbar: wrong style after the item stopped moving.")
             compare(verticalScrollbar.__styleInstance.state, "hidden", "Vertical scrollbar: wrong style after the item stopped moving.")
 
