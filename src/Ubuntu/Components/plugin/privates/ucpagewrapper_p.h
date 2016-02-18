@@ -42,7 +42,7 @@ public:
     void reset ();
     void activate   ();
     void deactivate ();
-    QQuickItem *toItem (QObject *theObject);
+    QQuickItem *toItem (QObject *theObject, bool canDelete = true);
     void initItem (QQuickItem *theItem);
     void copyProperties (QObject *target);
 
@@ -56,7 +56,7 @@ public:
     void nextStep ();
     void loadComponentState ();
     void createObjectState ();
-    void initializeObjectIfReady ();
+    void finalizeObjectIfReady ();
 
     QVariant m_reference;
     QVariant m_properties;
