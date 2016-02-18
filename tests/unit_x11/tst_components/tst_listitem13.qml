@@ -350,6 +350,21 @@ Item {
             movingSpy.wait();
         }
 
+        function test_release_outside() {
+            var listItem = defaults;
+            clickSpy.target = listItem;
+            clickSpy.clear();
+            highlightedSpy.target = listItem;
+            highlightedSpy.clear();
+
+            mousePress(listItem, listItem.width / 2, listItem.height / 2);
+            highlightedSpy.wait();
+            mouseMove(listView, 0, 0, 100);
+            mouseRelease(listView, 0, 0);
+            highlightedSpy.wait();
+            compare(clickSpy.count, 0, "Click must be suppressed when releasing outside of item");
+        }
+
         function test_vertical_listview_move_cancels_highlight_data() {
             return [
                 {tag: "With touch", mouse: false},
@@ -360,11 +375,17 @@ Item {
             var listItem = findChild(listView, "listItem0");
             verify(listItem, "Cannot find listItem0");
 
+            clickSpy.target = listItem;
+            clickSpy.clear();
+            highlightedSpy.target = listItem;
+            highlightedSpy.clear();
+
             // convert positions and use the listView to move
             var pos = listView.mapFromItem(listItem, listItem.width / 2, 0);
             if (data.mouse) {
                 // provide slow move
                 mousePress(listView, pos.x, pos.y);
+                highlightedSpy.wait();
                 for (var i = 1; i < 4; i++) {
                     pos.y += i * units.gu(0.5);
                     mouseMove(listView, pos.x, pos.y, 100);
@@ -375,6 +396,7 @@ Item {
                 // convert pos to point otherwise touch functions will get (0,0) points!!!
                 var pt = Qt.point(pos.x, pos.y);
                 TestExtras.touchPress(0, listView, pt);
+                highlightedSpy.wait();
                 for (i = 1; i < 4; i++) {
                     pt.y += i * units.gu(0.5);
                     TestExtras.touchMove(0, listView, pt);
@@ -383,6 +405,7 @@ Item {
                 compare(listItem.highlighted, false, "highlighted still!");
                 TestExtras.touchRelease(0, listView, pt);
             }
+            compare(clickSpy.count, 0, "Click must be suppressed when releasing outside of item");
         }
 
         function test_background_height_change_on_divider_visible() {

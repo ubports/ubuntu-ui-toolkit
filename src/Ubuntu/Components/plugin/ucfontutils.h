@@ -37,7 +37,9 @@ public:
     static UCFontUtils *instance(QObject *parent = Q_NULLPTR)
     {
         if (!m_instance) {
-            Q_ASSERT(parent);
+            if (!parent) {
+                qFatal("Creating FontUtils singleton requires a parent object!");
+            }
             m_instance = new UCFontUtils(parent);
         }
         return m_instance;

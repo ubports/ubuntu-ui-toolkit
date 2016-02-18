@@ -36,11 +36,15 @@ _ARGS="-p -o -p $_XML,xunitxml -p -o -p -,txt"
 set +e
 
 function create_test_cmd {
-	if [[ "$_TARGETPATH" = /* ]]; then
-      _CMD="dbus-test-runner --task $_TARGETPATH -n $_TESTFILE -m 300"	
-	else
-      _CMD="dbus-test-runner --task ./$_TARGETPATH -n $_TESTFILE -m 300"
-	fi
+  if [[ "$_TARGETPATH" = /* ]]; then
+      EXE=$_TARGETPATH
+  else
+      EXE=./$_TARGETPATH
+  fi
+  _CMD="-n $_TESTFILE -m 300"
+
+  _CMD="dbus-test-runner --task gdb -p --quiet $_CMD"
+  _CMD="$_CMD -p --batch -p -ex -p 'set print thread-events off' -p -ex -p run -p -ex -p bt -p --return-child-result -p --args -p $EXE"
 
   if [ "$_MINIMAL" = "minimal" ]; then
       _CMD="$_CMD -p -platform -p minimal"

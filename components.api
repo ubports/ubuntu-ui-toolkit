@@ -268,7 +268,8 @@ Ubuntu.Components.Clipboard 1.0 0.1: QtObject singleton
     function push(var data)
     function clear()
     function QQuickMimeData* newData()
-Ubuntu.Components.ColorUtils 0.1 1.0
+Ubuntu.Components.ColorUtils 1.0 0.1: QtObject singleton
+    function double luminance(color color)
 Ubuntu.Components.ComboButton 1.1: Button
     property double collapsedHeight
     default property list<QtObject> comboList
@@ -276,13 +277,18 @@ Ubuntu.Components.ComboButton 1.1: Button
     property color dropdownColor
     property bool expanded
     property double expandedHeight
-Ubuntu.Components.ComboButton 1.3: Button
+Ubuntu.Components.ComboButton 1.3: AbstractButton
     property double collapsedHeight
+    property color color
     default property list<QtObject> comboList
     readonly property double comboListHeight
     property color dropdownColor
     property bool expanded
     property double expandedHeight
+    property QFont font
+    property Gradient gradient
+    property string iconPosition
+    property color strokeColor
 Ubuntu.Components.Styles.ComboButtonStyle 1.1: Item
     property Item comboListHolder
     property double comboListMargin
@@ -499,6 +505,7 @@ Ubuntu.Components.Icon 1.0 0.1: Item
 Ubuntu.Components.Icon 1.1: Icon
     property url source
 Ubuntu.Components.Icon 1.3: Item
+    property bool asynchronous
     property color color
     property color keyColor
     property string name
@@ -1005,6 +1012,7 @@ Ubuntu.Components.ProgressBar 1.3: AnimatedItem
     property bool showProgressPercentage
     property double value
 Ubuntu.Components.ProgressionSlot 1.3: Item
+    property bool asynchronous
     property color color
     property color keyColor
     property string name
@@ -1100,6 +1108,7 @@ Ubuntu.Components.Slider 1.3: StyledItem
     function var formatValue(var v)
     property double minimumValue
     readonly property bool pressed
+    property double stepSize
     property double value
 Ubuntu.Components.SliderUtils 0.1 1.0
 Ubuntu.Components.SlotsAttached 1.3: QtObject
