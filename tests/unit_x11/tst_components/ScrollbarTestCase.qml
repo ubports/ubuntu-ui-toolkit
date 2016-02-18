@@ -108,6 +108,7 @@ UbuntuTestCase {
 
         compare(style.isScrollable, true, "Item is assumed to be scrollable.")
 
+        setupSignalSpy(signalSpy, thumb, style.isVertical ? "onYChanged" : "onXChanged")
         mousePress(thumb, 0, 0)
         mouseMove(thumb,
                   (style.isVertical ? 0 : firstStep),
@@ -115,6 +116,7 @@ UbuntuTestCase {
         mouseMove(thumb,
                   (style.isVertical ? 0 : secondStep),
                   (style.isVertical ? secondStep : 0))
+        signalSpy.wait()
 
         if (style.isVertical) {
             console.log(flickable.contentY, contentYBackup)
@@ -142,7 +144,7 @@ UbuntuTestCase {
         var nonScrollingPropName = verticalScrolling ? "contentX" : "contentY"
         var errorMsg = msgPrefix + ": wrong " + contentPropName + "."
 
-        tryCompare(flickable, contentPropName, newContentProp, 2000, errorMsg)
+        tryCompare(flickable, contentPropName, newContentProp, 5000, errorMsg)
         wait(150)
         compare(flickable[contentPropName], newContentProp, errorMsg)
 

@@ -203,7 +203,7 @@ Item {
             compare(scrollbar.__styleInstance.veryLongContentItem, false, "Scrollable item should be short.")
 
             flick(flickable, 2, 2, -units.gu(10), -units.gu(10))
-            tryCompare(flickable, "moving", true, 1000, "Flickable not moving after simulating a flick.")
+            tryCompare(flickable, "moving", true, 5000, "Flickable not moving after simulating a flick.")
 
             compare(scrollbar.__styleInstance.state, "indicator", "Wrong style while flicking.")
 
@@ -232,7 +232,7 @@ Item {
             compare(scrollbar.__styleInstance.veryLongContentItem, true, "Very long content item not detected")
 
             flick(flickable, 2, 2, -units.gu(10), -units.gu(10))
-            tryCompare(flickable, "moving", true, 1000, "Flickable not moving after simulating a flick.")
+            tryCompare(flickable, "moving", true, 5000, "Flickable not moving after simulating a flick.")
 
             compare(scrollbar.__styleInstance.state, "thumb", "Wrong style while flicking a very long item")
 
@@ -358,7 +358,6 @@ Item {
             triggerSteppersMode(scrollbar)
 
             if (style.isVertical) {
-                console.log(thumb.height/2)
                 mouseDrag(thumb, thumb.width/2, thumb.height/2, 0, trough.height)
                 compare(flickable[scrollbarUtils.propContent],
                         flickable.contentHeight + flickable.bottomMargin - flickable.height,
@@ -455,7 +454,7 @@ Item {
             if (data.scrollableHorizontally) {
                 if (data.veryLong) {
                     setVeryLongContentItem(flickable, style, true)
-                    tryCompare(style, "veryLongContentItem", true, 1000, "Hinting: veryLongContentItem should be true.")
+                    tryCompare(style, "veryLongContentItem", true, 5000, "Hinting: veryLongContentItem should be true.")
                 } else {
                     flickable.contentWidth = flickable.width + units.gu(1)
                 }
@@ -472,7 +471,7 @@ Item {
             if (data.scrollableVertically) {
                 if (data.veryLong) {
                     setVeryLongContentItem(flickable, style, false)
-                    tryCompare(style, "veryLongContentItem", true, 1000, "Hinting: veryLongContentItem should be true.")
+                    tryCompare(style, "veryLongContentItem", true, 5000, "Hinting: veryLongContentItem should be true.")
                 } else {
                     flickable.contentHeight = flickable.height + units.gu(1)
                 }

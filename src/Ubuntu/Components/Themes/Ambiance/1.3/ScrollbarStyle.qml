@@ -176,7 +176,6 @@ Item {
             console.log("BUG: Invalid scrolling value.")
             return
         }
-
         //don't setup an animation with duration 0, if we just don't want the animation
         if (animate) {
             scrollAnimation.to = value

@@ -181,8 +181,8 @@ Item {
         }
         function focusScrollView(scrollview) {
             mouseClick(scrollview, 0, 0)
-            compare(scrollview.focus, true, "Key events propagation: scrollview not focused.")
-            compare(scrollview.activeFocus, true, "Key events propagation: scrollview not focused.")
+            tryCompare(scrollview, "focus", true, 5000, "Key events propagation: scrollview not focused.")
+            tryCompare(scrollview, "activeFocus", true, 5000, "Key events propagation: scrollview not focused.")
         }
         function sendKeyAndCheckItHasNoEffect(keyName, keyCode, flickable, expectedContentX, expectedContentY) {
             keyClick(keyCode)
@@ -242,11 +242,12 @@ Item {
             }
 
             flick(scrollview.flickableItem, 20, 20, -units.gu(10), -units.gu(10))
+            tryCompare(scrollview.flickableItem, "moving", true, 5000, "Flickable not moving after simulating a flick.")
 
             //NOTE: this becomes FLAKY if you move the mouse inside the window the test is being rendered on
             //because the mouse moves interfere with the flicking
-            tryCompare(horizontalScrollbar.__styleInstance, "state", "thumb", 1000, "Horizontal scrollbar: wrong style while flicking.")
-            tryCompare(verticalScrollbar.__styleInstance, "state", "thumb", 1000, "Vertical scrollbar: wrong style while flicking.")
+            tryCompare(horizontalScrollbar.__styleInstance, "state", "thumb", 5000, "Horizontal scrollbar: wrong style while flicking.")
+            tryCompare(verticalScrollbar.__styleInstance, "state", "thumb", 5000, "Vertical scrollbar: wrong style while flicking.")
 
             //we don't set it up before because the hinting feature already changes the style to thumb
             //at the beginning
@@ -401,7 +402,7 @@ Item {
             keyClick(Qt.Key_End)
             //check that Key_End scrolls to the bottom
             var newContentY = flickable.contentHeight + flickable.bottomMargin - flickable.height
-            tryCompare(flickable, "contentY", newContentY, 2000, "End key handling: wrong contentY.")
+            tryCompare(flickable, "contentY", newContentY, 5000, "End key handling: wrong contentY.")
             wait(150)
             compare(flickable.contentY, newContentY, "End key handling: wrong contentY.")
             compare(flickable.contentX, contentXBackup, "End key must not change contentX.")
@@ -460,7 +461,7 @@ Item {
             contentYBackup = flickable.contentY
             newContentY = -flickable.topMargin
             keyClick(Qt.Key_Home)
-            tryCompare(flickable, "contentY", newContentY, 2000, "Home key handling: wrong contentY.")
+            tryCompare(flickable, "contentY", newContentY, 5000, "Home key handling: wrong contentY.")
             wait(150)
             compare(flickable.contentY, newContentY, "Home key handling: wrong contentY.")
             compare(flickable.contentX, contentXBackup, "Home key must not change contentX.")
@@ -584,9 +585,11 @@ Item {
             compare(scrollAnimation.running, true, "Scroll animation not running after using an arrow key.")
 
             //Move once again, this time while the animation is running
+            setupSignalSpy(signalSpy, thumb, style.isVertical ? "onYChanged" : "onXChanged")
             mouseMove(thumb,
                       (style.isVertical ? 0 : units.gu(11)),
                       (style.isVertical ? units.gu(11) : 0))
+            signalSpy.wait()
 
             compare(scrollAnimation.running, false, "Scroll animation must stop after dragging the thumb.")
 
