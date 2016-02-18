@@ -235,4 +235,9 @@ UbuntuTestCase {
     function getThumbArea(scrollbar) {
         return findChildAndCheckValidInstance(scrollbar.__styleInstance, "thumbArea")
     }
+    function getScrollAnimation(scrollbar) {
+        var anim = findInvisibleChild(scrollbar.__styleInstance, "scrollAnimation")
+        verify(anim !== null, "Returning a valid reference to scrollAnimation.")
+        return anim
+    }
 }

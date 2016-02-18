@@ -547,8 +547,52 @@ Item {
                                             (style.isVertical ? units.gu(12) : 0))
         }
 
-        function test_noFlickeringWhenUsingArrowKeysWhileDraggingThumb() {
-            //TODO
+        function test_noFlickeringWhenUsingArrowKeysWhileDraggingThumb_data() {
+            return [
+                        { tag: "Vertical scrollbar", vertical: true },
+                        { tag: "Horizontal scrollbar", vertical: false }
+                    ]
+        }
+        //Test that any running scrolling animation is stopped when the user drags the thumb
+        //to avoid conflicts and flickering
+        function test_noFlickeringWhenUsingArrowKeysWhileDraggingThumb(data) {
+            var firstTestItem = getFreshScrollView()
+            var scrollview = firstTestItem.scrollview
+            var flickable = scrollview.flickableItem
+            var scrollbar = data.vertical ? getVerticalScrollbar(scrollview)
+                                          : getHorizontalScrollbar(scrollview)
+            var style = scrollbar.__styleInstance
+            var scrollAnimation = getScrollAnimation(scrollbar)
+            var thumb = getThumb(scrollbar)
+
+            focusScrollView(scrollview)
+            triggerSteppersMode(scrollbar)
+
+            dragThumbForwardAndCheckPos_noRelease(scrollbar, flickable, units.gu(5), units.gu(10))
+
+            var contentXBackup = flickable.contentX
+            var contentYBackup = flickable.contentY
+
+            setupSignalSpy(signalSpy, scrollview.Keys, data.vertical ? "onDownPressed" : "onRightPressed")
+            setupSignalSpy(anotherSignalSpy, scrollAnimation, "onRunningChanged")
+            keyClick(data.vertical ? Qt.Key_Down : Qt.Key_Right)
+
+            signalSpy.wait()
+            compare(signalSpy.count, 1, "Wrong number of signals fired after pressing Esc.")
+
+            anotherSignalSpy.wait()
+            compare(scrollAnimation.running, true, "Scroll animation not running after using an arrow key.")
+
+            //Move once again, this time while the animation is running
+            mouseMove(thumb,
+                      (style.isVertical ? 0 : units.gu(11)),
+                      (style.isVertical ? units.gu(11) : 0))
+
+            compare(scrollAnimation.running, false, "Scroll animation must stop after dragging the thumb.")
+
+            mouseRelease(thumb,
+                         (style.isVertical ? 0 : units.gu(12)),
+                         (style.isVertical ? units.gu(12) : 0))
         }
 
         function test_noOverlapWhenBothSidesAreScrollable() {

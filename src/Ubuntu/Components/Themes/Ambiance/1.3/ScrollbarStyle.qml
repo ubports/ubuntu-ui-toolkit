@@ -398,6 +398,7 @@ Item {
 
     SmoothedAnimation {
         id: scrollAnimation
+        objectName: "scrollAnimation"
 
         //duration and easing coming from UX spec
         duration: UbuntuAnimation.SlowDuration
