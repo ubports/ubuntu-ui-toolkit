@@ -575,9 +575,9 @@ Item {
 
                     var mouseScrollingProp = isVertical ? mouseY : mouseX
                     if (mouseScrollingProp < slider[scrollingProp]) {
-                        scrollBy(-pageSize*visuals.longScrollingRatio)
+                        scrollBy(-pageSize*visuals.longScrollingRatio, true)
                     } else if (mouseScrollingProp > slider[scrollingProp] + slider[sizeProp]) {
-                        scrollBy(pageSize*visuals.longScrollingRatio)
+                        scrollBy(pageSize*visuals.longScrollingRatio, true)
                     }
                 }
 
