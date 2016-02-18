@@ -23,6 +23,10 @@ import Ubuntu.Test 1.0
 UbuntuTestCase {
     when: windowShown
 
+    //every test will assign the current view component (that is dynamically created) to this var
+    //so that the cleanup() will destroy it (thus releasing mouse etc) even when a test fails midway
+    property var currComponent: null
+
     //side == false -> set contentHeight
     //side == true ->  set contentWidth
     function setVeryLongContentItem(flickable, style, side) {

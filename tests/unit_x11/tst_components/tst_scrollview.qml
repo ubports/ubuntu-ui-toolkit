@@ -160,12 +160,13 @@ Item {
     ScrollbarTestCase {
         name: "ScrollView"
 
-        //TODO: centralize currComponent in ScrollbarTestCase and destroy dynamic objects
-        //in cleanup()
+        //another ref to an object we want to destroy in cleanup()
+        property var anotherDynamicComp: null
 
         function getFreshScrollView() {
             var wrapper = scrollViewComp.createObject(column)
             verify(wrapper !== null, "Error: dynamic item creation failed.")
+            currComponent = wrapper
             return wrapper
         }
         function getHorizontalScrollbar(scrollView) {
@@ -188,7 +189,17 @@ Item {
             wait(150)
             checkNoContentPositionChange(keyName + " key", flickable, expectedContentX, expectedContentY)
         }
-
+        function cleanup() {
+            if (currComponent) {
+                currComponent.destroy()
+                currComponent = null
+            }
+            if (anotherDynamicComp) {
+                anotherDynamicComp.destroy()
+                anotherDynamicComp = null
+            }
+            gc()
+        }
 
         function test_veryLongContentItemIsTrueEvenWhenOnlyOneSideIsVeryLong_data() {
             return [
@@ -247,8 +258,6 @@ Item {
 
             compare(horizontalScrollbar.__styleInstance.state, "hidden", "Horizontal scrollbar: wrong style after the item stopped moving.")
             compare(verticalScrollbar.__styleInstance.state, "hidden", "Vertical scrollbar: wrong style after the item stopped moving.")
-
-            freshTestItem.destroy()
         }
 
         function test_keyEventsPropagation() {
@@ -313,8 +322,6 @@ Item {
             keyClick(Qt.Key_Return)
             anotherSignalSpy.wait()
             compare(anotherSignalSpy.count, 4, "Key events propagation: parent did not receive the right number of key events.")
-
-            freshTestItem.destroy()
         }
 
         function test_arrowKeys_scrollableView_data() {
@@ -327,6 +334,10 @@ Item {
         function test_arrowKeys_scrollableView(data) {
             var testComp = scrollViewComp.createObject(column)
             verify(testComp !== null, "Error: dynamic item creation failed.")
+
+            //make sure cleanup() deletes the dynamic object if a test fails
+            currComponent = testComp
+
             var scrollview = testComp.scrollview
             var flickable = testComp.scrollview.flickableItem
             var horizontalScrollbar = getHorizontalScrollbar(scrollview)
@@ -453,8 +464,6 @@ Item {
             wait(150)
             compare(flickable.contentY, newContentY, "Home key handling: wrong contentY.")
             compare(flickable.contentX, contentXBackup, "Home key must not change contentX.")
-
-            testComp.destroy()
         }
 
         function test_arrowKeys_nonScrollableView_data() {
@@ -467,6 +476,10 @@ Item {
         function test_arrowKeys_nonScrollableView(data) {
             var testComp = nonScrollableTestViewComp.createObject(column)
             verify(testComp !== null, "Successfully created test object.")
+
+            //make sure cleanup() deletes the dynamic object if a test fails
+            currComponent = testComp
+
             var scrollview = testComp.scrollview
             var flickable = testComp.scrollview.flickableItem
             var horizontalScrollbar = getHorizontalScrollbar(scrollview)
@@ -494,8 +507,6 @@ Item {
             sendKeyAndCheckItHasNoEffect("PageDown", Qt.Key_PageDown, flickable, oldContentX, oldContentY)
             sendKeyAndCheckItHasNoEffect("Home", Qt.Key_Home, flickable, oldContentX, oldContentY)
             sendKeyAndCheckItHasNoEffect("End", Qt.Key_End, flickable, oldContentX, oldContentY)
-
-            testComp.destroy()
         }
 
         function test_escKey() {
@@ -515,6 +526,9 @@ Item {
             var secondTestItem = getFreshScrollView()
             var firstScrollView = firstTestItem.scrollview
             var secondScrollView = secondTestItem.scrollview
+            //make sure cleanup() deletes the dynamic object if a test fails
+            currComponent = firstTestItem
+            anotherDynamicComp = secondTestItem
 
             //wait until the column correctly lays out the new scrollview
             waitForRendering(secondTestItem)
@@ -544,14 +558,12 @@ Item {
             anotherSignalSpy.wait()
             compare(signalSpy.count, 1, "Key events propagation: key event delivered to the wrong scrollview.")
             compare(anotherSignalSpy.count, 1, "Key events propagation: second scrollview did not receive the key event.")
-
-            firstTestItem.destroy()
-            secondTestItem.destroy()
         }
 
         function test_transferFocusToAndFromInnerScrollView() {
             var outerScrollViewComp = nestedScrollViewComp.createObject(column)
             verify(outerScrollViewComp !== null, "Error: dynamic item creation failed.")
+            currComponent = outerScrollViewComp
 
             var outerScrollView = outerScrollViewComp.scrollview
             var innerScrollView = outerScrollViewComp.innerScrollView
@@ -565,8 +577,6 @@ Item {
             expectFail("", "FIXME: nested ScrollView doesn't lose focus.")
             compare(innerScrollView.activeFocus, false, "Inner ScrollView focus is still focused after clicking on the outer ScrollView.")
             compare(outerScrollView.activeFocus, true, "Outer ScrollView does not have activeFocus after clicking on the outer ScrollView.")
-
-            outerScrollViewComp.destroy()
         }
 
         //Test that a child can override key events that would otherwise be handled by ScrollView
@@ -600,8 +610,6 @@ Item {
             anotherSignalSpy.wait()
             compare(signalSpy.count, 2, "Inner item is not propagating key events as expected.")
             compare(anotherSignalSpy.count, 1, "Outer ScrollView did received the key event.")
-
-            outerScrollViewComp.destroy()
         }
     }
 }

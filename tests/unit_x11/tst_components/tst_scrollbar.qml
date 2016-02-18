@@ -124,10 +124,6 @@ Item {
     ScrollbarTestCase {
         name: "Scrollbar"
 
-        //every test will assign the current view component (that is dynamically created) to this var
-        //so that the cleanup() will destroy it (thus releasing mouse etc) even when a test fails midway
-        property var currComponent: null
-
         function getFreshFlickable(alignment) {
             var wrapper = flickableComp.createObject(column, { scrollbarAlignment: alignment } )
             verify(wrapper !== null, "Error: dynamic item creation failed.")
@@ -136,9 +132,6 @@ Item {
             return currComponent
         }
 
-        //some tests do dragging, let's make sure the mouse is released if they fail midway
-        //otherwise other tests will fail just because they still have mouse pressed from
-        //the previous (failing) drag test
         function cleanup() {
             if (currComponent) {
                 currComponent.destroy()
