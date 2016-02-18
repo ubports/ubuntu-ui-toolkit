@@ -202,27 +202,16 @@ Item {
 
             compare(scrollbar.__styleInstance.veryLongContentItem, false, "Scrollable item should be short.")
 
-            setupSignalSpy(signalSpy, flickable, "movingChanged")
+            flick(flickable, 2, 2, -units.gu(10), -units.gu(10))
+            tryCompare(flickable, "moving", true, 1000, "Flickable not moving after simulating a flick.")
 
-            flick(flickable, 1, 2, units.gu(2), -units.gu(1))
-
-            signalSpy.wait()
-            compare(signalSpy.count, 1, "No movingChanged signal after simulating a flick.")
-            compare(flickable.moving, true, "Flickable not moving after simulating a flick.")
             compare(scrollbar.__styleInstance.state, "indicator", "Wrong style while flicking.")
 
-            //we don't set it up before because the hinting feature already changes the style to thumb
-            //at the beginning
+            //we don't set it up before because the hinting feature already changes the state
             setupSignalSpy(anotherSignalSpy, scrollbar.__styleInstance, "stateChanged")
 
-            //make sure the flickable stops
-            mousePress(flickable, 0, 0)
-            mouseMove(flickable, 0, 0)
-            mouseRelease(flickable, 0, 0)
-
-            signalSpy.wait()
-            compare(flickable.moving, false, "Flickable still moving after simulating mouse click.")
-            compare(signalSpy.count, 2, "No movingChanged signal after Flickable stopped moving.")
+            //wait for the flickable to stop
+            tryCompare(flickable, "moving", false, 5000, "Flickable still moving after timeout.")
 
             anotherSignalSpy.wait()
             compare(anotherSignalSpy.count, 1, "State unchanged after Flickable stopped moving.")
@@ -242,26 +231,14 @@ Item {
 
             compare(scrollbar.__styleInstance.veryLongContentItem, true, "Very long content item not detected")
 
-            setupSignalSpy(signalSpy, flickable, "movingChanged")
-            flick(flickable, 1, 2, units.gu(2), -units.gu(1))
+            flick(flickable, 2, 2, -units.gu(10), -units.gu(10))
+            tryCompare(flickable, "moving", true, 1000, "Flickable not moving after simulating a flick.")
 
-            signalSpy.wait()
-            compare(signalSpy.count, 1, "No movingChanged signal after simulating a flick.")
-            compare(flickable.moving, true, "Flickable not moving after simulating a flick.")
             compare(scrollbar.__styleInstance.state, "thumb", "Wrong style while flicking a very long item")
 
-            //we don't set it up before because the hinting feature already changes the style to thumb
-            //at the beginning
             setupSignalSpy(anotherSignalSpy, scrollbar.__styleInstance, "stateChanged")
-
-            //make sure the flickable stops
-            mousePress(flickable, 0, 0)
-            mouseMove(flickable, 0, 0)
-            mouseRelease(flickable, 0, 0)
-
-            signalSpy.wait()
-            compare(flickable.moving, false, "Flickable still moving after simulating mouse click.")
-            compare(signalSpy.count, 2, "No movingChanged signal after Flickable stopped moving.")
+            //wait for the flickable to stop
+            tryCompare(flickable, "moving", false, 5000, "Flickable still moving after timeout.")
 
             anotherSignalSpy.wait()
             compare(anotherSignalSpy.count, 1, "State unchanged after Flickable stopped moving.")

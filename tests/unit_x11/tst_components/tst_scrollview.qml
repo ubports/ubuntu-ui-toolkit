@@ -254,7 +254,7 @@ Item {
             setupSignalSpy(ultimateSignalSpy, verticalScrollbar.__styleInstance, "stateChanged")
 
             //wait for the flickable to stop
-            tryCompare(scrollview.flickableItem, "moving", false, 5000, "Flickable still moving after simulating mouse click.")
+            tryCompare(scrollview.flickableItem, "moving", false, 5000, "Flickable still moving after timeout.")
 
             compare(horizontalScrollbar.__styleInstance.state, "hidden", "Horizontal scrollbar: wrong style after the item stopped moving.")
             compare(verticalScrollbar.__styleInstance.state, "hidden", "Vertical scrollbar: wrong style after the item stopped moving.")
