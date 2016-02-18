@@ -50,6 +50,31 @@ Item {
                 anchors.centerIn: parent
             }
         }
+        Rectangle {
+            color: "red"
+            width: units.gu(10)
+            height: units.gu(10)
+            AbstractButton {
+                id: increasedSensing
+                anchors.centerIn: parent
+                width: units.gu(4)
+                height: units.gu(4)
+                sensingMargins {
+                    left: units.gu(2)
+                    right: units.gu(2)
+                    top: units.gu(2)
+                    bottom: units.gu(2)
+                }
+                style: Item {
+                    anchors.fill: parent
+                    Rectangle {
+                        color: "blue"
+                        parent: styledItem.__mouseArea
+                        anchors.fill: parent
+                    }
+                }
+            }
+        }
 
         Loader {
             id: loader
@@ -96,10 +121,10 @@ Item {
         when: windowShown
 
         function cleanup() {
-            buttonWithSensing.sensingMargins.left =
-            buttonWithSensing.sensingMargins.top =
-            buttonWithSensing.sensingMargins.right =
-            buttonWithSensing.sensingMargins.bottom =
+            buttonWithSensing.sensingMargins.left = 0;
+            buttonWithSensing.sensingMargins.top = 0;
+            buttonWithSensing.sensingMargins.right = 0;
+            buttonWithSensing.sensingMargins.bottom = 0;
             buttonWithSensing.sensingMargins.all = 0;
             buttonWithSensing.width = 0;
             buttonWithSensing.height = 0;
@@ -206,6 +231,22 @@ Item {
                 {tag: "2x2 size, 2GU margins.all, click in sensing area", sizeGU: [2, 2], marginsAll: units.gu(2), clickGU: [6, 6], sensingGU: [6, 6]},
                 {tag: "zero size, 5GU margins.all, click out of sensing area", sizeGU: [0, 0], marginsAll: units.gu(5), clickGU: [10.1, 10.1], sensingGU: [10, 10], fail: true},
                 {tag: "2x2 size, 2GU margins.all, click out of sensing area", sizeGU: [2, 2], marginsAll: units.gu(2), clickGU: [6.1, 6.1], sensingGU: [6, 6], fail: true},
+
+                // test negative margins
+                {tag: "zero size, -1GU margins.all, click in sensing area", sizeGU: [0, 0], marginsAll: -units.gu(1), clickGU: [4, 4], sensingGU: [4, 4]},
+                {tag: "2x2 size, -1GU margins.all, click in sensing area", sizeGU: [2, 2], marginsAll: -units.gu(1), clickGU: [4, 4], sensingGU: [4, 4]},
+                {tag: "zero size, -1GU margins horizontal, click in sensing area", sizeGU: [0, 0], marginsGU: [-1, 0, -1, 0], clickGU: [4, 4], sensingGU: [4, 4]},
+                {tag: "zero size, -1GU margins vertical, click in sensing area", sizeGU: [0, 0], marginsGU: [0, -1, 0, -1], clickGU: [4, 4], sensingGU: [4, 4]},
+                {tag: "2x2 size, -1GU margins horizontal, click in sensing area", sizeGU: [2, 2], marginsGU: [-1, 0, -1, 0], clickGU: [4, 4], sensingGU: [4, 4]},
+                {tag: "2x2 size, -1GU margins vertical, click in sensing area", sizeGU: [2, 2], marginsGU: [0, -1, 0, -1], clickGU: [4, 4], sensingGU: [4, 4]},
+                {tag: "4x4 size, -1GU margins.all, click in sensing area", sizeGU: [4, 4], marginsAll: -units.gu(1), clickGU: [4, 4], sensingGU: [4, 4]},
+                {tag: "4x4 size, -1GU margins horizontal, click in sensing area", sizeGU: [4, 4], marginsGU: [-1, 0, -1, 0], clickGU: [4, 4], sensingGU: [4, 4]},
+                {tag: "4x4 size, -1GU margins vertical, click in sensing area", sizeGU: [4, 4], marginsGU: [0, -1, 0, -1], clickGU: [4, 4], sensingGU: [4, 4]},
+
+                // bigger size than minimum, decrease sensing area
+                {tag: "5x5 size, -1GU margins.all, click in sensing area", sizeGU: [5, 5], marginsAll: -units.gu(1), clickGU: [4, 4], sensingGU: [4, 4]},
+                {tag: "5x5 size, -1GU margins horizontal, click in sensing area", sizeGU: [5, 5], marginsGU: [-1, 0, -1, 0], clickGU: [4, 5], sensingGU: [4, 5]},
+                {tag: "5x5 size, -1GU margins vertical, click in sensing area", sizeGU: [5, 5], marginsGU: [0, -1, 0, -1], clickGU: [5, 4], sensingGU: [5, 4]},
             ];
         }
         function test_sensing_area(data) {
@@ -230,6 +271,17 @@ Item {
                 expectFailContinue(data.tag, "no signal");
             }
             mouseClick(buttonWithSensing.__mouseArea, units.gu(data.clickGU[0]), units.gu(data.clickGU[1]));
+            signalSpy.wait(500);
+        }
+
+        function test_predeclared_sensing_area() {
+            var point = centerOf(increasedSensing.parent);
+            // move the point to the edge of the sensing area
+            point.x -= increasedSensing.sensingMargins.left;
+            point.y -= increasedSensing.sensingMargins.top;
+            // click
+            signalSpy.target = increasedSensing;
+            mouseClick(increasedSensing.parent, point.x, point.y);
             signalSpy.wait(500);
         }
     }
