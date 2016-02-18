@@ -102,8 +102,6 @@ Item {
     property real longScrollingRatio: 0.9
 
     property string hintingStyle: veryLongContentItem ? 'thumb' : 'indicator'
-    onHintingStyleChanged: flashScrollbar()
-
     property real thumbsExtremesMargin: units.dp(4)
 
     /*****************************************************
@@ -219,6 +217,8 @@ Item {
             hintingTimer.restart()
         }
     }
+    onTotalContentSizeChanged: flashScrollbar()
+    onHintingStyleChanged: flashScrollbar()
 
     anchors.fill: parent
     opacity: overlayOpacityWhenHidden
@@ -383,10 +383,10 @@ Item {
     //we want to show both the scrollbar in both cases
     Connections {
         target: (flickableItem && initialized) ? flickableItem : null
-        onContentHeightChanged: flashScrollbar()
         onHeightChanged: flashScrollbar()
-        onContentWidthChanged: flashScrollbar()
         onWidthChanged: flashScrollbar()
+        //Use onTotalContentSizeChanged instead of binding to contentWidth/Height changes
+        //to trigger the scrollbar hinting when the scrollable content is resized
     }
 
     SmoothedAnimation {
@@ -906,8 +906,9 @@ Item {
         target: visuals
         property: 'state'
         value: {
-            if (!isScrollable && !alwaysOnScrollbars)
+            if (!isScrollable && !alwaysOnScrollbars) {
                 return '';
+            }
             else if (overlay) {
                 //we use the check on running to avoid to make it so that the scrollbar completes the transition
                 //to the steppers (or thumb) state even when the mouse exits the area prematurely (e.g. when the mouse

@@ -414,83 +414,112 @@ Item {
 
         function test_hinting_data() {
             return [
-                        {tag:"short content item", veryLongContentItem: true},
-                        {tag:"long content item", veryLongContentItem: false}
+                        //ownSide here is the side the scrollable cares about, i.e. height for vert scrollbar
+                        {tag: "vertical scrollbar, no scrollable side, short content item",
+                            alignment: Qt.AlignTrailing, scrollableHorizontally: false, scrollableVertically: false, veryLong: false },
+                        {tag: "horizontal scrollbar, no scrollable side, short content item",
+                            alignment: Qt.AlignBottom, scrollableHorizontally: false, scrollableVertically: false, veryLong: false },
+                        {tag: "vertical scrollbar, horizontal side scrollable, short content item",
+                            alignment: Qt.AlignTrailing, scrollableHorizontally: true, scrollableVertically: false, veryLong: false },
+                        {tag: "horizontal scrollbar, horizontal side scrollable, short content item",
+                            alignment: Qt.AlignBottom, scrollableHorizontally: true, scrollableVertically: false, veryLong: false },
+                        {tag: "vertical scrollbar, vertical side scrollable, short content item",
+                            alignment: Qt.AlignTrailing, scrollableHorizontally: false, scrollableVertically: true, veryLong: false },
+                        {tag: "horizontal scrollbar, vertical side scrollable, short content item",
+                            alignment: Qt.AlignBottom, scrollableHorizontally: false, scrollableVertically: true, veryLong: false },
+                        {tag: "vertical scrollbar, both sides scrollable, short content item",
+                            alignment: Qt.AlignTrailing, scrollableHorizontally: true, scrollableVertically: true, veryLong: false },
+                        {tag: "horizontal scrollbar, both sides scrollable, short content item",
+                            alignment: Qt.AlignBottom, scrollableHorizontally: true, scrollableVertically: true, veryLong: false },
+                        {tag: "vertical scrollbar, no scrollable side, long content item",
+                            alignment: Qt.AlignTrailing, scrollableHorizontally: false, scrollableVertically: false, veryLong: true },
+                        {tag: "horizontal scrollbar, no scrollable side, long content item",
+                            alignment: Qt.AlignBottom, scrollableHorizontally: false, scrollableVertically: false, veryLong: true },
+                        {tag: "vertical scrollbar, horizontal side scrollable, long content item",
+                            alignment: Qt.AlignTrailing, scrollableHorizontally: true, scrollableVertically: false, veryLong: true },
+                        {tag: "horizontal scrollbar, horizontal side scrollable, long content item",
+                            alignment: Qt.AlignBottom, scrollableHorizontally: true, scrollableVertically: false, veryLong: true },
+                        {tag: "vertical scrollbar, vertical side scrollable, long content item",
+                            alignment: Qt.AlignTrailing, scrollableHorizontally: false, scrollableVertically: true, veryLong: true },
+                        {tag: "horizontal scrollbar, vertical side scrollable, long content item",
+                            alignment: Qt.AlignBottom, scrollableHorizontally: false, scrollableVertically: true, veryLong: true },
+                        {tag: "vertical scrollbar, both sides scrollable, long content item",
+                            alignment: Qt.AlignTrailing, scrollableHorizontally: true, scrollableVertically: true, veryLong: true },
+                        {tag: "horizontal scrollbar, both sides scrollable, long content item",
+                            alignment: Qt.AlignBottom, scrollableHorizontally: true, scrollableVertically: true, veryLong: true },
                     ];
         }
 
         //test that the scrollbar is shown on contentHeight/width changes
         function test_hinting(data) {
-            var freshTestItem = getFreshFlickable(Qt.AlignTrailing)
-            var flickable = freshTestItem.flickable
-            var scrollbar = freshTestItem.scrollbar
-            var style = freshTestItem.scrollbar.__styleInstance
-
-            if (data.veryLongContentItem) {
-                setVeryLongContentItem(flickable, style, !style.isVertical)
-                tryCompare(style, "veryLongContentItem", true, 1000, "Hinting: veryLongContentItem should be true.")
-            } else {
-                tryCompare(style, "veryLongContentItem", false, 1000, "Hinting: veryLongContentItem should be false.")
-            }
-
-            tryCompare(style, "state", "hidden")
-            tryCompare(style, "opacity", style.overlayOpacityWhenHidden)
-
-            flickable.contentWidth += 5
-
-            tryCompare(style, "state", style.veryLongContentItem ? "thumb" : "indicator")
-            tryCompare(style, "opacity", style.overlayOpacityWhenShown)
-
-            tryCompare(style, "state", "hidden")
-            tryCompare(style, "opacity", style.overlayOpacityWhenHidden)
-
-            flickable.contentHeight += 5
-
-            tryCompare(style, "state", style.veryLongContentItem ? "thumb" : "indicator")
-            tryCompare(style, "opacity", style.overlayOpacityWhenShown)
-
-            freshTestItem.destroy()
-        }
-
-        function test_onlyShowScrollbarIfNeeded(data) {
             var freshTestItem = getFreshFlickable(data.alignment)
             var flickable = freshTestItem.flickable
             var scrollbar = freshTestItem.scrollbar
             var style = freshTestItem.scrollbar.__styleInstance
 
-            flickable.contentWidth = flickable.width
-            flickable.contentHeight = flickable.height
+            //we'll add it 1gu to simulate a change that doesn't make it become scrollable
+            //so we need to make sure adding 1gu doesn't make it scrollable
+            verify(flickable.width > units.gu(5), "Flickable width assumption is satisfied.")
+            verify(flickable.height > units.gu(5), "Flickable height assumption is satisfied.")
+            flickable.contentWidth = units.gu(2)
+            flickable.contentHeight = units.gu(2)
+            checkNonScrollableState(scrollbar)
 
-            tryCompare(style, "state", "")
-            tryCompare(style, "isScrollable", false)
-
-            flickable.contentWidth = flickable.width + 1
-
-            if (style.isVertical) {
-                //nothing should happen to the variable
-                compare(style.state, "", "Only show scrollbars if needed: contentWidth change causes vertical scrollbar to show.")
-                compare(style.isScrollable, false, "Only show scrollbars if needed: contentWidth change affects scrollability of vertical scrollbar.")
-            } else {
-                compare(style.isScrollable, true, "Only show scrollbars if needed: contentWidth does not make horizontal scrollbar scrollable.")
-                tryCompare(style, "state", "indicator")
-                //wait for it to hide
-                tryCompare(style, "state", "hidden")
+            if (data.scrollableHorizontally) {
+                if (data.veryLong) {
+                    setVeryLongContentItem(flickable, style, true)
+                    tryCompare(style, "veryLongContentItem", true, 1000, "Hinting: veryLongContentItem should be true.")
+                } else {
+                    flickable.contentWidth = flickable.width + units.gu(1)
+                }
+                if (!style.isVertical) {
+                    checkHinting(scrollbar)
+                    //wait for the hinting to finish
+                    checkScrollableAndHidden(scrollbar)
+                } else {
+                    //make sure the scrollbar was not affected by the size change of the opposite side
+                    checkNonScrollableState(scrollbar)
+                }
             }
 
-            console.log("STATE", style.state, style.isScrollable)
-            flickable.contentHeight = flickable.height + 1
-            console.log("STATE", style.state, style.isScrollable)
+            if (data.scrollableVertically) {
+                if (data.veryLong) {
+                    setVeryLongContentItem(flickable, style, false)
+                    tryCompare(style, "veryLongContentItem", true, 1000, "Hinting: veryLongContentItem should be true.")
+                } else {
+                    flickable.contentHeight = flickable.height + units.gu(1)
+                }
+                if (style.isVertical) {
+                    checkHinting(scrollbar)
+                    checkScrollableAndHidden(scrollbar)
+                } else {
+                    //Only make sure that the horiz scrollbar is not scrollable IF
+                    //we didn't previously also make the horizontal side scrollable
+                    if (!data.scrollableHorizontally) {
+                        checkNonScrollableState(scrollbar)
+                    }
+                }
+            }
 
-            if (style.isVertical) {
-                compare(style.isScrollable, true, "Only show scrollbars if needed: contentHeight does not make vertical scrollbar scrollable.")
-                tryCompare(style, "state", "indicator")
-                //wait for it to hide
-                tryCompare(style, "state", "hidden")
+            //try changing contentHeight
+            flickable.contentHeight += units.gu(1)
+            if (style.isVertical && data.scrollableVertically) {
+                checkHinting(scrollbar)
+                checkScrollableAndHidden(scrollbar)
+            } else if (!style.isVertical && data.scrollableHorizontally) {
+                compare(style.state, "hidden", "Wrong state.")
             } else {
-                console.log("STATE", style.state, style.isScrollable)
+                checkNonScrollableState(scrollbar)
+            }
 
-                compare(style.state, "", "Only show scrollbars if needed: contentHeight change causes horizontal scrollbar to show.")
-                compare(style.isScrollable, false, "Only show scrollbars if needed: contentHeight change affects scrollability of horizontal scrollbar.")
+            flickable.contentWidth += units.gu(1)
+            if (!style.isVertical && data.scrollableHorizontally) {
+                checkHinting(scrollbar)
+                checkScrollableAndHidden(scrollbar)
+            } else if (style.isVertical && data.scrollableVertically) {
+                compare(style.state, "hidden", "Wrong state.")
+            } else {
+                checkNonScrollableState(scrollbar)
             }
 
             freshTestItem.destroy()

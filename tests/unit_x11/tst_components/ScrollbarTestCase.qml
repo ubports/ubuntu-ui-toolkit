@@ -153,6 +153,29 @@ UbuntuTestCase {
         wait(0)
     }
 
+    //check that the scrollbar is using the hinting logic
+    function checkHinting(scrollbar) {
+        tryCompare(scrollbar.__styleInstance, "__hinting", true)
+        tryCompare(scrollbar.__styleInstance, "state",
+                   scrollbar.__styleInstance.veryLongContentItem ? "thumb" : "indicator")
+        tryCompare(scrollbar.__styleInstance, "opacity", scrollbar.__styleInstance.overlayOpacityWhenShown)
+    }
+
+    //make sure the scrollbar is now scrollable
+    function checkScrollableAndHidden(scrollbar) {
+        tryCompare(scrollbar.__styleInstance, "isScrollable", true)
+        tryCompare(scrollbar.__styleInstance, "state", "hidden")
+        tryCompare(scrollbar.__styleInstance, "opacity", scrollbar.__styleInstance.overlayOpacityWhenHidden)
+    }
+    //make sure that the scrollbar is in the state it should be in
+    //when the item is not scrollable
+    //tryCompare is needed to avoid checking the properties before the related bindings are evaluated
+    function checkNonScrollableState(scrollbar) {
+        tryCompare(scrollbar.__styleInstance, "isScrollable", false)
+        tryCompare(scrollbar.__styleInstance, "state", "")
+        tryCompare(scrollbar.__styleInstance, "opacity", scrollbar.__styleInstance.overlayOpacityWhenHidden)
+    }
+
     //defines how far the mouse has to be from the scrollbar before the drag is reset and temporarily disabled
     function dragResetThreshold(scrollbar) {
         return scrollbar.__styleInstance.troughThicknessSteppersStyle * 10
