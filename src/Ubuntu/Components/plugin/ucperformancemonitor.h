@@ -38,6 +38,7 @@ private Q_SLOTS:
     void connectToWindow(QQuickWindow* window);
     void startTimer();
     void stopTimer();
+    void windowDestroyed();
 
 private:
     QQuickWindow* findQQuickWindow();
