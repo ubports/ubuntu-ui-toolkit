@@ -30,7 +30,6 @@ UCPerformanceMonitor::UCPerformanceMonitor(QObject* parent) :
     QObject(parent),
     m_framesAboveThreshold(0),
     m_warningCount(0),
-    m_timer(NULL),
     m_window(NULL)
 {
     QObject::connect((QGuiApplication*)QGuiApplication::instance(), &QGuiApplication::applicationStateChanged,
@@ -92,16 +91,12 @@ void UCPerformanceMonitor::connectToWindow(QQuickWindow* window)
 
 void UCPerformanceMonitor::startTimer()
 {
-    if (!m_timer) {
-        m_timer.reset(new QElapsedTimer);
-    }
-    m_timer->start();
+    m_timer.start();
 }
 
 void UCPerformanceMonitor::stopTimer()
 {
-    int totalTimeInMs = m_timer->elapsed();
-    m_timer->invalidate();
+    const int totalTimeInMs = m_timer.elapsed();
 
     if (totalTimeInMs >= singleFrameThreshold) {
         qCWarning(ucPerformance, "Last frame took %d ms to render.", totalTimeInMs);
