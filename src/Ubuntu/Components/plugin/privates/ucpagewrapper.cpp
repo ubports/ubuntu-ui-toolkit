@@ -163,14 +163,14 @@ void UCPageWrapperPrivate::deactivate()
  Converts the QObject into a QQuickItem, if that is not possible
  the pointer is destroyed and nullptr is returned
  */
-QQuickItem *UCPageWrapperPrivate::toItem(QObject *theObject)
+QQuickItem *UCPageWrapperPrivate::toItem(QObject *theObject, bool canDelete)
 {
     Q_Q(UCPageWrapper);
     QQuickItem *theItem = qobject_cast<QQuickItem *>(theObject);
     if (!theItem) {
         //the returned object has to be a Item but if its a Object
         //do not leak the pointer
-        if (theObject) delete theObject;
+        if (canDelete && theObject) delete theObject;
 
         qmlInfo(q) << "PageWrapper only supports components that are derived from Item";;
         return nullptr;
@@ -255,7 +255,7 @@ void UCPageWrapperPrivate::nextStep()
             break;
         }
         case CreatingObject:{
-            initializeObjectIfReady();
+            finalizeObjectIfReady();
             break;
         }
         case NotifyPageLoaded: {
@@ -365,11 +365,12 @@ void UCPageWrapperPrivate::createObjectState()
     m_itemContext = new QQmlContext(creationContext);
 
     if (m_synchronous) {
-        QQuickItem *theItem = toItem(m_component->create(m_itemContext));
+        QQuickItem *theItem = toItem(m_component->beginCreate(m_itemContext));
         if (theItem) {
+            initItem(theItem);
             m_itemContext->setParent(theItem);
             m_itemContext = nullptr;
-            initItem(theItem);
+            m_component->completeCreate();
             m_state = NotifyPageLoaded;
             nextStep();
         } else {
@@ -382,11 +383,24 @@ void UCPageWrapperPrivate::createObjectState()
         QObject::connect(m_incubator, SIGNAL(enterOnStatusChanged()),
                          q, SLOT(nextStep()));
 
+        //make sure we intialize the item before it is instantiated
+        QSharedPointer<QMetaObject::Connection> connHandle(new QMetaObject::Connection);
+        auto asyncCallback = [this, connHandle](QObject *target){
+            QObject::disconnect(*connHandle);
+            QQuickItem *theItem = toItem(target, false);
+            if (theItem) {
+                m_itemContext->setParent(theItem);
+                m_itemContext = nullptr;
+                initItem(theItem);
+            }
+        };
+        *connHandle = QObject::connect(m_incubator, &UCPageWrapperIncubator::initialStateRequested, asyncCallback);
+
         m_component->create(*m_incubator, m_itemContext);
     }
 }
 
-void UCPageWrapperPrivate::initializeObjectIfReady()
+void UCPageWrapperPrivate::finalizeObjectIfReady()
 {
     Q_Q(UCPageWrapper);
     if(m_incubator->status() == QQmlIncubator::Ready) {
@@ -394,13 +408,8 @@ void UCPageWrapperPrivate::initializeObjectIfReady()
         QObject::disconnect(m_incubator, SIGNAL(enterOnStatusChanged()),
                          q, SLOT(nextStep()));
 
-        //the object was created, now initialize it
         QQuickItem *theItem = toItem(m_incubator->object());
         if (theItem) {
-            initItem(theItem);
-            m_itemContext->setParent(theItem);
-            m_itemContext = nullptr;
-
             //this code needs to be executed after the Incubator has executed the JS callback
             QSharedPointer<QMetaObject::Connection> sharedConn(new QMetaObject::Connection);
             auto asyncCallback = [this, sharedConn](){
@@ -419,6 +428,10 @@ void UCPageWrapperPrivate::initializeObjectIfReady()
     } else if(m_incubator->status() == QQmlIncubator::Error) {
         m_state = Error;
         qmlInfo(q) << m_incubator->errors();
+    } else if (m_incubator->status() == QQmlIncubator::Null) {
+        //page loading was cancled
+        reset();
+        return;
     }
 
     // cleanup
