@@ -21,8 +21,7 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QSettings>
-#include <QSvgRenderer>
-#include <QPainter>
+#include <QImageReader>
 #include <QStandardPaths>
 #include <QtDebug>
 
@@ -48,21 +47,21 @@ public:
     // Does a breadth-first search for an icon with any name in @names. Parent
     // themes are only looked at if the current theme doesn't contain any icon
     // in @names.
-    QPixmap findBestIcon(const QStringList &names, const QSize &size)
+    QImage findBestIcon(const QStringList &names, QSize *impsize, const QSize &size)
     {
         Q_FOREACH(const QString &name, names) {
-            QPixmap pixmap = lookupIcon(name, size);
-            if (!pixmap.isNull())
-                return pixmap;
+            QImage image = lookupIcon(name, impsize, size);
+            if (!image.isNull())
+                return image;
         }
 
         Q_FOREACH(IconThemePointer theme, parents) {
-            QPixmap pixmap = theme->findBestIcon(names, size);
-            if (!pixmap.isNull())
-                return pixmap;
+            QImage image = theme->findBestIcon(names, impsize, size);
+            if (!image.isNull())
+                return image;
         }
 
-        return QPixmap();
+        return QImage();
     }
 
 private:
@@ -121,30 +120,41 @@ private:
         return Fixed;
     }
 
-    static QPixmap loadIcon(const QString &filename, const QSize &size)
+    static QImage loadIcon(const QString &filename, QSize *impsize, const QSize &requestSize)
     {
-        QPixmap pixmap;
+        QImage image;
+        QImageReader imgio(filename);
 
-        const bool anyZero = size.width() <= 0 || size.height() <= 0;
-        const Qt::AspectRatioMode scaleMode = anyZero ? Qt::KeepAspectRatioByExpanding : Qt::KeepAspectRatio;
+        const bool force_scale = imgio.format() == "svg" || imgio.format() == "svgz";
 
-        if (filename.endsWith(".png")) {
-            pixmap = QPixmap(filename);
-            if (!pixmap.isNull() && !size.isNull() && (pixmap.width() != size.width() || pixmap.height() != size.height())) {
-                const QSize newSize = pixmap.size().scaled(size.width(), size.height(), scaleMode);
-                pixmap = pixmap.scaled(newSize);
+        if (requestSize.width() > 0 || requestSize.height() > 0) {
+            QSize s = imgio.size();
+            qreal ratio = 0.0;
+            if (requestSize.width() && (force_scale || requestSize.width() < s.width())) {
+                ratio = qreal(requestSize.width())/s.width();
+            }
+            if (requestSize.height() && (force_scale || requestSize.height() < s.height())) {
+                qreal hr = qreal(requestSize.height())/s.height();
+                if (ratio == 0.0 || hr < ratio)
+                    ratio = hr;
+            }
+            if (ratio > 0.0) {
+                s.setHeight(qRound(s.height() * ratio));
+                s.setWidth(qRound(s.width() * ratio));
+                imgio.setScaledSize(s);
             }
         }
-        else if (filename.endsWith(".svg")) {
-            QSvgRenderer renderer(filename);
-            pixmap = QPixmap(renderer.defaultSize().scaled(size.width(), size.height(), scaleMode));
-            pixmap.fill(Qt::transparent);
-            QPainter painter(&pixmap);
-            renderer.render(&painter);
-            painter.end();
-        }
 
-        return pixmap;
+        if (impsize)
+            *impsize = imgio.size();
+
+        if (imgio.read(&image)) {
+            if (impsize && impsize->width() < 0)
+                *impsize = image.size();
+            return image;
+        } else {
+            return QImage();
+        }
     }
 
     QString lookupIconFile(const QString &dir, const QString &name)
@@ -165,16 +175,16 @@ private:
         return QString();
     }
 
-    QPixmap lookupIcon(const QString &iconName, const QSize &size)
+    QImage lookupIcon(const QString &iconName, QSize *impsize, const QSize &size)
     {
         const int iconSize = qMax(size.width(), size.height());
         if (iconSize > 0)
-            return lookupBestMatchingIcon(iconName, size);
+            return lookupBestMatchingIcon(iconName, impsize, size);
         else
-            return lookupLargestIcon(iconName);
+            return lookupLargestIcon(iconName, impsize);
     }
 
-    QPixmap lookupBestMatchingIcon(const QString &iconName, const QSize &size)
+    QImage lookupBestMatchingIcon(const QString &iconName, QSize *impsize, const QSize &size)
     {
         int minDistance = 10000;
         QString bestFilename;
@@ -196,12 +206,12 @@ private:
         }
 
         if (!bestFilename.isNull())
-            return loadIcon(bestFilename, size);
+            return loadIcon(bestFilename, impsize, size);
 
-        return QPixmap();
+        return QImage();
     }
 
-    QPixmap lookupLargestIcon(const QString &iconName)
+    QImage lookupLargestIcon(const QString &iconName, QSize *impsize)
     {
         int maxSize = 0;
         QString bestFilename;
@@ -219,9 +229,9 @@ private:
         }
 
         if (!bestFilename.isNull())
-            return loadIcon(bestFilename, QSize(maxSize, maxSize));
+            return loadIcon(bestFilename, impsize, QSize(maxSize, maxSize));
 
-        return QPixmap();
+        return QImage();
     }
 
     int directorySizeDistance(const Directory &dir, const QSize &iconSize)
@@ -249,14 +259,12 @@ private:
 };
 
 UnityThemeIconProvider::UnityThemeIconProvider(const QString &themeName):
-  QQuickImageProvider(QQuickImageProvider::Pixmap)
+  QQuickImageProvider(QQuickImageProvider::Image)
 {
     theme = IconTheme::get(themeName);
 }
 
-QPixmap UnityThemeIconProvider::requestPixmap(const QString &id, QSize *size, const QSize &requestedSize)
+QImage UnityThemeIconProvider::requestImage(const QString &id, QSize *size, const QSize &requestedSize)
 {
-    QPixmap pixmap = theme->findBestIcon(id.split(",", QString::SkipEmptyParts), requestedSize);
-    *size = pixmap.size();
-    return pixmap;
+    return theme->findBestIcon(id.split(",", QString::SkipEmptyParts), size, requestedSize);
 }
