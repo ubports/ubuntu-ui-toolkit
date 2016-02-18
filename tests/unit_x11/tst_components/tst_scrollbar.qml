@@ -376,24 +376,45 @@ Item {
 
             addContentMargins(flickable)
 
+            setContentPositionToTopLeft(flickable)
+
             triggerSteppersMode(scrollbar)
 
-            if (scrollbar.__styleInstance.isVertical) {
-                mouseDrag(thumb, 0, 0, 0, trough.height)
+            if (style.isVertical) {
+                console.log(thumb.height/2)
+                mouseDrag(thumb, thumb.width/2, thumb.height/2, 0, trough.height)
                 compare(flickable[scrollbarUtils.propContent],
                         flickable.contentHeight + flickable.bottomMargin - flickable.height,
                         "Vertical thumb mouse drag: wrong contentProp after dragging to the end")
 
-                mouseDrag(thumb, 0, 0, 0, -trough.height)
+                var sceneThumbY = thumb.mapToItem(column).y
+
+                //Cannot use mouseDrag here, because the thumb is at the end of the trough.
+                //mouseDrag uses
+                //mouseMove(item, x + util.dragThreshold + 1, y + util.dragThreshold + 1, delay, button)
+                //to trigger the drag, but in our case that cannot work because the scrollbar is at
+                //the end of the trough, hence cannot move to its
+                //bottom (vertical scrollbar) or to its right (in the case of the horiz scrollbar)
+                mousePress(thumb, thumb.width/2, thumb.height/2)
+                mouseMove(thumb, thumb.width/2, 0  )
+                mouseMove(thumb, thumb.width/2, -sceneThumbY)
+                mouseRelease(thumb, 0, 0)
+
                 compare(flickable[scrollbarUtils.propContent], -flickable.topMargin,
                         "Vertical thumb mouse drag: wrong contentProp after dragging to the beginning")
             } else {
-                mouseDrag(thumb, 0, 0, trough.width, 0)
+                mouseDrag(thumb, thumb.width/2, thumb.height/2, trough.width, 0)
                 compare(flickable[scrollbarUtils.propContent],
                         flickable.contentWidth + flickable.rightMargin - flickable.width,
                         "Horizontal thumb mouse drag: wrong contentProp after dragging to the end")
 
-                mouseDrag(thumb, 0, 0, -trough.width, 0)
+                var sceneThumbX = thumb.mapToItem(column).x
+                //Can't use mouseDrag here, read above to know why
+                mousePress(thumb, thumb.width/2, thumb.height/2)
+                mouseMove(thumb, 0, thumb.height/2  )
+                mouseMove(thumb, -sceneThumbX, thumb.height/2)
+                mouseRelease(thumb, 0, 0)
+
                 compare(flickable[scrollbarUtils.propContent], -flickable.leftMargin,
                         "Horizontal thumb mouse drag: wrong contentProp after dragging to the beginning")
             }

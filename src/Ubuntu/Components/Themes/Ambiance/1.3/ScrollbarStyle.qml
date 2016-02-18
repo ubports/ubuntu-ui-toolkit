@@ -624,10 +624,11 @@ Item {
                     //checking for the value of visuals.state wouldn't be useful here, the value could be
                     //"hidden" even if the values have only just started transitioning from "steppers" state
                     if (trough.visible) {
-                        handlePress(mouse.x, mouse.y)
+                        var mouseScrollingProp = isVertical ? mouseY : mouseX
                         //don't start the press and hold timer to avoid conflicts with the drag
-                        var mappedCoord = mapToItem(slider, mouseX, mouseY)
-                        if (!slider.contains(Qt.point(mappedCoord.x, mappedCoord.y))) {
+                        if (mouseScrollingProp < slider[scrollingProp] ||
+                                mouseScrollingProp > (slider[scrollingProp] + slider[sizeProp])) {
+                            handlePress(mouseX, mouseY)
                             pressHoldTimer.startTimer(thumbArea)
                         } else {
                             //we can't tell whether the drag is started from mouse or touch
