@@ -15,8 +15,10 @@ load(ubuntu_qt_module)
 HEADERS += \ 
     colorutils.h \
     ubuntutoolkitglobal.h \
-    tree.h
+    tree.h \
+    asyncloader.h
 
 SOURCES += \ 
     colorutils.cpp \
-    tree.cpp
+    tree.cpp \
+    asyncloader.cpp
