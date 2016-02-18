@@ -39,7 +39,6 @@ UCPerformanceMonitor::UCPerformanceMonitor(QObject* parent) :
 
 UCPerformanceMonitor::~UCPerformanceMonitor()
 {
-    connectToWindow(NULL);
 }
 
 QQuickWindow* UCPerformanceMonitor::findQQuickWindow()
@@ -75,6 +74,8 @@ void UCPerformanceMonitor::connectToWindow(QQuickWindow* window)
                                 this, &UCPerformanceMonitor::startTimer);
             QObject::disconnect(m_window, &QQuickWindow::afterRendering,
                                 this, &UCPerformanceMonitor::stopTimer);
+            QObject::disconnect(m_window, &QWindow::destroyed,
+                                this, &UCPerformanceMonitor::windowDestroyed);
         }
 
         m_window = window;
@@ -86,6 +87,8 @@ void UCPerformanceMonitor::connectToWindow(QQuickWindow* window)
             QObject::connect(m_window, &QQuickWindow::afterRendering,
                              this, &UCPerformanceMonitor::stopTimer,
                              Qt::DirectConnection);
+            QObject::connect(m_window, &QWindow::destroyed,
+                             this, &UCPerformanceMonitor::windowDestroyed);
         }
     }
 }
@@ -125,4 +128,9 @@ void UCPerformanceMonitor::stopTimer()
         qCWarning(ucPerformance, "Too many warnings were given. Performance monitoring stops.");
         connectToWindow(NULL);
     }
+}
+
+void UCPerformanceMonitor::windowDestroyed()
+{
+    connectToWindow(NULL);
 }
