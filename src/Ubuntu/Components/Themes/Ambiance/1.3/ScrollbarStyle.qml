@@ -217,6 +217,13 @@ Item {
             hintingTimer.restart()
         }
     }
+    //The definition of isScrollable includes a binding on totalContentSize:
+    //when totalContentSizeChanged triggers flashScrollbar, isScrollable may
+    //have not been reevaluated yet using the new totalContentSize value, and
+    //that could make the logic ignore the hinting request.
+    //We perform the checks inside the flashScrollbar function instead of each
+    //time before calling flashScrollbar (though this comes at slightly higher cost)
+    onIsScrollableChanged: flashScrollbar()
     onTotalContentSizeChanged: flashScrollbar()
     onHintingStyleChanged: flashScrollbar()
 
