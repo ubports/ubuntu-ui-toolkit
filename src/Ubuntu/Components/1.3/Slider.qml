@@ -63,11 +63,11 @@ Toolkit.StyledItem {
 
     // FIXME(loicm) Add Support for the stepSize property.
 
-    // /*!
-    //    The distance between two selectable values in the range defined by
-    //    [minimumValue, maximumValue].
-    // */
-    // property real stepSize: 1.0
+    /*!
+       The distance between two selectable values in the range defined by
+       [minimumValue, maximumValue].
+    */
+    property real stepSize: (Math.abs(minimumValue) + Math.abs(maximumValue)) / 100.0
 
     /*!
        The current value of the slider. This property is not changed while the
@@ -175,6 +175,12 @@ Toolkit.StyledItem {
             }
         }
 
+        function adjustValue(increment) {
+            if (Qt.application.layoutDirection == Qt.RightToLeft)
+                increment *= -1;
+            slider.value = Toolkit.MathUtils.clamp(slider.value + increment, slider.minimumValue, slider.maximumValue);
+        }
+
         /* Mimic the behaviour of the 'pressed' property with one important difference:
            'pressed' is set to true only after the onPressed handler has been executed.
            That prevents us from doing interesting animations upon press.
@@ -204,6 +210,15 @@ Toolkit.StyledItem {
         }
         onClicked: slider.requestFocus(Qt.MouseFocusReason)
         onLiveValueChanged: if (isPressed) slider.requestFocus(Qt.MouseFocusReason)
+    }
+
+    Keys.onLeftPressed: {
+        if (event.modifiers === Qt.NoModifier)
+            __internals.adjustValue(-slider.stepSize);
+    }
+    Keys.onRightPressed: {
+        if (event.modifiers === Qt.NoModifier)
+            __internals.adjustValue(slider.stepSize);
     }
 
     styleName: "SliderStyle"

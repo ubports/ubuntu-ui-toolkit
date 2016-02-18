@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -13,31 +13,19 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Author: Loïc Molinari <loic.molinari@canonical.com>
  */
 
-#ifndef UCPROPORTIONALSHAPE_H
-#define UCPROPORTIONALSHAPE_H
+import QtQuick 2.4
+import Ubuntu.Components 1.3
 
-#include "ucubuntushape.h"
+Column {
+    anchors.fill: parent
+    spacing: units.dp(1)
+    Repeater {
+        model: 500
+        TextField {
+            width: parent.width
+        }
+    }
+}
 
-class UCProportionalShape : public UCUbuntuShape
-{
-    Q_OBJECT
-
-public:
-    UCProportionalShape(QQuickItem* parent=0);
-
-private Q_SLOTS:
-    void _q_updateWidth();
-    void _q_updateHeight();
-
-private:
-    void componentComplete();
-
-    Q_DISABLE_COPY(UCProportionalShape)
-};
-
-QML_DECLARE_TYPE(UCProportionalShape)
-
-#endif  // UCPROPORTIONALSHAPE_H
