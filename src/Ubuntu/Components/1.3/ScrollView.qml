@@ -119,13 +119,13 @@ StyledItem {
     }
     Keys.onPressed:  {
         if (event.key == Qt.Key_Escape) {
-            var scrollbarWithActiveDrag = (horizontalScrollbar.__styleInstance && horizontalScrollbar.__styleInstance.draggingThumb)
-                    || (verticalScrollbar.__styleInstance && verticalScrollbar.__styleInstance.draggingThumb)
+            var scrollbarWithActiveDrag = (horizontalScrollbar.__styleInstance && horizontalScrollbar.__styleInstance.draggingThumb && horizontalScrollbar)
+                    || (verticalScrollbar.__styleInstance && verticalScrollbar.__styleInstance.draggingThumb && verticalScrollbar)
                     || null
             if (scrollbarWithActiveDrag !== null) {
                 scrollbarWithActiveDrag.__styleInstance.resetScrollingToPreDrag()
+                event.accepted = true
             }
-            event.accepted = true
         } else if (verticalScrollbar.__styleInstance !== null) {
             if (event.key == Qt.Key_PageDown) {
                 verticalScrollbar.__styleInstance.scrollBy(flickableItem.height*internal.longScrollingRatio, true)

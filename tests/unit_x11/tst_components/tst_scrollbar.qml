@@ -590,8 +590,8 @@ Item {
                       (style.isVertical ? dragResetThreshold(scrollbar)+1 : secondStep),
                       (style.isVertical ? secondStep : dragResetThreshold(scrollbar)+1))
 
-            compare(flickable.contentX, contentXBackup, "Mouse drag reset: contentX not reset.")
-            compare(flickable.contentY, contentYBackup, "Mouse drag reset: contentY not reset.")
+            //check that it goes back to the pre-drag content position, as if the drag never started
+            checkNoContentPositionChange("Mouse drag reset", flickable, contentXBackup, contentYBackup)
 
             //go back to the old position
             mouseMove(thumb,
@@ -608,8 +608,8 @@ Item {
                       (style.isVertical ? 0 : -(style.dragThreshold + 1)),
                       (style.isVertical ? -(style.dragThreshold + 1) : 0))
 
-            compare(flickable.contentX, contentXBackup, "Mouse drag reset: contentX not reset.")
-            compare(flickable.contentY, contentYBackup, "Mouse drag reset: contentY not reset.")
+            //check that it goes back to the pre-drag content position, as if the drag never started
+            checkNoContentPositionChange("Mouse drag reset", flickable, contentXBackup, contentYBackup)
 
             //test that we resume dragging
             if (style.isVertical) {
@@ -626,8 +626,8 @@ Item {
                       (style.isVertical ? -(dragResetThreshold(scrollbar) + 7) : secondStep),
                       (style.isVertical ? secondStep : -(dragResetThreshold(scrollbar) + 7)))
 
-            compare(flickable.contentX, contentXBackup, "Mouse drag reset: contentX not reset.")
-            compare(flickable.contentY, contentYBackup, "Mouse drag reset: contentY not reset.")
+            //check that it goes back to the pre-drag content position, as if the drag never started
+            checkNoContentPositionChange("Mouse drag reset", flickable, contentXBackup, contentYBackup)
 
             mouseRelease(thumb,
                          (style.isVertical ? -(dragResetThreshold(scrollbar) + 7) : secondStep),

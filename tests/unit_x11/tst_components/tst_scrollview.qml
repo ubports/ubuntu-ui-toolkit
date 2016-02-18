@@ -509,8 +509,46 @@ Item {
             sendKeyAndCheckItHasNoEffect("End", Qt.Key_End, flickable, oldContentX, oldContentY)
         }
 
-        function test_escKey() {
-            //TODO: test that the esc key resets any pending drag
+        function test_escKey_data() {
+            return [
+                        { tag: "Vertical scrollbar", vertical: true },
+                        { tag: "Horizontal scrollbar", vertical: false }
+                    ]
+        }
+
+        function test_escKey(data) {
+            var firstTestItem = getFreshScrollView()
+            var scrollview = firstTestItem.scrollview
+            var flickable = scrollview.flickableItem
+            var horizontalScrollbar = getHorizontalScrollbar(scrollview)
+            var verticalScrollbar = getVerticalScrollbar(scrollview)
+            var style = horizontalScrollbar.__styleInstance
+
+            focusScrollView(scrollview)
+            triggerSteppersMode(data.vertical ? verticalScrollbar : horizontalScrollbar)
+
+            var contentXBackup = flickable.contentX
+            var contentYBackup = flickable.contentY
+
+            dragThumbForwardAndCheckPos_noRelease(
+                        (data.vertical ? verticalScrollbar : horizontalScrollbar),
+                        flickable,
+                        units.gu(5), units.gu(10))
+
+            setupSignalSpy(signalSpy, scrollview.Keys, "onPressed")
+            keyClick(Qt.Key_Escape)
+            signalSpy.wait()
+            compare(signalSpy.count, 1, "Wrong number of signals fired after pressing Esc.")
+
+            checkNoContentPositionChange("Escape key", flickable, contentXBackup, contentYBackup)
+
+            mouseRelease(style.isVertical ? getThumb(verticalScrollbar) : getThumb(horizontalScrollbar),
+                                            (style.isVertical ? 0 : units.gu(12)),
+                                            (style.isVertical ? units.gu(12) : 0))
+        }
+
+        function test_noFlickeringWhenUsingArrowKeysWhileDraggingThumb() {
+            //TODO
         }
 
         function test_noOverlapWhenBothSidesAreScrollable() {

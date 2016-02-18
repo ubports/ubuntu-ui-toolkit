@@ -96,6 +96,37 @@ UbuntuTestCase {
         return testUtil.callerFile() + ": " + msg
     }
 
+    //to promote code reuse
+    function dragThumbForwardAndCheckPos_noRelease(scrollbar, flickable, firstStep, secondStep) {
+        verify(scrollbar !== undefined, "Scrollbar reference must be valid.")
+        verify(flickable !== undefined, "Flickable reference must be valid.")
+
+        var thumb = getThumb(scrollbar)
+        var style = scrollbar.__styleInstance
+        var contentXBackup = flickable.contentX
+        var contentYBackup = flickable.contentY
+
+        compare(style.isScrollable, true, "Item is assumed to be scrollable.")
+
+        mousePress(thumb, 0, 0)
+        mouseMove(thumb,
+                  (style.isVertical ? 0 : firstStep),
+                  (style.isVertical ? firstStep : 0))
+        mouseMove(thumb,
+                  (style.isVertical ? 0 : secondStep),
+                  (style.isVertical ? secondStep : 0))
+
+        if (style.isVertical) {
+            console.log(flickable.contentY, contentYBackup)
+            verify(flickable.contentY !== contentYBackup, "Check that mouse drag changed contentY." )
+            compare(flickable.contentX, contentXBackup, "Vertical thumb drag must not change contentX")
+        } else {
+            verify(flickable.contentX !== contentXBackup, "Check that mouse drag changed contentX." )
+            compare(flickable.contentY, contentYBackup, "Horizontal thumb drag must not change contentY")
+        }
+
+    }
+
     //check that the view moves by the amount defined in the styling
     //i.e. a small amount when clicking on steppers or arrow hw keys
     //and a bigger amount when clicking on the trough or PageUp/Down
