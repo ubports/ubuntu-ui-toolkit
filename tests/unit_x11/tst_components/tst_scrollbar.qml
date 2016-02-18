@@ -216,8 +216,6 @@ Item {
             anotherSignalSpy.wait()
             compare(anotherSignalSpy.count, 1, "State unchanged after Flickable stopped moving.")
             compare(scrollbar.__styleInstance.state, "hidden", "Wrong style after the item stopped moving.")
-
-            freshTestItem.destroy()
         }
 
         function test_thumbStyleWhileFlicking_veryLongContent(data) {
@@ -243,7 +241,6 @@ Item {
             anotherSignalSpy.wait()
             compare(anotherSignalSpy.count, 1, "State unchanged after Flickable stopped moving.")
             compare(scrollbar.__styleInstance.state, "hidden", "Wrong style after a the item stopped moving.")
-            freshTestItem.destroy()
         }
 
         function test_scrollingWithContentMargins(data) {
@@ -297,7 +294,6 @@ Item {
             compare(flickable[scrollbarUtils.propContent],
                     oldContentProp,
                     "scrollBy: wrong contentY after scrolling by -1GU")
-            freshTestItem.destroy()
         }
 
         function test_showSteppers(data) {
@@ -336,8 +332,6 @@ Item {
             } else {
                 compare(trough.height, scrollbar.__styleInstance.troughThicknessSteppersStyle, "Wrong trough thickness in steppers style")
             }
-
-            freshTestItem.destroy()
         }
 
 
@@ -394,8 +388,6 @@ Item {
                 compare(flickable[scrollbarUtils.propContent], -flickable.leftMargin,
                         "Horizontal thumb mouse drag: wrong contentProp after dragging to the beginning")
             }
-
-            freshTestItem.destroy()
         }
 
         function test_hinting_data() {
@@ -507,8 +499,6 @@ Item {
             } else {
                 checkNonScrollableState(scrollbar)
             }
-
-            freshTestItem.destroy()
         }
 
         function test_minimumSliderSize(data) {
@@ -531,8 +521,6 @@ Item {
                 flickable.contentWidth = flickable.width * (flickable.width / minSize) + units.gu(100)
                 compare(thumb.width, minSize, "Thumb does not respect the minimum size.")
             }
-
-            freshTestItem.destroy()
         }
 
         function test_scrollingRatioValuesSanityCheck() {
