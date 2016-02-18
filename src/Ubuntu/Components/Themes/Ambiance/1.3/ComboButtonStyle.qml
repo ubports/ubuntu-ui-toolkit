@@ -16,7 +16,7 @@
 
 import QtQuick 2.4
 import Ubuntu.Components 1.3
-import Ubuntu.Components.Styles 1.2 as Style
+import Ubuntu.Components.Styles 1.3 as Style
 
 Style.ComboButtonStyle {
     id: comboStyle

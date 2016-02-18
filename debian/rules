@@ -11,7 +11,7 @@ DEB_HOST_MULTI_ARCH ?= $(shell dpkg-architecture -qDEB_BUILD_MULTIARCH)
 DEB_HOST_ARCH ?= $(shell dpkg-architecture -qDEB_HOST_ARCH)
 
 # Skip tests on the archs they are known to be flaky  with current configuration
-testskip_architectures := powerpc arm64 ppc64el
+testskip_architectures := powerpc arm64 ppc64el s390x
 
 override_dh_auto_configure:
 	qmake -r
@@ -39,4 +39,6 @@ override_dh_install:
 	# FIXME: Due to autopilot not being in the archive we ship docs for now
 	# sphinx-build -b singlehtml documentation/autopilot-helpers documentation/autopilot-helpers/_build/html
 	# sphinx-build -b json documentation/autopilot-helpers documentation/autopilot-helpers/_build/json
+	# Drop QML types used to test apicheck only
+	rm -f debian/tmp/usr/lib/*/qt5/qml/Extinct/Animals/*
 	dh_install --fail-missing

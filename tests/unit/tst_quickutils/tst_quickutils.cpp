@@ -17,6 +17,7 @@
 
 #include "uctestcase.h"
 #include "quickutils.h"
+#include <QtQml/QQmlEngine>
 
 class tst_QuickUtils : public QObject
 {
@@ -31,7 +32,8 @@ private Q_SLOTS:
     void initTestCase()
     {
         imEnvVar = qgetenv("QT_IM_MODULE");
-        QuickUtils::instance();
+        QQmlEngine *engine = new QQmlEngine(this);
+        QuickUtils::instance(engine);
     }
     void cleanupTestCase()
     {
@@ -51,7 +53,7 @@ private Q_SLOTS:
     {
         QFETCH(QByteArray, envVar);
         qputenv("QT_IM_MODULE", envVar);
-        QVERIFY(QuickUtils::instance().inputMethodProvider().isEmpty());
+        QVERIFY(QuickUtils::instance()->inputMethodProvider().isEmpty());
     }
 };
 

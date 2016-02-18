@@ -20,8 +20,11 @@
 #include <QQuickItem>
 #include <private/qquickitem_p.h>
 
-#define LABELSBLOCK_SPACING_DP                       4
+//The padding between title and the string below it (i.e. subtitle, or
+//summary, when subtitle is empty)
+#define TITLE_SPACING_DP                       2
 
+class UCTheme;
 class UCLabel;
 class UCThreeLabelsSlotPrivate;
 class UCThreeLabelsSlot : public QQuickItem
@@ -44,6 +47,9 @@ protected:
 private:
     Q_PRIVATE_SLOT(d_func(), void _q_onGuValueChanged())
     Q_PRIVATE_SLOT(d_func(), void _q_updateLabelsAnchorsAndBBoxHeight())
+
+    static QColor getSubtitleColor(QQuickItem *item, UCTheme *theme);
+    static QColor getSummaryColor(QQuickItem *item, UCTheme *theme);
 };
 
 class UCThreeLabelsSlotPrivate : public QQuickItemPrivate

@@ -16,7 +16,7 @@
 
 import QtQuick 2.4
 import Ubuntu.Components 1.3
-import Ubuntu.Components.Styles 1.2 as Style
+import Ubuntu.Components.Styles 1.3 as Style
 
 Style.PullToRefreshStyle {
     id: style
@@ -83,13 +83,21 @@ Style.PullToRefreshStyle {
           will be restored to the default value before the animation, and the content
           will be pushed under the header. We need to connect to the header changes
           so we can reset the state and the topMargin.
-          */
+        */
         if (rootItem && rootItem.__propagated && rootItem.__propagated.header) {
             rootItem.__propagated.header.visibleChanged.connect(fixTopMargin);
             rootItem.__propagated.header.heightChanged.connect(fixTopMargin);
         }
         ready = true;
     }
+
+    Component.onDestruction: {
+        if (rootItem && rootItem.__propagated && rootItem.__propagated.header) {
+            rootItem.__propagated.header.visibleChanged.disconnect(fixTopMargin);
+            rootItem.__propagated.header.heightChanged.disconnect(fixTopMargin);
+        }
+    }
+
     function fixTopMargin() {
         if (style.state === "refreshing") {
             /*

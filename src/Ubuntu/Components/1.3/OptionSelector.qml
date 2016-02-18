@@ -216,7 +216,7 @@ ListItem.Empty {
 
             readonly property url chevron: __styleInstance.chevron
             readonly property url tick: __styleInstance.tick
-            readonly property color themeColour: theme.palette.selected.fieldText
+            readonly property color themeColour: theme.palette.normal.backgroundText
             readonly property alias colourImage: optionSelector.colourImage
             property bool currentlyExpanded: expanded || multiSelection
 
@@ -264,6 +264,7 @@ ListItem.Empty {
 
             ListView {
                 id: list
+                parent: listContainer.__styleInstance.content
 
                 property int previousIndex: -1
                 readonly property alias expanded: optionSelector.expanded

@@ -52,7 +52,7 @@ void UCSlotsLayoutPrivate::init()
     QObject::connect(&padding, SIGNAL(topChanged()), q, SLOT(_q_relayout()));
     QObject::connect(&padding, SIGNAL(bottomChanged()), q, SLOT(_q_relayout()));
 
-    QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_onGuValueChanged()));
+    QObject::connect(UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_onGuValueChanged()));
 
     //FIXME (if possible): this will cause relayout to be called 4-5 times when the layout has "anchors.fill: parent"
     //defined on QML side
@@ -76,16 +76,16 @@ void UCSlotsLayoutPrivate::updateTopBottomPaddingIfNeeded()
 {
     if (!padding.topWasSetFromQml) {
         padding.setTop((getVerticalPositioningMode() == UCSlotPositioningMode::CenterVertically
-                        && maxSlotsHeight > UCUnits::instance().gu(SLOTSLAYOUT_TOPBOTTOMMARGIN_SIZETHRESHOLD_GU))
-                       ? UCUnits::instance().gu(SLOTSLAYOUT_TOPMARGIN1_GU)
-                       : UCUnits::instance().gu(SLOTSLAYOUT_TOPMARGIN2_GU));
+                        && maxSlotsHeight > UCUnits::instance()->gu(SLOTSLAYOUT_TOPBOTTOMMARGIN_SIZETHRESHOLD_GU))
+                       ? UCUnits::instance()->gu(SLOTSLAYOUT_TOPMARGIN1_GU)
+                       : UCUnits::instance()->gu(SLOTSLAYOUT_TOPMARGIN2_GU));
     }
 
     if (!padding.bottomWasSetFromQml) {
         padding.setBottom((getVerticalPositioningMode() == UCSlotPositioningMode::CenterVertically
-                           && maxSlotsHeight > UCUnits::instance().gu(SLOTSLAYOUT_TOPBOTTOMMARGIN_SIZETHRESHOLD_GU))
-                          ? UCUnits::instance().gu(SLOTSLAYOUT_BOTTOMMARGIN1_GU)
-                          : UCUnits::instance().gu(SLOTSLAYOUT_BOTTOMMARGIN2_GU));
+                           && maxSlotsHeight > UCUnits::instance()->gu(SLOTSLAYOUT_TOPBOTTOMMARGIN_SIZETHRESHOLD_GU))
+                          ? UCUnits::instance()->gu(SLOTSLAYOUT_BOTTOMMARGIN1_GU)
+                          : UCUnits::instance()->gu(SLOTSLAYOUT_BOTTOMMARGIN2_GU));
     }
 
     return;
@@ -197,11 +197,11 @@ void UCSlotsLayoutPrivate::_q_updateCachedHeight()
 void UCSlotsLayoutPrivate::_q_updateGuValues()
 {
     if (!padding.leadingWasSetFromQml) {
-        padding.setLeading(UCUnits::instance().gu(SLOTSLAYOUT_LEFTMARGIN_GU));
+        padding.setLeading(UCUnits::instance()->gu(SLOTSLAYOUT_LEFTMARGIN_GU));
     }
 
     if (!padding.trailingWasSetFromQml) {
-        padding.setTrailing(UCUnits::instance().gu(SLOTSLAYOUT_RIGHTMARGIN_GU));
+        padding.setTrailing(UCUnits::instance()->gu(SLOTSLAYOUT_RIGHTMARGIN_GU));
     }
 
     updateTopBottomPaddingIfNeeded();
@@ -299,7 +299,7 @@ void UCSlotsLayoutPrivate::_q_updateSize()
         return;
 
     Q_Q(UCSlotsLayout);
-    q->setImplicitWidth(parentItem ? parentItem->width() : UCUnits::instance().gu(IMPLICIT_SLOTSLAYOUT_WIDTH_GU));
+    q->setImplicitWidth(parentItem ? parentItem->width() : UCUnits::instance()->gu(IMPLICIT_SLOTSLAYOUT_WIDTH_GU));
     q->setImplicitHeight(qMax<qreal>(maxSlotsHeight, mainSlotHeight)
                          + padding.top() + padding.bottom());
 
@@ -1065,16 +1065,16 @@ UCSlotsAttachedPrivate::UCSlotsAttachedPrivate()
 void UCSlotsAttachedPrivate::_q_onGuValueChanged()
 {
     if (!padding.leadingWasSetFromQml)
-        padding.setLeading(UCUnits::instance().gu(SLOTSLAYOUT_SLOTS_SIDEMARGINS_GU));
+        padding.setLeading(UCUnits::instance()->gu(SLOTSLAYOUT_SLOTS_SIDEMARGINS_GU));
 
     if (!padding.trailingWasSetFromQml)
-        padding.setTrailing(UCUnits::instance().gu(SLOTSLAYOUT_SLOTS_SIDEMARGINS_GU));
+        padding.setTrailing(UCUnits::instance()->gu(SLOTSLAYOUT_SLOTS_SIDEMARGINS_GU));
 
     if (!padding.topWasSetFromQml)
-        padding.setTop(UCUnits::instance().gu(SLOTSLAYOUT_SLOTS_TOPBOTTOMMARGINS_GU));
+        padding.setTop(UCUnits::instance()->gu(SLOTSLAYOUT_SLOTS_TOPBOTTOMMARGINS_GU));
 
     if (!padding.bottomWasSetFromQml)
-        padding.setBottom(UCUnits::instance().gu(SLOTSLAYOUT_SLOTS_TOPBOTTOMMARGINS_GU));
+        padding.setBottom(UCUnits::instance()->gu(SLOTSLAYOUT_SLOTS_TOPBOTTOMMARGINS_GU));
 }
 
 /******************************************************************************
@@ -1085,7 +1085,7 @@ UCSlotsAttached::UCSlotsAttached(QObject *object)
 {
     Q_D(UCSlotsAttached);
     d->_q_onGuValueChanged();
-    QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this, SLOT(_q_onGuValueChanged()));
+    QObject::connect(UCUnits::instance(), SIGNAL(gridUnitChanged()), this, SLOT(_q_onGuValueChanged()));
 }
 
 /*!
@@ -1103,11 +1103,11 @@ UCSlotsAttached::UCSlotsAttached(QObject *object)
     \li * SlotsLayout.Trailing: the slot will be positioned in
         the trailing slots, i.e. the one towards the end of the
         layout.
-    \li * SlotsLayout.End: the slot will be positioned at
+    \li * SlotsLayout.Last: the slot will be positioned at
         the end of the layout.
     \endlist
 
-    \l {ProgressionSlot}, for instance, has its position set to SlotsLayout.End,
+    \l {ProgressionSlot}, for instance, has its position set to SlotsLayout.Last,
     in order to make sure the chevron is always displayed as the last trailing slot.
 
     Whenever there are more slots with the same \l {SlotsLayout::position},

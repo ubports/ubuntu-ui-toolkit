@@ -89,8 +89,6 @@ TestCase {
         var maxValue = 9
         var clampValue = -7
 
-        ignoreWarning("MathUtils.clamp, min value should not be bigger than the max value")
-
         var clamped = MathUtils.clamp(clampValue, minValue, maxValue)
         compare(clamped, maxValue, "clamped value not within range")
     }
@@ -99,8 +97,6 @@ TestCase {
         var minValue = 42
         var maxValue = 9
         var clampValue = 111
-
-        ignoreWarning("MathUtils.clamp, min value should not be bigger than the max value")
 
         var clamped = MathUtils.clamp(clampValue, minValue, maxValue)
         compare(clamped, minValue, "clamped value not within range")
@@ -111,8 +107,6 @@ TestCase {
         var maxValue = 9
         var clampValue = 42
 
-        ignoreWarning("MathUtils.clamp, min value should not be bigger than the max value")
-
         var clamped = MathUtils.clamp(clampValue, minValue, maxValue)
         compare(clamped, clampValue, "clamped value changed even though it shouldn't have")
     }
@@ -121,8 +115,6 @@ TestCase {
         var minValue = 42
         var maxValue = 9
         var clampValue = 9
-
-        ignoreWarning("MathUtils.clamp, min value should not be bigger than the max value")
 
         var clamped = MathUtils.clamp(clampValue, minValue, maxValue)
         compare(clamped, clampValue, "clamped value changed even though it shouldn't have")
@@ -133,8 +125,6 @@ TestCase {
         var maxValue = -42
         var clampValue = -50
 
-        ignoreWarning("MathUtils.clamp, min value should not be bigger than the max value")
-
         var clamped = MathUtils.clamp(clampValue, minValue, maxValue)
         compare(clamped, maxValue, "clamped value not within range")
     }
@@ -144,8 +134,6 @@ TestCase {
         var maxValue = -42
         var clampValue = 50
 
-        ignoreWarning("MathUtils.clamp, min value should not be bigger than the max value")
-
         var clamped = MathUtils.clamp(clampValue, minValue, maxValue)
         compare(clamped, minValue, "clamped value not within range")
     }
@@ -154,8 +142,6 @@ TestCase {
         var minValue = 9
         var maxValue = -42
         var clampValue = 50
-
-        ignoreWarning("MathUtils.clamp, min value should not be bigger than the max value")
 
         var clamped = MathUtils.clamp(clampValue, minValue, maxValue)
         compare(clamped, minValue, "clamped value not within range")

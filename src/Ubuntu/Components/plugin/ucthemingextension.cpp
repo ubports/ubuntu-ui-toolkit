@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -107,13 +107,28 @@ void UCItemAttached::itemParentChanged(QQuickItem *, QQuickItem *newParent)
         return;
     }
 
+    // when we set a parent, the two items must be under the same engine
+    if (newParent && qmlEngine(m_item) != qmlEngine(newParent)) {
+        return;
+    }
+
+    if (!qmlEngine(m_item)) {
+        // the item is about to be deleted, parent change occurs as the parent is removed
+        Q_ASSERT(!newParent);
+        return;
+    }
+
     // make sure we have these handlers attached to each intermediate item
     QQuickItem *oldThemedAscendant = UCThemingExtension::ascendantThemed(m_prevParent);
     QQuickItem *newThemedAscendant = UCThemingExtension::ascendantThemed(newParent);
     UCThemingExtension *oldExtension = qobject_cast<UCThemingExtension*>(oldThemedAscendant);
     UCThemingExtension *newExtension = qobject_cast<UCThemingExtension*>(newThemedAscendant);
-    UCTheme *oldTheme = oldExtension ? oldExtension->getTheme() : &UCTheme::defaultTheme();
-    UCTheme *newTheme = newExtension ? newExtension->getTheme() : &UCTheme::defaultTheme();
+    UCTheme *oldTheme = oldExtension ? oldExtension->getTheme() : UCTheme::defaultTheme(qmlEngine(m_item));
+    UCTheme *newTheme = newExtension ? newExtension->getTheme() : UCTheme::defaultTheme(qmlEngine(m_item));
+
+    // neither of the themes can be null!
+    Q_ASSERT(oldTheme);
+    Q_ASSERT(newTheme);
 
     if (oldTheme != newTheme) {
         UCThemingExtension *extension = qobject_cast<UCThemingExtension*>(m_item);
@@ -134,11 +149,10 @@ void UCItemAttached::itemParentChanged(QQuickItem *, QQuickItem *newParent)
  *
  */
 UCThemingExtension::UCThemingExtension(QQuickItem *extendedItem)
-    : theme(&UCTheme::defaultTheme())
+    : theme(Q_NULLPTR)
     , themedItem(extendedItem)
     , themeType(Inherited)
 {
-    theme->attachItem(themedItem, true);
     themedItem->setUserData(xdata, new UCItemAttached(themedItem));
 }
 
@@ -157,7 +171,7 @@ void UCThemingExtension::setParentTheme()
     }
     QQuickItem *upperThemed = ascendantThemed(QQuickItemPrivate::get(themedItem)->parentItem);
     UCThemingExtension *extension = qobject_cast<UCThemingExtension*>(upperThemed);
-    UCTheme *parentTheme = extension ? extension->getTheme() : &UCTheme::defaultTheme();
+    UCTheme *parentTheme = extension ? extension->getTheme() : UCTheme::defaultTheme(qmlEngine(themedItem));
     if (parentTheme != theme) {
         theme->setParentTheme(parentTheme);
     }
@@ -203,8 +217,18 @@ void UCThemingExtension::itemThemeReloaded(UCTheme *theme)
     }
 }
 
-UCTheme *UCThemingExtension::getTheme() const
+UCTheme *UCThemingExtension::getTheme()
 {
+    if (!theme) {
+        theme = UCTheme::defaultTheme(qmlEngine(themedItem));
+        if (!theme) {
+            QString msg = QStringLiteral("The item %1 was created without a valid QML Engine. Styling will not be possible.")
+                    .arg(themedItem->metaObject()->className());
+            qCritical().noquote() << msg;
+            return Q_NULLPTR;
+        }
+        theme->attachItem(themedItem, true);
+    }
     return theme;
 }
 void UCThemingExtension::setTheme(UCTheme *newTheme, ThemeType type)
@@ -244,7 +268,7 @@ void UCThemingExtension::resetTheme()
 {
     QQuickItem *upperThemed = ascendantThemed(QQuickItemPrivate::get(themedItem)->parentItem);
     UCThemingExtension *extension = qobject_cast<UCThemingExtension*>(upperThemed);
-    UCTheme *theme = extension ? extension->getTheme() : &UCTheme::defaultTheme();
+    UCTheme *theme = extension ? extension->getTheme() : UCTheme::defaultTheme(qmlEngine(themedItem));
     setTheme(theme, Inherited);
 }
 

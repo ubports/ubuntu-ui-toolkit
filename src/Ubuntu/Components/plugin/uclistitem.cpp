@@ -21,6 +21,7 @@
 #include "uclistitem_p.h"
 #include "uclistitemactions.h"
 #include "uclistitemactions_p.h"
+#include "privates/listitemselection.h"
 #include "ucubuntuanimation.h"
 #include "propertychange_p.h"
 #include "i18n.h"
@@ -93,20 +94,20 @@ void UCListItemDivider::init(UCListItem *listItem)
 void UCListItemDivider::paletteChanged()
 {
     Q_D(UCListItemDivider);
-    QColor background = d->listItem->getTheme()->getPaletteColor("normal", "background");
-    if (!background.isValid()) {
-        return;
-    }
-    // FIXME: we need a palette value for divider colors, till then base on the background
-    // luminance
     if (!d->colorFromChanged || !d->colorToChanged) {
-        qreal luminance = (background.red()*212 + background.green()*715 + background.blue()*73)/1000.0/255.0;
-        bool lightBackground = (luminance > 0.85);
+        QColor themeColor;
+        UCTheme *theme = d->listItem->getTheme();
+        if (theme) {
+            themeColor = d->listItem->getTheme()->getPaletteColor("normal", "base");
+        }
+        if (!themeColor.isValid()) {
+            return;
+        }
         if (!d->colorFromChanged) {
-            d->colorFrom = lightBackground ? QColor("#26000000") : QColor("#26FFFFFF");
+            d->colorFrom = themeColor;
         }
         if (!d->colorToChanged) {
-            d->colorTo = lightBackground ? QColor("#14FFFFFF") : QColor("#14000000");
+            d->colorTo = themeColor;
         }
         updateGradient();
     }
@@ -116,13 +117,13 @@ void UCListItemDivider::updateGradient()
 {
     Q_D(UCListItemDivider);
     d->gradient.clear();
-    d->gradient.append(QGradientStop(0.0, d->colorFrom));
-    d->gradient.append(QGradientStop(0.49, d->colorFrom));
-    d->gradient.append(QGradientStop(0.5, d->colorTo));
-    d->gradient.append(QGradientStop(1.0, d->colorTo));
-    if (d->listItem) {
-        d->listItem->update();
+    if (height() > UCUnits::instance()->dp(1)) {
+        d->gradient.append(QGradientStop(0.0, d->colorFrom));
+        d->gradient.append(QGradientStop(0.49, d->colorFrom));
+        d->gradient.append(QGradientStop(0.5, d->colorTo));
+        d->gradient.append(QGradientStop(1.0, d->colorTo));
     }
+    update();
 }
 
 QSGNode *UCListItemDivider::updatePaintNode(QSGNode *node, UpdatePaintNodeData *data)
@@ -136,9 +137,13 @@ QSGNode *UCListItemDivider::updatePaintNode(QSGNode *node, UpdatePaintNodeData *
 
     UCListItemPrivate *pListItem = UCListItemPrivate::get(d->listItem);
     bool lastItem = pListItem->countOwner ? (pListItem->index() == (pListItem->countOwner->property("count").toInt() - 1)): false;
-    if (!lastItem && (d->gradient.size() > 0) && ((d->colorFrom.alphaF() >= (1.0f / 255.0f)) || (d->colorTo.alphaF() >= (1.0f / 255.0f)))) {
+    if (!lastItem && ((d->colorFrom.alphaF() >= (1.0f / 255.0f)) || (d->colorTo.alphaF() >= (1.0f / 255.0f)))) {
         dividerNode->setRect(boundingRect());
-        dividerNode->setGradientStops(d->gradient);
+        if (d->gradient.size() > 0) {
+            dividerNode->setGradientStops(d->gradient);
+        } else {
+            dividerNode->setColor(d->colorFrom);
+        }
         dividerNode->update();
         return dividerNode;
     } else if (node) {
@@ -195,6 +200,7 @@ UCListItemPrivate::UCListItemPrivate()
     , trailingActions(Q_NULLPTR)
     , mainAction(Q_NULLPTR)
     , expansion(Q_NULLPTR)
+    , selection(Q_NULLPTR)
     , xAxisMoveThresholdGU(DEFAULT_SWIPE_THRESHOLD_GU)
     , button(Qt::NoButton)
     , highlighted(false)
@@ -235,9 +241,12 @@ void UCListItemPrivate::init()
                      q, SLOT(_q_themeChanged()), Qt::DirectConnection);
 
     // watch grid unit size change and set implicit size
-    QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_updateSize()));
+    QObject::connect(UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_updateSize()));
     _q_updateSize();
-    setStyleName("ListItemStyle");
+    styleDocument = "ListItemStyle";
+
+    // create selection object
+    selection = new ListItemSelection(q);
 }
 
 void UCListItemPrivate::_q_themeChanged()
@@ -303,13 +312,6 @@ void UCListItemPrivate::_q_contentMoving()
 
 // synchronizes selection mode, initializes the style if has not been done yet,
 // which in turn reveals the selection panels
-void UCListItemPrivate::_q_syncSelectMode()
-{
-    loadStyleItem();
-    Q_Q(UCListItem);
-    Q_EMIT q->selectModeChanged();
-}
-
 // same for the dragMode
 void UCListItemPrivate::_q_syncDragMode()
 {
@@ -329,7 +331,9 @@ void UCListItemPrivate::preStyleChanged()
 bool UCListItemPrivate::loadStyleItem(bool animated)
 {
     // the style should be loaded only if one of the condition is satisfied
-    if (!swiped && !selectMode() && !dragMode() && !(expansion && expansion->expanded())) {
+    // do not use selectMode() as that will create the selection handler, which may not even be needed at this phase.
+    bool inSelectMode = (selection && selection->inSelectMode());
+    if (!swiped && !inSelectMode && !dragMode() && !(expansion && expansion->expanded())) {
         return false;
     }
 
@@ -355,13 +359,13 @@ void UCListItemPrivate::_q_updateSize()
 {
     Q_Q(UCListItem);
     // update divider thickness
-    divider->setImplicitHeight(UCUnits::instance().dp(DIVIDER_THICKNESS_DP));
+    divider->setImplicitHeight(UCUnits::instance()->dp(DIVIDER_THICKNESS_DP));
     QQuickItem *owner = qobject_cast<QQuickItem*>(q->sender());
     if (!owner && parentAttached) {
         owner = static_cast<QQuickItem*>(parentAttached->parent());
     }
-    q->setImplicitWidth(owner ? owner->width() : UCUnits::instance().gu(IMPLICIT_LISTITEM_WIDTH_GU));
-    q->setImplicitHeight(UCUnits::instance().gu(IMPLICIT_LISTITEM_HEIGHT_GU));
+    q->setImplicitWidth(owner ? owner->width() : UCUnits::instance()->gu(IMPLICIT_LISTITEM_WIDTH_GU));
+    q->setImplicitHeight(UCUnits::instance()->gu(IMPLICIT_LISTITEM_HEIGHT_GU));
 }
 
 // returns the index of the list item when used in model driven views,
@@ -427,6 +431,7 @@ void UCListItemPrivate::setSwiped(bool swiped)
         // lock contentItem left/right edges
         lockContentItem(true);
     }
+    Q_EMIT q->swipedChanged();
 }
 
 // connects/disconnects from the Flickable anchestor to get notified when to do rebound
@@ -1014,13 +1019,7 @@ void UCListItem::componentComplete()
     }
 
     if (d->parentAttached) {
-        // connect selectedIndicesChanged
-        connect(d->parentAttached.data(), &UCViewItemsAttached::selectedIndicesChanged,
-                this, &UCListItem::selectedChanged);
-        // sync selectModeChanged()
-        connect(d->parentAttached, SIGNAL(selectModeChanged()),
-                this, SLOT(_q_syncSelectMode()));
-        // also draggable
+        // update draggable
         connect(d->parentAttached, SIGNAL(dragModeChanged()),
                 this, SLOT(_q_syncDragMode()));
 
@@ -1072,6 +1071,7 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
         }
 
         if (d->parentAttached) {
+            d->selection->attachToViewItems(d->parentAttached.data());
             connect(d->parentAttached.data(), SIGNAL(expandedIndicesChanged(QList<int>)),
                     this, SLOT(_q_updateExpansion(QList<int>)), Qt::DirectConnection);
         }
@@ -1201,7 +1201,7 @@ void UCListItemPrivate::showContextMenu()
         QQmlEngine::setContextForObject(component, qmlContext(q));
         QQuickItem* item = static_cast<QQuickItem*>(component->create(qmlContext(q)));
         item->setProperty("caller", QVariant::fromValue(q));
-        item->setParentItem(QuickUtils::instance().rootItem(q));
+        item->setParentItem(QuickUtils::instance()->rootItem(q));
         QMetaObject::invokeMethod(item, "show");
         QObject::connect(item, SIGNAL(visibleChanged()), q,
             SLOT(_q_popoverClosed()), Qt::DirectConnection);
@@ -1227,7 +1227,7 @@ void UCListItemPrivate::handleLeftButtonRelease(QMouseEvent *event)
             if (!swiped) {
                 Q_EMIT q->clicked();
                 if (mainAction) {
-                    Q_EMIT mainAction->trigger(index());
+                    invokeTrigger<UCAction>(mainAction, index());
                 }
             }
             snapOut();
@@ -1250,6 +1250,8 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
     }
 
     UCStyledItemBase::mouseReleaseEvent(event);
+    if (!contains(mapFromScene(event->windowPos())))
+        d->suppressClick = true;
     d->handleLeftButtonRelease(event);
 }
 
@@ -1261,7 +1263,7 @@ bool UCListItemPrivate::swipedOverThreshold(const QPointF &mousePos, const QPoin
     {
         return false;
     }
-    qreal threshold = UCUnits::instance().gu(xAxisMoveThresholdGU);
+    qreal threshold = UCUnits::instance()->gu(xAxisMoveThresholdGU);
     qreal mouseX = mousePos.x();
     qreal pressedX = relativePos.x();
     return swipeEnabled && ((mouseX < (pressedX - threshold)) || (mouseX > (pressedX + threshold)));
@@ -1652,7 +1654,10 @@ void UCListItem::resetHighlightColor()
 {
     Q_D(UCListItem);
     d->customColor = false;
-    d->highlightColor = getTheme()->getPaletteColor("selected", "background");
+    UCTheme *theme = getTheme();
+    if (theme) {
+        d->highlightColor = theme->getPaletteColor("highlighted", "background");
+    }
     update();
     Q_EMIT highlightColorChanged();
 }
@@ -1692,17 +1697,13 @@ void UCListItemPrivate::setDragMode(bool draggable)
  */
 bool UCListItemPrivate::isSelected()
 {
-    Q_Q(UCListItem);
-    return UCViewItemsAttachedPrivate::get(parentAttached)->isItemSelected(q);
+    Q_ASSERT(selection);
+    return selection->isSelected();
 }
 void UCListItemPrivate::setSelected(bool value)
 {
-    Q_Q(UCListItem);
-    if (value) {
-        UCViewItemsAttachedPrivate::get(parentAttached)->addSelectedItem(q);
-    } else {
-        UCViewItemsAttachedPrivate::get(parentAttached)->removeSelectedItem(q);
-    }
+    Q_ASSERT(selection);
+    selection->setSelected(value);
 }
 
 /*!
@@ -1715,14 +1716,19 @@ void UCListItemPrivate::setSelected(bool value)
  */
 bool UCListItemPrivate::selectMode()
 {
-    UCViewItemsAttachedPrivate *attached = UCViewItemsAttachedPrivate::get(parentAttached);
-    return attached ? attached->selectable : false;
+    Q_Q(UCListItem);
+    if (!selection) {
+        selection = new ListItemSelection(q);
+    }
+    return selection->inSelectMode();
 }
 void UCListItemPrivate::setSelectMode(bool selectable)
 {
-    if (parentAttached) {
-        parentAttached->setSelectMode(selectable);
+    Q_Q(UCListItem);
+    if (!selection) {
+        selection = new ListItemSelection(q);
     }
+    selection->setSelectMode(selectable);
 }
 
 /*!
@@ -1748,10 +1754,16 @@ void UCListItemPrivate::setAction(UCAction *action)
     if (mainAction == action) {
         return;
     }
+    if (mainAction) {
+        mainAction->removeOwningItem(q);
+    }
     mainAction = action;
-    if (mainAction && (mainAction->m_parameterType == UCAction::None)) {
-        // call setProperty to invoke notify signal
-        mainAction->setProperty("parameterType", UCAction::Integer);
+    if (mainAction) {
+        mainAction->addOwningItem(q);
+        if (mainAction->m_parameterType == UCAction::None) {
+            // call setProperty to invoke notify signal
+            mainAction->setProperty("parameterType", UCAction::Integer);
+        }
     }
     Q_EMIT q->actionChanged();
 }
@@ -1846,6 +1858,19 @@ void UCListItem::setSwipeEnabled(bool swipeEnabled)
     }
     d->swipeEnabled = swipeEnabled;
     Q_EMIT swipeEnabledChanged();
+}
+
+/*!
+ * \qmlproperty bool ListItem::swiped
+ * \readonly
+ * \since Ubuntu.Components 1.3
+ * The property notifies about the content being swiped so leading or trailing
+ * actions are visible.
+ */
+bool UCListItem::isSwiped()
+{
+    Q_D(UCListItem);
+    return d->swiped;
 }
 
 #include "moc_uclistitem.cpp"

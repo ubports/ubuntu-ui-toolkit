@@ -17,6 +17,7 @@
 import QtQuick 2.4
 import "../1.2/stack.js" as Stack
 import Ubuntu.Components 1.3
+import Ubuntu.Components.Private 1.3
 
 /*!
     \qmltype PageStack
@@ -224,6 +225,13 @@ PageTreeNode {
         objectName: "pagestack_back_action"
     }
 
+
+    Component {
+        id: pageWrapperComponent
+        PageWrapper{
+        }
+    }
+
     QtObject {
         id: internal
         property Item headStyle: (pageStack.__propagated
@@ -282,8 +290,7 @@ PageTreeNode {
         property var stack: new Stack.Stack()
 
         function createWrapper(page, properties) {
-            var wrapperComponent = Qt.createComponent("PageWrapper.qml");
-            var wrapperObject = wrapperComponent.createObject(pageStack);
+            var wrapperObject = pageWrapperComponent.createObject(pageStack);
             wrapperObject.pageStack = pageStack;
             wrapperObject.properties = properties;
             // set reference last because it will trigger creation of the object

@@ -21,7 +21,7 @@ import Ubuntu.Components.Popups 1.3
 Template {
     objectName: "popoversTemplate"
 
-    head.actions: [
+    trailingActions: [
         Action {
             text: "Actions"
             iconSource: "call_icon.png"

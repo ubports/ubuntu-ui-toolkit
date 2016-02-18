@@ -14,20 +14,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import QtQuick 2.4
+import QtQuick.Window 2.2
 import Ubuntu.Components 1.3
 import Ubuntu.Components.Styles 1.3 as Style
 
 Style.PageHeaderStyle {
     id: pageHeaderStyle
 
-    foregroundColor: theme.palette.selected.backgroundText
+    foregroundColor: theme.palette.normal.backgroundText
     backgroundColor: theme.palette.normal.background
-    dividerColor: Qt.rgba(0, 0, 0, 0.1)
+    dividerColor: theme.palette.normal.base
     property int fontWeight: Font.Light
     property int textSize: Label.Large
 
-    contentHeight: units.gu(6)
-    implicitHeight: contentHeight + divider.height + styledItem.sections.height
+    // reduced content height on a phone in landscape mode
+    contentHeight: Screen.height > units.gu(50) ? units.gu(6) : units.gu(5)
+    implicitHeight: contentHeight + divider.height + internal.extensionHeight
+
+    Object {
+        id: internal
+        property real extensionHeight: styledItem.extension ?
+                                         styledItem.extension.height
+                                       : styledItem.sections.height
+    }
 
     defaultActionDelegate: AbstractButton {
         style: IconButtonStyle { }
@@ -35,6 +44,7 @@ Style.PageHeaderStyle {
         height: parent ? parent.height : undefined
         action: modelData
         StyleHints {
+            // FIXME: introduce inactiveForegroundColor to PageHeaderStyle
             foregroundColor: pageHeaderStyle.foregroundColor
         }
     }

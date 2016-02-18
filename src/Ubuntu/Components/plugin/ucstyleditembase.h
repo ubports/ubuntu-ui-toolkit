@@ -29,9 +29,18 @@ class UCStyledItemBase : public QQuickItem, public UCThemingExtension
 {
     Q_OBJECT
     Q_INTERFACES(UCThemingExtension)
+    Q_PROPERTY(bool keyNavigationFocus
+              READ keyNavigationFocus
+              NOTIFY keyNavigationFocusChanged REVISION 2)
     Q_PROPERTY(bool activeFocusOnPress
                READ activefocusOnPress WRITE setActiveFocusOnPress
                NOTIFY activeFocusOnPressChanged REVISION 1)
+    // FIXME Re-expose property that would be inaccessible due to a QML bug
+    // https://bugs.launchpad.net/ubuntu/+source/qtdeclarative-opensource-src/+bug/1389721
+    Q_PROPERTY(bool activeFocusOnTab
+            READ activeFocusOnTab2
+            WRITE setActiveFocusOnTab2
+            NOTIFY activeFocusOnTabChanged2 FINAL)
     Q_PRIVATE_PROPERTY(UCStyledItemBase::d_func(), QQmlComponent *style READ style WRITE setStyle RESET resetStyle NOTIFY styleChanged FINAL DESIGNABLE false)
     Q_PRIVATE_PROPERTY(UCStyledItemBase::d_func(), QQuickItem *__styleInstance READ styleInstance NOTIFY styleInstanceChanged FINAL DESIGNABLE false)
     Q_PRIVATE_PROPERTY(UCStyledItemBase::d_func(), QString styleName READ styleName WRITE setStyleName NOTIFY styleNameChanged FINAL REVISION 2)
@@ -39,8 +48,11 @@ class UCStyledItemBase : public QQuickItem, public UCThemingExtension
 public:
     explicit UCStyledItemBase(QQuickItem *parent = 0);
 
+    bool keyNavigationFocus() const;
     bool activefocusOnPress() const;
     void setActiveFocusOnPress(bool value);
+    bool activeFocusOnTab2() const;
+    void setActiveFocusOnTab2(bool value);
 
 public Q_SLOTS:
     Q_REVISION(1) bool requestFocus(Qt::FocusReason reason = Qt::OtherFocusReason);
@@ -48,7 +60,9 @@ public Q_SLOTS:
 Q_SIGNALS:
     void styleChanged();
     void styleInstanceChanged();
+    Q_REVISION(2) void keyNavigationFocusChanged();
     Q_REVISION(1) void activeFocusOnPressChanged();
+    Q_REVISION(1) void activeFocusOnTabChanged2();
     Q_REVISION(2) void themeChanged();
     Q_REVISION(2) void styleNameChanged();
 
@@ -60,6 +74,9 @@ protected:
     virtual void postThemeChanged();
 
     void componentComplete();
+    void itemChange(ItemChange change, const ItemChangeData &data);
+    void focusInEvent(QFocusEvent *key);
+    void focusOutEvent(QFocusEvent *key);
     void mousePressEvent(QMouseEvent *event);
     bool childMouseEventFilter(QQuickItem *child, QEvent *event);
 
