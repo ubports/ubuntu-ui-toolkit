@@ -35,12 +35,6 @@ class UCBottomEdgePrivate : public UCStyledItemBasePrivate, protected QQuickItem
 public:
     UCBottomEdgePrivate();
 
-    enum PreloadType {
-        PreloadUrl,
-        PreloadComponent,
-        PreloadAny
-    };
-
     static UCBottomEdgePrivate *get(UCBottomEdge *item)
     {
         return item->d_func();
