@@ -95,12 +95,13 @@ UCBottomEdgeRegion::UCBottomEdgeRegion(QObject *parent)
     : QObject(parent)
     , m_bottomEdge(qobject_cast<UCBottomEdge*>(parent))
     , m_component(Q_NULLPTR)
-    , m_urlBackup(Q_NULLPTR)
-    , m_componentBackup(Q_NULLPTR)
+    , m_contentItem(Q_NULLPTR)
     , m_from(0.0)
     , m_to(-1.0)
     , m_enabled(true)
 {
+    connect(&m_loader, &UbuntuToolkit::AsyncLoader::loadingStatus,
+            this, &UCBottomEdgeRegion::onLoaderStatusChanged);
 }
 
 void UCBottomEdgeRegion::attachToBottomEdge(UCBottomEdge *bottomEdge)
@@ -121,40 +122,27 @@ bool UCBottomEdgeRegion::contains(qreal dragRatio)
 
 void UCBottomEdgeRegion::enter()
 {
+    m_active = true;
     Q_EMIT entered();
-    // backup url
-    if (m_url.isValid()) {
-        m_urlBackup = new PropertyChange(m_bottomEdge, "contentUrl");
-        QQmlProperty property(this, "contentUrl", qmlContext(this));
-        QQmlAbstractBinding *binding = QQmlPropertyPrivate::binding(property);
-        if (binding) {
-            PropertyChange::setBinding(m_urlBackup, binding);
-        } else {
-            PropertyChange::setValue(m_urlBackup, m_url);
-        }
+    if (!m_bottomEdge) {
+        return;
     }
-    if (m_component) {
-        m_componentBackup = new PropertyChange(m_bottomEdge, "contentComponent");
-        QQmlProperty property(this, "contentComponent", qmlContext(this));
-        QQmlAbstractBinding *binding = QQmlPropertyPrivate::binding(property);
-        if (binding) {
-            PropertyChange::setBinding(m_componentBackup, binding);
-        } else {
-            PropertyChange::setValue(m_componentBackup, QVariant::fromValue<QQmlComponent*>(m_component));
+    // if preloaded, set the content
+    if (m_bottomEdge->preloadContent() || m_default) {
+        if (m_loader.status() == UbuntuToolkit::AsyncLoader::Ready) {
+            UCBottomEdgePrivate::get(m_bottomEdge)->setCurrentContent(this, false);
+        }
+    } else {
+        // initiate loading, component has priority
+        if (m_component) {
+            m_loader.load(m_component, new QQmlContext(qmlContext(m_bottomEdge)));
         }
     }
 }
 
 void UCBottomEdgeRegion::exit()
 {
-    if (m_componentBackup) {
-        delete m_componentBackup;
-        m_componentBackup = Q_NULLPTR;
-    }
-    if (m_urlBackup) {
-        delete m_urlBackup;
-        m_urlBackup = Q_NULLPTR;
-    }
+    m_active = false;
     Q_EMIT exited();
 }
 
@@ -164,6 +152,49 @@ const QRectF UCBottomEdgeRegion::rect(const QRectF &bottomEdgeRect)
                 bottomEdgeRect.topLeft() + QPointF(0, bottomEdgeRect.height() * (1.0 - m_to)),
                 QSizeF(bottomEdgeRect.width(), bottomEdgeRect.height() * (m_to - m_from)));
     return regionRect;
+}
+
+void UCBottomEdgeRegion::loadRegionContent()
+{
+    if (m_component) {
+        m_loader.load(m_component, new QQmlContext(qmlContext(m_bottomEdge)));
+    } else if (m_url.isValid()) {
+        m_loader.load(m_url, new QQmlContext(qmlContext(m_bottomEdge)));
+    }
+}
+
+void UCBottomEdgeRegion::discardRegionContent()
+{
+    m_loader.reset();
+}
+
+QQuickItem *UCBottomEdgeRegion::regionContent()
+{
+    return m_contentItem;
+}
+
+void UCBottomEdgeRegion::onLoaderStatusChanged(UbuntuToolkit::AsyncLoader::LoadingStatus status, QObject *object)
+{
+    bool emitChange = false;
+
+    if (status == UbuntuToolkit::AsyncLoader::Ready) {
+        m_contentItem = qobject_cast<QQuickItem*>(object);
+        emitChange = true;
+    }
+
+    if (status == UbuntuToolkit::AsyncLoader::Reset) {
+        // de-parent first
+        if (m_contentItem) {
+            m_contentItem->setParentItem(nullptr);
+        }
+        delete m_contentItem;
+        m_contentItem = 0;
+        emitChange = true;
+    }
+
+    if (emitChange && m_bottomEdge) {
+        UCBottomEdgePrivate::get(m_bottomEdge)->setCurrentContent(this, false);
+    }
 }
 
 /*!
@@ -227,6 +258,18 @@ void UCBottomEdgeRegion::setTo(qreal to)
  * when the drag gesture enters the section area. The orginal value will be restored
  * once the gesture leaves the section area.
  */
+void UCBottomEdgeRegion::setUrl(const QUrl &url)
+{
+    if (m_url == url) {
+        return;
+    }
+    m_url = url;
+    Q_EMIT contentChanged(m_url);
+    // invoke loader if the preload is set
+    if (m_bottomEdge && (m_bottomEdge->preloadContent() || m_default)) {
+        m_loader.load(m_url, new QQmlContext(qmlContext(m_bottomEdge)));
+    }
+}
 
 /*!
  * \qmlproperty Component BottomEdgeRegion::contentComponent
@@ -235,6 +278,18 @@ void UCBottomEdgeRegion::setTo(qreal to)
  * when the drag gesture enters the section area. The orginal value will be restored
  * once the gesture leaves the section area.
  */
+void UCBottomEdgeRegion::setComponent(QQmlComponent *component)
+{
+    if (m_component == component) {
+        return;
+    }
+    m_component = component;
+    Q_EMIT contentComponentChanged(m_component);
+    // invoke loader if the preload is set
+    if (m_bottomEdge && (m_bottomEdge->preloadContent() || m_default)) {
+        m_loader.load(m_component, new QQmlContext(qmlContext(m_bottomEdge)));
+    }
+}
 
 /*!
  * \qmlsignal void BottomEdgeRegion::entered()

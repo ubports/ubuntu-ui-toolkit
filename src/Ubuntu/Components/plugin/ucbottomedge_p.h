@@ -35,6 +35,12 @@ class UCBottomEdgePrivate : public UCStyledItemBasePrivate, protected QQuickItem
 public:
     UCBottomEdgePrivate();
 
+    enum PreloadType {
+        PreloadUrl,
+        PreloadComponent,
+        PreloadAny
+    };
+
     static UCBottomEdgePrivate *get(UCBottomEdge *item)
     {
         return item->d_func();
@@ -55,7 +61,6 @@ public:
 
     // page header manipulation
     void patchContentItemHeader();
-    void createDefaultRegions();
     void updateProgressionStates(qreal distance);
     bool setActiveRegion(UCBottomEdgeRegion *range);
     void detectDirection(qreal currentDistance);
@@ -74,17 +79,14 @@ public:
     void itemChildAdded(QQuickItem *item, QQuickItem *child);
     void itemChildRemoved(QQuickItem *item, QQuickItem *child);
 
-    void preload();
-    void onLoaderStatusChanged(QQmlIncubator::Status status, QObject *object);
-
+    void setCurrentContent(UCBottomEdgeRegion *region, bool force);
     // members
-    QUrl contentUrl;
     QList<UCBottomEdgeRegion*> regions;
+    QPointer<QQuickItem> currentContentItem;
+    UCBottomEdgeRegion *defaultRegion;
     UCBottomEdgeRegion *activeRegion;
     UCBottomEdgeHint *hint;
-    QQmlComponent *contentComponent;
     UCBottomEdgeStyle *bottomPanel;
-    UbuntuToolkit::AsyncLoader *loader;
 
     qreal previousDistance;
     qreal dragProgress;

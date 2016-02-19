@@ -114,8 +114,6 @@ protected:
     Q_DECLARE_PRIVATE(UCBottomEdge)
 
 private:
-    Q_PRIVATE_SLOT(d_func(), void onLoaderStatusChanged(QQmlIncubator::Status status, QObject *object))
-
     friend class tst_BottomEdge;
 };
 Q_DECLARE_METATYPE(UCBottomEdge::Status)
