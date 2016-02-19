@@ -31,20 +31,21 @@ class UBUNTUTOOLKIT_EXPORT AsyncLoader : public QObject, protected QQmlIncubator
     Q_OBJECT
 public:
     enum LoadingStatus {
-        Null = QQmlIncubator::Null,
-        Ready = QQmlIncubator::Ready,
-        Loading = QQmlIncubator::Loading,
-        Error = QQmlIncubator::Error,
-        ComponentCreated,
+        Null,
+        Compiling,
+        Loading,
+        Initializing,
+        Ready,
+        Error,
         Reset
     };
 
     explicit AsyncLoader(QObject *parent = 0);
     ~AsyncLoader();
 
-    void load(const QUrl &url, QQmlContext *context);
-    void load(QQmlComponent *component, QQmlContext *context);
-    void reset();
+    bool load(const QUrl &url, QQmlContext *context);
+    bool load(QQmlComponent *component, QQmlContext *context);
+    bool reset();
     LoadingStatus status();
     void forceCompletion();
 
@@ -61,7 +62,7 @@ protected:
 
     QQmlComponent *m_component = nullptr;
     QQmlContext *m_context = nullptr;
-    LoadingStatus m_status = Null;
+    LoadingStatus m_status = Ready;
     bool m_ownComponent = false;
 };
 

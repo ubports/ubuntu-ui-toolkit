@@ -27,8 +27,9 @@ class LoaderSpy : public QObject
     Q_OBJECT
 public:
     UbuntuToolkit::AsyncLoader *m_loader;
-    QObject *m_object = nullptr;
-    bool m_loaded = false;
+    QScopedPointer<QObject> m_object;
+    bool m_done = false;
+    bool m_error = false;
     QList<UbuntuToolkit::AsyncLoader::LoadingStatus> m_statusList;
 public:
     LoaderSpy(UbuntuToolkit::AsyncLoader *loader)
@@ -42,11 +43,13 @@ public:
 protected Q_SLOTS:
     virtual void onLoadingStatusChanged(UbuntuToolkit::AsyncLoader::LoadingStatus status, QObject *object)
     {
-        qDebug() << "STATUS" << status;
         m_statusList << status;
         if (status == UbuntuToolkit::AsyncLoader::Ready) {
-            m_loaded = true;
-            m_object = object;
+            m_done = true;
+            m_object.reset(object);
+        }
+        if (status == UbuntuToolkit::AsyncLoader::Error) {
+            m_error = true;
         }
     }
 };
@@ -64,17 +67,49 @@ public:
 
     void onLoadingStatusChanged(UbuntuToolkit::AsyncLoader::LoadingStatus status, QObject *object) override
     {
-        if (status == UbuntuToolkit::AsyncLoader::Null) {
-            qDebug() << "SHIT!!";
-        }
-        LoaderSpy::onLoadingStatusChanged(status, object);
         if (status == UbuntuToolkit::AsyncLoader::Loading) {
             m_loader->reset();
             m_reset = true;
         }
+        LoaderSpy::onLoadingStatusChanged(status, object);
     }
 };
 
+class SecondLoaderSpy : public LoaderSpy
+{
+    Q_OBJECT
+public:
+    bool m_loadResult = false;
+public:
+    SecondLoaderSpy(UbuntuToolkit::AsyncLoader *loader, UbuntuToolkit::AsyncLoader::LoadingStatus loadAt,
+                    const QUrl &url, QQmlContext *context)
+        : LoaderSpy(loader)
+        , m_loadAt(loadAt)
+        , m_url(url)
+        , m_context(context)
+    {
+    }
+
+    void onLoadingStatusChanged(UbuntuToolkit::AsyncLoader::LoadingStatus status, QObject *object) override
+    {
+        if (status == (UbuntuToolkit::AsyncLoader::LoadingStatus)m_loadAt) {
+            m_loadAt = -1;
+            delete object;
+            object = nullptr;
+            m_loadResult = m_loader->load(m_url, m_context);
+        }
+        LoaderSpy::onLoadingStatusChanged(status, object);
+    }
+
+private:
+    int m_loadAt;
+    QUrl m_url;
+    QQmlContext *m_context;
+};
+
+/********************************************************************
+ * Test
+ ********************************************************************/
 class tst_AsyncLoader : public QObject
 {
     Q_OBJECT
@@ -85,16 +120,35 @@ private Q_SLOTS:
         QTest::addColumn<bool>("loadAsDocument");
         QTest::addColumn<QString>("document");
         QTest::addColumn<int>("mode");
+        QTest::addColumn< QList<int> >("statuses");
 
-        QTest::newRow("document") << true << "Document.qml" << (int)QQmlComponent::Asynchronous;
-        QTest::newRow("component, asynchronous") << false << "Document.qml" << (int)QQmlComponent::Asynchronous;
-        QTest::newRow("component, synchronous") << false << "Document.qml" << (int)QQmlComponent::PreferSynchronous;
+        QTest::newRow("document") << true << "Document.qml" << (int)QQmlComponent::Asynchronous
+                                  << (QList<int>()
+                                      << UbuntuToolkit::AsyncLoader::Compiling
+                                      << UbuntuToolkit::AsyncLoader::Loading
+                                      << UbuntuToolkit::AsyncLoader::Initializing
+                                      << UbuntuToolkit::AsyncLoader::Ready
+                                      );
+        QTest::newRow("component, asynchronous") << false << "Document.qml" << (int)QQmlComponent::Asynchronous
+                                                 << (QList<int>()
+                                                     << UbuntuToolkit::AsyncLoader::Compiling
+                                                     << UbuntuToolkit::AsyncLoader::Loading
+                                                     << UbuntuToolkit::AsyncLoader::Initializing
+                                                     << UbuntuToolkit::AsyncLoader::Ready
+                                                     );
+        QTest::newRow("component, synchronous") << false << "Document.qml" << (int)QQmlComponent::PreferSynchronous
+                                                << (QList<int>()
+                                                    << UbuntuToolkit::AsyncLoader::Loading
+                                                    << UbuntuToolkit::AsyncLoader::Initializing
+                                                    << UbuntuToolkit::AsyncLoader::Ready
+                                                    );
     }
     void test_load()
     {
         QFETCH(bool, loadAsDocument);
         QFETCH(QString, document);
         QFETCH(int, mode);
+        QFETCH(QList<int>, statuses);
 
         QScopedPointer<UbuntuTestCase> view(new UbuntuTestCase("TestApp.qml"));
         UbuntuToolkit::AsyncLoader loader;
@@ -110,18 +164,21 @@ private Q_SLOTS:
         }
         QTRY_VERIFY_WITH_TIMEOUT(spy.m_object != nullptr, 2000);
         // check the statuses
-        QCOMPARE(spy.m_statusList.length(), 4);
-        QCOMPARE(spy.m_statusList[0], UbuntuToolkit::AsyncLoader::Reset);
-        QCOMPARE(spy.m_statusList[1], UbuntuToolkit::AsyncLoader::Loading);
-        QCOMPARE(spy.m_statusList[2], UbuntuToolkit::AsyncLoader::ComponentCreated);
-        QCOMPARE(spy.m_statusList[3], UbuntuToolkit::AsyncLoader::Ready);
+        QCOMPARE(spy.m_statusList.length(), statuses.length());
+        for (int i = 0; i < spy.m_statusList.length(); i++) {
+            QVERIFY2((int)spy.m_statusList[i] == statuses[i], (QString(" Status at index %1 differs").arg(i)).toLocal8Bit().constData());
+        }
     }
 
     void test_load_with_error()
     {
+        QUrl document = QUrl::fromLocalFile("FaultyDocument.qml");
+        UbuntuTestCase::ignoreWarning("FaultyDocument.qml", 20, "Label is not a type");
         QScopedPointer<UbuntuTestCase> view(new UbuntuTestCase("TestApp.qml"));
         UbuntuToolkit::AsyncLoader loader;
-        loader.load(QUrl::fromLocalFile("FaultyDocument.qml"), view->rootContext());
+        LoaderSpy spy(&loader);
+        loader.load(document, view->rootContext());
+        QTRY_VERIFY_WITH_TIMEOUT(spy.m_error == true, 2000);
     }
 
     void test_load_and_cancel_data()
@@ -152,13 +209,57 @@ private Q_SLOTS:
             component.reset(new QQmlComponent(view->engine(), QUrl::fromLocalFile(document), (QQmlComponent::CompilationMode)mode));
             loader.load(component.data(), view->rootContext());
         }
-//        QTRY_VERIFY_WITH_TIMEOUT(spy.m_reset, 2000);
-        QTest::qWait(2000);
+        if (loader.status() < UbuntuToolkit::AsyncLoader::Loading) {
+            // cannot reset yet!
+            QVERIFY(!loader.reset());
+        }
+        QTRY_VERIFY_WITH_TIMEOUT(spy.m_reset, 2000);
     }
 
+    void test_second_load_scenarios_data()
+    {
+        QTest::addColumn<QString> ("doc1");
+        QTest::addColumn<QString> ("doc2");
+        QTest::addColumn<int> ("when");
+        QTest::addColumn<bool> ("success");
+
+        QTest::newRow("status = Compiling")
+                << "Document.qml" << "HeavyDocument.qml"
+                << (int)UbuntuToolkit::AsyncLoader::Compiling << false;
+        QTest::newRow("status = Loading")
+                << "Document.qml" << "HeavyDocument.qml"
+                << (int)UbuntuToolkit::AsyncLoader::Loading << true;
+        QTest::newRow("status = Initializing")
+                << "Document.qml" << "HeavyDocument.qml"
+                << (int)UbuntuToolkit::AsyncLoader::Initializing<< true;
+        QTest::newRow("status = Ready")
+                << "Document.qml" << "HeavyDocument.qml"
+                << (int)UbuntuToolkit::AsyncLoader::Ready << true;
+        QTest::newRow("status = Error")
+                << "FaultyDocument.qml" << "HeavyDocument.qml"
+                << (int)UbuntuToolkit::AsyncLoader::Error << true;
+    }
+    void test_second_load_scenarios()
+    {
+        QFETCH(QString, doc1);
+        QFETCH(QString, doc2);
+        QFETCH(int, when);
+        QFETCH(bool, success);
+
+        QScopedPointer<UbuntuTestCase> view(new UbuntuTestCase("TestApp.qml"));
+        UbuntuToolkit::AsyncLoader loader;
+        if (when == (int)UbuntuToolkit::AsyncLoader::Error) {
+            UbuntuTestCase::ignoreWarning("FaultyDocument.qml", 20, "Label is not a type");
+        }
+
+        SecondLoaderSpy spy(&loader, (UbuntuToolkit::AsyncLoader::LoadingStatus)when, QUrl::fromLocalFile(doc2), view->rootContext());
+        // load the first document
+        QVERIFY(loader.load(QUrl::fromLocalFile(doc1), view->rootContext()));
+        QTRY_VERIFY_WITH_TIMEOUT(spy.m_object != nullptr, 4000);
+        QCOMPARE(spy.m_loadResult, success);
+    }
 };
 
 QTEST_MAIN(tst_AsyncLoader)
 
 #include "tst_asyncloader.moc"
-
