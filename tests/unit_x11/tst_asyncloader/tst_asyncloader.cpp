@@ -231,7 +231,7 @@ private Q_SLOTS:
                 << (int)UbuntuToolkit::AsyncLoader::Loading << true;
         QTest::newRow("status = Initializing")
                 << "Document.qml" << "HeavyDocument.qml"
-                << (int)UbuntuToolkit::AsyncLoader::Initializing<< true;
+                << (int)UbuntuToolkit::AsyncLoader::Initializing << true;
         QTest::newRow("status = Ready")
                 << "Document.qml" << "HeavyDocument.qml"
                 << (int)UbuntuToolkit::AsyncLoader::Ready << true;

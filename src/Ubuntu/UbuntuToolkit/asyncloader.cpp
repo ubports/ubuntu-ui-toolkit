@@ -59,7 +59,8 @@ void AsyncLoader::statusChanged(Status status)
     if (status == QQmlIncubator::Error) {
         QList<QQmlError> e = errors();
         for (int i = 0; i < e.size(); i++) {
-            qWarning() << e[0].toString();
+            // remove quotes and any leading/trailing whitespace
+            qWarning().noquote() << e[0].toString().trimmed();
         }
     }
     if (status != QQmlIncubator::Loading) {
@@ -102,7 +103,7 @@ void AsyncLoader::onComponentStatusChanged(QQmlComponent::Status status)
 {
     if (status == QQmlComponent::Error) {
         QString error = m_component->errorString();
-        // remove any trailing LF
+        // remove quotes and any leading/trailing whitespace
         qWarning().noquote() << error.trimmed();
         detachComponent();
         emitStatus(Error);
@@ -119,6 +120,10 @@ void AsyncLoader::onComponentStatusChanged(QQmlComponent::Status status)
  * \param context
  * \return bool
  * The method initiates the loading of a given \e url within a specific \e context.
+ * Returns true on success.
+ * \note If the loading is initiated while there is a previous loading in place,
+ * you must make sure you delete the object from the previous loading before you
+ * trigger the new load.
  */
 bool AsyncLoader::load(const QUrl &url, QQmlContext *context)
 {
@@ -139,6 +144,10 @@ bool AsyncLoader::load(const QUrl &url, QQmlContext *context)
  * \param context
  * \return bool
  * The method initiates the loading of a \e component within the given \e context.
+ * Returns true on success.
+ * \note If the loading is initiated while there is a previous loading in place,
+ * you must make sure you delete the object from the previous loading before you
+ * trigger the new load.
  */
 bool AsyncLoader::load(QQmlComponent *component, QQmlContext *context)
 {
