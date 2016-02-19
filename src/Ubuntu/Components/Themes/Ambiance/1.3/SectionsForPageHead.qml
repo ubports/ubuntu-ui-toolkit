@@ -25,7 +25,7 @@ import Ubuntu.Components 1.3
  */
 StyledItem {
     id: sections
-    styleName: "SectionsStyle"
+    styleName: "SectionsForPageHeadStyle"
 
     property list<Action> actions
     property var model: actions

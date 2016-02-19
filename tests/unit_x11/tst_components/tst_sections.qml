@@ -95,6 +95,11 @@ Rectangle {
             enabled: false
         }
         Sections {
+            id: noSelectionSections
+            actions: root.actionList
+            selectedIndex: -1
+        }
+        Sections {
             id: enabledStringSections
             model: root.stringList
         }
@@ -208,12 +213,12 @@ Rectangle {
 
         function check_selected_section(sections, index, name) {
             var v = sections.selectedIndex;
-            compare(v, index, "selectedIndex "+v+" does not match "+index);
+            compare(v, index, "selectedIndex " + v + " does not match " + index);
             v = get_selected_section_button_index(sections);
-            compare(v, index, "selected button index "+v+" does not match "+index);
+            compare(v, index, "selected button index " + v + " does not match " + index);
             if (v === -1) return;
             var w = get_selected_section_button_text(sections);
-            compare(w, name, "selected button text \'"+w+"\' does not match \'"+name+"\'");
+            compare(w, name, "selected button text \'" + w + "\' does not match \'" + name + "\'");
         }
 
         // in each test function below, test the desired behavior
@@ -230,6 +235,9 @@ Rectangle {
         }
         function test_0_first_section_initially_selected_strings_disabled() {
             check_selected_section(disabledStringSections, 0, "string zero");
+        }
+        function test_0_no_selected_section_initalization() {
+            check_selected_section(noSelectionSections, -1, "");
         }
 
         function test_number_of_section_buttons() {
