@@ -16,13 +16,14 @@
  */
 
 import QtQuick 2.4
+import Ubuntu.Components 1.3
 
 Column {
     anchors.fill: parent
     spacing: 1
     Repeater {
-        model: 10000
-        TextInput {
+        model: 500
+        TextField {
             width: parent.width
         }
     }
