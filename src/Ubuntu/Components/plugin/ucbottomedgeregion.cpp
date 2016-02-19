@@ -163,12 +163,14 @@ void UCBottomEdgeRegion::loadRegionContent()
 
 void UCBottomEdgeRegion::loadContent(LoadingType type)
 {
+    // no need to create new context as we do not set any context properties
+    // for which we would need one
     switch (type) {
     case LoadingUrl:
-        m_loader.load(m_url, new QQmlContext(qmlContext(m_bottomEdge)));
+        m_loader.load(m_url, qmlContext(m_bottomEdge));
         return;
     case LoadingComponent:
-        m_loader.load(m_component, new QQmlContext(qmlContext(m_bottomEdge)));
+        m_loader.load(m_component, qmlContext(m_bottomEdge));
         return;
     }
 }
