@@ -134,9 +134,7 @@ void UCBottomEdgeRegion::enter()
         }
     } else {
         // initiate loading, component has priority
-        if (m_component) {
-            m_loader.load(m_component, new QQmlContext(qmlContext(m_bottomEdge)));
-        }
+        loadRegionContent();
     }
 }
 
@@ -157,9 +155,21 @@ const QRectF UCBottomEdgeRegion::rect(const QRectF &bottomEdgeRect)
 void UCBottomEdgeRegion::loadRegionContent()
 {
     if (m_component) {
-        m_loader.load(m_component, new QQmlContext(qmlContext(m_bottomEdge)));
+        loadContent(LoadingComponent);
     } else if (m_url.isValid()) {
+        loadContent(LoadingUrl);
+    }
+}
+
+void UCBottomEdgeRegion::loadContent(LoadingType type)
+{
+    switch (type) {
+    case LoadingUrl:
         m_loader.load(m_url, new QQmlContext(qmlContext(m_bottomEdge)));
+        return;
+    case LoadingComponent:
+        m_loader.load(m_component, new QQmlContext(qmlContext(m_bottomEdge)));
+        return;
     }
 }
 
@@ -266,8 +276,8 @@ void UCBottomEdgeRegion::setUrl(const QUrl &url)
     m_url = url;
     Q_EMIT contentChanged(m_url);
     // invoke loader if the preload is set
-    if (m_bottomEdge && (m_bottomEdge->preloadContent() || m_default)) {
-        m_loader.load(m_url, new QQmlContext(qmlContext(m_bottomEdge)));
+    if (m_bottomEdge && (m_bottomEdge->preloadContent() || m_default) && !m_url.isValid()) {
+        loadContent(LoadingUrl);
     }
 }
 
@@ -286,8 +296,8 @@ void UCBottomEdgeRegion::setComponent(QQmlComponent *component)
     m_component = component;
     Q_EMIT contentComponentChanged(m_component);
     // invoke loader if the preload is set
-    if (m_bottomEdge && (m_bottomEdge->preloadContent() || m_default)) {
-        m_loader.load(m_component, new QQmlContext(qmlContext(m_bottomEdge)));
+    if (m_bottomEdge && (m_bottomEdge->preloadContent() || m_default) && m_component) {
+        loadContent(LoadingComponent);
     }
 }
 

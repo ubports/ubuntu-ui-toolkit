@@ -83,6 +83,10 @@ Q_SIGNALS:
     void dragEnded();
 
 protected:
+    enum LoadingType {
+        LoadingUrl,
+        LoadingComponent
+    };
     UbuntuToolkit::AsyncLoader m_loader;
     QUrl m_url;
     QPointer<UCBottomEdge> m_bottomEdge;
@@ -98,6 +102,7 @@ protected:
     friend class UCBottomEdgePrivate;
     friend class tst_BottomEdge;
 
+    void loadContent(LoadingType type);
     Q_SLOT void onLoaderStatusChanged(UbuntuToolkit::AsyncLoader::LoadingStatus,QObject*);
 };
 
