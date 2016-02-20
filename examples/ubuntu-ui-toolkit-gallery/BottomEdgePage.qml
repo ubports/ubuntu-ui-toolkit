@@ -36,7 +36,7 @@ Template {
                 spacing: units.gu(1)
                 CheckBox {
                     id: contentToLayout
-                    text: i18n.tr("push content into the layout")
+                    text: i18n.tr("push content into the column")
                     enabled: bottomEdge.hint.status >= BottomEdgeHint.Active
                 }
                 Label {
@@ -52,28 +52,38 @@ Template {
         className: "BottomEdge"
 
         TemplateRow {
-            title: i18n.tr("preloadContent")
-            CheckBox {
-                checked: bottomEdge.preloadContent
-                onTriggered: bottomEdge.preloadContent = checked
+            title: i18n.tr("Content")
+            Row {
+                spacing: units.gu(1)
+                CheckBox {
+                    id: preloadContent
+                    text: i18n.tr("preload content")
+                    checked: bottomEdge.preloadContent
+                    onTriggered: bottomEdge.preloadContent = checked
+                }
+                Label {
+                    text: preloadContent.text
+                    anchors.verticalCenter: preloadContent.verticalCenter
+                }
             }
         }
 
-        TemplateRow {
+        TemplateFlow {
             title: i18n.tr("Top")
             Slider {
                 id: bottomEdgeHeight
+                width: Math.min(units.gu(30), parent.width)
                 maximumValue: page.height
                 value: bottomEdge.height
                 onValueChanged: bottomEdge.height = value
             }
         }
 
-        TemplateRow {
+        TemplateFlow {
             title: i18n.tr("Regions")
             Slider {
                 id: regionCount
-                width: units.gu(20)
+                width: Math.min(units.gu(20), parent.width)
                 maximumValue: 3.0
                 live: true
             }
@@ -135,8 +145,6 @@ Template {
             }
         }
 
-//        preloadContent: true
-
         regions: [
             BottomEdgeRegion {
                 objectName: "CustomRegion1"
@@ -144,6 +152,9 @@ Template {
                 to: 0.3
                 property color baseColor: UbuntuColors.silk
                 contentComponent: Rectangle {
+                    PageHeader {
+                        title: i18n.tr("CustomRegion #1")
+                    }
                     width: bottomEdge.width - units.gu(10)
                     height: bottomEdge.height
                     color: UbuntuColors.blue
@@ -155,6 +166,9 @@ Template {
                 from: 0.3
                 to: 0.6
                 contentComponent: Rectangle {
+                    PageHeader {
+                        title: i18n.tr("CustomRegion #2")
+                    }
                     width: bottomEdge.width - units.gu(30)
                     height: bottomEdge.height
                     color: UbuntuColors.red
