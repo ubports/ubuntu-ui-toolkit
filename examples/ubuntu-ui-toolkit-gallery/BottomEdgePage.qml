@@ -52,6 +52,14 @@ Template {
         className: "BottomEdge"
 
         TemplateRow {
+            title: i18n.tr("preloadContent")
+            CheckBox {
+                checked: bottomEdge.preloadContent
+                onTriggered: bottomEdge.preloadContent = checked
+            }
+        }
+
+        TemplateRow {
             title: i18n.tr("Top")
             Slider {
                 id: bottomEdgeHeight
@@ -127,18 +135,30 @@ Template {
             }
         }
 
+//        preloadContent: true
+
         regions: [
             BottomEdgeRegion {
                 objectName: "CustomRegion1"
                 enabled: regionConfig.model >= 1
                 to: 0.3
                 property color baseColor: UbuntuColors.silk
+                contentComponent: Rectangle {
+                    width: bottomEdge.width - units.gu(10)
+                    height: bottomEdge.height
+                    color: UbuntuColors.blue
+                }
             },
             BottomEdgeRegion {
                 objectName: "CustomRegion2"
                 enabled: regionConfig.model >= 2
                 from: 0.3
                 to: 0.6
+                contentComponent: Rectangle {
+                    width: bottomEdge.width - units.gu(30)
+                    height: bottomEdge.height
+                    color: UbuntuColors.red
+                }
             },
             BottomEdgeRegion {
                 objectName: "CustomRegion3"

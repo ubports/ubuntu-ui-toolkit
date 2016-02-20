@@ -22,4 +22,5 @@ DISTFILES += \
     AutoCollapseInPageWithPageHeader.qml \
     LeanActiveRegionChange.qml \
     UncoveredByRegion.qml \
-    OverriddenHintTrigger.qml
+    OverriddenHintTrigger.qml \
+    PreloadedContent.qml

@@ -39,7 +39,7 @@ class UCBottomEdgeRegion : public QObject
     Q_PROPERTY(QUrl contentUrl MEMBER m_url WRITE setUrl NOTIFY contentChanged FINAL)
     Q_PROPERTY(QQmlComponent* contentComponent MEMBER m_component WRITE setComponent NOTIFY contentComponentChanged FINAL)
 public:
-    explicit UCBottomEdgeRegion(QObject *parent = 0);
+    explicit UCBottomEdgeRegion(QObject *parent = 0, bool isDefault = false);
     void attachToBottomEdge(UCBottomEdge *bottomEdge);
 
     // used internally
@@ -68,8 +68,6 @@ public:
     {
         return const_cast<const UbuntuToolkit::AsyncLoader*>(&m_loader);
     }
-    void loadRegionContent();
-    void discardRegionContent();
 
 Q_SIGNALS:
     void enabledChanged();
@@ -96,12 +94,14 @@ protected:
     qreal m_to;
     bool m_enabled:1;
     bool m_active:1;
-    bool m_default:1;
+    const bool m_default:1;
 
     friend class UCBottomEdge;
     friend class UCBottomEdgePrivate;
     friend class tst_BottomEdge;
 
+    void loadRegionContent();
+    void discardRegionContent();
     void loadContent(LoadingType type);
     Q_SLOT void onLoaderStatusChanged(UbuntuToolkit::AsyncLoader::LoadingStatus,QObject*);
 };

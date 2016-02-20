@@ -121,4 +121,6 @@ Q_DECLARE_METATYPE(UCBottomEdge::DragDirection)
 
 Q_DECLARE_LOGGING_CATEGORY(ucBottomEdge)
 
+#define LOG     qCDebug(ucBottomEdge) << "[BottomEdge]"
+
 #endif // UCBOTTOMEDGE_H

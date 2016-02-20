@@ -25,6 +25,9 @@ BottomEdgeStyle {
     panelAnimation: panelBehavior
     revealThreshold: bottomEdge.hint.height + units.gu(2)
 
+    //deprecated for now
+    contentItem: bottomEdge.contentItem
+
     // own styling properties
     property color backgroundColor: !panelItem.collapsing
                                     ? Qt.rgba(0, 0, 0, Math.min(0.25, (height - revealThreshold - panelItem.y) / (height - revealThreshold)))

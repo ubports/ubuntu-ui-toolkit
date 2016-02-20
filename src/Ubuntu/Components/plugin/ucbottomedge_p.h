@@ -73,7 +73,8 @@ public:
     void itemChildAdded(QQuickItem *item, QQuickItem *child);
     void itemChildRemoved(QQuickItem *item, QQuickItem *child);
 
-    void setCurrentContent(UCBottomEdgeRegion *region, bool force);
+    void setCurrentContent();
+    void resetCurrentContent(QQuickItem *newItem);
     // members
     QList<UCBottomEdgeRegion*> regions;
     QPointer<QQuickItem> currentContentItem;
