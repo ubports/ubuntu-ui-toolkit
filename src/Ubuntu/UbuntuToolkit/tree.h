@@ -18,6 +18,7 @@
 #define TREE_H
 
 #include <QObject>
+#include <QVariant>
 #include "ubuntutoolkitglobal.h"
 
 namespace UbuntuToolkit {
