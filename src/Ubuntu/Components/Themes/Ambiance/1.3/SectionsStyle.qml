@@ -76,7 +76,7 @@ Item {
         id: listViewContainer
         anchors.fill: parent
 
-        property real listViewMargins: units.gu(3)
+        property real listViewMargins: units.gu(2)
 
         //We need to set this to 0.0 when OpacityMask will draw this listview for us.
         //we don't set visible: false because we still want to get the input events!
@@ -320,7 +320,7 @@ Item {
         start: Qt.point(0,0)
         end: Qt.point(width,0)
 
-        property real gradientWidth: units.gu(3) / gradient.width
+        property real gradientWidth: listViewContainer.listViewMargins / gradient.width
         //the width is gradientWidth, but we want the gradient to actually start/finish at gradientSplitPosition
         //just to leave some margin.
         property real gradientSplitPosition: 3/4 * gradientWidth
