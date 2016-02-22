@@ -88,9 +88,12 @@ Item {
 
             property bool animateContentX: false
 
-            // Position the selected item correctly. For a scrollable ListView,
-            //  this positions the item in the middle. If the ListView is not scrollable,
-            //  the first item will be aligned with the left of the ListView.
+            // Position the selected item correctly.
+            // For a scrollable ListView, if the item was already fully visible,
+            //  no repositioning is needed. If the item was (partially) invisible,
+            //  position it so that it becomes fully visible.
+            // If the ListView is not scrollable, the first item will be aligned with
+            //  the left of the ListView.
             function positionItem(item) {
                 if (item !== null) {
                     //stop the flick before doing computations
@@ -104,16 +107,14 @@ Item {
                         contentXAnim.stop();
                     }
 
-                    var pos = item.mapToItem(sectionsListView.contentItem, 0, 0);
-                    var newContentX = pos.x - sectionsListView.width/2 + item.width/2;
                     contentXAnim.from = contentX;
                     //make sure we don't overshoot bounds
                     if (sectionsListView.contentWidth <= sectionsListView.width) {
                         // No scrolling, position the sections on the left.
                         contentXAnim.to = originX;
                     } else {
-                        // Position the selected Item in the middle.
-                        contentXAnim.to = MathUtils.clamp(newContentX, originX, originX + contentWidth - width);
+                        // Position the selected Item so that it is fully visible.
+                        contentXAnim.to = MathUtils.clamp(contentX, originX, originX + contentWidth - width);
                     }
                     if (contentXAnim.from !== contentXAnim.to) {
                         contentXAnim.start();
