@@ -204,9 +204,11 @@ void UCPageWrapperPrivate::copyProperties(QObject *target)
     // copy the properties to the page object
     QVariantMap propMap = m_properties.toMap();
     QVariantMap::const_iterator i = propMap.constBegin();
+
+    QQmlContext *context = m_itemContext ? m_itemContext : qmlContext(target);
     for (;i != propMap.constEnd(); i++) {
-        if (!target->setProperty(qPrintable(i.key()), i.value())) {
-            qmlInfo(q) << "Setting unknown property "<<i.key();
+        if (!QQmlProperty::write(target, i.key(), i.value(), context)) {
+            qmlInfo(q) << "Could not assign value: "<<i.value()<<"to property: "<<i.key();
         }
     }
 }
@@ -389,9 +391,9 @@ void UCPageWrapperPrivate::createObjectState()
             QObject::disconnect(*connHandle);
             QQuickItem *theItem = toItem(target, false);
             if (theItem) {
+                initItem(theItem);
                 m_itemContext->setParent(theItem);
                 m_itemContext = nullptr;
-                initItem(theItem);
             }
         };
         *connHandle = QObject::connect(m_incubator, &UCPageWrapperIncubator::initialStateRequested, asyncCallback);

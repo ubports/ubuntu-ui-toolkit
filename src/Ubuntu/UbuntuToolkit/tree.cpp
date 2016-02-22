@@ -114,12 +114,20 @@ QList<QObject *> Tree::prune(const int stem)
 //
 // Default values for node and inclusive are top() and true.
 // Returns a list that contains the nodes that were chopped.
-QList<QObject *> Tree::chop(QObject *node, bool inclusive)
+QList<QObject *> Tree::chop(const QVariant &jsNode, const QVariant &jsInclusive)
 {
     Q_D(Tree);
 
-    if(!node)
+    QObject *node = nullptr;
+
+    if (!jsNode.isValid())
         node = top();
+    else
+        node = jsNode.value<QObject *>();
+
+    bool inclusive = true;
+    if (jsInclusive.isValid() && jsInclusive.canConvert<bool>())
+        inclusive = jsInclusive.toBool();
 
     int nodeIndex = index(node);
     if (nodeIndex < 0) {
@@ -177,9 +185,21 @@ QList<QObject *> Tree::chop(QObject *node, bool inclusive)
 //
 // Calling top() with no parameters returns top(0, false, 0) which is the
 //  last node that was added to the tree.
-QObject *Tree::top(const int stem, const bool exactMatch, const int n) const
+QObject *Tree::top(const QVariant &jsStem, const QVariant &jsExactMatch, const QVariant &jsN) const
 {
     const Q_D(Tree);
+
+    int stem = 0;
+    bool exactMatch = false;
+    int n = 0;
+
+    //@FIXME remove this part once we do not need to export Tree to JS anymore
+    if (jsStem.isValid() && jsStem.canConvert<int>())
+        stem = jsStem.value<int>();
+    if (jsExactMatch.isValid() && jsExactMatch.canConvert<bool>())
+        exactMatch = jsExactMatch.toBool();
+    if (jsN.isValid() && jsN.canConvert<int>())
+        n = jsN.value<int>();
 
     int st;
     int count = n;
