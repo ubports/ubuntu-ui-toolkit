@@ -32,9 +32,6 @@ class ButtonsTestCase(gallery.GalleryTestCase):
         ('standard button', dict(
             button_name="button_text", is_enabled=True, color=None, icon=None,
             text="Call")),
-        ('button with color', dict(
-            button_name="button_color", is_enabled=True,
-            color=[62, 179, 79, 255], icon=None, text="Call Ctrl+L")),
         ('button with icon', dict(
             button_name="button_iconsource", is_enabled=True, color=None,
             icon="call.png", text=None)),
@@ -64,9 +61,6 @@ class ButtonsTestCase(gallery.GalleryTestCase):
         button = self.app.select_single(objectName=self.button_name)
         self.assertIsNot(button, None)
         self.assertThat(button.enabled, Equals(self.is_enabled))
-
-        if self.color is not None:
-            self.assertThat(button.color, Equals(self.color))
 
         if self.icon is not None:
             self.assertTrue(button.iconSource.endswith(self.icon))
