@@ -316,9 +316,7 @@ Item {
         id: gradient
 
         visible: false
-        anchors {
-            fill: parent
-        }
+        anchors.fill: parent
         start: Qt.point(0,0)
         end: Qt.point(width,0)
 
@@ -350,12 +348,9 @@ Item {
             }
     }
 
-
     OpacityMask {
         id: mask
-        anchors {
-            fill: parent
-        }
+        anchors.fill: parent
         visible: false
         source: listViewContainer
         maskSource: gradient
