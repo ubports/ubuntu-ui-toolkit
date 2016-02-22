@@ -316,7 +316,9 @@ Item {
         id: gradient
 
         visible: false
-        anchors.fill: parent
+        anchors {
+            fill: parent
+        }
         start: Qt.point(0,0)
         end: Qt.point(width,0)
 
@@ -335,12 +337,25 @@ Item {
             GradientStop { position: 1.0 - gradient.gradientSplitPosition; color: Qt.rgba(1,1,1,0) }
             GradientStop { position: 1.0; color: Qt.rgba(1,1,1,0) }
         }
+
+            Rectangle {
+                // full opacity for the underline at the bottom in the mask below
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                    bottom: parent.bottom
+                }
+                height: sectionsStyle.underlineHeight
+                color: "white"
+            }
     }
+
 
     OpacityMask {
         id: mask
-        anchors.fill: parent
-
+        anchors {
+            fill: parent
+        }
         visible: false
         source: listViewContainer
         maskSource: gradient
