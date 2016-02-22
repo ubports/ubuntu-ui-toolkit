@@ -288,9 +288,12 @@ Item {
 
         Icon {
             id: leftHoveringIcon
-            anchors.left: parent.left
-            anchors.leftMargin: units.gu(1)
-            anchors.verticalCenter: parent.verticalCenter
+            anchors {
+                left: parent.left
+                leftMargin: (listViewContainer.listViewMargins - width) / 2
+                bottom: parent.bottom
+                bottomMargin: units.gu(2)
+            }
             width: units.gu(1)
             height: units.gu(1)
             visible: false
@@ -301,9 +304,12 @@ Item {
 
         Icon {
             id: rightHoveringIcon
-            anchors.right: parent.right
-            anchors.rightMargin: units.gu(1)
-            anchors.verticalCenter: parent.verticalCenter
+            anchors {
+                right: parent.right
+                rightMargin: (listViewContainer.listViewMargins - width) / 2
+                bottom: parent.bottom
+                bottomMargin: units.gu(2)
+            }
             width: units.gu(1)
             height: units.gu(1)
             visible: false
