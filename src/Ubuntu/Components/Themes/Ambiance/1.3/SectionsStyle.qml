@@ -330,7 +330,7 @@ Item {
         property real gradientWidth: listViewContainer.listViewMargins / gradient.width
         //the width is gradientWidth, but we want the gradient to actually start/finish at gradientSplitPosition
         //just to leave some margin.
-        property real gradientSplitPosition: 3/4 * gradientWidth
+        property real gradientSplitPosition: 2/3 * gradientWidth
 
         gradient: Gradient {
             //left gradient
