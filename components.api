@@ -8,6 +8,7 @@ Ubuntu.Components.AbstractButton 1.3 UCAbstractButton: ActionItem
     signal clicked()
     signal pressAndHold()
     readonly property bool pressed
+    readonly property UCMargins sensingMargins
 Ubuntu.Components.Action 1.3 1.0 0.1 UCAction: QtObject
     property string description
     property bool enabled
@@ -1557,6 +1558,12 @@ UCListItemDivider: Item
 UCListItemExpansion: QtObject
     property bool expanded
     property double height
+UCMargins: QtObject
+    property double all
+    property double bottom
+    property double left
+    property double right
+    property double top
 UCStateSaverAttached: QtObject
     property bool enabled
     property string properties
