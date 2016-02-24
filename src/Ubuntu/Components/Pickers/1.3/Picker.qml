@@ -134,7 +134,7 @@ StyledItem {
       recommended to change the delegate height through this property rather than
       changing it from the delegate itself.
       */
-    property real itemHeight: units.gu(4) + 1
+    property real itemHeight: units.gu(4)
 
     /*!
       The function positions the picker's view to the given index without animating
