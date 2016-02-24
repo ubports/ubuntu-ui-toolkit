@@ -20,6 +20,7 @@
 #include <QObject>
 #include <QQmlIncubator>
 #include <QJSValue>
+#include <QVariant>
 
 class UCPageWrapperIncubator : public QObject, public QQmlIncubator
 {
@@ -41,9 +42,14 @@ public:
     QJSValue onStatusChanged() const;
     void setOnStatusChanged(QJSValue onStatusChanged);
 
+protected:
+    // QQmlIncubator interface
+    virtual void setInitialState(QObject *target) override;
+
 
 Q_SIGNALS:
     void statusHasChanged (QQmlIncubator::Status status);
+    void initialStateRequested (QObject *target);
     void enterOnStatusChanged();
 
 private:

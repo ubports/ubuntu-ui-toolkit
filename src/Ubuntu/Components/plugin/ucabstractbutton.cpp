@@ -128,7 +128,7 @@ void UCAbstractButton::classBegin()
     UCActionItem::classBegin();
 
     // make sure we have the haptics set up!
-    HapticsProxy::instance().initialize();
+    HapticsProxy::instance()->initialize();
 
     // set up mouse area
     Q_D(UCAbstractButton);
@@ -183,7 +183,7 @@ void UCAbstractButtonPrivate::_q_mouseAreaClicked()
         return;
     }
     // play haptics
-    HapticsProxy::instance().play(QVariant());
+    HapticsProxy::instance()->play(QVariant());
     onClicked();
 }
 

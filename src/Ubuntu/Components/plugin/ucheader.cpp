@@ -46,11 +46,9 @@
         width: units.gu(50)
         height: units.gu(70)
 
-        Header {
-            id: header
+        header: Header {
             width: parent.width
             height: units.gu(6)
-            z: 1 // ensure the header goes on top of the flickable contents
             flickable: scrollableContent
 
             Rectangle {
@@ -71,8 +69,6 @@
     }
     \endqml
 
-    The default z-value is 0, so declare the Header after any Items that it should
-    overlay, or set its z-value to be larger than that of the other Items.
     The initial y-value is 0, but scrolling the flickable or setting \l exposed to
     false will change the y-value in the range from -height to 0.
 */

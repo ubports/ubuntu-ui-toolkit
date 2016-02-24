@@ -16,6 +16,7 @@
 
 #include "ucmainviewbase.h"
 #include "ucmainviewbase_p.h"
+#include "ucnamespace.h"
 
 #include "ucactionmanager.h"
 #include "ucactioncontext.h"
@@ -166,12 +167,7 @@ void UCMainViewBase::setAnchorToKeyboard(bool anchorToKeyboard)
     Q_EMIT anchorToKeyboardChanged(anchorToKeyboard);
 }
 
-/*!
-  \qmlproperty color MainView::headerColor
-  Color of the header's background.
-
-  \sa backgroundColor, footerColor
-*/
+// deprecated
 QColor UCMainViewBase::headerColor() const
 {
     return d_func()->m_headerColor;
@@ -184,32 +180,24 @@ void UCMainViewBase::setHeaderColor(QColor headerColor)
     //disable binding to background color
     d->m_flags |= UCMainViewBasePrivate::CustomHeaderColor;
     d->_q_headerColorBinding(headerColor);
+    UC_QML_DEPRECATION_WARNING("MainView.headerColor is deprecated in Ubuntu.Components 1.3.")
 }
 
 /*!
   \qmlproperty color MainView::backgroundColor
   Color of the background.
 
-  The background is usually a single color. However if \l headerColor
-  or \l footerColor are set then a gradient of colors will be drawn.
-
-  For example, in order for the MainView to draw a color gradient beneath
-  the content:
+  Example:
   \qml
       import QtQuick 2.4
-      import Ubuntu.Components 1.2
+      import Ubuntu.Components 1.3
 
       MainView {
           width: units.gu(40)
           height: units.gu(60)
-
-          headerColor: "#343C60"
-          backgroundColor: "#6A69A2"
-          footerColor: "#8896D5"
+          backgroundColor: UbuntuColors.blue
       }
   \endqml
-
-  \sa footerColor, headerColor
 */
 QColor UCMainViewBase::backgroundColor() const
 {
@@ -237,12 +225,7 @@ void UCMainViewBase::setBackgroundColor(QColor backgroundColor)
     d->doAutoTheme();
 }
 
-/*!
-  \qmlproperty color MainView::footerColor
-  Color of the footer's background.
-
-  \sa backgroundColor, headerColor
-*/
+// deprecated
 QColor UCMainViewBase::footerColor() const
 {
     return d_func()->m_footerColor;
@@ -255,11 +238,13 @@ void UCMainViewBase::setFooterColor(QColor footerColor)
     //disable binding to background color
     d->m_flags |= UCMainViewBasePrivate::CustomFooterColor;
     d->_q_footerColorBinding(footerColor);
+    UC_QML_DEPRECATION_WARNING("MainView.footerColor is deprecated in Ubuntu.Components 1.3.")
 }
 
 /*!
   \qmlproperty list<Action> MainView::actions
   \readonly
+  \deprecated
 
   A global list of actions that will be available to the system (including HUD)
   as long as the application is running. For actions that are not always available to the
@@ -273,6 +258,7 @@ QQmlListProperty<UCAction> UCMainViewBase::actions() const
 /*!
   \qmlproperty ActionManager MainView::actionManager
   \readonly
+  \deprecated
 
   The ActionManager that supervises the global and local ActionContexts.
   The \l actions property should be used preferably since it covers most
