@@ -87,6 +87,7 @@
 
 //From UbuntuToolkit
 #include <ColorUtils>
+#include <Tree>
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -300,6 +301,7 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     qmlRegisterType<UCFrame>(privateUri, 1, 3, "Frame");
     qmlRegisterType<UCPageWrapper>(privateUri, 1, 3, "PageWrapper");
     qmlRegisterType<UCAppHeaderBase>(privateUri, 1, 3, "AppHeaderBase");
+    qmlRegisterType<UbuntuToolkit::Tree>(privateUri, 1, 3, "Tree");
 
     QQmlExtensionPlugin::initializeEngine(engine, uri);
 

@@ -122,8 +122,8 @@ MainView {
         function test_tabOrder_bug1253804() {
             // FIXME bug #1541386
             if(TestExtras.openGLflavor() == "opengles2" &&
-               (TestExtras.cpuArchitecture() == "i386" || TestExtras.cpuArchitecture() == "amd64") )
-                skip("This test fails on amd64 and i386 with GLES.");
+               (TestExtras.cpuArchitecture() == "i386" || TestExtras.cpuArchitecture() == "x86_64") )
+                skip("This test fails on x86_64 and i386 with GLES.");
             var tabsModel = tabsWithRepeater.__model;
 
             compare(tabsRepeater.count, inputModel.count, "Incorrect number of tabs in Tabs");

@@ -30,7 +30,6 @@ UCPerformanceMonitor::UCPerformanceMonitor(QObject* parent) :
     QObject(parent),
     m_framesAboveThreshold(0),
     m_warningCount(0),
-    m_timer(NULL),
     m_window(NULL)
 {
     QObject::connect((QGuiApplication*)QGuiApplication::instance(), &QGuiApplication::applicationStateChanged,
@@ -39,7 +38,6 @@ UCPerformanceMonitor::UCPerformanceMonitor(QObject* parent) :
 
 UCPerformanceMonitor::~UCPerformanceMonitor()
 {
-    connectToWindow(NULL);
 }
 
 QQuickWindow* UCPerformanceMonitor::findQQuickWindow()
@@ -75,6 +73,8 @@ void UCPerformanceMonitor::connectToWindow(QQuickWindow* window)
                                 this, &UCPerformanceMonitor::startTimer);
             QObject::disconnect(m_window, &QQuickWindow::afterRendering,
                                 this, &UCPerformanceMonitor::stopTimer);
+            QObject::disconnect(m_window, &QWindow::destroyed,
+                                this, &UCPerformanceMonitor::windowDestroyed);
         }
 
         m_window = window;
@@ -86,22 +86,25 @@ void UCPerformanceMonitor::connectToWindow(QQuickWindow* window)
             QObject::connect(m_window, &QQuickWindow::afterRendering,
                              this, &UCPerformanceMonitor::stopTimer,
                              Qt::DirectConnection);
+            QObject::connect(m_window, &QWindow::destroyed,
+                             this, &UCPerformanceMonitor::windowDestroyed);
         }
     }
 }
 
 void UCPerformanceMonitor::startTimer()
 {
-    if (!m_timer) {
-        m_timer.reset(new QElapsedTimer);
-    }
-    m_timer->start();
+    m_timer.start();
 }
 
 void UCPerformanceMonitor::stopTimer()
 {
-    int totalTimeInMs = m_timer->elapsed();
-    m_timer->invalidate();
+    if (!m_timer.isValid()) {
+        return;
+    }
+
+    const int totalTimeInMs = m_timer.elapsed();
+    m_timer.invalidate();
 
     if (totalTimeInMs >= singleFrameThreshold) {
         qCWarning(ucPerformance, "Last frame took %d ms to render.", totalTimeInMs);
@@ -125,4 +128,9 @@ void UCPerformanceMonitor::stopTimer()
         qCWarning(ucPerformance, "Too many warnings were given. Performance monitoring stops.");
         connectToWindow(NULL);
     }
+}
+
+void UCPerformanceMonitor::windowDestroyed()
+{
+    connectToWindow(NULL);
 }
