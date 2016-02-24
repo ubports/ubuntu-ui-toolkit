@@ -118,7 +118,7 @@ void UCListItemDivider::updateGradient()
 {
     Q_D(UCListItemDivider);
     d->gradient.clear();
-    if (height() > UCUnits::instance().dp(1)) {
+    if (height() > UCUnits::instance()->dp(1)) {
         d->gradient.append(QGradientStop(0.0, d->colorFrom));
         d->gradient.append(QGradientStop(0.49, d->colorFrom));
         d->gradient.append(QGradientStop(0.5, d->colorTo));
@@ -245,7 +245,7 @@ void UCListItemPrivate::init()
                      q, SLOT(_q_themeChanged()), Qt::DirectConnection);
 
     // watch grid unit size change and set implicit size
-    QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_updateSize()));
+    QObject::connect(UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_updateSize()));
     _q_updateSize();
     styleDocument = "ListItemStyle";
 
@@ -363,13 +363,13 @@ void UCListItemPrivate::_q_updateSize()
 {
     Q_Q(UCListItem);
     // update divider thickness
-    divider->setImplicitHeight(UCUnits::instance().dp(DIVIDER_THICKNESS_DP));
+    divider->setImplicitHeight(UCUnits::instance()->dp(DIVIDER_THICKNESS_DP));
     QQuickItem *owner = qobject_cast<QQuickItem*>(q->sender());
     if (!owner && parentAttached) {
         owner = static_cast<QQuickItem*>(parentAttached->parent());
     }
-    q->setImplicitWidth(owner ? owner->width() : UCUnits::instance().gu(IMPLICIT_LISTITEM_WIDTH_GU));
-    q->setImplicitHeight(UCUnits::instance().gu(IMPLICIT_LISTITEM_HEIGHT_GU));
+    q->setImplicitWidth(owner ? owner->width() : UCUnits::instance()->gu(IMPLICIT_LISTITEM_WIDTH_GU));
+    q->setImplicitHeight(UCUnits::instance()->gu(IMPLICIT_LISTITEM_HEIGHT_GU));
 }
 
 // returns the index of the list item when used in model driven views,
@@ -1242,7 +1242,7 @@ void UCListItemPrivate::showContextMenu()
         QQmlEngine::setContextForObject(component, qmlContext(q));
         QQuickItem* item = static_cast<QQuickItem*>(component->create(qmlContext(q)));
         item->setProperty("caller", QVariant::fromValue(q));
-        item->setParentItem(QuickUtils::instance().rootItem(q));
+        item->setParentItem(QuickUtils::instance()->rootItem(q));
         QMetaObject::invokeMethod(item, "show");
         QObject::connect(item, SIGNAL(visibleChanged()), q,
             SLOT(_q_popoverClosed()), Qt::DirectConnection);
@@ -1291,6 +1291,8 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
     }
 
     UCStyledItemBase::mouseReleaseEvent(event);
+    if (!contains(mapFromScene(event->windowPos())))
+        d->suppressClick = true;
     d->handleLeftButtonRelease(event);
 }
 
@@ -1302,7 +1304,7 @@ bool UCListItemPrivate::swipedOverThreshold(const QPointF &mousePos, const QPoin
     {
         return false;
     }
-    qreal threshold = UCUnits::instance().gu(xAxisMoveThresholdGU);
+    qreal threshold = UCUnits::instance()->gu(xAxisMoveThresholdGU);
     qreal mouseX = mousePos.x();
     qreal pressedX = relativePos.x();
     return swipeEnabled && ((mouseX < (pressedX - threshold)) || (mouseX > (pressedX + threshold)));
@@ -1755,7 +1757,7 @@ void UCListItem::resetHighlightColor()
     d->customColor = false;
     UCTheme *theme = getTheme();
     if (theme) {
-        d->highlightColor = theme->getPaletteColor("selected", "foreground");
+        d->highlightColor = theme->getPaletteColor("highlighted", "background");
     }
     update();
     Q_EMIT highlightColorChanged();

@@ -31,7 +31,6 @@ QML_FILES += 1.2/AbstractButton.qml \
              1.2/AppHeader.qml \
              1.2/Captions.qml \
              1.2/CheckBox.qml \
-             1.2/colorUtils.js \
              1.2/ComboButton.qml \
              1.2/CrossFadeImage10.qml \
              1.2/CrossFadeImage11.qml \
@@ -92,7 +91,6 @@ QML_FILES += 1.3/ActionBar.qml \
              1.3/dateUtils.js \
              1.3/DraggingArea.qml \
              1.3/InputHandler.qml \
-             1.3/MainViewBase.qml \
              1.3/MainView.qml \
              1.3/OptionSelectorDelegate.qml \
              1.3/OptionSelector.qml \
@@ -103,8 +101,6 @@ QML_FILES += 1.3/ActionBar.qml \
              1.3/Page.qml \
              1.3/PageStack.qml \
              1.3/pageUtils.js \
-             1.3/PageWrapper.qml \
-             1.3/PageWrapperUtils.js \
              1.3/Panel.qml \
              1.3/ProgressBar.qml \
              1.3/PullToRefresh.qml \
@@ -122,7 +118,6 @@ QML_FILES += 1.3/ActionBar.qml \
              1.3/Toolbar.qml \
              1.3/ToolbarButton.qml \
              1.3/ToolbarItems.qml \
-             1.3/tree.js \
              1.3/UbuntuColors.qml \
              1.3/UbuntuListView.qml \
              1.3/UbuntuNumberAnimation.qml \

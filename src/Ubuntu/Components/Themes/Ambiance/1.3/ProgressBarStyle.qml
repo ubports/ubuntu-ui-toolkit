@@ -20,10 +20,18 @@ import Ubuntu.Components 1.3
 Item {
     id: progressBarStyle
 
-    property color foregroundColor: theme.palette.normal.activity
-    property color foregroundTextColor: theme.palette.normal.activityText
-    property color backgroundColor: theme.palette.normal.base
-    property color backgroundTextColor: theme.palette.normal.baseText
+    property color foregroundColor: styledItem.enabled
+                                        ? theme.palette.normal.activity
+                                        : theme.palette.disabled.activity
+    property color foregroundTextColor: styledItem.enabled
+                                            ? theme.palette.normal.activityText
+                                            : theme.palette.disabled.activityText
+    property color backgroundColor: styledItem.enabled
+                                        ? theme.palette.normal.base
+                                        : theme.palette.disabled.base
+    property color backgroundTextColor: styledItem.enabled
+                                            ? theme.palette.normal.baseText
+                                            : theme.palette.disabled.baseText
 
     property var progressBar: styledItem
 

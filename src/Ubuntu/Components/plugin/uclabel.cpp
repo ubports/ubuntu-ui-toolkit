@@ -31,10 +31,19 @@ void UCLabel::updatePixelSize()
     };
     QFont textFont = font();
     textFont.setPixelSize(
-        qRound(sizes[m_textSize] * UCUnits::instance().dp(UCFontUtils::fontUnits)));
+        qRound(sizes[m_textSize] * UCUnits::instance()->dp(UCFontUtils::fontUnits)));
     setFont(textFont);
     // remove PixelSizeSet flag
     m_flags &= ~PixelSizeSet;
+}
+
+void UCLabel::updateRenderType()
+{
+    if (UCUnits::instance()->gridUnit() <= 10) {
+        QQuickText::setRenderType(QQuickText::NativeRendering);
+    } else {
+        QQuickText::setRenderType(QQuickText::QtRendering);
+    }
 }
 
 void UCLabel::_q_updateFontFlag(const QFont &font)
@@ -79,9 +88,27 @@ void UCLabel::_q_customColor()
 UCLabel::UCLabel(QQuickItem* parent)
     : QQuickText(parent)
     , UCThemingExtension(this)
+    , m_defaultColor(getDefaultColor)
     , m_textSize(Medium)
     , m_flags(0)
 {
+}
+
+UCLabel::UCLabel(std::function<QColor (QQuickItem*, UCTheme*)> defaultColor, QQuickItem *parent)
+    : QQuickText(parent)
+    , UCThemingExtension(this)
+    , m_defaultColor(defaultColor)
+    , m_textSize(Medium)
+    , m_flags(0)
+{
+}
+
+QColor UCLabel::getDefaultColor(QQuickItem *item, UCTheme *theme)
+{
+    // FIXME: replace the code below with automatic color
+    // change detection based on teh item's state
+    const char *valueSet = item->isEnabled() ? "normal" : "disabled";
+    return theme ? theme->getPaletteColor(valueSet, "backgroundText") : QColor();
 }
 
 void UCLabel::classBegin()
@@ -98,9 +125,12 @@ void UCLabel::init()
     m_defaultFont.setFamily("Ubuntu");
     m_defaultFont.setWeight(QFont::Light);
     setFont(m_defaultFont);
+    updateRenderType();
 
+    connect(UCUnits::instance(), &UCUnits::gridUnitChanged, this, &UCLabel::updateRenderType);
     connect(this, &UCLabel::fontChanged, this, &UCLabel::_q_updateFontFlag, Qt::DirectConnection);
     connect(this, &UCLabel::colorChanged, this, &UCLabel::_q_customColor, Qt::DirectConnection);
+    connect(this, &UCLabel::enabledChanged, this, &UCLabel::postThemeChanged, Qt::DirectConnection);
 }
 
 void UCLabel::postThemeChanged()
@@ -110,7 +140,7 @@ void UCLabel::postThemeChanged()
     }
     UCTheme *theme = getTheme();
     if (theme) {
-        setColor(theme->getPaletteColor("normal", "baseText"));
+        setColor(m_defaultColor(this, theme));
         m_flags &= ~ColorSet;
     }
 }
@@ -145,6 +175,13 @@ void UCLabel::setTextSize(TextSize size)
         updatePixelSize();
         Q_EMIT textSizeChanged();
     }
+}
+
+void UCLabel::setRenderType(RenderType renderType)
+{
+    disconnect(UCUnits::instance(), &UCUnits::gridUnitChanged,
+               this, &UCLabel::updateRenderType);
+    QQuickText::setRenderType(renderType);
 }
 
 /*!

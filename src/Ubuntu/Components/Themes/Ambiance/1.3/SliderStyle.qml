@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -82,6 +82,9 @@ Item {
         width: units.gu(2)
         height: units.gu(2)
         backgroundColor: theme.palette.normal.raised
+
+        FocusShape {
+        }
     }
 
     BubbleShape {
@@ -116,8 +119,8 @@ Item {
             id: label
             anchors.centerIn: parent
             text: styledItem.formatValue(SliderUtils.liveValue(styledItem))
-            textSize: Label.Large
-            color: theme.palette.normal.raisedText
+            textSize: Label.Medium
+            color: theme.palette.normal.overlayText
         }
     }
 }

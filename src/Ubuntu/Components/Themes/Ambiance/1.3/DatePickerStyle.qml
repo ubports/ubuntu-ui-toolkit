@@ -32,7 +32,7 @@ Item {
     /*!
       Highlight color.
       */
-    property color highlightColor: UbuntuColors.orange
+    property color highlightColor: theme.palette.highlight.baseText
     /*!
       Scale of the highlight item
       */

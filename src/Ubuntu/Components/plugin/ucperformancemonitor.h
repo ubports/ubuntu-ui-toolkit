@@ -38,6 +38,7 @@ private Q_SLOTS:
     void connectToWindow(QQuickWindow* window);
     void startTimer();
     void stopTimer();
+    void windowDestroyed();
 
 private:
     QQuickWindow* findQQuickWindow();
@@ -45,7 +46,7 @@ private:
 private:
     int m_framesAboveThreshold;
     int m_warningCount;
-    QSharedPointer<QElapsedTimer> m_timer;
+    QElapsedTimer m_timer;
     QQuickWindow* m_window;
 };
 

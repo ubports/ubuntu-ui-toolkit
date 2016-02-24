@@ -10,4 +10,4 @@ INSTALLS += autopilot_module
 
 OTHER_FILES += qmlapicheck.sh
 
-check.commands += ./qmlapicheck.sh || exit 1;
+check.commands += $$PWD/qmlapicheck.sh || exit 1;

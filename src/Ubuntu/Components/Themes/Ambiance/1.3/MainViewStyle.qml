@@ -22,6 +22,7 @@ Item {
     id: mainViewStyle
 
     /*!
+      \deprecated
       Color of the header's background.
 
       \sa backgroundColor, footerColor
@@ -39,6 +40,7 @@ Item {
     property color backgroundColor: styledItem.backgroundColor
 
     /*!
+      \deprecated
       Color of the footer's background.
 
       \sa backgroundColor, headerColor
@@ -57,6 +59,13 @@ Item {
         anchors.fill: parent
         color: mainViewStyle.backgroundColor
         gradient: internals.isGradient ? backgroundGradient : null
+        visible: internals.isGradient
+    }
+
+    Binding {
+        target: typeof window != 'undefined' ? window : null
+        property: "color"
+        value: mainViewStyle.backgroundColor
     }
 
     QtObject {
