@@ -12,12 +12,13 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
 #ifndef ASYNCLOADER_H
 #define ASYNCLOADER_H
 
-#include <QtQml/QQmlIncubator>
 #include <QtQml/QQmlComponent>
 #include <ubuntutoolkitglobal.h>
 
@@ -26,7 +27,8 @@ class QQmlContext;
 
 namespace UbuntuToolkit {
 
-class UBUNTUTOOLKIT_EXPORT AsyncLoader : public QObject, protected QQmlIncubator
+class AsyncLoaderPrivate;
+class UBUNTUTOOLKIT_EXPORT AsyncLoader : public QObject
 {
     Q_OBJECT
 public:
@@ -53,17 +55,7 @@ Q_SIGNALS:
     void loadingStatus(LoadingStatus status, QObject *object);
 
 protected:
-    void setInitialState(QObject *object) override;
-    void statusChanged(Status status) override;
-
-    void emitStatus(LoadingStatus status, QObject *object = 0);
-    void onComponentStatusChanged(QQmlComponent::Status status);
-    void detachComponent();
-
-    QQmlComponent *m_component = nullptr;
-    QQmlContext *m_context = nullptr;
-    LoadingStatus m_status = Ready;
-    bool m_ownComponent = false;
+    Q_DECLARE_PRIVATE(AsyncLoader)
 };
 
 } // namespace UbuntuToolkit

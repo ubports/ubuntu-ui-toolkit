@@ -16,7 +16,8 @@ HEADERS += \
     colorutils.h \
     ubuntutoolkitglobal.h \
     tree.h \
-    asyncloader.h
+    asyncloader.h \
+    asyncloader_p.h
 
 SOURCES += \ 
     colorutils.cpp \
