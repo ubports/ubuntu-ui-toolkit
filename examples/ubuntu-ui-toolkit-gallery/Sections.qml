@@ -52,7 +52,7 @@ Template {
     property var manyActions: [
         "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
         "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen",
-        "sixteen", "seveneen", "eighteen", "nineteen", "twenty"
+        "sixteen", "seventeen", "eighteen", "nineteen", "twenty"
     ]
 
     TemplateSection {

@@ -16,9 +16,12 @@
 import QtQuick 2.4
 import Ubuntu.Components 1.3
 import QtGraphicalEffects 1.0
+import Ubuntu.Components.Private 1.3
 
 Item {
     id: sectionsStyle
+
+//    FocusScope { }
 
     implicitWidth: sectionsListView.contentWidth + 2 * listViewContainer.listViewMargins
     implicitHeight: units.gu(4)
@@ -228,6 +231,36 @@ Item {
                     }
                     height: sectionsStyle.underlineHeight
                     color: sectionsStyle.underlineColor
+                }
+
+                // FIXME: Focus behavior needs to change.
+                Frame {
+                    anchors.fill: sectionButton
+//                    anchors.margins: -units.gu(0.46)
+                    anchors {
+                        bottomMargin: units.gu(1)
+                        leftMargin: units.gu(1)
+                        rightMargin: units.gu(1)
+                    }
+                    color: sectionButton.enabled
+                                ? theme.palette.normal.focus
+                                : theme.palette.disabled.focus
+                    thickness: units.gu(0.21)
+                    radius: units.gu(1.7)
+                    visible: keyNavigationFocus
+
+                    Behavior on anchors.margins {
+                        UbuntuNumberAnimation {
+                            duration: UbuntuAnimation.FastDuration
+                        }
+                    }
+
+//                    Binding {
+//                        target: sectionButton
+//                        property: "activeFocusOnTab"
+//                        value: true
+//                        when: sectionButton
+//                    }
                 }
             }
 
