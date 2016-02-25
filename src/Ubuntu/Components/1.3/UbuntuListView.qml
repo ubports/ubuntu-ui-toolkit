@@ -195,8 +195,14 @@ ListView {
     }
 
     // highlight current item
-    highlight: Rectangle {
-        color: theme.palette.selected.background
-    }
+    highlight: currentItem ? highlightBar : null
     highlightMoveDuration: 0
+    Component {
+        id: highlightBar
+        Rectangle {
+            color: root.activeFocus
+                        ? theme.palette.highlighted.background
+                        : theme.palette.selected.background
+        }
+    }
 }

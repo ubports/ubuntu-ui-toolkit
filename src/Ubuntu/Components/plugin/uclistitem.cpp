@@ -1131,8 +1131,10 @@ QSGNode *UCListItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data
     bool paintFocus = hasActiveFocus() && keyNavigationFocus();
     rectNode->setPenWidth(paintFocus ? UCUnits::instance()->dp(1) : 0);
     if (paintFocus) {
-        // FIXME: zsombi - use theme colors!
-        QColor penColor("#DD4814");
+        QColor penColor;
+        if (getTheme()) {
+            penColor = getTheme()->getPaletteColor(isEnabled() ? "normal" : "disabled", "focus");
+        }
         rectNode->setPenColor(penColor);
         rectNode->setColor(Qt::transparent);
         updateNode = true;
