@@ -94,6 +94,7 @@ private Q_SLOTS:
     void testNoImportPathSet();
     void testBogusImportPathSet();
     void testMultipleImportPathsSet();
+    void testPaletteUsed_bug1549830();
 };
 
 void tst_UCDeprecatedTheme::initTestCase()
@@ -256,6 +257,13 @@ void tst_UCDeprecatedTheme::testMultipleImportPathsSet()
     QVERIFY(view);
     view->setTheme("TestModule.TestTheme");
 }
+
+void tst_UCDeprecatedTheme::testPaletteUsed_bug1549830()
+{
+    ThemeTestCase::ignoreWarning("ErronousPaletteUse.qml", 29, 20, "Unable to assign [undefined] to QColor", 3);
+    QScopedPointer<ThemeTestCase> view(new ThemeTestCase("ErronousPaletteUse.qml"));
+}
+
 
 QTEST_MAIN(tst_UCDeprecatedTheme)
 
