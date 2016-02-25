@@ -12,4 +12,4 @@ OTHER_FILES += \
     themes/TestModule/TestTheme/TestStyle.qml \
     themes/TestModule/TestTheme/qmldir \
     themes/TestModule/TestTheme/parent_theme \
-    ErronousPaletteUse.qml
+    ErroneousPaletteUse.qml

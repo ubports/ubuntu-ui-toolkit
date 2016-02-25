@@ -260,8 +260,8 @@ void tst_UCDeprecatedTheme::testMultipleImportPathsSet()
 
 void tst_UCDeprecatedTheme::testPaletteUsed_bug1549830()
 {
-    ThemeTestCase::ignoreWarning("ErronousPaletteUse.qml", 29, 20, "Unable to assign [undefined] to QColor", 3);
-    QScopedPointer<ThemeTestCase> view(new ThemeTestCase("ErronousPaletteUse.qml"));
+    ThemeTestCase::ignoreWarning("ErroneousPaletteUse.qml", 29, 20, "Unable to assign [undefined] to QColor", 3);
+    QScopedPointer<ThemeTestCase> view(new ThemeTestCase("ErroneousPaletteUse.qml"));
 }
 
 
