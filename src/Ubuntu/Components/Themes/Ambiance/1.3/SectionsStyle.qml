@@ -90,6 +90,7 @@ Item {
             objectName: "sections_listview"
 
             property bool animateContentX: false
+//            activeFocusOnTab: true
 
             // Position the selected item correctly.
             // For a scrollable ListView, if the item was already fully visible,
@@ -233,6 +234,7 @@ Item {
                     color: sectionsStyle.underlineColor
                 }
 
+                activeFocusOnTab: false
                 // FIXME: Focus behavior needs to change.
                 Frame {
                     anchors.fill: sectionButton
