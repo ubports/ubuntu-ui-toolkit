@@ -127,12 +127,12 @@ void AsyncLoader::onComponentStatusChanged(QQmlComponent::Status status)
  */
 bool AsyncLoader::load(const QUrl &url, QQmlContext *context)
 {
-    if (!reset()) {
+    if (!reset() || !context) {
         return false;
     }
-    if (url.isEmpty() || !url.isValid() || !context) {
+    if (url.isEmpty() || !url.isValid()) {
         emitStatus(Ready);
-        return true;
+        return false;
     }
     m_ownComponent = true;
     return load(new QQmlComponent(context->engine(), url, QQmlComponent::Asynchronous), context);
@@ -151,12 +151,12 @@ bool AsyncLoader::load(const QUrl &url, QQmlContext *context)
  */
 bool AsyncLoader::load(QQmlComponent *component, QQmlContext *context)
 {
-    if (!reset()) {
+    if (!reset() || !context) {
         return false;
     }
-    if (!component || !context) {
+    if (!component) {
         emitStatus(Ready);
-        return true;
+        return false;
     }
     m_component = component;
     m_context = context;
