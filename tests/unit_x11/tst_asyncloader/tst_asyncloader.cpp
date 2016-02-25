@@ -181,6 +181,29 @@ private Q_SLOTS:
         QTRY_VERIFY(spy.m_error == true);
     }
 
+    void test_load_no_context()
+    {
+        UbuntuToolkit::AsyncLoader loader;
+        QVERIFY(!loader.load(nullptr, nullptr));
+        QVERIFY(!loader.load(QUrl(), nullptr));
+    }
+
+    void test_load_invalid_url()
+    {
+        QQmlEngine engine;
+        UbuntuToolkit::AsyncLoader loader;
+        LoaderSpy spy(&loader);
+        QVERIFY(!loader.load(QUrl(), engine.rootContext()));
+    }
+
+    void test_load_null_component()
+    {
+        QQmlEngine engine;
+        UbuntuToolkit::AsyncLoader loader;
+        LoaderSpy spy(&loader);
+        QVERIFY(!loader.load(nullptr, engine.rootContext()));
+    }
+
     void test_load_and_cancel_data()
     {
         QTest::addColumn<bool>("loadAsDocument");

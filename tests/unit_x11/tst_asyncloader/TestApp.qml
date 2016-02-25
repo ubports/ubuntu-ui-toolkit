@@ -16,14 +16,6 @@
  */
 
 import QtQuick 2.4
-//import Ubuntu.Components 1.3
-
-//MainView {
-//    width: units.gu(40)
-//    height: units.gu(71)
-
-//    applicationName: "Document"
-//}
 
 Item {
 

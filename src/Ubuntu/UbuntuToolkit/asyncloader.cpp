@@ -12,9 +12,11 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#include <asyncloader.h>
+#include "asyncloader_p.h"
 
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlComponent>
@@ -23,11 +25,7 @@
 namespace UbuntuToolkit {
 
 AsyncLoader::AsyncLoader(QObject *parent)
-    : QObject(parent)
-    , QQmlIncubator(Asynchronous)
-    , m_component(nullptr)
-    , m_context(nullptr)
-    , m_ownComponent(false)
+    : QObject(*(new AsyncLoaderPrivate), parent)
 {    
 }
 
@@ -37,9 +35,9 @@ AsyncLoader::~AsyncLoader()
 }
 
 // incubator methods
-void AsyncLoader::setInitialState(QObject *object)
+void AsyncLoaderPrivate::setInitialState(QObject *object)
 {
-    emitStatus(Initializing, object);
+    emitStatus(AsyncLoader::Initializing, object);
 }
 
 AsyncLoader::LoadingStatus incubatorToLoadingStatus(QQmlIncubator::Status status)
@@ -54,7 +52,7 @@ AsyncLoader::LoadingStatus incubatorToLoadingStatus(QQmlIncubator::Status status
     return AsyncLoader::Null;
 }
 
-void AsyncLoader::statusChanged(Status status)
+void AsyncLoaderPrivate::statusChanged(Status status)
 {
     if (status == QQmlIncubator::Error) {
         QList<QQmlError> e = errors();
@@ -71,46 +69,49 @@ void AsyncLoader::statusChanged(Status status)
 }
 
 // procected methods
-void AsyncLoader::emitStatus(LoadingStatus status, QObject *object)
+void AsyncLoaderPrivate::emitStatus(AsyncLoader::LoadingStatus status, QObject *object)
 {
-    if (m_status == status) {
+    if (this->status == status) {
         return;
     }
 
-    m_status = status;
+    this->status = status;
     if (!object) {
         object = this->object();
     }
-    Q_EMIT loadingStatus(m_status, object);
+    Q_EMIT q_func()->loadingStatus(this->status, object);
 }
 
-void AsyncLoader::detachComponent()
+void AsyncLoaderPrivate::detachComponent()
 {
-    if (!m_component) {
+    if (!component) {
         return;
     }
 
-    disconnect(m_component, &QQmlComponent::statusChanged,
-               this, &AsyncLoader::onComponentStatusChanged);
-    if (m_ownComponent) {
-        m_component->deleteLater();
+    Q_Q(AsyncLoader);
+    if (componentHandler) {
+        QObject::disconnect(*componentHandler);
     }
-    m_component = nullptr;
-    m_ownComponent = false;
+    componentHandler.reset();
+    if (ownComponent) {
+        component->deleteLater();
+    }
+    component = nullptr;
+    ownComponent = false;
 }
 
-void AsyncLoader::onComponentStatusChanged(QQmlComponent::Status status)
+void AsyncLoaderPrivate::onComponentStatusChanged(QQmlComponent::Status status)
 {
     if (status == QQmlComponent::Error) {
-        QString error = m_component->errorString();
+        QString error = component->errorString();
         // remove quotes and any leading/trailing whitespace
         qWarning().noquote() << error.trimmed();
         detachComponent();
-        emitStatus(Error);
+        emitStatus(AsyncLoader::Error);
         return;
     }
     if (status == QQmlComponent::Ready) {
-        m_component->create(*this, m_context);
+        component->create(*this, context);
     }
 }
 
@@ -127,14 +128,15 @@ void AsyncLoader::onComponentStatusChanged(QQmlComponent::Status status)
  */
 bool AsyncLoader::load(const QUrl &url, QQmlContext *context)
 {
-    if (!reset()) {
+    if (!reset() || !context) {
         return false;
     }
-    if (url.isEmpty() || !url.isValid() || !context) {
-        emitStatus(Ready);
-        return true;
+    Q_D(AsyncLoader);
+    if (url.isEmpty() || !url.isValid()) {
+        d->emitStatus(Ready);
+        return false;
     }
-    m_ownComponent = true;
+    d->ownComponent = true;
     return load(new QQmlComponent(context->engine(), url, QQmlComponent::Asynchronous), context);
 }
 
@@ -151,21 +153,26 @@ bool AsyncLoader::load(const QUrl &url, QQmlContext *context)
  */
 bool AsyncLoader::load(QQmlComponent *component, QQmlContext *context)
 {
-    if (!reset()) {
+    if (!reset() || !context) {
         return false;
     }
-    if (!component || !context) {
-        emitStatus(Ready);
-        return true;
+    Q_D(AsyncLoader);
+    if (!component) {
+        d->emitStatus(Ready);
+        return false;
     }
-    m_component = component;
-    m_context = context;
-    if (m_component->isLoading()) {
-        emitStatus(Compiling);
-        connect(m_component, &QQmlComponent::statusChanged,
-                this, &AsyncLoader::onComponentStatusChanged, Qt::DirectConnection);
+    d->component = component;
+    d->context = context;
+    if (d->component->isLoading()) {
+        d->emitStatus(Compiling);
+        auto callback = [d] (QQmlComponent::Status status) {
+            d->onComponentStatusChanged(status);
+        };
+
+        d->componentHandler.reset(new QMetaObject::Connection);
+        *(d->componentHandler) = QObject::connect(d->component, &QQmlComponent::statusChanged, callback);
     } else {
-        onComponentStatusChanged(m_component->status());
+        d->onComponentStatusChanged(d->component->status());
     }
     return true;
 }
@@ -180,15 +187,16 @@ bool AsyncLoader::load(QQmlComponent *component, QQmlContext *context)
  */
 bool AsyncLoader::reset()
 {
-    if (m_status < Loading) {
+    Q_D(AsyncLoader);
+    if (d->status < Loading) {
         return false;
     }
-    if (m_status >= Ready) {
+    if (d->status >= Ready) {
         return true;
     }
-    clear();
+    d->clear();
     // make sure the listeners are getting the reset so they can delete the object
-    emitStatus(Reset);
+    d->emitStatus(Reset);
     return true;
 }
 
@@ -199,7 +207,7 @@ bool AsyncLoader::reset()
  */
 AsyncLoader::LoadingStatus AsyncLoader::status()
 {
-    return m_status;
+    return d_func()->status;
 }
 
 /*!
@@ -208,7 +216,7 @@ AsyncLoader::LoadingStatus AsyncLoader::status()
  */
 void AsyncLoader::forceCompletion()
 {
-    QQmlIncubator::forceCompletion();
+    d_func()->forceCompletion();
 }
 
 } // namespace UbuntuToolkit
