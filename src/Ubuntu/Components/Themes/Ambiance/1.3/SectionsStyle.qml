@@ -304,8 +304,15 @@ Item {
             height: units.gu(1)
             visible: false
             rotation: 180
-            opacity: sectionsListView.atXBeginning ? hoveringArea.iconsDisabledOpacity : 1.0
+            opacity: visible
+                     ? sectionsListView.atXBeginning ? hoveringArea.iconsDisabledOpacity : 1.0
+                     : 0.0
             name: "chevron"
+            Behavior on opacity {
+                UbuntuNumberAnimation {
+                    duration: UbuntuAnimation.FastDuration
+                }
+            }
         }
 
         Icon {
@@ -319,8 +326,15 @@ Item {
             width: units.gu(1)
             height: units.gu(1)
             visible: false
-            opacity: sectionsListView.atXEnd ? hoveringArea.iconsDisabledOpacity : 1.0
+            opacity: visible
+                     ? sectionsListView.atXEnd ? hoveringArea.iconsDisabledOpacity : 1.0
+                     : 0.0
             name: "chevron"
+            Behavior on opacity {
+                UbuntuNumberAnimation {
+                    duration: UbuntuAnimation.FastDuration
+                }
+            }
         }
     }
 
