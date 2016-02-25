@@ -679,10 +679,6 @@ Item {
             }
         }
 
-        function test_sanityCheckStylingVariables() {
-            //TODO
-        }
-
         function test_transferFocusFromOneScrollViewToAnother() {
             var firstTestItem = getFreshScrollView()
             var secondTestItem = getFreshScrollView()

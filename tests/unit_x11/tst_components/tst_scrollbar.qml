@@ -84,40 +84,69 @@ Item {
 
     VisualItemModel {
         id: layoutsModel
-        Flickable {
-            id: flickable_bottomAlign_anchors
-        }
-        Scrollbar {
-            id: scrollbar_bottomAlign_anchors
-            flickableItem: flickable_bottomAlign_anchors
-            align: Qt.AlignBottom
-        }
+        Item {
+            width: childrenRect.width
+            height: childrenRect.height
+            Flickable {
+                id: flickable_bottomAlign_anchors
+            }
+            Scrollbar {
+                id: scrollbar_bottomAlign_anchors
+                flickableItem: flickable_bottomAlign_anchors
+                align: Qt.AlignBottom
+            }
 
-        Flickable {
-            id: flickable_topAlign_anchors
-        }
-        Scrollbar {
-            id: scrollbar_topAlign_anchors
-            flickableItem: flickable_topAlign_anchors
-            align: Qt.AlignBottom
-        }
+            Flickable {
+                id: flickable_topAlign_anchors
+            }
+            Scrollbar {
+                id: scrollbar_topAlign_anchors
+                flickableItem: flickable_topAlign_anchors
+                align: Qt.AlignBottom
+            }
 
-        Flickable {
-            id: flickable_leadingAlign_anchors
-        }
-        Scrollbar {
-            id: scrollbar_leadingAlign_anchors
-            flickableItem: flickable_leadingAlign_anchors
-            align: Qt.AlignLeading
-        }
+            Flickable {
+                id: flickable_leadingAlign_anchors
+            }
+            Scrollbar {
+                id: scrollbar_leadingAlign_anchors
+                flickableItem: flickable_leadingAlign_anchors
+                align: Qt.AlignLeading
+            }
 
-        Flickable {
-            id: flickable_trailingAlign_anchors
-        }
-        Scrollbar {
-            id: scrollbar_trailingAlign_anchors
-            flickableItem: flickable_trailingAlign_anchors
-            align: Qt.AlignTrailing
+            Flickable {
+                id: flickable_trailingAlign_anchors
+            }
+            Scrollbar {
+                id: scrollbar_trailingAlign_anchors
+                flickableItem: flickable_trailingAlign_anchors
+                align: Qt.AlignTrailing
+            }
+
+            Flickable {
+                id: defaultValuesFlickable
+            }
+            Scrollbar {
+                id: defaultValuesScrollbar
+                flickableItem: defaultValuesFlickable
+            }
+
+            //Items used for values sanity checks
+            Flickable {
+                id: flickableSanityCheck
+                width: units.gu(30)
+                height: units.gu(40)
+                Rectangle {
+                    id: contentSanityCheck
+                    width: units.gu(20)
+                    height: units.gu(30)
+                    color: "yellow"
+                }
+            }
+            Scrollbar {
+                id: scrollbarSanityCheck
+                flickableItem: flickableSanityCheck
+            }
         }
     }
 
@@ -151,6 +180,53 @@ Item {
             clickInTheMiddle(itemToClickOn)
             wait(150)
             checkNoContentPositionChange(msgPrefix, flickable, expectedContentX, expectedContentY)
+        }
+
+        //NOTE: this does not test that the properties have the correct value, just that
+        //their values is not out of range (so it only applies to numeric values or enums)
+        function performStyleSanityCheck(scrollbar) {
+            var style = scrollbar.__styleInstance
+            /*****************************************************
+             *      STYLING PROPERTIES                           *
+             *****************************************************/
+            verify(style.minimumSliderSize >= 0, "Sanity check: invalid property value.")
+            verify(style.overlayOpacityWhenShown > 0, "Sanity check: invalid property value.")
+            verify(style.overlayOpacityWhenHidden >= 0, "Sanity check: invalid property value.")
+            verify(style.troughThicknessSteppersStyle > 0, "Sanity check: invalid property value.")
+            verify(style.troughThicknessThumbStyle > 0, "Sanity check: invalid property value.")
+            verify(style.troughThicknessIndicatorStyle > 0, "Sanity check: invalid property value.")
+            verify(style.sliderRadius >= 0, "Sanity check: invalid property value.")
+            verify(style.thumbThickness > 0, "Sanity check: invalid property value.")
+            verify(style.indicatorThickness > 0, "Sanity check: invalid property value.")
+            verify(style.scrollbarThicknessAnimation.duration >= 0, "Sanity check: invalid property value.")
+            verify(style.scrollbarFadeInAnimation.duration >= 0, "Sanity check: invalid property value.")
+            verify(style.scrollbarFadeOutAnimation.duration >= 0, "Sanity check: invalid property value.")
+            verify(style.scrollbarFadeOutPause >= 0, "Sanity check: invalid property value.")
+            verify(style.scrollbarCollapsePause >= 0, "Sanity check: invalid property value.")
+            verify(style.shortScrollingRatio > 0, "Sanity check: invalid property value.")
+            verify(style.longScrollingRatio > 0, "Sanity check: invalid property value.")
+            verify(style.hintingStyle === 'thumb'
+                   || style.hintingStyle === 'indicator', "Sanity check: invalid property value.")
+            verify(style.thumbsExtremesMargin >= 0, "Sanity check: invalid property value.")
+
+            /*****************************************************
+             *      HELPER PROPERTIES                            *
+             *****************************************************/
+            var slider = getThumb(scrollbar)
+            var trough = getTrough(scrollbar)
+            verify(!!style.thumb, "Sanity check: invalid property value.")
+            verify(!!style.trough, "Sanity check: invalid property value.")
+            //flickable helper properties
+            verify(!!style.flickableItem, "Sanity check: invalid property value.")
+
+            /*****************************************************
+             *      INTERNAL PROPERTIES AND FUNCTIONS            *
+             *****************************************************/
+            var thumbArea = getThumbArea(scrollbar)
+            var scrollAnimation = getScrollAnimation(scrollbar)
+            verify(style.nonOverlayScrollbarMargin >= 0, "Sanity check: invalid property value.")
+            verify(style.touchDragStartMargin >= 0, "Sanity check: invalid property value.")
+            verify(style.dragThreshold >= 0, "Sanity check: invalid property value.")
         }
 
         function test_bottomAlign_anchors() {
@@ -690,6 +766,107 @@ Item {
             clickInTheMiddle(firstStepper)
             checkScrolling(flickable, contentXBackup, contentYBackup, style,
                            false, -1, "First stepper, second click")
+
+        }
+
+        function test_defaultStylingValues() {
+            var scrollbar = defaultValuesScrollbar
+            var style = scrollbar.__styleInstance
+
+            /*****************************************************
+             *      STYLING PROPERTIES                           *
+             *****************************************************/
+            compare(style.interactive, style.isMouseConnected || style.veryLongContentItem, "Wrong styling property default value.")
+            compare(style.minimumSliderSize, units.gu(3), "Wrong styling property default value.")
+            compare(style.overlay, !style.alwaysOnScrollbars, "Wrong styling property default value.")
+            compare(style.overlayOpacityWhenShown, 1.0, "Wrong styling property default value.")
+            compare(style.overlayOpacityWhenHidden, 0.0, "Wrong styling property default value.")
+            compare(style.troughThicknessSteppersStyle, units.dp(14), "Wrong styling property default value.")
+            compare(style.troughThicknessThumbStyle, units.dp(14), "Wrong styling property default value.")
+            compare(style.troughThicknessIndicatorStyle, units.dp(9), "Wrong styling property default value.")
+            compare(style.troughColorThumbStyle, theme.palette.normal.foreground, "Wrong styling property default value.")
+            compare(style.troughColorSteppersStyle, theme.palette.normal.foreground, "Wrong styling property default value.")
+            compare(style.sliderColor, theme.palette.normal.foregroundText, "Wrong styling property default value.")
+            compare(style.sliderRadius, units.dp(3), "Wrong styling property default value.")
+            compare(style.thumbThickness, units.gu(1), "Wrong styling property default value.")
+            compare(style.indicatorThickness, units.dp(3), "Wrong styling property default value.")
+            compare(style.scrollbarThicknessAnimation.duration, UbuntuAnimation.SnapDuration, "Wrong styling property default value.")
+            compare(style.scrollbarFadeInAnimation.duration, UbuntuAnimation.SlowDuration, "Wrong styling property default value.")
+            compare(style.scrollbarFadeOutAnimation.duration, UbuntuAnimation.SlowDuration, "Wrong styling property default value.")
+            compare(style.scrollbarFadeOutPause, 3000, "Wrong styling property default value.")
+            compare(style.scrollbarCollapsePause, 1000, "Wrong styling property default value.")
+            compare(style.shortScrollingRatio, 0.1, "Wrong styling property default value.")
+            compare(style.longScrollingRatio, 0.9, "Wrong styling property default value.")
+            compare(style.hintingStyle, style.veryLongContentItem ? 'thumb' : 'indicator', "Wrong styling property default value.")
+            compare(style.thumbsExtremesMargin, units.dp(4), "Wrong styling property default value.")
+
+            /*****************************************************
+             *      HELPER PROPERTIES                            *
+             *****************************************************/
+            var slider = getThumb(scrollbar)
+            var trough = getTrough(scrollbar)
+            compare(style.thumb, slider, "Wrong styling property default value.")
+            compare(style.trough, trough, "Wrong styling property default value.")
+            compare(style.isScrollable, scrollbar.__private.scrollable && style.pageSize > 0.0
+                    && style.contentSize > 0.0 && style.totalContentSize > style.pageSize, "Wrong styling property default value.")
+            compare(style.isVertical, (scrollbar.align === Qt.AlignLeading) || (scrollbar.align === Qt.AlignTrailing), "Wrong styling property default value.")
+            compare(style.frontAligned, scrollbar.align === Qt.AlignLeading, "Wrong styling property default value.")
+            compare(style.rearAligned, scrollbar.align === Qt.AlignTrailing, "Wrong styling property default value.")
+            compare(style.topAligned, scrollbar.align === Qt.AlignTop, "Wrong styling property default value.")
+            compare(style.bottomAligned, scrollbar.align === Qt.AlignBottom, "Wrong styling property default value.")
+
+            //flickable helper properties
+            compare(style.flickableItem, scrollbar.flickableItem, "Wrong styling property default value.")
+            compare(style.pageSize, (style.isVertical) ? (scrollbar.flickableItem.height) : (scrollbar.flickableItem.width), "Wrong styling property default value.")
+            compare(style.contentSize, (style.isVertical) ? scrollbar.flickableItem.contentHeight : scrollbar.flickableItem.contentWidth, "Wrong styling property default value.")
+            compare(style.leadingContentMargin, style.isVertical ? scrollbar.flickableItem.topMargin : scrollbar.flickableItem.leftMargin, "Wrong styling property default value.")
+            compare(style.trailingContentMargin, style.isVertical ? scrollbar.flickableItem.bottomMargin : scrollbar.flickableItem.rightMargin, "Wrong styling property default value.")
+            compare(style.totalContentSize, style.contentSize + style.leadingContentMargin + style.trailingContentMargin, "Wrong styling property default value.")
+
+            /*****************************************************
+             *      INTERNAL PROPERTIES AND FUNCTIONS            *
+             *****************************************************/
+            var thumbArea = getThumbArea(scrollbar)
+            var scrollAnimation = getScrollAnimation(scrollbar)
+            compare(style.__recursionGuard, false, "Wrong styling property default value.")
+            compare(style.__disableStateBinding, false, "Wrong styling property default value.")
+            compare(style.__hinting, false, "Wrong styling property default value.")
+            compare(style.draggingThumb, thumbArea.drag.active || slider.mouseDragging || slider.touchDragging, "Wrong styling property default value.")
+            compare(style.thumbStyleFlag, style.veryLongContentItem && (scrollbar.flickableItem.moving || scrollAnimation.running), "Wrong styling property default value.")
+            compare(style.veryLongContentItem, scrollbar.flickableItem && style.initialized
+                    && ((scrollbar.flickableItem.contentHeight > scrollbar.flickableItem.height * 10)
+                        || (scrollbar.flickableItem.contentWidth > scrollbar.flickableItem.width * 10)), "Wrong styling property default value.")
+            compare(style.isMouseConnected, true, "Wrong styling property default value.")
+            compare(style.nonOverlayScrollbarMargin, style.troughThicknessSteppersStyle, "Wrong styling property default value.")
+            compare(style.useSteppers, true, "Wrong styling property default value.")
+            compare(style.touchDragStartMargin, units.gu(2), "Wrong styling property default value.")
+            compare(style.dragThreshold, units.dp(2), "Wrong styling property default value.")
+            compare(style.alwaysOnScrollbars, scrollbar.__alwaysOnScrollbars, "Wrong styling property default value.")
+        }
+
+        //just a few tests to ensure the key variables don't get out of range values
+        //NOTE: this does not test that the properties have the correct value, just that
+        //their values is not out of range (so it only applies to numeric values)
+        function test_sanityCheckStylingVariables() {
+            flickableSanityCheck.contentHeight = contentSanityCheck.height
+            flickableSanityCheck.contentWidth = contentSanityCheck.width
+            performStyleSanityCheck(scrollbarSanityCheck)
+
+            flickableSanityCheck.contentHeight = -contentSanityCheck.height
+            flickableSanityCheck.contentWidth = -contentSanityCheck.width
+            performStyleSanityCheck(scrollbarSanityCheck)
+
+            flickableSanityCheck.topMargin = units.gu(1)
+            flickableSanityCheck.leftMargin = units.gu(2)
+            flickableSanityCheck.rightMargin = units.gu(3)
+            flickableSanityCheck.bottomMargin = units.gu(4)
+            performStyleSanityCheck(scrollbarSanityCheck)
+
+            flickableSanityCheck.topMargin = -units.gu(1)
+            flickableSanityCheck.leftMargin = -units.gu(2)
+            flickableSanityCheck.rightMargin = -units.gu(3)
+            flickableSanityCheck.bottomMargin = -units.gu(4)
+            performStyleSanityCheck(scrollbarSanityCheck)
 
         }
     }
