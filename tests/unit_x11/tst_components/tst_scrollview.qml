@@ -241,7 +241,8 @@ Item {
                     scrollview.flickableItem.contentHeight = scrollview.flickableItem.height * 4
             }
 
-            flick(scrollview.flickableItem, 20, 20, -units.gu(10), -units.gu(10))
+            //The final "1" is a workaround to bug #1549256
+            flick(scrollview.flickableItem, 20, 20, -units.gu(10), -units.gu(10), undefined, undefined, undefined, undefined, 1)
             tryCompare(scrollview.flickableItem, "moving", true, 5000, "Flickable not moving after simulating a flick.")
 
             //NOTE: this becomes FLAKY if you move the mouse inside the window the test is being rendered on

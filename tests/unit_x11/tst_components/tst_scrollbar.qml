@@ -202,7 +202,9 @@ Item {
 
             compare(scrollbar.__styleInstance.veryLongContentItem, false, "Scrollable item should be short.")
 
-            flick(flickable, 2, 2, -units.gu(10), -units.gu(10))
+            //The final "1" is a workaround to bug #1549256
+            flick(flickable, 2, 2, -units.gu(10), -units.gu(10), undefined, undefined, undefined, undefined, 1)
+
             tryCompare(flickable, "moving", true, 5000, "Flickable not moving after simulating a flick.")
 
             compare(scrollbar.__styleInstance.state, "indicator", "Wrong style while flicking.")
@@ -229,7 +231,9 @@ Item {
 
             compare(scrollbar.__styleInstance.veryLongContentItem, true, "Very long content item not detected")
 
-            flick(flickable, 2, 2, -units.gu(10), -units.gu(10))
+            //The final "1" is a workaround to bug #1549256
+            flick(flickable, 2, 2, -units.gu(10), -units.gu(10), undefined, undefined, undefined, undefined, 1)
+
             tryCompare(flickable, "moving", true, 5000, "Flickable not moving after simulating a flick.")
 
             compare(scrollbar.__styleInstance.state, "thumb", "Wrong style while flicking a very long item")
