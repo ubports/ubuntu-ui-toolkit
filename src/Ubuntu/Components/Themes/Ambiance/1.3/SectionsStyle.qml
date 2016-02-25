@@ -90,7 +90,7 @@ Item {
             objectName: "sections_listview"
 
             property bool animateContentX: false
-//            activeFocusOnTab: true
+            activeFocusOnTab: false // FIXME: Enable proper focus handling
 
             // Position the selected item correctly.
             // For a scrollable ListView, if the item was already fully visible,
@@ -183,6 +183,7 @@ Item {
 
             delegate: AbstractButton {
                 id: sectionButton
+                activeFocusOnTab: false
                 objectName: "section_button_" + index
                 width: label.width + 2 * sectionsStyle.horizontalLabelSpacing
                 height: sectionsStyle.height
@@ -232,37 +233,6 @@ Item {
                     }
                     height: sectionsStyle.underlineHeight
                     color: sectionsStyle.underlineColor
-                }
-
-                activeFocusOnTab: false
-                // FIXME: Focus behavior needs to change.
-                Frame {
-                    anchors.fill: sectionButton
-//                    anchors.margins: -units.gu(0.46)
-                    anchors {
-                        bottomMargin: units.gu(1)
-                        leftMargin: units.gu(1)
-                        rightMargin: units.gu(1)
-                    }
-                    color: sectionButton.enabled
-                                ? theme.palette.normal.focus
-                                : theme.palette.disabled.focus
-                    thickness: units.gu(0.21)
-                    radius: units.gu(1.7)
-                    visible: keyNavigationFocus
-
-                    Behavior on anchors.margins {
-                        UbuntuNumberAnimation {
-                            duration: UbuntuAnimation.FastDuration
-                        }
-                    }
-
-//                    Binding {
-//                        target: sectionButton
-//                        property: "activeFocusOnTab"
-//                        value: true
-//                        when: sectionButton
-//                    }
                 }
             }
 

@@ -25,8 +25,6 @@
 #include <QtQml/QQmlEngine>
 #include <QtQuick/private/qquickanchors_p.h>
 
-#include <QDebug>
-
 UCStyledItemBasePrivate::UCStyledItemBasePrivate()
     : oldParentItem(Q_NULLPTR)
     , styleComponent(Q_NULLPTR)
@@ -526,7 +524,6 @@ void UCStyledItemBase::focusInEvent(QFocusEvent *event)
 {
     QQuickItem::focusInEvent(event);
 
-    qDebug()<<"focusInEvent "<<this;
     Q_D(UCStyledItemBase);
     if (d->keyNavigationFocus)
         return;
@@ -534,12 +531,10 @@ void UCStyledItemBase::focusInEvent(QFocusEvent *event)
     switch (event->reason()) {
         case Qt::TabFocusReason:
         case Qt::BacktabFocusReason:
-            qDebug()<<"keynavigationfocus"<<event->reason();
             d->keyNavigationFocus = true;
             Q_EMIT keyNavigationFocusChanged();
             break;
         default:
-            qDebug()<<"nope."<<event->reason();
             // Mouse or window focus don't affect keyNavigationFocus status
             break;
     }
