@@ -598,8 +598,84 @@ Item {
                          (style.isVertical ? units.gu(12) : 0))
         }
 
-        function test_noOverlapWhenBothSidesAreScrollable() {
-            //TODO: test that the scrollbars do not overlap when both sides are scrollable
+        function test_scrollbarsPositioning_data() {
+            return [
+                        { tag: "Not scrollable", scrollableHorizontally: false, scrollableVertically: false },
+                        { tag: "Horizontally scrollable", scrollableHorizontally: true, scrollableVertically: false } ,
+                        { tag: "Vertically scrollable", scrollableHorizontally: false, scrollableVertically: true },
+                        { tag: "Both scrollable", scrollableHorizontally: true, scrollableVertically: true }
+                    ]
+        }
+
+        function test_scrollbarsPositioning(data) {
+            var firstTestItem = getFreshScrollView()
+            var scrollview = firstTestItem.scrollview
+            var flickable = scrollview.flickableItem
+            var horizontalScrollbar = getHorizontalScrollbar(scrollview)
+            var verticalScrollbar = getVerticalScrollbar(scrollview)
+            var horStyle = horizontalScrollbar.__styleInstance
+            var verStyle = verticalScrollbar.__styleInstance
+            console.log(verticalScrollbar)
+
+            var viewport = scrollview.viewport
+
+            //make it not scrollable
+            flickable.contentHeight = flickable.height
+            flickable.contentWidth = flickable.width
+
+            tryCompare(horStyle, "isScrollable", false)
+            tryCompare(verStyle, "isScrollable", false)
+
+            if (data.scrollableHorizontally) {
+                flickable.contentWidth = flickable.width + 1
+                tryCompare(horStyle, "isScrollable", true)
+            }
+            if (data.scrollableVertically) {
+                flickable.contentHeight = flickable.height + 1
+                tryCompare(verStyle, "isScrollable", true)
+
+            }
+
+            compare(verticalScrollbar.anchors.top, viewport.anchors.top,
+                    "Horizontal scrollbar: wrong top anchors.")
+            compare(verticalScrollbar.anchors.bottom, viewport.anchors.bottom,
+                    "Horizontal scrollbar: wrong bottom anchors.")
+
+            //TODO: TEST THAT LEFT ANCHOR IS UNDEFINED. THIS REQUIRES A CUSTOM C++ METHOD
+            //THAT WE CURRENTLY DO NOT HAVE
+
+            compare(verticalScrollbar.anchors.right, viewport.anchors.right,
+                    "Horizontal scrollbar: wrong right anchors.")
+            compare(verticalScrollbar.anchors.topMargin, 0,
+                    "Horizontal scrollbar: wrong topMargin.")
+            compare(verticalScrollbar.anchors.rightMargin, 0,
+                    "Horizontal scrollbar: wrong rightMargin.")
+
+
+            //TODO: TEST THAT TOP ANCHOR IS UNDEFINED. THIS REQUIRES A CUSTOM C++ METHOD
+            //THAT WE CURRENTLY DO NOT HAVE
+
+            compare(horizontalScrollbar.anchors.bottom, viewport.anchors.bottom,
+                    "Horizontal scrollbar: wrong bottom anchors.")
+            compare(horizontalScrollbar.anchors.left, viewport.anchors.left,
+                    "Horizontal scrollbar: wrong left anchors.")
+            compare(horizontalScrollbar.anchors.right, viewport.anchors.right,
+                    "Horizontal scrollbar: wrong right anchors.")
+            compare(horizontalScrollbar.anchors.bottomMargin, 0,
+                    "Horizontal scrollbar: wrong bottomMargin.")
+            compare(horizontalScrollbar.anchors.leftMargin, 0,
+                    "Horizontal scrollbar: wrong leftMargin.")
+
+            //check they're not overlapping
+            if (data.scrollableHorizontally && data.scrollableVertically) {
+                compare(verticalScrollbar.anchors.bottomMargin,
+                        horStyle.troughThicknessSteppersStyle,
+                        "Vertical scrollbar: wrong bottom margin.")
+
+                compare(horizontalScrollbar.anchors.rightMargin,
+                        verStyle.troughThicknessSteppersStyle,
+                        "Horizontal scrollbar: wrong right margin.")
+            }
         }
 
         function test_sanityCheckStylingVariables() {
