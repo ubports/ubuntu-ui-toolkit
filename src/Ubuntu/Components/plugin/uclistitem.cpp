@@ -1129,7 +1129,7 @@ QSGNode *UCListItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data
 
     // focus frame
     bool paintFocus = hasActiveFocus() && keyNavigationFocus();
-    rectNode->setPenWidth(paintFocus ? UCUnits::instance().dp(1) : 0);
+    rectNode->setPenWidth(paintFocus ? UCUnits::instance()->dp(1) : 0);
     if (paintFocus) {
         // FIXME: zsombi - use theme colors!
         QColor penColor("#DD4814");
@@ -1138,7 +1138,7 @@ QSGNode *UCListItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data
         updateNode = true;
     }
     QRectF rect(boundingRect());
-    rect -= QMarginsF(0, 0, UCUnits::instance().dp(1), 0);
+    rect -= QMarginsF(0, 0, UCUnits::instance()->dp(1), 0);
     d->divider->setOpacity(paintFocus ? 0.0 : 1.0);
     rectNode->setRect(rect);
 

@@ -70,7 +70,7 @@ import Ubuntu.Components 1.3
 
             Component {
                 id: selectorDelegate
-                Toolkit.OptionSelectorDelegate { text: name; subText: description; iconSource: image }
+                OptionSelectorDelegate { text: name; subText: description; iconSource: image }
             }
 
             ListModel {
