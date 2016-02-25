@@ -40,7 +40,6 @@ private Q_SLOTS:
     void test_doubleAddNode () {
         UbuntuToolkit::Tree tree;
 
-        //use as cleanup helper to delete all created objects
         QObject node;
         QVERIFY(tree.add(0, nullptr, &node));
         QVERIFY(!tree.add(0, nullptr, &node));
@@ -49,7 +48,6 @@ private Q_SLOTS:
     void test_addRootWithParent () {
         UbuntuToolkit::Tree tree;
 
-        //use as cleanup helper to delete all created objects
         QObject parent;
         QObject node;
         QVERIFY(!tree.add(0, &parent, &node));
@@ -58,7 +56,6 @@ private Q_SLOTS:
     void test_addSubNodeWithoutParent () {
         UbuntuToolkit::Tree tree;
 
-        //use as cleanup helper to delete all created objects
         QObject root;
         QObject node;
         QVERIFY(tree.add(0, nullptr, &root));
@@ -68,7 +65,6 @@ private Q_SLOTS:
     void test_addSubNodeWithParentNotInTree () {
         UbuntuToolkit::Tree tree;
 
-        //use as cleanup helper to delete all created objects
         QObject root;
         QObject someParent;
         QObject node;
