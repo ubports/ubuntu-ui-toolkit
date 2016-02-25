@@ -60,6 +60,7 @@ Template {
 
                     Label {
                         text: "theme.palette." + modelData
+                        textSize: Label.Small
                     }
 
                     Grid {
