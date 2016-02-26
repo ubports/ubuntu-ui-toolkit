@@ -21,8 +21,6 @@ import Ubuntu.Components.Private 1.3
 Item {
     id: sectionsStyle
 
-//    FocusScope { }
-
     implicitWidth: sectionsListView.contentWidth + 2 * listViewContainer.listViewMargins
     implicitHeight: units.gu(4)
 
