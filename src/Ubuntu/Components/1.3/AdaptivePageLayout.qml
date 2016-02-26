@@ -18,7 +18,6 @@ import QtQuick 2.4
 import QtQuick.Layouts 1.1
 import Ubuntu.Components 1.3
 import Ubuntu.Components.Private 1.3
-import "tree.js" as Tree
 
 /*!
   \qmltype AdaptivePageLayout
@@ -62,8 +61,12 @@ import "tree.js" as Tree
             primaryPage: page1
             Page {
                 id: page1
-                title: "Main page"
+                header: PageHeader {
+                    id: header
+                    title: "Main Page"
+                }
                 Column {
+                    anchors.top: header.bottom
                     Button {
                         text: "Add Page2 above " + page1.title
                         onClicked: page1.pageStack.addPageToCurrentColumn(page1, page2)
@@ -76,11 +79,15 @@ import "tree.js" as Tree
             }
             Page {
                 id: page2
-                title: "Page #2"
+                header: PageHeader {
+                    title: "Page #2"
+                }
             }
             Page {
                 id: page3
-                title: "Page #3"
+                header: PageHeader {
+                    title: "Page #3"
+                }
             }
         }
     }
@@ -134,8 +141,12 @@ import "tree.js" as Tree
                 id: page1Component
                 Page {
                     id: page1
-                    title: "Main page"
+                    header: PageHeader {
+                        id: header
+                        title: "Main page"
+                    }
                     Column {
+                        anchors.top: header.bottom
                         Button {
                             text: "Add Page2 above " + page1.title
                             onClicked: page1.pageStack.addPageToCurrentColumn(page1, page2)
@@ -149,11 +160,15 @@ import "tree.js" as Tree
             }
             Page {
                 id: page2
-                title: "Page #2"
+                header: PageHeader {
+                    title: "Page #2"
+                }
             }
             Page {
                 id: page3
-                title: "Page #3"
+                header: PageHeader {
+                    title: "Page #3"
+                }
             }
         }
     }
@@ -201,11 +216,15 @@ PageTreeNode {
     /*!
       The property specifies the source of the primaryPage in case the primary
       page is created from a Component or loaded from an external document. It
-      has precedence over \l primaryPage. The page specified in this way will
-      be cerated asynchronously and the instance will be reported through
-      \l primaryPage property.
+      has precedence over \l primaryPage.
       */
     property var primaryPageSource
+
+    /*!
+      The property drives the way the pages should be loaded, synchronously or
+      asynchronously. Defaults to true.
+      */
+    property bool asynchronous: true
 
     /*!
       \qmlproperty int columns
@@ -229,62 +248,70 @@ PageTreeNode {
       is created. \c sourcePage must be active.
 
       The function creates the new page asynchronously if the new \c page to be
-      added is a Component or a QML document. In this case the function returns
-      an incubator which can be used to track the page creation.For more about
-      incubation in QML and creating components asynchronously, see
+      added is a Component or a QML document and the \l asynchronous property is
+      set to true. In this case the function returns an incubator which can be
+      used to track the page creation. For more about incubation in QML and creating
+      components asynchronously, see
       \l {http://doc.qt.io/qt-5/qml-qtqml-component.html#incubateObject-method}
       {Component.incubateObject()}.
       The following example removes an element from the list model whenever the
       page opened in the second column is closed. Note, the example must be run
       on desktop or on a device with at least 90 grid units screen width.
       \qml
-      import QtQuick 2.4
-      import Ubuntu.Components 1.3
+        import QtQuick 2.4
+        import Ubuntu.Components 1.3
 
-      MainView {
-          width: units.gu(90)
-          height: units.gu(70)
+        MainView {
+            width: units.gu(90)
+            height: units.gu(70)
 
-          Component {
-              id: page2Component
-              Page {
-                  title: "Second Page"
-                  Button {
-                      text: "Close me"
-                      onClicked: pageStack.removePages(pageStack.primaryPage);
-                  }
-              }
-          }
+            Component {
+                id: page2Component
+                Page {
+                    header: PageHeader {
+                        id: header
+                        title: "Second Page"
+                    }
+                    Button {
+                        anchors.top: header.bottom
+                        text: "Close me"
+                        onClicked: pageStack.removePages(pageStack.primaryPage);
+                    }
+                }
+            }
 
-          AdaptivePageLayout {
-              id: pageLayout
-              anchors.fill: parent
-              primaryPage: Page {
-                  title: "Primary Page"
-                  ListView {
-                      id: listView
-                      anchors.fill: parent
-                      model: 10
-                      delegate: ListItem {
-                          Label { text: modelData }
-                          onClicked: {
-                              var incubator = pageLayout.addPageToNextColumn(pageLayout.primaryPage, page2Component);
-                              if (incubator && incubator.status == Component.Loading) {
-                                  incubator.onStatusChanged = function(status) {
-                                      if (status == Component.Ready) {
-                                          // connect page's destruction to decrement model
-                                          incubator.object.Component.destruction.connect(function() {
-                                              listView.model--;
-                                          });
-                                      }
-                                  }
-                              }
-                          }
-                      }
-                  }
-              }
-          }
-      }
+            AdaptivePageLayout {
+                id: pageLayout
+                anchors.fill: parent
+                primaryPage: Page {
+                    header: PageHeader {
+                        title: "Primary Page"
+                        flickable: listView
+                    }
+                    ListView {
+                        id: listView
+                        anchors.fill: parent
+                        model: 10
+                        delegate: ListItem {
+                            Label { text: modelData }
+                            onClicked: {
+                                var incubator = pageLayout.addPageToNextColumn(pageLayout.primaryPage, page2Component);
+                                if (incubator && incubator.status == Component.Loading) {
+                                    incubator.onStatusChanged = function(status) {
+                                        if (status == Component.Ready) {
+                                            // connect page's destruction to decrement model
+                                            incubator.object.Component.destruction.connect(function() {
+                                                listView.model--;
+                                            });
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
       \endqml
 
       \sa {http://doc.qt.io/qt-5/qml-qtqml-component.html#incubateObject-method}{Component.incubateObject}
@@ -390,7 +417,7 @@ PageTreeNode {
 
         property bool internalUpdate: false
         property bool completed: false
-        property var tree: new Tree.Tree()
+        property var tree: Tree{}
 
         property int columns: !layout.layouts.length ?
                                   (layout.width >= units.gu(80) ? 2 : 1) :
@@ -441,7 +468,7 @@ PageTreeNode {
         }
 
         function createWrapper(page, properties) {
-            var wrapperObject = pageWrapperComponent.createObject(hiddenPages, {synchronous: false});
+            var wrapperObject = pageWrapperComponent.createObject(hiddenPages, {synchronous: !layout.asynchronous});
             wrapperObject.pageStack = layout;
             wrapperObject.properties = properties;
             // set reference last because it will trigger creation of the object
@@ -682,13 +709,12 @@ PageTreeNode {
             onTriggered: layout.removePages(wrapper.object)
 
             visible: {
-                var parentWrapper;
-                try {
-                    parentWrapper = d.tree.parent(wrapper);
-                } catch(err) {
+                var parentWrapper = d.tree.parent(wrapper);
+
+                if (!parentWrapper)
                     // Root node has no parent node.
                     return false;
-                }
+
                 if (!wrapper.pageHolder) {
                     // columns are being re-arranged.
                     return false;
@@ -796,13 +822,13 @@ PageTreeNode {
                     if (!page) {
                         return false;
                     }
-                    var parentWrapper;
-                    try {
-                        parentWrapper = d.tree.parent(holder.pageWrapper);
-                    } catch(err) {
+                    var parentWrapper = d.tree.parent(holder.pageWrapper);
+
+                    if (!parentWrapper) {
                         // Root node has no parent node.
                         return false;
                     }
+
                     var nextInColumn = d.tree.top(holder.column, holder.column < d.columns - 1, 1);
                     return parentWrapper === nextInColumn;
                 }

@@ -537,9 +537,13 @@ void UCTheme::resetName()
  * The palette doesn't need to be reset as it automatically resets when the
  * palette used for configuration is destroyed.
  */
-QObject* UCTheme::palette()
+QObject* UCTheme::palette(quint16 version)
 {
     if (!m_palette) {
+        if (version) {
+            // force version to be used
+            previousVersion = version;
+        }
         loadPalette(qmlEngine(this), false);
     }
     return m_palette;
