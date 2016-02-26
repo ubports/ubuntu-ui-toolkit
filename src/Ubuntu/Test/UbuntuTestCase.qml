@@ -156,10 +156,12 @@ TestCase {
             modifiers = Qt.NoModifier
         if (steps === undefined || steps <= 0)
             steps = 4;
+        //See bug#1549256
+        //--> delay === 0 it not guaranteed to trigger the flicking logic in QQuickFlickable
+        if (delay === undefined)
+            delay = 1;
         // make sure we have at least two move steps so the flick will be sensed
         steps += 1;
-        if (delay === undefined)
-            delay = -1;
 
         var ddx = dx / steps;
         var ddy = dy / steps;
