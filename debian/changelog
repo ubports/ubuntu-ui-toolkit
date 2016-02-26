@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (1.3.1862+16.04-0ubuntu1) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.3.1872+16.04-0ubuntu1) UNRELEASED; urgency=medium
 
   [ Timo Jyrinki ]
   * Fix gles unit test skipping.
@@ -20,6 +20,8 @@ ubuntu-ui-toolkit (1.3.1862+16.04-0ubuntu1) UNRELEASED; urgency=medium
   [ Oliver Tilloy ]
   * Do not try to assign to non-existent property "activeFocusOnPress". 
     Fixes LP: #1532953
+  * Bubble up ESC key press event if there is no popover to close. 
+    Fixes LP: #1546627
 
   [ Loïc Molinari ]
   * Added private items and nodes for the new component styles. 
@@ -43,6 +45,7 @@ ubuntu-ui-toolkit (1.3.1862+16.04-0ubuntu1) UNRELEASED; urgency=medium
     reference.
   * Label: use native rendering on low dpi screens (GRID_UNIT_PX <= 10) for 
     sharper looking text.
+  * Gallery: added palette browser to Colors page.
 
   [ Tim Peeters ]
   * Support scrolling in ListViews with horizontal orientation to the 
@@ -61,6 +64,8 @@ ubuntu-ui-toolkit (1.3.1862+16.04-0ubuntu1) UNRELEASED; urgency=medium
     header animation when starting an app without header. 
     Fixes LP: #1518002, LP: #1524901.
   * Use the correct string for skipping tests on x86_64 .
+  * Sections scrolling and keyboard navigation. Fixes LP: #1465048, LP: #1489591
+  * Fix autopilot color button failure.
 
   [ Zoltán Balogh ]
   * Create a click packaging project for the UITK Component Gallery.
@@ -75,6 +80,8 @@ ubuntu-ui-toolkit (1.3.1862+16.04-0ubuntu1) UNRELEASED; urgency=medium
     Fixes LP: #1531817.
   * Fix ListItemLayout multiline labels positioning and add docs about
     aliasing labels properties
+  * UbuntuTestCase flick(): default events delay to 1. Fixes LP: #1549256.
+  * Add Scrollbar and ScrollView tests plus implementation fixes.
 
   [ Benjamin Zeller ] 
   * Fix Bug lp:1535241 "AdaptivePageLayout first example is badly broken". 
@@ -113,6 +120,11 @@ ubuntu-ui-toolkit (1.3.1862+16.04-0ubuntu1) UNRELEASED; urgency=medium
     Fixes LP: #1544455
   * Get singletons report fatal error in case the parent is null upon first 
     creation. Adjust failing test cases. Fixes LP: #1542309
+  * Deprecated Theme forces palette to be loaded from 1.2 themes. 
+    Fixes LP: #1549830
+  * Introduce AdaptivePageLayout.asynchronous to the API. Fixes LP: #1540449
+  * AbstractButton handles 4x4GU minimal sensing area, exposes sensingMargins
+    to extend sensing area even further. Fixes LP:#1468645, LP: #1508114
 
   [ Albert Astals Cid ] 
   * Have a default pixelsPerInch value. Otherwise when running unity8 tests
@@ -122,7 +134,9 @@ ubuntu-ui-toolkit (1.3.1862+16.04-0ubuntu1) UNRELEASED; urgency=medium
   * Fix documentation typo - Ubunut -> Ubuntu.
   * Use new QML package name for qml-module-qtfeedback, drop old QML 
     package names.
- 
+  * Fix examples using OptionSelectorDelegate that place it in the Toolkit 
+    namespace but don't have the import to match.
+
   [ Colin Watson ]
   * Make src/Ubuntu/Test depend on src/Ubuntu/Components, to fix build with 
     high parallelisation.

@@ -25,14 +25,13 @@ import Ubuntu.Components 1.3
  */
 StyledItem {
     id: sections
-    styleName: "SectionsStyle"
+    styleName: "SectionsForPageHeadStyle"
 
     property list<Action> actions
     property var model: actions
     onModelChanged: {
         if (model && model.length > 3) {
-            // FIXME: Make the Sections scrollable for more than 3 sections.
-            console.warn("It is not YET recommended or supported to use more than three sections.");
+            console.warn("PageHeadSections does not support more than 3 sections. Use PageHeader and Sections instead.");
         }
     }
     property int selectedIndex: model ? 0 : -1
