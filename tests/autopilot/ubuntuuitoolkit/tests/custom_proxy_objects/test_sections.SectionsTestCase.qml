@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -22,12 +22,16 @@ MainView {
     height: units.gu(60)
     objectName: "mainView"
     Page {
-        title: "Sections test"
+        id: page
+        header: PageHeader {
+            title: "Sections test"
+        }
         Label {
             id: label
             objectName: "label"
             anchors {
-                top: parent.top
+                top: page.header.bottom
+                topMargin: units.gu(2)
                 horizontalCenter: parent.horizontalCenter
             }
             text: "Section " + sections.selectedIndex + " is selected."
@@ -35,8 +39,36 @@ MainView {
         Sections {
             id: sections
             objectName: "sections"
-            anchors.centerIn: parent
+            anchors {
+                horizontalCenter: parent.horizontalCenter
+                top: label.bottom
+                topMargin: units.gu(4)
+            }
             model: [ "first", "second", "third" ]
+        }
+        Label {
+            id: moreLabel
+            objectName: "scrolling_label"
+            anchors {
+                centerIn: parent
+            }
+            text: "Scrollable section " + moreSections.selectedIndex + " is selected."
+        }
+        Sections {
+            id: moreSections
+            objectName: "scrolling_sections"
+            anchors {
+                horizontalCenter: parent.horizontalCenter
+                top: moreLabel.bottom
+                topMargin: units.gu(4)
+                left: parent.left
+                right: parent.right
+            }
+            model: ["one", "two", "three", "four", "five", "six",
+                "seven", "eight", "nine", "ten", "eleven", "twelve",
+                "thirteen", "fourteen", "fifteen", "sixteen",
+                "seventeen", "eighteen", "nineteen", "twenty"
+            ]
         }
     }
 }
