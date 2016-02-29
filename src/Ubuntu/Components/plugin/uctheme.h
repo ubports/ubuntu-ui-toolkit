@@ -72,7 +72,7 @@ public:
     QString name() const;
     void setName(const QString& name);
     void resetName();
-    QObject* palette();
+    QObject* palette(quint16 version = 0);
     void setPalette(QObject *config);
     static void checkMixedVersionImports(QQuickItem *item, quint16 version);
 

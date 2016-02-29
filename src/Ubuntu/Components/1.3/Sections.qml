@@ -80,10 +80,6 @@ StyledItem {
      */
     property var model: actions
     onModelChanged: {
-        if (model && model.length > 3) {
-            // FIXME: Make the Sections scrollable for more than 3 sections.
-            console.warn("It is not YET recommended or supported to use more than three sections.");
-        }
         if (internal.done) {
             if (!model || model.length === 0) {
                 selectedIndex = -1;
