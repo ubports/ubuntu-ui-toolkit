@@ -22,8 +22,7 @@ import Ubuntu.Components.Styles 1.3 as Style
 Style.PageHeadStyle {
     id: headerStyle
     objectName: "PageHeadStyle" // used in unit tests
-//    contentHeight: Screen.height > units.gu(50) ? units.gu(6) : units.gu(5)
-    contentHeight: units.gu(5)
+    contentHeight: Screen.height > units.gu(50) ? units.gu(6) : units.gu(5)
     fontWeight: Font.Light
     textSize: Label.Large
     textLeftMargin: units.gu(2)

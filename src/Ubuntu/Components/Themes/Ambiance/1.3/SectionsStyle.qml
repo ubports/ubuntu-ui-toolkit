@@ -23,8 +23,7 @@ Item {
     id: sectionsStyle
 
     implicitWidth: sectionsListView.contentWidth + 2 * listViewContainer.listViewMargins
-//    implicitHeight: Screen.height > units.gu(50) ? units.gu(4) : units.gu(3)
-    implicitHeight: units.gu(3)
+    implicitHeight: Screen.height > units.gu(50) ? units.gu(4) : units.gu(3)
 
     /*!
       The foreground color of unselected sections.
