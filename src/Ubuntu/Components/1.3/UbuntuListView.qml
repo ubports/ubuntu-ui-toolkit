@@ -201,7 +201,7 @@ ListView {
         id: highlightBar
         Rectangle {
             color: root.activeFocus
-                        ? theme.palette.highlighted.background
+                        ? theme.palette.focused.background
                         : theme.palette.selected.background
         }
     }
