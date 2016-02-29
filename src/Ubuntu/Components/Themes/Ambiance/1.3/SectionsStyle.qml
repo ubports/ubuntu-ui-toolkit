@@ -210,7 +210,7 @@ Item {
                     font.weight: Font.Light
                     anchors {
                         baseline: underline.bottom
-                        baselineOffset: -units.gu(2)
+                        baselineOffset: sectionsStyle.height < units.gu(4) ? -units.gu(1) : -units.gu(2)
                         horizontalCenter: parent.horizontalCenter
                     }
 
@@ -298,7 +298,7 @@ Item {
                 left: parent.left
                 leftMargin: (listViewContainer.listViewMargins - width) / 2
                 bottom: parent.bottom
-                bottomMargin: units.gu(2)
+                bottomMargin: sectionsStyle.height < units.gu(4) ? units.gu(1) : units.gu(2)
             }
             width: units.gu(1)
             height: units.gu(1)
@@ -321,7 +321,7 @@ Item {
                 right: parent.right
                 rightMargin: (listViewContainer.listViewMargins - width) / 2
                 bottom: parent.bottom
-                bottomMargin: units.gu(2)
+                bottomMargin: sectionsStyle.height < units.gu(4) ? units.gu(1) : units.gu(2)
             }
             width: units.gu(1)
             height: units.gu(1)
