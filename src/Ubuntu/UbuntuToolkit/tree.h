@@ -18,6 +18,7 @@
 #define TREE_H
 
 #include <QObject>
+#include <QVariant>
 #include "ubuntutoolkitglobal.h"
 
 namespace UbuntuToolkit {
@@ -32,8 +33,10 @@ public:
     Q_INVOKABLE int index(QObject *node) const;
     Q_INVOKABLE bool add(const int stem, QObject *parentNode,QObject *newNode);
     Q_INVOKABLE QList<QObject *> prune(const int stem);
-    Q_INVOKABLE QList<QObject *> chop(QObject *node, bool inclusive);
-    Q_INVOKABLE QObject *top(const int stem = 0, const bool exactMatch = false, const int n = 0) const;
+    Q_INVOKABLE QList<QObject *> chop(const QVariant &jsNode, const QVariant &jsInclusive = QVariant(true));
+    Q_INVOKABLE QObject *top(const QVariant &jsStem = QVariant(0),
+                             const QVariant &jsExactMatch = QVariant(false),
+                             const QVariant &jsN = QVariant(0)) const;
     Q_INVOKABLE QObject *parent(QObject *node) const;
 
 private:

@@ -90,6 +90,7 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/uchaptics.h \
     $$PWD/ucabstractbutton.h \
     $$PWD/ucabstractbutton_p.h \
+    $$PWD/ucmargins.h \
     $$PWD/ucthemingextension.h \
     $$PWD/ucheader.h \
     $$PWD/uclabel.h \

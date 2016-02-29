@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2015-2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -767,7 +767,13 @@ Ubuntu.StyledItem {
     }
 
     // Escape should close the context menu even if the menu takes no input focus
-    Keys.onEscapePressed: if (activeFocus && inputHandler.popover) PopupUtils.close(inputHandler.popover)
+    Keys.onEscapePressed: {
+        if (activeFocus && inputHandler.popover) {
+            PopupUtils.close(inputHandler.popover)
+        } else {
+            event.accepted = false
+        }
+    }
 
     LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
     LayoutMirroring.childrenInherit: true

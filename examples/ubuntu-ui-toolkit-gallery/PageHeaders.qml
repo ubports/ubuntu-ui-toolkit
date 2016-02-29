@@ -44,8 +44,35 @@ Template {
                 iconName: "edit"
                 text: "Edit"
                 onTriggered: page.header = editHeader
+            },
+            Action {
+                iconName: standardHeader.extension === sections
+                          ? "media-playback-stop"
+                          : "filters"
+                text: "Sections"
+                onTriggered: {
+                    if (standardHeader.extension) {
+                        standardHeader.extension = null;
+                    } else {
+                        standardHeader.extension = sections;
+                    }
+                }
             }
         ]
+
+        Sections {
+            id: sections
+            visible: standardHeader.extension === sections
+            anchors {
+                left: parent.left
+                right: parent.right
+                bottom: parent.bottom
+            }
+            model: ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
+                    "ten", "eleven", "twelve", "thirteen"]
+        }
+
+
     }
 
     PageHeader {

@@ -216,11 +216,15 @@ PageTreeNode {
     /*!
       The property specifies the source of the primaryPage in case the primary
       page is created from a Component or loaded from an external document. It
-      has precedence over \l primaryPage. The page specified in this way will
-      be cerated asynchronously and the instance will be reported through
-      \l primaryPage property.
+      has precedence over \l primaryPage.
       */
     property var primaryPageSource
+
+    /*!
+      The property drives the way the pages should be loaded, synchronously or
+      asynchronously. Defaults to true.
+      */
+    property bool asynchronous: true
 
     /*!
       \qmlproperty int columns
@@ -244,9 +248,10 @@ PageTreeNode {
       is created. \c sourcePage must be active.
 
       The function creates the new page asynchronously if the new \c page to be
-      added is a Component or a QML document. In this case the function returns
-      an incubator which can be used to track the page creation.For more about
-      incubation in QML and creating components asynchronously, see
+      added is a Component or a QML document and the \l asynchronous property is
+      set to true. In this case the function returns an incubator which can be
+      used to track the page creation. For more about incubation in QML and creating
+      components asynchronously, see
       \l {http://doc.qt.io/qt-5/qml-qtqml-component.html#incubateObject-method}
       {Component.incubateObject()}.
       The following example removes an element from the list model whenever the
@@ -463,7 +468,7 @@ PageTreeNode {
         }
 
         function createWrapper(page, properties) {
-            var wrapperObject = pageWrapperComponent.createObject(hiddenPages, {synchronous: false});
+            var wrapperObject = pageWrapperComponent.createObject(hiddenPages, {synchronous: !layout.asynchronous});
             wrapperObject.pageStack = layout;
             wrapperObject.properties = properties;
             // set reference last because it will trigger creation of the object
