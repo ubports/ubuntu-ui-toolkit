@@ -29,7 +29,7 @@ Template {
         className: "Palette"
         documentation: "qml-palette.html"
 
-        property var palettes: ["normal", "disabled", "selected", "selectedDisabled", "highlighted"]
+        property var palettes: ["normal", "disabled", "selected", "selectedDisabled", "highlighted", "focused"]
         property var paletteValues: [["background", ["backgroundText", "backgroundSecondaryText", "backgroundTertiaryText"]],
             ["base", ["baseText"]],
             ["foreground", ["foregroundText"]],
