@@ -15,13 +15,19 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.3
-import Ubuntu.Components.Themes 1.3
+import Ubuntu.Components 1.2
 
-SuruDarkNormal {
-    background: UbuntuColors.inkstone
-    base: UbuntuColors.ash
-    foreground: UbuntuColors.slate
-    overlay: UbuntuColors.slate
+MainView {
+    width: units.gu(48)
+    height: units.gu(60)
+
+    Page {
+        title: "Hello, I am blue." // should be darkGrey
+        Label {
+            anchors.centerIn: parent
+            text: "bla"
+            color: Theme.palette.normal.negative // this color does not exist in 1.2 palette
+        }
+    }
 }
 

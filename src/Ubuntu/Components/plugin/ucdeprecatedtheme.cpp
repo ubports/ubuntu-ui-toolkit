@@ -131,7 +131,8 @@ void UCDeprecatedTheme::resetName()
 QObject* UCDeprecatedTheme::palette()
 {
     showDeprecatedNote(this, "Theme.palette is deprecated. Use ThemeSettings instead.");
-    return defaultTheme()->palette();
+    // force loading 1.2 palette!
+    return defaultTheme()->palette(BUILD_VERSION(1, 2));
 }
 
 /*!
