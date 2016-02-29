@@ -139,6 +139,16 @@ Description: Ubuntu toolkit common library development files
  This package contains the development files for
  Ubuntu toolkit common library
 
+Package: libubuntutoolkit5-private-dev
+Architecture: any
+Multi-Arch: same
+Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
+Depends: ${misc:Depends},
+ ${shlibs:Depends},
+Description: Ubuntu toolkit common library private development files
+ This package contains the private development files for
+ Ubuntu toolkit common library
+
 Package: ubuntu-ui-toolkit-theme
 Architecture: any
 Multi-Arch: foreign
