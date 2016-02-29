@@ -142,7 +142,7 @@ bool ListViewProxy::keyPressEvent(QKeyEvent *event)
     int count = this->count();
 
     if (currentIndex >= 0 && count > 0) {
-        currentIndex = qBound<int>(0, forwards ? currentIndex - 1 : currentIndex + 1, count);
+        currentIndex = qBound<int>(0, forwards ? currentIndex - 1 : currentIndex + 1, count - 1);
         setCurrentIndex(currentIndex);
         setKeyNavigationForListView(true);
     }
