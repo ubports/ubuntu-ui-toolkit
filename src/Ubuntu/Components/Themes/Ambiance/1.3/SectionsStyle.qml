@@ -259,9 +259,7 @@ Item {
         onPressed: {
             pressedLeft = leftIcon.pressed(mouse);
             pressedRight = rightIcon.pressed(mouse);
-//            if (!pressedLeft && !pressedRight) {
-                mouse.accepted = pressedLeft || pressedRight;
-//            }
+            mouse.accepted = pressedLeft || pressedRight;
         }
         onClicked: {
             // positionViewAtIndex() does not provide animation
