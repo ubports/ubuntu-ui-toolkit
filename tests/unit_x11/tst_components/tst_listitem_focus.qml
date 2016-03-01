@@ -63,6 +63,16 @@ Item {
                 Switch { objectName: "switch" + listItem.itemIndex }
                 Button { objectName: "button" + listItem.itemIndex; text: "test" }
             }
+            leadingActions: ListItemActions {
+                actions: Action {
+                    iconName: "delete"
+                }
+            }
+            trailingActions: ListItemActions {
+                actions: Action {
+                    iconName: "edit"
+                }
+            }
         }
     }
 
@@ -88,7 +98,7 @@ Item {
         }
     }
 
-    UbuntuTestCase {
+    ListItemTestCase13 {
         name: "ListItemFocus"
         when: windowShown
 
@@ -315,49 +325,49 @@ Item {
         // executes a combination of tab/navigation keys/backtab sequence
         function test_pattern_data() {
             return [
-                        {tag: "Tabs in ListView", test: listView, delegate: listItemWithContent, testPlan: [
-                                {key: Qt.Key_Tab, focus: "withContent0"},
-                                {key: Qt.Key_Tab, focus: "topItem"},
-                                {key: Qt.Key_Backtab, focus: "withContent0"},
-                        ]},
-                        {tag: "Tab and navigate in ListView", test: listView, delegate: listItemWithContent, testPlan: [
-                                {key: Qt.Key_Tab, focus: "withContent0"},
-                                {key: Qt.Key_Down, focus: "withContent1"},
-                                {key: Qt.Key_Left, focus: "button1"},
-                                {key: Qt.Key_Left, focus: "switch1"},
-                                {key: Qt.Key_Down, focus: "withContent2"},
-                                {key: Qt.Key_Right, focus: "checkbox2"},
-                                {key: Qt.Key_Right, focus: "switch2"},
-                                {key: Qt.Key_Down, focus: "withContent3"},
-                                {key: Qt.Key_Down, focus: "withContent4"},
-                                {key: Qt.Key_Backtab, focus: "topItem"},
-                                {key: Qt.Key_Tab, focus: "withContent4"},
-                        ]},
-                        {tag: "Tab and navigate in generic", test: generic, testPlan: [
-                                {key: Qt.Key_Tab, focus: "withContent0"},
-                                {key: Qt.Key_Down, focus: "withContent0"},
-                                {key: Qt.Key_Left, focus: "button0"},
-                                {key: Qt.Key_Left, focus: "switch0"},
-                                {key: Qt.Key_Down, focus: "switch0"},
-                                {key: Qt.Key_Right, focus: "button0"},
-                                {key: Qt.Key_Right, focus: "withContent0"},
-                                {key: Qt.Key_Down, focus: "withContent0"},
-                                {key: Qt.Key_Down, focus: "withContent0"},
-                                {key: Qt.Key_Backtab, focus: "topItem"},
-                                {key: Qt.Key_Tab, focus: "withContent0"},
-                        ]},
-                        {tag: "Mixed Tab and navigate keys in generic", test: generic, testPlan: [
-                                {key: Qt.Key_Tab, focus: "withContent0"},
-                                {key: Qt.Key_Tab, focus: "checkbox0"},
-                                {key: Qt.Key_Tab, focus: "switch0"},
-                                {key: Qt.Key_Right, focus: "button0"},
-                                {key: Qt.Key_Right, focus: "withContent0"},
-                                {key: Qt.Key_Tab, focus: "checkbox0"},
-                                {key: Qt.Key_Left, focus: "withContent0"},
-                                {key: Qt.Key_Left, focus: "button0"},
-                                {key: Qt.Key_Tab, focus: "withContent1"},
-                        ]},
-                    ];
+                {tag: "Tabs in ListView", test: listView, delegate: listItemWithContent, testPlan: [
+                        {key: Qt.Key_Tab, focus: "withContent0"},
+                        {key: Qt.Key_Tab, focus: "topItem"},
+                        {key: Qt.Key_Backtab, focus: "withContent0"},
+                ]},
+                {tag: "Tab and navigate in ListView", test: listView, delegate: listItemWithContent, testPlan: [
+                        {key: Qt.Key_Tab, focus: "withContent0"},
+                        {key: Qt.Key_Down, focus: "withContent1"},
+                        {key: Qt.Key_Left, focus: "button1"},
+                        {key: Qt.Key_Left, focus: "switch1"},
+                        {key: Qt.Key_Down, focus: "withContent2"},
+                        {key: Qt.Key_Right, focus: "checkbox2"},
+                        {key: Qt.Key_Right, focus: "switch2"},
+                        {key: Qt.Key_Down, focus: "withContent3"},
+                        {key: Qt.Key_Down, focus: "withContent4"},
+                        {key: Qt.Key_Backtab, focus: "topItem"},
+                        {key: Qt.Key_Tab, focus: "withContent4"},
+                ]},
+                {tag: "Tab and navigate in generic", test: generic, testPlan: [
+                        {key: Qt.Key_Tab, focus: "withContent0"},
+                        {key: Qt.Key_Down, focus: "withContent0"},
+                        {key: Qt.Key_Left, focus: "button0"},
+                        {key: Qt.Key_Left, focus: "switch0"},
+                        {key: Qt.Key_Down, focus: "switch0"},
+                        {key: Qt.Key_Right, focus: "button0"},
+                        {key: Qt.Key_Right, focus: "withContent0"},
+                        {key: Qt.Key_Down, focus: "withContent0"},
+                        {key: Qt.Key_Down, focus: "withContent0"},
+                        {key: Qt.Key_Backtab, focus: "topItem"},
+                        {key: Qt.Key_Tab, focus: "withContent0"},
+                ]},
+                {tag: "Mixed Tab and navigate keys in generic", test: generic, testPlan: [
+                        {key: Qt.Key_Tab, focus: "withContent0"},
+                        {key: Qt.Key_Tab, focus: "checkbox0"},
+                        {key: Qt.Key_Tab, focus: "switch0"},
+                        {key: Qt.Key_Right, focus: "button0"},
+                        {key: Qt.Key_Right, focus: "withContent0"},
+                        {key: Qt.Key_Tab, focus: "checkbox0"},
+                        {key: Qt.Key_Left, focus: "withContent0"},
+                        {key: Qt.Key_Left, focus: "button0"},
+                        {key: Qt.Key_Tab, focus: "withContent1"},
+                ]},
+            ];
         }
         function test_pattern(data) {
             var test = loadTest(data.test);
@@ -373,6 +383,33 @@ Item {
                 if (main.activeFocusItem.hasOwnProperty("keyNavigationFocus")) {
                     verify(main.activeFocusItem.keyNavigationFocus);
                 }
+            }
+        }
+
+        function test_do_not_focus_on_actions_data() {
+            return [
+                {tag: "leading actions revealed", test: listView, focusItem: "withContent1", leading: true, swipeDx: units.gu(10),
+                    key: Qt.Key_Left, focus: ["button1", "switch1", "checkbox1", "withContent1"]},
+                {tag: "trailing actions revealed", test: listView, focusItem: "withContent1", leading: false, swipeDx: -units.gu(10),
+                    key: Qt.Key_Left, focus: ["button1", "switch1", "checkbox1", "withContent1"]},
+            ]
+        }
+        function test_do_not_focus_on_actions(data) {
+            var test = loadTest(data.test);
+            if (test.hasOwnProperty("delegate")) {
+                test.delegate = listItemWithContent;
+                waitForRendering(test, 500);
+            }
+            var item = findChild(test, data.focusItem);
+            verify(item);
+            item.forceActiveFocus();
+            tryCompare(item, "activeFocus", true, 500, "Focus hasn't been gained by the ListItem");
+            // swipe in
+            swipe(item, data.leading ? 1 : item.width - 1, centerOf(item).y, data.swipeDx, 0);
+            // compare
+            for (var i = 0; i < data.focus.length; i++) {
+                keyClick(data.key);
+                tryCompare(main.activeFocusItem, "objectName", data.focus[i]);
             }
         }
     }

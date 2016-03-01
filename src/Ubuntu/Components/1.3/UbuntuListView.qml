@@ -195,14 +195,8 @@ ListView {
     }
 
     // highlight current item
-    highlight: currentItem ? highlightBar : null
-    highlightMoveDuration: 0
-    Component {
-        id: highlightBar
-        Rectangle {
-            color: root.activeFocus
-                        ? theme.palette.focused.background
-                        : theme.palette.selected.background
-        }
+    highlight: Rectangle {
+        color: theme.palette.selected.background
     }
+    highlightMoveDuration: 0
 }
