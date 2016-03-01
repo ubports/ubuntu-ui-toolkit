@@ -20,8 +20,10 @@ import Ubuntu.Components.Themes 1.3
 
 SuruDarkNormal {
     background: UbuntuColors.inkstone
+    backgroundText: UbuntuColors.blue
+    backgroundTertiaryText: UbuntuColors.blue
     base: UbuntuColors.ash
+    baseText:UbuntuColors.blue
     foreground: UbuntuColors.slate
-    overlay: UbuntuColors.slate
 }
 

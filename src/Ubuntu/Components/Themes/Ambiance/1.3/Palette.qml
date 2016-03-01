@@ -56,8 +56,4 @@ Palette {
         base: UbuntuColors.jet
         foreground: UbuntuColors.silk
     }
-
-    focused: AmbianceNormal {
-        background: Qt.rgba(UbuntuColors.blue.r, UbuntuColors.blue.g, UbuntuColors.blue.b, 0.2)
-    }
 }

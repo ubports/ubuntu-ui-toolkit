@@ -66,11 +66,6 @@ QtObject {
     property PaletteValues selected: PaletteValues{}
 
     /*!
-      Color palette to use when the widget is in focused state.
-      */
-    property PaletteValues focused: PaletteValues{}
-
-    /*!
        Color palette to use when the widget is selected and disabled.
       \since Ubuntu.Components.Themes 1.3
     */
