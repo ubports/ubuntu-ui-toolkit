@@ -263,8 +263,17 @@ Item {
         }
         onClicked: {
             // positionViewAtIndex() does not provide animation
+            var scrollDirection = 0;
+            if (pressedLeft && leftIcon.contains(mouse)) {
+                scrollDirection = -1;
+            } else if (pressedRight && rightIcon.contains(mouse)) {
+                scrollDirection = 1;
+            } else {
+                // user pressed on the left or right icon, and then released outside of that icon.
+                return;
+            }
             if (contentXAnim.running) contentXAnim.stop();
-            var newContentX = sectionsListView.contentX + (sectionsListView.width * (pressedLeft ? -1 : 1));
+            var newContentX = sectionsListView.contentX + (sectionsListView.width * scrollDirection);
             contentXAnim.from = sectionsListView.contentX;
             // make sure we don't overshoot bounds
             contentXAnim.to = MathUtils.clamp(
