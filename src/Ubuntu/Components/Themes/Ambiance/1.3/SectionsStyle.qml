@@ -257,11 +257,11 @@ Item {
         property bool pressedLeft: false
         property bool pressedRight: false
         onPressed: {
-            pressedLeft = leftIcon.hovering(mouse);
-            pressedRight = rightIcon.hovering(mouse);
-            if (!pressedLeft && !pressedRight) {
-                mouse.accepted = false;
-            }
+            pressedLeft = leftIcon.pressed(mouse);
+            pressedRight = rightIcon.pressed(mouse);
+//            if (!pressedLeft && !pressedRight) {
+                mouse.accepted = pressedLeft || pressedRight;
+//            }
         }
         onClicked: {
             // positionViewAtIndex() does not provide animation
@@ -278,8 +278,9 @@ Item {
 
         Icon {
             id: leftIcon
-            function hovering(mouse) {
-                return (mouse.x < listViewContainer.listViewMargins && enabled);
+            function pressed(mouse) {
+                return (mouse.x < listViewContainer.listViewMargins &&
+                        !sectionsListView.atXBeginning);
             }
             anchors {
                 left: parent.left
@@ -291,9 +292,8 @@ Item {
             height: units.gu(1)
             visible: false
             rotation: 180
-            enabled: !sectionsListView.atXBeginning
             opacity: visible
-                     ? enabled ? 1.0 : hoveringArea.iconsDisabledOpacity
+                     ? sectionsListView.atXBeginning ? hoveringArea.iconsDisabledOpacity : 1.0
                      : 0.0
             name: "chevron"
             Behavior on opacity {
@@ -305,8 +305,9 @@ Item {
 
         Icon {
             id: rightIcon
-            function hovering(mouse) {
-                return (mouse.x > hoveringArea.width - listViewContainer.listViewMargins && enabled);
+            function pressed(mouse) {
+                return (mouse.x > (hoveringArea.width - listViewContainer.listViewMargins) &&
+                        !sectionsListView.atXEnd);
             }
             anchors {
                 right: parent.right
@@ -317,9 +318,8 @@ Item {
             width: units.gu(1)
             height: units.gu(1)
             visible: false
-            enabled: !sectionsListView.atXEnd
             opacity: visible
-                     ? enabled ? 1.0 : hoveringArea.iconsDisabledOpacity
+                     ? sectionsListView.atXEnd ? hoveringArea.iconsDisabledOpacity : 1.0
                      : 0.0
             name: "chevron"
             Behavior on opacity {
