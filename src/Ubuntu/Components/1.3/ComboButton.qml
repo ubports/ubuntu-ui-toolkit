@@ -299,22 +299,14 @@ AbstractButton {
 
     styleName: "ComboButtonStyle"
 
-    Component.onCompleted: {
-        // update mouse area to report clicks only on the main button area
-        // area excluding dropDown button and combo list
-        // we must do separate bindings as __mouseArea is a read-only property
-        __mouseArea.anchors.fill = undefined;
-        __mouseArea.anchors.left = Qt.binding(function() {return combo.left;});
-        __mouseArea.anchors.top = Qt.binding(function() {return combo.top;});
-        __mouseArea.anchors.right = Qt.binding(function() {return combo.right;});
-        __mouseArea.anchors.rightMargin = Qt.binding(function() {return combo.__styleInstance.dropDownWidth;});
-        __mouseArea.height = Qt.binding(function() {return collapsedHeight;});
-        // for autopilot, set the main button name
-        __mouseArea.objectName = "combobutton_mainbutton";
-
-        // bind a height calculation to avoid unwanted change
-        combo.height = Qt.binding(function() {return collapsedHeight + __styleInstance.comboListPanel.height});
+    // update sensing area to report clicks only on the main button area
+    // area excluding dropDown button and combo list
+    sensingMargins {
+        bottom: -(combo.height - combo.collapsedHeight)
+        right: -combo.__styleInstance.dropDownWidth
     }
+    __mouseArea.objectName: "combobutton_mainbutton"
+    height: collapsedHeight + __styleInstance.comboListPanel.height
 
     // dropdown button
     AbstractButton {
