@@ -269,7 +269,8 @@ Item {
             } else if (pressedRight && rightIcon.contains(mouse)) {
                 scrollDirection = 1;
             } else {
-                // user pressed on the left or right icon, and then released outside of that icon.
+                // User pressed on the left or right icon, and then released inside of the
+                // MouseArea but outside of the icon that was pressed.
                 return;
             }
             if (contentXAnim.running) contentXAnim.stop();
