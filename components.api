@@ -197,6 +197,7 @@ Ubuntu.Components.BottomEdge 1.3 UCBottomEdge: StyledItem
     signal collapseCompleted()
     function commit()
     function collapse()
+    property bool preloadContent
     property list<BottomEdgeRegion> regions
     readonly property Status status
 Ubuntu.Components.BottomEdge.DragDirection: Enum
@@ -223,6 +224,8 @@ Ubuntu.Components.BottomEdgeRegion 1.3 UCBottomEdgeRegion: QtObject
     property url contentUrl
     property bool enabled
     property double from
+    signal contentChanged(url url)
+    signal contentComponentChanged(Component component)
     signal entered()
     signal exited()
     signal dragEnded()
