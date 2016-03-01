@@ -3,6 +3,6 @@ include( add_makecheck.pri )
 
 TEMPLATE = app
 QT += testlib qml quick
-CONFIG += no_keywords C++11
+CONFIG += no_keywords c++11
 
 
