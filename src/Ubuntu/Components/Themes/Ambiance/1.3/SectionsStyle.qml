@@ -255,9 +255,9 @@ Item {
         property bool hoveringRight: false
 
         function checkHovering(mouse) {
-            if (mouse.x < listViewContainer.listViewMargins) {
+            if (mouse.x < listViewContainer.listViewMargins && leftHoveringIcon.enabled) {
                 if (!hoveringLeft) hoveringLeft = true;
-            } else if (mouse.x > width - listViewContainer.listViewMargins) {
+            } else if (mouse.x > width - listViewContainer.listViewMargins && rightHoveringIcon.enabled) {
                 if (!hoveringRight) hoveringRight = true;
             } else {
                 hoveringLeft = false;
@@ -303,8 +303,9 @@ Item {
             height: units.gu(1)
             visible: false
             rotation: 180
+            enabled: !sectionsListView.atXBeginning
             opacity: visible
-                     ? sectionsListView.atXBeginning ? hoveringArea.iconsDisabledOpacity : 1.0
+                     ? enabled ? 1.0 : hoveringArea.iconsDisabledOpacity
                      : 0.0
             name: "chevron"
             Behavior on opacity {
@@ -325,8 +326,9 @@ Item {
             width: units.gu(1)
             height: units.gu(1)
             visible: false
+            enabled: !sectionsListView.atXEnd
             opacity: visible
-                     ? sectionsListView.atXEnd ? hoveringArea.iconsDisabledOpacity : 1.0
+                     ? enabled ? 1.0 : hoveringArea.iconsDisabledOpacity
                      : 0.0
             name: "chevron"
             Behavior on opacity {
