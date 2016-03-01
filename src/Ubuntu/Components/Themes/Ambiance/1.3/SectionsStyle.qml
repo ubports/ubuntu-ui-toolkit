@@ -251,48 +251,36 @@ Item {
 
         property real iconsDisabledOpacity: 0.3
 
-        property bool hoveringLeft: false
-        property bool hoveringRight: false
-
-        function checkHovering(mouse) {
-            if (mouse.x < listViewContainer.listViewMargins && leftHoveringIcon.enabled) {
-                if (!hoveringLeft) hoveringLeft = true;
-            } else if (mouse.x > width - listViewContainer.listViewMargins && rightHoveringIcon.enabled) {
-                if (!hoveringRight) hoveringRight = true;
-            } else {
-                hoveringLeft = false;
-                hoveringRight = false;
-            }
-        }
-
         anchors.fill: parent
         hoverEnabled: true
 
-        onPositionChanged: checkHovering(mouse)
-        onExited: {
-            hoveringLeft = false;
-            hoveringRight = false;
-        }
+        property bool pressedLeft: false
+        property bool pressedRight: false
         onPressed: {
-            if (!hoveringLeft && !hoveringRight) {
+            pressedLeft = leftIcon.hovering(mouse);
+            pressedRight = rightIcon.hovering(mouse);
+            if (!pressedLeft && !pressedRight) {
                 mouse.accepted = false;
             }
         }
         onClicked: {
             // positionViewAtIndex() does not provide animation
             if (contentXAnim.running) contentXAnim.stop();
-            var newContentX = sectionsListView.contentX + (sectionsListView.width * (hoveringLeft ? -1 : 1));
+            var newContentX = sectionsListView.contentX + (sectionsListView.width * (pressedLeft ? -1 : 1));
             contentXAnim.from = sectionsListView.contentX;
             // make sure we don't overshoot bounds
             contentXAnim.to = MathUtils.clamp(
                         newContentX,
-                        sectionsListView.originX,
+                        0.0, // estimation of originX is some times wrong when scrolling towards the beginning
                         sectionsListView.originX + sectionsListView.contentWidth - sectionsListView.width);
             contentXAnim.start();
         }
 
         Icon {
-            id: leftHoveringIcon
+            id: leftIcon
+            function hovering(mouse) {
+                return (mouse.x < listViewContainer.listViewMargins && enabled);
+            }
             anchors {
                 left: parent.left
                 leftMargin: (listViewContainer.listViewMargins - width) / 2
@@ -316,7 +304,10 @@ Item {
         }
 
         Icon {
-            id: rightHoveringIcon
+            id: rightIcon
+            function hovering(mouse) {
+                return (mouse.x > hoveringArea.width - listViewContainer.listViewMargins && enabled);
+            }
             anchors {
                 right: parent.right
                 rightMargin: (listViewContainer.listViewMargins - width) / 2
@@ -389,8 +380,8 @@ Item {
             when: hoveringArea.containsMouse
             PropertyChanges { target: mask; visible: true }
             PropertyChanges { target: listViewContainer; opacity: 0.0 }
-            PropertyChanges { target: leftHoveringIcon; visible: true; }
-            PropertyChanges { target: rightHoveringIcon; visible: true; }
+            PropertyChanges { target: leftIcon; visible: true; }
+            PropertyChanges { target: rightIcon; visible: true; }
         }
     ]
 }
