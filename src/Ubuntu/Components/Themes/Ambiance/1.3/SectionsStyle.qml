@@ -276,6 +276,7 @@ Item {
 
         Icon {
             id: leftIcon
+            // return whether the pressed event was done inside the area of the icon
             function pressed(mouse) {
                 return (mouse.x < listViewContainer.listViewMargins &&
                         !sectionsListView.atXBeginning);
@@ -303,6 +304,7 @@ Item {
 
         Icon {
             id: rightIcon
+            // return whether the pressed event was done inside the area of the icon
             function pressed(mouse) {
                 return (mouse.x > (hoveringArea.width - listViewContainer.listViewMargins) &&
                         !sectionsListView.atXEnd);
