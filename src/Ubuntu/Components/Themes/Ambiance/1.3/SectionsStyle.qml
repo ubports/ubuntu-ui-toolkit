@@ -257,8 +257,8 @@ Item {
         property bool pressedLeft: false
         property bool pressedRight: false
         onPressed: {
-            pressedLeft = leftIcon.pressed(mouse);
-            pressedRight = rightIcon.pressed(mouse);
+            pressedLeft = leftIcon.contains(mouse);
+            pressedRight = rightIcon.contains(mouse);
             mouse.accepted = pressedLeft || pressedRight;
         }
         onClicked: {
@@ -277,7 +277,7 @@ Item {
         Icon {
             id: leftIcon
             // return whether the pressed event was done inside the area of the icon
-            function pressed(mouse) {
+            function contains(mouse) {
                 return (mouse.x < listViewContainer.listViewMargins &&
                         !sectionsListView.atXBeginning);
             }
@@ -305,7 +305,7 @@ Item {
         Icon {
             id: rightIcon
             // return whether the pressed event was done inside the area of the icon
-            function pressed(mouse) {
+            function contains(mouse) {
                 return (mouse.x > (hoveringArea.width - listViewContainer.listViewMargins) &&
                         !sectionsListView.atXEnd);
             }
