@@ -141,7 +141,7 @@ void UCAbstractButton::classBegin()
     d->mouseArea->setHoverEnabled(true);
 
 #ifdef SENSING_DEBUG
-    // DEBUG
+    // keep this code for visual debugging purposes to track sensing area changes
     QQmlComponent component(qmlEngine(this));
     QString data = "import QtQuick 2.4; Rectangle { anchors.fill: parent; color: '#19b6ee'; opacity: 0.3 }";
     component.setData(data.toLocal8Bit(), QUrl());

@@ -36,7 +36,6 @@ public:
 
     bool isPressAndHoldConnected();
     void onClicked();
-    void adjustMouseArea(qreal width, qreal height);
 
     // private slots
     void _q_mouseAreaPressed();
