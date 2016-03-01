@@ -14,6 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import QtQuick 2.4
+import QtQuick.Window 2.2
 import Ubuntu.Components 1.3
 import QtGraphicalEffects 1.0
 import Ubuntu.Components.Private 1.3
@@ -22,7 +23,7 @@ Item {
     id: sectionsStyle
 
     implicitWidth: sectionsListView.contentWidth + 2 * listViewContainer.listViewMargins
-    implicitHeight: units.gu(4)
+    implicitHeight: Screen.height > units.gu(50) ? units.gu(4) : units.gu(3)
 
     /*!
       The foreground color of unselected sections.
@@ -208,7 +209,7 @@ Item {
                     font.weight: Font.Light
                     anchors {
                         baseline: underline.bottom
-                        baselineOffset: -units.gu(2)
+                        baselineOffset: sectionsStyle.height < units.gu(4) ? -units.gu(1) : -units.gu(2)
                         horizontalCenter: parent.horizontalCenter
                     }
 
@@ -296,7 +297,7 @@ Item {
                 left: parent.left
                 leftMargin: (listViewContainer.listViewMargins - width) / 2
                 bottom: parent.bottom
-                bottomMargin: units.gu(2)
+                bottomMargin: sectionsStyle.height < units.gu(4) ? units.gu(1) : units.gu(2)
             }
             width: units.gu(1)
             height: units.gu(1)
@@ -319,7 +320,7 @@ Item {
                 right: parent.right
                 rightMargin: (listViewContainer.listViewMargins - width) / 2
                 bottom: parent.bottom
-                bottomMargin: units.gu(2)
+                bottomMargin: sectionsStyle.height < units.gu(4) ? units.gu(1) : units.gu(2)
             }
             width: units.gu(1)
             height: units.gu(1)
