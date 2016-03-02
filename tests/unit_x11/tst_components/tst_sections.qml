@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.4
+import QtTest 1.0
 import Ubuntu.Test 1.0
 import Ubuntu.Components 1.3
 
@@ -371,13 +372,22 @@ Rectangle {
             wait_for_animation(selectedIndexSections);
         }
 
+        SignalSpy {
+            id: contentXChangedSpy
+            signalName: "contentXChanged"
+        }
+
         function test_click_disabled_scroll_button_bug1551356() {
             var listView = findChild(enabledSections, "sections_listview");
             var icon = findChild(enabledSections, "leftScrollIcon");
+            contentXChangedSpy.target = listView;
             compare(listView.contentX, 0.0, "listView is not at the leftmost position initially.");
             mouseClick(icon, icon.width/2, icon.height/2);
-            wait_for_animation(enabledSections);
-            compare(listView.contentX, 0.0, "listView moved when clicking disabled scroll button.");
+            wait(200); // give the listview ample time to scroll
+            compare(contentXChangedSpy.count, 0,
+                    "listView moved when clicking disabled scroll button.");
+            contentXChangedSpy.clear();
+            contentXChangedSpy.target = null;
         }
 
         function test_keyboard_navigation_data() {
