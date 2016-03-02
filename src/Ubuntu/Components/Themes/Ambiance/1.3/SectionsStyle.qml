@@ -236,6 +236,7 @@ Item {
             }
 
             SmoothedAnimation {
+                objectName: "sections_scroll_animation"
                 id: contentXAnim
                 target: sectionsListView
                 property: "contentX"
@@ -251,48 +252,47 @@ Item {
 
         property real iconsDisabledOpacity: 0.3
 
-        property bool hoveringLeft: false
-        property bool hoveringRight: false
-
-        function checkHovering(mouse) {
-            if (mouse.x < listViewContainer.listViewMargins) {
-                if (!hoveringLeft) hoveringLeft = true;
-            } else if (mouse.x > width - listViewContainer.listViewMargins) {
-                if (!hoveringRight) hoveringRight = true;
-            } else {
-                hoveringLeft = false;
-                hoveringRight = false;
-            }
-        }
-
         anchors.fill: parent
         hoverEnabled: true
 
-        onPositionChanged: checkHovering(mouse)
-        onExited: {
-            hoveringLeft = false;
-            hoveringRight = false;
-        }
+        property bool pressedLeft: false
+        property bool pressedRight: false
         onPressed: {
-            if (!hoveringLeft && !hoveringRight) {
-                mouse.accepted = false;
-            }
+            pressedLeft = leftIcon.contains(mouse);
+            pressedRight = rightIcon.contains(mouse);
+            mouse.accepted = pressedLeft || pressedRight;
         }
         onClicked: {
             // positionViewAtIndex() does not provide animation
+            var scrollDirection = 0;
+            if (pressedLeft && leftIcon.contains(mouse)) {
+                scrollDirection = -1;
+            } else if (pressedRight && rightIcon.contains(mouse)) {
+                scrollDirection = 1;
+            } else {
+                // User pressed on the left or right icon, and then released inside of the
+                // MouseArea but outside of the icon that was pressed.
+                return;
+            }
             if (contentXAnim.running) contentXAnim.stop();
-            var newContentX = sectionsListView.contentX + (sectionsListView.width * (hoveringLeft ? -1 : 1));
+            var newContentX = sectionsListView.contentX + (sectionsListView.width * scrollDirection);
             contentXAnim.from = sectionsListView.contentX;
             // make sure we don't overshoot bounds
             contentXAnim.to = MathUtils.clamp(
                         newContentX,
-                        sectionsListView.originX,
+                        0.0, // estimation of originX is some times wrong when scrolling towards the beginning
                         sectionsListView.originX + sectionsListView.contentWidth - sectionsListView.width);
             contentXAnim.start();
         }
 
         Icon {
-            id: leftHoveringIcon
+            id: leftIcon
+            objectName: "left_scroll_icon"
+            // return whether the pressed event was done inside the area of the icon
+            function contains(mouse) {
+                return (mouse.x < listViewContainer.listViewMargins &&
+                        !sectionsListView.atXBeginning);
+            }
             anchors {
                 left: parent.left
                 leftMargin: (listViewContainer.listViewMargins - width) / 2
@@ -315,7 +315,13 @@ Item {
         }
 
         Icon {
-            id: rightHoveringIcon
+            id: rightIcon
+            objectName: "right_scroll_icon"
+            // return whether the pressed event was done inside the area of the icon
+            function contains(mouse) {
+                return (mouse.x > (hoveringArea.width - listViewContainer.listViewMargins) &&
+                        !sectionsListView.atXEnd);
+            }
             anchors {
                 right: parent.right
                 rightMargin: (listViewContainer.listViewMargins - width) / 2
@@ -387,8 +393,8 @@ Item {
             when: hoveringArea.containsMouse
             PropertyChanges { target: mask; visible: true }
             PropertyChanges { target: listViewContainer; opacity: 0.0 }
-            PropertyChanges { target: leftHoveringIcon; visible: true; }
-            PropertyChanges { target: rightHoveringIcon; visible: true; }
+            PropertyChanges { target: leftIcon; visible: true; }
+            PropertyChanges { target: rightIcon; visible: true; }
         }
     ]
 }
