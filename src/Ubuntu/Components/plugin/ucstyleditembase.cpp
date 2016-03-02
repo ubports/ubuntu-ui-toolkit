@@ -33,6 +33,7 @@ UCStyledItemBasePrivate::UCStyledItemBasePrivate()
     , keyNavigationFocus(false)
     , activeFocusOnPress(false)
     , wasStyleLoaded(false)
+    , isFocusScope(true)
 {
 }
 
@@ -58,7 +59,6 @@ UCStyledItemBasePrivate::~UCStyledItemBasePrivate()
 void UCStyledItemBasePrivate::init()
 {
     Q_Q(UCStyledItemBase);
-    q->setFlag(QQuickItem::ItemIsFocusScope);
     QObject::connect(q, &QQuickItem::activeFocusOnTabChanged, q, &UCStyledItemBase::activeFocusOnTabChanged2);
 }
 
@@ -499,6 +499,21 @@ void UCStyledItemBasePrivate::completeComponentInitialization()
     // prepare style context if not been done yet
     postStyleChanged();
     loadStyleItem(false);
+}
+
+void UCStyledItemBase::classBegin()
+{
+    /* Some items require not to be focus scopes (like ListItem), however for
+     * backwards compatibility we must keep setting the generic styled items
+     * as focus scopes. The flag once set cannot be cleared, therefore we must
+     * use an additional boolean member isFocusScope to drive this request.
+     * The member defaults to true. Additionally, the focus scope flag must
+     * be set before the parentItem is set and child items are added.
+     */
+    if (d_func()->isFocusScope) {
+        setFlag(QQuickItem::ItemIsFocusScope);
+    }
+    QQuickItem::classBegin();
 }
 
 void UCStyledItemBase::componentComplete()

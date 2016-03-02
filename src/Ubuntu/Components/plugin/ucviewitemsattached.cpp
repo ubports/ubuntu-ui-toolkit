@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 Canonical Ltd.
+ * Copyright 2014-2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -23,6 +23,7 @@
 #include "i18n.h"
 #include "uclistitemstyle.h"
 #include "privates/listitemdragarea.h"
+#include "privates/listviewextensions.h"
 #include <QtQuick/private/qquickflickable_p.h>
 #include <QtQml/private/qqmlcomponentattached_p.h>
 #include <QtQml/QQmlInfo>
@@ -116,6 +117,22 @@ UCViewItemsAttachedPrivate::~UCViewItemsAttachedPrivate()
     clearFlickablesList();
 }
 
+void UCViewItemsAttachedPrivate::init()
+{
+    Q_Q(UCViewItemsAttached);
+    if (parent->inherits("QQuickListView")) {
+        listView = new ListViewProxy(static_cast<QQuickFlickable*>(parent), q);
+
+        // ListView focus handling
+        listView->view()->setActiveFocusOnTab(true);
+        // filter ListView events to override up/down focus handling
+        listView->overrideItemNavigation(true);
+    }
+    // listen readyness
+    QQmlComponentAttached *attached = QQmlComponent::qmlAttachedProperties(parent);
+    QObject::connect(attached, &QQmlComponentAttached::completed, q, &UCViewItemsAttached::completed);
+}
+
 // disconnect all flickables
 void UCViewItemsAttachedPrivate::clearFlickablesList()
 {
@@ -167,12 +184,7 @@ void UCViewItemsAttachedPrivate::buildFlickablesList()
 UCViewItemsAttached::UCViewItemsAttached(QObject *owner)
     : QObject(*(new UCViewItemsAttachedPrivate()), owner)
 {
-    if (owner->inherits("QQuickListView")) {
-        d_func()->listView = static_cast<QQuickFlickable*>(owner);
-    }
-    // listen readyness
-    QQmlComponentAttached *attached = QQmlComponent::qmlAttachedProperties(owner);
-    connect(attached, &QQmlComponentAttached::completed, this, &UCViewItemsAttached::completed);
+    d_func()->init();
 }
 
 UCViewItemsAttached::~UCViewItemsAttached()
@@ -202,6 +214,12 @@ bool UCViewItemsAttached::listenToRebind(UCListItem *item, bool listen)
         result = true;
     }
     return result;
+}
+
+// reports whether the ViewItems is attached to ListView
+bool UCViewItemsAttached::isAttachedToListView()
+{
+    return (d_func()->listView != Q_NULLPTR);
 }
 
 // reports true if any of the ascendant flickables is moving
@@ -462,7 +480,7 @@ void UCViewItemsAttached::setDragMode(bool value)
             qmlInfo(parent()) << QStringLiteral("Dragging mode requires ListView");
             return;
         }
-        QVariant model = d->listView->property("model");
+        QVariant model = d->listView->model();
         // warn if the model is anything else but Instance model (ObjectModel or DelegateModel)
         // or a derivate of QAbstractItemModel
         QString warning = QStringLiteral("Dragging is only supported when using a QAbstractItemModel, ListModel or list.");
@@ -492,7 +510,7 @@ void UCViewItemsAttachedPrivate::enterDragMode()
         dragArea->reset();
         return;
     }
-    dragArea = new ListItemDragArea(listView);
+    dragArea = new ListItemDragArea(listView->view());
     dragArea->init(q_func());
 }
 
@@ -515,7 +533,7 @@ bool UCViewItemsAttachedPrivate::isDragUpdatedConnected()
 // updates the selected indices list in ViewAttached which is changed due to dragging
 void UCViewItemsAttachedPrivate::updateSelectedIndices(int fromIndex, int toIndex)
 {
-    if (selectedList.count() == listView->property("count").toInt()) {
+    if (selectedList.count() == listView->count()) {
         // all indices selected, no need to reorder
         return;
     }

@@ -110,6 +110,7 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/ucmainviewbase.h \
     $$PWD/ucmainviewbase_p.h \
     $$PWD/ucperformancemonitor.h \
+    $$PWD/privates/listviewextensions.h \
     $$PWD/privates/frame.h \
     $$PWD/privates/ucpagewrapper.h \
     $$PWD/privates/ucpagewrapper_p.h \
@@ -187,6 +188,7 @@ SOURCES += $$PWD/plugin.cpp \
     $$PWD/ucpagetreenode.cpp \
     $$PWD/ucmainviewbase.cpp \
     $$PWD/ucperformancemonitor.cpp \
+    $$PWD/privates/listviewextensions.cpp \
     $$PWD/privates/frame.cpp \
     $$PWD/privates/ucpagewrapper.cpp \
     $$PWD/privates/ucpagewrapperincubator.cpp \
