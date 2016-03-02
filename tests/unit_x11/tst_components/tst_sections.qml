@@ -376,11 +376,11 @@ Rectangle {
             id: contentXChangedSpy
             signalName: "contentXChanged"
         }
-
         function test_click_disabled_scroll_button_bug1551356() {
             var listView = findChild(enabledSections, "sections_listview");
-            var icon = findChild(enabledSections, "leftScrollIcon");
+            var icon = findChild(enabledSections, "left_scroll_icon");
             contentXChangedSpy.target = listView;
+            contentXChangedSpy.clear();
             compare(listView.contentX, 0.0, "listView is not at the leftmost position initially.");
             mouseClick(icon, icon.width/2, icon.height/2);
             wait(200); // give the listview ample time to scroll
@@ -388,6 +388,35 @@ Rectangle {
                     "listView moved when clicking disabled scroll button.");
             contentXChangedSpy.clear();
             contentXChangedSpy.target = null;
+        }
+
+        SignalSpy {
+            id: animationStartedSpy
+            signalName: "started"
+        }
+        function test_press_release_on_different_icons() {
+            var leftIcon = findChild(scrollingSections, "left_scroll_icon");
+            var rightIcon = findChild(scrollingSections, "right_scroll_icon");
+            var animation = findInvisibleChild(scrollingSections, "sections_scroll_animation");
+            animationStartedSpy.target = animation;
+            compare(leftIcon.width, rightIcon.width, "Scroll icons are not the same width.");
+            compare(leftIcon.height, rightIcon.height, "Scroll icons are not the same height.");
+            var w = leftIcon.width / 2;
+            var h = leftIcon.height / 2;
+            mouseMove(leftIcon, w, h);
+            mousePress(leftIcon, w, h);
+            mouseMove(rightIcon, w, h);
+            mouseRelease(rightIcon, w, h);
+            wait(200);
+            compare(animationStartedSpy.count, 0,
+                    "Clicked signal came after pressing left icon and releasing on right icon.");
+            mousePress(rightIcon, w, h);
+            mouseMove(leftIcon, w, h);
+            mouseRelease(leftIcon, w, h);
+            wait(200);
+            compare(animationStartedSpy.count, 0,
+                    "Clicked signal came after pressing right icon and releasing on left icon.");
+            animationStartedSpy.target = null;
         }
 
         function test_keyboard_navigation_data() {

@@ -236,6 +236,7 @@ Item {
             }
 
             SmoothedAnimation {
+                objectName: "sections_scroll_animation"
                 id: contentXAnim
                 target: sectionsListView
                 property: "contentX"
@@ -286,7 +287,7 @@ Item {
 
         Icon {
             id: leftIcon
-            objectName: "leftScrollIcon"
+            objectName: "left_scroll_icon"
             // return whether the pressed event was done inside the area of the icon
             function contains(mouse) {
                 return (mouse.x < listViewContainer.listViewMargins &&
@@ -315,7 +316,7 @@ Item {
 
         Icon {
             id: rightIcon
-            objectName: "rightScrollIcon"
+            objectName: "right_scroll_icon"
             // return whether the pressed event was done inside the area of the icon
             function contains(mouse) {
                 return (mouse.x > (hoveringArea.width - listViewContainer.listViewMargins) &&
