@@ -88,6 +88,7 @@ Rectangle {
         Sections {
             id: enabledSections
             actions: root.actionList
+            width: parent.width // set width > implicitWidth to test for bug 1551356 below.
         }
         Sections {
             id: disabledSections
@@ -158,10 +159,16 @@ Rectangle {
             enabledStringSections.selectedIndex = 0;
             disabledStringSections.selectedIndex = 0;
             label.text = "No action triggered."
+            wait_for_animation(enabledSections);
         }
 
         function wait_for_animation(sections) {
-            // TODO when animations are added
+            var listView = findChild(sections, "sections_listview");
+            if (!listView.moving) {
+                // wait for potential animation to start
+                wait(100);
+            }
+            tryCompare(listView, "moving", false, 2000);
         }
 
         function get_number_of_section_buttons(sections) {
@@ -362,6 +369,15 @@ Rectangle {
                     "Changing the model triggers the third action.");
             selectedIndexSections.actions = originalActions;
             wait_for_animation(selectedIndexSections);
+        }
+
+        function test_click_disabled_scroll_button_bug1551356() {
+            var listView = findChild(enabledSections, "sections_listview");
+            var icon = findChild(enabledSections, "leftScrollIcon");
+            compare(listView.contentX, 0.0, "listView is not at the leftmost position initially.");
+            mouseClick(icon, icon.width/2, icon.height/2);
+            wait_for_animation(enabledSections);
+            compare(listView.contentX, 0.0, "listView moved when clicking disabled scroll button.");
         }
 
         function test_keyboard_navigation_data() {

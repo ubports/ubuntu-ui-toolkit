@@ -286,6 +286,7 @@ Item {
 
         Icon {
             id: leftIcon
+            objectName: "leftScrollIcon"
             // return whether the pressed event was done inside the area of the icon
             function contains(mouse) {
                 return (mouse.x < listViewContainer.listViewMargins &&
@@ -314,6 +315,7 @@ Item {
 
         Icon {
             id: rightIcon
+            objectName: "rightScrollIcon"
             // return whether the pressed event was done inside the area of the icon
             function contains(mouse) {
                 return (mouse.x > (hoveringArea.width - listViewContainer.listViewMargins) &&
