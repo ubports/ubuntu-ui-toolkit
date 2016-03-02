@@ -84,7 +84,7 @@ Conflicts: qt-components-ubuntu
 Breaks: qtdeclarative5-ubuntu-ui-toolkit-plugin (<< ${source:Version})
 Replaces: qt-components-ubuntu, qtdeclarative5-ubuntu-ui-toolkit-plugin (<< ${source:Version})
 Provides: qt-components-ubuntu
-Description: Qt Components for Ubuntu - QML plugin
+Description: Qt Components for Ubuntu - Components QML plugin
  Qt Components for Ubuntu offers a set of reusable user interface
  components for Qt Quick 2 / QML.
  .
@@ -96,7 +96,7 @@ Multi-Arch: same
 Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
 Depends: ${misc:Depends},
          ${shlibs:Depends},
-Description: Qt Components for Ubuntu - QML plugin
+Description: Qt Components for Ubuntu - Layouts QML plugin
  Qt Components for Ubuntu offers a set of reusable user interface
  components for Qt Quick 2 / QML.
  .
@@ -110,7 +110,7 @@ Depends: ${misc:Depends},
          ${shlibs:Depends},
          qml-module-qttest | qtdeclarative5-test-plugin,
          qml-module-ubuntu-components,
-Description: Qt Components for Ubuntu - QML plugin
+Description: Qt Components for Ubuntu - Test QML plugin
  Qt Components for Ubuntu offers a set of reusable user interface
  components for Qt Quick 2 / QML.
  .
@@ -122,11 +122,11 @@ Multi-Arch: same
 Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
 Depends: ${misc:Depends},
          ${shlibs:Depends},
-Description: Qt Components for Ubuntu - QML plugin
+Description: Qt Components for Ubuntu - PerformanceMetrics QML plugin
  Qt Components for Ubuntu offers a set of reusable user interface
  components for Qt Quick 2 / QML.
  .
- This package contains the Ubuntu Test QML plugin.
+ This package contains the Ubuntu PerformanceMetrics QML plugin.
 
 
 Package: qtdeclarative5-ubuntu-ui-toolkit-plugin
