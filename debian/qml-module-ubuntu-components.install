@@ -1,10 +1,3 @@
-usr/lib/*/qt5/qml/Ubuntu/PerformanceMetrics/*.qml
-usr/lib/*/qt5/qml/Ubuntu/PerformanceMetrics/qmldir
-usr/lib/*/qt5/qml/Ubuntu/PerformanceMetrics/plugins.qmltypes
-usr/lib/*/qt5/qml/Ubuntu/PerformanceMetrics/libUbuntuPerformanceMetrics.so
-usr/lib/*/qt5/qml/Ubuntu/Layouts/qmldir
-usr/lib/*/qt5/qml/Ubuntu/Layouts/plugins.qmltypes
-usr/lib/*/qt5/qml/Ubuntu/Layouts/libUbuntuLayouts.so
 usr/lib/*/qt5/qml/Ubuntu/Components/1.0/*.qml
 usr/lib/*/qt5/qml/Ubuntu/Components/1.1/*.qml
 usr/lib/*/qt5/qml/Ubuntu/Components/1.2/*.qml
@@ -29,5 +22,4 @@ usr/lib/*/qt5/qml/Ubuntu/Components/Pickers/qmldir
 usr/lib/*/qt5/qml/Ubuntu/Components/Styles/1.2/*.qml
 usr/lib/*/qt5/qml/Ubuntu/Components/Styles/1.3/*.qml
 usr/lib/*/qt5/qml/Ubuntu/Components/Styles/qmldir
-usr/lib/*/qt5/qml/Ubuntu/Test
 usr/share/locale/*/LC_MESSAGES/ubuntu-ui-toolkit.mo

@@ -61,7 +61,7 @@ Homepage: https://launchpad.net/ubuntu-ui-toolkit
 # again.
 Vcs-Bzr: https://code.launchpad.net/~ubuntu-sdk-team/ubuntu-ui-toolkit/trunk
 
-Package: qml-module-ubuntu-ui-toolkit
+Package: qml-module-ubuntu-components
 Architecture: any
 Multi-Arch: same
 Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
@@ -72,6 +72,7 @@ Depends: qml-module-qtgraphicaleffects | libqt5qml-graphicaleffects,
          qml-module-qtquick-layouts,
          qml-module-qtfeedback,
          qtdeclarative5-unity-action-plugin (>= 1.1.0),
+         qml-module-ubuntu-performancemetrics,
          suru-icon-theme,
          ttf-ubuntu-font-family,
          ubuntu-ui-toolkit-theme (= ${binary:Version}),
@@ -89,10 +90,49 @@ Description: Qt Components for Ubuntu - QML plugin
  .
  This package contains the Ubuntu Components QML plugin.
 
+Package: qml-module-ubuntu-layouts
+Architecture: any
+Multi-Arch: same
+Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+Description: Qt Components for Ubuntu - QML plugin
+ Qt Components for Ubuntu offers a set of reusable user interface
+ components for Qt Quick 2 / QML.
+ .
+ This package contains the Ubuntu Layouts QML plugin.
+
+Package: qml-module-ubuntu-test
+Architecture: any
+Multi-Arch: same
+Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+         qml-module-qttest | qtdeclarative5-test-plugin,
+         qml-module-ubuntu-components,
+Description: Qt Components for Ubuntu - QML plugin
+ Qt Components for Ubuntu offers a set of reusable user interface
+ components for Qt Quick 2 / QML.
+ .
+ This package contains the Ubuntu Test QML plugin.
+
+Package: qml-module-ubuntu-performancemetrics
+Architecture: any
+Multi-Arch: same
+Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+Description: Qt Components for Ubuntu - QML plugin
+ Qt Components for Ubuntu offers a set of reusable user interface
+ components for Qt Quick 2 / QML.
+ .
+ This package contains the Ubuntu Test QML plugin.
+
+
 Package: qtdeclarative5-ubuntu-ui-toolkit-plugin
 Architecture: any
 Section: oldlibs
-Depends: qml-module-ubuntu-ui-toolkit, ${misc:Depends}
+Depends: qml-module-ubuntu-components, ${misc:Depends}
 Description: Transitional dummy package for Ubuntu UI Toolkit QML plugin
  This package contains the Ubuntu Components QML plugin.
 
@@ -230,7 +270,7 @@ Depends: ${misc:Depends},
          ubuntu-ui-toolkit-examples (>= ${source:Version}),
          upstart,
          url-dispatcher-tools,
-         qml-module-ubuntu-ui-toolkit (>= ${source:Version}) | qml-module-ubuntu-ui-toolkit-gles,
+         qml-module-ubuntu-components (>= ${source:Version}) | qml-module-ubuntu-components-gles,
          ubuntu-app-launch-profiler (>= ${source:Version}),
          qml-module-qttest | qtdeclarative5-test-plugin,
 Description: Test package for Ubuntu UI Toolkit
