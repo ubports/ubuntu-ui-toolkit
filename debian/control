@@ -61,7 +61,7 @@ Homepage: https://launchpad.net/ubuntu-ui-toolkit
 # again.
 Vcs-Bzr: https://code.launchpad.net/~ubuntu-sdk-team/ubuntu-ui-toolkit/trunk
 
-Package: qtdeclarative5-ubuntu-ui-toolkit-plugin
+Package: qml-module-ubuntu-ui-toolkit
 Architecture: any
 Multi-Arch: same
 Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
@@ -80,7 +80,8 @@ Depends: qml-module-qtgraphicaleffects | libqt5qml-graphicaleffects,
          ${misc:Depends},
          ${shlibs:Depends},
 Conflicts: qt-components-ubuntu
-Replaces: qt-components-ubuntu
+Breaks: qtdeclarative5-ubuntu-ui-toolkit-plugin (<< ${source:Version})
+Replaces: qt-components-ubuntu, qtdeclarative5-ubuntu-ui-toolkit-plugin (<< ${source:Version})
 Provides: qt-components-ubuntu
 Description: Qt Components for Ubuntu - QML plugin
  Qt Components for Ubuntu offers a set of reusable user interface
@@ -88,6 +89,12 @@ Description: Qt Components for Ubuntu - QML plugin
  .
  This package contains the Ubuntu Components QML plugin.
 
+Package: qtdeclarative5-ubuntu-ui-toolkit-plugin
+Architecture: any
+Section: oldlibs
+Depends: qml-module-ubuntu-ui-toolkit, ${misc:Depends}
+Description: Transitional dummy package for Ubuntu UI Toolkit QML plugin
+ This package contains the Ubuntu Components QML plugin.
 
 Package: libubuntugestures5
 Architecture: any
@@ -223,7 +230,7 @@ Depends: ${misc:Depends},
          ubuntu-ui-toolkit-examples (>= ${source:Version}),
          upstart,
          url-dispatcher-tools,
-         qtdeclarative5-ubuntu-ui-toolkit-plugin (>= ${source:Version}) | qtdeclarative5-ubuntu-ui-toolkit-plugin-gles,
+         qml-module-ubuntu-ui-toolkit (>= ${source:Version}) | qml-module-ubuntu-ui-toolkit-gles,
          ubuntu-app-launch-profiler (>= ${source:Version}),
          qml-module-qttest | qtdeclarative5-test-plugin,
 Description: Test package for Ubuntu UI Toolkit
