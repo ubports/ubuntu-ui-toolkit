@@ -122,7 +122,7 @@ import Ubuntu.Components.Private 1.3
 
         AdaptivePageLayout {
             anchors.fill: parent
-            primaryPageSource: page1
+            primaryPageSource: page1Component
             layouts: PageColumnsLayout {
                 when: width > units.gu(80)
                 // column #0
