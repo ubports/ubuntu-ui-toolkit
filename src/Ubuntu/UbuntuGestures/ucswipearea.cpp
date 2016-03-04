@@ -370,17 +370,19 @@ bool UCSwipeArea::grabGesture() const
 void UCSwipeArea::setGrabGesture(bool enabled)
 {
     Q_D(UCSwipeArea);
-    if (d->grabGesture != enabled) {
-        d->grabGesture = enabled;
-
-        if (!d->grabGesture && d->status == UCSwipeAreaPrivate::Undecided) {
-            TouchRegistry::instance()->removeCandidateOwnerForTouch(d->touchId, this);
-            // We still wanna know when it ends for keeping the composition time window up-to-date
-            TouchRegistry::instance()->addTouchWatcher(d->touchId, this);
-        }
-
-        Q_EMIT grabGestureChanged(enabled);
+    if (d->grabGesture == enabled) {
+        return;
     }
+
+    d->grabGesture = enabled;
+
+    if (!d->grabGesture && d->status == UCSwipeAreaPrivate::Undecided) {
+        TouchRegistry::instance()->removeCandidateOwnerForTouch(d->touchId, this);
+        // We still wanna know when it ends for keeping the composition time window up-to-date
+        TouchRegistry::instance()->addTouchWatcher(d->touchId, this);
+    }
+
+    Q_EMIT grabGestureChanged(enabled);
 }
 
 bool UCSwipeArea::event(QEvent *event)
