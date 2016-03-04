@@ -91,16 +91,19 @@
  * properties will cause unpredictable results.
  */
 
-UCBottomEdgeRegion::UCBottomEdgeRegion(QObject *parent)
+UCBottomEdgeRegion::UCBottomEdgeRegion(QObject *parent, bool isDefault)
     : QObject(parent)
     , m_bottomEdge(qobject_cast<UCBottomEdge*>(parent))
     , m_component(Q_NULLPTR)
-    , m_urlBackup(Q_NULLPTR)
-    , m_componentBackup(Q_NULLPTR)
+    , m_contentItem(Q_NULLPTR)
     , m_from(0.0)
     , m_to(-1.0)
     , m_enabled(true)
+    , m_active(false)
+    , m_default(isDefault)
 {
+    connect(&m_loader, &UbuntuToolkit::AsyncLoader::loadingStatus,
+            this, &UCBottomEdgeRegion::onLoaderStatusChanged);
 }
 
 void UCBottomEdgeRegion::attachToBottomEdge(UCBottomEdge *bottomEdge)
@@ -121,41 +124,40 @@ bool UCBottomEdgeRegion::contains(qreal dragRatio)
 
 void UCBottomEdgeRegion::enter()
 {
+    m_active = true;
     Q_EMIT entered();
-    // backup url
-    if (m_url.isValid()) {
-        m_urlBackup = new PropertyChange(m_bottomEdge, "contentUrl");
-        QQmlProperty property(this, "contentUrl", qmlContext(this));
-        QQmlAbstractBinding *binding = QQmlPropertyPrivate::binding(property);
-        if (binding) {
-            PropertyChange::setBinding(m_urlBackup, binding);
-        } else {
-            PropertyChange::setValue(m_urlBackup, m_url);
+
+    LOG << "ENTER REGION" << objectName();
+    // if preloaded, or default(?), set the content
+    if (m_bottomEdge->preloadContent() || m_default) {
+        if (m_loader.status() == UbuntuToolkit::AsyncLoader::Ready) {
+            LOG << "SET REGION CONTENT" << objectName();
+            UCBottomEdgePrivate::get(m_bottomEdge)->setCurrentContent();
         }
-    }
-    if (m_component) {
-        m_componentBackup = new PropertyChange(m_bottomEdge, "contentComponent");
-        QQmlProperty property(this, "contentComponent", qmlContext(this));
-        QQmlAbstractBinding *binding = QQmlPropertyPrivate::binding(property);
-        if (binding) {
-            PropertyChange::setBinding(m_componentBackup, binding);
-        } else {
-            PropertyChange::setValue(m_componentBackup, QVariant::fromValue<QQmlComponent*>(m_component));
-        }
+    } else {
+        // initiate loading, component has priority
+        loadRegionContent();
     }
 }
 
 void UCBottomEdgeRegion::exit()
 {
-    if (m_componentBackup) {
-        delete m_componentBackup;
-        m_componentBackup = Q_NULLPTR;
-    }
-    if (m_urlBackup) {
-        delete m_urlBackup;
-        m_urlBackup = Q_NULLPTR;
-    }
+    m_active = false;
     Q_EMIT exited();
+
+    // detach content from BottomEdge
+    LOG << "EXIT REGION" << objectName();
+    UCBottomEdgePrivate::get(m_bottomEdge)->resetCurrentContent(nullptr);
+
+    // then cleanup
+    if (!m_contentItem) {
+        return;
+    }
+    LOG << "RESET REGION CONTENT" << objectName();
+    if (!m_bottomEdge->preloadContent()) {
+        LOG << "DISCARD REGION CONTENT" << objectName();
+        discardRegionContent();
+    }
 }
 
 const QRectF UCBottomEdgeRegion::rect(const QRectF &bottomEdgeRect)
@@ -164,6 +166,86 @@ const QRectF UCBottomEdgeRegion::rect(const QRectF &bottomEdgeRect)
                 bottomEdgeRect.topLeft() + QPointF(0, bottomEdgeRect.height() * (1.0 - m_to)),
                 QSizeF(bottomEdgeRect.width(), bottomEdgeRect.height() * (m_to - m_from)));
     return regionRect;
+}
+
+void UCBottomEdgeRegion::loadRegionContent()
+{
+    if (!m_enabled) {
+        return;
+    }
+    LOG << "LOAD REGION CONTENT" << objectName();
+    if (m_component) {
+        loadContent(LoadingComponent);
+    } else if (m_url.isValid()) {
+        loadContent(LoadingUrl);
+    }
+}
+
+void UCBottomEdgeRegion::loadContent(LoadingType type)
+{
+    // we must delete the previous content before we (re)initiate loading
+    if (m_contentItem) {
+        m_contentItem->deleteLater();;
+        m_contentItem = nullptr;
+    }
+    // no need to create new context as we do not set any context properties
+    // for which we would need one
+    switch (type) {
+    case LoadingUrl:
+        m_loader.load(m_url, qmlContext(m_bottomEdge));
+        return;
+    case LoadingComponent:
+        m_loader.load(m_component, qmlContext(m_bottomEdge));
+        return;
+    }
+}
+
+void UCBottomEdgeRegion::discardRegionContent()
+{
+    m_loader.reset();
+    if (m_contentItem) {
+        LOG << "DISCARD CONTENT" << objectName();
+        m_contentItem->deleteLater();
+    }
+    m_contentItem = nullptr;
+}
+
+QQuickItem *UCBottomEdgeRegion::regionContent()
+{
+    return m_contentItem;
+}
+
+void UCBottomEdgeRegion::onLoaderStatusChanged(UbuntuToolkit::AsyncLoader::LoadingStatus status, QObject *object)
+{
+    bool emitChange = false;
+    LOG << "STATUS" << status << object;
+    if (status == UbuntuToolkit::AsyncLoader::Ready) {
+        // if we are no longer active, no need to continue, and discard content
+        // this may occur when the component was still in Compiling state while
+        // the region was exited, therefore reset() could not cancel the operation.
+        if (!m_active && !m_default && !m_bottomEdge->preloadContent()) {
+            LOG << "DELETE REGION CONTENT" << objectName();
+            object->deleteLater();
+            return;
+        }
+        m_contentItem = qobject_cast<QQuickItem*>(object);
+        emitChange = m_active || m_default;
+    }
+
+    if (status == UbuntuToolkit::AsyncLoader::Reset) {
+        // de-parent first
+        if (m_contentItem) {
+            m_contentItem->setParentItem(nullptr);
+            LOG << "RESET CONTENT" << objectName();
+            m_contentItem->deleteLater();
+        }
+        m_contentItem = nullptr;
+        emitChange = true;
+    }
+
+    if (emitChange && m_bottomEdge && m_active) {
+        UCBottomEdgePrivate::get(m_bottomEdge)->setCurrentContent();
+    }
 }
 
 /*!
@@ -179,6 +261,15 @@ void UCBottomEdgeRegion::setEnabled(bool enabled)
     m_enabled = enabled;
     if (m_bottomEdge) {
         UCBottomEdgePrivate::get(m_bottomEdge)->validateRegion(this);
+    }
+
+    // load content if preload is set
+    if (m_bottomEdge->preloadContent()) {
+        if (!m_enabled) {
+            discardRegionContent();
+        } else {
+            loadRegionContent();
+        }
     }
     Q_EMIT enabledChanged();
 }
@@ -227,6 +318,18 @@ void UCBottomEdgeRegion::setTo(qreal to)
  * when the drag gesture enters the section area. The orginal value will be restored
  * once the gesture leaves the section area.
  */
+void UCBottomEdgeRegion::setUrl(const QUrl &url)
+{
+    if (m_url == url) {
+        return;
+    }
+    m_url = url;
+    Q_EMIT contentChanged(m_url);
+    // invoke loader if the preload is set
+    if (m_bottomEdge && (m_bottomEdge->preloadContent() || m_default) && !m_url.isValid()) {
+        loadContent(LoadingUrl);
+    }
+}
 
 /*!
  * \qmlproperty Component BottomEdgeRegion::contentComponent
@@ -235,6 +338,18 @@ void UCBottomEdgeRegion::setTo(qreal to)
  * when the drag gesture enters the section area. The orginal value will be restored
  * once the gesture leaves the section area.
  */
+void UCBottomEdgeRegion::setComponent(QQmlComponent *component)
+{
+    if (m_component == component) {
+        return;
+    }
+    m_component = component;
+    Q_EMIT contentComponentChanged(m_component);
+    // invoke loader if the preload is set
+    if (m_bottomEdge && (m_bottomEdge->preloadContent() || m_default) && m_component) {
+        loadContent(LoadingComponent);
+    }
+}
 
 /*!
  * \qmlsignal void BottomEdgeRegion::entered()

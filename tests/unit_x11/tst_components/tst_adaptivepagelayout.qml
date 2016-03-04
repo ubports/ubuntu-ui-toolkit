@@ -160,6 +160,10 @@ MainView {
             compare(defaults.primaryPageSource, undefined, "primaryPageSource not set by default");
             compare(defaults.layouts.length, 0, "no layouts by default");
             compare(defaults.columns, columns, columns + " column(s) as default");
+            compare(defaults.asynchronous, true, "default page loading is asynchronous");
+
+            verify(page1.active, "Page1 is not active but should be! Bug(1535241)");
+            verify(!page2.active, "Page2 is active but should not be! Bug(1535241)");
         }
 
         function test_change_primaryPage() {
@@ -285,6 +289,24 @@ MainView {
                 // make sure we wait enough to let additional tests to complete
                 loadedSpy.wait(1500);
             }
+        }
+
+        function test_forced_synchronous_loading_bug1540449_data() {
+            return [
+                {tag: "To current column", func: "addPageToCurrentColumn", page: pageComponent, expectedTitle: "DynamicPage"},
+                {tag: "To next column", func: "addPageToNextColumn", page: pageComponent, expectedTitle: "DynamicPage"},
+            ];
+        }
+        function test_forced_synchronous_loading_bug1540449(data) {
+            layout[data.func](layout.primaryPage, data.page);
+            waitForRendering(layout, 400);
+
+            var wrapper = getPageWrapper(layout, layout.primaryPage);
+            verify(wrapper);
+            var testColumn = MathUtils.clamp(wrapper.column + (data.func == "addPageToCurrentColumn" ? 0 : 1),
+                                             0, layout.columns - 1);
+            var testHolder = getColumnHolder(layout, testColumn);
+            compare(testHolder.pageWrapper.object.title, data.expectedTitle, "page not found");
         }
 
         function test_asynchronous_page_loading_incubator_forcecompletion() {

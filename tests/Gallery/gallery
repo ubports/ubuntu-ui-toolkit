@@ -1,0 +1,6 @@
+#!/bin/bash
+
+. `dirname ${BASH_SOURCE[0]}`/../../export_modules_dir.sh || exit 1
+
+SCRIPT_DIRECTORY=`dirname $0`
+QT_LOGGING_CONF=$SCRIPT_DIRECTORY/gallery-logging.config $BUILD_DIR/ubuntu-ui-toolkit-launcher/ubuntu-ui-toolkit-launcher $@ $SCRIPT_DIRECTORY/../../examples/ubuntu-ui-toolkit-gallery/ubuntu-ui-toolkit-gallery.qml

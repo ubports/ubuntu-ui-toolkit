@@ -22,7 +22,6 @@ from autopilot.introspection import dbus
 
 from ubuntuuitoolkit._custom_proxy_objects import (
     _common,
-    _flickable,
     _qquicklistview
 )
 
@@ -167,8 +166,82 @@ class DatePicker(_common.UbuntuUIToolkitCustomProxyObjectBase):
         """
         return datetime.time(self.hours, self.minutes, self.seconds)
 
+# Containers helpers.
 
-class QQuickPathView(_flickable.Scrollable):
+
+def _get_visible_container_top(containers):
+    containers_top = [container.globalRect.y for container in containers]
+    return max(containers_top)
+
+
+def _get_visible_container_bottom(containers):
+    containers_bottom = [
+        container.globalRect.y + container.globalRect.height
+        for container in containers if container.globalRect.height > 0]
+    return min(containers_bottom)
+
+
+class Scrollable(_common.UbuntuUIToolkitCustomProxyObjectBase):
+
+    @autopilot_logging.log_action(logger.info)
+    def is_child_visible(self, child):
+        """Determine if the child is visible.
+
+        A child is visible if no scrolling is needed to reveal it.
+
+        """
+        containers = self._get_containers()
+        return self._is_child_visible(child, containers)
+
+    def _get_containers(self):
+        """Return a list with the containers to take into account when swiping.
+
+        The list includes this flickable and the top-most container.
+        TODO add additional flickables that are between this and the top
+        container. --elopio - 2014-03-22
+
+        """
+        containers = [self._get_top_container(), self]
+        return containers
+
+    def _is_child_visible(self, child, containers):
+        """Check if the center of the child is visible.
+
+        :return: True if the center of the child is visible, False otherwise.
+
+        """
+        object_center = child.globalRect.y + child.globalRect.height // 2
+        visible_top = _get_visible_container_top(containers)
+        visible_bottom = _get_visible_container_bottom(containers)
+        return (object_center >= visible_top and
+                object_center <= visible_bottom)
+
+    def _slow_drag_rate(self):
+        # I found that when the flickDeceleration is 1500, the rate should be
+        # 5 and that when it's 100, the rate should be 1. With those two points
+        # we can get the following equation.
+        # XXX The deceleration might not be linear with respect to the rate,
+        # but this works for the two types of scrollables we have for now.
+        # --elopio - 2014-05-08
+        return (self.flickDeceleration + 250) / 350
+
+    def _slow_drag(self, start_x, stop_x, start_y, stop_y, rate=None):
+        # If we drag too fast, we end up scrolling more than what we
+        # should, sometimes missing the  element we are looking for.
+
+        # FIXME: QQuickPathView has no contentY property, but it was added
+        # to the PathView used inside the Picker in Picker.qml
+        original_content_y = self.contentY
+
+        if rate is None:
+            rate = self._slow_drag_rate()
+        self.pointing_device.drag(start_x, start_y, stop_x, stop_y, rate=rate)
+
+        if self.contentY == original_content_y:
+            raise _common.ToolkitException('Could not swipe in the flickable.')
+
+
+class QQuickPathView(Scrollable):
 
     # TODO make it more general and move it to its own module.
     # --elopio - 2014-05-06

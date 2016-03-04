@@ -26,7 +26,7 @@
 
 #define IMPLICIT_LISTITEM_WIDTH_GU      40
 #define IMPLICIT_LISTITEM_HEIGHT_GU     7
-#define DIVIDER_THICKNESS_DP            2
+#define DIVIDER_THICKNESS_DP            1
 #define DEFAULT_SWIPE_THRESHOLD_GU      1.5
 
 class QQuickFlickable;
@@ -102,6 +102,7 @@ public:
     bool suppressClick:1;
     bool ready:1;
     bool customColor:1;
+    bool listViewKeyNavigation:1;
 
     // getters/setters
     QQmlListProperty<QObject> data();
@@ -119,6 +120,7 @@ public:
     void setSelectMode(bool selectable);
     UCAction *action() const;
     void setAction(UCAction *action);
+    void setListViewKeyNavigation(bool value);
 
     virtual void postThemeChanged();
     inline UCListItemStyle *listItemStyle() const;
@@ -130,12 +132,14 @@ UCListItemStyle *UCListItemPrivate::listItemStyle() const
 
 class PropertyChange;
 class ListItemDragArea;
+class ListViewProxy;
 class UCViewItemsAttachedPrivate : public QObjectPrivate
 {
     Q_DECLARE_PUBLIC(UCViewItemsAttached)
 public:
     UCViewItemsAttachedPrivate();
     ~UCViewItemsAttachedPrivate();
+    void init();
 
     static UCViewItemsAttachedPrivate *get(UCViewItemsAttached *item)
     {
@@ -162,7 +166,7 @@ public:
     QMap<int, QPointer<UCListItem> > expansionList;
     QList< QPointer<QQuickFlickable> > flickables;
     QPointer<UCListItem> boundItem;
-    QQuickFlickable *listView;
+    ListViewProxy *listView;
     ListItemDragArea *dragArea;
     UCViewItemsAttached::ExpansionFlags expansionFlags;
     bool selectable:1;

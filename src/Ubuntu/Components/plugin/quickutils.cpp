@@ -30,6 +30,8 @@
 #include <private/qquicktextinput_p.h>
 #include <private/qquicktextedit_p.h>
 
+QuickUtils *QuickUtils::m_instance = nullptr;
+
 QuickUtils::QuickUtils(QObject *parent) :
     QObject(parent),
     m_rootView(0),
@@ -194,7 +196,12 @@ QObject* QuickUtils::createQmlObject(const QUrl &url, QQmlEngine *engine)
        the error "QQmlComponent: Component is not ready".
     */
     QQmlComponent *component = new QQmlComponent(engine, url, QQmlComponent::PreferSynchronous);
-    QObject* result = component->create();
+    QObject* result(Q_NULLPTR);
+    if (component->isError()) {
+        qmlInfo(engine) << component->errorString();
+    } else {
+        result = component->create();
+    }
     delete component;
     return result;
 }
@@ -206,4 +213,57 @@ bool QuickUtils::showDeprecationWarnings() {
         showWarnings = (warningsFlag.isEmpty() || warningsFlag == "yes") ? 1 : 2;
     }
     return showWarnings == 2;
+}
+
+// check whether an item is a descendant of parent
+bool QuickUtils::descendantItemOf(QQuickItem *item, const QQuickItem *parent)
+{
+    while (item && parent) {
+        if (item == parent) {
+            return true;
+        }
+        item = item->parentItem();
+    }
+    return false;
+}
+
+// returns the first key-focusable child item
+QQuickItem *QuickUtils::firstFocusableChild(QQuickItem *item)
+{
+    if (!item) {
+        return Q_NULLPTR;
+    }
+    const QList<QQuickItem*> &list = item->childItems();
+    for (int i = 0; i < list.count(); i++) {
+        QQuickItem *child = list.at(i);
+        if (child->activeFocusOnTab()) {
+            return child;
+        }
+        QQuickItem *focus = firstFocusableChild(child);
+        if (focus) {
+            return focus;
+        }
+    }
+    return Q_NULLPTR;
+}
+
+// returns the last key-focusable child item
+QQuickItem *QuickUtils::lastFocusableChild(QQuickItem *item)
+{
+    if (!item) {
+        return Q_NULLPTR;
+    }
+    const QList<QQuickItem*> &list = item->childItems();
+    int i = list.count() - 1;
+    while (i >= 0) {
+        QQuickItem *child = list.at(i--);
+        if (child->activeFocusOnTab()) {
+            return child;
+        }
+        QQuickItem *focus = lastFocusableChild(child);
+        if (focus) {
+            return focus;
+        }
+    }
+    return Q_NULLPTR;
 }

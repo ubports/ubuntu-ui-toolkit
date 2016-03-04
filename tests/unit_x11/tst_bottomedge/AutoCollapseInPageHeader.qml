@@ -23,7 +23,9 @@ MainView {
     height: units.gu(71)
 
     Page {
-        title: "Main page"
+        header: PageHeader {
+            title: "Main page"
+        }
 
         BottomEdge {
             id: bottomEdge

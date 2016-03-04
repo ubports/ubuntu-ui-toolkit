@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2015-2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -833,7 +833,6 @@ Ubuntu.ActionItem {
 
     // internals
 
-    opacity: enabled ? 1.0 : 0.3
     activeFocusOnPress: true
     activeFocusOnTab: true
 
@@ -844,7 +843,13 @@ Ubuntu.ActionItem {
     }
 
     // Escape should close the context menu even if the menu takes no input focus
-    Keys.onEscapePressed: if (activeFocus && inputHandler.popover) PopupUtils.close(inputHandler.popover)
+    Keys.onEscapePressed: {
+        if (activeFocus && inputHandler.popover) {
+            PopupUtils.close(inputHandler.popover)
+        } else {
+            event.accepted = false
+        }
+    }
 
     LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
     LayoutMirroring.childrenInherit: true
@@ -897,10 +902,13 @@ Ubuntu.ActionItem {
         onChildrenChanged: {
             // reparenting
             for (var i = 0; i < children.length; i++) {
-                children[i].parent = leftPane;
-                children[i].anchors.verticalCenter = verticalCenter;
-                children[i].activeFocusOnPress = false;
-                children[i].activeFocusOnTab = false;
+                var child = children[i];
+                child.parent = leftPane;
+                child.anchors.verticalCenter = verticalCenter;
+                if (child.hasOwnProperty("activeFocusOnPress")) {
+                    child.activeFocusOnPress = false;
+                }
+                child.activeFocusOnTab = false;
             }
         }
     }
@@ -921,10 +929,13 @@ Ubuntu.ActionItem {
         onChildrenChanged: {
             // reparenting
             for (var i = 0; i < children.length; i++) {
-                children[i].parent = rightPane;
-                children[i].anchors.verticalCenter = verticalCenter;
-                children[i].activeFocusOnPress = false;
-                children[i].activeFocusOnTab = false;
+                var child = children[i];
+                child.parent = rightPane;
+                child.anchors.verticalCenter = verticalCenter;
+                if (child.hasOwnProperty("activeFocusOnPress")) {
+                    child.activeFocusOnPress = false;
+                }
+                child.activeFocusOnTab = false;
             }
         }
     }
@@ -977,7 +988,7 @@ Ubuntu.ActionItem {
         }
         // hint is shown till user types something in the field
         visible: (editor.text == "") && !editor.inputMethodComposing
-        color: theme.palette.normal.backgroundText
+        color: theme.palette.normal.baseText
         font: editor.font
         elide: Text.ElideRight
     }

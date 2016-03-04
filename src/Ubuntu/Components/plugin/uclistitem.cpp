@@ -28,6 +28,7 @@
 #include "quickutils.h"
 #include "ucaction.h"
 #include "ucnamespace.h"
+#include "privates/listviewextensions.h"
 #include <QtQml/QQmlInfo>
 #include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickflickable_p.h>
@@ -94,20 +95,20 @@ void UCListItemDivider::init(UCListItem *listItem)
 void UCListItemDivider::paletteChanged()
 {
     Q_D(UCListItemDivider);
-    QColor background = d->listItem->getTheme()->getPaletteColor("normal", "background");
-    if (!background.isValid()) {
-        return;
-    }
-    // FIXME: we need a palette value for divider colors, till then base on the background
-    // luminance
     if (!d->colorFromChanged || !d->colorToChanged) {
-        qreal luminance = (background.red()*212 + background.green()*715 + background.blue()*73)/1000.0/255.0;
-        bool lightBackground = (luminance > 0.85);
+        QColor themeColor;
+        UCTheme *theme = d->listItem->getTheme();
+        if (theme) {
+            themeColor = d->listItem->getTheme()->getPaletteColor("normal", "base");
+        }
+        if (!themeColor.isValid()) {
+            return;
+        }
         if (!d->colorFromChanged) {
-            d->colorFrom = lightBackground ? QColor("#26000000") : QColor("#26FFFFFF");
+            d->colorFrom = themeColor;
         }
         if (!d->colorToChanged) {
-            d->colorTo = lightBackground ? QColor("#14FFFFFF") : QColor("#14000000");
+            d->colorTo = themeColor;
         }
         updateGradient();
     }
@@ -117,13 +118,13 @@ void UCListItemDivider::updateGradient()
 {
     Q_D(UCListItemDivider);
     d->gradient.clear();
-    d->gradient.append(QGradientStop(0.0, d->colorFrom));
-    d->gradient.append(QGradientStop(0.49, d->colorFrom));
-    d->gradient.append(QGradientStop(0.5, d->colorTo));
-    d->gradient.append(QGradientStop(1.0, d->colorTo));
-    if (d->listItem) {
-        d->listItem->update();
+    if (height() > UCUnits::instance()->dp(1)) {
+        d->gradient.append(QGradientStop(0.0, d->colorFrom));
+        d->gradient.append(QGradientStop(0.49, d->colorFrom));
+        d->gradient.append(QGradientStop(0.5, d->colorTo));
+        d->gradient.append(QGradientStop(1.0, d->colorTo));
     }
+    update();
 }
 
 QSGNode *UCListItemDivider::updatePaintNode(QSGNode *node, UpdatePaintNodeData *data)
@@ -137,9 +138,13 @@ QSGNode *UCListItemDivider::updatePaintNode(QSGNode *node, UpdatePaintNodeData *
 
     UCListItemPrivate *pListItem = UCListItemPrivate::get(d->listItem);
     bool lastItem = pListItem->countOwner ? (pListItem->index() == (pListItem->countOwner->property("count").toInt() - 1)): false;
-    if (!lastItem && (d->gradient.size() > 0) && ((d->colorFrom.alphaF() >= (1.0f / 255.0f)) || (d->colorTo.alphaF() >= (1.0f / 255.0f)))) {
+    if (!lastItem && ((d->colorFrom.alphaF() >= (1.0f / 255.0f)) || (d->colorTo.alphaF() >= (1.0f / 255.0f)))) {
         dividerNode->setRect(boundingRect());
-        dividerNode->setGradientStops(d->gradient);
+        if (d->gradient.size() > 0) {
+            dividerNode->setGradientStops(d->gradient);
+        } else {
+            dividerNode->setColor(d->colorFrom);
+        }
         dividerNode->update();
         return dividerNode;
     } else if (node) {
@@ -206,7 +211,10 @@ UCListItemPrivate::UCListItemPrivate()
     , suppressClick(false)
     , ready(false)
     , customColor(false)
+    , listViewKeyNavigation(false)
 {
+    // the ListItem is not a focus scope
+    isFocusScope = false;
 }
 UCListItemPrivate::~UCListItemPrivate()
 {
@@ -216,10 +224,10 @@ void UCListItemPrivate::init()
 {
     Q_Q(UCListItem);
     contentItem->setObjectName("ListItemHolder");
+    divider->init(q);
     QQml_setParent_noEvent(contentItem, q);
     contentItem->setParentItem(q);
     contentItem->setClip(true);
-    divider->init(q);
     // content will be redirected to the contentItem, therefore we must report
     // children changes as it would come from the main component
     QObject::connect(contentItem, &QQuickItem::childrenChanged,
@@ -237,7 +245,7 @@ void UCListItemPrivate::init()
                      q, SLOT(_q_themeChanged()), Qt::DirectConnection);
 
     // watch grid unit size change and set implicit size
-    QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_updateSize()));
+    QObject::connect(UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_updateSize()));
     _q_updateSize();
     styleDocument = "ListItemStyle";
 
@@ -355,13 +363,13 @@ void UCListItemPrivate::_q_updateSize()
 {
     Q_Q(UCListItem);
     // update divider thickness
-    divider->setImplicitHeight(UCUnits::instance().dp(DIVIDER_THICKNESS_DP));
+    divider->setImplicitHeight(UCUnits::instance()->dp(DIVIDER_THICKNESS_DP));
     QQuickItem *owner = qobject_cast<QQuickItem*>(q->sender());
     if (!owner && parentAttached) {
         owner = static_cast<QQuickItem*>(parentAttached->parent());
     }
-    q->setImplicitWidth(owner ? owner->width() : UCUnits::instance().gu(IMPLICIT_LISTITEM_WIDTH_GU));
-    q->setImplicitHeight(UCUnits::instance().gu(IMPLICIT_LISTITEM_HEIGHT_GU));
+    q->setImplicitWidth(owner ? owner->width() : UCUnits::instance()->gu(IMPLICIT_LISTITEM_WIDTH_GU));
+    q->setImplicitHeight(UCUnits::instance()->gu(IMPLICIT_LISTITEM_HEIGHT_GU));
 }
 
 // returns the index of the list item when used in model driven views,
@@ -974,6 +982,23 @@ UCListItem::~UCListItem()
 {
 }
 
+// override keyNavigationFocus getter
+bool UCListItem::keyNavigationFocus() const
+{
+    Q_D(const UCListItem);
+    return d->keyNavigationFocus ||d->listViewKeyNavigation;
+}
+
+void UCListItemPrivate::setListViewKeyNavigation(bool value)
+{
+    Q_Q(UCListItem);
+    bool prevKeyNav = q->keyNavigationFocus();
+    listViewKeyNavigation = value;
+    if (prevKeyNav != q->keyNavigationFocus()) {
+        Q_EMIT q->keyNavigationFocusChanged();
+    }
+}
+
 QObject *UCListItem::attachedViewItems(QObject *object, bool create)
 {
     return qmlAttachedPropertiesObject<UCViewItemsAttached>(object, create);
@@ -1070,6 +1095,9 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
             d->selection->attachToViewItems(d->parentAttached.data());
             connect(d->parentAttached.data(), SIGNAL(expandedIndicesChanged(QList<int>)),
                     this, SLOT(_q_updateExpansion(QList<int>)), Qt::DirectConnection);
+            // if the ViewItems is attached to a ListView, disable tab stops on the ListItem
+            setActiveFocusOnTab(!d->parentAttached->isAttachedToListView());
+            d->isTabFence = d->parentAttached->isAttachedToListView();
         }
 
         if (parentAttachee) {
@@ -1097,17 +1125,36 @@ QSGNode *UCListItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data
     if (!rectNode) {
         rectNode = QQuickItemPrivate::get(this)->sceneGraphContext()->createRectangleNode();
     }
+    bool updateNode = false;
+
+    // focus frame
+    bool paintFocus = hasActiveFocus() && keyNavigationFocus();
+    rectNode->setPenWidth(paintFocus ? UCUnits::instance()->dp(1) : 0);
+    if (paintFocus) {
+        QColor penColor;
+        if (getTheme()) {
+            penColor = getTheme()->getPaletteColor(isEnabled() ? "normal" : "disabled", "focus");
+        }
+        rectNode->setPenColor(penColor);
+        rectNode->setColor(Qt::transparent);
+        updateNode = true;
+    }
+    QRectF rect(boundingRect());
+    rect -= QMarginsF(0, 0, UCUnits::instance()->dp(1), 0);
+    d->divider->setOpacity(paintFocus ? 0.0 : 1.0);
+    rectNode->setRect(rect);
+
+    // highlight color
     if (color.alphaF() >= (1.0f / 255.0f)) {
         rectNode->setColor(color);
-        // cover only the area of the contentItem, removing divider's thickness
-        QRectF rect(boundingRect());
-        if (d->divider->isVisible()) {
-            rect -= QMarginsF(0, 0, 0, d->divider->height());
-        }
-        rectNode->setRect(rect);
         rectNode->setGradientStops(QGradientStops());
         rectNode->setAntialiasing(true);
         rectNode->setAntialiasing(false);
+        updateNode = true;
+    }
+
+    // update
+    if (updateNode) {
         rectNode->update();
     } else {
         // delete node, this will delete the divider node as well
@@ -1197,7 +1244,7 @@ void UCListItemPrivate::showContextMenu()
         QQmlEngine::setContextForObject(component, qmlContext(q));
         QQuickItem* item = static_cast<QQuickItem*>(component->create(qmlContext(q)));
         item->setProperty("caller", QVariant::fromValue(q));
-        item->setParentItem(QuickUtils::instance().rootItem(q));
+        item->setParentItem(QuickUtils::instance()->rootItem(q));
         QMetaObject::invokeMethod(item, "show");
         QObject::connect(item, SIGNAL(visibleChanged()), q,
             SLOT(_q_popoverClosed()), Qt::DirectConnection);
@@ -1246,6 +1293,8 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
     }
 
     UCStyledItemBase::mouseReleaseEvent(event);
+    if (!contains(mapFromScene(event->windowPos())))
+        d->suppressClick = true;
     d->handleLeftButtonRelease(event);
 }
 
@@ -1257,7 +1306,7 @@ bool UCListItemPrivate::swipedOverThreshold(const QPointF &mousePos, const QPoin
     {
         return false;
     }
-    qreal threshold = UCUnits::instance().gu(xAxisMoveThresholdGU);
+    qreal threshold = UCUnits::instance()->gu(xAxisMoveThresholdGU);
     qreal mouseX = mousePos.x();
     qreal pressedX = relativePos.x();
     return swipeEnabled && ((mouseX < (pressedX - threshold)) || (mouseX > (pressedX + threshold)));
@@ -1417,6 +1466,66 @@ void UCListItem::timerEvent(QTimerEvent *event)
         }
     } else {
         QQuickItem::timerEvent(event);
+    }
+}
+
+void UCListItem::focusInEvent(QFocusEvent *event)
+{
+    Q_D(UCListItem);
+    UCStyledItemBase::focusInEvent(event);
+    if (event->reason() == Qt::MouseFocusReason) {
+        d_func()->setListViewKeyNavigation(false);
+    }
+    update();
+}
+
+void UCListItem::focusOutEvent(QFocusEvent *event)
+{
+    UCStyledItemBase::focusOutEvent(event);
+    d_func()->setListViewKeyNavigation(false);
+    update();
+}
+
+// handle horizontal keys to navigate between focusable slots
+void UCListItem::keyPressEvent(QKeyEvent *event)
+{
+    UCStyledItemBase::keyPressEvent(event);
+    Q_D(UCListItem);
+    int key = event->key();
+    if (key != Qt::Key_Left && key != Qt::Key_Right) {
+        return;
+    }
+
+    bool forwards = (d->effectiveLayoutMirror ? key == Qt::Key_Left : key == Qt::Key_Right);
+    // we must check whether the ListItem has any key navigation focusable child
+    // this is needed due to the Qt bug https://bugreports.qt.io/browse/QTBUG-50516
+    if (!QuickUtils::firstFocusableChild(this)) {
+        return;
+    }
+
+    // get the next focusable relative to the active focus item
+    QQuickItem *activeFocus = isFocusScope() ? scopedFocusItem() : window()->activeFocusItem();
+    if (!activeFocus) {
+        return;
+    }
+
+    Qt::FocusReason reason = forwards ? Qt::TabFocusReason : Qt::BacktabFocusReason;
+    if ((activeFocus == QuickUtils::firstFocusableChild(this) && !forwards) ||
+        (activeFocus == QuickUtils::lastFocusableChild(this) && forwards)) {
+        // first or the last focus child is reached, so we wrap around
+        // but for that we must set the activeFocus to false in order to
+        // be able to focus the ListItem, especially when the ListItem is a Tab fence
+        activeFocus->setFocus(false);
+        forceActiveFocus(reason);
+    } else if (activeFocus == this) {
+        // get the first or last focusable item, depending on the direction
+        QQuickItem *nextFocus = forwards
+                ? QuickUtils::firstFocusableChild(this)
+                : QuickUtils::lastFocusableChild(this);
+        nextFocus->forceActiveFocus(reason);
+    } else {
+        // in case the ListItem is in ListView, we can freely proceed with the focusing
+        QQuickItemPrivate::focusNextPrev(activeFocus, forwards);
     }
 }
 
@@ -1648,7 +1757,10 @@ void UCListItem::resetHighlightColor()
 {
     Q_D(UCListItem);
     d->customColor = false;
-    d->highlightColor = getTheme()->getPaletteColor("selected", "background");
+    UCTheme *theme = getTheme();
+    if (theme) {
+        d->highlightColor = theme->getPaletteColor("highlighted", "background");
+    }
     update();
     Q_EMIT highlightColorChanged();
 }
@@ -1745,10 +1857,16 @@ void UCListItemPrivate::setAction(UCAction *action)
     if (mainAction == action) {
         return;
     }
+    if (mainAction) {
+        mainAction->removeOwningItem(q);
+    }
     mainAction = action;
-    if (mainAction && (mainAction->m_parameterType == UCAction::None)) {
-        // call setProperty to invoke notify signal
-        mainAction->setProperty("parameterType", UCAction::Integer);
+    if (mainAction) {
+        mainAction->addOwningItem(q);
+        if (mainAction->m_parameterType == UCAction::None) {
+            // call setProperty to invoke notify signal
+            mainAction->setProperty("parameterType", UCAction::Integer);
+        }
     }
     Q_EMIT q->actionChanged();
 }

@@ -22,12 +22,16 @@ BottomEdgeStyle {
     //setup properties
     property BottomEdge bottomEdge: styledItem
     panel: panelItem
-    contentItem: loader.item
     panelAnimation: panelBehavior
     revealThreshold: bottomEdge.hint.height + units.gu(2)
 
+    //deprecated for now
+    contentItem: bottomEdge.contentItem
+
     // own styling properties
-    property color backgroundColor: Qt.rgba(0, 0, 0, Math.min(0.25, (height - revealThreshold - panelItem.y) / (height - revealThreshold)))
+    property color backgroundColor: !panelItem.collapsing
+                                    ? Qt.rgba(0, 0, 0, Math.min(0.25, (height - revealThreshold - panelItem.y) / (height - revealThreshold)))
+                                    : "transparent"
     property color panelColor: theme.palette.normal.overlay
     property color shadowColor: "#000000"
 
@@ -43,6 +47,7 @@ BottomEdgeStyle {
     Rectangle {
         id: panelItem
         objectName: "bottomedge_panel"
+        property bool collapsing: false
         anchors {
             left: parent.left
             right: parent.right
@@ -51,11 +56,17 @@ BottomEdgeStyle {
                        ? -(bottomEdge.height * bottomEdge.dragProgress)
                        : 0
         }
-        height: loader.item ? loader.item.height : 0
+        height: bottomEdge.contentItem ? bottomEdge.contentItem.height : 0
         color: panelColor
         opacity: bottomEdge.status >= BottomEdge.Revealed ? 1.0 : 0.0
 
         Behavior on anchors.topMargin { UbuntuNumberAnimation { id: panelBehavior } }
+
+        Connections {
+            target: bottomEdge
+            onCollapseStarted: panelItem.collapsing = true
+            onCollapseCompleted: panelItem.collapsing = false
+        }
 
         state: bottomEdge.status > BottomEdge.Hidden ? "drop-hint" : ""
         states: [
@@ -97,27 +108,6 @@ BottomEdgeStyle {
                 GradientStop { position: 0.0; color: Qt.rgba(shadowColor.r, shadowColor.g, shadowColor.b, 0.0) }
                 GradientStop { position: 0.75; color: Qt.rgba(shadowColor.r, shadowColor.g, shadowColor.b, 0.05) }
                 GradientStop { position: 1.0; color: Qt.rgba(shadowColor.r, shadowColor.g, shadowColor.b, 0.1) }
-            }
-        }
-
-        // content
-        Loader {
-            id: loader
-            anchors.horizontalCenter: parent.horizontalCenter
-            asynchronous: true
-            source: bottomEdge.status > BottomEdge.Hidden ? bottomEdge.contentUrl : ""
-            sourceComponent: bottomEdge.status > BottomEdge.Hidden ? bottomEdge.contentComponent : null
-            onItemChanged: {
-                if (item) {
-                    item.parent = panelItem;
-                    item.anchors.horizontalCenter = panelItem.horizontalCenter;
-                }
-            }
-
-            Connections {
-                target: bottomEdge
-                onCommitStarted: loader.asynchronous = false
-                onCommitCompleted: loader.asynchronous = true
             }
         }
     }

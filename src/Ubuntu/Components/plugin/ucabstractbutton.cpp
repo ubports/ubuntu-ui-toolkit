@@ -17,10 +17,14 @@
 #include "ucabstractbutton.h"
 #include "ucabstractbutton_p.h"
 #include "uchaptics.h"
+#include "ucunits.h"
 #include "ucaction.h"
 #include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickmousearea_p.h>
 #include <QtQml/private/qqmlglobal_p.h>
+
+#define MIN_SENSING_WIDTH_GU    4
+#define MIN_SENSING_HEIGHT_GU   4
 
 UCAbstractButtonPrivate::UCAbstractButtonPrivate()
     : UCActionItemPrivate()
@@ -39,6 +43,7 @@ void UCAbstractButtonPrivate::init()
 /*!
     \qmltype AbstractButton
     \instantiates UCAbstractButton
+    \inherits ActionItem
     \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
     \brief The AbstractButton class defines the behavior of the button.
@@ -49,6 +54,34 @@ void UCAbstractButtonPrivate::init()
     If an action is specified, the button's clicked signal will trigger the action.
     Subclasses of AbstractButton can use other properties of action (for example
     the text and iconName).
+
+    \section2 Sensing area
+    It has been proven that, on touch devices in order to properly aim an active
+    component a minimum of 8x8 millimeters (i.e. 4x4 grid units) area has to be
+    provided. However not all the visuals are of that size, as Icons for example
+    are defaulted to be 2x2 grid units, but a component containing a single Icon
+    still has to be able to capture the press events. Therefore AbstractButton
+    makes sure this rule of 4x4 grid units for the sensing area is provided. In
+    addition it exposes the \l sensingMargins property which extends the component's
+    sensing area in all the directions, so other use cases when the sensing area
+    needs to be extended outside of the component's area, or restricted on a
+    given area of the component can be implemented. The following example extends
+    the sensing area on the left, top and bottom with 1 grid units, and on the
+    right with 10 grid units.
+    \qml
+    AbstractButton {
+        width: units.gu(2)
+        height: units.gu(2)
+        sensingMargins {
+            left: units.gu(1)
+            top: units.gu(1)
+            bottom: units.gu(1)
+            right: units.gu(10)
+        }
+    }
+    \endqml
+    \note Do not set clipping for the component as that will restrict the sensing
+    area to be available on the visual area only.
 */
 
 /*!
@@ -95,7 +128,7 @@ void UCAbstractButton::classBegin()
     UCActionItem::classBegin();
 
     // make sure we have the haptics set up!
-    HapticsProxy::instance().initialize();
+    HapticsProxy::instance()->initialize();
 
     // set up mouse area
     Q_D(UCAbstractButton);
@@ -111,6 +144,9 @@ void UCAbstractButtonPrivate::completeComponentInitialization()
     UCActionItemPrivate::completeComponentInitialization();
     Q_Q(UCAbstractButton);
 
+    // adjust sensing area
+    _q_adjustSensingArea();
+
     // bind mouse area
     QObject::connect(mouseArea, &QQuickMouseArea::pressedChanged, q, &UCAbstractButton::pressedChanged);
     QObject::connect(mouseArea, &QQuickMouseArea::hoveredChanged, q, &UCAbstractButton::hoveredChanged);
@@ -122,6 +158,9 @@ void UCAbstractButtonPrivate::completeComponentInitialization()
 // may not be available on compoennt completion
 void UCAbstractButtonPrivate::_q_mouseAreaPressed()
 {
+    if (!mouseArea->pressed()) {
+        return;
+    }
     bool longPressConnected = isPressAndHoldConnected();
     Q_Q(UCAbstractButton);
     if (longPressConnected && !pressAndHoldConnected) {
@@ -140,12 +179,11 @@ void UCAbstractButtonPrivate::_q_mouseAreaPressed()
 void UCAbstractButtonPrivate::_q_mouseAreaClicked()
 {
     // required by the deprecated ListItem module
-    Q_Q(UCAbstractButton);
     if (!acceptEvents) {
         return;
     }
     // play haptics
-    HapticsProxy::instance().play(QVariant());
+    HapticsProxy::instance()->play(QVariant());
     onClicked();
 }
 
@@ -174,6 +212,48 @@ void UCAbstractButton::keyReleaseEvent(QKeyEvent *event)
         default:
             break;
     }
+}
+
+void UCAbstractButtonPrivate::_q_adjustSensingArea()
+{
+    Q_Q(UCAbstractButton);
+    if (!componentComplete) {
+        // we do not hammer the component until completion
+        return;
+    }
+    // use the sensingMargins in the minimum calculation
+    qreal minimumWidth = UCUnits::instance()->gu(MIN_SENSING_WIDTH_GU);
+    qreal minimumHeight = UCUnits::instance()->gu(MIN_SENSING_HEIGHT_GU);
+    qreal hDelta = minimumWidth
+            - (q->width() + (sensingMargins ? (sensingMargins->left() + sensingMargins->right()) : 0.0));
+    qreal vDelta = minimumHeight
+            - (q->height() + (sensingMargins ? (sensingMargins->top() + sensingMargins->bottom()) : 0.0));
+    // adjust the sensing area
+    QQuickAnchors *mouseAreaAnchors = QQuickItemPrivate::get(mouseArea)->anchors();
+    if (hDelta >= 0) {
+        // the horizontal size is still smaller than the minimum
+        mouseAreaAnchors->setLeftMargin(-(hDelta / 2 + (sensingMargins ? sensingMargins->left() : 0.0)));
+        mouseAreaAnchors->setRightMargin(-(hDelta / 2 + (sensingMargins ? sensingMargins->right() : 0.0)));
+    } else if (sensingMargins) {
+        mouseAreaAnchors->setLeftMargin(-sensingMargins->left());
+        mouseAreaAnchors->setRightMargin(-sensingMargins->right());
+    }
+    if (vDelta >= 0) {
+        // the vertical size is still smaller than the minimum
+        mouseAreaAnchors->setTopMargin(-(vDelta / 2 + (sensingMargins ? sensingMargins->top() : 0.0)));
+        mouseAreaAnchors->setBottomMargin(-(vDelta / 2 + (sensingMargins ? sensingMargins->bottom() : 0.0)));
+    } else if (sensingMargins) {
+        mouseAreaAnchors->setTopMargin(-sensingMargins->top());
+        mouseAreaAnchors->setBottomMargin(-sensingMargins->bottom());
+    }
+}
+
+void UCAbstractButton::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)
+{
+    UCActionItem::geometryChanged(newGeometry, oldGeometry);
+
+    // adjust internal mouse area's size
+    d_func()->_q_adjustSensingArea();
 }
 
 /*!
@@ -211,6 +291,60 @@ QQuickMouseArea *UCAbstractButton::privateMouseArea() const
 {
     Q_D(const UCAbstractButton);
     return d->mouseArea;
+}
+
+/*!
+ * \qmlpropertygroup ::AbstractButton::sensingMargins
+ * \qmlproperty real AbstractButton::sensingMargins.left
+ * \qmlproperty real AbstractButton::sensingMargins.right
+ * \qmlproperty real AbstractButton::sensingMargins.top
+ * \qmlproperty real AbstractButton::sensingMargins.bottom
+ * \qmlproperty real AbstractButton::sensingMargins.all
+ * The property group specifies the margins extending the visual area where the
+ * touch and mouse events are sensed. Positive values mean the area will be extended
+ * on the specified direction outside of the visual area, negative values mean
+ * the sensing will fall under the component's visual border.
+ * All values default to 0.
+ *
+ * \note If the visual area and the sensing margins are not reaching the 4x4 grid
+ * units limit, the component will fall back to these minimum limits.
+ * For example, extending a 2x2 grid unit visual component into 5x4 grid units
+ * sensing area would look as follows:
+ * \qml
+ * AbstractButton {
+ *     width: units.gu(2)
+ *     height: units.gu(2)
+ *     Icon {
+ *         name: "settings"
+ *     }
+ *     sensingArea {
+ *         // no need to set the vertical direction as the minimum of
+ *         // 4 grid units will be taken automatically
+ *         leftMargin: units.gu(1)
+ *         // we only have to add 2 grid units as the width + left margin
+ *         // already gives us 3 grid units out of 5
+ *         rightMargin: units.gu(2)
+ *     }
+ * }
+ * \endqml
+ */
+UCMargins *UCAbstractButton::sensingMargins()
+{
+    Q_D(UCAbstractButton);
+    if (!d->sensingMargins) {
+        d->sensingMargins = new UCMargins(this);
+
+        // as this is the first time we create the sensing margins we only
+        // connect now to grid unit changes to keep sensing area size in sync
+        connect(UCUnits::instance(), SIGNAL(gridUnitChanged()), this, SLOT(_q_adjustSensingArea()));
+        // also connect to the margin changes
+        connect(d->sensingMargins, SIGNAL(leftChanged()), this, SLOT(_q_adjustSensingArea()));
+        connect(d->sensingMargins, SIGNAL(rightChanged()), this, SLOT(_q_adjustSensingArea()));
+        connect(d->sensingMargins, SIGNAL(topChanged()), this, SLOT(_q_adjustSensingArea()));
+        connect(d->sensingMargins, SIGNAL(bottomChanged()), this, SLOT(_q_adjustSensingArea()));
+        connect(d->sensingMargins, SIGNAL(allChanged()), this, SLOT(_q_adjustSensingArea()));
+    }
+    return d->sensingMargins;
 }
 
 #include "moc_ucabstractbutton.cpp"

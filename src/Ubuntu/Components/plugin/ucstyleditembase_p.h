@@ -72,6 +72,7 @@ public:
     bool keyNavigationFocus:1;
     bool activeFocusOnPress:1;
     bool wasStyleLoaded:1;
+    bool isFocusScope:1;
 
 protected:
 

@@ -1,5 +1,5 @@
 include(../test-include.pri)
-QT += quick-private gui-private
+QT += quick-private gui-private qml-private
 SOURCES += tst_deprecated_theme_engine.cpp
 
 OTHER_FILES += \
@@ -11,4 +11,5 @@ OTHER_FILES += \
     themes/CustomTheme/parent_theme \
     themes/TestModule/TestTheme/TestStyle.qml \
     themes/TestModule/TestTheme/qmldir \
-    themes/TestModule/TestTheme/parent_theme
+    themes/TestModule/TestTheme/parent_theme \
+    ErroneousPaletteUse.qml

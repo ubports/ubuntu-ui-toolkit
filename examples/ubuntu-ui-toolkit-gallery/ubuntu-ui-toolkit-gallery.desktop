@@ -1,11 +1,11 @@
 [Desktop Entry]
 Name=Ubuntu UI Toolkit Gallery
-Exec=/usr/bin/ubuntu-ui-toolkit-launcher $@ /usr/lib/ubuntu-ui-toolkit/examples/ubuntu-ui-toolkit-gallery/ubuntu-ui-toolkit-gallery.qml
+Exec=qmlscene %U ubuntu-ui-toolkit-gallery.qml
 Terminal=false
 Type=Application
 X-Ubuntu-Touch=true
-X-Ubuntu-Gettext-Domain=ubuntu-ui-toolkit-gallery
+X-Ubuntu-Gettext-Domain=com.ubuntu.developer.bzoltan.ubuntu-ui-toolkit-gallery
 # Added Icon and Path as a workaround for http://pad.lv/1227359.
 # TODO remove them once that bug is fixed. --elopio - 2013-09-18
-Icon=/usr/lib/ubuntu-ui-toolkit/examples/ubuntu-ui-toolkit-gallery/ubuntu-ui-toolkit-gallery.png
-Path=/usr/lib/ubuntu-ui-toolkit/examples/ubuntu-ui-toolkit-gallery/
+Icon=ubuntu-ui-toolkit-gallery.png
+

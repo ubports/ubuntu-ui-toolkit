@@ -23,6 +23,10 @@
 #include "ucstyleditembase_p.h"
 #include "ucaction.h"
 
+#include <AsyncLoader>
+
+using namespace UbuntuToolkit;
+
 class UCBottomEdgeStyle;
 class UCBottomEdgePrivate : public UCStyledItemBasePrivate, protected QQuickItemChangeListener
 {
@@ -51,7 +55,6 @@ public:
 
     // page header manipulation
     void patchContentItemHeader();
-    void createDefaultRegions();
     void updateProgressionStates(qreal distance);
     bool setActiveRegion(UCBottomEdgeRegion *range);
     void detectDirection(qreal currentDistance);
@@ -70,12 +73,14 @@ public:
     void itemChildAdded(QQuickItem *item, QQuickItem *child);
     void itemChildRemoved(QQuickItem *item, QQuickItem *child);
 
+    void setCurrentContent();
+    void resetCurrentContent(QQuickItem *newItem);
     // members
-    QUrl contentUrl;
     QList<UCBottomEdgeRegion*> regions;
+    QPointer<QQuickItem> currentContentItem;
+    UCBottomEdgeRegion *defaultRegion;
     UCBottomEdgeRegion *activeRegion;
     UCBottomEdgeHint *hint;
-    QQmlComponent *contentComponent;
     UCBottomEdgeStyle *bottomPanel;
 
     qreal previousDistance;
@@ -93,6 +98,7 @@ public:
 
     bool defaultRegionsReset:1;
     bool mousePressed:1;
+    bool preloadContent:1;
 
     // status management
     void setOperationStatus(OperationStatus s);
@@ -109,6 +115,5 @@ public:
     UCCollapseAction(QObject *parent = 0);
     void activate();
 };
-Q_DECLARE_METATYPE(QQmlListProperty<UCAction>)
 
 #endif // UCBOTTOMEDGE_P_H

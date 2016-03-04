@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2015 Canonical Ltd.
+ * Copyright 2013-2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -21,8 +21,10 @@
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlComponent>
 #include "ucdeprecatedtheme.h"
+#include "uctheme.h"
 #include "uctestcase.h"
 #include <private/qquicktext_p.h>
+#include "plugin.h"
 
 Q_DECLARE_METATYPE(QList<QQmlError>)
 
@@ -68,10 +70,18 @@ class tst_UCDeprecatedTheme : public QObject
 private:
     QString m_xdgDataPath;
 
+    UCDeprecatedTheme *instance(QQmlEngine &engine)
+    {
+        return engine.rootContext()->contextProperty("Theme").value<UCDeprecatedTheme*>();
+    }
+    void initDeprecatedTheme(QQmlEngine &engine)
+    {
+        UbuntuComponentsPlugin::initializeContextProperties(&engine);
+    }
+
 private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
-    void testInstance();
     void testNameDefault();
     void testNameSet();
     void testCreateStyleComponent();
@@ -84,6 +94,7 @@ private Q_SLOTS:
     void testNoImportPathSet();
     void testBogusImportPathSet();
     void testMultipleImportPathsSet();
+    void testPaletteUsed_bug1549830();
 };
 
 void tst_UCDeprecatedTheme::initTestCase()
@@ -97,24 +108,21 @@ void tst_UCDeprecatedTheme::cleanupTestCase()
     qputenv("XDG_DATA_DIRS", m_xdgDataPath.toLocal8Bit());
 }
 
-void tst_UCDeprecatedTheme::testInstance()
-{
-    UCDeprecatedTheme::instance();
-}
-
 void tst_UCDeprecatedTheme::testNameDefault()
 {
-    UCDeprecatedTheme theme;
-    QCOMPARE(theme.name(), QString("Ubuntu.Components.Themes.Ambiance"));
+    QQmlEngine engine;
+    initDeprecatedTheme(engine);
+    QCOMPARE(instance(engine)->name(), QString("Ubuntu.Components.Themes.Ambiance"));
 }
 
 void tst_UCDeprecatedTheme::testNameSet()
 {
     QTest::ignoreMessage(QtWarningMsg, "Theme not found: \"MyBeautifulTheme\"");
 
-    UCDeprecatedTheme theme;
-    theme.setName("MyBeautifulTheme");
-    QCOMPARE(theme.name(), QString("MyBeautifulTheme"));
+    QQmlEngine engine;
+    initDeprecatedTheme(engine);
+    instance(engine)->setName("MyBeautifulTheme");
+    QCOMPARE(instance(engine)->name(), QString("MyBeautifulTheme"));
 }
 
 void tst_UCDeprecatedTheme::testCreateStyleComponent()
@@ -217,8 +225,9 @@ void tst_UCDeprecatedTheme::testNoImportPathSet()
     qputenv("XDG_DATA_DIRS", "");
     qputenv("QML2_IMPORT_PATH", "");
 
-    UCDeprecatedTheme theme;
-    QCOMPARE(theme.name(), QString("Ubuntu.Components.Themes.Ambiance"));
+    QQmlEngine engine;
+    initDeprecatedTheme(engine);
+    QCOMPARE(instance(engine)->name(), QString("Ubuntu.Components.Themes.Ambiance"));
 }
 
 void tst_UCDeprecatedTheme::testBogusImportPathSet()
@@ -230,8 +239,9 @@ void tst_UCDeprecatedTheme::testBogusImportPathSet()
     qputenv("XDG_DATA_DIRS", "");
     qputenv("QML2_IMPORT_PATH", "/no/plugins/here");
 
-    UCDeprecatedTheme theme;
-    QCOMPARE(theme.name(), QString("Ubuntu.Components.Themes.Ambiance"));
+    QQmlEngine engine;
+    initDeprecatedTheme(engine);
+    QCOMPARE(instance(engine)->name(), QString("Ubuntu.Components.Themes.Ambiance"));
 }
 
 void tst_UCDeprecatedTheme::testMultipleImportPathsSet()
@@ -247,6 +257,13 @@ void tst_UCDeprecatedTheme::testMultipleImportPathsSet()
     QVERIFY(view);
     view->setTheme("TestModule.TestTheme");
 }
+
+void tst_UCDeprecatedTheme::testPaletteUsed_bug1549830()
+{
+    ThemeTestCase::ignoreWarning("ErroneousPaletteUse.qml", 29, 20, "Unable to assign [undefined] to QColor", 3);
+    QScopedPointer<ThemeTestCase> view(new ThemeTestCase("ErroneousPaletteUse.qml"));
+}
+
 
 QTEST_MAIN(tst_UCDeprecatedTheme)
 
