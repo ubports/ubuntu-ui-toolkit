@@ -118,6 +118,16 @@ MainView {
             signalName: "primaryPageChanged"
         }
 
+        SignalSpy {
+            id: deletedSpy1
+            signalName: "deleted"
+        }
+
+        SignalSpy {
+            id: deletedSpy2
+            signalName: "deleted"
+        }
+
         function resize_single_column() {
             layout.width = units.gu(40);
         }
@@ -334,14 +344,11 @@ MainView {
         }
         function test_hidden_page_keeps_geometry_bug1492343() {
             widthSpy.target = heightSpy.target = layout.primaryPage;
-            var pg = layout.primaryPage;
-            pg.heightChanged.connect(function() {print( pg.height)})
             layout.addPageToCurrentColumn(layout.primaryPage, page2);
             expectFailContinue("", "no width change expected");
             widthSpy.wait(400);
             expectFailContinue("", "no height change expected");
             heightSpy.wait(400);
-            pg.heightChanged.disconnect(function() {print( pg.height)})
         }
 
         SignalSpy {
@@ -443,6 +450,41 @@ MainView {
             defaults.primaryPage = otherPage1;
             primaryPageSpy.wait(400);
             compare(defaults.primaryPageSource, undefined, "primaryPageSource must be cleared");
+        }
+
+        function test_add_page_to_next_column_doesnt_delete_prev_column_content_bug1544745() {
+
+            var incubator = layout.addPageToNextColumn(layout.primaryPage, pageComponent);
+            verify(incubator);
+            verify(incubator.status != Component.Error);
+            var newPage = null;
+            if (incubator.status == Component.Loading) {
+                incubator.forceCompletion();
+                newPage = incubator.object;
+            } else if (incubator.status == Component.Ready) {
+                newPage = incubator.object;
+            }
+            deletedSpy1.target = newPage;
+
+            // add one page on top of the page on second column
+            incubator = layout.addPageToCurrentColumn(newPage, pageComponent);
+            verify(incubator);
+            newPage = null;
+            if (incubator.status == Component.Loading) {
+                incubator.forceCompletion();
+                newPage = incubator.object;
+            } else if (incubator.status == Component.Ready) {
+                newPage = incubator.object;
+            }
+            deletedSpy2.target = newPage;
+
+            // add a new page relative to the primary page to the next column
+            // this should remove the previously added two pages
+            incubator = layout.addPageToNextColumn(layout.primaryPage, pageComponent);
+            verify(incubator);
+            incubator.forceCompletion();
+            deletedSpy1.wait(500);
+            deletedSpy2.wait(500);
         }
     }
 }

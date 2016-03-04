@@ -339,10 +339,13 @@ PageTreeNode {
       */
     function addPageToNextColumn(sourcePage, page, properties) {
         var nextColumn = d.columnForPage(sourcePage) + 1;
-        d.tree.prune(nextColumn);
+        var pages = d.tree.prune(nextColumn);
         return d.addPageToColumn(nextColumn, sourcePage, page, properties, function() {
             for (var i = nextColumn; i < d.columns; i++) {
                 d.updatePageForColumn(i);
+            }
+            for (var i in pages) {
+                pages[i].destroyObject();
             }
         });
     }
@@ -591,9 +594,7 @@ PageTreeNode {
                 if (newWrapper) {
                     columnHolder.attachPage(newWrapper);
                 }
-                if (oldWrapper.canDestroy) {
-                    oldWrapper.destroyObject();
-                }
+                oldWrapper.destroyObject();
             }
         }
 
