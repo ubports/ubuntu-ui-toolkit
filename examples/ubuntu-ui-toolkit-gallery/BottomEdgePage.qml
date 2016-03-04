@@ -210,7 +210,9 @@ Template {
                     color: bottomEdge.activeRegion && bottomEdge.activeRegion.hasOwnProperty("baseColor") ?
                                bottomEdge.activeRegion.baseColor : Qt.rgba(0.5, 1, bottomEdge.dragProgress, 1)
                 }
+                Component.onDestruction: print("bottomedge content destroyed")
             }
         }
     }
+    Component.onDestruction: print("bottomedge page destroyed")
 }

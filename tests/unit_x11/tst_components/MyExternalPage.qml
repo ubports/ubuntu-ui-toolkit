@@ -18,7 +18,7 @@ import QtQuick 2.4
 import Ubuntu.Components 1.3
 
 Page {
-    title: "Page from QML file"
+    header: PageHeader { title: "Page from QML file" }
     Label {
         anchors.centerIn: parent
         text: "This page was created from MyExternalPage.qml."

@@ -38,8 +38,8 @@ MainView {
 
             Page {
                 id: page1
-                objectName: title
-                title: "Page1"
+                objectName: header.title
+                header: PageHeader { title: "Page1" }
 
                 Column {
                     anchors.centerIn: parent
@@ -56,18 +56,18 @@ MainView {
             }
             Page {
                 id: page2
-                objectName: title
-                title: "Page2"
+                objectName: header.title
+                header: PageHeader { title: "Page2" }
             }
             Page {
                 id: page3
-                objectName: title
-                title: "Page3"
+                objectName: header.title
+                header: PageHeader { title: "Page3" }
             }
             Page {
                 id: page4
-                objectName: title
-                title: "Page4"
+                objectName: header.title
+                header: PageHeader { title: "Page4" }
             }
         }
         AdaptivePageLayout {
@@ -76,18 +76,18 @@ MainView {
             height: parent.height / 2
             Page {
                 id: otherPage1
-                objectName: title
-                title: "Page1"
+                objectName: header.title
+                header: PageHeader { title: "Page1" }
             }
             Page {
                 id: otherPage2
-                objectName: title
-                title: "Page2"
+                objectName: header.title
+                header: PageHeader { title: "Page2" }
             }
             Page {
                 id: otherPage3
-                objectName: title
-                title: "Page3"
+                objectName: header.title
+                header: PageHeader { title: "Page3" }
             }
         }
     }
@@ -95,8 +95,10 @@ MainView {
     Component {
         id: pageComponent
         Page {
-            objectName: title
-            title: "DynamicPage"
+            objectName: header.title
+            header: PageHeader { title: "DynamicPage" }
+            signal deleted()
+            Component.onDestruction: deleted()
         }
     }
 
@@ -142,16 +144,20 @@ MainView {
         }
 
         function cleanup() {
-            page1.title = "Page1";
-            page2.title = "Page2";
-            page3.title = "Page3";
-            page4.title = "Page4";
+            page1.header.title = "Page1";
+            page2.header.title = "Page2";
+            page3.header.title = "Page3";
+            page4.header.title = "Page4";
             loadedSpy.clear();
             primaryPageSpy.clear();
             primaryPageSpy.target = null;
             resize_multiple_columns();
             layout.removePages(layout.primaryPage);
             defaults.primaryPage = null;
+            // restore binding on column number
+            root.columns = Qt.binding(function () {return root.width >= units.gu(80) ? 2 : 1});
+            // restore async
+            layout.asynchronous = true;
             wait(200);
         }
 
@@ -306,7 +312,7 @@ MainView {
             var testColumn = MathUtils.clamp(wrapper.column + (data.func == "addPageToCurrentColumn" ? 0 : 1),
                                              0, layout.columns - 1);
             var testHolder = getColumnHolder(layout, testColumn);
-            compare(testHolder.pageWrapper.object.title, data.expectedTitle, "page not found");
+            compare(testHolder.pageWrapper.object.header.title, data.expectedTitle, "page not found");
         }
 
         function test_asynchronous_page_loading_incubator_forcecompletion() {
@@ -328,11 +334,14 @@ MainView {
         }
         function test_hidden_page_keeps_geometry_bug1492343() {
             widthSpy.target = heightSpy.target = layout.primaryPage;
+            var pg = layout.primaryPage;
+            pg.heightChanged.connect(function() {print( pg.height)})
             layout.addPageToCurrentColumn(layout.primaryPage, page2);
             expectFailContinue("", "no width change expected");
             widthSpy.wait(400);
             expectFailContinue("", "no height change expected");
             heightSpy.wait(400);
+            pg.heightChanged.disconnect(function() {print( pg.height)})
         }
 
         SignalSpy {
@@ -428,7 +437,7 @@ MainView {
             primaryPageSpy.target = defaults;
             defaults.primaryPageSource = pageComponent;
             primaryPageSpy.wait(400);
-            compare(defaults.primaryPage.title, "DynamicPage", "DynamicPage not set as primaryPage");
+            compare(defaults.primaryPage.header.title, "DynamicPage", "DynamicPage not set as primaryPage");
             // now set a value to primaryPage
             primaryPageSpy.clear();
             defaults.primaryPage = otherPage1;
