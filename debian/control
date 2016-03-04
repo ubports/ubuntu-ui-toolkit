@@ -53,7 +53,7 @@ Build-Depends: accountsservice,
                unity-action-doc,
                uuid-runtime,
                xvfb,
-Standards-Version: 3.9.4
+Standards-Version: 3.9.7
 Homepage: https://launchpad.net/ubuntu-ui-toolkit
 Vcs-Bzr: https://code.launchpad.net/~ubuntu-sdk-team/ubuntu-ui-toolkit/trunk
 
