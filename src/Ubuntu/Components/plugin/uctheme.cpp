@@ -697,7 +697,8 @@ QQmlComponent* UCTheme::createStyleComponent(const QString& styleName, QObject* 
     if (parent != NULL) {
         QQmlEngine* engine = qmlEngine(parent);
         if (!engine) {
-            qmlInfo(parent) << QStringLiteral("No engine specified for the parent or created without engine.");
+            qmlInfo(parent) << QStringLiteral("No engine specified for the parent or created without engine. Style '%1' cannot be created.")
+                               .arg(styleName);
             return Q_NULLPTR;
         }
         // make sure we have the paths
