@@ -399,7 +399,7 @@ MainView {
         function test_primaryPageSource_bug1499179_data() {
             return [
                 {tag: "Component", test: pageComponent},
-                {tag: "Document", test: Qt.resolvedUrl("MyExternalPage.qml")},
+                {tag: "Document", test: Qt.resolvedUrl("MyExternalPageWithNewHeader.qml")},
             ];
         }
         function test_primaryPageSource_bug1499179(data) {
@@ -410,8 +410,8 @@ MainView {
 
         function test_change_primaryPageSource_data() {
             return [
-                {tag: "Component", test: pageComponent, nextValue: Qt.resolvedUrl("MyExternalPage.qml")},
-                {tag: "Document", test: Qt.resolvedUrl("MyExternalPage.qml"), nextValue: pageComponent},
+                {tag: "Component", test: pageComponent, nextValue: Qt.resolvedUrl("MyExternalPageWithNewHeader.qml")},
+                {tag: "Document", test: Qt.resolvedUrl("MyExternalPageWithNewHeader.qml"), nextValue: pageComponent},
             ];
         }
         function test_change_primaryPageSource(data) {
