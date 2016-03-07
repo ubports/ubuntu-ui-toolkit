@@ -33,9 +33,9 @@ diff -urN ../debian $tmpdir/debian
 if [ $? == 1 ] ; then
  echo 
  echo 
- echo "*****************************************************"
- echo "Please run wrap-and-sort -a -t to clean up packaging."
- echo "*****************************************************"
+ echo "*******************************************************"
+ echo "Please run 'wrap-and-sort -a -t' to clean up packaging."
+ echo "*******************************************************"
  echo 
  exit 1
 fi
