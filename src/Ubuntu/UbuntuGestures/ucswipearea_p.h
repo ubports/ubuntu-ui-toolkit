@@ -46,7 +46,7 @@ class UBUNTUGESTURES_EXPORT UCSwipeArea : public QQuickItem
             READ immediateRecognition
             WRITE setImmediateRecognition
             NOTIFY immediateRecognitionChanged)
-    Q_PROPERTY(bool grabGesture READ grabGesture WRITE setGrabGesture NOTIFY grabGestureChanged)
+    Q_PROPERTY(bool grabGesture READ grabGesture WRITE setGrabGesture NOTIFY grabGestureChanged FINAL)
 
     Q_ENUMS(Direction)
 public:

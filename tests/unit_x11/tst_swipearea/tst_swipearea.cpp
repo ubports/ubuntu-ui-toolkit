@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2015-2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -124,6 +124,8 @@ private Q_SLOTS:
     void makoRightEdgeDrag_verticalDownwards();
     void makoLeftEdgeDrag_slowStart();
     void makoLeftEdgeDrag_movesSlightlyBackwardsOnStart();
+    void grabGesture();
+    void grabGestureWithImmediateRecognition();
 
 private:
     // QTest::touchEvent takes QPoint instead of QPointF and I don't want to
@@ -1336,6 +1338,108 @@ void tst_UCSwipeArea::makoLeftEdgeDrag_movesSlightlyBackwardsOnStart()
     QCOMPARE(statusSpy->recognized(), true);
 
     delete statusSpy;
+}
+
+void tst_UCSwipeArea::grabGesture()
+{
+    UCSwipeArea *edgeDragArea =
+        m_view->rootObject()->findChild<UCSwipeArea*>("vpDragArea");
+    Q_ASSERT(edgeDragArea != 0);
+    UCSwipeAreaPrivate *d = UCSwipeAreaPrivate::get(edgeDragArea);
+    d->setRecognitionTimer(m_fakeTimerFactory->createTimer(edgeDragArea));
+    d->setTimeSource(m_fakeTimerFactory->timeSource());
+
+    UCSwipeArea *edgeDragAreaNoGrab =
+        m_view->rootObject()->findChild<UCSwipeArea*>("vpDragAreaNoGrab");
+    Q_ASSERT(edgeDragAreaNoGrab != 0);
+    QCOMPARE(edgeDragAreaNoGrab->grabGesture(), false);
+    UCSwipeAreaPrivate *dNoGrab = UCSwipeAreaPrivate::get(edgeDragAreaNoGrab);
+    dNoGrab->setRecognitionTimer(m_fakeTimerFactory->createTimer(edgeDragAreaNoGrab));
+    dNoGrab->setTimeSource(m_fakeTimerFactory->timeSource());
+
+    QPointF touchPoint = calculateInitialtouchPosition(edgeDragArea);
+
+    qreal desiredDragDistance = d->distanceThreshold * 2.0f;
+    QPointF dragDirectionVector(0., 1.); // vertical positive
+
+    qreal movementStepDistance = d->distanceThreshold * 0.1f;
+    QPointF touchMovement = dragDirectionVector * movementStepDistance;
+    int totalMovementSteps = qCeil(desiredDragDistance / movementStepDistance);
+    int movementTimeStepMs = (d->compositionTime * 1.5f) / totalMovementSteps;
+
+    qint64 timestamp = 0;
+
+    sendTouchPress(timestamp, 0, touchPoint);
+
+    for (int i = 0; i < totalMovementSteps; ++i) {
+        touchPoint += touchMovement;
+        timestamp += movementTimeStepMs;
+        sendTouchUpdate(timestamp, 0, touchPoint);
+    }
+
+    QCOMPARE((int)d->status, (int)UCSwipeAreaPrivate::Recognized);
+    QCOMPARE(edgeDragArea->dragging(), true);
+
+    QCOMPARE((int)dNoGrab->status, (int)UCSwipeAreaPrivate::Recognized);
+    QCOMPARE(edgeDragAreaNoGrab->dragging(), true);
+
+    // Use a large distance margin because position smoothing makes it hard
+    // to assume high accuracy.  The test below using immediateRecognition uses
+    // a smaller margin.
+    // NB: qFuzzyCompare(), used internally by QCOMPARE(), is broken.
+    QVERIFY(qAbs(edgeDragArea->distance() - edgeDragAreaNoGrab->distance()) < 2);
+
+    timestamp += movementTimeStepMs;
+    sendTouchRelease(timestamp, 0, touchPoint);
+}
+
+void tst_UCSwipeArea::grabGestureWithImmediateRecognition()
+{
+    UCSwipeArea *edgeDragArea =
+        m_view->rootObject()->findChild<UCSwipeArea*>("vpDragArea");
+    Q_ASSERT(edgeDragArea != 0);
+    UCSwipeAreaPrivate *d = UCSwipeAreaPrivate::get(edgeDragArea);
+
+    UCSwipeArea *edgeDragAreaNoGrab =
+        m_view->rootObject()->findChild<UCSwipeArea*>("vpDragAreaNoGrab");
+    Q_ASSERT(edgeDragAreaNoGrab != 0);
+    QCOMPARE(edgeDragAreaNoGrab->grabGesture(), false);
+    UCSwipeAreaPrivate *dNoGrab = UCSwipeAreaPrivate::get(edgeDragAreaNoGrab);
+
+    edgeDragArea->setImmediateRecognition(true);
+    edgeDragAreaNoGrab->setImmediateRecognition(true);
+
+    QPointF touchPoint = calculateInitialtouchPosition(edgeDragArea);
+
+    qreal desiredDragDistance = d->distanceThreshold * 2.0f;
+    QPointF dragDirectionVector(0., 1.); // vertical positive
+
+    qreal movementStepDistance = d->distanceThreshold * 0.1f;
+    QPointF touchMovement = dragDirectionVector * movementStepDistance;
+    int totalMovementSteps = qCeil(desiredDragDistance / movementStepDistance);
+    int movementTimeStepMs = (d->compositionTime * 1.5f) / totalMovementSteps;
+
+    qint64 timestamp = 0;
+
+    sendTouchPress(timestamp, 0, touchPoint);
+
+    for (int i = 0; i < totalMovementSteps; ++i) {
+        touchPoint += touchMovement;
+        timestamp += movementTimeStepMs;
+        sendTouchUpdate(timestamp, 0, touchPoint);
+    }
+
+    QCOMPARE((int)d->status, (int)UCSwipeAreaPrivate::Recognized);
+    QCOMPARE(edgeDragArea->dragging(), true);
+
+    QCOMPARE((int)dNoGrab->status, (int)UCSwipeAreaPrivate::Recognized);
+    QCOMPARE(edgeDragAreaNoGrab->dragging(), true);
+
+    // NB: qFuzzyCompare(), used internally by QCOMPARE(), is broken.
+    QVERIFY(qAbs(edgeDragArea->distance() - edgeDragAreaNoGrab->distance()) < 0.001);
+
+    timestamp += movementTimeStepMs;
+    sendTouchRelease(timestamp, 0, touchPoint);
 }
 
 QTEST_MAIN(tst_UCSwipeArea)
