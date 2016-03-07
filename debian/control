@@ -135,11 +135,11 @@ Description: Qt Components for Ubuntu - PerformanceMetrics QML plugin
 Package: qtdeclarative5-ubuntu-ui-toolkit-plugin
 Architecture: any
 Section: oldlibs
-Depends: ${misc:Depends},
-         qml-module-ubuntu-components,
+Depends: qml-module-ubuntu-components,
          qml-module-ubuntu-layouts,
          qml-module-ubuntu-performancemetrics,
          qml-module-ubuntu-test,
+         ${misc:Depends},
 Description: Transitional dummy package for Ubuntu UI Toolkit QML plugin
  This package contains the Ubuntu Components QML plugin.
 
