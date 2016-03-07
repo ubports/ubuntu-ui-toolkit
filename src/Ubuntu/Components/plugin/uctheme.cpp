@@ -696,8 +696,10 @@ QQmlComponent* UCTheme::createStyleComponent(const QString& styleName, QObject* 
 
     if (parent != NULL) {
         QQmlEngine* engine = qmlEngine(parent);
-        Q_ASSERT(engine);
-        Q_ASSERT(engine == qmlEngine(this));
+        if (!engine) {
+            qmlInfo(parent) << QStringLiteral("No engine specified for the parent or created without engine.");
+            return Q_NULLPTR;
+        }
         // make sure we have the paths
         bool fallback = false;
         QUrl url = styleUrl(styleName, version, &fallback);
