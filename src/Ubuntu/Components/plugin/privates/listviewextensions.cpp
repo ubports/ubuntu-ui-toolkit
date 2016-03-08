@@ -138,6 +138,7 @@ bool ListViewProxy::keyPressEvent(QKeyEvent *event)
     // for horizontal moves take into account the layout mirroring
     bool isRtl = QQuickItemPrivate::get(listView)->effectiveLayoutMirror;
     bool forwards = (key == Qt::Key_Up || (isRtl ? key == Qt::Key_Left : key == Qt::Key_Right));
+    int oldIndex = this->currentIndex();
     int currentIndex = this->currentIndex();
     int count = this->count();
 
@@ -147,5 +148,5 @@ bool ListViewProxy::keyPressEvent(QKeyEvent *event)
         setKeyNavigationForListView(true);
     }
 
-    return true;
+    return (oldIndex != currentIndex);
 }
