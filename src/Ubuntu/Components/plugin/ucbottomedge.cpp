@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -62,7 +62,10 @@ void UCBottomEdgePrivate::init()
     Q_Q(UCBottomEdge);
     // initialize hint
     QQml_setParent_noEvent(hint, q);
-    hint->setParentItem(q);
+    // keep BottomEdge.enabled in sync with the hint
+    QObject::connect(q, &UCBottomEdge::enabledChanged, [=] {
+        hint->setEnabled2(q->isEnabled());
+    });
 
     // create default regions
     createDefaultRegions();
@@ -589,7 +592,7 @@ void UCBottomEdgePrivate::setOperationStatus(OperationStatus s)
  *                 BottomEdgeRegion {
  *                     from: 0.6
  *                     to: 1.0
- *                     property color color: UbuntuColors.lightGrey
+ *                     property color color: UbuntuColors.silk
  *                 }
  *             ]
  *         }
@@ -706,6 +709,7 @@ void UCBottomEdge::initializeComponent()
 {
     Q_D(UCBottomEdge);
     // initialize hint
+    d->hint->setParentItem(this);
     d->hint->init();
 
     // hint click() always commits

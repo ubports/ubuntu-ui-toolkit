@@ -77,12 +77,12 @@ private:
 
     bool inputPanelPresent()
     {
-        return !QuickUtils::instance().inputMethodProvider().isEmpty();
+        return !QuickUtils::instance()->inputMethodProvider().isEmpty();
     }
 
     QPoint guPoint(qreal guX, qreal guY)
     {
-        return QPoint(UCUnits::instance().gu(guX), UCUnits::instance().gu(guY));
+        return QPoint(UCUnits::instance()->gu(guX), UCUnits::instance()->gu(guY));
     }
 
     void preventDblClick()
@@ -544,6 +544,7 @@ private Q_SLOTS:
 
     void testCase_doubleClicked()
     {
+        QSKIP("FIXME: lp#1542215 Flaky test result");
         QScopedPointer<QQuickView> view(loadTest("DoubleClicked.qml"));
         QVERIFY(view);
         UCMouse *filter = attachedFilter<UCMouse>(view->rootObject(), "FilterOwner");

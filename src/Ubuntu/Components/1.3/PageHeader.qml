@@ -32,10 +32,13 @@ import Ubuntu.Components 1.3
             StyleHints {
                 foregroundColor: UbuntuColors.orange
                 backgroundColor: "black"
-                dividerColor: UbuntuColors.darkGrey
+                dividerColor: UbuntuColors.slate
             }
         }
     \endqml
+
+    See \l Header properties that are inherited by PageHeader to control
+    the visibility of the header.
 */
 Header {
     id: header

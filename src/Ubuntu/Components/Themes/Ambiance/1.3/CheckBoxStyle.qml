@@ -23,19 +23,21 @@ Item {
     /*!
       The padding between the background shape and the outside border of the checkbox.
      */
-    property real backgroundPadding: units.gu(0.33)
+    property real backgroundPadding: 0
 
     /*!
       The background color when the checkbox is not checked.
      */
-    property color uncheckedBackgroundColor: Qt.rgba(theme.palette.normal.foreground.r,
-                                                     theme.palette.normal.foreground.g,
-                                                     theme.palette.normal.foreground.b, 0.2)
+    property color uncheckedBackgroundColor: styledItem.enabled
+                                                ? theme.palette.normal.foreground
+                                                : theme.palette.disabled.foreground
 
     /*!
       The background color when the checkbox is checked.
      */
-    property color checkedBackgroundColor: UbuntuColors.green
+    property color checkedBackgroundColor: styledItem.enabled
+                                            ? theme.palette.normal.positive
+                                            : theme.palette.disabled.raised
 
     /*!
       The image to show inside the checkbox when it is checked.
@@ -45,17 +47,17 @@ Item {
     /*!
       The color of the icon.
      */
-    property color iconColor: theme.palette.normal.foregroundText
+    property color iconColor: styledItem.enabled
+                                ? theme.palette.normal.positiveText
+                                : theme.palette.disabled.raisedText
 
     /*!
       The padding between the icon and the border of the thumb.
      */
-    property real iconPadding: backgroundPadding
+    property real iconPadding: units.gu(0.4)
 
-    opacity: enabled ? 1.0 : 0.5
-
-    implicitWidth: units.gu(3)
-    implicitHeight: units.gu(3)
+    implicitWidth: units.gu(2)
+    implicitHeight: units.gu(2)
 
     FocusShape {
     }

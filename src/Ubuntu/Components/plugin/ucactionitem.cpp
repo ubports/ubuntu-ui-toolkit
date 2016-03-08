@@ -139,6 +139,7 @@ void UCActionItemPrivate::attachAction(bool attach)
 {
     Q_Q(UCActionItem);
     if (attach) {
+        action->addOwningItem(q);
         QObject::connect(q, SIGNAL(triggered(QVariant)),
                 q, SLOT(_q_invokeActionTrigger(QVariant)), Qt::DirectConnection);
         if (!(flags & CustomVisible)) {
@@ -162,6 +163,7 @@ void UCActionItemPrivate::attachAction(bool attach)
                     q, &UCActionItem::iconNameChanged, Qt::DirectConnection);
         }
     } else {
+        action->removeOwningItem(q);
         QObject::disconnect(q, SIGNAL(triggered(QVariant)),
                    q, SLOT(_q_invokeActionTrigger(QVariant)));
         if (!(flags & CustomVisible)) {
@@ -228,7 +230,7 @@ QString UCActionItem::text()
     if (d->flags & UCActionItemPrivate::CustomText) {
         return d->text;
     }
-    return d->action ? d->action->m_text : QString();
+    return d->action ? d->action->text() : QString();
 }
 void UCActionItem::setText(const QString &text)
 {

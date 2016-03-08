@@ -25,11 +25,11 @@ class tst_UCUnits: public QObject
 
 private Q_SLOTS:
 
-    void singletonInstance() {
-        UCUnits& units1 = UCUnits::instance();
-        UCUnits& units2 = UCUnits::instance();
-        QCOMPARE(&units1, &units2);
-    }
+//    void singletonInstance() {
+//        UCUnits& units1 = UCUnits::instance();
+//        UCUnits& units2 = UCUnits::instance();
+//        QCOMPARE(&units1, &units2);
+//    }
 
     void defaultGridUnit() {
         qputenv("GRID_UNIT_PX", "");

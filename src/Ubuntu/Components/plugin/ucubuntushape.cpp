@@ -309,7 +309,7 @@ UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
     , m_flags(Stretched)
 {
     setFlag(ItemHasContents);
-    QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this,
+    QObject::connect(UCUnits::instance(), SIGNAL(gridUnitChanged()), this,
                      SLOT(_q_gridUnitChanged()));
     _q_gridUnitChanged();
 }
@@ -1002,7 +1002,7 @@ void UCUbuntuShape::_q_imagePropertiesChanged()
 
 void UCUbuntuShape::_q_gridUnitChanged()
 {
-    const float gridUnitInDevicePixels = UCUnits::instance().gridUnit() / qGuiApp->devicePixelRatio();
+    const float gridUnitInDevicePixels = UCUnits::instance()->gridUnit() / qGuiApp->devicePixelRatio();
     setImplicitWidth(implicitWidthGU * gridUnitInDevicePixels);
     setImplicitHeight(implicitHeightGU * gridUnitInDevicePixels);
     update();
@@ -1245,7 +1245,7 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
         // accordingly. The shape was using a fixed image for the corner before switching to a
         // distance field, since the corner wasn't taking the whole image (ending at ~80%) we need
         // to take that into account when the size is scaled down.
-        radius = UCUnits::instance().gridUnit() * radiusGuMap[m_radius]
+        radius = UCUnits::instance()->gridUnit() * radiusGuMap[m_radius]
                      / qGuiApp->devicePixelRatio();
         const float scaledDownRadius = qMin(itemSize.width(), itemSize.height()) * 0.5f * 0.8f;
         if (radius > scaledDownRadius) {

@@ -94,6 +94,8 @@ static float getenvFloat(const char* name, float defaultValue)
  * isolated from Qt's own scaling concept.
  */
 
+UCUnits *UCUnits::m_units = nullptr;
+
 UCUnits::UCUnits(QObject *parent) :
     QObject(parent),
     m_devicePixelRatio(qGuiApp->devicePixelRatio())
@@ -104,6 +106,11 @@ UCUnits::UCUnits(QObject *parent) :
     } else {
         m_gridUnit = DEFAULT_GRID_UNIT_PX * m_devicePixelRatio;
     }
+}
+
+UCUnits::~UCUnits()
+{
+    m_units = nullptr;
 }
 
 /*!

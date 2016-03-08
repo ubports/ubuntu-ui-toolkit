@@ -66,6 +66,17 @@ Item {
             readonly property var trailingSlots: []
         }
         ListItemLayout {
+            id: layoutMultilineLabels
+            title.text: "test \n test"
+            title.maximumLineCount: 2
+            subtitle.text: "test2 \n test2 \n test2"
+            subtitle.maximumLineCount: 3
+            summary.text: "test3 \n test3"
+            summary.maximumLineCount: 2
+            readonly property var leadingSlots: []
+            readonly property var trailingSlots: []
+        }
+        ListItemLayout {
             id: layoutOneLeading
             readonly property var leadingSlots: [layoutOneLeading_leading1]
             readonly property var trailingSlots: []
@@ -375,6 +386,17 @@ Item {
             compare(item.padding.trailing, units.gu(1), "Default trailing padding")
         }
 
+        function checkDefaultWrapping(item) {
+            //we have to use WrapAnywhere because otherwise it will have unexpected behaviour
+            //when used together with ElideRight when the string wraps (it will elide too early).
+            compare(item.title.wrapMode, Label.WrapAnywhere, "Wrong default title wrapMode")
+            compare(item.subtitle.wrapMode, Label.WrapAnywhere, "Wrong default subtitle wrapMode")
+            compare(item.summary.wrapMode, Label.WrapAnywhere, "Wrong default summary wrapMode")
+            compare(item.title.elide, Label.ElideRight, "Wrong default title elide")
+            compare(item.subtitle.elide, Label.ElideRight, "Wrong default subtitle elide")
+            compare(item.summary.elide, Label.ElideRight, "Wrong default summary elide")
+        }
+
         function checkImplicitSize(item) {
             compare(item.implicitHeight, expectedImplicitHeight(item), "Implicit height check")
             compare(item.implicitWidth, column.width, "Fill parent's width")
@@ -423,6 +445,13 @@ Item {
                     }
                 }
             }
+        }
+
+        function initTestCase() {
+            // check the coloring of the mainslot labels
+            compare(layoutEmpty.title.color, theme.palette.normal.backgroundText, "wrong title color");
+            compare(layoutEmpty.subtitle.color, theme.palette.normal.backgroundSecondaryText, "wrong subtitle color");
+            compare(layoutEmpty.summary.color, theme.palette.normal.backgroundTertiaryText, "wrong summary color");
         }
 
         function test_contentPadding_data() {
@@ -718,7 +747,7 @@ Item {
                             "Default labels positioning, subtitle's y")
                 } else {
                     compare(listitemlayout.subtitle.y,
-                            listitemlayout.title.baselineOffset + units.dp(4),
+                            listitemlayout.title.y + listitemlayout.title.height + units.dp(2),
                             "Default labels positioning, subtitle's y")
                 }
             }
@@ -734,7 +763,7 @@ Item {
                         compare(listitemlayout.summary.y, 0,
                                 "Default labels positioning, summary's y")
                     } else {
-                        compare(listitemlayout.summary.y, listitemlayout.title.baselineOffset + units.dp(4),
+                        compare(listitemlayout.summary.y, listitemlayout.title.y + listitemlayout.title.height + units.dp(2),
                                 "Default labels positioning, summary's y")
                     }
                 } else  {
@@ -742,6 +771,10 @@ Item {
                             "Default labels positioning, summary's y")
                 }
             }
+        }
+
+        function test_defaultLabelsWrappingAndElide() {
+            checkDefaultWrapping(layoutLabels)
         }
 
         function test_defaultMainSlotHeight() {
@@ -872,6 +905,25 @@ Item {
             waitForRendering(obj)
             compare(obj !== null, true, "QML ListItemLayout: testing labels' QML context.")
             obj.destroy()
+        }
+
+        //first version of ListItemLayout anchored subtitle to title's baseline, but that breaks
+        //when title is multiline
+        function test_multilineLabelsPositioning() {
+            compare(layoutMultilineLabels.title.maximumLineCount, 2,
+                    "Multiline labels positioning: wrong title maximumLineCount")
+            compare(layoutMultilineLabels.subtitle.maximumLineCount, 3,
+                    "Multiline labels positioning: wrong subtitle maximumLineCount")
+            compare(layoutMultilineLabels.summary.maximumLineCount, 2,
+                    "Multiline labels positioning: wrong summary maximumLineCount")
+
+            compare(layoutMultilineLabels.title.lineCount, 2,
+                    "Multiline labels positioning: wrong title lineCount")
+            compare(layoutMultilineLabels.subtitle.lineCount, 3,
+                    "Multiline labels positioning: wrong subtitle lineCount")
+            compare(layoutMultilineLabels.summary.lineCount, 2,
+                    "Multiline labels positioning: wrong summary lineCount")
+            checkLabelsY(layoutMultilineLabels)
         }
     }
 }

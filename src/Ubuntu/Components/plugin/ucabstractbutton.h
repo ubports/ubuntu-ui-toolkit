@@ -18,6 +18,8 @@
 #define UCABSTRACTBUTTON_H
 
 #include "ucactionitem.h"
+#include "ucmargins.h"
+#include <QtQuick/private/qquickevents_p_p.h>
 
 class QQuickMouseArea;
 class QQuickMouseEvent;
@@ -27,6 +29,7 @@ class UCAbstractButton : public UCActionItem
     Q_OBJECT
     Q_PROPERTY(bool pressed READ pressed NOTIFY pressedChanged)
     Q_PROPERTY(bool hovered READ hovered NOTIFY hoveredChanged)
+    Q_PROPERTY(UCMargins *sensingMargins READ sensingMargins CONSTANT FINAL)
 
     // internal, declared to support the deprecated ListItem module
     Q_PROPERTY(bool __acceptEvents READ acceptEvents WRITE setAcceptEvents)
@@ -36,6 +39,7 @@ public:
 
     bool pressed() const;
     bool hovered() const;
+    UCMargins *sensingMargins();
 
     bool privateAcceptEvents() const;
     void setPrivateAcceptEvents(bool accept);
@@ -45,6 +49,8 @@ public:
 
 protected:
     void classBegin();
+    virtual void geometryChanged(const QRectF &newGeometry,
+                                 const QRectF &oldGeometry);
     void keyReleaseEvent(QKeyEvent *key);
 
 Q_SIGNALS:
@@ -60,6 +66,9 @@ protected:
     Q_PRIVATE_SLOT(d_func(), void _q_mouseAreaPressed())
     Q_PRIVATE_SLOT(d_func(), void _q_mouseAreaClicked())
     Q_PRIVATE_SLOT(d_func(), void _q_mouseAreaPressAndHold())
+    Q_PRIVATE_SLOT(d_func(), void _q_adjustSensingArea())
 };
+
+QML_DECLARE_TYPE(UCMargins)
 
 #endif // UCABSTRACTBUTTON_H

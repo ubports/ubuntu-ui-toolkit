@@ -132,7 +132,7 @@ Template {
                 objectName: "CustomRegion1"
                 enabled: regionConfig.model >= 1
                 to: 0.3
-                property color baseColor: UbuntuColors.lightGrey
+                property color baseColor: UbuntuColors.silk
             },
             BottomEdgeRegion {
                 objectName: "CustomRegion2"

@@ -15,61 +15,62 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.3 as Toolkit13
+import Ubuntu.Components 1.3
 import "pageUtils.js" as Utils
 
 /*!
     \qmltype Page
-    \inqmlmodule Ubuntu.Components 1.1
+    \inqmlmodule Ubuntu.Components 1.3
+    \inherits StyledItem
     \ingroup ubuntu
-    \brief A page is the basic Item that must be used inside the \l MainView,
-        \l PageStack and \l Tabs.
+    \brief A page is the basic Item that represents a single view in
+        an Ubuntu application. It is recommended to use the Page inside
+        the \l MainView or \l AdaptivePageLayout.
+
+        \l MainView provides a header for Pages it includes if no
+        \l header property was set. However, the application header is deprecated
+        and it is recommended to set the \l header property instead.
+
         Anchors and height of a Page are automatically determined to align with
         the header of the \l MainView, but can be overridden.
+        Page contents does not automatically leave space for the Page \l header,
+        so this must be taken into account when anchoring the contents of the Page.
 
+        Example:
+        \qml
+            import QtQuick 2.4
+            import Ubuntu.Components 1.3
 
-    \l MainView provides a header for Pages it includes if no
-    \l header property was set.
-    The text and actions of the header are determined by the \l title
-    and \l head properties of the page:
+            MainView {
+                width: units.gu(48)
+                height: units.gu(60)
 
-    \qml
-        import QtQuick 2.4
-        import Ubuntu.Components 1.2
+                Page {
+                    header: PageHeader {
+                        id: pageHeader
+                        title: i18n.tr("Example page")
 
-        MainView {
-            width: units.gu(48)
-            height: units.gu(60)
-
-            Page {
-                title: i18n.tr("Example page")
-
-                Label {
-                    anchors.centerIn: parent
-                    text: i18n.tr("Hello world!")
-                }
-
-                head.actions: [
-                    Action {
-                        iconName: "search"
-                        text: i18n.tr("Search")
-                    },
-                    Action {
-                        iconName: "contacts"
-                        text: i18n.tr("Contacts")
+                        trailingActionBar.actions: [
+                            Action {
+                                iconName: "search"
+                                text: i18n.tr("Search")
+                            }
+                        ]
                     }
-                ]
-            }
-        }
-    \endqml
 
-    The Page automatically anchors to the left and bottom of its parent. The width of the Page
-    will be the full width of its parent \l MainView or \l PageStack or \l Tab,
-    and the height will adapt to leave space for the header when needed. It is possible to
-    use a Page inside a Loader, but in that case do not set the anchors or size of the Loader
-    so that the Page can control its width and height.
+                    Label {
+                        anchors {
+                            horizontalCenter: parent.horizontalCenter
+                            top: pageHeader.bottom
+                            topMargin: units.gu(5)
+                        }
+                        text: i18n.tr("Hello world!")
+                    }
+                }
+            }
+        \endqml
 */
-Toolkit13.PageTreeNode {
+PageTreeNode {
     id: page
     anchors {
         left: parent ? parent.left : undefined
@@ -78,25 +79,47 @@ Toolkit13.PageTreeNode {
     // Set width and height so that a parent Loader can be automatically resized
     // to the size of the loaded Page.
     width: parentNode ? parentNode.width - page.x : undefined
+    // FIXME: We no longer need to take the internal header height into account
+    //  when we remove MainView's AppHeader.
     height: parentNode ? page.flickable ? parentNode.height : parentNode.height - internal.headerHeight : undefined
 
     /*!
+      \qmlproperty ActrionContext Page::actionContext
+      \readonly
+      \since Ubuntu.Components 1.3
+      The action context of the page.
+      */
+    readonly property alias actionContext: localContext
+    ActionContext {
+        id: localContext
+        active: page.active
+        objectName: page.objectName + "Context"
+    }
+
+    /*!
+      \since Ubuntu.Components 1.3
       The header property for this page. Setting this property will reparent the
       header to the page and disable the \l MainView's application header.
       \qml
         Page {
             id: page
-            title: "Page with header"
             header: PageHeader {
-                title: page.title
+                title: "Page with header"
                 trailingActionBar.actions: [
                     Action { iconName: "settings" },
                     Action { iconName: "info" }
                 ]
+                flickable: myFlickable
             }
         }
       \endqml
-      \sa PageHeader
+      To avoid Page content being occluded by the header, the contents of the Page
+      should anchor to the bottom of the header. When the Page contents is flickable,
+      the contents does not need to be anchored to the header, but it is recommended
+      to use a \l PageHeader or \l Header component as the Page header, and set its
+      \l Header::flickable property so that the Flickable gets a top-margin that
+      leaves enough space for the header.
+      \sa PageHeader, Header
      */
     property Item header
     onHeaderChanged: internal.updateHeader()
@@ -105,70 +128,43 @@ Toolkit13.PageTreeNode {
     /*! \internal */
     isLeaf: true
 
-    /*!
-      The title of the page. Will be shown in the header of the \l MainView.
-      If the page is used inside a \l Tab, the default title is the \l Tab title.
-      For a Page not inside a \l Tab, the default title is an empty string.
-     */
+    /*! \deprecated */
     property string title: parentNode && parentNode.hasOwnProperty("title") ? parentNode.title : ""
-
-    /*!
-      Optional flickable that controls the MainView header. This property
-      is automatically set to the first child of the page that is Flickable
-      and anchors to the top of the page or fills the page. For example:
-      \qml
-          import QtQuick 2.4
-          import Ubuntu.Components 1.2
-
-          MainView {
-              width: units.gu(30)
-              height: units.gu(50)
-              Page {
-                  id: page
-                  title: "example"
-                  //flickable: null // uncomment for a fixed header
-                  Flickable {
-                      id: content
-                      anchors.fill: parent
-                      contentHeight: units.gu(70)
-                      Label {
-                          text: "hello"
-                          anchors.centerIn: parent
-                      }
-                  }
-              }
-          }
-      \endqml
-      In this example, page.flickable will automatically be set to content because it is
-      a Flickable and it fills its parent. Thus, scrolling down in the Flickable will automatically
-      hide the header.
-
-      Set this property to null to avoid automatic flickable detection, which disables hiding
-      of the header by scrolling in the Flickable. In cases where a flickable should control the header,
-      but it is not automatically detected, the flickable property can be set.
-     */
+    /*! \deprecated */
     property Flickable flickable: Utils.getFlickableChild(page)
-
-    /*!
-      \qmlproperty PageHeadConfiguration Page::head
-      \readonly
-      \deprecated
-      Configuration of the header for this page.
-      Deprecated: This configuration will be replaced by setting the \l header property.
-     */
+    /*! \deprecated */
     readonly property alias head: headerConfig
-    Toolkit13.PageHeadConfiguration {
+    PageHeadConfiguration {
         id: headerConfig
         title: page.title
         flickable: page.flickable
+        onFlickableChanged: internal.printDeprecationWarning()
+        onTitleChanged: internal.printDeprecationWarning()
+        onActionsChanged: internal.printDeprecationWarning()
+        onBackActionChanged: internal.printDeprecationWarning()
     }
 
-    Toolkit13.Object {
+    Object {
         id: internal
+
+        property bool showDeprecationWarning: true
+        function printDeprecationWarning() {
+            if (internal.showDeprecationWarning) {
+                var titleStr = page;
+                if (page.title) {
+                    titleStr += "\"" + page.title + "\"";
+                }
+                titleStr += ": "
+                print(titleStr + "In Ubuntu.Components 1.3, the use of Page.title, Page.flickable and" +
+                      " Page.head is deprecated. Use Page.header and the PageHeader component instead.");
+                internal.showDeprecationWarning = false;
+            }
+        }
 
         property Item previousHeader: null
         property Item previousHeaderParent: null
         function updateHeader() {
+            internal.showDeprecationWarning = false;
             if (internal.previousHeader) {
                 internal.previousHeader.parent = internal.previousHeaderParent;
             }

@@ -25,6 +25,7 @@ Item {
     property url chevron: Qt.resolvedUrl("../artwork/chevron_down.png")
     property url tick: Qt.resolvedUrl("../artwork/tick.png")
     property bool colourComponent: true
+    property alias content: backgroundFrame
 
     UbuntuShape {
         id: background
@@ -32,7 +33,25 @@ Item {
         width: styledItem.width
         height: styledItem.height
         radius: "medium"
+        source: shapeSource
+    }
 
-        backgroundColor: Qt.rgba(0, 0, 0, 0.05)
+    ShaderEffectSource {
+        id: shapeSource
+        sourceItem: backgroundFrame
+        hideSource: true
+        // FIXME: visible: false prevents rendering so make it a nearly
+        // transparent 1x1 pixel instead
+        opacity: 0.01
+        width: 1
+        height: 1
+    }
+
+    Rectangle {
+        id: backgroundFrame
+        anchors.fill: parent
+        color: styledItem.enabled
+                ? theme.palette.normal.background
+                : theme.palette.disabled.background
     }
 }

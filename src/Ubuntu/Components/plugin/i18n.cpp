@@ -41,7 +41,7 @@ namespace C {
  * a project. Example:
  * \qml
  * import QtQuick 2.4
- * import Ubunut.Components 0.1
+ * import Ubuntu.Components 0.1
  *
  * Item {
  *      width: units.gu(40)
@@ -54,6 +54,8 @@ namespace C {
  * }
  * \endqml
  */
+UbuntuI18n *UbuntuI18n::m_i18 = nullptr;
+
 UbuntuI18n::UbuntuI18n(QObject* parent) : QObject(parent)
 {
     /*
@@ -66,6 +68,11 @@ UbuntuI18n::UbuntuI18n(QObject* parent) : QObject(parent)
      *   defines the order of multiple locales
      */
     m_language = setlocale(LC_ALL, "");
+}
+
+UbuntuI18n::~UbuntuI18n()
+{
+    m_i18 = nullptr;
 }
 
 /*!

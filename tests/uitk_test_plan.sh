@@ -41,24 +41,24 @@ NORMAL_USE=false
 WIPE="--wipe"
 
 declare -a TEST_SUITE=(
+    " -p mediaplayer-app-autopilot mediaplayer_app"
+    " -p dialer-app-autopilot dialer_app"
+    " -p reminders-app-autopilot reminders"
     " -p ubuntu-ui-toolkit-autopilot ubuntuuitoolkit"
     " -p webbrowser-app-autopilot webbrowser_app"
     " -p address-book-app-autopilot address_book_app" 
     " sudoku_app"
     " ubuntu_calculator_app"
-    " -p mediaplayer-app-autopilot mediaplayer_app"
     " dropping_letters_app"
     " ubuntu_weather_app"
     " -p ubuntu-system-settings-autopilot ubuntu_system_settings"
     " music_app"
     " gallery_app"
-    " -p dialer-app-autopilot dialer_app"
-    " -p reminders-app-autopilot reminders"
     " -p messaging-app-autopilot messaging_app"
     " camera_app"
 #   " filemanager"
 #   " ubuntu_terminal_app"
-#   " -n unity8"
+    " -n unity8"
 #   " ubuntu_clock_app"
 #   " shorts_app"
 #   " online_accounts_ui"
@@ -87,8 +87,9 @@ AP_PACKAGES="address-book-service-dummy \
              unity-webapps-qml-autopilot \
              ubuntu-system-settings-autopilot\
              ubuntu-html5-ui-toolkit-autopilot \
-             ubuntu-system-settings-online-accounts-autopilot"
-#             messaging-app-autopilot \
+             ubuntu-system-settings-online-accounts-autopilot \
+             messaging-app-autopilot \
+             unity8"
 
 declare -a UNREGISTERED_APPS=(
 	"com.ubuntu.terminal"
@@ -314,20 +315,6 @@ function compare_results {
                 echo -e "\tPossible regression"  >> ${MAINFILE}
             fi
         done
-
-
-        do
-	    FAILED=${FAILED/ERROR:/FAIL:}
-	    FAILED_TEST=${FAILED/ERROR:/}
-            FAILED_TEST=${FAILED_TEST/FAIL:/}
-
-            echo -e "\tFailed with ${PPA} - $FAILED"  >> ${MAINFILE}
-            if grep --quiet "$FAILED_TEST" *archive.tests; then
-                echo -e "\tSame on archive"  >> ${MAINFILE}
-            else
-                echo -e "\tPossible regression"  >> ${MAINFILE}
-            fi
-        done
     done
 }
 
@@ -372,7 +359,7 @@ while getopts ":hrcintduslqwbv:o:p:f:a:" opt; do
             RTM=false
             CHANNEL="ubuntu-touch/devel-proposed/ubuntu"
             DISTRO="ubuntu"
-            SERIES="wily"
+            SERIES="xenial"
             ;;
         w)
             DISTUPGRADE=true
@@ -387,7 +374,7 @@ while getopts ":hrcintduslqwbv:o:p:f:a:" opt; do
 	   NORMAL_USE=true
 	   DONOTRUNTESTS=true
            COMISSION=true
-	   WIPE=""
+           WIPE=""
 	   ;;
         h)
             echo "Usage: uitk_test_plan.sh -s [serial number] -m -c"
@@ -400,7 +387,7 @@ while getopts ":hrcintduslqwbv:o:p:f:a:" opt; do
             echo -e "\t-p : Source PPA for the UITK. Default $PPA. Use -p archive to test stock image or -p [0-9]* to set a silo."
             echo -e "\t-f : Filter for the test suite. Default $FILTER"
             echo -e "\t-a : Start the test suite from the given test."
-            echo -e "\t-u : Provision the Development release of Ubuntu, Wily. Default is vivid-overlay (formerly RTM)."
+            echo -e "\t-u : Provision the Development release of Ubuntu, Xenial. Default is vivid-overlay (formerly RTM)."
             echo -e "\t-w : dist-upgrade to the whole PPA instead of just Ubuntu UI Toolkit. Default is only UITK."
             echo -e "\t-b : Bootstrap the device with the ${PPA} enabled."
             echo -e "\t-q : Provision the device for normal use with the ${PPA} enabled"
@@ -420,13 +407,13 @@ while getopts ":hrcintduslqwbv:o:p:f:a:" opt; do
             echo "Validate the UITK from teh archive on an vivid-overlay image"
             echo -e "\t$ ./uitk_test_plan.sh -c -p archive"
             echo ""
-            echo "Validate the UITK from a specific CI silo on an Ubuntu Wily image"
+            echo "Validate the UITK from a specific CI silo on an Ubuntu Xenial image"
             echo -e "\t$ ./uitk_test_plan.sh -c -p 001 -u"
             echo ""
             echo "Provision the device for manual testing with the latest vivid-overlay image"
             echo -e "\t$ ./uitk_test_plan.sh -c -p archive -n"
             echo ""
-            echo "Provision the device for manual testing with the latest Ubuntu Wily image"
+            echo "Provision the device for manual testing with the latest Ubuntu Xenial image"
             echo -e "\t$ ./uitk_test_plan.sh -c -p archive -u -n"
             echo ""
             echo "Run the test plan on an already provisioned device"

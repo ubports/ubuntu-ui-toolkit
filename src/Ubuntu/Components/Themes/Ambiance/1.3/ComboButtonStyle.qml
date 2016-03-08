@@ -23,20 +23,16 @@ Style.ComboButtonStyle {
 
     // configurations
     dropDownWidth: units.gu(5)
-    dropDownSeparatorWidth: units.dp(2)
     comboListMargin: units.gu(0.8)
     comboListHolder: comboListContent
     comboListPanel: panelItem
     defaultColor: mainButton.defaultColor
     defaultGradient: mainButton.defaultGradient
-    defaultDropdownColor: combo.expanded ? Qt.rgba(0, 0, 0, 0.05) : defaultColor
+    defaultDropdownColor: mainButton.defaultColor
     defaultFont: mainButton.defaultFont
 
-
-    width: combo.width
-    height: combo.collapsedHeight
-
-    property ComboButton combo: styledItem
+    width: styledItem.width
+    height: styledItem.collapsedHeight
 
     implicitWidth: mainButton.implicitWidth
     implicitHeight: mainButton.implicitHeight
@@ -44,25 +40,159 @@ Style.ComboButtonStyle {
     LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
     LayoutMirroring.childrenInherit: true
 
-    ButtonStyle {
+    Item {
         id: mainButton
+
+        property real minimumWidth: units.gu(36)
+        property real horizontalPadding: units.gu(4)
+        property color defaultColor: theme.palette.normal.foreground
+        property font defaultFont: Qt.font({family: "Ubuntu", pixelSize: FontUtils.sizeToPixels("medium")})
+        property Gradient defaultGradient: null
+        property real buttonFaceOffset: -dropDownWidth/2
+        property bool stroke: false
+
+        /*!
+          The property overrides the button's default background with an item. This
+          item can be used by derived styles to reuse the ButtonStyle and override
+          the default coloured background with an image or any other drawing.
+          The default value is null.
+        */
+        property Item backgroundSource: comboFace
+
         anchors {
             left: parent.left
             top: parent.top
             right: parent.right
         }
-        height: combo.collapsedHeight
-        // overrides
-        backgroundSource: comboFace
-        buttonFaceOffset: -dropDownWidth/2 - dropDownSeparatorWidth
-        horizontalPadding: units.gu(4) - dropDownSeparatorWidth
-        minimumWidth: units.gu(36)
+        width: styledItem.width
+        height: styledItem.collapsedHeight
+        implicitWidth: Math.max(
+            minimumWidth, foreground.implicitWidth + 2 * mainButton.horizontalPadding
+        )
+        implicitHeight: units.gu(4)
 
-        // FIXME: use hardcoded color while we get the theme palette updated
-        defaultColor: "#b2b2b2"
-        defaultGradient: null
+        LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
+        LayoutMirroring.childrenInherit: true
 
-        // button face
+        UbuntuShape {
+            id: background
+            anchors.fill: parent
+            borderSource: "radius_idle.sci"  // Deprecated, use a dedicated shape.
+            visible: mainButton.stroke ? false : ((backgroundColor.a != 0.0) || mainButton.backgroundSource)
+            source: mainButton.backgroundSource
+
+            backgroundColor: defaultColor
+            backgroundMode: UbuntuShape.SolidColor
+            opacity: styledItem.enabled ? 1.0 : 0.6
+        }
+
+        Item {
+            id: foreground
+
+            property string iconPosition: styledItem.iconPosition
+            property real iconSize: units.gu(2)
+            property real spacing: mainButton.horizontalPadding
+            property bool hasIcon: styledItem.iconSource != ""
+            property bool hasText: styledItem.text != ""
+
+            anchors {
+                centerIn: parent
+                horizontalCenterOffset: mainButton.buttonFaceOffset
+            }
+            transformOrigin: Item.Top
+            width: parent.width - 2*mainButton.horizontalPadding
+            implicitHeight: Math.max(foregroundIcon.height, foregroundLabel.height)
+            scale: styledItem.pressed ? 0.98 : 1.0
+            Behavior on scale {
+                NumberAnimation {
+                    duration: UbuntuAnimation.SnapDuration
+                    easing.type: Easing.Linear
+                }
+            }
+            state: foreground.hasIcon && hasText ? iconPosition : "center"
+
+            Icon {
+                id: foregroundIcon
+                visible: foreground.hasIcon
+                anchors.verticalCenter: parent.verticalCenter
+                width: foreground.iconSize
+                height: foreground.iconSize
+                color: foregroundLabel.color
+                source: styledItem.iconSource
+            }
+
+            Label {
+                id: foregroundLabel
+                anchors.verticalCenter: parent.verticalCenter
+                elide: Text.ElideRight
+                color: theme.palette.normal.foregroundText
+                font: styledItem.font
+                text: styledItem.text
+            }
+
+            states: [
+                State {
+                    name: "left"
+                    AnchorChanges {
+                        target: foregroundIcon
+                        anchors.left: foreground.left
+                    }
+                    AnchorChanges {
+                        target: foregroundLabel
+                        anchors.left: foregroundIcon.right
+                    }
+                    PropertyChanges {
+                        target: foregroundLabel
+                        anchors.leftMargin: spacing
+                        width: foreground.width - foregroundIcon.width - spacing
+                    }
+                    PropertyChanges {
+                        target: foreground
+                        implicitWidth: foregroundIcon.implicitWidth + spacing + foregroundLabel.implicitWidth
+                    }
+                },
+                State {
+                    name: "right"
+                    AnchorChanges {
+                        target: foregroundIcon
+                        anchors.right: foreground.right
+                    }
+                    AnchorChanges {
+                        target: foregroundLabel
+                        anchors.right: foregroundIcon.left
+                    }
+                    PropertyChanges {
+                        target: foregroundLabel
+                        anchors.rightMargin: spacing
+                        width: foreground.width - foregroundIcon.width - spacing
+                    }
+                    PropertyChanges {
+                        target: foreground
+                        implicitWidth: foregroundIcon.implicitWidth + spacing + foregroundLabel.implicitWidth
+                    }
+                },
+                State {
+                    name: "center"
+                    AnchorChanges {
+                        target: foregroundIcon
+                        anchors.horizontalCenter: foreground.horizontalCenter
+                    }
+                    AnchorChanges {
+                        target: foregroundLabel
+                        anchors.horizontalCenter: foreground.horizontalCenter
+                    }
+                    PropertyChanges {
+                        target: foregroundLabel
+                        width: Math.min(foregroundLabel.implicitWidth, foreground.width)
+                    }
+                    PropertyChanges {
+                        target: foreground
+                        implicitWidth: foreground.hasText ? foregroundLabel.implicitWidth : foregroundIcon.implicitWidth
+                    }
+                }
+            ]
+        }
+
         ShaderEffectSource {
             id: comboFace
             sourceItem: content
@@ -79,23 +209,13 @@ Style.ComboButtonStyle {
             width: mainButton.width
             height: mainButton.height
 
+            // button background
             Rectangle {
                 anchors {
                     fill: parent
-                    rightMargin: comboStyle.dropDownSeparatorWidth + comboStyle.dropDownWidth
+                    rightMargin: comboStyle.dropDownWidth
                 }
-                color: combo.color
-                gradient: mainButton.isGradient ? combo.gradient : null
-            }
-
-            // distancer
-            Item {
-                anchors {
-                    right: dropDownButton.right
-                    top: parent.top
-                    bottom: parent.bottom
-                }
-                width: comboStyle.dropDownSeparatorWidth
+                color: defaultColor
             }
 
             Rectangle {
@@ -107,11 +227,13 @@ Style.ComboButtonStyle {
                     bottom: parent.bottom
                 }
                 width: comboStyle.dropDownWidth
-                color: mainButton.__colorHack(combo.dropdownColor)
-                Image {
-                    source: Qt.resolvedUrl("../artwork/chevron.png")
+                color: defaultDropdownColor
+                Icon {
                     anchors.centerIn: parent
-                    rotation: combo.expanded ? -90 : 90
+                    height: parent.height / 2
+                    width: height
+                    name: styledItem.expanded? "up" : "down"
+                    color: foregroundLabel.color
                 }
             }
         }
@@ -125,7 +247,7 @@ Style.ComboButtonStyle {
             top: mainButton.bottom
             right: parent.right
         }
-        opacity: combo.expanded && (combo.comboList.length > 0)? 1.0 : 0.0
+        opacity: styledItem.expanded && (styledItem.comboList.length > 0)? 1.0 : 0.0
 
         ShaderEffectSource {
             id: listContent
@@ -144,40 +266,16 @@ Style.ComboButtonStyle {
                 topMargin: comboListMargin
             }
             clip: true
-            color: mainButton.__colorHack(combo.dropdownColor)
+            color: defaultDropdownColor
         }
 
-        BorderImage {
-            id: shadow
-            anchors {
-                fill: parent
-                leftMargin: -units.gu(0.5)
-                topMargin: comboListMargin - units.gu(0.5)
-                rightMargin: -units.gu(0.5)
-                bottomMargin: -units.gu(0.5)
-            }
-            source: Qt.resolvedUrl("../artwork/bubble_shadow.sci")
-        }
         UbuntuShape {
             id: shape
             anchors {
                 fill: parent
                 topMargin: comboListMargin
             }
-            visible: true
             source: listContent
-        }
-
-        Image {
-            source: Qt.resolvedUrl("../artwork/bubble_arrow.png")
-            rotation: 180
-            anchors {
-                bottom: shape.top
-                bottomMargin: -1
-                right: parent.right
-                rightMargin: dropDownWidth / 2 - units.gu(0.5)
-            }
-
         }
 
         Behavior on height {

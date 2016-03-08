@@ -26,7 +26,7 @@
 
 #define IMPLICIT_LISTITEM_WIDTH_GU      40
 #define IMPLICIT_LISTITEM_HEIGHT_GU     7
-#define DIVIDER_THICKNESS_DP            2
+#define DIVIDER_THICKNESS_DP            1
 #define DEFAULT_SWIPE_THRESHOLD_GU      1.5
 
 class QQuickFlickable;

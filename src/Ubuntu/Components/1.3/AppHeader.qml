@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.3 as Components
+import Ubuntu.Components.Private 1.3 as Privates
 
 /*!
     \internal
@@ -23,13 +23,19 @@ import Ubuntu.Components 1.3 as Components
     \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
 */
-Components.Header {
+Privates.AppHeaderBase {
+    // Note: styleName is set to "PageHeadStyle" in UCAppHeaderBase.
     id: header
 
     anchors {
         left: parent.left
         right: parent.right
     }
+
+    /*!
+      The background color of the header. Value set by MainView.
+     */
+    property color backgroundColor
 
     /*!
       The background color of the divider. Value set by MainView.
@@ -112,7 +118,12 @@ Components.Header {
      */
     property QtObject config: null
 
-    Component.onCompleted: internal.updateProperties()
+    animate: false
+    exposed: false
+    Component.onCompleted: {
+        internal.updateProperties();
+        header.animate = true;
+    }
     onConfigChanged: internal.updateProperties()
 
     onExposedChanged: {
@@ -158,6 +169,4 @@ Components.Header {
             }
         }
     }
-
-    styleName: "PageHeadStyle"
 }

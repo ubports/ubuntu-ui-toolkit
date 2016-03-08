@@ -3,7 +3,7 @@ unix {
     PKGCONFIG += gio-2.0 dbus-1 libnih-dbus
 }
 
-QT *= core-private qml qml-private quick quick-private gui-private dbus svg UbuntuGestures UbuntuGestures_private
+QT *= core-private qml qml-private quick quick-private gui-private dbus svg UbuntuGestures UbuntuGestures_private UbuntuToolkit
 
 equals(QT_MAJOR_VERSION, 5):lessThan(QT_MINOR_VERSION, 2) {
     QT += v8-private
@@ -90,6 +90,7 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/uchaptics.h \
     $$PWD/ucabstractbutton.h \
     $$PWD/ucabstractbutton_p.h \
+    $$PWD/ucmargins.h \
     $$PWD/ucthemingextension.h \
     $$PWD/ucheader.h \
     $$PWD/uclabel.h \
@@ -98,7 +99,6 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/ucimportversionchecker_p.h \
     $$PWD/ucbottomedgehint.h \
     $$PWD/ucbottomedgehint_p.h \
-    $$PWD/gestures/damper.h \
     $$PWD/gestures/ubuntugesturesqmlglobal.h \
     $$PWD/ucmathutils.h \
     $$PWD/ucbottomedge.h \
@@ -106,7 +106,15 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/ucbottomedgestyle.h \
     $$PWD/ucbottomedgeregion.h \
     $$PWD/ucpagetreenode.h \
-    $$PWD/ucpagetreenode_p.h
+    $$PWD/ucpagetreenode_p.h \
+    $$PWD/ucmainviewbase.h \
+    $$PWD/ucmainviewbase_p.h \
+    $$PWD/ucperformancemonitor.h \
+    $$PWD/privates/frame.h \
+    $$PWD/privates/ucpagewrapper.h \
+    $$PWD/privates/ucpagewrapper_p.h \
+    $$PWD/privates/ucpagewrapperincubator_p.h \
+    $$PWD/privates/appheaderbase.h
 
 SOURCES += $$PWD/plugin.cpp \
     $$PWD/uctheme.cpp \
@@ -176,7 +184,13 @@ SOURCES += $$PWD/plugin.cpp \
     $$PWD/ucbottomedge.cpp \
     $$PWD/ucbottomedgestyle.cpp \
     $$PWD/ucbottomedgeregion.cpp \
-    $$PWD/ucpagetreenode.cpp
+    $$PWD/ucpagetreenode.cpp \
+    $$PWD/ucmainviewbase.cpp \
+    $$PWD/ucperformancemonitor.cpp \
+    $$PWD/privates/frame.cpp \
+    $$PWD/privates/ucpagewrapper.cpp \
+    $$PWD/privates/ucpagewrapperincubator.cpp \
+    $$PWD/privates/appheaderbase.cpp
 
 # adapters
 SOURCES += $$PWD/adapters/alarmsadapter_organizer.cpp
@@ -190,4 +204,6 @@ OTHER_FILES += \
     $$PWD/shaders/shape_no_dfdy.frag \
     $$PWD/shaders/shapeoverlay.vert \
     $$PWD/shaders/shapeoverlay.frag \
-    $$PWD/shaders/shapeoverlay_no_dfdy.frag
+    $$PWD/shaders/shapeoverlay_no_dfdy.frag \
+    $$PWD/privates/shaders/frame.vert \
+    $$PWD/privates/shaders/frame.frag

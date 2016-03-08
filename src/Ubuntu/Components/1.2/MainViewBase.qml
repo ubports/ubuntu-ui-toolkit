@@ -48,7 +48,7 @@ PageTreeNode {
 
           Qt bug: https://bugreports.qt-project.org/browse/QTBUG-11712
          */
-        property string themeName: (ColorUtils.luminance(backgroundColor) >= 0.85) ?
+        property string themeName: (Toolkit.ColorUtils.luminance(backgroundColor) >= 0.85) ?
                                    "Ambiance" : "SuruDark"
         onThemeNameChanged: {
             // only change the theme if the current one is a system one.

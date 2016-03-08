@@ -70,11 +70,3 @@ double UCMathUtils::clampAndProject(double x, double xmin, double xmax, double y
 {
     return projectValue(clamp(x, xmin, xmax), xmin, xmax, ymin, ymax);
 }
-
-QObject *UCMathUtils::qmlRegisterTypeCallback(QQmlEngine *engine, QJSEngine *scriptEngine)
-{
-    Q_UNUSED(engine);
-    Q_UNUSED(scriptEngine);
-    return new UCMathUtils;
-}
-
