@@ -19,9 +19,7 @@ import Ubuntu.Components 1.3
 
 AmbianceNormal {
     background: UbuntuColors.porcelain
-    backgroundText: UbuntuColors.blue
-    backgroundTertiaryText: UbuntuColors.blue
     base: UbuntuColors.ash
-    baseText: UbuntuColors.blue
     foreground: UbuntuColors.ash
+    overlay: UbuntuColors.porcelain
 }

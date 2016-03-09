@@ -58,5 +58,9 @@ Palette {
         base: UbuntuColors.graphite
         foreground: UbuntuColors.slate
     }
+
+    focused: SuruDarkNormal {
+        background: Qt.rgba(UbuntuColors.blue.r, UbuntuColors.blue.g, UbuntuColors.blue.b, 0.4)
+    }
 }
 //![0]
