@@ -105,6 +105,13 @@ UCMainViewBase::UCMainViewBase(QQuickItem *parent)
     : UCPageTreeNode(*(new UCMainViewBasePrivate), parent)
 {
     d_func()->init();
+    connect(this, SIGNAL(windowChanged(QQuickWindow*)), this, SLOT(updateWindow()));
+}
+
+void UCMainViewBase::updateWindow() {
+    if (window()) {
+        window()->setColor(backgroundColor());
+    }
 }
 
 UCMainViewBase::UCMainViewBase(UCMainViewBasePrivate &dd, QQuickItem *parent)
@@ -219,6 +226,8 @@ void UCMainViewBase::setBackgroundColor(QColor backgroundColor)
         d->_q_headerColorBinding(d->m_backgroundColor);
     if (!(d->m_flags & UCMainViewBasePrivate::CustomFooterColor))
         d->_q_footerColorBinding(d->m_backgroundColor);
+
+    updateWindow();
 
     // FIXME: Define the background colors in MainViewStyle and get rid of the properties
     //  in MainViewBase. That removes the need for auto-theming.

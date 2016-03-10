@@ -77,6 +77,9 @@ Q_SIGNALS:
 protected:
     UCMainViewBase(UCMainViewBasePrivate &dd, QQuickItem *parent);
 
+protected Q_SLOTS:
+    void updateWindow();
+
 private:
     Q_DECLARE_PRIVATE(UCMainViewBase)
 };
