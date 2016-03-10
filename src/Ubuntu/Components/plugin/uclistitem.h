@@ -53,6 +53,9 @@ public:
     explicit UCListItem(QQuickItem *parent = 0);
     ~UCListItem();
 
+    // overrides
+    bool keyNavigationFocus() const override;
+
     QQuickItem *contentItem() const;
     UCListItemDivider *divider() const;
     UCListItemActions *leadingActions() const;
@@ -83,6 +86,9 @@ protected:
     bool childMouseEventFilter(QQuickItem *child, QEvent *event);
     bool eventFilter(QObject *, QEvent *);
     void timerEvent(QTimerEvent *event);
+    void focusInEvent(QFocusEvent *event) override;
+    void focusOutEvent(QFocusEvent *event) override;
+    void keyPressEvent(QKeyEvent *event) override;
 
 Q_SIGNALS:
     void leadingActionsChanged();
@@ -177,6 +183,7 @@ public:
     static UCViewItemsAttached *qmlAttachedProperties(QObject *owner);
 
     bool listenToRebind(UCListItem *item, bool listen);
+    bool isAttachedToListView();
     bool isMoving();
     bool isBoundTo(UCListItem *item);
 

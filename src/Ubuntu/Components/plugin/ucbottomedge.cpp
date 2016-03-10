@@ -37,15 +37,15 @@
 #include "private/ucswipearea_p.h"
 #include <QtQuick/private/qquickanimation_p.h>
 
-Q_LOGGING_CATEGORY(ucBottomEdge, "ubuntu.components.BottomEdge", QtMsgType::QtWarningMsg)
+using namespace UbuntuToolkit;
 
-#define LOG     qCDebug(ucBottomEdge) << "[BottomEdge]"
+Q_LOGGING_CATEGORY(ucBottomEdge, "ubuntu.components.BottomEdge", QtMsgType::QtWarningMsg)
 
 UCBottomEdgePrivate::UCBottomEdgePrivate()
     : UCStyledItemBasePrivate()
+    , defaultRegion(new UCBottomEdgeRegion(nullptr, true))
     , activeRegion(Q_NULLPTR)
     , hint(new UCBottomEdgeHint)
-    , contentComponent(Q_NULLPTR)
     , bottomPanel(Q_NULLPTR)
     , previousDistance(0.0)
     , dragProgress(0.)
@@ -54,6 +54,7 @@ UCBottomEdgePrivate::UCBottomEdgePrivate()
     , dragDirection(UCBottomEdge::Undefined)
     , defaultRegionsReset(false)
     , mousePressed(false)
+    , preloadContent(false)
 {
 }
 
@@ -67,8 +68,20 @@ void UCBottomEdgePrivate::init()
         hint->setEnabled2(q->isEnabled());
     });
 
-    // create default regions
-    createDefaultRegions();
+    // create default region
+    // for testing purposes
+    defaultRegion->setObjectName("default_BottomEdgeRegion");
+    // enters in this stage when drag ratio reaches 30% of the area
+    defaultRegion->m_from = 0.33;
+    defaultRegion->m_to = 1.0;
+    defaultRegion->attachToBottomEdge(q);
+
+    QObject::connect(defaultRegion, &UCBottomEdgeRegion::contentChanged,
+                     q, &UCBottomEdge::contentChanged);
+    QObject::connect(defaultRegion, &UCBottomEdgeRegion::contentComponentChanged,
+                     q, &UCBottomEdge::contentComponentChanged);
+
+    regions.append(defaultRegion);
 
     // set the style name
     styleDocument = QStringLiteral("BottomEdgeStyle");
@@ -124,12 +137,16 @@ void UCBottomEdgePrivate::appendRegion(UCBottomEdgeRegion *region)
 
     if (!defaultRegionsReset) {
         defaultRegionsReset = true;
-        qDeleteAll(regions);
         regions.clear();
     }
 
     // validate the region before we append
     validateRegion(region);
+
+    // if preload is set, load content
+    if (preloadContent) {
+        region->loadRegionContent();
+    }
 
     // append region definition
     regions.append(region);
@@ -146,7 +163,7 @@ void UCBottomEdgePrivate::clearRegions(bool destroy)
     }
     regions.clear();
     defaultRegionsReset = false;
-    createDefaultRegions();
+    regions.append(defaultRegion);
 }
 
 // validates an added region
@@ -184,21 +201,6 @@ void UCBottomEdgePrivate::validateRegion(UCBottomEdgeRegion *region, int regions
             }
         }
     }
-}
-
-// creates the default region(s)
-void UCBottomEdgePrivate::createDefaultRegions()
-{
-    Q_Q(UCBottomEdge);
-    // add the default stages
-    UCBottomEdgeRegion *commitRegion = new UCBottomEdgeRegion(q);
-    // for testing purposes
-    commitRegion->setObjectName("default_BottomEdgeRegion");
-    // enters in this stage when drag ratio reaches 30% of the area
-    commitRegion->m_from = 0.33;
-    commitRegion->m_to = 1.0;
-
-    regions.append(commitRegion);
 }
 
 // update status, drag direction and activeRegion during drag
@@ -352,6 +354,8 @@ void UCBottomEdge::unlockOperation(bool running)
         }
         break;
     case UCBottomEdgePrivate::Collapsing:
+        // no active region when collapsed!
+        d->setActiveRegion(nullptr);
         d->setStatus(UCBottomEdge::Hidden);
         Q_EMIT collapseCompleted();
         break;
@@ -392,11 +396,12 @@ void UCCollapseAction::activate()
 void UCBottomEdgePrivate::patchContentItemHeader()
 {
     // ugly, as it can be, as we don't have the PageHeader in cpp to detect the type
-    UCHeader *header = bottomPanel->m_contentItem ? bottomPanel->m_contentItem->findChild<UCHeader*>() : Q_NULLPTR;
+    UCHeader *header = currentContentItem ? currentContentItem->findChild<UCHeader*>() : Q_NULLPTR;
     if (!header || !QuickUtils::inherits(header, "PageHeader")) {
         return;
     }
 
+    LOG << "PATCH HEADER" << currentContentItem.data();
     // get the navigationActions and inject an action there
     QVariant list(header->property("navigationActions"));
     QQmlListProperty<UCAction> actions = list.value< QQmlListProperty<UCAction> >();
@@ -453,14 +458,6 @@ bool UCBottomEdgePrivate::loadStyleItem(bool animated)
         hint->setParentItem(bottomPanel);
         // and stack it before the panel, so it is covered by the panel when revealed
         hint->stackBefore(bottomPanel->m_panel);
-
-        // connect style stuff
-        QObject::connect(bottomPanel, &UCBottomEdgeStyle::contentItemChanged,
-                         q, &UCBottomEdge::contentItemChanged, Qt::DirectConnection);
-        // follow contentItem change to patch the header
-        QObject::connect(bottomPanel, &UCBottomEdgeStyle::contentItemChanged, [=]() {
-            patchContentItemHeader();
-        });
     }
     return result;
 }
@@ -749,6 +746,10 @@ void UCBottomEdgePrivate::completeComponentInitialization()
 {
     UCStyledItemBasePrivate::completeComponentInitialization();
     Q_Q(UCBottomEdge);
+    // trigger default region content loading; the default region content is
+    // always pre-loaded
+    defaultRegion->loadRegionContent();
+
     // fix the hint's style version as that has no qmlContext of its own
     // and thus import version check will fail; setting the context for
     // the hint using this component's hint won't work either as this
@@ -931,6 +932,13 @@ void UCBottomEdgePrivate::setStatus(UCBottomEdge::Status status)
     }
 
     Q_EMIT q_func()->statusChanged(this->status);
+
+    // show content
+    if (status > UCBottomEdge::Hidden) {
+        setCurrentContent();
+    } else {
+        resetCurrentContent(nullptr);
+    }
 }
 
 /*!
@@ -941,17 +949,12 @@ void UCBottomEdgePrivate::setStatus(UCBottomEdge::Status status)
 QUrl UCBottomEdge::contentUrl() const
 {
     Q_D(const UCBottomEdge);
-    return d->contentUrl;
+    return d->defaultRegion->m_url;
 }
 void UCBottomEdge::setContent(const QUrl &url)
 {
     Q_D(UCBottomEdge);
-    if (d->contentUrl == url) {
-        return;
-    }
-
-    d->contentUrl = url;
-    Q_EMIT contentChanged(d->contentUrl);
+    d->defaultRegion->setUrl(url);
 }
 
 /*!
@@ -962,16 +965,12 @@ void UCBottomEdge::setContent(const QUrl &url)
 QQmlComponent *UCBottomEdge::contentComponent() const
 {
     Q_D(const UCBottomEdge);
-    return d->contentComponent;
+    return d->defaultRegion->m_component;
 }
 void UCBottomEdge::setContentComponent(QQmlComponent *component)
 {
     Q_D(UCBottomEdge);
-    if (d->contentComponent == component) {
-        return;
-    }
-    d->contentComponent = component;
-    Q_EMIT contentComponentChanged(d->contentComponent);
+    d->defaultRegion->setComponent(component);
 }
 
 /*!
@@ -983,7 +982,7 @@ void UCBottomEdge::setContentComponent(QQmlComponent *component)
 QQuickItem *UCBottomEdge::contentItem() const
 {
     Q_D(const UCBottomEdge);
-    return d->bottomPanel ? d->bottomPanel->m_contentItem : Q_NULLPTR;
+    return d->currentContentItem.data();
 }
 
 /*!
@@ -1080,6 +1079,99 @@ UCBottomEdgeRegion *UCBottomEdge::activeRegion()
 {
     Q_D(UCBottomEdge);
     return d->activeRegion;
+}
+
+/*!
+ * \qmlproperty bool BottomEdge::preloadContent
+ * If set, all the contents set in the component and in regions will be loaded
+ * in the background, so it will be available before it is revealed.
+ */
+bool UCBottomEdge::preloadContent() const
+{
+    return d_func()->preloadContent;
+}
+void UCBottomEdge::setPreloadContent(bool value)
+{
+    Q_D(UCBottomEdge);
+    if (d->preloadContent == value) {
+        return;
+    }
+    d->preloadContent = value;
+
+    if (d->preloadContent) {
+        // we load all region's content, but we skip teh default one,
+        // as default one is always preloaded
+        for (int i = 0; i < d->regions.size(); i++) {
+            UCBottomEdgeRegion *region = d->regions[i];
+            if (region == d->defaultRegion) {
+                continue;
+            }
+            region->loadRegionContent();
+        }
+    } else {
+        // discard all inactive regions content, except default one
+        for (int i = 0; i < d->regions.size(); i++) {
+            UCBottomEdgeRegion *region = d->regions[i];
+            if (region != d->activeRegion && region != d->defaultRegion) {
+                region->discardRegionContent();
+            }
+        }
+    }
+
+    Q_EMIT preloadContentChanged();
+}
+
+/*
+ * Set the current content. The content is taken from the region if active, or foced
+ * is set. If the region has no item, the logic falls back to use the default region's
+ * content.
+ */
+void UCBottomEdgePrivate::setCurrentContent()
+{
+    QQuickItem *newContent = nullptr;
+    if (activeRegion) {
+        newContent = activeRegion->regionContent();
+        LOG << "ACTIVE REGION CONTENT" << activeRegion->objectName() << newContent;
+    }
+    if (!newContent) {
+        newContent = defaultRegion->regionContent();
+        LOG << "USING DEFAULT" << newContent;
+    }
+    resetCurrentContent(newContent);
+}
+/*
+ * Set the content to the default region one.
+ */
+void UCBottomEdgePrivate::resetCurrentContent(QQuickItem *newContent)
+{
+    if (newContent == currentContentItem) {
+        // same content, no need to reset to
+        return;
+    }
+    if (currentContentItem) {
+        // detach current content, the content will be deleted by the exiting region
+        currentContentItem->setVisible(false);
+        currentContentItem->setParentItem(nullptr);
+    }
+
+    if (!newContent) {
+        // try to use the default one
+        newContent = defaultRegion->regionContent();
+    }
+
+    // if it is still null, leave - we may not have default content at all!
+    if (!newContent) {
+        return;
+    }
+
+    LOG << "RESET CONTENT TO" << newContent;
+    currentContentItem = newContent;
+    currentContentItem->setParentItem(bottomPanel->m_panel);
+    QQuickAnchors *anchors = QQuickItemPrivate::get(currentContentItem.data())->anchors();
+    anchors->setHorizontalCenter(QQuickItemPrivate::get(bottomPanel->m_panel)->horizontalCenter());
+    currentContentItem->setVisible(true);
+    Q_EMIT q_func()->contentItemChanged();
+    patchContentItemHeader();
 }
 
 #include "moc_ucbottomedge.cpp"

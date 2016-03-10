@@ -205,7 +205,7 @@ QString parentThemeName(const UCTheme::ThemeRecord& themePath)
 {
     QString parentTheme;
     if (!themePath.isValid()) {
-        qWarning() << qPrintable(UbuntuI18n::instance().tr("Theme not found: \"%1\"").arg(themePath.name));
+        qWarning() << qPrintable(QStringLiteral("Theme not found: \"%1\"").arg(themePath.name));
     } else {
         QFile file(themePath.path.resolved(PARENT_THEME_FILE).toLocalFile());
         if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -373,7 +373,7 @@ void UCTheme::setupDefault()
     // set the default font
     QFont defaultFont = QGuiApplication::font();
     defaultFont.setFamily("Ubuntu");
-    defaultFont.setPixelSize(UCFontUtils::instance().sizeToPixels("medium"));
+    defaultFont.setPixelSize(UCFontUtils::instance()->sizeToPixels("medium"));
     defaultFont.setWeight(QFont::Light);
     QGuiApplication::setFont(defaultFont);
     setObjectName("default");
@@ -537,9 +537,13 @@ void UCTheme::resetName()
  * The palette doesn't need to be reset as it automatically resets when the
  * palette used for configuration is destroyed.
  */
-QObject* UCTheme::palette()
+QObject* UCTheme::palette(quint16 version)
 {
     if (!m_palette) {
+        if (version) {
+            // force version to be used
+            previousVersion = version;
+        }
         loadPalette(qmlEngine(this), false);
     }
     return m_palette;
@@ -550,7 +554,7 @@ void UCTheme::setPalette(QObject *config)
         return;
     }
     if (config && !QuickUtils::inherits(config, "Palette")) {
-        qmlInfo(config) << UbuntuI18n::instance().tr("Not a Palette component.");
+        qmlInfo(config) << QStringLiteral("Not a Palette component.");
         return;
     }
 
@@ -692,8 +696,11 @@ QQmlComponent* UCTheme::createStyleComponent(const QString& styleName, QObject* 
 
     if (parent != NULL) {
         QQmlEngine* engine = qmlEngine(parent);
-        Q_ASSERT(engine);
-        Q_ASSERT(engine == qmlEngine(this));
+        if (!engine) {
+            // we may be in the phase when the qml context is not yet defined for the parent
+            // so for now we return NULL
+            return Q_NULLPTR;
+        }
         // make sure we have the paths
         bool fallback = false;
         QUrl url = styleUrl(styleName, version, &fallback);
@@ -714,7 +721,7 @@ QQmlComponent* UCTheme::createStyleComponent(const QString& styleName, QObject* 
             }
         } else {
             qmlInfo(parent) <<
-               UbuntuI18n::instance().tr(QString("Warning: Style %1 not found in theme %2").arg(styleName).arg(name()));
+               QStringLiteral("Warning: Style %1 not found in theme %2").arg(styleName).arg(name());
         }
     }
 
@@ -735,7 +742,7 @@ void UCTheme::loadPalette(QQmlEngine *engine, bool notify)
     // theme may not have palette defined
     QUrl paletteUrl = styleUrl("Palette.qml", previousVersion ? previousVersion : LATEST_UITK_VERSION);
     if (paletteUrl.isValid()) {
-        m_palette = QuickUtils::instance().createQmlObject(paletteUrl, engine);
+        m_palette = QuickUtils::instance()->createQmlObject(paletteUrl, engine);
         if (m_palette) {
             m_palette->setParent(this);
         }

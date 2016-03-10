@@ -24,6 +24,8 @@
 #include "ucqquickimageextension.h"
 #undef protected
 
+#include "plugin.h"
+
 unsigned int numberOfTemporarySciFiles() {
     QStringList nameFilters;
     nameFilters << "*.sci";
@@ -34,7 +36,21 @@ class tst_UCQQuickImageExtension : public QObject
 {
     Q_OBJECT
 
+private:
+    QQmlEngine *engine = Q_NULLPTR;
+
 private Q_SLOTS:
+
+    void init()
+    {
+        engine = new QQmlEngine;
+        UbuntuComponentsPlugin::initializeContextProperties(engine);
+    }
+
+    void cleanup()
+    {
+        delete engine;
+    }
 
     void scaledBorderIdentity() {
         UCQQuickImageExtension image;

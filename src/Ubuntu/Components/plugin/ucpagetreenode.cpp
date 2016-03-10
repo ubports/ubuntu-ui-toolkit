@@ -428,7 +428,7 @@ void UCPageTreeNode::setParentNode(UCPageTreeNode *parentNode)
 
     //disconnect from the old parent, we do not want to get
     //false property updates
-    if (d->m_parentNode) {
+    if (d->m_parentNode && !QQmlData::wasDeleted(d->m_parentNode)) {
         if (!(d->m_flags & UCPageTreeNodePrivate::CustomActive)) {
             disconnect(d->m_parentNode, SIGNAL(activeChanged(bool)),
                        this, SLOT(_q_activeBinding(bool)));

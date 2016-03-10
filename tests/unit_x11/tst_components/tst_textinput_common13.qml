@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 Canonical Ltd.
+ * Copyright 2014-2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -167,6 +167,10 @@ Item {
         id: scrollerSpy
         signalName: "movementEnded"
     }
+    SignalSpy {
+        id: escapePressedSpy
+        signalName: "escapePressed"
+    }
 
     UbuntuTestCase {
         name: "TextInputCommonTest13"
@@ -193,6 +197,7 @@ Item {
             movementYSpy.clear();
             cursorRectSpy.clear();
             scrollerSpy.clear();
+            escapePressedSpy.clear();
         }
 
         function test_context_menu_items_data() {
@@ -446,7 +451,7 @@ Item {
             return [
                 { tag: 'popover', component: popoverComponent, target: popoverButton, offScreen: false },
                 { tag: 'popover', component: popoverComponent, target: null, offScreen: false },
-                { tag: 'dialog', component: dialogComponent, target: dialogButton, offScreen: true },
+                { tag: 'dialog', component: dialogComponent, target: null, offScreen: true },
             ]
         }
 
@@ -470,7 +475,7 @@ Item {
         }
 
         function test_osk_shrinks_dialog() {
-            var popover = PopupUtils.open(dialogComponent, dialogButton);
+            var popover = PopupUtils.open(dialogComponent);
             waitForRendering(popover);
             // Original height before showing OSK
             var originalHeight = popover.height;
@@ -511,6 +516,32 @@ Item {
             mouseClick(secondaryButton, secondaryButton.width/2, secondaryButton.height/2);
             waitForRendering(data.input, 500);
             compare(textField.focus, true, 'TextField no longer focused');
+        }
+
+        function test_escape_key_handling_data() {
+            return [
+                { tag: 'textField', input: textField},
+                { tag: 'textArea', input: textArea},
+                ];
+        }
+
+        function test_escape_key_handling(data) {
+            escapePressedSpy.target = data.input.parent.Keys
+            popupSpy.target = findChild(data.input, "input_handler");
+            data.input.focus = true;
+            var x = data.input.width / 2;
+            var y = data.input.height / 2;
+            mouseClick(data.input, x, y, Qt.RightButton);
+            popupSpy.wait();
+            var popover = findChild(testMain, "text_input_contextmenu");
+            verify(popover, "Cannot retrieve default TextInputPopover");
+            waitForRendering(popover);
+
+            keyClick(Qt.Key_Escape);
+            compare(escapePressedSpy.count, 0);
+
+            keyClick(Qt.Key_Escape);
+            compare(escapePressedSpy.count, 1);
         }
     }
 }

@@ -8,6 +8,7 @@ Ubuntu.Components.AbstractButton 1.3 UCAbstractButton: ActionItem
     signal clicked()
     signal pressAndHold()
     readonly property bool pressed
+    readonly property UCMargins sensingMargins
 Ubuntu.Components.Action 1.3 1.0 0.1 UCAction: QtObject
     property string description
     property bool enabled
@@ -83,6 +84,7 @@ Ubuntu.Components.ActivityIndicator 1.3: AnimatedItem
     property bool onScreen
     property bool running
 Ubuntu.Components.AdaptivePageLayout 1.3: PageTreeNode
+    property bool asynchronous
     readonly property int columns
     property list<PageColumnsLayou> layouts
     function var addPageToCurrentColumn(var sourcePage, var page, var properties)
@@ -195,6 +197,7 @@ Ubuntu.Components.BottomEdge 1.3 UCBottomEdge: StyledItem
     signal collapseCompleted()
     function commit()
     function collapse()
+    property bool preloadContent
     property list<BottomEdgeRegion> regions
     readonly property Status status
 Ubuntu.Components.BottomEdge.DragDirection: Enum
@@ -221,6 +224,8 @@ Ubuntu.Components.BottomEdgeRegion 1.3 UCBottomEdgeRegion: QtObject
     property url contentUrl
     property bool enabled
     property double from
+    signal contentChanged(url url)
+    signal contentComponentChanged(Component component)
     signal entered()
     signal exited()
     signal dragEnded()
@@ -268,7 +273,8 @@ Ubuntu.Components.Clipboard 1.0 0.1: QtObject singleton
     function push(var data)
     function clear()
     function QQuickMimeData* newData()
-Ubuntu.Components.ColorUtils 0.1 1.0
+Ubuntu.Components.ColorUtils 1.0 0.1: QtObject singleton
+    function double luminance(color color)
 Ubuntu.Components.ComboButton 1.1: Button
     property double collapsedHeight
     default property list<QtObject> comboList
@@ -276,13 +282,18 @@ Ubuntu.Components.ComboButton 1.1: Button
     property color dropdownColor
     property bool expanded
     property double expandedHeight
-Ubuntu.Components.ComboButton 1.3: Button
+Ubuntu.Components.ComboButton 1.3: AbstractButton
     property double collapsedHeight
+    property color color
     default property list<QtObject> comboList
     readonly property double comboListHeight
     property color dropdownColor
     property bool expanded
     property double expandedHeight
+    property QFont font
+    property Gradient gradient
+    property string iconPosition
+    property color strokeColor
 Ubuntu.Components.Styles.ComboButtonStyle 1.1: Item
     property Item comboListHolder
     property double comboListMargin
@@ -499,6 +510,7 @@ Ubuntu.Components.Icon 1.0 0.1: Item
 Ubuntu.Components.Icon 1.1: Icon
     property url source
 Ubuntu.Components.Icon 1.3: Item
+    property bool asynchronous
     property color color
     property color keyColor
     property string name
@@ -1005,6 +1017,7 @@ Ubuntu.Components.ProgressBar 1.3: AnimatedItem
     property bool showProgressPercentage
     property double value
 Ubuntu.Components.ProgressionSlot 1.3: Item
+    property bool asynchronous
     property color color
     property color keyColor
     property string name
@@ -1100,6 +1113,7 @@ Ubuntu.Components.Slider 1.3: StyledItem
     function var formatValue(var v)
     property double minimumValue
     readonly property bool pressed
+    property double stepSize
     property double value
 Ubuntu.Components.SliderUtils 0.1 1.0
 Ubuntu.Components.SlotsAttached 1.3: QtObject
@@ -1163,6 +1177,7 @@ Ubuntu.Components.SwipeArea 1.3 UCSwipeArea: Item
     property Direction direction
     readonly property double distance
     readonly property bool dragging
+    property bool grabGesture
     property bool immediateRecognition
     signal directionChanged(Direction direction)
     signal draggingChanged(bool dragging)
@@ -1170,6 +1185,7 @@ Ubuntu.Components.SwipeArea 1.3 UCSwipeArea: Item
     signal distanceChanged(double distance)
     signal touchPositionChanged(QPointF position)
     signal immediateRecognitionChanged(bool immediateRecognition)
+    signal grabGestureChanged(bool grabGesture)
     readonly property bool pressed
     readonly property QPointF touchPosition
 Ubuntu.Components.SwipeArea.Direction: Enum
@@ -1548,6 +1564,12 @@ UCListItemDivider: Item
 UCListItemExpansion: QtObject
     property bool expanded
     property double height
+UCMargins: QtObject
+    property double all
+    property double bottom
+    property double left
+    property double right
+    property double top
 UCStateSaverAttached: QtObject
     property bool enabled
     property string properties

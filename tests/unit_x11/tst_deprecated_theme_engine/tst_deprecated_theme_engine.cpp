@@ -24,6 +24,7 @@
 #include "uctheme.h"
 #include "uctestcase.h"
 #include <private/qquicktext_p.h>
+#include "plugin.h"
 
 Q_DECLARE_METATYPE(QList<QQmlError>)
 
@@ -75,7 +76,7 @@ private:
     }
     void initDeprecatedTheme(QQmlEngine &engine)
     {
-        UCDeprecatedTheme::registerToContext(engine.rootContext());
+        UbuntuComponentsPlugin::initializeContextProperties(&engine);
     }
 
 private Q_SLOTS:
@@ -93,6 +94,7 @@ private Q_SLOTS:
     void testNoImportPathSet();
     void testBogusImportPathSet();
     void testMultipleImportPathsSet();
+    void testPaletteUsed_bug1549830();
 };
 
 void tst_UCDeprecatedTheme::initTestCase()
@@ -255,6 +257,13 @@ void tst_UCDeprecatedTheme::testMultipleImportPathsSet()
     QVERIFY(view);
     view->setTheme("TestModule.TestTheme");
 }
+
+void tst_UCDeprecatedTheme::testPaletteUsed_bug1549830()
+{
+    ThemeTestCase::ignoreWarning("ErroneousPaletteUse.qml", 29, 20, "Unable to assign [undefined] to QColor", 3);
+    QScopedPointer<ThemeTestCase> view(new ThemeTestCase("ErroneousPaletteUse.qml"));
+}
+
 
 QTEST_MAIN(tst_UCDeprecatedTheme)
 

@@ -23,6 +23,8 @@
 #include <QtQml/QQmlParserStatus>
 #include <QtCore/QUrl>
 #include <QtCore/QPointer>
+#include <QtQml/QQmlIncubator>
+#include <AsyncLoader>
 
 class UCBottomEdge;
 class QQmlComponent;
@@ -34,13 +36,15 @@ class UCBottomEdgeRegion : public QObject
     Q_PROPERTY(bool enabled MEMBER m_enabled WRITE setEnabled NOTIFY enabledChanged FINAL)
     Q_PROPERTY(qreal from MEMBER m_from WRITE setFrom NOTIFY fromChanged FINAL)
     Q_PROPERTY(qreal to MEMBER m_to WRITE setTo NOTIFY toChanged FINAL)
-    Q_PROPERTY(QUrl contentUrl MEMBER m_url NOTIFY contentChanged FINAL)
-    Q_PROPERTY(QQmlComponent* contentComponent MEMBER m_component NOTIFY contentComponentChanged FINAL)
+    Q_PROPERTY(QUrl contentUrl MEMBER m_url WRITE setUrl NOTIFY contentChanged FINAL)
+    Q_PROPERTY(QQmlComponent* contentComponent MEMBER m_component WRITE setComponent NOTIFY contentComponentChanged FINAL)
 public:
-    explicit UCBottomEdgeRegion(QObject *parent = 0);
+    explicit UCBottomEdgeRegion(QObject *parent = 0, bool isDefault = false);
     void attachToBottomEdge(UCBottomEdge *bottomEdge);
 
     // used internally
+    void setUrl(const QUrl &url);
+    void setComponent(QQmlComponent *component);
     void setFrom(qreal from);
     void setTo(qreal to);
     void setEnabled(bool enabled);
@@ -49,30 +53,57 @@ public:
     void exit();
     const QRectF rect(const QRectF &bottomEdgeRect);
 
+    // not exposed to QML
+    bool isActive()
+    {
+        return m_active;
+    }
+    bool isDefault()
+    {
+        return m_default;
+    }
+
+    QQuickItem *regionContent();
+    inline const UbuntuToolkit::AsyncLoader *loader()
+    {
+        return const_cast<const UbuntuToolkit::AsyncLoader*>(&m_loader);
+    }
+
 Q_SIGNALS:
     void enabledChanged();
     void fromChanged();
     void toChanged();
-    void contentChanged();
-    void contentComponentChanged();
+    void contentChanged(const QUrl &url);
+    void contentComponentChanged(QQmlComponent *component);
 
     void entered();
     void exited();
     void dragEnded();
 
 protected:
+    enum LoadingType {
+        LoadingUrl,
+        LoadingComponent
+    };
+    UbuntuToolkit::AsyncLoader m_loader;
     QUrl m_url;
     QPointer<UCBottomEdge> m_bottomEdge;
     QQmlComponent *m_component;
-    PropertyChange *m_urlBackup;
-    PropertyChange *m_componentBackup;
+    QQuickItem *m_contentItem;
     qreal m_from;
     qreal m_to;
     bool m_enabled:1;
+    bool m_active:1;
+    const bool m_default:1;
 
     friend class UCBottomEdge;
     friend class UCBottomEdgePrivate;
     friend class tst_BottomEdge;
+
+    void loadRegionContent();
+    void discardRegionContent();
+    void loadContent(LoadingType type);
+    Q_SLOT void onLoaderStatusChanged(UbuntuToolkit::AsyncLoader::LoadingStatus,QObject*);
 };
 
 #endif // UCBOTTOMEDGEREGION_H

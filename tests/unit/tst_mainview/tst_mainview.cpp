@@ -36,6 +36,7 @@
 #include "ucapplication.h"
 #include "ucunits.h"
 #include "uctestcase.h"
+#include "plugin.h"
 
 class tst_MainView : public QObject
 {
@@ -77,8 +78,9 @@ private Q_SLOTS:
 
         view = new QQuickView;
         QQmlEngine *quickEngine = view->engine();
+        UbuntuComponentsPlugin::initializeContextProperties(quickEngine);
 
-        view->setGeometry(0,0, UCUnits::instance().gu(40), UCUnits::instance().gu(30));
+        view->setGeometry(0,0, UCUnits::instance()->gu(40), UCUnits::instance()->gu(30));
         //add modules folder so we have access to the plugin from QML
         QStringList imports = quickEngine->importPathList();
         imports.prepend(QDir(modules).absolutePath());
@@ -103,15 +105,15 @@ private Q_SLOTS:
 
     void testSetApplicationName() {
         QString appName("com.ubuntu.foo");
-        UCApplication::instance().setApplicationName(appName);
-        QCOMPARE(UCApplication::instance().applicationName(), appName);
+        UCApplication::instance()->setApplicationName(appName);
+        QCOMPARE(UCApplication::instance()->applicationName(), appName);
         QCOMPARE(QCoreApplication::applicationName(), appName);
         QCOMPARE(QString(""), QCoreApplication::organizationName());
     }
 
     void testExpectedDataFolder() {
         QString appName("net.weight.gain");
-        UCApplication::instance().setApplicationName(appName);
+        UCApplication::instance()->setApplicationName(appName);
         QString dataFolder(QStandardPaths::writableLocation(QStandardPaths::DataLocation));
         QString xdgDataHome(QProcessEnvironment::systemEnvironment().value("XDG_DATA_HOME",
             QProcessEnvironment::systemEnvironment().value("HOME") + "/.local/share"));
@@ -121,7 +123,7 @@ private Q_SLOTS:
 
     void testExpectedCacheFolder() {
         QString appName("cat.long.very");
-        UCApplication::instance().setApplicationName(appName);
+        UCApplication::instance()->setApplicationName(appName);
         QString cacheFolder(QStandardPaths::writableLocation(QStandardPaths::CacheLocation));
         QString xdgCacheHome(QProcessEnvironment::systemEnvironment().value("XDG_CACHE_HOME",
             QProcessEnvironment::systemEnvironment().value("HOME") + "/.cache"));
@@ -175,7 +177,7 @@ private Q_SLOTS:
         QString filename(getConfFile(applicationName));
         QFile::remove(filename);
 
-        UCApplication::instance().setApplicationName(applicationName);
+        UCApplication::instance()->setApplicationName(applicationName);
         // QSettings with defaults
         QSettings mySettings;
         mySettings.setValue("spam", "eggs");

@@ -47,8 +47,7 @@ class UCStyledItemBase : public QQuickItem, public UCThemingExtension
     Q_PROPERTY(UCTheme *theme READ getTheme WRITE setTheme RESET resetTheme NOTIFY themeChanged FINAL REVISION 2)
 public:
     explicit UCStyledItemBase(QQuickItem *parent = 0);
-
-    bool keyNavigationFocus() const;
+    virtual bool keyNavigationFocus() const;
     void setKeyNavigationFocus(bool value);
     bool activefocusOnPress() const;
     void setActiveFocusOnPress(bool value);
@@ -74,6 +73,7 @@ protected:
     virtual void preThemeChanged();
     virtual void postThemeChanged();
 
+    void classBegin();
     void componentComplete();
     void itemChange(ItemChange change, const ItemChangeData &data);
     void focusInEvent(QFocusEvent *key);

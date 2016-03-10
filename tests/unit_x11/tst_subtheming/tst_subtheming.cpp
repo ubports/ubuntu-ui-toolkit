@@ -27,6 +27,7 @@
 #include "ucnamespace.h"
 #include "ucunits.h"
 #include "uclabel.h"
+#include "plugin.h"
 
 class ThemeTestCase : public UbuntuTestCase
 {
@@ -102,6 +103,7 @@ private Q_SLOTS:
     void test_default_theme()
     {
         QQmlEngine engine;
+        UbuntuComponentsPlugin::initializeContextProperties(&engine);
         UCTheme::defaultTheme(&engine);
     }
 
@@ -171,6 +173,7 @@ private Q_SLOTS:
         qputenv("QV4_MM_AGGRESSIVE_GC", "1");
 
         QQmlEngine engine;
+        UbuntuComponentsPlugin::initializeContextProperties(&engine);
         UCTheme *theme0 = UCTheme::defaultTheme(&engine);
 
         UCTheme *theme1 = new UCTheme(&engine);
@@ -864,10 +867,12 @@ private Q_SLOTS:
         QTest::addColumn<QString>("widthProperty");
         QTest::addColumn<float>("width");
 
+        UCUnits units;
+
         QTest::newRow("Same document")
-                << "MoreStyleHints.qml" << "defaultColor" << QColor("brown") << QColor("brown") << "minimumWidth" << UCUnits::instance().gu(20);
+                << "MoreStyleHints.qml" << "defaultColor" << QColor("brown") << QColor("brown") << "minimumWidth" << units.gu(20);
         QTest::newRow("Different document")
-                << "GroupPropertyBindingHints.qml" << "gradientProxy.topColor" << QColor("blue") << QColor("tan") << "minimumWidth" << UCUnits::instance().gu(20);
+                << "GroupPropertyBindingHints.qml" << "gradientProxy.topColor" << QColor("blue") << QColor("tan") << "minimumWidth" << units.gu(20);
     }
     void test_stylehints_multiple()
     {

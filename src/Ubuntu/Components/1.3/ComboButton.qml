@@ -161,8 +161,66 @@ import Ubuntu.Components.Popups 1.3
     \section2 Styling
     The style of the component is defined in \l ComboButtonStyle.
   */
-Button {
+AbstractButton {
     id: combo
+
+    /*!
+      \deprecated
+      If set to a color, the button has a stroke border instead of a filled
+      shape.
+    */
+    property color strokeColor
+    onStrokeColorChanged: console.warn(
+        "WARNING: ComboButton.strokeColor is deprecated."
+    )
+
+    /*!
+      \deprecated
+      The background color of the button.
+    */
+    property color color
+    onColorChanged: console.warn("WARNING: ComboButton.color is deprecated.")
+
+    /*!
+      \deprecated
+      The gradient used to fill the background of the button.
+      Standard Ubuntu gradients are defined in \l UbuntuColors.
+      If both a gradient and a color are specified, the gradient will be used.
+    */
+    property Gradient gradient
+    onGradientChanged: console.warn(
+        "WARNING: ComboButton.gradient is deprecated."
+    )
+
+    /*!
+      \deprecated
+      The property specifies the color of the dropdown button and the combo
+      list for both collapsed and expanded states. You can use \l expanded to
+      define different colors for expanded or collapsed states.
+      */
+    property color dropdownColor
+    onDropdownColorChanged: console.warn(
+        "WARNING: ComboButton.dropdownColor is deprecated."
+    )
+
+    /*!
+      The font used for the button's text.
+    */
+    property font font: __styleInstance.defaultFont
+
+    /*!
+      The position of the icon relative to the text. Options
+      are "left" and "right". The default value is "left".
+
+      If only text or only an icon is defined, this
+      property is ignored and the text or icon is
+      centered horizontally and vertically in the button.
+
+      Currently this is a string value. We are waiting for
+      support for enums:
+      https://bugreports.qt-project.org/browse/QTBUG-14861
+    */
+    property string iconPosition: "left"
 
     /*!
       Specifies whether the combo list is expanded or not. The default falue is
@@ -239,33 +297,16 @@ Button {
       */
     default property alias comboList: comboListHolder.data
 
-    /* ----------------- Color and font configurations ----------------- */
-    /*!
-      The property specifies the color of the dropdown button and the combo list
-      for both collapsed and expanded states. You can use \l expanded to define
-      different colors for expanded or collapsed states.
-      */
-    property color dropdownColor: __styleInstance ? __styleInstance.defaultDropdownColor : color
-
-
     styleName: "ComboButtonStyle"
 
-    Component.onCompleted: {
-        // update mouse area to report clicks only on the main button area
-        // area excluding dropDown button and combo list
-        // we must do separate bindings as __mouseArea is a read-only property
-        __mouseArea.anchors.fill = undefined;
-        __mouseArea.anchors.left = Qt.binding(function() {return combo.left;});
-        __mouseArea.anchors.top = Qt.binding(function() {return combo.top;});
-        __mouseArea.anchors.right = Qt.binding(function() {return combo.right;});
-        __mouseArea.anchors.rightMargin = Qt.binding(function() {return combo.__styleInstance.dropDownWidth + combo.__styleInstance.dropDownSeparatorWidth;});
-        __mouseArea.height = Qt.binding(function() {return collapsedHeight;});
-        // for autopilot, set the main button name
-        __mouseArea.objectName = "combobutton_mainbutton";
-
-        // bind a height calculation to avoid unwanted change
-        combo.height = Qt.binding(function() {return collapsedHeight + __styleInstance.comboListPanel.height});
+    // update sensing area to report clicks only on the main button area
+    // area excluding dropDown button and combo list
+    sensingMargins {
+        bottom: -(combo.height - combo.collapsedHeight)
+        right: -combo.__styleInstance.dropDownWidth
     }
+    __mouseArea.objectName: "combobutton_mainbutton"
+    height: collapsedHeight + __styleInstance.comboListPanel.height
 
     // dropdown button
     AbstractButton {

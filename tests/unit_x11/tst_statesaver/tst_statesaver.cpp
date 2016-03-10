@@ -34,6 +34,7 @@
 #include <QtCore/QProcessEnvironment>
 #include "uctestcase.h"
 #include <signal.h>
+#include "plugin.h"
 
 #define protected public
 #define private public
@@ -50,6 +51,7 @@ public:
 
 private:
     QString m_modulePath;
+    QQmlEngine *engine = nullptr;
 
     QQuickView *createView(const QString &file)
     {
@@ -59,19 +61,19 @@ private:
 
     void resetView(QScopedPointer<UbuntuTestCase> &view, const QString &file)
     {
-        Q_EMIT StateSaverBackend::instance().initiateStateSaving();
+        Q_EMIT StateSaverBackend::instance()->initiateStateSaving();
         view.reset();
         // Make sure that the state is reloaded from file
-        StateSaverBackend::instance().m_archive.data()->sync();
+        StateSaverBackend::instance()->m_archive.data()->sync();
         view.reset(new UbuntuTestCase(file));
     }
 
     void resetView(QScopedPointer<QQuickView> &view, const QString &file)
     {
-        Q_EMIT StateSaverBackend::instance().initiateStateSaving();
+        Q_EMIT StateSaverBackend::instance()->initiateStateSaving();
         view.reset();
         // Make sure that the state is reloaded from file
-        StateSaverBackend::instance().m_archive.data()->sync();
+        StateSaverBackend::instance()->m_archive.data()->sync();
         view.reset(createView(file));
     }
 
@@ -99,13 +101,23 @@ private Q_SLOTS:
         // Create manually to avoid wrong ownership
         tempDir.mkdir("tst_statesaver");
         setenv("XDG_RUNTIME_DIR", testRuntimeDir.toUtf8(), 1);
-        // invoke initialization
-        StateSaverBackend::instance();
     }
 
     void cleanupTestCase()
     {
-        StateSaverBackend::instance().reset();
+    }
+
+    void init()
+    {
+        engine = new QQmlEngine;
+        UbuntuComponentsPlugin::initializeContextProperties(engine);
+        // invoke initialization
+        StateSaverBackend::instance(engine);
+    }
+    void cleanup()
+    {
+        StateSaverBackend::instance()->reset();
+        delete engine;
     }
 
     void test_SaveArrays()
@@ -467,7 +479,7 @@ private Q_SLOTS:
         QCOMPARE(items.count(), 5); // 4 Rectangles + 1 Repeater
 
         Q_FOREACH(QQuickItem *item, items) {
-            if (QuickUtils::instance().className(item) == "QQuickRectangle") {
+            if (QuickUtils::instance()->className(item) == "QQuickRectangle") {
                 item->setHeight(25);
             }
         }
@@ -481,7 +493,7 @@ private Q_SLOTS:
         QCOMPARE(items.count(), 5); // 4 Rectangles + 1 Repeater
 
         Q_FOREACH(QQuickItem *item, items) {
-            if (QuickUtils::instance().className(item) == "QQuickRectangle") {
+            if (QuickUtils::instance()->className(item) == "QQuickRectangle") {
                 QCOMPARE(item->height(), 25.0);
             }
         }

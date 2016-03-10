@@ -99,45 +99,45 @@ StyledItem {
     Keys.enabled: true
     Keys.onLeftPressed: {
         if (horizontalScrollbar.__styleInstance !== null) {
-            horizontalScrollbar.__styleInstance.scroll(-flickableItem.width*internal.shortScrollingRatio)
+            horizontalScrollbar.__styleInstance.scrollBy(-flickableItem.width*internal.shortScrollingRatio, true)
         }
     }
     Keys.onRightPressed: {
         if (horizontalScrollbar.__styleInstance !== null) {
-            horizontalScrollbar.__styleInstance.scroll(flickableItem.width*internal.shortScrollingRatio)
+            horizontalScrollbar.__styleInstance.scrollBy(flickableItem.width*internal.shortScrollingRatio, true)
         }
     }
     Keys.onDownPressed: {
         if (verticalScrollbar.__styleInstance !== null) {
-            verticalScrollbar.__styleInstance.scroll(flickableItem.height*internal.shortScrollingRatio)
+            verticalScrollbar.__styleInstance.scrollBy(flickableItem.height*internal.shortScrollingRatio, true)
         }
     }
     Keys.onUpPressed: {
         if (verticalScrollbar.__styleInstance !== null) {
-            verticalScrollbar.__styleInstance.scroll(-flickableItem.height*internal.shortScrollingRatio)
+            verticalScrollbar.__styleInstance.scrollBy(-flickableItem.height*internal.shortScrollingRatio, true)
         }
     }
     Keys.onPressed:  {
         if (event.key == Qt.Key_Escape) {
-            var scrollbarWithActiveDrag = (horizontalScrollbar.__styleInstance && horizontalScrollbar.__styleInstance.draggingThumb)
-                    || (verticalScrollbar.__styleInstance && verticalScrollbar.__styleInstance.draggingThumb)
+            var scrollbarWithActiveDrag = (horizontalScrollbar.__styleInstance && horizontalScrollbar.__styleInstance.draggingThumb && horizontalScrollbar)
+                    || (verticalScrollbar.__styleInstance && verticalScrollbar.__styleInstance.draggingThumb && verticalScrollbar)
                     || null
             if (scrollbarWithActiveDrag !== null) {
                 scrollbarWithActiveDrag.__styleInstance.resetScrollingToPreDrag()
+                event.accepted = true
             }
-            event.accepted = true
         } else if (verticalScrollbar.__styleInstance !== null) {
             if (event.key == Qt.Key_PageDown) {
-                verticalScrollbar.__styleInstance.scroll(flickableItem.height*internal.longScrollingRatio)
+                verticalScrollbar.__styleInstance.scrollBy(flickableItem.height*internal.longScrollingRatio, true)
                 event.accepted = true
             } else if (event.key == Qt.Key_PageUp) {
-                verticalScrollbar.__styleInstance.scroll(-flickableItem.height*internal.longScrollingRatio)
+                verticalScrollbar.__styleInstance.scrollBy(-flickableItem.height*internal.longScrollingRatio, true)
                 event.accepted = true
             } else if (event.key == Qt.Key_Home) {
-                verticalScrollbar.__styleInstance.scrollToBeginning()
+                verticalScrollbar.__styleInstance.scrollToBeginning(true)
                 event.accepted = true
             } else if (event.key == Qt.Key_End) {
-                verticalScrollbar.__styleInstance.scrollToEnd()
+                verticalScrollbar.__styleInstance.scrollToEnd(true)
                 event.accepted = true
             }
         }
