@@ -54,15 +54,6 @@ QtObject {
     property color baseText
 
     /*!
-       Color of focus frame/ ring/ stroke.
-    */
-    property color focus
-    /*!
-       Color of text on a focus frame/ ring/ stroke.
-    */
-    property color focusText
-
-    /*!
        Color applied to widgets on top of the base colour.
     */
     property color foreground
