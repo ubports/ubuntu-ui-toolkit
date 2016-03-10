@@ -57,7 +57,8 @@ Item {
     Rectangle {
         id: backgroundColor
         anchors.fill: parent
-        color: mainViewStyle.backgroundColor
+        color: "green"
+//        color: mainViewStyle.backgroundColor
         gradient: internals.isGradient ? backgroundGradient : null
         // When there is no gradient, we do not need to draw the background here,
         //  because MainViewBase sets the window color.
@@ -69,4 +70,5 @@ Item {
         property bool isGradient: mainViewStyle.backgroundColor != mainViewStyle.headerColor ||
                                   mainViewStyle.backgroundColor != mainViewStyle.footerColor
     }
+    Component.onCompleted: print("Completed MainViewStyle!")
 }

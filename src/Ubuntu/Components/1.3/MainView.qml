@@ -105,6 +105,8 @@ Toolkit.MainViewBase {
     /*! \deprecated */
     property bool automaticOrientation: false
 
+//    styleName: "MainViewStyle"
+    Component.onCompleted: print("completed MainView. styleName = "+styleName)
     /*!
       \internal
       Use default property to ensure children added do not draw over the header.

@@ -27,6 +27,7 @@
 #include <ColorUtils>
 
 #include <QCoreApplication>
+#include <QDebug>
 
 /*!
   \internal
@@ -59,6 +60,9 @@ void UCMainViewBasePrivate::init()
         // FIXME Wire this up to the application lifecycle management API instead of quit().
         qApp->quit();
     });
+
+//    connect(q, SIGNAL(windowChanged(QQuickWindow*)), q, SLOT(_q_updateWindow()));
+    _q_updateWindow();
 }
 
 void UCMainViewBasePrivate::_q_headerColorBinding(const QColor &col)
@@ -105,12 +109,14 @@ UCMainViewBase::UCMainViewBase(QQuickItem *parent)
     : UCPageTreeNode(*(new UCMainViewBasePrivate), parent)
 {
     d_func()->init();
-    connect(this, SIGNAL(windowChanged(QQuickWindow*)), this, SLOT(updateWindow()));
 }
 
-void UCMainViewBase::updateWindow() {
-    if (window()) {
-        window()->setColor(backgroundColor());
+void UCMainViewBasePrivate::_q_updateWindow()
+{
+    Q_Q(UCMainViewBase);
+qDebug() << "updating window "<<q->window();
+    if (q->window()) {
+        q->window()->setColor(m_backgroundColor);
     }
 }
 
@@ -227,7 +233,7 @@ void UCMainViewBase::setBackgroundColor(QColor backgroundColor)
     if (!(d->m_flags & UCMainViewBasePrivate::CustomFooterColor))
         d->_q_footerColorBinding(d->m_backgroundColor);
 
-    updateWindow();
+    d->_q_updateWindow();
 
     // FIXME: Define the background colors in MainViewStyle and get rid of the properties
     //  in MainViewBase. That removes the need for auto-theming.
@@ -321,3 +327,5 @@ void UCMainViewBase::classBegin()
         d->m_actionContext->classBegin();
     }
 }
+
+#include "moc_ucmainviewbase.cpp"

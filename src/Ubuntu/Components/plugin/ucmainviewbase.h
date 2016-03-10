@@ -18,6 +18,7 @@
 #define UCMAINVIEWBASE_H
 
 #include "ucpagetreenode.h"
+//#include "ucmainviewbase_p.h"
 
 class UCMainViewBasePrivate;
 class UCActionManager;
@@ -38,7 +39,6 @@ class UCMainViewBase : public UCPageTreeNode
 
 public:
     UCMainViewBase(QQuickItem *parent = nullptr);
-
 
     QString applicationName() const;
     void setApplicationName(QString applicationName);
@@ -77,11 +77,9 @@ Q_SIGNALS:
 protected:
     UCMainViewBase(UCMainViewBasePrivate &dd, QQuickItem *parent);
 
-protected Q_SLOTS:
-    void updateWindow();
-
 private:
     Q_DECLARE_PRIVATE(UCMainViewBase)
+    Q_PRIVATE_SLOT(d_func(), void _q_updateWindow())
 };
 
 #endif // UCMAINVIEWBASE_H
