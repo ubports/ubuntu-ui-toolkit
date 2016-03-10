@@ -1,3 +1,48 @@
+ubuntu-ui-toolkit (1.3.1888+16.04-0ubuntu1) UNRELEASED; urgency=medium
+
+  [ Benjamin Zeller 
+  * Register expected warning messages in the tree testcase.
+  * Add testsuite for Tree. Fixes LP: #1549171.
+  
+  [ Michael Terry <michael.terry@canonical.com>
+  * Add grabGesture field to SwipeArea.
+  * This field controls whether the SwipeArea takes ownership of the gestures it
+    observes. Fixes LP: #1527387.
+
+  [ Timo Jyrinki <timo.jyrinki@canonical.com>
+  * Add a test for blocking if packaging not sorted and clean.
+  * More package name transitioning, wrap and sort, fix debian/copyright syntax, 
+    update standards-version, fix devel package sections and add/fix 
+    lintian-overrides.
+
+  [ Olivier Tilloy <olivier.tilloy@canonical.com>
+  * Fix dependencies of the transitional dummy package 
+    qtdeclarative5-ubuntu-ui-toolkit-plugin. Fixes LP: #1553551.
+
+  [ Christian Dywan <christian.dywan@canonical.com> 
+  * Rename qtdeclarative5-*-plugin to qml-module-*. Fixes LP: #1342031.
+  * Require a qtdeclarative5 known to have the tab fence patch.
+
+  [ XiaoGuo, Liu <xiaoguo.liu@canonical.com>
+  * Fix AdaptivePageLayout documentation.
+
+  [ Tim Peeters <tim.peeters@canonical.com>
+  * Properly disable left/right arrows on sections when at the beginning/end of
+    the list. Fixes LP: #1551356.
+  * Sections and old AppHeader landscape mode. Fixes LP: #1551341.
+
+  [ Zsombor Egri <zsombor.egri@canonical.com> 
+  * ListItem focus navigation in ListView and other views. 
+    Fixes LP: #1523815, LP: #1536679, LP: #1549733, LP: #1549743
+  * BorromEdge.preloadContent. Fixes LP: #1540454.
+  * Asynchronous loader (AsyncLoader) using incubator, prerequisite for 
+    BottomEdge preloading its content. Fixes LP: #1540454.
+
+  [ Andrea Bernabei <andrea.bernabei@canonical.com>
+  * UI Gallery: fix vertical alignment of labels in left panel list items.
+
+ -- Zoltán Balogh <zoltanibalogh@canonical.com>  Thu, 10 Mar 2016 07:40:40 +0200
+
 ubuntu-ui-toolkit (1.3.1872+16.04.20160308-0ubuntu1) xenial; urgency=medium
 
   [ Timo Jyrinki ]
