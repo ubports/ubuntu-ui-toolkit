@@ -27,7 +27,6 @@
 #include <ColorUtils>
 
 #include <QCoreApplication>
-#include <QDebug>
 
 /*!
   \internal
@@ -61,8 +60,7 @@ void UCMainViewBasePrivate::init()
         qApp->quit();
     });
 
-//    connect(q, SIGNAL(windowChanged(QQuickWindow*)), q, SLOT(_q_updateWindow()));
-    _q_updateWindow();
+    QObject::connect(q, SIGNAL(windowChanged(QQuickWindow*)), q, SLOT(_q_updateWindow()));
 }
 
 void UCMainViewBasePrivate::_q_headerColorBinding(const QColor &col)
@@ -114,7 +112,6 @@ UCMainViewBase::UCMainViewBase(QQuickItem *parent)
 void UCMainViewBasePrivate::_q_updateWindow()
 {
     Q_Q(UCMainViewBase);
-qDebug() << "updating window "<<q->window();
     if (q->window()) {
         q->window()->setColor(m_backgroundColor);
     }
