@@ -37,10 +37,9 @@ Item {
     }
 
     Component {
-        id: whiteLabel
+        id: testLabel
         Label {
             text: "Hello Dolly!"
-            color: theme.palette.normal.backgroundText
         }
     }
 
@@ -70,12 +69,28 @@ Item {
         }
 
         function test_label_color_changes_even_with_same_value_as_default_bug1555784() {
-            var test = loadTest(whiteLabel);
+            var test = loadTest(testLabel);
 
+            // override the text color with the same as the default
+            test.color = theme.palette.normal.backgroundText;
             // change the color of the palette
-            var prevColor = test.color;
             theme.palette.normal.backgroundText = UbuntuColors.blue;
-            verify(test.color != prevColor);
+            verify(test.color != theme.palette.normal.backgroundText);
+        }
+
+        function test_override_font() {
+            var test = loadTest(testLabel);
+            var font = Qt.font({family: test.font.family, weight: test.font.weight, pixelSize: FontUtils.sizeToPixels("medium")});;
+
+            // override font
+            test.font = Qt.font({family: "Arial", weight: font.weight, pixelSize: FontUtils.sizeToPixels("medium")});
+            verify(test.font != font);
+            compare(test.font.pixelSize, font.pixelSize);
+
+            // set textSize, should not affect font size!
+            test.textSize = Label.Large;
+            // no font size change!
+            compare(test.font.pixelSize, font.pixelSize);
         }
     }
 }

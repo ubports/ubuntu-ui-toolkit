@@ -35,8 +35,6 @@ public:
 
     // slots
     void updateRenderType();
-    void _q_updateFontFlag(const QFont &font);
-    void _q_customColor();
 
     // methods
     void updatePixelSize();

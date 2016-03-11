@@ -51,8 +51,6 @@ void UCLabelPrivate::updatePixelSize()
     textFont.setPixelSize(
         qRound(sizes[textSize] * UCUnits::instance()->dp(UCFontUtils::fontUnits)));
     q->setFont(textFont);
-    // remove PixelSizeSet flag
-    flags &= ~PixelSizeSet;
 }
 
 void UCLabelPrivate::updateRenderType()
@@ -64,18 +62,6 @@ void UCLabelPrivate::updateRenderType()
     } else {
         qtext->setRenderType(QQuickText::QtRendering);
     }
-}
-
-void UCLabelPrivate::_q_updateFontFlag(const QFont &font)
-{
-    if (defaultFont.pixelSize() != font.pixelSize()) {
-        flags |= PixelSizeSet;
-    }
-}
-
-void UCLabelPrivate::_q_customColor()
-{
-    flags |= ColorSet;
 }
 
 /*!
@@ -150,8 +136,6 @@ void UCLabelPrivate::init()
     updateRenderType();
 
     QObject::connect(UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(updateRenderType()));
-    QObject::connect(q, SIGNAL(fontChanged(QFont)), q, SLOT(_q_updateFontFlag(QFont)), Qt::DirectConnection);
-    QObject::connect(q, SIGNAL(colorChanged()), q, SLOT(_q_customColor()), Qt::DirectConnection);
     QObject::connect(q, &UCLabel::enabledChanged, q, &UCLabel::postThemeChanged, Qt::DirectConnection);
 
     QObject::connect(q, &UCLabel::fontChanged, q, &UCLabel::fontChanged2, Qt::DirectConnection);
@@ -167,7 +151,6 @@ void UCLabel::postThemeChanged()
     UCTheme *theme = getTheme();
     if (theme) {
         setColor(d->defaultColor(this, theme));
-        d->flags &= ~UCLabelPrivate::ColorSet;
     }
 }
 
@@ -211,11 +194,15 @@ void UCLabel::setTextSize(TextSize size)
 
 void UCLabel::setFont2(const QFont &font)
 {
+    Q_D(UCLabel);
+    d->flags |= UCLabelPrivate::PixelSizeSet;
     QQuickText::setFont(font);
 }
 
 void UCLabel::setColor2(const QColor &color)
 {
+    Q_D(UCLabel);
+    d->flags |= UCLabelPrivate::ColorSet;
     QQuickText::setColor(color);
 }
 

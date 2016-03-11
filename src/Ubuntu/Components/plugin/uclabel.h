@@ -88,8 +88,6 @@ Q_SIGNALS:
 
 private:
     Q_PRIVATE_SLOT(d_func(), void updateRenderType())
-    Q_PRIVATE_SLOT(d_func(), void _q_updateFontFlag(const QFont &font))
-    Q_PRIVATE_SLOT(d_func(), void _q_customColor())
 
     UCLabelPrivate *d_ptr;
     Q_DECLARE_PRIVATE(UCLabel)
