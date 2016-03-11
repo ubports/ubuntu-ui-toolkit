@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -22,12 +22,13 @@
 // C++ std lib for std::function declaration
 #include <functional>
 
+class UCLabelPrivate;
 class UCLabel : public QQuickText, public UCThemingExtension
 {
     Q_OBJECT
     Q_INTERFACES(UCThemingExtension)
     Q_ENUMS(TextSize)
-    Q_PROPERTY(TextSize textSize MEMBER m_textSize WRITE setTextSize NOTIFY textSizeChanged FINAL)
+    Q_PROPERTY(TextSize textSize READ textSize WRITE setTextSize NOTIFY textSizeChanged FINAL)
 
     // Overriden from QQuickText
     Q_PROPERTY(RenderType renderType READ renderType WRITE setRenderType)
@@ -36,11 +37,13 @@ class UCLabel : public QQuickText, public UCThemingExtension
     Q_PROPERTY(QString fontSize READ fontSize WRITE setFontSize NOTIFY fontSizeChanged)
 
 public:
+
+    typedef std::function<QColor (QQuickItem*, UCTheme*)> ColorProviderFunc;
+
     UCLabel(QQuickItem* parent=0);
     // custom constructor to create the label with a different default color provider
-    UCLabel(std::function<QColor (QQuickItem*, UCTheme*)> defaultColor, QQuickItem *parent = 0);
-    //QQuickTextPrivate is not exported as of 5.4.1 so we need the init here
-    void init();
+    UCLabel(ColorProviderFunc defaultColor, QQuickItem *parent = 0);
+    ~UCLabel();
 
     enum TextSize {
         XxSmall = 0,
@@ -51,19 +54,12 @@ public:
         XLarge = 5
     };
 
+    TextSize textSize() const;
     void setTextSize(TextSize size);
     void setRenderType(RenderType renderType);
 
     // Deprecated.
-    QString fontSize() const
-    {
-        if (m_flags & TextSizeSet) {
-            return "";
-        }
-        const char* const sizes[] =
-            { "xx-small", "x-small", "small", "medium", "large", "x-large" };
-        return QString(sizes[m_textSize]);
-    }
+    QString fontSize() const;
     void setFontSize(const QString& fontSize);
 
 protected:
@@ -81,22 +77,12 @@ Q_SIGNALS:
     void fontSizeChanged();
 
 private:
-    void updatePixelSize();
-    static QColor getDefaultColor(QQuickItem *item, UCTheme *theme);
-    Q_SLOT void updateRenderType();
-    Q_SLOT void _q_updateFontFlag(const QFont &font);
-    Q_SLOT void _q_customColor();
+    Q_PRIVATE_SLOT(d_func(), void updateRenderType())
+    Q_PRIVATE_SLOT(d_func(), void _q_updateFontFlag(const QFont &font))
+    Q_PRIVATE_SLOT(d_func(), void _q_customColor())
 
-    enum {
-        TextSizeSet = 1,
-        PixelSizeSet = 2,
-        ColorSet = 4
-    };
-
-    QFont m_defaultFont;
-    std::function<QColor (QQuickItem *, UCTheme*)> m_defaultColor;
-    TextSize m_textSize;
-    quint8 m_flags;
+    UCLabelPrivate *d_ptr;
+    Q_DECLARE_PRIVATE(UCLabel)
 
     Q_DISABLE_COPY(UCLabel)
 };
