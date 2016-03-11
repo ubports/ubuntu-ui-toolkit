@@ -36,14 +36,46 @@ Item {
         }
     }
 
+    Component {
+        id: whiteLabel
+        Label {
+            text: "Hello Dolly!"
+            color: theme.palette.normal.backgroundText
+        }
+    }
+
+    Loader {
+        id: testLoader
+    }
+
     UbuntuTestCase {
         name: "Label13Extras"
         when: windowShown
 
+        function loadTest(component) {
+            testLoader.sourceComponent = component;
+            tryCompare(testLoader, "status", Loader.Ready, 1000);
+            verify(testLoader.item);
+            return testLoader.item;
+        }
+
+        function cleanup() {
+            testLoader.sourceComponent = null;
+            waitForRendering(main, 400);
+        }
+
         function test_label_with_button_bug1503901() {
             // this should SEGFAULT on error!
-            var test = labelWithButton.createObject(main);
-            test.destroy();
+            loadTest(labelWithButton);
+        }
+
+        function test_label_color_changes_even_with_same_value_as_default_bug1555784() {
+            var test = loadTest(whiteLabel);
+
+            // change the color of the palette
+            var prevColor = test.color;
+            theme.palette.normal.backgroundText = UbuntuColors.blue;
+            verify(test.color != prevColor);
         }
     }
 }

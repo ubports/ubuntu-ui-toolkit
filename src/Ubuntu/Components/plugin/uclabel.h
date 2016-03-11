@@ -32,6 +32,8 @@ class UCLabel : public QQuickText, public UCThemingExtension
 
     // Overriden from QQuickText
     Q_PROPERTY(RenderType renderType READ renderType WRITE setRenderType)
+    Q_PROPERTY(QFont font READ font WRITE setFont2 NOTIFY fontChanged2)
+    Q_PROPERTY(QColor color READ color WRITE setColor2 NOTIFY colorChanged2)
 
     // Deprecated.
     Q_PROPERTY(QString fontSize READ fontSize WRITE setFontSize NOTIFY fontSizeChanged)
@@ -56,6 +58,10 @@ public:
 
     TextSize textSize() const;
     void setTextSize(TextSize size);
+
+    // overriden from QQuickText
+    void setFont2(const QFont &font);
+    void setColor2(const QColor &color);
     void setRenderType(RenderType renderType);
 
     // Deprecated.
@@ -72,6 +78,10 @@ protected:
 
 Q_SIGNALS:
     void textSizeChanged();
+
+    // overrides
+    void fontChanged2();
+    void colorChanged2();
 
     // Deprecated.
     void fontSizeChanged();

@@ -153,6 +153,9 @@ void UCLabelPrivate::init()
     QObject::connect(q, SIGNAL(fontChanged(QFont)), q, SLOT(_q_updateFontFlag(QFont)), Qt::DirectConnection);
     QObject::connect(q, SIGNAL(colorChanged()), q, SLOT(_q_customColor()), Qt::DirectConnection);
     QObject::connect(q, &UCLabel::enabledChanged, q, &UCLabel::postThemeChanged, Qt::DirectConnection);
+
+    QObject::connect(q, &UCLabel::fontChanged, q, &UCLabel::fontChanged2, Qt::DirectConnection);
+    QObject::connect(q, &UCLabel::colorChanged, q, &UCLabel::colorChanged2, Qt::DirectConnection);
 }
 
 void UCLabel::postThemeChanged()
@@ -204,6 +207,16 @@ void UCLabel::setTextSize(TextSize size)
         d->updatePixelSize();
         Q_EMIT textSizeChanged();
     }
+}
+
+void UCLabel::setFont2(const QFont &font)
+{
+    QQuickText::setFont(font);
+}
+
+void UCLabel::setColor2(const QColor &color)
+{
+    QQuickText::setColor(color);
 }
 
 void UCLabel::setRenderType(RenderType renderType)
