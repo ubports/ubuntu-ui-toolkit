@@ -871,6 +871,20 @@ private Q_SLOTS:
         bottomEdge->setEnabled(!bottomEdge->isEnabled());
         QCOMPARE(bottomEdge->isEnabled(), bottomEdge->hint()->isEnabled());
     }
+
+    void test_collapse_by_keyboard() {
+        QScopedPointer<BottomEdgeTestCase> view(new BottomEdgeTestCase("Defaults.qml"));
+        UCBottomEdge *bottomEdge = view->testItem();
+        QTest::keyClick(bottomEdge->hint()->window(), Qt::Key_Tab);
+        QTRY_COMPARE_WITH_TIMEOUT(bottomEdge->hint()->property("activeFocus").toBool(), true, 1000);
+        QTRY_COMPARE_WITH_TIMEOUT(bottomEdge->hint()->property("keyNavigationFocus").toBool(), true, 1000);
+        QTest::keyClick(bottomEdge->hint()->window(), Qt::Key_Space);
+        QSignalSpy commitCompletedSpy(bottomEdge, SIGNAL(commitCompleted()));
+        QTRY_COMPARE_WITH_TIMEOUT(commitCompletedSpy.count(), 1, 1000);
+        QTest::keyClick(bottomEdge->hint()->window(), Qt::Key_Escape);
+        QSignalSpy collapseCompletedSpy(bottomEdge, SIGNAL(collapseCompleted()));
+        QTRY_COMPARE_WITH_TIMEOUT(collapseCompletedSpy.count(), 1, 1000);
+    }
 };
 
 QTEST_MAIN(tst_BottomEdge)
