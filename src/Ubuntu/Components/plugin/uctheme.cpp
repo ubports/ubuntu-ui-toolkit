@@ -38,7 +38,6 @@
 #include <QtGui/QGuiApplication>
 #include <QtGui/QFont>
 
-#include <QDebug>
 #include <QtQml/private/qqmlproperty_p.h>
 #include <QtQml/private/qqmlabstractbinding_p.h>
 #define foreach Q_FOREACH
@@ -691,7 +690,7 @@ void UCTheme::checkMixedVersionImports(QQuickItem *item, quint16 version)
  * to \a parent.
  */
 QQmlComponent* UCTheme::createStyleComponent(const QString& styleName, QObject* parent, quint16 version)
-{   
+{
     QQmlComponent *component = NULL;
     Q_ASSERT(version);
 
@@ -706,7 +705,6 @@ QQmlComponent* UCTheme::createStyleComponent(const QString& styleName, QObject* 
         bool fallback = false;
         QUrl url = styleUrl(styleName, version, &fallback);
         if (url.isValid()) {
-            qDebug()<<"creating style component from "<<url;
             if (fallback) {
                 qmlInfo(parent) << QStringLiteral("Theme '%1' has no '%2' style for version %3.%4, fall back to version %5.%6.")
                                    .arg(name()).arg(styleName).arg(MAJOR_VERSION(version)).arg(MINOR_VERSION(version))
