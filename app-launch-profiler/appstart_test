@@ -31,6 +31,7 @@ LTTNG_SESSION_NAME_REGEXP='(auto-.*-.*) created.'
 LTTNG_SESSION_NAME=""
 REMOTE_LTTNG_SESSION=true
 VERBOSE=false
+CLEAR_CACHE=""
 VERBOSE_PARAMETER=""
 WIRELESS_ADAPTER="$(nmcli -t -f device,type dev | egrep "wireless|wifi" | cut -d: -f1)"
 IP_ADDRESS="$(ifconfig | grep -A 1 ${WIRELESS_ADAPTER} | tail -1 | cut -d ':' -f 2 | cut -d ' ' -f 1)"
@@ -185,7 +186,7 @@ function measure_app_startups {
 					LTTNG_TRACE_FILE=${LINE/Traces will be written in /}
 					LTTNG_TRACE_FILE="${LTTNG_TRACE_FILE/$'\r'/}"
 				fi
-			done < <(adb -s ${SERIALNUMBER} shell "/usr/bin/profile_appstart.sh -a ${APPLICATION} -u ${IP_ADDRESS} -c ${COUNT} -s ${SLEEP_TIME}")
+			done < <(adb -s ${SERIALNUMBER} shell "/usr/bin/profile_appstart.sh -a ${APPLICATION} -u ${IP_ADDRESS} -c ${COUNT} -s ${SLEEP_TIME} ${CLEAR_CACHE--q}")
 			[ -z "${LTTNG_SESSION_NAME}" ] && echo "The lttng session is not available" || app-launch-profiler-lttng -i ~/lttng-traces/ubuntu-phablet/${LTTNG_SESSION_NAME} ${VERBOSE_PARAMETER--v}
 			if [[ $REMOTE_LTTNG_SESSION == false ]]; then
 				LTTNG_TRACE_PATH=${LTTNG_TRACE_FILE/$LTTNG_SESSION_NAME/}
@@ -200,7 +201,7 @@ function measure_app_startups {
 	done
 } 
 
-while getopts ":chvn:s:w:p:f:a:o:" opt; do
+while getopts ":cqhvn:s:w:p:f:a:o:" opt; do
 	case $opt in
 	c)
 		COMISSION=true
@@ -228,6 +229,9 @@ while getopts ":chvn:s:w:p:f:a:o:" opt; do
 		VERBOSE=true
 		unset VERBOSE_PARAMETER
 		;;
+	q)
+		unset CLEAR_CACHE
+		;;
 
 	h)
 		VERBOSE=true
@@ -239,6 +243,7 @@ while getopts ":chvn:s:w:p:f:a:o:" opt; do
 		echo -e "\t-w : Password of the phablet user on the device. Default ${PASSWORD}"
 		echo -e "\t-f : Filter for the test suite. Default $FILTER"
                 echo -e "\t-v : Turn appstart_test to be verbose. Default $VERBOSE"
+                echo -e "\t-q : Test the application startup with QML cache. Default ${CLEAR_CACHE-true} ${CLEAR_CACHE+false}"
 		echo -e "\t-h : Show this help"
 		exit
 		;;
@@ -254,6 +259,7 @@ adb wait-for-device
 SERIALNUMBER=`adb devices -l | grep -Ev "List of devices attached" | grep -Ev "emulator-" | sed "/^$/d"|sed "s/ .*//g"`
 adb -s ${SERIALNUMBER} wait-for-device
 echo "Serial number: ${SERIALNUMBER}"
+echo "Test with QML cache: ${CLEAR_CACHE-true}" ${CLEAR_CACHE+false}
 echo "Number of start: ${COUNT}"
 echo "Length of sleep between restarts: ${SLEEP_TIME}"
 echo "Filter: ${FILTER}"
