@@ -335,7 +335,7 @@ if [[ ${TEST_SILO} == true ]]; then
 		echo -e "Set up with silo \e[31m${SILO}\e[0m"
 		adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S bash -c 'echo \"deb http://ppa.launchpad.net/ci-train-ppa-service/landing-${SILO}/${DISTRO} ${SERIES} main\" > /etc/apt/sources.list.d/silo-${SILO}.list'  2>&1|grep -v password > /dev/null "
 		SILO=${SILO/\//-}
-		adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S bash -c 'echo -e \"Package: *\nPin: release o=LP-SILO-ci-train-ppa-service-landing-${SILO}\nPin-Priority: 1100\" > /etc/apt/preferences.d/silo.pref' 2>&1|grep -v password > /dev/null "
+		adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S bash -c 'echo -e \"Package: *\nPin: release o=LP-PPA-ci-train-ppa-service-landing-${SILO}\nPin-Priority: 1100\" > /etc/apt/preferences.d/silo.pref' 2>&1|grep -v password > /dev/null "
 		adb -s ${SERIALNUMBER} shell "test -e /usr/sbin/policy-rc.d && cp /usr/sbin/policy-rc.d /tmp/policy-rc.d"
 		adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S  bash -c 'echo \"exit 101\" > /usr/sbin/policy-rc.d'  2>&1|grep -v password > /dev/null"
 		adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S  bash -c 'chmod +x /usr/sbin/policy-rc.d'  2>&1|grep -v password > /dev/null"
