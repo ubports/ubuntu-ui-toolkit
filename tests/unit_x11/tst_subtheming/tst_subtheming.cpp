@@ -903,7 +903,7 @@ private Q_SLOTS:
         QCOMPARE(pressedColor, colorPressed);
     }
 
-    void test_dark_colored_theme_should_use_proper_style_bug1555797() {
+    void test_derived_theme_fallback_should_use_proper_style_bug1555797() {
         qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "");
         qputenv("XDG_DATA_DIRS", "./themes:./themes/TestModule");
 
