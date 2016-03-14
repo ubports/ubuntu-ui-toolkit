@@ -195,7 +195,11 @@ void UCLabel::setTextSize(TextSize size)
 void UCLabel::setFont2(const QFont &font)
 {
     Q_D(UCLabel);
-    d->flags |= UCLabelPrivate::PixelSizeSet;
+    // we must restrict ourself to the pixelSize change as any font property change will
+    // lead to the setter call.
+    if (d->defaultFont.pixelSize() != font.pixelSize()) {
+        d->flags |= UCLabelPrivate::PixelSizeSet;
+    }
     QQuickText::setFont(font);
 }
 

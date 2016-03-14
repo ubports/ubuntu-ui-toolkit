@@ -77,20 +77,5 @@ Item {
             theme.palette.normal.backgroundText = UbuntuColors.blue;
             verify(test.color != theme.palette.normal.backgroundText);
         }
-
-        function test_override_font() {
-            var test = loadTest(testLabel);
-            var font = Qt.font({family: test.font.family, weight: test.font.weight, pixelSize: FontUtils.sizeToPixels("medium")});;
-
-            // override font
-            test.font = Qt.font({family: "Arial", weight: font.weight, pixelSize: FontUtils.sizeToPixels("medium")});
-            verify(test.font != font);
-            compare(test.font.pixelSize, font.pixelSize);
-
-            // set textSize, should not affect font size!
-            test.textSize = Label.Large;
-            // no font size change!
-            compare(test.font.pixelSize, font.pixelSize);
-        }
     }
 }
