@@ -125,7 +125,8 @@ bool ListViewProxy::focusInEvent(QFocusEvent *event)
     return false;
 }
 
-// override up/down key presses for ListView
+// override up/down key presses for ListView; returns true if the key event is consumed
+// in which case ListView won't get it.
 bool ListViewProxy::keyPressEvent(QKeyEvent *event)
 {
     int key = event->key();
