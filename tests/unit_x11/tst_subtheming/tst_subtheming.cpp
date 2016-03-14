@@ -104,7 +104,6 @@ private Q_SLOTS:
         UCTheme::previousVersion = 0;
     }
 
-private:
     void test_default_theme()
     {
         QQmlEngine engine;
@@ -903,17 +902,17 @@ private:
         QTest::mouseRelease(view.data(), Qt::LeftButton, 0, pressPt.toPoint());
         QCOMPARE(pressedColor, colorPressed);
     }
-private Q_SLOTS:
-    void test_dark_colored_theme_should_use_proper_style_bug1555797() {
-        QScopedPointer<ThemeTestCase> view(new ThemeTestCase("DarkBackground.qml"));
 
-        // the style should fall back to its parent style prior to get back to the earlier version
-        UCStyledItemBase *root = qobject_cast<UCStyledItemBase*>(view->rootObject());
+    void test_dark_colored_theme_should_use_proper_style_bug1555797() {
+        QQmlEngine engine;
+        UbuntuComponentsPlugin::initializeContextProperties(&engine);
+        QScopedPointer<UCTheme> theme(new UCTheme);
+        theme->setName("Ubuntu.Components.Themes.SuruDark");
+
         // get the style URL
         bool fallback = false;
-        QUrl style = root->getTheme()->styleUrl("MainViewStyle.qml", BUILD_VERSION(1, 3), &fallback);
-        // should end with Ambiance/1.3/MainViewStyle.qml
-        QVERIFY(style.toString().endsWith("Ambiance/1.3/MainViewStyle.qml"));
+        QUrl style = theme->styleUrl("ButtonStyle.qml", BUILD_VERSION(1, 3), &fallback);
+        QVERIFY(style.toString().endsWith("Ubuntu/Components/Themes/Ambiance/1.3/ButtonStyle.qml"));
     }
 };
 

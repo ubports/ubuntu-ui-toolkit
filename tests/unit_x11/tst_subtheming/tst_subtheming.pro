@@ -45,7 +45,6 @@ OTHER_FILES += \
     OtherVersion.qml
 
 DISTFILES += \
-    DefaultTheme.qml \
-    DarkBackground.qml
+    DefaultTheme.qml
 
 
