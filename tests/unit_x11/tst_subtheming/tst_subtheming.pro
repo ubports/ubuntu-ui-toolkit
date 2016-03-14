@@ -42,9 +42,10 @@ OTHER_FILES += \
     GroupPropertyBindingHints.qml \
     OverrideStyleHints.qml \
     HintedButton.qml \
-    OtherVersion.qml
-
-DISTFILES += \
-    DefaultTheme.qml
+    OtherVersion.qml \
+    DefaultTheme.qml \
+    themes/DerivedTheme/parent_theme \
+    themes/DerivedTheme/1.2/TestStyle.qml \
+    themes/DerivedTheme/1.3/Palette.qml
 
 

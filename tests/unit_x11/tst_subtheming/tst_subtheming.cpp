@@ -904,15 +904,19 @@ private Q_SLOTS:
     }
 
     void test_dark_colored_theme_should_use_proper_style_bug1555797() {
+        qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "");
+        qputenv("XDG_DATA_DIRS", "./themes:./themes/TestModule");
+
         QQmlEngine engine;
         UbuntuComponentsPlugin::initializeContextProperties(&engine);
         QScopedPointer<UCTheme> theme(new UCTheme);
-        theme->setName("Ubuntu.Components.Themes.SuruDark");
+        theme->setName("DerivedTheme");
 
         // get the style URL
         bool fallback = false;
-        QUrl style = theme->styleUrl("ButtonStyle.qml", BUILD_VERSION(1, 3), &fallback);
-        QVERIFY(style.toString().endsWith("Ubuntu/Components/Themes/Ambiance/1.3/ButtonStyle.qml"));
+        QUrl style = theme->styleUrl("TestStyle.qml", BUILD_VERSION(1, 3), &fallback);
+        qDebug() << ":->" << style;
+        QVERIFY(style.toString().endsWith("TestTheme/1.3/TestStyle.qml"));
     }
 };
 
