@@ -915,7 +915,6 @@ private Q_SLOTS:
         // get the style URL
         bool fallback = false;
         QUrl style = theme->styleUrl("TestStyle.qml", BUILD_VERSION(1, 3), &fallback);
-        qDebug() << ":->" << style;
         QVERIFY(style.toString().endsWith("TestTheme/1.3/TestStyle.qml"));
     }
 };
