@@ -22,7 +22,7 @@ Column {
     anchors.fill: parent
     spacing: 1
     Repeater {
-        model: 500
+        model: 200
         TextField {
             width: parent.width
         }
