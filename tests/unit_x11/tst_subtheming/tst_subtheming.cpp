@@ -20,7 +20,11 @@
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlComponent>
+#define private public
+#define protected public
 #include "uctheme.h"
+#undef protected
+#undef private
 #include "quickutils.h"
 #include "uctestcase.h"
 #include "ucstyleditembase_p.h"
@@ -100,6 +104,7 @@ private Q_SLOTS:
         UCTheme::previousVersion = 0;
     }
 
+private:
     void test_default_theme()
     {
         QQmlEngine engine;
@@ -897,6 +902,18 @@ private Q_SLOTS:
         QColor pressedColor = qmlProperty.read().value<QColor>();
         QTest::mouseRelease(view.data(), Qt::LeftButton, 0, pressPt.toPoint());
         QCOMPARE(pressedColor, colorPressed);
+    }
+private Q_SLOTS:
+    void test_dark_colored_theme_should_use_proper_style_bug1555797() {
+        QScopedPointer<ThemeTestCase> view(new ThemeTestCase("DarkBackground.qml"));
+
+        // the style should fall back to its parent style prior to get back to the earlier version
+        UCStyledItemBase *root = qobject_cast<UCStyledItemBase*>(view->rootObject());
+        // get the style URL
+        bool fallback = false;
+        QUrl style = root->getTheme()->styleUrl("MainViewStyle.qml", BUILD_VERSION(1, 3), &fallback);
+        // should end with Ambiance/1.3/MainViewStyle.qml
+        QVERIFY(style.toString().endsWith("Ambiance/1.3/MainViewStyle.qml"));
     }
 };
 
