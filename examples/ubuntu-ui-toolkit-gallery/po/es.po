@@ -14,16 +14,16 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-12-25 05:33+0000\n"
-"X-Generator: Launchpad (build 17865)\n"
+"X-Launchpad-Export-Date: 2016-01-13 05:49+0000\n"
+"X-Generator: Launchpad (build 17886)\n"
 
 #: About.qml:34
 msgid "About..."
-msgstr ""
+msgstr "Acerca de...."
 
 #: ActionBars.qml:68
 msgid "Short list"
-msgstr ""
+msgstr "Lista corta"
 
 #: ActionBars.qml:79
 msgid "Number of slots"
@@ -31,7 +31,7 @@ msgstr ""
 
 #: ActionBars.qml:92
 msgid "Long list"
-msgstr ""
+msgstr "Lista larga"
 
 #: ActionBars.qml:102 Buttons.qml:91 Sections.qml:45 TextInputs.qml:90
 #: Toggles.qml:45 Toggles.qml:83
@@ -58,11 +58,11 @@ msgstr ""
 
 #: Animations.qml:98
 msgid "Fast"
-msgstr ""
+msgstr "Rápido"
 
 #: Animations.qml:134
 msgid "Slow"
-msgstr ""
+msgstr "Lento"
 
 #: Animations.qml:159
 msgid "Sleepy"
@@ -83,7 +83,7 @@ msgstr "Color"
 #: Buttons.qml:53
 #, qt-format
 msgid "Call %1"
-msgstr ""
+msgstr "Llamar %1"
 
 #: Buttons.qml:63 Buttons.qml:120 ListItems.qml:43
 msgid "Icon"
@@ -135,7 +135,7 @@ msgstr "Abrir"
 
 #: Icons.qml:29
 msgid "Scaling"
-msgstr ""
+msgstr "Escalado"
 
 #: Icons.qml:79
 msgid "Theme"
@@ -153,7 +153,7 @@ msgstr "Etiqueta"
 
 #: ListItems.qml:33
 msgid "Subtitled"
-msgstr ""
+msgstr "Subtitulado"
 
 #: ListItems.qml:37
 msgid "Secondary label"
@@ -165,7 +165,7 @@ msgstr ""
 
 #: ListItems.qml:73
 msgid "Progression"
-msgstr ""
+msgstr "Progreso"
 
 #: ListItems.qml:82
 msgid "Single value"
@@ -209,7 +209,7 @@ msgstr "Selector de elementos"
 
 #: ListItems.qml:112 TextInputs.qml:117
 msgid "Expanding"
-msgstr ""
+msgstr "Expansible"
 
 #: ListItems.qml:129 OptionSelectors.qml:54
 msgid "Multiple Selection"
@@ -245,11 +245,11 @@ msgstr "Control"
 
 #: ListItems.qml:202
 msgid "Removable"
-msgstr ""
+msgstr "Extraíble"
 
 #: ListItems.qml:205
 msgid "Slide to remove"
-msgstr ""
+msgstr "Deslizar para borrar"
 
 #: ListItems.qml:215
 msgid "Reset"
@@ -261,7 +261,7 @@ msgstr "Lista con grupos"
 
 #: ListItems.qml:261
 msgid "UbuntuListView"
-msgstr ""
+msgstr "UbuntuListView"
 
 #: ListItems.qml:321
 msgid "ExpandablesColumn"
@@ -269,15 +269,15 @@ msgstr ""
 
 #: ListItems.qml:364
 msgid "Expandable"
-msgstr ""
+msgstr "Expansible"
 
 #: NewListItems.qml:39
 msgid "Colored"
-msgstr ""
+msgstr "Coloreado"
 
 #: NewListItems.qml:42
 msgid "Highlight color"
-msgstr ""
+msgstr "Color de resaltado"
 
 #: NewListItems.qml:71
 msgid "Leading actions"
@@ -289,32 +289,32 @@ msgstr ""
 
 #: NewListItems.qml:84
 msgid "Custom action delegates"
-msgstr ""
+msgstr "Delegados de acción personalizados"
 
 #: NewListItems.qml:111
 msgid "Edit"
-msgstr ""
+msgstr "Editar"
 
 #: NewListItems.qml:114
 msgid "Move"
-msgstr ""
+msgstr "Mover"
 
 #: NewListItems.qml:163
 msgid "Basic"
-msgstr ""
+msgstr "Básico"
 
 #: NewListItems.qml:163 NewListItems.qml:168 NewListItems.qml:169
 #: NewListItems.qml:213 NewListItems.qml:214
 msgid "Colored divider"
-msgstr ""
+msgstr "Divisor coloreado"
 
 #: NewListItems.qml:163
 msgid "Immutable"
-msgstr ""
+msgstr "No modificable"
 
 #: NewListItems.qml:163 NewListItems.qml:170 NewListItems.qml:215
 msgid "No divider"
-msgstr ""
+msgstr "Sin divisor"
 
 #: OptionSelectors.qml:24
 msgid "Option Selector"
@@ -322,17 +322,19 @@ msgstr "Selector de opciones"
 
 #: OptionSelectors.qml:34
 msgid "This is the second value"
-msgstr ""
+msgstr "Este es el segundo valor"
 
 #: OptionSelectors.qml:35
 msgid ""
 "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy "
 "nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."
 msgstr ""
+"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy "
+"nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."
 
 #: OptionSelectors.qml:36
 msgid "Once upon a time there was a story nobody told."
-msgstr ""
+msgstr "Érase una vez una historia que nadie contó."
 
 #: OptionSelectors.qml:83
 msgid "Custom container height"
@@ -340,7 +342,7 @@ msgstr "Altura personalizada de contenedor"
 
 #: OptionSelectors.qml:96
 msgid "No initial selection, scrollable."
-msgstr ""
+msgstr "Sin selección inicial, desplazable."
 
 #: Pickers.qml:31
 msgid "Linear"
@@ -404,7 +406,7 @@ msgstr "Tamaños"
 
 #: Sections.qml:34
 msgid "Enabled"
-msgstr ""
+msgstr "Activado"
 
 #: Sheet.qml:28
 msgid "The visual style of the Sheet is early work and thus clunky looking."
@@ -429,19 +431,19 @@ msgstr "Intervalo"
 
 #: Sliders.qml:74
 msgid "Labels"
-msgstr ""
+msgstr "Etiquetas"
 
 #: Sliders.qml:85
 msgid "Small"
-msgstr ""
+msgstr "Pequeño"
 
 #: Sliders.qml:87
 msgid "Medium"
-msgstr ""
+msgstr "Mediano"
 
 #: Sliders.qml:89
 msgid "Large"
-msgstr ""
+msgstr "Grande"
 
 #: TextInputs.qml:50
 msgid "Type me in..."
@@ -465,7 +467,7 @@ msgstr ""
 
 #: TextInputs.qml:94
 msgid "No interaction allowed"
-msgstr ""
+msgstr "Interacciones no permitidas"
 
 #: TextInputs.qml:107
 msgid "Default"
@@ -497,4 +499,4 @@ msgstr "Imagen"
 
 #: UbuntuShape.qml:134
 msgid "Gradient"
-msgstr ""
+msgstr "Gradiente"

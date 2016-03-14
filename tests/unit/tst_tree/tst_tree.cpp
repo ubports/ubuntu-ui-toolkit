@@ -58,6 +58,8 @@ private Q_SLOTS:
     void test_doubleAddNode () {
         UbuntuToolkit::Tree tree;
 
+        QTest::ignoreMessage(QtWarningMsg, "Cannot add the same node twice to a tree.");
+
         QObject node;
         QVERIFY(tree.add(0, nullptr, &node));
         QVERIFY(!tree.add(0, nullptr, &node));
@@ -65,6 +67,8 @@ private Q_SLOTS:
 
     void test_addRootWithParent () {
         UbuntuToolkit::Tree tree;
+
+        QTest::ignoreMessage(QtWarningMsg, "Root node must have parentNode null.");
 
         QObject parent;
         QObject node;
@@ -74,6 +78,8 @@ private Q_SLOTS:
     void test_addSubNodeWithoutParent () {
         UbuntuToolkit::Tree tree;
 
+        QTest::ignoreMessage(QtWarningMsg, "Only root node has parentNode null.");
+
         QObject root;
         QObject node;
         QVERIFY(tree.add(0, nullptr, &root));
@@ -82,6 +88,8 @@ private Q_SLOTS:
 
     void test_addSubNodeWithParentNotInTree () {
         UbuntuToolkit::Tree tree;
+
+        QTest::ignoreMessage(QtWarningMsg, "Cannot add non-root node if parentNode is not in the tree.");
 
         QObject root;
         QObject someParent;
