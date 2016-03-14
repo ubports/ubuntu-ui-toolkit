@@ -23,6 +23,8 @@ PaletteValues {
     backgroundText: UbuntuColors.jet
     backgroundSecondaryText: UbuntuColors.slate
     backgroundTertiaryText: UbuntuColors.ash
+    backgroundPositiveText: UbuntuColors.green
+    backgroundNegativeText: UbuntuColors.red
     base: UbuntuColors.silk
     baseText: UbuntuColors.ash
     foreground: UbuntuColors.porcelain
