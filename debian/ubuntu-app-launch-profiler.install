@@ -1,3 +1,4 @@
+usr/bin/app-launch-profiler-lttng
+usr/bin/appstart_test
 usr/bin/app-launch-tracepoints
-usr/bin/app-launch-profiler-lttng.py
 usr/bin/profile_appstart.sh
