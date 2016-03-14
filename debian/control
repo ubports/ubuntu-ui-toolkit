@@ -2,89 +2,86 @@ Source: ubuntu-ui-toolkit
 Priority: optional
 Section: libs
 Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
-Build-Depends: debhelper (>= 9.0.0),
-               devscripts,
-               libgles2-mesa-dev,
-               libglib2.0-dev,
-               python3:any,
-               qml-module-qtgraphicaleffects | libqt5qml-graphicaleffects,
-               libinput-dev,
-               libxkbcommon-dev,
-               qtbase5-dev,
-               qtbase5-private-dev,
-               qttools5-dev-tools,
-               libqt5sql5-sqlite,
-               qtdeclarative5-dev (>= 5.4.1-1ubuntu11~overlay3),
-               qtdeclarative5-dev-tools,
-               qtdeclarative5-private-dev,
-               qml-module-qtquick2,
-               qml-module-qttest,
-               qml-module-qtquick-window2,
-               qml-module-qtquick-layouts,
-               qml-module-qtfeedback,
-               qtdeclarative5-unity-action-plugin (>= 1.1.0),
-               qtdeclarative5-private-dev,
-               qml-module-qtquick-localstorage,
-               qml-module-qt-labs-settings,
-               qml-module-qtqml-models2,
-               qtdeclarative5-doc-html,
-               qtwebkit5-doc-html,
-               qtsvg5-doc-html,
-               libqt5svg5-dev,
-               qtscript5-doc-html,
-               qtmultimedia5-doc-html,
-               unity-action-doc,
-               devscripts,
-               qtpim5-dev,
-               language-pack-en-base,
-               libdbus-1-dev,
-               libnih-dbus-dev,
+Build-Depends: accountsservice,
                dbus,
                dbus-test-runner,
-               accountsservice,
-               xvfb,
+               debhelper (>= 9.0.0),
+               devscripts,
                gdb,
-               libgl1-mesa-dri,
-               locales,
-               suru-icon-theme,
-               uuid-runtime,
-               python3-sphinx,
+               language-pack-en-base,
+               libdbus-1-dev,
                libfontconfig1-dev,
                libfreetype6-dev,
+               libgl1-mesa-dri,
+               libgles2-mesa-dev,
+               libglib2.0-dev,
+               libinput-dev,
+               liblttng-ust-dev,
                libmtdev-dev,
+               libnih-dbus-dev,
+               libqt5sql5-sqlite,
+               libqt5svg5-dev,
                libudev-dev,
+               libxkbcommon-dev,
                libxrender-dev,
-               liblttng-ust-dev
-Standards-Version: 3.9.4
+               locales,
+               python3-sphinx,
+               python3:any,
+               qml-module-qt-labs-settings,
+               qml-module-qtfeedback,
+               qml-module-qtgraphicaleffects,
+               qml-module-qtqml-models2,
+               qml-module-qtquick-layouts,
+               qml-module-qtquick-localstorage,
+               qml-module-qtquick-window2,
+               qml-module-qtquick2,
+               qml-module-qttest,
+               qtbase5-dev,
+               qtbase5-private-dev,
+               qtdeclarative5-dev (>= 5.4.1-1ubuntu11~overlay3),
+               qtdeclarative5-dev-tools,
+               qtdeclarative5-doc-html,
+               qtdeclarative5-private-dev,
+               qtdeclarative5-unity-action-plugin (>= 1.1.0),
+               qtmultimedia5-doc-html,
+               qtpim5-dev,
+               qtscript5-doc-html,
+               qtsvg5-doc-html,
+               qttools5-dev-tools,
+               qtwebkit5-doc-html,
+               suru-icon-theme,
+               unity-action-doc,
+               uuid-runtime,
+               xvfb,
+Standards-Version: 3.9.7
 Homepage: https://launchpad.net/ubuntu-ui-toolkit
-# If you aren't a member of ~ubuntu-sdk-team but need to upload packaging
-# changes, just go ahead. ~ubuntu-sdk-team will notice and sync up the code
-# again.
 Vcs-Bzr: https://code.launchpad.net/~ubuntu-sdk-team/ubuntu-ui-toolkit/trunk
 
 Package: qml-module-ubuntu-components
 Architecture: any
 Multi-Arch: same
-Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
-Depends: qml-module-qtgraphicaleffects | libqt5qml-graphicaleffects,
-         libqt5svg5,
-         qml-module-qtquick2,
-         qml-module-qtquick-window2,
-         qml-module-qtquick-layouts,
+Pre-Depends: dpkg (>= 1.15.6~),
+             ${misc:Pre-Depends},
+Depends: libqt5svg5,
+         libubuntugestures5 (= ${binary:Version}),
+         libubuntutoolkit5 (= ${binary:Version}),
          qml-module-qtfeedback,
-         qtdeclarative5-unity-action-plugin (>= 1.1.0),
+         qml-module-qtgraphicaleffects,
+         qml-module-qtquick-layouts,
+         qml-module-qtquick-window2,
+         qml-module-qtquick2,
          qml-module-ubuntu-performancemetrics,
+         qtdeclarative5-unity-action-plugin (>= 1.1.0),
          suru-icon-theme,
          ttf-ubuntu-font-family,
          ubuntu-ui-toolkit-theme (= ${binary:Version}),
-         libubuntugestures5 (= ${binary:Version}),
-         libubuntutoolkit5 (= ${binary:Version}),
          ${misc:Depends},
          ${shlibs:Depends},
-Conflicts: qt-components-ubuntu
-Breaks: qtdeclarative5-ubuntu-ui-toolkit-plugin (<< ${source:Version})
-Replaces: qt-components-ubuntu, qtdeclarative5-ubuntu-ui-toolkit-plugin (<< ${source:Version})
-Provides: qt-components-ubuntu
+Conflicts: qt-components-ubuntu,
+Breaks: qtdeclarative5-ubuntu-ui-toolkit-plugin (<< ${source:Version}),
+Replaces: qt-components-ubuntu,
+          qtdeclarative5-ubuntu-ui-toolkit-plugin (<< ${source:Version}),
+Provides: qt-components-ubuntu,
 Description: Qt Components for Ubuntu - Components QML plugin
  Qt Components for Ubuntu offers a set of reusable user interface
  components for Qt Quick 2 / QML.
@@ -94,10 +91,11 @@ Description: Qt Components for Ubuntu - Components QML plugin
 Package: qml-module-ubuntu-layouts
 Architecture: any
 Multi-Arch: same
-Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
+Pre-Depends: dpkg (>= 1.15.6~),
+             ${misc:Pre-Depends},
 Depends: ${misc:Depends},
          ${shlibs:Depends},
-Replaces: qtdeclarative5-ubuntu-ui-toolkit-plugin (<< ${source:Version})
+Replaces: qtdeclarative5-ubuntu-ui-toolkit-plugin (<< ${source:Version}),
 Description: Qt Components for Ubuntu - Layouts QML plugin
  Qt Components for Ubuntu offers a set of reusable user interface
  components for Qt Quick 2 / QML.
@@ -107,12 +105,13 @@ Description: Qt Components for Ubuntu - Layouts QML plugin
 Package: qml-module-ubuntu-test
 Architecture: any
 Multi-Arch: same
-Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
-Depends: ${misc:Depends},
-         ${shlibs:Depends},
-         qml-module-qttest | qtdeclarative5-test-plugin,
+Pre-Depends: dpkg (>= 1.15.6~),
+             ${misc:Pre-Depends},
+Depends: qml-module-qttest | qtdeclarative5-test-plugin,
          qml-module-ubuntu-components,
-Replaces: qtdeclarative5-ubuntu-ui-toolkit-plugin (<< ${source:Version})
+         ${misc:Depends},
+         ${shlibs:Depends},
+Replaces: qtdeclarative5-ubuntu-ui-toolkit-plugin (<< ${source:Version}),
 Description: Qt Components for Ubuntu - Test QML plugin
  Qt Components for Ubuntu offers a set of reusable user interface
  components for Qt Quick 2 / QML.
@@ -122,28 +121,33 @@ Description: Qt Components for Ubuntu - Test QML plugin
 Package: qml-module-ubuntu-performancemetrics
 Architecture: any
 Multi-Arch: same
-Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
+Pre-Depends: dpkg (>= 1.15.6~),
+             ${misc:Pre-Depends},
 Depends: ${misc:Depends},
          ${shlibs:Depends},
-Replaces: qtdeclarative5-ubuntu-ui-toolkit-plugin (<< ${source:Version})
+Replaces: qtdeclarative5-ubuntu-ui-toolkit-plugin (<< ${source:Version}),
 Description: Qt Components for Ubuntu - PerformanceMetrics QML plugin
  Qt Components for Ubuntu offers a set of reusable user interface
  components for Qt Quick 2 / QML.
  .
  This package contains the Ubuntu PerformanceMetrics QML plugin.
 
-
 Package: qtdeclarative5-ubuntu-ui-toolkit-plugin
 Architecture: any
 Section: oldlibs
-Depends: qml-module-ubuntu-components, ${misc:Depends}
+Depends: qml-module-ubuntu-components,
+         qml-module-ubuntu-layouts,
+         qml-module-ubuntu-performancemetrics,
+         qml-module-ubuntu-test,
+         ${misc:Depends},
 Description: Transitional dummy package for Ubuntu UI Toolkit QML plugin
  This package contains the Ubuntu Components QML plugin.
 
 Package: libubuntugestures5
 Architecture: any
 Multi-Arch: same
-Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
+Pre-Depends: dpkg (>= 1.15.6~),
+             ${misc:Pre-Depends},
 Depends: ${misc:Depends},
          ${shlibs:Depends},
 Description: Ubuntu gestures library for Ubuntu UI Toolkit
@@ -153,7 +157,9 @@ Description: Ubuntu gestures library for Ubuntu UI Toolkit
 Package: libubuntugestures5-dev
 Architecture: any
 Multi-Arch: same
-Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
+Section: libdevel
+Pre-Depends: dpkg (>= 1.15.6~),
+             ${misc:Pre-Depends},
 Depends: ${misc:Depends},
          ${shlibs:Depends},
 Description: Ubuntu gestures library development files
@@ -163,7 +169,9 @@ Description: Ubuntu gestures library development files
 Package: libubuntugestures5-private-dev
 Architecture: any
 Multi-Arch: same
-Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
+Section: libdevel
+Pre-Depends: dpkg (>= 1.15.6~),
+             ${misc:Pre-Depends},
 Depends: ${misc:Depends},
          ${shlibs:Depends},
 Description: Ubuntu gestures library private development files
@@ -173,7 +181,8 @@ Description: Ubuntu gestures library private development files
 Package: libubuntutoolkit5
 Architecture: any
 Multi-Arch: same
-Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
+Pre-Depends: dpkg (>= 1.15.6~),
+             ${misc:Pre-Depends},
 Depends: ${misc:Depends},
          ${shlibs:Depends},
 Description: Ubuntu toolkit common library for Ubuntu UI Toolkit
@@ -183,7 +192,9 @@ Description: Ubuntu toolkit common library for Ubuntu UI Toolkit
 Package: libubuntutoolkit5-dev
 Architecture: any
 Multi-Arch: same
-Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
+Section: libdevel
+Pre-Depends: dpkg (>= 1.15.6~),
+             ${misc:Pre-Depends},
 Depends: ${misc:Depends},
          ${shlibs:Depends},
 Description: Ubuntu toolkit common library development files
@@ -193,9 +204,11 @@ Description: Ubuntu toolkit common library development files
 Package: libubuntutoolkit5-private-dev
 Architecture: any
 Multi-Arch: same
-Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
+Section: libdevel
+Pre-Depends: dpkg (>= 1.15.6~),
+             ${misc:Pre-Depends},
 Depends: ${misc:Depends},
- ${shlibs:Depends},
+         ${shlibs:Depends},
 Description: Ubuntu toolkit common library private development files
  This package contains the private development files for
  Ubuntu toolkit common library
@@ -203,10 +216,11 @@ Description: Ubuntu toolkit common library private development files
 Package: ubuntu-ui-toolkit-theme
 Architecture: any
 Multi-Arch: foreign
-Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
+Pre-Depends: dpkg (>= 1.15.6~),
+             ${misc:Pre-Depends},
 Depends: ${misc:Depends},
          ${shlibs:Depends},
-Replaces: qt-components-ubuntu
+Replaces: qt-components-ubuntu,
 Description: Qt Components for Ubuntu - Ubuntu Theme
  Qt Components for Ubuntu offers a set of reusable user interface
  components for Qt Quick 2 / QML.
@@ -217,18 +231,19 @@ Package: ubuntu-ui-toolkit-doc
 Section: doc
 Architecture: all
 Multi-Arch: foreign
-Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
+Pre-Depends: dpkg (>= 1.15.6~),
+             ${misc:Pre-Depends},
 Depends: ${misc:Depends},
          ${shlibs:Depends},
 Suggests: qtdeclarative5-doc-html,
-          qtwebkit5-doc-html,
-          qtsvg5-doc-html,
-          qtscript5-doc-html,
           qtmultimedia5-doc-html,
+          qtscript5-doc-html,
+          qtsvg5-doc-html,
+          qtwebkit5-doc-html,
           unity-action-doc,
-Conflicts: qt-components-ubuntu-doc
-Replaces: qt-components-ubuntu-doc
-Provides: qt-components-ubuntu-doc
+Conflicts: qt-components-ubuntu-doc,
+Replaces: qt-components-ubuntu-doc,
+Provides: qt-components-ubuntu-doc,
 Description: Qt Components for Ubuntu - documentation
  Qt Components for Ubuntu offers a set of reusable user interface
  components for Qt Quick 2 / QML.
@@ -238,17 +253,21 @@ Description: Qt Components for Ubuntu - documentation
 Package: ubuntu-ui-toolkit-examples
 Section: devel
 Architecture: any
-Depends: ubuntu-ui-toolkit-tools (>= ${source:Version}),
-         qtdeclarative5-ubuntu-ui-toolkit-plugin (= ${binary:Version}) | qtdeclarative5-ubuntu-ui-toolkit-plugin-gles,
-         ubuntu-ui-toolkit-theme (= ${binary:Version}),
+Depends: qml-module-qt-labs-folderlistmodel,
          qml-module-qtquick-xmllistmodel,
-         qml-module-qt-labs-folderlistmodel,
+         qml-module-ubuntu-components (= ${binary:Version}) | qml-module-ubuntu-components-gles,
+         ubuntu-ui-toolkit-theme (= ${binary:Version}),
+         ubuntu-ui-toolkit-tools (>= ${source:Version}),
          ${misc:Depends},
-         ${shlibs:Depends}
-Recommends: libqt5multimedia5-plugins, ubuntu-ui-toolkit-doc
-Conflicts: qt-components-ubuntu-examples, qt-components-ubuntu-demos
-Replaces: qt-components-ubuntu-examples, qt-components-ubuntu-demos
-Provides: qt-components-ubuntu-examples, qt-components-ubuntu-demos
+         ${shlibs:Depends},
+Recommends: libqt5multimedia5-plugins,
+            ubuntu-ui-toolkit-doc,
+Conflicts: qt-components-ubuntu-demos,
+           qt-components-ubuntu-examples,
+Replaces: qt-components-ubuntu-demos,
+          qt-components-ubuntu-examples,
+Provides: qt-components-ubuntu-demos,
+          qt-components-ubuntu-examples,
 Description: Qt Components for Ubuntu - demos and examples
  Qt Components for Ubuntu offers a set of reusable user interface
  components for Qt Quick 2 / QML.
@@ -257,35 +276,35 @@ Description: Qt Components for Ubuntu - demos and examples
 
 Package: ubuntu-ui-toolkit-autopilot
 Architecture: any
-Depends: ${misc:Depends},
-         ${shlibs:Depends},
-         autopilot-qt5,
+Depends: autopilot-qt5,
          dpkg-dev,
          libqt5test5,
          libqt5widgets5,
+         python3-autopilot (>= 1.4),
+         python3-autopilot-trace,
          python3-fixtures,
          python3-gi,
          python3-testscenarios,
          python3-testtools,
-         python3-autopilot (>= 1.4),
-         python3-autopilot-trace,
+         qml-module-qttest,
+         qml-module-ubuntu-components (>= ${source:Version}) | qml-module-ubuntu-components-gles,
          qttestability-autopilot,
+         ubuntu-app-launch-profiler (>= ${source:Version}),
          ubuntu-keyboard-autopilot [amd64 armhf i386],
          ubuntu-ui-toolkit-examples (>= ${source:Version}),
          upstart,
          url-dispatcher-tools,
-         qml-module-ubuntu-components (>= ${source:Version}) | qml-module-ubuntu-components-gles,
-         ubuntu-app-launch-profiler (>= ${source:Version}),
-         qml-module-qttest | qtdeclarative5-test-plugin,
+         ${misc:Depends},
+         ${shlibs:Depends},
 Description: Test package for Ubuntu UI Toolkit
  Autopilot tests for the ubuntu-ui-toolkit package
 
 Package: ubuntu-app-launch-profiler
 Architecture: any
-Depends: ${misc:Depends},
+Depends: lttng-tools,
+         python3-babeltrace,
+         ${misc:Depends},
          ${shlibs:Depends},
-         lttng-tools,
-         python3-babeltrace
 Description: Qt Components for Ubuntu - startup time profiling tool
  Qt Components for Ubuntu offers a set of reusable user interface
  components for Qt Quick 2 / QML.
@@ -295,7 +314,7 @@ Description: Qt Components for Ubuntu - startup time profiling tool
 Package: ubuntu-ui-toolkit-tools
 Architecture: any
 Depends: ${misc:Depends},
-         ${shlibs:Depends}
+         ${shlibs:Depends},
 Description: Qt Components for Ubuntu - productive tools
  Qt Components for Ubuntu offers a set of reusable user interface
  components for Qt Quick 2 / QML.
