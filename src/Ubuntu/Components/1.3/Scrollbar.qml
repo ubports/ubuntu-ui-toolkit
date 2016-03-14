@@ -112,11 +112,13 @@ Toolkit.StyledItem {
       simulate the system setting (which will be implemented in unity8, I guess)
       True --> Steppers style, non-overlay scrollbars
       False --> Indicator and Trough styles
+      CURRENTLY UNUSED
     */
     property bool __alwaysOnScrollbars: false
 
     /*! internal
       Used by ScrollView to tweak Scrollbar's anchoring logic for the always-on scrollbars.
+      CURRENTLY UNUSED
     */
     property Item __viewport: null
 

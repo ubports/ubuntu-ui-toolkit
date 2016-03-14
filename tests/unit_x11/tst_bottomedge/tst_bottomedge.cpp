@@ -44,6 +44,9 @@ public:
     BottomEdgeTestCase(const QString& file, ResizeMode resize = SizeViewToRootObject, bool assertOnFailure = true, QWindow* parent = 0)
         : UbuntuTestCase(file, resize, assertOnFailure, parent)
     {
+        // make sure we disable the mouse
+        QuickUtils::instance()->m_mouseAttached = false;
+
         // patch all BottomEdges' SwipeArea gesture recognition timer
         QList<UCBottomEdge*> list = findChildren<UCBottomEdge*>();
         for (int i = 0; i < list.size(); ++i) {
@@ -98,21 +101,33 @@ public:
         }
         return (qobject_cast<UCCollapseAction*>(navigationActions->at(0)) != Q_NULLPTR);
     }
+
+    void guToPoints(QList<QPoint> &guMoves)
+    {
+        for (int i = 0; i < guMoves.size(); i++) {
+            guMoves[i] = QPointF(UCUnits::instance()->gu(guMoves[i].x()), UCUnits::instance()->gu(guMoves[i].y())).toPoint();
+        }
+    }
 };
 
 
 class tst_BottomEdge : public QObject
 {
     Q_OBJECT
+    QStringList regionObjects;
 private Q_SLOTS:
 
     void initTestCase()
     {
         UCTestExtras::registerTouchDevice();
-        // make sure we disable the mouse
-        QuickUtils::instance()->m_mouseAttached = false;
     }
 
+    void init()
+    {
+        regionObjects.clear();
+    }
+
+private Q_SLOTS:
     void test_defaults()
     {
         QScopedPointer<BottomEdgeTestCase> test(new BottomEdgeTestCase("Defaults.qml"));
@@ -129,6 +144,7 @@ private Q_SLOTS:
         QCOMPARE(test->regionAt("testItem", 0)->m_from, 0.33);
         QCOMPARE(test->regionAt("testItem", 0)->m_to, 1.0);
         QVERIFY(!test->testItem()->activeRegion());
+        QVERIFY(!test->testItem()->preloadContent());
     }
 
     void test_height_moves_when_reparented()
@@ -319,13 +335,13 @@ private Q_SLOTS:
         QList<QPoint> shortPath, longPath;
         // upwards
         for (int i = 0; i < 10; i++) {
-            shortPath << QPointF(0, -UCUnits::instance()->gu(3)).toPoint();
-            longPath << QPointF(0, -UCUnits::instance()->gu(7)).toPoint();
+            shortPath << QPoint(0, -3);
+            longPath << QPoint(0, -7);
         }
         // downwards
         for (int i = 0; i < 5; i++) {
-            shortPath << QPointF(0, UCUnits::instance()->gu(2)).toPoint();
-            longPath << QPointF(0, UCUnits::instance()->gu(2)).toPoint();
+            shortPath << QPoint(0, 2);
+            longPath << QPoint(0, 2);
         }
 
         QTest::newRow("with mouse, onethird not passed")
@@ -344,6 +360,7 @@ private Q_SLOTS:
 
         QScopedPointer<BottomEdgeTestCase> test(new BottomEdgeTestCase("BottomEdgeInItem.qml"));
         UCBottomEdge *bottomEdge = test->testItem();
+        test->guToPoints(moves);
 
         QPoint from(bottomEdge->width() / 2.0f, bottomEdge->height() - 1);
         moves.prepend(from);
@@ -884,6 +901,74 @@ private Q_SLOTS:
         QTest::keyClick(bottomEdge->hint()->window(), Qt::Key_Escape);
         QSignalSpy collapseCompletedSpy(bottomEdge, SIGNAL(collapseCompleted()));
         QTRY_COMPARE_WITH_TIMEOUT(collapseCompletedSpy.count(), 1, 1000);
+    }
+
+    void test_preload_content()
+    {
+        QScopedPointer<BottomEdgeTestCase> test(new BottomEdgeTestCase("PreloadedContent.qml"));
+        UCBottomEdge *bottomEdge = test->testItem();
+
+        QPoint from(bottomEdge->width() / 2.0f, bottomEdge->height() - 5);
+        QPoint to = from + QPoint(0, -(bottomEdge->parentItem()->height() - 1));
+        QSignalSpy spy(bottomEdge, SIGNAL(activeRegionChanged(UCBottomEdgeRegion*)));
+
+        connect(bottomEdge, &UCBottomEdge::contentItemChanged, [=]() {
+            regionObjects.append(bottomEdge->contentItem()
+                                    ? bottomEdge->contentItem()->objectName()
+                                    : "NULL");
+        });
+
+        UCTestExtras::touchPress(0, bottomEdge, from);
+        QPoint movePos(from);
+        while (movePos.y() > to.y()) {
+            QTest::qWait(20);
+            UCTestExtras::touchMove(0, bottomEdge, movePos);
+            movePos += QPoint(0, -10);
+        }
+        QTest::qWait(20);
+        UCTestExtras::touchRelease(0, bottomEdge, movePos);
+        // we should have had 3 active region changes by now
+        // null -> region #0 -> region #1 -> null
+        QCOMPARE(spy.count(), 3);
+        QCOMPARE(regionObjects.size(), 5);
+        int i = 0;
+        QCOMPARE(regionObjects[i++], QString("default"));
+        QCOMPARE(regionObjects[i++], QString("region1"));
+        QCOMPARE(regionObjects[i++], QString("default"));
+        QCOMPARE(regionObjects[i++], QString("region2"));
+        QCOMPARE(regionObjects[i++], QString("default"));
+    }
+
+    void test_reset_preload_content()
+    {
+        QScopedPointer<BottomEdgeTestCase> test(new BottomEdgeTestCase("PreloadedContent.qml"));
+        UCBottomEdge *bottomEdge = test->testItem();
+
+        UCBottomEdgePrivate *d = UCBottomEdgePrivate::get(bottomEdge);
+        for (int i = 0; i < d->regions.size(); i++) {
+            QVERIFY(d->regions[i]->regionContent());
+        }
+
+        // set preloadContent: false
+        bottomEdge->setPreloadContent(false);
+        for (int i = 0; i < d->regions.size(); i++) {
+            QVERIFY(!d->regions[i]->regionContent());
+        }
+    }
+
+    void test_disabled_content_unloads()
+    {
+        QScopedPointer<BottomEdgeTestCase> test(new BottomEdgeTestCase("PreloadedContent.qml"));
+        UCBottomEdge *bottomEdge = test->testItem();
+
+        UCBottomEdgePrivate *d = UCBottomEdgePrivate::get(bottomEdge);
+        // disable a region
+        d->regions[0]->setEnabled(false);
+        QVERIFY(!d->regions[0]->regionContent());
+
+        // enable it
+        d->regions[0]->setEnabled(true);
+        QTRY_VERIFY_WITH_TIMEOUT(d->regions[0]->regionContent() != nullptr, 1000);
     }
 };
 

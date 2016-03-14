@@ -136,7 +136,7 @@ Item {
         }
 
         function test_warn_when_too_many_sections() {
-            ignoreWarning("It is not YET recommended or supported to use more than three sections.")
+            ignoreWarning("PageHeadSections does not support more than 3 sections. Use PageHeader and Sections instead.");
             page.head.sections.model = ["red", "orange", "yellow", "green"];
         }
     }

@@ -17,6 +17,7 @@
 """Common helpers for Ubuntu UI Toolkit Autopilot custom proxy objects."""
 
 import logging
+import os
 import subprocess
 import time
 from distutils import version
@@ -189,7 +190,15 @@ def is_process_running(name):
 
 def is_maliit_process_running():
     """Return True if malitt-server process is running, False otherwise."""
-    return is_process_running(MALIIT)
+    # FIXME: lp#1542224 Use Maliit by default
+    if 'UITK_USE_MALIIT' not in os.environ:
+        logger.info("Not going to use Maliit - set UITK_USE_MALIIT to enable it")
+        return False
+    if is_process_running(MALIIT):
+        logger.info('Using Maliit for keyboard input')
+        return True
+    logger.info('Maliit enabled but not running on the system')
+    return False
 
 
 def check_autopilot_version():

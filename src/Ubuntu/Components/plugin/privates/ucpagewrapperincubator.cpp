@@ -15,6 +15,8 @@
  */
 
 #include "ucpagewrapperincubator_p.h"
+#include <QVariantMap>
+#include <QQmlInfo>
 
 /*!
   \internal
@@ -42,6 +44,11 @@ QJSValue UCPageWrapperIncubator::onStatusChanged() const
 void UCPageWrapperIncubator::setOnStatusChanged(QJSValue onStatusChanged)
 {
     m_onStatusChanged = onStatusChanged;
+}
+
+void UCPageWrapperIncubator::setInitialState(QObject *target)
+{
+    Q_EMIT initialStateRequested(target);
 }
 
 void UCPageWrapperIncubator::statusChanged(QQmlIncubator::Status status)

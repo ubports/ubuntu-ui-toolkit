@@ -24,7 +24,7 @@ Template {
     TemplateSection {
         className: "Button"
 
-        TemplateRow {
+        TemplateFlow {
             title: i18n.tr("Standard")
 
             Button {
@@ -33,7 +33,7 @@ Template {
             }
         }
 
-        TemplateRow {
+        TemplateFlow {
             title: i18n.tr("Stroke")
 
             Button {
@@ -43,7 +43,7 @@ Template {
             }
         }
 
-        TemplateRow {
+        TemplateFlow {
             title: i18n.tr("Color")
 
             Button {
@@ -59,7 +59,7 @@ Template {
             }
         }
 
-        TemplateRow {
+        TemplateFlow {
             title: i18n.tr("Icon")
 
             Button {
@@ -68,7 +68,7 @@ Template {
             }
         }
 
-        TemplateRow {
+        TemplateFlow {
             title: i18n.tr("Icon+Text")
 
             Button {
@@ -87,7 +87,7 @@ Template {
             }
         }
 
-        TemplateRow {
+        TemplateFlow {
             title: i18n.tr("Disabled")
 
             Button {
@@ -101,12 +101,13 @@ Template {
     TemplateSection {
         className: "ComboButton"
 
-        TemplateRow {
+        TemplateFlow {
             title: i18n.tr("Collapsed")
 
             ComboButton {
                 text: "Press me"
                 objectName: "combobutton_collapsed"
+                width: parent.width < units.gu(30)? parent.width : units.gu(30)
                 comboList:  UbuntuListView {
                     model: 10
                     delegate: Standard {
@@ -116,11 +117,12 @@ Template {
             }
         }
 
-        TemplateRow {
+        TemplateFlow {
             title: i18n.tr("Icon")
 
             ComboButton {
                 iconSource: "call.png"
+                width: parent.width < units.gu(30)? parent.width : units.gu(30)
                 comboList:  UbuntuListView {
                     model: 10
                     delegate: Standard {
@@ -130,12 +132,13 @@ Template {
             }
         }
 
-        TemplateRow {
+        TemplateFlow {
             title: i18n.tr("Icon+Text")
 
             ComboButton {
                 text: "Answer"
                 iconSource: "call.png"
+                width: parent.width < units.gu(30)? parent.width : units.gu(30)
                 comboList:  UbuntuListView {
                     model: 10
                     delegate: Standard {
@@ -144,13 +147,14 @@ Template {
                 }
             }
         }
-        TemplateRow {
+        TemplateFlow {
             title: i18n.tr("Expanded")
 
             ComboButton {
                 text: "Press me"
                 objectName: "combobutton_expanded"
                 expanded: true
+                width: parent.width < units.gu(30)? parent.width : units.gu(30)
                 comboList:  UbuntuListView {
                     model: 10
                     delegate: Standard {

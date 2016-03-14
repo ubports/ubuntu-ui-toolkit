@@ -28,6 +28,7 @@
 #include "quickutils.h"
 #include "ucaction.h"
 #include "ucnamespace.h"
+#include "privates/listviewextensions.h"
 #include <QtQml/QQmlInfo>
 #include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickflickable_p.h>
@@ -210,7 +211,10 @@ UCListItemPrivate::UCListItemPrivate()
     , suppressClick(false)
     , ready(false)
     , customColor(false)
+    , listViewKeyNavigation(false)
 {
+    // the ListItem is not a focus scope
+    isFocusScope = false;
 }
 UCListItemPrivate::~UCListItemPrivate()
 {
@@ -220,10 +224,10 @@ void UCListItemPrivate::init()
 {
     Q_Q(UCListItem);
     contentItem->setObjectName("ListItemHolder");
+    divider->init(q);
     QQml_setParent_noEvent(contentItem, q);
     contentItem->setParentItem(q);
     contentItem->setClip(true);
-    divider->init(q);
     // content will be redirected to the contentItem, therefore we must report
     // children changes as it would come from the main component
     QObject::connect(contentItem, &QQuickItem::childrenChanged,
@@ -978,6 +982,23 @@ UCListItem::~UCListItem()
 {
 }
 
+// override keyNavigationFocus getter
+bool UCListItem::keyNavigationFocus() const
+{
+    Q_D(const UCListItem);
+    return d->keyNavigationFocus ||d->listViewKeyNavigation;
+}
+
+void UCListItemPrivate::setListViewKeyNavigation(bool value)
+{
+    Q_Q(UCListItem);
+    bool prevKeyNav = q->keyNavigationFocus();
+    listViewKeyNavigation = value;
+    if (prevKeyNav != q->keyNavigationFocus()) {
+        Q_EMIT q->keyNavigationFocusChanged();
+    }
+}
+
 QObject *UCListItem::attachedViewItems(QObject *object, bool create)
 {
     return qmlAttachedPropertiesObject<UCViewItemsAttached>(object, create);
@@ -1074,6 +1095,9 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
             d->selection->attachToViewItems(d->parentAttached.data());
             connect(d->parentAttached.data(), SIGNAL(expandedIndicesChanged(QList<int>)),
                     this, SLOT(_q_updateExpansion(QList<int>)), Qt::DirectConnection);
+            // if the ViewItems is attached to a ListView, disable tab stops on the ListItem
+            setActiveFocusOnTab(!d->parentAttached->isAttachedToListView());
+            d->isTabFence = d->parentAttached->isAttachedToListView();
         }
 
         if (parentAttachee) {
@@ -1101,17 +1125,36 @@ QSGNode *UCListItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data
     if (!rectNode) {
         rectNode = QQuickItemPrivate::get(this)->sceneGraphContext()->createRectangleNode();
     }
+    bool updateNode = false;
+
+    // focus frame
+    bool paintFocus = hasActiveFocus() && keyNavigationFocus();
+    rectNode->setPenWidth(paintFocus ? UCUnits::instance()->dp(1) : 0);
+    if (paintFocus) {
+        QColor penColor;
+        if (getTheme()) {
+            penColor = getTheme()->getPaletteColor(isEnabled() ? "normal" : "disabled", "focus");
+        }
+        rectNode->setPenColor(penColor);
+        rectNode->setColor(Qt::transparent);
+        updateNode = true;
+    }
+    QRectF rect(boundingRect());
+    rect -= QMarginsF(0, 0, UCUnits::instance()->dp(1), 0);
+    d->divider->setOpacity(paintFocus ? 0.0 : 1.0);
+    rectNode->setRect(rect);
+
+    // highlight color
     if (color.alphaF() >= (1.0f / 255.0f)) {
         rectNode->setColor(color);
-        // cover only the area of the contentItem, removing divider's thickness
-        QRectF rect(boundingRect());
-        if (d->divider->isVisible()) {
-            rect -= QMarginsF(0, 0, 0, d->divider->height());
-        }
-        rectNode->setRect(rect);
         rectNode->setGradientStops(QGradientStops());
         rectNode->setAntialiasing(true);
         rectNode->setAntialiasing(false);
+        updateNode = true;
+    }
+
+    // update
+    if (updateNode) {
         rectNode->update();
     } else {
         // delete node, this will delete the divider node as well
@@ -1423,6 +1466,66 @@ void UCListItem::timerEvent(QTimerEvent *event)
         }
     } else {
         QQuickItem::timerEvent(event);
+    }
+}
+
+void UCListItem::focusInEvent(QFocusEvent *event)
+{
+    Q_D(UCListItem);
+    UCStyledItemBase::focusInEvent(event);
+    if (event->reason() == Qt::MouseFocusReason) {
+        d_func()->setListViewKeyNavigation(false);
+    }
+    update();
+}
+
+void UCListItem::focusOutEvent(QFocusEvent *event)
+{
+    UCStyledItemBase::focusOutEvent(event);
+    d_func()->setListViewKeyNavigation(false);
+    update();
+}
+
+// handle horizontal keys to navigate between focusable slots
+void UCListItem::keyPressEvent(QKeyEvent *event)
+{
+    UCStyledItemBase::keyPressEvent(event);
+    Q_D(UCListItem);
+    int key = event->key();
+    if (key != Qt::Key_Left && key != Qt::Key_Right) {
+        return;
+    }
+
+    bool forwards = (d->effectiveLayoutMirror ? key == Qt::Key_Left : key == Qt::Key_Right);
+    // we must check whether the ListItem has any key navigation focusable child
+    // this is needed due to the Qt bug https://bugreports.qt.io/browse/QTBUG-50516
+    if (!QuickUtils::firstFocusableChild(this)) {
+        return;
+    }
+
+    // get the next focusable relative to the active focus item
+    QQuickItem *activeFocus = isFocusScope() ? scopedFocusItem() : window()->activeFocusItem();
+    if (!activeFocus) {
+        return;
+    }
+
+    Qt::FocusReason reason = forwards ? Qt::TabFocusReason : Qt::BacktabFocusReason;
+    if ((activeFocus == QuickUtils::firstFocusableChild(this) && !forwards) ||
+        (activeFocus == QuickUtils::lastFocusableChild(this) && forwards)) {
+        // first or the last focus child is reached, so we wrap around
+        // but for that we must set the activeFocus to false in order to
+        // be able to focus the ListItem, especially when the ListItem is a Tab fence
+        activeFocus->setFocus(false);
+        forceActiveFocus(reason);
+    } else if (activeFocus == this) {
+        // get the first or last focusable item, depending on the direction
+        QQuickItem *nextFocus = forwards
+                ? QuickUtils::firstFocusableChild(this)
+                : QuickUtils::lastFocusableChild(this);
+        nextFocus->forceActiveFocus(reason);
+    } else {
+        // in case the ListItem is in ListView, we can freely proceed with the focusing
+        QQuickItemPrivate::focusNextPrev(activeFocus, forwards);
     }
 }
 

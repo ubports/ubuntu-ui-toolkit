@@ -48,7 +48,7 @@ class UCStyledItemBase : public QQuickItem, public UCThemingExtension
 public:
     explicit UCStyledItemBase(QQuickItem *parent = 0);
 
-    bool keyNavigationFocus() const;
+    virtual bool keyNavigationFocus() const;
     bool activefocusOnPress() const;
     void setActiveFocusOnPress(bool value);
     bool activeFocusOnTab2() const;
@@ -73,6 +73,7 @@ protected:
     virtual void preThemeChanged();
     virtual void postThemeChanged();
 
+    void classBegin();
     void componentComplete();
     void itemChange(ItemChange change, const ItemChangeData &data);
     void focusInEvent(QFocusEvent *key);

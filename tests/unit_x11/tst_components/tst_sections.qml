@@ -15,32 +15,40 @@
  */
 
 import QtQuick 2.4
+import QtTest 1.0
 import Ubuntu.Test 1.0
 import Ubuntu.Components 1.3
 
 Rectangle {
     id: root
-    width: 400
-    height: 600
+    width: units.gu(60)
+    height: units.gu(75)
     color: "white"
 
     property list<Action> actionList: [
         Action {
-            text: "first";
+            text: "action 0";
             onTriggered: label.text = "First action triggered.";
         },
         Action {
-            text: "second";
+            text: "action 1";
             onTriggered: label.text = "Second action triggered.";
         },
         Action {
-            text: "third";
+            text: "action 2";
             onTriggered: label.text = "Third action triggered.";
         }
     ]
 
     property var stringList: [
-        "string one", "string two", "string three"
+        "string zero", "string one", "string two"
+    ]
+
+    property var longStringList: [
+        "one", "two", "three", "four", "five", "six", "seven",
+        "eight", "nine", "ten", "eleven", "twelve", "thirteen",
+        "fourteen", "fifteen", "sixteen", "seventeen",
+        "eighteen", "nineteen", "twenty"
     ]
 
     Column {
@@ -53,41 +61,15 @@ Rectangle {
         }
         spacing: units.gu(2)
 
-        Label {
-            anchors.horizontalCenter: parent.horizontalCenter
-            text: "Sections with actions"
-        }
-        Label {
-            anchors.left: parent.left
-            text: "actions in-line:"
-            textSize: Label.Small
-        }
         Sections {
             // Not used in the tests below, but added here to
             //  verify that the Actions can be defined directly
             //  inside the list of actions.
             actions: [
-                Action { text: "1" },
-                Action { text: "2" }
+                Action { text: "inline action 0" },
+                Action { text: "inline action 1" }
             ]
-        }
-        Label {
-            anchors.left: parent.left
-            text: "enabled:"
-            textSize: Label.Small
-        }
-        Sections {
-            id: enabledSections
-            actions: root.actionList
-        }
-        Label {
-            text: "disabled:"
-            textSize: Label.Small
-        }
-        Sections {
-            id: disabledSections
-            actions: root.actionList
-            enabled: false
+            width: parent.width
         }
         Rectangle {
             anchors {
@@ -96,7 +78,7 @@ Rectangle {
                 margins: units.gu(2)
             }
             color: UbuntuColors.blue
-            height: units.gu(10)
+            height: units.gu(5)
             Label {
                 id: label
                 anchors.centerIn: parent
@@ -104,23 +86,24 @@ Rectangle {
                 color: "white"
             }
         }
-        Label {
-            anchors.horizontalCenter: parent.horizontalCenter
-            text: "Sections with strings"
+        Sections {
+            id: enabledSections
+            actions: root.actionList
+            width: parent.width // set width > implicitWidth to test for bug 1551356 below.
         }
-        Label {
-            anchors.left: parent.left
-            text: "enabled:"
-            textSize: Label.Small
+        Sections {
+            id: disabledSections
+            actions: root.actionList
+            enabled: false
+        }
+        Sections {
+            id: noSelectionSections
+            actions: root.actionList
+            selectedIndex: -1
         }
         Sections {
             id: enabledStringSections
             model: root.stringList
-        }
-        Label {
-            anchors.left: parent.left
-            text: "disabled:"
-            textSize: Label.Small
         }
         Sections {
             id: disabledStringSections
@@ -133,16 +116,24 @@ Rectangle {
             property bool action1Triggered: false;
             property bool action2Triggered: false;
             property Action action0: Action {
+                text: "action0"
                 onTriggered: selectedIndexSections.action0Triggered = true;
             }
             property Action action1: Action {
+                text: "action1 (selected)"
                 onTriggered: selectedIndexSections.action1Triggered = true;
             }
             property Action action2: Action {
+                text: "action2"
                 onTriggered: selectedIndexSections.action2Triggered = true;
             }
             actions: [action0, action1, action2]
             selectedIndex: 1
+        }
+        Sections {
+            id: scrollingSections
+            model: root.longStringList
+            width: parent.width
         }
     }
 
@@ -169,15 +160,21 @@ Rectangle {
             enabledStringSections.selectedIndex = 0;
             disabledStringSections.selectedIndex = 0;
             label.text = "No action triggered."
+            wait_for_animation(enabledSections);
         }
 
         function wait_for_animation(sections) {
-            // TODO when animations are added
+            var listView = findChild(sections, "sections_listview");
+            if (!listView.moving) {
+                // wait for potential animation to start
+                wait(100);
+            }
+            tryCompare(listView, "moving", false, 2000);
         }
 
         function get_number_of_section_buttons(sections) {
-            var repeater = findChild(sections, "sections_repeater");
-            return repeater.count;
+            var listview = findChild(sections, "sections_listview");
+            return listview.count;
         }
 
         // return the index of the selected section button,
@@ -224,28 +221,31 @@ Rectangle {
 
         function check_selected_section(sections, index, name) {
             var v = sections.selectedIndex;
-            compare(v, index, "selectedIndex "+v+" does not match "+index);
+            compare(v, index, "selectedIndex " + v + " does not match " + index);
             v = get_selected_section_button_index(sections);
-            compare(v, index, "selected button index "+v+" does not match "+index);
+            compare(v, index, "selected button index " + v + " does not match " + index);
             if (v === -1) return;
             var w = get_selected_section_button_text(sections);
-            compare(w, name, "selected button text \'"+w+"\' does not match \'"+name+"\'");
+            compare(w, name, "selected button text \'" + w + "\' does not match \'" + name + "\'");
         }
 
         // in each test function below, test the desired behavior
         //  for both enabledSections and disabledSections.
 
         function test_0_first_section_initially_selected_actions_enabled() {
-            check_selected_section(enabledSections, 0, "first");
+            check_selected_section(enabledSections, 0, "action 0");
         }
         function test_0_first_section_initially_selected_actions_disabled() {
-            check_selected_section(disabledSections, 0, "first");
+            check_selected_section(disabledSections, 0, "action 0");
         }
         function test_0_first_section_initially_selected_strings_enabled() {
-            check_selected_section(enabledStringSections, 0, "string one");
+            check_selected_section(enabledStringSections, 0, "string zero");
         }
         function test_0_first_section_initially_selected_strings_disabled() {
-            check_selected_section(disabledStringSections, 0, "string one");
+            check_selected_section(disabledStringSections, 0, "string zero");
+        }
+        function test_0_no_selected_section_initalization() {
+            check_selected_section(noSelectionSections, -1, "");
         }
 
         function test_number_of_section_buttons() {
@@ -258,7 +258,7 @@ Rectangle {
 
         function test_click_to_select_section_and_trigger_action() {
             var index = 2;
-            var name = "third";
+            var name = "action 2";
             click_section_button(enabledSections, name);
             wait_for_animation(enabledSections);
             check_selected_section(enabledSections, index, name);
@@ -268,12 +268,12 @@ Rectangle {
 
         function test_click_disabled_section_action() {
             var index = 2;
-            var name = "third";
+            var name = "action 2";
             click_section_button(disabledSections, name);
             wait_for_animation(disabledSections);
             // first button should still be selected:
             index = 0;
-            name = "first";
+            name = "action 0";
             check_selected_section(disabledSections, index, name);
             var text = "No action triggered.";
             compare(label.text, text, "Clicking disabled button triggered something.");
@@ -281,25 +281,25 @@ Rectangle {
 
         function test_click_to_select_section_string() {
             var index = 2;
-            var name = "string three";
+            var name = "string two";
             click_section_button(enabledStringSections, name);
             wait_for_animation(enabledStringSections);
             check_selected_section(enabledStringSections, index, name);
         }
 
         function test_click_disabled_section_string() {
-            var name = "string three";
+            var name = "string two";
             click_section_button(disabledStringSections, name);
             wait_for_animation(disabledStringSections);
             // first button should still be selected:
             var index = 0;
-            name = "string one";
+            name = "string zero";
             check_selected_section(disabledStringSections, index, name);
         }
 
         function test_set_selectedIndex_to_select_section_and_trigger_action_enabled() {
             var index = 1;
-            var name = "second";
+            var name = "action 1";
             enabledSections.selectedIndex = index;
             wait_for_animation(enabledSections);
             check_selected_section(enabledSections, index, name);
@@ -309,7 +309,7 @@ Rectangle {
 
         function test_set_selectedIndex_to_select_section_and_trigger_action_disabled() {
             var index = 2;
-            var name = "third";
+            var name = "action 2";
             disabledSections.selectedIndex = index;
             wait_for_animation(disabledSections);
             check_selected_section(disabledSections, index, name);
@@ -320,7 +320,7 @@ Rectangle {
 
         function test_set_selectedIndex_to_select_section_string_enabled() {
             var index = 1;
-            var name = "string two";
+            var name = "string one";
             enabledStringSections.selectedIndex = index;
             wait_for_animation(enabledStringSections);
             check_selected_section(enabledStringSections, index, name);
@@ -328,7 +328,7 @@ Rectangle {
 
         function test_set_selectedIndex_to_select_section_string_disabled() {
             var index = 2;
-            var name = "string three";
+            var name = "string two";
             disabledStringSections.selectedIndex = index;
             check_selected_section(disabledStringSections, index, name);
         }
@@ -370,6 +370,114 @@ Rectangle {
                     "Changing the model triggers the third action.");
             selectedIndexSections.actions = originalActions;
             wait_for_animation(selectedIndexSections);
+        }
+
+        SignalSpy {
+            id: contentXChangedSpy
+            signalName: "contentXChanged"
+        }
+        function test_click_disabled_scroll_button_bug1551356() {
+            var listView = findChild(enabledSections, "sections_listview");
+            var icon = findChild(enabledSections, "left_scroll_icon");
+            contentXChangedSpy.target = listView;
+            contentXChangedSpy.clear();
+            compare(listView.contentX, 0.0, "listView is not at the leftmost position initially.");
+            mouseClick(icon, icon.width/2, icon.height/2);
+            wait(200); // give the listview ample time to scroll
+            compare(contentXChangedSpy.count, 0,
+                    "listView moved when clicking disabled scroll button.");
+            contentXChangedSpy.clear();
+            contentXChangedSpy.target = null;
+        }
+
+        SignalSpy {
+            id: animationStartedSpy
+            signalName: "started"
+        }
+        function test_press_release_on_different_icons() {
+            var leftIcon = findChild(scrollingSections, "left_scroll_icon");
+            var rightIcon = findChild(scrollingSections, "right_scroll_icon");
+            var animation = findInvisibleChild(scrollingSections, "sections_scroll_animation");
+            animationStartedSpy.target = animation;
+            compare(leftIcon.width, rightIcon.width, "Scroll icons are not the same width.");
+            compare(leftIcon.height, rightIcon.height, "Scroll icons are not the same height.");
+            var w = leftIcon.width / 2;
+            var h = leftIcon.height / 2;
+            mouseMove(leftIcon, w, h);
+            mousePress(leftIcon, w, h);
+            mouseMove(rightIcon, w, h);
+            mouseRelease(rightIcon, w, h);
+            wait(200);
+            compare(animationStartedSpy.count, 0,
+                    "Clicked signal came after pressing left icon and releasing on right icon.");
+            mousePress(rightIcon, w, h);
+            mouseMove(leftIcon, w, h);
+            mouseRelease(leftIcon, w, h);
+            wait(200);
+            compare(animationStartedSpy.count, 0,
+                    "Clicked signal came after pressing right icon and releasing on left icon.");
+            animationStartedSpy.target = null;
+        }
+
+        function test_keyboard_navigation_data() {
+            return [
+                        { tag: "actions",
+                            item: enabledSections,
+                            initialButton: root.actionList[0].text,
+                            initialIndex: 0
+                        },
+                        { tag: "strings",
+                            item: enabledStringSections,
+                            initialButton: root.stringList[0],
+                            initialIndex: 0
+                        },
+                        { tag: "scrolling",
+                            item: scrollingSections,
+                            initialButton: root.longStringList[0],
+                            initialIndex: 0
+                        }
+                    ];
+        }
+
+        function test_keyboard_navigation(data) {
+            var sections = data.item;
+            var initialButtonName = data.initialButton;
+            click_section_button(sections, initialButtonName);
+            wait_for_animation(sections);
+            compare(sections.selectedIndex, data.initialIndex,
+                    "Clicking the initial button does not select section "+data.initialIndex);
+            var numberOfSections = sections.model.length;
+            var i = sections.selectedIndex;
+
+            // Sections has focus because it was just clicked on,
+            //  so we can use keyboard navigation.
+            while (i < numberOfSections - 1) {
+                i++;
+                keyClick(Qt.Key_Right);
+                wait_for_animation(sections);
+                compare(sections.selectedIndex, i,
+                        "Could not navigate to index " + i + " using right key.");
+            }
+
+            // Navigated to the last section. Right key should do nothing now.
+            keyClick(Qt.Key_Right);
+            wait_for_animation(sections);
+            compare(sections.selectedIndex, i,
+                    "Using right key navigates beyond the last section.");
+
+            while (i > 0) {
+                i--;
+                keyClick(Qt.Key_Left);
+                wait_for_animation(sections);
+                compare(sections.selectedIndex, i,
+                        "Could not navigate back to index " + i + " using left key.");
+            }
+
+            // Navigated back to the beginning. Left key should do nothing now.
+            keyClick(Qt.Key_Left);
+            wait_for_animation(sections);
+            compare(sections.selectedIndex, i,
+                    "Using left key navigates beyond the first section.");
         }
     }
 }

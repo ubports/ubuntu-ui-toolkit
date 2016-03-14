@@ -36,6 +36,9 @@ import Ubuntu.Components 1.3
             }
         }
     \endqml
+
+    See \l Header properties that are inherited by PageHeader to control
+    the visibility of the header.
 */
 Header {
     id: header
