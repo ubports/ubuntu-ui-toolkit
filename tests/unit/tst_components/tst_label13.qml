@@ -81,8 +81,8 @@ TestCase {
         ];
     }
     function test_fontSize_equals_textSize(data) {
-        textCustom.textSize = data.size;
-        fuzzyCompare(textCustom.font.pixelSize, FontUtils.sizeToPixels(data.tag), 0.999, "pixelSize differs for " + data.tag);
+        textFontSize.textSize = data.size;
+        fuzzyCompare(textFontSize.font.pixelSize, FontUtils.sizeToPixels(data.tag), 0.999, "pixelSize differs for " + data.tag);
     }
 
     function test_fontWeight_data() {
@@ -160,6 +160,9 @@ TestCase {
 
     Label {
         id: textCustom
+    }
+    Label {
+        id: textFontSize
     }
 
     Label {
