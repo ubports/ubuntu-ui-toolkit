@@ -1,0 +1,378 @@
+#!/bin/bash
+# Copyright 2014 Canonical Ltd.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation; version 2.1.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.If not, see <http://www.gnu.org/licenses/>.
+#
+# Author: Zoltán Balogh <zoltan.baloghn@canonical.com>
+
+SERIALNUMBER=086e443edf51b915
+SILO="025"
+TEST_SILO=false
+DISTRO="ubuntu"
+SERIES="vivid"
+CHANNEL="ubuntu-touch/rc-proposed/${DISTRO}"
+PASSWORD="0000"
+BOOTTIME=300
+COMISSION=false
+COUNT=10
+SLEEP_TIME=10
+FILTER=.*
+LTTNG_SESSION_NAME_REGEXP='(auto-.*-.*) created.'
+LTTNG_SESSION_NAME=""
+REMOTE_LTTNG_SESSION=true
+VERBOSE=false
+CLEAR_CACHE=""
+VERBOSE_PARAMETER=""
+WIRELESS_ADAPTER="$(nmcli -t -f device,type dev | egrep "wireless|wifi" | cut -d: -f1)"
+IP_ADDRESS="$(ifconfig | grep -A 1 ${WIRELESS_ADAPTER} | tail -1 | cut -d ':' -f 2 | cut -d ' ' -f 1)"
+
+declare -a APPLICATIONS=(
+	"dialer-app"
+	"messaging-app"
+	"ubuntu-system-settings"
+)
+
+function echo(){
+        if [[ $VERBOSE == true ]]; then
+                builtin echo $@;             
+        fi
+}
+
+sleep_indicator () {
+	if [ -z "$1" ]; then
+		i=1
+		while [$(adb get-state-s ${SERIALNUMBER}) == "unknown" ]
+		do
+			echo -ne "Wait for adb: $i seconds\r"
+			sleep 1
+			i=$[$i+1]
+		done
+		echo -ne '\n'
+		until pids=$(adb -s ${SERIALNUMBER} shell pidof unity-system-compositor|egrep -v "^$|initctl:"); 
+		do
+			echo -ne "Wait for compositor: $i seconds\r"
+			sleep 1;
+			i=$[$i+1]
+		done;
+		echo -ne '\n'
+		return
+	fi
+	SLEEP=$1
+	if [[ $SLEEP == 120 ]]; then
+		echo "Remember that the phone may ask for SIM pin code"
+	fi
+	for (( LOOPVAR=1; LOOPVAR<= ${SLEEP}; LOOPVAR++ ))
+	do
+		echo -ne "Wait: $SLEEP/$LOOPVAR seconds\r"
+		sleep 1
+	done
+	echo -ne '\n'
+	return 0
+}
+
+function wait_for_shell {
+	# Waiting for device on ADB
+	set -e
+	adb -s ${SERIALNUMBER} wait-for-device
+	# Start waiting for Unity8"
+	until PIDS=$(adb -s ${SERIALNUMBER} shell pidof unity8 2>/dev/null|egrep -v "^$"); 
+	do
+		sleep 0.1;
+	done;
+	echo "Unity8 is up with PID: ${PIDS}"
+	set +e
+}
+
+function unlock_screen {
+	adb -s ${SERIALNUMBER} shell powerd-cli display on |egrep -v "Display State requested, cookie is|Press ctrl-c to exit|not fully supported." &
+	adb -s ${SERIALNUMBER} shell powerd-cli active |egrep -v "requested, cookie is|Press ctrl-c to exit|not fully supported." &
+	#sleep_indicator 10
+	adb -s ${SERIALNUMBER} shell "gdbus call --session --dest com.canonical.UnityGreeter --object-path / --method com.canonical.UnityGreeter.HideGreeter|grep -v '\(\)'"
+	adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S dbus-send --system --print-reply \
+					 --dest=org.freedesktop.Accounts \
+					 /org/freedesktop/Accounts/User32011 \
+					 org.freedesktop.DBus.Properties.Set \
+					 string:com.canonical.unity.AccountsService \
+					 string:demo-edges variant:boolean:false 2>&1|grep -v password|egrep -v '\(\)|method return'"
+}
+
+function reset {
+	adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S reboot 2>&1|grep -v password"
+	sleep_indicator 120
+	wait_for_shell
+	sleep_indicator 10
+	network
+	unlock_screen
+}
+
+function network {
+	# check for available wi-fi or cellular network
+	if adb -s ${SERIALNUMBER} shell "nmcli -t -f device,type dev"|grep -q wlan; then
+		echo "Wi-Fi is enabled"
+	else
+		if adb -s ${SERIALNUMBER} shell "nmcli -t -f device,type con"|grep -q "ril_1:gsm"; then
+			echo "Cellular connection is available"
+		else
+			echo "Enable Wi-Fi or cellular network"
+			# Without any network connection the profiling tools can not be installed
+			exit
+		fi
+	fi
+	if phablet-network -s ${SERIALNUMBER} 2>&1|grep -q Error; then
+		echo "Reset and try again."
+		reset -f
+		phablet-network -s ${SERIALNUMBER} 2>&1
+	fi
+}
+
+function device_provisioning {
+	# flash the latest image
+	echo -e "Flashing \e[31m${CHANNEL}\e[0m"
+	ubuntu-device-flash touch --serial=${SERIALNUMBER} --channel=${CHANNEL} --wipe --developer-mode --password=${PASSWORD}
+	sleep_indicator ${BOOTTIME}
+	echo -e "Disable the intro wizard"
+	phablet-config -s ${SERIALNUMBER} welcome-wizard --disable
+	sleep_indicator 10
+	echo -e "Disable the edge swiping lecture "
+	phablet-config -s ${SERIALNUMBER} edges-intro --disable	
+	sleep_indicator 10
+	echo -e "Clone the network "
+	network
+	sleep_indicator 10
+	adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S reboot 2>&1|grep -v password"
+	sleep_indicator 120
+	network
+	sleep_indicator 10
+	echo "Set up with the archive image"
+	adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S touch /userdata/.writable_image 2>&1|grep -v password > /dev/null"
+	adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S touch /userdata/.adb_onlock 2>&1|grep -v password > /dev/null"
+	#phablet-config -s ${SERIALNUMBER} writable-image -r ${PASSWORD} 2>&1 > /dev/null
+	echo "Sleep after phablet-config";
+	sleep_indicator 10
+	echo -e "Clone the network "
+	network
+	adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S reboot 2>&1|grep -v password"
+	sleep_indicator 120
+	network
+	sleep_indicator 10
+}
+
+function measure_app_startups {
+	for APPLICATION in "${APPLICATIONS[@]}"
+	do
+	        if [[ ${APPLICATION} =~ ${FILTER} ]]; then
+ 			echo -e "\e[31m${APPLICATION}\e[0m"
+			LTTNG_SESSION_NAME=""
+			while read -r LINE
+			do
+				if [[ $LINE =~ $LTTNG_SESSION_NAME_REGEXP ]]; then
+					LTTNG_SESSION_NAME=${BASH_REMATCH[1]}
+				fi
+				if [[ $LINE =~ "Falling back to local" ]]; then
+					# Falling back to local
+					REMOTE_LTTNG_SESSION=false
+				fi
+				if [[ $LINE =~ "Traces will be written in" ]]; then
+					LTTNG_TRACE_FILE=${LINE/Traces will be written in /}
+					LTTNG_TRACE_FILE="${LTTNG_TRACE_FILE/$'\r'/}"
+				fi
+			done < <(adb -s ${SERIALNUMBER} shell "/usr/bin/profile_appstart.sh -a ${APPLICATION} -u ${IP_ADDRESS} -c ${COUNT} -s ${SLEEP_TIME} ${CLEAR_CACHE--q}")
+			[ -z "${LTTNG_SESSION_NAME}" ] && echo "The lttng session is not available" || app-launch-profiler-lttng -i ~/lttng-traces/ubuntu-phablet/${LTTNG_SESSION_NAME} ${VERBOSE_PARAMETER--v}
+			if [[ $REMOTE_LTTNG_SESSION == false ]]; then
+				LTTNG_TRACE_PATH=${LTTNG_TRACE_FILE/$LTTNG_SESSION_NAME/}
+				adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S chown phablet $LTTNG_TRACE_PATH -R 2>&1|grep -v password > /dev/null"
+				adb -s ${SERIALNUMBER} pull ${LTTNG_TRACE_FILE} ${LTTNG_SESSION_NAME}  > /dev/null 2>&1
+				app-launch-profiler-lttng -i ${LTTNG_SESSION_NAME} ${VERBOSE_PARAMETER--v}
+				if [ -z "${LTTNG_SESSION_NAME}" ];then
+					rm -rf ${LTTNG_SESSION_NAME}
+				fi
+			fi
+		fi
+	done
+} 
+
+while getopts ":cqhvn:s:w:p:f:a:o:" opt; do
+	case $opt in
+	c)
+		COMISSION=true
+		;;
+	n)
+		COUNT=$OPTARG
+		;;
+	s)
+		SLEEP_TIME=$OPTARG
+		;;
+	p)
+		TEST_SILO=true
+		PPA=$OPTARG
+		;;
+        f)
+		FILTER=$OPTARG
+		;;
+	a)
+		IFS=',' read -r -a APPLICATIONS <<< "$OPTARG"
+		;;
+	w)
+		PASSWORD=$OPTARG
+		;;
+	v)
+		VERBOSE=true
+		unset VERBOSE_PARAMETER
+		;;
+	q)
+		unset CLEAR_CACHE
+		;;
+
+	h)
+		VERBOSE=true
+		echo "Usage: appstart_test -c -p 025 -n 5 -s 10"
+		echo -e "\t-c : Provision the device from the rc-proposed channel"
+		echo -e "\t-n : Number of times the applications are started during the test. Default $COUNT"
+		echo -e "\t-s : Sleep time between application starts. Default $SLEEP_TIME"
+		echo -e "\t-p : Run tests against a silo Default is ${TEST_SILO} the default silo is: ${SILO}"
+		echo -e "\t-w : Password of the phablet user on the device. Default ${PASSWORD}"
+		echo -e "\t-f : Filter for the test suite. Default $FILTER"
+                echo -e "\t-v : Turn appstart_test to be verbose. Default $VERBOSE"
+                echo -e "\t-q : Test the application startup with QML cache. Default ${CLEAR_CACHE-true} ${CLEAR_CACHE+false}"
+		echo -e "\t-h : Show this help"
+		exit
+		;;
+	:)
+		echo "Option -$OPTARG requires an argument." >&2
+		exit
+	esac
+done
+
+# Use the first available device for testing
+echo -e "Waiting for a device"
+adb wait-for-device
+SERIALNUMBER=`adb devices -l | grep -Ev "List of devices attached" | grep -Ev "emulator-" | sed "/^$/d"|sed "s/ .*//g"`
+adb -s ${SERIALNUMBER} wait-for-device
+echo "Serial number: ${SERIALNUMBER}"
+echo "Test with QML cache: ${CLEAR_CACHE-true}" ${CLEAR_CACHE+false}
+echo "Number of start: ${COUNT}"
+echo "Length of sleep between restarts: ${SLEEP_TIME}"
+echo "Filter: ${FILTER}"
+echo "Commission: ${COMISSION}"
+echo "Test silo: ${TEST_SILO}"
+if [[ ${TEST_SILO} == true ]]; then
+	echo "Silo: ${SILO}"
+fi
+echo "Password of the phablet user:${PASSWORD}"
+echo "Applications to test:"
+for APPLICATION in "${APPLICATIONS[@]}"
+do
+    echo -e "\t$APPLICATION"
+done
+
+# Flash the device with rc-proposed
+if [ ${COMISSION} == true ]; then
+	device_provisioning
+	unlock_screen
+else
+	# Check if the device is in writable mode
+	if adb shell "echo ${PASSWORD}|sudo -S bash -c '[[ -f /userdata/.writable_image ]] &&echo && echo writable'" 2>&1 |grep -v password | grep -q writable ; then
+		# The device is already writable
+		unlock_screen
+		network
+	else
+		adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S touch /userdata/.writable_image 2>&1|grep -v password > /dev/null"
+		adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S touch /userdata/.adb_onlock 2>&1|grep -v password > /dev/null"
+		reset -f
+		sleep_indicator 120
+		echo -e "Clone the network "
+		network
+		adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S reboot 2>&1|grep -v password"
+		sleep_indicator 120
+	fi
+fi
+
+# Install the ubuntu-app-launch-profiler on the device if needed
+if adb shell "dpkg -l ubuntu-app-launch-profiler" 2>&1 | grep -q "no packages found" ; then
+	echo "Installing ubuntu-app-launch-profiler on the device"
+	adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S apt-get update 2>&1|grep -v password > /dev/null"
+	if adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S apt-cache search ubuntu-app-launch-profiler  2>/dev/null"|grep -q ubuntu-app-launch-profiler; then
+		adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S apt-get update 2>&1|grep -v password > /dev/null"
+		adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S apt-get install --yes --force-yes ubuntu-app-launch-profiler 2>&1 |grep -v password > /dev/null"
+	else
+		echo "ubuntu-app-launch-profiler is not available from the archives."
+		echo "Please install it manually and press enter."
+		read
+	fi
+else
+	echo "The ubuntu-app-launch-profiler is installed on the device"
+fi
+
+# Start the lttng-relayd if needed
+pgrep lttng-relayd > /dev/null
+if [ $? -eq 0 ]; then
+	echo -e "The lttng-relayd is already running."
+	LTTNG_RELAYD_STARTED=false
+else
+	LTTNG_RELAYD_STARTED=true
+	echo -e "Starting lttng-relayd"
+	lttng-relayd &
+	sleep_indicator 5
+fi
+
+nc -z ${IP_ADDRESS} 5343
+if [ $? -eq 0 ]; then
+	echo "The lttng server ${URL} is listening on 5343"
+else
+	echo "The lttng server is not accesible. Check lttng-relayd or firewall policies."
+fi
+
+# Configure the silo on the device if requested
+if [[ ${TEST_SILO} == true ]]; then
+	echo "Testing with ${SILO}"
+	if adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S bash -c 'ls -l /etc/apt/sources.list.d/' 2>&1"|grep -q testing-ppa.list; then
+		echo "Already set up"
+	else
+		echo -e "Set up with silo \e[31m${SILO}\e[0m"
+		adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S bash -c 'echo \"deb http://ppa.launchpad.net/ci-train-ppa-service/landing-${SILO}/${DISTRO} ${SERIES} main\" > /etc/apt/sources.list.d/silo-${SILO}.list'  2>&1|grep -v password > /dev/null "
+		SILO=${SILO/\//-}
+		adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S bash -c 'echo -e \"Package: *\nPin: release o=LP-PPA-ci-train-ppa-service-landing-${SILO}\nPin-Priority: 1100\" > /etc/apt/preferences.d/silo.pref' 2>&1|grep -v password > /dev/null "
+		adb -s ${SERIALNUMBER} shell "test -e /usr/sbin/policy-rc.d && cp /usr/sbin/policy-rc.d /tmp/policy-rc.d"
+		adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S  bash -c 'echo \"exit 101\" > /usr/sbin/policy-rc.d'  2>&1|grep -v password > /dev/null"
+		adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S  bash -c 'chmod +x /usr/sbin/policy-rc.d'  2>&1|grep -v password > /dev/null"
+		adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S apt-get update 2>&1|grep -v password > /dev/null"
+		adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S apt-get dist-upgrade --yes --force-yes 2>&1 |grep -v password > /dev/null"
+		adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S dpkg --configure -a 2>&1 |grep -v password > /dev/null"
+		adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S apt-get --force-yes -f install  2>&1 |grep -v password > /dev/null"
+		adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S reboot 2>&1|grep -v password > /dev/null"
+		sleep_indicator 120
+		unlock_screen
+		network
+		sleep_indicator 5
+	fi
+fi
+
+# Measure the application startup time
+measure_app_startups
+
+if [[ ${TEST_SILO} == true ]]; then
+	echo "Cleaning up silo ${SILO}"
+	if adb -s ${SERIALNUMBER} shell "dpkg-query -W --showformat='${Status}\n' ppa-purge 2>&1"|grep -q installed; then
+		adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S apt-get --force-yes  intsall ppa-purge  2>&1 |grep -v password > /dev/null"
+		REMOVE_PPA_PURGE=true
+	fi
+	adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S ppa-purge -y -i ppa:ci-train-ppa-service/landing-${SILO} 2>&1 |grep -v password > /dev/null"
+	if [[ ${REMOVE_PPA_PURGE} == true ]]; then
+		adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S apt-get --force-yes purge ppa-purge  2>&1 |grep -v password > /dev/null"
+	fi
+fi
+
+# Kill the lttng-relayd if it was started here
+if [[ ${LTTNG_RELAYD_STARTED} == true ]]; then
+	kill -9 `pgrep lttng-relayd`
+fi

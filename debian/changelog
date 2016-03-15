@@ -49,6 +49,16 @@ ubuntu-ui-toolkit (1.3.1893+16.04-0ubuntu1) UNRELEASED; urgency=medium
 
  -- Zoltán Balogh <zoltanibalogh@canonical.com>  Thu, 10 Mar 2016 07:40:40 +0200
 
+ubuntu-ui-toolkit (1.3.1872+16.04.20160314-0ubuntu1) xenial; urgency=medium
+
+  [ Zoltán Balogh ]
+  * land the appstart profiler renamed: app-launch-profiler/app-launch-
+    profiler-lttng.py => app-launch-profiler/app-launch-profiler-lttng
+    app-launch-profiler/appstart_profiling_test_plan.sh => app-launch-
+    profiler/appstart_test
+
+ -- Zoltan Balogh <zoltan.balogh@canonical.com>  Mon, 14 Mar 2016 04:36:11 +0000
+
 ubuntu-ui-toolkit (1.3.1872+16.04.20160308-0ubuntu1) xenial; urgency=medium
 
   [ Timo Jyrinki ]
