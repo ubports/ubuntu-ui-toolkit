@@ -901,6 +901,8 @@ private Q_SLOTS:
         QFETCH(Qt::Key, key);
 
         QScopedPointer<BottomEdgeTestCase> view(new BottomEdgeTestCase("Defaults.qml"));
+        view->rootObject()->forceActiveFocus();
+        QTRY_COMPARE_WITH_TIMEOUT(view->rootObject()->property("activeFocus").toBool(), true, 1000);
         UCBottomEdge *bottomEdge = view->testItem();
         QTest::keyClick(bottomEdge->hint()->window(), Qt::Key_Tab);
         QTRY_COMPARE_WITH_TIMEOUT(bottomEdge->hint()->property("activeFocus").toBool(), true, 1000);
