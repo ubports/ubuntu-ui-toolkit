@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (1.3.1888+16.04-0ubuntu1) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.3.1893+16.04-0ubuntu1) UNRELEASED; urgency=medium
 
   [ Benjamin Zeller 
   * Register expected warning messages in the tree testcase.
@@ -22,6 +22,7 @@ ubuntu-ui-toolkit (1.3.1888+16.04-0ubuntu1) UNRELEASED; urgency=medium
   [ Christian Dywan <christian.dywan@canonical.com> 
   * Rename qtdeclarative5-*-plugin to qml-module-*. Fixes LP: #1342031.
   * Require a qtdeclarative5 known to have the tab fence patch.
+  * Reset previous theme version and use UbuntuTestCase in tst_animator.
 
   [ XiaoGuo, Liu <xiaoguo.liu@canonical.com>
   * Fix AdaptivePageLayout documentation.
@@ -37,6 +38,11 @@ ubuntu-ui-toolkit (1.3.1888+16.04-0ubuntu1) UNRELEASED; urgency=medium
   * BorromEdge.preloadContent. Fixes LP: #1540454.
   * Asynchronous loader (AsyncLoader) using incubator, prerequisite for 
     BottomEdge preloading its content. Fixes LP: #1540454.
+  * ListView proxy should not consume up/down key events. Fixes LP: #1554447
+  * Pick up the right style. Fixes LP: #1555797
+  * Label makes sure the color alteration is known by the theming. 
+    Fixes LP: #1555784
+  * Fix AsyncLoader tests so they create slightly less amount of elements.
 
   [ Andrea Bernabei <andrea.bernabei@canonical.com>
   * UI Gallery: fix vertical alignment of labels in left panel list items.
