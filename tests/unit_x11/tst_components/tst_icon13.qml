@@ -17,7 +17,7 @@
 import QtQuick 2.4
 import QtTest 1.0
 import Ubuntu.Components 1.3
-import Ubuntu.Test 1.0
+import Ubuntu.Test 1.3
 
 Item {
     width: units.gu(50)
