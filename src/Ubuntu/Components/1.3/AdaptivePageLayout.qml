@@ -754,6 +754,19 @@ PageTreeNode {
             property var page: pageWrapper ? pageWrapper.object : null
             property bool customHeader: page && page.hasOwnProperty("header") &&
                                         page.header
+            onCustomHeaderChanged: {
+                // do not change the holderBody anchors until the new page
+                //  for the column has been set to prevent geometry changes in
+                //  the current/previous page.
+                if (page) {
+                    if (customHeader) {
+                        holderBody.anchors.top = holderBody.parent.top;
+                    } else {
+                        holderBody.anchors.top = subHeader.bottom;
+                    }
+                }
+            }
+
             onPageChanged: body.updateHeaderHeight(0)
             Connections {
                 target: page
@@ -770,7 +783,7 @@ PageTreeNode {
                 id: holderBody
                 objectName: parent.objectName + "Body"
                 anchors {
-                    top: customHeader ? parent.top : subHeader.bottom
+                    top: subHeader.bottom // updated in onCustomHeaderChanged
                     bottom: parent.bottom
                     left: parent.left
                     right: parent.right
