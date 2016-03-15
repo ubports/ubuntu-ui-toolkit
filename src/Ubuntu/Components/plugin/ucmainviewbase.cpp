@@ -187,7 +187,7 @@ void UCMainViewBase::setHeaderColor(QColor headerColor)
 {
     Q_D(UCMainViewBase);
 
-    // MainViewStyle is used to draw the gradient
+    // MainViewStyle is used to draw the gradient background.
     if (d->styleName().isEmpty()) {
         d->setStyleName(QStringLiteral("MainViewStyle"));
     }
@@ -252,7 +252,7 @@ void UCMainViewBase::setFooterColor(QColor footerColor)
 {
     Q_D(UCMainViewBase);
 
-    // MainViewStyle is used to draw the gradient
+    // MainViewStyle is used to draw the gradient background.
     if (d->styleName().isEmpty()) {
         d->setStyleName(QStringLiteral("MainViewStyle"));
     }
