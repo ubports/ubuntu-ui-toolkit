@@ -31,6 +31,8 @@
 #include "ucbottomedgestyle.h"
 #undef private
 
+Q_DECLARE_METATYPE(Qt::Key)
+
 #define QVERIFY_RETURN(statement, returnValue) \
 do {\
     if (!QTest::qVerify((statement), #statement, "", __FILE__, __LINE__))\
