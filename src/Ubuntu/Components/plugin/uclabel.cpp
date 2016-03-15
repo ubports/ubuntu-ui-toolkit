@@ -14,49 +14,54 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "uclabel.h"
+#include "label_p.h"
 #include "ucfontutils.h"
 #include "ucnamespace.h"
 #include "ucunits.h"
 #include "uctheme.h"
 
-void UCLabel::updatePixelSize()
+UCLabelPrivate::UCLabelPrivate(UCLabel *qq)
+    : q_ptr(qq)
+    , defaultColor(getDefaultColor)
+    , textSize(UCLabel::Medium)
+    , flags(0)
 {
-    if (m_flags & PixelSizeSet) {
+}
+
+UCLabelPrivate::UCLabelPrivate(UCLabel *qq, UCLabel::ColorProviderFunc func)
+    : q_ptr(qq)
+    , defaultColor(func)
+    , textSize(UCLabel::Medium)
+    , flags(0)
+{
+}
+
+void UCLabelPrivate::updatePixelSize()
+{
+    if (flags & PixelSizeSet) {
         return;
     }
+
+    Q_Q(UCLabel);
     const float sizes[] = {
         UCFontUtils::xxSmallScale, UCFontUtils::xSmallScale, UCFontUtils::smallScale,
         UCFontUtils::mediumScale, UCFontUtils::largeScale, UCFontUtils::xLargeScale
     };
-    QFont textFont = font();
+    QFont textFont = q->font();
     textFont.setPixelSize(
-        qRound(sizes[m_textSize] * UCUnits::instance()->dp(UCFontUtils::fontUnits)));
-    setFont(textFont);
-    // remove PixelSizeSet flag
-    m_flags &= ~PixelSizeSet;
+        qRound(sizes[textSize] * UCUnits::instance()->dp(UCFontUtils::fontUnits)));
+    q->setFont(textFont);
 }
 
-void UCLabel::updateRenderType()
+void UCLabelPrivate::updateRenderType()
 {
+    Q_Q(UCLabel);
+    QQuickText *qtext = static_cast<QQuickText*>(q);
     if (UCUnits::instance()->gridUnit() <= 10) {
-        QQuickText::setRenderType(QQuickText::NativeRendering);
+        qtext->setRenderType(QQuickText::NativeRendering);
     } else {
-        QQuickText::setRenderType(QQuickText::QtRendering);
+        qtext->setRenderType(QQuickText::QtRendering);
     }
-}
-
-void UCLabel::_q_updateFontFlag(const QFont &font)
-{
-    Q_UNUSED(font);
-    if (m_defaultFont.pixelSize() != font.pixelSize()) {
-        m_flags |= PixelSizeSet;
-    }
-}
-
-void UCLabel::_q_customColor()
-{
-    m_flags |= ColorSet;
 }
 
 /*!
@@ -88,60 +93,64 @@ void UCLabel::_q_customColor()
 UCLabel::UCLabel(QQuickItem* parent)
     : QQuickText(parent)
     , UCThemingExtension(this)
-    , m_defaultColor(getDefaultColor)
-    , m_textSize(Medium)
-    , m_flags(0)
+    , d_ptr(new UCLabelPrivate(this))
 {
 }
 
-UCLabel::UCLabel(std::function<QColor (QQuickItem*, UCTheme*)> defaultColor, QQuickItem *parent)
+UCLabel::UCLabel(ColorProviderFunc defaultColor, QQuickItem *parent)
     : QQuickText(parent)
     , UCThemingExtension(this)
-    , m_defaultColor(defaultColor)
-    , m_textSize(Medium)
-    , m_flags(0)
+    , d_ptr(new UCLabelPrivate(this, defaultColor))
 {
 }
+UCLabel::~UCLabel()
+{
+    delete d_ptr;
+}
 
-QColor UCLabel::getDefaultColor(QQuickItem *item, UCTheme *theme)
+QColor UCLabelPrivate::getDefaultColor(QQuickItem *item, UCTheme *theme)
 {
     // FIXME: replace the code below with automatic color
-    // change detection based on teh item's state
+    // change detection based on the item's state
     const char *valueSet = item->isEnabled() ? "normal" : "disabled";
     return theme ? theme->getPaletteColor(valueSet, "backgroundText") : QColor();
 }
 
 void UCLabel::classBegin()
 {
+    Q_D(UCLabel);
     QQuickText::classBegin();
-    init();
+    d->init();
 }
 
-void UCLabel::init()
+void UCLabelPrivate::init()
 {
-    postThemeChanged();
+    Q_Q(UCLabel);
+    q->postThemeChanged();
+
     updatePixelSize();
-    m_defaultFont = font();
-    m_defaultFont.setFamily("Ubuntu");
-    m_defaultFont.setWeight(QFont::Light);
-    setFont(m_defaultFont);
+    defaultFont = q->font();
+    defaultFont.setFamily("Ubuntu");
+    defaultFont.setWeight(QFont::Light);
+    q->setFont(defaultFont);
     updateRenderType();
 
-    connect(UCUnits::instance(), &UCUnits::gridUnitChanged, this, &UCLabel::updateRenderType);
-    connect(this, &UCLabel::fontChanged, this, &UCLabel::_q_updateFontFlag, Qt::DirectConnection);
-    connect(this, &UCLabel::colorChanged, this, &UCLabel::_q_customColor, Qt::DirectConnection);
-    connect(this, &UCLabel::enabledChanged, this, &UCLabel::postThemeChanged, Qt::DirectConnection);
+    QObject::connect(UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(updateRenderType()));
+    QObject::connect(q, &UCLabel::enabledChanged, q, &UCLabel::postThemeChanged, Qt::DirectConnection);
+
+    QObject::connect(q, &UCLabel::fontChanged, q, &UCLabel::fontChanged2, Qt::DirectConnection);
+    QObject::connect(q, &UCLabel::colorChanged, q, &UCLabel::colorChanged2, Qt::DirectConnection);
 }
 
 void UCLabel::postThemeChanged()
 {
-    if (m_flags & ColorSet) {
+    Q_D(UCLabel);
+    if (d->flags & UCLabelPrivate::ColorSet) {
         return;
     }
     UCTheme *theme = getTheme();
     if (theme) {
-        setColor(m_defaultColor(this, theme));
-        m_flags &= ~ColorSet;
+        setColor(d->defaultColor(this, theme));
     }
 }
 
@@ -163,24 +172,48 @@ void UCLabel::postThemeChanged()
  *  \li \b Label.XLarge - very large font size
  *  \endlist
  */
+UCLabel::TextSize UCLabel::textSize() const
+{
+    Q_D(const UCLabel);
+    return d->textSize;
+}
 void UCLabel::setTextSize(TextSize size)
 {
-    if (!(m_flags & TextSizeSet)) {
+    Q_D(UCLabel);
+    if (!(d->flags & UCLabelPrivate::TextSizeSet)) {
         Q_EMIT fontSizeChanged();
-        m_flags |= TextSizeSet;
+        d->flags |= UCLabelPrivate::TextSizeSet;
     }
 
-    if (m_textSize != size) {
-        m_textSize = size;
-        updatePixelSize();
+    if (d->textSize != size) {
+        d->textSize = size;
+        d->updatePixelSize();
         Q_EMIT textSizeChanged();
     }
 }
 
+void UCLabel::setFont2(const QFont &font)
+{
+    Q_D(UCLabel);
+    // we must restrict ourself to the pixelSize change as any font property change will
+    // lead to the setter call.
+    if (d->defaultFont.pixelSize() != font.pixelSize()) {
+        d->flags |= UCLabelPrivate::PixelSizeSet;
+    }
+    QQuickText::setFont(font);
+}
+
+void UCLabel::setColor2(const QColor &color)
+{
+    Q_D(UCLabel);
+    d->flags |= UCLabelPrivate::ColorSet;
+    QQuickText::setColor(color);
+}
+
 void UCLabel::setRenderType(RenderType renderType)
 {
-    disconnect(UCUnits::instance(), &UCUnits::gridUnitChanged,
-               this, &UCLabel::updateRenderType);
+    disconnect(UCUnits::instance(), SIGNAL(gridUnitChanged()),
+               this, SLOT(updateRenderType()));
     QQuickText::setRenderType(renderType);
 }
 
@@ -203,9 +236,20 @@ void UCLabel::setRenderType(RenderType renderType)
  *  \li \b "x-large" - very large font size
  *  \endlist
  */
+QString UCLabel::fontSize() const
+{
+    Q_D(const UCLabel);
+    if (d->flags & UCLabelPrivate::TextSizeSet) {
+        return "";
+    }
+    const char* const sizes[] =
+        { "xx-small", "x-small", "small", "medium", "large", "x-large" };
+    return QString(sizes[d->textSize]);
+}
 void UCLabel::setFontSize(const QString& fontSize)
 {
-    if (m_flags & TextSizeSet) {
+    Q_D(UCLabel);
+    if (d->flags & UCLabelPrivate::TextSizeSet) {
         return;
     }
     if (fontSize.size() < 4) {
@@ -225,9 +269,12 @@ void UCLabel::setFontSize(const QString& fontSize)
         default: { return; }
     }
 
-    if (m_textSize != textSize) {
-        m_textSize = textSize;
-        updatePixelSize();
+    if (d->textSize != textSize) {
+        d->textSize = textSize;
+        d->updatePixelSize();
         Q_EMIT fontSizeChanged();
     }
 }
+
+
+#include "moc_uclabel.cpp"
