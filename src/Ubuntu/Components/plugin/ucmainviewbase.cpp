@@ -187,6 +187,11 @@ void UCMainViewBase::setHeaderColor(QColor headerColor)
 {
     Q_D(UCMainViewBase);
 
+    // MainViewStyle is used to draw the gradient
+    if (d->styleName().isEmpty()) {
+        d->setStyleName(QStringLiteral("MainViewStyle"));
+    }
+
     //disable binding to background color
     d->m_flags |= UCMainViewBasePrivate::CustomHeaderColor;
     d->_q_headerColorBinding(headerColor);
@@ -247,6 +252,10 @@ void UCMainViewBase::setFooterColor(QColor footerColor)
 {
     Q_D(UCMainViewBase);
 
+    // MainViewStyle is used to draw the gradient
+    if (d->styleName().isEmpty()) {
+        d->setStyleName(QStringLiteral("MainViewStyle"));
+    }
     //disable binding to background color
     d->m_flags |= UCMainViewBasePrivate::CustomFooterColor;
     d->_q_footerColorBinding(footerColor);
@@ -298,7 +307,6 @@ void UCMainViewBase::componentComplete()
 {
     Q_D(UCMainViewBase);
     UCPageTreeNode::componentComplete();
-    d->setStyleName(QStringLiteral("MainViewStyle"));
     d->doAutoTheme();
 
     if (d->m_actionContext)

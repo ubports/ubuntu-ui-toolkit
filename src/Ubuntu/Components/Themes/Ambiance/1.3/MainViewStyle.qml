@@ -47,23 +47,16 @@ Item {
     */
     property color footerColor: styledItem.footerColor
 
-    Loader {
-        property bool isGradient: mainViewStyle.backgroundColor != mainViewStyle.headerColor ||
-                                  mainViewStyle.backgroundColor != mainViewStyle.footerColor
+    Rectangle {
         anchors.fill: parent
-        // When there is no gradient, we do not need to draw the background,
-        //  because MainViewBase sets the window color.
-        sourceComponent: isGradient ? gradientComponent : null
-    }
-
-    Component {
-        id: gradientComponent
-        Rectangle {
-            gradient: Gradient {
-                GradientStop { position: 0.0; color: mainViewStyle.headerColor }
-                GradientStop { position: 0.83; color: mainViewStyle.backgroundColor }
-                GradientStop { position: 1.0; color: mainViewStyle.footerColor }
-            }
+        // Hide the gradient if the style was loaded and afterwards the header
+        //  and footer color are set to the same value as backgroundColor.
+        visible: mainViewStyle.backgroundColor != mainViewStyle.headerColor ||
+                 mainViewStyle.backgroundColor != mainViewStyle.footerColor
+        gradient: Gradient {
+            GradientStop { position: 0.0; color: mainViewStyle.headerColor }
+            GradientStop { position: 0.83; color: mainViewStyle.backgroundColor }
+            GradientStop { position: 1.0; color: mainViewStyle.footerColor }
         }
     }
 }
