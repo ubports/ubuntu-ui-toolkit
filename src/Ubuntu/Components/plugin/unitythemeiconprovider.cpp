@@ -265,6 +265,8 @@ UnityThemeIconProvider::UnityThemeIconProvider(const QString &themeName):
 
 QPixmap UnityThemeIconProvider::requestPixmap(const QString &id, QSize *size, const QSize &requestedSize)
 {
+    // The hicolor theme will be searched last as per
+    // https://specifications.freedesktop.org/icon-theme-spec/icon-theme-spec-latest.html
     QSet<QString> alreadySearchedThemes;
     const QStringList names = id.split(",", QString::SkipEmptyParts);
     QPixmap pixmap = theme->findBestIcon(names, requestedSize, &alreadySearchedThemes);
