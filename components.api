@@ -1718,6 +1718,19 @@ Ubuntu.Test.UbuntuTestCase 1.0 0.1: TestCase
     function var warningFormat(var line, var column, var message)
     function var waitForHeaderAnimation(var mainView)
     readonly property QuickTestUtil testUtil
+Ubuntu.Test.UbuntuTestCase 1.3 UbuntuTestCase13: TestCase
+    function var findChild(var obj, var objectName)
+    function var findInvisibleChild(var obj, var objectName)
+    function var findChildWithProperty(var item, var property, var value)
+    function var centerOf(var item)
+    function var mouseMoveSlowly(var item, var x, var y, var dx, var dy, var steps, var stepdelay, var buttons)
+    function var flick(var item, var x, var y, var dx, var dy, var pressTimeout, var steps, var button, var modifiers, var delay)
+    function var mouseLongPress(var item, var x, var y, var button, var modifiers, var delay)
+    function var tryCompareFunction(var func, var expectedResult, var timeout)
+    function var typeString(var string)
+    function var warningFormat(var line, var column, var message)
+    function var waitForHeaderAnimation(var mainView)
+    readonly property QuickTestUtil testUtil
 Ubuntu.Components.UriHandler 1.0 0.1: QtObject singleton
     signal opened(QStringList uris)
 Ubuntu.Components.ListItems.ValueSelector 1.0 0.1: Empty
