@@ -48,8 +48,14 @@ public:
     // Does a breadth-first search for an icon with any name in @names. Parent
     // themes are only looked at if the current theme doesn't contain any icon
     // in @names.
-    QPixmap findBestIcon(const QStringList &names, const QSize &size)
+    QPixmap findBestIcon(const QStringList &names, const QSize &size, QSet<QString> *alreadySearchedThemes)
     {
+        if (alreadySearchedThemes) {
+            if (alreadySearchedThemes->contains(name))
+                return QPixmap();
+            alreadySearchedThemes->insert(name);
+        }
+
         Q_FOREACH(const QString &name, names) {
             QPixmap pixmap = lookupIcon(name, size);
             if (!pixmap.isNull())
@@ -57,7 +63,7 @@ public:
         }
 
         Q_FOREACH(IconThemePointer theme, parents) {
-            QPixmap pixmap = theme->findBestIcon(names, size);
+            QPixmap pixmap = theme->findBestIcon(names, size, alreadySearchedThemes);
             if (!pixmap.isNull())
                 return pixmap;
         }
@@ -100,8 +106,11 @@ private:
                     directories.append(dir);
                 }
 
-                Q_FOREACH(const QString &name, settings.value("Icon Theme/Inherits").toStringList())
-                    parents.append(IconTheme::get(name));
+                Q_FOREACH(const QString &name, settings.value("Icon Theme/Inherits").toStringList()) {
+                    if (name != "hicolor") {
+                        parents.append(IconTheme::get(name));
+                    }
+                }
 
                 // there can only be one index.theme
                 break;
@@ -256,7 +265,15 @@ UnityThemeIconProvider::UnityThemeIconProvider(const QString &themeName):
 
 QPixmap UnityThemeIconProvider::requestPixmap(const QString &id, QSize *size, const QSize &requestedSize)
 {
-    QPixmap pixmap = theme->findBestIcon(id.split(",", QString::SkipEmptyParts), requestedSize);
+    QSet<QString> alreadySearchedThemes;
+    const QStringList names = id.split(",", QString::SkipEmptyParts);
+    QPixmap pixmap = theme->findBestIcon(names, requestedSize, &alreadySearchedThemes);
+
+    if (pixmap.isNull()) {
+        IconTheme::IconThemePointer theme = IconTheme::get("hicolor");
+        return theme->findBestIcon(names, requestedSize, nullptr);
+    }
+
     *size = pixmap.size();
     return pixmap;
 }
