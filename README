@@ -39,7 +39,7 @@ You may need to be root for this command to succeed.
 
 To use these components in QML without installing them, you need to set the 
 QML2_IMPORT_PATH environment variable. This is done by running
-$ source export_modules_dir.sh
+$ source export_qml_dir.sh
 from the root directory of this repository, but is lost when you close your 
 shell.
 
