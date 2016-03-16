@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (1.3.1893+16.04-0ubuntu1) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.3.1896+16.04-0ubuntu1) UNRELEASED; urgency=medium
 
   [ Benjamin Zeller 
   * Register expected warning messages in the tree testcase.
@@ -23,6 +23,7 @@ ubuntu-ui-toolkit (1.3.1893+16.04-0ubuntu1) UNRELEASED; urgency=medium
   * Rename qtdeclarative5-*-plugin to qml-module-*. Fixes LP: #1342031.
   * Require a qtdeclarative5 known to have the tab fence patch.
   * Reset previous theme version and use UbuntuTestCase in tst_animator.
+  * BottomEdge(Hint) focus and close via keyboard. Fixes LP: #1523825
 
   [ XiaoGuo, Liu <xiaoguo.liu@canonical.com>
   * Fix AdaptivePageLayout documentation.
@@ -31,6 +32,9 @@ ubuntu-ui-toolkit (1.3.1893+16.04-0ubuntu1) UNRELEASED; urgency=medium
   * Properly disable left/right arrows on sections when at the beginning/end of
     the list. Fixes LP: #1551356.
   * Sections and old AppHeader landscape mode. Fixes LP: #1551341.
+  * Set the window color as soon as the window is available, to avoid a 
+    flickering background when it is updated later. 
+    Fixes LP: #1439133, LP: #1554897
 
   [ Zsombor Egri <zsombor.egri@canonical.com> 
   * ListItem focus navigation in ListView and other views. 
