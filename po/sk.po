@@ -15,8 +15,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 1 : (n>=2 && n<=4) ? 2 : 0;\n"
-"X-Launchpad-Export-Date: 2016-01-13 05:48+0000\n"
-"X-Generator: Launchpad (build 17886)\n"
+"X-Launchpad-Export-Date: 2016-03-16 06:05+0000\n"
+"X-Generator: Launchpad (build 17947)\n"
 
 #: Ubuntu/Components/1.2/TextInputPopover.qml:29
 #: Ubuntu/Components/1.3/TextInputPopover.qml:29
@@ -46,7 +46,7 @@ msgstr ""
 #: Ubuntu/Components/ListItems/1.2/Empty.qml:398
 #: Ubuntu/Components/ListItems/1.3/Empty.qml:398
 msgid "Delete"
-msgstr ""
+msgstr "Vymazať"
 
 #: Ubuntu/Components/plugin/adapters/dbuspropertywatcher_p.cpp:51
 msgid "No service/path specified"
@@ -166,26 +166,26 @@ msgstr ""
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:188
 msgid "Usage: "
-msgstr ""
+msgstr "Použitie: "
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:209
 msgid "Options:"
-msgstr ""
+msgstr "Možnosti:"
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:498
 #, qt-format
 msgid "%1 is expecting an additional argument: %2"
-msgstr ""
+msgstr "%1 očakáva ďalší prídavný argument:  %2"
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:503
 #, qt-format
 msgid "%1 is expecting a value for argument: %2"
-msgstr ""
+msgstr "%1 očakáva hodnotu pre argument: %2"
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:520
 #, qt-format
 msgid "%1 is expecting additional arguments: %2"
-msgstr ""
+msgstr "%1 očakáva ďalšie argumenty: %2"
 
 #: Ubuntu/Components/plugin/uclistitemstyle.cpp:145
 msgid "consider overriding swipeEvent() slot!"
