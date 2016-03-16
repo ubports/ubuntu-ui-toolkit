@@ -91,8 +91,8 @@ void collectReachableMetaObjects(QObject *object, QSet<const QMetaObject *> *met
 void collectReachableMetaObjects(const QQmlType *ty, QSet<const QMetaObject *> *metas)
 {
     collectReachableMetaObjects(ty->metaObject(), metas, ty->isExtendedType());
-    if (ty->attachedPropertiesType())
-        collectReachableMetaObjects(ty->attachedPropertiesType(), metas);
+    if (ty->attachedPropertiesType(0))
+        collectReachableMetaObjects(ty->attachedPropertiesType(0), metas);
 }
 
 /* We want to add the MetaObject for 'Qt' to the list, this is a
@@ -536,7 +536,7 @@ public:
             if (isSingleton)
                 object.insert("isSingleton", true);
 
-            if (const QMetaObject *attachedType = (*qmlTypes.begin())->attachedPropertiesType()) {
+            if (const QMetaObject *attachedType = (*qmlTypes.begin())->attachedPropertiesType(0)) {
                 // Can happen when a type is registered that returns itself as attachedPropertiesType()
                 // because there is no creatable type to attach to.
                 if (attachedType != meta) {
