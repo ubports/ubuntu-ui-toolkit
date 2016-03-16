@@ -76,10 +76,10 @@ void PropertyChange::setBinding(PropertyChange *change, QQmlAbstractBinding *bin
    }
    change->backup();
 #if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
-   QQmlAbstractBinding *prev = QQmlPropertyPrivate::setBinding(change->qmlProperty, binding);
+   QQmlAbstractBinding::Ptr prev(QQmlPropertyPrivate::binding(change->qmlProperty));
    QQmlPropertyPrivate::setBinding(change->qmlProperty, binding);
 #else
-   QQmlAbstractBinding::Ptr prev(QQmlPropertyPrivate::binding(change->qmlProperty));
+   QQmlAbstractBinding *prev = QQmlPropertyPrivate::setBinding(change->qmlProperty, binding);
 #endif
    if (prev && prev != binding && prev != change->backupBinding) {
 #if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
