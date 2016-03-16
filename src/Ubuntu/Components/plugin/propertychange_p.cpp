@@ -44,10 +44,10 @@ void PropertyChange::backup()
     if (!backedUp) {
 #if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
         backupBinding = QQmlPropertyPrivate::binding(qmlProperty);
+        QQmlPropertyPrivate::setBinding(qmlProperty, Q_NULLPTR);
 #else
         backupBinding = QQmlPropertyPrivate::setBinding(qmlProperty, Q_NULLPTR);
 #endif
-        QQmlPropertyPrivate::setBinding(qmlProperty, Q_NULLPTR);
         backupValue = qmlProperty.read();
         backedUp = true;
     }
@@ -77,10 +77,10 @@ void PropertyChange::setBinding(PropertyChange *change, QQmlAbstractBinding *bin
    change->backup();
 #if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
    QQmlAbstractBinding *prev = QQmlPropertyPrivate::setBinding(change->qmlProperty, binding);
+   QQmlPropertyPrivate::setBinding(change->qmlProperty, binding);
 #else
    QQmlAbstractBinding::Ptr prev(QQmlPropertyPrivate::binding(change->qmlProperty));
 #endif
-   QQmlPropertyPrivate::setBinding(change->qmlProperty, binding);
    if (prev && prev != binding && prev != change->backupBinding) {
 #if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
        prev->removeFromObject();
