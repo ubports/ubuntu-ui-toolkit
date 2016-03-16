@@ -17,6 +17,7 @@
 
 import babeltrace
 import sys
+import getopt
 
 
 class MyCounter(dict):
@@ -24,10 +25,27 @@ class MyCounter(dict):
         return 0
 
 if __name__ == '__main__':
+    verbose_mode = False
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "hi:v", ["help",
+                                   "inputdata="])
+    except getopt.GetoptError:
+        print("app-launch-profiler-lttng -i <inputdata>")
+        sys.exit(2)
+    for opt, arg in opts:
+        if opt == '-h':
+            print("app-launch-profiler-lttng -i <inputdata>")
+            sys.exit()
+        elif opt in ("-i", "--idata"):
+            inputdata = arg
+        elif opt in ("-v", "--verbose"):
+            verbose_mode = True
+        else:
+            assert False, "unhandled option"
+            sys.exit(2)
     col = babeltrace.TraceCollection()
-    if col.add_traces_recursive(sys.argv[1], 'ctf') is None:
+    if col.add_traces_recursive(inputdata, 'ctf') is None:
         raise RuntimeError('Cannot add trace')
-
     first_event = -1
     iterations = 0
     events_in_iteration = 2
@@ -62,7 +80,13 @@ if __name__ == '__main__':
 #                  str((event.timestamp-first_event) / 1000 / 1000 / 1000))
 
     for event in numbers:
-        print("---------- Event "+event+" ----------")
-        print("Min: " + str(round(minNumbers[event] / 1000 / 1000 / 1000, 4)))
-        print("Max: " + str(round(maxNumbers[event] / 1000 / 1000 / 1000, 4)))
-        print("Avg: " + str(round(numbers[event]/iterations/1000000/1000, 4)))
+        if (verbose_mode):
+            print("---------- Event "+event+" ----------")
+            print("Min: " + str(round(minNumbers[event] /
+                                      1000 / 1000 / 1000, 4)))
+            print("Max: " + str(round(maxNumbers[event] /
+                                      1000 / 1000 / 1000, 4)))
+            print("Avg: " + str(round(numbers[event] / iterations /
+                                      1000000/1000, 4)))
+        else:
+            print(str(round(numbers[event]/iterations/1000000/1000, 4)))

@@ -831,6 +831,15 @@ bool UCBottomEdge::eventFilter(QObject *target, QEvent *event)
         }
         break;
     }
+    case QEvent::KeyPress: {
+        QKeyEvent *keyPress = static_cast<QKeyEvent*>(event);
+        switch (keyPress->key()) {
+            case Qt::Key_Escape:
+                collapse();
+            default:
+                break;
+        }
+    }
     default: break;
     }
     return UCStyledItemBase::eventFilter(target, event);

@@ -47,30 +47,16 @@ Item {
     */
     property color footerColor: styledItem.footerColor
 
-    Gradient {
-        id: backgroundGradient
-        GradientStop { position: 0.0; color: mainViewStyle.headerColor }
-        GradientStop { position: 0.83; color: mainViewStyle.backgroundColor }
-        GradientStop { position: 1.0; color: mainViewStyle.footerColor }
-    }
-
     Rectangle {
-        id: backgroundColor
         anchors.fill: parent
-        color: mainViewStyle.backgroundColor
-        gradient: internals.isGradient ? backgroundGradient : null
-        visible: internals.isGradient
-    }
-
-    Binding {
-        target: typeof window != 'undefined' ? window : null
-        property: "color"
-        value: mainViewStyle.backgroundColor
-    }
-
-    QtObject {
-        id: internals
-        property bool isGradient: mainViewStyle.backgroundColor != mainViewStyle.headerColor ||
-                                  mainViewStyle.backgroundColor != mainViewStyle.footerColor
+        // Hide the gradient if the style was loaded and afterwards the header
+        //  and footer color are set to the same value as backgroundColor.
+        visible: mainViewStyle.backgroundColor != mainViewStyle.headerColor ||
+                 mainViewStyle.backgroundColor != mainViewStyle.footerColor
+        gradient: Gradient {
+            GradientStop { position: 0.0; color: mainViewStyle.headerColor }
+            GradientStop { position: 0.83; color: mainViewStyle.backgroundColor }
+            GradientStop { position: 1.0; color: mainViewStyle.footerColor }
+        }
     }
 }
