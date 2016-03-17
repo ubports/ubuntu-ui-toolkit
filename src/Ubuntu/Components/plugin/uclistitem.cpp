@@ -1471,7 +1471,6 @@ void UCListItem::timerEvent(QTimerEvent *event)
 
 void UCListItem::focusInEvent(QFocusEvent *event)
 {
-    Q_D(UCListItem);
     UCStyledItemBase::focusInEvent(event);
     if (event->reason() == Qt::MouseFocusReason) {
         d_func()->setListViewKeyNavigation(false);

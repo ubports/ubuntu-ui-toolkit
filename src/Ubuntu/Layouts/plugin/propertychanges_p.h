@@ -46,8 +46,15 @@ public:
     // members
     Type type;
     QQmlProperty property;
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+    QQmlAbstractBinding::Ptr fromBinding;
+    QQmlAbstractBinding::Ptr toBinding;
+#else
     QQmlAbstractBinding *fromBinding;
     QWeakPointer<QQmlAbstractBinding> toBinding;
+#endif
+
     QVariant fromValue;
     QVariant toValue;
 
