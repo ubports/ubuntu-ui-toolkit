@@ -182,6 +182,23 @@ PopupBase {
      */
     property alias theme: foreground.theme
 
+    /*!
+      \qmlproperty string styleName
+      The style name of the foreground of the Dialog.
+      \since Ubuntu.Components 1.3
+      \sa StyledItem::styleName
+     */
+    property alias styleName: foreground.styleName
+
+    /*!
+      \qmlproperty Component style
+      The style of the foreground of the Dialog.
+      This property takes precedence over \l styleName
+      \since Ubuntu.Components 1.3
+      \sa StyledItem::style
+     */
+    property alias style: foreground.style
+
     __foreground: foreground
     __eventGrabber.enabled: modal
     __dimBackground: modal
