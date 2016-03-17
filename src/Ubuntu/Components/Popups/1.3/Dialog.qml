@@ -137,6 +137,51 @@ PopupBase {
       */
     property alias contentHeight: foreground.height
 
+    /*!
+      \qmlproperty ThemeSettings theme
+      \since Ubuntu.Components 1.3
+      Configure the theme of the Dialog foreground and all its subcomponents.
+      Example:
+      \qml
+        import QtQuick 2.4
+        import Ubuntu.Components 1.3
+        import Ubuntu.Components.Popups 1.3
+        MainView {
+            width: units.gu(40)
+            height: units.gu(71)
+
+            // make sure the main theme is Ambiance
+            theme.name: "Ubuntu.Components.Themes.Ambiance"
+
+            Component {
+                id: dialogComponent
+                Dialog {
+                    id: dialog
+                    title: "Input dialog"
+                    // the dialog and its children will use SuruDark
+                    theme: ThemeSettings {
+                        name: "Ubuntu.Components.Themes.SuruDark"
+                    }
+                    TextField {
+                        placeholderText: "enter text"
+                    }
+                    Button {
+                        text: "Close"
+                        onClicked: PopupUtils.close(dialog)
+                    }
+                }
+            }
+
+            Button {
+                text: "Open dialog"
+                onClicked: PopupUtils.open(dialogComponent)
+            }
+        }
+      \endqml
+      \sa StyledItem::theme
+     */
+    property alias theme: foreground.theme
+
     __foreground: foreground
     __eventGrabber.enabled: modal
     __dimBackground: modal
