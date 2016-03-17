@@ -17,18 +17,38 @@
 # Author: Juhapekka Piiroinen <juhapekka.piiroinen@canonical.com>
 ################################################################################
 
-. `dirname $0`/../../build_paths.inc
+source `dirname $0`/../../export_qml_dir.sh || exit 1
 
 _CMD=""
 _TARGETPATH=$1
 _TESTFILEPATH=$2
 _MINIMAL=$3
 
-_TARGET=$(basename $1)
-_TESTFILE=$(basename $2)
-_LIB_PATH="${BUILD_DIR}/lib:${BUILD_DIR}/qml/Ubuntu/Components:${BUILD_DIR}/qml/Ubuntu/Test:$LD_LIBRARY_PATH"
-_IMPORT_PATH="${BUILD_DIR}/qml:$QML2_IMPORT_PATH"
-_THEMES_PATH="${BUILD_DIR}/qml"
+if [ -z $_TESTFILEPATH ]; then
+  _TESTFILEPATH=$_TARGETPATH
+fi
+
+if [ -z $_TARGETPATH ]; then
+  echo Usage:
+  echo "  $0 TARGET [FILE] [minimal|custom]"
+  echo ''
+  echo 'Examples:'
+  echo "  $0 tests/unit/tst_components/tst_components tst_label13.qml minimal"
+  echo ''
+  echo "  cd test/unit/tst_mainview"
+  echo "  ../$(basename $0) tst_mainview tst_mainview minimal"
+  echo "  cd ../../.."
+  echo ''
+  echo "  cd tests/unit_x11/tst_components"
+  echo "  ../../xvfb.sh ../../unit/$(basename $0) tst_components tst_listitem13.qml"
+  echo "  cd ../../.."
+  echo ''
+  echo "  tests/xvfb.sh $0 tests/unit_x11/tst_bottomedge/tst_bottomedge"
+  exit 1
+fi
+
+_TARGET=$(basename $_TARGETPATH)
+_TESTFILE=$(basename $_TESTFILEPATH)
 _XML="${BUILD_DIR}/tests/test_$_TARGET_$_TESTFILE.xml"
 
 _ARGS="-p -o -p $_XML,xunitxml -p -o -p -,txt"
@@ -44,7 +64,7 @@ function create_test_cmd {
   _CMD="-n $_TESTFILE -m 300"
 
   _CMD="dbus-test-runner --task gdb -p --quiet $_CMD"
-  _CMD="$_CMD -p --batch -p -ex -p 'set print thread-events off' -p -ex -p run -p -ex -p bt -p --return-child-result -p --args -p $EXE"
+  _CMD="$_CMD -p --batch -p -ex -p 'set print thread-events off' -p -ex -p run -p -ex -p bt -p --return-child-result -p --args -p $(readlink -f $EXE)"
 
   if [ "$_MINIMAL" = "minimal" ]; then
       _CMD="$_CMD -p -platform -p minimal"
@@ -53,7 +73,7 @@ function create_test_cmd {
   fi
 
   if [ $_TARGETPATH != $_TESTFILEPATH ]; then
-      _CMD="$_CMD -p -input -p $_TESTFILEPATH"
+      _CMD="$_CMD -p -input -p $(readlink -f $_TESTFILEPATH)"
   fi
   _CMD="$_CMD -p -maxwarnings -p 100"
 }
@@ -65,11 +85,11 @@ function execute_test_cmd {
     echo "Error: $_TARGET wasn't built!"
     RESULT=2
   elif [ $DISPLAY ]; then
+    cd $(dirname $_TARGETPATH)
+
     # https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1256999
     # https://bugreports.qt-project.org/browse/QTBUG-36243
 	
-    QML2_IMPORT_PATH=${_IMPORT_PATH} UBUNTU_UI_TOOLKIT_THEMES_PATH=${_THEMES_PATH} \
-    LD_LIBRARY_PATH=${_LIB_PATH} \
     ALARM_BACKEND=memory SUPPRESS_DEPRECATED_NOTE=no \
     QT_LOGGING_RULES="[PERFORMANCE].warning=false" \
     $_CMD $_ARGS 2>&1 | grep -v 'QFontDatabase: Cannot find font directory'
