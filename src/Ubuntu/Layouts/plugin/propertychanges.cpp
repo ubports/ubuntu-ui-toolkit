@@ -90,7 +90,11 @@ void PropertyAction::setValue(const QVariant &value)
  */
 void PropertyAction::setTargetBinding(QQmlAbstractBinding *binding, bool deletable)
 {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+    toBinding = binding;
+#else
     toBinding = QQmlAbstractBinding::getPointer(binding);
+#endif
     deleteToBinding = deletable;
 }
 
@@ -101,13 +105,26 @@ void PropertyAction::setTargetBinding(QQmlAbstractBinding *binding, bool deletab
  */
 void PropertyAction::apply()
 {
-    if (!toBinding.isNull()) {
+    if (toBinding) {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+        QQmlAbstractBinding::Ptr binding(QQmlPropertyPrivate::binding(property));
+        QQmlPropertyPrivate::setBinding(property, toBinding.data());
+#else
         QQmlAbstractBinding *binding = QQmlPropertyPrivate::setBinding(property, toBinding.data());
+#endif
         if (binding != fromBinding || (binding == fromBinding && deleteFromBinding)) {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+            if (binding == fromBinding) {
+                fromBinding.reset();
+                fromBinding=0;
+            }
+            binding->removeFromObject();
+#else
             binding->destroy();
             if (binding == fromBinding) {
                 fromBinding = 0;
             }
+#endif
         }
     } else if (toValueSet) {
         if (!property.object()->setProperty(property.name().toLocal8Bit(), toValue)) {
@@ -127,8 +144,13 @@ void PropertyAction::reset()
     if (fromBinding) {
         QQmlPropertyPrivate::setBinding(property, 0);
         if (deleteFromBinding) {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+            fromBinding->removeFromObject();
+            fromBinding.reset();
+#else
             fromBinding->destroy();
             fromBinding = 0;
+#endif
             deleteFromBinding = false;
         }
     }
@@ -144,15 +166,31 @@ void PropertyAction::revert(bool reset)
         property.reset();
     }
     if (fromBinding) {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+        QQmlAbstractBinding::Ptr revertedBinding(QQmlPropertyPrivate::binding(property));
+        QQmlPropertyPrivate::setBinding(property, fromBinding.data());
+#else
         QQmlAbstractBinding *revertedBinding = QQmlPropertyPrivate::setBinding(property, fromBinding);
+#endif
+
         if (revertedBinding && (revertedBinding != fromBinding) && ((revertedBinding != toBinding.data()) || (revertedBinding == toBinding.data() && deleteToBinding))) {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+            revertedBinding->removeFromObject();
+            revertedBinding.reset();
+#else
             revertedBinding->destroy();
+#endif
         }
-    } else if (!toBinding.isNull() && QQmlPropertyPrivate::binding(property) == toBinding.data()) {
+    } else if (toBinding && QQmlPropertyPrivate::binding(property) == toBinding.data()) {
         QQmlPropertyPrivate::setBinding(property, 0);
         if (deleteToBinding) {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+            toBinding->removeFromObject();
+            toBinding.reset();
+#else
             toBinding.data()->destroy();
             toBinding.clear();
+#endif
             deleteToBinding = false;
         }
     } else if (property.isValid() && fromValue.isValid() && (type == Value)) {
@@ -193,7 +231,11 @@ PropertyChange::PropertyChange(QQuickItem *target, const QString &property, cons
         } else {
             QQmlBinding *binding = new QQmlBinding(script, target, scriptContext);
             binding->setTarget(action.property);
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+            action.toBinding = binding;
+#else
             action.toBinding = QQmlAbstractBinding::getPointer(binding);
+#endif
             action.deleteToBinding = true;
         }
     }
