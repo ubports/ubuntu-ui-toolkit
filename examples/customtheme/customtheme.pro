@@ -1,6 +1,6 @@
 TEMPLATE = aux
 
-filetypes = qml png svg js jpg qmlproject desktop
+filetypes = qml png svg js jpg pro desktop
 
 OTHER_FILES = theme/parent_theme
 
