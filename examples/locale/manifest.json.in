@@ -4,7 +4,7 @@
     "architecture": "@CLICK_ARCH@",
     "title": "Locale",
     "hooks": {
-        "unit-converter": {
+        "locale": {
             "apparmor": "locale.apparmor",
             "desktop": "locale.desktop"
         }

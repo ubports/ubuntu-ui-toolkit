@@ -12,7 +12,8 @@ TARGET = calculator
 SUBDIRS += components
 
 QML_FILES += $$files(*.qml,true) \
-             $$files(*.js,true)
+             $$files(*.js,true) \
+             components
 
 CONF_FILES +=  $${TARGET}.apparmor \
                $${TARGET}.png \
@@ -20,7 +21,8 @@ CONF_FILES +=  $${TARGET}.apparmor \
 
 OTHER_FILES += $${CONF_FILES} \
                $${QML_FILES} \
-               $${TARGET}.desktop
+               $${TARGET}.desktop \
+            ``
 
 #specify where the qml/js files are installed to
 qml_files.path = /

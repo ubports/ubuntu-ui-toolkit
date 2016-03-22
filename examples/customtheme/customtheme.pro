@@ -14,12 +14,12 @@ QML_FILES += $$files(*.qml,true) \
 
 CONF_FILES +=  $${TARGET}.apparmor \
                $${TARGET}.png \
-	       $${TARGET}.wav
+	       $${TARGET}.wav \
+               theme/parent_theme
 
 OTHER_FILES += $${CONF_FILES} \
                $${QML_FILES} \
-               $${TARGET}.desktop \
-               theme/parent_theme
+               $${TARGET}.desktop 
 
 #specify where the qml/js files are installed to
 qml_files.path = /

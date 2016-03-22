@@ -4,7 +4,7 @@
     "architecture": "@CLICK_ARCH@",
     "title": "Jokes",
     "hooks": {
-        "unit-converter": {
+        "customtheme": {
             "apparmor": "customtheme.apparmor",
             "desktop": "customtheme.desktop"
         }
