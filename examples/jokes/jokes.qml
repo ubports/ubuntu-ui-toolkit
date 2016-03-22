@@ -84,7 +84,7 @@ MainView {
 
     SoundEffect {
         id: laugh
-        source: "laugh.wav"
+        source: "jokes.wav"
     }
 
     UbuntuShape {
