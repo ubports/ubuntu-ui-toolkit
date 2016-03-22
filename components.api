@@ -425,7 +425,10 @@ Ubuntu.Components.Popups.Dialog 1.3: PopupBase
     default property list<QtObject> contents
     property double edgeMargins
     property bool modal
+    property Component style
+    property string styleName
     property string text
+    property ThemeSettings theme
     property string title
 Ubuntu.Components.ListItems.Divider 1.0 0.1: QQuickImageBase
 Ubuntu.Components.ListItems.Divider 1.3: QQuickImageBase
@@ -987,6 +990,9 @@ Ubuntu.Components.Popups.Popover 1.3: PopupBase
     function var show()
     function var hide()
     property Item pointerTarget
+    property Component style
+    property string styleName
+    property ThemeSettings theme
 Ubuntu.Components.Popups.PopupBase 1.0 0.1: OrientationHelper
     property Item dismissArea
     property PropertyAnimation fadingAnimation
