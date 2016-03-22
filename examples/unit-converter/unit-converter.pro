@@ -30,7 +30,7 @@ config_files.files += $${CONF_FILES}
 #install the desktop file, a translated version is
 #automatically created in the build directory
 desktop_file.path = /
-desktop_file.files = unit-converter.desktop
+desktop_file.files = $${TARGET}.desktop
 desktop_file.CONFIG += no_check_exist
 
 exists($$PWD/../examples.pro) {
