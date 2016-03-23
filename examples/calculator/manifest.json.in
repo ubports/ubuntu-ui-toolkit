@@ -1,0 +1,15 @@
+{
+    "name": "calculator.bzoltan",
+    "description": "Example application of the Ubuntu UI Toolkit - Calculator",
+    "architecture": "@CLICK_ARCH@",
+    "title": "Calculator",
+    "hooks": {
+        "calculator": {
+            "apparmor": "calculator.apparmor",
+            "desktop": "calculator.desktop"
+        }
+    },
+    "version": "0.1",
+    "maintainer": "Zoltán Balogh <zoltan@bakter.hu>",
+    "framework": "ubuntu-sdk-15.04"
+}
