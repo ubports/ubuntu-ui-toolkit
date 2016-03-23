@@ -65,9 +65,31 @@ private Q_SLOTS:
 
         UnityThemeIconProvider provider("mockTheme");
         QSize returnedSize;
-        const QPixmap p = provider.requestPixmap(icon, &returnedSize, requestSize);
+        QPixmap p = provider.requestPixmap(icon, &returnedSize, requestSize);
         QCOMPARE(p.size(), resultSize);
         QCOMPARE(returnedSize, resultSize);
+
+        // Search again to make sure subsequent searches still work
+        p = provider.requestPixmap(icon, &returnedSize, requestSize);
+        QCOMPARE(p.size(), resultSize);
+        QCOMPARE(returnedSize, resultSize);
+    }
+
+    void test_hicolorLast()
+    {
+        QSize returnedSize;
+        UnityThemeIconProvider provider("mockTheme");
+
+        // myapp is in MockTheme3 (white) and hicolor (black)
+        // MockTheme3 one is returned since hicolor is last per spec
+        QPixmap p = provider.requestPixmap("myapp", &returnedSize, QSize(-1, -1));
+        QVERIFY(!p.isNull());
+        QCOMPARE(QColor(p.toImage().pixel(0,0)), QColor(Qt::white));
+
+        // myapp2 is only in hicolor (black) so that's the one returned
+        p = provider.requestPixmap("myapp2", &returnedSize, QSize(-1, -1));
+        QVERIFY(!p.isNull());
+        QCOMPARE(QColor(p.toImage().pixel(0,0)), QColor(Qt::black));
     }
 };
 

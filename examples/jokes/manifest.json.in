@@ -1,0 +1,15 @@
+{
+    "name": "jokes.bzoltan",
+    "description": "Example application of the Ubuntu UI Toolkit - Jokes",
+    "architecture": "@CLICK_ARCH@",
+    "title": "Jokes",
+    "hooks": {
+        "jokes": {
+            "apparmor": "jokes.apparmor",
+            "desktop": "jokes.desktop"
+        }
+    },
+    "version": "0.1",
+    "maintainer": "Zoltán Balogh <zoltan@bakter.hu>",
+    "framework": "ubuntu-sdk-15.04"
+}
