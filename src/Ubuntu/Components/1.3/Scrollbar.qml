@@ -65,12 +65,12 @@ import Ubuntu.Components 1.3 as Toolkit
 
     \section1 Vertical Scrollbar and Flickable behaviour
 
-    Since \l {Flickable::topMargin} and \l {Flickable::bottomMargin} are used by Ubuntu components
+    Since Flickable's topMargin and bottomMargin are modified by Ubuntu components
     such as \l BottomEdgeHint and \l Header in their positioning logic, the Scrollbar component
     uses the value of those properties to its top and bottom anchors margins, by default. This is
     to prevent any overlap with BottomEdgeHint or Header (see \l {Vertical Scrollbar and Header behaviour}
     for more info about that). In case you need to specify custom Flickable
-    content margins (note: we're talking about content, not anchors margins), you will also have to
+    content margins (note: we're talking about content margins, not anchors ones), you will also have to
     override the top and bottom anchors margins of the Scrollbar accordingly.
 
     \section1 Vertical Scrollbar and Header behaviour
