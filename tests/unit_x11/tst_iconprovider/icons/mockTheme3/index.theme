@@ -1,0 +1,10 @@
+[Icon Theme]
+Name=MockTheme3
+
+Directories=apps/512
+
+[apps/512]
+Size=512
+Context=Applications
+Type=Fixed
+
