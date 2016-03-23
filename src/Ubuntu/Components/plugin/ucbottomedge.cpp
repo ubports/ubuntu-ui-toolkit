@@ -439,7 +439,6 @@ void UCBottomEdgePrivate::patchContentItemHeader()
 bool UCBottomEdgePrivate::loadStyleItem(bool animated)
 {
     // fix styleVersion
-    Q_Q(UCBottomEdge);
     if (!styleVersion) {
         styleVersion = BUILD_VERSION(1, 3);
     }

@@ -88,7 +88,6 @@ void AsyncLoaderPrivate::detachComponent()
         return;
     }
 
-    Q_Q(AsyncLoader);
     if (componentHandler) {
         QObject::disconnect(*componentHandler);
     }

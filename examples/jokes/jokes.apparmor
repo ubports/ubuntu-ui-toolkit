@@ -1,0 +1,7 @@
+{
+    "policy_groups": [
+        "networking",
+        "audio"
+    ],
+    "policy_version": 1.3
+}

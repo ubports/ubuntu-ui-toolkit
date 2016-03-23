@@ -1,5 +1,6 @@
 [Icon Theme]
 Name=MockTheme
+Inherits=mockTheme2,mockTheme3
 
 Directories=actions/scalable,apps/512
 
