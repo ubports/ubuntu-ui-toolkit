@@ -225,7 +225,6 @@ Toolkit.StyledItem {
                         && __buddyScrollbar.align === Qt.AlignLeading
                         && __buddyScrollbar.__styleInstance.isScrollable)
                     return __buddyScrollbar.__styleInstance.troughThicknessSteppersStyle
-                //return buddyScrollbar.__styleInstance.indicatorThickness
                 // *ELSE FALLTHROUGH*
             default:
                 return 0
@@ -251,7 +250,6 @@ Toolkit.StyledItem {
                         && __buddyScrollbar.align === Qt.AlignTrailing
                         && __buddyScrollbar.__styleInstance.isScrollable)
                     return __buddyScrollbar.__styleInstance.troughThicknessSteppersStyle
-                //return buddyScrollbar.__styleInstance.indicatorThickness
                 // *ELSE FALLTHROUGH*
             default:
                 return 0
@@ -276,7 +274,6 @@ Toolkit.StyledItem {
                         && __buddyScrollbar.align === Qt.AlignTop
                         && __buddyScrollbar.__styleInstance.isScrollable)
                     return __buddyScrollbar.__styleInstance.troughThicknessSteppersStyle
-                //return buddyScrollbar.__styleInstance.indicatorThickness
                 // *ELSE FALLTHROUGH*
 
             default:
@@ -302,7 +299,6 @@ Toolkit.StyledItem {
                         && __buddyScrollbar.align === Qt.AlignBottom
                         && __buddyScrollbar.__styleInstance.isScrollable)
                     return __buddyScrollbar.__styleInstance.troughThicknessSteppersStyle
-                //return buddyScrollbar.__styleInstance.indicatorThickness
                 // *ELSE FALLTHROUGH*
             default:
                 return 0
