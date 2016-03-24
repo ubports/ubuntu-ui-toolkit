@@ -44,7 +44,7 @@ function create_test_cmd {
   _CMD="-n $_TESTFILE -m 300"
 
   DEB_HOST_ARCH=$(dpkg-architecture -qDEB_HOST_ARCH)
-  if [[ 'armv7l' == *$DEB_HOST_ARCH* ]]; then
+  if [[ ${DEB_HOST_ARCH} =~ 'arm' ]]; then
     _CMD="dbus-test-runner --task $EXE $_CMD"
   else
     _CMD="dbus-test-runner --task gdb -p --quiet $_CMD"
