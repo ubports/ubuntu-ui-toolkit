@@ -17,33 +17,43 @@
 # Author: Juhapekka Piiroinen <juhapekka.piiroinen@canonical.com>
 ################################################################################
 
-source `dirname $0`/../../export_qml_dir.sh || exit 1
+set -e
+
+source `dirname $0`/../../export_qml_dir.sh
 
 _CMD=""
 _TARGETPATH=$1
 _TESTFILEPATH=$2
 _MINIMAL=$3
 
+relpath() {
+  python -c 'import os, sys; print(os.path.relpath(*sys.argv[1:]))' $*
+}
+
 if [ -z $_TESTFILEPATH ]; then
   _TESTFILEPATH=$_TARGETPATH
+elif [[ 'minimal custom' == *$_TESTFILEPATH* ]]; then
+  _MINIMAL=$_TESTFILEPATH
+  _TESTFILEPATH=$_TARGETPATH
 fi
+test -z $_MINIMAL && _MINIMAL=default
 
 if [ -z $_TARGETPATH ]; then
   echo Usage:
-  echo "  $0 TARGET [FILE] [minimal|custom]"
+  echo "  $0 TEST_EXECUTABLE [QML_FILE] [QT_QPA_PLATFORM]"
   echo ''
   echo 'Examples:'
-  echo "  $0 tests/unit/tst_components/tst_components tst_label13.qml minimal"
+  echo "  $0 $(relpath ${BUILD_DIR}/tests/unit/tst_components/tst_components) tst_label13.qml minimal"
   echo ''
-  echo "  cd test/unit/tst_mainview"
-  echo "  ../$(basename $0) tst_mainview tst_mainview minimal"
+  echo "  cd $(relpath ${BUILD_DIR}/tests/unit/tst_mainview)"
+  echo "  ../$(basename $0) tst_mainview minimal"
   echo "  cd ../../.."
   echo ''
-  echo "  cd tests/unit_x11/tst_components"
+  echo "  cd $(relpath ${BUILD_DIR}/tests/unit_x11/tst_components)"
   echo "  ../../xvfb.sh ../../unit/$(basename $0) tst_components tst_listitem13.qml"
   echo "  cd ../../.."
   echo ''
-  echo "  tests/xvfb.sh $0 tests/unit_x11/tst_bottomedge/tst_bottomedge"
+  echo "  $(relpath ${BUILD_DIR}/tests/xvfb.sh) $0 $(relpath ${BUILD_DIR}/tests/unit_x11/tst_bottomedge/tst_bottomedge)"
   exit 1
 fi
 
@@ -52,8 +62,6 @@ _TESTFILE=$(basename $_TESTFILEPATH)
 _XML="${BUILD_DIR}/tests/test_$_TARGET_$_TESTFILE.xml"
 
 _ARGS="-p -o -p $_XML,xunitxml -p -o -p -,txt"
-
-set +e
 
 function create_test_cmd {
   if [[ "$_TARGETPATH" = /* ]]; then
@@ -66,14 +74,12 @@ function create_test_cmd {
   _CMD="dbus-test-runner --task gdb -p --quiet $_CMD"
   _CMD="$_CMD -p --batch -p -ex -p 'set print thread-events off' -p -ex -p run -p -ex -p bt -p --return-child-result -p --args -p $(readlink -f $EXE)"
 
-  if [ "$_MINIMAL" = "minimal" ]; then
-      _CMD="$_CMD -p -platform -p minimal"
-  elif [ "$_MINIMAL" = "custom" ]; then
-      _CMD="$_CMD -p -platform -p custom"
+  if [[ 'minimal custom' == *$_MINIMAL* ]]; then
+      _CMD="$_CMD -p -platform -p $_MINIMAL"
   fi
 
-  if [ $_TARGETPATH != $_TESTFILEPATH ]; then
-      _CMD="$_CMD -p -input -p $(readlink -f $_TESTFILEPATH)"
+  if [[ $_TESTFILEPATH == *\.qml* ]]; then
+      _CMD="$_CMD -p -input -p $_TESTFILEPATH"
   fi
   _CMD="$_CMD -p -maxwarnings -p 100"
 }
