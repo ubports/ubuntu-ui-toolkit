@@ -105,7 +105,6 @@ UCLabel::UCLabel(ColorProviderFunc defaultColor, QQuickItem *parent)
 }
 UCLabel::~UCLabel()
 {
-    delete d_ptr;
 }
 
 QColor UCLabelPrivate::getDefaultColor(QQuickItem *item, UCTheme *theme)
