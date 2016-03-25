@@ -30,6 +30,13 @@ import Ubuntu.Components 1.3
     migrate to ScrollView, to ensure the UX is ready for convergent devices and is consistent with the
     rest of the platform.
 
+    ScrollView wraps \l {Scrollbar}(s) in a view, and provides additional features such as:
+    \list
+    \li - Keyboard navigation and focus handling, for a complete convergent experience.
+    \li - Automatic position handling of vertical and horizontal scrollbars, preventing them from
+          overlapping one another when both on screen.
+    \endlist
+
     Adding scrollbars and keyboard input handling to a QML item is as simple as wrapping that item in a
     ScrollView, as shown in the following example:
 

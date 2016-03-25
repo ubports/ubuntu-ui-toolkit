@@ -867,7 +867,32 @@ Item {
             flickableSanityCheck.rightMargin = -units.gu(3)
             flickableSanityCheck.bottomMargin = -units.gu(4)
             performStyleSanityCheck(scrollbarSanityCheck)
+        }
 
+        //Test that Scrollbar defaults to Flickable.topMargin/bottomMargin (content margins)
+        //as its ANCHORS margins
+        function test_topBottomMargins(data) {
+            var freshTestItem = getFreshFlickable(data.alignment)
+            var flickable = freshTestItem.flickable
+            var scrollbar = freshTestItem.scrollbar
+
+            compare(scrollbar.__styleInstance.isScrollable, true, "The view is not scrollable.")
+            compare(scrollbar.__styleInstance.alwaysOnScrollbars, false, "This test assumes overlay scrollbars (if you need to change this, fix the expected margins).")
+            compare(scrollbar.anchors.topMargin, flickable.topMargin, "Wrong anchors.topMargin.")
+            compare(scrollbar.anchors.bottomMargin, flickable.bottomMargin, "Wrong anchors.bottomMargin.")
+
+            flickable.topMargin = units.gu(1)
+            compare(scrollbar.anchors.topMargin, units.gu(1), "Wrong anchors.topMargin.")
+            compare(scrollbar.anchors.bottomMargin, flickable.bottomMargin, "Wrong anchors.bottomMargin.")
+
+            flickable.bottomMargin = units.gu(3)
+            compare(scrollbar.anchors.topMargin, units.gu(1), "Wrong anchors.topMargin.")
+            compare(scrollbar.anchors.bottomMargin, units.gu(3), "Wrong anchors.bottomMargin.")
+
+            flickable.topMargin = 0
+            flickable.bottomMargin = units.gu(6)
+            compare(scrollbar.anchors.topMargin, 0, "Wrong anchors.topMargin.")
+            compare(scrollbar.anchors.bottomMargin, units.gu(6), "Wrong anchors.bottomMargin.")
         }
     }
 }
