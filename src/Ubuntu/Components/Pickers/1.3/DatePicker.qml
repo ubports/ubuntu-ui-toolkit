@@ -98,10 +98,10 @@ import Ubuntu.Components 1.3
     \a minimum and \a maximum properties. The interval can be altered considering
     the following rules:
     \list
-        \li - \a minimum must be less or equal than the \l date; if the \a date
+        \li \a minimum must be less or equal than the \l date; if the \a date
                 value is less than the given \a minimum, the date will be set to
                 the minimum's value
-        \li - \a maximum value must be greater than the \a minimum, or invalid.
+        \li \a maximum value must be greater than the \a minimum, or invalid.
                 When the maximum is smaller than the \l date, the \l date property
                 will be updated to get the maximum value.
                 When set to invalid date (see Date.getInvalidDate()), the upper
@@ -142,12 +142,12 @@ import Ubuntu.Components 1.3
     The date picker consist of three pickers: year, month, and date. The exact
     contents of the month and date pickers depends on the available width:
     \list
-        \li * full name for month, number and full day for date (“August” “28 Wednesday”)
-        \li * otherwise full name for month, number and abbreviated day
+        \li full name for month, number and full day for date (“August” “28 Wednesday”)
+        \li otherwise full name for month, number and abbreviated day
             for date (“August” “28 Wed”);
-        \li * otherwise full name for month, number for date (“August” “28”);
-        \li * otherwise abbreviated name for month, number for date (“Aug” “28”).
-        \li * otherwise number for month, number for date (“08” “28”).
+        \li otherwise full name for month, number for date (“August” “28”);
+        \li otherwise abbreviated name for month, number for date (“Aug” “28”).
+        \li otherwise number for month, number for date (“08” “28”).
     \endlist
 
     \a{If the currently selected date becomes impossible due to year change (from a
