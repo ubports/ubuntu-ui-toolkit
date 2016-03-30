@@ -106,7 +106,6 @@ Item {
                     id: pageItem
                     header: standardHeaderItem
 
-                    onHeaderChanged: console.log("NEW HEADER")
                     Flickable {
                         id: flickable_movingHeaderTest
                         anchors.fill: parent

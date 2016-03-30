@@ -168,17 +168,25 @@ Toolkit.StyledItem {
     //interactive scrollbar right below us (can happen with nested views)
     enabled: __interactive//&& __alwaysOnScrollbars
 
-    implicitWidth: internals.vertical ? units.gu(3) : flickableItem.width
-    implicitHeight: !internals.vertical ? units.gu(3) : flickableItem.height
+    implicitWidth: internals.vertical ? units.gu(3) : (flickableItem ? flickableItem.width : 0)
+    implicitHeight: !internals.vertical ? units.gu(3) : (flickableItem ? flickableItem.height : 0)
 
     anchors {
-        left: internals.leftAnchor(__viewport ? __viewport : flickableItem)
+        left: (__viewport || flickableItem)
+              ? internals.leftAnchor(__viewport ? __viewport : flickableItem)
+              : undefined
         leftMargin: internals.leftAnchorMargin()
-        right: internals.rightAnchor(__viewport ? __viewport : flickableItem)
+        right: (__viewport || flickableItem)
+               ? internals.rightAnchor(__viewport ? __viewport : flickableItem)
+               : undefined
         rightMargin: internals.rightAnchorMargin()
-        top: internals.topAnchor(__viewport ? __viewport : flickableItem)
+        top: (__viewport || flickableItem)
+             ? internals.topAnchor(__viewport ? __viewport : flickableItem)
+             : undefined
         topMargin: (flickableItem ? flickableItem.topMargin : 0) + internals.topAnchorMargin()
-        bottom: internals.bottomAnchor(__viewport ? __viewport : flickableItem)
+        bottom: (__viewport || flickableItem)
+                ? internals.bottomAnchor(__viewport ? __viewport : flickableItem)
+                : undefined
         bottomMargin: (flickableItem ? flickableItem.bottomMargin : 0) + internals.bottomAnchorMargin()
     }
 

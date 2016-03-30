@@ -653,8 +653,6 @@ Item {
             var verticalScrollbar = getVerticalScrollbar(scrollview)
             var horStyle = horizontalScrollbar.__styleInstance
             var verStyle = verticalScrollbar.__styleInstance
-            console.log(verticalScrollbar)
-
             var viewport = scrollview.viewport
 
             //make it not scrollable

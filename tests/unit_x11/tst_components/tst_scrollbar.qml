@@ -894,5 +894,20 @@ Item {
             compare(scrollbar.anchors.topMargin, 0, "Wrong anchors.topMargin.")
             compare(scrollbar.anchors.bottomMargin, units.gu(6), "Wrong anchors.bottomMargin.")
         }
+
+        //check that we don't output lots of warnings when the flickable item becomes null
+        //(it could happen while transitioning values or before the Binding applies and similar situations)
+        function test_noWarningsWhenFlickableIsNull() {
+            var freshTestItem = getFreshFlickable(Qt.AlignTrailing)
+            var flickable = freshTestItem.flickable
+            var scrollbar = freshTestItem.scrollbar
+
+            verify(scrollbar.flickableItem !== null, "Check that Scrollbar is linked to a Flickable.")
+            scrollbar.flickableItem = null
+
+            //This test will always pass if run with qmltestrunner, unfortunately there's no way
+            //using TestCase to do "if (testOutputsWarnings) --> fail", but the SDK test script
+            //will fail if this test outputs warnings, which is what we want
+        }
     }
 }
