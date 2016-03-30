@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -28,6 +28,11 @@ Item {
       The color of the title and the action buttons in the header.
      */
     property color foregroundColor
+
+    /*!
+      The color of disabled action buttons in the header.
+     */
+    property color disabledForegroundColor
 
     /*!
       The color of the background of the header.

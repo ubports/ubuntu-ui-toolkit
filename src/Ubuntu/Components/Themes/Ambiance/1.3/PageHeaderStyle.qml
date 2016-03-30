@@ -22,6 +22,7 @@ Style.PageHeaderStyle {
     id: pageHeaderStyle
 
     foregroundColor: theme.palette.normal.backgroundText
+    disabledForegroundColor: theme.palette.disabled.backgroundText
     backgroundColor: theme.palette.normal.background
     dividerColor: theme.palette.normal.base
     property int fontWeight: Font.Light
@@ -44,8 +45,8 @@ Style.PageHeaderStyle {
         height: parent ? parent.height : undefined
         action: modelData
         StyleHints {
-            // FIXME: introduce inactiveForegroundColor to PageHeaderStyle
-            foregroundColor: pageHeaderStyle.foregroundColor
+            foregroundColor: enabled ? pageHeaderStyle.foregroundColor
+                                     : pageHeaderStyle.disabledForegroundColor
         }
     }
 
