@@ -43,8 +43,8 @@ Style.PageHeaderStyle {
     Object {
         id: internal
         property real extensionHeight: styledItem.extension ?
-                                         styledItem.extension.height
-                                       : styledItem.sections.height
+                                           styledItem.extension.height
+                                         : styledItem.sections.height
 
         property bool landscape: Screen.height <= units.gu(50)
         property bool subtitle: styledItem.subtitle && !styledItem.contents
@@ -93,43 +93,47 @@ Style.PageHeaderStyle {
         }
     }
 
-    titleComponent: Item {
-        // The wrapping inside the extra Item is needed to
-        //  be able to position the Label vertically. Without it,
-        //  the Loader resizes the Label to span the full height.
-        Label {
-            id: titleLabel
-            objectName: "header_title_label"
-            text: styledItem.title
+    titleComponent: Component {
+        Item {
+            // The wrapping inside the extra Item is needed to
+            //  be able to position the Label vertically. Without it,
+            //  the Loader resizes the Label to span the full height.
+            Label {
+                id: titleLabel
+                objectName: "header_title_label"
+                text: styledItem.title
 
-            anchors {
-                left: parent.left
-                right: parent.right
-                verticalCenter: parent.verticalCenter
-                verticalCenterOffset: -internal.titleBottomSpacing/2
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                    verticalCenter: parent.verticalCenter
+                    verticalCenterOffset: -internal.titleBottomSpacing/2
+                }
+                color: pageHeaderStyle.foregroundColor
+                font.weight: pageHeaderStyle.fontWeight
+                textSize: pageHeaderStyle.textSize
+                elide: Text.ElideRight
             }
-            color: pageHeaderStyle.foregroundColor
-            font.weight: pageHeaderStyle.fontWeight
-            textSize: pageHeaderStyle.textSize
-            elide: Text.ElideRight
         }
     }
 
-    subtitleComponent: Item {
-        // Item fills the contents height
-        Label {
-            anchors {
-                left: parent.left
-                right: parent.right
-                baseline: parent.bottom
-                baselineOffset: -units.gu(1)
+    subtitleComponent: Component {
+        Item {
+            // Item fills the contents height
+            Label {
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                    baseline: parent.bottom
+                    baselineOffset: -units.gu(1)
+                }
+                objectName: "header_subtitle_label"
+                text: styledItem.subtitle
+                color: pageHeaderStyle.subtitleColor
+                visible: text != ""
+                textSize: pageHeaderStyle.subTextSize
+                font.weight: pageHeaderStyle.fontWeight
             }
-            objectName: "header_subtitle_label"
-            text: styledItem.subtitle
-            color: pageHeaderStyle.subtitleColor
-            visible: text != ""
-            textSize: pageHeaderStyle.subTextSize
-            font.weight: pageHeaderStyle.fontWeight
         }
     }
 
