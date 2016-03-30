@@ -22,11 +22,18 @@ Style.PageHeaderStyle {
     id: pageHeaderStyle
 
     foregroundColor: theme.palette.normal.backgroundText
-    subtitleColor: "pink"
+    disabledForegroundColor: theme.palette.disabled.backgroundText
+    subtitleColor: theme.palette.normal.backgroundTertiaryText
     backgroundColor: theme.palette.normal.background
     dividerColor: theme.palette.normal.base
+
+    // Font weight for the title and subtitle
     property int fontWeight: Font.Light
+
+    // Text size for title
     property int textSize: Label.Large
+
+    // Text size for subtitle
     property int subTextSize: internal.landscape ? Label.Small : Label.Medium
 
     contentHeight: internal.titleAreaHeight + internal.titleBottomSpacing
@@ -43,9 +50,9 @@ Style.PageHeaderStyle {
         property bool subtitle: styledItem.subtitle && !styledItem.contents
         property bool extension: styledItem.extension
 
-        // the height of the area in which the title and icons are vertically centered
+        // The height of the area in which the title and icons are vertically centered
         property real titleAreaHeight
-        // add to the contents height for additional space under the title
+        // Add to the content height for additional space under the title
         property real titleBottomSpacing
 
         onLandscapeChanged: updateHeights()
@@ -81,8 +88,8 @@ Style.PageHeaderStyle {
         height: internal.titleAreaHeight
         action: modelData
         StyleHints {
-            // FIXME: introduce inactiveForegroundColor to PageHeaderStyle
-            foregroundColor: pageHeaderStyle.foregroundColor
+            foregroundColor: enabled ? pageHeaderStyle.foregroundColor :
+                                       pageHeaderStyle.disabledForegroundColor
         }
     }
 

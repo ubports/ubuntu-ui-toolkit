@@ -30,6 +30,11 @@ Item {
     property color foregroundColor
 
     /*!
+      The color of disabled action buttons in the header.
+     */
+    property color disabledForegroundColor
+
+    /*!
       The color of the (optional) subtitle.
      */
     property color subtitleColor
