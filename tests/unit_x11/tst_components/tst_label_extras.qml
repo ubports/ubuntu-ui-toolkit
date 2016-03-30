@@ -16,7 +16,7 @@
 
 import QtQuick 2.4
 import QtTest 1.0
-import Ubuntu.Test 1.0
+import Ubuntu.Test 1.3
 import Ubuntu.Components 1.3
 
 Item {
@@ -40,6 +40,22 @@ Item {
         id: testLabel
         Label {
             text: "Hello Dolly!"
+        }
+    }
+
+    Component {
+        id: labelModel
+        ListView {
+            anchors.fill: parent
+            model: [ "Lorem ipsum dolor sit amet" ]
+            enabled: false
+            delegate: Label {
+                id: ubuntuIdLabel
+                objectName: "ubuntuIdLabel"
+                text: modelData
+                elide: Text.ElideRight
+                property string email: modelData
+            }
         }
     }
 
@@ -76,6 +92,11 @@ Item {
             // change the color of the palette
             theme.palette.normal.backgroundText = UbuntuColors.blue;
             verify(test.color != theme.palette.normal.backgroundText);
+        }
+
+        function test_label_destruction_crash_bug1560044() {
+            var test = loadTest(labelModel);
+            testLoader.sourceComponent = null;
         }
     }
 }

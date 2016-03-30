@@ -131,11 +131,11 @@ void UCListItemStyle::updateFlickable(QQuickFlickable *flickable)
  *
  * The \c event object properties are:
  * \list
- * \li * \c status - enumeration of \c {Started, Updated, Finished} values representing
+ * \li \c status - enumeration of \c {Started, Updated, Finished} values representing
  *                  the swipe event status
- * \li * \c to - (x, y) coordinates of the current mouse/touch point - read-only
- * \li * \c from - (x, y) coordinates of the previous mouse/touch point - read-only
- * \li * \c content - (x, y) updated coordinates of the \l {ListItem::contentItem}
+ * \li \c to - (x, y) coordinates of the current mouse/touch point - read-only
+ * \li \c from - (x, y) coordinates of the previous mouse/touch point - read-only
+ * \li \c content - (x, y) updated coordinates of the \l {ListItem::contentItem}
  *                  {ListItem.contentItem}, read-write
  * \endlist
  */

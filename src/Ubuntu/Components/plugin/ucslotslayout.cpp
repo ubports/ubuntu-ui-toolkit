@@ -617,12 +617,12 @@ void UCSlotsLayoutPrivate::handleAttachedPropertySignals(QQuickItem *item, bool 
 
     There are three conceptual types of slots:
     \list
-    \li * The \b {leading slots}, which are the ones positioned at the
+    \li The \b {leading slots}, which are the ones positioned at the
             beginning of the layout (i.e. they are the leftmost elements
             in left-to-right locales).
-    \li * The \b {trailing slots}, which are positioned after \l mainSlot,
+    \li The \b {trailing slots}, which are positioned after \l mainSlot,
             if any, or after the leading slots otherwise.
-    \li * The \b {main slot}, which drives the positioning of
+    \li The \b {main slot}, which drives the positioning of
             the vertical dimension of each slot as described in section
             \l {Automatic vertical positioning of slots}. This slot sits
             between leading and trailing slots, and can be set using the
@@ -738,12 +738,12 @@ void UCSlotsLayoutPrivate::handleAttachedPropertySignals(QQuickItem *item, bool 
     platform, SlotsLayout automatically handles the vertical positioning of its
     slots so that they comply with the following rules:
     \list
-        \li * if there's any slot which is taller or as tall as \l {mainSlot} or if
+        \li if there's any slot which is taller or as tall as \l {mainSlot} or if
             no \l {mainSlot} is defined, all slots will be \b {vertically centered} within the
             layout (still taking \l {SlotsLayout::padding.top} and \l {SlotsLayout::padding.bottom}
             into account).
             \image SlotsLayout_centerVertically.png
-        \li * \b{Otherwise}, all the slots (including \l {mainSlot}) will be \b {aligned to
+        \li \b{Otherwise}, all the slots (including \l {mainSlot}) will be \b {aligned to
             the top} of the layout with a padding of \l {SlotsLayout::padding.top} plus
             the top padding of the slot, defined in its attached properties.
             \image SlotsLayout_alignToTop.png
@@ -1035,10 +1035,10 @@ void UCSlotsLayout::setMainSlot(QQuickItem *item, bool fireSignal)
     The value of padding.top and padding.bottom depends on the size
     of the slots which are in the layout:
     \list
-    \li * if, according to the rules defined in \l {Automatic vertical positioning of slots},
+    \li if, according to the rules defined in \l {Automatic vertical positioning of slots},
         the slots are supposed to align to the top of the layout, padding.top
         and padding.bottom will have a value of \b{2} Grid Units.
-    \li * otherwise, if according to the rules defined in \l {Automatic vertical positioning of slots}
+    \li otherwise, if according to the rules defined in \l {Automatic vertical positioning of slots}
         the slots are supposed to be vertically centered in the layout, \b {and}
         the tallest slot (\l {mainSlot} excluded) has a height of at least 4 Grid Units,
         padding.top and padding.bottom will be set to \b{1} Grid Unit.
@@ -1096,14 +1096,14 @@ UCSlotsAttached::UCSlotsAttached(QObject *object)
 
     Valid values for \l position are:
     \list
-    \li * SlotsLayout.First: the slot will be positioned at the
+    \li SlotsLayout.First: the slot will be positioned at the
         beginning of the layout
-    \li * SlotsLayout.Leading: the slot will be positioned in
+    \li SlotsLayout.Leading: the slot will be positioned in
         the leading slots
-    \li * SlotsLayout.Trailing: the slot will be positioned in
+    \li SlotsLayout.Trailing: the slot will be positioned in
         the trailing slots, i.e. the one towards the end of the
         layout.
-    \li * SlotsLayout.Last: the slot will be positioned at
+    \li SlotsLayout.Last: the slot will be positioned at
         the end of the layout.
     \endlist
 

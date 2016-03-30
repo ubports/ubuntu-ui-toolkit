@@ -87,12 +87,10 @@ Q_SIGNALS:
     void fontSizeChanged();
 
 private:
-    Q_PRIVATE_SLOT(d_func(), void updateRenderType())
-
-    UCLabelPrivate *d_ptr;
-    Q_DECLARE_PRIVATE(UCLabel)
-
+    QScopedPointer<UCLabelPrivate> d_ptr;
+    Q_DECLARE_PRIVATE_D(d_ptr.data(), UCLabel)
     Q_DISABLE_COPY(UCLabel)
+    Q_PRIVATE_SLOT(d_func(), void updateRenderType())
 };
 
 QML_DECLARE_TYPE(UCLabel)
