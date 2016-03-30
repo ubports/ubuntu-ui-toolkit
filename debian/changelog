@@ -1,3 +1,12 @@
+ubuntu-ui-toolkit (1.3.1872+16.04.20160330.2-0ubuntu1) xenial; urgency=medium
+
+  [ Tim Peeters ]
+  * Set the window color as soon as the window is available, to avoid a
+    flickering background when it is updated later, plus fix runtest.sh
+    to work for xenial on arm. (LP: #1554897, #1439133)
+
+ -- Zoltan Balogh <zoltan.balogh@canonical.com>  Wed, 30 Mar 2016 23:08:38 +0000
+
 ubuntu-ui-toolkit (1.3.1872+16.04.20160314-0ubuntu1) xenial; urgency=medium
 
   [ Zoltán Balogh ]
