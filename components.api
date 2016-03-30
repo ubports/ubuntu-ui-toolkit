@@ -833,6 +833,7 @@ Ubuntu.Components.Styles.PageHeaderStyle 1.3: Item
     property color backgroundColor
     property double contentHeight
     property Component defaultActionDelegate
+    property color disabledForegroundColor
     property color dividerColor
     property color foregroundColor
     property color subtitleColor
