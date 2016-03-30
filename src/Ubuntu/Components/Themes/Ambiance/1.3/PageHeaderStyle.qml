@@ -42,9 +42,9 @@ Style.PageHeaderStyle {
     Component.onCompleted: internal.updateHeights()
     Object {
         id: internal
-        property real extensionHeight: styledItem.extension ?
-                                           styledItem.extension.height
-                                         : styledItem.sections.height
+        property real extensionHeight: styledItem.extension
+                                       ? styledItem.extension.height
+                                       : styledItem.sections.height
 
         property bool landscape: Screen.height <= units.gu(50)
         property bool subtitle: styledItem.subtitle && !styledItem.contents
@@ -62,6 +62,7 @@ Style.PageHeaderStyle {
         function updateHeights() {
             if (landscape) {
                 if (subtitle) {
+                    // with subtitle, and with or without extension
                     titleAreaHeight = units.gu(4);
                     titleBottomSpacing = units.gu(2);
                 } else if (extension) {
