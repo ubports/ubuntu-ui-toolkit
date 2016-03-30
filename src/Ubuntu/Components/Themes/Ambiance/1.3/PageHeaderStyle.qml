@@ -88,8 +88,8 @@ Style.PageHeaderStyle {
         height: internal.titleAreaHeight
         action: modelData
         StyleHints {
-            foregroundColor: enabled ? pageHeaderStyle.foregroundColor :
-                                       pageHeaderStyle.disabledForegroundColor
+            foregroundColor: enabled ? pageHeaderStyle.foregroundColor
+                                     : pageHeaderStyle.disabledForegroundColor
         }
     }
 
