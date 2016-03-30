@@ -59,6 +59,8 @@ void UCMainViewBasePrivate::init()
         // FIXME Wire this up to the application lifecycle management API instead of quit().
         qApp->quit();
     });
+
+    QObject::connect(q, SIGNAL(windowChanged(QQuickWindow*)), q, SLOT(_q_updateWindow()));
 }
 
 void UCMainViewBasePrivate::_q_headerColorBinding(const QColor &col)
@@ -105,6 +107,14 @@ UCMainViewBase::UCMainViewBase(QQuickItem *parent)
     : UCPageTreeNode(*(new UCMainViewBasePrivate), parent)
 {
     d_func()->init();
+}
+
+void UCMainViewBasePrivate::_q_updateWindow()
+{
+    Q_Q(UCMainViewBase);
+    if (q->window()) {
+        q->window()->setColor(m_backgroundColor);
+    }
 }
 
 UCMainViewBase::UCMainViewBase(UCMainViewBasePrivate &dd, QQuickItem *parent)
@@ -177,6 +187,11 @@ void UCMainViewBase::setHeaderColor(QColor headerColor)
 {
     Q_D(UCMainViewBase);
 
+    // MainViewStyle is used to draw the gradient background.
+    if (d->styleName().isEmpty()) {
+        d->setStyleName(QStringLiteral("MainViewStyle"));
+    }
+
     //disable binding to background color
     d->m_flags |= UCMainViewBasePrivate::CustomHeaderColor;
     d->_q_headerColorBinding(headerColor);
@@ -220,6 +235,8 @@ void UCMainViewBase::setBackgroundColor(QColor backgroundColor)
     if (!(d->m_flags & UCMainViewBasePrivate::CustomFooterColor))
         d->_q_footerColorBinding(d->m_backgroundColor);
 
+    d->_q_updateWindow();
+
     // FIXME: Define the background colors in MainViewStyle and get rid of the properties
     //  in MainViewBase. That removes the need for auto-theming.
     d->doAutoTheme();
@@ -235,6 +252,10 @@ void UCMainViewBase::setFooterColor(QColor footerColor)
 {
     Q_D(UCMainViewBase);
 
+    // MainViewStyle is used to draw the gradient background.
+    if (d->styleName().isEmpty()) {
+        d->setStyleName(QStringLiteral("MainViewStyle"));
+    }
     //disable binding to background color
     d->m_flags |= UCMainViewBasePrivate::CustomFooterColor;
     d->_q_footerColorBinding(footerColor);
@@ -286,7 +307,6 @@ void UCMainViewBase::componentComplete()
 {
     Q_D(UCMainViewBase);
     UCPageTreeNode::componentComplete();
-    d->setStyleName(QStringLiteral("MainViewStyle"));
     d->doAutoTheme();
 
     if (d->m_actionContext)
@@ -312,3 +332,5 @@ void UCMainViewBase::classBegin()
         d->m_actionContext->classBegin();
     }
 }
+
+#include "moc_ucmainviewbase.cpp"
