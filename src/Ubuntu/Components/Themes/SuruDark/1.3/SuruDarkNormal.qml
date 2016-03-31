@@ -46,4 +46,3 @@ PaletteValues {
     activity: UbuntuColors.blue
     activityText: "#FFFFFF"
 }
-

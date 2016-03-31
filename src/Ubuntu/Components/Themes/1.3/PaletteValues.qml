@@ -44,18 +44,6 @@ QtObject {
     property color backgroundTertiaryText
 
     /*!
-       Color applied to positive content on the \l background color.
-       \since Ubuntu.Components.Themes 1.3
-    */
-    property color backgroundPositiveText
-
-    /*!
-       Color applied to negative content on the \l background color.
-       \since Ubuntu.Components.Themes 1.3
-    */
-    property color backgroundNegativeText
-
-    /*!
        Color applied to the background of widgets.
     */
     property color base
