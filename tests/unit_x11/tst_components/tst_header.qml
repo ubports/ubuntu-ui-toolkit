@@ -29,7 +29,7 @@ Item {
         id: header
         flickable: flickable
         z: 1
-        width: parent.width
+        width: parent ? parent.width : 123
         height: root.initialHeaderHeight
 
         Rectangle {
