@@ -58,6 +58,7 @@ private Q_SLOTS:
     void _q_contentHeightChanged();
     void _q_flickableInteractiveChanged();
     void _q_heightChanged();
+    void _q_widthChanged();
 
 private:
     QPointer<QQuickFlickable> m_flickable;

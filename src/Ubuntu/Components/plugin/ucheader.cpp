@@ -93,6 +93,7 @@ UCHeader::UCHeader(QQuickItem *parent)
     connect(m_showHideAnimation, SIGNAL(runningChanged(bool)),
             this, SLOT(_q_showHideAnimationRunningChanged()));
     connect(this, SIGNAL(heightChanged()), this, SLOT(_q_heightChanged()));
+    connect(this, SIGNAL(widthChanged()), this, SLOT(_q_widthChanged()));
 }
 
 UCHeader::~UCHeader() {
@@ -115,10 +116,13 @@ void UCHeader::_q_heightChanged() {
         hide(false);
     }
 }
+void UCHeader::_q_widthChanged() {
+    // Margins need to be reverted when the width is set to 0.
+    updateFlickableMargins();
+}
 
 void UCHeader::itemChange(ItemChange change, const ItemChangeData &value) {
     if (change == ItemVisibleHasChanged || change == ItemParentHasChanged) {
-        qDebug()<<"itemChange: calling updateFlickableMargins.";
         updateFlickableMargins();
     }
     UCStyledItemBase::itemChange(change, value);
@@ -206,7 +210,6 @@ void UCHeader::updateFlickableMargins() {
     if (isVisible() && width() > 0.0 && parentItem()) {
         headerHeight = height();
     }
-    qDebug()<<"updateFlickableMargins: headerHeight = "<<headerHeight;
     qreal previousHeaderHeight = m_flickable->topMargin();
     if (headerHeight != previousHeaderHeight) {
         qreal previousContentY = m_flickable->contentY();
