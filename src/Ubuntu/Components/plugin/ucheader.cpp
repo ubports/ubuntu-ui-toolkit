@@ -148,11 +148,12 @@ void UCHeader::_q_heightChanged() {
  *                  anchors.fill: parent
  *                  topMargin: page.header.flickable ? 0 : page.header.height
  *                  contentHeight: units.gu(200)
+ *                  // Scrolling here can hide the header.
  *              }
  *              header: PageHeader {
  *                  title: i18n.tr("Navigation")
  *                  flickable: layout.columns === 1 ? contentFlick : null
- *                  // show header when it gets locked in a two-column layout:
+ *                  // Show header when it gets locked in a two-column layout:
  *                  onFlickableChanged: exposed = true
  *              }
  *          }
