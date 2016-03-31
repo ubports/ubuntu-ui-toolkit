@@ -93,7 +93,6 @@ UCHeader::UCHeader(QQuickItem *parent)
     connect(m_showHideAnimation, SIGNAL(runningChanged(bool)),
             this, SLOT(_q_showHideAnimationRunningChanged()));
     connect(this, SIGNAL(heightChanged()), this, SLOT(_q_heightChanged()));
-    connect(this, SIGNAL(widthChanged()), this, SLOT(_q_widthChanged()));
 }
 
 UCHeader::~UCHeader() {
@@ -115,10 +114,6 @@ void UCHeader::_q_heightChanged() {
     } else {
         hide(false);
     }
-}
-void UCHeader::_q_widthChanged() {
-    // Margins need to be reverted when the width is set to 0.
-    updateFlickableMargins();
 }
 
 void UCHeader::itemChange(ItemChange change, const ItemChangeData &value) {
@@ -143,8 +138,8 @@ void UCHeader::itemChange(ItemChange change, const ItemChangeData &value) {
  * The topMargin of the flickable will automatically be updated to always match
  * the height of the header. When changing the flickable, the topMargin of the previous
  * flickable is set to 0. When the header is invisible because its visible property is
- * false, it has height or width 0, or the header has no parent, the flickable topMargin
- * does not reflect the header height.
+ * false, or the header has no parent, the flickable topMargin does not reflect the
+ * header height.
  *
  * It is permitted to use a ListView as the value of flickable, but this works
  * well only if the ListView.header property is not set. Alternatively,
@@ -207,7 +202,7 @@ void UCHeader::updateFlickableMargins() {
         return;
     }
     qreal headerHeight = 0.0;
-    if (isVisible() && width() > 0.0 && parentItem()) {
+    if (isVisible() && parentItem()) {
         headerHeight = height();
     }
     qreal previousHeaderHeight = m_flickable->topMargin();

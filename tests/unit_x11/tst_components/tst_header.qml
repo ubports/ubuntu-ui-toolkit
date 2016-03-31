@@ -29,7 +29,7 @@ Item {
         id: header
         flickable: flickable
         z: 1
-        width: parent ? parent.width : 123
+        width: parent.width
         height: root.initialHeaderHeight
 
         Rectangle {
@@ -237,9 +237,7 @@ Item {
                     "Hidden header has wrong initial y-value.");
         }
 
-        // Run this test before test_flickable_margins_invisible_header_bug1560458_bug1560419()
-        //  which breaks the binding on header.width.
-        function test_1_reparent_width() {
+        function test_reparent_width() {
             // test initial header width:
             compare(header.parent, root);
             compare(header.width, root.width);
@@ -369,12 +367,6 @@ Item {
             header.height = h;
             compare(flickable.topMargin, h,
                     "Setting header height does not set flickable.topMargin.");
-            header.width = 0;
-            compare(flickable.topMargin, 0,
-                    "Header with width = 0 sets flickable.topMargin.");
-            header.width = root.width;
-            compare(flickable.topMargin, h,
-                    "Setting header width does not set flickable.topMargin.");
 
             // Setting opacity to 0 should not change flickable.topMargin.
             // This allows opacity animations.
