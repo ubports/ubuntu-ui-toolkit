@@ -130,7 +130,9 @@ void UCHeader::_q_heightChanged() {
  *
  * The topMargin of the flickable will automatically be updated to always match
  * the height of the header. When changing the flickable, the topMargin of the previous
- * flickable is set to 0.
+ * flickable is set to 0. When the header is invisible because its visible property is
+ * false, it has height or width 0, or the header has no parent, the flickable topMargin
+ * does not reflect the header height.
  *
  * It is permitted to use a ListView as the value of flickable, but this works
  * well only if the ListView.header property is not set. Alternatively,
