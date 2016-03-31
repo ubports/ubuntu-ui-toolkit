@@ -412,6 +412,42 @@ Item {
                 tryCompare(main.activeFocusItem, "objectName", data.focus[i]);
             }
         }
+
+        SignalSpy {
+            id: upKeySpy
+            signalName: "upPressed"
+        }
+        SignalSpy {
+            id: downKeySpy
+            signalName: "downPressed"
+        }
+        function test_do_not_eat_up_down_key_events_in_listview_bug1554447() {
+            var test = loadTest(listView);
+            test.delegate = listItemWithContent;
+            waitForRendering(test, 500);
+            upKeySpy.target = test.Keys;
+            downKeySpy.target = test.Keys;
+            test.forceActiveFocus();
+
+            // test up
+            test.positionViewAtBeginning();
+            keyClick(Qt.Key_Up);
+
+            upKeySpy.wait(500);
+
+            // test down
+            test.positionViewAtEnd();
+            keyClick(Qt.Key_Down);
+            downKeySpy.wait(500);
+
+            // test both up and down in the middle
+            upKeySpy.clear(); downKeySpy.clear();
+            test.positionViewAtIndex(test.count / 2, ListView.Center);
+            keyClick(Qt.Key_Up);
+            upKeySpy.wait(500);
+            keyClick(Qt.Key_Down);
+            downKeySpy.wait(500);
+        }
     }
 }
 

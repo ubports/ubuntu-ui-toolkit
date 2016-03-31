@@ -439,7 +439,6 @@ void UCBottomEdgePrivate::patchContentItemHeader()
 bool UCBottomEdgePrivate::loadStyleItem(bool animated)
 {
     // fix styleVersion
-    Q_Q(UCBottomEdge);
     if (!styleVersion) {
         styleVersion = BUILD_VERSION(1, 3);
     }
@@ -830,6 +829,15 @@ bool UCBottomEdge::eventFilter(QObject *target, QEvent *event)
             d->updateProgressionStates(distance);
         }
         break;
+    }
+    case QEvent::KeyPress: {
+        QKeyEvent *keyPress = static_cast<QKeyEvent*>(event);
+        switch (keyPress->key()) {
+            case Qt::Key_Escape:
+                collapse();
+            default:
+                break;
+        }
     }
     default: break;
     }

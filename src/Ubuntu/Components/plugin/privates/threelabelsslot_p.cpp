@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2015-2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,7 +15,7 @@
  */
 
 #include "threelabelsslot_p.h"
-#include "uclabel.h"
+#include "label_p.h"
 #include "ucunits.h"
 #include "ucfontutils.h"
 #include "uctheme.h"
@@ -148,7 +148,7 @@ UCLabel *UCThreeLabelsSlot::title()
     if (d->m_title == Q_NULLPTR) {
         d->m_title = new UCLabel(this);
         QQmlEngine::setContextForObject(d->m_title, qmlContext(this));
-        d->m_title->init();
+        UCLabelPrivate::get(d->m_title)->init();
 
         QQuickAnchors *titleAnchors = QQuickItemPrivate::get(d->m_title)->anchors();
         titleAnchors->setLeft(d->left());
@@ -193,7 +193,7 @@ UCLabel *UCThreeLabelsSlot::subtitle()
     if (d->m_subtitle == Q_NULLPTR) {
         d->m_subtitle = new UCLabel(getSubtitleColor, this);
         QQmlEngine::setContextForObject(d->m_subtitle, qmlContext(this));
-        d->m_subtitle->init();
+        UCLabelPrivate::get(d->m_subtitle)->init();
 
         QQuickAnchors *subtitleAnchors = QQuickItemPrivate::get(d->m_subtitle)->anchors();
         subtitleAnchors->setLeft(d->left());
@@ -223,7 +223,7 @@ UCLabel *UCThreeLabelsSlot::summary()
     if (d->m_summary == Q_NULLPTR) {
         d->m_summary = new UCLabel(getSummaryColor, this);
         QQmlEngine::setContextForObject(d->m_summary, qmlContext(this));
-        d->m_summary->init();
+        UCLabelPrivate::get(d->m_summary)->init();
 
         QQuickAnchors *summaryAnchors = QQuickItemPrivate::get(d->m_summary)->anchors();
         summaryAnchors->setLeft(d->left());

@@ -38,8 +38,8 @@ MainView {
 
             Page {
                 id: page1
-                objectName: title
-                title: "Page1"
+                objectName: header.title
+                header: PageHeader { title: "Page1" }
 
                 Column {
                     anchors.centerIn: parent
@@ -56,18 +56,18 @@ MainView {
             }
             Page {
                 id: page2
-                objectName: title
-                title: "Page2"
+                objectName: header.title
+                header: PageHeader { title: "Page2" }
             }
             Page {
                 id: page3
-                objectName: title
-                title: "Page3"
+                objectName: header.title
+                header: PageHeader { title: "Page3" }
             }
             Page {
                 id: page4
-                objectName: title
-                title: "Page4"
+                objectName: header.title
+                header: PageHeader { title: "Page4" }
             }
         }
         AdaptivePageLayout {
@@ -76,18 +76,18 @@ MainView {
             height: parent.height / 2
             Page {
                 id: otherPage1
-                objectName: title
-                title: "Page1"
+                objectName: header.title
+                header: PageHeader { title: "Page1" }
             }
             Page {
                 id: otherPage2
-                objectName: title
-                title: "Page2"
+                objectName: header.title
+                header: PageHeader { title: "Page2" }
             }
             Page {
                 id: otherPage3
-                objectName: title
-                title: "Page3"
+                objectName: header.title
+                header: PageHeader { title: "Page3" }
             }
         }
     }
@@ -95,8 +95,10 @@ MainView {
     Component {
         id: pageComponent
         Page {
-            objectName: title
-            title: "DynamicPage"
+            objectName: header.title
+            header: PageHeader { title: "DynamicPage" }
+            signal deleted()
+            Component.onDestruction: deleted()
         }
     }
 
@@ -114,6 +116,16 @@ MainView {
         SignalSpy {
             id: primaryPageSpy
             signalName: "primaryPageChanged"
+        }
+
+        SignalSpy {
+            id: deletedSpy1
+            signalName: "deleted"
+        }
+
+        SignalSpy {
+            id: deletedSpy2
+            signalName: "deleted"
         }
 
         function resize_single_column() {
@@ -142,16 +154,20 @@ MainView {
         }
 
         function cleanup() {
-            page1.title = "Page1";
-            page2.title = "Page2";
-            page3.title = "Page3";
-            page4.title = "Page4";
+            page1.header.title = "Page1";
+            page2.header.title = "Page2";
+            page3.header.title = "Page3";
+            page4.header.title = "Page4";
             loadedSpy.clear();
             primaryPageSpy.clear();
             primaryPageSpy.target = null;
             resize_multiple_columns();
             layout.removePages(layout.primaryPage);
             defaults.primaryPage = null;
+            // restore binding on column number
+            root.columns = Qt.binding(function () {return root.width >= units.gu(80) ? 2 : 1});
+            // restore async
+            layout.asynchronous = true;
             wait(200);
         }
 
@@ -306,7 +322,7 @@ MainView {
             var testColumn = MathUtils.clamp(wrapper.column + (data.func == "addPageToCurrentColumn" ? 0 : 1),
                                              0, layout.columns - 1);
             var testHolder = getColumnHolder(layout, testColumn);
-            compare(testHolder.pageWrapper.object.title, data.expectedTitle, "page not found");
+            compare(testHolder.pageWrapper.object.header.title, data.expectedTitle, "page not found");
         }
 
         function test_asynchronous_page_loading_incubator_forcecompletion() {
@@ -383,7 +399,7 @@ MainView {
         function test_primaryPageSource_bug1499179_data() {
             return [
                 {tag: "Component", test: pageComponent},
-                {tag: "Document", test: Qt.resolvedUrl("MyExternalPage.qml")},
+                {tag: "Document", test: Qt.resolvedUrl("MyExternalPageWithNewHeader.qml")},
             ];
         }
         function test_primaryPageSource_bug1499179(data) {
@@ -394,8 +410,8 @@ MainView {
 
         function test_change_primaryPageSource_data() {
             return [
-                {tag: "Component", test: pageComponent, nextValue: Qt.resolvedUrl("MyExternalPage.qml")},
-                {tag: "Document", test: Qt.resolvedUrl("MyExternalPage.qml"), nextValue: pageComponent},
+                {tag: "Component", test: pageComponent, nextValue: Qt.resolvedUrl("MyExternalPageWithNewHeader.qml")},
+                {tag: "Document", test: Qt.resolvedUrl("MyExternalPageWithNewHeader.qml"), nextValue: pageComponent},
             ];
         }
         function test_change_primaryPageSource(data) {
@@ -428,12 +444,47 @@ MainView {
             primaryPageSpy.target = defaults;
             defaults.primaryPageSource = pageComponent;
             primaryPageSpy.wait(400);
-            compare(defaults.primaryPage.title, "DynamicPage", "DynamicPage not set as primaryPage");
+            compare(defaults.primaryPage.header.title, "DynamicPage", "DynamicPage not set as primaryPage");
             // now set a value to primaryPage
             primaryPageSpy.clear();
             defaults.primaryPage = otherPage1;
             primaryPageSpy.wait(400);
             compare(defaults.primaryPageSource, undefined, "primaryPageSource must be cleared");
+        }
+
+        function test_add_page_to_next_column_doesnt_delete_prev_column_content_bug1544745() {
+
+            var incubator = layout.addPageToNextColumn(layout.primaryPage, pageComponent);
+            verify(incubator);
+            verify(incubator.status != Component.Error);
+            var newPage = null;
+            if (incubator.status == Component.Loading) {
+                incubator.forceCompletion();
+                newPage = incubator.object;
+            } else if (incubator.status == Component.Ready) {
+                newPage = incubator.object;
+            }
+            deletedSpy1.target = newPage;
+
+            // add one page on top of the page on second column
+            incubator = layout.addPageToCurrentColumn(newPage, pageComponent);
+            verify(incubator);
+            newPage = null;
+            if (incubator.status == Component.Loading) {
+                incubator.forceCompletion();
+                newPage = incubator.object;
+            } else if (incubator.status == Component.Ready) {
+                newPage = incubator.object;
+            }
+            deletedSpy2.target = newPage;
+
+            // add a new page relative to the primary page to the next column
+            // this should remove the previously added two pages
+            incubator = layout.addPageToNextColumn(layout.primaryPage, pageComponent);
+            verify(incubator);
+            incubator.forceCompletion();
+            deletedSpy1.wait(500);
+            deletedSpy2.wait(500);
         }
     }
 }

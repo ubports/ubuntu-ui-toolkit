@@ -66,6 +66,11 @@ Item {
             id: textArea
             text: "This is a text area with some text handling focus"
         }
+        Item {
+            BottomEdgeHint {
+                id: bottomEdgeHint
+            }
+        }
         Button {
             id: button
             text: "Press me"
@@ -198,7 +203,10 @@ Item {
                 {tag: "TextField(back)", from: textField, to: dummy, key: Qt.Key_Backtab},
                 {tag: "TextArea", from: textField, to: textArea, key: Qt.Key_Tab},
                 {tag: "TextArea(back)", from: textArea, to: textField, key: Qt.Key_Backtab},
-                {tag: "Button(back)", from: button, to: textArea, key: Qt.Key_Backtab},
+                {tag: "BottomEdgeHint", from: textArea, to: bottomEdgeHint, key: Qt.Key_Tab},
+                {tag: "BottomEdgeHint(back)", from: bottomEdgeHint, to: textArea, key: Qt.Key_Backtab},
+                {tag: "Button", from: bottomEdgeHint, to: button, key: Qt.Key_Tab},
+                {tag: "Button(back)", from: button, to: bottomEdgeHint, key: Qt.Key_Backtab},
                 {tag: "CheckBox", from: checkbox, to: switchbox, key: Qt.Key_Tab},
                 {tag: "CheckBox", from: switchbox, to: checkbox, key: Qt.Key_Backtab},
                 {tag: "Switch", from: switchbox, to: slider, key: Qt.Key_Tab},
@@ -220,8 +228,11 @@ Item {
             ];
         }
         function test_tab_focus(data) {
-            data.from.forceActiveFocus();
-            verify(data.from.activeFocus, "Source component is not focused");
+            data.from.focus = true;
+            verify(data.from.enabled, "Source component is invalid");
+            verify(data.to.enabled, "Target component is invalid");
+            verify(data.from.activeFocus, "Source component is not focused - focus is on %1"
+                .arg(String(window.activeFocusItem).split("(")[0]));
             if (data.key == Qt.LeftButton) {
                 verify(data.to.activeFocusOnPress, "Target doesn't take focus on click");
                 mouseClick(data.to, centerOf(data.to).x, centerOf(data.to).y);
@@ -231,7 +242,8 @@ Item {
             }
             waitForRendering(data.to, 500);
             verify(!data.from.activeFocus, "Source component still keeps focus");
-            verify(data.to.activeFocus, "Target component is not focused");
+            verify(data.to.activeFocus, "Target component is not focused - focus is on %1"
+                .arg(String(window.activeFocusItem).split("(")[0]));
         }
 
         function test_hide_osk_when_pickerpanel_opens() {
