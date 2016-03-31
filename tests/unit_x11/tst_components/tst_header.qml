@@ -351,6 +351,46 @@ Item {
             compare(flickable.topMargin, header.height, "Reverting flickable breaks flickable top margin.");
         }
 
+        function test_flickable_margins_invisible_header_bug1560458_bug1560419() {
+            var h = header.height;
+            compare(flickable.topMargin, h,
+                    "Flickable top margin does not match header height.");
+            header.visible = false;
+            compare(flickable.topMargin, 0,
+                    "Invisible header sets flickable.topMargin.");
+            header.visible = true;
+            compare(flickable.topMargin, h,
+                    "Making flickable visible does not set flickable.topMargin.");
+            header.height = 0;
+            compare(flickable.topMargin, 0,
+                    "Header with height = 0 sets flickable.topMargin.");
+            header.height = h;
+            compare(flickable.topMargin, h,
+                    "Setting header height does not set flickable.topMargin.");
+            header.width = 0;
+            compare(flickable.topMargin, 0,
+                    "Header with width = 0 sets flickable.topMargin.");
+            header.width = root.width;
+            compare(flickable.topMargin, h,
+                    "Setting header width does not set flickable.topMargin.");
+
+            // Setting opacity to 0 should not change flickable.topMargin.
+            // This allows opacity animations.
+            header.opacity = 0.0;
+            compare(flickable.topMargin, h,
+                    "Setting header opacity to 0 changes flickable.topMargin.");
+            header.opacity = 1.0;
+            compare(flickable.topMargin, h,
+                    "Setting header opacity to 1 changes flickable.topMargin.");
+
+            header.parent = null;
+            compare(flickable.topMargin, 0,
+                    "Header with no parent sets flickable.topMargin.");
+            header.parent = root;
+            compare(flickable.topMargin, h,
+                    "Header with parent does not set flickable.topMargin.");
+        }
+
         function test_flickable_contentHeight_bug1156573() {
             var old_height = flickable.contentHeight;
             header.exposed = false;
