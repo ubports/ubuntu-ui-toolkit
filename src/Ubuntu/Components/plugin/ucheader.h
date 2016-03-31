@@ -49,6 +49,7 @@ Q_SIGNALS:
 protected:
     virtual void show(bool animate);
     virtual void hide(bool animate);
+    virtual void itemChange(ItemChange change, const ItemChangeData &value);
 
 private Q_SLOTS:
     void _q_scrolledContents();

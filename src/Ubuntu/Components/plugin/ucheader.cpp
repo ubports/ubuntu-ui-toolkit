@@ -116,6 +116,14 @@ void UCHeader::_q_heightChanged() {
     }
 }
 
+void UCHeader::itemChange(ItemChange change, const ItemChangeData &value) {
+    if (change == ItemVisibleHasChanged || change == ItemParentHasChanged) {
+        qDebug()<<"itemChange: calling updateFlickableMargins.";
+        updateFlickableMargins();
+    }
+    UCStyledItemBase::itemChange(change, value);
+}
+
 /*!
  * \qmlproperty Flickable Header::flickable
  *
@@ -194,7 +202,11 @@ void UCHeader::updateFlickableMargins() {
     if (m_flickable.isNull()) {
         return;
     }
-    qreal headerHeight = height();
+    qreal headerHeight = 0.0;
+    if (isVisible() && width() > 0.0 && parentItem()) {
+        headerHeight = height();
+    }
+    qDebug()<<"updateFlickableMargins: headerHeight = "<<headerHeight;
     qreal previousHeaderHeight = m_flickable->topMargin();
     if (headerHeight != previousHeaderHeight) {
         qreal previousContentY = m_flickable->contentY();
