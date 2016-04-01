@@ -970,6 +970,19 @@ private Q_SLOTS:
         d->regions[0]->setEnabled(true);
         QTRY_VERIFY_WITH_TIMEOUT(UCBottomEdgeRegionPrivate::get(d->regions[0])->contentItem != nullptr, 1000);
     }
+
+    void test_action_triggered_commits()
+    {
+        QScopedPointer<BottomEdgeTestCase> test(new BottomEdgeTestCase("BottomEdgeWithAction.qml"));
+        UCBottomEdge *bottomEdge = test->testItem();
+        UCAction *action = bottomEdge->hint()->action();
+        QVERIFY(action);
+
+        // trigger action
+        action->trigger();
+        QTRY_COMPARE_WITH_TIMEOUT(bottomEdge->status(), UCBottomEdge::Committed, 2000);
+        QVERIFY(bottomEdge->contentItem());
+    }
 };
 
 QTEST_MAIN(tst_BottomEdge)

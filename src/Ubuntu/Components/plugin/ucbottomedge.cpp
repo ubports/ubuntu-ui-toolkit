@@ -1002,6 +1002,11 @@ QQuickItem *UCBottomEdge::contentItem() const
 void UCBottomEdge::commit()
 {
     Q_D(UCBottomEdge);
+    // make sure that teh default region's content is loaded!
+    if (!d->activeRegion || d->activeRegion == d->defaultRegion) {
+        // make sure teh default is the active region
+        d->setActiveRegion(d->defaultRegion);
+    }
     d->commit(1.0);
 }
 
