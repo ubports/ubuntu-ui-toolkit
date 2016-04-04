@@ -140,6 +140,43 @@ Item {
         }
     }
 
+    Component {
+        id: styledScrollbarComp
+        Scrollbar {
+            StyleHints {
+                sliderColor: UbuntuColors.green
+            }
+        }
+    }
+
+    Component {
+        id: changeDefaultScrollbarPropsComp
+        Item {
+            id: root
+            width: units.gu(30)
+            height: units.gu(50)
+            property alias scrollview: freshScrollView
+
+            ScrollView {
+                id: freshScrollView
+                anchors.fill: parent
+                clip: true
+
+                //This is what this whole component is about
+                horizontalScrollbar.align: Qt.AlignTop
+
+                Rectangle {
+                    id: content
+
+                    //make sure that it's not scrollable
+                    width: freshScrollView.width / 2
+                    height: freshScrollView.height / 2
+                    color: "blue"
+                }
+            }
+        }
+    }
+
     SignalSpy {
         id: signalSpy
     }
@@ -616,8 +653,6 @@ Item {
             var verticalScrollbar = getVerticalScrollbar(scrollview)
             var horStyle = horizontalScrollbar.__styleInstance
             var verStyle = verticalScrollbar.__styleInstance
-            console.log(verticalScrollbar)
-
             var viewport = scrollview.viewport
 
             //make it not scrollable
@@ -768,6 +803,36 @@ Item {
             anotherSignalSpy.wait()
             compare(signalSpy.count, 2, "Inner item is not propagating key events as expected.")
             compare(anotherSignalSpy.count, 1, "Outer ScrollView did received the key event.")
+        }
+
+        //Test that it's still possible to customize scrollbars even when using ScrollView
+        function test_styling() {
+            var firstTestItem = getFreshScrollView()
+            var scrollview = firstTestItem.scrollview
+
+            //the null parent is intentional, ScrollView should handle that
+            var styledScrollbar = styledScrollbarComp.createObject(null)
+            verify(!!styledScrollbar, "Check that the dynamically created object is valid.")
+            anotherDynamicComp = styledScrollbar
+
+            scrollview.verticalScrollbar = styledScrollbar
+            compare(scrollview.verticalScrollbar.__styleInstance.sliderColor, UbuntuColors.green, "Wrong slider colour.")
+        }
+
+        function test_changeDefaultScrollbarProps() {
+            var firstTestItem = getFreshScrollView()
+            var scrollview = firstTestItem.scrollview
+
+            //try changing values of a scrollbar which is inside ScrollView and check that it works
+            compare(scrollview.horizontalScrollbar.align, Qt.AlignBottom, "The initial alignment is not the expected one.")
+            scrollview.horizontalScrollbar.align = Qt.AlignTop
+            compare(scrollview.horizontalScrollbar.align, Qt.AlignTop, "Wrong updated alignment.")
+
+            //try changing a scrollbar property directly in the component definition (i.e. using QML, not JS)
+            var anotherTestScenario = changeDefaultScrollbarPropsComp.createObject(column)
+            verify(!!anotherTestScenario, "Check that the dynamically created object is valid.")
+            anotherDynamicComp = anotherTestScenario
+            compare(anotherTestScenario.scrollview.horizontalScrollbar.align, Qt.AlignTop, "Wrong default alignment.")
         }
     }
 }

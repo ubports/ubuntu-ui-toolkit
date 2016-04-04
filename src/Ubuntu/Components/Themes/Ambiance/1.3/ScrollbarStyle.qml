@@ -121,10 +121,18 @@ Item {
 
     //flickable helper properties
     property Flickable flickableItem: styledItem.flickableItem
-    property real pageSize: (isVertical) ? (styledItem.flickableItem.height) : (styledItem.flickableItem.width)
-    property real contentSize: (isVertical) ? styledItem.flickableItem.contentHeight : styledItem.flickableItem.contentWidth
-    property real leadingContentMargin: isVertical ? styledItem.flickableItem.topMargin : styledItem.flickableItem.leftMargin
-    property real trailingContentMargin: isVertical ? styledItem.flickableItem.bottomMargin : styledItem.flickableItem.rightMargin
+    property real pageSize: flickableItem
+                            ? (isVertical ? flickableItem.height : flickableItem.width)
+                            : 0
+    property real contentSize: flickableItem
+                               ? (isVertical ? flickableItem.contentHeight : flickableItem.contentWidth)
+                               : 0
+    property real leadingContentMargin: flickableItem
+                                        ? (isVertical ? flickableItem.topMargin : flickableItem.leftMargin)
+                                        : 0
+    property real trailingContentMargin: flickableItem
+                                         ? (isVertical ? flickableItem.bottomMargin : flickableItem.rightMargin)
+                                         : 0
     //this size includes content margins
     property real totalContentSize: contentSize + leadingContentMargin + trailingContentMargin
 
@@ -271,7 +279,7 @@ Item {
 
             //The total length of the path where the thumb can be positioned, from its min to its max value
             var draggableLength = scrollbar.__trough[propSize] - margin*2
-            var maxPosRatio = 1.0 - scrollbar.flickableItem.visibleArea[propSizeRatio]
+            var maxPosRatio = 1.0 - (scrollbar.flickableItem ? scrollbar.flickableItem.visibleArea[propSizeRatio] : 1.0)
 
             //Example with x/width, same applies to y/height
             //xPosition is in the range [0...1 - widthRatio]
@@ -282,7 +290,7 @@ Item {
             //the maxPosition is reached when xPosition becomes 1, and that never happens. To compensate that, we
             //scale xPosition by ( 1 / ( 1 - widthRatio) ). This way, when xPosition reaches its max ( 1 - widthRatio )
             //we get a multiplication factor of 1
-            return MathUtils.clamp(1.0 / maxPosRatio * scrollbar.flickableItem.visibleArea[propPosRatio]
+            return MathUtils.clamp(1.0 / maxPosRatio * (scrollbar.flickableItem ? scrollbar.flickableItem.visibleArea[propPosRatio] : 1.0)
                                    * (draggableLength - scrollbar.__styleInstance.thumb[propSize]) + margin, min, max);
         }
 
@@ -296,8 +304,8 @@ Item {
           THUMB CAN MOVE INTO! (which is what you want in 99.9% of the cases, for a scrollbar)
           */
         function sliderSize(scrollbar, min, max) {
-            var sizeRatio = scrollbar.flickableItem.visibleArea[propSizeRatio];
-            var posRatio = scrollbar.flickableItem.visibleArea[propPosRatio];
+            var sizeRatio = scrollbar.flickableItem ? scrollbar.flickableItem.visibleArea[propSizeRatio] : 1.0;
+            var posRatio = scrollbar.flickableItem ? scrollbar.flickableItem.visibleArea[propPosRatio] : 0.0;
 
             //(sizeRatio * max) is the current ideal size, as recommended by Flickable visibleArea props
             var sizeUnderflow = (sizeRatio * max) < min ? min - (sizeRatio * max) : 0

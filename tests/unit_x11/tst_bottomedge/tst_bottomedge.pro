@@ -23,4 +23,5 @@ DISTFILES += \
     LeanActiveRegionChange.qml \
     UncoveredByRegion.qml \
     OverriddenHintTrigger.qml \
-    PreloadedContent.qml
+    PreloadedContent.qml \
+    BottomEdgeWithAction.qml

@@ -1638,15 +1638,15 @@ UCListItemDivider* UCListItem::divider() const
  * An item is highlighted, thus highlight state toggled, when pressed and it has
  * one of the following conditions fulfilled:
  * \list
- *  \li * \l leadingActions or \l trailingActions set,
- *  \li * it has an \l action attached
- *  \li * if the ListItem has an active child component, such as a \l Button, a
+ *  \li \l leadingActions or \l trailingActions set,
+ *  \li it has an \l action attached
+ *  \li if the ListItem has an active child component, such as a \l Button, a
  *      \l Switch, etc.
- *  \li * in general, if an active (enabled and visible) \b MouseArea is added
+ *  \li in general, if an active (enabled and visible) \b MouseArea is added
  *      as a child component
- *  \li * \l clicked signal handler is implemented or there is a slot or function
+ *  \li \l clicked signal handler is implemented or there is a slot or function
  *      connected to it
- *  \li * \l pressAndHold signal handler is implemented or there is a slot or
+ *  \li \l pressAndHold signal handler is implemented or there is a slot or
  *      function connected to it.
  * \endlist
  *
