@@ -3,6 +3,11 @@ TARGET=UbuntuToolkit
 
 QT *= core-private gui-private qml qml-private quick quick-private testlib
 
+!contains(QT_ARCH, arm) {
+    DEFINES += UBUNTUTOOLKIT_ENABLE_TOUCH_EMULATION
+    LIBS += -lX11 -lxcb -lXi
+}
+
 CONFIG += dll no_keywords c++11
 
 INCLUDEPATH+=$$PWD

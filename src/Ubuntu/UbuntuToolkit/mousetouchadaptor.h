@@ -54,16 +54,24 @@ Q_SIGNALS:
     void enabledChanged(bool value);
 
 private:
-
-    bool handleButtonPress(xcb_button_press_event_t *pressEvent);
-    bool handleButtonRelease(xcb_button_release_event_t *releaseEvent);
-    bool handleMotionNotify(xcb_motion_notify_event_t *event);
+    void fetchXInput2Info();
+#ifdef UBUNTUTOOLKIT_ENABLE_TOUCH_EMULATION
+    bool xi2HandleEvent(xcb_ge_event_t *event);
+#endif
+    bool handleButtonPress(WId windowId, uint32_t detail, uint32_t modifiers, int x, int y);
+    bool handleButtonRelease(WId windowId, uint32_t detail, uint32_t modifiers, int x, int y);
+    bool handleMotionNotify(WId windowId, uint32_t modifiers, int x, int y);
     QWindow *findQWindowWithXWindowID(WId windowId);
 
     static QTouchDevice *m_touchDevice;
     bool m_leftButtonIsPressed;
+    bool m_triPressModifier;
 
     bool m_enabled;
+
+    bool m_xi2Enabled{false};
+    int m_xi2Minor{-1};
+    int m_xiOpCode, m_xiEventBase, m_xiErrorBase;
 };
 
 } // namespace UbuntuToolkit
