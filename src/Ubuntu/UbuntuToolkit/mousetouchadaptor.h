@@ -19,6 +19,7 @@
 #ifndef MOUSE_TOUCH_ADAPTOR_H
 #define MOUSE_TOUCH_ADAPTOR_H
 
+#include "ubuntutoolkitglobal.h"
 #include <QtCore/QAbstractNativeEventFilter>
 #include <QWindow>
 #include <xcb/xcb.h>
@@ -29,7 +30,7 @@ class QTouchDevice;
 namespace UbuntuToolkit {
 
 // Transforms QMouseEvents into single-finger QTouchEvents.
-class MouseTouchAdaptor : public QObject, public QAbstractNativeEventFilter
+class UBUNTUTOOLKIT_EXPORT MouseTouchAdaptor : public QObject, public QAbstractNativeEventFilter
 {
     Q_OBJECT
 public:
