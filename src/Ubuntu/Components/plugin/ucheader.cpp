@@ -127,6 +127,39 @@ void UCHeader::_q_heightChanged() {
  *
  * When flickable is null, the header can be exposed or
  * hidden by setting the \l exposed property.
+ * Note that \l exposed is not automatically updated when the value of flickable
+ * changes, so if the header must be exposed when the flickable changes
+ * (or is set to null), this must be done explicitly. Example:
+ * \qml
+ *  import QtQuick 2.4
+ *  import Ubuntu.Components 1.3
+ *
+ *  MainView {
+ *      width: units.gu(60)
+ *      height: units.gu(80)
+ *
+ *      AdaptivePageLayout {
+ *          id: layout
+ *          anchors.fill: parent
+ *          primaryPage: Page {
+ *              id: page
+ *              Flickable {
+ *                  id: contentFlick
+ *                  anchors.fill: parent
+ *                  topMargin: page.header.flickable ? 0 : page.header.height
+ *                  contentHeight: units.gu(200)
+ *                  // Scrolling here can hide the header.
+ *              }
+ *              header: PageHeader {
+ *                  title: i18n.tr("Navigation")
+ *                  flickable: layout.columns === 1 ? contentFlick : null
+ *                  // Show header when it gets locked in a two-column layout:
+ *                  onFlickableChanged: exposed = true
+ *              }
+ *          }
+ *      }
+ *  }
+ * \endqml
  *
  * The topMargin of the flickable will automatically be updated to always match
  * the height of the header. When changing the flickable, the topMargin of the previous
