@@ -16,8 +16,7 @@
  * Authored by: Daniel d'Andrada <daniel.dandrada@canonical.com>
  */
 
-#include "ucmousetouchadaptor.h"
-#include "uctestextras.h"
+#include "mousetouchadaptor.h"
 
 #include <qpa/qwindowsysteminterface.h>
 
@@ -41,9 +40,13 @@ Qt::MouseButton translateMouseButton(xcb_button_t detail)
 }
 } // end of anonymous namespace
 
+namespace UbuntuToolkit {
+
+QTouchDevice *MouseTouchAdaptor::m_touchDevice = nullptr;
+
 /*!
  * \qmltype MouseTouchAdaptor
- * \instantiates UCMouseTouchAdaptor
+ * \instantiates MouseTouchAdaptor
  * \inqmlmodule Ubuntu.Test 1.0
  * \ingroup ubuntu-test
  * \brief Singleton type turning mouse events into single finger touch events.
@@ -60,18 +63,40 @@ Qt::MouseButton translateMouseButton(xcb_button_t detail)
  * \endqml
  *
  */
-UCMouseTouchAdaptor::UCMouseTouchAdaptor()
+MouseTouchAdaptor::MouseTouchAdaptor()
     : QObject(nullptr)
     , m_leftButtonIsPressed(false)
     , m_enabled(true)
 {
     QCoreApplication::instance()->installNativeEventFilter(this);
 
-    UCTestExtras::registerTouchDevice();
-    m_touchDevice = UCTestExtras::m_touchDevice;
+    registerTouchDevice();
 }
 
-bool UCMouseTouchAdaptor::nativeEventFilter(const QByteArray & eventType,
+// registers a test touch device, returns true if a device was found/registered
+bool MouseTouchAdaptor::registerTouchDevice()
+{
+    // check if there is any touch device registered in the system
+    if (!m_touchDevice) {
+        QList<const QTouchDevice*> touchDevices = QTouchDevice::devices();
+        Q_FOREACH(const QTouchDevice *device, touchDevices) {
+            if (device->type() == QTouchDevice::TouchScreen) {
+                m_touchDevice = const_cast<QTouchDevice*>(device);
+                return true;
+            }
+        }
+    }
+    // if none, register one
+    if (!m_touchDevice) {
+        m_touchDevice = new QTouchDevice;
+        m_touchDevice->setType(QTouchDevice::TouchScreen);
+        QWindowSystemInterface::registerTouchDevice(m_touchDevice);
+        return true;
+    }
+    return false;
+}
+
+bool MouseTouchAdaptor::nativeEventFilter(const QByteArray & eventType,
                                           void * message, long * /*result*/)
 {
     if (!m_enabled) {
@@ -102,7 +127,7 @@ bool UCMouseTouchAdaptor::nativeEventFilter(const QByteArray & eventType,
     };
 }
 
-bool UCMouseTouchAdaptor::handleButtonPress(xcb_button_press_event_t *pressEvent)
+bool MouseTouchAdaptor::handleButtonPress(xcb_button_press_event_t *pressEvent)
 {
     Qt::MouseButton button = translateMouseButton(pressEvent->detail);
 
@@ -123,7 +148,7 @@ bool UCMouseTouchAdaptor::handleButtonPress(xcb_button_press_event_t *pressEvent
     return true;
 }
 
-bool UCMouseTouchAdaptor::handleButtonRelease(xcb_button_release_event_t *releaseEvent)
+bool MouseTouchAdaptor::handleButtonRelease(xcb_button_release_event_t *releaseEvent)
 {
     Qt::MouseButton button = translateMouseButton(releaseEvent->detail);
 
@@ -144,7 +169,7 @@ bool UCMouseTouchAdaptor::handleButtonRelease(xcb_button_release_event_t *releas
     return true;
 }
 
-bool UCMouseTouchAdaptor::handleMotionNotify(xcb_motion_notify_event_t *event)
+bool MouseTouchAdaptor::handleMotionNotify(xcb_motion_notify_event_t *event)
 {
     if (!m_leftButtonIsPressed) {
         return true;
@@ -162,7 +187,7 @@ bool UCMouseTouchAdaptor::handleMotionNotify(xcb_motion_notify_event_t *event)
     return true;
 }
 
-QWindow *UCMouseTouchAdaptor::findQWindowWithXWindowID(WId windowId)
+QWindow *MouseTouchAdaptor::findQWindowWithXWindowID(WId windowId)
 {
     QWindowList windowList = QGuiApplication::topLevelWindows();
     QWindow *foundWindow = nullptr;
@@ -185,14 +210,16 @@ QWindow *UCMouseTouchAdaptor::findQWindowWithXWindowID(WId windowId)
  * \qmlproperty bool MouseTouchAdaptor::enabled
  * Enables the mouse to touch conversion functionality. Defaults to true.
  */
-bool UCMouseTouchAdaptor::enabled() const
+bool MouseTouchAdaptor::enabled() const
 {
     return m_enabled;
 }
-void UCMouseTouchAdaptor::setEnabled(bool value)
+void MouseTouchAdaptor::setEnabled(bool value)
 {
     if (value != m_enabled) {
         m_enabled = value;
         Q_EMIT enabledChanged(value);
     }
 }
+
+} // namespace UbuntuToolkit

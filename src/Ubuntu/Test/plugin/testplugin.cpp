@@ -17,7 +17,7 @@
 #include "testplugin.h"
 #include <QtQml>
 #include "uctestextras.h"
-#include "ucmousetouchadaptor.h"
+#include <MouseTouchAdaptor>
 
 static QObject *registerExtras(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
@@ -32,11 +32,11 @@ static QObject *registerAdaptor(QQmlEngine *engine, QJSEngine *scriptEngine)
     Q_UNUSED(engine)
     Q_UNUSED(scriptEngine)
 
-    return new UCMouseTouchAdaptor;
+    return new UbuntuToolkit::MouseTouchAdaptor;
 }
 
 void TestPlugin::registerTypes(const char *uri)
 {
     qmlRegisterSingletonType<UCTestExtras>(uri, 1, 0, "TestExtras", registerExtras);
-    qmlRegisterSingletonType<UCMouseTouchAdaptor>(uri, 1, 0, "MouseTouchAdaptor", registerAdaptor);
+    qmlRegisterSingletonType<UbuntuToolkit::MouseTouchAdaptor>(uri, 1, 0, "MouseTouchAdaptor", registerAdaptor);
 }

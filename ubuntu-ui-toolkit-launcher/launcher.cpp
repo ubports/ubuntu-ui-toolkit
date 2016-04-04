@@ -32,7 +32,7 @@
 #include <QtQuick/private/qsgcontext_p.h>
 #include <QtCore/QCommandLineParser>
 #include <QtCore/QCommandLineOption>
-#include "MouseTouchAdaptor.h"
+#include <MouseTouchAdaptor>
 #include <QtGui/QTouchDevice>
 #include <QtQml/qqml.h>
 
@@ -153,7 +153,7 @@ int main(int argc, const char *argv[])
 
     if (args.isSet(_enableTouch) && !touchDevicePresent()) {
         // has no effect if we have touch screen
-        application.installNativeEventFilter(new MouseTouchAdaptor);
+        application.installNativeEventFilter(new UbuntuToolkit::MouseTouchAdaptor);
     }
 
     QUrl source(QUrl::fromLocalFile(filename));

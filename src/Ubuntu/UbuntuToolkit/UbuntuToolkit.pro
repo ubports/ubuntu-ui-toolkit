@@ -1,7 +1,7 @@
 TEMPLATE=lib
 TARGET=UbuntuToolkit
 
-QT *= core-private gui-private qml qml-private quick quick-private
+QT *= core-private gui-private qml qml-private quick quick-private testlib
 
 CONFIG += dll no_keywords c++11
 
@@ -17,9 +17,11 @@ HEADERS += \
     ubuntutoolkitglobal.h \
     tree.h \
     asyncloader.h \
-    asyncloader_p.h
+    asyncloader_p.h \
+    mousetouchadaptor.h
 
 SOURCES += \ 
     colorutils.cpp \
     tree.cpp \
-    asyncloader.cpp
+    asyncloader.cpp \
+    mousetouchadaptor.cpp

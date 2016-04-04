@@ -1,15 +1,15 @@
 {
-    "architecture": "all",
-    "description": "description of customtheme",
-    "framework": "ubuntu-sdk-14.10-dev2",
+    "name": "customtheme.zsombi",
+    "description": "Example application of the Ubuntu UI Toolkit - Jokes",
+    "architecture": "amd64",
+    "title": "Jokes",
     "hooks": {
         "customtheme": {
             "apparmor": "customtheme.apparmor",
             "desktop": "customtheme.desktop"
         }
     },
+    "version": "0.1",
     "maintainer": "Zsombor Egri <zsombor.egri@canonical.com>",
-    "name": "customtheme",
-    "title": "customtheme",
-    "version": "0.1"
+    "framework": "ubuntu-sdk-15.04"
 }
