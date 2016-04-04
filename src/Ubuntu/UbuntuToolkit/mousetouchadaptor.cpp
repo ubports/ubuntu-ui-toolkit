@@ -33,6 +33,11 @@ namespace UbuntuToolkit {
 
 QTouchDevice *MouseTouchAdaptor::m_touchDevice = nullptr;
 
+MouseTouchAdaptorPrivate::~MouseTouchAdaptorPrivate()
+{
+    QCoreApplication::instance()->removeNativeEventFilter(this);
+}
+
 /*!
  * \qmltype MouseTouchAdaptor
  * \instantiates MouseTouchAdaptor
@@ -52,12 +57,12 @@ QTouchDevice *MouseTouchAdaptor::m_touchDevice = nullptr;
  * \endqml
  *
  */
-MouseTouchAdaptor::MouseTouchAdaptor()
+MouseTouchAdaptor::MouseTouchAdaptor(QObject *parent)
     :
 #ifdef UBUNTUTOOLKIT_ENABLE_X11_TOUCH_EMULATION
-      QObject(*(new X11MouseTouchAdaptorPrivate), nullptr)
+      QObject(*(new X11MouseTouchAdaptorPrivate), parent)
 #else
-      QObject(*(new MouseTouchAdaptorPrivate), nullptr)
+      QObject(*(new MouseTouchAdaptorPrivate), parents)
 #endif
 {
     registerTouchDevice();

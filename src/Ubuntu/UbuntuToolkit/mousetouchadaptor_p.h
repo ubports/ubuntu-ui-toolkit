@@ -14,6 +14,7 @@ class MouseTouchAdaptorPrivate : public QObjectPrivate, public QAbstractNativeEv
     Q_DECLARE_PUBLIC(MouseTouchAdaptor)
 public:
     MouseTouchAdaptorPrivate() : QObjectPrivate() {}
+    ~MouseTouchAdaptorPrivate();
 
     virtual void init() {}
     virtual bool nativeEventFilter(const QByteArray & eventType, void *message, long *result)

@@ -21,8 +21,12 @@
 
 #include "ubuntutoolkitglobal.h"
 
+#include <QtCore/QObject>
+
 class QMouseEvent;
 class QTouchDevice;
+class QQmlEngine;
+class QJSEngine;
 
 namespace UbuntuToolkit {
 
@@ -31,19 +35,19 @@ class MouseTouchAdaptorPrivate;
 class UBUNTUTOOLKIT_EXPORT MouseTouchAdaptor : public QObject
 {
     Q_OBJECT
+    Q_PRIVATE_PROPERTY(MouseTouchAdaptor::d_func(), bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
 public:
-    explicit MouseTouchAdaptor();
+    explicit MouseTouchAdaptor(QObject *parent = Q_NULLPTR);
 
     static bool registerTouchDevice();
     inline static QTouchDevice *touchDevice()
     {
         return m_touchDevice;
     }
-
-    Q_PRIVATE_PROPERTY(MouseTouchAdaptor::d_func(), bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
-
-    bool enabled() const;
-    void setEnabled(bool value);
+    static QObject *registerQmlSingleton(QQmlEngine*, QJSEngine*)
+    {
+        return new MouseTouchAdaptor;
+    }
 
 Q_SIGNALS:
     void enabledChanged(bool value);
