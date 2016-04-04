@@ -198,8 +198,16 @@ void UCBottomEdgeHint::timerEvent(QTimerEvent *event)
 void UCBottomEdgeHint::keyPressEvent(QKeyEvent *event)
 {
     UCActionItem::keyPressEvent(event);
-    if ((status() >= Active) && (event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)) {
-        Q_EMIT clicked();
+    if (status() == Hidden)
+        return;
+    switch (event->key()) {
+        case Qt::Key_Enter:
+        case Qt::Key_Return:
+        case Qt::Key_Space:
+            Q_EMIT clicked();
+            break;
+        default:
+            break;
     }
 }
 

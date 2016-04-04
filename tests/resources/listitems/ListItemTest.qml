@@ -15,8 +15,8 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.2
-import Ubuntu.Components.Styles 1.2
+import Ubuntu.Components 1.3
+import Ubuntu.Components.Styles 1.3
 import QtQuick.Layouts 1.1
 
 MainView {
@@ -207,6 +207,7 @@ MainView {
                         title.text: "This is one Label split in two lines.\n" +
                               "The second line - item #" + modelData
                     }
+                    CheckBox {}
                     Button {
                         text: "Pressme..."
                     }
@@ -245,7 +246,7 @@ MainView {
                     model: 10
                     ListItem {
                         objectName: "InFlickable"+index
-                        color: UbuntuColors.red
+                        color: UbuntuColors.silk
                         highlightColor: "lime"
                         divider.colorFrom: UbuntuColors.green
 
@@ -263,9 +264,13 @@ MainView {
                         Label {
                             text: modelData + " Flickable item"
                         }
-                        Button {
-                            text: "Pressme..."
+                        Row {
                             anchors.centerIn: parent
+                            spacing: units.dp(4)
+                            Button {
+                                text: "Pressme..."
+                            }
+                            Switch {}
                         }
 
                         onClicked: divider.visible = !divider.visible

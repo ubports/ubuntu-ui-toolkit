@@ -162,6 +162,7 @@ public:
     UCSwipeArea::Direction direction;
 
     bool immediateRecognition;
+    bool grabGesture;
 };
 
 class UBUNTUGESTURES_EXPORT UCSwipeAreaStatusListener

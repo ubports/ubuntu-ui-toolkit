@@ -352,6 +352,38 @@ void UCSwipeArea::setImmediateRecognition(bool enabled)
         Q_EMIT immediateRecognitionChanged(enabled);
     }
 }
+    
+/*!
+ * \qmlproperty bool SwipeArea::grabGesture
+ * If true, any gestures will be grabbed and owned by the SwipeArea as usual.
+ * If false, gestures will still be reported, but events may be grabbed by
+ * another Qml object.
+ *
+ * Defaults to true. In most cases this should not be unset.
+ */
+bool UCSwipeArea::grabGesture() const
+{
+    Q_D(const UCSwipeArea);
+    return d->grabGesture;
+}
+
+void UCSwipeArea::setGrabGesture(bool enabled)
+{
+    Q_D(UCSwipeArea);
+    if (d->grabGesture == enabled) {
+        return;
+    }
+
+    d->grabGesture = enabled;
+
+    if (!d->grabGesture && d->status == UCSwipeAreaPrivate::Undecided) {
+        TouchRegistry::instance()->removeCandidateOwnerForTouch(d->touchId, this);
+        // We still wanna know when it ends for keeping the composition time window up-to-date
+        TouchRegistry::instance()->addTouchWatcher(d->touchId, this);
+    }
+
+    Q_EMIT grabGestureChanged(enabled);
+}
 
 bool UCSwipeArea::event(QEvent *event)
 {
@@ -401,7 +433,10 @@ void UCSwipeAreaPrivate::unownedTouchEvent(UnownedTouchEvent *unownedTouchEvent)
             unownedTouchEvent_undecided(unownedTouchEvent);
             break;
         default: // Recognized:
-            // do nothing
+            if (!grabGesture) {
+                // Treat unowned event as if we owned it, but we are really just watching it
+                touchEvent_recognized(event);
+            }
             break;
     }
 
@@ -453,7 +488,9 @@ void UCSwipeAreaPrivate::unownedTouchEvent_undecided(UnownedTouchEvent *unownedT
     }
 
     if (movedFarEnoughAlongGestureAxis()) {
-        TouchRegistry::instance()->requestTouchOwnership(touchId, q);
+        if (grabGesture) {
+            TouchRegistry::instance()->requestTouchOwnership(touchId, q);
+        }
         setStatus(Recognized);
         updatePosition(touchScenePosition);
     } else if (isPastMaxDistance()) {
@@ -552,12 +589,21 @@ void UCSwipeAreaPrivate::touchEvent_absent(QTouchEvent *event)
         if (recognitionIsDisabled()) {
             // Behave like a dumb TouchArea
             SA_TRACE("Gesture recognition is disabled. Requesting touch ownership immediately.");
-            TouchRegistry::instance()->requestTouchOwnership(touchId, q);
             setStatus(Recognized);
-            event->accept();
+            if (grabGesture) {
+                TouchRegistry::instance()->requestTouchOwnership(touchId, q);
+                event->accept();
+            } else {
+                watchPressedTouchPoints(touchPoints);
+                event->ignore();
+            }
         } else {
             // just monitor the touch points for now.
-            TouchRegistry::instance()->addCandidateOwnerForTouch(touchId, q);
+            if (grabGesture) {
+                TouchRegistry::instance()->addCandidateOwnerForTouch(touchId, q);
+            } else {
+                watchPressedTouchPoints(touchPoints);
+            }
 
             setStatus(Undecided);
             // Let the item below have it. We will monitor it and grab it later if a gesture
@@ -984,6 +1030,7 @@ UCSwipeAreaPrivate::UCSwipeAreaPrivate()
     , status(WaitingForTouch)
     , direction(UCSwipeArea::Rightwards)
     , immediateRecognition(false)
+    , grabGesture(true)
 {
 }
 

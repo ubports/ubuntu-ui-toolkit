@@ -119,7 +119,6 @@ UbuntuTestCase {
         signalSpy.wait()
 
         if (style.isVertical) {
-            console.log(flickable.contentY, contentYBackup)
             verify(flickable.contentY !== contentYBackup, "Check that mouse drag changed contentY." )
             compare(flickable.contentX, contentXBackup, "Vertical thumb drag must not change contentX")
         } else {
