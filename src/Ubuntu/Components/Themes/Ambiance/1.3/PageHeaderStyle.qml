@@ -47,8 +47,8 @@ Style.PageHeaderStyle {
                                        : styledItem.sections.height
 
         property bool landscape: Screen.height <= units.gu(50)
-        property bool subtitle: styledItem.subtitle && !styledItem.contents
-        property bool extension: styledItem.extension
+        property bool hasSubtitle: styledItem.subtitle && !styledItem.contents
+        property bool hasExtension: styledItem.extension
 
         // The height of the area in which the title and icons are vertically centered
         property real titleAreaHeight
@@ -56,16 +56,16 @@ Style.PageHeaderStyle {
         property real titleBottomSpacing
 
         onLandscapeChanged: updateHeights()
-        onSubtitleChanged: updateHeights()
-        onExtensionChanged: updateHeights()
+        onHasSubtitleChanged: updateHeights()
+        onHasExtensionChanged: updateHeights()
 
         function updateHeights() {
             if (landscape) {
-                if (subtitle) {
+                if (hasSubtitle) {
                     // with subtitle, and with or without extension
                     titleAreaHeight = units.gu(4);
                     titleBottomSpacing = units.gu(2);
-                } else if (extension) {
+                } else if (hasExtension) {
                     titleAreaHeight = units.gu(4);
                     titleBottomSpacing = units.gu(1);
                 } else {
@@ -74,7 +74,7 @@ Style.PageHeaderStyle {
                 }
             } else { // portrait
                 titleAreaHeight = units.gu(6);
-                if (subtitle) {
+                if (hasSubtitle) {
                     titleBottomSpacing = units.gu(1);
                 } else {
                     titleBottomSpacing = 0;
