@@ -14,6 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * Authored by: Daniel d'Andrada <daniel.dandrada@canonical.com>
+ *              Zsombor Egri <zsomboir.egri@canonical.com>
  */
 
 #include "mousetouchadaptor_p.h"
