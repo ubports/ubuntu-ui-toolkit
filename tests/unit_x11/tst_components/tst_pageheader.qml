@@ -89,6 +89,7 @@ Rectangle {
                 iconName: "attachment"
                 text: "Attach"
                 objectName: "five"
+                enabled: false
             },
             Action {
                 iconName: "contact"
