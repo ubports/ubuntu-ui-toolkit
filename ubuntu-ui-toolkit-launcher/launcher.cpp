@@ -153,7 +153,7 @@ int main(int argc, const char *argv[])
 
     if (args.isSet(_enableTouch) && !touchDevicePresent()) {
         // has no effect if we have touch screen
-        application.installNativeEventFilter(new UbuntuToolkit::MouseTouchAdaptor);
+        new UbuntuToolkit::MouseTouchAdaptor;
     }
 
     QUrl source(QUrl::fromLocalFile(filename));

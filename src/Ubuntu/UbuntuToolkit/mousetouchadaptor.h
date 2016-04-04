@@ -20,9 +20,6 @@
 #define MOUSE_TOUCH_ADAPTOR_H
 
 #include "ubuntutoolkitglobal.h"
-#include <QtCore/QAbstractNativeEventFilter>
-#include <QWindow>
-#include <xcb/xcb.h>
 
 class QMouseEvent;
 class QTouchDevice;
@@ -30,7 +27,8 @@ class QTouchDevice;
 namespace UbuntuToolkit {
 
 // Transforms QMouseEvents into single-finger QTouchEvents.
-class UBUNTUTOOLKIT_EXPORT MouseTouchAdaptor : public QObject, public QAbstractNativeEventFilter
+class MouseTouchAdaptorPrivate;
+class UBUNTUTOOLKIT_EXPORT MouseTouchAdaptor : public QObject
 {
     Q_OBJECT
 public:
@@ -42,10 +40,7 @@ public:
         return m_touchDevice;
     }
 
-    // Filters mouse events and posts the equivalent QTouchEvents.
-    bool nativeEventFilter(const QByteArray & eventType, void *message, long *result) Q_DECL_OVERRIDE;
-
-    Q_PROPERTY(bool enabled READ enabled WRITE setEnabled NOTIFY enabledChanged)
+    Q_PRIVATE_PROPERTY(MouseTouchAdaptor::d_func(), bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
 
     bool enabled() const;
     void setEnabled(bool value);
@@ -54,24 +49,8 @@ Q_SIGNALS:
     void enabledChanged(bool value);
 
 private:
-    void fetchXInput2Info();
-#ifdef UBUNTUTOOLKIT_ENABLE_TOUCH_EMULATION
-    bool xi2HandleEvent(xcb_ge_event_t *event);
-#endif
-    bool handleButtonPress(WId windowId, uint32_t detail, uint32_t modifiers, int x, int y);
-    bool handleButtonRelease(WId windowId, uint32_t detail, uint32_t modifiers, int x, int y);
-    bool handleMotionNotify(WId windowId, uint32_t modifiers, int x, int y);
-    QWindow *findQWindowWithXWindowID(WId windowId);
-
+    Q_DECLARE_PRIVATE(MouseTouchAdaptor)
     static QTouchDevice *m_touchDevice;
-    bool m_leftButtonIsPressed;
-    bool m_triPressModifier;
-
-    bool m_enabled;
-
-    bool m_xi2Enabled{false};
-    int m_xi2Minor{-1};
-    int m_xiOpCode, m_xiEventBase, m_xiErrorBase;
 };
 
 } // namespace UbuntuToolkit
