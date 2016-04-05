@@ -54,9 +54,14 @@ Header {
     property string title
 
     /*!
-      The contents item to display in the header. By default the contents
-      is undefined, and setting it will disable showing of the title in
-      the header.
+      Displayed under the title.
+      Hidden when the \l contents Item is set.
+     */
+    property string subtitle
+
+    /*!
+      The contents item to display in the header. By default the contents is
+      undefined, and setting it will disable showing of the title and subtitle.
 
       Example:
       \qml
@@ -79,6 +84,7 @@ Header {
 
     Component.onCompleted: contentsHolder.updateContents()
     onContentsChanged: contentsHolder.updateContents()
+    onSubtitleChanged: contentsHolder.updateContents()
 
     Item {
         id: contentsHolder
@@ -94,6 +100,11 @@ Header {
             id: titleLoader
             anchors.fill: parent
         }
+        Loader {
+            id: subtitleLoader
+            anchors.fill: parent
+        }
+
         property Item previousContents: null
         property Item previousContentsParent: null
 
@@ -110,6 +121,11 @@ Header {
                 previousContents = null;
                 previousContentsParent = null;
                 titleLoader.sourceComponent = __styleInstance.titleComponent;
+                if (!subtitle) {
+                    subtitleLoader.sourceComponent = null;
+                } else {
+                    subtitleLoader.sourceComponent = __styleInstance.subtitleComponent;
+                }
             }
         }
 

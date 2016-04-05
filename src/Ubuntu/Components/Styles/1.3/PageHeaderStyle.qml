@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -30,6 +30,16 @@ Item {
     property color foregroundColor
 
     /*!
+      The color of disabled action buttons in the header.
+     */
+    property color disabledForegroundColor
+
+    /*!
+      The color of the (optional) subtitle.
+     */
+    property color subtitleColor
+
+    /*!
       The color of the background of the header.
      */
     property color backgroundColor
@@ -49,6 +59,11 @@ Item {
       The default contents that will be loaded when no contents Item was set.
      */
     property Component titleComponent
+
+    /*!
+      The default component to display the subtitle.
+     */
+    property Component subtitleComponent
 
     /*!
       The height of the header excluding the divider and extension.
