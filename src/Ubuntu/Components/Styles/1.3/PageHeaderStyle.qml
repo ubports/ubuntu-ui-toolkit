@@ -35,6 +35,11 @@ Item {
     property color disabledForegroundColor
 
     /*!
+      The color of the (optional) subtitle.
+     */
+    property color subtitleColor
+
+    /*!
       The color of the background of the header.
      */
     property color backgroundColor
@@ -54,6 +59,11 @@ Item {
       The default contents that will be loaded when no contents Item was set.
      */
     property Component titleComponent
+
+    /*!
+      The default component to display the subtitle.
+     */
+    property Component subtitleComponent
 
     /*!
       The height of the header excluding the divider and extension.
