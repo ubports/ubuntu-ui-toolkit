@@ -31,11 +31,12 @@ MainView {
             objectName: "my_rectangle"
             id: myRectangle
             anchors {
-                left: parent.left
-                right: parent.right
+                left: parent ? parent.left : undefined
+                right: parent ? parent.right : undefined
             }
-            height: units.gu(6)
+            height: myPageHeader.height
             color: UbuntuColors.red
+            visible: parent && parent.visible
         }
 
         PageHeader {
@@ -52,6 +53,7 @@ MainView {
                     text: "Second"
                 }
             ]
+            visible: parent && parent.visible
         }
     }
 
@@ -64,7 +66,7 @@ MainView {
             anchors {
                 left: parent.left
                 right: parent.right
-                top: parent.top
+                top: page.header ? page.header.bottom : parent.top
                 topMargin: units.gu(10)
                 leftMargin: units.gu(10)
                 rightMargin: units.gu(10)
@@ -126,26 +128,24 @@ MainView {
 
         function test_page_with_no_header() {
             page.header = null;
-            compare(myPageHeader.parent, invisible,
-                    "Header parent is not correctly reverted when unsetting Page.header.");
-            compare(myPageHeader.visible, false,
-                    "My PageHeader is still visible after re-parenting it to an invisible Item.");
+            compare(myPageHeader.parent, null,
+                    "Header parent is not wet to null when unsetting Page.header.");
             compare(appHeader.visible, true,
                     "AppHeader does not become visible when Page.header is null.");
         }
 
         function test_page_with_alternative_header() {
             page.header = myRectangle;
-            compare(myPageHeader.parent, invisible,
-                    "Header parent not correctly reverted when setting a different Page.header.");
+            compare(myPageHeader.parent, null,
+                    "Header parent not null after setting a different Page.header.");
             compare(myRectangle.parent, page,
                     "Rectangle parent is not correctly set to page after setting it as Page.header.");
             compare(appHeader.visible, false,
                     "Setting a different Page.header Item shows the AppHeader.");
 
             page.header = myPageHeader;
-            compare(myRectangle.parent, invisible,
-                    "Rectangle parent is not correctly reverted after unsetting it as Page.header.");
+            compare(myRectangle.parent, null,
+                    "Rectangle parent is not set to null after unsetting it as Page.header.");
             // myPageHeader parent is checked in cleanup().
         }
     }
