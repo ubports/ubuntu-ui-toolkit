@@ -18,6 +18,7 @@
 #include <QtTest/QtTest>
 #include "ucbottomedge.h"
 #include "ucbottomedgeregion.h"
+#include "ucbottomedgeregion_p.h"
 #include "ucbottomedge_p.h"
 #include "ucbottomedgehint.h"
 #include "private/ucswipearea_p.h"
@@ -143,8 +144,8 @@ private Q_SLOTS:
         QVERIFY(test->regions("testItem"));
         QCOMPARE(test->regions("testItem")->size(), 1);
         QCOMPARE(test->regionAt("testItem", 0)->objectName(), QString("default_BottomEdgeRegion"));
-        QCOMPARE(test->regionAt("testItem", 0)->m_from, 0.33);
-        QCOMPARE(test->regionAt("testItem", 0)->m_to, 1.0);
+        QCOMPARE(UCBottomEdgeRegionPrivate::get(test->regionAt("testItem", 0))->from, 0.0);
+        QCOMPARE(UCBottomEdgeRegionPrivate::get(test->regionAt("testItem", 0))->to, 1.0);
         QVERIFY(!test->testItem()->activeRegion());
         QVERIFY(!test->testItem()->preloadContent());
     }
@@ -526,12 +527,12 @@ private Q_SLOTS:
                 << "AddCustomRegionOwnedByOtherBottomEdge.qml"
                 << "QML BottomEdge: Cannot reuse region owned by other BottomEdge components"
                    // we should have the default region still
-                << 0.33 << 1.0 << "default_BottomEdgeRegion";
+                << 0.0 << 1.0 << "default_BottomEdgeRegion";
         QTest::newRow("clear")
                 << "ClearCustomRegions.qml"
                 << QString()
                    // we should have the default region back
-                << 0.33 << 1.0 << "default_BottomEdgeRegion";
+                << 0.0 << 1.0 << "default_BottomEdgeRegion";
     }
 
     void test_region_operations()
@@ -553,8 +554,8 @@ private Q_SLOTS:
         QCOMPARE(privateBottomEdge->regions.size(), 1);
         UCBottomEdgeRegion *region = privateBottomEdge->regions[0];
         QVERIFY(region);
-        QCOMPARE(region->m_from, xFrom);
-        QCOMPARE(region->m_to, xTo);
+        QCOMPARE(UCBottomEdgeRegionPrivate::get(region)->from, xFrom);
+        QCOMPARE(UCBottomEdgeRegionPrivate::get(region)->to, xTo);
         QCOMPARE(region->objectName(), xName);
     }
 
@@ -576,9 +577,9 @@ private Q_SLOTS:
         }
         QTest::qWait(20);
         UCTestExtras::touchRelease(0, bottomEdge, movePos);
-        // we should have had 3 active region changes by now
-        // null -> region #0 -> region #1 -> null
-        QCOMPARE(spy.count(), 3);
+        // we should have had 4 active region changes by now
+        // null -> defaultRegion -> region #0 -> region #1 -> defaultRegion
+        QCOMPARE(spy.count(), 4);
     }
 
     void test_region_signals_emitted_data()
@@ -598,8 +599,8 @@ private Q_SLOTS:
         UCBottomEdgeRegion *region = privateBottomEdge->regions[0];
 
         // change the region so we can get the signals while dragged
-        region->m_from = 0.1;
-        region->m_to = 0.2;
+        UCBottomEdgeRegionPrivate::get(region)->from = 0.1;
+        UCBottomEdgeRegionPrivate::get(region)->to = 0.2;
 
         QPoint from(bottomEdge->width() / 2.0f, bottomEdge->height() - 5);
         QPoint delta(0, -(bottomEdge->height() / 3 + UCUnits::instance()->gu(6)));
@@ -615,7 +616,8 @@ private Q_SLOTS:
             UCTestExtras::touchDrag(0, bottomEdge, from, delta);
         }
         QTRY_COMPARE_WITH_TIMEOUT(entered.count(), 1, 500);
-        QTRY_COMPARE_WITH_TIMEOUT(exited.count(), 1, 500);
+        // exit should not be emitted as the region is not left when committed
+        QTRY_COMPARE_WITH_TIMEOUT(exited.count(), 0, 500);
     }
 
     void test_region_dragEnded_emitted_data()
@@ -677,39 +679,22 @@ private Q_SLOTS:
         UCBottomEdgeStyle *style = UCBottomEdgePrivate::get(bottomEdge)->bottomPanel;
 
         // alter default region for testing
-        region->m_from = 0.1;
-        region->m_to = 0.8;
+        UCBottomEdgeRegionPrivate::get(region)->to = 0.6;
 
         QPoint from(bottomEdge->width() / 2.0f, bottomEdge->height() - 5);
-        QPoint to = from + QPoint(0, -(bottomEdge->parentItem()->height() - 1));
+        QPoint delta(0, -(bottomEdge->height() / 2));
 
         if (withMouse) {
             bottomEdge->hint()->setStatus(UCBottomEdgeHint::Locked);
-            from = bottomEdge->mapToScene(from).toPoint();
-            to = bottomEdge->mapToScene(to).toPoint();
-            QTest::mousePress(bottomEdge->window(), Qt::LeftButton, 0, from, 20);
-            QPoint movePos(from);
-            while (movePos.y() > to.y() && !bottomEdge->activeRegion()) {
-                QTest::mouseMove(bottomEdge->window(), movePos, 20);
-                movePos += QPoint(0, -10);
-            }
-            QTest::mouseRelease(bottomEdge->window(),Qt::LeftButton, 0, movePos, 20);
+            UCTestExtras::mouseDrag(bottomEdge, from, delta, Qt::LeftButton, 0);
         } else {
-            UCTestExtras::touchPress(0, bottomEdge, from);
-            QPoint movePos(from);
-            while (movePos.y() > to.y() && !bottomEdge->activeRegion()) {
-                QTest::qWait(20);
-                UCTestExtras::touchMove(0, bottomEdge, movePos);
-                movePos += QPoint(0, -10);
-            }
-            QTest::qWait(20);
-            UCTestExtras::touchRelease(0, bottomEdge, movePos);
+            UCTestExtras::touchDrag(0, bottomEdge, from, delta, 20);
         }
 
-        QVERIFY(bottomEdge->activeRegion());
+        QTRY_COMPARE_WITH_TIMEOUT(bottomEdge->status(), UCBottomEdge::Committed, 1000);
+        QCOMPARE(bottomEdge->activeRegion(), region);
         // the top of the committed content should not be the top of the bottom edge
         QVERIFY(style->m_panel->y() > bottomEdge->y());
-        QCOMPARE(bottomEdge->status(), UCBottomEdge::Revealed);
     }
 
     void test_drag_ends_in_uncovered_region_collapses_data()
@@ -758,7 +743,6 @@ private Q_SLOTS:
             UCTestExtras::touchRelease(0, bottomEdge, movePos);
         }
 
-        QVERIFY(!bottomEdge->activeRegion());
         // we should be collapsing!
         QTRY_COMPARE_WITH_TIMEOUT(bottomEdge->status(), UCBottomEdge::Committed, 1000);
     }
@@ -780,8 +764,8 @@ private Q_SLOTS:
         UCBottomEdgeRegion *region = privateBottomEdge->regions[0];
 
         // alter region for testing
-        region->m_from = 0.1;
-        region->m_to = 0.8;
+        UCBottomEdgeRegionPrivate::get(region)->from = 0.1;
+        UCBottomEdgeRegionPrivate::get(region)->to = 0.8;
         // and connect commit to dragEnded
         connect(region, &UCBottomEdgeRegion::dragEnded, bottomEdge, &UCBottomEdge::commit);
 
@@ -794,7 +778,7 @@ private Q_SLOTS:
             to = bottomEdge->mapToScene(to).toPoint();
             QTest::mousePress(bottomEdge->window(), Qt::LeftButton, 0, from, 20);
             QPoint movePos(from);
-            while (movePos.y() > to.y() && !bottomEdge->activeRegion()) {
+            while (movePos.y() > to.y() && (bottomEdge->activeRegion() != region)) {
                 QTest::mouseMove(bottomEdge->window(), movePos, 20);
                 movePos += QPoint(0, -10);
             }
@@ -802,7 +786,7 @@ private Q_SLOTS:
         } else {
             UCTestExtras::touchPress(0, bottomEdge, from);
             QPoint movePos(from);
-            while (movePos.y() > to.y() && !bottomEdge->activeRegion()) {
+            while (movePos.y() > to.y() && (bottomEdge->activeRegion() != region)) {
                 QTest::qWait(20);
                 UCTestExtras::touchMove(0, bottomEdge, movePos);
                 movePos += QPoint(0, -10);
@@ -841,8 +825,8 @@ private Q_SLOTS:
         UCBottomEdgeRegion *region = privateBottomEdge->regions[0];
 
         // adjust region data for the test
-        region->m_from = 0.4;
-        region->m_to = 0.2;
+        UCBottomEdgeRegionPrivate::get(region)->from = 0.4;
+        UCBottomEdgeRegionPrivate::get(region)->to = 0.2;
         QPoint from(bottomEdge->width() / 2.0f, bottomEdge->height() - 5);
         QPoint delta(0, -(bottomEdge->height() / 2.0f));
         QSignalSpy activeRegion(bottomEdge, SIGNAL(activeRegionChanged(UCBottomEdgeRegion*)));
@@ -941,11 +925,13 @@ private Q_SLOTS:
         }
         QTest::qWait(20);
         UCTestExtras::touchRelease(0, bottomEdge, movePos);
-        // we should have had 3 active region changes by now
-        // null -> region #0 -> region #1 -> null
-        QCOMPARE(spy.count(), 3);
-        QCOMPARE(regionObjects.size(), 5);
+        // we should have had 4 active region changes by now
+        // null -> defaultRegion -> region #0 -> region #1 -> null
+        QCOMPARE(spy.count(), 4);
+        QCOMPARE(regionObjects.size(), 6);
+        // the first two regions content is the same
         int i = 0;
+        QCOMPARE(regionObjects[i++], QString("default"));
         QCOMPARE(regionObjects[i++], QString("default"));
         QCOMPARE(regionObjects[i++], QString("region1"));
         QCOMPARE(regionObjects[i++], QString("default"));
@@ -960,13 +946,13 @@ private Q_SLOTS:
 
         UCBottomEdgePrivate *d = UCBottomEdgePrivate::get(bottomEdge);
         for (int i = 0; i < d->regions.size(); i++) {
-            QVERIFY(d->regions[i]->regionContent());
+            QVERIFY(UCBottomEdgeRegionPrivate::get(d->regions[i])->contentItem);
         }
 
         // set preloadContent: false
         bottomEdge->setPreloadContent(false);
         for (int i = 0; i < d->regions.size(); i++) {
-            QVERIFY(!d->regions[i]->regionContent());
+            QVERIFY(!UCBottomEdgeRegionPrivate::get(d->regions[i])->contentItem);
         }
     }
 
@@ -978,11 +964,24 @@ private Q_SLOTS:
         UCBottomEdgePrivate *d = UCBottomEdgePrivate::get(bottomEdge);
         // disable a region
         d->regions[0]->setEnabled(false);
-        QVERIFY(!d->regions[0]->regionContent());
+        QVERIFY(!UCBottomEdgeRegionPrivate::get(d->regions[0])->contentItem);
 
         // enable it
         d->regions[0]->setEnabled(true);
-        QTRY_VERIFY_WITH_TIMEOUT(d->regions[0]->regionContent() != nullptr, 1000);
+        QTRY_VERIFY_WITH_TIMEOUT(UCBottomEdgeRegionPrivate::get(d->regions[0])->contentItem != nullptr, 1000);
+    }
+
+    void test_action_triggered_commits()
+    {
+        QScopedPointer<BottomEdgeTestCase> test(new BottomEdgeTestCase("BottomEdgeWithAction.qml"));
+        UCBottomEdge *bottomEdge = test->testItem();
+        UCAction *action = bottomEdge->hint()->action();
+        QVERIFY(action);
+
+        // trigger action
+        action->trigger();
+        QTRY_COMPARE_WITH_TIMEOUT(bottomEdge->status(), UCBottomEdge::Committed, 2000);
+        QVERIFY(bottomEdge->contentItem());
     }
 };
 

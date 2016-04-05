@@ -148,6 +148,17 @@ quint16 UCTheme::previousVersion = 0;
 const QString THEME_FOLDER_FORMAT("%1/%2/");
 const QString PARENT_THEME_FILE("parent_theme");
 
+static inline void updateBinding (QQmlAbstractBinding *binding)
+{
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+    if (binding->isValueTypeProxy())
+        return;
+    static_cast<QQmlBinding *>(binding)->update();
+#else
+    binding->update();
+#endif
+}
+
 QStringList themeSearchPath()
 {
     QString envPath = QLatin1String(getenv("UBUNTU_UI_TOOLKIT_THEMES_PATH"));
@@ -248,7 +259,11 @@ void UCTheme::PaletteConfig::restorePalette()
         }
 
         // restore the config binding to the config target
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+        if (config.configBinding && !config.configBinding->isValueTypeProxy()) {
+#else
         if (config.configBinding && config.configBinding->bindingType() == QQmlAbstractBinding::Binding) {
+#endif
             QQmlBinding *qmlBinding = static_cast<QQmlBinding*>(config.configBinding);
             qmlBinding->removeFromObject();
             qmlBinding->setTarget(config.configProperty);
@@ -256,11 +271,21 @@ void UCTheme::PaletteConfig::restorePalette()
 
         if (config.paletteBinding) {
             // restore the binding to the palette
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+            QQmlAbstractBinding::Ptr prev(QQmlPropertyPrivate::binding(config.paletteProperty));
+            QQmlPropertyPrivate::setBinding(config.paletteProperty, config.paletteBinding);
+#else
             QQmlAbstractBinding *prev = QQmlPropertyPrivate::setBinding(config.paletteProperty, config.paletteBinding);
+#endif
             if (prev && prev != config.paletteBinding && prev != config.configBinding) {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+                prev->removeFromObject();
+                prev.reset();
+#else
                 prev->destroy();
+#endif
             }
-            config.paletteBinding->update();
+            updateBinding(config.paletteBinding);
         } else {
             config.paletteProperty.write(config.paletteValue);
         }
@@ -324,7 +349,11 @@ void UCTheme::PaletteConfig::apply(QObject *themePalette)
         // apply configuration
         if (config.configBinding) {
             // transfer binding's target
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+            if (!config.configBinding->isValueTypeProxy()) {
+#else
             if (config.configBinding->bindingType() == QQmlAbstractBinding::Binding) {
+#endif
                 QQmlBinding *qmlBinding = static_cast<QQmlBinding*>(config.configBinding);
                 qmlBinding->setTarget(config.paletteProperty);
             }

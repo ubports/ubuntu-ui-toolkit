@@ -71,8 +71,13 @@ function create_test_cmd {
   fi
   _CMD="-n $_TESTFILE -m 300"
 
-  _CMD="dbus-test-runner --task gdb -p --quiet $_CMD"
-  _CMD="$_CMD -p --batch -p -ex -p 'set print thread-events off' -p -ex -p run -p -ex -p bt -p --return-child-result -p --args -p $(readlink -f $EXE)"
+  DEB_HOST_ARCH=$(dpkg-architecture -qDEB_HOST_ARCH)
+  if [[ ${DEB_HOST_ARCH} =~ 'arm' ]]; then
+    _CMD="dbus-test-runner --task $(readlink -f $EXE) $_CMD"
+  else
+    _CMD="dbus-test-runner --task gdb -p --quiet $_CMD"
+    _CMD="$_CMD -p --batch -p -ex -p 'set print thread-events off' -p -ex -p run -p -ex -p bt -p --return-child-result -p --args -p $(readlink -f $EXE)"
+  fi
 
   if [[ 'minimal custom' == *$_MINIMAL* ]]; then
       _CMD="$_CMD -p -platform -p $_MINIMAL"

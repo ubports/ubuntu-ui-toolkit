@@ -104,8 +104,8 @@ Item {
 
     Icon {
         id: h1
-        width: units.gu(2)
-        height: width
+        width: units.gu(3)
+        height: units.gu(1.5)
         anchors {
             centerIn: parent
             topMargin: styledItem.height

@@ -105,7 +105,8 @@ UCLabel::UCLabel(ColorProviderFunc defaultColor, QQuickItem *parent)
 }
 UCLabel::~UCLabel()
 {
-    delete d_ptr;
+    // disconnect functor, so QQuickItem's enabledChanged won't call into the invalid functor
+    disconnect(this, &UCLabel::enabledChanged, this, &UCLabel::postThemeChanged);
 }
 
 QColor UCLabelPrivate::getDefaultColor(QQuickItem *item, UCTheme *theme)

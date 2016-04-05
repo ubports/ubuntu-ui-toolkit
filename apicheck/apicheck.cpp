@@ -39,6 +39,10 @@
 #include <QJsonArray>
 #include <QLoggingCategory>
 
+#define foreach Q_FOREACH
+#include <QtQml/private/qqmlengine_p.h>
+#undef foreach
+
 #include <iostream>
 #include <algorithm>
 
@@ -50,6 +54,7 @@ bool verbose = false;
 
 QString currentProperty;
 QString inObjectInstantiation;
+QQmlEngine *currentEngine=0;
 
 void collectReachableMetaObjects(const QMetaObject *meta, QSet<const QMetaObject *> *metas, bool extended = false)
 {
@@ -91,8 +96,14 @@ void collectReachableMetaObjects(QObject *object, QSet<const QMetaObject *> *met
 void collectReachableMetaObjects(const QQmlType *ty, QSet<const QMetaObject *> *metas)
 {
     collectReachableMetaObjects(ty->metaObject(), metas, ty->isExtendedType());
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+    if (ty->attachedPropertiesType(QQmlEnginePrivate::get(currentEngine)))
+        collectReachableMetaObjects(ty->attachedPropertiesType(QQmlEnginePrivate::get(currentEngine)), metas);
+#else
     if (ty->attachedPropertiesType())
         collectReachableMetaObjects(ty->attachedPropertiesType(), metas);
+#endif
 }
 
 /* We want to add the MetaObject for 'Qt' to the list, this is a
@@ -536,7 +547,11 @@ public:
             if (isSingleton)
                 object.insert("isSingleton", true);
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+            if (const QMetaObject *attachedType = (*qmlTypes.begin())->attachedPropertiesType(QQmlEnginePrivate::get(currentEngine))) {
+#else
             if (const QMetaObject *attachedType = (*qmlTypes.begin())->attachedPropertiesType()) {
+#endif
                 // Can happen when a type is registered that returns itself as attachedPropertiesType()
                 // because there is no creatable type to attach to.
                 if (attachedType != meta) {
@@ -794,6 +809,7 @@ int main(int argc, char *argv[])
     qmlRegisterSingletonType<QObject>("Qt.test.qtestroot", 1, 0, "QTestRootObject", testRootObject);
 
     QQmlEngine engine;
+    currentEngine = &engine;
     QObject::connect(&engine, SIGNAL(quit()), QCoreApplication::instance(), SLOT(quit()));
 
     // load the QtQuick 2 plugin

@@ -89,6 +89,7 @@ Rectangle {
                 iconName: "attachment"
                 text: "Attach"
                 objectName: "five"
+                enabled: false
             },
             Action {
                 iconName: "contact"
@@ -130,6 +131,7 @@ Rectangle {
             z:1
 
             title: "Default title"
+            subtitle: subtitleSwitch.checked ? "This is amaaaaaazing" : ""
             contents: contentsSwitch.checked ? alternativeContents : null
             sections.actions: sectionsSwitch.checked ? root.sectionActions : []
             trailingActionBar.actions: trailingActionsSwitch.checked ?
@@ -231,7 +233,15 @@ Rectangle {
                     checked: false
                 }
                 Label {
-                    text: "Resize with window"
+                    text: "resize with window"
+                }
+
+                Switch {
+                    id: subtitleSwitch
+                    checked: false
+                }
+                Label {
+                    text: "subtitle"
                 }
             }
 
