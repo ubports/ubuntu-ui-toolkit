@@ -124,7 +124,8 @@ Item {
 
                     PageHeader {
                         id: standardHeaderItem
-                        visible: pageItem.header === standardHeaderItem
+                        // hide the header until it is used by the page
+                        parent: null
                         title: "Default title"
                         flickable: flickable_movingHeaderTest
                         trailingActionBar.actions: [
@@ -137,7 +138,8 @@ Item {
                     }
                     PageHeader {
                         id: editHeaderItem
-                        visible: pageItem.header === editHeaderItem
+                        // hide the header until it is used by the page
+                        parent: null
                         flickable: flickable_movingHeaderTest
                         property Component delegate: Component {
                             AbstractButton {
@@ -242,13 +244,7 @@ Item {
             var page = pageItem
             var header = data.header
             page.header = header
-//            page.header.visible = true;
             console.log(page.header, header.flickable)
-
-            //make sure the currently tested header is the one driving the flickable changes
-            //FIXME: this should not be needed after #1560458 is fixed
-//            header.flickable = null
-//            header.flickable = flickable_movingHeaderTest
 
             compare(page.header, header, "Handling of moving header: wrong header.")
             compare(scrollbar_movingHeaderTest.__styleInstance.isVertical, true, "Scrollbar is not vertical.")
@@ -260,7 +256,6 @@ Item {
                 checkScrollbarPositionRelativeToPage(scrollbar_movingHeaderTest, page, page.head.contents.height, data.tag)
                 return
             } else {
-//                header.flickable = flickable_movingHeaderTest
                 compare(header.flickable, flickable_movingHeaderTest, "Wrong PageHeader flickable.")
                 checkScrollbarPositionRelativeToPage(scrollbar_movingHeaderTest, page, page.header.height, data.tag + ", at initialization.")
             }
@@ -279,7 +274,6 @@ Item {
             //should cover the scrollbar)
             header.flickable = null
             compare(header.flickable, null, "Wrong PageHeader flickable.")
-//            expectFailContinue("Standard header", "Waiting on Header bug #1560458")
             checkScrollbarPositionRelativeToPage(scrollbar_movingHeaderTest, page, 0, data.tag)
 
             //reassign the correct flickable and check again
@@ -287,14 +281,13 @@ Item {
             compare(header.flickable, flickable_movingHeaderTest, "Wrong PageHeader flickable.")
             checkScrollbarPositionRelativeToPage(scrollbar_movingHeaderTest, page, page.header.height, data.tag + ", scrollbar")
 
-//            header.visible = false
-//            compare(header.visible, false, "Header visibility did not change, should have been false.")
-////            expectFailContinue("", "Waiting on Header bug #1560458")
-//            checkScrollbarPositionRelativeToPage(scrollbar_movingHeaderTest, page, 0, data.tag + ", invisible header")
+            header.visible = false
+            compare(header.visible, false, "Header visibility did not change, should have been false.")
+            checkScrollbarPositionRelativeToPage(scrollbar_movingHeaderTest, page, 0, data.tag + ", invisible header")
 
-//            header.visible = true
-//            compare(header.visible, true, "Header visibility did not change, should have been true.")
-//            checkScrollbarPositionRelativeToPage(scrollbar_movingHeaderTest, page, page.header.height, data.tag + ", visible header")
+            header.visible = true
+            compare(header.visible, true, "Header visibility did not change, should have been true.")
+            checkScrollbarPositionRelativeToPage(scrollbar_movingHeaderTest, page, page.header.height, data.tag + ", visible header")
 
             //even if the header has opacity 0, we should still take it into account. This is a standard in
             //QtQuick, you don't ignore a component just because opacity is 0, as that is also used for animations
