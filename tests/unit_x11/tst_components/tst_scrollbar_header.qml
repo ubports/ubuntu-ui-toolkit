@@ -116,6 +116,8 @@ Item {
                             text: "Use the icons in the header."
                             visible: standardHeaderItem.visible
                         }
+                        onTopMarginChanged: print("new f.topMargin = "+topMargin)
+                        Component.onCompleted: print("initial f.topMargin = "+topMargin)
                     }
                     Scrollbar {
                         id: scrollbar_movingHeaderTest
@@ -134,6 +136,8 @@ Item {
                                 onTriggered: pageItem.header = editHeaderItem
                             }
                         ]
+                        Component.onCompleted: print("Standard header height = "+height)
+                        onVisibleChanged: print("stdH.visible = "+visible)
                     }
                     PageHeader {
                         id: editHeaderItem
@@ -161,6 +165,8 @@ Item {
                                 }
                             }
                         }
+                        Component.onCompleted: print("edit header height = "+height)
+                        onVisibleChanged: print("editH.visible = "+visible)
                         leadingActionBar {
                             anchors.leftMargin: 0
                             actions: Action {
@@ -241,14 +247,18 @@ Item {
         function test_handlingOfMovingHeader(data) {
             var page = pageItem
             var header = data.header
-
+//if (page.header) page.header.visible = false;
+print("----------topMargin = "+flickable_movingHeaderTest.topMargin);
             page.header = header
+//            page.header.visible = true;
             console.log(page.header, header.flickable)
+print("new header.visible = "+page.header.visible)
+print("222-------topMargin = "+flickable_movingHeaderTest.topMargin);
 
             //make sure the currently tested header is the one driving the flickable changes
             //FIXME: this should not be needed after #1560458 is fixed
-            header.flickable = null
-            header.flickable = flickable_movingHeaderTest
+//            header.flickable = null
+//            header.flickable = flickable_movingHeaderTest
 
             compare(page.header, header, "Handling of moving header: wrong header.")
             compare(scrollbar_movingHeaderTest.__styleInstance.isVertical, true, "Scrollbar is not vertical.")
@@ -260,9 +270,11 @@ Item {
                 checkScrollbarPositionRelativeToPage(scrollbar_movingHeaderTest, page, page.head.contents.height, data.tag)
                 return
             } else {
-                header.flickable = flickable_movingHeaderTest
+//                header.flickable = flickable_movingHeaderTest
+                print("AAA")
                 compare(header.flickable, flickable_movingHeaderTest, "Wrong PageHeader flickable.")
-                checkScrollbarPositionRelativeToPage(scrollbar_movingHeaderTest, page, page.header.height, data.tag)
+                checkScrollbarPositionRelativeToPage(scrollbar_movingHeaderTest, page, page.header.height, data.tag + ", at initialization.")
+                print("BBB")
             }
 
             var tmpHeaderHeight = header.height
@@ -278,23 +290,25 @@ Item {
             //dependencies. The test Page does not handle this on purpose, so the header
             //should cover the scrollbar)
             header.flickable = null
+            print("CCC")
             compare(header.flickable, null, "Wrong PageHeader flickable.")
-            expectFailContinue("Standard header", "Waiting on Header bug #1560458")
+//            expectFailContinue("Standard header", "Waiting on Header bug #1560458")
+//            print("f.topMargin = "+flickable_movingHeaderTest.topMargin);
             checkScrollbarPositionRelativeToPage(scrollbar_movingHeaderTest, page, 0, data.tag)
-
+print("DDD")
             //reassign the correct flickable and check again
             header.flickable = flickable_movingHeaderTest
             compare(header.flickable, flickable_movingHeaderTest, "Wrong PageHeader flickable.")
             checkScrollbarPositionRelativeToPage(scrollbar_movingHeaderTest, page, page.header.height, data.tag + ", scrollbar")
 
-            header.visible = false
-            compare(header.visible, false, "Header visibility did not change, should have been false.")
-            expectFailContinue("", "Waiting on Header bug #1560458")
-            checkScrollbarPositionRelativeToPage(scrollbar_movingHeaderTest, page, 0, data.tag + ", invisible header")
+//            header.visible = false
+//            compare(header.visible, false, "Header visibility did not change, should have been false.")
+////            expectFailContinue("", "Waiting on Header bug #1560458")
+//            checkScrollbarPositionRelativeToPage(scrollbar_movingHeaderTest, page, 0, data.tag + ", invisible header")
 
-            header.visible = true
-            compare(header.visible, true, "Header visibility did not change, should have been true.")
-            checkScrollbarPositionRelativeToPage(scrollbar_movingHeaderTest, page, page.header.height, data.tag + ", visible header")
+//            header.visible = true
+//            compare(header.visible, true, "Header visibility did not change, should have been true.")
+//            checkScrollbarPositionRelativeToPage(scrollbar_movingHeaderTest, page, page.header.height, data.tag + ", visible header")
 
             //even if the header has opacity 0, we should still take it into account. This is a standard in
             //QtQuick, you don't ignore a component just because opacity is 0, as that is also used for animations

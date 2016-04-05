@@ -29,7 +29,7 @@ Item {
         id: header
         flickable: flickable
         z: 1
-        width: parent ? parent.width : 123
+        width: parent ? parent.width : 234
         height: root.initialHeaderHeight
 
         Rectangle {
@@ -343,8 +343,10 @@ Item {
 
             compare(otherFlickable.topMargin, otherFlickable.initialTopMargin, "Flickable top margin is not initialized properly.");
             header.flickable = otherFlickable;
-            compare(otherFlickable.topMargin, header.height, "Setting flickable does not update flickable top margin.");
-            compare(flickable.topMargin, 0, "Changing the flickable does not reset the previous flickable top margin to 0.");
+            compare(otherFlickable.topMargin, header.height + otherFlickable.initialTopMargin,
+                    "Setting flickable does not update flickable top margin.");
+            compare(flickable.topMargin, 0,
+                    "Changing the flickable does not reset the previous flickable top margin to 0.");
 
             header.flickable = flickable;
             compare(otherFlickable.topMargin, otherFlickable.initialTopMargin, "Reverting flickable does not restore the other flickable top margin.");
