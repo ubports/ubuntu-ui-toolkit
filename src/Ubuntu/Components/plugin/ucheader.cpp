@@ -21,8 +21,6 @@
 #include <QtQuick/private/qquickanimation_p.h>
 #include "ucubuntuanimation.h"
 #include "ucunits.h"
-#include "propertychange_p.h"
-
 
 /*!
     \qmltype Header
@@ -79,7 +77,6 @@ UCHeader::UCHeader(QQuickItem *parent)
     : UCStyledItemBase(parent)
     , m_flickable(Q_NULLPTR)
     , m_showHideAnimation(new QQuickNumberAnimation)
-//    , m_flickableTopMarginBackup(Q_NULLPTR)
     , m_previous_contentY(0)
     , m_previous_header_height(0)
     , m_exposed(true)
@@ -98,8 +95,6 @@ UCHeader::UCHeader(QQuickItem *parent)
 
 UCHeader::~UCHeader() {
     if (m_flickable != Q_NULLPTR) {
-//        Q_ASSERT(m_flickableTopMarginBackup != Q_NULLPTR);
-//        delete m_flickableTopMarginBackup;
         m_flickable->setTopMargin(m_flickable->topMargin() - m_previous_header_height);
     }
 }
@@ -166,14 +161,11 @@ void UCHeader::setFlickable(QQuickFlickable *flickable) {
         }
         m_flickable->disconnect(this);
 
-        qreal oldMargin = m_previous_header_height; //m_flickable->topMargin();
-        // store contentY to compensate for Flickable updating the position due to margin change.
-        qreal oldContentY = m_flickable->contentY();
+        qreal delta = m_flickable->topMargin() + m_flickable->contentY();
         m_flickable->setTopMargin(m_flickable->topMargin() - m_previous_header_height);
-
         m_previous_header_height = 0;
+        delta -= m_flickable->topMargin() + m_flickable->contentY();
 
-        qreal delta = m_flickable->topMargin() - oldMargin + m_flickable->contentY() - oldContentY;
         // revert the flickable content Y.
         m_flickable->setContentY(m_flickable->contentY() - delta);
     }
@@ -205,7 +197,7 @@ void UCHeader::updateFlickableMargins() {
     if (isVisible() && parentItem()) {
         headerHeight = height();
     }
-    qreal previousHeaderHeight = m_previous_header_height; //m_flickable->topMargin();
+    qreal previousHeaderHeight = m_previous_header_height;
     if (headerHeight != previousHeaderHeight) {
         qreal previousContentY = m_flickable->contentY();
         m_flickable->setTopMargin(m_flickable->topMargin() + headerHeight - m_previous_header_height);

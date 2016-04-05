@@ -23,7 +23,6 @@
 class QQuickFlickable;
 class QQuickNumberAnimation;
 class UCUbuntuAnimation;
-class PropertyChange;
 
 class UCHeader : public UCStyledItemBase
 {
