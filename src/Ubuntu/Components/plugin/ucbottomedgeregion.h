@@ -23,56 +23,61 @@
 #include <QtQml/QQmlParserStatus>
 #include <QtCore/QUrl>
 #include <QtCore/QPointer>
+#include <QtQml/QQmlIncubator>
+#include <AsyncLoader>
 
 class UCBottomEdge;
 class QQmlComponent;
 class PropertyChange;
+class UCBottomEdgeRegionPrivate;
 class UCBottomEdgeRegion : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(bool enabled MEMBER m_enabled WRITE setEnabled NOTIFY enabledChanged FINAL)
-    Q_PROPERTY(qreal from MEMBER m_from WRITE setFrom NOTIFY fromChanged FINAL)
-    Q_PROPERTY(qreal to MEMBER m_to WRITE setTo NOTIFY toChanged FINAL)
-    Q_PROPERTY(QUrl contentUrl MEMBER m_url NOTIFY contentChanged FINAL)
-    Q_PROPERTY(QQmlComponent* contentComponent MEMBER m_component NOTIFY contentComponentChanged FINAL)
+    Q_PROPERTY(bool enabled READ enabled WRITE setEnabled NOTIFY enabledChanged FINAL)
+    Q_PROPERTY(qreal from READ from WRITE setFrom NOTIFY fromChanged FINAL)
+    Q_PROPERTY(qreal to READ to WRITE setTo NOTIFY toChanged FINAL)
+    Q_PROPERTY(QUrl contentUrl READ url WRITE setUrl NOTIFY contentChanged FINAL)
+    Q_PROPERTY(QQmlComponent* contentComponent READ component WRITE setComponent NOTIFY contentComponentChanged FINAL)
 public:
     explicit UCBottomEdgeRegion(QObject *parent = 0);
-    void attachToBottomEdge(UCBottomEdge *bottomEdge);
 
     // used internally
+    QUrl url() const;
+    void setUrl(const QUrl &url);
+    QQmlComponent *component() const;
+    void setComponent(QQmlComponent *component);
+    qreal from() const;
     void setFrom(qreal from);
+    qreal to() const;
     void setTo(qreal to);
+    bool enabled() const;
     void setEnabled(bool enabled);
+
+    // support API
     bool contains(qreal dragRatio);
+    virtual bool canCommit(qreal dragRatio);
     void enter();
     void exit();
     const QRectF rect(const QRectF &bottomEdgeRect);
 
+    // not exposed to QML
 Q_SIGNALS:
     void enabledChanged();
     void fromChanged();
     void toChanged();
-    void contentChanged();
-    void contentComponentChanged();
+    void contentChanged(const QUrl &url);
+    void contentComponentChanged(QQmlComponent *component);
 
     void entered();
     void exited();
     void dragEnded();
 
 protected:
-    QUrl m_url;
-    QPointer<UCBottomEdge> m_bottomEdge;
-    QQmlComponent *m_component;
-    PropertyChange *m_urlBackup;
-    PropertyChange *m_componentBackup;
-    qreal m_from;
-    qreal m_to;
-    bool m_enabled:1;
-
-    friend class UCBottomEdge;
-    friend class UCBottomEdgePrivate;
-    friend class tst_BottomEdge;
+    UCBottomEdgeRegion(UCBottomEdgeRegionPrivate &dd, QObject *parent);
+private:
+    Q_DECLARE_PRIVATE(UCBottomEdgeRegion)
+    Q_PRIVATE_SLOT(d_func(), void onLoaderStatusChanged(AsyncLoader::LoadingStatus,QObject*))
 };
 
 #endif // UCBOTTOMEDGEREGION_H

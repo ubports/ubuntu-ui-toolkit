@@ -1,3 +1,164 @@
+ubuntu-ui-toolkit (1.3.1872+16.04.20160314-0ubuntu1) xenial; urgency=medium
+
+  [ Zoltán Balogh ]
+  * land the appstart profiler renamed: app-launch-profiler/app-launch-
+    profiler-lttng.py => app-launch-profiler/app-launch-profiler-lttng
+    app-launch-profiler/appstart_profiling_test_plan.sh => app-launch-
+    profiler/appstart_test
+
+ -- Zoltan Balogh <zoltan.balogh@canonical.com>  Mon, 14 Mar 2016 04:36:11 +0000
+
+ubuntu-ui-toolkit (1.3.1872+16.04.20160308-0ubuntu1) xenial; urgency=medium
+
+  [ Timo Jyrinki ]
+  * Fix gles unit test skipping.
+  * Add s390x to the unit test skipping architectures
+  * UITK test plan - wily -> xenial. Fixes LP: #1544490
+
+  [ Christian Dywan ]
+  * Print errors when QuickUtils fails to create a component.
+  * unit tests shouldn't use deprecated Dialog.callera
+  * Correctly count only test case results. The result= value is used in suites
+    and results.
+  * Skip tst_pagehead_visible flakes on non-arm. Fixes LP: #1534651
+  * Skip flaky tst_mousefilterTest::doubleClicked. Fixes LP: #1542215
+  * Suppress click signal if releasing outside of ListItem. Fixes LP: #1541148.
+  * Use gdb in runtest.sh to produce backtraces.
+  * Arrow keys change value of a Slider. Fixes LP: #1523824.
+  * Only use Maliit when enabled explicitly in the environment
+
+  [ Oliver Tilloy ]
+  * Do not try to assign to non-existent property "activeFocusOnPress". 
+    Fixes LP: #1532953
+  * Bubble up ESC key press event if there is no popover to close. 
+    Fixes LP: #1546627
+
+  [ Loïc Molinari ]
+  * Added private items and nodes for the new component styles. 
+    Fixes LP: #1523836
+  * Made use of new private Frame item for the focusing.
+  * Fixed performance monitor crash because of a NULL timer pointer dereference. 
+    Fixes LP: #1546986
+  * Fixed performance monitor dangling pointer crash. Fixes LP: #1546984
+  * [ProportionalShape] Ensured width/height ratio is correct with default values. 
+    Fixes LP: #1546546
+  * Added a workaround to prevent a crash while changing the QPA scale factor.
+
+  [ Florian Boucault ]
+  * Always on performance monitor that logs frames that too long to render.
+  * MainView: proceed to selecting the theme automatically at startup too. 
+    Fixes LP: #1535819
+  * MainView: when no gradient color is needed for the background, rely on 
+    QQuickWindow's GL clear color. Lessens overdraw considerably for most 
+    apps. Fixes LP: #1439133.
+  * Panel: MathUtils used without import prefix was leading to undefined 
+    reference.
+  * Label: use native rendering on low dpi screens (GRID_UNIT_PX <= 10) for 
+    sharper looking text.
+  * Gallery: added palette browser to Colors page.
+
+  [ Tim Peeters ]
+  * Support scrolling in ListViews with horizontal orientation to the 
+    qquicklistview CPO.
+  * Add background to AppHeader and remove contents clipping from MainView.
+    Fixes LP: #1531016, LP: #1531457.
+  * Hide AppHeader when using AdaptivePageLayout. Fixes bug 1531871. 
+    Fixes LP: #1531871.
+  * Implement horizontal flicking in the flickable autopilot CPO.
+  * Re-order to list of pages in the gallery to be alphabetical.
+  * Fix the autopilot failures introduced with the horizontal scrolling in 
+    the Flickable CPO.
+  * Update documentation for MainView, Page, AdaptivePageLayout to use the new 
+    PageHeader in all examples. Deprecate old properties. Fixes LP: #1540574
+  * Add 'animate' property to new internal AppHeaderBase, and do not show a 
+    header animation when starting an app without header. 
+    Fixes LP: #1518002, LP: #1524901.
+  * Use the correct string for skipping tests on x86_64 .
+  * Sections scrolling and keyboard navigation. Fixes LP: #1465048, LP: #1489591
+  * Fix autopilot color button failure.
+
+  [ Zoltán Balogh ]
+  * Create a click packaging project for the UITK Component Gallery.
+  * Improve the test plan executor script.  
+
+  [ Andrea Bernabei ] 
+  * Refer to SlotsLayout.Last instead of SlotsLayout.End in SlotsLayout 
+    documentation. Fixes LP: #1536170.
+  * Update "Import Statement:" in docs of Ubuntu.Components. Currently 
+    Developer's website shows "import Ubuntu.Components 1.2" and "since 
+    Ubuntu.Components 1.3" and that is confusing for all app developers. 
+    Fixes LP: #1531817.
+  * Fix ListItemLayout multiline labels positioning and add docs about
+    aliasing labels properties
+  * UbuntuTestCase flick(): default events delay to 1. Fixes LP: #1549256.
+  * Add Scrollbar and ScrollView tests plus implementation fixes.
+
+  [ Benjamin Zeller ] 
+  * Fix Bug lp:1535241 "AdaptivePageLayout first example is badly broken". 
+    Fixes LP: #1535241.
+  * The click project file is should not be part of the UITK project.
+  * Move MainViewBase to C++.
+  * Move tree.js to C++.
+  * Do not leak the incubator pointer in case a QML engine never took care of 
+    it. Delete the object directly.
+  * Move PageWrapper.qml to C++ for 1.3.
+  * Add Ubuntu toolkit shared library
+  * Move ColorUtils to UbuntuToolkit.
+  * Fixes LP: #1540642
+  * Make sure objects are initialized with extra properties before they are 
+    instantiated in the QML engine. 
+  * Use QQmlProperty::write() instead of QObject::writeProperty()
+ 
+  [ Zsombor Egri ]
+  * Update Palette values for Ubuntu.Components 1.3 and apply the palette on 
+    components. First set of visual updates including ListItem, Text inputs, 
+    CheckBox, Switch, Slider, PageHeader, ActionBar and BottomEdge. 
+    Fixes LP: #1350915.
+  * Contextual Actions - shortcut (and mnemonics) handling must obey 
+    active/inactive contexts, such as Page activation as well as Popups and 
+    Dialogs. Fixes LP: #1514856.
+  * Attach default theme to the QML Engine it creates. Fixes LP: #1527546
+  * Palette fix. Update components to use the palette. Fixes LP: #1495477
+  * Disable rendering performance logs for the unit tests.
+  * Specify message severity for the performance logging category.
+  * Link singletons used as context properties in root context of the QML 
+    Engine to the engine instance. Fixes LP: #1539558.
+  * Specify message severity for the performance logging category.
+  * Expose Icon.asynchronous property to drive image loading of the icon. 
+    Fixes LP: #1535480.
+  * Redo InverseMosueArea tests to not to use shared view for all the tests. 
+    Fixes LP: #1544455
+  * Get singletons report fatal error in case the parent is null upon first 
+    creation. Adjust failing test cases. Fixes LP: #1542309
+  * Deprecated Theme forces palette to be loaded from 1.2 themes. 
+    Fixes LP: #1549830
+  * Introduce AdaptivePageLayout.asynchronous to the API. Fixes LP: #1540449
+  * AbstractButton handles 4x4GU minimal sensing area, exposes sensingMargins
+    to extend sensing area even further. Fixes LP:#1468645, LP: #1508114
+
+  [ Albert Astals Cid ] 
+  * Have a default pixelsPerInch value. Otherwise when running unity8 tests
+    under xvfb we get the wrong parameters warning and tests fail.
+
+  [ Robert Ancell ]
+  * Fix documentation typo - Ubunut -> Ubuntu.
+  * Use new QML package name for qml-module-qtfeedback, drop old QML 
+    package names.
+  * Fix examples using OptionSelectorDelegate that place it in the Toolkit 
+    namespace but don't have the import to match.
+
+  [ Colin Watson ]
+  * Make src/Ubuntu/Test depend on src/Ubuntu/Components, to fix build with 
+    high parallelisation.
+
+  [ Pierre Bertet on 2016-02-17
+  * ComboButton: not based on Button anymore + style update.
+
+  [ CI Train Bot ]
+  * No-change rebuild.
+
+ -- Zoltan Balogh <zoltan.balogh@canonical.com>  Tue, 08 Mar 2016 06:45:42 +0000
+
 ubuntu-ui-toolkit (1.3.1795+16.04.20160106-0ubuntu1) xenial; urgency=medium
 
   [ Christian Dywan ]

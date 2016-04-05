@@ -63,6 +63,20 @@ Item {
         }
     }
 
+    SwipeArea {
+        id: swipeAreaNoGrab
+        objectName: "vpDragAreaNoGrab"
+
+        grabGesture: false
+        height: swipeArea.height
+        direction: swipeArea.direction
+        anchors {
+            left: swipeArea.left
+            right: swipeArea.right
+            top: swipeArea.top
+        }
+    }
+
     Label {
         text: "Downwards"
         anchors.top: parent.top

@@ -26,6 +26,8 @@
 #define MIN_SENSING_WIDTH_GU    4
 #define MIN_SENSING_HEIGHT_GU   4
 
+//#define SENSING_DEBUG
+
 UCAbstractButtonPrivate::UCAbstractButtonPrivate()
     : UCActionItemPrivate()
     , mouseArea(new QQuickMouseArea)
@@ -137,6 +139,23 @@ void UCAbstractButton::classBegin()
     QQuickAnchors *anchors = QQuickItemPrivate::get(d->mouseArea)->anchors();
     anchors->setFill(this);
     d->mouseArea->setHoverEnabled(true);
+
+#ifdef SENSING_DEBUG
+    // keep this code for visual debugging purposes to track sensing area changes
+    QQmlComponent component(qmlEngine(this));
+    QString data = "import QtQuick 2.4; Rectangle { anchors.fill: parent; color: '#19b6ee'; opacity: 0.3 }";
+    component.setData(data.toLocal8Bit(), QUrl());
+    if (component.isError()) {
+        qDebug() << "ERROR" << component.errorString();
+    } else {
+        QQuickItem *item = qobject_cast<QQuickItem*>(component.beginCreate(qmlContext(this)));
+        if (item) {
+            item->setParent(d->mouseArea);
+            item->setParentItem(d->mouseArea);
+            component.completeCreate();
+        }
+    }
+#endif
 }
 
 void UCAbstractButtonPrivate::completeComponentInitialization()
@@ -234,17 +253,17 @@ void UCAbstractButtonPrivate::_q_adjustSensingArea()
         // the horizontal size is still smaller than the minimum
         mouseAreaAnchors->setLeftMargin(-(hDelta / 2 + (sensingMargins ? sensingMargins->left() : 0.0)));
         mouseAreaAnchors->setRightMargin(-(hDelta / 2 + (sensingMargins ? sensingMargins->right() : 0.0)));
-    } else if (sensingMargins) {
-        mouseAreaAnchors->setLeftMargin(-sensingMargins->left());
-        mouseAreaAnchors->setRightMargin(-sensingMargins->right());
+    } else {
+        mouseAreaAnchors->setLeftMargin(sensingMargins ? -sensingMargins->left() : 0.0);
+        mouseAreaAnchors->setRightMargin(sensingMargins ? -sensingMargins->right() : 0.0);
     }
     if (vDelta >= 0) {
         // the vertical size is still smaller than the minimum
         mouseAreaAnchors->setTopMargin(-(vDelta / 2 + (sensingMargins ? sensingMargins->top() : 0.0)));
         mouseAreaAnchors->setBottomMargin(-(vDelta / 2 + (sensingMargins ? sensingMargins->bottom() : 0.0)));
-    } else if (sensingMargins) {
-        mouseAreaAnchors->setTopMargin(-sensingMargins->top());
-        mouseAreaAnchors->setBottomMargin(-sensingMargins->bottom());
+    } else {
+        mouseAreaAnchors->setTopMargin(sensingMargins ? -sensingMargins->top() : 0.0);
+        mouseAreaAnchors->setBottomMargin(sensingMargins ? -sensingMargins->bottom() : 0.0);
     }
 }
 

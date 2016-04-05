@@ -79,6 +79,7 @@ Styles.ListItemStyle {
                         id: actionButton
                         action: modelData
                         enabled: action.enabled
+                        activeFocusOnTab: false
                         width: MathUtils.clamp(delegateLoader.item ? delegateLoader.item.width : 0, actionsRow.minItemWidth, actionsRow.maxItemWidth)
                         anchors {
                             top: parent ? parent.top : undefined

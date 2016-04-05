@@ -20,7 +20,11 @@
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlComponent>
+#define private public
+#define protected public
 #include "uctheme.h"
+#undef protected
+#undef private
 #include "quickutils.h"
 #include "uctestcase.h"
 #include "ucstyleditembase_p.h"
@@ -897,6 +901,21 @@ private Q_SLOTS:
         QColor pressedColor = qmlProperty.read().value<QColor>();
         QTest::mouseRelease(view.data(), Qt::LeftButton, 0, pressPt.toPoint());
         QCOMPARE(pressedColor, colorPressed);
+    }
+
+    void test_derived_theme_fallback_should_use_proper_style_bug1555797() {
+        qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "");
+        qputenv("XDG_DATA_DIRS", "./themes:./themes/TestModule");
+
+        QQmlEngine engine;
+        UbuntuComponentsPlugin::initializeContextProperties(&engine);
+        QScopedPointer<UCTheme> theme(new UCTheme);
+        theme->setName("DerivedTheme");
+
+        // get the style URL
+        bool fallback = false;
+        QUrl style = theme->styleUrl("TestStyle.qml", BUILD_VERSION(1, 3), &fallback);
+        QVERIFY(style.toString().endsWith("TestTheme/1.3/TestStyle.qml"));
     }
 };
 

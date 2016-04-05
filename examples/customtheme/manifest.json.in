@@ -1,0 +1,15 @@
+{
+    "name": "customtheme.zsombi",
+    "description": "Example application of the Ubuntu UI Toolkit - Jokes",
+    "architecture": "@CLICK_ARCH@",
+    "title": "Jokes",
+    "hooks": {
+        "customtheme": {
+            "apparmor": "customtheme.apparmor",
+            "desktop": "customtheme.desktop"
+        }
+    },
+    "version": "0.1",
+    "maintainer": "Zsombor Egri <zsombor.egri@canonical.com>",
+    "framework": "ubuntu-sdk-15.04"
+}

@@ -188,20 +188,25 @@ MainView {
             return [
                 {tag: "enter and unlocked", key: Qt.Key_Return, status: BottomEdgeHint.Inactive},
                 {tag: "return and unlocked", key: Qt.Key_Enter, status: BottomEdgeHint.Inactive},
+                {tag: "space and unlocked", key: Qt.Key_Space, status: BottomEdgeHint.Inactive},
                 {tag: "enter and locked", key: Qt.Key_Return, status: BottomEdgeHint.Locked},
                 {tag: "return and locked", key: Qt.Key_Enter, status: BottomEdgeHint.Locked},
+                {tag: "space and locked", key: Qt.Key_Space, status: BottomEdgeHint.Locked},
             ];
         }
         function test_activate_by_key(data) {
-            if (hasMouseAttached && !data.locked) {
-                skip(data.tag, "Test requires ability to unlock");
+            switch (data.status) {
+            case BottomEdgeHint.Inactive:
+                QuickUtils.mouseAttached = false; break;
+            case BottomEdgeHint.Locked:
+                QuickUtils.mouseAttached = true; break;
+            default:
+                fail("Unexpected status %1".arg(data.status));
             }
             bottomEdgeHint.status = data.status;
             bottomEdgeHint.forceActiveFocus();
+            verify(bottomEdgeHint.activeFocus, "Hint doesn't have the focus");
             keyPress(data.key);
-            if (bottomEdgeHint.status != BottomEdgeHint.Locked) {
-                expectFailContinue(data.tag, "should fail");
-            }
             clickSpy.wait(400);
             keyRelease(data.key);
         }

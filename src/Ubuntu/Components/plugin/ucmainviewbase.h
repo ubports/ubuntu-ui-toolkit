@@ -79,6 +79,7 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(UCMainViewBase)
+    Q_PRIVATE_SLOT(d_func(), void _q_updateWindow())
 };
 
 #endif // UCMAINVIEWBASE_H

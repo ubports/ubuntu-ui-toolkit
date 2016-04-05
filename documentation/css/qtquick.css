@@ -473,8 +473,19 @@
         color: red;
     }
 
-    .qmldoc
+    /* The `#details ~ ul` selector is used because there is no other way to
+     * target the content without overwriting the default styles of the page.
+     * A better solution would be to reset the list style on the parts where
+     * this style is required instead of doing it by default. */
+    .qmldoc ul,
+    #details ~ ul
     {
+        margin: 0 10px 10px;
+    }
+    .qmldoc li,
+    #details ~ ul li
+    {
+        list-style: disc inside none;
     }
 
     .generic .alphaChar{

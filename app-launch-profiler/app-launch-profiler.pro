@@ -8,8 +8,9 @@ installPath = $$[QT_INSTALL_PREFIX]/bin/
 app-launch-tracepoints.path = $$installPath
 app-launch-tracepoints.files = app-launch-tracepoints
 app-launch-scripts.path = $$installPath
-app-launch-scripts.files = app-launch-profiler-lttng.py \
-                           profile_appstart.sh
+app-launch-scripts.files = app-launch-profiler-lttng \
+                           profile_appstart.sh \
+                           appstart_test
 INSTALLS += app-launch-tracepoints
 INSTALLS += app-launch-scripts
 
