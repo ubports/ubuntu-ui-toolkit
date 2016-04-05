@@ -62,7 +62,6 @@ private Q_SLOTS:
 private:
     QPointer<QQuickFlickable> m_flickable;
     QQuickNumberAnimation* m_showHideAnimation;
-//    PropertyChange* m_flickableTopMarginBackup;
 
     qreal m_previous_contentY;
     qreal m_previous_header_height;

@@ -157,8 +157,6 @@ void UCHeader::setFlickable(QQuickFlickable *flickable) {
         return;
     }
     if (!m_flickable.isNull()) {
-//        Q_ASSERT(m_flickableTopMarginBackup != Q_NULLPTR);
-
         // Finish the current header movement in case the current
         //  flickable is disconnected while scrolling.
         if (m_exposed) {
@@ -171,11 +169,7 @@ void UCHeader::setFlickable(QQuickFlickable *flickable) {
         qreal oldMargin = m_previous_header_height; //m_flickable->topMargin();
         // store contentY to compensate for Flickable updating the position due to margin change.
         qreal oldContentY = m_flickable->contentY();
-//        delete m_flickableTopMarginBackup; // Restores previous value/binding for topMargin.
-//        m_flickableTopMarginBackup = Q_NULLPTR;
-        qDebug()<<"Setting flickable. setTopMargin("<<m_flickable->topMargin()<<" - "<<m_previous_header_height<<");";
         m_flickable->setTopMargin(m_flickable->topMargin() - m_previous_header_height);
-        qDebug()<<"New topMargin = "<<m_flickable->topMargin();
 
         m_previous_header_height = 0;
 
@@ -188,10 +182,7 @@ void UCHeader::setFlickable(QQuickFlickable *flickable) {
     Q_EMIT flickableChanged();
 
     Q_ASSERT(m_previous_header_height == 0);
-//    Q_ASSERT(m_flickableTopMarginBackup == Q_NULLPTR);
-//    m_previous_header_height = 0.0; // new flickable does not reserve space for the header yet.
     if (!m_flickable.isNull()) {
-//        m_flickableTopMarginBackup = new PropertyChange(m_flickable, "topMargin");
         updateFlickableMargins();
         connect(m_flickable, SIGNAL(contentYChanged()),
                 this, SLOT(_q_scrolledContents()));
@@ -215,13 +206,9 @@ void UCHeader::updateFlickableMargins() {
         headerHeight = height();
     }
     qreal previousHeaderHeight = m_previous_header_height; //m_flickable->topMargin();
-    qDebug()<<"previousHeaderHeight = "<<previousHeaderHeight<<", headerHeight = "<<headerHeight;
     if (headerHeight != previousHeaderHeight) {
         qreal previousContentY = m_flickable->contentY();
-//        PropertyChange::setValue(m_flickableTopMarginBackup, headerHeight);
-        qDebug()<<"setTopMargin("<<m_flickable->topMargin()<<" + "<<headerHeight<<" - "<<m_previous_header_height<<")";
         m_flickable->setTopMargin(m_flickable->topMargin() + headerHeight - m_previous_header_height);
-        qDebug()<<"new topMargin = "<<m_flickable->topMargin();
         // Push down contents when header grows,
         //  pull up contents when header shrinks.
         m_flickable->setContentY(previousContentY - headerHeight + previousHeaderHeight);
