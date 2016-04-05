@@ -1006,6 +1006,8 @@ private Q_SLOTS:
         QTest::waitForEvents();
 
         QCOMPARE(entered.count(), 1);
+        QCOMPARE(mouseEvent3Params.handler, QString("EVENT4"));
+        QCOMPARE(mouseEvent3Params.pressedButton, Qt::NoButton);
 
         QTest::mousePress(view.data(), Qt::LeftButton, 0, guPoint(15, 15));
         QTest::waitForEvents();
@@ -1029,6 +1031,8 @@ private Q_SLOTS:
         QCOMPARE(mouseEvent2Params.handler, QString("EVENT2"));
         QCOMPARE(mouseEvent2Params.pressedButton, Qt::LeftButton);
         QCOMPARE(entered.count(), 2);
+        QCOMPARE(mouseEvent3Params.handler, QString("EVENT4"));
+        QCOMPARE(mouseEvent3Params.pressedButton, Qt::LeftButton);
 
         //and out again
         QTest::mouseMove(view.data(), guPoint(45, 15));
@@ -1036,6 +1040,8 @@ private Q_SLOTS:
         QCOMPARE(mouseEvent2Params.handler, QString("EVENT2"));
         QCOMPARE(mouseEvent2Params.pressedButton, Qt::LeftButton);
         QCOMPARE(exited.count(), 2);
+        QCOMPARE(mouseEvent3Params.handler, QString("EVENT4"));
+        QCOMPARE(mouseEvent3Params.pressedButton, Qt::LeftButton);
 
         QTest::mouseRelease(view.data(), Qt::LeftButton, 0, guPoint(45, 15));
         QTest::waitForEvents();
