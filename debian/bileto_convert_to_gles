@@ -8,6 +8,7 @@
 set -eu
 
 mv --verbose debian/control.gles debian/control
+mv --verbose debian/rules.gles debian/rules
 
 sed --in-place 's/^ubuntu-ui-toolkit /ubuntu-ui-toolkit-gles /g' debian/changelog
 
