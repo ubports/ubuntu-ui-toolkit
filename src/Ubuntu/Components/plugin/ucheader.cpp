@@ -167,7 +167,7 @@ void UCHeader::setFlickable(QQuickFlickable *flickable) {
         delta -= m_flickable->topMargin() + m_flickable->contentY();
 
         // revert the flickable content Y.
-        m_flickable->setContentY(m_flickable->contentY() - delta);
+        m_flickable->setContentY(m_flickable->contentY() + delta);
     }
 
     m_flickable = flickable;
@@ -197,13 +197,12 @@ void UCHeader::updateFlickableMargins() {
     if (isVisible() && parentItem()) {
         headerHeight = height();
     }
-    qreal previousHeaderHeight = m_previous_header_height;
-    if (headerHeight != previousHeaderHeight) {
+    if (headerHeight != m_previous_header_height) {
         qreal previousContentY = m_flickable->contentY();
         m_flickable->setTopMargin(m_flickable->topMargin() + headerHeight - m_previous_header_height);
         // Push down contents when header grows,
         //  pull up contents when header shrinks.
-        m_flickable->setContentY(previousContentY - headerHeight + previousHeaderHeight);
+        m_flickable->setContentY(previousContentY - headerHeight + m_previous_header_height);
         m_previous_header_height = headerHeight;
     }
 }
