@@ -15,7 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-source $PWD/export_modules_dir.sh
+source $PWD/export_qml_dir.sh
 
 if [ ! -e $QML2_IMPORT_PATH/Ubuntu/Layouts/libUbuntuLayouts.so ]; then
     echo You need to build UITK before you can run Autopilot test cases!

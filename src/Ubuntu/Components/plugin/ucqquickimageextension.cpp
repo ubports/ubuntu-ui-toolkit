@@ -122,7 +122,7 @@ void UCQQuickImageExtension::reloadSource()
             rewrittenSciFile = UCQQuickImageExtension::s_rewrittenSciFiles.value(m_source).data();
             if (rewrittenSciFile == NULL) {
                 rewrittenSciFile = new QTemporaryFile;
-                rewrittenSciFile->setFileTemplate(QDir::tempPath() + QDir::separator() + "XXXXXX.sci");
+                rewrittenSciFile->setFileTemplate(QDir::tempPath() + "/XXXXXX.sci");
                 rewrittenSciFile->open();
                 QTextStream output(rewrittenSciFile);
 
@@ -184,7 +184,7 @@ QString UCQQuickImageExtension::scaledBorder(const QString &border, const QStrin
 QString UCQQuickImageExtension::scaledSource(QString source, const QString &sciFilePath, const QString &scaleFactor)
 {
     // Rewrite the source line by prepending "image://scaling" to the source value
-    QString sciDirectory = QFileInfo(sciFilePath).dir().path() + QDir::separator();
+    QString sciDirectory = QFileInfo(sciFilePath).dir().path() + "/";
     QString baseUrl = "image://scaling/" + scaleFactor + "/" + sciDirectory;
 
     // If the source url is between quotes "", remove them

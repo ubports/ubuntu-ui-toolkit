@@ -2,136 +2,194 @@ Source: ubuntu-ui-toolkit-gles
 Priority: optional
 Section: libs
 Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
-Build-Depends: debhelper (>= 9.0.0),
-               devscripts,
-               libgles2-mesa-dev,
-               libglib2.0-dev,
-               python3:any,
-               python:any,
-               qml-module-qtgraphicaleffects | libqt5qml-graphicaleffects,
-               libinput-dev,
-               libxkbcommon-dev,
-               qtbase5-gles-dev,
-               qtbase5-dev-tools,
-               libqt5organizer5,
-               qt5-default,
-               qtbase5-private-gles-dev,
-               libqt5sql5-sqlite,
-               qtdeclarative5-dev-tools,
-               qtdeclarative5-private-dev,
-               qml-module-qtquick2 | qtdeclarative5-qtquick2-plugin,
-               qml-module-qttest | qtdeclarative5-test-plugin,
-               qml-module-qtquick-window2 | qtdeclarative5-window-plugin,
-               qml-module-qt-labs-settings | qtdeclarative5-settings-plugin,
-               qml-module-qtquick-layouts,
-               qtdeclarative5-qtfeedback-plugin,
-               qtdeclarative5-unity-action-plugin (>= 1.1.0),
-               qml-module-qtquick-localstorage | qtdeclarative5-localstorage-plugin,
-               qml-module-qtqml-models2,
-               qtdeclarative5-doc-html,
-               qtwebkit5-doc-html,
-               qtsvg5-doc-html,
-               libqt5svg5-dev,
-               qtscript5-doc-html,
-               qtmultimedia5-doc-html,
-               unity-action-doc,
-               devscripts,
-               qtpim5-dev,
-               language-pack-en-base,
-               libdbus-1-dev,
-               libnih-dbus-dev,
+Build-Depends: accountsservice,
                dbus,
                dbus-test-runner,
-               accountsservice,
-               xvfb,
+               debhelper (>= 9.0.0),
+               devscripts,
                gdb,
-               locales,
-               suru-icon-theme,
-               uuid-runtime,
-               python-autopilot (>= 1.4),
-               python3-sphinx,
+               language-pack-en-base,
+               libdbus-1-dev,
                libfontconfig1-dev,
                libfreetype6-dev,
+               libgles2-mesa-dev,
+               libglib2.0-dev,
+               libinput-dev,
+               liblttng-ust-dev,
                libmtdev-dev,
-               libudev-dev,
-               libxrender-dev,
+               libnih-dbus-dev,
                libqt5gui5-gles,
+               libqt5organizer5,
                libqt5quick5-gles,
                libqt5quickparticles5-gles,
                libqt5quickwidgets5-gles,
-               liblttng-ust-dev,
-Standards-Version: 3.9.4
+               libqt5sql5-sqlite,
+               libqt5svg5-dev,
+               libudev-dev,
+               libxkbcommon-dev,
+               libxrender-dev,
+               locales,
+               python-autopilot (>= 1.4),
+               python3-sphinx,
+               python3:any,
+               python:any,
+               qml-module-qt-labs-settings,
+               qml-module-qtgraphicaleffects,
+               qml-module-qtqml-models2,
+               qml-module-qtquick-layouts,
+               qml-module-qtquick-localstorage,
+               qml-module-qtquick-window2,
+               qml-module-qtquick2,
+               qml-module-qttest,
+               qtbase5-dev-tools,
+               qtbase5-gles-dev,
+               qtbase5-private-gles-dev,
+               qtdeclarative5-dev-tools,
+               qtdeclarative5-doc-html,
+               qtdeclarative5-private-dev,
+               qtdeclarative5-qtfeedback-plugin,
+               qtdeclarative5-unity-action-plugin (>= 1.1.0),
+               qtmultimedia5-doc-html,
+               qtpim5-dev,
+               qtscript5-doc-html,
+               qtsvg5-doc-html,
+               qtwebkit5-doc-html,
+               suru-icon-theme,
+               unity-action-doc,
+               uuid-runtime,
+               xvfb,
+Standards-Version: 3.9.7
 Homepage: https://launchpad.net/ubuntu-ui-toolkit
 
 Package: qtdeclarative5-ubuntu-ui-toolkit-plugin-gles
-Architecture: i386 amd64
-Conflicts: qtdeclarative5-ubuntu-ui-toolkit-plugin
-Replaces: qtdeclarative5-ubuntu-ui-toolkit-plugin
-Provides: qtdeclarative5-ubuntu-ui-toolkit-plugin
+Section: oldlibs
+Architecture: amd64 i386
 Multi-Arch: same
-Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
-Depends: libqt5qml-graphicaleffects | libqt5graphicaleffects5,
-         libqt5svg5,
-         qml-module-qtquick2 | qtdeclarative5-qtquick2-plugin,
-         qml-module-qtquick-window2 | qtdeclarative5-window-plugin,
+Depends: qml-module-ubuntu-components-gles,
+         ${misc:Depends},
+Description: Transitional package for Qt Components for Ubuntu, OpenGLES
+ Qt Components for Ubuntu offers a set of reusable user interface
+ components for Qt Quick 2 / QML.
+ .
+ This is a transitional package that is safe to remove.
+ .
+ This is the OpenGL ES version for amd64 and i386.
+
+Package: qml-module-ubuntu-components-gles
+Architecture: amd64 i386
+Breaks: qtdeclarative5-ubuntu-ui-toolkit-plugin-gles (<< ${source:Version}),
+Conflicts: qml-module-ubuntu-components,
+           qtdeclarative5-ubuntu-ui-toolkit-plugin,
+Replaces: qml-module-ubuntu-components,
+          qtdeclarative5-ubuntu-ui-toolkit-plugin,
+          qtdeclarative5-ubuntu-ui-toolkit-plugin-gles (<< ${source:Version}),
+Provides: qml-module-ubuntu-components,
+Multi-Arch: same
+Pre-Depends: dpkg (>= 1.15.6~),
+             ${misc:Pre-Depends},
+Depends: libqt5svg5,
+         libubuntugestures5-gles (= ${binary:Version}),
+         libubuntutoolkit5-gles (= ${binary:Version}),
+         qml-module-qtfeedback,
+         qml-module-qtgraphicaleffects,
          qml-module-qtquick-layouts,
-         qtdeclarative5-qtfeedback-plugin,
+         qml-module-qtquick-window2,
+         qml-module-qtquick2,
          qtdeclarative5-unity-action-plugin (>= 1.1.0),
          suru-icon-theme,
          ttf-ubuntu-font-family,
          ubuntu-ui-toolkit-theme,
-         libubuntugestures5-gles (= ${binary:Version}),
          ${misc:Depends},
          ${shlibs:Depends},
-Description: Qt Components for Ubuntu - QML plugin - OpenGLES
+Description: Qt Components for Ubuntu - QML plugin - GLES
  Qt Components for Ubuntu offers a set of reusable user interface
  components for Qt Quick 2 / QML.
  .
  This package contains the Ubuntu Components QML plugin (built with
  the OpenGLES backend).
 
-Package: libubuntugestures5-gles
-Architecture: i386 amd64
-Conflicts: libubuntugestures5
-Replaces: libubuntugestures5
-Provides: libubuntugestures5
+Package: qml-module-ubuntu-performancemetrics-gles
+Architecture: amd64 i386
+Breaks: qtdeclarative5-ubuntu-ui-toolkit-plugin-gles (<< ${source:Version}),
+Conflicts: qml-module-ubuntu-performancemetrics,
+Replaces: qml-module-ubuntu-performancemetrics,
+          qtdeclarative5-ubuntu-ui-toolkit-plugin-gles (<< ${source:Version}),
+Provides: qml-module-ubuntu-performancemetrics,
 Multi-Arch: same
-Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
+Pre-Depends: dpkg (>= 1.15.6~),
+             ${misc:Pre-Depends},
 Depends: ${misc:Depends},
          ${shlibs:Depends},
-Description: Gestures library for Ubuntu UI Toolkit - OpenGLES
+Description: Qt Components for Ubuntu - PerformanceMetrics QML plugin - GLES
+ Qt Components for Ubuntu offers a set of reusable user interface
+ components for Qt Quick 2 / QML.
+ .
+ This package contains the Ubuntu PerformanceMetrics QML plugin.
+ .
+ This is the OpenGL ES version for amd64 and i386.
+
+Package: libubuntugestures5-gles
+Architecture: amd64 i386
+Conflicts: libubuntugestures5,
+Replaces: libubuntugestures5,
+Provides: libubuntugestures5,
+Multi-Arch: same
+Pre-Depends: dpkg (>= 1.15.6~),
+             ${misc:Pre-Depends},
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+Description: Gestures library for Ubuntu UI Toolkit - GLES
  Library supporting Gesture recognition for Ubuntu UI Toolkit
  Classes for SwipeArea, and for Ubuntu Gestures in general.
+ .
+ This is the OpenGL ES version for amd64 and i386.
 
 Package: libubuntugestures5-gles-dev
-Architecture: i386 amd64
-Conflicts: libubuntugestures5-dev
-Replaces: libubuntugestures5-dev
-Provides: libubuntugestures5-dev
+Architecture: amd64 i386
+Conflicts: libubuntugestures5-dev,
+Replaces: libubuntugestures5-dev,
+Provides: libubuntugestures5-dev,
 Multi-Arch: same
-Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
+Section: libdevel
+Pre-Depends: dpkg (>= 1.15.6~),
+             ${misc:Pre-Depends},
 Depends: ${misc:Depends},
          ${shlibs:Depends},
-Description: Ubuntu gestures library development files - OpenGLES
+Description: Ubuntu gestures library development files - GLES
  This package contains the development files for
  Ubuntu gestures library with SwipeArea
+ .
+ This is the OpenGL ES version for amd64 and i386.
 
 Package: libubuntutoolkit5-gles
-Architecture: i386 amd64
+Architecture: amd64 i386
 Multi-Arch: same
-Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
+Conflicts: libubuntutoolkit5,
+Replaces: libubuntutoolkit5,
+Provides: libubuntutoolkit5,
+Pre-Depends: dpkg (>= 1.15.6~),
+             ${misc:Pre-Depends},
 Depends: ${misc:Depends},
          ${shlibs:Depends},
-Description: Ubuntu toolkit common library for Ubuntu UI Toolkit
+Description: Ubuntu toolkit common library for Ubuntu UI Toolkit - GLES
  Contains components and helper classes that are shared between the
  Ubuntu QML plugins
+ .
+ This is the OpenGL ES version for amd64 and i386.
 
 Package: libubuntutoolkit5-gles-dev
-Architecture: i386 amd64
+Architecture: amd64 i386
 Multi-Arch: same
-Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
+Section: libdevel
+Conflicts: libubuntutoolkit5-dev,
+Replaces: libubuntutoolkit5-dev,
+Provides: libubuntutoolkit5-dev,
+Pre-Depends: dpkg (>= 1.15.6~),
+             ${misc:Pre-Depends},
 Depends: ${misc:Depends},
          ${shlibs:Depends},
-Description: Ubuntu toolkit common library development files
+Description: Ubuntu toolkit common library development files - GLES
  This package contains the development files for
  Ubuntu toolkit common library
+ .
+ This is the OpenGL ES version for amd64 and i386.
