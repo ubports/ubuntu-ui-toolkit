@@ -63,6 +63,17 @@ _XML="${BUILD_DIR}/tests/test_$_TARGET_$_TESTFILE.xml"
 
 _ARGS="-p -o -p $_XML,xunitxml -p -o -p -,txt"
 
+function create_fallback_xml {
+  cat << EOF > $_XML
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite errors="1" failures="1" tests="1" name="$_TESTFILE">
+  <testcase result="fail" name="${_TESTFILE}_Execution">
+    <failure message="$1" result="fail"/>
+  </testcase>
+</testsuite>
+EOF
+}
+
 function create_test_cmd {
   if [[ "$_TARGETPATH" = /* ]]; then
       EXE=$_TARGETPATH
@@ -104,6 +115,10 @@ function execute_test_cmd {
     ALARM_BACKEND=memory SUPPRESS_DEPRECATED_NOTE=no \
     QT_LOGGING_RULES="[PERFORMANCE].warning=false" \
     $_CMD $_ARGS 2>&1 | grep -v 'QFontDatabase: Cannot find font directory'
+    if [ ! -s $_XML ]; then
+        # Write fallback in case it crashed and the file is empty
+        create_fallback_xml "Test results corrupted (crash)"
+    fi
     if [ "x$UITK_TEST_KEEP_RUNNING" != "x1" ]; then
         ${BUILD_DIR}/tests/checkresults.sh $_XML
         RESULT=$?
@@ -124,6 +139,8 @@ function execute_test_cmd {
   return $RESULT
 }
 
+# Always create XML in case the test can't be run, eg. .so file missing
+create_fallback_xml "Test couldn't be run"
 create_test_cmd
 execute_test_cmd
 RESULT=$?
