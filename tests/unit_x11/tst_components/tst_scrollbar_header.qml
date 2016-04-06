@@ -244,7 +244,6 @@ Item {
             var page = pageItem
             var header = data.header
             page.header = header
-            console.log(page.header, header.flickable)
 
             compare(page.header, header, "Handling of moving header: wrong header.")
             compare(scrollbar_movingHeaderTest.__styleInstance.isVertical, true, "Scrollbar is not vertical.")
