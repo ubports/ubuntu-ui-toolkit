@@ -200,7 +200,7 @@ void UCHeader::updateFlickableMargins() {
     qreal headerHeight = 0.0;
     if (isVisible() && parentItem()) {
         headerHeight = height();
-    }
+    } // else: header is not visible, so do not add to the topMargin.
     if (headerHeight != m_previous_header_height) {
         qreal previousContentY = m_flickable->contentY();
         m_flickable->setTopMargin(m_flickable->topMargin() + headerHeight - m_previous_header_height);
