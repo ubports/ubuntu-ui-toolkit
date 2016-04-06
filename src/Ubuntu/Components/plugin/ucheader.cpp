@@ -161,6 +161,10 @@ void UCHeader::setFlickable(QQuickFlickable *flickable) {
         }
         m_flickable->disconnect(this);
 
+        // store the current sum of the topMargin and contentY so that we
+        //  can add the change in topMargin+contentY to the new contentY after
+        //  updating the topMargin so that the user will still see the same
+        //  flickable contents at the top of the view after the header height changed.
         qreal delta = m_flickable->topMargin() + m_flickable->contentY();
         m_flickable->setTopMargin(m_flickable->topMargin() - m_previous_header_height);
         m_previous_header_height = 0;
