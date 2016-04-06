@@ -1001,7 +1001,9 @@ private Q_SLOTS:
 
         preventDblClick();
 
-        QTest::mouseMove(view.data(), guPoint(0, 0));
+        //don't use guPoint(0,0) as it's the same as not passing any point, i.e. it sends mouseMove to the
+        //center of the view
+        QTest::mouseMove(view.data(), guPoint(1, 1));
         QTest::mouseMove(view.data(), guPoint(15, 15));
         QTest::waitForEvents();
 
