@@ -277,14 +277,8 @@ Item {
             pageStack.push(pageWithHeader);
             var backButton = findChild(pageWithHeader.header.leadingActionBar,
                                        "pagestack_back_action_button");
-
-            // In case of incorrect visibility of the back button (bug 1565811), there
-            //  may be a delay before the button is created and made visible, so wait
-            //  here to make sure a potential bug is caught.
-            wait(100);
             compare(backButton, null,
                     "Page header shows back button with only one page on the stack.");
-
             pageStack.pop();
             pageStack.push(page1);
             pageStack.push(pageWithHeader);
