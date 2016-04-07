@@ -123,6 +123,8 @@ void X11MouseTouchAdaptorPrivate::init()
             m_xi2Enabled = true;
         }
     }
+
+    QCoreApplication::instance()->installNativeEventFilter(this);
 }
 
 void X11MouseTouchAdaptorPrivate::setEnabled(bool value)

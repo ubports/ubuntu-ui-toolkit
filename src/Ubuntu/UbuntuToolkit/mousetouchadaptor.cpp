@@ -63,14 +63,16 @@ MouseTouchAdaptor::MouseTouchAdaptor(QObject *parent)
 #ifdef UBUNTUTOOLKIT_ENABLE_X11_TOUCH_EMULATION
       QObject(*(new X11MouseTouchAdaptorPrivate), parent)
 #else
-      QObject(*(new MouseTouchAdaptorPrivate), parents)
+      QObject(*(new MouseTouchAdaptorPrivate), parent)
 #endif
 {
+#ifdef ENABLE_TOUCH_EMULATION
     registerTouchDevice();
-
+#else
+    qWarning() << "MouseTouchAdaptor not available on this architecture.";
+#endif
     Q_D(MouseTouchAdaptor);
     d->init();
-    QCoreApplication::instance()->installNativeEventFilter(d);
 }
 
 // registers a test touch device, returns true if a device was found/registered
@@ -94,8 +96,6 @@ bool MouseTouchAdaptor::registerTouchDevice()
         QWindowSystemInterface::registerTouchDevice(m_touchDevice);
         return true;
     }
-#else
-    qWarning() << "MouseTouchAdaptor not available on this architecture.";
 #endif
     return false;
 }
