@@ -19,6 +19,7 @@
 #include "ucbottomedge_p.h"
 #include "ucbottomedgestyle.h"
 #include "ucbottomedgeregion.h"
+#include "ucbottomedgeregion_p.h"
 #include "ucbottomedgehint_p.h"
 #include "ucstyleditembase_p.h"
 #include <QtQml/QQmlEngine>
@@ -43,7 +44,7 @@ Q_LOGGING_CATEGORY(ucBottomEdge, "ubuntu.components.BottomEdge", QtMsgType::QtWa
 
 UCBottomEdgePrivate::UCBottomEdgePrivate()
     : UCStyledItemBasePrivate()
-    , defaultRegion(new UCBottomEdgeRegion(nullptr, true))
+    , defaultRegion(new DefaultRegion(nullptr))
     , activeRegion(Q_NULLPTR)
     , hint(new UCBottomEdgeHint)
     , bottomPanel(Q_NULLPTR)
@@ -69,12 +70,8 @@ void UCBottomEdgePrivate::init()
     });
 
     // create default region
-    // for testing purposes
-    defaultRegion->setObjectName("default_BottomEdgeRegion");
     // enters in this stage when drag ratio reaches 30% of the area
-    defaultRegion->m_from = 0.33;
-    defaultRegion->m_to = 1.0;
-    defaultRegion->attachToBottomEdge(q);
+    UCBottomEdgeRegionPrivate::get(defaultRegion)->attachToBottomEdge(q);
 
     QObject::connect(defaultRegion, &UCBottomEdgeRegion::contentChanged,
                      q, &UCBottomEdge::contentChanged);
@@ -133,7 +130,7 @@ void UCBottomEdgePrivate::appendRegion(UCBottomEdgeRegion *region)
     QQml_setParent_noEvent(region, q);
     // take ownership!
     QQmlEngine::setObjectOwnership(region, QQmlEngine::CppOwnership);
-    region->attachToBottomEdge(q);
+    UCBottomEdgeRegionPrivate::get(region)->attachToBottomEdge(q);
 
     if (!defaultRegionsReset) {
         defaultRegionsReset = true;
@@ -143,13 +140,10 @@ void UCBottomEdgePrivate::appendRegion(UCBottomEdgeRegion *region)
     // validate the region before we append
     validateRegion(region);
 
-    // if preload is set, load content
-    if (preloadContent) {
-        region->loadRegionContent();
-    }
-
     // append region definition
     regions.append(region);
+
+    LOG << "region added:" << region;
 }
 
 // clears the custom regions list and restores the default ones
@@ -164,6 +158,8 @@ void UCBottomEdgePrivate::clearRegions(bool destroy)
     regions.clear();
     defaultRegionsReset = false;
     regions.append(defaultRegion);
+
+    LOG << "regions cleared, default restored";
 }
 
 // validates an added region
@@ -172,7 +168,7 @@ void UCBottomEdgePrivate::validateRegion(UCBottomEdgeRegion *region, int regions
     // we should not validate unti the bottom edge is not completed,
     // property changes may invalidate the result of the validation
     // also leave if the region is disabled
-    if (!componentComplete || !region->m_enabled) {
+    if (!componentComplete || !UCBottomEdgeRegionPrivate::get(region)->enabled) {
         return;
     }
     Q_Q(UCBottomEdge);
@@ -187,7 +183,7 @@ void UCBottomEdgePrivate::validateRegion(UCBottomEdgeRegion *region, int regions
     const QRectF regionRect(region->rect(boundingRect));
     for (int i = 0; i < regionsSize; ++i) {
         UCBottomEdgeRegion *stackedRegion = regions[i];
-        if (region == stackedRegion || !stackedRegion->m_enabled) {
+        if (region == stackedRegion || !UCBottomEdgeRegionPrivate::get(stackedRegion)->enabled) {
             continue;
         }
         QRectF rect(stackedRegion->rect(boundingRect));
@@ -197,7 +193,9 @@ void UCBottomEdgePrivate::validateRegion(UCBottomEdgeRegion *region, int regions
             QRectF intersect = regionRect.intersected(stackedRegion->rect(boundingRect));
             if (!intersect.isNull()) {
                 qmlInfo(region) << QString("Region intersects the one from index %1 having from: %2 and to: %3")
-                                   .arg(i).arg(stackedRegion->m_from).arg(stackedRegion->m_to);
+                                   .arg(i)
+                                   .arg(UCBottomEdgeRegionPrivate::get(stackedRegion)->from)
+                                   .arg(UCBottomEdgeRegionPrivate::get(stackedRegion)->to);
             }
         }
     }
@@ -228,6 +226,11 @@ void UCBottomEdgePrivate::updateProgressionStates(qreal distance)
             newActive = region;
             break;
         }
+    }
+    // if no active region is found, use the default one
+    if (!newActive) {
+        LOG << "no active region found, fall back to the default";
+        newActive = defaultRegion;
     }
     if (newActive != activeRegion) {
         setActiveRegion(newActive);
@@ -288,15 +291,15 @@ void UCBottomEdgePrivate::setDragDirection(UCBottomEdge::DragDirection direction
 void UCBottomEdgePrivate::onDragEnded()
 {
     // collapse if we drag downwards, or not in any active region and we did not pass 30% of the BottomEdge height
-    if (dragDirection == UCBottomEdge::Downwards || (!activeRegion && dragProgress < 0.33)) {
+    LOG << "direction:" << dragDirection << ", activeRegion?" << activeRegion << ", dragProgress:" << dragProgress;
+    if (dragDirection == UCBottomEdge::Downwards || (activeRegion && !activeRegion->canCommit(dragProgress))) {
         q_func()->collapse();
-    } else if (!activeRegion && dragProgress >= 0.33) {
-        // commit if we are not in an active region but we passed 30% of the BottomEdge height
-        q_func()->commit();
-    } else if (activeRegion) {
-        // emit region's dragEnded first
-        Q_EMIT activeRegion->dragEnded();
-        commit(activeRegion->m_to);
+    } else {
+        UCBottomEdgeRegion *region = activeRegion ? activeRegion : defaultRegion;
+        if (region->canCommit(dragProgress)) {
+            Q_EMIT region->dragEnded();
+            commit(UCBottomEdgeRegionPrivate::get(region)->to);
+        }
     }
 }
 
@@ -745,9 +748,6 @@ void UCBottomEdgePrivate::completeComponentInitialization()
 {
     UCStyledItemBasePrivate::completeComponentInitialization();
     Q_Q(UCBottomEdge);
-    // trigger default region content loading; the default region content is
-    // always pre-loaded
-    defaultRegion->loadRegionContent();
 
     // fix the hint's style version as that has no qmlContext of its own
     // and thus import version check will fail; setting the context for
@@ -957,7 +957,7 @@ void UCBottomEdgePrivate::setStatus(UCBottomEdge::Status status)
 QUrl UCBottomEdge::contentUrl() const
 {
     Q_D(const UCBottomEdge);
-    return d->defaultRegion->m_url;
+    return d->defaultRegion->url();
 }
 void UCBottomEdge::setContent(const QUrl &url)
 {
@@ -973,7 +973,7 @@ void UCBottomEdge::setContent(const QUrl &url)
 QQmlComponent *UCBottomEdge::contentComponent() const
 {
     Q_D(const UCBottomEdge);
-    return d->defaultRegion->m_component;
+    return d->defaultRegion->component();
 }
 void UCBottomEdge::setContentComponent(QQmlComponent *component)
 {
@@ -1002,6 +1002,11 @@ QQuickItem *UCBottomEdge::contentItem() const
 void UCBottomEdge::commit()
 {
     Q_D(UCBottomEdge);
+    // make sure that teh default region's content is loaded!
+    if (!d->activeRegion || d->activeRegion == d->defaultRegion) {
+        // make sure teh default is the active region
+        d->setActiveRegion(d->defaultRegion);
+    }
     d->commit(1.0);
 }
 
@@ -1111,17 +1116,14 @@ void UCBottomEdge::setPreloadContent(bool value)
         // as default one is always preloaded
         for (int i = 0; i < d->regions.size(); i++) {
             UCBottomEdgeRegion *region = d->regions[i];
-            if (region == d->defaultRegion) {
-                continue;
-            }
-            region->loadRegionContent();
+            UCBottomEdgeRegionPrivate::get(region)->loadRegionContent();
         }
     } else {
         // discard all inactive regions content, except default one
         for (int i = 0; i < d->regions.size(); i++) {
             UCBottomEdgeRegion *region = d->regions[i];
-            if (region != d->activeRegion && region != d->defaultRegion) {
-                region->discardRegionContent();
+            if (region != d->activeRegion) {
+                UCBottomEdgeRegionPrivate::get(region)->discardRegionContent();
             }
         }
     }
@@ -1138,11 +1140,11 @@ void UCBottomEdgePrivate::setCurrentContent()
 {
     QQuickItem *newContent = nullptr;
     if (activeRegion) {
-        newContent = activeRegion->regionContent();
+        newContent = UCBottomEdgeRegionPrivate::get(activeRegion)->contentItem;
         LOG << "ACTIVE REGION CONTENT" << activeRegion->objectName() << newContent;
     }
     if (!newContent) {
-        newContent = defaultRegion->regionContent();
+        newContent = UCBottomEdgeRegionPrivate::get(defaultRegion)->contentItem;
         LOG << "USING DEFAULT" << newContent;
     }
     resetCurrentContent(newContent);
@@ -1164,7 +1166,7 @@ void UCBottomEdgePrivate::resetCurrentContent(QQuickItem *newContent)
 
     if (!newContent) {
         // try to use the default one
-        newContent = defaultRegion->regionContent();
+        newContent = UCBottomEdgeRegionPrivate::get(defaultRegion)->contentItem;
     }
 
     // if it is still null, leave - we may not have default content at all!

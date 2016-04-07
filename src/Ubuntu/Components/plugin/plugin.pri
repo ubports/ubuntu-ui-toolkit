@@ -116,7 +116,8 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/privates/ucpagewrapper_p.h \
     $$PWD/privates/ucpagewrapperincubator_p.h \
     $$PWD/privates/appheaderbase.h \
-    $$PWD/label_p.h
+    $$PWD/label_p.h \
+    $$PWD/ucbottomedgeregion_p.h
 
 SOURCES += $$PWD/plugin.cpp \
     $$PWD/uctheme.cpp \

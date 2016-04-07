@@ -19,8 +19,30 @@
 #include "ucbottomedge.h"
 #include "ucbottomedge_p.h"
 #include "ucbottomedgeregion.h"
+#include "ucbottomedgeregion_p.h"
 #include "propertychange_p.h"
 #include <QtQml/private/qqmlproperty_p.h>
+
+
+UCBottomEdgeRegionPrivate::UCBottomEdgeRegionPrivate()
+    : QObjectPrivate()
+    , bottomEdge(Q_NULLPTR)
+    , component(Q_NULLPTR)
+    , contentItem(Q_NULLPTR)
+    , from(0.0)
+    , to(-1.0)
+    , enabled(true)
+    , active(false)
+{
+}
+
+void UCBottomEdgeRegionPrivate::init()
+{
+    Q_Q(UCBottomEdgeRegion);
+    bottomEdge = qobject_cast<UCBottomEdge*>(parent);
+    QObject::connect(&loader, SIGNAL(loadingStatus(AsyncLoader::LoadingStatus,QObject*)),
+            q, SLOT(onLoaderStatusChanged(AsyncLoader::LoadingStatus,QObject*)));
+}
 
 /*!
  * \qmltype BottomEdgeRegion
@@ -91,131 +113,141 @@
  * properties will cause unpredictable results.
  */
 
-UCBottomEdgeRegion::UCBottomEdgeRegion(QObject *parent, bool isDefault)
-    : QObject(parent)
-    , m_bottomEdge(qobject_cast<UCBottomEdge*>(parent))
-    , m_component(Q_NULLPTR)
-    , m_contentItem(Q_NULLPTR)
-    , m_from(0.0)
-    , m_to(-1.0)
-    , m_enabled(true)
-    , m_active(false)
-    , m_default(isDefault)
+UCBottomEdgeRegion::UCBottomEdgeRegion(QObject *parent)
+    : QObject(*(new UCBottomEdgeRegionPrivate), parent)
 {
-    connect(&m_loader, &UbuntuToolkit::AsyncLoader::loadingStatus,
-            this, &UCBottomEdgeRegion::onLoaderStatusChanged);
+    d_func()->init();
 }
 
-void UCBottomEdgeRegion::attachToBottomEdge(UCBottomEdge *bottomEdge)
+UCBottomEdgeRegion::UCBottomEdgeRegion(UCBottomEdgeRegionPrivate &dd, QObject *parent)
+    : QObject(dd, parent)
 {
-    QQml_setParent_noEvent(this, bottomEdge);
-    m_bottomEdge = bottomEdge;
+    d_func()->init();
+}
+
+void UCBottomEdgeRegionPrivate::attachToBottomEdge(UCBottomEdge *bottomEdge)
+{
+    Q_Q(UCBottomEdgeRegion);
+    QQml_setParent_noEvent(q, bottomEdge);
+    this->bottomEdge = bottomEdge;
     // adjust to property value if not set yet
-    if (m_to <= 0.0) {
-        m_to = 1.0;
-        Q_EMIT toChanged();
+    if (to <= 0.0) {
+        to = 1.0;
+        Q_EMIT q->toChanged();
+    }
+
+    // if preload is set, load content
+    if (bottomEdge->preloadContent()) {
+        loadRegionContent();
     }
 }
 
 bool UCBottomEdgeRegion::contains(qreal dragRatio)
 {
-    return (m_enabled && (m_from < m_to) && dragRatio >= m_from && dragRatio <= m_to);
+    Q_D(UCBottomEdgeRegion);
+    return (d->enabled && (d->from < d->to) && dragRatio >= d->from && dragRatio <= d->to);
+}
+
+// Called when drag ends to check whether content can be committed. The default
+// implementation returns true.
+bool UCBottomEdgeRegion::canCommit(qreal dragRatio)
+{
+    Q_UNUSED(dragRatio);
+    return true;
 }
 
 void UCBottomEdgeRegion::enter()
 {
-    m_active = true;
+    Q_D(UCBottomEdgeRegion);
+    d->active = true;
     Q_EMIT entered();
 
     LOG << "ENTER REGION" << objectName();
     // if preloaded, or default(?), set the content
-    if (m_bottomEdge->preloadContent() || m_default) {
-        if (m_loader.status() == UbuntuToolkit::AsyncLoader::Ready) {
+    if (d->bottomEdge->preloadContent()) {
+        if (d->loader.status() == UbuntuToolkit::AsyncLoader::Ready) {
             LOG << "SET REGION CONTENT" << objectName();
-            UCBottomEdgePrivate::get(m_bottomEdge)->setCurrentContent();
+            UCBottomEdgePrivate::get(d->bottomEdge)->setCurrentContent();
         }
     } else {
         // initiate loading, component has priority
-        loadRegionContent();
+        d->loadRegionContent();
     }
 }
 
 void UCBottomEdgeRegion::exit()
 {
-    m_active = false;
+    Q_D(UCBottomEdgeRegion);
+    d->active = false;
     Q_EMIT exited();
 
     // detach content from BottomEdge
     LOG << "EXIT REGION" << objectName();
-    UCBottomEdgePrivate::get(m_bottomEdge)->resetCurrentContent(nullptr);
+    UCBottomEdgePrivate::get(d->bottomEdge)->resetCurrentContent(nullptr);
 
     // then cleanup
-    if (!m_contentItem) {
+    if (!d->contentItem) {
         return;
     }
     LOG << "RESET REGION CONTENT" << objectName();
-    if (!m_bottomEdge->preloadContent()) {
+    if (!d->bottomEdge->preloadContent()) {
         LOG << "DISCARD REGION CONTENT" << objectName();
-        discardRegionContent();
+        d->discardRegionContent();
     }
 }
 
 const QRectF UCBottomEdgeRegion::rect(const QRectF &bottomEdgeRect)
 {
+    Q_D(UCBottomEdgeRegion);
     QRectF regionRect(
-                bottomEdgeRect.topLeft() + QPointF(0, bottomEdgeRect.height() * (1.0 - m_to)),
-                QSizeF(bottomEdgeRect.width(), bottomEdgeRect.height() * (m_to - m_from)));
+                bottomEdgeRect.topLeft() + QPointF(0, bottomEdgeRect.height() * (1.0 - d->to)),
+                QSizeF(bottomEdgeRect.width(), bottomEdgeRect.height() * (d->to - d->from)));
     return regionRect;
 }
 
-void UCBottomEdgeRegion::loadRegionContent()
+void UCBottomEdgeRegionPrivate::loadRegionContent()
 {
-    if (!m_enabled) {
+    if (!enabled) {
         return;
     }
-    LOG << "LOAD REGION CONTENT" << objectName();
-    if (m_component) {
+    LOG << "LOAD REGION CONTENT" << q_func()->objectName() << contentItem;
+    if (component) {
         loadContent(LoadingComponent);
-    } else if (m_url.isValid()) {
+    } else if (url.isValid()) {
         loadContent(LoadingUrl);
     }
 }
 
-void UCBottomEdgeRegion::loadContent(LoadingType type)
+void UCBottomEdgeRegionPrivate::loadContent(LoadingType type)
 {
     // we must delete the previous content before we (re)initiate loading
-    if (m_contentItem) {
-        m_contentItem->deleteLater();;
-        m_contentItem = nullptr;
+    if (contentItem) {
+        contentItem->deleteLater();;
+        contentItem = nullptr;
     }
     // no need to create new context as we do not set any context properties
     // for which we would need one
     switch (type) {
     case LoadingUrl:
-        m_loader.load(m_url, qmlContext(m_bottomEdge));
+        loader.load(url, qmlContext(bottomEdge));
         return;
     case LoadingComponent:
-        m_loader.load(m_component, qmlContext(m_bottomEdge));
+        loader.load(component, qmlContext(bottomEdge));
         return;
     }
 }
 
-void UCBottomEdgeRegion::discardRegionContent()
+void UCBottomEdgeRegionPrivate::discardRegionContent()
 {
-    m_loader.reset();
-    if (m_contentItem) {
-        LOG << "DISCARD CONTENT" << objectName();
-        m_contentItem->deleteLater();
+    loader.reset();
+    if (contentItem) {
+        LOG << "DISCARD CONTENT" << q_func()->objectName();
+        contentItem->deleteLater();
     }
-    m_contentItem = nullptr;
+    contentItem = nullptr;
 }
 
-QQuickItem *UCBottomEdgeRegion::regionContent()
-{
-    return m_contentItem;
-}
-
-void UCBottomEdgeRegion::onLoaderStatusChanged(UbuntuToolkit::AsyncLoader::LoadingStatus status, QObject *object)
+void UCBottomEdgeRegionPrivate::onLoaderStatusChanged(AsyncLoader::LoadingStatus status, QObject *object)
 {
     bool emitChange = false;
     LOG << "STATUS" << status << object;
@@ -223,28 +255,28 @@ void UCBottomEdgeRegion::onLoaderStatusChanged(UbuntuToolkit::AsyncLoader::Loadi
         // if we are no longer active, no need to continue, and discard content
         // this may occur when the component was still in Compiling state while
         // the region was exited, therefore reset() could not cancel the operation.
-        if (!m_active && !m_default && !m_bottomEdge->preloadContent()) {
-            LOG << "DELETE REGION CONTENT" << objectName();
+        if (!active && !bottomEdge->preloadContent()) {
+            LOG << "DELETE REGION CONTENT" << q_func()->objectName();
             object->deleteLater();
             return;
         }
-        m_contentItem = qobject_cast<QQuickItem*>(object);
-        emitChange = m_active || m_default;
+        contentItem = qobject_cast<QQuickItem*>(object);
+        emitChange = active;
     }
 
     if (status == UbuntuToolkit::AsyncLoader::Reset) {
         // de-parent first
-        if (m_contentItem) {
-            m_contentItem->setParentItem(nullptr);
-            LOG << "RESET CONTENT" << objectName();
-            m_contentItem->deleteLater();
+        if (contentItem) {
+            contentItem->setParentItem(nullptr);
+            LOG << "RESET CONTENT" << q_func()->objectName();
+            contentItem->deleteLater();
         }
-        m_contentItem = nullptr;
+        contentItem = nullptr;
         emitChange = true;
     }
 
-    if (emitChange && m_bottomEdge && m_active) {
-        UCBottomEdgePrivate::get(m_bottomEdge)->setCurrentContent();
+    if (emitChange && bottomEdge && active) {
+        UCBottomEdgePrivate::get(bottomEdge)->setCurrentContent();
     }
 }
 
@@ -253,24 +285,30 @@ void UCBottomEdgeRegion::onLoaderStatusChanged(UbuntuToolkit::AsyncLoader::Loadi
  * Enables the section. Disabled sections do not trigger nor change the BottomEdge
  * content. Defaults to false.
  */
+bool UCBottomEdgeRegion::enabled() const
+{
+    Q_D(const UCBottomEdgeRegion);
+    return d->enabled;
+}
 void UCBottomEdgeRegion::setEnabled(bool enabled)
 {
-    if (enabled == m_enabled) {
+    Q_D(UCBottomEdgeRegion);
+    if (enabled == d->enabled) {
         return;
     }
-    m_enabled = enabled;
-    if (m_bottomEdge) {
-        UCBottomEdgePrivate::get(m_bottomEdge)->validateRegion(this);
-    }
-
-    // load content if preload is set
-    if (m_bottomEdge->preloadContent()) {
-        if (!m_enabled) {
-            discardRegionContent();
-        } else {
-            loadRegionContent();
+    d->enabled = enabled;
+    if (d->bottomEdge) {
+        UCBottomEdgePrivate::get(d->bottomEdge)->validateRegion(this);
+        // load content if preload is set
+        if (d->bottomEdge->preloadContent()) {
+            if (!d->enabled) {
+                d->discardRegionContent();
+            } else {
+                d->loadRegionContent();
+            }
         }
     }
+
     Q_EMIT enabledChanged();
 }
 
@@ -279,14 +317,20 @@ void UCBottomEdgeRegion::setEnabled(bool enabled)
  * Specifies the starting ratio of the bottom erge area. The value must be bigger
  * or equal to 0 but strictly smaller than \l to. Defaults to 0.0.
  */
+qreal UCBottomEdgeRegion::from() const
+{
+    Q_D(const UCBottomEdgeRegion);
+    return d->from;
+}
 void UCBottomEdgeRegion::setFrom(qreal from)
 {
-    if (from == m_from) {
+    Q_D(UCBottomEdgeRegion);
+    if (from == d->from) {
         return;
     }
-    m_from = from;
-    if (m_bottomEdge) {
-        UCBottomEdgePrivate::get(m_bottomEdge)->validateRegion(this);
+    d->from = from;
+    if (d->bottomEdge) {
+        UCBottomEdgePrivate::get(d->bottomEdge)->validateRegion(this);
     }
     Q_EMIT fromChanged();
 }
@@ -299,14 +343,20 @@ void UCBottomEdgeRegion::setFrom(qreal from)
  * will result in exposing the bottom edge content only till the ration specified
  * by this property.
  */
+qreal UCBottomEdgeRegion::to() const
+{
+    Q_D(const UCBottomEdgeRegion);
+    return d->to;
+}
 void UCBottomEdgeRegion::setTo(qreal to)
 {
-    if (to == m_to) {
+    Q_D(UCBottomEdgeRegion);
+    if (to == d->to) {
         return;
     }
-    m_to = to;
-    if (m_bottomEdge) {
-        UCBottomEdgePrivate::get(m_bottomEdge)->validateRegion(this);
+    d->to = to;
+    if (d->bottomEdge) {
+        UCBottomEdgePrivate::get(d->bottomEdge)->validateRegion(this);
     }
     Q_EMIT toChanged();
 }
@@ -318,16 +368,22 @@ void UCBottomEdgeRegion::setTo(qreal to)
  * when the drag gesture enters the section area. The orginal value will be restored
  * once the gesture leaves the section area.
  */
+QUrl UCBottomEdgeRegion::url() const
+{
+    Q_D(const UCBottomEdgeRegion);
+    return d->url;
+}
 void UCBottomEdgeRegion::setUrl(const QUrl &url)
 {
-    if (m_url == url) {
+    Q_D(UCBottomEdgeRegion);
+    if (d->url == url) {
         return;
     }
-    m_url = url;
-    Q_EMIT contentChanged(m_url);
+    d->url = url;
+    Q_EMIT contentChanged(d->url);
     // invoke loader if the preload is set
-    if (m_bottomEdge && (m_bottomEdge->preloadContent() || m_default) && !m_url.isValid()) {
-        loadContent(LoadingUrl);
+    if (d->bottomEdge && (d->bottomEdge->preloadContent()) && !d->url.isValid()) {
+        d->loadContent(UCBottomEdgeRegionPrivate::LoadingUrl);
     }
 }
 
@@ -338,16 +394,22 @@ void UCBottomEdgeRegion::setUrl(const QUrl &url)
  * when the drag gesture enters the section area. The orginal value will be restored
  * once the gesture leaves the section area.
  */
+QQmlComponent *UCBottomEdgeRegion::component() const
+{
+    Q_D(const UCBottomEdgeRegion);
+    return d->component;
+}
 void UCBottomEdgeRegion::setComponent(QQmlComponent *component)
 {
-    if (m_component == component) {
+    Q_D(UCBottomEdgeRegion);
+    if (d->component == component) {
         return;
     }
-    m_component = component;
-    Q_EMIT contentComponentChanged(m_component);
+    d->component = component;
+    Q_EMIT contentComponentChanged(d->component);
     // invoke loader if the preload is set
-    if (m_bottomEdge && (m_bottomEdge->preloadContent() || m_default) && m_component) {
-        loadContent(LoadingComponent);
+    if (d->bottomEdge && d->bottomEdge->preloadContent() && d->component) {
+        d->loadContent(UCBottomEdgeRegionPrivate::LoadingComponent);
     }
 }
 
@@ -366,3 +428,40 @@ void UCBottomEdgeRegion::setComponent(QQmlComponent *component)
  * \qmlsignal void BottomEdgeRegion::dragEnded()
  * Signal triggered when the drag ends within the active bottom edge section area.
  */
+
+// default region
+
+DefaultRegionPrivate::DefaultRegionPrivate()
+{
+}
+
+void DefaultRegionPrivate::loadRegionContent()
+{
+    if (contentItem) {
+        LOG << "region content loaded, return";
+        return;
+    }
+    UCBottomEdgeRegionPrivate::loadRegionContent();
+}
+
+void DefaultRegionPrivate::discardRegionContent()
+{
+    // do nothing, do not cleanup the content!
+    LOG << "suppress region discarding!";
+}
+
+DefaultRegion::DefaultRegion(UCBottomEdge *parent)
+    : UCBottomEdgeRegion(*(new DefaultRegionPrivate), parent)
+{
+    UCBottomEdgeRegionPrivate *d = UCBottomEdgeRegionPrivate::get(this);
+    d->from = 0.0;
+    d->to = 1.0;
+    setObjectName("default_BottomEdgeRegion");
+}
+
+bool DefaultRegion::canCommit(qreal dragRatio)
+{
+    return (dragRatio >= 0.33);
+}
+
+#include "moc_ucbottomedgeregion.cpp"

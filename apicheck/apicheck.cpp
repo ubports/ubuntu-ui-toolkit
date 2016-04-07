@@ -39,6 +39,10 @@
 #include <QJsonArray>
 #include <QLoggingCategory>
 
+#define foreach Q_FOREACH
+#include <QtQml/private/qqmlengine_p.h>
+#undef foreach
+
 #include <iostream>
 #include <algorithm>
 
@@ -92,9 +96,10 @@ void collectReachableMetaObjects(QObject *object, QSet<const QMetaObject *> *met
 void collectReachableMetaObjects(const QQmlType *ty, QSet<const QMetaObject *> *metas)
 {
     collectReachableMetaObjects(ty->metaObject(), metas, ty->isExtendedType());
+
 #if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
-    if (ty->attachedPropertiesType(currentEngine))
-        collectReachableMetaObjects(ty->attachedPropertiesType(currentEngine), metas);
+    if (ty->attachedPropertiesType(QQmlEnginePrivate::get(currentEngine)))
+        collectReachableMetaObjects(ty->attachedPropertiesType(QQmlEnginePrivate::get(currentEngine)), metas);
 #else
     if (ty->attachedPropertiesType())
         collectReachableMetaObjects(ty->attachedPropertiesType(), metas);
@@ -543,7 +548,7 @@ public:
                 object.insert("isSingleton", true);
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
-            if (const QMetaObject *attachedType = (*qmlTypes.begin())->attachedPropertiesType(attachedPropertiesType)) {
+            if (const QMetaObject *attachedType = (*qmlTypes.begin())->attachedPropertiesType(QQmlEnginePrivate::get(currentEngine))) {
 #else
             if (const QMetaObject *attachedType = (*qmlTypes.begin())->attachedPropertiesType()) {
 #endif

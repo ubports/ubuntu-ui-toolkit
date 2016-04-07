@@ -42,9 +42,12 @@ ActionSelectionPopover {
     /*!
       The foreground color (icon and text) of actions in the panel.
      */
-    property color foregroundColor: styledItem.enabled
-                                        ? theme.palette.normal.backgroundText
-                                        : theme.palette.disabled.backgroundText
+    property color foregroundColor: theme.palette.normal.backgroundText
+
+    /*!
+      The foreground color (icon and text) of disabled actions in the panel.
+     */
+    property color disabledForegroundColor: theme.palette.disabled.backgroundText
 
     property bool square: true
     callerMargin: -units.gu(1) + units.dp(4)
@@ -83,7 +86,8 @@ ActionSelectionPopover {
             id: actionIcon
             visible: "" != action.iconSource
             source: action.iconSource
-            color: overflow.foregroundColor
+            color: enabled ? overflow.foregroundColor
+                           : overflow.disabledForegroundColor
             anchors {
                 verticalCenter: parent.verticalCenter
                 verticalCenterOffset: units.dp(-1)
@@ -107,7 +111,8 @@ ActionSelectionPopover {
             textSize: actionIcon.visible ? Label.Small : Label.Medium
             elide: Text.ElideRight
             text: action.text
-            color: overflow.foregroundColor
+            color: enabled ? overflow.foregroundColor
+                           : overflow.disabledForegroundColor
         }
 
         // The value of showDivider is automatically set by ActionSelectionPopover.
