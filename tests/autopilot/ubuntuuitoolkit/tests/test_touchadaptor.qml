@@ -29,6 +29,7 @@ MainView {
             id: mpa
             property bool touched: false
             anchors.fill: parent
+            mouseEnabled: false
             objectName: "touchArea"
             touchPoints: TouchPoint {
                 id: point1
