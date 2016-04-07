@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -17,7 +17,7 @@
 #include "testplugin.h"
 #include <QtQml>
 #include "uctestextras.h"
-#include "ucmousetouchadaptor.h"
+#include <MouseTouchAdaptor>
 
 static QObject *registerExtras(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
@@ -27,16 +27,8 @@ static QObject *registerExtras(QQmlEngine *engine, QJSEngine *scriptEngine)
     return new UCTestExtras;
 }
 
-static QObject *registerAdaptor(QQmlEngine *engine, QJSEngine *scriptEngine)
-{
-    Q_UNUSED(engine)
-    Q_UNUSED(scriptEngine)
-
-    return new UCMouseTouchAdaptor;
-}
-
 void TestPlugin::registerTypes(const char *uri)
 {
     qmlRegisterSingletonType<UCTestExtras>(uri, 1, 0, "TestExtras", registerExtras);
-    qmlRegisterSingletonType<UCMouseTouchAdaptor>(uri, 1, 0, "MouseTouchAdaptor", registerAdaptor);
+    qmlRegisterSingletonType<UbuntuToolkit::MouseTouchAdaptor>(uri, 1, 0, "MouseTouchAdaptor", UbuntuToolkit::MouseTouchAdaptor::registerQmlSingleton);
 }
