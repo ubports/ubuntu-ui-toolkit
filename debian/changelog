@@ -12,6 +12,7 @@ ubuntu-ui-toolkit (1.3.1918+16.04.20160404-0ubuntu1) xenial; urgency=medium
     observes. Fixes LP: #1527387.
 
   [ Timo Jyrinki ]
+  * Add additional Breaks as requested by archive admin.
   * Add a test for blocking if packaging not sorted and clean.
   * More package name transitioning, wrap and sort, fix debian/copyright syntax, 
     update standards-version, fix devel package sections and add/fix 
