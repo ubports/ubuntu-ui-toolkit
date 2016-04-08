@@ -54,10 +54,6 @@ Item {
                 onClicked: pageStack.push(pageWithPage)
             }
             Button {
-                text: "tabs"
-                onClicked: pageStack.push(tabs)
-            }
-            Button {
                 text: "pageWithHeader"
                 onClicked: pageStack.push(pageWithHeader)
             }
