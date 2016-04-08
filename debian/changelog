@@ -1,3 +1,29 @@
+ubuntu-ui-toolkit (1.3.1926+16.04) UNRELEASED; urgency=medium
+
+  [ Tim Peeters ]
+  * Hide the PageStack back button when depth == 1. Fixes LP: #1565811
+  * Add header subtitle. Fixes LP: #1399289
+  * Reveal the header in gallery when changing the layout to two columns. 
+    Fixes LP: #1556860
+  * Set correct colors for disabled actions in the header. 
+    Fixes LP: #1393485
+
+  [ Zsombor Egri ]
+  * Move MouseTouchAdaptor into UbuntuToolkit library. Fix adaptor code for
+    Xenial. Fixes LP: #1561436
+
+  [ Christian Dywan ]
+  * Don't use a separate argument to distinguish touch events. If it's touch,
+    it has our overloaded methods. Fixes LP: #1530802
+  * Use export_qml_dir.sh in qmlapicheck and runtest Also add Usage to runtest.
+    Fixes LP: #1567286.
+
+  [ Andrea Bernabei ]
+  * Mouse filter: check if mouse is inside the area on mouse moves and 
+    setHovered accordingly. Fixes LP: #1566378.
+
+ -- Zoltán Balogh <zoltan@bakter.hu>  Fri, 08 Apr 2016 20:28:19 +0300
+
 ubuntu-ui-toolkit (1.3.1918+16.04.20160404-0ubuntu1) xenial; urgency=medium
 
   [ Benjamin Zeller ] 
