@@ -19,7 +19,7 @@
 #include "ucperformancemonitor.h"
 #include <QtGui/QGuiApplication>
 
-Q_LOGGING_CATEGORY(ucPerformance, "[PERFORMANCE]", QtMsgType::QtCriticalMsg)
+Q_LOGGING_CATEGORY(ucPerformance, "[PERFORMANCE]")
 
 const int singleFrameThreshold = 32;
 const int multipleFrameThreshold = 17;

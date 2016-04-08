@@ -125,7 +125,8 @@ bool ListViewProxy::focusInEvent(QFocusEvent *event)
     return false;
 }
 
-// override up/down key presses for ListView
+// override up/down key presses for ListView; returns true if the key event is consumed
+// in which case ListView won't get it.
 bool ListViewProxy::keyPressEvent(QKeyEvent *event)
 {
     int key = event->key();
@@ -138,6 +139,7 @@ bool ListViewProxy::keyPressEvent(QKeyEvent *event)
     // for horizontal moves take into account the layout mirroring
     bool isRtl = QQuickItemPrivate::get(listView)->effectiveLayoutMirror;
     bool forwards = (key == Qt::Key_Up || (isRtl ? key == Qt::Key_Left : key == Qt::Key_Right));
+    int oldIndex = this->currentIndex();
     int currentIndex = this->currentIndex();
     int count = this->count();
 
@@ -147,5 +149,5 @@ bool ListViewProxy::keyPressEvent(QKeyEvent *event)
         setKeyNavigationForListView(true);
     }
 
-    return true;
+    return (oldIndex != currentIndex);
 }

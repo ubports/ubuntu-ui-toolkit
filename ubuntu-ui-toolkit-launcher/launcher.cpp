@@ -32,18 +32,9 @@
 #include <QtQuick/private/qsgcontext_p.h>
 #include <QtCore/QCommandLineParser>
 #include <QtCore/QCommandLineOption>
-#include "MouseTouchAdaptor.h"
+#include <MouseTouchAdaptor>
 #include <QtGui/QTouchDevice>
 #include <QtQml/qqml.h>
-
-bool touchDevicePresent()
-{
-    Q_FOREACH(const QTouchDevice *device, QTouchDevice::devices()) {
-        if (device->type() == QTouchDevice::TouchScreen)
-            return true;
-    }
-    return false;
-}
 
 static QObject *s_testRootObject = 0;
 static QObject *testRootObject(QQmlEngine *engine, QJSEngine *jsEngine)
@@ -151,9 +142,9 @@ int main(int argc, const char *argv[])
         view->setFlags(Qt::FramelessWindowHint);
     }
 
-    if (args.isSet(_enableTouch) && !touchDevicePresent()) {
+    if (args.isSet(_enableTouch)) {
         // has no effect if we have touch screen
-        application.installNativeEventFilter(new MouseTouchAdaptor);
+        new UbuntuToolkit::MouseTouchAdaptor(&application);
     }
 
     QUrl source(QUrl::fromLocalFile(filename));

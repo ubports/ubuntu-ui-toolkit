@@ -981,6 +981,76 @@ private Q_SLOTS:
         QTest::mouseRelease(view.data(), Qt::LeftButton, 0, QPoint(x, i));
     }
 
+    //This is to test that entered/exited events are fired as a consequence of a mouse move.
+    //When mouse is PRESSED, in fact, you won't get hover events. Mouse moves have to update
+    //the hovered state (and that will trigger entered()/exited()). This fixes lp:1566378
+    void testCase_enteredExitedOnMouseMove_lp1566378() {
+        QScopedPointer<QQuickView> view(loadTest("EnteredExitedOnMouseMove.qml"));
+        QVERIFY(view);
+        UCMouse *filter = attachedFilter<UCMouse>(view->rootObject(), "FilterOwner");
+        QVERIFY(filter);
+        QSignalSpy pressed(filter, SIGNAL(pressed(QQuickMouseEvent*, QQuickItem*)));
+        QSignalSpy positionChanged(filter, SIGNAL(positionChanged(QQuickMouseEvent*, QQuickItem*)));
+        QSignalSpy entered(filter, SIGNAL(entered(QQuickMouseEvent*, QQuickItem*)));
+        QSignalSpy exited(filter, SIGNAL(exited(QQuickMouseEvent*, QQuickItem*)));
+
+        QObject::connect(filter, SIGNAL(pressed(QQuickMouseEvent*, QQuickItem*)), this, SLOT(onMouseEvent(QQuickMouseEvent*, QQuickItem*)));
+        QObject::connect(filter, SIGNAL(positionChanged(QQuickMouseEvent*, QQuickItem*)), this, SLOT(onMouseEvent2(QQuickMouseEvent*, QQuickItem*)));
+        QObject::connect(filter, SIGNAL(entered(QQuickMouseEvent*, QQuickItem*)), this, SLOT(onMouseEvent3(QQuickMouseEvent*, QQuickItem*)));
+        QObject::connect(filter, SIGNAL(exited(QQuickMouseEvent*, QQuickItem*)), this, SLOT(onMouseEvent3(QQuickMouseEvent*, QQuickItem*)));
+
+        preventDblClick();
+
+        //don't use guPoint(0,0) as it's the same as not passing any point, i.e. it sends mouseMove to the
+        //center of the view
+        QTest::mouseMove(view.data(), guPoint(1, 1));
+        QTest::mouseMove(view.data(), guPoint(15, 15));
+        QTest::waitForEvents();
+
+        QCOMPARE(entered.count(), 1);
+        QCOMPARE(mouseEvent3Params.handler, QString("EVENT4"));
+        QCOMPARE(mouseEvent3Params.pressedButton, Qt::NoButton);
+
+        QTest::mousePress(view.data(), Qt::LeftButton, 0, guPoint(15, 15));
+        QTest::waitForEvents();
+        QCOMPARE(mouseEventParams.handler, QString("EVENT1"));
+        QCOMPARE(mouseEventParams.pressedButton, Qt::LeftButton);
+
+        QTest::mouseMove(view.data(), guPoint(25, 15));
+
+        //go out of the mousearea on the right
+        QTest::mouseMove(view.data(), guPoint(45, 15));
+        QTest::waitForEvents();
+        QCOMPARE(mouseEvent2Params.handler, QString("EVENT2"));
+        QCOMPARE(mouseEvent2Params.pressedButton, Qt::LeftButton);
+        QCOMPARE(exited.count(), 1);
+        QCOMPARE(mouseEvent3Params.handler, QString("EVENT4"));
+        QCOMPARE(mouseEvent3Params.pressedButton, Qt::LeftButton);
+
+        //move back in
+        QTest::mouseMove(view.data(), guPoint(25, 15));
+        QTest::waitForEvents();
+        QCOMPARE(mouseEvent2Params.handler, QString("EVENT2"));
+        QCOMPARE(mouseEvent2Params.pressedButton, Qt::LeftButton);
+        QCOMPARE(entered.count(), 2);
+        QCOMPARE(mouseEvent3Params.handler, QString("EVENT4"));
+        QCOMPARE(mouseEvent3Params.pressedButton, Qt::LeftButton);
+
+        //and out again
+        QTest::mouseMove(view.data(), guPoint(45, 15));
+        QTest::waitForEvents();
+        QCOMPARE(mouseEvent2Params.handler, QString("EVENT2"));
+        QCOMPARE(mouseEvent2Params.pressedButton, Qt::LeftButton);
+        QCOMPARE(exited.count(), 2);
+        QCOMPARE(mouseEvent3Params.handler, QString("EVENT4"));
+        QCOMPARE(mouseEvent3Params.pressedButton, Qt::LeftButton);
+
+        QTest::mouseRelease(view.data(), Qt::LeftButton, 0, guPoint(45, 15));
+        QTest::waitForEvents();
+
+        QCOMPARE(positionChanged.count(), 4);
+    }
+
     void testCase_hoverEvents() {
         QScopedPointer<QQuickView> view(loadTest("HoverEvent.qml"));
         QVERIFY(view);

@@ -1,0 +1,15 @@
+{
+    "name": "unit-converter.bzoltan",
+    "description": "Example application of the Ubuntu UI Toolkit - Unit converter",
+    "architecture": "@CLICK_ARCH@",
+    "title": "Unit Converter",
+    "hooks": {
+        "unit-converter": {
+            "apparmor": "unit-converter.apparmor",
+            "desktop": "unit-converter.desktop"
+        }
+    },
+    "version": "0.1",
+    "maintainer": "Zoltán Balogh <zoltan@bakter.hu>",
+    "framework": "ubuntu-sdk-15.04"
+}

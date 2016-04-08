@@ -339,10 +339,13 @@ PageTreeNode {
       */
     function addPageToNextColumn(sourcePage, page, properties) {
         var nextColumn = d.columnForPage(sourcePage) + 1;
-        d.tree.prune(nextColumn);
+        var wrappers = d.tree.prune(nextColumn);
         return d.addPageToColumn(nextColumn, sourcePage, page, properties, function() {
             for (var i = nextColumn; i < d.columns; i++) {
                 d.updatePageForColumn(i);
+            }
+            for (var i in wrappers) {
+                wrappers[i].destroyObject();
             }
         });
     }
@@ -591,9 +594,7 @@ PageTreeNode {
                 if (newWrapper) {
                     columnHolder.attachPage(newWrapper);
                 }
-                if (oldWrapper.canDestroy) {
-                    oldWrapper.destroyObject();
-                }
+                oldWrapper.destroyObject();
             }
         }
 
@@ -754,6 +755,19 @@ PageTreeNode {
             property var page: pageWrapper ? pageWrapper.object : null
             property bool customHeader: page && page.hasOwnProperty("header") &&
                                         page.header
+            onCustomHeaderChanged: {
+                // do not change the holderBody anchors until the new page
+                //  for the column has been set to prevent geometry changes in
+                //  the current/previous page.
+                if (page) {
+                    if (customHeader) {
+                        holderBody.anchors.top = holderBody.parent.top;
+                    } else {
+                        holderBody.anchors.top = subHeader.bottom;
+                    }
+                }
+            }
+
             onPageChanged: body.updateHeaderHeight(0)
             Connections {
                 target: page
@@ -770,7 +784,7 @@ PageTreeNode {
                 id: holderBody
                 objectName: parent.objectName + "Body"
                 anchors {
-                    top: customHeader ? parent.top : subHeader.bottom
+                    top: subHeader.bottom // updated in onCustomHeaderChanged
                     bottom: parent.bottom
                     left: parent.left
                     right: parent.right

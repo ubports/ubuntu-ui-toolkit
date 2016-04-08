@@ -218,13 +218,12 @@ PageTreeNode {
     Action {
         // used when the Page has a Page.header property set.
         id: backAction
-        visible: pageStack.depth > 0
+        visible: pageStack.depth > 1
         iconName: "back"
         text: "Back"
         onTriggered: pageStack.pop()
         objectName: "pagestack_back_action"
     }
-
 
     Component {
         id: pageWrapperComponent
