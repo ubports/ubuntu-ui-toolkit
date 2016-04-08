@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# This script converts the debian/ packaging into an alternate source package
+# which builds with GLES. You should copy the source tree into a new directory
+# before running this script (so you have one copy for GLES and one copy for
+# regular GL).
+
+set -eu
+
+mv --verbose debian/control.gles debian/control
+mv --verbose debian/rules.gles debian/rules
+
+sed --in-place 's/^ubuntu-ui-toolkit /ubuntu-ui-toolkit-gles /g' debian/changelog
+
+for gles in libubuntutoolkit5-gles-dev.install libubuntugestures5-gles-dev.install libubuntugestures5-gles.install libubuntutoolkit5-gles.install qml-module-ubuntu-components-gles.install qml-module-ubuntu-components-gles.lintian-overrides; do
+    mv --verbose debian/"$(echo $gles | sed 's/-gles//')" debian/$gles
+done
