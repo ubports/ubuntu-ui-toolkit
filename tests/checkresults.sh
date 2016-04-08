@@ -55,7 +55,7 @@ for _XML in $*; do
     WARNINGS=$(grep -c -P "$WARNINGS_PATTERN" $_XML)
     ERRORS=$(grep -c -P "$ERRORS_PATTERN" $_XML)
     if [ $ERRORS -ne 0 ]; then
-      FAILURES_FILES="${FAILURES_FILES}${_TESTNAME}\n"
+      FAILURES_FILES="${FAILURES_FILES}  ${_TESTNAME}\n"
       ((FAILURES+=$ERRORS))
     elif [ $WARNINGS -ne 0 ]; then
       if [[ $EXCEPTIONS == *$_TESTNAME* ]]; then
@@ -71,21 +71,27 @@ for _XML in $*; do
 done
 
 TOTAL=0
-((TOTAL+=$FAILURES))
-echo $FAILURES failures:
-echo -e $FAILURES_FILES
-
-if [ true ]; then
-    ((TOTAL+=FATAL_WARNINGS))
-    echo $FATAL_WARNINGS fatal warnings which MUST be fixed:
-    echo -e $FATAL_WARNINGS_FILES
+if [ -n "$FAILURES_FILES" ]; then
+    ((TOTAL+=$FAILURES))
+    echo $FAILURES failures which MUST be fixed:
+    echo -e "$FAILURES_FILES"
 fi
 
-echo The following tests issued $EXCEPTED expected warnings:
-echo -e $EXCEPTED_FILES
+if [ -n "$FATAL_WARNINGS_FILES" ]; then
+    ((TOTAL+=FATAL_WARNINGS))
+    echo $FATAL_WARNINGS fatal warnings which MUST be fixed:
+    echo -e "$FATAL_WARNINGS_FILES"
+fi
 
-echo Woot! Known problematic tests passed!
-echo Consider removing these from EXCEPTIONS in ${0#$(pwd)/}!
-echo -e $WOOT_FILES
+if [ -n "$EXCEPTED_FILES" ]; then
+    echo The following tests issued $EXCEPTED expected warnings:
+    echo -e "$EXCEPTED_FILES"
+fi
+
+if [ -n "$WOOT_FILES" ]; then
+    echo Woot! Known problematic tests passed!
+    echo Consider removing these from EXCEPTIONS in ${0#$(pwd)/}!
+    echo -e "$WOOT_FILES"
+fi
 
 exit $TOTAL
