@@ -257,7 +257,7 @@ Item {
             pushedPage = pageStack.push(pageComponent);
             compare(pushedPage.title, "Page from component",
                     "PageStack.push() returns Page created from Component");
-            pushedPage = pageStack.push(Qt.resolvedUrl("MyExternalPage.qml"));
+            pushedPage = pageStack.push(Qt.resolvedUrl("MyExternalPage.DEPRECATED_APPHEADER.qml"));
             compare(pushedPage.title, "Page from QML file",
                     "PageStack.push() returns Page created from QML file");
         }

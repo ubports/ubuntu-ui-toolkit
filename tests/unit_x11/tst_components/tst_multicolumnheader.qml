@@ -59,7 +59,7 @@ MainView {
                 ListItemWithLabel {
                     text: "Add external page right"
                     onClicked: layout.addPageToNextColumn(
-                                   rootPage, Qt.resolvedUrl("MyExternalPage.qml"))
+                                   rootPage, Qt.resolvedUrl("MyExternalPage.DEPRECATED_APPHEADER.qml"))
                 }
                 ListItemWithLabel {
                     text: "Add page with head contents left"
@@ -305,7 +305,7 @@ MainView {
         }
 
         function test_header_title_for_external_page() {
-            var incubator = layout.addPageToNextColumn(rootPage, Qt.resolvedUrl("MyExternalPage.qml"));
+            var incubator = layout.addPageToNextColumn(rootPage, Qt.resolvedUrl("MyExternalPage.DEPRECATED_APPHEADER.qml"));
             var pageLoaded = false;
             incubator.onStatusChanged = function (status) {
                 pageLoaded = (incubator.object != null);
