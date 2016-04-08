@@ -34,6 +34,8 @@ for _XML in $*; do
     EXCEPTIONS='tst_components_benchmark \
                 tst_tabbar.qml \
                 tst_datepicker.qml \
+                tst_datepicker13.qml \
+                tst_swipearea \
                 tst_qquick_image_extension \
                 tst_page.qml \
                 tst_toolbar.qml \
