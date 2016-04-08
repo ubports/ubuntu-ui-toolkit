@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2015 Canonical Ltd.
+ * Copyright 2012-2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -61,10 +61,6 @@ Item {
                 onClicked: pageStack.push(tabs)
             }
             Button {
-                text: "pageWithHeader"
-                onClicked: pageStack.push(pageWithHeader)
-            }
-            Button {
                 text: "pageComponent"
                 onClicked: pageStack.push(pageComponent)
             }
@@ -109,7 +105,7 @@ Item {
     }
 
     UbuntuTestCase {
-        name: "PageStackAPI"
+        name: "PageStackDeprecatedAppHeaderAPI"
         when: windowShown
         id: testCase
 
