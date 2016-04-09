@@ -54,10 +54,6 @@ Item {
                 onClicked: pageStack.push(pageWithPage)
             }
             Button {
-                text: "pageWithHeader"
-                onClicked: pageStack.push(pageWithHeader)
-            }
-            Button {
                 text: "pageComponent"
                 onClicked: pageStack.push(pageComponent)
             }
@@ -84,12 +80,6 @@ Item {
             header: PageHeader {
                 title: "Inner"
             }
-        }
-    }
-    Page {
-        id: pageWithHeader
-        header: PageHeader {
-            title: "Page with PageHeader"
         }
     }
 
@@ -207,16 +197,16 @@ Item {
         }
 
         function test_page_header_back_button_bug1565811() {
-            pageStack.push(pageWithHeader);
-            var backButton = findChild(pageWithHeader.header.leadingActionBar,
+            pageStack.push(page2);
+            var backButton = findChild(page2.header.leadingActionBar,
                                        "pagestack_back_action_button");
             compare(backButton, null,
                     "Page header shows back button with only one page on the stack.");
             pageStack.pop();
             pageStack.push(page1);
-            pageStack.push(pageWithHeader);
+            pageStack.push(page2);
             waitForHeaderAnimation(mainView);
-            backButton = findChild(pageWithHeader.header, "pagestack_back_action_button");
+            backButton = findChild(page2.header, "pagestack_back_action_button");
             compare(backButton && backButton.visible, true,
                     "Page header has no back button with two pages on the stack.");
         }
