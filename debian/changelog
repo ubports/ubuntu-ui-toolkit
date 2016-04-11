@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (1.3.1929+16.04) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.3.1930+16.04) UNRELEASED; urgency=medium
 
   [ Tim Peeters ]
   * Hide the PageStack back button when depth == 1. Fixes LP: #1565811
@@ -7,6 +7,7 @@ ubuntu-ui-toolkit (1.3.1929+16.04) UNRELEASED; urgency=medium
     Fixes LP: #1556860
   * Set correct colors for disabled actions in the header. 
     Fixes LP: #1393485
+  * Disable tst_datepicker.qml to unblock the staging.Fixes LP: #1567840
 
   [ Zsombor Egri ]
   * Move MouseTouchAdaptor into UbuntuToolkit library. Fix adaptor code for
