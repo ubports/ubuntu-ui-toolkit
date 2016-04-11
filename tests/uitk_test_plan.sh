@@ -203,7 +203,7 @@ function reset {
 function device_comission {
     if [ ${COMISSION_BOOTSTRAP} == true ]; then
         # bootstrap the device with the latest image
-	ubuntu-device-flash touch --channel=${CHANNEL} --wipe --bootstrap --developer-mode --password=0000a
+	ubuntu-device-flash touch --serial=${SERIALNUMBER} --channel=${CHANNEL} --wipe --bootstrap --developer-mode --password=0000
     elif [ ${COMISSION_FLASH} == true ]; then
         adb -s ${SERIALNUMBER} wait-for-device
         # Avoid https://bugs.launchpad.net/gallery-app/+bug/1363190
