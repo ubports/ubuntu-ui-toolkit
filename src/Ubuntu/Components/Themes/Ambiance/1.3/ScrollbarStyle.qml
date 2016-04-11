@@ -362,6 +362,34 @@ Item {
         }
     }
 
+    //each scrollbar connects to both width and height because
+    //we want to show both the scrollbar in both cases
+    Connections {
+        target: (flickableItem && initialized) ? flickableItem : null
+        onHeightChanged: flashScrollbar()
+        onWidthChanged: flashScrollbar()
+        //Use onTotalContentSizeChanged instead of binding to contentWidth/Height changes
+        //to trigger the scrollbar hinting when the scrollable content is resized
+    }
+
+    SmoothedAnimation {
+        id: scrollAnimation
+        objectName: "scrollAnimation"
+
+        //duration and easing coming from UX spec
+        duration: UbuntuAnimation.SlowDuration
+        easing.type: Easing.InOutCubic
+        target: styledItem.flickableItem
+        property: scrollbarUtils.propContent
+        //when the listview has variable size delegates the contentHeight estimation done by ListView
+        //could make us overshoot, especially when going from top to bottom of the list or viceversa.
+        //We call returnToBounds to mitigate that.
+        onRunningChanged: if (!running && flickableItem) {
+                              flickableItem.returnToBounds()
+                          }
+    }
+
+
     // The thumb appears whenever the mouse gets close enough to the scrollbar
     // and disappears after being for a long enough time far enough of it
     MouseArea {
@@ -391,530 +419,569 @@ Item {
             id: overshootTimer
             interval: scrollbarThicknessAnimation.duration * 10
         }
-    }
 
-    //each scrollbar connects to both width and height because
-    //we want to show both the scrollbar in both cases
-    Connections {
-        target: (flickableItem && initialized) ? flickableItem : null
-        onHeightChanged: flashScrollbar()
-        onWidthChanged: flashScrollbar()
-        //Use onTotalContentSizeChanged instead of binding to contentWidth/Height changes
-        //to trigger the scrollbar hinting when the scrollable content is resized
-    }
+        Flow {
+            id: flowContainer
+            property bool showSteppers: false
+            property bool showTrough: false
+            property bool showCornerRect: false
+            //thickness of trough and thumb
+            property real thickness: 0
+            property real thumbThickness: 0
 
-    SmoothedAnimation {
-        id: scrollAnimation
-        objectName: "scrollAnimation"
-
-        //duration and easing coming from UX spec
-        duration: UbuntuAnimation.SlowDuration
-        easing.type: Easing.InOutCubic
-        target: styledItem.flickableItem
-        property: scrollbarUtils.propContent
-        //when the listview has variable size delegates the contentHeight estimation done by ListView
-        //could make us overshoot, especially when going from top to bottom of the list or viceversa.
-        //We call returnToBounds to mitigate that.
-        onRunningChanged: if (!running && flickableItem) {
-                              flickableItem.returnToBounds()
-                          }
-    }
-
-    Flow {
-        id: flowContainer
-        property bool showSteppers: false
-        property bool showTrough: false
-        property bool showCornerRect: false
-        //thickness of trough and thumb
-        property real thickness: 0
-        property real thumbThickness: 0
-
-        property real proximityThickness: (isVertical) ? styledItem.width - thickness
-                                                       : styledItem.height - thickness
-        anchors {
-            fill: parent
-            leftMargin: (!isVertical || frontAligned) ? 0.0 : flowContainer.proximityThickness
-            rightMargin: (!isVertical || rearAligned) ? 0.0 : flowContainer.proximityThickness
-            topMargin: (isVertical || topAligned) ? 0.0 : flowContainer.proximityThickness
-            bottomMargin: (isVertical || bottomAligned) ? 0.0 : flowContainer.proximityThickness
-        }
-        clip: true
-        flow: (isVertical) ? Flow.TopToBottom : Flow.LeftToRight
-
-        Item {
-            id: troughContainer
-            //account for 2 steppers at the end of the scrollbar
-            width: isVertical ? parent.width
-                              : parent.width - steppersMouseArea.width
-            height: isVertical ? parent.height - steppersMouseArea.height
-                               : parent.height
-
-            // represents the visible area of the scrollbar where
-            //slider and thumb connector are placed
-            Rectangle {
-                id: trough
-                objectName: "trough"
-                anchors.fill: parent
-                visible: flowContainer.showTrough
+            property real proximityThickness: (isVertical) ? styledItem.width - thickness
+                                                           : styledItem.height - thickness
+            anchors {
+                fill: parent
+                leftMargin: (!isVertical || frontAligned) ? 0.0 : flowContainer.proximityThickness
+                rightMargin: (!isVertical || rearAligned) ? 0.0 : flowContainer.proximityThickness
+                topMargin: (isVertical || topAligned) ? 0.0 : flowContainer.proximityThickness
+                bottomMargin: (isVertical || bottomAligned) ? 0.0 : flowContainer.proximityThickness
             }
+            clip: true
+            flow: (isVertical) ? Flow.TopToBottom : Flow.LeftToRight
 
-            Rectangle {
-                id: slider
-                objectName: "interactiveScrollbarThumb"
+            Item {
+                id: troughContainer
+                //account for 2 steppers at the end of the scrollbar
+                width: isVertical ? parent.width
+                                  : parent.width - steppersMouseArea.width
+                height: isVertical ? parent.height - steppersMouseArea.height
+                                   : parent.height
 
-                //this property is true if the user could be starting a drag (i.e. pressed inside the thumb)
-                //but drag.active is not true yet (because that requires dragging >0 pixels)
-                //Usecase: thumb is at the top, user drags towards the top and
-                //goes out of window -> drag.active won't trigger because the thumb can't move by even 1px,
-                //but we still want the logic to know that user could be trying to drag (by moving the
-                //mouse down again afterwards, for example)
-                //
-                //NOTE: starting a drag while the scrollbars are in steppers mode is considered a mouse drag
-                //(because we want the style to stay to steppers) even when started with touch!
-                property bool mouseDragging: false
-                property bool touchDragging: false
+                // represents the visible area of the scrollbar where
+                //slider and thumb connector are placed
+                Rectangle {
+                    id: trough
+                    objectName: "trough"
+                    anchors.fill: parent
+                    visible: flowContainer.showTrough
+                }
 
-                //the proportional position of the thumb relative to the trough it can move into
-                //It is 0 when the thumb is at its minimum value, and 1 when it is at its maximum value
-                property real relThumbPosition : isVertical
-                                                 ? (slider.y - thumbsExtremesMargin) / (trough.height - 2*thumbsExtremesMargin - slider.height)
-                                                 : (slider.x - thumbsExtremesMargin) / (trough.width - 2*thumbsExtremesMargin - slider.width)
+                Rectangle {
+                    id: slider
+                    objectName: "interactiveScrollbarThumb"
 
-                //we just need to call this onPressed, so we shouldn't use a binding for it, which would get
-                //reevaluated any time one of the properties changes.
-                //+ having it as a binding has the sideeffect that when we query its value from inside onPressed
-                //it may not be using the most up-to-date value for *all* the variables it uses, and that would
-                //break the logic
-                function containsTouch() {
-                    var touchX = slider.mapFromItem(thumbArea, thumbArea.mouseX, thumbArea.mouseY).x
-                    var touchY = slider.mapFromItem(thumbArea, thumbArea.mouseX, thumbArea.mouseY).y
-                    //relaxed checks on the position of the touch, to allow some error
-                    if (touchX >= -visuals.touchDragStartMargin
-                            && touchX <= slider.width + visuals.touchDragStartMargin
-                            && touchY >= -visuals.touchDragStartMargin
-                            && touchY <= slider.height + visuals.touchDragStartMargin) {
-                        return true
-                    } else {
-                        return false
+                    //this property is true if the user could be starting a drag (i.e. pressed inside the thumb)
+                    //but drag.active is not true yet (because that requires dragging >0 pixels)
+                    //Usecase: thumb is at the top, user drags towards the top and
+                    //goes out of window -> drag.active won't trigger because the thumb can't move by even 1px,
+                    //but we still want the logic to know that user could be trying to drag (by moving the
+                    //mouse down again afterwards, for example)
+                    //
+                    //NOTE: starting a drag while the scrollbars are in steppers mode is considered a mouse drag
+                    //(because we want the style to stay to steppers) even when started with touch!
+                    property bool mouseDragging: false
+                    property bool touchDragging: false
+
+                    //the proportional position of the thumb relative to the trough it can move into
+                    //It is 0 when the thumb is at its minimum value, and 1 when it is at its maximum value
+                    property real relThumbPosition : isVertical
+                                                     ? (slider.y - thumbsExtremesMargin) / (trough.height - 2*thumbsExtremesMargin - slider.height)
+                                                     : (slider.x - thumbsExtremesMargin) / (trough.width - 2*thumbsExtremesMargin - slider.width)
+
+                    //we just need to call this onPressed, so we shouldn't use a binding for it, which would get
+                    //reevaluated any time one of the properties changes.
+                    //+ having it as a binding has the sideeffect that when we query its value from inside onPressed
+                    //it may not be using the most up-to-date value for *all* the variables it uses, and that would
+                    //break the logic
+                    function containsTouch() {
+                        var touchX = slider.mapFromItem(thumbArea, thumbArea.mouseX, thumbArea.mouseY).x
+                        var touchY = slider.mapFromItem(thumbArea, thumbArea.mouseX, thumbArea.mouseY).y
+                        //relaxed checks on the position of the touch, to allow some error
+                        if (touchX >= -visuals.touchDragStartMargin
+                                && touchX <= slider.width + visuals.touchDragStartMargin
+                                && touchY >= -visuals.touchDragStartMargin
+                                && touchY <= slider.height + visuals.touchDragStartMargin) {
+                            return true
+                        } else {
+                            return false
+                        }
+                    }
+
+                    anchors {
+                        verticalCenter: (isVertical) ? undefined : trough.verticalCenter
+                        horizontalCenter: (isVertical) ? trough.horizontalCenter : undefined
+                    }
+                    x: (isVertical) ? 0 : scrollbarUtils.sliderPos(styledItem, thumbsExtremesMargin, trough.width - slider.width - thumbsExtremesMargin)
+                    y: (!isVertical) ? 0 : scrollbarUtils.sliderPos(styledItem, thumbsExtremesMargin, trough.height - slider.height - thumbsExtremesMargin)
+                    radius: visuals.sliderRadius
+                    color: Qt.rgba(sliderColor.r, sliderColor.g, sliderColor.b,
+                                   sliderColor.a * (visuals.draggingThumb
+                                                    ? 1.0
+                                                    : (thumbArea.hoveringThumb ? 0.7 : 0.4 )))
+
+                    //This is to stop the scrollbar from changing size while being dragged when we have listviews
+                    //with delegates of variable size (in those cases, contentWidth/height changes as the user scrolls
+                    //because of the way ListView estimates the size of the out-of-views delegates
+                    //and that would trigger resizing of the thumb)
+                    //NOTE: otoh, we want the x/y binding to apply (even though it will cause a small flickering occasionally)
+                    //even while dragging, because that guarantees the view is at the top when the user drags to the top
+                    Binding {
+                        when: !visuals.draggingThumb
+                        target: slider
+                        property: "width"
+                        value: (isVertical) ? flowContainer.thumbThickness
+                                            : scrollbarUtils.sliderSize(styledItem, visuals.minimumSliderSize, trough.width - 2 * thumbsExtremesMargin)
+                    }
+                    Binding {
+                        when: !visuals.draggingThumb
+                        target: slider
+                        property: "height"
+                        value: (!isVertical) ? flowContainer.thumbThickness
+                                             : scrollbarUtils.sliderSize(styledItem, visuals.minimumSliderSize, trough.height - 2 * thumbsExtremesMargin)
                     }
                 }
 
-                anchors {
-                    verticalCenter: (isVertical) ? undefined : trough.verticalCenter
-                    horizontalCenter: (isVertical) ? trough.horizontalCenter : undefined
-                }
-                x: (isVertical) ? 0 : scrollbarUtils.sliderPos(styledItem, thumbsExtremesMargin, trough.width - slider.width - thumbsExtremesMargin)
-                y: (!isVertical) ? 0 : scrollbarUtils.sliderPos(styledItem, thumbsExtremesMargin, trough.height - slider.height - thumbsExtremesMargin)
-                radius: visuals.sliderRadius
-                color: Qt.rgba(sliderColor.r, sliderColor.g, sliderColor.b,
-                               sliderColor.a * (visuals.draggingThumb ? 1.0 : 0.6))
+                //we reuse the MouseArea for touch interactions as well, because MultiTouchPointArea
+                //can't propagate touch events underneath, if not consumed
+                //(it would also require implementing drag as it doesn't have it)
+                MouseArea {
+                    id: thumbArea
+                    objectName: "thumbArea"
 
-                //This is to stop the scrollbar from changing size while being dragged when we have listviews
-                //with delegates of variable size (in those cases, contentWidth/height changes as the user scrolls
-                //because of the way ListView estimates the size of the out-of-views delegates
-                //and that would trigger resizing of the thumb)
-                //NOTE: otoh, we want the x/y binding to apply (even though it will cause a small flickering occasionally)
-                //even while dragging, because that guarantees the view is at the top when the user drags to the top
-                Binding {
-                    when: !visuals.draggingThumb
-                    target: slider
-                    property: "width"
-                    value: (isVertical) ? flowContainer.thumbThickness
-                                        : scrollbarUtils.sliderSize(styledItem, visuals.minimumSliderSize, trough.width - 2 * thumbsExtremesMargin)
-                }
-                Binding {
-                    when: !visuals.draggingThumb
-                    target: slider
-                    property: "height"
-                    value: (!isVertical) ? flowContainer.thumbThickness
-                                         : scrollbarUtils.sliderSize(styledItem, visuals.minimumSliderSize, trough.height - 2 * thumbsExtremesMargin)
-                }
-            }
+                    property real originXAtDragStart: 0
+                    property real originYAtDragStart: 0
+                    property real contentXAtDragStart: 0
+                    property real contentYAtDragStart: 0
 
-            //we reuse the MouseArea for touch interactions as well, because MultiTouchPointArea
-            //can't propagate touch events underneath, if not consumed
-            //(it would also require implementing drag as it doesn't have it)
-            MouseArea {
-                id: thumbArea
-                objectName: "thumbArea"
+                    //cache input device position in order to ignore mouse/touch
+                    //moves which are shorter than a threshold. This is needed due
+                    //to the low precision of some touchscreen devices, to avoid
+                    //shaking the view while slowly dragging via touch
+                    property real previousX: 0
+                    property real previousY: 0
 
-                property real originXAtDragStart: 0
-                property real originYAtDragStart: 0
-                property real contentXAtDragStart: 0
-                property real contentYAtDragStart: 0
+                    //following UX spec, if during a drag the mouse goes far away from the scrollbar
+                    //we want to temporarily lock the drag and reset the scrollbar to where it was when
+                    //the drag started, WITHOUT losing the drag (if the mouse gets back within the distance
+                    //threshold, the drag has to resum without the need to release and pressHold again)
+                    property bool lockDrag: false
 
-                //cache input device position in order to ignore mouse/touch
-                //moves which are shorter than a threshold. This is needed due
-                //to the low precision of some touchscreen devices, to avoid
-                //shaking the view while slowly dragging via touch
-                property real previousX: 0
-                property real previousY: 0
+                    property bool hoveringThumb: false
+                    property string scrollingProp: isVertical ? "y" : "x"
+                    property string sizeProp: isVertical ? "height" : "width"
 
-                //following UX spec, if during a drag the mouse goes far away from the scrollbar
-                //we want to temporarily lock the drag and reset the scrollbar to where it was when
-                //the drag started, WITHOUT losing the drag (if the mouse gets back within the distance
-                //threshold, the drag has to resum without the need to release and pressHold again)
-                property bool lockDrag: false
-
-                property string scrollingProp: isVertical ? "y" : "x"
-                property string sizeProp: isVertical ? "height" : "width"
-
-                function initDrag(isMouse) {
-                    __disableStateBinding = true
-                    thumbArea.saveFlickableScrollingState()
-                    if (isMouse) {
-                        slider.mouseDragging = true
-                        visuals.state = "steppers"
-                    } else {
-                        slider.touchDragging = true
-                        visuals.state = "thumb"
+                    function initDrag(isMouse) {
+                        __disableStateBinding = true
+                        thumbArea.saveFlickableScrollingState()
+                        if (isMouse) {
+                            slider.mouseDragging = true
+                            visuals.state = "steppers"
+                        } else {
+                            slider.touchDragging = true
+                            visuals.state = "thumb"
+                        }
                     }
-                }
 
-                function resetDrag() {
-                    if (thumbArea.lockDrag) thumbArea.lockDrag = false
-                    slider.mouseDragging = false
-                    slider.touchDragging = false
-                    __disableStateBinding = false
-                }
-
-                function handlePress(mouseX, mouseY) {
-                    if (!thumbArea.pressed) return
-
-                    var mouseScrollingProp = isVertical ? mouseY : mouseX
-                    if (mouseScrollingProp < slider[scrollingProp]) {
-                        scrollBy(-pageSize*visuals.longScrollingRatio, true)
-                    } else if (mouseScrollingProp > slider[scrollingProp] + slider[sizeProp]) {
-                        scrollBy(pageSize*visuals.longScrollingRatio, true)
+                    function resetDrag() {
+                        if (thumbArea.lockDrag) thumbArea.lockDrag = false
+                        slider.mouseDragging = false
+                        slider.touchDragging = false
+                        __disableStateBinding = false
                     }
-                }
 
-                function saveFlickableScrollingState() {
-                    originXAtDragStart = flickableItem.originX
-                    originYAtDragStart = flickableItem.originY
-                    contentXAtDragStart = flickableItem.contentX
-                    contentYAtDragStart = flickableItem.contentY
-                }
+                    function handlePress(mouseX, mouseY) {
+                        if (!thumbArea.pressed) return
 
-                function resetFlickableToPreDragState() {
-                    //NOTE: when dealing with ListViews which have
-                    //delegates that are highly variable in size originX/Y and contentWidth/Height
-                    //change based on "out-of-view delegates" size estimation done by ListView.
-                    //In that case, we can't do anything to bring back the view to where it was
-                    //when the drag started, so we'd better not do anything instead of doing something
-                    //which we're sure will be wrong
-                    if (originXAtDragStart != flickableItem.originX
-                            || originYAtDragStart != flickableItem.originY) {
-                        return
-                    }
-                    flickableItem.contentX = contentXAtDragStart
-                    flickableItem.contentY = contentYAtDragStart
-                }
-
-                function cacheMousePosition(mouse) {
-                    previousX = mouse.x
-                    previousY = mouse.y
-                }
-
-                anchors {
-                    fill: trough
-                    // set margins adding 2 dp for error area
-                    leftMargin: (!isVertical || frontAligned) ? 0 : units.dp(-2)
-                    rightMargin: (!isVertical || rearAligned) ? 0 : units.dp(-2)
-                    topMargin: (isVertical || topAligned) ?  0 : units.dp(-2)
-                    bottomMargin: (isVertical || bottomAligned) ?  0 : units.dp(-2)
-                }
-                enabled: isScrollable && interactive
-                onPressed: {
-                    cacheMousePosition(mouse)
-                    //potentially we allow using touch to trigger mouse interactions, in case the
-                    //mouse has previously hovered over the area and activated the steppers style
-                    //checking for the value of visuals.state wouldn't be useful here, the value could be
-                    //"hidden" even if the values have only just started transitioning from "steppers" state
-                    if (trough.visible) {
                         var mouseScrollingProp = isVertical ? mouseY : mouseX
-                        //don't start the press and hold timer to avoid conflicts with the drag
-                        if (mouseScrollingProp < slider[scrollingProp] ||
-                                mouseScrollingProp > (slider[scrollingProp] + slider[sizeProp])) {
-                            handlePress(mouseX, mouseY)
-                            pressHoldTimer.startTimer(thumbArea)
-                        } else {
-                            //we can't tell whether the drag is started from mouse or touch
-                            //(unless we add an additional multipointtoucharea and reimplement drag
-                            //but MPTArea can't ignore touch events so we wouldn't be able to propagate those)
-                            //so we assume that it's a mouse drag if the mouse is within the proximity area
-                            //when the mouse is dragged
-                            initDrag(true)
+                        if (mouseScrollingProp < slider[scrollingProp]) {
+                            scrollBy(-pageSize*visuals.longScrollingRatio, true)
+                        } else if (mouseScrollingProp > slider[scrollingProp] + slider[sizeProp]) {
+                            scrollBy(pageSize*visuals.longScrollingRatio, true)
                         }
-                    } else if (visuals.veryLongContentItem && slider.containsTouch()) {
-                        initDrag(false)
-                    } else {
-                        //propagate otherwise
-                        mouse.accepted = false
                     }
-                }
-                onPositionChanged: {
-                    //avoid shaking the view when the user is draggin via touch
-                    if (Math.abs(mouse.x - previousX) < visuals.dragThreshold
-                            && Math.abs(mouse.y - previousY) < visuals.dragThreshold) {
-                        return
-                    }
-                    cacheMousePosition(mouse)
 
-                    if (pressedButtons == Qt.LeftButton && (slider.mouseDragging || slider.touchDragging)) {
-                        if ((isVertical && Math.abs(mouse.x - thumbArea.x) >= flowContainer.thickness * 10)
-                                || (!isVertical && Math.abs(mouse.y - thumbArea.y) >= flowContainer.thickness * 10)) {
-                            //don't reset it if the user is already scrolling the view (via keyboard or similar)
-                            if (!scrollAnimation.running) {
-                                resetFlickableToPreDragState()
-                                thumbArea.lockDrag = true
+                    function handleHover(mouseX, mouseY) {
+                        var mouseScrollingProp = isVertical ? mouseY : mouseX
+                        hoveringThumb = mouseScrollingProp >= slider[scrollingProp] &&
+                                mouseScrollingProp <= slider[scrollingProp] + slider[sizeProp]
+                    }
+
+                    function saveFlickableScrollingState() {
+                        originXAtDragStart = flickableItem.originX
+                        originYAtDragStart = flickableItem.originY
+                        contentXAtDragStart = flickableItem.contentX
+                        contentYAtDragStart = flickableItem.contentY
+                    }
+
+                    function resetFlickableToPreDragState() {
+                        //NOTE: when dealing with ListViews which have
+                        //delegates that are highly variable in size originX/Y and contentWidth/Height
+                        //change based on "out-of-view delegates" size estimation done by ListView.
+                        //In that case, we can't do anything to bring back the view to where it was
+                        //when the drag started, so we'd better not do anything instead of doing something
+                        //which we're sure will be wrong
+                        if (originXAtDragStart != flickableItem.originX
+                                || originYAtDragStart != flickableItem.originY) {
+                            return
+                        }
+                        flickableItem.contentX = contentXAtDragStart
+                        flickableItem.contentY = contentYAtDragStart
+                    }
+
+                    function cacheMousePosition(mouse) {
+                        previousX = mouse.x
+                        previousY = mouse.y
+                    }
+
+                    anchors {
+                        fill: trough
+                        // set margins adding 2 dp for error area
+                        leftMargin: (!isVertical || frontAligned) ? 0 : units.dp(-2)
+                        rightMargin: (!isVertical || rearAligned) ? 0 : units.dp(-2)
+                        topMargin: (isVertical || topAligned) ?  0 : units.dp(-2)
+                        bottomMargin: (isVertical || bottomAligned) ?  0 : units.dp(-2)
+                    }
+                    enabled: isScrollable && interactive
+                    onPressed: {
+                        cacheMousePosition(mouse)
+                        //potentially we allow using touch to trigger mouse interactions, in case the
+                        //mouse has previously hovered over the area and activated the steppers style
+                        //checking for the value of visuals.state wouldn't be useful here, the value could be
+                        //"hidden" even if the values have only just started transitioning from "steppers" state
+                        if (trough.visible) {
+                            var mouseScrollingProp = isVertical ? mouseY : mouseX
+                            //don't start the press and hold timer to avoid conflicts with the drag
+                            if (mouseScrollingProp < slider[scrollingProp] ||
+                                    mouseScrollingProp > (slider[scrollingProp] + slider[sizeProp])) {
+                                handlePress(mouseX, mouseY)
+                                pressHoldTimer.startTimer(thumbArea)
+                            } else {
+                                //we can't tell whether the drag is started from mouse or touch
+                                //(unless we add an additional multipointtoucharea and reimplement drag
+                                //but MPTArea can't ignore touch events so we wouldn't be able to propagate those)
+                                //so we assume that it's a mouse drag if the mouse is within the proximity area
+                                //when the mouse is dragged
+                                initDrag(true)
                             }
+                        } else if (visuals.veryLongContentItem && slider.containsTouch()) {
+                            initDrag(false)
                         } else {
-                            //don't clash with scrolling animation
-                            if (scrollAnimation.running) scrollAnimation.stop()
-
-                            if (thumbArea.lockDrag) thumbArea.lockDrag = false
-                            visuals.drag()
+                            //propagate otherwise
+                            mouse.accepted = false
                         }
                     }
-                }
-                onCanceled: {
-                    resetDrag()
-                    pressHoldTimer.stop()
-                }
-                onReleased: {
-                    resetDrag()
-                    pressHoldTimer.stop()
-                }
-                drag {
-                    //don't start a drag while we're scrolling using press and hold
-                    target: pressHoldTimer.running ? undefined : slider
-                    axis: (isVertical) ? Drag.YAxis : Drag.XAxis
-                    minimumY: lockDrag ? slider.y : thumbsExtremesMargin
-                    maximumY: lockDrag ? slider.y : trough.height - slider.height - thumbsExtremesMargin
-                    minimumX: lockDrag ? slider.x : thumbsExtremesMargin
-                    maximumX: lockDrag ? slider.x : trough.width - slider.width - thumbsExtremesMargin
-                    onActiveChanged: {
-                        if (drag.active) {
-                            //drag.active is true only when the target has been moved by >0 pixels (if threshold == 0)
-                            //that means if the bar is at the top and user drags it upwards, drag.active won't change,
-                            //but the user will still be able to leave the app window from above, move mouse to the left (or right)
-                            //enough to trigger the drag lock logic, and then come back in the window and move downwards.
-                            //At *that* point drag.active will become true, but we don't want to actually drag the thumb
-                            //because the mouse is still outside the area where thumb is follow input device movements
-                            if (!lockDrag) {
+                    onPositionChanged: {
+                        //avoid shaking the view when the user is draggin via touch
+                        if (Math.abs(mouse.x - previousX) < visuals.dragThreshold
+                                && Math.abs(mouse.y - previousY) < visuals.dragThreshold) {
+                            return
+                        }
+                        cacheMousePosition(mouse)
+
+                        if (pressedButtons == Qt.LeftButton && (slider.mouseDragging || slider.touchDragging)) {
+                            if ((isVertical && Math.abs(mouse.x - thumbArea.x) >= flowContainer.thickness * 10)
+                                    || (!isVertical && Math.abs(mouse.y - thumbArea.y) >= flowContainer.thickness * 10)) {
+                                //don't reset it if the user is already scrolling the view (via keyboard or similar)
+                                if (!scrollAnimation.running) {
+                                    resetFlickableToPreDragState()
+                                    thumbArea.lockDrag = true
+                                }
+                            } else {
+                                //don't clash with scrolling animation
+                                if (scrollAnimation.running) scrollAnimation.stop()
+
+                                if (thumbArea.lockDrag) thumbArea.lockDrag = false
                                 visuals.drag()
                             }
-                        } else {
-                            resetDrag()
                         }
                     }
-
-                    //NOTE: we need threshold to be 0, otherwise it will be
-                    //impossible to drag contentItems which have a size so that
-                    //"flickableItem.height - contentItem.height < threshold"!!!
-                    threshold: 0
-                }
-
-                Timer {
-                    id: pressHoldTimer
-
-                    //This var is needed to reuse the same timer to handle
-                    //both thumb and steppers press-and-hold
-                    //NOTE: the item MUST provide a handlePress method
-                    property MouseArea startedBy
-                    property bool firstTrigger: true
-
-                    function startTimer(item) {
-                        startedBy = item
-                        start()
+                    onCanceled: {
+                        hoveringThumb = false
+                        resetDrag()
+                        pressHoldTimer.stop()
                     }
-
-                    interval: firstTrigger ? 500 : 250
-                    onTriggered: {
-                        if (firstTrigger) firstTrigger = false
-                        if (startedBy !== undefined) {
-                            startedBy.handlePress(startedBy.mouseX, startedBy.mouseY)
-                        } else {
-                            console.log("Congrats, you have just found a bug! Press and hold timer is running without knowing the item that started it. Please report this.")
+                    onReleased: {
+                        hoveringThumb = false
+                        resetDrag()
+                        pressHoldTimer.stop()
+                    }
+                    drag {
+                        //don't start a drag while we're scrolling using press and hold
+                        target: pressHoldTimer.running ? undefined : slider
+                        axis: (isVertical) ? Drag.YAxis : Drag.XAxis
+                        minimumY: lockDrag ? slider.y : thumbsExtremesMargin
+                        maximumY: lockDrag ? slider.y : trough.height - slider.height - thumbsExtremesMargin
+                        minimumX: lockDrag ? slider.x : thumbsExtremesMargin
+                        maximumX: lockDrag ? slider.x : trough.width - slider.width - thumbsExtremesMargin
+                        onActiveChanged: {
+                            if (drag.active) {
+                                //drag.active is true only when the target has been moved by >0 pixels (if threshold == 0)
+                                //that means if the bar is at the top and user drags it upwards, drag.active won't change,
+                                //but the user will still be able to leave the app window from above, move mouse to the left (or right)
+                                //enough to trigger the drag lock logic, and then come back in the window and move downwards.
+                                //At *that* point drag.active will become true, but we don't want to actually drag the thumb
+                                //because the mouse is still outside the area where thumb is follow input device movements
+                                if (!lockDrag) {
+                                    visuals.drag()
+                                }
+                            } else {
+                                resetDrag()
+                            }
                         }
+
+                        //NOTE: we need threshold to be 0, otherwise it will be
+                        //impossible to drag contentItems which have a size so that
+                        //"flickableItem.height - contentItem.height < threshold"!!!
+                        threshold: 0
                     }
-                    repeat: true
-                    onRunningChanged: {
-                        if (!running) {
-                            firstTrigger = true
+
+                    //logic to support different colour on hovering
+                    hoverEnabled: true
+                    Mouse.enabled: true
+                    Mouse.ignoreSynthesizedEvents: true
+                    Mouse.onEntered: {
+                        hoveringThumb = false
+                        handleHover(event.x, event.y)
+                    }
+                    Mouse.onPositionChanged: {
+                        handleHover(mouse.x, mouse.y)
+                    }
+                    Mouse.onExited: {
+                        hoveringThumb = false
+                    }
+
+                    Timer {
+                        id: pressHoldTimer
+
+                        //This var is needed to reuse the same timer to handle
+                        //both thumb and steppers press-and-hold
+                        //NOTE: the item MUST provide a handlePress method
+                        property MouseArea startedBy
+                        property bool firstTrigger: true
+
+                        function startTimer(item) {
+                            startedBy = item
+                            start()
+                        }
+
+                        interval: firstTrigger ? 500 : 250
+                        onTriggered: {
+                            if (firstTrigger) firstTrigger = false
+                            if (startedBy !== undefined) {
+                                startedBy.handlePress(startedBy.mouseX, startedBy.mouseY)
+                            } else {
+                                console.log("Congrats, you have just found a bug! Press and hold timer is running without knowing the item that started it. Please report this.")
+                            }
+                        }
+                        repeat: true
+                        onRunningChanged: {
+                            if (!running) {
+                                firstTrigger = true
+                            }
                         }
                     }
                 }
             }
-        }
-        MouseArea {
-            id: steppersMouseArea
-            //size is handled by the states
 
-            function handlePress() {
-                var mappedCoordFirstStepper = mapToItem(firstStepper, mouseX, mouseY)
-                var mappedCoordSecondStepper = mapToItem(secondStepper, mouseX, mouseY)
+            MouseArea {
+                id: steppersMouseArea
+                //size is handled by the states
 
-                if (firstStepper.contains(Qt.point(mappedCoordFirstStepper.x, mappedCoordFirstStepper.y))) {
-                    scrollBy(-pageSize * visuals.shortScrollingRatio, true)
-                } else if (secondStepper.contains(Qt.point(mappedCoordSecondStepper.x, mappedCoordSecondStepper.y))) {
-                    scrollBy(pageSize * visuals.shortScrollingRatio, true)
+                property bool hoveringFirstStepper: false
+                property bool hoveringSecondStepper: false
+
+                function handlePress() {
+                    var mappedCoordFirstStepper = mapToItem(firstStepper, mouseX, mouseY)
+                    var mappedCoordSecondStepper = mapToItem(secondStepper, mouseX, mouseY)
+
+                    if (firstStepper.contains(Qt.point(mappedCoordFirstStepper.x, mappedCoordFirstStepper.y))) {
+                        scrollBy(-pageSize * visuals.shortScrollingRatio, true)
+                    } else if (secondStepper.contains(Qt.point(mappedCoordSecondStepper.x, mappedCoordSecondStepper.y))) {
+                        scrollBy(pageSize * visuals.shortScrollingRatio, true)
+                    }
                 }
-            }
 
-            enabled: isScrollable && interactive
-            visible: flowContainer.showSteppers
+                function handleHover(event) {
+                    var mappedCoordFirstStepper = mapToItem(firstStepper, event.x, event.y)
+                    var mappedCoordSecondStepper = mapToItem(secondStepper, event.x, event.y)
 
-            //We don't change the size of the images because we let the image reader figure the size out,
-            //though that means we have to hide the images somehow while the mousearea is visible but has
-            //null size. We choose to enable clipping here instead of creating bindings on images' visible prop
-            clip: true
-            onPressed: {
-                handlePress()
-                pressHoldTimer.startTimer(steppersMouseArea)
-            }
-            onReleased: pressHoldTimer.stop()
-            onCanceled: pressHoldTimer.stop()
-
-            Rectangle  {
-                id: firstStepper
-                objectName: "firstStepper"
-                anchors {
-                    //it's left in both cases, otherwise using RTL
-                    //would break the layout of the arrow
-                    left: parent.left
-                    right: isVertical ? parent.right : undefined
-                    top: parent.top
-                    bottom: !isVertical ? parent.bottom : undefined
+                    if (firstStepper.contains(Qt.point(mappedCoordFirstStepper.x, mappedCoordFirstStepper.y))) {
+                        hoveringFirstStepper = true
+                        hoveringSecondStepper = false
+                    } else if (secondStepper.contains(Qt.point(mappedCoordSecondStepper.x, mappedCoordSecondStepper.y))) {
+                        hoveringFirstStepper = false
+                        hoveringSecondStepper = true
+                    }
                 }
-                color: trough.color
-                visible: parent.visible
+
+                enabled: isScrollable && interactive
+                visible: flowContainer.showSteppers
+
+                //Logic that handles hovering on steppers
+                hoverEnabled: true
+                Mouse.enabled: true
+                Mouse.ignoreSynthesizedEvents: true
+                Mouse.onEntered: {
+                    hoveringFirstStepper = false
+                    hoveringSecondStepper = false
+                    handleHover(event)
+                }
+                Mouse.onPositionChanged: {
+                    handleHover(mouse)
+                }
+                Mouse.onExited: {
+                    hoveringFirstStepper = false
+                    hoveringSecondStepper = false
+                }
+
+                //We don't change the size of the images because we let the image reader figure the size out,
+                //though that means we have to hide the images somehow while the mousearea is visible but has
+                //null size. We choose to enable clipping here instead of creating bindings on images' visible prop
                 clip: true
+                onPressed: {
+                    handlePress()
+                    pressHoldTimer.startTimer(steppersMouseArea)
+                }
+                onReleased: pressHoldTimer.stop()
+                onCanceled: pressHoldTimer.stop()
 
-                Binding {
-                    target: firstStepper
-                    property: "height"
-                    when: isVertical
-                    value: visible ? troughThicknessSteppersStyle : 0
-                }
-                Binding {
-                    target: firstStepper
-                    property: "width"
-                    when: !isVertical
-                    value: visible ? troughThicknessSteppersStyle : 0
-                }
+                Rectangle  {
+                    id: firstStepper
+                    objectName: "firstStepper"
+                    anchors {
+                        //it's left in both cases, otherwise using RTL
+                        //would break the layout of the arrow
+                        left: parent.left
+                        right: isVertical ? parent.right : undefined
+                        top: parent.top
+                        bottom: !isVertical ? parent.bottom : undefined
+                    }
+                    color: trough.color
+                    visible: parent.visible
+                    clip: true
 
-                Icon {
-                    anchors.centerIn: parent
-                    rotation: isVertical ? 180 : 90
-                    source: Qt.resolvedUrl("../artwork/scrollbar_arrow.png")
-                    color: sliderColor
-                    keyColor: "#5d5d5d"
-                }
-            }
-            Rectangle {
-                id: secondStepper
-                objectName: "secondStepper"
-                anchors {
-                    left: isVertical ? parent.left : firstStepper.right
-                    right: isVertical ? parent.right : undefined
-                    top: !isVertical ? parent.top : firstStepper.bottom
-                    bottom: !isVertical ? parent.bottom : undefined
-                }
-                color: trough.color
-                clip: true
-                visible: parent.visible
+                    Binding {
+                        target: firstStepper
+                        property: "height"
+                        when: isVertical
+                        value: visible ? troughThicknessSteppersStyle : 0
+                    }
+                    Binding {
+                        target: firstStepper
+                        property: "width"
+                        when: !isVertical
+                        value: visible ? troughThicknessSteppersStyle : 0
+                    }
 
-                Binding {
-                    target: secondStepper
-                    property: "height"
-                    when: isVertical
-                    value: visible ? troughThicknessSteppersStyle : 0
+                    Icon {
+                        anchors.centerIn: parent
+                        rotation: isVertical ? 180 : 90
+                        source: Qt.resolvedUrl("../artwork/scrollbar_arrow.png")
+                        color: Qt.rgba(sliderColor.r, sliderColor.g, sliderColor.b,
+                                       sliderColor.a * (steppersMouseArea.hoveringFirstStepper
+                                                        ? (steppersMouseArea.pressed ? 1.0 : 0.7)
+                                                        : 0.4))
+                        keyColor: "#5d5d5d"
+                    }
                 }
-                Binding {
-                    target: secondStepper
-                    property: "width"
-                    when: !isVertical
-                    value: visible ? troughThicknessSteppersStyle : 0
-                }
-                Icon {
-                    anchors.centerIn: parent
-                    rotation: isVertical ? 0 : -90
-                    source: Qt.resolvedUrl("../artwork/scrollbar_arrow.png")
-                    color: sliderColor
-                    keyColor: "#5d5d5d"
+                Rectangle {
+                    id: secondStepper
+                    objectName: "secondStepper"
+                    anchors {
+                        left: isVertical ? parent.left : firstStepper.right
+                        right: isVertical ? parent.right : undefined
+                        top: !isVertical ? parent.top : firstStepper.bottom
+                        bottom: !isVertical ? parent.bottom : undefined
+                    }
+                    color: trough.color
+                    clip: true
+                    visible: parent.visible
+
+                    Binding {
+                        target: secondStepper
+                        property: "height"
+                        when: isVertical
+                        value: visible ? troughThicknessSteppersStyle : 0
+                    }
+                    Binding {
+                        target: secondStepper
+                        property: "width"
+                        when: !isVertical
+                        value: visible ? troughThicknessSteppersStyle : 0
+                    }
+                    Icon {
+                        anchors.centerIn: parent
+                        rotation: isVertical ? 0 : -90
+                        source: Qt.resolvedUrl("../artwork/scrollbar_arrow.png")
+                        color: Qt.rgba(sliderColor.r, sliderColor.g, sliderColor.b,
+                                       sliderColor.a * (steppersMouseArea.hoveringSecondStepper
+                                                        ? (steppersMouseArea.pressed ? 1.0 : 0.7)
+                                                        : 0.4))
+                        keyColor: "#5d5d5d"
+                    }
                 }
             }
         }
-    }
 
-    //just a hack: a rectangle which covers the corner where scrollbars meet, when they're in steppers style
-    Rectangle {
-        id: cornerRect
-        anchors.left: {
-            if (styledItem.__buddyScrollbar && styledItem.__buddyScrollbar.__styleInstance
-                    && styledItem.__buddyScrollbar.__styleInstance.isScrollable) {
-                if (isVertical) {
-                    return flowContainer.left
-                } else {
-                    if (styledItem.__buddyScrollbar.align === Qt.AlignTrailing) {
-                        return flowContainer.right
-                    } else
-                        return undefined
-                }
-            }
-        }
-        anchors.right: {
-            if (styledItem.__buddyScrollbar && styledItem.__buddyScrollbar.__styleInstance
-                    && styledItem.__buddyScrollbar.__styleInstance.isScrollable) {
-                if (isVertical) {
-                    return flowContainer.right
-                } else {
-                    if (styledItem.__buddyScrollbar.align === Qt.AlignLeading) {
+        //just a hack: a rectangle which covers the corner where scrollbars meet, when they're in steppers style
+        Rectangle {
+            id: cornerRect
+            anchors.left: {
+                if (styledItem.__buddyScrollbar && styledItem.__buddyScrollbar.__styleInstance
+                        && styledItem.__buddyScrollbar.__styleInstance.isScrollable) {
+                    if (isVertical) {
                         return flowContainer.left
                     } else {
+                        if (styledItem.__buddyScrollbar.align === Qt.AlignTrailing) {
+                            return flowContainer.right
+                        } else
+                            return undefined
+                    }
+                }
+            }
+            anchors.right: {
+                if (styledItem.__buddyScrollbar && styledItem.__buddyScrollbar.__styleInstance
+                        && styledItem.__buddyScrollbar.__styleInstance.isScrollable) {
+                    if (isVertical) {
+                        return flowContainer.right
+                    } else {
+                        if (styledItem.__buddyScrollbar.align === Qt.AlignLeading) {
+                            return flowContainer.left
+                        } else {
+                            return undefined
+                        }
+                    }
+                }
+            }
+            anchors.top: {
+                if (styledItem.__buddyScrollbar && styledItem.__buddyScrollbar.__styleInstance
+                        && styledItem.__buddyScrollbar.__styleInstance.isScrollable) {
+                    if (isVertical) {
+                        if (styledItem.__buddyScrollbar.align === Qt.AlignBottom) {
+                            return flowContainer.bottom
+                        } else {
+                            return undefined
+                        }
+                    } else {
                         return undefined
                     }
                 }
             }
-        }
-        anchors.top: {
-            if (styledItem.__buddyScrollbar && styledItem.__buddyScrollbar.__styleInstance
-                    && styledItem.__buddyScrollbar.__styleInstance.isScrollable) {
-                if (isVertical) {
-                    if (styledItem.__buddyScrollbar.align === Qt.AlignBottom) {
+            anchors.bottom: {
+                if (styledItem.__buddyScrollbar && styledItem.__buddyScrollbar.__styleInstance
+                        && styledItem.__buddyScrollbar.__styleInstance.isScrollable) {
+                    if (isVertical) {
+                        if (styledItem.__buddyScrollbar.align === Qt.AlignTop) {
+                            return flowContainer.top
+                        } else {
+                            return undefined
+                        }
+                    } else {
                         return flowContainer.bottom
-                    } else {
-                        return undefined
                     }
-                } else {
-                    return undefined
                 }
             }
+            //REMEMBER: the thickness animates during state changes,
+            //so we want to bind the right side to the thickness of the scrollbar
+            width: isVertical ? flowContainer.thickness : troughThicknessSteppersStyle
+            height: isVertical ? troughThicknessSteppersStyle : flowContainer.thickness
+            color: trough.color
+            visible: flowContainer.showCornerRect
+                     && styledItem.__buddyScrollbar
+                     && styledItem.__buddyScrollbar.__styleInstance.isScrollable
         }
-        anchors.bottom: {
-            if (styledItem.__buddyScrollbar && styledItem.__buddyScrollbar.__styleInstance
-                    && styledItem.__buddyScrollbar.__styleInstance.isScrollable) {
-                if (isVertical) {
-                    if (styledItem.__buddyScrollbar.align === Qt.AlignTop) {
-                        return flowContainer.top
-                    } else {
-                        return undefined
-                    }
-                } else {
-                    return flowContainer.bottom
-                }
-            }
-        }
-        //REMEMBER: the thickness animates during state changes,
-        //so we want to bind the right side to the thickness of the scrollbar
-        width: isVertical ? flowContainer.thickness : troughThicknessSteppersStyle
-        height: isVertical ? troughThicknessSteppersStyle : flowContainer.thickness
-        color: trough.color
-        visible: flowContainer.showCornerRect
-                 && styledItem.__buddyScrollbar
-                 && styledItem.__buddyScrollbar.__styleInstance.isScrollable
     }
 
     Binding {
@@ -930,9 +997,13 @@ Item {
                 //to the steppers (or thumb) state even when the mouse exits the area prematurely (e.g. when the mouse
                 //overshoots, without the .running check the scrollbar would stop the growing transition halfway and
                 //go back to hidden mode)
-                if (proximityArea.containsMouseDevice || (draggingThumb && slider.mouseDragging) || __overshootTimer.running) {
+                // NOTE: we use steppersMouseArea.pressed to keep steppers state even when the user presses on the steppers
+                // then holds and moves the pointer outside the window (probably by mistake) without releasing
+                if (proximityArea.containsMouseDevice || steppersMouseArea.pressed
+                        || (draggingThumb && slider.mouseDragging) || __overshootTimer.running) {
                     return 'steppers'
-                } else if (thumbStyleFlag || (draggingThumb && slider.touchDragging) || __overshootTimer.running) {
+                } else if (thumbStyleFlag
+                           || (draggingThumb && slider.touchDragging) || __overshootTimer.running) {
                     return 'thumb'
                 } else if (flickableItem.moving || scrollAnimation.running || transitionToIndicator.running) {
                     return 'indicator';
