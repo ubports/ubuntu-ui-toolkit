@@ -80,7 +80,7 @@ function create_test_cmd {
   else
       EXE=./$_TARGETPATH
   fi
-  _CMD="-n $_TESTFILE -m 300"
+  _CMD="-n $_TESTFILE -m 500"
 
   DEB_HOST_ARCH=$(dpkg-architecture -qDEB_HOST_ARCH)
   if [[ ${DEB_HOST_ARCH} =~ 'arm' ]]; then
