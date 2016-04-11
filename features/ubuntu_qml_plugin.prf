@@ -46,9 +46,12 @@ load(ubuntu_enable_testing)
     ld_lib_path.value += $$shell_path($$ROOT_BUILD_DIR/lib)
     ld_lib_path.value = $$unique(ld_lib_path.value)
 
-    qtAddToolEnv(QMLPLUGINDUMP, importpath)
-    qtAddToolEnv(QMLPLUGINDUMP, membackend)
-    qtAddToolEnv(QMLPLUGINDUMP, ld_lib_path)
+
+    QMLPLUGINDUMP_ENV_VARS = importpath \
+                             membackend \
+                             ld_lib_path
+
+    qtAddToolEnv(QMLPLUGINDUMP, $$QMLPLUGINDUMP_ENV_VARS)
 
     TARGETPATHBASE = $$replace(TARGETPATH, \\.\\d+\$, )
 
