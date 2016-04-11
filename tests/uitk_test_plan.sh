@@ -203,7 +203,7 @@ function reset {
 function device_comission {
     if [ ${COMISSION_BOOTSTRAP} == true ]; then
         # bootstrap the device with the latest image
-	ubuntu-device-flash  --revision=399 touch --channel=${CHANNEL} --wipe --bootstrap --developer-mode --password=0000a
+	ubuntu-device-flash touch --channel=${CHANNEL} --wipe --bootstrap --developer-mode --password=0000a
     elif [ ${COMISSION_FLASH} == true ]; then
         adb -s ${SERIALNUMBER} wait-for-device
         # Avoid https://bugs.launchpad.net/gallery-app/+bug/1363190
@@ -393,7 +393,7 @@ while getopts ":hrintduc:slqwbvi:o:p:e:f:a:" opt; do
             RTM=false
             CHANNEL="ubuntu-touch/devel-proposed/ubuntu"
             DISTRO="ubuntu"
-            SERIES="wily"
+            SERIES="xenial"
             ;;
         w)
             DISTUPGRADE=true
@@ -423,7 +423,7 @@ while getopts ":hrintduc:slqwbvi:o:p:e:f:a:" opt; do
             echo -e "\t-p : Source PPA for the UITK. Default $PPA. Use -p archive to test stock image or -p [0-9]* to set a silo."
             echo -e "\t-f : Filter for the test suite. Default $FILTER"
             echo -e "\t-a : Start the test suite from the given test."
-            echo -e "\t-u : Provision the Development release of Ubuntu, Wily. Default is vivid-overlay (formerly RTM)."
+            echo -e "\t-u : Provision the Development release of Ubuntu, Xenial. Default is vivid-overlay (formerly RTM)."
             echo -e "\t-w : dist-upgrade to the whole PPA instead of just Ubuntu UI Toolkit. Default is only UITK."
             echo -e "\t-q : Provision the device for normal use with the ${PPA} enabled"
             echo ""
